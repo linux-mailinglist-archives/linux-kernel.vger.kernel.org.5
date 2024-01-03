@@ -1,482 +1,196 @@
-Return-Path: <linux-kernel+bounces-15705-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15706-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 20CD782309F
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 16:34:12 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B9CB78230A3
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 16:34:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A62A0285DBF
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 15:34:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3049E1F2487A
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 15:34:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D40391C282;
-	Wed,  3 Jan 2024 15:33:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CFE11C68C;
+	Wed,  3 Jan 2024 15:34:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="uvLJHex6"
+	dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b="aqweOPi0"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail.zytor.com (terminus.zytor.com [198.137.202.136])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 847721BDC4
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 15:33:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--brho.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dbeac7a5b53so7096276.2
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 07:33:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1704296001; x=1704900801; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=OicT+l3EZJlJYj2TM+wBf0RsBy8Da2sRlMessm79MX4=;
-        b=uvLJHex6cAxG69h2j4On6/Tu/EsYcNpVMI2NmLGQI8RWBwWHngmeHhT0oyQhqe8s32
-         stH33io1hEAl4bavoNn1xdcJFxGfPx6X8zx52aAULkBGPblLw8Eae6hGcWA0ZYQqI7wS
-         FjMRHkuOP3b/8D2pGisXsGJVZAX+VGzwhZF1x2bHN3XqksXovR9EIo8XpU6hA/Eo/UwG
-         usExDcJVq3htvPw8uIkdAgJ0Ni50W0jAnK6gn9lQYp0FMGE7HnXxVii4GVLQ2IdzSw63
-         myUNm3DxQG7jpll7B1l2dMjO2T0X9DX46O7j3Ti7wzIsWqAIa4fwNag5t3joNxG+Hrr5
-         btWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704296001; x=1704900801;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=OicT+l3EZJlJYj2TM+wBf0RsBy8Da2sRlMessm79MX4=;
-        b=dJOe9IGER1wXWshC1mdKQ8fL/8MFlXsL3GRkreWV84+qqBK8t0CdlrAMD/etzWBz2f
-         JXy7ByMWXP2slvUiZCDNwcwQpCKpZE0Th/A7ajdK2FMRvEX4J0SvkVt+7XMAXn1tsuGe
-         PjdzANViDiUz3I8tgamEQEK05l8Kg5rGCyBKg7SnPASAX89HFC9/CwkGRJAownu/RU+D
-         TqZstZIQWniZRYf7CMJUv8hZipYdMsUbEPS/QRrY+lRVB+wBbjkxwh2DxapVOsi7kSqZ
-         RixelwzYAWnVoocMQZwzAEjBq4by02V3lpyQZSyCUg4MfwOfJQx9za6mfY4QqoGUEcMe
-         COYQ==
-X-Gm-Message-State: AOJu0Yzm+4VRJsIArDj5KBbg9eh9CfVik6OdjU70N8vbBktRWi6WZiwE
-	LEA491V/BhGt0fD/2HEVBZMzzu4deMj6DqQ=
-X-Google-Smtp-Source: AGHT+IFBRD+ZEI1ilypTnzEQs3SBZHYgKw6gKzJ73D+jgtUEvgAc3+DG2QK8wd49cHs1EI2qezTz6GFM
-X-Received: from gnomeregan.cam.corp.google.com ([2620:15c:93:4:7e71:cfbd:2031:cc52])
- (user=brho job=sendgmr) by 2002:a25:7495:0:b0:dbe:9f12:cfc6 with SMTP id
- p143-20020a257495000000b00dbe9f12cfc6mr37792ybc.1.1704296001660; Wed, 03 Jan
- 2024 07:33:21 -0800 (PST)
-Date: Wed,  3 Jan 2024 10:33:02 -0500
-In-Reply-To: <20240103153307.553838-1-brho@google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D28FA1C683
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 15:34:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zytor.com
+Received: from [127.0.0.1] ([76.133.66.138])
+	(authenticated bits=0)
+	by mail.zytor.com (8.17.2/8.17.1) with ESMTPSA id 403FXFDW3589428
+	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+	Wed, 3 Jan 2024 07:33:15 -0800
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 403FXFDW3589428
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+	s=2023121201; t=1704295996;
+	bh=oRFRY7ymFYRPfb4uY5/cZy3nbPYtAymysIGmROa2vNE=;
+	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
+	b=aqweOPi00UvcD0DrS4eZjkaUGr0S46AytMU0bAOz9brI4XMB5Uys6EMK1xzGQ4sIb
+	 CrNNqmn/ybfagyAeT0WGetmQQvFm3tzBf4DJpk4cjt4kSXY+W3Z0VHg60oumLSzNjZ
+	 +cxOkICPxTU1uu1glsqS6zMisDCv1nHjXZKfjYG21WEpSLQDADkURBBqUY/CsNAlAh
+	 ZublkcIGh5+viNmyZpekrh5UkSEI6kYsRCX1oRf/fze8e1bMjo2YRRzppfvrbiOVXr
+	 h552wHDz6OZdhRnupALQuwgA6CQEA6/wVD6HaLv4mVO8NvYi0T9JGj8coIIS2Tqi3D
+	 GDeh42ydvQnSw==
+Date: Wed, 03 Jan 2024 07:33:10 -0800
+From: "H. Peter Anvin" <hpa@zytor.com>
+To: Sean Christopherson <seanjc@google.com>,
+        Elizabeth Figura <zfigura@codeweavers.com>
+CC: x86@kernel.org, Linux Kernel <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
+        wine-devel@winehq.org
+Subject: Re: x86 SGDT emulation for Wine
+User-Agent: K-9 Mail for Android
+In-Reply-To: <ZZV65qJuJ67E_n9O@google.com>
+References: <2285758.taCxCBeP46@uriel> <868D3980-3323-4E4A-8A7A-B9C26F123A1E@zytor.com> <3207569.5fSG56mABF@uriel> <ZZV65qJuJ67E_n9O@google.com>
+Message-ID: <1C37C311-CF8A-44EC-89B5-D826EF458708@zytor.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240103153307.553838-1-brho@google.com>
-X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
-Message-ID: <20240103153307.553838-3-brho@google.com>
-Subject: [PATCH bpf-next 2/2] selftests/bpf: add inline assembly helpers to
- access array elements
-From: Barret Rhoden <brho@google.com>
-To: Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>
-Cc: mattbobrowski@google.com, bpf@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-When accessing an array, even if you insert your own bounds check,
-sometimes the compiler will remove the check, or modify it such that the
-verifier no longer knows your access is within bounds.
+On January 3, 2024 7:19:02 AM PST, Sean Christopherson <seanjc@google=2Ecom=
+> wrote:
+>On Tue, Jan 02, 2024, Elizabeth Figura wrote:
+>> On Wednesday, December 27, 2023 5:58:19 PM CST H=2E Peter Anvin wrote:
+>> > On December 27, 2023 2:20:37 PM PST, Elizabeth Figura <zfigura@codewe=
+avers=2Ecom> wrote:
+>> > >Hello all,
+>> > >
+>> > >There is a Windows 98 program, a game called Nuclear Strike, which w=
+ants to
+>> > >do some amount of direct VGA access=2E Part of this is port I/O, whi=
+ch
+>> > >naturally throws SIGILL that we can trivially catch and emulate in W=
+ine=2E
+>> > >The other part is direct access to the video memory at 0xa0000, whic=
+h in
+>> > >general isn't a problem to catch and virtualize as well=2E
+>> > >
+>> > >However, this program is a bit creative about how it accesses that m=
+emory;
+>> > >instead of just writing to 0xa0000 directly, it looks up a segment
+>> > >descriptor whose base is at 0xa0000 and then uses the %es override t=
+o
+>> > >write bytes=2E In pseudo-C, what it does is:
+>
+>=2E=2E=2E
+>
+>> > A prctl() to set the UMIP-emulated return values or disable it (givin=
+g
+>> > SIGILL) would be easy enough=2E
+>> >=20
+>> > For the non-UMIP case, and probably for a lot of other corner cases l=
+ike
+>> > relying on certain magic selector values and what not, the best optio=
+n
+>> > really would be to wrap the code in a lightweight KVM container=2E I =
+do *not*
+>> > mean running the Qemu user space part of KVM; instead have Wine inter=
+face
+>> > with /dev/kvm directly=2E
+>> >=20
+>> > Non-KVM-capable hardware is basically historic at this point=2E
+>>=20
+>> Sorry for the late response=E2=80=94I've been trying to do research on =
+what would be=20
+>> necessary to use KVM (plus I made the poor choice of sending this durin=
+g the=20
+>> holiday season=2E=2E=2E)
+>>=20
+>> I'm concerned that KVM is going to be difficult or even intractable=2E =
+Here are=20
+>> some of the problems that I (perhaps incorrectly) understand:
+>>=20
+>> * As I am led to understand, there can only be one hypervisor on the ma=
+chine=20
+>> at a time,
+>
+>No=2E  Only one instance of KVM-the-module is allowed, but there is no ar=
+bitrary
+>limit on the number of VMs that userspace can create=2E  The only meaning=
+ful
+>limitation is memory, and while struct kvm isn't tiny, it's not _that_ bi=
+g=2E
+>
+>> and KVM has a hard limit on the number of vCPUs=2E
+>>
+>>   The obvious way to use KVM for Wine is to make each (guest) thread a =
+vCPU=2E=20
+>> That will, at the very least, run into the thread limit=2E In order to =
+avoid=20
+>> that we'd need to ship a whole scheduler, which is concerning=2E That's=
+ a huge=20
+>> component to ship and a huge burden to keep updated=2E It also means we=
+ need to=20
+>> hoist *all* of the ipc and sync code into the guest, which will take an=
+=20
+>> enormous amount of work=2E
+>>=20
+>>   Moreover, because there can only be one hypervisor, and Wine is a mul=
+ti-
+>> process beast, that means that we suddenly need to throw every process =
+into=20
+>> the same VM=2E
+>
+>As above, this is wildly inaccurate=2E  The only KVM restriction with res=
+pect to
+>processes is that a VM is bound to the process (address space) that creat=
+ed the
+>VM=2E  There are no restrictions on the number of VMs that can be created=
+, e=2Eg=2E a
+>single process can create multiple VMs=2E
+>
+>> That has unfortunate implications regarding isolation (it's been a drea=
+m for
+>> years that we'd be able to share a single wine "VM" between multiple us=
+ers),
+>> it complicates memory management (though perhaps not terribly?)=2E And =
+it means
+>> you can only have one Wine VM at a time, and can't use Wine at the same=
+ time
+>> as a "real" VM, neither of which are restrictions that currently exist=
+=2E
+>>=20
+>>   And it's not even like we can refactor=E2=80=94we'd have to rewrite t=
+ons of code to=20
+>> work inside a VM, but also keep the old code around for the cases where=
+ we=20
+>> don't have a VM and want to delegate scheduling to the host OS=2E
+>>=20
+>> * Besides scheduling, we need to exit the VM every time we would normal=
+ly call=20
+>> into Unix code, which in practice is every time that the application do=
+es an=20
+>> NT syscall, or uses a library which we delegate to the host (including =
+e=2Eg=2E=20
+>> GPU, multimedia, audio=2E=2E=2E)
+>
+>Maybe I misinterpreted Peter's suggestion, but at least in my mind I wasn=
+'t thinking
+>that the entire Wine process would run in a VM, but rather Wine would run=
+ just
+>the "problematic" code in a VM=2E
+>
 
-The compiler is even free to make a copy of a register, check the copy,
-and use the original to access the array.  The verifier knows the *copy*
-is within bounds, but not the original register!
-
-Signed-off-by: Barret Rhoden <brho@google.com>
----
- tools/testing/selftests/bpf/Makefile          |   2 +-
- .../bpf/prog_tests/test_array_elem.c          | 112 ++++++++++
- .../selftests/bpf/progs/array_elem_test.c     | 195 ++++++++++++++++++
- tools/testing/selftests/bpf/progs/bpf_misc.h  |  43 ++++
- 4 files changed, 351 insertions(+), 1 deletion(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/test_array_elem.c
- create mode 100644 tools/testing/selftests/bpf/progs/array_elem_test.c
-
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index 617ae55c3bb5..651d4663cc78 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -34,7 +34,7 @@ LIBELF_CFLAGS	:= $(shell $(PKG_CONFIG) libelf --cflags 2>/dev/null)
- LIBELF_LIBS	:= $(shell $(PKG_CONFIG) libelf --libs 2>/dev/null || echo -lelf)
- 
- CFLAGS += -g $(OPT_FLAGS) -rdynamic					\
--	  -Wall -Werror 						\
-+	  -dicks -Wall -Werror 						\
- 	  $(GENFLAGS) $(SAN_CFLAGS) $(LIBELF_CFLAGS)			\
- 	  -I$(CURDIR) -I$(INCLUDE_DIR) -I$(GENDIR) -I$(LIBDIR)		\
- 	  -I$(TOOLSINCDIR) -I$(APIDIR) -I$(OUTPUT)
-diff --git a/tools/testing/selftests/bpf/prog_tests/test_array_elem.c b/tools/testing/selftests/bpf/prog_tests/test_array_elem.c
-new file mode 100644
-index 000000000000..c953636f07c9
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/test_array_elem.c
-@@ -0,0 +1,112 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2024 Google LLC. */
-+#include <test_progs.h>
-+#include "array_elem_test.skel.h"
-+
-+#define NR_MAP_ELEMS 100
-+
-+/*
-+ * Helper to load and run a program.
-+ * Call must define skel, map_elems, and bss_elems.
-+ * Destroy the skel when you're done.
-+ */
-+#define load_and_run(PROG) ({						\
-+	int err;							\
-+	skel = array_elem_test__open();					\
-+	if (!ASSERT_OK_PTR(skel, "array_elem_test open"))		\
-+		return;							\
-+	bpf_program__set_autoload(skel->progs.x_ ## PROG, true);	\
-+	err = array_elem_test__load(skel);				\
-+	if (!ASSERT_EQ(err, 0, "array_elem_test load")) {		\
-+		array_elem_test__destroy(skel);				\
-+		return;							\
-+	}								\
-+	err = array_elem_test__attach(skel);				\
-+	if (!ASSERT_EQ(err, 0, "array_elem_test attach")) {		\
-+		array_elem_test__destroy(skel);				\
-+		return;							\
-+	}								\
-+	for (int i = 0; i < NR_MAP_ELEMS; i++)				\
-+		skel->bss->lookup_indexes[i] = i;			\
-+	map_elems = bpf_map__mmap(skel->maps.arraymap);			\
-+	ASSERT_OK_PTR(map_elems, "mmap");				\
-+	bss_elems = skel->bss->bss_elems;				\
-+	skel->bss->target_pid = getpid();				\
-+	usleep(1);							\
-+})
-+
-+static void test_access_all(void)
-+{
-+	struct array_elem_test *skel;
-+	int *map_elems;
-+	int *bss_elems;
-+
-+	load_and_run(access_all);
-+
-+	for (int i = 0; i < NR_MAP_ELEMS; i++)
-+		ASSERT_EQ(map_elems[i], i, "array_elem map value not written");
-+
-+	for (int i = 0; i < NR_MAP_ELEMS; i++)
-+		ASSERT_EQ(bss_elems[i], i, "array_elem bss value not written");
-+
-+	array_elem_test__destroy(skel);
-+}
-+
-+static void test_oob_access(void)
-+{
-+	struct array_elem_test *skel;
-+	int *map_elems;
-+	int *bss_elems;
-+
-+	load_and_run(oob_access);
-+
-+	for (int i = 0; i < NR_MAP_ELEMS; i++)
-+		ASSERT_EQ(map_elems[i], 0, "array_elem map value was written");
-+
-+	for (int i = 0; i < NR_MAP_ELEMS; i++)
-+		ASSERT_EQ(bss_elems[i], 0, "array_elem bss value was written");
-+
-+	array_elem_test__destroy(skel);
-+}
-+
-+static void test_access_array_map_infer_sz(void)
-+{
-+	struct array_elem_test *skel;
-+	int *map_elems;
-+	int *bss_elems __maybe_unused;
-+
-+	load_and_run(access_array_map_infer_sz);
-+
-+	for (int i = 0; i < NR_MAP_ELEMS; i++)
-+		ASSERT_EQ(map_elems[i], i, "array_elem map value not written");
-+
-+	array_elem_test__destroy(skel);
-+}
-+
-+
-+/* Test that attempting to load a bad program fails. */
-+#define test_bad(PROG) ({						\
-+	struct array_elem_test *skel;					\
-+	int err;							\
-+	skel = array_elem_test__open();					\
-+	if (!ASSERT_OK_PTR(skel, "array_elem_test open"))		\
-+		return;							\
-+	bpf_program__set_autoload(skel->progs.x_bad_ ## PROG, true); 	\
-+	err = array_elem_test__load(skel);				\
-+	ASSERT_ERR(err, "array_elem_test load " # PROG);		\
-+	array_elem_test__destroy(skel);					\
-+})
-+
-+void test_test_array_elem(void)
-+{
-+	if (test__start_subtest("array_elem_access_all"))
-+		test_access_all();
-+	if (test__start_subtest("array_elem_oob_access"))
-+		test_oob_access();
-+	if (test__start_subtest("array_elem_access_array_map_infer_sz"))
-+		test_access_array_map_infer_sz();
-+	if (test__start_subtest("array_elem_bad_map_array_access"))
-+		test_bad(map_array_access);
-+	if (test__start_subtest("array_elem_bad_bss_array_access"))
-+		test_bad(bss_array_access);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/array_elem_test.c b/tools/testing/selftests/bpf/progs/array_elem_test.c
-new file mode 100644
-index 000000000000..9d48afc933f0
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/array_elem_test.c
-@@ -0,0 +1,195 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2024 Google LLC. */
-+#include <stdbool.h>
-+#include <linux/types.h>
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+#include "bpf_misc.h"
-+
-+char _license[] SEC("license") = "GPL";
-+
-+int target_pid = 0;
-+
-+#define NR_MAP_ELEMS 100
-+
-+/*
-+ * We want to test valid accesses into an array, but we also need to fool the
-+ * verifier.  If we just do for (i = 0; i < 100; i++), the verifier knows the
-+ * value of i and can tell we're inside the array.
-+ *
-+ * This "lookup" array is just the values 0, 1, 2..., such that
-+ * lookup_indexes[i] == i.  (set by userspace).  But the verifier doesn't know
-+ * that.
-+ */
-+unsigned int lookup_indexes[NR_MAP_ELEMS];
-+
-+/* Arrays can be in the BSS or inside a map element.  Make sure both work. */
-+int bss_elems[NR_MAP_ELEMS];
-+
-+struct map_array {
-+	int elems[NR_MAP_ELEMS];
-+};
-+
-+/*
-+ * This is an ARRAY_MAP of a single struct, and that struct is an array of
-+ * elements.  Userspace can mmap the map as if it was just a basic array of
-+ * elements.  Though if you make an ARRAY_MAP where the *values* are ints, don't
-+ * forget that bpf map elements are rounded up to 8 bytes.
-+ *
-+ * Once you get the pointer to the base of the inner array, you can access all
-+ * of the elements without another bpf_map_lookup_elem(), which is useful if you
-+ * are operating on multiple elements while holding a spinlock.
-+ */
-+struct {
-+	__uint(type, BPF_MAP_TYPE_ARRAY);
-+	__uint(max_entries, 1);
-+	__type(key, int);
-+	__type(value, struct map_array);
-+	__uint(map_flags, BPF_F_MMAPABLE);
-+} arraymap SEC(".maps");
-+
-+static struct map_array *get_map_array(void)
-+{
-+	int zero = 0;
-+
-+	return bpf_map_lookup_elem(&arraymap, &zero);
-+}
-+
-+static int *get_map_elems(void)
-+{
-+	struct map_array *arr = get_map_array();
-+
-+	if (!arr)
-+		return NULL;
-+	return arr->elems;
-+}
-+
-+/*
-+ * Test that we can access all elements, and that we are accessing the element
-+ * we think we are accessing.
-+ */
-+static void access_all(void)
-+{
-+	int *map_elems = get_map_elems();
-+	int *x;
-+
-+	for (int i = 0; i < NR_MAP_ELEMS; i++) {
-+		x = bpf_array_elem(map_elems, NR_MAP_ELEMS, lookup_indexes[i]);
-+		if (x)
-+			*x = i;
-+	}
-+
-+	for (int i = 0; i < NR_MAP_ELEMS; i++) {
-+		x = bpf_array_sz_elem(bss_elems, lookup_indexes[i]);
-+		if (x)
-+			*x = i;
-+	}
-+}
-+
-+SEC("?tp/syscalls/sys_enter_nanosleep")
-+int x_access_all(void *ctx)
-+{
-+	if ((bpf_get_current_pid_tgid() >> 32) != target_pid)
-+		return 0;
-+	access_all();
-+	return 0;
-+}
-+
-+/*
-+ * Helper for various OOB tests.  An out-of-bound access should be handled like
-+ * a lookup failure.  Specifically, the verifier should ensure we do not access
-+ * outside the array.  Userspace will check that we didn't access somewhere
-+ * inside the array.
-+ */
-+static void set_elem_to_1(long idx)
-+{
-+	int *map_elems = get_map_elems();
-+	int *x;
-+
-+	x = bpf_array_elem(map_elems, NR_MAP_ELEMS, idx);
-+	if (x)
-+		*x = 1;
-+	x = bpf_array_sz_elem(bss_elems, idx);
-+	if (x)
-+		*x = 1;
-+}
-+
-+/*
-+ * Test various out-of-bounds accesses.
-+ */
-+static void oob_access(void)
-+{
-+	set_elem_to_1(NR_MAP_ELEMS + 5);
-+	set_elem_to_1(NR_MAP_ELEMS);
-+	set_elem_to_1(-1);
-+	set_elem_to_1(~0UL);
-+}
-+
-+SEC("?tp/syscalls/sys_enter_nanosleep")
-+int x_oob_access(void *ctx)
-+{
-+	if ((bpf_get_current_pid_tgid() >> 32) != target_pid)
-+		return 0;
-+	oob_access();
-+	return 0;
-+}
-+
-+/*
-+ * Test that we can use the ARRAY_SIZE-style helper with an array in a map.
-+ *
-+ * Note that you cannot infer the size of the array from just a pointer; you
-+ * have to use the actual elems[100].  i.e. this will fail and should fail to
-+ * compile (-Wsizeof-pointer-div):
-+ *
-+ *	int *map_elems = get_map_elems();
-+ *	x = bpf_array_sz_elem(map_elems, lookup_indexes[i]);
-+ */
-+static void access_array_map_infer_sz(void)
-+{
-+	struct map_array *arr = get_map_array();
-+	int *x;
-+
-+	for (int i = 0; i < NR_MAP_ELEMS; i++) {
-+		x = bpf_array_sz_elem(arr->elems, lookup_indexes[i]);
-+		if (x)
-+			*x = i;
-+	}
-+}
-+
-+SEC("?tp/syscalls/sys_enter_nanosleep")
-+int x_access_array_map_infer_sz(void *ctx)
-+{
-+	if ((bpf_get_current_pid_tgid() >> 32) != target_pid)
-+		return 0;
-+	access_array_map_infer_sz();
-+	return 0;
-+}
-+
-+
-+
-+SEC("?tp/syscalls/sys_enter_nanosleep")
-+int x_bad_map_array_access(void *ctx)
-+{
-+	int *map_elems = get_map_elems();
-+
-+	/*
-+	 * Need to check to promote map_elems from MAP_OR_NULL to MAP so that we
-+	 * fail to load below for the right reason.
-+	 */
-+	if (!map_elems)
-+		return 0;
-+	/* Fail to load: we don't prove our access is inside map_elems[] */
-+	for (int i = 0; i < NR_MAP_ELEMS; i++)
-+		map_elems[lookup_indexes[i]] = i;
-+	return 0;
-+}
-+
-+SEC("?tp/syscalls/sys_enter_nanosleep")
-+int x_bad_bss_array_access(void *ctx)
-+{
-+	/* Fail to load: we don't prove our access is inside bss_elems[] */
-+	for (int i = 0; i < NR_MAP_ELEMS; i++)
-+		bss_elems[lookup_indexes[i]] = i;
-+	return 0;
-+}
-diff --git a/tools/testing/selftests/bpf/progs/bpf_misc.h b/tools/testing/selftests/bpf/progs/bpf_misc.h
-index 2fd59970c43a..002bab44cde2 100644
---- a/tools/testing/selftests/bpf/progs/bpf_misc.h
-+++ b/tools/testing/selftests/bpf/progs/bpf_misc.h
-@@ -135,4 +135,47 @@
- /* make it look to compiler like value is read and written */
- #define __sink(expr) asm volatile("" : "+g"(expr))
- 
-+/*
-+ * Access an array element within a bound, such that the verifier knows the
-+ * access is safe.
-+ *
-+ * This macro asm is the equivalent of:
-+ *
-+ *	if (!arr)
-+ *		return NULL;
-+ *	if (idx >= arr_sz)
-+ *		return NULL;
-+ *	return &arr[idx];
-+ *
-+ * The index (___idx below) needs to be a u64, at least for certain versions of
-+ * the BPF ISA, since there aren't u32 conditional jumps.
-+ */
-+#define bpf_array_elem(arr, arr_sz, idx) ({				\
-+	typeof(&(arr)[0]) ___arr = arr;					\
-+	__u64 ___idx = idx;						\
-+	if (___arr) {							\
-+		asm volatile("if %[__idx] >= %[__bound] goto 1f;	\
-+			      %[__idx] *= %[__size];		\
-+			      %[__arr] += %[__idx];		\
-+			      goto 2f;				\
-+			      1:;				\
-+			      %[__arr] = 0;			\
-+			      2:				\
-+			      "						\
-+			     : [__arr]"+r"(___arr), [__idx]"+r"(___idx)	\
-+			     : [__bound]"r"((arr_sz)),		        \
-+			       [__size]"i"(sizeof(typeof((arr)[0])))	\
-+			     : "cc");					\
-+	}								\
-+	___arr;								\
-+})
-+
-+/*
-+ * Convenience wrapper for bpf_array_elem(), where we compute the size of the
-+ * array.  Be sure to use an actual array, and not a pointer, just like with the
-+ * ARRAY_SIZE macro.
-+ */
-+#define bpf_array_sz_elem(arr, idx) \
-+	bpf_array_elem(arr, sizeof(arr) / sizeof((arr)[0]), idx)
-+
- #endif
--- 
-2.43.0.472.g3155946c3a-goog
-
+Yes, the idea would be that you would run the "problematic" code inside a =
+VM *mapped 1:1 with the external address space*, i=2Ee=2E use KVM simply as=
+ a special execution mode to give you more control of the fine grained mach=
+ine state like the GDT=2E The code that you don't want executed in the VM c=
+ontext simply leave unmapped in the VM page tables and set up #PF to always=
+ exit the VM context=2E
 
