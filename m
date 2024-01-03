@@ -1,121 +1,101 @@
-Return-Path: <linux-kernel+bounces-15144-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15150-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 83F5B8227B0
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 05:06:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D13A8227CD
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 05:18:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1D8A5284B9C
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 04:06:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CCE7828419F
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 04:18:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F29C815AF4;
-	Wed,  3 Jan 2024 04:06:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9495D15AF4;
+	Wed,  3 Jan 2024 04:18:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=buaa.edu.cn header.i=@buaa.edu.cn header.b="09dKia/m"
+	dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b="gvkkEwF3"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from azure-sdnproxy.icoremail.net (azure-sdnproxy.icoremail.net [52.237.72.81])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30E3E17980;
-	Wed,  3 Jan 2024 04:06:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=buaa.edu.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=buaa.edu.cn
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=buaa.edu.cn; s=buaa; h=Received:From:To:Cc:Subject:Date:
-	Message-Id:MIME-Version:Content-Transfer-Encoding; bh=UBDlzz6Wsf
-	vPV73RH7b/bcn+16PBcKw0N4bCbDc+87o=; b=09dKia/mTaKW0HG1EnmPWWcEgo
-	nAI/wYbKIB37OzKox+E22TDDx8qGvgsN24bUYG+iR2wg1z7pz8Q7osECF0zDrFJl
-	EZWiTzE65TLQoaWVIIFbJ8EzKwS2bd/UmbDNapr6RjD06+ep8eI9tIn2I3ES1lRq
-	MS4mRSGfg6bF8pSlo=
-Received: from localhost.localdomain (unknown [10.130.147.18])
-	by coremail-app1 (Coremail) with SMTP id OCz+CgC35Vc43ZRlU5uiAA--.46624S2;
-	Wed, 03 Jan 2024 12:06:16 +0800 (CST)
-From: Yuxuan Hu <20373622@buaa.edu.cn>
-To: marcel@holtmann.org,
-	johan.hedberg@gmail.com,
-	luiz.dentz@gmail.com
-Cc: linux-bluetooth@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	baijiaju1990@gmail.com,
-	sy2239101@buaa.edu.cn,
-	20373622@buaa.edu.cn,
-	buaazhr@buaa.edu.cn
-Subject: [PATCH V2] Bluetooth: rfcomm: Fix null-ptr-deref in rfcomm_check_security
-Date: Wed,  3 Jan 2024 12:06:11 +0800
-Message-Id: <20240103040611.3279681-1-20373622@buaa.edu.cn>
-X-Mailer: git-send-email 2.25.1
+Received: from mx1.riseup.net (mx1.riseup.net [198.252.153.129])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A562913AD4;
+	Wed,  3 Jan 2024 04:18:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=riseup.net
+Received: from mx0.riseup.net (mx0-pn.riseup.net [10.0.1.42])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx1.riseup.net (Postfix) with ESMTPS id 4T4bq41RG0zDqCy;
+	Wed,  3 Jan 2024 04:10:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
+	t=1704255024; bh=Q4QSWB4lpoWhI6LvZXYA/LFlYxYL0e3ql56uc4uLsUs=;
+	h=From:To:Subject:Date:In-Reply-To:References:From;
+	b=gvkkEwF3/QebBiVMO+2/EJNfLPfOgE+cXeV60VrcsObrJdNuBzSfA7e5nNjsFJ6nx
+	 dMQepmLCj7aRiupGy83fdalGF5X8v3/jNOakJSaoNGxu9xNU7TF0bVMlyj/1N9FWKZ
+	 ++l1Gi8E+caHIQDYeaxPZpZu+INxm9+u8YwevTBM=
+Received: from fews01-sea.riseup.net (fews01-sea-pn.riseup.net [10.0.1.109])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx0.riseup.net (Postfix) with ESMTPS id 4T4bpx2l20z9vy5;
+	Wed,  3 Jan 2024 04:10:17 +0000 (UTC)
+X-Riseup-User-ID: 405420CC388E9EF22FE493B6FCB7CB07418DA6345B23D1C17FCD1E61398A9170
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+	 by fews01-sea.riseup.net (Postfix) with ESMTPSA id 4T4bpp3Bf5zJmps;
+	Wed,  3 Jan 2024 04:10:09 +0000 (UTC)
+From: Dang Huynh <danct12@riseup.net>
+To: =?utf-8?B?T25kxZllag==?= Jirman <megi@xff.cz>,
+ Manuel Traut <manut@mecka.net>, Neil Armstrong <neil.armstrong@linaro.org>,
+ Jessica Zhang <quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
+ Sandy Huang <hjc@rock-chips.com>, Mark Yao <markyao0591@gmail.com>,
+ Diederik de Haas <didi.debian@cknow.org>,
+ Segfault <awarnecke002@hotmail.com>, Arnaud Ferraris <aferraris@debian.org>,
+ Danct12 <danct12@riseup.net>, dri-devel@lists.freedesktop.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org
+Subject:
+ Re: [PATCH v3 4/4] arm64: dts: rockchip: Add devicetree for Pine64 PineTab2
+Date: Wed, 03 Jan 2024 04:09:55 +0000
+Message-ID: <4814116.aeNJFYEL58@melttower>
+In-Reply-To: <775vjfucu2g2s6zzeutj7f7tapx3q2geccpxvv4ppcms4hxbq7@cbrdmlu2ryzp>
+References:
+ <20240102-pinetab2-v3-0-cb1aa69f8c30@mecka.net>
+ <20240102-pinetab2-v3-4-cb1aa69f8c30@mecka.net>
+ <775vjfucu2g2s6zzeutj7f7tapx3q2geccpxvv4ppcms4hxbq7@cbrdmlu2ryzp>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:OCz+CgC35Vc43ZRlU5uiAA--.46624S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7WFyDGF1xXr18Aw4UCw4rXwb_yoW8trW3pF
-	W2ya4xGFn7ur15Ar97AF4kAFyrZw1v9r15Kw4ku3yY93s5Wwn7trWSyr1jyay5CF4qk343
-	AF10qw4DGrnru37anT9S1TB71UUUUUDqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUBY1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AE
-	w4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2
-	IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E
-	87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1lnxkEFVAIw20F6c
-	xK64vIFxWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2Wl
-	Yx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbV
-	WUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc7CjxVAaw2AF
-	wI0_GFv_Wrylc2xSY4AK6svPMxAIw28IcxkI7VAKI48JMxAIw28IcVCjz48v1sIEY20_Aw
-	1UJr1UMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCj
-	r7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6x
-	IIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAI
-	w20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x
-	0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7sRiL0e3UUUUU==
-X-CM-SenderInfo: ysqtljawssquxxddhvlgxou0/
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"
 
-During our fuzz testing of the connection and disconnection process at the
-RFCOMM layer,we discovered this bug.By comparing the packetsfrom a normal
-connection and disconnection process with the testcase that triggered a
-KASAN report, we analyzed the cause of this bug as follows:
+On Tuesday, January 2, 2024 6:07:56 PM UTC Ond=C5=99ej Jirman wrote:
+> On Tue, Jan 02, 2024 at 05:15:47PM +0100, Manuel Traut wrote:
+> > +&pcie2x1 {
+> > +	pinctrl-names =3D "default";
+> > +	pinctrl-0 =3D <&pcie_reset_h>;
+> > +	reset-gpios =3D <&gpio1 RK_PB2 GPIO_ACTIVE_HIGH>;
+> > +	vpcie3v3-supply =3D <&vcc3v3_minipcie>;
+> > +	status =3D "okay";
+> > +};
+>=20
+> Does it make sense to enable this HW block by default, when it isn't used=
+ on
+> actual HW?
+>=20
 
-1. In the packets captured during a normal connection, the host sends a
-`Read Encryption Key Size` type of `HCI_CMD` packet(Command Opcode: 0x1408)
-to the controller to inquire the length of encryption key.After receiving
-this packet, the controller immediately replies with a Command Complete
-packet (Event Code: 0x0e) to return the Encryption Key Size.
+PCI-E is hooked up to a connector in the schematics, so I think it make sen=
+se=20
+to enable it when there's one available.
 
-2. In our fuzz test case, the timing of the controller's response to this
-packet was delayed to an unexpected point: after the RFCOMM and L2CAP
-layers had disconnected but before the HCI layer had disconnected.
-
-3. After receiving the Encryption Key Size Response at the time described
-in point 2, the host still called the rfcomm_check_security function.
-However, by this time `struct l2cap_conn *conn = l2cap_pi(sk)->chan->conn;`
-had already been released, and when the function executed
-`return hci_conn_security(conn->hcon, d->sec_level, auth_type, d->out);`,
-specifically when accessing `conn->hcon`, a null-ptr-deref error occurred.
-
-To fix this bug, check if `sk->sk_state` is BT_CLOSED before calling
-rfcomm_recv_frame in rfcomm_process_rx.
-
-Signed-off-by: Yuxuan Hu <20373622@buaa.edu.cn>
----
-V1 -> V2: Check earlier on rfcomm_process_rx
-
- net/bluetooth/rfcomm/core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/net/bluetooth/rfcomm/core.c b/net/bluetooth/rfcomm/core.c
-index 053ef8f25fae..1d34d8497033 100644
---- a/net/bluetooth/rfcomm/core.c
-+++ b/net/bluetooth/rfcomm/core.c
-@@ -1941,7 +1941,7 @@ static struct rfcomm_session *rfcomm_process_rx(struct rfcomm_session *s)
- 	/* Get data directly from socket receive queue without copying it. */
- 	while ((skb = skb_dequeue(&sk->sk_receive_queue))) {
- 		skb_orphan(skb);
--		if (!skb_linearize(skb)) {
-+		if (!skb_linearize(skb) && sk->sk_state != BT_CLOSED) {
- 			s = rfcomm_recv_frame(s, skb);
- 			if (!s)
- 				break;
--- 
-2.25.1
 
 
