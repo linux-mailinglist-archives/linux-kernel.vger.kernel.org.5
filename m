@@ -1,95 +1,115 @@
-Return-Path: <linux-kernel+bounces-15357-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15359-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A602822A99
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 10:52:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D2A6822A9E
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 10:54:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 264C11F2400E
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 09:52:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ED7FB1F23FFD
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 09:54:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C7B818AF6;
-	Wed,  3 Jan 2024 09:50:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E07EB1864B;
+	Wed,  3 Jan 2024 09:54:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="jg9h8ytC"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="zfSaECK1"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 848D718E3C;
-	Wed,  3 Jan 2024 09:50:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=D5wPLE9TZz9FB8/zFddxM+lmOG8aS1WUAq/N+WIF/34=; b=jg9h8ytC1jyaCi86YZ3yq/HzUo
-	Seznnu4aTFRdTXJGmfFHAoH6YU3aS90j7cpthWeEQHQJRY2fKCahqw78iCTzpUsUvyYF0Idcea9e7
-	4arIyVUDfOFaoh9Ibm0so5z1qetdUTK0DxUHg3rlmi42pbdqAQmsIpfDsucH/U7J2FS+8C1QwFHUG
-	/ZaP/aEtdTMz/JKRqc7Fvp06Qz7ijJfpB+2r5LEOqJjR4MudDJfT0fJl8KRvuJCSFaU5DM/lstI4G
-	VrnQtA+7spviCCv2HrumYR8WSHEDQpeo70e0Z8kk54G9pVtQUnZ9haza8a/DcL/nUFA4ZkjBsJYKu
-	+4iAFSWQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:45524)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1rKxtZ-0007JJ-0I;
-	Wed, 03 Jan 2024 09:50:41 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1rKxtZ-0006G0-1w; Wed, 03 Jan 2024 09:50:41 +0000
-Date: Wed, 3 Jan 2024 09:50:41 +0000
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: Daniel Golle <daniel@makrotopia.org>
-Cc: Eric Woudstra <ericwouds@gmail.com>, Alexander Couzens <lynxis@fe80.eu>,
-	Andrew Lunn <andrew@lunn.ch>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Frank Wunderlich <frank-w@public-files.de>, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH RFC net-next] net: pcs: pcs-mtk-lynxi fix
- mtk_pcs_lynxi_get_state() for 2500base-x
-Message-ID: <ZZUt8YG/z8koXK9y@shell.armlinux.org.uk>
-References: <20240102074408.1049203-1-ericwouds@gmail.com>
- <ZZP9GR15ufDbjGAJ@shell.armlinux.org.uk>
- <92190426-3614-4774-9E9F-18F121622788@gmail.com>
- <74223164-ab50-4d6d-a4f4-561b0a70d396@gmail.com>
- <ZZRrk85SCDmo76NJ@pidgin.makrotopia.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCBEB18AE8
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 09:54:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-336788cb261so9235757f8f.3
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 01:54:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1704275640; x=1704880440; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=yvwGK/ajNH4j3g/k9LHnvMmnVM5XM7MT9VEa1Y2TxfI=;
+        b=zfSaECK1+zrgqAAWWYvPnIM2I6hERxyOYrUlz4KwOwBjKEYTme7KNyFyx1kCdtQf7P
+         +1MzSDkCyLAMJNeKVgJ3ZyrUFaU2EXF4ysg5LDVUB3qHsEPx5Q6TxfXkvM0NjbwFtdi2
+         CagHs3y6s0S1Ck3oiMG4BL0tHyWquSE8yeqK/kfHl7K+Yl4TeUPpNHFWus30nKFnlqms
+         A7Vms/RM1P6j4lkReBIyfzUCD1gSbd2D6xDDgBNhuXFCfvvjWPuKbLHZlEU0fiPS6rpD
+         HITO0EPk5gqpDG8iIViMlwqKm9J6vu/wz4tK31rv8NI7HOI93mJRvfcrUpW6WZsK58mR
+         TuQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704275640; x=1704880440;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=yvwGK/ajNH4j3g/k9LHnvMmnVM5XM7MT9VEa1Y2TxfI=;
+        b=g2FQGFKhw0XmYr2vs/lEac5z9GOi7/dDCBp6zZ/8IJ/wK0fcayRusKhxbXNgAabnQ1
+         3P19hOZY1TXzXhavl3/CesNpybGYMV7VQIOIufljdsXHD+jXOXZTVVwQc1Ln39OAeCDA
+         Ofqb3AIijjFJwL0dOEy6NTQlYEy6FPDatzDZ/4cHfjalFfFoRJoig2miVQo9W9zeULZ3
+         2hUIQJiPHnPDSGBXbsLV1a/xvyk6EJY37a/0kawV1eg7M71N3Es/FvEe7kKK87UNGWbA
+         RwkgExSKZMblKLgjGUkTw65Iw0r5gs/tZVaSDm+WNyk2IjC5XEG7tnZBScz8PNy67TEs
+         dPgw==
+X-Gm-Message-State: AOJu0YxqDDg2qH9G08sRZa3Sp8ZfdCibZ5fP0DllBwuOHc5TUMKdvD6I
+	jMQaYw8Vab410IHgddJP8Ssqi2a1O+MKSA==
+X-Google-Smtp-Source: AGHT+IETruL/uOb+rdjpVP8lj+qu5BvxT0opC87FWCxIbN6EhcNQUyqHOwG2gvQDb+r8OKezB7Bsqw==
+X-Received: by 2002:a05:600c:4d26:b0:40c:50d5:f7ac with SMTP id u38-20020a05600c4d2600b0040c50d5f7acmr9806511wmp.60.1704275639983;
+        Wed, 03 Jan 2024 01:53:59 -0800 (PST)
+Received: from [192.168.10.46] (146725694.box.freepro.com. [130.180.211.218])
+        by smtp.googlemail.com with ESMTPSA id r8-20020a5d4948000000b003367a5b6b69sm30115767wrs.106.2024.01.03.01.53.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 03 Jan 2024 01:53:59 -0800 (PST)
+Message-ID: <3c9f9a53-958e-4d6c-8fe1-6514f97fe1e0@linaro.org>
+Date: Wed, 3 Jan 2024 10:53:58 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZZRrk85SCDmo76NJ@pidgin.makrotopia.org>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 0/6] thermal: netlink: Redefine the API and drop unused
+ code
+Content-Language: en-US
+To: "Rafael J. Wysocki" <rafael@kernel.org>,
+ Linux PM <linux-pm@vger.kernel.org>
+Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+ Zhang Rui <rui.zhang@intel.com>, Linux ACPI <linux-acpi@vger.kernel.org>,
+ LKML <linux-kernel@vger.kernel.org>, Lukasz Luba <lukasz.luba@arm.com>
+References: <4556052.LvFx2qVVIh@kreacher>
+ <CAJZ5v0hRGKjwDv0VLw550CLfUuNGaVXxmvcpbFhS=PCPqY0n4A@mail.gmail.com>
+From: Daniel Lezcano <daniel.lezcano@linaro.org>
+In-Reply-To: <CAJZ5v0hRGKjwDv0VLw550CLfUuNGaVXxmvcpbFhS=PCPqY0n4A@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Tue, Jan 02, 2024 at 09:01:23PM +0100, Daniel Golle wrote:
-> On Tue, Jan 02, 2024 at 08:33:32PM +0100, Eric Woudstra wrote:
-> > [...]
-> > 
-> > So if phylink_mii_c22_pcs_decode_state() should not set the speed, then it is not correctly set somewhere else.
+
+Hi Rafael,
+
+On 02/01/2024 14:24, Rafael J. Wysocki wrote:
+> On Fri, Dec 15, 2023 at 9:02 PM Rafael J. Wysocki <rjw@rjwysocki.net> wrote:
+>>
+>> Hi Everyone,
+>>
+>> This patch series redefines the thermal netlink API to be somewhat more
+>> convenient to use on the caller side and drops some unused code from
+>> the thermal netlink library.
+>>
+>> Please refer to the individual patch changelogs for details.
 > 
-> Yes, but the fix should go to pcs-mtk-lynxi.c and you don't need to
-> change phylink for it to work.
+> No feedback, so this series doesn't appear to be controversial, and I
+> would like to get it into 6.8.
+> 
+> Tentatively queuing it up and please let me know if it is problematic.
 
-... which is broken thinking. It's "let's add custom hacks to drivers
-to implement driver specific behaviour, ignoring what is being asked
-of them by the upper layers."
+I did not have time to review them properly and I'm OoO until next week. 
+Is it possible to wait for the next time so I can review them ?
+
+
 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
+
 
