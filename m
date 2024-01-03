@@ -1,132 +1,158 @@
-Return-Path: <linux-kernel+bounces-15568-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15569-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E6DD822E3B
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 14:28:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 20024822E43
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 14:29:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B8ADE2856C2
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 13:28:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 90CD6285D4C
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 13:29:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 707F9199BA;
-	Wed,  3 Jan 2024 13:28:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EC8C199D4;
+	Wed,  3 Jan 2024 13:29:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="dpgOU3mK"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5C35199B2;
-	Wed,  3 Jan 2024 13:28:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.174])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4T4rBt4xr0zZgRh;
-	Wed,  3 Jan 2024 21:28:22 +0800 (CST)
-Received: from canpemm500005.china.huawei.com (unknown [7.192.104.229])
-	by mail.maildlp.com (Postfix) with ESMTPS id 406BA1404F8;
-	Wed,  3 Jan 2024 21:28:36 +0800 (CST)
-Received: from [10.174.176.34] (10.174.176.34) by
- canpemm500005.china.huawei.com (7.192.104.229) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 3 Jan 2024 21:28:35 +0800
-Subject: Re: [linus:master] [jbd2] 6a3afb6ac6: fileio.latency_95th_ms 92.5%
- regression
-To: Jan Kara <jack@suse.cz>
-CC: kernel test robot <oliver.sang@intel.com>, <oe-lkp@lists.linux.dev>,
-	<lkp@intel.com>, <linux-kernel@vger.kernel.org>, Theodore Ts'o
-	<tytso@mit.edu>, <linux-ext4@vger.kernel.org>, <ying.huang@intel.com>,
-	<feng.tang@intel.com>, <fengwei.yin@intel.com>, <yukuai3@huawei.com>
-References: <202401021525.a27b9444-oliver.sang@intel.com>
- <dcc72d34-89e1-6181-3556-a1a981256cc6@huawei.com>
- <20240103094907.iupboelwjxi243h3@quack3>
-From: Zhang Yi <yi.zhang@huawei.com>
-Message-ID: <5fb892c2-a532-84bf-fbe2-148b32079fa4@huawei.com>
-Date: Wed, 3 Jan 2024 21:28:35 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 393571A29A
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 13:29:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com [209.85.218.70])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 182543F5A8
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 13:28:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+	s=20210705; t=1704288535;
+	bh=yWWe6H23myTSvjfVff9zG/62qYLCD/sbWwOipagSJuM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version;
+	b=dpgOU3mK1vPuL2BvROMimPl7Y7Bfa6pDz8oyPaUurTHpBy2tUkboS0U8tuO3QdBXX
+	 oTMWKiCD8i0omGjqKzwQAMFsqOUHQsliKndJy/6zUt4U/tvodyN7pn2lVLTWbQhdTW
+	 KfsyPXh+7YXRDOq1+8cLouEEj0AJ7UCdEoJMoLXKu/ZycXOZiKE/nyZ3MckxlOj7PA
+	 5vZGshX0vN9sQqHUK51rvvxw0Q54kfGrM3ZqNaJ+2uqMMW8S5ZpmxcF8U36aVvMF4d
+	 ODSbXQfAYu13aYY/szgpCiWnMHIEvegJJeg6fUc0v5hU2ab+4LuQWsV8M03j7H0e/W
+	 IrT8o6epRjnyQ==
+Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-a28102bc0f1so85408766b.0
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 05:28:55 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704288534; x=1704893334;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=yWWe6H23myTSvjfVff9zG/62qYLCD/sbWwOipagSJuM=;
+        b=ldv8/cuQ3A0xi824OXJDJvR/5gSVOq8vihWuAJnFmM7DbpXuTHMgPwoocI6HVsVN5W
+         pV2dVa27AWhdAhLNCpfu/isvSBkKTOTBlOyWskNOihqOoEQA9qELIH/sxnd7IOyk276W
+         pVxdLClMC+fSSTbeHLiB8qoGnKSk0f9N5tHpc3lK+zRCiLOoBgnWeFfeZKU2YIYJsHRF
+         UgVjG9tv9xWBUokkEIh5Z5v+FFpQsRyDckmWmkhyf12lkGK/va5rqmLqx3lik/gEw6rp
+         SCRLqlDTdnzAknZwMVTRuLGSVrPz7bnaMCiTLw/qk6WTNaliJqNR8MqwESah5OsOLLut
+         9QJQ==
+X-Gm-Message-State: AOJu0Yyb2EfnNPBJIsKAGJNo4Gd7uwrsb9cNGPReFrryTYOCZBfPjFiQ
+	F68YqzfMey+HaVypb3WNJnHEYDJ9TemTSdws2geHTQQ2vlvtLFhhHl+0LqQteLPjWGm8EWBesVN
+	EE8T7hchxg1DEDv9R08qnta4uF/u+HJQ6JoQ5Qrk0Cigs5H25DF960Ntj
+X-Received: by 2002:a17:907:36c7:b0:a27:d55d:73d3 with SMTP id bj7-20020a17090736c700b00a27d55d73d3mr3348197ejc.23.1704288534031;
+        Wed, 03 Jan 2024 05:28:54 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGCAg1DXImZMtkXe7TWoLXcnmyhjNjWaMpeNZkVAjpDt/dd1YDA1CXZvWTJalXLzI+MUZw+JQ==
+X-Received: by 2002:a17:907:36c7:b0:a27:d55d:73d3 with SMTP id bj7-20020a17090736c700b00a27d55d73d3mr3348189ejc.23.1704288533638;
+        Wed, 03 Jan 2024 05:28:53 -0800 (PST)
+Received: from stitch.. ([2a01:4262:1ab:c:5af0:999b:bb78:7614])
+        by smtp.gmail.com with ESMTPSA id eu18-20020a170907299200b00a26e53be089sm9549873ejc.44.2024.01.03.05.28.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Jan 2024 05:28:53 -0800 (PST)
+From: Emil Renner Berthing <emil.renner.berthing@canonical.com>
+To: linux-kernel@vger.kernel.org,
+	linux-gpio@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-riscv@lists.infradead.org
+Cc: Linus Walleij <linus.walleij@linaro.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Jisheng Zhang <jszhang@kernel.org>,
+	Guo Ren <guoren@kernel.org>,
+	Fu Wei <wefu@redhat.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Drew Fustini <dfustini@baylibre.com>
+Subject: [PATCH v2 0/8] Add T-Head TH1520 SoC pin control
+Date: Wed,  3 Jan 2024 14:28:37 +0100
+Message-ID: <20240103132852.298964-1-emil.renner.berthing@canonical.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240103094907.iupboelwjxi243h3@quack3>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- canpemm500005.china.huawei.com (7.192.104.229)
+Content-Transfer-Encoding: 8bit
 
-On 2024/1/3 17:49, Jan Kara wrote:
-> Hello!
-> 
-> On Wed 03-01-24 11:31:39, Zhang Yi wrote:
->> On 2024/1/2 15:31, kernel test robot wrote:
->>>
->>>
->>> Hello,
->>>
->>> kernel test robot noticed a 92.5% regression of fileio.latency_95th_ms on:
->>
->> This seems a little weird, the tests doesn't use blk-cgroup, and the patch
->> increase IO priority in WBT, so there shouldn't be any negative influence in
->> theory.
-> 
-> I don't have a great explanation either but there could be some impact e.g.
-> due to a different request merging of IO done by JBD2 vs the flush worker or
-> something like that. Note that the throughput reduction is only 5.7% so it
-> is not huge.
+This adds a pin control driver for the T-Head TH1520 RISC-V SoC used on
+the Lichee Pi 4A and BeagleV Ahead boards and updates the device trees
+to make use of it.
 
-Yeah, make sense, this should be one explanation that can be thought of at
-the moment.
+It can be easily tested using my th1520 branch at
 
-> 
->> I've tested sysbench on my machine with Intel Xeon Gold 6240 CPU,
->> 400GB memory with HDD disk, and couldn't reproduce this regression.
->>
->> ==
->> Without 6a3afb6ac6 ("jbd2: increase the journal IO's priority")
->> ==
->>
->>  $ sysbench fileio --events=0 --threads=128 --time=600 --file-test-mode=seqwr --file-total-size=68719476736 --file-io-mode=sync --file-num=1024 run
->>
->>   sysbench 1.1.0-df89d34 (using bundled LuaJIT 2.1.0-beta3)
->>
->>   Running the test with following options:
->>   Number of threads: 128
->>   Initializing random number generator from current time
->>
->>
->>   Extra file open flags: (none)
->>   1024 files, 64MiB each
->>   64GiB total file size
->>   Block size 16KiB
->>   Periodic FSYNC enabled, calling fsync() each 100 requests.
->>   Calling fsync() at the end of test, Enabled.
->>   Using synchronous I/O mode
->>   Doing sequential write (creation) test
->>   Initializing worker threads...
->>
->>   Threads started!
->>
->>
->>   Throughput:
->>            read:  IOPS=0.00 0.00 MiB/s (0.00 MB/s)
->>            write: IOPS=31961.19 499.39 MiB/s (523.65 MB/s)
->>            fsync: IOPS=327500.24
-> 
-> Well, your setup seems to be very different from what LKP was using. You
-> are achieving ~500 MB/s (likely because all the files fit into the cache
-> and more or less even within the dirty limit of the page cache) while LKP
-> run achieves only ~54 MB/s (i.e., we are pretty much bound by the rather
-> slow disk). I'd try running with something like 32GB of RAM to really see
-> the disk speed impact...
-> 
+  https://github.com/esmil/linux.git
 
-I'm afraid I missed the vmstat.io.bo changes, I will limit the dirty ratio
-and test it again tomorrow.
+..which also adds the MMC, PWM, ethernet and USB drivers that have
+been posted but are not upstream yet.
 
-Thanks,
-Yi.
+Jisheng: I've added this driver to the generic TH1520 entry in
+MAINTAINERS like you did with your USB driver. Let me know if that's not
+ok and I'll create a separate entry for this driver with me as
+maintainer.
+
+Drew: The last patch is purely based on reading the schematics. It'd be
+great if you could give it a spin on real hardware.
+
+Changes since v1
+- Keep pinmux data for each pin so we can mux by type instead of directly
+  using the mux index. Eg. use function = "uart" etc. (Linus)
+- Drop the strong pull-up property and prevent Linux from combining the strong
+  pull-up with the regular pull up/down. This also means we can't report such
+  usage if it set up by earlier stages, but that problem is deferred until we
+  encounter it (Linus)
+- Reference pinmux-node.yaml properly (Rob)
+- Specify valid pin names for each group (Rob)
+- Enable bus clock (Emil)
+- Implement gpio_request_enable() and gpio_set_direction() for automatic
+  GPIO handling (Emil)
+- Drop patch adding gpio-ranges to the gpio-dwapb bindings that is
+  merged in gpio/for-next. (Emil)
+- Patch 6/8 adding GPIO line names for the Lichee Pi 4M module (Emil)
+- Various code nits (Andy)
+
+/Emil
+
+Emil Renner Berthing (8):
+  dt-bindings: pinctrl: Add thead,th1520-pinctrl bindings
+  pinctrl: Add driver for the T-Head TH1520 SoC
+  riscv: dts: thead: Add TH1520 pin control nodes
+  riscv: dts: thead: Add TH1520 GPIO ranges
+  riscv: dts: thead: Adjust TH1520 GPIO labels
+  riscv: dts: thead: Add Lichee Pi 4M GPIO line names
+  riscv: dts: thead: Add TH1520 pinctrl settings for UART0
+  riscv: dtb: thead: Add BeagleV Ahead LEDs
+
+ .../pinctrl/thead,th1520-pinctrl.yaml         | 372 ++++++++
+ MAINTAINERS                                   |   1 +
+ .../boot/dts/thead/th1520-beaglev-ahead.dts   |  87 ++
+ .../dts/thead/th1520-lichee-module-4a.dtsi    |  43 +
+ .../boot/dts/thead/th1520-lichee-pi-4a.dts    |  28 +
+ arch/riscv/boot/dts/thead/th1520.dtsi         |  62 +-
+ drivers/pinctrl/Kconfig                       |   9 +
+ drivers/pinctrl/Makefile                      |   1 +
+ drivers/pinctrl/pinctrl-th1520.c              | 891 ++++++++++++++++++
+ 9 files changed, 1478 insertions(+), 16 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/pinctrl/thead,th1520-pinctrl.yaml
+ create mode 100644 drivers/pinctrl/pinctrl-th1520.c
+
+-- 
+2.43.0
+
 
