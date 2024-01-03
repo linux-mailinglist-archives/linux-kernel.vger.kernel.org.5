@@ -1,104 +1,63 @@
-Return-Path: <linux-kernel+bounces-15012-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15013-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 12D1482261C
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 01:52:43 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 679A4822621
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 01:53:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BBA9B1F2342B
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 00:52:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 72EFAB226BD
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 00:53:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6B9FED5;
-	Wed,  3 Jan 2024 00:52:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 906D74A28;
+	Wed,  3 Jan 2024 00:52:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="akrdPTzW"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XrOXl094"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [95.215.58.181])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A678C186B
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 00:52:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <c628c362-b2e8-4ad6-a34f-50c2822bccd6@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1704243135;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=2mbj4kJrIPUoYXn0O/rO1FE3ZmQq2KHBRtLh1iaeHtE=;
-	b=akrdPTzW4lRmi8ZQ5d27pMsj7HS5d7WnxvsY5G0Fq9ASMXKuHNSqgeKU7ZSdljPcfmEH5V
-	6Sf6/2+bjYWXYhc3nSAFUP8rV3VZoGnNjgLMdIxRDRC1+AiUmZ0Ln2bxC8scN4l0NhmBBF
-	JQuvUNTQ/K2+uod3MQ8qfQwmyq98MDo=
-Date: Tue, 2 Jan 2024 16:52:08 -0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF44423D3;
+	Wed,  3 Jan 2024 00:52:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E29BC43215;
+	Wed,  3 Jan 2024 00:52:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704243140;
+	bh=V7ZMMxY08OYA5uN5t/1uTGmU08BXdfN8CaBDPQSuYio=;
+	h=In-Reply-To:References:Subject:From:To:Date:From;
+	b=XrOXl094GCIcDcleUHAWtg6GAUXIxc2+jQCYde7C7jffU4zUZVHUUUwXswEmhQhSB
+	 OHG7+IfFG9/zMiJeeA6dwAVoaQmWH2JCpLYfd/LZbOmFGuLazSgFwpuNuykCYLq2z1
+	 sy31VRJaXjMEc06Uqqy9CQwnLFTxYJDD+aMt5v3ZPbpO2ZEJV9RGvtN5FlWo4tySGN
+	 lgEnTuEr8fSAM4qsF9trP7+opLrv1Jom2AmoAQAguQiGAC7FxqkXBHBZABcF3NJpwg
+	 3HQbRkGA6Sq2HplukfFVUg/lbvt1MXzsYsgAphHgpSr+xcCK6kHxHdGuBb/6u5LNrQ
+	 S6nfI3ZqCKYEA==
+Message-ID: <0decc5ec227b4dfde5324d99cea31b97.sboyd@kernel.org>
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next 0/2] bpf: add csum/ip_summed fields to __sk_buff
-Content-Language: en-US
-To: Menglong Dong <menglong8.dong@gmail.com>
-Cc: Stanislav Fomichev <sdf@google.com>, andrii@kernel.org, ast@kernel.org,
- daniel@iogearbox.net, song@kernel.org, yonghong.song@linux.dev,
- john.fastabend@gmail.com, kpsingh@kernel.org, haoluo@google.com,
- jolsa@kernel.org, davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
- pabeni@redhat.com, mykolal@fb.com, shuah@kernel.org, horms@kernel.org,
- dhowells@redhat.com, linyunsheng@huawei.com, aleksander.lobakin@intel.com,
- joannelkoong@gmail.com, laoar.shao@gmail.com, kuifeng@meta.com,
- bjorn@rivosinc.com, linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
- netdev@vger.kernel.org, linux-kselftest@vger.kernel.org
-References: <20231229081409.1276386-1-menglong8.dong@gmail.com>
- <ZZRR1q1JrJMD1lAy@google.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <ZZRR1q1JrJMD1lAy@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <0c14bbacf471683af67ffa7572bfa1d5c45a0b5d.1702849494.git.daniel@makrotopia.org>
+References: <27f99db432e9ccc804cc5b6501d7d17d72cae879.1702849494.git.daniel@makrotopia.org> <0c14bbacf471683af67ffa7572bfa1d5c45a0b5d.1702849494.git.daniel@makrotopia.org>
+Subject: Re: [PATCH v7 2/5] dt-bindings: reset: mediatek: add MT7988 ethwarp reset IDs
+From: Stephen Boyd <sboyd@kernel.org>
+To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Chen-Yu Tsai <wenst@chromium.org>, Conor Dooley <conor+dt@kernel.org>, Dan Carpenter <dan.carpenter@linaro.org>, Daniel Golle <daniel@makrotopia.org>, David S. Miller <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Frank Wunderlich <frank-w@public-files.de>, Garmin.Chang <Garmin.Chang@mediatek.com>, Jakub Kicinski <kuba@kernel.org>, James Liao <jamesjj.liao@mediatek.com>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Matthias Brugger <matthias.bgg@gmail.com>, Michael Turquette <mturquette@baylibre.com>, Paolo Abeni <pabeni@redhat.com>, Philipp Zabel <p.zabel@pengutronix.de>, Rob Herring <robh+dt@kernel.org>, Sabrina Dubroca <sd@queasysnail.net>, Sam Shih <sam.shih@mediatek.com>, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org, netdev@vger.kernel.org
+Date: Tue, 02 Jan 2024 16:52:18 -0800
+User-Agent: alot/0.10
 
-On 1/2/24 10:11 AM, Stanislav Fomichev wrote:
-> On 12/29, Menglong Dong wrote:
->> For now, we have to call some helpers when we need to update the csum,
->> such as bpf_l4_csum_replace, bpf_l3_csum_replace, etc. These helpers are
->> not inlined, which causes poor performance.
->>
->> In fact, we can define our own csum update functions in BPF program
->> instead of bpf_l3_csum_replace, which is totally inlined and efficient.
->> However, we can't do this for bpf_l4_csum_replace for now, as we can't
->> update skb->csum, which can cause skb->csum invalid in the rx path with
->> CHECKSUM_COMPLETE mode.
->>
->> What's more, we can't use the direct data access and have to use
->> skb_store_bytes() with the BPF_F_RECOMPUTE_CSUM flag in some case, such
->> as modifing the vni in the vxlan header and the underlay udp header has
->> no checksum.
+Quoting Daniel Golle (2023-12-17 13:49:45)
+> Add reset ID for ethwarp subsystem allowing to reset the built-in
+> Ethernet switch of the MediaTek MT7988 SoC.
+>=20
+> Signed-off-by: Daniel Golle <daniel@makrotopia.org>
+> Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collab=
+ora.com>
+> Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> ---
 
-There is bpf_csum_update(), does it work?
-A helper call should be acceptable comparing with the csum calculation itself.
-
->>
->> In the first patch, we make skb->csum readable and writable, and we make
->> skb->ip_summed readable. For now, for tc only. With these 2 fields, we
->> don't need to call bpf helpers for csum update any more.
->>
->> In the second patch, we add some testcases for the read/write testing for
->> skb->csum and skb->ip_summed.
->>
->> If this series is acceptable, we can define the inlined functions for csum
->> update in libbpf in the next step.
-> 
-> One downside of exposing those as __sk_buff fields is that all this
-> skb internal csum stuff now becomes a UAPI. And I'm not sure we want
-
-+1. Please no new __sk_buff extension and no new conversion in 
-bpf_convert_ctx_access().
-
-> that :-) Should we add a lightweight kfunc to reset the fields instead?
-> Or will it still have an unacceptable overhead?
-
+Applied to clk-next
 
