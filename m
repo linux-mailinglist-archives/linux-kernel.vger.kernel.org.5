@@ -1,85 +1,73 @@
-Return-Path: <linux-kernel+bounces-15439-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15440-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C697822C04
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 12:21:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5CBDB822C08
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 12:23:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 64C201C2325C
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 11:21:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6ADDB1C23392
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 11:23:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65E9C18E1E;
-	Wed,  3 Jan 2024 11:21:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3441418E2E;
+	Wed,  3 Jan 2024 11:23:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="Xe/QT+2J";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="HExykre3";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="tMWEzmJS";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="TJqKF1cV"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="IPFMgp3o"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E923418E15
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 11:21:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id C36CE21F5E;
-	Wed,  3 Jan 2024 11:21:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1704280875; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type;
-	bh=NHB4j9wlHDrYyqT2ikxPmdHQfGYnNUKv98b9mA6DHZM=;
-	b=Xe/QT+2JCCbI8yPbqXzgunQq2X3E0dtypQMaD5cVm8O8Ai5eQoSfApEWmxdnywqJvuykVo
-	IwkutEsjaBwyQHHPDhcMTXf4REgEtY9RdqXHOwaYjQxaoEK+YfUfHfD441xGfnHcDSOFxi
-	2lJecVINk8UwOOFBNmdOGX5uTOzosmw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1704280875;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type;
-	bh=NHB4j9wlHDrYyqT2ikxPmdHQfGYnNUKv98b9mA6DHZM=;
-	b=HExykre3r2nf6w/oGKa01rzU9P8W5hj2+dWHlXMRnbopvWXgUagO60EWxfaTJxshV40R1X
-	DRN91xHx8qlLrsBA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1704280874; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type;
-	bh=NHB4j9wlHDrYyqT2ikxPmdHQfGYnNUKv98b9mA6DHZM=;
-	b=tMWEzmJSfW52E5llmjoOygMAXyU09LuvgTtVegHo0XlcNZLQ6/3lhF/Mi1i4t50Lab3gg+
-	42lYQX55m19IfbfuQdfW9Gqd57wkkCwxWQqfPEt8GwMm2+idxnIpzi6+dYIIceeWSThIhx
-	ALj/VI8oDs4YzrDghcZ5/79LPGYDXV4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1704280874;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type;
-	bh=NHB4j9wlHDrYyqT2ikxPmdHQfGYnNUKv98b9mA6DHZM=;
-	b=TJqKF1cVc4ZSpxLReDXq13dQPiEwPH0nQeZyd843RMNo3L7roG4SHtSiVPm3yR++TwEdRM
-	7f6GiA4pJgnLjYDw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id AB5DE13AA6;
-	Wed,  3 Jan 2024 11:21:14 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id GXIXKipDlWV8EAAAD6G6ig
-	(envelope-from <jwiesner@suse.de>); Wed, 03 Jan 2024 11:21:14 +0000
-Received: by incl.suse.cz (Postfix, from userid 1000)
-	id 0819A9BCA0; Wed,  3 Jan 2024 12:21:14 +0100 (CET)
-Date: Wed, 3 Jan 2024 12:21:13 +0100
-From: Jiri Wiesner <jwiesner@suse.de>
-To: linux-kernel@vger.kernel.org
-Cc: John Stultz <jstultz@google.com>, Thomas Gleixner <tglx@linutronix.de>,
-	Stephen Boyd <sboyd@kernel.org>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Feng Tang <feng.tang@intel.com>
-Subject: [PATCH] clocksource: Skip watchdog check for large watchdog intervals
-Message-ID: <20240103112113.GA6108@incl>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D974218E15
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 11:23:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-50e7c6f0487so6935163e87.3
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 03:23:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1704281002; x=1704885802; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
+         :to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZJRFm+aJFXgkxWtqPNaVAM12RXPKxO0DGGq8KgLaeE0=;
+        b=IPFMgp3o+/ebLmnN7/Xto97/ZnuiFEXQBBYpFbhQ7G1pFsTEMX496etf7bXQ99U5H6
+         JwRcvQHHbVWTPuh0s1qsQUQruH+mO6O2PpxZBRKANrpgeC185Jh3rFUAxG6ThPIHEwu4
+         ibfA0yWtKAw1TS28IP/Q3NiH4C6gdY8RmuBFfKEsUeVGaIBPFkoIU7OGfxuybldayqGN
+         t3PWexb38xiMV3tq+zz12EPEmqY9I6ijkqrIce3xE+5b6TKeTitHyYbSK2hxAOSPKgSq
+         0dBuKt6/vcQaDkVg3FWjCyKW4ttCTPCMOwiyv8XhQdmsRYPmENuiQnoySSREjk03ALJ9
+         SliA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704281002; x=1704885802;
+        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
+         :to:from:date:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ZJRFm+aJFXgkxWtqPNaVAM12RXPKxO0DGGq8KgLaeE0=;
+        b=Sn44xTf6G9a87cubm1Xft1ou26ytIIOdlRHLX35AjaM46NcK2lGp8EcOokXR4R5tl6
+         o6w4F0dWCq8BI1PlnLxhzesewX2SvqzxKQW0t3SE40CfkjqhdUhcKubkY8YqD5I+/Me5
+         XIS9pVD3zHa+lvKAFJ7x99DzDJIOtcP+ndiqRAWE+R+B2Io8xcVonQ3XdtUpo1Wr+hbJ
+         1ajmW3yuopJbSXHeK/3uV7YLcMwTXv7pYUmLo6txqwx17TvhqqMElSjYHCNSe2QE+RxM
+         qCZkNj4NA6fIZXb3ZiPVDcoINGF/CeV93i2bLBF583/mvuY+QAOlQPEBB+eSs6XaIJWZ
+         CLpg==
+X-Gm-Message-State: AOJu0YyguS508+rd4/5zulChlMeSHAVRE1gMFng8wDQ/fVaj27wyT/Kr
+	eSo7bWR8LEUg0mRt5n8Yafi2DSc/YJe0nA==
+X-Google-Smtp-Source: AGHT+IFJVTLwzRGF1DuQP3vjPisYKxiWF+5uAzI0kdZJOWOmMPRP4sLXPJuiATG9UCHDYViYbvZ6Qg==
+X-Received: by 2002:a05:6512:ad0:b0:50e:6b38:9e0b with SMTP id n16-20020a0565120ad000b0050e6b389e0bmr6715682lfu.73.1704281001941;
+        Wed, 03 Jan 2024 03:23:21 -0800 (PST)
+Received: from localhost ([102.140.209.237])
+        by smtp.gmail.com with ESMTPSA id p2-20020a056402044200b005553a8bb61dsm10309013edw.87.2024.01.03.03.23.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Jan 2024 03:23:21 -0800 (PST)
+Date: Wed, 3 Jan 2024 14:23:18 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: oe-kbuild@lists.linux.dev, deepakx.nagaraju@intel.com,
+	joyce.ooi@intel.com, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: lkp@intel.com, oe-kbuild-all@lists.linux.dev, davem@davemloft.net,
+	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+	Nagaraju DeepakX <deepakx.nagaraju@intel.com>,
+	Andy Schevchenko <andriy.schevchenko@linux.intel.com>
+Subject: Re: [PATCH 5/5] net: ethernet: altera: rename functions and their
+ prototypes
+Message-ID: <ca5c5be7-9270-412b-a868-d5e28116f983@moroto.mountain>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -88,154 +76,84 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Level: *****
-X-Spam-Level: 
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=tMWEzmJS;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=TJqKF1cV
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-2.51 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_DKIM_ARC_DNSWL_HI(-1.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 RCPT_COUNT_FIVE(0.00)[6];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.de:+];
-	 MX_GOOD(-0.01)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[intel.com:email,suse.de:dkim,suse.de:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_IN_DNSWL_HI(-0.50)[2a07:de40:b281:104:10:150:64:97:from];
-	 RCVD_TLS_ALL(0.00)[];
-	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]
-X-Spam-Score: -2.51
-X-Rspamd-Queue-Id: C36CE21F5E
-X-Spam-Flag: NO
+In-Reply-To: <20231213071112.18242-6-deepakx.nagaraju@intel.com>
 
-There have been reports of the watchdog marking clocksources unstable on
-machines with 8 NUMA nodes:
-> clocksource: timekeeping watchdog on CPU373: Marking clocksource 'tsc' as unstable because the skew is too large:
-> clocksource:   'hpet' wd_nsec: 14523447520 wd_now: 5a749706 wd_last: 45adf1e0 mask: ffffffff
-> clocksource:   'tsc' cs_nsec: 14524115132 cs_now: 515ce2c5a96caa cs_last: 515cd9a9d83918 mask: ffffffffffffffff
-> clocksource:   'tsc' is current clocksource.
-> tsc: Marking TSC unstable due to clocksource watchdog
-> TSC found unstable after boot, most likely due to broken BIOS. Use 'tsc=unstable'.
-> sched_clock: Marking unstable (1950347883333462, 79649632569)<-(1950428279338308, -745776594)
-> clocksource: Checking clocksource tsc synchronization from CPU 400 to CPUs 0,46,52,54,138,208,392,397.
-> clocksource: Switched to clocksource hpet
+Hi,
 
-The measured clocksource skew - the absolute difference between cs_nsec
-and wd_nsec - was 668 microseconds:
-> cs_nsec - wd_nsec = 14524115132 - 14523447520 = 667612
+kernel test robot noticed the following build warnings:
 
-The kernel (based on 5.14.21) used 200 microseconds for the
-uncertainty_margin of both the clocksource and watchdog, resulting in a
-threshold of 400 microseconds.  The discrepancy is that the measured
-clocksource skew was evaluated against a threshold suited for watchdog
-intervals of roughly WATCHDOG_INTERVAL, i.e. HZ >> 1, which is 0.5 second.
-Both the cs_nsec and the wd_nsec value indicate that the actual watchdog
-interval was circa 14.5 seconds. Since the watchdog is executed in softirq
-context the expiration of the watchdog timer can get severely delayed on
-account of a ksoftirqd thread not getting to run in a timely manner.
-Surely, a system with such belated softirq execution is not working well
-and the scheduling issue should be looked into but the clocksource
-watchdog should be able to deal with it accordingly.
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-The solution in this patch skips the current watchdog check if the
-watchdog interval exceeds 1.5 * WATCHDOG_INTERVAL. Considering the maximum
-watchdog interval of 1.5 * WATCHDOG_INTERVAL, the current default
-uncertainty margin (of the TSC and HPET) corresponds to a limit on
-clocksource skew of 333 ppm (microseconds of skew per second). To keep the
-limit imposed by NTP (500 microseconds of skew per second) for all
-possible watchdog intervals, the margins would have to be scaled so that
-the threshold value is proportional to the length of the actual watchdog
-interval.
+url:    https://github.com/intel-lab-lkp/linux/commits/deepakx-nagaraju-intel-com/net-ethernet-altera-remove-unneeded-assignments/20231213-151600
+base:   net/main
+patch link:    https://lore.kernel.org/r/20231213071112.18242-6-deepakx.nagaraju%40intel.com
+patch subject: [PATCH 5/5] net: ethernet: altera: rename functions and their prototypes
+config: m68k-randconfig-r081-20231218 (https://download.01.org/0day-ci/archive/20231220/202312200739.79WGCuyb-lkp@intel.com/config)
+compiler: m68k-linux-gcc (GCC) 13.2.0
 
-Fixes: 2e27e793e280 ("clocksource: Reduce clocksource-skew threshold")
-Suggested-by: Feng Tang <feng.tang@intel.com>
-Signed-off-by: Jiri Wiesner <jwiesner@suse.de>
----
- kernel/time/clocksource.c | 28 ++++++++++++++++++++++++++--
- 1 file changed, 26 insertions(+), 2 deletions(-)
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+| Closes: https://lore.kernel.org/r/202312200739.79WGCuyb-lkp@intel.com/
 
-diff --git a/kernel/time/clocksource.c b/kernel/time/clocksource.c
-index c108ed8a9804..ac5cb0ff278b 100644
---- a/kernel/time/clocksource.c
-+++ b/kernel/time/clocksource.c
-@@ -98,7 +98,9 @@ static u64 suspend_start;
- /*
-  * Interval: 0.5sec.
-  */
--#define WATCHDOG_INTERVAL (HZ >> 1)
-+#define WATCHDOG_INTERVAL	(HZ >> 1)
-+#define WATCHDOG_INTR_MAX_NS	((WATCHDOG_INTERVAL + (WATCHDOG_INTERVAL >> 1))\
-+				 * NSEC_PER_SEC / HZ)
- 
- /*
-  * Threshold: 0.0312s, when doubled: 0.0625s.
-@@ -134,6 +136,7 @@ static DECLARE_WORK(watchdog_work, clocksource_watchdog_work);
- static DEFINE_SPINLOCK(watchdog_lock);
- static int watchdog_running;
- static atomic_t watchdog_reset_pending;
-+static int64_t watchdog_max_intr;
- 
- static inline void clocksource_watchdog_lock(unsigned long *flags)
- {
-@@ -400,7 +403,7 @@ static void clocksource_watchdog(struct timer_list *unused)
- {
- 	u64 csnow, wdnow, cslast, wdlast, delta;
- 	int next_cpu, reset_pending;
--	int64_t wd_nsec, cs_nsec;
-+	int64_t wd_nsec, cs_nsec, interval;
- 	struct clocksource *cs;
- 	enum wd_read_status read_ret;
- 	unsigned long extra_wait = 0;
-@@ -470,6 +473,27 @@ static void clocksource_watchdog(struct timer_list *unused)
- 		if (atomic_read(&watchdog_reset_pending))
- 			continue;
- 
-+		/*
-+		 * The processing of timer softirqs can get delayed (usually
-+		 * on account of ksoftirqd not getting to run in a timely
-+		 * manner), which causes the watchdog interval to stretch.
-+		 * Some clocksources, e.g. acpi_pm, cannot tolerate
-+		 * watchdog intervals longer than a few seconds.
-+		 * Skew detection may fail for longer watchdog intervals
-+		 * on account of fixed margins being used.
-+		 */
-+		interval = max(cs_nsec, wd_nsec);
-+		if (unlikely(interval > WATCHDOG_INTR_MAX_NS)) {
-+			if (system_state > SYSTEM_SCHEDULING &&
-+			    interval > 2 * watchdog_max_intr) {
-+				watchdog_max_intr = interval;
-+				pr_warn("Skipping watchdog check: cs_nsec: %lld wd_nsec: %lld\n",
-+					cs_nsec, wd_nsec);
-+			}
-+			watchdog_timer.expires = jiffies;
-+			continue;
-+		}
-+
- 		/* Check the deviation from the watchdog clocksource. */
- 		md = cs->uncertainty_margin + watchdog->uncertainty_margin;
- 		if (abs(cs_nsec - wd_nsec) > md) {
--- 
-2.35.3
+New smatch warnings:
+drivers/net/ethernet/altera/altera_tse_main.c:266 alloc_init_skbufs() warn: double check that we're allocating correct size: 24 vs 164
 
+Old smatch warnings:
+drivers/net/ethernet/altera/altera_tse_main.c:271 alloc_init_skbufs() warn: double check that we're allocating correct size: 24 vs 164
+drivers/net/ethernet/altera/altera_tse_main.c:988 tse_open() warn: 'priv->tx_irq' from request_irq() not released on lines: 988.
+
+vim +266 drivers/net/ethernet/altera/altera_tse_main.c
+
+bbd2190ce96d8f Vince Bridgers   2014-03-17  257  static int alloc_init_skbufs(struct altera_tse_private *priv)
+bbd2190ce96d8f Vince Bridgers   2014-03-17  258  {
+ad6f888f174e6a Nagaraju DeepakX 2023-12-13  259  	struct altera_dma_private *dma = &priv->dma_priv;
+ad6f888f174e6a Nagaraju DeepakX 2023-12-13  260  	unsigned int rx_descs = dma->rx_ring_size;
+ad6f888f174e6a Nagaraju DeepakX 2023-12-13  261  	unsigned int tx_descs = dma->tx_ring_size;
+bbd2190ce96d8f Vince Bridgers   2014-03-17  262  	int ret = -ENOMEM;
+bbd2190ce96d8f Vince Bridgers   2014-03-17  263  	int i;
+bbd2190ce96d8f Vince Bridgers   2014-03-17  264  
+bbd2190ce96d8f Vince Bridgers   2014-03-17  265  	/* Create Rx ring buffer */
+ad6f888f174e6a Nagaraju DeepakX 2023-12-13 @266  	dma->rx_ring = kcalloc(rx_descs, sizeof(struct altera_dma_private), GFP_KERNEL);
+
+There is a mismatch here.  dma->rx_ring was changed to altera_dma_buffer
+but the sizeof was changed to altera_dma_private.
+
+ad6f888f174e6a Nagaraju DeepakX 2023-12-13  267  	if (!dma->rx_ring)
+bbd2190ce96d8f Vince Bridgers   2014-03-17  268  		goto err_rx_ring;
+bbd2190ce96d8f Vince Bridgers   2014-03-17  269  
+bbd2190ce96d8f Vince Bridgers   2014-03-17  270  	/* Create Tx ring buffer */
+ad6f888f174e6a Nagaraju DeepakX 2023-12-13  271  	dma->tx_ring = kcalloc(tx_descs, sizeof(struct altera_dma_private), GFP_KERNEL);
+ad6f888f174e6a Nagaraju DeepakX 2023-12-13  272  	if (!dma->tx_ring)
+bbd2190ce96d8f Vince Bridgers   2014-03-17  273  		goto err_tx_ring;
+bbd2190ce96d8f Vince Bridgers   2014-03-17  274  
+ad6f888f174e6a Nagaraju DeepakX 2023-12-13  275  	dma->tx_cons = 0;
+ad6f888f174e6a Nagaraju DeepakX 2023-12-13  276  	dma->tx_prod = 0;
+bbd2190ce96d8f Vince Bridgers   2014-03-17  277  
+bbd2190ce96d8f Vince Bridgers   2014-03-17  278  	/* Init Rx ring */
+bbd2190ce96d8f Vince Bridgers   2014-03-17  279  	for (i = 0; i < rx_descs; i++) {
+ad6f888f174e6a Nagaraju DeepakX 2023-12-13  280  		ret = tse_init_rx_buffer(priv, &priv->dma_priv.rx_ring[i], dma->rx_dma_buf_sz);
+bbd2190ce96d8f Vince Bridgers   2014-03-17  281  		if (ret)
+bbd2190ce96d8f Vince Bridgers   2014-03-17  282  			goto err_init_rx_buffers;
+bbd2190ce96d8f Vince Bridgers   2014-03-17  283  	}
+bbd2190ce96d8f Vince Bridgers   2014-03-17  284  
+ad6f888f174e6a Nagaraju DeepakX 2023-12-13  285  	dma->rx_cons = 0;
+ad6f888f174e6a Nagaraju DeepakX 2023-12-13  286  	dma->rx_prod = 0;
+bbd2190ce96d8f Vince Bridgers   2014-03-17  287  
+bbd2190ce96d8f Vince Bridgers   2014-03-17  288  	return 0;
+bbd2190ce96d8f Vince Bridgers   2014-03-17  289  err_init_rx_buffers:
+bbd2190ce96d8f Vince Bridgers   2014-03-17  290  	while (--i >= 0)
+ad6f888f174e6a Nagaraju DeepakX 2023-12-13  291  		tse_free_rx_buffer(priv, &priv->dma_priv.rx_ring[i]);
+ad6f888f174e6a Nagaraju DeepakX 2023-12-13  292  	kfree(dma->tx_ring);
+bbd2190ce96d8f Vince Bridgers   2014-03-17  293  err_tx_ring:
+ad6f888f174e6a Nagaraju DeepakX 2023-12-13  294  	kfree(dma->rx_ring);
+bbd2190ce96d8f Vince Bridgers   2014-03-17  295  err_rx_ring:
+bbd2190ce96d8f Vince Bridgers   2014-03-17  296  	return ret;
+bbd2190ce96d8f Vince Bridgers   2014-03-17  297  }
 
 -- 
-Jiri Wiesner
-SUSE Labs
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
+
 
