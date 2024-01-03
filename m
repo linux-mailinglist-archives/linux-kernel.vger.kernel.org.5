@@ -1,136 +1,229 @@
-Return-Path: <linux-kernel+bounces-15830-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15831-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6625582340C
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 18:58:11 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 856CB82340E
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 19:00:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E46D0B233E8
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 17:58:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F065FB23309
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 18:00:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 326841D53C;
-	Wed,  3 Jan 2024 17:57:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 117241C69C;
+	Wed,  3 Jan 2024 18:00:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PQ61WSOk"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="dV5N1pWn"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 803B61D52A;
-	Wed,  3 Jan 2024 17:57:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 25872C433CB;
-	Wed,  3 Jan 2024 17:57:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704304671;
-	bh=EQmqIwt5epCeJn4AJ4OZUCyNlDG/sWGPlg++mDoiWxE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=PQ61WSOkYHvDu+NAujBX1iKQQZ8LBc7cOd7ZSkJdNDefaZuBx9ynYYZVtX4jJdGb+
-	 7XOT6chUxOsHLsEnmmvvdLULKAFhQAYEnDaeLySVJ4sicSBeTl1tnAmJxJOG36YvXX
-	 Ms9+4/7u7PMcapNSeVrTinr/tC5NoN2SrdI6TT4Y1/nJCvPFNr90TPRnY4X++JGbln
-	 dp6/3BqX3NvceDJ1L6d9p4FcLzK+bE6jV5LWDAamgcqerXB0coCHYs6xCp4t1vOTc5
-	 GJ700QXwCSqBl067oofTfdRi3BHCUE+ZrADAp/W+bEhUxVqMQidoVCPQFTYFgr5ua0
-	 q6BvF2SdkCRUw==
-Date: Wed, 3 Jan 2024 17:57:43 +0000
-From: Will Deacon <will@kernel.org>
-To: Jisheng Zhang <jszhang@kernel.org>
-Cc: "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Nick Piggin <npiggin@gmail.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>, Arnd Bergmann <arnd@arndb.de>,
-	linux-arch@vger.kernel.org, linux-mm@kvack.org,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-riscv@lists.infradead.org, Nadav Amit <namit@vmware.com>,
-	Andrea Arcangeli <aarcange@redhat.com>,
-	Andy Lutomirski <luto@kernel.org>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	Thomas Gleixner <tglx@linutronix.de>, Yu Zhao <yuzhao@google.com>,
-	x86@kernel.org
-Subject: Re: [PATCH 1/2] mm/tlb: fix fullmm semantics
-Message-ID: <20240103175743.GG5954@willie-the-truck>
-References: <20231228084642.1765-1-jszhang@kernel.org>
- <20231228084642.1765-2-jszhang@kernel.org>
- <20240103175001.GF5954@willie-the-truck>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD0E51C691
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 18:00:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1704304826;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=q48P5QWzofCocco3NZ1i12qdR2cjUhLN4nZ2fO8zD3Y=;
+	b=dV5N1pWnMf5X8erpqDbpudhcuLXKxwQN+T4O8vHTzWS3iSDUrA9YIaICQ3fYad0afsbWDY
+	vf22IPKJfNT9v/pZmEvBrKEbu5X2iTTTnCia1VmaHL8rOWJg0DPf9pq3zfyyZjdf4YUuqP
+	b3NlAaSaH3hqjyoT0+waZd8fmHRWlOc=
+Received: from mail-ot1-f71.google.com (mail-ot1-f71.google.com
+ [209.85.210.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-191-zaabMKSCPmWAECXwcCX5fQ-1; Wed, 03 Jan 2024 13:00:20 -0500
+X-MC-Unique: zaabMKSCPmWAECXwcCX5fQ-1
+Received: by mail-ot1-f71.google.com with SMTP id 46e09a7af769-6dbdbe8bf36so9609630a34.1
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 10:00:20 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704304819; x=1704909619;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=q48P5QWzofCocco3NZ1i12qdR2cjUhLN4nZ2fO8zD3Y=;
+        b=kXuUEUdapMhhzQVKGQWFWIl1fhCFByR3pAwuJw8omMw4Eou8cV6hcQtk/SynPLaP8A
+         mfWP5iUdeu5tMGssI00V+2hLmFoFJfwq8q8FRi18lqjSdCoTK0ERH38NqZGEfEvcxi2w
+         Ozd1G1aYERzhpL7/hvYAqF8omENdW/YpkMwc/C9ZeEFs7KV4ITqHvROfHemiEsYjZPIW
+         eSx/Qku+ztG/J8Y9JyafMe2EiKlZYDFAINp6CDyKObsVV0dE48zNzkmNadFJj/ajpM4F
+         c1ikIKm9hpzVtrpi1L17yNTpACEZWZTxKgOqfomw2jiL4+csooQB03gs1rtgunLtFW1S
+         f+7w==
+X-Gm-Message-State: AOJu0YwA6SvqsZNsZeYRACP/oQWZfA0bkUC3vvfRZBs8OgEanUAhy8h5
+	mH9jdYtP0UQQgUKlSZ9QTH+BrtUJXP4/R/fY9Z9X8LEzvv6QJfKleaqUdavM+2uTDDu3dy5UoH7
+	XKs5YlO5UFETjtluG7VKh2HS+7pho4s0J
+X-Received: by 2002:a05:6830:349e:b0:6dc:3c65:2a7f with SMTP id c30-20020a056830349e00b006dc3c652a7fmr6003218otu.63.1704304819634;
+        Wed, 03 Jan 2024 10:00:19 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEEnrcYn02XEmEIDEKFS5J+2ENvYFdJ67qmKLK8qDffDVVpRpUZ5pkWF9XzX4EQRd6bhSNjaQ==
+X-Received: by 2002:a05:6830:349e:b0:6dc:3c65:2a7f with SMTP id c30-20020a056830349e00b006dc3c652a7fmr6003182otu.63.1704304819321;
+        Wed, 03 Jan 2024 10:00:19 -0800 (PST)
+Received: from redhat.com ([38.15.60.12])
+        by smtp.gmail.com with ESMTPSA id w5-20020a9d6385000000b006dc0363d57csm2371548otk.6.2024.01.03.10.00.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Jan 2024 10:00:18 -0800 (PST)
+Date: Wed, 3 Jan 2024 11:00:16 -0700
+From: Alex Williamson <alex.williamson@redhat.com>
+To: Jason Gunthorpe <jgg@nvidia.com>
+Cc: Ankit Agrawal <ankita@nvidia.com>, Yishai Hadas <yishaih@nvidia.com>,
+ "shameerali.kolothum.thodi@huawei.com"
+ <shameerali.kolothum.thodi@huawei.com>, "kevin.tian@intel.com"
+ <kevin.tian@intel.com>, "eric.auger@redhat.com" <eric.auger@redhat.com>,
+ "brett.creeley@amd.com" <brett.creeley@amd.com>, "horms@kernel.org"
+ <horms@kernel.org>, Aniket Agashe <aniketa@nvidia.com>, Neo Jia
+ <cjia@nvidia.com>, Kirti Wankhede <kwankhede@nvidia.com>, "Tarun Gupta
+ (SW-GPU)" <targupta@nvidia.com>, Vikram Sethi <vsethi@nvidia.com>, Andy
+ Currid <acurrid@nvidia.com>, Alistair Popple <apopple@nvidia.com>, John
+ Hubbard <jhubbard@nvidia.com>, Dan Williams <danw@nvidia.com>, "Anuj
+ Aggarwal (SW-GPU)" <anuaggarwal@nvidia.com>, Matt Ochs <mochs@nvidia.com>,
+ "kvm@vger.kernel.org" <kvm@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v15 1/1] vfio/nvgrace-gpu: Add vfio pci variant module
+ for grace hopper
+Message-ID: <20240103110016.5067b42e.alex.williamson@redhat.com>
+In-Reply-To: <20240103165727.GQ50406@nvidia.com>
+References: <20231217191031.19476-1-ankita@nvidia.com>
+	<20231218151717.169f80aa.alex.williamson@redhat.com>
+	<BY5PR12MB3763179CAC0406420AB0C9BAB095A@BY5PR12MB3763.namprd12.prod.outlook.com>
+	<20240102091001.5fcc8736.alex.williamson@redhat.com>
+	<20240103165727.GQ50406@nvidia.com>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240103175001.GF5954@willie-the-truck>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Wed, Jan 03, 2024 at 05:50:01PM +0000, Will Deacon wrote:
-> On Thu, Dec 28, 2023 at 04:46:41PM +0800, Jisheng Zhang wrote:
-> > From: Nadav Amit <namit@vmware.com>
-> > 
-> > fullmm in mmu_gather is supposed to indicate that the mm is torn-down
-> > (e.g., on process exit) and can therefore allow certain optimizations.
-> > However, tlb_finish_mmu() sets fullmm, when in fact it want to say that
-> > the TLB should be fully flushed.
-> > 
-> > Change tlb_finish_mmu() to set need_flush_all and check this flag in
-> > tlb_flush_mmu_tlbonly() when deciding whether a flush is needed.
-> > 
-> > At the same time, bring the arm64 fullmm on process exit optimization back.
-> > 
-> > Signed-off-by: Nadav Amit <namit@vmware.com>
-> > Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
-> > Cc: Andrea Arcangeli <aarcange@redhat.com>
-> > Cc: Andrew Morton <akpm@linux-foundation.org>
-> > Cc: Andy Lutomirski <luto@kernel.org>
-> > Cc: Dave Hansen <dave.hansen@linux.intel.com>
-> > Cc: Peter Zijlstra <peterz@infradead.org>
-> > Cc: Thomas Gleixner <tglx@linutronix.de>
-> > Cc: Will Deacon <will@kernel.org>
-> > Cc: Yu Zhao <yuzhao@google.com>
-> > Cc: Nick Piggin <npiggin@gmail.com>
-> > Cc: x86@kernel.org
-> > ---
-> >  arch/arm64/include/asm/tlb.h | 5 ++++-
-> >  include/asm-generic/tlb.h    | 2 +-
-> >  mm/mmu_gather.c              | 2 +-
-> >  3 files changed, 6 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/arch/arm64/include/asm/tlb.h b/arch/arm64/include/asm/tlb.h
-> > index 846c563689a8..6164c5f3b78f 100644
-> > --- a/arch/arm64/include/asm/tlb.h
-> > +++ b/arch/arm64/include/asm/tlb.h
-> > @@ -62,7 +62,10 @@ static inline void tlb_flush(struct mmu_gather *tlb)
-> >  	 * invalidating the walk-cache, since the ASID allocator won't
-> >  	 * reallocate our ASID without invalidating the entire TLB.
-> >  	 */
-> > -	if (tlb->fullmm) {
-> > +	if (tlb->fullmm)
-> > +		return;
-> > +
-> > +	if (tlb->need_flush_all) {
-> >  		if (!last_level)
-> >  			flush_tlb_mm(tlb->mm);
-> >  		return;
+On Wed, 3 Jan 2024 12:57:27 -0400
+Jason Gunthorpe <jgg@nvidia.com> wrote:
+
+> On Tue, Jan 02, 2024 at 09:10:01AM -0700, Alex Williamson wrote:
 > 
-> Why isn't the 'last_level' check sufficient here? In other words, when do
-> we perform a !last_level invalidation with 'fullmm' set outside of teardown?
+> > Yes, it's possible to add support that these ranges honor the memory
+> > enable bit, but it's not trivial and unfortunately even vfio-pci isn't
+> > a great example of this.  
+> 
+> We talked about this already, the HW architects here confirm there is
+> no issue with reset and memory enable. You will get all 1's on read
+> and NOP on write. It doesn't need to implement VMA zap.
 
-Sorry, logic inversion typo there. I should've said:
+We talked about reset, I don't recall that we discussed that coherent
+and uncached memory ranges masquerading as PCI BARs here honor the
+memory enable bit in the command register.
 
-  When do we perform a last_level invalidation with 'fullmm' set outside
-  of teardown?
+> > around device reset or relative to the PCI command register.  The
+> > variant driver becomes a trivial implementation that masks BARs 2 & 4
+> > and exposes the ACPI range as a device specific region with only mmap
+> > support.  QEMU can then map the device specific region into VM memory
+> > and create an equivalent ACPI table for the guest.  
+> 
+> Well, no, probably not. There is an NVIDIA specification for how the
+> vPCI function should be setup within the VM and it uses the BAR
+> method, not the ACPI.
 
-I remember this used to be the case for OOM ages ago, but 687cb0884a71
-("mm, oom_reaper: gather each vma to prevent leaking TLB entry") sorted
-that out.
+Is this specification available?  It's a shame we've gotten this far
+without a reference to it.
 
-I'm not against making this clearer and/or more robust, I'm just trying
-to understand whether this is fixing a bug (as implied by the subject)
-or not.
+> There are a lot of VMMs and OSs this needs to support so it must all
+> be consistent. For better or worse the decision was taken for the vPCI
+> spec to use BAR not ACPI, in part due to feedback from the broader VMM
+> ecosystem, and informed by future product plans.
+> 
+> So, if vfio does special regions then qemu and everyone else has to
+> fix it to meet the spec.
 
-Will
+Great, this is the sort of justification and transparency that had not
+been previously provided.  It is curious that only within the past
+couple months the device ABI changed by adding the uncached BAR, so
+this hasn't felt like a firm design.  Also I believe it's been stated
+that the driver supports both the bare metal representation of the
+device and this model where the coherent memory is mapped as a BAR, so
+I'm not sure what obstacles remain or how we're positioned for future
+products if take the bare metal approach.
+
+> > I know Jason had described this device as effectively pre-CXL to
+> > justify the coherent memory mapping, but it seems like there's still a
+> > gap here that we can't simply hand wave that this PCI BAR follows a
+> > different set of semantics.    
+> 
+> I thought all the meaningful differences are fixed now?
+> 
+> The main remaining issue seems to be around the config space
+> emulation?
+
+In the development of the virtio-vfio-pci variant driver we noted that
+r/w access to the IO BAR didn't honor the IO bit in the command
+register, which was quickly remedied and now returns -EIO if accessed
+while disabled.  We were already adding r/w support to the coherent BAR
+at the time as vfio doesn't have a means to express a region as only
+having mmap support and precedent exists that BAR regions must support
+these accesses.  So it was suggested that r/w accesses should also
+honor the command register memory enable bit, but of course memory BARs
+also support mmap, which snowballs into a much more complicated problem
+than we have in the case of the virtio IO BAR.
+
+So where do we go?  Do we continue down the path of emulating full PCI
+semantics relative to these emulated BARs?  Does hardware take into
+account the memory enable bit of the command register?  Do we
+re-evaluate the BAR model for a device specific region?
+
+> > We don't typically endorse complexity in the kernel only for the
+> > purpose of avoiding work in userspace.  The absolute minimum should
+> > be some justification of the design decision and analysis relative
+> > to standard PCI behavior.  Thanks,  
+> 
+> If we strictly took that view in VFIO a lot of stuff wouldn't be here
+> :)
+> 
+> I've made this argument before and gave up - the ecosystem wants to
+> support multiple VMMs and the sanest path to do that is via VFIO
+> kernel drivers that plug into existing vfio-pci support in the VMM
+> ecosystem.
+> 
+> From a HW supplier perspective it is quite vexing to have to support
+> all these different (and often proprietary!) VMM implementations. It
+> is not just top of tree qemu.
+> 
+> If we instead did complex userspace drivers and userspace emulation of
+> config space and so on then things like the IDXD SIOV support would
+> look *very* different and not use VFIO at all. That would probably be
+> somewhat better for security, but I was convinced it is a long and
+> technically complex road.
+> 
+> At least with this approach the only VMM issue is the NUMA nodes, and
+> as we have discussed that hackery is to make up for current Linux
+> kernel SW limitations, not actually reflecting anything about the
+> HW. If some other OS or future Linux doesn't require the ACPI NUMA
+> nodes to create an OS visible NUMA object then the VMM will not
+> require any changes.
+
+Yes, I'm satisfied with where we've landed for the NUMA nodes and
+generic initiator object.  It's an annoying constraint for management
+tools but it's better than the original proposal where nodes
+automatically popped into existence based on a vfio-pci device. 
+
+There's certainly a balancing game of complexity in the driver vs
+deferring the work to userspace.  From my perspective, I don't have a
+good justification for why we're on the emulated BAR path when another
+path looks a lot easier.  With the apparent increasing complexity of
+emulating the memory enable semantics, I felt we needed to get a better
+story there and really look at whether those semantics are worthwhile,
+or perhaps as alluded, HW takes this into account (though I'm not sure
+how).
+
+I'd suggest we take a look at whether we need to continue to pursue
+honoring the memory enable bit for these BARs and make a conscious and
+documented decision if we choose to ignore it.  Ideally we could also
+make this shared spec that we're implementing to available to the
+community to justify the design decisions here.  In the case of
+GPUDirect Cliques we had permission to post the spec to the list so it
+could be archived to provide a stable link for future reference.
+Thanks,
+
+Alex
+
 
