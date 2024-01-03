@@ -1,115 +1,156 @@
-Return-Path: <linux-kernel+bounces-15059-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15060-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 865128226C3
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 03:06:39 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B2E718226C6
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 03:08:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 47AFF1C21CF1
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 02:06:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3BA59B223F4
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 02:08:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0FD615B0;
-	Wed,  3 Jan 2024 02:06:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D77EB4A27;
+	Wed,  3 Jan 2024 02:07:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="CT63txv5"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99DB8136B
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 02:06:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 891A0C433C9;
-	Wed,  3 Jan 2024 02:06:30 +0000 (UTC)
-Date: Tue, 2 Jan 2024 21:07:31 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Masami Hiramatsu
- <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Subject: [GIT PULL] tracing: Final fixes for v6.7
-Message-ID: <20240102210731.1f1c5bf5@gandalf.local.home>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 921FF4A13
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 02:07:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=UX067oc02QDIU9lFdARVeeJs/ixm6qZ2B6Eg730Gc/A=; b=CT63txv5IW7iwImvLLydxpE8Nn
+	01Hx2r6QecPzXtVTDulJmT+GjFxLdTUJIDFosAtjY8sAltMpih4PDIf/Ox/zzRqodTwjrfgshy168
+	U69STW5WzjBzhfqRlJslsaT5qeeaq2K10gBbzRJC7PeFy4tE9x2o1Kl9MZKL+7K9BYJ4b56HGRSLU
+	5NXlVgsC0OAatCJB6WFugBOJgsj9/IEYv3BO6me3fjuiqjVRDBRwxbO9wF9pqL6mv8gjJV1HsH1/I
+	63PAu9hljX/8/iKsXU/gOGSaDrunFjLc9GAtHCWdXKTaflqdxkJc4FYSdTrM6bT1Bv1P9zuxKQlxW
+	vh9o6r/w==;
+Received: from [50.53.46.231] (helo=[192.168.254.15])
+	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+	id 1rKqfZ-009Xfj-2T;
+	Wed, 03 Jan 2024 02:07:45 +0000
+Message-ID: <fc7f44bd-e4e9-42db-abbe-c55469d43506@infradead.org>
+Date: Tue, 2 Jan 2024 18:07:45 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] arch/x86: Fix typos
+Content-Language: en-US
+To: Bjorn Helgaas <helgaas@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
+ Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+ Dave Hansen <dave.hansen@linux.intel.com>
+Cc: x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
+ linux-kernel@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>
+References: <20240103004011.1758650-1-helgaas@kernel.org>
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20240103004011.1758650-1-helgaas@kernel.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
 
 
-Linus,
+On 1/2/24 16:40, Bjorn Helgaas wrote:
+> From: Bjorn Helgaas <bhelgaas@google.com>
+> 
+> Fix typos, most reported by "codespell arch/x86".  Only touches comments,
+> no code changes.
+> 
+> Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+> ---
+>  arch/x86/boot/compressed/Makefile            | 2 +-
+>  arch/x86/boot/compressed/mem.c               | 2 +-
+>  arch/x86/coco/tdx/tdx.c                      | 2 +-
+>  arch/x86/crypto/aesni-intel_asm.S            | 2 +-
+>  arch/x86/crypto/aesni-intel_avx-x86_64.S     | 2 +-
+>  arch/x86/crypto/crc32c-pcl-intel-asm_64.S    | 2 +-
+>  arch/x86/crypto/sha512-avx-asm.S             | 2 +-
+>  arch/x86/crypto/sha512-ssse3-asm.S           | 2 +-
+>  arch/x86/events/amd/brs.c                    | 2 +-
+>  arch/x86/events/amd/core.c                   | 2 +-
+>  arch/x86/events/intel/core.c                 | 2 +-
+>  arch/x86/hyperv/hv_apic.c                    | 2 +-
+>  arch/x86/hyperv/irqdomain.c                  | 2 +-
+>  arch/x86/hyperv/ivm.c                        | 2 +-
+>  arch/x86/include/asm/amd_nb.h                | 2 +-
+>  arch/x86/include/asm/extable_fixup_types.h   | 2 +-
+>  arch/x86/include/asm/fpu/types.h             | 2 +-
+>  arch/x86/include/asm/iosf_mbi.h              | 2 +-
+>  arch/x86/include/asm/kvm_host.h              | 2 +-
+>  arch/x86/include/asm/nospec-branch.h         | 4 ++--
+>  arch/x86/include/asm/pgtable_64.h            | 2 +-
+>  arch/x86/include/asm/uv/uv_hub.h             | 2 +-
+>  arch/x86/include/asm/vdso/gettimeofday.h     | 2 +-
+>  arch/x86/include/asm/xen/interface_64.h      | 2 +-
+>  arch/x86/include/uapi/asm/amd_hsmp.h         | 2 +-
+>  arch/x86/kernel/alternative.c                | 2 +-
+>  arch/x86/kernel/amd_gart_64.c                | 2 +-
+>  arch/x86/kernel/apic/Makefile                | 2 +-
+>  arch/x86/kernel/apic/apic.c                  | 2 +-
+>  arch/x86/kernel/apic/vector.c                | 2 +-
+>  arch/x86/kernel/cpu/sgx/ioctl.c              | 2 +-
+>  arch/x86/kernel/fpu/core.c                   | 2 +-
+>  arch/x86/kernel/head_64.S                    | 4 ++--
+>  arch/x86/kernel/hpet.c                       | 4 ++--
+>  arch/x86/kernel/kvm.c                        | 2 +-
+>  arch/x86/kernel/kvmclock.c                   | 2 +-
+>  arch/x86/kernel/ldt.c                        | 6 +++---
+>  arch/x86/kernel/process.c                    | 2 +-
+>  arch/x86/kernel/sev-shared.c                 | 2 +-
+>  arch/x86/kvm/cpuid.c                         | 2 +-
+>  arch/x86/kvm/mmu/mmu.c                       | 4 ++--
+>  arch/x86/kvm/mmu/tdp_iter.c                  | 2 +-
+>  arch/x86/kvm/svm/svm.c                       | 2 +-
+>  arch/x86/kvm/vmx/nested.c                    | 2 +-
+>  arch/x86/kvm/vmx/vmx.c                       | 2 +-
+>  arch/x86/kvm/x86.c                           | 6 +++---
+>  arch/x86/lib/delay.c                         | 2 +-
+>  arch/x86/mm/init_64.c                        | 6 +++---
+>  arch/x86/mm/pat/memtype.c                    | 2 +-
+>  arch/x86/mm/pat/set_memory.c                 | 4 ++--
+>  arch/x86/mm/pti.c                            | 2 +-
+>  arch/x86/mm/tlb.c                            | 2 +-
+>  arch/x86/net/bpf_jit_comp.c                  | 2 +-
+>  arch/x86/net/bpf_jit_comp32.c                | 2 +-
+>  arch/x86/platform/intel-quark/imr_selftest.c | 2 +-
+>  arch/x86/platform/pvh/head.S                 | 2 +-
+>  arch/x86/platform/uv/uv_nmi.c                | 2 +-
+>  arch/x86/platform/uv/uv_time.c               | 2 +-
+>  arch/x86/realmode/init.c                     | 2 +-
+>  arch/x86/xen/mmu_pv.c                        | 2 +-
+>  60 files changed, 71 insertions(+), 71 deletions(-)
+> 
+> diff --git a/arch/x86/kernel/apic/vector.c b/arch/x86/kernel/apic/vector.c
+> index 319448d87b99..dbd15a67e9df 100644
+> --- a/arch/x86/kernel/apic/vector.c
+> +++ b/arch/x86/kernel/apic/vector.c
+> @@ -738,7 +738,7 @@ int __init arch_probe_nr_irqs(void)
+>  void lapic_assign_legacy_vector(unsigned int irq, bool replace)
+>  {
+>  	/*
+> -	 * Use assign system here so it wont get accounted as allocated
+> +	 * Use assign system here so it won't get accounted as allocated
+>  	 * and moveable in the cpu hotplug check and it prevents managed
 
-tracing fixes for v6.7-rc8:
+OK, but        movable      is preferred.
 
-- Fix a NULL kernel dereference in set_gid() on tracefs mounting.
-  When tracefs is mounted with "gid=1000", it will update the existing
-  dentries to have the new gid. The tracefs_inode which is retrieved
-  by a container_of(dentry->d_inode) has flags to see if the inode
-  belongs to the eventfs system.
+>  	 * irq reservation from touching it.
+>  	 */
 
-  The issue that was fixed was if getdents() was called on tracefs
-  that was previously mounted, and was not closed. It will leave
-  a "cursor dentry" in the subdirs list of the current dentries that
-  set_gid() walks. On a remount of tracefs, the container_of(dentry->d_inode)
-  will dereference a NULL pointer and cause a crash when referenced.
+Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
 
-  Simply have a check for dentry->d_inode to see if it is NULL and if
-  so, skip that entry.
+Thanks.
 
-- Fix the bits of the eventfs_inode structure. The "is_events" bit
-  was taken  from the nr_entries field, but the nr_entries field wasn't
-  updated to be 30 bits and was still 31. Including the "is_freed" bit
-  this would use 33 bits which would make the structure use another
-  integer for just one bit.
-
-
-Please pull the latest trace-v6.7-rc8 tree, which can be found at:
-
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace.git
-trace-v6.7-rc8
-
-Tag SHA1: 268dc78680a450c2207c0af35e0e367ff07b25eb
-Head SHA1: fd56cd5f6d76e93356d9520cf9dabffe1e3d1aa0
-
-
-Steven Rostedt (Google) (2):
-      tracefs: Check for dentry->d_inode exists in set_gid()
-      eventfs: Fix bitwise fields for "is_events"
-
-----
- fs/tracefs/inode.c    | 4 ++++
- fs/tracefs/internal.h | 2 +-
- 2 files changed, 5 insertions(+), 1 deletion(-)
----------------------------
-diff --git a/fs/tracefs/inode.c b/fs/tracefs/inode.c
-index 62524b20964e..bc86ffdb103b 100644
---- a/fs/tracefs/inode.c
-+++ b/fs/tracefs/inode.c
-@@ -215,6 +215,10 @@ static void set_gid(struct dentry *parent, kgid_t gid)
- 		struct dentry *dentry = list_entry(tmp, struct dentry, d_child);
- 		next = tmp->next;
- 
-+		/* Note, getdents() can add a cursor dentry with no inode */
-+		if (!dentry->d_inode)
-+			continue;
-+
- 		spin_lock_nested(&dentry->d_lock, DENTRY_D_LOCK_NESTED);
- 
- 		change_gid(dentry, gid);
-diff --git a/fs/tracefs/internal.h b/fs/tracefs/internal.h
-index 899e447778ac..42bdeb471a07 100644
---- a/fs/tracefs/internal.h
-+++ b/fs/tracefs/internal.h
-@@ -63,7 +63,7 @@ struct eventfs_inode {
- 	};
- 	unsigned int			is_freed:1;
- 	unsigned int			is_events:1;
--	unsigned int			nr_entries:31;
-+	unsigned int			nr_entries:30;
- };
- 
- static inline struct tracefs_inode *get_tracefs(const struct inode *inode)
+-- 
+#Randy
 
