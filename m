@@ -1,103 +1,112 @@
-Return-Path: <linux-kernel+bounces-15290-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15291-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F3FE8229C5
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 09:51:48 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6CA008229CC
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 09:54:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A9ADE2851A9
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 08:51:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D5DC2B22A47
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 08:54:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD1F6182A9;
-	Wed,  3 Jan 2024 08:51:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="RmOlLDEO"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3533A182BB;
+	Wed,  3 Jan 2024 08:54:24 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ua1-f43.google.com (mail-ua1-f43.google.com [209.85.222.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 427F718623
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 08:51:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-ua1-f43.google.com with SMTP id a1e0cc1a2514c-7cd42bc0f1dso972606241.1
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 00:51:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1704271888; x=1704876688; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8vgekKZ/OlG7JICiZDEFn9JZQAvlVZRayuPQgdK4A3Y=;
-        b=RmOlLDEOGcUN6ItkidKPz5rcHWhOwPSxPO6J2UcmKGHkGY9eVksKFn4NldD8O4opW7
-         OTDNm8A56G43f3E3RDa1H+CEuXOFgqE+RGQbyBezBnxAXO1NuvlbxmiOcwp8JWgs1aOc
-         LEqjlQvz+Uqwg9dDbHsa8OTRYI7GAr7f1kVEmKi+cApYX6Mf72qtVtGa2bCzLwpAowBs
-         QqU8b9rIQlnZyzw5AY+VowElwQUGPVTxyCurCoLXN5PMpFCTZhlqkMlnMkHAOPbSvQFr
-         WihHlP5js52lGyd69ky07xo9DqnmSH7ALAaQ9YhBA57U0v2UUCKFzhSQVF6l4Gk7Yacx
-         mp0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704271888; x=1704876688;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8vgekKZ/OlG7JICiZDEFn9JZQAvlVZRayuPQgdK4A3Y=;
-        b=hMmtSQNpywruB2B0khYpCuTxnDXsMfDe4vpOBy0P+klk9724hTyzbB2USKhVilLifY
-         nsvOeM//xStvLV6xWxQcBrfcGznXj8eQQDyOgbhDGjZXgl+7uMx/n+qZiGlLfy8WcfZa
-         umhNzioDYRkPaVUUDuKfDNbtNrWd++p11ylyVHIwfKMCxjVhXeLyQ5Yy8Hgse1ACfEiO
-         d84Wx5qpAAtT3r9oohjGQWXHd2f8KbwZqQpm7BXSGw6ehwMWE/VBWpq2ZDVegZeZSb9T
-         4qgbFULZqLZtaHqbQBZX6ItCv6yUItjEyPct1MmE7KPbA4yheNpEG+K+/QEqwfnFWyvV
-         BfcA==
-X-Gm-Message-State: AOJu0Yw93LfN9GkDtPLKvpB8s6RFko+SQBIccBsNUs7LrK2mM9LEVO0D
-	oqPTmjnPzI3FIocQ7VvgbdV2fHCDrEpEhwy0bcvqfTz43pSHtg==
-X-Google-Smtp-Source: AGHT+IGlCDun+5AZYjonVjIbZIWyoWJfpOTl00hEI6erZzD7dQFVLcGlY2MgsTLACmwfHfuGizoarZKojMhAgXVHtjI=
-X-Received: by 2002:a05:6102:4b15:b0:466:ecfa:88de with SMTP id
- ia21-20020a0561024b1500b00466ecfa88demr9565508vsb.14.1704271888154; Wed, 03
- Jan 2024 00:51:28 -0800 (PST)
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0E03182A2;
+	Wed,  3 Jan 2024 08:54:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
+Received: from loongson.cn (unknown [10.20.42.173])
+	by gateway (Coremail) with SMTP id _____8AxkOmxIJVl3HsBAA--.1600S3;
+	Wed, 03 Jan 2024 16:54:09 +0800 (CST)
+Received: from [10.20.42.173] (unknown [10.20.42.173])
+	by localhost.localdomain (Coremail) with SMTP id AQAAf8CxG76vIJVl+pUYAA--.44880S3;
+	Wed, 03 Jan 2024 16:54:09 +0800 (CST)
+Subject: Re: [PATCH 4/5] LoongArch: Add paravirt interface for guest kernel
+To: Juergen Gross <jgross@suse.com>, Huacai Chen <chenhuacai@kernel.org>,
+ Tianrui Zhao <zhaotianrui@loongson.cn>
+Cc: loongarch@lists.linux.dev, linux-kernel@vger.kernel.org,
+ virtualization@lists.linux.dev, kvm@vger.kernel.org
+References: <20240103071615.3422264-1-maobibo@loongson.cn>
+ <20240103071615.3422264-5-maobibo@loongson.cn>
+ <66c15a1b-fb28-4653-982f-37494a01cd4f@suse.com>
+ <4240d67f-1e5d-f865-c16e-32b64aea8099@loongson.cn>
+ <df32d011-49c8-4bdb-a695-41cb6fbdf854@suse.com>
+From: maobibo <maobibo@loongson.cn>
+Message-ID: <b8b2330d-9057-ff9b-b5aa-483c0f573a72@loongson.cn>
+Date: Wed, 3 Jan 2024 16:54:07 +0800
+User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240102082829.30874-1-Wenhua.Lin@unisoc.com>
-In-Reply-To: <20240102082829.30874-1-Wenhua.Lin@unisoc.com>
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-Date: Wed, 3 Jan 2024 09:51:17 +0100
-Message-ID: <CAMRc=Md-9vh7-r+SWm-TFPhonntindgj4cjeATUr2uZxEUxLxw@mail.gmail.com>
-Subject: Re: [PATCH V3] gpio: pmic-eic-sprd: Configure the bit corresponding
- to the EIC through offset
-To: Wenhua Lin <Wenhua.Lin@unisoc.com>
-Cc: Linus Walleij <linus.walleij@linaro.org>, Andy Shevchenko <andy@kernel.org>, 
-	Orson Zhai <orsonzhai@gmail.com>, Baolin Wang <baolin.wang@linux.alibaba.com>, 
-	Chunyan Zhang <zhang.lyra@gmail.com>, linux-gpio@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, wenhua lin <wenhua.lin1994@gmail.com>, 
-	Xiongpeng Wu <xiongpeng.wu@unisoc.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <df32d011-49c8-4bdb-a695-41cb6fbdf854@suse.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:AQAAf8CxG76vIJVl+pUYAA--.44880S3
+X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
+X-Coremail-Antispam: 1Uk129KBj93XoWxJrykKFW5Cry5WF4fKw1ruFX_yoW8JFWrpF
+	WS9asFkF48CF42yr4xKr4kZr1Y9rZrKr15Wa4rXry0v39xZw1Fvr4FgF1a9a4DAr1UC3Wj
+	qFWjq3srW3WDAFXCm3ZEXasCq-sJn29KB7ZKAUJUUUU5529EdanIXcx71UUUUU7KY7ZEXa
+	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+	0xBIdaVrnRJUUU9Sb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+	0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
+	xVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx
+	1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv
+	67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07
+	AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwCFI7km07C2
+	67AKxVWUAVWUtwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI
+	8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWU
+	CwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r
+	1xMIIF0xvEx4A2jsIE14v26r4j6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBI
+	daVFxhVjvjDU0xZFpf9x07jYSoJUUUUU=
 
-On Tue, Jan 2, 2024 at 9:28=E2=80=AFAM Wenhua Lin <Wenhua.Lin@unisoc.com> w=
-rote:
->
-> A bank PMIC EIC contains 16 EICs, and the operating registers
-> are BIT0-BIT15, such as BIT0 of the register operated by EIC0.
-> Using the one-dimensional array reg[CACHE_NR_REGS] for maintenance
-> will cause the configuration of other EICs to be affected when
-> operating a certain EIC. In order to solve this problem, configure
-> the bit corresponding to the EIC through offset.
->
-> Signed-off-by: Wenhua Lin <Wenhua.Lin@unisoc.com>
-> ---
-> Change in V3:
-> -Change title.
-> -Change commit message.
-> -Delete the modification of the two-dimensional array maintenance pmic ei=
-c,
->  and add the corresponding bits to configure the eic according to the off=
-set.
-> ---
 
-Applied, thanks!
 
-Bart
+On 2024/1/3 下午4:14, Juergen Gross wrote:
+> On 03.01.24 09:00, maobibo wrote:
+>>
+>>
+>> On 2024/1/3 下午3:40, Jürgen Groß wrote:
+>>> On 03.01.24 08:16, Bibo Mao wrote:
+>>>> The patch add paravirt interface for guest kernel, it checks whether
+>>>> system runs on VM mode. If it is, it will detect hypervisor type. And
+>>>> returns true it is KVM hypervisor, else return false. Currently only
+>>>> KVM hypervisor is supported, so there is only hypervisor detection
+>>>> for KVM type.
+>>>
+>>> I guess you are talking of pv_guest_init() here? Or do you mean
+>>> kvm_para_available()?
+>> yes, it is pv_guest_init. It will be better if all hypervisor detection
+>> is called in function pv_guest_init. Currently there is only kvm 
+>> hypervisor, kvm_para_available is hard-coded in pv_guest_init here.
+> 
+> I think this is no problem as long as there are not more hypervisors
+> supported.
+> 
+>>
+>> I can split file paravirt.c into paravirt.c and kvm.c, paravirt.c is 
+>> used for hypervisor detection, and move code relative with pv_ipi into 
+>> kvm.c
+> 
+> I wouldn't do that right now.
+> 
+> Just be a little bit more specific in the commit message (use the related
+> function name instead of "it").
+Sure, will do this in next version, and thanks for your guidance.
+
+Regards
+Bibo Mao
+> 
+> 
+> Juergen
+
 
