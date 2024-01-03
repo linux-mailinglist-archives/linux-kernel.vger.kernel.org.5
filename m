@@ -1,66 +1,66 @@
-Return-Path: <linux-kernel+bounces-15492-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15494-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id DCFF6822CB6
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 13:09:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D708822CBC
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 13:10:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8032DB21EA4
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 12:09:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2E53B1C231C2
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 12:10:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3D9119450;
-	Wed,  3 Jan 2024 12:09:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEE0F199D2;
+	Wed,  3 Jan 2024 12:09:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GNFPcH8B"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WxnDUHJv"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA4AA18EB2;
-	Wed,  3 Jan 2024 12:09:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D32E618EC9;
+	Wed,  3 Jan 2024 12:09:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-336746c7b6dso9340934f8f.0;
-        Wed, 03 Jan 2024 04:09:08 -0800 (PST)
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-40d76923ec4so41850975e9.3;
+        Wed, 03 Jan 2024 04:09:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704283746; x=1704888546; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1704283747; x=1704888547; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=3HxXaZqQGOpnmGmdiVei4YbOtWHqTHWlxdX/eXyYuxA=;
-        b=GNFPcH8BNsh6qFKL898Mauk4dd/btqNl4RtnxI/lfoFP2t9/tOrn/UquHphO1f5is/
-         qp/VXuYVogvUR1FWhI3LRr3izo9+xOhwo//xpoc0lNWf+NweZnkHJZW32ipoEfkX7l2n
-         rleTeQ2RBDXedRjFMHzVj/JuJVbJLfqBCfcJ4hStkMcod45kLDWpi+EVk7sUbSPEl6wX
-         e5csqD0ZpYd0hr1OazEiPRtRXJpOrYrIOLnx5b+Fg+hDaK5srSF4MfoIYL9el8FyVlRC
-         kbG5btGkrDrwCDhjFNLdmm2CTleIVx9MTJ9N//WJ6QQhfZvn4PHP9YMmid2eNgK/F+T2
-         jZRQ==
+        bh=4WYvQJBKPTze3DHEG/ddyiPavhb8SAmoWAb8gifhRQs=;
+        b=WxnDUHJvRqBSaV6pjQ9sBK61Qf7uoakgGDCkgErPcObbaRJGj7OFlEOMrwe7uF478A
+         YO1LcEAYKJwAuFF4eCTBcu+H1Tru4PNgscWJ+jXlO5Yeter2wx9f4L+YI1iyY4cVPtJ8
+         jJi0XWtG0nm7K857mh4aUUnKPyFDyu/KqwhbDXoBBWD3KuWgAJnUvGbnc40o1mZ1b0oL
+         Icu3ZOKFDHTsSRDSyQMOpQdgfhZW9wL0ZoBzJbBxCmknxyFzENOOGoYz4jHInB+5uBkW
+         VGpGmugtLr/iMHX7BjXSWpDfSOTscRbl48x15EhALobVab+XrGtIYBA34F9Q7FKEjGem
+         uLrg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704283746; x=1704888546;
+        d=1e100.net; s=20230601; t=1704283747; x=1704888547;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=3HxXaZqQGOpnmGmdiVei4YbOtWHqTHWlxdX/eXyYuxA=;
-        b=rlUvjBt9gOYVnVH41t3NXGVDJcte5vznjwzUuRw2NRsRS8xUyDaHv/E9EaUjmooYgk
-         AQWR7mTRm3D4aiBXMcOpYjQUd2LW58nRiMugPRw8xeUOGDV0uzAYFtGDr8aPB+I3rnkc
-         GbLlPvT2KjL0Yqb6HYqxiSLIxWLebpAbPxQqfOZgHezquIR+rT0YUwlWLqVN1fXNgVHL
-         /17EFQOFRRJ7yolxPtbg/7XIsdv75GVSTuqiopzBiWGuCD6i8SiG2FmWBmxLryhGeG1G
-         J4acpej2fzzgsjLVIksjrXXxr3OwEtGZ1ebpQ7jKsAcmTA2BieCwuG0AU7xvHza1pFDa
-         qtQg==
-X-Gm-Message-State: AOJu0YyXVVrknZACcqJ9VlC8ri/bK9bwVcvtulCk2bgfm+DAZpr5AG9G
-	YDNnLDzOFqMoerM+NeqNAFjuhJjRbHOgCQSO
-X-Google-Smtp-Source: AGHT+IG3GBletUEOZZSx/cadwXeccfqkXB012KQgAmdGLTcifJ3I1z/PUCovcZs7LJunQYqZde5REg==
-X-Received: by 2002:a05:600c:ad3:b0:40d:80a2:d21b with SMTP id c19-20020a05600c0ad300b0040d80a2d21bmr3288057wmr.151.1704283746247;
-        Wed, 03 Jan 2024 04:09:06 -0800 (PST)
+        bh=4WYvQJBKPTze3DHEG/ddyiPavhb8SAmoWAb8gifhRQs=;
+        b=hkuqGFR4CCorRa8YM2jzQrpGVo2WeTKsleFCPGpJ/3DIBIM5JQM9WfLLp+1ypEzAb2
+         GYJgY/7trfVcVtnLTFgPniXA7DCr35WVbyjuoGcHKjp47PA/+rqf10caB4lxgf0hUU/y
+         K2gCDxq2DwkCn7GaV0nUI3vWA6PEOb6sTOa/AMTAaABIaSwql4fXUSos0UY6BdEPk4V8
+         II7qgBVOcWlpuklOuz3K6PpMWXitIcvlp5ubo0pcRQLbpAhs3pTKymZ6vdrU/2QCkN8s
+         w9izzASQtRa0TCRBfiFy3oEel7xMskxPJgxmeIJG8STL7UWNTCQtaFvQvGzXN6V/Spjt
+         LrUA==
+X-Gm-Message-State: AOJu0Yzpeq7LUQl5KJJxv9GJBptBWfj3Bsgk1wGHmerygOSwxdGUvvto
+	lPT0S5eWK2RtSo2RDHY71YeyWAdUjFfDsXAG
+X-Google-Smtp-Source: AGHT+IE/nUm5+KwneTEnHsQrqVQ+yStInen24AvslGTUMTC+s0cqfocye0aOigqpWo0TeoX/GidK5g==
+X-Received: by 2002:a1c:6a04:0:b0:40d:6032:fa8b with SMTP id f4-20020a1c6a04000000b0040d6032fa8bmr5099308wmc.72.1704283747584;
+        Wed, 03 Jan 2024 04:09:07 -0800 (PST)
 Received: from [127.0.1.1] (2a02-8389-41cf-e200-1a90-a88c-d3fe-4285.cable.dynamic.v6.surfer.at. [2a02:8389:41cf:e200:1a90:a88c:d3fe:4285])
-        by smtp.gmail.com with ESMTPSA id o28-20020a05600c511c00b0040b37f1079dsm2106443wms.29.2024.01.03.04.09.05
+        by smtp.gmail.com with ESMTPSA id o28-20020a05600c511c00b0040b37f1079dsm2106443wms.29.2024.01.03.04.09.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Jan 2024 04:09:05 -0800 (PST)
+        Wed, 03 Jan 2024 04:09:07 -0800 (PST)
 From: Javier Carrasco <javier.carrasco.cruz@gmail.com>
-Date: Wed, 03 Jan 2024 13:08:51 +0100
-Subject: [PATCH v2 1/3] iio: light: as73211: use IIO_VAL_FRACTIONAL for
- intensity scales
+Date: Wed, 03 Jan 2024 13:08:52 +0100
+Subject: [PATCH v2 2/3] dt-bindings: iio: light: as73211: add support for
+ as7331
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -69,7 +69,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240103-as7331-v2-1-6f0ad05e0482@gmail.com>
+Message-Id: <20240103-as7331-v2-2-6f0ad05e0482@gmail.com>
 References: <20240103-as7331-v2-0-6f0ad05e0482@gmail.com>
 In-Reply-To: <20240103-as7331-v2-0-6f0ad05e0482@gmail.com>
 To: Christian Eggers <ceggers@arri.de>, Jonathan Cameron <jic23@kernel.org>, 
@@ -78,68 +78,56 @@ To: Christian Eggers <ceggers@arri.de>, Jonathan Cameron <jic23@kernel.org>,
  Conor Dooley <conor+dt@kernel.org>
 Cc: linux-iio@vger.kernel.org, devicetree@vger.kernel.org, 
  linux-kernel@vger.kernel.org, 
- Javier Carrasco <javier.carrasco.cruz@gmail.com>
+ Javier Carrasco <javier.carrasco.cruz@gmail.com>, 
+ Conor Dooley <conor.dooley@microchip.com>
 X-Mailer: b4 0.13-dev-4e032
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1704283743; l=1689;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1704283743; l=1584;
  i=javier.carrasco.cruz@gmail.com; s=20230509; h=from:subject:message-id;
- bh=1MU3giKWl0gPRroVrrkRwqryd8WZu7+Nv1DcBdlcyYE=;
- b=wYfGApcioFFsmZe4cBgXSFsR2MKOE6mwqP/rJLgi01qhG8GRJz6KyvTv1RXbwZN7T0KbxxdBR
- GinIZpVOOv5DpscHaAI1N1nl2j0EdCPbPdxI302hH5sWevexjpUTz1e
+ bh=EVcVlVkKVxVo7dqyNLXpMvZHU1y8Zir+Ulin1WweGiY=;
+ b=BOyh1NHjmxJqR1GjgOUOH45Sy+y6lMzcPBfOwYbufIf45EYuzl/tzUKyp3FhoXWCnE/1L9p01
+ AuWZq1uFVMOA36b2NTRvxVroYGb2HAfDl9haHVVmXOW9Cs3U4a01+Qm
 X-Developer-Key: i=javier.carrasco.cruz@gmail.com; a=ed25519;
  pk=tIGJV7M+tCizagNijF0eGMBGcOsPD+0cWGfKjl4h6K8=
 
-The scale values associated to the light channels are calculated as a
-division that can be better expressed as an IIO_VAL_FRACTIONAL type
-instead of the current IIO_VAL_INT.
+This device has the same properties and I2C addresses as the as73211.
+The only difference between them is the photodiodes they use internally,
+which in this case is irrelevant for the bindings.
 
-Note that the constant values used for the calculation were scaled up to
-work with integers, turning the nW/cm^2 units from the datasheet into
-nW/m^2, which would not be necessary with the IIO_VAL_FRACTIONAL type.
-But to avoid issues from current users of the driver, the units must be
-kept.
-
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
 Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
 ---
- drivers/iio/light/as73211.c | 15 +++++++--------
- 1 file changed, 7 insertions(+), 8 deletions(-)
+ Documentation/devicetree/bindings/iio/light/ams,as73211.yaml | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/iio/light/as73211.c b/drivers/iio/light/as73211.c
-index ec97a3a46839..b4c6f389a292 100644
---- a/drivers/iio/light/as73211.c
-+++ b/drivers/iio/light/as73211.c
-@@ -356,25 +356,24 @@ static int as73211_read_raw(struct iio_dev *indio_dev, struct iio_chan_spec cons
- 			return IIO_VAL_INT_PLUS_MICRO;
+diff --git a/Documentation/devicetree/bindings/iio/light/ams,as73211.yaml b/Documentation/devicetree/bindings/iio/light/ams,as73211.yaml
+index 0e8cd02759b3..062a038aa0ff 100644
+--- a/Documentation/devicetree/bindings/iio/light/ams,as73211.yaml
++++ b/Documentation/devicetree/bindings/iio/light/ams,as73211.yaml
+@@ -4,19 +4,22 @@
+ $id: http://devicetree.org/schemas/iio/light/ams,as73211.yaml#
+ $schema: http://devicetree.org/meta-schemas/core.yaml#
  
- 		case IIO_INTENSITY: {
--			unsigned int scale;
+-title: AMS AS73211 JENCOLOR(R) Digital XYZ Sensor
++title: AMS AS73211 JENCOLOR(R) Digital XYZ Sensor and AMS AS7331 UV Sensor
  
- 			switch (chan->channel2) {
- 			case IIO_MOD_X:
--				scale = AS73211_SCALE_X;
-+				*val = AS73211_SCALE_X;
- 				break;
- 			case IIO_MOD_Y:
--				scale = AS73211_SCALE_Y;
-+				*val = AS73211_SCALE_Y;
- 				break;
- 			case IIO_MOD_Z:
--				scale = AS73211_SCALE_Z;
-+				*val = AS73211_SCALE_Z;
- 				break;
- 			default:
- 				return -EINVAL;
- 			}
--			scale /= as73211_gain(data);
--			scale /= as73211_integration_time_1024cyc(data);
--			*val = scale;
--			return IIO_VAL_INT;
-+			*val2 = as73211_integration_time_1024cyc(data) *
-+				as73211_gain(data);
-+
-+			return IIO_VAL_FRACTIONAL;
+ maintainers:
+   - Christian Eggers <ceggers@arri.de>
  
- 		default:
- 			return -EINVAL;
+ description: |
+-  XYZ True Color Sensor with I2C Interface
++  AMS AS73211 XYZ True Color Sensor with I2C Interface
+   https://ams.com/documents/20143/36005/AS73211_DS000556_3-01.pdf/a65474c0-b302-c2fd-e30a-c98df87616df
++  AMS AS7331 UVA, UVB and UVC Sensor with I2C Interface
++  https://ams.com/documents/20143/9106314/AS7331_DS001047_4-00.pdf
+ 
+ properties:
+   compatible:
+     enum:
+       - ams,as73211
++      - ams,as7331
+ 
+   reg:
+     description:
 
 -- 
 2.39.2
