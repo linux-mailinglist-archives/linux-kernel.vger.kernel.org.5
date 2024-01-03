@@ -1,90 +1,161 @@
-Return-Path: <linux-kernel+bounces-15404-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15406-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0ACC1822B93
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 11:47:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0908F822B96
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 11:48:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AAE941F2399B
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 10:47:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 961932853DC
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 10:48:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00D3718E00;
-	Wed,  3 Jan 2024 10:47:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2640A18C3A;
+	Wed,  3 Jan 2024 10:47:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="aMVSUKwr";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="LXjTni6i";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="L3Dr+y52";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="fMD2WkQk"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5459818E08
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 10:47:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-35fcbe27a7fso119770835ab.2
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 02:47:21 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704278840; x=1704883640;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=0v9D0U8zoD0RGhtvTYl+RE9AdMXmXMXGPURFx26hzEc=;
-        b=OeZqu+rqXGLfRHw/JEAxijqGvF9B+EhMeVQ6kwHXM8Xlsy7Qm6AUX3lMJFAz0Lu222
-         dFuG4P5DacE2kDyTwTS5JVxe9VjReovZjSJo/mjiKDG8tsVvRJuWroR98VNzbyI0vkSB
-         igIfa4/wAZc6LJRidfgtm/lN9fvqtKXVRVTI5W9S6diFUvQHV3oe73jcG0j1djykXV9V
-         3q4qFWY/1QEv2lEfALO/Pi6oO6oHm02AAwYM1HeuDcYCBujqNaCnabR7ixqXXXM78d4c
-         oS/E0HWQI7CldBp2kFQ3QVtA8PwK/T4nXI/nxZxVnJi/P65kNXdKgYO9AabE8a/Uugo7
-         7+Iw==
-X-Gm-Message-State: AOJu0YzH96hdmflWDVaihr8ODDr2qeF09axTKx/VXT6DXLsIcLe+L6hH
-	5mQQcbtW5T6SohE88TQZSeMgKWei7SY8rySSN0QD9W5+HFhN
-X-Google-Smtp-Source: AGHT+IHPMOHUuANNnM1elvc/yjK02zS6unpcxlMnJzKrWI5oJcqSTfD9XHwCw4aJDuQD+tdEErrea3dBmzyFR9+hk79RPGOseu0A
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3F6518C19;
+	Wed,  3 Jan 2024 10:47:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id CF8151FD0D;
+	Wed,  3 Jan 2024 10:47:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1704278863; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Rg5KRAwo0AFVwbHMpXUMvMXUGfmIiWah+X+scYHvmWs=;
+	b=aMVSUKwrNxKsDAtUhf83urZiLbahRA7dJv4iQjHxUh+linKRV+pUcXJCCPGFN5u7AcGhI1
+	IOB2tFAsBrKF2NBPp15LiB0cuBZyeaT/VJDg11OJt8LZwI2Ejd4J6+COUcAKcnuyIcshls
+	0dZb93UyC28ht4DE29UksYuO/1CbnCw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1704278863;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Rg5KRAwo0AFVwbHMpXUMvMXUGfmIiWah+X+scYHvmWs=;
+	b=LXjTni6iQ+fTVuHvu61vqthFR6yFRCHGPc6Iui8mFt3NrYCEYaflXhh31Ku5oBrWZGx+87
+	QomT+jNovuQZIHBA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1704278862; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Rg5KRAwo0AFVwbHMpXUMvMXUGfmIiWah+X+scYHvmWs=;
+	b=L3Dr+y526qc0FBu3bqQMGQ50XpMSEiO9d48DUvXIryxfDurx0LPNjmoVRTq7MYo1gxiNuE
+	jX0g8s/bdQnRhG/MNMgYwVfHa4gJBNtd10MHTqDE2Av/ptZMTGLHE2DgXBexnbZzjQ4S0m
+	5kD7ZobGVDaNTjudjPftmhoqDP6h6sw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1704278862;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Rg5KRAwo0AFVwbHMpXUMvMXUGfmIiWah+X+scYHvmWs=;
+	b=fMD2WkQkqIdPqohQoq1TdjD3GDNhi5RWUkxKZwFRbthol1/6FrTA6vZ6NMqrhsl4zy+wKJ
+	SGLbUpRyweJynqBw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8A3E41340C;
+	Wed,  3 Jan 2024 10:47:42 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 2AVoIE47lWXuBgAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Wed, 03 Jan 2024 10:47:42 +0000
+Date: Wed, 03 Jan 2024 11:47:42 +0100
+Message-ID: <87cyuibsmp.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Arnd Bergmann <arnd@kernel.org>
+Cc: Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Yu Liao <liaoyu15@huawei.com>,
+	Dawei Li <set_pte_at@outlook.com>,
+	linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ALSA: ac97: fix build regression
+In-Reply-To: <20240103102544.3715055-1-arnd@kernel.org>
+References: <20240103102544.3715055-1-arnd@kernel.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1d18:b0:35f:f01e:bb32 with SMTP id
- i24-20020a056e021d1800b0035ff01ebb32mr2389137ila.4.1704278840626; Wed, 03 Jan
- 2024 02:47:20 -0800 (PST)
-Date: Wed, 03 Jan 2024 02:47:20 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000e4d49f060e08565a@google.com>
-Subject: [syzbot] Monthly netfilter report (Jan 2024)
-From: syzbot <syzbot+listc06dd9c5e64ea358a383@syzkaller.appspotmail.com>
-To: fw@strlen.de, kadlec@netfilter.org, linux-kernel@vger.kernel.org, 
-	netdev@vger.kernel.org, netfilter-devel@vger.kernel.org, pablo@netfilter.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Level: 
+X-Spam-Level: 
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=L3Dr+y52;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=fMD2WkQk
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-2.07 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[outlook.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.de:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_SEVEN(0.00)[9];
+	 MID_CONTAINS_FROM(1.00)[];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,arndb.de:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 FREEMAIL_CC(0.00)[perex.cz,suse.com,linuxfoundation.org,arndb.de,huawei.com,outlook.com,vger.kernel.org];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-1.56)[92.15%]
+X-Spam-Score: -2.07
+X-Rspamd-Queue-Id: CF8151FD0D
+X-Spam-Flag: NO
 
-Hello netfilter maintainers/developers,
+On Wed, 03 Jan 2024 11:25:38 +0100,
+Arnd Bergmann wrote:
+> 
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> The ac97_bus_type structure is no longer declared in this file:
+> 
+> sound/ac97/bus.c: In function 'ac97_codec_add':
+> sound/ac97/bus.c:112:27: error: 'ac97_bus_type' undeclared (first use in this function); did you mean 'bus_type'?
+>   112 |         codec->dev.bus = &ac97_bus_type;
+>       |                           ^~~~~~~~~~~~~
+>       |                           bus_type
+> sound/ac97/bus.c:112:27: note: each undeclared identifier is reported only once for each function it appears in
+> sound/ac97/bus.c: In function 'snd_ac97_codec_driver_register':
+> sound/ac97/bus.c:191:28: error: 'ac97_bus_type' undeclared (first use in this function); did you mean 'ac97_bus_reset'?
+>   191 |         drv->driver.bus = &ac97_bus_type;
+> 
+> Include the header that contains the declaration and make sure the definition
+> is const but not static.
+> 
+> Fixes: 66e82d219924 ("ALSA: mark all struct bus_type as const")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-This is a 31-day syzbot report for the netfilter subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/netfilter
+Thanks, applied now.
 
-During the period, 0 new issues were detected and 0 were fixed.
-In total, 4 issues are still open and 157 have been fixed so far.
 
-Some of the still happening issues:
-
-Ref Crashes Repro Title
-<1> 45      Yes   INFO: rcu detected stall in gc_worker (3)
-                  https://syzkaller.appspot.com/bug?extid=eec403943a2a2455adaa
-<2> 4       Yes   INFO: rcu detected stall in tcp_setsockopt
-                  https://syzkaller.appspot.com/bug?extid=1a11c39caf29450eac9f
-<3> 2       Yes   WARNING in __nf_unregister_net_hook (6)
-                  https://syzkaller.appspot.com/bug?extid=de4025c006ec68ac56fc
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
-
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
-
-You may send multiple commands in a single email message.
+Takashi
 
