@@ -1,203 +1,118 @@
-Return-Path: <linux-kernel+bounces-15589-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15603-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 030DC822E7E
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 14:37:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 23A87822EB9
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 14:41:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 741C01F2447F
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 13:37:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C7D86282A6C
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 13:41:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79601199D2;
-	Wed,  3 Jan 2024 13:37:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FAB71A28A;
+	Wed,  3 Jan 2024 13:38:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="csjzmMWw"
+	dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b="kLhrPyd4"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4BBE199A7;
-	Wed,  3 Jan 2024 13:36:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65AFFC433C8;
-	Wed,  3 Jan 2024 13:36:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704289019;
-	bh=npHM9vpQDD0YaKHAFSgDUNbwthYUPEZd70TaRUZD2jQ=;
-	h=From:Date:Subject:To:Cc:From;
-	b=csjzmMWw0qt+2fLHY7xAR4JX6QOhTh3IxX3kFFvTwmtGmhvMfltIQ+XTYRBnSCcRO
-	 7sjmonKV1KSJ4E10JPEcwqOtrhr/Kd7bPLnAPu/M8gP8sLO02YPOgtdE1x4UZdudWE
-	 YARqtAKQco5uY9zW2Q/z5venTrN+EuRDmIQopzyJUu2GfTRHIA7PJLf2deAhkjD1QU
-	 uTPxPxq/jEU4vk93wNWunDIHrQ319K0JEhw1JR0vOOuaiGTwox0ook5LJQuPgHw8zI
-	 ic5BVS9NvshgO9TslBl99w1tma80vLADOXot8ViTrkIYlTOdvhelrwwhQVaR4IPIks
-	 tI+DqBoDneRvg==
-From: Jeff Layton <jlayton@kernel.org>
-Date: Wed, 03 Jan 2024 08:36:52 -0500
-Subject: [PATCH] nfsd: drop the nfsd_put helper
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E68E199B6;
+	Wed,  3 Jan 2024 13:38:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.helo=mx0b-0016f401.pphosted.com
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+	by mx0a-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4032T7WG005087;
+	Wed, 3 Jan 2024 05:37:52 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=pfpt0220; bh=zh+AyINX
+	Tu/Vu+J5ZWs/mnBjeWFhJ2utrKdUpD3dDh8=; b=kLhrPyd4G7oi/JGNrMbhn/Ue
+	b25wiCm4ozjXAFfD8PoY7I1QyXbe1S5Xa70gmaScrintawXW6QpDa5NTWSR4fr/K
+	ktEDcsrmLL5XxgozDrIKSoH67aK9xIWjq4eMJh12CCXrkPiW+IhZ7lETFeHOCmk7
+	UsqAud5oLXK3dJy+MjF9+OnuyjQoJO81I+tMWabuZUiROz61YQ9iTo8xLbz/PSvd
+	deGeUwq+a4POknU0j/jKyXBa6/idh9X2BAoHQ2yIXo3AdvTdsI4MAqDMOHpnFh0e
+	z69rtQk25+8ECP5/LhjBLq8sKgc9x/P5QUnAdIExfQyJxNM3bPiR7gcxKukQxg==
+Received: from dc5-exch02.marvell.com ([199.233.59.182])
+	by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3vcxu5tqst-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+	Wed, 03 Jan 2024 05:37:52 -0800 (PST)
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Wed, 3 Jan
+ 2024 05:37:51 -0800
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
+ Transport; Wed, 3 Jan 2024 05:37:51 -0800
+Received: from dc3lp-swdev041.marvell.com (dc3lp-swdev041.marvell.com [10.6.60.191])
+	by maili.marvell.com (Postfix) with ESMTP id 109093F708E;
+	Wed,  3 Jan 2024 05:37:47 -0800 (PST)
+From: Elad Nachman <enachman@marvell.com>
+To: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
+        <vadym.kochan@plvision.eu>, <aviramd@marvell.com>,
+        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+CC: <enachman@marvell.com>, <stable@vger.kernel.org>
+Subject: [PATCH v2] mtd: rawnand: marvell: fix layouts
+Date: Wed, 3 Jan 2024 15:37:40 +0200
+Message-ID: <20240103133740.1233405-1-enachman@marvell.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240103-nfsd-fixes-v1-1-4f4f9d7edd0d@kernel.org>
-X-B4-Tracking: v=1; b=H4sIAPNilWUC/x2LQQqAIBAAvyJ7bsFVCeor0SFyrb1YuBCB+Pek4
- zAzFZSLsMJsKhR+ROXKHWgwsJ9bPhgldgZnXbBkPeakEZO8rEiJaBrJh40I+nAX/kXvl7W1D7F
- 5o4RcAAAA
-To: Chuck Lever <chuck.lever@oracle.com>, Neil Brown <neilb@suse.de>, 
- Olga Kornievskaia <kolga@netapp.com>, Dai Ngo <Dai.Ngo@oracle.com>, 
- Tom Talpey <tom@talpey.com>
-Cc: linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Zhi Li <yieli@redhat.com>, Jeff Layton <jlayton@kernel.org>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4169; i=jlayton@kernel.org;
- h=from:subject:message-id; bh=npHM9vpQDD0YaKHAFSgDUNbwthYUPEZd70TaRUZD2jQ=;
- b=owEBbQKS/ZANAwAIAQAOaEEZVoIVAcsmYgBllWL6CHoxnJYzNSIeWmPmToKgjiAjfYI/MkcFT
- BJK2ZRv1TOJAjMEAAEIAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCZZVi+gAKCRAADmhBGVaC
- FYe1D/9rHq1ta/c44yjQzKR2GMS8vTot5jLnLN0i9Cdu90C2/+zKupjLmiQFwxG3ghDw0BjAQB2
- 35whAkNzJ18HRr4YmI+3mlUdLOvFVqBDvJmUkFSQoHlf4oj/55F8/jva4VLGxes3rXI+HvCP5c7
- k6tdb5sJqof5BxIDGJ2vG2ujJTI6y6PkvNmTNhVaM1I9/mkqO4AA7Wt7NILjgnrSi00WiowJKRn
- QQ4WHnr61h12WBneqsLM6CZWuEzVGbtoLaYiaDZ517uxDcC2yFAxctG4L+/Zg+njBUGwRNhVIIS
- b550o+JIpQw6tcLJCoA805rQK9ocXmyMR7UDS/ttaAXJBDSNyKEwe6Ru2jKPPLsZ6vag1SgPffz
- GvPMUsCrFffbRcZFfdEKK6/3VLvQHtUOAnVH/CSNzQ2D11L13ick2ILijFVIWo8EU8NT1yetEHe
- eWhgbWW73cghn7Om0wEH/+jk7DIg9k6/i9xR8cg7aZSxyJ49lIZwL4LXMncMbGanmMbKnaBBsri
- yLJcYy1PbqlS6+KPlQFuLrEJHgjmVjvbsQYhKm2GQpH8fCvN9RUZ1mdHUy2AEEhCw/5mi9iaCLz
- m9RSA/nPvFumVFMYS5UuysSAfjkyAH8lnnXw26lhRaTfh/FDB8jy0YEpfWV/1vV6tc7xBs0+QtX
- SDouGTUduiH80pQ==
-X-Developer-Key: i=jlayton@kernel.org; a=openpgp;
- fpr=4BC0D7B24471B2A184EAF5D3000E684119568215
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: v1EW8NBQjlMtvzdifc8-WQV5sv3PL5qF
+X-Proofpoint-GUID: v1EW8NBQjlMtvzdifc8-WQV5sv3PL5qF
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
 
-It's not safe to call nfsd_put once nfsd_last_thread has been called, as
-that function will zero out the nn->nfsd_serv pointer.
+From: Elad Nachman <enachman@marvell.com>
 
-Drop the nfsd_put helper altogether and open-code the svc_put in its
-callers instead. That allows us to not be reliant on the value of that
-pointer when handling an error.
+The check in nand_base.c, nand_scan_tail() : has the following code:
+(ecc->steps * ecc->size != mtd->writesize) which fails for some NAND chips.
+Remove ECC entries in this driver which are not integral multiplications,
+and adjust the number of chunks for entries which fails the above
+calculation so it will calculate correctly (this was previously done
+automatically before the check and was removed in a later commit).
 
-Fixes: 2a501f55cd64 ("nfsd: call nfsd_last_thread() before final nfsd_put()")
-Reported-by: Zhi Li <yieli@redhat.com>
-Cc: NeilBrown <neilb@suse.de>
-Signed-off-by: Jeffrey Layton <jlayton@redhat.com>
+Fixes: 68c18dae6888 ("mtd: rawnand: marvell: add missing layouts")
+Cc: stable@vger.kernel.org
+Signed-off-by: Elad Nachman <enachman@marvell.com>
 ---
-I know it's late, but it would be good to get this into v6.7 if
-possible. I think it's fairly straightforward.
----
- fs/nfsd/nfsctl.c | 31 +++++++++++++++++--------------
- fs/nfsd/nfsd.h   |  7 -------
- 2 files changed, 17 insertions(+), 21 deletions(-)
+ drivers/mtd/nand/raw/marvell_nand.c | 13 +++++--------
+ 1 file changed, 5 insertions(+), 8 deletions(-)
 
-diff --git a/fs/nfsd/nfsctl.c b/fs/nfsd/nfsctl.c
-index 7cd513e59305..87fed75808ff 100644
---- a/fs/nfsd/nfsctl.c
-+++ b/fs/nfsd/nfsctl.c
-@@ -693,6 +693,7 @@ static ssize_t __write_ports_addfd(char *buf, struct net *net, const struct cred
- 	char *mesg = buf;
- 	int fd, err;
- 	struct nfsd_net *nn = net_generic(net, nfsd_net_id);
-+	struct svc_serv *serv;
+diff --git a/drivers/mtd/nand/raw/marvell_nand.c b/drivers/mtd/nand/raw/marvell_nand.c
+index a46698744850..5b0f5a9cef81 100644
+--- a/drivers/mtd/nand/raw/marvell_nand.c
++++ b/drivers/mtd/nand/raw/marvell_nand.c
+@@ -290,16 +290,13 @@ static const struct marvell_hw_ecc_layout marvell_nfc_layouts[] = {
+ 	MARVELL_LAYOUT( 2048,   512,  4,  1,  1, 2048, 32, 30,  0,  0,  0),
+ 	MARVELL_LAYOUT( 2048,   512,  8,  2,  1, 1024,  0, 30,1024,32, 30),
+ 	MARVELL_LAYOUT( 2048,   512,  8,  2,  1, 1024,  0, 30,1024,64, 30),
+-	MARVELL_LAYOUT( 2048,   512,  12, 3,  2, 704,   0, 30,640,  0, 30),
+-	MARVELL_LAYOUT( 2048,   512,  16, 5,  4, 512,   0, 30,  0, 32, 30),
++	MARVELL_LAYOUT( 2048,   512,  16, 4,  4, 512,   0, 30,  0, 32, 30),
+ 	MARVELL_LAYOUT( 4096,   512,  4,  2,  2, 2048, 32, 30,  0,  0,  0),
+-	MARVELL_LAYOUT( 4096,   512,  8,  5,  4, 1024,  0, 30,  0, 64, 30),
+-	MARVELL_LAYOUT( 4096,   512,  12, 6,  5, 704,   0, 30,576, 32, 30),
+-	MARVELL_LAYOUT( 4096,   512,  16, 9,  8, 512,   0, 30,  0, 32, 30),
++	MARVELL_LAYOUT( 4096,   512,  8,  4,  4, 1024,  0, 30,  0, 64, 30),
++	MARVELL_LAYOUT( 4096,   512,  16, 8,  8, 512,   0, 30,  0, 32, 30),
+ 	MARVELL_LAYOUT( 8192,   512,  4,  4,  4, 2048,  0, 30,  0,  0,  0),
+-	MARVELL_LAYOUT( 8192,   512,  8,  9,  8, 1024,  0, 30,  0, 160, 30),
+-	MARVELL_LAYOUT( 8192,   512,  12, 12, 11, 704,  0, 30,448,  64, 30),
+-	MARVELL_LAYOUT( 8192,   512,  16, 17, 16, 512,  0, 30,  0,  32, 30),
++	MARVELL_LAYOUT( 8192,   512,  8,  8,  8, 1024,  0, 30,  0, 160, 30),
++	MARVELL_LAYOUT( 8192,   512,  16, 16, 16, 512,  0, 30,  0,  32, 30),
+ };
  
- 	err = get_int(&mesg, &fd);
- 	if (err != 0 || fd < 0)
-@@ -703,15 +704,15 @@ static ssize_t __write_ports_addfd(char *buf, struct net *net, const struct cred
- 	if (err != 0)
- 		return err;
- 
--	err = svc_addsock(nn->nfsd_serv, net, fd, buf, SIMPLE_TRANSACTION_LIMIT, cred);
-+	serv = nn->nfsd_serv;
-+	err = svc_addsock(serv, net, fd, buf, SIMPLE_TRANSACTION_LIMIT, cred);
- 
--	if (err < 0 && !nn->nfsd_serv->sv_nrthreads && !nn->keep_active)
-+	if (err < 0 && !serv->sv_nrthreads && !nn->keep_active)
- 		nfsd_last_thread(net);
--	else if (err >= 0 &&
--		 !nn->nfsd_serv->sv_nrthreads && !xchg(&nn->keep_active, 1))
--		svc_get(nn->nfsd_serv);
-+	else if (err >= 0 && !serv->sv_nrthreads && !xchg(&nn->keep_active, 1))
-+		svc_get(serv);
- 
--	nfsd_put(net);
-+	svc_put(serv);
- 	return err;
- }
- 
-@@ -725,6 +726,7 @@ static ssize_t __write_ports_addxprt(char *buf, struct net *net, const struct cr
- 	struct svc_xprt *xprt;
- 	int port, err;
- 	struct nfsd_net *nn = net_generic(net, nfsd_net_id);
-+	struct svc_serv *serv;
- 
- 	if (sscanf(buf, "%15s %5u", transport, &port) != 2)
- 		return -EINVAL;
-@@ -737,32 +739,33 @@ static ssize_t __write_ports_addxprt(char *buf, struct net *net, const struct cr
- 	if (err != 0)
- 		return err;
- 
--	err = svc_xprt_create(nn->nfsd_serv, transport, net,
-+	serv = nn->nfsd_serv;
-+	err = svc_xprt_create(serv, transport, net,
- 			      PF_INET, port, SVC_SOCK_ANONYMOUS, cred);
- 	if (err < 0)
- 		goto out_err;
- 
--	err = svc_xprt_create(nn->nfsd_serv, transport, net,
-+	err = svc_xprt_create(serv, transport, net,
- 			      PF_INET6, port, SVC_SOCK_ANONYMOUS, cred);
- 	if (err < 0 && err != -EAFNOSUPPORT)
- 		goto out_close;
- 
--	if (!nn->nfsd_serv->sv_nrthreads && !xchg(&nn->keep_active, 1))
--		svc_get(nn->nfsd_serv);
-+	if (!serv->sv_nrthreads && !xchg(&nn->keep_active, 1))
-+		svc_get(serv);
- 
--	nfsd_put(net);
-+	svc_put(serv);
- 	return 0;
- out_close:
--	xprt = svc_find_xprt(nn->nfsd_serv, transport, net, PF_INET, port);
-+	xprt = svc_find_xprt(serv, transport, net, PF_INET, port);
- 	if (xprt != NULL) {
- 		svc_xprt_close(xprt);
- 		svc_xprt_put(xprt);
- 	}
- out_err:
--	if (!nn->nfsd_serv->sv_nrthreads && !nn->keep_active)
-+	if (!serv->sv_nrthreads && !nn->keep_active)
- 		nfsd_last_thread(net);
- 
--	nfsd_put(net);
-+	svc_put(serv);
- 	return err;
- }
- 
-diff --git a/fs/nfsd/nfsd.h b/fs/nfsd/nfsd.h
-index 3286ffacbc56..9ed0e08d16c2 100644
---- a/fs/nfsd/nfsd.h
-+++ b/fs/nfsd/nfsd.h
-@@ -113,13 +113,6 @@ int		nfsd_pool_stats_open(struct inode *, struct file *);
- int		nfsd_pool_stats_release(struct inode *, struct file *);
- void		nfsd_shutdown_threads(struct net *net);
- 
--static inline void nfsd_put(struct net *net)
--{
--	struct nfsd_net *nn = net_generic(net, nfsd_net_id);
--
--	svc_put(nn->nfsd_serv);
--}
--
- bool		i_am_nfsd(void);
- 
- struct nfsdfs_client {
-
----
-base-commit: 610a9b8f49fbcf1100716370d3b5f6f884a2835a
-change-id: 20240103-nfsd-fixes-1f1196134a11
-
-Best regards,
+ /**
 -- 
-Jeff Layton <jlayton@kernel.org>
+2.25.1
 
 
