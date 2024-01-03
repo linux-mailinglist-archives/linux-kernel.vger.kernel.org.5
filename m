@@ -1,132 +1,135 @@
-Return-Path: <linux-kernel+bounces-15343-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15344-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 499B5822A6C
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 10:47:45 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8DCAE822A6F
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 10:48:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D9562B22E4C
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 09:47:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 433F21F23EC1
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 09:48:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF04B18633;
-	Wed,  3 Jan 2024 09:47:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86CC11862E;
+	Wed,  3 Jan 2024 09:47:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="VNE1vr6+"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ua1-f41.google.com (mail-ua1-f41.google.com [209.85.222.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C48E18622;
-	Wed,  3 Jan 2024 09:47:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.163])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4T4lGD09rVz1g1sq;
-	Wed,  3 Jan 2024 17:45:56 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (unknown [7.185.36.74])
-	by mail.maildlp.com (Postfix) with ESMTPS id 9345E180021;
-	Wed,  3 Jan 2024 17:47:21 +0800 (CST)
-Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Wed, 3 Jan
- 2024 17:47:20 +0800
-Subject: Re: [RFC PATCH net-next v1 4/4] net: page_pool: use netmem_t instead
- of struct page in API
-To: Mina Almasry <almasrymina@google.com>
-CC: Shakeel Butt <shakeelb@google.com>, Jakub Kicinski <kuba@kernel.org>,
-	<linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-	<bpf@vger.kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar
-	<mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen
-	<dave.hansen@linux.intel.com>, <x86@kernel.org>, "H. Peter Anvin"
-	<hpa@zytor.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J.
- Wysocki" <rafael@kernel.org>, Sumit Semwal <sumit.semwal@linaro.org>,
-	=?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>, Michael Chan
-	<michael.chan@broadcom.com>, "David S. Miller" <davem@davemloft.net>, Eric
- Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Alexei
- Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper
- Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>,
-	Wei Fang <wei.fang@nxp.com>, Shenwei Wang <shenwei.wang@nxp.com>, Clark Wang
-	<xiaoning.wang@nxp.com>, NXP Linux Team <linux-imx@nxp.com>, Jeroen de Borst
-	<jeroendb@google.com>, Praveen Kaligineedi <pkaligineedi@google.com>,
-	Shailend Chand <shailend@google.com>, Yisen Zhuang <yisen.zhuang@huawei.com>,
-	Salil Mehta <salil.mehta@huawei.com>, Jesse Brandeburg
-	<jesse.brandeburg@intel.com>, Tony Nguyen <anthony.l.nguyen@intel.com>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>, Marcin Wojtas
-	<mw@semihalf.com>, Russell King <linux@armlinux.org.uk>, Sunil Goutham
-	<sgoutham@marvell.com>, Geetha sowjanya <gakula@marvell.com>, Subbaraya
- Sundeep <sbhatta@marvell.com>, hariprasad <hkelam@marvell.com>, Felix Fietkau
-	<nbd@nbd.name>, John Crispin <john@phrozen.org>, Sean Wang
-	<sean.wang@mediatek.com>, Mark Lee <Mark-MC.Lee@mediatek.com>, Lorenzo
- Bianconi <lorenzo@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Saeed
- Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, Horatiu
- Vultur <horatiu.vultur@microchip.com>, <UNGLinuxDriver@microchip.com>, "K. Y.
- Srinivasan" <kys@microsoft.com>, Haiyang Zhang <haiyangz@microsoft.com>, Wei
- Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>, Jassi Brar
-	<jaswinder.singh@linaro.org>, Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>, Jose Abreu
-	<joabreu@synopsys.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Siddharth Vadapalli <s-vadapalli@ti.com>, Ravi Gunasekaran
-	<r-gunasekaran@ti.com>, Roger Quadros <rogerq@kernel.org>, Jiawen Wu
-	<jiawenwu@trustnetic.com>, Mengyuan Lou <mengyuanlou@net-swift.com>, Ronak
- Doshi <doshir@vmware.com>, VMware PV-Drivers Reviewers
-	<pv-drivers@vmware.com>, Ryder Lee <ryder.lee@mediatek.com>, Shayne Chen
-	<shayne.chen@mediatek.com>, Kalle Valo <kvalo@kernel.org>, Juergen Gross
-	<jgross@suse.com>, Stefano Stabellini <sstabellini@kernel.org>, Oleksandr
- Tyshchenko <oleksandr_tyshchenko@epam.com>, Andrii Nakryiko
-	<andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu
-	<song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, KP Singh
-	<kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo
-	<haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, Stefan Hajnoczi
-	<stefanha@redhat.com>, Stefano Garzarella <sgarzare@redhat.com>, Shuah Khan
-	<shuah@kernel.org>, =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>,
-	Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers
-	<ndesaulniers@google.com>, Bill Wendling <morbo@google.com>, Justin Stitt
-	<justinstitt@google.com>, Jason Gunthorpe <jgg@nvidia.com>, Willem de Bruijn
-	<willemdebruijn.kernel@gmail.com>
-References: <20231214020530.2267499-1-almasrymina@google.com>
- <20231214020530.2267499-5-almasrymina@google.com>
- <ddffff98-f3de-6a5d-eb26-636dacefe9aa@huawei.com>
- <CAHS8izO2nDHuxKau8iLcAmnho-1TYkzW09MBZ80+JzOo9YyVFA@mail.gmail.com>
- <20231215021114.ipvdx2bwtxckrfdg@google.com>
- <20231215190126.1040fa12@kernel.org>
- <CALvZod5myy2SvuCMNmqjjYeNONqSArV+8y8mrkfnNeog8WLjng@mail.gmail.com>
- <CAHS8izOLBtjHOqbTS_PiTNe+rTE=jboDWDM9zS108B57vVNcwA@mail.gmail.com>
- <CAHS8izMkCwv3jak9KUHeDUrkwBNNpdYk4voEX7Cbp7mTpNAQdA@mail.gmail.com>
- <54f226ef-df2d-9f32-fa3f-e846d6510758@huawei.com>
- <CAHS8izP63wXGH+Q3y1H=ycT=AHYnhGveBnuyF_rYioAjZ=Hn=g@mail.gmail.com>
- <7c6d35e3-165f-5883-1c1b-fce82c976028@huawei.com>
- <CAHS8izNqeiK1tq=48LMbbqq5B4d2mhgbuKRvnFtiBngf73jXZg@mail.gmail.com>
-From: Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <fda068d0-f7fb-90fc-cdd6-1f853a4a225f@huawei.com>
-Date: Wed, 3 Jan 2024 17:47:20 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E288518625
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 09:47:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
+Received: by mail-ua1-f41.google.com with SMTP id a1e0cc1a2514c-7ccfbdd77f6so2079263241.3
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 01:47:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1704275265; x=1704880065; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/Uu3c8CS1lVfKVNMcApNeIRZ8Y8V3EqweSncyL4lcTY=;
+        b=VNE1vr6+zbcW+RbuKh48/16HqjYZBHVcz0NYHe6UiYsVmbAde+BZjIMHpmbK8O+C4M
+         hjK+UG4v0/aOOvpogWzUWGJJw2wWt3BTRPKh9BH7OMJ2RFLeyJuE5wGdRzAdmx6taF3U
+         WosPh1KaxZAHyIQqYqbN73SbzE8hOAm6miln6AlWZasmp+iPBfx6nOmY97nWlQk2F040
+         eKx4W169JBStTe+7qr2H9KhYEAVSeECiVfaKokqZ9eB1MomNCXAZnQeOMMalwmfQs/eU
+         gXHxFwewzNeZ7Ga16rKuBAlLxfrQhY8rajcwasv3SW6lehcMRtl1BHOqkdKnt4dEVZKg
+         Rofg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704275265; x=1704880065;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/Uu3c8CS1lVfKVNMcApNeIRZ8Y8V3EqweSncyL4lcTY=;
+        b=Kq9lQmucQ5FzhrRCUiPQ53p2DwUnK4of9hVR2jxgjx6Pew7zpBt9/VAOYRvEZbfGwu
+         VwR0n1Mt43SVoYZnnjdmfqz6YALfRzdKzUxlOIG316Q+B5myINe4QB4oGRslHyg8DfC6
+         DWyj/vx+Wr4o7VIu07G/U15f45w1x0lR0nL1Hu3E/mquQXzGUbgryhUAbhehGf/KiQ/A
+         NS+rvXm69qqCvXu17DMNhFN7s1z7f7UAfQPFSTi6TDTJTZlWPiX31AMLPS/DOajZF35u
+         XpwLEtnIg9KgYIzD+V/Nm4kpQmlzGxiutCc5+NyiBsLcpaJfhptYHh1teKfKcRGlwtEG
+         uA5w==
+X-Gm-Message-State: AOJu0Yzt05wKDS/79Yec92rr/sdjy7oUpi1aFZ0jvQc6yQO8sAd7CKhW
+	NeDgsMVWUd/Cng4fpu93ug4glpaEVGka3xWTjCMr4+ZfR0XTfw==
+X-Google-Smtp-Source: AGHT+IEYu7lrKPktfj6xVwnpsPDmZsLaProxg+WpiLZAf8IdKHO8AmnXGk+VkPfNvNleTDCFWcsjOBbBtgiFrLe2YUo=
+X-Received: by 2002:a05:6102:2b86:b0:467:7814:ec21 with SMTP id
+ ib6-20020a0561022b8600b004677814ec21mr2561562vsb.9.1704275264727; Wed, 03 Jan
+ 2024 01:47:44 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CAHS8izNqeiK1tq=48LMbbqq5B4d2mhgbuKRvnFtiBngf73jXZg@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpemm500005.china.huawei.com (7.185.36.74)
+References: <20231228104800.24913-1-tychang@realtek.com>
+In-Reply-To: <20231228104800.24913-1-tychang@realtek.com>
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+Date: Wed, 3 Jan 2024 10:47:33 +0100
+Message-ID: <CAMRc=MeB6UBf2cCrB8XHtfKigmS3Gb41SV-G6F+0X7Dd+7oatw@mail.gmail.com>
+Subject: Re: [PATCH v5 0/2] Add gpio driver support for Realtek DHC SoCs
+To: Tzuyi Chang <tychang@realtek.com>
+Cc: Linus Walleij <linus.walleij@linaro.org>, Andy Shevchenko <andy@kernel.org>, 
+	Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	linux-gpio@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2024/1/3 0:14, Mina Almasry wrote:
-> 
-> The idea being that skb_frag_page() can return NULL if the frag is not
-> paged, and the relevant callers are modified to handle that.
+On Thu, Dec 28, 2023 at 11:48=E2=80=AFAM Tzuyi Chang <tychang@realtek.com> =
+wrote:
+>
+> These patches add the bindings and the gpio driver for Realtek
+> DHC(Digital Home Center) RTD SoCs, including RTD1295, RTD1395,
+> RTD1619, RTD1319, RTD1619B, RTD1319D and RTD1315E.
+>
+> Change log:
+> v4->v5:
+> 1. Add more description in the Kconfig.
+> 2. Add comment for the counter-intuitive number 31.
+> 3. Convert to use cleanup API and module_platform_driver() macro.
+> 4. Simplify some of the code as suggested in patch v4.
+> v3->v4:
+> 1. Arrange the compatible list in alphanumerical order.
+> 2. Remove the size check for the offset array.
+> 3. Add the debounce callback.
+> 4. Conducted a review of the critical section, employing raw_spinlock_t f=
+or locking purposes.
+> 5. Add gpiochip_enable_irq/gpiochip_disable_irq to fulfill the immutabili=
+ty requirements.
+> 6. Use irqd_to_hwirq to get hwirq.
+> v2->v3:
+> 1. Remove generic compatible and use SoC-specific compatible instead.
+> 2. Add the missing descriptions for the rtd_gpio_info structure members.
+> 3. Assign gpio_chip fwnode.
+> v1->v2:
+> 1. Add description for DHC RTD SoCs in the bindings.
+> 2. Revise the compatible names in the bindings.
+> 3. Transitioned from OF API to platform_device API.
+> 4. Use u8 for the offset array within the rtd_gpio_info structure.
+> 5. Record the size of each array within the rtd_gpio_info structure and
+>    implement checks to prevent out-of-bounds access.
+> 6. Use GPIOLIB_IRQCHIP helpers to register interrupts.
+> 7. Use dynamic allocation for GPIO base.
+>
+> Tzuyi Chang (2):
+>   dt-bindings: gpio: realtek: Add realtek,rtd-gpio
+>   Add GPIO support for Realtek DHC(Digital Home Center) RTD SoCs.
+>
+>  .../bindings/gpio/realtek,rtd-gpio.yaml       |  69 ++
+>  drivers/gpio/Kconfig                          |  13 +
+>  drivers/gpio/Makefile                         |   1 +
+>  drivers/gpio/gpio-rtd.c                       | 604 ++++++++++++++++++
+>  4 files changed, 687 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/gpio/realtek,rtd-gp=
+io.yaml
+>  create mode 100644 drivers/gpio/gpio-rtd.c
+>
+> --
+> 2.43.0
+>
 
-There are many existing drivers which are not expecting NULL returning for
-skb_frag_page() as those drivers are not supporting devmem, adding additionl
-checking overhead in skb_frag_page() for those drivers does not make much
-sense, IMHO, it may make more sense to introduce a new helper for the driver
-supporting devmem or networking core that needing dealing with both normal
-page and devmem.
+I applied this series. For the future: the commit subject should have
+the "gpio: rtd: ..." prefix. I added it this time.
 
-And we are also able to keep the old non-NULL returning semantic for
-skb_frag_page().
+Bart
 
