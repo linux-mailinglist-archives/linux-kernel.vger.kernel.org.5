@@ -1,91 +1,123 @@
-Return-Path: <linux-kernel+bounces-15017-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15019-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EACB1822638
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 02:05:07 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B2E2822640
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 02:05:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 969451F22B70
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 01:05:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 27443B228FF
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 01:05:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F0CF1379;
-	Wed,  3 Jan 2024 01:05:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="jcDX0A8V"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EA06A57;
+	Wed,  3 Jan 2024 01:05:29 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2044710F1
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 01:04:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-5edf3780534so48189027b3.0
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 17:04:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704243897; x=1704848697; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=TQSx9psUw9oTbZGR+KHCIwReL7n5ZCIfgzIPIKpKg1M=;
-        b=jcDX0A8V4fgFW+iVVwPYvDijnona7Ju+cR0jBvKC0lebNUdt5m9f5T+dPZjvnZE2+o
-         gXJIx0OE4UC8xam7bWvHGhtiRq3bwjs6EqLVyaHKJ0OVp3WrixEBoQ2Cf2ahhNCfaBka
-         LcNCBZNa5G7++ON8HSV/SIgoHU51E1m24nxj/o3SYSunHcuszU5qrGFFAJNppdABVGZG
-         +e/jt/OmQaCaumMvXSW5F858S7hr5hV6WYQ2fXrMhsPYsU4cI6f2fhYx8FKn0xJuFG76
-         u60Mg0JAk6/ljv/xKq5HzV1w+d+oh/v/Bc3OkPmpEXgs1ujDYgWuDUJxdJkCpOnPd5Ru
-         k7cg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704243897; x=1704848697;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=TQSx9psUw9oTbZGR+KHCIwReL7n5ZCIfgzIPIKpKg1M=;
-        b=p4Uaqu92ROiQpaBH4JTUzaEPaFvThm0wMNIQkd1pd0tKnrzQN6HBOtOyfx7UceL7Te
-         oKrrzSiTErf1FK/0wp95IPv1w1iBUiBw+gR4TdUptodkagJBtfxmDsdEJQwXZQI7A7+X
-         Jz85sLvBJx+Ix8Yqn+2QmPewvzOBsvtUBVU6TRxbZKr1uInXxxpaB9VabZHMMEZCgwCY
-         hDhky62Jh8zmswyMRvkldduNj421flnHsreVFzo8iakkM0ge0vyNG67c1jb2LWtqO6zS
-         9t1Xw+KAtCiyCLjTMBy1UQVtwsKUNmGhZ0EV0NIAwfZPddOu2jdz+9zkGu10bKi20Ezb
-         stAA==
-X-Gm-Message-State: AOJu0Yx//Qor2Bbog8hmHAn6CuIVzupeZUPu84bPN+BjiGqz8iyhUasJ
-	K84BXMkpg0D9XkIehOALYjbF85BzhSCmjWTKNEl+mgjDWVwL8g==
-X-Google-Smtp-Source: AGHT+IG5PG1R+n1LmMee/LvkPlexxf/e36Gs+fr/vMs1zvzGXA2xFnirJcEViDaAogqMYLkyvifTh5m0vmHSz9oLG3E=
-X-Received: by 2002:a0d:fec4:0:b0:5e7:e672:fe47 with SMTP id
- o187-20020a0dfec4000000b005e7e672fe47mr11403301ywf.72.1704243897097; Tue, 02
- Jan 2024 17:04:57 -0800 (PST)
+Received: from mg.richtek.com (mg.richtek.com [220.130.44.152])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54AD91848;
+	Wed,  3 Jan 2024 01:05:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=richtek.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=richtek.com
+X-MailGates: (SIP:2,PASS,NONE)(compute_score:DELIVER,40,3)
+Received: from 192.168.10.47
+	by mg.richtek.com with MailGates ESMTPS Server V6.0(636810:0:AUTH_RELAY)
+	(envelope-from <cy_huang@richtek.com>)
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256/256); Wed, 03 Jan 2024 09:04:52 +0800 (CST)
+Received: from ex3.rt.l (192.168.10.46) by ex4.rt.l (192.168.10.47) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.27; Wed, 3 Jan
+ 2024 09:04:52 +0800
+Received: from linuxcarl2.richtek.com (192.168.10.154) by ex3.rt.l
+ (192.168.10.45) with Microsoft SMTP Server id 15.2.1258.27 via Frontend
+ Transport; Wed, 3 Jan 2024 09:04:52 +0800
+Date: Wed, 3 Jan 2024 09:04:52 +0800
+From: ChiYuan Huang <cy_huang@richtek.com>
+To: Jonathan Cameron <jic23@kernel.org>
+CC: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
+	<conor+dt@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>, Rob Herring
+	<robh+dt@kernel.org>, Uwe =?iso-8859-1?Q?Kleine-K=F6nig?=
+	<u.kleine-koenig@pengutronix.de>, <linux-iio@vger.kernel.org>,
+	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 2/2] iio: adc: rtq6056: Add support for the whole
+ RTQ6056 family
+Message-ID: <20240103010452.GA6655@linuxcarl2.richtek.com>
+References: <cover.1703762557.git.cy_huang@richtek.com>
+ <74db15583a9a68701dbff5a1a967c0d987d6dfb6.1703762557.git.cy_huang@richtek.com>
+ <20231230120347.0816bd09@jic23-huawei>
+ <20240102083042.GA13611@linuxcarl2.richtek.com>
+ <20240102193642.0d6d2007@jic23-huawei>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240102-topic-gpu_cooling-v1-0-fda30c57e353@linaro.org> <20240102-topic-gpu_cooling-v1-1-fda30c57e353@linaro.org>
-In-Reply-To: <20240102-topic-gpu_cooling-v1-1-fda30c57e353@linaro.org>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Wed, 3 Jan 2024 03:04:46 +0200
-Message-ID: <CAA8EJpoCTF4mAWJv_4ZGS0eMGpic66vSJWqkjzqkyNU_1V7Npw@mail.gmail.com>
-Subject: Re: [PATCH 01/12] arm64: dts: qcom: msm8916: Hook up GPU cooling device
-To: Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc: Bjorn Andersson <andersson@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Marijn Suijten <marijn.suijten@somainline.org>, linux-arm-msm@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20240102193642.0d6d2007@jic23-huawei>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 
-On Tue, 2 Jan 2024 at 15:35, Konrad Dybcio <konrad.dybcio@linaro.org> wrote:
->
-> In order to allow for throttling the GPU, hook up the cooling device
-> to the respective thermal zones.
->
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-> ---
->  arch/arm64/boot/dts/qcom/msm8916.dtsi | 9 +++++++++
->  1 file changed, 9 insertions(+)
+On Tue, Jan 02, 2024 at 07:36:42PM +0000, Jonathan Cameron wrote:
+> On Tue, 2 Jan 2024 16:30:42 +0800
+> ChiYuan Huang <cy_huang@richtek.com> wrote:
+> 
+> > Hi, Johathan:
+> > 
+> > Most comments are good and will be fixed in next revision.
+> > 
+> > Still one comment I cannot make sure.
+> > 
+> > Please see the comment that's below yours.
+> > 	
+> Hi ChiYuan,
+> 
+> It's good practice to crop away all the parts where the discussion is finished.
+> Makes it easier for people to find the bit you want discussion to continue on!
+> 
+> I've done so in this reply.
+> 
+> ...
+> > > > +
+> > > >  enum {
+> > > >  	RTQ6056_CH_VSHUNT = 0,
+> > > >  	RTQ6056_CH_VBUS,
+> > > > @@ -50,16 +60,29 @@ enum {
+> > > >  enum {
+> > > >  	F_OPMODE = 0,
+> > > >  	F_VSHUNTCT,
+> > > > +	F_SADC = F_VSHUNTCT,  
+> > > 
+> > > If the devices have different register fields, better to have different enums
+> > > for them as well as that should result in less confusing code.
+> > >   
+> > Actually, this is all the same register, just the control naming difference.
+> > If not to define the new eum, I can remain to use the same field to handle rtq6059 part.
+> 
+> If the bits in the register control the same thing across both parts then
+> add a comment alongside the enum to make that clear. 
+> 
+> Given the naming that seems very unlikely.  PGA and AVG would eman
+> very different things to me for starters (oversampling vs a programmble
+> gain amplifier on the front end)
+> 
+I'm also thinking how to write this difference like as comments or a seperate enum.
+But if to define a new enum, many function about the regfield controls must be seperated
+for 6056 and 6059.
+> > >   
+> > > >  	F_VBUSCT,
+> > > > +	F_BADC = F_VBUSCT,
+> > > >  	F_AVG,
+> > > > +	F_PGA = F_AVG,
+> > > >  	F_RESET,
+> > > >  	F_MAX_FIELDS
+> > > >  };
 
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+What if to keep the original coding, just to rename the different part like as below
+F_SADC -> F_RTQ6059_SDAC
+F_BADC -> F_RTQ6059_BADC
+F_PGA -> F_RTQ6059_PGA
 
+At least, the nameing already shows the difference between 6056 and 6059.
+Only these three parts are different, others are the same like as F_OPMODE, F_RESET.
 
--- 
-With best wishes
-Dmitry
 
