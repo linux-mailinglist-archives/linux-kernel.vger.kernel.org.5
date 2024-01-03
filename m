@@ -1,46 +1,47 @@
-Return-Path: <linux-kernel+bounces-16107-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16108-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 967C182390D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 00:16:49 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6559882390E
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 00:16:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 95B3B1C24732
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 23:16:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DE8561F2557B
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 23:16:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5879200BF;
-	Wed,  3 Jan 2024 23:16:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD402200D6;
+	Wed,  3 Jan 2024 23:16:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NdSQSyir"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aZacJLpO"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20F80200A7
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 23:16:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5723C433CB;
-	Wed,  3 Jan 2024 23:16:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C93F200C6
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 23:16:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A3DDBC433C8;
+	Wed,  3 Jan 2024 23:16:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704323778;
-	bh=Si9WqlndekB3Prd77wl/hrQqdwF5SS/r91UXwpMoGdw=;
+	s=k20201202; t=1704323779;
+	bh=Gr90VWCG4SEvfPBl+lUpDKdA7y5+PFDPIALUlbQNMzs=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=NdSQSyir55wgNijCroo6pmC7gAvTFa9alkO2hoLf93IxZ8aT9AQvz+HCu//lbf5+B
-	 YPce0UX4i+1emKYB3GdrBgiYbIgnyywnQNGgj/apnJcEwJtqgCIcnwIzKSFkIfXqTL
-	 FkegxD9HvN579c80JL8LRgDLKfq1mI/meYm6XqOTG4HWhv4lxyHLd+jjuYvka0JxGY
-	 6R1yEEmD5xgYmNbn61Uq4OKc9W6C8yKPyJrWxFrACnoQ48s1WD+BwaFaQW8Qd47oZy
-	 GTIrz7wxyj7cGgBRUjBcTpo7vzYyYpIyc3ztlsSZXxXQT/UznA5gxtSXP9LC8t3jw/
-	 iPjiSlVeKaPoA==
+	b=aZacJLpOn2XOmpLX7LR9Y71UrV33x6V6CyvVS9O7iKXSYy0AZPqE3FL2frJhqw5Nw
+	 JYnTNuUx3cXtpICUiifZty0kBy2YIoBfiQKk6GIPsBqgDH6ckEAxB3DfQ/VevScRHK
+	 hVUXhCP6/TbwDGWh4ZNB4ie8UB/guE5Ywenf8uLO+wTFaQhOTPKpMQUn9uyN44GMjY
+	 dVOVRPnRxjHYXo7vo7fUhto8AfePxvkD83gH9m6rkGReU7GnfRUNOhmjfPXmrvAkvB
+	 UM8NQJ7xsJE2yk6DrkcUUaoMWlGr/Er5S0CCwJlJHodjlaT1t8W5v5pTomZb4BF+mR
+	 T+OOY48t4Tefw==
 From: Bjorn Helgaas <helgaas@kernel.org>
-To: Vineet Gupta <vgupta@kernel.org>
+To: Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>
 Cc: Randy Dunlap <rdunlap@infradead.org>,
 	linux-kernel@vger.kernel.org,
 	Bjorn Helgaas <bhelgaas@google.com>,
-	linux-snps-arc@lists.infradead.org
-Subject: [PATCH 2/8] ARC: Fix typos
-Date: Wed,  3 Jan 2024 17:15:59 -0600
-Message-Id: <20240103231605.1801364-3-helgaas@kernel.org>
+	linux-arm-kernel@lists.infradead.org
+Subject: [PATCH 3/8] arm64: Fix typos
+Date: Wed,  3 Jan 2024 17:16:00 -0600
+Message-Id: <20240103231605.1801364-4-helgaas@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240103231605.1801364-1-helgaas@kernel.org>
 References: <20240103231605.1801364-1-helgaas@kernel.org>
@@ -54,458 +55,290 @@ Content-Transfer-Encoding: 8bit
 
 From: Bjorn Helgaas <bhelgaas@google.com>
 
-Fix typos, most reported by "codespell arch/arc".  Only touches comments,
+Fix typos, most reported by "codespell arch/arm64".  Only touches comments,
 no code changes.
 
 Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-Cc: linux-snps-arc@lists.infradead.org
+Cc: linux-arm-kernel@lists.infradead.org
 ---
- arch/arc/boot/Makefile                    |  4 ++--
- arch/arc/boot/dts/axc003.dtsi             |  4 ++--
- arch/arc/boot/dts/vdk_axs10x_mb.dtsi      |  2 +-
- arch/arc/include/asm/dsp.h                |  2 +-
- arch/arc/include/asm/entry-compact.h      | 10 +++++-----
- arch/arc/include/asm/entry.h              |  4 ++--
- arch/arc/include/asm/irq.h                |  2 +-
- arch/arc/include/asm/irqflags-compact.h   |  2 +-
- arch/arc/include/asm/mmu_context.h        |  2 +-
- arch/arc/include/asm/pgtable-bits-arcv2.h |  2 +-
- arch/arc/include/asm/shmparam.h           |  2 +-
- arch/arc/include/asm/smp.h                |  4 ++--
- arch/arc/include/asm/thread_info.h        |  2 +-
- arch/arc/include/uapi/asm/swab.h          |  2 +-
- arch/arc/kernel/entry-arcv2.S             |  8 ++++----
- arch/arc/kernel/entry.S                   |  4 ++--
- arch/arc/kernel/head.S                    |  2 +-
- arch/arc/kernel/intc-arcv2.c              |  2 +-
- arch/arc/kernel/perf_event.c              |  2 +-
- arch/arc/kernel/setup.c                   |  2 +-
- arch/arc/kernel/signal.c                  |  2 +-
- arch/arc/kernel/traps.c                   |  2 +-
- arch/arc/kernel/vmlinux.lds.S             |  4 ++--
- arch/arc/mm/tlbex.S                       |  8 ++++----
- 24 files changed, 40 insertions(+), 40 deletions(-)
+ arch/arm64/Kconfig                  | 2 +-
+ arch/arm64/include/asm/assembler.h  | 4 ++--
+ arch/arm64/include/asm/cpufeature.h | 4 ++--
+ arch/arm64/include/asm/pgtable.h    | 2 +-
+ arch/arm64/include/asm/suspend.h    | 2 +-
+ arch/arm64/include/asm/traps.h      | 4 ++--
+ arch/arm64/kernel/acpi.c            | 2 +-
+ arch/arm64/kernel/cpufeature.c      | 6 +++---
+ arch/arm64/kernel/entry-common.c    | 2 +-
+ arch/arm64/kernel/entry-ftrace.S    | 2 +-
+ arch/arm64/kernel/entry.S           | 2 +-
+ arch/arm64/kernel/ftrace.c          | 2 +-
+ arch/arm64/kernel/machine_kexec.c   | 2 +-
+ arch/arm64/kernel/probes/uprobes.c  | 2 +-
+ arch/arm64/kernel/sdei.c            | 2 +-
+ arch/arm64/kernel/smp.c             | 2 +-
+ arch/arm64/kernel/traps.c           | 2 +-
+ 17 files changed, 22 insertions(+), 22 deletions(-)
 
-diff --git a/arch/arc/boot/Makefile b/arch/arc/boot/Makefile
-index 5648748c285f..5a8550124b73 100644
---- a/arch/arc/boot/Makefile
-+++ b/arch/arc/boot/Makefile
-@@ -1,8 +1,8 @@
- # SPDX-License-Identifier: GPL-2.0
+diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+index 7b071a00425d..1954035737cf 100644
+--- a/arch/arm64/Kconfig
++++ b/arch/arm64/Kconfig
+@@ -2227,7 +2227,7 @@ config CMDLINE
+ 	default ""
+ 	help
+ 	  Provide a set of default command-line options at build time by
+-	  entering them here. As a minimum, you should specify the the
++	  entering them here. As a minimum, you should specify the
+ 	  root device (e.g. root=/dev/nfs).
  
--# uImage build relies on mkimage being availble on your host for ARC target
-+# uImage build relies on mkimage being available on your host for ARC target
- # You will need to build u-boot for ARC, rename mkimage to arc-elf32-mkimage
--# and make sure it's reacable from your PATH
-+# and make sure it's reachable from your PATH
+ choice
+diff --git a/arch/arm64/include/asm/assembler.h b/arch/arm64/include/asm/assembler.h
+index 376a980f2bad..0b2e67fa9a11 100644
+--- a/arch/arm64/include/asm/assembler.h
++++ b/arch/arm64/include/asm/assembler.h
+@@ -390,7 +390,7 @@ alternative_endif
+  * [start, end) with dcache line size explicitly provided.
+  *
+  * 	op:		operation passed to dc instruction
+- * 	domain:		domain used in dsb instruciton
++ * 	domain:		domain used in dsb instruction
+  * 	start:          starting virtual address of the region
+  * 	end:            end virtual address of the region
+  *	linesz:		dcache line size
+@@ -431,7 +431,7 @@ alternative_endif
+  * [start, end)
+  *
+  * 	op:		operation passed to dc instruction
+- * 	domain:		domain used in dsb instruciton
++ * 	domain:		domain used in dsb instruction
+  * 	start:          starting virtual address of the region
+  * 	end:            end virtual address of the region
+  * 	fixup:		optional label to branch to on user fault
+diff --git a/arch/arm64/include/asm/cpufeature.h b/arch/arm64/include/asm/cpufeature.h
+index f6d416fe49b0..a0f4010c1e85 100644
+--- a/arch/arm64/include/asm/cpufeature.h
++++ b/arch/arm64/include/asm/cpufeature.h
+@@ -198,7 +198,7 @@ extern struct arm64_ftr_reg arm64_ftr_reg_ctrel0;
+  *    registers (e.g, SCTLR, TCR etc.) or patching the kernel via
+  *    alternatives. The kernel patching is batched and performed at later
+  *    point. The actions are always initiated only after the capability
+- *    is finalised. This is usally denoted by "enabling" the capability.
++ *    is finalised. This is usually denoted by "enabling" the capability.
+  *    The actions are initiated as follows :
+  *	a) Action is triggered on all online CPUs, after the capability is
+  *	finalised, invoked within the stop_machine() context from
+@@ -250,7 +250,7 @@ extern struct arm64_ftr_reg arm64_ftr_reg_ctrel0;
+ #define ARM64_CPUCAP_SCOPE_LOCAL_CPU		((u16)BIT(0))
+ #define ARM64_CPUCAP_SCOPE_SYSTEM		((u16)BIT(1))
+ /*
+- * The capabilitiy is detected on the Boot CPU and is used by kernel
++ * The capability is detected on the Boot CPU and is used by kernel
+  * during early boot. i.e, the capability should be "detected" and
+  * "enabled" as early as possibly on all booting CPUs.
+  */
+diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
+index b19a8aee684c..25bf7d15a115 100644
+--- a/arch/arm64/include/asm/pgtable.h
++++ b/arch/arm64/include/asm/pgtable.h
+@@ -288,7 +288,7 @@ bool pgattr_change_is_safe(u64 old, u64 new);
+  *   1      0      |   1           0          1
+  *   1      1      |   0           1          x
+  *
+- * When hardware DBM is not present, the sofware PTE_DIRTY bit is updated via
++ * When hardware DBM is not present, the software PTE_DIRTY bit is updated via
+  * the page fault mechanism. Checking the dirty status of a pte becomes:
+  *
+  *   PTE_DIRTY || (PTE_WRITE && !PTE_RDONLY)
+diff --git a/arch/arm64/include/asm/suspend.h b/arch/arm64/include/asm/suspend.h
+index 0cde2f473971..e65f33edf9d6 100644
+--- a/arch/arm64/include/asm/suspend.h
++++ b/arch/arm64/include/asm/suspend.h
+@@ -23,7 +23,7 @@ struct cpu_suspend_ctx {
+  * __cpu_suspend_enter()'s caller, and populated by __cpu_suspend_enter().
+  * This data must survive until cpu_resume() is called.
+  *
+- * This struct desribes the size and the layout of the saved cpu state.
++ * This struct describes the size and the layout of the saved cpu state.
+  * The layout of the callee_saved_regs is defined by the implementation
+  * of __cpu_suspend_enter(), and cpu_resume(). This struct must be passed
+  * in by the caller as __cpu_suspend_enter()'s stack-frame is gone once it
+diff --git a/arch/arm64/include/asm/traps.h b/arch/arm64/include/asm/traps.h
+index eefe766d6161..03084ed290ac 100644
+--- a/arch/arm64/include/asm/traps.h
++++ b/arch/arm64/include/asm/traps.h
+@@ -52,8 +52,8 @@ static inline int in_entry_text(unsigned long ptr)
+  * CPUs with the RAS extensions have an Implementation-Defined-Syndrome bit
+  * to indicate whether this ESR has a RAS encoding. CPUs without this feature
+  * have a ISS-Valid bit in the same position.
+- * If this bit is set, we know its not a RAS SError.
+- * If its clear, we need to know if the CPU supports RAS. Uncategorized RAS
++ * If this bit is set, we know it's not a RAS SError.
++ * If it's clear, we need to know if the CPU supports RAS. Uncategorized RAS
+  * errors share the same encoding as an all-zeros encoding from a CPU that
+  * doesn't support RAS.
+  */
+diff --git a/arch/arm64/kernel/acpi.c b/arch/arm64/kernel/acpi.c
+index dba8fcec7f33..7eca4273b415 100644
+--- a/arch/arm64/kernel/acpi.c
++++ b/arch/arm64/kernel/acpi.c
+@@ -128,7 +128,7 @@ static int __init acpi_fadt_sanity_check(void)
  
- OBJCOPYFLAGS= -O binary -R .note -R .note.gnu.build-id -R .comment -S
- 
-diff --git a/arch/arc/boot/dts/axc003.dtsi b/arch/arc/boot/dts/axc003.dtsi
-index 3434c8131ecd..c0a812674ce9 100644
---- a/arch/arc/boot/dts/axc003.dtsi
-+++ b/arch/arc/boot/dts/axc003.dtsi
-@@ -119,9 +119,9 @@ mmc@15000 {
  	/*
- 	 * The DW APB ICTL intc on MB is connected to CPU intc via a
- 	 * DT "invisible" DW APB GPIO block, configured to simply pass thru
--	 * interrupts - setup accordinly in platform init (plat-axs10x/ax10x.c)
-+	 * interrupts - setup accordingly in platform init (plat-axs10x/ax10x.c)
- 	 *
--	 * So here we mimic a direct connection betwen them, ignoring the
-+	 * So here we mimic a direct connection between them, ignoring the
- 	 * ABPG GPIO. Thus set "interrupts = <24>" (DW APB GPIO to core)
- 	 * instead of "interrupts = <12>" (DW APB ICTL to DW APB GPIO)
- 	 *
-diff --git a/arch/arc/boot/dts/vdk_axs10x_mb.dtsi b/arch/arc/boot/dts/vdk_axs10x_mb.dtsi
-index 90a412026e64..0e0e2d337bf8 100644
---- a/arch/arc/boot/dts/vdk_axs10x_mb.dtsi
-+++ b/arch/arc/boot/dts/vdk_axs10x_mb.dtsi
-@@ -113,7 +113,7 @@ mmc@15000 {
- 	/*
- 	 * Embedded Vision subsystem UIO mappings; only relevant for EV VDK
- 	 *
--	 * This node is intentionally put outside of MB above becase
-+	 * This node is intentionally put outside of MB above because
- 	 * it maps areas outside of MB's 0xez-0xfz.
+ 	 * FADT is required on arm64; retrieve it to check its presence
+-	 * and carry out revision and ACPI HW reduced compliancy tests
++	 * and carry out revision and ACPI HW reduced compliance tests
  	 */
- 	uio_ev: uio@d0000000 {
-diff --git a/arch/arc/include/asm/dsp.h b/arch/arc/include/asm/dsp.h
-index 202c78e56704..f496dbc4640b 100644
---- a/arch/arc/include/asm/dsp.h
-+++ b/arch/arc/include/asm/dsp.h
-@@ -12,7 +12,7 @@
- /*
-  * DSP-related saved registers - need to be saved only when you are
-  * scheduled out.
-- * structure fields name must correspond to aux register defenitions for
-+ * structure fields name must correspond to aux register definitions for
-  * automatic offset calculation in DSP_AUX_SAVE_RESTORE macros
+ 	status = acpi_get_table(ACPI_SIG_FADT, 0, &table);
+ 	if (ACPI_FAILURE(status)) {
+diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
+index 646591c67e7a..3089526900a8 100644
+--- a/arch/arm64/kernel/cpufeature.c
++++ b/arch/arm64/kernel/cpufeature.c
+@@ -748,7 +748,7 @@ static int search_cmp_ftr_reg(const void *id, const void *regp)
+  * entry.
+  *
+  * returns - Upon success,  matching ftr_reg entry for id.
+- *         - NULL on failure. It is upto the caller to decide
++ *         - NULL on failure. It is up to the caller to decide
+  *	     the impact of a failure.
   */
- struct dsp_callee_regs {
-diff --git a/arch/arc/include/asm/entry-compact.h b/arch/arc/include/asm/entry-compact.h
-index a0e760eb35a8..4b8502df31d9 100644
---- a/arch/arc/include/asm/entry-compact.h
-+++ b/arch/arc/include/asm/entry-compact.h
-@@ -7,7 +7,7 @@
-  *  Stack switching code can no longer reliably rely on the fact that
-  *  if we are NOT in user mode, stack is switched to kernel mode.
-  *  e.g. L2 IRQ interrupted a L1 ISR which had not yet completed
-- *  it's prologue including stack switching from user mode
-+ *  its prologue including stack switching from user mode
-  *
-  * Vineetg: Aug 28th 2008: Bug #94984
-  *  -Zero Overhead Loop Context shd be cleared when entering IRQ/EXcp/Trap
-@@ -58,7 +58,7 @@
- 	 * 2. L1 IRQ taken, ISR starts (CPU auto-switched to KERNEL mode)
- 	 * 3. But before it could switch SP from USER to KERNEL stack
- 	 *      a L2 IRQ "Interrupts" L1
--	 * Thay way although L2 IRQ happened in Kernel mode, stack is still
-+	 * That way although L2 IRQ happened in Kernel mode, stack is still
- 	 * not switched.
- 	 * To handle this, we may need to switch stack even if in kernel mode
- 	 * provided SP has values in range of USER mode stack ( < 0x7000_0000 )
-@@ -88,7 +88,7 @@
- 
- 	GET_CURR_TASK_ON_CPU   r9
- 
--	/* With current tsk in r9, get it's kernel mode stack base */
-+	/* With current tsk in r9, get its kernel mode stack base */
- 	GET_TSK_STACK_BASE  r9, r9
- 
- 	/* save U mode SP @ pt_regs->sp */
-@@ -197,7 +197,7 @@
-  * NOTE:
-  *
-  * It is recommended that lp_count/ilink1/ilink2 not be used as a dest reg
-- * for memory load operations. If used in that way interrupts are deffered
-+ * for memory load operations. If used in that way interrupts are deferred
-  * by hardware and that is not good.
-  *-------------------------------------------------------------*/
- .macro EXCEPTION_EPILOGUE
-@@ -265,7 +265,7 @@
-  * NOTE:
-  *
-  * It is recommended that lp_count/ilink1/ilink2 not be used as a dest reg
-- * for memory load operations. If used in that way interrupts are deffered
-+ * for memory load operations. If used in that way interrupts are deferred
-  * by hardware and that is not good.
-  *-------------------------------------------------------------*/
- .macro INTERRUPT_EPILOGUE  LVL
-diff --git a/arch/arc/include/asm/entry.h b/arch/arc/include/asm/entry.h
-index 49c2e090cb5c..4bcb64dbcc8f 100644
---- a/arch/arc/include/asm/entry.h
-+++ b/arch/arc/include/asm/entry.h
-@@ -7,7 +7,7 @@
- #ifndef __ASM_ARC_ENTRY_H
- #define __ASM_ARC_ENTRY_H
- 
--#include <asm/unistd.h>		/* For NR_syscalls defination */
-+#include <asm/unistd.h>		/* For NR_syscalls definition */
- #include <asm/arcregs.h>
- #include <asm/ptrace.h>
- #include <asm/processor.h>	/* For VMALLOC_START */
-@@ -158,7 +158,7 @@
- .endm
- 
- /*-------------------------------------------------------------
-- * given a tsk struct, get to the base of it's kernel mode stack
-+ * given a tsk struct, get to the base of its kernel mode stack
-  * tsk->thread_info is really a PAGE, whose bottom hoists stack
-  * which grows upwards towards thread_info
-  *------------------------------------------------------------*/
-diff --git a/arch/arc/include/asm/irq.h b/arch/arc/include/asm/irq.h
-index c574712ad865..9cd79263acba 100644
---- a/arch/arc/include/asm/irq.h
-+++ b/arch/arc/include/asm/irq.h
-@@ -10,7 +10,7 @@
-  * ARCv2 can support 240 interrupts in the core interrupts controllers and
-  * 128 interrupts in IDU. Thus 512 virtual IRQs must be enough for most
-  * configurations of boards.
-- * This doesnt affect ARCompact, but we change it to same value
-+ * This doesn't affect ARCompact, but we change it to same value
-  */
- #define NR_IRQS		512
- 
-diff --git a/arch/arc/include/asm/irqflags-compact.h b/arch/arc/include/asm/irqflags-compact.h
-index 0d63e568d64c..936a2f21f315 100644
---- a/arch/arc/include/asm/irqflags-compact.h
-+++ b/arch/arc/include/asm/irqflags-compact.h
-@@ -46,7 +46,7 @@
-  * IRQ Control Macros
-  *
-  * All of them have "memory" clobber (compiler barrier) which is needed to
-- * ensure that LD/ST requiring irq safetly (R-M-W when LLSC is not available)
-+ * ensure that LD/ST requiring irq safety (R-M-W when LLSC is not available)
-  * are redone after IRQs are re-enabled (and gcc doesn't reuse stale register)
-  *
-  * Noted at the time of Abilis Timer List corruption
-diff --git a/arch/arc/include/asm/mmu_context.h b/arch/arc/include/asm/mmu_context.h
-index dda471f5f05b..9963bb1a5733 100644
---- a/arch/arc/include/asm/mmu_context.h
-+++ b/arch/arc/include/asm/mmu_context.h
-@@ -165,7 +165,7 @@ static inline void switch_mm(struct mm_struct *prev, struct mm_struct *next,
-  * for retiring-mm. However destroy_context( ) still needs to do that because
-  * between mm_release( ) = >deactive_mm( ) and
-  * mmput => .. => __mmdrop( ) => destroy_context( )
-- * there is a good chance that task gets sched-out/in, making it's ASID valid
-+ * there is a good chance that task gets sched-out/in, making its ASID valid
-  * again (this teased me for a whole day).
-  */
- 
-diff --git a/arch/arc/include/asm/pgtable-bits-arcv2.h b/arch/arc/include/asm/pgtable-bits-arcv2.h
-index f3eea3f30b2e..f8f85c04d7a8 100644
---- a/arch/arc/include/asm/pgtable-bits-arcv2.h
-+++ b/arch/arc/include/asm/pgtable-bits-arcv2.h
-@@ -66,7 +66,7 @@
-  * Other rules which cause the divergence from 1:1 mapping
-  *
-  *  1. Although ARC700 can do exclusive execute/write protection (meaning R
-- *     can be tracked independet of X/W unlike some other CPUs), still to
-+ *     can be tracked independent of X/W unlike some other CPUs), still to
-  *     keep things consistent with other archs:
-  *      -Write implies Read:   W => R
-  *      -Execute implies Read: X => R
-diff --git a/arch/arc/include/asm/shmparam.h b/arch/arc/include/asm/shmparam.h
-index 8b0251464ffd..719112af0f41 100644
---- a/arch/arc/include/asm/shmparam.h
-+++ b/arch/arc/include/asm/shmparam.h
-@@ -6,7 +6,7 @@
- #ifndef __ARC_ASM_SHMPARAM_H
- #define __ARC_ASM_SHMPARAM_H
- 
--/* Handle upto 2 cache bins */
-+/* Handle up to 2 cache bins */
- #define	SHMLBA	(2 * PAGE_SIZE)
- 
- /* Enforce SHMLBA in shmat */
-diff --git a/arch/arc/include/asm/smp.h b/arch/arc/include/asm/smp.h
-index e0913f52c2cd..990f834909f0 100644
---- a/arch/arc/include/asm/smp.h
-+++ b/arch/arc/include/asm/smp.h
-@@ -77,7 +77,7 @@ static inline const char *arc_platform_smp_cpuinfo(void)
+ static struct arm64_ftr_reg *get_arm64_ftr_reg_nowarn(u32 sys_id)
+@@ -874,7 +874,7 @@ static void __init sort_ftr_regs(void)
  
  /*
-  * ARC700 doesn't support atomic Read-Modify-Write ops.
-- * Originally Interrupts had to be disabled around code to gaurantee atomicity.
-+ * Originally Interrupts had to be disabled around code to guarantee atomicity.
-  * The LLOCK/SCOND insns allow writing interrupt-hassle-free based atomic ops
-  * based on retry-if-irq-in-atomic (with hardware assist).
-  * However despite these, we provide the IRQ disabling variant
-@@ -86,7 +86,7 @@ static inline const char *arc_platform_smp_cpuinfo(void)
-  *	support needed.
-  *
-  * (2) In a SMP setup, the LLOCK/SCOND atomicity across CPUs needs to be
-- *	gaurantted by the platform (not something which core handles).
-+ *	guaranteed by the platform (not something which core handles).
-  *	Assuming a platform won't, SMP Linux needs to use spinlocks + local IRQ
-  *	disabling for atomicity.
-  *
-diff --git a/arch/arc/include/asm/thread_info.h b/arch/arc/include/asm/thread_info.h
-index 4c530cf131f3..12daaf3a61ea 100644
---- a/arch/arc/include/asm/thread_info.h
-+++ b/arch/arc/include/asm/thread_info.h
-@@ -38,7 +38,7 @@
- struct thread_info {
- 	unsigned long flags;		/* low level flags */
- 	unsigned long ksp;		/* kernel mode stack top in __switch_to */
--	int preempt_count;		/* 0 => preemptable, <0 => BUG */
-+	int preempt_count;		/* 0 => preemptible, <0 => BUG */
- 	int cpu;			/* current CPU */
- 	unsigned long thr_ptr;		/* TLS ptr */
- 	struct task_struct *task;	/* main task structure */
-diff --git a/arch/arc/include/uapi/asm/swab.h b/arch/arc/include/uapi/asm/swab.h
-index 02109cd48ee1..8d1f1ef44ba7 100644
---- a/arch/arc/include/uapi/asm/swab.h
-+++ b/arch/arc/include/uapi/asm/swab.h
-@@ -62,7 +62,7 @@
-  * 8051fdc4:	st     r2,[r1,20]	; Mem op : save result back to mem
-  *
-  * Joern suggested a better "C" algorithm which is great since
-- * (1) It is portable to any architecure
-+ * (1) It is portable to any architecture
-  * (2) At the same time it takes advantage of ARC ISA (rotate intrns)
+  * Initialise the CPU feature register from Boot CPU values.
+- * Also initiliases the strict_mask for the register.
++ * Also initialises the strict_mask for the register.
+  * Any bits that are not covered by an arm64_ftr_bits entry are considered
+  * RES0 for the system-wide value, and must strictly match.
   */
+@@ -3108,7 +3108,7 @@ static void verify_local_cpu_caps(u16 scope_mask)
+ 			/*
+ 			 * We have to issue cpu_enable() irrespective of
+ 			 * whether the CPU has it or not, as it is enabeld
+-			 * system wide. It is upto the call back to take
++			 * system wide. It is up to the call back to take
+ 			 * appropriate action on this CPU.
+ 			 */
+ 			if (caps->cpu_enable)
+diff --git a/arch/arm64/kernel/entry-common.c b/arch/arm64/kernel/entry-common.c
+index 0fc94207e69a..80b5268578a8 100644
+--- a/arch/arm64/kernel/entry-common.c
++++ b/arch/arm64/kernel/entry-common.c
+@@ -660,7 +660,7 @@ static void noinstr el0_inv(struct pt_regs *regs, unsigned long esr)
  
-diff --git a/arch/arc/kernel/entry-arcv2.S b/arch/arc/kernel/entry-arcv2.S
-index 2e49c81c8086..e238b5fd3c8c 100644
---- a/arch/arc/kernel/entry-arcv2.S
-+++ b/arch/arc/kernel/entry-arcv2.S
-@@ -5,7 +5,7 @@
-  * Copyright (C) 2013 Synopsys, Inc. (www.synopsys.com)
-  */
- 
--#include <linux/linkage.h>   /* ARC_{EXTRY,EXIT} */
-+#include <linux/linkage.h>   /* ARC_{ENTRY,EXIT} */
- #include <asm/entry.h>       /* SAVE_ALL_{INT1,INT2,TRAP...} */
- #include <asm/errno.h>
- #include <asm/arcregs.h>
-@@ -31,7 +31,7 @@ VECTOR	res_service		; Reset Vector
- VECTOR	mem_service		; Mem exception
- VECTOR	instr_service		; Instrn Error
- VECTOR	EV_MachineCheck		; Fatal Machine check
--VECTOR	EV_TLBMissI		; Intruction TLB miss
-+VECTOR	EV_TLBMissI		; Instruction TLB miss
- VECTOR	EV_TLBMissD		; Data TLB miss
- VECTOR	EV_TLBProtV		; Protection Violation
- VECTOR	EV_PrivilegeV		; Privilege Violation
-@@ -76,11 +76,11 @@ ENTRY(handle_interrupt)
- 	# query in hard ISR path would return false (since .IE is set) which would
- 	# trips genirq interrupt handling asserts.
- 	#
--	# So do a "soft" disable of interrutps here.
-+	# So do a "soft" disable of interrupts here.
- 	#
- 	# Note this disable is only for consistent book-keeping as further interrupts
- 	# will be disabled anyways even w/o this. Hardware tracks active interrupts
--	# seperately in AUX_IRQ_ACT.active and will not take new interrupts
-+	# separately in AUX_IRQ_ACT.active and will not take new interrupts
- 	# unless this one returns (or higher prio becomes pending in 2-prio scheme)
- 
- 	IRQ_DISABLE
-diff --git a/arch/arc/kernel/entry.S b/arch/arc/kernel/entry.S
-index 089f6680518f..3c7e74aba679 100644
---- a/arch/arc/kernel/entry.S
-+++ b/arch/arc/kernel/entry.S
-@@ -95,7 +95,7 @@ ENTRY(EV_MachineCheck)
- 	lr  r0, [efa]
- 	mov r1, sp
- 
--	; MC excpetions disable MMU
-+	; MC exceptions disable MMU
- 	ARC_MMU_REENABLE r3
- 
- 	lsr  	r3, r10, 8
-@@ -209,7 +209,7 @@ trap_with_param:
- 
- ; ---------------------------------------------
- ; syscall TRAP
--; ABI: (r0-r7) upto 8 args, (r8) syscall number
-+; ABI: (r0-r7) up to 8 args, (r8) syscall number
- ; ---------------------------------------------
- 
- ENTRY(EV_Trap)
-diff --git a/arch/arc/kernel/head.S b/arch/arc/kernel/head.S
-index 9152782444b5..8d541f53fae3 100644
---- a/arch/arc/kernel/head.S
-+++ b/arch/arc/kernel/head.S
-@@ -165,7 +165,7 @@ ENTRY(first_lines_of_secondary)
- 	; setup stack (fp, sp)
- 	mov	fp, 0
- 
--	; set it's stack base to tsk->thread_info bottom
-+	; set its stack base to tsk->thread_info bottom
- 	GET_TSK_STACK_BASE r0, sp
- 
- 	j	start_kernel_secondary
-diff --git a/arch/arc/kernel/intc-arcv2.c b/arch/arc/kernel/intc-arcv2.c
-index 678898757e47..f324f0e3341a 100644
---- a/arch/arc/kernel/intc-arcv2.c
-+++ b/arch/arc/kernel/intc-arcv2.c
-@@ -56,7 +56,7 @@ void arc_init_IRQ(void)
- 	WRITE_AUX(AUX_IRQ_CTRL, ictrl);
- 
- 	/*
--	 * ARCv2 core intc provides multiple interrupt priorities (upto 16).
-+	 * ARCv2 core intc provides multiple interrupt priorities (up to 16).
- 	 * Typical builds though have only two levels (0-high, 1-low)
- 	 * Linux by default uses lower prio 1 for most irqs, reserving 0 for
- 	 * NMI style interrupts in future (say perf)
-diff --git a/arch/arc/kernel/perf_event.c b/arch/arc/kernel/perf_event.c
-index adff957962da..6e5a651cd75c 100644
---- a/arch/arc/kernel/perf_event.c
-+++ b/arch/arc/kernel/perf_event.c
-@@ -38,7 +38,7 @@
-  * (based on a specific RTL build)
-  * Below is the static map between perf generic/arc specific event_id and
-  * h/w condition names.
-- * At the time of probe, we loop thru each index and find it's name to
-+ * At the time of probe, we loop thru each index and find its name to
-  * complete the mapping of perf event_id to h/w index as latter is needed
-  * to program the counter really
-  */
-diff --git a/arch/arc/kernel/setup.c b/arch/arc/kernel/setup.c
-index 4dcf8589b708..cbe0b678811e 100644
---- a/arch/arc/kernel/setup.c
-+++ b/arch/arc/kernel/setup.c
-@@ -392,7 +392,7 @@ static void arc_chk_core_config(struct cpuinfo_arc *info)
- #ifdef CONFIG_ARC_HAS_DCCM
- 	/*
- 	 * DCCM can be arbit placed in hardware.
--	 * Make sure it's placement/sz matches what Linux is built with
-+	 * Make sure its placement/sz matches what Linux is built with
- 	 */
- 	if ((unsigned int)__arc_dccm_base != info->dccm.base)
- 		panic("Linux built with incorrect DCCM Base address\n");
-diff --git a/arch/arc/kernel/signal.c b/arch/arc/kernel/signal.c
-index 0b3bb529d246..5414d9f5c40c 100644
---- a/arch/arc/kernel/signal.c
-+++ b/arch/arc/kernel/signal.c
-@@ -9,7 +9,7 @@
-  * vineetg: Nov 2009 (Everything needed for TIF_RESTORE_SIGMASK)
-  *  -do_signal() supports TIF_RESTORE_SIGMASK
-  *  -do_signal() no loner needs oldset, required by OLD sys_sigsuspend
-- *  -sys_rt_sigsuspend() now comes from generic code, so discard arch implemen
-+ *  -sys_rt_sigsuspend() now comes from generic code, so discard arch implement
-  *  -sys_sigsuspend() no longer needs to fudge ptregs, hence that arg removed
-  *  -sys_sigsuspend() no longer loops for do_signal(), sets TIF_xxx and leaves
-  *   the job to do_signal()
-diff --git a/arch/arc/kernel/traps.c b/arch/arc/kernel/traps.c
-index 9b9570b79362..a19751e824fb 100644
---- a/arch/arc/kernel/traps.c
-+++ b/arch/arc/kernel/traps.c
-@@ -89,7 +89,7 @@ int do_misaligned_access(unsigned long address, struct pt_regs *regs,
- 
- /*
-  * Entry point for miscll errors such as Nested Exceptions
-- *  -Duplicate TLB entry is handled seperately though
-+ *  -Duplicate TLB entry is handled separately though
-  */
- void do_machine_check_fault(unsigned long address, struct pt_regs *regs)
+ static void noinstr el0_dbg(struct pt_regs *regs, unsigned long esr)
  {
-diff --git a/arch/arc/kernel/vmlinux.lds.S b/arch/arc/kernel/vmlinux.lds.S
-index 549c3f407918..61a1b2b96e1d 100644
---- a/arch/arc/kernel/vmlinux.lds.S
-+++ b/arch/arc/kernel/vmlinux.lds.S
-@@ -41,8 +41,8 @@ SECTIONS
- #endif
+-	/* Only watchpoints write FAR_EL1, otherwise its UNKNOWN */
++	/* Only watchpoints write FAR_EL1, otherwise it's UNKNOWN */
+ 	unsigned long far = read_sysreg(far_el1);
+ 
+ 	enter_from_user_mode(regs);
+diff --git a/arch/arm64/kernel/entry-ftrace.S b/arch/arm64/kernel/entry-ftrace.S
+index f0c16640ef21..e24e7d8f8b61 100644
+--- a/arch/arm64/kernel/entry-ftrace.S
++++ b/arch/arm64/kernel/entry-ftrace.S
+@@ -94,7 +94,7 @@ SYM_CODE_START(ftrace_caller)
+ 	stp	x29, x30, [sp, #FREGS_SIZE]
+ 	add	x29, sp, #FREGS_SIZE
+ 
+-	/* Prepare arguments for the the tracer func */
++	/* Prepare arguments for the tracer func */
+ 	sub	x0, x30, #AARCH64_INSN_SIZE		// ip (callsite's BL insn)
+ 	mov	x1, x9					// parent_ip (callsite's LR)
+ 	mov	x3, sp					// regs
+diff --git a/arch/arm64/kernel/entry.S b/arch/arm64/kernel/entry.S
+index a6030913cd58..00bdd1fa8151 100644
+--- a/arch/arm64/kernel/entry.S
++++ b/arch/arm64/kernel/entry.S
+@@ -547,7 +547,7 @@ SYM_CODE_START_LOCAL(__bad_stack)
+ 	mrs	x0, tpidrro_el0
  
  	/*
--	 * The reason for having a seperate subsection .init.ramfs is to
--	 * prevent objump from including it in kernel dumps
-+	 * The reason for having a separate subsection .init.ramfs is to
-+	 * prevent objdump from including it in kernel dumps
- 	 *
- 	 * Reason for having .init.ramfs above .init is to make sure that the
- 	 * binary blob is tucked away to one side, reducing the displacement
-diff --git a/arch/arc/mm/tlbex.S b/arch/arc/mm/tlbex.S
-index e054780a8fe0..dc65e87a531f 100644
---- a/arch/arc/mm/tlbex.S
-+++ b/arch/arc/mm/tlbex.S
-@@ -5,19 +5,19 @@
-  * Copyright (C) 2004, 2007-2010, 2011-2012 Synopsys, Inc. (www.synopsys.com)
+-	 * Store the original GPRs to the new stack. The orginal SP (minus
++	 * Store the original GPRs to the new stack. The original SP (minus
+ 	 * PT_REGS_SIZE) was stashed in tpidr_el0 by kernel_ventry.
+ 	 */
+ 	sub	sp, sp, #PT_REGS_SIZE
+diff --git a/arch/arm64/kernel/ftrace.c b/arch/arm64/kernel/ftrace.c
+index a650f5e11fc5..6e00b39059ff 100644
+--- a/arch/arm64/kernel/ftrace.c
++++ b/arch/arm64/kernel/ftrace.c
+@@ -423,7 +423,7 @@ int ftrace_make_nop(struct module *mod, struct dyn_ftrace *rec,
+ 		return ret;
+ 
+ 	/*
+-	 * When using mcount, callsites in modules may have been initalized to
++	 * When using mcount, callsites in modules may have been initialized to
+ 	 * call an arbitrary module PLT (which redirects to the _mcount stub)
+ 	 * rather than the ftrace PLT we'll use at runtime (which redirects to
+ 	 * the ftrace trampoline). We can ignore the old PLT when initializing
+diff --git a/arch/arm64/kernel/machine_kexec.c b/arch/arm64/kernel/machine_kexec.c
+index 078910db77a4..36721a7e7855 100644
+--- a/arch/arm64/kernel/machine_kexec.c
++++ b/arch/arm64/kernel/machine_kexec.c
+@@ -296,7 +296,7 @@ void crash_post_resume(void)
+  * marked as Reserved as memory was allocated via memblock_reserve().
   *
-  * Vineetg: April 2011 :
-- *  -MMU v1: moved out legacy code into a seperate file
-+ *  -MMU v1: moved out legacy code into a separate file
-  *  -MMU v3: PD{0,1} bits layout changed: They don't overlap anymore,
-  *      helps avoid a shift when preparing PD0 from PTE
-  *
-  * Vineetg: July 2009
-- *  -For MMU V2, we need not do heuristics at the time of commiting a D-TLB
-- *   entry, so that it doesn't knock out it's I-TLB entry
-+ *  -For MMU V2, we need not do heuristics at the time of committing a D-TLB
-+ *   entry, so that it doesn't knock out its I-TLB entry
-  *  -Some more fine tuning:
-  *   bmsk instead of add, asl.cc instead of branch, delay slot utilise etc
-  *
-  * Vineetg: July 2009
-  *  -Practically rewrote the I/D TLB Miss handlers
-- *   Now 40 and 135 instructions a peice as compared to 131 and 449 resp.
-+ *   Now 40 and 135 instructions apiece as compared to 131 and 449 resp.
-  *   Hence Leaner by 1.5 K
-  *   Used Conditional arithmetic to replace excessive branching
-  *   Also used short instructions wherever possible
+  * In hibernation, the pages which are Reserved and yet "nosave" are excluded
+- * from the hibernation iamge. crash_is_nosave() does thich check for crash
++ * from the hibernation image. crash_is_nosave() does this check for crash
+  * dump kernel and will reduce the total size of hibernation image.
+  */
+ 
+diff --git a/arch/arm64/kernel/probes/uprobes.c b/arch/arm64/kernel/probes/uprobes.c
+index d49aef2657cd..5016f7f681c0 100644
+--- a/arch/arm64/kernel/probes/uprobes.c
++++ b/arch/arm64/kernel/probes/uprobes.c
+@@ -122,7 +122,7 @@ void arch_uprobe_abort_xol(struct arch_uprobe *auprobe, struct pt_regs *regs)
+ 	struct uprobe_task *utask = current->utask;
+ 
+ 	/*
+-	 * Task has received a fatal signal, so reset back to probbed
++	 * Task has received a fatal signal, so reset back to probed
+ 	 * address.
+ 	 */
+ 	instruction_pointer_set(regs, utask->vaddr);
+diff --git a/arch/arm64/kernel/sdei.c b/arch/arm64/kernel/sdei.c
+index 255d12f881c2..931f317a9ffa 100644
+--- a/arch/arm64/kernel/sdei.c
++++ b/arch/arm64/kernel/sdei.c
+@@ -206,7 +206,7 @@ unsigned long sdei_arch_get_entry_point(int conduit)
+ /*
+  * do_sdei_event() returns one of:
+  *  SDEI_EV_HANDLED -  success, return to the interrupted context.
+- *  SDEI_EV_FAILED  -  failure, return this error code to firmare.
++ *  SDEI_EV_FAILED  -  failure, return this error code to firmware.
+  *  virtual-address -  success, return to this address.
+  */
+ unsigned long __kprobes do_sdei_event(struct pt_regs *regs,
+diff --git a/arch/arm64/kernel/smp.c b/arch/arm64/kernel/smp.c
+index defbab84e9e5..8b8e1320033b 100644
+--- a/arch/arm64/kernel/smp.c
++++ b/arch/arm64/kernel/smp.c
+@@ -351,7 +351,7 @@ void arch_cpuhp_cleanup_dead_cpu(unsigned int cpu)
+ 
+ 	/*
+ 	 * Now that the dying CPU is beyond the point of no return w.r.t.
+-	 * in-kernel synchronisation, try to get the firwmare to help us to
++	 * in-kernel synchronisation, try to get the firmware to help us to
+ 	 * verify that it has really left the kernel before we consider
+ 	 * clobbering anything it might still be using.
+ 	 */
+diff --git a/arch/arm64/kernel/traps.c b/arch/arm64/kernel/traps.c
+index 215e6d7f2df8..e76c71c54c8c 100644
+--- a/arch/arm64/kernel/traps.c
++++ b/arch/arm64/kernel/traps.c
+@@ -897,7 +897,7 @@ void __noreturn panic_bad_stack(struct pt_regs *regs, unsigned long esr, unsigne
+ 	__show_regs(regs);
+ 
+ 	/*
+-	 * We use nmi_panic to limit the potential for recusive overflows, and
++	 * We use nmi_panic to limit the potential for recursive overflows, and
+ 	 * to get a better stack trace.
+ 	 */
+ 	nmi_panic(NULL, "kernel stack overflow");
 -- 
 2.34.1
 
