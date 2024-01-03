@@ -1,180 +1,146 @@
-Return-Path: <linux-kernel+bounces-15043-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15042-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A472282269A
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 02:41:34 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 61D7A822698
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 02:41:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4DB9E2840F9
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 01:41:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 166C11F22EAC
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 01:41:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58894469F;
-	Wed,  3 Jan 2024 01:41:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=icenowy.me header.i=uwu@icenowy.me header.b="RU2g7DHz"
-X-Original-To: linux-kernel@vger.kernel.org
-Received: from sender4-op-o10.zoho.com (sender4-op-o10.zoho.com [136.143.188.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DE3F139E;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C79F41390;
 	Wed,  3 Jan 2024 01:41:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=icenowy.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=icenowy.me
-ARC-Seal: i=1; a=rsa-sha256; t=1704246050; cv=none; 
-	d=zohomail.com; s=zohoarc; 
-	b=HSg+e+Nw84UJKsztMiRO82NEuT6N2ItlXPkE9p0puFZ50zVdAiTgyjvS6IVskgROQRKGcxyylr3Da8TIUYlYO2+Btj88BYZxuHyrnHo1IOye/yKKvVjRQw6x1w/hKW+kn/tiCpv2wdkbKvxVfzo8aKoqyO5XvOs1YtndkptqAZA=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
-	t=1704246050; h=Content-Type:Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:Subject:To:To:Message-Id:Reply-To; 
-	bh=Gj6YxQ75iiB/BEXS7c2m5L18+BjacyE9oLwb6HHBAEI=; 
-	b=btTks4pX6r4DE8Xl0Cx92ggtDd53/jqGz6TKG25sJBkCvHHNOmTqX/k9A/K2GWGJ3AkgSJtys87K0sC5j/aPmGwIt3aQoLS7EOJ3aYRGj1ECatdDocOKX/QHhHk6C6i19j3WlgP7y2A2x9fMO6gsJUuGx2eSn29FbbDHKuSZD5Q=
-ARC-Authentication-Results: i=1; mx.zohomail.com;
-	dkim=pass  header.i=icenowy.me;
-	spf=pass  smtp.mailfrom=uwu@icenowy.me;
-	dmarc=pass header.from=<uwu@icenowy.me>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1704246050;
-	s=zmail2; d=icenowy.me; i=uwu@icenowy.me;
-	h=Message-ID:Subject:Subject:From:From:To:To:Cc:Cc:Date:Date:In-Reply-To:References:Content-Type:Content-Transfer-Encoding:MIME-Version:Message-Id:Reply-To;
-	bh=Gj6YxQ75iiB/BEXS7c2m5L18+BjacyE9oLwb6HHBAEI=;
-	b=RU2g7DHzRw6IcVzBKnwmxU/a9lh/sP6u8hidJcxGPGi69i5RKhQR2gifEoV9uUO5
-	1t9gginnxFRl64V/DlrWX3XHI6oC7s5AF5xVc0XXr/6TRS7zaXeaqgUy6z+6nsWoE0+
-	fO6qLuwTXvXnp1a5a8PVSPJ/BaSJxrEQiFAuqUl5iMX5bmh6dB4MUgn10iO5VJTcpo5
-	dNhMtcT3uksd+p4fCDiA56cFOOvHQXjkrn/U3IhCom003IEA9aPFHni5HIJijtENqC+
-	CAYr05KKgrdTiQBsnUFsdl62P3NEh3VXu69As58dWZRnUCL2vWzAVqRl7kEMQHA4Www
-	QKGUfAGifA==
-Received: from edelgard.fodlan.icenowy.me (120.85.97.100 [120.85.97.100]) by mx.zohomail.com
-	with SMTPS id 1704246049145819.0302806532882; Tue, 2 Jan 2024 17:40:49 -0800 (PST)
-Message-ID: <fff240d6ef9ac1f4c67f9c1a7eaebc3b90af53b4.camel@icenowy.me>
-Subject: Re: [PATCH RESEND] arm64: dts: allwinner: a64: Add thermal trip
- points for GPU
-From: Icenowy Zheng <uwu@icenowy.me>
-To: Alexey Klimov <alexey.klimov@linaro.org>, anarsoul@gmail.com, 
-	tiny.windzz@gmail.com, linux-sunxi@lists.linux.dev
-Cc: rafael@kernel.org, devicetree@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	wens@csie.org, jernej.skrabec@gmail.com, samuel@sholland.org, 
-	daniel.lezcano@linaro.org, peter.griffin@linaro.org, klimov.linux@gmail.com
-Date: Wed, 03 Jan 2024 09:40:43 +0800
-In-Reply-To: <20240101000008.65747-1-alexey.klimov@linaro.org>
-References: <20240101000008.65747-1-alexey.klimov@linaro.org>
-Organization: Anthon Open-Source Community
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-User-Agent: Evolution 3.44.4 
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XG5wXB+K"
+X-Original-To: linux-kernel@vger.kernel.org
+Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABD1810FE;
+	Wed,  3 Jan 2024 01:41:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-28ce9a0e544so146013a91.3;
+        Tue, 02 Jan 2024 17:41:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704246066; x=1704850866; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Fsry+veA0BH9pQQgtym3vQ1xpw5YN/FTLuIDJlPaT/M=;
+        b=XG5wXB+KD7PJ+JeTu94f18/1QjLLpjdTcNTJWT6qwNYEr6svx+gaU4s743w/TDxPk9
+         LnlOumWItDWuPwwpIIC3CqGpJflk+KxThuzS3Dd5kPN8X9l+8rxa/mW0XEyYIO9YNJXn
+         r6zSrbeqVZnFBq57ySuzxAqXNHG/gXDOsg4L1iEbgoJdK1EyED9V5FSgbPOC1EXnCXmx
+         ySQYjKR4xq2BbNJK/RG+B62BLnZSKlhkrzEtg5aLh0l841RZsfPL30xHl094OMVuxJLQ
+         vfbNcUJIQJVMbx2x+LaGhdTNiB+nPRRgOXlOiiyqsyuPMHDen5NGveRz5tQusoN71er5
+         rz5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704246066; x=1704850866;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Fsry+veA0BH9pQQgtym3vQ1xpw5YN/FTLuIDJlPaT/M=;
+        b=HS7ssEB18JQZ6Q1g859aJOSDnv5VnzMPl/NUEYs7kQ+bGVOnmCoWGpCWffprdA5HOG
+         lBoaDauI5j7CrqFeqLUD5u7xtqrxNUdyQCkc/q69/hvF+Uj41Fuls7bHjRmyiwPgWCKv
+         vt/kcGVtleHwDp4IFIenVxutnZ3UHND2xKDEm1P/HYDJOQqJEd8JhIe328OWdmM3NGMG
+         lR6+XWjcICS9OfqeoVFRPy6vk+Cgwq2lRPeeQlV2PoUETjeIf4dqrrcodBfcKCV+S1C6
+         t2sWbvvx9xvkHa5RlHSLQiaf7xSeBCe7mXXPlBXVAEHvqbP41ic70+KX3Ug8bvQARG1v
+         WONw==
+X-Gm-Message-State: AOJu0YwjlFyYO81gLhYDBVaTGSPuS73d5Q+VUj/Zjb464VKlarJOTu+G
+	4697likbWfAejgDvPpCBLPJsN7kej5Nake1JJNRGfLXYXcx+mw==
+X-Google-Smtp-Source: AGHT+IEFA1WPqXBDf6TZ9sAPvWMZnLP1mKpQSnenwwwlgbRJFCw1RJsRUvloVhcxfRR496mPMA+HdaNkqeQLbJbJQe8=
+X-Received: by 2002:a17:90a:7186:b0:28c:d9b:5983 with SMTP id
+ i6-20020a17090a718600b0028c0d9b5983mr8760421pjk.48.1704246065933; Tue, 02 Jan
+ 2024 17:41:05 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-ZohoMailClient: External
+References: <20231204064934.21236-1-wenchao.chen@unisoc.com>
+ <CAPDyKFpK2Yjj2oDWCUKHpht6PC9uNG-x2rPYO3EBD6GGWg4VZg@mail.gmail.com>
+ <CA+Da2qyB2tQjq5wxoqNwjb5HXhdPHMsWN08Ot7nMEkZzOgQ9LA@mail.gmail.com> <7541f17a-f0a7-486b-9664-3573623d7154@linux.alibaba.com>
+In-Reply-To: <7541f17a-f0a7-486b-9664-3573623d7154@linux.alibaba.com>
+From: Wenchao Chen <wenchao.chen666@gmail.com>
+Date: Wed, 3 Jan 2024 09:40:54 +0800
+Message-ID: <CA+Da2qy7Rwkx-SXORi8DB5ptaTm1TuME+CgsCDk2Bs-rJo6gsg@mail.gmail.com>
+Subject: Re: [PATCH] mmc: sprd: Fix eMMC init failure after hw reset
+To: Baolin Wang <baolin.wang@linux.alibaba.com>
+Cc: Ulf Hansson <ulf.hansson@linaro.org>, Wenchao Chen <wenchao.chen@unisoc.com>, 
+	zhang.lyra@gmail.com, orsonzhai@gmail.com, linux-mmc@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, zhenxiong.lai@unisoc.com, 
+	yuelin.tang@unisoc.com
+Content-Type: text/plain; charset="UTF-8"
 
-5ZyoIDIwMjQtMDEtMDHmmJ/mnJ/kuIDnmoQgMDA6MDAgKzAwMDDvvIxBbGV4ZXkgS2xpbW925YaZ
-6YGT77yaCj4gV2l0aG91dCB0cmlwIHBvaW50cyBmb3IgR1BVLCB0aGUgZm9sbG93aW5nIGVycm9y
-cyBhcmUgcHJpbnRlZCBpbiB0aGUKPiBkbWVzZyBsb2cgYW5kIHRoZSBzdW44aS10aGVybWFsIGRy
-aXZlciBmYWlscyB0byBsb2FkOgo+IAo+IHRoZXJtYWxfc3lzOiBGYWlsZWQgdG8gZmluZCAndHJp
-cHMnIG5vZGUKPiB0aGVybWFsX3N5czogRmFpbGVkIHRvIGZpbmQgdHJpcCBwb2ludHMgZm9yIHRo
-ZXJtYWwtc2Vuc29yIGlkPTEKPiBzdW44aS10aGVybWFsOiBwcm9iZSBvZiAxYzI1MDAwLnRoZXJt
-YWwtc2Vuc29yIGZhaWxlZCB3aXRoIGVycm9yIC0yMgo+IAo+IFdoZW4gdGhlcm1hbCB6b25lcyBh
-cmUgZGVmaW5lZCwgdHJpcCBwb2ludHMgZGVmaW5pdGlvbnMgYXJlCj4gbWFuZGF0b3J5LgoKSSBz
-dWdnZXN0IGV2ZXJ5b25lIHNlZWluZyB0aGlzIHBhdGNoIGhhdmUgYSBsb29rIG9uIG15IHBhdGNo
-IGF0IFsxXSwKd2hpY2ggbWFrZXMgdHJpcCBwb2ludHMgbm90IHNvIG1hbmRhdG9yeSAtLSBpdCdz
-IGF0IGxlYXN0IG9uY2UgYW4KYWxsb3dlZCBiZWhhdmlvciwgYnV0IGxvc3Qgd2hlbiBjb252ZXJ0
-aW5nIERUIGJpbmRpbmcgdG8gWUFNTC4KClsxXQpodHRwczovL2xpc3RzLmluZnJhZGVhZC5vcmcv
-cGlwZXJtYWlsL2xpbnV4LWFybS1rZXJuZWwvMjAyMy1KdWx5Lzg1MjA4OC5odG1sCgo+IFRyaXAg
-dmFsdWVzIGZvciB0aGUgR1BVIGFyZSBhc3N1bWVkIHRvIGJlIHRoZSBzYW1lIHZhbHVlcyBhcyB0
-aGUgQ1BVCj4gb25lcy4gVGhlIGF2YWlsYWJsZSBzcGVjcyBkbyBub3QgcHJvdmlkZSBhbnkgaGlu
-dHMgYWJvdXQgdGhlcm1hbAo+IHJlZ2ltZXMKPiBmb3IgdGhlIEdQVSBhbmQgaXQgc2VlbXMgR1BV
-IGlzIGltcGxlbWVudGVkIG9uIHRoZSBzYW1lIGRpZSBhcyB0aGUKPiBDUFUuCj4gCj4gVGVzdGVk
-IG9uIFBpbmUgYTY0Ky4KPiAKPiBDYzogU2FtdWVsIEhvbGxhbmQgPHNhbXVlbEBzaG9sbGFuZC5v
-cmc+Cj4gQ2M6IEplcm5laiBTa3JhYmVjIDxqZXJuZWouc2tyYWJlY0BnbWFpbC5jb20+Cj4gQ2M6
-IENoZW4tWXUgVHNhaSA8d2Vuc0Bjc2llLm9yZz4KPiBDYzogRGFuaWVsIExlemNhbm8gPGRhbmll
-bC5sZXpjYW5vQGxpbmFyby5vcmc+Cj4gQ2M6IGRldmljZXRyZWVAdmdlci5rZXJuZWwub3JnCj4g
-U2lnbmVkLW9mZi1ieTogQWxleGV5IEtsaW1vdiA8YWxleGV5LmtsaW1vdkBsaW5hcm8ub3JnPgo+
-IC0tLQo+IMKgYXJjaC9hcm02NC9ib290L2R0cy9hbGx3aW5uZXIvc3VuNTBpLWE2NC5kdHNpIHwg
-NDYKPiArKysrKysrKysrKysrKysrKysrCj4gwqAxIGZpbGUgY2hhbmdlZCwgNDYgaW5zZXJ0aW9u
-cygrKQo+IAo+IGRpZmYgLS1naXQgYS9hcmNoL2FybTY0L2Jvb3QvZHRzL2FsbHdpbm5lci9zdW41
-MGktYTY0LmR0c2kKPiBiL2FyY2gvYXJtNjQvYm9vdC9kdHMvYWxsd2lubmVyL3N1bjUwaS1hNjQu
-ZHRzaQo+IGluZGV4IDYyZjQ1ZjcxZWM2NS4uMDc5NjNlZWExYmYwIDEwMDY0NAo+IC0tLSBhL2Fy
-Y2gvYXJtNjQvYm9vdC9kdHMvYWxsd2lubmVyL3N1bjUwaS1hNjQuZHRzaQo+ICsrKyBiL2FyY2gv
-YXJtNjQvYm9vdC9kdHMvYWxsd2lubmVyL3N1bjUwaS1hNjQuZHRzaQo+IEBAIC0yNDMsNiArMjQz
-LDI5IEBAIGdwdTBfdGhlcm1hbDogZ3B1MC10aGVybWFsIHsKPiDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBwb2xsaW5nLWRlbGF5LXBhc3NpdmUgPSA8MD47
-Cj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgcG9sbGlu
-Zy1kZWxheSA9IDwwPjsKPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqB0aGVybWFsLXNlbnNvcnMgPSA8JnRocyAxPjsKPiArCj4gK8KgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqB0cmlwcyB7Cj4gK8KgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgZ3B1MF9hbGVy
-dDA6IGdwdTBfYWxlcnQwIHsKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgLyogbWlsbGlDZWxzaXVz
-ICovCj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHRlbXBlcmF0dXJlID0gPDc1MDAwPjsKPiArwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgaHlzdGVyZXNpcyA9IDwyMDAwPjsKPiArwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgdHlwZSA9ICJwYXNzaXZlIjsKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqB9Owo+ICsKPiArwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBncHUwX2FsZXJ0
-MTogZ3B1MF9hbGVydDEgewo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAvKiBtaWxsaUNlbHNpdXMg
-Ki8KPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgdGVtcGVyYXR1cmUgPSA8OTAwMDA+Owo+ICvCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqBoeXN0ZXJlc2lzID0gPDIwMDA+Owo+ICvCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqB0eXBlID0gImhvdCI7Cj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgfTsKPiArCj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgZ3B1MF9jcml0OiBncHUw
-X2NyaXQgewo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAvKiBtaWxsaUNlbHNpdXMgKi8KPiArwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgdGVtcGVyYXR1cmUgPSA8MTEwMDAwPjsKPiArwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgaHlzdGVyZXNpcyA9IDwyMDAwPjsKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgdHlw
-ZSA9ICJjcml0aWNhbCI7Cj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgfTsKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoH07Cj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqB9
-Owo+IMKgCj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBncHUxX3RoZXJtYWw6IGdw
-dTEtdGhlcm1hbCB7Cj4gQEAgLTI1MCw2ICsyNzMsMjkgQEAgZ3B1MV90aGVybWFsOiBncHUxLXRo
-ZXJtYWwgewo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oHBvbGxpbmctZGVsYXktcGFzc2l2ZSA9IDwwPjsKPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBwb2xsaW5nLWRlbGF5ID0gPDA+Owo+IMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHRoZXJtYWwtc2Vuc29ycyA9IDwm
-dGhzIDI+Owo+ICsKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoHRyaXBzIHsKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqBncHUxX2FsZXJ0MDogZ3B1MV9hbGVydDAgewo+ICvCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqAvKiBtaWxsaUNlbHNpdXMgKi8KPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-dGVtcGVyYXR1cmUgPSA8NzUwMDA+Owo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBoeXN0ZXJlc2lz
-ID0gPDIwMDA+Owo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqB0eXBlID0gInBhc3NpdmUiOwo+ICvC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoH07Cj4gKwo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoGdwdTFfYWxlcnQxOiBncHUxX2FsZXJ0MSB7Cj4gK8KgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoC8qIG1pbGxpQ2Vsc2l1cyAqLwo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqB0
-ZW1wZXJhdHVyZSA9IDw5MDAwMD47Cj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGh5c3RlcmVzaXMg
-PSA8MjAwMD47Cj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHR5cGUgPSAiaG90IjsKPiArwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqB9
-Owo+ICsKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqBncHUxX2NyaXQ6IGdwdTFfY3JpdCB7Cj4gK8KgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoC8qIG1pbGxpQ2Vsc2l1cyAqLwo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqB0ZW1wZXJhdHVy
-ZSA9IDwxMTAwMDA+Owo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBoeXN0ZXJlc2lzID0gPDIwMDA+
-Owo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqB0eXBlID0gImNyaXRpY2FsIjsKPiArwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqB9Owo+
-ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgfTsKPiDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoH07Cj4gwqDCoMKgwqDCoMKgwqDCoH07Cj4gwqAK
-Cg==
+Gentle ping.
 
+Thanks,
+Wenchao.Chen
+
+On Tue, 12 Dec 2023 at 10:57, Baolin Wang <baolin.wang@linux.alibaba.com> wrote:
+>
+>
+>
+> On 12/8/2023 7:52 PM, Wenchao Chen wrote:
+> > On Thu, 7 Dec 2023 at 21:59, Ulf Hansson <ulf.hansson@linaro.org> wrote:
+> >>
+> >> On Mon, 4 Dec 2023 at 07:50, Wenchao Chen <wenchao.chen@unisoc.com> wrote:
+> >>>
+> >>> Some eMMC devices that do not close the auto clk gate
+> >>> after hw reset will cause eMMC initialization to fail.
+> >>>
+> >>> Signed-off-by: Wenchao Chen <wenchao.chen@unisoc.com>
+> >>
+> >> I assume we want this tagged for stable kernels too, but do we have a
+> >> corresponding fixes commit that we can point out?
+> >>
+> >> Kind regards
+> >> Uffe
+> >>
+> >
+> > Hi Uffe
+> > Sorry, I forgot to add fixes commit.
+> >
+> > Fixes: ff874dbc4f86 ("mmc: sdhci-sprd: Disable CLK_AUTO when the clock
+> > is less than 400K")
+>
+> With the Fixes tag, looks goo to me.
+> Reviewed-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+>
+> >>> ---
+> >>>   drivers/mmc/host/sdhci-sprd.c | 10 +++++++---
+> >>>   1 file changed, 7 insertions(+), 3 deletions(-)
+> >>>
+> >>> diff --git a/drivers/mmc/host/sdhci-sprd.c b/drivers/mmc/host/sdhci-sprd.c
+> >>> index 6b8a57e2d20f..bed57a1c64b5 100644
+> >>> --- a/drivers/mmc/host/sdhci-sprd.c
+> >>> +++ b/drivers/mmc/host/sdhci-sprd.c
+> >>> @@ -239,15 +239,19 @@ static inline void _sdhci_sprd_set_clock(struct sdhci_host *host,
+> >>>          div = ((div & 0x300) >> 2) | ((div & 0xFF) << 8);
+> >>>          sdhci_enable_clk(host, div);
+> >>>
+> >>> +       val = sdhci_readl(host, SDHCI_SPRD_REG_32_BUSY_POSI);
+> >>> +       mask = SDHCI_SPRD_BIT_OUTR_CLK_AUTO_EN | SDHCI_SPRD_BIT_INNR_CLK_AUTO_EN;
+> >>>          /* Enable CLK_AUTO when the clock is greater than 400K. */
+> >>>          if (clk > 400000) {
+> >>> -               val = sdhci_readl(host, SDHCI_SPRD_REG_32_BUSY_POSI);
+> >>> -               mask = SDHCI_SPRD_BIT_OUTR_CLK_AUTO_EN |
+> >>> -                       SDHCI_SPRD_BIT_INNR_CLK_AUTO_EN;
+> >>>                  if (mask != (val & mask)) {
+> >>>                          val |= mask;
+> >>>                          sdhci_writel(host, val, SDHCI_SPRD_REG_32_BUSY_POSI);
+> >>>                  }
+> >>> +       } else {
+> >>> +               if (val & mask) {
+> >>> +                       val &= ~mask;
+> >>> +                       sdhci_writel(host, val, SDHCI_SPRD_REG_32_BUSY_POSI);
+> >>> +               }
+> >>>          }
+> >>>   }
+> >>>
+> >>> --
+> >>> 2.17.1
+> >>>
 
