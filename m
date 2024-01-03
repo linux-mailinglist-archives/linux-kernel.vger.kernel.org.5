@@ -1,212 +1,189 @@
-Return-Path: <linux-kernel+bounces-15806-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15807-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B6C6E823345
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 18:33:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 50BDF823368
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 18:36:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 372A2285E1B
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 17:33:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B5A7E1C20CC6
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 17:36:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF0011C29D;
-	Wed,  3 Jan 2024 17:33:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEB3C1C29D;
+	Wed,  3 Jan 2024 17:35:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="fuoTEJU/"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MF0ZAbPD"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pg1-f179.google.com (mail-pg1-f179.google.com [209.85.215.179])
+Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B26A61C680
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 17:33:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-pg1-f179.google.com with SMTP id 41be03b00d2f7-5cd8667c59eso7881586a12.2
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 09:33:04 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BFE81C28F;
+	Wed,  3 Jan 2024 17:35:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-50e72e3d435so8183798e87.2;
+        Wed, 03 Jan 2024 09:35:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1704303184; x=1704907984; darn=vger.kernel.org;
-        h=in-reply-to:autocrypt:from:references:cc:to:subject:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Zjb+9p3FM9eED612zjQKPUOtJyria7tSXPwGrhXU0Rg=;
-        b=fuoTEJU/8BVy/PflbJTH277w3n+odnyybBZvqh4BAxhXfb7LbTLweWYJDY4jBOaljr
-         z5JZaZyAwXBKasA5TuqtqbTvK7RRisp4rfG9rluXrVKCKJ5jQM3cWLRj37UG6eZX57SR
-         f/PiBEsTjcmA8nRRP8dybeKSKn+tzQDvLwRDs=
+        d=gmail.com; s=20230601; t=1704303323; x=1704908123; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=HgaItFa446aFMiSnamEBaM7GyUBdJS5VRch8OwZfXSk=;
+        b=MF0ZAbPD/X0xvTZ7hzJ3D2PnHB1SBQF0pRRIFmFhnv331llhfvMlZJUSp+k5T+xEbV
+         ue8X3HfoMnMq3iKUGiTSZ/Ddi1EUKN7CL83536X6P3alk4/RrqjQUuM4hf3GZCAGNulT
+         v5VVO8FnI/v/4gsJJbIIdJq08RwiK5fdnrqcUbrPInucfs32dBxtwHjFaAPcXs5udpxj
+         KypPZzBt+a74t8bjyBernX3c3i0+aU0Qv3RisytYSg9smuoYAn0kqJhykpqJhViMzXWY
+         NhZBvw7ix8vwi5LzRS+NQdzgyzAT5S7Of0hiUmc3PYeeSq3Kswy6woN4Gzx1wImDKAPf
+         6S6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704303184; x=1704907984;
-        h=in-reply-to:autocrypt:from:references:cc:to:subject:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=Zjb+9p3FM9eED612zjQKPUOtJyria7tSXPwGrhXU0Rg=;
-        b=pV5LxZNYYl2nikH/UxW7D/AdxAPgIgFjX5bFSJ+ibwnhBaTK0KnPCUuRB0LorEVdKm
-         2db1ZBz97jq28+W5fFKXaVPui+7NyG2+J2rOUbrm1XZa0JYGLjpdD3mKh6iOVyvM8PgW
-         eu3B/OAzI/vw9WyaUB9s/igwkQPNXPeFPcb337gKr52AbgaOo4PKQrYLT3Cz+A0vJqwY
-         Za2WCzwgyV9CRV9F6H3bTIEOL7zWtzJ2Q1JcquyAz/oTz7GGrxRLShouaAO/z0hiAYrw
-         x2CUdxqO5fQYp6sQPqwRjpkEWWxRhl1vFv7UbdMBSIXVLT2RGHAWaQrAT6RjS2cOl4WB
-         sbsw==
-X-Gm-Message-State: AOJu0YzKQPbg1xZaM2aq3tDHF7r8Bi/DNTN7N+9py11A0Im4RFwsDhkb
-	6JXUKiqAlVZMbnlVNY1MjHVbGhGnjl6y
-X-Google-Smtp-Source: AGHT+IFNY2gpMV4LFOfumo6BQPfrj0NPAzVFxfQDAwdKP3y0zfCq8yP8k1mt6XcaSB8XsD69OdITeg==
-X-Received: by 2002:a05:6a20:1596:b0:197:583a:5e1a with SMTP id h22-20020a056a20159600b00197583a5e1amr2621813pzj.1.1704303183972;
-        Wed, 03 Jan 2024 09:33:03 -0800 (PST)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id n2-20020a056a000d4200b006da2ef0e956sm10350698pfv.114.2024.01.03.09.33.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Jan 2024 09:33:03 -0800 (PST)
-Message-ID: <4a8b9d2c-2afc-4146-9fde-e1c56405dbfa@broadcom.com>
-Date: Wed, 3 Jan 2024 09:33:02 -0800
+        d=1e100.net; s=20230601; t=1704303323; x=1704908123;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HgaItFa446aFMiSnamEBaM7GyUBdJS5VRch8OwZfXSk=;
+        b=VcAmHU5zS68VKVFNSSh/+sLOePkZM4ajAZfGAj4FESXqV9ZskqQnAdaOon/mbD6WDh
+         XvYYwDe/VMfXdFBlxnfjuafPRFbtDvGKdzJ4mv2IzSxRRQIgGS1oqnxL6Dqtzt29H/wk
+         odsUw9Wag0v1y+49lT/M2xbVYFDyyAOuVj2tq4OqWpCvbGwx5v0gPEvFEojX8tKLWBzi
+         7nLWnqzMQ3fSsrYQxktwvUD+q3L0O6f+Ogv7EHJtWdihYKPSo/Bv/u8XRIMPvgXogr8O
+         x1ijAe6TNjcrOZUmocHWj0RYbGT+dtzETWtV3kwOhOC2f8kd3Qu3w7GiIKI0o0hB2UyK
+         kssg==
+X-Gm-Message-State: AOJu0YythNlC43Ft48eK2Y8bSCDnRWnaLi/Z4KXlmPpqAQFVGfu6eE3p
+	Likgus5ltdKMdpZBXN1ZKVE=
+X-Google-Smtp-Source: AGHT+IG5Hn9TGj/uHC7PG4pedjddlBvONui+OZ7Qe7a52QJj1d/0obPGawzNCzIPKR9toMBnDGKT8A==
+X-Received: by 2002:a19:f812:0:b0:50e:6c1d:5dec with SMTP id a18-20020a19f812000000b0050e6c1d5decmr4325314lff.23.1704303323303;
+        Wed, 03 Jan 2024 09:35:23 -0800 (PST)
+Received: from pc636 (host-90-233-200-64.mobileonline.telia.com. [90.233.200.64])
+        by smtp.gmail.com with ESMTPSA id w18-20020a05651203d200b0050e6c30236esm3526090lfp.12.2024.01.03.09.35.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Jan 2024 09:35:22 -0800 (PST)
+From: Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date: Wed, 3 Jan 2024 18:35:20 +0100
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: Uladzislau Rezki <urezki@gmail.com>, RCU <rcu@vger.kernel.org>,
+	Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
+	Boqun Feng <boqun.feng@gmail.com>, Hillf Danton <hdanton@sina.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
+	Frederic Weisbecker <frederic@kernel.org>
+Subject: Re: [PATCH v3 4/7] rcu: Improve handling of synchronize_rcu() users
+Message-ID: <ZZWa2LENLXCMUBhW@pc636>
+References: <20231128080033.288050-5-urezki@gmail.com>
+ <579f86e0-e03e-4ab3-9a85-a62064bcf2a1@paulmck-laptop>
+ <ZYQY8bB3zpywfBxO@pc636>
+ <650554ca-17f6-4119-ab4e-42239c958c73@paulmck-laptop>
+ <ZYVWjc65LzD8qkdw@pc636>
+ <e20058f9-a525-4d65-b22b-7dd9cfec9737@paulmck-laptop>
+ <ZZQHCrGNwjooI4kU@pc636>
+ <cd45b0b5-f86b-43fb-a5f3-47d340cd4f9f@paulmck-laptop>
+ <ZZVeEGTKVp7CUqtK@pc636>
+ <45a15103-0302-4e7d-b522-e17e8b8ac927@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] serial: 8250_bcm2835aux: Restore clock error handling
-To: Stefan Wahren <wahrenst@gmx.net>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Jiri Slaby <jirislaby@kernel.org>
-Cc: Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>,
- Adrien Thierry <athierry@redhat.com>, Jeremy Linton <jeremy.linton@arm.com>,
- linux-serial@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-References: <20231220114334.4712-1-wahrenst@gmx.net>
-From: Florian Fainelli <florian.fainelli@broadcom.com>
-Autocrypt: addr=florian.fainelli@broadcom.com; keydata=
- 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
-In-Reply-To: <20231220114334.4712-1-wahrenst@gmx.net>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="000000000000e487b1060e0e01a1"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <45a15103-0302-4e7d-b522-e17e8b8ac927@paulmck-laptop>
 
---000000000000e487b1060e0e01a1
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-
-On 12/20/23 03:43, Stefan Wahren wrote:
-> The commit fcc446c8aa63 ("serial: 8250_bcm2835aux: Add ACPI support")
-> dropped the error handling for clock acquiring. But even an optional
-> clock needs this.
+On Wed, Jan 03, 2024 at 06:47:30AM -0800, Paul E. McKenney wrote:
+> On Wed, Jan 03, 2024 at 02:16:00PM +0100, Uladzislau Rezki wrote:
+> > On Tue, Jan 02, 2024 at 11:25:13AM -0800, Paul E. McKenney wrote:
+> > > On Tue, Jan 02, 2024 at 01:52:26PM +0100, Uladzislau Rezki wrote:
+> > > > Hello, Paul!
+> > > > 
+> > > > Sorry for late answer, it is because of holidays :)
+> > > > 
+> > > > > > > > The problem is that, we are limited in number of "wait-heads" which we
+> > > > > > > > add as a marker node for this/current grace period. If there are more clients
+> > > > > > > > and there is no a wait-head available it means that a system, the deferred
+> > > > > > > > kworker, is slow in processing callbacks, thus all wait-nodes are in use.
+> > > > > > > > 
+> > > > > > > > That is why we need an extra grace period. Basically to repeat our try one
+> > > > > > > > more time, i.e. it might be that a current grace period is not able to handle
+> > > > > > > > users due to the fact that a system is doing really slow, but this is rather
+> > > > > > > > a corner case and is not a problem.
+> > > > > > > 
+> > > > > > > But in that case, the real issue is not the need for an extra grace
+> > > > > > > period, but rather the need for the wakeup processing to happen, correct?
+> > > > > > > Or am I missing something subtle here?
+> > > > > > > 
+> > > > > > Basically, yes. If we had a spare dummy-node we could process the users
+> > > > > > by the current GP(no need in extra). Why we may not have it - it is because
+> > > > > > like you pointed:
+> > > > > > 
+> > > > > > - wake-up issue, i.e. wake-up time + when we are on_cpu;
+> > > > > > - slow list process. For example priority. The kworker is not
+> > > > > >   given enough CPU time to do the progress, thus "dummy-nodes"
+> > > > > >   are not released in time for reuse.
+> > > > > > 
+> > > > > > Therefore, en extra GP is requested if there is a high flow of
+> > > > > > synchronize_rcu() users and kworker is not able to do a progress
+> > > > > > in time.
+> > > > > > 
+> > > > > > For example 60K+ parallel synchronize_rcu() users will trigger it.
+> > > > > 
+> > > > > OK, but what bad thing would happen if that was moved to precede the
+> > > > > rcu_seq_start(&rcu_state.gp_seq)?  That way, the requested grace period
+> > > > > would be the same as the one that is just now starting.
+> > > > > 
+> > > > > Something like this?
+> > > > > 
+> > > > > 	start_new_poll = rcu_sr_normal_gp_init();
+> > > > > 
+> > > > > 	/* Record GP times before starting GP, hence rcu_seq_start(). */
+> > > > > 	rcu_seq_start(&rcu_state.gp_seq);
+> > > > > 	ASSERT_EXCLUSIVE_WRITER(rcu_state.gp_seq);
+> > > > >
+> > > > I had a concern about the case when rcu_sr_normal_gp_init() handles what
+> > > > we currently have, in terms of requests. Right after that there is/are
+> > > > extra sync requests which invoke the start_poll_synchronize_rcu() but
+> > > > since a GP has been requested before it will not request an extra one. So
+> > > > "last" incoming users might not be processed.
+> > > > 
+> > > > That is why i have placed the rcu_sr_normal_gp_init() after a gp_seq is
+> > > > updated.
+> > > > 
+> > > > I can miss something, so please comment. Apart of that we can move it
+> > > > as you proposed.
+> > > 
+> > > Couldn't that possibility be handled by a check in rcu_gp_cleanup()?
+> > > 
+> > It is controlled by the caller anyway, i.e. if a new GP is needed.
+> > 
+> > I am not 100% sure it is as straightforward as it could look like to
+> > handle it in the rcu_sr_normal_gp_cleaup() function. At least i see
+> > that we need to access to the first element of llist and find out if
+> > it is a wait-dummy-head or not. If not we know there are extra incoming
+> > calls.
+> > 
+> > So that way requires extra calling of start_poll_synchronize_rcu().
 > 
-> Fixes: fcc446c8aa63 ("serial: 8250_bcm2835aux: Add ACPI support")
-> Signed-off-by: Stefan Wahren <wahrenst@gmx.net>
+> If this is invoked early enough in rcu_gp_cleanup(), all that needs to
+> happen is to set the need_gp flag.  Plus you can count the number of
+> requests, and snapshot that number at rcu_gp_init() time and check to
+> see if it changed at rcu_gp_cleanup() time.  Later on, this could be
+> used to reduce the number of wakeups, correct?
+> 
+You mean instead of waking-up a gp-kthread just continue processing of
+new users if they are exist? If so, i think, we can implement it as separate
+patches.
 
-Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
--- 
-Florian
+> > I can add a comment about your concern and we can find the best approach
+> > later, if it is OK with you!
+> 
+> I agree that this should be added via a later patch, though I have not
+> yet given up on the possibility that this patch might be simple enough
+> to be later in this same series.
+> 
+Maybe there is a small misunderstanding. Please note, the rcu_sr_normal_gp_init() 
+function does not request any new gp, i.e. our approach does not do any extra GP
+requests. It happens only if there are no any dummy-wait-head available as we
+discussed it earlier.
 
-
---000000000000e487b1060e0e01a1
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-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
-riBJ/K1AFUjRAjFhGV64l++td7dkmnq/X8ET75ti+w1s4FRpFqkD2m7pg5NxdsZphYIXAgMBAAGj
-QjBAMA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBSP8Et/qC5FJK5N
-UPpjmove4t0bvDANBgkqhkiG9w0BAQsFAAOCAQEAS0DbwFCq/sgM7/eWVEVJu5YACUGssxOGhigH
-M8pr5nS5ugAtrqQK0/Xx8Q+Kv3NnSoPHRHt44K9ubG8DKY4zOUXDjuS5V2yq/BKW7FPGLeQkbLmU
-Y/vcU2hnVj6DuM81IcPJaP7O2sJTqsyQiunwXUaMld16WCgaLx3ezQA3QY/tRG3XUyiXfvNnBB4V
-14qWtNPeTCekTBtzc3b0F5nCH3oO4y0IrQocLP88q1UOD5F+NuvDV0m+4S4tfGCLw0FREyOdzvcy
-a5QBqJnnLDMfOjsl0oZAzjsshnjJYS8Uuu7bVW/fhO4FCU29KNhyztNiUGUe65KXgzHZs7XKR1g/
-XzCCBVgwggRAoAMCAQICDBP8P9hKRVySg3Qv5DANBgkqhkiG9w0BAQsFADBbMQswCQYDVQQGEwJC
-RTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTExMC8GA1UEAxMoR2xvYmFsU2lnbiBHQ0MgUjMg
-UGVyc29uYWxTaWduIDIgQ0EgMjAyMDAeFw0yMjA5MTAxMjE4MTFaFw0yNTA5MTAxMjE4MTFaMIGW
-MQswCQYDVQQGEwJJTjESMBAGA1UECBMJS2FybmF0YWthMRIwEAYDVQQHEwlCYW5nYWxvcmUxFjAU
-BgNVBAoTDUJyb2FkY29tIEluYy4xGTAXBgNVBAMTEEZsb3JpYW4gRmFpbmVsbGkxLDAqBgkqhkiG
-9w0BCQEWHWZsb3JpYW4uZmFpbmVsbGlAYnJvYWRjb20uY29tMIIBIjANBgkqhkiG9w0BAQEFAAOC
-AQ8AMIIBCgKCAQEA+oi3jMmHltY4LMUy8Up5+1zjd1iSgUBXhwCJLj1GJQF+GwP8InemBbk5rjlC
-UwbQDeIlOfb8xGqHoQFGSW8p9V1XUw+cthISLkycex0AJ09ufePshLZygRLREU0H4ecNPMejxCte
-KdtB4COST4uhBkUCo9BSy1gkl8DJ8j/BQ1KNUx6oYe0CntRag+EnHv9TM9BeXBBLfmMRnWNhvOSk
-nSmRX0J3d9/G2A3FIC6WY2XnLW7eAZCQPa1Tz3n2B5BGOxwqhwKLGLNu2SRCPHwOdD6e0drURF7/
-Vax85/EqkVnFNlfxtZhS0ugx5gn2pta7bTdBm1IG4TX+A3B1G57rVwIDAQABo4IB3jCCAdowDgYD
-VR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3Vy
-ZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEG
-CCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWdu
-MmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93
-d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6
-hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNy
-bDAoBgNVHREEITAfgR1mbG9yaWFuLmZhaW5lbGxpQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggr
-BgEFBQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUUwwfJ6/F
-KL0fRdVROal/Lp4lAF0wDQYJKoZIhvcNAQELBQADggEBAKBgfteDc1mChZjKBY4xAplC6uXGyBrZ
-kNGap1mHJ+JngGzZCz+dDiHRQKGpXLxkHX0BvEDZLW6LGOJ83ImrW38YMOo3ZYnCYNHA9qDOakiw
-2s1RH00JOkO5SkYdwCHj4DB9B7KEnLatJtD8MBorvt+QxTuSh4ze96Jz3kEIoHMvwGFkgObWblsc
-3/YcLBmCgaWpZ3Ksev1vJPr5n8riG3/N4on8gO5qinmmr9Y7vGeuf5dmZrYMbnb+yCBalkUmZQwY
-NxADYvcRBA0ySL6sZpj8BIIhWiXiuusuBmt2Mak2eEv0xDbovE6Z6hYyl/ZnRadbgK/ClgbY3w+O
-AfUXEZ0xggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52
-LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwT
-/D/YSkVckoN0L+QwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIMwvi9PC8PNz/YU5
-y3BQ/EUoW96PzcgYOPqMbMh9br+3MBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcN
-AQkFMQ8XDTI0MDEwMzE3MzMwNFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZI
-AWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEH
-MAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQAmulAIHt7GyxMdCzNd1bNRTMijy5LqIISQ
-D/ScEUprzoK3m/VP6CuMOQXLgkY2hN0DqSACX0rK5oBN/irkZPTrs46iMjokl+E7vqMLY7yHmbr3
-DYQkrIcSpq8jXf/Zh4hWVLU3hQZrnc8x7Rnq+VGl8QX7iNyy/GtIWDVZfhW1lAF09Y4+i9CSgnQ8
-n3fxBUVaq3vMffjJg1K38rB7Mr7yLb6JK8WN5DmRnvyFRCFrRGxMklfB3Q6xeup88tWleZ8u6hVa
-SMA4iPfjF2YDmaFFxRXxmYnK1y1lGaHFlyVzlrBpjMNcXI+mzHPiysyOCb7yRffOgUE8g97Vpiqh
-iEes
---000000000000e487b1060e0e01a1--
+--
+Uladzislau Rezki
 
