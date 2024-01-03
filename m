@@ -1,76 +1,159 @@
-Return-Path: <linux-kernel+bounces-15127-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15115-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF33182277D
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 04:14:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC382822761
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 04:09:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 95B5BB21CA2
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 03:14:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 69FB81F238BC
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 03:09:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14714539E;
-	Wed,  3 Jan 2024 03:12:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 707DD1799A;
+	Wed,  3 Jan 2024 03:09:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="RMF0QZJx"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from cstnet.cn (smtp87.cstnet.cn [159.226.251.87])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F373E1A59A;
-	Wed,  3 Jan 2024 03:12:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iie.ac.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iie.ac.cn
-Received: from mengjingzi$iie.ac.cn ( [121.195.114.118] ) by
- ajax-webmail-APP-17 (Coremail) ; Wed, 3 Jan 2024 11:12:28 +0800 (GMT+08:00)
-Date: Wed, 3 Jan 2024 11:12:28 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From: =?UTF-8?B?5a2f5pWs5ae/?= <mengjingzi@iie.ac.cn>
-To: brauner@kernel.org
-Cc: linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Subject: proposal to refine capability checks when _rlimit_overlimit() is
- true
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.15 build 20230921(8ad33efc)
- Copyright (c) 2002-2024 www.mailtech.cn cnic.cn
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DCCD17980;
+	Wed,  3 Jan 2024 03:09:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704251372; x=1735787372;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=iu8p/P3QhQcocBbNzGCVARnxcO1Moj9wB0O7V477T4A=;
+  b=RMF0QZJxefP8LNeWLB3Xi5Oz0ai7yoM/4QBVkFoP27VZMWxDX12IUDMF
+   6I4gzB4+RBD0guO5n/HlO/fU/WDihD5dWv798n4wp/YMHiKPxKMwo9wyX
+   B+Mso8Jy+DboDM2qthdWJTzgyT5c98uK9WQBKl3gH94TisEAK5uOZ0HzS
+   svKsDPH3gsNKZ7tqpuF16y4/sR2jwJYTsUMobWpwZHwFvsc6zzfrlpfSE
+   qQUNSmdihFX6J6An2PQwwYzt+7f9J8r4XwDqlYeaiy7lQ8W67+QUKwsag
+   HgvlTcKBX2PvQRzZ+Kezcf7puyWeaC+QVo8PMFaDwnexmx1X5OoB8wCbO
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10941"; a="10343114"
+X-IronPort-AV: E=Sophos;i="6.04,326,1695711600"; 
+   d="scan'208";a="10343114"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jan 2024 19:09:31 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10941"; a="729665904"
+X-IronPort-AV: E=Sophos;i="6.04,326,1695711600"; 
+   d="scan'208";a="729665904"
+Received: from dmi-pnp-i7.sh.intel.com ([10.239.159.155])
+  by orsmga003.jf.intel.com with ESMTP; 02 Jan 2024 19:09:26 -0800
+From: Dapeng Mi <dapeng1.mi@linux.intel.com>
+To: Sean Christopherson <seanjc@google.com>,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Jim Mattson <jmattson@google.com>
+Cc: kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Zhenyu Wang <zhenyuw@linux.intel.com>,
+	Zhang Xiong <xiong.y.zhang@intel.com>,
+	Mingwei Zhang <mizhang@google.com>,
+	Like Xu <like.xu.linux@gmail.com>,
+	Jinrong Liang <cloudliang@tencent.com>,
+	Dapeng Mi <dapeng1.mi@intel.com>,
+	Dapeng Mi <dapeng1.mi@linux.intel.com>
+Subject: [kvm-unit-tests Patch v3 00/11] pmu test bugs fix and improvements
+Date: Wed,  3 Jan 2024 11:13:58 +0800
+Message-Id: <20240103031409.2504051-1-dapeng1.mi@linux.intel.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <1a8ed7bd.c96e.18ccd4ee4d1.Coremail.mengjingzi@iie.ac.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID:qgCowAB3Qumd0JRl5xYDAA--.26354W
-X-CM-SenderInfo: pphqwyxlqj6xo6llvhldfou0/1tbiDAYFE2WUwEQ2dgAAsp
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
-	CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
-	daVFxhVjvjDU=
+Content-Transfer-Encoding: 8bit
 
-SGkhCgpXZSBvYnNlcnZlZCBhIHBvdGVudGlhbCByZWZpbmVtZW50IGluIHRoZSBrZXJuZWwvZm9y
-ay5jIGxpbmUgMjM2OC4gQ3VycmVudGx5LCBib3RoIENBUF9TWVNfQURNSU4gYW5kIENBUF9TWVNf
-UkVTT1VSQ0UgYXJlIGNoZWNrZWQgd2hlbiB0aGUgbGltaXQgaXMgb3ZlciBzeXN0ZW0gbGltaXQu
-IFdlIHN1Z2dlc3QgY29uc2lkZXJpbmcgYW4gYWRqdXN0bWVudCB0byB1dGlsaXplIENBUF9TWVNf
-UkVTT1VSQ0UgZXhjbHVzaXZlbHkuIEhlcmUncyBvdXIgcmF0aW9uYWxlIGZvciB0aGlzIHN1Z2dl
-c3Rpb246CgooMSkgRGVmaW5lZCBDYXBhYmlsaXR5IGZvciBSZXNvdXJjZSBBY2Nlc3M6IEFjY29y
-ZGluZyB0byB0aGUgY2FwYWJpbGl0eSBtYW51YWwgcGFnZVsxXSwgdGhlIGNhcGFiaWxpdHkgZXhw
-bGljaXRseSBkZWZpbmVkIGZvciBieXBhc3NpbmcgcmVzb3VyY2UgbGltaXRzIGlzIENBUF9TWVNf
-UkVTT1VSQ0UuIFRoaXMgY2FwYWJpbGl0eSBpcyBkZXNpZ25lZCB0byBwcm92aWRlIHRoZSBuZWNl
-c3NhcnkgcHJpdmlsZWdlcyBmb3IgYWNjZXNzaW5nIHN5c3RlbSByZXNvdXJjZXMgd2l0aG91dCBv
-dmVyLXByaXZpbGVnaW5nIHdpdGggdGhlIGJyb2FkZXIgQ0FQX1NZU19BRE1JTi4KCigyKSBNYWlu
-dGFpbmluZyBMZWFzdCBQcml2aWxlZ2U6IENBUF9TWVNfQVNNSU4gaXMgYWxyZWFkeSBvdmVybG9h
-ZGVkIGFuZCBrbm93biBhcyB0aGUgbmV3ICJyb290IlsyXS4gVGhlIHVzZSBvZiBDQVBfU1lTX0FE
-TUlOIGluIHRoaXMgY29udGV4dCBtaWdodCBpbmFkdmVydGVudGx5IG92ZXItcHJpdmlsZWdlIHRo
-ZSBzeXN0ZW0gYnkgcHJvdmlkaW5nIG1vcmUgY2FwYWJpbGl0aWVzIHRoYW4gbmVjZXNzYXJ5LiBB
-bmQgYWNjb3JkaW5nIHRvIGNhcGFiaWxpdHkgbWFudWFsIHBhZ2VbMV0sIOKAnERvbid0IGNob29z
-ZSBDQVBfU1lTX0FETUlOIGlmIHlvdSBjYW4gcG9zc2libHkgYXZvaWQgaXQh4oCdLCBpdCdzIGJl
-bmVmaWNpYWwgdG8gdXNlIHRoZSBtb3N0IHNwZWNpZmljIGNhcGFiaWxpdHkgcmVxdWlyZWQgZm9y
-IGEgZ2l2ZW4gdGFzay4KClRoaXMgaXNzdWUgZXhpc3RzIGluIHNldmVyYWwga2VybmVsIHZlcnNp
-b25zIGFuZCB3ZSBoYXZlIGNoZWNrZWQgaXQgb24gdGhlIGxhdGVzdCBzdGFibGUgcmVsZWFzZShM
-aW51eCA2LjYuOSkuCgpZb3VyIGluc2lnaHRzIGFuZCBmZWVkYmFjayBvbiB0aGlzIHByb3Bvc2Vk
-IG1vZGlmaWNhdGlvbiB3b3VsZCBiZSBoaWdobHkgYXBwcmVjaWF0ZWQuIFRoYW5rIHlvdSBmb3Ig
-eW91ciB0aW1lIGFuZCBjb25zaWRlcmF0aW9uLgoKQmVzdCByZWdhcmRzLApKaW5nemkKCnJlZmVy
-ZW5jZToKWzFdIGh0dHBzOi8vd3d3Lm1hbjcub3JnL2xpbnV4L21hbi1wYWdlcy9tYW43L2NhcGFi
-aWxpdGllcy43Lmh0bWwKWzJdIGh0dHBzOi8vbHduLm5ldC9BcnRpY2xlcy80ODYzMDYv
+When running pmu test on Sapphire Rapids, we found sometimes pmu test
+reports the following failures.
+
+1. FAIL: Intel: all counters
+2. FAIL: Intel: core cycles-0
+3. FAIL: Intel: llc misses-4
+
+Further investigation shows these failures are all false alarms rather
+than real vPMU issues.
+
+The failure 1 is caused by a bug in check_counters_many() which defines
+a cnt[] array with length 10. On Sapphire Rapids KVM supports 8 GP
+counters and 3 fixed counters, obviously the total counter number (11)
+of Sapphire Rapids exceed current cnt[] length 10, it would cause a out
+of memory access and lead to the "all counters" false alarm. Patch
+02~03 would fix this issue.
+
+The failure 2 is caused by pipeline and cache warm-up latency.
+Currently "core cycles" is the first executed event. When the measured
+loop() program is executed at the first time, cache hierarchy and pipeline
+are needed to warm up. All these warm-up work consumes so much cycles
+that it exceeds the predefined upper boundary and cause the failure.
+Patch 04 fixes this issue.
+
+The failure 3 is caused by 0 llc misses count. It's possible and
+reasonable that there is no llc misses happened for such simple loop()
+asm blob especially along with larger and larger LLC size on new
+processors. Patch 09 would fix this issue by introducing clflush
+instruction to force LLC miss.
+
+Besides above bug fixes, this patch series also includes several
+optimizations.
+
+One important optimization (patch 07~08) is to move
+GLOBAL_CTRL enabling/disabling into the loop asm blob, so the precise
+count for instructions and branches events can be measured and the
+verification can be done against the precise count instead of the rough
+count range. This improves the verification accuracy.
+
+Another important optimization (patch 10~11) is to leverage IBPB command
+to force to trigger a branch miss, so the lower boundary of branch miss
+event can be set to 1 instead of the ambiguous 0. This eliminates the
+ambiguity brought from 0.
+
+All these changes are tested on Intel Sapphire Rapids server platform
+and the pmu test passes. Since I have no AMD platforms on my hand, these
+changes are not verified on AMD platforms yet. If someone can help to
+verify these changes on AMD platforms, it's welcome and appreciated.
+
+Changes:
+  v2 -> v3:
+        fix "core cycles" failure,
+        introduce precise verification for instructions/branches,
+        leverage IBPB command to optimize branch misses verification,
+        drop v2 introduced slots event verification
+  v1 -> v2:
+        introduce clflush to optimize llc misses verification
+        introduce rdrand to optimize branch misses verification
+
+History:
+  v2: https://lore.kernel.org/lkml/20231031092921.2885109-1-dapeng1.mi@linux.intel.com/
+  v1: https://lore.kernel.org/lkml/20231024075748.1675382-1-dapeng1.mi@linux.intel.com/
+
+Dapeng Mi (10):
+  x86: pmu: Enlarge cnt[] length to 64 in check_counters_many()
+  x86: pmu: Add asserts to warn inconsistent fixed events and counters
+  x86: pmu: Switch instructions and core cycles events sequence
+  x86: pmu: Refine fixed_events[] names
+  x86: pmu: Remove blank line and redundant space
+  x86: pmu: Enable and disable PMCs in loop() asm blob
+  x86: pmu: Improve instruction and branches events verification
+  x86: pmu: Improve LLC misses event verification
+  x86: pmu: Add IBPB indirect jump asm blob
+  x86: pmu: Improve branch misses event verification
+
+Xiong Zhang (1):
+  x86: pmu: Remove duplicate code in pmu_init()
+
+ lib/x86/pmu.c |   5 --
+ x86/pmu.c     | 201 ++++++++++++++++++++++++++++++++++++++++++--------
+ 2 files changed, 171 insertions(+), 35 deletions(-)
+
+-- 
+2.34.1
+
 
