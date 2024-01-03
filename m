@@ -1,103 +1,115 @@
-Return-Path: <linux-kernel+bounces-15504-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15498-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69BF2822CDA
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 13:20:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6ADF8822CCA
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 13:16:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 167F1282EC8
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 12:20:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DFA812858B6
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 12:16:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 420851946C;
-	Wed,  3 Jan 2024 12:20:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="oX6ZihZ4"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 122B919440;
+	Wed,  3 Jan 2024 12:16:02 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from out203-205-221-231.mail.qq.com (out203-205-221-231.mail.qq.com [203.205.221.231])
+Received: from mout-p-101.mailbox.org (mout-p-101.mailbox.org [80.241.56.151])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64A3F18ECD;
-	Wed,  3 Jan 2024 12:20:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1704284404; bh=hsWvIYTjGOuzkSHY0cRhuMQ9nYrh1dhhCxx/OjJphEE=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=oX6ZihZ4T4XuarlFE0ha55Wc7LoMXc83phzHQ1CcTHsNY2ZvCq79l+NkrA73F6/XO
-	 Y9pjC507eoK0hUylolKltPJoNMvjIctpewNlZDzxRjQ6yWzzg4LdCc7GAxdlYZrfT2
-	 X9ZqaaAWCib0Uu2IjJFUitl4dOUm/U1NIxDZsPiE=
-Received: from pek-lxu-l1.wrs.com ([111.198.225.215])
-	by newxmesmtplogicsvrsza1-0.qq.com (NewEsmtp) with SMTP
-	id 3721BE1A; Wed, 03 Jan 2024 20:13:50 +0800
-X-QQ-mid: xmsmtpt1704284030t5lk8klny
-Message-ID: <tencent_BF8F0DF0258C8DBF124CDDE4DD8D992DCF07@qq.com>
-X-QQ-XMAILINFO: MQ+wLuVvI2LQx1ZWRYQcqrrru8adTGjx2DK1zZieGMM5Y/1cc8/R+Ey5dg6t3b
-	 gz93V4CrPQDU+BFuJzi3BlheLDoS5kXDJ51uNlcEUX5iGsPdruRlZwXhieqrjGDf6Gg/Dbnuv4OF
-	 vgihRqlzDkquI9+ef1p+WCDI12EF634TMfKkWQbw3nzkseFvplzB2uctkUTD0xnmCqrehHPIeG5k
-	 0JDJ/rS655z+U3JUZUEmzTfMDsdAa4tOwp8yLXO8Y4zqUNXwbrGFCPfoYrvuRxdllOf1tB/h7tBP
-	 vk1H05stOWsAFPMar1bLL1LZRuNZzu3eMORR8vzJsU/iCmz3ZSJr8YkLawH6cxZrI4EmLs7+xkgV
-	 IquvIwjLDyi7hKFpDXqBb1cCzNHzUNHNVPdxnmnVHf53S41t0I16aAXzVKL1bJovnUB4BD7t+QWA
-	 TOQ9K3OHVXDwsELv22PSv2Dov5IP9PHU9Uj9rsIikv34IqTAYl5Hg9lvdBTdAn+7CS/6Hf1UPq2K
-	 vayA+0WyzvOUySvq0QxsyIPxeZ1gUtOpSW8JXBYLzGqOYcOGj1mPmQ6Oua1EH8c4JSlc1M1+CiAO
-	 +V3u+W3E1vgv1o8kKG45HG46A1S4wu0JF4i4e8qUSGYaP4677BL3cZ1KANKiWJB076GUwog6c/fU
-	 WbqsZDuoebMfU/5iwuguhcW/ED+3d7BujXalYnJaMO2tnjEjqNtcXvjTd1+DGxSi2a7Rhx3Q/pwR
-	 wXNWnzboVOkELgL6oJCePZ8eajmYLwRVEtYkGPYQnVbfmxZYFuqMLMOO7QLnPd+FJqHsnICMQgAC
-	 mG70DP2IrSK1KdtMnWwa5zze18Wnt8R9UiG7864zddXfDEQsAXpM3l0+EjqHne7skv5HtJo+XFJt
-	 qUmAaBqfLXBn9WlAAwbcu6/gpOwErsnP1UaBqGnicQa+hyCXoM0tQqj9+R8eRse7ANkb/cuSa7
-X-QQ-XMRINFO: Mp0Kj//9VHAxr69bL5MkOOs=
-From: Edward Adam Davis <eadavis@qq.com>
-To: syzbot+864a269c27ee06b58374@syzkaller.appspotmail.com
-Cc: benjamin.berg@intel.com,
-	davem@davemloft.net,
-	edumazet@google.com,
-	johannes.berg@intel.com,
-	johannes@sipsolutions.net,
-	kuba@kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-wireless@vger.kernel.org,
-	miriam.rachel.korenblit@intel.com,
-	netdev@vger.kernel.org,
-	pabeni@redhat.com,
-	syzkaller-bugs@googlegroups.com
-Subject: [PATCH net-next] wifi: fix warning in __cfg80211_bss_update
-Date: Wed,  3 Jan 2024 20:13:51 +0800
-X-OQ-MSGID: <20240103121350.2734479-2-eadavis@qq.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <0000000000009fa770060e089409@google.com>
-References: <0000000000009fa770060e089409@google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CAA218EB0;
+	Wed,  3 Jan 2024 12:15:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=v0yd.nl
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=v0yd.nl
+Received: from smtp102.mailbox.org (smtp102.mailbox.org [IPv6:2001:67c:2050:b231:465::102])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mout-p-101.mailbox.org (Postfix) with ESMTPS id 4T4pbH31vgz9snN;
+	Wed,  3 Jan 2024 13:15:55 +0100 (CET)
+Message-ID: <548fb407-ef57-4108-aa26-52deafdca55c@v0yd.nl>
+Date: Wed, 3 Jan 2024 13:15:52 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Subject: Re: [PATCH v2 0/4] Power off HCI devices before rfkilling them
+Content-Language: en-US
+To: Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+Cc: Marcel Holtmann <marcel@holtmann.org>,
+ Johan Hedberg <johan.hedberg@gmail.com>, asahi@lists.linux.dev,
+ linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
+ netdev@vger.kernel.org, verdre@v0yd.nl
+References: <20240102181946.57288-1-verdre@v0yd.nl>
+ <CABBYNZ+sTko6reoJO43W2LHGW58f0kK_8Zgc3mep7xki355=iA@mail.gmail.com>
+From: =?UTF-8?Q?Jonas_Dre=C3=9Fler?= <verdre@v0yd.nl>
+In-Reply-To: <CABBYNZ+sTko6reoJO43W2LHGW58f0kK_8Zgc3mep7xki355=iA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 4T4pbH31vgz9snN
 
-Replace rcu_dereference() with rcu_access_pointer() to avoid warnings. 
+Hi Luiz,
 
-Fixes: 32af9a9e1069 ("wifi: cfg80211: free beacon_ies when overridden from hidden BSS")
-Reported-and-tested-by: syzbot+864a269c27ee06b58374@syzkaller.appspotmail.com
-Signed-off-by: Edward Adam Davis <eadavis@qq.com>
----
- net/wireless/scan.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On 1/2/24 19:39, Luiz Augusto von Dentz wrote:
+> Hi Jonas,
+> 
+> On Tue, Jan 2, 2024 at 1:19 PM Jonas Dreßler <verdre@v0yd.nl> wrote:
+>>
+>> In theory the firmware is supposed to power off the bluetooth card
+>> when we use rfkill to block it. This doesn't work on a lot of laptops
+>> though, leading to weird issues after turning off bluetooth, like the
+>> connection timing out on the peripherals which were connected, and
+>> bluetooth not connecting properly when the adapter is turned on again
+>> quickly after rfkilling.
+>>
+>> This series hooks into the rfkill driver from the bluetooth subsystem
+>> to send a HCI_POWER_OFF command to the adapter before actually submitting
+>> the rfkill to the firmware and killing the HCI connection.
+>>
+>> ---
+>>
+>> v1 -> v2: Fixed commit message title to make CI happy
+>>
+>> Jonas Dreßler (4):
+>>    Bluetooth: Remove HCI_POWER_OFF_TIMEOUT
+>>    Bluetooth: mgmt: Remove leftover queuing of power_off work
+>>    Bluetooth: Add new state HCI_POWERING_DOWN
+>>    Bluetooth: Queue a HCI power-off command before rfkilling adapters
+> 
+> Apart from the assumption of RFKILL actually killing the RF
+> immediately or not, I'm fine with these changes, that said it would be
+> great if we can have some proper way to test the behavior of rfkill,
+> perhaps via mgmt-tester, since it should behave like the
+> MGMT_OP_SET_POWERED.
 
-diff --git a/net/wireless/scan.c b/net/wireless/scan.c
-index cf2131671..7cb8ae87c 100644
---- a/net/wireless/scan.c
-+++ b/net/wireless/scan.c
-@@ -1864,7 +1864,7 @@ __cfg80211_bss_update(struct cfg80211_registered_device *rdev,
- 					 &hidden->hidden_list);
- 				hidden->refcount++;
- 
--				ies = (void *)rcu_dereference(new->pub.beacon_ies);
-+				ies = (void *)rcu_access_pointer(new->pub.beacon_ies);
- 				rcu_assign_pointer(new->pub.beacon_ies,
- 						   hidden->pub.beacon_ies);
- 				if (ies)
--- 
-2.43.0
+Testing this sounds like a good idea, I guess we'd have to teach 
+mgmt-tester to write to rfkill. The bigger problem seems to be that 
+there's no MGMT event for power changes and also no MGMT_OP_GET_POWERED, 
+so that's a bit concerning, could userspace even be notified about 
+changes to adapter power?
 
+Another thing I'm thinking about now is that queuing the HCI command 
+using hci_cmd_sync_queue() might not be enough: The command is still 
+executed async in a thread, and we won't actually block until it has 
+been sent, so this might be introducing a race (rfkill could kill the 
+adapter before we actually send the HCI command). The proper way might 
+be to use a completion and wait until the 
+set_powered_off_sync_complete() callback is invoked?
+
+> 
+>>   include/net/bluetooth/hci.h |  2 +-
+>>   net/bluetooth/hci_core.c    | 33 ++++++++++++++++++++++++++++++---
+>>   net/bluetooth/hci_sync.c    | 16 +++++++++++-----
+>>   net/bluetooth/mgmt.c        | 30 ++++++++++++++----------------
+>>   4 files changed, 56 insertions(+), 25 deletions(-)
+>>
+>> --
+>> 2.43.0
+>>
+> 
+> 
+
+Cheers,
+Jonas
 
