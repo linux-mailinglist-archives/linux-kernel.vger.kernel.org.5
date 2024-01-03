@@ -1,125 +1,117 @@
-Return-Path: <linux-kernel+bounces-15084-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15085-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B4AD822717
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 03:36:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 622B3822718
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 03:39:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B7F41B22473
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 02:36:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id ED22CB21771
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 02:39:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 164694A28;
-	Wed,  3 Jan 2024 02:36:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9F524A27;
+	Wed,  3 Jan 2024 02:39:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="zkgl1Y5z"
+	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="ExTsSpJk"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail-4325.protonmail.ch (mail-4325.protonmail.ch [185.70.43.25])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A3BA4A17
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 02:36:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1d3ea8d0f9dso41055ad.1
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 18:36:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1704249376; x=1704854176; darn=vger.kernel.org;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=v52EQ/A6TAXr6Z6qExZ1s4TncM4K58Y7qBR/ZAdYtZw=;
-        b=zkgl1Y5zMfOgL4mgoVIgXA+R42WJsUf0x52qHk2ZZ+9OH+mQUwQFMSUWECiZAyA2JJ
-         41mViPrXyloIXsAJeE76Zr5LjmpTehUvWhiK3Z4L00dlyPknfmgRnfvD1hrARUEW95l+
-         nskDPCYfzusA+Fr4bWUu7kjlPfbzpL1lRwef98qHIKc+9fX+KM5+L1ZxyEUveu0rjLdt
-         VC5hxU1nb1LOLDRgzV0p8In+l63sBxQERjoRa2Z34NLcv1HY0bFEJOd4DMGBScQJPgWD
-         WU1xA4ZcK2m+Vqbtqve8i6NgFN7uNkYLfsWNBQhYUutukX5uWVBDOqSJn4wK1PzTJaet
-         VvSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704249376; x=1704854176;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=v52EQ/A6TAXr6Z6qExZ1s4TncM4K58Y7qBR/ZAdYtZw=;
-        b=M4q7dc6FnCE43UcIP2KYBpZO01W7+txKYXV/XjdxGA7tivJiRg/j6mhUvdnuSKAKGN
-         0Rj0786iDQvJt0BYYtJhY6MP6OSONCaJ4bCvhrkfAgqzeAYzVQctqpCSB2gBbzgLedr1
-         A1HXwZJZK9mTpdzeY0bB48UI+eXhKbEtT2Dki0/CHFrp2oIWirQKNunoHxpK6y+UNB/I
-         CfR9qjANQjNMk2HatMkJebvZMoYD2bHZtpiLYW0td3+3D+DpCOfUVyMmrArB/G9ZSPom
-         5dCfzoveAKUq9wH0LekqjJmmhp3RTR1M5UtDzajKub4tywv47PyTEyEYGoAeLVu7+Zry
-         UPjw==
-X-Gm-Message-State: AOJu0YxUpCzWkt9sy+AxdEds2KP7T4lIlYvsro94eEX6vd/xicC9CEWZ
-	5j/Nx/auKZKJ+n2pFdyAkRy2Wk0b0hXISMMGlfgoX1WvZOAC
-X-Google-Smtp-Source: AGHT+IHRLCBiISoazm9mVZrqDO51ftpMM1MRJLgMJGTk721tHqv+vKNga7SoDo23wTY/QHS60Zi41g==
-X-Received: by 2002:a17:902:ec85:b0:1d3:b085:5e4b with SMTP id x5-20020a170902ec8500b001d3b0855e4bmr84957plg.16.1704249376239;
-        Tue, 02 Jan 2024 18:36:16 -0800 (PST)
-Received: from [2620:0:1008:15:c73b:7876:89ec:9102] ([2620:0:1008:15:c73b:7876:89ec:9102])
-        by smtp.gmail.com with ESMTPSA id si13-20020a17090b528d00b0028cbfdbd804sm336031pjb.45.2024.01.02.18.36.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Jan 2024 18:36:15 -0800 (PST)
-Date: Tue, 2 Jan 2024 18:36:15 -0800 (PST)
-From: David Rientjes <rientjes@google.com>
-To: Gang Li <gang.li@linux.dev>
-cc: David Hildenbrand <david@redhat.com>, 
-    Mike Kravetz <mike.kravetz@oracle.com>, 
-    Muchun Song <muchun.song@linux.dev>, 
-    Andrew Morton <akpm@linux-foundation.org>, 
-    Tim Chen <tim.c.chen@linux.intel.com>, linux-mm@kvack.org, 
-    linux-kernel@vger.kernel.org, ligang.bdlg@bytedance.com
-Subject: Re: [PATCH v3 4/7] hugetlb: pass *next_nid_to_alloc directly to
- for_each_node_mask_to_alloc
-In-Reply-To: <958bf051-e776-4cbf-ae3c-76ee82d55bcc@linux.dev>
-Message-ID: <d6b8518b-9686-5766-d906-6b35edab2583@google.com>
-References: <20240102131249.76622-1-gang.li@linux.dev> <20240102131249.76622-5-gang.li@linux.dev> <19b08bb8-1fbd-557b-2684-5c29c5c783e6@google.com> <958bf051-e776-4cbf-ae3c-76ee82d55bcc@linux.dev>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E497A4A13
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 02:39:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
+	s=rpwcewjj7zfibednh5axf65hs4.protonmail; t=1704249544; x=1704508744;
+	bh=coq+E/koRQ1nyDj6Btxcud2fUdhToaVns+u6j7xhYDo=;
+	h=Date:To:From:Cc:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
+	 Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
+	b=ExTsSpJkVG/FfAqr+JfR7Aea8K6RrhNmZ/g2kFoQcYuBoUap5M8BeiKM20bCJVdxl
+	 5+5T8tc9wNuMheekpSVToJvcsizmqPcOVYNXZUjqYSeSr2COuARD9z/3trnEvPUTH+
+	 7uOYdd17CnBiS5xRj8wzRD6v45AmVdlX2Da6G2nR37buheIBVIpIw+TUhDHKt8BjT0
+	 tvwLDAGIAoQ4+a4zXIz2DpVDEx/rQp4U/DGDmidBgEaRi38sHQiSY4u6mQIQQtO3KX
+	 asiLmWM2vD0Ry9x2b8n/QuwcNZwUidY6ATm8xzzMgabizOhPT6BCP2m6oDTNmueYIs
+	 rdDrRzp8WIElQ==
+Date: Wed, 03 Jan 2024 02:38:50 +0000
+To: "peterz@infradead.org" <peterz@infradead.org>
+From: rohan470 <rohan470@proton.me>
+Cc: "mingo@kernel.org" <mingo@kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: EEVDF virtual time calculation rationale
+Message-ID: <ZkUEh0F9jAcEI7v9ufD9OqnxsuVxvOca7fX8R9jJlre5kFXoynNMANNbZFPZs02-jb2MdiCQAGk_l2Xdl4cmnxekDyRG45rcJ1-yU0Kz9oo=@proton.me>
+Feedback-ID: 96939901:user:proton
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, 3 Jan 2024, Gang Li wrote:
+Hello,
 
-> On 2024/1/3 09:32, David Rientjes wrote:
-> > Same error as v2:
-> > 
-> > mm/hugetlb.c:3315:53: warning: variable 'node' is used uninitialized
-> > whenever '&&' condition is false [-Wsometimes-uninitialized]
-> >          for_each_node_mask_to_alloc(&h->next_nid_to_alloc, nr_nodes, node,
-> > &node_states[N_MEMORY]) {
-> >          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > mm/hugetlb.c:1501:3: note: expanded from macro 'for_each_node_mask_to_alloc'
-> >                  nr_nodes > 0 &&                                         \
-> >                  ^~~~~~~~~~~~
-> > mm/hugetlb.c:3342:38: note: uninitialized use occurs here
-> >          list_add(&m->list, &huge_boot_pages[node]);
-> >                                              ^~~~
-> > mm/hugetlb.c:3315:53: note: remove the '&&' if its condition is always true
-> >          for_each_node_mask_to_alloc(&h->next_nid_to_alloc, nr_nodes, node,
-> > &node_states[N_MEMORY]) {
-> >                                                             ^
-> > mm/hugetlb.c:3310:7: warning: variable 'node' is used uninitialized whenever
-> > 'if' condition is false [-Wsometimes-uninitialized]
-> >                  if (!m)
-> >                      ^~
-> > mm/hugetlb.c:3342:38: note: uninitialized use occurs here
-> >          list_add(&m->list, &huge_boot_pages[node]);
-> >                                              ^~~~
-> > mm/hugetlb.c:3310:3: note: remove the 'if' if its condition is always true
-> >                  if (!m)
-> >                  ^~~~~~~
-> > mm/hugetlb.c:3304:20: note: initialize the variable 'node' to silence this
-> > warning
-> >          int nr_nodes, node;
-> >                            ^
-> >                             = 0
-> > 2 warnings generated.
-> > 
-> 
-> How did you get those warnings? I got nothing in my compilation.
-> 
+I have a question regarding the calculation of virtual time in the new EEVD=
+F system.=20
+I'm quite new to Linux kernel development, so forgive me if my question sou=
+nds naive or if my assumptions regarding the kernel's scheduling mechanisms=
+ are incorrect.
 
-I'm using clang.
+I read Stoica et al's EEVDF papers (both the 37 page technical report [1], =
+and the 1996 RTSS conference edition [2]). I then spent the past few weeks =
+studying the new EEVDF code.
+I noticed a difference in how virtual time is calculated in the paper versu=
+s how the kernel does it.
 
-You spotted the issue in your earlier reply about the potentially 
-uninitialized use of "node" when adding to the list.
+The paper defines virtual time as:
+V(t)=3D\int_{0}^{t}\frac{1}{\sum_{j\in A(\tau)}w_j}d\tau
+
+However, if I understand correctly, the kernel does not calculate virtual t=
+ime with this formula.=20
+Instead, it takes the \Sum lag_i =3D 0 invariant of EEVDF and the definitio=
+n of lag (lag_i =3D S - s_i =3D w_i * (V - v_i)), and rearranges the formul=
+a to solve for virtual time, V.=20
+This means virtual time is effectively calculated as a weighted average of =
+the tasks' virtual runtimes.
+
+Why does the kernel calculate virtual time this way? Does it produce the ex=
+act same value as the integral solution?
+Was this inherited from the CFS system?
+
+One issue I thought of with the integral solution is that the definition of=
+ time 0 is somewhat ambiguous. Is it when the system boots, or when the run=
+queue is initialized, or something else?
+Could it be set to any arbitrary time constant, as long as it's before the =
+first time we try to calculate virtual time?=20
+Unfortunately, the paper doesn't answer these questions, since it omits the=
+ implementation of the get_current_vt function.
+
+Could an integral version be implemented like this?: we store the virtual t=
+ime in a variable, virtual_time. When the scheduler runs periodically from =
+an interrupt, we update virtual time with: virtual_time +=3D (1/sum_of_weig=
+hts)*(t-t'), where t is the current time and t' is the last time we updated=
+ the virtual_time variable. When a task leaves/joins the system, we update =
+virtual time with: virtual_time =3D virtual_time +/- (lag_i(t)/(sum_of_weig=
+hts)), where sum_of_weights is the new sum after the leave/join.
+
+For the periodic update (not the leave/join) of virtual_time, we effectivel=
+y break the integral into two parts: one for the 0 to t' interval, and anot=
+her for the t' to t interval. Since the integral for 0 to t' is already cal=
+culated, we don't have to worry about the variations in sum_of_weights duri=
+ng that interval. Since we update virtual_time and sum_of_weights whenever =
+a task leaves/joins the system, then t' is the last time the weights could =
+have changed before t. Therefore, we know sum_of_weights stays constant bet=
+ween t' and t.
+
+I'm curious to learn more about why the weighted average method is used, an=
+d whether or not the integral solution is possible to use in the kernel.
+
+Thanks,
+-Rohan
+
+[1] https://citeseerx.ist.psu.edu/document?repid=3Drep1&type=3Dpdf&doi=3D80=
+5acf7726282721504c8f00575d91ebfd750564
+[2] https://ieeexplore.ieee.org/abstract/document/563725?casa_token=3DeZ1XT=
+M6ux9QAAAAA:10ncyLGX4mjYATqMTdwBRgQTkIjE4MHtYvYKLXVuaubP_cdWr8YeX-TALqd-94O=
+xhDp248wAWFqe
 
