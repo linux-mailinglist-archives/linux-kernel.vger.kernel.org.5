@@ -1,39 +1,54 @@
-Return-Path: <linux-kernel+bounces-15549-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15550-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B72DE822DF7
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 14:06:08 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D1243822DFC
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 14:06:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D08711C233DA
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 13:06:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 77C69284C97
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 13:06:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56A9A1946C;
-	Wed,  3 Jan 2024 13:05:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 675731947E;
+	Wed,  3 Jan 2024 13:06:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="dviX+RL9"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="o1HORcO6"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF96F199C9;
-	Wed,  3 Jan 2024 13:05:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
-Received: from [192.168.88.20] (91-158-149-209.elisa-laajakaista.fi [91.158.149.209])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 35A01975;
-	Wed,  3 Jan 2024 14:04:44 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1704287084;
-	bh=djLByMMojF7QdbLFrXRzsVf1b2YzpQ503EVkUJjYbtw=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=dviX+RL99zy+L8eeEKToG7uvQevS55DKnim1QwAZeLkw9Jwasqoc27ZD9C4GYQTt1
-	 Wi3+BbMSyXA0q6o9Hxkmwrmlz5USAdr6TSzMVy6pGtSYPVUEnL1IyOdl98LQ8JbCBB
-	 2u34E3hC4fJoaTk0CUJ5pQmvGQVHvjyJ5l52Ngn8=
-Message-ID: <bf271671-861d-43d4-a24f-de49256ef9d0@ideasonboard.com>
-Date: Wed, 3 Jan 2024 15:05:40 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2743C1945E;
+	Wed,  3 Jan 2024 13:06:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 403CICU4030794;
+	Wed, 3 Jan 2024 13:06:19 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=6AihegcrHuKOKVAT22QfdIlNLXan2cC61758qMqmqts=; b=o1
+	HORcO66e7KRXO79u2YP06PNJvhOWBc8QJui8Vd6ufOk4RNIY117WyGj/IZkwCaOC
+	WHtxgIKdnq0CKl7zNTpNimaajPO49ZlbWZ6CoKLglZ/SiHCt1GvHrmbA8QClWQZe
+	MfIvm/QQNmY08T+DImeXjYMJIT+3yRoKZoXKHJ8+JT2xCHdbGcv8FGfFrvtXsj6o
+	rjOuSEOQnCYyxO22pKEiYO/5XMi6bhWBQwt48D1ep+NFP+u8iL4BBOsE5W4rsDr4
+	r8+cZ1rzvSDBnMoGUxqoWN5z3qEQnrnX0yEZou0jhP88MG9HSsOPy9siBkE8wy0r
+	RnJTNgmmauFLh6c0MIvA==
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vcg41ba7j-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 03 Jan 2024 13:06:19 +0000 (GMT)
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 403D6IZw032623
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 3 Jan 2024 13:06:18 GMT
+Received: from [10.253.72.77] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 3 Jan
+ 2024 05:06:13 -0800
+Message-ID: <365d76a4-db05-40ac-a453-fb7e8b6db423@quicinc.com>
+Date: Wed, 3 Jan 2024 21:06:10 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -41,119 +56,119 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] arm64: dts: ti: k3-am69-sk: remove assigned-clock-parents
- for unused VP
+Subject: Re: [PATCH v4 3/5] net: mdio: ipq4019: configure CMN PLL clock for
+ ipq5332
 Content-Language: en-US
-To: Jayesh Choudhary <j-choudhary@ti.com>, nm@ti.com, vigneshr@ti.com
-Cc: kristo@kernel.org, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
- conor+dt@kernel.org, a-bhatia1@ti.com, rogerq@kernel.org, sabiya.d@ti.com,
- u-kumar1@ti.com, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org
-References: <20231221113042.48492-1-j-choudhary@ti.com>
-From: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Autocrypt: addr=tomi.valkeinen@ideasonboard.com; keydata=
- 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
-In-Reply-To: <20231221113042.48492-1-j-choudhary@ti.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+To: Bryan O'Donoghue <bryan.odonoghue@linaro.org>, <agross@kernel.org>,
+        <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
+        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+        <pabeni@redhat.com>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <andrew@lunn.ch>, <hkallweit1@gmail.com>, <linux@armlinux.org.uk>,
+        <robert.marko@sartura.hr>
+CC: <linux-arm-msm@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <quic_srichara@quicinc.com>
+References: <20231225084424.30986-1-quic_luoj@quicinc.com>
+ <20231225084424.30986-4-quic_luoj@quicinc.com>
+ <1d7ef6cc-5c25-4a59-ad7f-38870ac132c4@linaro.org>
+From: Jie Luo <quic_luoj@quicinc.com>
+In-Reply-To: <1d7ef6cc-5c25-4a59-ad7f-38870ac132c4@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: TdYOiUNuml-WWw9-fiDVZ4SKAWquoQeD
+X-Proofpoint-ORIG-GUID: TdYOiUNuml-WWw9-fiDVZ4SKAWquoQeD
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 mlxscore=0
+ phishscore=0 spamscore=0 bulkscore=0 adultscore=0 priorityscore=1501
+ impostorscore=0 mlxlogscore=999 malwarescore=0 suspectscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2401030107
 
-Hi,
 
-On 21/12/2023 13:30, Jayesh Choudhary wrote:
-> VP2 and VP3 are unused video ports and VP3 share the same parent
-> clock as VP1 causing issue with pixel clock setting for HDMI (VP1).
-> So remove the parent clocks for unused VPs.
+
+On 1/3/2024 5:50 PM, Bryan O'Donoghue wrote:
+> On 25/12/2023 08:44, Luo Jie wrote:
+>> The reference clock of CMN PLL block is selectable, the internal
+>> 48MHZ is used by default.
+>>
+>> The output clock of CMN PLL block is for providing the clock
+>> source of ethernet device(such as qca8084), there are 1 * 25MHZ
+>> and 3 * 50MHZ output clocks available for the ethernet devices.
+>>
+>> Signed-off-by: Luo Jie <quic_luoj@quicinc.com>
+>> ---
+>>   drivers/net/mdio/mdio-ipq4019.c | 129 +++++++++++++++++++++++++++++++-
+>>   1 file changed, 128 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/net/mdio/mdio-ipq4019.c 
+>> b/drivers/net/mdio/mdio-ipq4019.c
+>> index e24b0e688b10..e4862ac02026 100644
+>> --- a/drivers/net/mdio/mdio-ipq4019.c
+>> +++ b/drivers/net/mdio/mdio-ipq4019.c
+>> @@ -44,6 +44,17 @@
+>>   /* Maximum SOC PCS(uniphy) number on IPQ platform */
+>>   #define ETH_LDO_RDY_CNT                3
+>> +#define CMN_PLL_REFERENCE_SOURCE_SEL        0x28
+>> +#define CMN_PLL_REFCLK_SOURCE_DIV        GENMASK(9, 8)
+>> +
+>> +#define CMN_PLL_REFERENCE_CLOCK            0x784
+>> +#define CMN_PLL_REFCLK_EXTERNAL            BIT(9)
+>> +#define CMN_PLL_REFCLK_DIV            GENMASK(8, 4)
+>> +#define CMN_PLL_REFCLK_INDEX            GENMASK(3, 0)
+>> +
+>> +#define CMN_PLL_POWER_ON_AND_RESET        0x780
+>> +#define CMN_ANA_EN_SW_RSTN            BIT(6)
+>> +
+>>   enum mdio_clk_id {
+>>       MDIO_CLK_MDIO_AHB,
+>>       MDIO_CLK_UNIPHY0_AHB,
+>> @@ -55,6 +66,7 @@ enum mdio_clk_id {
+>>   struct ipq4019_mdio_data {
+>>       void __iomem *membase;
+>> +    void __iomem *cmn_membase;
+>>       void __iomem *eth_ldo_rdy[ETH_LDO_RDY_CNT];
+>>       struct clk *clk[MDIO_CLK_CNT];
+>>   };
+>> @@ -227,12 +239,116 @@ static int ipq4019_mdio_write_c22(struct 
+>> mii_bus *bus, int mii_id, int regnum,
+>>       return 0;
+>>   }
+>> +/* For the CMN PLL block, the reference clock can be configured 
+>> according to
+>> + * the device tree property "qcom,cmn-ref-clock-frequency", the 
+>> internal 48MHZ
+>> + * is used by default.
+>> + *
+>> + * The output clock of CMN PLL block is provided to the ethernet 
+>> devices,
+>> + * threre are 4 CMN PLL output clocks (1*25MHZ + 3*50MHZ) enabled by 
+>> default.
+>> + *
+>> + * Such as the output 50M clock for the qca8084 ethernet PHY.
+>> + */
+>> +static int ipq_cmn_clock_config(struct mii_bus *bus)
+>> +{
+>> +    struct ipq4019_mdio_data *priv;
+>> +    u32 reg_val, src_sel, ref_clk;
+>> +    int ret;
+>> +
+>> +    priv = bus->priv;
+>> +    if (priv->cmn_membase) {
 > 
-> Fixes: 6f8605fd7d11 ("arm64: dts: ti: k3-am69-sk: Add DP and HDMI support")
-> Reported-by: Nishanth Menon <nm@ti.com>
-> Closes: https://storage.kernelci.org/mainline/master/v6.7-rc6/arm64/defconfig/gcc-10/lab-ti/baseline-nfs-am69_sk-fs.txt
-> Signed-off-by: Jayesh Choudhary <j-choudhary@ti.com>
+> if (!priv->cnm_membase)
+>      return 0;
+> 
+> then move the indentation here one tab left.
+> 
+Ok, will update this, Thanks.
+
 > ---
-> 
-> Local testing log for HDMI on AM69-SK:
-> <https://gist.github.com/Jayesh2000/517395cd85eb28d65b8ee4568cefb809>
-> 
->   arch/arm64/boot/dts/ti/k3-am69-sk.dts | 8 ++------
->   1 file changed, 2 insertions(+), 6 deletions(-)
-> 
-> diff --git a/arch/arm64/boot/dts/ti/k3-am69-sk.dts b/arch/arm64/boot/dts/ti/k3-am69-sk.dts
-> index 8da591579868..370980eb59b0 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am69-sk.dts
-> +++ b/arch/arm64/boot/dts/ti/k3-am69-sk.dts
-> @@ -918,13 +918,9 @@ &dss {
->   	pinctrl-names = "default";
->   	pinctrl-0 = <&dss_vout0_pins_default>;
->   	assigned-clocks = <&k3_clks 218 2>,
-> -			  <&k3_clks 218 5>,
-> -			  <&k3_clks 218 14>,
-> -			  <&k3_clks 218 18>;
-> +			  <&k3_clks 218 5>;
->   	assigned-clock-parents = <&k3_clks 218 3>,
-> -				 <&k3_clks 218 7>,
-> -				 <&k3_clks 218 16>,
-> -				 <&k3_clks 218 22>;
-> +				 <&k3_clks 218 7>;
->   };
->   
->   &serdes_wiz4 {
-
-The SK has two outputs, using VP0 and VP1, so the above kind of makes 
-sense. Then again, setting up 4 clocks here really shouldn't break the 
-SK, should it? The AM69 has 4 available VPs. How does one configure the 
-clocks for a board that uses 4 VPs, or possibly a different selection of 
-VPs?
-
-I think the patch desc should explain why this doesn't work. Afaik, the 
-dts is not wrong as such, but there's an underlying issue that breaks 
-the clocking if all four clocks are set up here.
-
-So, with the desc updated, as this fixes an issue and is not wrong:
-
-Reviewed-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-
-But I also feel this is dodging a firmware (?) issue.
-
-  Tomi
-
+> bod
 
