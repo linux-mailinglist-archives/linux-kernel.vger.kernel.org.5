@@ -1,255 +1,464 @@
-Return-Path: <linux-kernel+bounces-15776-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15777-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1ADB823199
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 17:54:54 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C77838231A5
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 17:57:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 13355B21B56
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 16:54:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 37CF71F2464B
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 16:57:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 336531BDF0;
-	Wed,  3 Jan 2024 16:54:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 519B11BDFD;
+	Wed,  3 Jan 2024 16:56:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="UoWeLLZx"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="CigdaF1t"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pg1-f169.google.com (mail-pg1-f169.google.com [209.85.215.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAC341BDDF
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 16:54:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
-Received: by mail-pg1-f169.google.com with SMTP id 41be03b00d2f7-5ce0656a7bdso1970550a12.3
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 08:54:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1704300881; x=1704905681; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=At4QHdwp3ZadpLBcNbgmNjMEMqeIcq9YtBwBsEfmi00=;
-        b=UoWeLLZxCab0VKZC1YVQqfLDYgWaJ5oYSsNdgDQ3eZ2+fsyscXqgY0sp/NQnXzDCnQ
-         nE9tJ4FMyIO3uNG8PJOMl5LBXiZRsxpbrCMC2Y6bMGAPn3FGnULsrSblHGNyAZMXRTq9
-         KBnmcfyQvjaBW+D7wGCHSJn6+dl6knNXmZXf+A+CuVc4wEyarLXvmECiLhBp3DL8N4SO
-         fWRjtyKUUg81bfi+jwKpTLSPZ6W8jxpwv84bbILwNl1L2ZwBFimAwkCt3rLEPVnBn+CV
-         dv+xI7zuNDVJdpt3TFn+p33x2JaH75X63vXWhUWaikcA/R6KdKAS1gsbqKZv19IVKr+n
-         AVpA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704300881; x=1704905681;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=At4QHdwp3ZadpLBcNbgmNjMEMqeIcq9YtBwBsEfmi00=;
-        b=C8wa3Mtvj8jb2b5rcWyFPaZ0/xjWKr7v/sR0Pa6HvT6RKe1guNSsLIIxERhx7bfoeI
-         D4GYiEWsnafGuY4Jv/m8j28oay/3zgjQq5jW+NEIcnhfQEZtYYkdMt56sOwaGPB2QbZ+
-         Aotbo0ExwPvyOu026B1RtAwXeV5H3rrK/e+2KzsSUhrSPvUks2ixj66DKAdRH67au8fH
-         a6Zncg+/10T5KBHwqdYDmsQml1PsVUeATntC3SKHrI/Yv0uoKpJSzJDwS93iMnyXfzzH
-         V3y33BAM8Di0pq7Mi0LHBXexytft3kYaO6KKtGI+FAgT5XnSIuW3JxVD4903r5gw7KlZ
-         YX6A==
-X-Gm-Message-State: AOJu0YzxCJdjtSEKnGQilVpwgRobTIcruBrDwwgpy/Q0QWDbzgYj3AuV
-	fNVZMs7AOlFaKPMeUQWYRlmQJL+k4xOnrQ==
-X-Google-Smtp-Source: AGHT+IFphH96nvot+o6OJI+1Oefu5ZnyAS0PgflwFC1JcbKaoG4F36jfxfu5/7Zi+jYM28KFX7allg==
-X-Received: by 2002:a05:6a20:1615:b0:198:ae17:6a86 with SMTP id l21-20020a056a20161500b00198ae176a86mr636668pzj.10.1704300881041;
-        Wed, 03 Jan 2024 08:54:41 -0800 (PST)
-Received: from sw06.internal.sifive.com ([4.53.31.132])
-        by smtp.gmail.com with ESMTPSA id p7-20020a17090a930700b0028b89520c7asm1954805pjo.9.2024.01.03.08.54.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Jan 2024 08:54:40 -0800 (PST)
-From: Samuel Holland <samuel.holland@sifive.com>
-To: Atish Patra <atishp@atishpatra.org>,
-	Anup Patel <anup@brainfault.org>
-Cc: Samuel Holland <samuel.holland@sifive.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Will Deacon <will@kernel.org>,
-	linux-arm-kernel@lists.infradead.org,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 947141BDEC;
+	Wed,  3 Jan 2024 16:56:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73E5BC433C7;
+	Wed,  3 Jan 2024 16:56:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1704301016;
+	bh=55YAiE47xn8SJbZTG5gBBLlgoRLB1XK+vd8rkROAvGY=;
+	h=From:To:Cc:Subject:Date:From;
+	b=CigdaF1togTarn+NtgBxxfngDH+4AsYg/tooD1VIGld7TfEqp5H9I4fXZLNSoUDaT
+	 qhK4Q2enmkRLQZbm/I50emsyG062YK7J7wJt0YfSWhyLQRFTO7XKWqH3tplCcw9nYp
+	 qFEyKmRhG9ZB4Vv5DSaKXukht5d6HV25kj/tfvUc=
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: stable@vger.kernel.org
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	patches@lists.linux.dev,
 	linux-kernel@vger.kernel.org,
-	linux-riscv@lists.infradead.org
-Subject: [PATCH] perf: RISC-V: Check standard event availability
-Date: Wed,  3 Jan 2024 08:53:48 -0800
-Message-ID: <20240103165438.633054-1-samuel.holland@sifive.com>
-X-Mailer: git-send-email 2.42.0
+	torvalds@linux-foundation.org,
+	akpm@linux-foundation.org,
+	linux@roeck-us.net,
+	shuah@kernel.org,
+	patches@kernelci.org,
+	lkft-triage@lists.linaro.org,
+	pavel@denx.de,
+	jonathanh@nvidia.com,
+	f.fainelli@gmail.com,
+	sudipm.mukherjee@gmail.com,
+	srw@sladewatkins.net,
+	rwarsow@gmx.de,
+	conor@kernel.org,
+	allen.lkml@gmail.com
+Subject: [PATCH 6.1 000/100] 6.1.71-rc1 review
+Date: Wed,  3 Jan 2024 17:53:49 +0100
+Message-ID: <20240103164856.169912722@linuxfoundation.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: quilt/0.67
+X-stable: review
+X-Patchwork-Hint: ignore
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.71-rc1.gz
+X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+X-KernelTest-Branch: linux-6.1.y
+X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+X-KernelTest-Version: 6.1.71-rc1
+X-KernelTest-Deadline: 2024-01-05T16:49+00:00
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-The RISC-V SBI PMU specification defines several standard hardware and
-cache events. Currently, all of these events appear in the `perf list`
-output, even if they are not actually implemented. Add logic to check
-which events are supported by the hardware (i.e. can be mapped to some
-counter), so only usable events are reported to userspace.
+This is the start of the stable review cycle for the 6.1.71 release.
+There are 100 patches in this series, all will be posted as a response
+to this one.  If anyone has any issues with these being applied, please
+let me know.
 
-Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
----
-Before this patch:
-$ perf list hw
+Responses should be made by Fri, 05 Jan 2024 16:47:49 +0000.
+Anything received after that time might be too late.
 
-List of pre-defined events (to be used in -e or -M):
+The whole patch series can be found in one patch at:
+	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.71-rc1.gz
+or in the git tree and branch at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
+and the diffstat can be found below.
 
-  branch-instructions OR branches                    [Hardware event]
-  branch-misses                                      [Hardware event]
-  bus-cycles                                         [Hardware event]
-  cache-misses                                       [Hardware event]
-  cache-references                                   [Hardware event]
-  cpu-cycles OR cycles                               [Hardware event]
-  instructions                                       [Hardware event]
-  ref-cycles                                         [Hardware event]
-  stalled-cycles-backend OR idle-cycles-backend      [Hardware event]
-  stalled-cycles-frontend OR idle-cycles-frontend    [Hardware event]
+thanks,
 
-$ perf stat -ddd true
+greg k-h
 
- Performance counter stats for 'true':
+-------------
+Pseudo-Shortlog of commits:
 
-              4.36 msec task-clock                       #    0.744 CPUs utilized
-                 1      context-switches                 #  229.325 /sec
-                 0      cpu-migrations                   #    0.000 /sec
-                38      page-faults                      #    8.714 K/sec
-         4,375,694      cycles                           #    1.003 GHz                         (60.64%)
-           728,945      instructions                     #    0.17  insn per cycle
-            79,199      branches                         #   18.162 M/sec
-            17,709      branch-misses                    #   22.36% of all branches
-           181,734      L1-dcache-loads                  #   41.676 M/sec
-             5,547      L1-dcache-load-misses            #    3.05% of all L1-dcache accesses
-     <not counted>      LLC-loads                                                               (0.00%)
-     <not counted>      LLC-load-misses                                                         (0.00%)
-     <not counted>      L1-icache-loads                                                         (0.00%)
-     <not counted>      L1-icache-load-misses                                                   (0.00%)
-     <not counted>      dTLB-loads                                                              (0.00%)
-     <not counted>      dTLB-load-misses                                                        (0.00%)
-     <not counted>      iTLB-loads                                                              (0.00%)
-     <not counted>      iTLB-load-misses                                                        (0.00%)
-     <not counted>      L1-dcache-prefetches                                                    (0.00%)
-     <not counted>      L1-dcache-prefetch-misses                                               (0.00%)
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    Linux 6.1.71-rc1
 
-       0.005860375 seconds time elapsed
+Andrii Nakryiko <andrii@kernel.org>
+    tracing/kprobes: Fix symbol counting logic by looking at modules as well
 
-       0.000000000 seconds user
-       0.010383000 seconds sys
+Jiri Olsa <jolsa@kernel.org>
+    kallsyms: Make module_kallsyms_on_each_symbol generally available
 
-After this patch:
-$ perf list hw
+Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+    device property: Allow const parameter to dev_fwnode()
 
-List of pre-defined events (to be used in -e or -M):
+Geert Uytterhoeven <geert+renesas@glider.be>
+    spi: Constify spi parameters of chip select APIs
 
-  branch-instructions OR branches                    [Hardware event]
-  branch-misses                                      [Hardware event]
-  cache-misses                                       [Hardware event]
-  cache-references                                   [Hardware event]
-  cpu-cycles OR cycles                               [Hardware event]
-  instructions                                       [Hardware event]
+NeilBrown <neilb@suse.de>
+    NFSD: fix possible oops when nfsd/pool_stats is closed.
 
-$ perf stat -ddd true
+Steven Rostedt (Google) <rostedt@goodmis.org>
+    ring-buffer: Fix slowpath of interrupted event
 
- Performance counter stats for 'true':
+Pablo Neira Ayuso <pablo@netfilter.org>
+    netfilter: nf_tables: skip set commit for deleted/destroyed sets
 
-              5.16 msec task-clock                       #    0.848 CPUs utilized
-                 1      context-switches                 #  193.817 /sec
-                 0      cpu-migrations                   #    0.000 /sec
-                37      page-faults                      #    7.171 K/sec
-         5,183,625      cycles                           #    1.005 GHz
-           961,696      instructions                     #    0.19  insn per cycle
-            85,853      branches                         #   16.640 M/sec
-            20,462      branch-misses                    #   23.83% of all branches
-           243,545      L1-dcache-loads                  #   47.203 M/sec
-             5,974      L1-dcache-load-misses            #    2.45% of all L1-dcache accesses
-   <not supported>      LLC-loads
-   <not supported>      LLC-load-misses
-   <not supported>      L1-icache-loads
-   <not supported>      L1-icache-load-misses
-   <not supported>      dTLB-loads
-            19,619      dTLB-load-misses
-   <not supported>      iTLB-loads
-             6,831      iTLB-load-misses
-   <not supported>      L1-dcache-prefetches
-   <not supported>      L1-dcache-prefetch-misses
+Steven Rostedt (Google) <rostedt@goodmis.org>
+    ring-buffer: Remove useless update to write_stamp in rb_try_to_discard()
 
-       0.006085625 seconds time elapsed
+Steven Rostedt (Google) <rostedt@goodmis.org>
+    tracing: Fix blocked reader of snapshot buffer
 
-       0.000000000 seconds user
-       0.013022000 seconds sys
+Steven Rostedt (Google) <rostedt@goodmis.org>
+    ring-buffer: Fix wake ups when buffer_percent is set to 100
+
+Matthew Wilcox (Oracle) <willy@infradead.org>
+    mm/memory-failure: check the mapcount of the precise page
+
+Matthew Wilcox (Oracle) <willy@infradead.org>
+    mm/memory-failure: cast index to loff_t before shifting it
+
+Charan Teja Kalla <quic_charante@quicinc.com>
+    mm: migrate high-order folios in swap cache correctly
+
+Baokun Li <libaokun1@huawei.com>
+    mm/filemap: avoid buffered read/write race to read inconsistent data
+
+Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+    platform/x86: p2sb: Allow p2sb_bar() calls during PCI device probe
+
+Namjae Jeon <linkinjeon@kernel.org>
+    ksmbd: fix slab-out-of-bounds in smb_strndup_from_utf16()
+
+Christoph Hellwig <hch@lst.de>
+    block: renumber QUEUE_FLAG_HW_WC
+
+Louis Chauvet <louis.chauvet@bootlin.com>
+    spi: atmel: Fix clock issue when using devices with different polarities
+
+Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>
+    spi: Add APIs in spi core to set/get spi->chip_select and spi->cs_gpiod
+
+Tudor Ambarus <tudor.ambarus@microchip.com>
+    spi: Reintroduce spi_set_cs_timing()
+
+Helge Deller <deller@gmx.de>
+    linux/export: Ensure natural alignment of kcrctab array
+
+NeilBrown <neilb@suse.de>
+    nfsd: call nfsd_last_thread() before final nfsd_put()
+
+NeilBrown <neilb@suse.de>
+    nfsd: separate nfsd_last_thread() from nfsd_put()
+
+Nuno Sa <nuno.sa@analog.com>
+    iio: imu: adis16475: add spi_device_id table
+
+Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+    spi: Introduce spi_get_device_match_data() helper
+
+Dan Carpenter <dan.carpenter@linaro.org>
+    usb: fotg210-hcd: delete an incorrect bounds test
+
+Tony Lindgren <tony@atomide.com>
+    ARM: dts: Fix occasional boot hang for am3 usb
+
+Namjae Jeon <linkinjeon@kernel.org>
+    ksmbd: fix wrong allocation size update in smb2_open()
+
+Namjae Jeon <linkinjeon@kernel.org>
+    ksmbd: avoid duplicate opinfo_put() call on error of smb21_lease_break_ack()
+
+Namjae Jeon <linkinjeon@kernel.org>
+    ksmbd: lazy v2 lease break on smb2_write()
+
+Namjae Jeon <linkinjeon@kernel.org>
+    ksmbd: send v2 lease break notification for directory
+
+Namjae Jeon <linkinjeon@kernel.org>
+    ksmbd: downgrade RWH lease caching state to RH for directory
+
+Namjae Jeon <linkinjeon@kernel.org>
+    ksmbd: set v2 lease capability
+
+Namjae Jeon <linkinjeon@kernel.org>
+    ksmbd: set epoch in create context v2 lease
+
+Namjae Jeon <linkinjeon@kernel.org>
+    ksmbd: don't update ->op_state as OPLOCK_STATE_NONE on error
+
+Namjae Jeon <linkinjeon@kernel.org>
+    ksmbd: move setting SMB2_FLAGS_ASYNC_COMMAND and AsyncId
+
+Namjae Jeon <linkinjeon@kernel.org>
+    ksmbd: release interim response after sending status pending response
+
+Namjae Jeon <linkinjeon@kernel.org>
+    ksmbd: move oplock handling after unlock parent dir
+
+Namjae Jeon <linkinjeon@kernel.org>
+    ksmbd: separately allocate ci per dentry
+
+Namjae Jeon <linkinjeon@kernel.org>
+    ksmbd: fix possible deadlock in smb2_open
+
+Zongmin Zhou <zhouzongmin@kylinos.cn>
+    ksmbd: prevent memory leak on error return
+
+Namjae Jeon <linkinjeon@kernel.org>
+    ksmbd: fix kernel-doc comment of ksmbd_vfs_kern_path_locked()
+
+Namjae Jeon <linkinjeon@kernel.org>
+    ksmbd: no need to wait for binded connection termination at logoff
+
+Namjae Jeon <linkinjeon@kernel.org>
+    ksmbd: add support for surrogate pair conversion
+
+Kangjing Huang <huangkangjing@gmail.com>
+    ksmbd: fix missing RDMA-capable flag for IPoIB device in ksmbd_rdma_capable_netdev()
+
+Marios Makassikis <mmakassikis@freebox.fr>
+    ksmbd: fix recursive locking in vfs helpers
+
+Namjae Jeon <linkinjeon@kernel.org>
+    ksmbd: fix kernel-doc comment of ksmbd_vfs_setxattr()
+
+Namjae Jeon <linkinjeon@kernel.org>
+    ksmbd: reorganize ksmbd_iov_pin_rsp()
+
+Cheng-Han Wu <hank20010209@gmail.com>
+    ksmbd: Remove unused field in ksmbd_user struct
+
+Namjae Jeon <linkinjeon@kernel.org>
+    ksmbd: fix potential double free on smb2_read_pipe() error path
+
+Namjae Jeon <linkinjeon@kernel.org>
+    ksmbd: fix Null pointer dereferences in ksmbd_update_fstate()
+
+Namjae Jeon <linkinjeon@kernel.org>
+    ksmbd: fix wrong error response status by using set_smb2_rsp_status()
+
+Namjae Jeon <linkinjeon@kernel.org>
+    ksmbd: fix race condition between tree conn lookup and disconnect
+
+Namjae Jeon <linkinjeon@kernel.org>
+    ksmbd: fix race condition from parallel smb2 lock requests
+
+Namjae Jeon <linkinjeon@kernel.org>
+    ksmbd: fix race condition from parallel smb2 logoff requests
+
+Namjae Jeon <linkinjeon@kernel.org>
+    ksmbd: fix race condition with fp
+
+Namjae Jeon <linkinjeon@kernel.org>
+    ksmbd: check iov vector index in ksmbd_conn_write()
+
+Namjae Jeon <linkinjeon@kernel.org>
+    ksmbd: return invalid parameter error response if smb2 request is invalid
+
+Namjae Jeon <linkinjeon@kernel.org>
+    ksmbd: fix passing freed memory 'aux_payload_buf'
+
+Namjae Jeon <linkinjeon@kernel.org>
+    ksmbd: remove unneeded mark_inode_dirty in set_info_sec()
+
+Steve French <stfrench@microsoft.com>
+    ksmbd: remove experimental warning
+
+Namjae Jeon <linkinjeon@kernel.org>
+    ksmbd: add missing calling smb2_set_err_rsp() on error
+
+Yang Li <yang.lee@linux.alibaba.com>
+    ksmbd: Fix one kernel-doc comment
+
+Atte Heikkilä <atteh.mailbox@gmail.com>
+    ksmbd: fix `force create mode' and `force directory mode'
+
+Namjae Jeon <linkinjeon@kernel.org>
+    ksmbd: fix wrong interim response on compound
+
+Namjae Jeon <linkinjeon@kernel.org>
+    ksmbd: add support for read compound
+
+Yang Yingliang <yangyingliang@huawei.com>
+    ksmbd: switch to use kmemdup_nul() helper
+
+Namjae Jeon <linkinjeon@kernel.org>
+    ksmbd: check if a mount point is crossed during path lookup
+
+Wang Ming <machel@vivo.com>
+    ksmbd: Fix unsigned expression compared with zero
+
+Gustavo A. R. Silva <gustavoars@kernel.org>
+    ksmbd: Replace one-element array with flexible-array member
+
+Gustavo A. R. Silva <gustavoars@kernel.org>
+    ksmbd: Use struct_size() helper in ksmbd_negotiate_smb_dialect()
+
+Lu Hongfei <luhongfei@vivo.com>
+    ksmbd: Replace the ternary conditional operator with min()
+
+Namjae Jeon <linkinjeon@kernel.org>
+    ksmbd: use kvzalloc instead of kvmalloc
+
+Lu Hongfei <luhongfei@vivo.com>
+    ksmbd: Change the return value of ksmbd_vfs_query_maximal_access to void
+
+Namjae Jeon <linkinjeon@kernel.org>
+    ksmbd: return a literal instead of 'err' in ksmbd_vfs_kern_path_locked()
+
+Namjae Jeon <linkinjeon@kernel.org>
+    ksmbd: use kzalloc() instead of __GFP_ZERO
+
+Namjae Jeon <linkinjeon@kernel.org>
+    ksmbd: remove unused ksmbd_tree_conn_share function
+
+Namjae Jeon <linkinjeon@kernel.org>
+    ksmbd: add mnt_want_write to ksmbd vfs functions
+
+Namjae Jeon <linkinjeon@kernel.org>
+    ksmbd: fix posix_acls and acls dereferencing possible ERR_PTR()
+
+Namjae Jeon <linkinjeon@kernel.org>
+    ksmbd: call putname after using the last component
+
+Namjae Jeon <linkinjeon@kernel.org>
+    ksmbd: fix uninitialized pointer read in smb2_create_link()
+
+Namjae Jeon <linkinjeon@kernel.org>
+    ksmbd: fix uninitialized pointer read in ksmbd_vfs_rename()
+
+Namjae Jeon <linkinjeon@kernel.org>
+    ksmbd: fix racy issue from using ->d_parent and ->d_name
+
+Al Viro <viro@zeniv.linux.org.uk>
+    fs: introduce lock_rename_child() helper
+
+David Disseldorp <ddiss@suse.de>
+    ksmbd: remove unused compression negotiate ctx packing
+
+David Disseldorp <ddiss@suse.de>
+    ksmbd: avoid duplicate negotiate ctx offset increments
+
+David Disseldorp <ddiss@suse.de>
+    ksmbd: set NegotiateContextCount once instead of every inc
+
+Namjae Jeon <linkinjeon@kernel.org>
+    ksmbd: delete asynchronous work from list
+
+Tom Rix <trix@redhat.com>
+    ksmbd: remove unused is_char_allowed function
+
+Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+    ksmbd: Fix parameter name and comment mismatch
+
+Colin Ian King <colin.i.king@gmail.com>
+    ksmbd: Fix spelling mistake "excceed" -> "exceeded"
+
+Steve French <stfrench@microsoft.com>
+    ksmbd: update Kconfig to note Kerberos support and fix indentation
+
+Dawei Li <set_pte_at@outlook.com>
+    ksmbd: Remove duplicated codes
+
+Dawei Li <set_pte_at@outlook.com>
+    ksmbd: fix typo, syncronous->synchronous
+
+Dawei Li <set_pte_at@outlook.com>
+    ksmbd: Implements sess->rpc_handle_list as xarray
+
+ye xingchen <ye.xingchen@zte.com.cn>
+    ksmbd: Convert to use sysfs_emit()/sysfs_emit_at() APIs
+
+Marios Makassikis <mmakassikis@freebox.fr>
+    ksmbd: Fix resource leak in smb2_lock()
+
+Jeff Layton <jlayton@kernel.org>
+    ksmbd: use F_SETLK when unlocking a file
+
+Namjae Jeon <linkinjeon@kernel.org>
+    ksmbd: set SMB2_SESSION_FLAG_ENCRYPT_DATA when enforcing data encryption for this share
+
+Gustavo A. R. Silva <gustavoars@kernel.org>
+    ksmbd: replace one-element arrays with flexible-array members
 
 
- drivers/perf/riscv_pmu_sbi.c | 37 ++++++++++++++++++++++++++++++++++--
- 1 file changed, 35 insertions(+), 2 deletions(-)
+-------------
 
-diff --git a/drivers/perf/riscv_pmu_sbi.c b/drivers/perf/riscv_pmu_sbi.c
-index 16acd4dcdb96..b58a70ee8317 100644
---- a/drivers/perf/riscv_pmu_sbi.c
-+++ b/drivers/perf/riscv_pmu_sbi.c
-@@ -86,7 +86,7 @@ struct sbi_pmu_event_data {
- 	};
- };
- 
--static const struct sbi_pmu_event_data pmu_hw_event_map[] = {
-+static struct sbi_pmu_event_data pmu_hw_event_map[] = {
- 	[PERF_COUNT_HW_CPU_CYCLES]		= {.hw_gen_event = {
- 							SBI_PMU_HW_CPU_CYCLES,
- 							SBI_PMU_EVENT_TYPE_HW, 0}},
-@@ -120,7 +120,7 @@ static const struct sbi_pmu_event_data pmu_hw_event_map[] = {
- };
- 
- #define C(x) PERF_COUNT_HW_CACHE_##x
--static const struct sbi_pmu_event_data pmu_cache_event_map[PERF_COUNT_HW_CACHE_MAX]
-+static struct sbi_pmu_event_data pmu_cache_event_map[PERF_COUNT_HW_CACHE_MAX]
- [PERF_COUNT_HW_CACHE_OP_MAX]
- [PERF_COUNT_HW_CACHE_RESULT_MAX] = {
- 	[C(L1D)] = {
-@@ -265,6 +265,36 @@ static const struct sbi_pmu_event_data pmu_cache_event_map[PERF_COUNT_HW_CACHE_M
- 	},
- };
- 
-+static void pmu_sbi_check_event(struct sbi_pmu_event_data *edata)
-+{
-+	struct sbiret ret;
-+
-+	ret = sbi_ecall(SBI_EXT_PMU, SBI_EXT_PMU_COUNTER_CFG_MATCH,
-+			0, cmask, 0, edata->event_idx, 0, 0);
-+	if (!ret.error) {
-+		sbi_ecall(SBI_EXT_PMU, SBI_EXT_PMU_COUNTER_STOP,
-+			  ret.value, 0x1, SBI_PMU_STOP_FLAG_RESET, 0, 0, 0);
-+	} else if (ret.error == SBI_ERR_NOT_SUPPORTED) {
-+		/* This event cannot be monitored by any counter */
-+		edata->event_idx = -EINVAL;
-+	}
-+}
-+
-+static void pmu_sbi_update_events(void)
-+{
-+	/* Ensure events are not already mapped to a counter */
-+	sbi_ecall(SBI_EXT_PMU, SBI_EXT_PMU_COUNTER_STOP,
-+		  0, cmask, SBI_PMU_STOP_FLAG_RESET, 0, 0, 0);
-+
-+	for (int i = 0; i < ARRAY_SIZE(pmu_hw_event_map); i++)
-+		pmu_sbi_check_event(&pmu_hw_event_map[i]);
-+
-+	for (int i = 0; i < ARRAY_SIZE(pmu_cache_event_map); i++)
-+		for (int j = 0; j < ARRAY_SIZE(pmu_cache_event_map[i]); j++)
-+			for (int k = 0; k < ARRAY_SIZE(pmu_cache_event_map[i][j]); k++)
-+				pmu_sbi_check_event(&pmu_cache_event_map[i][j][k]);
-+}
-+
- static int pmu_sbi_ctr_get_width(int idx)
- {
- 	return pmu_ctr_list[idx].width;
-@@ -1046,6 +1076,9 @@ static int pmu_sbi_device_probe(struct platform_device *pdev)
- 	if (pmu_sbi_get_ctrinfo(num_counters, &cmask))
- 		goto out_free;
- 
-+	/* Check which standard events are available */
-+	pmu_sbi_update_events();
-+
- 	ret = pmu_sbi_setup_irqs(pmu, pdev);
- 	if (ret < 0) {
- 		pr_info("Perf sampling/filtering is not supported as sscof extension is not available\n");
--- 
-2.42.0
+Diffstat:
+
+ Makefile                          |    4 +-
+ arch/arm/boot/dts/am33xx.dtsi     |    1 +
+ drivers/base/property.c           |   11 +-
+ drivers/iio/imu/adis16475.c       |  129 +++--
+ drivers/platform/x86/p2sb.c       |  178 +++++--
+ drivers/spi/spi-atmel.c           |   82 ++-
+ drivers/spi/spi.c                 |   92 +++-
+ drivers/usb/host/fotg210-hcd.c    |    3 -
+ fs/namei.c                        |  125 ++++-
+ fs/nfsd/nfsctl.c                  |    9 +-
+ fs/nfsd/nfsd.h                    |    8 +-
+ fs/nfsd/nfssvc.c                  |   57 +-
+ fs/smb/common/smb2pdu.h           |    1 +
+ fs/smb/server/Kconfig             |   10 +-
+ fs/smb/server/asn1.c              |   33 +-
+ fs/smb/server/auth.c              |   11 +-
+ fs/smb/server/connection.c        |   74 +--
+ fs/smb/server/connection.h        |    2 +-
+ fs/smb/server/ksmbd_netlink.h     |    4 +-
+ fs/smb/server/ksmbd_work.c        |  100 +++-
+ fs/smb/server/ksmbd_work.h        |   36 +-
+ fs/smb/server/mgmt/share_config.h |   29 +-
+ fs/smb/server/mgmt/tree_connect.c |   53 +-
+ fs/smb/server/mgmt/tree_connect.h |   14 +-
+ fs/smb/server/mgmt/user_config.h  |    1 -
+ fs/smb/server/mgmt/user_session.c |   38 +-
+ fs/smb/server/mgmt/user_session.h |    3 +-
+ fs/smb/server/oplock.c            |  147 ++++--
+ fs/smb/server/oplock.h            |    8 +-
+ fs/smb/server/server.c            |   36 +-
+ fs/smb/server/smb2misc.c          |   19 +-
+ fs/smb/server/smb2ops.c           |   19 +-
+ fs/smb/server/smb2pdu.c           | 1033 ++++++++++++++++---------------------
+ fs/smb/server/smb2pdu.h           |    3 +-
+ fs/smb/server/smb_common.c        |   19 +-
+ fs/smb/server/smb_common.h        |   14 +-
+ fs/smb/server/smbacl.c            |   20 +-
+ fs/smb/server/smbacl.h            |    2 +-
+ fs/smb/server/transport_ipc.c     |    4 +-
+ fs/smb/server/transport_rdma.c    |   44 +-
+ fs/smb/server/unicode.c           |  191 ++++---
+ fs/smb/server/vfs.c               |  638 ++++++++++++-----------
+ fs/smb/server/vfs.h               |   52 +-
+ fs/smb/server/vfs_cache.c         |   63 ++-
+ fs/smb/server/vfs_cache.h         |   18 +-
+ include/linux/blkdev.h            |    2 +-
+ include/linux/export-internal.h   |    1 +
+ include/linux/module.h            |    9 +
+ include/linux/namei.h             |    7 +
+ include/linux/property.h          |    7 +-
+ include/linux/spi/spi.h           |   23 +
+ kernel/module/kallsyms.c          |    2 -
+ kernel/trace/ring_buffer.c        |  140 ++---
+ kernel/trace/trace.c              |   20 +-
+ kernel/trace/trace_kprobe.c       |   25 +-
+ mm/filemap.c                      |    9 +
+ mm/memory-failure.c               |    8 +-
+ mm/migrate.c                      |    9 +-
+ net/netfilter/nf_tables_api.c     |    2 +-
+ 59 files changed, 2139 insertions(+), 1563 deletions(-)
+
 
 
