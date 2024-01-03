@@ -1,153 +1,126 @@
-Return-Path: <linux-kernel+bounces-15982-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15984-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91DAF82368F
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 21:26:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E4CA823692
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 21:27:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A295E1C24510
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 20:26:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D1C5A285EEC
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 20:27:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9F381D52E;
-	Wed,  3 Jan 2024 20:26:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 414CB1D522;
+	Wed,  3 Jan 2024 20:27:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="P24OsXGa"
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="YVpFbnd6"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2D7C1D522;
-	Wed,  3 Jan 2024 20:26:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704313593; x=1735849593;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=Lbi2jJK5X6Ja8W5YJo3K02rWVxNq162kMfMknei1nr0=;
-  b=P24OsXGayooeGA166ie5EMgXCeHhFxJLzuMjR2smZmnJwkSzksYhW79h
-   V31R4+v/5aNRoTosrdVOopqvhBDKQ/nQfeJwxc9M5oYlF/OD8dJflzaEz
-   N0SfcY0zuW0A/emnxh6/Tz3nNwcrUGCOS5mbuHIxB4U9FT30tLXgS8aD2
-   ZbOBY/0bNAufbPwUb05KGXfoE3k0Q6HH6ZQqlARrGR4KWJMD68HtLTUD+
-   B8TBjyIc8naRi03g/WQ3ywBCSPq1UVfSHZHRuAoxtjEMAnrky9kTPMydo
-   yQDSowt4KtEE7ZlzoBgca+SY0ilGtbRHrR25gkE18+QRnAkIvcx5kYEUs
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10942"; a="15704000"
-X-IronPort-AV: E=Sophos;i="6.04,328,1695711600"; 
-   d="scan'208";a="15704000"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jan 2024 12:26:32 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10942"; a="870664136"
-X-IronPort-AV: E=Sophos;i="6.04,328,1695711600"; 
-   d="scan'208";a="870664136"
-Received: from lmjeniso-mobl1.amr.corp.intel.com (HELO [10.212.155.116]) ([10.212.155.116])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jan 2024 12:26:30 -0800
-Message-ID: <6ee6340a-ffe2-4106-b845-47cf443558c3@intel.com>
-Date: Wed, 3 Jan 2024 12:26:29 -0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B82B1D52F
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 20:27:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-6d9bc8939d0so2945603b3a.0
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 12:27:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1704313638; x=1704918438; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=xcsOQ9nD5GPnMMvdZNgPzZalWOKW9Ch4bNlsftdutyM=;
+        b=YVpFbnd61kSxJs8pNoR9WNm0ig9qBgLqqwQ6bHkBVroBOsf8s41xdjjAh4ZxmfVrQZ
+         AONmXMOd2WkX2mU/WfkEDkvqS9zPIKm6LVM8q05FrNfqxIWSMxgwZj/LuqD/5yLSz04s
+         wkykAVRS/sI+EvER9WlsohNwCOj2n5RwvWwg9FRmBrc0QhqLr/TXiXJho89S1xixq8ES
+         H/sRWcu2Z1qvTfkPUQB8RDcDZisnB5BS1LIEG13Q5rO/ZCOjnoa1VtEEJWnbwg+uvWsb
+         Tp+ZZw9g/CLcvcx/c2uqa+Pghl1HgmqMX6LfNxj3W790rbjWwIKos73M3f1p5uWh1yEV
+         iiJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704313638; x=1704918438;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xcsOQ9nD5GPnMMvdZNgPzZalWOKW9Ch4bNlsftdutyM=;
+        b=TXqDYW1W4bvTwqUrRJsKcFreIGRaQcSPQ3JsbHiNZmkoCVgCTUKmyhrZPYXwI6eVNi
+         Pn2d+DEpgTonPRTkydqy+XCgrzyxSEUapJGoOfCQX8oV2pvgB1g6rdI/Uy6Cjesyu4F4
+         o+Eg1Zayz/WLcCfNO/s/cYPE/TJxKk6EWhL6rLzllOJ3nGGvjxRbhdSLR2OZ+FQHZeST
+         3qyGqCZfCY766gNIZmMyoCKIw7oX77207Wlb6yFwICJSrXUQekFrtwkmnoWnreCmXid3
+         dSCQzW26lmAe40QsCXk1ULIhWOZYTcEDoEA3nGSLeP4zIpesc1OPPbC1Qdg1EKq9Mx+V
+         ZvXg==
+X-Gm-Message-State: AOJu0YzyGk4HtEIKWkY4wZXwDnzSyqOwHbQCnM2+qigxtfATn60uzI43
+	YaafRcoKFGg9THSuvn1Rz8yayvgbEVjtuKg2xKXMuMVm/lo=
+X-Google-Smtp-Source: AGHT+IGfGjwL1gOAZN1cJcV3cHT0ah1Btx46k+DeH+QlmZ3yh13pe7S1KrdoMLLsu6lIidEfExM5yg==
+X-Received: by 2002:a05:6a20:938b:b0:197:58b5:3251 with SMTP id x11-20020a056a20938b00b0019758b53251mr2377252pzh.113.1704313638634;
+        Wed, 03 Jan 2024 12:27:18 -0800 (PST)
+Received: from ghost (070-095-050-247.res.spectrum.com. [70.95.50.247])
+        by smtp.gmail.com with ESMTPSA id u16-20020a056a00099000b006d9c7f2840bsm16045592pfg.57.2024.01.03.12.27.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Jan 2024 12:27:18 -0800 (PST)
+Date: Wed, 3 Jan 2024 12:27:15 -0800
+From: Charlie Jenkins <charlie@rivosinc.com>
+To: Dan Carpenter <dan.carpenter@linaro.org>
+Cc: oe-kbuild@lists.linux.dev, lkp@intel.com, oe-kbuild-all@lists.linux.dev,
+	linux-kernel@vger.kernel.org, Palmer Dabbelt <palmer@rivosinc.com>
+Subject: Re: arch/riscv/kernel/module.c:639 process_accumulated_relocations()
+ error: uninitialized symbol 'curr_type'.
+Message-ID: <ZZXDI78QsaXzbfR+@ghost>
+References: <d0897fb3-1af8-430b-aa8b-9aa829bad1d7@suswa.mountain>
+ <ZXoFhu2TPXgrsInY@ghost>
+ <a46f0c36-8fd2-4a85-880c-eb462d4a837b@suswa.mountain>
+ <ZYzIbVfge6I8Ptw0@ghost>
+ <c11513b4-6e60-44b5-ba12-83fbb9b7e2c3@suswa.mountain>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] mm/tlb: fix fullmm semantics
-Content-Language: en-US
-To: Catalin Marinas <catalin.marinas@arm.com>,
- Jisheng Zhang <jszhang@kernel.org>
-Cc: Will Deacon <will@kernel.org>,
- "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
- Andrew Morton <akpm@linux-foundation.org>, Nick Piggin <npiggin@gmail.com>,
- Peter Zijlstra <peterz@infradead.org>,
- Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
- <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
- Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org,
- linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
- Nadav Amit <namit@vmware.com>, Andrea Arcangeli <aarcange@redhat.com>,
- Andy Lutomirski <luto@kernel.org>, Dave Hansen
- <dave.hansen@linux.intel.com>, Thomas Gleixner <tglx@linutronix.de>,
- Yu Zhao <yuzhao@google.com>, x86@kernel.org
-References: <20231228084642.1765-1-jszhang@kernel.org>
- <20231228084642.1765-2-jszhang@kernel.org> <ZZWh4c3ZUtadFqD1@arm.com>
-From: Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
-In-Reply-To: <ZZWh4c3ZUtadFqD1@arm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c11513b4-6e60-44b5-ba12-83fbb9b7e2c3@suswa.mountain>
 
-On 1/3/24 10:05, Catalin Marinas wrote:
->> --- a/mm/mmu_gather.c
->> +++ b/mm/mmu_gather.c
->> @@ -384,7 +384,7 @@ void tlb_finish_mmu(struct mmu_gather *tlb)
->>  		 * On x86 non-fullmm doesn't yield significant difference
->>  		 * against fullmm.
->>  		 */
->> -		tlb->fullmm = 1;
->> +		tlb->need_flush_all = 1;
->>  		__tlb_reset_range(tlb);
->>  		tlb->freed_tables = 1;
->>  	}
-> The optimisation here was added about a year later in commit
-> 7a30df49f63a ("mm: mmu_gather: remove __tlb_reset_range() for force
-> flush"). Do we still need to keep freed_tables = 1 here? I'd say only
-> __tlb_reset_range().
+On Tue, Jan 02, 2024 at 03:37:34PM +0300, Dan Carpenter wrote:
+> On Wed, Dec 27, 2023 at 04:59:25PM -0800, Charlie Jenkins wrote:
+> > On Thu, Dec 14, 2023 at 11:00:46AM +0300, Dan Carpenter wrote:
+> > > On Wed, Dec 13, 2023 at 11:27:02AM -0800, Charlie Jenkins wrote:
+> > > > > 8fd6c5142395a1 Charlie Jenkins 2023-11-01  638  			}
+> > > > > 8fd6c5142395a1 Charlie Jenkins 2023-11-01 @639  			reloc_handlers[curr_type].accumulate_handler(
+> > > > >                                                                                        ^^^^^^^^^
+> > > > > Can the list be empty?  Uninitialized in that case.
+> > > > 
+> > > > That's a tricky one, the list cannot be empty. Each bucket in the
+> > > > bucket_iter is guarunteed to have at least one rel_entry. I can probably
+> > > > resolve this by extracting this for loop into a do-while loop.
+> > > 
+> > > You can just ignore false positives.  It's not really a fix to change it
+> > > to a do-while loop.  I reviewed the do while code before reading this
+> > > email and I still wondered about empty lists, but just to hear that it's
+> > > not going to be empty is enough.  Just the email was sufficient.
+> > > 
+> > > regards,
+> > > dan carpenter
+> > > 
+> > 
+> > The fix isn't the do-while loop but rather the use after free, the
+> > incorrect sizeof, and incorrect error handling when
+> > initialize_relocation_hashtable fails. I decided to include the do-while
+> > code because I was already touching the surrounding code. Can you review
+> > [1]? If you would prefer that the do-while is reverted, I can do that,
+> > but it is important that the rest of the fixes are merged before 6.7 is
+> > released.
+> > 
+> > [1] https://lore.kernel.org/all/20231213-module_loading_fix-v1-1-da9b7c92ade5@rivosinc.com/
+> 
+> 
+> Most subsystems wouldn't merge a patch like this which does so many
+> things at the same time...
 
-I think the __tlb_reset_range() can be dangerous if it clears
-->freed_tables.  On x86 at least, it might lead to skipping the TLB IPI
-for CPUs that are in lazy TLB mode.  When those wake back up they might
-start using the freed page tables.
+That is a good point, I split it across 4 different patches.
 
-Logically, this little hunk of code is just trying to turn the 'tlb'
-from a ranged flush into a full one.  Ideally, just setting
-'need_flush_all = 1' would be enough.
+https://lore.kernel.org/linux-riscv/20240103-module_loading_fix-v2-0-292b160552c9@rivosinc.com/
 
-Is __tlb_reset_range() doing anything useful for other architectures?  I
-think it's just destroying perfectly valid metadata on x86. ;)
+> 
+> regards,
+> dan carpenter
+> 
 
