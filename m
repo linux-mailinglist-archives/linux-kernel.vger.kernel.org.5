@@ -1,130 +1,119 @@
-Return-Path: <linux-kernel+bounces-16033-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16034-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 12021823744
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 22:50:15 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 93A08823747
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 22:50:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 215E41C24874
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 21:50:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 36C59B249DD
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 21:50:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 441331DA26;
-	Wed,  3 Jan 2024 21:50:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2318D1DA30;
+	Wed,  3 Jan 2024 21:50:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="E+QhrLv6"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bE7I7rp2"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B07391DA23;
-	Wed,  3 Jan 2024 21:50:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 403LcQHL016677;
-	Wed, 3 Jan 2024 21:49:57 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:mime-version:content-type; s=
-	qcppdkim1; bh=uHNnF/bZ94LqrAIEs8WqP6zxB4HkEIdKigzoxp3FnMs=; b=E+
-	QhrLv61P/gb9vrQFMdMoQ75FQns6tuA4gOqTCkEb8LgZ2jBTGN3NL1hgalFe3R1q
-	wHqgvy+xSpWbFqrC5YDCqlLZ4MAEdTajbYJ/wLGVqEf9YoBytd/AjmN2nMaHsY5N
-	DqQAuXfapmYvUArEKuLQFG4e7En0zHTxMAnX4YBw/wzVPu3OCL2udExg+48SkUgN
-	7tueCNbWpO1XwAQmaT9q0B4Nu/yC0UCGUHDJzQwQVT+o4cGfcnkmEkmfH47WFzDs
-	8GSv0KfqdafubHDHu7Pv37E0pRlIYRrtKe0CIWyCux/2t9dB6VDEyyhpS3keWCA9
-	dqipJh4/Syf/plxvoZyQ==
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vdchnge8x-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 03 Jan 2024 21:49:56 +0000 (GMT)
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 403LntAI026012
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 3 Jan 2024 21:49:56 GMT
-Received: from hu-wcheng-lv.qualcomm.com (10.49.16.6) by
- nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Wed, 3 Jan 2024 13:49:55 -0800
-From: Wesley Cheng <quic_wcheng@quicinc.com>
-To: <gregkh@linuxfoundation.org>, <Thinh.Nguyen@synopsys.com>
-CC: <linux-kernel@vger.kernel.org>, <linux-usb@vger.kernel.org>,
-        Wesley Cheng
-	<quic_wcheng@quicinc.com>, <stable@vger.kernel.org>
-Subject: [PATCH v2] usb: dwc3: gadget: Queue PM runtime idle on disconnect event
-Date: Wed, 3 Jan 2024 13:49:46 -0800
-Message-ID: <20240103214946.2596-1-quic_wcheng@quicinc.com>
-X-Mailer: git-send-email 2.17.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBE521DA21;
+	Wed,  3 Jan 2024 21:50:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2cce6bb9b48so57363931fa.1;
+        Wed, 03 Jan 2024 13:50:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704318618; x=1704923418; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=aUL3qmp8YyJgWnCTGwj76mcYbxOhNMbAwT7dZHuyZLE=;
+        b=bE7I7rp2ZHRU3CiKEqNmMClEw6oEJfJ8+g/soopZC78zongH3Otu/1nWacM0YJowDg
+         IdDdznCojwhdeyp2i8Ypbg98d62RcgExtvSm7VuA3kDeYfFQBfVDEdpvT99PnqemOpKe
+         drJD70+0OaSqhMg8OosDA60A26d0yUMKQVP2/v5nbgYtWDwK48hFledUx0ajuv0UtcRx
+         CB2hWHbTuTN4MnkFSJtlQ+nWYSpJxt38XUTzyRlHLCE7yg220bSJkaWkU3f30k7Rwz8r
+         Fn8TM/aqRYGEO98mh1b+8yUyVH2R9ifhvRaX69KR0VKMMuvD6XywT7glTMu6kn2SFgsn
+         QN3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704318618; x=1704923418;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=aUL3qmp8YyJgWnCTGwj76mcYbxOhNMbAwT7dZHuyZLE=;
+        b=q2VlWJYqKCAARPkq2gb9X5jcXrsDFTT0kTqg7OAFVJOxP2IKHNCOOij1LYnIJQPA6r
+         RkThbWsNwOX4JpyGoE4sadROUrbq8bPm9OHR+ureq04gUXO2WzOh10FvamihCEuQgZKP
+         4cxqE7jQ750A++x+ql4TonotDRdttE9z9kVS5H6Md6SV6apw3tS9RHKQ9B9yQw0GBLFn
+         P7QT/tM40O0g2FZCy0LwTcxDi9/YTFveH5kdqWkTQ+v4IcBIA049NwWC4e2CKJyarLVI
+         MBIZcfZbx7CrpFhVTwvM17tX3a+Z+eclrlN2o3Jy1Pe+llG8QqKFJS3aQNS6H+7m5vsJ
+         NpmQ==
+X-Gm-Message-State: AOJu0YwBOw6db9BQyB4g66kvH1KoDnBQ6+7XcBomZplj5y0ijKUaK+Ar
+	M46mTAy4KfkmSlE/ZTte/WtrJvUN8gs+Q3PqoH8=
+X-Google-Smtp-Source: AGHT+IHDPheYVtEU2gvbcDYItqdryUAsUg7Fw8MTJXuIYUjp1Z93npevJoMlhK+cRfgkblV86K8SbtYNNXfYeFatlxQ=
+X-Received: by 2002:a2e:9684:0:b0:2cc:1e7b:3612 with SMTP id
+ q4-20020a2e9684000000b002cc1e7b3612mr4209336lji.65.1704318617657; Wed, 03 Jan
+ 2024 13:50:17 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: YFXwFkLpgfQ5ub3fwda2QtO2dozwio8I
-X-Proofpoint-GUID: YFXwFkLpgfQ5ub3fwda2QtO2dozwio8I
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0
- priorityscore=1501 malwarescore=0 adultscore=0 clxscore=1011
- suspectscore=0 impostorscore=0 mlxscore=0 spamscore=0 bulkscore=0
- mlxlogscore=906 lowpriorityscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.19.0-2311290000 definitions=main-2401030176
+References: <20231220045228.27079-2-luizluca@gmail.com> <ZZPtUIRerqTI2/yh@shell.armlinux.org.uk>
+ <CAJq09z61JRNOBy6zLJ+D2pOVP-FCkofLjNghHSOkFJ=5q=6utQ@mail.gmail.com>
+ <ZZU1SJlKpeU38c9I@shell.armlinux.org.uk> <ZZVMiPCoDyv/NZXN@shell.armlinux.org.uk>
+In-Reply-To: <ZZVMiPCoDyv/NZXN@shell.armlinux.org.uk>
+From: Luiz Angelo Daros de Luca <luizluca@gmail.com>
+Date: Wed, 3 Jan 2024 18:50:06 -0300
+Message-ID: <CAJq09z56GmDhbZUWR_s+thOfu0WB47o66X3_Ko3KyTk44inMCg@mail.gmail.com>
+Subject: Re: [PATCH net-next] net: mdio: get/put device node during (un)registration
+To: "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc: kuba@kernel.org, netdev@vger.kernel.org, andrew@lunn.ch, 
+	hkallweit1@gmail.com, davem@davemloft.net, edumazet@google.com, 
+	pabeni@redhat.com, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-There is a scenario where DWC3 runtime suspend is blocked due to the
-dwc->connected flag still being true while PM usage_count is zero after
-DWC3 giveback is completed and the USB gadget session is being terminated.
-This leads to a case where nothing schedules a PM runtime idle for the
-device.
+> Please test to check that this addresses your issue. Thanks.
+>
+> diff --git a/drivers/net/phy/mdio_bus.c b/drivers/net/phy/mdio_bus.c
+> index 6cf73c15635b..afbad1ad8683 100644
+> --- a/drivers/net/phy/mdio_bus.c
+> +++ b/drivers/net/phy/mdio_bus.c
+> @@ -193,6 +193,10 @@ static void mdiobus_release(struct device *d)
+>              bus->state != MDIOBUS_ALLOCATED,
+>              "%s: not in RELEASED or ALLOCATED state\n",
+>              bus->id);
+> +
+> +       if (bus->state == MDIOBUS_RELEASED)
+> +               fwnode_handle_put(dev_fwnode(d));
+> +
+>         kfree(bus);
+>  }
+>
+> @@ -684,6 +688,15 @@ int __mdiobus_register(struct mii_bus *bus, struct module *owner)
+>         bus->dev.groups = NULL;
+>         dev_set_name(&bus->dev, "%s", bus->id);
+>
+> +       /* If the bus state is allocated, we're registering a fresh bus
+> +        * that may have a fwnode associated with it. Grab a reference
+> +        * to the fwnode. This will be dropped when the bus is released.
+> +        * If the bus was set to unregistered, it means that the bus was
+> +        * previously registered, and we've already grabbed a reference.
+> +        */
+> +       if (bus->state == MDIOBUS_ALLOCATED)
+> +               fwnode_handle_get(dev_fwnode(&bus->dev));
+> +
+>         /* We need to set state to MDIOBUS_UNREGISTERED to correctly release
+>          * the device in mdiobus_free()
+>          *
+> --
 
-The exact condition is seen with the following sequence:
-  1.  USB bus reset is issued by the host
-  2.  Shortly after, or concurrently, a USB PD DR SWAP request is received
-      (sink->source)
-  3.  USB bus reset event handler runs and issues
-      dwc3_stop_active_transfers(), and pending transfer are stopped
-  4.  DWC3 usage_count decremented to 0, and runtime idle occurs while
-      dwc->connected == true, returns -EBUSY
-  5.  DWC3 disconnect event seen, dwc->connected set to false due to DR
-      swap handling
-  6.  No runtime idle after this point
+Thanks Russel. It is much better than my approach. You simply get/put
+during registration/unregistration when a node is defined, no matter
+who defined it (of_mdiobus_register or anything else). Clean and
+simple.
 
-Address this by issuing an asynchronous PM runtime idle call after the
-disconnect event is completed, as it modifies the dwc->connected flag,
-which is what blocks the initial runtime idle.
+Regards,
 
-Fixes: fc8bb91bc83e ("usb: dwc3: implement runtime PM")
-Cc: stable@vger.kernel.org
-Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
----
-changes from v1:
-- CC'ed stable
-
- drivers/usb/dwc3/gadget.c | 7 +++++++
- 1 file changed, 7 insertions(+)
-
-diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
-index 858fe4c299b7..de6056277f94 100644
---- a/drivers/usb/dwc3/gadget.c
-+++ b/drivers/usb/dwc3/gadget.c
-@@ -3973,6 +3973,13 @@ static void dwc3_gadget_disconnect_interrupt(struct dwc3 *dwc)
- 	usb_gadget_set_state(dwc->gadget, USB_STATE_NOTATTACHED);
- 
- 	dwc3_ep0_reset_state(dwc);
-+
-+	/*
-+	 * Request PM idle to address condition where usage count is
-+	 * already decremented to zero, but waiting for the disconnect
-+	 * interrupt to set dwc->connected to FALSE.
-+	 */
-+	pm_request_idle(dwc->dev);
- }
- 
- static void dwc3_gadget_reset_interrupt(struct dwc3 *dwc)
+Luiz
 
