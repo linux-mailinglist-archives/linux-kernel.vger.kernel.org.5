@@ -1,136 +1,106 @@
-Return-Path: <linux-kernel+bounces-15293-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15294-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F2178229D3
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 09:59:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B1E438229D5
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 10:01:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7272C1F23DF7
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 08:59:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3E4A3285150
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 09:01:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 200B7182B6;
-	Wed,  3 Jan 2024 08:59:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 214F5182AB;
+	Wed,  3 Jan 2024 09:01:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="APqPemPI";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="APqPemPI"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lqAUSpyi"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA0B8182A4;
-	Wed,  3 Jan 2024 08:59:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id A245A1F79C;
-	Wed,  3 Jan 2024 08:59:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1704272345; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Yv2lvBBY8zygbe4ymIzZMEvU6ASa58iPZBjgLvImPuI=;
-	b=APqPemPI7W1Ua8LkRyWzDPC3sHMyuQJIj2v0Wy/brDFHbMHaNs9wPvYHRAMtyyNXW3d+3z
-	8RehXl/VOkKgLwf4LWpLD7xpzYDjHNQPhmsa+H+vVnIM1tLMZOWbvTH0HuCLap65uwqTqG
-	XnebmvetCeovBhh7ESJOxfdx14eDXsQ=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1704272345; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Yv2lvBBY8zygbe4ymIzZMEvU6ASa58iPZBjgLvImPuI=;
-	b=APqPemPI7W1Ua8LkRyWzDPC3sHMyuQJIj2v0Wy/brDFHbMHaNs9wPvYHRAMtyyNXW3d+3z
-	8RehXl/VOkKgLwf4LWpLD7xpzYDjHNQPhmsa+H+vVnIM1tLMZOWbvTH0HuCLap65uwqTqG
-	XnebmvetCeovBhh7ESJOxfdx14eDXsQ=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 796401340C;
-	Wed,  3 Jan 2024 08:59:05 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id QqxWGtkhlWXGZgAAD6G6ig
-	(envelope-from <mhocko@suse.com>); Wed, 03 Jan 2024 08:59:05 +0000
-Date: Wed, 3 Jan 2024 09:59:04 +0100
-From: Michal Hocko <mhocko@suse.com>
-To: Dan Schatzberg <schatzberg.dan@gmail.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Yosry Ahmed <yosryahmed@google.com>, Huan Yang <link@vivo.com>,
-	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-	linux-mm@kvack.org, Tejun Heo <tj@kernel.org>,
-	Zefan Li <lizefan.x@bytedance.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Shakeel Butt <shakeelb@google.com>,
-	Muchun Song <muchun.song@linux.dev>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Kefeng Wang <wangkefeng.wang@huawei.com>,
-	SeongJae Park <sj@kernel.org>,
-	"Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
-	Nhat Pham <nphamcs@gmail.com>, Yue Zhao <findns94@gmail.com>
-Subject: Re: [PATCH v5 2/2] mm: add swapiness= arg to memory.reclaim
-Message-ID: <ZZUhBoTNgL3AUK3f@tiehlicka>
-References: <20231220152653.3273778-1-schatzberg.dan@gmail.com>
- <20231220152653.3273778-3-schatzberg.dan@gmail.com>
- <ZYQFlynE7CU_Fjoc@tiehlicka>
- <ZZRLVYeTjljn0dO5@dschatzberg-fedora-PF3DHTBV>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 602E518624
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 09:01:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-28bc8540299so4555930a91.0
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 01:01:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704272506; x=1704877306; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xGznX7WYH4v+IstE717/QjOXmBKiMPgM0a6SaDcyCWk=;
+        b=lqAUSpyi/IeRW1wDUrAtf6WbQXckWuP1dKSxW8EeCsne5eYNwq3rKDAcx7njA3o4FR
+         JuAFJ8esMxw2mJH88SXACreOp/RP7gxXl4MDOmvH5hKccUyPcqb+ArlvzC32KAAM9TcY
+         9kQbjzp0bSZkh3kFesZonrQGjYFIQg3Tu72zVUZYre/AO73q/Iv23bkZ6xjvpllZgbqK
+         zphV1I4MOfNwJN10D3bB98sbmIw2Kz8GDKuugvWft+GVZmPW1o9gptAuR0l0B996H50R
+         sXYw1hJcAgPI2E6oj+Ub/meXUn/zMfzZjicI1jyFFt3heshQQOST4bmwSfGzoArfk6nM
+         IDfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704272506; x=1704877306;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xGznX7WYH4v+IstE717/QjOXmBKiMPgM0a6SaDcyCWk=;
+        b=j4bks23Z/d9LOJLEqKoAEyaz/NLX5Yj3Cz1CqZI/lLvB78HrmKyi7C/KMTW9P1gv9d
+         XYtYect6Qf3M7O5pZSryQaRxKX07CxNl4rjZo1xNxhwHa+UrbS5XazwPhf7HJcy2B8Zz
+         rtqEnC+H9/fmVnAGNt4MwviFRaiZpJmhkMvFXfhqJUjdYl0e3By40+xhQLalhIiU+cgz
+         09Cu1pXhbabNlQM7zqx9gGgoRHh8JaLygiWt3X9S+LZZULSRKyc4v6X2a6G19cW+vo0+
+         kR2/lNUlctk4mxRmQBiFpHWec0oZlJAATZGcQ0IhkRslnBdZIfPbSrp1kiOvlI3QfsVw
+         k51A==
+X-Gm-Message-State: AOJu0YwnykYmmilzrmegG490KZcD2ZtPj0FD23VxFC995tUIEUo3Fo7q
+	x225fB8WywRcoBvJn8bxvh+bj9SdorK+5Htci4Q=
+X-Google-Smtp-Source: AGHT+IG/TkHGlE+KCz5Q/N6IXzIbXU6XAISaGjcot6U+D8okXS9K4oQuxa4lymqzb7V2xEeJ8eDWoMsZYJCoNthYcao=
+X-Received: by 2002:a17:90b:1192:b0:28b:92da:a028 with SMTP id
+ gk18-20020a17090b119200b0028b92daa028mr6639721pjb.60.1704272505529; Wed, 03
+ Jan 2024 01:01:45 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZZRLVYeTjljn0dO5@dschatzberg-fedora-PF3DHTBV>
-X-Spam-Level: 
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: 0.70
-X-Spamd-Result: default: False [0.70 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 BAYES_HAM(-0.00)[42.17%];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 R_RATELIMIT(0.00)[to_ip_from(RLhyf994aoi9gdt4d63rk4ux49)];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCPT_COUNT_TWELVE(0.00)[19];
-	 FREEMAIL_TO(0.00)[gmail.com];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 FREEMAIL_CC(0.00)[cmpxchg.org,linux.dev,google.com,vivo.com,vger.kernel.org,kvack.org,kernel.org,bytedance.com,lwn.net,linux-foundation.org,huawei.com,gmail.com];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Flag: NO
+References: <20231227145143.2399-3-jiangshanlai@gmail.com> <202401031025.95761451-oliver.sang@intel.com>
+In-Reply-To: <202401031025.95761451-oliver.sang@intel.com>
+From: Lai Jiangshan <jiangshanlai@gmail.com>
+Date: Wed, 3 Jan 2024 17:01:33 +0800
+Message-ID: <CAJhGHyAsg+AOY4GEE4m-7YA7YPf0hzqMgWTAVsr31Ob49VVXyw@mail.gmail.com>
+Subject: Re: [PATCH 2/7] workqueue: Share the same PWQ for the CPUs of a pod
+To: kernel test robot <oliver.sang@intel.com>
+Cc: oe-lkp@lists.linux.dev, lkp@intel.com, linux-kernel@vger.kernel.org, 
+	Tejun Heo <tj@kernel.org>, Naohiro.Aota@wdc.com, 
+	Lai Jiangshan <jiangshan.ljs@antgroup.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue 02-01-24 12:43:49, Dan Schatzberg wrote:
-> On Thu, Dec 21, 2023 at 10:29:59AM +0100, Michal Hocko wrote:
-[...]
-> Thanks for the review Michal and sorry for the delayed response. Your
-> patch looks reasonable to me but I'm a bit unclear about the need for
-> #ifdef - mem_cgroup_swappiness already works correctly regardless of
-> CONFIG_MEMCG or not - why not make sc->swappiness and sc_swappiness()
-> unconditional?
+On Wed, Jan 3, 2024 at 10:55=E2=80=AFAM kernel test robot <oliver.sang@inte=
+l.com> wrote:
 
-We do not have a different user than memcg pro-active reclaim. Making
-that conditional makes that more explicit. Nothing that I would insist
-on of course.
--- 
-Michal Hocko
-SUSE Labs
+
+Hello 0-DAY CI Kernel Test Team
+
+> If you fix the issue in a separate patch/commit (i.e. not just a new vers=
+ion of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <oliver.sang@intel.com>
+> | Closes: https://lore.kernel.org/oe-lkp/202401031025.95761451-oliver.san=
+g@intel.com
+>
+>
+> [   30.471685][    T1] ------------[ cut here ]------------
+> [ 30.476998][ T1] WARNING: CPU: 111 PID: 1 at kernel/workqueue.c:4842 des=
+troy_workqueue (kernel/workqueue.c:4842 (discriminator 1))
+
+It hits the check here
+
+        if ((pwq !=3D pwq->wq->dfl_pwq) && (pwq->refcnt > 1))
+                return true;
+
+Not only is the default pwq installed multiple times, but also other pwqs
+with this patch.
+
+Maybe pwq->installed_refcnt needs to be introduced to fix it.
+
+Thanks
+Lai
 
