@@ -1,145 +1,184 @@
-Return-Path: <linux-kernel+bounces-15882-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15879-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6EFBE8234EC
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 19:49:54 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D7BEE8234E1
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 19:48:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0AF8C1F25657
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 18:49:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 891EF1F25683
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 18:48:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07ADF1CA8F;
-	Wed,  3 Jan 2024 18:49:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E06A1CA85;
+	Wed,  3 Jan 2024 18:48:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tkos.co.il header.i=@tkos.co.il header.b="ktbiLOTW"
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="LmiPGfC+"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail.tkos.co.il (mail.tkos.co.il [84.110.109.230])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com [209.85.219.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17F881CA89
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 18:49:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tkos.co.il
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tkos.co.il
-Received: from localhost (unknown [10.0.8.3])
-	by mail.tkos.co.il (Postfix) with ESMTP id 5FDCA440A92;
-	Wed,  3 Jan 2024 20:47:20 +0200 (IST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tkos.co.il;
-	s=default; t=1704307640;
-	bh=TGqtNSqQzaT3LW4imqj4e0okddD35ScBH/nof2tytVY=;
-	h=References:From:To:Cc:Subject:Date:In-reply-to:From;
-	b=ktbiLOTWNHgYgoCMfabqvXLREuUI2x8zEHaLTHh6OnWDmRkQDb2xY8v2A1AA2Wbz/
-	 3iJv8lAtSOR3TaD2Jzc18AvIWc3wQNy+u7nqvv7A8M7TqIq0FsezN9kSK3ujqfjguP
-	 8RwFrT7lxIn7d04/f0AJ+9gYfwr3NAYJC8hJc+EBchZcEqrqGK1S/1UClae6I4cWbx
-	 B01MUQsACIjNa4GLJ5Oq3cuMGagKdXhzceak8a3MmNQdlNDZtfRUX2RBpbv9sUS2v5
-	 SgCZ8ErxMTQGC/iFTd5oTCkNicjxAq00JzY+4/7rDXUJGvqTsToFTPsn7MPBdYPjCv
-	 eTNJ2TtesVe9Q==
-References: <20240103170002.1793197-1-enachman@marvell.com>
-User-agent: mu4e 1.10.8; emacs 29.1
-From: Baruch Siach <baruch@tkos.co.il>
-To: Elad Nachman <enachman@marvell.com>
-Cc: catalin.marinas@arm.com, will@kernel.org, thunder.leizhen@huawei.com,
- bhe@redhat.com, akpm@linux-foundation.org, yajun.deng@linux.dev,
- chris.zjh@huawei.com, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] arm64: mm: Fix SOCs with DDR starting above zero
-Date: Wed, 03 Jan 2024 20:47:17 +0200
-In-reply-to: <20240103170002.1793197-1-enachman@marvell.com>
-Message-ID: <87r0iy45ho.fsf@tarshish>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9138C1CA86
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 18:48:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-yb1-f182.google.com with SMTP id 3f1490d57ef6-dbeac174e29so245792276.2
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 10:48:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1704307686; x=1704912486; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=FhPl6n+gaHRZqX878lSuSjjHaJIqMMwAsnd88hKX+7k=;
+        b=LmiPGfC+MKvX6Fgcq0PEdfR/GO8u7NK9swKzUJAyJFbyg4kOlbrbN+j3ioyjfUu0Pr
+         dZLOJ7PylQLsdTnuyW7bHi0mG5UF2uf6SZwAnLoZ7v0Vp5heXF6dp76rpE2qTp5v9lqU
+         vMo89V+1Z3ZZeMECWOk9mi6y+kxBCqpLhzliZIV1FBaMXsgXIgP1xnhb0fPbfDUCopak
+         RlZYt96xqfhCuFCKGrSk7EosEz/dzPguegK3fpqj9i5zqAUwhCkRMKLZQqZyhZ2MyLG4
+         GDHSNQz3AzTGx+sV9qfTvXFh3AFiPrinHAfh7Iea4kirKE0+RHUUJXv6ANeBhvX7EtTW
+         KQ9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704307686; x=1704912486;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FhPl6n+gaHRZqX878lSuSjjHaJIqMMwAsnd88hKX+7k=;
+        b=X7sgBzdX3xGj7QnUzigomU6nOLcQ8kOZqCyD3X6WQ5pPgKn6Mpi09BlQN41eFZ3Q1q
+         Ac6gKLlGw8Ol2PWknsQO8K1/cXwEWp1wvYZLLFL/dqO2fcrFZnvpIgAInxvaVZFpcDWf
+         BjbOb1eVZ7oO89ImPmKsRaV7MLbIXNJsmO0mBCFHAfCjESGUyYjcW6xHtE0KAapOdGn8
+         WF0QVimlvrczciSBygmPVan2i6cDfnzPsScTs+gsjyrMIit/MhWkqFXEhwGVRm8nVtmF
+         IIJIgw0nNpTotkt7kSsT/1M88ld0eJ5qUdtDCTNjNJmVuhsZdciy8xQWSTOtIbRSRxOz
+         ghMw==
+X-Gm-Message-State: AOJu0Yx9jWNw/8M3volS7Ghz2RoKwVUwQGVV2bc9Xe/30zqk7ZPUfeoa
+	P/uvRdwN+dlvrZ8Gda7svKxwrxbSvurl4/WdhoQjGhhgCFY=
+X-Google-Smtp-Source: AGHT+IHKWGLvLZUPJL8bZ4+1PfDyD4XSImEoClSZMSeMX+NcmH91Do12c+kWsJ2zb3rFDLDm/c6U0A==
+X-Received: by 2002:a5b:810:0:b0:dbe:82bc:5676 with SMTP id x16-20020a5b0810000000b00dbe82bc5676mr2344620ybp.11.1704307686377;
+        Wed, 03 Jan 2024 10:48:06 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
+        by smtp.gmail.com with ESMTPSA id cq5-20020a05622a424500b004181e5a724csm14393361qtb.88.2024.01.03.10.48.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Jan 2024 10:48:05 -0800 (PST)
+Received: from jgg by wakko with local (Exim 4.95)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1rL6Hc-0013gY-Hm;
+	Wed, 03 Jan 2024 14:48:04 -0400
+Date: Wed, 3 Jan 2024 14:48:04 -0400
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Shifeng Li <lishifeng@sangfor.com.cn>
+Cc: leon@kernel.org, wenglianfa@huawei.com, gustavoars@kernel.org,
+	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Shifeng Li <lishifeng1992@126.com>
+Subject: Re: [PATCH] RDMA/device: Fix a race between mad_client and cm_client
+ init
+Message-ID: <20240103184804.GB50608@ziepe.ca>
+References: <20240102034335.34842-1-lishifeng@sangfor.com.cn>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240102034335.34842-1-lishifeng@sangfor.com.cn>
 
-Hi Elad,
-
-On Wed, Jan 03 2024, Elad Nachman wrote:
-> From: Elad Nachman <enachman@marvell.com>
->
-> Some SOCs, like the Marvell AC5/X/IM, have a combination
-> of DDR starting at 0x2_0000_0000 coupled with DMA controllers
-> limited to 31 and 32 bit of addressing.
-> This requires to properly arrange ZONE_DMA and ZONE_DMA32 for
-> these SOCs, so swiotlb and coherent DMA allocation would work
-> properly.
-> Change initialization so device tree dma zone bits are taken as
-> function of offset from DRAM start, and when calculating the
-> maximal zone physical RAM address for physical DDR starting above
-> 32-bit, combine the physical address start plus the zone mask
-> passed as parameter.
-> This creates the proper zone splitting for these SOCs:
-> 0..2GB for ZONE_DMA
-> 2GB..4GB for ZONE_DMA32
-> 4GB..8GB for ZONE_NORMAL
->
-> Signed-off-by: Elad Nachman <enachman@marvell.com>
-
-For an alternative approach see
-
-  https://lore.kernel.org/all/cover.1703683642.git.baruch@tkos.co.il/
-
-baruch
-
-> ---
->  arch/arm64/mm/init.c | 20 +++++++++++++++-----
->  1 file changed, 15 insertions(+), 5 deletions(-)
->
-> diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
-> index 74c1db8ce271..8288c778916e 100644
-> --- a/arch/arm64/mm/init.c
-> +++ b/arch/arm64/mm/init.c
-> @@ -115,20 +115,21 @@ static void __init arch_reserve_crashkernel(void)
+On Mon, Jan 01, 2024 at 07:43:35PM -0800, Shifeng Li wrote:
+> diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
+> index 67bcea7a153c..85782786993d 100644
+> --- a/drivers/infiniband/core/device.c
+> +++ b/drivers/infiniband/core/device.c
+> @@ -1315,12 +1315,6 @@ static int enable_device_and_get(struct ib_device *device)
+>  	down_write(&devices_rwsem);
+>  	xa_set_mark(&devices, device->index, DEVICE_REGISTERED);
 >  
->  /*
->   * Return the maximum physical address for a zone accessible by the given bits
-> - * limit. If DRAM starts above 32-bit, expand the zone to the maximum
-> - * available memory, otherwise cap it at 32-bit.
-> + * limit. If DRAM starts above 32-bit, expand the zone to the available memory
-> + * start limited by the zone bits mask, otherwise cap it at 32-bit.
->   */
->  static phys_addr_t __init max_zone_phys(unsigned int zone_bits)
->  {
->  	phys_addr_t zone_mask = DMA_BIT_MASK(zone_bits);
->  	phys_addr_t phys_start = memblock_start_of_DRAM();
-> +	phys_addr_t phys_end = memblock_end_of_DRAM();
->  
->  	if (phys_start > U32_MAX)
-> -		zone_mask = PHYS_ADDR_MAX;
-> +		zone_mask = phys_start | zone_mask;
->  	else if (phys_start > zone_mask)
->  		zone_mask = U32_MAX;
->  
-> -	return min(zone_mask, memblock_end_of_DRAM() - 1) + 1;
-> +	return min(zone_mask, phys_end - 1) + 1;
+> -	/*
+> -	 * By using downgrade_write() we ensure that no other thread can clear
+> -	 * DEVICE_REGISTERED while we are completing the client setup.
+> -	 */
+> -	downgrade_write(&devices_rwsem);
+> -
+>  	if (device->ops.enable_driver) {
+>  		ret = device->ops.enable_driver(device);
+>  		if (ret)
+> @@ -1337,7 +1331,7 @@ static int enable_device_and_get(struct ib_device *device)
+>  	if (!ret)
+>  		ret = add_compat_devs(device);
+>  out:
+> -	up_read(&devices_rwsem);
+> +	up_write(&devices_rwsem);
+>  	return ret;
 >  }
->  
->  static void __init zone_sizes_init(void)
-> @@ -140,7 +141,16 @@ static void __init zone_sizes_init(void)
->  
->  #ifdef CONFIG_ZONE_DMA
->  	acpi_zone_dma_bits = fls64(acpi_iort_dma_get_max_cpu_address());
-> -	dt_zone_dma_bits = fls64(of_dma_get_max_cpu_address(NULL));
-> +	/*
-> +	 * When calculating the dma zone bits from the device tree, subtract
-> +	 * the DRAM start address, in case it does not start from address
-> +	 * zero. This way. we pass only the zone size related bits to
-> +	 * max_zone_phys(), which will add them to the base of the DRAM.
-> +	 * This prevents miscalculations on arm64 SOCs which combines
-> +	 * DDR starting above 4GB with memory controllers limited to
-> +	 * 32-bits or less:
-> +	 */
-> +	dt_zone_dma_bits = fls64(of_dma_get_max_cpu_address(NULL) - memblock_start_of_DRAM());
->  	zone_dma_bits = min3(32U, dt_zone_dma_bits, acpi_zone_dma_bits);
->  	arm64_dma_phys_limit = max_zone_phys(zone_dma_bits);
->  	max_zone_pfns[ZONE_DMA] = PFN_DOWN(arm64_dma_phys_limit);
 
+I don't think messing with the devices_rwsem here is a great idea, it
+would be better to address this on the clients_rwsem side like:
 
--- 
-                                                     ~. .~   Tk Open Systems
-=}------------------------------------------------ooO--U--Ooo------------{=
-   - baruch@tkos.co.il - tel: +972.52.368.4656, http://www.tkos.co.il -
+diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
+index 67bcea7a153c6a..b956c9f8e62d34 100644
+--- a/drivers/infiniband/core/device.c
++++ b/drivers/infiniband/core/device.c
+@@ -1730,7 +1730,7 @@ static int assign_client_id(struct ib_client *client)
+ {
+ 	int ret;
+ 
+-	down_write(&clients_rwsem);
++	lockdep_assert_held(&clients_rwsem);
+ 	/*
+ 	 * The add/remove callbacks must be called in FIFO/LIFO order. To
+ 	 * achieve this we assign client_ids so they are sorted in
+@@ -1739,14 +1739,11 @@ static int assign_client_id(struct ib_client *client)
+ 	client->client_id = highest_client_id;
+ 	ret = xa_insert(&clients, client->client_id, client, GFP_KERNEL);
+ 	if (ret)
+-		goto out;
++		return ret;
+ 
+ 	highest_client_id++;
+ 	xa_set_mark(&clients, client->client_id, CLIENT_REGISTERED);
+-
+-out:
+-	up_write(&clients_rwsem);
+-	return ret;
++	return 0;
+ }
+ 
+ static void remove_client_id(struct ib_client *client)
+@@ -1776,25 +1773,31 @@ int ib_register_client(struct ib_client *client)
+ {
+ 	struct ib_device *device;
+ 	unsigned long index;
++	bool need_unreg = false;
+ 	int ret;
+ 
+ 	refcount_set(&client->uses, 1);
+ 	init_completion(&client->uses_zero);
+-	ret = assign_client_id(client);
+-	if (ret)
+-		return ret;
+ 
+ 	down_read(&devices_rwsem);
++	down_write(&clients_rwsem);
++	ret = assign_client_id(client);
++	if (ret)
++		goto out;
++
++	need_unreg = true;
+ 	xa_for_each_marked (&devices, index, device, DEVICE_REGISTERED) {
+ 		ret = add_client_context(device, client);
+-		if (ret) {
+-			up_read(&devices_rwsem);
+-			ib_unregister_client(client);
+-			return ret;
+-		}
++		if (ret)
++			goto out;
+ 	}
++	ret = 0;
++out:
++	up_write(&clients_rwsem);
+ 	up_read(&devices_rwsem);
+-	return 0;
++	if (need_unreg && ret)
++		ib_unregister_client(client);
++	return ret;
+ }
+ EXPORT_SYMBOL(ib_register_client);
+ 
 
