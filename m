@@ -1,190 +1,264 @@
-Return-Path: <linux-kernel+bounces-15645-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15646-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10A5E822F6C
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 15:28:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B9C0822F82
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 15:30:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 170401C235AA
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 14:28:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DFD10285766
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 14:30:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B82401A5A1;
-	Wed,  3 Jan 2024 14:28:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8844D1A5AB;
+	Wed,  3 Jan 2024 14:29:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Pe4kYOdz"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="M8WIyPV5"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-oa1-f43.google.com (mail-oa1-f43.google.com [209.85.160.43])
+Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE8B01A594;
-	Wed,  3 Jan 2024 14:27:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f43.google.com with SMTP id 586e51a60fabf-2046c724383so1923701fac.1;
-        Wed, 03 Jan 2024 06:27:59 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6766E1A5A2
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 14:29:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1d3fde109f2so107875ad.1
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 06:29:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704292078; x=1704896878; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1704292194; x=1704896994; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=a349tfFo0Tz6+yladu1vGz3cOOaSViS9QyeDAzXiKtI=;
-        b=Pe4kYOdzNeudFCkX8EA3GZYLfLIBH/DxnRNGN9VRkKB2osQEUuTPCFVKtG6dH3wzfO
-         v6ieCWQibeCoMAtWb5me/rE1eVapEY8Xu0jgk/AQ3T10yg/xauSPo9PkN++BKOQpGg0R
-         Ad/J3ejqiMHpyZldi6JRuAxtbukPpJTE5biENr1xMDs6u1aR7ym4iDDDbXGIuGxj+LpO
-         hg55fi3X13H5hWsaZWBf7PwM/e1/+cpybqYusLJd410p2ga7v7n4a7wlAvmejSBTExAR
-         vzisuQ5N/Am24sdb05KppAyvoVs8zwRdplQJVN7qTEya5yuHhot3t2YXAgveIwB9wimD
-         z9dw==
+        bh=oVEKfZs2DLLoJBucrUU9KPu7VS008ehBPwm9FkA9RgE=;
+        b=M8WIyPV51tzRwXbkWCR0NhK6INw1+R6zcDt4IZ3LA/6+18uGF2lIzTrCHRBZUN7Rvo
+         O80p9Hwaf8yYLH175P+FRpbwZJ2JZfVFLwqYiYkEdna+dMCr825qWgVB1HCYMLZoiSid
+         b62uBjfaF7dbDscysZGn50wyPIYaK/AAbS2xe6Q+yDwcwheY3UasIyN+/fraE4vCEqzo
+         1nQEHQwoojv//HXFOpaD8bOy/2HuFN8At85LKTAGtF3afh+p5e5SWyyVncbeiwyYwj0X
+         PlPiuyGT9sxfxQ87oYfS/WqNBxYaWvg/sdXhFgUTGzmv7r5BLfQr5LTASdEQ9m0sCpY3
+         QPlw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704292078; x=1704896878;
+        d=1e100.net; s=20230601; t=1704292194; x=1704896994;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=a349tfFo0Tz6+yladu1vGz3cOOaSViS9QyeDAzXiKtI=;
-        b=vhz+CMT0RS+3L7l28AyjfaiAKjqPSl4cUmF1ESVSjBlDruPe0W/BS44flr6cJVAJo3
-         31XpZrslcyU1G28g53NqpmJVo7ehW0vQngALEwMisaIdUBgsY7zsQL1J5sX6IRM3OSnC
-         uhBkfbaHCf4LGGuBjtAZMrGlZmK8TWAavoHOzYJO4lAtiODIBPnZbr3QPQd/OwQ+8aHF
-         uuMRHz+FJjG1OrQLyWHkE3TfMFNNZ1Il7X3ZxIjevOw7fK0EzW9x/2eyX36K3FXsUc7w
-         bWl0NDaxhe/2M0fxK20vxkTehCC3WOEO8GPrc8lAWPvqepKCldilzPPRaG4wek5Z79uP
-         6FPw==
-X-Gm-Message-State: AOJu0Yxq1yPb6qCg3quqTbsVcn71w3RE3UfJt9/r0Ihu9MOwaeXReOwy
-	CO8CC3GI5D4oxxscUTGrsPMkne8cqzFSd3P8/Wc=
-X-Google-Smtp-Source: AGHT+IHjuxm+WsGold4msvLzUcwvASXsLbNWaImZQEtNmF+UM28LD4T6ctfH3u7LonFz90aecPkvdKH3c/Z8VWiEa/Q=
-X-Received: by 2002:a05:6871:2b02:b0:204:32f7:6668 with SMTP id
- dr2-20020a0568712b0200b0020432f76668mr8870200oac.34.1704292078704; Wed, 03
- Jan 2024 06:27:58 -0800 (PST)
+        bh=oVEKfZs2DLLoJBucrUU9KPu7VS008ehBPwm9FkA9RgE=;
+        b=CPjDnI19847rcTEkcZotqCTEXdCT65uZH6pxr2aTOqQCrukBvKi7Fw41R3merVAW7z
+         fQ1y9Rn56+BS0UHzKSJFDltOqI0dOaBwmjCk+WUcOw5nmWPGmeQPEiFUs2zzG/lNehKE
+         /YQ8qpNoMp3PlEsceC2wJp0ousPDSfH6Wx3SDBEqdg4TuikQM9TGn4C9cofLQx1nUAhL
+         t7VuOfSLOiOaM0FTCpk+8UKkaNxKDfXBnUgcNQ3ruq9S6l8hQxiQIbxuSZK3hzVesVPn
+         NgrFSmtPXMehhe7/Aj9gAv/sDcfY53hVUjYe3PnMMud15MdMrHq7YJleam0h7sbbOCQJ
+         pBhQ==
+X-Gm-Message-State: AOJu0YyF7YskSZgvTR0qf1+tLq/74TGzhgkDH/fRGm5bpMV/6bhsesRl
+	0nW3AkNhwVHsThn934JCDR42Hd7GAwngTW340c9soDbNtp8x
+X-Google-Smtp-Source: AGHT+IFF7WKOxIOZEaJ5Kz2sTuauklxf37gjIrk4WsTMuHIqjeoPENHgJr+UbkTrFrWygnbUbTj4/IiqxjI2vP7vKhU=
+X-Received: by 2002:a17:903:94e:b0:1d4:3cf7:ef28 with SMTP id
+ ma14-20020a170903094e00b001d43cf7ef28mr135098plb.9.1704292193249; Wed, 03 Jan
+ 2024 06:29:53 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231228014220.3562640-1-samuel.holland@sifive.com>
-In-Reply-To: <20231228014220.3562640-1-samuel.holland@sifive.com>
-From: Alex Deucher <alexdeucher@gmail.com>
-Date: Wed, 3 Jan 2024 09:27:47 -0500
-Message-ID: <CADnq5_Pub0UULb6UqO2g+Eo6RCy=gqtWLN9txjEyp2Gmw9idww@mail.gmail.com>
-Subject: Re: [PATCH v2 00/14] Unified cross-architecture kernel-mode FPU API
-To: Samuel Holland <samuel.holland@sifive.com>
-Cc: linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org, 
-	x86@kernel.org, linux-riscv@lists.infradead.org, 
-	Christoph Hellwig <hch@lst.de>, linux-arch@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>, 
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	amd-gfx@lists.freedesktop.org, loongarch@lists.linux.dev
+References: <0000000000009ae37b060d32c643@google.com> <5e68be46-caab-40f4-8e0f-543566fd7c28@moroto.mountain>
+In-Reply-To: <5e68be46-caab-40f4-8e0f-543566fd7c28@moroto.mountain>
+From: Aleksandr Nogikh <nogikh@google.com>
+Date: Wed, 3 Jan 2024 15:29:41 +0100
+Message-ID: <CANp29Y64Pzp_SstZsM5n4x5RwJxYbnBP3asUxOvvAkJ4_mo_Sw@mail.gmail.com>
+Subject: Re: [PATCH] usbhid: fix array-index-out-of-bounds in usbhid_parse
+ UBSAN warning
+To: Dan Carpenter <dan.carpenter@linaro.org>
+Cc: oe-kbuild@lists.linux.dev, 
+	syzbot <syzbot+c52569baf0c843f35495@syzkaller.appspotmail.com>, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, lkp@intel.com, 
+	oe-kbuild-all@lists.linux.dev
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Dec 28, 2023 at 5:11=E2=80=AFAM Samuel Holland
-<samuel.holland@sifive.com> wrote:
->
-> This series unifies the kernel-mode FPU API across several architectures
-> by wrapping the existing functions (where needed) in consistently-named
-> functions placed in a consistent header location, with mostly the same
-> semantics: they can be called from preemptible or non-preemptible task
-> context, and are not assumed to be reentrant. Architectures are also
-> expected to provide CFLAGS adjustments for compiling FPU-dependent code.
-> For the moment, SIMD/vector units are out of scope for this common API.
->
-> This allows us to remove the ifdeffery and duplicated Makefile logic at
-> each FPU user. It then implements the common API on RISC-V, and converts
-> a couple of users to the new API: the AMDGPU DRM driver, and the FPU
-> self test.
->
-> The underlying goal of this series is to allow using newer AMD GPUs
-> (e.g. Navi) on RISC-V boards such as SiFive's HiFive Unmatched. Those
-> GPUs need CONFIG_DRM_AMD_DC_FP to initialize, which requires kernel-mode
-> FPU support.
+Hi Dan,
 
-Series is:
-Acked-by: Alex Deucher <alexander.deucher@amd.com>
+In this particular case syzbot just forwarded a user's patch testing
+request to the LKML. I think there's not much value in kernel test
+robot analyzing such emails.
 
+--=20
+Aleksandr
+
+On Wed, Jan 3, 2024 at 3:12=E2=80=AFPM Dan Carpenter <dan.carpenter@linaro.=
+org> wrote:
 >
-> Previous versions:
-> v1: https://lore.kernel.org/linux-kernel/20231208055501.2916202-1-samuel.=
-holland@sifive.com/
-> v0: https://lore.kernel.org/linux-kernel/20231122030621.3759313-1-samuel.=
-holland@sifive.com/
+> Hi syzbot,
 >
-> Changes in v2:
->  - Add documentation explaining the built-time and runtime APIs
->  - Add a linux/fpu.h header for generic isolation enforcement
->  - Remove file name from header comment
->  - Clean up arch/arm64/lib/Makefile, like for arch/arm
->  - Remove RISC-V architecture-specific preprocessor check
->  - Split altivec removal to a separate patch
->  - Use linux/fpu.h instead of asm/fpu.h in consumers
->  - Declare test_fpu() in a header
+> kernel test robot noticed the following build warnings:
 >
-> Michael Ellerman (1):
->   drm/amd/display: Only use hard-float, not altivec on powerpc
+> https://git-scm.com/docs/git-format-patch#_base_tree_information]
 >
-> Samuel Holland (13):
->   arch: Add ARCH_HAS_KERNEL_FPU_SUPPORT
->   ARM: Implement ARCH_HAS_KERNEL_FPU_SUPPORT
->   ARM: crypto: Use CC_FLAGS_FPU for NEON CFLAGS
->   arm64: Implement ARCH_HAS_KERNEL_FPU_SUPPORT
->   arm64: crypto: Use CC_FLAGS_FPU for NEON CFLAGS
->   lib/raid6: Use CC_FLAGS_FPU for NEON CFLAGS
->   LoongArch: Implement ARCH_HAS_KERNEL_FPU_SUPPORT
->   powerpc: Implement ARCH_HAS_KERNEL_FPU_SUPPORT
->   x86: Implement ARCH_HAS_KERNEL_FPU_SUPPORT
->   riscv: Add support for kernel-mode FPU
->   drm/amd/display: Use ARCH_HAS_KERNEL_FPU_SUPPORT
->   selftests/fpu: Move FP code to a separate translation unit
->   selftests/fpu: Allow building on other architectures
+> url:    https://github.com/intel-lab-lkp/linux/commits/syzbot/usbhid-fix-=
+array-index-out-of-bounds-in-usbhid_parse-UBSAN-warning/20231225-153341
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/hid/hid.git for-n=
+ext
+> patch link:    https://lore.kernel.org/r/0000000000009ae37b060d32c643%40g=
+oogle.com
+> patch subject: [PATCH] usbhid: fix array-index-out-of-bounds in usbhid_pa=
+rse UBSAN warning
+> config: x86_64-randconfig-161-20231225 (https://download.01.org/0day-ci/a=
+rchive/20231226/202312260900.gRDPofL9-lkp@intel.com/config)
+> compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git =
+ae42196bc493ffe877a7e3dff8be32035dea4d07)
 >
->  Documentation/core-api/floating-point.rst     | 78 +++++++++++++++++++
->  Documentation/core-api/index.rst              |  1 +
->  Makefile                                      |  5 ++
->  arch/Kconfig                                  |  6 ++
->  arch/arm/Kconfig                              |  1 +
->  arch/arm/Makefile                             |  7 ++
->  arch/arm/include/asm/fpu.h                    | 15 ++++
->  arch/arm/lib/Makefile                         |  3 +-
->  arch/arm64/Kconfig                            |  1 +
->  arch/arm64/Makefile                           |  9 ++-
->  arch/arm64/include/asm/fpu.h                  | 15 ++++
->  arch/arm64/lib/Makefile                       |  6 +-
->  arch/loongarch/Kconfig                        |  1 +
->  arch/loongarch/Makefile                       |  5 +-
->  arch/loongarch/include/asm/fpu.h              |  1 +
->  arch/powerpc/Kconfig                          |  1 +
->  arch/powerpc/Makefile                         |  5 +-
->  arch/powerpc/include/asm/fpu.h                | 28 +++++++
->  arch/riscv/Kconfig                            |  1 +
->  arch/riscv/Makefile                           |  3 +
->  arch/riscv/include/asm/fpu.h                  | 16 ++++
->  arch/riscv/kernel/Makefile                    |  1 +
->  arch/riscv/kernel/kernel_mode_fpu.c           | 28 +++++++
->  arch/x86/Kconfig                              |  1 +
->  arch/x86/Makefile                             | 20 +++++
->  arch/x86/include/asm/fpu.h                    | 13 ++++
->  drivers/gpu/drm/amd/display/Kconfig           |  2 +-
->  .../gpu/drm/amd/display/amdgpu_dm/dc_fpu.c    | 35 +--------
->  drivers/gpu/drm/amd/display/dc/dml/Makefile   | 36 +--------
->  drivers/gpu/drm/amd/display/dc/dml2/Makefile  | 36 +--------
->  include/linux/fpu.h                           | 12 +++
->  lib/Kconfig.debug                             |  2 +-
->  lib/Makefile                                  | 26 +------
->  lib/raid6/Makefile                            | 31 ++------
->  lib/test_fpu.h                                |  8 ++
->  lib/{test_fpu.c =3D> test_fpu_glue.c}           | 37 ++-------
->  lib/test_fpu_impl.c                           | 37 +++++++++
->  37 files changed, 343 insertions(+), 190 deletions(-)
->  create mode 100644 Documentation/core-api/floating-point.rst
->  create mode 100644 arch/arm/include/asm/fpu.h
->  create mode 100644 arch/arm64/include/asm/fpu.h
->  create mode 100644 arch/powerpc/include/asm/fpu.h
->  create mode 100644 arch/riscv/include/asm/fpu.h
->  create mode 100644 arch/riscv/kernel/kernel_mode_fpu.c
->  create mode 100644 arch/x86/include/asm/fpu.h
->  create mode 100644 include/linux/fpu.h
->  create mode 100644 lib/test_fpu.h
->  rename lib/{test_fpu.c =3D> test_fpu_glue.c} (71%)
->  create mode 100644 lib/test_fpu_impl.c
+> If you fix the issue in a separate patch/commit (i.e. not just a new vers=
+ion of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+> | Closes: https://lore.kernel.org/r/202312260900.gRDPofL9-lkp@intel.com/
+>
+> smatch warnings:
+> drivers/hid/usbhid/hid-core.c:1026 usbhid_parse() warn: curly braces inte=
+nded?
+> drivers/hid/usbhid/hid-core.c:1029 usbhid_parse() warn: inconsistent inde=
+nting
+>
+> vim +1026 drivers/hid/usbhid/hid-core.c
+>
+> c500c9714011ed drivers/hid/usbhid/hid-core.c Jiri Slaby         2008-05-1=
+6   979  static int usbhid_parse(struct hid_device *hid)
+> c500c9714011ed drivers/hid/usbhid/hid-core.c Jiri Slaby         2008-05-1=
+6   980  {
+> c500c9714011ed drivers/hid/usbhid/hid-core.c Jiri Slaby         2008-05-1=
+6   981        struct usb_interface *intf =3D to_usb_interface(hid->dev.par=
+ent);
+> ^1da177e4c3f41 drivers/usb/input/hid-core.c  Linus Torvalds     2005-04-1=
+6   982        struct usb_host_interface *interface =3D intf->cur_altsettin=
+g;
+> ^1da177e4c3f41 drivers/usb/input/hid-core.c  Linus Torvalds     2005-04-1=
+6   983        struct usb_device *dev =3D interface_to_usbdev (intf);
+> ^1da177e4c3f41 drivers/usb/input/hid-core.c  Linus Torvalds     2005-04-1=
+6   984        struct hid_descriptor *hdesc;
+> 2eb5dc30eb87aa drivers/hid/usbhid/hid-core.c Paul Walmsley      2007-04-1=
+9   985        u32 quirks =3D 0;
+> c500c9714011ed drivers/hid/usbhid/hid-core.c Jiri Slaby         2008-05-1=
+6   986        unsigned int rsize =3D 0;
+> c5b7c7c395a34f drivers/usb/input/hid-core.c  Dmitry Torokhov    2005-09-1=
+5   987        char *rdesc;
+> c500c9714011ed drivers/hid/usbhid/hid-core.c Jiri Slaby         2008-05-1=
+6   988        int ret, n;
+> f043bfc98c193c drivers/hid/usbhid/hid-core.c Jaejoong Kim       2017-09-2=
+8   989        int num_descriptors;
+> f043bfc98c193c drivers/hid/usbhid/hid-core.c Jaejoong Kim       2017-09-2=
+8   990        size_t offset =3D offsetof(struct hid_descriptor, desc);
+> ^1da177e4c3f41 drivers/usb/input/hid-core.c  Linus Torvalds     2005-04-1=
+6   991
+> d5d3e202753cc0 drivers/hid/usbhid/hid-core.c Benjamin Tissoires 2017-11-2=
+0   992        quirks =3D hid_lookup_quirk(hid);
+> ^1da177e4c3f41 drivers/usb/input/hid-core.c  Linus Torvalds     2005-04-1=
+6   993
+> 6f4303fb2ec680 drivers/hid/usbhid/hid-core.c Jiri Kosina        2009-01-2=
+9   994        if (quirks & HID_QUIRK_IGNORE)
+> 6f4303fb2ec680 drivers/hid/usbhid/hid-core.c Jiri Kosina        2009-01-2=
+9   995                return -ENODEV;
+> 6f4303fb2ec680 drivers/hid/usbhid/hid-core.c Jiri Kosina        2009-01-2=
+9   996
+> 0f28b55db54300 drivers/usb/input/hid-core.c  Alan Stern         2006-05-1=
+5   997        /* Many keyboards and mice don't like to be polled for repor=
+ts,
+> 0f28b55db54300 drivers/usb/input/hid-core.c  Alan Stern         2006-05-1=
+5   998         * so we will always set the HID_QUIRK_NOGET flag for them. =
+*/
+> 0f28b55db54300 drivers/usb/input/hid-core.c  Alan Stern         2006-05-1=
+5   999        if (interface->desc.bInterfaceSubClass =3D=3D USB_INTERFACE_=
+SUBCLASS_BOOT) {
+> 0f28b55db54300 drivers/usb/input/hid-core.c  Alan Stern         2006-05-1=
+5  1000                if (interface->desc.bInterfaceProtocol =3D=3D USB_IN=
+TERFACE_PROTOCOL_KEYBOARD ||
+> 0f28b55db54300 drivers/usb/input/hid-core.c  Alan Stern         2006-05-1=
+5  1001                        interface->desc.bInterfaceProtocol =3D=3D US=
+B_INTERFACE_PROTOCOL_MOUSE)
+> 0f28b55db54300 drivers/usb/input/hid-core.c  Alan Stern         2006-05-1=
+5  1002                                quirks |=3D HID_QUIRK_NOGET;
+> 0f28b55db54300 drivers/usb/input/hid-core.c  Alan Stern         2006-05-1=
+5  1003        }
+> 0f28b55db54300 drivers/usb/input/hid-core.c  Alan Stern         2006-05-1=
+5  1004
+> c5b7c7c395a34f drivers/usb/input/hid-core.c  Dmitry Torokhov    2005-09-1=
+5  1005        if (usb_get_extra_descriptor(interface, HID_DT_HID, &hdesc) =
+&&
+> c5b7c7c395a34f drivers/usb/input/hid-core.c  Dmitry Torokhov    2005-09-1=
+5  1006            (!interface->desc.bNumEndpoints ||
+> ^1da177e4c3f41 drivers/usb/input/hid-core.c  Linus Torvalds     2005-04-1=
+6  1007             usb_get_extra_descriptor(&interface->endpoint[0], HID_D=
+T_HID, &hdesc))) {
+> 58037eb961f859 drivers/hid/usbhid/hid-core.c Jiri Kosina        2007-05-3=
+0  1008                dbg_hid("class descriptor not present\n");
+> c500c9714011ed drivers/hid/usbhid/hid-core.c Jiri Slaby         2008-05-1=
+6  1009                return -ENODEV;
+> ^1da177e4c3f41 drivers/usb/input/hid-core.c  Linus Torvalds     2005-04-1=
+6  1010        }
+> ^1da177e4c3f41 drivers/usb/input/hid-core.c  Linus Torvalds     2005-04-1=
+6  1011
+> f043bfc98c193c drivers/hid/usbhid/hid-core.c Jaejoong Kim       2017-09-2=
+8  1012        if (hdesc->bLength < sizeof(struct hid_descriptor)) {
+> f043bfc98c193c drivers/hid/usbhid/hid-core.c Jaejoong Kim       2017-09-2=
+8  1013                dbg_hid("hid descriptor is too short\n");
+> f043bfc98c193c drivers/hid/usbhid/hid-core.c Jaejoong Kim       2017-09-2=
+8  1014                return -EINVAL;
+> f043bfc98c193c drivers/hid/usbhid/hid-core.c Jaejoong Kim       2017-09-2=
+8  1015        }
+> f043bfc98c193c drivers/hid/usbhid/hid-core.c Jaejoong Kim       2017-09-2=
+8  1016
+> c500c9714011ed drivers/hid/usbhid/hid-core.c Jiri Slaby         2008-05-1=
+6  1017        hid->version =3D le16_to_cpu(hdesc->bcdHID);
+> c500c9714011ed drivers/hid/usbhid/hid-core.c Jiri Slaby         2008-05-1=
+6  1018        hid->country =3D hdesc->bCountryCode;
+> c500c9714011ed drivers/hid/usbhid/hid-core.c Jiri Slaby         2008-05-1=
+6  1019
+> f043bfc98c193c drivers/hid/usbhid/hid-core.c Jaejoong Kim       2017-09-2=
+8  1020        num_descriptors =3D min_t(int, hdesc->bNumDescriptors,
+> f043bfc98c193c drivers/hid/usbhid/hid-core.c Jaejoong Kim       2017-09-2=
+8  1021               (hdesc->bLength - offset) / sizeof(struct hid_class_d=
+escriptor));
+> f043bfc98c193c drivers/hid/usbhid/hid-core.c Jaejoong Kim       2017-09-2=
+8  1022
+> f043bfc98c193c drivers/hid/usbhid/hid-core.c Jaejoong Kim       2017-09-2=
+8  1023        for (n =3D 0; n < num_descriptors; n++)
+>
+> This for loop needs curly braces now.
+>
+> d3e0d5b253c73b drivers/hid/usbhid/hid-core.c syzbot             2023-12-2=
+3  1024                if (n >=3D ARRAY_SIZE(hdesc->desc))
+> d3e0d5b253c73b drivers/hid/usbhid/hid-core.c syzbot             2023-12-2=
+3  1025                        break;
+> ^1da177e4c3f41 drivers/usb/input/hid-core.c  Linus Torvalds     2005-04-1=
+6 @1026                if (hdesc->desc[n].bDescriptorType =3D=3D HID_DT_REP=
+ORT)
+> ^1da177e4c3f41 drivers/usb/input/hid-core.c  Linus Torvalds     2005-04-1=
+6  1027                        rsize =3D le16_to_cpu(hdesc->desc[n].wDescri=
+ptorLength);
+> ^1da177e4c3f41 drivers/usb/input/hid-core.c  Linus Torvalds     2005-04-1=
+6  1028
+> ^1da177e4c3f41 drivers/usb/input/hid-core.c  Linus Torvalds     2005-04-1=
+6 @1029        if (!rsize || rsize > HID_MAX_DESCRIPTOR_SIZE) {
+> 58037eb961f859 drivers/hid/usbhid/hid-core.c Jiri Kosina        2007-05-3=
+0  1030                dbg_hid("weird size of report descriptor (%u)\n", rs=
+ize);
+> c500c9714011ed drivers/hid/usbhid/hid-core.c Jiri Slaby         2008-05-1=
+6  1031                return -EINVAL;
+> ^1da177e4c3f41 drivers/usb/input/hid-core.c  Linus Torvalds     2005-04-1=
+6  1032        }
+> ^1da177e4c3f41 drivers/usb/input/hid-core.c  Linus Torvalds     2005-04-1=
+6  1033
+> 52150c78270db5 drivers/hid/usbhid/hid-core.c Joe Perches        2017-03-0=
+1  1034        rdesc =3D kmalloc(rsize, GFP_KERNEL);
 >
 > --
-> 2.42.0
+> 0-DAY CI Kernel Test Service
+> https://github.com/intel/lkp-tests/wiki
 >
+> --
+> You received this message because you are subscribed to the Google Groups=
+ "syzkaller-bugs" group.
+> To unsubscribe from this group and stop receiving emails from it, send an=
+ email to syzkaller-bugs+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgi=
+d/syzkaller-bugs/5e68be46-caab-40f4-8e0f-543566fd7c28%40moroto.mountain.
 
