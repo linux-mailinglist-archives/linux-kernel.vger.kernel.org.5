@@ -1,185 +1,160 @@
-Return-Path: <linux-kernel+bounces-15538-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15539-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E2F2822D85
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 13:50:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7823A822D87
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 13:51:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DF47F2830BB
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 12:50:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6C406283AD7
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 12:51:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEE7F1945E;
-	Wed,  3 Jan 2024 12:50:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A9511945E;
+	Wed,  3 Jan 2024 12:51:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ZVj0QktV"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Q45D+nEF"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com [209.85.219.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B228E19444
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 12:50:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-dbdbfaab70eso6439700276.3
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 04:50:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704286230; x=1704891030; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=uMQJge1OFocSBVvJxeeoeFzhMb6jVyBHP21ntl+sV/E=;
-        b=ZVj0QktVZfoenLqVk7AA3TlGU3MUq4uZYDZ12GObE9QSpQ0vYncX+HXpYWgYzgDiQj
-         eb7iUM2VEWVrjvsWAFONkTNjdqmePh9wCIS+q6949O0muCxyKlRhKIVQp04Z6Fv/qkQX
-         DU6w4GKyPMkHFkBPwUe5AeEpK+sHMd8OQTirUnJ/1h7Fgwp/9hvP6LQzKbpxABZVydom
-         rf2TivldeVBM9HFmOcDOvp72DR6ZxnPXg6z6UjrbtTMpdTygnPAb1VThqe59lzXdlwZu
-         w7r7NZEyUZ/zndSYwMUVMkrKMe3N6dwMsbZ9v2nkhiD8uAp63fQ1ZgoY24dcO7I5JYFB
-         9moA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704286230; x=1704891030;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=uMQJge1OFocSBVvJxeeoeFzhMb6jVyBHP21ntl+sV/E=;
-        b=ASdCUbiy0J3A1LqSO0Two8hICFzdB2dcaCi1+fhsx/iWsYHC/Hts7jsdpXmI59NhNE
-         GM5pT3hZPbu3J6HDUBup8T228NeLrWZDDwFnYFTgxwRvpC0AFOqERf/Kkh4sovuo18x1
-         rLxgzrMeVWRVBC1qzqqy3yomwOD2NxIrxHQD3A5kJ1KH52zVD5TQ0+ItgFd0Rq1Kt2OV
-         HBfV6p1f9ifTA2fAyZhTgCz5qYtmxmLNGTRjXxM2HoxGD6ZBFZ8DIQOSjoMRvC2rkgly
-         Ty+zgGxKZYN76d4CI9Hr9gMokj1lQIkpnx0gwT+A8KXGw6PSxG1P3Xj19zoZQJSQIylL
-         SBjg==
-X-Gm-Message-State: AOJu0Yxrd46K35n/Q/P2DqVaJlBfQaaMvkbE6979bK2FmWxY1saexslI
-	Oy0/tEbUJ0VDqW/UeqiH1nh50HhvEN/7uvvPakFkZEo/vEsmBg==
-X-Google-Smtp-Source: AGHT+IEli+i1LhMaNCig5qS+FtDFjWedP/VNkzC6jzMcC0RM0qSY5aMRs5tMe1+MaZQwo/pUvmcXTIs/GQCNBQrScXc=
-X-Received: by 2002:a25:840c:0:b0:db7:dacf:3fb2 with SMTP id
- u12-20020a25840c000000b00db7dacf3fb2mr8131789ybk.95.1704286229718; Wed, 03
- Jan 2024 04:50:29 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AD321944F
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 12:51:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704286263; x=1735822263;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=KYziqKdQfSgXfcOt7uAj0Nx4BYS3Yqk3BF3UVFmBCH0=;
+  b=Q45D+nEFce4BiKgKbUsNgGSJH2BxCds6UzHGGkGbioLKYRizb/maF+Ln
+   2YF6CE8TZgKwYHtDTBcXAa3ImcmDnn8WqtZSIB+BDjap7Yi6q4GjSjOTX
+   unB1XQVEJJm+I+vryfp8P+oOsRwdTnm0Yjns/h86DIHtZjti7pMEjsVll
+   ZvHSxsNIcUWtIkcf7wUE5QplMCphky/8op37TrvTtkwqeFgiEqTcxvswK
+   /nVVEQOVUbVog9tsThD+6++8Llr/Qx8ZZD9ZkCEqr6vUz8BPZ8sGPqT3R
+   GwQxuEqi2dfbqd3F5vjPz6KJNGoyLzh3aF1b+sOWQEiWVOyqF9AeKq+ml
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10941"; a="10606488"
+X-IronPort-AV: E=Sophos;i="6.04,327,1695711600"; 
+   d="scan'208";a="10606488"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jan 2024 04:51:02 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10941"; a="850430030"
+X-IronPort-AV: E=Sophos;i="6.04,327,1695711600"; 
+   d="scan'208";a="850430030"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by fmsmga004.fm.intel.com with ESMTP; 03 Jan 2024 04:50:58 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rL0i0-000M5f-0w;
+	Wed, 03 Jan 2024 12:50:56 +0000
+Date: Wed, 3 Jan 2024 20:50:45 +0800
+From: kernel test robot <lkp@intel.com>
+To: Kairui Song <ryncsn@gmail.com>, linux-mm@kvack.org
+Cc: oe-kbuild-all@lists.linux.dev,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Linux Memory Management List <linux-mm@kvack.org>,
+	Chris Li <chrisl@kernel.org>, "Huang, Ying" <ying.huang@intel.com>,
+	Hugh Dickins <hughd@google.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Matthew Wilcox <willy@infradead.org>,
+	Michal Hocko <mhocko@suse.com>, Yosry Ahmed <yosryahmed@google.com>,
+	David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org,
+	Kairui Song <kasong@tencent.com>
+Subject: Re: [PATCH v2 7/9] mm/swap: avoid a duplicated swap cache lookup for
+ SWP_SYNCHRONOUS_IO
+Message-ID: <202401032010.yrIDf885-lkp@intel.com>
+References: <20240102175338.62012-8-ryncsn@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231228114157.104822-1-ulf.hansson@linaro.org>
- <20231228114157.104822-2-ulf.hansson@linaro.org> <22330d85-1d5c-48de-b006-9176f275328e@quicinc.com>
-In-Reply-To: <22330d85-1d5c-48de-b006-9176f275328e@quicinc.com>
-From: Ulf Hansson <ulf.hansson@linaro.org>
-Date: Wed, 3 Jan 2024 13:49:53 +0100
-Message-ID: <CAPDyKFqcB_ANOBsJBitjdgdUs2G8B3qWWvD54Bmw56ZoUKNWAg@mail.gmail.com>
-Subject: Re: [PATCH 1/5] PM: domains: Add helper functions to attach/detach
- multiple PM domains
-To: Nikunj Kela <quic_nkela@quicinc.com>
-Cc: "Rafael J . Wysocki" <rafael@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	Viresh Kumar <viresh.kumar@linaro.org>, linux-pm@vger.kernel.org, 
-	Sudeep Holla <sudeep.holla@arm.com>, Kevin Hilman <khilman@kernel.org>, 
-	Konrad Dybcio <konrad.dybcio@linaro.org>, Bjorn Andersson <andersson@kernel.org>, 
-	Nikunj Kela <nkela@quicinc.com>, Prasad Sodagudi <psodagud@quicinc.com>, 
-	Stephan Gerhold <stephan@gerhold.net>, Ben Horgan <Ben.Horgan@arm.com>, linux-kernel@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-remoteproc@vger.kernel.org, 
-	linux-media@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240102175338.62012-8-ryncsn@gmail.com>
 
-On Fri, 29 Dec 2023 at 21:21, Nikunj Kela <quic_nkela@quicinc.com> wrote:
->
->
-> On 12/28/2023 3:41 AM, Ulf Hansson wrote:
-> > Attaching/detaching of a device to multiple PM domains has started to
-> > become a common operation for many drivers, typically during ->probe() and
-> > ->remove(). In most cases, this has lead to lots of boilerplate code in the
-> > drivers.
-> >
-> > To fixup up the situation, let's introduce a pair of helper functions,
-> > dev_pm_domain_attach|detach_list(), that driver can use instead of the
-> > open-coding. Note that, it seems reasonable to limit the support for these
-> > helpers to DT based platforms, at it's the only valid use case for now.
-> >
-> > Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
-> > ---
-> >   drivers/base/power/common.c | 133 ++++++++++++++++++++++++++++++++++++
-> >   include/linux/pm_domain.h   |  38 +++++++++++
-> >   2 files changed, 171 insertions(+)
-> >
-> > diff --git a/drivers/base/power/common.c b/drivers/base/power/common.c
-> > index 44ec20918a4d..1ef51889fc6f 100644
-> > --- a/drivers/base/power/common.c
-> > +++ b/drivers/base/power/common.c
-> > @@ -167,6 +167,114 @@ struct device *dev_pm_domain_attach_by_name(struct device *dev,
-> >   }
-> >   EXPORT_SYMBOL_GPL(dev_pm_domain_attach_by_name);
-> >
-> > +/**
-> > + * dev_pm_domain_attach_list - Associate a device with its PM domains.
-> > + * @dev: The device used to lookup the PM domains for.
-> > + * @data: The data used for attaching to the PM domains.
-> > + * @list: An out-parameter with an allocated list of attached PM domains.
-> > + *
-> > + * This function helps to attach a device to its multiple PM domains. The
-> > + * caller, which is typically a driver's probe function, may provide a list of
-> > + * names for the PM domains that we should try to attach the device to, but it
-> > + * may also provide an empty list, in case the attach should be done for all of
-> > + * the available PM domains.
-> > + *
-> > + * Callers must ensure proper synchronization of this function with power
-> > + * management callbacks.
-> > + *
-> > + * Returns the number of attached PM domains or a negative error code in case of
-> > + * a failure. Note that, to detach the list of PM domains, the driver shall call
-> > + * dev_pm_domain_detach_list(), typically during the remove phase.
-> > + */
-> > +int dev_pm_domain_attach_list(struct device *dev,
-> > +                           const struct dev_pm_domain_attach_data *data,
-> > +                           struct dev_pm_domain_list **list)
-> > +{
-> > +     struct device_node *np = dev->of_node;
-> > +     struct dev_pm_domain_list *pds;
-> > +     struct device *pd_dev = NULL;
-> > +     int ret, i, num_pds = 0;
-> > +     bool by_id = true;
-> > +     u32 link_flags = data && data->pd_flags & PD_FLAG_NO_DEV_LINK ? 0 :
-> > +                     DL_FLAG_STATELESS | DL_FLAG_PM_RUNTIME;
-> > +
-> > +     if (dev->pm_domain)
-> > +             return -EEXIST;
-> > +
-> > +     /* For now this is limited to OF based platforms. */
-> > +     if (!np)
-> > +             return 0;
-> > +
-> > +     if (data && data->pd_names) {
-> > +             num_pds = data->num_pd_names;
-> > +             by_id = false;
-> > +     } else {
-> > +             num_pds = of_count_phandle_with_args(np, "power-domains",
-> > +                                                  "#power-domain-cells");
-> > +     }
-> > +
-> > +     if (num_pds <= 0)
-> > +             return 0;
-> > +
-> > +     pds = devm_kzalloc(dev, sizeof(*pds), GFP_KERNEL);
-> > +     if (!pds)
-> > +             return -ENOMEM;
-> > +
-> > +     pds->pd_devs = devm_kcalloc(dev, num_pds, sizeof(*pds->pd_devs),
-> > +                                 GFP_KERNEL);
-> > +     if (!pds->pd_devs)
-> > +             return -ENOMEM;
-> > +
-> > +     pds->pd_links = devm_kcalloc(dev, num_pds, sizeof(*pds->pd_links),
-> > +                                  GFP_KERNEL);
-> > +     if (!pds->pd_links)
-> > +             return -ENOMEM;
-> > +
-> > +     if (link_flags && data->pd_flags & PD_FLAG_DEV_LINK_ON)
->
-> Since data is optional, this check results in crash if data is NULL. Thanks
+Hi Kairui,
 
-Thanks for spotting this! I certainly tested that option too, but must
-have been on some earlier internal version. :-)
+kernel test robot noticed the following build warnings:
 
-I will iterate the series tomorrow to fix this up.
+[auto build test WARNING on akpm-mm/mm-everything]
+[also build test WARNING on next-20240103]
+[cannot apply to linus/master v6.7-rc8]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-[...]
+url:    https://github.com/intel-lab-lkp/linux/commits/Kairui-Song/mm-swapfile-c-add-back-some-comment/20240103-015650
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
+patch link:    https://lore.kernel.org/r/20240102175338.62012-8-ryncsn%40gmail.com
+patch subject: [PATCH v2 7/9] mm/swap: avoid a duplicated swap cache lookup for SWP_SYNCHRONOUS_IO
+config: arc-vdk_hs38_smp_defconfig (https://download.01.org/0day-ci/archive/20240103/202401032010.yrIDf885-lkp@intel.com/config)
+compiler: arc-elf-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240103/202401032010.yrIDf885-lkp@intel.com/reproduce)
 
-Kind regards
-Uffe
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202401032010.yrIDf885-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> mm/swap_state.c:884: warning: Function parameter or member 'shadow' not described in 'swapin_direct'
+
+
+vim +884 mm/swap_state.c
+
+d9bfcfdc41e8e5 Huang Ying  2017-09-06  872  
+b16a5db0ccd159 Kairui Song 2024-01-03  873  /**
+b16a5db0ccd159 Kairui Song 2024-01-03  874   * swapin_direct - swap in folios skipping swap cache and readahead
+b16a5db0ccd159 Kairui Song 2024-01-03  875   * @entry: swap entry of this memory
+b16a5db0ccd159 Kairui Song 2024-01-03  876   * @gfp_mask: memory allocation flags
+b16a5db0ccd159 Kairui Song 2024-01-03  877   * @vmf: fault information
+b16a5db0ccd159 Kairui Song 2024-01-03  878   *
+b16a5db0ccd159 Kairui Song 2024-01-03  879   * Returns the struct folio for entry and addr after the swap entry is read
+b16a5db0ccd159 Kairui Song 2024-01-03  880   * in.
+b16a5db0ccd159 Kairui Song 2024-01-03  881   */
+983c0b807f7eda Kairui Song 2024-01-03  882  static struct folio *swapin_direct(swp_entry_t entry, gfp_t gfp_mask,
+cd81b9fd3de376 Kairui Song 2024-01-03  883  				  struct vm_fault *vmf, void *shadow)
+b16a5db0ccd159 Kairui Song 2024-01-03 @884  {
+b16a5db0ccd159 Kairui Song 2024-01-03  885  	struct vm_area_struct *vma = vmf->vma;
+b16a5db0ccd159 Kairui Song 2024-01-03  886  	struct folio *folio;
+b16a5db0ccd159 Kairui Song 2024-01-03  887  
+b16a5db0ccd159 Kairui Song 2024-01-03  888  	/* skip swapcache */
+b16a5db0ccd159 Kairui Song 2024-01-03  889  	folio = vma_alloc_folio(GFP_HIGHUSER_MOVABLE, 0,
+b16a5db0ccd159 Kairui Song 2024-01-03  890  				vma, vmf->address, false);
+b16a5db0ccd159 Kairui Song 2024-01-03  891  	if (folio) {
+9e22e4254bdb8c Kairui Song 2024-01-03  892  		if (mem_cgroup_swapin_charge_folio(folio, NULL,
+64ae20cbed3891 Kairui Song 2024-01-03  893  						   GFP_KERNEL, entry)) {
+b16a5db0ccd159 Kairui Song 2024-01-03  894  			folio_put(folio);
+b16a5db0ccd159 Kairui Song 2024-01-03  895  			return NULL;
+b16a5db0ccd159 Kairui Song 2024-01-03  896  		}
+64ae20cbed3891 Kairui Song 2024-01-03  897  
+64ae20cbed3891 Kairui Song 2024-01-03  898  		__folio_set_locked(folio);
+64ae20cbed3891 Kairui Song 2024-01-03  899  		__folio_set_swapbacked(folio);
+64ae20cbed3891 Kairui Song 2024-01-03  900  
+b16a5db0ccd159 Kairui Song 2024-01-03  901  		mem_cgroup_swapin_uncharge_swap(entry);
+b16a5db0ccd159 Kairui Song 2024-01-03  902  
+b16a5db0ccd159 Kairui Song 2024-01-03  903  		if (shadow)
+b16a5db0ccd159 Kairui Song 2024-01-03  904  			workingset_refault(folio, shadow);
+b16a5db0ccd159 Kairui Song 2024-01-03  905  
+b16a5db0ccd159 Kairui Song 2024-01-03  906  		folio_add_lru(folio);
+b16a5db0ccd159 Kairui Song 2024-01-03  907  
+b16a5db0ccd159 Kairui Song 2024-01-03  908  		/* To provide entry to swap_read_folio() */
+b16a5db0ccd159 Kairui Song 2024-01-03  909  		folio->swap = entry;
+b16a5db0ccd159 Kairui Song 2024-01-03  910  		swap_read_folio(folio, true, NULL);
+b16a5db0ccd159 Kairui Song 2024-01-03  911  		folio->private = NULL;
+b16a5db0ccd159 Kairui Song 2024-01-03  912  	}
+b16a5db0ccd159 Kairui Song 2024-01-03  913  
+b16a5db0ccd159 Kairui Song 2024-01-03  914  	return folio;
+b16a5db0ccd159 Kairui Song 2024-01-03  915  }
+b16a5db0ccd159 Kairui Song 2024-01-03  916  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
