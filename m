@@ -1,200 +1,161 @@
-Return-Path: <linux-kernel+bounces-15432-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15433-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43460822BEB
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 12:14:58 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 71BD2822BEC
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 12:15:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C16571F222A7
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 11:14:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A78DBB231CC
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 11:15:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC2E018E16;
-	Wed,  3 Jan 2024 11:14:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4BA918E17;
+	Wed,  3 Jan 2024 11:15:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KXllc8JK"
+	dkim=pass (2048-bit key) header.d=csgroup.eu header.i=@csgroup.eu header.b="bPxO51dz"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com [209.85.219.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from FRA01-MR2-obe.outbound.protection.outlook.com (mail-mr2fra01on2057.outbound.protection.outlook.com [40.107.9.57])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4A1818E0C;
-	Wed,  3 Jan 2024 11:14:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f176.google.com with SMTP id 3f1490d57ef6-dbdbfaab70eso6371113276.3;
-        Wed, 03 Jan 2024 03:14:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704280487; x=1704885287; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=GVbmSivqFm16l2ZyQvLc7/P+co6sVaCHTLFtmYuE64U=;
-        b=KXllc8JKUpgHUbmeBPfzAeAvkI6dLr8KpsBj0TD581VlgFmolZENykuquIzeAgUlkq
-         roPGPAi1BHGHLTb/nKPaNPSe6O40UDnAhoKdANVdDv11L++zO6w/PbTJLES8iYHVT53J
-         rYop4rMgTvMbvNELTchqWMFfYFdkPof33Xo+qpyg+stB+MRgp7btoPJEOATTA7t9rD5j
-         CdNIzrXh2kKvuY7cwyZBHyFuFfd1bubJxipuXHRuKGl/FBNwxS2QkFm9eHomA2a3oJWL
-         ZHUFV5fAEN+Tko4zOSje6TWhNTAX/AvzXvwU/mfN40VVY9bcwsumR5GcBFa8TezJb6RT
-         vm1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704280487; x=1704885287;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=GVbmSivqFm16l2ZyQvLc7/P+co6sVaCHTLFtmYuE64U=;
-        b=pfU9nt9jeceDBvCKJRUi432JMn2idElEA03liFPHzLY8Zc5hA6Ngo/iopTcWkB7XP1
-         rtJa2RlWw0kkK4h/oJFmy0TZFjbCXPQEx0d4KAU3H9FZRGsZyZG/KGqRi5mPDqTeE4Vo
-         YjymBWzCeJECV2M8aVioyIJ6pdJjGYgZDOgeJKTNmVMqmAPt2HrjKvxN3XAMU4tLMWou
-         S0fThqEv4CGurlif+pSb8WA/fG5TDqhn3nfg7WuEqJod1I1XepywBq2y5ALU178P0CUY
-         v8K/9sGnIKxFMIxBG05M9D/aRRrlpYVbhTzWk6y0NBiZFkbeowAF+op5AvKXpVpuk/MN
-         IP3w==
-X-Gm-Message-State: AOJu0YxF1rd/IauQyZIWodyVb/N4pnnQ0tude9Hc+hOZ9zucUZGCYsqI
-	htFnSRa6PnVCLqqXJnL4/HQyCmnyHHTH4lRleH/y3ZOdR4U=
-X-Google-Smtp-Source: AGHT+IE+uUWbonqqQ1YDN9GzN2DHvb4IXcQ8qjCyQF38y+zzd/JJa+SWQk84/EpX8TMl8fJDznYvsK/8hbAF/j2W9JM=
-X-Received: by 2002:a81:9884:0:b0:5f0:8159:2df4 with SMTP id
- p126-20020a819884000000b005f081592df4mr3923785ywg.89.1704280486667; Wed, 03
- Jan 2024 03:14:46 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54EB018657
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 11:14:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=csgroup.eu
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=K/1BQ2LkED6ZB4J6itpPUPDi8h0fmUoBpUSCdE4JJl9u2hbzfDFYNTAu1XrGyHQnSXIhoEFGkZLYuRDF9sUTeTe+Qzj1dyr0BZsv4ZmE5sx88/n7PjBd/De/sYGKPZ0g8gIKZuQeMDsD7gQz4DTVxAUbIPfBRlj9cf0iVNcaZbB0ttqxw8HRSQxu28PqbivRokO9w0L1N+A2/yP1Gyj9yr6ahyOxPh55UjgT5Qs/OaRe8UF4471JJsrmrHq7xRlyYBkMqO5rGeq9UU9PzHQrfgVWTrMPXNgtnwesiHVJj5bcZNbxMItgN+cYDleiF9aEdpJxHmw8g6FDuAO5w8I0PQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=61W9i2elWY4cDzcH9AfBgmc9NhqXytNr91CX1w8ccDA=;
+ b=ND27t8LF1CFL7SOPNrmIU32qB2WfAnX2ujkRwiZ6PjMxpztxD9uAfv1zvmRw55jAAm8MEivb1Y1SzWOmxPT2pHn4PdoxBU3ex1O0y+3dmPilxDWicHaUMdNvigralowDrKIwfr2DSUq8yCBCKOoBXqpmJjrvFqCsdtWD3++L9el2X/Ah8gWHvTDqvxY0s9zCqrCA7QYWMI/EPalbQ9wG0kmQVDE7N99LMocEnPvmmhf2RAG9R5wu32y7d9lWszfjVoYPbX/cDxmsax6uJVaVqSQVYhxsEtVm9eycLKpj/GweUT/aVYrm7352btj5wd+se2DXH9PvisRmbWgPvIPiYA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=csgroup.eu; dmarc=pass action=none header.from=csgroup.eu;
+ dkim=pass header.d=csgroup.eu; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=csgroup.eu;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=61W9i2elWY4cDzcH9AfBgmc9NhqXytNr91CX1w8ccDA=;
+ b=bPxO51dz2KfAYd8fNowOhBosMPSfaBVKhaVF1hCsC5IOTY7eEohA/FmH7zGkMzUa+4DITjP1B7uRliLPWqc2RcqiHs/qvOysw6m7vlm3/Bu3HbUvZC+J0UciZxgA+nR+snIUQVyYUzqD8E0XQrJOq6l5gO8C3VWSIYmUW8+tyVfauCXWxsVcsIQxynvLR54z/bLnTjV4faSlFMbihC/9sfMlBsGFLQpIptiWg/DKFbbq1choi+4wnnJxdUIXe0mjXVEMbOFuyZ6vI5t/jrn4tpZssNN6CC3aik7JPhIaNgYwKtVh3rFuQtRmeNAj2FxrXYsyqriXd8mY9rYFDr1FIg==
+Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:31::15)
+ by PR1P264MB1438.FRAP264.PROD.OUTLOOK.COM (2603:10a6:102:1d::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7135.25; Wed, 3 Jan
+ 2024 11:14:54 +0000
+Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
+ ([fe80::f788:32b4:1c5e:f264]) by MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
+ ([fe80::f788:32b4:1c5e:f264%7]) with mapi id 15.20.7135.023; Wed, 3 Jan 2024
+ 11:14:54 +0000
+From: Christophe Leroy <christophe.leroy@csgroup.eu>
+To: "peterx@redhat.com" <peterx@redhat.com>, "linux-mm@kvack.org"
+	<linux-mm@kvack.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>
+CC: James Houghton <jthoughton@google.com>, David Hildenbrand
+	<david@redhat.com>, "Kirill A . Shutemov" <kirill@shutemov.name>, Yang Shi
+	<shy828301@gmail.com>, "linux-riscv@lists.infradead.org"
+	<linux-riscv@lists.infradead.org>, Andrew Morton <akpm@linux-foundation.org>,
+	"Aneesh Kumar K . V" <aneesh.kumar@kernel.org>, Rik van Riel
+	<riel@surriel.com>, Andrea Arcangeli <aarcange@redhat.com>, Axel Rasmussen
+	<axelrasmussen@google.com>, Mike Rapoport <rppt@kernel.org>, John Hubbard
+	<jhubbard@nvidia.com>, Vlastimil Babka <vbabka@suse.cz>, Michael Ellerman
+	<mpe@ellerman.id.au>, Andrew Jones <andrew.jones@linux.dev>,
+	"linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, Mike Kravetz
+	<mike.kravetz@oracle.com>, Muchun Song <muchun.song@linux.dev>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>, Jason Gunthorpe <jgg@nvidia.com>,
+	Christoph Hellwig <hch@infradead.org>, Lorenzo Stoakes <lstoakes@gmail.com>,
+	Matthew Wilcox <willy@infradead.org>
+Subject: Re: [PATCH v2 00/13] mm/gup: Unify hugetlb, part 2
+Thread-Topic: [PATCH v2 00/13] mm/gup: Unify hugetlb, part 2
+Thread-Index: AQHaPiVMR3zGhecV+0qUMoop8MTeWbDH79wA
+Date: Wed, 3 Jan 2024 11:14:54 +0000
+Message-ID: <591c59d6-dedb-4399-8a6f-c574fd2ad9cc@csgroup.eu>
+References: <20240103091423.400294-1-peterx@redhat.com>
+In-Reply-To: <20240103091423.400294-1-peterx@redhat.com>
+Accept-Language: fr-FR, en-US
+Content-Language: fr-FR
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+user-agent: Mozilla Thunderbird
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=csgroup.eu;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: MRZP264MB2988:EE_|PR1P264MB1438:EE_
+x-ms-office365-filtering-correlation-id: a46ab680-8c26-4864-caae-08dc0c4d368e
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ 206BXAmyCBTV/6DPmDDl7TdD2SOVaG7S9Kq64plErT6hscH+EZn1mQSWp2Fq3orAaWVJpPPKVPXeZWvqpGoVGikBqiuHTVwodponlrwlMfMobcUhKZzvgXX5NGDs9zdpURmSuKE7x+EDPMhOYFWh+HV7vSfhoiWK09PsRIe3z7UfSMsO2YEj4FBUoQoCFaHEjJxcLBjOQ63FoJXZ3axAezfY2P9YK4+42w2W/WnxOnjuoeh2le0rusBvxqwdoo2/5ZEN8k+pDGw6k0lTyYQ2Nxe3FIldMAlMJMqTfhqBZusyCsp1U7+TL2fCdZHQy8ZhrrmIeYtghx/maSaKbweW+rhBYjeLY6UwhbmMoYtFLOgE971G6rna/ITJiFSNJyGe34TOPNVLeRi5Qs/ayKC1QjmcRRHUI0IM624sHzJo8V3dHQg8H6vjcjz0zDw4kqPLr5IoIQ7ycxdw/9xd99Fy3oOUXt3Zd7gsOYMM6M2ErzqgfPSVmH1siEzyG+2AIQDhiyIZDADEfipzf2u1As72mkfXa0i0RVY9MY1QiTxt4yAd7lrFkC6vYTN1fObJ6h/BAZfUDzh8IlTJMOXNquecc7OWw+8uSQyImrwis0oF8+qwOI/xRUHf3N5SqJ6Aw8Rv/QhtJ04chOr6rXNNahVsouG8rDqSlSjvGy3f1xZYgd0Po63wKbJoQAHglwWDKVUQ
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(376002)(366004)(39850400004)(396003)(136003)(346002)(230922051799003)(451199024)(1800799012)(186009)(64100799003)(38100700002)(122000001)(38070700009)(36756003)(31686004)(31696002)(86362001)(26005)(6506007)(6512007)(71200400001)(54906003)(4326008)(6486002)(316002)(8936002)(478600001)(8676002)(66446008)(66946007)(76116006)(66556008)(91956017)(66476007)(110136005)(64756008)(2616005)(41300700001)(44832011)(5660300002)(4744005)(7416002)(2906002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?eko1WmdKcG56ZjhDL3B6YmNsY2l4aVFKUGlxN0ZYenlja0xTNjM4VjlNaDhC?=
+ =?utf-8?B?N1JObUdydGFWcEJlWERPRjVoUDJlcUF6bi9mZUtqdzZCeGRMUE9JcmJhc29y?=
+ =?utf-8?B?TFZ1WE1NN21jZU85bHBacnEwVm1vVUpBLzU2K0JLc3h3NDd2V1lvckVLWW1k?=
+ =?utf-8?B?dVh0L0VkVE9WYUlaWXpINUpGYjQ2SHQ1MGF0cXBQdW42VkRpc0liUkkwYlIw?=
+ =?utf-8?B?ZkZ3Ly9HQW1WTU1wWklHMTNGUXJMN0hnZlpROWZaK2h0YXRnQjVXZFlTdWg1?=
+ =?utf-8?B?TjhUVm5aR2NLbjhTNWxwYSsxRDMvTy9hcjZpNjRUaHFsMzIvRGxUQThYSTFJ?=
+ =?utf-8?B?QUtCcXhHb2FpL1pldWJsUERxVDFiTHJWbEphTVMyWFZkUkliR0FRSUhiRWFR?=
+ =?utf-8?B?S1VqUm5xaUhKa0swVEo1UnA0SFhDbXhkTU1CVTVCTzh6N0JoNlN5bEhWbCtD?=
+ =?utf-8?B?UXNXbzQvN0U3emdZVEVZdjBYZ0tBb0NXdVIzQVRWN0ZlMElQWElXZmF4N0VY?=
+ =?utf-8?B?ejdDblltMGZCblZsK3RtU1NIV3UzcE1XaXZCRFR5NVN4dURwL0lBaWJYcjZw?=
+ =?utf-8?B?bU1abXYrNVZQbjdsUHZuZTNEOEZYb25Cclo3bUVvekd4TVYyWUFTVXpkaFRD?=
+ =?utf-8?B?Q2sxOXJhdVhUMkMyZlg2TWtEMDljSFd4WlBXeUYyRktzaDVMa05oQkFTSFRo?=
+ =?utf-8?B?VDh0OE9CM3lqWm1PbktvZDIwUVZVMmNqY2h6SDFDYUhveTg2cGJhVUR2ZWNY?=
+ =?utf-8?B?MGpPQkpWMVFOa2ZPZjdrKzRBK2lZZzBzNVYvUkUwdmk5aVUrTmNxZndXRVVa?=
+ =?utf-8?B?blk2cU14YXMvenp6MmhJN3VzQWJ3RUIzdmlLZ3hOTjZjZTBmU0FEYnorVWJU?=
+ =?utf-8?B?VGdzN29TTXJnaVQ4dURQSGFyRDN0SVExN2tmcE5LM1pycitkWS8rRU9wZkNn?=
+ =?utf-8?B?QXM3WnRGcXJWVE5EU09aYVZ1N1dTUVpZUms0L3hLTnVkcDA1dEJFaFVYd3Va?=
+ =?utf-8?B?anByOGM1RnlmYzBwSWlxMG5jbDNnOTM1dUNaQnFNL2RYbzFLeEErZlNOWUJr?=
+ =?utf-8?B?b0xzblp4SGZoUHZHejdwbkhGUWE1TXdiNDR2Z0M4NytHUFE0bUxzcnJ4Tjli?=
+ =?utf-8?B?QURnbW03c01pUi9sNDJuU2t5MFVHVXM4TzM3YlQzN0o5OVNoL0VseFh5blQw?=
+ =?utf-8?B?REl5VEl4Z3l4MThrb1pxWWQ1VDN4ZVlxMURHaW8vcEdCdDNRQWdrTWNLeXo0?=
+ =?utf-8?B?OTd5N2hYQWY3Rys2eEZLeFdzZHNOd2RndVVXQmlZME5wV0tiWTF4WVhxVERN?=
+ =?utf-8?B?Wi9QRzJqT1g4N3pvdU5YR3JVb0o1c3dtYkF5TGNZVDJLampaMHU5cjhqa1V3?=
+ =?utf-8?B?YmdKMUxkU0F0ZG9QMzJnZkdQZHZsSTJGbTdMVlU2Qjhoallmem1OY29rZkJX?=
+ =?utf-8?B?RjQ0d3FvZFIyTUo5blNieWhMVGg1WXluQis1U05NYXhRQW5BS0FETGlFcExG?=
+ =?utf-8?B?NDMxZkl3QnR4NjlMTllyTHlOVzhFMGZqVWlFMFA5cVVUNzNGNGdxT3ZnVlJ6?=
+ =?utf-8?B?Mml3TmlhdkVaM2M5VVoxWkZiNFp1NnhDeUJBSTducjhXWFVBZXBtUFhqS214?=
+ =?utf-8?B?ckJsL1J0OHZxWk9JK25vR1hCVVEybGVRVkZ6WDFyODdQckU0MDlBbzVlWmpr?=
+ =?utf-8?B?aWtqYVNxQ0RaL0Z4ZzZrS1lhT2M2bXRqRHdESERzMzUzZjRZV1NDRXZ2Rkln?=
+ =?utf-8?B?YmJZOEdwTVZ2R3ZjT1JhaWxrOWhEODYzQ0thcVJUM2Z3VmVNS0gxTG9memdK?=
+ =?utf-8?B?MXFmeVdTM0hpZFhpSDNwR2U3bFFaUy9hcmVoU1FKdTAvRjJQMVFtK0pnclZi?=
+ =?utf-8?B?UW5SU2UzR0hYT3A5cnAxT3I1VjJsSGYzcFZVSFZrbFE3ZlhNT2N4b1BtZ0xa?=
+ =?utf-8?B?YW15NjhrcGJmdmNEeTNFNGdRU0FNeWhocy94MXE2MUNqQ3FRTTJNQy9PNVZD?=
+ =?utf-8?B?dURYQ2l1RHNMWDdSa0hXVk9aSFl3NGtya0lTUXpETnlKbEgvU2hKKzcvQVZs?=
+ =?utf-8?B?V1pLUlhES1NjYVFQbzdlZ3VHU25LdE1kWXo1czYwZmdLNHBBMndnd1NWbGtN?=
+ =?utf-8?Q?CdhuWEYtVRTHjWy6h1uit1GuH?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <734BDE7BB8D75B4788D78F6935B9A2E5@FRAP264.PROD.OUTLOOK.COM>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231218170404.910153-1-tmaimon77@gmail.com> <7c322ab2ab59b434429ce471c148c026.sboyd@kernel.org>
- <CAP6Zq1gYJTRw9=w6cP3KXX2jg3SPk2KBqNrbcs9NoOs2JeUnAg@mail.gmail.com> <5b31aa5cfb1e819b03678d080b630667.sboyd@kernel.org>
-In-Reply-To: <5b31aa5cfb1e819b03678d080b630667.sboyd@kernel.org>
-From: Tomer Maimon <tmaimon77@gmail.com>
-Date: Wed, 3 Jan 2024 13:14:35 +0200
-Message-ID: <CAP6Zq1hTGWcG+63QV2rUVw92E51_NdoXCQaKTCrWNkJDGiEXwQ@mail.gmail.com>
-Subject: Re: [PATCH RESEND v21] clk: npcm8xx: add clock controller
-To: Stephen Boyd <sboyd@kernel.org>
-Cc: avifishman70@gmail.com, benjaminfair@google.com, joel@jms.id.au, 
-	mturquette@baylibre.com, tali.perry1@gmail.com, venture@google.com, 
-	yuenn@google.com, openbmc@lists.ozlabs.org, linux-clk@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: csgroup.eu
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: a46ab680-8c26-4864-caae-08dc0c4d368e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Jan 2024 11:14:54.6602
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 9914def7-b676-4fda-8815-5d49fb3b45c8
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: NvPDBpNJ3tco9JeVbuzj/9gCNGcjUrPiOk6BQaHknYZY8OIitU8Lglv5C7XoVmPUM/ebk0qnZX9KIOmuiMXMYWApTEcc46ynxDpg/+Fqbmg=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR1P264MB1438
 
-Hi Stephen,
-
-Thanks for your clarifications.
-
-On Wed, 3 Jan 2024 at 01:52, Stephen Boyd <sboyd@kernel.org> wrote:
->
-> Quoting Tomer Maimon (2023-12-21 05:43:20)
-> > Hi Stephen,
-> >
-> > Thanks for your comments
-> >
-> > On Thu, 21 Dec 2023 at 00:09, Stephen Boyd <sboyd@kernel.org> wrote:
-> > >
-> > > Quoting Tomer Maimon (2023-12-18 09:04:04)
-> > > > diff --git a/drivers/clk/clk-npcm8xx.c b/drivers/clk/clk-npcm8xx.c
-> > > > new file mode 100644
-> > > > index 000000000000..e6c5111cc255
-> > > > --- /dev/null
-> > > > +++ b/drivers/clk/clk-npcm8xx.c
-> > > > @@ -0,0 +1,552 @@
-> > > > +// SPDX-License-Identifier: GPL-2.0
-> > > > +/*
-> > > > + * Nuvoton NPCM8xx Clock Generator
-> > > > + * All the clocks are initialized by the bootloader, so this driver allows only
-> > > > + * reading of current settings directly from the hardware.
-> > > > + *
-> > > > + * Copyright (C) 2020 Nuvoton Technologies
-> > > > + * Author: Tomer Maimon <tomer.maimon@nuvoton.com>
-> > > > + */
-> > > > +
-> > > > +#define pr_fmt(fmt) "npcm8xx_clk: " fmt
-> > > > +
-> > > > +#include <linux/bitfield.h>
-> > > > +#include <linux/clk-provider.h>
-> > > > +#include <linux/err.h>
-> > > > +#include <linux/io.h>
-> > > > +#include <linux/kernel.h>
-> > > > +#include <linux/module.h>
-> > > > +#include <linux/platform_device.h>
-> > > > +#include <linux/slab.h>
-> > > > +#include <linux/regmap.h>
-> > > [...]
-> > > > +#define NPCM8XX_CLK_S_CLKOUT      "clkout"
-> > > > +#define NPCM8XX_CLK_S_PRE_ADC     "pre adc"
-> > > > +#define NPCM8XX_CLK_S_UART        "uart"
-> > > > +#define NPCM8XX_CLK_S_UART2       "uart2"
-> > > > +#define NPCM8XX_CLK_S_TIMER       "timer"
-> > > > +#define NPCM8XX_CLK_S_MMC         "mmc"
-> > > > +#define NPCM8XX_CLK_S_SDHC        "sdhc"
-> > > > +#define NPCM8XX_CLK_S_ADC         "adc"
-> > > > +#define NPCM8XX_CLK_S_GFX         "gfx0_gfx1_mem"
-> > > > +#define NPCM8XX_CLK_S_USBIF       "serial_usbif"
-> > > > +#define NPCM8XX_CLK_S_USB_HOST    "usb_host"
-> > > > +#define NPCM8XX_CLK_S_USB_BRIDGE  "usb_bridge"
-> > > > +#define NPCM8XX_CLK_S_PCI         "pci"
-> > > > +#define NPCM8XX_CLK_S_TH          "th"
-> > > > +#define NPCM8XX_CLK_S_ATB         "atb"
-> > > > +#define NPCM8XX_CLK_S_PRE_CLK     "pre_clk"
-> > > > +#define NPCM8XX_CLK_S_RG         "rg"
-> > > > +#define NPCM8XX_CLK_S_RCP        "rcp"
-> > > > +
-> > > > +static struct clk_hw hw_pll1_div2, hw_pll2_div2, hw_gfx_div2, hw_pre_clk;
-> > > > +static struct npcm8xx_clk_pll_data npcm8xx_pll_clks[] = {
-> > > > +       { NPCM8XX_CLK_S_PLL0, { .name = NPCM8XX_CLK_S_REFCLK }, NPCM8XX_PLLCON0, 0 },
-> > >
-> > > This is a new driver, so please stop using .name in clk_parent_data
-> > > structures.
-> > A few versions ago you suggested defining the reference clock in the
-> > device tree,Can I use .fw_name since the reference clock in the device
-> > tree
-> >
-> >         refclk: refclk-25mhz {
-> >                 compatible = "fixed-clock";
-> >                 clock-output-names = "refclk";
->
-> Please don't use clock-output-names property.
-Will remove
->
-> >                 clock-frequency = <25000000>;
-> >                 #clock-cells = <0>;
-> >         };
->
-> Use of this binding is fine assuming the reference clk is a real thing
-> that exists outside the SoC. Is it?
-Yes it is.
->
-> >
-> >         clk: clock-controller@f0801000 {
-> >                  compatible = "nuvoton,npcm845-clk";
-> >                  nuvoton,sysclk = <&rst>;
-> >                  #clock-cells = <1>;
-> >                  clocks = <&refclk>;
->
-> This is index = 0
-O.K.
->
-> >                  clock-names = "refclk";
-> >          };
-> >
-> > I will make sure to add refclk-25mhz to NPCM8xx device tree.
-> > >
-> > > > +       { NPCM8XX_CLK_S_PLL1, { .name = NPCM8XX_CLK_S_REFCLK }, NPCM8XX_PLLCON1, 0 },
-> > > > +       { NPCM8XX_CLK_S_PLL2, { .name = NPCM8XX_CLK_S_REFCLK }, NPCM8XX_PLLCON2, 0 },
-> > > > +       { NPCM8XX_CLK_S_PLL_GFX, { .name = NPCM8XX_CLK_S_REFCLK }, NPCM8XX_PLLCONG, 0 },
-> > > > +};
-> > > > +
-> > > > +static const u32 cpuck_mux_table[] = { 0, 1, 2, 7 };
-> > > > +static const struct clk_parent_data cpuck_mux_parents[] = {
-> > > > +       { .hw = &npcm8xx_pll_clks[0].hw },
-> > > > +       { .hw = &npcm8xx_pll_clks[1].hw },
-> > > > +       { .index = 0 },
-> > >
-> > > This requires a binding update. As of today, there isn't a 'clocks'
-> > > property for the nuvoton,npcm845-clk binding.
-> > Can I use fw_name = NPCM8XX_CLK_S_REFCLK instead of  .index = 0 in
-> > that way, I will not need to modify nuvoton,npcm845-clk binding.
->
-> Why don't you want to modify the binding? If you add a clocks property
-> like in the example above you will have to modify the binding.
-Will add clocks property to nuvoton,npcm845-clk binding.
-
-Thanks,
-
-Tomer
+DQoNCkxlIDAzLzAxLzIwMjQgw6AgMTA6MTQsIHBldGVyeEByZWRoYXQuY29tIGEgw6ljcml0wqA6
+DQo+IEZyb206IFBldGVyIFh1IDxwZXRlcnhAcmVkaGF0LmNvbT4NCj4gDQo+IA0KPiBUZXN0IERv
+bmUNCj4gPT09PT09PT09DQo+IA0KPiBUaGlzIHYxIHdlbnQgdGhyb3VnaCB0aGUgbm9ybWFsIEdV
+UCBzbW9rZSB0ZXN0cyBvdmVyIGRpZmZlcmVudCBtZW1vcnkNCj4gdHlwZXMgb24gYXJjaHMgKHVz
+aW5nIFZNIGluc3RhbmNlcyk6IHg4Nl82NCwgYWFyY2g2NCwgcHBjNjRsZS4gIEZvcg0KPiBhYXJj
+aDY0LCB0ZXN0ZWQgb3ZlciA2NEtCIGNvbnRfcHRlIGh1Z2UgcGFnZXMuICBGb3IgcHBjNjRsZSwg
+dGVzdGVkIG92ZXINCj4gMTZNQiBodWdlcGQgZW50cmllcyAoUG93ZXI4IGhhc2ggTU1VIG9uIDRL
+IGJhc2UgcGFnZSBzaXplKS4NCj4gDQoNCkNhbiB5b3UgdGVsbCBob3cgeW91IHRlc3QgPw0KDQpJ
+J20gd2lsbGluZyB0byB0ZXN0IHRoaXMgc2VyaWVzIG9uIHBvd2VycGMgOHh4IChQUEMzMikuDQoN
+CkNocmlzdG9waGUNCg==
 
