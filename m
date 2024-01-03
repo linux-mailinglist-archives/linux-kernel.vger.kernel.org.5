@@ -1,201 +1,114 @@
-Return-Path: <linux-kernel+bounces-15578-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15579-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5DDEB822E5F
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 14:31:55 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A1E91822E64
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 14:32:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3DA9D1C236F2
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 13:31:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 40BC31F220AF
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 13:32:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7116F19BCF;
-	Wed,  3 Jan 2024 13:30:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE25B1A591;
+	Wed,  3 Jan 2024 13:30:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="BHxFdWop"
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="1zHnQX+c"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31CDB19BAF
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 13:30:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-553e36acfbaso12415a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 05:30:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1704288614; x=1704893414; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EG1JPJoQXcnD8x9xPNrPoCvZ57tzKqywV3MMnL/ZCpM=;
-        b=BHxFdWopckJEP9NAvDTlmOGjEg4Fn01X5MUaUJAi10nyecZh+csJO5sA6oubWNGx6z
-         gMWWKTe6SqAaBxzHcoR8TgpNYXhfMknC/JSQ4XvBmKw7kz1WluQJEUVzy+Hfd6FjWM78
-         9hQ7kzWSDG62+wINIolrA4gfo/XvUDCCT1cr06ixSSWtSaHor/uzOYYImM4siHljv1Dz
-         eJgOGwqW3+dfMgJb384jM3BEQT8pmqYQcVcohRwP5Nk5IYDyE8+9z23qP/RXflEAgu9w
-         YklkOIK+sxUsGY0Dr4xW5S9yUfJxGcCLl4e4V+XTb9+uLbvcdkEMqdKI7YrsDveXWS/F
-         VWVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704288614; x=1704893414;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=EG1JPJoQXcnD8x9xPNrPoCvZ57tzKqywV3MMnL/ZCpM=;
-        b=eLQx2LBflsqOBG1akY0oopeCpITyL1d6CYN5/3HUyeXLU4LdKMJkuitNpltICQbOO0
-         b8wfjYwNKExJVLUBgkcZLqlKhISm4MTQey94MX3vuSclrlOIqzy5dK0aWyt529SnfXOI
-         hvPN6uqWw/IJluruYgMBquJZjDYPF8uWwgqnUpFrJMZN5R1Zti+u6FwZIovNtle2G/F2
-         pKCA1j8zC0vjmysXK6R6h2W3MALP0qbIwoq+1H4HsxEh9OTC9NX1gAv/2tkgLWmlIihy
-         vNdKbRCM1ia3asmppVuITRE7MyGKOPrMgc7JSrx50BPbIAGeXDT1HFxreJfSoOm6Qnuf
-         8o4w==
-X-Gm-Message-State: AOJu0Yx2p1SLiRnfk8Vg+hi4NpD+Vt4L//fhTVu5t4k442NL4qeVgsv7
-	cbsFMZyn2mscKKM7SrwyJKmA3w0h3gVcg+TNKFXvcoIDhiI6
-X-Google-Smtp-Source: AGHT+IGcpdkuovt9cj7pidLmE+5ecVJgA0Cy2xBQq+vDKoXa5lhX7c0GLa621Y2qcJM05Kn+NLFA71EX7DXzL6DkU0E=
-X-Received: by 2002:a50:9ece:0:b0:554:2501:cc8e with SMTP id
- a72-20020a509ece000000b005542501cc8emr157394edf.6.1704288614143; Wed, 03 Jan
- 2024 05:30:14 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7B671A27E;
+	Wed,  3 Jan 2024 13:30:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Transfer-Encoding:Content-Disposition:
+	Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:From:
+	Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Content-Disposition:
+	In-Reply-To:References; bh=1H++AJiescRoXR5SWrVB1eNQUoip3aAkOmJ/HiZ4zFc=; b=1z
+	HnQX+cm/ClYDZS+R5jDLXvXTqeToFIScTgJmaxWCtETaENqsdsnHh5KxQzovCNiLb/Fx8sJa0kTcD
+	rMA3pPqTrNa7ZY9R64Wl9LYSxiS80L7yrD82n7/1d5vul9xWJ6tb0SzQemRdx4eK34bqzblhXXsq7
+	5dtK8NxHj7Vk330=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1rL1K8-004Fxw-12; Wed, 03 Jan 2024 14:30:20 +0100
+Date: Wed, 3 Jan 2024 14:30:20 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: Yajun Deng <yajun.deng@linux.dev>
+Cc: "Russell King (Oracle)" <linux@armlinux.org.uk>, davem@davemloft.net,
+	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+	olteanv@gmail.com, hkallweit1@gmail.com, kabel@kernel.org,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-phy@lists.infradead.org
+Subject: Re: [PATCH net-next] net: phy: Cleanup struct mdio_driver_common
+Message-ID: <7367681a-3ef5-42ad-9c2f-173f77cc1b56@lunn.ch>
+References: <20231228072350.1294425-1-yajun.deng@linux.dev>
+ <ZZRJLg6U0G5CNRQ0@shell.armlinux.org.uk>
+ <a5aca886-ca0a-8170-417f-a189ec28c87f@linux.dev>
+ <ZZU8I5wwH+y1VsIy@shell.armlinux.org.uk>
+ <52ea5dbf-2d60-7a23-e525-9dcae2809554@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <127b8199-1cd4-42d7-9b2b-875abaad93fe@gmail.com>
- <90117449-1f4a-47d7-baf4-2ed6540bc436@gmail.com> <CANn89i+GJOgcDWK=C0+vmomt2ShotrOKyLiXzFkfT1W8vpJv1Q@mail.gmail.com>
- <9419df03-a203-4b73-91a6-f008076c29b4@gmail.com>
-In-Reply-To: <9419df03-a203-4b73-91a6-f008076c29b4@gmail.com>
-From: Eric Dumazet <edumazet@google.com>
-Date: Wed, 3 Jan 2024 14:30:00 +0100
-Message-ID: <CANn89iJdPRspWo2XzqdGdGe9_am7zNwbq9vm0AFLF-KRODzE7A@mail.gmail.com>
-Subject: Re: [PATCH net-next v2 2/3] net: gro: parse ipv6 ext headers without
- frag0 invalidation
-To: Richard Gobert <richardbgobert@gmail.com>
-Cc: davem@davemloft.net, dsahern@kernel.org, kuba@kernel.org, 
-	pabeni@redhat.com, shuah@kernel.org, netdev@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <52ea5dbf-2d60-7a23-e525-9dcae2809554@linux.dev>
 
-On Wed, Jan 3, 2024 at 2:08=E2=80=AFPM Richard Gobert <richardbgobert@gmail=
-.com> wrote:
->
->
->
-> Eric Dumazet wrote:
-> > On Tue, Jan 2, 2024 at 2:25=E2=80=AFPM Richard Gobert <richardbgobert@g=
-mail.com> wrote:
-> >>
-> >> The existing code always pulls the IPv6 header and sets the transport
-> >> offset initially. Then optionally again pulls any extension headers in
-> >> ipv6_gso_pull_exthdrs and sets the transport offset again on return fr=
-om
-> >> that call. skb->data is set at the start of the first extension header
-> >> before calling ipv6_gso_pull_exthdrs, and must disable the frag0
-> >> optimization because that function uses pskb_may_pull/pskb_pull instea=
-d of
-> >> skb_gro_ helpers. It sets the GRO offset to the TCP header with
-> >> skb_gro_pull and sets the transport header. Then returns skb->data to =
-its
-> >> position before this block.
-> >>
-> >> This commit introduces a new helper function - ipv6_gro_pull_exthdrs -
-> >> which is used in ipv6_gro_receive to pull ipv6 ext headers instead of
-> >> ipv6_gso_pull_exthdrs. Thus, there is no modification of skb->data, al=
-l
-> >> operations use skb_gro_* helpers, and the frag0 fast path can be taken=
- for
-> >> IPv6 packets with ext headers.
-> >>
-> >> Signed-off-by: Richard Gobert <richardbgobert@gmail.com>
-> >> Reviewed-by: Willem de Bruijn <willemb@google.com>
-> >> ---
-> >>  include/net/ipv6.h     |  1 +
-> >>  net/ipv6/ip6_offload.c | 51 +++++++++++++++++++++++++++++++++--------=
--
-> >>  2 files changed, 42 insertions(+), 10 deletions(-)
-> >>
-> >> diff --git a/include/net/ipv6.h b/include/net/ipv6.h
-> >> index 78d38dd88aba..217240efa182 100644
-> >> --- a/include/net/ipv6.h
-> >> +++ b/include/net/ipv6.h
-> >> @@ -26,6 +26,7 @@ struct ip_tunnel_info;
-> >>  #define SIN6_LEN_RFC2133       24
-> >>
-> >>  #define IPV6_MAXPLEN           65535
-> >> +#define IPV6_MIN_EXTHDR_LEN    8
-> >
-> > // Hmm see my following comment.
-> >
-> >>
-> >>  /*
-> >>   *     NextHeader field of IPv6 header
-> >> diff --git a/net/ipv6/ip6_offload.c b/net/ipv6/ip6_offload.c
-> >> index 0e0b5fed0995..c07111d8f56a 100644
-> >> --- a/net/ipv6/ip6_offload.c
-> >> +++ b/net/ipv6/ip6_offload.c
-> >> @@ -37,6 +37,40 @@
-> >>                 INDIRECT_CALL_L4(cb, f2, f1, head, skb);        \
-> >>  })
-> >>
-> >> +static int ipv6_gro_pull_exthdrs(struct sk_buff *skb, int off, int pr=
-oto)
-> >> +{
-> >> +       const struct net_offload *ops =3D NULL;
-> >> +       struct ipv6_opt_hdr *opth;
-> >> +
-> >> +       for (;;) {
-> >> +               int len;
-> >> +
-> >> +               ops =3D rcu_dereference(inet6_offloads[proto]);
-> >> +
-> >> +               if (unlikely(!ops))
-> >> +                       break;
-> >> +
-> >> +               if (!(ops->flags & INET6_PROTO_GSO_EXTHDR))
-> >> +                       break;
-> >> +
-> >> +               opth =3D skb_gro_header(skb, off + IPV6_MIN_EXTHDR_LEN=
-, off);
-> >
-> > I do not see a compelling reason for adding yet another constant here.
-> >
-> > I would stick to
-> >
-> >    opth =3D skb_gro_header(skb, off + sizeof(*opth), off);
-> >
-> > Consistency with similar helpers is desirable.
-> >
->
-> In terms of consistency - similar helper functions (ipv6_gso_pull_exthdrs=
-,
-> ipv6_parse_hopopts) also pull 8 bytes at the beginning of every IPv6
-> extension header, because the minimum extension header length is 8 bytes.
->
-> sizeof(*opth) =3D 2, so for an IPv6 packet with one extension header with=
- a
-> common length of 8 bytes, pskb_may_pull will be called twice: first with
-> length =3D 2 and again with length =3D 8, which might not be ideal when p=
-arsing
-> non-linear packets.
->
-> Willem suggested adding a constant to make the code more self-documenting=
-.
+On Wed, Jan 03, 2024 at 07:38:04PM +0800, Yajun Deng wrote:
+> 
+> On 2024/1/3 18:51, Russell King (Oracle) wrote:
+> > On Wed, Jan 03, 2024 at 10:03:14AM +0800, Yajun Deng wrote:
+> > > On 2024/1/3 01:34, Russell King (Oracle) wrote:
+> > > > I'm not sure why this consistency is even desired, the commit message
+> > > > doesn't properly say _why_ this change is being proposed.
+> > > Most drivers use device_driver directly. This should be added to the commit.
+> > > 
+> > > Like this:
+> > > 
+> > > struct sdio_driver {
+> > > 
+> > > ... ...
+> > > 
+> > >          struct device_driver drv;
+> > > };
+> > > 
+> > > 
+> > > struct pcie_port_service_driver {
+> > > 
+> > > ... ...
+> > > 
+> > >          struct device_driver driver;
+> > > };
+> > > 
+> > > and so on ...
+> > ... which is fine for those other drivers because they don't share the
+> > same bus. That is not the case here - we have two different classes
+> > of drivers on the same bus.
+> 
+> 
+> Yes, that's true. But we can implement it with is_phy_driver(). I don't
+> think we need a flag for that.
+> 
+> > 
+> > I don't like a justification that just because other subsystems do
+> > something in one particular way, that is the only way things should be
+> > done. I think there is good reason to have the structure we have, and
+> > thus there needs to be a good reason to change it.
+> 
+> Its purpose is to clean up struct mdio_driver_common, and make the code
+> cleaner.
 
+I have to agree with Russell here. The commit message should explain
+the 'Why?'. Why is this better? Why is it cleaner? Why does making it
+the same as all other drivers make it better, when in fact we have two
+classes of devices stacked on top of it, and making it different to
+every other driver actually helps developers realise that?
 
-Hmm... I was looking at
-
-skb_checksum_setup_ipv6() , it uses skb_maybe_pull_tail( ...
-sizeof(struct ipv6_opt_hdr))
-ipv6_skip_exthdr()  also uses sizeof(struct ipv6_opt_hdr)
-ip6_tnl_parse_tlv_enc_lim also uses the same.
-hbh_mt6(), ipv6header_mt6(),  .. same...
-ip6_find_1stfragopt(), get_ipv6_ext_hdrs(), tcf_csum_ipv6(),
-mip6_rthdr_offset() same
-
-So it seems you found two helpers that went the other way.
-
-If you think pulling 8 bytes first is a win, I would suggest a stand
-alone patch, adding the magic constant
-using it in all places, so that a casual reader can make sense of the
-magical 8 value.
+      Andrew
 
