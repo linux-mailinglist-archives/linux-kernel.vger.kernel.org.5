@@ -1,213 +1,132 @@
-Return-Path: <linux-kernel+bounces-15692-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15691-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE654823059
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 16:18:57 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B415823056
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 16:18:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4B55628604F
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 15:18:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1EF4DB23767
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 15:18:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBCA01B296;
-	Wed,  3 Jan 2024 15:18:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A69C71B26C;
+	Wed,  3 Jan 2024 15:18:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="G9MMxejv"
+	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="UOvxH07p"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
+Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7C7D1A720
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85C8B1A71B
 	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 15:18:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-50e7dff3e9fso7777428e87.2
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a275b3a1167so601337666b.3
         for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 07:18:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1704295109; x=1704899909; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=qOnh6GFoMJIg3Fk5aDwenA5FAvHDGXhGVcW2b/3N3Bc=;
-        b=G9MMxejvLv3D5PRC5DfObCJVUmNe6vKlhaNd6xjL6bsQmcbL3ulgyh3mDZ1wxYED+E
-         0gHoQsKDjb4/6jR5dOqt+MHsH4o9YgLRqkB81HN3aOyb8jwHDdk3gDCugVbUmYCTvIxZ
-         FTWV7lORIqlc3LRKx7/oV6MTt3YvWjfgBOVRl1oMidr2ep7AA4IXGcPmjxSHoJf2Mf3K
-         u7j4zUyfZLyup/WBYx9moOJG3FMmnb008Au0uPZ+Od1FQU7dHAwUJdYwcaTh415hhZBw
-         2cI/jtcZh4dO/hE8fX9K/cmj1CKwKLSXn0LxC9zrF5GpvRmEJdoqnMtciS5DmsiT7JDB
-         PFLA==
+        d=ventanamicro.com; s=google; t=1704295109; x=1704899909; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=x58X07zwjYU7cKHRzjg4ENbbksPJOwVkc9czaYIAXnY=;
+        b=UOvxH07pTHjYyCTYEc8kC4SXBKwnARlAPqx1Nkn45nBsttkklzlnQO0vGSUk0+iaNT
+         XHBsFqr5bZ9Yh4TdxrNsDnINDC/4iMWizyiIiCHVuSq0qV56hS3CaHVHaYpdYZqDfEhq
+         4d7PU6gaOTkho3Fa582w1pyi1hU2arSLSYDG0/bkE2Iss+JvQFoiywFkHQquXmo1eiiT
+         hI2MF8Y55UI/rWQO5NI9uykbqEjIyiMrIIho6dtTe9KvpONBs50OwyBQqorJK7nUbAcc
+         TCznmPdQdKfT0zsQ5aGAzy2zdtkZvzd48mBuMEuRIprCLvA3zNisA9JFQaa4oIinwHpZ
+         wRQQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1704295109; x=1704899909;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=qOnh6GFoMJIg3Fk5aDwenA5FAvHDGXhGVcW2b/3N3Bc=;
-        b=C6twtWUunT+WnQH2RGmUU5FhpEynZPgEyPECKVIY+R3yn37bGYVhYfyEl8jB7fcpne
-         V4Nh9nfB/r5ob3Xk9R42XrMHiWCLKD1M+cm22kc6zGKxZPkCaHVQJKUiayeFjcKJuIzk
-         hgol/ZHTu08/wG5d8VFXsn+l3PXzAgTz9fCVyj7MshM/m8FzDCGM8jYXMwjJWpuWsrKb
-         kWiKhIPs/YfvJHNEUm6YS8abxIDux1pH49CRLSaU0eR+D7kBpedwFgplQsCUYd+U3CSk
-         V1GbvCOlLBnSyGB5+X5pwVxm3Ip/AaruGQOPQCAPj2Yh9ePgnYqZBjst/OM0RsQ9kDB7
-         brBw==
-X-Gm-Message-State: AOJu0YzOi1JnP+Wh+zXY/Bn1kGMVEIUgGrC8kmMxUjZgYLXeK2ko77xQ
-	O9Y8LDj75qkqmiL+TeUn/F4+O93AGWhBmg==
-X-Google-Smtp-Source: AGHT+IGmMNSNCa2FS9YbKliIuuRoRIjkZHFFRQauWfc6RzCo+GBWoTZ+VEYuChLYvzI5/3hshuW9bQ==
-X-Received: by 2002:a05:6512:3c8e:b0:50e:7693:7084 with SMTP id h14-20020a0565123c8e00b0050e76937084mr9468630lfv.57.1704295108834;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=x58X07zwjYU7cKHRzjg4ENbbksPJOwVkc9czaYIAXnY=;
+        b=tWf6ZdjQHEqnipBtKXiERQdazsuCT0FFD/N44b/r8c1DW7alq0qV65OD1irlW3nqA3
+         4lrQdUNxK61ixrfYkvemQeiP0tX4N6Ke1zO7atcTLVvSISv+FJWEyDRCEwMBHETFnDE4
+         0Z2geWStmYA9D0FbMgTmLzabshEfFHCv0kjH1buonO4Vw2GFmoP94K4PoKuaSGZXxwgm
+         Bqgin4xo7fYu+01o+XNQqwGCvh4QkqB7Fk0UxVma04XlUm2hskUmMcg5vEldrrs/bOJl
+         5gcA4IIZWqR0AejTLFf8tBjjVxXeZw5OK1uG5NIcpSVYPt96Uj5w6igyeNqUxt7lBgz5
+         a/fA==
+X-Gm-Message-State: AOJu0YzPsKiDVkPtwFdg6VEiA6HenaVHhtB34m/MIhWTVvfL0oXNXlWm
+	FqBzCkC4f5SQBL33iaYFljx592NvjIBXwQ==
+X-Google-Smtp-Source: AGHT+IFvaCr1M0YJt2eVUUY9JaIAd7GjOQgEzJfEemGQkJ002T1Rf88/GWTw0XzPMNRZwYC3tYhoyw==
+X-Received: by 2002:a17:906:52ce:b0:a28:ab0b:fb56 with SMTP id w14-20020a17090652ce00b00a28ab0bfb56mr392021ejn.106.1704295108657;
         Wed, 03 Jan 2024 07:18:28 -0800 (PST)
-Received: from ?IPV6:2a02:6b6a:b5c7:0:1b12:a705:8eb0:640d? ([2a02:6b6a:b5c7:0:1b12:a705:8eb0:640d])
-        by smtp.gmail.com with ESMTPSA id a5-20020a056512390500b0050e677cb432sm3667596lfu.193.2024.01.03.07.18.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+Received: from localhost (2001-1ae9-1c2-4c00-20f-c6b4-1e57-7965.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:20f:c6b4:1e57:7965])
+        by smtp.gmail.com with ESMTPSA id ez21-20020a1709070bd500b00a26ac88d801sm12144793ejc.30.2024.01.03.07.18.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Wed, 03 Jan 2024 07:18:28 -0800 (PST)
-Message-ID: <a57b9e19-3466-bb73-1c88-c19417ac6822@bytedance.com>
-Date: Wed, 3 Jan 2024 15:18:25 +0000
+Date: Wed, 3 Jan 2024 16:18:27 +0100
+From: Andrew Jones <ajones@ventanamicro.com>
+To: Randy Dunlap <rdunlap@infradead.org>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>, 
+	Linux Next Mailing List <linux-next@vger.kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
+	KVM list <kvm@vger.kernel.org>, linux-riscv <linux-riscv@lists.infradead.org>
+Subject: Re: Re: linux-next: Tree for Jan 2 (riscv & KVM problem)
+Message-ID: <20240103-d2201c92e97755a4bb438bc3@orel>
+References: <20240102165725.6d18cc50@canb.auug.org.au>
+ <44907c6b-c5bd-4e4a-a921-e4d3825539d8@infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.4.2
-Subject: Re: [External] [PATCH v5] x86: intel_epb: Add earlyparam option to
- keep bias at performance
-To: Jack Allister <jalliste@amazon.com>
-Cc: "Rafael J . Wysocki" <rafael@kernel.org>,
- Paul Durrant <pdurrant@amazon.com>, Jue Wang <juew@amazon.com>,
- Jonathan Corbet <corbet@lwn.net>, Thomas Gleixner <tglx@linutronix.de>,
- Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
- Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
- "H. Peter Anvin" <hpa@zytor.com>, "Paul E. McKenney" <paulmck@kernel.org>,
- Randy Dunlap <rdunlap@infradead.org>, Tejun Heo <tj@kernel.org>,
- Peter Zijlstra <peterz@infradead.org>, Yan-Jie Wang <yanjiewtw@gmail.com>,
- Hans de Goede <hdegoede@redhat.com>, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <83431857-7182-471a-9ff1-9dac37e5a02f@intel.com>
- <20240103144607.46369-1-jalliste@amazon.com>
-Content-Language: en-US
-From: Usama Arif <usama.arif@bytedance.com>
-In-Reply-To: <20240103144607.46369-1-jalliste@amazon.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <44907c6b-c5bd-4e4a-a921-e4d3825539d8@infradead.org>
 
+On Tue, Jan 02, 2024 at 10:07:21AM -0800, Randy Dunlap wrote:
+> 
+> 
+> On 1/1/24 21:57, Stephen Rothwell wrote:
+> > Hi all,
+> > 
+> > Changes since 20231222:
+> > 
+> 
+> It is possible for a riscv randconfig to create a .config file with
+> CONFIG_KVM enabled but CONFIG_HAVE_KVM is not set.
+> Is that expected?
+> 
+> CONFIG_HAVE_KVM_IRQCHIP=y
+> CONFIG_HAVE_KVM_IRQ_ROUTING=y
+> CONFIG_KVM_MMIO=y
+> CONFIG_HAVE_KVM_MSI=y
+> CONFIG_KVM_GENERIC_DIRTYLOG_READ_PROTECT=y
+> CONFIG_HAVE_KVM_VCPU_ASYNC_IOCTL=y
+> CONFIG_KVM_XFER_TO_GUEST_WORK=y
+> CONFIG_KVM_GENERIC_HARDWARE_ENABLING=y
+> CONFIG_KVM_GENERIC_MMU_NOTIFIER=y
+> CONFIG_VIRTUALIZATION=y
+> CONFIG_KVM=m
+> 
+> Should arch/riscv/kvm/Kconfig: "config KVM" select HAVE_KVM
+> along with the other selects there or should that "config KVM"
+> depend on HAVE_KVM?
 
+We probably should add a patch which makes RISCV select HAVE_KVM and
+KVM depend on HAVE_KVM in order for riscv kvm to be consistent with
+the other KVM supporting architectures.
 
-On 03/01/2024 14:46, Jack Allister wrote:
-> Buggy BIOSes may not set a sane boot-time Energy Performance Bias (EPB).
-> A result of this may be overheating or excess power usage. The kernel
-> overrides any boot-time EPB "performance" bias to "normal" to avoid this.
 > 
-> When used in data centers it is preferable keep the EPB at "performance"
-> when performing a live-update of the host kernel via a kexec to the new
-> kernel. This is due to boot-time being critical when performing the kexec
-> as running guest VMs will perceieve this as latency or downtime.
 > 
-> On Intel Xeon Ice Lake platforms it has been observed that a combination of
-> EPB being set to "normal" alongside HWP (Intel Hardware P-states) being
-> enabled/configured during or close to the kexec causes an increases the
-> live-update/kexec downtime by 7 times compared to when the EPB is set to
-> "performance".
+> The problem .config file causes build errors because EVENTFD
+> is not set:
 > 
-> Introduce a command-line parameter, "intel_epb=preserve", to skip the
-> "performance" -> "normal" override/workaround. This maintains prior
-> functionality when no parameter is set, but adds in the ability to stay at
-> performance for a speedy kexec if a user wishes.
-> 
-> Signed-off-by: Jack Allister <jalliste@amazon.com>
-> Acked-by: Rafael J. Wysocki <rafael@kernel.org>
-> Cc: Paul Durrant <pdurrant@amazon.com>
-> Cc: Jue Wang <juew@amazon.com>
-> Cc: Usama Arif <usama.arif@bytedance.com>
-> ---
->   .../admin-guide/kernel-parameters.txt         | 12 +++++++++++
->   arch/x86/kernel/cpu/intel_epb.c               | 21 +++++++++++++++++--
->   2 files changed, 31 insertions(+), 2 deletions(-)
-> 
-> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-> index 65731b060e3f..5602ee213115 100644
-> --- a/Documentation/admin-guide/kernel-parameters.txt
-> +++ b/Documentation/admin-guide/kernel-parameters.txt
-> @@ -2148,6 +2148,18 @@
->   			0	disables intel_idle and fall back on acpi_idle.
->   			1 to 9	specify maximum depth of C-state.
->   
-> +	intel_epb=	[X86]
-> +			auto
-> +			  Same as not passing a parameter to intel_epb. This will
-> +			  ensure that the intel_epb module will restore the energy
-> +			  performance bias to "normal" at boot-time. This workaround
-> +			  is for buggy BIOSes which may not set this value and cause
-> +			  either overheating or excess power usage.
-Hi,
+> ../arch/riscv/kvm/../../../virt/kvm/eventfd.c: In function 'kvm_irqfd_assign':
+> ../arch/riscv/kvm/../../../virt/kvm/eventfd.c:335:19: error: implicit declaration of function 'eventfd_ctx_fileget'; did you mean 'eventfd_ctx_fdget'? [-Werror=implicit-function-declaration]
+>   335 |         eventfd = eventfd_ctx_fileget(f.file);
+>       |                   ^~~~~~~~~~~~~~~~~~~
+>       |                   eventfd_ctx_fdget
+> ../arch/riscv/kvm/../../../virt/kvm/eventfd.c:335:17: warning: assignment to 'struct eventfd_ctx *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
+>   335 |         eventfd = eventfd_ctx_fileget(f.file);
+>       |                 ^
+>
 
-Thanks for the patch. Is auto needed over here? It was pointed in an 
-earlier review that it could be an option, but it doesn't seem to serve 
-a purpose. Its also not how the code works, i.e. intel_epb=abc would be 
-the same as intel_epb=auto. Just could add a print if intel_epb=preserve 
-is not encountered then an unexpected value has been passed in.
-
-> +			preserve
-> +			  At kernel boot-time if the EPB value is read as "performance"
-> +			  keep it at this value. This prevents the "performance" -> "normal"
-> +			  transition which is a workaround mentioned above.
-> +
->   	intel_pstate=	[X86]
->   			disable
->   			  Do not enable intel_pstate as the default
-> diff --git a/arch/x86/kernel/cpu/intel_epb.c b/arch/x86/kernel/cpu/intel_epb.c
-> index e4c3ba91321c..419e699a43e6 100644
-> --- a/arch/x86/kernel/cpu/intel_epb.c
-> +++ b/arch/x86/kernel/cpu/intel_epb.c
-> @@ -50,7 +50,8 @@
->    * the OS will do that anyway.  That sometimes is problematic, as it may cause
->    * the system battery to drain too fast, for example, so it is better to adjust
->    * it on CPU bring-up and if the initial EPB value for a given CPU is 0, the
-> - * kernel changes it to 6 ('normal').
-> + * kernel changes it to 6 ('normal'). However, if it is desirable to retain the
-> + * original initial EPB value, intel_epb=preserve can be set to enforce it.
->    */
->   
->   static DEFINE_PER_CPU(u8, saved_epb);
-> @@ -75,6 +76,8 @@ static u8 energ_perf_values[] = {
->   	[EPB_INDEX_POWERSAVE] = ENERGY_PERF_BIAS_POWERSAVE,
->   };
->   
-> +static bool intel_epb_no_override __read_mostly;
-> +
->   static int intel_epb_save(void)
->   {
->   	u64 epb;
-> @@ -106,7 +109,7 @@ static void intel_epb_restore(void)
->   		 * ('normal').
->   		 */
->   		val = epb & EPB_MASK;
-> -		if (val == ENERGY_PERF_BIAS_PERFORMANCE) {
-> +		if (!intel_epb_no_override && val == ENERGY_PERF_BIAS_PERFORMANCE) {
->   			val = energ_perf_values[EPB_INDEX_NORMAL];
->   			pr_warn_once("ENERGY_PERF_BIAS: Set to 'normal', was 'performance'\n");
->   		}
-> @@ -213,6 +216,20 @@ static const struct x86_cpu_id intel_epb_normal[] = {
->   	{}
->   };
->   
-> +static __init int parse_intel_epb(char *str)
-> +{
-> +	if (!str)
-> +		return 0;
-> +
-> +	/* "intel_epb=preserve" prevents PERFORMANCE->NORMAL on restore. */
-> +	if (!strcmp(str, "preserve"))
-> +		intel_epb_no_override = true;
-> +
-Maybe add an print in else here to say that unexpected value has been 
-encountered for intel_epb if preserve is not seen.
+Hmm. riscv kvm selects HAVE_KVM_EVENTFD, which selects EVENTFD. I'm
+not sure how the lack of HAVE_KVM is leading to this.
 
 Thanks,
-Usama
-> +	return 0;
-> +}
-> +
-> +early_param("intel_epb", parse_intel_epb);
-> +
->   static __init int intel_epb_init(void)
->   {
->   	const struct x86_cpu_id *id = x86_match_cpu(intel_epb_normal);
+drew
 
