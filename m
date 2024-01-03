@@ -1,97 +1,107 @@
-Return-Path: <linux-kernel+bounces-15626-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15627-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B9A0F822F12
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 15:01:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CC878822F16
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 15:01:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 689F11F23D8B
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 14:01:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C18421C23726
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 14:01:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A812F1A5A1;
-	Wed,  3 Jan 2024 14:00:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5803D1A587;
+	Wed,  3 Jan 2024 14:01:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="Kofrjrnm"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DrvKS9JS"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52F741A593;
-	Wed,  3 Jan 2024 14:00:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=AsG33UPNYjYCjVVsF0qY80s0GE26xn+JI/RSCas0qdI=; b=Kofrjrnmvk2RLHNCJnjXC/iFyX
-	U+oxOjVpJ8MVWuF0Uv0DCO9lH8BHbvzcmEN2EqKeNReOvuPsXS0/zwyH7hr/bcZ2q1+2t/pCTatBM
-	Zzbo8ZEu5O1IK1wGpQPprU+rAhWg4IpzXMVFUno0xWaWJG8euRPpUNDkc7xlYTSa+T2tqEealWgWr
-	slVgv9J+H5JIJNkYp6OMlG21uNDUnsv3jPLSPZ3ssz2RpgePDWNtGB9XNxYPsOS0ypkurs2VLf/jX
-	VTp1udt8Oe9TPYTm+kz3CQHUthFrSZRtPe4qi4F0Js0+8SrZ0W+zCYOc15dMpmZMT2AwEQaaDk8CU
-	umBF3lLQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:36860)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1rL1nM-0007X5-2r;
-	Wed, 03 Jan 2024 14:00:32 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1rL1nM-0006QC-I6; Wed, 03 Jan 2024 14:00:32 +0000
-Date: Wed, 3 Jan 2024 14:00:32 +0000
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: Yajun Deng <yajun.deng@linux.dev>
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-	pabeni@redhat.com, andrew@lunn.ch, olteanv@gmail.com,
-	hkallweit1@gmail.com, przemyslaw.kitszel@intel.com,
-	kabel@kernel.org, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-phy@lists.infradead.org
-Subject: Re: [PATCH net-next v2 0/2] net: phy: Use is_phy_driver() and
- is_phy_device()
-Message-ID: <ZZVogCGYu9pIR620@shell.armlinux.org.uk>
-References: <20240103025334.541682-1-yajun.deng@linux.dev>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4438A1A27A;
+	Wed,  3 Jan 2024 14:01:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-3368abe1093so9215207f8f.2;
+        Wed, 03 Jan 2024 06:01:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704290495; x=1704895295; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=9BErBM0wPdwvSBc33sZfKMWNPmjAg4dmUERmQ8FyzhY=;
+        b=DrvKS9JS9cChm6u3o/0mBK1GiKFO187SNG2lfYMfO9+zOLXYmJlR0LFbaihn/pE0g2
+         KnxYI12xtbNumNf894YLjaOcSC1GCsH2a3Om6pbY7XOu4/wjFld1THXvctZK7FwPFDo8
+         hqYfmCk1aIq43fAdpTFdEHlnFsSr1sovzK8sIz2VAXjr3d7FLaJYNr7P0U+GAxFxC0e/
+         xLUmGzbuu8av7igwhJJqqzf9/dP4RPmg75XBlmjTTXybLhNgjKsESbPeNkLV64jR0tuE
+         PXdy26ZSo2G7B/q2ALKZa0XeB0UnOUbwRpFoImk01zJSEhsHSWvMvmiabVSkFqbV2f2k
+         KGrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704290495; x=1704895295;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=9BErBM0wPdwvSBc33sZfKMWNPmjAg4dmUERmQ8FyzhY=;
+        b=uRrk1mnbbtPB1XI0xO1P2mlLVj8aKcrUEggGVpHvYbg7YrmYl9I5h6kIQDeUULbTiU
+         GSQ6QkXjD7RGsfFxjGoIBXaTfjgwxCRt0OVKsmhsSiRakGqI1iP0bHBkeUzYGNxm3M34
+         koX5RP2nDHsTSQ2hEZaB0LHBit48QvNhvA3U+StP0SYWgoqmCTorf1D2TdWcDtP2uwEJ
+         VbVqYXc5A6hwL2PQzD38uWavOSmm30wbXvqtYS75CJZHATB102w6Prw40Qaj0BxPXNYT
+         eaf1cEjG69FBEcjmLlmRWYe2mB49B338B9j3LK6vJHxMdjylZhdwH9LCmqT1IFUfdJQv
+         EzeA==
+X-Gm-Message-State: AOJu0YxeXirKHvyLeebeYhbl5+PnOp0q4cUoUeXu3fku52u/bwXkcr0t
+	jIBHnTJmGdJGpxLtkrqhE0o=
+X-Google-Smtp-Source: AGHT+IFdZ3buW4ywokrWfvLiSPOyxmG+Mp6bHvVAaY2H43y0Cs4nR/z1KL6Q4m42TETaPWuDqov5gQ==
+X-Received: by 2002:a05:6000:184d:b0:337:3de5:d70f with SMTP id c13-20020a056000184d00b003373de5d70fmr2772418wri.102.1704290495296;
+        Wed, 03 Jan 2024 06:01:35 -0800 (PST)
+Received: from debian ([146.70.204.204])
+        by smtp.gmail.com with ESMTPSA id e29-20020a5d595d000000b003372b8ab19asm12025202wri.64.2024.01.03.06.01.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 03 Jan 2024 06:01:35 -0800 (PST)
+Message-ID: <50450c53-caa8-49bf-a718-5819a4263e9f@gmail.com>
+Date: Wed, 3 Jan 2024 15:01:15 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240103025334.541682-1-yajun.deng@linux.dev>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+Subject: Re: [PATCH net-next v2 2/3] net: gro: parse ipv6 ext headers without
+ frag0 invalidation
+To: Eric Dumazet <edumazet@google.com>
+Cc: davem@davemloft.net, dsahern@kernel.org, kuba@kernel.org,
+ pabeni@redhat.com, shuah@kernel.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+References: <127b8199-1cd4-42d7-9b2b-875abaad93fe@gmail.com>
+ <90117449-1f4a-47d7-baf4-2ed6540bc436@gmail.com>
+ <CANn89i+GJOgcDWK=C0+vmomt2ShotrOKyLiXzFkfT1W8vpJv1Q@mail.gmail.com>
+ <9419df03-a203-4b73-91a6-f008076c29b4@gmail.com>
+ <CANn89iJdPRspWo2XzqdGdGe9_am7zNwbq9vm0AFLF-KRODzE7A@mail.gmail.com>
+From: Richard Gobert <richardbgobert@gmail.com>
+In-Reply-To: <CANn89iJdPRspWo2XzqdGdGe9_am7zNwbq9vm0AFLF-KRODzE7A@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Wed, Jan 03, 2024 at 10:53:32AM +0800, Yajun Deng wrote:
-> There is only one flag that can be set in struct mdio_driver_common and
-> mdio_device. We can compare the probe of the driver or the type of the
-> device to implement it. Hence, these flags in struct mdio_driver_common
-> and mdio_device can be removed.
+Eric Dumazet wrote:
+
 > 
-> Introduce is_phy_driver() and is_phy_device(). Use them test the driver
-> or device.
+> 
+> Hmm... I was looking at
+> 
+> skb_checksum_setup_ipv6() , it uses skb_maybe_pull_tail( ...
+> sizeof(struct ipv6_opt_hdr))
+> ipv6_skip_exthdr()  also uses sizeof(struct ipv6_opt_hdr)
+> ip6_tnl_parse_tlv_enc_lim also uses the same.
+> hbh_mt6(), ipv6header_mt6(),  .. same...
+> ip6_find_1stfragopt(), get_ipv6_ext_hdrs(), tcf_csum_ipv6(),
+> mip6_rthdr_offset() same
+> 
+> So it seems you found two helpers that went the other way.
+> 
+> If you think pulling 8 bytes first is a win, I would suggest a stand
+> alone patch, adding the magic constant
+> using it in all places, so that a casual reader can make sense of the
+> magical 8 value.
 
-It is not a good idea to post a new series while discussion of the first
-is still on-going, even if it has been 24 hours since you last posted a
-patch. If discussion is still going on, then we don't need the
-distraction of yet another series to duplicate the comments to.
-
-I remain completely unconvinced of the merit of these changes. IMHO,
-it is pure churn for churn's sake - there is no _real_ benefit. It
-doesn't fix a bug. It doesn't make the code easier to read. It only
-satisfies some ideological idea that all drivers should look the same.
-
-Unless a very good justification can be found, I am not in favour of
-changing these drivers.
-
-There _may_ be good merit in is_phy_driver() and is_phy_device(), and
-as Andrew says, that should be done _first_.
-
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+I guess pulling 8 bytes first is not such a big advantage.
+I will submit a v3 with sizeof(*opth) as you suggested.
 
