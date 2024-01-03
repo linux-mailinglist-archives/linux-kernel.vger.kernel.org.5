@@ -1,366 +1,336 @@
-Return-Path: <linux-kernel+bounces-15213-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15214-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA744822867
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 07:22:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 51457822869
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 07:27:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 54041B22DD4
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 06:22:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BB27A1F23B9D
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 06:27:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0CFB179B8;
-	Wed,  3 Jan 2024 06:22:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9B89179AC;
+	Wed,  3 Jan 2024 06:26:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="VQeI/TvT"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="agE6PUbi"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D3F71798E
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 06:22:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Wed, 3 Jan 2024 15:21:56 +0900
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1704262931;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=OkWOvh0R4AzZSrU0vzv3EnSquWMWG0rTt3bwonJYN+8=;
-	b=VQeI/TvThTX0DYcsW5HWKSf0W7GVMNVuOD7PE52pb00ctxmftBccuI+ZxlD940CHPZrrTK
-	7i3VYRWCUlWJQHng6MYrlOnYKBApfRrZML5mppuijffoaanZooakRBxCnBCmuYAVEcQ3L9
-	AORoeoX8dr+FvT5SfJQwFMmRX7cI7fg=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Itaru Kitayama <itaru.kitayama@linux.dev>
-To: Ryan Roberts <ryan.roberts@arm.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Matthew Wilcox <willy@infradead.org>,
-	Yin Fengwei <fengwei.yin@intel.com>,
-	David Hildenbrand <david@redhat.com>, Yu Zhao <yuzhao@google.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Anshuman Khandual <anshuman.khandual@arm.com>,
-	Yang Shi <shy828301@gmail.com>,
-	"Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Itaru Kitayama <itaru.kitayama@gmail.com>,
-	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-	John Hubbard <jhubbard@nvidia.com>,
-	David Rientjes <rientjes@google.com>,
-	Vlastimil Babka <vbabka@suse.cz>, Hugh Dickins <hughd@google.com>,
-	Kefeng Wang <wangkefeng.wang@huawei.com>,
-	Barry Song <21cnbao@gmail.com>,
-	Alistair Popple <apopple@nvidia.com>, linux-mm@kvack.org,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v9 09/10] selftests/mm/cow: Generalize do_run_with_thp()
- helper
-Message-ID: <ZZT9BHVU0+lyKNJF@vm3>
-References: <20231207161211.2374093-1-ryan.roberts@arm.com>
- <20231207161211.2374093-10-ryan.roberts@arm.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 633CF1798E;
+	Wed,  3 Jan 2024 06:26:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4035jmfx013745;
+	Wed, 3 Jan 2024 06:26:15 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=ucH66wfieCeWWgEeqZEDdxHXb+f7gX4VUgyWpqVU/p8=; b=ag
+	E6PUbiiVljwpMLI6UMkGCGJAvf81+jHl/MuHRJKl59yisztZFif9GKaEoF6DWoMO
+	5nkNRSvxN5dLlsMiusks1p/EDuiHCliaYrYAdRflOtVVQ2UqmzaW1FNY4wXRp6Ul
+	/P65EuQfkzEFQ/Bs8213Z0iL017XRZFVEYimRA4ZGI2C+GnA+8y/XOtnzD0wxIiQ
+	iR9OpdNyDbZ4QzCrsyjFC+hw3ye5mYweywlBLdqmbuywV0oSibwL3mPkN7M+/RGz
+	nio8y28evHj2Yt8G63oHDEfvcGy/wMfoFO3aoE9xMqDeFNM4s9tscFMPxE9wSWWt
+	GNWr8fHLQpPdL3OjAIlA==
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vch7na6hb-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 03 Jan 2024 06:26:13 +0000 (GMT)
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4036QDNb000697
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 3 Jan 2024 06:26:13 GMT
+Received: from [10.214.66.253] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 2 Jan
+ 2024 22:26:06 -0800
+Message-ID: <be075bef-808b-4175-acbe-e26abc4a7a25@quicinc.com>
+Date: Wed, 3 Jan 2024 11:54:53 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231207161211.2374093-10-ryan.roberts@arm.com>
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6 3/5] iommu/arm-smmu: introduction of ACTLR for custom
+ prefetcher settings
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+CC: <will@kernel.org>, <robin.murphy@arm.com>, <joro@8bytes.org>,
+        <konrad.dybcio@linaro.org>, <jsnitsel@redhat.com>,
+        <quic_bjorande@quicinc.com>, <mani@kernel.org>,
+        <quic_eberman@quicinc.com>, <robdclark@chromium.org>,
+        <u.kleine-koenig@pengutronix.de>, <robh@kernel.org>,
+        <vladimir.oltean@nxp.com>, <quic_pkondeti@quicinc.com>,
+        <quic_molvera@quicinc.com>, <linux-arm-msm@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <iommu@lists.linux.dev>,
+        <linux-kernel@vger.kernel.org>, <qipl.kernel.upstream@quicinc.com>
+References: <20231220133808.5654-1-quic_bibekkum@quicinc.com>
+ <20231220133808.5654-4-quic_bibekkum@quicinc.com>
+ <CAA8EJpo8X+jfi20N9P7kUshxe6_7pwQe8G0Q02JDuB8ozH7hLA@mail.gmail.com>
+ <7b32b7a7-bc64-4102-a6bf-3c3fc8d979ac@quicinc.com>
+ <CAA8EJpo6LdBQm5q=r2+ETBwhKL3YkUsPDuzA2MGCqb-1R_9b7w@mail.gmail.com>
+Content-Language: en-US
+From: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
+In-Reply-To: <CAA8EJpo6LdBQm5q=r2+ETBwhKL3YkUsPDuzA2MGCqb-1R_9b7w@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 8ntEr63AlUb5ibHk2srvV2kUfOt-8kUh
+X-Proofpoint-ORIG-GUID: 8ntEr63AlUb5ibHk2srvV2kUfOt-8kUh
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ impostorscore=0 phishscore=0 mlxlogscore=999 mlxscore=0 lowpriorityscore=0
+ priorityscore=1501 malwarescore=0 bulkscore=0 spamscore=0 clxscore=1015
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2401030051
 
-On Thu, Dec 07, 2023 at 04:12:10PM +0000, Ryan Roberts wrote:
-> do_run_with_thp() prepares (PMD-sized) THP memory into different states
-> before running tests. With the introduction of multi-size THP, we would
-> like to reuse this logic to also test those smaller THP sizes. So let's
-> add a thpsize parameter which tells the function what size THP it should
-> operate on.
+
+
+On 12/21/2023 4:02 PM, Dmitry Baryshkov wrote:
+> On Thu, 21 Dec 2023 at 12:02, Bibek Kumar Patro
+> <quic_bibekkum@quicinc.com> wrote:
+>>
+>>
+>>
+>> On 12/21/2023 6:06 AM, Dmitry Baryshkov wrote:
+>>> On Wed, 20 Dec 2023 at 15:39, Bibek Kumar Patro
+>>> <quic_bibekkum@quicinc.com> wrote:
+>>>>
+>>>> Currently in Qualcomm  SoCs the default prefetch is set to 1 which allows
+>>>> the TLB to fetch just the next page table. MMU-500 features ACTLR
+>>>> register which is implementation defined and is used for Qualcomm SoCs
+>>>> to have a custom prefetch setting enabling TLB to prefetch the next set
+>>>> of page tables accordingly allowing for faster translations.
+>>>>
+>>>> ACTLR value is unique for each SMR (Stream matching register) and stored
+>>>> in a pre-populated table. This value is set to the register during
+>>>> context bank initialisation.
+>>>>
+>>>> Signed-off-by: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
+>>>> ---
+>>>>    drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 45 ++++++++++++++++++++++
+>>>>    drivers/iommu/arm/arm-smmu/arm-smmu-qcom.h |  6 ++-
+>>>>    drivers/iommu/arm/arm-smmu/arm-smmu.c      |  5 ++-
+>>>>    drivers/iommu/arm/arm-smmu/arm-smmu.h      |  5 +++
+>>>>    4 files changed, 58 insertions(+), 3 deletions(-)
+>>>>
+>>>> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+>>>> index 20c9836d859b..1cefdd0ca110 100644
+>>>> --- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+>>>> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+>>>> @@ -24,6 +24,12 @@
+>>>>    #define CPRE                   (1 << 1)
+>>>>    #define CMTLB                  (1 << 0)
+>>>>
+>>>> +struct actlr_config {
+>>>> +       u16 sid;
+>>>> +       u16 mask;
+>>>> +       u32 actlr;
+>>>> +};
+>>>> +
+>>>>    static struct qcom_smmu *to_qcom_smmu(struct arm_smmu_device *smmu)
+>>>>    {
+>>>>           return container_of(smmu, struct qcom_smmu, smmu);
+>>>> @@ -215,9 +221,38 @@ static bool qcom_adreno_can_do_ttbr1(struct arm_smmu_device *smmu)
+>>>>           return true;
+>>>>    }
+>>>>
+>>>> +static void qcom_smmu_set_actlr(struct device *dev, struct arm_smmu_device *smmu, int cbndx,
+>>>> +               const struct actlr_config *actlrcfg)
+>>>> +{
+>>>> +       struct arm_smmu_master_cfg *cfg = dev_iommu_priv_get(dev);
+>>>> +       struct iommu_fwspec *fwspec = dev_iommu_fwspec_get(dev);
+>>>> +       struct arm_smmu_smr *smr;
+>>>> +       u16 mask;
+>>>> +       int idx;
+>>>> +       u16 id;
+>>>> +       int i;
+>>>> +
+>>>> +       for (; actlrcfg->sid || actlrcfg->mask || actlrcfg->actlr; actlrcfg++) {
+>>>> +               id = actlrcfg->sid;
+>>>> +               mask = actlrcfg->mask;
+>>>> +
+>>>> +               for_each_cfg_sme(cfg, fwspec, i, idx) {
+>>>> +                       smr = &smmu->smrs[idx];
+>>>> +                       if (smr_is_subset(smr, id, mask)) {
+>>>> +                               arm_smmu_cb_write(smmu, cbndx, ARM_SMMU_CB_ACTLR,
+>>>> +                                               actlrcfg->actlr);
+>>>> +                               break;
+>>>> +                       }
+>>>> +               }
+>>>> +       }
+>>>> +}
+>>>> +
+>>>>    static int qcom_adreno_smmu_init_context(struct arm_smmu_domain *smmu_domain,
+>>>>                   struct io_pgtable_cfg *pgtbl_cfg, struct device *dev)
+>>>>    {
+>>>> +       struct arm_smmu_device *smmu = smmu_domain->smmu;
+>>>> +       struct qcom_smmu *qsmmu = to_qcom_smmu(smmu);
+>>>> +       int cbndx = smmu_domain->cfg.cbndx;
+>>>>           struct adreno_smmu_priv *priv;
+>>>>
+>>>>           smmu_domain->cfg.flush_walk_prefer_tlbiasid = true;
+>>>> @@ -248,6 +283,9 @@ static int qcom_adreno_smmu_init_context(struct arm_smmu_domain *smmu_domain,
+>>>>           priv->set_stall = qcom_adreno_smmu_set_stall;
+>>>>           priv->resume_translation = qcom_adreno_smmu_resume_translation;
+>>>>
+>>>> +       if (qsmmu->data->actlrcfg_gfx)
+>>>> +               qcom_smmu_set_actlr(dev, smmu, cbndx, qsmmu->data->actlrcfg_gfx);
+>>>
+>>> There was a feedback point against v4 that there can be more than two
+>>> (apps + gpu) SMMU devices. No, we can not use additional compat
+>>> strings, the SMMU units are compatible with each other.
+>>
+>> Just to understand better, did you mean if in the below check
+>> [inside arm-smmu-qcom.c file during qcom_smmu_create()], "else" has two
+>> things? (Currently adreno_impl for gpu smmu, else for only
+>> apps smmu)
 > 
-> A separate commit will utilize this change to add new tests for
-> multi-size THP, where available.
+> qcom,adreno-smmu is quite unique here, this is the only distinctive
+> substring. We do not have such compat strings for any other of SMMU
+> nodes.
 > 
-> Reviewed-by: David Hildenbrand <david@redhat.com>
-> Tested-by: Kefeng Wang <wangkefeng.wang@huawei.com>
-> Tested-by: John Hubbard <jhubbard@nvidia.com>
-> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
 
-Tested-by: Itaru Kitayama <itaru.kitayama@linux.dev>
+Apologies for the delayed response, I was on leave and could
+not monitor the replies.
 
-I am replying to all this time; Ryan, do you think it's okay to run
-700 of selftests/mm/cow tests? Even on FVP, they did not take longer
-though.
+for other SMMUs (except qcom-adreno-smmu) we would
+need to use the IO address matching.
 
-> ---
->  tools/testing/selftests/mm/cow.c | 121 +++++++++++++++++--------------
->  1 file changed, 67 insertions(+), 54 deletions(-)
+>>
+>>            if (np && of_device_is_compatible(np, "qcom,adreno-smmu"))
+>>                    impl = data->adreno_impl;
+>>            else
+>>                    impl = data->impl;
+>>
+>>> Please add
+>>> matching between the smmu and particular actlr table using the IO
+>>> address of the SMMU block.
+>>>
+>>
+>> The ACTLR table for each smmu will have A IO address attached, so based
+>> on IO address we can apply ACTLR.
+>> Is this your proposal((IMO hardcoding IO in driver won't be viable,
+>> isn't it?), or in smmu DT we would need to set the IO?
 > 
-> diff --git a/tools/testing/selftests/mm/cow.c b/tools/testing/selftests/mm/cow.c
-> index 7324ce5363c0..4d0b5a125d3c 100644
-> --- a/tools/testing/selftests/mm/cow.c
-> +++ b/tools/testing/selftests/mm/cow.c
-> @@ -32,7 +32,7 @@
->  
->  static size_t pagesize;
->  static int pagemap_fd;
-> -static size_t thpsize;
-> +static size_t pmdsize;
->  static int nr_hugetlbsizes;
->  static size_t hugetlbsizes[10];
->  static int gup_fd;
-> @@ -734,7 +734,7 @@ enum thp_run {
->  	THP_RUN_PARTIAL_SHARED,
->  };
->  
-> -static void do_run_with_thp(test_fn fn, enum thp_run thp_run)
-> +static void do_run_with_thp(test_fn fn, enum thp_run thp_run, size_t thpsize)
->  {
->  	char *mem, *mmap_mem, *tmp, *mremap_mem = MAP_FAILED;
->  	size_t size, mmap_size, mremap_size;
-> @@ -759,11 +759,11 @@ static void do_run_with_thp(test_fn fn, enum thp_run thp_run)
->  	}
->  
->  	/*
-> -	 * Try to populate a THP. Touch the first sub-page and test if we get
-> -	 * another sub-page populated automatically.
-> +	 * Try to populate a THP. Touch the first sub-page and test if
-> +	 * we get the last sub-page populated automatically.
->  	 */
->  	mem[0] = 0;
-> -	if (!pagemap_is_populated(pagemap_fd, mem + pagesize)) {
-> +	if (!pagemap_is_populated(pagemap_fd, mem + thpsize - pagesize)) {
->  		ksft_test_result_skip("Did not get a THP populated\n");
->  		goto munmap;
->  	}
-> @@ -773,12 +773,14 @@ static void do_run_with_thp(test_fn fn, enum thp_run thp_run)
->  	switch (thp_run) {
->  	case THP_RUN_PMD:
->  	case THP_RUN_PMD_SWAPOUT:
-> +		assert(thpsize == pmdsize);
->  		break;
->  	case THP_RUN_PTE:
->  	case THP_RUN_PTE_SWAPOUT:
->  		/*
->  		 * Trigger PTE-mapping the THP by temporarily mapping a single
-> -		 * subpage R/O.
-> +		 * subpage R/O. This is a noop if the THP is not pmdsize (and
-> +		 * therefore already PTE-mapped).
->  		 */
->  		ret = mprotect(mem + pagesize, pagesize, PROT_READ);
->  		if (ret) {
-> @@ -875,52 +877,60 @@ static void do_run_with_thp(test_fn fn, enum thp_run thp_run)
->  		munmap(mremap_mem, mremap_size);
->  }
->  
-> -static void run_with_thp(test_fn fn, const char *desc)
-> +static void run_with_thp(test_fn fn, const char *desc, size_t size)
->  {
-> -	ksft_print_msg("[RUN] %s ... with THP\n", desc);
-> -	do_run_with_thp(fn, THP_RUN_PMD);
-> +	ksft_print_msg("[RUN] %s ... with THP (%zu kB)\n",
-> +		desc, size / 1024);
-> +	do_run_with_thp(fn, THP_RUN_PMD, size);
->  }
->  
-> -static void run_with_thp_swap(test_fn fn, const char *desc)
-> +static void run_with_thp_swap(test_fn fn, const char *desc, size_t size)
->  {
-> -	ksft_print_msg("[RUN] %s ... with swapped-out THP\n", desc);
-> -	do_run_with_thp(fn, THP_RUN_PMD_SWAPOUT);
-> +	ksft_print_msg("[RUN] %s ... with swapped-out THP (%zu kB)\n",
-> +		desc, size / 1024);
-> +	do_run_with_thp(fn, THP_RUN_PMD_SWAPOUT, size);
->  }
->  
-> -static void run_with_pte_mapped_thp(test_fn fn, const char *desc)
-> +static void run_with_pte_mapped_thp(test_fn fn, const char *desc, size_t size)
->  {
-> -	ksft_print_msg("[RUN] %s ... with PTE-mapped THP\n", desc);
-> -	do_run_with_thp(fn, THP_RUN_PTE);
-> +	ksft_print_msg("[RUN] %s ... with PTE-mapped THP (%zu kB)\n",
-> +		desc, size / 1024);
-> +	do_run_with_thp(fn, THP_RUN_PTE, size);
->  }
->  
-> -static void run_with_pte_mapped_thp_swap(test_fn fn, const char *desc)
-> +static void run_with_pte_mapped_thp_swap(test_fn fn, const char *desc, size_t size)
->  {
-> -	ksft_print_msg("[RUN] %s ... with swapped-out, PTE-mapped THP\n", desc);
-> -	do_run_with_thp(fn, THP_RUN_PTE_SWAPOUT);
-> +	ksft_print_msg("[RUN] %s ... with swapped-out, PTE-mapped THP (%zu kB)\n",
-> +		desc, size / 1024);
-> +	do_run_with_thp(fn, THP_RUN_PTE_SWAPOUT, size);
->  }
->  
-> -static void run_with_single_pte_of_thp(test_fn fn, const char *desc)
-> +static void run_with_single_pte_of_thp(test_fn fn, const char *desc, size_t size)
->  {
-> -	ksft_print_msg("[RUN] %s ... with single PTE of THP\n", desc);
-> -	do_run_with_thp(fn, THP_RUN_SINGLE_PTE);
-> +	ksft_print_msg("[RUN] %s ... with single PTE of THP (%zu kB)\n",
-> +		desc, size / 1024);
-> +	do_run_with_thp(fn, THP_RUN_SINGLE_PTE, size);
->  }
->  
-> -static void run_with_single_pte_of_thp_swap(test_fn fn, const char *desc)
-> +static void run_with_single_pte_of_thp_swap(test_fn fn, const char *desc, size_t size)
->  {
-> -	ksft_print_msg("[RUN] %s ... with single PTE of swapped-out THP\n", desc);
-> -	do_run_with_thp(fn, THP_RUN_SINGLE_PTE_SWAPOUT);
-> +	ksft_print_msg("[RUN] %s ... with single PTE of swapped-out THP (%zu kB)\n",
-> +		desc, size / 1024);
-> +	do_run_with_thp(fn, THP_RUN_SINGLE_PTE_SWAPOUT, size);
->  }
->  
-> -static void run_with_partial_mremap_thp(test_fn fn, const char *desc)
-> +static void run_with_partial_mremap_thp(test_fn fn, const char *desc, size_t size)
->  {
-> -	ksft_print_msg("[RUN] %s ... with partially mremap()'ed THP\n", desc);
-> -	do_run_with_thp(fn, THP_RUN_PARTIAL_MREMAP);
-> +	ksft_print_msg("[RUN] %s ... with partially mremap()'ed THP (%zu kB)\n",
-> +		desc, size / 1024);
-> +	do_run_with_thp(fn, THP_RUN_PARTIAL_MREMAP, size);
->  }
->  
-> -static void run_with_partial_shared_thp(test_fn fn, const char *desc)
-> +static void run_with_partial_shared_thp(test_fn fn, const char *desc, size_t size)
->  {
-> -	ksft_print_msg("[RUN] %s ... with partially shared THP\n", desc);
-> -	do_run_with_thp(fn, THP_RUN_PARTIAL_SHARED);
-> +	ksft_print_msg("[RUN] %s ... with partially shared THP (%zu kB)\n",
-> +		desc, size / 1024);
-> +	do_run_with_thp(fn, THP_RUN_PARTIAL_SHARED, size);
->  }
->  
->  static void run_with_hugetlb(test_fn fn, const char *desc, size_t hugetlbsize)
-> @@ -1091,15 +1101,15 @@ static void run_anon_test_case(struct test_case const *test_case)
->  
->  	run_with_base_page(test_case->fn, test_case->desc);
->  	run_with_base_page_swap(test_case->fn, test_case->desc);
-> -	if (thpsize) {
-> -		run_with_thp(test_case->fn, test_case->desc);
-> -		run_with_thp_swap(test_case->fn, test_case->desc);
-> -		run_with_pte_mapped_thp(test_case->fn, test_case->desc);
-> -		run_with_pte_mapped_thp_swap(test_case->fn, test_case->desc);
-> -		run_with_single_pte_of_thp(test_case->fn, test_case->desc);
-> -		run_with_single_pte_of_thp_swap(test_case->fn, test_case->desc);
-> -		run_with_partial_mremap_thp(test_case->fn, test_case->desc);
-> -		run_with_partial_shared_thp(test_case->fn, test_case->desc);
-> +	if (pmdsize) {
-> +		run_with_thp(test_case->fn, test_case->desc, pmdsize);
-> +		run_with_thp_swap(test_case->fn, test_case->desc, pmdsize);
-> +		run_with_pte_mapped_thp(test_case->fn, test_case->desc, pmdsize);
-> +		run_with_pte_mapped_thp_swap(test_case->fn, test_case->desc, pmdsize);
-> +		run_with_single_pte_of_thp(test_case->fn, test_case->desc, pmdsize);
-> +		run_with_single_pte_of_thp_swap(test_case->fn, test_case->desc, pmdsize);
-> +		run_with_partial_mremap_thp(test_case->fn, test_case->desc, pmdsize);
-> +		run_with_partial_shared_thp(test_case->fn, test_case->desc, pmdsize);
->  	}
->  	for (i = 0; i < nr_hugetlbsizes; i++)
->  		run_with_hugetlb(test_case->fn, test_case->desc,
-> @@ -1120,7 +1130,7 @@ static int tests_per_anon_test_case(void)
->  {
->  	int tests = 2 + nr_hugetlbsizes;
->  
-> -	if (thpsize)
-> +	if (pmdsize)
->  		tests += 8;
->  	return tests;
->  }
-> @@ -1329,7 +1339,7 @@ static void run_anon_thp_test_cases(void)
->  {
->  	int i;
->  
-> -	if (!thpsize)
-> +	if (!pmdsize)
->  		return;
->  
->  	ksft_print_msg("[INFO] Anonymous THP tests\n");
-> @@ -1338,13 +1348,13 @@ static void run_anon_thp_test_cases(void)
->  		struct test_case const *test_case = &anon_thp_test_cases[i];
->  
->  		ksft_print_msg("[RUN] %s\n", test_case->desc);
-> -		do_run_with_thp(test_case->fn, THP_RUN_PMD);
-> +		do_run_with_thp(test_case->fn, THP_RUN_PMD, pmdsize);
->  	}
->  }
->  
->  static int tests_per_anon_thp_test_case(void)
->  {
-> -	return thpsize ? 1 : 0;
-> +	return pmdsize ? 1 : 0;
->  }
->  
->  typedef void (*non_anon_test_fn)(char *mem, const char *smem, size_t size);
-> @@ -1419,7 +1429,7 @@ static void run_with_huge_zeropage(non_anon_test_fn fn, const char *desc)
->  	}
->  
->  	/* For alignment purposes, we need twice the thp size. */
-> -	mmap_size = 2 * thpsize;
-> +	mmap_size = 2 * pmdsize;
->  	mmap_mem = mmap(NULL, mmap_size, PROT_READ | PROT_WRITE,
->  			MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
->  	if (mmap_mem == MAP_FAILED) {
-> @@ -1434,11 +1444,11 @@ static void run_with_huge_zeropage(non_anon_test_fn fn, const char *desc)
->  	}
->  
->  	/* We need a THP-aligned memory area. */
-> -	mem = (char *)(((uintptr_t)mmap_mem + thpsize) & ~(thpsize - 1));
-> -	smem = (char *)(((uintptr_t)mmap_smem + thpsize) & ~(thpsize - 1));
-> +	mem = (char *)(((uintptr_t)mmap_mem + pmdsize) & ~(pmdsize - 1));
-> +	smem = (char *)(((uintptr_t)mmap_smem + pmdsize) & ~(pmdsize - 1));
->  
-> -	ret = madvise(mem, thpsize, MADV_HUGEPAGE);
-> -	ret |= madvise(smem, thpsize, MADV_HUGEPAGE);
-> +	ret = madvise(mem, pmdsize, MADV_HUGEPAGE);
-> +	ret |= madvise(smem, pmdsize, MADV_HUGEPAGE);
->  	if (ret) {
->  		ksft_test_result_fail("MADV_HUGEPAGE failed\n");
->  		goto munmap;
-> @@ -1457,7 +1467,7 @@ static void run_with_huge_zeropage(non_anon_test_fn fn, const char *desc)
->  		goto munmap;
->  	}
->  
-> -	fn(mem, smem, thpsize);
-> +	fn(mem, smem, pmdsize);
->  munmap:
->  	munmap(mmap_mem, mmap_size);
->  	if (mmap_smem != MAP_FAILED)
-> @@ -1650,7 +1660,7 @@ static void run_non_anon_test_case(struct non_anon_test_case const *test_case)
->  	run_with_zeropage(test_case->fn, test_case->desc);
->  	run_with_memfd(test_case->fn, test_case->desc);
->  	run_with_tmpfile(test_case->fn, test_case->desc);
-> -	if (thpsize)
-> +	if (pmdsize)
->  		run_with_huge_zeropage(test_case->fn, test_case->desc);
->  	for (i = 0; i < nr_hugetlbsizes; i++)
->  		run_with_memfd_hugetlb(test_case->fn, test_case->desc,
-> @@ -1671,7 +1681,7 @@ static int tests_per_non_anon_test_case(void)
->  {
->  	int tests = 3 + nr_hugetlbsizes;
->  
-> -	if (thpsize)
-> +	if (pmdsize)
->  		tests += 1;
->  	return tests;
->  }
-> @@ -1681,10 +1691,13 @@ int main(int argc, char **argv)
->  	int err;
->  
->  	pagesize = getpagesize();
-> -	thpsize = read_pmd_pagesize();
-> -	if (thpsize)
-> +	pmdsize = read_pmd_pagesize();
-> +	if (pmdsize) {
-> +		ksft_print_msg("[INFO] detected PMD size: %zu KiB\n",
-> +			       pmdsize / 1024);
->  		ksft_print_msg("[INFO] detected THP size: %zu KiB\n",
-> -			       thpsize / 1024);
-> +			       pmdsize / 1024);
-> +	}
->  	nr_hugetlbsizes = detect_hugetlb_page_sizes(hugetlbsizes,
->  						    ARRAY_SIZE(hugetlbsizes));
->  	detect_huge_zeropage();
-> -- 
-> 2.25.1
+> Unfortunately, I meant exactly that: hardcoding addresses of the SMMU
+> register spaces. see drivers/gpu/drm/msm/dsi_cfg.c
+> Then during device probe the driver can match the IO address to the
+> list of the per-platform ACTLR tables and select the correct one.
+> Then you don't even need a special actlrcfg_gfx. The GFX will fall
+> into the main schema.
+> 
+
+Thanks for the reference, I will check once and try to evaluate a
+similar implementation for ACTLR table as well.
+
+Thanks,
+Bibek
+
+>>
+>>
+>> Thanks & regards,
+>> Bibek
+>>
+>>>> +
+>>>>           return 0;
+>>>>    }
+>>>>
+>>>> @@ -274,6 +312,13 @@ static const struct of_device_id qcom_smmu_client_of_match[] __maybe_unused = {
+>>>>    static int qcom_smmu_init_context(struct arm_smmu_domain *smmu_domain,
+>>>>                   struct io_pgtable_cfg *pgtbl_cfg, struct device *dev)
+>>>>    {
+>>>> +       struct arm_smmu_device *smmu = smmu_domain->smmu;
+>>>> +       struct qcom_smmu *qsmmu = to_qcom_smmu(smmu);
+>>>> +       int cbndx = smmu_domain->cfg.cbndx;
+>>>> +
+>>>> +       if (qsmmu->data->actlrcfg)
+>>>> +               qcom_smmu_set_actlr(dev, smmu, cbndx, qsmmu->data->actlrcfg);
+>>>> +
+>>>
+>>> One issue occured to me, while I was reviewing the patchset. The ACTLR
+>>> settings are related to the whole SMMU setup, but we are applying them
+>>> each time there is an SMMU context init (in other words, one per each
+>>> domain). Is that correct? Or it's just that there is no better place
+>>> for initialising the global register set? Would it be better to
+>>> reprogram the ACTLR registers which are related just to this
+>>> particular domain?
+>>>
+>>>>           smmu_domain->cfg.flush_walk_prefer_tlbiasid = true;
+>>>>
+>>>>           return 0;
+>>>> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.h b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.h
+>>>> index f3b91963e234..cb4cb402c202 100644
+>>>> --- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.h
+>>>> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.h
+>>>> @@ -1,6 +1,6 @@
+>>>>    /* SPDX-License-Identifier: GPL-2.0-only */
+>>>>    /*
+>>>> - * Copyright (c) 2022, Qualcomm Innovation Center, Inc. All rights reserved.
+>>>> + * Copyright (c) 2023, Qualcomm Innovation Center, Inc. All rights reserved.
+>>>>     */
+>>>>
+>>>>    #ifndef _ARM_SMMU_QCOM_H
+>>>> @@ -24,7 +24,11 @@ struct qcom_smmu_config {
+>>>>           const u32 *reg_offset;
+>>>>    };
+>>>>
+>>>> +struct actlr_config;
+>>>> +
+>>>>    struct qcom_smmu_match_data {
+>>>> +       const struct actlr_config *actlrcfg;
+>>>> +       const struct actlr_config *actlrcfg_gfx;
+>>>>           const struct qcom_smmu_config *cfg;
+>>>>           const struct arm_smmu_impl *impl;
+>>>>           const struct arm_smmu_impl *adreno_impl;
+>>>> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.c b/drivers/iommu/arm/arm-smmu/arm-smmu.c
+>>>> index d6d1a2a55cc0..0c7f700b27dd 100644
+>>>> --- a/drivers/iommu/arm/arm-smmu/arm-smmu.c
+>>>> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu.c
+>>>> @@ -990,9 +990,10 @@ static int arm_smmu_find_sme(struct arm_smmu_device *smmu, u16 id, u16 mask)
+>>>>                    * expect simply identical entries for this case, but there's
+>>>>                    * no harm in accommodating the generalisation.
+>>>>                    */
+>>>> -               if ((mask & smrs[i].mask) == mask &&
+>>>> -                   !((id ^ smrs[i].id) & ~smrs[i].mask))
+>>>> +
+>>>> +               if (smr_is_subset(&smrs[i], id, mask))
+>>>>                           return i;
+>>>> +
+>>>>                   /*
+>>>>                    * If the new entry has any other overlap with an existing one,
+>>>>                    * though, then there always exists at least one stream ID
+>>>> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.h b/drivers/iommu/arm/arm-smmu/arm-smmu.h
+>>>> index 703fd5817ec1..2e4f65412c6b 100644
+>>>> --- a/drivers/iommu/arm/arm-smmu/arm-smmu.h
+>>>> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu.h
+>>>> @@ -501,6 +501,11 @@ static inline void arm_smmu_writeq(struct arm_smmu_device *smmu, int page,
+>>>>                   writeq_relaxed(val, arm_smmu_page(smmu, page) + offset);
+>>>>    }
+>>>>
+>>>> +static inline bool smr_is_subset(struct arm_smmu_smr *smrs, u16 id, u16 mask)
+>>>> +{
+>>>> +       return (mask & smrs->mask) == mask && !((id ^ smrs->id) & ~smrs->mask);
+>>>> +}
+>>>> +
+>>>>    #define ARM_SMMU_GR0           0
+>>>>    #define ARM_SMMU_GR1           1
+>>>>    #define ARM_SMMU_CB(s, n)      ((s)->numpage + (n))
+>>>> --
+>>>> 2.17.1
+>>>>
+>>>
+>>>
+> 
+> 
 > 
 
