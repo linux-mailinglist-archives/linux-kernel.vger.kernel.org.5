@@ -1,151 +1,107 @@
-Return-Path: <linux-kernel+bounces-15889-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15890-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2690982350B
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 19:53:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B845A82350F
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 19:54:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 35ADA1C20C15
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 18:53:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 35B1B28674A
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 18:54:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 968001CAB2;
-	Wed,  3 Jan 2024 18:53:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CE521CA87;
+	Wed,  3 Jan 2024 18:54:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="A5AV5lBO"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="dW2HxG/x"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 192171CAA9;
-	Wed,  3 Jan 2024 18:53:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704307985; x=1735843985;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=xb3JCgo4iqLo11WVKyNpxqIH6S3YvPj930p7OczgVDQ=;
-  b=A5AV5lBOPtJz9CJDlOM8YOrjz9tDuH74rPYZC/bVlGYnxkxSkwuX8auP
-   Df2s0r2N30eXOj7q3oTuoq2gbFCdSPk86y37/q8OyNVA9JVeSuvm8NEFl
-   7idoUXe/oHNSq0Qy6rxdEjPtD2LV4CPWuxZDcJqpepM5IFfbjqrF2dSBY
-   52MQhTGGO/gSyHVxjm3w3vzg3i3xsTHi/DuWI6RJA9vyXwB6KSbokppy3
-   D9i7YJCpIKoFz7zon9xBaChf0vAiGOzuJGyPX0co44qdmNre+S4c17EY+
-   CI1/FCCkswzlfPiCOXmBfI5THugfljFoCRYEo55wfHc1Ybw6YaM6gAZ6s
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10942"; a="382009519"
-X-IronPort-AV: E=Sophos;i="6.04,328,1695711600"; 
-   d="scan'208";a="382009519"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jan 2024 10:53:04 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10942"; a="850508459"
-X-IronPort-AV: E=Sophos;i="6.04,328,1695711600"; 
-   d="scan'208";a="850508459"
-Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.252.51.162])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jan 2024 10:53:01 -0800
-Message-ID: <ee017245-fec1-4492-9ce0-bb4a515d15a5@intel.com>
-Date: Wed, 3 Jan 2024 20:52:58 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7936E1CA89
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 18:54:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--brho.bounces.google.com
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-5e9074bb7c5so142214577b3.0
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 10:54:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1704308045; x=1704912845; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=FJN4MS0ig8KJTW6JTQgcLpiilQPej5rcL1B+jlYVGD0=;
+        b=dW2HxG/xXAFDFP5gFgKWGeKLL4wzZyxje6foWlfrlol4BYv8U/uGhcHdcEm5bsxrIS
+         EpioM4FHgFb/FbNvZp+Ft3soBsonFh6JTFBfwRgOBgBI//Q/67c4QH+qxfHawcih5QwA
+         TLJogi/CzXsge77hWbzO49J9skP9brQBZZKkkDMrqjw+SUYVJPmoqEB5jN4xSvy2rzo4
+         Mn3csH70FfSaTmkyyoZRCBn8Hk6UM4cH9MuEfPKMxkO5bXSXbZiYT9v5HU1JV1sc1VyJ
+         jsL/qyWdQvqXukQpwlyImBcI+f8o+PMg7vMK9SLdC1XiZoxILYSHp1vLEcFHshMAfOGA
+         JyUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704308045; x=1704912845;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=FJN4MS0ig8KJTW6JTQgcLpiilQPej5rcL1B+jlYVGD0=;
+        b=fWu+RfQDG9xaV8afv4wf90MdlX2VBuAi53ie/k1ZwLWyNqYQx58RvszSogh42VXjEP
+         e0/s5BXtsO9sqnnAXhYcNCba8CGBiFhJho56qycF6Geh6yja17V3VfbA5630RyjwH43t
+         npYEiDNkzEKON9NuXDYg2l53t9Gg2Djdo7J/JxMj1FHWwrtb/wI9zlvhlv+ZMiLm+xb2
+         WV3I8WGquJCP55500K+6bfaoyNr0iz6nqj2974pCeOA0GRC+ADDtphU2mUQ2pP/QW+Vu
+         29i/h7SG69ttRec8Z/YS5GCcLpe2qIEVAWyQRcKlyGPVX/cbl2nZup5ov37KIC0aRXVW
+         Cp8w==
+X-Gm-Message-State: AOJu0Yw04dNpA0x/ITOb1E8t4C4yTOHh0B5l6lekoMdglnVv1aipUzs1
+	vPD4bvCuEAInDTTiJGjVDh5ihH5+BAIhP5c=
+X-Google-Smtp-Source: AGHT+IESUciFVAW5XfzHlaRZ+F6yADVLeUwKAEMRPVlpvBpoJTjsg6s70TZ20hXvGKcCLnb9NuxAgWb3
+X-Received: from gnomeregan.cam.corp.google.com ([2620:15c:93:4:7e71:cfbd:2031:cc52])
+ (user=brho job=sendgmr) by 2002:a05:6902:2402:b0:dbe:4cdc:abfa with SMTP id
+ dr2-20020a056902240200b00dbe4cdcabfamr416007ybb.13.1704308045361; Wed, 03 Jan
+ 2024 10:54:05 -0800 (PST)
+Date: Wed,  3 Jan 2024 13:53:57 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 1/2] mmc: cqhci: Add cqhci set_tran_desc() callback
-Content-Language: en-US
-To: Sergey Khimich <serghox@gmail.com>, linux-mmc@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>,
- Shawn Lin <shawn.lin@rock-chips.com>, Jyan Chou <jyanchou@realtek.com>
-References: <20231231144619.758290-1-serghox@gmail.com>
- <20231231144619.758290-2-serghox@gmail.com>
-From: Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-In-Reply-To: <20231231144619.758290-2-serghox@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
+Message-ID: <20240103185403.610641-1-brho@google.com>
+Subject: [PATCH v2 bpf-next 0/2] inline asm helpers to access array elements
+From: Barret Rhoden <brho@google.com>
+To: Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>
+Cc: mattbobrowski@google.com, bpf@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On 31/12/23 16:46, Sergey Khimich wrote:
-> From: Sergey Khimich <serghox@gmail.com>
-> 
-> There are could be specific limitations for some mmc
-> controllers for setting cqhci transfer descriptors.
-> So add callback to allow implement driver specific function.
-> 
-> Signed-off-by: Sergey Khimich <serghox@gmail.com>
-> ---
->  drivers/mmc/host/cqhci-core.c | 10 +++++++---
->  drivers/mmc/host/cqhci.h      |  5 +++++
->  2 files changed, 12 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/mmc/host/cqhci-core.c b/drivers/mmc/host/cqhci-core.c
-> index 41e94cd14109..d12870b124cc 100644
-> --- a/drivers/mmc/host/cqhci-core.c
-> +++ b/drivers/mmc/host/cqhci-core.c
-> @@ -474,8 +474,8 @@ static int cqhci_dma_map(struct mmc_host *host, struct mmc_request *mrq)
->  	return sg_count;
->  }
->  
-> -static void cqhci_set_tran_desc(u8 *desc, dma_addr_t addr, int len, bool end,
-> -				bool dma64)
-> +void cqhci_set_tran_desc(u8 *desc, dma_addr_t addr, int len, bool end,
+Sorry for the delay on this.  Discussed in [1].  It's a helper for
+proving to the verifier that your access in the array is valid.  Happy
+to change names or whatever.  =)
 
-Needs to be exported also i.e.
-EXPORT_SYMBOL(cqhci_set_tran_desc);
+Also added a libbpf helper function for mmapping an mmappable map.
 
-> +			 bool dma64)
->  {
->  	__le32 *attr = (__le32 __force *)desc;
->  
-> @@ -522,7 +522,11 @@ static int cqhci_prep_tran_desc(struct mmc_request *mrq,
->  
->  		if ((i+1) == sg_count)
->  			end = true;
-> -		cqhci_set_tran_desc(desc, addr, len, end, dma64);
-> +		if (cq_host->ops->set_tran_desc)
-> +			cq_host->ops->set_tran_desc(cq_host, &desc, addr, len, end, dma64);
-> +		else
-> +			cqhci_set_tran_desc(desc, addr, len, end, dma64);
-> +
->  		desc += cq_host->trans_desc_len;
->  	}
->  
-> diff --git a/drivers/mmc/host/cqhci.h b/drivers/mmc/host/cqhci.h
-> index 1a12e40a02e6..703d5af6c49e 100644
-> --- a/drivers/mmc/host/cqhci.h
-> +++ b/drivers/mmc/host/cqhci.h
-> @@ -217,6 +217,7 @@ struct cqhci_host_ops;
->  struct mmc_host;
->  struct mmc_request;
->  struct cqhci_slot;
-> +struct mmc_data;
+We've been using both in our ghost-BPF schedulers[2].
 
-Not used
+[1] https://lore.kernel.org/bpf/b4cb3423-b18d-8fad-7355-d8aa66ccfe4c@google.com/T/
+[2] https://github.com/google/ghost-userspace/blob/main/third_party/bpf/common.bpf.h#L218
 
->  
->  struct cqhci_host {
->  	const struct cqhci_host_ops *ops;
-> @@ -293,6 +294,9 @@ struct cqhci_host_ops {
->  	int (*program_key)(struct cqhci_host *cq_host,
->  			   const union cqhci_crypto_cfg_entry *cfg, int slot);
->  #endif
-> +	void (*set_tran_desc)(struct cqhci_host *cq_host, u8 **desc,
-> +			      dma_addr_t addr, int len, bool end, bool dma64);
-> +
->  };
->  
->  static inline void cqhci_writel(struct cqhci_host *host, u32 val, int reg)
-> @@ -318,6 +322,7 @@ irqreturn_t cqhci_irq(struct mmc_host *mmc, u32 intmask, int cmd_error,
->  int cqhci_init(struct cqhci_host *cq_host, struct mmc_host *mmc, bool dma64);
->  struct cqhci_host *cqhci_pltfm_init(struct platform_device *pdev);
->  int cqhci_deactivate(struct mmc_host *mmc);
-> +void cqhci_set_tran_desc(u8 *desc, dma_addr_t addr, int len, bool end, bool dma64);
->  static inline int cqhci_suspend(struct mmc_host *mmc)
->  {
->  	return cqhci_deactivate(mmc);
+v1: https://lore.kernel.org/bpf/20240103153307.553838-1-brho@google.com/
+- use libbpf's internal bpf_map_mmap_sz()
+- remove debugging cruft
+
+Barret Rhoden (2):
+  libbpf: add helpers for mmapping maps
+  selftests/bpf: add inline assembly helpers to access array elements
+
+ tools/bpf/bpftool/gen.c                       |  16 +-
+ tools/lib/bpf/libbpf.c                        |  18 ++
+ tools/lib/bpf/libbpf.h                        |   6 +
+ tools/lib/bpf/libbpf.map                      |   4 +
+ .../bpf/prog_tests/test_array_elem.c          | 112 ++++++++++
+ .../selftests/bpf/progs/array_elem_test.c     | 195 ++++++++++++++++++
+ tools/testing/selftests/bpf/progs/bpf_misc.h  |  43 ++++
+ 7 files changed, 381 insertions(+), 13 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/test_array_elem.c
+ create mode 100644 tools/testing/selftests/bpf/progs/array_elem_test.c
+
+-- 
+2.43.0.472.g3155946c3a-goog
 
 
