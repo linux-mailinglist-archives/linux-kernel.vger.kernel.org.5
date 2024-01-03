@@ -1,245 +1,122 @@
-Return-Path: <linux-kernel+bounces-15717-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15718-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED8A38230D6
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 16:54:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA44F8230DD
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 16:55:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 10C501C238CA
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 15:54:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 766931F24A61
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 15:55:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E07B1B280;
-	Wed,  3 Jan 2024 15:54:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3673A1B28C;
+	Wed,  3 Jan 2024 15:55:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="boLsoeZk"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Apn/sAvO"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com [209.85.208.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A07FF1B278
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 15:54:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id F3C5B40E01C5;
-	Wed,  3 Jan 2024 15:54:03 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id Xg2tRQQM6vsz; Wed,  3 Jan 2024 15:54:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1704297240; bh=WpnTenm9HEJOzoqg96hDNa6TBkWGdDEowlsD7/ZMG0k=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=boLsoeZklD38Vy50LMQbw/BOVKimr4VXDlvNJxIo890wZSVUSquQtmsP0tI/9y3Am
-	 keynluXldAWEJL6pW8tMAzhWF2OMHZPf1Gv6fe3W/02/6NOg2d/SYlMQwyJaSmFM4b
-	 zDn0MsJHKYATWvdUxXUAUNxXkuwz/nvWuj9Mw8qwPnZuUOXGG7zxr7o3u4qIewy7Gr
-	 gok95Hr1ZWqLOfv9MUbRB+NCb5DfLO+QQaWbQd3RQrorWvKllDRfOyzKnPA+G5kXej
-	 Q6fLs0OLLp476RgkWImmVL+YIdGzoUsNxzAGgNpDUGCVku3s3/lvoRupHK8WnupfTR
-	 KrlFoeVM0cxxghlY6KSAnz6cCYyiSwWw2DGaXBEUlUVHQZ51zLZY9n2YAE1KUdbJhQ
-	 S/ww0MPbbAxbWqMCDrnQOu4FaJQNPINBg6+f7cDPr9ZMSFgZzkYvrKpsyWQ+4QV/u5
-	 ZB97dIDO/kGf1XkM/VdDrUKJSzq3L2PC+Em4mtb7s7+Tp0l9g5ve6x4p9yl2NMDWDd
-	 VpXgaWJT50oIFj9reEPVpDmX3E7OEkDHu0fc1uWdLWTVRbEpbLlmtlKY+UdUviMqIn
-	 a1URu/he/l4O3KRDbrWNuZ5TJN3wFnZ8DzLoJKCmbjtQQtkfmk2LiOVP6fzOZKKsR0
-	 21sx6wBkxlhAW06CpiWAbcOs=
-Received: from zn.tnic (pd9530f8c.dip0.t-ipconnect.de [217.83.15.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 991F940E01BE;
-	Wed,  3 Jan 2024 15:53:50 +0000 (UTC)
-Date: Wed, 3 Jan 2024 16:53:44 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Shubhrajyoti Datta <shubhrajyoti.datta@amd.com>
-Cc: linux-edac@vger.kernel.or, git@amd.com, linux-kernel@vger.kernel.org,
-	rric@kernel.org, mchehab@kernel.org, james.morse@arm.com,
-	tony.luck@intel.com, sai.krishna.potthuri@amd.com,
-	shubhrajyoti.datta@gmail.com
-Subject: Re: [PATCH] EDAC/versal: Make the bits in error injection
- configurable
-Message-ID: <20240103155344.GCZZWDCLfrRR2N18JU@fat_crate.local>
-References: <20231220042832.29795-1-shubhrajyoti.datta@amd.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECD4E1BDC2;
+	Wed,  3 Jan 2024 15:55:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2cd053d5683so26877771fa.2;
+        Wed, 03 Jan 2024 07:55:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704297320; x=1704902120; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JBL9Qlw0s9HFYXJhGaaKeiT1PrvQ2SXf3tpTJ4/9DV8=;
+        b=Apn/sAvOwHkQEwx+qyZYiLV6CdzxiKwwwPCng8d/kV0wJ/XYP3Iv+IQaxFP2WAbj58
+         E7A4Zl7tYYbmfRWA7vZk77pZixFRy9J0Cf0YxyHPAhFlH7U8JHdppu5oed1TN5TIbSdp
+         ROP3zgws6plkvSXgPh0zUcZPk47l7vgGmU9bP42mBaKqo8hkeCPw25BvOD/Ue1sgtpr6
+         zZdG7pZDVdBNYqyTbAGQ87lPK1iSnoNlj6lM+2hiT53RiBg5VO8yvrjIq42CmVuPKTGs
+         np8AvRPAunGWDZVJ7gqIHhkeTaxV94vJ6oFVkID7qTHi/WQibR5yIjZuxY0jPzfEujYC
+         ZiVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704297320; x=1704902120;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=JBL9Qlw0s9HFYXJhGaaKeiT1PrvQ2SXf3tpTJ4/9DV8=;
+        b=Pggj0TYCk+U8vvZX1ZdgWxpNa4Hj3c6sFSWZ0aTkESovYUbhEQxQRWLjcyIrdIBGrl
+         xCgcKFb3220YSNvC4tyOFqusC8bvqm9fvTip3CCq3UteP44DOTTSQVYJn9HSJnBFBncg
+         fGi5wdSggGRoRHGCTv7LpwEJ11vkFoJr4Qw/yP+/+YGuJrjC73z6o9nlNEgMiO++ccHT
+         uPVs3tYzmDwTtUA7E6dA/zkPaJU6pkNcukWOxMPoxzDMheSaTLPl4WeJcNjFEcluFHlf
+         A9/i5v3fTXl6ksx929Rv9T74DXkLP/c/98qeLjgXwtBo7Tkkw/TQgM58TP3nIeYaBNP6
+         2P3w==
+X-Gm-Message-State: AOJu0Ywm8Bo3HwbGplbY8iXIOMrm1gFIsq4qmwz28R+i5QEHEmICm4Jh
+	gwkOcSg0GFRAFHRyqq1yaYoDT+8mDrlZFxpJack=
+X-Google-Smtp-Source: AGHT+IF5Wm64hVkZ2r/6KR3R9lcK/6o4Q8H5mbV6WqP5Q66wa4IPcHzCETBSF0Bv/lJDOVVHMJNNANgPOdHUJnIF+DU=
+X-Received: by 2002:a2e:9643:0:b0:2cc:ea26:38d1 with SMTP id
+ z3-20020a2e9643000000b002ccea2638d1mr3842952ljh.45.1704297319902; Wed, 03 Jan
+ 2024 07:55:19 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20231220042832.29795-1-shubhrajyoti.datta@amd.com>
+References: <20240103101201.1812679-1-clancy_shang@163.com>
+In-Reply-To: <20240103101201.1812679-1-clancy_shang@163.com>
+From: Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+Date: Wed, 3 Jan 2024 10:55:06 -0500
+Message-ID: <CABBYNZL=Tfe=Psg+JEjVqZBFv=vrbyhYa-5HzZJAOSe5aOAtgQ@mail.gmail.com>
+Subject: Re: [PATCH] Bluetooth: hci_sync: fix hogp device suspend bug
+To: clancy_shang@163.com
+Cc: marcel@holtmann.org, johan.hedberg@gmail.com, 
+	linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	zhongjun.yu@quectel.com, Clancy Shang <clancy.shang@quectel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Dec 20, 2023 at 09:58:32AM +0530, Shubhrajyoti Datta wrote:
-> Currently the error injection bits are hardcoded.
-> Make them configurable. We have separate entries to configure the
+Hi Clancy,
 
-Who's "We"?
-
-> bits to inject errors.
-> 
-> Signed-off-by: Shubhrajyoti Datta <shubhrajyoti.datta@amd.com>
+On Wed, Jan 3, 2024 at 5:12=E2=80=AFAM <clancy_shang@163.com> wrote:
+>
+> From: Clancy Shang <clancy.shang@quectel.com>
+>
+> when Bluetooth enters suspend, and disconnects everything with the
+> disconnect reason code of 0x15, the hogp device could not into sleep
+> and continued advertising. when use the disconnect reason code of 0x13,
+> the hogp device going into sleep succeeded.
+>
+> Signed-off-by: Clancy Shang <clancy.shang@quectel.com>
 > ---
-> 
->  drivers/edac/versal_edac.c | 122 ++++++++++++++++++++++++++++++++-----
->  1 file changed, 106 insertions(+), 16 deletions(-)
+>  net/bluetooth/hci_sync.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/net/bluetooth/hci_sync.c b/net/bluetooth/hci_sync.c
+> index d85a7091a116..16b5420c32d0 100644
+> --- a/net/bluetooth/hci_sync.c
+> +++ b/net/bluetooth/hci_sync.c
+> @@ -5927,7 +5927,7 @@ int hci_suspend_sync(struct hci_dev *hdev)
+>
+>         if (hci_conn_count(hdev)) {
+>                 /* Soft disconnect everything (power off) */
+> -               err =3D hci_disconnect_all_sync(hdev, HCI_ERROR_REMOTE_PO=
+WER_OFF);
+> +               err =3D hci_disconnect_all_sync(hdev, HCI_ERROR_REMOTE_US=
+ER_TERM);
 
-...
+Are you actually paying attention to my responses? I did nak this
+change before, so we need to find some way to detect the device is
+handling HCI_ERROR_REMOTE_POWER_OFF as link loss, which is wrong, and
+only then use HCI_ERROR_REMOTE_USER_TERM, so please don't keep sending
+the same patch over and over until you make these changes.
 
-> @@ -847,12 +849,14 @@ static ssize_t xddr_inject_data_poison_store(struct mem_ctl_info *mci,
->  	return 0;
->  }
->  
-> -static ssize_t inject_data_poison_store(struct file *file, const char __user *data,
-> -					size_t count, loff_t *ppos)
-> +static ssize_t inject_data_ce_store(struct file *file, const char __user *data,
-> +				    size_t count, loff_t *ppos)
->  {
->  	struct device *dev = file->private_data;
->  	struct mem_ctl_info *mci = to_mci(dev);
->  	struct edac_priv *priv = mci->pvt_info;
-> +	u8 ce_bitpos;
-> +	int ret;
->  
->  	/* Unlock the PCSR registers */
->  	writel(PCSR_UNLOCK_VAL, priv->ddrmc_baseaddr + XDDR_PCSR_OFFSET);
-> @@ -863,14 +867,98 @@ static ssize_t inject_data_poison_store(struct file *file, const char __user *da
->  	/* Lock the PCSR registers */
->  	writel(1, priv->ddrmc_noc_baseaddr + XDDR_PCSR_OFFSET);
+>                 if (err) {
+>                         /* Set state to BT_RUNNING so resume doesn't noti=
+fy */
+>                         hdev->suspend_state =3D BT_RUNNING;
+> --
+> 2.25.1
+>
 
-You lock the PCSR registers...
 
-> -	xddr_inject_data_poison_store(mci, data);
-> +	ret = kstrtou8_from_user(data, count, 0, &ce_bitpos);
-> +	if (ret)
-> +		return ret;
-> +	ret = xddr_inject_data_ce_store(mci, ce_bitpos);
-
-... and you lock them here *again*. This doesn't make sense.
->  
->  	return count;
->  }
->  
-> -static const struct file_operations xddr_inject_enable_fops = {
-> +static void xddr_inject_data_ue_store(struct mem_ctl_info *mci, u32 val0, u32 val1)
-> +{
-> +	struct edac_priv *priv = mci->pvt_info;
-> +
-> +	writel(val0, priv->ddrmc_baseaddr + ECCW0_FLIP0_OFFSET);
-> +	writel(val0, priv->ddrmc_baseaddr + ECCW0_FLIP1_OFFSET);
-> +	writel(val1, priv->ddrmc_baseaddr + ECCW1_FLIP1_OFFSET);
-> +	writel(val1, priv->ddrmc_baseaddr + ECCW1_FLIP1_OFFSET);
-> +}
-> +
-> +static ssize_t inject_data_ue_store(struct file *file, const char __user *data,
-> +				    size_t count, loff_t *ppos)
-> +{
-> +	struct device *dev = file->private_data;
-> +	struct mem_ctl_info *mci = to_mci(dev);
-> +	struct edac_priv *priv = mci->pvt_info;
-> +	u8 pos0, pos1, len;
-> +	u32 val0 = 0;
-> +	u32 val1 = 0;
-> +	u8 ue0, ue1;
-> +	char buf[6];
-> +	int ret;
-> +
-> +	len = min_t(size_t, count, sizeof(buf));
-> +	if (copy_from_user(buf, data, len))
-> +		return -EFAULT;
-> +
-> +	for (pos0 = 0; buf[pos0] != ' ' && pos0 <= len; pos0++)
-> +		;
-> +
-> +	if (pos0 > len)
-> +		return -EINVAL;
-> +
-> +	ret = kstrtou8_from_user(data, pos0, 0, &ue0);
-> +	if (ret)
-> +		return ret;
-> +
-> +	for (pos1 = pos0 + 1; buf[pos1] != '\n' && pos1 <= len; pos1++)
-> +		;
-> +
-> +	if (pos1 > count)
-> +		return -EINVAL;
-> +
-> +	ret = kstrtou8_from_user(&data[pos0 + 1], pos1 - pos0 - 1, 0,
-> +				 &ue1);
-> +	if (ret)
-> +		return ret;
-> +
-> +	if (ue0 < 31) {
-> +		val0 = BIT(ue0);
-> +	} else {
-> +		ue0 = ue0 - 31;
-> +		val1 = BIT(ue0);
-> +	}
-> +	if (ue1 < 31) {
-> +		val0 |= BIT(ue1);
-> +	} else {
-> +		ue1 = ue1 - 31;
-> +		val1 |= BIT(ue1);
-> +	}
-> +
-> +	/* Unlock the PCSR registers */
-> +	writel(PCSR_UNLOCK_VAL, priv->ddrmc_baseaddr + XDDR_PCSR_OFFSET);
-> +	writel(PCSR_UNLOCK_VAL, priv->ddrmc_noc_baseaddr + XDDR_PCSR_OFFSET);
-> +
-> +	poison_setup(priv);
-> +
-> +	/* Lock the PCSR registers */
-> +	writel(1, priv->ddrmc_noc_baseaddr + XDDR_PCSR_OFFSET);
-> +
-> +	xddr_inject_data_ue_store(mci, val0, val1);
-> +
-> +	return count;
-> +}
-> +
-> +static const struct file_operations xddr_inject_ue_fops = {
-> +	.open = simple_open,
-> +	.write = inject_data_ue_store,
-> +	.llseek = generic_file_llseek,
-> +};
-> +
-> +static const struct file_operations xddr_inject_ce_fops = {
->  	.open = simple_open,
-> -	.write = inject_data_poison_store,
-> +	.write = inject_data_ce_store,
->  	.llseek = generic_file_llseek,
->  };
-
-Put the fops underneath the respective functions.
-
-Also, the injection algorithm needs to be explained in a comment here,
-step by step, and not have people figure out what they need to do by
-parsing inject_data_{ce,ue}_store() by foot.
-
-> @@ -882,8 +970,10 @@ static void create_debugfs_attributes(struct mem_ctl_info *mci)
->  	if (!priv->debugfs)
->  		return;
->  
-> -	edac_debugfs_create_file("inject_error", 0200, priv->debugfs,
-> -				 &mci->dev, &xddr_inject_enable_fops);
-> +	edac_debugfs_create_file("inject_ce", 0200, priv->debugfs,
-> +				 &mci->dev, &xddr_inject_ce_fops);
-> +	edac_debugfs_create_file("inject_ue", 0200, priv->debugfs,
-> +				 &mci->dev, &xddr_inject_ue_fops);
-
-That function can return NULL.
-
->  	debugfs_create_x64("address", 0600, priv->debugfs,
->  			   &priv->err_inject_addr);
->  	mci->debugfs = priv->debugfs;
-> -- 
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+--=20
+Luiz Augusto von Dentz
 
