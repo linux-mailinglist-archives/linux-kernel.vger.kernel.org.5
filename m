@@ -1,111 +1,129 @@
-Return-Path: <linux-kernel+bounces-15773-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15774-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 26E3982318D
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 17:51:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E490D823191
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 17:51:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A1A51B23B6B
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 16:51:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 91AD6287FED
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 16:51:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87E261C6A1;
-	Wed,  3 Jan 2024 16:50:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="B26drKpT"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10C821C280;
+	Wed,  3 Jan 2024 16:51:25 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from bmailout1.hostsharing.net (bmailout1.hostsharing.net [83.223.95.100])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B5721C68E
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 16:50:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-3366ddd1eddso10278279f8f.0
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 08:50:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1704300634; x=1704905434; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=g8qj9LLTaa3LyoC7NJsfeCbrmfVY1SENx7bd1fNAz/o=;
-        b=B26drKpTpsehMjGux6bg03PkS4t+xfLRMpnaYfE56XW9DdcRiOFRsCbyqu6FUMtzSE
-         ko6QsVtfoc4rBjwn8tDxe1hl4cY9s8lUZFIjVZZAcTqBsd6gnTgGuZhhm9s0TjoS8lap
-         9GejGrNZtAXWV149D5uzio42RduVyeEgFkI6uxYS7OTyg0wjW/f+I8y41dl9c89IpYoF
-         /6PgyLPVy4M2uWDmwyX65O2xZsqr2EA3neBWbiKBfUoF//1+cHV3UoOu0PdstOvzCq31
-         qNOO9iLVd485ohzzhS9maLKJ2PjldQZRyIbLR4XAT8ErD7OxDbXfXd4xzDsLDY61XM1T
-         6UqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704300634; x=1704905434;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=g8qj9LLTaa3LyoC7NJsfeCbrmfVY1SENx7bd1fNAz/o=;
-        b=dg4RifUzZGJBp8FQxqXnKAUb7/fMynuMvTOjPjPyQYQy1yIj7zW8jyPyl1hb0gp3VE
-         w0t3Eb9AfHagWdYg3UEcXFYuSE0+73cJLBfM17GjGNPRgw4SEZ4S4DIrxzsYuA7bS0e1
-         domBcT2fPe044BAO2FdcRVj1AjvHEoMfcxq82yZiTt7SqvuOFJtWCKBMlt0NDlgYUKw7
-         PfnWBXmBwd7prsqrIkSLkA9cgZq/cRAJ1o7F4t+nRjkqU0NHUaNlBm3Wt4T/mEDZkNMM
-         5u48kq1pCtzNiZCn247vvaTzHctD0dE0nJPWQsPmLueCM8d8IANBdBUUwm1dI54KDEpp
-         kj9Q==
-X-Gm-Message-State: AOJu0YxoSvcv8Qx5/w6fNO3IjUJQfQ3ZAfMmo0XGlvi+z4JOHlj48Vdd
-	nPCEWJGerDk1Kxmh4Ofj7pOqlwT+z1hx73eE2VQju8/sfmCP
-X-Google-Smtp-Source: AGHT+IFNldFQ4Ekd/9hAkgFof+yediaDi67d4DKeiI/9kvveDCGn42r8gdubpoTgPe07Pf4zH6H99anPJwbz/MQDEtI=
-X-Received: by 2002:adf:ef05:0:b0:336:5493:c8fa with SMTP id
- e5-20020adfef05000000b003365493c8famr5056173wro.60.1704300634270; Wed, 03 Jan
- 2024 08:50:34 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 279231BDEC;
+	Wed,  3 Jan 2024 16:51:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wunner.de
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=h08.hostsharing.net
+Received: from h08.hostsharing.net (h08.hostsharing.net [IPv6:2a01:37:1000::53df:5f1c:0])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256
+	 client-signature RSA-PSS (4096 bits) client-digest SHA256)
+	(Client CN "*.hostsharing.net", Issuer "RapidSSL TLS RSA CA G1" (verified OK))
+	by bmailout1.hostsharing.net (Postfix) with ESMTPS id F3C6530000861;
+	Wed,  3 Jan 2024 17:51:19 +0100 (CET)
+Received: by h08.hostsharing.net (Postfix, from userid 100393)
+	id E6CE12B0031; Wed,  3 Jan 2024 17:51:19 +0100 (CET)
+Date: Wed, 3 Jan 2024 17:51:19 +0100
+From: Lukas Wunner <lukas@wunner.de>
+To: Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Cc: linux-pci@vger.kernel.org, Bjorn Helgaas <helgaas@kernel.org>,
+	Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+	Rob Herring <robh@kernel.org>, Krzysztof Wilczy??ski <kw@linux.com>,
+	Alexandru Gagniuc <mr.nuke.me@gmail.com>,
+	Krishna chaitanya chundru <quic_krichai@quicinc.com>,
+	Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+	"Rafael J . Wysocki" <rafael@kernel.org>, linux-pm@vger.kernel.org,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	LKML <linux-kernel@vger.kernel.org>,
+	Alex Deucher <alexdeucher@gmail.com>,
+	Daniel Lezcano <daniel.lezcano@linaro.org>,
+	Amit Kucheria <amitk@kernel.org>, Zhang Rui <rui.zhang@intel.com>
+Subject: Re: [PATCH v3 06/10] PCI: Cache PCIe device's Supported Speed Vector
+Message-ID: <20240103165119.GB3463@wunner.de>
+References: <20230929115723.7864-1-ilpo.jarvinen@linux.intel.com>
+ <20230929115723.7864-7-ilpo.jarvinen@linux.intel.com>
+ <20231230151931.GA25718@wunner.de>
+ <94973372-91fc-27fc-b187-7427af9e4b7d@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231227-syscall32-v1-1-9621140d33bd@google.com>
- <20231227233444.GH1674809@ZenIV> <20231228004550.GJ1674809@ZenIV>
-In-Reply-To: <20231228004550.GJ1674809@ZenIV>
-From: Nick Desaulniers <ndesaulniers@google.com>
-Date: Wed, 3 Jan 2024 08:50:19 -0800
-Message-ID: <CAKwvOdn2Tm6C4Q-GWfh7e2N8rQKAHYyGM9Cn6vb1CUzCORiaAg@mail.gmail.com>
-Subject: Re: [PATCH] x86/syscalls: shrink entry/syscall_32.i via IWYU
-To: Al Viro <viro@zeniv.linux.org.uk>
-Cc: Tanzir Hasan <tanzirh@google.com>, Andy Lutomirski <luto@kernel.org>, 
-	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
-	"H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org, 
-	Nick Desaulniers <nnn@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <94973372-91fc-27fc-b187-7427af9e4b7d@linux.intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 
-On Wed, Dec 27, 2023 at 4:45=E2=80=AFPM Al Viro <viro@zeniv.linux.org.uk> w=
-rote:
+On Mon, Jan 01, 2024 at 08:31:39PM +0200, Ilpo Järvinen wrote:
+> On Sat, 30 Dec 2023, Lukas Wunner wrote:
+> > On Fri, Sep 29, 2023 at 02:57:19PM +0300, Ilpo Järvinen wrote:
+> > > Only the former is currently cached in pcie_bus_speeds in
+> > > the struct pci_bus. The link speeds that are supported is the
+> > > intersection of these two.
+> > 
+> > I'm wondering if caching both is actually necessary.  Why not cache
+> > just the intersection?  Do we need either of the two somewhere?
+> 
+> Intersection is enough at least for bwctrl. The only downside that is 
+> barely worth mentioning is that the bus SLSV has to be re-read when
+> function 0 sets the intersection.
 >
-> On Wed, Dec 27, 2023 at 11:34:44PM +0000, Al Viro wrote:
->
-> > That's _it_.  The same goes for syscall_64.c and syscall_x32.c.
-> > Oh, and lose the __visible/asmlinkage junk in there - none of that
-> > stuff is used from asm these days.  See the patch below -
-> > Untested But Should Work(tm):
->
-> Unfortunately, there's this in kernel/trace/trace_syscalls.c:
->
-> unsigned long __init __weak arch_syscall_addr(int nr)
-> {
->         return (unsigned long)sys_call_table[nr];
-> }
->
-> How is that supposed to work for anything biarch?  Including
-> amd64 with CONFIG_COMPAT enabled?
+> I can think of somebody wanting to expose the list of both supported speed 
+> to userspace though sysfs (not done by this patch series), but they could 
+> be read from the registers in that case so that use case doesn't really 
+> matter much, IMO.
 
-commit f431b634f24d ("tracing/syscalls: Allow archs to ignore tracing
-compat syscalls")
+Yes, that would be a reasonable argument to keep both values instead
+of storing just the intersection.
 
-added a comment block about ARCH_TRACE_IGNORE_COMPAT_SYSCALLS, which
-is defined for x86 in arch/x86/include/asm/ftrace.h.
 
-The implementation of arch_syscall_addr for mips is quite complex;
-dependent on quite a few different configs.
+> > > Store the device's Supported Link Speeds Vector into the struct pci_bus
+> > > when the Function 0 is enumerated (the Multi-Function Devices must have
+> > > same speeds the same for all Functions) to be easily able to calculate
+> > > the intersection of Supported Link Speeds.
+> > 
+> > Might want to add an explanation what you're going to need this for,
+> > I assume it's accessed frequently by the bandwidth throttling driver
+> > in a subsequent patch?
+> 
+> Yes. I tend to try to avoid forward references because some maintainers 
+> complain about them (leading to minimal changes where true motivations 
+> have to be hidden because "future" cannot be used to motivate a change 
+> even if that's often the truest motivation within a patch series). But 
+> I'll add a fwd ref here to make it more obvious. :-)
 
---=20
+Bjorn has used phrases such as "We're about to ..." a couple of times
+in commit messages to convey that a particular change in the present
+patch will be taken advantage of by a subsequent patch.
+
+I've used the same phrase but got criticized (in other subsystems)
+for using "we".
+
+So I use phrases such as:
+
+ "An upcoming commit will create DOE mailboxes upon device enumeration by
+  the PCI core.  Their lifetime shall not be limited by a driver.
+  Therefore rework..." (see 022b66f38195)
+
+Can also reference the past:
+
+ "The PCI core has just been amended to create a pci_doe_mb struct for
+  every DOE instance on device enumeration.  [...]  That leaves [...]
+  without any callers, so drop them." (see 74e491e5d1bc)
+
+If someone finds your commit e.g. through git blame, it may help them
+enormously if you provide context in the commit message.  If maintainers
+in other subsystem tell you otherwise, they're wrong. ;)
+
 Thanks,
-~Nick Desaulniers
+
+Lukas
 
