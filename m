@@ -1,71 +1,86 @@
-Return-Path: <linux-kernel+bounces-16066-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16067-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2ABC68237CB
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 23:23:06 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A5488237D8
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 23:24:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B1658B23C59
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 22:23:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C0B651C2417F
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 22:24:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A9D5208B2;
-	Wed,  3 Jan 2024 22:21:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90C3B1F944;
+	Wed,  3 Jan 2024 22:22:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="A/JOL9/g"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MfSg7HGf"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B374820321;
-	Wed,  3 Jan 2024 22:21:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 1F808C433C9;
-	Wed,  3 Jan 2024 22:21:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8D801F617;
+	Wed,  3 Jan 2024 22:22:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 64094C433C8;
+	Wed,  3 Jan 2024 22:22:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704320472;
-	bh=wOBZV3ibgSj8rsPL6O+JggixUHGy17B+e/eETzMVJT4=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=A/JOL9/gMdAUxXr1IMLcr1lxVhv/cTlKGeUyR93aDy6r5cAepKKjAl9Y3Ge1fqP5W
-	 FWeIb0xi6HBmNcIPi4grB/bPKhFX8o5g8qYhaATLagoBOiRQ16G6WkuqB9irzW1/Lm
-	 O94+gMlC4BFscGfTnmw/qVhha9RsV3/kecy80/pgMtMAlLBc8TS89JygR5pST1oHnH
-	 tmXLO89mu7XTvuRYgbczsWZIfi/0KxOEhD6g9FSJEHb7QC4iGf38zW8wkecmwXACcn
-	 WBMKrFXYKUJgkZ8KpaqeTRH/LQZOeZceXGxneH+yVdjJg0CMK05F3kmco+y229qT7h
-	 84vyN7a34RYXA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 093C4DCB6FE;
-	Wed,  3 Jan 2024 22:21:12 +0000 (UTC)
-Subject: Re: [GIT PULL] PCI fixes for v6.7
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <20240103221335.GA1797305@bhelgaas>
-References: <20240103221335.GA1797305@bhelgaas>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20240103221335.GA1797305@bhelgaas>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/pci/pci.git tags/pci-v6.7-fixes-2
-X-PR-Tracked-Commit-Id: 0ee2030af4e3e0a9cd26dfaa8c2f935beffa91d1
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: ac865f00af293d081356bec56eea90815094a60e
-Message-Id: <170432047202.21817.14232662667208695983.pr-tracker-bot@kernel.org>
-Date: Wed, 03 Jan 2024 22:21:12 +0000
-To: Bjorn Helgaas <helgaas@kernel.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org, Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>, Rob Herring <robh@kernel.org>, Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kwilczynski@kernel.org>, Tom Joseph <tjoseph@cadence.com>, Michael Schaller <michael@5challer.de>, Kai-Heng Feng <kai.heng.feng@canonical.com>
+	s=k20201202; t=1704320544;
+	bh=Xqh8mRMTZjVBQ4W72hW9xL1GK2MfD1+kMbsRptHMHmE=;
+	h=Date:From:To:Cc:Subject:Reply-To:From;
+	b=MfSg7HGffmUNqmVb8SnoYQnRUSfHRKdvaTVTmVyXSK4o2Ph8l3qk20AmyjZzYXIAJ
+	 kDelRQbE0X6pkFnKmcISSLMIfyItVAVHGeXNUnxKTzIjGzBTUERVwNZP0qioZYBp8d
+	 hWTCXsXiNJBNtRmfUB4T7iSIEO1ZTp0wm5GXpZMHvV06+a5wOt+j0v4VcfuLMVcI2w
+	 hBpSdndVY79I3RwvYd/KxwBOGc1HiyEcByxUH3LkmeXFEUvoz4WFxd8vYbu4i26iK+
+	 7UWQHVgGW5ygPdbDrCT9F7/dRmAW4vcDiLqkSu+JeM3IMEe85o6Gb2dWpvFvh3yVQ7
+	 LiY46smhkmW7g==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id F1E49CE08F4; Wed,  3 Jan 2024 14:22:23 -0800 (PST)
+Date: Wed, 3 Jan 2024 14:22:23 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Like Xu <like.xu@linux.intel.com>, Andi Kleen <ak@linux.intel.com>,
+	Kan Liang <kan.liang@linux.intel.com>,
+	Luwei Kang <luwei.kang@intel.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Paolo Bonzini <pbonzini@redhat.com>
+Cc: linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+	kvm@vger.kernel.org, Breno Leitao <leitao@debian.org>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Ingo Molnar <mingo@redhat.com>
+Subject: [BUG] Guest OSes die simultaneously (bisected)
+Message-ID: <3d8f5987-e09c-4dd2-a9c0-8ba22c9e948a@paulmck-laptop>
+Reply-To: paulmck@kernel.org
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-The pull request you sent on Wed, 3 Jan 2024 16:13:35 -0600:
+Hello!
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/pci/pci.git tags/pci-v6.7-fixes-2
+Since some time between v5.19 and v6.4, long-running rcutorture tests
+would (rarely but intolerably often) have all guests on a given host die
+simultaneously with something like an instruction fault or a segmentation
+violation.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/ac865f00af293d081356bec56eea90815094a60e
+Each bisection step required 20 hosts running 10 hours each, and
+this eventually fingered commit c59a1f106f5c ("KVM: x86/pmu: Add
+IA32_PEBS_ENABLE MSR emulation for extended PEBS").  Although this commit
+is certainly messing with things that could possibly cause all manner
+of mischief, I don't immediately see a smoking gun.  Except that the
+commit prior to this one is rock solid.
 
-Thank you!
+Just to make things a bit more exciting, bisection in mainline proved
+to be problematic due to bugs of various kinds that hid this one.  I was
+therefore forced to bisect among the commits backported to the internal
+v5.19-based kernel, which fingered the backported version of the patch
+called out above.
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Please note that this is not (yet) an emergency.  I will just continue
+to run rcutorture on v5.19-based hypervisors in the meantime.
+
+Any suggestions for debugging or fixing?
+
+							Thanx, Paul
 
