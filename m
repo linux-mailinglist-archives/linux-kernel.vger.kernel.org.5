@@ -1,464 +1,162 @@
-Return-Path: <linux-kernel+bounces-15698-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15700-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 60160823079
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 16:24:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 636B082308E
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 16:28:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 07B83283AF1
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 15:24:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 749431C23794
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 15:28:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D4281A73F;
-	Wed,  3 Jan 2024 15:24:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97BCA1B279;
+	Wed,  3 Jan 2024 15:28:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="BBz2ctHS"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D39F61A726;
-	Wed,  3 Jan 2024 15:24:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9DEDC433C8;
-	Wed,  3 Jan 2024 15:24:50 +0000 (UTC)
-Date: Wed, 3 Jan 2024 10:25:53 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
- <linux-trace-kernel@vger.kernel.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>, Linus Torvalds
- <torvalds@linux-foundation.org>
-Subject: [PATCH] eventfs: Stop using dcache_readdir() for getdents()
-Message-ID: <20240103102553.17a19cea@gandalf.local.home>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8ACFF1A730;
+	Wed,  3 Jan 2024 15:28:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 403DlAVu001467;
+	Wed, 3 Jan 2024 15:27:46 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=Nu8lunzViOUpOfegZsY+Z05a/poHdYSCSroiiueke/4=; b=BB
+	z2ctHSJD5dquHTYRfOF1AtFzzDiAGhOtvEXPnoGkGSSys0dg3J2a1lkPCqOVLCQ2
+	cpXHWWf9EJEcP7zO7SNQGvCXsFgWJF1xSYmjfV0xhUogTTxrM9VyeyZeC2LSJdwd
+	ZPR/8gnpoDdbEFb03FMC602ms+bbciRyAMd71Tk3NhNEHTvjFIZhoovyx48GL8Ho
+	mnMSZsJ2ieM+nP54aTQMzoCzkkjoq89m9b2gdA0oM9phOslVmEScO0sn3fREyUGo
+	kcYlpiqA4pVUne7jfLzmCm7WaOg6TXhgWe6muJDeaItueS9pNeFlWn9GCTbzhsnP
+	SXlf9BvoRZnzQGxyNDgA==
+Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vd8dpr8pe-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 03 Jan 2024 15:27:46 +0000 (GMT)
+Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
+	by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 403FRiTq029569
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 3 Jan 2024 15:27:44 GMT
+Received: from [10.216.8.10] (10.80.80.8) by nasanex01c.na.qualcomm.com
+ (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 3 Jan
+ 2024 07:27:33 -0800
+Message-ID: <520e377d-e990-c185-4a20-07806873e506@quicinc.com>
+Date: Wed, 3 Jan 2024 20:57:13 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: RESEND: Re: [Patch v6 03/12] docs: qcom: Add qualcomm minidump
+ guide
+Content-Language: en-US
+To: Ruipeng Qi <ruipengqi7@gmail.com>
+CC: <agross@kernel.org>, <alim.akhtar@samsung.com>, <andersson@kernel.org>,
+        <bmasney@redhat.com>, <conor+dt@kernel.org>, <corbet@lwn.net>,
+        <gpiccoli@igalia.com>, <keescook@chromium.org>, <kernel@quicinc.com>,
+        <kgene@kernel.org>, <konrad.dybcio@linaro.org>,
+        <krzysztof.kozlowski+dt@linaro.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <linux-hardening@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-remoteproc@vger.kernel.org>,
+        <linux-samsung-soc@vger.kernel.org>, <mathieu.poirier@linaro.org>,
+        <matthias.bgg@gmail.com>, <nm@ti.com>, <robh+dt@kernel.org>,
+        <tony.luck@intel.com>, <vigneshr@ti.com>, <qiruipeng@lixiang.com>
+References: <1700864395-1479-4-git-send-email-quic_mojha@quicinc.com>
+ <20231225135542.1789-1-ruipengqi7@gmail.com>
+From: Mukesh Ojha <quic_mojha@quicinc.com>
+In-Reply-To: <20231225135542.1789-1-ruipengqi7@gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01c.na.qualcomm.com (10.45.79.139)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: Eq10y8K3OI3Kx2Zzds3mwvzzBPYT1-u_
+X-Proofpoint-ORIG-GUID: Eq10y8K3OI3Kx2Zzds3mwvzzBPYT1-u_
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ priorityscore=1501 phishscore=0 impostorscore=0 spamscore=0
+ lowpriorityscore=0 mlxscore=0 malwarescore=0 mlxlogscore=826 adultscore=0
+ clxscore=1011 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2401030127
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-The eventfs creates dynamically allocated dentries and inodes. Using the
-dcache_readdir() logic for its own directory lookups requires hiding the
-cursor of the dcache logic and playing games to allow the dcache_readdir()
-to still have access to the cursor while the eventfs saved what it created
-and what it needs to release.
 
-Instead, just have eventfs have its own iterate_shared callback function
-that will fill in the dent entries. This simplifies the code quite a bit.
+On 12/25/2023 7:25 PM, Ruipeng Qi wrote:
+> <+How a kernel client driver can register region with minidump
+> <+------------------------------------------------------------
+> <+
+> <+Client driver can use ``qcom_minidump_region_register`` API's to register
+> <+and ``qcom_minidump_region_unregister`` to unregister their region from
+> <+minidump driver.
+> <+
+> <+Client needs to fill their region by filling ``qcom_minidump_region``
+> <+structure object which consists of the region name, region's virtual
+> <+and physical address and its size.
+> 
+> Hi, Mukesh, wish you a good holiday :)
 
-Also, remove the "lookup" parameter to the create_file/dir_dentry() and
-always have it return a dentry that has its ref count incremented, and
-have the caller call the dput. This simplifies that code as well.
+Hope you had the same..:-)
 
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
- fs/tracefs/event_inode.c | 237 +++++++++++++--------------------------
- 1 file changed, 78 insertions(+), 159 deletions(-)
+> 
+> I have the following idea, please help me to assess whether this can be
+> implemented or not. As we all know, most of the kernel objects are
+> allocated by the slab sub-system.I wonder if we can dump all memory
+> keeped by the slab sub-system? If so,  we got most of the kernel objects
+> which will be helpful to fix problems when we run with system issues.
+> 
+> How can we do this? From the description above, I think we should
+> register one region for each slab,  for each slab will have some pages,
+> and the memory between each slab is non-continuous. As we all
+> know, there are millions of slabs in the system, so if we dump slabs
+> in this way, it will introduce a heavy overhead.
+> 
+> I am not very familiar with qualcomm minidump, maybe my thought
+> is wrong. Looking forward to your reply!
 
-diff --git a/fs/tracefs/event_inode.c b/fs/tracefs/event_inode.c
-index f0677ea0ec24..53d34a4b5a2b 100644
---- a/fs/tracefs/event_inode.c
-+++ b/fs/tracefs/event_inode.c
-@@ -52,9 +52,7 @@ enum {
- static struct dentry *eventfs_root_lookup(struct inode *dir,
- 					  struct dentry *dentry,
- 					  unsigned int flags);
--static int dcache_dir_open_wrapper(struct inode *inode, struct file *file);
--static int dcache_readdir_wrapper(struct file *file, struct dir_context *ctx);
--static int eventfs_release(struct inode *inode, struct file *file);
-+static int eventfs_iterate(struct file *file, struct dir_context *ctx);
- 
- static void update_attr(struct eventfs_attr *attr, struct iattr *iattr)
- {
-@@ -148,11 +146,9 @@ static const struct inode_operations eventfs_file_inode_operations = {
- };
- 
- static const struct file_operations eventfs_file_operations = {
--	.open		= dcache_dir_open_wrapper,
- 	.read		= generic_read_dir,
--	.iterate_shared	= dcache_readdir_wrapper,
-+	.iterate_shared	= eventfs_iterate,
- 	.llseek		= generic_file_llseek,
--	.release	= eventfs_release,
- };
- 
- /* Return the evenfs_inode of the "events" directory */
-@@ -390,16 +386,14 @@ void eventfs_set_ei_status_free(struct tracefs_inode *ti, struct dentry *dentry)
-  * @mode: The mode of the file.
-  * @data: The data to use to set the inode of the file with on open()
-  * @fops: The fops of the file to be created.
-- * @lookup: If called by the lookup routine, in which case, dput() the created dentry.
-  *
-  * Create a dentry for a file of an eventfs_inode @ei and place it into the
-- * address located at @e_dentry. If the @e_dentry already has a dentry, then
-- * just do a dget() on it and return. Otherwise create the dentry and attach it.
-+ * address located at @e_dentry.
-  */
- static struct dentry *
- create_file_dentry(struct eventfs_inode *ei, int idx,
- 		   struct dentry *parent, const char *name, umode_t mode, void *data,
--		   const struct file_operations *fops, bool lookup)
-+		   const struct file_operations *fops)
- {
- 	struct eventfs_attr *attr = NULL;
- 	struct dentry **e_dentry = &ei->d_children[idx];
-@@ -414,9 +408,7 @@ create_file_dentry(struct eventfs_inode *ei, int idx,
- 	}
- 	/* If the e_dentry already has a dentry, use it */
- 	if (*e_dentry) {
--		/* lookup does not need to up the ref count */
--		if (!lookup)
--			dget(*e_dentry);
-+		dget(*e_dentry);
- 		mutex_unlock(&eventfs_mutex);
- 		return *e_dentry;
- 	}
-@@ -441,13 +433,12 @@ create_file_dentry(struct eventfs_inode *ei, int idx,
- 		 * way to being freed, don't return it. If e_dentry is NULL
- 		 * it means it was already freed.
- 		 */
--		if (ei->is_freed)
-+		if (ei->is_freed) {
- 			dentry = NULL;
--		else
-+		} else {
- 			dentry = *e_dentry;
--		/* The lookup does not need to up the dentry refcount */
--		if (dentry && !lookup)
- 			dget(dentry);
-+		}
- 		mutex_unlock(&eventfs_mutex);
- 		return dentry;
- 	}
-@@ -465,9 +456,6 @@ create_file_dentry(struct eventfs_inode *ei, int idx,
- 	}
- 	mutex_unlock(&eventfs_mutex);
- 
--	if (lookup)
--		dput(dentry);
--
- 	return dentry;
- }
- 
-@@ -500,13 +488,12 @@ static void eventfs_post_create_dir(struct eventfs_inode *ei)
-  * @pei: The eventfs_inode parent of ei.
-  * @ei: The eventfs_inode to create the directory for
-  * @parent: The dentry of the parent of this directory
-- * @lookup: True if this is called by the lookup code
-  *
-  * This creates and attaches a directory dentry to the eventfs_inode @ei.
-  */
- static struct dentry *
- create_dir_dentry(struct eventfs_inode *pei, struct eventfs_inode *ei,
--		  struct dentry *parent, bool lookup)
-+		  struct dentry *parent)
- {
- 	struct dentry *dentry = NULL;
- 
-@@ -520,9 +507,7 @@ create_dir_dentry(struct eventfs_inode *pei, struct eventfs_inode *ei,
- 	if (ei->dentry) {
- 		/* If the dentry already has a dentry, use it */
- 		dentry = ei->dentry;
--		/* lookup does not need to up the ref count */
--		if (!lookup)
--			dget(dentry);
-+		dget(dentry);
- 		mutex_unlock(&eventfs_mutex);
- 		return dentry;
- 	}
-@@ -542,7 +527,7 @@ create_dir_dentry(struct eventfs_inode *pei, struct eventfs_inode *ei,
- 		 * way to being freed.
- 		 */
- 		dentry = ei->dentry;
--		if (dentry && !lookup)
-+		if (dentry)
- 			dget(dentry);
- 		mutex_unlock(&eventfs_mutex);
- 		return dentry;
-@@ -562,9 +547,6 @@ create_dir_dentry(struct eventfs_inode *pei, struct eventfs_inode *ei,
- 	}
- 	mutex_unlock(&eventfs_mutex);
- 
--	if (lookup)
--		dput(dentry);
--
- 	return dentry;
- }
- 
-@@ -589,8 +571,8 @@ static struct dentry *eventfs_root_lookup(struct inode *dir,
- 	struct eventfs_inode *ei;
- 	struct dentry *ei_dentry = NULL;
- 	struct dentry *ret = NULL;
-+	struct dentry *d;
- 	const char *name = dentry->d_name.name;
--	bool created = false;
- 	umode_t mode;
- 	void *data;
- 	int idx;
-@@ -626,13 +608,10 @@ static struct dentry *eventfs_root_lookup(struct inode *dir,
- 		ret = simple_lookup(dir, dentry, flags);
- 		if (IS_ERR(ret))
- 			goto out;
--		create_dir_dentry(ei, ei_child, ei_dentry, true);
--		created = true;
--		break;
--	}
--
--	if (created)
-+		d = create_dir_dentry(ei, ei_child, ei_dentry);
-+		dput(d);
- 		goto out;
-+	}
- 
- 	for (i = 0; i < ei->nr_entries; i++) {
- 		entry = &ei->entries[i];
-@@ -650,8 +629,8 @@ static struct dentry *eventfs_root_lookup(struct inode *dir,
- 			ret = simple_lookup(dir, dentry, flags);
- 			if (IS_ERR(ret))
- 				goto out;
--			create_file_dentry(ei, i, ei_dentry, name, mode, cdata,
--					   fops, true);
-+			d = create_file_dentry(ei, i, ei_dentry, name, mode, cdata, fops);
-+			dput(d);
- 			break;
- 		}
- 	}
-@@ -660,127 +639,82 @@ static struct dentry *eventfs_root_lookup(struct inode *dir,
- 	return ret;
- }
- 
--struct dentry_list {
--	void			*cursor;
--	struct dentry		**dentries;
--};
--
--/**
-- * eventfs_release - called to release eventfs file/dir
-- * @inode: inode to be released
-- * @file: file to be released (not used)
-- */
--static int eventfs_release(struct inode *inode, struct file *file)
--{
--	struct tracefs_inode *ti;
--	struct dentry_list *dlist = file->private_data;
--	void *cursor;
--	int i;
--
--	ti = get_tracefs(inode);
--	if (!(ti->flags & TRACEFS_EVENT_INODE))
--		return -EINVAL;
--
--	if (WARN_ON_ONCE(!dlist))
--		return -EINVAL;
--
--	for (i = 0; dlist->dentries && dlist->dentries[i]; i++) {
--		dput(dlist->dentries[i]);
--	}
--
--	cursor = dlist->cursor;
--	kfree(dlist->dentries);
--	kfree(dlist);
--	file->private_data = cursor;
--	return dcache_dir_close(inode, file);
--}
--
--static int add_dentries(struct dentry ***dentries, struct dentry *d, int cnt)
--{
--	struct dentry **tmp;
--
--	tmp = krealloc(*dentries, sizeof(d) * (cnt + 2), GFP_NOFS);
--	if (!tmp)
--		return -1;
--	tmp[cnt] = d;
--	tmp[cnt + 1] = NULL;
--	*dentries = tmp;
--	return 0;
--}
--
--/**
-- * dcache_dir_open_wrapper - eventfs open wrapper
-- * @inode: not used
-- * @file: dir to be opened (to create it's children)
-- *
-- * Used to dynamic create file/dir with-in @file, all the
-- * file/dir will be created. If already created then references
-- * will be increased
-+/*
-+ * Walk the children of a eventfs_inode to fill in getdents().
-  */
--static int dcache_dir_open_wrapper(struct inode *inode, struct file *file)
-+static int eventfs_iterate(struct file *file, struct dir_context *ctx)
- {
- 	const struct file_operations *fops;
-+	struct inode *f_inode = file_inode(file);
- 	const struct eventfs_entry *entry;
- 	struct eventfs_inode *ei_child;
- 	struct tracefs_inode *ti;
- 	struct eventfs_inode *ei;
--	struct dentry_list *dlist;
--	struct dentry **dentries = NULL;
--	struct dentry *parent = file_dentry(file);
--	struct dentry *d;
--	struct inode *f_inode = file_inode(file);
--	const char *name = parent->d_name.name;
-+	struct dentry *ei_dentry = NULL;
-+	struct dentry *dentry;
-+	const char *name;
- 	umode_t mode;
--	void *data;
--	int cnt = 0;
- 	int idx;
--	int ret;
--	int i;
--	int r;
-+	int ret = -EINVAL;
-+	int ino;
-+	int i, r, c;
-+
-+	if (!dir_emit_dots(file, ctx))
-+		return 0;
- 
- 	ti = get_tracefs(f_inode);
- 	if (!(ti->flags & TRACEFS_EVENT_INODE))
- 		return -EINVAL;
- 
--	if (WARN_ON_ONCE(file->private_data))
--		return -EINVAL;
-+	c = ctx->pos - 2;
- 
- 	idx = srcu_read_lock(&eventfs_srcu);
- 
- 	mutex_lock(&eventfs_mutex);
- 	ei = READ_ONCE(ti->private);
-+	if (ei && !ei->is_freed)
-+		ei_dentry = READ_ONCE(ei->dentry);
- 	mutex_unlock(&eventfs_mutex);
- 
--	if (!ei) {
--		srcu_read_unlock(&eventfs_srcu, idx);
--		return -EINVAL;
--	}
--
--
--	data = ei->data;
-+	if (!ei || !ei_dentry)
-+		goto out;
- 
--	dlist = kmalloc(sizeof(*dlist), GFP_KERNEL);
--	if (!dlist) {
--		srcu_read_unlock(&eventfs_srcu, idx);
--		return -ENOMEM;
--	}
-+	ret = 0;
- 
--	inode_lock(parent->d_inode);
-+	/*
-+	 * Need to create the dentries and inodes to have a consistent
-+	 * inode number.
-+	 */
- 	list_for_each_entry_srcu(ei_child, &ei->children, list,
- 				 srcu_read_lock_held(&eventfs_srcu)) {
--		d = create_dir_dentry(ei, ei_child, parent, false);
--		if (d) {
--			ret = add_dentries(&dentries, d, cnt);
--			if (ret < 0)
--				break;
--			cnt++;
-+
-+		if (ei_child->is_freed)
-+			continue;
-+
-+		name = ei_child->name;
-+
-+		dentry = create_dir_dentry(ei, ei_child, ei_dentry);
-+		if (!dentry)
-+			goto out;
-+		ino = dentry->d_inode->i_ino;
-+		dput(dentry);
-+
-+		if (c > 0) {
-+			c--;
-+			continue;
- 		}
-+
-+		if (!dir_emit(ctx, name, strlen(name), ino, DT_DIR))
-+			goto out;
-+		ctx->pos++;
- 	}
- 
- 	for (i = 0; i < ei->nr_entries; i++) {
--		void *cdata = data;
-+		void *cdata = ei->data;
-+
- 		entry = &ei->entries[i];
- 		name = entry->name;
-+
- 		mutex_lock(&eventfs_mutex);
- 		/* If ei->is_freed, then the event itself may be too */
- 		if (!ei->is_freed)
-@@ -790,41 +724,26 @@ static int dcache_dir_open_wrapper(struct inode *inode, struct file *file)
- 		mutex_unlock(&eventfs_mutex);
- 		if (r <= 0)
- 			continue;
--		d = create_file_dentry(ei, i, parent, name, mode, cdata, fops, false);
--		if (d) {
--			ret = add_dentries(&dentries, d, cnt);
--			if (ret < 0)
--				break;
--			cnt++;
-+
-+		dentry = create_file_dentry(ei, i, ei_dentry, name, mode, cdata, fops);
-+		if (!dentry)
-+			goto out;
-+		ino = dentry->d_inode->i_ino;
-+		dput(dentry);
-+
-+		if (c > 0) {
-+			c--;
-+			continue;
- 		}
-+
-+		if (!dir_emit(ctx, name, strlen(name), ino, DT_REG))
-+			goto out;
-+		ctx->pos++;
- 	}
--	inode_unlock(parent->d_inode);
-+	ret = 1;
-+ out:
- 	srcu_read_unlock(&eventfs_srcu, idx);
--	ret = dcache_dir_open(inode, file);
--
--	/*
--	 * dcache_dir_open() sets file->private_data to a dentry cursor.
--	 * Need to save that but also save all the dentries that were
--	 * opened by this function.
--	 */
--	dlist->cursor = file->private_data;
--	dlist->dentries = dentries;
--	file->private_data = dlist;
--	return ret;
--}
--
--/*
-- * This just sets the file->private_data back to the cursor and back.
-- */
--static int dcache_readdir_wrapper(struct file *file, struct dir_context *ctx)
--{
--	struct dentry_list *dlist = file->private_data;
--	int ret;
- 
--	file->private_data = dlist->cursor;
--	ret = dcache_readdir(file, ctx);
--	dlist->cursor = file->private_data;
--	file->private_data = dlist;
- 	return ret;
- }
- 
--- 
-2.42.0
+In the current state and in simple terms, Qualcomm Minidump can not do
+this, Minidump is more of a consumer driver so, what ever gets
+registered with it, it can dump. Qualcomm Minidump serves bigger purpose
+to dump content in any kind of crash whether it is kernel or non-kernel
+like NOC errors/XPUs etc and both kernel/non-kernel entity can register 
+to it, so we gets dump in any kind of system crash.
 
+One more thing, kernel part of minidump, we are calling it APSS Minidump
+has limitation of no of entries so it will be difficult to dump 
+non-continuous regions after a certain number of registration ~200. However,
+we do have a solution in downstream kernel for it like to create a big 
+CMA buffer and register this buffer with Minidump so that whatever gets 
+dumped in that buffer gets captured during crash and fill up this buffer 
+and create elf during panic. I think, similar thing you are also doing 
+with your OS-minidump.
+
+I have just glanced into your implementation of OS-minidump, it
+more of relying on basic concept of RAM content preserved
+across boot and later reading it through procfs but this basic
+stuff is common to pstore(ram) as well and pstore has file system 
+support why don't you make your driver as one of pstore record and that 
+way Qualcomm minidump also gets benefited where entire OS-minidump 
+record gets registered with Qualcomm minidump and we get this on panic 
+and you get this via pstorefs.
+
+-Mukesh
+
+> 
+> Best Regards
+> Ruipeng
 
