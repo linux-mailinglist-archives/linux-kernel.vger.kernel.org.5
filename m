@@ -1,121 +1,133 @@
-Return-Path: <linux-kernel+bounces-15819-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15820-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E905B8233D1
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 18:50:18 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E6508233D8
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 18:51:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5338E2866F6
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 17:50:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 528921C23C93
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 17:51:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 261ED1C2AC;
-	Wed,  3 Jan 2024 17:50:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jNPoyeCq"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D0EF1C29C;
+	Wed,  3 Jan 2024 17:51:01 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70CF71C296;
-	Wed,  3 Jan 2024 17:50:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 148E0C433C8;
-	Wed,  3 Jan 2024 17:50:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704304208;
-	bh=a1eB5V5dv9FsKtuAgCrEoiM/zZTQE0AOc1G/QrOZMvs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=jNPoyeCqDgsu3BE73CiRzBofXmm/w3pz76XB97b/iprlVnMmRWf9yAYU3brWptOXC
-	 wx/v9G2JBn/xtRJWz+ZmIoFP/fZ2F+nxqeqUSgB+4PeLfbntRX9gLLbdp1knHXjki1
-	 8QBRTHFkdyIgM1o1z0S+Z+ICo+EiiwXV9DOlV+qNdxTe9oQzjUQuZxSZRhV/SO2QIv
-	 AdTisd3vVx2K001275d+QRLb/yghZHtZ8qKpbv0da/tV1s8rEBvtWVDHvvfjAln8v3
-	 MusFr71gFIOgO/A9FAQJpE/UtL+K/3hdUMK4TFO6SDgW3Nnjdb+/PPoLpnkI4OvDhm
-	 rtg+LdZPtE5tQ==
-Date: Wed, 3 Jan 2024 17:50:01 +0000
-From: Will Deacon <will@kernel.org>
-To: Jisheng Zhang <jszhang@kernel.org>
-Cc: "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Nick Piggin <npiggin@gmail.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>, Arnd Bergmann <arnd@arndb.de>,
-	linux-arch@vger.kernel.org, linux-mm@kvack.org,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-riscv@lists.infradead.org, Nadav Amit <namit@vmware.com>,
-	Andrea Arcangeli <aarcange@redhat.com>,
-	Andy Lutomirski <luto@kernel.org>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	Thomas Gleixner <tglx@linutronix.de>, Yu Zhao <yuzhao@google.com>,
-	x86@kernel.org
-Subject: Re: [PATCH 1/2] mm/tlb: fix fullmm semantics
-Message-ID: <20240103175001.GF5954@willie-the-truck>
-References: <20231228084642.1765-1-jszhang@kernel.org>
- <20231228084642.1765-2-jszhang@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19B871C296;
+	Wed,  3 Jan 2024 17:50:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.231])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4T4xzP35nNz6JB4H;
+	Thu,  4 Jan 2024 01:48:49 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id 3CDFA1400D3;
+	Thu,  4 Jan 2024 01:50:49 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Wed, 3 Jan
+ 2024 17:50:48 +0000
+Date: Wed, 3 Jan 2024 17:50:47 +0000
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: Ira Weiny <ira.weiny@intel.com>
+CC: Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>, Dan Williams
+	<dan.j.williams@intel.com>, Shiju Jose <shiju.jose@huawei.com>, "Yazen
+ Ghannam" <yazen.ghannam@amd.com>, Davidlohr Bueso <dave@stgolabs.net>, Dave
+ Jiang <dave.jiang@intel.com>, Alison Schofield <alison.schofield@intel.com>,
+	Vishal Verma <vishal.l.verma@intel.com>, "Ard Biesheuvel" <ardb@kernel.org>,
+	<linux-efi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-cxl@vger.kernel.org>
+Subject: Re: [PATCH RFC v4 5/6] firmware/efi: Process CXL Component Events
+Message-ID: <20240103175047.00001a55@Huawei.com>
+In-Reply-To: <20231219171210.000078a6@Huawei.com>
+References: <20230601-cxl-cper-v4-0-47bb901f135e@intel.com>
+	<20230601-cxl-cper-v4-5-47bb901f135e@intel.com>
+	<7ec6d2af-c860-9b05-7eaf-c82f50f8e66e@amd.com>
+	<65674a71ef4d0_a1b25294e4@iweiny-mobl.notmuch>
+	<20231213171351.00004579@Huawei.com>
+	<657a2ff3bcc0b_25c9c7294ab@iweiny-mobl.notmuch>
+	<20231219171210.000078a6@Huawei.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231228084642.1765-2-jszhang@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml100004.china.huawei.com (7.191.162.219) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On Thu, Dec 28, 2023 at 04:46:41PM +0800, Jisheng Zhang wrote:
-> From: Nadav Amit <namit@vmware.com>
-> 
-> fullmm in mmu_gather is supposed to indicate that the mm is torn-down
-> (e.g., on process exit) and can therefore allow certain optimizations.
-> However, tlb_finish_mmu() sets fullmm, when in fact it want to say that
-> the TLB should be fully flushed.
-> 
-> Change tlb_finish_mmu() to set need_flush_all and check this flag in
-> tlb_flush_mmu_tlbonly() when deciding whether a flush is needed.
-> 
-> At the same time, bring the arm64 fullmm on process exit optimization back.
-> 
-> Signed-off-by: Nadav Amit <namit@vmware.com>
-> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
-> Cc: Andrea Arcangeli <aarcange@redhat.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Andy Lutomirski <luto@kernel.org>
-> Cc: Dave Hansen <dave.hansen@linux.intel.com>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Yu Zhao <yuzhao@google.com>
-> Cc: Nick Piggin <npiggin@gmail.com>
-> Cc: x86@kernel.org
-> ---
->  arch/arm64/include/asm/tlb.h | 5 ++++-
->  include/asm-generic/tlb.h    | 2 +-
->  mm/mmu_gather.c              | 2 +-
->  3 files changed, 6 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/arm64/include/asm/tlb.h b/arch/arm64/include/asm/tlb.h
-> index 846c563689a8..6164c5f3b78f 100644
-> --- a/arch/arm64/include/asm/tlb.h
-> +++ b/arch/arm64/include/asm/tlb.h
-> @@ -62,7 +62,10 @@ static inline void tlb_flush(struct mmu_gather *tlb)
->  	 * invalidating the walk-cache, since the ASID allocator won't
->  	 * reallocate our ASID without invalidating the entire TLB.
->  	 */
-> -	if (tlb->fullmm) {
-> +	if (tlb->fullmm)
-> +		return;
-> +
-> +	if (tlb->need_flush_all) {
->  		if (!last_level)
->  			flush_tlb_mm(tlb->mm);
->  		return;
+On Tue, 19 Dec 2023 17:12:10 +0000
+Jonathan Cameron <Jonathan.Cameron@Huawei.com> wrote:
 
-Why isn't the 'last_level' check sufficient here? In other words, when do
-we perform a !last_level invalidation with 'fullmm' set outside of teardown?
+> On Wed, 13 Dec 2023 14:28:03 -0800
+> Ira Weiny <ira.weiny@intel.com> wrote:
+> 
+> > Jonathan Cameron wrote:  
+> > > On Wed, 29 Nov 2023 06:28:01 -0800
+> > > Ira Weiny <ira.weiny@intel.com> wrote:
+> > >     
+> > 
+> > [snip]
+> >   
+> > > > > __packed attribute just for cper_cxl_event_rec still fails to properly 
+> > > > > align structure elements. Looks like, __packed attribute is needed for 
+> > > > > all structs (cper_cxl_event_devid and cper_cxl_event_sn) inside 
+> > > > > cper_cxl_event_rec.
+> > > > > 
+> > > > > Seems easier to use global pragma instead.. I could test and obtain the 
+> > > > > output as expected using pragma..      
+> > > > 
+> > > > I did not know that was acceptable in the kernel but I see you used it in
+> > > > cper_cxl.h before...
+> > > > 
+> > > > Ok I'll do that and spin again.
+> > > > 
+> > > > Thanks so much for testing this!  I was out last week and still don't have
+> > > > a test environment.    
+> > > 
+> > > Easy to hack into QEMU :)  Hmm. I have a CCIX patch set from years ago
+> > > somewhere that does similar. Would be easy to repurposed. Looks like
+> > > I never published them (just told people to ask if they wanted them :( ).
+> > > 
+> > > Anyhow, if useful I can dig them out.    
+> > 
+> > If you have a branch with them with a somewhat latest qemu that could work
+> > too.  
+> They are ancient and based on GHES emulation that got reworked before being
+> merged. I had a quick go at a forwards port but this is a bigger job than
+> I expected. May be a little while :(
 
-Will
+Working again (embarrassingly I had the error source numbers reversed due
+to a merge resolution that went wrong which took me a day to find). I'll flesh
+out the injection but it will basically look like normal error injection
+via qmp (json records) with a bonus parameter to stick them out as via
+GHESv2 / CPER rather than AER internal error.  I've not figured out how
+to wire HEST up for x86 emulation yet though so it's ARM virt only for now.
+(HEST isn't created for x86 qemu machines whereas it is for arm virt with ras=on)
+Obviously that emulation is wrong in all sorts of ways as I should be dealing
+with firmware/OSPM negotiation and setting the messaging up etc but meh
+- it works for exercising the code :)
+
+On the plus side I get nice trace points using your series and Smita's one.
+Quite a bit of data is 0s at the moment as I'm lazy and it's the end of the day
+here - I'll fix that up later this week as I can see 'everything' in QEMU
+and the register values etc are already handled via the native injection paths.
+
+Jonathan
+
+> 
+> Jonathan
+> 
+> > 
+> > Ira  
+> 
+> 
+
 
