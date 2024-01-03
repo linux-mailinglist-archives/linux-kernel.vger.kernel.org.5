@@ -1,122 +1,184 @@
-Return-Path: <linux-kernel+bounces-15297-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15298-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E3448229DD
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 10:03:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A61328229DF
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 10:03:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9148F28531A
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 09:03:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1B3991F23DC1
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 09:03:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2474718631;
-	Wed,  3 Jan 2024 09:03:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9333C1865C;
+	Wed,  3 Jan 2024 09:03:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=buaa.edu.cn header.i=@buaa.edu.cn header.b="Q9Mmzw7U"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="jepADU8i";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="jepADU8i"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from azure-sdnproxy.icoremail.net (azure-sdnproxy.icoremail.net [207.46.229.174])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE478182A8;
-	Wed,  3 Jan 2024 09:02:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=buaa.edu.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=buaa.edu.cn
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=buaa.edu.cn; s=buaa; h=Received:From:To:Cc:Subject:Date:
-	Message-Id:MIME-Version:Content-Transfer-Encoding; bh=hoJ1IZhXId
-	vBH2NHy/nUS/+Bv6SFG+7M6aXxKVElZRQ=; b=Q9Mmzw7UTMm/4qGdkf6TLeJnZV
-	jdK5DY5wt8CquVteUJ4P3V/xZ1A8U6g6v7EmSoYxTnCp2O2vsX4C8eflsoN73ENK
-	TRNuQeb5taSG+xqn8bt4UEX/jNWd3eU9QirC5shKKH3VEz5VmfYQeEL8BBtiV2fU
-	OQH/mJKpMW/u9K6qc=
-Received: from localhost.localdomain (unknown [10.130.147.18])
-	by coremail-app1 (Coremail) with SMTP id OCz+CgBnlli0IpVln02jAA--.47372S2;
-	Wed, 03 Jan 2024 17:02:44 +0800 (CST)
-From: Yuxuan Hu <20373622@buaa.edu.cn>
-To: marcel@holtmann.org,
-	johan.hedberg@gmail.com,
-	luiz.dentz@gmail.com
-Cc: linux-bluetooth@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	baijiaju1990@gmail.com,
-	sy2239101@buaa.edu.cn,
-	20373622@buaa.edu.cn,
-	pmenzel@molgen.mpg.de
-Subject: [PATCH V3] Bluetooth: rfcomm: Fix null-ptr-deref in rfcomm_check_security
-Date: Wed,  3 Jan 2024 17:02:38 +0800
-Message-Id: <20240103090238.3376565-1-20373622@buaa.edu.cn>
-X-Mailer: git-send-email 2.25.1
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48A2C1863B;
+	Wed,  3 Jan 2024 09:03:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id F3EE421C97;
+	Wed,  3 Jan 2024 09:03:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1704272591; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=F/wKVvKvm03UEJ1zWEiwuyaYFJhvNJ616HPYPBiI8YQ=;
+	b=jepADU8iST6CjLUnRT9a6jAE+w0C5dLforvavtktIEjjD64Ml4ZI4pCqMYDuKtn059CLu/
+	Aedew8aMfA4gaK07k1/8MawmuKIgqdLHrH3lX13QA2CXzb+WmxachkHtNme4ki0vHMzTUN
+	XMjwx89DRMm9i3PPVglC7tHwiw/0sjE=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1704272591; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=F/wKVvKvm03UEJ1zWEiwuyaYFJhvNJ616HPYPBiI8YQ=;
+	b=jepADU8iST6CjLUnRT9a6jAE+w0C5dLforvavtktIEjjD64Ml4ZI4pCqMYDuKtn059CLu/
+	Aedew8aMfA4gaK07k1/8MawmuKIgqdLHrH3lX13QA2CXzb+WmxachkHtNme4ki0vHMzTUN
+	XMjwx89DRMm9i3PPVglC7tHwiw/0sjE=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D4B841340C;
+	Wed,  3 Jan 2024 09:03:10 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id CJ0gMs4ilWUcaAAAD6G6ig
+	(envelope-from <mhocko@suse.com>); Wed, 03 Jan 2024 09:03:10 +0000
+Date: Wed, 3 Jan 2024 10:03:10 +0100
+From: Michal Hocko <mhocko@suse.com>
+To: Dan Schatzberg <schatzberg.dan@gmail.com>
+Cc: Yu Zhao <yuzhao@google.com>, Johannes Weiner <hannes@cmpxchg.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Yosry Ahmed <yosryahmed@google.com>, Huan Yang <link@vivo.com>,
+	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+	linux-mm@kvack.org, Tejun Heo <tj@kernel.org>,
+	Zefan Li <lizefan.x@bytedance.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Shakeel Butt <shakeelb@google.com>,
+	Muchun Song <muchun.song@linux.dev>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Kefeng Wang <wangkefeng.wang@huawei.com>,
+	SeongJae Park <sj@kernel.org>,
+	"Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
+	Nhat Pham <nphamcs@gmail.com>, Yue Zhao <findns94@gmail.com>
+Subject: Re: [PATCH v5 2/2] mm: add swapiness= arg to memory.reclaim
+Message-ID: <ZZUizpTWOt3gNeqR@tiehlicka>
+References: <20231220152653.3273778-1-schatzberg.dan@gmail.com>
+ <20231220152653.3273778-3-schatzberg.dan@gmail.com>
+ <CAOUHufYwPzZ7k=ecFkxaw+26hUkiTODEnmKM8b3=Lk=n+bm29w@mail.gmail.com>
+ <ZZQqCHmocwUFvuTz@dschatzberg-fedora-PF3DHTBV>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:OCz+CgBnlli0IpVln02jAA--.47372S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7WFyDGF1xXr18Zr17Kw47CFg_yoW8tFWxpF
-	W2ya4fGFn7ur15Ar97AF4kAFyrZw1v9r15Kr4kZ3yY93s5Wwn3trWSyr1jkay5CF4qk343
-	AF18X3yDJrnru3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUU901xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AE
-	w4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2
-	IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2
-	z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2vYz4IE04k24V
-	AvwVAKI4IrM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xf
-	McIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7
-	v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVCm
-	-wCF04k20xvY0x0EwIxGrwCF04k20xvE74AGY7Cv6cx26F1DJr1UJwCFx2IqxVCFs4IE7x
-	kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
-	67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
-	CI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1x
-	MIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIda
-	VFxhVjvjDU0xZFpf9x0JUQZ23UUUUU=
-X-CM-SenderInfo: ysqtljawssquxxddhvlgxou0/
+In-Reply-To: <ZZQqCHmocwUFvuTz@dschatzberg-fedora-PF3DHTBV>
+X-Spam-Level: **
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spamd-Result: default: False [-2.81 / 50.00];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 RCVD_IN_DNSWL_HI(-0.50)[2a07:de40:b281:106:10:150:64:167:received];
+	 RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	 TO_DN_SOME(0.00)[];
+	 R_RATELIMIT(0.00)[to_ip_from(RLsgd6kpfonsu388crrfsk7e3y)];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_TRACE(0.00)[suse.com:+];
+	 MX_GOOD(-0.01)[];
+	 FREEMAIL_TO(0.00)[gmail.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 BAYES_HAM(-3.00)[100.00%];
+	 ARC_NA(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	 RCVD_DKIM_ARC_DNSWL_HI(-1.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 TAGGED_RCPT(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 RCPT_COUNT_TWELVE(0.00)[20];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 FREEMAIL_CC(0.00)[google.com,cmpxchg.org,linux.dev,vivo.com,vger.kernel.org,kvack.org,kernel.org,bytedance.com,lwn.net,linux-foundation.org,huawei.com,gmail.com];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[];
+	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=jepADU8i
+X-Spam-Score: -2.81
+X-Rspamd-Queue-Id: F3EE421C97
 
-During our fuzz testing of the connection and disconnection process at the
-RFCOMM layer, we discovered this bug. By comparing the packets from a normal
-connection and disconnection process with the testcase that triggered a
-KASAN report. We analyzed the cause of this bug as follows:
+On Tue 02-01-24 10:21:44, Dan Schatzberg wrote:
+> Hi Yu Zhao,
+> 
+> Thanks for the feedback, sorry for the delayed response.
+> 
+> On Thu, Dec 21, 2023 at 10:31:59PM -0700, Yu Zhao wrote:
+> > On Wed, Dec 20, 2023 at 8:27 AM Dan Schatzberg <schatzberg.dan@gmail.com> wrote:
+> > >
+> > > ...
+> > 
+> > The cover letter says:
+> > "Previously, this exact interface addition was proposed by Yosry[3]."
+> > 
+> > So I think it should be acknowledged with a Suggested-by, based on:
+> > "A Suggested-by: tag indicates that the patch idea is suggested by the
+> > person named and ensures credit to the person for the idea."
+> > from
+> > https://docs.kernel.org/process/submitting-patches.html#using-reported-by-tested-by-reviewed-by-suggested-by-and-fixes
+> 
+> Sure, will do.
+> 
+> > > diff --git a/mm/vmscan.c b/mm/vmscan.c
+> > > index d91963e2d47f..aa5666842c49 100644
+> > > --- a/mm/vmscan.c
+> > > +++ b/mm/vmscan.c
+> > > @@ -92,6 +92,9 @@ struct scan_control {
+> > >         unsigned long   anon_cost;
+> > >         unsigned long   file_cost;
+> > >
+> > > +       /* Swappiness value for reclaim. NULL will fall back to per-memcg/global value */
+> > > +       int *swappiness;
+> > 
+> > Using a pointer to indicate whether the type it points to is
+> > overridden isn't really a good practice.
+> > 
+> > A better alternative was suggested during the v2:
+> > "Perhaps the negative to avoid unnecessary dereferences."
+> > https://lore.kernel.org/linux-mm/dhhjw4h22q4ngwtxmhuyifv32zjd6z2relrcjgnxsw6zys3mod@o6dh5dy53ae3/
+> 
+> I did have a couple versions with a negative but it creates
+> initialization issues where every instantiation of scan_control needs
+> to make sure to initialize swappiness or else it will behave as if
+> swappiness is 0. That's pretty error prone so using the pointer seemed
+> the better approach.
 
-1. In the packets captured during a normal connection, the host sends a
-`Read Encryption Key Size` type of `HCI_CMD` packet (Command Opcode: 0x1408)
-to the controller to inquire the length of encryption key.After receiving
-this packet, the controller immediately replies with a Command Complete
-packet (Event Code: 0x0e) to return the Encryption Key Size.
-
-2. In our fuzz test case, the timing of the controller's response to this
-packet was delayed to an unexpected point: after the RFCOMM and L2CAP
-layers had disconnected but before the HCI layer had disconnected.
-
-3. After receiving the Encryption Key Size Response at the time described
-in point 2, the host still called the rfcomm_check_security function.
-However, by this time `struct l2cap_conn *conn = l2cap_pi(sk)->chan->conn;`
-had already been released, and when the function executed
-`return hci_conn_security(conn->hcon, d->sec_level, auth_type, d->out);`,
-specifically when accessing `conn->hcon`, a null-ptr-deref error occurred.
-
-To fix this bug, check if `sk->sk_state` is BT_CLOSED before calling
-rfcomm_recv_frame in rfcomm_process_rx.
-
-Signed-off-by: Yuxuan Hu <20373622@buaa.edu.cn>
----
-V1 -> V2: Check earlier on rfcomm_process_rx
-V2 -> V3: Fixed formatting errors in the commit
-
- net/bluetooth/rfcomm/core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/net/bluetooth/rfcomm/core.c b/net/bluetooth/rfcomm/core.c
-index 053ef8f25fae..1d34d8497033 100644
---- a/net/bluetooth/rfcomm/core.c
-+++ b/net/bluetooth/rfcomm/core.c
-@@ -1941,7 +1941,7 @@ static struct rfcomm_session *rfcomm_process_rx(struct rfcomm_session *s)
- 	/* Get data directly from socket receive queue without copying it. */
- 	while ((skb = skb_dequeue(&sk->sk_receive_queue))) {
- 		skb_orphan(skb);
--		if (!skb_linearize(skb)) {
-+		if (!skb_linearize(skb) && sk->sk_state != BT_CLOSED) {
- 			s = rfcomm_recv_frame(s, skb);
- 			if (!s)
- 				break;
+I do agree with this. Especially for an opt-in features it is better if
+the default initialization has a clear meanining. In this case even if
+somebody doesn't use the helper then the NULL should be caught as NULL
+ptr rather than a silent misbehavior.
 -- 
-2.25.1
-
+Michal Hocko
+SUSE Labs
 
