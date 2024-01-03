@@ -1,82 +1,169 @@
-Return-Path: <linux-kernel+bounces-14995-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-14997-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0559F8225E7
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 01:20:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A79CE8225ED
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 01:28:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8DDEF1F23553
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 00:20:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 46D751F23171
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 00:28:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F134A34;
-	Wed,  3 Jan 2024 00:20:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB25864B;
+	Wed,  3 Jan 2024 00:27:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="neeRo+i9"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="JqpSmB3i"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EA8B362;
-	Wed,  3 Jan 2024 00:20:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 0DFECC433C7;
-	Wed,  3 Jan 2024 00:20:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704241225;
-	bh=aIsUKu+yZamorxjmUFGFEBphcUe2Y1eu5rvXAC2OpdY=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=neeRo+i9afojXM/3NNCreF09CMJUgvSboqVXmMEpDXpLe6HPSXvkyWoICwBgVHJYk
-	 Fhwz56u5pUh6ff1kn/WJCFtSpkSKaNtDS6SVImyYRBqcmvjgRAH2Gaa89l6oPLVGR0
-	 B2/tCk4ZrmWgo+mvbH5TRVOwWcC3mAy9CKmROqG1oyO1jOSzTe8WzdnlNAEu41Z/n1
-	 OAAiw5U2MUsOpnj+1kWXZ1ZPgtcNvUkcYrhzhjrK2GCIwc99LesHRngsKdfZA9KdFt
-	 m7BRMUlujdbn3LVHNv55RW5ceRPqk3bbsLn3nf1/2o744GyRO1p21H0gYiS77SvnjY
-	 jXlBx5Az16kxw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id E74C7C395C5;
-	Wed,  3 Jan 2024 00:20:24 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3385362
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 00:27:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-40d5097150fso11105e9.1
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 16:27:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1704241676; x=1704846476; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4D/ScSo67diCtOm5/uS067tATdpuyW3M9IteQeNMCkw=;
+        b=JqpSmB3i0ZnEz+ULTVT8IdFiudtV9vFjgJ8aIWrR3anz0xnFIcQHtPVAMQwAomaHPa
+         TCY4wZjvT35xB4UcEhH9ZIhDb+jWpChBHYkEK4jxxF3YfG3qEHxC2Zt1ce8g93Tr7UeL
+         0duLITVaAnY4Qr87ScwH8gzN447fTR8icJvqUphyUWriaeJfTQyGfw0TcIXMO1JsfRVg
+         iioW2F9+au2bktirWFwNC500zpNy0FBDVcO1f32S6VlSbz0teRC7b42GmxAQ73GVCXl2
+         xxFT/lXbKPaybU985Y1LgCt+2Z5XroSQQu9JAhE+Oy1m0FZipHySMafdbXZnoToF0Wrr
+         N66A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704241676; x=1704846476;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=4D/ScSo67diCtOm5/uS067tATdpuyW3M9IteQeNMCkw=;
+        b=SKOhXSuvq+N0JBa2OgxMeAzHcdaPvXYyPlGXeTcZJZm/tIiHqfcAZ+2S9POsOP+QRV
+         uB8aYE25X8Z280B4kduzCJMamj61V2/NzYH6vpLfa6gIXrrvFAQO5jLWOTWFEqKuK6bw
+         rxpfNAkz83FdHW6EV0b7jL/EMhQHGbuRY/1ESWs0jMfmgJiWKT5UDCvNzn3W693Cjy2q
+         giaticCSEmRz+FR/aY3yvLmPM0i6TnJ05PohFuNLHTaw4cDeptMSgVWpU257EDDnEmtP
+         2gNgImPf/KS4yZzSl8q57v/iPzqB4OTAbnXFSEppGfgvdIwMR4uUyJtDgYVtyQIYTC99
+         iouw==
+X-Gm-Message-State: AOJu0Yz7/UNi05A9aGSPrpYyW4ls4hObxh95lfDquCoCvibArLjmVoq3
+	ioaBEjSCECSKjnFBRE46NE2ZfyUuQukdDz10fFDrlzerbLSXAGF+ZVMCZZeD8ybPCdg=
+X-Google-Smtp-Source: AGHT+IECRhHL8i6EJhapjrPvjjkUFOBxuyxbDGo4rPMdOTQKZfID1ZODqsqG+FaBVNta653qz6jqVW1If/xon1YfzGs=
+X-Received: by 2002:a05:600c:354f:b0:40d:87df:92ca with SMTP id
+ i15-20020a05600c354f00b0040d87df92camr17552wmq.3.1704241675743; Tue, 02 Jan
+ 2024 16:27:55 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] MAINTAINERS: Update mvpp2 driver email
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <170424122494.12524.6893620259777477458.git-patchwork-notify@kernel.org>
-Date: Wed, 03 Jan 2024 00:20:24 +0000
-References: <20231225225245.1606-1-marcin.s.wojtas@gmail.com>
-In-Reply-To: <20231225225245.1606-1-marcin.s.wojtas@gmail.com>
-To: Marcin Wojtas <marcin.s.wojtas@gmail.com>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, pabeni@redhat.com,
- kuba@kernel.org, edumazet@google.com, davem@davemloft.net,
- linux@armlinux.org.uk
+References: <20231220152653.3273778-1-schatzberg.dan@gmail.com>
+ <20231220152653.3273778-3-schatzberg.dan@gmail.com> <CAOUHufYwPzZ7k=ecFkxaw+26hUkiTODEnmKM8b3=Lk=n+bm29w@mail.gmail.com>
+ <ZZQqCHmocwUFvuTz@dschatzberg-fedora-PF3DHTBV>
+In-Reply-To: <ZZQqCHmocwUFvuTz@dschatzberg-fedora-PF3DHTBV>
+From: Yu Zhao <yuzhao@google.com>
+Date: Tue, 2 Jan 2024 17:27:18 -0700
+Message-ID: <CAOUHufaTDcLNipHQC3sJuoOVcCkKnmzHt=tiiZrOxmOg5EUVYA@mail.gmail.com>
+Subject: Re: [PATCH v5 2/2] mm: add swapiness= arg to memory.reclaim
+To: Dan Schatzberg <schatzberg.dan@gmail.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Yosry Ahmed <yosryahmed@google.com>, Huan Yang <link@vivo.com>, linux-kernel@vger.kernel.org, 
+	cgroups@vger.kernel.org, linux-mm@kvack.org, Tejun Heo <tj@kernel.org>, 
+	Zefan Li <lizefan.x@bytedance.com>, Jonathan Corbet <corbet@lwn.net>, 
+	Michal Hocko <mhocko@kernel.org>, Shakeel Butt <shakeelb@google.com>, 
+	Muchun Song <muchun.song@linux.dev>, Andrew Morton <akpm@linux-foundation.org>, 
+	Kefeng Wang <wangkefeng.wang@huawei.com>, SeongJae Park <sj@kernel.org>, 
+	"Vishal Moola (Oracle)" <vishal.moola@gmail.com>, Nhat Pham <nphamcs@gmail.com>, 
+	Yue Zhao <findns94@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello:
+On Tue, Jan 2, 2024 at 8:21=E2=80=AFAM Dan Schatzberg <schatzberg.dan@gmail=
+.com> wrote:
+>
+> Hi Yu Zhao,
+>
+> Thanks for the feedback, sorry for the delayed response.
+>
+> On Thu, Dec 21, 2023 at 10:31:59PM -0700, Yu Zhao wrote:
+> > On Wed, Dec 20, 2023 at 8:27=E2=80=AFAM Dan Schatzberg <schatzberg.dan@=
+gmail.com> wrote:
+> > >
+> > > ...
+> >
+> > The cover letter says:
+> > "Previously, this exact interface addition was proposed by Yosry[3]."
+> >
+> > So I think it should be acknowledged with a Suggested-by, based on:
+> > "A Suggested-by: tag indicates that the patch idea is suggested by the
+> > person named and ensures credit to the person for the idea."
+> > from
+> > https://docs.kernel.org/process/submitting-patches.html#using-reported-=
+by-tested-by-reviewed-by-suggested-by-and-fixes
+>
+> Sure, will do.
+>
+> > > diff --git a/mm/vmscan.c b/mm/vmscan.c
+> > > index d91963e2d47f..aa5666842c49 100644
+> > > --- a/mm/vmscan.c
+> > > +++ b/mm/vmscan.c
+> > > @@ -92,6 +92,9 @@ struct scan_control {
+> > >         unsigned long   anon_cost;
+> > >         unsigned long   file_cost;
+> > >
+> > > +       /* Swappiness value for reclaim. NULL will fall back to per-m=
+emcg/global value */
+> > > +       int *swappiness;
+> >
+> > Using a pointer to indicate whether the type it points to is
+> > overridden isn't really a good practice.
+> >
+> > A better alternative was suggested during the v2:
+> > "Perhaps the negative to avoid unnecessary dereferences."
+> > https://lore.kernel.org/linux-mm/dhhjw4h22q4ngwtxmhuyifv32zjd6z2relrcjg=
+nxsw6zys3mod@o6dh5dy53ae3/
+>
+> I did have a couple versions with a negative but it creates
+> initialization issues where every instantiation of scan_control needs
+> to make sure to initialize swappiness or else it will behave as if
+> swappiness is 0. That's pretty error prone so using the pointer seemed
+> the better approach.
+>
+> > Since only proactive reclaim can override swappiness, meaning it only
+> > happens if sc->proactive is true, I think the best way to make it work
+> > without spending much effort is create a helper as Michal suggest but
+> > it should look like:
+> >
+> > sc_swappiness()
+> > {
+> >   return sc->proactive ? sc->swappiness : mem_cgroup_swappiness(memcg);
+> > }
+> >
+> > In this patchset, sc->swappiness really means
+> > sc->proactive_swappiness. So it should be renamed accordingly.
+>
+> Helper aside, I disagree with this point about coupling with the
+> proactive flag.
 
-This patch was applied to netdev/net.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
+Sure. But I would like to hear a *concrete* counterexample.
 
-On Mon, 25 Dec 2023 23:52:45 +0100 you wrote:
-> I no longer use mw@semihalf.com email. Update
-> mvpp2 driver entry with my alternative address.
-> 
-> Signed-off-by: Marcin Wojtas <marcin.s.wojtas@gmail.com>
-> ---
->  MAINTAINERS | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> The fact that the only user currently is proactive
+> reclaim
 
-Here is the summary with links:
-  - MAINTAINERS: Update mvpp2 driver email
-    https://git.kernel.org/netdev/net/c/fe6d8300a7af
+Yes, that's a fact, and we should make the decision based on the
+current known facts.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+> doesn't imply to me that the interface (in scan_control)
+> should be coupled to the use-case.
 
+Future always has its uncertainty which I would not worry so much about.
 
+> It's easier to reason about a
+> swappiness field that overrides swappiness for all scans that set it
+> regardless of the users.
+
+For example? And how likely would that happen in the next few years?
 
