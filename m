@@ -1,211 +1,194 @@
-Return-Path: <linux-kernel+bounces-15968-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15967-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E9F1682366F
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 21:20:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9351B82366D
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 21:20:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 94138282434
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 20:20:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A7F911C238B1
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 20:20:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D8DC1DA32;
-	Wed,  3 Jan 2024 20:18:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 954C91D553;
+	Wed,  3 Jan 2024 20:18:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="cudjj8zo"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="uZApOUn/"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2060.outbound.protection.outlook.com [40.107.101.60])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C32B91DA22;
-	Wed,  3 Jan 2024 20:18:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KIO/LXh92c42RCc8sukOkjKnU8o15Fgadg57OvOI4KDoEvOsaUuU0bi5Det5Z6jOeAfQ+kZEoDewws5WjD2K1rlddhaGLSENSBv8X87trjkRVLPH4EwyGf9aE1LV/bD06BdBRWrw1xOxmsyhuE/zpqrmHDqmA9LkFJV7rq1HeSZ1em/MuvghKS5el/08qd9a969K2x6YlfC3H79Wj/hLB+BS8VMZhNrJ/WrhYkQOteRlCQ1vtdCJBVXmANy2NsLJFJQSCF8CxJuJ1o6U+k4kmJFXv4wkP7Cy8lGP3aIG0+Syv9D7CJfnf7ypbSTrThtz2AnHWX35TH3glQiTPl9vgg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=3Jkzvf45R652jTNTistK6FIpzk5K5NTE1x/nlt5KJjg=;
- b=niCkWzzRyx/9G1ju/rGUeRjHWVv9bwnT8pJ9gcD8RCOZ0kbCSXv7V/RqXuF6EaKHJ0W+JW0z4LMfoOGZP24kVzc5RtOGEYFAJZXNtWD4fW166qZkVhUMk+dj5TOwT+W/rYCDB2Eu7Uad35fcVQ32goyn7sLTcfKa9pGyi/qNGcVQFHCTwW0JZNt+AMVay+IrbVyqfGraFdaIZdWH288K70K8LZQ3/XxnGEbf8ejXxSc2INSdwX83xXzwfwYzvA6a0R/mc4xtyEYmgjk90B+XLU8C1wP10MJjJDeYzfKHJK/C2GakxYdCPzfWow4EMHMOW0zGWYcqg8pSMw4/MNKcgA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.160) smtp.rcpttodomain=oracle.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3Jkzvf45R652jTNTistK6FIpzk5K5NTE1x/nlt5KJjg=;
- b=cudjj8zoOGTKywdtHbQ0ZQxegR7VOILFwtnnzRvFyqcJnSffrJCc9UauSvqv2iqPTpftiWGm1gDhdogbe3U1X8c5sE3C1Gl3hzmX5MayHu01K3RV22vlbL2PN28umV5E2Y7ynptCdrj6a9EGkbRbilR1nXkzp6fQS1K9T7Pkoh8o3Sa4ruoJ0pqobQAcZDMVAuKEkSD1duadj63w1nNT5VRpCPSt8kaFEm++9dXHmZ1sh2Ry7TNBI3wcb/Rfi/AIOs+NlfnZHf+YOo18VHDTWyx0lduaxj/3EO97DREenlTyBSnC0YTpD7sykwnaA7ORFTdGO4Wr17gP7nyFvpS6BA==
-Received: from BLAPR03CA0066.namprd03.prod.outlook.com (2603:10b6:208:329::11)
- by SA1PR12MB5613.namprd12.prod.outlook.com (2603:10b6:806:22b::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.13; Wed, 3 Jan
- 2024 20:18:48 +0000
-Received: from MN1PEPF0000F0E2.namprd04.prod.outlook.com
- (2603:10b6:208:329:cafe::8) by BLAPR03CA0066.outlook.office365.com
- (2603:10b6:208:329::11) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.13 via Frontend
- Transport; Wed, 3 Jan 2024 20:18:47 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.160) by
- MN1PEPF0000F0E2.mail.protection.outlook.com (10.167.242.40) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7159.9 via Frontend Transport; Wed, 3 Jan 2024 20:18:47 +0000
-Received: from rnnvmail204.nvidia.com (10.129.68.6) by mail.nvidia.com
- (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Wed, 3 Jan 2024
- 12:18:38 -0800
-Received: from rnnvmail203.nvidia.com (10.129.68.9) by rnnvmail204.nvidia.com
- (10.129.68.6) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Wed, 3 Jan 2024
- 12:18:38 -0800
-Received: from Asurada-Nvidia (10.127.8.12) by mail.nvidia.com (10.129.68.9)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41 via Frontend
- Transport; Wed, 3 Jan 2024 12:18:37 -0800
-Date: Wed, 3 Jan 2024 12:18:35 -0800
-From: Nicolin Chen <nicolinc@nvidia.com>
-To: Jason Gunthorpe <jgg@nvidia.com>
-CC: Yi Liu <yi.l.liu@intel.com>, "Tian, Kevin" <kevin.tian@intel.com>,
-	"joro@8bytes.org" <joro@8bytes.org>, "alex.williamson@redhat.com"
-	<alex.williamson@redhat.com>, "robin.murphy@arm.com" <robin.murphy@arm.com>,
-	"baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>, "cohuck@redhat.com"
-	<cohuck@redhat.com>, "eric.auger@redhat.com" <eric.auger@redhat.com>,
-	"kvm@vger.kernel.org" <kvm@vger.kernel.org>, "mjrosato@linux.ibm.com"
-	<mjrosato@linux.ibm.com>, "chao.p.peng@linux.intel.com"
-	<chao.p.peng@linux.intel.com>, "yi.y.sun@linux.intel.com"
-	<yi.y.sun@linux.intel.com>, "peterx@redhat.com" <peterx@redhat.com>,
-	"jasowang@redhat.com" <jasowang@redhat.com>,
-	"shameerali.kolothum.thodi@huawei.com"
-	<shameerali.kolothum.thodi@huawei.com>, "lulu@redhat.com" <lulu@redhat.com>,
-	"suravee.suthikulpanit@amd.com" <suravee.suthikulpanit@amd.com>,
-	"iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>, "Duan,
- Zhenzhong" <zhenzhong.duan@intel.com>, "joao.m.martins@oracle.com"
-	<joao.m.martins@oracle.com>, "Zeng, Xin" <xin.zeng@intel.com>, "Zhao, Yan Y"
-	<yan.y.zhao@intel.com>
-Subject: Re: [PATCH v7 1/3] iommufd: Add data structure for Intel VT-d
- stage-1 cache invalidation
-Message-ID: <ZZXBGw9dJyvb/5r5@Asurada-Nvidia>
-References: <BN9PR11MB52766D7F774510E0181CC89B8C93A@BN9PR11MB5276.namprd11.prod.outlook.com>
- <ZXvI2IiXwwuHRE8V@Asurada-Nvidia>
- <7c398efc-8a2f-479d-bcff-ded8cc1ef3d0@intel.com>
- <20240102233849.GK50406@nvidia.com>
- <c59a780d-4030-4815-a34b-fb2e2f902ab3@intel.com>
- <20240103160108.GP50406@nvidia.com>
- <ZZWP7iBqUtbTRb3s@Asurada-Nvidia>
- <20240103165848.GR50406@nvidia.com>
- <ZZWUD+lCw3mRc/15@Asurada-Nvidia>
- <20240103175202.GT50406@nvidia.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D8C11D527
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 20:18:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a28ac851523so85324966b.0
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 12:18:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1704313124; x=1704917924; darn=vger.kernel.org;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=A2ZJGOikkMPN7pWE+w4oJN8NP+AUZ90HIGt1xo13QEI=;
+        b=uZApOUn/mxLlMGJPmm13Egfnu3YTFdKAaTNE1MiHXsPtABwULRkw060NScRKNlCRGg
+         TwyZekzmk+yyQEm3C/VK7/5NLM7Do7DQcYPg5/o0D1I2lqGLjHzeZyhxAlzFuPmFT73c
+         N2rR8KSfvthAYGNOV3mAKRjrVfjiaLR1V6I1PNzfAx5ZDvlcP+EX2sWU4ziVYLW6D96r
+         y2sNojkabKsz899K7+EDz65kK4q1J2FLavuLP8xVb+iO/omjvAXS9zNOKgNd7aWzhkKw
+         JIYoDwQ9v/HxsWnrcDIgqIfVkSWLyGBxVkyinHdMLQwpDLnp5sdY/tLUq+xZXsNbAEOx
+         ab4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704313124; x=1704917924;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=A2ZJGOikkMPN7pWE+w4oJN8NP+AUZ90HIGt1xo13QEI=;
+        b=Nrig10j6ZuBrf3m9T+IID7YcN/Ilp6JEIRgqQwpibfKrsWXyKCsTDXxot1T1KqK0C+
+         BBaxU76kG3jrefHpynnFh8qjPRaHvOdErBpj4otcA9H6rOHvEHv2LHOYwxiFCDqPYFFr
+         EK7FW7bJDC1775AKtZDOqkT1r4Cej1dLIyxRIb/M3Lwjno3vqaAVtBOpw1goFft1uu6C
+         FEhhHn/+0lZZjyf1HPqmYno6XfAdJ5PIAThGQAGi7/2NR9UZbwgoFG3MCVloHv6D3Flg
+         rGbHNbW8zMwuoEloQlIrHn/nn33HYd0ghrZad3trRaHrQVPR5ATfPKFqIg58clB0Qiij
+         TkKw==
+X-Gm-Message-State: AOJu0YxuZt7ROPwI+A6rXk6Ev9Q1fsnO1JHb4d61rjiukwj0DO/CdI9W
+	xnw8jPgBZboPke3VUvjl1Hw3BsLNiGpjYA==
+X-Google-Smtp-Source: AGHT+IEopSTbCf4B5V8fqwdakyTaEaltKwMaH7A9dLKVUUxSh9Idzu+RVi94wLwRocTrAJnl8BnPww==
+X-Received: by 2002:a17:907:7e8a:b0:a28:afb8:9eea with SMTP id qb10-20020a1709077e8a00b00a28afb89eeamr553258ejc.86.1704313124095;
+        Wed, 03 Jan 2024 12:18:44 -0800 (PST)
+Received: from [10.167.154.1] (178235179036.dynamic-4-waw-k-1-3-0.vectranet.pl. [178.235.179.36])
+        by smtp.gmail.com with ESMTPSA id wl1-20020a170907310100b00a236378a43fsm12962108ejb.62.2024.01.03.12.18.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Jan 2024 12:18:43 -0800 (PST)
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+Date: Wed, 03 Jan 2024 21:18:37 +0100
+Subject: [PATCH v2] regulator: qcom_smd: Keep one rpm handle for all vregs
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20240103175202.GT50406@nvidia.com>
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN1PEPF0000F0E2:EE_|SA1PR12MB5613:EE_
-X-MS-Office365-Filtering-Correlation-Id: 7b7a37cf-0c68-447d-36a5-08dc0c993177
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	1JeP9scPdpI5yaSzg1u9k4VBF1pBKy0IMLNohTEOQPy5Cu1W/hy6BTDAM7U8oCO3vSpOseatrrOxKpNa/mZxPMTgj7UqhUm5x/m87O/g7ys4VO0l4lolK9aKN44j4y40pAiFzzOwKKuArEPwMdR+I+oFtJDfPCf34txyGDfooH3oBec3sJK0jDCg+V+4OEk1y6gD0Br7vhvDGqW/jFSQObuxLZXsFqPcX1VvbUthIBgd7LT+HnuEaMD/sukf55wNBZ43Myjj4kogZOBYYu4mKhbrYJ+ikYpWQbg9bk4WKqhAUl4N/0PEYqolqffxoUM1YJdQF92oPDnaNjsM4ZN+IU0b5I4BZEkrzwlD5zUQE57m+Bt5ahdnj4JbVH7jRyMi7JD/3OnMqDOjbfN7uNECbnPbi0U4L1N0+5CpdBM+HaDji27q3flzbJlkMvKmxJ9DV7We6OlfQvFXDW2z9X9AYqJOdLWVpzjEfVK+htLldyRx/23+Hp1Qa51EsE6QsYDIA83riJTtvw6L1TaZ9qpWj+eqdgi+jpw7Fbgi/VmkXOIXszmbxkfskxA42tXsJ9jAgvMcaLtOLHO0scauSeciqZigFhRgezk0mZH9HHLxtHS1HlwfJadiAe0s3njqAF+4kc1Drkqt1tHqBog+H9/g/sgXC9ReMmfdozexbLo/fF4FnUb6E7Ry22IHesvtSE9lY9kMZEkVxxoj+WI1MzoaxciGAOgnxW8Vn3RDbvfeokeiuePdwMSYVwxkZ1uLbD55
-X-Forefront-Antispam-Report:
-	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(396003)(39860400002)(136003)(376002)(346002)(230922051799003)(82310400011)(186009)(64100799003)(451199024)(1800799012)(40470700004)(36840700001)(46966006)(55016003)(40480700001)(40460700003)(70206006)(70586007)(336012)(9686003)(86362001)(7636003)(356005)(82740400003)(33716001)(426003)(41300700001)(47076005)(26005)(83380400001)(2906002)(5660300002)(6862004)(7416002)(4326008)(6636002)(478600001)(8676002)(8936002)(316002)(36860700001)(54906003);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Jan 2024 20:18:47.7318
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7b7a37cf-0c68-447d-36a5-08dc0c993177
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	MN1PEPF0000F0E2.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB5613
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20231227-topic-rpm_vreg_cleanup-v2-1-04c79c4f9166@linaro.org>
+X-B4-Tracking: v=1; b=H4sIABzBlWUC/4WNQQqDMBAAvyI5N0VTbbWn/qOIrHHVhTQJGw0t4
+ t+b+oEeZ2CYTQRkwiDu2SYYIwVyNoE6ZULPYCeUNCQWKleXQqmbXJwnLdm/usg4ddog2NXLEfK
+ m0kOlatQixT0ElD2D1XPK7WpMkp5xpPdxe7aJZwqL488xj8XP/v3EQhayKZsB8vpagq4ehiywO
+ zueRLvv+xfm8N3c0gAAAA==
+To: Bjorn Andersson <andersson@kernel.org>, 
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+Cc: Marijn Suijten <marijn.suijten@somainline.org>, 
+ linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>
+X-Mailer: b4 0.12.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1704313122; l=3511;
+ i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
+ bh=oEtESB40r3b9IYd6/4bBqk9VXGazYB7UyTINdPp6n1U=;
+ b=f7TiSIjD0bq8Xe77nwYvDy0TQG9DRzTS6fI3U1ukcZ2PtidSH0NyXUwOD0jeWtZGScn725yOg
+ ztw/q+mYeCjBPXOb6WAX1KiLDgOrG7SFxOpTP/p9uYtBLeT+2Iovi7t
+X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
+ pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
 
-On Wed, Jan 03, 2024 at 01:52:02PM -0400, Jason Gunthorpe wrote:
-> On Wed, Jan 03, 2024 at 09:06:23AM -0800, Nicolin Chen wrote:
-> > On Wed, Jan 03, 2024 at 12:58:48PM -0400, Jason Gunthorpe wrote:
-> > > On Wed, Jan 03, 2024 at 08:48:46AM -0800, Nicolin Chen wrote:
-> > > > > You can pass the ctx to the invalidate op, it is already implied
-> > > > > because the passed iommu_domain is linked to a single iommufd ctx.
-> > > > 
-> > > > The device virtual id lookup API needs something similar, yet it
-> > > > likely needs a viommu pointer (or its id) instead? As the table
-> > > > is attached to a viommu while an ictx can have multiple viommus,
-> > > > right?
-> > > 
-> > > Yes, when we get to an API for that it will have to be some op
-> > > 'invalidate_viommu(..)' and it can get the necessary pointers.
-> > 
-> > OK! I will try that first.
-> > 
-> > > The viommu object will have to be some driver object like the
-> > > iommu_domain.
-> > 
-> > I drafted something like this, linking it to struct iommu_device:
-> > 
-> > +struct iommufd_viommu {
-> > +       struct iommufd_object obj;
-> > +       struct iommufd_ctx *ictx;
-> > +       struct iommu_device *iommu_dev;
-> > +       struct iommufd_hwpt_paging *hwpt;
-> > +       /* array of struct iommufd_device, indexed by device virtual id */
-> > +       struct xarray device_ids;
-> > +};
-> 
-> The driver would have to create it and there would be some driver
-> specific enclosing struct to go with it
-> 
-> Perhaps device_ids goes in the driver specific struct, I don't know.
+For no apparent reason (as there's just one RPM per SoC), all vregs
+currently store a copy of a pointer to smd_rpm. Introduce a single,
+global one to save up on space in each definition.
 
-+struct iommufd_viommu {
-+	struct iommufd_object obj;
-+	struct iommufd_ctx *ictx;
-+	struct iommu_device *iommu_dev;
-+	struct iommufd_hwpt_paging *hwpt;	/* maybe unneeded */
+bloat-o-meter reports:
+
+Total: Before=43944, After=43924, chg -0.05%
+
+plus sizeof(ptr) on every dynamically allocated regulator :)
+
+Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+---
+Changes in v2:
+- Remove unused function argument from rpm_regulator_init_vreg kerneldoc
+- Do NOT add a mutex around the rpm assignment, talked to Dmitry offline
+  and we concluded it makes no sense
+- Link to v1: https://lore.kernel.org/r/20231227-topic-rpm_vreg_cleanup-v1-1-949da0864ac5@linaro.org
+---
+ drivers/regulator/qcom_smd-regulator.c | 19 +++++++------------
+ 1 file changed, 7 insertions(+), 12 deletions(-)
+
+diff --git a/drivers/regulator/qcom_smd-regulator.c b/drivers/regulator/qcom_smd-regulator.c
+index d1be9568025e..5461c03e2aac 100644
+--- a/drivers/regulator/qcom_smd-regulator.c
++++ b/drivers/regulator/qcom_smd-regulator.c
+@@ -11,11 +11,10 @@
+ #include <linux/regulator/of_regulator.h>
+ #include <linux/soc/qcom/smd-rpm.h>
+ 
++struct qcom_smd_rpm *smd_vreg_rpm;
 +
-+	int vmid;
-+
-+	union iommu_driver_user_data {
-+		struct iommu_driver_user_vtd;
-+		struct iommu_driver_user_arm_smmuv3;
-+		struct iommu_driver_user_amd_viommu;
-+	};
-+};
+ struct qcom_rpm_reg {
+ 	struct device *dev;
+-
+-	struct qcom_smd_rpm *rpm;
+-
+ 	u32 type;
+ 	u32 id;
+ 
+@@ -70,7 +69,7 @@ static int rpm_reg_write_active(struct qcom_rpm_reg *vreg)
+ 	if (!reqlen)
+ 		return 0;
+ 
+-	ret = qcom_rpm_smd_write(vreg->rpm, QCOM_SMD_RPM_ACTIVE_STATE,
++	ret = qcom_rpm_smd_write(smd_vreg_rpm, QCOM_SMD_RPM_ACTIVE_STATE,
+ 				 vreg->type, vreg->id,
+ 				 req, sizeof(req[0]) * reqlen);
+ 	if (!ret) {
+@@ -1384,14 +1383,13 @@ MODULE_DEVICE_TABLE(of, rpm_of_match);
+  * @dev:		Pointer to the top level qcom_smd-regulator PMIC device
+  * @node:		Pointer to the individual qcom_smd-regulator resource
+  *			device node
+- * @rpm:		Pointer to the rpm bus node
+  * @pmic_rpm_data:	Pointer to a null-terminated array of qcom_smd-regulator
+  *			resources defined for the top level PMIC device
+  *
+  * Return: 0 on success, errno on failure
+  */
+ static int rpm_regulator_init_vreg(struct qcom_rpm_reg *vreg, struct device *dev,
+-				   struct device_node *node, struct qcom_smd_rpm *rpm,
++				   struct device_node *node,
+ 				   const struct rpm_regulator_data *pmic_rpm_data)
+ {
+ 	struct regulator_config config = {};
+@@ -1409,7 +1407,6 @@ static int rpm_regulator_init_vreg(struct qcom_rpm_reg *vreg, struct device *dev
+ 	}
+ 
+ 	vreg->dev	= dev;
+-	vreg->rpm	= rpm;
+ 	vreg->type	= rpm_data->type;
+ 	vreg->id	= rpm_data->id;
+ 
+@@ -1440,11 +1437,10 @@ static int rpm_reg_probe(struct platform_device *pdev)
+ 	const struct rpm_regulator_data *vreg_data;
+ 	struct device_node *node;
+ 	struct qcom_rpm_reg *vreg;
+-	struct qcom_smd_rpm *rpm;
+ 	int ret;
+ 
+-	rpm = dev_get_drvdata(pdev->dev.parent);
+-	if (!rpm) {
++	smd_vreg_rpm = dev_get_drvdata(pdev->dev.parent);
++	if (!smd_vreg_rpm) {
+ 		dev_err(&pdev->dev, "Unable to retrieve handle to rpm\n");
+ 		return -ENODEV;
+ 	}
+@@ -1460,8 +1456,7 @@ static int rpm_reg_probe(struct platform_device *pdev)
+ 			return -ENOMEM;
+ 		}
+ 
+-		ret = rpm_regulator_init_vreg(vreg, dev, node, rpm, vreg_data);
+-
++		ret = rpm_regulator_init_vreg(vreg, dev, node, vreg_data);
+ 		if (ret < 0) {
+ 			of_node_put(node);
+ 			return ret;
 
-Then iommu_ops would need something like:
-	iommu_user_alloc/free(struct iommu_device *iommu_dev,
-			      union *iommu_driver_user_data, int *vmid);
-	iommu_user_set/unset_dev_id(union iommu_driver_user_data,
-				    struct device* dev. u32/u64 id);
-	iommu_user_invalidate(union iommu_driver_user_data *iommu,
-			      struct iommu_user_data_array *array);
+---
+base-commit: 0fef202ac2f8e6d9ad21aead648278f1226b9053
+change-id: 20231227-topic-rpm_vreg_cleanup-fa095cd528ec
 
-Comments and ideas on better naming convention?
+Best regards,
+-- 
+Konrad Dybcio <konrad.dybcio@linaro.org>
 
-> Not sure it should have hwpt at all, probably vmid should come from
-> the driver specific struct in some driver specific way
-
-The idea having a hwpt pointer is to share the paging hwpt among
-the viommu objects. I don't think it "shouldn't have", yet likely
-we can avoid it depending on whether it will have some use or not
-in the context.
-
-Nicolin
 
