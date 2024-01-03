@@ -1,384 +1,204 @@
-Return-Path: <linux-kernel+bounces-15109-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15110-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 492DE822755
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 04:01:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A3D8E822757
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 04:05:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0ECFE1C22D29
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 03:01:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DCFD01F22BFE
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 03:05:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3C1F4A33;
-	Wed,  3 Jan 2024 03:01:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDDC917981;
+	Wed,  3 Jan 2024 03:05:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="aHYirBzc"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YQwT/jk0"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
+Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65C5C17980
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 03:01:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-50e70d8273fso1324e87.0
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Jan 2024 19:01:07 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12F0E171C8;
+	Wed,  3 Jan 2024 03:05:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-6d9b51093a0so5715487b3a.0;
+        Tue, 02 Jan 2024 19:05:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1704250865; x=1704855665; darn=vger.kernel.org;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wEqAS6lUOK244Og0QhQ14SjtB7KhQXvIvbYkplos8Zw=;
-        b=aHYirBzcvnLrtWBFeX4Fv7MTP+tuQvvzHudbBsZ3RyBhHSbQXY1v50t/5/gJ9aNapP
-         AjCCQKkqAU/OnwKv5TGl/ansfR+n9eO753guKBiLDxDCwX8rZ7a0izIg+pW5B0SFbM9s
-         /OSYRzmja+/EEOvi26KRJl6YKm8NNbWy4CsluAALsYniKKBwIWcAJODqPNpVWSQsYSbe
-         Y/VTwZRtstGhMtcsGsmdfawMec5LSv8d4iaxyA73Nibl31C2R62HTBcCGvfw8Su7U9rY
-         BxLtCDLJ4vy0sttJT4SWUamawrZ19e2lQyNHkH5uaeSXJ3dN+CdDBzS4qRLwctpU+w3x
-         2wkg==
+        d=gmail.com; s=20230601; t=1704251135; x=1704855935; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=lTTGMdmW5tqRSqYab/aSD3OkEyygJdSXdIDYPelT2uo=;
+        b=YQwT/jk04DaSZ45bWr6Rqu3byEaVqSWz9W/3KYqkYRGZfUQESawhLR5qx3ZqZOVNdS
+         t+PzJH6nuxJvCqfd4Jp+yUbuqiSaGW5tbWScpZAL4jwpUtuOVbcpJxvYHQn0ehZt0isn
+         qYzwv1x2z9CJix/vzhVCm15cFsylKdelAAss8QENAvcSq5qa75AvgfbCyizjJQgNA6pr
+         EefMKxPwcsq3zKxnfy7XPy7hVD4Qfu4IuKHVIZY0b9Z2LfxgGvUV5BhKnX3ObZGHixJ6
+         e5BVG6RdITy2Lg0bdoCFjbH2jusPN1DUG4Kw+cJ3nBjOUYUgl1645iKVHeTzCP2n/x/B
+         gRoA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704250865; x=1704855665;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wEqAS6lUOK244Og0QhQ14SjtB7KhQXvIvbYkplos8Zw=;
-        b=XQK/JqnW3hEPw45k7oi1TMnmlmPTJHybn5vBfsfx5oTFpCCPWlUJZbKBLk6xmx2h1m
-         oNo8LHA0b6zZEoRK+xAxycdApxJnoyzsPXhNqW5hidZkG3vcEQoJHNdGy+lgq4Cx2GSy
-         yffobTnIYXXySJgBMW0WMNGK7MCFR1ltK94XR+GHeWroufwjcGGm8i5iwo74KyRub1QJ
-         ebssKhymW1/Yi/RfyjTdeUwN8jrbZ0WWj4agCRUTdl3+LsxkUxzYJs8PNL5mnoVNddGA
-         G2kvU9fdkdVYw6nlu+rGUEV+fGjwpqhsT2053m1mnEGPK7UiV926B6MvQMTeeFYNGBj4
-         tUOA==
-X-Gm-Message-State: AOJu0YwZAPmRb1oNWbrawMGzL8oqb1x3TsUEKfN+dCMy3gPQajQGuAtc
-	eAJrfz2OF9ZHwHXYT//M8IMXxa1r+vyNhsKkpxh0J02clymK
-X-Google-Smtp-Source: AGHT+IEJZ1VMcut2KcGDICtAiq2m/b5KuDKPjbOqlCDVqVrIpmNBGvInCj8UOT4HhcLmWIAV+X3NqHezcvrzzkNXcJo=
-X-Received: by 2002:ac2:4e65:0:b0:50e:a747:917 with SMTP id
- y5-20020ac24e65000000b0050ea7470917mr13180lfs.5.1704250865081; Tue, 02 Jan
- 2024 19:01:05 -0800 (PST)
+        d=1e100.net; s=20230601; t=1704251135; x=1704855935;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=lTTGMdmW5tqRSqYab/aSD3OkEyygJdSXdIDYPelT2uo=;
+        b=hyTcRxzfsufIt7x8F9ssbjM/o4x6DKIkf0WoryWGyUFe0r4BnbFw+mVXkwGWgKJ9GL
+         vEk4yrNsv9S7Svj8B3x+c3VjX//j6fTV0VJtb8GKGvF86WeMZ0MCjAbtws9SUM3yyJ8x
+         sQaOoBDs3yy6faZyYntvkuFPlfslvpoUwRqC4+XFyAXMrU1DYcby01vbIvlfs27TUPm2
+         C0LfMp8SoPT3S/2G4ok1UxDWwUTspCjprXdgt+Ilf/mKQlOprA77uFajPmxFcOqP7IZU
+         a/PNZTd5Ns1TX0mah29EYnFzbPpC0zo6ToNGybofd+IYH2HjtUrq9SamYSTRvLiIiIB3
+         3s7Q==
+X-Gm-Message-State: AOJu0YzSK2u6nh74G3+wFFP9gRTIj1cAX6pyNe8m359PjW3JTx8mL3Zb
+	IFb5axKDcENSbnWY+3KXNlbfkhwaujIAM8F3/l4=
+X-Google-Smtp-Source: AGHT+IGoLzabXrh/YjSuINiNlgCjWf5zlqc4lZbhNqKIJKZdtjTN4WdrDMN7zuaExKLWvrWq+EUAIA88xg9DmxSqBEE=
+X-Received: by 2002:a05:6a00:1e02:b0:6d9:9fba:5bce with SMTP id
+ gx2-20020a056a001e0200b006d99fba5bcemr15768199pfb.9.1704251135213; Tue, 02
+ Jan 2024 19:05:35 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231207014655.1252484-1-irogers@google.com>
-In-Reply-To: <20231207014655.1252484-1-irogers@google.com>
-From: Ian Rogers <irogers@google.com>
-Date: Tue, 2 Jan 2024 19:00:53 -0800
-Message-ID: <CAP-5=fWdAouBb7us44HOdd+ZfBj5fLFTuLCokbG8w3jVuQgTxw@mail.gmail.com>
-Subject: Re: [PATCH v1] perf env: Avoid recursively taking env->bpf_progs.lock
-To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Namhyung Kim <namhyung@kernel.org>, Ian Rogers <irogers@google.com>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Song Liu <song@kernel.org>, 
-	Ming Wang <wangming01@loongson.cn>, Ravi Bangoria <ravi.bangoria@amd.com>, 
-	Huacai Chen <chenhuacai@kernel.org>, Kan Liang <kan.liang@linux.intel.com>, 
-	K Prateek Nayak <kprateek.nayak@amd.com>, linux-perf-users@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+From: xingwei lee <xrivendell7@gmail.com>
+Date: Wed, 3 Jan 2024 11:05:24 +0800
+Message-ID: <CABOYnLxaHBEaSRaEU+kDsHF8a=9AokO1ZUEVtpeT9ddL8giw3A@mail.gmail.com>
+Subject: Re: [PATCH] crypto: af_alg/hash: Fix uninit-value access in af_alg_free_sg()
+To: syoshida@redhat.com
+Cc: davem@davemloft.net, dhowells@redhat.com, herbert@gondor.apana.org.au, 
+	linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Dec 6, 2023 at 5:46=E2=80=AFPM Ian Rogers <irogers@google.com> wrot=
-e:
->
-> Add variants of perf_env__insert_bpf_prog_info, perf_env__insert_btf
-> and perf_env__find_btf prefixed with __ to indicate the
-> env->bpf_progs.lock is assumed held. Call these variants when the lock
-> is held to avoid recursively taking it and potentially having a thread
-> deadlock with itself.
->
-> Signed-off-by: Ian Rogers <irogers@google.com>
+Hi,Shigeru and Herbert. Happy New Year anyway.
+I also found this bug and tried to reproduce it.
+My own syzkaller crashes titled "double-free in af_alg_free_sg=E2=80=9D or
+=E2=80=9CKASAN: use-after-free in af_alg_free_sg=E2=80=9D lead me to consid=
+er it maybe
+a security-related problem.
 
-Ping.
+I reproduced it with repro.c and repro.txt and also bisection to this
+commit: https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git/comm=
+it/crypto/algif_hash.c?id=3Db6d972f6898308fbe7e693bf8d44ebfdb1cd2dc4
 
-Thanks,
-Ian
+=3D* repro.c =3D*
+// autogenerated by syzkaller (https://github.com/google/syzkaller)
 
-> ---
-> Previously this patch was part of a larger set:
-> https://lore.kernel.org/lkml/20231127220902.1315692-51-irogers@google.com=
-/
-> ---
->  tools/perf/util/bpf-event.c |  8 +++---
->  tools/perf/util/bpf-event.h | 12 ++++-----
->  tools/perf/util/env.c       | 53 +++++++++++++++++++++++--------------
->  tools/perf/util/env.h       |  4 +++
->  tools/perf/util/header.c    |  8 +++---
->  5 files changed, 51 insertions(+), 34 deletions(-)
->
-> diff --git a/tools/perf/util/bpf-event.c b/tools/perf/util/bpf-event.c
-> index 830711cae30d..3573e0b7ef3e 100644
-> --- a/tools/perf/util/bpf-event.c
-> +++ b/tools/perf/util/bpf-event.c
-> @@ -545,9 +545,9 @@ int evlist__add_bpf_sb_event(struct evlist *evlist, s=
-truct perf_env *env)
->         return evlist__add_sb_event(evlist, &attr, bpf_event__sb_cb, env)=
-;
->  }
->
-> -void bpf_event__print_bpf_prog_info(struct bpf_prog_info *info,
-> -                                   struct perf_env *env,
-> -                                   FILE *fp)
-> +void __bpf_event__print_bpf_prog_info(struct bpf_prog_info *info,
-> +                                     struct perf_env *env,
-> +                                     FILE *fp)
->  {
->         __u32 *prog_lens =3D (__u32 *)(uintptr_t)(info->jited_func_lens);
->         __u64 *prog_addrs =3D (__u64 *)(uintptr_t)(info->jited_ksyms);
-> @@ -563,7 +563,7 @@ void bpf_event__print_bpf_prog_info(struct bpf_prog_i=
-nfo *info,
->         if (info->btf_id) {
->                 struct btf_node *node;
->
-> -               node =3D perf_env__find_btf(env, info->btf_id);
-> +               node =3D __perf_env__find_btf(env, info->btf_id);
->                 if (node)
->                         btf =3D btf__new((__u8 *)(node->data),
->                                        node->data_size);
-> diff --git a/tools/perf/util/bpf-event.h b/tools/perf/util/bpf-event.h
-> index 1bcbd4fb6c66..e2f0420905f5 100644
-> --- a/tools/perf/util/bpf-event.h
-> +++ b/tools/perf/util/bpf-event.h
-> @@ -33,9 +33,9 @@ struct btf_node {
->  int machine__process_bpf(struct machine *machine, union perf_event *even=
-t,
->                          struct perf_sample *sample);
->  int evlist__add_bpf_sb_event(struct evlist *evlist, struct perf_env *env=
-);
-> -void bpf_event__print_bpf_prog_info(struct bpf_prog_info *info,
-> -                                   struct perf_env *env,
-> -                                   FILE *fp);
-> +void __bpf_event__print_bpf_prog_info(struct bpf_prog_info *info,
-> +                                     struct perf_env *env,
-> +                                     FILE *fp);
->  #else
->  static inline int machine__process_bpf(struct machine *machine __maybe_u=
-nused,
->                                        union perf_event *event __maybe_un=
-used,
-> @@ -50,9 +50,9 @@ static inline int evlist__add_bpf_sb_event(struct evlis=
-t *evlist __maybe_unused,
->         return 0;
->  }
->
-> -static inline void bpf_event__print_bpf_prog_info(struct bpf_prog_info *=
-info __maybe_unused,
-> -                                                 struct perf_env *env __=
-maybe_unused,
-> -                                                 FILE *fp __maybe_unused=
-)
-> +static inline void __bpf_event__print_bpf_prog_info(struct bpf_prog_info=
- *info __maybe_unused,
-> +                                                   struct perf_env *env =
-__maybe_unused,
-> +                                                   FILE *fp __maybe_unus=
-ed)
->  {
->
->  }
-> diff --git a/tools/perf/util/env.c b/tools/perf/util/env.c
-> index c68b7a004f29..cfdacbf29456 100644
-> --- a/tools/perf/util/env.c
-> +++ b/tools/perf/util/env.c
-> @@ -22,15 +22,20 @@ struct perf_env perf_env;
->  #include "bpf-utils.h"
->  #include <bpf/libbpf.h>
->
-> -void perf_env__insert_bpf_prog_info(struct perf_env *env,
-> -                                   struct bpf_prog_info_node *info_node)
-> +void perf_env__insert_bpf_prog_info(struct perf_env *env, struct bpf_pro=
-g_info_node *info_node)
-> +{
-> +       down_write(&env->bpf_progs.lock);
-> +       __perf_env__insert_bpf_prog_info(env, info_node);
-> +       up_write(&env->bpf_progs.lock);
-> +}
-> +
-> +void __perf_env__insert_bpf_prog_info(struct perf_env *env, struct bpf_p=
-rog_info_node *info_node)
->  {
->         __u32 prog_id =3D info_node->info_linear->info.id;
->         struct bpf_prog_info_node *node;
->         struct rb_node *parent =3D NULL;
->         struct rb_node **p;
->
-> -       down_write(&env->bpf_progs.lock);
->         p =3D &env->bpf_progs.infos.rb_node;
->
->         while (*p !=3D NULL) {
-> @@ -42,15 +47,13 @@ void perf_env__insert_bpf_prog_info(struct perf_env *=
-env,
->                         p =3D &(*p)->rb_right;
->                 } else {
->                         pr_debug("duplicated bpf prog info %u\n", prog_id=
-);
-> -                       goto out;
-> +                       return;
->                 }
->         }
->
->         rb_link_node(&info_node->rb_node, parent, p);
->         rb_insert_color(&info_node->rb_node, &env->bpf_progs.infos);
->         env->bpf_progs.infos_cnt++;
-> -out:
-> -       up_write(&env->bpf_progs.lock);
->  }
->
->  struct bpf_prog_info_node *perf_env__find_bpf_prog_info(struct perf_env =
-*env,
-> @@ -79,14 +82,22 @@ struct bpf_prog_info_node *perf_env__find_bpf_prog_in=
-fo(struct perf_env *env,
->  }
->
->  bool perf_env__insert_btf(struct perf_env *env, struct btf_node *btf_nod=
-e)
-> +{
-> +       bool ret;
-> +
-> +       down_write(&env->bpf_progs.lock);
-> +       ret =3D __perf_env__insert_btf(env, btf_node);
-> +       up_write(&env->bpf_progs.lock);
-> +       return ret;
-> +}
-> +
-> +bool __perf_env__insert_btf(struct perf_env *env, struct btf_node *btf_n=
-ode)
->  {
->         struct rb_node *parent =3D NULL;
->         __u32 btf_id =3D btf_node->id;
->         struct btf_node *node;
->         struct rb_node **p;
-> -       bool ret =3D true;
->
-> -       down_write(&env->bpf_progs.lock);
->         p =3D &env->bpf_progs.btfs.rb_node;
->
->         while (*p !=3D NULL) {
-> @@ -98,25 +109,31 @@ bool perf_env__insert_btf(struct perf_env *env, stru=
-ct btf_node *btf_node)
->                         p =3D &(*p)->rb_right;
->                 } else {
->                         pr_debug("duplicated btf %u\n", btf_id);
-> -                       ret =3D false;
-> -                       goto out;
-> +                       return false;
->                 }
->         }
->
->         rb_link_node(&btf_node->rb_node, parent, p);
->         rb_insert_color(&btf_node->rb_node, &env->bpf_progs.btfs);
->         env->bpf_progs.btfs_cnt++;
-> -out:
-> -       up_write(&env->bpf_progs.lock);
-> -       return ret;
-> +       return true;
->  }
->
->  struct btf_node *perf_env__find_btf(struct perf_env *env, __u32 btf_id)
-> +{
-> +       struct btf_node *res;
-> +
-> +       down_read(&env->bpf_progs.lock);
-> +       res =3D __perf_env__find_btf(env, btf_id);
-> +       up_read(&env->bpf_progs.lock);
-> +       return res;
-> +}
-> +
-> +struct btf_node *__perf_env__find_btf(struct perf_env *env, __u32 btf_id=
-)
->  {
->         struct btf_node *node =3D NULL;
->         struct rb_node *n;
->
-> -       down_read(&env->bpf_progs.lock);
->         n =3D env->bpf_progs.btfs.rb_node;
->
->         while (n) {
-> @@ -126,13 +143,9 @@ struct btf_node *perf_env__find_btf(struct perf_env =
-*env, __u32 btf_id)
->                 else if (btf_id > node->id)
->                         n =3D n->rb_right;
->                 else
-> -                       goto out;
-> +                       return node;
->         }
-> -       node =3D NULL;
-> -
-> -out:
-> -       up_read(&env->bpf_progs.lock);
-> -       return node;
-> +       return NULL;
->  }
->
->  /* purge data in bpf_progs.infos tree */
-> diff --git a/tools/perf/util/env.h b/tools/perf/util/env.h
-> index bf7e3c4c211f..7c527e65c186 100644
-> --- a/tools/perf/util/env.h
-> +++ b/tools/perf/util/env.h
-> @@ -175,12 +175,16 @@ const char *perf_env__raw_arch(struct perf_env *env=
-);
->  int perf_env__nr_cpus_avail(struct perf_env *env);
->
->  void perf_env__init(struct perf_env *env);
-> +void __perf_env__insert_bpf_prog_info(struct perf_env *env,
-> +                                     struct bpf_prog_info_node *info_nod=
-e);
->  void perf_env__insert_bpf_prog_info(struct perf_env *env,
->                                     struct bpf_prog_info_node *info_node)=
-;
->  struct bpf_prog_info_node *perf_env__find_bpf_prog_info(struct perf_env =
-*env,
->                                                         __u32 prog_id);
->  bool perf_env__insert_btf(struct perf_env *env, struct btf_node *btf_nod=
-e);
-> +bool __perf_env__insert_btf(struct perf_env *env, struct btf_node *btf_n=
-ode);
->  struct btf_node *perf_env__find_btf(struct perf_env *env, __u32 btf_id);
-> +struct btf_node *__perf_env__find_btf(struct perf_env *env, __u32 btf_id=
-);
->
->  int perf_env__numa_node(struct perf_env *env, struct perf_cpu cpu);
->  char *perf_env__find_pmu_cap(struct perf_env *env, const char *pmu_name,
-> diff --git a/tools/perf/util/header.c b/tools/perf/util/header.c
-> index 08cc2febabde..02bf9d8b5f74 100644
-> --- a/tools/perf/util/header.c
-> +++ b/tools/perf/util/header.c
-> @@ -1849,8 +1849,8 @@ static void print_bpf_prog_info(struct feat_fd *ff,=
- FILE *fp)
->                 node =3D rb_entry(next, struct bpf_prog_info_node, rb_nod=
-e);
->                 next =3D rb_next(&node->rb_node);
->
-> -               bpf_event__print_bpf_prog_info(&node->info_linear->info,
-> -                                              env, fp);
-> +               __bpf_event__print_bpf_prog_info(&node->info_linear->info=
-,
-> +                                                env, fp);
->         }
->
->         up_read(&env->bpf_progs.lock);
-> @@ -3188,7 +3188,7 @@ static int process_bpf_prog_info(struct feat_fd *ff=
-, void *data __maybe_unused)
->                 /* after reading from file, translate offset to address *=
-/
->                 bpil_offs_to_addr(info_linear);
->                 info_node->info_linear =3D info_linear;
-> -               perf_env__insert_bpf_prog_info(env, info_node);
-> +               __perf_env__insert_bpf_prog_info(env, info_node);
->         }
->
->         up_write(&env->bpf_progs.lock);
-> @@ -3235,7 +3235,7 @@ static int process_bpf_btf(struct feat_fd *ff, void=
- *data __maybe_unused)
->                 if (__do_read(ff, node->data, data_size))
->                         goto out;
->
-> -               perf_env__insert_btf(env, node);
-> +               __perf_env__insert_btf(env, node);
->                 node =3D NULL;
->         }
->
-> --
-> 2.43.0.rc2.451.g8631bc7472-goog
->
+#define _GNU_SOURCE
+
+#include <endian.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/syscall.h>
+#include <sys/types.h>
+#include <unistd.h>
+
+uint64_t r[3] =3D {0xffffffffffffffff, 0xffffffffffffffff, 0xffffffffffffff=
+ff};
+
+int main(void) {
+ syscall(__NR_mmap, /*addr=3D*/0x1ffff000ul, /*len=3D*/0x1000ul, /*prot=3D*=
+/0ul,
+         /*flags=3D*/0x32ul, /*fd=3D*/-1, /*offset=3D*/0ul);
+ syscall(__NR_mmap, /*addr=3D*/0x20000000ul, /*len=3D*/0x1000000ul, /*prot=
+=3D*/7ul,
+         /*flags=3D*/0x32ul, /*fd=3D*/-1, /*offset=3D*/0ul);
+ syscall(__NR_mmap, /*addr=3D*/0x21000000ul, /*len=3D*/0x1000ul, /*prot=3D*=
+/0ul,
+         /*flags=3D*/0x32ul, /*fd=3D*/-1, /*offset=3D*/0ul);
+ intptr_t res =3D 0;
+ res =3D syscall(__NR_socket, /*domain=3D*/0x26ul, /*type=3D*/5ul, /*proto=
+=3D*/0);
+ if (res !=3D -1) r[0] =3D res;
+ *(uint16_t*)0x20000040 =3D 0x26;
+ memcpy((void*)0x20000042, "hash\000\000\000\000\000\000\000\000\000\000", =
+14);
+ *(uint32_t*)0x20000050 =3D 0;
+ *(uint32_t*)0x20000054 =3D 0;
+ memcpy((void*)0x20000058,
+        "poly1305\000\000\000\000\000\000\000\000\000\000\000\000\000\000\0=
+00"
+        "\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\0=
+00"
+        "\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\0=
+00"
+        "\000\000\000\000\000\000\000",
+        64);
+ syscall(__NR_bind, /*fd=3D*/r[0], /*addr=3D*/0x20000040ul, /*addrlen=3D*/0=
+x58ul);
+ res =3D syscall(__NR_accept4, /*fd=3D*/r[0], /*peer=3D*/0ul, /*peerlen=3D*=
+/0ul,
+               /*flags=3D*/0ul);
+ if (res !=3D -1) r[1] =3D res;
+ *(uint64_t*)0x20000d80 =3D 0;
+ *(uint32_t*)0x20000d88 =3D 0;
+ *(uint64_t*)0x20000d90 =3D 0x20000d40;
+ *(uint64_t*)0x20000d40 =3D 0x20000d00;
+ *(uint16_t*)0x20000d00 =3D 0;
+ *(uint64_t*)0x20000d48 =3D 0x14;
+ *(uint64_t*)0x20000d98 =3D 1;
+ *(uint64_t*)0x20000da0 =3D 0;
+ *(uint64_t*)0x20000da8 =3D 0;
+ *(uint32_t*)0x20000db0 =3D 0;
+ syscall(__NR_sendmsg, /*fd=3D*/r[1], /*msg=3D*/0x20000d80ul, /*f=3D*/0x400=
+c000ul);
+ res =3D syscall(__NR_accept4, /*fd=3D*/r[1], /*peer=3D*/0ul, /*peerlen=3D*=
+/0ul,
+               /*flags=3D*/0ul);
+ if (res !=3D -1) r[2] =3D res;
+ *(uint64_t*)0x20000840 =3D 0;
+ *(uint32_t*)0x20000848 =3D 0;
+ *(uint64_t*)0x20000850 =3D 0;
+ *(uint64_t*)0x20000858 =3D 0;
+ *(uint64_t*)0x20000860 =3D 0;
+ *(uint64_t*)0x20000868 =3D 0;
+ *(uint32_t*)0x20000870 =3D 0x4000;
+ syscall(__NR_sendmsg, /*fd=3D*/r[2], /*msg=3D*/0x20000840ul, /*f=3D*/0x400=
+1ul);
+ return 0;
+}
+
+=3D* repro.txt =3D*
+r0 =3D socket$alg(0x26, 0x5, 0x0)
+bind$alg(r0, &(0x7f0000000040)=3D{0x26, 'hash\x00', 0x0, 0x0,
+'poly1305\x00'}, 0x58)
+r1 =3D accept4(r0, 0x0, 0x0, 0x0)
+sendmsg$BATADV_CMD_SET_HARDIF(r1, &(0x7f0000000d80)=3D{0x0, 0x0,
+&(0x7f0000000d40)=3D{&(0x7f0000000d00)=3DANY=3D[@ANYBLOB, @ANYRES16=3D0x0,
+@ANYBLOB], 0x14}}, 0x400c000)
+r2 =3D accept4(r1, 0x0, 0x0, 0x0)
+sendmsg$alg(r2, &(0x7f0000000840)=3D{0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+0x4000}, 0x4001)
+
+After analysing the uninitialized of ctx->sgl, it may cause (without
+KMSAN in linux kernel)
+
+void af_alg_free_sg(struct af_alg_sgl *sgl)
+{
+  int i;
+
+  if (sgl->sgt.sgl) {
+    if (sgl->need_unpin)
+      for (i =3D 0; i < sgl->sgt.nents; i++)
+        unpin_user_page(sg_page(&sgl->sgt.sgl[i]));
+    if (sgl->sgt.sgl !=3D sgl->sgl)
+      kvfree(sgl->sgt.sgl);
+    sgl->sgt.sgl =3D NULL;
+  }
+}
+
+1. If sgl->sgt.sgl is 0x0, the poc triggers nothing
+2. If sgl->sgt.sgl is not null but like 0xbbbbbbbbbbbbbbbb,
+unpin_user_page will crash like =E2=80=9Cwild-memory access=E2=80=9D.
+3. If sgl->sgt.sgl happens to be a pointer whether it is being used or
+released, sgl->sgt.nents<0, kvfree can definitely cause uaf or double
+free and maybe lead to control flow hijacking.
+
+The incorrect logic of unlock_free label can really cause security issues.
+
+I hope the reproducer and analysis helps.
+
+Best regards.
+xingwei Lee
 
