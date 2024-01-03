@@ -1,113 +1,119 @@
-Return-Path: <linux-kernel+bounces-15342-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15358-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A39BF822A68
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 10:47:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D0839822A9B
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 10:53:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4273C1F23DCE
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 09:47:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6C7521F23FE9
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 09:53:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93DFC1862A;
-	Wed,  3 Jan 2024 09:46:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2C5318647;
+	Wed,  3 Jan 2024 09:53:00 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from proxmox-new.maurer-it.com (proxmox-new.maurer-it.com [94.136.29.106])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25A8818625;
-	Wed,  3 Jan 2024 09:46:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-5edfcba97e3so56103087b3.2;
-        Wed, 03 Jan 2024 01:46:49 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704275209; x=1704880009;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ihhhQFZaZR4+J27tLwPbBpD9wwAmji8BYJHqOMirIeI=;
-        b=EmJcfOGM+457bmt2vTw01wmY2hP7VeI+xzp6zHz2ntlho2l4ozsxsDY8zyyWBxxe+g
-         2A3WFTot8PzMx5ZloJ1l8rJP5Dp/6/Hleh5xLXI8EgepCBvtej/3l8tEKWc+rGRfcSNS
-         +dfLHkWnKYKgnkBFjwaAYjon5nF6DuLm6QRL3RcGGTmnI0R6YTh0BMO70EftoqZ7tPvq
-         hR4bh982ju9+QVxI2nb+/PdxcfW+zRmC9lkCDwik7KUcaTSGVuPQsAkKqEKOdYZBQA9y
-         rHIoJSaFrqJ+CHZgYpFGH40lfXwyxofHUmo9Mdw+jZP0Qu0b6KuNCwvikGkGb05NnN8T
-         IrWg==
-X-Gm-Message-State: AOJu0YyIRNTKJwfFZfAs0DwifgtO8BrIzBck9V6NC/zrN933dUnUUyM5
-	pwJbh2Iqg3RlS/vOeaYXrHsqdsANJuUjXw==
-X-Google-Smtp-Source: AGHT+IG5DoeCebu1mnPf6/+snrmyaMw4m2cgTIOf3MnEPMcsooUQPv+W+XJYZiEPdbWHmdx5xWXBiw==
-X-Received: by 2002:a81:9156:0:b0:5e8:7687:77c9 with SMTP id i83-20020a819156000000b005e8768777c9mr11218265ywg.1.1704275208963;
-        Wed, 03 Jan 2024 01:46:48 -0800 (PST)
-Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com. [209.85.128.181])
-        by smtp.gmail.com with ESMTPSA id r38-20020a814426000000b005f134299392sm3749487ywa.52.2024.01.03.01.46.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Jan 2024 01:46:47 -0800 (PST)
-Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-5edfcba97e3so56102857b3.2;
-        Wed, 03 Jan 2024 01:46:47 -0800 (PST)
-X-Received: by 2002:a81:80c1:0:b0:5e8:6aba:9d18 with SMTP id
- q184-20020a8180c1000000b005e86aba9d18mr14346275ywf.35.1704275207623; Wed, 03
- Jan 2024 01:46:47 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A1BA1862A;
+	Wed,  3 Jan 2024 09:52:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=proxmox.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proxmox.com
+Received: from proxmox-new.maurer-it.com (localhost.localdomain [127.0.0.1])
+	by proxmox-new.maurer-it.com (Proxmox) with ESMTP id 15E4745133;
+	Wed,  3 Jan 2024 10:46:55 +0100 (CET)
+Message-ID: <45a1df73-c6c1-4d36-b84d-93bb4ec9f861@proxmox.com>
+Date: Wed, 3 Jan 2024 10:46:47 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240103015240.1065284-1-pvorel@suse.cz>
-In-Reply-To: <20240103015240.1065284-1-pvorel@suse.cz>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Wed, 3 Jan 2024 10:46:36 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdXGwyS-CL0vLdUP4Z4YEYhmcmDyC3YdGCnS=jFkqASqvw@mail.gmail.com>
-Message-ID: <CAMuHMdXGwyS-CL0vLdUP4Z4YEYhmcmDyC3YdGCnS=jFkqASqvw@mail.gmail.com>
-Subject: Re: [PATCH 00/36] Remove UCLINUX from LTP
-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it, Cyril Hrubis <chrubis@suse.cz>, Li Wang <liwang@redhat.com>, 
-	Andrea Cervesato <andrea.cervesato@suse.com>, Greg Ungerer <gerg@linux-m68k.org>, 
-	Jonathan Corbet <corbet@lwn.net>, Randy Dunlap <rdunlap@infradead.org>, 
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, Christophe Lyon <christophe.lyon@linaro.org>, 
-	linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, 
-	Linux ARM <linux-arm-kernel@lists.infradead.org>, 
-	linux-riscv <linux-riscv@lists.infradead.org>, Linux-sh list <linux-sh@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: Qemu KVM thread spins at 100% CPU usage on scsi hot-unplug
+ (kernel 6.6.8 guest)
+Content-Language: en-US
+To: Steven Haigh <netwiz@crc.id.au>, Lukas Wunner <lukas@wunner.de>
+Cc: linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <3a7656ab-df4c-4d57-8866-661beffcddd7@crc.id.au>
+ <20231228131802.GA21994@wunner.de>
+ <5f4dfc03-bdfc-41d1-8c5a-1e767e472a96@crc.id.au>
+From: Fiona Ebner <f.ebner@proxmox.com>
+In-Reply-To: <5f4dfc03-bdfc-41d1-8c5a-1e767e472a96@crc.id.au>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Hi Petr,
+Hi,
 
-CC other uClinux arch lists
+Am 29.12.23 um 06:46 schrieb Steven Haigh:
+> On 29/12/23 00:18, Lukas Wunner wrote:
+>> On Thu, Dec 28, 2023 at 01:03:10PM +1100, Steven Haigh wrote:
+>>> At some point in kernel 6.6.x, SCSI hotplug in qemu VMs broke. This was
+>>> mostly fixed in the following commit to release 6.6.8:
+>>>     commit 5cc8d88a1b94b900fd74abda744c29ff5845430b
+>>>     Author: Bjorn Helgaas <bhelgaas@google.com>
+>>>     Date:   Thu Dec 14 09:08:56 2023 -0600
+>>>     Revert "PCI: acpiphp: Reassign resources on bridge if necessary"
+>>>
+>>> After this commit, the SCSI block device is hotplugged correctly, and
+>>> a device node as /dev/sdX appears within the qemu VM.
+>>>
+>>> New problem:
+>>>
+>>> When the same SCSI block device is hot-unplugged, the QEMU KVM
+>>> process will
+>>> spin at 100% CPU usage. The guest shows no CPU being used via top,
+>>> but the
+>>> host will continue to spin in the KVM thread until the VM is rebooted.
+>>
+>> Find out the PID of the qemu process on the host, then cat
+>> /proc/$PID/stack
+>> to see where the CPU time is spent.
+> 
+> Thanks for the tip - I'll certainly do that.
+> 
+> Annoyingly, since I posted this report originally, then adding in a new
+> report to the kernel.org lists in this, I have been unable to reproduce
+> this problem. I have successfully done ~22 scsi hotplug / remove cycles
+> and none resulted in reproducing the issue.
+> 
+> Kernel versions are still the same on both proxmox host and the Fedora
+> guest - however I see an update on the host of the qemu-kvm packages in
+> Proxmox. The proxmox host hasn't even been rebooted in this time.
+> 
+> I wonder if the initial revert included in 6.6.8 fixed the main problem,
+> and the later update to qemu-kvm packages on the proxmox host followed
+> by the last reboot of the VM with the new KVM package sorted the second
+> issue.
+> 
+> Seeing as I can no longer reproduce this reliably - whereas it was 100%
+> reproducible prior, maybe I'm now chasing ghosts.
+> 
 
-On Wed, Jan 3, 2024 at 2:52=E2=80=AFAM Petr Vorel <pvorel@suse.cz> wrote:
-> UCLINUX is broken in LTP and nobody really cares. Actually I dare to
-> say UCLINUX is dead. Therefore I prepared patchset to remove UCLINUX
-> from LTP. We have been actively removing UCLINUX from LTP during rewrite
-> tests to new LTP API. This removes the rest from the old tests (which
-> will be sooner or later rewritten to new API).
->
-> Because the patchset is quite big, I did not want to send it to mailing
-> lists (but I can do it if you want).
->
-> Can you please have look at my fork on gitlab, branch: remove-UCLINUX
-> https://gitlab.com/pevik/ltp/-/commits/remove-UCLINUX?ref_type=3Dheads
->
-> Build test:
-> https://github.com/pevik/ltp/actions/runs/7392470215
+That sounds likely. Version pve-qemu-kvm=8.1.2-5 had a regression where
+an IO thread in QEMU could start spinning after a drain (which happens
+during hotplug on the QEMU side). It was introduced by an attempted fix
+for a much rarer problem [0] and was reverted in pve-qemu-kvm=8.1.2-6
+[1]. A proper fix is still being worked on [2].
 
-Thanks for your series!
+[0]:
+https://git.proxmox.com/?p=pve-qemu.git;a=commit;h=6b7c1815e1c89cb66ff48fbba6da69fe6d254630
+[1]:
+https://git.proxmox.com/?p=pve-qemu.git;a=commit;h=2a49e667bae33f2a5c6ba6b59a0cd26387f73a27
+[2]: https://lists.nongnu.org/archive/html/qemu-devel/2023-12/msg01900.html
 
-I see you only CCed linux-m68k, but AFAIK, uClinux is not restricted
-to m68k/coldfire, but also available on arm32, riscv, sh, and xtensa.
+Best Regards,
+Fiona
 
-Gr{oetje,eeting}s,
+> I'll still continue to monitor - as I normally do this SCSI hotplug ~3
+> times per week doing backups to different external HDDs - so if I do
+> observe it again, I'll grab the stack and reply to this thread again
+> with what I can find.
+> 
+> Until then, I don't want to waste other peoples time also chasing ghosts :)
+> 
 
-                        Geert
 
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-.org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
 
