@@ -1,426 +1,371 @@
-Return-Path: <linux-kernel+bounces-15887-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15888-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2D58823503
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 19:52:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 40DB0823509
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 19:53:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 89711285EB6
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 18:52:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AA4761F256F3
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 18:53:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09E501CA87;
-	Wed,  3 Jan 2024 18:52:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 519131CA92;
+	Wed,  3 Jan 2024 18:53:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="brjvgsAu"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="eghqorrE"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 946A91CA82
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 18:52:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1704307940;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+deU6nLc+LcvM7HNh2qjt6eus+hmUjEZj9BMXEhc3O4=;
-	b=brjvgsAu2tSDKcQcFUrijiitzSFmRLBjH7MXQkZUaDoar0/Zm7TUzeAQfQ7arXR6sWLElo
-	HOuCdNqjCqtLMYCOc9gjhyCPQ7tSzD7AJ6DqFn7+tejH93fR5ty0cN5eXRBnXVD/dTkp3R
-	Y8bl7ZAEURMQFE5IDtBozia5685waGA=
-Received: from mail-pg1-f200.google.com (mail-pg1-f200.google.com
- [209.85.215.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-563-ftXop23YMgGcPFGv4iuFHw-1; Wed, 03 Jan 2024 13:52:19 -0500
-X-MC-Unique: ftXop23YMgGcPFGv4iuFHw-1
-Received: by mail-pg1-f200.google.com with SMTP id 41be03b00d2f7-5cd61dccd77so3712055a12.3
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 10:52:19 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704307935; x=1704912735;
-        h=content-transfer-encoding:content-disposition:mime-version
-         :references:in-reply-to:message-id:date:subject:cc:to:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+deU6nLc+LcvM7HNh2qjt6eus+hmUjEZj9BMXEhc3O4=;
-        b=D8FcWjQFSn7ZF1mrFVYjYHS1k/wnf5SuEz72HJJ7gN0Ny0k6QuwIpVBgs7mRNwcnr0
-         DriVdd7hE580lxRjzlOPgg/y1s5RGhE7cVchw70nKwbEhm39jcXlCezExzxD9+KPfKMk
-         BZp/vhi0GLhPyF+n1ShE/qAdxDUTDSq8GRvE0DoB6b2WiV2iFRJS93Hba/+IVQlyTJKQ
-         Wo11vJheDUMkQY+vrihjt1dXN30rTAkYvgT2kwB8qYPcRsD3UhKFz1JntibqX9PqTT4w
-         +MCdLCu53pU1Fon7hQt6BI2foVhzSmhRU1PbPlmOoxp86QjhIxo94x4+/pxDxn9pD05I
-         7gBg==
-X-Gm-Message-State: AOJu0YyHB2caQ4T4BFUaujASuSTgty/f5dkK4GH3xj5vawAwIXpRN/lp
-	b2/cwe7dkd1ViLPbdn29WdHG1zZoL+RJ9L+zHYM41OOrOwh/1VGpAokjEWTl4UWyN/dMnGUGt4J
-	xmfMzGvVSVwOgAKrulrd/2zyrZqN4ne+l
-X-Received: by 2002:a17:902:c40d:b0:1d4:a8f2:40fc with SMTP id k13-20020a170902c40d00b001d4a8f240fcmr3810474plk.45.1704307934830;
-        Wed, 03 Jan 2024 10:52:14 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFld9fqxbeM4JulnYE7bGd4x+azw1/t2DEqJEWqoD03h8J2JGk1gUa0QVMLimK27lhvQ+pEtg==
-X-Received: by 2002:a17:902:c40d:b0:1d4:a8f2:40fc with SMTP id k13-20020a170902c40d00b001d4a8f240fcmr3810439plk.45.1704307933163;
-        Wed, 03 Jan 2024 10:52:13 -0800 (PST)
-Received: from localhost.localdomain ([2804:431:c7ec:911:6911:ca60:846:eb46])
-        by smtp.gmail.com with ESMTPSA id v24-20020a17090331d800b001d4cac52e73sm3090464ple.131.2024.01.03.10.52.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Jan 2024 10:52:12 -0800 (PST)
-From: Leonardo Bras <leobras@redhat.com>
-To: guoren@kernel.org
-Cc: Leonardo Bras <leobras@redhat.com>,
-	paul.walmsley@sifive.com,
-	palmer@dabbelt.com,
-	panqinglin2020@iscas.ac.cn,
-	bjorn@rivosinc.com,
-	conor.dooley@microchip.com,
-	peterz@infradead.org,
-	keescook@chromium.org,
-	wuwei2016@iscas.ac.cn,
-	xiaoguang.xing@sophgo.com,
-	chao.wei@sophgo.com,
-	unicorn_wang@outlook.com,
-	uwu@icenowy.me,
-	jszhang@kernel.org,
-	wefu@redhat.com,
-	atishp@atishpatra.org,
-	ajones@ventanamicro.com,
-	linux-riscv@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Guo Ren <guoren@linux.alibaba.com>
-Subject: Re: [PATCH V2 1/3] riscv: Add Zicbop instruction definitions & cpufeature
-Date: Wed,  3 Jan 2024 15:52:00 -0300
-Message-ID: <ZZWs0C19tz763FnH@LeoBras>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20231231082955.16516-2-guoren@kernel.org>
-References: <20231231082955.16516-1-guoren@kernel.org> <20231231082955.16516-2-guoren@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFEE21CA86;
+	Wed,  3 Jan 2024 18:52:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704307978; x=1735843978;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=eQbs7x9ViQQ3AdE9gveThq22Yr0RNmMxc1ihuW30/+8=;
+  b=eghqorrEs9DnkN+lEe+A9sFWYwCuul/ZHl5WT8JG2zBccteZRaU0MgEl
+   +9x1ZTS3ZJARDKT7huPt96u8gQmXsuO2m1kzxKHzDyjIQnycNHfUkdM1M
+   FDNhMTHQ82ut2hA7JHx8wtaZrLH1R+2ZSzv9eiBIMGjUZtBXFFk00E5Tb
+   uVc+vHFUhBdx/vFCRlpc9UP52Is4ro22CWdCz7MmdmGzhfpmZvV8Or/pQ
+   VXiW8JWY8P4OEFu2B8uVT8nzo0uXGi+TpLnGevolsRYDb1Vi4f9TO6SAn
+   qbtRRnChF7iyzrOi1RW4vghymbf90p8gPdky/tqBavT1BSl/iVorqG19d
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10942"; a="382009506"
+X-IronPort-AV: E=Sophos;i="6.04,328,1695711600"; 
+   d="scan'208";a="382009506"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jan 2024 10:52:58 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10942"; a="850508452"
+X-IronPort-AV: E=Sophos;i="6.04,328,1695711600"; 
+   d="scan'208";a="850508452"
+Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.252.51.162])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jan 2024 10:52:55 -0800
+Message-ID: <8eecede9-23b6-48dd-90e2-68e1f2722830@intel.com>
+Date: Wed, 3 Jan 2024 20:52:50 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 2/2] mmc: sdhci-of-dwcmshc: Implement SDHCI CQE support
+Content-Language: en-US
+To: Sergey Khimich <serghox@gmail.com>, linux-mmc@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>,
+ Shawn Lin <shawn.lin@rock-chips.com>, Jyan Chou <jyanchou@realtek.com>
+References: <20231231144619.758290-1-serghox@gmail.com>
+ <20231231144619.758290-3-serghox@gmail.com>
+From: Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+In-Reply-To: <20231231144619.758290-3-serghox@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Sun, Dec 31, 2023 at 03:29:51AM -0500, guoren@kernel.org wrote:
-> From: Guo Ren <guoren@linux.alibaba.com>
+On 31/12/23 16:46, Sergey Khimich wrote:
+> From: Sergey Khimich <serghox@gmail.com>
 > 
-> Cache-block prefetch instructions are HINTs to the hardware to
-> indicate that software intends to perform a particular type of
-> memory access in the near future. This patch adds prefetch.i,
-> prefetch.r and prefetch.w instruction definitions by
-> RISCV_ISA_EXT_ZICBOP cpufeature.
-
-Hi Guo Ren,
-
-Here it would be nice to point a documentation for ZICBOP extension:
-https://wiki.riscv.org/display/HOME/Recently+Ratified+Extensions
-
-or having a nice link for:
-https://drive.google.com/file/d/1jfzhNAk7viz4t2FLDZ5z4roA0LBggkfZ/view
-
+> For enabling CQE support just set 'supports-cqe' in your DevTree file
+> for appropriate mmc node.
 > 
-> Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-> Signed-off-by: Guo Ren <guoren@kernel.org>
+> Signed-off-by: Sergey Khimich <serghox@gmail.com>
 > ---
->  arch/riscv/Kconfig                | 15 ++++++++
->  arch/riscv/include/asm/hwcap.h    |  1 +
->  arch/riscv/include/asm/insn-def.h | 60 +++++++++++++++++++++++++++++++
->  arch/riscv/kernel/cpufeature.c    |  1 +
->  4 files changed, 77 insertions(+)
+>  drivers/mmc/host/Kconfig            |   1 +
+>  drivers/mmc/host/sdhci-of-dwcmshc.c | 181 +++++++++++++++++++++++++++-
+>  2 files changed, 180 insertions(+), 2 deletions(-)
 > 
-> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-> index 24c1799e2ec4..fcbd417d65ea 100644
-> --- a/arch/riscv/Kconfig
-> +++ b/arch/riscv/Kconfig
-> @@ -579,6 +579,21 @@ config RISCV_ISA_ZICBOZ
+> diff --git a/drivers/mmc/host/Kconfig b/drivers/mmc/host/Kconfig
+> index 58bd5fe4cd25..f7594705b013 100644
+> --- a/drivers/mmc/host/Kconfig
+> +++ b/drivers/mmc/host/Kconfig
+> @@ -233,6 +233,7 @@ config MMC_SDHCI_OF_DWCMSHC
+>  	depends on MMC_SDHCI_PLTFM
+>  	depends on OF
+>  	depends on COMMON_CLK
+> +	select MMC_CQHCI
+>  	help
+>  	  This selects Synopsys DesignWare Cores Mobile Storage Controller
+>  	  support.
+> diff --git a/drivers/mmc/host/sdhci-of-dwcmshc.c b/drivers/mmc/host/sdhci-of-dwcmshc.c
+> index 3a3bae6948a8..0ba1df4bcf36 100644
+> --- a/drivers/mmc/host/sdhci-of-dwcmshc.c
+> +++ b/drivers/mmc/host/sdhci-of-dwcmshc.c
+> @@ -20,6 +20,7 @@
+>  #include <linux/sizes.h>
 >  
->  	   If you don't know what to do here, say Y.
+>  #include "sdhci-pltfm.h"
+> +#include "cqhci.h"
 >  
-> +config RISCV_ISA_ZICBOP
-> +	bool "Zicbop extension support for cache block prefetch"
-> +	depends on MMU
-> +	depends on RISCV_ALTERNATIVE
-> +	default y
-> +	help
-> +	  Adds support to dynamically detect the presence of the ZICBOP
-> +	  extension (Cache Block Prefetch Operations) and enable its
-> +	  usage.
+>  #define SDHCI_DWCMSHC_ARG2_STUFF	GENMASK(31, 16)
+>  
+> @@ -36,6 +37,9 @@
+>  #define DWCMSHC_ENHANCED_STROBE		BIT(8)
+>  #define DWCMSHC_EMMC_ATCTRL		0x40
+>  
+> +/* DWC IP vendor area 2 pointer */
+> +#define DWCMSHC_P_VENDOR_AREA2		0xea
 > +
-> +	  The Zicbop extension can be used to prefetch cache block for
-> +	  read/write fetch.
+>  /* Rockchip specific Registers */
+>  #define DWCMSHC_EMMC_DLL_CTRL		0x800
+>  #define DWCMSHC_EMMC_DLL_RXCLK		0x804
+> @@ -75,6 +79,11 @@
+>  #define BOUNDARY_OK(addr, len) \
+>  	((addr | (SZ_128M - 1)) == ((addr + len - 1) | (SZ_128M - 1)))
+>  
+> +#define DWCMSHC_SDHCI_CQE_TRNS_MODE	(SDHCI_TRNS_MULTI | \
+> +					 SDHCI_TRNS_BLK_CNT_EN | \
+> +					 SDHCI_TRNS_DMA)
 > +
-> +	  If you don't know what to do here, say Y.
 > +
-
-According to doc:
-"The Zicbop extension defines a set of cache-block prefetch instructions: 
-PREFETCH.R, PREFETCH.W, and PREFETCH.I"
-
-So above text seems ok
-
-
->  config TOOLCHAIN_HAS_ZIHINTPAUSE
->  	bool
->  	default y
-> diff --git a/arch/riscv/include/asm/hwcap.h b/arch/riscv/include/asm/hwcap.h
-> index 06d30526ef3b..77d3b6ee25ab 100644
-> --- a/arch/riscv/include/asm/hwcap.h
-> +++ b/arch/riscv/include/asm/hwcap.h
-> @@ -57,6 +57,7 @@
->  #define RISCV_ISA_EXT_ZIHPM		42
->  #define RISCV_ISA_EXT_SMSTATEEN		43
->  #define RISCV_ISA_EXT_ZICOND		44
-> +#define RISCV_ISA_EXT_ZICBOP		45
-
-Is this number just in kernel code, or does it mean something in the RISC-V 
-documentation?
-
+>  enum dwcmshc_rk_type {
+>  	DWCMSHC_RK3568,
+>  	DWCMSHC_RK3588,
+> @@ -90,7 +99,9 @@ struct rk35xx_priv {
 >  
->  #define RISCV_ISA_EXT_MAX		64
->  
-> diff --git a/arch/riscv/include/asm/insn-def.h b/arch/riscv/include/asm/insn-def.h
-> index e27179b26086..bbda350a63bf 100644
-> --- a/arch/riscv/include/asm/insn-def.h
-> +++ b/arch/riscv/include/asm/insn-def.h
-> @@ -18,6 +18,13 @@
->  #define INSN_I_RD_SHIFT			 7
->  #define INSN_I_OPCODE_SHIFT		 0
->  
-> +#define INSN_S_SIMM7_SHIFT		25
-> +#define INSN_S_RS2_SHIFT		20
-> +#define INSN_S_RS1_SHIFT		15
-> +#define INSN_S_FUNC3_SHIFT		12
-> +#define INSN_S_SIMM5_SHIFT		 7
-> +#define INSN_S_OPCODE_SHIFT		 0
+>  struct dwcmshc_priv {
+>  	struct clk	*bus_clk;
+> -	int vendor_specific_area1; /* P_VENDOR_SPECIFIC_AREA reg */
+> +	int vendor_specific_area1; /* P_VENDOR_SPECIFIC_AREA1 reg */
+> +	int vendor_specific_area2; /* P_VENDOR_SPECIFIC_AREA2 reg */
 > +
-
-The shifts seem correct for S-Type, but I would name the IMM defines in a 
-way we could understand where they fit in IMM:
-
-
-INSN_S_SIMM5_SHIFT -> INSN_S_SIMM_0_4_SHIFT
-INSN_S_SIMM7_SHIFT -> INSN_S_SIMM_5_11_SHIFT
-
-What do you think?
-
-
->  #ifdef __ASSEMBLY__
+>  	void *priv; /* pointer to SoC private stuff */
+>  };
 >  
->  #ifdef CONFIG_AS_HAS_INSN
-> @@ -30,6 +37,10 @@
->  	.insn	i \opcode, \func3, \rd, \rs1, \simm12
->  	.endm
+> @@ -210,6 +221,90 @@ static void dwcmshc_hs400_enhanced_strobe(struct mmc_host *mmc,
+>  	sdhci_writel(host, vendor, reg);
+>  }
 >  
-> +	.macro insn_s, opcode, func3, rs2, simm12, rs1
-> +	.insn	s \opcode, \func3, \rs2, \simm12(\rs1)
-> +	.endm
+> +static int dwcmshc_execute_tuning(struct mmc_host *mmc, u32 opcode)
+> +{
+> +	int err = sdhci_execute_tuning(mmc, opcode);
+> +	struct sdhci_host *host = mmc_priv(mmc);
 > +
->  #else
->  
->  #include <asm/gpr-num.h>
-> @@ -51,10 +62,20 @@
->  		 (\simm12 << INSN_I_SIMM12_SHIFT))
->  	.endm
->  
-> +	.macro insn_s, opcode, func3, rs2, simm12, rs1
-> +	.4byte	((\opcode << INSN_S_OPCODE_SHIFT) |		\
-> +		 (\func3 << INSN_S_FUNC3_SHIFT) |		\
-> +		 (.L__gpr_num_\rs2 << INSN_S_RS2_SHIFT) |	\
-> +		 (.L__gpr_num_\rs1 << INSN_S_RS1_SHIFT) |	\
-> +		 ((\simm12 & 0x1f) << INSN_S_SIMM5_SHIFT) |	\
-> +		 (((\simm12 >> 5) & 0x7f) << INSN_S_SIMM7_SHIFT))
-> +	.endm
+> +	if (err)
+> +		return err;
 > +
+> +	/*
+> +	 * Tuning can leave the IP in an active state (Buffer Read Enable bit
+> +	 * set) which prevents the entry to low power states (i.e. S0i3). Data
+> +	 * reset will clear it.
+> +	 */
+> +	sdhci_reset(host, SDHCI_RESET_DATA);
+> +
+> +	return 0;
+> +}
+> +
+> +static u32 dwcmshc_cqe_irq_handler(struct sdhci_host *host, u32 intmask)
+> +{
+> +	int cmd_error = 0;
+> +	int data_error = 0;
+> +
+> +	if (!sdhci_cqe_irq(host, intmask, &cmd_error, &data_error))
+> +		return intmask;
+> +
+> +	cqhci_irq(host->mmc, intmask, cmd_error, data_error);
+> +
+> +	return 0;
+> +}
+> +
+> +static void dwcmshc_sdhci_cqe_enable(struct mmc_host *mmc)
+> +{
+> +	struct sdhci_host *host = mmc_priv(mmc);
+> +	u8 ctrl;
+> +
+> +	sdhci_writew(host, DWCMSHC_SDHCI_CQE_TRNS_MODE, SDHCI_TRANSFER_MODE);
+> +
+> +	sdhci_cqe_enable(mmc);
+> +
+> +	/*
+> +	 * The "DesignWare Cores Mobile Storage Host Controller
+> +	 * DWC_mshc / DWC_mshc_lite Databook" says:
+> +	 * when Host Version 4 Enable" is 1 in Host Control 2 register,
+> +	 * SDHCI_CTRL_ADMA32 bit means ADMA2 is selected.
+> +	 * Selection of 32-bit/64-bit System Addressing:
+> +	 * either 32-bit or 64-bit system addressing is selected by
+> +	 * 64-bit Addressing bit in Host Control 2 register.
+> +	 *
+> +	 * On the other hand the "DesignWare Cores Mobile Storage Host
+> +	 * Controller DWC_mshc / DWC_mshc_lite User Guide" says, that we have to
+> +	 * set DMA_SEL to ADMA2 _only_ mode in the Host Control 2 register.
+> +	 */
+> +	ctrl = sdhci_readb(host, SDHCI_HOST_CONTROL);
+> +	ctrl &= ~SDHCI_CTRL_DMA_MASK;
+> +	ctrl |= SDHCI_CTRL_ADMA32;
+> +	sdhci_writeb(host, ctrl, SDHCI_HOST_CONTROL);
+> +}
+> +
+> +static void dwcmshc_set_tran_desc(struct cqhci_host *cq_host, u8 **desc,
+> +				  dma_addr_t addr, int len, bool end, bool dma64)
+> +{
+> +	int tmplen, offset;
+> +
+> +	if (likely(!len || BOUNDARY_OK(addr, len))) {
+> +		cqhci_set_tran_desc(*desc, addr, len, end, dma64);
+> +		return;
+> +	}
+> +
+> +	offset = addr & (SZ_128M - 1);
+> +	tmplen = SZ_128M - offset;
+> +	cqhci_set_tran_desc(*desc, addr, tmplen, false, dma64);
+> +
+> +	addr += tmplen;
+> +	len -= tmplen;
+> +	*desc += cq_host->trans_desc_len;
+> +	cqhci_set_tran_desc(*desc, addr, len, end, dma64);
+> +}
+> +
+> +static void dwcmshc_cqhci_dumpregs(struct mmc_host *mmc)
+> +{
+> +	sdhci_dumpregs(mmc_priv(mmc));
+> +}
+> +
+>  static void dwcmshc_rk3568_set_clock(struct sdhci_host *host, unsigned int clock)
+>  {
+>  	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
+> @@ -345,6 +440,7 @@ static const struct sdhci_ops sdhci_dwcmshc_ops = {
+>  	.get_max_clock		= dwcmshc_get_max_clock,
+>  	.reset			= sdhci_reset,
+>  	.adma_write_desc	= dwcmshc_adma_write_desc,
+> +	.irq			= dwcmshc_cqe_irq_handler,
+>  };
+>  
+>  static const struct sdhci_ops sdhci_dwcmshc_rk35xx_ops = {
+> @@ -379,6 +475,71 @@ static const struct sdhci_pltfm_data sdhci_dwcmshc_rk35xx_pdata = {
+>  		   SDHCI_QUIRK2_CLOCK_DIV_ZERO_BROKEN,
+>  };
+>  
+> +static const struct cqhci_host_ops dwcmshc_cqhci_ops = {
+> +	.enable		= dwcmshc_sdhci_cqe_enable,
+> +	.disable	= sdhci_cqe_disable,
+> +	.dumpregs	= dwcmshc_cqhci_dumpregs,
+> +	.set_tran_desc	= dwcmshc_set_tran_desc,
+> +};
+> +
+> +static void dwcmshc_cqhci_init(struct sdhci_host *host, struct platform_device *pdev)
+> +{
+> +	struct cqhci_host *cq_host;
+> +	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
+> +	struct dwcmshc_priv *priv = sdhci_pltfm_priv(pltfm_host);
+> +	bool dma64 = false;
+> +	u16 clk;
+> +	int err;
+> +
+> +	host->mmc->caps2 |= MMC_CAP2_CQE | MMC_CAP2_CQE_DCMD;
+> +	cq_host = devm_kzalloc(&pdev->dev, sizeof(*cq_host), GFP_KERNEL);
+> +	if (!cq_host) {
+> +		dev_err(mmc_dev(host->mmc), "Unable to setup CQE: not enough memory\n");
+> +		return;
+> +	}
+> +
+> +	/*
+> +	 * For dwcmshc host controller we have to enable internal clock
+> +	 * before access to some registers from Vendor Specific Aria 2.
+
+Aria -> Area
+
+> +	 */
+> +	clk = sdhci_readw(host, SDHCI_CLOCK_CONTROL);
+> +	clk |= SDHCI_CLOCK_INT_EN;
+> +	sdhci_writew(host, clk, SDHCI_CLOCK_CONTROL);
+> +	clk = sdhci_readw(host, SDHCI_CLOCK_CONTROL);
+> +	if (!(clk & SDHCI_CLOCK_INT_EN)) {
+> +		dev_err(mmc_dev(host->mmc), "Unable to setup CQE: internal clock enable error\n");
+> +		goto free_cq_host;
+> +	}
+> +
+> +	cq_host->mmio = host->ioaddr + priv->vendor_specific_area2;
+> +	cq_host->ops = &dwcmshc_cqhci_ops;
+> +
+> +	/* Enable using of 128-bit task descriptors */
+> +	dma64 = host->flags & SDHCI_USE_64_BIT_DMA;
+> +	if (dma64) {
+> +		dev_dbg(mmc_dev(host->mmc), "128-bit task descriptors\n");
+> +		cq_host->caps |= CQHCI_TASK_DESC_SZ_128;
+> +	}
+> +	err = cqhci_init(cq_host, host->mmc, dma64);
+> +	if (err) {
+> +		dev_err(mmc_dev(host->mmc), "Unable to setup CQE: error %d\n", err);
+> +		goto int_clock_disable;
+> +	}
+> +
+> +	dev_dbg(mmc_dev(host->mmc), "CQE init done\n");
+> +
+> +	return;
+> +
+> +int_clock_disable:
+> +	clk = sdhci_readw(host, SDHCI_CLOCK_CONTROL);
+> +	clk &= ~SDHCI_CLOCK_INT_EN;
+> +	sdhci_writew(host, clk, SDHCI_CLOCK_CONTROL);
+> +
+> +free_cq_host:
+> +	devm_kfree(&pdev->dev, cq_host);
+> +}
+> +
+> +
+>  static int dwcmshc_rk35xx_init(struct sdhci_host *host, struct dwcmshc_priv *dwc_priv)
+>  {
+>  	int err;
+> @@ -471,7 +632,7 @@ static int dwcmshc_probe(struct platform_device *pdev)
+>  	struct rk35xx_priv *rk_priv = NULL;
+>  	const struct sdhci_pltfm_data *pltfm_data;
+>  	int err;
+> -	u32 extra;
+> +	u32 extra, caps;
+>  
+>  	pltfm_data = device_get_match_data(&pdev->dev);
+>  	if (!pltfm_data) {
+> @@ -519,9 +680,12 @@ static int dwcmshc_probe(struct platform_device *pdev)
+>  
+>  	priv->vendor_specific_area1 =
+>  		sdhci_readl(host, DWCMSHC_P_VENDOR_AREA1) & DWCMSHC_AREA1_MASK;
+> +	priv->vendor_specific_area2 =
+> +		sdhci_readw(host, DWCMSHC_P_VENDOR_AREA2);
+
+Is this OK for all IPs? ie. do they all have DWCMSHC_P_VENDOR_AREA2 register?
+
+>  
+>  	host->mmc_host_ops.request = dwcmshc_request;
+>  	host->mmc_host_ops.hs400_enhanced_strobe = dwcmshc_hs400_enhanced_strobe;
+> +	host->mmc_host_ops.execute_tuning = dwcmshc_execute_tuning;
+>  
+>  	if (pltfm_data == &sdhci_dwcmshc_rk35xx_pdata) {
+>  		rk_priv = devm_kzalloc(&pdev->dev, sizeof(struct rk35xx_priv), GFP_KERNEL);
+> @@ -547,6 +711,10 @@ static int dwcmshc_probe(struct platform_device *pdev)
+>  		sdhci_enable_v4_mode(host);
 >  #endif
 >  
->  #define __INSN_R(...)	insn_r __VA_ARGS__
->  #define __INSN_I(...)	insn_i __VA_ARGS__
-> +#define __INSN_S(...)	insn_s __VA_ARGS__
-
-As a curiosity: It's quite odd to have prefetch.{i,r,w} to be an S-Type 
-instruction, given this type was supposed to be for store instructions.
-
-On prefetch.{i,r,w}:
-31	   24   	 19    14    11	  	6
-imm[11:5] | PREFETCH_OP | rs1 | ORI | imm[4:0] | OP_IMM
-
-For S-Type, we have:
-31	   24     19    14       11	    6
-imm[11:5] | rs1  | rs2 | funct3 | imm[4:0] | opcode
-
-For I-Type, we have:
-31	    19    14       11	6
-immm[11:0] | rs1 | funct3 | rd | opcode
-
-I understand that there should be reasons for choosing S-type, but it 
-would make much more sense (as per instruction type, and as per parameters)
-to go with I-Type. 
-
-(I understand this was done in HW, and in kernel code we have better choice 
-to encode it as S-Type, but I kind of find the S-Type choice odd)
-
->  
->  #else /* ! __ASSEMBLY__ */
->  
-> @@ -66,6 +87,9 @@
->  #define __INSN_I(opcode, func3, rd, rs1, simm12)	\
->  	".insn	i " opcode ", " func3 ", " rd ", " rs1 ", " simm12 "\n"
->  
-> +#define __INSN_S(opcode, func3, rs2, simm12, rs1)	\
-> +	".insn	s " opcode ", " func3 ", " rs2 ", " simm12 "(" rs1 ")\n"
+> +	caps = sdhci_readl(host, SDHCI_CAPABILITIES);
+> +	if (caps & SDHCI_CAN_64BIT_V4)
+> +		sdhci_enable_v4_mode(host);
 > +
->  #else
+>  	host->mmc->caps |= MMC_CAP_WAIT_WHILE_BUSY;
 >  
->  #include <linux/stringify.h>
-> @@ -92,12 +116,26 @@
->  "		 (\\simm12 << " __stringify(INSN_I_SIMM12_SHIFT) "))\n"	\
->  "	.endm\n"
+>  	pm_runtime_get_noresume(dev);
+> @@ -557,6 +725,15 @@ static int dwcmshc_probe(struct platform_device *pdev)
+>  	if (err)
+>  		goto err_rpm;
 >  
-> +#define DEFINE_INSN_S							\
-> +	__DEFINE_ASM_GPR_NUMS						\
-> +"	.macro insn_s, opcode, func3, rs2, simm12, rs1\n"		\
-> +"	.4byte	((\\opcode << " __stringify(INSN_S_OPCODE_SHIFT) ") |"	\
-> +"		 (\\func3 << " __stringify(INSN_S_FUNC3_SHIFT) ") |"	\
-> +"		 (.L__gpr_num_\\rs2 << " __stringify(INSN_S_RS2_SHIFT) ") |" \
-> +"		 (.L__gpr_num_\\rs1 << " __stringify(INSN_S_RS1_SHIFT) ") |" \
-> +"		 ((\\simm12 & 0x1f) << " __stringify(INSN_S_SIMM5_SHIFT) ") |" \
-> +"		 (((\\simm12 >> 5) & 0x7f) << " __stringify(INSN_S_SIMM7_SHIFT) "))\n" \
-> +"	.endm\n"
+> +	/* Setup Command Queue Engine if enabled */
+> +	if (device_property_read_bool(&pdev->dev, "supports-cqe")) {
+> +		if (caps & SDHCI_CAN_64BIT_V4)
+> +			dwcmshc_cqhci_init(host, pdev);
+> +		else
+> +			dev_warn(dev, "Cannot enable CQE without V4 mode support\n");
+> +	}
 > +
->  #define UNDEFINE_INSN_R							\
->  "	.purgem insn_r\n"
->  
->  #define UNDEFINE_INSN_I							\
->  "	.purgem insn_i\n"
->  
-> +#define UNDEFINE_INSN_S							\
-> +"	.purgem insn_s\n"
-> +
->  #define __INSN_R(opcode, func3, func7, rd, rs1, rs2)			\
->  	DEFINE_INSN_R							\
->  	"insn_r " opcode ", " func3 ", " func7 ", " rd ", " rs1 ", " rs2 "\n" \
-> @@ -108,6 +146,11 @@
->  	"insn_i " opcode ", " func3 ", " rd ", " rs1 ", " simm12 "\n" \
->  	UNDEFINE_INSN_I
->  
-> +#define __INSN_S(opcode, func3, rs2, simm12, rs1)			\
-> +	DEFINE_INSN_S							\
-> +	"insn_s " opcode ", " func3 ", " rs2 ", " simm12 ", " rs1 "\n"	\
-> +	UNDEFINE_INSN_S
-> +
->  #endif
->  
->  #endif /* ! __ASSEMBLY__ */
-> @@ -120,6 +163,10 @@
->  	__INSN_I(RV_##opcode, RV_##func3, RV_##rd,		\
->  		 RV_##rs1, RV_##simm12)
->  
-> +#define INSN_S(opcode, func3, rs2, simm12, rs1)			\
-> +	__INSN_S(RV_##opcode, RV_##func3, RV_##rs2,		\
-> +		 RV_##simm12, RV_##rs1)
 > +
 
-The defines above seem correct, but TBH I am not very used to review
-.macro code.
+Double blank line.
 
->  #define RV_OPCODE(v)		__ASM_STR(v)
->  #define RV_FUNC3(v)		__ASM_STR(v)
->  #define RV_FUNC7(v)		__ASM_STR(v)
-> @@ -133,6 +180,7 @@
->  #define RV___RS2(v)		__RV_REG(v)
+>  	if (rk_priv)
+>  		dwcmshc_rk35xx_postinit(host, priv);
 >  
->  #define RV_OPCODE_MISC_MEM	RV_OPCODE(15)
-> +#define RV_OPCODE_OP_IMM	RV_OPCODE(19)
-
-Correct.
-
-
->  #define RV_OPCODE_SYSTEM	RV_OPCODE(115)
->  
->  #define HFENCE_VVMA(vaddr, asid)				\
-> @@ -196,4 +244,16 @@
->  	INSN_I(OPCODE_MISC_MEM, FUNC3(2), __RD(0),		\
->  	       RS1(base), SIMM12(4))
->  
-> +#define CBO_PREFETCH_I(base, offset)				\
-> +	INSN_S(OPCODE_OP_IMM, FUNC3(6), __RS2(0),		\
-> +	       SIMM12(offset), RS1(base))
-> +
-> +#define CBO_PREFETCH_R(base, offset)				\
-> +	INSN_S(OPCODE_OP_IMM, FUNC3(6), __RS2(1),		\
-> +	       SIMM12(offset), RS1(base))
-> +
-> +#define CBO_PREFETCH_W(base, offset)				\
-> +	INSN_S(OPCODE_OP_IMM, FUNC3(6), __RS2(3),		\
-> +	       SIMM12(offset), RS1(base))
-> +
-
-For OP_IMM & FUNC3(6) we have ORI, right?
-For ORI, rd will be at bytes 11:7, which in PREFETCH.{i,r,w} is
-offset[4:0].
-
-IIUC, when the cpu does not support ZICBOP, this should be fine as long as 
-rd = 0, since changes to r0 are disregarded.
-
-In this case, we need to guarantee offset[4:0] = 0, or else we migth write 
-on an unrelated register. This can be noticed in ZICBOP documentation pages 
-21, 22, 23, as offset[4:0] is always [0 0 0 0 0]. 
-(Google docs in first comment)
-
-What we need here is something like:
-+ enum {
-+ 	PREFETCH_I,
-+ 	PREFETCH_R,
-+ 	PREFETCH_W,
-+ }	 
-+
-+ #define CBO_PREFETCH(type, base, offset)                      \
-+     INSN_S(OPCODE_OP_IMM, FUNC3(6), __RS2(type),              \
-+            SIMM12(offset & ~0x1f), RS1(base))
-
-+ #define CBO_PREFETCH_I(base, offset)				\
-+     CBO_PREFETCH(PREFETCH_I, base, offset)
-+
-+ #define CBO_PREFETCH_R(base, offset)				\
-+     CBO_PREFETCH(PREFETCH_R, base, offset)
-+
-+ #define CBO_PREFETCH_W(base, offset)				\
-+     CBO_PREFETCH(PREFETCH_W, base, offset)
-+
-
-Maybe replacing 0x1f by some MASK macro, so it looks nicer.
-(not sure how it's acceptable in asm, though).
-
-The above would guarantee that we would never have CBO_PREFETCH_*() to mess 
-up any other register due to a unnoticed (base & 0x1f) != 0
-
-Does that make sense?
-
->  #endif /* __ASM_INSN_DEF_H */
-> diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
-> index b3785ffc1570..bdb02b066041 100644
-> --- a/arch/riscv/kernel/cpufeature.c
-> +++ b/arch/riscv/kernel/cpufeature.c
-> @@ -168,6 +168,7 @@ const struct riscv_isa_ext_data riscv_isa_ext[] = {
->  	__RISCV_ISA_EXT_DATA(h, RISCV_ISA_EXT_h),
->  	__RISCV_ISA_EXT_DATA(zicbom, RISCV_ISA_EXT_ZICBOM),
->  	__RISCV_ISA_EXT_DATA(zicboz, RISCV_ISA_EXT_ZICBOZ),
-> +	__RISCV_ISA_EXT_DATA(zicbop, RISCV_ISA_EXT_ZICBOP),
->  	__RISCV_ISA_EXT_DATA(zicntr, RISCV_ISA_EXT_ZICNTR),
->  	__RISCV_ISA_EXT_DATA(zicond, RISCV_ISA_EXT_ZICOND),
->  	__RISCV_ISA_EXT_DATA(zicsr, RISCV_ISA_EXT_ZICSR),
-> -- 
-> 2.40.1
-> 
-
-Apart from above suggestions, seems a nice change :)
-
-I suggest splitting this patch into 2, though:
-- Introducing S-Type instructions (plz point docs for reference) 
-- Introduce ZICBOP extension.
-
-Thanks!
-Leo
-
 
 
