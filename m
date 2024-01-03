@@ -1,211 +1,344 @@
-Return-Path: <linux-kernel+bounces-15418-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15420-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93F1C822BB7
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 11:59:02 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E1D8822BBD
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 12:00:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 346932862A0
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 10:59:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 585B5B23057
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 11:00:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 600EC18E39;
-	Wed,  3 Jan 2024 10:58:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79C3018E13;
+	Wed,  3 Jan 2024 10:59:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="B7acPJNm"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 017AA18E1C;
-	Wed,  3 Jan 2024 10:58:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4T4msr3CzDz4f3lV6;
-	Wed,  3 Jan 2024 18:58:24 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 1EEE31A0807;
-	Wed,  3 Jan 2024 18:58:30 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.124.27])
-	by APP1 (Coremail) with SMTP id cCh0CgDHyhDUPZVlW02hFQ--.58083S4;
-	Wed, 03 Jan 2024 18:58:29 +0800 (CST)
-From: Hou Tao <houtao@huaweicloud.com>
-To: linux-fsdevel@vger.kernel.org
-Cc: Miklos Szeredi <miklos@szeredi.hu>,
-	Vivek Goyal <vgoyal@redhat.com>,
-	Stefan Hajnoczi <stefanha@redhat.com>,
-	"Michael S . Tsirkin" <mst@redhat.com>,
-	linux-kernel@vger.kernel.org,
-	virtualization@lists.linux.dev,
-	houtao1@huawei.com
-Subject: [PATCH] virtiofs: limit the length of ITER_KVEC dio by max_nopage_rw
-Date: Wed,  3 Jan 2024 18:59:29 +0800
-Message-Id: <20240103105929.1902658-1-houtao@huaweicloud.com>
-X-Mailer: git-send-email 2.29.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3BDC18E0D;
+	Wed,  3 Jan 2024 10:59:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id CAD9540E01CB;
+	Wed,  3 Jan 2024 10:59:44 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id rhWWOBUcAl4K; Wed,  3 Jan 2024 10:59:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1704279582; bh=kWj1r7YWgv/xuCZuac9oYHJ2Ii/q2D59EYfwOqw5nDg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=B7acPJNm7mRSTv6Mii0NETfGyxXgzzVz4ntLc/qNPM07P18RKpz6+8/kceMx/oNpc
+	 oImibIN2Z8H04tAS6K/S6VnRw3Pi8SmvpPVLi+Y/HV5GC7ZAND9OmiLvKmZ9LlrRlS
+	 fGgqtsxGJktbeO4tB27WlO1v3Fii7Yh1SX9/K8VpwoG2ZZE2NrBkaTdxmR4Fe0M/Hi
+	 U7Q/drYXNLtQLSzGc3wMyw+7P8B82Gv3wjThFOqT3tbLTAoYtE+ljlByG+ihQXuD3O
+	 bjYbDfUV9qHcCTSpQM3WACJcS+qh4rtfrwQlG+bwLCxqOu+v9qlVqOLjaWJ5sy0hes
+	 Juz97AY3DmWr+YTj3rcrQXiWhrm22bRDbWmPzR7avSen1FwD5mcHLjUVIcuYkJjRhR
+	 NMy7dQ/PPtb4nJOCWZOu3GcbwWMeArZcNe9uGNcTR9T7MzBHCSqchOQtn3XGoHzpPd
+	 UDsSBU7zKBxRMJ5n5NxP1WeWVx1H1ytu6v38rLh1gU2KQZA4bQDIL8xkaRp1Jb1b+N
+	 DlQ6PQjeNk2Zss1VaXILMIXWHL8xZw0WCtQQ1mMEyczAh2LEgvSUGXvRcW6k0Rp6/k
+	 Y+e7bsTJXwrhWuO1czB40mvLSkpEQl+cLfZA0osFOuOEhwdYE4gaX6DHvF+5L28+iJ
+	 sUQ/JYUv9fplWGB6pHHsjaM4=
+Received: from zn.tnic (pd9530f8c.dip0.t-ipconnect.de [217.83.15.140])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 8C4C940E01C5;
+	Wed,  3 Jan 2024 10:59:34 +0000 (UTC)
+Date: Wed, 3 Jan 2024 11:59:33 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Yazen Ghannam <yazen.ghannam@amd.com>
+Cc: linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
+	avadhut.naik@amd.com, tony.luck@intel.com, john.allen@amd.com,
+	william.roche@oracle.com, muralidhara.mk@amd.com
+Subject: Re: [PATCH v4 0/3] AMD Address Translation Library
+Message-ID: <20240103105933.GBZZU+FRPkBDkIwr4P@fat_crate.local>
+References: <20231218190406.27479-1-yazen.ghannam@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgDHyhDUPZVlW02hFQ--.58083S4
-X-Coremail-Antispam: 1UD129KBjvJXoW3ArWfGw4UurWftrWDJr4rAFb_yoW7AFWxpr
-	4ftFy5ZF4xXF47urZxJF4j9ryfCwn3GF42gr95W3Z3uF17Z342kF1FvFyUuFy7urW8JrWI
-	qr4ktry2vrs0vaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUgEb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCj
-	c4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4
-	CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1x
-	MIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJV
-	Cq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIY
-	CTnIWIevJa73UjIFyTuYvjxUrR6zUUUUU
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20231218190406.27479-1-yazen.ghannam@amd.com>
 
-From: Hou Tao <houtao1@huawei.com>
+On Mon, Dec 18, 2023 at 01:04:03PM -0600, Yazen Ghannam wrote:
+> Hi all,
+> 
+> This revision addresses comments from Boris for v3. The most substantial
+> change is the removal of the library "stub".
+> 
+> Thanks,
+> Yazen
+> 
+> Yazen Ghannam (3):
+>   RAS: Introduce AMD Address Translation Library
+>   EDAC/amd64: Use new AMD Address Translation Library
+>   Documentation: RAS: Add index and address translation section
 
-When trying to insert a 10MB kernel module kept in a virtiofs with cache
-disabled, the following warning was reported:
+Ok, a combo diff of my fixes ontop, below. Lemme queue it - further
+fixes can go ontop from now on.
 
-  ------------[ cut here ]------------
-  WARNING: CPU: 2 PID: 439 at mm/page_alloc.c:4544 ......
-  Modules linked in:
-  CPU: 2 PID: 439 Comm: insmod Not tainted 6.7.0-rc7+ #33
-  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), ......
-  RIP: 0010:__alloc_pages+0x2c4/0x360
-  ......
-  Call Trace:
-   <TASK>
-   ? __warn+0x8f/0x150
-   ? __alloc_pages+0x2c4/0x360
-   __kmalloc_large_node+0x86/0x160
-   __kmalloc+0xcd/0x140
-   virtio_fs_enqueue_req+0x240/0x6d0
-   virtio_fs_wake_pending_and_unlock+0x7f/0x190
-   queue_request_and_unlock+0x58/0x70
-   fuse_simple_request+0x18b/0x2e0
-   fuse_direct_io+0x58a/0x850
-   fuse_file_read_iter+0xdb/0x130
-   __kernel_read+0xf3/0x260
-   kernel_read+0x45/0x60
-   kernel_read_file+0x1ad/0x2b0
-   init_module_from_file+0x6a/0xe0
-   idempotent_init_module+0x179/0x230
-   __x64_sys_finit_module+0x5d/0xb0
-   do_syscall_64+0x36/0xb0
-   entry_SYSCALL_64_after_hwframe+0x6e/0x76
-   ......
-   </TASK>
-  ---[ end trace 0000000000000000 ]---
+Thx.
 
-The warning happened as follow. In copy_args_to_argbuf(), virtiofs uses
-kmalloc-ed memory as bound buffer for fuse args, but
-fuse_get_user_pages() only limits the length of fuse arg by max_read or
-max_write for IOV_KVEC io (e.g., kernel_read_file from finit_module()).
-For virtiofs, max_read is UINT_MAX, so a big read request which is about
-10MB is passed to copy_args_to_argbuf(), kmalloc() is called in turn
-with len=10MB, and triggers the warning in __alloc_pages():
-WARN_ON_ONCE_GFP(order > MAX_ORDER, gfp)).
-
-A feasible solution is to limit the value of max_read for virtiofs, so
-the length passed to kmalloc() will be limited. However it will affects
-the max read size for ITER_IOVEC io and the value of max_write also needs
-limitation. So instead of limiting the values of max_read and max_write,
-introducing max_nopage_rw to cap both the values of max_read and
-max_write when the fuse dio read/write request is initiated from kernel.
-
-Considering that fuse read/write request from kernel is uncommon and to
-decrease the demand for large contiguous pages, set max_nopage_rw as
-256KB instead of KMALLOC_MAX_SIZE - 4096 or similar.
-
-Fixes: a62a8ef9d97d ("virtio-fs: add virtiofs filesystem")
-Signed-off-by: Hou Tao <houtao1@huawei.com>
 ---
- fs/fuse/file.c      | 12 +++++++++++-
- fs/fuse/fuse_i.h    |  3 +++
- fs/fuse/inode.c     |  1 +
- fs/fuse/virtio_fs.c |  6 ++++++
- 4 files changed, 21 insertions(+), 1 deletion(-)
-
-diff --git a/fs/fuse/file.c b/fs/fuse/file.c
-index a660f1f21540..f1beb7c0b782 100644
---- a/fs/fuse/file.c
-+++ b/fs/fuse/file.c
-@@ -1422,6 +1422,16 @@ static int fuse_get_user_pages(struct fuse_args_pages *ap, struct iov_iter *ii,
- 	return ret < 0 ? ret : 0;
+diff --git a/drivers/ras/amd/atl/access.c b/drivers/ras/amd/atl/access.c
+index 1de0460f5e03..f6dd87bb2c35 100644
+--- a/drivers/ras/amd/atl/access.c
++++ b/drivers/ras/amd/atl/access.c
+@@ -18,12 +18,12 @@ static DEFINE_MUTEX(df_indirect_mutex);
+ /*
+  * Data Fabric Indirect Access uses FICAA/FICAD.
+  *
+- * Fabric Indirect Configuration Access Address (FICAA): Constructed based
++ * Fabric Indirect Configuration Access Address (FICAA): constructed based
+  * on the device's Instance Id and the PCI function and register offset of
+  * the desired register.
+  *
+- * Fabric Indirect Configuration Access Data (FICAD): There are FICAD LO
+- * and FICAD HI registers but so far we only need the LO register.
++ * Fabric Indirect Configuration Access Data (FICAD): there are FICAD
++ * low and high registers but so far only the low register is needed.
+  *
+  * Use Instance Id 0xFF to indicate a broadcast read.
+  */
+diff --git a/drivers/ras/amd/atl/core.c b/drivers/ras/amd/atl/core.c
+index 9cc31c052427..6dc4e06305f7 100644
+--- a/drivers/ras/amd/atl/core.c
++++ b/drivers/ras/amd/atl/core.c
+@@ -31,7 +31,7 @@ static int addr_over_limit(struct addr_ctx *ctx)
+ 
+ 	/* Is calculated system address above DRAM limit address? */
+ 	if (ctx->ret_addr > dram_limit_addr) {
+-		atl_debug("Calculated address (0x%016llx) > DRAM limit (0x%016llx)",
++		atl_debug(ctx, "Calculated address (0x%016llx) > DRAM limit (0x%016llx)",
+ 			  ctx->ret_addr, dram_limit_addr);
+ 		return -EINVAL;
+ 	}
+@@ -179,7 +179,7 @@ static void check_for_legacy_df_access(void)
+  * are technically independent things.
+  *
+  * It's possible to match on the PCI IDs of the Data Fabric devices, but this will be
+- * an every expanding list. Instead match on the SMCA and Zen features to cover all
++ * an ever expanding list. Instead, match on the SMCA and Zen features to cover all
+  * relevant systems.
+  */
+ static const struct x86_cpu_id amd_atl_cpuids[] = {
+diff --git a/drivers/ras/amd/atl/dehash.c b/drivers/ras/amd/atl/dehash.c
+index 51721094dd06..6f414926e6fe 100644
+--- a/drivers/ras/amd/atl/dehash.c
++++ b/drivers/ras/amd/atl/dehash.c
+@@ -12,7 +12,14 @@
+ 
+ #include "internal.h"
+ 
+-static inline bool valid_map_bits(struct addr_ctx *ctx, u8 bit1, u8 bit2,
++/*
++ * Verify the interleave bits are correct in the different interleaving
++ * settings.
++ *
++ * If @num_intlv_dies and/or @num_intlv_sockets are 1, it means the
++ * respective interleaving is disabled.
++ */
++static inline bool map_bits_valid(struct addr_ctx *ctx, u8 bit1, u8 bit2,
+ 				  u8 num_intlv_dies, u8 num_intlv_sockets)
+ {
+ 	if (!(ctx->map.intlv_bit_pos == bit1 || ctx->map.intlv_bit_pos == bit2)) {
+@@ -37,11 +44,7 @@ static int df2_dehash_addr(struct addr_ctx *ctx)
+ {
+ 	u8 hashed_bit, intlv_bit, intlv_bit_pos;
+ 
+-	/*
+-	 * Assert that interleave bit is 8 or 9 and that die and socket
+-	 * interleaving are disabled.
+-	 */
+-	if (!valid_map_bits(ctx, 8, 9, 1, 1))
++	if (!map_bits_valid(ctx, 8, 9, 1, 1))
+ 		return -EINVAL;
+ 
+ 	intlv_bit_pos = ctx->map.intlv_bit_pos;
+@@ -64,11 +67,7 @@ static int df3_dehash_addr(struct addr_ctx *ctx)
+ 	bool hash_ctl_64k, hash_ctl_2M, hash_ctl_1G;
+ 	u8 hashed_bit, intlv_bit, intlv_bit_pos;
+ 
+-	/*
+-	 * Assert that interleave bit is 8 or 9 and that die and socket
+-	 * interleaving are disabled.
+-	 */
+-	if (!valid_map_bits(ctx, 8, 9, 1, 1))
++	if (!map_bits_valid(ctx, 8, 9, 1, 1))
+ 		return -EINVAL;
+ 
+ 	hash_ctl_64k = FIELD_GET(DF3_HASH_CTL_64K, ctx->map.ctl);
+@@ -172,11 +171,7 @@ static int df4_dehash_addr(struct addr_ctx *ctx)
+ 	bool hash_ctl_64k, hash_ctl_2M, hash_ctl_1G;
+ 	u8 hashed_bit, intlv_bit;
+ 
+-	/*
+-	 * Assert that interleave bit is 8, die interleaving is disabled,
+-	 * and no more than 2 sockets are interleaved.
+-	 */
+-	if (!valid_map_bits(ctx, 8, 8, 1, 2))
++	if (!map_bits_valid(ctx, 8, 8, 1, 2))
+ 		return -EINVAL;
+ 
+ 	hash_ctl_64k = FIELD_GET(DF4_HASH_CTL_64K, ctx->map.ctl);
+@@ -252,11 +247,7 @@ static int df4p5_dehash_addr(struct addr_ctx *ctx)
+ 	u8 hashed_bit, intlv_bit;
+ 	u64 rehash_vector;
+ 
+-	/*
+-	 * Assert that interleave bit is 8, die interleaving is disabled,
+-	 * and no more than 2 sockets are interleaved.
+-	 */
+-	if (!valid_map_bits(ctx, 8, 8, 1, 2))
++	if (!map_bits_valid(ctx, 8, 8, 1, 2))
+ 		return -EINVAL;
+ 
+ 	hash_ctl_64k = FIELD_GET(DF4_HASH_CTL_64K, ctx->map.ctl);
+diff --git a/drivers/ras/amd/atl/denormalize.c b/drivers/ras/amd/atl/denormalize.c
+index fb182dd7cca6..01f1d0fb6799 100644
+--- a/drivers/ras/amd/atl/denormalize.c
++++ b/drivers/ras/amd/atl/denormalize.c
+@@ -339,7 +339,8 @@ static u16 get_logical_coh_st_fabric_id(struct addr_ctx *ctx)
+ 	}
+ 
+ 	if (log_fabric_id == MAX_COH_ST_CHANNELS)
+-		atl_debug("COH_ST remap entry not found for 0x%x", log_fabric_id);
++		atl_debug(ctx, "COH_ST remap entry not found for 0x%x",
++			  log_fabric_id);
+ 
+ 	/* Get the Node ID bits from the physical and apply to the logical. */
+ 	return (phys_fabric_id & df_cfg.node_id_mask) | log_fabric_id;
+diff --git a/drivers/ras/amd/atl/internal.h b/drivers/ras/amd/atl/internal.h
+index a1996811aa34..f17c5f5c9950 100644
+--- a/drivers/ras/amd/atl/internal.h
++++ b/drivers/ras/amd/atl/internal.h
+@@ -279,10 +279,10 @@ static inline u64 remove_bits(u8 low_bit, u8 high_bit, u64 data)
+ 	return temp1 | temp2;
  }
  
-+static size_t fuse_max_dio_rw_size(const struct fuse_conn *fc,
-+				   const struct iov_iter *iter, int write)
-+{
-+	unsigned int nmax = write ? fc->max_write : fc->max_read;
-+
-+	if (iov_iter_is_kvec(iter))
-+		nmax = min(nmax, fc->max_nopage_rw);
-+	return nmax;
-+}
-+
- ssize_t fuse_direct_io(struct fuse_io_priv *io, struct iov_iter *iter,
- 		       loff_t *ppos, int flags)
+-#define atl_debug(fmt, arg...) \
++#define atl_debug(ctx, fmt, arg...) \
+ 	pr_debug("socket_id=%u die_id=%u coh_st_inst_id=%u norm_addr=0x%016llx: " fmt,\
+-		 ctx->inputs.socket_id, ctx->inputs.die_id,\
+-		 ctx->inputs.coh_st_inst_id, ctx->inputs.norm_addr, ##arg)
++		 (ctx)->inputs.socket_id, (ctx)->inputs.die_id,\
++		 (ctx)->inputs.coh_st_inst_id, (ctx)->inputs.norm_addr, ##arg)
+ 
+ static inline void atl_debug_on_bad_df_rev(void)
  {
-@@ -1432,7 +1442,7 @@ ssize_t fuse_direct_io(struct fuse_io_priv *io, struct iov_iter *iter,
- 	struct inode *inode = mapping->host;
- 	struct fuse_file *ff = file->private_data;
- 	struct fuse_conn *fc = ff->fm->fc;
--	size_t nmax = write ? fc->max_write : fc->max_read;
-+	size_t nmax = fuse_max_dio_rw_size(fc, iter, write);
- 	loff_t pos = *ppos;
- 	size_t count = iov_iter_count(iter);
- 	pgoff_t idx_from = pos >> PAGE_SHIFT;
-diff --git a/fs/fuse/fuse_i.h b/fs/fuse/fuse_i.h
-index 1df83eebda92..fc753cd34211 100644
---- a/fs/fuse/fuse_i.h
-+++ b/fs/fuse/fuse_i.h
-@@ -594,6 +594,9 @@ struct fuse_conn {
- 	/** Constrain ->max_pages to this value during feature negotiation */
- 	unsigned int max_pages_limit;
+@@ -291,7 +291,7 @@ static inline void atl_debug_on_bad_df_rev(void)
  
-+	/** Maximum read/write size when there is no page in request */
-+	unsigned int max_nopage_rw;
-+
- 	/** Input queue */
- 	struct fuse_iqueue iq;
+ static inline void atl_debug_on_bad_intlv_mode(struct addr_ctx *ctx)
+ {
+-	atl_debug("Unrecognized interleave mode: %u", ctx->map.intlv_mode);
++	atl_debug(ctx, "Unrecognized interleave mode: %u", ctx->map.intlv_mode);
+ }
  
-diff --git a/fs/fuse/inode.c b/fs/fuse/inode.c
-index 2a6d44f91729..4cbbcb4a4b71 100644
---- a/fs/fuse/inode.c
-+++ b/fs/fuse/inode.c
-@@ -923,6 +923,7 @@ void fuse_conn_init(struct fuse_conn *fc, struct fuse_mount *fm,
- 	fc->user_ns = get_user_ns(user_ns);
- 	fc->max_pages = FUSE_DEFAULT_MAX_PAGES_PER_REQ;
- 	fc->max_pages_limit = FUSE_MAX_MAX_PAGES;
-+	fc->max_nopage_rw = UINT_MAX;
+ #endif /* __AMD_ATL_INTERNAL_H__ */
+diff --git a/drivers/ras/amd/atl/map.c b/drivers/ras/amd/atl/map.c
+index 8145b7bb2b40..64e8b1eda1ae 100644
+--- a/drivers/ras/amd/atl/map.c
++++ b/drivers/ras/amd/atl/map.c
+@@ -140,7 +140,7 @@ static int get_dram_offset(struct addr_ctx *ctx, u64 *norm_offset)
  
- 	INIT_LIST_HEAD(&fc->mounts);
- 	list_add(&fm->fc_entry, &fc->mounts);
-diff --git a/fs/fuse/virtio_fs.c b/fs/fuse/virtio_fs.c
-index 5f1be1da92ce..3aac31d45198 100644
---- a/fs/fuse/virtio_fs.c
-+++ b/fs/fuse/virtio_fs.c
-@@ -1452,6 +1452,12 @@ static int virtio_fs_get_tree(struct fs_context *fsc)
- 	/* Tell FUSE to split requests that exceed the virtqueue's size */
- 	fc->max_pages_limit = min_t(unsigned int, fc->max_pages_limit,
- 				    virtqueue_size - FUSE_HEADER_OVERHEAD);
-+	/* copy_args_to_argbuf() uses kmalloc-ed memory as bounce buffer
-+	 * for fuse args, so limit the total size of these args to prevent
-+	 * the warning in __alloc_pages() and decrease the demand for large
-+	 * contiguous pages.
-+	 */
-+	fc->max_nopage_rw = min(fc->max_nopage_rw, 256U << 10);
+ 	/* Should not be called for map 0. */
+ 	if (!ctx->map.num) {
+-		atl_debug("Trying to find DRAM offset for map 0");
++		atl_debug(ctx, "Trying to find DRAM offset for map 0");
+ 		return -EINVAL;
+ 	}
  
- 	fsc->s_fs_info = fm;
- 	sb = sget_fc(fsc, virtio_fs_test_super, set_anon_super_fc);
--- 
-2.29.2
+@@ -388,7 +388,6 @@ static int find_normalized_offset(struct addr_ctx *ctx, u64 *norm_offset)
+ 
+ 	for (ctx->map.num = 1; ctx->map.num < df_cfg.num_coh_st_maps; ctx->map.num++) {
+ 		ret = get_dram_offset(ctx, norm_offset);
+-
+ 		if (ret < 0)
+ 			return ret;
+ 
+@@ -398,13 +397,13 @@ static int find_normalized_offset(struct addr_ctx *ctx, u64 *norm_offset)
+ 
+ 		/* Enabled offsets should never be 0. */
+ 		if (*norm_offset == 0) {
+-			atl_debug("Enabled map %u offset is 0", ctx->map.num);
++			atl_debug(ctx, "Enabled map %u offset is 0", ctx->map.num);
+ 			return -EINVAL;
+ 		}
+ 
+ 		/* Offsets should always increase from one map to the next. */
+ 		if (*norm_offset <= last_offset) {
+-			atl_debug("Map %u offset (0x%016llx) <= previous (0x%016llx)",
++			atl_debug(ctx, "Map %u offset (0x%016llx) <= previous (0x%016llx)",
+ 				  ctx->map.num, *norm_offset, last_offset);
+ 			return -EINVAL;
+ 		}
+@@ -650,18 +649,17 @@ static void dump_address_map(struct dram_addr_map *map)
+ 
+ int get_address_map(struct addr_ctx *ctx)
+ {
+-	int ret = 0;
++	int ret;
+ 
+ 	ret = get_address_map_common(ctx);
+ 	if (ret)
+-		goto out;
++		return ret;
+ 
+ 	ret = get_global_map_data(ctx);
+ 	if (ret)
+-		goto out;
++		return ret;
+ 
+ 	dump_address_map(&ctx->map);
+ 
+-out:
+ 	return ret;
+ }
+diff --git a/drivers/ras/amd/atl/system.c b/drivers/ras/amd/atl/system.c
+index 37ad203bb93e..af61f2f1d6de 100644
+--- a/drivers/ras/amd/atl/system.c
++++ b/drivers/ras/amd/atl/system.c
+@@ -17,7 +17,7 @@ int determine_node_id(struct addr_ctx *ctx, u8 socket_id, u8 die_id)
+ 	u16 socket_id_bits, die_id_bits;
+ 
+ 	if (socket_id > 0 && df_cfg.socket_id_mask == 0) {
+-		atl_debug("Invalid socket inputs: socket_id=%u socket_id_mask=0x%x",
++		atl_debug(ctx, "Invalid socket inputs: socket_id=%u socket_id_mask=0x%x",
+ 			  socket_id, df_cfg.socket_id_mask);
+ 		return -EINVAL;
+ 	}
+@@ -28,7 +28,7 @@ int determine_node_id(struct addr_ctx *ctx, u8 socket_id, u8 die_id)
+ 	socket_id_bits &=	df_cfg.socket_id_mask;
+ 
+ 	if (die_id > 0 && df_cfg.die_id_mask == 0) {
+-		atl_debug("Invalid die inputs: die_id=%u die_id_mask=0x%x",
++		atl_debug(ctx, "Invalid die inputs: die_id=%u die_id_mask=0x%x",
+ 			  die_id, df_cfg.die_id_mask);
+ 		return -EINVAL;
+ 	}
+@@ -225,8 +225,6 @@ static void get_num_maps(void)
+ 		df_cfg.num_coh_st_maps	= 2;
+ 		break;
+ 	case DF4:
+-		df_cfg.num_coh_st_maps	= 4;
+-		break;
+ 	case DF4p5:
+ 		df_cfg.num_coh_st_maps	= 4;
+ 		break;
 
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
 
