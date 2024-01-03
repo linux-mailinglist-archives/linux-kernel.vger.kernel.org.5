@@ -1,150 +1,107 @@
-Return-Path: <linux-kernel+bounces-15506-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15509-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B650822CE1
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 13:22:08 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C9A7A822CEA
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 13:22:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 58BD5B21C2A
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 12:22:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EE1231C23543
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 12:22:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E89319440;
-	Wed,  3 Jan 2024 12:21:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="jj0N50XA"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53CF519477;
+	Wed,  3 Jan 2024 12:22:29 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5812A19445
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 12:21:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-5e7c1012a42so85362127b3.3
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 04:21:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704284514; x=1704889314; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Dy0HsVS+iZ9hEJU+wJGKHJ+eZMWAvGjx8XOWsGELyQo=;
-        b=jj0N50XAG9+mAJSMenJBTAVtDzItZ/s8YOKfwUdzAW6Gmd73bXzlOkv4IPiT6JXQfJ
-         yWdYXhmQaiCt8pWnJVOFK9n8AxlWCwZdgpLPMfrjkn/fmqfQYxHK1CnRCMi7p3hYibux
-         D6BzYymUdhbNVrJX8lTEir7dI5dJKA2u/SKeQ/3+hypa98o25w0ZX1IJeuMEt+S+eizA
-         nLpiADAZCLGs4UQ5FPANJJoRpwKyvg996bj9CWZE0MbbEmfGa8rbrYm/jVYdeUotNOBi
-         P3bQYzbwpgKEYgQqYcImiKW2K2WEKYnQjP1rinSVA4VEm0CP+UHyWVH5yWxaSlQRpE7J
-         HFyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704284514; x=1704889314;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Dy0HsVS+iZ9hEJU+wJGKHJ+eZMWAvGjx8XOWsGELyQo=;
-        b=IFilKLBeMk2jf9WzGWQPcaxbYSimHqKxMi+Ni7+STNYV4rIpU6Ms6PrUHXZTPXY7/9
-         hqbMvvSjXTU76TerPoywU4vry/8RaVZEKLsipvygilqX/qaS2mv14kL1/r51yYoJ4RF4
-         pryRnZs+tnt7RTKVKHnTabUtga2QFKLLLydHEEAmdUKiT9vdMlC3ALhqBhVmEy7jh0+C
-         bVXbRr6s9TFhxJhPo9QmUst3eQKbTLG880wnmTsNyzDGBiMMcMnGoWlbnCLa+oNtH0t+
-         dy6WExpgbLirbk1HYz96YJB8oW15JoMC57J1I5PlbFYTLO9VWe26bwojYKqt6Wp+EeuZ
-         14MQ==
-X-Gm-Message-State: AOJu0YyeQREKpFrKPz1QXnvxFPUDywoharLAuYZtTaj8iAwPweWsGdG8
-	uN5EmocJ9xfEMHcgfYbmlprLRcPZjxs4hjWcxIzyeKEPbpn+xQ==
-X-Google-Smtp-Source: AGHT+IGqLefkwFSdFQp9UDZGcvBiz2/bcMXHLdaRynGAl7qEyjonv9zAygb4WT3tck7RHMNmWS6mHyROAddAAgybgJ4=
-X-Received: by 2002:a05:690c:2a46:b0:5ee:6403:8931 with SMTP id
- ej6-20020a05690c2a4600b005ee64038931mr5265480ywb.55.1704284514280; Wed, 03
- Jan 2024 04:21:54 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D6B918EDD
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 12:22:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rL0GL-00043N-Mm; Wed, 03 Jan 2024 13:22:21 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rL0GE-00074J-Ti; Wed, 03 Jan 2024 13:22:14 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rL0GE-003Lb5-2e;
+	Wed, 03 Jan 2024 13:22:14 +0100
+Date: Wed, 3 Jan 2024 13:22:14 +0100
+From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: William Qiu <william.qiu@starfivetech.com>
+Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-riscv@lists.infradead.org, linux-pwm@vger.kernel.org, 
+	Emil Renner Berthing <kernel@esmil.dk>, Rob Herring <robh+dt@kernel.org>, 
+	Thierry Reding <thierry.reding@gmail.com>, Philipp Zabel <p.zabel@pengutronix.de>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Hal Feng <hal.feng@starfivetech.com>, Paul Walmsley <paul.walmsley@sifive.com>, 
+	Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>
+Subject: Re: [PATCH v10 2/4] pwm: opencores: Add PWM driver support
+Message-ID: <sl3np65yohjs2hyz3d2mfbs3ewdfpaisdlgle7dcqudpecgipl@pxccptubrguc>
+References: <20231222094548.54103-1-william.qiu@starfivetech.com>
+ <20231222094548.54103-3-william.qiu@starfivetech.com>
+ <b1a44192-4e7d-46c2-b9cf-969795208839@starfivetech.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240103112911.2954632-1-jorge@foundries.io>
-In-Reply-To: <20240103112911.2954632-1-jorge@foundries.io>
-From: Ulf Hansson <ulf.hansson@linaro.org>
-Date: Wed, 3 Jan 2024 13:21:18 +0100
-Message-ID: <CAPDyKFpRD2euDm5cArZFcS3b9Zpr8yKL6vcyk4Sb77Vkr-YDZA@mail.gmail.com>
-Subject: Re: [PATCHv3] mmc: rpmb: do not force a retune before RPMB switch
-To: Jorge Ramirez-Ortiz <jorge@foundries.io>
-Cc: adrian.hunter@intel.com, Avri.Altman@wdc.com, christian.loehle@arm.com, 
-	ricardo@foundries.io, linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="ei7ppzofy2gte56m"
+Content-Disposition: inline
+In-Reply-To: <b1a44192-4e7d-46c2-b9cf-969795208839@starfivetech.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-On Wed, 3 Jan 2024 at 12:29, Jorge Ramirez-Ortiz <jorge@foundries.io> wrote:
->
-> Requesting a retune before switching to the RPMB partition has been
-> observed to cause CRC errors on the RPMB reads (-EILSEQ).
->
-> Since RPMB reads can not be retried, the clients would be directly
-> affected by the errors.
->
-> This commit disables the retune request prior to switching to the RPMB
-> partition: mmc_retune_pause() no longer triggers a retune before the
-> pause period begins.
->
-> This was verified with the sdhci-of-arasan driver (ZynqMP) configured
-> for HS200 using two separate eMMC cards (DG4064 and 064GB2). In both
-> cases, the error was easy to reproduce triggering every few tenths of
-> reads.
->
-> With this commit, systems that were utilizing OP-TEE to access RPMB
-> variables will experience an enhanced performance. Specifically, when
-> OP-TEE is configured to employ RPMB as a secure storage solution, it not
-> only writes the data but also the secure filesystem within the
-> partition. As a result, retrieving any variable involves multiple RPMB
-> reads, typically around five.
->
-> For context, on ZynqMP, each retune request consumed approximately
-> 8ms. Consequently, reading any RPMB variable used to take at the very
-> minimum 40ms.
->
-> After droping the need to retune before switching to the RPMB partition,
-> this is no longer the case.
->
-> Signed-off-by: Jorge Ramirez-Ortiz <jorge@foundries.io>
-> Acked-by: Avri Altman <avri.altman@wdc.com>
-> Acked-by: Adrian Hunter <adrian.hunter@intel.com>
 
-Thanks for updating the commit message, very nice! And thanks Adrian
-for reviewing this!
+--ei7ppzofy2gte56m
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Applied for next, thanks!
+Hello William,
 
-Kind regards
-Uffe
+On Wed, Jan 03, 2024 at 03:15:31PM +0800, William Qiu wrote:
+> Could you please help me review this patch series to see if there is
+> anything that needs to be modified? If not, could you help me integrate
+> this patch into the main line? Thanks.
+> Thanks for taking time to review this patch series.
 
-> ---
->  v3:
->     Added some performance information to the commit message
->  v2:
->     mmc_retune_pause() no longer can trigger a retune.
->     Keeping Avri Altman Acked-by since they are functionally equivalent.
->  v1:
->     modify mmc_retune_pause to optionally trigger a retune.
->
->
->  drivers/mmc/core/host.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
->
-> diff --git a/drivers/mmc/core/host.c b/drivers/mmc/core/host.c
-> index 096093f7be00..ed44920e92df 100644
-> --- a/drivers/mmc/core/host.c
-> +++ b/drivers/mmc/core/host.c
-> @@ -119,13 +119,12 @@ void mmc_retune_enable(struct mmc_host *host)
->
->  /*
->   * Pause re-tuning for a small set of operations.  The pause begins after the
-> - * next command and after first doing re-tuning.
-> + * next command.
->   */
->  void mmc_retune_pause(struct mmc_host *host)
->  {
->         if (!host->retune_paused) {
->                 host->retune_paused = 1;
-> -               mmc_retune_needed(host);
->                 mmc_retune_hold(host);
->         }
->  }
-> --
-> 2.34.1
+It's on my radar. Actually your patch set is on the top of my list. I
+won't promise a timely review, but I plan to do it this week.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--ei7ppzofy2gte56m
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmWVUXUACgkQj4D7WH0S
+/k4Wrgf9H2xWkjQYexVF/+Fqnk0YZUI6HXVnF+6vhwtoU8wskh1hVETaDfAsA1ca
+TNI/mS1aYYaukikrpbprbR0MjwI2dRjvwm54xZgvZLTZx61Gl69FNH2KMlnPCjha
+9Vw++IAFa+HrzV55Yl/fmY1/W4i7sHZTDY+px2IgD51sxy4SLZq7D0S9NurCGx7J
+PbGHBBNWdSxWjP6klQdnA2C7A6ivG3nkhVmcqKXlmwpdacEEUh8kfyJVQ/n4QRZi
+15sCY0nt9D6IOC9v1z2mvPocCrTMkefG0gkraiOVf6Xh5kIFHVUNAj2NTnQb7F2R
+7FFOt3V+xcAO+F9jVsSfZymQ+t9Mbg==
+=Lp3F
+-----END PGP SIGNATURE-----
+
+--ei7ppzofy2gte56m--
 
