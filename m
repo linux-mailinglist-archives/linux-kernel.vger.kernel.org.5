@@ -1,104 +1,182 @@
-Return-Path: <linux-kernel+bounces-15863-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15864-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 708FA82346E
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 19:26:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7798A82346F
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 19:27:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1F81D1F2444D
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 18:26:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2BB451F2446E
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 18:27:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88F1B1CF92;
-	Wed,  3 Jan 2024 18:25:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ao+ZXOop"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C07051C6A6;
+	Wed,  3 Jan 2024 18:26:08 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 699401CA96;
-	Wed,  3 Jan 2024 18:25:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704306352; x=1735842352;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=xTyozBGsJ68X6VYIDd0NVpbOWs1o6mrsQLngawoY/Og=;
-  b=ao+ZXOop3h0hZMUIXVwXt49hlkdcCVNcltHBIygOtMXngwcCt20DvzHZ
-   HKPNToHB3gCGUPbVdtOdxcxdx3Gdmh4ZfvmtaYjDbkq+t8cTjtQFwWi9m
-   nUbJKbTeegQuOJDtRQPumteAr3UZYYOZ11hp7ctJThbyu/0s7FbrWbzCo
-   NvHDh9fH4Ez2bTEkPwKalnCOXRbUO59z2hE8GurYvoXp4aQv36kEpI0VU
-   28FE51KcVKjuxqa4kTg9OkqpYKMefaBdCbljIbwKpfoUDFwTNRZH5QsXb
-   D4wV0A9nIYbA/Znk/UrT7Ywdu22o6BsqLr1qKgralkGM7xCHQPArhn3Vx
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10942"; a="10641291"
-X-IronPort-AV: E=Sophos;i="6.04,328,1695711600"; 
-   d="scan'208";a="10641291"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jan 2024 10:25:50 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10942"; a="773208655"
-X-IronPort-AV: E=Sophos;i="6.04,328,1695711600"; 
-   d="scan'208";a="773208655"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga007.jf.intel.com with ESMTP; 03 Jan 2024 10:25:46 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rL5vz-000MQw-2u;
-	Wed, 03 Jan 2024 18:25:43 +0000
-Date: Thu, 4 Jan 2024 02:25:13 +0800
-From: kernel test robot <lkp@intel.com>
-To: Yajun Deng <yajun.deng@linux.dev>, davem@davemloft.net,
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com
-Cc: oe-kbuild-all@lists.linux.dev, andrew@lunn.ch, olteanv@gmail.com,
-	hkallweit1@gmail.com, linux@armlinux.org.uk,
-	rmk+kernel@armlinux.org.uk, kabel@kernel.org,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-phy@lists.infradead.org, Yajun Deng <yajun.deng@linux.dev>
-Subject: Re: [PATCH net-next] net: phy: Cleanup struct mdio_driver_common
-Message-ID: <202401040103.bTPaACUE-lkp@intel.com>
-References: <20231228072350.1294425-1-yajun.deng@linux.dev>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 644911D52D;
+	Wed,  3 Jan 2024 18:26:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 288E3C433C8;
+	Wed,  3 Jan 2024 18:26:07 +0000 (UTC)
+Date: Wed, 3 Jan 2024 13:27:10 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
+ <linux-trace-kernel@vger.kernel.org>, Masami Hiramatsu
+ <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Subject: Re: [PATCH] eventfs: Stop using dcache_readdir() for getdents()
+Message-ID: <20240103132710.443f227f@gandalf.local.home>
+In-Reply-To: <CAHk-=whrRobm82kcjwj625bZrdK+vvEo0B5PBzP+hVaBcHUkJA@mail.gmail.com>
+References: <20240103102553.17a19cea@gandalf.local.home>
+	<CAHk-=whrRobm82kcjwj625bZrdK+vvEo0B5PBzP+hVaBcHUkJA@mail.gmail.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231228072350.1294425-1-yajun.deng@linux.dev>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Hi Yajun,
+On Wed, 3 Jan 2024 10:12:08 -0800
+Linus Torvalds <torvalds@linux-foundation.org> wrote:
 
-kernel test robot noticed the following build errors:
+> On Wed, 3 Jan 2024 at 07:24, Steven Rostedt <rostedt@goodmis.org> wrote:
+> >
+> > Instead, just have eventfs have its own iterate_shared callback function
+> > that will fill in the dent entries. This simplifies the code quite a bit.  
+> 
+> Much better. Now eventfs looks more like a real filesystem, and less
+> like an eldritch horror monster that is parts of dcache tackled onto a
+> pseudo-filesystem.
 
-[auto build test ERROR on net-next/main]
+Thanks.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Yajun-Deng/net-phy-Cleanup-struct-mdio_driver_common/20231228-152806
-base:   net-next/main
-patch link:    https://lore.kernel.org/r/20231228072350.1294425-1-yajun.deng%40linux.dev
-patch subject: [PATCH net-next] net: phy: Cleanup struct mdio_driver_common
-config: s390-randconfig-002-20240103 (https://download.01.org/0day-ci/archive/20240104/202401040103.bTPaACUE-lkp@intel.com/config)
-compiler: s390-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240104/202401040103.bTPaACUE-lkp@intel.com/reproduce)
+> 
+> However, one request, and one nit:
+> 
+> > Also, remove the "lookup" parameter to the create_file/dir_dentry() and
+> > always have it return a dentry that has its ref count incremented, and
+> > have the caller call the dput. This simplifies that code as well.  
+> 
+> Can you please do that as a separate patch, where the first patch just
+> cleans up the directory iteration, and the second patch then goes "now
+> there are no more callers that have the 'lookup' argument set to
+> false".
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202401040103.bTPaACUE-lkp@intel.com/
+Yeah, I was thinking of doing it as two patches and figured I'd merge them
+into one because I deleted one of the users of it. As I was on the fence
+with doing two patches, I'm happy to change that.
 
-All errors (new ones prefixed by >>):
+> 
+> Because as-is, the patch is kind of two things mixed up.
+> 
+> The small nit is this:
+> 
+> > +static int eventfs_iterate(struct file *file, struct dir_context *ctx)
+> >  {
+> > +       /*
+> > +        * Need to create the dentries and inodes to have a consistent
+> > +        * inode number.
+> > +        */
+> >         list_for_each_entry_srcu(ei_child, &ei->children, list,
+> >                                  srcu_read_lock_held(&eventfs_srcu)) {
+> > -               d = create_dir_dentry(ei, ei_child, parent, false);
+> > -               if (d) {
+> > -                       ret = add_dentries(&dentries, d, cnt);
+> > -                       if (ret < 0)
+> > -                               break;
+> > -                       cnt++;
+> > +
+> > +               if (ei_child->is_freed)
+> > +                       continue;
+> > +
+> > +               name = ei_child->name;
+> > +
+> > +               dentry = create_dir_dentry(ei, ei_child, ei_dentry);
+> > +               if (!dentry)
+> > +                       goto out;
+> > +               ino = dentry->d_inode->i_ino;
+> > +               dput(dentry);
+> > +
+> > +               if (c > 0) {
+> > +                       c--;
+> > +                       continue;
+> >                 }  
+> 
+> Just move this "is the position before this name" up to the top of the
+> loop. Even above the "is_freed" part.
+> 
+> Let's just always count all the entries in the child list.
+> 
+> And same for the ei->nr_entries loop:
+> 
+> >         for (i = 0; i < ei->nr_entries; i++) {  
+> 
+> where there's no point in creating that dentry just to look up the
+> inode number, only to then decide "Oh, we already iterated past this
+> part, so let's not do anything with it".
+> 
+> This wouldn't seem to matter much with a big enough getdents buffer
+> (which is the normal user level behavior), but it actually does,
+> because we don't keep track of "we have read to the end of the
+> directory".
+> 
+> So every readdir ends up effectively doing getdents at least twice:
+> once to read the directory entries, and then once to just be told
+> "that was all".
+> 
+> End result: you should strive very hard to *not* waste time on the
+> directory entries that have already been read, and are less than
+> 'ctx->pos'.
 
-   s390-linux-ld: drivers/net/phy/mdio_bus.o: in function `mdio_bus_match':
->> mdio_bus.c:(.text+0xecc): undefined reference to `is_phy_driver'
-   s390-linux-ld: drivers/net/phy/mdio_device.o: in function `mdio_device_bus_match':
->> mdio_device.c:(.text+0x934): undefined reference to `is_phy_driver'
+My patch originally did that, but then I was worried about counting something
+that doesn't exist.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+If it is done twice, there's a good chance the dentry will still be around
+anyway, so it doesn't slow it down that much. The dput() only decrements
+the entry and doesn't free it. I added back my "show_events_dentries" file
+to test this. They sit with refcount equal to zero waiting to be reclaimed.
+But if they get referenced again, the refcount goes up again.
+
+That is, the first time it is called, where ctx->pos is likely zero, it
+creates the dentry, but that is also added to the list. The next time, with
+ctx->pos greater than zero, the create_dir_dentry() starts with:
+
+static struct dentry *
+create_dir_dentry(struct eventfs_inode *pei, struct eventfs_inode *ei,
+		  struct dentry *parent)
+{
+	struct dentry *dentry = NULL;
+
+	WARN_ON_ONCE(!inode_is_locked(parent->d_inode));
+
+	mutex_lock(&eventfs_mutex);
+	if (pei->is_freed || ei->is_freed) {
+		mutex_unlock(&eventfs_mutex);
+		return NULL;
+	}
+	if (ei->dentry) {
+		/* If the dentry already has a dentry, use it */
+		dentry = ei->dentry;
+		dget(dentry);
+		mutex_unlock(&eventfs_mutex);
+		return dentry;
+	}
+	mutex_unlock(&eventfs_mutex);
+
+Where the already created dentry is returned. (hmm, I just noticed that
+comment should be "if the eventfs_inode already has a dentry" and not "If
+the dentry already has a dentry" :-p ).
+
+It does require taking a mutex, but that's actually quite fast too.
+
+If you don't think it will cause any inconsistencies to count something
+that perhaps doesn't exist anymore, then I can move the ctx->pos check up.
+
+-- Steve
+
 
