@@ -1,121 +1,159 @@
-Return-Path: <linux-kernel+bounces-15242-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15248-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E46928228FF
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 08:30:46 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C2A782291C
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 08:51:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 89E591F23C51
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 07:30:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 273EA1C22F64
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 07:51:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBB8F1803D;
-	Wed,  3 Jan 2024 07:30:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=codeweavers.com header.i=@codeweavers.com header.b="QC6jEHwv"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 440BB18045;
+	Wed,  3 Jan 2024 07:51:29 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail.codeweavers.com (mail.codeweavers.com [4.36.192.163])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0BE51802F
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 07:30:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeweavers.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=codeweavers.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=codeweavers.com; s=s1; h=Message-ID:Date:Subject:Cc:To:From:Sender;
-	bh=bCfLSVPQoIMpScqiGU+FQxppHcHn7wqKQ1i1JBi2Q88=; b=QC6jEHwv22+wuyyUZYFHOvzBcC
-	7l8/ue8JARl6urs5G+Clqr/przo5m/eC/zGeuCWLZS/l06oVjYiu/8e7ikLTQ61XMbIHj1TRLpL/J
-	LdIFPvueWo3mLupiDLpMdaH44fH/4TzK/iIO68w8aZhw4+3oWPK9BpT0dWrYyLQ+IDVGv5iRDD3Iq
-	Aub4yYWsWGjs82PnpOYIHy09xl5w+j501rjwiHOk+Jp+ZDoZE+pPojUuTOgi45xePI7JXzfiV3icA
-	7QTZenBbufOLZKWMfLQq4jE3tGHKaA45RBvbBMqZo3ZCx2XpPVAkNMa0xcKdeHvkXjv+cRGWSSoOa
-	oOdmcD/Q==;
-Received: from cw141ip135.vpn.codeweavers.com ([10.69.141.135] helo=grey.localnet)
-	by mail.codeweavers.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <stefan@codeweavers.com>)
-	id 1rKvhz-009vLS-08;
-	Wed, 03 Jan 2024 01:30:35 -0600
-From: Stefan =?ISO-8859-1?Q?D=F6singer?= <stefan@codeweavers.com>
-To: x86@kernel.org, Linux Kernel <linux-kernel@vger.kernel.org>,
- Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
- Ricardo Neri <ricardo.neri-calderon@linux.intel.com>, wine-devel@winehq.org,
- "H. Peter Anvin" <hpa@zytor.com>
-Cc: Elizabeth Figura <zfigura@codeweavers.com>
-Subject: Re: x86 SGDT emulation for Wine
-Date: Wed, 03 Jan 2024 10:30:24 +0300
-Message-ID: <13430819.uLZWGnKmhe@grey>
-Organization: CodeWeavers
-In-Reply-To: <3207569.5fSG56mABF@uriel>
-References:
- <2285758.taCxCBeP46@uriel> <868D3980-3323-4E4A-8A7A-B9C26F123A1E@zytor.com>
- <3207569.5fSG56mABF@uriel>
+Received: from invmail4.hynix.com (exvmail4.hynix.com [166.125.252.92])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0FA618038
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Jan 2024 07:51:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
+X-AuditID: a67dfc5b-d6dff70000001748-67-65950e6e4313
+Received: from hymail23.hynixad.com (10.156.135.53) by hymail14.hynixad.com
+ (10.156.135.44) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.2.986.42; Wed, 3 Jan 2024
+ 16:36:13 +0900
+Received: from hymail23.hynixad.com ([10.156.135.53]) by hymail23.hynixad.com
+ ([10.156.135.53]) with mapi id 15.02.0986.042; Wed, 3 Jan 2024 16:36:08 +0900
+From: "Hardaway (Shih Hung) Tseng SKHYT" <hardaway.tseng@sk.com>
+To: Keith Busch <kbusch@kernel.org>, =?utf-8?B?SmltIExpbiDmnpflv5fono0=?=
+	<jim.lin@siliconmotion.com>, =?utf-8?B?RGF2aWQgWWVoIOiRieWvsOiejQ==?=
+	<david.yeh@siliconmotion.com>
+CC: Jim.Lin <jim.chihjung.lin@gmail.com>, "axboe@kernel.dk" <axboe@kernel.dk>,
+	"hch@lst.de" <hch@lst.de>, "sagi@grimberg.me" <sagi@grimberg.me>,
+	"linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	=?utf-8?B?Q0ogQ2hlbiDpmbPnvqTlgpE=?= <cj.chen@siliconmotion.com>,
+	=?utf-8?B?7ZWc7IOB7JWIKEhBTiBTQU5HQU4pIOuMgOunjOuyleyduA==?=
+	<sangan.han@sk.com>, "Ives(Hsueh Hsien) Lu SKHYT" <ives.lu@sk.com>
+Subject: RE: [PATCH] nvme-pci: disable write zeroes for SK Hynix BC901
+Thread-Topic: [PATCH] nvme-pci: disable write zeroes for SK Hynix BC901
+Thread-Index: AQHaIabItSYv0AoU6E61/0TaLKTrOLCOdLOAgAHxkXD//3BOAIAAn7AggDd08+A=
+Date: Wed, 3 Jan 2024 07:36:07 +0000
+Message-ID: <bcc45d1d4c914707b81c54cba6f1917e@sk.com>
+References: <20231128025737.53026-1-jim.lin@siliconmotion.com>
+ <SEYPR01MB4341EFAA7D4B563BFF903B45FDBCA@SEYPR01MB4341.apcprd01.prod.exchangelabs.com>
+ <71aae1b4cb0441d0940a5e536f4ffce0@sk.com>
+ <ZWaBULOgInxbp6JQ@kbusch-mbp.dhcp.thefacebook.com> 
+Accept-Language: zh-TW, en-US, ko-KR
+Content-Language: zh-TW
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart2924670.e9J7NaK4W3";
- micalg="pgp-sha256"; protocol="application/pgp-signature"
+X-CFilter-Loop: Reflected
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrHLMWRmVeSWpSXmKPExsXC9ZZnoW4e39RUg/9n2S0u75rD5sDo8XmT
+	XABjFJdNSmpOZllqkb5dAlfGom+9LAUzTCqu9vYyNTC+Mepi5OSQEDCR2PfmHiOILSTwilHi
+	1l/HLkYuIHsuo0Rj1zMmkASbgIPEk/a9bCAJEYGNjBITD3xgB0kwCzxglui7qw9iCwu4Sfw8
+	8RtskoiAu0Tj2zZmCNtP4vbnJrB6FgEViW9fJrCC2LwCphL7p31ig9j2g1Hi2YEusCJGoKL3
+	h58zQiwQlzh3sZUd4lQBiSV7zjND2KISLx//Y4WwFSRevNoKdCkHUL2mxPpd+hCtihJTuh+y
+	Q+wSlDg58wkLRLmkxMEVN1gmMIrOQrJhFkL3LCTds5B0L2BkWcUolJlXlpuYmWOil1GZl1mh
+	l5yfu4kRGAvLav9E72D8dCH4EKMAB6MSD++BX5NThVgTy4orcw8xSnAwK4nwrl8HFOJNSays
+	Si3Kjy8qzUktPsQozcGiJM5r9K08RUggPbEkNTs1tSC1CCbLxMEp1cDYzbN8n+mUjoe3ldka
+	TmzRidr84nhR7P41KwLe951P7Q1MedpSu717L5804/XgH7tMeqPOVH0rO3XMSOy6pP60vezv
+	7kQe1ppQu8H947WvM02j9B/4S3dWXD329OPa+6svCYTsjE/cdT5Ydab2uwkBV85nGGuwhChc
+	2rPN8mjoYc9yZeYJVxblK7EUZyQaajEXFScCAGGGQiGBAgAA
 
---nextPart2924670.e9J7NaK4W3
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="utf-8"; protected-headers="v1"
-From: Stefan =?ISO-8859-1?Q?D=F6singer?= <stefan@codeweavers.com>
-Cc: Elizabeth Figura <zfigura@codeweavers.com>
-Subject: Re: x86 SGDT emulation for Wine
-Date: Wed, 03 Jan 2024 10:30:24 +0300
-Message-ID: <13430819.uLZWGnKmhe@grey>
-Organization: CodeWeavers
-In-Reply-To: <3207569.5fSG56mABF@uriel>
-MIME-Version: 1.0
-
-Am Dienstag, 2. Januar 2024, 22:53:26 EAT schrieb Elizabeth Figura:
->   I'm concerned that this will be very expensive. Most VM users don't need
-> to exit on every syscall. While I haven't tested KVM, I think some other
-> Wine developers actually did a similar experiment using a hypervisor to
-> solve some other problem (related to 32-bit support on Mac OS), and exiting
-> the hypervisor was prohibitively slow.
-
-Just to add to this point, Ken Thomases and I experimented with this on Mac 
-OS, and as Zeb said, we found it to be unworkably slow. In the d3d games we 
-tested the performance of hypervisor + lots of exits was approximately the 
-same as running all 32 bit guest code inside qemu's software CPU emulation, or 
-about 5% of the performance of using native 32 bit mac processes (when they 
-still existed). From what we could tell the cost was imposed by the CPU and 
-not MacOS' very lightweight hypervisor API.
-
-There are obviously differences between Mac and Linux, and with Wine's new 
-syscalls we probably don't need to exit as often as my hangover wrapper DLLs 
-did, but combined with the other reasons Zeb listed I don't think running Wine 
-inside KVM is ever going to be realistic.
-
---nextPart2924670.e9J7NaK4W3
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEQxb0tqoFWyeVMl1sPRO8yFRPGiIFAmWVDRAACgkQPRO8yFRP
-GiJ13RAAqjuafx3f25HgeI+PhElCBW4yzBMAemdbPY4PPMP/f7T3c2qvUZsdzjqv
-U6yqikXrKpgpBy+pV2ofZK3W8hALIrSWaCng+auEwToa9lvjWP1TgPNcF3504xU7
-vDpFtXmvBb2K/JmAbptyEdorf5AKSnGRjHgvbNXxjuzI/+OYL1BihK1w1md13MPv
-1wdHXZUy6HuZ9wltoErAK3HdP5ZOSTILRpHHY58E3OTmcWREcds0sYj9IgvAOIV+
-f6mUGkCdrgyHdtVMdpcwNcyksKyf+42pbdlww4GHDxD2zVlJkTbVn6bIS4DIBGJ9
-jCOmr0clYjCXLCUAslCoNVSa/CpHab/64Hdg07lguqV3+u4FjVnrGs05jHTASVAW
-3x1sfICCRV+iwjJpnQX0r9JQIv1ZKBd4jn+6ZpM1Ahbn/PKf5Plzw+XL18miyJL/
-2+4CpMQ8K2kc2Ww/gO5a9yvINJY9uES2hEIvYgvZwB3NovO7sO2xPriEd0f3uKV2
-aQg6D1KR46riMdFgVfKfg7vRBoLakd3CqbU6NAxO53EAhMd3L+MvTOSW8dVWYH6v
-OU+Av5m7vKUPd22wzL4YKxlIBKdNpzBGHNj40/aCzhn5fJsgfHr0VDOl28DCrD4r
-CXtmCIE8wNeW8lXmFU29lQcmIve4WLrt327qXp48tPLALqlaICg=
-=0sIG
------END PGP SIGNATURE-----
-
---nextPart2924670.e9J7NaK4W3--
-
-
-
+SGVsbG8gS2VpdGgsDQoNCkhvcGUgZXZlcnl0aGluZyB5b3UgYXJlIGRvaW5nIGlzIHdlbGwhDQoN
+ClRoZXNlIGRheXMgb3VyIHRlYW1zIHRyaWVkIHNldmVyYWwgd2F5IHRvIGRvIGZ1cnRoZXIgdmVy
+aWZpY2F0aW9uIG9mIHRoaXMgZGlzYWJsZSB3cml0ZSB6ZXJvIHBhdGNoIGZvciBCQzkwMSwgbGV0
+IG1lIHN1bW1hcml6ZSBhcyBiZWxvdyA6DQoNCjEpCVRoZSBjaHJvbWUgaW1hZ2Ugd2l0aCB0aGlz
+IG5ldyB3cml0ZSB6ZXJvIGRpc2FibGUgY29kZSBidWlsdCB3aXRoIDUuMTUsIGhhcyBiZWVuIHZl
+cmlmaWVkIGFuZCBwYXNzZWQgKDwgMjBtaW4gbW9kZSBzd2l0Y2hpbmcgdGltZSkNCjIpCUR1ZSB0
+byBzb21lIGxpbWl0YXRpb25zLCBHb29nbGUgdGVhbSBjb3VsZG4ndCBidWlsZCBhIG5ldyBjaHJv
+bWUgaW1hZ2Ugd2l0aCB0aGUgc3VnZ2VzdGVkIDYuNSBvciBsYXRlciB2ZXJzaW9uICsgdGhpcyBk
+aXNhYmxlIHdyaXRlIHplcm8gcGF0Y2ggZm9yIHZlcmlmaWNhdGlvbiB0ZXN0Lg0KMykJVHJpZWQg
+dG8gYnVpbGQgaW1hZ2Ugd2l0aCA1LjE1ICsgZGlzYWJsZSB3cml0ZSB6ZXJvIHBhdGNoICsgREVB
+QyBtZXJnZWQsIHN5c3RlbSBjYW4gcnVuIGJ1dCB0aGUgdGVzdGluZyByZXN1bHQgaXMgZmFpbGVk
+ICg+IDIwbWluIG1vZGUgc3dpdGNoaW5nLCBhY3R1YWxseSAyN34yOW1pbnMpLg0KDQpBYm92ZSBp
+cyBhbGwgd2UgY291bGQgZG8gaGVyZSBmb3IgdGhlIHZlcmlmaWNhdGlvbiBvZiB0aGlzIHBhdGNo
+LCBjb3VsZCB5b3Ugc2hhcmUgdXMgeW91ciBjb21tZW50IG9yIHN1Z2dlc3Rpb24/IElzIGl0IHBv
+c3NpYmxlIHRvIG1lcmdlIGFuZCBkbyB1cHN0cmVhbSBmb3IgdGhpcyBwYXRjaD8NCg0KVGhhbmsg
+eW91IHNvIG11Y2ghDQoNCg0KVGhhbmtzICYgUmVnYXJkcywNCkhhcmRhd2F5Lg0KDQoNCkhhcmRh
+d2F5IFRzZW5nLyBTci4gTWFuYWdlciB8IFNOLUZBUUUgfCBTSyBoeW5peCBTZW1pY29uZHVjdG9y
+IFRhaXdhbg0KQWRkcmVzczogMTBGLiBOby4gMzA4LCBaaGlmdSBSZC4sIFpob25nc2hhbiBEaXN0
+LiwgVGFpcGVpIENpdHkgMTA0NjYsIFRhaXdhbiBPZmZpY2UgOiArODg2LTItMzUxOC0yMzEzLyBG
+YXg6ICs4ODYtMi0zNTE4LTIzNjYvIE1vYmlsZTogKzg4Ni05MTktODAzLTQ1OA0KRW1haWw6IGhh
+cmRhd2F5LnRzZW5nQHNrLmNvbQ0KDQpTSyBoeW5peCBDb25maWRlbnRpYWwNCuKAnFRoaXMgZS1t
+YWlsIG1heSBjb250YWluIGNvbmZpZGVudGlhbCBhbmQvb3IgcHJpdmlsZWdlZCBpbmZvcm1hdGlv
+bi4gSWYgeW91IGFyZSBub3QgdGhlIGludGVuZGVkIHJlY2lwaWVudChvciBoYXZlIHJlY2VpdmVk
+IHRoaXMgZS1tYWlsIGluIGVycm9yKSwgcGxlYXNlIG5vdGlmeSB0aGUgc2VuZGVyIGltbWVkaWF0
+ZWx5IGFuZCBkZXN0cm95IHRoaXMgZS1tYWlsLiBBbnkgdW5hdXRob3JpemVkIGNvcHlpbmcsIGRp
+c2Nsb3N1cmUgb3IgZGlzdHJpYnV0aW9uIG9mIHRoZSBtYXRlcmlhbCBpbiB0aGlzIGUtbWFpbCBp
+cyBzdHJpY3RseSBmb3JiaWRkZW4u4oCdDQoNClRoYW5rcyAmIFJlZ2FyZHMsDQpIYXJkYXdheS4N
+Cg0KDQpIYXJkYXdheSBUc2VuZy8gU3IuIE1hbmFnZXIgfCBTTi1GQVFFIHwgU0sgaHluaXggU2Vt
+aWNvbmR1Y3RvciBUYWl3YW4NCkFkZHJlc3M6IDEwRi4gTm8uIDMwOCwgWmhpZnUgUmQuLCBaaG9u
+Z3NoYW4gRGlzdC4sIFRhaXBlaSBDaXR5IDEwNDY2LCBUYWl3YW4NCk9mZmljZSA6ICs4ODYtMi0z
+NTE4LTIzMTMvIEZheDogKzg4Ni0yLTM1MTgtMjM2Ni8gTW9iaWxlOiArODg2LTkxOS04MDMtNDU4
+DQpFbWFpbDogaGFyZGF3YXkudHNlbmdAc2suY29tDQoNClNLIGh5bml4IENvbmZpZGVudGlhbA0K
+4oCcVGhpcyBlLW1haWwgbWF5IGNvbnRhaW4gY29uZmlkZW50aWFsIGFuZC9vciBwcml2aWxlZ2Vk
+IGluZm9ybWF0aW9uLiBJZiB5b3UgYXJlIG5vdCB0aGUgaW50ZW5kZWQgcmVjaXBpZW50KG9yIGhh
+dmUgcmVjZWl2ZWQgdGhpcyBlLW1haWwgaW4gZXJyb3IpLCBwbGVhc2Ugbm90aWZ5IHRoZSBzZW5k
+ZXIgaW1tZWRpYXRlbHkgYW5kIGRlc3Ryb3kgdGhpcyBlLW1haWwuIEFueSB1bmF1dGhvcml6ZWQg
+Y29weWluZywgZGlzY2xvc3VyZSBvciBkaXN0cmlidXRpb24gb2YgdGhlIG1hdGVyaWFsIGluIHRo
+aXMgZS1tYWlsIGlzIHN0cmljdGx5IGZvcmJpZGRlbi7igJ0NCg0KDQotLS0tLU9yaWdpbmFsIE1l
+c3NhZ2UtLS0tLQ0KRnJvbTogSGFyZGF3YXkgKFNoaWggSHVuZykgVHNlbmcgU0tIWVQgDQpTZW50
+OiBXZWRuZXNkYXksIE5vdmVtYmVyIDI5LCAyMDIzIDExOjUxIEFNDQpUbzogJ0tlaXRoIEJ1c2No
+JyA8a2J1c2NoQGtlcm5lbC5vcmc+OyBKaW0gTGluIOael+W/l+iejSA8amltLmxpbkBzaWxpY29u
+bW90aW9uLmNvbT47IERhdmlkIFllaCDokYnlr7Dono0gPGRhdmlkLnllaEBzaWxpY29ubW90aW9u
+LmNvbT4NCkNjOiBKaW0uTGluIDxqaW0uY2hpaGp1bmcubGluQGdtYWlsLmNvbT47IGF4Ym9lQGtl
+cm5lbC5kazsgaGNoQGxzdC5kZTsgc2FnaUBncmltYmVyZy5tZTsgbGludXgtbnZtZUBsaXN0cy5p
+bmZyYWRlYWQub3JnOyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOyBDSiBDaGVuIOmZs+e+
+pOWCkSA8Y2ouY2hlbkBzaWxpY29ubW90aW9uLmNvbT47IO2VnOyDgeyViChIQU4gU0FOR0FOKSDr
+jIDrp4zrspXsnbggPHNhbmdhbi5oYW5Ac2suY29tPjsgSXZlcyhIc3VlaCBIc2llbikgTHUgU0tI
+WVQgPGl2ZXMubHVAc2suY29tPg0KU3ViamVjdDogUkU6IFtQQVRDSF0gbnZtZS1wY2k6IGRpc2Fi
+bGUgd3JpdGUgemVyb2VzIGZvciBTSyBIeW5peCBCQzkwMQ0KDQpIaSBLZWl0aCwNCg0KVGhhbmtz
+IGZvciBoZWFkIHVwIENocmlzdG9waCdzIHF1ZXN0aW9ucyENCk91ciB0ZWFtIHdpbGwgaGVscCB1
+cyB0byBhbnN3ZXIgdGhlbS4NCg0KSGkgSmltIGFuZCBEYXZpZCwNClRoYW5rcyBmb3IgeW91ciBz
+dXBwb3J0IQ0KDQoNClRoYW5rcyAmIFJlZ2FyZHMsDQpIYXJkYXdheS4NCg0KDQpIYXJkYXdheSBU
+c2VuZy8gU3IuIE1hbmFnZXIgfCBTTi1GQVFFIHwgU0sgaHluaXggU2VtaWNvbmR1Y3RvciBUYWl3
+YW4NCkFkZHJlc3M6IDEwRi4gTm8uIDMwOCwgWmhpZnUgUmQuLCBaaG9uZ3NoYW4gRGlzdC4sIFRh
+aXBlaSBDaXR5IDEwNDY2LCBUYWl3YW4gT2ZmaWNlIDogKzg4Ni0yLTM1MTgtMjMxMy8gRmF4OiAr
+ODg2LTItMzUxOC0yMzY2LyBNb2JpbGU6ICs4ODYtOTE5LTgwMy00NTgNCkVtYWlsOiBoYXJkYXdh
+eS50c2VuZ0Bzay5jb20NCg0KU0sgaHluaXggQ29uZmlkZW50aWFsDQrigJxUaGlzIGUtbWFpbCBt
+YXkgY29udGFpbiBjb25maWRlbnRpYWwgYW5kL29yIHByaXZpbGVnZWQgaW5mb3JtYXRpb24uIElm
+IHlvdSBhcmUgbm90IHRoZSBpbnRlbmRlZCByZWNpcGllbnQob3IgaGF2ZSByZWNlaXZlZCB0aGlz
+IGUtbWFpbCBpbiBlcnJvciksIHBsZWFzZSBub3RpZnkgdGhlIHNlbmRlciBpbW1lZGlhdGVseSBh
+bmQgZGVzdHJveSB0aGlzIGUtbWFpbC4gQW55IHVuYXV0aG9yaXplZCBjb3B5aW5nLCBkaXNjbG9z
+dXJlIG9yIGRpc3RyaWJ1dGlvbiBvZiB0aGUgbWF0ZXJpYWwgaW4gdGhpcyBlLW1haWwgaXMgc3Ry
+aWN0bHkgZm9yYmlkZGVuLuKAnQ0KDQoNCi0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQpGcm9t
+OiBLZWl0aCBCdXNjaCA8a2J1c2NoQGtlcm5lbC5vcmc+DQpTZW50OiBXZWRuZXNkYXksIE5vdmVt
+YmVyIDI5LCAyMDIzIDg6MTAgQU0NClRvOiBIYXJkYXdheSAoU2hpaCBIdW5nKSBUc2VuZyBTS0hZ
+VCA8aGFyZGF3YXkudHNlbmdAc2suY29tPg0KQ2M6IEppbSBMaW4g5p6X5b+X6J6NIDxqaW0ubGlu
+QHNpbGljb25tb3Rpb24uY29tPjsgSmltLkxpbiA8amltLmNoaWhqdW5nLmxpbkBnbWFpbC5jb20+
+OyBheGJvZUBrZXJuZWwuZGs7IGhjaEBsc3QuZGU7IHNhZ2lAZ3JpbWJlcmcubWU7IGxpbnV4LW52
+bWVAbGlzdHMuaW5mcmFkZWFkLm9yZzsgbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZzsgQ0og
+Q2hlbiDpmbPnvqTlgpEgPGNqLmNoZW5Ac2lsaWNvbm1vdGlvbi5jb20+OyBEYXZpZCBZZWgg6JGJ
+5a+w6J6NIDxkYXZpZC55ZWhAc2lsaWNvbm1vdGlvbi5jb20+OyDtlZzsg4HslYgoSEFOIFNBTkdB
+Tikg64yA66eM67KV7J24IDxzYW5nYW4uaGFuQHNrLmNvbT47IEl2ZXMoSHN1ZWggSHNpZW4pIEx1
+IFNLSFlUIDxpdmVzLmx1QHNrLmNvbT4NClN1YmplY3Q6IFJlOiBbUEFUQ0hdIG52bWUtcGNpOiBk
+aXNhYmxlIHdyaXRlIHplcm9lcyBmb3IgU0sgSHluaXggQkM5MDENCg0KT24gVHVlLCBOb3YgMjgs
+IDIwMjMgYXQgMTE6NTE6NDJQTSArMDAwMCwgaGFyZGF3YXkudHNlbmdAc2suY29tIHdyb3RlOg0K
+PiBIaSBLZWl0aCwgSmltIGFuZCB0ZWFtLA0KPiANCj4gVGhhbmtzIGZvciBlZmZvcnRzIQ0KPiAN
+Cj4gVGhpcyBpcyBIYXJkYXdheSBmcm9tIFNLIGh5bml4LCB0aGlzIHNvZnR3YXJlIGNoYW5nZSBo
+YXMgYmVlbiB0ZXN0ZWQgYW5kIHZlcmlmaWVkIGJ5IE9ETSBDb21wYWwsIHRoZSB0ZXN0aW5nIHJl
+c3VsdCBpcyBwYXNzLCB0aGVyZWZvcmUsIHdlIHdvdWxkIGxpa2UgdG8gYXBwbHkgdGhpcyB1cGRh
+dGUuDQoNCkdyZWF0LCB0aGFua3MgZm9yIGNvbmZpcm1pbmcuIEkndmUgZ290IHRoaXMgcXVldWVk
+IHVwIGludGVybmFsbHksIGJ1dCB3YW50IHRvIGNoZWNrIGlmIENocmlzdG9waCdzIHF1ZXN0aW9u
+IGNvdWxkIGxlYWQgdG8gYSBiZXR0ZXIgb3V0Y29tZSBmb3IgZXZlcnlvbmUuIEZvciByZWZlcmVu
+Y2UsIGFza2VkIGhlcmU6DQoNCiAgaHR0cHM6Ly9saXN0cy5pbmZyYWRlYWQub3JnL3BpcGVybWFp
+bC9saW51eC1udm1lLzIwMjMtTm92ZW1iZXIvMDQzMjk4Lmh0bWwNCg0KSWYgeW91IHdlcmUgYWxy
+ZWFkeSB0ZXN0aW5nIGNsb3NlIHRvIHVwc3RyZWFtLCA2LjIgb3IgbmV3ZXIsIHRoZW4gdGhpcyBw
+YXRjaCBpcyBhbHJlYWR5IHRoZSBiZXN0IG9wdGlvbi4NCg==
 
