@@ -1,108 +1,121 @@
-Return-Path: <linux-kernel+bounces-15818-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15819-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 257AB8233BE
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 18:48:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E905B8233D1
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 18:50:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4C3B01C23CC8
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 17:48:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5338E2866F6
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Jan 2024 17:50:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E38D1C2AF;
-	Wed,  3 Jan 2024 17:48:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 261ED1C2AC;
+	Wed,  3 Jan 2024 17:50:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="sHMJMYUC"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jNPoyeCq"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0AE21C687;
-	Wed,  3 Jan 2024 17:48:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
-Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 28F69975;
-	Wed,  3 Jan 2024 18:47:11 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1704304031;
-	bh=QaMguZNC0YTPL2eKYa/rVYf/kvdTNG9Pz36lgAFMA6o=;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70CF71C296;
+	Wed,  3 Jan 2024 17:50:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 148E0C433C8;
+	Wed,  3 Jan 2024 17:50:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704304208;
+	bh=a1eB5V5dv9FsKtuAgCrEoiM/zZTQE0AOc1G/QrOZMvs=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=sHMJMYUCDxI7LKSV4yfLNdPDWwVVvc+z6/uGZfSBJO1EjSLU9wwJowHLrBMuzVwlT
-	 H6K2j1RLxJRQDcQfwz1AshKZYvF32wUBIHDPNJRJeXg2wqa548ko8xERXPInnA8wi9
-	 0/l+/6Qa+G/saDavk1X0o82+2BPa0Wjc7fnNuNCQ=
-Date: Wed, 3 Jan 2024 19:48:20 +0200
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To: Arnd Bergmann <arnd@kernel.org>
-Cc: Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Paul Elder <paul.elder@ideasonboard.com>,
-	Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-	Sakari Ailus <sakari.ailus@linux.intel.com>,
-	Arnd Bergmann <arnd@arndb.de>, Hans de Goede <hdegoede@redhat.com>,
-	Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-	Alain Volmat <alain.volmat@foss.st.com>,
-	Mehdi Djait <mehdi.djait@bootlin.com>, linux-media@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] media: i2c: thp7312: select CONFIG_FW_LOADER
-Message-ID: <20240103174820.GA17142@pendragon.ideasonboard.com>
-References: <20240103155811.4092035-1-arnd@kernel.org>
+	b=jNPoyeCqDgsu3BE73CiRzBofXmm/w3pz76XB97b/iprlVnMmRWf9yAYU3brWptOXC
+	 wx/v9G2JBn/xtRJWz+ZmIoFP/fZ2F+nxqeqUSgB+4PeLfbntRX9gLLbdp1knHXjki1
+	 8QBRTHFkdyIgM1o1z0S+Z+ICo+EiiwXV9DOlV+qNdxTe9oQzjUQuZxSZRhV/SO2QIv
+	 AdTisd3vVx2K001275d+QRLb/yghZHtZ8qKpbv0da/tV1s8rEBvtWVDHvvfjAln8v3
+	 MusFr71gFIOgO/A9FAQJpE/UtL+K/3hdUMK4TFO6SDgW3Nnjdb+/PPoLpnkI4OvDhm
+	 rtg+LdZPtE5tQ==
+Date: Wed, 3 Jan 2024 17:50:01 +0000
+From: Will Deacon <will@kernel.org>
+To: Jisheng Zhang <jszhang@kernel.org>
+Cc: "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Nick Piggin <npiggin@gmail.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>, Arnd Bergmann <arnd@arndb.de>,
+	linux-arch@vger.kernel.org, linux-mm@kvack.org,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-riscv@lists.infradead.org, Nadav Amit <namit@vmware.com>,
+	Andrea Arcangeli <aarcange@redhat.com>,
+	Andy Lutomirski <luto@kernel.org>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	Thomas Gleixner <tglx@linutronix.de>, Yu Zhao <yuzhao@google.com>,
+	x86@kernel.org
+Subject: Re: [PATCH 1/2] mm/tlb: fix fullmm semantics
+Message-ID: <20240103175001.GF5954@willie-the-truck>
+References: <20231228084642.1765-1-jszhang@kernel.org>
+ <20231228084642.1765-2-jszhang@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240103155811.4092035-1-arnd@kernel.org>
+In-Reply-To: <20231228084642.1765-2-jszhang@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 
-Hi Arnd,
-
-Thank you for the patch.
-
-On Wed, Jan 03, 2024 at 04:58:05PM +0100, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
+On Thu, Dec 28, 2023 at 04:46:41PM +0800, Jisheng Zhang wrote:
+> From: Nadav Amit <namit@vmware.com>
 > 
-> The recently added driver uses the firmware loader mechanism but causes
-> a link failure when that is in a loadable module while thp7312 itself
-> is built-in:
+> fullmm in mmu_gather is supposed to indicate that the mm is torn-down
+> (e.g., on process exit) and can therefore allow certain optimizations.
+> However, tlb_finish_mmu() sets fullmm, when in fact it want to say that
+> the TLB should be fully flushed.
 > 
-> arm-linux-gnueabi-ld: drivers/media/i2c/thp7312.o: in function `thp7312_probe':
-> thp7312.c:(.text+0x4164): undefined reference to `firmware_upload_register'
+> Change tlb_finish_mmu() to set need_flush_all and check this flag in
+> tlb_flush_mmu_tlbonly() when deciding whether a flush is needed.
 > 
-> Select the required Kconfig symbol. Note that the driver specifically
-> needs the firmware upload interface that is controlled by CONFIG_FW_UPLOAD,
-> but there is no link failure when that is disabled because the interfaces
-> are stubbed out here.
+> At the same time, bring the arm64 fullmm on process exit optimization back.
 > 
-> Fixes: 7a52ab415b43 ("media: i2c: Add driver for THine THP7312")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-
-I've posted a similar fix yesterday, see
-https://lore.kernel.org/linux-media/20240102074518.24968-1-laurent.pinchart@ideasonboard.com
-
-What approach do you think is best ?
-
+> Signed-off-by: Nadav Amit <namit@vmware.com>
+> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+> Cc: Andrea Arcangeli <aarcange@redhat.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Andy Lutomirski <luto@kernel.org>
+> Cc: Dave Hansen <dave.hansen@linux.intel.com>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Yu Zhao <yuzhao@google.com>
+> Cc: Nick Piggin <npiggin@gmail.com>
+> Cc: x86@kernel.org
 > ---
->  drivers/media/i2c/Kconfig | 1 +
->  1 file changed, 1 insertion(+)
+>  arch/arm64/include/asm/tlb.h | 5 ++++-
+>  include/asm-generic/tlb.h    | 2 +-
+>  mm/mmu_gather.c              | 2 +-
+>  3 files changed, 6 insertions(+), 3 deletions(-)
 > 
-> diff --git a/drivers/media/i2c/Kconfig b/drivers/media/i2c/Kconfig
-> index 78a87331686e..4c3435921f19 100644
-> --- a/drivers/media/i2c/Kconfig
-> +++ b/drivers/media/i2c/Kconfig
-> @@ -674,6 +674,7 @@ menu "Camera ISPs"
->  config VIDEO_THP7312
->  	tristate "THine THP7312 support"
->  	depends on I2C
-> +	select FW_LOADER
->  	select MEDIA_CONTROLLER
->  	select V4L2_CCI_I2C
->  	select V4L2_FWNODE
+> diff --git a/arch/arm64/include/asm/tlb.h b/arch/arm64/include/asm/tlb.h
+> index 846c563689a8..6164c5f3b78f 100644
+> --- a/arch/arm64/include/asm/tlb.h
+> +++ b/arch/arm64/include/asm/tlb.h
+> @@ -62,7 +62,10 @@ static inline void tlb_flush(struct mmu_gather *tlb)
+>  	 * invalidating the walk-cache, since the ASID allocator won't
+>  	 * reallocate our ASID without invalidating the entire TLB.
+>  	 */
+> -	if (tlb->fullmm) {
+> +	if (tlb->fullmm)
+> +		return;
+> +
+> +	if (tlb->need_flush_all) {
+>  		if (!last_level)
+>  			flush_tlb_mm(tlb->mm);
+>  		return;
 
--- 
-Regards,
+Why isn't the 'last_level' check sufficient here? In other words, when do
+we perform a !last_level invalidation with 'fullmm' set outside of teardown?
 
-Laurent Pinchart
+Will
 
