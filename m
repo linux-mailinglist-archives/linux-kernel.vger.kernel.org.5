@@ -1,61 +1,43 @@
-Return-Path: <linux-kernel+bounces-16137-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16138-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14CE6823986
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 01:18:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id DFFD882398C
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 01:19:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C65551F25DEB
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 00:18:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 94DE61F2605A
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 00:19:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CDCE7FE;
-	Thu,  4 Jan 2024 00:18:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C33FEDD;
+	Thu,  4 Jan 2024 00:19:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="YJeT7fYw"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="WNlqAeGa"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-io1-f51.google.com (mail-io1-f51.google.com [209.85.166.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64B04366
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 00:18:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-io1-f51.google.com with SMTP id ca18e2360f4ac-7bbdd28a52aso9037839f.1
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 16:18:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1704327499; x=1704932299; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=SuD1D14mJpZxgunpN2GoPeJomdi3lVYstSMBtTROq7o=;
-        b=YJeT7fYwnu574GGgKEGgLj8Zl/8/6BuaFkhltV7ig4GIxKjHUwqWicLBa5djmDi4tZ
-         pP1WiZop1MhiyBtXRaO0EPAlxupWqRATl1uyWrncaetp/9dA/5vlnxXM0Bt31Z3JInoH
-         rOB8Z8/4zVtk2tuV81mG69ZlzWq7FGoJ1zcD4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704327499; x=1704932299;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=SuD1D14mJpZxgunpN2GoPeJomdi3lVYstSMBtTROq7o=;
-        b=ONMs2jfa/xa1m95ZuMBpG62S+3nM8gQVeuwIajeDJrHiBEe4M/6tpO7PP+1YnxdsyD
-         JJwSam0AJbTk3eqpFEvlwpfT5/PT7HMrvlecFHQoZBifG8ONYiQN0uoV0/MK/M5noqHZ
-         38jcZlodOxqmdB0cykqfpXdnfufDyfgwxbThwi0ij7pOlit+lQd3T34I4kOt7P9f5+hn
-         0188QX2EqL/EkuZEn+SBwvCuuG3KafQ5G1ZXHzZBkh8imyC5PaITKwoUge2JEGsm+lxV
-         jGvHnlqfk3uiE/4KKgllfoIqK5omEouG8yMMpA8Sp5qfUhyID0V4GRiE5HXb0C+RLHdR
-         Ij2g==
-X-Gm-Message-State: AOJu0YzKyLyEVr4/tywKVxWiMo12+vd7vh5OZvZUZncdmvtpsqBVJlJu
-	NhjHznW2t5VnNF0XEYjeszHiQIOxFC4noA==
-X-Google-Smtp-Source: AGHT+IFBl+paPAGn0wPchVPzxKzuWnrgImKUlT+cEf0osTlbByFRoRzHPU245Q7vGRg2ejxjDhiaRg==
-X-Received: by 2002:a92:cdac:0:b0:35f:f683:f76e with SMTP id g12-20020a92cdac000000b0035ff683f76emr27999742ild.3.1704327499572;
-        Wed, 03 Jan 2024 16:18:19 -0800 (PST)
-Received: from [192.168.1.128] ([38.175.170.29])
-        by smtp.gmail.com with ESMTPSA id bg11-20020a056e02310b00b0035faf00c555sm8776442ilb.31.2024.01.03.16.18.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Jan 2024 16:18:19 -0800 (PST)
-Message-ID: <72d36089-147c-42aa-afe4-5b3fa681dc65@linuxfoundation.org>
-Date: Wed, 3 Jan 2024 17:18:18 -0700
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D81936B;
+	Thu,  4 Jan 2024 00:19:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=0SEkDxkX73eYHKG0v/y3mmPzpF+tkShgrm5cJQMXxio=; b=WNlqAeGaAenVvfZnIUbipXu0s+
+	Arz55X0ciai3unUSjDibQpCxLHUM8UAJPsYzJIPgi6uiGjwc5Wr3B+R/VG2X+oFhqnaiNr/CPB+Ay
+	N3OUGZHUTX1peTGhl5q52I8yHVMKk4L6OcAtZA22keDKgFh2H53NZBbM1zzImWi31ygZAlxlELDkA
+	MLeSHrd6vluGKSFCiETbZEWsYHRMwS9CKFpSfuj9XEgjUGOh2NVF4m8Izs0xzUY/ASJmcwOb7/j6d
+	mq0KYL5oyBTbD7ivTvJLbwms7SRahDapcA9azvxetGgRywHPiWsJguMr7avZNDrlwoPeX+W1qkYvC
+	hntm+meQ==;
+Received: from [50.53.46.231] (helo=[192.168.254.15])
+	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+	id 1rLBS1-00CTNI-2P;
+	Thu, 04 Jan 2024 00:19:09 +0000
+Message-ID: <429dd825-204a-4b11-87fd-ce9d39040d4d@infradead.org>
+Date: Wed, 3 Jan 2024 16:19:03 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -63,46 +45,137 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 6.6 00/49] 6.6.10-rc1 review
+Subject: Re: [PATCH v6 08/12] mm/mempolicy: add userland mempolicy arg
+ structure
 Content-Language: en-US
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
-Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
- torvalds@linux-foundation.org, akpm@linux-foundation.org,
- linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
- lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
- f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, srw@sladewatkins.net,
- rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com,
- Shuah Khan <skhan@linuxfoundation.org>
-References: <20240103164834.970234661@linuxfoundation.org>
-From: Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <20240103164834.970234661@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To: Gregory Price <gourry.memverge@gmail.com>, linux-mm@kvack.org
+Cc: linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+ linux-arch@vger.kernel.org, akpm@linux-foundation.org, arnd@arndb.de,
+ tglx@linutronix.de, luto@kernel.org, mingo@redhat.com, bp@alien8.de,
+ dave.hansen@linux.intel.com, hpa@zytor.com, mhocko@kernel.org,
+ tj@kernel.org, ying.huang@intel.com, gregory.price@memverge.com,
+ corbet@lwn.net, rakie.kim@sk.com, hyeongtak.ji@sk.com, honggyu.kim@sk.com,
+ vtavarespetr@micron.com, peterz@infradead.org, jgroves@micron.com,
+ ravis.opensrc@micron.com, sthanneeru@micron.com, emirakhur@micron.com,
+ Hasan.Maruf@amd.com, seungjun.ha@samsung.com,
+ Frank van der Linden <fvdl@google.com>
+References: <20240103224209.2541-1-gregory.price@memverge.com>
+ <20240103224209.2541-9-gregory.price@memverge.com>
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20240103224209.2541-9-gregory.price@memverge.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 1/3/24 09:55, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.6.10 release.
-> There are 49 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Fri, 05 Jan 2024 16:47:49 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.6.10-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.6.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+Hi,
 
-Compiled and booted on my test system. No dmesg regressions.
+On 1/3/24 14:42, Gregory Price wrote:
+> This patch adds the new user-api argument structure intended for
+> set_mempolicy2 and mbind2.
+> 
+> struct mpol_param {
+>   __u16 mode;
+>   __u16 mode_flags;
+>   __s32 home_node;          /* mbind2: policy home node */
+>   __u16 pol_maxnodes;
+>   __u8 resv[6];
+>   __aligned_u64 *pol_nodes;
+> };
+> 
+> This structure is intended to be extensible as new mempolicy extensions
+> are added.
+> 
+> For example, set_mempolicy_home_node was added to allow vma mempolicies
+> to have a preferred/home node assigned.  This structure allows the user
+> to set the home node at the time mempolicy is created, rather than
+> requiring an additional syscalls.
+> 
+> Full breakdown of arguments as of this patch:
+>     mode:         Mempolicy mode (MPOL_DEFAULT, MPOL_INTERLEAVE)
+> 
+>     mode_flags:   Flags previously or'd into mode in set_mempolicy
+>                   (e.g.: MPOL_F_STATIC_NODES, MPOL_F_RELATIVE_NODES)
+> 
+>     home_node:    for mbind2.  Allows the setting of a policy's home
+>                   with the use of MPOL_MF_HOME_NODE
+> 
+>     pol_maxnodes: Max number of nodes in the policy nodemask
+> 
+>     pol_nodes:    Policy nodemask
+> 
+> The reserved field accounts explicitly for a potential memory hole
+> in the structure.
+> 
+> Suggested-by: Frank van der Linden <fvdl@google.com>
+> Suggested-by: Vinicius Tavares Petrucci <vtavarespetr@micron.com>
+> Suggested-by: Hasan Al Maruf <Hasan.Maruf@amd.com>
+> Signed-off-by: Gregory Price <gregory.price@memverge.com>
+> Co-developed-by: Vinicius Tavares Petrucci <vtavarespetr@micron.com>
+> Signed-off-by: Vinicius Tavares Petrucci <vtavarespetr@micron.com>
+> ---
+>  .../admin-guide/mm/numa_memory_policy.rst       | 17 +++++++++++++++++
+>  include/linux/syscalls.h                        |  1 +
+>  include/uapi/linux/mempolicy.h                  |  9 +++++++++
+>  3 files changed, 27 insertions(+)
+> 
+> diff --git a/Documentation/admin-guide/mm/numa_memory_policy.rst b/Documentation/admin-guide/mm/numa_memory_policy.rst
+> index a70f20ce1ffb..cbfc5f65ed77 100644
+> --- a/Documentation/admin-guide/mm/numa_memory_policy.rst
+> +++ b/Documentation/admin-guide/mm/numa_memory_policy.rst
+> @@ -480,6 +480,23 @@ closest to which page allocation will come from. Specifying the home node overri
+>  the default allocation policy to allocate memory close to the local node for an
+>  executing CPU.
+>  
+> +Extended Mempolicy Arguments::
+> +
+> +	struct mpol_param {
+> +		__u16 mode;
+> +		__u16 mode_flags;
+> +		__s32 home_node;	 /* mbind2: set home node */
+> +		__u64 pol_maxnodes;
+> +		__aligned_u64 pol_nodes; /* nodemask pointer */
+> +	};
+>
 
-Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+Can you make the above documentation struct agree with the
+struct in the header below, please?
+(just a difference in the size of pol_maxnodes and the
+'resv' bytes)
 
-thanks,
--- Shuah
+
+> +The extended mempolicy argument structure is defined to allow the mempolicy
+> +interfaces future extensibility without the need for additional system calls.
+> +
+> +The core arguments (mode, mode_flags, pol_nodes, and pol_maxnodes) apply to
+> +all interfaces relative to their non-extended counterparts. Each additional
+> +field may only apply to specific extended interfaces.  See the respective
+> +extended interface man page for more details.
+>  
+>  Memory Policy Command Line Interface
+>  ====================================
+
+
+> diff --git a/include/uapi/linux/mempolicy.h b/include/uapi/linux/mempolicy.h
+> index 1f9bb10d1a47..109788c8be92 100644
+> --- a/include/uapi/linux/mempolicy.h
+> +++ b/include/uapi/linux/mempolicy.h
+> @@ -27,6 +27,15 @@ enum {
+>  	MPOL_MAX,	/* always last member of enum */
+>  };
+>  
+> +struct mpol_param {
+> +	__u16 mode;
+> +	__u16 mode_flags;
+> +	__s32 home_node;	/* mbind2: policy home node */
+> +	__u16 pol_maxnodes;
+> +	__u8 resv[6];
+> +	__aligned_u64 pol_nodes;
+> +};
+> +
+>  /* Flags for set_mempolicy */
+>  #define MPOL_F_STATIC_NODES	(1 << 15)
+>  #define MPOL_F_RELATIVE_NODES	(1 << 14)
+
+-- 
+#Randy
 
