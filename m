@@ -1,138 +1,326 @@
-Return-Path: <linux-kernel+bounces-16635-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16634-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 886398241A1
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 13:23:12 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C1FEF824199
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 13:22:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ABE0D1C21A22
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 12:23:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2D9C11F24A25
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 12:22:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C750219E1;
-	Thu,  4 Jan 2024 12:22:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE8E321A0C;
+	Thu,  4 Jan 2024 12:22:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="wZUB/1KU"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="XFc8VLBs";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="BRLIxIrq";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="dWaipx2c";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="VFhD00b5"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mout.web.de (mout.web.de [212.227.15.14])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38D0822301;
-	Thu,  4 Jan 2024 12:22:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
-	t=1704370908; x=1704975708; i=markus.elfring@web.de;
-	bh=CM2cef1ckyh3aeLZ3H3C8Q/8Yfvaf5jJIOf1Yk9mDyk=;
-	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-	 In-Reply-To;
-	b=wZUB/1KU+78EYC/8EnDNvkEjklcLnvniJUTGUDD4aFzGf1N9j7iiSinLs/FYS+mu
-	 2LK3ACiE4XYGcnLDUxxRCLKcRNleq/3I9OHWK25fK/hNTmSLnzcMEauoraIeuQv0l
-	 b16Ese/qS3BCzT6FhP/ASwrlosR0NhtTOY26otnHGAM6yhaLplMwR7l7z1wTQ4Vu0
-	 whUTl+h80i1YQIaai0kU/IZxRcMpU3YXXehGVBRADu9yVSYnnE81wXKmxkGk4vIgy
-	 G9RKHN8IWrAGCmWBceNarCzHVezG2u5QECnjld6jMD+76yOb0Uk/Jp1kwwRgMpwmF
-	 EnxeJkg5zrV74ty6eQ==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.91.95]) by smtp.web.de (mrweb005
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1M5j1q-1rIdhW330c-007bL1; Thu, 04
- Jan 2024 13:21:48 +0100
-Message-ID: <1ab4ea7c-731a-4b8d-8f6f-c9bf5f0f02e4@web.de>
-Date: Thu, 4 Jan 2024 13:21:46 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A3FC21361;
+	Thu,  4 Jan 2024 12:22:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id C3FE921D3A;
+	Thu,  4 Jan 2024 12:22:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1704370935; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=dEOhbl6BxUdU6y2PPLv5OY3ZqGBD0PFejfclreExChI=;
+	b=XFc8VLBsnl9aL7k3OjwpBjEyurAPHn/wozw7huEJg8Kh1XtexFXGnCOFrF5cdJObzIoVOB
+	WSl0qwfGcHDQRAYaR70hDrxP5dEBoB1H4OgNdM9BCSFoyD0dNvFgWPJz8qJrVSt4tKq5qM
+	SM0EzBf8FjQO8tP69JsU/iZJsUbAZBg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1704370935;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=dEOhbl6BxUdU6y2PPLv5OY3ZqGBD0PFejfclreExChI=;
+	b=BRLIxIrqPa8P6c1xZvwUjFY/XF/4q/Hh7Fr9qUPo3HG8bI8kuWp+Geq4NwDCe18M+n1X29
+	u6rW+t5czthqMXCw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1704370934; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=dEOhbl6BxUdU6y2PPLv5OY3ZqGBD0PFejfclreExChI=;
+	b=dWaipx2c9mtfXsouDbDbhmlJanWKJIihT+c3mI9H4+BEJ9hmUZtaN5Uu4ae2qTdtLH7xKW
+	DDYet+i2/F2cAa+agkhhbr3Cv4olBkJ/pv8A4qgM43c2v3EY3PHpUBczoq93IpuUDz4twc
+	YFhcZIKVsPkTvaHSTOYEQ6iZivXOeek=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1704370934;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=dEOhbl6BxUdU6y2PPLv5OY3ZqGBD0PFejfclreExChI=;
+	b=VFhD00b5yP8kUic6tuTXvk6P7y+b439KNlXOG1em78AjaLBeb4nyWpSfko2ONapIBWJ8nM
+	q4ULVr0ImRgl9xDA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A408A137E8;
+	Thu,  4 Jan 2024 12:22:14 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id aIvDJ/ailmWuFQAAD6G6ig
+	(envelope-from <jack@suse.cz>); Thu, 04 Jan 2024 12:22:14 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 12451A07EF; Thu,  4 Jan 2024 13:22:14 +0100 (CET)
+Date: Thu, 4 Jan 2024 13:22:14 +0100
+From: Jan Kara <jack@suse.cz>
+To: Yu Kuai <yukuai1@huaweicloud.com>
+Cc: axboe@kernel.dk, roger.pau@citrix.com, colyli@suse.de,
+	kent.overstreet@gmail.com, joern@lazybastard.org,
+	miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+	sth@linux.ibm.com, hoeppner@linux.ibm.com, hca@linux.ibm.com,
+	gor@linux.ibm.com, agordeev@linux.ibm.com, jejb@linux.ibm.com,
+	martin.petersen@oracle.com, clm@fb.com, josef@toxicpanda.com,
+	dsterba@suse.com, viro@zeniv.linux.org.uk, brauner@kernel.org,
+	nico@fluxnic.net, xiang@kernel.org, chao@kernel.org, tytso@mit.edu,
+	adilger.kernel@dilger.ca, jack@suse.com, konishi.ryusuke@gmail.com,
+	willy@infradead.org, akpm@linux-foundation.org, hare@suse.de,
+	p.raghav@samsung.com, linux-block@vger.kernel.org,
+	linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org,
+	linux-bcache@vger.kernel.org, linux-mtd@lists.infradead.org,
+	linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
+	linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-erofs@lists.ozlabs.org,
+	linux-ext4@vger.kernel.org, linux-nilfs@vger.kernel.org,
+	yukuai3@huawei.com, yi.zhang@huawei.com, yangerkun@huawei.com
+Subject: Re: [PATCH RFC v3 for-6.8/block 14/17] buffer: add a new helper to
+ read sb block
+Message-ID: <20240104122214.jndsqygnmljxmj5d@quack3>
+References: <20231221085712.1766333-1-yukuai1@huaweicloud.com>
+ <20231221085853.1770062-1-yukuai1@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [1/3] drm: property: One function call less in
- drm_property_create() after error detection
-Content-Language: en-GB
-To: =?UTF-8?Q?Michel_D=C3=A4nzer?= <michel.daenzer@mailbox.org>,
- dri-devel@lists.freedesktop.org, kernel-janitors@vger.kernel.org,
- Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>
-Cc: LKML <linux-kernel@vger.kernel.org>, cocci@inria.fr,
- Simon Ser <contact@emersion.fr>
-References: <ff7ce5d0-59fa-470c-8dd6-68dbe65c18e5@web.de>
- <9b1e7330-f4f6-47f8-a568-eaea1624bb6f@web.de>
- <37647c33-7f9d-4763-8bf4-cfc5c9a811de@mailbox.org>
- <c5f1a7bf-b444-4934-a205-3c2b3a045ff7@web.de>
- <dd300771-851f-4cfb-b9a2-d87d2b4399aa@mailbox.org>
- <93cfabee-9692-491c-8d38-dec142e90252@web.de>
- <ff58a489-105c-4fdc-9af5-59efb9d05ec0@mailbox.org>
-From: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <ff58a489-105c-4fdc-9af5-59efb9d05ec0@mailbox.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:ZjA7m6hOg2b8XD2dDwIjNKbIX/BJ0afrZlGsqq4t3Ue5m7p2Fa2
- V7m4gj+Xi7klUcvwxAOVrLpBSjsrWkN8GgRSJzGL1Dp0nH07N9gDbcH7v/jBCb8uJIwys+a
- hcrZLKDMOfoMe0vkZXVTjLQTE5GllV7biwODL+RNsaPAGN6tinfT3Kqw5FP5YIZzDLIlAmL
- g4TJvVzeychmg1OCQWOtA==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231221085853.1770062-1-yukuai1@huaweicloud.com>
+X-Spam-Level: 
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Level: 
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:dAMZO8I92jE=;vhF3KLbYbyO37AA1WXmmtroYNT+
- /v6UKA7rNB9/QFdyhcjMEEi8gv4m32E6+zup+9VIDT+Dro24JCnFMvbdJBOy/nv2XTKhO5H9z
- 0AJeBGsyF16sZgipQ57Fk8QFNC3me/suULDgpuwvG9iRUonwTOnLfXNkykxwlKw2OY9T/0XDz
- fAj8FTvyYsCK07SsdDMGO5ga+jn+zB3pYATssmTw2RRIzbhXpwgVmc4yLk5DIXzyTevEcdQKg
- 8cX74pnZTdJrGITmHXeqcvIO3mHhRFgl4vVZfcBIjKeZZvtEkoLGtlpVfHpbo7BjnUp11O4Ln
- s0cscoxC/GNpElPFLQzSQPG+wClcWbr/j59DpNpKjeYc2Rv40W9IwsURCfQnSSc6W2lyotvuC
- QTcWIIhbxxDCB9J0h4o9xSNoO+ygSZHRwNQDPN/KPOe5h80luPrA4DhRy3TWeFoht6A7FNJHB
- LN7IDqYJ+AP8iTvlvZ81a19jR1tD6loIPukQm6Lv/BNmyscsrT2XvI+bXJEbB2uvldk1ofMTy
- OC7vEeJh4vmAQBfeYAngjQOpuMaVxBHF3MgAxcoGapTQ2c3wNeucs5+w02OiQPCBSHXRTUujQ
- fJQAme8l9kEwoojmDcMmXBE7uFSPTZf1yrXilsR+D/qNNbF9HF3oPG0IGqM16Uwt9ITnHdfIF
- FYVJoUsT4vaeb5gvz62SHlFr40GCtNQSrAR0MZuqJuTd/l9PlUkBPj7mh4txvJpN9aelP6Pk7
- UsSgTLoqg6Acpum/7vjJRaAu/jTXU8EIQ96kzx2xvPPwR4u2mzmgSIsOmlpY7HRtecbofZMaJ
- FFq/wY2wTA+PV8PXrxjyrPUSs7r0u4u9FjnsYS2G4Qrp8F/NYqLoP/wZ7k5V1cKg30wnXkLrj
- PMivYoYYNFIOvoQwwevbvVobFVWqeOZV2SLBKg/HeR284z5zugh5po5E6htW4scAJbzBTikMv
- 0mPmId4bSJLqDYcGTVZk1fVDnPeQo1CD15WnUpYGuFe8YXWaAz/GTUATl0IoNKtAaPxsPw==
+X-Spamd-Result: default: False [-1.31 / 50.00];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	 TO_DN_SOME(0.00)[];
+	 R_RATELIMIT(0.00)[to_ip_from(RLhr85cyeg3mfw7iggddtjdkgs)];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_TRACE(0.00)[suse.cz:+];
+	 MX_GOOD(-0.01)[];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 BAYES_HAM(-3.00)[99.99%];
+	 ARC_NA(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 FROM_HAS_DN(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 TAGGED_RCPT(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 RCPT_COUNT_TWELVE(0.00)[48];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[huawei.com:email,suse.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 FREEMAIL_CC(0.00)[kernel.dk,citrix.com,suse.de,gmail.com,lazybastard.org,bootlin.com,nod.at,ti.com,linux.ibm.com,oracle.com,fb.com,toxicpanda.com,suse.com,zeniv.linux.org.uk,kernel.org,fluxnic.net,mit.edu,dilger.ca,infradead.org,linux-foundation.org,samsung.com,vger.kernel.org,lists.xenproject.org,lists.infradead.org,lists.ozlabs.org,huawei.com];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[];
+	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=dWaipx2c;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=VFhD00b5
+X-Spam-Score: -1.31
+X-Rspamd-Queue-Id: C3FE921D3A
 
-> The commit log says:
->
->  This issue was detected by using the Coccinelle software.
->
-> Either that's inaccurate then,
+On Thu 21-12-23 16:58:53, Yu Kuai wrote:
+> From: Yu Kuai <yukuai3@huawei.com>
+> 
+> Unlike __bread_gfp(), ext4 has special handing while reading sb block:
+> 
+> 1) __GFP_NOFAIL is not set, and memory allocation can fail;
+> 2) If buffer write failed before, set buffer uptodate and don't read
+>    block from disk;
+> 3) REQ_META is set for all IO, and REQ_PRIO is set for reading xattr;
+> 4) If failed, return error ptr instead of NULL;
+> 
+> This patch add a new helper __bread_gfp2() that will match above 2 and 3(
+> 1 will be used, and 4 will still be encapsulated by ext4), and prepare to
+> prevent calling mapping_gfp_constraint() directly on bd_inode->i_mapping
+> in ext4.
+> 
+> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 
-No.
+I'm not enthusiastic about this but I guess it is as good as it gets
+without larger cleanups in this area. So feel free to add:
 
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-> or you should be able to provide the corresponding output from Coccinell=
-e.
+								Honza
 
-Do you find data (like the following) more helpful for the adjustment
-of affected implementation details?
-
-
-Markus_Elfring@Sonne:=E2=80=A6/Projekte/Linux/next-analyses> LANG=3DC git =
-status && spatch =E2=80=A6/Projekte/Coccinelle/janitor/show_jumps_to_kfree=
-_with_null_pointer.cocci drivers/gpu/drm/drm_property.c
-HEAD detached at next-20240104
-=E2=80=A6
-@@ -114,9 +114,6 @@ struct drm_property *drm_property_create
-        property->dev =3D dev;
-
-        if (num_values) {
--               property->values =3D kcalloc(num_values, sizeof(uint64_t),
--                                          GFP_KERNEL);
--               if (!property->values)
-                        goto fail;
-        }
-
-@@ -133,8 +130,6 @@ struct drm_property *drm_property_create
-        list_add_tail(&property->head, &dev->mode_config.property_list);
-
-        return property;
--fail:
--       kfree(property->values);
-        kfree(property);
-        return NULL;
- }
-
-
-How do you think about to extend the application of script variants
-for the semantic patch language?
-
-Regards,
-Markus
+> ---
+>  fs/buffer.c                 | 68 ++++++++++++++++++++++++++-----------
+>  include/linux/buffer_head.h | 18 +++++++++-
+>  2 files changed, 65 insertions(+), 21 deletions(-)
+> 
+> diff --git a/fs/buffer.c b/fs/buffer.c
+> index 967f34b70aa8..188bd36c9fea 100644
+> --- a/fs/buffer.c
+> +++ b/fs/buffer.c
+> @@ -1255,16 +1255,19 @@ void __bforget(struct buffer_head *bh)
+>  }
+>  EXPORT_SYMBOL(__bforget);
+>  
+> -static struct buffer_head *__bread_slow(struct buffer_head *bh)
+> +static struct buffer_head *__bread_slow(struct buffer_head *bh,
+> +					blk_opf_t op_flags,
+> +					bool check_write_error)
+>  {
+>  	lock_buffer(bh);
+> -	if (buffer_uptodate(bh)) {
+> +	if (buffer_uptodate(bh) ||
+> +	    (check_write_error && buffer_uptodate_or_error(bh))) {
+>  		unlock_buffer(bh);
+>  		return bh;
+>  	} else {
+>  		get_bh(bh);
+>  		bh->b_end_io = end_buffer_read_sync;
+> -		submit_bh(REQ_OP_READ, bh);
+> +		submit_bh(REQ_OP_READ | op_flags, bh);
+>  		wait_on_buffer(bh);
+>  		if (buffer_uptodate(bh))
+>  			return bh;
+> @@ -1445,6 +1448,31 @@ void __breadahead(struct block_device *bdev, sector_t block, unsigned size)
+>  }
+>  EXPORT_SYMBOL(__breadahead);
+>  
+> +static struct buffer_head *
+> +bread_gfp(struct block_device *bdev, sector_t block, unsigned int size,
+> +	  blk_opf_t op_flags, gfp_t gfp, bool check_write_error)
+> +{
+> +	struct buffer_head *bh;
+> +
+> +	gfp |= mapping_gfp_constraint(bdev->bd_inode->i_mapping, ~__GFP_FS);
+> +
+> +	/*
+> +	 * Prefer looping in the allocator rather than here, at least that
+> +	 * code knows what it's doing.
+> +	 */
+> +	gfp |= __GFP_NOFAIL;
+> +
+> +	bh = bdev_getblk(bdev, block, size, gfp);
+> +	if (unlikely(!bh))
+> +		return NULL;
+> +
+> +	if (buffer_uptodate(bh) ||
+> +	    (check_write_error && buffer_uptodate_or_error(bh)))
+> +		return bh;
+> +
+> +	return __bread_slow(bh, op_flags, check_write_error);
+> +}
+> +
+>  /**
+>   *  __bread_gfp() - reads a specified block and returns the bh
+>   *  @bdev: the block_device to read from
+> @@ -1458,27 +1486,27 @@ EXPORT_SYMBOL(__breadahead);
+>   *  It returns NULL if the block was unreadable.
+>   */
+>  struct buffer_head *
+> -__bread_gfp(struct block_device *bdev, sector_t block,
+> -		   unsigned size, gfp_t gfp)
+> +__bread_gfp(struct block_device *bdev, sector_t block, unsigned int size,
+> +	    gfp_t gfp)
+>  {
+> -	struct buffer_head *bh;
+> -
+> -	gfp |= mapping_gfp_constraint(bdev->bd_inode->i_mapping, ~__GFP_FS);
+> -
+> -	/*
+> -	 * Prefer looping in the allocator rather than here, at least that
+> -	 * code knows what it's doing.
+> -	 */
+> -	gfp |= __GFP_NOFAIL;
+> -
+> -	bh = bdev_getblk(bdev, block, size, gfp);
+> -
+> -	if (likely(bh) && !buffer_uptodate(bh))
+> -		bh = __bread_slow(bh);
+> -	return bh;
+> +	return bread_gfp(bdev, block, size, 0, gfp, false);
+>  }
+>  EXPORT_SYMBOL(__bread_gfp);
+>  
+> +/*
+> + * This works like __bread_gfp() except:
+> + * 1) If buffer write failed before, set buffer uptodate and don't read
+> + * block from disk;
+> + * 2) Caller can pass in additional op_flags like REQ_META;
+> + */
+> +struct buffer_head *
+> +__bread_gfp2(struct block_device *bdev, sector_t block, unsigned int size,
+> +	     blk_opf_t op_flags, gfp_t gfp)
+> +{
+> +	return bread_gfp(bdev, block, size, op_flags, gfp, true);
+> +}
+> +EXPORT_SYMBOL(__bread_gfp2);
+> +
+>  static void __invalidate_bh_lrus(struct bh_lru *b)
+>  {
+>  	int i;
+> diff --git a/include/linux/buffer_head.h b/include/linux/buffer_head.h
+> index 5f23ee599889..751b2744b4ae 100644
+> --- a/include/linux/buffer_head.h
+> +++ b/include/linux/buffer_head.h
+> @@ -171,6 +171,18 @@ static __always_inline int buffer_uptodate(const struct buffer_head *bh)
+>  	return test_bit_acquire(BH_Uptodate, &bh->b_state);
+>  }
+>  
+> +static __always_inline int buffer_uptodate_or_error(struct buffer_head *bh)
+> +{
+> +	/*
+> +	 * If the buffer has the write error flag, data was failed to write
+> +	 * out in the block. In this case, set buffer uptodate to prevent
+> +	 * reading old data.
+> +	 */
+> +	if (buffer_write_io_error(bh))
+> +		set_buffer_uptodate(bh);
+> +	return buffer_uptodate(bh);
+> +}
+> +
+>  static inline unsigned long bh_offset(const struct buffer_head *bh)
+>  {
+>  	return (unsigned long)(bh)->b_data & (page_size(bh->b_page) - 1);
+> @@ -231,7 +243,11 @@ void __brelse(struct buffer_head *);
+>  void __bforget(struct buffer_head *);
+>  void __breadahead(struct block_device *, sector_t block, unsigned int size);
+>  struct buffer_head *__bread_gfp(struct block_device *,
+> -				sector_t block, unsigned size, gfp_t gfp);
+> +				sector_t block, unsigned int size, gfp_t gfp);
+> +struct buffer_head *__bread_gfp2(struct block_device *bdev, sector_t block,
+> +				 unsigned int size, blk_opf_t op_flags,
+> +				 gfp_t gfp);
+> +
+>  struct buffer_head *alloc_buffer_head(gfp_t gfp_flags);
+>  void free_buffer_head(struct buffer_head * bh);
+>  void unlock_buffer(struct buffer_head *bh);
+> -- 
+> 2.39.2
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
