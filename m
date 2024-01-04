@@ -1,196 +1,168 @@
-Return-Path: <linux-kernel+bounces-16242-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16243-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B2B13823B5F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 05:13:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1EE46823B79
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 05:36:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 277171F2634E
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 04:13:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 25C191C24B9B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 04:36:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B5F810A16;
-	Thu,  4 Jan 2024 04:13:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD3521C6A4;
+	Thu,  4 Jan 2024 04:35:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ngH3RJ0o"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="OoCRMCoQ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2060.outbound.protection.outlook.com [40.107.94.60])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56D6B1DFE6;
-	Thu,  4 Jan 2024 04:13:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8CC08C433C8;
-	Thu,  4 Jan 2024 04:13:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704341584;
-	bh=ylBARymjYrog7nf4LTQyyVmdSy3x6uAoxe8NKMlZDIw=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=ngH3RJ0oqkizOg0INkeg3QTZAW4PGnt0D+Rp2vvMDnoUfz4CSvldjRre2PcegtRi5
-	 4GuKAcEwUR71kowYEzb9MLihoj8dRM9HGvAJzPVLRhamuvPx+FHCWZc3pIAYmdO+RE
-	 beTK1wQZWPhvkfHIjy/qbm6z16lUyMBvRzIUENKHnstPY/B8VR4tif1yffITu3eGEK
-	 c9vHQp50WVADA/kOdh+XJZs4ydSg9FyAxNg3rBfhv/tqPK8IdU4fYgi4upDte0kQiV
-	 5P0asPSk8PtJBt3nEDNH/X33Fp+/NZtR2ej7ZgcYUwmks+V9PJCWCEi7qRhkweEIr+
-	 Hd2T1jQH2wOsQ==
-Date: Thu, 4 Jan 2024 13:12:59 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Jinghao Jia <jinghao7@illinois.edu>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
- x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, Peter Zijlstra
- <peterz@infradead.org>, linux-trace-kernel@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] x86/kprobes: fix incorrect return address calculation
- in kprobe_emulate_call_indirect
-Message-Id: <20240104131259.d66b4284deb6c4acde992dfa@kernel.org>
-In-Reply-To: <20240102233345.385475-1-jinghao7@illinois.edu>
-References: <20240102233345.385475-1-jinghao7@illinois.edu>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A1621A70F;
+	Thu,  4 Jan 2024 04:35:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=d6O3TDIiEG2+9oJfv5sT9JlFgKie/TpHx/A5vRrRaATvyoOtPknoVHrlseY2oqizfI2rpx7DT/gcn3e9CKAnNq80UXZivCJ87NDMl1Dnb9nuaA98yNGABBQpW6Ohd1q4nYVW1vEjvun2ChufBU8/L918ZmElxeGcme3rLtYkVMIm0nq3A7YVoYN2jho3+m3dG1YRWY4jpGDm4e9RLPF5NB8H+fyUilxyOCp6ZtTury0dKhZ/BCOmhIxv2vlHv+6+S2s+2DJ3jZ6dWwp5VReO2IehtiG14Ymz4lhtzartjcHu2bEzLkjFxzEf447+9lyX16y1Ut2vWPXBFh4oxeShWQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=mQQ0BEMyfWR8uwCEVKVUo0y2rjaQ303/rbAw5AiYa9k=;
+ b=jELp41Lq7t/nUZkkF4dcqc1nCn650tmBWHfojLs6idSWsE0LRX4Y2aNRYMJTAaKMeOxItxeu3hEyXuJqXfkPuOpwpByRHVjr0fSvc1V5BENdMgD9/fHe3FZ5DOirHOd+awu/DE3WMyfv+byam1EU6OU1BGGKkg4NXIlsplGqeBF7FX9/1kxcpHL+AFeyR8PhoRdRImHbI5QoS+b42pEnUBo41CHqmLThkT6ik1N/4liyCoVf2oU1kVgb1qkpHc0gjzDuBE4IFb9+NMVR8h4HtqvXXDk0XyfkIze6C+EZe2JpqBwE4IYu29eQk06F3zQYaF2oc/B8h3fiix98OtBhnw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=mQQ0BEMyfWR8uwCEVKVUo0y2rjaQ303/rbAw5AiYa9k=;
+ b=OoCRMCoQKj3YhBPQsUH+TcLG5eedeAgpJb2W0uJ/EgrKRFDgZbsvhrXwb2tD/Dwvmu/TL4ZWhvMk0iUvnWEx1O5wyVzZIfvoUzPldmPFIz7cHRv9GQ/ibNi8t8MOptpO/+LhrDm/feYx0GPAzzInZDz8QjE8Ut9G0qh6uhnBS9liSPE6yNx3iyWfjNYqVyd/VRFwNf4rpehZ43U1fTUjf/Y8irhMhnrPlK74O482W0G9CXhlTcEGdFFVqihOW4Fi3EKOJi69d+mMCyDk9PR5dy+V5iEBCAPCdxUxc/YfYYT+HFl+R+TrIjzQSCL9Rvmmn/olM5AokM0PAq5yCXOutw==
+Received: from LV3PR12MB9404.namprd12.prod.outlook.com (2603:10b6:408:219::9)
+ by BL3PR12MB6644.namprd12.prod.outlook.com (2603:10b6:208:3b1::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.13; Thu, 4 Jan
+ 2024 04:35:47 +0000
+Received: from LV3PR12MB9404.namprd12.prod.outlook.com
+ ([fe80::efb1:c686:d73d:2762]) by LV3PR12MB9404.namprd12.prod.outlook.com
+ ([fe80::efb1:c686:d73d:2762%7]) with mapi id 15.20.7135.023; Thu, 4 Jan 2024
+ 04:35:47 +0000
+From: Chaitanya Kulkarni <chaitanyak@nvidia.com>
+To: Jens Axboe <axboe@kernel.dk>, Gautam Menghani <gautam@linux.ibm.com>,
+	Chaitanya Kulkarni <chaitanyak@nvidia.com>, "ming.lei@redhat.com"
+	<ming.lei@redhat.com>, "damien.lemoal@opensource.wdc.com"
+	<damien.lemoal@opensource.wdc.com>, "zhouchengming@bytedance.com"
+	<zhouchengming@bytedance.com>, "nj.shetty@samsung.com"
+	<nj.shetty@samsung.com>, "akinobu.mita@gmail.com" <akinobu.mita@gmail.com>
+CC: "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"riteshh@linux.ibm.com" <riteshh@linux.ibm.com>
+Subject: Re: [PATCH] drivers/block/null_blk: Switch from radix tree api to
+ xarrays
+Thread-Topic: [PATCH] drivers/block/null_blk: Switch from radix tree api to
+ xarrays
+Thread-Index: AQHaOnX9UZmrpI+/OE6MN0I+LyD7TbDAefqAgAigEQA=
+Date: Thu, 4 Jan 2024 04:35:46 +0000
+Message-ID: <05b18725-dbf4-42eb-a233-d65611eb76bf@nvidia.com>
+References: <20231229164155.73541-1-gautam@linux.ibm.com>
+ <f1f002e9-8010-4b74-9da8-2551be97fa6f@kernel.dk>
+In-Reply-To: <f1f002e9-8010-4b74-9da8-2551be97fa6f@kernel.dk>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+user-agent: Mozilla Thunderbird
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: LV3PR12MB9404:EE_|BL3PR12MB6644:EE_
+x-ms-office365-filtering-correlation-id: 100a811e-3e53-4b9c-4b46-08dc0cde9f09
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ bs+HQcxid/neG9K7LSBz8Hfa1ssruUOrrL+bl4VCAHXXf83FeOfsbDxPZfYIjSA4rNJxdHFVn5rCjGZRHX7GkjuHReEdNINPRUUMQ57y+2LWLn0G5WQ+1DK9/I0Gx7kXHKhCV7PTnCTtRXdNoC0cUmL3nxiX/HM+zNd9cj23Aq9pCc6doUJSoXjivMWEnghDMwduGxPUQxMNc2BgX5X9MZ25N1//PuQ+vlG/X+mdRBWm2gmGtm77YJKdXd6ef9DnF2ReJto/U7yJUFc9MjIJRt5KMoFRtluSVUZrW94cvAYEeD0HZo6tLjdxZyyhA7L5tG4bnIo6ap0b8JVZrjCRYU4pxHTn/Lx943UaKiMyvSoCRDCOQW/rxR+ToF6rNQOxSxXR8/G2RepT2IcR5qzyEWyCTmeCK5S6Q4rNXLbbip3ivpqsrIuGMIr496HGwBybaRKzuSDwrPKj/Jg/PdsiqqXGTmBJ80DxlhdEhFck3vDgy91dRTYJDdMXWIYlsajSS+PMm7aTKMIWTLNP3XGSDgtug5Bl9tja71Dez6apsFzygnAtMW9felSdSEVFQUBBTuc0Ww6DufZrrNqSTo9jfMGnrmkrizwnPPq/OLGIM3xznzQCtpPwIyEMmWULK7EFh2tIIAicPn/YbYB5P3j7NzXOj7YN+Smj0tS3hMmySTsBHP6cs8wGBRRH+naxYfVH
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV3PR12MB9404.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(366004)(396003)(346002)(376002)(136003)(230922051799003)(186009)(64100799003)(1800799012)(451199024)(83380400001)(7416002)(41300700001)(2906002)(2616005)(38100700002)(122000001)(8676002)(54906003)(110136005)(8936002)(316002)(71200400001)(5660300002)(4326008)(478600001)(64756008)(76116006)(66446008)(91956017)(6512007)(66556008)(66476007)(6486002)(66946007)(6506007)(53546011)(86362001)(38070700009)(31696002)(36756003)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?WldRRkRsNTNzcXVvLzA2aitTNWRRdndmM3FDeFlYN3pRRmtOVGdZMldrN3Iy?=
+ =?utf-8?B?blI4VVQ0QVdCWGhiUThIZ1BDWFdzZVFNTyszZHUzL3pJS01EVlQ5Vy95Qmx6?=
+ =?utf-8?B?bGtpN1BsN0YvdEJWRWViM1k5Y090bDJMVThSZ2VReExvSmtVK1NLMzkwR1RV?=
+ =?utf-8?B?cUdvNGl0b3F1TW0rVVRDV1hDSVJhbERvcXZCbG9RS2J6WThKQVc2YTQ3UDlN?=
+ =?utf-8?B?cW4wRkdjZjNqRWRuL2NvVnZRNXp4bTNXMDNOWExoaWVtWmVTV1B3NkZrc3F1?=
+ =?utf-8?B?eGc1OVpNY1pmWUlBb1NRT25QeGtQY2x3L3NuUlY2alB5ZzJhSk1TZVN1UnJD?=
+ =?utf-8?B?czB2RzBkWHpmOXVsa29nZUpCdW5PZ3U2TVdmU1dFTklvLytBWmZWejgxcUNW?=
+ =?utf-8?B?NDhGQWdsVTRQUjZzTS91UG10Nzh2RVpxdGtuQ1Y2WFN2bHU1U1FuQlMyaDBv?=
+ =?utf-8?B?VWhUdFBnOU14SmUrVzRUR2k2bURkOTkwOWU4SmlaZHljWk9nbGowQzBtVElH?=
+ =?utf-8?B?NG1JWXlsKy85Y293TXVSSEd0akFTOHBvdGpkdERPNWhaTWVOTjVDY1Z1TlBR?=
+ =?utf-8?B?VjI2d0M5RW5hNFMzN3p6QWc4b2dJREFDcnRXSjBUWnlxYUt0TXVTbmhuMGM5?=
+ =?utf-8?B?Sno2WjV3MlBVMHVONWJkbmpKcGphS3kwMnJoWTd2NkwveDdZb0VYMGszZEhI?=
+ =?utf-8?B?OTVIYnl1dEg1TzVhZEQ5WDU4VEZ2QUJmekdrdE9ZdzdSNG0rWEtYNUVIRHZ0?=
+ =?utf-8?B?VmkwYnlQSGdRSWt5Y2tyVzNUcVNuMnFFR0o0NUUyVktsTU9jd2p3emxYZnhS?=
+ =?utf-8?B?SFk2R05iUmV2bTRGWGdSOFd1RENIdmRnQXhWbHFTaVdQU1p0c3VPa0FaOEE4?=
+ =?utf-8?B?Q0RvdnNJYzM4dXh1QXhqb251RVVBMWFaRDVMNHRrWXJITnRkWDJtYUNpbGFP?=
+ =?utf-8?B?dFFHREpEbVRnRE1Bb25vR2orRkVEMXZMczFPbkVwcWF6Z21qT1AxbCtnZTFG?=
+ =?utf-8?B?YW9aejRwSG5GUU11Z1Rva1hXbHNpV3cxRG9scGJna0ZxNTUxQXcxdDVvSWJF?=
+ =?utf-8?B?eExUZ3B3TFdFR3plcmlMZWtMamVsdWFzQkdJMjZBM3FkbWVkMlZPVHg2cUVT?=
+ =?utf-8?B?K0oyNlNqUTkrSXRXOHMxaFd6VE1mMmhaQzh2MkVJejlxME1PUWRLOXBBKytv?=
+ =?utf-8?B?MXgzUnVFZkQvRGQ0YW81T0lZMDViWE5rQzlTcjNTeDlrdlFYVUQ2SHVrZS9i?=
+ =?utf-8?B?RWtienVIZ3VaK2tSSVBVL2ExS3o5VGV5dGVINmg5S1JCUHM1UWRkbkhOck1J?=
+ =?utf-8?B?UlNRSTFXYTRzNVNuWDg3MlI0MFM5bnJUK3B2c3dweHg2V0twRWxpZENycFR5?=
+ =?utf-8?B?UUNXaEFySnM1amRDaGROMGRXV0hJK243amphSkdpaEIwOEk3dVZOdS8xam9h?=
+ =?utf-8?B?Q281N1RvU3FXR1JZSjFFenc4T2QxZkdqUXVHUnhWRFkwb0lBMnFOM251bHJG?=
+ =?utf-8?B?andFbE0xRHlJbFg0cHpQR1RRTXJqOXRRdXROZkw5UVpQZ3cwVVhEVFk0R1Fi?=
+ =?utf-8?B?RmNUWXZOSENoVnFpU0FPSkRUZlJPRnEvcjlZRk03SFB1cHoyUlFnV2ZHeHNL?=
+ =?utf-8?B?TXRQYWR3VDB4RHhhYXdETUxXU1JodW9XU1U5UjFFN2h4ME5mdnZpays4S0JW?=
+ =?utf-8?B?Mm5xck1OQUxuMXcrdzJwWFJuZDNBQXduL29NUlJ3MTBLUzJpbktpVTU4ZlFU?=
+ =?utf-8?B?dHJtcC9hOFdpdUdJTXFkb0J3N0luMVBLWXdpMXlVamthcStaeU1jRTdRcjNo?=
+ =?utf-8?B?ZmZmRUl6KzkrNTcrOHRtL1BhNUswcE5QYXdVMWY5QzhFTU9Lcmw5YWxSMFBC?=
+ =?utf-8?B?S0x4U0xZRngwUEkzTzhHbGd1RUpudDVqRmtocGZyOFhuODdKMFhvS2x1RkJZ?=
+ =?utf-8?B?dlU4SDRCMWMrdVp0SEJTTVEwRmtUSkNCQ1ltR003NE53Tk1XbkVkWVhCdkll?=
+ =?utf-8?B?RXEzZzZGOUtHZUU3OW45N1FxTWxrZnZYcElsRGFpM2Y1M1hsYW5kUXZwc1Fw?=
+ =?utf-8?B?bVZKYmJseDBPZ3IvekZSOVUxTmZQSHExRTIzam9DMno0bDQvSDN5QXpBdkVy?=
+ =?utf-8?B?Y1dUOTJvZklVNFlsTDJwTFBoSVcvNGJlOE9Jd2RCMFFXSnFWSE9GUy80ZU05?=
+ =?utf-8?Q?+Km/VthWTYZ/APvjOY52X6jTMEn1s2VcDw+XrGKllzhY?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <37A1C7EB2F2FD94EAEA6BAB33ACA9BB1@namprd12.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: LV3PR12MB9404.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 100a811e-3e53-4b9c-4b46-08dc0cde9f09
+X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Jan 2024 04:35:46.9750
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: osaxDa4f68Tmjed5WWhvwvgeNyVl6R+0sXo8OdX721DWVWsVkFHtPUM+H9BUxdFQ3ft92O/DeuFKksty5gR0Ww==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL3PR12MB6644
 
-On Tue,  2 Jan 2024 17:33:45 -0600
-Jinghao Jia <jinghao7@illinois.edu> wrote:
-
-> kprobe_emulate_call_indirect currently uses int3_emulate_call to emulate
-> indirect calls. However, int3_emulate_call always assumes the size of
-> the call to be 5 bytes when calculating the return address. This is
-> incorrect for register-based indirect calls in x86, which can be either
-> 2 or 3 bytes depending on whether REX prefix is used.
-
-Ah, that's a really good point! Yes, it should handle the shorter
-indirect call with registers.
-
-> At kprobe runtime,
-> the incorrect return address causes control flow to land onto the wrong
-> place after return -- possibly not a valid instruction boundary. This
-> can lead to a panic like the following:
-> 
-> [    7.308204][    C1] BUG: unable to handle page fault for address: 000000000002b4d8
-> [    7.308883][    C1] #PF: supervisor read access in kernel mode
-> [    7.309168][    C1] #PF: error_code(0x0000) - not-present page
-> [    7.309461][    C1] PGD 0 P4D 0
-> [    7.309652][    C1] Oops: 0000 [#1] SMP
-> [    7.309929][    C1] CPU: 1 PID: 0 Comm: swapper/1 Not tainted 6.7.0-rc5-trace-for-next #6
-> [    7.310397][    C1] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.0-20220807_005459-localhost 04/01/2014
-> [    7.311068][    C1] RIP: 0010:__common_interrupt+0x52/0xc0
-> [    7.311349][    C1] Code: 01 00 4d 85 f6 74 39 49 81 fe 00 f0 ff ff 77 30 4c 89 f7 4d 8b 5e 68 41 ba 91 76 d8 42 45 03 53 fc 74 02 0f 0b cc ff d3 65 48 <8b> 05 30 c7 ff 7e 65 4c 89 3d 28 c7 ff 7e 5b 41 5c 41 5e 41 5f c3
-> [    7.312512][    C1] RSP: 0018:ffffc900000e0fd0 EFLAGS: 00010046
-> [    7.312899][    C1] RAX: 0000000000000001 RBX: 0000000000000023 RCX: 0000000000000001
-> [    7.313334][    C1] RDX: 00000000000003cd RSI: 0000000000000001 RDI: ffff888100d302a4
-> [    7.313702][    C1] RBP: 0000000000000001 R08: 0ef439818636191f R09: b1621ff338a3b482
-> [    7.314146][    C1] R10: ffffffff81e5127b R11: ffffffff81059810 R12: 0000000000000023
-> [    7.314509][    C1] R13: 0000000000000000 R14: ffff888100d30200 R15: 0000000000000000
-> [    7.314951][    C1] FS:  0000000000000000(0000) GS:ffff88813bc80000(0000) knlGS:0000000000000000
-> [    7.315396][    C1] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [    7.315691][    C1] CR2: 000000000002b4d8 CR3: 0000000003028003 CR4: 0000000000370ef0
-> [    7.316153][    C1] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> [    7.316508][    C1] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> [    7.316948][    C1] Call Trace:
-> [    7.317123][    C1]  <IRQ>
-> [    7.317279][    C1]  ? __die_body+0x64/0xb0
-> [    7.317482][    C1]  ? page_fault_oops+0x248/0x370
-> [    7.317712][    C1]  ? __wake_up+0x96/0xb0
-> [    7.317964][    C1]  ? exc_page_fault+0x62/0x130
-> [    7.318211][    C1]  ? asm_exc_page_fault+0x22/0x30
-> [    7.318444][    C1]  ? __cfi_native_send_call_func_single_ipi+0x10/0x10
-> [    7.318860][    C1]  ? default_idle+0xb/0x10
-> [    7.319063][    C1]  ? __common_interrupt+0x52/0xc0
-> [    7.319330][    C1]  common_interrupt+0x78/0x90
-> [    7.319546][    C1]  </IRQ>
-> [    7.319679][    C1]  <TASK>
-> [    7.319854][    C1]  asm_common_interrupt+0x22/0x40
-> [    7.320082][    C1] RIP: 0010:default_idle+0xb/0x10
-> [    7.320309][    C1] Code: 4c 01 c7 4c 29 c2 e9 72 ff ff ff cc cc cc cc 90 90 90 90 90 90 90 90 90 90 90 b8 0c 67 40 a5 66 90 0f 00 2d 09 b9 3b 00 fb f4 <fa> c3 0f 1f 00 90 90 90 90 90 90 90 90 90 90 90 b8 0c 67 40 a5 e9
-> [    7.321449][    C1] RSP: 0018:ffffc9000009bee8 EFLAGS: 00000256
-> [    7.321808][    C1] RAX: ffff88813bca8b68 RBX: 0000000000000001 RCX: 000000000001ef0c
-> [    7.322227][    C1] RDX: 0000000000000000 RSI: 0000000000000001 RDI: 000000000001ef0c
-> [    7.322656][    C1] RBP: ffffc9000009bef8 R08: 8000000000000000 R09: 00000000000008c2
-> [    7.323083][    C1] R10: 0000000000000000 R11: ffffffff81058e70 R12: 0000000000000000
-> [    7.323530][    C1] R13: ffff8881002b30c0 R14: 0000000000000000 R15: 0000000000000000
-> [    7.323948][    C1]  ? __cfi_lapic_next_deadline+0x10/0x10
-> [    7.324239][    C1]  default_idle_call+0x31/0x50
-> [    7.324464][    C1]  do_idle+0xd3/0x240
-> [    7.324690][    C1]  cpu_startup_entry+0x25/0x30
-> [    7.324983][    C1]  start_secondary+0xb4/0xc0
-> [    7.325217][    C1]  secondary_startup_64_no_verify+0x179/0x17b
-> [    7.325498][    C1]  </TASK>
-> [    7.325641][    C1] Modules linked in:
-> [    7.325906][    C1] CR2: 000000000002b4d8
-> [    7.326104][    C1] ---[ end trace 0000000000000000 ]---
-> [    7.326354][    C1] RIP: 0010:__common_interrupt+0x52/0xc0
-> [    7.326614][    C1] Code: 01 00 4d 85 f6 74 39 49 81 fe 00 f0 ff ff 77 30 4c 89 f7 4d 8b 5e 68 41 ba 91 76 d8 42 45 03 53 fc 74 02 0f 0b cc ff d3 65 48 <8b> 05 30 c7 ff 7e 65 4c 89 3d 28 c7 ff 7e 5b 41 5c 41 5e 41 5f c3
-> [    7.327570][    C1] RSP: 0018:ffffc900000e0fd0 EFLAGS: 00010046
-> [    7.327910][    C1] RAX: 0000000000000001 RBX: 0000000000000023 RCX: 0000000000000001
-> [    7.328273][    C1] RDX: 00000000000003cd RSI: 0000000000000001 RDI: ffff888100d302a4
-> [    7.328632][    C1] RBP: 0000000000000001 R08: 0ef439818636191f R09: b1621ff338a3b482
-> [    7.329223][    C1] R10: ffffffff81e5127b R11: ffffffff81059810 R12: 0000000000000023
-> [    7.329780][    C1] R13: 0000000000000000 R14: ffff888100d30200 R15: 0000000000000000
-> [    7.330193][    C1] FS:  0000000000000000(0000) GS:ffff88813bc80000(0000) knlGS:0000000000000000
-> [    7.330632][    C1] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [    7.331050][    C1] CR2: 000000000002b4d8 CR3: 0000000003028003 CR4: 0000000000370ef0
-> [    7.331454][    C1] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> [    7.331854][    C1] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> [    7.332236][    C1] Kernel panic - not syncing: Fatal exception in interrupt
-> [    7.332730][    C1] Kernel Offset: disabled
-> [    7.333044][    C1] ---[ end Kernel panic - not syncing: Fatal exception in interrupt ]---
-> 
-> The relevant assembly code is (from objdump, faulting address
-> highlighted):
-> 
-> ffffffff8102ed9d:       41 ff d3                  call   *%r11
-> ffffffff8102eda0:       65 48 <8b> 05 30 c7 ff    mov    %gs:0x7effc730(%rip),%rax
-> 
-> The emulation incorrectly sets the return address to be ffffffff8102ed9d
-> + 0x5 = ffffffff8102eda2, which is the 8b byte in the middle of the next
-> mov. This in turn causes incorrect subsequent instruction decoding and
-> eventually triggers the page fault above.
-> 
-> Instead of invoking int3_emulate_call, perform push and jmp emulation
-> directly in kprobe_emulate_call_indirect. At this point we can obtain
-> the instruction size from p->ainsn.size so that we can calculate the
-> correct return address.
-
-This looks good to me, because 'p->ainsn.size = insn->length' so the
-'regs->ip - INT3_INSN_SIZE + p->ainsn.size' will point the next instruction
-correctly.
-
-Let me pick it.
-
-Thanks!
-
-> 
-> Fixes: 6256e668b7af ("x86/kprobes: Use int3 instead of debug trap for single-step")
-> Signed-off-by: Jinghao Jia <jinghao7@illinois.edu>
-> ---
->  arch/x86/kernel/kprobes/core.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/kernel/kprobes/core.c b/arch/x86/kernel/kprobes/core.c
-> index e8babebad7b8..a0ce46c0a2d8 100644
-> --- a/arch/x86/kernel/kprobes/core.c
-> +++ b/arch/x86/kernel/kprobes/core.c
-> @@ -576,7 +576,8 @@ static void kprobe_emulate_call_indirect(struct kprobe *p, struct pt_regs *regs)
->  {
->  	unsigned long offs = addrmode_regoffs[p->ainsn.indirect.reg];
->  
-> -	int3_emulate_call(regs, regs_get_register(regs, offs));
-> +	int3_emulate_push(regs, regs->ip - INT3_INSN_SIZE + p->ainsn.size);
-> +	int3_emulate_jmp(regs, regs_get_register(regs, offs));
->  }
->  NOKPROBE_SYMBOL(kprobe_emulate_call_indirect);
->  
-> -- 
-> 2.43.0
-> 
-
-
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+T24gMTIvMjkvMjMgMDg6NTIsIEplbnMgQXhib2Ugd3JvdGU6DQo+IE9uIDEyLzI5LzIzIDk6NDEg
+QU0sIEdhdXRhbSBNZW5naGFuaSB3cm90ZToNCj4+IENvbnZlcnQgdGhlIG51bGxfYmxrIGRyaXZl
+ciB0byB1c2UgdGhlIHhhcnJheSBBUEkgaW5zdGVhZCBvZiByYWRpeCB0cmVlDQo+PiBBUEkuDQo+
+Pg0KPj4gVGVzdGluZzoNCj4+IFVzZWQgYmxrdGVzdHMgdGVzdCBzdWl0ZSAoYmxvY2sgYW5kIHpi
+ZCBzdWl0ZXMpIHRvIHRlc3QgdGhlIGN1cnJlbnQNCj4+IG51bGxfYmxrIGRyaXZlciBhbmQgbnVs
+bF9ibGsgZHJpdmVyIHdpdGggdGhpcyBwYXRjaCBhcHBsaWVkLiBUaGUgdGVzdHMNCj4+IHJlc3Vs
+dHMgaW4gYm90aCB0aGUgaW5zdGFuY2VzIHdlcmUgdGhlIHNhbWUuDQo+IFdoYXQncyB0aGUgcHVy
+cG9zZSBvZiB0aGUgY2hhbmdlPw0KPg0KPiBPbmUgdGhpbmcgdGhhdCBhbHdheXMgYW5ub3lzIG1l
+IHNsaWdodGx5IHdpdGggeGFycmF5IGlzIHRoZSBpbXBsaWVkDQo+IGxvY2tpbmcuIFNvIG5vdyB5
+b3UncmUgZ3JhYmJpbmcgdHdvIGxvY2tzIHJhdGhlciB0aGFuIGp1c3QgdXRpbGl6aW5nIHRoZQ0K
+PiBsb2NrIHRoYXQgd2FzIGFscmVhZHkgaGVsZC4gSSB0aGluayBhIGJldHRlciB0cmFuc2Zvcm1h
+dGlvbiB3b3VsZCBiZSB0bw0KPiBmaXJzdCBjaGFuZ2UgdGhlIGxvY2tpbmcgdG8gYmUgY2xvc2Vy
+IHRvIHRoZSBsb29rdXAgYW5kIGRlbGV0aW9uLCBhbmQNCj4gdGhlbiBjb252ZXJ0IHRvIHhhcnJh
+eSBhbmQgbm93IGJlaW5nIGFibGUgdG8gZHJvcCB0aGF0IG90aGVyIGxvY2suIEp1c3QNCj4gZG9p
+bmcgYSBibGluZCBjb252ZXJzaW9uIGxpa2UgdGhpcyB3aXRob3V0IHBvdGVudGlhbGx5IHVuZGVy
+c3RhbmRpbmcgdGhlDQo+IGRldGFpbHMgb2YgaXQgaXMgbm90IGEgZ29vZCBpZGVhLCBpbWhvLg0K
+Pg0KDQpJIGFncmVlIHhhcnJheSBpcyBhIGJldHRlciBkYXRhIHN0cnVjdHVyZSB0aGFuIHJhZGl4
+IHRyZWUgdy5yLnQuIHdoYXQgd2UgZGlkDQpmb3IgYnJkLCBidXQgSSdtIHJlYWxseSBub3Qgc3Vy
+ZSB3aGF0IGl0IHdpbGwgYnV5IGZvciBhIHRlc3RpbmcgZHJpdmVyIGxpa2UNCm51bGxfYmxrIHVu
+bGVzcyBpdCBpcyB1c2VkIGluIHByb2R1Y3Rpb24gc29tZXdoZXJlIHdoZXJlIHJhZGl4IHRyZWVz
+IGFyZSBub3QNCnN1ZmZpY2llbnQsIGJ1dCBJJ3ZlIG5vdCBzZWVuIHRoYXQgY2FzZSAuLi4NCg0K
+LWNrDQoNCg0K
 
