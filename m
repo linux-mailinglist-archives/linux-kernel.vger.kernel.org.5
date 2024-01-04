@@ -1,171 +1,168 @@
-Return-Path: <linux-kernel+bounces-16959-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16960-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7CC17824689
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 17:45:22 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B956582468B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 17:46:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7E013B22A80
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 16:45:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BDAB41C222E4
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 16:46:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9D33250FE;
-	Thu,  4 Jan 2024 16:45:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B56325112;
+	Thu,  4 Jan 2024 16:46:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=inria.fr header.i=@inria.fr header.b="dTK5ArS5"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="KSHdxR+f"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail2-relais-roc.national.inria.fr (mail2-relais-roc.national.inria.fr [192.134.164.83])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1D73250F2
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 16:45:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=inria.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=inria.fr
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E47FE250F1
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 16:45:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-336c5b5c163so401409f8f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 08:45:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=inria.fr; s=dc;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=dtqnjFUoWCgQFhsvOFi3p6DWIG72PcJq28mOXBoIE+I=;
-  b=dTK5ArS5DLrLrlZwo117/TmXXHVaqC9Y54eo4Oq47ZOj8e1XZv5PJnTT
-   U46uTwivPc0v8RReY/D4ieQMFl1B9/ammwAo6apJrUff67CbPTxO52FK8
-   QiVUH+6+UPl0jKHf5cIHBuWtu5cc7XsrVj8WhdFbriF2bpABnvmYVg0HQ
-   I=;
-Authentication-Results: mail2-relais-roc.national.inria.fr; dkim=none (message not signed) header.i=none; spf=SoftFail smtp.mailfrom=julia.lawall@inria.fr; dmarc=fail (p=none dis=none) d=inria.fr
-X-IronPort-AV: E=Sophos;i="6.04,331,1695679200"; 
-   d="scan'208";a="144905714"
-Received: from dt-lawall.paris.inria.fr ([128.93.67.65])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2024 17:45:02 +0100
-Date: Thu, 4 Jan 2024 17:45:02 +0100 (CET)
-From: Julia Lawall <julia.lawall@inria.fr>
-To: Vincent Guittot <vincent.guittot@linaro.org>
-cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-    Dietmar Eggemann <dietmar.eggemann@arm.com>, Mel Gorman <mgorman@suse.de>, 
-    linux-kernel@vger.kernel.org
-Subject: Re: EEVDF and NUMA balancing
-In-Reply-To: <CAKfTPtCAcHuzhcDvry6_nH2K29wc-LEo2yOi-J-mnZkwMvGDbw@mail.gmail.com>
-Message-ID: <8daf59ab-5f73-1f3-251e-bb9cc72a598@inria.fr>
-References: <alpine.DEB.2.22.394.2310032059060.3220@hadrien> <b8ab29de-1775-46e-dd75-cdf98be8b0@inria.fr> <CAKfTPtBhWwk9sf9F1=KwubiAWFDC2A9ZT-SSJ+tgFxme1cFmYA@mail.gmail.com> <alpine.DEB.2.22.394.2312182302310.3361@hadrien>
- <CAKfTPtALEFtrapi3Kk97KLGQN4259eEQEwwftVUK4RG42Vgoyw@mail.gmail.com> <98b3df1-79b7-836f-e334-afbdd594b55@inria.fr> <CAKfTPtCRN_eWgVdK2-h6E_ifJKwwJEtMjeNjB=5DXZFWyBS+tQ@mail.gmail.com> <93112fbe-30be-eab8-427c-5d4670a0f94e@inria.fr>
- <CAKfTPtAeFvrZxApK3RruWwCjMxbQvOkU+_YgZSo4QPT_AD6FxA@mail.gmail.com> <9dc451b5-9dd8-89f2-1c9c-7c358faeaad@inria.fr> <CAKfTPtDCsLnDnVje9maP5s-L7TbtSu4CvF19xHOxbkvSNd7vZg@mail.gmail.com> <2359ab5-4556-1a73-9255-3fcf2fc57ec@inria.fr> <6618dcfa-a42f-567c-2a9d-a76786683b29@inria.fr>
- <CAKfTPtDrULyOB9+RhjoPfCpHKVhx5kRf6dq79DSE6jZgsEairw@mail.gmail.com> <edbd8ecd-148c-b366-fd46-3531dec39d49@inria.fr> <cecfd395-f067-99e1-bdd2-fec2ebc3db3@inria.fr> <CAKfTPtCAcHuzhcDvry6_nH2K29wc-LEo2yOi-J-mnZkwMvGDbw@mail.gmail.com>
+        d=google.com; s=20230601; t=1704386757; x=1704991557; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Tg07B/b+PmSMf2FD05P3T9dr6e/iVE+Fl7KD2hAHB3o=;
+        b=KSHdxR+fHvrHghzjPHY5JgQ9rxXl1a8h/YkP4P8a9svzltts8cMfJAxI6+ygYzxAwJ
+         Gq/cWF7S5B2FCAbgmaCohACnQigfG3IGqL/Gjivb3/ogmPX5TRz6bLN9KJhOaoVRjPLp
+         ovsJrR0bcQytRp4tVB+536f1rTuLxMtbzAaMpuwuOAl8SkgD36L23NIjCaiMZXQ2i1OX
+         5BiFD6cEXPsG2lTHX8WXDxJ4K2kdGc+L4JwLQ36ymN3IdbnVQEffvu9QPbijiA+vq320
+         51zc7mEoucaM8EuSzhfGCThDDpcQlPVWkdWoXgLgJwau++zXD8v0HWBVqpj8dr545DXs
+         C9Ow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704386757; x=1704991557;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Tg07B/b+PmSMf2FD05P3T9dr6e/iVE+Fl7KD2hAHB3o=;
+        b=L9T+gLFV18cmEqPkY/INiqeCcYNg3KCwGWxlAisIUV8aAlGj+yTRNkxWRnKncGTQM2
+         ifHAYMpAIvNjD8c9asgeD0pFDjqh9icy8K8enPLXK6s/tcuCXnBHSYxnRxxyyf3Yf7eW
+         L4k0SLWNv8NXOIubD3LczIhFBaLMkstX/fKPkZU+CyEbgrrQ3QSE1HxEUkPFx4UyLtQo
+         zCynljbfvauq8fr9n2P7uo6DUi7NPu363gnYPxaopcje49QG4nH2NHLNejXWGBORTsKd
+         MJFf4djOW2VxN4qOqW0sunT1tpKCTg97HwRooLmMseMkm4yZ0MW3ktobsifdUItdtoYv
+         rpwA==
+X-Gm-Message-State: AOJu0YwQs/Bi7NUcuP6d4EnN8r+fVXX3DrUv8Aao4Af/6m0T2IpaUHe9
+	3wV0gUnNdCGCFGUZhWN0k9BSsV8FTzp4rV3diL5tosCWz07z
+X-Google-Smtp-Source: AGHT+IFPYq0eI3raaaSjoMhfB3lze8Iq4DULARw0RWc47y1DscUKSAHtO7PITg/8/KpSF8Yph0LCzn71nxt6s+u2saU=
+X-Received: by 2002:adf:d1e2:0:b0:337:a2f:a823 with SMTP id
+ g2-20020adfd1e2000000b003370a2fa823mr516802wrd.8.1704386756997; Thu, 04 Jan
+ 2024 08:45:56 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <20240104-extable-v2-1-6fdcb64abcb2@google.com> <20240104011419.GN1674809@ZenIV>
+In-Reply-To: <20240104011419.GN1674809@ZenIV>
+From: Nick Desaulniers <ndesaulniers@google.com>
+Date: Thu, 4 Jan 2024 08:45:42 -0800
+Message-ID: <CAKwvOdmDh=kAnRVDX-Qhg4KAoPDi7STfU5Ga5f+jZPb8fyyN8Q@mail.gmail.com>
+Subject: Re: [PATCH v2] x86/vdso: shrink vdso/extable.i via IWYU
+To: Al Viro <viro@zeniv.linux.org.uk>
+Cc: Tanzir Hasan <tanzirh@google.com>, Andy Lutomirski <luto@kernel.org>, 
+	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
+	"H. Peter Anvin" <hpa@zytor.com>, Nick Desaulniers <nnn@google.com>, linux-kernel@vger.kernel.org, 
+	Arnd Bergmann <arnd@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-
-
-On Thu, 4 Jan 2024, Vincent Guittot wrote:
-
-> On Fri, 29 Dec 2023 at 16:18, Julia Lawall <julia.lawall@inria.fr> wrote:
-> >
-> >
-> >
-> > On Thu, 28 Dec 2023, Julia Lawall wrote:
-> >
-> > > > > > > > > I'm surprised that you have mainly CPU_NEWLY_IDLE. Do you know the reason ?
-> > > > > > > >
-> > > > > > > > No.  They come from do_idle calling the scheduler.  I will look into why
-> > > > > > > > this happens so often.
-> > > > > > >
-> > > > > > > Hmm, the CPU was idle and received a need resched which triggered the
-> > > > > > > scheduler but there was nothing to schedule so it goes back to idle
-> > > > > > > after running a newly_idle _load_balance.
-> > > > > >
-> > > > > > I spent quite some time thinking the same until I saw the following code
-> > > > > > in do_idle:
-> > > > > >
-> > > > > > preempt_set_need_resched();
-> > > > > >
-> > > > > > So I have the impression that do_idle sets need resched itself.
-> > > > >
-> > > > > But of course that code is only executed if need_resched is true.  But I
-> > > >
-> > > > Yes, that is your root cause. something, most probably in interrupt
-> > > > context, wakes up your CPU and expect to wake up a thread
-> > > >
-> > > > > don't know who would be setting need resched on each clock tick.
-> > > >
-> > > > that can be a timer, interrupt, ipi, rcu ...
-> > > > a trace should give you some hints
-> > >
-> > > I have the impression that it is the goal of calling nohz_csd_func on each
-> > > clock tick that causes the calls to need_resched.  If the idle process is
-> > > polling, call_function_single_prep_ipi just sets need_resched to get the
+On Wed, Jan 3, 2024 at 5:14=E2=80=AFPM Al Viro <viro@zeniv.linux.org.uk> wr=
+ote:
 >
-> Your system is calling the polling mode and not the default
-> cpuidle_idle_call() ? This could explain why I don't see such problem
-> on my system which doesn't have polling
+> On Thu, Jan 04, 2024 at 12:02:40AM +0000, Tanzir Hasan wrote:
 >
-> Are you forcing the use of polling mode ?
-> If yes, could you check that this problem disappears without forcing
-> polling mode ?
+> *ugh*
+>
+> > +#include <linux/stddef.h>
+> > +#include <linux/types.h>
 
-I'll check.  I didn't explicitly set anything, but I don't really know
-what my configuration file does.
+Tanzir's tooling is pretty neat; it can print //why// certain indirect
+includes were made direct.  In this case:
+
+#include <linux/stddef.h>    // for false, true
+#include <linux/types.h>     // for bool
+
+So it's kind of sad that the use of bools like this will depend on two
+different headers.  Perhaps it's worth making an include/linux/bool.h
+header; at least that naming convention would better match userspace C
+programming (I feel the same about not having a stdint.h, too).  Also,
+one of the more recent C standards standardized bool, so if we ever
+plan to move off -std=3Dgnu11, we will need to adjust the kernel's
+definitions of bool anyways.  Doing so in one place rather than two
+might be nice.  Adding Arnd, who I think looked at that recently
+(can't recall precisely).
 
 >
-> > > idle process to stop polling.  But there is no actual task that the idle
-> > > process should schedule.  The need_resched then prevents the idle process
-> > > from stealing, due to the CPU_NEWLY_IDLE flag, contradicting the whole
-> > > purpose of calling nohz_csd_func in the first place.
->
-> Do I understand correctly that your sequence is :
-> CPU A                                  CPU B
-> cpu enters idle
-> do_idle()
->   ...
->   loop in cpu_idle_poll
->   ...
->                                        kick_ilb on CPU A
->                                          send_call_function_single_ipi
->                                            set_nr_if_polling
->                                              set TIF_NEED_RESCHED
->
->   exit polling loop
-> exit while (!need_resched())
->
-> call nohz_csd_func but
->   need_resched is true so it's a nope
->
-> pick_next_task_fair
->   newidle_balance
->     load_balance(CPU_NEWLY_IDLE)
+> Do we have _anything_ that would not want stddef.h?  Seriously -
+> NULL, true, false, offsetof...   At that point I'd rather have
+> it via -include...
 
-Yes, this looks correct.
-
-thanks,
-julia
+No!  No more -include!  That should never have been allowed in the
+kernel.  That pessimizes every translation unit which now must parse
+those entire files regardless of whether they are actually used or
+not.  And undoing the 3 existing ones is going to be painful.  And we
+can't even use precompiled headers easily for those because the x86
+kernel uses like 3+ ABIs when building different parts of the kernel
+image (and precompiled headers need to have the same compiler flags
+for the translation unit as was used to precompile the header).
 
 >
-> >
-> > Looking in more detail, do_idle contains the following after existing the
-> > polling loop:
-> >
-> >         flush_smp_call_function_queue();
-> >         schedule_idle();
-> >
-> > flush_smp_call_function_queue() does end up calling nohz_csd_func, but
-> > this has no impact, because it first checks that need_resched() is false,
-> > whereas it is currently true to cause existing the polling loop.  Removing
-> > that test causes:
-> >
-> > raise_softirq_irqoff(SCHED_SOFTIRQ);
-> >
-> > but that causes the load balancing code to be executed from a ksoftirqd
-> > task, which means that there is now no load imbalance.
-> >
-> > So the only chance to detect an imbalance does seem to be to have the load
-> > balance call be executed by the idle task, via schedule_idle(), as is
-> > done currently.  But that leads to the core being considered to be newly
-> > idle.
-> >
-> > julia
-> >
-> >
->
+> Are we going to spam that include all over the tree?  Because
+> it'd really be just about everything...
+
+We could try to take the tact with these changes of "removing as many
+explicit header inclusions as possible while still being able to
+build," but I strongly recommend against that.  (Some C or C++
+projects do take that approach, some explicitly don't)
+
+Basically, if you can scrape by by building with a minimal number of
+headers (because let's say one of the explicit includes happens to
+already include stddef.h; that's what I'm referring to as an
+"indirect" inclusion or dependency), it makes it harder to refactor
+headers in the future, since you can end up with build breakages in .c
+files due to such indirect inclusions.  If you make your indirect
+includes direct (by explicitly including them, like this patch), then
+that becomes a non-issue.
+
+If an indirect dependency is made direct, it doesn't change the number
+of tokens to parse, assuming your compiler has the header guard
+optimization.
+
+And we don't plan to send patches that make every indirect include
+direct unless it results in some amount of reduction in code size for
+the parser (as is measured in the commit message of this patch).
+
+I don't buy that include lists are somehow an eyesore, but if they
+ever got too long, one could make a new .h file just for that one .c
+file which contains the full include list such that the .c file only
+includes the one newly created .h file.
+
+--
+Anyways, it would be nice to retain these 2 headers explicitly.  One
+goal of automating this is that the process and results are
+reproducible between two different developers.  If we have automation
+that tries to help developers avoid indirect dependencies, and devs
+manually touch up the results to remove includes (going back to
+relying on indirect dependencies), then someone else runs the
+automation, that will result in the manual touch ups being undone.
+For this file without too many #ifdef CONFIG_FOO's, it's more obvious
+what can be made indirect.  But for other larger translation units, I
+worry that having such a posture (of favoring indirect dependencies)
+will break randconfigs when attempting to refactor headers or include
+lists.
+
+My advice; rely on automation and move on.  (I feel the same about
+clang-format btw)
+--=20
+Thanks,
+~Nick Desaulniers
 
