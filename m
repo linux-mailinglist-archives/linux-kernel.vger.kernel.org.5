@@ -1,109 +1,221 @@
-Return-Path: <linux-kernel+bounces-16234-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16235-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4799A823B49
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 04:49:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1BC1A823B4B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 04:57:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BED9D2880F0
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 03:49:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9556D1F25CA2
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 03:57:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3498E10A04;
-	Thu,  4 Jan 2024 03:49:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F75318E0A;
+	Thu,  4 Jan 2024 03:57:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="dKXJYVfB"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Ii4xHkKP"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E91C618640
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 03:49:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704340174; x=1735876174;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=HpyfkjZPit+bsDxyrOjSyzNXxZrIbPJsDr9Ekj6i/aU=;
-  b=dKXJYVfB1FR2DUacsv2Xff9L6i6vA8iG2kTuIUMPMaCHI17JXKyKWjaT
-   JPaBMfnw7W9m74PfJOg24zIdY5c8gsYEXY10YrxkXOZIBsxmMBYxohRL9
-   Np6uc1ccsyJZBfdKQXc6jpDpeDRP3V9Y2/AAwZE4YTCQOD6g31v98B40Q
-   o40qCde1bIGyrFh6uILOUGPgEMPx+k2g60tRpyuBu05DhBGAKC0yXQ3l5
-   8IjluETSg18jmGFfT+vSYGVYY29ZluodejC5Fnp60KIZ3k/h8LYNi/lcz
-   NsoodNK8Dx5IaU70J/NOz9WguWYznJdb5FtvBwpsf/9EVh11+OQr2KXlj
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10942"; a="483298266"
-X-IronPort-AV: E=Sophos;i="6.04,329,1695711600"; 
-   d="scan'208";a="483298266"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jan 2024 19:49:33 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,329,1695711600"; 
-   d="scan'208";a="22324731"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmviesa001.fm.intel.com with ESMTP; 03 Jan 2024 19:49:05 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rLEj8-000MsU-0S;
-	Thu, 04 Jan 2024 03:49:02 +0000
-Date: Thu, 4 Jan 2024 11:48:29 +0800
-From: kernel test robot <lkp@intel.com>
-To: Jens Axboe <axboe@kernel.dk>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: fs/splice.c:53:19: sparse: sparse: cast from restricted fmode_t
-Message-ID: <202401041120.Cr5feSew-lkp@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23D1818647
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 03:56:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1704340616;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=YMN+pqeNMI7ZuFW+qE934BKBWaEBG3spDH3M6BLKSMk=;
+	b=Ii4xHkKPc9ACJPxTFbgiocsvrRtqLvMBXbh0kb/ZmSHMQF1mTCnBVNSEHqLq5s8TfyZmOv
+	J2RBm/lnqUwA0BxKfDfmbRbv/7XeSlGd3IVrQldowUI0dy1H3EK5iFFnpfSsTqmRLBW0WA
+	+5OWqCTBCF9WFLF068j136GBlsf0Tfg=
+Received: from mail-oo1-f69.google.com (mail-oo1-f69.google.com
+ [209.85.161.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-503-g3SBQw-2P021zJ76x-euZw-1; Wed, 03 Jan 2024 22:56:54 -0500
+X-MC-Unique: g3SBQw-2P021zJ76x-euZw-1
+Received: by mail-oo1-f69.google.com with SMTP id 006d021491bc7-594edc5b62bso136402eaf.3
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 19:56:54 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704340614; x=1704945414;
+        h=content-transfer-encoding:content-disposition:mime-version
+         :references:in-reply-to:message-id:date:subject:cc:to:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=YMN+pqeNMI7ZuFW+qE934BKBWaEBG3spDH3M6BLKSMk=;
+        b=D2d6l7yIJfJsXxiog4ke97In1v+hKoinWNn6KXyL1syv1BNqt9Ek+Ybysz+Xu6A9mO
+         tEtn+WWlpjm/6rYuuxnZ5hwOM8d78SE+1Eq0GFATMvnUPPPKZls/xAHRBVmrr3xQVzWx
+         tMO7+pLKdDOaTQ5om376ycdCwhG8ch61MHKvM2mEdnjLxDrgbmuFvgFF5d7/7YN9bkcW
+         GLQyz7H7KrrttTjQjywUmK2r3zg49i6kyVUGtZa3TJJldO9a1dY+sJfNsLElC+SitNpm
+         Vl6oQqE9GLDZArEVFlcPnnnCieNwYrVW/38Vya5vAoFHJiM1d3RSYJcwqKexHFOQyDV0
+         cY/Q==
+X-Gm-Message-State: AOJu0YzNV+5jRWSOTq4vA9rAU7ukJh/AUwvlOT0Db2yOb+FM1dS4SYEw
+	QrPCWCAi0HmzN4iwh5mxO1AHSok5CtqFXozPP5GBuuQnDI0E8p7gJ7HXU2NXVBGfn79oRQl5xnB
+	+4ogX1z46S8Es11zktBimweHjP+V5VJ20
+X-Received: by 2002:a05:6358:e497:b0:175:524e:440d with SMTP id by23-20020a056358e49700b00175524e440dmr2948368rwb.57.1704340613943;
+        Wed, 03 Jan 2024 19:56:53 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEvUY09MTn5GToRw03eTFd2Z42WB1/U704H6N/ybGn6z8OeOBAp6ZdewL30cqW+xtKO4DZEgw==
+X-Received: by 2002:a05:6358:e497:b0:175:524e:440d with SMTP id by23-20020a056358e49700b00175524e440dmr2948348rwb.57.1704340613566;
+        Wed, 03 Jan 2024 19:56:53 -0800 (PST)
+Received: from localhost.localdomain ([2804:431:c7ec:911:6911:ca60:846:eb46])
+        by smtp.gmail.com with ESMTPSA id nb5-20020a17090b35c500b0028bbf4c0264sm2558789pjb.10.2024.01.03.19.56.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Jan 2024 19:56:53 -0800 (PST)
+From: Leonardo Bras <leobras@redhat.com>
+To: Guo Ren <guoren@kernel.org>
+Cc: Leonardo Bras <leobras@redhat.com>,
+	Andrew Jones <ajones@ventanamicro.com>,
+	paul.walmsley@sifive.com,
+	palmer@dabbelt.com,
+	panqinglin2020@iscas.ac.cn,
+	bjorn@rivosinc.com,
+	conor.dooley@microchip.com,
+	peterz@infradead.org,
+	keescook@chromium.org,
+	wuwei2016@iscas.ac.cn,
+	xiaoguang.xing@sophgo.com,
+	chao.wei@sophgo.com,
+	unicorn_wang@outlook.com,
+	uwu@icenowy.me,
+	jszhang@kernel.org,
+	wefu@redhat.com,
+	atishp@atishpatra.org,
+	linux-riscv@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Guo Ren <guoren@linux.alibaba.com>
+Subject: Re: [PATCH V2 3/3] riscv: xchg: Prefetch the destination word for sc.w
+Date: Thu,  4 Jan 2024 00:56:39 -0300
+Message-ID: <ZZYsdyKx8kmoDBGB@LeoBras>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <CAJF2gTTpi5A+9KP5EyH9qhD_fwuZrWpx6zdCJyG+iv0Ez5q-gw@mail.gmail.com>
+References: <20231231082955.16516-1-guoren@kernel.org> <20231231082955.16516-4-guoren@kernel.org> <20240102-81391283df04c430d76c0eb0@orel> <CAJF2gTQ7Oo8UKdPRs0GAAUsh9mDCgGucS8g8kuPzByaWVOtigw@mail.gmail.com> <ZZW5Y85OdibCu58h@LeoBras> <CAJF2gTTpi5A+9KP5EyH9qhD_fwuZrWpx6zdCJyG+iv0Ez5q-gw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   ac865f00af293d081356bec56eea90815094a60e
-commit: 0f99fc513ddd28de155c58547824a9fd63daacea splice: clear FMODE_NOWAIT on file if splice/vmsplice is used
-date:   8 months ago
-config: csky-randconfig-r013-20230825 (https://download.01.org/0day-ci/archive/20240104/202401041120.Cr5feSew-lkp@intel.com/config)
-compiler: csky-linux-gcc (GCC) 12.3.0
-reproduce: (https://download.01.org/0day-ci/archive/20240104/202401041120.Cr5feSew-lkp@intel.com/reproduce)
+On Thu, Jan 04, 2024 at 09:24:40AM +0800, Guo Ren wrote:
+> On Thu, Jan 4, 2024 at 3:45 AM Leonardo Bras <leobras@redhat.com> wrote:
+> >
+> > On Wed, Jan 03, 2024 at 02:15:45PM +0800, Guo Ren wrote:
+> > > On Tue, Jan 2, 2024 at 7:19 PM Andrew Jones <ajones@ventanamicro.com> wrote:
+> > > >
+> > > > On Sun, Dec 31, 2023 at 03:29:53AM -0500, guoren@kernel.org wrote:
+> > > > > From: Guo Ren <guoren@linux.alibaba.com>
+> > > > >
+> > > > > The cost of changing a cacheline from shared to exclusive state can be
+> > > > > significant, especially when this is triggered by an exclusive store,
+> > > > > since it may result in having to retry the transaction.
+> > > > >
+> > > > > This patch makes use of prefetch.w to prefetch cachelines for write
+> > > > > prior to lr/sc loops when using the xchg_small atomic routine.
+> > > > >
+> > > > > This patch is inspired by commit: 0ea366f5e1b6 ("arm64: atomics:
+> > > > > prefetch the destination word for write prior to stxr").
+> > > > >
+> > > > > Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+> > > > > Signed-off-by: Guo Ren <guoren@kernel.org>
+> > > > > ---
+> > > > >  arch/riscv/include/asm/cmpxchg.h | 4 +++-
+> > > > >  1 file changed, 3 insertions(+), 1 deletion(-)
+> > > > >
+> > > > > diff --git a/arch/riscv/include/asm/cmpxchg.h b/arch/riscv/include/asm/cmpxchg.h
+> > > > > index 26cea2395aae..d7b9d7951f08 100644
+> > > > > --- a/arch/riscv/include/asm/cmpxchg.h
+> > > > > +++ b/arch/riscv/include/asm/cmpxchg.h
+> > > > > @@ -10,6 +10,7 @@
+> > > > >
+> > > > >  #include <asm/barrier.h>
+> > > > >  #include <asm/fence.h>
+> > > > > +#include <asm/processor.h>
+> > > > >
+> > > > >  #define __arch_xchg_masked(prepend, append, r, p, n)                 \
+> > > >
+> > > > Are you sure this is based on v6.7-rc7? Because I don't see this macro.
+> > > Oh, it is based on Leobras' patches. I would remove it in the next of version.
+> >
+> > I would say this next :)
+> Thx for the grammar correction.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202401041120.Cr5feSew-lkp@intel.com/
+Oh, I was not intending to correct grammar.
+I just meant the next thing I would mention is that it was based on top of 
+my patchset instead of v6.7-rc7:
 
-sparse warnings: (new ones prefixed by >>)
->> fs/splice.c:53:19: sparse: sparse: cast from restricted fmode_t
->> fs/splice.c:53:19: sparse: sparse: cast from restricted fmode_t
->> fs/splice.c:53:19: sparse: sparse: cast to restricted fmode_t
-   fs/splice.c: note: in included file (through include/linux/mmzone.h, include/linux/gfp.h, include/linux/xarray.h, ...):
-   include/linux/page-flags.h:246:46: sparse: sparse: self-comparison always evaluates to false
+> 
+> >
+> > >
+> > > >
+> > > > >  ({                                                                   \
+> > > > > @@ -23,6 +24,7 @@
+> > > > >                                                                       \
+> > > > >       __asm__ __volatile__ (                                          \
+> > > > >              prepend                                                  \
+> > > > > +            PREFETCHW_ASM(%5)                                        \
+> > > > >              "0:      lr.w %0, %2\n"                                  \
+> > > > >              "        and  %1, %0, %z4\n"                             \
+> > > > >              "        or   %1, %1, %z3\n"                             \
+> > > > > @@ -30,7 +32,7 @@
+> > > > >              "        bnez %1, 0b\n"                                  \
+> > > > >              append                                                   \
+> > > > >              : "=&r" (__retx), "=&r" (__rc), "+A" (*(__ptr32b))       \
+> > > > > -            : "rJ" (__newx), "rJ" (~__mask)                          \
+> > > > > +            : "rJ" (__newx), "rJ" (~__mask), "rJ" (__ptr32b)         \
+> > > >
+> > > > I'm pretty sure we don't want to allow the J constraint for __ptr32b.
+> > > >
+> > > > >              : "memory");                                             \
+> > > > >                                                                       \
+> > > > >       r = (__typeof__(*(p)))((__retx & __mask) >> __s);               \
+> > > > > --
+> > > > > 2.40.1
+> > > > >
+> > > >
+> > > > Thanks,
+> > > > drew
+> > >
+> > >
+> > >
+> > > --
+> > > Best Regards
+> > >  Guo Ren
+> > >
+> >
+> > Nice patch :)
+> > Any reason it's not needed in __arch_cmpxchg_masked(), and __arch_cmpxchg() ?
+> CAS is a conditional AMO, unlike xchg (Stand AMO). Arm64 is wrong, or
+> they have a problem with the hardware.
 
-vim +53 fs/splice.c
+Sorry, I was unable to fully understand the reason here.
 
-    39	
-    40	/*
-    41	 * Splice doesn't support FMODE_NOWAIT. Since pipes may set this flag to
-    42	 * indicate they support non-blocking reads or writes, we must clear it
-    43	 * here if set to avoid blocking other users of this pipe if splice is
-    44	 * being done on it.
-    45	 */
-    46	static noinline void noinline pipe_clear_nowait(struct file *file)
-    47	{
-    48		fmode_t fmode = READ_ONCE(file->f_mode);
-    49	
-    50		do {
-    51			if (!(fmode & FMODE_NOWAIT))
-    52				break;
-  > 53		} while (!try_cmpxchg(&file->f_mode, &fmode, fmode & ~FMODE_NOWAIT));
-    54	}
-    55	
+You suggest that the PREFETCH.W was inserted on xchg_masked because it will 
+always switch the variable (no compare, blind CAS), but not on cmpxchg.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Is this because cmpxchg will depend on a compare, and thus it does not 
+garantee a write? so it would be unwise to always prefetch cacheline 
+exclusiveness for this cpu, where shared state would be enough.
+Is that correct? 
+
+Thanks!
+Leo
+
+
+> 
+> >
+> > Thanks!
+> > Leo
+> >
+> 
+> 
+> -- 
+> Best Regards
+>  Guo Ren
+> 
+
 
