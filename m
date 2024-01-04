@@ -1,152 +1,167 @@
-Return-Path: <linux-kernel+bounces-16939-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16954-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD0AD82464A
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 17:32:53 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 61E8B824678
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 17:41:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E46FC1C2241F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 16:32:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CC8DCB23ABF
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 16:41:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 286B625559;
-	Thu,  4 Jan 2024 16:32:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E10A828DAD;
+	Thu,  4 Jan 2024 16:40:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=landley-net.20230601.gappssmtp.com header.i=@landley-net.20230601.gappssmtp.com header.b="FGndA+ao"
+	dkim=pass (1024-bit key) header.d=wolfvision.net header.i=@wolfvision.net header.b="a4XCW/gJ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-io1-f49.google.com (mail-io1-f49.google.com [209.85.166.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from EUR02-AM0-obe.outbound.protection.outlook.com (mail-am0eur02on2041.outbound.protection.outlook.com [40.107.247.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60F4224B4F
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 16:32:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=landley.net
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=landley.net
-Received: by mail-io1-f49.google.com with SMTP id ca18e2360f4ac-7ba9c26e14aso20360539f.0
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 08:32:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=landley-net.20230601.gappssmtp.com; s=20230601; t=1704385946; x=1704990746; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=GZozTrRnGVXzy31zBAY9Io4KyrsVmk5XpdKMFCKbp5Q=;
-        b=FGndA+aoe6WDkgaivOKRHwydkzkusJ8CuvZXYuM5KMprCew/0HZKAHsTxfP7JXLYRM
-         FfCvbWbi3xXR5BqM3gdc6WZGBISwuoAip158x+ftCkm64Z9NCbKT6MqCPMSwCzYej+EG
-         2RzZ0bHZOqOmBudyeTCWgnD/RkDHyGNdZP0Rpwm+TEfDvCs9p+El9xGlUiitquXlNtvy
-         HQ/yTlNnFdo5pRpvoIG1sRBqSFnQRYwc2HwzIwO7KaChSCqaKtxkaoWcaFd0D+LHhccx
-         dWpLZ+W5pLuVlaUShb9dcUYge5KF1U7bxcJhG0lETalKMntPslu3WRryXCRdi5A21oG7
-         rncQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704385946; x=1704990746;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GZozTrRnGVXzy31zBAY9Io4KyrsVmk5XpdKMFCKbp5Q=;
-        b=BCejj8NBtFB24qh1IPm+UaTNIugIOfChswHA0r0kJXLS3cpDPgcjY21U3aJllzDxYK
-         zH4hf+XOhuHSSzsw7KTn6r0xxPLvhjCPMaMtYj9xMIxZ3GB/y8xRIN7iEpCHGBchT2MM
-         SplBYj4hkunFQalqCmGxpwwhpEGp31yt7o8u9u1K8phU0M9GCApWE7KzPkW+sLkf/zV3
-         KS9HZtdIEOk2lC4R9xxiIukKzNP5wTT1IS+1cWgNB3Jq9VtCc/PnlCIEJmLGfF8gaP13
-         AlvwSXuEzOjbHS4ADYGD7WYhke4qShMNgoagPs6b6GYqVTnS51xkIQWIx4mUY44WOKJd
-         h/fw==
-X-Gm-Message-State: AOJu0YwPIMKoMVZGK6O6iC283BIjpruBLtY8XYQLWEXEg8ka+/kpkzFl
-	0u9UQq5LUV+75c3kyCvNzILRKW8RCkjeFg==
-X-Google-Smtp-Source: AGHT+IGfv7ALW3+Jd+SE55tGh732azgppxaH8IixXrfYqjh5vvjsIK9HlVCx+k8e0bLSIH6hQ0rZAQ==
-X-Received: by 2002:a6b:e511:0:b0:7ba:7d6a:652c with SMTP id y17-20020a6be511000000b007ba7d6a652cmr543650ioc.3.1704385946492;
-        Thu, 04 Jan 2024 08:32:26 -0800 (PST)
-Received: from [172.16.32.83] ([198.232.126.202])
-        by smtp.gmail.com with ESMTPSA id n21-20020a02a915000000b0046df6a4574dsm212304jam.161.2024.01.04.08.32.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Jan 2024 08:32:26 -0800 (PST)
-Message-ID: <c7b8d248-fb59-0476-dea8-89d40207460f@landley.net>
-Date: Thu, 4 Jan 2024 10:38:53 -0600
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF21C28DA9;
+	Thu,  4 Jan 2024 16:40:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wolfvision.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wolfvision.net
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Vy4zYZxZnwCgMjMxRmeMQTMDOG5Z09Z3XJ8O71WPRGTqD17zuDZznZbjFOgcs+shNa+IyXmrYUGnjrifQsmJOIz+3NOAQBhDZ/Tg4BWWOnTc56ZJRtxZMhvhGJwRGMC9AWRXAnuLYyaX4ck3btiEvJbGKFBG+Xnj95Tk7yNouRBmUZYBPCu4t8ko+HjgZb/3vUjz+d9jl55tU2t+Lqy2Pb6tTw199SHMbPTqfWupiflEuTD3688DS/Jsh2v/HdgopU+2pUtpTmyWsPHitHO20mRBCwKcOd+wd0Q5J77Toj2MMswxQ32jKp6RQiMh614QECk43ipsOxsUkJudegVMOg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=YfE8zpKU30wCA8ikY8tv404UH7pPpHZVhM4Hq2yW4vQ=;
+ b=DSyo/03zoFCFnijqY+12fUlRUdroQuztDUR/MHLORKDiJofZlKyLHgmsHnjA1oLG+GSXSR4Eq71Wrwj0Jw2o4hGQelJ8AzE5WjNwAUHt/Zu0jsGspE4j0Qb1fDVlarsgjjkBVAQx7K73pcNH41zVSa3a+vqIDiJ3ubaRUWNTtRN+TWXKrkoC5/PZHKuSylHG+TRMEhhBbIAnVxoOPGdSwKG0SF66Whg+PpNkQ8cpVgUBfIV8fAMx6CTy9DWKTDYYOvFWMJ2/6UKfDGRaX7dR1cze2HYmhZJLAUdXnaL+2xiNX2LfCuM9je0yEi4jF9GR4/NVM2RRFtCO7xToe76+0g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wolfvision.net; dmarc=pass action=none
+ header.from=wolfvision.net; dkim=pass header.d=wolfvision.net; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wolfvision.net;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=YfE8zpKU30wCA8ikY8tv404UH7pPpHZVhM4Hq2yW4vQ=;
+ b=a4XCW/gJ3AwRTRuMdD96d6d9lgb5JX+39HF5BBlu0WAXmEdBhCo+zYoP5l9yft94ufWbjiKOTeBqm+e4puter/JDE1vfQpUIwPv6Tn8wczJukytbZ7zEcyIk+pT9sVcXEQ3E/okRRnd2SsqSAw/Bf8NwAkuLW8mEcmb/cCVdUrE=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=wolfvision.net;
+Received: from VE1PR08MB4974.eurprd08.prod.outlook.com (2603:10a6:803:111::15)
+ by PR3PR08MB5578.eurprd08.prod.outlook.com (2603:10a6:102:83::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.13; Thu, 4 Jan
+ 2024 16:40:02 +0000
+Received: from VE1PR08MB4974.eurprd08.prod.outlook.com
+ ([fe80::6b40:1e6f:7c94:71dc]) by VE1PR08MB4974.eurprd08.prod.outlook.com
+ ([fe80::6b40:1e6f:7c94:71dc%4]) with mapi id 15.20.7135.023; Thu, 4 Jan 2024
+ 16:40:02 +0000
+Message-ID: <7a47a61f-4356-4913-8e04-5b815c8382b2@wolfvision.net>
+Date: Thu, 4 Jan 2024 17:39:59 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/4] usb: typec: tipd: add init and reset functions to
+ tipd_data
+Content-Language: en-US
+To: Roger Quadros <rogerq@kernel.org>,
+ Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231207-tps6598x_update-v2-0-f3cfcde6d890@wolfvision.net>
+ <20231207-tps6598x_update-v2-1-f3cfcde6d890@wolfvision.net>
+ <2a001d00-32c8-4ec3-9635-08473df6a069@kernel.org>
+From: Javier Carrasco <javier.carrasco@wolfvision.net>
+In-Reply-To: <2a001d00-32c8-4ec3-9635-08473df6a069@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: FR4P281CA0292.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:e7::8) To VE1PR08MB4974.eurprd08.prod.outlook.com
+ (2603:10a6:803:111::15)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Subject: Re: [PATCH v3] rootfs: Fix support for rootfstype= when root= is
- given
-Content-Language: en-US
-To: Askar Safin <safinaskar@gmail.com>
-Cc: Stefan Berger <stefanb@linux.ibm.com>, gregkh@linuxfoundation.org,
- initramfs@vger.kernel.org, linux-kernel@vger.kernel.org,
- stable@vger.kernel.org, zohar@linux.ibm.com
-References: <CAPnZJGDcNwPLbzC99qNQ+bRMwxPU-Z0xe=TD6DWQU=0MNyeftA@mail.gmail.com>
- <d4b227de-d609-aef2-888b-203dbcf06707@landley.net>
- <CAPnZJGBeV-E_AN8GnTfkaJvRtBmCeMYYCt+O0XMsc3kDULRuKg@mail.gmail.com>
- <fb776d99-1956-4e1b-9afc-84f27ca40f46@linux.ibm.com>
- <0879141d-462c-7e94-7c87-7a5b5422b8ed@landley.net>
- <e32077de-b159-4a7b-89a3-e1925239142f@linux.ibm.com>
- <fcb45898-0699-878f-0656-f570607fbed4@landley.net>
- <CAPnZJGAr8BfTHmn3QZnJ6dnVCQsUnUASmdH4tzz0-QMwHmZZLQ@mail.gmail.com>
-From: Rob Landley <rob@landley.net>
-In-Reply-To: <CAPnZJGAr8BfTHmn3QZnJ6dnVCQsUnUASmdH4tzz0-QMwHmZZLQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: VE1PR08MB4974:EE_|PR3PR08MB5578:EE_
+X-MS-Office365-Filtering-Correlation-Id: 90d7f1d1-051d-469a-aa12-08dc0d43cc2f
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	7Zcl85DcMGyqSsDa42D96nSe1Po/1ZifDcRgexA7ubaOB6+X9vEZueRgHZZr+whKzJryy4NyRk9gDBc7htk2AfTNRBiXgOfy7p9lMQRsvQ5+GAkMzw7gVgoDj0dQJhcKliu9t1fdBLxZHLXO3hWstmq/zScXF2occqorIxT8gmL+0nR/y8LyrbhMhEd8ZNUiIsqa/PM8nvx2fCQtqrYUvQZDvvuzBjWyHOa0rYvOlIypqVKzgE4SW87eOAFcxDChOEwxu20AoQ29wwqQpjnZIMtWD5NczE/OkothwEU7val0cpnpFjs4Oay4164pn0bb3M78+b3swcD3RVFEhW+gDVtpAVQ5aHexsT130u4UpTY69qZTnsolDCXrD8miAA0/tSoY3orfme340c6q/34zqQDwKG06XbQR8vbWLbPu+pgxOanUASSFSCvrZta8CJTDUg7kXoUAMK55B5BEUI8RhvPRuakSG3SiCvBEbZUPg/eDwYwuMATThE9xWSIABChq9XzSMx7j+FvWHT0BkmkBwYj2dLeLagg/h4wo/vKU9S1VQ0QjSXUOqHB05qqMF5289KN8/2zrV4+ANN1gpB+Y3lwrO7RHp5uwEGyLTFOukDm3UYyCrifU3DMYZCdR/oCq4vFaIUvm8/0ND6GHrUv8kA==
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR08MB4974.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39850400004)(346002)(376002)(136003)(396003)(366004)(230922051799003)(64100799003)(186009)(451199024)(1800799012)(2906002)(6506007)(31686004)(6512007)(478600001)(53546011)(2616005)(6486002)(44832011)(36756003)(8676002)(8936002)(66476007)(66556008)(66946007)(110136005)(316002)(6666004)(4326008)(5660300002)(38100700002)(4744005)(41300700001)(86362001)(31696002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?dDl5ZXhpVnE0dWJyRHJXVXFqVzV5aDRFWWUwRElyRCsybnFkaE5xcDNnY3pv?=
+ =?utf-8?B?eEEwd0x1cmJhV2ZIMEVyRHZnMVJoLy9nMFNieGJwV2NZai9KekdleFRYR21M?=
+ =?utf-8?B?NGFhZC9PVEdpNlNoWEt3SGsrVzF2MnBhZDEzM3cwcmxWQS90US9ZMFloRloz?=
+ =?utf-8?B?b3hWZDJWcHFhTWlhaWZpRXAxT1lOaVNyblF5Z21PUkk5LzdPZEN6cE1pSXdY?=
+ =?utf-8?B?TVloWmNIQStrWGNKcXJ3OXcvSkJud3RaOXpvRmU3cDBRaXd4VXlJSDdNRVl6?=
+ =?utf-8?B?QW5RSW1CTnR1emY1SHlUamY0b0QvYmVNbHVPZVVmL3dsSmk1R2Y3YURvYWNa?=
+ =?utf-8?B?OUhucDByTlVFRnE5Y3pQOXpKbHdtUzd4WEpuNkZtSGJ3Mm1qd0xYaDhNeHl6?=
+ =?utf-8?B?em5LM25uQ2E0ejM5dDc4a0RoOTVsR2tPeDczSjI5cldwQnQ4blIxVUN2RnBw?=
+ =?utf-8?B?UWpWWlhONk1wTnBFUks2SzJOYk1ETGI3Q2oySG9QYVM0N2g0VUxLNjdTTW4v?=
+ =?utf-8?B?WkpDQ0NFWExPYW5HUjZEbzgyS2NFT09yampXM3Q4d0pBUXFVTW44bnhDWHpl?=
+ =?utf-8?B?L1ZTdjUwekltd21CMS8xdGl6cTFONHVWbGVnd0gyYTdIWFF1R0FqUWFobldC?=
+ =?utf-8?B?VUdqWmF4Yi84OHlybzlGOXRaVloyRG5pU3RCTzJuR2JGM0lSbmkzbWxoNS83?=
+ =?utf-8?B?Z3l4UU93MERjWFhWcjIwbHQyVnVuVUx2Z3JnN1NlK0k2c1JJVFdSV29IMnVK?=
+ =?utf-8?B?MnpxUDdtRW93TmJnaEVqeUNhem5FV0lZeVNPZUJwNjlTbWF0TW16VWluc1o3?=
+ =?utf-8?B?dXpkOVJPazE3bldMMUNSMnpGR0ZJWG5EODZ6YlQyMSt2V3RXenE2YUVpbjhs?=
+ =?utf-8?B?by8wWlE4NjVrRkZDdFQwSDdBaWZacjZZZE41Y3d3Nm5MOHp1bzR0ZHZsdit5?=
+ =?utf-8?B?VFJjT2tFY1Yrb3FieTJDUWUrVGRtQ1QwOHIyRVFwL2VQdE1LNnE2YUlLR0Qw?=
+ =?utf-8?B?K2ZuUlFtTmsyZE56R1RZZDRoNWZXbGNQUnFsc0xydjhPNHZ6L3BWRmQyVDdT?=
+ =?utf-8?B?UGNGZmxYQi9BNXZaTmE5UWhDWm8rZ3kycWtHOVBBdUNkVHNrbzVQOXp4R2RC?=
+ =?utf-8?B?ajltWmNSeHBUWGorSG9hR2ludEx2MEpubTVZWmt2bE9hZUJpV1BxVWE0T2h4?=
+ =?utf-8?B?N0t5WGgxRTA3d05hWCtzM1dLSStrZ05RSGFmZFA1Zm5uUUNDaE5aSmZzT3BB?=
+ =?utf-8?B?MG9qemtWYWFaRWlLZmhmNmpJVFpLWHBoVXdRN1ZEZEpVcWQycHArNEJrRHoz?=
+ =?utf-8?B?ZGlrNEJad3VCNFpRQWN5NnF3UXZTclloYmFHNDF3YVN2SnpYUmJNb0xRU0tv?=
+ =?utf-8?B?dHJ1VkE3Ujd1WEpPdktkSUdvbUNoRGhEMW9RTmI5eUZIZk5GTlVPUHppYllG?=
+ =?utf-8?B?V0ZocjZjT2VmdDI2MCtORENoeEs3eGpPV2JNQWs0QVVYWFB6NVQ1YUg1ZTBT?=
+ =?utf-8?B?ZkJtenZaamxqb21kTmd3dDJJK2s3U25rUVl0a0NObjNSV3YxU2N5bVBPbkUz?=
+ =?utf-8?B?dkZwTEI3S1RhZXZiTXNQUHdpM2JtRGJNbEhPK09RSnlPRjlwckhGR1VUZTly?=
+ =?utf-8?B?L2E1OVRGS3RLVXBhYjJReGNneGtKZVgybGttbEtmdWtVa1hPQUg5c2wrR0VB?=
+ =?utf-8?B?dlcwYmZRUnRHTU4vWFM2R2VTNEQ2bTVFK05UK2dBeEdZVUZPaUY2bUpBMXFZ?=
+ =?utf-8?B?WHUyQjhPWE0wOEsrQ3BSaU5TaUYzNWY0d2RlYlp5a3BQTFgvZlpVTU5ZN0p1?=
+ =?utf-8?B?VElzMC96bncrbjRrMlNBMHlkbGFRQU1xQWFWb1VMS2s2Q1hhYjBETEtXbDZi?=
+ =?utf-8?B?TzFkS3pwcSt0Mm5pM2YvZDZuNU9pNk1XTGRvZCsxbmkyZ09vT2VyT1lxLzdS?=
+ =?utf-8?B?VzU5UkwySmVnMkIzN0FFeHpKb3JReTdkUnJGYlhWM2R1TTdBbHdUQmNmUGR5?=
+ =?utf-8?B?UjFCRm9SQWlHSEtRT0Y1Njg0emFINTlDZlVoUWpXR1lmMHlyUXBSV2Q5REow?=
+ =?utf-8?B?dEQyNExjdkRVUExLL1k3YXNPWWFsTWNxQnV1dWVlakhEY3kvc0sySkNxbzJx?=
+ =?utf-8?B?MFZNcW8reVJWcnVSNGFHQmJ4K2xKdVVWMjlDa2lQYkt1VDhBcDJoczU3UWlG?=
+ =?utf-8?B?dUNTcFVMM3lPMVBlUm9VMWF3a21QU1dUQmV5MVNoTVlnY0ZFY1J1UHZDRHhB?=
+ =?utf-8?Q?pgYf9NWMJeCYXuL/8pAiOpmeKUZoJrcHDHS0gPgx7Y=3D?=
+X-OriginatorOrg: wolfvision.net
+X-MS-Exchange-CrossTenant-Network-Message-Id: 90d7f1d1-051d-469a-aa12-08dc0d43cc2f
+X-MS-Exchange-CrossTenant-AuthSource: VE1PR08MB4974.eurprd08.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Jan 2024 16:40:02.0517
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: e94ec9da-9183-471e-83b3-51baa8eb804f
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: x1xQrjBZPH8hzefM8nlHlzxeNuFjvshcysfyefrVxL1tOJHUpzydoPoNTxlaeQVXPa7cVckSIZ1BzlfrMRATV8zPesf0tbdKNiTn+hNkDDk=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR3PR08MB5578
 
-On 1/4/24 00:06, Askar Safin wrote:
-> On Sat, Dec 30, 2023 at 8:01 PM Rob Landley <rob@landley.net> wrote:
->> I've been following the initramfs xattr support threads forever:
+On 04.01.24 17:14, Roger Quadros wrote:
+>> @@ -1393,7 +1412,7 @@ static int __maybe_unused tps6598x_resume(struct device *dev)
+>>  	if (ret < 0)
+>>  		return ret;
+>>  
+>> -	if (device_is_compatible(tps->dev, "ti,tps25750") && ret == TPS_MODE_PTCH) {
+>> +	if (ret == TPS_MODE_PTCH) {
 > 
-> Here is my proposal: add to the kernel support for catar (
-> https://0pointer.net/blog/casync-a-tool-for-distributing-file-system-images.html
-> ) in addition to cpio. catar has the following advantages:
+> Won't this function will be invoked for all variants?
+> If so, why are we calling a tsp25750 specific function here?
+> 
+>>  		ret = tps25750_init(tps);
+>>  		if (ret)
+>>  			return ret;
 
-Didn't we just have a thread about the inadvisability of adding more ways to do
-the same thing, with each existing codepath still having to be supported forever?
+Hi Roger,
 
-And your solution is a link to the website of Lenart Pottering, author and
-maintainer of systemd. You want to put systemd code into the kernel.
+good catch. The device-specific init function should be called instead,
+as it is already done in the probe function:
 
-> - catar is simple and reproducible. For the same directory tree the
-> same bit-precise catar file is generated, which is good for
-> cryptographic signatures.
+  	ret =  tps->data->init(tps);
+  	if (ret)
+  		return ret;
 
-I can trivially reproduce the same cpio each time from the same tree, the trick
-is just fetching the whole directory and sorting it before processing (to
-squelch hash-impacted readdir() return order from the filesystem).
+I will send the fix asap.
 
-> As opposed to tar's monstrosity (
-> https://www.cyphar.com/blog/post/20190121-ociv2-images-i-tar )
-> - catar has support for xattr.
-
-Adding xattr support to my toybox cpio implementation is maybe 10 lines of C, I
-assume the other implementations aren't that much more tangled. The question was
-always a largely aesthetic issue of file format.
-
-Tar is NOT well-defined. I say this as someone who has IMPLEMENTED tar and has a
-pending TODO item to patch up YET ANOTHER funky corner case du jour somebody hit:
-
-https://github.com/landley/toybox/issues/469
-
-Inventing a NEW file format... there are multiple dozens already: zip, arj,
-lharc, zoo... You could theoretically extract squashfs into initramfs because
-technically it's an archive format.
-
-Good grief, there's an xkcd on that:
-
-https://xkcd.com/927/
-
-> It has support for nearly all types of
-
-"nearly"
-
-Please no.
-
-> metainformation Linux offers (32 bit UIDs, nanosecond timestamps,
-> "disable CoW" flag and various other flags, selinux file labels, file
-> capabilities, etc). All this metainformation can be disabled if
-> needed. So, next time we will want to add some new type of
-> metainformation, there will be no need for lengthy discussions about
-> how it should be stored.
-
-There's no real need NOW. "We did not come to an agreement in email" does not
-mean "let's add a new unrelated format". It means let's carve out an hour to
-actually speak to each other, by voice and maybe video, using this thing called
-the internet. (Without covid we'd have had a BOF at some conference by now.)
-
-Rob
+Thanks a lot for your feedback and best regards,
+Javier Carrasco
 
