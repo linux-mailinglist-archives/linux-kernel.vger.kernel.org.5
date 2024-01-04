@@ -1,514 +1,219 @@
-Return-Path: <linux-kernel+bounces-16318-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16319-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93E7B823CB8
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 08:26:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 784E7823CBB
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 08:26:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E7529B24B41
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 07:26:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8ECDF1C212C5
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 07:26:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC62720DDB;
-	Thu,  4 Jan 2024 07:24:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C554200AA;
+	Thu,  4 Jan 2024 07:25:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amarulasolutions.com header.i=@amarulasolutions.com header.b="GLQu/VKr"
+	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="OMGLCvKL";
+	dkim=pass (1024-bit key) header.d=mediateko365.onmicrosoft.com header.i=@mediateko365.onmicrosoft.com header.b="NttmYTNe"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26C9620B28
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 07:24:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=amarulasolutions.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amarulasolutions.com
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-555f95cc2e4so244681a12.3
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 23:24:26 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0395C1F927;
+	Thu,  4 Jan 2024 07:25:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
+X-UUID: 5c5cc352aad211ee9e680517dc993faa-20240104
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+	h=MIME-Version:Content-Transfer-Encoding:Content-ID:Content-Type:In-Reply-To:References:Message-ID:Date:Subject:CC:To:From; bh=K1m8JPDTWsOj0H971qZJrk16jbhVavgCbGuZIyMq8FI=;
+	b=OMGLCvKLXQDSnAY5LaS+NPBeE7qBSzRdJvXPlnTxvoJG1EuT3FJpgqjzDmlhs7PXXBNsY+9rwPBwBnjDsxpuvX0GRV8xFYO/QYUc0X14Bnms7tKJi2/ClL3uNhgNsRRit63ovR8vEEtqEEcTzZKFuXVx8FTgdNCUiqRxaNmR25c=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.35,REQID:7c60cd0d-0ce9-46bc-916a-3d2233af5888,IP:0,U
+	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+	release,TS:0
+X-CID-META: VersionHash:5d391d7,CLOUDID:5d5fe18d-e2c0-40b0-a8fe-7c7e47299109,B
+	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+	RL:11|1,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:
+	NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULN
+X-UUID: 5c5cc352aad211ee9e680517dc993faa-20240104
+Received: from mtkmbs14n2.mediatek.inc [(172.21.101.76)] by mailgw01.mediatek.com
+	(envelope-from <chunfeng.yun@mediatek.com>)
+	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+	with ESMTP id 1455005972; Thu, 04 Jan 2024 15:24:56 +0800
+Received: from mtkmbs10n2.mediatek.inc (172.21.101.183) by
+ mtkmbs11n1.mediatek.inc (172.21.101.185) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Thu, 4 Jan 2024 15:24:55 +0800
+Received: from APC01-TYZ-obe.outbound.protection.outlook.com (172.21.101.237)
+ by mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Thu, 4 Jan 2024 15:24:55 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PbFBaDxLbGvQF368yalbLGVfwTF/imbLwgr4f9A5bacEqQEydVMU2u/UIA/yH5/KmakInOZAAtkH6szO8Q0eR+RrKGKtHakknld98SQKPrOgyCtzNf1KS7S4abndVwiqwK9RfMNOtPxVkqWylz8mcM7aFZGS0YBAJUO0DFYiFFREIHRGZEjAHy4MKhTNsVoSNiuStUnqpgKlQCdMl4bF87Ke9jsD0X5RjirY31nETf6mlI9CpnxPAekWn9z17xm9SZp95Jf7F2O3rkIR3TOGDNJk4z7VkxgMVv2b5ETFccYMWxaKyzxQ2Wr54W5ePyeh6cS2WLlnefTa9fKziBBxFw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=K1m8JPDTWsOj0H971qZJrk16jbhVavgCbGuZIyMq8FI=;
+ b=eLook0PlQkY9fKPD8miH/x5Ycu19UxCbVYn+RIx7d65r6A8DpL9SkwIB/7IkyRQ5mQc5tY4zHrpS/26s4obHbwxxDPJ4yYiCTosrQeZNOrx8m/yZpG6LRAIlfFlj7Hdbf9KUpreO8/Nwh6xbxOUrnjO+ESGynv3jEIbOPRiLMaVViIXq3OJivlQi976wSkhfqDkv7Q934YPNuY1INsW/MBRK6Zp0gYuZslt58BZjugCEI4UrwyZRXORdWGlasbsD5BwviJGWJ4w7gidfujiLTwj49ebuzIQ8HhcLD3WOT5IXA5qR2LEk7jenkbv/+ZaotCeWQ1dl7SVDO3QeEGmkNw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mediatek.com; dmarc=pass action=none header.from=mediatek.com;
+ dkim=pass header.d=mediatek.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amarulasolutions.com; s=google; t=1704353065; x=1704957865; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xWXC08AomogX9fJjDHe3MxBIDHnKEfsu8+LOFUoPPqY=;
-        b=GLQu/VKr7toLromD7Ag/32q2Aw/qxd0rlt82toeyPHY1x4r5P5APg+GT4uOzEcZ4jP
-         p0LgChKa8qDuH8Yk1Rg2ORvNtjjA3TpGkvSGYIRdDB0GTBERtDm+akW4HaVo/hU+1oa4
-         leCAz//xOjwD2iXrzfVI/KEr6XZx9edPrrZJI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704353065; x=1704957865;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xWXC08AomogX9fJjDHe3MxBIDHnKEfsu8+LOFUoPPqY=;
-        b=sdA7GxYw/Utzba42zh3Skk3DFjfVzOjnpV4u9wCveU24mtZLSGQ3Myn0qByPP8srM3
-         63W+LNrXS7s3w7wE6/klSCi1k6j8MLYR9ISsTRjdBbCzNhPIiKbEkpwaXYEwa3MN+ONR
-         s6vpUuJSjrO2I8ezZxZPx+kxPrlud9kgzamq1p1TNlsINI3uLyiSt3fb/sFfGCARVB+C
-         qkh2OQQHRIc7737V1cyZL3WaaQnwfsH+wtKWOdNNc5+jIpvK8JYtExsDynk6NNUcBqLF
-         BvK2TmKcyjyp8YxTbi/qFvMXVopTLve32f8mILxbLJjWY328HggTPubUf944xDu1T4G4
-         u6vg==
-X-Gm-Message-State: AOJu0YzY3GD8ooKqW0FCuq8cHKpeXfjRzFwBXCKMSgrXqneMYPQZg8yK
-	eNESMsD5dykB5KK5WeiINDEUpdSDkSl+I+eudD+rJ2U3EWM=
-X-Google-Smtp-Source: AGHT+IGPMbdQfMOH07dDXotaO9QeIhqPnUIlXjQuWZ5LXIvkJSyIt5BiMSytKGKOzq3rwMMYXESNOA==
-X-Received: by 2002:a50:c01e:0:b0:557:b8f:3f3a with SMTP id r30-20020a50c01e000000b005570b8f3f3amr71951edb.75.1704353065121;
-        Wed, 03 Jan 2024 23:24:25 -0800 (PST)
-Received: from dario-ThinkPad-T14s-Gen-2i.. (net-93-150-255-34.cust.vodafonedsl.it. [93.150.255.34])
-        by smtp.gmail.com with ESMTPSA id d3-20020a056402000300b00553772c2968sm18530735edu.82.2024.01.03.23.24.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Jan 2024 23:24:24 -0800 (PST)
-From: Dario Binacchi <dario.binacchi@amarulasolutions.com>
-To: linux-kernel@vger.kernel.org
-Cc: linux-amarula@amarulasolutions.com,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Dario Binacchi <dario.binacchi@amarulasolutions.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	David Airlie <airlied@gmail.com>,
-	Jessica Zhang <quic_jesszhan@quicinc.com>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Sam Ravnborg <sam@ravnborg.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	dri-devel@lists.freedesktop.org
-Subject: [PATCH v3 8/8] drm/panel: nt35510: support FRIDA FRD400B25025-A-CTK
-Date: Thu,  4 Jan 2024 08:23:44 +0100
-Message-ID: <20240104072407.41290-9-dario.binacchi@amarulasolutions.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240104072407.41290-1-dario.binacchi@amarulasolutions.com>
-References: <20240104072407.41290-1-dario.binacchi@amarulasolutions.com>
+ d=mediateko365.onmicrosoft.com; s=selector2-mediateko365-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=K1m8JPDTWsOj0H971qZJrk16jbhVavgCbGuZIyMq8FI=;
+ b=NttmYTNe9UOZDHlZRfP34iZsumhJ9UZ6LyyWhsPX6C1ggVTCfmltENgljoDJ88wVOCIP+ttwPGErRG/8SQ0Xf0IIC/xaYrvT7aV6mAh5zTyeTtRK8PvWYvMtLtQPS978r5J8gCUvAiY8+k2Y11kbZP6eyV2/YiIVCHIFp/NmwFA=
+Received: from TYZPR03MB7153.apcprd03.prod.outlook.com (2603:1096:400:33c::6)
+ by SI2PR03MB6638.apcprd03.prod.outlook.com (2603:1096:4:1e6::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7135.25; Thu, 4 Jan
+ 2024 07:24:52 +0000
+Received: from TYZPR03MB7153.apcprd03.prod.outlook.com
+ ([fe80::75b5:9f6d:dc01:9946]) by TYZPR03MB7153.apcprd03.prod.outlook.com
+ ([fe80::75b5:9f6d:dc01:9946%6]) with mapi id 15.20.7159.013; Thu, 4 Jan 2024
+ 07:24:52 +0000
+From: =?utf-8?B?Q2h1bmZlbmcgWXVuICjkupHmmKXls7Ap?= <Chunfeng.Yun@mediatek.com>
+To: "s.shtylyov@omp.ru" <s.shtylyov@omp.ru>, "gregkh@linuxfoundation.org"
+	<gregkh@linuxfoundation.org>, "robh+dt@kernel.org" <robh+dt@kernel.org>,
+	"krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
+	"angelogioacchino.delregno@collabora.com"
+	<angelogioacchino.delregno@collabora.com>
+CC: "linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+	"mathias.nyman@intel.com" <mathias.nyman@intel.com>,
+	=?utf-8?B?RWRkaWUgSHVuZyAo5rSq5q2j6ZGrKQ==?= <Eddie.Hung@mediatek.com>,
+	"conor+dt@kernel.org" <conor+dt@kernel.org>,
+	=?utf-8?B?TWFjcGF1bCBMaW4gKOael+aZuuaWjCk=?= <Macpaul.Lin@mediatek.com>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>, "matthias.bgg@gmail.com"
+	<matthias.bgg@gmail.com>
+Subject: Re: [PATCH v4 1/3] dt-bindings: usb: mtk-xhci: add a property for
+ Gen1 isoc-in transfer issue
+Thread-Topic: [PATCH v4 1/3] dt-bindings: usb: mtk-xhci: add a property for
+ Gen1 isoc-in transfer issue
+Thread-Index: AQHaOIpkcdKDXzmoj0eSssQ68oUiA7C82pEAgAxyjYA=
+Date: Thu, 4 Jan 2024 07:24:52 +0000
+Message-ID: <97bb8db3cf03d23f92ea67afc83f2303bccbe561.camel@mediatek.com>
+References: <20231227060316.8539-1-chunfeng.yun@mediatek.com>
+	 <1e5772b3-2e71-069c-5794-ded2ee72222f@omp.ru>
+In-Reply-To: <1e5772b3-2e71-069c-5794-ded2ee72222f@omp.ru>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=mediatek.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: TYZPR03MB7153:EE_|SI2PR03MB6638:EE_
+x-ms-office365-filtering-correlation-id: 0a092917-a74d-4f4f-0972-08dc0cf63e28
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 4IYm1okLQAgSzpnhkYWoTWQnHxkuYbDFPm3oLY6/9GMcF+QKygd2Z4lFuqjJ5j7JBQMuixJCQIhh9pZXxqlaHWqTK2rkrzSE2cdWPCFWpXVA3aodHoCZ5Lz+lh61QYaT1bCLjp+DxIDFeDklOxfgYldoSKpMEXue1Z0cXVEerKNoKT6jFBVCP1P4p5DTyrIGibX9IiKw8j2XnSPOLst0aYnAX2in5zQkKaqQES0lF6UnDnTtcnTDKsuA1z+zLvCUufJopWGMO9UNEvSRVDCRFbLVVyM6uWaeHlHVpvX9qIDr1AB5f95bVllNMf/eXHijpFkqyGymf/mPBPUfz/oQ99i6uKo7nl7rOskaDcc3UoZB18pxOnqK4tIq52ARt4w+FULdTY8MKKXHuINYCxJ9zx38L5IJJh/uv3gWv7GS0c6gfAtp009wbslb/t9RMihGUn0sO7EpiFXUv6PPgLgzh5S5MswtwkYEHz26NODL9ulWwyVKRyLP6w6sAIZ186HQdk2vJ2i0WftXuclmOPJLSx/ETWicrZjMr6x8F+0XHV+KkoDG8qJgm2z4/xMdlJ9/ZWM8ffAihwpCQRDq+lBDuSl1lyc6ogSl6aEkRJ9HSHoAjaS1VmhMBPMy9iZqtLd7wi7HtahKobjRwrLLdaTRtvHf8U5rpEzKdWLBr6VUijCqM68tJtwOLvPzVf4q2T0RL12mcd8gjsyB97vMFfa8mS+nOt3UPayt4Z9PFTQoyYo=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYZPR03MB7153.apcprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(396003)(136003)(346002)(39860400002)(366004)(230273577357003)(230173577357003)(230922051799003)(1800799012)(64100799003)(451199024)(186009)(6512007)(6506007)(71200400001)(53546011)(6486002)(478600001)(2616005)(41300700001)(76116006)(83380400001)(26005)(7416002)(2906002)(91956017)(5660300002)(8676002)(66946007)(54906003)(4326008)(66556008)(66446008)(64756008)(4001150100001)(8936002)(110136005)(316002)(66476007)(38100700002)(38070700009)(86362001)(36756003)(122000001)(85182001)(99106002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?QTBIZHhCbXcxdHVHd1NyMGt3R25LaXY1Ly94aldJT2ZWbnFXd3lhYjZIeVZt?=
+ =?utf-8?B?VjZ1SzgwM1ZTeEpRZ29tWnE5NHAwMSszVSt4QlhsWDMwZlg1TUtvYUY4Szhv?=
+ =?utf-8?B?ZFB6R2MvZk5aYWRuYWM2ZGZoaG11NEdYVUhoaXM3dXdrZW9qL2ZNQWtsRHJi?=
+ =?utf-8?B?OXZiczlieU83RnIyTzJzY3R5YVJnTUUwZ2xoWUxwa0VRK015NmJmOTJKRjJP?=
+ =?utf-8?B?Q0U2SDM5cVhhejhxVzMxcGhuNzJ3NXFIU1RsWGhaKzN2SU4vVFI2azRXQ09p?=
+ =?utf-8?B?Zm1Xd1JDUGNyN1dteEphMkVyTzNSKzdhRUYvbXhZTUZhYytJd3duMzgwZzlr?=
+ =?utf-8?B?Q2dGR1dkTEg5cnpJUlpzVWVXMm0wZkF1Z05hLzVDY2ZKRWxIMmwyOTdJazBF?=
+ =?utf-8?B?SHEraDRiMit3RWIrUUZaR2JzVFAzWEIyMldyMnhCeStJUSttN25zOGVPR1p3?=
+ =?utf-8?B?QTl6b0Z3TkRhejQ3VDc1ZGxMV0U5NW5qN0xLMnRISUZLaG93RVpmYUd5RU40?=
+ =?utf-8?B?K3hNbjNGUGZ6V3hSZ25pYk93VUlsbGkxTVZkZmd1VEdTOHJUbE5CakZVc09o?=
+ =?utf-8?B?MTFyd251cXhCRnhYSjBIVERBdzVodG1MN00ra0Rnakc1ZDh1NTdDdE1kTnI5?=
+ =?utf-8?B?Qkdld1N5d0FPT25zTFRMMEtCUEQ0eWVUdDNTeFhyb0NuTFpPMlVZaHJIMi9F?=
+ =?utf-8?B?OExWcUo3dFZZNFNadmcycERVRG0yWmlZWFViVVhPZjBlQXBhV3RRNytkQU51?=
+ =?utf-8?B?MFZUMGFPOE0wVlJyaTc0ZmRQcXZlTmd3TVdiTmk0SFZjYmQ4ZUdCZWZXbyt4?=
+ =?utf-8?B?RmNUMGsyTFk3QW1wZlBiQUJodzNWWi9weCs5cDdmQndmUVlQMUdhcVhxSGRD?=
+ =?utf-8?B?cnJ1blYvM0NnY2VxaXNuUnd2aFM4Z3F3UVU5WVlWdS9nVHlvTmlhS29OM2J0?=
+ =?utf-8?B?dXE3VlpiKzhxdStIZ0lIaWtKNzBkdnErWEU5SHJjcEpEUENLYVZnT3pqNEpF?=
+ =?utf-8?B?VVA5N1lNc0x4cHlXOWlGRndoR0xOS0JVejBMN2VoeXZWSmNmZHBmQmppSXdo?=
+ =?utf-8?B?SExrdW5CNjBOM2NmdzVKb0wxOXpDNnlQZEZFY0VhZGN2MUZWN2F4REY5aTBP?=
+ =?utf-8?B?MEFmeFV2VERud2I3S013aklkQm1na1BNc2ZNZzluR2h2V0Zkeit6U2I2TGxI?=
+ =?utf-8?B?ZEVnSWJteEVMUHlRaytieGRpMjlOM05jQ2gzRDk4a3A5UnJyZ0V3RDFON3pU?=
+ =?utf-8?B?bVVPa3BCdEoxZnFjTlJZWSs2R28xMlhiUjdDUUJ5NThjKy9xcmljZllzU0tS?=
+ =?utf-8?B?QlBHVGZYelFIQkpMQyt0Q0VOVk9wMzlSODFQMjVTUzMyTXVEaVoycHdVUmFS?=
+ =?utf-8?B?ZFVEYm11L01IQWNhR1ZPNE5rTm5vT01FVHgyd3V1N2xtMHFSdzBaZTdMM1o4?=
+ =?utf-8?B?QzdVZDFqMXlhdW9aaWZjTzFjYUdpV2VOWVdlK0ljNnVqeW1sRGYvKzU2VzBR?=
+ =?utf-8?B?VGhvaDlJUmhjZU5ZRFZDTml1L1ZtRWxocUhUaUdvaVdWVHlvcVY0S1FFbmF0?=
+ =?utf-8?B?MmZRZWMwRkd5eFBZV3p5b3RpOTR5SWllRVB6VW9OVnh1QTdDWlloZDJpbVFV?=
+ =?utf-8?B?U3BTTGtES2lDOXczTi9xa2pVRmZUY25OUkorZkxxcElDNi8vSjYyaXloZFY0?=
+ =?utf-8?B?blpWZEhpc21RNVdLWWtnL1BsUE5TZ2hmK0l1ZzBsMFhBNmk1YTFKQjZBb24y?=
+ =?utf-8?B?V2dUYk9ncjFjLzR3VjFtV2w4R05VOUg5TEhRTlh6Qk5PNlpaUHZpY3kzK2lI?=
+ =?utf-8?B?b0wxc0pWeml1T0pCb1BNdmR6QWVmNSthUThXZUhtNVBONGc5dGJHVjhyaVMz?=
+ =?utf-8?B?MzQxV3lVdjg4bkJMbDh0cXF4STd6dHZ1NW5sMjJJdTEwMFdiM3BTa0JKcTQv?=
+ =?utf-8?B?eWNUNzltdUFFQ0E0S2NoRmNEM1FZdkxST253WlRNZzVQbG5zUUFtcHhxalJH?=
+ =?utf-8?B?MGE3YmJDQXlIdXdpajlCc0w2R3pXMmg3d2dhUG1KdHlZenBLZHZiaVM0VkV0?=
+ =?utf-8?B?QUFFazcvTnAxNDYwRWtBOGR6S2hmTHVqaTV2WnpDOWYxamFFSExVSEN1SkNW?=
+ =?utf-8?B?NWJjSk9pRE5zbTN5djVwRVlmSDdKVU1pOFBCQVBEY2ZhUFcxTjNHUHJGRGVj?=
+ =?utf-8?B?ekE9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <7EA07054050724419CC56F54E15D7C10@apcprd03.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: TYZPR03MB7153.apcprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0a092917-a74d-4f4f-0972-08dc0cf63e28
+X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Jan 2024 07:24:52.3659
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a7687ede-7a6b-4ef6-bace-642f677fbe31
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: P3sx3AoJleBTv7XuFJ7IebC3pTTw5nS4WcDkx44rBws3kTC7VnA/LuCvuAHnZfA4V1YLgH74fhM6wzcMLaGtLNRWH9oUs7uruZpDmbfBxCc=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SI2PR03MB6638
+X-MTK: N
 
-The initialization commands are taken from the STMicroelectronics driver
-found at [1].
-To ensure backward compatibility, flags have been added to enable gamma
-correction setting and display control. In other cases, registers have
-been set to their default values according to the specifications found
-in the datasheet.
-
-[1] https://github.com/STMicroelectronics/STM32CubeF7/blob/master/Drivers/BSP/Components/nt35510/
-Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
-
----
-
-(no changes since v2)
-
-Changes in v2:
-- Re-write the patch [8/8] "drm/panel: nt35510: support FRIDA FRD400B25025-A-CTK"
-  in the same style as the original driver.
-
- drivers/gpu/drm/panel/panel-novatek-nt35510.c | 282 ++++++++++++++++--
- 1 file changed, 251 insertions(+), 31 deletions(-)
-
-diff --git a/drivers/gpu/drm/panel/panel-novatek-nt35510.c b/drivers/gpu/drm/panel/panel-novatek-nt35510.c
-index ce8969f48286..c85dd0d0829d 100644
---- a/drivers/gpu/drm/panel/panel-novatek-nt35510.c
-+++ b/drivers/gpu/drm/panel/panel-novatek-nt35510.c
-@@ -36,6 +36,9 @@
- #include <drm/drm_modes.h>
- #include <drm/drm_panel.h>
- 
-+#define NT35510_CMD_CORRECT_GAMMA BIT(0)
-+#define NT35510_CMD_CONTROL_DISPLAY BIT(1)
-+
- #define MCS_CMD_MAUCCTR		0xF0 /* Manufacturer command enable */
- #define MCS_CMD_READ_ID1	0xDA
- #define MCS_CMD_READ_ID2	0xDB
-@@ -112,18 +115,33 @@
- /* AVDD and AVEE setting 3 bytes */
- #define NT35510_P1_AVDD_LEN 3
- #define NT35510_P1_AVEE_LEN 3
-+#define NT35510_P1_VCL_LEN 3
- #define NT35510_P1_VGH_LEN 3
- #define NT35510_P1_VGL_LEN 3
- #define NT35510_P1_VGP_LEN 3
- #define NT35510_P1_VGN_LEN 3
-+#define NT35510_P1_VCMOFF_LEN 2
- /* BT1CTR thru BT5CTR setting 3 bytes */
- #define NT35510_P1_BT1CTR_LEN 3
- #define NT35510_P1_BT2CTR_LEN 3
-+#define NT35510_P1_BT3CTR_LEN 3
- #define NT35510_P1_BT4CTR_LEN 3
- #define NT35510_P1_BT5CTR_LEN 3
- /* 52 gamma parameters times two per color: positive and negative */
- #define NT35510_P1_GAMMA_LEN 52
- 
-+#define NT35510_WRCTRLD_BCTRL BIT(5)
-+#define NT35510_WRCTRLD_A BIT(4)
-+#define NT35510_WRCTRLD_DD BIT(3)
-+#define NT35510_WRCTRLD_BL BIT(2)
-+#define NT35510_WRCTRLD_DB BIT(1)
-+#define NT35510_WRCTRLD_G BIT(0)
-+
-+#define NT35510_WRCABC_OFF 0
-+#define NT35510_WRCABC_UI_MODE 1
-+#define NT35510_WRCABC_STILL_MODE 2
-+#define NT35510_WRCABC_MOVING_MODE 3
-+
- /**
-  * struct nt35510_config - the display-specific NT35510 configuration
-  *
-@@ -175,6 +193,10 @@ struct nt35510_config {
- 	 * @mode_flags: DSI operation mode related flags
- 	 */
- 	unsigned long mode_flags;
-+	/**
-+	 * @cmds: enable DSI commands
-+	 */
-+	u32 cmds;
- 	/**
- 	 * @avdd: setting for AVDD ranging from 0x00 = 6.5V to 0x14 = 4.5V
- 	 * in 0.1V steps the default is 0x05 which means 6.0V
-@@ -224,6 +246,25 @@ struct nt35510_config {
- 	 * The defaults are 4 and 3 yielding 0x34
- 	 */
- 	u8 bt2ctr[NT35510_P1_BT2CTR_LEN];
-+	/**
-+	 * @vcl: setting for VCL ranging from 0x00 = -2.5V to 0x11 = -4.0V
-+	 * in 1V steps, the default is 0x00 which means -2.5V
-+	 */
-+	u8 vcl[NT35510_P1_VCL_LEN];
-+	/**
-+	 * @bt3ctr: setting for boost power control for the VCL step-up
-+	 * circuit (3)
-+	 * bits 0..2 in the lower nibble controls CLCK, the booster clock
-+	 * frequency, the values are the same as for PCK in @bt1ctr.
-+	 * bits 4..5 in the upper nibble controls BTCL, the boosting
-+	 * amplification for the step-up circuit.
-+	 * 0 = Disable
-+	 * 1 = -0.5 x VDDB
-+	 * 2 = -1 x VDDB
-+	 * 3 = -2 x VDDB
-+	 * The defaults are 4 and 2 yielding 0x24
-+	 */
-+	u8 bt3ctr[NT35510_P1_BT3CTR_LEN];
- 	/**
- 	 * @vgh: setting for VGH ranging from 0x00 = 7.0V to 0x0B = 18.0V
- 	 * in 1V steps, the default is 0x08 which means 15V
-@@ -277,6 +318,19 @@ struct nt35510_config {
- 	 * same layout of bytes as @vgp.
- 	 */
- 	u8 vgn[NT35510_P1_VGN_LEN];
-+	/**
-+	 * @vcmoff: setting the DC VCOM offset voltage
-+	 * The first byte contains bit 8 of VCM in bit 0 and VCMOFFSEL in bit 4.
-+	 * The second byte contains bits 0..7 of VCM.
-+	 * VCMOFFSEL the common voltage offset mode.
-+	 * VCMOFFSEL 0x00 = VCOM .. 0x01 Gamma.
-+	 * The default is 0x00.
-+	 * VCM the VCOM output voltage (VCMOFFSEL = 0) or the internal register
-+	 * offset for gamma voltage (VCMOFFSEL = 1).
-+	 * VCM 0x00 = 0V/0 .. 0x118 = 3.5V/280 in steps of 12.5mV/1step
-+	 * The default is 0x00 = 0V/0.
-+	 */
-+	u8 vcmoff[NT35510_P1_VCMOFF_LEN];
- 	/**
- 	 * @dopctr: setting optional control for display
- 	 * ERR bits 0..1 in the first byte is the ERR pin output signal setting.
-@@ -441,6 +495,43 @@ struct nt35510_config {
- 	 * @gamma_corr_neg_b: Blue gamma correction parameters, negative
- 	 */
- 	u8 gamma_corr_neg_b[NT35510_P1_GAMMA_LEN];
-+	/**
-+	 * @wrdisbv: write display brightness
-+	 * 0x00 value means the lowest brightness and 0xff value means
-+	 * the highest brightness.
-+	 * The default is 0x00.
-+	 */
-+	u8 wrdisbv;
-+	/**
-+	 * @wrctrld: write control display
-+	 * G bit 0 selects gamma curve: 0 = Manual, 1 = Automatic
-+	 * DB bit 1 selects display brightness: 0 = Manual, 1 = Automatic
-+	 * BL bit 2 controls backlight control: 0 = Off, 1 = On
-+	 * DD bit 3 controls display dimming: 0 = Off, 1 = On
-+	 * A bit 4 controls LABC block: 0 = Off, 1 = On
-+	 * BCTRL bit 5 controls brightness block: 0 = Off, 1 = On
-+	 */
-+	u8 wrctrld;
-+	/**
-+	 * @wrcabc: write content adaptive brightness control
-+	 * There is possible to use 4 different modes for content adaptive
-+	 * image functionality:
-+	 * 0: Off
-+	 * 1: User Interface Image (UI-Mode)
-+	 * 2: Still Picture Image (Still-Mode)
-+	 * 3: Moving Picture Image (Moving-Mode)
-+	 * The default is 0
-+	 */
-+	u8 wrcabc;
-+	/**
-+	 * @wrcabcmb: write CABC minimum brightness
-+	 * Set the minimum brightness value of the display for CABC
-+	 * function.
-+	 * 0x00 value means the lowest brightness for CABC and 0xff
-+	 * value means the highest brightness for CABC.
-+	 * The default is 0x00.
-+	 */
-+	u8 wrcabcmb;
- };
- 
- /**
-@@ -584,6 +675,16 @@ static int nt35510_setup_power(struct nt35510 *nt)
- 				nt->conf->bt2ctr);
- 	if (ret)
- 		return ret;
-+	ret = nt35510_send_long(nt, dsi, NT35510_P1_SETVCL,
-+				NT35510_P1_VCL_LEN,
-+				nt->conf->vcl);
-+	if (ret)
-+		return ret;
-+	ret = nt35510_send_long(nt, dsi, NT35510_P1_BT3CTR,
-+				NT35510_P1_BT3CTR_LEN,
-+				nt->conf->bt3ctr);
-+	if (ret)
-+		return ret;
- 	ret = nt35510_send_long(nt, dsi, NT35510_P1_SETVGH,
- 				NT35510_P1_VGH_LEN,
- 				nt->conf->vgh);
-@@ -620,6 +721,12 @@ static int nt35510_setup_power(struct nt35510 *nt)
- 	if (ret)
- 		return ret;
- 
-+	ret = nt35510_send_long(nt, dsi, NT35510_P1_SETVCMOFF,
-+				NT35510_P1_VCMOFF_LEN,
-+				nt->conf->vcmoff);
-+	if (ret)
-+		return ret;
-+
- 	/* Typically 10 ms */
- 	usleep_range(10000, 20000);
- 
-@@ -799,36 +906,38 @@ static int nt35510_power_on(struct nt35510 *nt)
- 	if (ret)
- 		return ret;
- 
--	ret = nt35510_send_long(nt, dsi, NT35510_P1_SET_GAMMA_RED_POS,
--				NT35510_P1_GAMMA_LEN,
--				nt->conf->gamma_corr_pos_r);
--	if (ret)
--		return ret;
--	ret = nt35510_send_long(nt, dsi, NT35510_P1_SET_GAMMA_GREEN_POS,
--				NT35510_P1_GAMMA_LEN,
--				nt->conf->gamma_corr_pos_g);
--	if (ret)
--		return ret;
--	ret = nt35510_send_long(nt, dsi, NT35510_P1_SET_GAMMA_BLUE_POS,
--				NT35510_P1_GAMMA_LEN,
--				nt->conf->gamma_corr_pos_b);
--	if (ret)
--		return ret;
--	ret = nt35510_send_long(nt, dsi, NT35510_P1_SET_GAMMA_RED_NEG,
--				NT35510_P1_GAMMA_LEN,
--				nt->conf->gamma_corr_neg_r);
--	if (ret)
--		return ret;
--	ret = nt35510_send_long(nt, dsi, NT35510_P1_SET_GAMMA_GREEN_NEG,
--				NT35510_P1_GAMMA_LEN,
--				nt->conf->gamma_corr_neg_g);
--	if (ret)
--		return ret;
--	ret = nt35510_send_long(nt, dsi, NT35510_P1_SET_GAMMA_BLUE_NEG,
--				NT35510_P1_GAMMA_LEN,
--				nt->conf->gamma_corr_neg_b);
--	if (ret)
--		return ret;
-+	if (nt->conf->cmds & NT35510_CMD_CORRECT_GAMMA) {
-+		ret = nt35510_send_long(nt, dsi, NT35510_P1_SET_GAMMA_RED_POS,
-+					NT35510_P1_GAMMA_LEN,
-+					nt->conf->gamma_corr_pos_r);
-+		if (ret)
-+			return ret;
-+		ret = nt35510_send_long(nt, dsi, NT35510_P1_SET_GAMMA_GREEN_POS,
-+					NT35510_P1_GAMMA_LEN,
-+					nt->conf->gamma_corr_pos_g);
-+		if (ret)
-+			return ret;
-+		ret = nt35510_send_long(nt, dsi, NT35510_P1_SET_GAMMA_BLUE_POS,
-+					NT35510_P1_GAMMA_LEN,
-+					nt->conf->gamma_corr_pos_b);
-+		if (ret)
-+			return ret;
-+		ret = nt35510_send_long(nt, dsi, NT35510_P1_SET_GAMMA_RED_NEG,
-+					NT35510_P1_GAMMA_LEN,
-+					nt->conf->gamma_corr_neg_r);
-+		if (ret)
-+			return ret;
-+		ret = nt35510_send_long(nt, dsi, NT35510_P1_SET_GAMMA_GREEN_NEG,
-+					NT35510_P1_GAMMA_LEN,
-+					nt->conf->gamma_corr_neg_g);
-+		if (ret)
-+			return ret;
-+		ret = nt35510_send_long(nt, dsi, NT35510_P1_SET_GAMMA_BLUE_NEG,
-+					NT35510_P1_GAMMA_LEN,
-+					nt->conf->gamma_corr_neg_b);
-+		if (ret)
-+			return ret;
-+	}
- 
- 	/* Set up stuff in  manufacturer control, page 0 */
- 	ret = nt35510_send_long(nt, dsi, MCS_CMD_MAUCCTR,
-@@ -907,6 +1016,26 @@ static int nt35510_prepare(struct drm_panel *panel)
- 	/* Up to 120 ms */
- 	usleep_range(120000, 150000);
- 
-+	if (nt->conf->cmds & NT35510_CMD_CONTROL_DISPLAY) {
-+		ret = mipi_dsi_dcs_write(dsi, MIPI_DCS_WRITE_CONTROL_DISPLAY,
-+					 &nt->conf->wrctrld,
-+					 sizeof(nt->conf->wrctrld));
-+		if (ret < 0)
-+			return ret;
-+
-+		ret = mipi_dsi_dcs_write(dsi, MIPI_DCS_WRITE_POWER_SAVE,
-+					 &nt->conf->wrcabc,
-+					 sizeof(nt->conf->wrcabc));
-+		if (ret < 0)
-+			return ret;
-+
-+		ret = mipi_dsi_dcs_write(dsi, MIPI_DCS_SET_CABC_MIN_BRIGHTNESS,
-+					 &nt->conf->wrcabcmb,
-+					 sizeof(nt->conf->wrcabcmb));
-+		if (ret < 0)
-+			return ret;
-+	}
-+
- 	ret = mipi_dsi_dcs_set_display_on(dsi);
- 	if (ret) {
- 		dev_err(nt->dev, "failed to turn display on (%d)\n", ret);
-@@ -1033,7 +1162,10 @@ static int nt35510_probe(struct mipi_dsi_device *dsi)
- 			return PTR_ERR(bl);
- 		}
- 		bl->props.max_brightness = 255;
--		bl->props.brightness = 255;
-+		if (nt->conf->cmds & NT35510_CMD_CONTROL_DISPLAY)
-+			bl->props.brightness = nt->conf->wrdisbv;
-+		else
-+			bl->props.brightness = 255;
- 		bl->props.power = FB_BLANK_POWERDOWN;
- 		nt->panel.backlight = bl;
- 	}
-@@ -1112,6 +1244,7 @@ static const struct nt35510_config nt35510_hydis_hva40wv1 = {
- 		.flags = 0,
- 	},
- 	.mode_flags = MIPI_DSI_CLOCK_NON_CONTINUOUS,
-+	.cmds = NT35510_CMD_CORRECT_GAMMA,
- 	/* 0x09: AVDD = 5.6V */
- 	.avdd = { 0x09, 0x09, 0x09 },
- 	/* 0x34: PCK = Hsync/2, BTP = 2 x VDDB */
-@@ -1120,6 +1253,10 @@ static const struct nt35510_config nt35510_hydis_hva40wv1 = {
- 	.avee = { 0x09, 0x09, 0x09 },
- 	/* 0x24: NCK = Hsync/2, BTN =  -2 x VDDB */
- 	.bt2ctr = { 0x24, 0x24, 0x24 },
-+	/* VBCLA: -2.5V, VBCLB: -2.5V, VBCLC: -2.5V */
-+	.vcl = { 0x00, 0x00, 0x00 },
-+	/* 0x24: CLCK = Hsync/2, BTN =  -1 x VDDB */
-+	.bt3ctr = { 0x24, 0x24, 0x24 },
- 	/* 0x05 = 12V */
- 	.vgh = { 0x05, 0x05, 0x05 },
- 	/* 0x24: NCKA = Hsync/2, VGH = 2 x AVDD - AVEE */
-@@ -1132,6 +1269,8 @@ static const struct nt35510_config nt35510_hydis_hva40wv1 = {
- 	.vgp = { 0x00, 0xA3, 0x00 },
- 	/* VGMP: 0x0A3 = 5.0375V, VGSP = 0V */
- 	.vgn = { 0x00, 0xA3, 0x00 },
-+	/* VCMOFFSEL = VCOM voltage offset mode, VCM = 0V */
-+	.vcmoff = { 0x00, 0x00 },
- 	/* Enable TE, EoTP and RGB pixel format */
- 	.dopctr = { NT35510_DOPCTR_0_DSITE | NT35510_DOPCTR_0_EOTP |
- 		    NT35510_DOPCTR_0_N565, NT35510_DOPCTR_1_CTB },
-@@ -1163,7 +1302,88 @@ static const struct nt35510_config nt35510_hydis_hva40wv1 = {
- 	.gamma_corr_neg_b = { NT35510_GAMMA_NEG_DEFAULT },
- };
- 
-+static const struct nt35510_config nt35510_frida_frd400b25025 = {
-+	.width_mm = 52,
-+	.height_mm = 86,
-+	.mode = {
-+		.clock = 23000,
-+		.hdisplay = 480,
-+		.hsync_start = 480 + 34, /* HFP = 34 */
-+		.hsync_end = 480 + 34 + 2, /* HSync = 2 */
-+		.htotal = 480 + 34 + 2 + 34, /* HBP = 34 */
-+		.vdisplay = 800,
-+		.vsync_start = 800 + 15, /* VFP = 15 */
-+		.vsync_end = 800 + 15 + 12, /* VSync = 12 */
-+		.vtotal = 800 + 15 + 12 + 15, /* VBP = 15 */
-+		.flags = 0,
-+	},
-+	.mode_flags = MIPI_DSI_MODE_VIDEO | MIPI_DSI_MODE_VIDEO_BURST |
-+			MIPI_DSI_MODE_LPM,
-+	.cmds = NT35510_CMD_CONTROL_DISPLAY,
-+	/* 0x03: AVDD = 6.2V */
-+	.avdd = { 0x03, 0x03, 0x03 },
-+	/* 0x46: PCK = 2 x Hsync, BTP = 2.5 x VDDB */
-+	.bt1ctr = { 0x46, 0x46, 0x46 },
-+	/* 0x03: AVEE = -6.2V */
-+	.avee = { 0x03, 0x03, 0x03 },
-+	/* 0x36: PCK = 2 x Hsync, BTP =  2 x VDDB */
-+	.bt2ctr = { 0x36, 0x36, 0x36 },
-+	/* VBCLA: -2.5V, VBCLB: -2.5V, VBCLC: -3.5V */
-+	.vcl = { 0x00, 0x00, 0x02 },
-+	/* 0x26: CLCK = 2 x Hsync, BTN =  -1 x VDDB */
-+	.bt3ctr = { 0x26, 0x26, 0x26 },
-+	/* 0x09 = 16V */
-+	.vgh = { 0x09, 0x09, 0x09 },
-+	/* 0x36: HCK = 2 x Hsync, VGH = 2 x AVDD - AVEE */
-+	.bt4ctr = { 0x36, 0x36, 0x36 },
-+	/* 0x08 = -10V */
-+	.vgl = { 0x08, 0x08, 0x08 },
-+	/* 0x26: LCK = 2 x Hsync, VGL = AVDD + VCL - AVDD */
-+	.bt5ctr = { 0x26, 0x26, 0x26 },
-+	/* VGMP: 0x080 = 4.6V, VGSP = 0V */
-+	.vgp = { 0x00, 0x80, 0x00 },
-+	/* VGMP: 0x080 = 4.6V, VGSP = 0V */
-+	.vgn = { 0x00, 0x80, 0x00 },
-+	/* VCMOFFSEL = VCOM voltage offset mode, VCM = -1V */
-+	.vcmoff = { 0x00, 0x50 },
-+	.dopctr = { NT35510_DOPCTR_0_RAMKP | NT35510_DOPCTR_0_DSITE |
-+		NT35510_DOPCTR_0_DSIG | NT35510_DOPCTR_0_DSIM |
-+		NT35510_DOPCTR_0_EOTP | NT35510_DOPCTR_0_N565, 0 },
-+	.madctl = NT35510_ROTATE_180_SETTING,
-+	/* 0x03: SDT = 1.5 us */
-+	.sdhdtctr = 0x03,
-+	/* EQ control for gate signals, 0x00 = 0 us */
-+	.gseqctr = { 0x00, 0x00 },
-+	/* SDEQCTR: source driver EQ mode 2, 1 us rise time on each step */
-+	.sdeqctr = { 0x01, 0x02, 0x02, 0x02 },
-+	/* SDVPCTR: Normal operation off color during v porch */
-+	.sdvpctr = 0x01,
-+	/* T1: number of pixel clocks on one scanline: 0x184 = 389 clocks */
-+	.t1 = 0x0184,
-+	/* VBP: vertical back porch toward the panel */
-+	.vbp = 0x1C,
-+	/* VFP: vertical front porch toward the panel */
-+	.vfp = 0x1C,
-+	/* PSEL: divide pixel clock 23MHz with 1 (no clock downscaling) */
-+	.psel = 0,
-+	/* DPTMCTR12: 0x03: LVGL = VGLX, overlap mode, swap R->L O->E */
-+	.dpmctr12 = { 0x03, 0x00, 0x00, },
-+	/* write display brightness */
-+	.wrdisbv = 0x7f,
-+	/* write control display */
-+	.wrctrld = NT35510_WRCTRLD_BCTRL | NT35510_WRCTRLD_DD |
-+			NT35510_WRCTRLD_BL,
-+	/* write content adaptive brightness control */
-+	.wrcabc = NT35510_WRCABC_STILL_MODE,
-+	/* write CABC minimum brightness */
-+	.wrcabcmb = 0xff,
-+};
-+
- static const struct of_device_id nt35510_of_match[] = {
-+	{
-+		.compatible = "frida,frd400b25025",
-+		.data = &nt35510_frida_frd400b25025,
-+	},
- 	{
- 		.compatible = "hydis,hva40wv1",
- 		.data = &nt35510_hydis_hva40wv1,
--- 
-2.43.0
-
+T24gV2VkLCAyMDIzLTEyLTI3IGF0IDEyOjE5ICswMzAwLCBTZXJnZXkgU2h0eWx5b3Ygd3JvdGU6
+DQo+ICAJIA0KPiBFeHRlcm5hbCBlbWFpbCA6IFBsZWFzZSBkbyBub3QgY2xpY2sgbGlua3Mgb3Ig
+b3BlbiBhdHRhY2htZW50cyB1bnRpbA0KPiB5b3UgaGF2ZSB2ZXJpZmllZCB0aGUgc2VuZGVyIG9y
+IHRoZSBjb250ZW50Lg0KPiAgT24gMTIvMjcvMjMgOTowMyBBTSwgQ2h1bmZlbmcgWXVuIHdyb3Rl
+Og0KPiANCj4gPiBGb3IgR2VuMSBpc29jLWluIGVuZHBvaW50IG9uIGNvbnRyb2xsZXIgYmVmb3Jl
+IGFib3V0IFNTVVNCIElQTQ0KPiB2MS42LjAsIGl0DQo+ID4gc3RpbGwgc2VuZCBvdXQgdW5leHBl
+Y3RlZCBBQ0sgYWZ0ZXIgcmVjZWl2aW5nIGEgc2hvcnQgcGFja2V0IGluDQo+IGJ1cnN0DQo+ID4g
+dHJhbnNmZXIsIHRoaXMgd2lsbCBjYXVzZSBhbiBleGNlcHRpb24gb24gY29ubmVjdGVkIGRldmlj
+ZSwNCj4gc3BlY2lhbGx5IGZvcg0KPiA+IGEgNGsgY2FtZXJhLg0KPiA+IEFkZCBhIHF1aXJrIHBy
+b3BlcnR5ICJyeC1maWZvLWRlcHRoIiB0byB3b3JrIGFyb3VuZCB0aGlzIGhhcmR3YXJlDQo+IGlz
+c3VlLA0KPiA+IHByZWZlciB0byB1c2UgM2sgYnl0ZXM7DQo+ID4gVGhlIHNpZGUtZWZmZWN0IGlz
+IHRoYXQgbWF5IGNhdXNlIHBlcmZvcm1hbmNlIGRyb3AgYWJvdXQgMTAlLA0KPiBpbmNsdWRpbmcN
+Cj4gDQo+ICAgIFRoYXQgaXQgbWF5IGNhdXNlPw0KPiANCj4gPiBidWxrIHRyYW5zZmVyLg0KPiA+
+IA0KPiA+IFNpZ25lZC1vZmYtYnk6IENodW5mZW5nIFl1biA8Y2h1bmZlbmcueXVuQG1lZGlhdGVr
+LmNvbT4NCj4gPiAtLS0NCj4gPiB2NDogY2hhbmdlIHJ4LWZpZm8gc2l6ZSBpbiBieXRlcw0KPiA+
+IHYzOiBhZGQgZmlmbyBkZXB0aCB1bml0LCBjaGFuZ2UgdGhlIHZhbHVlIHJhbmdlIGZyb20gMC0z
+IHRvIDEtNA0KPiA+IHYyOiBjaGFuZ2UgJ21lZGlhdGVrLHJ4Zmlmby1kZXB0aCcgdG8gJ3J4LWZp
+Zm8tZGVwdGgnDQo+ID4gLS0tDQo+ID4gIC4uLi9kZXZpY2V0cmVlL2JpbmRpbmdzL3VzYi9tZWRp
+YXRlayxtdGsteGhjaS55YW1sICAgIHwgMTENCj4gKysrKysrKysrKysNCj4gPiAgMSBmaWxlIGNo
+YW5nZWQsIDExIGluc2VydGlvbnMoKykNCj4gPiANCj4gPiBkaWZmIC0tZ2l0IGEvRG9jdW1lbnRh
+dGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3VzYi9tZWRpYXRlayxtdGstDQo+IHhoY2kueWFtbCBi
+L0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy91c2IvbWVkaWF0ZWssbXRrLQ0KPiB4
+aGNpLnlhbWwNCj4gPiBpbmRleCBlOTY0NGUzMzNkNzguLjlmNjIxZjIyMDlkZiAxMDA2NDQNCj4g
+PiAtLS0gYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvdXNiL21lZGlhdGVrLG10
+ay14aGNpLnlhbWwNCj4gPiArKysgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mv
+dXNiL21lZGlhdGVrLG10ay14aGNpLnlhbWwNCj4gPiBAQCAtMTI0LDYgKzEyNCwxNyBAQCBwcm9w
+ZXJ0aWVzOg0KPiA+ICAgICAgICBkZWZpbmVkIGluIHRoZSB4SENJIHNwZWMgb24gTVRLJ3MgY29u
+dHJvbGxlci4NCj4gPiAgICAgIGRlZmF1bHQ6IDUwMDANCj4gPiAgDQo+ID4gKyAgcngtZmlmby1k
+ZXB0aDoNCj4gPiArICAgICRyZWY6IC9zY2hlbWFzL3R5cGVzLnlhbWwjL2RlZmluaXRpb25zL3Vp
+bnQzMg0KPiA+ICsgICAgZGVzY3JpcHRpb246DQo+ID4gKyAgICAgIEl0IGlzIGEgcXVpcmsgdXNl
+ZCB0byB3b3JrIGFyb3VuZCBHZW4xIGlzb2MtaW4gZW5kcG9pbnQNCj4gdHJhbnNmZXIgaXNzdWUN
+Cj4gPiArICAgICAgdGhhdCBzdGlsbCBzZW5kIG91dCB1bmV4cGVjdGVkIEFDSyBhZnRlciBkZXZp
+Y2UgZmluaXNoIHRoZQ0KPiBidXJzdCB0cmFuc2Zlcg0KPiANCj4gICAgRmluaXNoZXMuDQo+IA0K
+PiA+ICsgICAgICB3aXRoIGEgc2hvcnQgcGFja2V0IGFuZCBjYXVzZSBhbiBleGNlcHRpb24sIHNw
+ZWNpYWxseSBvbiBhDQo+IDRLIGNhbWVyYQ0KPiA+ICsgICAgICBkZXZpY2UsIGl0IGhhcHBlbnMg
+b24gY29udHJvbGxlciBiZWZvcmUgYWJvdXQgSVBNIHYxLjYuMDsNCj4gdGhlIHNpZGUtZWZmZWN0
+DQo+ID4gKyAgICAgIGlzIHRoYXQgbWF5IGNhdXNlIHBlcmZvcm1hbmNlIGRyb3AgYWJvdXQgMTAl
+LCBpbmNsdWRlIGJ1bGsNCj4gdHJhbnNmZXIsDQo+IA0KPiAgICBUaGF0IGl0IG1heSBjYXVzZT8g
+QW5kIGluY2x1ZGluZz8NCk9rLCBJJ2xsIGZpeCB0aGVzZSB0eXBvcywgDQoNClJlcGx5IGFnYWlu
+LCBwcmV2aW91cyBvbmUgY29udGFpbnMgSFRNTCBwYXJ0Ow0KDQpUaGFua3MNCj4gDQoNCg0KPiBb
+Li4uXQ0KPiANCj4gTUJSLCBTZXJnZXkNCg==
 
