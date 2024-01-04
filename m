@@ -1,160 +1,132 @@
-Return-Path: <linux-kernel+bounces-16517-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16518-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C6A74823F97
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 11:41:20 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F0EE823F9B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 11:43:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 762D2287356
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 10:41:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4301CB217E8
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 10:42:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C83920DDD;
-	Thu,  4 Jan 2024 10:41:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3DB220DD2;
+	Thu,  4 Jan 2024 10:42:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="OzmUnB4r"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="hW9rsOHq"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-vk1-f172.google.com (mail-vk1-f172.google.com [209.85.221.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06DBA20DCD;
-	Thu,  4 Jan 2024 10:41:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4046QW0r029609;
-	Thu, 4 Jan 2024 10:41:03 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=F8/8VaDHGms/Lqzr39o9HKXgHc46WovuoUXE1O+NyPk=; b=Oz
-	mUnB4r22RSHEuLv/QA+M/UAU7PZ3LC5ajPEGEFbK+pQLl/ht142jJzMdFVUIZSd0
-	t0IZrO4PFhZBThTzXxtcfZrmUhVTW8BLmlskuOqnrqiq1joMj0ziKsSDWJ1uUfgq
-	L3lUcoFRsk5AbcGkaEz0Cl7lDLWRxqfa7HWbWCVsaUnVI2MFza/vAioz6n8fq3bm
-	KJMUAZJpsLUJsFoAmeWB6JekImHG6Aq/4xHd8FYuFLv+GXbGrVCzG7uUpt8lIx7A
-	auW3Srpn5RbnRSFN4jRXT1nrfnYybI3Jsl1y6n75thW+VTLmGDedVOolwvwKqyN0
-	liA7IBxD4DSKk6duMljA==
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vdqb1rn42-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 04 Jan 2024 10:41:03 +0000 (GMT)
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 404Af2L6006811
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 4 Jan 2024 10:41:02 GMT
-Received: from [10.239.154.73] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 4 Jan
- 2024 02:40:56 -0800
-Message-ID: <a8012b92-6072-406d-8aab-ecb167ea44d2@quicinc.com>
-Date: Thu, 4 Jan 2024 18:40:53 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAA8D20DCE
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 10:42:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-vk1-f172.google.com with SMTP id 71dfb90a1353d-4b73e952ef2so87195e0c.2
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 02:42:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1704364970; x=1704969770; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=LolWQ4Jrb+Z7IGxXTLsLvRDIA9OucvvsNX3g5Br+h1s=;
+        b=hW9rsOHqD3lAiRGYn/qKxn9ZjQOAPvrzJJk1UMLBY1+VOUBS53IWoiBTYePAsskBYj
+         Zk77AA3IEG0tWN5TTE/XVdlDvMdKMAQ1OK16ptifpMefWRFXQ6c3iQejPD53jRN7+6II
+         0RFPVw+8MTZZEh4oF1lenUcw0Din+iYgpg+cGZ5pkgTQUVJJt6GLjoEQfbZUVubjAkRw
+         PnzVYhYUROfR37axLxWv0+TJ6VolM/eLkdPSPE3W4rgtwi/H8CUa6LbE0E6PHTRkEjvi
+         LDfKNl0YLNENIfsO/zb+rRnRpKT8LuaN9W+gXdNuRwGmHfmn4u5SRjZ1PdCZuJUOBEfs
+         iOxw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704364970; x=1704969770;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=LolWQ4Jrb+Z7IGxXTLsLvRDIA9OucvvsNX3g5Br+h1s=;
+        b=b9RTGxumhGPDcMRNnU9SMH86jb4e6rPPvEnHuS1Ye35khSe320Rn1EXOQYuHVe9zJK
+         FF9277fY2PQmC21VBPhqyRLIDnfwyymQwNDE2tDBhraDxVB/BSTvXGNfZcP3myveE8Pj
+         LymmfR/xis2g4MwElS+GsXxEx9hA7119HX8imJan0Gqas6k2jEHisgkRGdliPlXw40i/
+         KmLmC4GG3HOGzpPIXaZzV6U11+rTZAcV1t2XM1Vi6zxtCI18nxMvwAZdiAEkt1hoadY0
+         LBjq6eY9Epm27xVkDxBSaw7nkcUiSMq37+ZmJZRAL9Op3CQRMwwwpa/XWC0KjBUUOkXC
+         7zTQ==
+X-Gm-Message-State: AOJu0YzoECIFVDMoI9uLWp0JBulsL7ujZwu6z3Rg0wxvqBrU84O0oVb2
+	3ZqVueihwvSJo1LkPbtSZN7a8bT4FESQvrhWfuJXpZlPMYoX
+X-Google-Smtp-Source: AGHT+IHRbgq83scPnGoNOMQVhsBQFaBLOBRHtuOw/QohbmSJuWeKgX3B38tkPgZeXgthkyBiNqZdN0GvPubaSh3kUww=
+X-Received: by 2002:a05:6122:3181:b0:4b6:e60e:e080 with SMTP id
+ ch1-20020a056122318100b004b6e60ee080mr162069vkb.30.1704364969684; Thu, 04 Jan
+ 2024 02:42:49 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] arm64: dts: qcom: ipq6018: add #power-domain-cells for
- gcc node
-Content-Language: en-US
-To: Robert Marko <robimarko@gmail.com>,
-        Konrad Dybcio
-	<konrad.dybcio@linaro.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        <quic_tdas@quicinc.com>, <quic_aiquny@quicinc.com>
-CC: <kernel@quicinc.com>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson
-	<andersson@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20240104-gcc-docs-update-v1-1-127e4816b798@quicinc.com>
- <CAA8EJprsGke9zZBy_x=YSxz7R1aSpx8r3ndjjXVVKhjKBxd=QQ@mail.gmail.com>
- <724f608a-cbfe-48f6-a1f7-59b961a7d724@quicinc.com>
- <56ee556d-ec31-4553-bce3-0c1e12c111ed@linaro.org>
- <685f45d9-48e8-49c6-9de0-6771777ba62e@gmail.com>
-From: Fenglin Wu <quic_fenglinw@quicinc.com>
-In-Reply-To: <685f45d9-48e8-49c6-9de0-6771777ba62e@gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: eB8CLUkVl2nVs5OaaL68yTxwIrX8iCpK
-X-Proofpoint-ORIG-GUID: eB8CLUkVl2nVs5OaaL68yTxwIrX8iCpK
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- suspectscore=0 mlxscore=0 adultscore=0 priorityscore=1501
- lowpriorityscore=0 bulkscore=0 mlxlogscore=999 clxscore=1011
- malwarescore=0 phishscore=0 spamscore=0 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.19.0-2311290000
- definitions=main-2401040080
+References: <cover.1700502145.git.andreyknvl@google.com> <1d1ad5692ee43d4fc2b3fd9d221331d30b36123f.1700502145.git.andreyknvl@google.com>
+ <ZZZx5TpqioairIMP@localhost.localdomain> <CANpmjNMWyVOvni-w-2Lx6WyEUnP+G_cLVELJv_-B4W1fMrQpnw@mail.gmail.com>
+ <ZZaGHbaerKfli0Wu@localhost.localdomain>
+In-Reply-To: <ZZaGHbaerKfli0Wu@localhost.localdomain>
+From: Marco Elver <elver@google.com>
+Date: Thu, 4 Jan 2024 11:42:11 +0100
+Message-ID: <CANpmjNMgpcpTCqepjQa=M7USYmCRYnRFRQdXfz0iZdPaBNK=6w@mail.gmail.com>
+Subject: Re: [PATCH v4 17/22] lib/stackdepot: allow users to evict stack traces
+To: Oscar Salvador <osalvador@suse.de>
+Cc: andrey.konovalov@linux.dev, Andrew Morton <akpm@linux-foundation.org>, 
+	Andrey Konovalov <andreyknvl@gmail.com>, Alexander Potapenko <glider@google.com>, 
+	Dmitry Vyukov <dvyukov@google.com>, Vlastimil Babka <vbabka@suse.cz>, kasan-dev@googlegroups.com, 
+	Evgenii Stepanov <eugenis@google.com>, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+	Andrey Konovalov <andreyknvl@google.com>
+Content-Type: text/plain; charset="UTF-8"
 
+On Thu, 4 Jan 2024 at 11:18, Oscar Salvador <osalvador@suse.de> wrote:
+>
+> On Thu, Jan 04, 2024 at 10:25:40AM +0100, Marco Elver wrote:
+> > I think a boolean makes the interface more confusing for everyone
+> > else. At that point stack_depot_put merely decrements the refcount and
+> > becomes a wrapper around refcount_dec, right?
+>
+> Thanks Marco for the feedback.
+>
+> Fair enough.
+>
+> > I think you want to expose the stack_record struct anyway for your
+> > series, so why not simply avoid calling stack_depot_put and decrement
+> > the refcount with your own helper (there needs to be a new stackdepot
+> > function to return a stack_record under the pool_rwlock held as
+> > reader).
+>
+> Yeah, that was something I was experimenting with my last version.
+> See [0], I moved the "stack_record" struct into the header so page_owner
+> can make sense of it. I guess that's fine right?
 
+Not exposing the internals would be better, but at this point I think
+your usecase looks like it's doing something that is somewhat out of
+the bounds of the stackdepot API. I also don't see that it makes sense
+to add more helpers to the stackdepot API to deal with such special
+cases.
 
-On 1/4/2024 6:32 PM, Robert Marko wrote:
-> 
-> On 04. 01. 2024. 11:16, Konrad Dybcio wrote:
->> On 4.01.2024 11:13, Fenglin Wu wrote:
->>>
->>> On 1/4/2024 5:53 PM, Dmitry Baryshkov wrote:
->>>> On Thu, 4 Jan 2024 at 10:06, Fenglin Wu via B4 Relay
->>>> <devnull+quic_fenglinw.quicinc.com@kernel.org> wrote:
->>>>> From: Fenglin Wu <quic_fenglinw@quicinc.com>
->>>>>
->>>>> Property '#power-domain-cells' is required as per defined in 
->>>>> qcom,gcc.yaml
->>>>> so add it for ipq6018 gcc device node to eliminate following 
->>>>> warning in
->>>>> dtbs_check:
->>>>>
->>>>> arch/arm64/boot/dts/qcom/ipq6018-cp01-c1.dtb: gcc@1800000:
->>>>>           '#power-domain-cells' is a required property
->>>>> from schema $id: 
->>>>> http://devicetree.org/schemas/clock/qcom,gcc-ipq6018.yaml#
->>>> But ipq6018 doesn't implement GDSC support. So for the sake of fixing
->>>> the warning you are adding a bogus property.
->>>>
->>> I agree. However, there are also some gcc drivers not implementing 
->>> GDSC support but the bindings are adding '#power-domain-cells' in the 
->>> DT example, such as: qcom,gcc-apq8064.yaml, qcom,gcc-ipq4019.yaml, 
->>> qcom,gcc-ipq6018.yaml, qcom,gcc-ipq8064.yaml, qcom,gcc-msm8660.yaml.
->>>
->>> Actually I thought that maybe we should do a clean up by removing 
->>> '#power-domain-cells' out of the qcom,gcc.yaml binding and only 
->>> adding it into individual qcom,gcc-xxx.yaml for the driver which has 
->>> implemented GDSC support. I checked this with Taniya offline, but she 
->>> prefers only fixing it in ipq6018.dtsi as it doesn't hurt anything by 
->>> adding the property, and she expects the GDSC support should be 
->>> existing in most of qcom,gcc drivers especially the newer Qcom chipsets.
->> Before we start changing anything, we should assess whether these
->> platforms actually have GDSCs within this clock controller block,
->> even if they are (currently) not described in the clk driver.
-> Hi,
-> IPQ6018 has GDSC-s, at least for the USB-s.
-> I tried configuring them a while ago, but the USB2.0 GDSC seems to 
-> either have a HW bug or
-> it uses some special configuration as its status bits never show that 
-> its ON [1].
-> 
-> [1] 
-> https://patchwork.kernel.org/project/linux-arm-msm/patch/20231025104457.628109-2-robimarko@gmail.com/
-> 
-Thanks for the link! I checked the spec internal, and I did see GDSC 
-device for USB0/USB1 controller is present in GCC clock controller.
-So considering there is a patch ongoing to add GDSC device for ipq6018 
-gcc driver, can the DT commit which adds '#power-domain-cells' be accepted?
+As such, I'd reason that it's ok to expose the struct for this special usecase.
 
-> Regards,
-> Robert
-> 
->>
->> Konrad
+> If so, I'd do as you mentioned, just decrementing it with my own helper
+> so no calls to stack_depot_put will be needed.
+>
+> Regarding the locking, I yet have to check the patch that implements
+> the read/write lock, but given that page_owner won't be evicting
+> anything, do I still have to fiddle with the locks?
+
+You need to grab the lock as a reader to fetch the stack_record and
+return it. All that should be hidden behind whatever function you'll
+introduce to return the stack_record (stack_depot_find()?).
+
+> > Also, you need to ensure noone else calls stack_depot_put on the stack
+> > traces you want to keep. If there is a risk someone else may call
+> > stack_depot_put on them, it obviously won't work (I think the only
+> > option then is to introduce a way to pin stacks).
+>
+> Well, since page_owner won't call stack_depot_put, I don't see
+> how someone else would be able to interfere there, so I think
+> I am safe there.
+>
+> [0] https://patchwork.kernel.org/project/linux-mm/patch/20231120084300.4368-3-osalvador@suse.de/
+>
+> --
+> Oscar Salvador
+> SUSE Labs
 
