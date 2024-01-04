@@ -1,122 +1,150 @@
-Return-Path: <linux-kernel+bounces-17199-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17200-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 58B79824995
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 21:32:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 21B028249AA
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 21:37:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D694F28741F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 20:32:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C63C5287A52
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 20:37:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55B671E491;
-	Thu,  4 Jan 2024 20:32:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18B8A1E516;
+	Thu,  4 Jan 2024 20:37:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="B+LLXUal"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F15E51DFD6
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 20:31:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57C6DC433C7;
-	Thu,  4 Jan 2024 20:31:58 +0000 (UTC)
-Date: Thu, 4 Jan 2024 15:33:04 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-kernel@vger.kernel.org, Masami Hiramatsu <mhiramat@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>, Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>, Andrew Morton
- <akpm@linux-foundation.org>, Ajay Kaher <akaher@vmware.com>, Al Viro
- <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>
-Subject: Re: [for-next][PATCH 2/3] eventfs: Stop using dcache_readdir() for
- getdents()
-Message-ID: <20240104153304.79e607c8@gandalf.local.home>
-In-Reply-To: <CAHk-=wik=OOYCRSzAA7x485GyxH97ioaPziiF4Ms1kRU8VLkHA@mail.gmail.com>
-References: <20240104164703.808999991@goodmis.org>
-	<20240104164738.483305222@goodmis.org>
-	<CAHk-=wiKwDUDv3+jCsv-uacDcHDVTYsXtBR9=6sGM5mqX+DhOg@mail.gmail.com>
-	<20240104140246.688a3966@gandalf.local.home>
-	<20240104150500.38b15a62@gandalf.local.home>
-	<CAHk-=wik=OOYCRSzAA7x485GyxH97ioaPziiF4Ms1kRU8VLkHA@mail.gmail.com>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 579941DFE4;
+	Thu,  4 Jan 2024 20:37:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A6D7C433C8;
+	Thu,  4 Jan 2024 20:37:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704400628;
+	bh=a8xLbo0tsyN6zjcgxC/0/SukCsLZkJhe7HQ4vjjIj2c=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=B+LLXUalTxg51OR6CgQ+OA7VuIbQPbWTCc8BgxbZz03exQkyongzikz0jHbynTvzS
+	 SRXlhmhDPHapReMyZxcKM5sgMpVii48tSu+V8OM6PQcqjCv/ASEkeEkVWhh+/lV5be
+	 kPGq8kM/7+JwYpuBULvkv1HLy2AimNPtWkZH9643+enoT3bl1I+JWBkcIifG3Eeh77
+	 z1VPnDJkQjOfCAke1LudFp8k/WUeR4fAkwgaBQWB5zOqPPPLBPiTCICuV2G+v8Yfvd
+	 lm/+FUM49tH+4zTfI8UxPYAjdgBRLhZigoXXtqBsN9rI/v7YZ6rZOpodP7J0E2aaMF
+	 wKUBRNSHwJ7dg==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+	id 012E4403EF; Thu,  4 Jan 2024 17:37:05 -0300 (-03)
+Date: Thu, 4 Jan 2024 17:37:05 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Ian Rogers <irogers@google.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Kan Liang <kan.liang@linux.intel.com>,
+	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Edward Baker <edward.baker@intel.com>
+Subject: Re: [PATCH v1 1/4] perf vendor events intel: Alderlake/rocketlake
+ metric fixes
+Message-ID: <ZZcW8Zk02wPbpXJI@kernel.org>
+References: <20240104074259.653219-1-irogers@google.com>
+ <ZZam-EG-UepcXtWw@kernel.org>
+ <CAP-5=fV+U4qSwU8nqHJMgAZTwtWs9jEm3i9yDQSVtq9Fbos5HA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAP-5=fV+U4qSwU8nqHJMgAZTwtWs9jEm3i9yDQSVtq9Fbos5HA@mail.gmail.com>
+X-Url: http://acmel.wordpress.com
 
-On Thu, 4 Jan 2024 12:18:06 -0800
-Linus Torvalds <torvalds@linux-foundation.org> wrote:
+Em Thu, Jan 04, 2024 at 05:56:22AM -0800, Ian Rogers escreveu:
+> On Thu, Jan 4, 2024 at 4:39 AM Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
+> > Em Wed, Jan 03, 2024 at 11:42:56PM -0800, Ian Rogers escreveu:
+> > > Fix that the core PMU is being specified for 2 uncore events. Specify
+> > > a PMU for the alderlake UNCORE_FREQ metric.
+<SNIP>
+> > 101: perf all metricgroups test                                      : Ok
+> > 102: perf all metrics test                                           : FAILED!
+> > 107: perf metrics value validation                                   : Ok
 
-> On Thu, 4 Jan 2024 at 12:04, Steven Rostedt <rostedt@goodmis.org> wrote:
-> >
-> > Also, I just realized it breaks if we update the 'c--' before the callback. :-/
-> >
-> > I have to put this check *after* the callback check.  
-> 
-> What? No.
-> 
-> > Reason being, the callback can say "this event doesn't get this file" and
-> > return 0, which tells eventfs to skip this file.  
-> 
-> So yes, there seems to be a bug there, in that ctx->pos is only
-> updated for successful callbacks (and not for "ignored entry").
+> > 102 is now failing due to some other problem:
 
-OK, I wasn't sure if it was OK to update the ctx->pos for something we
-didn't add, so I avoided doing so.
+> > root@number:~# perf test -v 102
+> > 102: perf all metrics test                                           :
+> > --- start ---
+> > test child forked, pid 2701034
+> > Testing tma_core_bound
+> > Testing tma_info_core_ilp
+<SNIP>
+> > Testing tma_memory_fence
+> > Metric 'tma_memory_fence' not printed in:
+> > # Running 'internals/synthesize' benchmark:
+> > Computing performance of single threaded perf event synthesis by
+> > synthesizing events on the perf process itself:
+> >   Average synthesis took: 49.458 usec (+- 0.033 usec)
+> >   Average num. events: 47.000 (+- 0.000)
+> >   Average time per event 1.052 usec
+> >   Average data synthesis took: 53.268 usec (+- 0.027 usec)
+> >   Average num. events: 244.000 (+- 0.000)
+> >   Average time per event 0.218 usec
 
-> 
-> But that just means that you should always update 'ctx->pos' as you
-> 'continue' the loop.
-> 
-> The logical place to do that would be in the for-loop itself, which
-> actually is very natural for the simple case, ie you should just do
-> 
->         for (i = 0; i < ei->nr_entries; i++, ctx->pos++) {
+> >  Performance counter stats for 'perf bench internals synthesize':
 
-Well, we don't want to do that and c-- at the same time. But of course, if
-we do the shortcut, we can have:
+> >      <not counted>      cpu_core/TOPDOWN.SLOTS/                                                 (0.00%)
+> >      <not counted>      cpu_core/topdown-retiring/                                              (0.00%)
+> >      <not counted>      cpu_core/topdown-mem-bound/                                             (0.00%)
+> >      <not counted>      cpu_core/topdown-bad-spec/                                              (0.00%)
+> >      <not counted>      cpu_core/topdown-fe-bound/                                              (0.00%)
+> >      <not counted>      cpu_core/topdown-be-bound/                                              (0.00%)
+> >      <not counted>      cpu_core/RESOURCE_STALLS.SCOREBOARD/                                        (0.00%)
+> >      <not counted>      cpu_core/EXE_ACTIVITY.1_PORTS_UTIL/                                        (0.00%)
+> >      <not counted>      cpu_core/EXE_ACTIVITY.BOUND_ON_LOADS/                                        (0.00%)
+> >      <not counted>      cpu_core/MISC2_RETIRED.LFENCE/                                          (0.00%)
+> >      <not counted>      cpu_core/CYCLE_ACTIVITY.STALLS_TOTAL/                                        (0.00%)
+> >      <not counted>      cpu_core/CPU_CLK_UNHALTED.THREAD/                                        (0.00%)
+> >      <not counted>      cpu_core/ARITH.DIV_ACTIVE/                                              (0.00%)
+> >      <not counted>      cpu_core/EXE_ACTIVITY.2_PORTS_UTIL,umask=0xc/                                        (0.00%)
+> >      <not counted>      cpu_core/EXE_ACTIVITY.3_PORTS_UTIL,umask=0x80/                                        (0.00%)
 
-	for (i = c; i < ei->nr_entries; i++, ctx->pos++) {
+> >        1.177929044 seconds time elapsed
 
-which would be OK. And better if we move it before the ei->children list walk.
+> >        0.434552000 seconds user
+> >        0.736874000 seconds sys
+> > Testing tma_port_1
+<SNIP>
+> > test child finished with -1
+> > ---- end ----
+> > perf all metrics test: FAILED!
+> > root@number:~#
 
-> 
-> but in the list_for_each_entry_srcu() case the 'update' part of the
-> for-loop isn't actually accessible, so it would have to be at the
-> 'continue' point(s).
-> 
-> Which is admittedly a bit annoying.
+> Have a try disabling the NMI watchdog. Agreed that there is more to
 
-But not really an issue as we just have:
+Did the trick, added this to the cset log message:
 
-	list_for_each_entry_srcu(ei_child, &ei->children, list,
-				 srcu_read_lock_held(&eventfs_srcu)) {
+--------------------------------------- 8< ----------------------------
+Test 102 is failing for another reason, not being able to get as many
+counters as needed, Ian Rogers suggested disabling the NMI watchdog to
+have more counters available:
 
-		if (c > 0) {
-			c--;
-			continue;
-		}
+  root@number:/home/acme# cat /proc/sys/kernel/nmi_watchdog
+  1
+  root@number:/home/acme# echo 0 > /proc/sys/kernel/nmi_watchdog
+  root@number:/home/acme# perf test 102
+  102: perf all metrics test                                           : Ok
+  root@number:/home/acme#
+--------------------------------------- 8< ----------------------------
 
-		ctx->pos++;
+- Arnaldo
 
-> 
-> Looking at that I'm actually surprised that I don't recall that we'd
-> have hit that issue with our 'for_each_xyz()' loops before.
-> 
-> The update for our "for_each_xyz()" helpers are all hardcoded to just
-> do the "next iterator" thing, and there's no nice way to take
-> advantage of the normal for-loop semantics of "do this at the end of
-> the loop"
-
-Anyway, if I do count ctx->pos++ for every iteration, whether it added
-something or not, it appears to work. I'll write up a couple of patches to
-handle this.
-
-Thanks,
-
--- Steve
+> fix here but I think the PMU driver is in part to blame because
+> manually breaking the weak group of events is a fix. Fwiw, if we
+> switch to the buddy watchdog mechanism then we'll no longer need to
+> disable the NMI watchdog:
+> https://lore.kernel.org/lkml/20230421155255.1.I6bf789d21d0c3d75d382e7e51a804a7a51315f2c@changeid/
 
