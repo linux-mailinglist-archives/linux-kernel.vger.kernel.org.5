@@ -1,122 +1,298 @@
-Return-Path: <linux-kernel+bounces-17239-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17240-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E4DDC824A4F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 22:29:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B523824A51
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 22:30:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 94BD42841F8
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 21:29:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A41801F242E9
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 21:30:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3BF82C6AD;
-	Thu,  4 Jan 2024 21:29:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE1CF2C842;
+	Thu,  4 Jan 2024 21:30:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="c4exMFG/"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="4X7V4v9X"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com [209.85.219.177])
+Received: from mail-qk1-f180.google.com (mail-qk1-f180.google.com [209.85.222.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82E552C6AF
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 21:29:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-db3fa47c2f7so899830276.0
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 13:29:45 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C3642C6B0
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 21:30:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qk1-f180.google.com with SMTP id af79cd13be357-781bbb1f61fso57903785a.3
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 13:30:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1704403784; x=1705008584; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bDcJlzRwgOjmf9s3ju/kHyej59d33XX1hqLumYLyfkE=;
-        b=c4exMFG/xhSFs7fVDmdOrQcBL7gKQYzdhiAsSDUhU9joP3gHFbweujXx9/YCv6GusU
-         LipRAo6UCn1QJ8FE23VS9o+LjPKcEvoPpBUBXsiLSusU6lWwvIyti5NPNKpluZ/bKa/P
-         02ZYh6D29ukCcKQ+pGLHBb5dokanGVaE3CARo=
+        d=google.com; s=20230601; t=1704403809; x=1705008609; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=mOzrK40wE2i86/1eoThEmcjck6rrrkGEQCO3495UBJg=;
+        b=4X7V4v9XYwOdZeFfYanur4C4xqOB53IsiSTiamVqTSSIm1eD06zVmF9j8rumCw4/75
+         uGfr7LN7l3+vBRRTg9cjbj24vxfPCJZB7gfsrESPfxOEsotO3TLFWbeEpyUwaCieclib
+         +akm7EHN3COoEVDrBoi/OLQNvMg+WuEvvodl2pIVid3xnnTJYIUOL7GbFZnk1nDYuofJ
+         kWhwBDkmnhh9IrTVvhpYM1E7iaMov0gKm8iyw0DNbWsF13evwMYO4+QID6vh+iKLhST3
+         ZVge1fazaL5eKVoAl6upZ3q3XONu3ZP49dYqcmT2oOUp/lxt1kyLm2rYurRiEEaapHn4
+         Xo9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704403784; x=1705008584;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=bDcJlzRwgOjmf9s3ju/kHyej59d33XX1hqLumYLyfkE=;
-        b=q1/BRR0C1deEFC/Tk85Sm3p/vGp6/J6rhfv1U8wu7CGEfsCKcMpeElrSstI69zBPCe
-         qhAWpXc8WT8jD9BvVXboMwNWTLO/dVS7aIMZr0m1fpcP/3nD0uR7wagtEEaW68P6Bk3M
-         QiaMZuDJx5jByXw3uHicyzL9m9g2daIylYeY0DnQ9SEzRI1DwgAfCWJE9Ek6c3ymJR2v
-         KTgIsocrLQePw7wE3EV3XT4UBAY1O5UdWmbNM7p+RB+RJQ3nCI/EmwvRLg70oCHLemHx
-         lO4wm4OjuYk0VCu8nIcXLXby5mkKVYIPOEncN6jXEen4BN8NVGRbDNmONwQNKArseKhK
-         gp4Q==
-X-Gm-Message-State: AOJu0YxwzZM/sHCQhVfL+OUIZ6DH2+Fnt+3EevPMQj+vXWdtJiRxd38Z
-	Cl5j+ORi6/+ojAzudKeV/okrcEeTYrV4niPzZSlgeUU3MqAbzuERj2KFAJE=
-X-Google-Smtp-Source: AGHT+IFbQEHsVmVAV68hl37UcSvgcgKs002/+LTdYHsauicQGHlQdZcr1LUYTxY2eGVe/gEWwTFmkDgrb6AyHhyhCgE=
-X-Received: by 2002:a5b:884:0:b0:dbd:b4c2:728d with SMTP id
- e4-20020a5b0884000000b00dbdb4c2728dmr1116662ybq.112.1704403784286; Thu, 04
- Jan 2024 13:29:44 -0800 (PST)
+        d=1e100.net; s=20230601; t=1704403809; x=1705008609;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=mOzrK40wE2i86/1eoThEmcjck6rrrkGEQCO3495UBJg=;
+        b=xFHo9uuYFZFzLDFfKjfj8tiG/4h3LzJ6OjCZBHzauLTgZm2Kq6q8iX+czl/M1vdLxQ
+         EvPCX7slOzWUemhdHca+cOCf1is9Qd+5jHCI3RLr5tHCHDC/daMDDrSnn3+97gjlJC3U
+         3V5BC/wMszv4DpgKZOcIb2TFr4P4Axi8vUkSRTePkKeomcIJwXIzY45Lm3tnBybL5Fk0
+         b44IXGZtvCvoUc45H9JIovyOzGthoWb3FC9hWNfxwEX05L+j71NbYkSr40PxfOE4pcSz
+         D+yW9xrBH2ynjJMAihqDjDnLoBuh5hRnUjsfY7wU2s3RFRyk/sx/GHArBziFxMgxWAVI
+         0LIg==
+X-Gm-Message-State: AOJu0Yz+V70Aa8Q+TXnrJsjrzv28ErKIPGwuvUK3fE91mPA2zdigEea3
+	SmTuh048a6nqs4FPNHjEzvqk609ab4QK
+X-Google-Smtp-Source: AGHT+IEmJQXP3/MIeiFTUp/ueNxqjWNjqkvZsJG501M8Pp0+mOihcuWY1SjInPiD8GbwjhMSsxdy+g==
+X-Received: by 2002:a05:620a:4895:b0:781:5db7:e1d3 with SMTP id ea21-20020a05620a489500b007815db7e1d3mr1394394qkb.108.1704403809002;
+        Thu, 04 Jan 2024 13:30:09 -0800 (PST)
+Received: from [192.168.1.31] (d-65-175-157-166.nh.cpe.atlanticbb.net. [65.175.157.166])
+        by smtp.gmail.com with ESMTPSA id y20-20020a37e314000000b0077fb4ae1a71sm96785qki.93.2024.01.04.13.30.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Jan 2024 13:30:08 -0800 (PST)
+Message-ID: <e5e52e0a-7494-47bb-8a6a-9819b0c93bd8@google.com>
+Date: Thu, 4 Jan 2024 16:30:06 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240104050605.1773158-1-zack.rusin@broadcom.com> <202401042305.WdnDeo57-lkp@intel.com>
-In-Reply-To: <202401042305.WdnDeo57-lkp@intel.com>
-From: Zack Rusin <zack.rusin@broadcom.com>
-Date: Thu, 4 Jan 2024 16:29:33 -0500
-Message-ID: <CABQX2QMFJ4arXwVNE5YF4pRHqkzVb-rjyqWwSOtrQ_+QLPLV9w@mail.gmail.com>
-Subject: Re: [PATCH v2] input/vmmouse: Fix device name copies
-To: kernel test robot <lkp@intel.com>
-Cc: linux-kernel@vger.kernel.org, oe-kbuild-all@lists.linux.dev, 
-	Dmitry Torokhov <dmitry.torokhov@gmail.com>, Arnd Bergmann <arnd@arndb.de>, 
-	Robert Jarzmik <robert.jarzmik@free.fr>, Raul Rangel <rrangel@chromium.org>, 
-	linux-input@vger.kernel.org, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 bpf-next 2/2] selftests/bpf: add inline assembly
+ helpers to access array elements
+Content-Language: en-US
+To: Yonghong Song <yonghong.song@linux.dev>
+Cc: Jiri Olsa <olsajiri@gmail.com>, Eddy Z <eddyz87@gmail.com>,
+ Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Song Liu <song@kernel.org>,
+ mattbobrowski@google.com, bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240103185403.610641-1-brho@google.com>
+ <20240103185403.610641-3-brho@google.com> <ZZa1668ft4Npd1DA@krava>
+ <f3dd9d80-3fab-4676-b589-1d4667431287@linux.dev>
+From: Barret Rhoden <brho@google.com>
+In-Reply-To: <f3dd9d80-3fab-4676-b589-1d4667431287@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Thu, Jan 4, 2024 at 11:04=E2=80=AFAM kernel test robot <lkp@intel.com> w=
-rote:
->
-> Hi Zack,
->
-> kernel test robot noticed the following build errors:
->
-> [auto build test ERROR on dtor-input/next]
-> [also build test ERROR on dtor-input/for-linus linus/master v6.7-rc8 next=
--20240104]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch#_base_tree_information]
->
-> url:    https://github.com/intel-lab-lkp/linux/commits/Zack-Rusin/input-v=
-mmouse-Fix-device-name-copies/20240104-130724
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/dtor/input.git ne=
-xt
-> patch link:    https://lore.kernel.org/r/20240104050605.1773158-1-zack.ru=
-sin%40broadcom.com
-> patch subject: [PATCH v2] input/vmmouse: Fix device name copies
-> config: i386-buildonly-randconfig-001-20240104 (https://download.01.org/0=
-day-ci/archive/20240104/202401042305.WdnDeo57-lkp@intel.com/config)
-> compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
-> reproduce (this is a W=3D1 build): (https://download.01.org/0day-ci/archi=
-ve/20240104/202401042305.WdnDeo57-lkp@intel.com/reproduce)
->
-> If you fix the issue in a separate patch/commit (i.e. not just a new vers=
-ion of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202401042305.WdnDeo57-lkp=
-@intel.com/
->
-> All errors (new ones prefixed by >>):
->
-> >> drivers/input/mouse/vmmouse.c:77:7: error: variably modified 'phys' at=
- file scope
->      char phys[sizeof_field(struct serio, phys) +
->           ^~~~
+On 1/4/24 12:31, Yonghong Song wrote:
+[snip]
 
-This can be trivially fixed by using __builtin_strlen which with
-fortify-strings.h is used anyway but before respining this I'll wait
-to hear if this approach is ok. The sparse warning we can't do much
-about because it doesn't recognize the fact that the array size is a
-compile time expression.
+>>> +/*
+>>> + * Access an array element within a bound, such that the verifier 
+>>> knows the
+>>> + * access is safe.
+>>> + *
+>>> + * This macro asm is the equivalent of:
+>>> + *
+>>> + *    if (!arr)
+>>> + *        return NULL;
+>>> + *    if (idx >= arr_sz)
+>>> + *        return NULL;
+>>> + *    return &arr[idx];
+>>> + *
+>>> + * The index (___idx below) needs to be a u64, at least for certain 
+>>> versions of
+>>> + * the BPF ISA, since there aren't u32 conditional jumps.
+>>> + */
+>>> +#define bpf_array_elem(arr, arr_sz, idx) ({                \
+>>> +    typeof(&(arr)[0]) ___arr = arr;                    \
+>>> +    __u64 ___idx = idx;                        \
+>>> +    if (___arr) {                            \
+>>> +        asm volatile("if %[__idx] >= %[__bound] goto 1f;    \
+>>> +                  %[__idx] *= %[__size];        \
+>>> +                  %[__arr] += %[__idx];        \
+>>> +                  goto 2f;                \
+>>> +                  1:;                \
+>>> +                  %[__arr] = 0;            \
+>>> +                  2:                \
+>>> +                  "                        \
+>>> +                 : [__arr]"+r"(___arr), [__idx]"+r"(___idx)    \
+>>> +                 : [__bound]"r"((arr_sz)),                \
+>>> +                   [__size]"i"(sizeof(typeof((arr)[0])))    \
+>>> +                 : "cc");                    \
+>>> +    }                                \
+>>> +    ___arr;                                \
+>>> +})
+> 
+> The LLVM bpf backend has made some improvement to handle the case like
+>    r1 = ...
+>    r2 = r1 + 1
+>    if (r2 < num) ...
+>    using r1
+> by preventing generating the above code pattern.
+> 
+> The implementation is a pattern matching style so surely it won't be
+> able to cover all cases.
+> 
+> Do you have specific examples which has verification failure due to
+> false array out of bound access?
 
-z
+Not in a small example.  =(
+
+This bug has an example, but it was part of a larger program:
+https://github.com/google/ghost-userspace/issues/31
+
+The rough progression was:
+- sometimes the compiler optimizes out the checks.  So we added a macro 
+to make the compiler not know the value of the variable anymore.
+- then, the compiler would occasionally do the check on a copy of the 
+register, so we did the comparison and index operation all in assembly.
+
+
+I tried using bpf_cmp_likely() in my actual program (not just a one-off 
+test), and still had a verifier issue.  It's a large and convoluted 
+program, so it might be hard to get a small reproducer.  But it a 
+different compiler issue than the one you mentioned.
+
+Specifically, I swapped out my array-access-macro for this one, using 
+bpf_cmp_likely():
+
+#define bpf_array_elem(arr, arr_sz, idx) ({ \
+         typeof(&(arr)[0]) ___arr = arr;        \
+         typeof(&(arr)[0]) ___ret = 0;          \
+         u64 ___idx = idx;                      \
+         if (___arr && bpf_cmp_likely(___idx, <, arr_sz))   \
+                 ___ret = &___arr[___idx];\
+         ___ret;                          \
+})
+
+which should be the same logic as before:
+
+  *      if (!arr)
+  *              return NULL;
+  *      if (idx >= arr_sz)
+  *              return NULL;
+  *      return &arr[idx];
+
+The issue I run into is different than the one you had.  The compiler 
+did the bounds check, but then for some reason recreated the index.  The 
+index is coming from another map.
+
+Arguably, the verifier is doing its job - that value could have changed. 
+  I just don't want the compiler to do the reread or any other 
+shenanigans in between the bounds check and the usage.
+
+The guts of the error:
+- r0 is the map (L127)
+- r1 is the index, read from another map (L128)
+- r1 gets verified to be less than 0x200 (L129)
+- some other stuff happens
+- r1 gets read again, and is no longer bound (L132)
+- r1 gets scaled up by 896.
+   (896*0x200 = 0x70000, would be the real bound, but r1 lost the 0x200 
+bound)
+- r0 indexed by the bad r1 (L134)
+- blow up (L143)
+
+127: (15) if r0 == 0x0 goto pc+1218   ; 
+R0=map_value(off=0,ks=4,vs=458752,imm=0)
+
+128: (79) r1 = *(u64 *)(r10 -40)      ; 
+R1_w=Pscalar(umax=4294967295,var_off=(0x0; 0xffffffff)) R10=fp0
+
+129: (35) if r1 >= 0x200 goto pc+1216         ; 
+R1_w=Pscalar(umax=511,var_off=(0x0; 0x1ff))
+
+130: (79) r4 = *(u64 *)(r10 -56)      ; R4_w=Pscalar() R10=fp0;
+
+131: (37) r4 /= 1000                  ; R4_w=Pscalar()
+
+132: (79) r1 = *(u64 *)(r10 -40)      ; 
+R1_w=Pscalar(umax=4294967295,var_off=(0x0; 0xffffffff)) R10=fp0;
+
+133: (27) r1 *= 896                   ; 
+R1_w=Pscalar(umax=3848290696320,var_off=(0x0; 
+0x3ffffffff80),s32_max=2147483520,u32_max=-128)
+
+134: (0f) r0 += r1                    ; 
+R0_w=map_value(off=0,ks=4,vs=458752,umax=3848290696320,var_off=(0x0; 
+0x3ffffffff80),s32_max=2147483520,u32_max=-128) 
+R1_w=Pscalar(umax=3848290696320,var_off=(0x0; 
+0x3ffffffff80),s32_max=2147483520,u32_max=-128)
+
+135: (79) r3 = *(u64 *)(r10 -48)      ; 
+R3_w=map_value(off=0,ks=4,vs=15728640,imm=0) R10=fp0;
+
+136: (0f) r3 += r8                    ; 
+R3_w=map_value(off=0,ks=4,vs=15728640,umax=15728400,var_off=(0x0; 
+0xfffff0),s32_max=16777200,u32_max=16777200) 
+R8=Pscalar(umax=15728400,var_off=(0x0; 0xfffff0))
+
+137: (61) r1 = *(u32 *)(r7 +16)       ; 
+R1_w=Pscalar(umax=4294967295,var_off=(0x0; 0xffffffff)) 
+R7=map_value(id=18779,off=0,ks=4,vs=224,imm=0)
+
+138: (79) r2 = *(u64 *)(r3 +88)       ; R2=Pscalar() 
+R3=map_value(off=0,ks=4,vs=15728640,umax=15728400,var_off=(0x0; 
+0xfffff0),s32_max=16777200,u32_max=16777200)
+
+139: (a5) if r1 < 0x9 goto pc+1       ; 
+R1=Pscalar(umin=9,umax=4294967295,var_off=(0x0; 0xffffffff))
+
+140: (b7) r1 = 0                      ; R1_w=P0
+
+141: (27) r1 *= 72                    ; R1_w=P0
+
+142: (0f) r0 += r1                    ; 
+R0_w=map_value(off=0,ks=4,vs=458752,umax=3848290696320,var_off=(0x0; 
+0x3ffffffff80),s32_max=2147483520,u32_max=-128) R1_w=P0
+
+143: (7b) *(u64 *)(r0 +152) = r2
+
+
+if i put in a little ASM magic to tell the compiler to not recreate the 
+index, it works, like so:
+
+#define BPF_MUST_CHECK(x) ({ asm volatile ("" : "+r"(x)); x; })
+
+#define bpf_array_elem(arr, arr_sz, idx) ({ \
+         typeof(&(arr)[0]) ___arr = arr;        \
+         typeof(&(arr)[0]) ___ret = 0;          \
+         u64 ___idx = idx;                      \
+         BPF_MUST_CHECK(___idx);                \
+	if (___arr && bpf_cmp_likely(___idx, <, arr_sz))   \
+                 ___ret = &___arr[___idx];\
+         ___ret;                          \
+})
+
+though anecdotally, that only stops the "reread the index from its map" 
+problem, similar to a READ_ONCE.  the compiler is still free to just use 
+another register for the check.
+
+The bit of ASM i had from a while back that did that was:
+
+  *      r2 = r8
+  *      r2 <<= 32 
+
+  *      r2 >>= 32
+  *      if r2 > 0x3ff goto pc+29 
+
+  *      r8 <<= 32 
+
+  *      r8 >>= 32 
+
+  *      r8 <<= 6 
+
+  *      r0 += r8
+  *      *(u64 *)(r0 +48) = r3 
+
+
+where r2 was bounds checked, but r8 was used instead.
+
+I'll play around and see if I can come up with a selftest that can run 
+into any of these "you did the check, but threw the check away" scenarios.
+
+Thanks,
+
+Barret
+
+
 
