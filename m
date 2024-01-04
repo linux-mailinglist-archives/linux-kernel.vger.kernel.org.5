@@ -1,186 +1,142 @@
-Return-Path: <linux-kernel+bounces-16146-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16147-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 445548239AB
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 01:29:48 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3A18F8239AD
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 01:31:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id ACECF1F24F6D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 00:29:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 917E6B23504
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 00:31:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26CB7652;
-	Thu,  4 Jan 2024 00:29:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A7CB632;
+	Thu,  4 Jan 2024 00:31:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="ZpaJxDI8"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="sJfX7PAp"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCFBB371
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 00:29:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-50e741123acso9116075e87.0
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 16:29:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1704328175; x=1704932975; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:user-agent:from:references
-         :in-reply-to:mime-version:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=eFX55NQWA+9lL7CtE2Bgpp65JEIghVU5OMsa8HjOyp8=;
-        b=ZpaJxDI8SVeVzdenMGTQZ8ekZDGt0d910p7LdD9yFJPtNogw6pRiIuU3q56T4i8ZtC
-         IWHWlgPyZaUgknwD1+/GtIKNFL+wIs3QPyfXc4hTDjsWzGUNLuji5kPbDej3CrnLROaP
-         vGNq1vgAFP1xivFFzplloGo5x0M3cypGfGAgc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704328175; x=1704932975;
-        h=cc:to:subject:message-id:date:user-agent:from:references
-         :in-reply-to:mime-version:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=eFX55NQWA+9lL7CtE2Bgpp65JEIghVU5OMsa8HjOyp8=;
-        b=W2AkhmV3GHnuma5h94vKYCKLcNMBNvQY8tklxte427RQSl9fi+X6WaQ1dU2jLiZKnT
-         pyRqy09JJQr9f5tAl6wgIM0kGAGPvXgZlFEYj9Ds8csiFYN2GbzYlf5vxptbr3uZHlye
-         WWeQg8ukO9g6sNdjkAWowqx1P/KIh3L6/Le3Ezh5nyEeIL/tsDkuw5PaXW6Wd+HswZmV
-         j1EP2zQcorlmpfYIWX1BzVUdv/Yu8O0RXGFFq18tFBc9WSIVMpYaUfyP+ZNLYhHv3X2k
-         eevBvXG/L6rqK8DLN6ttxgOq4h9EuQQMGnnQGfpVMAZXkU5upKkwNgRM4Bs/MMRB4GAC
-         0GHQ==
-X-Gm-Message-State: AOJu0YxyKfg3XWoLZOgwgXZ5N8UpvgX/WUHBEtl7/ZGBTx6KwVleToqr
-	X8Nkq8V51jillRJzpUPPwvKT4W5TZkBE5JEwNtlaVbHq10ra
-X-Google-Smtp-Source: AGHT+IHJJyzZPwDkfITirK0m6vyTs69alIHAu0jXzx5SlO3epP170om0Wn1HKVZuBB+QyfqhNlKJ61gulVRgzQQWO9Y=
-X-Received: by 2002:a05:6512:3e24:b0:50e:6b5d:59fa with SMTP id
- i36-20020a0565123e2400b0050e6b5d59famr9614253lfv.4.1704328174770; Wed, 03 Jan
- 2024 16:29:34 -0800 (PST)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Wed, 3 Jan 2024 16:29:34 -0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A9CB365
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 00:31:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=BU9majFR6rZDd9qwFfDcoHl+cx/MmPzBWfA7gC38Y3s=; b=sJfX7PApe9xZB8v0VKTqy/7TZM
+	8RKnJHUYxksxU6zl+7SWpVppGE2IGiRMVCjvRWk5MZumCMdGMZcV9LfplXRzSpvRozIkb5yHpARQa
+	bZORfyJu6umPppCHEWV2xIGrir8yaWhX0kD1jhSRZ+RDBaDSP8GZArUObt1IhWeIOTrCzz0niXQxe
+	PY9geYqGgZ9jKa1jVxizxTS3AoxJag6cMh77YG0MXFxBDV5jvFgPRARnF8d3Qz1+u9SbbNVrLk+4A
+	ogFlJ5PhQjJ5h2wzTkvE3BFtQ0YDjxr7KyxGAFF1m0uO2hl19zPLHeAK4aySSeLwcaBpTvztIX2fg
+	2gthSZbA==;
+Received: from [50.53.46.231] (helo=[192.168.254.15])
+	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+	id 1rLBe0-00CUli-1A;
+	Thu, 04 Jan 2024 00:31:32 +0000
+Message-ID: <62c7008e-d460-4314-b2af-2122b93d41dc@infradead.org>
+Date: Wed, 3 Jan 2024 16:31:31 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CANg-bXDzLJgWLuH8Xj4GLYG=AVfcbmi_EfrA7DaHj4F6i350DA@mail.gmail.com>
-References: <20240102210820.2604667-1-markhas@chromium.org>
- <20240102140734.v4.24.Ieee574a0e94fbaae01fd6883ffe2ceeb98d7df28@changeid>
- <CAE-0n50zkwZ8nguUJcL1gjbuavhSU_rLxfGhanxB4YA7N34hLQ@mail.gmail.com>
- <CANg-bXByhaSngW2AAG9h6DYHpiTUvh8+yw3LPU6ZQSCb62M-wg@mail.gmail.com>
- <CAE-0n52u68wMHJGe8=jz4Y1y2=voycFEY15keebz9tPDDBgiqA@mail.gmail.com> <CANg-bXDzLJgWLuH8Xj4GLYG=AVfcbmi_EfrA7DaHj4F6i350DA@mail.gmail.com>
-From: Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.10
-Date: Wed, 3 Jan 2024 16:29:34 -0800
-Message-ID: <CAE-0n52365_AYgjaXyV7+oB8WgaJVp5oCUzdsq7NquZsR08XXw@mail.gmail.com>
-Subject: Re: [PATCH v4 24/24] platform/chrome: cros_ec: Use PM subsystem to
- manage wakeirq
-To: Mark Hasemeyer <markhas@chromium.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Sudeep Holla <sudeep.holla@arm.com>, 
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Rob Herring <robh@kernel.org>, 
-	Andy Shevchenko <andriy.shevchenko@intel.com>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Raul Rangel <rrangel@chromium.org>, Tzung-Bi Shih <tzungbi@kernel.org>, 
-	Benson Leung <bleung@chromium.org>, Bhanu Prakash Maiya <bhanumaiya@chromium.org>, 
-	Chen-Yu Tsai <wenst@chromium.org>, Guenter Roeck <groeck@chromium.org>, 
-	Prashant Malani <pmalani@chromium.org>, Rob Barnes <robbarnes@google.com>, 
-	chrome-platform@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/8] ARC: Fix typos
+Content-Language: en-US
+To: Bjorn Helgaas <helgaas@kernel.org>, Vineet Gupta <vgupta@kernel.org>
+Cc: linux-kernel@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
+ linux-snps-arc@lists.infradead.org
+References: <20240103231605.1801364-1-helgaas@kernel.org>
+ <20240103231605.1801364-3-helgaas@kernel.org>
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20240103231605.1801364-3-helgaas@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Quoting Mark Hasemeyer (2024-01-03 14:25:25)
-> > The DTS patch would go through the platform maintainer tree and be
-> > pulled into the soc tree and sent up to mainline from there. The
-> > platform/chrome patch would go through chrome platform tree and then to
-> > mainline. The bisection hole will be real.
->
-> I thought it would all get merged in the next merge window. How are
-> bifurcations like this normally dealt with? Does one wait for the
-> first series of patches to land in mainline before submitting
-> dependent patches? That could take two merge windows.
 
-It's usually fine to land in the respective maintainer trees because the
-driver is written to be compatible with either version of the DT.
 
->
-> > >
-> > > > Does using the pm wakeirq logic require the use of 'wakeup-source'
-> > > > property in DT? A quick glance makes me believe it isn't needed, so
-> > > > please split that part out of this patch as well.
-> > >
-> > > No, 'wakeup-source' is not required, it provides an indication to the
-> > > driver that the IRQ should be used for wake, which then enables the pm
-> > > subsystem accordingly. If 'wakup-source' is not used, we're back to
-> > > square one of making assumptions. Specifically in this case, it would
-> > > be assumed that all SPI based EC's are wake capable.
-> >
-> > Is that the wrong assumption to make? My understanding of the DT
-> > property is that it is used to signal that this device should be treated
-> > as a wakeup source, when otherwise it isn't treated as one. In this
-> > case, the device has always been treated as a wakeup source so adding
-> > the property is redundant.
->
-> For SPI, it's not the wrong assumption. I was trying to drop the
-> assumption though to match ACPI/LPC behavior.
+On 1/3/24 15:15, Bjorn Helgaas wrote:
+> From: Bjorn Helgaas <bhelgaas@google.com>
+> 
+> Fix typos, most reported by "codespell arch/arc".  Only touches comments,
+> no code changes.
+> 
+> Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+> Cc: linux-snps-arc@lists.infradead.org
+> ---
+>  arch/arc/boot/Makefile                    |  4 ++--
+>  arch/arc/boot/dts/axc003.dtsi             |  4 ++--
+>  arch/arc/boot/dts/vdk_axs10x_mb.dtsi      |  2 +-
+>  arch/arc/include/asm/dsp.h                |  2 +-
+>  arch/arc/include/asm/entry-compact.h      | 10 +++++-----
+>  arch/arc/include/asm/entry.h              |  4 ++--
+>  arch/arc/include/asm/irq.h                |  2 +-
+>  arch/arc/include/asm/irqflags-compact.h   |  2 +-
+>  arch/arc/include/asm/mmu_context.h        |  2 +-
+>  arch/arc/include/asm/pgtable-bits-arcv2.h |  2 +-
+>  arch/arc/include/asm/shmparam.h           |  2 +-
+>  arch/arc/include/asm/smp.h                |  4 ++--
+>  arch/arc/include/asm/thread_info.h        |  2 +-
+>  arch/arc/include/uapi/asm/swab.h          |  2 +-
+>  arch/arc/kernel/entry-arcv2.S             |  8 ++++----
+>  arch/arc/kernel/entry.S                   |  4 ++--
+>  arch/arc/kernel/head.S                    |  2 +-
+>  arch/arc/kernel/intc-arcv2.c              |  2 +-
+>  arch/arc/kernel/perf_event.c              |  2 +-
+>  arch/arc/kernel/setup.c                   |  2 +-
+>  arch/arc/kernel/signal.c                  |  2 +-
+>  arch/arc/kernel/traps.c                   |  2 +-
+>  arch/arc/kernel/vmlinux.lds.S             |  4 ++--
+>  arch/arc/mm/tlbex.S                       |  8 ++++----
+>  24 files changed, 40 insertions(+), 40 deletions(-)
+> 
 
-Ok. Is the EC always a wakeup source? Not the EC irq, the EC device.
 
->
-> > Making the patch series dependent on the
-> > property being present makes the driver break without the DT change. We
-> > try to make drivers work with older DT files, sometimes by adding
-> > backwards compatibility code, so the presence of the wakeup-source
-> > property should not be required to make this work.
->
-> Do we have use cases where Chromebooks are running older DTBs? I get
-> the idea in theory, but don't grasp why it's needed here.
+> diff --git a/arch/arc/include/asm/pgtable-bits-arcv2.h b/arch/arc/include/asm/pgtable-bits-arcv2.h
+> index f3eea3f30b2e..f8f85c04d7a8 100644
+> --- a/arch/arc/include/asm/pgtable-bits-arcv2.h
+> +++ b/arch/arc/include/asm/pgtable-bits-arcv2.h
+> @@ -66,7 +66,7 @@
+>   * Other rules which cause the divergence from 1:1 mapping
+>   *
+>   *  1. Although ARC700 can do exclusive execute/write protection (meaning R
+> - *     can be tracked independet of X/W unlike some other CPUs), still to
+> + *     can be tracked independent of X/W unlike some other CPUs), still to
 
-It's to make the kernel bisectable while the DTB and driver patches are
-merged through different trees.
+                         independently
 
-> Regardless,
-> I can update the SPI code to assume a wake capable IRQ. But I'd like
-> to keep the prerequisite device tree patches unless there's a good
-> reason to drop them. Specifying 'wake-source' certainly doesn't hurt
-> anything, and there are other improvements to the OF
-> subsystem/documentation.
+>   *     keep things consistent with other archs:
+>   *      -Write implies Read:   W => R
+>   *      -Execute implies Read: X => R
 
-I don't see any harm in having wakeup-source in the binding, but I'd
-prefer it is behind a different compatible string as optional, and
-introduced when we need to have an EC that doesn't wake up the system.
-Otherwise it's all future coding for a device that doesn't exist. It's
-also a potential landmine if the driver patch is backported somewhere
-without the DTS patch (maybe the DTS is not upstream?). Someone will
-have to debug why wakeups aren't working anymore.
+> diff --git a/arch/arc/kernel/signal.c b/arch/arc/kernel/signal.c
+> index 0b3bb529d246..5414d9f5c40c 100644
+> --- a/arch/arc/kernel/signal.c
+> +++ b/arch/arc/kernel/signal.c
+> @@ -9,7 +9,7 @@
+>   * vineetg: Nov 2009 (Everything needed for TIF_RESTORE_SIGMASK)
+>   *  -do_signal() supports TIF_RESTORE_SIGMASK
+>   *  -do_signal() no loner needs oldset, required by OLD sys_sigsuspend
+> - *  -sys_rt_sigsuspend() now comes from generic code, so discard arch implemen
+> + *  -sys_rt_sigsuspend() now comes from generic code, so discard arch implement
 
->
-> > What is the goal of this patch series? Is it to allow disabling the
-> > wakeup capability of the EC wake irq from userspace? I can see a
-> > possible problem where we want to disable wakeup for the EC dynamically
-> > because either it has no child devices that are wakeup sources (e.g. no
-> > power button, no keyboard on ARM) or userspace has disabled all the
-> > wakeup sources for those child devices at runtime. In that case, we
-> > would want to keep the EC irq from waking up the system from suspend. Is
-> > that what you're doing here?
->
-> The root of this patch series stems from a bug where spurious wakes
-> are seen on Skyrim.
+                                                                         implementation
 
-Are all 24 patches needed to fix spurious wakeups? Why can't we do a DMI
-match table for Skyrim devices and disable the wakeirq logic on that
-platform? That would be a much more focused and targeted fix, no?
+>   *  -sys_sigsuspend() no longer needs to fudge ptregs, hence that arg removed
+>   *  -sys_sigsuspend() no longer loops for do_signal(), sets TIF_xxx and leaves
+>   *   the job to do_signal()
 
-> Copying some wording from the DTS patches:
-> "Some Chromebooks use a separate wake pin, while others overload the
-> interrupt for wake and IO. With the current assumption, spurious wakes
-> can occur on systems that use a separate wake pin. It is planned to
-> update the driver to no longer assume that the EC interrupt pin should
-> be enabled for wake."
->
-> This patch series will allow us to disable the ec_sync pin as a wake
-> source on Skyrim as it already uses a dedicated wake gpio.
 
-Aha! This last sentence is the detail I've been looking for. Please put
-these details in the commit text.
+But in any case:
 
-"Skyrim devices are experiencing spurious wakeups due to the EC driver
-always enabling the irq as a wakeup source but on Skyrim devices the EC
-wakeup signal is a dedicated gpio separate from the irq."
+Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
 
-Please be direct and specific instead of writing in general terms.
+Thanks.
+
+-- 
+#Randy
 
