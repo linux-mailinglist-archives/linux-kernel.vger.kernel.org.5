@@ -1,60 +1,249 @@
-Return-Path: <linux-kernel+bounces-16961-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16962-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47B5C82468F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 17:46:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2DE99824690
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 17:46:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EFE271F25601
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 16:46:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 972491F255F3
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 16:46:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 358712555C;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 418B025560;
 	Thu,  4 Jan 2024 16:46:33 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0FF024B26
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB933250F1
 	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 16:46:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 477B1C433C7;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6766EC433CA;
 	Thu,  4 Jan 2024 16:46:32 +0000 (UTC)
 Received: from rostedt by gandalf with local (Exim 4.97)
 	(envelope-from <rostedt@goodmis.org>)
-	id 1rLQsc-00000000uIk-1GaJ;
+	id 1rLQsc-00000000uJG-1xDI;
 	Thu, 04 Jan 2024 11:47:38 -0500
-Message-ID: <20240104164703.808999991@goodmis.org>
+Message-ID: <20240104164738.327880386@goodmis.org>
 User-Agent: quilt/0.67
-Date: Thu, 04 Jan 2024 11:47:03 -0500
+Date: Thu, 04 Jan 2024 11:47:04 -0500
 From: Steven Rostedt <rostedt@goodmis.org>
 To: linux-kernel@vger.kernel.org
 Cc: Masami Hiramatsu <mhiramat@kernel.org>,
  Mark Rutland <mark.rutland@arm.com>,
  Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Andrew Morton <akpm@linux-foundation.org>
-Subject: [for-next][PATCH 0/3] tracefs/eventfs: Updates for 6.8
+ Andrew Morton <akpm@linux-foundation.org>,
+ Linus Torvalds <torvalds@linux-foundation.org>,
+ Ajay Kaher <akaher@vmware.com>,
+ Al Viro <viro@ZenIV.linux.org.uk>,
+ Christian Brauner <brauner@kernel.org>
+Subject: [for-next][PATCH 1/3] eventfs: Remove "lookup" parameter from create_dir/file_dentry()
+References: <20240104164703.808999991@goodmis.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+
+The "lookup" parameter is a way to differentiate the call to
+create_file/dir_dentry() from when it's just a lookup (no need to up the
+dentry refcount) and accessed via a readdir (need to up the refcount).
+
+But reality, it just makes the code more complex. Just up the refcount and
+let the caller decide to dput() the result or not.
+
+Link: https://lore.kernel.org/linux-trace-kernel/20240103102553.17a19cea@gandalf.local.home
+Link: https://lore.kernel.org/linux-trace-kernel/20240104015435.517502710@goodmis.org
+
+Cc: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Ajay Kaher <akaher@vmware.com>
+Cc: Al Viro <viro@ZenIV.linux.org.uk>
+Cc: Christian Brauner <brauner@kernel.org>
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+ fs/tracefs/event_inode.c | 55 +++++++++++++++-------------------------
+ 1 file changed, 20 insertions(+), 35 deletions(-)
+
+diff --git a/fs/tracefs/event_inode.c b/fs/tracefs/event_inode.c
+index f0677ea0ec24..c360300fb866 100644
+--- a/fs/tracefs/event_inode.c
++++ b/fs/tracefs/event_inode.c
+@@ -390,16 +390,14 @@ void eventfs_set_ei_status_free(struct tracefs_inode *ti, struct dentry *dentry)
+  * @mode: The mode of the file.
+  * @data: The data to use to set the inode of the file with on open()
+  * @fops: The fops of the file to be created.
+- * @lookup: If called by the lookup routine, in which case, dput() the created dentry.
+  *
+  * Create a dentry for a file of an eventfs_inode @ei and place it into the
+- * address located at @e_dentry. If the @e_dentry already has a dentry, then
+- * just do a dget() on it and return. Otherwise create the dentry and attach it.
++ * address located at @e_dentry.
+  */
+ static struct dentry *
+ create_file_dentry(struct eventfs_inode *ei, int idx,
+ 		   struct dentry *parent, const char *name, umode_t mode, void *data,
+-		   const struct file_operations *fops, bool lookup)
++		   const struct file_operations *fops)
+ {
+ 	struct eventfs_attr *attr = NULL;
+ 	struct dentry **e_dentry = &ei->d_children[idx];
+@@ -414,9 +412,7 @@ create_file_dentry(struct eventfs_inode *ei, int idx,
+ 	}
+ 	/* If the e_dentry already has a dentry, use it */
+ 	if (*e_dentry) {
+-		/* lookup does not need to up the ref count */
+-		if (!lookup)
+-			dget(*e_dentry);
++		dget(*e_dentry);
+ 		mutex_unlock(&eventfs_mutex);
+ 		return *e_dentry;
+ 	}
+@@ -441,13 +437,12 @@ create_file_dentry(struct eventfs_inode *ei, int idx,
+ 		 * way to being freed, don't return it. If e_dentry is NULL
+ 		 * it means it was already freed.
+ 		 */
+-		if (ei->is_freed)
++		if (ei->is_freed) {
+ 			dentry = NULL;
+-		else
++		} else {
+ 			dentry = *e_dentry;
+-		/* The lookup does not need to up the dentry refcount */
+-		if (dentry && !lookup)
+ 			dget(dentry);
++		}
+ 		mutex_unlock(&eventfs_mutex);
+ 		return dentry;
+ 	}
+@@ -465,9 +460,6 @@ create_file_dentry(struct eventfs_inode *ei, int idx,
+ 	}
+ 	mutex_unlock(&eventfs_mutex);
+ 
+-	if (lookup)
+-		dput(dentry);
+-
+ 	return dentry;
+ }
+ 
+@@ -500,13 +492,12 @@ static void eventfs_post_create_dir(struct eventfs_inode *ei)
+  * @pei: The eventfs_inode parent of ei.
+  * @ei: The eventfs_inode to create the directory for
+  * @parent: The dentry of the parent of this directory
+- * @lookup: True if this is called by the lookup code
+  *
+  * This creates and attaches a directory dentry to the eventfs_inode @ei.
+  */
+ static struct dentry *
+ create_dir_dentry(struct eventfs_inode *pei, struct eventfs_inode *ei,
+-		  struct dentry *parent, bool lookup)
++		  struct dentry *parent)
+ {
+ 	struct dentry *dentry = NULL;
+ 
+@@ -518,11 +509,9 @@ create_dir_dentry(struct eventfs_inode *pei, struct eventfs_inode *ei,
+ 		return NULL;
+ 	}
+ 	if (ei->dentry) {
+-		/* If the dentry already has a dentry, use it */
++		/* If the eventfs_inode already has a dentry, use it */
+ 		dentry = ei->dentry;
+-		/* lookup does not need to up the ref count */
+-		if (!lookup)
+-			dget(dentry);
++		dget(dentry);
+ 		mutex_unlock(&eventfs_mutex);
+ 		return dentry;
+ 	}
+@@ -542,7 +531,7 @@ create_dir_dentry(struct eventfs_inode *pei, struct eventfs_inode *ei,
+ 		 * way to being freed.
+ 		 */
+ 		dentry = ei->dentry;
+-		if (dentry && !lookup)
++		if (dentry)
+ 			dget(dentry);
+ 		mutex_unlock(&eventfs_mutex);
+ 		return dentry;
+@@ -562,9 +551,6 @@ create_dir_dentry(struct eventfs_inode *pei, struct eventfs_inode *ei,
+ 	}
+ 	mutex_unlock(&eventfs_mutex);
+ 
+-	if (lookup)
+-		dput(dentry);
+-
+ 	return dentry;
+ }
+ 
+@@ -589,8 +575,8 @@ static struct dentry *eventfs_root_lookup(struct inode *dir,
+ 	struct eventfs_inode *ei;
+ 	struct dentry *ei_dentry = NULL;
+ 	struct dentry *ret = NULL;
++	struct dentry *d;
+ 	const char *name = dentry->d_name.name;
+-	bool created = false;
+ 	umode_t mode;
+ 	void *data;
+ 	int idx;
+@@ -626,13 +612,10 @@ static struct dentry *eventfs_root_lookup(struct inode *dir,
+ 		ret = simple_lookup(dir, dentry, flags);
+ 		if (IS_ERR(ret))
+ 			goto out;
+-		create_dir_dentry(ei, ei_child, ei_dentry, true);
+-		created = true;
+-		break;
+-	}
+-
+-	if (created)
++		d = create_dir_dentry(ei, ei_child, ei_dentry);
++		dput(d);
+ 		goto out;
++	}
+ 
+ 	for (i = 0; i < ei->nr_entries; i++) {
+ 		entry = &ei->entries[i];
+@@ -650,8 +633,8 @@ static struct dentry *eventfs_root_lookup(struct inode *dir,
+ 			ret = simple_lookup(dir, dentry, flags);
+ 			if (IS_ERR(ret))
+ 				goto out;
+-			create_file_dentry(ei, i, ei_dentry, name, mode, cdata,
+-					   fops, true);
++			d = create_file_dentry(ei, i, ei_dentry, name, mode, cdata, fops);
++			dput(d);
+ 			break;
+ 		}
+ 	}
+@@ -768,9 +751,10 @@ static int dcache_dir_open_wrapper(struct inode *inode, struct file *file)
+ 	inode_lock(parent->d_inode);
+ 	list_for_each_entry_srcu(ei_child, &ei->children, list,
+ 				 srcu_read_lock_held(&eventfs_srcu)) {
+-		d = create_dir_dentry(ei, ei_child, parent, false);
++		d = create_dir_dentry(ei, ei_child, parent);
+ 		if (d) {
+ 			ret = add_dentries(&dentries, d, cnt);
++			dput(d);
+ 			if (ret < 0)
+ 				break;
+ 			cnt++;
+@@ -790,9 +774,10 @@ static int dcache_dir_open_wrapper(struct inode *inode, struct file *file)
+ 		mutex_unlock(&eventfs_mutex);
+ 		if (r <= 0)
+ 			continue;
+-		d = create_file_dentry(ei, i, parent, name, mode, cdata, fops, false);
++		d = create_file_dentry(ei, i, parent, name, mode, cdata, fops);
+ 		if (d) {
+ 			ret = add_dentries(&dentries, d, cnt);
++			dput(d);
+ 			if (ret < 0)
+ 				break;
+ 			cnt++;
+-- 
+2.42.0
 
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace.git
-eventfs/for-next
-
-Head SHA1: 8186fff7ab649085e2c60d032d9a20a85af1d87c
-
-
-Steven Rostedt (Google) (3):
-      eventfs: Remove "lookup" parameter from create_dir/file_dentry()
-      eventfs: Stop using dcache_readdir() for getdents()
-      tracefs/eventfs: Use root and instance inodes as default ownership
-
-----
- fs/tracefs/event_inode.c | 320 +++++++++++++++++++++++------------------------
- fs/tracefs/inode.c       | 198 ++++++++++++++++-------------
- fs/tracefs/internal.h    |   3 +
- 3 files changed, 270 insertions(+), 251 deletions(-)
 
