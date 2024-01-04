@@ -1,263 +1,147 @@
-Return-Path: <linux-kernel+bounces-16485-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16484-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E920823F36
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 11:07:09 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B67A4823F35
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 11:06:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 813281F24AAE
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 10:07:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 33903283CE8
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 10:06:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2190520DF8;
-	Thu,  4 Jan 2024 10:06:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42B9320DD6;
+	Thu,  4 Jan 2024 10:06:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=vivo.com header.i=@vivo.com header.b="ASDfma+S"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="BrEuyE9X"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01on2115.outbound.protection.outlook.com [40.107.215.115])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8827220B3E;
-	Thu,  4 Jan 2024 10:06:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vivo.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=vivo.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dk6MMRFrCHse6wxW3blUSD0e2Big2fixmJ1UAHmj2NauAYEZ5m5+Em8aR0uiCXC3N5Q0mdGRtD4SNkWnPcCcpVwSc/hGtdKpPPHgi9q1BPtHRJQ4oQWuUZbnz9w7dMxmhb3v7U8+FpcwECesgPIfF2p+rXtZhSSvtFvn9cc+eGDrRKAMYPj7rIPe0XJl6hX6Uva0x67mMtZ69/s/3AZ3oodgslDWjG/q3SmDYYGWKGs5jzIFFh7ziYJs6RkX+gLd5lNEbVUtrWUVm/HMt0QA7ySF/kMw3lKKBwR2EGlR0ftHbKdde4gxlYbnxA6vvuS2JEVYB8Y1x5ObWjBhRVvjEA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=2aQDjlWhWdpqHlsXM3gl/Zf183I9Y9KyBUkLUpxSWPA=;
- b=X3MEjiHQaH/6N3Y9Nw1f3axsUlQ+aJuHuKAsOKa/KIWTwHJbhUVG7HoI0WRTKP3Fv2e0QCGEYvJ1OdwH7LUvx88G8yuLFvrNRlkRZ6DKLhXGZsb3OyG/61vo9ML6f0ihKgOu+SVXEAX0X6VJc6wh/sonOZ2U4Xj/pxY7Osh237WFNZDxUeQ8uvFoYf532bP6gi5ddQeEJfeVhMqk2G6rG+P/gonXGeVphs/l0QMN1pnm2UAFpNYaFFA6g042dunMqNiGH417HaboJZp4hbmPDBwh8qrkJrAeJYP9xbRdw4R/K/H6iIrniNbXsRVVpxNz0qXXyh3PNZLV4jzqF2lPzg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2aQDjlWhWdpqHlsXM3gl/Zf183I9Y9KyBUkLUpxSWPA=;
- b=ASDfma+Ss/rcgeLgjpqVs+4FNNzuJPRHHtH0VTffpdvxCepDvslwu7LF56JXRHlnsbgfkboPTUStKGV5DEC31bm0t0BLuHmwpTXmJy0qleOae7/lWk/m8m0iVEg5PrlV+NcQ0DnR8XhBw/liuftLrQk2xuu0q4oh8PMTv0ulC8Lwtc0945Rb1l+d7yGiE0A8rikFQQFt0ri0ryTXc/1KCFrKAnENs3qdzFA/CqkZbZU8cvsli7prWvpXBxH9kv6MvilExcL09ZADTea+RnEXJMg0HFUjy7hwtKvY8LxSiadhqEC87i1htzmIodY1E3/GPLID2PM/5vvE7ZJhm6QbYw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=vivo.com;
-Received: from TYZPR06MB4045.apcprd06.prod.outlook.com (2603:1096:400:21::8)
- by SEZPR06MB5879.apcprd06.prod.outlook.com (2603:1096:101:e4::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7135.25; Thu, 4 Jan
- 2024 10:06:07 +0000
-Received: from TYZPR06MB4045.apcprd06.prod.outlook.com
- ([fe80::9925:32d7:c818:3c5]) by TYZPR06MB4045.apcprd06.prod.outlook.com
- ([fe80::9925:32d7:c818:3c5%7]) with mapi id 15.20.7159.013; Thu, 4 Jan 2024
- 10:06:07 +0000
-From: Bixuan Cui <cuibixuan@vivo.com>
-To: akpm@linux-foundation.org,
-	rostedt@goodmis.org,
-	mhiramat@kernel.org,
-	mathieu.desnoyers@efficios.com
-Cc: linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org,
-	linux-mm@kvack.org,
-	opensource.kernel@vivo.com,
-	cuibixuan@vivo.com
-Subject: [PATCH -next v5 2/2] mm: vmscan: add new event to trace shrink lru
-Date: Thu,  4 Jan 2024 02:05:27 -0800
-Message-Id: <20240104100527.3908-3-cuibixuan@vivo.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20240104100527.3908-1-cuibixuan@vivo.com>
-References: <20240104100527.3908-1-cuibixuan@vivo.com>
-Content-Type: text/plain
-X-ClientProxiedBy: TYCP286CA0316.JPNP286.PROD.OUTLOOK.COM
- (2603:1096:400:3b7::9) To TYZPR06MB4045.apcprd06.prod.outlook.com
- (2603:1096:400:21::8)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14CD620B24
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 10:06:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-5537114380bso269934a12.3
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 02:06:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1704362768; x=1704967568; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=p2VRerHbUXnseXpnoaycYA+JvWQ06UaimMD+PjvMoyo=;
+        b=BrEuyE9X56UHGPz6chp5gwhNAK4GhCYDarxG8r4NywgzTb3e5Qk4VotrMxyPoQkma7
+         2zmBKVIcEX5/+ckGOh0u4VRCNJ9QOK+4QETz2ZA+3EjA6gCM/LVskvcgU8vUPaCys6l9
+         mkMFcgVEgK2MT063yheFYuSiWCxVkJFkFdpWN+H3He5sKlek4xl7HYVLgNlkPRU8cJ9b
+         xiKqQgG7XyNhokMVCXXrqkfkUqN0SZ6dFZ22MHslEPe5fRTMBEM4dQf77dL47AlGCbq9
+         LzjBZ/1vve3tZcxgdqxRusbEiFj11i5WBcWdw5lnhhgN/epq97gnfUq0Xr5K2sX24prI
+         MT3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704362768; x=1704967568;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=p2VRerHbUXnseXpnoaycYA+JvWQ06UaimMD+PjvMoyo=;
+        b=MKgmz4ffhulydIF0nv46WtuO0IPI0Rlg2lHA6qgDGTQ/6i5dq05AsnUT1lKTuy05yD
+         Fftw2/KvUhGvkf2xCcMCteps3Nnu3SOSGOL2K2eOiwoKQz74Rwj7c6TboSUZaBNto/fH
+         VZawfbCnNSJQGX6nWF8cYP/NsS8D3V3LkUI+Sn0C8uW72y3aWddsNI1/mRCpSMZZqv07
+         pGdIV5u5HZleW9fxv7ds3ECqN0qxF7WMqKPjRr5qGs0nqs07sxC4gGcaq8h3hjYSLD+D
+         g0FbUFJtWcfzxIhJ6n8FGelW4pzhS0E32oG26XqfINgoVv0dalgMbeS0ejU/VoQ6+xto
+         Q9Sg==
+X-Gm-Message-State: AOJu0Yw4wE81weVEFtz1LcvxwgPed/nOSvNSysCTULMJ4VX0ATHjK+ct
+	w0zk3GPNLtOf7v258QTsFPpv4cotgZlnAw==
+X-Google-Smtp-Source: AGHT+IE7B8T8Xf8ldzmLF5fnpBcVnHBKV6LTQYuD94tHojlLNLIWKY05YMbLyFDnMtBnb6Gr2jbqLg==
+X-Received: by 2002:aa7:c31a:0:b0:556:be08:6645 with SMTP id l26-20020aa7c31a000000b00556be086645mr219506edq.28.1704362768324;
+        Thu, 04 Jan 2024 02:06:08 -0800 (PST)
+Received: from [192.168.199.125] (178235179036.dynamic-4-waw-k-1-3-0.vectranet.pl. [178.235.179.36])
+        by smtp.gmail.com with ESMTPSA id e24-20020a056402105800b005557a9395e1sm9917768edu.47.2024.01.04.02.06.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Jan 2024 02:06:07 -0800 (PST)
+Message-ID: <2aa360c6-3e8a-4454-8a1e-31ed285d7a68@linaro.org>
+Date: Thu, 4 Jan 2024 11:06:05 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: TYZPR06MB4045:EE_|SEZPR06MB5879:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0b435189-8bbd-4a45-2d71-08dc0d0cc49f
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	0T+KS8kIrF6xFgrZgKqQHW2fUF4g5o7u4DXhJRuWq6tWr9+vBwYvAXnTZyV2YOZAlhWvTnW552vuoMBuJO8D5JHWXtV8oNNc/7SLhL+rqloGjzgAbTFi4psFDQM0bs1KKIDyCoXHezU8nTYoEUCmzjnhXCk/VvYg8ZZ9Ggwa2p04TH/SDFrz86mJuNjI8K++rvag42En3Xrme8DGzQzGmA847cZTvz8XBoSHIywiLC+ZZQL06gi/BWz6pGA4eoF7pPSjd00RGEQCQA9FCB1JgQdW6wr6wPBNuSWZf1/OGDCgp2Rihxi/wbO2bVloROCxWDWBT9bkWTQ/y7cErnnmSPLPuaMr7GDLKsJx7sDsaVg+JygIsN9Lbl3E0VPRNBS5GpMZyB0ZsuYlJkLaeaI9ITk7Dnan33SldV4HZxmzvujWuO4sBV9fxjkJZIRFE5n5RiL8iHZJwI1dMPm8m0lKuLzllXGYkO1xR2TmALfcw+aiW8HgSBTCw7uG6u03BmVDETq8IHzWPm6vIlALEH5ccfuoljPN/wj7dioaOg7eOaBPwrBmPAG65BcSLvGxfL0UpyLhNhJPjEnmfTaSOVACenVwJyUTs4DgL7gZ81CtRCJ0OORZ58GoCDXYHmd6yt6q
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYZPR06MB4045.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(136003)(346002)(396003)(39860400002)(376002)(230922051799003)(1800799012)(451199024)(186009)(64100799003)(26005)(1076003)(5660300002)(107886003)(83380400001)(2616005)(2906002)(8676002)(8936002)(41300700001)(316002)(38100700002)(4326008)(6666004)(478600001)(52116002)(6486002)(6512007)(6506007)(66556008)(66946007)(86362001)(66476007)(38350700005)(36756003)(40140700001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?bb3O8yIKJNXPc6Pt0qG5CCJKOBQ/Cefldv416yvxFtCjnNMXFAzjgffesv7W?=
- =?us-ascii?Q?o3tTQxcK9BNfEzcknUXNaTpK0pB0B5Qm0h8dJeQUPjOlNDA47ZfNTzE09cC/?=
- =?us-ascii?Q?cZMfZnYmTibacydGhK9nH/Ty+kUp+XFQIP8IpqjyfAewwq4Xnf0lasidkj+J?=
- =?us-ascii?Q?yaLBvIG6mQ42HhNa9MQB6Olw25bPZvxh9/D6iuP49rohXTG+xypfWS87yxnC?=
- =?us-ascii?Q?FBShuwfMX4Eg+c7LQe7wa7g5u3eGPHkQWltLfSCh2CSw6FIiD8Gd27sALyNn?=
- =?us-ascii?Q?9Dk3xWGeYdE7j4lbtbtiXo+AJ6DBgyaCZWNUadgOXPYrxMvzvjT3t1eyRUt6?=
- =?us-ascii?Q?85A+72Ck518FgiQJDDNO7SwnLDMINwQTVDW8bWJb2V9kUq7wea6kLRlq9KIY?=
- =?us-ascii?Q?THlH54F8CRRaCvieyjnKEBBRZq/gk/WnzyFCx2Cheto7oLSIvvYcw+5Mv8ED?=
- =?us-ascii?Q?GPFE4Cn1g2ErYXeIr6SVZm7uw5lZEIEeBKTUjilFik1srZzBc+0jUzu2HGWY?=
- =?us-ascii?Q?7ub45m8qk+dnKzpPrmlwAMpNLMfUEUu6DNuPq4EBHaOGKSBqG9IoSAvt4vLl?=
- =?us-ascii?Q?Z5rOHiuDgftHcjHF6b+XAIzEu4LbTyuivlOLI+Zoa6wsg+II9f+uxlTd+IZl?=
- =?us-ascii?Q?qBNxzmLCRMpQ5PLNpipCNjHHxXXv9w9Es7ubl2sa9ZjfHCabQ4YajHjYnkgB?=
- =?us-ascii?Q?aFjOdl1aboPWkZeIGNRwQqfL09JWbZynPK5uL9y9T3rbW0vSSAWUTQKsSKID?=
- =?us-ascii?Q?HorZ4s095VywvLhwgbC6FyizXlaeCabbZYS+B4q8+CEteL7RhXLnn0K3c7af?=
- =?us-ascii?Q?9RkSvaDkosLeetznruVaSuvV1+kO/FCGD+IGS6XXVvG7IbqvNFVH9QuneyH3?=
- =?us-ascii?Q?lq+EkZiCL6TfTx7YfItL9X4DYlhQrX/eZSsHn52J5OtapLBExcgahLVhKntD?=
- =?us-ascii?Q?Ip7odKycx2vXOFCwxQpOThxkLzfbPH2vT+JV+1pb/CtUnEwqJS75jtP6MTtl?=
- =?us-ascii?Q?g7uMBXBeBPLeoB2sjiCIt8nhP6LgzleUfUmN9x/c1BJQhwZuAT5VRbp0vPz7?=
- =?us-ascii?Q?CHEOm4ZmL3+dMZBrjyhU3Fs3MY6Rug03MJqdO/AqXjTGPT+gMYeIkW860Abq?=
- =?us-ascii?Q?MGA4HTz//a5di0w1WMTmO7OaxqwEzfr5Znv3n4jxvZrUDSgmYkM1vURLH34u?=
- =?us-ascii?Q?FbPEBIrlWCnYRuZNBxPq2GZr//cm+h8AwvE6nJagrfEZ4VgJUWGUM+vePXEg?=
- =?us-ascii?Q?gWJGvbGGN8QYn7MWzyFdjHqHfbljh6WsQzf3/B0naEzDND7i9Fio1PezD3b+?=
- =?us-ascii?Q?f4Cn/B0111134r/XkshPvcZN6nxgd9bDoaPO32TUIInXdrCXuI+fShQklw6w?=
- =?us-ascii?Q?J2jgM06o97QJfvSqcbP8D1lIwXgQQBGoXeumWme7SByRwxNR7YF7/0I7ncfm?=
- =?us-ascii?Q?yFyxY/pJMf0Flu/ZmE4Msqd4jOk559+3r5+qk5dAWDUTuH3mXO3FQRg8S3i9?=
- =?us-ascii?Q?40i7xvUP6JB6LV3RuyT3jImSne7iOhlqh2flqY7FRUonmpDxf+UBu2Sz1t0Y?=
- =?us-ascii?Q?BD7nRIpjQ7JDSiXkgBwQOD+YdKf3E2ACMQ1GYr4e?=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0b435189-8bbd-4a45-2d71-08dc0d0cc49f
-X-MS-Exchange-CrossTenant-AuthSource: TYZPR06MB4045.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Jan 2024 10:06:07.1055
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Xk4o1tESSayQWLS4Jv7X76j6W3EndV9KT61OXWQJs9inW8fN5so/P4y9dh8KVVjGvNjw8PS3YO0tAaJc+oexjg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEZPR06MB5879
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/4] interconnect: qcom: x1e80100: Remove bogus per-RSC
+ BCMs and nodes
+Content-Language: en-US
+To: Rajendra Nayak <quic_rjendra@quicinc.com>,
+ Bjorn Andersson <andersson@kernel.org>, Georgi Djakov <djakov@kernel.org>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Sibi Sankar <quic_sibis@quicinc.com>,
+ Abel Vesa <abel.vesa@linaro.org>
+Cc: Marijn Suijten <marijn.suijten@somainline.org>,
+ linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+ linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+References: <20240102-topic-x1e_fixes-v1-0-70723e08d5f6@linaro.org>
+ <20240102-topic-x1e_fixes-v1-1-70723e08d5f6@linaro.org>
+ <4d4d5d3b-cdb2-484a-8297-4b8bb0817986@quicinc.com>
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <4d4d5d3b-cdb2-484a-8297-4b8bb0817986@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-From: cuibixuan <cuibixuan@vivo.com>
+On 4.01.2024 10:59, Rajendra Nayak wrote:
+> 
+> 
+> On 1/2/2024 11:59 PM, Konrad Dybcio wrote:
+>> The downstream kernel has infrastructure for passing votes from different
+>> interconnect nodes onto different RPMh RSCs. This neither implemented, not
+>> is going to be implemented upstream (in favor of a different solution
+>> using ICC tags through the same node).
+>>
+>> Unfortunately, as it happens, meaningless (in the upstream context) parts
+>> of the vendor driver were copied, ending up causing havoc - since all
+>> "per-RSC" (in quotes because they all point to the main APPS one) BCMs
+>> defined within the driver overwrite the value in RPMh on every
+>> aggregation.
+>>
+>> To both avoid keeping bogus code around and possibly introducing
+>> impossible-to-track-down bugs (busses shutting down for no reason), get
+>> rid of the duplicated BCMs and their associated ICC nodes.
+> 
+> Thanks Konrad for catching this, I do see these nodes in other Qualcomm SoCs upstream (atleast sm8350/sm8450 and sm8550), perhaps they need to be cleaned up as well?
+Yes, I cleaned up 8550 last week, I'll look into the rest.
 
-Page reclaim is an important part of memory reclaim, including:
-  * shrink_active_list(), moves folios from the active LRU to the inactive LRU
-  * shrink_inactive_list(), shrink lru from inactive LRU list
-
-Add the new events to calculate the execution time to better evaluate 
-the entire memory recycling ratio.
-
-Example of output:
-         kswapd0-103     [007] .....  1098.353020: mm_vmscan_lru_shrink_active_start: nid=0
-         kswapd0-103     [007] .....  1098.353040: mm_vmscan_lru_shrink_active_end: nid=0 nr_taken=32 nr_active=0 nr_deactivated=32 nr_referenced=0 priority=6 flags=RECLAIM_WB_FILE|RECLAIM_WB_ASYNC
-         kswapd0-103     [007] .....  1098.353040: mm_vmscan_lru_shrink_inactive_start: nid=0
-         kswapd0-103     [007] .....  1098.353094: mm_vmscan_lru_shrink_inactive_end: nid=0 nr_scanned=32 nr_reclaimed=0 nr_dirty=0 nr_writeback=0 nr_congested=0 nr_immediate=0 nr_activate_anon=0 nr_activate_file=0 nr_ref_keep=32 nr_unmap_fail=0 priority=6 flags=RECLAIM_WB_ANON|RECLAIM_WB_ASYNC
-         kswapd0-103     [007] .....  1098.353094: mm_vmscan_lru_shrink_inactive_start: nid=0
-         kswapd0-103     [007] .....  1098.353162: mm_vmscan_lru_shrink_inactive_end: nid=0 nr_scanned=32 nr_reclaimed=21 nr_dirty=0 nr_writeback=0 nr_congested=0 nr_immediate=0 nr_activate_anon=0 nr_activate_file=0 nr_ref_keep=11 nr_unmap_fail=0 priority=6 flags=RECLAIM_WB_FILE|RECLAIM_WB_ASYNC
-
-Signed-off-by: Bixuan Cui <cuibixuan@vivo.com>
-Reviewed-by: Andrew Morton <akpm@linux-foundation.org>
----
-Changes:
-v5: * Use 'DECLARE_EVENT_CLASS(mm_vmscan_lru_shrink_start_template' to
-replace 'RACE_EVENT(mm_vmscan_lru_shrink_inactive/active_start'
-    * Add the explanation for adding new shrink lru events into 'mm: vmscan: add new event to trace shrink lru'
-v4: * Add Reviewed-by and Changlog to every patch.
-v3: * Swap the positions of 'nid' and 'freeable' to prevent the hole in the trace event.
-v2: * Modify trace_mm_vmscan_lru_shrink_inactive() in evict_folios() at the same time to fix build error (Andrew pointed out).
-
- include/trace/events/vmscan.h | 31 +++++++++++++++++++++++++++++--
- mm/vmscan.c                   | 11 ++++++++---
- 2 files changed, 37 insertions(+), 5 deletions(-)
-
-diff --git a/include/trace/events/vmscan.h b/include/trace/events/vmscan.h
-index b99cd28c9815..4793d952c248 100644
---- a/include/trace/events/vmscan.h
-+++ b/include/trace/events/vmscan.h
-@@ -395,7 +395,34 @@ TRACE_EVENT(mm_vmscan_write_folio,
- 		show_reclaim_flags(__entry->reclaim_flags))
- );
- 
--TRACE_EVENT(mm_vmscan_lru_shrink_inactive,
-+DECLARE_EVENT_CLASS(mm_vmscan_lru_shrink_start_template,
-+
-+	TP_PROTO(int nid),
-+
-+	TP_ARGS(nid),
-+
-+	TP_STRUCT__entry(
-+		__field(int, nid)
-+	),
-+
-+	TP_fast_assign(
-+		__entry->nid = nid;
-+	),
-+
-+	TP_printk("nid=%d", __entry->nid)
-+);
-+
-+DEFINE_EVENT(mm_vmscan_lru_shrink_start_template, mm_vmscan_lru_shrink_inactive_start,
-+	TP_PROTO(int nid),
-+	TP_ARGS(nid)
-+);
-+
-+DEFINE_EVENT(mm_vmscan_lru_shrink_start_template, mm_vmscan_lru_shrink_active_start,
-+	TP_PROTO(int nid),
-+	TP_ARGS(nid)
-+);
-+
-+TRACE_EVENT(mm_vmscan_lru_shrink_inactive_end,
- 
- 	TP_PROTO(int nid,
- 		unsigned long nr_scanned, unsigned long nr_reclaimed,
-@@ -446,7 +473,7 @@ TRACE_EVENT(mm_vmscan_lru_shrink_inactive,
- 		show_reclaim_flags(__entry->reclaim_flags))
- );
- 
--TRACE_EVENT(mm_vmscan_lru_shrink_active,
-+TRACE_EVENT(mm_vmscan_lru_shrink_active_end,
- 
- 	TP_PROTO(int nid, unsigned long nr_taken,
- 		unsigned long nr_active, unsigned long nr_deactivated,
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index 4e3b835c6b4a..a44d9624d60f 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -1906,6 +1906,8 @@ static unsigned long shrink_inactive_list(unsigned long nr_to_scan,
- 	struct pglist_data *pgdat = lruvec_pgdat(lruvec);
- 	bool stalled = false;
- 
-+	trace_mm_vmscan_lru_shrink_inactive_start(pgdat->node_id);
-+
- 	while (unlikely(too_many_isolated(pgdat, file, sc))) {
- 		if (stalled)
- 			return 0;
-@@ -1990,7 +1992,7 @@ static unsigned long shrink_inactive_list(unsigned long nr_to_scan,
- 	if (file)
- 		sc->nr.file_taken += nr_taken;
- 
--	trace_mm_vmscan_lru_shrink_inactive(pgdat->node_id,
-+	trace_mm_vmscan_lru_shrink_inactive_end(pgdat->node_id,
- 			nr_scanned, nr_reclaimed, &stat, sc->priority, file);
- 	return nr_reclaimed;
- }
-@@ -2028,6 +2030,8 @@ static void shrink_active_list(unsigned long nr_to_scan,
- 	int file = is_file_lru(lru);
- 	struct pglist_data *pgdat = lruvec_pgdat(lruvec);
- 
-+	trace_mm_vmscan_lru_shrink_active_start(pgdat->node_id);
-+
- 	lru_add_drain();
- 
- 	spin_lock_irq(&lruvec->lru_lock);
-@@ -2107,7 +2111,7 @@ static void shrink_active_list(unsigned long nr_to_scan,
- 		lru_note_cost(lruvec, file, 0, nr_rotated);
- 	mem_cgroup_uncharge_list(&l_active);
- 	free_unref_page_list(&l_active);
--	trace_mm_vmscan_lru_shrink_active(pgdat->node_id, nr_taken, nr_activate,
-+	trace_mm_vmscan_lru_shrink_active_end(pgdat->node_id, nr_taken, nr_activate,
- 			nr_deactivate, nr_rotated, sc->priority, file);
- }
- 
-@@ -4524,9 +4528,10 @@ static int evict_folios(struct lruvec *lruvec, struct scan_control *sc, int swap
- 	if (list_empty(&list))
- 		return scanned;
- retry:
-+	trace_mm_vmscan_lru_shrink_inactive_start(pgdat->node_id);
- 	reclaimed = shrink_folio_list(&list, pgdat, sc, &stat, false);
- 	sc->nr_reclaimed += reclaimed;
--	trace_mm_vmscan_lru_shrink_inactive(pgdat->node_id,
-+	trace_mm_vmscan_lru_shrink_inactive_end(pgdat->node_id,
- 			scanned, reclaimed, &stat, sc->priority,
- 			type ? LRU_INACTIVE_FILE : LRU_INACTIVE_ANON);
- 
--- 
-2.17.1
-
+Konrad
 
