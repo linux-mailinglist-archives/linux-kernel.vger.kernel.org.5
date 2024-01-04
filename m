@@ -1,186 +1,183 @@
-Return-Path: <linux-kernel+bounces-16396-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16397-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD7E7823DDB
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 09:48:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B43BD823DDD
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 09:49:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 482271F24E7E
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 08:48:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5F38D285A24
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 08:49:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC3131EA84;
-	Thu,  4 Jan 2024 08:48:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B97B1EA6F;
+	Thu,  4 Jan 2024 08:48:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="aDlWzz6A";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="aDlWzz6A"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8893D1E528;
-	Thu,  4 Jan 2024 08:48:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.17])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4T5Kvk05cFz1g1dg;
-	Thu,  4 Jan 2024 16:46:58 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (unknown [7.185.36.74])
-	by mail.maildlp.com (Postfix) with ESMTPS id 6981E1A0172;
-	Thu,  4 Jan 2024 16:48:24 +0800 (CST)
-Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 4 Jan
- 2024 16:48:23 +0800
-Subject: Re: [RFC PATCH net-next v1 4/4] net: page_pool: use netmem_t instead
- of struct page in API
-To: Mina Almasry <almasrymina@google.com>
-CC: Shakeel Butt <shakeelb@google.com>, Jakub Kicinski <kuba@kernel.org>,
-	<linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-	<bpf@vger.kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar
-	<mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen
-	<dave.hansen@linux.intel.com>, <x86@kernel.org>, "H. Peter Anvin"
-	<hpa@zytor.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J.
- Wysocki" <rafael@kernel.org>, Sumit Semwal <sumit.semwal@linaro.org>,
-	=?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>, Michael Chan
-	<michael.chan@broadcom.com>, "David S. Miller" <davem@davemloft.net>, Eric
- Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Alexei
- Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper
- Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>,
-	Wei Fang <wei.fang@nxp.com>, Shenwei Wang <shenwei.wang@nxp.com>, Clark Wang
-	<xiaoning.wang@nxp.com>, NXP Linux Team <linux-imx@nxp.com>, Jeroen de Borst
-	<jeroendb@google.com>, Praveen Kaligineedi <pkaligineedi@google.com>,
-	Shailend Chand <shailend@google.com>, Yisen Zhuang <yisen.zhuang@huawei.com>,
-	Salil Mehta <salil.mehta@huawei.com>, Jesse Brandeburg
-	<jesse.brandeburg@intel.com>, Tony Nguyen <anthony.l.nguyen@intel.com>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>, Marcin Wojtas
-	<mw@semihalf.com>, Russell King <linux@armlinux.org.uk>, Sunil Goutham
-	<sgoutham@marvell.com>, Geetha sowjanya <gakula@marvell.com>, Subbaraya
- Sundeep <sbhatta@marvell.com>, hariprasad <hkelam@marvell.com>, Felix Fietkau
-	<nbd@nbd.name>, John Crispin <john@phrozen.org>, Sean Wang
-	<sean.wang@mediatek.com>, Mark Lee <Mark-MC.Lee@mediatek.com>, Lorenzo
- Bianconi <lorenzo@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Saeed
- Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, Horatiu
- Vultur <horatiu.vultur@microchip.com>, <UNGLinuxDriver@microchip.com>, "K. Y.
- Srinivasan" <kys@microsoft.com>, Haiyang Zhang <haiyangz@microsoft.com>, Wei
- Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>, Jassi Brar
-	<jaswinder.singh@linaro.org>, Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>, Jose Abreu
-	<joabreu@synopsys.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Siddharth Vadapalli <s-vadapalli@ti.com>, Ravi Gunasekaran
-	<r-gunasekaran@ti.com>, Roger Quadros <rogerq@kernel.org>, Jiawen Wu
-	<jiawenwu@trustnetic.com>, Mengyuan Lou <mengyuanlou@net-swift.com>, Ronak
- Doshi <doshir@vmware.com>, VMware PV-Drivers Reviewers
-	<pv-drivers@vmware.com>, Ryder Lee <ryder.lee@mediatek.com>, Shayne Chen
-	<shayne.chen@mediatek.com>, Kalle Valo <kvalo@kernel.org>, Juergen Gross
-	<jgross@suse.com>, Stefano Stabellini <sstabellini@kernel.org>, Oleksandr
- Tyshchenko <oleksandr_tyshchenko@epam.com>, Andrii Nakryiko
-	<andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu
-	<song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, KP Singh
-	<kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo
-	<haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, Stefan Hajnoczi
-	<stefanha@redhat.com>, Stefano Garzarella <sgarzare@redhat.com>, Shuah Khan
-	<shuah@kernel.org>, =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>,
-	Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers
-	<ndesaulniers@google.com>, Bill Wendling <morbo@google.com>, Justin Stitt
-	<justinstitt@google.com>, Jason Gunthorpe <jgg@nvidia.com>, Willem de Bruijn
-	<willemdebruijn.kernel@gmail.com>
-References: <20231214020530.2267499-1-almasrymina@google.com>
- <20231214020530.2267499-5-almasrymina@google.com>
- <ddffff98-f3de-6a5d-eb26-636dacefe9aa@huawei.com>
- <CAHS8izO2nDHuxKau8iLcAmnho-1TYkzW09MBZ80+JzOo9YyVFA@mail.gmail.com>
- <20231215021114.ipvdx2bwtxckrfdg@google.com>
- <20231215190126.1040fa12@kernel.org>
- <CALvZod5myy2SvuCMNmqjjYeNONqSArV+8y8mrkfnNeog8WLjng@mail.gmail.com>
- <CAHS8izOLBtjHOqbTS_PiTNe+rTE=jboDWDM9zS108B57vVNcwA@mail.gmail.com>
- <CAHS8izMkCwv3jak9KUHeDUrkwBNNpdYk4voEX7Cbp7mTpNAQdA@mail.gmail.com>
- <54f226ef-df2d-9f32-fa3f-e846d6510758@huawei.com>
- <CAHS8izP63wXGH+Q3y1H=ycT=AHYnhGveBnuyF_rYioAjZ=Hn=g@mail.gmail.com>
- <7c6d35e3-165f-5883-1c1b-fce82c976028@huawei.com>
- <CAHS8izNqeiK1tq=48LMbbqq5B4d2mhgbuKRvnFtiBngf73jXZg@mail.gmail.com>
- <fda068d0-f7fb-90fc-cdd6-1f853a4a225f@huawei.com>
- <CAHS8izNAxB=DQzSBOGbm6SsiL1cLSijj9n=g3d3egSxnOcBibQ@mail.gmail.com>
-From: Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <99817ed2-8ba6-ef8f-3ccb-2a2ab284b4af@huawei.com>
-Date: Thu, 4 Jan 2024 16:48:23 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD2921E51D;
+	Thu,  4 Jan 2024 08:48:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id D6DD921F8C;
+	Thu,  4 Jan 2024 08:48:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1704358116; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=wm5QlyvcznWtplNRx9gonr2CCF8FxZMqNW82GS8OYto=;
+	b=aDlWzz6AYUd//0CioCBvgVBGSt/KNDNfv0oz/0keYnwTq6sq/56CVspGPYopmhtFVYNAIW
+	S0ImbtpkXuoi5Na/YS7SZh2HsXoTwS1cwS/yFJkFmwGhFDakbGuKAaB5ZQ4fK50rtnu9xR
+	zwgDUk3KEp1dpVTkVVw+a3Y0TqPMrVM=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1704358116; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=wm5QlyvcznWtplNRx9gonr2CCF8FxZMqNW82GS8OYto=;
+	b=aDlWzz6AYUd//0CioCBvgVBGSt/KNDNfv0oz/0keYnwTq6sq/56CVspGPYopmhtFVYNAIW
+	S0ImbtpkXuoi5Na/YS7SZh2HsXoTwS1cwS/yFJkFmwGhFDakbGuKAaB5ZQ4fK50rtnu9xR
+	zwgDUk3KEp1dpVTkVVw+a3Y0TqPMrVM=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id AC7E213722;
+	Thu,  4 Jan 2024 08:48:36 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 5m3gJ+RwlmXoVAAAD6G6ig
+	(envelope-from <mhocko@suse.com>); Thu, 04 Jan 2024 08:48:36 +0000
+Date: Thu, 4 Jan 2024 09:48:36 +0100
+From: Michal Hocko <mhocko@suse.com>
+To: Yu Zhao <yuzhao@google.com>
+Cc: Dan Schatzberg <schatzberg.dan@gmail.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+	linux-mm@kvack.org, Yosry Ahmed <yosryahmed@google.com>,
+	David Rientjes <rientjes@google.com>, Chris Li <chrisl@kernel.org>,
+	Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeelb@google.com>,
+	Muchun Song <muchun.song@linux.dev>,
+	David Hildenbrand <david@redhat.com>,
+	Matthew Wilcox <willy@infradead.org>,
+	Kefeng Wang <wangkefeng.wang@huawei.com>,
+	Yue Zhao <findns94@gmail.com>, Hugh Dickins <hughd@google.com>
+Subject: Re: [PATCH v6 2/2] mm: add swapiness= arg to memory.reclaim
+Message-ID: <ZZZw5NSEFNYwbjZM@tiehlicka>
+References: <20240103164841.2800183-1-schatzberg.dan@gmail.com>
+ <20240103164841.2800183-3-schatzberg.dan@gmail.com>
+ <CAOUHufZ-hTwdiy7eYgJWo=CHyPbdxTX60hxjPmwa9Ox6FXMYQQ@mail.gmail.com>
+ <ZZWlT5wmDaMceSlQ@dschatzberg-fedora-PC0Y6AEN>
+ <ZZYE36e0BFFzi0X3@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CAHS8izNAxB=DQzSBOGbm6SsiL1cLSijj9n=g3d3egSxnOcBibQ@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpemm500005.china.huawei.com (7.185.36.74)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZZYE36e0BFFzi0X3@google.com>
+X-Spam-Score: 7.00
+X-Spamd-Result: default: False [7.00 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 BAYES_SPAM(5.10)[100.00%];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 TAGGED_RCPT(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 R_RATELIMIT(0.00)[to_ip_from(RLhyf994aoi9gdt4d63rk4ux49)];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 RCPT_COUNT_TWELVE(0.00)[21];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 FREEMAIL_CC(0.00)[gmail.com,linux-foundation.org,vger.kernel.org,kvack.org,google.com,kernel.org,bytedance.com,cmpxchg.org,lwn.net,linux.dev,redhat.com,infradead.org,huawei.com];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spam-Level: *******
+X-Spam-Flag: NO
 
-On 2024/1/4 2:38, Mina Almasry wrote:
-> On Wed, Jan 3, 2024 at 1:47 AM Yunsheng Lin <linyunsheng@huawei.com> wrote:
->>
->> On 2024/1/3 0:14, Mina Almasry wrote:
->>>
->>> The idea being that skb_frag_page() can return NULL if the frag is not
->>> paged, and the relevant callers are modified to handle that.
->>
->> There are many existing drivers which are not expecting NULL returning for
->> skb_frag_page() as those drivers are not supporting devmem, adding additionl
->> checking overhead in skb_frag_page() for those drivers does not make much
->> sense, IMHO, it may make more sense to introduce a new helper for the driver
->> supporting devmem or networking core that needing dealing with both normal
->> page and devmem.
->>
->> And we are also able to keep the old non-NULL returning semantic for
->> skb_frag_page().
+On Wed 03-01-24 18:07:43, Yu Zhao wrote:
+> On Wed, Jan 03, 2024 at 01:19:59PM -0500, Dan Schatzberg wrote:
+> > On Wed, Jan 03, 2024 at 10:19:40AM -0700, Yu Zhao wrote:
+> > [...]
+> > > > diff --git a/mm/vmscan.c b/mm/vmscan.c
+> > > > index d91963e2d47f..394e0dd46b2e 100644
+> > > > --- a/mm/vmscan.c
+> > > > +++ b/mm/vmscan.c
+> > > > @@ -92,6 +92,11 @@ struct scan_control {
+> > > >         unsigned long   anon_cost;
+> > > >         unsigned long   file_cost;
+> > > >
+> > > > +#ifdef CONFIG_MEMCG
+> > > > +       /* Swappiness value for proactive reclaim. Always use sc_swappiness()! */
+> > > > +       int *proactive_swappiness;
+> > > > +#endif
+> > > 
+> > > Why is proactive_swappiness still a pointer? The whole point of the
+> > > previous conversation is that sc->proactive can tell whether
+> > > sc->swappiness is valid or not, and that's less awkward than using a
+> > > pointer.
+> > 
+> > It's the same reason as before - zero initialization ensures that the
+> > pointer is NULL which tells us if it's valid or not. Proactive reclaim
+> > might not set swappiness and you need to distinguish swappiness of 0
+> > and not-set. See this discussion with Michal:
+> > 
+> > https://lore.kernel.org/linux-mm/ZZUizpTWOt3gNeqR@tiehlicka/
 > 
-> I think I'm seeing agreement that the direction we're heading into
-> here is that most net stack & drivers should use the abstract netmem
-
-As far as I see, at least for the drivers, I don't think we have a clear
-agreement if we should have a unified driver facing struct or API for both
-normal page and devmem yet.
-
-> type, and only specific code that needs a page or devmem (like
-> tcp_receive_zerocopy or tcp_recvmsg_dmabuf) will be the ones that
-> unpack the netmem and get the underlying page or devmem, using
-> skb_frag_page() or something like skb_frag_dmabuf(), etc.
+>  static ssize_t memory_reclaim(struct kernfs_open_file *of, char *buf,
+>                               size_t nbytes, loff_t off)
+>  {
+>         struct mem_cgroup *memcg = mem_cgroup_from_css(of_css(of));
+>         unsigned int nr_retries = MAX_RECLAIM_RETRIES;
+>         unsigned long nr_to_reclaim, nr_reclaimed = 0;
+> +       int swappiness = -1;
+> ...
+>                 reclaimed = try_to_free_mem_cgroup_pages(memcg,
+>                                         min(nr_to_reclaim - nr_reclaimed, SWAP_CLUSTER_MAX),
+> -                                       GFP_KERNEL, reclaim_options);
+> +                                       GFP_KERNEL, reclaim_options,
+> +                                       swappiness);
 > 
-> As Jason says repeatedly, I'm not allowed to blindly cast a netmem to
-> a page and assume netmem==page. Netmem can only be cast to a page
-> after checking the low bits and verifying the netmem is actually a
-
-I thought it would be best to avoid casting a netmem or devmem to a
-page in the driver, I think the main argument is that it is hard
-to audit very single driver doing a checking before doing the casting
-in the future? and we can do better auditting if the casting is limited
-to a few core functions in the networking core.
-
-> page. I think any suggestions that blindly cast a netmem to page
-> without the checks will get nacked by Jason & Christian, so the
-> checking in the specific cases where the code needs to know the
-> underlying memory type seems necessary.
+> ...
 > 
-> IMO I'm not sure the checking is expensive. With likely/unlikely &
-> static branches the checks should be very minimal or a straight no-op.
-> For example in RFC v2 where we were doing a lot of checks for devmem
-> (we don't do that anymore for RFCv5), I had run the page_pool perf
-> tests and proved there is little to no perf regression:
+> +static int sc_swappiness(struct scan_control *sc, struct mem_cgroup *memcg)
+> +{
+> +       return sc->proactive && sc->proactive_swappiness > -1 ?
+> +              sc->proactive_swappiness : mem_cgroup_swappiness(memcg);
+> +}
 
-For MAX_SKB_FRAGS being 17, it means we may have 17 additional checking
-overhead for the drivers not supporting devmem, not to mention we may
-have bigger value for MAX_SKB_FRAGS if BIG TCP is enable.
+Tpo be completely honest I really fail to see why this is such a hot
+discussion point. To be completely clear both approaches are feasible.
 
-Even there is no notiable performance degradation for a specific case,
-we should avoid the overhead as much as possible for the existing use
-case when supporting a new use case.
+The main argument for NULL check based approach is that it is less error
+prone from an incorrect ussage because any bug becomes obvious. If we
+use any other special constant a missing initialization would be much
+harder to spot because they would be subtle behavior change.
 
-> 
-> https://lore.kernel.org/netdev/CAHS8izM4w2UETAwfnV7w+ZzTMxLkz+FKO+xTgRdtYKzV8RzqXw@mail.gmail.com/
-
-The above test case does not even seems to be testing a code path calling
-skb_frag_page() as my understanding.
-
-> 
+Are there really any strong arguments to go against this "default
+initialization is safe" policy?
+-- 
+Michal Hocko
+SUSE Labs
 
