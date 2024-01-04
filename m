@@ -1,385 +1,200 @@
-Return-Path: <linux-kernel+bounces-16246-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16247-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C611823B96
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 05:52:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E2FE823B98
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 05:56:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0EB0C1C24C25
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 04:52:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CD1CF28827B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 04:56:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CBC21864C;
-	Thu,  4 Jan 2024 04:52:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6E6A18B00;
+	Thu,  4 Jan 2024 04:55:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="LStWGe7i"
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="ayevH5qT"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2076.outbound.protection.outlook.com [40.107.102.76])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8F8115485;
-	Thu,  4 Jan 2024 04:52:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=T4rOdDepmXXzTh6bVPOQVGUYR7VMtzU484oH6ZXdMzwoMfQgF2lIb9d/6wAcBssPLaX72actKNVz+FUca4LbmhknBy0fA157eyohyvbOmmL1N7D6Y2qrVUDuAayeuzzMqZruj/sQAqIKnOIGuPChRTOdhcCh9+nfy3GOmULK2b9ArdZxmnlEiIC0x/63NBY9mORiViRwsykH1c2UQsFkPXMSCOMuQd6G/z5D4YVka0y4g3zcOD9HZZfNBOBX4D+WpFvTo6HJY1/fSEwIMfxKZyRHA59aSzLbFH7raMeQ9qZCIKkPTH9Ihs0Ly7HfXkmQRU4CDUkjSdXZgPCa0lepjg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=4pqB1YrR1pUmofr1Nur8tPilzqJVBFMJcQfKdTDzqtc=;
- b=nGnNqnYERocT0l9xG1jeCRl6Y+uzYPlr7qtr6H+Q0VpVzfVaW/thhIftCmQw5irYeKgEXw+j7zX/X45+H0GpXCGsZxSBB281IMv90g61zWN6oYLpxAlwE5pny1PnPa0stJaMCnLVjGKjgdNv3xeIES9ZGP2uYN6m6VoqJo46nZbL2HI4cDpxY9DoknGjxtz1POMGeRfJYZJiMmhWJHdla5RwoPG5AjdXlipImCuSd4tD/JAIqXa/6xF2DzRNT1bkludYR1Tlxs2yMvkgjtp62FelET/1lkpCvPG2NpqnN2gheS0mHewNVWZ+wZkacYEabHbwmZaKqQQvqlJu1iRNIw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4pqB1YrR1pUmofr1Nur8tPilzqJVBFMJcQfKdTDzqtc=;
- b=LStWGe7iiZQ/edzflvzjQzCy+HCr8noE4jz4Rn3iwpcPVEsXOfUgMcXRJqJuWTiUnKjaxA+5+8G5i8ACcwxTRcZvPbduLGuY0H8OojAfiJEOj39trTo/bhjCcxXy1MI1YlvG23tCtJTidwzRIY/7TIrcPPPkqhF5DuTuNcIqhwI=
-Received: from DM6PR12MB3993.namprd12.prod.outlook.com (2603:10b6:5:1c5::29)
- by MN6PR12MB8541.namprd12.prod.outlook.com (2603:10b6:208:47a::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7135.25; Thu, 4 Jan
- 2024 04:52:15 +0000
-Received: from DM6PR12MB3993.namprd12.prod.outlook.com
- ([fe80::b46:e1e6:ac2a:4386]) by DM6PR12MB3993.namprd12.prod.outlook.com
- ([fe80::b46:e1e6:ac2a:4386%7]) with mapi id 15.20.7113.027; Thu, 4 Jan 2024
- 04:52:15 +0000
-From: "Manne, Nava kishore" <nava.kishore.manne@amd.com>
-To: "mdf@kernel.org" <mdf@kernel.org>, "hao.wu@intel.com" <hao.wu@intel.com>,
-	"yilun.xu@intel.com" <yilun.xu@intel.com>, "trix@redhat.com"
-	<trix@redhat.com>, "peter.colberg@intel.com" <peter.colberg@intel.com>,
-	"conor.dooley@microchip.com" <conor.dooley@microchip.com>,
-	"v.georgiev@metrotek.ru" <v.georgiev@metrotek.ru>, "Simek, Michal"
-	<michal.simek@amd.com>, Marco Pagani <marpagan@redhat.com>,
-	"gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-	"ruanjinjie@huawei.com" <ruanjinjie@huawei.com>, "linux-fpga@vger.kernel.org"
-	<linux-fpga@vger.kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, "git (AMD-Xilinx)" <git@amd.com>
-Subject: [RFC] FPGA Subsystem User Space Interface Proposal
-Thread-Topic: [RFC] FPGA Subsystem User Space Interface Proposal
-Thread-Index: Ado+yABjPiRB0KySRY6DC56HOLfe9A==
-Date: Thu, 4 Jan 2024 04:52:15 +0000
-Message-ID:
- <DM6PR12MB3993D5ECA50B27682AEBE19FCD67A@DM6PR12MB3993.namprd12.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DM6PR12MB3993:EE_|MN6PR12MB8541:EE_
-x-ms-office365-filtering-correlation-id: 5470966f-9c40-4d86-8900-08dc0ce0ebfa
-x-ld-processed: 3dd8961f-e488-4e60-8e11-a82d994e183d,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- L8k6wkfZ5BWoNy/7AhJ9kLeQQAMEyvOhqaRaTreEcDETMhqLCHDPhdhQihTKa/EljgcmVuz0yBLj5Qq+b/7+zTVCU+SUyoCsMgMXOOK96K3Ls2YoP2j9cnRP+QEhnklYwqqFH1Kxzif+U/rA0lL2ktkrmo0/xENAQJSAyQdRFKVxldOdQqDUaTe/kygyeWoUDYtov73yUBQL+VkS8cN/GHgNiIhoyuIQvtDJg1DzGNknDmnf6m76+XnibUJOWA04JVfADvMvxhN9thKpv4D4NuL9QBRc0Dld9dNKMmgktaphkSAQfeiNVD8WMTPv2xgdex4o0GO8fTLa0VMgVlNezNMe+ZdIzpuzJMbwXk+czAdAI+6b2xem8+CVZE8Tv2V04SN1wsACIkZKDxoagQNqIVyjJmI1y3bmcybJnu4pmbilSOxrGquDA+LZdj34a4Fvn1Sht2DJcMuk8YBUCZN25AXWSihbgSIZJ93riX3ILQFpayhBLDkDYoG0ZjtEVjykrF0h1jzwUZGwjsj0C5VJqaLbOdNUyIDh9JJAq9tROOd+bbJ5yv/V3OGDXZr7GbHJQJEtHaCI1YDeFX+sYqi1ssheZVDrlDd6kaJHEEpMtAWniwIjHOCpEGjpeIaDMfDusDiTyGZdT36LGCJ3AyQyiA==
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3993.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(346002)(376002)(396003)(136003)(39860400002)(230922051799003)(1800799012)(64100799003)(186009)(451199024)(26005)(71200400001)(122000001)(3613699003)(921011)(66556008)(83380400001)(38100700002)(110136005)(66946007)(76116006)(966005)(64756008)(66476007)(316002)(66446008)(6636002)(478600001)(86362001)(5660300002)(52536014)(7416002)(2906002)(8936002)(8676002)(33656002)(55016003)(38070700009)(9686003)(7696005)(6506007)(41300700001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?LOx4hEK2VSusPKYj8wkk2cgA4AcBJRkWhKaTrI1yyiRJX4WsN8adkU4u61Uo?=
- =?us-ascii?Q?LNd2tlbi7h6hJ/LpMgstzeRGpmptO+u/kNAqA+xSqYrSxE+lNguhYpJtjEa+?=
- =?us-ascii?Q?oHXLK9QMN5DxzjLHLvszAzFFTm+K1aD2/axdrdjYxo2zBuNQXGN0fkRf+vFg?=
- =?us-ascii?Q?B8FcMMUQFTonRU15T9PwxqeePAl/oSPpYB+bWlT5sEUp9qMKMIC8QpOA/SeK?=
- =?us-ascii?Q?QXaXHbIWgc0UWS9X1ltNCjXrdfYK3EvsHvBPx9ikKieaA2G1GK9hhAm90Qf0?=
- =?us-ascii?Q?NZxGtAlMTuycehJFTCGcgOtIHkDALG2h7DBlX9C2LEWomgxFtxPGdccTiUz4?=
- =?us-ascii?Q?sLWnMEd2355QHoRLaQ7aqn2NI+OecSMARvfoK2Qzx3/vqC0krfM5JyyG5Tb/?=
- =?us-ascii?Q?quuhoNuRjM7fBKGXn105auLWjav6fEq9N0rE3g28PSX6VnutkAAtaMio35jg?=
- =?us-ascii?Q?zNL2opqBAk0cKhq18jkMlf6Xhr7Co7sP74AWM3oDAbJheeyH9WxyF3VCCE4p?=
- =?us-ascii?Q?Gbwfs10mc0BoAX/RC0HhikZBpEjNfiD+wBs5V9rS9dx/JFyvoLvblgBmHmA2?=
- =?us-ascii?Q?NRd6GjY9rlbGp+jC4nXPo3/XfIyqIrB1q2EbVaNtXl5VfwF0oH6sKwlGPq1V?=
- =?us-ascii?Q?48lGS8WyXUO0sVhp2kKwbhnoGX7Yiq1dioVucMi5MMvcKBb0W5/PViP0d2zG?=
- =?us-ascii?Q?7sZmbzwoAt+EnHm/ZkxAhQMfbZYzH5RY9vtC4DFvQDzD3TRZYtcg4quxWXWc?=
- =?us-ascii?Q?aCXbuWw0hLVKK8/bAxtlmyuwU2zXuuCuWQ1ynTk7cTVA/TEYdFZWu6LILb30?=
- =?us-ascii?Q?ZpW6EhqjpEA869DRNfvaOgd9XlTQqSybjXDAbDAL5QKSMglNCBVsaaoM1xfm?=
- =?us-ascii?Q?5LYRN+dRYhfwqdJvdSGCxbR3LKtdai91k6MYH1ZvfeU9GXfGBXFHg2e46QVC?=
- =?us-ascii?Q?AIdRzUmBvc204F7Xez2Kw35Mg6FKC8gp5MZofLe9QTW+aaS7zvgB6i5nMxVQ?=
- =?us-ascii?Q?GdPLgcVMclrjckyeetytYu00eoEtAn6Z3PoG6z2rvcubU66cG0eFR7vw0LOd?=
- =?us-ascii?Q?HUTkVlozlt8VPR/XS8PrLty+EUfpGjtjub4YvtLfFpX5jGfiI8tn6Sj+tTo5?=
- =?us-ascii?Q?83VhUdc8XWZgkZeO+5SGso4oZNsBTruJPrsbI68YnePitGWXExyXu49dArZV?=
- =?us-ascii?Q?GAS8xxgXQRALQHyNYhnLlyv7CtxJFfGwh7nuQOtyP7gzKgWnGT/fuyTkN6UE?=
- =?us-ascii?Q?f5lerxUMPDR1AEILwebyln+HYmXgsfwQ9Y9k7nC63rCd4n+++cp8Nqf8/rP8?=
- =?us-ascii?Q?vwgs2ouF494OSWD9S9pjU9bxSiSjJ3UtN3tiV9Xqx8/gEWsFqKgHFTQoJ5O1?=
- =?us-ascii?Q?tryH601cqipi5mqm3BEuQWuwGwodjPLylGZTLWpQhNNV0NEIKu8tDdNBroL8?=
- =?us-ascii?Q?bhf9NpmPlvfm3lnOOXGhHCzHf9PX0k2+yW0jzHEEtqEQIiyanoVmVRffr/Wl?=
- =?us-ascii?Q?nbwocQ698etzVxA9QHEoxnWt5M9pQo3Y8p+egUwK4/B96lTgFDb+4lH0LrJi?=
- =?us-ascii?Q?byxX7HzGdlIl8PQS4+I=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9104815EA6
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 04:55:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-5edfcba97e3so1425977b3.2
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 20:55:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1704344152; x=1704948952; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=FSGKxtpAayAcHObQDlsqsv0BU3tFHlXJLbZKNWj+7ms=;
+        b=ayevH5qTCLmtPdXljKi+/dXnP3FV0UPdKfeBX/TtMsZLOwVtgt/oQNHprF6aVCB/P5
+         mreopH9hG/Um6+LA1ckJUrOK0IV34wtC8GNmFS6P4IJfGuE3l9bqUKe/z4Bmiupp/l8v
+         NWdY7zutsTGnNorS/clx+7YA7aqf5vZTVIq0w=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704344152; x=1704948952;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=FSGKxtpAayAcHObQDlsqsv0BU3tFHlXJLbZKNWj+7ms=;
+        b=BB66WNN3KqhOEqYseBBtDoWeW7ioH50nLJxQSGqjHGTQMNWt/MR4vlgeS+HoAgQe//
+         LVMmysORpGJZ7F4X5yGb3uScpEbcONl2Kmp63UH92eptFSJ8kJj8cma+fdAr27GKgFEy
+         /GXb1P4vYkLE0rsg9a7J659dnZNJ+awedGzDwAamjWllosJpWfCftl0L8IGeBJGFEzVL
+         pkCWRmumx0wqpFStTGOIDGZsa976+egGOf9JJg/1nD2JpEyZxR/4h44v5hT5UZe4KSAi
+         IU7DMalQ+yWQVte6UwxVDJkeWW+oyGv2/HiO3t5pyeRgqXdcdFBqu2aSQo+JMMBcU9PD
+         6DOA==
+X-Gm-Message-State: AOJu0Ywl9Y4UwD0UJz7OHtBAuBXaTi7dQOp8bu8HwYBLH7dWaHm4agMq
+	polj6p4Lxbngr9SRbh+g4hHR5qyMWFy2k2zBh8B54w3RgbdA
+X-Google-Smtp-Source: AGHT+IEhxXj9nei6hm7QKNjakE0j9auM+VIHYHWIPNtlJlVEeu7Ar+6WuGQqpRBguFh1aTI89xgZzRPIbWdjItkGO3Q=
+X-Received: by 2002:a81:5d43:0:b0:5f3:2c5e:462f with SMTP id
+ r64-20020a815d43000000b005f32c5e462fmr101358ywb.51.1704344152353; Wed, 03 Jan
+ 2024 20:55:52 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3993.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5470966f-9c40-4d86-8900-08dc0ce0ebfa
-X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Jan 2024 04:52:15.0709
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: NOMBqcR7DAuoOsXxjjtm1AST+fLf61SgEE8YA0pJEE/QeKSa9wS49Qt8fqwC9S82
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN6PR12MB8541
+References: <20240102210820.2604667-1-markhas@chromium.org>
+ <20240102140734.v4.24.Ieee574a0e94fbaae01fd6883ffe2ceeb98d7df28@changeid>
+ <CAE-0n50zkwZ8nguUJcL1gjbuavhSU_rLxfGhanxB4YA7N34hLQ@mail.gmail.com>
+ <CANg-bXByhaSngW2AAG9h6DYHpiTUvh8+yw3LPU6ZQSCb62M-wg@mail.gmail.com>
+ <CAE-0n52u68wMHJGe8=jz4Y1y2=voycFEY15keebz9tPDDBgiqA@mail.gmail.com>
+ <CANg-bXDzLJgWLuH8Xj4GLYG=AVfcbmi_EfrA7DaHj4F6i350DA@mail.gmail.com> <CAE-0n52365_AYgjaXyV7+oB8WgaJVp5oCUzdsq7NquZsR08XXw@mail.gmail.com>
+In-Reply-To: <CAE-0n52365_AYgjaXyV7+oB8WgaJVp5oCUzdsq7NquZsR08XXw@mail.gmail.com>
+From: Mark Hasemeyer <markhas@chromium.org>
+Date: Wed, 3 Jan 2024 21:55:41 -0700
+Message-ID: <CANg-bXAVm01qoGUL2hUN9=3eK5o6c6BKtTUL82WiLL8cxFeaLA@mail.gmail.com>
+Subject: Re: [PATCH v4 24/24] platform/chrome: cros_ec: Use PM subsystem to
+ manage wakeirq
+To: Stephen Boyd <swboyd@chromium.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Sudeep Holla <sudeep.holla@arm.com>, 
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Rob Herring <robh@kernel.org>, 
+	Andy Shevchenko <andriy.shevchenko@intel.com>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Raul Rangel <rrangel@chromium.org>, Tzung-Bi Shih <tzungbi@kernel.org>, 
+	Benson Leung <bleung@chromium.org>, Bhanu Prakash Maiya <bhanumaiya@chromium.org>, 
+	Chen-Yu Tsai <wenst@chromium.org>, Guenter Roeck <groeck@chromium.org>, 
+	Prashant Malani <pmalani@chromium.org>, Rob Barnes <robbarnes@google.com>, 
+	chrome-platform@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-| Introduction                                                        |
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-This document provides a detailed overview of the proposed Kernel feature f=
-or FPGA Manager subsystem user interface.
-It describes the problem statement behind the proposal, the problem to be s=
-olved, a top-level solution design.
+> > > > > Does using the pm wakeirq logic require the use of 'wakeup-source'
+> > > > > property in DT? A quick glance makes me believe it isn't needed, so
+> > > > > please split that part out of this patch as well.
+> > > >
+> > > > No, 'wakeup-source' is not required, it provides an indication to the
+> > > > driver that the IRQ should be used for wake, which then enables the pm
+> > > > subsystem accordingly. If 'wakup-source' is not used, we're back to
+> > > > square one of making assumptions. Specifically in this case, it would
+> > > > be assumed that all SPI based EC's are wake capable.
+> > >
+> > > Is that the wrong assumption to make? My understanding of the DT
+> > > property is that it is used to signal that this device should be treated
+> > > as a wakeup source, when otherwise it isn't treated as one. In this
+> > > case, the device has always been treated as a wakeup source so adding
+> > > the property is redundant.
+> >
+> > For SPI, it's not the wrong assumption. I was trying to drop the
+> > assumption though to match ACPI/LPC behavior.
+>
+> Ok. Is the EC always a wakeup source? Not the EC irq, the EC device.
 
-Table of Contents:
-------------------
-A. Problem Statement and Background
-B. Scope and Out of scope of the proposal
-     B.1 Scope
-     B.2 Out of scope
-C. Proposed Solution
-D. Proposed User Interface Details
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-| A. Problem Statement and Background                                      =
-  |
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-The existing FPGA manager subsystem didn't have any user space interface (o=
-ther than the status/state in sysfs) in Kernel.=20
-Basically, FPGAs are semiconductor devices that can be reprogrammed for des=
-ired hardware functionality.
-FPGAs can be reprogrammed at runtime with different types of logic and IPs =
-as per user need and hence there is a need to use device tree overlays for =
-removing/updating/adding the devices at runtime for the IPs/controllers tha=
-t are present in FPGA.=20
-But we don't have any user interface in kernel for updating the device tree=
- at runtime.
+Yes. The powerd daemon enables the EC for wake [1]. At least on ACPI systems.
+[1] https://source.chromium.org/chromiumos/chromiumos/codesearch/+/81b23aeac510655f27e1d87b99b12c78146e7c37:src/platform2/power_manager/powerd/daemon.cc;l=611
 
-Sometime back there was a series sent by Pantelis Antoniou (https://lore.ke=
-rnel.org/lkml/1414528565-10907-4-git-send-email-pantelis.antoniou@konsulko.=
-com/).
-This patch introduced a user interface configfs for Device Tree overlays, a=
- method of dynamically altering the kernel's live Device Tree. However,  th=
-is patch series was not accepted in mainline due to various concerns.
-For more details refer to this link: https://elinux.org/Frank%27s_Evolving_=
-Overlay_Thoughts#issues_and_what_needs_to_be_completed_--_Not_an_exhaustive=
-_list
+> > Regardless,
+> > I can update the SPI code to assume a wake capable IRQ. But I'd like
+> > to keep the prerequisite device tree patches unless there's a good
+> > reason to drop them. Specifying 'wake-source' certainly doesn't hurt
+> > anything, and there are other improvements to the OF
+> > subsystem/documentation.
+>
+> I don't see any harm in having wakeup-source in the binding, but I'd
+> prefer it is behind a different compatible string as optional, and
+> introduced when we need to have an EC that doesn't wake up the system.
 
-One of the major valid concerns that were raised with this configfs interfa=
-ce was security as it opens up the interface to users for modifying the liv=
-e device tree.
+The 'wakeup-source' property is already optional. See patch 04 in this
+version of the series which updates the documentation surrounding the
+property. Or are you suggesting a completely new string so that we can
+be forever backward compatible? If that's the case, the property would
+indeed have to have inverted logic signifying a device that is *not*
+wakeup capable. It feels wrong to have to do something like that.
 
-So, in order to configure/program the FPGA devices, All the major vendors o=
-f FPGA are using this configfs series as out-of-tree patch for configuring =
-the FPGAs
-and there was never an attempt to introduce a generic interface to configur=
-e/program the FPGA in upstream and hence upstream kernel ended up in not ha=
-ving proper support for FPGAs.
+> Otherwise it's all future coding for a device that doesn't exist.
 
-The proposal below tries to address this gap of FPGA programmability by pro=
-viding an interface to the user.
+I agree adding 'wakeup-source' is future coding for a device that
+doesn't exist. It does provide (pseudo) feature parity with ACPI
+systems though. See my comment below about ACPI GpioInt/Interrupt
+resources.
 
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-| B. Proposed Solution                                                |
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-The proposed interface adds a new sysfs interface (of-fpga-region.c) as par=
-t of the fpga subsystem and it is responsible for supporting the below func=
-tionalities.
---> Provide the user interface for the FPGA subsystem to handle the below F=
-PGA relevant stuff.
-         - Bridges.
-         - FPGA Configuration.
-         - Driver - Probe/Remove
-                               =20
---> The new sysfs interface uses Device Tree overlay (DTO) files to configu=
-re/ reprogram an FPGA while an operating system is running.
-                - Restrict the overlay's subsystem usage only to FPGA regio=
-ns in order to mitigate the major security concern with configfs.
-                - Do validation checks on the user provided DTO files.
-                                - If the user provided DTO doesn't target a=
-n FPGA Region which is already part of the running kernel, then return -INV=
-ALID error.
-                                - If the DTO file contains multiple targets=
-, then return -INVALID error.
-                                - It will allow only Child nodes which are =
-part of targeted FPGA Region.
-                - It avoids Overlay notification calls . So that it will no=
-t interrupt the other subsystem's(Like; GPIO, I2C.....etc) exists in the ke=
-rnel.
-               =20
--->This proposed solution will not change the existing sequence When a=20
--->DT overlay that targets an FPGA Region is applied
-                - The FPGA Region will do the following:
-                - 1. Disable appropriate FPGA bridges.
-                - 2. Program the FPGA using the FPGA manager.
-                - 3. Enable the FPGA bridges.
-                - 4. The Device Tree overlay is accepted into the live tree=
-.
-                - 5. Child devices are populated.
-                - When the overlay is removed, the child nodes will be remo=
-ved, and the FPGA Region will disable the bridges.
-      =20
-                                                                    . -----=
----------------------------------.                       .-----------------=
-------------------------.                       =20
-                                                                   |       =
-                                             |                     |       =
-                                                 |
-                                                                   |       =
-                    .------------------|                     |-------------=
---------.                           |
-                                                                   |       =
-                    | sysfs_load() |<=3D=3D=3D=3D=3D=3D=3D> |Overaly_apply(=
-)|                          |=20
-.---------------------------------.                     |                  =
-         '------------------|                     |---------------------'  =
-                         |
-|                                          |                     |         =
-                                           |                     |         =
-                                               |
-|    New Sysfs interface   |        =3D=3D=3D=3D>   |       of-fpga-region =
-.c               |                     |            DT Overlay.c           =
-           |
-|       load/unload             |                      |                   =
-                                |                     |                    =
-                                    |
-'--------------------------------'                      |                  =
-    .---------------------|                     |-------------------------.=
-                     |
-                                                                    |      =
-               | sysfs_unload() |<=3D=3D=3D=3D=3D=3D=3D> | Overlay_remove()=
- |                    |
-                                                                    |      =
-                '-------------------- |                     |--------------=
------------'                     |
-                                                                    |      =
-                                             |                     |       =
-                                                |
-                                                                     '-----=
------------------------------- --'                       '-----------------=
--------------------------'
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-| D. Proposed User Interface Details                                       =
-        |
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-How to use the fpga sysfs interface.
+> It's
+> also a potential landmine if the driver patch is backported somewhere
+> without the DTS patch (maybe the DTS is not upstream?). Someone will
+> have to debug why wakeups aren't working anymore.
 
-To load Image:
-	 - echo "DTBO file" > /sys/class/of-fpga_region/<region>/load
+I can change the SPI driver so it doesn't look for the 'wakeup-source'
+property, keeping existing behavior where wakeirq is assumed. So there
+should be no issues with backporting.
 
-To unload Image:
-	 - /sys/class/of-fpga_region/<region>/unload
+> > > What is the goal of this patch series? Is it to allow disabling the
+> > > wakeup capability of the EC wake irq from userspace? I can see a
+> > > possible problem where we want to disable wakeup for the EC dynamically
+> > > because either it has no child devices that are wakeup sources (e.g. no
+> > > power button, no keyboard on ARM) or userspace has disabled all the
+> > > wakeup sources for those child devices at runtime. In that case, we
+> > > would want to keep the EC irq from waking up the system from suspend. Is
+> > > that what you're doing here?
+> >
+> > The root of this patch series stems from a bug where spurious wakes
+> > are seen on Skyrim.
+>
+> Are all 24 patches needed to fix spurious wakeups? Why can't we do a DMI
+> match table for Skyrim devices and disable the wakeirq logic on that
+> platform? That would be a much more focused and targeted fix, no?
 
-To get the image status (Load/Unload):
-	 - cat /sys/class/of-fpga_region/<region>/status
+It would be more focused and targeted, but I don't think it's the
+correct fix. Skyrim is not the quirk. The driver is incorrectly
+enabling the IRQ for wake even though a GPE exists for the EC to wake the AP.
+ACPI defines keywords to specify GpioInt and Interrupt
+resources as wake capable, and until recently [2], we were not
+flagging the respective resources correctly. Most ACPI Chromebooks
+have a dedicated GPE for wake, and enabling the IRQ for wake is
+unintentional IMHO.
+[2] https://review.coreboot.org/c/coreboot/+/79373
 
-Base Image
-               - Also called the "static image"
-               - An FPGA image that is designed to do full reconfiguration =
-of the FPGA.
-               - A base image may set up a set of partial reconfiguration r=
-egions that may later be reprogrammed.
+> > Copying some wording from the DTS patches:
+> > "Some Chromebooks use a separate wake pin, while others overload the
+> > interrupt for wake and IO. With the current assumption, spurious wakes
+> > can occur on systems that use a separate wake pin. It is planned to
+> > update the driver to no longer assume that the EC interrupt pin should
+> > be enabled for wake."
+> >
+> > This patch series will allow us to disable the ec_sync pin as a wake
+> > source on Skyrim as it already uses a dedicated wake gpio.
+>
+> Aha! This last sentence is the detail I've been looking for. Please put
+> these details in the commit text.
+>
+> "Skyrim devices are experiencing spurious wakeups due to the EC driver
+> always enabling the irq as a wakeup source but on Skyrim devices the EC
+> wakeup signal is a dedicated gpio separate from the irq."
+>
+> Please be direct and specific instead of writing in general terms.
 
-     .-----------------------.                       .---------------------=
------------------------.
-    | Host CPU              |                   |             FPGA         =
-                             |
-    |                                |                   |                 =
-                                           |
-    |                           -- -|                   |                  =
------------             ---------  |
-    |                         | H |                   |       |=3D=3D>| Bri=
-dge0 |<=3D=3D>| PRR0 | |
-    |                         | W|                   |       |         ----=
--------             --------    |
-    |                         |     |                   |       |          =
-                                         |
-    |                         | B |<=3D=3D=3D=3D=3D>    |<=3D=3D |         =
------------             --------   |
-    |                         | R |                   |        |=3D=3D>| Br=
-idge1 |<=3D=3D>| PRR1| |
-    |                         |  I |                   |        |        --=
----------              --------   |
-    |                         | D |                  |        |            =
-                                       |
-    |                         | G |                  |        |         ---=
---------               -------   |
-    |                         | E |                   |        |=3D=3D>| Br=
-idge2 |<=3D=3D>| PRR2 ||
-    |                          ----|                  |                   -=
-----------               --------  |
-    |                               |                  |                   =
-                                           |
-     '-----------------------'                     '-----------------------=
-----------------------'
+Sure, I can update the commit text :-)
 
-In the above diagram a typical FPGA is setup with a base image that created=
- three regions.
-Each region (PRR0 - 2) gets its own split of the busses that is independent=
-ly gated by a soft logic bridge (Bridge0 - 2) in the FPGA.
-The contents of each PRR can be reprogrammed independently while the rest o=
-f the system continues to function.
+In summary, there are a lot of comments that suggest different
+solutions. Here are the options I see:
+1. Skyrim DMI quirk
+2a. Update EC SPI driver to assume wake capable regardless of
+'wakeup-source' property being present
+2b. Remove 'wakeup-source' entries from DTS
+3. Leave the existing solution
 
-Form the above tropology the sysfs interface looks like as follows.
-
-For Base/static region:
-To load Image:
-                - echo "DTBO file" > /sys/class/of-fpga_region/FPGA/load
-
-To unload Image:
-                - /sys/class/of-fpga_region/FPGA/unload
-
-To get the image status (Load/Unload):
-                - cat /sys/class/of-fpga_region/FPGA/status
-
-For PRR0:
-To load Image:
-                - echo "DTBO file" >   /sys/class/of-fpga_region/PRR0/load
-
-To unload Image:
-                - /sys/class/of-fpga_region/PRR0/unload
-
-To get the image status (Load/Unload):
-                - cat /sys/class/of-fpga_region/PRR0/status
-
-For PRR1:
-To load Image:
-                - echo "DTBO file" >   /sys/class/of-fpga_region/PRR1/load
-
-To unload Image:
-                - /sys/class/of-fpga_region/PRR1/unload
-
-To get the image status (Load/Unload):
-                - cat /sys/class/of-fpga_region/PRR1/status
-
-For PRR1:
-To load Image:
-                - echo "DTBO file" >   /sys/class/of-fpga_region/PRR1/load
-
-To unload Image:
-                - /sys/class/of-fpga_region/PRR1/unload
-
-To get the image status (Load/Unload):
-                - cat /sys/class/of-fpga_region/PRR1/status
+I'm arguing for 2a (without 2b). This keeps backward compatibility
+while adding an indication that the EC is wake capable and keeps
+closer feature parity with the ACPI/LPC interface. FWIW, others have
+already reviewed/ack'd the dts patches.
 
