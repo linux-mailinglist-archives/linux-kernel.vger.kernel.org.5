@@ -1,108 +1,158 @@
-Return-Path: <linux-kernel+bounces-16513-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16514-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B953D823F8C
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 11:39:02 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 52937823F8F
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 11:39:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2FAAEB226DE
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 10:39:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5F75A1C203C0
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 10:39:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C388E20DD2;
-	Thu,  4 Jan 2024 10:38:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E7F520B39;
+	Thu,  4 Jan 2024 10:39:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="PimzDzdY"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Yf9wynvq"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ot1-f42.google.com (mail-ot1-f42.google.com [209.85.210.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9874F20B12
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 10:38:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1704364730;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=UBsofFS/gKrGHJmrD7vxg1XvYsRw/h2z5LmDFHSmzrw=;
-	b=PimzDzdY5sNi8daa6UiT8WNCxBOZvyyjeA/Cm60PY8uECNase8UkRQsu9pmPZjkhNMxhVq
-	vT+2NL/6PckKUhoBJ4+1QvmQE5vKyYcyLpwQt13Sm6dl8CWtUD92WcRYtjRpEXT8GnvXRz
-	E3QckJ2zfGIsAVlpaEUUzRk59V+SRhU=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-79-enNxeBIPNPueHODMRSoRNA-1; Thu, 04 Jan 2024 05:38:48 -0500
-X-MC-Unique: enNxeBIPNPueHODMRSoRNA-1
-Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-3368250f2a3so233923f8f.3
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 02:38:48 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08DA820DCC;
+	Thu,  4 Jan 2024 10:39:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f42.google.com with SMTP id 46e09a7af769-6dc8a63cb4aso130372a34.1;
+        Thu, 04 Jan 2024 02:39:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704364772; x=1704969572; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HwKVdXdW5gUlzbUYq6PKIihyslraOqeE1EIRqpwR3PA=;
+        b=Yf9wynvqsAdGqioFJNUk1MzpcbBo7pJBU6CJEf0KZF856FXKQ7uVxZ5viKUmA1u6Wb
+         qCR0miTS9ngA8yK0zaumbrmqPeM+Dd/Tz2jDt+YKyKxUtoV/h8DKVHVwIg60OuBXs/HB
+         FuYrwh2auzzvp5wCTodyU/nmXBmbHdlpzBEjZ6qHKpSNCISpJog0oRdEIaadAQ2eXV7h
+         7GwbeNiOcko4AXxHVnmZf7aJ+EqsfkG7wEJS8GPc24S6Sx/bwSWYEZf5E7csIscFwiDz
+         Zs7ZeRryesGhytuFZN20eUHIDzccf6/A0Hc3dBxACUSMtSXKWZe3m5ljCNk9nA+YXcmk
+         qBVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704364727; x=1704969527;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=UBsofFS/gKrGHJmrD7vxg1XvYsRw/h2z5LmDFHSmzrw=;
-        b=S7BZpvSAeN2Gjp41iEIK1AbJEliOLMGOkdj6mFlUkMdXnz5xqbq++RCJcfI5QC/g1c
-         jcYydNfdRJbJTJ61/Q2kCtzphQPgdumtVn87/jAxI4V71xsA57/NLh4T5lU6YxHWFG81
-         M+Acq/A9kUc7gt4FNLd8QLSx9t97VcwV6UmEOyu5c7P49wRh/olt7Bh2Z2agwBu2VfYZ
-         DvxiS7BEmZClP1Ags3WkyfWjzp2Qn9KRNem3mjKKbWCXvSpjLy8aMGgVFElm2XBW5pN+
-         VNy8v0pja1bsDE/Rpe1Wjgf6VbBeOrEXeYDmAKz06oQ/8MJDwkl0LOkzq16PvHyCd4OR
-         cFiw==
-X-Gm-Message-State: AOJu0YxGmD+KhzicDWFMB/17yZJBtPGzzA/k2q/effnAsXq7Gol7XWER
-	TB4RoyJmWoR52H7niwjl8e4nPlQySXECp8SkWYyFQetWZphTMz2AEqprukdQYjQyG89G2iDMqjV
-	k2HAJy/sYMq/kyhJydsLjtMuvjO5Dz+gj
-X-Received: by 2002:adf:cd90:0:b0:337:4e99:9193 with SMTP id q16-20020adfcd90000000b003374e999193mr114390wrj.2.1704364727742;
-        Thu, 04 Jan 2024 02:38:47 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHeMWiPhW+NjWkpVbwNVWkRYyy3U0zuceK83BPXwKod81rB2j/SBpSvif22g+CVtN6qF8Vbig==
-X-Received: by 2002:adf:cd90:0:b0:337:4e99:9193 with SMTP id q16-20020adfcd90000000b003374e999193mr114382wrj.2.1704364727440;
-        Thu, 04 Jan 2024 02:38:47 -0800 (PST)
-Received: from vschneid-thinkpadt14sgen2i.remote.csb (213-44-141-166.abo.bbox.fr. [213.44.141.166])
-        by smtp.gmail.com with ESMTPSA id h15-20020a5d430f000000b0033740e109adsm8900271wrq.75.2024.01.04.02.38.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Jan 2024 02:38:47 -0800 (PST)
-From: Valentin Schneider <vschneid@redhat.com>
-To: alexs@kernel.org, Ingo Molnar <mingo@redhat.com>, Peter Zijlstra
- <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>, Vincent
- Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann
- <dietmar.eggemann@arm.com>, Steven Rostedt <rostedt@goodmis.org>, Ben
- Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, Daniel Bristot
- de Oliveira <bristot@redhat.com>, linux-kernel@vger.kernel.org
-Cc: curuwang@tencent.com, Alex Shi <alexs@kernel.org>
-Subject: Re: [PATCH v2] sched/stat: correct the task blocking state
-In-Reply-To: <20240103081042.1549189-1-alexs@kernel.org>
-References: <20240103081042.1549189-1-alexs@kernel.org>
-Date: Thu, 04 Jan 2024 11:38:46 +0100
-Message-ID: <xhsmhy1d5ids9.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+        d=1e100.net; s=20230601; t=1704364772; x=1704969572;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HwKVdXdW5gUlzbUYq6PKIihyslraOqeE1EIRqpwR3PA=;
+        b=JmKXBTjnWeVE982rix8MXRht4mY18qvAlUKdyuBIwU2M7+ZGKaL1Lb6cblN4HH11My
+         zY8diQaKiavdN9yE6rs/7/Bz4sn1WTraBry9n5lCqsLJ8FPYUKjYI2D33VE5f1SstVTU
+         s07uvaHsKV9G8zDRoAfXuxGsVdo7amoOGwN3EXsjXithZq9+CmDgkXGpRQMEmJYZFyQU
+         I5skBNCOhASG613eJWFYPf5VIVJeZOxjjE0H9Tv2t8cZyaqAaV1gVIsh2v2rLVxb+s6i
+         ii6Nge61OOetcYIJyg3IV8FsyUG+fPo6aLdah1RSqWvHILMU8VEroPkPvizzqr7sx8Eu
+         E8Lg==
+X-Gm-Message-State: AOJu0Yz0YTIke+upVxOQyDw4TskrfvSR/vAKo6FDmhzAdFfgsD4Xrrno
+	ue6dXDo+yj/adTJPKyFalFpIbPAX3yaRRzb3EYg=
+X-Google-Smtp-Source: AGHT+IEVSjSuH2lgDlz0NaGQ3mjNHk2iC9rRuFcFho0tC9gSl0WNd0vxcbLAGnARFo2saM3kDnpDOxVkKQIHQxhQ1d8=
+X-Received: by 2002:a9d:6a10:0:b0:6dc:4d9e:12b4 with SMTP id
+ g16-20020a9d6a10000000b006dc4d9e12b4mr114898otn.34.1704364771740; Thu, 04 Jan
+ 2024 02:39:31 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20231229090643.116575-1-qiujingbao.dlmu@gmail.com>
+ <20231229090643.116575-3-qiujingbao.dlmu@gmail.com> <bbc6ebbb-9ec2-48af-b57e-a4dcb531973f@linaro.org>
+In-Reply-To: <bbc6ebbb-9ec2-48af-b57e-a4dcb531973f@linaro.org>
+From: Jingbao Qiu <qiujingbao.dlmu@gmail.com>
+Date: Thu, 4 Jan 2024 18:39:20 +0800
+Message-ID: <CAJRtX8TOXjiDfcq+GOqo-nnVtTYtbRRdhpzin4izJW-PtUuBHw@mail.gmail.com>
+Subject: Re: [PATCH v1 2/3] dt-bindings: power: sophgo: add Power-On-Reset/POR
+ for Sophgo CV1800 series SoC.
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: a.zummo@towertech.it, alexandre.belloni@bootlin.com, robh+dt@kernel.org, 
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
+	paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu, 
+	linux-rtc@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, dlan@gentoo.org, inochiama@outlook.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 03/01/24 16:10, alexs@kernel.org wrote:
-> From: Alex Shi <alexs@kernel.org>
+On Thu, Jan 4, 2024 at 4:37=E2=80=AFPM Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
 >
-> The commit 80ed87c8a9ca ("sched/wait: Introduce TASK_NOLOAD and TASK_IDLE")
-> stopped the idle kthreads from contributing to the load average. However,
-> the idle state time still contributes to the blocked state time instead of
-> the sleep time. As a result, we cannot determine if a task is stopped due
-> to some reasons or if it is idle by its own initiative.
+> On 29/12/2023 10:06, Jingbao Qiu wrote:
+> > Add devicetree binding to describe the Power-On-Reset/POR for Sophgo CV=
+1800 SoC.
 >
-> Distinguishing between these two states would make the system state clearer
-> and provide us with an opportunity to use the 'D' state of a task as an
-> indicator of latency issues.
+> Please wrap commit message according to Linux coding style / submission
+> process (neither too early nor over the limit):
+> https://elixir.bootlin.com/linux/v6.4-rc1/source/Documentation/process/su=
+bmitting-patches.rst#L597
+>
+> Subject: Make it concise. It's way over the limit. Also, unnecessary
+> full stop.
+>
+> This all applies to all your patches.
 >
 
-get_task_state() already reports TASK_IDLE as 'I', which should be what
-userspace sees (e.g. via /proc/$pid/stat). This is also the case for the
-sched_switch and sched_wakeup trace events.
+I will do that.
 
-I assume what you mean here is you first turn to schedstats to check
-whether there is any abnormal amount of blocking, and then if there is any
-you turn to tracing, in which case you'd like the schedstats to not make
-things look worse than they really are?
+> >
+>
+> > Signed-off-by: Jingbao Qiu <qiujingbao.dlmu@gmail.com>
+> > ---
+>
+> What changed here? Where is the changelog? Did you just ignore entire
+> feedback from v3?
 
+Actually, I separated the previous patches because there were issues
+in various places.
+I want to solve it bit by bit. Should I continue with the current
+patch changes or return to
+the previous patch?
+
+>
+> >  .../bindings/power/sophgo,cv1800-por.yaml     | 29 +++++++++++++++++++
+> >  1 file changed, 29 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/power/sophgo,cv18=
+00-por.yaml
+> >
+> > diff --git a/Documentation/devicetree/bindings/power/sophgo,cv1800-por.=
+yaml b/Documentation/devicetree/bindings/power/sophgo,cv1800-por.yaml
+> > new file mode 100644
+> > index 000000000000..8706230a1cbc
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/power/sophgo,cv1800-por.yaml
+> > @@ -0,0 +1,29 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/power/sophgo,cv1800-por.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Power-On-Reset/POR of the Sophgo CV1800 SoC
+> > +
+> > +maintainers:
+> > +  - Jingbao Qiu <qiujingbao.dlmu@gmail.com>
+> > +
+> > +description:
+> > +  This hardware provides triggering and timing control
+> > +  for chip power on, off, and reset.
+> > +
+> > +properties:
+> > +  compatible:
+> > +    const: sophgo,cv1800-por
+> > +
+>
+> Empty schema, drop entire file. You do not need it.
+>
+
+I will drop it.
+
+Best regards,
+Jingbao Qiu
+
+> Best regards,
+> Krzysztof
+>
 
