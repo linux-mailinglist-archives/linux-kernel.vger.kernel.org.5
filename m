@@ -1,151 +1,172 @@
-Return-Path: <linux-kernel+bounces-16640-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16641-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A56778241BA
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 13:26:53 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 295E08241C1
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 13:28:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 409EC2861BF
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 12:26:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 83475B23AC0
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 12:28:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E68FF219ED;
-	Thu,  4 Jan 2024 12:26:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1C67219ED;
+	Thu,  4 Jan 2024 12:28:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="qtMJfZA1";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="6snWFrcr"
+	dkim=pass (1024-bit key) header.d=solidrn.onmicrosoft.com header.i=@solidrn.onmicrosoft.com header.b="IggMOMiB"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
+Received: from EUR01-VE1-obe.outbound.protection.outlook.com (mail-ve1eur01on2077.outbound.protection.outlook.com [40.107.14.77])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 377092136C;
-	Thu,  4 Jan 2024 12:26:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sakamocchi.jp
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sakamocchi.jp
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-	by mailout.nyi.internal (Postfix) with ESMTP id 0FAAC5C0167;
-	Thu,  4 Jan 2024 07:26:40 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Thu, 04 Jan 2024 07:26:40 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
-	 h=cc:cc:content-type:content-type:date:date:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to; s=fm2; t=1704371200; x=
-	1704457600; bh=Meyf+8HOowsCgjAcne3s8KH81Tf6xBYj/bEm7WmbPCo=; b=q
-	tMJfZA1rfcIiQ8X6RgZu4gA+Q9w/l9+txbHbNWsYvav/l6Bh0NVeHijwEOF+34G0
-	G0BBIJdjbFUzfeErJzWhiN0X+qvLvsE6onlfP+Abf0Gzq+PYjnejQu9JwuC7ibAU
-	Xf2HtLK+1k4ROq/ewFLEcevgWRafSM1Eus8+m/0XmKwx4bcDBSytJzllJj9M9BjN
-	y9oghHZEWWjCRkD46+9J3s0H6zSvDi/v8UMsqXFuOmdXgrrCJJuAyg41gAQWuiJL
-	R8MpdIxzpfFqo3YV8Uxi7amKBTa35tNwot5nVLvjzJpaQj+lDwj5ECAI2SF8GxMN
-	QgIw7p3qdN4mzkWAdKGJg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1704371200; x=1704457600; bh=Meyf+8HOowsCgjAcne3s8KH81Tf6
-	xBYj/bEm7WmbPCo=; b=6snWFrcruHpwi2UbO+b5q/FK3U1BwtvipECnHLW4ys/V
-	TPqv2VkYODqqdAM9B4lb1VibdnO/UzRcb91s3yxlYhd1tK13vumo5Y+gQmqvBzRW
-	BrQK8gxy9QSQILzGI7xecrcgV11Ql97ubAAgIngZW7NdIZ1q32YFSWAyIyPqKbG2
-	ysDSoBxRQP4ddE84z6I+LZRfmjEJm8N7EdPylo2tEHRhkqWnfJqpSo4m3LquM4EN
-	5j3fkt9RA9c2SuFZSiX6Fbc4stHJekCCZfi6yB4Kq0LXvsSX0tbXb7SDIiOeZnai
-	RMEBSwXSCFZfBRaB1b5DmKMIGEwGrjdeyoXlxAWDsQ==
-X-ME-Sender: <xms:_6OWZfldj0zZ68b48xDEI4qo5mJ09BipIeFhYQq3GfzEFW2dNIuuPA>
-    <xme:_6OWZS3V-j4dBi4w5EfWcBWJkmU1brChjg8Rdw8Zn4wSu_Gvr63v3T0_lxo8j0_pK
-    kAZFh9uyJQvWX1OOhE>
-X-ME-Received: <xmr:_6OWZVqKL69TRxksJ2trlxF6TBAhRc0J7XvUI2lDv0dKe1uPP1NtySMYAyzSTWuzzcUxLuzrCRYh2w2zLV3aTOXEGeljPABOX2iU>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdegjedgfeelucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    goufhushhpvggtthffohhmrghinhculdegledmnecujfgurhepfffhvfevuffkfhggtggu
-    jgesthdtredttddtvdenucfhrhhomhepvfgrkhgrshhhihcuufgrkhgrmhhothhouceooh
-    dqthgrkhgrshhhihesshgrkhgrmhhotggthhhirdhjpheqnecuggftrfgrthhtvghrnhep
-    leevffeuteelhfeftddvvdevudelteegkeeghefgtddtieettdevkedtudefjeeinecuff
-    homhgrihhnpehsuhhsvgdrtghomhdpkhgvrhhnvghlrdhorhhgpdhsohhurhgtvghfohhr
-    ghgvrdhnvghtpdhrvgguhhgrthdrtghomhdplhgruhhntghhphgrugdrnhgvthenucevlh
-    hushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehoqdhtrghkrghs
-    hhhisehsrghkrghmohgttghhihdrjhhp
-X-ME-Proxy: <xmx:_6OWZXkwZinPso-f-nI7LyubDs-_LjXK9x-ekuGNt6s7J4_36ZInnw>
-    <xmx:_6OWZd0d30ki__Wc8u6NOZ7kGMW467HFGJOLwNcr5NhbUw5Ivy39ig>
-    <xmx:_6OWZWvhdpelLQNftBsjf5vkeKYHPFLT1fienqMXBwiUEShKGvy3YQ>
-    <xmx:AKSWZWzpc0uvOn6pzH7qSsoZZEMPf7PD2LlOHtBlbTNsIbeWcVru_A>
-Feedback-ID: ie8e14432:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 4 Jan 2024 07:26:38 -0500 (EST)
-Date: Thu, 4 Jan 2024 21:26:35 +0900
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-To: linux1394-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
-Cc: Jiri Slaby <jirislaby@kernel.org>,
-	Mario Limonciello <mario.limonciello@amd.com>,
-	stable@vger.kernel.org
-Subject: Re: [PATCH v2] firewire: ohci: suppress unexpected system reboot in
- AMD Ryzen machines and ASM108x/VT630x PCIe cards
-Message-ID: <20240104122635.GA350070@workstation.local>
-Mail-Followup-To: linux1394-devel@lists.sourceforge.net,
-	linux-kernel@vger.kernel.org, Jiri Slaby <jirislaby@kernel.org>,
-	Mario Limonciello <mario.limonciello@amd.com>,
-	stable@vger.kernel.org
-References: <20240102110150.244475-1-o-takashi@sakamocchi.jp>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CF8321373;
+	Thu,  4 Jan 2024 12:28:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=solid-run.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=solid-run.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=K8GHrHClKy8AInglKX8w5khuNFPGe1yk4QSec1Qyc6wVOJd9qJDs11emplrCuFw2hCnq1fvyZTuaL9UsFzTBFKQYX7XDg1df0NUpMx/L2rF53chewwQSS7qo2hWb5GIki5wwtBHfBkVgnTUaCQjiMoXbTvKC4b/kwiHuDdziv+iNp0DCeTI5g4MoFhNWjUymbIO6Pt8H5Y5Ff3jydzLggDZ5NoqZRTG+/+hR8eu66AJKjfJ9+pp51yfY6wt9+fhhXCtmxYrt0K0qmaAubgu0cZdj/OGy3p/fkG+q5dGymIc21YtV6X9CMK3H/beLr9xYxX6L6EAQ2k8kuHbBG/6xWA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=dswUDti2J2zGaV8ekq/K2F6vfHKQzKM/opaqG8LkzXQ=;
+ b=gf2FEbZxPppaKzjH9fTOH1I7qv1RQjtWbEk31FtCVM4GIls1CvHupqH+k4089IimemovynqNiRvxWH1BDdA8ae+uoYbVVO4tx5GqH3aJ5pAStoHu93prbdMTX+ZXZKiO/RTQ2VQya7kKM8bSyYayfcsS8f1CGI8tdUoUwHohf5Bi9n2D3kHtrAPvSWiNU3YBAcuvN+tC6rrx7oboW1IZRxspfge2TcDaVH3jjhebIlPMfJ6F1U0vGD8q1LPUKT2bpoK0nVEDB5zlu9ZCUU8BxABAMoCkUhnsb7flRDUJiPSmZ4pWnTc+zAK/0hr0CTjVIGcXglSMDl3dk1BvaGQNAg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=solid-run.com; dmarc=pass action=none
+ header.from=solid-run.com; dkim=pass header.d=solid-run.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=solidrn.onmicrosoft.com; s=selector1-solidrn-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=dswUDti2J2zGaV8ekq/K2F6vfHKQzKM/opaqG8LkzXQ=;
+ b=IggMOMiBu9/IUFF08IxCk8SXL0b8wh51loh/ny07ngSFHHBU5mS0+tZXCPRjOKZdwYJYCWv9lVaKZ2cG1kdmc02NT6hVhV0KH4TdnNlwYN4jOo6ZqApDdLtmGF7qVW4JhK0nj994S+zcHX009Kb5FTzKUNAACtpAK0mjiQgNYvg=
+Received: from AS8PR04MB8963.eurprd04.prod.outlook.com (2603:10a6:20b:42e::18)
+ by PA4PR04MB7967.eurprd04.prod.outlook.com (2603:10a6:102:b8::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.14; Thu, 4 Jan
+ 2024 12:28:15 +0000
+Received: from AS8PR04MB8963.eurprd04.prod.outlook.com
+ ([fe80::daf2:8c54:d469:793d]) by AS8PR04MB8963.eurprd04.prod.outlook.com
+ ([fe80::daf2:8c54:d469:793d%6]) with mapi id 15.20.7159.013; Thu, 4 Jan 2024
+ 12:28:15 +0000
+From: Josua Mayer <josua@solid-run.com>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Andrew Lunn
+	<andrew@lunn.ch>, Gregory Clement <gregory.clement@bootlin.com>, Sebastian
+ Hesselbarth <sebastian.hesselbarth@gmail.com>, Rob Herring
+	<robh+dt@kernel.org>, Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>
+CC: "linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>, "devicetree@vger.kernel.org"
+	<devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 04/11] dt-bindings: marvell: a38x: add kobol helios-4
+ board
+Thread-Topic: [PATCH v4 04/11] dt-bindings: marvell: a38x: add kobol helios-4
+ board
+Thread-Index: AQHaOzcd7FwvfjKH2k64f3uwzWp19LDJXa0AgAA+3gA=
+Date: Thu, 4 Jan 2024 12:28:14 +0000
+Message-ID: <765ad049-685d-4ced-b984-06f177a56bac@solid-run.com>
+References:
+ <20231230-support-clearfog-gtr-l8-sfp-v4-0-1d7f0e2c7128@solid-run.com>
+ <20231230-support-clearfog-gtr-l8-sfp-v4-4-1d7f0e2c7128@solid-run.com>
+ <f463c8b6-5dcf-45f8-8650-e3b3bf542248@linaro.org>
+In-Reply-To: <f463c8b6-5dcf-45f8-8650-e3b3bf542248@linaro.org>
+Accept-Language: de-DE, en-US
+Content-Language: de-DE
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=solid-run.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: AS8PR04MB8963:EE_|PA4PR04MB7967:EE_
+x-ms-office365-filtering-correlation-id: e58e18c8-a54d-4284-9165-08dc0d209fcf
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ P+3yqk3WRVWlxaLG36cVBr4eysK5p45A1fcCoQOdeTCa+P4KIPxyLSeebeLyX3i7cA7+BKOoSgmlGg06JMS8R5dYy4LNTLAK1D8c2GM/uRjWMDN99B/jHZ/tujDSD3GiWR1B1NCU/fBFXQ8tf1/RoSAMJVIhiemX7OjixRUUGReV7muvaJsdWztnmLnrUs3mdPonzAMTN+ONBVthBRnuNPsIufvoFaXhWR6a/szWes7Uw4nqWKuKn/6RnlwS4S4+fkJ6Qy1uk5aRmqCxDroFJViWtdprQ06ZtXLCsOjJGhvQF6YKgZtRRVlXhiJO9dCJxl5sY2JtksNaj7pfvRGe/TJ7T9uZWDtZiGY+48zXvY7t2ZhHCSFp6WvDetO0zQIxR4cphu3i9hnmC5rKUEIJ3QkZJ+J50zMpYE0quGxO1CL+KKdHM9ZK17NSf0f21QZPgI6SGaLJ8eso75VaqubMbdaX5VOesXWq20X1jtK/6tnPARlJ9xnz/v6BGr8D/J6tXTyIcqCXF4/UGu/XaWGVpb7F1nuSCpE0izYWdAZYV4TGUAULGbG40KLffYN40UJX7QmbHRmBGRz6LGX24fq0uc1juUAygWnrUNTIaDG2NFBtySkyk2Oztz7hjs4dXnOWcs8hb1STwg8RI7SUYyQP3w==
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB8963.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39840400004)(366004)(376002)(346002)(396003)(136003)(230922051799003)(451199024)(186009)(64100799003)(1800799012)(478600001)(6486002)(8676002)(6512007)(53546011)(71200400001)(6506007)(66476007)(4326008)(91956017)(8936002)(316002)(66556008)(76116006)(54906003)(66946007)(64756008)(66446008)(110136005)(122000001)(2616005)(26005)(5660300002)(7416002)(2906002)(41300700001)(38100700002)(36756003)(38070700009)(31696002)(86362001)(31686004)(45980500001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?ckNhbHluUjg0RVB1Sml3ZVY5R0luNW9TdmlzckY2aGFQWHJlTTZYT1B2a2Ru?=
+ =?utf-8?B?d08yaXVrSWk1enh3VlZsUmYxZEl1a0FpTUNzUmRpRFJMcUd0T1V2V2Y1R1dG?=
+ =?utf-8?B?S2pxQnllMldNSEFXdUhFbEVWOUdFb3dRUmd2RWVRN1JwT25ZVWhiOTNGM0FV?=
+ =?utf-8?B?NG9kY0VoWWRyTXNpdW5uQzgxUzcyMU9HcnRuckk5aHJGbTBxamlJUzgvdU1m?=
+ =?utf-8?B?RkU2czd2cGRLT0JNbXJhNWJnUGpJWkJDSmFoUWNBVFVKRjY0aDdSVUhReTRL?=
+ =?utf-8?B?c1JQSFoxOXIxYXBnYnI1MEhJQ0VoUStlZVJETXFsNE83eldPMHlBcXl4SUhp?=
+ =?utf-8?B?LzRHSkpWRG56aDdOUnJ4bEl2cnAvb1VHMC9DRDNoWjlTMGJjTW85V1IxSnhs?=
+ =?utf-8?B?d0l1RUdiOElOb0U1NXVrWDc0Ly9CZTVuanZXUjBlaGJXK0hFenU0U0tjY1Vr?=
+ =?utf-8?B?ejlQZ09RcGY2MVhOQmFScWhWamRZWlRGd0hOcFNCc3kwSFhzbEc3aXZFcDZH?=
+ =?utf-8?B?aU03aHFjRW9ENmVUMFh4QncvRGVOS291M2ZtQXFEUGFqVkZwQk9SYmxXbDB5?=
+ =?utf-8?B?WE9WN0haUWxMREdIb3h4WDFwaS9VRDJkT2RQa09aWkRPTGM0MHROa1E0WlJC?=
+ =?utf-8?B?RndseWdVSG5OK0VpYlk1TzA1TDVNMnpSdkludEluWkYvNndsVTY2U1NkSit0?=
+ =?utf-8?B?Y0MyeTJtbFArYVdBejJWU0VENzYrYmtwN2tLUGdwZ2pDMlREWUxxVjJJTEJj?=
+ =?utf-8?B?cHVmSTNPU1ZvZUVLUWV3dHpMYVdZN2JpbTFIeGJobVdhMitPd0Y3Zk10anN4?=
+ =?utf-8?B?cS80SkdVNFlpN2RqcGprRU1sL1dyRWlvMTdSaTJ2a0VhNWVtTklxbkhPLytV?=
+ =?utf-8?B?QittdXgzb0hEVUUvOWl6RHFXeERkbjVRLzdqdmZHcDlKUmNMcTMrSHQ5OHhk?=
+ =?utf-8?B?OUhkT1dtNUVNYzZZRE5iYzNnOUhqRlFCdkhQWjBMRjFGVEF1NjVwdEQ0V1Za?=
+ =?utf-8?B?SmxIbDVDRmUwSGtEbVRzdkxYejJ5ZXI3TFpUTlJkOXI2RHZQV08wcHNCM0hH?=
+ =?utf-8?B?Uk5HOTdmcUNYV1hGZTVHN0dBSlRBQk85YmhMS3oyVVZGVWh4RUxpa25xK1oy?=
+ =?utf-8?B?a09nbjk1bVJxZTc3L0RIS2hHOU53ODFFS0V0SUlPeUJveFArcE9MYUZYK2o2?=
+ =?utf-8?B?eXpZWlpOTTIzQzE1Qzh0YjE2aWU4bG50SHdlSVVUQzJrUSs4Nll1VHJNZm9J?=
+ =?utf-8?B?Q0h4WDg4a05sZ1QvckY1YWxiUjdKeHp6RFpLZlNEQldaL1BVdmlaWDNxUEJN?=
+ =?utf-8?B?ZFFtYzErckJZVFpLM2U2RVZqRkxvdHRGNVBpWGZvQ0RXY3F2Qi95bkRHai91?=
+ =?utf-8?B?dHlLdytFQVU0SFE2cG52UWw1NWl0S1dac3k0akZzWkVxRmt5NHlIQzcySStB?=
+ =?utf-8?B?cXoxSEMzaWFCNFp0UHR1bjlmSE5KYjdaZ1ZCd1RibFBuZUJyOFJVcWFIR0Vi?=
+ =?utf-8?B?YVRkeG5ibTcyTmNocDhSaW1scFlyQmllZThOcnBVZmxIS2w2ZG1telRPMjVp?=
+ =?utf-8?B?WHFXcjVaN1ZtRmkycElqN1ZaYXdJS25aQXV1V3ZDcjhGa3lZem5aUjl0bEZa?=
+ =?utf-8?B?Q3VDVks5aTVGKzhmb3Z6L01PZ0ZEMk01MHpCQytTQUtFMkV4Z2NGL25pZGNn?=
+ =?utf-8?B?cWRSTWJsWHYzRkFXMDBVMVZBbW1OOFlWaDFKU3N2anZMMzl0UDhoUzdwUnRN?=
+ =?utf-8?B?NzlodFR1VlY4cG45NTgxc0k1T013Q003Nlc2TkR1UTlFWG1vU0szWGIrMThm?=
+ =?utf-8?B?OUw4STNqSGtFd1JRbVorYVVZUHZxSTFYbWk0Q2xXOHBqMHlOY2YwWk1pdk8z?=
+ =?utf-8?B?MmRZV2pZU2NiQ1hMY21INUVyYzFKZUJ1NmoxdElSK1dmclNrY3kyMUFUOHdm?=
+ =?utf-8?B?VnR2SlFobHc3YlJzZWg5NDFiNTQvSXBpNlZVa1pSWElub3JpTTEramhMeGRz?=
+ =?utf-8?B?cjlocGI4WjRDMWNzUWlGSEZQM0R1NkhoYUpyMUt0eXZrVUFYT3E0TDRpT0RG?=
+ =?utf-8?B?WUkwZmNHWTl3Q3FZM213YXhSYmRrZ2Q4UXMyTUptek1jWVJNUlhTWFFnTVY3?=
+ =?utf-8?Q?aA76GOsQPbXcqdqaUA48npo/X?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <60D339495F9E0F4A8D6AFE9A6BE81DE9@eurprd04.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240102110150.244475-1-o-takashi@sakamocchi.jp>
+X-OriginatorOrg: solid-run.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB8963.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e58e18c8-a54d-4284-9165-08dc0d209fcf
+X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Jan 2024 12:28:15.0453
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a4a8aaf3-fd27-4e27-add2-604707ce5b82
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: oee1E7E34s6WwqGLnmWp+wJLy1OEO/LpPlwMIb4SksGpO9KgMb6TVt31UjGr4fteNjgxdkZ0jHm/VKpzW+loRw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PA4PR04MB7967
 
-Hi,
-
-On Tue, Jan 02, 2024 at 08:01:50PM +0900, Takashi Sakamoto wrote:
-> VIA VT6306/6307/6308 provides PCI interface compliant to 1394 OHCI. When
-> the hardware is combined with Asmedia ASM1083/1085 PCIe-to-PCI bus bridge,
-> it appears that accesses to its 'Isochronous Cycle Timer' register (offset
-> 0xf0 on PCI I/O space) often causes unexpected system reboot in any type
-> of AMD Ryzen machine (both 0x17 and 0x19 families). It does not appears in
-> the other type of machine (AMD pre-Ryzen machine, Intel machine, at least),
-> or in the other OHCI 1394 hardware (e.g. Texas Instruments).
-> 
-> The issue explicitly appears at a commit dcadfd7f7c74 ("firewire: core:
-> use union for callback of transaction completion") added to v6.5 kernel.
-> It changed 1394 OHCI driver to access to the register every time to
-> dispatch local asynchronous transaction. However, the issue exists in
-> older version of kernel as long as it runs in AMD Ryzen machine, since
-> the access to the register is required to maintain bus time. It is not
-> hard to imagine that users experience the unexpected system reboot when
-> generating bus reset by plugging any devices in, or reading the register
-> by time-aware application programs; e.g. audio sample processing.
-> 
-> This commit suppresses the unexpected system reboot in the combination of
-> hardware. It avoids the access itself. As a result, the software stack can
-> not provide the hardware time anymore to unit drivers, userspace
-> applications, and nodes in the same IEEE 1394 bus. It brings apparent
-> disadvantage since time-aware application programs require it, while
-> time-unaware applications are available again; e.g. sbp2.
-> 
-> Cc: stable@vger.kernel.org
-> Reported-by: Jiri Slaby <jirislaby@kernel.org>
-> Closes: https://bugzilla.suse.com/show_bug.cgi?id=1215436
-> Reported-by: Mario Limonciello <mario.limonciello@amd.com>
-> Closes: https://bugzilla.kernel.org/show_bug.cgi?id=217994
-> Reported-by: Tobias Gruetzmacher <tobias-lists@23.gs>
-> Closes: https://sourceforge.net/p/linux1394/mailman/message/58711901/
-> Closes: https://bugzilla.redhat.com/show_bug.cgi?id=2240973
-> Closes: https://bugs.launchpad.net/linux/+bug/2043905
-> Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-> ---
->  drivers/firewire/ohci.c | 51 +++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 51 insertions(+)
-
-Applied to for-linus branch[1]. I'll send it tomorrow and expect it applied
-to the mainline kernel, the latest stable kernel, and the longterm kernels.
-
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/ieee1394/linux1394.git/log/?h=for-linus
-
-Regards
-
-Takashi Sakamoto
+QW0gMDQuMDEuMjQgdW0gMDk6NDMgc2NocmllYiBLcnp5c3p0b2YgS296bG93c2tpOg0KPiBPbiAz
+MC8xMi8yMDIzIDE2OjQ0LCBKb3N1YSBNYXllciB3cm90ZToNCj4+IEFkZCBEVCBjb21wYXRpYmxl
+IGZvciB0aGUgaGVsaW9zLTQgbmFzIGJ5IEtvYm9sLCB3aGljaCBpcyBhbHJlYWR5IHVzZWQNCj4+
+IGluLXRyZWUuDQo+Pg0KPj4gVGhpcyBwcm9kdWN0IHNoYXJlcyBhIGNvbW1vbiBzeXN0ZW0gb24g
+bW9kdWxlIHdpdGggdGhlIHNvbGlkcnVuIGFybWFkYQ0KPj4gMzg4IGNsZWFyZm9nIGJvYXJkcywg
+aG93ZXZlciBpdCBpcyBub3QgZWFzaWx5IGRlc2NyaWJlZCBpbiBhIHNpbmdsZQ0KPj4gbGlzdCBk
+dWUgdG8gdGhlaXIgZXh0cmEgInNvbGlkcnVuLGNsZWFyZm9nLWExIiBjb21wYXRpYmxlIHN0cmlu
+Zy4NCj4+DQo+PiBTaWduZWQtb2ZmLWJ5OiBKb3N1YSBNYXllciA8am9zdWFAc29saWQtcnVuLmNv
+bT4NCj4+IC0tLQ0KPj4gIERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9hcm0vbWFy
+dmVsbC9hcm1hZGEtMzh4LnlhbWwgfCA5ICsrKysrKysrKw0KPj4gIDEgZmlsZSBjaGFuZ2VkLCA5
+IGluc2VydGlvbnMoKykNCj4+DQo+PiBkaWZmIC0tZ2l0IGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0
+cmVlL2JpbmRpbmdzL2FybS9tYXJ2ZWxsL2FybWFkYS0zOHgueWFtbCBiL0RvY3VtZW50YXRpb24v
+ZGV2aWNldHJlZS9iaW5kaW5ncy9hcm0vbWFydmVsbC9hcm1hZGEtMzh4LnlhbWwNCj4+IGluZGV4
+IDQ5NTBiODQwYmYxYy4uM2JhYmRhMGQ1NzVmIDEwMDY0NA0KPj4gLS0tIGEvRG9jdW1lbnRhdGlv
+bi9kZXZpY2V0cmVlL2JpbmRpbmdzL2FybS9tYXJ2ZWxsL2FybWFkYS0zOHgueWFtbA0KPj4gKysr
+IGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL2FybS9tYXJ2ZWxsL2FybWFkYS0z
+OHgueWFtbA0KPj4gQEAgLTE1LDYgKzE1LDE1IEBAIHByb3BlcnRpZXM6DQo+PiAgICBjb21wYXRp
+YmxlOg0KPj4gICAgICBvbmVPZjoNCj4+ICANCj4+ICsgICAgICAtIGRlc2NyaXB0aW9uOg0KPj4g
+KyAgICAgICAgICBLb2JvbCBBcm1hZGEgMzg4IGJhc2VkIGhlbGlvcyBuYXMuDQo+PiArDQo+IERy
+b3AgYmxhbmsgbGluZQ0KQWNrLg0KPg0KPj4gKyAgICAgICAgaXRlbXM6DQo+PiArICAgICAgICAg
+IC0gY29uc3Q6IGtvYm9sLGhlbGlvczQNCj4+ICsgICAgICAgICAgLSBjb25zdDogbWFydmVsbCxh
+cm1hZGEzODgNCj4+ICsgICAgICAgICAgLSBjb25zdDogbWFydmVsbCxhcm1hZGEzODUNCj4+ICsg
+ICAgICAgICAgLSBjb25zdDogbWFydmVsbCxhcm1hZGEzODANCj4+ICsNCj4+ICAgICAgICAtIGRl
+c2NyaXB0aW9uOg0KPj4gICAgICAgICAgICBTb2xpZFJ1biBBcm1hZGEgMzg4IGNsZWFyZm9nIGZh
+bWlseSBzaW5nbGUtYm9hcmQgY29tcHV0ZXJzLg0KPj4gIA0KPj4NCj4gQmVzdCByZWdhcmRzLA0K
+PiBLcnp5c3p0b2YNCj4NCg==
 
