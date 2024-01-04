@@ -1,115 +1,184 @@
-Return-Path: <linux-kernel+bounces-17305-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17307-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 19870824B26
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 23:46:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D8FE824B2B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 23:48:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B268D285D26
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 22:46:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9CFCA1F24BB9
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 22:48:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CB3D2D02B;
-	Thu,  4 Jan 2024 22:46:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A2832D035;
+	Thu,  4 Jan 2024 22:48:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fa+5SOze"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oo1-f45.google.com (mail-oo1-f45.google.com [209.85.161.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C3652CCD6
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 22:46:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rLWTt-0003LX-RS; Thu, 04 Jan 2024 23:46:29 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rLWTs-000SXg-6R; Thu, 04 Jan 2024 23:46:28 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rLWTs-003ePm-0J;
-	Thu, 04 Jan 2024 23:46:28 +0100
-Date: Thu, 4 Jan 2024 23:46:27 +0100
-From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Emil Renner Berthing <emil.renner.berthing@canonical.com>
-Cc: William Qiu <william.qiu@starfivetech.com>, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org, linux-pwm@vger.kernel.org, 
-	Emil Renner Berthing <kernel@esmil.dk>, Rob Herring <robh+dt@kernel.org>, 
-	Thierry Reding <thierry.reding@gmail.com>, Philipp Zabel <p.zabel@pengutronix.de>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Hal Feng <hal.feng@starfivetech.com>, Paul Walmsley <paul.walmsley@sifive.com>, 
-	Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>
-Subject: Re: [PATCH v10 3/4] riscv: dts: starfive: jh7100: Add PWM node and
- pins configuration
-Message-ID: <xd2ryic6mr6d6cbljjbhmr56mfpchfzkmc3lnznhmoiwyzip2a@6bhbho267e7c>
-References: <20231222094548.54103-1-william.qiu@starfivetech.com>
- <20231222094548.54103-4-william.qiu@starfivetech.com>
- <CAJM55Z9tyrR7emEBrY0+Fnc_LUFQHkqYHLQ4ptL=XQMy52qtVw@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63E432CCAD;
+	Thu,  4 Jan 2024 22:48:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f45.google.com with SMTP id 006d021491bc7-594bea92494so513719eaf.2;
+        Thu, 04 Jan 2024 14:48:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704408491; x=1705013291; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ig4wvFvhtr+8Tfek404VfnLve6ynwSGmNBANXDk4iHk=;
+        b=fa+5SOzeXcqCBhjv8dgmTw/HIsrzZkDuBXZ+zgsfYPBe15CnBgIaA2AvZZyxEstqcK
+         P6Kqgbq+WoYzRMRMeTOfp8OKFg/txyIm+Au4bnEalnq33u6G9P0tq8U2r+IUAtcSh7dF
+         QchDgOeFGbMz8b1oOP2t578JZusrc5GKmp+1U3Q5ZcDP3+06cQ+8GIY7n+8xujmOfnjz
+         yRE0TeXO0UIPVL+rE1+E8qhLe23xhCmCdzo7Ged2X6GEwVNVjJaB3FRD6dgPyoxcx1io
+         UZEOZonCuxTsW1avqqw3FegaeLRITzpE7Pfx654nkkox7L46ubuNmxnC09s4RCMXv27r
+         L+Zg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704408491; x=1705013291;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ig4wvFvhtr+8Tfek404VfnLve6ynwSGmNBANXDk4iHk=;
+        b=E7lUwtYFxKFUTsSSrnkXKPHtLPBsvQLGwkk1zyK5d9193EKu6jz9ARc36//PE7ywG1
+         Zc0+Iduktq4XRlsoGQmuzSmJc+MFa2BrfvOQdxfJZ+Sa7N7GrMi07hUfvIDSLwsNlpgL
+         M1QORlEPsGC+TNveWYnpFUluW1eZ4wVJQ/CNiJv9xckynbgmpE1gmOBe9IFphBgSdYut
+         gun6sojPdsNAnOrLGNbQ1KAxyxqjHPan3ZjKSsb34lHFa8UvtZFeUoeeAV6+7ymQLCzM
+         qwABEBz1VmpOFeMRJchimA2lh325iG2JbVOfcOAlywxqlNrfzX917BoD605gd7dpP+rw
+         7Org==
+X-Gm-Message-State: AOJu0YxGSVFC/CNw6djSF3TcN6hfWLMIodsf/8aHq1SHkc/RULNYJLUB
+	skgP6pw9eJ4vzjk8tsdxK8w=
+X-Google-Smtp-Source: AGHT+IGfvR8XJZSQ113ZitUd9zmFRfxDm7xJXcURskPH74zVS3CNlFiUK0SJbdtVxWMZKsXhvNmPGg==
+X-Received: by 2002:a05:6820:2284:b0:594:35b8:5fc8 with SMTP id ck4-20020a056820228400b0059435b85fc8mr1380293oob.8.1704408491424;
+        Thu, 04 Jan 2024 14:48:11 -0800 (PST)
+Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
+        by smtp.gmail.com with ESMTPSA id fz27-20020a05622a5a9b00b0042545c7beccsm189536qtb.59.2024.01.04.14.48.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Jan 2024 14:48:11 -0800 (PST)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+	by mailauth.nyi.internal (Postfix) with ESMTP id 9256C27C005A;
+	Thu,  4 Jan 2024 17:48:10 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute2.internal (MEProxy); Thu, 04 Jan 2024 17:48:10 -0500
+X-ME-Sender: <xms:qTWXZaaLeprJbFdosXfbnBS-a9jPW6PW_g3juXTTRn4R6DPmkg8-5A>
+    <xme:qTWXZda1othseXpQ2eCV4I0eLZ_QL2XyP4ueBkbUBtVD_Npg6FTrTpF7OOjXjPSdM
+    hYRDRNg2OHL96dx2A>
+X-ME-Received: <xmr:qTWXZU8ITpl5zXQ28ueQo_nffOCyJ6Wb51zWgmGMixWnHIMGST3BD_yVHC8>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdegkedgtddvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhu
+    nhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrg
+    htthgvrhhnpeehudfgudffffetuedtvdehueevledvhfelleeivedtgeeuhfegueeviedu
+    ffeivdenucevlhhushhtvghrufhiiigvpedunecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    gsohhquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdei
+    gedqudejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfih
+    igmhgvrdhnrghmvg
+X-ME-Proxy: <xmx:qTWXZcrvZ9FAFmVfhceXvYE6FTMAs0Tlhh1E1uR6X1kxjUYhfgyxmw>
+    <xmx:qTWXZVpZLAHnlFff6jPlesCGC0GTofTMy1YiisUxa4bXKQCIG5dpYQ>
+    <xmx:qTWXZaSDB0QpYmhEe59A1te0s9c0vnKksAd2XsfZjx-tD59wMIiZtA>
+    <xmx:qjWXZbYoRUTD6xR8w5ng7C92aLRS_JdeO2N3idwgSb8AYO3ej_8PqA>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 4 Jan 2024 17:48:09 -0500 (EST)
+Date: Thu, 4 Jan 2024 14:47:01 -0800
+From: Boqun Feng <boqun.feng@gmail.com>
+To: Alice Ryhl <aliceryhl@google.com>
+Cc: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>,
+	Wedson Almeida Filho <wedsonaf@gmail.com>,
+	Gary Guo <gary@garyguo.net>,
+	=?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
+	Benno Lossin <benno.lossin@proton.me>,
+	Andreas Hindborg <a.hindborg@samsung.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+	Waiman Long <longman@redhat.com>, Tiago Lam <tiagolam@gmail.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Martin Rodriguez Reboredo <yakoyoku@gmail.com>,
+	rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 4/4] rust: sync: update integer types in CondVar
+Message-ID: <ZZc1ZcgzdRHtipr0@boqun-archlinux>
+References: <20240104-rb-new-condvar-methods-v3-0-70b514fcbe52@google.com>
+ <20240104-rb-new-condvar-methods-v3-4-70b514fcbe52@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="t6vmolgghsdowiew"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAJM55Z9tyrR7emEBrY0+Fnc_LUFQHkqYHLQ4ptL=XQMy52qtVw@mail.gmail.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20240104-rb-new-condvar-methods-v3-4-70b514fcbe52@google.com>
 
+On Thu, Jan 04, 2024 at 02:02:44PM +0000, Alice Ryhl wrote:
+[...]
+> -use core::ffi::c_long;
+> +use core::ffi::{c_int, c_long, c_uint};
 
---t6vmolgghsdowiew
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+core::ffi::c_uint is not needed here. And 
 
-Hello Emil,
+	use core::ptr;
 
-On Sun, Dec 24, 2023 at 02:49:34AM -0800, Emil Renner Berthing wrote:
-> William Qiu wrote:
-> > Add OpenCores PWM controller node and add PWM pins configuration
-> > on VisionFive 1 board.
-> >
-> > Signed-off-by: William Qiu <william.qiu@starfivetech.com>
->=20
-> Sorry, I thought I already sent my review. This looks good.
->=20
-> Reviewed-by: Emil Renner Berthing <emil.renner.berthing@canonical.com>
+is missing (for the `ptr::mut_null()` below)
 
-Is this also an implicit Ack to take this patch via the pwm tree once
-the earlier patches are ready? Or do you want to take it via your tree?
-(Maybe already now together with the binding? If so, you can assume my
-Reviewed-by to be an implicit Ack for that.)
+>  use core::marker::PhantomPinned;
+>  use macros::pin_data;
+>  
+[...]
+> @@ -174,23 +179,16 @@ pub fn wait_interruptible_timeout<T: ?Sized, B: Backend>(
+>          }
+>      }
+>  
+> -    /// Calls the kernel function to notify the appropriate number of threads with the given flags.
+> -    fn notify(&self, count: i32, flags: u32) {
+> +    /// Calls the kernel function to notify the appropriate number of threads.
+> +    fn notify(&self, count: c_int) {
+>          // SAFETY: `wait_list` points to valid memory.
+> -        unsafe {
+> -            bindings::__wake_up(
+> -                self.wait_list.get(),
+> -                bindings::TASK_NORMAL,
+> -                count,
+> -                flags as _,
+> -            )
+> -        };
+> +        unsafe { bindings::__wake_up(self.wait_list.get(), TASK_NORMAL, count, ptr::null_mut()) };
+>      }
+>  
+[...]
+> diff --git a/rust/kernel/task.rs b/rust/kernel/task.rs
+> index ffb4a51eb898..37468613ac0d 100644
+> --- a/rust/kernel/task.rs
+> +++ b/rust/kernel/task.rs
+> @@ -10,6 +10,14 @@
 
-Best regards
-Uwe
+Missing:
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+	use core::ffi::{c_long, c_int, c_uint};
 
---t6vmolgghsdowiew
-Content-Type: application/pgp-signature; name="signature.asc"
+here.
 
------BEGIN PGP SIGNATURE-----
+Regards,
+Boqun
 
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmWXNUMACgkQj4D7WH0S
-/k5yJwf8DhWKIA7w5Efn+CTxdLq+56oqG3ETi+SoNHAw6aIw5EMpC/VJwzn87CjW
-rFbc+3JtR/MZvQtlQeEaKu8+IuYRUW0iOFQ2FjVJXI2219g9PsTgMdx9fQmlZFqp
-iFg3DTWerqhqGu258walJUgojVdC6plX2sjlVWvf9UIIaYv9yR4IYMffeFWw0MM/
-dThWdIdYfx4BtxMJWxkiw3QQr7s1tpJ55weroLPO5CAMqXrjiC6YGmcelTF8mRCJ
-6pFloQ1MTC6kT5gERkxBlnO1V+WocrNXPamPFavh5UtGL0PmsZqQzUT49MWwb2si
-sXuOgYjeLG8VgEj8X0+2I+x7k90eDg==
-=xoqr
------END PGP SIGNATURE-----
-
---t6vmolgghsdowiew--
+>  /// A sentinal value used for infinite timeouts.
+>  pub const MAX_SCHEDULE_TIMEOUT: c_long = c_long::MAX;
+>  
+> +/// Bitmask for tasks that are sleeping in an interruptible state.
+> +pub const TASK_INTERRUPTIBLE: c_int = bindings::TASK_INTERRUPTIBLE as c_int;
+> +/// Bitmask for tasks that are sleeping in an uninterruptible state.
+> +pub const TASK_UNINTERRUPTIBLE: c_int = bindings::TASK_UNINTERRUPTIBLE as c_int;
+> +/// Convenience constant for waking up tasks regardless of whether they are in interruptible or
+> +/// uninterruptible sleep.
+> +pub const TASK_NORMAL: c_uint = bindings::TASK_NORMAL as c_uint;
+> +
+>  /// Returns the currently running task.
+>  #[macro_export]
+>  macro_rules! current {
+> 
+> -- 
+> 2.43.0.472.g3155946c3a-goog
+> 
 
