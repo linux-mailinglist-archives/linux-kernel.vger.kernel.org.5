@@ -1,64 +1,64 @@
-Return-Path: <linux-kernel+bounces-16398-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16399-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 31EF2823DE0
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 09:49:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60CF1823DE3
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 09:49:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4B0821C2110A
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 08:49:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 14A091F24E1D
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 08:49:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30B6B20327;
-	Thu,  4 Jan 2024 08:48:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FF721EA8A;
+	Thu,  4 Jan 2024 08:49:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="sByGSUQT"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ufa7xdkX"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
+Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A1D2200C3
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 08:48:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60B541E535
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 08:49:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a28da6285c1so43732766b.0
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 00:48:56 -0800 (PST)
+Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a27cc46d40bso29012566b.0
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 00:49:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704358135; x=1704962935; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1704358149; x=1704962949; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=yEeJCxTv4FtQCXSjfyLRBbFqtRimpgdlnbXrXwN26rQ=;
-        b=sByGSUQTGwUU1h9JBTaFfJ2gEAJkdJXB4M6vWkfvSR87959qBVDlCyYk4CrbepHzVT
-         tr2vWkBX7wFpJJv+t8x5wDamBpTTTcRhd7SSmNCLlsodCAIoem6u+f7d1ndV0UIROo2T
-         e73pOm07i1BS6us/MPYoFFSmnEZey/z3Y8on1tNpHh+1XrSFijx7OpRvi7i0AP89xTJj
-         DuAq0/FJN4wA8GMq5f/RLeHSCek59BdlHs99MbVF5awvG9JgZbm8ZT9wxe61AYyI76pz
-         2JVCHvhjVM83zKy+YnwrT7+GYT898vVd5RAKabDdHpcg3UH1izY0sRucnwG88dKCuuLT
-         J/Cg==
+        bh=rSUAhs2NZ2z2mbGMEeYh4n4nTpBCrMv4nvgeVWSIKwI=;
+        b=ufa7xdkX1iHvj3XRT5E67RHb2rrwnxLMiu+A0mVnfBH6I92AJcl59mfjcIJNRHooVD
+         8Eb3JrmkSVwDWPyk6HLbMf9AGy1D7My3dia0ZTQjSBBUSILeUgAp6N9G0gtyhX7ruxOv
+         rFEdJyV+T8ldlUBtT3ukiIVRWAPv8LvmqPtZan2MU7x/WJtv90uNduxcr5q8tr6r0TGY
+         yJ7hy+WCoXQp4zys/y6VGEnEofoMXEBYyMz4u5G89E+D/eq8dta5kK6s0Peuj0oADfN7
+         Q7i1fJIICcInyH9mL/w5c/YHCQLTMqfy2+BpGPgtn7CX2velq/zXBf9SzLzg63S3IjVx
+         WL8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704358135; x=1704962935;
+        d=1e100.net; s=20230601; t=1704358149; x=1704962949;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=yEeJCxTv4FtQCXSjfyLRBbFqtRimpgdlnbXrXwN26rQ=;
-        b=jdCxfU0ar6ZDiG13uCLsiSGzwPnE/pnqlLBJT6xrjp8u6m7kcVb651c4r/el7uaJrN
-         smDh5yXytM7bHRbJ645t3L75F5/cNer1wrs85ieNKpAgS6YjqbT1E31nPeLfZctRv5R+
-         Dq3xh4uzlizzmyMETvz3JpX1ecGBJdTtTCsa5xumUHdmC2nrApMlDodPFI7OQ/F88ETj
-         TEJw6h1V7LppMxGjsUhu+MgzIrs3c0mNuEWttNE37tEZ1l1JLz9Bfj5Vzb18ZkgdVBzt
-         cUIYLuU0Ri5kRGBv5Fbnxn7OBRowxcePOgvxAZzDmir1MZHESl3MQnhr7c2wU2vQESf1
-         6/Rw==
-X-Gm-Message-State: AOJu0YzBLHauRfZd/E88YxpKGftu5OnoM8eKTBd2yWptCsJBCxiDUqa5
-	M39ErPS0NAdQded0tqaDrbXWT+I8QUiLZg==
-X-Google-Smtp-Source: AGHT+IHdPFIhZxpEJfM/1lgjNAuOg7v60s+AHIPrEc9zJvsEnw7ZutVIL8Z0nh5dPL+vc6CueOwjOw==
-X-Received: by 2002:a17:907:2e19:b0:a26:e35a:de3d with SMTP id ig25-20020a1709072e1900b00a26e35ade3dmr219265ejc.23.1704358135332;
-        Thu, 04 Jan 2024 00:48:55 -0800 (PST)
+        bh=rSUAhs2NZ2z2mbGMEeYh4n4nTpBCrMv4nvgeVWSIKwI=;
+        b=tjUOEGlAdv8clkgEP+M0ct0v8bbRdMuQyJewemQYrZ8qBUwfVcS3tOGB1b/M8r8p+l
+         P+v6FmdmXxfKlm/N1MA1osHdraaNazhz4kkk7RYljxohkAdBmATKXL1hxjpuuI7IG0py
+         Dmgs5U0pVDtEtdDGbXBPrVK6IGJZiAhN0vZ49u6EHqjt209ZBS6ujjHWn7BVhW6m7BdU
+         iwsuv63+biGvx6N7gfc9ozfMqSCTGrTNbGtWt32IQa1X2RW26cruqdvg2VCsOO4zHttA
+         Ml0e/OwsNBUava/9vlaLwvAsTKAVxSJD5H74Kzh6yzAT1gUbFQ7GjWTkkwg4S3y3G/2T
+         myZw==
+X-Gm-Message-State: AOJu0YyWvzxAEpMws5LU9Sp3DT1lNveXCZHWq5qD7FC/fAFEkpe2kaWa
+	XGNotgDcwoF88Tf8xt1Rs+PgkOZMr0bnvw==
+X-Google-Smtp-Source: AGHT+IFibIboJcyAM3xsZeZ5KUMQSk8ULFBx9rBI5F4qM8gGsw42blOfpRnmj4DU9atsZV+2WIEDjg==
+X-Received: by 2002:a17:906:340c:b0:a27:7339:fa16 with SMTP id c12-20020a170906340c00b00a277339fa16mr99287ejb.70.1704358149279;
+        Thu, 04 Jan 2024 00:49:09 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id ka24-20020a170907921800b00a26a80a58fcsm13126060ejb.196.2024.01.04.00.48.54
+        by smtp.gmail.com with ESMTPSA id ka24-20020a170907921800b00a26a80a58fcsm13126060ejb.196.2024.01.04.00.49.08
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Jan 2024 00:48:54 -0800 (PST)
-Message-ID: <23dea360-b1a6-46e7-ad30-94f3e4e577d8@linaro.org>
-Date: Thu, 4 Jan 2024 09:48:54 +0100
+        Thu, 04 Jan 2024 00:49:08 -0800 (PST)
+Message-ID: <0d62d425-0739-4c8f-b064-9e3e6740e821@linaro.org>
+Date: Thu, 4 Jan 2024 09:49:08 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,7 +66,8 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V2 1/3] dt-bindings: clk: sprd: Add UMS9620 support
+Subject: Re: [PATCH V2 2/3] clk: sprd: Add dt-bindings include file for
+ UMS9620
 Content-Language: en-US
 To: Chunyan Zhang <chunyan.zhang@unisoc.com>, Stephen Boyd
  <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
@@ -77,7 +78,7 @@ Cc: linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
  Baolin Wang <baolin.wang@linux.alibaba.com>,
  Chunyan Zhang <zhang.lyra@gmail.com>
 References: <20240104072148.1619009-1-chunyan.zhang@unisoc.com>
- <20240104072148.1619009-2-chunyan.zhang@unisoc.com>
+ <20240104072148.1619009-3-chunyan.zhang@unisoc.com>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -123,22 +124,16 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240104072148.1619009-2-chunyan.zhang@unisoc.com>
+In-Reply-To: <20240104072148.1619009-3-chunyan.zhang@unisoc.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
 On 04/01/2024 08:21, Chunyan Zhang wrote:
->    "#clock-cells":
->      const: 1
->  
->    clocks:
-> -    minItems: 1
-> -    maxItems: 4
->      description: |
->        The input parent clock(s) phandle for the clock, only list
->        fixed clocks which are declared in devicetree.
->  
-> -  clock-names:
+> This file defines all UMS9620 clock indexes. It should be included in
+> the DTS file(s) in which there're devices using these clocks.
+> 
+> Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
+> ---
 
 Implement my comments from v1.
 
