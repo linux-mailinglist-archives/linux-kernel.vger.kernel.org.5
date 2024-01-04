@@ -1,119 +1,176 @@
-Return-Path: <linux-kernel+bounces-17042-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17043-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 374D582477D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 18:32:00 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B00F582477F
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 18:32:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5A1C31C2421D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 17:31:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BD9071C242A1
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 17:32:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A8DD286AD;
-	Thu,  4 Jan 2024 17:31:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BB13286BF;
+	Thu,  4 Jan 2024 17:32:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="WQr6YuxP"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="DlxtnQRo"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [95.215.58.188])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8673928DB8
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 17:31:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1d44200b976so4960175ad.2
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 09:31:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1704389509; x=1704994309; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=j2qn6VAQhWQUb4CiHmq8h+Yo362Cgbx3EEBUJCdDtwc=;
-        b=WQr6YuxPgGGirkeMuBYn5m87aN/cWl4KLkdmtHWAe2SMlLpElb62RkJyO5b6q3qD/o
-         4sXA4EgRRRzrB7/2cb3geQBDsRz/nD7ReYUpyYB6QKuQoP6tV9r0A8BQO4vL3Q6NCRLC
-         qsW/ooJr0c10Pp8kq0dWD6aZ1QHk3spJ5lCkvgSpYltKWfwbzQ27Xj1LGlTUIk/n6xPD
-         nkuMM7bsulVLJCSCD3N7KLTkooYvh8EwYwbnRFtUlueEnuJjsrpkJOPtMGNyUY88s7VG
-         YavHcxPLjpDsJpY/jwk78eq3MFEvR/TVt66k81sCJRsowLt8u/QGbbgfpMYKZz+KpT/p
-         E7Cg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704389509; x=1704994309;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=j2qn6VAQhWQUb4CiHmq8h+Yo362Cgbx3EEBUJCdDtwc=;
-        b=oiDkRBOYC6LBa0Y7LxnIHs0NkFDGFBU7BWucwRKzrCgASPG200Hf07s5F+xzzNzYiC
-         KCkrs7iRBaDkZWFwvS+HUxbuScvrqDanYBeHlOcyJaj4JzcSeDAsI6eoXGkTPKXdPU4e
-         35x2L5Aegzk6DIqacrckvSPPVZ+raK+ypT+x6Qa/4ajT8ROwWjwWipuJOTyACdgtlAmt
-         1+ofGRF0wgzLn5R9ZHZH0O/1Kq7ZbiHwlrKEJQ8SJGNuWHc2MuoNqPN58hrm1a7DDpH9
-         zj9/VzYdgeSfOgDkoP1T7furG71Zen9SMI1Ufwd/vxXt5uyk2BwojJ4zvXJJLi/3iezn
-         Oh2w==
-X-Gm-Message-State: AOJu0Yw9W53acgx2unjKsfKSaYDx1P7Tk0IYtwCjz4vjv+EF0HWleNnK
-	9J1OmaSUhSUnG4RveZqm7OZZ2Y/i3Yrj
-X-Google-Smtp-Source: AGHT+IHMC5pZFX/0Skg2KosMt2koIMu23ZQakX4wRBOCCZwE0XOW8EMW0XldZ0cn7U85d4bQM0ur4Q==
-X-Received: by 2002:a17:902:f68e:b0:1d4:4483:67d4 with SMTP id l14-20020a170902f68e00b001d4448367d4mr692781plg.89.1704389508707;
-        Thu, 04 Jan 2024 09:31:48 -0800 (PST)
-Received: from google.com (77.62.105.34.bc.googleusercontent.com. [34.105.62.77])
-        by smtp.gmail.com with ESMTPSA id y22-20020a170902b49600b001d4910ff83dsm13256439plr.121.2024.01.04.09.31.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Jan 2024 09:31:48 -0800 (PST)
-Date: Thu, 4 Jan 2024 17:31:45 +0000
-From: Carlos Llamas <cmllamas@google.com>
-To: Pierre Gondois <pierre.gondois@arm.com>
-Cc: linux-kernel@vger.kernel.org,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
-	Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Christian Brauner <brauner@kernel.org>,
-	Suren Baghdasaryan <surenb@google.com>, Coly Li <colyli@suse.de>,
-	Kent Overstreet <kent.overstreet@gmail.com>,
-	Marco Elver <elver@google.com>, Kees Cook <keescook@chromium.org>,
-	Lucas De Marchi <lucas.demarchi@intel.com>,
-	Ingo Molnar <mingo@kernel.org>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	linux-bcache@vger.kernel.org
-Subject: Re: [PATCH v2 2/3] binder: Use of hlist_count_nodes()
-Message-ID: <ZZbrgYTkhp_EH6Ci@google.com>
-References: <20240104164937.424320-1-pierre.gondois@arm.com>
- <20240104164937.424320-3-pierre.gondois@arm.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F084128DA7
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 17:31:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <f3dd9d80-3fab-4676-b589-1d4667431287@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1704389518;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=c/MgIcwgbufD+K7MphBKN+ZekKtDYhLfSrww5v51YLg=;
+	b=DlxtnQRovdZpb0rtMaC7tg2Xak8kiBCgOywO4W+JoXHUm9dE8IpEupVc0M8hmX5ljIteCy
+	aP/rglzTtwovZyKQoTbJajQZ5eqfV+l2IBIprHLbB9HJJ08F1zVUlpSKxeQdbY5h9T+cxm
+	jngvY2DYeiA2X9acjc2qgYwjknNKHFU=
+Date: Thu, 4 Jan 2024 09:31:52 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240104164937.424320-3-pierre.gondois@arm.com>
+Subject: Re: [PATCH v2 bpf-next 2/2] selftests/bpf: add inline assembly
+ helpers to access array elements
+Content-Language: en-GB
+To: Jiri Olsa <olsajiri@gmail.com>, Barret Rhoden <brho@google.com>,
+ Eddy Z <eddyz87@gmail.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Song Liu <song@kernel.org>,
+ mattbobrowski@google.com, bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240103185403.610641-1-brho@google.com>
+ <20240103185403.610641-3-brho@google.com> <ZZa1668ft4Npd1DA@krava>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <ZZa1668ft4Npd1DA@krava>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Thu, Jan 04, 2024 at 05:49:34PM +0100, Pierre Gondois wrote:
-> Make use of the newly added hlist_count_nodes().
-> 
-> Signed-off-by: Pierre Gondois <pierre.gondois@arm.com>
-> ---
->  drivers/android/binder.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
-> 
-> diff --git a/drivers/android/binder.c b/drivers/android/binder.c
-> index 92128aae2d06..f9ca4d58d825 100644
-> --- a/drivers/android/binder.c
-> +++ b/drivers/android/binder.c
-> @@ -6077,9 +6077,7 @@ static void print_binder_node_nilocked(struct seq_file *m,
->  	struct binder_work *w;
->  	int count;
->  
-> -	count = 0;
-> -	hlist_for_each_entry(ref, &node->refs, node_entry)
-> -		count++;
-> +	count = hlist_count_nodes(&node->refs);
->  
->  	seq_printf(m, "  node %d: u%016llx c%016llx hs %d hw %d ls %d lw %d is %d iw %d tr %d",
->  		   node->debug_id, (u64)node->ptr, (u64)node->cookie,
-> -- 
-> 2.25.1
-> 
+cc Eduard.
 
-Looks good to me!
+On 1/4/24 5:43 AM, Jiri Olsa wrote:
+> On Wed, Jan 03, 2024 at 01:53:59PM -0500, Barret Rhoden wrote:
+>
+> SNIP
+>
+>> +
+>> +
+>> +/* Test that attempting to load a bad program fails. */
+>> +#define test_bad(PROG) ({						\
+>> +	struct array_elem_test *skel;					\
+>> +	int err;							\
+>> +	skel = array_elem_test__open();					\
+>> +	if (!ASSERT_OK_PTR(skel, "array_elem_test open"))		\
+>> +		return;							\
+>> +	bpf_program__set_autoload(skel->progs.x_bad_ ## PROG, true); 	\
+>> +	err = array_elem_test__load(skel);				\
+>> +	ASSERT_ERR(err, "array_elem_test load " # PROG);		\
+>> +	array_elem_test__destroy(skel);					\
+>> +})
+> I wonder we could use the existing RUN_TESTS macro and use tags
+> in programs like we do for example in progs/test_global_func1.c:
+>
+>    SEC("tc")
+>    __failure __msg("combined stack size of 4 calls is 544")
+>    int global_func1(struct __sk_buff *skb)
+>
+> jirka
+>
+>
+>> +
+>> +void test_test_array_elem(void)
+>> +{
+>> +	if (test__start_subtest("array_elem_access_all"))
+>> +		test_access_all();
+>> +	if (test__start_subtest("array_elem_oob_access"))
+>> +		test_oob_access();
+>> +	if (test__start_subtest("array_elem_access_array_map_infer_sz"))
+>> +		test_access_array_map_infer_sz();
+>> +	if (test__start_subtest("array_elem_bad_map_array_access"))
+>> +		test_bad(map_array_access);
+>> +	if (test__start_subtest("array_elem_bad_bss_array_access"))
+>> +		test_bad(bss_array_access);
+>> +
+[...]
+>> diff --git a/tools/testing/selftests/bpf/progs/bpf_misc.h b/tools/testing/selftests/bpf/progs/bpf_misc.h
+>> index 2fd59970c43a..002bab44cde2 100644
+>> --- a/tools/testing/selftests/bpf/progs/bpf_misc.h
+>> +++ b/tools/testing/selftests/bpf/progs/bpf_misc.h
+>> @@ -135,4 +135,47 @@
+>>   /* make it look to compiler like value is read and written */
+>>   #define __sink(expr) asm volatile("" : "+g"(expr))
+>>   
+>> +/*
+>> + * Access an array element within a bound, such that the verifier knows the
+>> + * access is safe.
+>> + *
+>> + * This macro asm is the equivalent of:
+>> + *
+>> + *	if (!arr)
+>> + *		return NULL;
+>> + *	if (idx >= arr_sz)
+>> + *		return NULL;
+>> + *	return &arr[idx];
+>> + *
+>> + * The index (___idx below) needs to be a u64, at least for certain versions of
+>> + * the BPF ISA, since there aren't u32 conditional jumps.
+>> + */
+>> +#define bpf_array_elem(arr, arr_sz, idx) ({				\
+>> +	typeof(&(arr)[0]) ___arr = arr;					\
+>> +	__u64 ___idx = idx;						\
+>> +	if (___arr) {							\
+>> +		asm volatile("if %[__idx] >= %[__bound] goto 1f;	\
+>> +			      %[__idx] *= %[__size];		\
+>> +			      %[__arr] += %[__idx];		\
+>> +			      goto 2f;				\
+>> +			      1:;				\
+>> +			      %[__arr] = 0;			\
+>> +			      2:				\
+>> +			      "						\
+>> +			     : [__arr]"+r"(___arr), [__idx]"+r"(___idx)	\
+>> +			     : [__bound]"r"((arr_sz)),		        \
+>> +			       [__size]"i"(sizeof(typeof((arr)[0])))	\
+>> +			     : "cc");					\
+>> +	}								\
+>> +	___arr;								\
+>> +})
 
-Acked-by: Carlos Llamas <cmllamas@google.com>
+The LLVM bpf backend has made some improvement to handle the case like
+   r1 = ...
+   r2 = r1 + 1
+   if (r2 < num) ...
+   using r1
+by preventing generating the above code pattern.
+
+The implementation is a pattern matching style so surely it won't be
+able to cover all cases.
+
+Do you have specific examples which has verification failure due to
+false array out of bound access?
+
+>> +
+>> +/*
+>> + * Convenience wrapper for bpf_array_elem(), where we compute the size of the
+>> + * array.  Be sure to use an actual array, and not a pointer, just like with the
+>> + * ARRAY_SIZE macro.
+>> + */
+>> +#define bpf_array_sz_elem(arr, idx) \
+>> +	bpf_array_elem(arr, sizeof(arr) / sizeof((arr)[0]), idx)
+>> +
+>>   #endif
+>> -- 
+>> 2.43.0.472.g3155946c3a-goog
+>>
+>>
 
