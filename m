@@ -1,46 +1,46 @@
-Return-Path: <linux-kernel+bounces-16455-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16457-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D4D7823ECC
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 10:40:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7AAAF823ED2
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 10:41:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CB785283A6D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 09:40:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0EFE028392F
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 09:41:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CD11208CC;
-	Thu,  4 Jan 2024 09:40:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3AE6208C5;
+	Thu,  4 Jan 2024 09:41:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="VRMf+rTJ"
+	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="PciEGIzn"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp-relay-canonical-0.canonical.com (smtp-relay-canonical-0.canonical.com [185.125.188.120])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 338D4208C2;
-	Thu,  4 Jan 2024 09:40:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1A8320B00;
+	Thu,  4 Jan 2024 09:41:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
 Received: from [192.168.192.85] (unknown [50.39.103.33])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id D84353F282;
-	Thu,  4 Jan 2024 09:40:14 +0000 (UTC)
+	by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 960893F282;
+	Thu,  4 Jan 2024 09:41:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-	s=20210705; t=1704361216;
-	bh=71tC4v7HfXzWYuxX2H/iX+eBvNlFgY4lYHx817BfIRI=;
+	s=20210705; t=1704361266;
+	bh=QqAQvXUABPE2esOHug0dITG/dfqhrSD3nWANAc4HZSs=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
 	 In-Reply-To:Content-Type;
-	b=VRMf+rTJ20a7rnrYYWs9aySVX0pBol0WU+wfnKH2dKxr1ewv+t3p2LfmcmayLSYya
-	 6rCK1xLUCpchZZ7yROg8lqOA3nidKaVYavdWI/reXyTpl59KLkwUIcfDLc2r3u6ZKh
-	 4KFHZjyX0q+KZGFV3TCjo9A8mq2u8XnKQQsBk/OaNoIx+18J38cHWWkQ1pDEV7QIqr
-	 287KPnGvMfKjNHJvmEA0rKep+OzF1qHyT6GndsPknTuMkDoZ9sJNVhLRklpunSSyYY
-	 bsYejhF8pSF4bYLJuf/REtMFdqANdHZQckEgQ2snwYVZnU/0pL47fk+r74WMN6XORj
-	 tJrnE1RsL0VZQ==
-Message-ID: <fe581580-0528-49c7-96e6-ae8cb5de31c1@canonical.com>
-Date: Thu, 4 Jan 2024 01:40:12 -0800
+	b=PciEGIzncwLwkPF0GJsbIc16+HSzi9xiqSCeOBqauYLpYuMsQig7aa3JdcuE1jefB
+	 zTCRe6CCfDqu/OQMXOxjKnkZZ+wAW8NEJLEFZANCyJi8z/A0h8OFcW7NctX+X8fPV7
+	 n7oWTYAnr/eltrXmY69geeQG+Y4uv48dh8HdZmR1mOuT48amM8TqJdaa9AbzDNSiMs
+	 4Zv0U3ALsen9PsgpmiXt9iXVWCtaC8i83HE/e4AAsL/09T1IV7Qsl3REsyySYsBIia
+	 DARvd8+WJj4ffIIvtXIMzZZ5gnOpH3jy0cDcUTsFSpcBA+9nyQzgnCv1b55zXy+H7B
+	 7r4T4shR9ncmQ==
+Message-ID: <eaf76a45-3217-47c2-bf69-bdd765062e69@canonical.com>
+Date: Thu, 4 Jan 2024 01:41:04 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -48,14 +48,14 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] apparmor: avoid crash when parsed profile name is empty
+Subject: Re: [PATCH] apparmor: fix possible memory leak in unpack_trans_table
 Content-Language: en-US
 To: Fedor Pchelkin <pchelkin@ispras.ru>
 Cc: Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>,
  "Serge E. Hallyn" <serge@hallyn.com>, apparmor@lists.ubuntu.com,
  linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org,
  Alexey Khoroshilov <khoroshilov@ispras.ru>, lvc-project@linuxtesting.org
-References: <20231228160744.1301-1-pchelkin@ispras.ru>
+References: <20231204181945.5903-1-pchelkin@ispras.ru>
 From: John Johansen <john.johansen@canonical.com>
 Autocrypt: addr=john.johansen@canonical.com; keydata=
  xsFNBE5mrPoBEADAk19PsgVgBKkImmR2isPQ6o7KJhTTKjJdwVbkWSnNn+o6Up5knKP1f49E
@@ -100,83 +100,92 @@ Autocrypt: addr=john.johansen@canonical.com; keydata=
  +T7sv9+iY+e0Y+SolyJgTxMYeRnDWE6S77g6gzYYHmcQOWP7ZMX+MtD4SKlf0+Q8li/F9GUL
  p0rw8op9f0p1+YAhyAd+dXWNKf7zIfZ2ME+0qKpbQnr1oizLHuJX/Telo8KMmHter28DPJ03 lT9Q
 Organization: Canonical
-In-Reply-To: <20231228160744.1301-1-pchelkin@ispras.ru>
+In-Reply-To: <20231204181945.5903-1-pchelkin@ispras.ru>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 12/28/23 08:07, Fedor Pchelkin wrote:
-> When processing a packed profile in unpack_profile() described like
+On 12/4/23 10:19, Fedor Pchelkin wrote:
+> If we fail to unpack the transition table then the table elements which
+> have been already allocated are not freed on error path.
 > 
->   "profile :ns::samba-dcerpcd /usr/lib*/samba/{,samba/}samba-dcerpcd {...}"
+> unreferenced object 0xffff88802539e000 (size 128):
+>    comm "apparmor_parser", pid 903, jiffies 4294914938 (age 35.085s)
+>    hex dump (first 32 bytes):
+>      20 73 6f 6d 65 20 6e 61 73 74 79 20 73 74 72 69   some nasty stri
+>      6e 67 20 73 6f 6d 65 20 6e 61 73 74 79 20 73 74  ng some nasty st
+>    backtrace:
+>      [<ffffffff81ddb312>] __kmem_cache_alloc_node+0x1e2/0x2d0
+>      [<ffffffff81c47194>] __kmalloc_node_track_caller+0x54/0x170
+>      [<ffffffff81c225b9>] kmemdup+0x29/0x60
+>      [<ffffffff83e1ee65>] aa_unpack_strdup+0xe5/0x1b0
+>      [<ffffffff83e20808>] unpack_pdb+0xeb8/0x2700
+>      [<ffffffff83e23567>] unpack_profile+0x1507/0x4a30
+>      [<ffffffff83e27bfa>] aa_unpack+0x36a/0x1560
+>      [<ffffffff83e194c3>] aa_replace_profiles+0x213/0x33c0
+>      [<ffffffff83de9461>] policy_update+0x261/0x370
+>      [<ffffffff83de978e>] profile_replace+0x20e/0x2a0
+>      [<ffffffff81eac8bf>] vfs_write+0x2af/0xe00
+>      [<ffffffff81eaddd6>] ksys_write+0x126/0x250
+>      [<ffffffff88f34fb6>] do_syscall_64+0x46/0xf0
+>      [<ffffffff890000ea>] entry_SYSCALL_64_after_hwframe+0x6e/0x76
 > 
-> a string ":samba-dcerpcd" is unpacked as a fully-qualified name and then
-> passed to aa_splitn_fqname().
-> 
-> aa_splitn_fqname() treats ":samba-dcerpcd" as only containing a namespace.
-> Thus it returns NULL for tmpname, meanwhile tmpns is non-NULL. Later
-> aa_alloc_profile() crashes as the new profile name is NULL now.
-> 
-> general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN NOPTI
-> KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
-> CPU: 6 PID: 1657 Comm: apparmor_parser Not tainted 6.7.0-rc2-dirty #16
-> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.16.2-3-gd478f380-rebuilt.opensuse.org 04/01/2014
-> RIP: 0010:strlen+0x1e/0xa0
-> Call Trace:
->   <TASK>
->   ? strlen+0x1e/0xa0
->   aa_policy_init+0x1bb/0x230
->   aa_alloc_profile+0xb1/0x480
->   unpack_profile+0x3bc/0x4960
->   aa_unpack+0x309/0x15e0
->   aa_replace_profiles+0x213/0x33c0
->   policy_update+0x261/0x370
->   profile_replace+0x20e/0x2a0
->   vfs_write+0x2af/0xe00
->   ksys_write+0x126/0x250
->   do_syscall_64+0x46/0xf0
->   entry_SYSCALL_64_after_hwframe+0x6e/0x76
->   </TASK>
-> ---[ end trace 0000000000000000 ]---
-> RIP: 0010:strlen+0x1e/0xa0
-> 
-> It seems such behaviour of aa_splitn_fqname() is expected and checked in
-> other places where it is called (e.g. aa_remove_profiles). Well, there
-> is an explicit comment "a ns name without a following profile is allowed"
-> inside.
-> 
-> AFAICS, nothing can prevent unpacked "name" to be in form like
-> ":samba-dcerpcd" - it is passed from userspace.
-> 
-> Deny the whole profile set replacement in such case and inform user with
-> EPROTO and an explaining message.
+> Call aa_free_str_table() on error path as was done before the blamed
+> commit. It implements all necessary checks, frees str_table if it is
+> available and nullifies the pointers.
 > 
 > Found by Linux Verification Center (linuxtesting.org).
 > 
-> Fixes: 04dc715e24d0 ("apparmor: audit policy ns specified in policy load")
+> Fixes: a0792e2ceddc ("apparmor: make transition table unpack generic so it can be reused")
 > Signed-off-by: Fedor Pchelkin <pchelkin@ispras.ru>
 
 thanks, I have pulled this into my tree
-
 Acked-by: John Johansen <john.johansen@canonical.com>
 
 > ---
->   security/apparmor/policy_unpack.c | 4 ++++
->   1 file changed, 4 insertions(+)
+>   security/apparmor/lib.c           | 1 +
+>   security/apparmor/policy_unpack.c | 7 +++----
+>   2 files changed, 4 insertions(+), 4 deletions(-)
 > 
+> diff --git a/security/apparmor/lib.c b/security/apparmor/lib.c
+> index 4c198d273f09..cd569fbbfe36 100644
+> --- a/security/apparmor/lib.c
+> +++ b/security/apparmor/lib.c
+> @@ -41,6 +41,7 @@ void aa_free_str_table(struct aa_str_table *t)
+>   			kfree_sensitive(t->table[i]);
+>   		kfree_sensitive(t->table);
+>   		t->table = NULL;
+> +		t->size = 0;
+>   	}
+>   }
+>   
 > diff --git a/security/apparmor/policy_unpack.c b/security/apparmor/policy_unpack.c
-> index e0af1e9f40ee..70d448048773 100644
+> index fc21952aca6b..887010692538 100644
 > --- a/security/apparmor/policy_unpack.c
 > +++ b/security/apparmor/policy_unpack.c
-> @@ -835,6 +835,10 @@ static struct aa_profile *unpack_profile(struct aa_ext *e, char **ns_name)
+> @@ -478,6 +478,8 @@ static bool unpack_trans_table(struct aa_ext *e, struct aa_str_table *strs)
+>   		if (!table)
+>   			goto fail;
 >   
->   	tmpname = aa_splitn_fqname(name, strlen(name), &tmpns, &ns_len);
->   	if (tmpns) {
-> +		if (!tmpname) {
-> +			info = "empty profile name";
-> +			goto fail;
-> +		}
->   		*ns_name = kstrndup(tmpns, ns_len, GFP_KERNEL);
->   		if (!*ns_name) {
->   			info = "out of memory";
+> +		strs->table = table;
+> +		strs->size = size;
+>   		for (i = 0; i < size; i++) {
+>   			char *str;
+>   			int c, j, pos, size2 = aa_unpack_strdup(e, &str, NULL);
+> @@ -520,14 +522,11 @@ static bool unpack_trans_table(struct aa_ext *e, struct aa_str_table *strs)
+>   			goto fail;
+>   		if (!aa_unpack_nameX(e, AA_STRUCTEND, NULL))
+>   			goto fail;
+> -
+> -		strs->table = table;
+> -		strs->size = size;
+>   	}
+>   	return true;
+>   
+>   fail:
+> -	kfree_sensitive(table);
+> +	aa_free_str_table(strs);
+>   	e->pos = saved_pos;
+>   	return false;
+>   }
 
 
