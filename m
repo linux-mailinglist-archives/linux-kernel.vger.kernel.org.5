@@ -1,59 +1,59 @@
-Return-Path: <linux-kernel+bounces-16384-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16385-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D6707823DB5
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 09:43:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id ACD68823DB7
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 09:44:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 45A9B1F24B00
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 08:43:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1C6B91F24A2E
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 08:44:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BC2A20DCD;
-	Thu,  4 Jan 2024 08:42:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5571A20DCC;
+	Thu,  4 Jan 2024 08:42:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amarulasolutions.com header.i=@amarulasolutions.com header.b="Yi+YaoiG"
+	dkim=pass (1024-bit key) header.d=amarulasolutions.com header.i=@amarulasolutions.com header.b="DQzp8RL5"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
+Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EB011EA66
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 08:42:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C598120B3B
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 08:42:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=amarulasolutions.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amarulasolutions.com
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a27733ae1dfso26631466b.3
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 00:42:24 -0800 (PST)
+Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-554909ac877so323574a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 00:42:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amarulasolutions.com; s=google; t=1704357743; x=1704962543; darn=vger.kernel.org;
+        d=amarulasolutions.com; s=google; t=1704357745; x=1704962545; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=mFqXTGTlYTvcm2/UHRhYI2FZvx1qxWqmcpgcCxysnrA=;
-        b=Yi+YaoiGL1fMB11ihiMz0zREt4WBD6+3I3BtvqYCGp9UzesNhJ9/JpAFAq3QZPMjSd
-         /YhSCHYT9VBU5bxLzlWJHBvZ7FgEM4PfNIHwzm2w40RvlH8VVcsFUh+zBkfhPc7hKt8l
-         +zO9UCaZAp2yK9Ga86yccrqaKGgUNp44iCb9s=
+        bh=xWXC08AomogX9fJjDHe3MxBIDHnKEfsu8+LOFUoPPqY=;
+        b=DQzp8RL593XWnKIwC+gmXQVYxTO6SzlkzcM6y/+SA5hYrEICJYQLUux4yPmG+clccB
+         kI5YWgJFHK2tuRaoCrq9OH9/lZnNRciVAhTLgWC6xTSLdCtCEx8w0pnVZtYTDkZX98wm
+         hBKfo7rTLnnov8mm6j1WNDl7QGKwd9SAjnQEw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704357743; x=1704962543;
+        d=1e100.net; s=20230601; t=1704357745; x=1704962545;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=mFqXTGTlYTvcm2/UHRhYI2FZvx1qxWqmcpgcCxysnrA=;
-        b=IPs1rL6LyMEp2KJarLBrIO1vqqYDIpJw2e10XfpY8LDeaeGVE9k2GwYI3BRvkuco7m
-         Ku5K5U/EMSrW4l/2rcFbUEecYtrh+izb32//Eu7BNtNMLIuA9JVrMvwyIsvSk7McdfcK
-         DQTyP0u+wPHQm3gLyxb/U6/4Ia4TSDrKjLg94Bx0tN/Wlsm5LfSfU+bHreA4aXoKuvv1
-         8Y72FIU9rh1hrGguFPhPypP6bGf+QwM+VpX/HSN9o8ct6y0vyy76BCxiiEPeGfYGKZTT
-         mP31+rVZeK7DrZg0cLZb8LZGVoONN1l9RC+7GTsv/7SYFS+socR94J2B7gPgntIXHDYP
-         xj8w==
-X-Gm-Message-State: AOJu0YwTM12086OI2a6SMc6R519ntwCwjANc9xmI9RR+gz7Ayt9jo16c
-	vIkB/qI+nUmkKRsjn4HWP1EY4fUxQopc17IGTMY4rBa/q2M=
-X-Google-Smtp-Source: AGHT+IEuTBHPoWheiV+CKAMknHpY/JDL10WWIA3jiYObZ5C8zEi03Cx9l7bfPyxX730VD0aqs75UJQ==
-X-Received: by 2002:a17:906:f810:b0:a26:8c28:1b67 with SMTP id kh16-20020a170906f81000b00a268c281b67mr67694ejb.260.1704357743090;
-        Thu, 04 Jan 2024 00:42:23 -0800 (PST)
+        bh=xWXC08AomogX9fJjDHe3MxBIDHnKEfsu8+LOFUoPPqY=;
+        b=nNFU74vnR8SabsLlURTPs6tu4YVgreKa+Z3b43Q4r+0NEAlhL4ScWevXVcnCpRqROW
+         Y+TFyrsBrDxmge+0b76MeehHq4qS3QVMN42kdwRFvCJmmdJnRfkSvBeKxJvb7EXjh3Ve
+         blqLS5H7EJQhoUx1PAwuNh6jpPPM/nCQ40464YvXIC1JXGn9D7OdWMeKLXPCRCWEtJF6
+         TlRciSR7kCboKnJe5VgphsFbOrMwNqFYNHMn8wBhA6X3MHsrKZLyXBjTG1ge5RbfxHN0
+         lkoKVd3hQiF9UAp0U/h5kyyGwLWegqFe+FvZwr1kXdRKRUEkUEKHnUzWNociOvefPZ2l
+         Pw8w==
+X-Gm-Message-State: AOJu0YzMpKpQRbi/kkkhA8Jlnw5EhiM7FrIeuB7M5b4/5JVDYDdd5MD8
+	lQEE8DM8BnfVIW9ClnsKXfjrygo2k6W3tZaFuvJPMa8Wvy4=
+X-Google-Smtp-Source: AGHT+IHlmvxTc2+qf8oiKmoCMdz+XKI9ffGX9BsbK6Gg5TL5KmCMDdyPiSW2BZ+SGjbvcB/DxT2MCg==
+X-Received: by 2002:a17:907:1b1e:b0:a27:e214:96b with SMTP id mp30-20020a1709071b1e00b00a27e214096bmr150503ejc.112.1704357744885;
+        Thu, 04 Jan 2024 00:42:24 -0800 (PST)
 Received: from dario-ThinkPad-T14s-Gen-2i.amarulasolutions.com (net-93-150-255-34.cust.vodafonedsl.it. [93.150.255.34])
-        by smtp.gmail.com with ESMTPSA id wh14-20020a170906fd0e00b00a233efe6aa7sm13495704ejb.51.2024.01.04.00.42.21
+        by smtp.gmail.com with ESMTPSA id wh14-20020a170906fd0e00b00a233efe6aa7sm13495704ejb.51.2024.01.04.00.42.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Jan 2024 00:42:22 -0800 (PST)
+        Thu, 04 Jan 2024 00:42:24 -0800 (PST)
 From: Dario Binacchi <dario.binacchi@amarulasolutions.com>
 To: linux-kernel@vger.kernel.org
 Cc: linux-amarula@amarulasolutions.com,
@@ -69,9 +69,9 @@ Cc: linux-amarula@amarulasolutions.com,
 	Sam Ravnborg <sam@ravnborg.org>,
 	Thomas Zimmermann <tzimmermann@suse.de>,
 	dri-devel@lists.freedesktop.org
-Subject: [PATCH v4 7/8] drm/panel: nt35510: move hardwired parameters to configuration
-Date: Thu,  4 Jan 2024 09:41:47 +0100
-Message-ID: <20240104084206.721824-8-dario.binacchi@amarulasolutions.com>
+Subject: [PATCH v4 8/8] drm/panel: nt35510: support FRIDA FRD400B25025-A-CTK
+Date: Thu,  4 Jan 2024 09:41:48 +0100
+Message-ID: <20240104084206.721824-9-dario.binacchi@amarulasolutions.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240104084206.721824-1-dario.binacchi@amarulasolutions.com>
 References: <20240104084206.721824-1-dario.binacchi@amarulasolutions.com>
@@ -83,10 +83,14 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This patch, preparatory for future developments, move the hardwired
-parameters to configuration data to allow the addition of new
-NT35510-based panels.
+The initialization commands are taken from the STMicroelectronics driver
+found at [1].
+To ensure backward compatibility, flags have been added to enable gamma
+correction setting and display control. In other cases, registers have
+been set to their default values according to the specifications found
+in the datasheet.
 
+[1] https://github.com/STMicroelectronics/STM32CubeF7/blob/master/Drivers/BSP/Components/nt35510/
 Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
 
 ---
@@ -94,222 +98,416 @@ Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
 (no changes since v2)
 
 Changes in v2:
-- Re-write the patch [7/8] "drm/panel: nt35510: refactor panel initialization"
-  in the same style as the original driver in order to maintain the same
-  structure.
+- Re-write the patch [8/8] "drm/panel: nt35510: support FRIDA FRD400B25025-A-CTK"
+  in the same style as the original driver.
 
- drivers/gpu/drm/panel/panel-novatek-nt35510.c | 140 ++++++++++++++----
- 1 file changed, 115 insertions(+), 25 deletions(-)
+ drivers/gpu/drm/panel/panel-novatek-nt35510.c | 282 ++++++++++++++++--
+ 1 file changed, 251 insertions(+), 31 deletions(-)
 
 diff --git a/drivers/gpu/drm/panel/panel-novatek-nt35510.c b/drivers/gpu/drm/panel/panel-novatek-nt35510.c
-index d6dceb858008..ce8969f48286 100644
+index ce8969f48286..c85dd0d0829d 100644
 --- a/drivers/gpu/drm/panel/panel-novatek-nt35510.c
 +++ b/drivers/gpu/drm/panel/panel-novatek-nt35510.c
-@@ -171,6 +171,10 @@ struct nt35510_config {
- 	 * timing in the display controller.
+@@ -36,6 +36,9 @@
+ #include <drm/drm_modes.h>
+ #include <drm/drm_panel.h>
+ 
++#define NT35510_CMD_CORRECT_GAMMA BIT(0)
++#define NT35510_CMD_CONTROL_DISPLAY BIT(1)
++
+ #define MCS_CMD_MAUCCTR		0xF0 /* Manufacturer command enable */
+ #define MCS_CMD_READ_ID1	0xDA
+ #define MCS_CMD_READ_ID2	0xDB
+@@ -112,18 +115,33 @@
+ /* AVDD and AVEE setting 3 bytes */
+ #define NT35510_P1_AVDD_LEN 3
+ #define NT35510_P1_AVEE_LEN 3
++#define NT35510_P1_VCL_LEN 3
+ #define NT35510_P1_VGH_LEN 3
+ #define NT35510_P1_VGL_LEN 3
+ #define NT35510_P1_VGP_LEN 3
+ #define NT35510_P1_VGN_LEN 3
++#define NT35510_P1_VCMOFF_LEN 2
+ /* BT1CTR thru BT5CTR setting 3 bytes */
+ #define NT35510_P1_BT1CTR_LEN 3
+ #define NT35510_P1_BT2CTR_LEN 3
++#define NT35510_P1_BT3CTR_LEN 3
+ #define NT35510_P1_BT4CTR_LEN 3
+ #define NT35510_P1_BT5CTR_LEN 3
+ /* 52 gamma parameters times two per color: positive and negative */
+ #define NT35510_P1_GAMMA_LEN 52
+ 
++#define NT35510_WRCTRLD_BCTRL BIT(5)
++#define NT35510_WRCTRLD_A BIT(4)
++#define NT35510_WRCTRLD_DD BIT(3)
++#define NT35510_WRCTRLD_BL BIT(2)
++#define NT35510_WRCTRLD_DB BIT(1)
++#define NT35510_WRCTRLD_G BIT(0)
++
++#define NT35510_WRCABC_OFF 0
++#define NT35510_WRCABC_UI_MODE 1
++#define NT35510_WRCABC_STILL_MODE 2
++#define NT35510_WRCABC_MOVING_MODE 3
++
+ /**
+  * struct nt35510_config - the display-specific NT35510 configuration
+  *
+@@ -175,6 +193,10 @@ struct nt35510_config {
+ 	 * @mode_flags: DSI operation mode related flags
  	 */
- 	const struct drm_display_mode mode;
+ 	unsigned long mode_flags;
 +	/**
-+	 * @mode_flags: DSI operation mode related flags
++	 * @cmds: enable DSI commands
 +	 */
-+	unsigned long mode_flags;
++	u32 cmds;
  	/**
  	 * @avdd: setting for AVDD ranging from 0x00 = 6.5V to 0x14 = 4.5V
  	 * in 0.1V steps the default is 0x05 which means 6.0V
-@@ -273,6 +277,100 @@ struct nt35510_config {
+@@ -224,6 +246,25 @@ struct nt35510_config {
+ 	 * The defaults are 4 and 3 yielding 0x34
+ 	 */
+ 	u8 bt2ctr[NT35510_P1_BT2CTR_LEN];
++	/**
++	 * @vcl: setting for VCL ranging from 0x00 = -2.5V to 0x11 = -4.0V
++	 * in 1V steps, the default is 0x00 which means -2.5V
++	 */
++	u8 vcl[NT35510_P1_VCL_LEN];
++	/**
++	 * @bt3ctr: setting for boost power control for the VCL step-up
++	 * circuit (3)
++	 * bits 0..2 in the lower nibble controls CLCK, the booster clock
++	 * frequency, the values are the same as for PCK in @bt1ctr.
++	 * bits 4..5 in the upper nibble controls BTCL, the boosting
++	 * amplification for the step-up circuit.
++	 * 0 = Disable
++	 * 1 = -0.5 x VDDB
++	 * 2 = -1 x VDDB
++	 * 3 = -2 x VDDB
++	 * The defaults are 4 and 2 yielding 0x24
++	 */
++	u8 bt3ctr[NT35510_P1_BT3CTR_LEN];
+ 	/**
+ 	 * @vgh: setting for VGH ranging from 0x00 = 7.0V to 0x0B = 18.0V
+ 	 * in 1V steps, the default is 0x08 which means 15V
+@@ -277,6 +318,19 @@ struct nt35510_config {
  	 * same layout of bytes as @vgp.
  	 */
  	u8 vgn[NT35510_P1_VGN_LEN];
 +	/**
-+	 * @dopctr: setting optional control for display
-+	 * ERR bits 0..1 in the first byte is the ERR pin output signal setting.
-+	 * 0 = Disable, ERR pin output low
-+	 * 1 = ERR pin output CRC error only
-+	 * 2 = ERR pin output ECC error only
-+	 * 3 = ERR pin output CRC and ECC error
-+	 * The default is 0.
-+	 * N565 bit 2 in the first byte is the 16-bit/pixel format selection.
-+	 * 0 = R[4:0] + G[5:3] & G[2:0] + B[4:0]
-+	 * 1 = G[2:0] + R[4:0] & B[4:0] + G[5:3]
-+	 * The default is 0.
-+	 * DIS_EoTP_HS bit 3 in the first byte is "DSI protocol violation" error
-+	 * reporting.
-+	 * 0 = reporting when error
-+	 * 1 = not reporting when error
-+	 * DSIM bit 4 in the first byte is the video mode data type enable
-+	 * 0 = Video mode data type disable
-+	 * 1 = Video mode data type enable
-+	 * The default is 0.
-+	 * DSIG bit 5 int the first byte is the generic r/w data type enable
-+	 * 0 = Generic r/w disable
-+	 * 1 = Generic r/w enable
-+	 * The default is 0.
-+	 * DSITE bit 6 in the first byte is TE line enable
-+	 * 0 = TE line is disabled
-+	 * 1 = TE line is enabled
-+	 * The default is 0.
-+	 * RAMKP bit 7 in the first byte is the frame memory keep/loss in
-+	 * sleep-in mode
-+	 * 0 = contents loss in sleep-in
-+	 * 1 = contents keep in sleep-in
-+	 * The default is 0.
-+	 * CRL bit 1 in the second byte is the source driver data shift
-+	 * direction selection. This bit is XOR operation with bit RSMX
-+	 * of 3600h command.
-+	 * 0 (RMSX = 0) = S1 -> S1440
-+	 * 0 (RMSX = 1) = S1440 -> S1
-+	 * 1 (RMSX = 0) = S1440 -> S1
-+	 * 1 (RMSX = 1) = S1 -> S1440
-+	 * The default is 0.
-+	 * CTB bit 2 in the second byte is the vertical scanning direction
-+	 * selection for gate control signals. This bit is XOR operation
-+	 * with bit ML of 3600h command.
-+	 * 0 (ML = 0) = Forward (top -> bottom)
-+	 * 0 (ML = 1) = Reverse (bottom -> top)
-+	 * 1 (ML = 0) = Reverse (bottom -> top)
-+	 * 1 (ML = 1) = Forward (top -> bottom)
-+	 * The default is 0.
-+	 * CRGB bit 3 in the second byte is RGB-BGR order selection. This
-+	 * bit is XOR operation with bit RGB of 3600h command.
-+	 * 0 (RGB = 0) = RGB/Normal
-+	 * 0 (RGB = 1) = BGR/RB swap
-+	 * 1 (RGB = 0) = BGR/RB swap
-+	 * 1 (RGB = 1) = RGB/Normal
-+	 * The default is 0.
-+	 * TE_PWR_SEL bit 4 in the second byte is the TE output voltage
-+	 * level selection (only valid when DSTB_SEL = 0 or DSTB_SEL = 1,
-+	 * VSEL = High and VDDI = 1.665~3.3V).
-+	 * 0 = TE output voltage level is VDDI
-+	 * 1 = TE output voltage level is VDDA
-+	 * The default is 0.
++	 * @vcmoff: setting the DC VCOM offset voltage
++	 * The first byte contains bit 8 of VCM in bit 0 and VCMOFFSEL in bit 4.
++	 * The second byte contains bits 0..7 of VCM.
++	 * VCMOFFSEL the common voltage offset mode.
++	 * VCMOFFSEL 0x00 = VCOM .. 0x01 Gamma.
++	 * The default is 0x00.
++	 * VCM the VCOM output voltage (VCMOFFSEL = 0) or the internal register
++	 * offset for gamma voltage (VCMOFFSEL = 1).
++	 * VCM 0x00 = 0V/0 .. 0x118 = 3.5V/280 in steps of 12.5mV/1step
++	 * The default is 0x00 = 0V/0.
 +	 */
-+	u8 dopctr[NT35510_P0_DOPCTR_LEN];
-+	/**
-+	 * @madctl: Memory data access control
-+	 * RSMY bit 0 is flip vertical. Flips the display image top to down.
-+	 * RSMX bit 1 is flip horizontal. Flips the display image left to right.
-+	 * MH bit 2 is the horizontal refresh order.
-+	 * RGB bit 3 is the RGB-BGR order.
-+	 * 0 = RGB color sequence
-+	 * 1 = BGR color sequence
-+	 * ML bit 4 is the vertical refresh order.
-+	 * MV bit 5 is the row/column exchange.
-+	 * MX bit 6 is the column address order.
-+	 * MY bit 7 is the row address order.
-+	 */
-+	u8 madctl;
-+	/**
-+	 * @sdhdtctr: source output data hold time
-+	 * 0x00..0x3F = 0..31.5us in steps of 0.5us
-+	 * The default is 0x05 = 2.5us.
-+	 */
-+	u8 sdhdtctr;
-+	/**
-+	 * @gseqctr: EQ control for gate signals
-+	 * GFEQ_XX[3:0]: time setting of EQ step for falling edge in steps
-+	 * of 0.5us.
-+	 * The default is 0x07 = 3.5us
-+	 * GREQ_XX[7:4]: time setting of EQ step for rising edge in steps
-+	 * of 0.5us.
-+	 * The default is 0x07 = 3.5us
-+	 */
-+	u8 gseqctr[NT35510_P0_GSEQCTR_LEN];
++	u8 vcmoff[NT35510_P1_VCMOFF_LEN];
  	/**
- 	 * @sdeqctr: Source driver control settings, first byte is
- 	 * 0 for mode 1 and 1 for mode 2. Mode 1 uses two steps and
-@@ -536,46 +634,28 @@ static int nt35510_setup_display(struct nt35510 *nt)
- {
- 	struct mipi_dsi_device *dsi = to_mipi_dsi_device(nt->dev);
- 	const struct nt35510_config *conf = nt->conf;
--	u8 dopctr[NT35510_P0_DOPCTR_LEN];
--	u8 gseqctr[NT35510_P0_GSEQCTR_LEN];
- 	u8 dpfrctr[NT35510_P0_DPFRCTR1_LEN];
--	/* FIXME: set up any rotation (assume none for now) */
--	u8 addr_mode = NT35510_ROTATE_0_SETTING;
--	u8 val;
- 	int ret;
- 
--	/* Enable TE, EoTP and RGB pixel format */
--	dopctr[0] = NT35510_DOPCTR_0_DSITE | NT35510_DOPCTR_0_EOTP |
--		NT35510_DOPCTR_0_N565;
--	dopctr[1] = NT35510_DOPCTR_1_CTB;
- 	ret = nt35510_send_long(nt, dsi, NT35510_P0_DOPCTR,
- 				NT35510_P0_DOPCTR_LEN,
--				dopctr);
-+				conf->dopctr);
- 	if (ret)
- 		return ret;
- 
--	ret = mipi_dsi_dcs_write(dsi, MIPI_DCS_SET_ADDRESS_MODE, &addr_mode,
--				 sizeof(addr_mode));
-+	ret = mipi_dsi_dcs_write(dsi, MIPI_DCS_SET_ADDRESS_MODE, &conf->madctl,
-+				 sizeof(conf->madctl));
- 	if (ret < 0)
- 		return ret;
- 
--	/*
--	 * Source data hold time, default 0x05 = 2.5us
--	 * 0x00..0x3F = 0 .. 31.5us in steps of 0.5us
--	 * 0x0A = 5us
--	 */
--	val = 0x0A;
--	ret = mipi_dsi_dcs_write(dsi, NT35510_P0_SDHDTCTR, &val,
--				 sizeof(val));
-+	ret = mipi_dsi_dcs_write(dsi, NT35510_P0_SDHDTCTR, &conf->sdhdtctr,
-+				 sizeof(conf->sdhdtctr));
- 	if (ret < 0)
- 		return ret;
- 
--	/* EQ control for gate signals, 0x00 = 0 us */
--	gseqctr[0] = 0x00;
--	gseqctr[1] = 0x00;
- 	ret = nt35510_send_long(nt, dsi, NT35510_P0_GSEQCTR,
- 				NT35510_P0_GSEQCTR_LEN,
--				gseqctr);
-+				conf->gseqctr);
- 	if (ret)
- 		return ret;
- 
-@@ -896,7 +976,6 @@ static int nt35510_probe(struct mipi_dsi_device *dsi)
+ 	 * @dopctr: setting optional control for display
+ 	 * ERR bits 0..1 in the first byte is the ERR pin output signal setting.
+@@ -441,6 +495,43 @@ struct nt35510_config {
+ 	 * @gamma_corr_neg_b: Blue gamma correction parameters, negative
  	 */
- 	dsi->hs_rate = 349440000;
- 	dsi->lp_rate = 9600000;
--	dsi->mode_flags = MIPI_DSI_CLOCK_NON_CONTINUOUS;
+ 	u8 gamma_corr_neg_b[NT35510_P1_GAMMA_LEN];
++	/**
++	 * @wrdisbv: write display brightness
++	 * 0x00 value means the lowest brightness and 0xff value means
++	 * the highest brightness.
++	 * The default is 0x00.
++	 */
++	u8 wrdisbv;
++	/**
++	 * @wrctrld: write control display
++	 * G bit 0 selects gamma curve: 0 = Manual, 1 = Automatic
++	 * DB bit 1 selects display brightness: 0 = Manual, 1 = Automatic
++	 * BL bit 2 controls backlight control: 0 = Off, 1 = On
++	 * DD bit 3 controls display dimming: 0 = Off, 1 = On
++	 * A bit 4 controls LABC block: 0 = Off, 1 = On
++	 * BCTRL bit 5 controls brightness block: 0 = Off, 1 = On
++	 */
++	u8 wrctrld;
++	/**
++	 * @wrcabc: write content adaptive brightness control
++	 * There is possible to use 4 different modes for content adaptive
++	 * image functionality:
++	 * 0: Off
++	 * 1: User Interface Image (UI-Mode)
++	 * 2: Still Picture Image (Still-Mode)
++	 * 3: Moving Picture Image (Moving-Mode)
++	 * The default is 0
++	 */
++	u8 wrcabc;
++	/**
++	 * @wrcabcmb: write CABC minimum brightness
++	 * Set the minimum brightness value of the display for CABC
++	 * function.
++	 * 0x00 value means the lowest brightness for CABC and 0xff
++	 * value means the highest brightness for CABC.
++	 * The default is 0x00.
++	 */
++	u8 wrcabcmb;
+ };
  
- 	/*
- 	 * Every new incarnation of this display must have a unique
-@@ -908,6 +987,8 @@ static int nt35510_probe(struct mipi_dsi_device *dsi)
- 		return -ENODEV;
- 	}
+ /**
+@@ -584,6 +675,16 @@ static int nt35510_setup_power(struct nt35510 *nt)
+ 				nt->conf->bt2ctr);
+ 	if (ret)
+ 		return ret;
++	ret = nt35510_send_long(nt, dsi, NT35510_P1_SETVCL,
++				NT35510_P1_VCL_LEN,
++				nt->conf->vcl);
++	if (ret)
++		return ret;
++	ret = nt35510_send_long(nt, dsi, NT35510_P1_BT3CTR,
++				NT35510_P1_BT3CTR_LEN,
++				nt->conf->bt3ctr);
++	if (ret)
++		return ret;
+ 	ret = nt35510_send_long(nt, dsi, NT35510_P1_SETVGH,
+ 				NT35510_P1_VGH_LEN,
+ 				nt->conf->vgh);
+@@ -620,6 +721,12 @@ static int nt35510_setup_power(struct nt35510 *nt)
+ 	if (ret)
+ 		return ret;
  
-+	dsi->mode_flags = nt->conf->mode_flags;
++	ret = nt35510_send_long(nt, dsi, NT35510_P1_SETVCMOFF,
++				NT35510_P1_VCMOFF_LEN,
++				nt->conf->vcmoff);
++	if (ret)
++		return ret;
 +
- 	nt->supplies[0].supply = "vdd"; /* 2.3-4.8 V */
- 	nt->supplies[1].supply = "vddi"; /* 1.65-3.3V */
- 	ret = devm_regulator_bulk_get(dev, ARRAY_SIZE(nt->supplies),
-@@ -1030,6 +1111,7 @@ static const struct nt35510_config nt35510_hydis_hva40wv1 = {
- 		.vtotal = 800 + 2 + 0 + 5, /* VBP = 5 */
+ 	/* Typically 10 ms */
+ 	usleep_range(10000, 20000);
+ 
+@@ -799,36 +906,38 @@ static int nt35510_power_on(struct nt35510 *nt)
+ 	if (ret)
+ 		return ret;
+ 
+-	ret = nt35510_send_long(nt, dsi, NT35510_P1_SET_GAMMA_RED_POS,
+-				NT35510_P1_GAMMA_LEN,
+-				nt->conf->gamma_corr_pos_r);
+-	if (ret)
+-		return ret;
+-	ret = nt35510_send_long(nt, dsi, NT35510_P1_SET_GAMMA_GREEN_POS,
+-				NT35510_P1_GAMMA_LEN,
+-				nt->conf->gamma_corr_pos_g);
+-	if (ret)
+-		return ret;
+-	ret = nt35510_send_long(nt, dsi, NT35510_P1_SET_GAMMA_BLUE_POS,
+-				NT35510_P1_GAMMA_LEN,
+-				nt->conf->gamma_corr_pos_b);
+-	if (ret)
+-		return ret;
+-	ret = nt35510_send_long(nt, dsi, NT35510_P1_SET_GAMMA_RED_NEG,
+-				NT35510_P1_GAMMA_LEN,
+-				nt->conf->gamma_corr_neg_r);
+-	if (ret)
+-		return ret;
+-	ret = nt35510_send_long(nt, dsi, NT35510_P1_SET_GAMMA_GREEN_NEG,
+-				NT35510_P1_GAMMA_LEN,
+-				nt->conf->gamma_corr_neg_g);
+-	if (ret)
+-		return ret;
+-	ret = nt35510_send_long(nt, dsi, NT35510_P1_SET_GAMMA_BLUE_NEG,
+-				NT35510_P1_GAMMA_LEN,
+-				nt->conf->gamma_corr_neg_b);
+-	if (ret)
+-		return ret;
++	if (nt->conf->cmds & NT35510_CMD_CORRECT_GAMMA) {
++		ret = nt35510_send_long(nt, dsi, NT35510_P1_SET_GAMMA_RED_POS,
++					NT35510_P1_GAMMA_LEN,
++					nt->conf->gamma_corr_pos_r);
++		if (ret)
++			return ret;
++		ret = nt35510_send_long(nt, dsi, NT35510_P1_SET_GAMMA_GREEN_POS,
++					NT35510_P1_GAMMA_LEN,
++					nt->conf->gamma_corr_pos_g);
++		if (ret)
++			return ret;
++		ret = nt35510_send_long(nt, dsi, NT35510_P1_SET_GAMMA_BLUE_POS,
++					NT35510_P1_GAMMA_LEN,
++					nt->conf->gamma_corr_pos_b);
++		if (ret)
++			return ret;
++		ret = nt35510_send_long(nt, dsi, NT35510_P1_SET_GAMMA_RED_NEG,
++					NT35510_P1_GAMMA_LEN,
++					nt->conf->gamma_corr_neg_r);
++		if (ret)
++			return ret;
++		ret = nt35510_send_long(nt, dsi, NT35510_P1_SET_GAMMA_GREEN_NEG,
++					NT35510_P1_GAMMA_LEN,
++					nt->conf->gamma_corr_neg_g);
++		if (ret)
++			return ret;
++		ret = nt35510_send_long(nt, dsi, NT35510_P1_SET_GAMMA_BLUE_NEG,
++					NT35510_P1_GAMMA_LEN,
++					nt->conf->gamma_corr_neg_b);
++		if (ret)
++			return ret;
++	}
+ 
+ 	/* Set up stuff in  manufacturer control, page 0 */
+ 	ret = nt35510_send_long(nt, dsi, MCS_CMD_MAUCCTR,
+@@ -907,6 +1016,26 @@ static int nt35510_prepare(struct drm_panel *panel)
+ 	/* Up to 120 ms */
+ 	usleep_range(120000, 150000);
+ 
++	if (nt->conf->cmds & NT35510_CMD_CONTROL_DISPLAY) {
++		ret = mipi_dsi_dcs_write(dsi, MIPI_DCS_WRITE_CONTROL_DISPLAY,
++					 &nt->conf->wrctrld,
++					 sizeof(nt->conf->wrctrld));
++		if (ret < 0)
++			return ret;
++
++		ret = mipi_dsi_dcs_write(dsi, MIPI_DCS_WRITE_POWER_SAVE,
++					 &nt->conf->wrcabc,
++					 sizeof(nt->conf->wrcabc));
++		if (ret < 0)
++			return ret;
++
++		ret = mipi_dsi_dcs_write(dsi, MIPI_DCS_SET_CABC_MIN_BRIGHTNESS,
++					 &nt->conf->wrcabcmb,
++					 sizeof(nt->conf->wrcabcmb));
++		if (ret < 0)
++			return ret;
++	}
++
+ 	ret = mipi_dsi_dcs_set_display_on(dsi);
+ 	if (ret) {
+ 		dev_err(nt->dev, "failed to turn display on (%d)\n", ret);
+@@ -1033,7 +1162,10 @@ static int nt35510_probe(struct mipi_dsi_device *dsi)
+ 			return PTR_ERR(bl);
+ 		}
+ 		bl->props.max_brightness = 255;
+-		bl->props.brightness = 255;
++		if (nt->conf->cmds & NT35510_CMD_CONTROL_DISPLAY)
++			bl->props.brightness = nt->conf->wrdisbv;
++		else
++			bl->props.brightness = 255;
+ 		bl->props.power = FB_BLANK_POWERDOWN;
+ 		nt->panel.backlight = bl;
+ 	}
+@@ -1112,6 +1244,7 @@ static const struct nt35510_config nt35510_hydis_hva40wv1 = {
  		.flags = 0,
  	},
-+	.mode_flags = MIPI_DSI_CLOCK_NON_CONTINUOUS,
+ 	.mode_flags = MIPI_DSI_CLOCK_NON_CONTINUOUS,
++	.cmds = NT35510_CMD_CORRECT_GAMMA,
  	/* 0x09: AVDD = 5.6V */
  	.avdd = { 0x09, 0x09, 0x09 },
  	/* 0x34: PCK = Hsync/2, BTP = 2 x VDDB */
-@@ -1050,6 +1132,14 @@ static const struct nt35510_config nt35510_hydis_hva40wv1 = {
+@@ -1120,6 +1253,10 @@ static const struct nt35510_config nt35510_hydis_hva40wv1 = {
+ 	.avee = { 0x09, 0x09, 0x09 },
+ 	/* 0x24: NCK = Hsync/2, BTN =  -2 x VDDB */
+ 	.bt2ctr = { 0x24, 0x24, 0x24 },
++	/* VBCLA: -2.5V, VBCLB: -2.5V, VBCLC: -2.5V */
++	.vcl = { 0x00, 0x00, 0x00 },
++	/* 0x24: CLCK = Hsync/2, BTN =  -1 x VDDB */
++	.bt3ctr = { 0x24, 0x24, 0x24 },
+ 	/* 0x05 = 12V */
+ 	.vgh = { 0x05, 0x05, 0x05 },
+ 	/* 0x24: NCKA = Hsync/2, VGH = 2 x AVDD - AVEE */
+@@ -1132,6 +1269,8 @@ static const struct nt35510_config nt35510_hydis_hva40wv1 = {
  	.vgp = { 0x00, 0xA3, 0x00 },
  	/* VGMP: 0x0A3 = 5.0375V, VGSP = 0V */
  	.vgn = { 0x00, 0xA3, 0x00 },
-+	/* Enable TE, EoTP and RGB pixel format */
-+	.dopctr = { NT35510_DOPCTR_0_DSITE | NT35510_DOPCTR_0_EOTP |
-+		    NT35510_DOPCTR_0_N565, NT35510_DOPCTR_1_CTB },
++	/* VCMOFFSEL = VCOM voltage offset mode, VCM = 0V */
++	.vcmoff = { 0x00, 0x00 },
+ 	/* Enable TE, EoTP and RGB pixel format */
+ 	.dopctr = { NT35510_DOPCTR_0_DSITE | NT35510_DOPCTR_0_EOTP |
+ 		    NT35510_DOPCTR_0_N565, NT35510_DOPCTR_1_CTB },
+@@ -1163,7 +1302,88 @@ static const struct nt35510_config nt35510_hydis_hva40wv1 = {
+ 	.gamma_corr_neg_b = { NT35510_GAMMA_NEG_DEFAULT },
+ };
+ 
++static const struct nt35510_config nt35510_frida_frd400b25025 = {
++	.width_mm = 52,
++	.height_mm = 86,
++	.mode = {
++		.clock = 23000,
++		.hdisplay = 480,
++		.hsync_start = 480 + 34, /* HFP = 34 */
++		.hsync_end = 480 + 34 + 2, /* HSync = 2 */
++		.htotal = 480 + 34 + 2 + 34, /* HBP = 34 */
++		.vdisplay = 800,
++		.vsync_start = 800 + 15, /* VFP = 15 */
++		.vsync_end = 800 + 15 + 12, /* VSync = 12 */
++		.vtotal = 800 + 15 + 12 + 15, /* VBP = 15 */
++		.flags = 0,
++	},
++	.mode_flags = MIPI_DSI_MODE_VIDEO | MIPI_DSI_MODE_VIDEO_BURST |
++			MIPI_DSI_MODE_LPM,
++	.cmds = NT35510_CMD_CONTROL_DISPLAY,
++	/* 0x03: AVDD = 6.2V */
++	.avdd = { 0x03, 0x03, 0x03 },
++	/* 0x46: PCK = 2 x Hsync, BTP = 2.5 x VDDB */
++	.bt1ctr = { 0x46, 0x46, 0x46 },
++	/* 0x03: AVEE = -6.2V */
++	.avee = { 0x03, 0x03, 0x03 },
++	/* 0x36: PCK = 2 x Hsync, BTP =  2 x VDDB */
++	.bt2ctr = { 0x36, 0x36, 0x36 },
++	/* VBCLA: -2.5V, VBCLB: -2.5V, VBCLC: -3.5V */
++	.vcl = { 0x00, 0x00, 0x02 },
++	/* 0x26: CLCK = 2 x Hsync, BTN =  -1 x VDDB */
++	.bt3ctr = { 0x26, 0x26, 0x26 },
++	/* 0x09 = 16V */
++	.vgh = { 0x09, 0x09, 0x09 },
++	/* 0x36: HCK = 2 x Hsync, VGH = 2 x AVDD - AVEE */
++	.bt4ctr = { 0x36, 0x36, 0x36 },
++	/* 0x08 = -10V */
++	.vgl = { 0x08, 0x08, 0x08 },
++	/* 0x26: LCK = 2 x Hsync, VGL = AVDD + VCL - AVDD */
++	.bt5ctr = { 0x26, 0x26, 0x26 },
++	/* VGMP: 0x080 = 4.6V, VGSP = 0V */
++	.vgp = { 0x00, 0x80, 0x00 },
++	/* VGMP: 0x080 = 4.6V, VGSP = 0V */
++	.vgn = { 0x00, 0x80, 0x00 },
++	/* VCMOFFSEL = VCOM voltage offset mode, VCM = -1V */
++	.vcmoff = { 0x00, 0x50 },
++	.dopctr = { NT35510_DOPCTR_0_RAMKP | NT35510_DOPCTR_0_DSITE |
++		NT35510_DOPCTR_0_DSIG | NT35510_DOPCTR_0_DSIM |
++		NT35510_DOPCTR_0_EOTP | NT35510_DOPCTR_0_N565, 0 },
 +	.madctl = NT35510_ROTATE_180_SETTING,
-+	/* 0x0A: SDT = 5 us */
-+	.sdhdtctr = 0x0A,
++	/* 0x03: SDT = 1.5 us */
++	.sdhdtctr = 0x03,
 +	/* EQ control for gate signals, 0x00 = 0 us */
 +	.gseqctr = { 0x00, 0x00 },
- 	/* SDEQCTR: source driver EQ mode 2, 2.5 us rise time on each step */
- 	.sdeqctr = { 0x01, 0x05, 0x05, 0x05 },
- 	/* SDVPCTR: Normal operation off color during v porch */
++	/* SDEQCTR: source driver EQ mode 2, 1 us rise time on each step */
++	.sdeqctr = { 0x01, 0x02, 0x02, 0x02 },
++	/* SDVPCTR: Normal operation off color during v porch */
++	.sdvpctr = 0x01,
++	/* T1: number of pixel clocks on one scanline: 0x184 = 389 clocks */
++	.t1 = 0x0184,
++	/* VBP: vertical back porch toward the panel */
++	.vbp = 0x1C,
++	/* VFP: vertical front porch toward the panel */
++	.vfp = 0x1C,
++	/* PSEL: divide pixel clock 23MHz with 1 (no clock downscaling) */
++	.psel = 0,
++	/* DPTMCTR12: 0x03: LVGL = VGLX, overlap mode, swap R->L O->E */
++	.dpmctr12 = { 0x03, 0x00, 0x00, },
++	/* write display brightness */
++	.wrdisbv = 0x7f,
++	/* write control display */
++	.wrctrld = NT35510_WRCTRLD_BCTRL | NT35510_WRCTRLD_DD |
++			NT35510_WRCTRLD_BL,
++	/* write content adaptive brightness control */
++	.wrcabc = NT35510_WRCABC_STILL_MODE,
++	/* write CABC minimum brightness */
++	.wrcabcmb = 0xff,
++};
++
+ static const struct of_device_id nt35510_of_match[] = {
++	{
++		.compatible = "frida,frd400b25025",
++		.data = &nt35510_frida_frd400b25025,
++	},
+ 	{
+ 		.compatible = "hydis,hva40wv1",
+ 		.data = &nt35510_hydis_hva40wv1,
 -- 
 2.43.0
 
