@@ -1,180 +1,134 @@
-Return-Path: <linux-kernel+bounces-16642-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16643-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A5568241CD
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 13:33:18 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 90D9D8241D3
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 13:34:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 73DCF1F252D4
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 12:33:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A4EC41C23CAD
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 12:34:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50A1D2231D;
-	Thu,  4 Jan 2024 12:32:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6A0821A09;
+	Thu,  4 Jan 2024 12:34:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="HRHzg9OK"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA9531EB57;
-	Thu,  4 Jan 2024 12:32:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4T5QwC58Htz4f3jYP;
-	Thu,  4 Jan 2024 20:32:43 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 00E171A085D;
-	Thu,  4 Jan 2024 20:32:46 +0800 (CST)
-Received: from [10.174.176.73] (unknown [10.174.176.73])
-	by APP1 (Coremail) with SMTP id cCh0CgCnqxFrpZZlWpgFFg--.9161S3;
-	Thu, 04 Jan 2024 20:32:46 +0800 (CST)
-Subject: Re: [PATCH RFC v3 for-6.8/block 11/17] erofs: use bdev api
-To: Jan Kara <jack@suse.cz>, Yu Kuai <yukuai1@huaweicloud.com>
-Cc: axboe@kernel.dk, roger.pau@citrix.com, colyli@suse.de,
- kent.overstreet@gmail.com, joern@lazybastard.org, miquel.raynal@bootlin.com,
- richard@nod.at, vigneshr@ti.com, sth@linux.ibm.com, hoeppner@linux.ibm.com,
- hca@linux.ibm.com, gor@linux.ibm.com, agordeev@linux.ibm.com,
- jejb@linux.ibm.com, martin.petersen@oracle.com, clm@fb.com,
- josef@toxicpanda.com, dsterba@suse.com, viro@zeniv.linux.org.uk,
- brauner@kernel.org, nico@fluxnic.net, xiang@kernel.org, chao@kernel.org,
- tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.com,
- konishi.ryusuke@gmail.com, willy@infradead.org, akpm@linux-foundation.org,
- hare@suse.de, p.raghav@samsung.com, linux-block@vger.kernel.org,
- linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org,
- linux-bcache@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
- linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, linux-erofs@lists.ozlabs.org,
- linux-ext4@vger.kernel.org, linux-nilfs@vger.kernel.org,
- yi.zhang@huawei.com, yangerkun@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
-References: <20231221085712.1766333-1-yukuai1@huaweicloud.com>
- <20231221085826.1768395-1-yukuai1@huaweicloud.com>
- <20240104120207.ig7tfc3mgckwkp2n@quack3>
-From: Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <7f868579-f993-aaa1-b7d7-eccbe0b0173c@huaweicloud.com>
-Date: Thu, 4 Jan 2024 20:32:43 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B3B7219EC
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 12:34:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a28bf46ea11so74809366b.1
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 04:34:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1704371648; x=1704976448; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Ik4uyCYv2TQarb31EWuXmmWrYINJlUytsNJyudVrGMk=;
+        b=HRHzg9OK4sAdYUHQdMm3ZE6PoEL19W/Tz6Cj99EkH2SW8VKHWUcJTY6Jw/jxt59Z5/
+         66pjWDS7J3fASiUj+HvVMNM4JcuRGbywFGXhzgUHkSdtETfDB+6fToN2rrUdVYe419o3
+         VWFTUK8ANGglsN/MeQPysApFjFBFYhqs7QeFWrUYpIL6W+/1cabKKlTvzEmNTZclLSIT
+         iC0E6e0ryjrUACeOc7AkgJLX0gzxR+PjYrkRefHr7JqhwmQFQGFrHx0luCXuKpNFNpGV
+         7If/Kaf/styKSNJxTd2eNjDPrczG5ZLD+5XALBvX81sStU3zhmQGIkjl6XA6aYj498XP
+         +I6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704371648; x=1704976448;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Ik4uyCYv2TQarb31EWuXmmWrYINJlUytsNJyudVrGMk=;
+        b=dacrtNmfwcPbWgMgmMTT31gpM3j/Gh1Pdcq1G0LyPQBqr12GWkuMitzL0pTWmtDvZX
+         9Q8WqBcOjChPcrPBphm4FP4eL30fFermNM3dwG0VjCJJpr9jZ/BWZT8TTkKjHH8pD0w+
+         sy0hKmMEmQW8k04Gew/ywJsRopynzkOPhyfHuA7i/pG2uc7VpkPb9++/hJbV9X8GYUnd
+         Npt+BR22AjPyjJn6o0lrvrOy8jkXn1IZvtidHKcNIPdKFZp8/Ocav9IZNeScS+F9sRM9
+         ziFgrBfTkt6HiFizEGzH4A2h+3TCTM+RntWHrdNZNRW+UHljR3yFoLkIeP0L5gOJJZNx
+         +QDw==
+X-Gm-Message-State: AOJu0YylTsrWmjL3wVCsDehqLDppDjcP3IYlD3naNBcehll2AlCE6Nq3
+	mr8KhGDO+shDaTOIkxhVZUMMJ7BPcxbvKfPR0Vi9JyberF52b83GeFpT+5khAok=
+X-Google-Smtp-Source: AGHT+IERCr09H6KSLmfFQXyDrlFQIYorvDwOvmuf00b1qBW8NX0+J9jeWqyUIre3qPyVI8Wbm7Z5IHlV/zHPZA4aVyk=
+X-Received: by 2002:a17:906:56d3:b0:a23:5893:1ac8 with SMTP id
+ an19-20020a17090656d300b00a2358931ac8mr587088ejc.27.1704371648530; Thu, 04
+ Jan 2024 04:34:08 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240104120207.ig7tfc3mgckwkp2n@quack3>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgCnqxFrpZZlWpgFFg--.9161S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxJFy8ury3GFW8AF18AFy3twb_yoW5CFW7pF
-	y5CF1rGrWrXr9I9w1Igr1jvF4rta97tr48C3yxJw1FvayjqrySgFy0ywnxGF4jkr4vkr4I
-	qF12vryxuw4UKrDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUU9q14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-	2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-	W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
-	0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
-	kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
-	67AF67kF1VAFwI0_Wrv_Gr1UMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF
-	4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1lIxAIcVCF04k26cxKx2IYs7xG6rWU
-	JVWrZr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr1j6F
-	4UJbIYCTnIWIevJa73UjIFyTuYvjfUoL0eDUUUU
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+References: <20240102220134.3229156-1-samuel.holland@sifive.com> <20240102220134.3229156-5-samuel.holland@sifive.com>
+In-Reply-To: <20240102220134.3229156-5-samuel.holland@sifive.com>
+From: Alexandre Ghiti <alexghiti@rivosinc.com>
+Date: Thu, 4 Jan 2024 13:33:57 +0100
+Message-ID: <CAHVXubh+qnJCF1e6u8G0h+5fnfoGDHz0jjBr+KW11WZbKt3F9A@mail.gmail.com>
+Subject: Re: [PATCH v4 04/12] riscv: Only send remote fences when some other
+ CPU is online
+To: Samuel Holland <samuel.holland@sifive.com>
+Cc: Palmer Dabbelt <palmer@dabbelt.com>, linux-riscv@lists.infradead.org, 
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi, Jan!
+On Tue, Jan 2, 2024 at 11:01=E2=80=AFPM Samuel Holland
+<samuel.holland@sifive.com> wrote:
+>
+> If no other CPU is online, a local cache or TLB flush is sufficient.
+> These checks can be constant-folded when SMP is disabled.
+>
+> Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
+> ---
+>
+> Changes in v4:
+>  - New patch for v4
+>
+>  arch/riscv/mm/cacheflush.c | 4 +++-
+>  arch/riscv/mm/tlbflush.c   | 4 +++-
+>  2 files changed, 6 insertions(+), 2 deletions(-)
+>
+> diff --git a/arch/riscv/mm/cacheflush.c b/arch/riscv/mm/cacheflush.c
+> index 47c485bc7df0..f7933ae88a55 100644
+> --- a/arch/riscv/mm/cacheflush.c
+> +++ b/arch/riscv/mm/cacheflush.c
+> @@ -21,7 +21,9 @@ void flush_icache_all(void)
+>  {
+>         local_flush_icache_all();
+>
+> -       if (riscv_use_sbi_for_rfence())
+> +       if (num_online_cpus() < 2)
+> +               return;
+> +       else if (riscv_use_sbi_for_rfence())
+>                 sbi_remote_fence_i(NULL);
+>         else
+>                 on_each_cpu(ipi_remote_fence_i, NULL, 1);
+> diff --git a/arch/riscv/mm/tlbflush.c b/arch/riscv/mm/tlbflush.c
+> index 2f18fe6fc4f3..37b3c93e3c30 100644
+> --- a/arch/riscv/mm/tlbflush.c
+> +++ b/arch/riscv/mm/tlbflush.c
+> @@ -73,7 +73,9 @@ static void __ipi_flush_tlb_all(void *info)
+>
+>  void flush_tlb_all(void)
+>  {
+> -       if (riscv_use_sbi_for_rfence())
+> +       if (num_online_cpus() < 2)
+> +               local_flush_tlb_all();
+> +       else if (riscv_use_sbi_for_rfence())
+>                 sbi_remote_sfence_vma_asid(NULL, 0, FLUSH_TLB_MAX_SIZE, F=
+LUSH_TLB_NO_ASID);
+>         else
+>                 on_each_cpu(__ipi_flush_tlb_all, NULL, 1);
+> --
+> 2.42.0
+>
 
-ÔÚ 2024/01/04 20:02, Jan Kara Ð´µÀ:
-> On Thu 21-12-23 16:58:26, Yu Kuai wrote:
->> From: Yu Kuai <yukuai3@huawei.com>
->>
->> Avoid to access bd_inode directly, prepare to remove bd_inode from
->> block_device.
->>
->> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-> 
-> I'm not erofs maintainer but IMO this is quite ugly and grows erofs_buf
-> unnecessarily. I'd rather store 'sb' pointer in erofs_buf and then do the
-> right thing in erofs_bread() which is the only place that seems to care
-> about the erofs_is_fscache_mode() distinction... Also blkszbits is then
-> trivially sb->s_blocksize_bits so it would all seem much more
-> straightforward.
-
-Thanks for your suggestion, I'll follow this unless Gao Xiang has other
-suggestions.
-
-Kuai
-> 
-> 								Honza
-> 
->> ---
->>   fs/erofs/data.c     | 18 ++++++++++++------
->>   fs/erofs/internal.h |  2 ++
->>   2 files changed, 14 insertions(+), 6 deletions(-)
->>
->> diff --git a/fs/erofs/data.c b/fs/erofs/data.c
->> index c98aeda8abb2..bbe2fe199bf3 100644
->> --- a/fs/erofs/data.c
->> +++ b/fs/erofs/data.c
->> @@ -32,8 +32,8 @@ void erofs_put_metabuf(struct erofs_buf *buf)
->>   void *erofs_bread(struct erofs_buf *buf, erofs_blk_t blkaddr,
->>   		  enum erofs_kmap_type type)
->>   {
->> -	struct inode *inode = buf->inode;
->> -	erofs_off_t offset = (erofs_off_t)blkaddr << inode->i_blkbits;
->> +	u8 blkszbits = buf->inode ? buf->inode->i_blkbits : buf->blkszbits;
->> +	erofs_off_t offset = (erofs_off_t)blkaddr << blkszbits;
->>   	pgoff_t index = offset >> PAGE_SHIFT;
->>   	struct page *page = buf->page;
->>   	struct folio *folio;
->> @@ -43,7 +43,9 @@ void *erofs_bread(struct erofs_buf *buf, erofs_blk_t blkaddr,
->>   		erofs_put_metabuf(buf);
->>   
->>   		nofs_flag = memalloc_nofs_save();
->> -		folio = read_cache_folio(inode->i_mapping, index, NULL, NULL);
->> +		folio = buf->inode ?
->> +			read_mapping_folio(buf->inode->i_mapping, index, NULL) :
->> +			bdev_read_folio(buf->bdev, offset);
->>   		memalloc_nofs_restore(nofs_flag);
->>   		if (IS_ERR(folio))
->>   			return folio;
->> @@ -67,10 +69,14 @@ void *erofs_bread(struct erofs_buf *buf, erofs_blk_t blkaddr,
->>   
->>   void erofs_init_metabuf(struct erofs_buf *buf, struct super_block *sb)
->>   {
->> -	if (erofs_is_fscache_mode(sb))
->> +	if (erofs_is_fscache_mode(sb)) {
->>   		buf->inode = EROFS_SB(sb)->s_fscache->inode;
->> -	else
->> -		buf->inode = sb->s_bdev->bd_inode;
->> +		buf->bdev = NULL;
->> +	} else {
->> +		buf->inode = NULL;
->> +		buf->bdev = sb->s_bdev;
->> +		buf->blkszbits = EROFS_SB(sb)->blkszbits;
->> +	}
->>   }
->>   
->>   void *erofs_read_metabuf(struct erofs_buf *buf, struct super_block *sb,
->> diff --git a/fs/erofs/internal.h b/fs/erofs/internal.h
->> index b0409badb017..c9206351b485 100644
->> --- a/fs/erofs/internal.h
->> +++ b/fs/erofs/internal.h
->> @@ -224,8 +224,10 @@ enum erofs_kmap_type {
->>   
->>   struct erofs_buf {
->>   	struct inode *inode;
->> +	struct block_device *bdev;
->>   	struct page *page;
->>   	void *base;
->> +	u8 blkszbits;
->>   	enum erofs_kmap_type kmap_type;
->>   };
->>   #define __EROFS_BUF_INITIALIZER	((struct erofs_buf){ .page = NULL })
->> -- 
->> 2.39.2
->>
-
+on_each_cpu() already deals correctly with a single online cpu, the
+only thing to optimize here is the SBI rfence. So I'd move this new
+test in sbi_remote_sfence_vma_asid() and sbi_remote_fence_i() to avoid
+the superfluous M-mode entry when only one cpu is online by checking
+the cpumask. And since sbi_remote_fence_i() is used in another
+function (flush_icache_mm()), we could also take advantage of this
+optimization when only the local cpu must be flushed.
 
