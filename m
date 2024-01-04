@@ -1,106 +1,203 @@
-Return-Path: <linux-kernel+bounces-16851-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16852-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D62868244E8
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 16:26:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 15DA28244EA
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 16:27:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D75F41C21D06
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 15:26:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B8CAE286DA5
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 15:27:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3733241FF;
-	Thu,  4 Jan 2024 15:26:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31B71241FE;
+	Thu,  4 Jan 2024 15:27:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ADm76X0G"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="dBfe4em3";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="cA3HhRsJ";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="dBfe4em3";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="cA3HhRsJ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C6182377F
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 15:26:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-50e7d6565b5so692474e87.0
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 07:26:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704382002; x=1704986802; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=kR6fri6zfOqsumIMPFqXw2iWj6TDkCagFBePFWGJhIk=;
-        b=ADm76X0Gi50Nx8wvtv9NF/FY6EdtLnrAE1p/7U/2afCoHYGnMWGZE8R8ihd+p8u7C7
-         Xceooq9XehBvgaFuM3R+7+WgJ0qRLda7vTGyPCUE/xPcVCH6sfYxphh1vMURrX0OQEsc
-         ltIK8tyXF5TbMGvhBbNE4Yg9nBuIuAmmoGFWmsbU0ZLyeAPl4Q1SASlud2hIOXNv9Bfw
-         q1YymnSfnOW2bUo3qiAXBDpMI7rS9lvQEz/F5C4N5TzslrDO8fjkF0Y/8PcHTjHTmHq/
-         WEzHmAX+9k9r4+m4JTDB/as40oHBaYdLm2FKtjEk5+irMcJ7IIikdZomFdyeWJZV9QWD
-         ZJ8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704382002; x=1704986802;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=kR6fri6zfOqsumIMPFqXw2iWj6TDkCagFBePFWGJhIk=;
-        b=uykH/pAUTkkCbPrY1iJGD9TTE4yadvVF5XawLtFh8BD1rBfsMhbwP5j6Zqd/tLdgbo
-         d+qz1r+bgK7U4/8v94ja8XSMIxoVrHBrOhFiTK2JbIgD7n+uar6Ple+kAh1W9areOzoE
-         AVeP16GxM5VNM9h1B+OJUj835/mnTK0YcERfZRpn3wjNWa7XQZ881DpAq0/VTGphie+f
-         q6d9R6iM80wHHt5sTHdd39fLp3zYkTiuleyp6Q66HYsX0K0d3A3y0dyixcQvX+1cttzu
-         3pqnCCMydNe0sD0QnazC6AoEkjZMm42qmD+s4K/oLPpik4zj/GmdfyD/Jf1MMWc0sAr0
-         z3ug==
-X-Gm-Message-State: AOJu0YzDmOhc5S2NvvJpxcOi46X8sO/IC39xp35W/pyxC47yY+WYKrhc
-	zcGwbuW/lBVQ6wF3vC3q8dz9XCNcf0t9fg==
-X-Google-Smtp-Source: AGHT+IENlCSAIUJOeRuY3KAhsacO67sooGmTlUINZ+Exrwrq129QzN3yc1GQd5n4NyrMGN7+x6vRLg==
-X-Received: by 2002:a19:ae1a:0:b0:50e:7f5e:59b with SMTP id f26-20020a19ae1a000000b0050e7f5e059bmr380944lfc.60.1704382002669;
-        Thu, 04 Jan 2024 07:26:42 -0800 (PST)
-Received: from localhost ([102.140.209.237])
-        by smtp.gmail.com with ESMTPSA id d33-20020a056402402100b0055422adeb00sm18858482eda.33.2024.01.04.07.26.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Jan 2024 07:26:42 -0800 (PST)
-Date: Thu, 4 Jan 2024 18:26:38 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Michel =?iso-8859-1?Q?D=E4nzer?= <michel.daenzer@mailbox.org>
-Cc: Markus Elfring <Markus.Elfring@web.de>, dri-devel@lists.freedesktop.org,
-	kernel-janitors@vger.kernel.org, Daniel Vetter <daniel@ffwll.ch>,
-	David Airlie <airlied@gmail.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	LKML <linux-kernel@vger.kernel.org>, cocci@inria.fr
-Subject: Re: [PATCH 1/3] drm: property: One function call less in
- drm_property_create() after error detection
-Message-ID: <b56e4902-f020-4461-abf1-563e6f8b23e6@moroto.mountain>
-References: <ff7ce5d0-59fa-470c-8dd6-68dbe65c18e5@web.de>
- <9b1e7330-f4f6-47f8-a568-eaea1624bb6f@web.de>
- <37647c33-7f9d-4763-8bf4-cfc5c9a811de@mailbox.org>
- <c5f1a7bf-b444-4934-a205-3c2b3a045ff7@web.de>
- <dd300771-851f-4cfb-b9a2-d87d2b4399aa@mailbox.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC527241E7;
+	Thu,  4 Jan 2024 15:27:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id C3B5721DF7;
+	Thu,  4 Jan 2024 15:27:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1704382038; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=KWbky96QGRcwFV5isIsGPDHire/PDOSyRwF8lmzP/DQ=;
+	b=dBfe4em31QIE5R7CSUtW3D0QZPa8MOlx8fDV5S1iGAK42rZ7Po3nISOaPHW2uhDdjsYVQ8
+	nYDd7zBm9HDobZ7st+MAJjfeZAVPWrEG5+bNK1fKYlXa/i77jLSiX438uwLXBmi9pD8L5s
+	7dYHuYQWNVtkubvVWS10Y4WNmKVOGsw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1704382038;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=KWbky96QGRcwFV5isIsGPDHire/PDOSyRwF8lmzP/DQ=;
+	b=cA3HhRsJSPma1JUPEOMAuGboHdH1B7m1qswm1PWd3HD8NBj1W0PB3+GwCmIU+OpIJUKQod
+	yW3sm33pkT5nn+AQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1704382038; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=KWbky96QGRcwFV5isIsGPDHire/PDOSyRwF8lmzP/DQ=;
+	b=dBfe4em31QIE5R7CSUtW3D0QZPa8MOlx8fDV5S1iGAK42rZ7Po3nISOaPHW2uhDdjsYVQ8
+	nYDd7zBm9HDobZ7st+MAJjfeZAVPWrEG5+bNK1fKYlXa/i77jLSiX438uwLXBmi9pD8L5s
+	7dYHuYQWNVtkubvVWS10Y4WNmKVOGsw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1704382038;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=KWbky96QGRcwFV5isIsGPDHire/PDOSyRwF8lmzP/DQ=;
+	b=cA3HhRsJSPma1JUPEOMAuGboHdH1B7m1qswm1PWd3HD8NBj1W0PB3+GwCmIU+OpIJUKQod
+	yW3sm33pkT5nn+AQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id AB59313722;
+	Thu,  4 Jan 2024 15:27:18 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 4XyKKVbOlmXXTgAAD6G6ig
+	(envelope-from <jack@suse.cz>); Thu, 04 Jan 2024 15:27:18 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 020E9A07EF; Thu,  4 Jan 2024 16:27:17 +0100 (CET)
+Date: Thu, 4 Jan 2024 16:27:17 +0100
+From: Jan Kara <jack@suse.cz>
+To: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+Cc: linux-ext4@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
+	Ritesh Harjani <ritesh.list@gmail.com>,
+	linux-kernel@vger.kernel.org, Jan Kara <jack@suse.cz>,
+	glandvador@yahoo.com, bugzilla@eyal.emu.id.au
+Subject: Re: [PATCH 1/1] ext4: fallback to complex scan if aligned scan
+ doesn't work
+Message-ID: <20240104152717.rj7mmmij77q3mbiu@quack3>
+References: <cover.1702455010.git.ojaswin@linux.ibm.com>
+ <ee033f6dfa0a7f2934437008a909c3788233950f.1702455010.git.ojaswin@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <dd300771-851f-4cfb-b9a2-d87d2b4399aa@mailbox.org>
+In-Reply-To: <ee033f6dfa0a7f2934437008a909c3788233950f.1702455010.git.ojaswin@linux.ibm.com>
+X-Spam-Level: 
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spamd-Result: default: False [-1.10 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 URIBL_BLOCKED(0.00)[suse.cz:email,suse.com:email];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com,yahoo.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 TAGGED_RCPT(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 BAYES_HAM(-3.00)[100.00%];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 RCPT_COUNT_SEVEN(0.00)[8];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.cz:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 FREEMAIL_CC(0.00)[vger.kernel.org,mit.edu,gmail.com,suse.cz,yahoo.com,eyal.emu.id.au];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spam-Score: -1.10
 
-On Wed, Jan 03, 2024 at 06:18:13PM +0100, Michel Dänzer wrote:
-> On 2024-01-03 17:24, Markus Elfring wrote:
-> > 
-> >> Out of curiosity, what exactly did Coccinelle report?
-> > 
-> > Some SmPL scripts from my own selection tend to point questionable implementation details out.
+On Fri 15-12-23 16:49:50, Ojaswin Mujoo wrote:
+> Currently in case the goal length is a multiple of stripe size we use
+> ext4_mb_scan_aligned() to find the stripe size aligned physical blocks.
+> In case we are not able to find any, we again go back to calling
+> ext4_mb_choose_next_group() to search for a different suitable block
+> group. However, since the linear search always begins from the start,
+> most of the times we end up with the same BG and the cycle continues.
 > 
-> That doesn't answer my question.
+> With large fliesystems, the CPU can be stuck in this loop for hours
+> which can slow down the whole system. Hence, until we figure out a
+> better way to continue the search (rather than starting from beginning)
+> in ext4_mb_choose_next_group(), lets just fallback to
+> ext4_mb_complex_scan_group() in case aligned scan fails, as it is much
+> more likely to find the needed blocks.
 > 
-> Without seeing the actual Coccinelle report, I'll assume that it didn't actually call for this change.
+> Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
 
-This isn't one of the Coccinelle scripts which ship with the kernel,
-it's something that Markus wrote himself.
+If I understand the difference right, the problem is that while
+ext4_mb_choose_next_group() guarantees large enough free space extent for
+the CR_GOAL_LEN_FAST or CR_BEST_AVAIL_LEN passes, it does not guaranteed
+large enough *aligned* free space extent. Thus for non-aligned allocations
+we can fail only due to a race with another allocating process but with
+aligned allocations we can consistently fail in ext4_mb_scan_aligned() and
+thus livelock in the allocation loop.
 
-regards,
-dan carpenter
+If my understanding is correct, feel free to add:
 
+Reviewed-by: Jan Kara <jack@suse.cz>
+
+								Honza
+
+
+
+> ---
+>  fs/ext4/mballoc.c | 21 +++++++++++++--------
+>  1 file changed, 13 insertions(+), 8 deletions(-)
+> 
+> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+> index d72b5e3c92ec..63f12ec02485 100644
+> --- a/fs/ext4/mballoc.c
+> +++ b/fs/ext4/mballoc.c
+> @@ -2895,14 +2895,19 @@ ext4_mb_regular_allocator(struct ext4_allocation_context *ac)
+>  			ac->ac_groups_scanned++;
+>  			if (cr == CR_POWER2_ALIGNED)
+>  				ext4_mb_simple_scan_group(ac, &e4b);
+> -			else if ((cr == CR_GOAL_LEN_FAST ||
+> -				 cr == CR_BEST_AVAIL_LEN) &&
+> -				 sbi->s_stripe &&
+> -				 !(ac->ac_g_ex.fe_len %
+> -				 EXT4_B2C(sbi, sbi->s_stripe)))
+> -				ext4_mb_scan_aligned(ac, &e4b);
+> -			else
+> -				ext4_mb_complex_scan_group(ac, &e4b);
+> +			else {
+> +				bool is_stripe_aligned = sbi->s_stripe &&
+> +					!(ac->ac_g_ex.fe_len %
+> +					  EXT4_B2C(sbi, sbi->s_stripe));
+> +
+> +				if ((cr == CR_GOAL_LEN_FAST ||
+> +				     cr == CR_BEST_AVAIL_LEN) &&
+> +				    is_stripe_aligned)
+> +					ext4_mb_scan_aligned(ac, &e4b);
+> +
+> +				if (ac->ac_status == AC_STATUS_CONTINUE)
+> +					ext4_mb_complex_scan_group(ac, &e4b);
+> +			}
+>  
+>  			ext4_unlock_group(sb, group);
+>  			ext4_mb_unload_buddy(&e4b);
+> -- 
+> 2.39.3
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
