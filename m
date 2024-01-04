@@ -1,120 +1,120 @@
-Return-Path: <linux-kernel+bounces-16269-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16270-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79AF9823BF5
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 06:58:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D72F7823BF9
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 06:58:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 16717285AFA
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 05:58:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 84E2F285C82
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 05:58:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 837BF18EBE;
-	Thu,  4 Jan 2024 05:58:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="dU2fAWE0"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DE3918ECE;
+	Thu,  4 Jan 2024 05:58:44 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BDC918EBD;
-	Thu,  4 Jan 2024 05:58:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 4045AW5g003555;
-	Thu, 4 Jan 2024 05:57:56 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=LYjP6l6ccwWyulGOSKOxb1lXvRXMy12sfK4tBYthV8k=;
- b=dU2fAWE00B74zsckVxAXa6hTRfeJfJjPmEt+BhoO0RbTgVgC34ez2pze8Bu3IdTx5KJ0
- eHMzePHpHjinHv9MqzAj5NA7g9tucfkGrtSR6YMsUW+ybOUA+dCV/kFm0YSHkz8htv0u
- GauVJUlpf09pqm5ekO1OmW8R+YCCNtPZkH7mboOI1vRS9BYAzDQYhWPz54Kcms8P3Ih9
- /Tf6+H18cBYoMAjb6lKnkvAhu1jwZvYuO3HShgoU4HKS7eUKkOIOJfxu1318QXs0Oo5g
- cNUroxkbXEg8p7yZuulq1prsqnl1oQEdCXd7W8TfvSOhlr0G5oPMzOKkaHNEg7PU6APj LA== 
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vdhg38w2p-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 04 Jan 2024 05:57:55 +0000
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 40437dsq019309;
-	Thu, 4 Jan 2024 05:57:54 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
-	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3vc30sppjc-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 04 Jan 2024 05:57:54 +0000
-Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
-	by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 4045vq3124904420
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 4 Jan 2024 05:57:52 GMT
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 634182004B;
-	Thu,  4 Jan 2024 05:57:52 +0000 (GMT)
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id BC29520040;
-	Thu,  4 Jan 2024 05:57:50 +0000 (GMT)
-Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com (unknown [9.109.253.82])
-	by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Thu,  4 Jan 2024 05:57:50 +0000 (GMT)
-Date: Thu, 4 Jan 2024 11:27:47 +0530
-From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-To: Kemeng Shi <shikemeng@huaweicloud.com>
-Cc: tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/9] ext4: remove unused parameter group in
- ext4_mb_choose_next_group_*()
-Message-ID: <ZZZI2yTyAXs3gIzL@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
-References: <20240103102821.448134-1-shikemeng@huaweicloud.com>
- <20240103102821.448134-3-shikemeng@huaweicloud.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0738F2CA6;
+	Thu,  4 Jan 2024 05:58:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=realtek.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=realtek.com
+X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 4045wM8L11475824, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
+	by rtits2.realtek.com.tw (8.15.2/2.95/5.92) with ESMTPS id 4045wM8L11475824
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 4 Jan 2024 13:58:23 +0800
+Received: from RTEXDAG02.realtek.com.tw (172.21.6.101) by
+ RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.32; Thu, 4 Jan 2024 13:58:22 +0800
+Received: from RTEXDAG02.realtek.com.tw (172.21.6.101) by
+ RTEXDAG02.realtek.com.tw (172.21.6.101) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.7; Thu, 4 Jan 2024 13:58:22 +0800
+Received: from RTEXDAG02.realtek.com.tw ([fe80::5d58:7838:d352:d6b8]) by
+ RTEXDAG02.realtek.com.tw ([fe80::5d58:7838:d352:d6b8%5]) with mapi id
+ 15.01.2375.007; Thu, 4 Jan 2024 13:58:22 +0800
+From: =?utf-8?B?VFlfQ2hhbmdb5by15a2Q6YC4XQ==?= <tychang@realtek.com>
+To: Bartosz Golaszewski <brgl@bgdev.pl>
+CC: Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko
+	<andy@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v5 0/2] Add gpio driver support for Realtek DHC SoCs
+Thread-Topic: [PATCH v5 0/2] Add gpio driver support for Realtek DHC SoCs
+Thread-Index: AQHaOXtdJNg44qAIYUmtF1DI0I5vCbDHWqyAgAHXWcA=
+Date: Thu, 4 Jan 2024 05:58:22 +0000
+Message-ID: <57250f26c03e4e938f0b68d07ee5e27f@realtek.com>
+References: <20231228104800.24913-1-tychang@realtek.com>
+ <CAMRc=MeB6UBf2cCrB8XHtfKigmS3Gb41SV-G6F+0X7Dd+7oatw@mail.gmail.com>
+In-Reply-To: <CAMRc=MeB6UBf2cCrB8XHtfKigmS3Gb41SV-G6F+0X7Dd+7oatw@mail.gmail.com>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+x-kse-serverinfo: RTEXDAG02.realtek.com.tw, 9
+x-kse-antispam-interceptor-info: fallback
+x-kse-antivirus-interceptor-info: fallback
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240103102821.448134-3-shikemeng@huaweicloud.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 8dnK-ZWpIo9dbZCmBmeHrOhEg4RCg4tA
-X-Proofpoint-ORIG-GUID: 8dnK-ZWpIo9dbZCmBmeHrOhEg4RCg4tA
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-04_02,2024-01-03_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 mlxscore=0
- impostorscore=0 bulkscore=0 lowpriorityscore=0 phishscore=0 suspectscore=0
- adultscore=0 spamscore=0 mlxlogscore=844 priorityscore=1501 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
- definitions=main-2401040040
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-ServerInfo: RTEXH36505.realtek.com.tw, 9
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-Antivirus-Interceptor-Info: fallback
+X-KSE-AntiSpam-Interceptor-Info: fallback
 
-On Wed, Jan 03, 2024 at 06:28:14PM +0800, Kemeng Shi wrote:
-> Remove unused parameter group in ext4_mb_choose_next_group_*().
-
-Hey Kemeng, 
-
-Just a small thing, the parameter we are removing is "ngroups" rather
-than "group" so maybe fix that in the commit message. 
-
-Other than that looks good, feel free to add
-
-Reviewed-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-> 
-> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
-> Reviewed-by: Jan Kara <jack@suse.cz>
-> ---
->  fs/ext4/mballoc.c | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
-> 
-> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-> index 9f9b8dd06..765b62729 100644
-> --- a/fs/ext4/mballoc.c
-> +++ b/fs/ext4/mballoc.c
-> @@ -870,7 +870,7 @@ mb_update_avg_fragment_size(struct super_block *sb, struct ext4_group_info *grp)
->   * cr level needs an update.
->   */
->  static void ext4_mb_choose_next_group_p2_aligned(struct ext4_allocation_context *ac,
-> -			enum criteria *new_cr, ext4_group_t *group, ext4_group_t ngroups)
-> +			enum criteria *new_cr, ext4_group_t *group)
->  {
+SGkgQmFydG9zeiwNCg0KPk9uIFRodSwgRGVjIDI4LCAyMDIzIGF0IDExOjQ44oCvQU0gVHp1eWkg
+Q2hhbmcgPHR5Y2hhbmdAcmVhbHRlay5jb20+DQo+d3JvdGU6DQo+Pg0KPj4gVGhlc2UgcGF0Y2hl
+cyBhZGQgdGhlIGJpbmRpbmdzIGFuZCB0aGUgZ3BpbyBkcml2ZXIgZm9yIFJlYWx0ZWsNCj4+IERI
+QyhEaWdpdGFsIEhvbWUgQ2VudGVyKSBSVEQgU29DcywgaW5jbHVkaW5nIFJURDEyOTUsIFJURDEz
+OTUsDQo+PiBSVEQxNjE5LCBSVEQxMzE5LCBSVEQxNjE5QiwgUlREMTMxOUQgYW5kIFJURDEzMTVF
+Lg0KPj4NCj4+IENoYW5nZSBsb2c6DQo+PiB2NC0+djU6DQo+PiAxLiBBZGQgbW9yZSBkZXNjcmlw
+dGlvbiBpbiB0aGUgS2NvbmZpZy4NCj4+IDIuIEFkZCBjb21tZW50IGZvciB0aGUgY291bnRlci1p
+bnR1aXRpdmUgbnVtYmVyIDMxLg0KPj4gMy4gQ29udmVydCB0byB1c2UgY2xlYW51cCBBUEkgYW5k
+IG1vZHVsZV9wbGF0Zm9ybV9kcml2ZXIoKSBtYWNyby4NCj4+IDQuIFNpbXBsaWZ5IHNvbWUgb2Yg
+dGhlIGNvZGUgYXMgc3VnZ2VzdGVkIGluIHBhdGNoIHY0Lg0KPj4gdjMtPnY0Og0KPj4gMS4gQXJy
+YW5nZSB0aGUgY29tcGF0aWJsZSBsaXN0IGluIGFscGhhbnVtZXJpY2FsIG9yZGVyLg0KPj4gMi4g
+UmVtb3ZlIHRoZSBzaXplIGNoZWNrIGZvciB0aGUgb2Zmc2V0IGFycmF5Lg0KPj4gMy4gQWRkIHRo
+ZSBkZWJvdW5jZSBjYWxsYmFjay4NCj4+IDQuIENvbmR1Y3RlZCBhIHJldmlldyBvZiB0aGUgY3Jp
+dGljYWwgc2VjdGlvbiwgZW1wbG95aW5nIHJhd19zcGlubG9ja190IGZvcg0KPmxvY2tpbmcgcHVy
+cG9zZXMuDQo+PiA1LiBBZGQgZ3Bpb2NoaXBfZW5hYmxlX2lycS9ncGlvY2hpcF9kaXNhYmxlX2ly
+cSB0byBmdWxmaWxsIHRoZSBpbW11dGFiaWxpdHkNCj5yZXF1aXJlbWVudHMuDQo+PiA2LiBVc2Ug
+aXJxZF90b19od2lycSB0byBnZXQgaHdpcnEuDQo+PiB2Mi0+djM6DQo+PiAxLiBSZW1vdmUgZ2Vu
+ZXJpYyBjb21wYXRpYmxlIGFuZCB1c2UgU29DLXNwZWNpZmljIGNvbXBhdGlibGUgaW5zdGVhZC4N
+Cj4+IDIuIEFkZCB0aGUgbWlzc2luZyBkZXNjcmlwdGlvbnMgZm9yIHRoZSBydGRfZ3Bpb19pbmZv
+IHN0cnVjdHVyZSBtZW1iZXJzLg0KPj4gMy4gQXNzaWduIGdwaW9fY2hpcCBmd25vZGUuDQo+PiB2
+MS0+djI6DQo+PiAxLiBBZGQgZGVzY3JpcHRpb24gZm9yIERIQyBSVEQgU29DcyBpbiB0aGUgYmlu
+ZGluZ3MuDQo+PiAyLiBSZXZpc2UgdGhlIGNvbXBhdGlibGUgbmFtZXMgaW4gdGhlIGJpbmRpbmdz
+Lg0KPj4gMy4gVHJhbnNpdGlvbmVkIGZyb20gT0YgQVBJIHRvIHBsYXRmb3JtX2RldmljZSBBUEku
+DQo+PiA0LiBVc2UgdTggZm9yIHRoZSBvZmZzZXQgYXJyYXkgd2l0aGluIHRoZSBydGRfZ3Bpb19p
+bmZvIHN0cnVjdHVyZS4NCj4+IDUuIFJlY29yZCB0aGUgc2l6ZSBvZiBlYWNoIGFycmF5IHdpdGhp
+biB0aGUgcnRkX2dwaW9faW5mbyBzdHJ1Y3R1cmUgYW5kDQo+PiAgICBpbXBsZW1lbnQgY2hlY2tz
+IHRvIHByZXZlbnQgb3V0LW9mLWJvdW5kcyBhY2Nlc3MuDQo+PiA2LiBVc2UgR1BJT0xJQl9JUlFD
+SElQIGhlbHBlcnMgdG8gcmVnaXN0ZXIgaW50ZXJydXB0cy4NCj4+IDcuIFVzZSBkeW5hbWljIGFs
+bG9jYXRpb24gZm9yIEdQSU8gYmFzZS4NCj4+DQo+PiBUenV5aSBDaGFuZyAoMik6DQo+PiAgIGR0
+LWJpbmRpbmdzOiBncGlvOiByZWFsdGVrOiBBZGQgcmVhbHRlayxydGQtZ3Bpbw0KPj4gICBBZGQg
+R1BJTyBzdXBwb3J0IGZvciBSZWFsdGVrIERIQyhEaWdpdGFsIEhvbWUgQ2VudGVyKSBSVEQgU29D
+cy4NCj4+DQo+PiAgLi4uL2JpbmRpbmdzL2dwaW8vcmVhbHRlayxydGQtZ3Bpby55YW1sICAgICAg
+IHwgIDY5ICsrDQo+PiAgZHJpdmVycy9ncGlvL0tjb25maWcgICAgICAgICAgICAgICAgICAgICAg
+ICAgIHwgIDEzICsNCj4+ICBkcml2ZXJzL2dwaW8vTWFrZWZpbGUgICAgICAgICAgICAgICAgICAg
+ICAgICAgfCAgIDEgKw0KPj4gIGRyaXZlcnMvZ3Bpby9ncGlvLXJ0ZC5jICAgICAgICAgICAgICAg
+ICAgICAgICB8IDYwNA0KPisrKysrKysrKysrKysrKysrKw0KPj4gIDQgZmlsZXMgY2hhbmdlZCwg
+Njg3IGluc2VydGlvbnMoKykNCj4+ICBjcmVhdGUgbW9kZSAxMDA2NDQNCj4+IERvY3VtZW50YXRp
+b24vZGV2aWNldHJlZS9iaW5kaW5ncy9ncGlvL3JlYWx0ZWsscnRkLWdwaW8ueWFtbA0KPj4gIGNy
+ZWF0ZSBtb2RlIDEwMDY0NCBkcml2ZXJzL2dwaW8vZ3Bpby1ydGQuYw0KPj4NCj4+IC0tDQo+PiAy
+LjQzLjANCj4+DQo+DQo+SSBhcHBsaWVkIHRoaXMgc2VyaWVzLiBGb3IgdGhlIGZ1dHVyZTogdGhl
+IGNvbW1pdCBzdWJqZWN0IHNob3VsZCBoYXZlIHRoZSAiZ3BpbzoNCj5ydGQ6IC4uLiIgcHJlZml4
+LiBJIGFkZGVkIGl0IHRoaXMgdGltZS4NCj4NCg0KVGhhbmsgeW91LiBJJ2xsIG1ha2Ugc3VyZSB0
+byB0YWtlIG5vdGUgb2YgaXQgbmV4dCB0aW1lLg0KDQpUaGFua3MsDQpUenV5aSBDaGFuZw0K
 
