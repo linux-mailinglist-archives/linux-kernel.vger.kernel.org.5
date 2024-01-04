@@ -1,358 +1,304 @@
-Return-Path: <linux-kernel+bounces-17067-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17068-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF52A8247CE
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 18:52:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 50ECA8247D2
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 18:53:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 13A611C24045
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 17:52:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D67AA285832
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 17:53:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A70A728DB8;
-	Thu,  4 Jan 2024 17:52:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76E7A28DC1;
+	Thu,  4 Jan 2024 17:53:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="dSl2ffrD"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="r1xGtIhZ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F4B828DA0
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 17:51:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-553e36acfbaso377a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 09:51:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1704390716; x=1704995516; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=B74JqfZyQlvHE8okDbReQQjqktg4m15F066ZG6l5Rrw=;
-        b=dSl2ffrD1Zc6qV1nU7fkxfFrSzWNQNHiuxpU7JoYLlkeZer7asXYAfF2/6ksCYJBnQ
-         M5IXWDgcNER2hrDLCbvJb3QiegNVBqYHqk6qNA21Z1X4wrLtSJmaGMlCFN4Jh9S2n+4v
-         OYFp99+ma8bTIV/iiJhtG2CAH4j+Ro3PQNpPA4UsLLUhdAQQj+wx8JQpnxPLc8vGaPxk
-         Gxu9oNyTgv79kIx0vuNM00d65LrbwLWz3XB4O/Gz7nmiUud2hk0Yh1pCfaeATeHQ3JZD
-         gGK0HVAPiTHD8oO2RxjYPlGfp6KoqA1lBa9ITFhXYiJZl/S6S+whIf6UyNIhyqoKvvr2
-         Ss+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704390716; x=1704995516;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=B74JqfZyQlvHE8okDbReQQjqktg4m15F066ZG6l5Rrw=;
-        b=chraYEE4yh3ACZDkDCvKWLT+3nuFM15ltKRw/of+j13ksU1HyNLEeQ2ZdRxDJJPYM6
-         xco4lIRXLSa4G2JK0QcyZZpeDX2VbNPuz0bmSfNa3O9yh78nN3MrZvbqghLN2g9KvgJY
-         Z+CX3dvFJKho2Q+O4In5t/QT/HTD7DXU7NLMOas9YZZmXBvADezDExi9jKj0RXxdCJVq
-         nN17Yp/+mFv5BtxBjTeuaFqt1gjb0dsxAUlujT53YGe2Kjnno+gzAtdphlSnyGeUF/O+
-         fL+s3Pr2Hd0L4QzfS2JaesfZdaqokM0YlCs+EVORp2cqyGNAWPtulxeI0OZTuAbtWBVC
-         RluA==
-X-Gm-Message-State: AOJu0YxxIc3Eozyzl7/bUenNtVzEc7LIwI/ruDhQ5ZtV9S/HzNqO5YsO
-	IBubL0S5rB/eKcE/ElhCcFmptQHDP2A9vINBsSQRuxh5gp5x
-X-Google-Smtp-Source: AGHT+IFEAPvvuFWx88JngOw4Y9x/ZbIkJrHBt25yhvCdNyPzK4HGYk53JY9+vHuiXlAQeDwGwei73oXLhSnEOfRInXc=
-X-Received: by 2002:a50:d4d2:0:b0:557:1142:d5bb with SMTP id
- e18-20020a50d4d2000000b005571142d5bbmr4311edj.4.1704390716226; Thu, 04 Jan
- 2024 09:51:56 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3EF128DAB;
+	Thu,  4 Jan 2024 17:53:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6501DC433C7;
+	Thu,  4 Jan 2024 17:52:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704390782;
+	bh=wKYftDd3FW5eeDWnzupfy2i9v4YDDNe798XkVIlpntA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=r1xGtIhZLKg/DWo5tFxE72e0gxuhkDIKV4oTNFvWvLqyDfrPQlNjK41WMhUYcJ1Hy
+	 7l4MiWr16D03U44+WfsgK+XEiKYsL32Ukwtb+j/zownEYSCDtIc4jIudL8FCPlztJa
+	 wa3BjGjg6ADD5tLTRzht7v5o/AtHz6wJOmu6cGaHjdJhk2IFea8qY2lPnxJ6cm1Qjh
+	 xd0qOT1j7Yhp3oL6StLi286l42ZzdauAuy+Mqtq4fkVcX1zQ/VIPPAK5WbYmULuKja
+	 UuqG0mCKG/yDEgIxi9pDNgNiLE0gWveCqOYbIqd2Tk7qom5amXmA6wKNlSJKE3rHuA
+	 pKoSbTQBou1NQ==
+Date: Thu, 4 Jan 2024 17:52:53 +0000
+From: Simon Horman <horms@kernel.org>
+To: Yi-De Wu <yi-de.wu@mediatek.com>
+Cc: Yingshiuan Pan <yingshiuan.pan@mediatek.com>,
+	Ze-Yu Wang <ze-yu.wang@mediatek.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Wihl Deacon <will@kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Richard Cochran <richardcochran@gmail.com>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-doc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-trace-kernel@vger.kernel.org, netdev@vger.kernel.org,
+	linux-mediatek@lists.infradead.org,
+	David Bradil <dbrazdil@google.com>,
+	Trilok Soni <quic_tsoni@quicinc.com>,
+	Jade Shih <jades.shih@mediatek.com>,
+	Ivan Tseng <ivan.tseng@mediatek.com>,
+	My Chuang <my.chuang@mediatek.com>,
+	Shawn Hsiao <shawn.hsiao@mediatek.com>,
+	PeiLun Suei <peilun.suei@mediatek.com>,
+	Liju Chen <liju-clr.chen@mediatek.com>,
+	Willix Yeh <chi-shen.yeh@mediatek.com>,
+	Kevenny Hsieh <kevenny.hsieh@mediatek.com>
+Subject: Re: [PATCH v8 08/20] virt: geniezone: Add vcpu support
+Message-ID: <20240104175253.GK31813@kernel.org>
+References: <20231228105147.13752-1-yi-de.wu@mediatek.com>
+ <20231228105147.13752-9-yi-de.wu@mediatek.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240104074259.653219-1-irogers@google.com> <ZZam-EG-UepcXtWw@kernel.org>
- <CAP-5=fV+U4qSwU8nqHJMgAZTwtWs9jEm3i9yDQSVtq9Fbos5HA@mail.gmail.com> <8af821dc-d173-483d-8b69-b8e041538561@linux.intel.com>
-In-Reply-To: <8af821dc-d173-483d-8b69-b8e041538561@linux.intel.com>
-From: Ian Rogers <irogers@google.com>
-Date: Thu, 4 Jan 2024 09:51:44 -0800
-Message-ID: <CAP-5=fVTEcbJdG6_L+GH5RGCtpFhpjWyyhYu0Fhx5CRRqZcqDg@mail.gmail.com>
-Subject: Re: [PATCH v1 1/4] perf vendor events intel: Alderlake/rocketlake
- metric fixes
-To: "Liang, Kan" <kan.liang@linux.intel.com>, "Wang, Weilin" <weilin.wang@intel.com>
-Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
-	Ingo Molnar <mingo@redhat.com>, Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Namhyung Kim <namhyung@kernel.org>, Adrian Hunter <adrian.hunter@intel.com>, 
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Edward Baker <edward.baker@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231228105147.13752-9-yi-de.wu@mediatek.com>
 
-On Thu, Jan 4, 2024 at 6:30=E2=80=AFAM Liang, Kan <kan.liang@linux.intel.co=
-m> wrote:
->
->
->
-> On 2024-01-04 8:56 a.m., Ian Rogers wrote:
-> >> Testing tma_slow_pause
-> >> Metric 'tma_slow_pause' not printed in:
-> >> # Running 'internals/synthesize' benchmark:
-> >> Computing performance of single threaded perf event synthesis by
-> >> synthesizing events on the perf process itself:
-> >>   Average synthesis took: 49.987 usec (+- 0.049 usec)
-> >>   Average num. events: 47.000 (+- 0.000)
-> >>   Average time per event 1.064 usec
-> >>   Average data synthesis took: 53.490 usec (+- 0.033 usec)
-> >>   Average num. events: 245.000 (+- 0.000)
-> >>   Average time per event 0.218 usec
-> >>
-> >>  Performance counter stats for 'perf bench internals synthesize':
-> >>
-> >>      <not counted>      cpu_core/TOPDOWN.SLOTS/                       =
-                          (0.00%)
-> >>      <not counted>      cpu_core/topdown-retiring/                    =
-                          (0.00%)
-> >>      <not counted>      cpu_core/topdown-mem-bound/                   =
-                          (0.00%)
-> >>      <not counted>      cpu_core/topdown-bad-spec/                    =
-                          (0.00%)
-> >>      <not counted>      cpu_core/topdown-fe-bound/                    =
-                          (0.00%)
-> >>      <not counted>      cpu_core/topdown-be-bound/                    =
-                          (0.00%)
-> >>      <not counted>      cpu_core/RESOURCE_STALLS.SCOREBOARD/          =
-                              (0.00%)
-> >>      <not counted>      cpu_core/EXE_ACTIVITY.1_PORTS_UTIL/           =
-                             (0.00%)
-> >>      <not counted>      cpu_core/EXE_ACTIVITY.BOUND_ON_LOADS/         =
-                               (0.00%)
-> >>      <not counted>      cpu_core/CPU_CLK_UNHALTED.PAUSE/              =
-                          (0.00%)
-> >>      <not counted>      cpu_core/CYCLE_ACTIVITY.STALLS_TOTAL/         =
-                               (0.00%)
-> >>      <not counted>      cpu_core/CPU_CLK_UNHALTED.THREAD/             =
-                           (0.00%)
-> >>      <not counted>      cpu_core/ARITH.DIV_ACTIVE/                    =
-                          (0.00%)
-> >>      <not counted>      cpu_core/EXE_ACTIVITY.2_PORTS_UTIL,umask=3D0xc=
-/                                        (0.00%)
-> >>      <not counted>      cpu_core/EXE_ACTIVITY.3_PORTS_UTIL,umask=3D0x8=
-0/                                        (0.00%)
-> >>
-> >>        1.186254766 seconds time elapsed
-> >>
-> >>        0.427220000 seconds user
-> >>        0.752217000 seconds sys
-> >> Testing smi_cycles
-> >> Testing smi_num
-> >> Testing tsx_aborted_cycles
-> >> Testing tsx_cycles_per_elision
-> >> Testing tsx_cycles_per_transaction
-> >> Testing tsx_transactional_cycles
-> >> test child finished with -1
-> >> ---- end ----
-> >> perf all metrics test: FAILED!
-> >> root@number:~#
-> > Have a try disabling the NMI watchdog. Agreed that there is more to
-> > fix here but I think the PMU driver is in part to blame because
-> > manually breaking the weak group of events is a fix.
->
-> I think we have a NO_GROUP_EVENTS_NMI metric constraint to mark a group
-> which require disabling of the NMI watchdog.
-> Maybe we should mark the group a NO_GROUP_EVENTS_NMI metric.
+On Thu, Dec 28, 2023 at 06:51:35PM +0800, Yi-De Wu wrote:
+> From: "Yingshiuan Pan" <yingshiuan.pan@mediatek.com>
+> 
+> VMM use this interface to create vcpu instance which is a fd, and this
+> fd will be for any vcpu operations, such as setting vcpu registers and
+> accepts the most important ioctl GZVM_VCPU_RUN which requests GenieZone
+> hypervisor to do context switch to execute VM's vcpu context.
+> 
+> Signed-off-by: Yingshiuan Pan <yingshiuan.pan@mediatek.com>
+> Signed-off-by: Jerry Wang <ze-yu.wang@mediatek.com>
+> Signed-off-by: kevenny hsieh <kevenny.hsieh@mediatek.com>
+> Signed-off-by: Liju Chen <liju-clr.chen@mediatek.com>
+> Signed-off-by: Yi-De Wu <yi-de.wu@mediatek.com>
 
-+Weilin due to the affects of event grouping.
+Hi Yi-De Wu,
 
-Thanks Kan, NO_GROUP_EVENTS_NMI would be good. Something I see for
-tma_ports_utilized_1 that may be worsening things is:
+some minor feedback from my side.
 
-```
-Testing tma_ports_utilized_1
-Metric 'tma_ports_utilized_1' not printed in:
-# Running 'internals/synthesize' benchmark:
-Computing performance of single threaded perf event synthesis by
-synthesizing events on the perf process itself:
-  Average synthesis took: 49.581 usec (+- 0.030 usec)
-  Average num. events: 47.000 (+- 0.000)
-  Average time per event 1.055 usec
-  Average data synthesis took: 53.367 usec (+- 0.032 usec)
-  Average num. events: 246.000 (+- 0.000)
-  Average time per event 0.217 usec
+...
 
- Performance counter stats for 'perf bench internals synthesize':
+> diff --git a/include/uapi/linux/gzvm.h b/include/uapi/linux/gzvm.h
+> index 77a58ee085df..bdf277fa248a 100644
+> --- a/include/uapi/linux/gzvm.h
+> +++ b/include/uapi/linux/gzvm.h
+> @@ -25,6 +25,34 @@
+>  /* GZVM_CAP_PVM_SET_PROTECTED_VM only sets protected but not load pvmfw */
+>  #define GZVM_CAP_PVM_SET_PROTECTED_VM		2
+>  
+> +/*
+> + * Architecture specific registers are to be defined and ORed with
+> + * the arch identifier.
+> + */
+> +#define GZVM_REG_ARCH_ARM64	0x6000000000000000ULL
+> +#define GZVM_REG_ARCH_MASK	0xff00000000000000ULL
 
-     <not counted>      cpu_core/TOPDOWN.SLOTS/
-                         (0.00%)
-     <not counted>      cpu_core/topdown-retiring/
-                         (0.00%)
-     <not counted>      cpu_core/topdown-mem-bound/
-                         (0.00%)
-     <not counted>      cpu_core/topdown-bad-spec/
-                         (0.00%)
-     <not counted>      cpu_core/topdown-fe-bound/
-                         (0.00%)
-     <not counted>      cpu_core/topdown-be-bound/
-                         (0.00%)
-     <not counted>      cpu_core/RESOURCE_STALLS.SCOREBOARD/
-                             (0.00%)
-     <not counted>      cpu_core/EXE_ACTIVITY.1_PORTS_UTIL/
-                            (0.00%)
-     <not counted>      cpu_core/EXE_ACTIVITY.BOUND_ON_LOADS/
-                              (0.00%)
-     <not counted>      cpu_core/EXE_ACTIVITY.1_PORTS_UTIL/
-                            (0.00%)
-     <not counted>      cpu_core/CYCLE_ACTIVITY.STALLS_TOTAL/
-                              (0.00%)
-     <not counted>      cpu_core/CPU_CLK_UNHALTED.THREAD/
-                          (0.00%)
-     <not counted>      cpu_core/ARITH.DIV_ACTIVE/
-                         (0.00%)
-     <not counted>      cpu_core/EXE_ACTIVITY.2_PORTS_UTIL,umask=3D0xc/
-                                      (0.00%)
-     <not counted>      cpu_core/EXE_ACTIVITY.3_PORTS_UTIL,umask=3D0x80/
-                                       (0.00%)
+nit: using GENMASK_ULL and FIELD_PREP seems appropriate here.
 
-       1.180394056 seconds time elapsed
+> +
+> +/*
+> + * Reg size = BIT((reg.id & GZVM_REG_SIZE_MASK) >> GZVM_REG_SIZE_SHIFT) bytes
+> + */
+> +#define GZVM_REG_SIZE_SHIFT	52
+> +#define GZVM_REG_SIZE_MASK	0x00f0000000000000ULL
+> +
+> +#define GZVM_REG_SIZE_U8	0x0000000000000000ULL
+> +#define GZVM_REG_SIZE_U16	0x0010000000000000ULL
+> +#define GZVM_REG_SIZE_U32	0x0020000000000000ULL
+> +#define GZVM_REG_SIZE_U64	0x0030000000000000ULL
+> +#define GZVM_REG_SIZE_U128	0x0040000000000000ULL
+> +#define GZVM_REG_SIZE_U256	0x0050000000000000ULL
+> +#define GZVM_REG_SIZE_U512	0x0060000000000000ULL
+> +#define GZVM_REG_SIZE_U1024	0x0070000000000000ULL
+> +#define GZVM_REG_SIZE_U2048	0x0080000000000000ULL
 
-       0.409881000 seconds user
-       0.764134000 seconds sys
-```
+And here.
 
-The event EXE_ACTIVITY.1_PORTS_UTIL is repeated, this is because the
-metric code deduplicates events based purely on their name and so
-doesn't realize EXE_ACTIVITY.1_PORTS_UTIL is the same as
-cpu_core@EXE_ACTIVITY.1_PORTS_UTIL@. This is a hybrid only glitch as
-we only prefix with a PMU for hybrid metrics, and I should find and
-remove why there's no PMU for the 1 case of EXE_ACTIVITY.1_PORTS_UTIL.
+> +
+> +/* Register type definitions */
+> +#define GZVM_REG_TYPE_SHIFT	16
+> +/* Register type: general purpose */
+> +#define GZVM_REG_TYPE_GENERAL	(0x10 << GZVM_REG_TYPE_SHIFT)
 
-This problem doesn't occur for tma_slow_pause and I wondered if you
-could give insight. That metric has the counters below:
-```
-$ perf stat -M tma_slow_pause -a sleep 0.1
+And using FIELD_PREP seems appropriate here too.
 
-Performance counter stats for 'system wide':
+...
 
-    <not counted>      cpu_core/TOPDOWN.SLOTS/
-                        (0.00%)
-    <not counted>      cpu_core/topdown-retiring/
-                        (0.00%)
-    <not counted>      cpu_core/topdown-mem-bound/
-                        (0.00%)
-    <not counted>      cpu_core/topdown-bad-spec/
-                        (0.00%)
-    <not counted>      cpu_core/topdown-fe-bound/
-                        (0.00%)
-    <not counted>      cpu_core/topdown-be-bound/
-                        (0.00%)
-    <not counted>      cpu_core/RESOURCE_STALLS.SCOREBOARD/
-                            (0.00%)
-    <not counted>      cpu_core/EXE_ACTIVITY.1_PORTS_UTIL/
-                           (0.00%)
-    <not counted>      cpu_core/EXE_ACTIVITY.BOUND_ON_LOADS/
-                             (0.00%)
-    <not counted>      cpu_core/CPU_CLK_UNHALTED.PAUSE/
-                        (0.00%)
-    <not counted>      cpu_core/CYCLE_ACTIVITY.STALLS_TOTAL/
-                             (0.00%)
-    <not counted>      cpu_core/CPU_CLK_UNHALTED.THREAD/
-                         (0.00%)
-    <not counted>      cpu_core/ARITH.DIV_ACTIVE/
-                        (0.00%)
-    <not counted>      cpu_core/EXE_ACTIVITY.2_PORTS_UTIL,umask=3D0xc/
-                                     (0.00%)
-    <not counted>      cpu_core/EXE_ACTIVITY.3_PORTS_UTIL,umask=3D0x80/
-                                      (0.00%)
+> @@ -51,6 +79,11 @@ struct gzvm_memory_region {
+>  
+>  #define GZVM_SET_MEMORY_REGION     _IOW(GZVM_IOC_MAGIC,  0x40, \
+>  					struct gzvm_memory_region)
+> +/*
+> + * GZVM_CREATE_VCPU receives as a parameter the vcpu slot,
+> + * and returns a vcpu fd.
+> + */
+> +#define GZVM_CREATE_VCPU           _IO(GZVM_IOC_MAGIC,   0x41)
+>  
+>  /* for GZVM_SET_USER_MEMORY_REGION */
+>  struct gzvm_userspace_memory_region {
+> @@ -66,6 +99,124 @@ struct gzvm_userspace_memory_region {
+>  #define GZVM_SET_USER_MEMORY_REGION _IOW(GZVM_IOC_MAGIC, 0x46, \
+>  					 struct gzvm_userspace_memory_region)
+>  
+> +/*
+> + * ioctls for vcpu fds
+> + */
+> +#define GZVM_RUN                   _IO(GZVM_IOC_MAGIC,   0x80)
+> +
+> +/* VM exit reason */
+> +enum {
+> +	GZVM_EXIT_UNKNOWN = 0x92920000,
+> +	GZVM_EXIT_MMIO = 0x92920001,
+> +	GZVM_EXIT_HYPERCALL = 0x92920002,
+> +	GZVM_EXIT_IRQ = 0x92920003,
+> +	GZVM_EXIT_EXCEPTION = 0x92920004,
+> +	GZVM_EXIT_DEBUG = 0x92920005,
+> +	GZVM_EXIT_FAIL_ENTRY = 0x92920006,
+> +	GZVM_EXIT_INTERNAL_ERROR = 0x92920007,
+> +	GZVM_EXIT_SYSTEM_EVENT = 0x92920008,
+> +	GZVM_EXIT_SHUTDOWN = 0x92920009,
+> +	GZVM_EXIT_GZ = 0x9292000a,
+> +};
+> +
+> +/**
+> + * struct gzvm_vcpu_run: Same purpose as kvm_run, this struct is
+> + *			shared between userspace, kernel and
+> + *			GenieZone hypervisor
+> + * @exit_reason: The reason why gzvm_vcpu_run has stopped running the vCPU
+> + * @immediate_exit: Polled when the vcpu is scheduled.
+> + *                  If set, immediately returns -EINTR
+> + * @padding1: Reserved for future-proof and must be zero filled
+> + * @mmio: The nested struct in anonymous union. Handle mmio in host side
+> + * @phys_addr: The address guest tries to access
+> + * @data: The value to be written (is_write is 1) or
+> + *        be filled by user for reads (is_write is 0)
+> + * @size: The size of written data.
+> + *        Only the first `size` bytes of `data` are handled
+> + * @reg_nr: The register number where the data is stored
+> + * @is_write: 1 for VM to perform a write or 0 for VM to perform a read
+> + * @fail_entry: The nested struct in anonymous union.
+> + *              Handle invalid entry address at the first run
+> + * @hardware_entry_failure_reason: The reason codes about hardware entry failure
+> + * @cpu: The current processor number via smp_processor_id()
+> + * @exception: The nested struct in anonymous union.
+> + *             Handle exception occurred in VM
+> + * @exception: Which exception vector
+> + * @error_code: Exception error codes
+> + * @hypercall: The nested struct in anonymous union.
+> + *             Some hypercalls issued from VM must be handled
+> + * @args: The hypercall's arguments
+> + * @internal: The nested struct in anonymous union. The errors from hypervisor
+> + * @suberror: The errors codes about GZVM_EXIT_INTERNAL_ERROR
+> + * @ndata: The number of elements used in data[]
+> + * @data: Keep the detailed information about GZVM_EXIT_INTERNAL_ERROR
+> + * @system_event: The nested struct in anonymous union.
+> + *                VM's PSCI must be handled by host
+> + * @type: System event type.
+> + *        Ex. GZVM_SYSTEM_EVENT_SHUTDOWN or GZVM_SYSTEM_EVENT_RESET...etc.
+> + * @ndata: The number of elements used in data[]
+> + * @data: Keep the detailed information about GZVM_EXIT_SYSTEM_EVENT
+> + * @padding: Fix it to a reasonable size future-proof for keeping the same
+> + *           struct size when adding new variables in the union is needed
+> + *
+> + * Keep identical layout between the 3 modules
+> + */
 
-      0.102074888 seconds time elapsed
-```
+I am unsure how to address this, but ./scripts/kernel-doc seems confused
+about the correlation between the fields documented above and the nested
+structure below.
 
-With -vv I see the event string is:
-'{RESOURCE_STALLS.SCOREBOARD/metric-id=3DRESOURCE_STALLS.SCOREBOARD/,cpu_co=
-re/EXE_ACTIVITY.1_PORTS_UTIL,metric-id=3Dcpu_core!3EXE_ACTIVITY.1_PORTS_UTI=
-L!3/,cpu_core/TOPDOWN.SLOTS,metric-id=3Dcpu_core!3TOPDOWN.SLOTS!3/,cpu_core=
-/EXE_ACTIVITY.BOUND_ON_LOADS,metric-id=3Dcpu_core!3EXE_ACTIVITY.BOUND_ON_LO=
-ADS!3/,cpu_core/topdown-retiring,metric-id=3Dcpu_core!3topdown!1retiring!3/=
-,cpu_core/topdown-mem-bound,metric-id=3Dcpu_core!3topdown!1mem!1bound!3/,cp=
-u_core/topdown-bad-spec,metric-id=3Dcpu_core!3topdown!1bad!1spec!3/,CPU_CLK=
-_UNHALTED.PAUSE/metric-id=3DCPU_CLK_UNHALTED.PAUSE/,cpu_core/CYCLE_ACTIVITY=
-.STALLS_TOTAL,metric-id=3Dcpu_core!3CYCLE_ACTIVITY.STALLS_TOTAL!3/,cpu_core=
-/CPU_CLK_UNHALTED.THREAD,metric-id=3Dcpu_core!3CPU_CLK_UNHALTED.THREAD!3/,c=
-pu_core/ARITH.DIV_ACTIVE,metric-id=3Dcpu_core!3ARITH.DIV_ACTIVE!3/,cpu_core=
-/topdown-fe-bound,metric-id=3Dcpu_core!3topdown!1fe!1bound!3/,cpu_core/EXE_=
-ACTIVITY.2_PORTS_UTIL,umask=3D0xc,metric-id=3Dcpu_core!3EXE_ACTIVITY.2_PORT=
-S_UTIL!0umask!20xc!3/,cpu_core/EXE_ACTIVITY.3_PORTS_UTIL,umask=3D0x80,metri=
-c-id=3Dcpu_core!3EXE_ACTIVITY.3_PORTS_UTIL!0umask!20x80!3/,cpu_core/topdown=
--be-bound,metric-id=3Dcpu_core!3topdown!1be!1bound!3/}:W'
+"./scripts/kernel-doc -none" says:
 
-which without the metric-ids becomes:
-'{RESOURCE_STALLS.SCOREBOARD,cpu_core/EXE_ACTIVITY.1_PORTS_UTIL/,cpu_core/T=
-OPDOWN.SLOTS/,cpu_core/EXE_ACTIVITY.BOUND_ON_LOADS/,cpu_core/topdown-retiri=
-ng/,cpu_core/topdown-mem-bound/,cpu_core/topdown-bad-spec/,CPU_CLK_UNHALTED=
-.PAUSE,cpu_core/CYCLE_ACTIVITY.STALLS_TOTAL/,cpu_core/CPU_CLK_UNHALTED.THRE=
-AD/,cpu_core/ARITH.DIV_ACTIVE/,cpu_core/topdown-fe-bound/,cpu_core/EXE_ACTI=
-VITY.2_PORTS_UTIL,umask=3D0xc/,cpu_core/EXE_ACTIVITY.3_PORTS_UTIL,umask=3D0=
-x80/,cpu_core/topdown-be-bound/}:W'
-
-I count 9 none slots/top-down counters there, but I see
-CPU_CLK_UNHALTED.THREAD can use fixed counter 1. Should
-perf_event_open fail for a CPU that has a pinned use of a fixed
-counter and the group needs the fixed counter? I'm guessing you don't
-want this as CPU_CLK_UNHALTED.THREAD can also go on a generic counter
-and the driver doesn't want to count counter usage, it seems feasible
-to add it though. I guess we need a NO_GROUP_EVENTS_NMI whenever
-CPU_CLK_UNHALTED.THREAD is an event and 8 generic counters are in use.
-
-Checking on Tigerlake I see:
-```
-$ perf stat -M tma_slow_pause -a sleep 0.1
-
-Performance counter stats for 'system wide':
-
-      105,210,913      TOPDOWN.SLOTS                    #      0.1 %
-tma_slow_pause           (72.65%)
-        6,701,129      topdown-retiring
-                        (72.65%)
-       52,359,712      topdown-fe-bound
-                        (72.65%)
-       32,904,532      topdown-be-bound
-                        (72.65%)
-       14,117,814      topdown-bad-spec
-                        (72.65%)
-        6,602,391      RESOURCE_STALLS.SCOREBOARD
-                        (76.17%)
-        4,220,773      cpu/EXE_ACTIVITY.3_PORTS_UTIL,umask=3D0x80/
-                                 (76.73%)
-          421,812      EXE_ACTIVITY.BOUND_ON_STORES
-                        (76.69%)
-        5,164,088      EXE_ACTIVITY.1_PORTS_UTIL
-                        (76.70%)
-          299,681      cpu/INT_MISC.RECOVERY_CYCLES,cmask=3D1,edge/
-                                  (76.69%)
-              245      MISC_RETIRED.PAUSE_INST
-                        (76.67%)
-       58,403,687      CPU_CLK_UNHALTED.THREAD
-                        (76.72%)
-       25,297,841      CYCLE_ACTIVITY.STALLS_MEM_ANY
-                        (76.67%)
-        3,788,772      EXE_ACTIVITY.2_PORTS_UTIL
-                        (62.69%)
-       20,973,875      CYCLE_ACTIVITY.STALLS_TOTAL
-                        (62.16%)
-           68,053      ARITH.DIVIDER_ACTIVE
-                        (62.18%)
-
-      0.102624327 seconds time elapsed
-```
-so 10 generic counters which would never fit and the weak group is
-broken - the difference in the metric explaining why I've not been
-seeing the issue. I think I need to add alderlake/sapphirerapids
-constraints here:
-https://github.com/captain5050/perfmon/blob/main/scripts/create_perf_json.p=
-y#L1382
-Ideally we'd automate the constraint generation (or the PMU driver
-would help us out by failing to open the weak group).
-
-Thanks,
-Ian
+ .../gzvm.h:219: warning: Excess struct member 'phys_addr' description in 'gzvm_vcpu_run'
+ .../gzvm.h:219: warning: Excess struct member 'data' description in 'gzvm_vcpu_run'
+ .../gzvm.h:219: warning: Excess struct member 'size' description in 'gzvm_vcpu_run'
+ .../gzvm.h:219: warning: Excess struct member 'reg_nr' description in 'gzvm_vcpu_run'
+ .../gzvm.h:219: warning: Excess struct member 'is_write' description in 'gzvm_vcpu_run'
+ .../gzvm.h:219: warning: Excess struct member 'hardware_entry_failure_reason' description in 'gzvm_vcpu_run'
+ .../gzvm.h:219: warning: Excess struct member 'cpu' description in 'gzvm_vcpu_run'
+ .../gzvm.h:219: warning: Excess struct member 'error_code' description in 'gzvm_vcpu_run'
+ .../gzvm.h:219: warning: Excess struct member 'args' description in 'gzvm_vcpu_run'
+ .../gzvm.h:219: warning: Excess struct member 'suberror' description in 'gzvm_vcpu_run'
+ .../gzvm.h:219: warning: Excess struct member 'ndata' description in 'gzvm_vcpu_run'
+ .../gzvm.h:219: warning: Excess struct member 'data' description in 'gzvm_vcpu_run'
+ .../gzvm.h:219: warning: Excess struct member 'type' description in 'gzvm_vcpu_run'
+ .../gzvm.h:219: warning: Excess struct member 'ndata' description in 'gzvm_vcpu_run'
+ .../gzvm.h:219: warning: Excess struct member 'data' description in 'gzvm_vcpu_run'
 
 
-> Thanks,
-> Kan
->
-> > Fwiw, if we
-> > switch to the buddy watchdog mechanism then we'll no longer need to
-> > disable the NMI watchdog:
-> > https://lore.kernel.org/lkml/20230421155255.1.I6bf789d21d0c3d75d382e7e5=
-1a804a7a51315f2c@changeid/
->
+> +struct gzvm_vcpu_run {
+> +	/* to userspace */
+> +	__u32 exit_reason;
+> +	__u8 immediate_exit;
+> +	__u8 padding1[3];
+> +	/* union structure of collection of guest exit reason */
+> +	union {
+> +		/* GZVM_EXIT_MMIO */
+> +		struct {
+> +			/* from FAR_EL2 */
+> +			__u64 phys_addr;
+> +			__u8 data[8];
+> +			/* from ESR_EL2 as */
+> +			__u64 size;
+> +			/* from ESR_EL2 */
+> +			__u32 reg_nr;
+> +			/* from ESR_EL2 */
+> +			__u8 is_write;
+> +		} mmio;
+> +		/* GZVM_EXIT_FAIL_ENTRY */
+> +		struct {
+> +			__u64 hardware_entry_failure_reason;
+> +			__u32 cpu;
+> +		} fail_entry;
+> +		/* GZVM_EXIT_EXCEPTION */
+> +		struct {
+> +			__u32 exception;
+> +			__u32 error_code;
+> +		} exception;
+> +		/* GZVM_EXIT_HYPERCALL */
+> +		struct {
+> +			__u64 args[8];	/* in-out */
+> +		} hypercall;
+> +		/* GZVM_EXIT_INTERNAL_ERROR */
+> +		struct {
+> +			__u32 suberror;
+> +			__u32 ndata;
+> +			__u64 data[16];
+> +		} internal;
+> +		/* GZVM_EXIT_SYSTEM_EVENT */
+> +		struct {
+> +#define GZVM_SYSTEM_EVENT_SHUTDOWN       1
+> +#define GZVM_SYSTEM_EVENT_RESET          2
+> +#define GZVM_SYSTEM_EVENT_CRASH          3
+> +#define GZVM_SYSTEM_EVENT_WAKEUP         4
+> +#define GZVM_SYSTEM_EVENT_SUSPEND        5
+> +#define GZVM_SYSTEM_EVENT_SEV_TERM       6
+> +#define GZVM_SYSTEM_EVENT_S2IDLE         7
+> +			__u32 type;
+> +			__u32 ndata;
+> +			__u64 data[16];
+> +		} system_event;
+> +		char padding[256];
+> +	};
+> +};
+
+...
 
