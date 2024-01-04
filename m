@@ -1,78 +1,237 @@
-Return-Path: <linux-kernel+bounces-16813-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16818-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A2A3F824447
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 15:59:41 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8BD43824453
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 16:00:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 39A4B287B45
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 14:59:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7B3B71C22086
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 15:00:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5010723749;
-	Thu,  4 Jan 2024 14:59:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A3DA23761;
+	Thu,  4 Jan 2024 15:00:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b="ozXQIbL7"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Kd2fCAmh"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from ms.lwn.net (ms.lwn.net [45.79.88.28])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 338B02375B;
-	Thu,  4 Jan 2024 14:59:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lwn.net
-Received: from localhost (unknown [IPv6:2601:280:5e00:7e19::646])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by ms.lwn.net (Postfix) with ESMTPSA id 5509A736;
-	Thu,  4 Jan 2024 14:59:16 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 5509A736
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-	t=1704380356; bh=zE8trZHBrNElb2KpwEMAkQtL13NFiH44pG8CqyNTtl4=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=ozXQIbL7PFlidCFD//xZ7XMgiebPtf99JvCij/kZBtmvb1k1Z3EE2HUmR0xJVGe+q
-	 9vDNhXDis91x+ycXrbXhU98fMj4/BnLD4mbec3vydC+eA9ohSp5nwTfsGS26B4mGo4
-	 P4EaECHZsBlLVpFYaCTusBO8WxPzoqOYzr4JX2oFK1T/iRB6PZpKgjaYs9pp6ljYqX
-	 wIfYB6x9EppO0E9IIwn2T2pwnUDQoWt4AyYzidRGFhT3WjGJ8gloijWgZZuoU+M97J
-	 ImUtnPYpsIA+7wuj10INdJOOHIQCI5UwXHAEBjgXxGcIMrb+ObKfZqAAnkXU+XsKyY
-	 I1SQL7v3nAO3w==
-From: Jonathan Corbet <corbet@lwn.net>
-To: Jani Nikula <jani.nikula@linux.intel.com>, Randy Dunlap
- <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
-Cc: Randy Dunlap <rdunlap@infradead.org>, Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>, linux-doc@vger.kernel.org, Mauro Carvalho
- Chehab <mchehab@kernel.org>
-Subject: Re: [PATCH] scripts/get_abi.pl: ignore some temp files
-In-Reply-To: <87v889z7h3.fsf@intel.com>
-References: <20231228233113.5218-1-rdunlap@infradead.org>
- <87plyi86zg.fsf@meer.lwn.net> <87v889z7h3.fsf@intel.com>
-Date: Thu, 04 Jan 2024 07:59:15 -0700
-Message-ID: <871qax6t6k.fsf@meer.lwn.net>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 076ED2377C
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 15:00:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1704380408;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=aezVZ21RXwDSPznUaEfqO8ObQ6DAwMB4uYqaeR9muhs=;
+	b=Kd2fCAmhoK0LpFlKeE2/ZmWLy+vejFuNGitUz2YD7+GTvUZprE2ihH0DH+FNLaqOTcDHa2
+	m4NFZWqC06XcR5QDYdFpuxMEmO/6Bfc+runm9jpzh1sZsGyef/ozfSacHtTDe+nzYk0zh6
+	XDBRllbDw85MyMTo0WLJ6QJiPx2U3jc=
+Received: from mail-vs1-f71.google.com (mail-vs1-f71.google.com
+ [209.85.217.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-385--992aZnuO5yq791L8SkNxg-1; Thu, 04 Jan 2024 10:00:05 -0500
+X-MC-Unique: -992aZnuO5yq791L8SkNxg-1
+Received: by mail-vs1-f71.google.com with SMTP id ada2fe7eead31-466f26eefe0so177775137.1
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 07:00:05 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704380405; x=1704985205;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=aezVZ21RXwDSPznUaEfqO8ObQ6DAwMB4uYqaeR9muhs=;
+        b=Zf53d6V5XjDgQ3xqyPqMsw0BVGbv28XG9pn35r1zc2zbjmqUE/H6WnPMKdXhDEYVlc
+         9IJKhtYe2yqBGqnMNw4g3GxcRbvaIj+++zp0MjqAo4YTvAkGMiZqYOvHrAoufm/sQzs8
+         GIpD87aZ8wFvKbyGGl+nTNWXpXiAngRDnpMCDGRkGyH9Uz0ZsQ1DlpHK5X/lFOzTchf8
+         wNbBSY6F9P9J/kYVUWd/xPu609qT8apq0LEOwqO60e0jyuZtT+OggJ0mCHXCoEn52p5A
+         WATrUU6feInqnCS1xmkyuW4tnrwDjRaJMxsaqH5mrAci+IzE7/CRsZzvVW3NDdAppkOK
+         KrGA==
+X-Gm-Message-State: AOJu0YwzwNp2d2IhadxqygmChTM+CCv12fw4Q7JW3gog7/zhBTN8G2RC
+	nxDESy4Y8+CGV76J4rXLXLnTFfFV1G/D8J7q03pnlUOCEcYv3D5gRRIe7G2p/eTWEVkU0K9leL1
+	oJhEKa0HpVqqQL72LsYX/oEu9FInqCwsJ1XSGtAg4T7vLN2mm
+X-Received: by 2002:a05:6102:3d0c:b0:467:ab82:8541 with SMTP id i12-20020a0561023d0c00b00467ab828541mr539164vsv.2.1704380405030;
+        Thu, 04 Jan 2024 07:00:05 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IF2HsVP41TbYsCNRo6/+4LVhY17gL8avGvalNBhnIivjxsS/wGVW5B9BBDLt8t9XK0c/FrtR1NieWMjipPujkQ=
+X-Received: by 2002:a05:6102:3d0c:b0:467:ab82:8541 with SMTP id
+ i12-20020a0561023d0c00b00467ab828541mr539149vsv.2.1704380404783; Thu, 04 Jan
+ 2024 07:00:04 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <3d8f5987-e09c-4dd2-a9c0-8ba22c9e948a@paulmck-laptop>
+ <88f49775-2b56-48cc-81b8-651a940b7d6b@paulmck-laptop> <ZZX6pkHnZP777DVi@google.com>
+ <77d7a3e3-f35e-4507-82c2-488405b25fa4@paulmck-laptop> <c6d5dd6e-2dec-423c-af39-213f17b1a9db@paulmck-laptop>
+In-Reply-To: <c6d5dd6e-2dec-423c-af39-213f17b1a9db@paulmck-laptop>
+From: Paolo Bonzini <pbonzini@redhat.com>
+Date: Thu, 4 Jan 2024 15:59:52 +0100
+Message-ID: <CABgObfYG-ZwiRiFeGbAgctLfj7+PSmgauN9RwGMvZRfxvmD_XQ@mail.gmail.com>
+Subject: Re: [BUG] Guest OSes die simultaneously (bisected)
+To: paulmck@kernel.org
+Cc: Sean Christopherson <seanjc@google.com>, Like Xu <like.xu@linux.intel.com>, 
+	Andi Kleen <ak@linux.intel.com>, Kan Liang <kan.liang@linux.intel.com>, 
+	Luwei Kang <luwei.kang@intel.com>, Peter Zijlstra <peterz@infradead.org>, 
+	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	kvm@vger.kernel.org, Breno Leitao <leitao@debian.org>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Ingo Molnar <mingo@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Jani Nikula <jani.nikula@linux.intel.com> writes:
-
-> On Wed, 03 Jan 2024, Jonathan Corbet <corbet@lwn.net> wrote:
->> It would have been nice to create all of those files with a .abi
->> extension so we didn't have to do this kind of blocklisting, but so be
->> it.
+On Thu, Jan 4, 2024 at 3:58=E2=80=AFPM Paul E. McKenney <paulmck@kernel.org=
+> wrote:
 >
-> Alternatively, we could switch to yaml instead of using another homebrew
-> format with another homebrew parser, and rename them .yaml.
+> On Wed, Jan 03, 2024 at 05:00:35PM -0800, Paul E. McKenney wrote:
+> > On Wed, Jan 03, 2024 at 04:24:06PM -0800, Sean Christopherson wrote:
+> > > On Wed, Jan 03, 2024, Paul E. McKenney wrote:
+> > > > On Wed, Jan 03, 2024 at 02:22:23PM -0800, Paul E. McKenney wrote:
+> > > > > Hello!
+> > > > >
+> > > > > Since some time between v5.19 and v6.4, long-running rcutorture t=
+ests
+> > > > > would (rarely but intolerably often) have all guests on a given h=
+ost die
+> > > > > simultaneously with something like an instruction fault or a segm=
+entation
+> > > > > violation.
+> > > > >
+> > > > > Each bisection step required 20 hosts running 10 hours each, and
+> > > > > this eventually fingered commit c59a1f106f5c ("KVM: x86/pmu: Add
+> > > > > IA32_PEBS_ENABLE MSR emulation for extended PEBS").  Although thi=
+s commit
+> > > > > is certainly messing with things that could possibly cause all ma=
+nner
+> > > > > of mischief, I don't immediately see a smoking gun.  Except that =
+the
+> > > > > commit prior to this one is rock solid.
+> > > > > Just to make things a bit more exciting, bisection in mainline pr=
+oved
+> > > > > to be problematic due to bugs of various kinds that hid this one.=
+  I was
+> > > > > therefore forced to bisect among the commits backported to the in=
+ternal
+> > > > > v5.19-based kernel, which fingered the backported version of the =
+patch
+> > > > > called out above.
+> > > >
+> > > > Ah, and so why do I believe that this is a problem in mainline rath=
+er
+> > > > than just (say) a backporting mistake?
+> > > >
+> > > > Because this issue was first located in v6.4, which already has thi=
+s
+> > > > commit included.
+> > > >
+> > > >                                                   Thanx, Paul
+> > > >
+> > > > > Please note that this is not (yet) an emergency.  I will just con=
+tinue
+> > > > > to run rcutorture on v5.19-based hypervisors in the meantime.
+> > > > >
+> > > > > Any suggestions for debugging or fixing?
+> > >
+> > > This looks suspect:
+> > >
+> > > +       u64 pebs_mask =3D cpuc->pebs_enabled & x86_pmu.pebs_capable;
+> > > +       int global_ctrl, pebs_enable;
+> > >
+> > > -       arr[0].msr =3D MSR_CORE_PERF_GLOBAL_CTRL;
+> > > -       arr[0].host =3D intel_ctrl & ~cpuc->intel_ctrl_guest_mask;
+> > > -       arr[0].guest =3D intel_ctrl & ~cpuc->intel_ctrl_host_mask;
+> > > -       arr[0].guest &=3D ~(cpuc->pebs_enabled & x86_pmu.pebs_capable=
+);
+> > > -       *nr =3D 1;
+> > > +       *nr =3D 0;
+> > > +       global_ctrl =3D (*nr)++;
+> > > +       arr[global_ctrl] =3D (struct perf_guest_switch_msr){
+> > > +               .msr =3D MSR_CORE_PERF_GLOBAL_CTRL,
+> > > +               .host =3D intel_ctrl & ~cpuc->intel_ctrl_guest_mask,
+> > > +               .guest =3D intel_ctrl & (~cpuc->intel_ctrl_host_mask =
+| ~pebs_mask),
+> > > +       };
+> > >
+> > >
+> > > IIUC (always a big if with this code), the intent is that the guest's=
+ version of
+> > > PERF_GLOBAL_CTRL gets bits that are (a) not exclusive to the host and=
+ (b) not
+> > > being used for PEBS.  (b) is necessary because PEBS generates records=
+ in memory
+> > > using virtual addresses, i.e. the CPU will write to memory using a vi=
+rtual address
+> > > that is valid for the host but not the guest.  And so PMU counters th=
+at are
+> > > configured to generate PEBS records need to be disabled while running=
+ the guest.
+> > >
+> > > Before that commit, the logic was:
+> > >
+> > >   guest[PERF_GLOBAL_CTRL] =3D ctrl & ~host;
+> > >   guest[PERF_GLOBAL_CTRL] &=3D ~pebs;
+> > >
+> > > But after, it's now:
+> > >
+> > >   guest[PERF_GLOBAL_CTRL] =3D ctrl & (~host | ~pebs);
+> > >
+> > > I.e. the kernel is enabled counters in the guest that are not host-on=
+ly OR not
+> > > PEBS.  E.g. if only counter 0 is in use, it's using PEBS, but it's no=
+t exclusive
+> > > to the host, then the new code will yield (truncated to a single byte=
+ for sanity)
+> > >
+> > >   1 =3D 1 & (0xf | 0xe)
+> > >
+> > > and thus keep counter 0 enabled, whereas the old code would yield
+> > >
+> > >   1 =3D 1 & 0xf
+> > >   0 =3D 1 & 0xe
+> > >
+> > > A bit of a shot in the dark and completed untested, but I think this =
+is the correct
+> > > fix?
+> >
+> > I am firing off some tests, and either way, thank you very much!!!
+>
+> Woo-hoo!!!  ;-)
+>
+> Tested-by: Paul E. McKenney <paulmck@kernel.org>
+>
+> Will you be sending a proper patch, or would you prefer that I do so?
+> In the latter case, I would need your Signed-off-by.
 
-But ... we didn't invent that! :)
+I will fast track this one to Linus.
 
-That is, of course, a better idea.  It would be a good project for
-somebody.
+Paolo
 
-Thanks,
+> And again, thank you very much!!!
+>
+>                                                         Thanx, Paul
+>
+> > > diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/cor=
+e.c
+> > > index a08f794a0e79..92d5a3464cb2 100644
+> > > --- a/arch/x86/events/intel/core.c
+> > > +++ b/arch/x86/events/intel/core.c
+> > > @@ -4056,7 +4056,7 @@ static struct perf_guest_switch_msr *intel_gues=
+t_get_msrs(int *nr, void *data)
+> > >         arr[global_ctrl] =3D (struct perf_guest_switch_msr){
+> > >                 .msr =3D MSR_CORE_PERF_GLOBAL_CTRL,
+> > >                 .host =3D intel_ctrl & ~cpuc->intel_ctrl_guest_mask,
+> > > -               .guest =3D intel_ctrl & (~cpuc->intel_ctrl_host_mask =
+| ~pebs_mask),
+> > > +               .guest =3D intel_ctrl & ~(cpuc->intel_ctrl_host_mask =
+| pebs_mask),
+> > >         };
+> > >
+> > >         if (!x86_pmu.pebs)
+> > >
+>
 
-jon
 
