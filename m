@@ -1,238 +1,134 @@
-Return-Path: <linux-kernel+bounces-17204-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17205-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5A4C8249BC
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 21:45:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 335568249C1
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 21:46:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4132FB22816
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 20:45:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 634E5B21619
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 20:46:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4F9E1E52B;
-	Thu,  4 Jan 2024 20:45:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4974921A02;
+	Thu,  4 Jan 2024 20:46:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="VwKJoJtw"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="E+g0e3Kf"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70E4E1E517
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 20:45:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1704401137;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=JTU9XHak2ephYeTO61ZRd9/X4Vs2q0I/imNuUJpI0mI=;
-	b=VwKJoJtwsMT2lb0o+msKi/0wjv8wZOzHPx/c0DXogymzAIyDQhSJAZgfIK+10iCv8qHGW4
-	GyDUc5dbohPBAM9CYLjsL8ITPkH22+uB7jb9VY+JounPhfIaE/TMgl/80VvAlMnm9NDFWp
-	5lU7ltz+GJrh6R8FKFixJ34RbIkT87M=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-348-PUDaQFKpPSqLFziw-JD2ZA-1; Thu,
- 04 Jan 2024 15:45:33 -0500
-X-MC-Unique: PUDaQFKpPSqLFziw-JD2ZA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 621A729AA3BB;
-	Thu,  4 Jan 2024 20:45:33 +0000 (UTC)
-Received: from localhost (unknown [10.39.192.16])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id B12931C060AF;
-	Thu,  4 Jan 2024 20:45:32 +0000 (UTC)
-Date: Thu, 4 Jan 2024 15:45:31 -0500
-From: Stefan Hajnoczi <stefanha@redhat.com>
-To: Alexander Potapenko <glider@google.com>
-Cc: syzbot <syzbot+d7521c1e3841ed075a42@syzkaller.appspotmail.com>,
-	jasowang@redhat.com, linux-kernel@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com, virtualization@lists.linux.dev,
-	xuanzhuo@linux.alibaba.com, bonzini@redhat.com,
-	"Michael S. Tsirkin" <mst@redhat.com>
-Subject: Re: [syzbot] [virtualization?] KMSAN: uninit-value in virtqueue_add
- (4)
-Message-ID: <20240104204531.GB954424@fedora>
-References: <000000000000fd588e060de27ef4@google.com>
- <20240102080315-mutt-send-email-mst@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B2891E519
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 20:46:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--tanzirh.bounces.google.com
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dbe868fdc33so1339037276.0
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 12:46:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1704401193; x=1705005993; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=NITyRopo7Y40R0nr2zp14Z4yBh/ruIkhsiCAnP45ZGU=;
+        b=E+g0e3Kf3CHRsdvrDTzWd+4pXvLyIytjaBSHZcQ1e8gsJ+1GSpWbPrcmRhts3IrS8U
+         drBD4elU3sDuDp2mx8fzgaXloJmjvhqPl0RbFJbj3oBQ+MqRvAx6RrJ/4GPM9u1qEsv6
+         7BTOPlK42eo8nJfP5BMPjYhZRQsK90SyaCdBvLbe/4xiIemGWbcCXHfjpunF19DrVRA7
+         CN0sLdFSXKvXZGLe5s2VRqBxPRV84RToT0xfjMTr8Yog+NRezKZYSnHxRH3Ypy8qcall
+         dq8hwGIndM7y2glzValJnRz0PcHMIpU43f96nBZRmrjGyAShNpJO9h9UVdJ5/EuKmNfR
+         4Rvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704401193; x=1705005993;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=NITyRopo7Y40R0nr2zp14Z4yBh/ruIkhsiCAnP45ZGU=;
+        b=Q8HMQuTu+twVJGJgbBdLD+c1mwIxfEv3WrRVkNqZmZpmOGBLp90iPNk6EaSFNqPOYF
+         rZ7jwPlrnlAazddc0xG8omA5cD67Yk95WXTI9LaC5S/kruTzfVluPfDR4wVRFzXo58ic
+         MiYWEYmV3RUn4ihOTxkOmeOpWuYh+4LpsBSdLxmpRILqTZUVHeJLYh4GkGDW1Kw2rlr4
+         f9llmoR0bq9AUYl0sUMIIjv3W1HTWK6AKhro6nUyaurSNGe4TLungMOxW0F2S8Q8+Ktm
+         9HtXPxXvRT+/AxZ7OkRibIhORK24DyFGDEp/nNgMdSZ1rAbti76Gojmqe/lnDiHLxyjq
+         75AA==
+X-Gm-Message-State: AOJu0YwgWibvY/GJUYD5ueBHqBOFep57S9m72wKpq0hwHyi1N8Ftnn0M
+	iX/izSC9MZPFNEn6SDImD3Hdrww2CXhHt8yfGvw=
+X-Google-Smtp-Source: AGHT+IHyj3cs/mQrHZHDmEifEqt9bLnp96wGHVW7I5WH1p32gaRvIKRMS8w4XGG260gOKc4E21xYWY4grkzI
+X-Received: from tanz.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:c4a])
+ (user=tanzirh job=sendgmr) by 2002:a05:6902:546:b0:dbc:fb31:e5f with SMTP id
+ z6-20020a056902054600b00dbcfb310e5fmr411831ybs.10.1704401193179; Thu, 04 Jan
+ 2024 12:46:33 -0800 (PST)
+Date: Thu, 04 Jan 2024 20:46:25 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="8gbDFBVP1Dpt5/+r"
-Content-Disposition: inline
-In-Reply-To: <20240102080315-mutt-send-email-mst@kernel.org>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIACAZl2UC/32Myw6CMBBFf4XM2pp2Wstj5X8YF9gO0EQpabHRE
+ P7dwo6Nuatzk3MWiBQcRWiKBQIlF50fM+CpADO0Y0/M2cyAHKVArFiy0UuMNL8nVpGU2mreGkm
+ QjSlQ5z577XbPPLg4+/Dd40ls79ZRXHB16CTB8kpZClU+jCZ77b3vn3Q2/gVbKOEfGbOMWF90T bUx2B3kdV1//pZjYuQAAAA=
+X-Developer-Key: i=tanzirh@google.com; a=ed25519; pk=UeRjcUcv5W9AeLGEbAe2+0LptQpcY+o1Zg0LHHo7VN4=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1704401191; l=1644;
+ i=tanzirh@google.com; s=20231204; h=from:subject:message-id;
+ bh=7gCna5XwQbAFpgNexqiBSU+7+4EeGk2SxjmCUATV/rE=; b=NuA2qbiKKgnq5hkUjtMHwg9dQ1/QrVpNQyJKgpIvw/HK3nEPgfoGDgnXtd9qz3UybHC+BJjo/
+ 0ndy/OD6qBxD8cUZskqQjprqrxmCm78UWqwHR2xo3UmjS5jP+wqu45g
+X-Mailer: b4 0.12.4
+Message-ID: <20240104-vdso32setup-v2-1-dc9b76c7d06f@google.com>
+Subject: [PATCH v2] x86/vdso: shrink vdso/vdso32-setup.i via IWYU
+From: Tanzir Hasan <tanzirh@google.com>
+To: Andy Lutomirski <luto@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
+	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
+	"H. Peter Anvin" <hpa@zytor.com>
+Cc: Nick Desaulniers <nnn@google.com>, linux-kernel@vger.kernel.org, 
+	Nick Desaulniers <ndesaulniers@google.com>, Tanzir Hasan <tanzirh@google.com>
+Content-Type: text/plain; charset="utf-8"
 
+This diff uses an open source tool include-what-you-use (IWYU) to modify
+the include list, changing indirect includes to direct includes. IWYU is
+implemented using the IWYUScripts github repository which is a tool that
+is currently undergoing development. These changes seek to improve build
+times.
 
---8gbDFBVP1Dpt5/+r
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This change to vdso/vdso32-setup.c resulted in a preprocessed size of
+vdso/vdso32-setup.i from 44009 lines to 18572 lines (-58%) for the x86
+defconfig.
 
-On Tue, Jan 02, 2024 at 08:03:46AM -0500, Michael S. Tsirkin wrote:
-> On Mon, Jan 01, 2024 at 05:38:24AM -0800, syzbot wrote:
-> > Hello,
-> >=20
-> > syzbot found the following issue on:
-> >=20
-> > HEAD commit:    fbafc3e621c3 Merge tag 'for_linus' of git://git.kernel.=
-org..
-> > git tree:       upstream
-> > console+strace: https://syzkaller.appspot.com/x/log.txt?x=3D173df3e9e80=
-000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=3De0c7078a6b9=
-01aa3
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=3Dd7521c1e3841e=
-d075a42
-> > compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for D=
-ebian) 2.40
-> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D1300b4a1e=
-80000
-> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D130b0379e80=
-000
-> >=20
-> > Downloadable assets:
-> > disk image: https://storage.googleapis.com/syzbot-assets/1520f7b6daa4/d=
-isk-fbafc3e6.raw.xz
-> > vmlinux: https://storage.googleapis.com/syzbot-assets/8b490af009d5/vmli=
-nux-fbafc3e6.xz
-> > kernel image: https://storage.googleapis.com/syzbot-assets/202ca200f4a4=
-/bzImage-fbafc3e6.xz
-> >=20
-> > IMPORTANT: if you fix the issue, please add the following tag to the co=
-mmit:
-> > Reported-by: syzbot+d7521c1e3841ed075a42@syzkaller.appspotmail.com
-> >=20
-> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Tested-by: Nick Desaulniers <ndesaulniers@google.com>
+Signed-off-by: Tanzir Hasan <tanzirh@google.com>
+---
+Changes in v2:
+- Fixed messed up signed-off-by tag
+- Link to v1: https://lore.kernel.org/r/20240104-vdso32setup-v1-1-1737147bc6ed@google.com
+---
+ arch/x86/entry/vdso/vdso32-setup.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
-Hi Alexander,
-Please take a look at this KMSAN failure. The uninitialized memory was
-created for the purpose of writing a coredump. vring_map_one_sg() should
-have direction=3DDMA_TO_DEVICE.
+diff --git a/arch/x86/entry/vdso/vdso32-setup.c b/arch/x86/entry/vdso/vdso32-setup.c
+index 76e4e74f35b5..8dbe022589a6 100644
+--- a/arch/x86/entry/vdso/vdso32-setup.c
++++ b/arch/x86/entry/vdso/vdso32-setup.c
+@@ -8,13 +8,11 @@
+  */
+ 
+ #include <linux/init.h>
+-#include <linux/smp.h>
+-#include <linux/kernel.h>
+-#include <linux/mm_types.h>
+-#include <linux/elf.h>
++#include <linux/kstrtox.h>
++#include <linux/printk.h>
++#include <linux/stddef.h>
+ 
+-#include <asm/processor.h>
+-#include <asm/vdso.h>
++#include <asm/cache.h>
+ 
+ #ifdef CONFIG_COMPAT_VDSO
+ #define VDSO_DEFAULT	0
 
-I can't easily tell whether this is a genuine bug or an issue with
-commit 88938359e2df ("virtio: kmsan: check/unpoison scatterlist in
-vring_map_one_sg()"). Maybe coredump.c is writing out pages that KMSAN
-thinks are uninitialized?
+---
+base-commit: f5837722ffecbbedf1b1dbab072a063565f0dad1
+change-id: 20231228-vdso32setup-8e336d60ac3e
 
-Stefan
-
-> > BUG: KMSAN: uninit-value in vring_map_one_sg drivers/virtio/virtio_ring=
-=2Ec:380 [inline]
-> > BUG: KMSAN: uninit-value in virtqueue_add_split drivers/virtio/virtio_r=
-ing.c:614 [inline]
-> > BUG: KMSAN: uninit-value in virtqueue_add+0x21c6/0x6530 drivers/virtio/=
-virtio_ring.c:2210
-> >  vring_map_one_sg drivers/virtio/virtio_ring.c:380 [inline]
-> >  virtqueue_add_split drivers/virtio/virtio_ring.c:614 [inline]
-> >  virtqueue_add+0x21c6/0x6530 drivers/virtio/virtio_ring.c:2210
-> >  virtqueue_add_sgs+0x186/0x1a0 drivers/virtio/virtio_ring.c:2244
-> >  __virtscsi_add_cmd drivers/scsi/virtio_scsi.c:467 [inline]
-> >  virtscsi_add_cmd+0x838/0xad0 drivers/scsi/virtio_scsi.c:501
-> >  virtscsi_queuecommand+0x896/0xa60 drivers/scsi/virtio_scsi.c:598
-> >  scsi_dispatch_cmd drivers/scsi/scsi_lib.c:1516 [inline]
-> >  scsi_queue_rq+0x4874/0x5790 drivers/scsi/scsi_lib.c:1758
-> >  blk_mq_dispatch_rq_list+0x13f8/0x3600 block/blk-mq.c:2049
-> >  __blk_mq_do_dispatch_sched block/blk-mq-sched.c:170 [inline]
-> >  blk_mq_do_dispatch_sched block/blk-mq-sched.c:184 [inline]
-> >  __blk_mq_sched_dispatch_requests+0x10af/0x2500 block/blk-mq-sched.c:309
-> >  blk_mq_sched_dispatch_requests+0x160/0x2d0 block/blk-mq-sched.c:333
-> >  blk_mq_run_work_fn+0xd0/0x280 block/blk-mq.c:2434
-> >  process_one_work kernel/workqueue.c:2627 [inline]
-> >  process_scheduled_works+0x104e/0x1e70 kernel/workqueue.c:2700
-> >  worker_thread+0xf45/0x1490 kernel/workqueue.c:2781
-> >  kthread+0x3ed/0x540 kernel/kthread.c:388
-> >  ret_from_fork+0x66/0x80 arch/x86/kernel/process.c:147
-> >  ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
-> >=20
-> > Uninit was created at:
-> >  __alloc_pages+0x9a4/0xe00 mm/page_alloc.c:4591
-> >  alloc_pages_mpol+0x62b/0x9d0 mm/mempolicy.c:2133
-> >  alloc_pages mm/mempolicy.c:2204 [inline]
-> >  folio_alloc+0x1da/0x380 mm/mempolicy.c:2211
-> >  filemap_alloc_folio+0xa5/0x430 mm/filemap.c:974
-> >  __filemap_get_folio+0xa5a/0x1760 mm/filemap.c:1918
-> >  ext4_da_write_begin+0x7f8/0xec0 fs/ext4/inode.c:2891
-> >  generic_perform_write+0x3f5/0xc40 mm/filemap.c:3918
-> >  ext4_buffered_write_iter+0x564/0xaa0 fs/ext4/file.c:299
-> >  ext4_file_write_iter+0x20f/0x3460
-> >  __kernel_write_iter+0x329/0x930 fs/read_write.c:517
-> >  dump_emit_page fs/coredump.c:888 [inline]
-> >  dump_user_range+0x593/0xcd0 fs/coredump.c:915
-> >  elf_core_dump+0x528d/0x5a40 fs/binfmt_elf.c:2077
-> >  do_coredump+0x32c9/0x4920 fs/coredump.c:764
-> >  get_signal+0x2185/0x2d10 kernel/signal.c:2890
-> >  arch_do_signal_or_restart+0x53/0xca0 arch/x86/kernel/signal.c:309
-> >  exit_to_user_mode_loop+0xe8/0x320 kernel/entry/common.c:168
-> >  exit_to_user_mode_prepare+0x163/0x220 kernel/entry/common.c:204
-> >  irqentry_exit_to_user_mode+0xd/0x30 kernel/entry/common.c:309
-> >  irqentry_exit+0x16/0x40 kernel/entry/common.c:412
-> >  exc_page_fault+0x246/0x6f0 arch/x86/mm/fault.c:1564
-> >  asm_exc_page_fault+0x2b/0x30 arch/x86/include/asm/idtentry.h:570
-> >=20
-> > Bytes 0-4095 of 4096 are uninitialized
-> > Memory access of size 4096 starts at ffff88812c79c000
-> >=20
-> > CPU: 0 PID: 997 Comm: kworker/0:1H Not tainted 6.7.0-rc7-syzkaller-0000=
-3-gfbafc3e621c3 #0
-> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS=
- Google 11/17/2023
-> > Workqueue: kblockd blk_mq_run_work_fn
-> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D
-> >=20
-> >=20
-> > ---
-> > This report is generated by a bot. It may contain errors.
-> > See https://goo.gl/tpsmEJ for more information about syzbot.
-> > syzbot engineers can be reached at syzkaller@googlegroups.com.
-> >=20
-> > syzbot will keep track of this issue. See:
-> > https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> >=20
-> > If the report is already addressed, let syzbot know by replying with:
-> > #syz fix: exact-commit-title
-> >=20
-> > If you want syzbot to run the reproducer, reply with:
-> > #syz test: git://repo/address.git branch-or-commit-hash
-> > If you attach or paste a git patch, syzbot will apply it before testing.
-> >=20
-> > If you want to overwrite report's subsystems, reply with:
-> > #syz set subsystems: new-subsystem
-> > (See the list of subsystem names on the web dashboard)
-> >=20
-> > If the report is a duplicate of another one, reply with:
-> > #syz dup: exact-subject-of-another-report
-> >=20
-> > If you want to undo deduplication, reply with:
-> > #syz undup
->=20
-
---8gbDFBVP1Dpt5/+r
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAmWXGOsACgkQnKSrs4Gr
-c8h//ggAykBGZ2OvGmuAvcSR+aFZJK1ce+2BUgvlfCbRz1rB2SuKASaH3gqoiet1
-6wNUTpJoGbcXGJi/Vzw1mv8NmYwasf+UwJAN5dtl2ZL34a+QzszKHUpFjExxAU6C
-TesfrMLBWTB4/chi1+ZKE36YOin6SeQZ8FqDnDFJ/DyGGR9A8LuebK2Y9UGM2shh
-u1M/Jmpty1gYMiAtCJcQTJYZb5q/ZgB/IofK5UAK0Tjk2pXSJD1RsGaJCoe8lZVC
-6o5IllaMgK9vVq7t1jmpsmV0mFbfA3hHpQ2LPp31O90lc4vXb9hueDybcsk5jx+m
-5tyc4eqtcUaT4R5CKFfI7/+7V08c8g==
-=mScI
------END PGP SIGNATURE-----
-
---8gbDFBVP1Dpt5/+r--
+Best regards,
+-- 
+Tanzir Hasan <tanzirh@google.com>
 
 
