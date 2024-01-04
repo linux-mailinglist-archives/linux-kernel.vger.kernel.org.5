@@ -1,218 +1,120 @@
-Return-Path: <linux-kernel+bounces-17301-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17297-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D55A824B1C
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 23:44:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 35B39824B10
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 23:41:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 22C20282691
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 22:44:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C70DA281C97
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 22:41:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F63B2CCD9;
-	Thu,  4 Jan 2024 22:43:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F7EB2CCD9;
+	Thu,  4 Jan 2024 22:41:02 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtprelay07.ispgateway.de (smtprelay07.ispgateway.de [134.119.228.105])
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89D0A2CCB4;
-	Thu,  4 Jan 2024 22:43:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=apitzsch.eu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=apitzsch.eu
-Received: from [92.206.191.209] (helo=note-book.lan)
-	by smtprelay07.ispgateway.de with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96.1)
-	(envelope-from <git@apitzsch.eu>)
-	id 1rLWOi-0005BY-2u;
-	Thu, 04 Jan 2024 23:41:09 +0100
-From: =?utf-8?q?Andr=C3=A9_Apitzsch?= <git@apitzsch.eu>
-Date: Thu, 04 Jan 2024 23:40:40 +0100
-Subject: [PATCH v2] dt-bindings: regulator: Convert ti,tps65132 to YAML
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA6F72C864
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 22:40:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rLWOR-0001yE-9T; Thu, 04 Jan 2024 23:40:51 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rLWOO-000SX9-Bn; Thu, 04 Jan 2024 23:40:48 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rLWOO-003eP0-0q;
+	Thu, 04 Jan 2024 23:40:48 +0100
+Date: Thu, 4 Jan 2024 23:40:48 +0100
+From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: William Qiu <william.qiu@starfivetech.com>
+Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-riscv@lists.infradead.org, linux-pwm@vger.kernel.org, 
+	Emil Renner Berthing <kernel@esmil.dk>, Rob Herring <robh+dt@kernel.org>, 
+	Thierry Reding <thierry.reding@gmail.com>, Philipp Zabel <p.zabel@pengutronix.de>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Hal Feng <hal.feng@starfivetech.com>, Paul Walmsley <paul.walmsley@sifive.com>, 
+	Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>
+Subject: Re: [PATCH v10 2/4] pwm: opencores: Add PWM driver support
+Message-ID: <mtqzl3hdfivkty2gdwabfxpshz276fjke477eql3nua4west63@u53ruikv5hz2>
+References: <20231222094548.54103-1-william.qiu@starfivetech.com>
+ <20231222094548.54103-3-william.qiu@starfivetech.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20240104-tps65132-v2-1-6c77fe2f4787@apitzsch.eu>
-X-B4-Tracking: v=1; b=H4sIAOczl2UC/23MQQ7CIBCF4as0sxZTpikUV97DdEGAymxaApSoD
- XcXu3b5v7x8ByQXySW4dQdEVyjRtrbASwfG6/XpGNnWgD0OHLlkOSQx8gGZXCZEZY22o4J2D9E
- t9Dqpx9zaU8pbfJ9y4b/1D1I440wORiitRG9xuutA+ZOMv7od5lrrF9S8kHaiAAAA
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, 
- Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>
-Cc: linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, 
- =?utf-8?q?Andr=C3=A9_Apitzsch?= <git@apitzsch.eu>
-X-Mailer: b4 0.12.4
-X-Df-Sender: YW5kcmVAYXBpdHpzY2guZXU=
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="e6p2envurvrpju5r"
+Content-Disposition: inline
+In-Reply-To: <20231222094548.54103-3-william.qiu@starfivetech.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-Convert TI TPS65132 bindings from .txt to .yaml format.
 
-Signed-off-by: André Apitzsch <git@apitzsch.eu>
----
-Changes in v2:
-- Fix typo in commit message header (65133 -> 65132)
-- Add missing 'maintainers' property and put list in as fallback as it
-  was done for Documentation/devicetree/bindings/serial/8250.yaml
-- Link to v1: https://lore.kernel.org/r/20231217-tps65132-v1-1-73c69a960d28@apitzsch.eu
----
- .../devicetree/bindings/regulator/ti,tps65132.yaml | 84 ++++++++++++++++++++++
- .../bindings/regulator/tps65132-regulator.txt      | 46 ------------
- 2 files changed, 84 insertions(+), 46 deletions(-)
+--e6p2envurvrpju5r
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/Documentation/devicetree/bindings/regulator/ti,tps65132.yaml b/Documentation/devicetree/bindings/regulator/ti,tps65132.yaml
-new file mode 100644
-index 000000000000..6a6d1a3d6fa7
---- /dev/null
-+++ b/Documentation/devicetree/bindings/regulator/ti,tps65132.yaml
-@@ -0,0 +1,84 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/regulator/ti,tps65132.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: TI TPS65132 Dual Output Power Regulators
-+
-+maintainers:
-+  - devicetree@vger.kernel.org
-+
-+description: |
-+  The TPS65132 is designed to supply positive/negative driven applications.
-+
-+  Datasheet is available at:
-+  https://www.ti.com/lit/gpn/tps65132
-+
-+properties:
-+  compatible:
-+    enum:
-+      - ti,tps65132
-+
-+  reg:
-+    maxItems: 1
-+
-+patternProperties:
-+  "^out[pn]$":
-+    type: object
-+    $ref: regulator.yaml#
-+    unevaluatedProperties: false
-+    description:
-+      Properties for single regulator.
-+
-+    properties:
-+      enable-gpios:
-+        maxItems: 1
-+        description:
-+          GPIO specifier to enable the GPIO control (on/off) for regulator.
-+
-+      active-discharge-gpios:
-+        maxItems: 1
-+        description:
-+          GPIO specifier to actively discharge the delay mechanism.
-+
-+      ti,active-discharge-time-us:
-+        description: Regulator active discharge time in microseconds.
-+
-+    dependencies:
-+      active-discharge-gpios: [ 'ti,active-discharge-time-us' ]
-+
-+required:
-+  - compatible
-+  - reg
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/gpio/gpio.h>
-+
-+    i2c {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        regulator@3e {
-+            compatible = "ti,tps65132";
-+            reg = <0x3e>;
-+
-+            outp {
-+                regulator-name = "outp";
-+                regulator-boot-on;
-+                regulator-always-on;
-+                enable-gpios = <&gpio 23 GPIO_ACTIVE_HIGH>;
-+            };
-+
-+            outn {
-+                regulator-name = "outn";
-+                regulator-boot-on;
-+                regulator-always-on;
-+                regulator-active-discharge = <0>;
-+                enable-gpios = <&gpio 40 GPIO_ACTIVE_HIGH>;
-+            };
-+        };
-+    };
-diff --git a/Documentation/devicetree/bindings/regulator/tps65132-regulator.txt b/Documentation/devicetree/bindings/regulator/tps65132-regulator.txt
-deleted file mode 100644
-index 3a3505520c69..000000000000
---- a/Documentation/devicetree/bindings/regulator/tps65132-regulator.txt
-+++ /dev/null
-@@ -1,46 +0,0 @@
--TPS65132 regulators
--
--Required properties:
--- compatible: "ti,tps65132"
--- reg: I2C slave address
--
--Optional Subnode:
--Device supports two regulators OUTP and OUTN. A sub node within the
--   device node describe the properties of these regulators. The sub-node
--   names must be as follows:
--	-For regulator outp, the sub node name should be "outp".
--	-For regulator outn, the sub node name should be "outn".
--
---enable-gpios:(active high, output) Regulators are controlled by the input pins.
--   If it is connected to GPIO through host system then provide the
--   gpio number as per gpio.txt.
---active-discharge-gpios: (active high, output) Some configurations use delay mechanisms
--  on the enable pin, to keep the regulator enabled for some time after
--  the enable signal goes low. This GPIO is used to actively discharge
--  the delay mechanism. Requires specification of ti,active-discharge-time-us
---ti,active-discharge-time-us: how long the active discharge gpio should be
--  asserted for during active discharge, in microseconds.
--
--Each regulator is defined using the standard binding for regulators.
--
--Example:
--
--	tps65132@3e {
--		compatible = "ti,tps65132";
--		reg = <0x3e>;
--
--		outp {
--			regulator-name = "outp";
--			regulator-boot-on;
--			regulator-always-on;
--			enable-gpios = <&gpio 23 0>;
--		};
--
--		outn {
--			regulator-name = "outn";
--			regulator-boot-on;
--			regulator-always-on;
--			regulator-active-discharge = <0>;
--			enable-gpios = <&gpio 40 0>;
--		};
--	};
+Hello again,
 
----
-base-commit: d0b3c8aa5e37775cd7c3ac07b256218df0fd6678
-change-id: 20231217-tps65132-7f8229dcad59
+On Fri, Dec 22, 2023 at 05:45:46PM +0800, William Qiu wrote:
+> +static const struct ocores_pwm_data jh7100_pwm_data =3D {
+> +	.get_ch_base =3D starfive_jh71x0_get_ch_base,
+> +};
+> +
+> +static const struct ocores_pwm_data jh7110_pwm_data =3D {
+> +	.get_ch_base =3D starfive_jh71x0_get_ch_base,
+> +};
+> +
+> +static const struct of_device_id ocores_pwm_of_match[] =3D {
+> +	{ .compatible =3D "opencores,pwm-v1" },
+> +	{ .compatible =3D "starfive,jh7100-pwm", .data =3D &jh7100_pwm_data},
+> +	{ .compatible =3D "starfive,jh7110-pwm", .data =3D &jh7110_pwm_data},
+> +	{ /* sentinel */ }
 
-Best regards,
--- 
-André Apitzsch <git@apitzsch.eu>
+Looking at the binding
 
+	compatible =3D "opencores,pwm-v1";
+
+isn't a valid configuration. If that is indeed the case and you always
+have either starfive,jh7100-pwm or starfive,jh7110-pwm, you can drop the
+logic to only use starfive_jh71x0_get_ch_base conditionally.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--e6p2envurvrpju5r
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmWXM+8ACgkQj4D7WH0S
+/k5eqwf7BKGgncVgVmHDNmQfHHTNNfkRf4UToW1IVJgCDbsLtDvbBFJbN5tzdhb+
+cL/gFmPxhwJBZ2rRDGTa0/5EBBkCfwVdIQ8jj1wqJEyx0bQuvxUKdNIVCjYtmvFJ
+B0dSDdrYqvSQK3v5gHEYGfi1TOXWJ0P9LdIZxiIRAyF8eDfPVAHnvM3JhPxnkoX9
+d0jC11XgWfuS/7PWg17j45Kr25+6WQD0gXxHTR+jFH3srzZPsgTjzoN1pUrMUUvU
+9zfN8xZtRy9EZOQCDV5s9eP3PdaTJc3hNkkD4MzdD9ObrxGbfvqvzMtAOG2aEmMm
+BtgpzOX0+0zOrVcwSvAO5Tp7FW3mJg==
+=hIsf
+-----END PGP SIGNATURE-----
+
+--e6p2envurvrpju5r--
 
