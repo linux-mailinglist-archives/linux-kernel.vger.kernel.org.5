@@ -1,123 +1,162 @@
-Return-Path: <linux-kernel+bounces-16228-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16232-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8ECE0823B23
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 04:31:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 12466823B3F
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 04:43:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 58E1D1C21518
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 03:31:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 08D4A1C24361
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 03:43:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 725405684;
-	Thu,  4 Jan 2024 03:31:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="OiUSbn/g"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B33F21DFEB;
+	Thu,  4 Jan 2024 03:42:39 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com [209.85.219.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from TWMBX02.aspeed.com (mail.aspeedtech.com [211.20.114.72])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9E0C5257
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 03:31:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-yb1-f175.google.com with SMTP id 3f1490d57ef6-dbe39a45e8eso93607276.1
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 19:31:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1704339073; x=1704943873; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9n80u1CkaWzx8obyOyFuf0rWVWTZDVHCjinQCoRyPWM=;
-        b=OiUSbn/g+GZHt6LiMHru5HOMX/1hXR3ODMoJvNO2+bTh9f8JC40mU6ajWAF89+TdyY
-         G9eJM6uLDRcS5tmkmcPNn0GXywJ7AMxOM+v6SgE6K1dbFX8EqMRahT8NK5HrS8pyBNFu
-         c/hGMmhcul2e3yvFpAx2g2BnuxQp8rvEhn2o0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704339073; x=1704943873;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9n80u1CkaWzx8obyOyFuf0rWVWTZDVHCjinQCoRyPWM=;
-        b=X84xqA0vB3HzW14gCyB+fDVDkPrTj37fTUjjuoBnUDr5ncbIdlr09SoXobc6vF1qKb
-         WCcBPKB6O8P+9crWWquRkm/WoNThC+9UiywIZLdXnGWNpUPYjDR9JaKLhChed0+k2+94
-         Te439TD1aCSRIz08XSq0ls8i6+zV1nzlO6dUOJeC2RTaeONt2h3keu06BgxiI83s0mrK
-         EZfq6Zist8dLpBduzOodt2BvSaZyWWQagBG1EspW/802EJ7Mwq+mp7JqJiQAUrpFAuxQ
-         OyZ41+p5uWcyRlz+Onz8ywGiIo4mpQuyyVTAUKAG5bz73Nl1LaA2eWb6gjm2BiWjy6zg
-         AhUg==
-X-Gm-Message-State: AOJu0YwW6eEfczetQ3W5SYJl9t50Hb6EAXnr3bNPvVt/kNhvzNvZKLuv
-	iwlRF2lRmFd9FQWA8e32f3rIrFD2lEdmpH0WffXsR7meNPzs
-X-Google-Smtp-Source: AGHT+IGuaPvVtHJ5wEmfvzXQLBsZQkV2dtIVwKwQ499x5ahDUSFOeJ36BveDlqYMHrOi+9ZDmI4LmmToAKYZZcRFj38=
-X-Received: by 2002:a25:a166:0:b0:dbe:a209:3305 with SMTP id
- z93-20020a25a166000000b00dbea2093305mr10023ybh.98.1704339073736; Wed, 03 Jan
- 2024 19:31:13 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9A9B1D699;
+	Thu,  4 Jan 2024 03:42:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=aspeedtech.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aspeedtech.com
+Received: from TWMBX02.aspeed.com (192.168.0.24) by TWMBX02.aspeed.com
+ (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 4 Jan
+ 2024 11:41:21 +0800
+Received: from twmbx02.aspeed.com (192.168.10.10) by TWMBX02.aspeed.com
+ (192.168.0.24) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 4 Jan 2024 11:41:21 +0800
+From: Billy Tsai <billy_tsai@aspeedtech.com>
+To: <jdelvare@suse.com>, <linux@roeck-us.net>, <robh+dt@kernel.org>,
+	<krzysztof.kozlowski+dt@linaro.org>, <joel@jms.id.au>, <andrew@aj.id.au>,
+	<corbet@lwn.net>, <thierry.reding@gmail.com>,
+	<u.kleine-koenig@pengutronix.de>, <p.zabel@pengutronix.de>,
+	<billy_tsai@aspeedtech.com>, <naresh.solanki@9elements.com>,
+	<linux-hwmon@vger.kernel.org>, <devicetree@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-aspeed@lists.ozlabs.org>,
+	<linux-kernel@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+	<linux-pwm@vger.kernel.org>, <BMC-SW@aspeedtech.com>, <patrick@stwcx.xyz>
+Subject: [PATCH v11 0/3] Support pwm/tach driver for aspeed ast26xx
+Date: Thu, 4 Jan 2024 11:41:17 +0800
+Message-ID: <20240104034120.3516290-1-billy_tsai@aspeedtech.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231215235638.19189-1-rdunlap@infradead.org>
-In-Reply-To: <20231215235638.19189-1-rdunlap@infradead.org>
-From: Zack Rusin <zack.rusin@broadcom.com>
-Date: Wed, 3 Jan 2024 22:31:03 -0500
-Message-ID: <CABQX2QMm4ovL51sLOgi-bFtctLUgXuw-T2m0Qcja41HaR3XKkQ@mail.gmail.com>
-Subject: Re: [PATCH] drm/vmwgfx: fix kernel-doc Excess struct member 'base'
-To: Randy Dunlap <rdunlap@infradead.org>
-Cc: linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>, 
-	dri-devel@lists.freedesktop.org, 
-	VMware Graphics Reviewers <linux-graphics-maintainer@vmware.com>, Maxime Ripard <mripard@kernel.org>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, Zack Rusin <zackr@vmware.com>, 
-	Kees Cook <keescook@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+Received-SPF: Fail (TWMBX02.aspeed.com: domain of billy_tsai@aspeedtech.com
+ does not designate 192.168.10.10 as permitted sender)
+ receiver=TWMBX02.aspeed.com; client-ip=192.168.10.10;
+ helo=twmbx02.aspeed.com;
 
-On Fri, Dec 15, 2023 at 6:56=E2=80=AFPM Randy Dunlap <rdunlap@infradead.org=
-> wrote:
->
-> Fix a new kernel-doc warning reported by kernel test robot:
->
-> vmwgfx_surface.c:55: warning: Excess struct member 'base' description in =
-'vmw_user_surface'
->
-> The other warning is not correct: it is confused by "__counted_by".
-> Kees has made a separate patch for that.
->
-> In -Wall mode, kernel-doc still reports 20 warnings of this nature:
-> vmwgfx_surface.c:198: warning: No description found for return value of '=
-vmw_surface_dma_size'
-> but I am not addressing those.
->
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202312150701.kNI9LuM3-lkp@i=
-ntel.com/
-> Cc: Kees Cook <keescook@chromium.org>
-> Cc: Zack Rusin <zackr@vmware.com>
-> Cc: VMware Graphics Reviewers <linux-graphics-maintainer@vmware.com>
-> Cc: dri-devel@lists.freedesktop.org
-> Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-> Cc: Maxime Ripard <mripard@kernel.org>
-> Cc: Thomas Zimmermann <tzimmermann@suse.de>
-> ---
->  drivers/gpu/drm/vmwgfx/vmwgfx_surface.c |    1 -
->  1 file changed, 1 deletion(-)
->
-> diff -- a/drivers/gpu/drm/vmwgfx/vmwgfx_surface.c b/drivers/gpu/drm/vmwgf=
-x/vmwgfx_surface.c
-> --- a/drivers/gpu/drm/vmwgfx/vmwgfx_surface.c
-> +++ b/drivers/gpu/drm/vmwgfx/vmwgfx_surface.c
-> @@ -44,7 +44,6 @@
->   * struct vmw_user_surface - User-space visible surface resource
->   *
->   * @prime:          The TTM prime object.
-> - * @base:           The TTM base object handling user-space visibility.
->   * @srf:            The surface metadata.
->   * @master:         Master of the creating client. Used for security che=
-ck.
->   */
+Unlike the old design that the register setting of the TACH should based
+on the configure of the PWM. In ast26xx, the dependency between pwm and
+tach controller is eliminated and becomes a separate hardware block. One
+is used to provide pwm output and another is used to monitor the frequency
+of the input. This driver implements them by exposing two kernel
+subsystems: PWM and HWMON. The PWM subsystem can be utilized alongside
+existing drivers for controlling elements such as fans (pwm-fan.c),
+beepers (pwm-beeper.c) and so on. Through the HWMON subsystem, the driver
+provides sysfs interfaces for fan.
 
-Thanks, looks great. I went ahead and pushed this one to drm-misc-next.
+Changes since v10:
+Add the enum for the 'fan-driving-mode' properties in the fan-common.yaml.
 
-z
+Changes since v9:
+Change the type of fan-driving-mode to string
+Fix some typos and formatting issues.
+
+Changes since v8:
+Fix the fail of fan div register setting. (FIELD_GET -> FIELD_PREP)
+Change the type of tach-ch from uint32_t to uint8-array
+Add additional properties and apply constraints to certain properties.
+
+Changes since v7:
+Cherry-pick the fan-common.yaml and add the following properties:
+- min-rpm
+- div
+- mode
+- tach-ch
+Fix the warning which is reported by the kernel test robot.
+
+Changes since v6:
+Consolidate the PWM and TACH functionalities into a unified driver.
+
+Changes since v5:
+- pwm/tach:
+  - Remove the utilization of common resources from the parent node.
+  - Change the concept to 16 PWM/TACH controllers, each with one channel,
+  instead of 1 PWM/TACH controller with 16 channels.
+- dt-binding:
+  - Eliminate the usage of simple-mfd.
+
+Changes since v4:
+- pwm:
+  - Fix the return type of get_status function.
+- tach:
+  - read clk source once and re-use it
+  - Remove the constants variables
+  - Allocate tach_channel as array
+  - Use dev->parent
+- dt-binding:
+  - Fix the order of the patches
+  - Add example and description for tach child node
+  - Remove pwm extension property
+
+Changes since v3:
+- pwm:
+  - Remove unnecessary include header
+  - Fix warning Prefer "GPL" over "GPL v2"
+- tach:
+  - Remove the paremeter min_rpm and max_rpm and return the tach value 
+  directly without any polling or delay.
+  - Fix warning Prefer "GPL" over "GPL v2"
+- dt-binding:
+  - Replace underscore in node names with dashes
+  - Split per subsystem
+
+Changes since v2:
+- pwm:
+  - Use devm_* api to simplify the error cleanup
+  - Fix the multi-line alignment problem
+- tach:
+  - Add tach-aspeed-ast2600 to index.rst
+  - Fix the multi-line alignment problem
+  - Remove the tach enable/disable when read the rpm
+  - Fix some coding format issue
+
+Changes since v1:
+- tach:
+  - Add the document tach-aspeed-ast2600.rst
+  - Use devm_* api to simplify the error cleanup.
+  - Change hwmon register api to devm_hwmon_device_register_with_info
+
+
+Billy Tsai (2):
+  dt-bindings: hwmon: Support Aspeed g6 PWM TACH Control
+  hwmon: (aspeed-g6-pwm-tacho): Support for ASPEED g6 PWM/Fan tach
+
+Naresh Solanki (1):
+  dt-bindings: hwmon: fan: Add fan binding to schema
+
+ .../bindings/hwmon/aspeed,g6-pwm-tach.yaml    |  69 +++
+ .../devicetree/bindings/hwmon/fan-common.yaml |  79 +++
+ Documentation/hwmon/aspeed-g6-pwm-tach.rst    |  26 +
+ Documentation/hwmon/index.rst                 |   1 +
+ drivers/hwmon/Kconfig                         |  11 +
+ drivers/hwmon/Makefile                        |   1 +
+ drivers/hwmon/aspeed-g6-pwm-tach.c            | 539 ++++++++++++++++++
+ 7 files changed, 726 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/hwmon/aspeed,g6-pwm-tach.yaml
+ create mode 100644 Documentation/devicetree/bindings/hwmon/fan-common.yaml
+ create mode 100644 Documentation/hwmon/aspeed-g6-pwm-tach.rst
+ create mode 100644 drivers/hwmon/aspeed-g6-pwm-tach.c
+
+-- 
+2.25.1
+
 
