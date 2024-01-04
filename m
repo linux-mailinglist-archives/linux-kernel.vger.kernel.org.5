@@ -1,68 +1,68 @@
-Return-Path: <linux-kernel+bounces-16418-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16419-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A467823E30
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 10:07:39 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E6B7823E35
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 10:07:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 36E371C23747
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 09:07:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 98FCBB24E57
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 09:07:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A78A42032F;
-	Thu,  4 Jan 2024 09:07:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5E2A208BE;
+	Thu,  4 Jan 2024 09:07:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="a0jZ3uHY"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="TqBCh0vI"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D62A2030F
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 09:07:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7527E1EA95
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 09:07:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1704359245;
+	s=mimecast20190719; t=1704359246;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=NoDK23LlK5p4IgH6ZTqMMZELxs6CauTLQ4NGvi9HnM4=;
-	b=a0jZ3uHYMca+MD8tZbIb41B+cMT9VZF7ULx1U5q+kxRjGFu1CR55b9sAA843syvCdmqnol
-	eaUeTINo7WjpmNCV6um1JlMtghDfM52CE4g+IXf/qzBfUMkGCSzbSxc7RuF2EylPWVUdEQ
-	jm8RkXBh4b7pOVcJMn9OamY50m6p4lQ=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=Dyerj4wk/ZFwQTySswA1kbRd7v7F1+vxDBdnemG6spU=;
+	b=TqBCh0vIW37ieVV9bfde8VaHnc8Vl+Kjr+F0Ls/V5ii3LaoE7nR6MwW2vyYCJ2JQ+4sezz
+	EO+tT9cb66JvqpWL6h7qnIK/D1AYyBkPWTMeNDeEsKbMNSREgcZCbw48XJW7acT0Tz+eLi
+	CE3qoEhFAnE9YcQdrgYvV8zcHtLgopQ=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-472-HAhkJWpENJ2EWeZaDCopGA-1; Thu, 04 Jan 2024 04:07:24 -0500
-X-MC-Unique: HAhkJWpENJ2EWeZaDCopGA-1
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-40d87d87654so728265e9.0
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 01:07:24 -0800 (PST)
+ us-mta-556-9ukcPC5hOTGL3cORj58ffw-1; Thu, 04 Jan 2024 04:07:25 -0500
+X-MC-Unique: 9ukcPC5hOTGL3cORj58ffw-1
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-40d5ac8116fso653835e9.0
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 01:07:25 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704359243; x=1704964043;
+        d=1e100.net; s=20230601; t=1704359244; x=1704964044;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=NoDK23LlK5p4IgH6ZTqMMZELxs6CauTLQ4NGvi9HnM4=;
-        b=p0bKz2q1JLEDgCQafpVgpzSCbpLOMxsDRcPI+jrqMcICjJfbNQKYjXWEHZQ9GxxSe3
-         O7udkfPD5ImWEz7dyWgM9u5mY1QxAKzk87nX2L/e3s1dEL9rIAB1jxKJ/O7aL/qgxGOW
-         2yvEIZW45L9c+aP3MRUhD7zT7243hclB2zDzbEuIJadrlp5WW3Cnp28wsVm5bQxCeUao
-         2yeZzXGNGhO6tMVFH+ugVQYY1T4YUWEPWBz8xrKslzmDu5nyhGqAz4tu8EYAteUEZpYY
-         l5M7fEmHwltufGa8CjlAyxjmqGzpz51fNv4zLU5DtlgVvcq23c0TkZF4Ptn5UPaSNya6
-         PfCA==
-X-Gm-Message-State: AOJu0YwD1Q79zhq+jbMNEjw66vUp2nEnjpXGXgCr6+V/ewR3PWHn9txJ
-	u3oqYJd8QxKjrNanM5MjWhOse7pmBkyF8RvwVh4IdsB20B9gLejzh0h8N8B/YRIig4rJm2Ye9V9
-	xqhC3ytuMH+5f2nZj8FtTdZC33Saskijl
-X-Received: by 2002:a5d:5f95:0:b0:337:3cf6:ed4c with SMTP id dr21-20020a5d5f95000000b003373cf6ed4cmr443073wrb.4.1704359243214;
+        bh=Dyerj4wk/ZFwQTySswA1kbRd7v7F1+vxDBdnemG6spU=;
+        b=Fz2Lm9+PiDZ/wc97aaQmvQtS8QkwRjDLuWGvh3j7tcByh+FTspAX3bILiwhLHpbVrx
+         db/MG3zHUjjkIbR0cpVLvSjHgIwkTK+mPDKwpLEN44J3klbawGRkB7MJfq4rz8cvXVO5
+         Rt6mzO/L0qhMt0Mta/VwwVQZLOik6t1A2z6n4hiWUDEE88N6WSHzFPFeJrXYJ26PKwJN
+         HBQMymgoE1+7EDRjj2gq4RCo5gKskUxX+AFbJjrnXzFqnlY7F7qP8S6Md4nQKFtvJhVJ
+         qo2AiXW7ImtIE6i82Ggr6kB9FK2ODZ35QvQXdbNUxG0dQD5Qh0Kr60P7WxMPB04DC4pm
+         mRcw==
+X-Gm-Message-State: AOJu0YwZ2zVEQtBVCC32r0iWS5MB7f5yq/JlV4adlLSqYr0lAieb2zTA
+	p6qSPJQkj0XL5gOTwubMbVa68YI9crRcSKZhSj5oVmO+/7f8L/cy47dThIlP5OrUjqXFOAPWKkr
+	AVirC9PCoqXAnzLoS9ntsK1MsbEceo8Rv
+X-Received: by 2002:a5d:530b:0:b0:336:7110:38e2 with SMTP id e11-20020a5d530b000000b00336711038e2mr442479wrv.3.1704359244283;
+        Thu, 04 Jan 2024 01:07:24 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGnOXrQk2cIihpHok1C7CyYlsuReEbnUhcMXsqJWkEpa+4RuJPHmSYUUJZSaW06PyuJTJ2d1A==
+X-Received: by 2002:a5d:530b:0:b0:336:7110:38e2 with SMTP id e11-20020a5d530b000000b00336711038e2mr442456wrv.3.1704359243976;
         Thu, 04 Jan 2024 01:07:23 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGXzNqzW8kqtKPV62b5Zy3H304bH+UJk2Jf9aXIbT0CMRfAzqN9DqxRHxNyFzZiNtek5M5OJQ==
-X-Received: by 2002:a5d:5f95:0:b0:337:3cf6:ed4c with SMTP id dr21-20020a5d5f95000000b003373cf6ed4cmr443049wrb.4.1704359242584;
-        Thu, 04 Jan 2024 01:07:22 -0800 (PST)
 Received: from pstanner-thinkpadt14sgen1.muc.redhat.com (nat-pool-muc-t.redhat.com. [149.14.88.26])
-        by smtp.gmail.com with ESMTPSA id h15-20020a5d430f000000b0033740e109adsm8720864wrq.75.2024.01.04.01.07.21
+        by smtp.gmail.com with ESMTPSA id h15-20020a5d430f000000b0033740e109adsm8720864wrq.75.2024.01.04.01.07.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Jan 2024 01:07:22 -0800 (PST)
+        Thu, 04 Jan 2024 01:07:23 -0800 (PST)
 From: Philipp Stanner <pstanner@redhat.com>
 To: Bjorn Helgaas <bhelgaas@google.com>,
 	Arnd Bergmann <arnd@arndb.de>,
@@ -91,11 +91,10 @@ To: Bjorn Helgaas <bhelgaas@google.com>,
 Cc: linux-kernel@vger.kernel.org,
 	linux-pci@vger.kernel.org,
 	linux-arch@vger.kernel.org,
-	stable@vger.kernel.org,
-	Arnd Bergmann <arnd@kernel.org>
-Subject: [PATCH v5 1/5] lib/pci_iomap.c: fix cleanup bugs in pci_iounmap()
-Date: Thu,  4 Jan 2024 10:07:05 +0100
-Message-ID: <20240104090708.10571-3-pstanner@redhat.com>
+	stable@vger.kernel.org
+Subject: [PATCH v5 2/5] lib: move pci_iomap.c to drivers/pci/
+Date: Thu,  4 Jan 2024 10:07:06 +0100
+Message-ID: <20240104090708.10571-4-pstanner@redhat.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240104090708.10571-2-pstanner@redhat.com>
 References: <20240104090708.10571-2-pstanner@redhat.com>
@@ -107,51 +106,114 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-pci_iounmap() in lib/pci_iomap.c is supposed to check whether an address
-is within ioport-range IF the config specifies that ioports exist. If
-so, the port should be unmapped with ioport_unmap(). If not, it's a
-generic MMIO address that has to be passed to iounmap().
+This file is guarded by an #ifdef CONFIG_PCI. It, consequently, does not
+belong to lib/ because it is not generic infrastructure.
 
-The bugs are:
-  1. ioport_unmap() is missing entirely, so this function will never
-     actually unmap a port.
-  2. the #ifdef for the ioport-ranges accidentally also guards
-     iounmap(), potentially compiling an empty function. This would
-     cause the mapping to be leaked.
+Move the file to drivers/pci/ and implement the necessary changes to
+Makefiles and Kconfigs.
 
-Implement the missing call to ioport_unmap().
+Update MAINTAINERS file.
 
-Move the guard so that iounmap() will always be part of the function.
-
-CC: <stable@vger.kernel.org> # v5.15+
-Fixes: 316e8d79a095 ("pci_iounmap'2: Electric Boogaloo: try to make sense of it all")
-Reported-by: Danilo Krummrich <dakr@redhat.com>
-Suggested-by: Arnd Bergmann <arnd@kernel.org>
+Suggested-by: Danilo Krummrich <dakr@redhat.com>
 Signed-off-by: Philipp Stanner <pstanner@redhat.com>
 Reviewed-by: Arnd Bergmann <arnd@arndb.de>
 ---
- lib/pci_iomap.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ MAINTAINERS                            | 1 -
+ drivers/pci/Kconfig                    | 5 +++++
+ drivers/pci/Makefile                   | 1 +
+ lib/pci_iomap.c => drivers/pci/iomap.c | 3 ---
+ lib/Kconfig                            | 3 ---
+ lib/Makefile                           | 1 -
+ 6 files changed, 6 insertions(+), 8 deletions(-)
+ rename lib/pci_iomap.c => drivers/pci/iomap.c (99%)
 
-diff --git a/lib/pci_iomap.c b/lib/pci_iomap.c
-index ce39ce9f3526..6e144b017c48 100644
---- a/lib/pci_iomap.c
-+++ b/lib/pci_iomap.c
-@@ -168,10 +168,12 @@ void pci_iounmap(struct pci_dev *dev, void __iomem *p)
- 	uintptr_t start = (uintptr_t) PCI_IOBASE;
- 	uintptr_t addr = (uintptr_t) p;
+diff --git a/MAINTAINERS b/MAINTAINERS
+index edae86acdfdc..efa37ee81d30 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -16762,7 +16762,6 @@ F:	include/asm-generic/pci*
+ F:	include/linux/of_pci.h
+ F:	include/linux/pci*
+ F:	include/uapi/linux/pci*
+-F:	lib/pci*
  
--	if (addr >= start && addr < start + IO_SPACE_LIMIT)
-+	if (addr >= start && addr < start + IO_SPACE_LIMIT) {
-+		ioport_unmap(p);
- 		return;
--	iounmap(p);
-+	}
- #endif
-+	iounmap(p);
- }
+ PCIE DRIVER FOR AMAZON ANNAPURNA LABS
+ M:	Jonathan Chocron <jonnyc@amazon.com>
+diff --git a/drivers/pci/Kconfig b/drivers/pci/Kconfig
+index 74147262625b..d35001589d88 100644
+--- a/drivers/pci/Kconfig
++++ b/drivers/pci/Kconfig
+@@ -13,6 +13,11 @@ config FORCE_PCI
+ 	select HAVE_PCI
+ 	select PCI
+ 
++# select this to provide a generic PCI iomap,
++# without PCI itself having to be defined
++config GENERIC_PCI_IOMAP
++	bool
++
+ menuconfig PCI
+ 	bool "PCI support"
+ 	depends on HAVE_PCI
+diff --git a/drivers/pci/Makefile b/drivers/pci/Makefile
+index cc8b4e01e29d..64dcedccfc87 100644
+--- a/drivers/pci/Makefile
++++ b/drivers/pci/Makefile
+@@ -14,6 +14,7 @@ ifdef CONFIG_PCI
+ obj-$(CONFIG_PROC_FS)		+= proc.o
+ obj-$(CONFIG_SYSFS)		+= slot.o
+ obj-$(CONFIG_ACPI)		+= pci-acpi.o
++obj-$(CONFIG_GENERIC_PCI_IOMAP) += iomap.o
+ endif
+ 
+ obj-$(CONFIG_OF)		+= of.o
+diff --git a/lib/pci_iomap.c b/drivers/pci/iomap.c
+similarity index 99%
+rename from lib/pci_iomap.c
+rename to drivers/pci/iomap.c
+index 6e144b017c48..91285fcff1ba 100644
+--- a/lib/pci_iomap.c
++++ b/drivers/pci/iomap.c
+@@ -9,7 +9,6 @@
+ 
+ #include <linux/export.h>
+ 
+-#ifdef CONFIG_PCI
+ /**
+  * pci_iomap_range - create a virtual mapping cookie for a PCI BAR
+  * @dev: PCI device that owns the BAR
+@@ -178,5 +177,3 @@ void pci_iounmap(struct pci_dev *dev, void __iomem *p)
  EXPORT_SYMBOL(pci_iounmap);
  
+ #endif /* ARCH_WANTS_GENERIC_PCI_IOUNMAP */
+-
+-#endif /* CONFIG_PCI */
+diff --git a/lib/Kconfig b/lib/Kconfig
+index 3ea1c830efab..1bf859166ac7 100644
+--- a/lib/Kconfig
++++ b/lib/Kconfig
+@@ -70,9 +70,6 @@ source "lib/math/Kconfig"
+ config NO_GENERIC_PCI_IOPORT_MAP
+ 	bool
+ 
+-config GENERIC_PCI_IOMAP
+-	bool
+-
+ config GENERIC_IOMAP
+ 	bool
+ 	select GENERIC_PCI_IOMAP
+diff --git a/lib/Makefile b/lib/Makefile
+index 6b09731d8e61..0800289ec6c5 100644
+--- a/lib/Makefile
++++ b/lib/Makefile
+@@ -153,7 +153,6 @@ CFLAGS_debug_info.o += $(call cc-option, -femit-struct-debug-detailed=any)
+ obj-y += math/ crypto/
+ 
+ obj-$(CONFIG_GENERIC_IOMAP) += iomap.o
+-obj-$(CONFIG_GENERIC_PCI_IOMAP) += pci_iomap.o
+ obj-$(CONFIG_HAS_IOMEM) += iomap_copy.o devres.o
+ obj-$(CONFIG_CHECK_SIGNATURE) += check_signature.o
+ obj-$(CONFIG_DEBUG_LOCKING_API_SELFTESTS) += locking-selftest.o
 -- 
 2.43.0
 
