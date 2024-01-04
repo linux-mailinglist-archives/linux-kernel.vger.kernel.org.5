@@ -1,93 +1,144 @@
-Return-Path: <linux-kernel+bounces-17077-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17079-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9FE2E824804
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 19:14:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D0E11824808
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 19:15:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4A7FE1C20E4C
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 18:14:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 671001F21940
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 18:15:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5A6F28DD7;
-	Thu,  4 Jan 2024 18:14:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CA8A28DD1;
+	Thu,  4 Jan 2024 18:15:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mQsYPQBj"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="TR5s+GfB"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDBF828DC3;
-	Thu,  4 Jan 2024 18:14:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704392084; x=1735928084;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=sA1m4Z7P3CQ1pNqVc8Y8YSLSGCDu3yuKBy1DkHN+zck=;
-  b=mQsYPQBjgRlZdQ4qmkqz4gbzWbLuCn8vxhrsg/xe/7b9nGOxx2IMkaeF
-   QecmRq3O66R75nk6/i6wjTW033UkvEPojsRAkz0VfuZaeWP9a16KunqAk
-   rxAzpHchOETZH+QXtN6JTbQyXECqertvbR9hYku4Yj1z9iy8IMTD5IBUM
-   RZl565PysoT09zClML9zXFNW+feZ6teQC0lDdl2ZZlWY3S/hxtjCB+syi
-   kJdtzC5uV4PNF4QCd2fO0/jvq9kwMtWmLqj2MtyWpDPydRmpB420rabYB
-   BgCeiZM11IeHXSAKoyR9L045HTBMrqz/vXB/gR1e6MG34urtgyUeV6GEO
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10943"; a="15952104"
-X-IronPort-AV: E=Sophos;i="6.04,331,1695711600"; 
-   d="scan'208";a="15952104"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2024 10:14:44 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10943"; a="903905911"
-X-IronPort-AV: E=Sophos;i="6.04,331,1695711600"; 
-   d="scan'208";a="903905911"
-Received: from asebenix-mobl1.ger.corp.intel.com ([10.251.210.215])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2024 10:14:41 -0800
-Date: Thu, 4 Jan 2024 20:14:38 +0200 (EET)
-From: =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To: Armin Wolf <W_Armin@gmx.de>
-cc: Hans de Goede <hdegoede@redhat.com>, platform-driver-x86@vger.kernel.org, 
-    LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 3/4] platform/x86: wmi: Decouple legacy WMI notify handlers
- from wmi_block_list
-In-Reply-To: <20240103192707.115512-4-W_Armin@gmx.de>
-Message-ID: <ff735fbd-a0b4-6e-d3c9-a1358e9d9616@linux.intel.com>
-References: <20240103192707.115512-1-W_Armin@gmx.de> <20240103192707.115512-4-W_Armin@gmx.de>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4636E28DC3
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 18:15:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-336c8ab0b20so728855f8f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 10:15:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1704392144; x=1704996944; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=a5baGaSmFbgB509j+N50+gyL+8haTd8NMoSNMBKXbuw=;
+        b=TR5s+GfBlfqYJTFipy3pgaUbK785xUJlnp1LC0wYXUEOE0jkHYXSoPfWUuT8FAfXZN
+         ns9MthBy345//phshVBv/a5XaItsSUevtJaNG8YbkvL2yOfG+8YP3fsF68LAX57CGu8A
+         EqxSKzWL+0qADvLh+I5uLsdHxnt47A20FZDrPYkUZKQw1DUhNvrSVPNfdp8l5VjTYiZB
+         3nMZBjREF4HLs7S7iXiwZGwcyZkEwMrnUQExe+i2/jCEzhZpZXiKwIy49Wa1SkI9yifN
+         LYx3F//ENyyqABj+9I08ZtCnDwKOnOuOfXPLxR3OP6xgaEtgrB6h52HvcQNt9PhB7JYS
+         kpaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704392144; x=1704996944;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=a5baGaSmFbgB509j+N50+gyL+8haTd8NMoSNMBKXbuw=;
+        b=EulgLMSF6CDTrsPZhPkN8QsD3UpMrbEA/rIfUsbh9q/Tzsd+P06SzBe0JY9ULLQvOo
+         /7A7RVE4LRP6Fp7kVH9Xz9mkKDNBoUavq4f87Y8VDw43FhEUEUsCCL0+s2Flv6pZ608u
+         nTA/kLpgEQpUzqVPJdP27Dw363MhzwOOL4U8pAKdQd9idgETalwBBT1NBM54n5MtUXX6
+         TJyIJ0fPXFdTs8qjNfWKLsEuSN/OOP+7RxPSeiYdIiTWyteuoVxlbZ0fEoMrZebXXRQ5
+         qHG0qxjVueoH/UuphkoF03Df6v9kGNFRwzMXsEKXUC/WBw4gxpQ8KlFi/CD5tqDlt3/4
+         ygYA==
+X-Gm-Message-State: AOJu0YzndTVjrHxVa3EQAKcg6neekuCmsvHNXndcwfBMUW7xqmlqzwUl
+	8wa2kIX192IDqm5MVYvSiXxInnHIjhBPMqqdMjSluxQFtIGh
+X-Google-Smtp-Source: AGHT+IGjQWwD0JSRtgSRb/LA8Uebru4laIwL3Y2REbANo4weMZGfUoaVCdM5RXpKn+q6mRcbIAQMieMfH0ca8grrRWY=
+X-Received: by 2002:adf:e7c1:0:b0:336:7745:f63b with SMTP id
+ e1-20020adfe7c1000000b003367745f63bmr744619wrn.101.1704392144150; Thu, 04 Jan
+ 2024 10:15:44 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-1830788590-1704392082=:10531"
+References: <20240104-vdso32setup-v1-1-1737147bc6ed@google.com>
+In-Reply-To: <20240104-vdso32setup-v1-1-1737147bc6ed@google.com>
+From: Nick Desaulniers <ndesaulniers@google.com>
+Date: Thu, 4 Jan 2024 10:15:29 -0800
+Message-ID: <CAKwvOd=KR_fUXF3jVJgW6a9x0++2f1aS99PxHa+ZfHDUNemykQ@mail.gmail.com>
+Subject: Re: [PATCH] x86/vdso: shrink vdso/vdso32-setup.i via IWYU
+To: Tanzir Hasan <tanzirh@google.com>
+Cc: Andy Lutomirski <luto@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
+	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
+	"H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org, 
+	Nick Desaulniers <nnn@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+On Thu, Jan 4, 2024 at 8:51=E2=80=AFAM Tanzir Hasan <tanzirh@google.com> wr=
+ote:
+>
+> This diff uses an open source tool include-what-you-use (IWYU) to modify
+> the include list, changing indirect includes to direct includes. IWYU is
+> implemented using the IWYUScripts github repository which is a tool that
+> is currently undergoing development. These changes seek to improve build
+> times.
+>
+> This change to vdso/vdso32-setup.c resulted in a preprocessed size of
+> vdso/vdso32-setup.i from 44009 lines to 18572 lines (-58%) for the x86
+> defconfig.
+>
+> ---
+>
+>
+> Signed-off-by: Tanzir Hasan <tanzirh@google.com>
 
---8323329-1830788590-1704392082=:10531
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: 8BIT
+^ Your signed off by tag is "below the fold" (`---`), so it will not
+be retained when applied. (Bad)
 
-On Wed, 3 Jan 2024, Armin Wolf wrote:
+If you're using b4 to send patches, let's triple check whether you're
+putting your SOB on the "meta" commit (probably what's going wrong) as
+opposed to the commit itself (good).  Why don't you check that and
+then send me a v2 privately, so I can help you check?
 
-> Until now, legacy WMI notify handler functions where using the
-> wmi_block_list, which did no refcounting on the returned WMI device.
-> This meant that the WMI device could disappear at any moment,
-> potentially leading to various errors.
-> Fix this by using bus_find_device() which returns an actual
-> reference to the found WMI device.
-> 
-> Tested on a Dell Inspiron 3505 and a Acer Aspire E1-731.
-> 
-> Signed-off-by: Armin Wolf <W_Armin@gmx.de>
+> ---
+>  arch/x86/entry/vdso/vdso32-setup.c | 10 ++++------
+>  1 file changed, 4 insertions(+), 6 deletions(-)
+>
+> diff --git a/arch/x86/entry/vdso/vdso32-setup.c b/arch/x86/entry/vdso/vds=
+o32-setup.c
+> index 76e4e74f35b5..8dbe022589a6 100644
+> --- a/arch/x86/entry/vdso/vdso32-setup.c
+> +++ b/arch/x86/entry/vdso/vdso32-setup.c
+> @@ -8,13 +8,11 @@
+>   */
+>
+>  #include <linux/init.h>
+> -#include <linux/smp.h>
+> -#include <linux/kernel.h>
+> -#include <linux/mm_types.h>
+> -#include <linux/elf.h>
+> +#include <linux/kstrtox.h>
+> +#include <linux/printk.h>
+> +#include <linux/stddef.h>
+>
+> -#include <asm/processor.h>
+> -#include <asm/vdso.h>
+> +#include <asm/cache.h>
+>
+>  #ifdef CONFIG_COMPAT_VDSO
+>  #define VDSO_DEFAULT   0
+>
+> ---
+> base-commit: f5837722ffecbbedf1b1dbab072a063565f0dad1
+> change-id: 20231228-vdso32setup-8e336d60ac3e
+>
+> Best regards,
+> --
+> Tanzir Hasan <tanzirh@google.com>
+>
 
-Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
 
--- 
- i.
-
---8323329-1830788590-1704392082=:10531--
+--=20
+Thanks,
+~Nick Desaulniers
 
