@@ -1,124 +1,222 @@
-Return-Path: <linux-kernel+bounces-17121-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17122-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90B7F824888
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 20:03:45 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99EFB824893
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 20:05:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A18821C2261A
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 19:03:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id ECB46B21483
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 19:05:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A57CC28E3E;
-	Thu,  4 Jan 2024 19:03:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CE4E2C190;
+	Thu,  4 Jan 2024 19:05:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="FtpCyBrs"
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="gs551/Ji"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2062.outbound.protection.outlook.com [40.107.92.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE0C32C681;
-	Thu,  4 Jan 2024 19:03:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=Axy8b7yTVmlWQ3J02cuBqfZM28j68uaGpo9P0Q0lef8=; b=FtpCyBrszIbomqrZcJVs3ACgAW
-	jDaVkMzCrpfEduq46FlNmEmn4hXnLMFsBg/yqd/I5v90EiMxxbIRvhAsAGO8hx7whKKpzMCuKRodz
-	jxPOoxGNXqudhGsrX2cazJQgtZvGc/TciQavrsTx1Lzu/lyrMeerdNTAVuCN92kx3/su0GhP7ZQ75
-	C2Bef3Q+0tphpjBh6MYfAkMKaAhxeo75tiwrJWrBx34n8WNX0Nsx81jvtHYYslD7MC0bVvBGcKEGC
-	tC5ZaFwAoIj6g9b3ucxQrmVQlOssd64/r+DVgjxHN4M0Tze+MYcEQMZumo2yqVV8fsiFkHPQeOMUl
-	U/6jHccQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1rLSzw-00Fnxu-9n; Thu, 04 Jan 2024 19:03:20 +0000
-Date: Thu, 4 Jan 2024 19:03:20 +0000
-From: Matthew Wilcox <willy@infradead.org>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Al Viro <viro@zeniv.linux.org.uk>, LKML <linux-kernel@vger.kernel.org>,
-	Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Christian Brauner <brauner@kernel.org>,
-	linux-fsdevel@vger.kernel.org,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
-Subject: Re: [PATCH] tracefs/eventfs: Use root and instance inodes as default
- ownership
-Message-ID: <ZZcA+LnSFyZFuqNX@casper.infradead.org>
-References: <20240103203246.115732ec@gandalf.local.home>
- <20240104014837.GO1674809@ZenIV>
- <20240103212506.41432d12@gandalf.local.home>
- <20240104043945.GQ1674809@ZenIV>
- <20240104100544.593030e0@gandalf.local.home>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 268C0286AF;
+	Thu,  4 Jan 2024 19:05:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jKcwinse3RLW4TyZHjNbzU18te/2+Wfws0KBYqHJWbgrGNotRzyx7QTiTyQcLbrQbwoqh970sgvzxBj3reA8LkKUEcyYO+TaQS4i6xgCJ73rQW4hvcMgCUoDWtPDEvlarDcTAGr7jO6nOO2MMphZmou1zQgmcXVMK51YBSJIKOtUvt+bEw0nvYZ3tstAMWZJrqLdTcB4KZ1FxM1+DVmLJyxRG9HOeYA5bZ1Re1LCYqNgOq7g4RekKckLZ6fxFit+xC2ZQ9+QbUa2lzyU9dM6TOK06tuD+VlS0KpmHhBVpTQhLqJGuEfqfb5IcNLvSQIQOoTnSFk6NYQgJcNEMS8Lrg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=IvhJ6sg9bHA+panwIqVyh/4I3TUy1y/BTBBzyNNnq2Y=;
+ b=I4pbsTgolwq5XaIA7usiJYxjmU5o8e+Lo0eXYR9coU3sLYm1HjvL/w2wo+PHApH18ot4R+Pon8IDrBm6hhDhWbvGKhFMawRASg1I/pGABSUC1F9OEj7WuV9rKOxh2H0hVEA0u779C4dlIsgNL4qqr/er7IW7xIvs3eKJjWOthh7Hb7nL0iSY3VS3DTR2opta3xb5tubRFIk5EFBtXwbNurBD8yNZL0/LPlFZXC/mXdzGJa75RAQY8kc37LCD0OIiVnM2OWghSqBvhDXClmL85GBrbH5XAGVVlpZp/BkkEeTf4PjAL++vJEmN8kZWYucgFSr2lnr5v/ReY0hWlCqXtg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=redhat.com smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=IvhJ6sg9bHA+panwIqVyh/4I3TUy1y/BTBBzyNNnq2Y=;
+ b=gs551/JibpGZ/thylPBn5VDa/64K1y3XIivIHa1BQuAGcSQor3tVkWE+BKdmXOb4Ja4a6yRB9ZP7whAhLpru9g/w0SVpi+Zk323UWBPr43t/VV0zBjw+AcbJWafPYOBdzVVDwSzomk+/FXrfTOnRvp1o+5L05isfJHoN/JJKIlI=
+Received: from BL0PR02CA0126.namprd02.prod.outlook.com (2603:10b6:208:35::31)
+ by PH0PR12MB8150.namprd12.prod.outlook.com (2603:10b6:510:293::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.16; Thu, 4 Jan
+ 2024 19:05:33 +0000
+Received: from MN1PEPF0000ECD6.namprd02.prod.outlook.com
+ (2603:10b6:208:35:cafe::b2) by BL0PR02CA0126.outlook.office365.com
+ (2603:10b6:208:35::31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.15 via Frontend
+ Transport; Thu, 4 Jan 2024 19:05:32 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ MN1PEPF0000ECD6.mail.protection.outlook.com (10.167.242.135) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7159.9 via Frontend Transport; Thu, 4 Jan 2024 19:05:31 +0000
+Received: from purico-ed09host.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Thu, 4 Jan
+ 2024 13:05:29 -0600
+From: Ashish Kalra <Ashish.Kalra@amd.com>
+To: <pbonzini@redhat.com>
+CC: <seanjc@google.com>, <tglx@linutronix.de>, <mingo@redhat.com>,
+	<bp@alien8.de>, <dave.hansen@linux.intel.com>, <x86@kernel.org>,
+	<hpa@zytor.com>, <thomas.lendacky@amd.com>, <kvm@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <joro@8bytes.org>
+Subject: [PATCH v3] x86/sev: Add support for allowing zero SEV ASIDs.
+Date: Thu, 4 Jan 2024 19:05:20 +0000
+Message-ID: <20240104190520.62510-1-Ashish.Kalra@amd.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240104100544.593030e0@gandalf.local.home>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MN1PEPF0000ECD6:EE_|PH0PR12MB8150:EE_
+X-MS-Office365-Filtering-Correlation-Id: 6c018437-03d9-4f01-f435-08dc0d582029
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	OL9qqhS0P6VRh2dAL9xeyzuB1u8vl9hOA+WmSeqbOArccbLg5xEgdt4ZL99V23ejpL/k5E/B8lOnduQW4XJrpUgenrOBfa6nPWRaIh5kLa/kZdJeTKCB0tJsWkemQ5amQLBFXP7RHbwWaW/RQT9v4bIX+k0KZczdUN7KikAAm+wPaiIWSmU0sfffq68gNHtmP0LKvmcwR9U4gIrm/HEFvu2nI3nMt4f2I8EYIF31wJQIGE5ghOkv0pdRg6NL0YuHfk7LIe/VMffTTvg1lVr49fKRS+hQZJpBw7DrS6zJYK/v/IWSTx6n9jsAomvegK9lgCkF0gy7EoFf7vyCvr80qOGS+xtZ/mVInYwlqypudRPZjIxpu82tQeBnj7Nzmsv7ajLjPBKB3ZK7CzyFiEta9XmBckidM6g2Y7LwXOr1Nn6eIpz/nVIY631tGgSEqjbNxyXxMwtWZjXwuU7ty1r87bk0FJydRT1I9fLlWsV3uKzUUZ518ZomTDmRjwATIqK13QIago6uynCSSE0+iaAxjg1MO8cBMGVmn03f6qedsZ7xQhTAhi95FVcJDykrRHDJZ1woOFqkP0NiK2l77fKjXC1u8+L06fQanQ3V/cq4ska8iZExzJXa2SDk2ct59RdJJ2totiFisqj9LKGSW3gt+H+wddXpF71qE/qjIQr50LgdZ7HKEr1fk1tiYxBvVrW3pVshCkLpRc3YVoZ23IZElnHyVSG6aaViXojSoYo4nYAxG1y8CYCGbgKCsIxsDIBEJQnGnMuDVA+ldwpj3uA8uQ==
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(376002)(346002)(396003)(39860400002)(136003)(230922051799003)(1800799012)(186009)(451199024)(64100799003)(82310400011)(46966006)(40470700004)(36840700001)(36756003)(40460700003)(86362001)(40480700001)(81166007)(83380400001)(82740400003)(16526019)(426003)(336012)(54906003)(47076005)(356005)(478600001)(26005)(1076003)(2616005)(7696005)(36860700001)(6666004)(316002)(8936002)(8676002)(70586007)(70206006)(6916009)(2906002)(7416002)(4326008)(41300700001)(5660300002)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Jan 2024 19:05:31.6421
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6c018437-03d9-4f01-f435-08dc0d582029
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	MN1PEPF0000ECD6.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR12MB8150
 
-On Thu, Jan 04, 2024 at 10:05:44AM -0500, Steven Rostedt wrote:
-> > file_system_type: what filesystem instances belong to.  Not quite the same
-> > thing as fs driver (one driver can provide several of those).  Usually
-> > it's 1-to-1, but that's not required (e.g. NFS vs NFSv4, or ext[234], or...).
-> 
-> I don't know the difference between NFS and NFSv4 as I just used whatever
-> was the latest. But I understand the ext[234] part.
+From: Ashish Kalra <ashish.kalra@amd.com>
 
-What Al's sying is that nfs.ko provides both nfs_fs_type and
-nfs4_fs_type.  ext4.ko provides ext2_fs_type, ext3_fs_type and
-ext4_fs_type.  This is allowed but anomalous.  Most filesystems provide
-only one, eg ocfs2_fs_type.
+Some BIOSes allow the end user to set the minimum SEV ASID value
+(CPUID 0x8000001F_EDX) to be greater than the maximum number of
+encrypted guests, or maximum SEV ASID value (CPUID 0x8000001F_ECX)
+in order to dedicate all the SEV ASIDs to SEV-ES or SEV-SNP.
 
-> > 
-> > super_block: individual filesystem instance.  Hosts dentry tree (connected or
-> > several disconnected parts - think NFSv4 or the state while trying to get
-> > a dentry by fhandle, etc.).
-> 
-> I don't know how NFSv4 works, I'm only a user of it, I never actually
-> looked at the code. So that's not the best example, at least for me.
+The SEV support, as coded, does not handle the case where the minimum
+SEV ASID value can be greater than the maximum SEV ASID value.
+As a result, the following confusing message is issued:
 
-Right, so NFS (v4 or otherwise) is Special.  In the protocol, files
-are identified by a thing called an fhandle.  This is (iirc) a 32-byte
-identifier which must persist across server reboot.  Originally it was
-probably supposed to encode dev_t plus ino_t plus generation number.
-But you can do all kinds of things in the NFS protocol with an fhandle
-that you need a dentry for in Linux (like path walks).  Unfortunately,
-clients can't be told "Hey, we've lost context, please rewalk" (which
-would have other problems anyway), so we need a way to find the dentry
-for an fhandle.  I understand this very badly, but essentially we end
-up looking for canonical ones, and then creating isolated trees of
-dentries if we can't find them.  Sometimes we then graft these isolated
-trees into the canonical spots if we end up connecting them through
-various filesystem activity.
+[   30.715724] kvm_amd: SEV enabled (ASIDs 1007 - 1006)
 
-At least that's my understanding which probably contains several
-misunderstandings.
+Fix the support to properly handle this case.
 
-> >  Filesystem object contents belongs here; multiple hardlinks
-> > have different dentries and the same inode.
-> 
-> So, can I assume that an inode could only have as many dentries as hard
-> links? I know directories are only allowed to have a single hard link. Is
-> that why they can only have a single dentry?
+Fixes: 916391a2d1dc ("KVM: SVM: Add support for SEV-ES capability in KVM")
+Suggested-by: Sean Christopherson <seanjc@google.com>
+Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
+Cc: stable@vger.kernel.org
+---
+ arch/x86/kvm/svm/sev.c | 40 ++++++++++++++++++++++++----------------
+ 1 file changed, 24 insertions(+), 16 deletions(-)
 
-There could be more.  For example, I could open("A"); ln("A", "B");
-open("B"); rm("A"); ln("B", "C"); open("C"); rm("B").
+diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+index 4900c078045a..2112c94bac76 100644
+--- a/arch/x86/kvm/svm/sev.c
++++ b/arch/x86/kvm/svm/sev.c
+@@ -143,8 +143,20 @@ static void sev_misc_cg_uncharge(struct kvm_sev_info *sev)
+ 
+ static int sev_asid_new(struct kvm_sev_info *sev)
+ {
+-	int asid, min_asid, max_asid, ret;
++	/*
++	 * SEV-enabled guests must use asid from min_sev_asid to max_sev_asid.
++	 * SEV-ES-enabled guest can use from 1 to min_sev_asid - 1.
++	 * Note: min ASID can end up larger than the max if basic SEV support is
++	 * effectively disabled by disallowing use of ASIDs for SEV guests.
++	 */
++	unsigned int min_asid = sev->es_active ? 1 : min_sev_asid;
++	unsigned int max_asid = sev->es_active ? min_sev_asid - 1 : max_sev_asid;
++	unsigned int asid;
+ 	bool retry = true;
++	int ret;
++
++	if (min_asid > max_asid)
++		return -ENOTTY;
+ 
+ 	WARN_ON(sev->misc_cg);
+ 	sev->misc_cg = get_current_misc_cg();
+@@ -157,12 +169,6 @@ static int sev_asid_new(struct kvm_sev_info *sev)
+ 
+ 	mutex_lock(&sev_bitmap_lock);
+ 
+-	/*
+-	 * SEV-enabled guests must use asid from min_sev_asid to max_sev_asid.
+-	 * SEV-ES-enabled guest can use from 1 to min_sev_asid - 1.
+-	 */
+-	min_asid = sev->es_active ? 1 : min_sev_asid;
+-	max_asid = sev->es_active ? min_sev_asid - 1 : max_sev_asid;
+ again:
+ 	asid = find_next_zero_bit(sev_asid_bitmap, max_asid + 1, min_asid);
+ 	if (asid > max_asid) {
+@@ -246,21 +252,20 @@ static void sev_unbind_asid(struct kvm *kvm, unsigned int handle)
+ static int sev_guest_init(struct kvm *kvm, struct kvm_sev_cmd *argp)
+ {
+ 	struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
+-	int asid, ret;
++	int ret;
+ 
+ 	if (kvm->created_vcpus)
+ 		return -EINVAL;
+ 
+-	ret = -EBUSY;
+ 	if (unlikely(sev->active))
+-		return ret;
++		return -EINVAL;
+ 
+ 	sev->active = true;
+ 	sev->es_active = argp->id == KVM_SEV_ES_INIT;
+-	asid = sev_asid_new(sev);
+-	if (asid < 0)
++	ret = sev_asid_new(sev);
++	if (ret < 0)
+ 		goto e_no_asid;
+-	sev->asid = asid;
++	sev->asid = ret;
+ 
+ 	ret = sev_platform_init(&argp->error);
+ 	if (ret)
+@@ -2229,8 +2234,10 @@ void __init sev_hardware_setup(void)
+ 		goto out;
+ 	}
+ 
+-	sev_asid_count = max_sev_asid - min_sev_asid + 1;
+-	WARN_ON_ONCE(misc_cg_set_capacity(MISC_CG_RES_SEV, sev_asid_count));
++	if (min_sev_asid <= max_sev_asid) {
++		sev_asid_count = max_sev_asid - min_sev_asid + 1;
++		WARN_ON_ONCE(misc_cg_set_capacity(MISC_CG_RES_SEV, sev_asid_count));
++	}
+ 	sev_supported = true;
+ 
+ 	/* SEV-ES support requested? */
+@@ -2261,7 +2268,8 @@ void __init sev_hardware_setup(void)
+ out:
+ 	if (boot_cpu_has(X86_FEATURE_SEV))
+ 		pr_info("SEV %s (ASIDs %u - %u)\n",
+-			sev_supported ? "enabled" : "disabled",
++			sev_supported ? (min_sev_asid <= max_sev_asid ?  "enabled" : "unusable")
++			: "disabled",
+ 			min_sev_asid, max_sev_asid);
+ 	if (boot_cpu_has(X86_FEATURE_SEV_ES))
+ 		pr_info("SEV-ES %s (ASIDs %u - %u)\n",
+-- 
+2.34.1
 
-Now there are three dentries for this inode, its link count is currently
-one and never exceeded two.
-
-> Thanks for this overview. It was very useful, and something I think we
-> should add to kernel doc. I did read Documentation/filesystems/vfs.rst but
-> honestly, I think your writeup here is a better overview.
-
-Documentation/filesystems/locking.rst is often a better source, although
-the two should really be merged.  Not for the faint-hearted.
 
