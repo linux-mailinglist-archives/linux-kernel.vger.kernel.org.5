@@ -1,174 +1,226 @@
-Return-Path: <linux-kernel+bounces-16565-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16566-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1EFB5824054
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 12:09:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A949824055
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 12:11:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 21B701C20961
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 11:09:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5378B282E54
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 11:11:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC15F20DF4;
-	Thu,  4 Jan 2024 11:09:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="cBFRrh4E"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA53C210ED;
+	Thu,  4 Jan 2024 11:11:15 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail-m15579.qiye.163.com (mail-m15579.qiye.163.com [101.71.155.79])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD570210E9
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 11:09:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-55692ad81e3so454633a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 03:09:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1704366577; x=1704971377; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=74N1Cq913BTRhayzvgQnIcxYARZsluZ7x3qTYNrywUw=;
-        b=cBFRrh4ER7/KcfcXadb4VIA6oojldE/QtRibhYHijxrL0DB4URPcuI62/hKM/Vm49X
-         dO/DiwzIn6y3uRirHRRu3R1Ho10tTpJTOOWe2AsK/HSUhTufLBP0ieCuRI0HMIklYasZ
-         tNyO01R6jO2zQXclnddx4GHTSbAjVD3oVESZ7/NSW+cUuoU08SGFytSDAmBAr/cS6YF+
-         QKtotjJVlg5lkoJOK0KLb5tvFnIQJOaG+6z/pCLctoE/kbWO7WsJElaRaRND7B8YpOnK
-         c0GMK8KDvIP1JyghvBqQxfebuhcX/TDtOOP+NC/YEz6CSsKHZtQ4ERzqPdTNJ4JtXHNs
-         RUFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704366577; x=1704971377;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=74N1Cq913BTRhayzvgQnIcxYARZsluZ7x3qTYNrywUw=;
-        b=e7bQRaHHdZPTXiOklTCrB4hWP6wTBtJ2QEMbVeSRaGHt0cSLl9cQmibo+pqPOMUdsq
-         PQOUvVnTep9PJG2H7g9775bOO43R0Wp/Nmd+l4dOxUD7XY25GjtHfxftXznF3q1U7bqf
-         ycQqw/3/Ocafu1DdyMftUa9/fl6lGLiq/7lWNJYJuKmBF8jcbOfvO3Fo0LraiPt7UcL/
-         pGBm6Hih6xp6CZYD+TB/CHCK+5S4gDKrHTUg4Tdg0DIIEHbNMMMLAf+yni1wM6TLndvX
-         dd8M/TikSHyLYUhe4YTt4ImkFbkmlKdkm+1BbdOo49iXSXuftfGtvmBoIMVgfj+eiXVG
-         bGFA==
-X-Gm-Message-State: AOJu0Yx5jKsHn2JX3a5+1Soh6uvaHWNic6+aC4mKnHdqwJU7Wm3bXpD8
-	b39qcvc4ve8SPuWPUYJykaLtvuWUQXl3dA==
-X-Google-Smtp-Source: AGHT+IEQCwN9GP2QDGQCOCSlVQdGYcgmdoQnHVO1JwxIhclSNsrhshtNA82sSQCt5a2uS2CNGPMffw==
-X-Received: by 2002:a05:6402:3193:b0:556:b393:7559 with SMTP id di19-20020a056402319300b00556b3937559mr231896edb.23.1704366576957;
-        Thu, 04 Jan 2024 03:09:36 -0800 (PST)
-Received: from localhost (2001-1ae9-1c2-4c00-20f-c6b4-1e57-7965.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:20f:c6b4:1e57:7965])
-        by smtp.gmail.com with ESMTPSA id 8-20020a0564021f4800b005545dffa0bdsm16441289edz.13.2024.01.04.03.09.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Jan 2024 03:09:36 -0800 (PST)
-Date: Thu, 4 Jan 2024 12:09:35 +0100
-From: Andrew Jones <ajones@ventanamicro.com>
-To: Haibo Xu <xiaobo55x@gmail.com>
-Cc: Marc Zyngier <maz@kernel.org>, Haibo Xu <haibo1.xu@intel.com>, 
-	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Albert Ou <aou@eecs.berkeley.edu>, Paolo Bonzini <pbonzini@redhat.com>, 
-	Shuah Khan <shuah@kernel.org>, Oliver Upton <oliver.upton@linux.dev>, 
-	James Morse <james.morse@arm.com>, Suzuki K Poulose <suzuki.poulose@arm.com>, 
-	Zenghui Yu <yuzenghui@huawei.com>, Anup Patel <anup@brainfault.org>, 
-	Atish Patra <atishp@atishpatra.org>, Guo Ren <guoren@kernel.org>, 
-	Mayuresh Chitale <mchitale@ventanamicro.com>, Greentime Hu <greentime.hu@sifive.com>, 
-	wchen <waylingii@gmail.com>, Conor Dooley <conor.dooley@microchip.com>, 
-	Heiko Stuebner <heiko@sntech.de>, Minda Chen <minda.chen@starfivetech.com>, 
-	Samuel Holland <samuel@sholland.org>, Jisheng Zhang <jszhang@kernel.org>, 
-	Sean Christopherson <seanjc@google.com>, Peter Xu <peterx@redhat.com>, Like Xu <likexu@tencent.com>, 
-	Vipin Sharma <vipinsh@google.com>, Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>, 
-	Aaron Lewis <aaronlewis@google.com>, Thomas Huth <thuth@redhat.com>, linux-kernel@vger.kernel.org, 
-	linux-riscv@lists.infradead.org, kvm@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, kvm-riscv@lists.infradead.org
-Subject: Re: Re: [PATCH v4 11/11] KVM: selftests: Enable tunning of
- err_margin_us in arch timer test
-Message-ID: <20240104-be1acabe472432f709ee408c@orel>
-References: <cover.1702371136.git.haibo1.xu@intel.com>
- <0343a9e4bfa8011fbb6bca0286cee7eab1f17d5d.1702371136.git.haibo1.xu@intel.com>
- <8734vy832j.wl-maz@kernel.org>
- <CAJve8onc0WN5g98aOVBmJx15wFBAqfBKJ+ufoLY+oqYyVL+=3A@mail.gmail.com>
- <f98879dc24f948f7a8a7b5374a32bc04@kernel.org>
- <CAJve8ona7g=LxW1YeRB_FqGodF973H=A3b2m8054gmzK=Z7_ww@mail.gmail.com>
- <87zfy5t1qt.wl-maz@kernel.org>
- <CAJve8o=nTsAwwgSib4vOLXjOWSMV2+J+BFsUZ57OdAK7eW8q8A@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68588210E3;
+	Thu,  4 Jan 2024 11:11:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=senarytech.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=senarytech.com
+Received: from book-ThinkStation-P328.. (unknown [61.183.143.78])
+	by mail-m12756.qiye.163.com (Hmail) with ESMTPA id 95295DC0733;
+	Thu,  4 Jan 2024 19:10:49 +0800 (CST)
+From: bo liu <bo.liu@senarytech.com>
+To: perex@perex.cz,
+	tiwai@suse.com
+Cc: linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	bo liu <bo.liu@senarytech.com>
+Subject: [PATCH] ALSA: hda/conexant: Fix headset auto detect fail in cx8070 and SN6140
+Date: Thu,  4 Jan 2024 19:10:44 +0800
+Message-Id: <20240104111044.5880-1-bo.liu@senarytech.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJve8o=nTsAwwgSib4vOLXjOWSMV2+J+BFsUZ57OdAK7eW8q8A@mail.gmail.com>
+X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
+	tZV1koWUFITzdXWS1ZQUlXWQ8JGhUIEh9ZQVkaQklMVhpNSR1DThoYQx8dH1UTARMWGhIXJBQOD1
+	lXWRgSC1lBWU1KVUpDSFVKT0hVTENZV1kWGg8SFR0UWUFZT0tIVUpMSk9OTVVKS0tVSkJLS1kG
+X-HM-Tid: 0a8cd42b3162b223kuuu95295dc0733
+X-HM-MType: 1
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Ohw6Cyo*HjwdCDpIEQgDQitD
+	GVYwCjdVSlVKTEtPSE1NTU5LSElOVTMWGhIXVRkUVRcSDjsIHhUaCQIPHhgTVRgUFkVZV1kSC1lB
+	WU1KVUpDSFVKT0hVTENZV1kIAVlBTUNKSzcG
 
-On Thu, Dec 21, 2023 at 10:58:40AM +0800, Haibo Xu wrote:
-> On Wed, Dec 20, 2023 at 9:58 PM Marc Zyngier <maz@kernel.org> wrote:
-> >
-> > On Wed, 20 Dec 2023 13:51:24 +0000,
-> > Haibo Xu <xiaobo55x@gmail.com> wrote:
-> > >
-> > > On Wed, Dec 20, 2023 at 5:00 PM Marc Zyngier <maz@kernel.org> wrote:
-> > > >
-> > > > On 2023-12-20 06:50, Haibo Xu wrote:
-> > > > > On Wed, Dec 20, 2023 at 2:22 AM Marc Zyngier <maz@kernel.org> wrote:
-> > > > >>
-> > > > >> On Tue, 12 Dec 2023 09:31:20 +0000,
-> > > > >> Haibo Xu <haibo1.xu@intel.com> wrote:
-> > > > >> > diff --git a/tools/testing/selftests/kvm/include/timer_test.h b/tools/testing/selftests/kvm/include/timer_test.h
-> > > > >> > index 968257b893a7..b1d405e7157d 100644
-> > > > >> > --- a/tools/testing/selftests/kvm/include/timer_test.h
-> > > > >> > +++ b/tools/testing/selftests/kvm/include/timer_test.h
-> > > > >> > @@ -22,6 +22,7 @@ struct test_args {
-> > > > >> >       int nr_iter;
-> > > > >> >       int timer_period_ms;
-> > > > >> >       int migration_freq_ms;
-> > > > >> > +     int timer_err_margin_us;
-> > > > >>
-> > > > >> ... except that you are storing it as a signed value. Some consistency
-> > > > >> wouldn't hurt, really, and would avoid issues when passing large
-> > > > >> values.
-> > > > >>
-> > > > >
-> > > > > Yes, it's more proper to use an unsigned int for the non-negative error
-> > > > > margin.
-> > > > > Storing as signed here is just to keep the type consistent with that
-> > > > > of timer_period_ms
-> > > > > since there will be '+' operation in other places.
-> > > > >
-> > > > >         tools/testing/selftests/kvm/aarch64/arch_timer.c
-> > > > >         /* Setup a timeout for the interrupt to arrive */
-> > > > >          udelay(msecs_to_usecs(test_args.timer_period_ms) +
-> > > > >              test_args.timer_err_margin_us);
-> > > >
-> > > > But that's exactly why using a signed quantity is wrong.
-> > > > What does it mean to have a huge *negative* margin?
-> > > >
-> > >
-> > > Hi Marc,
-> > >
-> > > I agree that negative values are meaningless for the margin.
-> > > If I understand correctly, the negative margin should be filtered by
-> > > assertion in atoi_non_negative().
-> >
-> > No. Please.
-> >
-> > atoi_non_negative() returns a uint32_t, which is what it should do.
-> > The bug is squarely in the use of an 'int' to store such value, and it
-> > is the *storage* that turns a positive value into a negative one.
-> >
-> 
-> Thanks for the detailed info!
-> 
-> May I understand that your concern is mainly for a platform with 64bit int type,
-> which may trigger the positive to negative convert?
-> 
-> If so, I think we may need to do a clean up for the test code since
-> several other
-> places have the same issue.
+When OMTP headset plugin the headset jack of CX8070 and SN6160 sound cards,
+the headset type detection circuit will recognize the headset type as CTIA.
+At this point, plugout and plugin the headset will get the correct headset
+type as OMTP.
+The reason for the failure of headset type recognition is that the sound
+card creation will enable the VREF voltage of the headset mic, which
+interferes with the headset type automatic detection circuit. Plugout and
+plugin the headset will restart the headset detection and get the correct
+headset type.
+The patch is disable the VREF voltage when the headset is not present, and
+will enable the VREF voltage when the headset is present.
 
-Yes, I think we should do that cleanup. While there are probably several
-offenders scattered throughout kvm selftests, we can keep the scope of
-this series focused on arch_timer.c. Let's audit all uses of signed types
-and convert them to unsigned as necessary with some separate patch(es)
-before splitting the test, so both aarch64 and riscv get the cleanups.
+Signed-off-by: bo liu <bo.liu@senarytech.com>
+---
+ sound/pci/hda/patch_conexant.c | 108 ++++++++++++++++++++++++++++++++-
+ 1 file changed, 106 insertions(+), 2 deletions(-)
 
-Thanks,
-drew
+diff --git a/sound/pci/hda/patch_conexant.c b/sound/pci/hda/patch_conexant.c
+index a889cccdd607..29c62181dbc3 100644
+--- a/sound/pci/hda/patch_conexant.c
++++ b/sound/pci/hda/patch_conexant.c
+@@ -42,7 +42,8 @@ struct conexant_spec {
+ 	unsigned int gpio_led;
+ 	unsigned int gpio_mute_led_mask;
+ 	unsigned int gpio_mic_led_mask;
+-
++	unsigned int headset_present_flag;
++	bool is_cx8070_sn6140;
+ };
+ 
+ 
+@@ -164,6 +165,22 @@ static void cxt_init_gpio_led(struct hda_codec *codec)
+ 	}
+ }
+ 
++static void cx_fixup_headset_recog(struct hda_codec *codec)
++{
++	unsigned int mic_persent;
++
++	/* fix some headset type recognize fail issue, such as EDIFIER headset */
++	snd_hda_codec_write(codec, 0x1c, 0, 0x320, 0x010);
++	snd_hda_codec_write(codec, 0x1c, 0, 0x3b0, 0xe10);
++	snd_hda_codec_write(codec, 0x1c, 0, 0x4f0, 0x0eb);
++	/* fix reboot headset type recognize fail issue */
++	mic_persent = snd_hda_codec_read(codec, 0x19, 0, AC_VERB_GET_PIN_SENSE, 0x0);
++	if (mic_persent&0x80000000)
++		snd_hda_codec_write(codec, 0x19, 0, AC_VERB_SET_PIN_WIDGET_CONTROL, 0x24);
++	else
++		snd_hda_codec_write(codec, 0x19, 0, AC_VERB_SET_PIN_WIDGET_CONTROL, 0x20);
++}
++
+ static int cx_auto_init(struct hda_codec *codec)
+ {
+ 	struct conexant_spec *spec = codec->spec;
+@@ -174,6 +191,9 @@ static int cx_auto_init(struct hda_codec *codec)
+ 	cxt_init_gpio_led(codec);
+ 	snd_hda_apply_fixup(codec, HDA_FIXUP_ACT_INIT);
+ 
++	if (spec->is_cx8070_sn6140)
++		cx_fixup_headset_recog(codec);
++
+ 	return 0;
+ }
+ 
+@@ -192,6 +212,81 @@ static void cx_auto_free(struct hda_codec *codec)
+ 	snd_hda_gen_free(codec);
+ }
+ 
++enum {
++	CX_HEADSET_NOPRESENT = 0,
++	CX_HEADSET_PARTPRESENT,
++	CX_HEADSET_ALLPRESENT,
++};
++
++static void cx_process_headset_plugin(struct hda_codec *codec)
++{
++	unsigned int val;
++	unsigned int count = 0;
++
++	/* Wait headset detect done. */
++	do {
++		val = snd_hda_codec_read(codec, 0x1c, 0, 0xca0, 0x0);
++		if (val&0x080) {
++			codec_dbg(codec, "headset type detect done!\n");
++			break;
++		}
++		msleep(20);
++		count++;
++	} while (count < 3);
++	val = snd_hda_codec_read(codec, 0x1c, 0, 0xcb0, 0x0);
++	if (val&0x800) {
++		codec_dbg(codec, "headset plugin, type is CTIA\n");
++		snd_hda_codec_write(codec, 0x19, 0, AC_VERB_SET_PIN_WIDGET_CONTROL, 0x24);
++	} else if (val&0x400) {
++		codec_dbg(codec, "headset plugin, type is OMTP\n");
++		snd_hda_codec_write(codec, 0x19, 0, AC_VERB_SET_PIN_WIDGET_CONTROL, 0x24);
++	} else {
++		codec_dbg(codec, "headphone plugin\n");
++	}
++}
++
++static void cx_update_headset_mic_vref(struct hda_codec *codec, unsigned int res)
++{
++	unsigned int phone_present, mic_persent, phone_tag, mic_tag;
++	struct conexant_spec *spec = codec->spec;
++
++	/* In cx8070 and sn6140, headset is fixed to use node 16 and node 19.
++	 * Check hp and mic tag to process headset pulgin and plugout.
++	 */
++	phone_tag = snd_hda_codec_read(codec, 0x16, 0, AC_VERB_GET_UNSOLICITED_RESPONSE, 0x0);
++	mic_tag = snd_hda_codec_read(codec, 0x19, 0, AC_VERB_GET_UNSOLICITED_RESPONSE, 0x0);
++	if ((phone_tag&(res>>AC_UNSOL_RES_TAG_SHIFT)) || (mic_tag&(res>>AC_UNSOL_RES_TAG_SHIFT))) {
++		phone_present = snd_hda_codec_read(codec, 0x16, 0, AC_VERB_GET_PIN_SENSE, 0x0);
++		if (!(phone_present&AC_PINSENSE_PRESENCE)) {/* headphone plugout */
++			spec->headset_present_flag = CX_HEADSET_NOPRESENT;
++			snd_hda_codec_write(codec, 0x19, 0, AC_VERB_SET_PIN_WIDGET_CONTROL, 0x20);
++			return;
++		}
++		if (spec->headset_present_flag == CX_HEADSET_NOPRESENT) {
++			spec->headset_present_flag = CX_HEADSET_PARTPRESENT;
++		} else if (spec->headset_present_flag == CX_HEADSET_PARTPRESENT) {
++			mic_persent = snd_hda_codec_read(codec, 0x19, 0,
++							 AC_VERB_GET_PIN_SENSE, 0x0);
++			/* headset is present */
++			if ((phone_present&AC_PINSENSE_PRESENCE) &&
++			    (mic_persent&AC_PINSENSE_PRESENCE)) {
++				cx_process_headset_plugin(codec);
++				spec->headset_present_flag = CX_HEADSET_ALLPRESENT;
++			}
++		}
++	}
++}
++
++static void cx_jack_unsol_event(struct hda_codec *codec, unsigned int res)
++{
++	struct conexant_spec *spec = codec->spec;
++
++	if (spec->is_cx8070_sn6140)
++		cx_update_headset_mic_vref(codec, res);
++
++	snd_hda_jack_unsol_event(codec, res);
++}
++
+ #ifdef CONFIG_PM
+ static int cx_auto_suspend(struct hda_codec *codec)
+ {
+@@ -205,7 +300,7 @@ static const struct hda_codec_ops cx_auto_patch_ops = {
+ 	.build_pcms = snd_hda_gen_build_pcms,
+ 	.init = cx_auto_init,
+ 	.free = cx_auto_free,
+-	.unsol_event = snd_hda_jack_unsol_event,
++	.unsol_event = cx_jack_unsol_event,
+ #ifdef CONFIG_PM
+ 	.suspend = cx_auto_suspend,
+ 	.check_power_status = snd_hda_gen_check_power_status,
+@@ -1042,6 +1137,15 @@ static int patch_conexant_auto(struct hda_codec *codec)
+ 	codec->spec = spec;
+ 	codec->patch_ops = cx_auto_patch_ops;
+ 
++	/* init cx8070/sn6140 flag and reset headset_present_flag */
++	switch (codec->core.vendor_id) {
++	case 0x14f11f86:
++	case 0x14f11f87:
++		spec->is_cx8070_sn6140 = true;
++		spec->headset_present_flag = CX_HEADSET_NOPRESENT;
++		break;
++	}
++
+ 	cx_auto_parse_eapd(codec);
+ 	spec->gen.own_eapd_ctl = 1;
+ 
+-- 
+2.34.1
+
 
