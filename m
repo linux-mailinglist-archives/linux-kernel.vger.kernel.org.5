@@ -1,145 +1,88 @@
-Return-Path: <linux-kernel+bounces-16777-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16763-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E58182439A
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 15:22:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C3408824379
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 15:18:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BB88D28185C
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 14:22:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 60985287AC2
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 14:18:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD58D24202;
-	Thu,  4 Jan 2024 14:20:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="TPbwZSvi"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7063C225A8;
+	Thu,  4 Jan 2024 14:17:46 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.smtpout.orange.fr (smtp-15.smtpout.orange.fr [80.12.242.15])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 638812421B;
-	Thu,  4 Jan 2024 14:20:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=wanadoo.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
-Received: from [192.168.1.18] ([92.140.202.140])
-	by smtp.orange.fr with ESMTPA
-	id LOa0rXuduH4TlLOa0rJH71; Thu, 04 Jan 2024 15:20:16 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-	s=t20230301; t=1704378016;
-	bh=Q9FqaBRUlUJ8QVrn0N9cxjxXK+HP850wiUfYJxgq3pQ=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=TPbwZSviMLHuvYbnXJii9RDt0jfzC+RqGtoks9U5QwVOElbSmFoctY2tATq3+SLXE
-	 +i5fSeP3I4tisKbYA1fSPj0helfmtrtH3zw7vt3Z0+el3VHhhKSIZzY3QNMrB+p25j
-	 zbWz3kHfvmatrN4qUWvTUOU0JgiW2KjjWz434AwEvzmyPd4IdEh9ZqYAmoT1g4sr+g
-	 Fd6/NlUrDvGuFSRqLQZCoHC2aWYi6TLjpTVxncyBEzxpkbjp38yHGziyUJRmnJz0Aa
-	 262/6XBCiRpQH+Z+bAJ3kQ5pXQwohp3BXpTW/eqWW8P9PgFBtqzOJ5s6VJqgW9Yhwq
-	 qZoErV2YXipkg==
-X-ME-Helo: [192.168.1.18]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Thu, 04 Jan 2024 15:20:16 +0100
-X-ME-IP: 92.140.202.140
-Message-ID: <51ce6e78-023b-4914-96c0-ed1bd664d188@wanadoo.fr>
-Date: Thu, 4 Jan 2024 15:20:15 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52A4622F12;
+	Thu,  4 Jan 2024 14:17:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.162.254])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4T5TF23VGBzZgFt;
+	Thu,  4 Jan 2024 22:17:26 +0800 (CST)
+Received: from dggpeml500021.china.huawei.com (unknown [7.185.36.21])
+	by mail.maildlp.com (Postfix) with ESMTPS id 8048B18001C;
+	Thu,  4 Jan 2024 22:17:40 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by dggpeml500021.china.huawei.com
+ (7.185.36.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 4 Jan
+ 2024 22:17:39 +0800
+From: Baokun Li <libaokun1@huawei.com>
+To: <linux-ext4@vger.kernel.org>
+CC: <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
+	<ritesh.list@gmail.com>, <linux-kernel@vger.kernel.org>,
+	<yi.zhang@huawei.com>, <yangerkun@huawei.com>, <yukuai3@huawei.com>,
+	<libaokun1@huawei.com>
+Subject: [PATCH v3 0/8] ext4: fix divide error in mb_update_avg_fragment_size()
+Date: Thu, 4 Jan 2024 22:20:32 +0800
+Message-ID: <20240104142040.2835097-1-libaokun1@huawei.com>
+X-Mailer: git-send-email 2.31.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] vboxsf: Remove usage of the deprecated ida_simple_xx()
- API
-Content-Language: fr, en-US
-To: Hans de Goede <hdegoede@redhat.com>
-Cc: linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
- linux-fsdevel@vger.kernel.org
-References: <2752888783edaed8576777e1763dc0489fd07000.1702963000.git.christophe.jaillet@wanadoo.fr>
- <b4c96284-1ae8-498b-84ae-34a9f65e9da8@redhat.com>
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-In-Reply-To: <b4c96284-1ae8-498b-84ae-34a9f65e9da8@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpeml500021.china.huawei.com (7.185.36.21)
 
-Le 19/12/2023 à 10:39, Hans de Goede a écrit :
-> Hi,
-> 
-> On 12/19/23 06:17, Christophe JAILLET wrote:
->> ida_alloc() and ida_free() should be preferred to the deprecated
->> ida_simple_get() and ida_simple_remove().
->>
->> This is less verbose.
->>
->> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> 
-> Thanks, patch looks good to me:
-> 
-> Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-> 
-> vboxsf is not really undergoing any active development,
-> if there is a tree which is collecting other ida related
-> patches feel free to route this through that tree.
+V2->V3:
+  Replace patch 3's changelog with the one suggested by Jan Kara.
+  Refactor the code in patch 4 to make it more readable, as suggested by Jan Kara.
+  Patch 8 is adapted based on patch 4 after modification.
+  Add Reviewed-by tag.
 
-There is still a bit of work to remove the remaining ida_simple_get() 
-calls, so we still have time.
+V1->V2:
+  Fixed some things pointed out by Jan Kara.
+  Fixed more cases where blocks could be allocated from corrupted groups.
 
-Based on another experience when phasing out an old API, I would say at 
-least 2-3 months.
+[V1]: https://lore.kernel.org/all/20231218141814.1477338-1-libaokun1@huawei.com/
+[V2]: https://lore.kernel.org/all/20231221150558.2740823-1-libaokun1@huawei.com/
 
-If this one is still around when nearly all the other calls have been 
-handled, i'll come back to it to see the best way to have is merged in a 
-tree or in another, so that the old API can be removed.
+Baokun Li (8):
+  ext4: fix double-free of blocks due to wrong extents moved_len
+  ext4: do not trim the group with corrupted block bitmap
+  ext4: regenerate buddy after block freeing failed if under fc replay
+  ext4: avoid bb_free and bb_fragments inconsistency in mb_free_blocks()
+  ext4: avoid dividing by 0 in mb_update_avg_fragment_size() when block
+    bitmap corrupt
+  ext4: avoid allocating blocks from corrupted group in
+    ext4_mb_try_best_found()
+  ext4: avoid allocating blocks from corrupted group in
+    ext4_mb_find_by_goal()
+  ext4: mark the group block bitmap as corrupted before reporting an
+    error
 
-CJ
+ fs/ext4/mballoc.c     | 91 ++++++++++++++++++++++++++++---------------
+ fs/ext4/move_extent.c |  6 +--
+ 2 files changed, 62 insertions(+), 35 deletions(-)
 
-> 
-> Regards,
-> 
-> Hans
-> 
-> 
-> 
-> 
-> 
-> 
-> 
->> ---
->>   fs/vboxsf/super.c | 6 +++---
->>   1 file changed, 3 insertions(+), 3 deletions(-)
->>
->> diff --git a/fs/vboxsf/super.c b/fs/vboxsf/super.c
->> index 1fb8f4df60cb..cd8486bc91bd 100644
->> --- a/fs/vboxsf/super.c
->> +++ b/fs/vboxsf/super.c
->> @@ -155,7 +155,7 @@ static int vboxsf_fill_super(struct super_block *sb, struct fs_context *fc)
->>   		}
->>   	}
->>   
->> -	sbi->bdi_id = ida_simple_get(&vboxsf_bdi_ida, 0, 0, GFP_KERNEL);
->> +	sbi->bdi_id = ida_alloc(&vboxsf_bdi_ida, GFP_KERNEL);
->>   	if (sbi->bdi_id < 0) {
->>   		err = sbi->bdi_id;
->>   		goto fail_free;
->> @@ -221,7 +221,7 @@ static int vboxsf_fill_super(struct super_block *sb, struct fs_context *fc)
->>   	vboxsf_unmap_folder(sbi->root);
->>   fail_free:
->>   	if (sbi->bdi_id >= 0)
->> -		ida_simple_remove(&vboxsf_bdi_ida, sbi->bdi_id);
->> +		ida_free(&vboxsf_bdi_ida, sbi->bdi_id);
->>   	if (sbi->nls)
->>   		unload_nls(sbi->nls);
->>   	idr_destroy(&sbi->ino_idr);
->> @@ -268,7 +268,7 @@ static void vboxsf_put_super(struct super_block *sb)
->>   
->>   	vboxsf_unmap_folder(sbi->root);
->>   	if (sbi->bdi_id >= 0)
->> -		ida_simple_remove(&vboxsf_bdi_ida, sbi->bdi_id);
->> +		ida_free(&vboxsf_bdi_ida, sbi->bdi_id);
->>   	if (sbi->nls)
->>   		unload_nls(sbi->nls);
->>   
-> 
-> 
-> 
+-- 
+2.31.1
 
 
