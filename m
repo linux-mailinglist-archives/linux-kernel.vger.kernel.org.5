@@ -1,143 +1,128 @@
-Return-Path: <linux-kernel+bounces-17133-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17135-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A04E98248BF
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 20:12:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8CFFC8248C7
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 20:13:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 26EBF28182F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 19:12:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 355651F257DA
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 19:13:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 378652C19B;
-	Thu,  4 Jan 2024 19:12:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAC6C2C689;
+	Thu,  4 Jan 2024 19:13:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="z3cAeGYi"
+	dkim=pass (2048-bit key) header.d=soleen.com header.i=@soleen.com header.b="F/ZnFVg7"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oo1-f44.google.com (mail-oo1-f44.google.com [209.85.161.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E428F2C194
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 19:12:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1704395547;
-	bh=H5jcJXHHsnb0KDKtbYg8I4ZDhU9wIwvX0Jm1PSTYmdc=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=z3cAeGYiSpKdzPhNU+Czu3DKgz9WmFQsf48G2Q5tT5lZMpU8UpWwlyhLmLVZZg/SI
-	 5j1pX/Q57Ayi+J9LRwwzUQb3qE7wIboeFA/pxPM2E0gqUZWwZwm66jg5QZx3/e9BJ6
-	 Djh6KVn+Las4BNgeafr6WiWDvgyW2OqSLiLiw7jk2FXHmXdbtpKpFZrDvwvYkGL7J4
-	 U+7OevGeOUFdg2H1F4puyTHBn/Ko3RF02Mc6hl/2l/UL26ukidN8NzHQ9Puvg+7q1G
-	 oR1WnHu3MnwSHmlOGYm6ifUjRnOk9VrouUMEQTGbI0b/7iV39nnmsWRk5ctL4q8NPz
-	 DIg6qdI4Xq95g==
-Received: from [100.115.223.179] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: cristicc)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 1E17B37813E4;
-	Thu,  4 Jan 2024 19:12:27 +0000 (UTC)
-Message-ID: <b017a3e2-f658-4a95-b972-6ffb87acfdc3@collabora.com>
-Date: Thu, 4 Jan 2024 21:12:25 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C91082C18F
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 19:13:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=soleen.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=soleen.com
+Received: by mail-oo1-f44.google.com with SMTP id 006d021491bc7-596175c0be0so452536eaf.3
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 11:13:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=soleen.com; s=google; t=1704395583; x=1705000383; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/+vYEuDAPJ/iEdESxX2pInRN4g9EPXyQ5h9FSdd/4u4=;
+        b=F/ZnFVg7p6RCRwo6c599coMU7gxw34TnRuIn9tv4NSDTLCFyNIcCycMnVBIoSBhUaf
+         5VePqzrdqqOPRKKkraOQpG8XlgFm3zjmU3ROzjemte9baJ4kCqNNrgdAqngJeCHvlLMT
+         ccN+J71GjNlNUYaCcvaMn9xh9mjC0xYx+SwN4B6qr/yTTMnZRYvNOhLp64UX+NkJd/Vy
+         YSkeOW4R3gS7ZDU8/YKly32rHGE+xlyTcPg4qLxF5bOlnB3yUbFqy9azk3VRBB7HpFXx
+         waNjhIskVtiY0gZZye1eBD20fLHFMqL1LxWwap0rGSneRmh7FVOv1Qc8SWhK/C/qEkoW
+         tynA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704395583; x=1705000383;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/+vYEuDAPJ/iEdESxX2pInRN4g9EPXyQ5h9FSdd/4u4=;
+        b=XSS+L+VDR9qnPbKbxzLi/4TCrMNQluOzt9pFcwza+CcE9mXRSJRPNtfk71MNKacF9L
+         oqf//G0Z0NRNH4CcnnCACIwxPyzg4d/TOnmAjmicUoAe4N7j/RwEYBD8WxU38KWeq2a4
+         TNREAbzL5IfEWvB0jaIyOAQdgV0IHLOQ7LwSRGyA+7QNgPLAoh+TmCEY0Sl4y5ts0nE/
+         4l8OcjPblfXV8T52bixHei61h+U6XYdSZott8R02/toU4/sxxi1V1y26pQ/TQki9Y8Fv
+         Z6/IVsR7tJc4VcKhkZoZ79NvL/aKGE0tZAwONhm8Ngv19x3gCGNWyfHkanfe3qxDZzrq
+         09IQ==
+X-Gm-Message-State: AOJu0YyzpccgstuiIE9Y2QQp2Dy0bgtKqVARZHD2GDzumbmr/S+c/6Bf
+	SY11VsfoBgg04ajaJJJphWJlMmo12TvHQVpvBKkdytHf0Q3JrA==
+X-Google-Smtp-Source: AGHT+IF/5x1qWEeEN53jwIdamLjEry3P/nE1f12xa2taaKft/YlEJdrBP6aDzExJ1bDcrqKpemuFKkiIEAFmrNQGE5k=
+X-Received: by 2002:a05:6358:8828:b0:174:b7f2:51db with SMTP id
+ hv40-20020a056358882800b00174b7f251dbmr1188037rwb.19.1704395582852; Thu, 04
+ Jan 2024 11:13:02 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] drm/rockchip: vop2: Drop unused if_dclk_rate variable
-To: =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
- Sandy Huang <hjc@rock-chips.com>, Andy Yan <andy.yan@rock-chips.com>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>
-Cc: dri-devel@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org,
- linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
- kernel@collabora.com
-References: <20240104143951.85219-1-cristian.ciocaltea@collabora.com>
- <20240104143951.85219-2-cristian.ciocaltea@collabora.com>
- <5867171.29KlJPOoH8@diego>
-Content-Language: en-US
-From: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
-In-Reply-To: <5867171.29KlJPOoH8@diego>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20231226200205.562565-1-pasha.tatashin@soleen.com>
+ <eqkpplwwyeqqd356ka3g6isaoboe62zrii77krsb7zwzmvdusr@5i3lzfhpt2xe>
+ <CA+CK2bBE1bQuqZy3cbWiv8V3vJ8YNJZRayp6Wv-j2_9i37XT4g@mail.gmail.com> <eng4vwaci5hwlicszgcld6uny55vll2bfs3vp2yjbjf3exhamg@zf6yc2uhax7w>
+In-Reply-To: <eng4vwaci5hwlicszgcld6uny55vll2bfs3vp2yjbjf3exhamg@zf6yc2uhax7w>
+From: Pasha Tatashin <pasha.tatashin@soleen.com>
+Date: Thu, 4 Jan 2024 14:12:26 -0500
+Message-ID: <CA+CK2bCUGepLLA2Hsmq00XEhPzLWPb5CjzY_UPT0qWSKastjAQ@mail.gmail.com>
+Subject: Re: [PATCH v3 00/10] IOMMU memory observability
+To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+Cc: akpm@linux-foundation.org, alim.akhtar@samsung.com, alyssa@rosenzweig.io, 
+	asahi@lists.linux.dev, baolu.lu@linux.intel.com, bhelgaas@google.com, 
+	cgroups@vger.kernel.org, corbet@lwn.net, david@redhat.com, 
+	dwmw2@infradead.org, hannes@cmpxchg.org, heiko@sntech.de, 
+	iommu@lists.linux.dev, jernej.skrabec@gmail.com, jonathanh@nvidia.com, 
+	joro@8bytes.org, krzysztof.kozlowski@linaro.org, linux-doc@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org, linux-rockchip@lists.infradead.org, 
+	linux-samsung-soc@vger.kernel.org, linux-sunxi@lists.linux.dev, 
+	linux-tegra@vger.kernel.org, lizefan.x@bytedance.com, marcan@marcan.st, 
+	mhiramat@kernel.org, m.szyprowski@samsung.com, paulmck@kernel.org, 
+	rdunlap@infradead.org, robin.murphy@arm.com, samuel@sholland.org, 
+	suravee.suthikulpanit@amd.com, sven@svenpeter.dev, thierry.reding@gmail.com, 
+	tj@kernel.org, tomas.mudrunka@gmail.com, vdumpa@nvidia.com, wens@csie.org, 
+	will@kernel.org, yu-cheng.yu@intel.com, rientjes@google.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Heiko,
+On Thu, Jan 4, 2024 at 12:04=E2=80=AFPM Michal Koutn=C3=BD <mkoutny@suse.co=
+m> wrote:
+>
+> On Thu, Jan 04, 2024 at 11:29:43AM -0500, Pasha Tatashin <pasha.tatashin@=
+soleen.com> wrote:
+> > Thank you for taking a look at this. The two patches [1] [2] which add
+> > GFP_KERNEL_ACCOUNT were sent separate from this series at request of
+> > reviewers:
+>
+> Ah, I didn't catch that.
+>
+> Though, I mean the patch 02/10 calls iommu_alloc_pages() with GFP_KERNEL
+> (and not a passed gfp from iommu_map).
+> Then patch 09/10 accounts all iommu_alloc_pages() under NR_IOMMU_PAGES.
+>
+> I think there is a difference between what's shown NR_IOMMU_PAGES and
+> what will have __GFP_ACCOUNT because of that.
+>
+> I.e. is it the intention that this difference is not subject to
+> limiting?
 
-On 1/4/24 17:58, Heiko Stübner wrote:
-> Hi Christian, Andy,
-> 
-> Am Donnerstag, 4. Januar 2024, 15:39:50 CET schrieb Cristian Ciocaltea:
->> Commit 5a028e8f062f ("drm/rockchip: vop2: Add support for rk3588")
->> introduced a variable which ended up being unused.  Remove it.
->>
->> rockchip_drm_vop2.c:1688:23: warning: variable ‘if_dclk_rate’ set but not used [-Wunused-but-set-variable]
->>
->> Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
-> 
-> in general, please don't send non-series patches as replies to other patches.
-> It confuses tooling like b4 way too often, as this patch is not designated
-> as a 2/2 (similar to the first one not being 1/2).
+Yes, we will have a difference between GFP_ACCOUNT and what
+NR_IOMMU_PAGES shows. GFP_ACCOUNT is set only where it makes sense to
+charge to user processes, i.e. IOMMU Page Tables, but there more IOMMU
+shared data that should not really be charged to a specific process.
+The charged and uncharged data will be visible via /proc/vmstat
+nr_iommu_pages field.
 
-That was unintentional, sorry!  I wrongly assumed 'git send-email' is
-able to correctly handle multiple patches which are not part of a
-series.  I'm not sure if the '--no-thread' flag would have helped.
+Pasha
 
->> ---
->>  drivers/gpu/drm/rockchip/rockchip_drm_vop2.c | 2 --
->>  1 file changed, 2 deletions(-)
->>
->> diff --git a/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c b/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c
->> index 44508c2dd614..923985d4161b 100644
->> --- a/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c
->> +++ b/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c
->> @@ -1685,7 +1685,6 @@ static unsigned long rk3588_calc_cru_cfg(struct vop2_video_port *vp, int id,
->>  	unsigned long dclk_core_rate = v_pixclk >> 2;
->>  	unsigned long dclk_rate = v_pixclk;
->>  	unsigned long dclk_out_rate;
->> -	unsigned long if_dclk_rate;
->>  	unsigned long if_pixclk_rate;
->>  	int K = 1;
->>  
->> @@ -1700,7 +1699,6 @@ static unsigned long rk3588_calc_cru_cfg(struct vop2_video_port *vp, int id,
->>  		}
->>  
->>  		if_pixclk_rate = (dclk_core_rate << 1) / K;
->> -		if_dclk_rate = dclk_core_rate / K;
->>  		/*
->>  		 * *if_pixclk_div = dclk_rate / if_pixclk_rate;
->>  		 * *if_dclk_div = dclk_rate / if_dclk_rate;
->>  		 */
-> 		*if_pixclk_div = 2;
-> 		*if_dclk_div = 4;
-> 
-> with the code continuing with those static constants but the comment
-> showing a forumula, I do hope Andy can provide a bit of insight into
-> what is happening here.
-> 
-> I.e. I'd really like to understand if that really is just a remnant or
-> something different is needed.
-
-The current implementation is not able to handle all display modes
-supported by connected displays, e.g. in my testing environment I
-encountered issues with 2560x1440-75.00Hz, 2048x1152-60.00Hz,
-1024x768-60.00Hz.  Additionally, it doesn't seem to cope well with
-non-integer refresh rates like 59.94, 29.97, 23.98, etc.
-
-My temporary workaround relies on using the HDMI PHY PLL in conjunction
-with a downstream-based hack to compute the clock rates.  I'm not sure
-that would be an upstreamable solution, so I would let Andy shed some
-light on the topic.
-
-Thanks,
-Cristian
-
-> 
-> Heiko
-> 
-> 
+>
+> (Note: I'm not familiar with iommu code and moreover I'm only looking at
+> the two patch sets, not the complete code applied. So you may correct my
+> reasoning.)
+>
+>
+> Thanks,
+> Michal
 
