@@ -1,92 +1,148 @@
-Return-Path: <linux-kernel+bounces-16986-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16987-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3A868246E2
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 18:08:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D54D8246E6
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 18:09:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D94051C225CD
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 17:08:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2A8381F23C25
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 17:09:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 548E225578;
-	Thu,  4 Jan 2024 17:08:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8526A25577;
+	Thu,  4 Jan 2024 17:09:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="l5YIbXbQ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HPcxO3yM"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3759C25560;
-	Thu,  4 Jan 2024 17:08:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704388081; x=1735924081;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=qPUzoILDd3+YEP2nl1nUfeLW8U963CpH72/0YjAzmlo=;
-  b=l5YIbXbQgXwHC7lMnxYPVkP7JwAllc/RZILLL5Q8nkv6iKiYwMaukAdZ
-   J82zTo5YUdftLlkeElG8WYjJXgqEU0Xey+i7fuOUe2Mu303mA1vLuxyuf
-   sUnPgB651aEkhhZ0dHCEglNBfNZdiyp8OYcUKzx+vsfnfBF4//6hznZ7v
-   QDcEoLxAoTOHTdEk3CeXi8VMKcvqsixonETBhMNdObnOFnRNQ86MAoRFf
-   jh89F3RgxXtPkVsOr9F/8110Gz/KP6uDcyD4XFvryCfbv2iQy7OUaIIJT
-   gxzOHYZOQkz3Fkv2NMo6JF2ekBIkeaZrpsKTqBdbEQpaauubbyfw+NS4R
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10943"; a="4409440"
-X-IronPort-AV: E=Sophos;i="6.04,331,1695711600"; 
-   d="scan'208";a="4409440"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2024 09:07:58 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10943"; a="780475868"
-X-IronPort-AV: E=Sophos;i="6.04,331,1695711600"; 
-   d="scan'208";a="780475868"
-Received: from tassilo.jf.intel.com (HELO tassilo) ([10.54.38.190])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2024 09:07:57 -0800
-Date: Thu, 4 Jan 2024 09:07:56 -0800
-From: Andi Kleen <ak@linux.intel.com>
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: Paolo Bonzini <pbonzini@redhat.com>,
-	Sean Christopherson <seanjc@google.com>,
-	Like Xu <like.xu@linux.intel.com>,
-	Kan Liang <kan.liang@linux.intel.com>,
-	Luwei Kang <luwei.kang@intel.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-	kvm@vger.kernel.org, Breno Leitao <leitao@debian.org>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Ingo Molnar <mingo@redhat.com>
-Subject: Re: [BUG] Guest OSes die simultaneously (bisected)
-Message-ID: <ZZbl7KqomDOR+HUC@tassilo>
-References: <3d8f5987-e09c-4dd2-a9c0-8ba22c9e948a@paulmck-laptop>
- <88f49775-2b56-48cc-81b8-651a940b7d6b@paulmck-laptop>
- <ZZX6pkHnZP777DVi@google.com>
- <77d7a3e3-f35e-4507-82c2-488405b25fa4@paulmck-laptop>
- <c6d5dd6e-2dec-423c-af39-213f17b1a9db@paulmck-laptop>
- <CABgObfYG-ZwiRiFeGbAgctLfj7+PSmgauN9RwGMvZRfxvmD_XQ@mail.gmail.com>
- <b2775ea5-20c9-4dff-b4b1-bbb212065a22@paulmck-laptop>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3F7825568;
+	Thu,  4 Jan 2024 17:09:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 41E46C433C7;
+	Thu,  4 Jan 2024 17:09:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704388144;
+	bh=RWeAVVvZw1mx2BvGayUBS6umOxU8tPTVMM+VecJn/f8=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=HPcxO3yMF3LAMwce01ASv+HwPrY6kxiRVKzBS1WDDfGH4hfeIaJwmR8OsadaPgI+q
+	 QOUuo6L0QiaDmKaFgIzixHb4rGQY2OLcVMpdHSVSNOtxTMeeqw3c7Ivs6LXHNqPwTD
+	 PgMzUiD+Pp/r/5exuDJyKI5s8fvXJy+BSB2KqspKzKTYzYTb0mqPYOKG5aPdV6OcCI
+	 XbSNeR1xlNpU82dXUZRMygcOd4KqzAjbeRj6ZTOGJD5FZ12rEsBq6n9vdTz4oxocSk
+	 jo5XHUncegf+8c0b7f2cxzV0k0qmTCOZoSBEjuDNeEVQK4eUq7A+i/ufwCtlMP5N6d
+	 Cfsfs67PvbVag==
+Message-ID: <5ed7ee66-ad7f-43ce-8550-a1a671cce9ad@kernel.org>
+Date: Thu, 4 Jan 2024 19:08:59 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b2775ea5-20c9-4dff-b4b1-bbb212065a22@paulmck-laptop>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 0/4] usb: typec: tipd: add patch update support for
+ tps6598x
+Content-Language: en-US
+To: Javier Carrasco <javier.carrasco@wolfvision.net>,
+ Jai Luthra <j-luthra@ti.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+ linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org, vigneshr@ti.com,
+ d-gole@ti.com, nm@ti.com
+References: <20231207-tps6598x_update-v2-0-f3cfcde6d890@wolfvision.net>
+ <vmngazj6si7xxss7txenezkcukqje2glhvvs7ipdcx3vjiqvlk@ohmmhhhlryws>
+ <2nqiaxakx6setx4tzgddnbjadbh7miegz5p6wamsbbiyrfuq3x@un2uxajbswkg>
+ <e9e8dd9f-b11b-43fc-8d76-6734dbddb540@kernel.org>
+ <b0963302-b498-4a81-b635-0b4faf02e83b@wolfvision.net>
+From: Roger Quadros <rogerq@kernel.org>
+In-Reply-To: <b0963302-b498-4a81-b635-0b4faf02e83b@wolfvision.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-> My (completely random) guess is that there is some rare combination
-> of events that causes this code to fail.  If so, is it feasible to
-> construct a test that makes this rare combination of events less rare,
-> so that similar future bugs are caught more quickly?
 
-Yes, I tested something similar before. What you need is create lots of 
-PMIs with perf (running perf top should be enough) and a workload that creates
-lots of exits in a guest (e.g. running fio on a virtio device). This 
-will stress test this particular path.
 
--Andi
+On 04/01/2024 18:36, Javier Carrasco wrote:
+> On 04.01.24 17:15, Roger Quadros wrote:
+>>
+>>
+>> On 04/01/2024 17:47, Jai Luthra wrote:
+>>> Hi Javier,
+>>> The following change seems to fix boot on SK-AM62A without reverting 
+>>> this whole series:
+>>>
+>>> ------------------
+>>>
+>>> diff --git a/drivers/usb/typec/tipd/core.c b/drivers/usb/typec/tipd/core.c
+>>> index a956eb976906a5..8ba2aa05db519b 100644
+>>> --- a/drivers/usb/typec/tipd/core.c
+>>> +++ b/drivers/usb/typec/tipd/core.c
+>>> @@ -1223,11 +1223,16 @@ static int cd321x_reset(struct tps6598x *tps)
+>>>  	return 0;
+>>>  }
+>>>  
+>>> -static int tps6598x_reset(struct tps6598x *tps)
+>>> +static int tps25750_reset(struct tps6598x *tps)
+>>>  {
+>>>  	return tps6598x_exec_cmd_tmo(tps, "GAID", 0, NULL, 0, NULL, 2000, 0);
+>>>  }
+>>>  
+>>> +static int tps6598x_reset(struct tps6598x *tps)
+>>> +{
+>>> +	return 0;
+>>> +}
+>>> +
+>>>  static int
+>>>  tps25750_register_port(struct tps6598x *tps, struct fwnode_handle *fwnode)
+>>>  {
+>>> @@ -1545,7 +1550,7 @@ static const struct tipd_data tps25750_data = {
+>>>  	.trace_status = trace_tps25750_status,
+>>>  	.apply_patch = tps25750_apply_patch,
+>>>  	.init = tps25750_init,
+>>> -	.reset = tps6598x_reset,
+>>> +	.reset = tps25750_reset,
+>>>  };
+>>>  
+>>>  static const struct of_device_id tps6598x_of_match[] = {
+>>>
+>>> ------------------
+>>>
+>>> I am not an expert on this, will let you/others decide on what should be 
+>>> the correct way to reset TPS6598x for patching without breaking this SK.
+>>>
+>>>
+>>
+>> This looks like a correct fix to me.
+>> Could you please send a proper PATCH with Fixes tag? Thanks!
+>>
+> Hi Roger,
+> 
+> that fix only removes the reset function and does nothing instead, but
+> the reset call is identical for both devices (hence why there was a
+> single function for both devices). As I mentioned in my reply to Jai
+
+This is incorrect.
+
+Look at the original code, the GAID command is issued only if it is a
+tps25750 device.
+
+Below is your part of the code that replaces it with reset() ops.
+
+> @@ -1340,8 +1360,8 @@ static int tps6598x_probe(struct i2c_client *client)
+>  	tps6598x_write64(tps, TPS_REG_INT_MASK1, 0);
+>  err_reset_controller:
+>  	/* Reset PD controller to remove any applied patch */
+> -	if (is_tps25750)
+> -		tps6598x_exec_cmd_tmo(tps, "GAID", 0, NULL, 0, NULL, 2000, 0);
+> +	tps->data->reset(tps);
+> +
+>  	return ret;
+>  }
+
+which means the GAID command will be executed for both tps25750 and tps6598x
+as you have a single reset function for both.
+This is a problem for boards using the tps6598x.
+
+-- 
+cheers,
+-roger
 
