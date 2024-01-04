@@ -1,86 +1,74 @@
-Return-Path: <linux-kernel+bounces-16173-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16174-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED032823A14
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 02:10:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A5F4823A21
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 02:15:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1EC451C24A79
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 01:10:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6FE871C24A61
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 01:15:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A69D01859;
-	Thu,  4 Jan 2024 01:10:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2350F1865;
+	Thu,  4 Jan 2024 01:15:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pRtIML8y"
+	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="D0TY6nHa"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4D2037B;
-	Thu,  4 Jan 2024 01:10:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id B5797C433CD;
-	Thu,  4 Jan 2024 01:10:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704330625;
-	bh=1/AcE2yNiKq2VOJf4UWVULUFGIR5FL0yTpn0dYOMgV4=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=pRtIML8yJvY8OrrCkOnGvbT4HFeyvhgWt/McrcCuYortNS2fFJMA+1mrOZRZtIpb2
-	 JJ7WF3QqGf8SOtz5SQnLzI/S5i7lGRG+0gqyRweAS9SBY5t8b6arhq3ZVeGsIymVKC
-	 hbO1MPXLpvorBRhu0BQaJvTV4XCigzV8XlOHzpx455IcGcqBVjzn+cFQ1S9L1xPxah
-	 TMxnX91dINhsKuQba88LpxZlvb6jeZxiuTfeMj+k729PyvHSCvKq1+H909xATZUS2K
-	 CLh78iDD/Pcc6JiSdGS41Ob/pMycuFCFxBMOI/S0xf1bmP15hmXxHxXf7tKudr9iMb
-	 OnxAnQOu+qoLA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 9F772C43168;
-	Thu,  4 Jan 2024 01:10:25 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51532A34
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 01:14:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=vxU9S5f6FIwALc89E8wXPWdUBFpyV1Du3ti4Xvllcyw=; b=D0TY6nHa5vyi0JeUJngCTHdH8W
+	T/GOMmflZqn5LTutVgJl+7IxZtdEG53StFYOnWF4AK1nJoc8whepE1HbP+dwHHvXr/Rr/LaUC8tlv
+	9uKPssaDzsBDVKwly64tKmJ5Cns7UACzFkisNrI34uBWE3rIia66c1XGW8HDmzHWQvVpO0R7fD3QV
+	yCx9uDCD9F0wqzjkA8iPzb4K7yU4DhUWCIl0c+pOxwTFdK9UEGBax+YSM2/SVRqZQpGXTj2XJHeML
+	KvN7VnIqy+7iBhbMfF73tpLHdXeKYmRVp9CiFsbl7xutKBPU04KSIn8kKSgaW863FksvglH+XNPCD
+	7O/TopRw==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
+	id 1rLCJP-00112g-2i;
+	Thu, 04 Jan 2024 01:14:19 +0000
+Date: Thu, 4 Jan 2024 01:14:19 +0000
+From: Al Viro <viro@zeniv.linux.org.uk>
+To: Tanzir Hasan <tanzirh@google.com>
+Cc: Andy Lutomirski <luto@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>, Nick Desaulniers <nnn@google.com>,
+	linux-kernel@vger.kernel.org,
+	Nick Desaulniers <ndesaulniers@google.com>
+Subject: Re: [PATCH v2] x86/vdso: shrink vdso/extable.i via IWYU
+Message-ID: <20240104011419.GN1674809@ZenIV>
+References: <20240104-extable-v2-1-6fdcb64abcb2@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v2 net-next] selftests/net: change shebang to bash to support
- "source"
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <170433062564.12007.6147887260840109226.git-patchwork-notify@kernel.org>
-Date: Thu, 04 Jan 2024 01:10:25 +0000
-References: <20231229131931.3961150-1-yujie.liu@intel.com>
-In-Reply-To: <20231229131931.3961150-1-yujie.liu@intel.com>
-To: Yujie Liu <yujie.liu@intel.com>
-Cc: netdev@vger.kernel.org, liuhangbin@gmail.com, pabeni@redhat.com,
- dsahern@kernel.org, linux-kselftest@vger.kernel.org,
- linux-kernel@vger.kernel.org, lkp@intel.com, oliver.sang@intel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240104-extable-v2-1-6fdcb64abcb2@google.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 
-Hello:
+On Thu, Jan 04, 2024 at 12:02:40AM +0000, Tanzir Hasan wrote:
 
-This patch was applied to netdev/net-next.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
+*ugh*
 
-On Fri, 29 Dec 2023 21:19:31 +0800 you wrote:
-> The patch set [1] added a general lib.sh in net selftests, and converted
-> several test scripts to source the lib.sh.
-> 
-> unicast_extensions.sh (converted in [1]) and pmtu.sh (converted in [2])
-> have a /bin/sh shebang which may point to various shells in different
-> distributions, but "source" is only available in some of them. For
-> example, "source" is a built-it function in bash, but it cannot be
-> used in dash.
-> 
-> [...]
+> +#include <linux/stddef.h>
+> +#include <linux/types.h>
 
-Here is the summary with links:
-  - [v2,net-next] selftests/net: change shebang to bash to support "source"
-    https://git.kernel.org/netdev/net-next/c/05d92cb0e919
+Do we have _anything_ that would not want stddef.h?  Seriously -
+NULL, true, false, offsetof...   At that point I'd rather have
+it via -include...
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Are we going to spam that include all over the tree?  Because
+it'd really be just about everything...
 
