@@ -1,210 +1,586 @@
-Return-Path: <linux-kernel+bounces-16654-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16653-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D90298241F1
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 13:39:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D1C2B8241F0
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 13:39:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 832B3286D3C
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 12:39:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EAF051C23D6F
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 12:39:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C18D21A1B;
-	Thu,  4 Jan 2024 12:39:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C805121A1D;
+	Thu,  4 Jan 2024 12:39:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="q5/tUaq3"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Jc3emnQl"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E6C1219EE
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 12:39:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a277339dcf4so50894666b.2
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 04:39:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1704371971; x=1704976771; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VzvOTQrYsC64lRjX0Rt7BbitXgRl8QC6qZq6acvuD1g=;
-        b=q5/tUaq30XHM3OWFF3UKTf1vU4Tvhlmb6HLtzdTo7SURp6qP4xAdD8r4vIIbwvrzld
-         C5CSEmsEDpwnx2aml7Noy4ANWFjqAdq/zCBcdxVc5LLYI6U7B8qWLTrumKh0HP2kc6ES
-         dxxvNlvmgZUEtUAEGC4NRqG/RRyNbM2eYkGlwtzZ1WD+4wmTNRr8Bg0hn2s3XuBMjW3S
-         rlM7fLWtvx5Y2biaOSA4Gc31Z2lY2tAAO6DOlaTRg4kmOnZzBqYw8DG2xAqnFEHgRLve
-         iJEBxGsfa8dRLP5zUabC7tKHg8PW9oPKlfIXk4/gkaEouKo2QjXZKpyy2Z9rGv84YGYD
-         Lq9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704371971; x=1704976771;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VzvOTQrYsC64lRjX0Rt7BbitXgRl8QC6qZq6acvuD1g=;
-        b=gqz1jw3PRLHcN//RhDKvWNRp/kbMxlfBLrXZkDPqWp0yHHN4OtVGRI45q2ifvxYh66
-         tQmyw8S1x8dRxpWcWs3nmtRo/ILgP1579JXxnH/F//nEbNEutgl92YJoa87+5BJG/3Zc
-         1o1uib574GJ5ih7AdMAfEvOi8I3wPo+2JdubgqOlWbqzirp3ZeETcgcwIRG5sc8liT3Q
-         Dr/wufN5VPObGTkfF/TA63otVc4RFpI2g5B12iwam7n8G1nYiAZbtg0NdwDZhiBinf1B
-         K3wTXE/xGGtnEyrPr8gQ01XbVZmW7v55at1x/nhBsxeQL2dgnHP8p2WXD2c0EGBxtJmc
-         WMKg==
-X-Gm-Message-State: AOJu0YwemaEm2hhbtwEk/Br2EEgQcfWiePpJKhsf8OrT6gRctL43VoSH
-	b9kksyCWqo8g+NyWoTuZglmBuiHOvOqNUuIJN5k1K5ou2URAWQ==
-X-Google-Smtp-Source: AGHT+IEeRR4I3uWL5TxDjZ3qrupVtXYMaBZuKr0o+l32Kjda9sN5IKWIaRFz0g22rzETebnGyfVZeFTdsQogwR+pnjM=
-X-Received: by 2002:a17:907:76a8:b0:a26:9916:a46b with SMTP id
- jw8-20020a17090776a800b00a269916a46bmr317729ejc.33.1704371971601; Thu, 04 Jan
- 2024 04:39:31 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13FF821A09;
+	Thu,  4 Jan 2024 12:39:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3211BC433C8;
+	Thu,  4 Jan 2024 12:39:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704371963;
+	bh=/2WY45SakhE3CG3eYyZMADqFwRD3LHdHe9F1gaQ4V9U=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Jc3emnQlHQYwU54eO40Ol7V8c+YwQ9fN9YPeH28PSYEI39djFKB/50NtmJG7oaKKv
+	 QcD2knARDtdSgQZo6EVE0GZG7sbhbdLJdHGWLtefK49CoV49/6U38vjLh4pjeX2B3u
+	 rQcYc53IjiV43GmtjEhSkgVKX9IVD6PQCVrGz/9LLlTFM6KfZZNk/A4wldPpozvXU2
+	 RYrHbiS4r3gf2e+hoFl+1+x0Z6h7DRZiSnEniEYaXFuzsNXezUMN+CpreaB8863nHl
+	 f+Y3S507TUJAoVLp1BEwOrAx5DP+zu8AxNiwOi51BCFoRLnROHsc89gtz8owc6VgSf
+	 TGuAMa+FWX8sg==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+	id 767C1403EF; Thu,  4 Jan 2024 09:39:20 -0300 (-03)
+Date: Thu, 4 Jan 2024 09:39:20 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Ian Rogers <irogers@google.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Kan Liang <kan.liang@linux.intel.com>,
+	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Edward Baker <edward.baker@intel.com>
+Subject: Re: [PATCH v1 1/4] perf vendor events intel: Alderlake/rocketlake
+ metric fixes
+Message-ID: <ZZam-EG-UepcXtWw@kernel.org>
+References: <20240104074259.653219-1-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240102220134.3229156-1-samuel.holland@sifive.com> <20240102220134.3229156-9-samuel.holland@sifive.com>
-In-Reply-To: <20240102220134.3229156-9-samuel.holland@sifive.com>
-From: Alexandre Ghiti <alexghiti@rivosinc.com>
-Date: Thu, 4 Jan 2024 13:39:20 +0100
-Message-ID: <CAHVXubhKrC_7DEBXR_wCP9g7-KfWg9nuyim7+X1Ja2gh8s9+HA@mail.gmail.com>
-Subject: Re: [PATCH v4 08/12] riscv: mm: Introduce cntx2asid/cntx2version
- helper macros
-To: Samuel Holland <samuel.holland@sifive.com>
-Cc: Palmer Dabbelt <palmer@dabbelt.com>, linux-riscv@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240104074259.653219-1-irogers@google.com>
+X-Url: http://acmel.wordpress.com
 
-On Tue, Jan 2, 2024 at 11:01=E2=80=AFPM Samuel Holland
-<samuel.holland@sifive.com> wrote:
->
-> When using the ASID allocator, the MM context ID contains two values:
-> the ASID in the lower bits, and the allocator version number in the
-> remaining bits. Use macros to make this separation more obvious.
->
-> Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
+Em Wed, Jan 03, 2024 at 11:42:56PM -0800, Ian Rogers escreveu:
+> Fix that the core PMU is being specified for 2 uncore events. Specify
+> a PMU for the alderlake UNCORE_FREQ metric.
+> 
+> Conversion script updated in:
+> https://github.com/intel/perfmon/pull/126
+> 
+> Reported-by: Arnaldo Carvalho de Melo <acme@kernel.org>
+> Closes: https://lore.kernel.org/lkml/ZZWOdHXJJ_oecWwm@kernel.org/
+> Signed-off-by: Ian Rogers <irogers@google.com>
+
+After this first patch:
+
+101: perf all metricgroups test                                      : Ok
+102: perf all metrics test                                           : FAILED!
+107: perf metrics value validation                                   : Ok
+
+102 is now failing due to some other problem:
+
+root@number:~# perf test -v 102
+102: perf all metrics test                                           :
+--- start ---
+test child forked, pid 2701034
+Testing tma_core_bound
+Testing tma_info_core_ilp
+Testing tma_info_memory_l2mpki
+Testing tma_memory_bound
+Testing tma_info_bad_spec_branch_misprediction_cost
+Testing tma_info_bad_spec_ipmisp_cond_ntaken
+Testing tma_info_bad_spec_ipmisp_cond_taken
+Testing tma_info_bad_spec_ipmisp_indirect
+Testing tma_info_bad_spec_ipmisp_ret
+Testing tma_info_bad_spec_ipmispredict
+Testing tma_info_bottleneck_mispredictions
+Testing tma_info_branches_callret
+Testing tma_info_branches_cond_nt
+Testing tma_info_branches_cond_tk
+Testing tma_info_branches_jump
+Testing tma_info_branches_other_branches
+Testing tma_branch_mispredicts
+Testing tma_clears_resteers
+Testing tma_machine_clears
+Testing tma_mispredicts_resteers
+Testing tma_icache_misses
+Testing tma_info_bottleneck_big_code
+Testing tma_itlb_misses
+Testing tma_unknown_branches
+Testing tma_info_inst_mix_bptkbranch
+Testing tma_info_inst_mix_ipbranch
+Testing tma_info_inst_mix_ipcall
+Testing tma_info_inst_mix_iptb
+Testing tma_info_system_ipfarbranch
+Testing tma_info_thread_uptb
+Testing tma_info_memory_fb_hpki
+Testing tma_info_memory_l1mpki
+Testing tma_info_memory_l1mpki_load
+Testing tma_info_memory_l2hpki_all
+Testing tma_info_memory_l2hpki_load
+Testing tma_info_memory_l2mpki_all
+Testing tma_info_memory_l2mpki_load
+Testing tma_info_memory_l3mpki
+Testing tma_l1_bound
+Testing tma_l2_bound
+Testing tma_l3_bound
+Testing tma_fp_scalar
+Testing tma_fp_vector
+Testing tma_fp_vector_128b
+Testing tma_fp_vector_256b
+Testing tma_int_vector_128b
+Testing tma_int_vector_256b
+Testing tma_port_0
+Testing tma_x87_use
+Testing tma_info_botlnk_l0_core_bound_likely
+Testing tma_info_core_fp_arith_utilization
+Testing tma_info_pipeline_execute
+Testing tma_info_system_gflops
+Testing tma_info_thread_execute_per_issue
+Testing tma_dsb
+Testing tma_info_frontend_dsb_coverage
+Testing tma_decoder0_alone
+Testing tma_dsb_switches
+Testing tma_info_botlnk_l2_dsb_misses
+Testing tma_info_frontend_dsb_switch_cost
+Testing tma_info_frontend_ipdsb_miss_ret
+Testing tma_mite
+Testing tma_contested_accesses
+Testing tma_false_sharing
+Testing tma_backend_bound
+Testing tma_backend_bound_aux
+Testing tma_bad_speculation
+Testing tma_frontend_bound
+Testing tma_retiring
+Testing tma_info_botlnk_l2_ic_misses
+Testing tma_info_bottleneck_instruction_fetch_bw
+Testing tma_info_frontend_fetch_upc
+Testing tma_info_frontend_icache_miss_latency
+Testing tma_info_frontend_ipunknown_branch
+Testing tma_info_frontend_lsd_coverage
+Testing tma_info_memory_tlb_code_stlb_mpki
+Testing tma_fetch_bandwidth
+Testing tma_lsd
+Testing tma_branch_resteers
+Testing tma_lcp
+Testing tma_ms_switches
+Testing tma_info_core_flopc
+Testing tma_info_inst_mix_iparith
+Testing tma_info_inst_mix_iparith_avx128
+Testing tma_info_inst_mix_iparith_avx256
+Testing tma_info_inst_mix_iparith_scalar_dp
+Testing tma_info_inst_mix_iparith_scalar_sp
+Testing tma_info_inst_mix_ipflop
+Testing tma_fetch_latency
+Testing tma_avx_assists
+Testing tma_fp_arith
+Testing tma_fp_assists
+Testing tma_info_system_cpu_utilization
+Testing tma_info_system_dram_bw_use
+Testing tma_shuffles
+Testing tma_info_frontend_l2mpki_code
+Testing tma_info_frontend_l2mpki_code_all
+Testing tma_info_inst_mix_ipload
+Testing tma_info_inst_mix_ipstore
+Testing tma_info_bottleneck_memory_bandwidth
+Testing tma_info_bottleneck_memory_data_tlbs
+Testing tma_info_bottleneck_memory_latency
+Testing tma_info_memory_core_l1d_cache_fill_bw
+Testing tma_info_memory_core_l2_cache_fill_bw
+Testing tma_info_memory_core_l3_cache_access_bw
+Testing tma_info_memory_core_l3_cache_fill_bw
+Testing tma_info_memory_load_miss_real_latency
+Testing tma_info_memory_mlp
+Testing tma_info_memory_thread_l1d_cache_fill_bw_1t
+Testing tma_info_memory_thread_l2_cache_fill_bw_1t
+Testing tma_info_memory_thread_l3_cache_access_bw_1t
+Testing tma_info_memory_thread_l3_cache_fill_bw_1t
+Testing tma_info_memory_tlb_load_stlb_mpki
+Testing tma_info_memory_tlb_page_walks_utilization
+Testing tma_info_memory_tlb_store_stlb_mpki
+Testing tma_info_system_mem_parallel_reads
+Testing tma_info_system_mem_read_latency
+Testing tma_info_system_mem_request_latency
+Testing tma_info_thread_cpi
+Testing tma_fb_full
+Testing tma_mem_bandwidth
+Testing tma_sq_full
+Testing tma_streaming_stores
+Testing tma_dram_bound
+Testing tma_store_bound
+Testing tma_l3_hit_latency
+Testing tma_mem_latency
+Testing tma_store_latency
+Testing tma_dtlb_load
+Testing tma_dtlb_store
+Testing tma_load_stlb_hit
+Testing tma_load_stlb_miss
+Testing tma_store_stlb_hit
+Testing tma_store_stlb_miss
+Testing tma_info_memory_oro_data_l2_mlp
+Testing tma_info_memory_oro_load_l2_mlp
+Testing tma_info_memory_oro_load_l2_miss_latency
+Testing tma_info_memory_oro_load_l3_miss_latency
+Testing tma_microcode_sequencer
+Testing tma_info_core_clks
+Testing tma_info_core_clks_p
+Testing tma_info_core_cpi
+Testing tma_info_core_ipc
+Testing tma_info_core_slots
+Testing tma_info_core_upi
+Testing tma_info_frontend_inst_miss_cost_dramhit_percent
+Testing tma_info_frontend_inst_miss_cost_l2hit_percent
+Testing tma_info_frontend_inst_miss_cost_l3hit_percent
+Testing tma_info_inst_mix_branch_mispredict_ratio
+Testing tma_info_inst_mix_branch_mispredict_to_unknown_branch_ratio
+Testing tma_info_inst_mix_fpdiv_uop_ratio
+Testing tma_info_inst_mix_idiv_uop_ratio
+Testing tma_info_inst_mix_ipfarbranch
+Testing tma_info_inst_mix_ipmisp_cond_ntaken
+Testing tma_info_inst_mix_ipmisp_cond_taken
+Testing tma_info_inst_mix_ipmisp_indirect
+Testing tma_info_inst_mix_ipmisp_ret
+Testing tma_info_inst_mix_ipmispredict
+Testing tma_info_inst_mix_microcode_uop_ratio
+Testing tma_info_inst_mix_x87_uop_ratio
+Testing tma_info_l1_bound_address_alias_blocks
+Testing tma_info_l1_bound_load_splits
+Testing tma_info_l1_bound_store_fwd_blocks
+Testing tma_info_memory_cycles_per_demand_load_dram_hit
+Testing tma_info_memory_cycles_per_demand_load_l2_hit
+Testing tma_info_memory_cycles_per_demand_load_l3_hit
+Testing tma_info_memory_memloadpki
+Testing tma_info_system_kernel_cpi
+Testing tma_info_system_kernel_utilization
+Testing tma_data_sharing
+Testing tma_lock_latency
+Testing tma_fused_instructions
+Testing tma_info_pipeline_ipassist
+Testing tma_info_pipeline_retire
+Testing tma_info_pipeline_strings_cycles
+Testing tma_info_thread_clks
+Testing tma_info_thread_uoppi
+Testing tma_int_operations
+Testing tma_memory_operations
+Testing tma_non_fused_branches
+Testing tma_nop_instructions
+Testing tma_other_light_ops
+Testing tma_ports_utilization
+Testing tma_ports_utilized_0
+Testing tma_ports_utilized_1
+Metric 'tma_ports_utilized_1' not printed in:
+# Running 'internals/synthesize' benchmark:
+Computing performance of single threaded perf event synthesis by
+synthesizing events on the perf process itself:
+  Average synthesis took: 49.581 usec (+- 0.030 usec)
+  Average num. events: 47.000 (+- 0.000)
+  Average time per event 1.055 usec
+  Average data synthesis took: 53.367 usec (+- 0.032 usec)
+  Average num. events: 246.000 (+- 0.000)
+  Average time per event 0.217 usec
+
+ Performance counter stats for 'perf bench internals synthesize':
+
+     <not counted>      cpu_core/TOPDOWN.SLOTS/                                                 (0.00%)
+     <not counted>      cpu_core/topdown-retiring/                                              (0.00%)
+     <not counted>      cpu_core/topdown-mem-bound/                                             (0.00%)
+     <not counted>      cpu_core/topdown-bad-spec/                                              (0.00%)
+     <not counted>      cpu_core/topdown-fe-bound/                                              (0.00%)
+     <not counted>      cpu_core/topdown-be-bound/                                              (0.00%)
+     <not counted>      cpu_core/RESOURCE_STALLS.SCOREBOARD/                                        (0.00%)
+     <not counted>      cpu_core/EXE_ACTIVITY.1_PORTS_UTIL/                                        (0.00%)
+     <not counted>      cpu_core/EXE_ACTIVITY.BOUND_ON_LOADS/                                        (0.00%)
+     <not counted>      cpu_core/EXE_ACTIVITY.1_PORTS_UTIL/                                        (0.00%)
+     <not counted>      cpu_core/CYCLE_ACTIVITY.STALLS_TOTAL/                                        (0.00%)
+     <not counted>      cpu_core/CPU_CLK_UNHALTED.THREAD/                                        (0.00%)
+     <not counted>      cpu_core/ARITH.DIV_ACTIVE/                                              (0.00%)
+     <not counted>      cpu_core/EXE_ACTIVITY.2_PORTS_UTIL,umask=0xc/                                        (0.00%)
+     <not counted>      cpu_core/EXE_ACTIVITY.3_PORTS_UTIL,umask=0x80/                                        (0.00%)
+
+       1.180394056 seconds time elapsed
+
+       0.409881000 seconds user
+       0.764134000 seconds sys
+Testing tma_ports_utilized_2
+Metric 'tma_ports_utilized_2' not printed in:
+# Running 'internals/synthesize' benchmark:
+Computing performance of single threaded perf event synthesis by
+synthesizing events on the perf process itself:
+  Average synthesis took: 50.456 usec (+- 0.066 usec)
+  Average num. events: 47.000 (+- 0.000)
+  Average time per event 1.074 usec
+  Average data synthesis took: 52.904 usec (+- 0.030 usec)
+  Average num. events: 246.000 (+- 0.000)
+  Average time per event 0.215 usec
+
+ Performance counter stats for 'perf bench internals synthesize':
+
+     <not counted>      cpu_core/TOPDOWN.SLOTS/                                                 (0.00%)
+     <not counted>      cpu_core/topdown-retiring/                                              (0.00%)
+     <not counted>      cpu_core/topdown-mem-bound/                                             (0.00%)
+     <not counted>      cpu_core/topdown-bad-spec/                                              (0.00%)
+     <not counted>      cpu_core/topdown-fe-bound/                                              (0.00%)
+     <not counted>      cpu_core/topdown-be-bound/                                              (0.00%)
+     <not counted>      cpu_core/RESOURCE_STALLS.SCOREBOARD/                                        (0.00%)
+     <not counted>      cpu_core/EXE_ACTIVITY.1_PORTS_UTIL/                                        (0.00%)
+     <not counted>      cpu_core/EXE_ACTIVITY.BOUND_ON_LOADS/                                        (0.00%)
+     <not counted>      cpu_core/CYCLE_ACTIVITY.STALLS_TOTAL/                                        (0.00%)
+     <not counted>      cpu_core/CPU_CLK_UNHALTED.THREAD/                                        (0.00%)
+     <not counted>      cpu_core/ARITH.DIV_ACTIVE/                                              (0.00%)
+     <not counted>      cpu_core/EXE_ACTIVITY.2_PORTS_UTIL,umask=0xc/                                        (0.00%)
+     <not counted>      cpu_core/EXE_ACTIVITY.2_PORTS_UTIL/                                        (0.00%)
+     <not counted>      cpu_core/EXE_ACTIVITY.3_PORTS_UTIL,umask=0x80/                                        (0.00%)
+
+       1.187012938 seconds time elapsed
+
+       0.397919000 seconds user
+       0.782854000 seconds sys
+Testing tma_ports_utilized_3m
+Metric 'tma_ports_utilized_3m' not printed in:
+# Running 'internals/synthesize' benchmark:
+Computing performance of single threaded perf event synthesis by
+synthesizing events on the perf process itself:
+  Average synthesis took: 48.248 usec (+- 0.028 usec)
+  Average num. events: 47.000 (+- 0.000)
+  Average time per event 1.027 usec
+  Average data synthesis took: 52.781 usec (+- 0.036 usec)
+  Average num. events: 245.000 (+- 0.000)
+  Average time per event 0.215 usec
+
+ Performance counter stats for 'perf bench internals synthesize':
+
+     <not counted>      cpu_core/TOPDOWN.SLOTS/                                                 (0.00%)
+     <not counted>      cpu_core/topdown-retiring/                                              (0.00%)
+     <not counted>      cpu_core/topdown-mem-bound/                                             (0.00%)
+     <not counted>      cpu_core/topdown-bad-spec/                                              (0.00%)
+     <not counted>      cpu_core/topdown-fe-bound/                                              (0.00%)
+     <not counted>      cpu_core/topdown-be-bound/                                              (0.00%)
+     <not counted>      cpu_core/UOPS_EXECUTED.CYCLES_GE_3/                                        (0.00%)
+     <not counted>      cpu_core/RESOURCE_STALLS.SCOREBOARD/                                        (0.00%)
+     <not counted>      cpu_core/EXE_ACTIVITY.1_PORTS_UTIL/                                        (0.00%)
+     <not counted>      cpu_core/EXE_ACTIVITY.BOUND_ON_LOADS/                                        (0.00%)
+     <not counted>      cpu_core/CYCLE_ACTIVITY.STALLS_TOTAL/                                        (0.00%)
+     <not counted>      cpu_core/CPU_CLK_UNHALTED.THREAD/                                        (0.00%)
+     <not counted>      cpu_core/ARITH.DIV_ACTIVE/                                              (0.00%)
+     <not counted>      cpu_core/EXE_ACTIVITY.2_PORTS_UTIL,umask=0xc/                                        (0.00%)
+     <not counted>      cpu_core/EXE_ACTIVITY.3_PORTS_UTIL,umask=0x80/                                        (0.00%)
+
+       1.160315379 seconds time elapsed
+
+       0.388639000 seconds user
+       0.765363000 seconds sys
+Testing tma_serializing_operation
+Testing C10_Pkg_Residency
+Testing C1_Core_Residency
+Testing C2_Pkg_Residency
+Testing C3_Pkg_Residency
+Testing C6_Core_Residency
+Testing C6_Pkg_Residency
+Testing C7_Core_Residency
+Testing C7_Pkg_Residency
+Testing C8_Pkg_Residency
+Testing C9_Pkg_Residency
+Testing tma_info_system_average_frequency
+Testing tma_info_system_turbo_utilization
+Testing tma_info_inst_mix_ipswpf
+Testing tma_info_bottleneck_branching_overhead
+Testing tma_info_core_coreipc
+Testing tma_info_thread_ipc
+Testing tma_heavy_operations
+Testing tma_light_operations
+Testing tma_info_core_core_clks
+Testing tma_info_system_smt_2t_utilization
+Testing tma_info_thread_slots_utilization
+Testing UNCORE_FREQ
+Testing tma_info_system_socket_clks
+Testing tma_info_inst_mix_instructions
+Testing tma_info_thread_slots
+Testing tma_base
+Testing tma_ms_uops
+Testing tma_resource_bound
+Testing tma_alloc_restriction
+Testing tma_branch_detect
+Testing tma_branch_resteer
+Testing tma_cisc
+Testing tma_decode
+Testing tma_divider
+Testing tma_fast_nuke
+Testing tma_few_uops_instructions
+Testing tma_fpdiv_uops
+Testing tma_mem_scheduler
+Testing tma_non_mem_scheduler
+Testing tma_nuke
+Testing tma_other_fb
+Testing tma_other_load_store
+Testing tma_other_ret
+Testing tma_predecode
+Testing tma_register
+Testing tma_reorder_buffer
+Testing tma_serialization
+Testing tma_assists
+Testing tma_disambiguation
+Testing tma_fp_assist
+Testing tma_ld_buffer
+Testing tma_memory_ordering
+Testing tma_other_l1
+Testing tma_page_fault
+Testing tma_rsv
+Testing tma_smc
+Testing tma_split_loads
+Testing tma_split_stores
+Testing tma_st_buffer
+Testing tma_stlb_hit
+Testing tma_stlb_miss
+Testing tma_store_fwd_blk
+Testing tma_alu_op_utilization
+Testing tma_load_op_utilization
+Testing tma_mixing_vectors
+Testing tma_page_faults
+Testing tma_store_op_utilization
+Testing tma_memory_fence
+Metric 'tma_memory_fence' not printed in:
+# Running 'internals/synthesize' benchmark:
+Computing performance of single threaded perf event synthesis by
+synthesizing events on the perf process itself:
+  Average synthesis took: 49.458 usec (+- 0.033 usec)
+  Average num. events: 47.000 (+- 0.000)
+  Average time per event 1.052 usec
+  Average data synthesis took: 53.268 usec (+- 0.027 usec)
+  Average num. events: 244.000 (+- 0.000)
+  Average time per event 0.218 usec
+
+ Performance counter stats for 'perf bench internals synthesize':
+
+     <not counted>      cpu_core/TOPDOWN.SLOTS/                                                 (0.00%)
+     <not counted>      cpu_core/topdown-retiring/                                              (0.00%)
+     <not counted>      cpu_core/topdown-mem-bound/                                             (0.00%)
+     <not counted>      cpu_core/topdown-bad-spec/                                              (0.00%)
+     <not counted>      cpu_core/topdown-fe-bound/                                              (0.00%)
+     <not counted>      cpu_core/topdown-be-bound/                                              (0.00%)
+     <not counted>      cpu_core/RESOURCE_STALLS.SCOREBOARD/                                        (0.00%)
+     <not counted>      cpu_core/EXE_ACTIVITY.1_PORTS_UTIL/                                        (0.00%)
+     <not counted>      cpu_core/EXE_ACTIVITY.BOUND_ON_LOADS/                                        (0.00%)
+     <not counted>      cpu_core/MISC2_RETIRED.LFENCE/                                          (0.00%)
+     <not counted>      cpu_core/CYCLE_ACTIVITY.STALLS_TOTAL/                                        (0.00%)
+     <not counted>      cpu_core/CPU_CLK_UNHALTED.THREAD/                                        (0.00%)
+     <not counted>      cpu_core/ARITH.DIV_ACTIVE/                                              (0.00%)
+     <not counted>      cpu_core/EXE_ACTIVITY.2_PORTS_UTIL,umask=0xc/                                        (0.00%)
+     <not counted>      cpu_core/EXE_ACTIVITY.3_PORTS_UTIL,umask=0x80/                                        (0.00%)
+
+       1.177929044 seconds time elapsed
+
+       0.434552000 seconds user
+       0.736874000 seconds sys
+Testing tma_port_1
+Testing tma_port_6
+Testing tma_slow_pause
+Metric 'tma_slow_pause' not printed in:
+# Running 'internals/synthesize' benchmark:
+Computing performance of single threaded perf event synthesis by
+synthesizing events on the perf process itself:
+  Average synthesis took: 49.987 usec (+- 0.049 usec)
+  Average num. events: 47.000 (+- 0.000)
+  Average time per event 1.064 usec
+  Average data synthesis took: 53.490 usec (+- 0.033 usec)
+  Average num. events: 245.000 (+- 0.000)
+  Average time per event 0.218 usec
+
+ Performance counter stats for 'perf bench internals synthesize':
+
+     <not counted>      cpu_core/TOPDOWN.SLOTS/                                                 (0.00%)
+     <not counted>      cpu_core/topdown-retiring/                                              (0.00%)
+     <not counted>      cpu_core/topdown-mem-bound/                                             (0.00%)
+     <not counted>      cpu_core/topdown-bad-spec/                                              (0.00%)
+     <not counted>      cpu_core/topdown-fe-bound/                                              (0.00%)
+     <not counted>      cpu_core/topdown-be-bound/                                              (0.00%)
+     <not counted>      cpu_core/RESOURCE_STALLS.SCOREBOARD/                                        (0.00%)
+     <not counted>      cpu_core/EXE_ACTIVITY.1_PORTS_UTIL/                                        (0.00%)
+     <not counted>      cpu_core/EXE_ACTIVITY.BOUND_ON_LOADS/                                        (0.00%)
+     <not counted>      cpu_core/CPU_CLK_UNHALTED.PAUSE/                                        (0.00%)
+     <not counted>      cpu_core/CYCLE_ACTIVITY.STALLS_TOTAL/                                        (0.00%)
+     <not counted>      cpu_core/CPU_CLK_UNHALTED.THREAD/                                        (0.00%)
+     <not counted>      cpu_core/ARITH.DIV_ACTIVE/                                              (0.00%)
+     <not counted>      cpu_core/EXE_ACTIVITY.2_PORTS_UTIL,umask=0xc/                                        (0.00%)
+     <not counted>      cpu_core/EXE_ACTIVITY.3_PORTS_UTIL,umask=0x80/                                        (0.00%)
+
+       1.186254766 seconds time elapsed
+
+       0.427220000 seconds user
+       0.752217000 seconds sys
+Testing smi_cycles
+Testing smi_num
+Testing tsx_aborted_cycles
+Testing tsx_cycles_per_elision
+Testing tsx_cycles_per_transaction
+Testing tsx_transactional_cycles
+test child finished with -1
+---- end ----
+perf all metrics test: FAILED!
+root@number:~#
+
 > ---
->
-> (no changes since v1)
->
->  arch/riscv/include/asm/mmu.h |  3 +++
->  arch/riscv/mm/context.c      | 12 ++++++------
->  arch/riscv/mm/tlbflush.c     |  2 +-
->  3 files changed, 10 insertions(+), 7 deletions(-)
->
-> diff --git a/arch/riscv/include/asm/mmu.h b/arch/riscv/include/asm/mmu.h
-> index 355504b37f8e..a550fbf770be 100644
-> --- a/arch/riscv/include/asm/mmu.h
-> +++ b/arch/riscv/include/asm/mmu.h
-> @@ -26,6 +26,9 @@ typedef struct {
->  #endif
->  } mm_context_t;
->
-> +#define cntx2asid(cntx)                ((cntx) & asid_mask)
-> +#define cntx2version(cntx)     ((cntx) & ~asid_mask)
+>  .../arch/x86/alderlake/adl-metrics.json           | 15 ++++++++-------
+>  .../arch/x86/rocketlake/rkl-metrics.json          |  2 +-
+>  2 files changed, 9 insertions(+), 8 deletions(-)
+> 
+> diff --git a/tools/perf/pmu-events/arch/x86/alderlake/adl-metrics.json b/tools/perf/pmu-events/arch/x86/alderlake/adl-metrics.json
+> index 3388b58b8f1a..35124a4ddcb2 100644
+> --- a/tools/perf/pmu-events/arch/x86/alderlake/adl-metrics.json
+> +++ b/tools/perf/pmu-events/arch/x86/alderlake/adl-metrics.json
+> @@ -69,12 +69,6 @@
+>          "MetricName": "C9_Pkg_Residency",
+>          "ScaleUnit": "100%"
+>      },
+> -    {
+> -        "BriefDescription": "Uncore frequency per die [GHZ]",
+> -        "MetricExpr": "tma_info_system_socket_clks / #num_dies / duration_time / 1e9",
+> -        "MetricGroup": "SoC",
+> -        "MetricName": "UNCORE_FREQ"
+> -    },
+>      {
+>          "BriefDescription": "Percentage of cycles spent in System Management Interrupts.",
+>          "MetricExpr": "((msr@aperf@ - cycles) / msr@aperf@ if msr@smi@ > 0 else 0)",
+> @@ -809,6 +803,13 @@
+>          "ScaleUnit": "100%",
+>          "Unit": "cpu_atom"
+>      },
+> +    {
+> +        "BriefDescription": "Uncore frequency per die [GHZ]",
+> +        "MetricExpr": "tma_info_system_socket_clks / #num_dies / duration_time / 1e9",
+> +        "MetricGroup": "SoC",
+> +        "MetricName": "UNCORE_FREQ",
+> +        "Unit": "cpu_core"
+> +    },
+>      {
+>          "BriefDescription": "This metric represents Core fraction of cycles CPU dispatched uops on execution ports for ALU operations.",
+>          "MetricExpr": "(cpu_core@UOPS_DISPATCHED.PORT_0@ + cpu_core@UOPS_DISPATCHED.PORT_1@ + cpu_core@UOPS_DISPATCHED.PORT_5_11@ + cpu_core@UOPS_DISPATCHED.PORT_6@) / (5 * tma_info_core_core_clks)",
+> @@ -1838,7 +1839,7 @@
+>      },
+>      {
+>          "BriefDescription": "Average number of parallel data read requests to external memory",
+> -        "MetricExpr": "UNC_ARB_DAT_OCCUPANCY.RD / cpu_core@UNC_ARB_DAT_OCCUPANCY.RD\\,cmask\\=1@",
+> +        "MetricExpr": "UNC_ARB_DAT_OCCUPANCY.RD / UNC_ARB_DAT_OCCUPANCY.RD@cmask\\=1@",
+>          "MetricGroup": "Mem;MemoryBW;SoC",
+>          "MetricName": "tma_info_system_mem_parallel_reads",
+>          "PublicDescription": "Average number of parallel data read requests to external memory. Accounts for demand loads and L1/L2 prefetches",
+> diff --git a/tools/perf/pmu-events/arch/x86/rocketlake/rkl-metrics.json b/tools/perf/pmu-events/arch/x86/rocketlake/rkl-metrics.json
+> index 0c880e415669..27433fc15ede 100644
+> --- a/tools/perf/pmu-events/arch/x86/rocketlake/rkl-metrics.json
+> +++ b/tools/perf/pmu-events/arch/x86/rocketlake/rkl-metrics.json
+> @@ -985,7 +985,7 @@
+>      },
+>      {
+>          "BriefDescription": "Average number of parallel data read requests to external memory",
+> -        "MetricExpr": "UNC_ARB_DAT_OCCUPANCY.RD / cpu@UNC_ARB_DAT_OCCUPANCY.RD\\,cmask\\=1@",
+> +        "MetricExpr": "UNC_ARB_DAT_OCCUPANCY.RD / UNC_ARB_DAT_OCCUPANCY.RD@cmask\\=1@",
+>          "MetricGroup": "Mem;MemoryBW;SoC",
+>          "MetricName": "tma_info_system_mem_parallel_reads",
+>          "PublicDescription": "Average number of parallel data read requests to external memory. Accounts for demand loads and L1/L2 prefetches"
+> -- 
+> 2.43.0.472.g3155946c3a-goog
+> 
 
-Not a big fan of the naming, I would have something like
-get_asid_from_context() and get_version_from_context() or something
-like that, but up to you of course.
+-- 
 
-> +
->  void __init create_pgd_mapping(pgd_t *pgdp, uintptr_t va, phys_addr_t pa=
-,
->                                phys_addr_t sz, pgprot_t prot);
->  #endif /* __ASSEMBLY__ */
-> diff --git a/arch/riscv/mm/context.c b/arch/riscv/mm/context.c
-> index 217fd4de6134..43d005f63253 100644
-> --- a/arch/riscv/mm/context.c
-> +++ b/arch/riscv/mm/context.c
-> @@ -81,7 +81,7 @@ static void __flush_context(void)
->                 if (cntx =3D=3D 0)
->                         cntx =3D per_cpu(reserved_context, i);
->
-> -               __set_bit(cntx & asid_mask, context_asid_map);
-> +               __set_bit(cntx2asid(cntx), context_asid_map);
->                 per_cpu(reserved_context, i) =3D cntx;
->         }
->
-> @@ -102,7 +102,7 @@ static unsigned long __new_context(struct mm_struct *=
-mm)
->         lockdep_assert_held(&context_lock);
->
->         if (cntx !=3D 0) {
-> -               unsigned long newcntx =3D ver | (cntx & asid_mask);
-> +               unsigned long newcntx =3D ver | cntx2asid(cntx);
->
->                 /*
->                  * If our current CONTEXT was active during a rollover, w=
-e
-> @@ -115,7 +115,7 @@ static unsigned long __new_context(struct mm_struct *=
-mm)
->                  * We had a valid CONTEXT in a previous life, so try to
->                  * re-use it if possible.
->                  */
-> -               if (!__test_and_set_bit(cntx & asid_mask, context_asid_ma=
-p))
-> +               if (!__test_and_set_bit(cntx2asid(cntx), context_asid_map=
-))
->                         return newcntx;
->         }
->
-> @@ -168,7 +168,7 @@ static void set_mm_asid(struct mm_struct *mm, unsigne=
-d int cpu)
->          */
->         old_active_cntx =3D atomic_long_read(&per_cpu(active_context, cpu=
-));
->         if (old_active_cntx &&
-> -           ((cntx & ~asid_mask) =3D=3D atomic_long_read(&current_version=
-)) &&
-> +           (cntx2version(cntx) =3D=3D atomic_long_read(&current_version)=
-) &&
->             atomic_long_cmpxchg_relaxed(&per_cpu(active_context, cpu),
->                                         old_active_cntx, cntx))
->                 goto switch_mm_fast;
-> @@ -177,7 +177,7 @@ static void set_mm_asid(struct mm_struct *mm, unsigne=
-d int cpu)
->
->         /* Check that our ASID belongs to the current_version. */
->         cntx =3D atomic_long_read(&mm->context.id);
-> -       if ((cntx & ~asid_mask) !=3D atomic_long_read(&current_version)) =
-{
-> +       if (cntx2version(cntx) !=3D atomic_long_read(&current_version)) {
->                 cntx =3D __new_context(mm);
->                 atomic_long_set(&mm->context.id, cntx);
->         }
-> @@ -191,7 +191,7 @@ static void set_mm_asid(struct mm_struct *mm, unsigne=
-d int cpu)
->
->  switch_mm_fast:
->         csr_write(CSR_SATP, virt_to_pfn(mm->pgd) |
-> -                 ((cntx & asid_mask) << SATP_ASID_SHIFT) |
-> +                 (cntx2asid(cntx) << SATP_ASID_SHIFT) |
->                   satp_mode);
->
->         if (need_flush_tlb)
-> diff --git a/arch/riscv/mm/tlbflush.c b/arch/riscv/mm/tlbflush.c
-> index 76b24d4ed4ab..5ec621545c69 100644
-> --- a/arch/riscv/mm/tlbflush.c
-> +++ b/arch/riscv/mm/tlbflush.c
-> @@ -85,7 +85,7 @@ static void __flush_tlb_range(struct mm_struct *mm, uns=
-igned long start,
->                         return;
->
->                 if (static_branch_unlikely(&use_asid_allocator))
-> -                       asid =3D atomic_long_read(&mm->context.id) & asid=
-_mask;
-> +                       asid =3D cntx2asid(atomic_long_read(&mm->context.=
-id));
->         } else {
->                 cmask =3D cpu_online_mask;
->         }
-> --
-> 2.42.0
->
-
-You can add:
-
-Reviewed-by: Alexandre Ghiti <alexghiti@rivosinc.com>
-
-Thanks,
-
-Alex
+- Arnaldo
 
