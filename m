@@ -1,51 +1,56 @@
-Return-Path: <linux-kernel+bounces-16684-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16685-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7090082426C
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 14:07:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 016F682426F
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 14:07:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1F008287ACE
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 13:07:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EED471C23F55
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 13:07:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0824722327;
-	Thu,  4 Jan 2024 13:03:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C640F224D5;
+	Thu,  4 Jan 2024 13:05:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DkO1jlDh"
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="Y8rRXlep"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 523352230C;
-	Thu,  4 Jan 2024 13:03:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98199C433C8;
-	Thu,  4 Jan 2024 13:03:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704373422;
-	bh=A8ZR/6SM/RSWKP/a/pFKacgU/Wu3j1mC0cFt4l1fwLE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=DkO1jlDhPRzTF+k92oCyoaddI2+urxW1BcFNpiArmjdZ6gqzrUSONj/6gCTpqqj+s
-	 t4CTtzOS7wB8LLcoDlX6niyxoC6BhK42kmb9X/ke6IhnhdC3cgjE3hJYHeGKsgONW8
-	 awHfUErrPmsT1IyF7SdNRqz8mFwiaVzmjY2F+DDqb3uS2HbgRZSFeOcu+Z3HWdJPNU
-	 NFEruw1vhtyCcIDhc1snodZddb9kFHDobpmWp2KibokD/JHonBBUCFGtoImWRKSHFl
-	 8uxVkHvOQH0GFq+fKgBGb+fWcAfriAHzjpa3TSIC7ATNHhUREmaRUIK0nW3rMEz6Lx
-	 lmmzMqaTlvEkQ==
-Date: Thu, 4 Jan 2024 13:03:37 +0000
-From: Simon Horman <horms@kernel.org>
-To: Christian Marangi <ansuelsmth@gmail.com>
-Cc: Andrew Lunn <andrew@lunn.ch>, Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	"David S. Miller" <davem@davemloft.net>,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7256121343;
+	Thu,  4 Jan 2024 13:05:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=y1A8fgZsiIjsazqh2xXbSQAE7toMo839MhQ2MSFa1Ik=; b=Y8rRXlepBxDcgCzTA7uGpVud/D
+	k6UiLHKLWjtAi60KxLwieZ5dGpeTkkKhx8hLP2gQ1a/2yP/23fNx52Ni9hMfIArOoaCiqHF649NrL
+	/UrUYIc+HmCWT7z4WLOR8hICBXldkNSVsH/VEYFjoL7dni5lc4IeWVVdAcWGLZ3GPxfk=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1rLNPd-004LdL-03; Thu, 04 Jan 2024 14:05:29 +0100
+Date: Thu, 4 Jan 2024 14:05:28 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: "Gan, Yi Fang" <yi.fang.gan@intel.com>
+Cc: Russell King <linux@armlinux.org.uk>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	"David S . Miller" <davem@davemloft.net>,
 	Eric Dumazet <edumazet@google.com>,
 	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [net-next PATCH v3 2/4] net: phy: at803x: refactor qca808x cable
- test get status function
-Message-ID: <20240104130337.GG31813@kernel.org>
-References: <20240103124637.3078-1-ansuelsmth@gmail.com>
- <20240103124637.3078-3-ansuelsmth@gmail.com>
+	Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
+	netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	Looi Hong Aun <hong.aun.looi@intel.com>,
+	Voon Weifeng <weifeng.voon@intel.com>,
+	Song Yoong Siang <yoong.siang.song@intel.com>,
+	Choong Yong Liang <yong.liang.choong@intel.com>
+Subject: Re: [PATCH net v3 1/1] net: phylink: Add module_exit()
+Message-ID: <fb1cc3a4-8615-4cee-8fe7-29966c4cb7c7@lunn.ch>
+References: <20240104101255.3056090-1-yi.fang.gan@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -54,74 +59,19 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240103124637.3078-3-ansuelsmth@gmail.com>
+In-Reply-To: <20240104101255.3056090-1-yi.fang.gan@intel.com>
 
-On Wed, Jan 03, 2024 at 01:46:33PM +0100, Christian Marangi wrote:
-> Refactor qca808x cable test get status function to remove code
-> duplication and clean things up.
-> 
-> The same logic is applied to each pair hence it can be generalized and
-> moved to a common function.
-> 
-> Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
-> ---
->  drivers/net/phy/at803x.c | 65 +++++++++++++++++++++-------------------
->  1 file changed, 34 insertions(+), 31 deletions(-)
-> 
-> diff --git a/drivers/net/phy/at803x.c b/drivers/net/phy/at803x.c
-> index acf483fa0887..b87293ee736c 100644
-> --- a/drivers/net/phy/at803x.c
-> +++ b/drivers/net/phy/at803x.c
-> @@ -2037,10 +2037,39 @@ static int qca808x_cable_test_start(struct phy_device *phydev)
->  	return 0;
->  }
->  
-> +static void qca808x_cable_test_get_pair_status(struct phy_device *phydev, u8 pair,
-> +					       u16 status)
-> +{
-> +	u16 pair_code;
-> +	int length;
-> +
-> +	switch (pair) {
-> +	case ETHTOOL_A_CABLE_PAIR_A:
-> +		pair_code = FIELD_GET(QCA808X_CDT_CODE_PAIR_A, status);
-> +		break;
-> +	case ETHTOOL_A_CABLE_PAIR_B:
-> +		pair_code = FIELD_GET(QCA808X_CDT_CODE_PAIR_B, status);
-> +		break;
-> +	case ETHTOOL_A_CABLE_PAIR_C:
-> +		pair_code = FIELD_GET(QCA808X_CDT_CODE_PAIR_C, status);
-> +		break;
-> +	case ETHTOOL_A_CABLE_PAIR_D:
-> +		pair_code = FIELD_GET(QCA808X_CDT_CODE_PAIR_D, status);
-> +		break;
-> +	}
+On Thu, Jan 04, 2024 at 06:12:55PM +0800, Gan, Yi Fang wrote:
+65;7401;1c> In delete_module(), if mod->init callback is defined but mod->exit callback
+> is not defined, it will assume the module cannot be removed and return
+> EBUSY. The module_exit() is missing from current phylink module drive
+> causing failure while unloading it.
 
-Hi Christian,
+This is still missing the explanation why this is safe.
 
-I don't think this can actually happen given current usage,
-but if pair doesn't match one of the cases above,
-then pair_code is used uninitialised below.
 
-Flagged by Smatch.
+    Andrew
 
-> +
-> +	ethnl_cable_test_result(phydev, pair,
-> +				qca808x_cable_test_result_trans(pair_code));
-> +
-> +	if (qca808x_cdt_fault_length_valid(pair_code)) {
-> +		length = qca808x_cdt_fault_length(phydev, pair);
-> +		ethnl_cable_test_fault_length(phydev, pair, length);
-> +	}
-> +}
-> +
->  static int qca808x_cable_test_get_status(struct phy_device *phydev, bool *finished)
->  {
->  	int ret, val;
-> -	int pair_a, pair_b, pair_c, pair_d;
->  
->  	*finished = false;
->  
-
-...
+---
+pw-bot: cr
 
