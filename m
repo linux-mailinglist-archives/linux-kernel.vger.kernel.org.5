@@ -1,100 +1,88 @@
-Return-Path: <linux-kernel+bounces-17147-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17148-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE33B8248E7
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 20:20:03 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D504C8248E8
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 20:20:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8CBCD2839C9
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 19:20:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 167ADB20D0A
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 19:20:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A3402C1A3;
-	Thu,  4 Jan 2024 19:19:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C5112C694;
+	Thu,  4 Jan 2024 19:19:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AhoD7/69"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Dda83Mqf"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B66B22C194;
-	Thu,  4 Jan 2024 19:19:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BF910C433CA;
-	Thu,  4 Jan 2024 19:19:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F1FF2C68C
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 19:19:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C60E9C433C8;
+	Thu,  4 Jan 2024 19:19:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704395994;
-	bh=TzkztMPde2JWtmqHozGMznhfMwCoSJkyBXAFGHMfTXg=;
-	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
-	b=AhoD7/69l6FQZ03ugH8x76tNj6z5BNaAk7lpWKN+aBdvls2cstLH8jtMuNjLIlMlf
-	 kE2zYzI2YjXFHqE+vktBfPrEViikX31vepZi1H4J1qwx4fOZvjF4W+gHEqFRKEt/9S
-	 jTiah/k2OK5ZYnq+YW4m0twe4HLPPxnURjqGZ2ifNyifPGM0tmErJ9Nw7PupW9eVI5
-	 FO48Ywt9xnRhqDvqwwGw8FJXCNetljbsBLDWV80oA1QskX50LxW0cp08Izb5NZjGvN
-	 nI4JOwT5lSEMJxCOFzuMhSF80DAz7xzFR4V/L6YbTT2VL5mzaMxdvLqoPi6owfOJnL
-	 +DQp7ZYTgGcLg==
+	s=k20201202; t=1704395996;
+	bh=edaUvHjWU6iYWkUwFTqdLrkW4WvxE2h+anopOjfjoQw=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=Dda83MqfeoLl8Y8yNGu+H/QOncGyiBIqMrFs2qt1ZZLHaAVkjZjjH5ra8bmwaCNP+
+	 dJWFqyT3NC2HBNxXXP4fWGExrOxEGjEC0t4i+/eSgy0TNXKU/vINVFoaMrfW5Gjg46
+	 X2FAb1vl6PsDivFonJVsR5cKqE2ItVeQtj7JUifRmdp3mOzgKapoEZpDT6S0VL3hJF
+	 gRYJ8N0o6iZAz4rKBCJTBeCD0h6606w2ckf0f8TC1rwVuSqy6dqNQbB8b2siGX58RT
+	 +bE0uScI3rZ8Vrpg6u4Jrophx4Y6PwC4CY5ZDg+4SqeVIefVRdUwTtFd4XQbJpz9f0
+	 CIICs4rLBOKnA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 5A3E8CE06FA; Thu,  4 Jan 2024 11:19:56 -0800 (PST)
+Date: Thu, 4 Jan 2024 11:19:56 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Jiri Wiesner <jwiesner@suse.de>
+Cc: linux-kernel@vger.kernel.org, John Stultz <jstultz@google.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Stephen Boyd <sboyd@kernel.org>, Feng Tang <feng.tang@intel.com>
+Subject: Re: [PATCH] clocksource: Skip watchdog check for large watchdog
+ intervals
+Message-ID: <dd62437f-b7a2-4844-89f6-94a88a08f227@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20240103112113.GA6108@incl>
+ <5b8fd9ba-1622-4ec7-b3cc-2db3a78122f1@paulmck-laptop>
+ <20240104163050.GC3303@incl>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Thu, 04 Jan 2024 21:19:47 +0200
-Message-Id: <CY65YBFIQA5T.3HZ78VUGKCH40@suppilovahvero>
-Cc: "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
- "seanjc@google.com" <seanjc@google.com>, "Zhang, Bo" <zhanb@microsoft.com>,
- "kristen@linux.intel.com" <kristen@linux.intel.com>,
- "anakrish@microsoft.com" <anakrish@microsoft.com>,
- "sean.j.christopherson@intel.com" <sean.j.christopherson@intel.com>, "Li,
- Zhiquan1" <zhiquan1.li@intel.com>, "yangjie@microsoft.com"
- <yangjie@microsoft.com>
-Subject: Re: [PATCH v6 09/12] x86/sgx: Restructure top-level EPC reclaim
- function
-From: "Jarkko Sakkinen" <jarkko@kernel.org>
-To: "Haitao Huang" <haitao.huang@linux.intel.com>, "Mehta, Sohil"
- <sohil.mehta@intel.com>, "x86@kernel.org" <x86@kernel.org>,
- "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
- "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>, "hpa@zytor.com"
- <hpa@zytor.com>, "mingo@redhat.com" <mingo@redhat.com>, "tj@kernel.org"
- <tj@kernel.org>, "mkoutny@suse.com" <mkoutny@suse.com>,
- "tglx@linutronix.de" <tglx@linutronix.de>, "linux-sgx@vger.kernel.org"
- <linux-sgx@vger.kernel.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, "bp@alien8.de" <bp@alien8.de>, "Huang, Kai"
- <kai.huang@intel.com>, "Dave Hansen" <dave.hansen@intel.com>
-X-Mailer: aerc 0.15.2
-References: <20231030182013.40086-1-haitao.huang@linux.intel.com>
- <20231030182013.40086-10-haitao.huang@linux.intel.com>
- <c8fc40dc56b853fbff14ba22db197c80a6d31820.camel@intel.com>
- <op.2e0yod2lwjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <431c5d7f5aee7d11ec2e8aa2e526fde438fa53b4.camel@intel.com>
- <op.2ftmyampwjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <3c27bca678c1b041920a14a7da0d958c9861ebca.camel@intel.com>
- <op.2f0eo8r1wjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <73ed579be8ad81835df1c309b7c69b491b7f2c8e.camel@intel.com>
- <op.2f523elowjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <4b28fc01-50cf-469b-8161-7d56b863b42b@intel.com>
- <op.2g1d81fqwjvjmi@hhuan26-mobl.amr.corp.intel.com>
-In-Reply-To: <op.2g1d81fqwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240104163050.GC3303@incl>
 
-On Thu Jan 4, 2024 at 9:11 PM EET, Haitao Huang wrote:
-> > The key question here is whether we want the SGX VM to be complex and
-> > more like the real VM or simple when a cgroup hits its limit.  Right?
-> >
->
-> Although it's fair to say the majority of complexity of this series is in=
- =20
-> support for reclaiming per cgroup, I think it's manageable and much less =
-=20
-> than real VM after we removed the enclave killing parts: the only extra =
-=20
-> effort is to track pages in separate list and reclaim them in separately =
-=20
-> as opposed to track in on global list and reclaim together. The main =20
-> reclaiming loop code is still pretty much the same as before.
+On Thu, Jan 04, 2024 at 05:30:50PM +0100, Jiri Wiesner wrote:
+> On Wed, Jan 03, 2024 at 02:08:08PM -0800, Paul E. McKenney wrote:
+> > I believe that there were concerns about a similar approach in the case
+> > where the jiffies counter is the clocksource
+> 
+> I ran a few simple tests on a 2 NUMA node Intel machine and found nothing 
+> so far. I tried booting with clocksource=jiffies and I changed the 
+> "nr_online_nodes <= 4" check in tsc_clocksource_as_watchdog() to enable 
+> the watchdog on my machine. I have a debugging module that monitors 
+> clocksource and watchdog reads in clocksource_watchdog() with kprobes. I 
+> see the cs/wd reads executed roughly every 0.5 second, as expected. When 
+> the machine is idle the average watchdog interval is 501.61 milliseconds 
+> (+-15.57 ms, with a minimum of 477.07 ms and a maximum of 517.93 ms). The 
+> result is similar when the CPUs of the machine are fully saturated with 
+> netperf processes. I also tried booting with clocksource=jiffies and 
+> tsc=watchdog. The watchdog interval was similar to the previous test.
+> 
+> AFAIK, the jiffies clocksource does get checked by the watchdog itself. 
+> And with that, I have run out of ideas.
 
-I'm not seeing any unmanageable complexity on SGX side, and also
-cgroups specific changes are somewhat clean to me at least...
+If I recall correctly (ha!), the concern was that with the jiffies as
+clocksource, we would be using jiffies (via timers) to check jiffies
+(the clocksource), and that this could cause issues if the jiffies got
+behind, then suddenly updated while the clocksource watchdog was running.
 
-BR, Jarkko
+Thoughts?
+
+							Thanx, Paul
 
