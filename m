@@ -1,59 +1,59 @@
-Return-Path: <linux-kernel+bounces-17235-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17236-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62B4A824A41
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 22:25:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A8DC1824A43
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 22:25:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F0825288007
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 21:25:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BCA591C226F9
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 21:25:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CDF52C6A1;
-	Thu,  4 Jan 2024 21:24:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DFA92C878;
+	Thu,  4 Jan 2024 21:24:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="LotKH7lg"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="RyjBMIql"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C0E32C856
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 21:24:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BA852C87D
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 21:24:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--maheshb.bounces.google.com
-Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-5e617562a65so20302087b3.1
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 13:24:40 -0800 (PST)
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dbe053d5d91so1383463276.2
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 13:24:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1704403479; x=1705008279; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1704403482; x=1705008282; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=3EcDyhJpXfuqwObCE0OlLjCVuMesE+JcrTbbaHS7TvA=;
-        b=LotKH7lgllB4kBU5B5E+oVZQl97UZumqcsTNzKaAycUxfsJBWL0Qe6PawMZ96UUYjx
-         83Zbglq/FID45oO/tQbsB35VDrlu5ZTIfaHO7YQgoz+yebbbOpJXZh98lwLRZA0qiA/G
-         QmqWZaIZN784CcZO9BE77GrsGta+VG4GFQix6z/tenaWdm5+wKEKvC7boPdWjbci14Xs
-         acdsVbIf3ZcsqLb4E35MojRUjjFicmsJF97rpfP+cX+nB0r87fZyXDb4EYSxX7WpZ67B
-         XAxUKEEILStPAF61yU0Top6xba12ZrN27HFX36A0GB9Ucngjdh02GAxMNlThCnawamtg
-         Hsbw==
+        bh=YsAJCiIBvgndyLh0nU4MixTydeQR6acGfzT1miAC0JA=;
+        b=RyjBMIqlE311DaqGjKy8LExpBMxE+BQp2X6F8mvzCH95q6TVq1tKDY0T54uYsB+5DP
+         b0Z6IfUCXrj9WSq1O5DCiZLWC2oEXltk8NegwpqELO8BloDjjeiG9SQvijPnzQGJ90ra
+         XOZLBtCzT7t65EX4DpnYDzgn/fTHcncyPgvr6Dx1PRLMqHZqUoBHRqrbjFQf7AeEz4Tx
+         ePKE3F+zt6nZ3SeUP9DsqsirNN5uOHG2oyjpby+AjvyON4jGyX6u0wgw0+DiebrKOaE5
+         omRjs0L/tdPO22I8DLCok5ETkYbNJF/X+/yg5+2T4xA6HbLvcYuLRTdYvet4Njd8XQPL
+         qpyQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704403479; x=1705008279;
+        d=1e100.net; s=20230601; t=1704403482; x=1705008282;
         h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=3EcDyhJpXfuqwObCE0OlLjCVuMesE+JcrTbbaHS7TvA=;
-        b=XPy3RuixbfyrHI5fmg3UTqXVOIrpG3S/9P3Ak9wc5/Leysph5upavlGr6jVLeoIkiC
-         P9ToGXNDEQ24OI1TCi3QbjMk5bIytsaaqYQ4VOeKaEZXT8UC3J6/JYzKAvkkHg5Ug/kJ
-         yBE4+SUM97RZ73bBpx6j+bUYSa50q9JxCVQGmp05AsR1SuUHGoX+0IUi3qK5Wfr3jKIk
-         +1yoARX+jmuEkyuGwkmxxm9xQDzz4N62NuUSXkDYCk63XjUn7WFaCibBat8uuWEQY37V
-         C6xjxZBXIrNVTI2vdujhBgyuXD4sInASU2KlibxW+ONckmF9PiS/sSlv+gmpcCamSjvC
-         9tVQ==
-X-Gm-Message-State: AOJu0YzHiLNVkOu38K2GNEaQNbf4OosVnB+o3j37TkTGt+m6T13s5FMl
-	dW5F2H92wUuebQmVpsZFEHZAzVeRo0NKE+J/QJA=
-X-Google-Smtp-Source: AGHT+IFyGuvvGsK4MYW1STDNxBXNcWnNz2TEZSC2WyHSKJfWvjhnBymy4PreKpmWN+Yt326Lq1gIuzLNjad2
+        bh=YsAJCiIBvgndyLh0nU4MixTydeQR6acGfzT1miAC0JA=;
+        b=uwugIzTabKfCaSkLz1EdyuIbJuMqQNJ7BF/fP06SM4Yq5FvfG8psePuhg3j45svmgA
+         fbJrZBP+0bGYjrwoMSSZ+v9jMj/WXRkqwPFUd5ixXC0cedgtehKN0GbDjRunIEDYJrfu
+         VfQPgz1arpbTtbowV/lqfjldN0WJOgZzn1XnZ4dtA9lZSlvO0gPN0GvrYkZO8qCYaa9g
+         T/a6MHEPgtDk+9J5HCSEtBeU1iWGxafshn6Jpf6q1TNjWpwGS3puW/HEreUObdXHdl0b
+         vPeFkoi1E9D1Y9q9wEgHE5tXJcz1vPLACabt4JGNFIEJ4sE/hCAB4MXQUXoFF1efk0Mf
+         YSqQ==
+X-Gm-Message-State: AOJu0YxMco8iwAmm3AO26WoyAJdq18VG0naQw3Xgnj9iLaADeSGdLWZc
+	KYf3w3/PmOgjoSxkudHWsyJp+2gfrQ2iwqDS4JY=
+X-Google-Smtp-Source: AGHT+IHGUyHXVjIzF9I3UpGGe202gVTqGTWxOBA9wbyf98ZTRVjvXMqgV/cWw6j8j4Z4cTJlB395cEVW5BUY
 X-Received: from coldfire.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:2b7a])
- (user=maheshb job=sendgmr) by 2002:a05:690c:3389:b0:5e5:c7de:e7ac with SMTP
- id fl9-20020a05690c338900b005e5c7dee7acmr598138ywb.1.1704403479494; Thu, 04
- Jan 2024 13:24:39 -0800 (PST)
-Date: Thu,  4 Jan 2024 13:24:36 -0800
+ (user=maheshb job=sendgmr) by 2002:a05:690c:368b:b0:5de:9c9f:3ee4 with SMTP
+ id fu11-20020a05690c368b00b005de9c9f3ee4mr625667ywb.6.1704403482530; Thu, 04
+ Jan 2024 13:24:42 -0800 (PST)
+Date: Thu,  4 Jan 2024 13:24:39 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -61,8 +61,8 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 X-Mailer: git-send-email 2.43.0.195.gebba966016-goog
-Message-ID: <20240104212436.3276057-1-maheshb@google.com>
-Subject: [PATCHv3 net-next 1/3] ptp: add new method ptp_gettimex64any()
+Message-ID: <20240104212439.3276458-1-maheshb@google.com>
+Subject: [PATCHv3 net-next 2/3] ptp: add ioctl interface for ptp_gettimex64any()
 From: Mahesh Bandewar <maheshb@google.com>
 To: Netdev <netdev@vger.kernel.org>, Linux <linux-kernel@vger.kernel.org>, 
 	David Miller <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, 
@@ -73,17 +73,8 @@ Cc: Jonathan Corbet <corbet@lwn.net>, John Stultz <jstultz@google.com>, Don Hatc
 	Willem de Bruijn <willemb@google.com>
 Content-Type: text/plain; charset="UTF-8"
 
-The current method that gets pre/post timestamps for PHC-read
-supports only CLOCK_REALTIME timebase while most of the systems
-have their clock disciplined by NTP service. There are applications
-that can benefit from pre/post timestamps that are not changing
-or have different timebases.
-
-This patch adds the new API ptp_gettimex64any() which allows user
-to specify the timebase for these pre/post timestamps.  The options
-supported are CLOCK_REALTIME, CLOCK_MONOTONIC, and CLOCK_MONOTONIC_RAW
-
-Option of CLOCK_REALTIME is equivalent to using ptp_gettimex64().
+add an ioctl op PTP_SYS_OFFSET_ANY to support newly added
+ptp_gettimex64any() method
 
 Signed-off-by: Mahesh Bandewar <maheshb@google.com>
 CC: Richard Cochran <richardcochran@gmail.com>
@@ -93,92 +84,97 @@ CC: Jakub Kicinski <kuba@kernel.org>
 CC: "Willem de Bruijn" <willemb@google.com>
 CC: netdev@vger.kernel.org
 ---
- include/linux/ptp_clock_kernel.h | 50 ++++++++++++++++++++++++++++++--
- 1 file changed, 48 insertions(+), 2 deletions(-)
+ drivers/ptp/ptp_chardev.c      | 37 ++++++++++++++++++++++++++++++++++
+ include/uapi/linux/ptp_clock.h | 14 +++++++++++++
+ 2 files changed, 51 insertions(+)
 
-diff --git a/include/linux/ptp_clock_kernel.h b/include/linux/ptp_clock_kernel.h
-index 1ef4e0f9bd2a..b1316d82721a 100644
---- a/include/linux/ptp_clock_kernel.h
-+++ b/include/linux/ptp_clock_kernel.h
-@@ -102,6 +102,17 @@ struct ptp_system_timestamp {
-  *               reading the lowest bits of the PHC timestamp and the second
-  *               reading immediately follows that.
-  *
-+ * @gettimex64any: Reads the current time from the hardware clock and
-+ *                 optionally also any of the MONO, MONO_RAW, or SYS clock
-+ *                 parameter ts: Holds the PHC timestamp.
-+ *                 parameter sts: If not NULL, it holds a pair of
-+ *                 timestamps from the clock of choice. The first reading
-+ *                 is made right before reading the lowest bits of the
-+ *                 PHC timestamp and the second reading immediately
-+ *                 follows that.
-+ *                 parameter clkid: any one of the supported clockids
-+ *                 (CLOCK_REALTIME, CLOCK_MONOTONIC, CLOCK_MONOTONIC_RAW)
-+ *
-  * @getcrosststamp:  Reads the current time from the hardware clock and
-  *                   system clock simultaneously.
-  *                   parameter cts: Contains timestamp (device,system) pair,
-@@ -180,6 +191,10 @@ struct ptp_clock_info {
- 	int (*gettime64)(struct ptp_clock_info *ptp, struct timespec64 *ts);
- 	int (*gettimex64)(struct ptp_clock_info *ptp, struct timespec64 *ts,
- 			  struct ptp_system_timestamp *sts);
-+	int (*gettimex64any)(struct ptp_clock_info *ptp,
-+			     struct timespec64 *ts,
-+			     struct ptp_system_timestamp *sts,
-+			     clockid_t clockid);
- 	int (*getcrosststamp)(struct ptp_clock_info *ptp,
- 			      struct system_device_crosststamp *cts);
- 	int (*settime64)(struct ptp_clock_info *p, const struct timespec64 *ts);
-@@ -452,16 +467,47 @@ static inline ktime_t ptp_convert_timestamp(const ktime_t *hwtstamp,
+diff --git a/drivers/ptp/ptp_chardev.c b/drivers/ptp/ptp_chardev.c
+index 7513018c9f9a..f20d43c34aec 100644
+--- a/drivers/ptp/ptp_chardev.c
++++ b/drivers/ptp/ptp_chardev.c
+@@ -161,6 +161,7 @@ long ptp_ioctl(struct posix_clock_context *pccontext, unsigned int cmd,
+ 	struct ptp_clock *ptp =
+ 		container_of(pccontext->clk, struct ptp_clock, clock);
+ 	struct ptp_sys_offset_extended *extoff = NULL;
++	struct ptp_sys_offset_any *anyoff = NULL;
+ 	struct ptp_sys_offset_precise precise_offset;
+ 	struct system_device_crosststamp xtstamp;
+ 	struct ptp_clock_info *ops = ptp->info;
+@@ -378,6 +379,42 @@ long ptp_ioctl(struct posix_clock_context *pccontext, unsigned int cmd,
+ 			err = -EFAULT;
+ 		break;
  
- #endif
- 
-+static inline void ptp_read_any_ts64(struct timespec64 *ts,
-+				     clockid_t clkid)
-+{
-+	switch (clkid) {
-+	case CLOCK_REALTIME:
-+		ktime_get_real_ts64(ts);
-+		break;
-+	case CLOCK_MONOTONIC:
-+		ktime_get_ts64(ts);
-+		break;
-+	case CLOCK_MONOTONIC_RAW:
-+		ktime_get_raw_ts64(ts);
-+		break;
-+	default:
-+		break;
-+	}
-+}
++	case PTP_SYS_OFFSET_ANY:
++		if (!ptp->info->gettimex64any) {
++			err = -EOPNOTSUPP;
++			break;
++		}
++		anyoff = memdup_user((void __user *)arg, sizeof(*anyoff));
++		if (IS_ERR(anyoff)) {
++			err = PTR_ERR(anyoff);
++			anyoff = NULL;
++			break;
++		}
++		if (anyoff->n_samples > PTP_MAX_SAMPLES
++		    || anyoff->rsv[0] || anyoff->rsv[1]
++		    || (anyoff->clockid != CLOCK_REALTIME
++			&& anyoff->clockid != CLOCK_MONOTONIC
++			&& anyoff->clockid != CLOCK_MONOTONIC_RAW)) {
++			err = -EINVAL;
++			break;
++		}
 +
- static inline void ptp_read_system_prets(struct ptp_system_timestamp *sts)
- {
- 	if (sts)
--		ktime_get_real_ts64(&sts->pre_ts);
-+		ptp_read_any_ts64(&sts->pre_ts, CLOCK_REALTIME);
- }
- 
- static inline void ptp_read_system_postts(struct ptp_system_timestamp *sts)
- {
- 	if (sts)
--		ktime_get_real_ts64(&sts->post_ts);
-+		ptp_read_any_ts64(&sts->pre_ts, CLOCK_REALTIME);
- }
- 
-+static inline void ptp_read_any_prets(struct ptp_system_timestamp *sts,
-+				      clockid_t clkid)
-+{
-+	if (sts)
-+		ptp_read_any_ts64(&sts->pre_ts, clkid);
-+}
++		for (i = 0; i < anyoff->n_samples; i++) {
++			err = ptp->info->gettimex64any(ptp->info, &ts, &sts,
++						       anyoff->clockid);
++			if (err)
++				goto out;
++			anyoff->ts[i][0].sec = sts.pre_ts.tv_sec;
++			anyoff->ts[i][0].nsec = sts.pre_ts.tv_nsec;
++			anyoff->ts[i][1].sec = ts.tv_sec;
++			anyoff->ts[i][1].nsec = ts.tv_nsec;
++			anyoff->ts[i][2].sec = sts.post_ts.tv_sec;
++			anyoff->ts[i][2].nsec = sts.post_ts.tv_nsec;
++		}
++		if (copy_to_user((void __user *)arg, anyoff, sizeof(*anyoff)))
++			err = -EFAULT;
++		break;
 +
-+static inline void ptp_read_any_postts(struct ptp_system_timestamp *sts,
-+				       clockid_t clkid)
-+{
-+	if (sts)
-+		ptp_read_any_ts64(&sts->post_ts, clkid);
-+}
- #endif
+ 	case PTP_SYS_OFFSET:
+ 	case PTP_SYS_OFFSET2:
+ 		sysoff = memdup_user((void __user *)arg, sizeof(*sysoff));
+diff --git a/include/uapi/linux/ptp_clock.h b/include/uapi/linux/ptp_clock.h
+index da700999cad4..a3143df8de2b 100644
+--- a/include/uapi/linux/ptp_clock.h
++++ b/include/uapi/linux/ptp_clock.h
+@@ -158,6 +158,18 @@ struct ptp_sys_offset_extended {
+ 	struct ptp_clock_time ts[PTP_MAX_SAMPLES][3];
+ };
+ 
++struct ptp_sys_offset_any {
++	unsigned int n_samples;		/* Desired number of measurements. */
++	clockid_t clockid;		/* One of the supported ClockID */
++	unsigned int rsv[2];		/* Reserved for future use. */
++	/*
++	 * Array of [TS, phc, TS] time stamps. The kernel will provide
++	 * 3*n_samples time stamps.
++	 * TS is any of the ts_type requested.
++	 */
++	struct ptp_clock_time ts[PTP_MAX_SAMPLES][3];
++};
++
+ struct ptp_sys_offset_precise {
+ 	struct ptp_clock_time device;
+ 	struct ptp_clock_time sys_realtime;
+@@ -226,6 +238,8 @@ struct ptp_pin_desc {
+ 	_IOWR(PTP_CLK_MAGIC, 18, struct ptp_sys_offset_extended)
+ #define PTP_MASK_CLEAR_ALL  _IO(PTP_CLK_MAGIC, 19)
+ #define PTP_MASK_EN_SINGLE  _IOW(PTP_CLK_MAGIC, 20, unsigned int)
++#define PTP_SYS_OFFSET_ANY \
++	_IOWR(PTP_CLK_MAGIC, 21, struct ptp_sys_offset_any)
+ 
+ struct ptp_extts_event {
+ 	struct ptp_clock_time t; /* Time event occured. */
 -- 
 2.43.0.195.gebba966016-goog
 
