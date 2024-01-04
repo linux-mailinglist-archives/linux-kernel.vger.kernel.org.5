@@ -1,384 +1,116 @@
-Return-Path: <linux-kernel+bounces-17159-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17160-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4897782490A
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 20:30:18 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 053EC82490E
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 20:31:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9C757B21113
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 19:30:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AB79B1C224AF
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 19:31:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 158752C19E;
-	Thu,  4 Jan 2024 19:30:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C0F52C1B2;
+	Thu,  4 Jan 2024 19:31:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Ot0d+wXR"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="fU/o5oPz"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9239B2C19C;
-	Thu,  4 Jan 2024 19:30:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704396605; x=1735932605;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=XbrYYoSXE3YaF1Ch/5mpDGYMPOH5jY4B+4OnS5lYTe8=;
-  b=Ot0d+wXRxZkQZnn8j5fZSq3nvSt5tiJVnTSP9aBJbxYo5GjQiIfWz5K6
-   qeso8fY8sctm1nrFRtGgB4WzToF7ox8PW+Ib6jjCaVLqfaDOXbJWpROR9
-   dOwdje8RJlja/pMMTEnsoPijkHhFXxjf0oVUp6hyn8+F27Q7l66+S03Ir
-   diBbvkupRAA1trRWHlvl/QdJYEduTSjQUm32uaFm22na4nxO8CwHcF7Qu
-   jbGIVIkKkwtLEPlSzpRdx/u9GEGgC59BtNDiM/aAQtlqemdUDhiAdxziA
-   QDElp8lTOQujJuFxrYrBaacZTWG5xnZsh4O+UpysVsy629s/Y+eZca90X
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10943"; a="483519558"
-X-IronPort-AV: E=Sophos;i="6.04,331,1695711600"; 
-   d="scan'208";a="483519558"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2024 11:30:04 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10943"; a="780517687"
-X-IronPort-AV: E=Sophos;i="6.04,331,1695711600"; 
-   d="scan'208";a="780517687"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga002.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2024 11:30:04 -0800
-Received: from [10.209.154.172] (kliang2-mobl1.ccr.corp.intel.com [10.209.154.172])
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by linux.intel.com (Postfix) with ESMTPS id 7B5F6580BF8;
-	Thu,  4 Jan 2024 11:30:02 -0800 (PST)
-Message-ID: <550563df-f8ac-4aa7-99de-ccf94cea8513@linux.intel.com>
-Date: Thu, 4 Jan 2024 14:30:01 -0500
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 159EE2C19E
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 19:31:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--tanzirh.bounces.google.com
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-5f53b4554b6so13270237b3.3
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 11:31:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1704396699; x=1705001499; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=dKx45HTp0b4xIO1bOxeSuZrQBl5REepZTvzMnrfd4hI=;
+        b=fU/o5oPzrbPUIfqFh2HFkFoNd+RMo3dkrg5muCXbgfwzu11c4bgqkk9FSn+2ZlnASg
+         bUHO+du4lOKMR63GYLkRFJv30jeALzZNehagmLeGmhIdvwTmef6mhYaBDJV5lV0GET45
+         UcfbVJDTRw+k+wBS/9uvVLWwrHXUVomAOxwVHXv6pM+Q8xQ4vDj9puW2KOLfvwz24SJI
+         SbrDYPYIlP80W6IsqpXA/ZHs5jCtQ86Nj4k/h/2Pd741lZKxXp5i7jpMYulyEvewC/Oo
+         uQO15b70kinsfxOOizjELUXrl9clhxyreLfZYMpa+4hEMteYUADQBvd9GuUuUc5jvSe6
+         vLHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704396699; x=1705001499;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=dKx45HTp0b4xIO1bOxeSuZrQBl5REepZTvzMnrfd4hI=;
+        b=mtfZMIjZDPjEXl09YCQb7eXA94/C6wAMIer/pl0LE3/LYkXFlLFlafWQ9HBfLa0AW0
+         ogEZHgd/vPBhqyuPAONnxzKaRR7lJsD+tV0ZhWlGfvM9f6E31xu2fpsIzxXZg+rTcz0L
+         yheMjOEPRby+j5OD69Ws/P/YqXG2EjXtrn77MPsAoWQqGBAfXrRJxu9IanKDfkAdnNwV
+         xBZpyVZwMgO603rYnnYU9FIlrX9hhFeDwxbIAuCqV1ApKcOHfByd4GbfWrHJ4+Ot4RJt
+         7HKtCm/hZdicWcUIXeSxz4FeyNqBlza80JMSsRr6ZLrmjgd8iBdWkZMungYw+/kEh7/Q
+         A90g==
+X-Gm-Message-State: AOJu0Yw3WNHzfQzwMaezgLXB3tW8lqWECvzYwELtXOofx1HASOxrOL7K
+	PmS7U8Byc4knhvNQOLl7sYTYtw32jQAg6eqDzcE=
+X-Google-Smtp-Source: AGHT+IGFPOpQPZcVAcZaS8m+YGry0n/a8P4727XpuPp5J19oo6vmywqKUyE2onkIULmizhldKPH62SnDi4zb
+X-Received: from tanz.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:c4a])
+ (user=tanzirh job=sendgmr) by 2002:a05:690c:3383:b0:5f4:f576:642d with SMTP
+ id fl3-20020a05690c338300b005f4f576642dmr420242ywb.2.1704396699032; Thu, 04
+ Jan 2024 11:31:39 -0800 (PST)
+Date: Thu, 04 Jan 2024 19:31:36 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 1/4] perf vendor events intel: Alderlake/rocketlake
- metric fixes
-Content-Language: en-US
-To: Ian Rogers <irogers@google.com>, "Wang, Weilin" <weilin.wang@intel.com>
-Cc: Arnaldo Carvalho de Melo <acme@kernel.org>,
- Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
- Mark Rutland <mark.rutland@arm.com>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
- Adrian Hunter <adrian.hunter@intel.com>, linux-perf-users@vger.kernel.org,
- linux-kernel@vger.kernel.org, Edward Baker <edward.baker@intel.com>
-References: <20240104074259.653219-1-irogers@google.com>
- <ZZam-EG-UepcXtWw@kernel.org>
- <CAP-5=fV+U4qSwU8nqHJMgAZTwtWs9jEm3i9yDQSVtq9Fbos5HA@mail.gmail.com>
- <8af821dc-d173-483d-8b69-b8e041538561@linux.intel.com>
- <CAP-5=fVTEcbJdG6_L+GH5RGCtpFhpjWyyhYu0Fhx5CRRqZcqDg@mail.gmail.com>
-From: "Liang, Kan" <kan.liang@linux.intel.com>
-In-Reply-To: <CAP-5=fVTEcbJdG6_L+GH5RGCtpFhpjWyyhYu0Fhx5CRRqZcqDg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIAJcHl2UC/3XMQQ7CIBCF4as0sxYDCI115T1MFxTGlsR2mkGJp
+ uHuYvcu/5e8b4OEHDHBpdmAMccUaamhDg34yS0jihhqg5baSCWNYJwpY3ityEwsuqHtrHHSW+2 hnlbGe3zv4K2vPcX0JP7sfla/9S+VlVACnZdhQHtu1ek6Eo0PPHqaoS+lfAEoJBEyrQAAAA==
+X-Developer-Key: i=tanzirh@google.com; a=ed25519; pk=UeRjcUcv5W9AeLGEbAe2+0LptQpcY+o1Zg0LHHo7VN4=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1704396697; l=1023;
+ i=tanzirh@google.com; s=20231204; h=from:subject:message-id;
+ bh=o8ZjFGvVRgAOV0PoxZM4zUboX/hIcxwiDge9/iyOGQM=; b=5lAIJ80+siN62VvzAwvXsNzu6CG4HnB9waOM/hpOGI7dmfcK8AWqFSAUB2Lzqv/JuwTxw79S1
+ H73yzEWogqSAfA67hbQMirOJ7jGBq1A6gFfWkkHkZIXxvC64foLHimI
+X-Mailer: b4 0.12.4
+Message-ID: <20240104-removeduperror-v1-1-d170d4b3675a@google.com>
+Subject: [PATCH] android: removed duplicate linux/errno
+From: Tanzir Hasan <tanzirh@google.com>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	"=?utf-8?q?Arve_Hj=C3=B8nnev=C3=A5g?=" <arve@android.com>, Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>, 
+	Joel Fernandes <joel@joelfernandes.org>, Christian Brauner <brauner@kernel.org>, 
+	Carlos Llamas <cmllamas@google.com>, Suren Baghdasaryan <surenb@google.com>
+Cc: Nick Desaulniers <nnn@google.com>, linux-kernel@vger.kernel.org, 
+	Nick Desaulniers <ndesaulniers@google.com>, Tanzir Hasan <tanzirh@google.com>
+Content-Type: text/plain; charset="utf-8"
 
+There are two linux/errno.h inclusions in this file. The second one has
+been removed and the file builds correctly.
 
+Fixes: 54ffdab82080 ("android: binder: binderfs.c: removed asm-generic/errno-base.h")
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Tested-by: Nick Desaulniers <ndesaulniers@google.com>
+Signed-off-by: Tanzir Hasan <tanzirh@google.com>
+---
 
-On 2024-01-04 12:51 p.m., Ian Rogers wrote:
-> On Thu, Jan 4, 2024 at 6:30=E2=80=AFAM Liang, Kan <kan.liang@linux.inte=
-l.com> wrote:
->>
->>
->>
->> On 2024-01-04 8:56 a.m., Ian Rogers wrote:
->>>> Testing tma_slow_pause
->>>> Metric 'tma_slow_pause' not printed in:
->>>> # Running 'internals/synthesize' benchmark:
->>>> Computing performance of single threaded perf event synthesis by
->>>> synthesizing events on the perf process itself:
->>>>   Average synthesis took: 49.987 usec (+- 0.049 usec)
->>>>   Average num. events: 47.000 (+- 0.000)
->>>>   Average time per event 1.064 usec
->>>>   Average data synthesis took: 53.490 usec (+- 0.033 usec)
->>>>   Average num. events: 245.000 (+- 0.000)
->>>>   Average time per event 0.218 usec
->>>>
->>>>  Performance counter stats for 'perf bench internals synthesize':
->>>>
->>>>      <not counted>      cpu_core/TOPDOWN.SLOTS/                     =
-                            (0.00%)
->>>>      <not counted>      cpu_core/topdown-retiring/                  =
-                            (0.00%)
->>>>      <not counted>      cpu_core/topdown-mem-bound/                 =
-                            (0.00%)
->>>>      <not counted>      cpu_core/topdown-bad-spec/                  =
-                            (0.00%)
->>>>      <not counted>      cpu_core/topdown-fe-bound/                  =
-                            (0.00%)
->>>>      <not counted>      cpu_core/topdown-be-bound/                  =
-                            (0.00%)
->>>>      <not counted>      cpu_core/RESOURCE_STALLS.SCOREBOARD/        =
-                                (0.00%)
->>>>      <not counted>      cpu_core/EXE_ACTIVITY.1_PORTS_UTIL/         =
-                               (0.00%)
->>>>      <not counted>      cpu_core/EXE_ACTIVITY.BOUND_ON_LOADS/       =
-                                 (0.00%)
->>>>      <not counted>      cpu_core/CPU_CLK_UNHALTED.PAUSE/            =
-                            (0.00%)
->>>>      <not counted>      cpu_core/CYCLE_ACTIVITY.STALLS_TOTAL/       =
-                                 (0.00%)
->>>>      <not counted>      cpu_core/CPU_CLK_UNHALTED.THREAD/           =
-                             (0.00%)
->>>>      <not counted>      cpu_core/ARITH.DIV_ACTIVE/                  =
-                            (0.00%)
->>>>      <not counted>      cpu_core/EXE_ACTIVITY.2_PORTS_UTIL,umask=3D0=
-xc/                                        (0.00%)
->>>>      <not counted>      cpu_core/EXE_ACTIVITY.3_PORTS_UTIL,umask=3D0=
-x80/                                        (0.00%)
->>>>
->>>>        1.186254766 seconds time elapsed
->>>>
->>>>        0.427220000 seconds user
->>>>        0.752217000 seconds sys
->>>> Testing smi_cycles
->>>> Testing smi_num
->>>> Testing tsx_aborted_cycles
->>>> Testing tsx_cycles_per_elision
->>>> Testing tsx_cycles_per_transaction
->>>> Testing tsx_transactional_cycles
->>>> test child finished with -1
->>>> ---- end ----
->>>> perf all metrics test: FAILED!
->>>> root@number:~#
->>> Have a try disabling the NMI watchdog. Agreed that there is more to
->>> fix here but I think the PMU driver is in part to blame because
->>> manually breaking the weak group of events is a fix.
->>
->> I think we have a NO_GROUP_EVENTS_NMI metric constraint to mark a grou=
-p
->> which require disabling of the NMI watchdog.
->> Maybe we should mark the group a NO_GROUP_EVENTS_NMI metric.
->=20
-> +Weilin due to the affects of event grouping.
->=20
-> Thanks Kan, NO_GROUP_EVENTS_NMI would be good. Something I see for
-> tma_ports_utilized_1 that may be worsening things is:
->=20
-> ```
-> Testing tma_ports_utilized_1
-> Metric 'tma_ports_utilized_1' not printed in:
-> # Running 'internals/synthesize' benchmark:
-> Computing performance of single threaded perf event synthesis by
-> synthesizing events on the perf process itself:
->   Average synthesis took: 49.581 usec (+- 0.030 usec)
->   Average num. events: 47.000 (+- 0.000)
->   Average time per event 1.055 usec
->   Average data synthesis took: 53.367 usec (+- 0.032 usec)
->   Average num. events: 246.000 (+- 0.000)
->   Average time per event 0.217 usec
->=20
->  Performance counter stats for 'perf bench internals synthesize':
->=20
->      <not counted>      cpu_core/TOPDOWN.SLOTS/
->                          (0.00%)
->      <not counted>      cpu_core/topdown-retiring/
->                          (0.00%)
->      <not counted>      cpu_core/topdown-mem-bound/
->                          (0.00%)
->      <not counted>      cpu_core/topdown-bad-spec/
->                          (0.00%)
->      <not counted>      cpu_core/topdown-fe-bound/
->                          (0.00%)
->      <not counted>      cpu_core/topdown-be-bound/
->                          (0.00%)
->      <not counted>      cpu_core/RESOURCE_STALLS.SCOREBOARD/
->                              (0.00%)
->      <not counted>      cpu_core/EXE_ACTIVITY.1_PORTS_UTIL/
->                             (0.00%)
->      <not counted>      cpu_core/EXE_ACTIVITY.BOUND_ON_LOADS/
->                               (0.00%)
->      <not counted>      cpu_core/EXE_ACTIVITY.1_PORTS_UTIL/
->                             (0.00%)
->      <not counted>      cpu_core/CYCLE_ACTIVITY.STALLS_TOTAL/
->                               (0.00%)
->      <not counted>      cpu_core/CPU_CLK_UNHALTED.THREAD/
->                           (0.00%)
->      <not counted>      cpu_core/ARITH.DIV_ACTIVE/
->                          (0.00%)
->      <not counted>      cpu_core/EXE_ACTIVITY.2_PORTS_UTIL,umask=3D0xc/=
+---
+ drivers/android/binderfs.c | 1 -
+ 1 file changed, 1 deletion(-)
 
->                                       (0.00%)
->      <not counted>      cpu_core/EXE_ACTIVITY.3_PORTS_UTIL,umask=3D0x80=
-/
->                                        (0.00%)
->=20
->        1.180394056 seconds time elapsed
->=20
->        0.409881000 seconds user
->        0.764134000 seconds sys
-> ```
->=20
-> The event EXE_ACTIVITY.1_PORTS_UTIL is repeated, this is because the
-> metric code deduplicates events based purely on their name and so
-> doesn't realize EXE_ACTIVITY.1_PORTS_UTIL is the same as
-> cpu_core@EXE_ACTIVITY.1_PORTS_UTIL@. This is a hybrid only glitch as
-> we only prefix with a PMU for hybrid metrics, and I should find and
-> remove why there's no PMU for the 1 case of EXE_ACTIVITY.1_PORTS_UTIL.
->=20
-> This problem doesn't occur for tma_slow_pause and I wondered if you
-> could give insight. That metric has the counters below:
-> ```
-> $ perf stat -M tma_slow_pause -a sleep 0.1
->=20
-> Performance counter stats for 'system wide':
->=20
->     <not counted>      cpu_core/TOPDOWN.SLOTS/
->                         (0.00%)
->     <not counted>      cpu_core/topdown-retiring/
->                         (0.00%)
->     <not counted>      cpu_core/topdown-mem-bound/
->                         (0.00%)
->     <not counted>      cpu_core/topdown-bad-spec/
->                         (0.00%)
->     <not counted>      cpu_core/topdown-fe-bound/
->                         (0.00%)
->     <not counted>      cpu_core/topdown-be-bound/
->                         (0.00%)
->     <not counted>      cpu_core/RESOURCE_STALLS.SCOREBOARD/
->                             (0.00%)
->     <not counted>      cpu_core/EXE_ACTIVITY.1_PORTS_UTIL/
->                            (0.00%)
->     <not counted>      cpu_core/EXE_ACTIVITY.BOUND_ON_LOADS/
->                              (0.00%)
->     <not counted>      cpu_core/CPU_CLK_UNHALTED.PAUSE/
->                         (0.00%)
->     <not counted>      cpu_core/CYCLE_ACTIVITY.STALLS_TOTAL/
->                              (0.00%)
->     <not counted>      cpu_core/CPU_CLK_UNHALTED.THREAD/
->                          (0.00%)
->     <not counted>      cpu_core/ARITH.DIV_ACTIVE/
->                         (0.00%)
->     <not counted>      cpu_core/EXE_ACTIVITY.2_PORTS_UTIL,umask=3D0xc/
->                                      (0.00%)
->     <not counted>      cpu_core/EXE_ACTIVITY.3_PORTS_UTIL,umask=3D0x80/=
+diff --git a/drivers/android/binderfs.c b/drivers/android/binderfs.c
+index d04ff6029480..3001d754ac36 100644
+--- a/drivers/android/binderfs.c
++++ b/drivers/android/binderfs.c
+@@ -29,7 +29,6 @@
+ #include <linux/uaccess.h>
+ #include <linux/user_namespace.h>
+ #include <linux/xarray.h>
+-#include <linux/errno.h>
+ #include <uapi/linux/android/binder.h>
+ #include <uapi/linux/android/binderfs.h>
+ 
 
->                                       (0.00%)
->=20
->       0.102074888 seconds time elapsed
-> ```
->=20
-> With -vv I see the event string is:
-> '{RESOURCE_STALLS.SCOREBOARD/metric-id=3DRESOURCE_STALLS.SCOREBOARD/,cp=
-u_core/EXE_ACTIVITY.1_PORTS_UTIL,metric-id=3Dcpu_core!3EXE_ACTIVITY.1_POR=
-TS_UTIL!3/,cpu_core/TOPDOWN.SLOTS,metric-id=3Dcpu_core!3TOPDOWN.SLOTS!3/,=
-cpu_core/EXE_ACTIVITY.BOUND_ON_LOADS,metric-id=3Dcpu_core!3EXE_ACTIVITY.B=
-OUND_ON_LOADS!3/,cpu_core/topdown-retiring,metric-id=3Dcpu_core!3topdown!=
-1retiring!3/,cpu_core/topdown-mem-bound,metric-id=3Dcpu_core!3topdown!1me=
-m!1bound!3/,cpu_core/topdown-bad-spec,metric-id=3Dcpu_core!3topdown!1bad!=
-1spec!3/,CPU_CLK_UNHALTED.PAUSE/metric-id=3DCPU_CLK_UNHALTED.PAUSE/,cpu_c=
-ore/CYCLE_ACTIVITY.STALLS_TOTAL,metric-id=3Dcpu_core!3CYCLE_ACTIVITY.STAL=
-LS_TOTAL!3/,cpu_core/CPU_CLK_UNHALTED.THREAD,metric-id=3Dcpu_core!3CPU_CL=
-K_UNHALTED.THREAD!3/,cpu_core/ARITH.DIV_ACTIVE,metric-id=3Dcpu_core!3ARIT=
-H.DIV_ACTIVE!3/,cpu_core/topdown-fe-bound,metric-id=3Dcpu_core!3topdown!1=
-fe!1bound!3/,cpu_core/EXE_ACTIVITY.2_PORTS_UTIL,umask=3D0xc,metric-id=3Dc=
-pu_core!3EXE_ACTIVITY.2_PORTS_UTIL!0umask!20xc!3/,cpu_core/EXE_ACTIVITY.3=
-_PORTS_UTIL,umask=3D0x80,metric-id=3Dcpu_core!3EXE_ACTIVITY.3_PORTS_UTIL!=
-0umask!20x80!3/,cpu_core/topdown-be-bound,metric-id=3Dcpu_core!3topdown!1=
-be!1bound!3/}:W'
->=20
-> which without the metric-ids becomes:
-> '{RESOURCE_STALLS.SCOREBOARD,cpu_core/EXE_ACTIVITY.1_PORTS_UTIL/,cpu_co=
-re/TOPDOWN.SLOTS/,cpu_core/EXE_ACTIVITY.BOUND_ON_LOADS/,cpu_core/topdown-=
-retiring/,cpu_core/topdown-mem-bound/,cpu_core/topdown-bad-spec/,CPU_CLK_=
-UNHALTED.PAUSE,cpu_core/CYCLE_ACTIVITY.STALLS_TOTAL/,cpu_core/CPU_CLK_UNH=
-ALTED.THREAD/,cpu_core/ARITH.DIV_ACTIVE/,cpu_core/topdown-fe-bound/,cpu_c=
-ore/EXE_ACTIVITY.2_PORTS_UTIL,umask=3D0xc/,cpu_core/EXE_ACTIVITY.3_PORTS_=
-UTIL,umask=3D0x80/,cpu_core/topdown-be-bound/}:W'
->=20
-> I count 9 none slots/top-down counters there, but I see
-> CPU_CLK_UNHALTED.THREAD can use fixed counter 1. Should
-> perf_event_open fail for a CPU that has a pinned use of a fixed
-> counter and the group needs the fixed counter?
+---
+base-commit: 0c9ae0b8605078eafc3bea053cc78791e97ba2e2
+change-id: 20240104-removeduperror-9b6954a0c52c
 
-I tried, but the idea was rejected.
+Best regards,
+-- 
+Tanzir Hasan <tanzirh@google.com>
 
-> I'm guessing you don't
-> want this as CPU_CLK_UNHALTED.THREAD can also go on a generic counter
-> and the driver doesn't want to count counter usage, it seems feasible
-> to add it though. I guess we need a NO_GROUP_EVENTS_NMI whenever
-> CPU_CLK_UNHALTED.THREAD is an event and 8 generic counters are in use.
-
-Yes, it looks good to me.
-
->=20
-> Checking on Tigerlake I see:
-> ```
-> $ perf stat -M tma_slow_pause -a sleep 0.1
->=20
-> Performance counter stats for 'system wide':
->=20
->       105,210,913      TOPDOWN.SLOTS                    #      0.1 %
-> tma_slow_pause           (72.65%)
->         6,701,129      topdown-retiring
->                         (72.65%)
->        52,359,712      topdown-fe-bound
->                         (72.65%)
->        32,904,532      topdown-be-bound
->                         (72.65%)
->        14,117,814      topdown-bad-spec
->                         (72.65%)
->         6,602,391      RESOURCE_STALLS.SCOREBOARD
->                         (76.17%)
->         4,220,773      cpu/EXE_ACTIVITY.3_PORTS_UTIL,umask=3D0x80/
->                                  (76.73%)
->           421,812      EXE_ACTIVITY.BOUND_ON_STORES
->                         (76.69%)
->         5,164,088      EXE_ACTIVITY.1_PORTS_UTIL
->                         (76.70%)
->           299,681      cpu/INT_MISC.RECOVERY_CYCLES,cmask=3D1,edge/
->                                   (76.69%)
->               245      MISC_RETIRED.PAUSE_INST
->                         (76.67%)
->        58,403,687      CPU_CLK_UNHALTED.THREAD
->                         (76.72%)
->        25,297,841      CYCLE_ACTIVITY.STALLS_MEM_ANY
->                         (76.67%)
->         3,788,772      EXE_ACTIVITY.2_PORTS_UTIL
->                         (62.69%)
->        20,973,875      CYCLE_ACTIVITY.STALLS_TOTAL
->                         (62.16%)
->            68,053      ARITH.DIVIDER_ACTIVE
->                         (62.18%)
->=20
->       0.102624327 seconds time elapsed
-> ```
-> so 10 generic counters which would never fit and the weak group is
-> broken - the difference in the metric explaining why I've not been
-> seeing the issue. I think I need to add alderlake/sapphirerapids
-> constraints here:
-> https://github.com/captain5050/perfmon/blob/main/scripts/create_perf_js=
-on.py#L1382
-> Ideally we'd automate the constraint generation (or the PMU driver
-> would help us out by failing to open the weak group).
-
-Yes, an automation will be great. The NO_GROUP_EVENTS_NMI can be set for
-a group which has CPU_CLK_UNHALTED.THREAD and the number of core events
-(expect topdown) =3D=3D the max number of GP counters + 1.
-
-Thanks,
-Kan
->=20
-> Thanks,
-> Ian
->=20
->=20
->> Thanks,
->> Kan
->>
->>> Fwiw, if we
->>> switch to the buddy watchdog mechanism then we'll no longer need to
->>> disable the NMI watchdog:
->>> https://lore.kernel.org/lkml/20230421155255.1.I6bf789d21d0c3d75d382e7=
-e51a804a7a51315f2c@changeid/
->>
->=20
 
