@@ -1,269 +1,236 @@
-Return-Path: <linux-kernel+bounces-16567-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16568-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 29C0A824057
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 12:12:44 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A6FDC82405B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 12:13:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 82961B23DCF
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 11:12:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1DC24B23BF5
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 11:13:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87938210F1;
-	Thu,  4 Jan 2024 11:12:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="r1G5Uiv/"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFAE8210F6;
+	Thu,  4 Jan 2024 11:13:12 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ot1-f50.google.com (mail-ot1-f50.google.com [209.85.210.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D05B1210E8;
-	Thu,  4 Jan 2024 11:12:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7BD4DC433C8;
-	Thu,  4 Jan 2024 11:12:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704366751;
-	bh=ZTYlcyfMaa3S3C+3fVCkNuI7tbLxpzFHsI1DErMHbmc=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=r1G5Uiv/WQdfy8fNqdt5yEW68k/doK+XAT06xU5w251XH5yBWIvyIQEGq5mbOzTCV
-	 Qe3pPsj5P3o3Q6xdXjyhek3InYKVDQv2GMnfpJ9+AjmTpAS2X9nUQ85MJYQQL5mmYL
-	 DSqbMfsnlsm6tPJu1SxRriSpbVe6vjKJ+Xa/7mQBIvrH/gYEbOKezsLLU6Es9zmLiu
-	 aKv7DGe0fe5fbH0KZ1p1wnU5WI3S/6KLsJll9/dTRyiszw8mj9+1GfQvXwpStlXDvD
-	 jF/oP061KaATAIWn+Ypih4EMcXTyMQEQZjSIJYnKjpUhUMOPUMolKwQCkKQ973wXwV
-	 /EwLAWI+kdR3g==
-Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
-	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <maz@kernel.org>)
-	id 1rLLeG-008mAO-SY;
-	Thu, 04 Jan 2024 11:12:29 +0000
-Date: Thu, 04 Jan 2024 11:12:28 +0000
-Message-ID: <86il499wtf.wl-maz@kernel.org>
-From: Marc Zyngier <maz@kernel.org>
-To: Lorenzo Pieralisi <lpieralisi@kernel.org>
-Cc: linux-kernel@vger.kernel.org,
-	Robin Murphy <robin.murphy@arm.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	linux-arm-kernel@lists.infradead.org,
-	linux-acpi@vger.kernel.org,
-	acpica-devel@lists.linux.dev,
-	Fang Xiang <fangxiang3@xiaomi.com>,
-	Robert Moore <robert.moore@intel.com>
-Subject: Re: [PATCH v4 3/3] irqchip/gic-v3: Enable non-coherent redistributors/ITSes ACPI probing
-In-Reply-To: <20231227110038.55453-4-lpieralisi@kernel.org>
-References: <20230905104721.52199-1-lpieralisi@kernel.org>
-	<20231227110038.55453-1-lpieralisi@kernel.org>
-	<20231227110038.55453-4-lpieralisi@kernel.org>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
- (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05E97210E3;
+	Thu,  4 Jan 2024 11:13:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f50.google.com with SMTP id 46e09a7af769-6dbd87b706aso106450a34.0;
+        Thu, 04 Jan 2024 03:13:10 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704366790; x=1704971590;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KADDJtubP9xxZYN3kC3xy/rkpnjcsqHbF4q/GCStMls=;
+        b=GikRP3/Sat1zGEvez8PIrZSyOyRg1A/K2AZ5YFSmSa8ACKaZv7Zco/vEUzUzIzg86H
+         lowyKzuc4wkCcJABK4LNtUdTkleqkuiRVo968OvsiqmJDXfzXkDu2q6dfPU07DYJjawU
+         WQXKxb8Qbm1LB2AnUnJJISotMSFj3I9duVaHUI48gEiahemhddoqVU9nf2eL58YZPfLk
+         FfAFR7bWzNP1IXTSkcTed2sVtap6p2Olj7Qmv+x4PmK+jGdKe4H0WHJUaDvp2ZESSQy8
+         AlXuit84HiBiMUHfaB8Mm/Lk/mf0Ik7t3/LEVYMvuTdYuGbzPjtLheKMFBlXRfXTGPbE
+         Fnhw==
+X-Gm-Message-State: AOJu0YzedUhiSuyKaysIi+pzL9X4zF9zxmLDfy0mCqLt/Q4VxwGUxXCw
+	VnBTvtI1COe5xlTbxRK5GRyI9PZKXbBZaQys9u0=
+X-Google-Smtp-Source: AGHT+IFSyW8wbnoZ4SCVQ2MOTqO2FYzWiFceSrHjqeUYNzwfns8DQw+OB/LtOUVoO1vKs8nyOXs+OLtiSepvVSfkhvA=
+X-Received: by 2002:a4a:b3c2:0:b0:594:35b4:8a with SMTP id q2-20020a4ab3c2000000b0059435b4008amr840062ooo.0.1704366789882;
+ Thu, 04 Jan 2024 03:13:09 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: lpieralisi@kernel.org, linux-kernel@vger.kernel.org, robin.murphy@arm.com, mark.rutland@arm.com, rafael@kernel.org, linux-arm-kernel@lists.infradead.org, linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev, fangxiang3@xiaomi.com, robert.moore@intel.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+MIME-Version: 1.0
+References: <4556052.LvFx2qVVIh@kreacher> <10409811.nUPlyArG6x@kreacher> <4eb9b38f-5364-466b-99fa-b2c42c1a4997@arm.com>
+In-Reply-To: <4eb9b38f-5364-466b-99fa-b2c42c1a4997@arm.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Thu, 4 Jan 2024 12:12:58 +0100
+Message-ID: <CAJZ5v0h=y0=Cd3PEKK8dvwJzbSt_6rzS84hzgrSrxTrDkA_5Ug@mail.gmail.com>
+Subject: Re: [PATCH v1 4/6] thermal: netlink: Drop thermal_notify_tz_trip_add/delete()
+To: Lukasz Luba <lukasz.luba@arm.com>
+Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>, 
+	Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>, Linux PM <linux-pm@vger.kernel.org>, 
+	Daniel Lezcano <daniel.lezcano@linaro.org>, Zhang Rui <rui.zhang@intel.com>, 
+	Linux ACPI <linux-acpi@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, 27 Dec 2023 11:00:38 +0000,
-Lorenzo Pieralisi <lpieralisi@kernel.org> wrote:
-> 
-> The GIC architecture specification defines a set of registers
-> for redistributors and ITSes that control the sharebility and
-> cacheability attributes of redistributors/ITSes initiator ports
-> on the interconnect (GICR_[V]PROPBASER, GICR_[V]PENDBASER,
-> GITS_BASER<n>).
-> 
-> Architecturally the GIC provides a means to drive shareability
-> and cacheability attributes signals and related IWB/OWB/ISH barriers
+On Wed, Jan 3, 2024 at 9:06=E2=80=AFPM Lukasz Luba <lukasz.luba@arm.com> wr=
+ote:
+>
+>
+>
+> On 12/15/23 19:59, Rafael J. Wysocki wrote:
+> > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> >
+> > Because thermal_notify_tz_trip_add/delete() are never used, drop them
+> > entirely along with the related code.
+> >
+> > The addition or removal of trip points is not supported by the thermal
+> > core and is unlikely to be supported in the future, so it is also
+> > unlikely that these functions will ever be needed.
+> >
+> > No intentional functional impact.
+> >
+> > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > ---
+> >   drivers/thermal/thermal_netlink.c |   33 +---------------------------=
+-----
+> >   drivers/thermal/thermal_netlink.h |   14 --------------
+> >   2 files changed, 1 insertion(+), 46 deletions(-)
+> >
+> > Index: linux-pm/drivers/thermal/thermal_netlink.c
+> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > --- linux-pm.orig/drivers/thermal/thermal_netlink.c
+> > +++ linux-pm/drivers/thermal/thermal_netlink.c
+> > @@ -135,7 +135,7 @@ static int thermal_genl_event_tz_trip_up
+> >       return 0;
+> >   }
+> >
+> > -static int thermal_genl_event_tz_trip_add(struct param *p)
+> > +static int thermal_genl_event_tz_trip_change(struct param *p)
+> >   {
+> >       if (nla_put_u32(p->msg, THERMAL_GENL_ATTR_TZ_ID, p->tz_id) ||
+> >           nla_put_u32(p->msg, THERMAL_GENL_ATTR_TZ_TRIP_ID, p->trip_id)=
+ ||
+> > @@ -147,15 +147,6 @@ static int thermal_genl_event_tz_trip_ad
+> >       return 0;
+> >   }
+> >
+> > -static int thermal_genl_event_tz_trip_delete(struct param *p)
+> > -{
+> > -     if (nla_put_u32(p->msg, THERMAL_GENL_ATTR_TZ_ID, p->tz_id) ||
+> > -         nla_put_u32(p->msg, THERMAL_GENL_ATTR_TZ_TRIP_ID, p->trip_id)=
+)
+> > -             return -EMSGSIZE;
+> > -
+> > -     return 0;
+> > -}
+> > -
+> >   static int thermal_genl_event_cdev_add(struct param *p)
+> >   {
+> >       if (nla_put_string(p->msg, THERMAL_GENL_ATTR_CDEV_NAME,
+> > @@ -245,9 +236,6 @@ int thermal_genl_event_tz_disable(struct
+> >   int thermal_genl_event_tz_trip_down(struct param *p)
+> >       __attribute__((alias("thermal_genl_event_tz_trip_up")));
+> >
+> > -int thermal_genl_event_tz_trip_change(struct param *p)
+> > -     __attribute__((alias("thermal_genl_event_tz_trip_add")));
+> > -
+> >   static cb_t event_cb[] =3D {
+> >       [THERMAL_GENL_EVENT_TZ_CREATE]          =3D thermal_genl_event_tz=
+_create,
+> >       [THERMAL_GENL_EVENT_TZ_DELETE]          =3D thermal_genl_event_tz=
+_delete,
+> > @@ -256,8 +244,6 @@ static cb_t event_cb[] =3D {
+> >       [THERMAL_GENL_EVENT_TZ_TRIP_UP]         =3D thermal_genl_event_tz=
+_trip_up,
+> >       [THERMAL_GENL_EVENT_TZ_TRIP_DOWN]       =3D thermal_genl_event_tz=
+_trip_down,
+> >       [THERMAL_GENL_EVENT_TZ_TRIP_CHANGE]     =3D thermal_genl_event_tz=
+_trip_change,
+> > -     [THERMAL_GENL_EVENT_TZ_TRIP_ADD]        =3D thermal_genl_event_tz=
+_trip_add,
+> > -     [THERMAL_GENL_EVENT_TZ_TRIP_DELETE]     =3D thermal_genl_event_tz=
+_trip_delete,
+> >       [THERMAL_GENL_EVENT_CDEV_ADD]           =3D thermal_genl_event_cd=
+ev_add,
+> >       [THERMAL_GENL_EVENT_CDEV_DELETE]        =3D thermal_genl_event_cd=
+ev_delete,
+> >       [THERMAL_GENL_EVENT_CDEV_STATE_UPDATE]  =3D thermal_genl_event_cd=
+ev_state_update,
+> > @@ -350,23 +336,6 @@ int thermal_notify_tz_trip_up(const stru
+> >       return thermal_genl_send_event(THERMAL_GENL_EVENT_TZ_TRIP_UP, &p)=
+;
+> >   }
+> >
+> > -int thermal_notify_tz_trip_add(int tz_id, int trip_id, int trip_type,
+> > -                            int trip_temp, int trip_hyst)
+> > -{
+> > -     struct param p =3D { .tz_id =3D tz_id, .trip_id =3D trip_id,
+> > -                        .trip_type =3D trip_type, .trip_temp =3D trip_=
+temp,
+> > -                        .trip_hyst =3D trip_hyst };
+> > -
+> > -     return thermal_genl_send_event(THERMAL_GENL_EVENT_TZ_TRIP_ADD, &p=
+);
+> > -}
+> > -
+> > -int thermal_notify_tz_trip_delete(int tz_id, int trip_id)
+> > -{
+> > -     struct param p =3D { .tz_id =3D tz_id, .trip_id =3D trip_id };
+> > -
+> > -     return thermal_genl_send_event(THERMAL_GENL_EVENT_TZ_TRIP_DELETE,=
+ &p);
+> > -}
+> > -
+> >   int thermal_notify_tz_trip_change(const struct thermal_zone_device *t=
+z,
+> >                                 const struct thermal_trip *trip)
+> >   {
+> > Index: linux-pm/drivers/thermal/thermal_netlink.h
+> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > --- linux-pm.orig/drivers/thermal/thermal_netlink.h
+> > +++ linux-pm/drivers/thermal/thermal_netlink.h
+> > @@ -22,9 +22,6 @@ int thermal_notify_tz_trip_down(const st
+> >                               const struct thermal_trip *trip);
+> >   int thermal_notify_tz_trip_up(const struct thermal_zone_device *tz,
+> >                             const struct thermal_trip *trip);
+> > -int thermal_notify_tz_trip_delete(int tz_id, int id);
+> > -int thermal_notify_tz_trip_add(int tz_id, int id, int type,
+> > -                            int temp, int hyst);
+> >   int thermal_notify_tz_trip_change(const struct thermal_zone_device *t=
+z,
+> >                                 const struct thermal_trip *trip);
+> >   int thermal_notify_cdev_state_update(int cdev_id, int state);
+> > @@ -71,17 +68,6 @@ static inline int thermal_notify_tz_trip
+> >   {
+> >       return 0;
+> >   }
+> > -
+> > -static inline int thermal_notify_tz_trip_delete(int tz_id, int id)
+> > -{
+> > -     return 0;
+> > -}
+> > -
+> > -static inline int thermal_notify_tz_trip_add(int tz_id, int id, int ty=
+pe,
+> > -                                          int temp, int hyst)
+> > -{
+> > -     return 0;
+> > -}
+> >
+> >   static inline int thermal_notify_tz_trip_change(const struct thermal_=
+zone_device *tz,
+> >                                               const struct thermal_trip=
+ *trip)
+> >
+> >
+> >
+>
+> We could also add a comment that these two
+> (THERMAL_GENL_EVENT_TZ_TRIP_ADD/DELETE) in the uapi header are obsolete.
 
-IWB/OWB *barriers*? Unless you're talking about something else,
-IWB/OWB refers to cacheability, and only that.
+I'd rather say they are placeholders for message types that have never
+been sent by the kernel - and nothing changes in that respect after
+the $subject patch.  They have been unused so far and they are still
+unused (it is easier to figure that out through code inspection,
+however).
 
-> but it is not mandatory for designs to wire up the corresponding
-> interconnect signals that control the cacheability/shareability
-> of transactions.
-> 
-> Redistributors and ITSes interconnect ports can be connected to
-> non-coherent interconnects that are not able to manage the
-> shareability/cacheability attributes; this implicitly makes
-> the redistributors and ITSes non-coherent observers.
-> 
-> So far, the GIC driver on probe executes a write to "probe" for
-> the redistributors and ITSes registers shareability bitfields
-> by writing a value (ie InnerShareable - the shareability domain the
-> CPUs are in) and check it back to detect whether the value sticks or
-> not; this hinges on a GIC programming model behaviour that predates the
-> current specifications, that just define shareability bits as writeable
-> but do not guarantee that writing certain shareability values
-> enable the expected behaviour for the redistributors/ITSes
-> memory interconnect ports.
-> 
-> To enable non-coherent GIC designs on ACPI based systems, parse the MADT
-> GICC/GICR/ITS subtables non-coherent flags to determine whether the
-> respective components are non-coherent observers and force the shareability
-> attributes to be programmed into the redistributors and ITSes registers.
-> 
-> An ACPI global function (acpi_get_madt_revision()) is added to retrieve
-> the MADT revision, in that it is essential to check the MADT revision
-> before checking for flags that were added with MADT revision 7 so that
-> if the kernel is booted with ACPI tables (MADT rev < 7) it skips parsing
-> the newly added flags (that should be zeroed reserved values for MADT
-> versions < 7 but they could turn out to be buggy and should be ignored).
-> 
-> Signed-off-by: Lorenzo Pieralisi <lpieralisi@kernel.org>
-> Cc: Robin Murphy <robin.murphy@arm.com>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: "Rafael J. Wysocki" <rafael@kernel.org>
-> Cc: Marc Zyngier <maz@kernel.org>
-> ---
->  drivers/acpi/processor_core.c    | 21 +++++++++++++++++++++
->  drivers/irqchip/irq-gic-common.h |  8 ++++++++
->  drivers/irqchip/irq-gic-v3-its.c |  4 ++++
->  drivers/irqchip/irq-gic-v3.c     |  9 +++++++++
->  include/linux/acpi.h             |  3 +++
->  5 files changed, 45 insertions(+)
-> 
-> diff --git a/drivers/acpi/processor_core.c b/drivers/acpi/processor_core.c
-> index b203cfe28550..c253d151275e 100644
-> --- a/drivers/acpi/processor_core.c
-> +++ b/drivers/acpi/processor_core.c
-> @@ -215,6 +215,27 @@ phys_cpuid_t __init acpi_map_madt_entry(u32 acpi_id)
->  	return rv;
->  }
->  
-> +u8 __init acpi_get_madt_revision(void)
-> +{
-> +	static u8 madt_revision __initdata;
-> +	static bool madt_read __initdata;
-> +	struct acpi_table_header *madt = NULL;
-> +
-> +	if (!madt_read) {
-> +		madt_read = true;
+And even though it is unlikely that they will be used in the future,
+it is not entirely unimaginable.
 
-Huh. Why do we need this hack? What's the issue with accessing the
-MADT? Can it disappear from under our feet? While we're walking it?
+> Other than that this looks good.
+>
+> Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
 
-> +
-> +		acpi_get_table(ACPI_SIG_MADT, 0, &madt);
-> +		if (!madt)
-> +			return madt_revision;
-
-What does this mean? Can we have a revision 0 of MADT?
-
-> +
-> +		madt_revision = madt->revision;
-> +
-> +		acpi_put_table(madt);
-> +	}
-> +
-> +	return madt_revision;
-> +}
-> +
->  static phys_cpuid_t map_mat_entry(acpi_handle handle, int type, u32 acpi_id)
->  {
->  	struct acpi_buffer buffer = { ACPI_ALLOCATE_BUFFER, NULL };
-> diff --git a/drivers/irqchip/irq-gic-common.h b/drivers/irqchip/irq-gic-common.h
-> index f407cce9ecaa..8dffee95f7e8 100644
-> --- a/drivers/irqchip/irq-gic-common.h
-> +++ b/drivers/irqchip/irq-gic-common.h
-> @@ -6,6 +6,7 @@
->  #ifndef _IRQ_GIC_COMMON_H
->  #define _IRQ_GIC_COMMON_H
->  
-> +#include <linux/acpi.h>
->  #include <linux/of.h>
->  #include <linux/irqdomain.h>
->  #include <linux/irqchip/arm-gic-common.h>
-> @@ -29,6 +30,13 @@ void gic_enable_quirks(u32 iidr, const struct gic_quirk *quirks,
->  void gic_enable_of_quirks(const struct device_node *np,
->  			  const struct gic_quirk *quirks, void *data);
->  
-> +#ifdef CONFIG_ACPI
-> +static inline bool gic_acpi_non_coherent_flag(u32 flags, u32 mask)
-> +{
-> +	return (acpi_get_madt_revision() >= 7) && (flags & mask);
-> +}
-
-Given that this checks *any* flag (or a combination of flags), the
-name of the helper is extremely misleading. Also, GICC flags are not
-necessarily tied to revision 7 of MADT.
-
-To be honest, I don't think this helper bring much, and I'd rather see
-an explicit check (or 3) for the revision in the driver code.
-
-> +#endif
-> +
->  #define RDIST_FLAGS_PROPBASE_NEEDS_FLUSHING    (1 << 0)
->  #define RDIST_FLAGS_RD_TABLES_PREALLOCATED     (1 << 1)
->  #define RDIST_FLAGS_FORCE_NON_SHAREABLE        (1 << 2)
-> diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v3-its.c
-> index 9a7a74239eab..8d088fca65a1 100644
-> --- a/drivers/irqchip/irq-gic-v3-its.c
-> +++ b/drivers/irqchip/irq-gic-v3-its.c
-> @@ -5578,6 +5578,10 @@ static int __init gic_acpi_parse_madt_its(union acpi_subtable_headers *header,
->  		goto node_err;
->  	}
->  
-> +	if (gic_acpi_non_coherent_flag(its_entry->flags,
-> +				       ACPI_MADT_ITS_NON_COHERENT))
-> +		its->flags |= ITS_FLAGS_FORCE_NON_SHAREABLE;
-> +
->  	err = its_probe_one(its);
->  	if (!err)
->  		return 0;
-> diff --git a/drivers/irqchip/irq-gic-v3.c b/drivers/irqchip/irq-gic-v3.c
-> index 98b0329b7154..48e02838fdc8 100644
-> --- a/drivers/irqchip/irq-gic-v3.c
-> +++ b/drivers/irqchip/irq-gic-v3.c
-> @@ -2356,6 +2356,11 @@ gic_acpi_parse_madt_redist(union acpi_subtable_headers *header,
->  		pr_err("Couldn't map GICR region @%llx\n", redist->base_address);
->  		return -ENOMEM;
->  	}
-> +
-> +	if (gic_acpi_non_coherent_flag(redist->flags,
-> +				       ACPI_MADT_GICR_NON_COHERENT))
-> +		gic_data.rdists.flags |= RDIST_FLAGS_FORCE_NON_SHAREABLE;
-> +
->  	gic_request_region(redist->base_address, redist->length, "GICR");
->  
->  	gic_acpi_register_redist(redist->base_address, redist_base);
-> @@ -2380,6 +2385,10 @@ gic_acpi_parse_madt_gicc(union acpi_subtable_headers *header,
->  		return -ENOMEM;
->  	gic_request_region(gicc->gicr_base_address, size, "GICR");
->  
-> +	if (gic_acpi_non_coherent_flag(gicc->flags,
-> +				       ACPI_MADT_GICC_NON_COHERENT))
-> +		gic_data.rdists.flags |= RDIST_FLAGS_FORCE_NON_SHAREABLE;
-> +
->  	gic_acpi_register_redist(gicc->gicr_base_address, redist_base);
->  	return 0;
->  }
-> diff --git a/include/linux/acpi.h b/include/linux/acpi.h
-> index 54189e0e5f41..a292f2bdb693 100644
-> --- a/include/linux/acpi.h
-> +++ b/include/linux/acpi.h
-> @@ -283,6 +283,9 @@ static inline bool invalid_phys_cpuid(phys_cpuid_t phys_id)
->  	return phys_id == PHYS_CPUID_INVALID;
->  }
->  
-> +
-> +u8 __init acpi_get_madt_revision(void);
-> +
->  /* Validate the processor object's proc_id */
->  bool acpi_duplicate_processor_id(int proc_id);
->  /* Processor _CTS control */
-
-Thanks,
-
-	M.
-
--- 
-Without deviation from the norm, progress is not possible.
+Thanks a lot for all of the reviews!
 
