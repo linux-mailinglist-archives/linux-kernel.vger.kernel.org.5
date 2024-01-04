@@ -1,90 +1,133 @@
-Return-Path: <linux-kernel+bounces-16639-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16633-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D326C8241B6
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 13:25:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E175824188
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 13:19:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 043331C21525
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 12:25:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0C1E01F21900
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 12:19:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DDD1219E8;
-	Thu,  4 Jan 2024 12:25:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBCAB21A06;
+	Thu,  4 Jan 2024 12:19:22 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from server.atrad.com.au (server.atrad.com.au [150.101.241.2])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99AA921373;
-	Thu,  4 Jan 2024 12:24:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=just42.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=just42.net
-Received: from marvin.atrad.com.au (marvin.atrad.com.au [192.168.0.2])
-	by server.atrad.com.au (8.17.2/8.17.2) with ESMTPS id 404CIq6K028017
-	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NO);
-	Thu, 4 Jan 2024 22:48:53 +1030
-Date: Thu, 4 Jan 2024 22:48:52 +1030
-From: Jonathan Woithe <jwoithe@just42.net>
-To: Igor Mammedov <imammedo@redhat.com>
-Cc: Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Lukas Wunner <lukas@wunner.de>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/7] PCI: Solve two bridge window sizing issues
-Message-ID: <ZZaiLOR4aO84CG2S@marvin.atrad.com.au>
-References: <20231228165707.3447-1-ilpo.jarvinen@linux.intel.com>
- <20240104131210.71f44d4b@imammedo.users.ipa.redhat.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C4F221361;
+	Thu,  4 Jan 2024 12:19:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4T5QcW2wTFz4f3jJK;
+	Thu,  4 Jan 2024 20:19:07 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id 266E71A0804;
+	Thu,  4 Jan 2024 20:19:09 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+	by APP1 (Coremail) with SMTP id cCh0CgBHShA5opZl+60EFg--.63321S3;
+	Thu, 04 Jan 2024 20:19:08 +0800 (CST)
+Subject: Re: [PATCH RFC v3 for-6.8/block 02/17] xen/blkback: use bdev api in
+ xen_update_blkif_status()
+To: Jan Kara <jack@suse.cz>, Yu Kuai <yukuai1@huaweicloud.com>
+Cc: axboe@kernel.dk, roger.pau@citrix.com, colyli@suse.de,
+ kent.overstreet@gmail.com, joern@lazybastard.org, miquel.raynal@bootlin.com,
+ richard@nod.at, vigneshr@ti.com, sth@linux.ibm.com, hoeppner@linux.ibm.com,
+ hca@linux.ibm.com, gor@linux.ibm.com, agordeev@linux.ibm.com,
+ jejb@linux.ibm.com, martin.petersen@oracle.com, clm@fb.com,
+ josef@toxicpanda.com, dsterba@suse.com, viro@zeniv.linux.org.uk,
+ brauner@kernel.org, nico@fluxnic.net, xiang@kernel.org, chao@kernel.org,
+ tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.com,
+ konishi.ryusuke@gmail.com, willy@infradead.org, akpm@linux-foundation.org,
+ hare@suse.de, p.raghav@samsung.com, linux-block@vger.kernel.org,
+ linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org,
+ linux-bcache@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
+ linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, linux-erofs@lists.ozlabs.org,
+ linux-ext4@vger.kernel.org, linux-nilfs@vger.kernel.org,
+ yi.zhang@huawei.com, yangerkun@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
+References: <20231221085712.1766333-1-yukuai1@huaweicloud.com>
+ <20231221085712.1766333-3-yukuai1@huaweicloud.com>
+ <20240104110631.3vspsvxbbvcpdqdu@quack3>
+From: Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <29bfcfc7-62b0-3876-78ce-f7ebe3506eb6@huaweicloud.com>
+Date: Thu, 4 Jan 2024 20:19:05 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+In-Reply-To: <20240104110631.3vspsvxbbvcpdqdu@quack3>
+Content-Type: text/plain; charset=gbk; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240104131210.71f44d4b@imammedo.users.ipa.redhat.com>
-X-MIMEDefang-action: accept
-X-Scanned-By: MIMEDefang 2.86 on 192.168.0.1
+X-CM-TRANSID:cCh0CgBHShA5opZl+60EFg--.63321S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7ur1xtw4fZF13Gr48Wr1rZwb_yoW8WF4rpr
+	y7GF48AryDKFWjkFs3Xa1I9Fn3Ka17GrW5urZxA34fXr90qr92gasYy34YgFWxXrn3Jrs2
+	qw47XFs3Ary8W3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUU9214x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+	2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+	W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
+	0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
+	kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
+	67AF67kF1VAFwI0_Wrv_Gr1UMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF
+	4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j
+	6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYx
+	BIdaVFxhVjvjDU0xZFpf9x0JUd8n5UUUUU=
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 
-On Thu, Jan 04, 2024 at 01:12:10PM +0100, Igor Mammedov wrote:
-> On Thu, 28 Dec 2023 18:57:00 +0200
-> Ilpo Järvinen <ilpo.jarvinen@linux.intel.com> wrote:
+Hi, Jan!
+
+ÔÚ 2024/01/04 19:06, Jan Kara Ð´µÀ:
+> On Thu 21-12-23 16:56:57, Yu Kuai wrote:
+>> From: Yu Kuai <yukuai3@huawei.com>
+>>
+>> Avoid to access bd_inode directly, prepare to remove bd_inode from
+>> block_devcie.
+>>
+>> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+>> ---
+>>   drivers/block/xen-blkback/xenbus.c | 3 +--
+>>   1 file changed, 1 insertion(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/block/xen-blkback/xenbus.c b/drivers/block/xen-blkback/xenbus.c
+>> index e34219ea2b05..e645afa4af57 100644
+>> --- a/drivers/block/xen-blkback/xenbus.c
+>> +++ b/drivers/block/xen-blkback/xenbus.c
+>> @@ -104,8 +104,7 @@ static void xen_update_blkif_status(struct xen_blkif *blkif)
+>>   		xenbus_dev_error(blkif->be->dev, err, "block flush");
+>>   		return;
+>>   	}
+>> -	invalidate_inode_pages2(
+>> -			blkif->vbd.bdev_handle->bdev->bd_inode->i_mapping);
+>> +	invalidate_bdev(blkif->vbd.bdev_handle->bdev);
 > 
-> > Hi all,
-> > 
-> > Here's a series that contains two fixes to PCI bridge window sizing
-> > algorithm. Together, they should enable remove & rescan cycle to work
-> > for a PCI bus that has PCI devices with optional resources and/or
-> > disparity in BAR sizes.
-> > 
-> > For the second fix, I chose to expose find_empty_resource_slot() from
-> > kernel/resource.c because it should increase accuracy of the cannot-fit
-> > decision (currently that function is called find_resource()). In order
-> > to do that sensibly, a few improvements seemed in order to make its
-> > interface and name of the function sane before exposing it. Thus, the
-> > few extra patches on resource side.
-> > 
-> > Unfortunately I don't have a reason to suspect these would help with
-> > the issues related to the currently ongoing resource regression
-> > thread [1].
+> This function uses invalidate_inode_pages2() while invalidate_bdev() ends
+> up using mapping_try_invalidate() and there are subtle behavioral
+> differences between these two (for example invalidate_inode_pages2() tries
+> to clean dirty pages using the ->launder_folio method). So I think you'll
+> need helper like invalidate_bdev2() for this.
+
+Thanks for reviewing this patch, I know the differenct between then,
+what I don't understand is that why using invalidate_inode_pages2()
+here. sync_blockdev() is just called and 0 is returned, I think in this
+case it's safe to call invalidate_bdev() directly, or am I missing
+other things?
+
+Thanks,
+Kuai
+
 > 
-> Jonathan,
-> can you test this series on affected machine with broken kernel to see if
-> it's of any help in your case?
+> 								Honza
+> 
 
-Certainly, but it will have to wait until next Thursday (11 Jan 2024).  I'm
-still on leave this week, and when at work I only have physical access to
-the machine concerned on Thursdays at present.
-
-Which kernel would you prefer I apply the series to?
-
-Regards
-  jonathan
 
