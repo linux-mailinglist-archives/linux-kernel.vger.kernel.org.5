@@ -1,65 +1,65 @@
-Return-Path: <linux-kernel+bounces-17176-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17177-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9302F824933
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 20:43:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E62DE824934
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 20:43:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1A6C728654F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 19:43:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 84C151F2497A
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 19:43:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 871652C6A8;
-	Thu,  4 Jan 2024 19:42:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABF562C6BD;
+	Thu,  4 Jan 2024 19:42:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="xKjShSnM"
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="scGTid8T"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-il1-f176.google.com (mail-il1-f176.google.com [209.85.166.176])
+Received: from mail-il1-f177.google.com (mail-il1-f177.google.com [209.85.166.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07EBF2C1BF
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 19:42:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 126132C694
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 19:42:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-il1-f176.google.com with SMTP id e9e14a558f8ab-3606aa2c7a4so2085265ab.0
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 11:42:55 -0800 (PST)
+Received: by mail-il1-f177.google.com with SMTP id e9e14a558f8ab-35fff22678eso2957615ab.3
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 11:42:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1704397375; x=1705002175; darn=vger.kernel.org;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=zZ4NebEk/v8RtkZO7csT64Y6aHb7A5Z83OOo99KtSl4=;
-        b=xKjShSnMqxwoYwFGdazY+zZ3gjWaDbFvOKTDsCiF2DmQaYr4rQzOoZVqw8naJdnARe
-         pl3bEpMF+Dbcs8jJX811r2T5fCpuNDGlWV0sBPhRD/cTu13+6nwp8swT+MsjRzLYIAmJ
-         CixIpGEu5/ERZ1ldqOWu69ZD07LiaK5/RLhfpMsOLMrX4ExPS3/pCeNCBWp5LZ6AczwN
-         e6WjPhFVzSsN36IzKaOF+bUse7bFgxjlWTkYsXKcAHYTM6WthrZc+BQ8Al25MKFN2tOO
-         qxDGCgzZoXzCqYXx6QhxWCZIrHDwesR/RQ4fxVQbdkx5hUc18/Z3iytiRX2qOkCk0xG4
-         doMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704397375; x=1705002175;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1704397376; x=1705002176; darn=vger.kernel.org;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=zZ4NebEk/v8RtkZO7csT64Y6aHb7A5Z83OOo99KtSl4=;
-        b=mpJKXPk89LqnO7ogTsyP5d+ty6yIrUfImVr8iPDI9yP11sudN1m6E1fFLP0R8pObD2
-         PNqXVt6SSN7V81sE5dbJHSpyP3sO6a0eiEEeWJhkjjMBiH0PbqB4+1DXww0w+I6y/dx5
-         dj2V4u4PjNiuLn2FMLCSz0sworaa7P49/5hAiMLVz6c5gw35idGfUARzpyDB/4YavAX8
-         +VqE/669crFOB3W6a4wO3s/T7dH5Ek0VTRL/BGz4lWui8bVQpf1w5c8qYFivIyVH64V5
-         Y5iThz28NG036oVa0mc4KsTl435izQZ8dVdDtGBNGlHySbEDMpXrbfIwUdXSbvr7dnph
-         liPQ==
-X-Gm-Message-State: AOJu0Yw8i+PRIz87vfFyadTHtOs8w6UveaG6Fl/a4caLSG1lcGAEBnhx
-	A0zjK2C6jd7236XYD0v3GTh1mU3rkrAYzg==
-X-Google-Smtp-Source: AGHT+IHsElya+8s71eEn1wxhXEYSAasDbnd+VBq9vmycNipi4gm/93N0ihC5hlaYRI+LIQoFk7OxiQ==
-X-Received: by 2002:a05:6e02:19c9:b0:35f:e71f:4c60 with SMTP id r9-20020a056e0219c900b0035fe71f4c60mr1114054ill.13.1704397375175;
-        Thu, 04 Jan 2024 11:42:55 -0800 (PST)
+        bh=tLVjvsKzWbuu1Tn6vfa7DAnWzdMErwoBxrG3TwM6ilc=;
+        b=scGTid8TC9aU85cSvQWjhr6iMX92QpCxJd5CcTAEise3S4nqV7VS3tV1S8XsEC5LHf
+         9Ykh9FF3W3gD4HQA+1mFenYHP8ttY8i70H8IJEUIxubTCq5F1HN+yx2u7PP15ziLiG3N
+         DCqfO1aB4uEU8tTZTBRcXKRBNSvqQkjfA2bfiXoW10vMpLlzL73Hny8YjBgWS4z2ABs1
+         5IfUU34xU8UAtkQLuQqiUe/MHnznUiY4JDPd6jkoDx4Edkl3M2m5PoS8v+SQpzSC0EkM
+         ymmNFblI7ZH8gvvquStOyiYr6HH1rIFposkHIq8jlwjXWZC8shPNpmjNraRfpTa/YN2N
+         w1Lw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704397376; x=1705002176;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=tLVjvsKzWbuu1Tn6vfa7DAnWzdMErwoBxrG3TwM6ilc=;
+        b=vdjlQ9fjv8+iZ4I6miOxo9xKFL4PRSq1bNLF0MGYXss+lDgS/12/+5RBuHjxhdmzVW
+         QGoQy+sfJDo86mD/1JveGgs+OXffD9SmGj5cwpasMbszGpY2ZmTNHKguP5MIWgMQoZ6N
+         0h7y3G+FVxWQMQ+cGPUV9xsoqfRwzXMulYWVDfShs2V8SVmdMuviY0GzdmFAYrqWdO8I
+         VYrqO+BngDV9ODZINOTh0T/RtxaqPt3gPMGl9KLY4tUudadrkTBfTBMzUoBzJhWGadjx
+         s79LJUbDjnH2/P6cAj13AMM+2irVR+euZifzZ4xfzhZTAEMuCqLPoUp2lXEJLKrx7LR3
+         dYiA==
+X-Gm-Message-State: AOJu0YyN08mo4v+ZS+O8SiNKp0oOodIYaGfm4Uur+GQeDzNcgHTVWibH
+	s7qAAU9+Ihl6VMJy/oUNNZRMIDjPTTn9Uw==
+X-Google-Smtp-Source: AGHT+IFm+qeZXnh4PvWyj6eeezVL805LTax37/sq68iQqd8SUNlSbsETWbuY1iXc3g3AU1sH94b8XA==
+X-Received: by 2002:a05:6e02:1be9:b0:35f:e306:cc2d with SMTP id y9-20020a056e021be900b0035fe306cc2dmr1172109ilv.32.1704397376337;
+        Thu, 04 Jan 2024 11:42:56 -0800 (PST)
 Received: from charlie.ba.rivosinc.com ([64.71.180.162])
-        by smtp.gmail.com with ESMTPSA id o10-20020a92daca000000b0035d0da89a0asm19606ilq.6.2024.01.04.11.42.54
+        by smtp.gmail.com with ESMTPSA id o10-20020a92daca000000b0035d0da89a0asm19606ilq.6.2024.01.04.11.42.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Jan 2024 11:42:54 -0800 (PST)
+        Thu, 04 Jan 2024 11:42:55 -0800 (PST)
 From: Charlie Jenkins <charlie@rivosinc.com>
-Subject: [PATCH v3 0/3] riscv: modules: Fix module loading error handling
-Date: Thu, 04 Jan 2024 11:42:46 -0800
-Message-Id: <20240104-module_loading_fix-v3-0-a71f8de6ce0f@rivosinc.com>
+Date: Thu, 04 Jan 2024 11:42:47 -0800
+Subject: [PATCH v3 1/3] riscv: Fix module loading free order
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -68,53 +68,54 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIADcKl2UC/33NTQrCMBCG4atI1kaS6Y/GlfcQKWkytgNtIokGp
- fTupgU3Ii7fD+aZiUUMhJEdNxMLmCiSdzmK7YaZXrsOOdncDAQUEmTBR28fAzaD15Zc11zpyQt
- taluiPkhQLB/eAuZ5Rc+X3D3Fuw+v9UeSy/qXS5JLbrVq90aBtlidAiUfyZmd8SNbxAQfpRRS/
- FaACw4KWlmLqgKjvpR5nt9RWVTg/QAAAA==
+Message-Id: <20240104-module_loading_fix-v3-1-a71f8de6ce0f@rivosinc.com>
+References: <20240104-module_loading_fix-v3-0-a71f8de6ce0f@rivosinc.com>
+In-Reply-To: <20240104-module_loading_fix-v3-0-a71f8de6ce0f@rivosinc.com>
 To: Paul Walmsley <paul.walmsley@sifive.com>, 
  Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>
 Cc: Palmer Dabbelt <palmer@rivosinc.com>, linux-riscv@lists.infradead.org, 
  linux-kernel@vger.kernel.org, Charlie Jenkins <charlie@rivosinc.com>, 
  kernel test robot <lkp@intel.com>, Dan Carpenter <error27@gmail.com>, 
- Julia Lawall <julia.lawall@inria.fr>, 
- Dan Carpenter <dan.carpenter@linaro.org>
+ Julia Lawall <julia.lawall@inria.fr>
 X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1704397374; l=1029;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1704397374; l=1064;
  i=charlie@rivosinc.com; s=20231120; h=from:subject:message-id;
- bh=6NGr/DoKC3/yzJo7z44jpZYiAVYTGaXxLfBI12gIXoY=;
- b=4RPWQTDdkNAFI4p28vauTpKQftHTQB59nLae7uu4QHL1PR/S3LNN1lSC8AXI9pvl+rvxuasHi
- M9GLKbADcLKCXc1VW8mARqzk+s+jdiIP5Fk0HhmFkG5mpku3yh9YCqw
+ bh=ChQMN8HXWHXJl0z5+9ukmO+5sTC3VuwHdA0xAgdz31A=;
+ b=Nc7YMdNtkiogT9SuSOwkwklZUSWSzuGSMVWI6Jj/7Ki7kHxfugbk8U/yTQtvOO8OlVcnpSpoY
+ O5QMhR5H1UfAHoQ8EspkwAbM3BL/hJ40b6H9Oys/ELv92VYszOq6yck
 X-Developer-Key: i=charlie@rivosinc.com; a=ed25519;
  pk=t4RSWpMV1q5lf/NWIeR9z58bcje60/dbtxxmoSfBEcs=
 
-When modules are loaded while there is not ample allocatable memory,
-there was previously not proper error handling. This series fixes a
-use-after-free error and a different issue that caused a non graceful
-exit after memory was not properly allocated.
+Reverse order of kfree calls to resolve use-after-free error.
 
 Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
+Fixes: d8792a5734b0 ("riscv: Safely remove entries from relocation list")
+Reported-by: kernel test robot <lkp@intel.com>
+Reported-by: Dan Carpenter <error27@gmail.com>
+Closes: https://lore.kernel.org/r/202312132019.iYGTwW0L-lkp@intel.com/
+Reported-by: kernel test robot <lkp@intel.com>
+Reported-by: Julia Lawall <julia.lawall@inria.fr>
+Closes: https://lore.kernel.org/r/202312120044.wTI1Uyaa-lkp@intel.com/
 ---
-Changes in v3:
-- Drop patch using do-while
-- Link to v2: https://lore.kernel.org/r/20240103-module_loading_fix-v2-0-292b160552c9@rivosinc.com
+ arch/riscv/kernel/module.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Changes in v2:
-- Split changes across multiple patches
-- Link to v1: https://lore.kernel.org/r/20231213-module_loading_fix-v1-1-da9b7c92ade5@rivosinc.com
+diff --git a/arch/riscv/kernel/module.c b/arch/riscv/kernel/module.c
+index aac019ed63b1..21c7a773a8ef 100644
+--- a/arch/riscv/kernel/module.c
++++ b/arch/riscv/kernel/module.c
+@@ -723,8 +723,8 @@ static int add_relocation_to_accumulate(struct module *me, int type,
+ 
+ 			if (!bucket) {
+ 				kfree(entry);
+-				kfree(rel_head);
+ 				kfree(rel_head->rel_entry);
++				kfree(rel_head);
+ 				return -ENOMEM;
+ 			}
+ 
 
----
-Charlie Jenkins (3):
-      riscv: Fix module loading free order
-      riscv: Correctly free relocation hashtable on error
-      riscv: Fix relocation_hashtable size
-
- arch/riscv/kernel/module.c | 14 +++++++++-----
- 1 file changed, 9 insertions(+), 5 deletions(-)
----
-base-commit: a39b6ac3781d46ba18193c9dbb2110f31e9bffe9
-change-id: 20231213-module_loading_fix-3ac6d4ea8129
 -- 
-- Charlie
+2.43.0
 
 
