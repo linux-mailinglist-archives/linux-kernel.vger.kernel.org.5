@@ -1,80 +1,87 @@
-Return-Path: <linux-kernel+bounces-16869-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16870-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA74C824532
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 16:42:37 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 92738824534
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 16:42:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EC1061C221D8
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 15:42:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 46C1E1F23C11
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 15:42:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B885024219;
-	Thu,  4 Jan 2024 15:42:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C57CA249E0;
+	Thu,  4 Jan 2024 15:42:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZwtHzFyx"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dfmU2Wk/"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-oi1-f180.google.com (mail-oi1-f180.google.com [209.85.167.180])
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F5E12420A;
-	Thu,  4 Jan 2024 15:42:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=acm.org
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A297C24201;
+	Thu,  4 Jan 2024 15:42:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f180.google.com with SMTP id 5614622812f47-3bb69bfdd96so630850b6e.1;
-        Thu, 04 Jan 2024 07:42:28 -0800 (PST)
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a27cd5850d6so72220566b.1;
+        Thu, 04 Jan 2024 07:42:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704382947; x=1704987747; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1704382964; x=1704987764; darn=vger.kernel.org;
         h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:reply-to:message-id:subject:cc:to:from:date
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=5oMiGZMowUzqMWGwhCBfkbKcvKR9HrULZLN+Y7bf4S0=;
-        b=ZwtHzFyx+IB3zt4jqUgNXfHgIR25r50eTXw5oPyoQ5Eoz7NGyWPDXK1FiiLEAYr6OC
-         96vFQIb++EO4xp1IzCHWJoc5NTo4Svfiv379UqzGwK1IRAN9r2cZkhdV5KSEvflRm2Mn
-         9l+wk2Z+RYB3MPRgSiyTSjbz4ETnQzNlmmZ/9Kt0gbcF16rLG5BMHi+KXOkAx1GoKxg/
-         Jld/o1Zy0zZJoKreJg7tYJRWt90kB5sSnCn68JbSF3zRiVqhJwrFZ15clzRqTNWkJK6K
-         o+Qz235IfuqFubBfJQ6/CYXEFkSbNUAfNJJg6u+PGCEfFb3Gx0C+ejVFALHi6DBpTHJa
-         4VHA==
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=jTkbnBm6/5/MdujzWlHiWh0IB4tKyJUPbJXAGWM4F7k=;
+        b=dfmU2Wk/XoF9ktgi0hW5mvlbQ/+V+QJ97RrJLCuInY0gSxfR4B3Ix3PL4xnqCNVJyU
+         xGk+vYK+ZtLh54OPRsDBfsowKXxTNAC8hDSe9wUVu9UJB5o7EUYA9/+Ub8nfx4e+GaFb
+         6wcIWoOomBqv2f/mkAjuTYECpliTmnGlNW/inmaDeJTJvcDphWBpotNpvzmVHonTvqhE
+         M5Tkdoioo6X3bZKjTqYI3sOi7gwdHLTCTzZBonxM6na91WKlEKlMSs+aNYfKEQ8AVcbQ
+         IpsmbLAT2hrU+luFutG+7pDk11y/92BeGfLShrhVxcQvuc5fBzpKrDzjQ8b6SNn12XU8
+         lyIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704382947; x=1704987747;
+        d=1e100.net; s=20230601; t=1704382964; x=1704987764;
         h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:reply-to:message-id:subject:cc:to:from:date
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5oMiGZMowUzqMWGwhCBfkbKcvKR9HrULZLN+Y7bf4S0=;
-        b=Y2Y7bQ+x/5pEIQM+439iB9MCs/vk4eDpzitqTswGHYa1IYmeCNSfCP/n9J3nuKJQBZ
-         R4ULaQGvWngA4yQ2uwu6562bg6pw0oBTR3Uoest3Tb1zsTBbf33vPgcYDz7NabMXnZW1
-         dAaVoOe29J5ObdW+DubONF3j8TmlbxJhAVKZbjAZ2sm4HArgNJlXffG/Rul+HvcrWVJ5
-         nHGdUz6ZrQW+96SdUs/A07n+EpFJKOvvB4KcGqrEkFG/9Px5bDwJQTozuiepTOLZS1Z/
-         F8+JmlnP4aGKP2IoQ/W5fxCCx2zv/JnIjaFCL7HpFIdBt+aRr0yE9wUodIhP/bxbXPYF
-         FYdQ==
-X-Gm-Message-State: AOJu0YzggIvwy+1pLzUBPGfdmAXd49hG9LrouozTM9zSq0EkN48/q4Ok
-	OGwGeuI95jRgsMHSA5cEEw==
-X-Google-Smtp-Source: AGHT+IGBVcQOehWgZgtVkqUEVkpT4ymFf47CPxuZ3r/zwB3M65lL8wGjFXR+faDYn1CyfX3tGNuADA==
-X-Received: by 2002:a05:6808:1401:b0:3bc:23ca:b8f8 with SMTP id w1-20020a056808140100b003bc23cab8f8mr293904oiv.27.1704382947589;
-        Thu, 04 Jan 2024 07:42:27 -0800 (PST)
-Received: from serve.minyard.net (serve.minyard.net. [2001:470:b8f6:1b::1])
-        by smtp.gmail.com with ESMTPSA id ct6-20020a056808360600b003bbcc7ad593sm2208336oib.34.2024.01.04.07.42.26
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=jTkbnBm6/5/MdujzWlHiWh0IB4tKyJUPbJXAGWM4F7k=;
+        b=X12MYIQKLR0eMPQH0/Yqcls6SePhDVU9hY3WwFHR8SDP3HTJSwSe0CdA7fy6AUv/cD
+         bPcKPo/qq7gHDMQxQmIlmLiJtyx8ZUQtu2fOA9gaUDVKJcucdhJl+i1U8uUEzmBBa58q
+         79BzaJopelQBYGNVOQrCUpwHqYgJ4DGnanKNDkFDff7xoiTRAFll1aU+3+YqbFZCOywX
+         7gd5ZX3jQqFmhcwKVTfFbG4SnJwHTXp9g80akaVBcg8sc1/EnWe8GQMub0Dea8cBed8A
+         oyGjvlDGf/d33nQp83Dg/EHJupL3zs+05tqB9SheYzntcyklcKeOES5Tm5utRrtdHyi9
+         hM9A==
+X-Gm-Message-State: AOJu0Ywr/FGwTiomOrETctpveg9TO9MkhfGewLx87ONYQfwKf/6ywFTT
+	XM7e9GzYRYYVe6GbpbY4C34=
+X-Google-Smtp-Source: AGHT+IHjeXF9p0hr/CJfgF2dv0x7zBSZO13sqctpbNXoAzsJdZH9m1qlb87mAlfmbz+5nHim8Q727g==
+X-Received: by 2002:a17:907:76ac:b0:a28:b9b8:2f8c with SMTP id jw12-20020a17090776ac00b00a28b9b82f8cmr381280ejc.152.1704382963780;
+        Thu, 04 Jan 2024 07:42:43 -0800 (PST)
+Received: from skbuf ([188.25.255.36])
+        by smtp.gmail.com with ESMTPSA id ex17-20020a170907955100b00a269fa0d305sm13894476ejc.8.2024.01.04.07.42.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Jan 2024 07:42:27 -0800 (PST)
-Sender: Corey Minyard <tcminyard@gmail.com>
-Received: from mail.minyard.net (unknown [IPv6:2001:470:b8f6:1b:8b39:45b4:3a91:698e])
-	by serve.minyard.net (Postfix) with ESMTPSA id 754301800BC;
-	Thu,  4 Jan 2024 15:42:26 +0000 (UTC)
-Date: Thu, 4 Jan 2024 09:42:25 -0600
-From: Corey Minyard <minyard@acm.org>
-To: "Rafael J. Wysocki" <rafael@kernel.org>
-Cc: Kai-Heng Feng <kai.heng.feng@canonical.com>, jdelvare@suse.com,
-	linux@roeck-us.net, Len Brown <lenb@kernel.org>,
-	Robert Moore <robert.moore@intel.com>, linux-acpi@vger.kernel.org,
-	linux-kernel@vger.kernel.org, acpica-devel@lists.linux.dev
-Subject: Re: [PATCH v3 1/2] ACPI: IPMI: Add helper to wait for when SMI is
- selected
-Message-ID: <ZZbR4X6z9wkSESzD@mail.minyard.net>
-Reply-To: minyard@acm.org
-References: <20240104024819.848979-1-kai.heng.feng@canonical.com>
- <CAJZ5v0gNa7XvUo3B1srXaWBrWx+Bx=w=D7ddi-mqda8xBdWwCQ@mail.gmail.com>
+        Thu, 04 Jan 2024 07:42:43 -0800 (PST)
+Date: Thu, 4 Jan 2024 17:42:41 +0200
+From: Vladimir Oltean <olteanv@gmail.com>
+To: =?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
+Cc: Daniel Golle <daniel@makrotopia.org>,
+	Landen Chao <Landen.Chao@mediatek.com>,
+	DENG Qingfang <dqfext@gmail.com>,
+	Sean Wang <sean.wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>,
+	Florian Fainelli <f.fainelli@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Frank Wunderlich <frank-w@public-files.de>,
+	Bartel Eerdekens <bartel.eerdekens@constell8.be>,
+	mithat.guner@xeront.com, erkin.bozoglu@xeront.com,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH net-next v2 6/7] net: dsa: mt7530: do not set
+ priv->p5_interface on mt7530_setup_port5()
+Message-ID: <20240104154241.rxjins4mi5zkbhia@skbuf>
+References: <20231227044347.107291-1-arinc.unal@arinc9.com>
+ <20231227044347.107291-7-arinc.unal@arinc9.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -84,112 +91,40 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJZ5v0gNa7XvUo3B1srXaWBrWx+Bx=w=D7ddi-mqda8xBdWwCQ@mail.gmail.com>
+In-Reply-To: <20231227044347.107291-7-arinc.unal@arinc9.com>
 
-On Thu, Jan 04, 2024 at 02:34:52PM +0100, Rafael J. Wysocki wrote:
-> On Thu, Jan 4, 2024 at 3:48 AM Kai-Heng Feng
-> <kai.heng.feng@canonical.com> wrote:
-> >
-> > The function of acpi_power_meter module on Dell system requires IPMI
-> > handler is installed and SMI is selected.
+On Wed, Dec 27, 2023 at 07:43:46AM +0300, Arınç ÜNAL wrote:
+> priv->p5_interface and priv->p6_interface are for use on the MT7531 switch.
+> They prevent the CPU ports of MT7531 to be configured again. They are
+> useless for MT7530. Therefore, remove setting priv->p5_interface for
+> MT7530.
 > 
-> Does the firmware use _DEP to let the OS know about this dependency?
-> 
-> > So add a helper to let acpi_power_meter know when IPMI handler and SMI
-> > are ready.
-> >
-> > Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-> > ---
-> > v3:
-> >  - New patch.
-> >
-> >  drivers/acpi/acpi_ipmi.c | 17 ++++++++++++++++-
-> >  include/acpi/acpi_bus.h  |  5 +++++
-> >  2 files changed, 21 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/acpi/acpi_ipmi.c b/drivers/acpi/acpi_ipmi.c
-> > index 0555f68c2dfd..54862cab7171 100644
-> > --- a/drivers/acpi/acpi_ipmi.c
-> > +++ b/drivers/acpi/acpi_ipmi.c
-> > @@ -23,6 +23,8 @@ MODULE_LICENSE("GPL");
-> >  #define IPMI_TIMEOUT                   (5000)
-> >  #define ACPI_IPMI_MAX_MSG_LENGTH       64
-> >
-> > +static struct completion smi_selected;
-> > +
-> >  struct acpi_ipmi_device {
-> >         /* the device list attached to driver_data.ipmi_devices */
-> >         struct list_head head;
-> > @@ -463,8 +465,10 @@ static void ipmi_register_bmc(int iface, struct device *dev)
-> >                 if (temp->handle == handle)
-> >                         goto err_lock;
-> >         }
-> > -       if (!driver_data.selected_smi)
-> > +       if (!driver_data.selected_smi) {
-> >                 driver_data.selected_smi = ipmi_device;
-> > +               complete(&smi_selected);
-> > +       }
-> >         list_add_tail(&ipmi_device->head, &driver_data.ipmi_devices);
-> >         mutex_unlock(&driver_data.ipmi_lock);
-> >
-> > @@ -578,10 +582,21 @@ acpi_ipmi_space_handler(u32 function, acpi_physical_address address,
-> >         return status;
-> >  }
-> >
-> > +int acpi_wait_for_acpi_ipmi(void)
-> > +{
-> > +       long ret;
-> > +
-> > +       ret = wait_for_completion_interruptible_timeout(&smi_selected, 2 * HZ);
-> > +
-> > +       return ret > 0 ? 0 : -ETIMEDOUT;
-> 
-> What will happen if the IPMI driver is unloaded after this has returned 0?
+> Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
+> ---
 
-The IPMI driver can't be unloaded if it has a user.
+What makes priv->p5_interface and priv->p6_interface useless for MT7530
+as you say? This code in mt753x_phylink_mac_config() seems executed
+regardless of switch family:
 
-I've been following this, but I know little about ACPI.  Beyond this
-solution, the only other solution I could come up with was to start the
-IPMI driver earlier.  But then you are in a chicken-and-egg situation
-(https://dictionary.cambridge.org/dictionary/english/chicken-and-egg-situation).
-Which was the reason for the SPMI table, but that's really kind of
-useless for this, even if the SPMI table existed.
+	case 5:
+		if (priv->p5_interface == state->interface)
+			break;
 
--corey
+		if (mt753x_mac_config(ds, port, mode, state) < 0)
+			goto unsupported;
 
-> 
-> > +}
-> > +EXPORT_SYMBOL_GPL(acpi_wait_for_acpi_ipmi);
-> > +
-> >  static int __init acpi_ipmi_init(void)
-> >  {
-> >         int result;
-> >         acpi_status status;
-> > +       init_completion(&smi_selected);
-> >
-> >         if (acpi_disabled)
-> >                 return 0;
-> > diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
-> > index 1216d72c650f..afa6e4d4bf46 100644
-> > --- a/include/acpi/acpi_bus.h
-> > +++ b/include/acpi/acpi_bus.h
-> > @@ -821,11 +821,16 @@ static inline void acpi_put_acpi_dev(struct acpi_device *adev)
-> >  {
-> >         acpi_dev_put(adev);
-> >  }
-> > +
-> > +int acpi_wait_for_acpi_ipmi(void);
-> > +
-> >  #else  /* CONFIG_ACPI */
-> >
-> >  static inline int register_acpi_bus_type(void *bus) { return 0; }
-> >  static inline int unregister_acpi_bus_type(void *bus) { return 0; }
-> >
-> > +static inline int acpi_wait_for_acpi_ipmi(void) { return 0; }
-> > +
-> >  #endif                         /* CONFIG_ACPI */
-> >
-> >  #endif /*__ACPI_BUS_H__*/
-> > --
-> 
+		if (priv->p5_intf_sel != P5_DISABLED)
+			priv->p5_interface = state->interface;
+		break;
+	case 6:
+		if (priv->p6_interface == state->interface)
+			break;
+
+		mt753x_pad_setup(ds, state);
+
+		if (mt753x_mac_config(ds, port, mode, state) < 0)
+			goto unsupported;
+
+		priv->p6_interface = state->interface;
+		break;
 
