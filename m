@@ -1,122 +1,149 @@
-Return-Path: <linux-kernel+bounces-16734-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16735-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 32373824315
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 14:50:57 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 142FF824316
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 14:51:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C7139B2495E
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 13:50:54 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7EAF2B250CF
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 13:51:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65F5E22EEE;
-	Thu,  4 Jan 2024 13:49:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD63A22EFE;
+	Thu,  4 Jan 2024 13:50:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arista.com header.i=@arista.com header.b="Kfu5KJFE"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="l5ICfODo"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
+Received: from mail-vs1-f49.google.com (mail-vs1-f49.google.com [209.85.217.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3355E22EE6
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 13:49:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=arista.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arista.com
-Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-40d5a41143fso4397245e9.3
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 05:49:08 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A82D022336
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 13:50:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-vs1-f49.google.com with SMTP id ada2fe7eead31-4670a58b118so95700137.2
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 05:50:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=arista.com; s=google; t=1704376147; x=1704980947; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=1N0CJHq6htpDij9HAOUTJdfEEnbukPhsaVqFV2O6M58=;
-        b=Kfu5KJFEvaFn3dvgGo1N9pFqDDcZGpkSheTw6/hRxPyiU6lTy7rfDZ9XbK+C89S4v7
-         h5NBoUlKRLX4FLORzRcW9B1Juj7CDQ8l3aNgIAhcxWnknCfcY2w9PZRo5E6DPv6wllDX
-         +cr6V2ndSq3RAJFGHe5QYnREhD+zWOo2g/UDupubR7yeSNqNOLUj1sRWr5HZy9EiinJB
-         fLO13ZStiqn8puVb8aXh9owvWgX28UAqyW436Wgcx4VOeRGnFCD7sPNf5CdKuCL/1LIH
-         6DFn41Qk4TTBcZCY6Gre63rWVKSpznjbMQSVTKIRTLOGJ3qiLz1fw904hLKuc7ZQSg33
-         mv4w==
+        d=google.com; s=20230601; t=1704376205; x=1704981005; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jmcHXU84jO7/aD/+uybBFnY8Y1yiePevOt8pOFnzJnU=;
+        b=l5ICfODoDrHL0Nuq6YZH8Nk3GxtBMj8BT3EflBHOtNMnp7fjsy9qbKJ5nDxMKh8j2K
+         HRoq1hLH7xfaqYPdxfQzWXmN5XdXUYeRR/I3DBcTc49bTTUQVCeHBzY94k06IAFpOHDX
+         v8FfYwcjZLeqJoyo2cTfL7CNG31Zch2uIkRiJD87cc6YXqiYVpzvHaD3mXVlO4I6rcB+
+         Ls++AQdF++hKRQgsoHzBqy8GadGcaHZbeAwZevhdMZl058lBM4X1jFz2oQNhvxYcW6SY
+         lX0Q1a5W6EIT1BubSXguECmSQ2k3MzucISwkkAX6Fsc0VklATyoWuUo0xugXZvcH5kg+
+         OJPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704376147; x=1704980947;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1N0CJHq6htpDij9HAOUTJdfEEnbukPhsaVqFV2O6M58=;
-        b=obgpE8RLUA+m0MF3ss5WKAKdXedfoQ9T/9DzCeHbD1BHiaBz+aDoui1q/V1ouWlwI0
-         4mlF7iX4FX/1utlUu+BkXKDtuI2EzN56EtHRBe4B4AgpWcs48GmDbppFKt5ikwCRHyeU
-         EzhkiDpNtNkDRvaWI7XqW0Z3z/bhUniru7BC5ziwxEHjSx2SNffEIuYuO7jSohTb0dLY
-         yj3CDCm+1Sp3I0KMWHsYj+l7MPVhySbHGhrifz+KbIX15obKa2EYVKJzzyXYWWBl6mkk
-         q/OkNHkza0AxGXQ3k3v9MiKgvDpL8z7fT+WDYIJL2fffAxCQYVCgvB+jRoIINr1vJeWO
-         owlA==
-X-Gm-Message-State: AOJu0YypPK0uYYtT2ig633Ygra1j5CB5f1+GrQWW/TSI4F0CkX2HavZc
-	ATBZUcE5BOrAr5syQGDXNcDlUF54eo8a
-X-Google-Smtp-Source: AGHT+IFCXmewWplzS9dS4w5yAqKZ0sUEiQjYEZExiJcpaFkmwIbLwp8oPLCtP/EDEXfUC4t2l0cR6A==
-X-Received: by 2002:a05:600c:84ce:b0:40c:2b01:e09e with SMTP id er14-20020a05600c84ce00b0040c2b01e09emr323603wmb.47.1704376147451;
-        Thu, 04 Jan 2024 05:49:07 -0800 (PST)
-Received: from [10.83.37.178] ([217.173.96.166])
-        by smtp.gmail.com with ESMTPSA id az30-20020a05600c601e00b0040e35f28039sm168575wmb.18.2024.01.04.05.49.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Jan 2024 05:49:06 -0800 (PST)
-Message-ID: <fe1752a6-9866-45e6-b011-92a242304fce@arista.com>
-Date: Thu, 4 Jan 2024 13:49:05 +0000
+        d=1e100.net; s=20230601; t=1704376205; x=1704981005;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=jmcHXU84jO7/aD/+uybBFnY8Y1yiePevOt8pOFnzJnU=;
+        b=KCXcGCbtoQP8Rt7oWedR9v2qS8169GjEfN7T6bKNf2XyKLFg7I6GLOI1t4SXJvyAHD
+         nLScgfA03fpvZH4RC6FwWfXcXizLp9wPZ40XJ6M0A8LukMwN/XpRlUkdBvV6/PEMWg7R
+         3HT5J66m6eumSfXCfb/1sDCsohbJRWMegHjvzDlw1iJoNeykRqRijDZqTfHJS6bidaiQ
+         iw4rAAUPZjLCSRS4czoGYhskOAjU5dB9JLnZekr8NTyiLUQlLwmaVMP7n0aJ82oc6ET/
+         1bWiQlFUS86yM7g8fix6yhH/Td/l/cLcswZ48NIMZPsDQrLrfbpxWtmpi2G9L15bzXJg
+         Uvhg==
+X-Gm-Message-State: AOJu0Yyyk/aWTYuFrOT0Cf0LWE9HsP9eT+6gGq1w072sj9gpdu8vzeI5
+	HrnnKlkiYmpQlC6tvaoLYbTSoL5QzXLT2ZXg/viJ6qviXy8t
+X-Google-Smtp-Source: AGHT+IEAG/I6C9BLRfLo85MzbCkaRVNqJu+9FkpCp4Ck+/c2Obav4H8mDC12zSpvDgDHq2jOZdWQCtux3iqfLUKsiTg=
+X-Received: by 2002:a05:6102:15a8:b0:467:a64f:aa27 with SMTP id
+ g40-20020a05610215a800b00467a64faa27mr421440vsv.15.1704376205029; Thu, 04 Jan
+ 2024 05:50:05 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: syslog spam: TCP segment has incorrect auth options set
-Content-Language: en-US
-To: Christian Kujau <lists@nerdbynature.de>
-Cc: netdev@vger.kernel.org, Dmitry Safonov <0x7f454c46@gmail.com>,
- Francesco Ruggeri <fruggeri@arista.com>,
- Salam Noureddine <noureddine@arista.com>, David Ahern <dsahern@kernel.org>,
- linux-kernel@vger.kernel.org
-References: <f6b59324-1417-566f-a976-ff2402718a8d@nerdbynature.de>
-From: Dmitry Safonov <dima@arista.com>
-In-Reply-To: <f6b59324-1417-566f-a976-ff2402718a8d@nerdbynature.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20231216-rb-new-condvar-methods-v2-0-b05ab61e6d5b@google.com>
+ <20231216-rb-new-condvar-methods-v2-3-b05ab61e6d5b@google.com>
+ <3fba196a-8cb6-4ce9-9e67-bfb716a2d171@proton.me> <ZYRtuRXPgQcN_3cr@boqun-archlinux>
+In-Reply-To: <ZYRtuRXPgQcN_3cr@boqun-archlinux>
+From: Alice Ryhl <aliceryhl@google.com>
+Date: Thu, 4 Jan 2024 14:49:54 +0100
+Message-ID: <CAH5fLghmG4e0RjVdPuyWYgCt2cQ9+_WRP81tGxS4qyL91vHiEg@mail.gmail.com>
+Subject: Re: [PATCH v2 3/4] rust: sync: add `CondVar::wait_timeout`
+To: Boqun Feng <boqun.feng@gmail.com>
+Cc: Benno Lossin <benno.lossin@proton.me>, Miguel Ojeda <ojeda@kernel.org>, 
+	Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, Gary Guo <gary@garyguo.net>, 
+	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+	Andreas Hindborg <a.hindborg@samsung.com>, Peter Zijlstra <peterz@infradead.org>, 
+	Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>, Waiman Long <longman@redhat.com>, 
+	Tiago Lam <tiagolam@gmail.com>, Thomas Gleixner <tglx@linutronix.de>, rust-for-linux@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Christian,
+On Thu, Dec 21, 2023 at 5:54=E2=80=AFPM Boqun Feng <boqun.feng@gmail.com> w=
+rote:
+>
+> On Wed, Dec 20, 2023 at 11:31:05AM +0000, Benno Lossin wrote:
+> > On 12/16/23 16:31, Alice Ryhl wrote:
+> > > @@ -102,7 +105,12 @@ pub fn new(name: &'static CStr, key: &'static Lo=
+ckClassKey) -> impl PinInit<Self
+> > >          })
+> > >      }
+> > >
+> > > -    fn wait_internal<T: ?Sized, B: Backend>(&self, wait_state: u32, =
+guard: &mut Guard<'_, T, B>) {
+> > > +    fn wait_internal<T: ?Sized, B: Backend>(
+> > > +        &self,
+> > > +        wait_state: u32,
+> > > +        guard: &mut Guard<'_, T, B>,
+> > > +        timeout: c_long,
+> > > +    ) -> c_long {
+> > >          let wait =3D Opaque::<bindings::wait_queue_entry>::uninit();
+> > >
+> > >          // SAFETY: `wait` points to valid memory.
+> > > @@ -113,11 +121,13 @@ fn wait_internal<T: ?Sized, B: Backend>(&self, =
+wait_state: u32, guard: &mut Guar
+> > >              bindings::prepare_to_wait_exclusive(self.wait_list.get()=
+, wait.get(), wait_state as _)
+> > >          };
+> > >
+> > > -        // SAFETY: No arguments, switches to another thread.
+> > > -        guard.do_unlocked(|| unsafe { bindings::schedule() });
+> > > +        // SAFETY: Switches to another thread. The timeout can be an=
+y number.
+> > > +        let ret =3D guard.do_unlocked(|| unsafe { bindings::schedule=
+_timeout(timeout) });
+> >
+> > I am not sure what exactly the safety requirements of `schedule_timeout=
+`
+> > are. I looked at the function and saw that the timout should not be
+> > negative. But aside from that only the the context switching should be
+> > relevant. What things are not allowed to do when calling `schedule`
+> > (aside from the stuff that klint catches)?
+>
+> One thing is that you probably don't want to call `schedule` with task
+> state being TASK_DEAD, if so the `schedule` would be counted as
+> `ARef<Task>::drop()`, see __schedule() -> context_switch() ->
+> finish_context_switch(), and the task may be freed after that, which
+> free the stack of the task, and anything that references a object on the
+> stack would be a UAF. On the other hand, if the task state is not
+> TASK_DEAD, `schedule*()` should be a no-op regarding memory safety.
+>
+> > Because if there are none, then I would put the "switches to another
+> > thread" part into a normal comment.
+> >
+>
+> I think it's possible to make schedule_timeout() a safe function: we can
+> define setting task state TASK_DEAD as an unsafe operation, whose safety
+> requirement is something like: "Must ensure that if some code can
+> reference a memory object that belongs to the task (e.g. a stack
+> variable) after the task calls a followed `schedule()`, the code must
+> also hold an additional reference count to the task."
+>
+> Yes, it might be out of the scope of this patchset though.
 
-Thanks for the report,
+These things sound like they are out of scope of this patchset.
+Changing it from schedule to schedule_timeout doesn't change whether
+this is ok or not.
 
-On 1/4/24 10:55, Christian Kujau wrote:
-> Ever since commit 2717b5adea9e ("net/tcp: Add tcp_hash_fail() ratelimited 
-> logs") the following is printed, in waves of small floods, to syslog:
-> 
->  kernel: TCP: TCP segment has incorrect auth options set for XX.20.239.12.54681->XX.XX.90.103.80 [S]
-> 
-> This host is connected to the open internet and serves as a small HTTP and 
-> SSH login server, not much traffic is happening here. So I'd assume these 
-> messages to be the result of random internet scans and/or fingerprinting 
-> attempts or the like. While not really a concern, these messages are 
-> flooding the dmesg buffer over time :-(
-> 
-> Is there a way to adjust the severity of these messages?
-> 
-> * In include/net/tcp.h this gets logged with tcp_hash_fail(), which is
-> * defined in include/net/tcp_ao.h and calls net_info_ratelimited(), which
-> * is in turn defined in include/linux/net.h and calls pr_info().
-> 
-> Can e.g. net_dbg_ratelimited be used instead?
-
-Yeah, I guess it's possible to down the severity of these logs, but may
-be unexpected by admins: TCP-MD5 messages existed for long time and
-there may be userspace that expects them (i.e. in arista there are tests
-that look for these specific messages - those would be easy to fix, but
-there may be others outside this company).
-
-While thinking on the origin of your issue, it seems that the logs
-produced by either TCP-MD5 or TCP-AO are desired by a user when they
-add/use the authentication. Could you try this and see if that solves
-the issue for you?
-
-https://lore.kernel.org/all/20240104-tcp_hash_fail-logs-v1-1-ff3e1f6f9e72@arista.com/
-
-Thanks,
-             Dmitry
-
+Alice
 
