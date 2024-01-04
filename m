@@ -1,64 +1,64 @@
-Return-Path: <linux-kernel+bounces-16442-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16443-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB065823EA2
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 10:29:10 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D9674823EA5
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 10:29:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3F8772874C1
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 09:29:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2EE2CB21B27
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 09:29:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DA5B208AE;
-	Thu,  4 Jan 2024 09:29:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A9FF208B9;
+	Thu,  4 Jan 2024 09:29:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="hRPqLEY2"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ruXDC2hR"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 150FF2033C
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 09:28:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9A60208B2
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 09:29:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-554e902064aso373355a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 01:28:59 -0800 (PST)
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a28b0207c1dso22799966b.3
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 01:29:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704360538; x=1704965338; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1704360564; x=1704965364; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=BvKedpzjdbUqqpWsx0w08cM96+nsatTobkXdlZaM6SQ=;
-        b=hRPqLEY2Y9OlooxG83srArE1zvoM1a3Fv7YOWM/QITeUMiaVd7rKWT/89XDfJ0QPgY
-         THxTtmASpYF8/HW2co6ZbQwIhcS8auwNy3jbupVV4XSqtfH0CDuOU9sG7EVeX75WgbMZ
-         nXfPJ0k1Wdk58g7s08iZVuCb0YkzNI53YiOmqYTH7dCq8g6Dq8SmyKw03jUlfbUrDL2P
-         xLRowVS+ekelZl+gBbNfTcAtPQickBh0bGXjL/HbEckO49dHP6OSAajdxjTYWhp9Kq9n
-         e537xK/Iojku6rjVqu0Y5FWSU0caK9d3O9Y+37GBSgIyygglZje8m1YOronKlwEMYUnR
-         zuug==
+        bh=sxCSOtgIuTCmDMgckUR1KMBV4DlQWWFk6eRZHQf9FiI=;
+        b=ruXDC2hRxKwiU8UUX+shqHzu9+A9t5Tvs13Du8DJ+S3W/ex3LxRPGEr5uJwqjgCbtu
+         lPZa6jA9A5kOrvnd+D1R/5DMYJYsywhPCXWhh7e1vtLgqn/G5P9Z6nP/DF0uB5JGbbDa
+         zFAg891pFCy2DI50aw618BjnIhb76LXeXerTacxVdaWLyH8xhcducVeKS8ijKRIMraNR
+         LXhUMKKul0ovGoyxn2LjCl15SLkWzWgY1U0sZpol2wfTOOTZDUzEKM6hlq40KJCcJxvk
+         Blbxz0TltST1F6vp7jbfNvLsOCKl+3SStt6bpNn39goz06nvbbt1BGr5f2LwYo8tnb4x
+         Tbgg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704360538; x=1704965338;
+        d=1e100.net; s=20230601; t=1704360564; x=1704965364;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=BvKedpzjdbUqqpWsx0w08cM96+nsatTobkXdlZaM6SQ=;
-        b=APH8C4jHY3XKBfD1+UdH6wbusyBHYM0cZ3nTFWLmpW1AgTHemoLjK8UFTQWV9HL4MU
-         d+qEIKEtqB5+Y6uGrLsKa0lqpUuxl34VgwZTybMPVZQ3ti1aiV42s8ki5NTeZ7oumtDg
-         kmVXNwmEmF7a5GCQjWxsK3ihup2SiZEn0FwMAXcy1LihdLO1hOaW9blG2EB3vXvP9GKj
-         jdaUX15WEyGBa0tl8lBFWsbgvzD2ugmLYsNH/m2FkkHmNwkDQAeCSG5O6m9JoTaNxTLO
-         r27UKfkYxu+xAMpH65x8XKaJL/4yJ1USUJ52F+WAoKm9BfKt9XDc5RjKYtemimHkA/T1
-         mfrw==
-X-Gm-Message-State: AOJu0Yy4wd4gpAKqEeUPGFNdXaqrzCrbt+BdFfnCpALzrx1A2H4+GwLk
-	tqyEfui/mVz1JxfW5ihrBMgbn+gTo8FpBg==
-X-Google-Smtp-Source: AGHT+IFX6d/hf4qADPdyTB6cGWUeu+PuU2X+JCrLAoJycR8jmkHysidP8MbdQerxBYKuel4j1dFPWQ==
-X-Received: by 2002:a17:906:32d6:b0:a23:5cdd:fe31 with SMTP id k22-20020a17090632d600b00a235cddfe31mr167421ejk.117.1704360538417;
-        Thu, 04 Jan 2024 01:28:58 -0800 (PST)
+        bh=sxCSOtgIuTCmDMgckUR1KMBV4DlQWWFk6eRZHQf9FiI=;
+        b=s9rqQK7nL9bBh9yyScbdENtPee0lHWxpT0PZR4JWaH8CrR+kqVvuJg8kR9xO8wR7PW
+         ukcJMrsxltxGb2elSAtHzytuOUhw87/IXEgOwD1j0tucxnFXT0nr9PeSMbCLzCbWEGCS
+         2H+nFFiER6+z1X/9zTbdarjuRZQ8RIRvp1g2d0W7lcMduT9RRiSK65WwiXm+CsgTXTSa
+         DoKWKT61U5p6AjG54PL+mqhTxXRkN4pHJExOJuwCWXcm8G36zBbvCwPaTGrTUA682RpR
+         DSQve3Wn/8lnzHq3rQceGq9eHmYsg04zNAYaRBnmpznKDBvT5PKXEr2G60RcsyuUBztj
+         ZRwg==
+X-Gm-Message-State: AOJu0Yw5D4+NesApc/m8LSdE8I/bZjuDYJzT7poEtjIFEtwEmxUdJW/x
+	ayi3oftCxGmCZsQo4ArLgozbXVmgkuB3Qw==
+X-Google-Smtp-Source: AGHT+IFajqTWmTnMMBn/8bztmTnBY8FlKldSofq+dadysBPgbVWftwgMb7NUtZMZv1WH36cUoeyBGg==
+X-Received: by 2002:a17:906:cf83:b0:a27:4c43:ad3 with SMTP id um3-20020a170906cf8300b00a274c430ad3mr193833ejb.8.1704360563957;
+        Thu, 04 Jan 2024 01:29:23 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id f17-20020a170906495100b00a26b057df46sm9910107ejt.126.2024.01.04.01.28.57
+        by smtp.gmail.com with ESMTPSA id f17-20020a170906495100b00a26b057df46sm9910107ejt.126.2024.01.04.01.29.22
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Jan 2024 01:28:58 -0800 (PST)
-Message-ID: <46155b58-f952-42d5-b607-8a4e83a25ac9@linaro.org>
-Date: Thu, 4 Jan 2024 10:28:56 +0100
+        Thu, 04 Jan 2024 01:29:23 -0800 (PST)
+Message-ID: <0adf22be-bbab-48d5-909e-ad43ccf4ff5f@linaro.org>
+Date: Thu, 4 Jan 2024 10:29:22 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,8 +66,7 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/3] dt-bindings: mmc: sdhci-cadence6: add DT bindings
- documentation
+Subject: Re: [PATCH 2/3] mmc: sdhci-cadence6: add Cadence SD6HC support
 Content-Language: en-US
 To: Alex Soo <yuklin.soo@starfivetech.com>,
  Ulf Hansson <ulf.hansson@linaro.org>, Adrian Hunter
@@ -81,7 +80,7 @@ Cc: linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
  Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
  <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>
 References: <20231228065322.1176351-1-yuklin.soo@starfivetech.com>
- <20231228065322.1176351-2-yuklin.soo@starfivetech.com>
+ <20231228065322.1176351-3-yuklin.soo@starfivetech.com>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -127,35 +126,29 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231228065322.1176351-2-yuklin.soo@starfivetech.com>
+In-Reply-To: <20231228065322.1176351-3-yuklin.soo@starfivetech.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
 On 28/12/2023 07:53, Alex Soo wrote:
-> Add DT bindings documentation for Cadence SD/eMMC host controller
-> (Version 6) driver.
+> Add a driver for the Cadence SD6HC SD/SDIO/eMMC controller.
 > 
 > Signed-off-by: Alex Soo <yuklin.soo@starfivetech.com>
-
-A nit, subject: drop second/last, redundant "DT bindings documentation".
-The "dt-bindings" prefix is already stating that these are bindings.
-
-Basically your subject is pure redundancy.
-
-
 > ---
->  .../devicetree/bindings/mmc/cdns,sd6hci.yaml  | 65 +++++++++++++++++++
->  1 file changed, 65 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mmc/cdns,sd6hci.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/mmc/cdns,sd6hci.yaml b/Documentation/devicetree/bindings/mmc/cdns,sd6hci.yaml
-> new file mode 100644
-> index 000000000000..97e28d720c7b
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mmc/cdns,sd6hci.yaml
+>  MAINTAINERS                           |   6 +
+>  drivers/mmc/host/Kconfig              |  11 +
+>  drivers/mmc/host/Makefile             |   2 +
+>  drivers/mmc/host/sdhci-cadence6-phy.c | 384 +++++++++++++++++++
+>  drivers/mmc/host/sdhci-cadence6.c     | 531 ++++++++++++++++++++++++++
+>  drivers/mmc/host/sdhci-cadence6.h     | 148 +++++++
+>  6 files changed, 1082 insertions(+)
+>  create mode 100644 drivers/mmc/host/sdhci-cadence6-phy.c
+>  create mode 100644 drivers/mmc/host/sdhci-cadence6.c
+>  create mode 100644 drivers/mmc/host/sdhci-cadence6.h
 
-There were several other patches adding this, so please consolidate the
-effort. You just duplicated a lot of code.
+Please work with existing submissions:
+
+https://lore.kernel.org/all/?q=sd6hc
 
 Best regards,
 Krzysztof
