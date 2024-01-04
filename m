@@ -1,64 +1,43 @@
-Return-Path: <linux-kernel+bounces-16867-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16868-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1105D82452E
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 16:41:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C74E9824530
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 16:42:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4CF2B282808
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 15:41:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 71D3E282984
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 15:42:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8232B2421D;
-	Thu,  4 Jan 2024 15:41:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB2782421B;
+	Thu,  4 Jan 2024 15:41:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="sczJVuWo"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="DAOUHpBP"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE68B241FD
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 15:41:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-555f95cc2e4so817459a12.3
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 07:41:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704382891; x=1704987691; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=F7/ShbpEf54yAHHl4FpslzJHf7YewK4v2kQSkVZU+B4=;
-        b=sczJVuWo22scTW0OzGAoAX0PBt16+MkVIMR4nN3OaE3+AoSnpO4HKdFpGWINe13jrK
-         ziYPu4yBpgnEV0QLX8sjyXVW1det+AGO6K8TWccQNL50A+ySoRpEui9bmUf/g3UB+3WS
-         9HJY2gHtJdEqZoW/FNMZTqetYt2Fq8TdOVHdMff1Xm8vhelUAW6kVIVChhJHdDKo4xgp
-         W9OREhYs7SIoQw7N3yEBMkuliQArACRKbdjuutr5dPDyzk4J0DKOZcELOdx2TDAhsSCh
-         nr9khGz5XoXwf0TOyoycQP3WVLKv6AvYsS6VopvonvWdN0oysriAdPOhlAiJu3zyF4Fv
-         b8aQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704382891; x=1704987691;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=F7/ShbpEf54yAHHl4FpslzJHf7YewK4v2kQSkVZU+B4=;
-        b=bciYjQ1OtoCl+OswUpyy8Cs647J9xVlhiA5LArZNMMuWFmMYCOmxkvHnmxZRtm7Ad1
-         DlMZcqub4v5jysLAhYdHD3YqeMvv4FooLSSZOU0Af8hY4LsA6Jg+O61p5y3+leMzgz+i
-         iDtrgXIeHYNld8gb6dhGbAjwmGuOqTdPWaCx08eMWWJqW5NEjSXHCfWddQBRjGod5aFX
-         HL04/UWmH+isqCeC4Lqe099xscE/QSoULqi2bHWcNkx6lCcGlKRD0ZP7kM9JaPMfAhpW
-         0BysDpkYOgPgkMrUu5vgfJugvjTYaROdVOaTlKnf8GgcZ1U40aLmaSjtrIyqvkDNtRiz
-         ruiw==
-X-Gm-Message-State: AOJu0YzgL0eTnqgMNFetftO2IM7b6dwD1F8xpvuoGbEti3awg1qYi85R
-	rlpG9uJYMs/mPnlFDQTJlWpb5WcYxqBzdg==
-X-Google-Smtp-Source: AGHT+IEah0e7M2KrNungIWa3+GEmC8D68fB1t4UAkc0BcqWffzA+XwCkKbcFVX1Hg/VoQkLod6TmbQ==
-X-Received: by 2002:a17:906:3a09:b0:a26:a245:9cef with SMTP id z9-20020a1709063a0900b00a26a2459cefmr351361eje.64.1704382891320;
-        Thu, 04 Jan 2024 07:41:31 -0800 (PST)
-Received: from [192.168.2.107] ([79.115.63.202])
-        by smtp.gmail.com with ESMTPSA id c15-20020a170906d18f00b00a28ba0c3821sm1132678ejz.101.2024.01.04.07.41.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Jan 2024 07:41:30 -0800 (PST)
-Message-ID: <a3a9df6a-4270-4076-9e9b-ce2fc7284d54@linaro.org>
-Date: Thu, 4 Jan 2024 15:41:28 +0000
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4407D2375B;
+	Thu,  4 Jan 2024 15:41:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 1A1FF60008;
+	Thu,  4 Jan 2024 15:41:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1704382902;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=0FvXN4xvTiTgMyzMRSmABdNVZi9nrUpHczM3Ucu85Gk=;
+	b=DAOUHpBPXnJDXdCxkA8g/d07BxjS9VXflLwgJD9e8K0ZfUUOPbdEAHjvzrQNfEuIxGr6iG
+	kPVLXHuT83EmqiRxq81SgqKJYPkxd3+tI9TARZrf2AbrWRLYOp+FwrBhpjv/V0qFuaU6AV
+	ylOQmD0q0x4jC3edy9+F6hAf91FYPv5kgZHzXQ0XIjO6NaeDfJXU1NkKsRzAtNr923hAJj
+	cIQJSdUqfqiXBMXkCAiwAT+fOuDMj6Wc1w28nZknRrFvgi3XK+hb7lRlymENYYvVpnoWuC
+	p4WGUsMmpiUdh9t/KabjnBWgFqgwmqiGZt53JSMIRE3tiee9EojlgiGxckMkDg==
+Message-ID: <110ac63c-5d93-4f11-a064-b8b4a7994fec@bootlin.com>
+Date: Thu, 4 Jan 2024 16:41:41 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,74 +45,196 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 04/12] tty: serial: samsung: prepare for different IO
- types
+Subject: Re: [PATCH 2/2] wifi: wilc1000: fix RCU usage in connect path
+To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc: ajay.kathat@microchip.com, claudiu.beznea@tuxon.dev, kvalo@kernel.org,
+ linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+ thomas.petazzoni@bootlin.com
+References: <20240104143925.194295-1-alexis.lothore@bootlin.com>
+ <20240104143925.194295-3-alexis.lothore@bootlin.com>
+ <175febb5-f31a-4540-8b70-7206fef83760@wanadoo.fr>
 Content-Language: en-US
-To: Greg KH <gregkh@linuxfoundation.org>
-Cc: peter.griffin@linaro.org, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, mturquette@baylibre.com,
- sboyd@kernel.org, conor+dt@kernel.org, andi.shyti@kernel.org,
- alim.akhtar@samsung.com, jirislaby@kernel.org, s.nawrocki@samsung.com,
- tomasz.figa@gmail.com, cw00.choi@samsung.com, arnd@arndb.de,
- semen.protsenko@linaro.org, andre.draszik@linaro.org, saravanak@google.com,
- willmcvicker@google.com, linux-arm-kernel@lists.infradead.org,
- linux-samsung-soc@vger.kernel.org, linux-clk@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-i2c@vger.kernel.org, linux-serial@vger.kernel.org,
- kernel-team@android.com
-References: <20231228125805.661725-1-tudor.ambarus@linaro.org>
- <20231228125805.661725-5-tudor.ambarus@linaro.org>
- <2024010432-taco-moneyless-53e2@gregkh>
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <2024010432-taco-moneyless-53e2@gregkh>
+From: =?UTF-8?Q?Alexis_Lothor=C3=A9?= <alexis.lothore@bootlin.com>
+In-Reply-To: <175febb5-f31a-4540-8b70-7206fef83760@wanadoo.fr>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: alexis.lothore@bootlin.com
 
-
-
-On 1/4/24 15:32, Greg KH wrote:
-> On Thu, Dec 28, 2023 at 12:57:57PM +0000, Tudor Ambarus wrote:
->> GS101's Connectivity Peripheral blocks (peric0/1 blocks) which
->> include the I3C and USI (I2C, SPI, UART) only allow 32-bit
->> register accesses. If using 8-bit register accesses, a SError
->> Interrupt is raised causing the system unusable.
+On 1/4/24 16:30, Christophe JAILLET wrote:
+> Le 04/01/2024 à 15:39, Alexis Lothoré a écrit :
+>> From: Alexis Lothoré <alexis.lothore-LDxbnhwyfcJBDgjK7y7TUQ@public.gmane.org>
 >>
->> Instead of specifying the reg-io-width = 4 everywhere, for each node,
->> the requirement should be deduced from the compatible.
+>> With lockdep enabled, calls to the connect function from cfg802.11 layer
+>> lead to the following warning:
 >>
->> Prepare the samsung tty driver to allow IO types different than
->> UPIO_MEM. ``struct uart_port::iotype`` is an unsigned char where all
->> its 8 bits are exposed to uapi. We can't make NULL checks on it to
->> verify if it's set, thus always set it from the driver's data.
+>> =============================
+>> WARNING: suspicious RCU usage
+>> 6.7.0-rc1-wt+ #333 Not tainted
+>> -----------------------------
+>> drivers/net/wireless/microchip/wilc1000/hif.c:386
+>> suspicious rcu_dereference_check() usage!
+>> [...]
+>> stack backtrace:
+>> CPU: 0 PID: 100 Comm: wpa_supplicant Not tainted 6.7.0-rc1-wt+ #333
+>> Hardware name: Atmel SAMA5
+>>   unwind_backtrace from show_stack+0x18/0x1c
+>>   show_stack from dump_stack_lvl+0x34/0x48
+>>   dump_stack_lvl from wilc_parse_join_bss_param+0x7dc/0x7f4
+>>   wilc_parse_join_bss_param from connect+0x2c4/0x648
+>>   connect from cfg80211_connect+0x30c/0xb74
+>>   cfg80211_connect from nl80211_connect+0x860/0xa94
+>>   nl80211_connect from genl_rcv_msg+0x3fc/0x59c
+>>   genl_rcv_msg from netlink_rcv_skb+0xd0/0x1f8
+>>   netlink_rcv_skb from genl_rcv+0x2c/0x3c
+>>   genl_rcv from netlink_unicast+0x3b0/0x550
+>>   netlink_unicast from netlink_sendmsg+0x368/0x688
+>>   netlink_sendmsg from ____sys_sendmsg+0x190/0x430
+>>   ____sys_sendmsg from ___sys_sendmsg+0x110/0x158
+>>   ___sys_sendmsg from sys_sendmsg+0xe8/0x150
+>>   sys_sendmsg from ret_fast_syscall+0x0/0x1c
 >>
->> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+>> This warning is emitted because in the connect path, when trying to parse
+>> target BSS parameters, we dereference a RCU pointer whithout being in RCU
+>> critical section.
+>> Fix RCU dereference usage by moving it to a RCU read critical section. To
+>> avoid wrapping the whole wilc_parse_join_bss_param under the critical
+>> section, just use the critical section to copy ies data
+>>
+>> Fixes: c460495ee072 ("staging: wilc1000: fix incorrent type in initializer")
+>> Signed-off-by: Alexis Lothoré
+>> <alexis.lothore-LDxbnhwyfcJBDgjK7y7TUQ@public.gmane.org>
 >> ---
->> v2: new patch
+>>   drivers/net/wireless/microchip/wilc1000/hif.c | 35 ++++++++++++-------
+>>   1 file changed, 23 insertions(+), 12 deletions(-)
 >>
->>  drivers/tty/serial/samsung_tty.c | 9 ++++++++-
->>  1 file changed, 8 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/tty/serial/samsung_tty.c b/drivers/tty/serial/samsung_tty.c
->> index 66bd6c090ace..97ce4b2424af 100644
->> --- a/drivers/tty/serial/samsung_tty.c
->> +++ b/drivers/tty/serial/samsung_tty.c
->> @@ -72,6 +72,7 @@ struct s3c24xx_uart_info {
->>  	const char		*name;
->>  	enum s3c24xx_port_type	type;
->>  	unsigned int		port_type;
->> +	unsigned char		iotype;
->>  	unsigned int		fifosize;
->>  	unsigned long		rx_fifomask;
->>  	unsigned long		rx_fifoshift;
+>> diff --git a/drivers/net/wireless/microchip/wilc1000/hif.c
+>> b/drivers/net/wireless/microchip/wilc1000/hif.c
+>> index 6f1218a51061..806b7337b5ae 100644
+>> --- a/drivers/net/wireless/microchip/wilc1000/hif.c
+>> +++ b/drivers/net/wireless/microchip/wilc1000/hif.c
+>> @@ -377,38 +377,48 @@ struct wilc_join_bss_param *
+>>   wilc_parse_join_bss_param(struct cfg80211_bss *bss,
+>>                 struct cfg80211_crypto_settings *crypto)
+>>   {
+>> -    const struct cfg80211_bss_ies *ies = rcu_dereference(bss->ies);
+>> -    const u8 *tim_elm, *ssid_elm, *rates_ie, *supp_rates_ie;
+>> +    const u8 *ies_data, *tim_elm, *ssid_elm, *rates_ie, *supp_rates_ie;
+>>       const u8 *ht_ie, *wpa_ie, *wmm_ie, *rsn_ie;
+>>       struct ieee80211_p2p_noa_attr noa_attr;
+>> +    const struct cfg80211_bss_ies *ies;
+>>       struct wilc_join_bss_param *param;
+>> -    u8 rates_len = 0;
+>> +    u8 rates_len = 0, ies_len;
+>>       int ret;
+>>         param = kzalloc(sizeof(*param), GFP_KERNEL);
+>>       if (!param)
+>>           return NULL;
+>>   +    rcu_read_lock();
+>> +    ies = rcu_dereference(bss->ies);
+>> +    ies_data = kmemdup(ies->data, ies->len, GFP_ATOMIC);
 > 
-> Is there a reason you are trying to add unused memory spaces to this
-> structure for no valid reason?  I don't think you could have picked a
-> more incorrect place in there to add this :)
+> Is it mandatory to have GFP_ATOMIC here?
+> If yes, then some other drivers may need to be fixed (at least [1]).
+
+From my understanding: yes, because if any sleep occurs in a section protected
+by rcu_read_lock/rcu_read_unlock, it may mess with RCU grace period wait (and
+so, rcu reclaim step may occur while this reader is still in the read section)
+
 > 
-> Please fix.
+>> +    if (!ies_data) {
+>> +        rcu_read_unlock();
+> 
+> 'param' allocated just a few lines above is leaking now.
+
+You are right, good catch, thanks. I will update accordingly.
+> 
+> CJ
+> 
+> 
+> [1]:
+> https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/tree/drivers/pci/p2pdma.c#n660
+> 
+> 
+>> +        return NULL;
+>> +    }
+>> +    ies_len = ies->len;
+>> +    rcu_read_unlock();
+>> +
+>>       param->beacon_period = cpu_to_le16(bss->beacon_interval);
+>>       param->cap_info = cpu_to_le16(bss->capability);
+>>       param->bss_type = WILC_FW_BSS_TYPE_INFRA;
+>>       param->ch = ieee80211_frequency_to_channel(bss->channel->center_freq);
+>>       ether_addr_copy(param->bssid, bss->bssid);
+>>   -    ssid_elm = cfg80211_find_ie(WLAN_EID_SSID, ies->data, ies->len);
+>> +    ssid_elm = cfg80211_find_ie(WLAN_EID_SSID, ies_data, ies_len);
+>>       if (ssid_elm) {
+>>           if (ssid_elm[1] <= IEEE80211_MAX_SSID_LEN)
+>>               memcpy(param->ssid, ssid_elm + 2, ssid_elm[1]);
+>>       }
+>>   -    tim_elm = cfg80211_find_ie(WLAN_EID_TIM, ies->data, ies->len);
+>> +    tim_elm = cfg80211_find_ie(WLAN_EID_TIM, ies_data, ies_len);
+>>       if (tim_elm && tim_elm[1] >= 2)
+>>           param->dtim_period = tim_elm[3];
+>>         memset(param->p_suites, 0xFF, 3);
+>>       memset(param->akm_suites, 0xFF, 3);
+>>   -    rates_ie = cfg80211_find_ie(WLAN_EID_SUPP_RATES, ies->data, ies->len);
+>> +    rates_ie = cfg80211_find_ie(WLAN_EID_SUPP_RATES, ies_data, ies_len);
+>>       if (rates_ie) {
+>>           rates_len = rates_ie[1];
+>>           if (rates_len > WILC_MAX_RATES_SUPPORTED)
+>> @@ -419,7 +429,7 @@ wilc_parse_join_bss_param(struct cfg80211_bss *bss,
+>>         if (rates_len < WILC_MAX_RATES_SUPPORTED) {
+>>           supp_rates_ie = cfg80211_find_ie(WLAN_EID_EXT_SUPP_RATES,
+>> -                         ies->data, ies->len);
+>> +                         ies_data, ies_len);
+>>           if (supp_rates_ie) {
+>>               u8 ext_rates = supp_rates_ie[1];
+>>   @@ -434,11 +444,11 @@ wilc_parse_join_bss_param(struct cfg80211_bss *bss,
+>>           }
+>>       }
+>>   -    ht_ie = cfg80211_find_ie(WLAN_EID_HT_CAPABILITY, ies->data, ies->len);
+>> +    ht_ie = cfg80211_find_ie(WLAN_EID_HT_CAPABILITY, ies_data, ies_len);
+>>       if (ht_ie)
+>>           param->ht_capable = true;
+>>   -    ret = cfg80211_get_p2p_attr(ies->data, ies->len,
+>> +    ret = cfg80211_get_p2p_attr(ies_data, ies_len,
+>>                       IEEE80211_P2P_ATTR_ABSENCE_NOTICE,
+>>                       (u8 *)&noa_attr, sizeof(noa_attr));
+>>       if (ret > 0) {
+>> @@ -462,7 +472,7 @@ wilc_parse_join_bss_param(struct cfg80211_bss *bss,
+>>       }
+>>       wmm_ie = cfg80211_find_vendor_ie(WLAN_OUI_MICROSOFT,
+>>                        WLAN_OUI_TYPE_MICROSOFT_WMM,
+>> -                     ies->data, ies->len);
+>> +                     ies_data, ies_len);
+>>       if (wmm_ie) {
+>>           struct ieee80211_wmm_param_ie *ie;
+>>   @@ -477,13 +487,13 @@ wilc_parse_join_bss_param(struct cfg80211_bss *bss,
+>>         wpa_ie = cfg80211_find_vendor_ie(WLAN_OUI_MICROSOFT,
+>>                        WLAN_OUI_TYPE_MICROSOFT_WPA,
+>> -                     ies->data, ies->len);
+>> +                     ies_data, ies_len);
+>>       if (wpa_ie) {
+>>           param->mode_802_11i = 1;
+>>           param->rsn_found = true;
+>>       }
+>>   -    rsn_ie = cfg80211_find_ie(WLAN_EID_RSN, ies->data, ies->len);
+>> +    rsn_ie = cfg80211_find_ie(WLAN_EID_RSN, ies_data, ies_len);
+>>       if (rsn_ie) {
+>>           int rsn_ie_len = sizeof(struct element) + rsn_ie[1];
+>>           int offset = 8;
+>> @@ -517,6 +527,7 @@ wilc_parse_join_bss_param(struct cfg80211_bss *bss,
+>>               param->akm_suites[i] = crypto->akm_suites[i] & 0xFF;
+>>       }
+>>   +    kfree(ies_data);
+>>       return (void *)param;
+>>   }
+>>   
 > 
 
-Will put it after "const char *name".
-Thanks,
-ta
+-- 
+Alexis Lothoré, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
+
 
