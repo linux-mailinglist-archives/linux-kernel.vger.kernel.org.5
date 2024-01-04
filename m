@@ -1,199 +1,143 @@
-Return-Path: <linux-kernel+bounces-16375-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16377-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF2D3823D97
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 09:41:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8AC21823DA1
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 09:42:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0570DB20BFF
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 08:41:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3AB8D286800
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 08:42:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A45F1DFC2;
-	Thu,  4 Jan 2024 08:41:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B15F1DFFF;
+	Thu,  4 Jan 2024 08:42:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="zxRlYUfW"
+	dkim=pass (1024-bit key) header.d=amarulasolutions.com header.i=@amarulasolutions.com header.b="RgeBvFeV"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2084.outbound.protection.outlook.com [40.107.223.84])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAEDE1DDC3;
-	Thu,  4 Jan 2024 08:41:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FclJQenVelnCN39/am16dBCDAwtTbb3MptzcTy+FVQalQnSx4Wmkx98Yuxs8stfLXOdMQXfNAm2kq65IefiVkaHqqfNbz0rey/vOFiGcQ63ci02FEZ+o2+lZ79YCWrKU3WDxDCBRJB98br5FBpen9NkU69Mq5y+HdDpXLLt0Bo/kRhINAE/s4mcFjOeO2BvptQeU9v7UP4o5de9c1HtMiSR01F8Emx+fiCBSLmOazdBT1fFvlR6sRo5gIvHqBCjMNnUDqMNz3H7bel6aO55lBX0UULoIoq6BLPhjeDXytjkNZDnppa+2KL0bai9Ont4TlG+yl0J01MoaguE6q2W+Lg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=LMGkMAcVuyEUKEuhXSUNdWPPvdRxsN061VdyA1fsVjM=;
- b=E12yv86B64WCMGgXFrJjvDbxFO/uvUI5UULYkwuSAhOGJSshHC4iogvvkW/nY3S7YvNBEO/VfC6wc1zhlsXCOIGAxW6nAV2APXk8z6NQb4uPhcL/nx8LjS0sC7nUyEsCKk1nu3pRyaTdg276uW7v60D/05tw+Si+KGUAHEoWsCtQlpkv24FUjpQ2/Rvj6H7HkvqF6/EpFkVwl3cg41QJ1irwznDbGcUxBrcjlsipFFKbe6dVdRrpPv/+cQBTq1gVMb9+OD6tW7geDOzzr49Rs6gXDJCrBcpEkQB+yfWW8UiAkMtLyIJxGez66BAt/TUetg9tWbBBzfIPJdyOOns2QQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LMGkMAcVuyEUKEuhXSUNdWPPvdRxsN061VdyA1fsVjM=;
- b=zxRlYUfWO8hsvUyBoNMzl/DsSyLUeg8AG8uvR+ReIR2whbClePvph60cImOjbXfDZeLCyhX4R5BSlNhGrE+iU/cvRs/XH8t2piqeEIIWDNo4DLsAasHCm6PqVI+UqXDCUr8lk8DPAhqXr3TJdWNvDYxCDwQbdxtVFE990PLS6HY=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from DM6PR12MB3657.namprd12.prod.outlook.com (2603:10b6:5:149::18)
- by PH7PR12MB8016.namprd12.prod.outlook.com (2603:10b6:510:26b::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.14; Thu, 4 Jan
- 2024 08:41:42 +0000
-Received: from DM6PR12MB3657.namprd12.prod.outlook.com
- ([fe80::5786:22a:27df:9a70]) by DM6PR12MB3657.namprd12.prod.outlook.com
- ([fe80::5786:22a:27df:9a70%7]) with mapi id 15.20.7159.013; Thu, 4 Jan 2024
- 08:41:42 +0000
-Date: Thu, 4 Jan 2024 09:41:37 +0100
-From: Robert Richter <rrichter@amd.com>
-To: Dan Williams <dan.j.williams@intel.com>
-Cc: Ira Weiny <ira.weiny@intel.com>, Davidlohr Bueso <dave@stgolabs.net>,
-	Jonathan Cameron <jonathan.cameron@huawei.com>,
-	Dave Jiang <dave.jiang@intel.com>,
-	Alison Schofield <alison.schofield@intel.com>,
-	Vishal Verma <vishal.l.verma@intel.com>, linux-cxl@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Fan Ni <nifan.cxl@gmail.com>,
-	Lukas Wunner <lukas@wunner.de>
-Subject: Re: [PATCH] cxl/pci: Get rid of pointer arithmetic reading CDAT table
-Message-ID: <ZZZvQcWKHd2Pmg3O@rric.localdomain>
-References: <20231116-fix-cdat-devm-free-v1-1-b148b40707d7@intel.com>
- <ZVfIaNhiSc-yQZo5@rric.localdomain>
- <ZVfJ6Fxidvw_gz7r@rric.localdomain>
- <657bd741d2961_269bd294d@dwillia2-mobl3.amr.corp.intel.com.notmuch>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <657bd741d2961_269bd294d@dwillia2-mobl3.amr.corp.intel.com.notmuch>
-X-ClientProxiedBy: FR3P281CA0029.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:1c::22) To DM6PR12MB3657.namprd12.prod.outlook.com
- (2603:10b6:5:149::18)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B8C71DDCD
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 08:42:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=amarulasolutions.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amarulasolutions.com
+Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a27733ae1dfso26612566b.3
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 00:42:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amarulasolutions.com; s=google; t=1704357733; x=1704962533; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=w6TTGghNZIM3DwJh+LEsX8daCCdA5ovV1xX1zOwS5+I=;
+        b=RgeBvFeVd8GeH2ixJda7LEOylWxiyJjOfQiXqkt3Sr4SEoCxB0yfxv11PdTGkpsiGd
+         T9U1O8dsRqeWees70711jDp3K8e4Ff9V01MbQxB9qEKCmxlyOOOU8s0HnKFH1AmnfyJg
+         0a/G9vgTNc0Oe2lgg/nGa1xIE6YbgZijdlOnA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704357733; x=1704962533;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=w6TTGghNZIM3DwJh+LEsX8daCCdA5ovV1xX1zOwS5+I=;
+        b=U1jlYYuCPAPfrOP4fz2FKg8+KM+szgCmEuZdLLTCNqSNuuUGk9mXhat0+DdQ83L/fy
+         exDPlZRYBfvFaTNp6EcaBdIe0qtbge5G+wWNPhQbGTony4cqiPJI6SraNWdJz8yNDym3
+         D0UMThvy/jRQp2QZ9RqDDiOiZOamRZwLTk04gBPhcdacdUeFtlbsLvvETM5Lq9F5qpHJ
+         Jjc/3d4e/rvqILSAxo3rCTE3zEHzqIq8/Mxi/GNLdMqZ0Oz4JKk963mVmoWlv/PMjDPa
+         StvfpjQoP5AwyqrBawZ/HoUAB/mYIjSk68QScyyxlaQSkF8y1esnZCmw19G2JQ0A6uM9
+         szcg==
+X-Gm-Message-State: AOJu0YyBstvFbDrrK+Yk5Lh2BQEMF2cf6VCOOCPt5ttKAOqFhOzeSLKj
+	WDEnCzuwZm1wH1NB5zbExxe8HqfbyDtTIBcNsdbJ5fHDbJg=
+X-Google-Smtp-Source: AGHT+IFyrXaOSZ8giovYkCTuU9dk3yAf5TDiqjFF9nYGZb1tZAGuyWbchnGPaOePcQ+ciRaFdTnV/w==
+X-Received: by 2002:a17:907:9009:b0:a28:c638:40a0 with SMTP id ay9-20020a170907900900b00a28c63840a0mr65840ejc.77.1704357733257;
+        Thu, 04 Jan 2024 00:42:13 -0800 (PST)
+Received: from dario-ThinkPad-T14s-Gen-2i.amarulasolutions.com (net-93-150-255-34.cust.vodafonedsl.it. [93.150.255.34])
+        by smtp.gmail.com with ESMTPSA id wh14-20020a170906fd0e00b00a233efe6aa7sm13495704ejb.51.2024.01.04.00.42.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Jan 2024 00:42:12 -0800 (PST)
+From: Dario Binacchi <dario.binacchi@amarulasolutions.com>
+To: linux-kernel@vger.kernel.org
+Cc: linux-amarula@amarulasolutions.com,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Dario Binacchi <dario.binacchi@amarulasolutions.com>,
+	Andre Przywara <andre.przywara@arm.com>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Daniel Vetter <daniel@ffwll.ch>,
+	David Airlie <airlied@gmail.com>,
+	Gregory CLEMENT <gregory.clement@bootlin.com>,
+	Jessica Zhang <quic_jesszhan@quicinc.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Lee Jones <lee@kernel.org>,
+	=?UTF-8?q?Leonard=20G=C3=B6hrs?= <l.goehrs@pengutronix.de>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Sam Ravnborg <sam@ravnborg.org>,
+	Sean Nyekjaer <sean@geanix.com>,
+	Shawn Guo <shawnguo@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	devicetree@vger.kernel.org,
+	dri-devel@lists.freedesktop.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-stm32@st-md-mailman.stormreply.com
+Subject: [PATCH v4 0/8] Add display support for stm32f769-disco board
+Date: Thu,  4 Jan 2024 09:41:40 +0100
+Message-ID: <20240104084206.721824-1-dario.binacchi@amarulasolutions.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR12MB3657:EE_|PH7PR12MB8016:EE_
-X-MS-Office365-Filtering-Correlation-Id: e38b1026-07a3-4960-0194-08dc0d00f9e5
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	WSrKTrt/rFIjEC3X/q/DeSz7BS8BBRrjMqoXJkmvaszbXuB1lg3Gxyz4eCVJiRFPlLgnk+49emZlpimGQ/BSJ/HICcFTjRvVdP74UvTUcr2ym0ezD6Czo8sXPmxoGF1K9y9Ls8E0cW1nFcJy5E9HrHW9A/qucEpl8gzOrRF0cuKWo7dmrbztenUx0C5qm7fE+U+s+RKfNu190cnEJQw9MhzavFrTFNjPxoDPSz5B1Hi3cxVCv/+7vBC4NbIohE3dTyb/i+cWy67OEV7PTyISk3W2lLXQy9uVhMRu4DFzJ09SyFUo1XWt0C7+ax+h0OtFWrc/sAeVL+Ls8Zj0uaHgvh6+fBhIF79J+N1NWG59hBDKyZaUN6T1m3Xt5f/SUk1bBlDIsC67SVbVtqNFYwbK6jG+5H/T2uEwuoCkV2HT0h9uAHcpGdAkhKb/W/LDFIvg5CBjWidR1kD0XlXrd+bJbvNjaiXCoKlsEVB0TczPexuMm9wmJ9WOuzfoi/IxFVgg87EQkLcQ5suQdJ3PqUEYLSAG+79zdGQO4PDKfEvULtS7nBe9COwyL05nc91yWmsOLYMiv+7qI4vAzfnG5Nl5R28GbSK4VKbHfwRsS2sEVCY=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3657.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(39860400002)(136003)(376002)(366004)(396003)(230922051799003)(186009)(451199024)(1800799012)(64100799003)(316002)(2906002)(54906003)(4326008)(5660300002)(7416002)(83380400001)(41300700001)(26005)(9686003)(6512007)(478600001)(6666004)(6486002)(6506007)(53546011)(8936002)(6916009)(66946007)(8676002)(66476007)(38100700002)(66556008)(26583001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?CGtKJ14hF0e7aQR+QfZQqkLT3Du9Rh1xvAYoy55TWrHfZQYRNdhlBvX6Mo75?=
- =?us-ascii?Q?s21rxVF2+ijvuAMnQB9B0t7w7DVeseDsscdqY8+8Gt4PJZaES90zc3tBaO0r?=
- =?us-ascii?Q?tV7TxO9OFw8dTNqHvuJxQhoDGYVfqu8EXI1Q4lvF74SFSLRzhgesyYYing36?=
- =?us-ascii?Q?ewQYtRTSkZpoFXVdjF20jgyAymj2lplOgu3mBk5ChoAYOH8yB13YLmukZm9Y?=
- =?us-ascii?Q?hFQKYe65gOFQw4uhYiuFUTir7agMQaoW8B3ItH0ndohA0ckyNQcXIqB1HWEm?=
- =?us-ascii?Q?zC2F7d9c8m1AObgP7/RPZvm3zcGoiNGrMIYwX/7vbsWlgsaI9PUNeiT6esxR?=
- =?us-ascii?Q?lZ7778pfqfl0DoYzmAP9uJ1lzHRhkyQpjWHc74PQBxSAJAJwEcHjLreU29zH?=
- =?us-ascii?Q?JljKte3jmu+shKl0Tiu9+moOBV+sCXEhovfkoYqGn0FgL4h/768BzAWYH393?=
- =?us-ascii?Q?66wrggqMytlgmr3wo02HEWlGsXMrBvhOss9n2oqKnNMpAuKHxVERekYO9UB6?=
- =?us-ascii?Q?PPnR3h1aCQv5jXpSqgPZTx6IOgSAl8imcXMzKXwKQlh2SgiWt25MkzDyVP2O?=
- =?us-ascii?Q?9yX/Chzf8M+kEp09sR4OlYb6CxJjWzKXU41uSbADZRyqB9+NIM1Ns/6EjfYI?=
- =?us-ascii?Q?aGaiYglgfbGHOPjCqxS1RJN93SnVYb9RAC8e1ySPptsBg976SX11HBWrX3SS?=
- =?us-ascii?Q?ob8tyPZANSSrekfxfKrMtOkyvUS+udxzGKVRabUASNl9X0Ha5s6q8SYCgip+?=
- =?us-ascii?Q?CmY9UuD8qsjSk5CJA9LPokWyPpw5vePCTDnHYXOEF3+6KMGgFLxqHOgXbWrI?=
- =?us-ascii?Q?UieeYY23VKmXiFuAIksQoBncUfshG/HvGQ7XxZSWCX6mHSMqW3eu3MB6K9iT?=
- =?us-ascii?Q?iaa/x+AuhxNlPJSrjTgUECAvv5LvH40SUGc/CfaORPDpu87y/G7dr8XM8K79?=
- =?us-ascii?Q?2ST0dzEXD60mbXsc+Hf6XR7HONvFoX2MYa5J+fDWxa3Y9rB3l/Z/11+yKJDG?=
- =?us-ascii?Q?U6310V8QoOwXWLRSTXAfVYXU57k9/Pt8I/eJfyNXyYqkwDG81jnA1VLaGFAF?=
- =?us-ascii?Q?XGmPbIpGAnLzGBi273InH9qnnbyhZ/vy86DWa6sExWjX7ZSgmJ128JFLd4Fe?=
- =?us-ascii?Q?qG58FiKyg6eTDmoFP2Tul/MkkDQa/HOXsi/ILBkWmnaWy5+nMCE+FQLjWf8N?=
- =?us-ascii?Q?u9JcnLjGgliAhvDzlJDbZoD4AAaVSVh7tlNJNYYlbUKwjRUXD2Oc71Yitepq?=
- =?us-ascii?Q?0mwLFVSJU5sk18GU0S9osJjlIdJ2Sf87fq/cDXT/TJXb7tjnaXcES1xKPDsS?=
- =?us-ascii?Q?r6iox16EOSoWmU4xv6xf5GfqE+Rlf8mdAAErjNeOAiSakxQEJqn9/FvGT9Dh?=
- =?us-ascii?Q?YK6LeR2eXOS3Y7iLZpC4kNE70Q85Ua0E5BqltwhfcmRVAGqaCRSI0rKkm32o?=
- =?us-ascii?Q?qtxS9LlADBMyYxdDOxhKHCeJQ/jRN6M4TYtnC+aG3JqlBlxiJZplXaHtjcWz?=
- =?us-ascii?Q?8XWHLXbJvrraHlzWx8Kjb6Ge4D5nZ5clmrL2RC2PwPHxFWERsp8Y6AOkyoOt?=
- =?us-ascii?Q?GzCQDKyKyaD9asXNBi1Ijr6tOg+YEYtCDmvTGZhB?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e38b1026-07a3-4960-0194-08dc0d00f9e5
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3657.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Jan 2024 08:41:42.5419
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: UKGgFbjX8BIz2irCv4aE+6XFc1L7RUbzu9hivpFlZQTgCDpA0EiCM0K40bADSYgIT24WL+zJtUvfef091DjTTQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB8016
+Content-Transfer-Encoding: 8bit
 
-This threat slipped away end of last year...
+The series adds display support for the stm32f769-disco board. It has been
+tested on hardware revisions MB1225-B03 and MB1166-A09. This required
+modifications to the nt35510 driver. As I do not have the Hydis HVA40WV1
+display, it would be better if someone tested the driver in that
+configuration.
 
-On 14.12.23 20:34:09, Dan Williams wrote:
-> Robert Richter wrote:
-> > On 17.11.23 21:09:18, Robert Richter wrote:
-> > > I will send an on-top patch for 6.8 that reworks that code area to
-> > > remove the pointer arithmetic.
-> > 
-> > Here it is:
-> > 
-> > From 13787f72c20b8c54754ae86015d982307eae0397 Mon Sep 17 00:00:00 2001
-> > From: Robert Richter <rrichter@amd.com>
-> > Subject: [PATCH] cxl/pci: Get rid of pointer arithmetic reading CDAT table
-> > 
-> > Reading the CDAT table using DOE requires a Table Access Response
-> > Header in addition to the CDAT entry. In current implementation this
-> > has caused offsets with sizeof(__le32) to the actual buffers. This led
-> > to hardly readable code and even bugs (see fix of devm_kfree() in
-> > read_cdat_data()).
-> > 
-> > Rework code to avoid calculations with sizeof(__le32). Introduce
-> > struct cdat_doe for this which contains the Table Access Response
-> > Header and a variable payload size for various data structures
-> > afterwards to access the CDAT table and its CDAT Data Structures
-> > without recalculating buffer offsets.
-> 
-> I like reworking the code to introduce an explicit type for the response
-> buffer, but as Ira points out, lets call it a "response" not a
-> "cdat_doe".
+Changes in v4:
+- Put the "enum" list in alphabetical order
 
-Looks good.
+Changes in v3:
+- Use "enum" to have less code changed
 
-> 
-> The feedback on the flex array is accurate, but I see no reason to have
-> 3 flex arrays vs:
-> 
-> struct cdat_response {
->        __le32 doe_header;
->        union {
->                struct cdat_header header;
->                struct cdat_entry_header entry;
->                u8 table[];
->        };
-> } __packed;
+Changes in v2:
+- Add Acked-by tag of Conor Dooley
+- Add a dash in front of each "items:"
+- Change the status of panel_backlight node to "disabled"
+- Delete backlight property from panel0 node.
+- Re-write the patch [7/8] "drm/panel: nt35510: refactor panel initialization"
+  in the same style as the original driver in order to maintain the same
+  structure.
+- Re-write the patch [8/8] "drm/panel: nt35510: support FRIDA FRD400B25025-A-CTK"
+  in the same style as the original driver.
 
-The flex arrays are due to sizeof(*doe) which is just the size of the
-base payload without any variable data then. Another nice effect of
-this is pointer creation of @header and @entry:
+Dario Binacchi (8):
+  dt-bindings: mfd: stm32f7: Add binding definition for DSI
+  ARM: dts: stm32: add DSI support on stm32f769
+  ARM: dts: stm32: rename mmc_vcard to vcc-3v3 on stm32f769-disco
+  ARM: dts: stm32: add display support on stm32f769-disco
+  dt-bindings: nt35510: add compatible for FRIDA FRD400B25025-A-CTK
+  ARM: dts: add stm32f769-disco-mb1225-revb03-mb1166-reva09
+  drm/panel: nt35510: move hardwired parameters to configuration
+  drm/panel: nt35510: support FRIDA FRD400B25025-A-CTK
 
-	doe->header vs. &doe->header etc.
+ .../display/panel/novatek,nt35510.yaml        |   4 +-
+ arch/arm/boot/dts/st/Makefile                 |   1 +
+ ...f769-disco-mb1225-revb03-mb1166-reva09.dts |  18 +
+ arch/arm/boot/dts/st/stm32f769-disco.dts      |  78 +++-
+ arch/arm/boot/dts/st/stm32f769.dtsi           |  21 +
+ drivers/gpu/drm/panel/panel-novatek-nt35510.c | 422 +++++++++++++++---
+ include/dt-bindings/mfd/stm32f7-rcc.h         |   1 +
+ 7 files changed, 484 insertions(+), 61 deletions(-)
+ create mode 100644 arch/arm/boot/dts/st/stm32f769-disco-mb1225-revb03-mb1166-reva09.dts
+ create mode 100644 arch/arm/boot/dts/st/stm32f769.dtsi
 
-... which aligns with doe->table too.
+-- 
+2.43.0
 
-This all leads to well readable code.
-
-> 
-> As far as I can see nothing outside of drivers/cxl/core/pci.c needs
-> 'struct cdat_response', so it can stay local to this C file.
-> 
-> While you are working on that I will do another lead-in cleanup to kill
-> the goto in cxl_cdat_read_table() and let you come back and kill off the
-> open-coded "+ sizeof(__le32)" that I will leave behind.
-
-I briefly looked into your patch, but will send for reference a v2
-with a rebase onto cxl/next and small updates only. I could prepare a
-v3 that bases on your patch afterwards.
-
-Thanks,
-
--Robert
 
