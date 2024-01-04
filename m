@@ -1,213 +1,130 @@
-Return-Path: <linux-kernel+bounces-16890-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16889-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D9CE982457D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 16:55:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 52994824579
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 16:55:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 84C60286045
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 15:55:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 65C581C21E6F
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 15:55:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1051924A03;
-	Thu,  4 Jan 2024 15:55:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32E71249FF;
+	Thu,  4 Jan 2024 15:55:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fvZjdmoW"
+	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="P2WvEIgS"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-vk1-f173.google.com (mail-vk1-f173.google.com [209.85.221.173])
+Received: from mail-yb1-f179.google.com (mail-yb1-f179.google.com [209.85.219.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8EF3249EC;
-	Thu,  4 Jan 2024 15:55:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vk1-f173.google.com with SMTP id 71dfb90a1353d-4b732dfa6e4so187303e0c.1;
-        Thu, 04 Jan 2024 07:55:24 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE2C1249EC
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 15:54:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
+Received: by mail-yb1-f179.google.com with SMTP id 3f1490d57ef6-dbd715ed145so548398276.1
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 07:54:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704383723; x=1704988523; darn=vger.kernel.org;
+        d=paul-moore.com; s=google; t=1704383698; x=1704988498; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=UPeDIiQjNkPvl4Ik1+JkTjR4o2Soc24WzRcdY8DaVYo=;
-        b=fvZjdmoWk6wPXVGe4F4nqa57sn02xom6y1xg+NPAKOfxSccOkMRO16bTL4JTuEmvEX
-         xr+Gp8vIkZ68Izwg9cLZRFDwof56nQnzGHIFAYPbe7+bZD+2FrV3Eq5EEy2DYTBBv7/n
-         +exlCiyRXPfHIX2Qnu4q8cxY1G8zxzZd97aTbwPrVE0qqGrbU5/biAn8xBQnMMQNfo0s
-         50rwuEMRZcTCCbwnPHDY692OPm2PBPtSb+nRzYUom9EK4+waflic7yy0DcW6HlhFb4j1
-         lqrtcVbGOlbpjTqhJ967GYCoVdYeVeAqZ36M6T19s0AvM9NZHuBG0LlBjAxKse3/zOTQ
-         Mhvg==
+        bh=ZLqJo44VuyUw8MJch6t3PsF5TyAUQI8Tm5Zx7iuRPos=;
+        b=P2WvEIgS5ZYA51KjWYF1mXbpummCO3ePiPEFnrNdmKgkHCN2jcbD76LAgEVU5hJthj
+         7A6HXmfgldVZBV8eK61IhrD6FiSOL09UPBmRwIzQyguLrsIzjisttxRx6m5S/faDQE4U
+         aLR5qHW3U0l2lyHRDqf25DoU04EIBQKljU8516m2Ll0j8dS+i0txZIs8cJjUdOAJvqJc
+         mTsyEr1znIlM1zNiYpxv5e8bV7s9H3WkkeY3zYlYn+b0eC1jmix5VoqIU6gt/F+do0LF
+         /uv7Lw5iw7nzIQya54ca9ggRBA7a+h2NgbKPiY2Ct8mXC2LY5EOqjIwHCjqTEpJcYCog
+         BMIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704383723; x=1704988523;
+        d=1e100.net; s=20230601; t=1704383698; x=1704988498;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=UPeDIiQjNkPvl4Ik1+JkTjR4o2Soc24WzRcdY8DaVYo=;
-        b=HktXfpQdbaE+58/YoWKl04lYDqYF7lrv7sEzQd0IVGV+OAe1y4qFzgQ9linNmPkzoB
-         MECYfACkKk9qpUswnlCJnooHySOcfbAj2d5cOplfijZMEt4k4llIVxvHCtCNCPAmxrpi
-         0GD6BKKHW3DCUKHAtPD5eT0mr+pYsReWP9KDqQq+U5XRL9D3G7xLCtX+sOhapkk5dHmw
-         fZOG+o0MfwQlf6XRq1/n+O4OmobY1Sbr20TjI2vxRwkRgQw6l1M0bhRkDkc1L8NQP/dk
-         N/sF5gXLoy3HWzGyVPzqYfYEhj0mYPS6vNgsY9/vJ7dqSPyD0GxeaZcKX9Zeab2FUZXX
-         WTvw==
-X-Gm-Message-State: AOJu0YyWNTyrE0DU4l7pTEe6JPs3hvYlU2flCtNFtZLFbkJUkWTN0nEh
-	w8jOoJnwgNwPqIIvB9dQfTPsfwM/MP86vlE6MPU=
-X-Google-Smtp-Source: AGHT+IFziaDJ3NSo7BkYW/w+OWVaUUgoZfbD/12fbvF28wfa+TcMRxgPb+Fu8jzlDe/pBw9yISY7j4W7adlO3cvMmnA=
-X-Received: by 2002:a05:6122:12d3:b0:4b7:3d44:9b05 with SMTP id
- d19-20020a05612212d300b004b73d449b05mr664953vkp.4.1704383723681; Thu, 04 Jan
- 2024 07:55:23 -0800 (PST)
+        bh=ZLqJo44VuyUw8MJch6t3PsF5TyAUQI8Tm5Zx7iuRPos=;
+        b=RNM/GHWCUzsqdr608itjb9O9xuo6Vvvqo3Al1BbkkAqUqjhtuxwwBxYyMieFM/0CVe
+         fX0sXD3MI7Whfxzo5blXc38+PB5zO1AB6n5/7ZDt+9T66Iz6nnmYHUw59YSREqgdxS0A
+         xmDvPrPt7eyWbWKEepqAh/9Nhjc73TruULdzqkXnmzRf22cG491nYpg054Jwy6g3kC6u
+         kKHG3zFe5tJJD36qDozjXz0ca59WIRMXTdLblez4G0jPFYO4WdhL07G8sNZBJ2yUipkr
+         3sjbOSkguT544IQSvBaN9BVKjwSczOe+4vHTHme0pB7aNEXosurV49ioxbMDt08vhwvs
+         80ug==
+X-Gm-Message-State: AOJu0YwXfg1TxbdbsQWODDckMXb6B3df/4ZW0flcpxuM0x9aGZoeATOw
+	6YT2Y6ZEvyndFan626yJHfBiu1vXKtGrhqYrnBUIhzZKBEGj
+X-Google-Smtp-Source: AGHT+IFy2mnx3oXos2pR13M1nFq0SGOOGRWe/9M47++wXkY5A4g9tH+dFdPm3+T8rBq35nuH8KZ3eS74dp1pysSFLAs=
+X-Received: by 2002:a25:ad95:0:b0:d9a:4b0f:402b with SMTP id
+ z21-20020a25ad95000000b00d9a4b0f402bmr741926ybi.38.1704383698532; Thu, 04 Jan
+ 2024 07:54:58 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231201131551.201503-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20231201131551.201503-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <CAMuHMdUiaL__+CDaFxRbUFgrz69SYBNfZm4JvY_qQRKLMTCY0w@mail.gmail.com>
- <CA+V-a8tTWf8Kx-Ex=DPsSR2ZWHC29N_pAoEZN1sR5Nqobf139A@mail.gmail.com> <CAMuHMdXosvV=EuRtL69r6=UT0SO8Aq-XjWwJMJQpWAhT2z+ffA@mail.gmail.com>
-In-Reply-To: <CAMuHMdXosvV=EuRtL69r6=UT0SO8Aq-XjWwJMJQpWAhT2z+ffA@mail.gmail.com>
-From: "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date: Thu, 4 Jan 2024 15:54:29 +0000
-Message-ID: <CA+V-a8tNeiyvK90urPF9s3JZOav77TRO8xdAEiCmYurrf3-4RA@mail.gmail.com>
-Subject: Re: [PATCH v3 1/3] pinctrl: renesas: rzg2l: Include pinmap in
- RZG2L_GPIO_PORT_PACK() macro
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Magnus Damm <magnus.damm@gmail.com>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Albert Ou <aou@eecs.berkeley.edu>, Linus Walleij <linus.walleij@linaro.org>, 
-	linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-riscv@lists.infradead.org, 
-	linux-gpio@vger.kernel.org, Biju Das <biju.das.jz@bp.renesas.com>, 
-	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+References: <20230710102319.19716-1-greg@enjellic.com> <20230710102319.19716-3-greg@enjellic.com>
+ <ZNKN+ZK6Lfbjb4GZ@jerom> <20230811202254.GA9401@wind.enjellic.com>
+In-Reply-To: <20230811202254.GA9401@wind.enjellic.com>
+From: Paul Moore <paul@paul-moore.com>
+Date: Thu, 4 Jan 2024 10:54:47 -0500
+Message-ID: <CAHC9VhSBnKor21HKiLuvn1kPmtHzNZW2j6FfEQ+cab5R1=_Bdw@mail.gmail.com>
+Subject: Re: [PATCH 02/13] Add TSEM specific documentation.
+To: "Dr. Greg" <greg@enjellic.com>
+Cc: Serge Hallyn <serge@hallyn.com>, linux-security-module@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, corbet@lwn.net
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi Geert,
+On Fri, Aug 11, 2023 at 4:24=E2=80=AFPM Dr. Greg <greg@enjellic.com> wrote:
+> On Tue, Aug 08, 2023 at 01:48:25PM -0500, Serge Hallyn wrote:
+> > On Mon, Jul 10, 2023 at 05:23:08AM -0500, Dr. Greg wrote:
 
-On Tue, Jan 2, 2024 at 10:18=E2=80=AFAM Geert Uytterhoeven <geert@linux-m68=
-k.org> wrote:
->
-> Hi Prabhakar,
->
-> On Thu, Dec 21, 2023 at 10:04=E2=80=AFPM Lad, Prabhakar
-> <prabhakar.csengg@gmail.com> wrote:
-> > On Wed, Dec 6, 2023 at 1:13=E2=80=AFPM Geert Uytterhoeven <geert@linux-=
-m68k.org> wrote:
-> > > On Fri, Dec 1, 2023 at 2:16=E2=80=AFPM Prabhakar <prabhakar.csengg@gm=
-ail.com> wrote:
-> > > > From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> > > >
-> > > > Currently we assume all the port pins are sequential ie always PX_0=
- to
-> > > > PX_n (n=3D1..7) exist, but on RZ/Five SoC we have additional pins P=
-19_1 to
-> > > > P28_5 which have holes in them, for example only one pin on port19 =
-is
-> > > > available and that is P19_1 and not P19_0. So to handle such cases
-> > > > include pinmap for each port which would indicate the pin availabil=
-ity
-> > > > on each port. As the pincount can be calculated based on pinmap dro=
-p this
-> > > > from RZG2L_GPIO_PORT_PACK() macro and update RZG2L_GPIO_PORT_GET_PI=
-NCNT()
-> > > > macro.
-> > > >
-> > > > Previously we had a max of 7 pins on each port but on RZ/Five Port-=
-20
-> > > > has 8 pins, so move the single pin configuration to BIT(63).
-> > > >
-> > > > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.c=
-om>
-> > >
-> > > Thanks for your patch!
-> > >
-> > > > --- a/drivers/pinctrl/renesas/pinctrl-rzg2l.c
-> > > > +++ b/drivers/pinctrl/renesas/pinctrl-rzg2l.c
-> > > > @@ -80,15 +80,17 @@
-> > > >   * n indicates number of pins in the port, a is the register index
-> > > >   * and f is pin configuration capabilities supported.
-> > > >   */
-> > > > -#define RZG2L_GPIO_PORT_PACK(n, a, f)  (((n) << 28) | ((a) << 20) =
-| (f))
-> > > > -#define RZG2L_GPIO_PORT_GET_PINCNT(x)  (((x) & GENMASK(30, 28)) >>=
- 28)
-> > > > +#define RZG2L_GPIO_PORT_PACK(n, a, f)  (((n) > 0 ? ((u64)(GENMASK_=
-ULL(((n) - 1 + 28), 28))) : 0) | \
-> > >
-> > > The mask creation can be simplified to
-> > >
-> > >     ((1ULL << (n)) - 1) << 28
-> > >
-> > OK.
-> >
-> > > but see below...
-> > >
-> > > > +                                        ((a) << 20) | (f))
-> > > > +#define RZG2L_GPIO_PORT_GET_PINMAP(x)  (((x) & GENMASK_ULL(35, 28)=
-) >> 28)
-> > > > +#define RZG2L_GPIO_PORT_GET_PINCNT(x)  (hweight8(RZG2L_GPIO_PORT_G=
-ET_PINMAP((x))))
-> > >
-> > > I think we've reached the point where it would be easier for the
-> > > casual reviewer to #define PIN_CFG_*_MASK for all fields, and use
-> > > FIELD_{PREP,GET}() to pack resp. extract values.  That would also
-> > > make it more obvious which bits are in use, and how many bits are
-> > > still available for future use.
-> > >
-> > If I use the FIELD_PREP() macro like below I get build issues as below:
-> >
-> > #define RZG2L_GPIO_PORT_PIN_CNT_MASK    GENMASK(31, 28)
-> > #define RZG2L_GPIO_PORT_PIN_REG_MASK    GENMASK(27, 20)
-> > #define RZG2L_GPIO_PORT_PIN_CFG_MASK    GENMASK(19, 0)
-> > #define RZG2L_GPIO_PORT_PACK(n, a, f)
-> > FIELD_PREP(RZG2L_GPIO_PORT_PIN_CNT_MASK, n) | \
-> >                     FIELD_PREP(RZG2L_GPIO_PORT_PIN_REG_MASK, a) | \
-> >                     FIELD_PREP(RZG2L_GPIO_PORT_PIN_CFG_MASK, f)
-> >
-> >
-> > drivers/pinctrl/renesas/pinctrl-rzg2l.c:91:41: note: in expansion of
-> > macro 'FIELD_PREP'
-> >    91 |
-> > FIELD_PREP(RZG2L_GPIO_PORT_PIN_CFG_MASK, f)
-> >       |                                         ^~~~~~~~~~
-> > drivers/pinctrl/renesas/pinctrl-rzg2l.c:1486:9: note: in expansion of
-> > macro 'RZG2L_GPIO_PORT_PACK'
-> >  1486 |         RZG2L_GPIO_PORT_PACK(6, 0x2a,
-> > RZG3S_MPXED_PIN_FUNCS(A)),                        /* P18 */
-> >       |         ^~~~~~~~~~~~~~~~~~~~
-> >
-> > Do you have any pointers?
->
-> You left out the actual error :-(
->
-Oops sorry.
+...
 
-> include/linux/bitfield.h:113:9: error: braced-group within expression
-> allowed only inside a function
->   113 |         ({
->          \
->       |         ^
-> drivers/pinctrl/renesas/pinctrl-rzg2l.c:93:39: note: in expansion of
-> macro =E2=80=98FIELD_PREP=E2=80=99
->    93 | #define RZG2L_GPIO_PORT_PACK(n, a, f)
-> FIELD_PREP(RZG2L_GPIO_PORT_PIN_CNT_MASK, n) | \
->       |                                       ^~~~~~~~~~
-> drivers/pinctrl/renesas/pinctrl-rzg2l.c:1555:9: note: in expansion of
-> macro =E2=80=98RZG2L_GPIO_PORT_PACK=E2=80=99
->  1555 |         RZG2L_GPIO_PORT_PACK(2, 0x10, RZG2L_MPXED_PIN_FUNCS),
->       |         ^~~~~~~~~~~~~~~~~~~~
+> > > +of a model.  This allows a TMA to attest to the trust/security statu=
+s
+> > > +of a platform or workload by signing this singular value and
+> > > +presenting it to a verifying party.
+> > > +
+> > > +In TSEM nomenclature, this singular value is referred to as the
+> > > +'state' of the model.  The attestation model is to use trust
+> > > +orchestrators to generate the state value of a workload by unit
+> > > +testing.  This state value can be packaged with a utility or contain=
+er
+> > > +to represent a summary trust characteristic that can be attested by =
+a
+> > > +TMA, eliminating the need for a verifying partner to review and veri=
+fy
+> > > +an event log.
+> > > +
+> > > +TMA's implement this architecture by maintaining a single instance
+> > > +vector of the set of security state coefficients that have been
+> > > +generated.  A state measurement is generated by sorting the vector i=
+n
+> > > +big-endian hash format and then generating a standard measurement
+> > > +digest over this new vector.
 >
-> Using FIELD_PREP_CONST() instead makes it build.
+> > Are you saying the TMA will keep every meaningful measurement for
+> > the duration of the workload, so that it can always sort them?
 >
-Thanks for the pointer, that did the trick.
+> Correct, every unique security state coefficient.
+>
+> The approach isn't unique and without precedent.  Roberto Sassu is
+> using a similar strategy in order generate a time/order independent
+> PCR value for unlocking TPM sealed keys by parsing RPM and .deb
+> distribution manifests.
+>
+> Paul Moore, in his comments in February to the V1 series, even
+> seriously questioned why we would expose the classic linear extension
+> measurement from a TMA.
 
-> I think we've reached the point where it would be easier for the
-> casual reviewer to #define PIN_CFG_*_MASK for all fields, and use
-> FIELD_{PREP,GET}() to pack resp.
-To clarify, you mean to define PIN_CFG_*_MASK for all
-PIN_CFG_IOLH_A..PIN_CFG_OEN macros? I ask because we dont extract the
-respective CFG flags in the code.
+To put my comment from the first revision into the proper context, and
+with my understanding that TSEM's security model does not consider
+event ordering/timing, I questioned what TSEM would expose an ordered
+list of events to userspace in addition to its unordered, sorted list.
+Either ordering is important to the security model, in which case you
+expose the ordered list, or it isn't, in which case you expose the
+list in whatever form is most convenient for the tooling/model; it
+makes little sense to me to expose both.
 
-Cheers,
-Prabhakar
+--=20
+paul-moore.com
 
