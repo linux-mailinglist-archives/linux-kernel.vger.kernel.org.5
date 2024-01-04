@@ -1,62 +1,62 @@
-Return-Path: <linux-kernel+bounces-16727-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16728-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E543B824304
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 14:49:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B536F824307
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 14:49:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 170441C23F07
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 13:49:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 394A11F25215
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 13:49:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D3C022F1B;
-	Thu,  4 Jan 2024 13:47:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B78BD22F0B;
+	Thu,  4 Jan 2024 13:47:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Wo0jgfd2"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mmzwAkmm"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35B5D22F0B;
-	Thu,  4 Jan 2024 13:47:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFC3023760;
+	Thu,  4 Jan 2024 13:47:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1d4414ec9c7so2879085ad.0;
-        Thu, 04 Jan 2024 05:47:44 -0800 (PST)
+Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1d427518d52so3410695ad.0;
+        Thu, 04 Jan 2024 05:47:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704376064; x=1704980864; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1704376067; x=1704980867; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=KHfABZko5E3OyVpk0Pm7Tx9/GwQM3X5Y0l7yapoWLPM=;
-        b=Wo0jgfd25f+tiAMVFm1YcW7fCZVtZPWD6PPs2FMcVnEMEeX98PNgzfKLy5XCGGbf5a
-         jfnf7TNuXl/xA1hoVHFWbuszQoiqtyjkG7A9LsDr4D64hizCMN4MrxVs8NETBcuyNk+f
-         RoksPz5cbdJmbriwalhnd9GouhucN2nUFL9kTBhFOtn/+ppHteGuWgZbZJpn8X8UsVDr
-         wATh6wzO99sw7P2YqomXFTWok9FcsLPUgD6FAir6EKyXEtBvW6axgLM2F+fGMPoMh9Th
-         yRuLnq2sfypcbMWZiQRWpPGnCjX3hS5hdKdZSas7Ggtgj/+3YVZUfL+BNvncIq9rDPbw
-         v5YQ==
+        bh=4mmt0UdSDV+w1BWZtmNFxfAxPy3KjCbVYZPCzBNdDlQ=;
+        b=mmzwAkmmv6Jp2oZzEgM/ossWtbTEosSwGTs/AIGMA+2+QVsc3h2JaMPy/pzmXYKk7Y
+         M3q8etyHRkISjKiZDa7biJs7X201uL6stHQc/zHaaVeE+LBmAvrTyacQD9cJ/pcrZjuy
+         zMS8vntiNnvSm+PrMYGga629uSD2o19Pi6cbfKbLkUcB6pZDh9/GS26OhQcu84nh75zE
+         IotzOoa7209X7iG7Q/pPvC9GSm2K29sznC0gKgXhaG/x+IoRvlCV/O4yI9EZbgPak8Ms
+         gGeXnhLISHSn24mtHh3p5VtahAk4OKpWTlSnM/NBZqPS4A7q1DBFEo/vX8wpjXiJNobI
+         eonw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704376064; x=1704980864;
+        d=1e100.net; s=20230601; t=1704376067; x=1704980867;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=KHfABZko5E3OyVpk0Pm7Tx9/GwQM3X5Y0l7yapoWLPM=;
-        b=TRmEI3Ij0nVyHr/XbtIuDur55o9z8oEZc2+w1FdoXwPKRDgkt4O0wTqqnuB10j7Y1n
-         kFrAatSm86MScw/7vao4ZldqB9ARv049fJlhj241s6+KNsj+dNtrPKTNJTChT/LH1GjQ
-         8qn3kHEHmKYxIid3BXjyDMnz9klFkr2hac0DCZuyZKKGati68hvWageYJCuJwyes6Oa7
-         CzLhd5VkyNZ2ZwLMHTZbcBIV35oscrM8vs0p/pWImw+DnUlsUbS6FSHN5PJCNm29bdyz
-         L1/9XQWszWqv0sugIpFwtKBF0QxGCeDd8zpKHXqwWWppLPCYhJXP6E7UFlt5qwBl6Vce
-         XldA==
-X-Gm-Message-State: AOJu0Yw/3usK72QxZurCgrkqjp3NPZ7qSWZkWeGsQ6aVcOLGZV3Al339
-	xuW2sZvctzQPFrV/VQkBQjn5gFRgdgI=
-X-Google-Smtp-Source: AGHT+IHUiOTg4zCNAIBM0tpqHX3KafYYflpL77hic8vey7JDTAmJ354vcnuYX8fns2HYsVVBMeoeQw==
-X-Received: by 2002:a17:903:1c3:b0:1d4:cea8:5d6a with SMTP id e3-20020a17090301c300b001d4cea85d6amr595332plh.4.1704376064558;
-        Thu, 04 Jan 2024 05:47:44 -0800 (PST)
+        bh=4mmt0UdSDV+w1BWZtmNFxfAxPy3KjCbVYZPCzBNdDlQ=;
+        b=Q6GBZC5SZnNL1nP//BnMI4ZVsOOfYh7ffN+RLIP5MzOsHeRaSlTAal2jxWkjObp7jL
+         AyE3CyY+rjuTXPaN7DsxdshySukesfqE8fiLJzWbNusds7TZ38XoqPA1YqAf2VZ74WnC
+         Hoa0thh8zoUUtV1E0rwHHKRzQ3rfH28ASvRkGjUCv3QKEbwRhWHIiX9+rUFVpeUHfg3e
+         p5qwzjBL+SeNZ5nrGdA6KYfPmiUxwGEfwZzhuFckn2CdlbMvsYvsz3ShyrRV+KwHxn9P
+         kPsvJ6cS1sCwOiJmHN/nvV0WYTC+QRD/SMk62O+yvq/pFt/KbAlwf/pr/MFJby8frShL
+         WmEQ==
+X-Gm-Message-State: AOJu0Yz/Oz+zSR4e/qsRVmPa3DsdReKLqWAjJuKu6HjUXffalDzE/daJ
+	mqwpnLGVhPQqscoEpTCqRHk=
+X-Google-Smtp-Source: AGHT+IF7X1lreIaoGxYOY0Mw924RintZD1lo9Uf8+TBROV+grUK3C7/HxBu+kT8owOJIrT3JfzUsBg==
+X-Received: by 2002:a17:902:dac5:b0:1d3:f344:6b01 with SMTP id q5-20020a170902dac500b001d3f3446b01mr745037plx.3.1704376067201;
+        Thu, 04 Jan 2024 05:47:47 -0800 (PST)
 Received: from peter-bmc.dhcpserver.bu9bmc.local (1-34-21-66.hinet-ip.hinet.net. [1.34.21.66])
-        by smtp.gmail.com with ESMTPSA id a22-20020a1709027d9600b001d425d495c9sm22990550plm.190.2024.01.04.05.47.42
+        by smtp.gmail.com with ESMTPSA id a22-20020a1709027d9600b001d425d495c9sm22990550plm.190.2024.01.04.05.47.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Jan 2024 05:47:44 -0800 (PST)
+        Thu, 04 Jan 2024 05:47:46 -0800 (PST)
 From: Peter Yin <peteryin.openbmc@gmail.com>
 To: patrick@stwcx.xyz,
 	Rob Herring <robh+dt@kernel.org>,
@@ -68,9 +68,9 @@ To: patrick@stwcx.xyz,
 	linux-arm-kernel@lists.infradead.org,
 	linux-aspeed@lists.ozlabs.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v2 3/6] ARM: dts: aspeed: Harma: Remove Vuart
-Date: Thu,  4 Jan 2024 21:45:29 +0800
-Message-Id: <20240104134532.536793-4-peteryin.openbmc@gmail.com>
+Subject: [PATCH v2 4/6] ARM: dts: aspeed: Harma: Add cpu power good line name
+Date: Thu,  4 Jan 2024 21:45:30 +0800
+Message-Id: <20240104134532.536793-5-peteryin.openbmc@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240104134532.536793-1-peteryin.openbmc@gmail.com>
 References: <20240104134532.536793-1-peteryin.openbmc@gmail.com>
@@ -82,28 +82,26 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Remove vuart to avoid port conflict with uart2
+Add a line name for cpu power good.
 
 Signed-off-by: Peter Yin <peteryin.openbmc@gmail.com>
 ---
- arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-harma.dts | 4 ----
- 1 file changed, 4 deletions(-)
+ arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-harma.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-harma.dts b/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-harma.dts
-index a0056d633eb1..5d692e9f541e 100644
+index 5d692e9f541e..36aad01dda20 100644
 --- a/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-harma.dts
 +++ b/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-harma.dts
-@@ -100,10 +100,6 @@ &uart_routing {
- 	status = "okay";
- };
- 
--&vuart1 {
--	status = "okay";
--};
--
- &wdt1 {
- 	status = "okay";
- 	pinctrl-names = "default";
+@@ -501,7 +501,7 @@ &sgpiom0 {
+ 	"","reset-control-cpu0-p1-mux",
+ 	"","reset-control-e1s-mux",
+ 	"power-host-good","reset-control-mb-mux",
+-	"","reset-control-smb-e1s-0",
++	"power-cpu-good","reset-control-smb-e1s-0",
+ 	/*E0-E3 line 64-71*/
+ 	"","reset-control-smb-e1s-1",
+ 	"host-ready-n","reset-control-srst",
 -- 
 2.25.1
 
