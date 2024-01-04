@@ -1,123 +1,138 @@
-Return-Path: <linux-kernel+bounces-17153-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17151-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0EF648248F9
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 20:24:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 852E48248F2
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 20:24:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 244C31C20A75
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 19:24:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 21DD51F2229B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 19:24:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D76B2C682;
-	Thu,  4 Jan 2024 19:24:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47C532C694;
+	Thu,  4 Jan 2024 19:23:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="H8c+SgAk"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="meNwmT0f"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 913432C84F;
-	Thu,  4 Jan 2024 19:24:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704396257; x=1735932257;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=qkwcWTRnPuLK3bQ1zp6BZNHfneeNLWWLi4JM7xkbcJE=;
-  b=H8c+SgAkbMwqG4dKL8t2NY1okX1mw4vNjpuarJIGNs2WDcvvlpF7KS4G
-   VsppEgCOsMfQ7G7xrNdFVtv67kOkVSwWgFrMXLXeNW41QTEpyxrvwC5dL
-   rwwtLHWa/MORsLgLp0vMyPvTbtgYckrx403gojtM5HjmW72Pd3XBb6Lgu
-   IQ7PmQgCSexLOorfZaZPOjermLMCpSpmiRxsy9UTXHPhONvgwVSzjCLvm
-   llAnlA2u5jzdv+jJ/LW0qNfeYQYzsXU1OCHRNqg5zY1k6pAA/3/ZldvLC
-   /+nJEIksPw4ys8y+jT8Cc1kCvSJkNqzOP9jYRO1G+rqhqO/YNjHv0F2QZ
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10943"; a="396225338"
-X-IronPort-AV: E=Sophos;i="6.04,331,1695711600"; 
-   d="scan'208";a="396225338"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2024 11:24:16 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10943"; a="814742448"
-X-IronPort-AV: E=Sophos;i="6.04,331,1695711600"; 
-   d="scan'208";a="814742448"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga001.jf.intel.com with ESMTP; 04 Jan 2024 11:24:14 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rLTK7-0000Ml-1E;
-	Thu, 04 Jan 2024 19:24:11 +0000
-Date: Fri, 5 Jan 2024 03:23:17 +0800
-From: kernel test robot <lkp@intel.com>
-To: Zack Rusin <zack.rusin@broadcom.com>, linux-kernel@vger.kernel.org
-Cc: oe-kbuild-all@lists.linux.dev, Zack Rusin <zack.rusin@broadcom.com>,
-	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Robert Jarzmik <robert.jarzmik@free.fr>,
-	Raul Rangel <rrangel@chromium.org>, linux-input@vger.kernel.org,
-	stable@vger.kernel.org
-Subject: Re: [PATCH v2] input/vmmouse: Fix device name copies
-Message-ID: <202401050307.tWbIHuS1-lkp@intel.com>
-References: <20240104050605.1773158-1-zack.rusin@broadcom.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F30A2C681;
+	Thu,  4 Jan 2024 19:23:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0EC73C433C8;
+	Thu,  4 Jan 2024 19:23:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704396233;
+	bh=onmE/RNN+R0R622Kj1gpfjhJTPdyiEEgXOtbnFDL9vM=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=meNwmT0f40fUdUnCGT+x2YGTjJ2yCdYWGp93Q0I+AgpYXrr2udoKh2wGh7o51MNlh
+	 xVdhFdmRHIg/iJ2usoZ5K8UPEmrX9dKKCul6s5S9e+4pRH70PvbwiVfoKBcxpDdcU2
+	 8uIyf1AVz0CaGWyDFfECIqiTWgdFKoGwq/II3NMorJm6KyYDSiia2G7ToXF/+e24pU
+	 5YE59CNdkvNFam7dar7dZEhVbi1lZg/XXBSsbshDBUWq0MDdYMl/JPFRGTwNzkqcNc
+	 /WaiUESmmiFJy7DiU4/s6UjRbnANjVtZHo854wjfMLvmhPUZQkyWwyRyqq4cC0ymJ7
+	 3KzuCBOe47+rA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 8F2C6CE06FA; Thu,  4 Jan 2024 11:23:52 -0800 (PST)
+Date: Thu, 4 Jan 2024 11:23:52 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Paolo Bonzini <pbonzini@redhat.com>
+Cc: Sean Christopherson <seanjc@google.com>,
+	Like Xu <like.xu@linux.intel.com>, Andi Kleen <ak@linux.intel.com>,
+	Kan Liang <kan.liang@linux.intel.com>,
+	Luwei Kang <luwei.kang@intel.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+	kvm@vger.kernel.org, Breno Leitao <leitao@debian.org>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Ingo Molnar <mingo@redhat.com>
+Subject: Re: [BUG] Guest OSes die simultaneously (bisected)
+Message-ID: <acb26142-622a-4f5d-aba6-c92601f95fbf@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <3d8f5987-e09c-4dd2-a9c0-8ba22c9e948a@paulmck-laptop>
+ <88f49775-2b56-48cc-81b8-651a940b7d6b@paulmck-laptop>
+ <ZZX6pkHnZP777DVi@google.com>
+ <77d7a3e3-f35e-4507-82c2-488405b25fa4@paulmck-laptop>
+ <c6d5dd6e-2dec-423c-af39-213f17b1a9db@paulmck-laptop>
+ <CABgObfYG-ZwiRiFeGbAgctLfj7+PSmgauN9RwGMvZRfxvmD_XQ@mail.gmail.com>
+ <b2775ea5-20c9-4dff-b4b1-bbb212065a22@paulmck-laptop>
+ <b327b546-4a5f-462d-baeb-804a33bd3f6a@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240104050605.1773158-1-zack.rusin@broadcom.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <b327b546-4a5f-462d-baeb-804a33bd3f6a@redhat.com>
 
-Hi Zack,
+On Thu, Jan 04, 2024 at 05:32:34PM +0100, Paolo Bonzini wrote:
+> On 1/4/24 17:06, Paul E. McKenney wrote:
+> > Although I am happy to have been able to locate the commit (and even
+> > happier that Sean spotted the problem and that you quickly pushed the
+> > fix to mainline!), chasing this consumed a lot of time and systems over
+> > an embarrassingly large number of months.  As in I first spotted this
+> > bug in late July.  Despite a number of increasingly complex attempts,
+> > bisection became feasible only after the buggy commit was backported to
+> > our internal v5.19 code base.  🙁
+> 
+> Yes, this strikes two sore points.
+> 
+> One is that I have also experienced being able to bisect only with a
+> somewhat more linear history (namely the CentOS Stream 9 aka c9s
+> frankenkernel [1]) and not with upstream.  Even if the c9s kernel is not a
+> fully linear set of commits, there's some benefit from merge commits that
+> consist of slightly more curated set of patches, where each merge commit
+> includes both new features and bugfixes.  Unfortunately, whether you'll be
+> able to do this with the c9s kernel depends a lot on the subsystems involved
+> and on the bug.  Both are factors that may or may not be known in advance.
 
-kernel test robot noticed the following build warnings:
+I guess I am glad that it is not just me.  ;-)
 
-[auto build test WARNING on dtor-input/next]
-[also build test WARNING on dtor-input/for-linus linus/master v6.7-rc8 next-20240104]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+> The other, of course, is testing.  The KVM selftests infrastructure is meant
+> for this kind of white box problem, but the space of tests that can be
+> written is so large, that there's always too few tests.  It shines when you
+> have a clear bisection but an unclear fix (in the past I have had cases
+> where spending two days to write a test led me to writing a fix in thirty
+> minutes), but boosting the reproducibility is always a good thing.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Zack-Rusin/input-vmmouse-Fix-device-name-copies/20240104-130724
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/dtor/input.git next
-patch link:    https://lore.kernel.org/r/20240104050605.1773158-1-zack.rusin%40broadcom.com
-patch subject: [PATCH v2] input/vmmouse: Fix device name copies
-config: i386-randconfig-061-20240104 (https://download.01.org/0day-ci/archive/20240105/202401050307.tWbIHuS1-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240105/202401050307.tWbIHuS1-lkp@intel.com/reproduce)
+Agreed, validation never will be perfect, and so improving the test
+suite based on production experience is a good thing, as is creating
+test cases based on the behavior of important production workloads for
+those who run them.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202401050307.tWbIHuS1-lkp@intel.com/
+> > And please understand that I am not casting shade on those who wrote,
+> > reviewed, and committed that buggy commit.  As in I freely confess that
+> > I had to stare at Sean's fix for a few minutes before I figured out what
+> > was going on.
+> 
+> Oh don't worry about that---rather, I am going to cast a shade on those that
+> did not review the commit, namely me.  I am somewhat obsessed with Boolean
+> logic and *probably* I would have caught it, or would have asked to split
+> the use of designated initializers to a separate patch.  Any of the two
+> could, at least potentially, have saved you quite some time.
 
-sparse warnings: (new ones prefixed by >>)
->> drivers/input/mouse/vmmouse.c:77:52: sparse: sparse: Variable length array is used.
->> drivers/input/mouse/vmmouse.c:77:14: sparse: sparse: flexible array member 'phys' is not last
+We have all done similar things.  I certainly have!
 
-vim +77 drivers/input/mouse/vmmouse.c
+> > Instead, the point I am trying to make is that carefully
+> > constructed tests can serve as tireless and accurate code reviewers.
+> > This won't ever replace actual code review, but my experience indicates
+> > that it will help find more bugs more quickly and more easily.
+> 
+> TBH this (conflict between virtual addresses on the host and the guest
+> leading to corruption of the guest) is probably not the kind of adversarial
+> test that one would have written or suggested right off the bat.  But it
+> should be written now indeed.
 
-    67	
-    68	/**
-    69	 * struct vmmouse_data - private data structure for the vmmouse driver
-    70	 *
-    71	 * @abs_dev: "Absolute" device used to report absolute mouse movement.
-    72	 * @phys: Physical path for the absolute device.
-    73	 * @dev_name: Name attribute name for the absolute device.
-    74	 */
-    75	struct vmmouse_data {
-    76		struct input_dev *abs_dev;
-  > 77		char phys[sizeof_field(struct serio, phys) +
-    78			  strlen(VMMOUSE_PHYS_NAME_POSTFIX_STR)];
-    79		char dev_name[128];
-    80	};
-    81	
+Very good, looking forward to seeing it!
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+							Thanx, Paul
+
+> Paolo
+> 
+> [1]
+> https://www.theregister.com/2023/06/30/enterprise_distro_feature_devconf/
+> 
 
