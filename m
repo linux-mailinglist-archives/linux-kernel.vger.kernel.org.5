@@ -1,190 +1,299 @@
-Return-Path: <linux-kernel+bounces-16428-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16429-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A0C5823E58
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 10:11:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 81A72823E70
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 10:16:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A3FCC1C23938
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 09:11:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 98A211C21267
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 09:16:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D20132032A;
-	Thu,  4 Jan 2024 09:10:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C175A20322;
+	Thu,  4 Jan 2024 09:16:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="BtnXb6SL";
-	dkim=pass (1024-bit key) header.d=mediateko365.onmicrosoft.com header.i=@mediateko365.onmicrosoft.com header.b="dYGYZL3s"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="RLdzTpDz"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oa1-f50.google.com (mail-oa1-f50.google.com [209.85.160.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACE252030F
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 09:10:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
-X-UUID: 1bd2d588aae111eea2298b7352fd921d-20240104
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-	h=MIME-Version:Content-Transfer-Encoding:Content-ID:Content-Type:In-Reply-To:References:Message-ID:Date:Subject:CC:To:From; bh=iDemUndNfC2c1KaETmY3ga7hEW/YNKPUMSl6aFFh33c=;
-	b=BtnXb6SL6JxjVQxayF2btXeynrJPI7DBVE7OTbWN7VzzmZ/5QT8gVPjczVdeahPP/UY06xSzy/nbPU5BbCxNRb1kNNwdW9k5Hn2iYrmat9TTV3qO+jKUWm+I3Ln2gV9jM/FjwdeD4zd0LB6ohdDpKQi8DMwHJwP1hFsJnu8Ts9c=;
-X-CID-CACHE: Type:Local,Time:202401041656+08,HitQuantity:1
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.35,REQID:dbdccacb-a0b1-40cd-9141-ba660ceaf70f,IP:0,U
-	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-	release,TS:0
-X-CID-META: VersionHash:5d391d7,CLOUDID:e591fb7e-4f93-4875-95e7-8c66ea833d57,B
-	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-	RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
-	DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR
-X-UUID: 1bd2d588aae111eea2298b7352fd921d-20240104
-Received: from mtkmbs13n1.mediatek.inc [(172.21.101.193)] by mailgw02.mediatek.com
-	(envelope-from <ck.hu@mediatek.com>)
-	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-	with ESMTP id 1788376822; Thu, 04 Jan 2024 17:10:30 +0800
-Received: from mtkmbs10n2.mediatek.inc (172.21.101.183) by
- mtkmbs13n1.mediatek.inc (172.21.101.193) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Thu, 4 Jan 2024 17:10:29 +0800
-Received: from APC01-PSA-obe.outbound.protection.outlook.com (172.21.101.237)
- by mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Thu, 4 Jan 2024 17:10:29 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=iSE+zIJ9uKtLOH27kz4NNKL3pKUni4YY3/POHMrVFkj0L90Wf6JT6K1JKBJ/SMCp3Jxvv5uzwfSCHB+SyC+oVtM9CFfy7ktCsvM7q1FypxifBValBJUIO70A3xSon6aTMj53nPnXByKhv9bm3kIkIkJ9s+5rUZr9nd6AqKIbiYXuZlAf1UQMY5DwEZtRlvVquA+YeGqF7JpvnzEh3srQqPg+d9R99BqqKyihc2fL69UpSKNvX105zpLXUDUhEySITfdxDOUqXyV0t5GiZdoPBhJ0itNJJXNfi3Vx5XP9/Vlz9oxXl/PSik9PNL3NHi83Nc5vt7391ly81H5WxgbQhw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=iDemUndNfC2c1KaETmY3ga7hEW/YNKPUMSl6aFFh33c=;
- b=kGMEAU6ZGild1tZtq13jbBkJxf0IKPvOG9mDyxbZEPH5djc9anIh4Z/ZTIip5ff76FaZ2w29pmY3mZ8g3+fQKwhVDaycnrJpiGkacntTE0B4j8scxH3t8fcZDIRDJz4iHm3Q+w/0fxV8UdjOYn75ieYwXUujpn6Xnruh7GacX+Piy7RlbtRp4QbuZ2CB01z8CRLKTRBUUgrjeRDqJl+PV04xzr11E7ux0vkodDGSdFd2Mi0FJQbgg34iQ5+9JtquztZyWr8bbQWLhtIMl9CHdXMTzfUi7qFdb/b+9y3JRlzVmes2mUNg0i4nOmFX2k+l2bX47ekUbHtxZhPMiVdn0Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mediatek.com; dmarc=pass action=none header.from=mediatek.com;
- dkim=pass header.d=mediatek.com; arc=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E68692030F
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 09:16:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-oa1-f50.google.com with SMTP id 586e51a60fabf-2045bedb806so209389fac.3
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 01:16:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=mediateko365.onmicrosoft.com; s=selector2-mediateko365-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=iDemUndNfC2c1KaETmY3ga7hEW/YNKPUMSl6aFFh33c=;
- b=dYGYZL3sUaOi8tFD3e01u6yIVhOFMtrNwMAAwhoF6iDUsnr+hjCUcQ2zC6nQtG0S1gAVPVeJfd5jUn4t1Lv6qXITqzlDd0kQDofGDG4Ek3fIQO4qbTdcNUxKZo8yHz7y4V3I2saaQyEYK2xccIe6NGWULTNThakWxWtLzPAFTts=
-Received: from TYZPR03MB6624.apcprd03.prod.outlook.com (2603:1096:400:1f4::13)
- by TY0PR03MB6428.apcprd03.prod.outlook.com (2603:1096:400:1ac::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.13; Thu, 4 Jan
- 2024 09:10:27 +0000
-Received: from TYZPR03MB6624.apcprd03.prod.outlook.com
- ([fe80::eb43:57cb:edfd:3762]) by TYZPR03MB6624.apcprd03.prod.outlook.com
- ([fe80::eb43:57cb:edfd:3762%7]) with mapi id 15.20.7159.013; Thu, 4 Jan 2024
- 09:10:27 +0000
-From: =?utf-8?B?Q0sgSHUgKOiDoeS/iuWFiSk=?= <ck.hu@mediatek.com>
-To: =?utf-8?B?TWFjIFNoZW4gKOayiOS/iik=?= <Mac.Shen@mediatek.com>,
-	"chunkuang.hu@kernel.org" <chunkuang.hu@kernel.org>,
-	=?utf-8?B?Sml0YW8gU2hpICjnn7PorrDmtpsp?= <jitao.shi@mediatek.com>,
-	"daniel@ffwll.ch" <daniel@ffwll.ch>, "p.zabel@pengutronix.de"
-	<p.zabel@pengutronix.de>, "airlied@gmail.com" <airlied@gmail.com>,
-	"matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
-	"angelogioacchino.delregno@collabora.com"
-	<angelogioacchino.delregno@collabora.com>
-CC: "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>,
-	=?utf-8?B?U2h1aWppbmcgTGkgKOadjuawtOmdmSk=?= <Shuijing.Li@mediatek.com>
-Subject: Re: [PATCH] drm/mediatek/dp: Add the HDCP feature for DisplayPort
-Thread-Topic: [PATCH] drm/mediatek/dp: Add the HDCP feature for DisplayPort
-Thread-Index: AQHaHrPjdunoffcOCEGmErF8vNrJIrDJnk0A
-Date: Thu, 4 Jan 2024 09:10:27 +0000
-Message-ID: <6e185fb7860cff63241e116964ea84e37607aa83.camel@mediatek.com>
-References: <20231124085346.26602-1-mac.shen@mediatek.com>
-In-Reply-To: <20231124085346.26602-1-mac.shen@mediatek.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=mediatek.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: TYZPR03MB6624:EE_|TY0PR03MB6428:EE_
-x-ms-office365-filtering-correlation-id: 507d85a9-949d-4dca-c2c2-08dc0d04fe08
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: FarD8hw08H72gxd1tpeT2noCYBx/+lAcJVx1y5L93JPQ1qrk1/848q9INPMg8dH56RkFjb1oPLPcKbdvSLK3EdytEIN3AHgICzittpIlJhd6K7owkbRc8O0wq3r/QjMcXyhNi+iMkmrKgVpqQuZI9UnsVzAtkc2FjZZVsNRuO3ySCONguKthfc1Nx5lMMBmDBmgv8ntSAtLEzDFDZXCFvRo6YvNxiXG4IsaeNgUgZyDnHglj92IPYH+w4k1/+KjuZtLEH4Y6GdmSKyIasCComFw+NtMs3axU7wD35fUaYaokiok3/6tGjMCqSUhZ1prnpO3Mtz4J8YzAWRysg/ji6E+ji5NGB7lGZbvBj70ClPuHo6+Yn3EYB91AelBzB7Nk45QvJJYyY/5Vnd1FsJccNBq/byRBlaWI3lEqIvXtxABjKJcgmRPRwNKSgqkIki2nF47zOLgN6X6GiRmhHTpYKixlfTEy9COWmime8nNgIKtk1zajL1EBbFaeo1eY6tNJEAudFOw48gbCED+VOWeHZmwMynXl2mBR2zhx+ju+RrFN7pe66BsJJU2UsMuZzClhlcdod11r+fs+COCnGqElYFxzH4LdNtrNaS5tQsENLga1BYwPO+0cC3LIX3TAD60Rb1R6s1XDk3ve2jLMmWFWAPIiT2MpFk+QP4ZKONIJZR8=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYZPR03MB6624.apcprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(136003)(366004)(346002)(376002)(396003)(230922051799003)(64100799003)(186009)(451199024)(1800799012)(4001150100001)(2906002)(4744005)(5660300002)(478600001)(7416002)(38070700009)(4326008)(36756003)(85182001)(316002)(110136005)(66556008)(41300700001)(54906003)(66946007)(66476007)(76116006)(66446008)(64756008)(6506007)(6512007)(8676002)(107886003)(6486002)(86362001)(8936002)(2616005)(26005)(71200400001)(122000001)(38100700002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?QmUrWXladWZEbGRvU2hkUnk5UG9mL0k0VzlzU1ZwRlc5dHNLQXduSDRYM3VY?=
- =?utf-8?B?ZmhXN05KdFhXWWZtenhFYlpibkxIdHhJQm9YMlhTRVFyVGMrR2ZEZ3JFV2px?=
- =?utf-8?B?OWdPS2JvblRvOUtNNDNFMzdEa25LRVBGMk5mZ3NYWjJia0YyNXRTZlZNR3Ry?=
- =?utf-8?B?VVZSZ1g0akw5THBxNFM2bStsa1VoOCt3MytKam1Ud0k3M1cxRFRoWURhZTNW?=
- =?utf-8?B?bE5JQWZLZFRVNmVtdTZVaDd2eFE1d2lDY3gxNk13SXRSZC9maU14ZC9tRzJv?=
- =?utf-8?B?dUk0dDQzWUlSV0VtU2pZRjZjaEROZ2dLaXZYbWxWL1hFdVIxVnRkY3ZVMDhZ?=
- =?utf-8?B?MVBkbVh5Y3hHZ1hJM1prRHEvSUIwWDF0TTRCR3Y4a0VHUCsrQmZDUGdodSta?=
- =?utf-8?B?bkVjQllpNEs0UFRyZVNPUUFaamNKZUxtRU5zK1FMZHVoWjdUdUlYajF5RFpS?=
- =?utf-8?B?TnQyTHBCekFQaTg3TUIxR2hQVWVVUnZCRm1UWnIwbmV5d2x6VlU1L1lucEo3?=
- =?utf-8?B?c0creUhxMDl1Z29SdFkrMnludHhsMExOTW5lVm1RYkJoYWpWanpuUVMxaXVk?=
- =?utf-8?B?VTl3djBBL3liSFRYajd6K1RYNCsyUnh6V2djbnRPMSs0YncyUmxPWFIwUzNw?=
- =?utf-8?B?dkVjNnF4OUg1a2xDamgza3U5bkQrZmhCemNYYmp5SFNSeHU2Rm1vbEMzYzFw?=
- =?utf-8?B?emZJdEkzcUNmSkMzeXZwWmhjTEQ1WTN4NzFWaGlGWGdreDFzcUQ1MDU0SzNi?=
- =?utf-8?B?OFVPQzlwY2YxZ05nYUdvMEFYU2ZaZnlOMjhvV1RDK2phQ0lLaEdsc3RWQVp1?=
- =?utf-8?B?Ri9zYitQK0piQlNIYXJyWC9WM0M4Nm0wYkRIQ1pPRytCOUMwdGFoMi9UTHlD?=
- =?utf-8?B?WmtxY3VObks1bDY5WER2eUphZmdqU1ZIeXFJYzFWazBjTHBaWjkvS3BzT3F4?=
- =?utf-8?B?d3NtVS9Xdm03bUQrT2ZKOFl1WWgxRVlCMWhpOGhlNjNsOUNVSTh4Snd4MGxz?=
- =?utf-8?B?OGpxeGNaSk5ML3ZOeXhZZ29vcnlYOVdZZU9ibXVKdW12MWdRQW9tWDNySkx4?=
- =?utf-8?B?MFlyS0t5a00xR2tJdytLaG5BTnhaU2x4YmFnTVJ3UFQwOHJacGFiaWZiUXFt?=
- =?utf-8?B?Z0JsUW1ndkcvU3dXT1BzYURFQ1FMMzZ3Ly8ydS9TM3lnOUd6T1h3VmlEb0da?=
- =?utf-8?B?dHhYVzFuY2d6WWVvNkNjZitSeGZEbjdSZlBqSHp1ZkI0TWRLclNISWpmUzNI?=
- =?utf-8?B?Y2puazJDUElxTFJGd0NOcFhnSURpaWFJZUZFdm8vWEJuR1NuYXc2d3R4QktX?=
- =?utf-8?B?WW9STklRSjhQKzh0YksvYUdwUnp4bDhROTdTcDI3aGYrRDN4ZFhUVmF6VUVS?=
- =?utf-8?B?cUh4eUIxc240VXB4eWVDNkQ3UlRCa1l5OExaZ2FLTEJEV0kzN1lGSnExcVA0?=
- =?utf-8?B?TWhtUnJyVFd6U2JhMWtVQmRsS253NVZTSXhvaW03bWgrQ0VmaUQ3cGxTaS9k?=
- =?utf-8?B?eUNZOVNhc1pTU1VYaHVZOUpMUzMzcTZHcGpzWmJ5OU5GTzNOQnZ2MHZBN2h1?=
- =?utf-8?B?TlliaXNydExRendNS2ZlemNDdWYwa0Y1N2Z4emRjWXJJNlZhTUZuOU1wNHNI?=
- =?utf-8?B?eXJIbDl3V0RRcElLcnhPeEdGdFVBUit3ZDhkWmtNV1ZzclA0S2wzZ2g5VzAx?=
- =?utf-8?B?UGEwcUZqUW95U2xXU3lsR0FDTEtHVVJnbDlTZXlid0MwQ2tBd01VdVBJWFZM?=
- =?utf-8?B?SzFlQ0VVclZSbERoQ0VWRHlBeDJTYURWdzBVUUwrM2JQU1o4d1JpY1NuZlFq?=
- =?utf-8?B?clI4eUFnSkoxZCtQWlZaY2hoTEpTMkcrUTV5cEl6VUNzQTVyUC9mQjNLei9a?=
- =?utf-8?B?bWMyc3JHOFBETm1oaDN1THVUbjFwNmtHMmRlU2lmUjZFeUxHcDFWY0RtNk1v?=
- =?utf-8?B?RlpMbDNiLyt1NGRJL0NyTGtURHJ5QWMxMlVXdmN1eWVTZ0g0WEIzSWFtZ0NJ?=
- =?utf-8?B?YUYwMjJUeHdPaGEwMzh2bnZnZ0dYSFBqdnQ5Q0UxSnp6TTVLMDFqRjhCR3NF?=
- =?utf-8?B?MTBjSTlEZGhZRWxiZ0FTdldpNXJka3RyTjlDV3RuVXVHTzlSWmlRenJjOTZs?=
- =?utf-8?Q?nLV3k6v/je/ItU+Y3KRonjKOa?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <D9207C2B88D5EA428F599FC773DC886F@apcprd03.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        d=linaro.org; s=google; t=1704359779; x=1704964579; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=3eBbShZ2BwnincXv141HpuY+RWRdP3e/BsP9CbGlsdQ=;
+        b=RLdzTpDz9nE9QhHE7E5y4O5uUGrY1UGTch15UZv6yU36htOZiYtZYXAqjNfuk0QmgJ
+         JmQIZDO0RBrupzMEE9jbypRl4aO4D+l7A1U4ARmMOsd0nUC4tnRmVF3hQHvKp3+H7qIz
+         ud7iDK6V589vA9E+uuGF+tO/EZgrTQLSy8BW2mYuZ9IARAQnQxOsI2KeMTOm9GEWV/+c
+         vYoc6EMoPiK1HAK+gjwv512pc9foV1eZlcRjEnaReqrNf/M38lBVEqj5SyfhJyUDO70Z
+         go12KvFHROLIl65ODwcng3wqDEcMMNiLxoz7Mk3/yQkP/2F0wCFEfRVctpA3iSr70wHo
+         u31w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704359779; x=1704964579;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=3eBbShZ2BwnincXv141HpuY+RWRdP3e/BsP9CbGlsdQ=;
+        b=qacHTBK7THtOocNFr1EA9+4K5mKtEOCd5n94evaRnh6XTYLysq5qzTSUrKG1qYgA8c
+         UbeT1PxfvY7FkBqQnLP+LOSs53Tz0Llg9KGhab8WloIAeSq74D3id20/wLdWvn03484Q
+         9Yzv1riLSmdTTYmb5PB+6X1LrixxIgJ1oid+XQbKdXdHFEL1zWdPlLWBlEvS552FVzWP
+         ZWxxtp+soW3ZFTf6hgmi0i4H4Mu/iDEfsoDe+7oFG6xDWbZtgcn+nNY16VTM0eSGicjz
+         +8eru5Hhgjz8pzeFRvgfceOOo7YCZ6s7efpiqArLE9eDMy5+KkXDgIy1ZxXKzNVB48Uv
+         vtRA==
+X-Gm-Message-State: AOJu0YzPtUcSCJhFAO+/o31r4XKUTJqA43Cs4DNCyeC7PTQoPkVnj7Tw
+	VeB3uVeKrSXzPY7P7kpzIJuwalUbPV3FRw==
+X-Google-Smtp-Source: AGHT+IFgXEApPVf37IEiP0RxdUyGd16pamtfVtdm3WLFlwPZyUd5Asr63TasfUFRuOMpOUV+9zl78Q==
+X-Received: by 2002:a05:6871:586:b0:1fb:e5f:c539 with SMTP id u6-20020a056871058600b001fb0e5fc539mr330062oan.49.1704359778865;
+        Thu, 04 Jan 2024 01:16:18 -0800 (PST)
+Received: from [192.168.17.16] ([138.84.62.99])
+        by smtp.gmail.com with ESMTPSA id u11-20020a9d4d8b000000b006d9fb0458cdsm4561137otk.39.2024.01.04.01.16.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Jan 2024 01:16:18 -0800 (PST)
+Message-ID: <eb17f8c6-3967-4a39-aaa3-0252950c9084@linaro.org>
+Date: Thu, 4 Jan 2024 03:16:15 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TYZPR03MB6624.apcprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 507d85a9-949d-4dca-c2c2-08dc0d04fe08
-X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Jan 2024 09:10:27.2595
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a7687ede-7a6b-4ef6-bace-642f677fbe31
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: pJP46wzbdRaa9za9XluSZl6ajIvX9HSV+H5OFx0Ls4CZ3L54um5AzpRzefxI+o2oSxHRpygAqcioG1pPS6g5wQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY0PR03MB6428
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 5.10 00/75] 5.10.206-rc1 review
+Content-Language: en-US
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
+Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+ torvalds@linux-foundation.org, akpm@linux-foundation.org,
+ linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+ lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+ f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, srw@sladewatkins.net,
+ rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com,
+ Francis Laniel <flaniel@linux.microsoft.com>
+References: <20240103164842.953224409@linuxfoundation.org>
+From: =?UTF-8?Q?Daniel_D=C3=ADaz?= <daniel.diaz@linaro.org>
+In-Reply-To: <20240103164842.953224409@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-SGksIE1hYzoNCg0KT24gRnJpLCAyMDIzLTExLTI0IGF0IDE2OjUzICswODAwLCBtYWMuc2hlbiB3
-cm90ZToNCj4gQWRkIHRlZSBjbGllbnQgYXBwbGljYXRpb24sIEhEQ1AgMS54IGFuZCAyLnggYXV0
-aGVudGljYXRpb24gZm9yDQo+IERpc3BsYXlQb3J0DQo+IHRvIHN1cHBvcnQgdGhlIEhEQ1AgZmVh
-dHVyZS4NCj4gDQo+IFNpZ25lZC1vZmYtYnk6IG1hYy5zaGVuIDxtYWMuc2hlbkBtZWRpYXRlay5j
-b20+DQo+IC0tLQ0KDQpbc25pcF0NCg0KPiArDQo+ICsvKiBUaW1lb3V0IHJlbGF0aXZlICovDQo+
-ICsjZGVmaW5lIEhEQ1AyX0FLRVNFTkRDRVJUX1dEVCAgICAgICAgICAgICAgIDEwMCAgICAgIC8v
-IDEwMG1zDQo+ICsjZGVmaW5lIEhEQ1AyX0FLRVNFTkRIUFJJTUVfTk9fU1RPUkVEX1dEVCAgIDEw
-MDAgICAgIC8vIDFzZWMNCj4gKyNkZWZpbmUgSERDUDJfQUtFU0VOREhQUklNRV9TVE9SRURfV0RU
-ICAgICAgMjAwICAgICAgLy8gMjAwbXMNCj4gKyNkZWZpbmUgSERDUDJfQUtFU0VORFBBSVJJTkdJ
-TkZPX1dEVCAgICAgICAgMjAwICAgICAgLy8gMjAwbXMNCj4gKyNkZWZpbmUgSERDUDJfTENTRU5E
-TFBSSU1FX1dEVCAgICAgICAgICAgICAgNyAgICAgICAgLy8gN21zDQo+ICsjZGVmaW5lIEhEQ1Ay
-X0VOQ19FTl9USU1FUiAgICAgICAgICAgICAgICAgIDIwMCAgICAgIC8vIDIwMCBtcw0KPiArI2Rl
-ZmluZSBIRENQMl9SRVBBVVRIU0VORFJFQ1ZJRF9XRFQgICAgICAgICAzMDAwICAgICAvLyAzIHNl
-Yw0KDQpJcyB0aGlzIEhEQ1BfMl8yX1JFQ1ZJRF9MSVNUX1RJTUVPVVRfTVM/IElmIHRoZXNlIGFy
-ZSBkZWZpbmVkIGluIEhEQ1ANCnNwZWNpZmljYXRpb24sIG1vdmUgdGhlc2UgZGVmaW5pdGlvbiB0
-byBpbmNsdWRlL2RybS9kaXNwbGF5L2RybV9oZGNwLmgNCg0KUmVnYXJkcywNCkNLDQoNCj4gKyNk
-ZWZpbmUgSERDUDJfUkVQX1NFTkRfQUNLICAgICAgICAgICAgICAgICAgMjAwMCAgICAgLy8gMiBT
-ZWMNCj4gKyNkZWZpbmUgSERDUDJfUkVQQVVUSFNUUkVBTVJEWV9XRFQgICAgICAgICAgMTAwICAg
-ICAgLy8gMTAwIG1zDQo+ICsNCg==
+Hello!
+
+On 03/01/24 10:54 a. m., Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.206 release.
+> There are 75 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Fri, 05 Jan 2024 16:47:49 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.206-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+
+We're seeing a kernel warning on:
+* Juno-r2
+* Dragonboard 410c
+* i386
+
+that looks like this:
+
+-----8<-----
+   ------------[ cut here ]------------
+   [  968.182348] WARNING: CPU: 2 PID: 16253 at kernel/module.c:261 module_kallsyms_on_each_symbol+0xaf/0xc0
+   [  968.191666] Modules linked in: x86_pkg_temp_thermal fuse ip_tables
+   [  968.197876] CPU: 2 PID: 16253 Comm: ftracetest Not tainted 5.10.206-rc1 #1
+   [  968.204786] Hardware name: Supermicro SYS-5019S-ML/X11SSH-F, BIOS 2.7 12/07/2021
+   [  968.212208] EIP: module_kallsyms_on_each_symbol+0xaf/0xc0
+   [  968.217632] Code: 68 d9 75 a4 31 c0 8d 65 f4 5b 5e 5f 5d c3 8d 74 26 00 90 ba ff ff ff ff b8 38 36 68 d9 e8 e9 61 df 00 85 c0 0f 85 6f ff ff ff  0b e9 68 ff ff ff 8d b4 26 00 00 00 00 8d 76 00 3e 8d 74 26 00
+   [  968.236389] EAX: 00000000 EBX: 00000001 ECX: ffffffff EDX: 00000001
+   [  968.242700] ESI: c5839d68 EDI: 00025c3b EBP: c5839d54 ESP: c5839d3c
+   [  968.249008] DS: 007b ES: 007b FS: 00d8 GS: 00e0 SS: 0068 EFLAGS: 00010246
+   [  968.255845] CR0: 80050033 CR2: 010d9b70 CR3: 05b30000 CR4: 003506d0
+   [  968.262138] DR0: 00000000 DR1: 00000000 DR2: 00000000 DR3: 00000000
+   [  968.268413] DR6: fffe0ff0 DR7: 00000400
+   [  968.272278] Call Trace:
+   [  968.274817]  ? show_regs.cold+0x14/0x1a
+   [  968.278679]  ? __warn+0x71/0x100
+   [  968.281954]  ? module_kallsyms_on_each_symbol+0xaf/0xc0
+   [  968.287224]  ? report_bug+0x7e/0xa0
+   [  968.290736]  ? exc_overflow+0x40/0x40
+   [  968.294452]  ? handle_bug+0x2a/0x50
+   [  968.297971]  ? exc_invalid_op+0x1b/0x60
+   [  968.301836]  ? handle_exception+0x140/0x140
+   [  968.306052]  ? module_kallsyms_on_each_symbol+0xaf/0xc0
+   [  968.311310]  ? exc_overflow+0x40/0x40
+   [  968.314999]  ? module_kallsyms_on_each_symbol+0xaf/0xc0
+   [  968.320252]  ? trace_kprobe_run_command+0x20/0x20
+   [  968.324970]  ? trace_kprobe_run_command+0x20/0x20
+   [  968.329720]  kallsyms_on_each_symbol+0xc1/0xd0
+   [  968.334195]  ? trace_kprobe_run_command+0x20/0x20
+   [  968.338939]  trace_kprobe_create+0x5fd/0xb20
+   [  968.343243]  ? alloc_trace_kprobe+0x130/0x130
+   [  968.347628]  create_dyn_event+0x57/0xc0
+   [  968.351495]  ? dyn_event_release+0x140/0x140
+   [  968.355791]  trace_run_command+0x69/0x80
+   [  968.359754]  trace_parse_run_command+0x97/0x130
+   [  968.364339]  ? dyn_event_seq_next+0x20/0x20
+   [  968.368549]  dyn_event_write+0x10/0x20
+   [  968.372328]  ? dyn_event_release+0x140/0x140
+   [  968.376611]  vfs_write+0xe5/0x500
+   [  968.379973]  ? lock_acquire+0x8c/0x230
+   [  968.383752]  ? __might_fault+0x31/0x70
+   [  968.387545]  ? find_held_lock+0x24/0x80
+   [  968.391414]  ksys_write+0x72/0xf0
+   [  968.394759]  __ia32_sys_write+0x15/0x20
+   [  968.398621]  __do_fast_syscall_32+0x54/0xa0
+   [  968.402838]  do_fast_syscall_32+0x29/0x60
+   [  968.406868]  do_SYSENTER_32+0x15/0x20
+   [  968.410547]  entry_SYSENTER_32+0x9f/0xf2
+   [  968.414497] EIP: 0xb7f85549
+   [  968.417309] Code: 03 74 c0 01 10 05 03 74 b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80  5a 59 c3 90 90 90 90 8d 76 00 58 b8 77 00 00 00 cd 80 90 8d 76
+   [  968.436081] EAX: ffffffda EBX: 00000001 ECX: 010ccdc0 EDX: 00000018
+   [  968.442371] ESI: b7f6aff4 EDI: 010ccdc0 EBP: 0044c4fc ESP: bfd964c0
+   [  968.448664] DS: 007b ES: 007b FS: 0000 GS: 0033 SS: 007b EFLAGS: 00000246
+   [  968.455478] irq event stamp: 77487
+   [  968.458912] hardirqs last  enabled at (77497): [] console_unlock+0x589/0x5a0
+   [  968.466837] hardirqs last disabled at (77506): [] console_unlock+0x41d/0x5a0
+   [  968.474799] softirqs last  enabled at (77474): [] call_on_stack+0x45/0x50
+   [  968.482480] softirqs last disabled at (77469): [] call_on_stack+0x45/0x50
+   [  968.490183] ---[ end trace 444b2433ce3c8b30 ]---
+----->8-----
+
+and this:
+
+-----8<-----
+   ------------[ cut here ]------------
+   [  418.955406] WARNING: CPU: 1 PID: 10942 at kernel/module.c:261 module_assert_mutex+0x3c/0x50
+   [  418.963777] Modules linked in: tda998x cec drm_kms_helper crct10dif_ce fuse drm dm_mod ip_tables x_tables
+   [  418.973433] CPU: 1 PID: 10942 Comm: ftracetest Not tainted 5.10.206-rc1 #1
+   [  418.980324] Hardware name: ARM Juno development board (r2) (DT)
+   [  418.986261] pstate: 60000005 (nZCv daif -PAN -UAO -TCO BTYPE=--)
+   [  418.992284] pc : module_assert_mutex+0x3c/0x50
+   [  418.996739] lr : module_assert_mutex+0x38/0x50
+   [  419.001192] sp : ffff80001cd03a90
+   [  419.004515] x29: ffff80001cd03a90 x28: 0000000000000018
+   [  419.009853] x27: 0000000000000002 x26: ffff0008324a6f80
+   [  419.015189] x25: 0000000000000006 x24: ffff800012819678
+   [  419.020525] x23: ffff0008324a6608 x22: ffff800010229bd0
+   [  419.025861] x21: ffff800010229bd0 x20: ffff80001cd03c68
+   [  419.031196] x19: 0000000000000000 x18: 0000000000000000
+   [  419.036531] x17: 0000000000000000 x16: 0000000000000000
+   [  419.041867] x15: 0000aaab20142c50 x14: 0000000000000028
+   [  419.047202] x13: 0000000000000002 x12: 0000000000000003
+   [  419.052538] x11: 0000000000000002 x10: 0101010101010101
+   [  419.057873] x9 : ffff80001019b11c x8 : 7f7f7f7f7f7f7f7f
+   [  419.063209] x7 : 625e6b646d71646a x6 : 34001c0a651c383c
+   [  419.068544] x5 : 3c381c650a1c0034 x4 : 0000000000000000
+   [  419.073880] x3 : 7d95b99001c19d7c x2 : ffff80096cfc9000
+   [  419.079215] x1 : 0000000000000000 x0 : 0000000000000000
+   [  419.084551] Call trace:
+   [  419.087005]  module_assert_mutex+0x3c/0x50
+   [  419.091114]  module_kallsyms_on_each_symbol+0x2c/0x100
+   [  419.096267]  kallsyms_on_each_symbol+0xe0/0x120
+   [  419.100812]  trace_kprobe_create+0x4e4/0x9d0
+   [  419.105095]  create_dyn_event+0x80/0xf0
+   [  419.108943]  trace_run_command+0x90/0xac
+   [  419.112877]  trace_parse_run_command+0x120/0x4c0
+   [  419.117506]  dyn_event_write+0x18/0x24
+   [  419.121267]  vfs_write+0xec/0x20c
+   [  419.124592]  ksys_write+0x78/0x110
+   [  419.128004]  __arm64_sys_write+0x24/0x30
+   [  419.131939]  el0_svc_common.constprop.0+0x84/0x1e0
+   [  419.136743]  do_el0_svc+0x2c/0xa4
+   [  419.140069]  el0_svc+0x20/0x30
+   [  419.143132]  el0_sync_handler+0xe8/0x114
+   [  419.147065]  el0_sync+0x180/0x1c0
+   [  419.150387] irq event stamp: 48184
+   [  419.153800] hardirqs last  enabled at (48183): [] exit_to_kernel_mode+0x38/0x180
+   [  419.162781] hardirqs last disabled at (48184): [] el1_dbg+0x24/0x50
+   [  419.170630] softirqs last  enabled at (48168): [] __do_softirq+0x4dc/0x564
+   [  419.179091] softirqs last disabled at (48153): [] __irq_exit_rcu+0x170/0x194
+   [  419.187721] ---[ end trace 2989cd52be73b559 ]---
+   ------------[ cut here ]------------
+   [  419.263431] WARNING: CPU: 2 PID: 10942 at kernel/module.c:261 module_assert_mutex+0x3c/0x50
+   [  419.271801] Modules linked in: tda998x cec drm_kms_helper crct10dif_ce fuse drm dm_mod ip_tables x_tables
+   [  419.281457] CPU: 2 PID: 10942 Comm: ftracetest Tainted: G        W         5.10.206-rc1 #1
+   [  419.289740] Hardware name: ARM Juno development board (r2) (DT)
+   [  419.295676] pstate: 60000005 (nZCv daif -PAN -UAO -TCO BTYPE=--)
+   [  419.301698] pc : module_assert_mutex+0x3c/0x50
+   [  419.306154] lr : module_assert_mutex+0x38/0x50
+   [  419.310607] sp : ffff80001cd03a90
+   [  419.313930] x29: ffff80001cd03a90 x28: 0000000000000018
+   [  419.319267] x27: 0000000000000002 x26: ffff000831f8d500
+   [  419.324603] x25: 0000000000000007 x24: ffff800012819678
+   [  419.329939] x23: ffff000831f8d608 x22: ffff800010229bd0
+   [  419.335275] x21: ffff800010229bd0 x20: ffff80001cd03c68
+   [  419.340610] x19: 0000000000000000 x18: 0000000000000000
+   [  419.345946] x17: 0000000000000000 x16: 0000000000000000
+   [  419.351281] x15: 0000aaab20142c50 x14: 000000000003fffd
+   [  419.356616] x13: 0000000000000038 x12: 0000000000000038
+   [  419.361951] x11: 0000000000000002 x10: 0101010101010101
+   [  419.367287] x9 : ffff80001019b11c x8 : 7f7f7f7f7f7f7f7f
+   [  419.372622] x7 : 625e6b646d71646a x6 : 34001c0a651c383c
+   [  419.377958] x5 : 3c381c650a1c0034 x4 : 0000000000000000
+   [  419.383293] x3 : 7d95b99001c19d7c x2 : ffff80096cfeb000
+   [  419.388628] x1 : 0000000000000000 x0 : 0000000000000000
+   [  419.393964] Call trace:
+   [  419.396419]  module_assert_mutex+0x3c/0x50
+   [  419.400527]  module_kallsyms_on_each_symbol+0x2c/0x100
+   [  419.405679]  kallsyms_on_each_symbol+0xe0/0x120
+   [  419.410225]  trace_kprobe_create+0x4e4/0x9d0
+   [  419.414507]  create_dyn_event+0x80/0xf0
+   [  419.418355]  trace_run_command+0x90/0xac
+   [  419.422289]  trace_parse_run_command+0x120/0x4c0
+   [  419.426918]  dyn_event_write+0x18/0x24
+   [  419.430683]  vfs_write+0xec/0x20c
+   [  419.434007]  ksys_write+0x78/0x110
+   [  419.437419]  __arm64_sys_write+0x24/0x30
+   [  419.441354]  el0_svc_common.constprop.0+0x84/0x1e0
+   [  419.446159]  do_el0_svc+0x2c/0xa4
+   [  419.449486]  el0_svc+0x20/0x30
+   [  419.452549]  el0_sync_handler+0xe8/0x114
+   [  419.456482]  el0_sync+0x180/0x1c0
+   [  419.459805] irq event stamp: 48666
+   [  419.463218] hardirqs last  enabled at (48665): [] exit_to_kernel_mode+0x38/0x180
+   [  419.472199] hardirqs last disabled at (48666): [] el1_dbg+0x24/0x50
+   [  419.480048] softirqs last  enabled at (48664): [] __do_softirq+0x4dc/0x564
+   [  419.488508] softirqs last disabled at (48659): [] __irq_exit_rcu+0x170/0x194
+   [  419.497139] ---[ end trace 2989cd52be73b55a ]---
+----->8-----
+
+Test execution:
+
+   https://lkft.validation.linaro.org/scheduler/job/7142331
+
+Bisections (Arm64 and x86) point to:
+
+   commit 47808d93a0cd0bb7358d9ef141e85216a4b86ef4
+   Author: Francis Laniel <flaniel@linux.microsoft.com>
+   Date:   Fri Oct 20 13:42:49 2023 +0300
+
+       tracing/kprobes: Return EADDRNOTAVAIL when func matches several symbols
+       
+       commit b022f0c7e404887a7c5229788fc99eff9f9a80d5 upstream.
+
+
+Reverting made the warning disappear on both Arm64 and i386.
+
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+
+Greetings!
+
+Daniel Díaz
+daniel.diaz@linaro.org
+
 
