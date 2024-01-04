@@ -1,199 +1,212 @@
-Return-Path: <linux-kernel+bounces-16425-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16427-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9529B823E4D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 10:10:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9948B823E54
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 10:10:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 27D5BB2534E
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 09:10:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1039AB255B3
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 09:10:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C096420339;
-	Thu,  4 Jan 2024 09:09:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95BD1208B4;
+	Thu,  4 Jan 2024 09:10:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lzzb0GUw"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ot1-f49.google.com (mail-ot1-f49.google.com [209.85.210.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 827561EA95
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 09:09:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rLJin-00009h-2S; Thu, 04 Jan 2024 10:09:01 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rLJil-000J08-2c; Thu, 04 Jan 2024 10:08:59 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rLJik-003WEi-3A;
-	Thu, 04 Jan 2024 10:08:58 +0100
-Date: Thu, 4 Jan 2024 10:08:58 +0100
-From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Duje =?utf-8?Q?Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
-Cc: Arnd Bergmann <arnd@arndb.de>, Robert Jarzmik <robert.jarzmik@free.fr>, 
-	Lubomir Rintel <lkundrak@v3.sk>, zhang songyi <zhang.songyi@zte.com.cn>, soc@kernel.org, 
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH RFC RESEND] soc: pxa: ssp: Cast to enum pxa_ssp_type
- instead of int
-Message-ID: <rj7ijuyy47jrffi6sk7wikqo3rnutz2swkdrznyegalylacawz@jdncegf3elct>
-References: <20240103210604.16877-1-duje.mihanovic@skole.hr>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 883CF208AD;
+	Thu,  4 Jan 2024 09:10:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f49.google.com with SMTP id 46e09a7af769-6dbfe3fe308so153868a34.1;
+        Thu, 04 Jan 2024 01:10:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704359424; x=1704964224; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=CE7ZVwfqCf4qvRKSBIMzsEL7hrDljgpGVgOv+qGGIiA=;
+        b=lzzb0GUwf1Ehrm45WAAtcFK2SBOi/3p0dbAyLrQGy50UAWO796I9FK2RWdMNeJY5yH
+         sX2DnWnWVssO88F0De4yNQFL1GxE5esA3t31gOJTvJmtNrQLsiumdJ+1eh28250fiNgW
+         TFZxqS5gMu1MExe1rRYMBRbV4KNfuKcrMseV6y6WeHeTw/WetGsFTZvX92WCQriaFPlM
+         Pfja7eWQsSVXFApQjTLU6e8XKgYa1SfhVXMY5BOjPSUSMbs8egYxuUZZnsbTz+CJOESc
+         QtKBl8gHWC8nIcvU+NOgmK2ZoO8WeNqwRhvmAvEOEBdxpizIpG+8cSlNs2DklXiIfZLz
+         4x5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704359424; x=1704964224;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=CE7ZVwfqCf4qvRKSBIMzsEL7hrDljgpGVgOv+qGGIiA=;
+        b=vsxMKdwYn/EaV6wgC7xAebeNUpph8+hmNk69tAHIakZp7uDLLEZtL0xdJmWdAgPZtQ
+         w83JG23syM5lHjSuW4rElVul0Jc7YrYZHD4VWJANS/uzGxpKM90YYC2cLD96ZbufWeO8
+         yWx4alHavs69tuo+xAYkfl4OiJTW/xLTpw140hljdq3ju89rkmT85J9nsbzq2efxuY8q
+         WhUSb/2t1kFYHLWWAePE+6QfwTgeQOCax5eguBd+3NKnkRKI6L/qYdKfoXCxZ+PaDQf0
+         QRkH0AOA1FBaII0K0D1Kk++zkuv6cgdyab+NQxLdLU/is/f5kFDs+UmXvd3LL0Rlb8/y
+         H4LQ==
+X-Gm-Message-State: AOJu0YzFBglRofKakMllJNSCdZ6B+FnXndiDfaoN62YvEtXOY9Jw3s0B
+	bk7yucs5mHFpIfJWPRdkIcsWC3nymKis9lEFdnParAV8gfA=
+X-Google-Smtp-Source: AGHT+IHaWSQ6dab/i9XxEgE12EvITOybHXfLxz+hdbS4qbMFLz9rWg02ON6uM9VH9nsyc1dIVX4yMVK5kZpwX/ysRPg=
+X-Received: by 2002:a05:6871:8014:b0:204:2eb4:2c98 with SMTP id
+ sk20-20020a056871801400b002042eb42c98mr263125oab.30.1704359424510; Thu, 04
+ Jan 2024 01:10:24 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="52dkhi32d3pgibs4"
-Content-Disposition: inline
-In-Reply-To: <20240103210604.16877-1-duje.mihanovic@skole.hr>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <20231229085156.1490233-1-chunyan.zhang@unisoc.com>
+ <20231229085156.1490233-2-chunyan.zhang@unisoc.com> <3a290bf9-928d-4d21-9c93-0d1db59d6fff@linaro.org>
+In-Reply-To: <3a290bf9-928d-4d21-9c93-0d1db59d6fff@linaro.org>
+From: Chunyan Zhang <zhang.lyra@gmail.com>
+Date: Thu, 4 Jan 2024 17:09:47 +0800
+Message-ID: <CAAfSe-stvoKSVynTnoy87CUK3NM+ZEwfTMazO0tfwcx5BXG0Og@mail.gmail.com>
+Subject: Re: [PATCH 1/3] dt-bindings: clk: sprd: Add UMS9620 support
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Chunyan Zhang <chunyan.zhang@unisoc.com>, Stephen Boyd <sboyd@kernel.org>, 
+	Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	linux-clk@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Orson Zhai <orsonzhai@gmail.com>, 
+	Baolin Wang <baolin.wang@linux.alibaba.com>
+Content-Type: text/plain; charset="UTF-8"
 
+Hi Krzysztof,
 
---52dkhi32d3pgibs4
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Thu, 4 Jan 2024 at 16:46, Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
+>
+> On 29/12/2023 09:51, Chunyan Zhang wrote:
+> > Add UMS9620's clock compatible strings and descriptions for clock
+> > and clock-names for UMS9620.
+> >
+> > Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
+> > ---
+> >  .../bindings/clock/sprd,ums512-clk.yaml       | 79 ++++++++++++++++---
+> >  1 file changed, 68 insertions(+), 11 deletions(-)
+> >
+> > diff --git a/Documentation/devicetree/bindings/clock/sprd,ums512-clk.yaml b/Documentation/devicetree/bindings/clock/sprd,ums512-clk.yaml
+> > index 43d2b6c31357..dcad41a1fea7 100644
+> > --- a/Documentation/devicetree/bindings/clock/sprd,ums512-clk.yaml
+> > +++ b/Documentation/devicetree/bindings/clock/sprd,ums512-clk.yaml
+> > @@ -30,25 +30,38 @@ properties:
+> >        - sprd,ums512-mm-clk
+> >        - sprd,ums512-mm-gate-clk
+> >        - sprd,ums512-apapb-gate
+> > +      - sprd,ums9620-pmu-gate
+> > +      - sprd,ums9620-g1-pll
+> > +      - sprd,ums9620-g5l-pll
+> > +      - sprd,ums9620-g5r-pll
+> > +      - sprd,ums9620-g8-pll
+> > +      - sprd,ums9620-g9-pll
+> > +      - sprd,ums9620-g10-pll
+> > +      - sprd,ums9620-apapb-gate
+> > +      - sprd,ums9620-ap-clk
+> > +      - sprd,ums9620-apahb-gate
+> > +      - sprd,ums9620-aon-gate
+> > +      - sprd,ums9620-aonapb-clk
+> > +      - sprd,ums9620-topdvfs-clk
+> > +      - sprd,ums9620-ipaapb-gate
+> > +      - sprd,ums9620-ipa-clk
+> > +      - sprd,ums9620-ipaglb-gate
+> > +      - sprd,ums9620-ipadispc-gate
+> > +      - sprd,ums9620-pcieapb-gate
+> > +      - sprd,ums9620-pcie-clk
+> > +      - sprd,ums9620-mm-gate
+> > +      - sprd,ums9620-mm-clk
+> > +      - sprd,ums9620-dpu-vsp-gate
+> > +      - sprd,ums9620-dpu-vsp-clk
+> >
+> >    "#clock-cells":
+> >      const: 1
+> >
+> >    clocks:
+> > -    minItems: 1
+> > -    maxItems: 4
+>
+> No, constraints stay here.
+>
+> >      description: |
+> >        The input parent clock(s) phandle for the clock, only list
+> >        fixed clocks which are declared in devicetree.
+> >
+> > -  clock-names:
+>
+> No, you cannot just drop properties. Widest constraints stay here.
+>
+> > -    minItems: 1
+> > -    items:
+> > -      - const: ext-26m
+> > -      - const: ext-32k
+> > -      - const: ext-4m
+> > -      - const: rco-100m
+> > -
+> >    reg:
+> >      maxItems: 1
+> >
+> > @@ -57,7 +70,43 @@ required:
+> >    - '#clock-cells'
+> >    - reg
+> >
+> > -additionalProperties: false
+> > +allOf:
+> > +  - if:
+> > +      properties:
+> > +        compatible:
+> > +          contains:
+> > +            pattern: "^sprd,ums512-.*"
+> > +
+> > +    then:
+> > +      properties:
+> > +        clocks:
+> > +          minItems: 1
+> > +          maxItems: 4
+> > +
+> > +        clock-names:
+> > +          minItems: 1
+> > +          items:
+> > +            - const: ext-26m
+> > +            - const: ext-32k
+> > +            - const: ext-4m
+> > +            - const: rco-100m
+> > +
+> > +  - if:
+> > +      properties:
+> > +        compatible:
+> > +          contains:
+> > +            pattern: "^sprd,ums9620-.*"
+> > +    then:
+> > +      properties:
+> > +        clocks:
+> > +          minItems: 1
+> > +          maxItems: 6
+> > +
+> > +        clock-names:
+> > +          minItems: 1
+> > +          maxItems: 6
+>
+> Missing names.
 
-[adding lakml to Cc for wider audience]
+The names are fixed, but the order are not.
 
-On Wed, Jan 03, 2024 at 10:06:03PM +0100, Duje Mihanovi=C4=87 wrote:
-> On ARM64 platforms, id->data is a 64-bit value and casting it to a
-> 32-bit integer causes build errors. Cast it to the corresponding enum
-> instead.
->=20
-> Signed-off-by: Duje Mihanovi=C4=87 <duje.mihanovic@skole.hr>
-> ---
-> This patch is necessary for my Marvell PXA1908 series to compile successf=
-ully
-> with allyesconfig:
-> https://lore.kernel.org/all/20231102-pxa1908-lkml-v7-0-cabb1a0cb52b@skole=
-=2Ehr/
-> ---
->  drivers/soc/pxa/ssp.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->=20
-> diff --git a/drivers/soc/pxa/ssp.c b/drivers/soc/pxa/ssp.c
-> index a1e8a07f7275..e2ffd8fd7e13 100644
-> --- a/drivers/soc/pxa/ssp.c
-> +++ b/drivers/soc/pxa/ssp.c
-> @@ -152,11 +152,11 @@ static int pxa_ssp_probe(struct platform_device *pd=
-ev)
->  	if (dev->of_node) {
->  		const struct of_device_id *id =3D
->  			of_match_device(of_match_ptr(pxa_ssp_of_ids), dev);
-> -		ssp->type =3D (int) id->data;
-> +		ssp->type =3D (enum pxa_ssp_type) id->data;
+For example:
+clk_a {
+    clocks = <&ext_26m>, <&ext_32k>;
+    clock-names = "ext-26m", "ext-32k";
+};
 
-I wonder if this is a long-term fix. The error that the compiler throws
-is:
+clk_b {
+    clocks = <&ext_26m>, <&ext_4m>;
+    clock-names = "ext-26m", "ext-4m";
+};
 
-	drivers/soc/pxa/ssp.c:155:29: error: cast from pointer to integer of diffe=
-rent size [-Werror=3Dpointer-to-int-cast]
-	  155 |                 ssp->type =3D (int) id->data;
-	      |                             ^
+How to list the names for this kind of case? (Please forgive me for
+being lazy, didn't find a similar case after a fast search)
 
-enum pxa_ssp_type is an integer type, too, and its width could be
-smaller than 64 bit, too.
-
-The following would also help:
-
-diff --git a/drivers/soc/pxa/ssp.c b/drivers/soc/pxa/ssp.c
-index a1e8a07f7275..095d997eb886 100644
---- a/drivers/soc/pxa/ssp.c
-+++ b/drivers/soc/pxa/ssp.c
-@@ -96,13 +96,13 @@ EXPORT_SYMBOL(pxa_ssp_free);
-=20
- #ifdef CONFIG_OF
- static const struct of_device_id pxa_ssp_of_ids[] =3D {
--	{ .compatible =3D "mrvl,pxa25x-ssp",	.data =3D (void *) PXA25x_SSP },
--	{ .compatible =3D "mvrl,pxa25x-nssp",	.data =3D (void *) PXA25x_NSSP },
--	{ .compatible =3D "mrvl,pxa27x-ssp",	.data =3D (void *) PXA27x_SSP },
--	{ .compatible =3D "mrvl,pxa3xx-ssp",	.data =3D (void *) PXA3xx_SSP },
--	{ .compatible =3D "mvrl,pxa168-ssp",	.data =3D (void *) PXA168_SSP },
--	{ .compatible =3D "mrvl,pxa910-ssp",	.data =3D (void *) PXA910_SSP },
--	{ .compatible =3D "mrvl,ce4100-ssp",	.data =3D (void *) CE4100_SSP },
-+	{ .compatible =3D "mrvl,pxa25x-ssp",	.driver_data =3D PXA25x_SSP },
-+	{ .compatible =3D "mvrl,pxa25x-nssp",	.driver_data =3D PXA25x_NSSP },
-+	{ .compatible =3D "mrvl,pxa27x-ssp",	.driver_data =3D PXA27x_SSP },
-+	{ .compatible =3D "mrvl,pxa3xx-ssp",	.driver_data =3D PXA3xx_SSP },
-+	{ .compatible =3D "mvrl,pxa168-ssp",	.driver_data =3D PXA168_SSP },
-+	{ .compatible =3D "mrvl,pxa910-ssp",	.driver_data =3D PXA910_SSP },
-+	{ .compatible =3D "mrvl,ce4100-ssp",	.driver_data =3D CE4100_SSP },
- 	{ },
- };
- MODULE_DEVICE_TABLE(of, pxa_ssp_of_ids);
-@@ -152,7 +152,7 @@ static int pxa_ssp_probe(struct platform_device *pdev)
- 	if (dev->of_node) {
- 		const struct of_device_id *id =3D
- 			of_match_device(of_match_ptr(pxa_ssp_of_ids), dev);
--		ssp->type =3D (int) id->data;
-+		ssp->type =3D id->driver_data;
- 	} else {
- 		const struct platform_device_id *id =3D
- 			platform_get_device_id(pdev);
-diff --git a/include/linux/mod_devicetable.h b/include/linux/mod_devicetabl=
-e.h
-index f458469c5ce5..fbe16089e4bb 100644
---- a/include/linux/mod_devicetable.h
-+++ b/include/linux/mod_devicetable.h
-@@ -283,7 +283,10 @@ struct of_device_id {
- 	char	name[32];
- 	char	type[32];
- 	char	compatible[128];
--	const void *data;
-+	union {
-+		const void *data;
-+		kernel_ulong_t driver_data;
-+	};
- };
-=20
- /* VIO */
-
-For this driver the change would be nice, as several casts can be
-dropped.
-
->  	} else {
->  		const struct platform_device_id *id =3D
->  			platform_get_device_id(pdev);
-> -		ssp->type =3D (int) id->driver_data;
-> +		ssp->type =3D (enum pxa_ssp_type) id->driver_data;
-
-This one isn't problematic in my build configuration and you could just
-drop the cast completely.
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=C3=B6nig         =
-   |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---52dkhi32d3pgibs4
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmWWdakACgkQj4D7WH0S
-/k5kkAf/SdNq0pMzzew8DK1KS9BHkwqYm63O609O6pP+m+aJlHmSt2HGFPIhEV4I
-aGasfXdwyiF+QJ3oGOmBA4j7+AcGAB5sog1Ofhh8GzOAft3gntrF/TiQhCXHHUNX
-tH7M/v5gqdwBwDHvyF6b8LPNL/1LZ784Gtiso+G6geuTmA7veXkaW4gXuFTvWJfT
-dtEvYqrlZharOUHKEtBF2Yazt42zub/pqDP1ZNgvvuT+1WCLMdCRdJjDZRGdC3/b
-Nl6ANRbOhTZPhvAzuryKug8e9tBAhqdLR0UhfXJ/b9shUr8zlLB96Rgw5q+HWFcY
-qjNWazn8ABaFDQn6pX3Ep1O2SzGk1g==
-=ZZi0
------END PGP SIGNATURE-----
-
---52dkhi32d3pgibs4--
+Thanks,
+Chunyan
 
