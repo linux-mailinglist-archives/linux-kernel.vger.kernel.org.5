@@ -1,64 +1,64 @@
-Return-Path: <linux-kernel+bounces-16373-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16374-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7617F823D94
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 09:39:18 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C9CF0823D96
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 09:40:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DF9ED1F24AB4
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 08:39:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DD6381C2133A
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 08:40:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65EF21DDD6;
-	Thu,  4 Jan 2024 08:39:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95D621DFF8;
+	Thu,  4 Jan 2024 08:39:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="FhmsSH7X"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="M2f3niH6"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
+Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2195A1DDC6
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 08:39:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 542211DDC5
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 08:39:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-554e902064aso318918a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 00:39:07 -0800 (PST)
+Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-50ea98440a7so242415e87.1
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 00:39:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704357546; x=1704962346; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1704357589; x=1704962389; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=iVBUvQESwEuj7+bdrNiCjOnoxxVZAsrzYnxazsGsKUU=;
-        b=FhmsSH7XSvZF3zUAwb4IPqiGNp3K8O8nC5MSbcPUOS+KHNseYHDwFSTMCL8mpCjGna
-         vGKRntkQK1FesWoPzWt+NVdIERhtDFPK9yBMzZpCnyPpMxO838raCD+2HfxK8gtMCKEc
-         yuav2y7Nm7iMxJwJZrbu4wshaniScZQDjSZtrBF88mfPNQ8IJeCRHq1gmHsEn7YjWH7g
-         u+6IGG3KLygDuXp//Dcis1xGgaOSbXjM+8+j9nt/gUyWlHlCfRhs8GkfPtzPD7gMuFRE
-         iXceL3CL8y9G0cKfaDUdEbEWYmibWL6wHCyQZbj0GiX5cxTPXLi9GKgKBTlar0Frq7Y2
-         LChw==
+        bh=tun37mXYAseVAf60N53LcraM6sHbEmexMaK/+E7MKzA=;
+        b=M2f3niH6ErM3FljC+pFdp0rVVV7kkHEsNba/y3E2eVGGC2i/F904h5kDPLpidMJOkn
+         qPTR8fr9wgqzH2aMTLj5LCyrgNI3P3zq86+IRU0Vm5lnih/vzbwP5OGyQGuOuo1d1MGy
+         +w+ztp7bpJjMvWJHu0yVS7Ix5PLon4meH+yA7dkH5ofxnKac7lz3dSOni5TpKNKje+vw
+         bJjJT302Z6XcWD+7JcSFj1fb0ildNdTUOz/fXQvaVi3DrKwHLibQUXTM79fpNim8I2ig
+         llKLHjn7GtB4Mflgl0uAMF5ogFe5HWVHjp0x36gnJBmNpq4XyFF11/0MII/hGrIk5Gob
+         k9EQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704357546; x=1704962346;
+        d=1e100.net; s=20230601; t=1704357589; x=1704962389;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=iVBUvQESwEuj7+bdrNiCjOnoxxVZAsrzYnxazsGsKUU=;
-        b=U4+3Uw2V6T/HEpcUNmCq2TPnH4I1/WqW/EfOaFcZ+cX0cb3yau6nna2jD8toLhpebr
-         n/TuNj6P/UJgIuMn/W//N6MUB1M/yK8Pzfr8kUFVyHetwKM0FsQ0cJrgDqaq4o87Wpy2
-         rKk98Zry2buzoIykqbNksSnpicXYyqnxXsi3P7oZ5RrcOPXhzw2ixIL8VRHhXj/BWlqK
-         sKoEE/HMWw6aruPVLX/rOvXMK5vOXQPdBP8lUlfWJ0zVY79Fnh4ZEJARy7DWUO5asnD4
-         Vhj/UWVBKY0WjXl93teNuY4LRIl8PbHw8hr66cETRsGq09oHSJtwQ6MaEAZr9fuuc8QY
-         YKlQ==
-X-Gm-Message-State: AOJu0Yw35RpXS18dQuF3SWpbM7PAsmcN1sk6rlY/8CEbac3lgyntZXHR
-	SvAOhVN2iIMe1H34fWOj1hsl6XsLz+dwEg==
-X-Google-Smtp-Source: AGHT+IHe6fiT46hJMigYra3M3AO5HB2U62T+VCpt7IGhkZ1XHijTRpEPHirPHc1sk3G5DlIftLpISw==
-X-Received: by 2002:a50:cc92:0:b0:555:6be0:2f58 with SMTP id q18-20020a50cc92000000b005556be02f58mr141390edi.1.1704357546326;
-        Thu, 04 Jan 2024 00:39:06 -0800 (PST)
+        bh=tun37mXYAseVAf60N53LcraM6sHbEmexMaK/+E7MKzA=;
+        b=CJC0F9FOU25vH1wco8op24APz/HNvfIbKvqMzE6QvQ+W9yBLR+6UXP7fqB7MZpElcq
+         jIw9QOlTuVjokUCOkxujpEGxN667mNiLG58Z3FUV3gN+LEmdWTKxqkNstHx0oqgXYYtQ
+         VnQOQawJ2/5tPMf8tODVVnJKhl65CqrMGaraect6ALR6IQWB/Z+o2mbLq4EA5DxYnxYm
+         7uUTZ2mGlb0h25Y9p/kNE5+f6cw57Ia1O56TTx+FnnFEDte/X7u+0AkZAdvi6sWbqqXQ
+         m7XEWjWt/jkmMOHECw3gc0eh9P6HEKOBZCBJzeKQPX5Oi5Ew32ATrvlZn0P6w6xKpjjo
+         OgNQ==
+X-Gm-Message-State: AOJu0YyB3UYJ+sckK07dIFghvJDLOAPGXxlt8NuapJWZyIniUC0RbMEk
+	mYo5AB6JEotxMB9IHaAHsCcGuuZq3swQiw==
+X-Google-Smtp-Source: AGHT+IHaSsq3tCm9beUyzguB4zAFtLHx5CuOJSSpTHOPherHAorQFESKrdacwcdHpq3MZyPfEKGCdQ==
+X-Received: by 2002:a05:6512:3993:b0:50e:4098:3798 with SMTP id j19-20020a056512399300b0050e40983798mr142324lfu.60.1704357589385;
+        Thu, 04 Jan 2024 00:39:49 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id y11-20020aa7c24b000000b00553754bd636sm18503253edo.35.2024.01.04.00.39.04
+        by smtp.gmail.com with ESMTPSA id y11-20020aa7c24b000000b00553754bd636sm18503253edo.35.2024.01.04.00.39.48
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Jan 2024 00:39:05 -0800 (PST)
-Message-ID: <cdb4a69e-766e-4af2-8ba8-c09a11152679@linaro.org>
-Date: Thu, 4 Jan 2024 09:39:04 +0100
+        Thu, 04 Jan 2024 00:39:48 -0800 (PST)
+Message-ID: <3f463dbd-14f7-4c2d-a464-647060cf45b8@linaro.org>
+Date: Thu, 4 Jan 2024 09:39:48 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,8 +66,8 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 01/11] dt-bindings: marvell: a38x: remove invalid txt
- bindings for armada 38x SoCs
+Subject: Re: [PATCH v4 02/11] dt-bindings: marvell: a38x: convert the soc
+ compatibles description to yaml
 Content-Language: en-US
 To: Josua Mayer <josua@solid-run.com>, Andrew Lunn <andrew@lunn.ch>,
  Gregory Clement <gregory.clement@bootlin.com>,
@@ -78,7 +78,7 @@ To: Josua Mayer <josua@solid-run.com>, Andrew Lunn <andrew@lunn.ch>,
 Cc: linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org
 References: <20231230-support-clearfog-gtr-l8-sfp-v4-0-1d7f0e2c7128@solid-run.com>
- <20231230-support-clearfog-gtr-l8-sfp-v4-1-1d7f0e2c7128@solid-run.com>
+ <20231230-support-clearfog-gtr-l8-sfp-v4-2-1d7f0e2c7128@solid-run.com>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -124,27 +124,65 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231230-support-clearfog-gtr-l8-sfp-v4-1-1d7f0e2c7128@solid-run.com>
+In-Reply-To: <20231230-support-clearfog-gtr-l8-sfp-v4-2-1d7f0e2c7128@solid-run.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
 On 30/12/2023 16:44, Josua Mayer wrote:
-> The current bindings documentation for armada-38x are only listing SoCs,
-> but no actual boards. Only actual boards should be listed.
+> Convert the existing txt binding for armada-38x socs to DT schema
+> format.
 > 
-> Delete this invalid binding document.
+
+Where is the conversion? I don't see. Conversion means "remove and add"
+in a diff. I see only second part.
+
+> Note that the current bindings only document the SoC (armada380,
+> armada385, armada388). This is undesirable, instead there should be
+> entries for actual boards.
 > 
-> Conversion to a boilerplate yaml has been considered but is not useful.
-> A new bindings documentation in yaml format can be introduced with new
-> bindings for specific boards.
+> For now only convert to yaml, the content can be corrected separately.
 > 
 > Signed-off-by: Josua Mayer <josua@solid-run.com>
 > ---
->  .../devicetree/bindings/arm/marvell/armada-38x.txt | 27 ----
+>  .../bindings/arm/marvell/armada-38x.yaml           | 33 ++++++++++++++++++++++
+>  1 file changed, 33 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/arm/marvell/armada-38x.yaml b/Documentation/devicetree/bindings/arm/marvell/armada-38x.yaml
+> new file mode 100644
+> index 000000000000..5af222e6db18
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/arm/marvell/armada-38x.yaml
+> @@ -0,0 +1,33 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/arm/marvell/armada-38x.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Marvell Armada 38x Platforms
+> +
+> +maintainers:
+> +  - Gregory CLEMENT <gregory.clement@bootlin.com>
+> +
+> +properties:
+> +  $nodename:
+> +    const: '/'
+> +  compatible:
+> +    oneOf:
+> +
+> +      - description: Armada 380 SoC
+> +        items:
+> +          - const: marvell,armada380
+> +
+> +      - description: Armada 385 SoC
+> +        items:
+> +          - const: marvell,armada385
+> +          - const: marvell,armada380
+> +
 
-I asked you what to do in one step. Don't break steps into multiple steps.
+No, we have been here.
 
-This should be squashed.
+NAK.
 
 Best regards,
 Krzysztof
