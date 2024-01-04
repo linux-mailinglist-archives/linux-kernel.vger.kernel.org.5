@@ -1,141 +1,86 @@
-Return-Path: <linux-kernel+bounces-16172-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16173-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 410EB823A0F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 02:08:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED032823A14
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 02:10:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B6042287E94
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 01:07:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1EC451C24A79
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 01:10:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 493824A35;
-	Thu,  4 Jan 2024 01:07:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A69D01859;
+	Thu,  4 Jan 2024 01:10:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="R8BOTk86"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pRtIML8y"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-il1-f179.google.com (mail-il1-f179.google.com [209.85.166.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41B77442E
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 01:07:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-il1-f179.google.com with SMTP id e9e14a558f8ab-35ffc781b3bso24675ab.1
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 17:07:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1704330470; x=1704935270; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=7m+H9c4RKS2/XKxU5xixK4qV5pHJenGZp2+iHHRxZ8I=;
-        b=R8BOTk86mUfgzMbzcUmvPBCCI3FOzdXj16BvlPiBHZCbR06gmypwpAa85juK7wdmgE
-         Y4QbYdXP7gUQ6Zbr4ismQqYX4uWEnf2W+1oDnihdIgWPmIOWfT+yjfgQD6QcEs54jSKD
-         8SedaBQddx6rqtyVDKHegjRuW6q/7NGd/gFmLf9nIlVHvg7g5uI/JE+Z81grJmTLOvqF
-         1t+YuP0OY98y9I5re6kgPD85Cesw07kDK0WAwtC+a895N0LCEmPZm3LbXTLRLJqCBlae
-         ltpp4NvhVadI8EoJgd9nP8xal/cyudzaBZLcfqM0VJ/V7gAhW7+TGFhy/1FhBAQX6pst
-         qhzA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704330470; x=1704935270;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7m+H9c4RKS2/XKxU5xixK4qV5pHJenGZp2+iHHRxZ8I=;
-        b=A8nt3fYmHl9Nftw6AxiT3rs4LPHBhMMa5jFiY+jpF3PtxNS0yPzws6mGHQn1cEKg2A
-         y75UeTDLiX1L78RyzoMWOhe/fL8NcZjiRxGnFlsZmLZYExi8ViBUzrPJnpmY9vb6W/Fx
-         /mdD8WewmkltzhOc1nnnCJmGZg2GYA3VObNEDXrUeVxRXUMii4t9sGLoEVy6+kEnXG/t
-         JcDqFj1qZu+Bsd+QFA32lOTt0Y7ezpVG806U/appgAsqhzhHQZgGf5tZKmUTIhZqCWbX
-         4g7PbFcc+uzq5yseIy8ag2BskW5ub4N3aubeUs9dYaG5e/6jvuIYh0nWWT5QSbdMRJtT
-         v9Mg==
-X-Gm-Message-State: AOJu0YwB+tWRI5ZY9Q+miyOXQTy1hmI9/lBquQHpLtCtiNu+MmVY58Jo
-	cC/BEXepp60njNUzGtc8wuj/Sxea29by
-X-Google-Smtp-Source: AGHT+IGRuUGkfMLL656tWkrl3gVsRL5YUSK9Aa3dv2YOfuY5Fqt+InY0LH5LQvbxFNvicz1QowE59g==
-X-Received: by 2002:a92:cccf:0:b0:360:495:20e9 with SMTP id u15-20020a92cccf000000b00360049520e9mr302785ilq.8.1704330470029;
-        Wed, 03 Jan 2024 17:07:50 -0800 (PST)
-Received: from google.com ([100.64.188.49])
-        by smtp.gmail.com with ESMTPSA id k11-20020a02cccb000000b0046ddbd7b67fsm760485jaq.93.2024.01.03.17.07.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Jan 2024 17:07:49 -0800 (PST)
-Date: Wed, 3 Jan 2024 18:07:43 -0700
-From: Yu Zhao <yuzhao@google.com>
-To: Dan Schatzberg <schatzberg.dan@gmail.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
-	cgroups@vger.kernel.org, linux-mm@kvack.org,
-	Yosry Ahmed <yosryahmed@google.com>, Michal Hocko <mhocko@suse.com>,
-	David Rientjes <rientjes@google.com>, Chris Li <chrisl@kernel.org>,
-	Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Jonathan Corbet <corbet@lwn.net>, Michal Hocko <mhocko@kernel.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Shakeel Butt <shakeelb@google.com>,
-	Muchun Song <muchun.song@linux.dev>,
-	David Hildenbrand <david@redhat.com>,
-	Matthew Wilcox <willy@infradead.org>,
-	Kefeng Wang <wangkefeng.wang@huawei.com>,
-	Yue Zhao <findns94@gmail.com>, Hugh Dickins <hughd@google.com>
-Subject: Re: [PATCH v6 2/2] mm: add swapiness= arg to memory.reclaim
-Message-ID: <ZZYE36e0BFFzi0X3@google.com>
-References: <20240103164841.2800183-1-schatzberg.dan@gmail.com>
- <20240103164841.2800183-3-schatzberg.dan@gmail.com>
- <CAOUHufZ-hTwdiy7eYgJWo=CHyPbdxTX60hxjPmwa9Ox6FXMYQQ@mail.gmail.com>
- <ZZWlT5wmDaMceSlQ@dschatzberg-fedora-PC0Y6AEN>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4D2037B;
+	Thu,  4 Jan 2024 01:10:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id B5797C433CD;
+	Thu,  4 Jan 2024 01:10:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704330625;
+	bh=1/AcE2yNiKq2VOJf4UWVULUFGIR5FL0yTpn0dYOMgV4=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=pRtIML8yJvY8OrrCkOnGvbT4HFeyvhgWt/McrcCuYortNS2fFJMA+1mrOZRZtIpb2
+	 JJ7WF3QqGf8SOtz5SQnLzI/S5i7lGRG+0gqyRweAS9SBY5t8b6arhq3ZVeGsIymVKC
+	 hbO1MPXLpvorBRhu0BQaJvTV4XCigzV8XlOHzpx455IcGcqBVjzn+cFQ1S9L1xPxah
+	 TMxnX91dINhsKuQba88LpxZlvb6jeZxiuTfeMj+k729PyvHSCvKq1+H909xATZUS2K
+	 CLh78iDD/Pcc6JiSdGS41Ob/pMycuFCFxBMOI/S0xf1bmP15hmXxHxXf7tKudr9iMb
+	 OnxAnQOu+qoLA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 9F772C43168;
+	Thu,  4 Jan 2024 01:10:25 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZZWlT5wmDaMceSlQ@dschatzberg-fedora-PC0Y6AEN>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v2 net-next] selftests/net: change shebang to bash to support
+ "source"
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <170433062564.12007.6147887260840109226.git-patchwork-notify@kernel.org>
+Date: Thu, 04 Jan 2024 01:10:25 +0000
+References: <20231229131931.3961150-1-yujie.liu@intel.com>
+In-Reply-To: <20231229131931.3961150-1-yujie.liu@intel.com>
+To: Yujie Liu <yujie.liu@intel.com>
+Cc: netdev@vger.kernel.org, liuhangbin@gmail.com, pabeni@redhat.com,
+ dsahern@kernel.org, linux-kselftest@vger.kernel.org,
+ linux-kernel@vger.kernel.org, lkp@intel.com, oliver.sang@intel.com
 
-On Wed, Jan 03, 2024 at 01:19:59PM -0500, Dan Schatzberg wrote:
-> On Wed, Jan 03, 2024 at 10:19:40AM -0700, Yu Zhao wrote:
+Hello:
+
+This patch was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
+
+On Fri, 29 Dec 2023 21:19:31 +0800 you wrote:
+> The patch set [1] added a general lib.sh in net selftests, and converted
+> several test scripts to source the lib.sh.
+> 
+> unicast_extensions.sh (converted in [1]) and pmtu.sh (converted in [2])
+> have a /bin/sh shebang which may point to various shells in different
+> distributions, but "source" is only available in some of them. For
+> example, "source" is a built-it function in bash, but it cannot be
+> used in dash.
+> 
 > [...]
-> > > diff --git a/mm/vmscan.c b/mm/vmscan.c
-> > > index d91963e2d47f..394e0dd46b2e 100644
-> > > --- a/mm/vmscan.c
-> > > +++ b/mm/vmscan.c
-> > > @@ -92,6 +92,11 @@ struct scan_control {
-> > >         unsigned long   anon_cost;
-> > >         unsigned long   file_cost;
-> > >
-> > > +#ifdef CONFIG_MEMCG
-> > > +       /* Swappiness value for proactive reclaim. Always use sc_swappiness()! */
-> > > +       int *proactive_swappiness;
-> > > +#endif
-> > 
-> > Why is proactive_swappiness still a pointer? The whole point of the
-> > previous conversation is that sc->proactive can tell whether
-> > sc->swappiness is valid or not, and that's less awkward than using a
-> > pointer.
-> 
-> It's the same reason as before - zero initialization ensures that the
-> pointer is NULL which tells us if it's valid or not. Proactive reclaim
-> might not set swappiness and you need to distinguish swappiness of 0
-> and not-set. See this discussion with Michal:
-> 
-> https://lore.kernel.org/linux-mm/ZZUizpTWOt3gNeqR@tiehlicka/
 
- static ssize_t memory_reclaim(struct kernfs_open_file *of, char *buf,
-                              size_t nbytes, loff_t off)
- {
-        struct mem_cgroup *memcg = mem_cgroup_from_css(of_css(of));
-        unsigned int nr_retries = MAX_RECLAIM_RETRIES;
-        unsigned long nr_to_reclaim, nr_reclaimed = 0;
-+       int swappiness = -1;
-...
-                reclaimed = try_to_free_mem_cgroup_pages(memcg,
-                                        min(nr_to_reclaim - nr_reclaimed, SWAP_CLUSTER_MAX),
--                                       GFP_KERNEL, reclaim_options);
-+                                       GFP_KERNEL, reclaim_options,
-+                                       swappiness);
+Here is the summary with links:
+  - [v2,net-next] selftests/net: change shebang to bash to support "source"
+    https://git.kernel.org/netdev/net-next/c/05d92cb0e919
 
-...
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-+static int sc_swappiness(struct scan_control *sc, struct mem_cgroup *memcg)
-+{
-+       return sc->proactive && sc->proactive_swappiness > -1 ?
-+              sc->proactive_swappiness : mem_cgroup_swappiness(memcg);
-+}
+
 
