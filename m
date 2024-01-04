@@ -1,282 +1,265 @@
-Return-Path: <linux-kernel+bounces-17213-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17217-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 702348249E9
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 22:00:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B8278249F2
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 22:01:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0908E287BE6
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 21:00:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F2D2F287C1B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 21:01:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F22162C6AF;
-	Thu,  4 Jan 2024 21:00:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F4142C1B5;
+	Thu,  4 Jan 2024 21:00:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="eDe8VMqu"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dKkap8LN"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF88728E0D
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 21:00:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1704402002;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=D0cKn7qdYds079CLOrGNBapSvJeS5p31NAQ7WgjQqmE=;
-	b=eDe8VMquEnT5cgNR0+HvWO2+/1M5YP2u1hkUEU0v34GOOkLizUl3L2JASqthjhR4AkqS1r
-	Kv0voWKKI1HPRmuqDFh1n6g0lzdpTXnUesfTWjyvII+QNeN2+tPL4EAAluvyIMt/QI6B5Y
-	4U+IU1OCi7I703R7q1nZtvQCHqlZiqM=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-279-GE2DdKgbMG6iYTBR-hY7JA-1; Thu,
- 04 Jan 2024 16:00:01 -0500
-X-MC-Unique: GE2DdKgbMG6iYTBR-hY7JA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C4B4D1C18CC3;
-	Thu,  4 Jan 2024 21:00:00 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id A7F1B1121313;
-	Thu,  4 Jan 2024 21:00:00 +0000 (UTC)
-From: Paolo Bonzini <pbonzini@redhat.com>
-To: linux-kernel@vger.kernel.org,
-	kvm@vger.kernel.org
-Cc: ajones@ventanamicro.com
-Subject: [PATCH 4/4] treewide: remove CONFIG_HAVE_KVM
-Date: Thu,  4 Jan 2024 15:59:59 -0500
-Message-Id: <20240104205959.4128825-5-pbonzini@redhat.com>
-In-Reply-To: <20240104205959.4128825-1-pbonzini@redhat.com>
-References: <20240104205959.4128825-1-pbonzini@redhat.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B6EE2D78D;
+	Thu,  4 Jan 2024 21:00:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2C4D5C433C8;
+	Thu,  4 Jan 2024 21:00:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704402017;
+	bh=dmMY+NqMp5EPtMDl4fN5j64AngkjIkbw86hL5YSeuhY=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=dKkap8LNcwOi4O6dx1Yj8GhJyrY2Oj8IVc3t8GA7bK2MnigpF9c0R6Dgivem55J51
+	 aZ+qmB1rQxjDDlcAvl11/G1o3U2kXptANj4ovtzF4r5K3Zf8tPvksKBfJkW7f3ZtPE
+	 /LdbnsQYHA63LhGmahmSbPvfP5ceJKnHGH83ML5XRNz+BMVc9cAni4s8GnkXMPtjBb
+	 OUBjZx8iIV+9RoMetXN5kQ7xo5WIOkITUhFbHtRmdJwxLc/TJDX2uCOxFRM0iSJjFF
+	 TL7z8VCIMWVxEpeOt+yuvNOFPvfKqiCJH9+9jzKS0HWA/GK22bhpBYl0rHGzzAtxHn
+	 5t7ipmqeQNK2w==
+Date: Thu, 4 Jan 2024 13:00:16 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: Shinas Rasheed <srasheed@marvell.com>
+Cc: <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+ <hgani@marvell.com>, <vimleshk@marvell.com>, <sedara@marvell.com>,
+ <egallen@redhat.com>, <mschmidt@redhat.com>, <pabeni@redhat.com>,
+ <horms@kernel.org>, <wizhao@redhat.com>, <kheib@redhat.com>,
+ <konguyen@redhat.com>, Veerasenareddy Burru <vburru@marvell.com>, Satananda
+ Burla <sburla@marvell.com>, "David S. Miller" <davem@davemloft.net>, Eric
+ Dumazet <edumazet@google.com>
+Subject: Re: [PATCH net-next v2 6/8] octeon_ep_vf: add Tx/Rx processing and
+ interrupt support
+Message-ID: <20240104130016.47bc1071@kernel.org>
+In-Reply-To: <20231223134000.2906144-7-srasheed@marvell.com>
+References: <20231223134000.2906144-1-srasheed@marvell.com>
+	<20231223134000.2906144-7-srasheed@marvell.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-It has no users anymore.  While at it also remove a dependency on X86
-that is redundant within arch/x86.
+On Sat, 23 Dec 2023 05:39:58 -0800 Shinas Rasheed wrote:
+> +static int octep_vf_napi_poll(struct napi_struct *napi, int budget)
+> +{
+> +	struct octep_vf_ioq_vector *ioq_vector =
+> +		container_of(napi, struct octep_vf_ioq_vector, napi);
+> +	u32 tx_pending, rx_done;
+> +
+> +	tx_pending = octep_vf_iq_process_completions(ioq_vector->iq, budget);
 
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
----
- arch/arm64/Kconfig         | 1 -
- arch/arm64/kvm/Kconfig     | 1 -
- arch/loongarch/Kconfig     | 1 -
- arch/loongarch/kvm/Kconfig | 1 -
- arch/mips/Kconfig          | 9 ---------
- arch/s390/Kconfig          | 1 -
- arch/s390/kvm/Kconfig      | 1 -
- arch/x86/Kconfig           | 1 -
- arch/x86/kvm/Kconfig       | 2 --
- virt/kvm/Kconfig           | 3 ---
- 10 files changed, 21 deletions(-)
+completions should use some static budget, say 256, the budget passed
+in is for Rx.
 
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index 7b071a00425d..dbf08f8b66dd 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -214,7 +214,6 @@ config ARM64
- 	select HAVE_HW_BREAKPOINT if PERF_EVENTS
- 	select HAVE_IOREMAP_PROT
- 	select HAVE_IRQ_TIME_ACCOUNTING
--	select HAVE_KVM
- 	select HAVE_MOD_ARCH_SPECIFIC
- 	select HAVE_NMI
- 	select HAVE_PERF_EVENTS
-diff --git a/arch/arm64/kvm/Kconfig b/arch/arm64/kvm/Kconfig
-index ad5ce0454f17..d8e40d7f89f6 100644
---- a/arch/arm64/kvm/Kconfig
-+++ b/arch/arm64/kvm/Kconfig
-@@ -20,7 +20,6 @@ if VIRTUALIZATION
- 
- menuconfig KVM
- 	bool "Kernel-based Virtual Machine (KVM) support"
--	depends on HAVE_KVM
- 	select KVM_COMMON
- 	select KVM_GENERIC_HARDWARE_ENABLING
- 	select KVM_GENERIC_MMU_NOTIFIER
-diff --git a/arch/loongarch/Kconfig b/arch/loongarch/Kconfig
-index ee123820a476..78330e0ca2f2 100644
---- a/arch/loongarch/Kconfig
-+++ b/arch/loongarch/Kconfig
-@@ -129,7 +129,6 @@ config LOONGARCH
- 	select HAVE_KPROBES
- 	select HAVE_KPROBES_ON_FTRACE
- 	select HAVE_KRETPROBES
--	select HAVE_KVM
- 	select HAVE_MOD_ARCH_SPECIFIC
- 	select HAVE_NMI
- 	select HAVE_PCI
-diff --git a/arch/loongarch/kvm/Kconfig b/arch/loongarch/kvm/Kconfig
-index 3b284b7e63ad..62c05d6e175c 100644
---- a/arch/loongarch/kvm/Kconfig
-+++ b/arch/loongarch/kvm/Kconfig
-@@ -20,7 +20,6 @@ if VIRTUALIZATION
- config KVM
- 	tristate "Kernel-based Virtual Machine (KVM) support"
- 	depends on AS_HAS_LVZ_EXTENSION
--	depends on HAVE_KVM
- 	select HAVE_KVM_DIRTY_RING_ACQ_REL
- 	select HAVE_KVM_VCPU_ASYNC_IOCTL
- 	select KVM_COMMON
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index 3eb3239013d9..cf5bb1c756e6 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -1262,7 +1262,6 @@ config CPU_LOONGSON64
- 	select MIPS_FP_SUPPORT
- 	select GPIOLIB
- 	select SWIOTLB
--	select HAVE_KVM
- 	help
- 	  The Loongson GSx64(GS264/GS464/GS464E/GS464V) series of processor
- 	  cores implements the MIPS64R2 instruction set with many extensions,
-@@ -1375,7 +1374,6 @@ config CPU_MIPS32_R2
- 	select CPU_SUPPORTS_32BIT_KERNEL
- 	select CPU_SUPPORTS_HIGHMEM
- 	select CPU_SUPPORTS_MSA
--	select HAVE_KVM
- 	help
- 	  Choose this option to build a kernel for release 2 or later of the
- 	  MIPS32 architecture.  Most modern embedded systems with a 32-bit
-@@ -1391,7 +1389,6 @@ config CPU_MIPS32_R5
- 	select CPU_SUPPORTS_HIGHMEM
- 	select CPU_SUPPORTS_MSA
- 	select CPU_SUPPORTS_VZ
--	select HAVE_KVM
- 	select MIPS_O32_FP64_SUPPORT
- 	help
- 	  Choose this option to build a kernel for release 5 or later of the
-@@ -1408,7 +1405,6 @@ config CPU_MIPS32_R6
- 	select CPU_SUPPORTS_HIGHMEM
- 	select CPU_SUPPORTS_MSA
- 	select CPU_SUPPORTS_VZ
--	select HAVE_KVM
- 	select MIPS_O32_FP64_SUPPORT
- 	help
- 	  Choose this option to build a kernel for release 6 or later of the
-@@ -1444,7 +1440,6 @@ config CPU_MIPS64_R2
- 	select CPU_SUPPORTS_HIGHMEM
- 	select CPU_SUPPORTS_HUGEPAGES
- 	select CPU_SUPPORTS_MSA
--	select HAVE_KVM
- 	help
- 	  Choose this option to build a kernel for release 2 or later of the
- 	  MIPS64 architecture.  Many modern embedded systems with a 64-bit
-@@ -1463,7 +1458,6 @@ config CPU_MIPS64_R5
- 	select CPU_SUPPORTS_MSA
- 	select MIPS_O32_FP64_SUPPORT if 32BIT || MIPS32_O32
- 	select CPU_SUPPORTS_VZ
--	select HAVE_KVM
- 	help
- 	  Choose this option to build a kernel for release 5 or later of the
- 	  MIPS64 architecture.  This is a intermediate MIPS architecture
-@@ -1482,7 +1476,6 @@ config CPU_MIPS64_R6
- 	select CPU_SUPPORTS_MSA
- 	select MIPS_O32_FP64_SUPPORT if 32BIT || MIPS32_O32
- 	select CPU_SUPPORTS_VZ
--	select HAVE_KVM
- 	help
- 	  Choose this option to build a kernel for release 6 or later of the
- 	  MIPS64 architecture.  New MIPS processors, starting with the Warrior
-@@ -1500,7 +1493,6 @@ config CPU_P5600
- 	select CPU_SUPPORTS_VZ
- 	select CPU_MIPSR2_IRQ_VI
- 	select CPU_MIPSR2_IRQ_EI
--	select HAVE_KVM
- 	select MIPS_O32_FP64_SUPPORT
- 	help
- 	  Choose this option to build a kernel for MIPS Warrior P5600 CPU.
-@@ -1621,7 +1613,6 @@ config CPU_CAVIUM_OCTEON
- 	select USB_OHCI_BIG_ENDIAN_MMIO if CPU_BIG_ENDIAN
- 	select MIPS_L1_CACHE_SHIFT_7
- 	select CPU_SUPPORTS_VZ
--	select HAVE_KVM
- 	help
- 	  The Cavium Octeon processor is a highly integrated chip containing
- 	  many ethernet hardware widgets for networking tasks. The processor
-diff --git a/arch/s390/Kconfig b/arch/s390/Kconfig
-index 3bec98d20283..b369ee2648c2 100644
---- a/arch/s390/Kconfig
-+++ b/arch/s390/Kconfig
-@@ -194,7 +194,6 @@ config S390
- 	select HAVE_KPROBES
- 	select HAVE_KPROBES_ON_FTRACE
- 	select HAVE_KRETPROBES
--	select HAVE_KVM
- 	select HAVE_LIVEPATCH
- 	select HAVE_MEMBLOCK_PHYS_MAP
- 	select HAVE_MOD_ARCH_SPECIFIC
-diff --git a/arch/s390/kvm/Kconfig b/arch/s390/kvm/Kconfig
-index f89bedbe63bd..7f17c5185dc3 100644
---- a/arch/s390/kvm/Kconfig
-+++ b/arch/s390/kvm/Kconfig
-@@ -19,7 +19,6 @@ if VIRTUALIZATION
- config KVM
- 	def_tristate y
- 	prompt "Kernel-based Virtual Machine (KVM) support"
--	depends on HAVE_KVM
- 	select PREEMPT_NOTIFIERS
- 	select HAVE_KVM_CPU_RELAX_INTERCEPT
- 	select HAVE_KVM_VCPU_ASYNC_IOCTL
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 3762f41bb092..a3935a737c14 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -240,7 +240,6 @@ config X86
- 	select HAVE_FUNCTION_ERROR_INJECTION
- 	select HAVE_KRETPROBES
- 	select HAVE_RETHOOK
--	select HAVE_KVM
- 	select HAVE_LIVEPATCH			if X86_64
- 	select HAVE_MIXED_BREAKPOINTS_REGS
- 	select HAVE_MOD_ARCH_SPECIFIC
-diff --git a/arch/x86/kvm/Kconfig b/arch/x86/kvm/Kconfig
-index c8e62a371d24..419a72ed307a 100644
---- a/arch/x86/kvm/Kconfig
-+++ b/arch/x86/kvm/Kconfig
-@@ -7,7 +7,6 @@ source "virt/kvm/Kconfig"
- 
- menuconfig VIRTUALIZATION
- 	bool "Virtualization"
--	depends on HAVE_KVM || X86
- 	default y
- 	help
- 	  Say Y here to get to see options for using your Linux host to run other
-@@ -20,7 +19,6 @@ if VIRTUALIZATION
- 
- config KVM
- 	tristate "Kernel-based Virtual Machine (KVM) support"
--	depends on HAVE_KVM
- 	depends on HIGH_RES_TIMERS
- 	depends on X86_LOCAL_APIC
- 	select PREEMPT_NOTIFIERS
-diff --git a/virt/kvm/Kconfig b/virt/kvm/Kconfig
-index cce5c03ecc92..4ecb6daf3f91 100644
---- a/virt/kvm/Kconfig
-+++ b/virt/kvm/Kconfig
-@@ -1,9 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0
- # KVM common configuration items and defaults
- 
--config HAVE_KVM
--       bool
--
- config KVM_COMMON
-        bool
-        select EVENTFD
--- 
-2.39.1
+> +	rx_done = octep_vf_oq_process_rx(ioq_vector->oq, budget);
 
+You should not call Rx processing if budget is 0 at all, please see
+NAPI docs. Looks like the function may try to refill Rx buffers with
+budget of 0.
+
+> +	/* need more polling if tx completion processing is still pending or
+> +	 * processed at least 'budget' number of rx packets.
+> +	 */
+> +	if (tx_pending || rx_done >= budget)
+> +		return budget;
+> +
+> +	napi_complete(napi);
+
+please use napi_complete_done().
+
+> +	octep_vf_enable_ioq_irq(ioq_vector->iq, ioq_vector->oq);
+> +	return rx_done;
+> +}
+
+>  /**
+>   * octep_vf_start_xmit() - Enqueue packet to Octoen hardware Tx Queue.
+>   *
+> @@ -184,6 +591,143 @@ static int octep_vf_stop(struct net_device *netdev)
+>  static netdev_tx_t octep_vf_start_xmit(struct sk_buff *skb,
+>  				       struct net_device *netdev)
+>  {
+> [...]
+> +dma_map_sg_err:
+> +	if (si > 0) {
+> +		dma_unmap_single(iq->dev, sglist[0].dma_ptr[0],
+> +				 sglist[0].len[0], DMA_TO_DEVICE);
+> +		sglist[0].len[0] = 0;
+> +	}
+> +	while (si > 1) {
+> +		dma_unmap_page(iq->dev, sglist[si >> 2].dma_ptr[si & 3],
+> +			       sglist[si >> 2].len[si & 3], DMA_TO_DEVICE);
+> +		sglist[si >> 2].len[si & 3] = 0;
+> +		si--;
+> +	}
+> +	tx_buffer->gather = 0;
+> +dma_map_err:
+
+if previous tx had xmit_more() you need to ring the doorbell here
+
+> +	dev_kfree_skb_any(skb);
+>  	return NETDEV_TX_OK;
+>  }
+
+> @@ -114,8 +158,8 @@ static int octep_vf_setup_oq(struct octep_vf_device *oct, int q_no)
+>  		goto desc_dma_alloc_err;
+>  	}
+>  
+> -	oq->buff_info = (struct octep_vf_rx_buffer *)
+> -			vzalloc(oq->max_count * OCTEP_VF_OQ_RECVBUF_SIZE);
+> +	oq->buff_info = vzalloc(oq->max_count * OCTEP_VF_OQ_RECVBUF_SIZE);
+> +
+
+bad fixup squash?
+
+>  	if (unlikely(!oq->buff_info)) {
+>  		dev_err(&oct->pdev->dev,
+>  			"Failed to allocate buffer info for OQ-%d\n", q_no);
+
+
+> +		/* Swap the length field that is in Big-Endian to CPU */
+> +		buff_info->len = be64_to_cpu(resp_hw->length);
+> +		if (oct->fw_info.rx_ol_flags) {
+> +			/* Extended response header is immediately after
+> +			 * response header (resp_hw)
+> +			 */
+> +			resp_hw_ext = (struct octep_vf_oq_resp_hw_ext *)
+> +				      (resp_hw + 1);
+> +			buff_info->len -= OCTEP_VF_OQ_RESP_HW_EXT_SIZE;
+> +			/* Packet Data is immediately after
+> +			 * extended response header.
+> +			 */
+> +			data_offset = OCTEP_VF_OQ_RESP_HW_SIZE +
+> +				      OCTEP_VF_OQ_RESP_HW_EXT_SIZE;
+> +			rx_ol_flags = resp_hw_ext->rx_ol_flags;
+> +		} else {
+> +			/* Data is immediately after
+> +			 * Hardware Rx response header.
+> +			 */
+> +			data_offset = OCTEP_VF_OQ_RESP_HW_SIZE;
+> +			rx_ol_flags = 0;
+> +		}
+> +		rx_bytes += buff_info->len;
+> +
+> +		if (buff_info->len <= oq->max_single_buffer_size) {
+> +			skb = build_skb((void *)resp_hw, PAGE_SIZE);
+
+napi_build_skb() ?
+
+> +			skb_reserve(skb, data_offset);
+> +			skb_put(skb, buff_info->len);
+> +			read_idx++;
+> +			desc_used++;
+> +			if (read_idx == oq->max_count)
+> +				read_idx = 0;
+> +		} else {
+> +			struct skb_shared_info *shinfo;
+> +			u16 data_len;
+> +
+> +			skb = build_skb((void *)resp_hw, PAGE_SIZE);
+
+ditto
+
+> +			skb_reserve(skb, data_offset);
+> +			/* Head fragment includes response header(s);
+> +			 * subsequent fragments contains only data.
+> +			 */
+> +			skb_put(skb, oq->max_single_buffer_size);
+> +			read_idx++;
+> +			desc_used++;
+> +			if (read_idx == oq->max_count)
+> +				read_idx = 0;
+> +
+> +			shinfo = skb_shinfo(skb);
+> +			data_len = buff_info->len - oq->max_single_buffer_size;
+> +			while (data_len) {
+> +				dma_unmap_page(oq->dev, oq->desc_ring[read_idx].buffer_ptr,
+> +					       PAGE_SIZE, DMA_FROM_DEVICE);
+> +				buff_info = (struct octep_vf_rx_buffer *)
+> +					    &oq->buff_info[read_idx];
+> +				if (data_len < oq->buffer_size) {
+> +					buff_info->len = data_len;
+> +					data_len = 0;
+> +				} else {
+> +					buff_info->len = oq->buffer_size;
+> +					data_len -= oq->buffer_size;
+> +				}
+> +
+> +				skb_add_rx_frag(skb, shinfo->nr_frags,
+> +						buff_info->page, 0,
+> +						buff_info->len,
+> +						buff_info->len);
+> +				buff_info->page = NULL;
+> +				read_idx++;
+> +				desc_used++;
+> +				if (read_idx == oq->max_count)
+> +					read_idx = 0;
+> +			}
+> +		}
+> +
+> +		skb->dev = oq->netdev;
+> +		skb->protocol =  eth_type_trans(skb, skb->dev);
+
+double space
+
+> +		if (feat & NETIF_F_RXCSUM &&
+> +		    OCTEP_VF_RX_CSUM_VERIFIED(rx_ol_flags))
+> +			skb->ip_summed = CHECKSUM_UNNECESSARY;
+> +		else
+> +			skb->ip_summed = CHECKSUM_NONE;
+> +		napi_gro_receive(oq->napi, skb);
+> +	}
+> +
+> +	oq->host_read_idx = read_idx;
+> +	oq->refill_count += desc_used;
+> +	oq->stats.packets += pkt;
+> +	oq->stats.bytes += rx_bytes;
+> +
+> +	return pkt;
+> +}
+
+> +/**
+> + * octep_vf_iq_process_completions() - Process Tx queue completions.
+> + *
+> + * @iq: Octeon Tx queue data structure.
+> + * @budget: max number of completions to be processed in one invocation.
+> + */
+> +int octep_vf_iq_process_completions(struct octep_vf_iq *iq, u16 budget)
+> +{
+> [...]
+> +	netdev_tx_completed_queue(iq->netdev_q, compl_pkts, compl_bytes);
+> +
+> +	if (unlikely(__netif_subqueue_stopped(iq->netdev, iq->q_no)) &&
+> +	    (IQ_INSTR_SPACE(iq) >
+> +	     OCTEP_VF_WAKE_QUEUE_THRESHOLD))
+> +		netif_wake_subqueue(iq->netdev, iq->q_no);
+
+Please use helpers form net/netdev_queues.h
+
+> @@ -195,8 +267,7 @@ static void octep_vf_free_iq(struct octep_vf_iq *iq)
+>  
+>  	desc_ring_size = OCTEP_VF_IQ_DESC_SIZE * CFG_GET_IQ_NUM_DESC(oct->conf);
+>  
+> -	if (iq->buff_info)
+> -		vfree(iq->buff_info);
+> +	vfree(iq->buff_info);
+
+This should be in a previous patch.
 
