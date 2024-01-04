@@ -1,191 +1,221 @@
-Return-Path: <linux-kernel+bounces-16463-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16464-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B81A8823EE3
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 10:47:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C763823EE4
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 10:47:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2B8D31F25156
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 09:47:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E00B12866FB
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 09:47:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19902208D0;
-	Thu,  4 Jan 2024 09:47:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA8E7208C5;
+	Thu,  4 Jan 2024 09:47:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="zB3BJRwh";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="GHrZS6J3";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="zB3BJRwh";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="GHrZS6J3"
+	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="etnyfX8x"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAA6220B00;
-	Thu,  4 Jan 2024 09:47:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 1E54E21F0F;
-	Thu,  4 Jan 2024 09:47:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1704361628; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type;
-	bh=EMpOkek3UzbzqloIm6JwYe5MMwJcc3+DVcMOLpoJnf0=;
-	b=zB3BJRwh+uPkFPa53G4XEAMAcg7SpZOAlaiigRFvKe5aIXx3DFYfIod9gwZ60HBBDSw/7+
-	L5hyL0RuADAqcJEEMHxqfBSZN7Yqg6VcN+4n3Za2j7EEdiZcJHs89xGkOQ533vL3ItMqgz
-	KB/MAy6O+pXv0uNQ/AHG9rChyz8mjZU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1704361628;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type;
-	bh=EMpOkek3UzbzqloIm6JwYe5MMwJcc3+DVcMOLpoJnf0=;
-	b=GHrZS6J37nBA04Vh8IB9jSLWziWwp6+YwkUhLnxrmYRxFYVV/YbNOZgqHmIq4LPhHCQFaR
-	K4s8aqXPzcgopzBw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1704361628; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type;
-	bh=EMpOkek3UzbzqloIm6JwYe5MMwJcc3+DVcMOLpoJnf0=;
-	b=zB3BJRwh+uPkFPa53G4XEAMAcg7SpZOAlaiigRFvKe5aIXx3DFYfIod9gwZ60HBBDSw/7+
-	L5hyL0RuADAqcJEEMHxqfBSZN7Yqg6VcN+4n3Za2j7EEdiZcJHs89xGkOQ533vL3ItMqgz
-	KB/MAy6O+pXv0uNQ/AHG9rChyz8mjZU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1704361628;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type;
-	bh=EMpOkek3UzbzqloIm6JwYe5MMwJcc3+DVcMOLpoJnf0=;
-	b=GHrZS6J37nBA04Vh8IB9jSLWziWwp6+YwkUhLnxrmYRxFYVV/YbNOZgqHmIq4LPhHCQFaR
-	K4s8aqXPzcgopzBw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D541E137E8;
-	Thu,  4 Jan 2024 09:47:07 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id dfR+Mpt+lmWuZQAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Thu, 04 Jan 2024 09:47:07 +0000
-Date: Thu, 04 Jan 2024 10:47:07 +0100
-Message-ID: <8734vda0ro.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
- Linux Sound Mailing List <linux-sound@vger.kernel.org>, Linux Kernel
- Mailing List <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] sound fixes for 6.7-final
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 524A820B06
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 09:47:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
+Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-50e7abe4be4so382961e87.2
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 01:47:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ventanamicro.com; s=google; t=1704361656; x=1704966456; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=tjIOzASFKXtnzifSOlgR7uNlr9WKjwKVoy2m9WsQklE=;
+        b=etnyfX8x7PnfmQK9s15o6DjiIedecs7X1ib0odYUMizoHhl9D7GXka3VfufaBx8Kd0
+         gNZHjoeqNhbOSJPNeuOMP6TJYE0MZ17UsVpt4gQbApt1K2gXZMTZSou/9DQcYEm5X0Ae
+         mtFlCl4Xih36VVB10MYYWuXA7Z9lo0SkMOsJ89GmqW3kzkl5KJWUW4XUf/4YbQNhfXMA
+         LiiiHbXvcDIwNcoycf2ValLslh/GK+Ki+Daqsuldn8PMXkwHHBx7jSlcsxt92ZcCpDmX
+         kLSzD9ET6eCsuec8/3IbxFhnAKBQrh28lnjNf00zv4ezY+W/Pl2Yb/xdkSIKJiMDQQ8z
+         pHaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704361656; x=1704966456;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tjIOzASFKXtnzifSOlgR7uNlr9WKjwKVoy2m9WsQklE=;
+        b=gltV/IvsXKv9AzDHP2O+SZuLPjtij/mqYGCXgdE/Vmiv7hzn8SL/fMeExn4reDPEZR
+         RJ6ho9L24dwbBmOOS1oBxl4w2o/hrGdWNNU/uzSHPNTb7JxIbQKcEPC8bst0cIwGzdxU
+         pWzZHGPIot6pk//r/bJUIk9kHnKrWX1J7GcI/efzQiwu9WjAESsGHU+8BTJ9OQdHhIfg
+         iFTVzvWs6vxnLK2tNzgj0qCNSHr/VQX4Cc5GMkjdog0ZPHDQS8fkilX+XKYvT488u0JJ
+         BVw7devIwIj6NF8F671Z82J7BkpEdWNDn7Y+xPRm7xAW6eC7VdMT1TmcvgNc/gXr32dK
+         Bg1A==
+X-Gm-Message-State: AOJu0Yzk42qY5CULfEzXOp7pcdCFKeLOOZ1x/uzjRNp9sYDIIE65Odv1
+	9R6F8/6Kw8z7pCnoeA5voGW/3oDcxhMlKg==
+X-Google-Smtp-Source: AGHT+IHokDrCyFOkfMV2ZJkoKUpPp5Z2frj1npon3QRHNkknpBQw7ofTk3TqPl1odKml1sS1MObQxw==
+X-Received: by 2002:a05:6512:2141:b0:50e:6a07:5c02 with SMTP id s1-20020a056512214100b0050e6a075c02mr201705lfr.15.1704361656189;
+        Thu, 04 Jan 2024 01:47:36 -0800 (PST)
+Received: from localhost (2001-1ae9-1c2-4c00-20f-c6b4-1e57-7965.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:20f:c6b4:1e57:7965])
+        by smtp.gmail.com with ESMTPSA id p9-20020a170907910900b00a26ac5e3683sm12848872ejq.100.2024.01.04.01.47.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Jan 2024 01:47:35 -0800 (PST)
+Date: Thu, 4 Jan 2024 10:47:34 +0100
+From: Andrew Jones <ajones@ventanamicro.com>
+To: Leonardo Bras <leobras@redhat.com>
+Cc: guoren@kernel.org, paul.walmsley@sifive.com, palmer@dabbelt.com, 
+	panqinglin2020@iscas.ac.cn, bjorn@rivosinc.com, conor.dooley@microchip.com, 
+	peterz@infradead.org, keescook@chromium.org, wuwei2016@iscas.ac.cn, 
+	xiaoguang.xing@sophgo.com, chao.wei@sophgo.com, unicorn_wang@outlook.com, uwu@icenowy.me, 
+	jszhang@kernel.org, wefu@redhat.com, atishp@atishpatra.org, 
+	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, Guo Ren <guoren@linux.alibaba.com>
+Subject: Re: Re: Re: [PATCH V2 1/3] riscv: Add Zicbop instruction definitions
+ & cpufeature
+Message-ID: <20240104-4ecfb92d2f8c95fa773ca695@orel>
+References: <20231231082955.16516-1-guoren@kernel.org>
+ <20231231082955.16516-2-guoren@kernel.org>
+ <ZZWs0C19tz763FnH@LeoBras>
+ <20240103-0c96ceea88523b7b946e4ba8@orel>
+ <ZZXEpU-JzsvD2UDW@LeoBras>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spam-Level: *
-X-Spam-Score: 1.20
-X-Spamd-Result: default: False [1.20 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCPT_COUNT_FIVE(0.00)[5];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 TO_DN_ALL(0.00)[];
-	 NEURAL_SPAM_LONG(3.50)[1.000];
-	 MID_CONTAINS_FROM(1.00)[];
-	 NEURAL_HAM_SHORT(-0.20)[-0.999];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 FREEMAIL_CC(0.00)[kernel.org,gmail.com,vger.kernel.org];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-X-Spam-Flag: NO
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZZXEpU-JzsvD2UDW@LeoBras>
 
-Linus,
+On Wed, Jan 03, 2024 at 05:33:41PM -0300, Leonardo Bras wrote:
+> On Wed, Jan 03, 2024 at 08:29:39PM +0100, Andrew Jones wrote:
+> > On Wed, Jan 03, 2024 at 03:52:00PM -0300, Leonardo Bras wrote:
+> > > On Sun, Dec 31, 2023 at 03:29:51AM -0500, guoren@kernel.org wrote:
+...
+> > > The shifts seem correct for S-Type, but I would name the IMM defines in a 
+> > > way we could understand where they fit in IMM:
+> > > 
+> > > 
+> > > INSN_S_SIMM5_SHIFT -> INSN_S_SIMM_0_4_SHIFT
+> > > INSN_S_SIMM7_SHIFT -> INSN_S_SIMM_5_11_SHIFT
+> > > 
+> > > What do you think?
+> > 
+> > I'm in favor of this suggestion, but then wonder if we don't need another
+> > patch before this which renames INSN_I_SIMM12_SHIFT to
+> > INSN_I_SIMM_0_11_SHIFT in order to keep things consistent.
+> 
+> Agree. If it's ok, I can provide a patch doing the rename on top of this 
+> patchset.
 
-please pull sound fixes for v6.7-final from:
+The INSN_I change is only needed if we also take the new INSN_S shift
+macros, so I think the INSN_I change should be part of this series.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git tags/sound-6.7-final
+BTW, I just noticed we wrote the numbers backwards. They should be
 
-The topmost commit is b6ce6e6c79e4ec650887f1fe391a70e54972001a
+ INSN_I_SIMM_11_0_SHIFT
+ INSN_S_SIMM_11_5_SHIFT
+ INSN_S_SIMM_4_0_SHIFT
 
-----------------------------------------------------------------
+> > > >  
+> > > > +#define CBO_PREFETCH_I(base, offset)				\
+> > > > +	INSN_S(OPCODE_OP_IMM, FUNC3(6), __RS2(0),		\
+> > > > +	       SIMM12(offset), RS1(base))
+> > > > +
+> > > > +#define CBO_PREFETCH_R(base, offset)				\
+> > > > +	INSN_S(OPCODE_OP_IMM, FUNC3(6), __RS2(1),		\
+> > > > +	       SIMM12(offset), RS1(base))
+> > > > +
+> > > > +#define CBO_PREFETCH_W(base, offset)				\
+> > > > +	INSN_S(OPCODE_OP_IMM, FUNC3(6), __RS2(3),		\
+> > > > +	       SIMM12(offset), RS1(base))
+> > > > +
+> > > 
+> > > For OP_IMM & FUNC3(6) we have ORI, right?
+> > > For ORI, rd will be at bytes 11:7, which in PREFETCH.{i,r,w} is
+> > > offset[4:0].
+> > > 
+> > > IIUC, when the cpu does not support ZICBOP, this should be fine as long as 
+> > > rd = 0, since changes to r0 are disregarded.
+> > > 
+> > > In this case, we need to guarantee offset[4:0] = 0, or else we migth write 
+> > > on an unrelated register. This can be noticed in ZICBOP documentation pages 
+> > > 21, 22, 23, as offset[4:0] is always [0 0 0 0 0]. 
+> > > (Google docs in first comment)
+> > > 
+> > > What we need here is something like:
+> > > + enum {
+> > > + 	PREFETCH_I,
+> > > + 	PREFETCH_R,
+> > > + 	PREFETCH_W,
+> > > + }	 
+> > 
+> > Can't use enum. This header may be included in assembly.
+> 
+> Oh, I suggest defines then, since it's better to make it clear instead of 
+> using 0, 1, 3.
 
-sound fixes for 6.7-final
+I don't think we gain anything by adding another define in order to create
+the instruction define. We have to review the number sooner or later. I'd
+prefer we use the number inside the instruction define so we only need
+to look one place, which is also consistent with how we use FUNC fields.
 
-It became more than wished, partly because of vacations.
-But all changes are fairly device-specific and should be safe to
-apply.
+> 
+> > 
+> > > +
+> > > + #define CBO_PREFETCH(type, base, offset)                      \
+> > > +     INSN_S(OPCODE_OP_IMM, FUNC3(6), __RS2(type),              \
+> > > +            SIMM12(offset & ~0x1f), RS1(base))
+> > 
+> > Yes. I suggested we mask offset as well, but ideally we'd detect a caller
+> > using an offset with nonzero lower 5 bits at compile time.
+> 
+> I would suggest the compiler would take care of this, but I am not sure 
+> about the assembly, since I am not sure if it gets any optimization.
+> 
+> I don't think we can detect a caller with non-zero offset at compile time, 
+> since it will be used in locks which can be at (potentially) any place in 
+> the block size. (if you have any idea though, please let me know :) )
+> 
+> On the other hand, we could create a S-Type macro which deliberately 
+> ignores imm[4:0], like  
+> 
+> + INSN_S_TRUNCATE(OPCODE_OP_IMM, FUNC3(6), __RS2(3),               \
+> +                 SIMM12(offset), RS1(base))
+> 
+> Which saves the bits 11:5 of offset  into imm[11:5], and zero-fill 
+> imm[4:0], like
+> 
+> +#define DEFINE_INSN_S                                                    \
+> + __DEFINE_ASM_GPR_NUMS                                           \
+> +"        .macro insn_s, opcode, func3, rs2, simm12, rs1\n"               \
+> +"        .4byte  ((\\opcode << " __stringify(INSN_S_OPCODE_SHIFT) ") |"  \
+> +"                 (\\func3 << " __stringify(INSN_S_FUNC3_SHIFT) ") |"    \
+> +"                 (.L__gpr_num_\\rs2 << " __stringify(INSN_S_RS2_SHIFT) ") |" \
+> +"                 (.L__gpr_num_\\rs1 << " __stringify(INSN_S_RS1_SHIFT) ") |" \
+> +"                 (((\\simm12 >> 5) & 0x7f) << " __stringify(INSN_S_SIMM7_SHIFT) "))\n" \
+> +"        .endm\n"
+> +
+> 
+> Does this make sense?
 
-- A regression fix for Oops at ASoC HD-audio probe
-- A series of TAS2781 HD-audio codec fixes
-- A random build regression fix with SPI helpers
-- Minor endianness fix for USB-audio mixer code
-- ASoC FSL driver error handling fix
-- ASoC Mediatek driver register fix
-- A series of ASoC meson g12a driver fixes
-- A few usual HD-audio oneliner quirks
+If we create a special version of INSN_S, then I suggest we create one
+where its two SIMM fields are independent and then define prefetch
+instructions like this
 
-----------------------------------------------------------------
+ #define PREFETCH_W(base, offset) \
+     INSN_S_SPLIT_IMM(OPCODE_OP_IMM, FUNC3(6), __RS2(3), \
+         SIMM_11_5(offset >> 5), SIMM_4_0(0), RS1(base))
 
-Aabish Malik (1):
-      ALSA: hda/realtek: enable SND_PCI_QUIRK for hp pavilion 14-ec1xxx series
+which would allow simple review against the spec and potentially
+support other instructions which use hard coded values in the
+immediate fields.
 
-Andy Chi (1):
-      ALSA: hda/realtek: fix mute/micmute LEDs for a HP ZBook
+But I'm not sure it's worth it. I think
 
-Arnd Bergmann (1):
-      ALSA: hda: cs35l41: fix building without CONFIG_SPI
+ #define PREFETCH_W(base, offset) \
+     INSN_S(OPCODE_OP_IMM, FUNC3(6), __RS2(3), \
+         SIMM12(offset & ~0x1f), RS1(base))
 
-Chancel Liu (1):
-      ASoC: fsl_rpmsg: Fix error handler with pm_runtime_enable
+is also pretty easy to review against the spec and we don't have any other
+instructions yet with other requirements for the immediates.
 
-Eugen Hristev (1):
-      ASoC: mediatek: mt8186: fix AUD_PAD_TOP register and offset
-
-Geoffrey D. Bennett (1):
-      ALSA: scarlett2: Convert meter levels from little-endian
-
-Gergo Koteles (4):
-      ALSA: hda/tas2781: do not use regcache
-      ALSA: hda/tas2781: fix typos in comment
-      ALSA: hda/tas2781: move set_drv_data outside tasdevice_init
-      ALSA: hda/tas2781: remove sound controls in unbind
-
-Mark Brown (4):
-      ASoC: meson: g12a-toacodec: Validate written enum values
-      ASoC: meson: g12a-tohdmitx: Validate written enum values
-      ASoC: meson: g12a-toacodec: Fix event generation
-      ASoC: meson: g12a-tohdmitx: Fix event generation for S/PDIF mux
-
-Peter Ujfalusi (1):
-      ASoC: SOF: Intel: hda-codec: Delay the codec device registration
-
-Siddhesh Dharme (1):
-      ALSA: hda/realtek: Fix mute and mic-mute LEDs for HP ProBook 440 G6
-
----
- sound/pci/hda/cs35l41_hda_property.c        |   4 +-
- sound/pci/hda/patch_realtek.c               |   3 +
- sound/pci/hda/tas2781_hda_i2c.c             | 244 +++++++++++++++-------------
- sound/soc/codecs/tas2781-comlib.c           |   4 +-
- sound/soc/codecs/tas2781-i2c.c              |   2 +
- sound/soc/fsl/fsl_rpmsg.c                   |  10 +-
- sound/soc/mediatek/mt8186/mt8186-dai-adda.c |   2 +-
- sound/soc/meson/g12a-toacodec.c             |   5 +-
- sound/soc/meson/g12a-tohdmitx.c             |   8 +-
- sound/soc/sof/intel/hda-codec.c             |  18 +-
- sound/usb/mixer_scarlett2.c                 |   4 +-
- 11 files changed, 172 insertions(+), 132 deletions(-)
-
+Thanks,
+drew
 
