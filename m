@@ -1,119 +1,110 @@
-Return-Path: <linux-kernel+bounces-17030-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17031-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E80C2824757
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 18:24:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B0D2824759
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 18:24:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DDADE1C242E2
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 17:24:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 12F30285EF6
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 17:24:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C8CD28E17;
-	Thu,  4 Jan 2024 17:18:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCE6D2C18C;
+	Thu,  4 Jan 2024 17:18:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Ja8Ppc1S"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ozARAWKf"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 408CA28DD7
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 17:18:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-28ca63fd071so417898a91.3
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 09:18:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1704388699; x=1704993499; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=IRi6ZcW7R00/a07ptTf12NVKem9z9qCQn2dzbpt/bz4=;
-        b=Ja8Ppc1S3aCr5sZA7GHoefZu/RsLtfnC18IxPw5wQ3FqHr89fK/MD+GzqTfKPLxg/M
-         Y+WfAiu5aaM+a054sst2kzGhGBMCV04d7JjLMl/ncf/e0rwGyc+KgE9PlG8JT16xqklo
-         8jO9P+Qkv52dRMNg/9HEP1oWRGfGIlQ/UOf7kJQngYyM7rOIYL7OpCSJsxeoB6HVgpf0
-         9M0OXWqGESgeBXzMG9JJuQaMUrUusgiBZjAT7s9Br07dm2i/XFolwG4fgl/8jCLIeHGJ
-         bMWlWzxoSpUgKwCqMBJ7ituPqGmTI5D8QgvjnIEV6L6qMOQk2AxpObXOsFJD3Z6GCllj
-         vO1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704388699; x=1704993499;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=IRi6ZcW7R00/a07ptTf12NVKem9z9qCQn2dzbpt/bz4=;
-        b=W0P00+pfy11r/EsszZSS2CLi0HRBp0XylzS6Dlc6BltepEiVfZbJtKNb00kkDVxEEn
-         W6zKrZKYxByJPJqpYEU9T1WFyqkNliokgjWmwpYYKrlymaesx71/zy1hY6glixA0W6YO
-         +i8edPvh0193HR4Td7N0yeS/AOwqM7LR8ATgoEA7VgzkqSuIcPqIa6ZYy2GBfItvvHqI
-         c4AZQLPGxyn+fftTcbT6LWt+3nIXKgDlzfCobaNtmXfZeOTJHcQd6gVum3MPgPropZE/
-         NHXKR5ArzqWN2RR7rqVgETtLfXJXu+fFo3OuCshebiKPpyS7EfF7CtjWtqXMFCsdHTkc
-         6WCQ==
-X-Gm-Message-State: AOJu0Yw3b4B2WLtMnAztedGkhFfL7ymVJe0B1EnyVesB4bqQdjI458kz
-	OgiDanIzHN8YDipF9zqEzUSVde+q+BHiyRaWMnH88an2D6yl96E=
-X-Google-Smtp-Source: AGHT+IFH8yB0eV1v8+1OUMuYvujN1R2j3/TK3hMBlDxjSoz4L3WWBZbfjt7mLRv4fOgfk1LfJV4VlQ==
-X-Received: by 2002:a17:90a:bcf:b0:28b:cbfb:63af with SMTP id x15-20020a17090a0bcf00b0028bcbfb63afmr787402pjd.86.1704388699280;
-        Thu, 04 Jan 2024 09:18:19 -0800 (PST)
-Received: from google.com (77.62.105.34.bc.googleusercontent.com. [34.105.62.77])
-        by smtp.gmail.com with ESMTPSA id nh5-20020a17090b364500b0028bdc7e5a15sm4011773pjb.53.2024.01.04.09.18.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Jan 2024 09:18:18 -0800 (PST)
-Date: Thu, 4 Jan 2024 17:18:14 +0000
-From: Carlos Llamas <cmllamas@google.com>
-To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc: Tanzir Hasan <tanzirh@google.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
-	Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Christian Brauner <brauner@kernel.org>,
-	Suren Baghdasaryan <surenb@google.com>,
-	linux-kernel@vger.kernel.org, Nick Desaulniers <nnn@google.com>,
-	Al Viro <viro@zeniv.linux.org.uk>
-Subject: Re: [PATCH] android: removed asm-generic/errno-base.h
-Message-ID: <ZZboVgcBljOgrJAI@google.com>
-References: <20231226-binderfs-v1-1-66829e92b523@google.com>
- <eacd168f-22dd-4e11-8907-0c79ee33f595@wanadoo.fr>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31E8828E30;
+	Thu,  4 Jan 2024 17:18:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 434EFC433C7;
+	Thu,  4 Jan 2024 17:18:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704388703;
+	bh=4BDLtWSfYGZgp3W2cYGuKr7Sby6Scya/xnEGeEw71bw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ozARAWKfOoTssT2qAByVR5pY7jB4Pp03cp1083vFpdHUP35jsbwxqDl3iMoG3KCZb
+	 LMCQKOLqm5+KgucXw/zwgDVs0VGEgDcqjZqyL8XO78G9PbeUFGkrDhcTPu5LkGgkQl
+	 efQ9E9kziOE/XPVH4aJvMosk/kPflkT59rOMsPwUgOuy5S3mjX5EVnpSMankwqAJ5p
+	 HOVQXl1ew0mB8BMuPkiZjM2WcVVdyABubVwgeaVJp3rLwi3DVDAsw0Z+miz1gHs6jW
+	 DqgGFZNJNtHXPf2rFzV3wtmx6brI/uK3J9AmFh6sRPYrdNcAFe/ur3SmZ2fswTsmSm
+	 LImliq38trvHA==
+Date: Thu, 4 Jan 2024 09:18:21 -0800
+From: Eric Biggers <ebiggers@kernel.org>
+To: Jerry Shih <jerry.shih@sifive.com>
+Cc: linux-crypto@vger.kernel.org, linux-riscv@lists.infradead.org,
+	linux-kernel@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
+	Heiko Stuebner <heiko@sntech.de>,
+	Phoebe Chen <phoebe.chen@sifive.com>, hongrong.hsu@sifive.com,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>, Andy Chiu <andy.chiu@sifive.com>
+Subject: Re: [RFC PATCH 07/13] crypto: riscv - add vector crypto accelerated
+ AES-{ECB,CBC,CTR,XTS}
+Message-ID: <20240104171821.GA1127@sol.localdomain>
+References: <20240102064743.220490-1-ebiggers@kernel.org>
+ <20240102064743.220490-8-ebiggers@kernel.org>
+ <20240103145043.GB773@quark.localdomain>
+ <905D43CF-B01A-49DE-9046-51A370B6F680@sifive.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <eacd168f-22dd-4e11-8907-0c79ee33f595@wanadoo.fr>
+In-Reply-To: <905D43CF-B01A-49DE-9046-51A370B6F680@sifive.com>
 
-On Thu, Jan 04, 2024 at 04:36:00PM +0100, Christophe JAILLET wrote:
-> Le 26/12/2023 à 18:09, Tanzir Hasan a écrit :
-> > asm-generic/errno-base.h can be replaced by linux/errno.h and the file
-> > will still build correctly. It is an asm-generic file which should be
-> > avoided if possible.
+On Thu, Jan 04, 2024 at 04:47:16PM +0800, Jerry Shih wrote:
+> On Jan 3, 2024, at 22:50, Eric Biggers <ebiggers@kernel.org> wrote:
+> > On Tue, Jan 02, 2024 at 12:47:33AM -0600, Eric Biggers wrote:
+> >> diff --git a/arch/riscv/crypto/Makefile b/arch/riscv/crypto/Makefile
+> >> index dca698c5cba3e..5dd91f34f0d52 100644
+> >> --- a/arch/riscv/crypto/Makefile
+> >> +++ b/arch/riscv/crypto/Makefile
+> >> @@ -1,7 +1,10 @@
+> >> # SPDX-License-Identifier: GPL-2.0-only
+> >> #
+> >> # linux/arch/riscv/crypto/Makefile
+> >> #
+> >> 
+> >> obj-$(CONFIG_CRYPTO_AES_RISCV64) += aes-riscv64.o
+> >> aes-riscv64-y := aes-riscv64-glue.o aes-riscv64-zvkned.o
+> >> +
+> >> +obj-$(CONFIG_CRYPTO_AES_BLOCK_RISCV64) += aes-block-riscv64.o
+> >> +aes-block-riscv64-y := aes-riscv64-block-mode-glue.o aes-riscv64-zvkned-zvbb-zvkg.o aes-riscv64-zvkned-zvkb.o
 > > 
-> > Suggested-by: Al Viro <viro@zeniv.linux.org.uk>
-> > Signed-off-by: Tanzir Hasan <tanzirh@google.com>
-> > ---
-> >   drivers/android/binderfs.c | 2 +-
-> >   1 file changed, 1 insertion(+), 1 deletion(-)
+> > A bug I noticed (which is also present in Jerry's patchset) is that some of the
+> > code of the aes-block-riscv64 module is located in aes-riscv64-zvkned.S, which
+> > isn't built into that module but rather into aes-riscv64.  This causes a build
+> > error when both CONFIG_CRYPTO_AES_RISCV64 and CONFIG_CRYPTO_AES_BLOCK_RISCV64
+> > are set to 'm':
 > > 
-> > diff --git a/drivers/android/binderfs.c b/drivers/android/binderfs.c
-> > index 1224ab7aa070..d04ff6029480 100644
-> > --- a/drivers/android/binderfs.c
-> > +++ b/drivers/android/binderfs.c
-> > @@ -29,7 +29,7 @@
-> >   #include <linux/uaccess.h>
-> >   #include <linux/user_namespace.h>
-> >   #include <linux/xarray.h>
-> > -#include <uapi/asm-generic/errno-base.h>
-> > +#include <linux/errno.h>
+> >    ERROR: modpost: "aes_cbc_decrypt_zvkned" [arch/riscv/crypto/aes-block-riscv64.ko] undefined!
+> >    ERROR: modpost: "aes_ecb_decrypt_zvkned" [arch/riscv/crypto/aes-block-riscv64.ko] undefined!
+> >    ERROR: modpost: "aes_cbc_encrypt_zvkned" [arch/riscv/crypto/aes-block-riscv64.ko] undefined!
+> >    ERROR: modpost: "aes_ecb_encrypt_zvkned" [arch/riscv/crypto/aes-block-riscv64.ko] undefined!
+> > 
+> > To fix this, I think we should just merge the two modules and kconfig options
+> > together so that there is one module that provides both the AES modes and the
+> > AES single-block cipher.  That's how x86's aesni-intel works, for example.
+> > 
+> > - Eric
 > 
-> linux/errno.h is already included a few lines above.
+> That's a bug in my patchset.
+> I don't test with all options with `M` settings since I can't boot to qemu with all `M` settings.
 > 
-> CJ
-> 
+> Could we move the cbc and ecb from `aes-riscv64-zvkned` to `aes-block-riscv64` instead of merging
+> these two modules?
+> Thus, we could still enable the single aes block cipher without other extensions(e.g. zvbb or zvkg).
 
-Good catch! Then we should just drop the errno-base.h include.
+My proposal to merge the two modules still results in the single-block AES
+cipher being registered when zvkned alone is present.  It just won't be
+selectable separately via kconfig.  I think that's fine.
 
---
-Carlos Llamas
+- Eric
 
