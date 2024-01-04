@@ -1,118 +1,110 @@
-Return-Path: <linux-kernel+bounces-17311-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17312-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 46981824B42
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 23:57:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3957B824B47
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 23:58:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BE58CB24149
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 22:57:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5B9F21C224F2
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 22:58:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF7572D02F;
-	Thu,  4 Jan 2024 22:57:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B8232D043;
+	Thu,  4 Jan 2024 22:58:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="IbdD9WfV"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D8292D02B
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 22:57:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-52-8HlQ54MTNZ20SPJ_9fcAIg-1; Thu, 04 Jan 2024 22:57:24 +0000
-X-MC-Unique: 8HlQ54MTNZ20SPJ_9fcAIg-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Thu, 4 Jan
- 2024 22:57:10 +0000
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Thu, 4 Jan 2024 22:57:10 +0000
-From: David Laight <David.Laight@ACULAB.COM>
-To: 'Zack Rusin' <zack.rusin@broadcom.com>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>
-CC: Dmitry Torokhov <dmitry.torokhov@gmail.com>, Arnd Bergmann
-	<arnd@arndb.de>, Robert Jarzmik <robert.jarzmik@free.fr>, Raul Rangel
-	<rrangel@chromium.org>, "linux-input@vger.kernel.org"
-	<linux-input@vger.kernel.org>, "stable@vger.kernel.org"
-	<stable@vger.kernel.org>
-Subject: RE: [PATCH v2] input/vmmouse: Fix device name copies
-Thread-Topic: [PATCH v2] input/vmmouse: Fix device name copies
-Thread-Index: AQHaPsvFRvb2B19ESUahla1XzNFio7DKQqgg
-Date: Thu, 4 Jan 2024 22:57:10 +0000
-Message-ID: <645d8e19494d4a27b2ae775fee56e252@AcuMS.aculab.com>
-References: <20231127204206.3593559-1-zack@kde.org>
- <20240104050605.1773158-1-zack.rusin@broadcom.com>
-In-Reply-To: <20240104050605.1773158-1-zack.rusin@broadcom.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF7252D029;
+	Thu,  4 Jan 2024 22:58:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 404Mhfd0010981;
+	Thu, 4 Jan 2024 22:58:31 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=HptTqmPQ1Pxy0XsGa3EiuulInmHFr8LzcaXL6ybczHA=; b=Ib
+	dD9WfVbkslO5ioVWwkPMHulUDcKTFithYgFTvHl0MZoFQB+LQZe7k9KSv+CGyxTi
+	IPzT5b+OABbfjxr1X8NLj7U1ccBb5GguXmzvW2Wo0MXh0BBXwd/dD4L5O7GQktFZ
+	jQIVHJVIVbboeQcnLFcA/kQ2hlSfQDikSRcp5dRbR/WMtUeWnsFIvUhaS+o3hKte
+	yXwLt/bI13Vph07LivpzKuwH5YUNeb86zvuzHFjzyIEXXGpeilzuiqyIrs8Y9voN
+	u4+yqMoHzmhAQ/nuSe7tW1Zp3qTr44VIy/WISnZvRfZMQARTE6ugON7qj1TAfNIE
+	/R272n7BtKSQ/m6Ksx1A==
+Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ve1sgghj4-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 04 Jan 2024 22:58:31 +0000 (GMT)
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+	by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 404MwUIu027484
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 4 Jan 2024 22:58:30 GMT
+Received: from [10.71.108.105] (10.80.80.8) by nasanex01b.na.qualcomm.com
+ (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 4 Jan
+ 2024 14:58:29 -0800
+Message-ID: <1e9fd6f2-3fdb-4779-b79a-274e51c4cbba@quicinc.com>
+Date: Thu, 4 Jan 2024 14:58:29 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/2] phy: qualcomm: eusb2-repeater: Some fixes after the
+ regmap rework
 Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+To: Abel Vesa <abel.vesa@linaro.org>, Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@kernel.org>
+CC: <linux-arm-msm@vger.kernel.org>, <linux-phy@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20240104-phy-qcom-eusb2-repeater-fixes-v1-0-047b7b6b8333@linaro.org>
+From: Elliot Berman <quic_eberman@quicinc.com>
+In-Reply-To: <20240104-phy-qcom-eusb2-repeater-fixes-v1-0-047b7b6b8333@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: OdiNoiUE90c92Fr3UrgSrfVNDcasfR6y
+X-Proofpoint-ORIG-GUID: OdiNoiUE90c92Fr3UrgSrfVNDcasfR6y
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 clxscore=1011
+ spamscore=0 bulkscore=0 mlxscore=0 mlxlogscore=546 impostorscore=0
+ adultscore=0 phishscore=0 suspectscore=0 lowpriorityscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2401040174
 
-RnJvbTogWmFjayBSdXNpbg0KPiBTZW50OiAwNCBKYW51YXJ5IDIwMjQgMDU6MDYNCj4gDQo+IE1h
-a2Ugc3VyZSB2bW1vdXNlX2RhdGE6OnBoeXMgY2FuIGhvbGQgc2VyaW86OnBoeXMgKHdoaWNoIGlz
-IDMyIGJ5dGVzKQ0KPiBwbHVzIGFuIGV4dHJhIHN0cmluZywgZXh0ZW5kIGl0IHRvIDY0Lg0KPiAN
-Cj4gRml4ZXMgZ2NjMTMgd2FybmluZ3M6DQo+IGRyaXZlcnMvaW5wdXQvbW91c2Uvdm1tb3VzZS5j
-OiBJbiBmdW5jdGlvbiDigJh2bW1vdXNlX2luaXTigJk6DQo+IGRyaXZlcnMvaW5wdXQvbW91c2Uv
-dm1tb3VzZS5jOjQ1NTo1Mzogd2FybmluZzog4oCYL2lucHV0MeKAmSBkaXJlY3RpdmUgb3V0cHV0
-IG1heSBiZSB0cnVuY2F0ZWQgd3JpdGluZyA3DQo+IGJ5dGVzIGludG8gYSByZWdpb24gb2Ygc2l6
-ZSBiZXR3ZWVuIDEgYW5kIDMyIFstV2Zvcm1hdC10cnVuY2F0aW9uPV0NCj4gICA0NTUgfCAgICAg
-ICAgIHNucHJpbnRmKHByaXYtPnBoeXMsIHNpemVvZihwcml2LT5waHlzKSwgIiVzL2lucHV0MSIs
-DQo+ICAgICAgIHwgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgIF5+fn5+fn4NCj4gZHJpdmVycy9pbnB1dC9tb3VzZS92bW1vdXNlLmM6NDU1Ojk6IG5v
-dGU6IOKAmHNucHJpbnRm4oCZIG91dHB1dCBiZXR3ZWVuIDggYW5kIDM5IGJ5dGVzIGludG8gYSBk
-ZXN0aW5hdGlvbg0KPiBvZiBzaXplIDMyDQo+ICAgNDU1IHwgICAgICAgICBzbnByaW50Zihwcml2
-LT5waHlzLCBzaXplb2YocHJpdi0+cGh5cyksICIlcy9pbnB1dDEiLA0KPiAgICAgICB8ICAgICAg
-ICAgXn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn4N
-Cj4gICA0NTYgfCAgICAgICAgICAgICAgICAgIHBzbW91c2UtPnBzMmRldi5zZXJpby0+cGh5cyk7
-DQo+ICAgICAgIHwgICAgICAgICAgICAgICAgICB+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+
-DQo+IA0KPiB2MjogVXNlIHRoZSBleGFjdCBzaXplIGZvciB0aGUgdm1tb3VzZV9kYXRhOjpwaHlz
-DQo+IA0KPiBTaWduZWQtb2ZmLWJ5OiBaYWNrIFJ1c2luIDx6YWNrLnJ1c2luQGJyb2FkY29tLmNv
-bT4NCj4gRml4ZXM6IDhiOGJlNTFiNGZkMyAoIklucHV0OiBhZGQgdm1tb3VzZSBkcml2ZXIiKQ0K
-PiBDYzogRG1pdHJ5IFRvcm9raG92IDxkbWl0cnkudG9yb2tob3ZAZ21haWwuY29tPg0KPiBDYzog
-QXJuZCBCZXJnbWFubiA8YXJuZEBhcm5kYi5kZT4NCj4gQ2M6IFJvYmVydCBKYXJ6bWlrIDxyb2Jl
-cnQuamFyem1pa0BmcmVlLmZyPg0KPiBDYzogUmF1bCBSYW5nZWwgPHJyYW5nZWxAY2hyb21pdW0u
-b3JnPg0KPiBDYzogbGludXgtaW5wdXRAdmdlci5rZXJuZWwub3JnDQo+IENjOiA8c3RhYmxlQHZn
-ZXIua2VybmVsLm9yZz4gIyB2NC4xKw0KPiAtLS0NCj4gIGRyaXZlcnMvaW5wdXQvbW91c2Uvdm1t
-b3VzZS5jIHwgOCArKysrKystLQ0KPiAgMSBmaWxlIGNoYW5nZWQsIDYgaW5zZXJ0aW9ucygrKSwg
-MiBkZWxldGlvbnMoLSkNCj4gDQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2lucHV0L21vdXNlL3Zt
-bW91c2UuYyBiL2RyaXZlcnMvaW5wdXQvbW91c2Uvdm1tb3VzZS5jDQo+IGluZGV4IGVhOWVmZjdj
-ODA5OS4uNzQxMzE2NzNlMmYzIDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL2lucHV0L21vdXNlL3Zt
-bW91c2UuYw0KPiArKysgYi9kcml2ZXJzL2lucHV0L21vdXNlL3ZtbW91c2UuYw0KPiBAQCAtNjMs
-NiArNjMsOCBAQA0KPiAgI2RlZmluZSBWTU1PVVNFX1ZFTkRPUiAiVk13YXJlIg0KPiAgI2RlZmlu
-ZSBWTU1PVVNFX05BTUUgICAiVk1Nb3VzZSINCj4gDQo+ICsjZGVmaW5lIFZNTU9VU0VfUEhZU19O
-QU1FX1BPU1RGSVhfU1RSICIvaW5wdXQxIg0KPiArDQo+ICAvKioNCj4gICAqIHN0cnVjdCB2bW1v
-dXNlX2RhdGEgLSBwcml2YXRlIGRhdGEgc3RydWN0dXJlIGZvciB0aGUgdm1tb3VzZSBkcml2ZXIN
-Cj4gICAqDQo+IEBAIC03Miw3ICs3NCw4IEBADQo+ICAgKi8NCj4gIHN0cnVjdCB2bW1vdXNlX2Rh
-dGEgew0KPiAgCXN0cnVjdCBpbnB1dF9kZXYgKmFic19kZXY7DQo+IC0JY2hhciBwaHlzWzMyXTsN
-Cj4gKwljaGFyIHBoeXNbc2l6ZW9mX2ZpZWxkKHN0cnVjdCBzZXJpbywgcGh5cykgKw0KPiArCQkg
-IHN0cmxlbihWTU1PVVNFX1BIWVNfTkFNRV9QT1NURklYX1NUUildOw0KPiAgCWNoYXIgZGV2X25h
-bWVbMTI4XTsNCj4gIH07DQo+IA0KPiBAQCAtNDUyLDcgKzQ1NSw4IEBAIGludCB2bW1vdXNlX2lu
-aXQoc3RydWN0IHBzbW91c2UgKnBzbW91c2UpDQo+ICAJcHNtb3VzZS0+cHJpdmF0ZSA9IHByaXY7
-DQo+IA0KPiAgCS8qIFNldCB1cCBhbmQgcmVnaXN0ZXIgYWJzb2x1dGUgZGV2aWNlICovDQo+IC0J
-c25wcmludGYocHJpdi0+cGh5cywgc2l6ZW9mKHByaXYtPnBoeXMpLCAiJXMvaW5wdXQxIiwNCj4g
-KwlzbnByaW50Zihwcml2LT5waHlzLCBzaXplb2YocHJpdi0+cGh5cyksDQo+ICsJCSAiJXMiIFZN
-TU9VU0VfUEhZU19OQU1FX1BPU1RGSVhfU1RSLA0KPiAgCQkgcHNtb3VzZS0+cHMyZGV2LnNlcmlv
-LT5waHlzKTsNCg0KTm90d2l0aHN0YW5kaW5nIGFueSBlcnJvciAoZml4ZWQpIG9yIG5vdCBmcm9t
-IHRoZSBnY2MvYnVpbGQgcm9iZXJ0DQpvciBzcGFyc2UgdGhhdCAnZml4JyBpcyBlbnRpcmVseSBo
-b3JyaWJsZS4NCg0KUmVsYXRlZCBJJ20gZ3Vlc3NpbmcgdGhhdCBkZXZfbmFtZVsxMjhdIGlzIGVp
-dGhlciBsaWtlbHkgdG8NCmJlIHRydW5jYXRlZCBvciBtYXNzaXZlbHkgZmFyIHRvbyBsb25nPw0K
-DQpUaGVyZSBhcmUgYSBmZXcgd2F5IHRvIGdldCBnY2MgdG8gU1RGVSA6LSkNCg0KCURhdmlkDQoN
-Ci0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBGYXJt
-LCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChX
-YWxlcykNCg==
 
+
+On 1/4/2024 6:52 AM, Abel Vesa wrote:
+> Found the first issue (from first patch) while adding support
+> for X Elite (X1E80100) which comes with more than one repeaters.
+> The second fix is just bonus.
+> 
+
+Tested-by: Elliot Berman <quic_eberman@quicinc.com> # sm8650-qrd
+
+> ---
+> Abel Vesa (2):
+>       phy: qualcomm: eusb2-repeater: Fix the regfields for multiple instances
+>       phy: qualcomm: eusb2-repeater: Drop the redundant zeroing
+> 
+>  drivers/phy/qualcomm/phy-qcom-eusb2-repeater.c | 23 ++++++++++-------------
+>  1 file changed, 10 insertions(+), 13 deletions(-)
+> ---
+> base-commit: 0fef202ac2f8e6d9ad21aead648278f1226b9053
+> change-id: 20240104-phy-qcom-eusb2-repeater-fixes-c9201113032c
+> 
+> Best regards,
 
