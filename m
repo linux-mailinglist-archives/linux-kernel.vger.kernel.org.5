@@ -1,121 +1,87 @@
-Return-Path: <linux-kernel+bounces-16667-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16663-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2779182421D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 13:59:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 68395824211
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 13:54:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id ABBE3B244E1
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 12:59:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F1CC7286E8E
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 12:54:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4EBA2232C;
-	Thu,  4 Jan 2024 12:58:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 711972231C;
+	Thu,  4 Jan 2024 12:54:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mess.org header.i=@mess.org header.b="SZrSYppm"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cHLnPAVv"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from gofer.mess.org (gofer.mess.org [88.97.38.141])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B7DC22324;
-	Thu,  4 Jan 2024 12:58:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mess.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mess.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mess.org; s=2020;
-	t=1704372628; bh=2rIYho0tJC4fQVeP6/cBbLHX5whOI1hHP2hPbbpgze8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=SZrSYppmG8kRGCUnosr7aniaaMeadcFKNVy6SrMe0d79B4F/ByDaAeDIGTX/P8e7I
-	 PJgo+r+eT2+uz3IsN65cwhk75HOmuguHYscVpN9fsAwoxjxS+WSto/KiQsIcRQHAfZ
-	 6lX1MZG2Z5lNSpxrW28GC3VClCxPkEVO9z9FDqO/5StIj7zdcUjTMxAsvfQBJKq81q
-	 ufyR0eMIKfjOXLtEWz6cLRQ8xdU2Zk+R7Ebg1Okla5Iy/gDbSxmYEQQlHb2k+MH6bp
-	 xhOV1HF11uummEJ1SAyhW1W5aDsEK84tKOqMwC7Pg2qw+Dmi5g4BfvF4eP2a7lryxg
-	 G5v0Fqb9AInFg==
-Received: by gofer.mess.org (Postfix, from userid 1000)
-	id 1760F1000FC; Thu,  4 Jan 2024 12:50:28 +0000 (GMT)
-Date: Thu, 4 Jan 2024 12:50:28 +0000
-From: Sean Young <sean@mess.org>
-To: Bagas Sanjaya <bagasdotme@gmail.com>
-Cc: Thierry Reding <thierry.reding@gmail.com>, Lee Jones <lee@kernel.org>,
-	Jingoo Han <jingoohan1@gmail.com>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Stephen Rothwell <sfr@canb.auug.org.au>,
-	Flavio Suligoi <f.suligoi@asem.it>,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	Linux Next Mailing List <linux-next@vger.kernel.org>,
-	Linux DRI Development <dri-devel@lists.freedesktop.org>
-Subject: Re: (subset) linux-next: build failure after merge of the pwm tree
-Message-ID: <ZZaplFvjLADNz-2m@gofer.mess.org>
-References: <20231221165805.0c4771c1@canb.auug.org.au>
- <170316329164.542553.8341559295114557258.b4-ty@kernel.org>
- <20231221125801.GG10102@google.com>
- <ZYSFUZf8NcK5vvLv@orome.fritz.box>
- <ZZaCQahr3t8CUumD@archie.me>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE4EF2230A;
+	Thu,  4 Jan 2024 12:54:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1ADCFC433C7;
+	Thu,  4 Jan 2024 12:53:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704372844;
+	bh=TUgtbOo/PVfQSA54Hl3nscCe0OQ8k5krHwt9pHz+FgM=;
+	h=Date:Subject:To:References:Cc:From:In-Reply-To:From;
+	b=cHLnPAVvbsxhokJh4rMwLRys1z3+1kjxvxQGdFmgwkh1UaRd5/0Eq9uZTUcz46VDa
+	 KkGxKQ90nc+PupobVDIvS9rDBEv6tJsx5rfOKDupthHWSNz5A27XhaopzaJ8MTWVxX
+	 +Y9XI6Obc+OyXl8K2RuzPkTglEXcWQGssHrJNdq39f7HJteFtrQBehCMCFChLAU1bE
+	 yhVcVsPRoL4+5/gOVxhUdERSkDpQkRi61VeO4sRpsUJoevJOg7ySSe1y4zzp66PNWw
+	 P4kFV4Ixr7KmSZCzUH1/8GMa550FukSl0AW/kEjZUmmCocptrkWaxoTGGNGcMaaZpc
+	 OTow14fYYaHew==
+Message-ID: <64ee255e-9a5a-405e-b342-e91c55bd95ce@kernel.org>
+Date: Thu, 4 Jan 2024 13:53:54 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZZaCQahr3t8CUumD@archie.me>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] OPP: Remove the unused argument to config_clks_t
+Content-Language: en-US
+To: Viresh Kumar <viresh.kumar@linaro.org>
+References: <f24f32f1213b4b9e9ff2b4a36922f8d6e3abac51.1704278832.git.viresh.kumar@linaro.org>
+Cc: Bart Van Assche <bvanassche@acm.org>, Dmitry Osipenko <digetx@gmail.com>,
+ Thierry Reding <thierry.reding@gmail.com>,
+ "Rafael J. Wysocki" <rafael@kernel.org>, Stephen Boyd <sboyd@kernel.org>,
+ Viresh Kumar <vireshk@kernel.org>,
+ Vincent Guittot <vincent.guittot@linaro.org>,
+ "James E.J. Bottomley" <jejb@linux.ibm.com>,
+ Jonathan Hunter <jonathanh@nvidia.com>,
+ "Martin K. Petersen" <martin.petersen@oracle.com>,
+ Alim Akhtar <alim.akhtar@samsung.com>, Chanwoo Choi <cw00.choi@samsung.com>,
+ Kyungmin Park <kyungmin.park@samsung.com>,
+ MyungJoo Ham <myungjoo.ham@samsung.com>, Nishanth Menon <nm@ti.com>,
+ linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+ linux-scsi@vger.kernel.org, linux-tegra@vger.kernel.org,
+ Avri Altman <avri.altman@wdc.com>
+From: Konrad Dybcio <konradybcio@kernel.org>
+In-Reply-To: <f24f32f1213b4b9e9ff2b4a36922f8d6e3abac51.1704278832.git.viresh.kumar@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Thu, Jan 04, 2024 at 05:02:41PM +0700, Bagas Sanjaya wrote:
-> [also add Jingoo (additional backlight maintainer) and Linus]
-> 
-> On Thu, Dec 21, 2023 at 07:34:57PM +0100, Thierry Reding wrote:
-> > On Thu, Dec 21, 2023 at 12:58:01PM +0000, Lee Jones wrote:
-> > > On Thu, 21 Dec 2023, Lee Jones wrote:
-> > > 
-> > > > On Thu, 21 Dec 2023 16:58:05 +1100, Stephen Rothwell wrote:
-> > > > > After merging the backlight tree, today's linux-next build (x86_64
-> > > > > allmodconfig) failed like this:
-> > > > > 
-> > > > > drivers/video/backlight/mp3309c.c: In function 'mp3309c_bl_update_status':
-> > > > > drivers/video/backlight/mp3309c.c:134:23: error: implicit declaration of function 'pwm_apply_state'; did you mean 'pwm_apply_args'? [-Werror=implicit-function-declaration]
-> > > > >   134 |                 ret = pwm_apply_state(chip->pwmd, &pwmstate);
-> > > > >       |                       ^~~~~~~~~~~~~~~
-> > > > >       |                       pwm_apply_args
-> > > > > 
-> > > > > [...]
-> > > > 
-> > > > Applied, thanks!
-> > > > 
-> > > > [1/1] linux-next: build failure after merge of the pwm tree
-> > > >       commit: f7baa9ccef93ba1c36a8ecf58c2f4e86fb3181b9
-> > > 
-> > > Actually it's:
-> > > 
-> > >   f7baa9ccef93b ("backlight: mp3309c: Rename  pwm_apply_state() to pwm_apply_might_sleep()")
-> > > 
-> > > But don't bank on the commit ID staying the same.
-> > 
-> > This is likely going to break the build on your branch because
-> > pwm_apply_might_sleep() is only available in the PWM tree right now. In
-> > any case, I've now pushed a commit that adds pwm_apply_state() back as a
-> > compatibility stub, so it should be okay for you to drop this if you
-> > run into problems. It's always possible that somebody else wants to add
-> > a new caller of pwm_apply_state() and in retrospect we should've
-> > probably done this from the start, at least as a transitional measure
-> > for one or two cycles.
-> > 
-> 
-> Hi Lee and Thierry,
-> 
-> I know that we're still on New Year vibes, so some things are not up to full
-> steam for now; but since we're close to v6.7 release and v6.8 merge window,
-> hence allow me to ask:
-> 
-> Stephen Rothwell is still complaining about backlight tree build failure
-> due to f7baa9ccef93b, yet it has not been fixed so far. Has the culprit
-> been dropped/reverted as he requested? The worst case is the culprit slips
-> through and become part of backlight PR and Linus will likely not happy
-> with the build regression (maybe he had to fix by himself).
 
-This should be fixed by 9a216587a03df, and on current linux-next I can't 
-reproduce the problem any more (x86_64 allmodconfig).
 
-Thanks,
-Sean
+On 3.01.2024 11:48, Viresh Kumar wrote:
+> The OPP core needs to take care of a special case, where the OPPs aren't
+> available for a device, but in order to keep the same unified interface
+> for the driver, the same OPP core API must take care of performing a
+> simple clk_set_rate() for the device.
+> 
+> This required the extra argument, but that is used only within the OPP
+> core and the drivers don't need to take care of that.
+> 
+> Simplify the external API and handle it differently within the OPP core.
+> 
+> This shouldn't result in any functional change.
+
+Hi, so this apparently breaks serial on Qualcomm platforms using
+"qcom,geni-debug-uart".. I'm seeing garbage on the console, likely
+meaning that ratesetting wasn't done.
+
+Konrad
 
