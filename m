@@ -1,228 +1,139 @@
-Return-Path: <linux-kernel+bounces-17126-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17131-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id ECAB08248AC
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 20:09:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 368058248B9
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 20:11:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7E8542858DE
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 19:09:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DC2EB1F22CD5
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 19:11:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDD2E2C194;
-	Thu,  4 Jan 2024 19:09:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5A2C2C197;
+	Thu,  4 Jan 2024 19:11:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kaVJ8KjB"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6030A28E15;
-	Thu,  4 Jan 2024 19:09:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B34AEC433C8;
-	Thu,  4 Jan 2024 19:09:11 +0000 (UTC)
-Date: Thu, 4 Jan 2024 14:10:17 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Al Viro <viro@zeniv.linux.org.uk>
-Cc: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
- <linux-trace-kernel@vger.kernel.org>, Masami Hiramatsu
- <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Linus Torvalds <torvalds@linux-foundation.org>, Christian Brauner
- <brauner@kernel.org>, linux-fsdevel@vger.kernel.org, Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>, Jonathan Corbet <corbet@lwn.net>,
- linux-doc@vger.kernel.org
-Subject: Re: [PATCH] tracefs/eventfs: Use root and instance inodes as
- default ownership
-Message-ID: <20240104141017.4cd8451f@gandalf.local.home>
-In-Reply-To: <20240104182502.GR1674809@ZenIV>
-References: <20240103203246.115732ec@gandalf.local.home>
-	<20240104014837.GO1674809@ZenIV>
-	<20240103212506.41432d12@gandalf.local.home>
-	<20240104043945.GQ1674809@ZenIV>
-	<20240104100544.593030e0@gandalf.local.home>
-	<20240104182502.GR1674809@ZenIV>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4ED7A28E26;
+	Thu,  4 Jan 2024 19:11:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704395482; x=1735931482;
+  h=to:cc:subject:references:date:mime-version:
+   content-transfer-encoding:from:message-id:in-reply-to;
+  bh=DBk487czzork4gcCBMCfVeAOw7RW7zZUuFillY2fezs=;
+  b=kaVJ8KjBBZYQ4Nn30niCl6ol+HZ9+vAiIW7yxqbQdKUyAN1h/FAq9p/8
+   W9TRWcvITUihqT6QBKMRWAIAhRCyoNJHo8JJehMpVbbfvQVQz4qmlNcwD
+   Hw7gqzjYTPkBfnO3PWMmLP3LKnUN3d5i/DEGslJC+TBDfX8o8/wueSWd2
+   A4GsAnBODRMac6tq8EmCKBWqwSbIw+Ftg+XRe0y60FLS7INNGB5xS5odS
+   3haix0LBHS25ETisC3bRSXn0r1RFEondJ3XmwnlOsfp/hkAafyzPARt3F
+   GJySZmf6Lz8+gUeSPG87QoU6VNmxhdc/ghlIlmx72xQgptQKmHOkspq46
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10943"; a="4710001"
+X-IronPort-AV: E=Sophos;i="6.04,331,1695711600"; 
+   d="scan'208";a="4710001"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2024 11:11:21 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,331,1695711600"; 
+   d="scan'208";a="22602012"
+Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.168])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 04 Jan 2024 11:11:18 -0800
+Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
+To: "Mehta, Sohil" <sohil.mehta@intel.com>, "jarkko@kernel.org"
+ <jarkko@kernel.org>, "x86@kernel.org" <x86@kernel.org>,
+ "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+ "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>, "hpa@zytor.com"
+ <hpa@zytor.com>, "mingo@redhat.com" <mingo@redhat.com>, "tj@kernel.org"
+ <tj@kernel.org>, "mkoutny@suse.com" <mkoutny@suse.com>, "tglx@linutronix.de"
+ <tglx@linutronix.de>, "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "bp@alien8.de"
+ <bp@alien8.de>, "Huang, Kai" <kai.huang@intel.com>, "Dave Hansen"
+ <dave.hansen@intel.com>
+Cc: "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
+ "seanjc@google.com" <seanjc@google.com>, "Zhang, Bo" <zhanb@microsoft.com>,
+ "kristen@linux.intel.com" <kristen@linux.intel.com>, "anakrish@microsoft.com"
+ <anakrish@microsoft.com>, "sean.j.christopherson@intel.com"
+ <sean.j.christopherson@intel.com>, "Li, Zhiquan1" <zhiquan1.li@intel.com>,
+ "yangjie@microsoft.com" <yangjie@microsoft.com>
+Subject: Re: [PATCH v6 09/12] x86/sgx: Restructure top-level EPC reclaim
+ function
+References: <20231030182013.40086-1-haitao.huang@linux.intel.com>
+ <20231030182013.40086-10-haitao.huang@linux.intel.com>
+ <c8fc40dc56b853fbff14ba22db197c80a6d31820.camel@intel.com>
+ <op.2e0yod2lwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <431c5d7f5aee7d11ec2e8aa2e526fde438fa53b4.camel@intel.com>
+ <op.2ftmyampwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <3c27bca678c1b041920a14a7da0d958c9861ebca.camel@intel.com>
+ <op.2f0eo8r1wjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <73ed579be8ad81835df1c309b7c69b491b7f2c8e.camel@intel.com>
+ <op.2f523elowjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <4b28fc01-50cf-469b-8161-7d56b863b42b@intel.com>
+Date: Thu, 04 Jan 2024 13:11:15 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+From: "Haitao Huang" <haitao.huang@linux.intel.com>
+Organization: Intel
+Message-ID: <op.2g1d81fqwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <4b28fc01-50cf-469b-8161-7d56b863b42b@intel.com>
+User-Agent: Opera Mail/1.0 (Win32)
 
-On Thu, 4 Jan 2024 18:25:02 +0000
-Al Viro <viro@zeniv.linux.org.uk> wrote:
+Hi Dave,
 
-> On Thu, Jan 04, 2024 at 10:05:44AM -0500, Steven Rostedt wrote:
-> 
-> > This is the "tribal knowledge" I'm talking about. I really didn't know how
-> > the root dentry parent worked. I guess that makes sense, as it matches the
-> > '..' of a directory, and the '/' directory '..' points to itself. Although
-> > mounted file systems do not behave that way. My /proc/.. is '/'. I just
-> > figured that the dentry->d_parent would be similar. Learn something everyday.  
-> 
-> What would you expect to happen if you have the same filesystem mounted in
-> several places?  Having separate dentry trees would be a nightmare - you'd
-> get cache coherency problems from hell.  It's survivable for procfs, but
-> for something like a normal local filesystem it'd become very painful.
-> And if we want them to share dentry tree, how do you choose where the ..
-> would lead from the root dentry?
+On Wed, 03 Jan 2024 10:37:35 -0600, Dave Hansen <dave.hansen@intel.com>  
+wrote:
 
-My mistake was thinking that the dentry was attached more to the path than
-the inode. But that doesn't seem to be the case. I wasn't sure if there was
-a way to get to a dentry from the inode. I see the i_dentry list, which is
-a list, where I got some of my idea that dentry was closer to path than inode.
+> On 12/18/23 13:24, Haitao Huang wrote:> @Dave and @Michal, Your
+> thoughts? Or could you confirm we should not
+>> do reclaim per cgroup at all?
+> What's the benefit of doing reclaim per cgroup?  Is that worth the extra
+> complexity?
+>
 
-> 
-> The way it's done is that linkage between the trees is done separately -
-> there's a tree of struct mount (well, forest, really - different processes
-> can easily have separate trees, which is how namespaces are done) and
-> each node in the mount tree refers to a dentry (sub)tree in some filesystem
-> instance.  Location is represented by (mount, dentry) pair and handling of
-> .. is basically (modulo refcounting, locking, error handling, etc.)
-> 	while dentry == subtree_root(mount) && mount != mountpoint_mount(mount)
-> 		// cross into the mountpoint under it
-> 		dentry = mountpoint_dentry(mount)
-> 		mount = mountpoint_mount(mount)
-> 	go_into(mount, dentry->d_parent)
-> 
-> Note that you can have e.g. /usr/lib/gcc/x86_64-linux-gnu/12 mounted on /mnt/blah:
-> ; mount --bind /usr/lib/gcc/x86_64-linux-gnu/12 /mnt/blah
-> will do it.  Then e.g. /mnt/blah/include will resolve to the same dentry as
-> /usr/lib/gcc/x86_64-linux-gnu/12/include, etc.
-> ; chdir /mnt/blah
-> ; ls
-> 32                 crtprec80.o        libgomp.so         libsanitizer.spec
-> cc1                g++-mapper-server  libgomp.spec       libssp_nonshared.a
-> cc1plus            include            libitm.a           libstdc++.a
-> collect2           libasan.a          libitm.so          libstdc++fs.a
-> crtbegin.o         libasan_preinit.o  libitm.spec        libstdc++.so
-> crtbeginS.o        libasan.so         liblsan.a          libsupc++.a
-> crtbeginT.o        libatomic.a        liblsan_preinit.o  libtsan.a
-> crtend.o           libatomic.so       liblsan.so         libtsan_preinit.o
-> crtendS.o          libbacktrace.a     liblto_plugin.so   libtsan.so
-> crtfastmath.o      libcc1.so          libobjc.a          libubsan.a
-> crtoffloadbegin.o  libgcc.a           libobjc_gc.a       libubsan.so
-> crtoffloadend.o    libgcc_eh.a        libobjc_gc.so      lto1
-> crtoffloadtable.o  libgcc_s.so        libobjc.so         lto-wrapper
-> crtprec32.o        libgcov.a          libquadmath.a      plugin
-> crtprec64.o        libgomp.a          libquadmath.so     x32
-> 
-> We obviously want .. to resolve to /mnt, though.
-> ; ls ..
-> ; ls /usr/lib/gcc/x86_64-linux-gnu/
-> 12
-> 
-> So the trigger for "cross into underlying mountpoint" has to be "dentry is
-> the root of subtree mount refers to" - it depends upon the mount we are
-> in.
-> 
-> > >  Filesystem object contents belongs here; multiple hardlinks
-> > > have different dentries and the same inode.  
-> > 
-> > So, can I assume that an inode could only have as many dentries as hard
-> > links? I know directories are only allowed to have a single hard link. Is
-> > that why they can only have a single dentry?  
-> 
-> Not quite.  Single alias for directories is more about cache coherency
-> fun; we really can't afford multiple aliases for those.  For non-directories
-> it's possible to have an entirely disconnected dentry refering to that
-> sucker; if somebody hands you an fhandle with no indication of the parent
-> directory, you might end up having to do one of those, no matter how many
-> times you find the same inode later.  Not an issue for tracefs, though.
-> 
-> > > namespace: mount tree.  Unlike everything prior, this one is a part of
-> > > process state - same as descriptor table, mappings, etc.  
-> > 
-> > And I'm guessing namespace is for containers. At least that's what I've
-> > been assuming they are for.  
-> 
-> It predates containers by quite a few years, but yes, that's one of the
-> users.  It is related to virtual machines, in the same sense the set
-> of memory mappings is - each thread can be thought of as a VM, with
-> a bunch of components.  Just as mmap() manipulates the virtual address
-> translation for the threads that share memory space with the caller,
-> mount() manipulates the pathname resolution for the threads that share
-> the namespace with the caller.
-> 
-> > > descriptor table: mapping from numbers to IO channels (opened files).  
-> > 
-> > This is that "process fd table" I mentioned above (I wrote that before
-> > reading this).
-> >   
-> > > Again, a part of process state.  dup() creates a new entry, with
-> > > reference to the same file as the old one; multiple open() of the  
-> > 
-> > Hmm, wouldn't "dup()" create another "file" that just points to the same
-> > dentry? It wouldn't be the "same file", or did you mean "file" from the
-> > user space point of view?  
-> 
-> No.  The difference between open() and dup() is that the latter will
-> result in a descriptor that really refers to the same file.  Current
-> IO position belongs to IO channel; it doesn't matter for e.g. terminals,
-> but for regular file it immediately becomes an issue.
-> 	fd1 = open("foo", 0);
-> 	fd2 = open("foo", 0);
-> 	read(fd1, &c1, 1);
-> 	read(fd2, &c2, 1);
-> will result in the first byte of foo read into c1 and c2, but
-> 	fd1 = open("foo", 0);
-> 	fd2 = dup(fd1);
-> 	read(fd1, &c1, 1);
-> 	read(fd2, &c2, 1);
-> will have the first byte of foo in c1 and the second one - in c2.
-> open() yields a new IO channel attached to new descriptor; dup()
-> (and dup2()) attaches the existing IO channel to new descriptor.
-> fork() acts like dup() in that respect - child gets its descriptor
-> table populated with references to the same IO channels as the
-> parent does.
+Without reclaiming per cgroup, then we have to always set the limit to  
+enclave's peak usage. This may not be efficient utilization as in many  
+cases each enclave can perform fine with EPC limit set less than peak.  
+Basically each group can not give up some pages for greater good without  
+dying :-)
 
-Ah, looking at the code I use dup() in, it's mostly for pipes in
-and for redirecting stdout,stdin, etc. So yeah, that makes sense.
+Also with enclaves enabled with EDMM, the peak usage is not static so hard  
+to determine upfront. Hence it might be an operation/deployment  
+inconvenience.
 
-> 
-> Any Unix since about '71 has it done that way and the same goes
-> for NT, DOS, etc. - you can't implement redirects to/from regular
-> files without that distinction.
+In case of over-committing (sum of limits > total capacity), one cgroup at  
+peak usage may require swapping pages out in a different cgroup if system  
+is overloaded at that time.
 
-Yep, which is what I used it for. Just forgot the details.
+> The key question here is whether we want the SGX VM to be complex and
+> more like the real VM or simple when a cgroup hits its limit.  Right?
+>
 
-> 
-> > > same pathname will each yield a separate opened file.  _Some_ state
-> > > belongs here (close-on-exec, mostly).  Note that there's no such
-> > > thing as "the descriptor of this file" - not even "the user-supplied
-> > > number that had been used to get the file we are currently reading
-> > > from", since that number might be refering to something entirely
-> > > different right after we'd resolved it to opened file and that
-> > > happens *without* disrupting the operation.  
-> > 
-> > This last paragraph confused me. What do you mean by ""referring to
-> > something entirely different"?  
-> 
-> 	Two threads share descriptor table; one of them is in
-> read(fd, ...), another does dup2(fd2, fd).  If read() gets past the
-> point where it gets struct file reference, it will keep accessing that
-> IO channel.  dup2() will replace the reference in descriptor table,
-> but that won't disrupt the read()...
+Although it's fair to say the majority of complexity of this series is in  
+support for reclaiming per cgroup, I think it's manageable and much less  
+than real VM after we removed the enclave killing parts: the only extra  
+effort is to track pages in separate list and reclaim them in separately  
+as opposed to track in on global list and reclaim together. The main  
+reclaiming loop code is still pretty much the same as before.
 
-Oh, OK. So basically if fd 4 is a reference to /tmp/foo and you open
-/tmp/bar which gets fd2, and one thread is reading fd 4 (/tmp/foo), the
-other thread doing dup2(fd2, fd) will make fd 4 a reference to /tmp/bar but
-the read will finish reading /tmp/foo.
 
-But if the first thread were to do another read(fd, ...) it would then read
-/tmp/bar. In other words, it allows read() to stay atomic with respect to
-what it is reading until it returns.
+> If stopping at patch 5 and having less code is even remotely an option,
+> why not do _that_?
+>
+I hope I described limitations clear enough above.
+If those are OK with users and also make it acceptable for merge quickly,  
+I'm happy to do that :-)
 
-> 
-> > 
-> > Thanks for this overview. It was very useful, and something I think we
-> > should add to kernel doc. I did read Documentation/filesystems/vfs.rst but
-> > honestly, I think your writeup here is a better overview.  
-> 
-> At the very least it would need serious reordering ;-/
-
-Yeah, but this is all great information. Thanks for explaining it.
-
--- Steve
+Thanks
+Haitao
 
