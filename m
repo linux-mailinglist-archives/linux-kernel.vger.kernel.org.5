@@ -1,218 +1,195 @@
-Return-Path: <linux-kernel+bounces-16533-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16530-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 26615823FC5
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 11:47:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 582A9823FBE
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 11:46:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A51951F2526A
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 10:47:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B7613282423
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 10:46:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB6A6224C6;
-	Thu,  4 Jan 2024 10:45:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F28321A15;
+	Thu,  4 Jan 2024 10:45:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="2AShXaHw";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Jej9803v";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="2AShXaHw";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Jej9803v"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EC2921A03;
-	Thu,  4 Jan 2024 10:45:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ghiti.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ghiti.fr
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 7F999C000A;
-	Thu,  4 Jan 2024 10:45:08 +0000 (UTC)
-Message-ID: <3b9fb9f0-86e8-4a76-be69-9f4598434c6c@ghiti.fr>
-Date: Thu, 4 Jan 2024 11:45:08 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 377B5210E9;
+	Thu,  4 Jan 2024 10:45:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 503371F800;
+	Thu,  4 Jan 2024 10:45:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1704365112; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qrIGhLv2SxdSJiBgvJ6RBN/JBcW+xFNE2ns/9BE/9Dc=;
+	b=2AShXaHwXqOM/NWK4V3NBLuFMDgR5Cyis/b6BCVMQw3Jw7rx2yBiD5GBhno8DQZFz0FiUX
+	WSkU2EqOiaXVZGOx7VUVz3IS3+TTqvpdZ6HZCE0MYa2f2wwSrW15SYdD9qc2ht1yg2trli
+	XsC+Jt3bvqD6CFpV0g0Q45htWLVd8Fg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1704365112;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qrIGhLv2SxdSJiBgvJ6RBN/JBcW+xFNE2ns/9BE/9Dc=;
+	b=Jej9803vYI774QiOY3bC15dEnx+FHitaYbS+GYSZix5ViiukKuFCDSPwuFLzABWSI1TSZF
+	S64HoCI109htWAAA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1704365112; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qrIGhLv2SxdSJiBgvJ6RBN/JBcW+xFNE2ns/9BE/9Dc=;
+	b=2AShXaHwXqOM/NWK4V3NBLuFMDgR5Cyis/b6BCVMQw3Jw7rx2yBiD5GBhno8DQZFz0FiUX
+	WSkU2EqOiaXVZGOx7VUVz3IS3+TTqvpdZ6HZCE0MYa2f2wwSrW15SYdD9qc2ht1yg2trli
+	XsC+Jt3bvqD6CFpV0g0Q45htWLVd8Fg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1704365112;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qrIGhLv2SxdSJiBgvJ6RBN/JBcW+xFNE2ns/9BE/9Dc=;
+	b=Jej9803vYI774QiOY3bC15dEnx+FHitaYbS+GYSZix5ViiukKuFCDSPwuFLzABWSI1TSZF
+	S64HoCI109htWAAA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3AD8F13722;
+	Thu,  4 Jan 2024 10:45:12 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id nFxbDjiMlmVGdwAAD6G6ig
+	(envelope-from <jack@suse.cz>); Thu, 04 Jan 2024 10:45:12 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id EF757A07EF; Thu,  4 Jan 2024 11:45:11 +0100 (CET)
+Date: Thu, 4 Jan 2024 11:45:11 +0100
+From: Jan Kara <jack@suse.cz>
+To: Baokun Li <libaokun1@huawei.com>
+Cc: linux-ext4@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
+	jack@suse.cz, ritesh.list@gmail.com, linux-kernel@vger.kernel.org,
+	yi.zhang@huawei.com, yangerkun@huawei.com, yukuai3@huawei.com
+Subject: Re: [PATCH v2 6/8] ext4: avoid allocating blocks from corrupted
+ group in ext4_mb_try_best_found()
+Message-ID: <20240104104511.axpp3k4tti6xbk2l@quack3>
+References: <20231221150558.2740823-1-libaokun1@huawei.com>
+ <20231221150558.2740823-7-libaokun1@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/4] riscv: enable MMU_GATHER_RCU_TABLE_FREE for SMP &&
- MMU
-Content-Language: en-US
-To: Jisheng Zhang <jszhang@kernel.org>
-Cc: Paul Walmsley <paul.walmsley@sifive.com>,
- Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
- Will Deacon <will@kernel.org>,
- "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
- Andrew Morton <akpm@linux-foundation.org>, Nick Piggin <npiggin@gmail.com>,
- Peter Zijlstra <peterz@infradead.org>, linux-riscv@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org, linux-mm@kvack.org
-References: <20231219175046.2496-1-jszhang@kernel.org>
- <20231219175046.2496-4-jszhang@kernel.org>
- <e90f3b0f-95be-4ead-85cf-cca4378755f3@ghiti.fr> <ZZOBwt1ZBsPUshkY@xhacker>
-From: Alexandre Ghiti <alex@ghiti.fr>
-In-Reply-To: <ZZOBwt1ZBsPUshkY@xhacker>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-GND-Sasl: alex@ghiti.fr
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231221150558.2740823-7-libaokun1@huawei.com>
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Score: 1.69
+X-Spamd-Bar: +
+X-Spam-Flag: NO
+X-Spamd-Result: default: False [1.69 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 BAYES_HAM(-0.00)[37.96%];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 TAGGED_RCPT(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.cz:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_SEVEN(0.00)[10];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.cz:dkim,suse.cz:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 FREEMAIL_CC(0.00)[vger.kernel.org,mit.edu,dilger.ca,suse.cz,gmail.com,huawei.com];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[];
+	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=2AShXaHw;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=Jej9803v
+X-Spam-Level: *
+X-Rspamd-Queue-Id: 503371F800
 
-Hi Jisheng,
+On Thu 21-12-23 23:05:56, Baokun Li wrote:
+> Determine if the group block bitmap is corrupted before using ac_b_ex in
+> ext4_mb_try_best_found() to avoid allocating blocks from a group with a
+> corrupted block bitmap in the following concurrency and making the
+> situation worse.
+> 
+> ext4_mb_regular_allocator
+>   ext4_lock_group(sb, group)
+>   ext4_mb_good_group
+>    // check if the group bbitmap is corrupted
+>   ext4_mb_complex_scan_group
+>    // Scan group gets ac_b_ex but doesn't use it
+>   ext4_unlock_group(sb, group)
+>                            ext4_mark_group_bitmap_corrupted(group)
+>                            // The block bitmap was corrupted during
+>                            // the group unlock gap.
+>   ext4_mb_try_best_found
+>     ext4_lock_group(ac->ac_sb, group)
+>     ext4_mb_use_best_found
+>       mb_mark_used
+>       // Allocating blocks in block bitmap corrupted group
+> 
+> Signed-off-by: Baokun Li <libaokun1@huawei.com>
 
-On 02/01/2024 04:23, Jisheng Zhang wrote:
-> On Sun, Dec 31, 2023 at 07:32:47AM +0100, Alexandre Ghiti wrote:
->> On 19/12/2023 18:50, Jisheng Zhang wrote:
->>> In order to implement fast gup we need to ensure that the page
->>> table walker is protected from page table pages being freed from
->>> under it.
->>>
->>> riscv situation is more complicated than other architectures: some
->>> riscv platforms may use IPI to perform TLB shootdown, for example,
->>> those platforms which support AIA, usually the riscv_ipi_for_rfence is
->>> true on these platforms; some riscv platforms may rely on the SBI to
->>> perform TLB shootdown, usually the riscv_ipi_for_rfence is false on
->>> these platforms. To keep software pagetable walkers safe in this case
->>> we switch to RCU based table free (MMU_GATHER_RCU_TABLE_FREE). See the
->>> comment below 'ifdef CONFIG_MMU_GATHER_RCU_TABLE_FREE' in
->>> include/asm-generic/tlb.h for more details.
->>>
->>> This patch enables MMU_GATHER_RCU_TABLE_FREE, then use
->>>
->>> *tlb_remove_page_ptdesc() for those platforms which use IPI to perform
->>> TLB shootdown;
->>>
->>> *tlb_remove_ptdesc() for those platforms which use SBI to perform TLB
->>> shootdown;
->>
->> Can you elaborate a bit more on what those functions do differently and why
->> we need to differentiate IPI vs SBI TLB shootdown? I don't understand this.
-> Hi Alex,
->
-> If IPI, the local_irq_save in lockless_pages_from_mm() of fast gup code
-> path will block page table pages from being freed, I think the comments
-> there is execellent.
->
-> If SBI, the local_irq_save in lockless_pages_from_mm() can't acchieve
-> the goal however. Because local_irq_save() only disable S-privilege IPI irq,
-> it can't disable M-privilege's, which the SBI implementation use to
-> shootdown TLB entry. So we need MMU_GATHER_RCU_TABLE_FREE helper for
-> SBI case.
+Looks good. Feel free to add:
 
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-Ok, I get it now, can you add the following link to your commit 
-description 
-https://elixir.bootlin.com/linux/v6.6/source/mm/mmu_gather.c#L162 ? It 
-describes the problem very clearly.
+								Honza
 
-
-> Thanks
->   
->>> Both case mean that disabling interrupts will block the free and
->>> protect the fast gup page walker.
->>>
->>> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
->>> ---
->>>    arch/riscv/Kconfig               |  1 +
->>>    arch/riscv/include/asm/pgalloc.h | 23 ++++++++++++++++++-----
->>>    arch/riscv/include/asm/tlb.h     | 18 ++++++++++++++++++
->>>    3 files changed, 37 insertions(+), 5 deletions(-)
->>>
->>> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
->>> index 24c1799e2ec4..d3555173d9f4 100644
->>> --- a/arch/riscv/Kconfig
->>> +++ b/arch/riscv/Kconfig
->>> @@ -147,6 +147,7 @@ config RISCV
->>>    	select IRQ_FORCED_THREADING
->>>    	select KASAN_VMALLOC if KASAN
->>>    	select LOCK_MM_AND_FIND_VMA
->>> +	select MMU_GATHER_RCU_TABLE_FREE if SMP && MMU
->>>    	select MODULES_USE_ELF_RELA if MODULES
->>>    	select MODULE_SECTIONS if MODULES
->>>    	select OF
->>> diff --git a/arch/riscv/include/asm/pgalloc.h b/arch/riscv/include/asm/pgalloc.h
->>> index 3c5e3bd15f46..deaf971253a2 100644
->>> --- a/arch/riscv/include/asm/pgalloc.h
->>> +++ b/arch/riscv/include/asm/pgalloc.h
->>> @@ -102,7 +102,10 @@ static inline void __pud_free_tlb(struct mmu_gather *tlb, pud_t *pud,
->>>    		struct ptdesc *ptdesc = virt_to_ptdesc(pud);
->>>    		pagetable_pud_dtor(ptdesc);
->>> -		tlb_remove_page_ptdesc(tlb, ptdesc);
->>> +		if (riscv_use_ipi_for_rfence())
->>> +			tlb_remove_page_ptdesc(tlb, ptdesc);
->>> +		else
->>> +			tlb_remove_ptdesc(tlb, ptdesc);
->>>    	}
->>>    }
->>> @@ -136,8 +139,12 @@ static inline void p4d_free(struct mm_struct *mm, p4d_t *p4d)
->>>    static inline void __p4d_free_tlb(struct mmu_gather *tlb, p4d_t *p4d,
->>>    				  unsigned long addr)
->>>    {
->>> -	if (pgtable_l5_enabled)
->>> -		tlb_remove_page_ptdesc(tlb, virt_to_ptdesc(p4d));
->>> +	if (pgtable_l5_enabled) {
->>> +		if (riscv_use_ipi_for_rfence())
->>> +			tlb_remove_page_ptdesc(tlb, virt_to_ptdesc(p4d));
->>> +		else
->>> +			tlb_remove_ptdesc(tlb, virt_to_ptdesc(p4d));
->>> +	}
->>>    }
->>>    #endif /* __PAGETABLE_PMD_FOLDED */
->>> @@ -169,7 +176,10 @@ static inline void __pmd_free_tlb(struct mmu_gather *tlb, pmd_t *pmd,
->>>    	struct ptdesc *ptdesc = virt_to_ptdesc(pmd);
->>>    	pagetable_pmd_dtor(ptdesc);
->>> -	tlb_remove_page_ptdesc(tlb, ptdesc);
->>> +	if (riscv_use_ipi_for_rfence())
->>> +		tlb_remove_page_ptdesc(tlb, ptdesc);
->>> +	else
->>> +		tlb_remove_ptdesc(tlb, ptdesc);
->>>    }
->>>    #endif /* __PAGETABLE_PMD_FOLDED */
->>> @@ -180,7 +190,10 @@ static inline void __pte_free_tlb(struct mmu_gather *tlb, pgtable_t pte,
->>>    	struct ptdesc *ptdesc = page_ptdesc(pte);
->>>    	pagetable_pte_dtor(ptdesc);
->>> -	tlb_remove_page_ptdesc(tlb, ptdesc);
->>> +	if (riscv_use_ipi_for_rfence())
->>> +		tlb_remove_page_ptdesc(tlb, ptdesc);
->>> +	else
->>> +		tlb_remove_ptdesc(tlb, ptdesc);
->>>    }
->>>    #endif /* CONFIG_MMU */
->>> diff --git a/arch/riscv/include/asm/tlb.h b/arch/riscv/include/asm/tlb.h
->>> index 1eb5682b2af6..a0b8b853503f 100644
->>> --- a/arch/riscv/include/asm/tlb.h
->>> +++ b/arch/riscv/include/asm/tlb.h
->>> @@ -10,6 +10,24 @@ struct mmu_gather;
->>>    static void tlb_flush(struct mmu_gather *tlb);
->>> +#ifdef CONFIG_MMU
->>> +#include <linux/swap.h>
->>> +
->>> +/*
->>> + * While riscv platforms with riscv_ipi_for_rfence as true require an IPI to
->>> + * perform TLB shootdown, some platforms with riscv_ipi_for_rfence as false use
->>> + * SBI to perform TLB shootdown. To keep software pagetable walkers safe in this
->>> + * case we switch to RCU based table free (MMU_GATHER_RCU_TABLE_FREE). See the
->>> + * comment below 'ifdef CONFIG_MMU_GATHER_RCU_TABLE_FREE' in include/asm-generic/tlb.h
-
-
-A direct link would be better, I did not find the comment you mention 
-here and even though, it can still move around later.
-
-And then you can add:
-
-Reviewed-by: Alexandre Ghiti <alexghiti@rivosinc.com>
-
-Thanks!
-
-Alex
-
-
->>> + * for more details.
->>> + */
->>> +static inline void __tlb_remove_table(void *table)
->>> +{
->>> +	free_page_and_swap_cache(table);
->>> +}
->>> +
->>> +#endif /* CONFIG_MMU */
->>> +
->>>    #define tlb_flush tlb_flush
->>>    #include <asm-generic/tlb.h>
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+> ---
+>  fs/ext4/mballoc.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+> index 03500aec43ac..2bb29f0077bd 100644
+> --- a/fs/ext4/mballoc.c
+> +++ b/fs/ext4/mballoc.c
+> @@ -2303,6 +2303,9 @@ void ext4_mb_try_best_found(struct ext4_allocation_context *ac,
+>  		return;
+>  
+>  	ext4_lock_group(ac->ac_sb, group);
+> +	if (unlikely(EXT4_MB_GRP_BBITMAP_CORRUPT(e4b->bd_info)))
+> +		goto out;
+> +
+>  	max = mb_find_extent(e4b, ex.fe_start, ex.fe_len, &ex);
+>  
+>  	if (max > 0) {
+> @@ -2310,6 +2313,7 @@ void ext4_mb_try_best_found(struct ext4_allocation_context *ac,
+>  		ext4_mb_use_best_found(ac, e4b);
+>  	}
+>  
+> +out:
+>  	ext4_unlock_group(ac->ac_sb, group);
+>  	ext4_mb_unload_buddy(e4b);
+>  }
+> -- 
+> 2.31.1
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
