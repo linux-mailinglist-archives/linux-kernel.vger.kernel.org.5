@@ -1,178 +1,217 @@
-Return-Path: <linux-kernel+bounces-16803-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16804-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7877D82441F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 15:51:04 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5ED46824422
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 15:51:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 260151F228DA
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 14:51:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9405DB2398A
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 14:51:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E966F2375D;
-	Thu,  4 Jan 2024 14:50:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8B642375C;
+	Thu,  4 Jan 2024 14:51:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iOadmwT/"
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="BjfY4km8"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f41.google.com (mail-io1-f41.google.com [209.85.166.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C15623749;
-	Thu,  4 Jan 2024 14:50:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9AAA0C433C8;
-	Thu,  4 Jan 2024 14:50:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704379852;
-	bh=3JTuWT5QZksFXhz5QlHD6DJDpXXaLdQf2WuuHegnM8A=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=iOadmwT/HEsQjg0LSG4fy90jJHIrFTXlh+6JLqLrgEm0BT14qS1vxK8nJSiKdEz11
-	 WG0kEqPRDLeB9AXm5GHsOqFv/ltEUZk7uVUqn4YO9QUbcjpCDTzrMMzBv6AOxzKt3d
-	 EqejQbHVDr3vZa2fa7Ycz6tLADN0hM+6NMo9k3L5568ctdp1NNvzHH9Oejf0CSEBuH
-	 2WK+RsMDpbQuiJ01GlC3MIg2nGdRru3QeUZROJjPMYTleknVFPTxIx0aTNkrO6bcWN
-	 HW8iZHsXwQL/599bXvx1K4tzIUiUZmAxJoFYJ0qLys1D5b4V6/sY2QnlAFOWMt/Bs2
-	 vubs2tI5+akwA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 3C6A5CE130C; Thu,  4 Jan 2024 06:50:52 -0800 (PST)
-Date: Thu, 4 Jan 2024 06:50:52 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Sean Christopherson <seanjc@google.com>
-Cc: Like Xu <like.xu@linux.intel.com>, Andi Kleen <ak@linux.intel.com>,
-	Kan Liang <kan.liang@linux.intel.com>,
-	Luwei Kang <luwei.kang@intel.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-	kvm@vger.kernel.org, Breno Leitao <leitao@debian.org>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Ingo Molnar <mingo@redhat.com>
-Subject: Re: [BUG] Guest OSes die simultaneously (bisected)
-Message-ID: <c6d5dd6e-2dec-423c-af39-213f17b1a9db@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <3d8f5987-e09c-4dd2-a9c0-8ba22c9e948a@paulmck-laptop>
- <88f49775-2b56-48cc-81b8-651a940b7d6b@paulmck-laptop>
- <ZZX6pkHnZP777DVi@google.com>
- <77d7a3e3-f35e-4507-82c2-488405b25fa4@paulmck-laptop>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84E4623755
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 14:51:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-io1-f41.google.com with SMTP id ca18e2360f4ac-7bbe90357d8so26924539f.2
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 06:51:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1704379904; x=1704984704; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=or1h/yMnjb6tVAyJBd6HlW28SfRdcpAwUGvNMzv3A58=;
+        b=BjfY4km8d2TyCCCvkH/MBBhr/62VTu+nN/Jzh4dEHBEp7XZHum2le35+8dbDHwiMB2
+         4VxvXDU8apZ0vkHWsEz8TZct98hFG1qKRLH3MHOW9DcJfov99jizBVBhmsoKGoPMbala
+         ywvK6cVy+Oz1uiD0qj9PomcT2GXSmhPGXTN4g=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704379904; x=1704984704;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=or1h/yMnjb6tVAyJBd6HlW28SfRdcpAwUGvNMzv3A58=;
+        b=fio7++tbtA0mFpuBbSMjQaWtZO/Aq5oho8j0LUvcM0QzVcad+OVvgsCix4YxhS7aNt
+         SoZD+IqoQPnIRS+BEkWmjywcx6NM9xTcaAz/BMQ2RyyqPb6kqqSFA+K3kEzopjc/Z7kS
+         42eW0om4v5lF8zlxpq973+Kgce7eMfqKSY6Y8XNe1zD0Uk2ISRx70bi2r6RAjt62ur+f
+         7X4Cp3isBnv8qsZ1pVImBVijhEsqO+u1q9FYi0ucEjSsKmALOhpp5dNLV1s0A+XYcPvM
+         v5KS4qKSNBTaQnNACMSL/6I8KmP7yE3CoHRqafMOBget7XSQwo2Ok5E6LeL+QCp5tEPU
+         Hitg==
+X-Gm-Message-State: AOJu0YzH2ppYsCvyf9LWtc2Ezsx8mP4u6kusrGCvapRfh2T++Br0yZ3p
+	1VtKCrpeJyx8TDqtn4vlQ+g8+D7ERTFu/CXjLgN1SlUpHwR9
+X-Google-Smtp-Source: AGHT+IEYU2DLzWSUIVJNOwHaKCi+sergeBd9wsnJzrR/LxrNBZKPhWi9MLRYEkvnXrh64TiDxyY+/OhPCjGRQQYclA8=
+X-Received: by 2002:a05:6e02:1689:b0:35d:58ce:2322 with SMTP id
+ f9-20020a056e02168900b0035d58ce2322mr876045ila.5.1704379904640; Thu, 04 Jan
+ 2024 06:51:44 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <77d7a3e3-f35e-4507-82c2-488405b25fa4@paulmck-laptop>
+References: <20240102081402.1226795-1-treapking@chromium.org>
+ <eed88b36-ae56-40d3-8588-0d5d75da71a6@collabora.com> <5520e8e3-c75b-480f-b831-c40b5cca029f@collabora.com>
+In-Reply-To: <5520e8e3-c75b-480f-b831-c40b5cca029f@collabora.com>
+From: Pin-yen Lin <treapking@chromium.org>
+Date: Thu, 4 Jan 2024 22:51:33 +0800
+Message-ID: <CAEXTbpeqRsWNgZE3ZgcFKogxv-tjAmQT=D6o6X4ViuG5ZZFCHQ@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] clk: mediatek: Introduce need_pm_runtime to mtk_clk_desc
+To: Eugen Hristev <eugen.hristev@collabora.com>, 
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Cc: Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, 
+	Matthias Brugger <matthias.bgg@gmail.com>, Chen-Yu Tsai <wenst@chromium.org>, 
+	linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Weiyi Lu <weiyi.lu@mediatek.com>, 
+	linux-mediatek@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 03, 2024 at 05:00:35PM -0800, Paul E. McKenney wrote:
-> On Wed, Jan 03, 2024 at 04:24:06PM -0800, Sean Christopherson wrote:
-> > On Wed, Jan 03, 2024, Paul E. McKenney wrote:
-> > > On Wed, Jan 03, 2024 at 02:22:23PM -0800, Paul E. McKenney wrote:
-> > > > Hello!
-> > > > 
-> > > > Since some time between v5.19 and v6.4, long-running rcutorture tests
-> > > > would (rarely but intolerably often) have all guests on a given host die
-> > > > simultaneously with something like an instruction fault or a segmentation
-> > > > violation.
-> > > > 
-> > > > Each bisection step required 20 hosts running 10 hours each, and
-> > > > this eventually fingered commit c59a1f106f5c ("KVM: x86/pmu: Add
-> > > > IA32_PEBS_ENABLE MSR emulation for extended PEBS").  Although this commit
-> > > > is certainly messing with things that could possibly cause all manner
-> > > > of mischief, I don't immediately see a smoking gun.  Except that the
-> > > > commit prior to this one is rock solid.
-> > > > Just to make things a bit more exciting, bisection in mainline proved
-> > > > to be problematic due to bugs of various kinds that hid this one.  I was
-> > > > therefore forced to bisect among the commits backported to the internal
-> > > > v5.19-based kernel, which fingered the backported version of the patch
-> > > > called out above.
-> > > 
-> > > Ah, and so why do I believe that this is a problem in mainline rather
-> > > than just (say) a backporting mistake?
-> > > 
-> > > Because this issue was first located in v6.4, which already has this
-> > > commit included.
-> > > 
-> > > 							Thanx, Paul
-> > > 
-> > > > Please note that this is not (yet) an emergency.  I will just continue
-> > > > to run rcutorture on v5.19-based hypervisors in the meantime.
-> > > > 
-> > > > Any suggestions for debugging or fixing?
-> > 
-> > This looks suspect:
-> > 
-> > +       u64 pebs_mask = cpuc->pebs_enabled & x86_pmu.pebs_capable;
-> > +       int global_ctrl, pebs_enable;
-> >  
-> > -       arr[0].msr = MSR_CORE_PERF_GLOBAL_CTRL;
-> > -       arr[0].host = intel_ctrl & ~cpuc->intel_ctrl_guest_mask;
-> > -       arr[0].guest = intel_ctrl & ~cpuc->intel_ctrl_host_mask;
-> > -       arr[0].guest &= ~(cpuc->pebs_enabled & x86_pmu.pebs_capable);
-> > -       *nr = 1;
-> > +       *nr = 0;
-> > +       global_ctrl = (*nr)++;
-> > +       arr[global_ctrl] = (struct perf_guest_switch_msr){
-> > +               .msr = MSR_CORE_PERF_GLOBAL_CTRL,
-> > +               .host = intel_ctrl & ~cpuc->intel_ctrl_guest_mask,
-> > +               .guest = intel_ctrl & (~cpuc->intel_ctrl_host_mask | ~pebs_mask),
-> > +       };
-> > 
-> > 
-> > IIUC (always a big if with this code), the intent is that the guest's version of
-> > PERF_GLOBAL_CTRL gets bits that are (a) not exclusive to the host and (b) not
-> > being used for PEBS.  (b) is necessary because PEBS generates records in memory
-> > using virtual addresses, i.e. the CPU will write to memory using a virtual address
-> > that is valid for the host but not the guest.  And so PMU counters that are
-> > configured to generate PEBS records need to be disabled while running the guest.
-> > 
-> > Before that commit, the logic was:
-> > 
-> >   guest[PERF_GLOBAL_CTRL] = ctrl & ~host;
-> >   guest[PERF_GLOBAL_CTRL] &= ~pebs;
-> > 
-> > But after, it's now:
-> > 
-> >   guest[PERF_GLOBAL_CTRL] = ctrl & (~host | ~pebs);
-> > 
-> > I.e. the kernel is enabled counters in the guest that are not host-only OR not
-> > PEBS.  E.g. if only counter 0 is in use, it's using PEBS, but it's not exclusive
-> > to the host, then the new code will yield (truncated to a single byte for sanity)
-> > 
-> >   1 = 1 & (0xf | 0xe)
-> > 
-> > and thus keep counter 0 enabled, whereas the old code would yield
-> > 
-> >   1 = 1 & 0xf
-> >   0 = 1 & 0xe
-> > 
-> > A bit of a shot in the dark and completed untested, but I think this is the correct
-> > fix?
-> 
-> I am firing off some tests, and either way, thank you very much!!!
+Hi Eugen and Angelo,
 
-Woo-hoo!!!  ;-)
+Unfortunately, I don't have a way to reliably reproduce this either.
 
-Tested-by: Paul E. McKenney <paulmck@kernel.org>
+We notice this issue from the automatic crash reports sent from the
+users, but we are still not able to reproduce this locally.  So our
+plan is to ship this patch to the users and see if the crash rate goes
+down after a month or so.
 
-Will you be sending a proper patch, or would you prefer that I do so?
-In the latter case, I would need your Signed-off-by.
+Regards,
+Pin-yen
 
-And again, thank you very much!!!
-
-							Thanx, Paul
-
-> > diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
-> > index a08f794a0e79..92d5a3464cb2 100644
-> > --- a/arch/x86/events/intel/core.c
-> > +++ b/arch/x86/events/intel/core.c
-> > @@ -4056,7 +4056,7 @@ static struct perf_guest_switch_msr *intel_guest_get_msrs(int *nr, void *data)
-> >         arr[global_ctrl] = (struct perf_guest_switch_msr){
-> >                 .msr = MSR_CORE_PERF_GLOBAL_CTRL,
-> >                 .host = intel_ctrl & ~cpuc->intel_ctrl_guest_mask,
-> > -               .guest = intel_ctrl & (~cpuc->intel_ctrl_host_mask | ~pebs_mask),
-> > +               .guest = intel_ctrl & ~(cpuc->intel_ctrl_host_mask | pebs_mask),
-> >         };
-> >  
-> >         if (!x86_pmu.pebs)
-> > 
+On Wed, Jan 3, 2024 at 9:20=E2=80=AFPM Eugen Hristev
+<eugen.hristev@collabora.com> wrote:
+>
+> On 1/3/24 14:19, AngeloGioacchino Del Regno wrote:
+> > Il 02/01/24 09:12, Pin-yen Lin ha scritto:
+> >> Introduce a new need_pm_runtime variable to mtk_clk_desc to indicate
+> >> this clock needs a runtime PM get on the clock controller during the
+> >> probing stage.
+> >>
+> >> Signed-off-by: Pin-yen Lin <treapking@chromium.org>
+> >
+> > Hello Pin-yen,
+> >
+> > We have experienced something similar, but it was really hard to reprod=
+uce after
+> > some changes.
+> >
+> > In an effort to try to solve this issue (but again, reproducing is real=
+ly hard),
+> > Eugen has sent a commit in the hope that someone else found a way to ea=
+sily
+> > reproduce. Please look at [1].
+> >
+> > I'm also adding Eugen to the Cc's of this email.
+> >
+> > Cheers,
+> > Angelo
+> >
+> > [1]:
+> > https://patchwork.kernel.org/project/linux-pm/patch/20231225133615.7899=
+3-1-eugen.hristev@collabora.com/
+>
+> Hello Pin-yen,
+>
+> Can you try my patch and let me know if this changes anything for you ?
+>
+> If it does not change anything, can you also try this one as well ? It's =
+another
+> attempt to fix the synchronization with genpd.
+>
+> https://lore.kernel.org/linux-arm-kernel/20231129113120.4907-1-eugen.hris=
+tev@collabora.com/
+>
+> Thanks,
+> Eugen
+>
+> >
+> >> ---
+> >>
+> >> Changes in v2:
+> >> - Fix the order of error handling
+> >> - Update the commit message and add a comment before the runtime PM ca=
+ll
+> >>
+> >>   drivers/clk/mediatek/clk-mtk.c | 15 +++++++++++++++
+> >>   drivers/clk/mediatek/clk-mtk.h |  2 ++
+> >>   2 files changed, 17 insertions(+)
+> >>
+> >> diff --git a/drivers/clk/mediatek/clk-mtk.c b/drivers/clk/mediatek/clk=
+-mtk.c
+> >> index 2e55368dc4d8..c31e535909c8 100644
+> >> --- a/drivers/clk/mediatek/clk-mtk.c
+> >> +++ b/drivers/clk/mediatek/clk-mtk.c
+> >> @@ -13,6 +13,7 @@
+> >>   #include <linux/of.h>
+> >>   #include <linux/of_address.h>
+> >>   #include <linux/platform_device.h>
+> >> +#include <linux/pm_runtime.h>
+> >>   #include <linux/slab.h>
+> >>
+> >>   #include "clk-mtk.h"
+> >> @@ -494,6 +495,14 @@ static int __mtk_clk_simple_probe(struct platform=
+_device *pdev,
+> >>                      return IS_ERR(base) ? PTR_ERR(base) : -ENOMEM;
+> >>      }
+> >>
+> >> +
+> >> +    if (mcd->need_runtime_pm) {
+> >> +            devm_pm_runtime_enable(&pdev->dev);
+> >> +            r =3D pm_runtime_resume_and_get(&pdev->dev);
+> >> +            if (r)
+> >> +                    return r;
+> >> +    }
+> >> +
+> >>      /* Calculate how many clk_hw_onecell_data entries to allocate */
+> >>      num_clks =3D mcd->num_clks + mcd->num_composite_clks;
+> >>      num_clks +=3D mcd->num_fixed_clks + mcd->num_factor_clks;
+> >> @@ -574,6 +583,9 @@ static int __mtk_clk_simple_probe(struct platform_=
+device *pdev,
+> >>                      goto unregister_clks;
+> >>      }
+> >>
+> >> +    if (mcd->need_runtime_pm)
+> >> +            pm_runtime_put(&pdev->dev);
+> >> +
+> >>      return r;
+> >>
+> >>   unregister_clks:
+> >> @@ -604,6 +616,9 @@ static int __mtk_clk_simple_probe(struct platform_=
+device *pdev,
+> >>   free_base:
+> >>      if (mcd->shared_io && base)
+> >>              iounmap(base);
+> >> +
+> >> +    if (mcd->need_runtime_pm)
+> >> +            pm_runtime_put(&pdev->dev);
+> >>      return r;
+> >>   }
+> >>
+> >> diff --git a/drivers/clk/mediatek/clk-mtk.h b/drivers/clk/mediatek/clk=
+-mtk.h
+> >> index 22096501a60a..c17fe1c2d732 100644
+> >> --- a/drivers/clk/mediatek/clk-mtk.h
+> >> +++ b/drivers/clk/mediatek/clk-mtk.h
+> >> @@ -237,6 +237,8 @@ struct mtk_clk_desc {
+> >>
+> >>      int (*clk_notifier_func)(struct device *dev, struct clk *clk);
+> >>      unsigned int mfg_clk_idx;
+> >> +
+> >> +    bool need_runtime_pm;
+> >>   };
+> >>
+> >>   int mtk_clk_pdev_probe(struct platform_device *pdev);
+> >
+> >
+> >
+> >
+>
 
