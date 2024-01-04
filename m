@@ -1,383 +1,151 @@
-Return-Path: <linux-kernel+bounces-16713-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16714-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC9738242D1
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 14:43:22 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D09B48242D2
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 14:43:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 627301F24BF8
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 13:43:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2D6DDB212D8
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 13:43:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C8F52134F;
-	Thu,  4 Jan 2024 13:43:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B2CE22337;
+	Thu,  4 Jan 2024 13:43:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ELfDU5Hd"
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="GV10Xjne"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2041.outbound.protection.outlook.com [40.107.236.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88595224C0;
-	Thu,  4 Jan 2024 13:43:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a271a28aeb4so59307066b.2;
-        Thu, 04 Jan 2024 05:43:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704375790; x=1704980590; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=HbeyHQ1rUcqV4dwET8z8R4TsNDpuCB5qN0CZweVYSGU=;
-        b=ELfDU5HdutR8Sljse1SORUyrOV6ro+hhJUCE9AK8SgqCbNYGbhhXUZbjP38mxFbhR4
-         PF1w7pacnZ/UPw59wPC0mF2QOjIC9iThgshVM/X0/W9nvRlf7oaYRAQm8lnjx9HhhcsJ
-         okjFqlZeXQreREtet8ZoEFLYVh90DMUH8pnORmeivOiZYf/aFfgewdQrSKqJi2RQrgQk
-         PFmD2c8tqFoZwOlXHQQKBz8v5lnyM53dypKpQ572ZUt+KH7ChzaCwxS7YqVyYR2Se3sg
-         j6zwfdPQbnu5inXJGz6Ffas7RqOgXmB5rya90cLAA+G9lVU5ZNfI/02wpNAb1xNYwK6z
-         fy7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704375790; x=1704980590;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HbeyHQ1rUcqV4dwET8z8R4TsNDpuCB5qN0CZweVYSGU=;
-        b=KTTuYzFfnV2KWaEeRLx682mt6BjKlgAcfb151QrN5ktF3mDjRt+VluWOiiCKrhcZYL
-         0WeqP6P9suweGmg8sMVCCE2x2u01acrzdrxtmF3cBSkZhvdZiDyrqA0X8rpdHkOQi2O9
-         5JNxvnYBNisVUzB2jlI/7DwoZV0z8P7z3xXnDdph5eNAJ3jLDGos9Kq8dpd4gYheuou5
-         KizKVamSoBhbyYSuibXfqCTJBZ1OCorqtGQIXOrUc38VnuQPmf/P8z3Nhx3PQkpiro+p
-         ccisk3E4v3OD+K+myOC/hRAwbnb9M8mbWOjd7J7Af/DfM73wdKG5uChuP8mky0+AE5XE
-         ydkw==
-X-Gm-Message-State: AOJu0YymQ1sCsWYcJcIj12F/0K5UMlGTqt+6FEr5bD5QoFp6hYLYhb6d
-	efNrKJdiLgMRM3p86kv8+d0=
-X-Google-Smtp-Source: AGHT+IGANj+Sn306j6NLEDqnWaQ9NE+nZrW6j5GCO+fqezjzdxC7lSuQvOPOC/qEkFAz2rGHPZTrvw==
-X-Received: by 2002:a17:907:8703:b0:a28:b8a0:20ef with SMTP id qn3-20020a170907870300b00a28b8a020efmr328256ejc.146.1704375789471;
-        Thu, 04 Jan 2024 05:43:09 -0800 (PST)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id gi20-20020a1709070c9400b00a26a25d9205sm13775909ejc.16.2024.01.04.05.43.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Jan 2024 05:43:09 -0800 (PST)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Thu, 4 Jan 2024 14:43:07 +0100
-To: Barret Rhoden <brho@google.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>, mattbobrowski@google.com,
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 bpf-next 2/2] selftests/bpf: add inline assembly
- helpers to access array elements
-Message-ID: <ZZa1668ft4Npd1DA@krava>
-References: <20240103185403.610641-1-brho@google.com>
- <20240103185403.610641-3-brho@google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EEA72232E;
+	Thu,  4 Jan 2024 13:43:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=l/4mI0obpgPCfUyjCrCeTFAW8FIA9VTy7QFtFXYluMZ/iLrSOiPZg0WEvGRuRzHtzBT+NX+jEzRmy/U2hp+iHvYQlqXJpWwRWC/8Ml0lvmewNirj9Bew9hdEkTOJZcCvOvooXqXSgGKjWTZMt+9iPE9N8QUkJFv7Ay19Gw8umzJTIVgvCWidgRPdNM+xm2Rpv7HiUcNUIYD9VsrlrHt2q2MAgL2E2vQj4YMgixOE3so0nzczvvbmd01Mra55lAKhNs+ERnFgUt8OvrLTQupNyrLdJyFBrz1M3yZHNourktiLm+cAQ9rTeGfwVo9ZVRK2qNsoiE2BQttvzH9B+9tkMg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=B2eaFHQ70lU8AKmYZJzEro0RtOux318vRyRxAP1gJOk=;
+ b=mHD8Yolp8vtMqpBI21sr/drgcwTZLpEev4mI0C4gCRAEsJrC8JcQO/Hc5FlfBcWvdwZ6nA1xRz26E7jKognsUmcbe+CTnBwoL0nZllrQ6uJHEdZ7d7ofTNxHvNj7EYAVqQfVSrlfsF6dJUhTGOa3YU4YRrmbYib72b+rsIB/+LaZZ8tZiDoyOrepCzUzAGc5jI8Zw4Q6VqdIHujRvFSSCuQzDceBoQyR/SpxdrqRz3azmLO8LhWqowVlVOYb/p64GgagNmCYzOVSHhmHZjF+p8V8Evgxffqggj9DhK4yyOrDCzEfPjwNGhHIG1cWHZah1LeVGP0/Lo/jpqPLn34Fbw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=B2eaFHQ70lU8AKmYZJzEro0RtOux318vRyRxAP1gJOk=;
+ b=GV10XjneFoKiNu3AeYGwB11fjdCuapb98fe7cgPtn44WBc0tyHrtExoRpB9ZweWzdukTv0uotmSv+mejUFnMGC5sSt3CYxwkhwkcvOVfrSxKugb+SmSjScGKh3nU4OB2NJkctnVGQi5TWe6cuMzcv07h7Qta3eXHrLO0aBYliXY=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from DM6PR12MB3657.namprd12.prod.outlook.com (2603:10b6:5:149::18)
+ by MW4PR12MB7360.namprd12.prod.outlook.com (2603:10b6:303:22b::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.15; Thu, 4 Jan
+ 2024 13:43:29 +0000
+Received: from DM6PR12MB3657.namprd12.prod.outlook.com
+ ([fe80::5786:22a:27df:9a70]) by DM6PR12MB3657.namprd12.prod.outlook.com
+ ([fe80::5786:22a:27df:9a70%7]) with mapi id 15.20.7159.013; Thu, 4 Jan 2024
+ 13:43:29 +0000
+Date: Thu, 4 Jan 2024 14:43:23 +0100
+From: Robert Richter <rrichter@amd.com>
+To: Dan Williams <dan.j.williams@intel.com>
+Cc: Ira Weiny <ira.weiny@intel.com>, Davidlohr Bueso <dave@stgolabs.net>,
+	Jonathan Cameron <jonathan.cameron@huawei.com>,
+	Dave Jiang <dave.jiang@intel.com>,
+	Alison Schofield <alison.schofield@intel.com>,
+	Vishal Verma <vishal.l.verma@intel.com>, linux-cxl@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Fan Ni <nifan.cxl@gmail.com>,
+	Lukas Wunner <lukas@wunner.de>
+Subject: Re: [PATCH] cxl/pci: Get rid of pointer arithmetic reading CDAT table
+Message-ID: <ZZa1-11632f6CckT@rric.localdomain>
+References: <20231116-fix-cdat-devm-free-v1-1-b148b40707d7@intel.com>
+ <ZVfIaNhiSc-yQZo5@rric.localdomain>
+ <ZVfJ6Fxidvw_gz7r@rric.localdomain>
+ <657bd741d2961_269bd294d@dwillia2-mobl3.amr.corp.intel.com.notmuch>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <657bd741d2961_269bd294d@dwillia2-mobl3.amr.corp.intel.com.notmuch>
+X-ClientProxiedBy: FR5P281CA0016.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:f1::14) To DM6PR12MB3657.namprd12.prod.outlook.com
+ (2603:10b6:5:149::18)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240103185403.610641-3-brho@google.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6PR12MB3657:EE_|MW4PR12MB7360:EE_
+X-MS-Office365-Filtering-Correlation-Id: 49de766a-83c3-4171-39de-08dc0d2b227e
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	C8alWrvibIMM6wgXeClth5z5CBVxSEOfsnF1Nx7Vze6BYqfE8Y62fyuZYkAtGJn00RkgqOp2NA6qP6IrNdX2nnDh/jOWMXNZqtpQlCHz7TOyN+828U7irfrqRHquZ668L8vXMBS9gL7i1A52yr76v3xyl87bCIfD3lct95PeEWmUO5LZVTaLRoAziaiBjzv6h9aYqMzrXtyLtEEL3ccvFuhY56a5ufHkqUu5XLd0NtI9UMPH9qbll4SIjfXA0QZCCR/M/W0k9xPJM+dbL0u9ZGcUOQ4Qswd2IzXB2uBiTAPgORqevL+GSRXU24KjcPA2avDl+doaXnx2z/j8PU1SFmJWZkqBuJ4BPSQGb4NUlwVasFh95N1ZgO7u0HhUUgjW2vRR5DIYVZvIacFguIMvgUxOtfqH/0/DGxl206CgeXZ7H8zHY3i7L6mqZEuSutzw+H4SdBpQZ//o1uOXe+t7KV34VBW29nsg5mLdXv5wLkYe69NqA2MQWmQ1ZxHL7UqkCtrd9WRUqMyhHLLwBxuuIS5FYli7wjhibzZP3MtkDS8SkjlgZsnVCciRoSJ9Eh1uJHejXhzVwDqEdA1NraUdEFgA3xt9VjYjhC4azdBrXTvnHqsI5eLMlKqZNSVYdc9ay3ijn7ruMY3jNb8fdMvEjg==
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3657.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(136003)(346002)(396003)(39860400002)(376002)(230922051799003)(1800799012)(186009)(451199024)(64100799003)(316002)(54906003)(66556008)(6916009)(66946007)(66476007)(8676002)(4326008)(8936002)(53546011)(9686003)(6512007)(6506007)(6666004)(6486002)(478600001)(41300700001)(2906002)(5660300002)(4744005)(7416002)(38100700002)(26005)(83380400001)(26583001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?OYIMF377hacjKLsdaPsRmFDVFp7ljWrVnkIAp721gbxzHdbUhbXGB2WpAN8K?=
+ =?us-ascii?Q?y/f4+5x9OjebU+SH1URv5WLm0j3W/6aW61rNeqzaFbopx7vjt+qhnJugr5uC?=
+ =?us-ascii?Q?Dnb/AMiltJJZFYDun6DkShjEmEGW6B6StyMXhKqAU53jSU93/x0xDxWm4HDN?=
+ =?us-ascii?Q?qpGz3PFwbmx8Vu1G42lGJgwn3pVcv+toXRfd8v3yKTCWRHwlmFXaMbeBiDOU?=
+ =?us-ascii?Q?ouwt4N7X1GBo0+QD2BsnIhgto3iWzIjyBpQ0Tpgznzft78olsiyU4yNx24J3?=
+ =?us-ascii?Q?g13o8QztjwHDG6awcqBjwwU7bZM00VRroa9UzOYX6i9QVNQ/8iDyXQqx/7PE?=
+ =?us-ascii?Q?bYR6FFhKyVuht0CEgQMVM1FG/NbGjwCtS5wVQwig0u/XIx2bdhxe/NIy+A3b?=
+ =?us-ascii?Q?VroTn6F6wozLNlp8fezSMougeRWdzhHuP9dKXV/XRND6+TCv3QM+Hgw1FmCa?=
+ =?us-ascii?Q?XBbt9yWF5IpPtBOXWI4zngd0WWiLxaesXuwro/lqronRmRoDjKF3C39hZTdQ?=
+ =?us-ascii?Q?9nN92wMpFPmV4Wi7p+ik5D9cyz885JI4KsPQn0OQs2k1qd1XiXuRZGFUEbTA?=
+ =?us-ascii?Q?ou92n6OyCNRUDzbZh3cGOt359OinEKPdZNmVte8MjuYH63IvzJP6xYCsROtm?=
+ =?us-ascii?Q?rJiHA1+Ch4bMF7jtR6FISG1Ox3rQNmLHPHVMImXPhxdwBiHCFevSGxO/0j6a?=
+ =?us-ascii?Q?KFKVzkGyZKQEBwOzJhJJDoNyDSpDLLhKlD1dAMg9gjIxNmJ11kPwWVu6jnha?=
+ =?us-ascii?Q?81PQdw9/N3blvIDqzrmgIlvgFQWEKMMAqjKU6fLRY/XVyOxXbAl8AtvFPkcb?=
+ =?us-ascii?Q?CFEjGKWwkDrfMzhqHa8O4paVLFnpDYc99XFvW7XwoE2sjyfk8/T6WHBvz2+4?=
+ =?us-ascii?Q?oVt4RniCTs0vMh34PNLCp48K/BxihF1ys4Zh6keDr9GXcogoX53qHOWYl/BP?=
+ =?us-ascii?Q?G6N+8NektolF4XtDr9S/yeTMwwTCJZYtyWqjYYtSu/eJAXLVhKFkKDs22YwV?=
+ =?us-ascii?Q?VlazFO75ExCggdDKuWLr6fuNoUnTHOy5u0Tvx4B5SbJ6utovumFyM9Cp7YCL?=
+ =?us-ascii?Q?DDkE5JcHXTz8+H13G6Fxg33qmmJacTqBdC03mml1EgyQFjqhfCJ/ypr61zVg?=
+ =?us-ascii?Q?hJgjW37Zo8V/3Q8M1w5DyCh+qSzcxq5oMH6spCf9I7+Ard4UPgZCplii1YKn?=
+ =?us-ascii?Q?4X5x84B2eHOoW87ZS4SiW4MFc4bhr9yFRtnmYpOn4oPEpIHY1UO2IfkhjaXb?=
+ =?us-ascii?Q?BtvYshzkMC9T6+TVsywJY4UD8BEOG+fhgyief8gYM1k4ifhvyp2XpWs72Gzw?=
+ =?us-ascii?Q?eYwESHeabxjvqkV6q+Hr/LGU0uojbhH9o7nAxyIBfxcVrrrsNLw1XIkV732d?=
+ =?us-ascii?Q?DiYOfH0Ba0u5JpVTgG/QXPiqBiRlAA5GRhtl/zPOpJ1xk2nRkmBw89SJw2E/?=
+ =?us-ascii?Q?ZSw+vb6BwpXnxLM4lyvX2IqwtHN6fnkemZR8D7fFWFTqoLQx4eY/i3/CPtzt?=
+ =?us-ascii?Q?Iixa+/j9aQoFwwPDMSZ/oihBhx8Smx0e+tHPt/AQHG4VnzIfiaGud6/XGQt2?=
+ =?us-ascii?Q?OY9NAnpLp5qBg6/VzHRpXfRlkPcUVgBsWB9R5NTN?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 49de766a-83c3-4171-39de-08dc0d2b227e
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3657.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Jan 2024 13:43:29.4749
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 8xPbcvwf8SIZmF40hKQwAOVvneGYI9BHLKUERky7FF8bqfdZJN3/mVjDi68ltdUcfM9RtaiElB6Bs5+35S7Vbg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR12MB7360
 
-On Wed, Jan 03, 2024 at 01:53:59PM -0500, Barret Rhoden wrote:
+On 14.12.23 20:34:09, Dan Williams wrote:
 
-SNIP
-
-> +
-> +
-> +/* Test that attempting to load a bad program fails. */
-> +#define test_bad(PROG) ({						\
-> +	struct array_elem_test *skel;					\
-> +	int err;							\
-> +	skel = array_elem_test__open();					\
-> +	if (!ASSERT_OK_PTR(skel, "array_elem_test open"))		\
-> +		return;							\
-> +	bpf_program__set_autoload(skel->progs.x_bad_ ## PROG, true); 	\
-> +	err = array_elem_test__load(skel);				\
-> +	ASSERT_ERR(err, "array_elem_test load " # PROG);		\
-> +	array_elem_test__destroy(skel);					\
-> +})
-
-I wonder we could use the existing RUN_TESTS macro and use tags
-in programs like we do for example in progs/test_global_func1.c:
-
-  SEC("tc")
-  __failure __msg("combined stack size of 4 calls is 544")
-  int global_func1(struct __sk_buff *skb)
-
-jirka
-
-
-> +
-> +void test_test_array_elem(void)
-> +{
-> +	if (test__start_subtest("array_elem_access_all"))
-> +		test_access_all();
-> +	if (test__start_subtest("array_elem_oob_access"))
-> +		test_oob_access();
-> +	if (test__start_subtest("array_elem_access_array_map_infer_sz"))
-> +		test_access_array_map_infer_sz();
-> +	if (test__start_subtest("array_elem_bad_map_array_access"))
-> +		test_bad(map_array_access);
-> +	if (test__start_subtest("array_elem_bad_bss_array_access"))
-> +		test_bad(bss_array_access);
-> +}
-> diff --git a/tools/testing/selftests/bpf/progs/array_elem_test.c b/tools/testing/selftests/bpf/progs/array_elem_test.c
-> new file mode 100644
-> index 000000000000..9d48afc933f0
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/array_elem_test.c
-> @@ -0,0 +1,195 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (c) 2024 Google LLC. */
-> +#include <stdbool.h>
-> +#include <linux/types.h>
-> +#include <linux/bpf.h>
-> +#include <bpf/bpf_helpers.h>
-> +#include <bpf/bpf_tracing.h>
-> +#include "bpf_misc.h"
-> +
-> +char _license[] SEC("license") = "GPL";
-> +
-> +int target_pid = 0;
-> +
-> +#define NR_MAP_ELEMS 100
-> +
-> +/*
-> + * We want to test valid accesses into an array, but we also need to fool the
-> + * verifier.  If we just do for (i = 0; i < 100; i++), the verifier knows the
-> + * value of i and can tell we're inside the array.
-> + *
-> + * This "lookup" array is just the values 0, 1, 2..., such that
-> + * lookup_indexes[i] == i.  (set by userspace).  But the verifier doesn't know
-> + * that.
-> + */
-> +unsigned int lookup_indexes[NR_MAP_ELEMS];
-> +
-> +/* Arrays can be in the BSS or inside a map element.  Make sure both work. */
-> +int bss_elems[NR_MAP_ELEMS];
-> +
-> +struct map_array {
-> +	int elems[NR_MAP_ELEMS];
-> +};
-> +
-> +/*
-> + * This is an ARRAY_MAP of a single struct, and that struct is an array of
-> + * elements.  Userspace can mmap the map as if it was just a basic array of
-> + * elements.  Though if you make an ARRAY_MAP where the *values* are ints, don't
-> + * forget that bpf map elements are rounded up to 8 bytes.
-> + *
-> + * Once you get the pointer to the base of the inner array, you can access all
-> + * of the elements without another bpf_map_lookup_elem(), which is useful if you
-> + * are operating on multiple elements while holding a spinlock.
-> + */
-> +struct {
-> +	__uint(type, BPF_MAP_TYPE_ARRAY);
-> +	__uint(max_entries, 1);
-> +	__type(key, int);
-> +	__type(value, struct map_array);
-> +	__uint(map_flags, BPF_F_MMAPABLE);
-> +} arraymap SEC(".maps");
-> +
-> +static struct map_array *get_map_array(void)
-> +{
-> +	int zero = 0;
-> +
-> +	return bpf_map_lookup_elem(&arraymap, &zero);
-> +}
-> +
-> +static int *get_map_elems(void)
-> +{
-> +	struct map_array *arr = get_map_array();
-> +
-> +	if (!arr)
-> +		return NULL;
-> +	return arr->elems;
-> +}
-> +
-> +/*
-> + * Test that we can access all elements, and that we are accessing the element
-> + * we think we are accessing.
-> + */
-> +static void access_all(void)
-> +{
-> +	int *map_elems = get_map_elems();
-> +	int *x;
-> +
-> +	for (int i = 0; i < NR_MAP_ELEMS; i++) {
-> +		x = bpf_array_elem(map_elems, NR_MAP_ELEMS, lookup_indexes[i]);
-> +		if (x)
-> +			*x = i;
-> +	}
-> +
-> +	for (int i = 0; i < NR_MAP_ELEMS; i++) {
-> +		x = bpf_array_sz_elem(bss_elems, lookup_indexes[i]);
-> +		if (x)
-> +			*x = i;
-> +	}
-> +}
-> +
-> +SEC("?tp/syscalls/sys_enter_nanosleep")
-> +int x_access_all(void *ctx)
-> +{
-> +	if ((bpf_get_current_pid_tgid() >> 32) != target_pid)
-> +		return 0;
-> +	access_all();
-> +	return 0;
-> +}
-> +
-> +/*
-> + * Helper for various OOB tests.  An out-of-bound access should be handled like
-> + * a lookup failure.  Specifically, the verifier should ensure we do not access
-> + * outside the array.  Userspace will check that we didn't access somewhere
-> + * inside the array.
-> + */
-> +static void set_elem_to_1(long idx)
-> +{
-> +	int *map_elems = get_map_elems();
-> +	int *x;
-> +
-> +	x = bpf_array_elem(map_elems, NR_MAP_ELEMS, idx);
-> +	if (x)
-> +		*x = 1;
-> +	x = bpf_array_sz_elem(bss_elems, idx);
-> +	if (x)
-> +		*x = 1;
-> +}
-> +
-> +/*
-> + * Test various out-of-bounds accesses.
-> + */
-> +static void oob_access(void)
-> +{
-> +	set_elem_to_1(NR_MAP_ELEMS + 5);
-> +	set_elem_to_1(NR_MAP_ELEMS);
-> +	set_elem_to_1(-1);
-> +	set_elem_to_1(~0UL);
-> +}
-> +
-> +SEC("?tp/syscalls/sys_enter_nanosleep")
-> +int x_oob_access(void *ctx)
-> +{
-> +	if ((bpf_get_current_pid_tgid() >> 32) != target_pid)
-> +		return 0;
-> +	oob_access();
-> +	return 0;
-> +}
-> +
-> +/*
-> + * Test that we can use the ARRAY_SIZE-style helper with an array in a map.
-> + *
-> + * Note that you cannot infer the size of the array from just a pointer; you
-> + * have to use the actual elems[100].  i.e. this will fail and should fail to
-> + * compile (-Wsizeof-pointer-div):
-> + *
-> + *	int *map_elems = get_map_elems();
-> + *	x = bpf_array_sz_elem(map_elems, lookup_indexes[i]);
-> + */
-> +static void access_array_map_infer_sz(void)
-> +{
-> +	struct map_array *arr = get_map_array();
-> +	int *x;
-> +
-> +	for (int i = 0; i < NR_MAP_ELEMS; i++) {
-> +		x = bpf_array_sz_elem(arr->elems, lookup_indexes[i]);
-> +		if (x)
-> +			*x = i;
-> +	}
-> +}
-> +
-> +SEC("?tp/syscalls/sys_enter_nanosleep")
-> +int x_access_array_map_infer_sz(void *ctx)
-> +{
-> +	if ((bpf_get_current_pid_tgid() >> 32) != target_pid)
-> +		return 0;
-> +	access_array_map_infer_sz();
-> +	return 0;
-> +}
-> +
-> +
-> +
-> +SEC("?tp/syscalls/sys_enter_nanosleep")
-> +int x_bad_map_array_access(void *ctx)
-> +{
-> +	int *map_elems = get_map_elems();
-> +
-> +	/*
-> +	 * Need to check to promote map_elems from MAP_OR_NULL to MAP so that we
-> +	 * fail to load below for the right reason.
-> +	 */
-> +	if (!map_elems)
-> +		return 0;
-> +	/* Fail to load: we don't prove our access is inside map_elems[] */
-> +	for (int i = 0; i < NR_MAP_ELEMS; i++)
-> +		map_elems[lookup_indexes[i]] = i;
-> +	return 0;
-> +}
-> +
-> +SEC("?tp/syscalls/sys_enter_nanosleep")
-> +int x_bad_bss_array_access(void *ctx)
-> +{
-> +	/* Fail to load: we don't prove our access is inside bss_elems[] */
-> +	for (int i = 0; i < NR_MAP_ELEMS; i++)
-> +		bss_elems[lookup_indexes[i]] = i;
-> +	return 0;
-> +}
-> diff --git a/tools/testing/selftests/bpf/progs/bpf_misc.h b/tools/testing/selftests/bpf/progs/bpf_misc.h
-> index 2fd59970c43a..002bab44cde2 100644
-> --- a/tools/testing/selftests/bpf/progs/bpf_misc.h
-> +++ b/tools/testing/selftests/bpf/progs/bpf_misc.h
-> @@ -135,4 +135,47 @@
->  /* make it look to compiler like value is read and written */
->  #define __sink(expr) asm volatile("" : "+g"(expr))
->  
-> +/*
-> + * Access an array element within a bound, such that the verifier knows the
-> + * access is safe.
-> + *
-> + * This macro asm is the equivalent of:
-> + *
-> + *	if (!arr)
-> + *		return NULL;
-> + *	if (idx >= arr_sz)
-> + *		return NULL;
-> + *	return &arr[idx];
-> + *
-> + * The index (___idx below) needs to be a u64, at least for certain versions of
-> + * the BPF ISA, since there aren't u32 conditional jumps.
-> + */
-> +#define bpf_array_elem(arr, arr_sz, idx) ({				\
-> +	typeof(&(arr)[0]) ___arr = arr;					\
-> +	__u64 ___idx = idx;						\
-> +	if (___arr) {							\
-> +		asm volatile("if %[__idx] >= %[__bound] goto 1f;	\
-> +			      %[__idx] *= %[__size];		\
-> +			      %[__arr] += %[__idx];		\
-> +			      goto 2f;				\
-> +			      1:;				\
-> +			      %[__arr] = 0;			\
-> +			      2:				\
-> +			      "						\
-> +			     : [__arr]"+r"(___arr), [__idx]"+r"(___idx)	\
-> +			     : [__bound]"r"((arr_sz)),		        \
-> +			       [__size]"i"(sizeof(typeof((arr)[0])))	\
-> +			     : "cc");					\
-> +	}								\
-> +	___arr;								\
-> +})
-> +
-> +/*
-> + * Convenience wrapper for bpf_array_elem(), where we compute the size of the
-> + * array.  Be sure to use an actual array, and not a pointer, just like with the
-> + * ARRAY_SIZE macro.
-> + */
-> +#define bpf_array_sz_elem(arr, idx) \
-> +	bpf_array_elem(arr, sizeof(arr) / sizeof((arr)[0]), idx)
-> +
->  #endif
-> -- 
-> 2.43.0.472.g3155946c3a-goog
+> struct cdat_response {
+>        __le32 doe_header;
+>        union {
+>                struct cdat_header header;
+>                struct cdat_entry_header entry;
+>                u8 table[];
+>        };
+> } __packed;
 > 
-> 
+> As far as I can see nothing outside of drivers/cxl/core/pci.c needs
+> 'struct cdat_response', so it can stay local to this C file.
+
+I moved that close to cdat_header and cdat_entry_header which is also
+defined in cxlpci.h but only used in core/pci.c. I would like to keep
+them together but we could move that completely into pci.c in a
+separate patch?
+
+Thanks,
+
+-Robert
 
