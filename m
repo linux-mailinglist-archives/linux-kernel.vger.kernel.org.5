@@ -1,84 +1,115 @@
-Return-Path: <linux-kernel+bounces-16559-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16560-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0747824033
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 12:04:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3772A824036
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 12:05:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5E5E61F2531E
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 11:04:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1EF231C20971
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 11:05:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15511210FC;
-	Thu,  4 Jan 2024 11:03:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42B97210E9;
+	Thu,  4 Jan 2024 11:04:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PwgEweuG"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MdCVG4B3"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A35CF20DFE;
-	Thu,  4 Jan 2024 11:03:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704366190; x=1735902190;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=8AD2mwTpSOPN46qJMOG/GtGnn6omFmnzhTc8pTVXNhU=;
-  b=PwgEweuGi/rFmWd9lQS6VeKmMRBCq8msbpc/d96jazTg+zbh24wLEr7T
-   8zpapTO4+o+y3LYVq3nb717DzGBi6U1TQlqvhuQqJ7EJm3v67lgzkiCzs
-   fWgeqruZ22UfWhKg7icby5IdorrgNtC9HmtDOV963Ww32nOoGewU4CzU3
-   dsrNwH1yOzVUMWagyL7aIEDTfCxusQP5QCWpKGLC1synQiZTxgjPY5Jd6
-   gOV/dooV8v4XCuBDtoJgQp9LfkACzYliA+y9v1iUFmavn7VuXdC2OtlNS
-   4XMCVjxrwLIMXV+VYEhyn31Kvnyf/gclGkK2Kd8LuVRfAe24w/jfblsU5
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10942"; a="400991924"
-X-IronPort-AV: E=Sophos;i="6.04,330,1695711600"; 
-   d="scan'208";a="400991924"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2024 03:03:10 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10942"; a="814597939"
-X-IronPort-AV: E=Sophos;i="6.04,330,1695711600"; 
-   d="scan'208";a="814597939"
-Received: from pdelarag-mobl.ger.corp.intel.com (HELO localhost) ([10.252.36.32])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2024 03:03:07 -0800
-From: Jani Nikula <jani.nikula@linux.intel.com>
-To: Jonathan Corbet <corbet@lwn.net>, Randy Dunlap <rdunlap@infradead.org>,
- linux-kernel@vger.kernel.org
-Cc: Randy Dunlap <rdunlap@infradead.org>, Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>, linux-doc@vger.kernel.org, Mauro Carvalho
- Chehab <mchehab@kernel.org>
-Subject: Re: [PATCH] scripts/get_abi.pl: ignore some temp files
-In-Reply-To: <87plyi86zg.fsf@meer.lwn.net>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20231228233113.5218-1-rdunlap@infradead.org>
- <87plyi86zg.fsf@meer.lwn.net>
-Date: Thu, 04 Jan 2024 13:03:04 +0200
-Message-ID: <87v889z7h3.fsf@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B95C210E1;
+	Thu,  4 Jan 2024 11:04:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4FF52C433C7;
+	Thu,  4 Jan 2024 11:04:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704366296;
+	bh=iYIXWFcyvfJ4RuPN+ihhCi5AWNrSC9flkhBX8xC/WZQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=MdCVG4B32fTqPy/GblbVN4TJxup14rRCQw+QTcbO+paPAjEMmlPodY2duJsiT97C4
+	 5X0Bn8bwccFskbNV8dBFmtfJJ9TZ0nhteO5313s4sXRzYUJYQMmXhRpwNqo+C9wYlY
+	 7lcEcy9aeXaA9uVyhM9bfNls3WLDwI/yolnjR5Zzz86rstkD41MZgPdrsMAGLW/0zN
+	 pbvWeLONeDbkqJHAukPSzsO/d12ysOcZxfUrcXEYuN6mVf8lilYbq/NKzw6KbdbsR6
+	 Dd5jAwkfYMUTvzhWOgXNAtRYu8nmKRhSJeenXcQPBMyGgSN/BkeP0fHbLRSwAVkm32
+	 5N5NvzlBICuqQ==
+Date: Thu, 4 Jan 2024 12:04:51 +0100
+From: Andi Shyti <andi.shyti@kernel.org>
+To: Elad Nachman <enachman@marvell.com>
+Cc: gregory.clement@bootlin.com, linux-i2c@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, cyuval@marvell.com
+Subject: Re: [PATCH v3 1/1] i2c: busses: i2c-mv64xxx: fix arb-loss i2c lock
+Message-ID: <qki2w47cfu74j6tuwz363wgsleypbkgkejtzbk7zfktjxlbmqp@h3cejf2gnccb>
+References: <20231213151312.1165115-1-enachman@marvell.com>
+ <20231213151312.1165115-2-enachman@marvell.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231213151312.1165115-2-enachman@marvell.com>
 
-On Wed, 03 Jan 2024, Jonathan Corbet <corbet@lwn.net> wrote:
-> It would have been nice to create all of those files with a .abi
-> extension so we didn't have to do this kind of blocklisting, but so be
-> it.
+Hi Elad,
 
-Alternatively, we could switch to yaml instead of using another homebrew
-format with another homebrew parser, and rename them .yaml.
+first of all it's very nice to see code so well documented :-)
 
-BR,
-Jani.
+Thanks for the effort you put in it.
 
+...
 
--- 
-Jani Nikula, Intel
+> +	/*
+> +	 * Start with arbitration lost soft reset enabled as to false.
+> +	 * Try to locate the necessary items in the device tree to
+> +	 * make this feature work.
+> +	 * Only after we verify that the device tree contains all of
+> +	 * the needed information and that it is sound and usable,
+> +	 * then we enable this flag.
+> +	 * This information should be defined, but the driver maintains
+> +	 * backward compatibility with old dts files, so it will not fail
+> +	 * the probe in case these are missing.
+> +	 */
+> +	drv_data->soft_reset = false;
+> +	pc = pinctrl_get(&pd->dev);
+
+I'm not against using devm_pinctrl_get(), in my previous comments
+I was questioning whether it should be placed in the probe
+function (as you did).
+
+Placed there, iirc, it needed explicit release. Here, I don't
+think it does if you use the managed version.
+
+> +	if (!IS_ERR(pc)) {
+> +		drv_data->pc = pc;
+> +		drv_data->i2c_mpp_state =
+> +			pinctrl_lookup_state(pc, "default");
+> +		drv_data->i2c_gpio_state =
+> +			pinctrl_lookup_state(pc, "gpio");
+> +		drv_data->scl_gpio =
+> +			of_get_named_gpio(pd->dev.of_node, "scl-gpios", 0);
+> +		drv_data->sda_gpio =
+> +			of_get_named_gpio(pd->dev.of_node, "sda-gpios", 0);
+
+please use devm_gpio_get(...).
+
+> +		if (!IS_ERR(drv_data->i2c_gpio_state) &&
+> +		    !IS_ERR(drv_data->i2c_mpp_state) &&
+> +		    gpio_is_valid(drv_data->scl_gpio) &&
+> +		    gpio_is_valid(drv_data->sda_gpio)) {
+
+...
+
+> +	if (!IS_ERR(drv_data->pc))
+> +		pinctrl_put(drv_data->pc);
+> +	if (drv_data->soft_reset) {
+> +		devm_gpiod_put(drv_data->adapter.dev.parent,
+> +			       gpio_to_desc(drv_data->scl_gpio));
+> +		devm_gpiod_put(drv_data->adapter.dev.parent,
+> +			       gpio_to_desc(drv_data->sda_gpio));
+
+if it's managed it doesn't need to be explicitely removed.
+
+Thanks,
+Andi
 
