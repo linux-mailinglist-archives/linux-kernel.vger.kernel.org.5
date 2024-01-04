@@ -1,169 +1,167 @@
-Return-Path: <linux-kernel+bounces-17192-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17193-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D1BC824969
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 21:07:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B2C782496F
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 21:12:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1B51C1F22E3B
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 20:07:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9AE721F238F5
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 20:12:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 944C22C691;
-	Thu,  4 Jan 2024 20:07:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E565C2C694;
+	Thu,  4 Jan 2024 20:11:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="fazAKQnL"
+	dkim=fail reason="signature verification failed" (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="Aa2hnTK5"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A67792C682
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 20:07:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1d3ea8d0f9dso30575ad.1
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 12:07:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1704398865; x=1705003665; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=f5ZXdX4bS3ERPeQksYREtFg6egDHCXXKYTYbIsKvCx8=;
-        b=fazAKQnLaP1+dsErYjM/8ghaAcJokDFebNLk+CT1RwoDgvt7O2UvdtWcXj9UxhCvzO
-         23cnS8vdygCrIxDi3Biw4DVly3m64ONFbq0OWm/k4CRf6WS7oIYGSc4j0Y6WdV9bFObX
-         jbAoVFnQR1z4JswtNu4fsbr+/IFwOCu0sR6r9LkMrD7yVPuywH1CGEl1vcIMP1XV/g2u
-         woCRlpIL/E+yYnQGsvMn6WfOXI7ZIcgtE6u/drca1j8XF2RI7kYdfouc6pQSRaYYJzut
-         T9zJf5HFvsj5enbCPA+pdiYJB4jsAaClcIknP6kfKrmxfZ4YO7cjpIvDOi611oQZ8GWQ
-         08yA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704398865; x=1705003665;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=f5ZXdX4bS3ERPeQksYREtFg6egDHCXXKYTYbIsKvCx8=;
-        b=AvnjYaBBi7ydLLYAbqTAqvnHifrIyOgB8AXR7KbLcOgPfO30liBScJ0/dXA8Kk6OsM
-         qJZ/W4ydrFxc5KUPJuvNNjJu1cEdzcNF2H0VTG+XFQP7bsvbB5ytTVtvzviPJr3HdDcF
-         MqWBaXTf7Ncvz65PB5K+G2wQX/H0dhfMfXufkXxGc6rAh4zqjJEoiUxWAQWK0br6mHs4
-         u3EBj5ZXzd415cWfMg7PFm/g7YkVw4AR1VyN6+opK28l7sjgyegcFj/BjyIu3h8bGYMF
-         BwXG3y83Yi8e5fLtytHeEn4i163qNvQkNyTU5uilYKh/Rp7Vlbn+hXS9Z41pjn+xm3PM
-         lPAQ==
-X-Gm-Message-State: AOJu0YxKgseRfXv+CjRiMIYYgST4ynidNZFwTSSZZdjJmgZN5MNRNqYI
-	uS5dpIyIzFtudHdhZqFPeIRTdi8HkzQBdtpqdRy5QcywMXU=
-X-Google-Smtp-Source: AGHT+IE1vkesK4ZOVeDXSnQesWkwfg2DZNXrNfara5a0m92sCbqwWjRcDNy568hvPKmtKyTR34K9s+lngyphSHVzEeE=
-X-Received: by 2002:a17:902:e884:b0:1d4:d462:f5a9 with SMTP id
- w4-20020a170902e88400b001d4d462f5a9mr38645plg.20.1704398864639; Thu, 04 Jan
- 2024 12:07:44 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96CB72C681
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 20:11:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 0900640E01FE;
+	Thu,  4 Jan 2024 20:11:53 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=fail (4096-bit key)
+	reason="fail (body has been altered)" header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id Ud5A7blET9Hf; Thu,  4 Jan 2024 20:11:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1704399109; bh=h5u4a89Q552KmReRiF5dxNQT7fCFg48Wsu9uyCE9Z+w=;
+	h=From:To:Cc:Subject:Date:From;
+	b=Aa2hnTK5Y3kgReJnFiz3GJekJ7cMpItj/sqGVzTk5OLsz0erd8Iv4axsulPtsRyrT
+	 O3Yh8LwvZGAZKb+Ao4roa85+xolhVy7jKZF9FO4Y55aWWtQQ0oOtTfrpJf3/m3oiHs
+	 5Y3Mt45HLKbjhHU38v2YyFf7979MX/poCQ7zepA/t/qBtuoZ9i/QUmbizKnGMgbGNj
+	 b6p8trpROcLUcLabbLDvhUKOOIxTZAGvP02uLB1ACu+L75iVjKhsm0uJGKLgv5p3/p
+	 WPlgnR0Nf3Y4+yK9TtPup1N3t75pvJebOtIXgOASvmlo3v0RDf5kd11jtePnujnhHO
+	 6KjK8hdf7Ba8cGOvcv6RdZ1tW2w8UdpwXSzcULCu/QErTN/C3CXBpK5vofbcIp5Vxe
+	 Ef/NOiMJ2DdlpFiUwNH4Z5nAIc0xl5CAd9SBtZR8b3Pm+d0rpiJXr5EOGpjI7/UDAO
+	 cDx6gFtuJ6n4gHHLkfSmuvVYErtc838QhnEgAClIqhbE6axlJ1MbR8m/3dz7W7MPNx
+	 Sk+hdFjTagL1TDBFsBzStKW9Ct1HkysxmdIqZsfKBHlX80QnbFZDaRyxWKcB7Vk4SB
+	 cPKOhA99QlDVypTJAX0CzIcex53XVVjQBx68/i7Q5X4Flrj9XbhOI0z30weAhA5ksp
+	 s+BE6wdBSPtPkD6M1lTCCXuA=
+Received: from zn.tnic (pd9530f8c.dip0.t-ipconnect.de [217.83.15.140])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 0D9BC40E0196;
+	Thu,  4 Jan 2024 20:11:46 +0000 (UTC)
+From: Borislav Petkov <bp@alien8.de>
+To: X86 ML <x86@kernel.org>
+Cc: Michael Roth <michael.roth@amd.com>,
+	LKML <linux-kernel@vger.kernel.org>
+Subject: [PATCH] x86/CPU/AMD: Add X86_FEATURE_ZEN5
+Date: Thu,  4 Jan 2024 21:11:37 +0100
+Message-ID: <20240104201138.5072-1-bp@alien8.de>
+X-Mailer: git-send-email 2.42.0.rc0.25.ga82fb66fed25
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231206081538.17056-1-yunfei.dong@mediatek.com>
- <20231206081538.17056-4-yunfei.dong@mediatek.com> <705ce6b0-e945-404c-8014-38881a01fbca@xs4all.nl>
-In-Reply-To: <705ce6b0-e945-404c-8014-38881a01fbca@xs4all.nl>
-From: Jeffrey Kardatzke <jkardatzke@google.com>
-Date: Thu, 4 Jan 2024 12:07:32 -0800
-Message-ID: <CA+ddPcPH+M=rnAzyPgq7rMUV2sAdCJ5xdEAncPUyTfspxswzjQ@mail.gmail.com>
-Subject: Re: [PATCH v3,03/21] v4l2: verify secure dmabufs are used in secure queue
-To: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Cc: Yunfei Dong <yunfei.dong@mediatek.com>, 
-	=?UTF-8?B?TsOtY29sYXMgRiAuIFIgLiBBIC4gUHJhZG8=?= <nfraprado@collabora.com>, 
-	Nicolas Dufresne <nicolas.dufresne@collabora.com>, 
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
-	Benjamin Gaignard <benjamin.gaignard@collabora.com>, Nathan Hebert <nhebert@chromium.org>, 
-	Chen-Yu Tsai <wenst@chromium.org>, Yong Wu <yong.wu@mediatek.com>, 
-	Hsin-Yi Wang <hsinyi@chromium.org>, Fritz Koenig <frkoenig@chromium.org>, 
-	Daniel Vetter <daniel@ffwll.ch>, Steve Cho <stevecho@chromium.org>, 
-	Sumit Semwal <sumit.semwal@linaro.org>, Brian Starkey <Brian.Starkey@arm.com>, 
-	John Stultz <jstultz@google.com>, "T . J . Mercier" <tjmercier@google.com>, 
-	=?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
-	Matthias Brugger <matthias.bgg@gmail.com>, dri-devel@lists.freedesktop.org, 
-	linaro-mm-sig@lists.linaro.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-mediatek@lists.infradead.org, 
-	Project_Global_Chrome_Upstream_Group@mediatek.com
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Dec 11, 2023 at 2:58=E2=80=AFAM Hans Verkuil <hverkuil-cisco@xs4all=
-.nl> wrote:
->
-> On 06/12/2023 09:15, Yunfei Dong wrote:
-> > From: Jeffrey Kardatzke <jkardatzke@google.com>
-> >
-> > Verfies in the dmabuf implementations that if the secure memory flag is
->
-> Verfies -> Verifies
+From: "Borislav Petkov (AMD)" <bp@alien8.de>
 
-Thanks. Yunfei, change that please.
->
-> > set for a queue that the dmabuf submitted to the queue is unmappable.
-> >
-> > Signed-off-by: Jeffrey Kardatzke <jkardatzke@google.com>
-> > Signed-off-by: Yunfei Dong <yunfei.dong@mediatek.com>
-> > ---
-> >  drivers/media/common/videobuf2/videobuf2-dma-contig.c | 6 ++++++
-> >  drivers/media/common/videobuf2/videobuf2-dma-sg.c     | 6 ++++++
-> >  2 files changed, 12 insertions(+)
-> >
-> > diff --git a/drivers/media/common/videobuf2/videobuf2-dma-contig.c b/dr=
-ivers/media/common/videobuf2/videobuf2-dma-contig.c
-> > index 3d4fd4ef5310..ad58ef8dc231 100644
-> > --- a/drivers/media/common/videobuf2/videobuf2-dma-contig.c
-> > +++ b/drivers/media/common/videobuf2/videobuf2-dma-contig.c
-> > @@ -710,6 +710,12 @@ static int vb2_dc_map_dmabuf(void *mem_priv)
-> >               return -EINVAL;
-> >       }
-> >
-> > +     /* verify the dmabuf is secure if we are in secure mode */
-> > +     if (buf->vb->vb2_queue->secure_mem && sg_page(sgt->sgl)) {
->
-> This needs a bit more explanation. I guess that for secure memory
-> sg_page returns NULL?
+Add a synthetic feature flag for Zen5.
 
-How about if we change it to:
+Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
+---
+ arch/x86/include/asm/cpufeatures.h |  4 +---
+ arch/x86/kernel/cpu/amd.c          | 25 +++++++++++++++++++++----
+ 2 files changed, 22 insertions(+), 7 deletions(-)
 
-/* verify the dmabuf is secure if we are in secure mode, this is done
-by validating there is no page entry for the dmabuf */
+diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cp=
+ufeatures.h
+index 29cb275a219d..fdf723b6f6d0 100644
+--- a/arch/x86/include/asm/cpufeatures.h
++++ b/arch/x86/include/asm/cpufeatures.h
+@@ -81,10 +81,8 @@
+ #define X86_FEATURE_K6_MTRR		( 3*32+ 1) /* AMD K6 nonstandard MTRRs */
+ #define X86_FEATURE_CYRIX_ARR		( 3*32+ 2) /* Cyrix ARRs (=3D MTRRs) */
+ #define X86_FEATURE_CENTAUR_MCR		( 3*32+ 3) /* Centaur MCRs (=3D MTRRs) =
+*/
+-
+-/* CPU types for specific tunings: */
+ #define X86_FEATURE_K8			( 3*32+ 4) /* "" Opteron, Athlon64 */
+-/* FREE, was #define X86_FEATURE_K7			( 3*32+ 5) "" Athlon */
++#define X86_FEATURE_ZEN5		( 3*32+ 5) /* "" CPU based on Zen5 microarchit=
+ecture */
+ #define X86_FEATURE_P3			( 3*32+ 6) /* "" P3 */
+ #define X86_FEATURE_P4			( 3*32+ 7) /* "" P4 */
+ #define X86_FEATURE_CONSTANT_TSC	( 3*32+ 8) /* TSC ticks at a constant r=
+ate */
+diff --git a/arch/x86/kernel/cpu/amd.c b/arch/x86/kernel/cpu/amd.c
+index 9f42d1c59e09..bc49e3b3aae0 100644
+--- a/arch/x86/kernel/cpu/amd.c
++++ b/arch/x86/kernel/cpu/amd.c
+@@ -538,7 +538,7 @@ static void bsp_init_amd(struct cpuinfo_x86 *c)
+=20
+ 	/* Figure out Zen generations: */
+ 	switch (c->x86) {
+-	case 0x17: {
++	case 0x17:
+ 		switch (c->x86_model) {
+ 		case 0x00 ... 0x2f:
+ 		case 0x50 ... 0x5f:
+@@ -554,8 +554,8 @@ static void bsp_init_amd(struct cpuinfo_x86 *c)
+ 			goto warn;
+ 		}
+ 		break;
+-	}
+-	case 0x19: {
++
++	case 0x19:
+ 		switch (c->x86_model) {
+ 		case 0x00 ... 0x0f:
+ 		case 0x20 ... 0x5f:
+@@ -569,7 +569,17 @@ static void bsp_init_amd(struct cpuinfo_x86 *c)
+ 			goto warn;
+ 		}
+ 		break;
+-	}
++
++	case 0x1a:
++		switch (c->x86_model) {
++		case 0x00 ... 0x0f:
++			setup_force_cpu_cap(X86_FEATURE_ZEN5);
++			break;
++		default:
++			goto warn;
++		}
++		break;
++
+ 	default:
+ 		break;
+ 	}
+@@ -1039,6 +1049,11 @@ static void init_amd_zen4(struct cpuinfo_x86 *c)
+ 		msr_set_bit(MSR_ZEN4_BP_CFG, MSR_ZEN4_BP_CFG_SHARED_BTB_FIX_BIT);
+ }
+=20
++static void init_amd_zen5(struct cpuinfo_x86 *c)
++{
++	init_amd_zen_common();
++}
++
+ static void init_amd(struct cpuinfo_x86 *c)
+ {
+ 	u64 vm_cr;
+@@ -1084,6 +1099,8 @@ static void init_amd(struct cpuinfo_x86 *c)
+ 		init_amd_zen3(c);
+ 	else if (boot_cpu_has(X86_FEATURE_ZEN4))
+ 		init_amd_zen4(c);
++	else if (boot_cpu_has(X86_FEATURE_ZEN5))
++		init_amd_zen5(c);
+=20
+ 	/*
+ 	 * Enable workaround for FXSAVE leak on CPUs
+--=20
+2.42.0.rc0.25.ga82fb66fed25
 
->
-> > +             pr_err("secure queue requires secure dma_buf");
-> > +             return -EINVAL;
-> > +     }
-> > +
-> >       /* checking if dmabuf is big enough to store contiguous chunk */
-> >       contig_size =3D vb2_dc_get_contiguous_size(sgt);
-> >       if (contig_size < buf->size) {
-> > diff --git a/drivers/media/common/videobuf2/videobuf2-dma-sg.c b/driver=
-s/media/common/videobuf2/videobuf2-dma-sg.c
-> > index 28f3fdfe23a2..55428c73c380 100644
-> > --- a/drivers/media/common/videobuf2/videobuf2-dma-sg.c
-> > +++ b/drivers/media/common/videobuf2/videobuf2-dma-sg.c
-> > @@ -564,6 +564,12 @@ static int vb2_dma_sg_map_dmabuf(void *mem_priv)
-> >               return -EINVAL;
-> >       }
-> >
-> > +     /* verify the dmabuf is secure if we are in secure mode */
-> > +     if (buf->vb->vb2_queue->secure_mem && !sg_dma_secure(sgt->sgl)) {
->
-> I can't find the sg_dma_secure function. I suspect this patch series
-> depends on another series?
-
-That was an oversight, it should be the same as in
-videobuf2-dma-contig.c. Yunfei, can you change this to match what's in
-videobuf2-dma-contig.c after the comment is reworded?
->
-> > +             pr_err("secure queue requires secure dma_buf");
-> > +             return -EINVAL;
-> > +     }
-> > +
-> >       buf->dma_sgt =3D sgt;
-> >       buf->vaddr =3D NULL;
-> >
->
-> Regards,
->
->         Hans
 
