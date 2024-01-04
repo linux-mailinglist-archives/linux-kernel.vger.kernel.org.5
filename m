@@ -1,51 +1,51 @@
-Return-Path: <linux-kernel+bounces-16998-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16997-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 46BD48246FF
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 18:14:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4CF4A8246FD
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 18:14:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B03EFB247FE
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 17:14:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AC352B2381A
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 17:14:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EB062C857;
-	Thu,  4 Jan 2024 17:12:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 749A22C6AE;
+	Thu,  4 Jan 2024 17:12:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="ZVtuwFWT"
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="WzKylqBC"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2084.outbound.protection.outlook.com [40.107.93.84])
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2077.outbound.protection.outlook.com [40.107.94.77])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 442E828DB9;
-	Thu,  4 Jan 2024 17:12:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BA612C693;
+	Thu,  4 Jan 2024 17:12:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NgHAUJZQQJGOZ9gATJByf3+7y0lwKBtotpqvC8fxuQxHCUs5YvRc9FMogSlvGBPR/LUXmO3INHxH6v5ENqE/TNIhJdDxq03hXWCeRQzzv/9KU9Ic4/dgI3H79VKgoBjtA6w2RMOC8aeCxPbV2v95I9U9XwbvILhOoh+N8GIa/i+rxuxjfu5ib2akC/XOI0oNNXCci0/ScPjHn+Ecd3sZm/H7lGPd9YjNY/pvBdb9Rfhxi6gsY6/ivjuDrDhGH9B/1RJBwGR9g2C4Tg4rRr3G0C8t9JMl1qKL3SHeWuCfKGNlMOzYu0DIaRqhADnc2S/x1qKUDrSEXpxuVPWtXjk+ng==
+ b=X45mPAtJNFdLmbzhWX9a0OINidweVVnk5TGXyO9SObQjXRQHNcBcMphg2AWdE3/N6wbH6pt+s5ieaUA54vUCgQXIQO3cFV7dWxAQEq3nRoJjAQcZi8ECmpWVWfVuAarEYFLplNtZAL3J84QFAr5jLtUe5iPdfcRdJTxCdMQdxJUOU+ig0TnzXP3i3R8ZFzP9Y0iRB425aNE90ddLecmEfo7+3txsnYzDPeKDUigMG/08q57OB2+m4SinzHwFwwgWaYZ5uJFBu+IkP7R4H0fApSxIrAKRROHgk4+b9AKgoNa632gVbpFNpFxw7pcdSzBWXa2F78u+eisJqF9wtFOZNw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=jhVBXH+IltD3kpoJwfm00H6Rnk41GD9XT2RASqKLOYg=;
- b=aEa/GTDVshEIE36kJPDPuVsgfcTphSjBCEqVAHYd+v11bZJuY4FNVftOiSGOaOgbpADnNO3uqKzlHbuiN6WiH0n5ANOdUgMTjY+IIx+kBECwLiuWXt5zIbAF2zs7hI+nUb/bGeO174+ykq269rPKhN6Gp7ABD46evs9HhkQFWbr7RSCaGu1jK9afKI/Acal2HS3UnzvvyJ8gDRm0i7mSeKsgB0g5Av3DlZEYVhxE1G2SLKE6FvpKXDIIvIWhIPCFaWHqpb8ab1fBJlofv1sUdkXZNmj41RJxADtYAYBnI7rL/i6bcw0aRF1T93T6idvOhprMEBV12PnRQh+FbKp4qg==
+ bh=NVMyew+aAbLO2p6XK3nYqwrp0paEZ6on+b8/3CaJpi8=;
+ b=jnSXGz3JIBqHpQm3oVviTTiz0ev8dZh8xaHKfvV8K3l2QVa5WWKThH2GDW/nun6enCULd/eEueC7zR7rj5kS6kA1iAPFDELNKoyWUjwWvfELUQKBrXdPh8CVAPT3HNQYlfTG4Nyx6r4r2NPa3+1XJeY3zzGOd0j1t98rV/fowvJ8OqNF4j9kkbAlHvUEMJV6Q5bPpIPYsh5POlniMnUmMvOcBfA/I7OVCbdFjIS0A7CfLUfX6xdro5pGFpg41+KXO0AlIGTcMd1iLMMEokaxSM6FwML+kWkasr49XQY427RTpX1jGE/vYRZA67xduyLBE1sZrTyIFNXbvMHl/OxpxA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  165.204.84.17) smtp.rcpttodomain=davemloft.net smtp.mailfrom=amd.com;
  dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
  header.from=amd.com; dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jhVBXH+IltD3kpoJwfm00H6Rnk41GD9XT2RASqKLOYg=;
- b=ZVtuwFWT/mDYLx9nEV3fEUqycDHT3+Dppr/WRZwkzEX1oDx69OSiga7CiG+kja3JNBi2ZdU7mwDDwmnSV75R8BD+2g1GfJ7gWZuIddETxjk6Fwl33zAX1pm2qlCvWFsvJy8bsneamaT2i44lvcmuqizWPYYc7xetD5FA50aokxw=
-Received: from DS7PR03CA0220.namprd03.prod.outlook.com (2603:10b6:5:3ba::15)
- by SA1PR12MB8142.namprd12.prod.outlook.com (2603:10b6:806:334::5) with
+ bh=NVMyew+aAbLO2p6XK3nYqwrp0paEZ6on+b8/3CaJpi8=;
+ b=WzKylqBCBsD49WeysrkveJ4Xi83/1qL50DLkgKLz+Bh3PTqBuuUG4qIIPP3f3ji27CbaaNzuxvsv5/n5o4XQbBUFUae1u1/xJ//MFIloz5CSRmzrjN0o3p7O2MmNbVLrjHyyBig8MdDrO8MeuCRjyqFgOipqO/atJ4U/tjxCFvg=
+Received: from DS7PR03CA0219.namprd03.prod.outlook.com (2603:10b6:5:3ba::14)
+ by PH7PR12MB5687.namprd12.prod.outlook.com (2603:10b6:510:13e::11) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.15; Thu, 4 Jan
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.14; Thu, 4 Jan
  2024 17:12:43 +0000
 Received: from DS3PEPF000099D7.namprd04.prod.outlook.com
- (2603:10b6:5:3ba:cafe::b9) by DS7PR03CA0220.outlook.office365.com
- (2603:10b6:5:3ba::15) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.13 via Frontend
+ (2603:10b6:5:3ba:cafe::25) by DS7PR03CA0219.outlook.office365.com
+ (2603:10b6:5:3ba::14) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.15 via Frontend
  Transport; Thu, 4 Jan 2024 17:12:43 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
  smtp.mailfrom=amd.com; dkim=none (message not signed)
@@ -56,18 +56,18 @@ Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
 Received: from SATLEXMB04.amd.com (165.204.84.17) by
  DS3PEPF000099D7.mail.protection.outlook.com (10.167.17.8) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7159.9 via Frontend Transport; Thu, 4 Jan 2024 17:12:42 +0000
+ 15.20.7159.9 via Frontend Transport; Thu, 4 Jan 2024 17:12:43 +0000
 Received: from driver-dev1.pensando.io (10.180.168.240) by SATLEXMB04.amd.com
  (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Thu, 4 Jan
- 2024 11:12:39 -0600
+ 2024 11:12:40 -0600
 From: Brett Creeley <brett.creeley@amd.com>
 To: <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
 	<pabeni@redhat.com>, <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
 CC: <shannon.nelson@amd.com>, <brett.creeley@amd.com>
-Subject: [PATCH net-next 5/8] pds_core: Clear BARs on reset
-Date: Thu, 4 Jan 2024 09:12:18 -0800
-Message-ID: <20240104171221.31399-6-brett.creeley@amd.com>
+Subject: [PATCH net-next 6/8] pds_core: Don't assign interrupt index/bound_intr to notifyq
+Date: Thu, 4 Jan 2024 09:12:19 -0800
+Message-ID: <20240104171221.31399-7-brett.creeley@amd.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20240104171221.31399-1-brett.creeley@amd.com>
 References: <20240104171221.31399-1-brett.creeley@amd.com>
@@ -82,188 +82,93 @@ X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
  (10.181.40.145)
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS3PEPF000099D7:EE_|SA1PR12MB8142:EE_
-X-MS-Office365-Filtering-Correlation-Id: cf419c8f-dd04-4246-0398-08dc0d485d29
+X-MS-TrafficTypeDiagnostic: DS3PEPF000099D7:EE_|PH7PR12MB5687:EE_
+X-MS-Office365-Filtering-Correlation-Id: 43f96daa-fcad-45b6-d8a7-08dc0d485d7e
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	xJ3Syczm38eTP9R2kqZ222Q91A3Zz4BQIU6nz/o+Yei2fvfAlRer4YZjIcbwC6H0pVk3fM3F3eZFJao9AZ5w9qJprkoiaVQfW0uRwaSMlELcDniBXdwRisbKO/2E77zRmKTD61DIkM/1mr1tA1g5byJLXpaTmKF6IYhVvRv447fg7gIsXuEWAsAiG3A+gt3V4x/qw1c00t1zbOGOojADyF0sZosRXP0rXKtUDzlhEne1C18qIGib8Nwfrs7Czk3BbZQhau1uhcQ4W7+S0cxmawSRkspL/kGbE/Tt/ENFs0Gx14/ShiKN820zuwIjWaqLqcV2we/FXliAedpkZI1XEJNV0+3s7ljO2WEZl56wj9cH1wj+i7sQqQ2ch/97/1RBSxWhrT0h0jruobcYUeyiC8XdKAAplqkPBW86pRxN+FIw1fNcAUKMxnF0NLdgwLVaArwzKLiZTjVzi8dAWiim5fxFaDiD/F4/aJiRPIavctvjWAhpJ1AgykhoOJdpXuAEg+aVhyfC3t6fwJn1+vhoTTY3aQjFN+Y2Ynmpm/NzqGYFe+ir3gqIg8Ng+Nn2W+zLIyxoY0CSbtI3OvipEBpkwBKZXUr8+hr8+/ybzPn7TILEyE+5c7Bavi21UCp4bpKzl5AO7GfVLLA4YZ6R03EMvsrOrU2BGN65CyDT3GFPdLKcpJAHVpJRgbkwv47F1iiuOveGJFFVrTp+zK/bQx4/01hW64cYhNzg/VB2AFcjCMTjYUetNETuEY/pVbvEsF3qkqM9fqpItlIrcTHR8dNYbg==
+	qSmv5QA4V1VTIQEarP4YHaRCCUZnag9oy0LCcNWa9xUEFk1oMlbXhxi2RtUKKStbJ+B2YbTwf+sOQwTv5QZkSKW2hVB42FhlJVhxMBXRPMPJYUVXXLjQsJHFsnrbX90vaAY6WzdLIhB5NwYyBoJhtNRbpgK6V2NKMh1qJaOwTAERAbG66k1d7iNVp4EupqQRi9J8mE4DwunBbPOpYScRFvCm1duqaD2hLcq5nE51ldCKg9R3oRCr9nEuuHPHHw/2R7/VMaNEOuKATmMr0+inT9R83l3eh7adVyBDDpB891o5BTJrxb8qskiKrkRW9i+CjSGVmAhGhCWPBYF8cYx25AeS4BrlCiIaohyFrHoyI2Z8NaRu/pxI9NGe2FgsKBgNWRTevXBF9rSUKXrcLyPJgmhZlWcYoQlTHRkZZ8HXO8Sle2yf/CCG5HQK3OO+PgLMmOLVYztZoHCeBEfWttCJSPwA+NPzUW5g3tAXy+PAyxlV9Z2khlEN+Q9UlGhLIZtZS4CiigNQbEFdEalTn9BMiukdXBZSKN7qk4Zsp4263OqrD0565MnALULPaEX7eYflHlPksURW/y51uhq5tyDnC30UeeAzRV/SF2ju1laOGlBKCGvzcqpnAE4tG/BMdY/H+bi3SZrVvHhffmEZjHOOuwh5f3YfhtKAOm2/8kXQILhfmnzLUob+eHeNivPtnniMKYQ6NvBSwuvCiwO1/IA4/Q+JEdK8KwqtCQUwA62y5UOtIBZs/X0O0T3Xbx4aNomNMvHFAyiF//em/L9GYZbUpA==
 X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(396003)(346002)(39860400002)(376002)(136003)(230922051799003)(186009)(64100799003)(82310400011)(451199024)(1800799012)(40470700004)(46966006)(36840700001)(426003)(26005)(2616005)(1076003)(336012)(6666004)(478600001)(47076005)(16526019)(83380400001)(41300700001)(2906002)(4326008)(316002)(8936002)(54906003)(70206006)(110136005)(70586007)(44832011)(8676002)(36860700001)(5660300002)(82740400003)(86362001)(36756003)(81166007)(356005)(40460700003)(40480700001)(36900700001);DIR:OUT;SFP:1101;
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(396003)(376002)(136003)(346002)(230922051799003)(186009)(64100799003)(1800799012)(451199024)(82310400011)(40470700004)(36840700001)(46966006)(478600001)(8676002)(8936002)(6666004)(70206006)(54906003)(110136005)(316002)(47076005)(2616005)(70586007)(36860700001)(26005)(1076003)(426003)(336012)(4326008)(16526019)(5660300002)(44832011)(2906002)(41300700001)(83380400001)(36756003)(82740400003)(81166007)(356005)(86362001)(40460700003)(40480700001)(36900700001);DIR:OUT;SFP:1101;
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Jan 2024 17:12:42.9980
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Jan 2024 17:12:43.5449
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: cf419c8f-dd04-4246-0398-08dc0d485d29
+X-MS-Exchange-CrossTenant-Network-Message-Id: 43f96daa-fcad-45b6-d8a7-08dc0d485d7e
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
 X-MS-Exchange-CrossTenant-AuthSource:
 	DS3PEPF000099D7.namprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB8142
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB5687
 
-During reset the BARs might be accessed when they are
-unmapped. This can cause unexpected issues, so fix it by
-clearing the cached BAR values so they are not accessed
-until they are re-mapped.
-
-Also, make sure any places that can access the BARs
-when they are NULL are prevented.
+The notifyq rides on the adminq's interrupt, so there's
+no need to setup and/or access the notifyq's interrupt
+index or bound_intr. The driver sets the bound_intr
+using  qcq->intx = -1 for the notifyq, but luckily
+nothing accesses that field for notifyq. Instead of
+expecting that remains the case, just clean up
+the notifyq's interrupt index and bound_intr fields.
 
 Signed-off-by: Brett Creeley <brett.creeley@amd.com>
 Reviewed-by: Shannon Nelson <shannon.nelson@amd.com>
 ---
- drivers/net/ethernet/amd/pds_core/adminq.c  | 28 +++++++++++++++------
- drivers/net/ethernet/amd/pds_core/core.c    |  8 +++++-
- drivers/net/ethernet/amd/pds_core/dev.c     |  9 ++++++-
- drivers/net/ethernet/amd/pds_core/devlink.c |  3 ++-
- drivers/net/ethernet/amd/pds_core/fw.c      |  3 +++
- drivers/net/ethernet/amd/pds_core/main.c    |  5 ++++
- 6 files changed, 45 insertions(+), 11 deletions(-)
+ drivers/net/ethernet/amd/pds_core/core.c    | 5 +----
+ drivers/net/ethernet/amd/pds_core/debugfs.c | 3 ++-
+ 2 files changed, 3 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/net/ethernet/amd/pds_core/adminq.c b/drivers/net/ethernet/amd/pds_core/adminq.c
-index 5edff33d56f3..ea773cfa0af6 100644
---- a/drivers/net/ethernet/amd/pds_core/adminq.c
-+++ b/drivers/net/ethernet/amd/pds_core/adminq.c
-@@ -191,10 +191,16 @@ static int __pdsc_adminq_post(struct pdsc *pdsc,
- 
- 	/* Check that the FW is running */
- 	if (!pdsc_is_fw_running(pdsc)) {
--		u8 fw_status = ioread8(&pdsc->info_regs->fw_status);
--
--		dev_info(pdsc->dev, "%s: post failed - fw not running %#02x:\n",
--			 __func__, fw_status);
-+		if (pdsc->info_regs) {
-+			u8 fw_status =
-+				ioread8(&pdsc->info_regs->fw_status);
-+
-+			dev_info(pdsc->dev, "%s: post failed - fw not running %#02x:\n",
-+				 __func__, fw_status);
-+		} else {
-+			dev_info(pdsc->dev, "%s: post failed - BARs not setup\n",
-+				 __func__);
-+		}
- 		ret = -ENXIO;
- 
- 		goto err_out_unlock;
-@@ -266,10 +272,16 @@ int pdsc_adminq_post(struct pdsc *pdsc,
- 			break;
- 
- 		if (!pdsc_is_fw_running(pdsc)) {
--			u8 fw_status = ioread8(&pdsc->info_regs->fw_status);
--
--			dev_dbg(pdsc->dev, "%s: post wait failed - fw not running %#02x:\n",
--				__func__, fw_status);
-+			if (pdsc->info_regs) {
-+				u8 fw_status =
-+					ioread8(&pdsc->info_regs->fw_status);
-+
-+				dev_dbg(pdsc->dev, "%s: post wait failed - fw not running %#02x:\n",
-+					__func__, fw_status);
-+			} else {
-+				dev_dbg(pdsc->dev, "%s: post wait failed - BARs not setup\n",
-+					__func__);
-+			}
- 			err = -ENXIO;
- 			break;
- 		}
 diff --git a/drivers/net/ethernet/amd/pds_core/core.c b/drivers/net/ethernet/amd/pds_core/core.c
-index 3b3e1541dd1c..023a59c8e425 100644
+index 023a59c8e425..5426ab5de66b 100644
 --- a/drivers/net/ethernet/amd/pds_core/core.c
 +++ b/drivers/net/ethernet/amd/pds_core/core.c
-@@ -600,7 +600,13 @@ void pdsc_fw_up(struct pdsc *pdsc)
+@@ -129,6 +129,7 @@ static int pdsc_qcq_intr_alloc(struct pdsc *pdsc, struct pdsc_qcq *qcq)
+ 	if (index < 0)
+ 		return index;
+ 	qcq->intx = index;
++	qcq->cq.bound_intr = &pdsc->intr_info[index];
  
- static void pdsc_check_pci_health(struct pdsc *pdsc)
- {
--	u8 fw_status = ioread8(&pdsc->info_regs->fw_status);
-+	u8 fw_status;
-+
-+	/* some sort of teardown already in progress */
-+	if (!pdsc->info_regs)
-+		return;
-+
-+	fw_status = ioread8(&pdsc->info_regs->fw_status);
- 
- 	/* is PCI broken? */
- 	if (fw_status != PDS_RC_BAD_PCI)
-diff --git a/drivers/net/ethernet/amd/pds_core/dev.c b/drivers/net/ethernet/amd/pds_core/dev.c
-index 31940b857e0e..62a38e0a8454 100644
---- a/drivers/net/ethernet/amd/pds_core/dev.c
-+++ b/drivers/net/ethernet/amd/pds_core/dev.c
-@@ -57,6 +57,9 @@ int pdsc_err_to_errno(enum pds_core_status_code code)
- 
- bool pdsc_is_fw_running(struct pdsc *pdsc)
- {
-+	if (!pdsc->info_regs)
-+		return false;
-+
- 	pdsc->fw_status = ioread8(&pdsc->info_regs->fw_status);
- 	pdsc->last_fw_time = jiffies;
- 	pdsc->last_hb = ioread32(&pdsc->info_regs->fw_heartbeat);
-@@ -182,13 +185,17 @@ int pdsc_devcmd_locked(struct pdsc *pdsc, union pds_core_dev_cmd *cmd,
- {
- 	int err;
- 
-+	if (!pdsc->cmd_regs)
-+		return -ENXIO;
-+
- 	memcpy_toio(&pdsc->cmd_regs->cmd, cmd, sizeof(*cmd));
- 	pdsc_devcmd_dbell(pdsc);
- 	err = pdsc_devcmd_wait(pdsc, cmd->opcode, max_seconds);
--	memcpy_fromio(comp, &pdsc->cmd_regs->comp, sizeof(*comp));
- 
- 	if ((err == -ENXIO || err == -ETIMEDOUT) && pdsc->wq)
- 		queue_work(pdsc->wq, &pdsc->health_work);
-+	else
-+		memcpy_fromio(comp, &pdsc->cmd_regs->comp, sizeof(*comp));
- 
- 	return err;
+ 	return 0;
  }
-diff --git a/drivers/net/ethernet/amd/pds_core/devlink.c b/drivers/net/ethernet/amd/pds_core/devlink.c
-index e9948ea5bbcd..54864f27c87a 100644
---- a/drivers/net/ethernet/amd/pds_core/devlink.c
-+++ b/drivers/net/ethernet/amd/pds_core/devlink.c
-@@ -111,7 +111,8 @@ int pdsc_dl_info_get(struct devlink *dl, struct devlink_info_req *req,
+@@ -222,7 +223,6 @@ int pdsc_qcq_alloc(struct pdsc *pdsc, unsigned int type, unsigned int index,
+ 		goto err_out_free_irq;
+ 	}
  
- 	mutex_lock(&pdsc->devcmd_lock);
- 	err = pdsc_devcmd_locked(pdsc, &cmd, &comp, pdsc->devcmd_timeout * 2);
--	memcpy_fromio(&fw_list, pdsc->cmd_regs->data, sizeof(fw_list));
-+	if (!err)
-+		memcpy_fromio(&fw_list, pdsc->cmd_regs->data, sizeof(fw_list));
- 	mutex_unlock(&pdsc->devcmd_lock);
- 	if (err && err != -EIO)
- 		return err;
-diff --git a/drivers/net/ethernet/amd/pds_core/fw.c b/drivers/net/ethernet/amd/pds_core/fw.c
-index 90a811f3878a..fa626719e68d 100644
---- a/drivers/net/ethernet/amd/pds_core/fw.c
-+++ b/drivers/net/ethernet/amd/pds_core/fw.c
-@@ -107,6 +107,9 @@ int pdsc_firmware_update(struct pdsc *pdsc, const struct firmware *fw,
+-	qcq->cq.bound_intr = &pdsc->intr_info[qcq->intx];
+ 	qcq->cq.num_descs = num_descs;
+ 	qcq->cq.desc_size = cq_desc_size;
+ 	qcq->cq.tail_idx = 0;
+@@ -433,9 +433,6 @@ int pdsc_setup(struct pdsc *pdsc, bool init)
+ 	if (err)
+ 		goto err_out_teardown;
  
- 	dev_info(pdsc->dev, "Installing firmware\n");
+-	/* NotifyQ rides on the AdminQ interrupt */
+-	pdsc->notifyqcq.intx = pdsc->adminqcq.intx;
+-
+ 	/* Set up the Core with the AdminQ and NotifyQ info */
+ 	err = pdsc_core_init(pdsc);
+ 	if (err)
+diff --git a/drivers/net/ethernet/amd/pds_core/debugfs.c b/drivers/net/ethernet/amd/pds_core/debugfs.c
+index 8ec392299b7d..dd6aaeecfe0a 100644
+--- a/drivers/net/ethernet/amd/pds_core/debugfs.c
++++ b/drivers/net/ethernet/amd/pds_core/debugfs.c
+@@ -105,7 +105,6 @@ void pdsc_debugfs_add_qcq(struct pdsc *pdsc, struct pdsc_qcq *qcq)
+ 	struct dentry *qcq_dentry, *q_dentry, *cq_dentry;
+ 	struct dentry *intr_dentry;
+ 	struct debugfs_regset32 *intr_ctrl_regset;
+-	struct pdsc_intr_info *intr = &pdsc->intr_info[qcq->intx];
+ 	struct pdsc_queue *q = &qcq->q;
+ 	struct pdsc_cq *cq = &qcq->cq;
  
-+	if (!pdsc->cmd_regs)
-+		return -ENXIO;
+@@ -143,6 +142,8 @@ void pdsc_debugfs_add_qcq(struct pdsc *pdsc, struct pdsc_qcq *qcq)
+ 	debugfs_create_u16("tail", 0400, cq_dentry, &cq->tail_idx);
+ 
+ 	if (qcq->flags & PDS_CORE_QCQ_F_INTR) {
++		struct pdsc_intr_info *intr = &pdsc->intr_info[qcq->intx];
 +
- 	dl = priv_to_devlink(pdsc);
- 	devlink_flash_update_status_notify(dl, "Preparing to flash",
- 					   NULL, 0, 0);
-diff --git a/drivers/net/ethernet/amd/pds_core/main.c b/drivers/net/ethernet/amd/pds_core/main.c
-index 5172a5ad8ec6..05fdeb235e5f 100644
---- a/drivers/net/ethernet/amd/pds_core/main.c
-+++ b/drivers/net/ethernet/amd/pds_core/main.c
-@@ -37,6 +37,11 @@ static void pdsc_unmap_bars(struct pdsc *pdsc)
- 	struct pdsc_dev_bar *bars = pdsc->bars;
- 	unsigned int i;
- 
-+	pdsc->info_regs = NULL;
-+	pdsc->cmd_regs = NULL;
-+	pdsc->intr_status = NULL;
-+	pdsc->intr_ctrl = NULL;
-+
- 	for (i = 0; i < PDS_CORE_BARS_MAX; i++) {
- 		if (bars[i].vaddr)
- 			pci_iounmap(pdsc->pdev, bars[i].vaddr);
+ 		intr_dentry = debugfs_create_dir("intr", qcq->dentry);
+ 		if (IS_ERR_OR_NULL(intr_dentry))
+ 			return;
 -- 
 2.17.1
 
