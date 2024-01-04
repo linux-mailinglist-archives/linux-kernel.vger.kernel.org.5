@@ -1,179 +1,194 @@
-Return-Path: <linux-kernel+bounces-16923-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16924-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 715E3824621
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 17:27:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C7CF824623
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 17:27:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EA40E1F2117C
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 16:27:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 443CA1C22342
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 16:27:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BA7924B35;
-	Thu,  4 Jan 2024 16:27:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="CRsSNgQo"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFDD324B3A;
+	Thu,  4 Jan 2024 16:27:33 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C999E24B2C
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 16:27:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-6d9af1f12d5so480011b3a.3
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 08:27:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704385630; x=1704990430; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=FnYAokOhwR9OqZmkxeqPvu/rT3S42+z3MXWvmRmQ4QQ=;
-        b=CRsSNgQoxR8wM0eATvfuIWg7h+ooIQoG9a4vfS47PdXO0RZCeyw2mRc+WhKF9jlQLa
-         GMHlewS3iJoQoV5fUS0vOi94gHWSJfSe6HOT15k1meCzLJ5O+C3h+NB/dpuVEs8LGv1f
-         6FZPM1ar7pSEX/4gzFlYetAXrKGEu/pq7bbz19qkCJ5hpcscAg5ZKDpgQFJjqbKZn8Xg
-         +S2mLC4w4seGfRy5ZFI/3Fc3LrNy8HNJh7kcA0RKul6mVEhWb6lj/mtzS1LKhnatW9g1
-         RjLPUuC9XQIdCKKqQTJnpue3kpTInvHPeoK1MbJzvnDKNn0P/4jQ+G6VNQS3n1p6MOT6
-         Ys0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704385630; x=1704990430;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=FnYAokOhwR9OqZmkxeqPvu/rT3S42+z3MXWvmRmQ4QQ=;
-        b=vKB/32ZmNo5+3hAA3EhkAfftGf7Hx9+aven7TvZ1x1NwM7vAA84guwTyMR49jP1Hgh
-         RT86PGH24gHdaHK9/sVKv1FFVZ13yi20fKCpCezHmC2IvMfW7HBpsdkwRQ7IZOBSmwc2
-         WefmXRRZU7BCx8acA1vaM5wER45RpzOZRJvlW9puXjzutxOSEZnt7maKN0eDgqQDl59u
-         HqF8canqq0ANBSFq9gZqUgg7LqaPniInRbZXMX8cO8p3zLBeV4RorjxrJbDlOlgWSSZ7
-         ZCWneN6jEzobjCyrvqlemLVbkpD4NAp9P7Xy6O2gjTGNQO2mOIz+3SanOvrw/w2I2T7B
-         eDng==
-X-Gm-Message-State: AOJu0Yz/h8BnDW2tG9Hmg45TpW/oH0KD6JRIw1qz6LLBv18PQTQeDq5M
-	Rlf/sbSmhaAHTnPyLrTJR3hLjqXPdUFQJQ3HDNJ6DppaMX8wXA==
-X-Google-Smtp-Source: AGHT+IHxNDL2SCklXExrZBno6wrVarH3D+WkSYzCdxI/W6IebtqJZR+DyujGCrzA8xMpDshpkAzNcAMO/Dk/rzlXP1I=
-X-Received: by 2002:a62:5f82:0:b0:6da:13bc:fb4d with SMTP id
- t124-20020a625f82000000b006da13bcfb4dmr843842pfb.47.1704385630172; Thu, 04
- Jan 2024 08:27:10 -0800 (PST)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61A6424B29
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 16:27:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A39FEC15;
+	Thu,  4 Jan 2024 08:28:16 -0800 (PST)
+Received: from e127643.. (unknown [172.31.20.19])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 968433F5A1;
+	Thu,  4 Jan 2024 08:27:23 -0800 (PST)
+From: James Clark <james.clark@arm.com>
+To: coresight@lists.linaro.org,
+	linux-arm-kernel@lists.infradead.org,
+	kvmarm@lists.linux.dev,
+	broonie@kernel.org,
+	maz@kernel.org,
+	suzuki.poulose@arm.com,
+	acme@kernel.org
+Cc: James Clark <james.clark@arm.com>,
+	Oliver Upton <oliver.upton@linux.dev>,
+	James Morse <james.morse@arm.com>,
+	Zenghui Yu <yuzenghui@huawei.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	Mike Leach <mike.leach@linaro.org>,
+	Leo Yan <leo.yan@linaro.org>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Anshuman Khandual <anshuman.khandual@arm.com>,
+	Rob Herring <robh@kernel.org>,
+	Miguel Luis <miguel.luis@oracle.com>,
+	Jintack Lim <jintack.lim@linaro.org>,
+	Ard Biesheuvel <ardb@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Helge Deller <deller@gmx.de>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Quentin Perret <qperret@google.com>,
+	Vincent Donnefort <vdonnefort@google.com>,
+	Akihiko Odaki <akihiko.odaki@daynix.com>,
+	Fuad Tabba <tabba@google.com>,
+	Kristina Martsenko <kristina.martsenko@arm.com>,
+	Joey Gouly <joey.gouly@arm.com>,
+	Jing Zhang <jingzhangos@google.com>,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v4 0/7] kvm/coresight: Support exclude guest and exclude host
+Date: Thu,  4 Jan 2024 16:27:00 +0000
+Message-Id: <20240104162714.1062610-1-james.clark@arm.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <alpine.DEB.2.22.394.2310032059060.3220@hadrien>
- <alpine.DEB.2.22.394.2310041958380.3108@hadrien> <20231009102949.GC14330@noisy.programming.kicks-ass.net>
- <b8ab29de-1775-46e-dd75-cdf98be8b0@inria.fr> <CAKfTPtBhWwk9sf9F1=KwubiAWFDC2A9ZT-SSJ+tgFxme1cFmYA@mail.gmail.com>
- <alpine.DEB.2.22.394.2312182302310.3361@hadrien> <CAKfTPtALEFtrapi3Kk97KLGQN4259eEQEwwftVUK4RG42Vgoyw@mail.gmail.com>
- <98b3df1-79b7-836f-e334-afbdd594b55@inria.fr> <CAKfTPtCRN_eWgVdK2-h6E_ifJKwwJEtMjeNjB=5DXZFWyBS+tQ@mail.gmail.com>
- <93112fbe-30be-eab8-427c-5d4670a0f94e@inria.fr> <CAKfTPtAeFvrZxApK3RruWwCjMxbQvOkU+_YgZSo4QPT_AD6FxA@mail.gmail.com>
- <9dc451b5-9dd8-89f2-1c9c-7c358faeaad@inria.fr> <CAKfTPtDCsLnDnVje9maP5s-L7TbtSu4CvF19xHOxbkvSNd7vZg@mail.gmail.com>
- <2359ab5-4556-1a73-9255-3fcf2fc57ec@inria.fr> <6618dcfa-a42f-567c-2a9d-a76786683b29@inria.fr>
- <CAKfTPtDrULyOB9+RhjoPfCpHKVhx5kRf6dq79DSE6jZgsEairw@mail.gmail.com>
- <edbd8ecd-148c-b366-fd46-3531dec39d49@inria.fr> <cecfd395-f067-99e1-bdd2-fec2ebc3db3@inria.fr>
-In-Reply-To: <cecfd395-f067-99e1-bdd2-fec2ebc3db3@inria.fr>
-From: Vincent Guittot <vincent.guittot@linaro.org>
-Date: Thu, 4 Jan 2024 17:26:57 +0100
-Message-ID: <CAKfTPtCAcHuzhcDvry6_nH2K29wc-LEo2yOi-J-mnZkwMvGDbw@mail.gmail.com>
-Subject: Re: EEVDF and NUMA balancing
-To: Julia Lawall <julia.lawall@inria.fr>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Dietmar Eggemann <dietmar.eggemann@arm.com>, Mel Gorman <mgorman@suse.de>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-On Fri, 29 Dec 2023 at 16:18, Julia Lawall <julia.lawall@inria.fr> wrote:
->
->
->
-> On Thu, 28 Dec 2023, Julia Lawall wrote:
->
-> > > > > > > > I'm surprised that you have mainly CPU_NEWLY_IDLE. Do you know the reason ?
-> > > > > > >
-> > > > > > > No.  They come from do_idle calling the scheduler.  I will look into why
-> > > > > > > this happens so often.
-> > > > > >
-> > > > > > Hmm, the CPU was idle and received a need resched which triggered the
-> > > > > > scheduler but there was nothing to schedule so it goes back to idle
-> > > > > > after running a newly_idle _load_balance.
-> > > > >
-> > > > > I spent quite some time thinking the same until I saw the following code
-> > > > > in do_idle:
-> > > > >
-> > > > > preempt_set_need_resched();
-> > > > >
-> > > > > So I have the impression that do_idle sets need resched itself.
-> > > >
-> > > > But of course that code is only executed if need_resched is true.  But I
-> > >
-> > > Yes, that is your root cause. something, most probably in interrupt
-> > > context, wakes up your CPU and expect to wake up a thread
-> > >
-> > > > don't know who would be setting need resched on each clock tick.
-> > >
-> > > that can be a timer, interrupt, ipi, rcu ...
-> > > a trace should give you some hints
-> >
-> > I have the impression that it is the goal of calling nohz_csd_func on each
-> > clock tick that causes the calls to need_resched.  If the idle process is
-> > polling, call_function_single_prep_ipi just sets need_resched to get the
+This is a combination of the RFC for nVHE here [1] and v3 of VHE version
+here [2]. After a few of the review comments it seemed much simpler for
+both versions to use the same interface and be in the same patchset.
 
-Your system is calling the polling mode and not the default
-cpuidle_idle_call() ? This could explain why I don't see such problem
-on my system which doesn't have polling
+FEAT_TRF is a Coresight feature that allows trace capture to be
+completely filtered at different exception levels, unlike the existing
+TRCVICTLR controls which may still emit target addresses of branches,
+even if the following trace is filtered.
 
-Are you forcing the use of polling mode ?
-If yes, could you check that this problem disappears without forcing
-polling mode ?
+Without FEAT_TRF, it was possible to start a trace session on a host and
+also collect trace from the guest as TRCVICTLR was never programmed to
+exclude guests (and it could still emit target addresses even if it
+was).
 
-> > idle process to stop polling.  But there is no actual task that the idle
-> > process should schedule.  The need_resched then prevents the idle process
-> > from stealing, due to the CPU_NEWLY_IDLE flag, contradicting the whole
-> > purpose of calling nohz_csd_func in the first place.
+With FEAT_TRF, the current behavior of trace in guests exists depends on
+whether nVHE or VHE are being used. Both of the examples below are from
+the host's point of view, as Coresight isn't accessible from guests.
+This patchset is only relevant to when FEAT_TRF exists, otherwise there
+is no change.
 
-Do I understand correctly that your sequence is :
-CPU A                                  CPU B
-cpu enters idle
-do_idle()
-  ...
-  loop in cpu_idle_poll
-  ...
-                                       kick_ilb on CPU A
-                                         send_call_function_single_ipi
-                                           set_nr_if_polling
-                                             set TIF_NEED_RESCHED
+  nVHE:
 
-  exit polling loop
-exit while (!need_resched())
+  Because the host and the guest are both using TRFCR_EL1, trace will be
+  generated in guests depending on the same filter rules the host is
+  using. For example if the host is tracing userspace only, then guest
+  userspace trace will also be collected.
 
-call nohz_csd_func but
-  need_resched is true so it's a nope
+  (This is further limited by whether TRBE is used because an issue
+  with TRBE means that it's completely disabled in nVHE guests, but it's
+  possible to have other tracing components.)
 
-pick_next_task_fair
-  newidle_balance
-    load_balance(CPU_NEWLY_IDLE)
+  VHE:
 
+  With VHE, the host filters will be in TRFCR_EL2, but the filters in
+  TRFCR_EL1 will be active when the guest is running. Because we don't
+  write to TRFCR_EL1, guest trace will be completely disabled.
 
->
-> Looking in more detail, do_idle contains the following after existing the
-> polling loop:
->
->         flush_smp_call_function_queue();
->         schedule_idle();
->
-> flush_smp_call_function_queue() does end up calling nohz_csd_func, but
-> this has no impact, because it first checks that need_resched() is false,
-> whereas it is currently true to cause existing the polling loop.  Removing
-> that test causes:
->
-> raise_softirq_irqoff(SCHED_SOFTIRQ);
->
-> but that causes the load balancing code to be executed from a ksoftirqd
-> task, which means that there is now no load imbalance.
->
-> So the only chance to detect an imbalance does seem to be to have the load
-> balance call be executed by the idle task, via schedule_idle(), as is
-> done currently.  But that leads to the core being considered to be newly
-> idle.
->
-> julia
->
->
+With this change, the guest filtering rules from the Perf session are
+honored for both nVHE and VHE modes. This is done by either writing to
+TRFCR_EL12 at the start of the Perf session and doing nothing else
+further, or caching the guest value and writing it at guest switch for
+nVHE.
+
+---
+
+Changes since V3:
+  * Create a new shared area to store the host state instead of copying
+    it before each VCPU run
+  * Drop commit that moved SPE and trace registers from host_debug_state
+    into the kvm sysregs array because the guest values were never used 
+  * Document kvm_etm_set_guest_trfcr()
+  * Guard kvm_etm_set_guest_trfcr() with a feature check
+  * Drop Mark B and Suzuki's review tags on the sysreg patch because it
+    turned out that broke the Perf build and needed some unconventional
+    changes to fix it (as in: to update the tools copy of the headers in
+    the same commit as the kernel changes)
+
+Changes since V2:
+
+  * Add a new iflag to signify presence of FEAT_TRF and keep the
+    existing TRBE iflag. This fixes the issue where TRBLIMITR_EL1 was
+    being accessed even if TRBE didn't exist
+  * Reword a commit message
+
+Changes since V1:
+
+  * Squashed all the arm64/tools/sysreg changes into the first commit
+  * Add a new commit to move SPE and TRBE regs into the kvm sysreg array
+  * Add a comment above the TRFCR global that it's per host CPU rather
+    than vcpu
+
+Changes since nVHE RFC [1]:
+
+ * Re-write just in terms of the register value to be written for the
+   host and the guest. This removes some logic from the hyp code and
+   a value of kvm_vcpu_arch:trfcr_el1 = 0 no longer means "don't
+   restore".
+ * Remove all the conditional compilation and new files.
+ * Change the kvm_etm_update_vcpu_events macro to a function.
+ * Re-use DEBUG_STATE_SAVE_TRFCR so iflags don't need to be expanded
+   anymore.
+ * Expand the cover letter.
+
+Changes since VHE v3 [2]:
+
+ * Use the same interface as nVHE mode so TRFCR_EL12 is now written by
+   kvm.
+
+[1]: https://lore.kernel.org/kvmarm/20230804101317.460697-1-james.clark@arm.com/
+[2]: https://lore.kernel.org/kvmarm/20230905102117.2011094-1-james.clark@arm.com/
+
+James Clark (7):
+  arm64: KVM: Fix renamed function in comment
+  arm64: KVM: Use shared area to pass PMU event state to hypervisor
+  arm64/sysreg/tools: Move TRFCR definitions to sysreg
+  arm64: KVM: Add iflag for FEAT_TRF
+  arm64: KVM: Add interface to set guest value for TRFCR register
+  arm64: KVM: Write TRFCR value on guest switch with nVHE
+  coresight: Pass guest TRFCR value to KVM
+
+ arch/arm64/include/asm/kvm_host.h             |  15 +-
+ arch/arm64/include/asm/sysreg.h               |  12 -
+ arch/arm64/kernel/image-vars.h                |   1 +
+ arch/arm64/kvm/arm.c                          |  16 +-
+ arch/arm64/kvm/debug.c                        |  48 ++-
+ arch/arm64/kvm/hyp/nvhe/debug-sr.c            |  55 +--
+ arch/arm64/kvm/hyp/nvhe/setup.c               |  13 +-
+ arch/arm64/kvm/hyp/nvhe/switch.c              |   9 +-
+ arch/arm64/kvm/pmu.c                          |   4 +-
+ arch/arm64/tools/sysreg                       |  41 +++
+ .../coresight/coresight-etm4x-core.c          |  42 ++-
+ drivers/hwtracing/coresight/coresight-etm4x.h |   2 +-
+ drivers/hwtracing/coresight/coresight-priv.h  |   3 +
+ include/kvm/arm_pmu.h                         |  17 -
+ tools/arch/arm64/include/asm/sysreg.h         | 345 +++++++++++++++++-
+ tools/include/linux/kasan-tags.h              |  15 +
+ 16 files changed, 554 insertions(+), 84 deletions(-)
+ create mode 100644 tools/include/linux/kasan-tags.h
+
+-- 
+2.34.1
+
 
