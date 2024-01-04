@@ -1,155 +1,101 @@
-Return-Path: <linux-kernel+bounces-16575-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16577-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6F7582407A
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 12:19:48 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F7B4824081
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 12:21:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F34221C23B20
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 11:19:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0F42A1C23DF9
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 11:21:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82BC821101;
-	Thu,  4 Jan 2024 11:19:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B4722111D;
+	Thu,  4 Jan 2024 11:21:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="BCIiI5a9"
+	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="CkCcC81e"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23111210F3;
-	Thu,  4 Jan 2024 11:19:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 404BJQfJ124161;
-	Thu, 4 Jan 2024 05:19:26 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1704367166;
-	bh=gEI1DUvl7fwMGnh7BriCsJR03yIbeB6SbxVvjDA9xHg=;
-	h=From:To:CC:Subject:Date;
-	b=BCIiI5a9PeRs0T+tkg67xaVWYXo85oT6EKzgsRzyOcJr+aOblB0QhLpEyANNkOLRV
-	 Ra0gpt21YLCm/FMycxD/NDXIKKrIJSaGhDriliaDketlmqnGL5z7AiYdaW5RKcHhLf
-	 62VDJ30ArdkfeUuVCP6fcyWcpm3ImUNbQa+y8cac=
-Received: from DLEE107.ent.ti.com (dlee107.ent.ti.com [157.170.170.37])
-	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 404BJQtm117077
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Thu, 4 Jan 2024 05:19:26 -0600
-Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE107.ent.ti.com
- (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 4
- Jan 2024 05:19:26 -0600
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 4 Jan 2024 05:19:26 -0600
-Received: from a0497641-HP-Z2-Tower-G9-Workstation-Desktop-PC.dhcp.ti.com (a0497641-hp-z2-tower-g9-workstation-desktop-pc.dhcp.ti.com [172.24.227.36])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 404BJMmS111184;
-	Thu, 4 Jan 2024 05:19:23 -0600
-From: Neha Malcom Francis <n-francis@ti.com>
-To: <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <vigneshr@ti.com>, <nm@ti.com>
-CC: <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <a-nandan@ti.com>, <kristo@kernel.org>,
-        <u-kumar1@ti.com>, <n-francis@ti.com>
-Subject: [PATCH v2] arm64: dts: ti: k3-j721e: Add support for DFS in J721E A72
-Date: Thu, 4 Jan 2024 16:49:22 +0530
-Message-ID: <20240104111922.832040-1-n-francis@ti.com>
-X-Mailer: git-send-email 2.34.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C1EF21100
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 11:21:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-5570bef7cb8so321942a12.2
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 03:21:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ventanamicro.com; s=google; t=1704367267; x=1704972067; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=qKPYdKug4jHnHkMVUhvNYsHAKauhASNUqaOoyowrxaM=;
+        b=CkCcC81e7pxUPbxnGqAeBDgXnUW0N5jiidh0AzksMoDj3DX6007FBlyuC5W463bBoN
+         f1xV4nv/PRx090so3Ad8Ss5VWJ4tbg6h1doY52R70zRXVjNQdvwRt5HrpHaEhgzyUYaN
+         lf3nfg5lzalWWAw5CLPAOcP9zdIu9nsZLIItzOCnR+iFXDQx5pxqVCsNYSYyfg8oXyTa
+         2plNuAYxJYr+Ua3AzAGUyWT1HXFW/IGlNCZPVAA8hdW3mHqlNExLlYYpAcEs5+20jQBz
+         NRwswomhmD9DPbw4WHF62Ha5XfxSRhjk3+nZeGkKkQpUO5q+eu6S1tPGJMtDYWw8EUXn
+         sWvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704367267; x=1704972067;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qKPYdKug4jHnHkMVUhvNYsHAKauhASNUqaOoyowrxaM=;
+        b=roNqEzv6U3ZNWA1hZ/9TDYtGXoPCeAI3a++d8dpODmLT8RlpT/S26tNfKVlu6UK77S
+         tF6WA2S1gCUhQu8o/tOxge2hjVDDIp2rXXYLGtWv5Oh1mIdDrEGPJW447rzupth8WON6
+         6wHMAT+6KqQUhU9e1piLqd4CxgnawI8yzsTWJxdTelUNHH81AOXoCejvjxHn3mhQGW1z
+         QDJjMX0nOKL6mU+vVWI/PbraPCY8ebpNwsYOSkvNaMYN11UNYER8jzGw/BHDewHQKDw+
+         s/7mDlyh914+OXfNrmHQXaEYlQPN9LfaBUglOU0U2/SHNRc4Ip/G9CEO0EUxjJ5scKWx
+         Fx4g==
+X-Gm-Message-State: AOJu0YwCVEti0hhGtg2v7z6pjqRF9j58C2ARhKJpYZJ6mvVkz6v1YJNO
+	5lr4aiximRvPFlj79qovTTe/2aMh01wERQ==
+X-Google-Smtp-Source: AGHT+IGEPF95NHKVsnpyIHKUm/KgY8I0kv9v78/s4o+1miuTMPSJaURO0LP/yv/+PD12AbmgBJL1yQ==
+X-Received: by 2002:a50:bae9:0:b0:555:65c0:e72b with SMTP id x96-20020a50bae9000000b0055565c0e72bmr319888ede.62.1704367266640;
+        Thu, 04 Jan 2024 03:21:06 -0800 (PST)
+Received: from localhost (2001-1ae9-1c2-4c00-20f-c6b4-1e57-7965.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:20f:c6b4:1e57:7965])
+        by smtp.gmail.com with ESMTPSA id w14-20020aa7d28e000000b0055306f10c28sm18642880edq.28.2024.01.04.03.21.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Jan 2024 03:21:06 -0800 (PST)
+Date: Thu, 4 Jan 2024 12:21:05 +0100
+From: Andrew Jones <ajones@ventanamicro.com>
+To: Alexandre Ghiti <alex@ghiti.fr>
+Cc: linux-riscv@lists.infradead.org, linux-next@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, kvm@vger.kernel.org, kvm-riscv@lists.infradead.org, 
+	paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu, anup@brainfault.org, 
+	atishp@atishpatra.org, rdunlap@infradead.org, sfr@canb.auug.org.au, mpe@ellerman.id.au, 
+	npiggin@gmail.com, linuxppc-dev@lists.ozlabs.org, pbonzini@redhat.com
+Subject: Re: Re: [PATCH] RISC-V: KVM: Require HAVE_KVM
+Message-ID: <20240104-6a5a59dde14adcaf3ac22a35@orel>
+References: <20240104104307.16019-2-ajones@ventanamicro.com>
+ <20240104-d5ebb072b91a6f7abbb2ac76@orel>
+ <752c11ea-7172-40ff-a821-c78aeb6c5518@ghiti.fr>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <752c11ea-7172-40ff-a821-c78aeb6c5518@ghiti.fr>
 
-Add 2G, 1G, 500M and 250M as the supported frequencies for A72. This
-enables support for Dynamic Frequency Scaling (DFS). Note that Dynamic
-Voltage and Frequency Scaling (DVFS) is not supported on J7 devices.
+On Thu, Jan 04, 2024 at 12:07:51PM +0100, Alexandre Ghiti wrote:
+> On 04/01/2024 11:52, Andrew Jones wrote:
+> > This applies to linux-next, but I forgot to append -next to the PATCH
+> > prefix.
+> 
+> 
+> Shoudn't this go to -fixes instead? With a Fixes tag?
 
-J721E SoC has three different speed grade devices (see [1], 7.5
-Operating Performance Points) which as of today are indiscernible in
-software, users of a different speed grade device must manually change
-the DTS to ensure their maximum speed frequency is supported.
+I'm not sure how urgent it is since it's a randconfig thing, but if we
+think it deserves the -fixes track then I can do that. The Fixes tag isn't
+super easy to select since, while it seems like it should be 8132d887a702
+("KVM: remove CONFIG_HAVE_KVM_EVENTFD"), it could also be 99cdc6c18c2d
+("RISC-V: Add initial skeletal KVM support").
 
-To obtain clock-latency-ns, the maximum time was found to switch from/to
-any frequency for a CPU and this value was rounded off and set.
+I'll leave both the urgency decision and the Fixes tag selection up to
+the maintainers. Anup? Paolo?
 
-[1] https://www.ti.com/lit/gpn/tda4vm
-
-Signed-off-by: Neha Malcom Francis <n-francis@ti.com>
----
-Test and boot logs:
-https://gist.github.com/nehamalcom/33608837ab5ad3332ff11a7fa7a602e2
-
-Changes since v1:
-https://lore.kernel.org/all/20231214075637.176586-1-n-francis@ti.com/
-- removed OPPs 1.5G and 750M as they introduced boot regression in
-  J721E-SK
-- Nishanth
-	- indicated DVFS not supported in commit message
-	- moved critical data sheet info from below tear line to commit
-	  message
-	- added opp-shared property
-	- added clock-latency-ns property
-
- arch/arm64/boot/dts/ti/k3-j721e.dtsi | 31 ++++++++++++++++++++++++++++
- 1 file changed, 31 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/ti/k3-j721e.dtsi b/arch/arm64/boot/dts/ti/k3-j721e.dtsi
-index a200810df54a..5de6c70bd989 100644
---- a/arch/arm64/boot/dts/ti/k3-j721e.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-j721e.dtsi
-@@ -48,6 +48,9 @@ cpu0: cpu@0 {
- 			d-cache-line-size = <64>;
- 			d-cache-sets = <256>;
- 			next-level-cache = <&L2_0>;
-+			clocks = <&k3_clks 202 2>;
-+			clock-names = "cpu";
-+			operating-points-v2 = <&cpu0_opp_table>;
- 		};
- 
- 		cpu1: cpu@1 {
-@@ -62,6 +65,34 @@ cpu1: cpu@1 {
- 			d-cache-line-size = <64>;
- 			d-cache-sets = <256>;
- 			next-level-cache = <&L2_0>;
-+			clocks = <&k3_clks 203 0>;
-+			clock-names = "cpu";
-+			operating-points-v2 = <&cpu0_opp_table>;
-+		};
-+	};
-+
-+	cpu0_opp_table: opp-table {
-+		compatible = "operating-points-v2";
-+		opp-shared;
-+
-+		opp6-2000000000 {
-+			opp-hz = /bits/ 64 <2000000000>;
-+			clock-latency-ns = <300000>;
-+		};
-+
-+		opp4-1000000000 {
-+			opp-hz = /bits/ 64 <1000000000>;
-+			clock-latency-ns = <300000>;
-+		};
-+
-+		opp2-500000000 {
-+			opp-hz = /bits/ 64 <500000000>;
-+			clock-latency-ns = <300000>;
-+		};
-+
-+		opp1-250000000 {
-+			opp-hz = /bits/ 64 <250000000>;
-+			clock-latency-ns = <300000>;
- 		};
- 	};
- 
--- 
-2.34.1
-
+Thanks,
+drew
 
