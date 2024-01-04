@@ -1,127 +1,144 @@
-Return-Path: <linux-kernel+bounces-17172-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17173-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 852F2824929
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 20:37:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 33A1D82492B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 20:37:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 05BB4287218
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 19:37:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C3B92282342
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 19:37:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B262E2C855;
-	Thu,  4 Jan 2024 19:35:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 873C12CCDA;
+	Thu,  4 Jan 2024 19:36:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="fmOjjJ9f"
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="hjK4Bvhw"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+Received: from mail-pg1-f169.google.com (mail-pg1-f169.google.com [209.85.215.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61E002C859
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 19:35:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-40d894764e7so8416375e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 11:35:57 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB35E2CCBA
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 19:36:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-pg1-f169.google.com with SMTP id 41be03b00d2f7-5ce9555d42eso647725a12.2
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 11:36:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1704396955; x=1705001755; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=TLfuV7xsXyW+hLKhxRy2JmANDmog6uIMlY97oe3vpGA=;
-        b=fmOjjJ9fZ+iJn4YSNSK/eJgX9cZ3H3w62EDHYon7+YnT2lIEQFQXj/GBYZb90oAcyq
-         Rzd9/CsODZ5mz/sNjJeIpk1m7ajzHI+yVSeD5RMvpH+B15IyU7SaR+WN0ofc1NK1wZfs
-         0fTiHiF+RAHO64CccNJcSVTeaToCfSSAPLXG0=
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1704396985; x=1705001785; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=5jyLPzGlkBzpMC1Ie2DgS7N7g7HFIfbpKPqTLTs2R68=;
+        b=hjK4Bvhwta+qX9IgS73+a13RTbjKwG9l1YvUBiE7VYGu9Wq5EPTvwsakzroPRIyslY
+         jVeo3rNztqECE279ag2ZNeUYYbuvMt9vAlfU+zomc4ivz3SgXVRDORg2W/wLEWO/1GaO
+         AwNJoV7aWUTDqMsdq0QNKYJKLOou/2Hr/+8UEBR0a+K41i5n540I1T+VtzfBX5llE6lP
+         Ds0pscuu0HHNr70Sl7PzREpIqSxNdBn6ikB+Hhd6y1e3SQgfBbszAJJ5lIWWUOyLmksM
+         UB+m+JMvwBdIs/bdzMJGX1FtahhGfDPSPyULn1GxbukF6jDikHukID2LYXF1KdWZaeAO
+         p66g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704396955; x=1705001755;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=TLfuV7xsXyW+hLKhxRy2JmANDmog6uIMlY97oe3vpGA=;
-        b=v60dKJStmMl1d3T69S+Q1l0CAccGvp6qa3y5RbwszHTDfq/T8XtCRZG2csBu/XF9H5
-         9V19Yu9N/ovUG5F08zSm5fxhPly6GUjjvffnk43WIRwM4ezzi03Z8nVJRRLwfg7k+4LN
-         3QZvRH0mSlnYjqjqPn5kx+TnLOAF1SepGL5bn/Seg6u+FkdAdSZ5H2cfGxzfrhi5ebtW
-         4DaJd1BPcuKLw6z0XU24ELBKlNzEd8zcJGcIkY2dZZ3Ac2t+eZC0WdvxksCTD/owCFZT
-         9kAR+EHAXbfvwSjOrLboiP84nhruYkIAtlVHzrI4dE/KYwQkzB/wwSwGcIW0izbD3CQ5
-         kynQ==
-X-Gm-Message-State: AOJu0YzIcGC7cCq/TdnOT1sHH5BjpBj5C7mpqCWpoGHc5YzRwnQSXBmh
-	OB+QB71AZT+DwTm4P8FRV97VThd4WO+1paagmZUL+KJWl8RZx9pI
-X-Google-Smtp-Source: AGHT+IEaIkzrIUBpXAOJfcHbAzUMndcTbdg02Fjxg2SWFljy/v5BqBgf7bXf24pjBnufZkxbW4TyEA==
-X-Received: by 2002:a05:600c:c0b:b0:40e:351d:53fd with SMTP id fm11-20020a05600c0c0b00b0040e351d53fdmr377601wmb.239.1704396955335;
-        Thu, 04 Jan 2024 11:35:55 -0800 (PST)
-Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com. [209.85.218.50])
-        by smtp.gmail.com with ESMTPSA id bg10-20020a170906a04a00b00a26a443e98esm13930367ejb.169.2024.01.04.11.35.54
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Jan 2024 11:35:54 -0800 (PST)
-Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a26ed1e05c7so105256566b.2
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 11:35:54 -0800 (PST)
-X-Received: by 2002:a17:906:1194:b0:a28:b79a:37a0 with SMTP id
- n20-20020a170906119400b00a28b79a37a0mr367224eja.222.1704396954150; Thu, 04
- Jan 2024 11:35:54 -0800 (PST)
+        d=1e100.net; s=20230601; t=1704396985; x=1705001785;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5jyLPzGlkBzpMC1Ie2DgS7N7g7HFIfbpKPqTLTs2R68=;
+        b=ZlUsjxjVam7lKOM7c77bBeONKYp148zM1wFGXg/efKo4FFQKIP9Bm1QxtUfACpAoei
+         Mmc/s6I2tMLmywE2gMNe8q9ZLavc/gXUxOG9smTMgccRf2FJsiMeBJY9s067NSnuNYTw
+         ob9QCL2zdJRxvrFF75zT2Y682JEfNL/l6vFDIBxUQVdD9yKBZ8m1eYB1PIExdk6qoS6c
+         X1l3hgCeqFVAclVF22VqrfT9EVzuWYIKm7n0BrawAXP9kk22wmqJzGa27V+VtTArV2Mv
+         K31Tt8obUbtE0zGiOF4xC8rMK+H1rn4lls/mpqrH3Nlb19gVYirhgVikbVXOvFEBJXoo
+         SrWw==
+X-Gm-Message-State: AOJu0YzWDmTprM0jbYP4araTYQ2jk6s/4mhDcw9eRoo5pCurCLccd4ff
+	MjBRMHxQXlGvPqdywGhv3tNaNgWQsfJIlg==
+X-Google-Smtp-Source: AGHT+IG/iL6sTjfq2ya9QGl5wDoK7MD1hL09Yv8G/ovDwT5oWVUmHs7UgRl9PtyO8HocqpDkSoN/6g==
+X-Received: by 2002:a05:6a20:8415:b0:197:5be1:262b with SMTP id c21-20020a056a20841500b001975be1262bmr1108314pzd.83.1704396984958;
+        Thu, 04 Jan 2024 11:36:24 -0800 (PST)
+Received: from ghost ([2601:647:5700:6860:bd91:d703:f34:7cf7])
+        by smtp.gmail.com with ESMTPSA id ko7-20020a056a00460700b006d9a0694f93sm23013pfb.205.2024.01.04.11.36.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Jan 2024 11:36:24 -0800 (PST)
+Date: Thu, 4 Jan 2024 11:36:22 -0800
+From: Charlie Jenkins <charlie@rivosinc.com>
+To: Dan Carpenter <dan.carpenter@linaro.org>
+Cc: Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Palmer Dabbelt <palmer@rivosinc.com>,
+	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+	kernel test robot <lkp@intel.com>,
+	Dan Carpenter <error27@gmail.com>
+Subject: Re: [PATCH v2 4/4] riscv: Convert relocation iterator to do-while
+Message-ID: <ZZcIthn20O1l1DDL@ghost>
+References: <20240103-module_loading_fix-v2-0-292b160552c9@rivosinc.com>
+ <20240103-module_loading_fix-v2-4-292b160552c9@rivosinc.com>
+ <39727434-a265-484b-9ee6-da6611487b47@moroto.mountain>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240103203246.115732ec@gandalf.local.home> <20240104014837.GO1674809@ZenIV>
- <20240103212506.41432d12@gandalf.local.home> <20240104043945.GQ1674809@ZenIV>
- <20240104100544.593030e0@gandalf.local.home> <20240104182502.GR1674809@ZenIV> <20240104141517.0657b9d1@gandalf.local.home>
-In-Reply-To: <20240104141517.0657b9d1@gandalf.local.home>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Thu, 4 Jan 2024 11:35:37 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wgxhmMcVGvyxTxvjeBaenOmG8t_Erahj16-68whbvh-Ug@mail.gmail.com>
-Message-ID: <CAHk-=wgxhmMcVGvyxTxvjeBaenOmG8t_Erahj16-68whbvh-Ug@mail.gmail.com>
-Subject: Re: [PATCH] tracefs/eventfs: Use root and instance inodes as default ownership
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Al Viro <viro@zeniv.linux.org.uk>, LKML <linux-kernel@vger.kernel.org>, 
-	Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Christian Brauner <brauner@kernel.org>, 
-	linux-fsdevel@vger.kernel.org, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <39727434-a265-484b-9ee6-da6611487b47@moroto.mountain>
 
-On Thu, 4 Jan 2024 at 11:14, Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> "file descriptor" - is just what maps to a specific inode.
+On Thu, Jan 04, 2024 at 03:35:55PM +0300, Dan Carpenter wrote:
+> On Wed, Jan 03, 2024 at 12:22:03PM -0800, Charlie Jenkins wrote:
+> > Use a do-while loop to iterate through relocation entries to prevent
+> > curr_type from being marked as uninitialized.
+> > 
+> > Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
+> > Fixes: d8792a5734b0 ("riscv: Safely remove entries from relocation list")
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > Reported-by: Dan Carpenter <error27@gmail.com>
+> > Closes: https://lore.kernel.org/r/202312130859.wnkuzVWY-lkp@intel.com/
+> > ---
+> >  arch/riscv/kernel/module.c | 26 +++++++++++++++++++++-----
+> >  1 file changed, 21 insertions(+), 5 deletions(-)
+> > 
+> > diff --git a/arch/riscv/kernel/module.c b/arch/riscv/kernel/module.c
+> > index ceb0adb38715..581e425686ab 100644
+> > --- a/arch/riscv/kernel/module.c
+> > +++ b/arch/riscv/kernel/module.c
+> > @@ -633,15 +633,31 @@ process_accumulated_relocations(struct module *me,
+> >  					  bucket_iter->bucket, node) {
+> >  			buffer = 0;
+> >  			location = rel_head_iter->location;
+> > -			list_for_each_entry_safe(rel_entry_iter,
+> > -						 rel_entry_iter_tmp,
+> > -						 rel_head_iter->rel_entry,
+> > -						 head) {
+> > +			rel_entry_iter =
+> > +				list_first_entry(rel_head_iter->rel_entry,
+> > +						 typeof(*rel_entry_iter), head);
+> > +			rel_entry_iter_tmp =
+> > +				list_next_entry(rel_entry_iter, head);
+> > +
+> > +			/*
+> > +			 * Iterate through all relocation entries that share
+> > +			 * this location. This uses a do-while loop instead of
+> > +			 * list_for_each_entry_safe since it is known that there
+> > +			 * is at least one entry and curr_type needs to be the
+> > +			 * value of the last entry when the loop exits.
+> > +			 */
+> 
+> I know that I reported this static checker and all, but actually after
+> reading this comment, I think we should stay with original code.  So
+> long as we know the list has "least one entry" which we do then the
+> original code worked fine.
+> 
+> To be honest, I probably would not have even reported this static
+> checker warning except that I saw there were some other issues and
+> thought "Eh, why not throw this warning in as well, in case the list
+> can be empty."
 
-Nope. Technically and traditionally, file descriptor is just the
-integer index that is used to look up a 'struct file *'.
+That makes sense, I will drop that patch.
 
-Except in the kernel, we really just tend to use that term (well, I
-do) for the 'struct file *' itself, since the integer 'fd' is usually
-not really relevant except at the system call interface.
+- Charlie
 
-Which is *NOT* the inode, because the 'struct file' has other things
-in it (the file position, the permissions that were used at open time
-etc, close-on-exec state etc etc).
-
-> "file description" - is how the file is accessed (position in the file and
->                         flags associated to how it was opened)
-
-That's a horrible term that shouldn't be used at all. Apparently some
-people use it for what is our 'struct file *", also known as a "file
-table entry".  Avoid it.
-
-If anything, just use "fd" for the integer representation, and "file"
-for the pointer to a 'struct file".
-
-But most of the time the two are conceptually interchangeable, in that
-an 'fd' just translates directly to a 'struct file *'.
-
-Note that while there's that conceptual direct translation, there's
-also very much a "time of use" issue, in that a "fd -> file"
-translation happens at one particular time and in one particular user
-context, and then it's *done* (so closing and possibly re-using the fd
-after it's been looked up does not actually affect an existing 'struct
-file *').
-
-And while 'fd -> file' lookup is quick and common, the other way
-doesn't exist, because multiple 'fd's can map to one 'struct file *'
-thanks to dup() (and 'fork()', since a 'fd -> file' translation always
-happens within the context of a particular user space, an 'fd' in one
-process is obviously not the same as an 'fd' in another one).
-
-               Linus
+> 
+> The other three patches look good.
+> 
+> regards,
+> dan carpenter
+> 
 
