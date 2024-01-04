@@ -1,110 +1,108 @@
-Return-Path: <linux-kernel+bounces-16512-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16513-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 57F79823F88
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 11:37:46 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B953D823F8C
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 11:39:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D7D75282190
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 10:37:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2FAAEB226DE
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 10:39:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DFF720DCE;
-	Thu,  4 Jan 2024 10:37:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C388E20DD2;
+	Thu,  4 Jan 2024 10:38:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="PimzDzdY"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1257520DCC;
-	Thu,  4 Jan 2024 10:37:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 12952C15;
-	Thu,  4 Jan 2024 02:38:14 -0800 (PST)
-Received: from [10.57.88.128] (unknown [10.57.88.128])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 905143F5A1;
-	Thu,  4 Jan 2024 02:37:25 -0800 (PST)
-Message-ID: <9c1fa923-403f-4c98-b03e-37e467366284@arm.com>
-Date: Thu, 4 Jan 2024 10:38:43 +0000
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9874F20B12
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 10:38:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1704364730;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=UBsofFS/gKrGHJmrD7vxg1XvYsRw/h2z5LmDFHSmzrw=;
+	b=PimzDzdY5sNi8daa6UiT8WNCxBOZvyyjeA/Cm60PY8uECNase8UkRQsu9pmPZjkhNMxhVq
+	vT+2NL/6PckKUhoBJ4+1QvmQE5vKyYcyLpwQt13Sm6dl8CWtUD92WcRYtjRpEXT8GnvXRz
+	E3QckJ2zfGIsAVlpaEUUzRk59V+SRhU=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-79-enNxeBIPNPueHODMRSoRNA-1; Thu, 04 Jan 2024 05:38:48 -0500
+X-MC-Unique: enNxeBIPNPueHODMRSoRNA-1
+Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-3368250f2a3so233923f8f.3
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 02:38:48 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704364727; x=1704969527;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=UBsofFS/gKrGHJmrD7vxg1XvYsRw/h2z5LmDFHSmzrw=;
+        b=S7BZpvSAeN2Gjp41iEIK1AbJEliOLMGOkdj6mFlUkMdXnz5xqbq++RCJcfI5QC/g1c
+         jcYydNfdRJbJTJ61/Q2kCtzphQPgdumtVn87/jAxI4V71xsA57/NLh4T5lU6YxHWFG81
+         M+Acq/A9kUc7gt4FNLd8QLSx9t97VcwV6UmEOyu5c7P49wRh/olt7Bh2Z2agwBu2VfYZ
+         DvxiS7BEmZClP1Ags3WkyfWjzp2Qn9KRNem3mjKKbWCXvSpjLy8aMGgVFElm2XBW5pN+
+         VNy8v0pja1bsDE/Rpe1Wjgf6VbBeOrEXeYDmAKz06oQ/8MJDwkl0LOkzq16PvHyCd4OR
+         cFiw==
+X-Gm-Message-State: AOJu0YxGmD+KhzicDWFMB/17yZJBtPGzzA/k2q/effnAsXq7Gol7XWER
+	TB4RoyJmWoR52H7niwjl8e4nPlQySXECp8SkWYyFQetWZphTMz2AEqprukdQYjQyG89G2iDMqjV
+	k2HAJy/sYMq/kyhJydsLjtMuvjO5Dz+gj
+X-Received: by 2002:adf:cd90:0:b0:337:4e99:9193 with SMTP id q16-20020adfcd90000000b003374e999193mr114390wrj.2.1704364727742;
+        Thu, 04 Jan 2024 02:38:47 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHeMWiPhW+NjWkpVbwNVWkRYyy3U0zuceK83BPXwKod81rB2j/SBpSvif22g+CVtN6qF8Vbig==
+X-Received: by 2002:adf:cd90:0:b0:337:4e99:9193 with SMTP id q16-20020adfcd90000000b003374e999193mr114382wrj.2.1704364727440;
+        Thu, 04 Jan 2024 02:38:47 -0800 (PST)
+Received: from vschneid-thinkpadt14sgen2i.remote.csb (213-44-141-166.abo.bbox.fr. [213.44.141.166])
+        by smtp.gmail.com with ESMTPSA id h15-20020a5d430f000000b0033740e109adsm8900271wrq.75.2024.01.04.02.38.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Jan 2024 02:38:47 -0800 (PST)
+From: Valentin Schneider <vschneid@redhat.com>
+To: alexs@kernel.org, Ingo Molnar <mingo@redhat.com>, Peter Zijlstra
+ <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>, Vincent
+ Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann
+ <dietmar.eggemann@arm.com>, Steven Rostedt <rostedt@goodmis.org>, Ben
+ Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, Daniel Bristot
+ de Oliveira <bristot@redhat.com>, linux-kernel@vger.kernel.org
+Cc: curuwang@tencent.com, Alex Shi <alexs@kernel.org>
+Subject: Re: [PATCH v2] sched/stat: correct the task blocking state
+In-Reply-To: <20240103081042.1549189-1-alexs@kernel.org>
+References: <20240103081042.1549189-1-alexs@kernel.org>
+Date: Thu, 04 Jan 2024 11:38:46 +0100
+Message-ID: <xhsmhy1d5ids9.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] OPP: Add API to update EM after adjustment of voltage
- for OPPs
-Content-Language: en-US
-To: Viresh Kumar <viresh.kumar@linaro.org>
-Cc: linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
- dietmar.eggemann@arm.com, linux-arm-kernel@lists.infradead.org,
- sboyd@kernel.org, nm@ti.com, linux-samsung-soc@vger.kernel.org,
- daniel.lezcano@linaro.org, rafael@kernel.org,
- krzysztof.kozlowski@linaro.org, alim.akhtar@samsung.com,
- m.szyprowski@samsung.com, xuewen.yan94@gmail.com, mhiramat@kernel.org,
- qyousef@layalina.io, wvw@google.com
-References: <20231220110339.1065505-1-lukasz.luba@arm.com>
- <20231220110339.1065505-2-lukasz.luba@arm.com>
- <20231226051228.oe7rpgf34nwgr5ah@vireshk-i7>
-From: Lukasz Luba <lukasz.luba@arm.com>
-In-Reply-To: <20231226051228.oe7rpgf34nwgr5ah@vireshk-i7>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 
-Hi Viresh,
+On 03/01/24 16:10, alexs@kernel.org wrote:
+> From: Alex Shi <alexs@kernel.org>
+>
+> The commit 80ed87c8a9ca ("sched/wait: Introduce TASK_NOLOAD and TASK_IDLE")
+> stopped the idle kthreads from contributing to the load average. However,
+> the idle state time still contributes to the blocked state time instead of
+> the sleep time. As a result, we cannot determine if a task is stopped due
+> to some reasons or if it is idle by its own initiative.
+>
+> Distinguishing between these two states would make the system state clearer
+> and provide us with an opportunity to use the 'D' state of a task as an
+> indicator of latency issues.
+>
 
-On 12/26/23 05:12, Viresh Kumar wrote:
-> On 20-12-23, 11:03, Lukasz Luba wrote:
->> There are device drivers which can modify voltage values for OPPs. It
->> could be due to the chip binning and those drivers have specific chip
->> knowledge about this. This adjustment can happen after Energy Model is
->> registered, thus EM can have stale data about power.
->>
->> Introduce new API function which can be used by device driver which
->> adjusted the voltage for OPPs. The implementation takes care about
->> calculating needed internal details in the new EM table ('cost' field).
->> It plugs in the new EM table to the framework so other subsystems would
->> use the correct data.
->>
->> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
->> ---
->>   drivers/opp/of.c       | 69 ++++++++++++++++++++++++++++++++++++++++++
->>   include/linux/pm_opp.h |  6 ++++
->>   2 files changed, 75 insertions(+)
->>
->> diff --git a/drivers/opp/of.c b/drivers/opp/of.c
->> index 81fa27599d58..992434c0b711 100644
->> --- a/drivers/opp/of.c
->> +++ b/drivers/opp/of.c
->> @@ -1596,3 +1596,72 @@ int dev_pm_opp_of_register_em(struct device *dev, struct cpumask *cpus)
->>   	return ret;
->>   }
->>   EXPORT_SYMBOL_GPL(dev_pm_opp_of_register_em);
->> +
->> +/**
->> + * dev_pm_opp_of_update_em() - Update Energy Model with new power values
->> + * @dev		: Device for which an Energy Model has to be registered
->> + *
->> + * This uses the "dynamic-power-coefficient" devicetree property to calculate
->> + * power values for EM. It uses the new adjusted voltage values known for OPPs
->> + * which have changed after boot.
->> + */
->> +int dev_pm_opp_of_update_em(struct device *dev)
-> 
-> I don't see anything OPP or OF related in this function, I don't think it needs
-> to be part of the OPP core. You just want to reuse _get_power() I guess, which
-> can be exported then.
-> 
-> This should really be part of the EM core instead.
-> 
+get_task_state() already reports TASK_IDLE as 'I', which should be what
+userspace sees (e.g. via /proc/$pid/stat). This is also the case for the
+sched_switch and sched_wakeup trace events.
 
-Thank you for having a look at this. OK, that makes sense.
-When I finish the EM runtime modification core features and get them
-merged, I'll continue to work on this patch set. I'll try to follow
-your comment here and export that function (with a different name
-probably).
+I assume what you mean here is you first turn to schedstats to check
+whether there is any abnormal amount of blocking, and then if there is any
+you turn to tracing, in which case you'd like the schedstats to not make
+things look worse than they really are?
 
-Regards,
-Lukasz
 
