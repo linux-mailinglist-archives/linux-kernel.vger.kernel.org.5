@@ -1,99 +1,118 @@
-Return-Path: <linux-kernel+bounces-17086-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17087-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8357B824817
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 19:22:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E3F882481B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 19:23:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 226331F2149F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 18:22:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0B4B21F22DEF
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 18:23:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB20428E26;
-	Thu,  4 Jan 2024 18:22:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8A0628E0F;
+	Thu,  4 Jan 2024 18:22:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=tuxedocomputers.com header.i=@tuxedocomputers.com header.b="OkdMnE5y"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="TcJTE8z4"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail.tuxedocomputers.com (mail.tuxedocomputers.com [157.90.84.7])
+Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9964028DB0;
-	Thu,  4 Jan 2024 18:22:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tuxedocomputers.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxedocomputers.com
-Received: from wse.fritz.box (p5de453e7.dip0.t-ipconnect.de [93.228.83.231])
-	(Authenticated sender: wse@tuxedocomputers.com)
-	by mail.tuxedocomputers.com (Postfix) with ESMTPA id 01BF82FC0073;
-	Thu,  4 Jan 2024 19:22:16 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tuxedocomputers.com;
-	s=default; t=1704392537;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=JKQS4AwlSL17ZE3tRGxXuQK7iAc6fj3KFZMSPVfU4pw=;
-	b=OkdMnE5yYzSnkjr8qaei7lbEsVaM28faOqbY8ipEZAroqBo3Fkn/b222HVO7Tke+bt8h6v
-	V58kJzs2ay4dteIG5I/JuwwnqCL0C5xO6JX8ji2vy38+KRCvvGX7RrFafesc/xzM1oTzm9
-	OG6TCYy/ZMtR+zxoS3tfx/Fx7laPRlM=
-Authentication-Results: mail.tuxedocomputers.com;
-	auth=pass smtp.auth=wse@tuxedocomputers.com smtp.mailfrom=wse@tuxedocomputers.com
-From: Werner Sembach <wse@tuxedocomputers.com>
-To: dmitry.torokhov@gmail.com
-Cc: hdegoede@redhat.com,
-	linux-input@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Werner Sembach <wse@tuxedocomputers.com>
-Subject: [PATCH v3 2/2] i8042: Use new forcenorestore quirk to replace old buggy quirk combination
-Date: Thu,  4 Jan 2024 19:22:08 +0100
-Message-Id: <20240104182208.779486-3-wse@tuxedocomputers.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240104182208.779486-1-wse@tuxedocomputers.com>
-References: <20240104182208.779486-1-wse@tuxedocomputers.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2C042C686
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 18:22:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dbea05a6de5so985665276.3
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 10:22:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1704392558; x=1704997358; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=bbDN6W21p6F1EYYykal14M3FBVWLwpCqqmiZbB/3IKE=;
+        b=TcJTE8z4fFZw6YngnDvt/vBExHe+itRApJaM5qfV3Qs5OBOGkLb30/u0hMa4I3+m8y
+         G5fVbAJG7J5ZehQUGVwpM8dc+23488atiBdfwQmI2SSCC9VVggunD3HYNJCD9V9bDrXp
+         1t3v5HkIrN6Y6v6mHFhVhjCt59UlOpRlRWb3U3rW0nMljABwCuBlIO/FWYVYSYm1N2bs
+         fNM9rMDOb4ZrVS8T7q73AWnKuUAlzNeA1J+YpW8BNeO8bTW9S8qIlS5y5d/q0vDvC9uZ
+         7dvg0eW/EZTu+zWoXr1hLw+c8wDVBRtTI0Pkq8JoFdSN7FNQaUdvutWW7atkkSDGgOCx
+         lpwQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704392558; x=1704997358;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=bbDN6W21p6F1EYYykal14M3FBVWLwpCqqmiZbB/3IKE=;
+        b=MEfjGanBQ0/d3OgjDeUY2CrpFDuvklPaqbcsHFju0mmblZB+rAaceFzYM/pEZB2gUB
+         uqN+DYAAw2Gd4KY7bH/XKA1xQtaIwoGVpwjdVD1u5RI3EE8cgU1wYmbz3Sixjd00E50d
+         /8frQLaFXC77V5sX4Alg1jwKybwuDmvdmbZRDN1oBzj7cAcqt6vVAKOLwsHMIDj9Jg5G
+         T+M/aOJiMwOJQL44+vLSoDDGiWH7wWncyHdFmgCDk/xbs2cnE8DWl+pJ/xDavq9W39uq
+         6h2dwptzxc486LcMyEnSXPr72x42t08T9Ke67NE1C6QLo3ibQr3tUePDOroRpA2uoh+q
+         mnUg==
+X-Gm-Message-State: AOJu0YzOV7SNAk4VmJvNPrbdAfWKMxLAVfBofSECAm+w7kBjF3FUlkTm
+	l87YllKv3QMCQBxcalo6I7UxhZvY3flIdnEsiQ==
+X-Google-Smtp-Source: AGHT+IEaMRCHGS38DtQMJCrRm/hEwM4m2ug9DEysF+4xs9/4bbCvrTyBUAjUQhP7cnYM4OHndFKWnJ2AyNQ=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6902:134e:b0:dbe:a220:68ee with SMTP id
+ g14-20020a056902134e00b00dbea22068eemr30231ybu.0.1704392557745; Thu, 04 Jan
+ 2024 10:22:37 -0800 (PST)
+Date: Thu, 4 Jan 2024 18:22:36 +0000
+In-Reply-To: <a327286a-36a6-4cdc-92bd-777fb763d88a@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+References: <20240104153939.129179-1-pbonzini@redhat.com> <a327286a-36a6-4cdc-92bd-777fb763d88a@linux.intel.com>
+Message-ID: <ZZbuwU8ShrcXWdMY@google.com>
+Subject: Re: [PATCH] KVM: x86/pmu: fix masking logic for MSR_CORE_PERF_GLOBAL_CTRL
+From: Sean Christopherson <seanjc@google.com>
+To: Kan Liang <kan.liang@linux.intel.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org, kvm@vger.kernel.org, 
+	peterz@infradead.org, linux-perf-users@vger.kernel.org, leitao@debian.org, 
+	acme@kernel.org, mingo@redhat.com, "Paul E . McKenney" <paulmck@kernel.org>, 
+	stable@vger.kernel.org, Like Xu <like.xu.linux@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
 
-The old quirk combination sometimes cause a laggy keyboard after boot. With
-the new quirk the initial issue of an unresponsive keyboard after s3 resume
-is also fixed, but it doesn't have the negative side effect of the
-sometimes laggy keyboard.
+On Thu, Jan 04, 2024, Liang, Kan wrote:
+> 
+> 
+> On 2024-01-04 10:39 a.m., Paolo Bonzini wrote:
+> > When commit c59a1f106f5c ("KVM: x86/pmu: Add IA32_PEBS_ENABLE
+> > MSR emulation for extended PEBS") switched the initialization of
+> > cpuc->guest_switch_msrs to use compound literals, it screwed up
+> > the boolean logic:
+> > 
+> > +	u64 pebs_mask = cpuc->pebs_enabled & x86_pmu.pebs_capable;
+> > ...
+> > -	arr[0].guest = intel_ctrl & ~cpuc->intel_ctrl_host_mask;
+> > -	arr[0].guest &= ~(cpuc->pebs_enabled & x86_pmu.pebs_capable);
+> > +               .guest = intel_ctrl & (~cpuc->intel_ctrl_host_mask | ~pebs_mask),
+> > 
+> > Before the patch, the value of arr[0].guest would have been intel_ctrl &
+> > ~cpuc->intel_ctrl_host_mask & ~pebs_mask.  The intent is to always treat
+> > PEBS events as host-only because, while the guest runs, there is no way
+> > to tell the processor about the virtual address where to put PEBS records
+> > intended for the host.
+> > 
+> > Unfortunately, the new expression can be expanded to
+> > 
+> > 	(intel_ctrl & ~cpuc->intel_ctrl_host_mask) | (intel_ctrl & ~pebs_mask)
+> > 
+> > which makes no sense; it includes any bit that isn't *both* marked as
+> > exclude_guest and using PEBS.  So, reinstate the old logic.  
+> 
+> I think the old logic will completely disable the PEBS in guest
+> capability. Because the counter which is assigned to a guest PEBS event
+> will also be set in the pebs_mask. The old logic disable the counter in
+> GLOBAL_CTRL in guest. Nothing will be counted.
+> 
+> Like once proposed a fix in the intel_guest_get_msrs().
+> https://lore.kernel.org/lkml/20231129095055.88060-1-likexu@tencent.com/
+> It should work for the issue.
 
-Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
-Cc: stable@vger.kernel.org
----
- drivers/input/serio/i8042-acpipnpio.h | 10 +---------
- 1 file changed, 1 insertion(+), 9 deletions(-)
+No, that patch only affects the path where hardware supports enabling PEBS in the
+the guest, i.e. intel_guest_get_msrs() will bail before getting to that code due
+to the lack of x86_pmu.pebs_ept support, which IIUC is all pre-Icelake Intel CPUs.
 
-diff --git a/drivers/input/serio/i8042-acpipnpio.h b/drivers/input/serio/i8042-acpipnpio.h
-index 10ec4534e5e14..e631a26394e92 100644
---- a/drivers/input/serio/i8042-acpipnpio.h
-+++ b/drivers/input/serio/i8042-acpipnpio.h
-@@ -1142,18 +1142,10 @@ static const struct dmi_system_id i8042_dmi_quirk_table[] __initconst = {
- 					SERIO_QUIRK_NOLOOP | SERIO_QUIRK_NOPNP)
- 	},
- 	{
--		/*
--		 * Setting SERIO_QUIRK_NOMUX or SERIO_QUIRK_RESET_ALWAYS makes
--		 * the keyboard very laggy for ~5 seconds after boot and
--		 * sometimes also after resume.
--		 * However both are required for the keyboard to not fail
--		 * completely sometimes after boot or resume.
--		 */
- 		.matches = {
- 			DMI_MATCH(DMI_BOARD_NAME, "N150CU"),
- 		},
--		.driver_data = (void *)(SERIO_QUIRK_NOMUX | SERIO_QUIRK_RESET_ALWAYS |
--					SERIO_QUIRK_NOLOOP | SERIO_QUIRK_NOPNP)
-+		.driver_data = (void *)(SERIO_QUIRK_FORCENORESTORE)
- 	},
- 	{
- 		.matches = {
--- 
-2.34.1
-
+	if (!kvm_pmu || !x86_pmu.pebs_ept)
+		return arr;
 
