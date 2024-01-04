@@ -1,167 +1,207 @@
-Return-Path: <linux-kernel+bounces-16954-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16955-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61E8B824678
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 17:41:52 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E163E82467A
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 17:42:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CC8DCB23ABF
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 16:41:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E76361C22452
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 16:42:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E10A828DAD;
-	Thu,  4 Jan 2024 16:40:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 782D928DD5;
+	Thu,  4 Jan 2024 16:40:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=wolfvision.net header.i=@wolfvision.net header.b="a4XCW/gJ"
+	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="Zo7O8VJm"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from EUR02-AM0-obe.outbound.protection.outlook.com (mail-am0eur02on2041.outbound.protection.outlook.com [40.107.247.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF21C28DA9;
-	Thu,  4 Jan 2024 16:40:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wolfvision.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wolfvision.net
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Vy4zYZxZnwCgMjMxRmeMQTMDOG5Z09Z3XJ8O71WPRGTqD17zuDZznZbjFOgcs+shNa+IyXmrYUGnjrifQsmJOIz+3NOAQBhDZ/Tg4BWWOnTc56ZJRtxZMhvhGJwRGMC9AWRXAnuLYyaX4ck3btiEvJbGKFBG+Xnj95Tk7yNouRBmUZYBPCu4t8ko+HjgZb/3vUjz+d9jl55tU2t+Lqy2Pb6tTw199SHMbPTqfWupiflEuTD3688DS/Jsh2v/HdgopU+2pUtpTmyWsPHitHO20mRBCwKcOd+wd0Q5J77Toj2MMswxQ32jKp6RQiMh614QECk43ipsOxsUkJudegVMOg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=YfE8zpKU30wCA8ikY8tv404UH7pPpHZVhM4Hq2yW4vQ=;
- b=DSyo/03zoFCFnijqY+12fUlRUdroQuztDUR/MHLORKDiJofZlKyLHgmsHnjA1oLG+GSXSR4Eq71Wrwj0Jw2o4hGQelJ8AzE5WjNwAUHt/Zu0jsGspE4j0Qb1fDVlarsgjjkBVAQx7K73pcNH41zVSa3a+vqIDiJ3ubaRUWNTtRN+TWXKrkoC5/PZHKuSylHG+TRMEhhBbIAnVxoOPGdSwKG0SF66Whg+PpNkQ8cpVgUBfIV8fAMx6CTy9DWKTDYYOvFWMJ2/6UKfDGRaX7dR1cze2HYmhZJLAUdXnaL+2xiNX2LfCuM9je0yEi4jF9GR4/NVM2RRFtCO7xToe76+0g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wolfvision.net; dmarc=pass action=none
- header.from=wolfvision.net; dkim=pass header.d=wolfvision.net; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wolfvision.net;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=YfE8zpKU30wCA8ikY8tv404UH7pPpHZVhM4Hq2yW4vQ=;
- b=a4XCW/gJ3AwRTRuMdD96d6d9lgb5JX+39HF5BBlu0WAXmEdBhCo+zYoP5l9yft94ufWbjiKOTeBqm+e4puter/JDE1vfQpUIwPv6Tn8wczJukytbZ7zEcyIk+pT9sVcXEQ3E/okRRnd2SsqSAw/Bf8NwAkuLW8mEcmb/cCVdUrE=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wolfvision.net;
-Received: from VE1PR08MB4974.eurprd08.prod.outlook.com (2603:10a6:803:111::15)
- by PR3PR08MB5578.eurprd08.prod.outlook.com (2603:10a6:102:83::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.13; Thu, 4 Jan
- 2024 16:40:02 +0000
-Received: from VE1PR08MB4974.eurprd08.prod.outlook.com
- ([fe80::6b40:1e6f:7c94:71dc]) by VE1PR08MB4974.eurprd08.prod.outlook.com
- ([fe80::6b40:1e6f:7c94:71dc%4]) with mapi id 15.20.7135.023; Thu, 4 Jan 2024
- 16:40:02 +0000
-Message-ID: <7a47a61f-4356-4913-8e04-5b815c8382b2@wolfvision.net>
-Date: Thu, 4 Jan 2024 17:39:59 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/4] usb: typec: tipd: add init and reset functions to
- tipd_data
-Content-Language: en-US
-To: Roger Quadros <rogerq@kernel.org>,
- Heikki Krogerus <heikki.krogerus@linux.intel.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231207-tps6598x_update-v2-0-f3cfcde6d890@wolfvision.net>
- <20231207-tps6598x_update-v2-1-f3cfcde6d890@wolfvision.net>
- <2a001d00-32c8-4ec3-9635-08473df6a069@kernel.org>
-From: Javier Carrasco <javier.carrasco@wolfvision.net>
-In-Reply-To: <2a001d00-32c8-4ec3-9635-08473df6a069@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: FR4P281CA0292.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:e7::8) To VE1PR08MB4974.eurprd08.prod.outlook.com
- (2603:10a6:803:111::15)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B09B28DCC
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 16:40:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
+Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2cd20d9d483so8526381fa.1
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 08:40:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ventanamicro.com; s=google; t=1704386452; x=1704991252; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=y2FqLd+7fSNFOVRetfmjHxaVxLnzYZGauh/919f31n4=;
+        b=Zo7O8VJm4Z08SIWTKbLLzcsUYfH8K8Bglx/hngJK3BN9nZ8Icwla02wqJDAEELFgCs
+         WJiZPTjhD9D1xCVaA3DVcZZxEdvVK3A4yGGFalcadaXSAFYtoJLdxsuawKsV9NHrffru
+         v2jIEn1sIODYgfSLlF+kS+WYUpwWIagTpwE9in5md+WZRnFdC1aIAh5PCGFpjWawXXTi
+         TakQy3iaziv1JP7oL4b49QvaT0KhSLqZXxRHxr8uej2G+FgWhvdaTbcjo1xDRWFcZU0x
+         1mv2N1ZkLowAf+HUsxBt3yGW4duCHCiir951NZHwZxX6dGUU9D/JYnJ7/KATq2M1TAT+
+         31zw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704386452; x=1704991252;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=y2FqLd+7fSNFOVRetfmjHxaVxLnzYZGauh/919f31n4=;
+        b=Z6+DFrOSHRS9DR74vOY7PWIQHPUX8VKh5OCMQgqrwP0S1xa4KvopLDEIkriijWvHey
+         69qqctgpsDWASu6Voquzv2JMce9giNvef8cO3eqE5s6PYZVKrLmFd4OUl/T9oP80+R8z
+         oaLC1xnebMomTH3eGuPVTaZU2tHC5hOCiLjofPnvZTiaIrL9pYjvO0X/iNPkhDHmHxiq
+         3QKc1uhgDtHkOLx0FXTN4gvYjsVL7MqHkzt9Vj7sIdrncsgPF6gTm4POOY2tOgsnLvg0
+         xhf57nXc88HFxjDTCGO7wLmZ/2s+SdCWWLZ6B8oH/1iQjEjYd/OSXJoStzBz5apZ5hoB
+         y7QQ==
+X-Gm-Message-State: AOJu0Yxh+6tcbh0Y7ioCjliXcieM4AcWhR6d7vo23b0hlnw+VthGIus8
+	LdzwbrZKGNiz1eL+2hpy9FcDg08z5EzWjA==
+X-Google-Smtp-Source: AGHT+IGFO2UvTUj/ZscmTQoKmtFIQwFPXy9Y4BV7rHK7k8Pt7EyqdVTqewSUkncC86IP3RAOZJP0Rw==
+X-Received: by 2002:ac2:5bdb:0:b0:50e:7a2d:6cd7 with SMTP id u27-20020ac25bdb000000b0050e7a2d6cd7mr473965lfn.55.1704386451954;
+        Thu, 04 Jan 2024 08:40:51 -0800 (PST)
+Received: from localhost (2001-1ae9-1c2-4c00-20f-c6b4-1e57-7965.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:20f:c6b4:1e57:7965])
+        by smtp.gmail.com with ESMTPSA id ez9-20020a056402450900b0055504002a5fsm13025509edb.72.2024.01.04.08.40.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Jan 2024 08:40:51 -0800 (PST)
+Date: Thu, 4 Jan 2024 17:40:50 +0100
+From: Andrew Jones <ajones@ventanamicro.com>
+To: Leonardo Bras <leobras@redhat.com>
+Cc: guoren@kernel.org, paul.walmsley@sifive.com, palmer@dabbelt.com, 
+	panqinglin2020@iscas.ac.cn, bjorn@rivosinc.com, conor.dooley@microchip.com, 
+	peterz@infradead.org, keescook@chromium.org, wuwei2016@iscas.ac.cn, 
+	xiaoguang.xing@sophgo.com, chao.wei@sophgo.com, unicorn_wang@outlook.com, uwu@icenowy.me, 
+	jszhang@kernel.org, wefu@redhat.com, atishp@atishpatra.org, 
+	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, Guo Ren <guoren@linux.alibaba.com>
+Subject: Re: Re: Re: Re: [PATCH V2 1/3] riscv: Add Zicbop instruction
+ definitions & cpufeature
+Message-ID: <20240104-d6981cf63a39af4dff1d380a@orel>
+References: <20231231082955.16516-1-guoren@kernel.org>
+ <20231231082955.16516-2-guoren@kernel.org>
+ <ZZWs0C19tz763FnH@LeoBras>
+ <20240103-0c96ceea88523b7b946e4ba8@orel>
+ <ZZXEpU-JzsvD2UDW@LeoBras>
+ <20240104-4ecfb92d2f8c95fa773ca695@orel>
+ <ZZbI3clKUbNbNtZj@LeoBras>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: VE1PR08MB4974:EE_|PR3PR08MB5578:EE_
-X-MS-Office365-Filtering-Correlation-Id: 90d7f1d1-051d-469a-aa12-08dc0d43cc2f
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	7Zcl85DcMGyqSsDa42D96nSe1Po/1ZifDcRgexA7ubaOB6+X9vEZueRgHZZr+whKzJryy4NyRk9gDBc7htk2AfTNRBiXgOfy7p9lMQRsvQ5+GAkMzw7gVgoDj0dQJhcKliu9t1fdBLxZHLXO3hWstmq/zScXF2occqorIxT8gmL+0nR/y8LyrbhMhEd8ZNUiIsqa/PM8nvx2fCQtqrYUvQZDvvuzBjWyHOa0rYvOlIypqVKzgE4SW87eOAFcxDChOEwxu20AoQ29wwqQpjnZIMtWD5NczE/OkothwEU7val0cpnpFjs4Oay4164pn0bb3M78+b3swcD3RVFEhW+gDVtpAVQ5aHexsT130u4UpTY69qZTnsolDCXrD8miAA0/tSoY3orfme340c6q/34zqQDwKG06XbQR8vbWLbPu+pgxOanUASSFSCvrZta8CJTDUg7kXoUAMK55B5BEUI8RhvPRuakSG3SiCvBEbZUPg/eDwYwuMATThE9xWSIABChq9XzSMx7j+FvWHT0BkmkBwYj2dLeLagg/h4wo/vKU9S1VQ0QjSXUOqHB05qqMF5289KN8/2zrV4+ANN1gpB+Y3lwrO7RHp5uwEGyLTFOukDm3UYyCrifU3DMYZCdR/oCq4vFaIUvm8/0ND6GHrUv8kA==
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR08MB4974.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39850400004)(346002)(376002)(136003)(396003)(366004)(230922051799003)(64100799003)(186009)(451199024)(1800799012)(2906002)(6506007)(31686004)(6512007)(478600001)(53546011)(2616005)(6486002)(44832011)(36756003)(8676002)(8936002)(66476007)(66556008)(66946007)(110136005)(316002)(6666004)(4326008)(5660300002)(38100700002)(4744005)(41300700001)(86362001)(31696002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?dDl5ZXhpVnE0dWJyRHJXVXFqVzV5aDRFWWUwRElyRCsybnFkaE5xcDNnY3pv?=
- =?utf-8?B?eEEwd0x1cmJhV2ZIMEVyRHZnMVJoLy9nMFNieGJwV2NZai9KekdleFRYR21M?=
- =?utf-8?B?NGFhZC9PVEdpNlNoWEt3SGsrVzF2MnBhZDEzM3cwcmxWQS90US9ZMFloRloz?=
- =?utf-8?B?b3hWZDJWcHFhTWlhaWZpRXAxT1lOaVNyblF5Z21PUkk5LzdPZEN6cE1pSXdY?=
- =?utf-8?B?TVloWmNIQStrWGNKcXJ3OXcvSkJud3RaOXpvRmU3cDBRaXd4VXlJSDdNRVl6?=
- =?utf-8?B?QW5RSW1CTnR1emY1SHlUamY0b0QvYmVNbHVPZVVmL3dsSmk1R2Y3YURvYWNa?=
- =?utf-8?B?OUhucDByTlVFRnE5Y3pQOXpKbHdtUzd4WEpuNkZtSGJ3Mm1qd0xYaDhNeHl6?=
- =?utf-8?B?em5LM25uQ2E0ejM5dDc4a0RoOTVsR2tPeDczSjI5cldwQnQ4blIxVUN2RnBw?=
- =?utf-8?B?UWpWWlhONk1wTnBFUks2SzJOYk1ETGI3Q2oySG9QYVM0N2g0VUxLNjdTTW4v?=
- =?utf-8?B?WkpDQ0NFWExPYW5HUjZEbzgyS2NFT09yampXM3Q4d0pBUXFVTW44bnhDWHpl?=
- =?utf-8?B?L1ZTdjUwekltd21CMS8xdGl6cTFONHVWbGVnd0gyYTdIWFF1R0FqUWFobldC?=
- =?utf-8?B?VUdqWmF4Yi84OHlybzlGOXRaVloyRG5pU3RCTzJuR2JGM0lSbmkzbWxoNS83?=
- =?utf-8?B?Z3l4UU93MERjWFhWcjIwbHQyVnVuVUx2Z3JnN1NlK0k2c1JJVFdSV29IMnVK?=
- =?utf-8?B?MnpxUDdtRW93TmJnaEVqeUNhem5FV0lZeVNPZUJwNjlTbWF0TW16VWluc1o3?=
- =?utf-8?B?dXpkOVJPazE3bldMMUNSMnpGR0ZJWG5EODZ6YlQyMSt2V3RXenE2YUVpbjhs?=
- =?utf-8?B?by8wWlE4NjVrRkZDdFQwSDdBaWZacjZZZE41Y3d3Nm5MOHp1bzR0ZHZsdit5?=
- =?utf-8?B?VFJjT2tFY1Yrb3FieTJDUWUrVGRtQ1QwOHIyRVFwL2VQdE1LNnE2YUlLR0Qw?=
- =?utf-8?B?K2ZuUlFtTmsyZE56R1RZZDRoNWZXbGNQUnFsc0xydjhPNHZ6L3BWRmQyVDdT?=
- =?utf-8?B?UGNGZmxYQi9BNXZaTmE5UWhDWm8rZ3kycWtHOVBBdUNkVHNrbzVQOXp4R2RC?=
- =?utf-8?B?ajltWmNSeHBUWGorSG9hR2ludEx2MEpubTVZWmt2bE9hZUJpV1BxVWE0T2h4?=
- =?utf-8?B?N0t5WGgxRTA3d05hWCtzM1dLSStrZ05RSGFmZFA1Zm5uUUNDaE5aSmZzT3BB?=
- =?utf-8?B?MG9qemtWYWFaRWlLZmhmNmpJVFpLWHBoVXdRN1ZEZEpVcWQycHArNEJrRHoz?=
- =?utf-8?B?ZGlrNEJad3VCNFpRQWN5NnF3UXZTclloYmFHNDF3YVN2SnpYUmJNb0xRU0tv?=
- =?utf-8?B?dHJ1VkE3Ujd1WEpPdktkSUdvbUNoRGhEMW9RTmI5eUZIZk5GTlVPUHppYllG?=
- =?utf-8?B?V0ZocjZjT2VmdDI2MCtORENoeEs3eGpPV2JNQWs0QVVYWFB6NVQ1YUg1ZTBT?=
- =?utf-8?B?ZkJtenZaamxqb21kTmd3dDJJK2s3U25rUVl0a0NObjNSV3YxU2N5bVBPbkUz?=
- =?utf-8?B?dkZwTEI3S1RhZXZiTXNQUHdpM2JtRGJNbEhPK09RSnlPRjlwckhGR1VUZTly?=
- =?utf-8?B?L2E1OVRGS3RLVXBhYjJReGNneGtKZVgybGttbEtmdWtVa1hPQUg5c2wrR0VB?=
- =?utf-8?B?dlcwYmZRUnRHTU4vWFM2R2VTNEQ2bTVFK05UK2dBeEdZVUZPaUY2bUpBMXFZ?=
- =?utf-8?B?WHUyQjhPWE0wOEsrQ3BSaU5TaUYzNWY0d2RlYlp5a3BQTFgvZlpVTU5ZN0p1?=
- =?utf-8?B?VElzMC96bncrbjRrMlNBMHlkbGFRQU1xQWFWb1VMS2s2Q1hhYjBETEtXbDZi?=
- =?utf-8?B?TzFkS3pwcSt0Mm5pM2YvZDZuNU9pNk1XTGRvZCsxbmkyZ09vT2VyT1lxLzdS?=
- =?utf-8?B?VzU5UkwySmVnMkIzN0FFeHpKb3JReTdkUnJGYlhWM2R1TTdBbHdUQmNmUGR5?=
- =?utf-8?B?UjFCRm9SQWlHSEtRT0Y1Njg0emFINTlDZlVoUWpXR1lmMHlyUXBSV2Q5REow?=
- =?utf-8?B?dEQyNExjdkRVUExLL1k3YXNPWWFsTWNxQnV1dWVlakhEY3kvc0sySkNxbzJx?=
- =?utf-8?B?MFZNcW8reVJWcnVSNGFHQmJ4K2xKdVVWMjlDa2lQYkt1VDhBcDJoczU3UWlG?=
- =?utf-8?B?dUNTcFVMM3lPMVBlUm9VMWF3a21QU1dUQmV5MVNoTVlnY0ZFY1J1UHZDRHhB?=
- =?utf-8?Q?pgYf9NWMJeCYXuL/8pAiOpmeKUZoJrcHDHS0gPgx7Y=3D?=
-X-OriginatorOrg: wolfvision.net
-X-MS-Exchange-CrossTenant-Network-Message-Id: 90d7f1d1-051d-469a-aa12-08dc0d43cc2f
-X-MS-Exchange-CrossTenant-AuthSource: VE1PR08MB4974.eurprd08.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Jan 2024 16:40:02.0517
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: e94ec9da-9183-471e-83b3-51baa8eb804f
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: x1xQrjBZPH8hzefM8nlHlzxeNuFjvshcysfyefrVxL1tOJHUpzydoPoNTxlaeQVXPa7cVckSIZ1BzlfrMRATV8zPesf0tbdKNiTn+hNkDDk=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR3PR08MB5578
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZZbI3clKUbNbNtZj@LeoBras>
 
-On 04.01.24 17:14, Roger Quadros wrote:
->> @@ -1393,7 +1412,7 @@ static int __maybe_unused tps6598x_resume(struct device *dev)
->>  	if (ret < 0)
->>  		return ret;
->>  
->> -	if (device_is_compatible(tps->dev, "ti,tps25750") && ret == TPS_MODE_PTCH) {
->> +	if (ret == TPS_MODE_PTCH) {
+On Thu, Jan 04, 2024 at 12:03:57PM -0300, Leonardo Bras wrote:
+...
+> > > > > What we need here is something like:
+> > > > > + enum {
+> > > > > + 	PREFETCH_I,
+> > > > > + 	PREFETCH_R,
+> > > > > + 	PREFETCH_W,
+> > > > > + }	 
+> > > > 
+> > > > Can't use enum. This header may be included in assembly.
+> > > 
+> > > Oh, I suggest defines then, since it's better to make it clear instead of 
+> > > using 0, 1, 3.
+> > 
+> > I don't think we gain anything by adding another define in order to create
+> > the instruction define. We have to review the number sooner or later. I'd
+> > prefer we use the number inside the instruction define so we only need
+> > to look one place, which is also consistent with how we use FUNC fields.
+> > 
 > 
-> Won't this function will be invoked for all variants?
-> If so, why are we calling a tsp25750 specific function here?
+> Sorry, I was unable to understand the reasoning.
 > 
->>  		ret = tps25750_init(tps);
->>  		if (ret)
->>  			return ret;
+> If we are going to review the numbers sooner or later, would not it be 
+> better to have the instruction define to have "PREFETCH_W" instead of a 
+> number, and a unified list of defines for instructions.
+> 
+> This way we don't need to look into the code for 0's 1's and 3's, but 
+> instead just replace the number in the define list.
+> 
+> What am I missing?  
 
-Hi Roger,
+PREFETCH_W isn't defined as just 3, it's defined as
+   INSN_S(OPCODE_OP_IMM, FUNC3(6), __RS2(3), ...)
 
-good catch. The device-specific init function should be called instead,
-as it is already done in the probe function:
+Adding a define (PREFETCH_W_RS2?) for the 3 just bloats the code and
+requires reviewers of PREFETCH_W to go look up another define.
+OPCODE_OP_IMM gets a define because it's used in multiple instructions,
+but everything else in an instruction definition should be a number
+exactly matching the spec, making it easy to review, or be an argument
+passed into the instruction macro.
 
-  	ret =  tps->data->init(tps);
-  	if (ret)
-  		return ret;
+> 
+> > > 
+> > > > 
+> > > > > +
+> > > > > + #define CBO_PREFETCH(type, base, offset)                      \
+> > > > > +     INSN_S(OPCODE_OP_IMM, FUNC3(6), __RS2(type),              \
+> > > > > +            SIMM12(offset & ~0x1f), RS1(base))
+> > > > 
+> > > > Yes. I suggested we mask offset as well, but ideally we'd detect a caller
+> > > > using an offset with nonzero lower 5 bits at compile time.
+> > > 
+> > > I would suggest the compiler would take care of this, but I am not sure 
+> > > about the assembly, since I am not sure if it gets any optimization.
+> > > 
+> > > I don't think we can detect a caller with non-zero offset at compile time, 
+> > > since it will be used in locks which can be at (potentially) any place in 
+> > > the block size. (if you have any idea though, please let me know :) )
 
-I will send the fix asap.
+I forgot to reply to this before. The reason I think it may be possible to
+validate offset at compile time is because it must be a constant, i.e.
+__builtin_constant_p(offset) must return true. So maybe something like
 
-Thanks a lot for your feedback and best regards,
-Javier Carrasco
+ static_assert(__builtin_constant_p(offset) && !(offset & 0x1f))
+
+I'll try to find time to play with it.
+
+> > > 
+> > > On the other hand, we could create a S-Type macro which deliberately 
+> > > ignores imm[4:0], like  
+> > > 
+> > > + INSN_S_TRUNCATE(OPCODE_OP_IMM, FUNC3(6), __RS2(3),               \
+> > > +                 SIMM12(offset), RS1(base))
+> > > 
+> > > Which saves the bits 11:5 of offset  into imm[11:5], and zero-fill 
+> > > imm[4:0], like
+> > > 
+> > > +#define DEFINE_INSN_S                                                    \
+> > > + __DEFINE_ASM_GPR_NUMS                                           \
+> > > +"        .macro insn_s, opcode, func3, rs2, simm12, rs1\n"               \
+> > > +"        .4byte  ((\\opcode << " __stringify(INSN_S_OPCODE_SHIFT) ") |"  \
+> > > +"                 (\\func3 << " __stringify(INSN_S_FUNC3_SHIFT) ") |"    \
+> > > +"                 (.L__gpr_num_\\rs2 << " __stringify(INSN_S_RS2_SHIFT) ") |" \
+> > > +"                 (.L__gpr_num_\\rs1 << " __stringify(INSN_S_RS1_SHIFT) ") |" \
+> > > +"                 (((\\simm12 >> 5) & 0x7f) << " __stringify(INSN_S_SIMM7_SHIFT) "))\n" \
+> > > +"        .endm\n"
+> > > +
+> > > 
+> > > Does this make sense?
+> > 
+> > If we create a special version of INSN_S, then I suggest we create one
+> > where its two SIMM fields are independent and then define prefetch
+> > instructions like this
+> > 
+> >  #define PREFETCH_W(base, offset) \
+> >      INSN_S_SPLIT_IMM(OPCODE_OP_IMM, FUNC3(6), __RS2(3), \
+> >          SIMM_11_5(offset >> 5), SIMM_4_0(0), RS1(base))
+> > 
+> > which would allow simple review against the spec and potentially
+> > support other instructions which use hard coded values in the
+> > immediate fields.
+> > 
+> 
+> I agree, it looks better this way.
+> 
+> We could have:
+> INSN_S_SPLIT_IMM(OPCODE, FUNC3, RS1, RS2, SIMM_11_5, SIMM_4_0)
+> 
+> and implement INSN_S like:
+> #define INSN_S(OPCODE, FUNC3, RS1, RS2, SIMM_11_0) \
+> 	INSN_S_SPLIT_IMM(OPCODE, FUNC3, RS1, RS2,  \
+> 		SIMM_11_0 >> 5, SIMM_11_0 & 0x1f)
+
+That won't work since SIMM_11_0 will be a string. Actually, with
+stringification in mind, I don't think defining INSN_S_SPLIT_IMM()
+is a good idea.
+
+Thanks,
+drew
 
