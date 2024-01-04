@@ -1,164 +1,167 @@
-Return-Path: <linux-kernel+bounces-16615-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16617-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9802682413A
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 13:03:16 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 594F1824141
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 13:04:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 858FA1C232EA
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 12:03:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B0752B23D95
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 12:04:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A16A21371;
-	Thu,  4 Jan 2024 12:03:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 463842136B;
+	Thu,  4 Jan 2024 12:04:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="xpes5WeJ"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="lS14CG/4"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCCCF219EF
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 12:03:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2cca5d81826so5924451fa.2
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 04:03:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704369785; x=1704974585; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=DFIN0JRPxZeIYz9kF4NaZedcE87VAaRvQmqCR63HznA=;
-        b=xpes5WeJ03jylSvs61Gd4ZQcY3A6dT/3JtBf8h184UkojiC1np8xwvhnkkQIxFePw2
-         292R8Ls6I2MK0wK7Iwc+ms068/Um8sB1a9l9KtNavM1QD8o4a/lm72Qz9O2PWuP3j06t
-         /KJ89YjO5AJHGKApI2rQ9D0Mvyyws3g+DyVxsWZ6K38y3EyWdPE9VeWo+LxdGI3xE3GW
-         xXI2Lu9e+5zCKYPiJY/0j99G+tfh0T7+hgyB0wiPW3QeQvEI3+5JjteZwk2Ez3INeCW+
-         ljgBj9UNHu1C7YgSUuubiOO5r+qwMecXRLFQoXhElDz3QzymVM034mvXpH40r4z3ONNK
-         2cBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704369785; x=1704974585;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DFIN0JRPxZeIYz9kF4NaZedcE87VAaRvQmqCR63HznA=;
-        b=hxWsXqcTBjq/Dbt64IIKQtOJctcucbAAR91zVhuTfvv4/OmxbBkDhdWm68zX4R6mnP
-         kxatW+BV8X30mgptKRtN3VtvG3wIIJsD5gmA13eOcdil69V88ZgHdl3V91HybYqybl5m
-         nP4PfBvBMHIaguC+5mXpd7QbD5yShK66C+bkCnBHxDujMFO27L3Fp6OAfREN1sVsIvCJ
-         F3n1uWW/JBsXWAsZHGyKIOrDLCI5EY9uRCcEFWA9osgjxTesytdAFF7DA42cT0+cnrYD
-         iUrYAfvV36S8sDh3f5qWSFM7kIYwsva1/jyCULkJWW9JfWGYaPzNwV3ZZmOS49PA2pUI
-         w/ZA==
-X-Gm-Message-State: AOJu0Yx/SyaQiNaJEqgxH0SYJLnKxx1A7SAlXKQ6Kz2rwdLxv9lhpALC
-	DQY4qI1DZnT3PpOLZAPnJLsfCm1JtmZN3Q==
-X-Google-Smtp-Source: AGHT+IEfclptb3Y6RoCGpyhaqWbQXBt6VX579x8n32GryTMhIBu+yxRbTfoeKYc+baWP3G64gwLKpw==
-X-Received: by 2002:a2e:9d84:0:b0:2cd:13bf:78d7 with SMTP id c4-20020a2e9d84000000b002cd13bf78d7mr255488ljj.10.1704369784952;
-        Thu, 04 Jan 2024 04:03:04 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id wh14-20020a170906fd0e00b00a234907311asm13618345ejb.55.2024.01.04.04.03.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Jan 2024 04:03:04 -0800 (PST)
-Message-ID: <5cdd7549-1b44-4612-b020-84ce5a24e15a@linaro.org>
-Date: Thu, 4 Jan 2024 13:03:02 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EADA219F9;
+	Thu,  4 Jan 2024 12:04:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=8Z/vHoSndZHXrh+DMZJgXjJqVV6ZzD4r7OZ3XIEgP6w=; b=lS14CG/4LTpvtxeCmIGnydE6uV
+	HUw9ht9hNaonRQ/QAnYToxZSM2uoKFReyEI10v20CEB8KL8OEhfmQS3Gnd5tzXk31pI8XjtziS27d
+	pg0YuUX/6rgY92UOthyBJIIANII6F9ClJJiiqHlwu6+a0D9F//8GVthZC6D117a7rVaJktmn80Yu0
+	itYtlqgFaPFUWVxwjIFNcI9urCjUZJ7JEdQpeaE94TFSYV/xCJfhOm/tC5s19lcnO3EQY7x6FbqCu
+	WQh0TGJlt7steaF/JJnjtWvhuwoRX/TIXCv6XwUi27pqqhsTEW2dgjqUcn7S5Nos+VdUhzjB80Nma
+	nnep9jYQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:45974)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1rLMSW-0008SK-2D;
+	Thu, 04 Jan 2024 12:04:24 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1rLMSW-0007OU-6g; Thu, 04 Jan 2024 12:04:24 +0000
+Date: Thu, 4 Jan 2024 12:04:24 +0000
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: Marc Zyngier <maz@kernel.org>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev,
+	Mark Rutland <mark.rutland@arm.com>,
+	Robin Murphy <robin.murphy@arm.com>,
+	Fang Xiang <fangxiang3@xiaomi.com>,
+	Robert Moore <robert.moore@intel.com>
+Subject: Re: [PATCH v4 0/3] irqchip/gic-v3: Enable non-coherent GIC designs
+ probing
+Message-ID: <ZZaeyBXn85AnsIk6@shell.armlinux.org.uk>
+References: <20230905104721.52199-1-lpieralisi@kernel.org>
+ <20231227110038.55453-1-lpieralisi@kernel.org>
+ <CAJZ5v0gUBU=VL8E34sjROssoGNbLnhmUQVHGWT60hgBG_ufTHw@mail.gmail.com>
+ <86h6jt9vs7.wl-maz@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 3/3] dt-bindings: mfd: sophgo: add misc MFD for Sophgo
- CV1800 series SoC.
-Content-Language: en-US
-To: Jingbao Qiu <qiujingbao.dlmu@gmail.com>
-Cc: a.zummo@towertech.it, alexandre.belloni@bootlin.com, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu,
- linux-rtc@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, dlan@gentoo.org, inochiama@outlook.com
-References: <20231229090643.116575-1-qiujingbao.dlmu@gmail.com>
- <20231229090643.116575-4-qiujingbao.dlmu@gmail.com>
- <942d79d0-08a8-4cda-90de-57daa44d9dd7@linaro.org>
- <CAJRtX8Rv0Ws=fcgDf2jh6GRz3ba+CkjH4u6JUPZnN61-CqqzZA@mail.gmail.com>
- <73dc5e85-0442-4b48-8abb-4a323403f3c0@linaro.org>
- <CAJRtX8QKyGDrCa_L8YY_Bsy3TTJsfw0LOt2T8uLWEfKE9QrQDg@mail.gmail.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <CAJRtX8QKyGDrCa_L8YY_Bsy3TTJsfw0LOt2T8uLWEfKE9QrQDg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <86h6jt9vs7.wl-maz@kernel.org>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-On 04/01/2024 12:42, Jingbao Qiu wrote:
-ties: false
->>>>> +
->>>>> +examples:
->>>>> +  - |
->>>>> +    #include <dt-bindings/interrupt-controller/irq.h>
->>>>> +
->>>>> +    misc@5025000 {
->>>>
->>>>
->>>> misc can be anything.
->>>
->>> Actually, there are RTC and (Power On Reset/POR) here. I can't find a suitable
->>> word to describe him. Can you give me some advice?
->>
->> Then maybe just rtc? If there is nothing else, why RTC is separate subnode?
->>
+On Thu, Jan 04, 2024 at 11:34:48AM +0000, Marc Zyngier wrote:
+> On Wed, 03 Jan 2024 13:43:16 +0000,
+> "Rafael J. Wysocki" <rafael@kernel.org> wrote:
+> > 
+> > On Wed, Dec 27, 2023 at 12:00 PM Lorenzo Pieralisi
+> > <lpieralisi@kernel.org> wrote:
+> > >
+> > > This series is v4 of previous series:
+> > >
+> > > v3: https://lore.kernel.org/all/20231006125929.48591-1-lpieralisi@kernel.org
+> > > v2: https://lore.kernel.org/all/20230906094139.16032-1-lpieralisi@kernel.org
+> > > v1: https://lore.kernel.org/all/20230905104721.52199-1-lpieralisi@kernel.org
+> > >
+> > > v3 -> v4:
+> > >         - Dropped patches [1-3], already merged
+> > >         - Added Linuxized ACPICA changes accepted upstream
+> > >         - Rebased against v6.7-rc3
+> > >
+> > > v2 -> v3:
+> > >         - Added ACPICA temporary changes and ACPI changes to implement
+> > >           ECR https://bugzilla.tianocore.org/show_bug.cgi?id=4557
+> > >         - ACPI changes are for testing purposes - subject to ECR code
+> > >           first approval
+> > >
+> > > v1 -> v2:
+> > >         - Updated DT bindings as per feedback
+> > >         - Updated patch[2] to use GIC quirks infrastructure
+> > >
+> > > Original cover letter
+> > > ---
+> > > The GICv3 architecture specifications provide a means for the
+> > > system programmer to set the shareability and cacheability
+> > > attributes the GIC components (redistributors and ITSes) use
+> > > to drive memory transactions.
+> > >
+> > > Albeit the architecture give control over shareability/cacheability
+> > > memory transactions attributes (and barriers), it is allowed to
+> > > connect the GIC interconnect ports to non-coherent memory ports
+> > > on the interconnect, basically tying off shareability/cacheability
+> > > "wires" and de-facto making the redistributors and ITSes non-coherent
+> > > memory observers.
+> > >
+> > > This series aims at starting a discussion over a possible solution
+> > > to this problem, by adding to the GIC device tree bindings the
+> > > standard dma-noncoherent property. The GIC driver uses the property
+> > > to force the redistributors and ITSes shareability attributes to
+> > > non-shareable, which consequently forces the driver to use CMOs
+> > > on GIC memory tables.
+> > >
+> > > On ARM DT DMA is default non-coherent, so the GIC driver can't rely
+> > > on the generic DT dma-coherent/non-coherent property management layer
+> > > (of_dma_is_coherent()) which would default all GIC designs in the field
+> > > as non-coherent; it has to rely on ad-hoc dma-noncoherent property handling.
+> > >
+> > > When a consistent approach is agreed upon for DT an equivalent binding will
+> > > be put forward for ACPI based systems.
+> > >
+> > > Lorenzo Pieralisi (3):
+> > >   ACPICA: MADT: Add GICC online capable bit handling
+> > >   ACPICA: MADT: Add new MADT GICC/GICR/ITS non-coherent flags handling
+> > >   irqchip/gic-v3: Enable non-coherent redistributors/ITSes ACPI probing
+> > >
+> > >  drivers/acpi/processor_core.c    | 21 +++++++++++++++++++++
+> > >  drivers/irqchip/irq-gic-common.h |  8 ++++++++
+> > >  drivers/irqchip/irq-gic-v3-its.c |  4 ++++
+> > >  drivers/irqchip/irq-gic-v3.c     |  9 +++++++++
+> > >  include/acpi/actbl2.h            | 12 ++++++++++--
+> > >  include/linux/acpi.h             |  3 +++
+> > >  6 files changed, 55 insertions(+), 2 deletions(-)
+> > >
+> > > --
+> > 
+> > I can apply the first 2 patches, but I would need an ACK for the 3rd one.
+> > 
+> > Alternatively, feel free to add
+> > 
+> > Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > 
+> > to the first 2 patches and route them via ARM64.
 > 
-> There is also a por submodule used to provide power off and restart functions.
-> Do you mean to use RTC as the parent node like this.
-> rtc{
->     //something
->     por{
->     }
+> Thanks for that. I have some comments on the third patch, which I'd
+> like to see addressed beforehand. This is probably all 6.9 material
+> anyway (nobody is affected by this so far).
 
-por is empty in your binding, so there is little point in having it as
-subnode.
+From a purely selfish point of view, it would be useful to have the
+first patch merged merely to reduce the burden of patches for vcpu
+hotplug.
 
-Best regards,
-Krzysztof
-
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
