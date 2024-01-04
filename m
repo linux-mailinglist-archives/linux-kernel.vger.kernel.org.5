@@ -1,60 +1,76 @@
-Return-Path: <linux-kernel+bounces-17197-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17198-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A368982498E
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 21:27:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94B39824992
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 21:29:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8C57B1C2293E
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 20:27:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1F19F1F24521
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 20:29:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 851012C69E;
-	Thu,  4 Jan 2024 20:27:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B23FD2C6A0;
+	Thu,  4 Jan 2024 20:29:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kj6TNpNA"
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="RhmouT7p"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qk1-f175.google.com (mail-qk1-f175.google.com [209.85.222.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C9A82C697
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 20:27:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704400031; x=1735936031;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=g1oDRCv8dPqMR/AR77cJFUoMVlJQWt/Q6i9jLC9FSxU=;
-  b=kj6TNpNABFdX8VcsQX3Telw2wwd8kzr+RQAawqMc+0SotE6XfSAIdlE7
-   Jj4RM43Kl8UMILwkqGWopyaDt4xRxLfemq/WjGQs1MrzCGQq/UOoVoeTY
-   0NYtmKlKIgRF8/MNd0dRxbjm3pJCqU1roCh8mKhWNeaA4Ybs/pcTW/af9
-   lwz4BjbgC6Azq3JkWNO3wB8Oucext9XndB07w531Y85vZpw3ttwviQ0MV
-   TZhvg/QLADjAut7KlQ/l7yEubsvqp6GhwMCmYiJKzKmlpO3rTX8yWH84H
-   q/UoQZhd/GNrW/0o9tPl6OCDAVqd7ntHObJ5mAuXIV8CSaClWZ4tvI6gB
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10943"; a="483530905"
-X-IronPort-AV: E=Sophos;i="6.04,331,1695711600"; 
-   d="scan'208";a="483530905"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2024 12:26:18 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,331,1695711600"; 
-   d="scan'208";a="22285442"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orviesa002.jf.intel.com with ESMTP; 04 Jan 2024 12:26:17 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rLUIA-0000Oi-2J;
-	Thu, 04 Jan 2024 20:26:14 +0000
-Date: Fri, 5 Jan 2024 04:25:25 +0800
-From: kernel test robot <lkp@intel.com>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: fs/bcachefs/alloc_background.c:200:5-8: Unneeded variable: "ret".
- Return "  0" on line 208
-Message-ID: <202401050409.VH31aFND-lkp@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FD8E2C69A
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 20:29:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-qk1-f175.google.com with SMTP id af79cd13be357-781b9922f44so51641185a.2
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 12:29:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1704400152; x=1705004952; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Js6JSpUmigYbW6w6fgAM+QgqXQNUIDobYA2AIx1gbcU=;
+        b=RhmouT7pE+7OoKHkS2N3bEsRfn1WJNFm4Tot8uaPx5yW9rDRu7phJ2UQ/7t4yAhV/k
+         BYNtpqNxflfP6F1pxdbb5s7QpAV/jsIF67eTV/9vVyRcFYjQi0R0TPzdHRHjz1JqZ2AR
+         yRaAGcYKBvyQb8ds5sdq+ZmcAMf1rOVhnNV//NElJW5ZBnOMYlcBkp3rlDSv2zAfUJB1
+         WwmyJ9o8dU3eerPnw9sBqwYvCX4layZMBRZ9VObM6b5EVuXdGSeAl8QAZOeow8vVbP9N
+         iSf0QG8PwHn+5x5yAcMQ7AVGASIJ6ZQV24WZoHGrkgDhqPzOnB+besUj8N0WVyFyO+Wk
+         1SaQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704400152; x=1705004952;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Js6JSpUmigYbW6w6fgAM+QgqXQNUIDobYA2AIx1gbcU=;
+        b=Tty6JbP32eRE01AS6tGtPFY6JfbBxrugVFl82a9RAzt4+pRBpN3+by84dhNSvg9JUC
+         DtggTp78TvDfcBvgnmhiJQOx5yXg606GMT9CRPI77ybovxCLiBfKNgTPc8MuZSHax65X
+         QrE6G/brNxRI2+r8owBjaJwNvlfkErV7RnMIeH+1/aBZGFNVTlsDbFlp88o2G/qB6JQs
+         JqNHyT8BdfMjWM9TU1ULdLMG0geH2klrv30H12ImAK+cKuq5fxxnt8YQWWTVjB8Grf/C
+         +j0vjyF7OK63oJ56WDF21uax+3lW06PaD8S6+oLwmlKmwl494bn5NTBXRztZrGM8VD9i
+         yclw==
+X-Gm-Message-State: AOJu0Yzl2mtEwt1MfaRkY/2NcXZg0hXY9KP1t14EdjnYFOA+Rmzl3Ejp
+	qKSKtxLI7bW55zMVHbzr19ovl9jMhaJH/Q==
+X-Google-Smtp-Source: AGHT+IFHA7MyY6SluE5Lmfef+n0mZa0GrfDdvhlhI7a5zI3AOX5Y02JTsMjZgV59//5Oh7B0nRArXg==
+X-Received: by 2002:a05:620a:8517:b0:781:30a1:62e0 with SMTP id pe23-20020a05620a851700b0078130a162e0mr1198421qkn.32.1704400151951;
+        Thu, 04 Jan 2024 12:29:11 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
+        by smtp.gmail.com with ESMTPSA id bk8-20020a05620a1a0800b0076db5b792basm63070qkb.75.2024.01.04.12.29.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Jan 2024 12:29:06 -0800 (PST)
+Received: from jgg by wakko with local (Exim 4.95)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1rLUKs-001GcK-1n;
+	Thu, 04 Jan 2024 16:29:02 -0400
+Date: Thu, 4 Jan 2024 16:29:02 -0400
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Junxian Huang <huangjunxian6@hisilicon.com>
+Cc: Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
+	linuxarm@huawei.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH for-next 4/6] RDMA/hns: Support flexible pagesize
+Message-ID: <20240104202902.GD50608@ziepe.ca>
+References: <20231225075330.4116470-1-huangjunxian6@hisilicon.com>
+ <20231225075330.4116470-5-huangjunxian6@hisilicon.com>
+ <20231226085202.GA13350@unreal>
+ <fbd65691-b0a2-0963-96fc-7e09a66cd203@hisilicon.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -63,53 +79,38 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <fbd65691-b0a2-0963-96fc-7e09a66cd203@hisilicon.com>
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   ac865f00af293d081356bec56eea90815094a60e
-commit: b65db750e2bb9252321fd54c284edd73c1595a09 bcachefs: Enumerate fsck errors
-date:   9 weeks ago
-config: x86_64-randconfig-r064-20231231 (https://download.01.org/0day-ci/archive/20240105/202401050409.VH31aFND-lkp@intel.com/config)
-compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
+On Tue, Dec 26, 2023 at 05:16:33PM +0800, Junxian Huang wrote:
+> 
+> 
+> On 2023/12/26 16:52, Leon Romanovsky wrote:
+> > On Mon, Dec 25, 2023 at 03:53:28PM +0800, Junxian Huang wrote:
+> >> From: Chengchang Tang <tangchengchang@huawei.com>
+> >>
+> >> In the current implementation, a fixed page size is used to
+> >> configure the PBL, which is not flexible enough and is not
+> >> conducive to the performance of the HW.
+> >>
+> >> Signed-off-by: Chengchang Tang <tangchengchang@huawei.com>
+> >> Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
+> >> ---
+> >>  drivers/infiniband/hw/hns/hns_roce_alloc.c  |   6 -
+> >>  drivers/infiniband/hw/hns/hns_roce_device.h |   9 ++
+> >>  drivers/infiniband/hw/hns/hns_roce_mr.c     | 168 +++++++++++++++-----
+> >>  3 files changed, 139 insertions(+), 44 deletions(-)
+> > 
+> > I'm wonder if the ib_umem_find_best_pgsz() API should be used instead.
+> > What is missing there?
+> > 
+> > Thanks
+> 
+> Actually this API is used for umem.
+> For kmem, we add hns_roce_find_buf_best_pgsz() to do a similar job.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202401050409.VH31aFND-lkp@intel.com/
+But why do you need to do something like this for kmem? It looked to
+me like kmem knows its allocation size when it was allocated, how come
+you need to iterate over all of it again?
 
-cocci warnings: (new ones prefixed by >>)
->> fs/bcachefs/alloc_background.c:200:5-8: Unneeded variable: "ret". Return "  0" on line 208
-   fs/bcachefs/alloc_background.c:216:5-8: Unneeded variable: "ret". Return "  0" on line 222
-   fs/bcachefs/alloc_background.c:230:5-8: Unneeded variable: "ret". Return "  0" on line 236
-   fs/bcachefs/alloc_background.c:243:5-8: Unneeded variable: "ret". Return "  0" on line 297
-   fs/bcachefs/alloc_background.c:523:5-8: Unneeded variable: "ret". Return "  0" on line 530
---
->> fs/bcachefs/lru.c:17:5-8: Unneeded variable: "ret". Return "  0" on line 23
---
->> fs/bcachefs/quota.c:66:5-8: Unneeded variable: "ret". Return "  0" on line 73
---
->> fs/bcachefs/subvolume.c:104:5-8: Unneeded variable: "ret". Return "  0" on line 111
-
-vim +200 fs/bcachefs/alloc_background.c
-
-   194	
-   195	int bch2_alloc_v1_invalid(struct bch_fs *c, struct bkey_s_c k,
-   196				  enum bkey_invalid_flags flags,
-   197				  struct printbuf *err)
-   198	{
-   199		struct bkey_s_c_alloc a = bkey_s_c_to_alloc(k);
- > 200		int ret = 0;
-   201	
-   202		/* allow for unknown fields */
-   203		bkey_fsck_err_on(bkey_val_u64s(a.k) < bch_alloc_v1_val_u64s(a.v), c, err,
-   204				 alloc_v1_val_size_bad,
-   205				 "incorrect value size (%zu < %u)",
-   206				 bkey_val_u64s(a.k), bch_alloc_v1_val_u64s(a.v));
-   207	fsck_err:
- > 208		return ret;
-   209	}
-   210	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Jason
 
