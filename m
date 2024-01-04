@@ -1,210 +1,216 @@
-Return-Path: <linux-kernel+bounces-17112-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17113-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A6C0824870
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 19:53:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C624824871
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 19:54:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5C7301C225F0
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 18:53:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E9EA91F22F88
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 18:54:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E68A628E3A;
-	Thu,  4 Jan 2024 18:53:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24E7F28E28;
+	Thu,  4 Jan 2024 18:54:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="K4pp7smN"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="T/5VnVSX"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53BDE2C19A;
-	Thu,  4 Jan 2024 18:53:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 404IqjjM028754;
-	Thu, 4 Jan 2024 12:52:45 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1704394365;
-	bh=Jixmz8UmdzmchzS9VJO4ZuCFHsN7gfU1qaRRGXCk3j8=;
-	h=Date:From:To:CC:Subject:References:In-Reply-To;
-	b=K4pp7smNcP5O66x1ZOGRFKeUI7yrbnzJJCk4XKh+XsgUtuFjk6x8c0b2T2b/gdCij
-	 rwsRBP0a7p4rRdKNDkJOJf8ZYZ9Ny3Xb5JsX0Asexu9wurijHAjZYfDqDRlwnUsIHb
-	 FiCPrkfsrOrHJSo7veZVDKWoSeKZQcwJxW3dlMow=
-Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
-	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 404IqjZH017937
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Thu, 4 Jan 2024 12:52:45 -0600
-Received: from DLEE108.ent.ti.com (157.170.170.38) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 4
- Jan 2024 12:52:44 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 4 Jan 2024 12:52:44 -0600
-Received: from localhost (dhruva.dhcp.ti.com [172.24.227.68])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 404Iqhqr001930;
-	Thu, 4 Jan 2024 12:52:43 -0600
-Date: Fri, 5 Jan 2024 00:22:42 +0530
-From: Dhruva Gole <d-gole@ti.com>
-To: Roger Quadros <rogerq@kernel.org>
-CC: Jai Luthra <j-luthra@ti.com>,
-        Javier Carrasco
-	<javier.carrasco@wolfvision.net>,
-        Greg Kroah-Hartman
-	<gregkh@linuxfoundation.org>,
-        Heikki Krogerus
-	<heikki.krogerus@linux.intel.com>,
-        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <vigneshr@ti.com>, <nm@ti.com>
-Subject: Re: [PATCH v2 0/4] usb: typec: tipd: add patch update support for
- tps6598x
-Message-ID: <20240104185242.tf2fvgf56ehajqd5@dhruva>
-References: <20231207-tps6598x_update-v2-0-f3cfcde6d890@wolfvision.net>
- <vmngazj6si7xxss7txenezkcukqje2glhvvs7ipdcx3vjiqvlk@ohmmhhhlryws>
- <2nqiaxakx6setx4tzgddnbjadbh7miegz5p6wamsbbiyrfuq3x@un2uxajbswkg>
- <e9e8dd9f-b11b-43fc-8d76-6734dbddb540@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D06E52C188
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 18:54:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-555aa7fd668so1014252a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 10:54:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704394446; x=1704999246; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=jKANwIhqa+LvmlQt2znhD615O1LJ668Njt6YHHfEb+I=;
+        b=T/5VnVSX7LBA4lR2IMr+1+18gZVAK1z6EJ2Mfun4mSqoVA/aJJUlGQ+vwm/8iiQQ53
+         /cOKXAO9URtteGBf9Tyn2uR9rcmjtZtwzIbVgtZ0vBC0H8csVjTOfaS8jJwXeN4Q7qAT
+         Wat0lcIzemlYj9SV6Sh6y6ajtRv+BqTz0ZBYyzhTLaQmg+YSzkdWC3myNOA1UrLV/WZD
+         lad6u8e06dmtImSXaRkWKJN8QL/Qg/6lYSrVO71aZTNN6rNIWsOkGFTharXIKx6cg7pX
+         A2IwPfHDw3lLWzN1v9fWYspZPUPpoC4XJxeR/wwAEZRNYNmZdnpholTDDQSr/6QvZgk7
+         aOLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704394446; x=1704999246;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=jKANwIhqa+LvmlQt2znhD615O1LJ668Njt6YHHfEb+I=;
+        b=kWVIeIb9anLu+Uc1aqCYoXHy75qQli4jwkH6ALn/4v6OLOnt38AgwtXIs3ZFP25Kvs
+         BJr5V8qqEl28xiv2R+erKZY7s/1n+FgM1x8nuPyXiC0gceNk3AM2wdzA5ns+9ogMwPVG
+         PVay3BVEE488Rg2+TIqPs0KljRo9/tWvjrI54SJi/JhwA8x/7QvZReZ3weKgvqVnOL9s
+         4iPtos3yBOYYaI7Ij2bFRN1bEYxSR8Tmcl2Pgrpv1Zc1uyl0hJvnoKnrEC0B+DKX62KO
+         0WfqDpIbsfWOjNgEl0hzphLbZOUIGuI6XYp+vvogPgeoRmIQXCmDvXo9stSz4dZYa3PF
+         qGeA==
+X-Gm-Message-State: AOJu0YxIyB3BcT11Tbvq5LVmy7h6BXtjktRUu/gNReHYQSSwAmIfSeFA
+	NRxvi/gVD9kBwaWIbAKbHcA=
+X-Google-Smtp-Source: AGHT+IFhdU/VMhwpjMnGX2lcnofrQbURePzE/VM+99mptm3emNVixnMZdqIgEEfDKwqVyqXeZhYK+g==
+X-Received: by 2002:a17:906:f810:b0:a23:44e8:81b with SMTP id kh16-20020a170906f81000b00a2344e8081bmr562135ejb.73.1704394445767;
+        Thu, 04 Jan 2024 10:54:05 -0800 (PST)
+Received: from EPUAKYIW03DD.. ([91.123.150.198])
+        by smtp.gmail.com with ESMTPSA id d21-20020a170906305500b00a2699b0fd49sm13966430ejd.86.2024.01.04.10.54.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Jan 2024 10:54:05 -0800 (PST)
+From: Oleksandr Tyshchenko <olekstysh@gmail.com>
+To: xen-devel@lists.xenproject.org,
+	linux-kernel@vger.kernel.org
+Cc: Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
+	=?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+	Daniel Vetter <daniel@ffwll.ch>,
+	Juergen Gross <jgross@suse.com>,
+	Stefano Stabellini <sstabellini@kernel.org>
+Subject: [PATCH] xen/gntdev: Fix the abuse of underlying struct page in DMA-buf import
+Date: Thu,  4 Jan 2024 20:53:27 +0200
+Message-Id: <20240104185327.177376-1-olekstysh@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <e9e8dd9f-b11b-43fc-8d76-6734dbddb540@kernel.org>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 8bit
 
-Hi all,
+From: Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
 
-On Jan 04, 2024 at 18:15:36 +0200, Roger Quadros wrote:
-> 
-> 
-> On 04/01/2024 17:47, Jai Luthra wrote:
-> > Hi Javier,
-> > 
-> > On Jan 04, 2024 at 19:50:05 +0530, Jai Luthra wrote:
-> >> Hi Javier, Greg,
-> >>
-> >> On Dec 14, 2023 at 17:29:08 +0100, Javier Carrasco wrote:
-> >>> This series extends the patch update mechanism to support the tps6598x.
-> >>>
-> >>> Currently there is only support for the tps25750 part and some
-> >>> conditional clauses are used to make a special case out of it. Now that
-> >>> different parts support patch updates, a more general approach is
-> >>> proposed.
-> >>>
-> >>> The update mechanism differs from the one required by tps25750 and it is
-> >>> explained in the commit message as a summary of the application note in
-> >>> that respect.
-> >>>
-> >>> Note that the series makes use of the TPS_SETUP_MS introduced in
-> >>> commit 6a4d4a27f986 ("usb: typec: tps6598x: add reset gpio support"),
-> >>> which is currently available in usb-next / usb-testing.
-> >>>
-> >>> A TPS65987D has been used to test this functionality with positive
-> >>> results.
-> >>>
-> >>> Signed-off-by: Javier Carrasco <javier.carrasco@wolfvision.net>
-> >>> ---
-> >>> Changes in v2:
-> >>> - Remove probe defeferring mechanism and expect the firmware to be
-> >>>   available (Heikki Krogerus).
-> >>> - Link to v1: 
-> >>> https://lore.kernel.org/r/20231207-tps6598x_update-v1-0-dc21b5301d91@wolfvision.net
-> >>>
-> >>
-> >> FYI, this series breaks boot for TI SK-AM62A and SK-AM62 which use 
-> >> TPS6598x as the USB-C PD chip.
+DO NOT access the underlying struct page of an sg table exported
+by DMA-buf in dmabuf_imp_to_refs(), this is not allowed.
+Please see drivers/dma-buf/dma-buf.c:mangle_sg_table() for details.
 
-This series also broke boot on TI SK-AM62x [0].
+Fortunately, here (for special Xen device) we can avoid using
+pages and calculate gfns directly from dma addresses provided by
+the sg table.
 
-> >>
-> >> The platforms stopped booting since next-20240103 [1], and reverting 
-> >> this series [4] seems to fix the issue [2]
-> >>
-> >> Is there any change needed in the board device-tree [3] and bindings?
-> >>
-> >> We don't specify any firmware in the device-tree node, but seems like 
-> >> that is an assumption in this series. I tried reverting it (below 
-> >> change) but that did *not* help with the stuck boot.
-> >>
-> >> diff --git a/drivers/usb/typec/tipd/core.c b/drivers/usb/typec/tipd/core.c
-> >> index a956eb976906..fa3bd7349265 100644
-> >> --- a/drivers/usb/typec/tipd/core.c
-> >> +++ b/drivers/usb/typec/tipd/core.c
-> >> @@ -1139,7 +1139,7 @@ static int tps6598x_apply_patch(struct tps6598x *tps)
-> >>         ret = device_property_read_string(tps->dev, "firmware-name",
-> >>                                           &firmware_name);
-> >>         if (ret)
-> >> -               return ret;
-> >> +               return 0;
-> >>
-> >>         ret = tps_request_firmware(tps, &fw);
-> >>         if (ret)
-> >>
-> >>
-> >> [1] https://linux.kernelci.org/soc/ti/job/next/kernel/next-20240103/plan/baseline-nfs/
-> >> [2] https://gist.github.com/jailuthra/0c077176585e4df2f8b78f7784087865
-> >> [3] https://gitlab.com/linux-kernel/linux-next/-/blob/master/arch/arm64/boot/dts/ti/k3-am62a7-sk.dts#L305
-> >> [4] https://github.com/jailuthra/linux/commits/next-20240103-tps6598-fix/
-> > 
-> > The following change seems to fix boot on SK-AM62A without reverting 
-> > this whole series:
-> > 
-> > ------------------
-> > 
-> > diff --git a/drivers/usb/typec/tipd/core.c b/drivers/usb/typec/tipd/core.c
-> > index a956eb976906a5..8ba2aa05db519b 100644
-> > --- a/drivers/usb/typec/tipd/core.c
-> > +++ b/drivers/usb/typec/tipd/core.c
-> > @@ -1223,11 +1223,16 @@ static int cd321x_reset(struct tps6598x *tps)
-> >  	return 0;
-> >  }
-> >  
-> > -static int tps6598x_reset(struct tps6598x *tps)
-> > +static int tps25750_reset(struct tps6598x *tps)
-> >  {
-> >  	return tps6598x_exec_cmd_tmo(tps, "GAID", 0, NULL, 0, NULL, 2000, 0);
-> >  }
-> >  
-> > +static int tps6598x_reset(struct tps6598x *tps)
-> > +{
-> > +	return 0;
-> > +}
-> > +
-> >  static int
-> >  tps25750_register_port(struct tps6598x *tps, struct fwnode_handle *fwnode)
-> >  {
-> > @@ -1545,7 +1550,7 @@ static const struct tipd_data tps25750_data = {
-> >  	.trace_status = trace_tps25750_status,
-> >  	.apply_patch = tps25750_apply_patch,
-> >  	.init = tps25750_init,
-> > -	.reset = tps6598x_reset,
-> > +	.reset = tps25750_reset,
-> >  };
-> >  
-> >  static const struct of_device_id tps6598x_of_match[] = {
-> > 
-> > ------------------
-> > 
-> > I am not an expert on this, will let you/others decide on what should be 
-> > the correct way to reset TPS6598x for patching without breaking this SK.
-> > 
-> > 
-> 
-> This looks like a correct fix to me.
-> Could you please send a proper PATCH with Fixes tag? Thanks!
+Suggested-by: Daniel Vetter <daniel@ffwll.ch>
+Signed-off-by: Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
+---
+Please note, I didn't manage to test the patch against the latest master branch
+on real HW (patch was only build tested there). Patch was tested on Arm64
+guests using Linux v5.10.41 from vendor's BSP, this is the environment where
+running this use-case is possible and to which I have an access (Xen PV display
+with zero-copy and backend domain as a buffer provider - be-alloc=1, so dma-buf
+import part was involved). A little bit old, but the dma-buf import code
+in gntdev-dmabuf.c hasn't been changed much since that time, all context
+remains allmost the same according to my code inspection.
+---
+---
+ drivers/xen/gntdev-dmabuf.c | 42 +++++++++++++++----------------------
+ 1 file changed, 17 insertions(+), 25 deletions(-)
 
-Thanks for reviewing this Roger, the same patch above worked for me to
-fix SK-AM62x as well [1].
-
-[0] https://storage.kernelci.org/next/master/next-20240103/arm64/defconfig/gcc-10/lab-ti/baseline-nfs-am62xx_sk-fs.txt
-[1] https://gist.github.com/DhruvaG2000/326b5d7fab4be95f20cd0aac4125f577
-
+diff --git a/drivers/xen/gntdev-dmabuf.c b/drivers/xen/gntdev-dmabuf.c
+index 4440e626b797..0dde49fca9a5 100644
+--- a/drivers/xen/gntdev-dmabuf.c
++++ b/drivers/xen/gntdev-dmabuf.c
+@@ -11,6 +11,7 @@
+ #include <linux/kernel.h>
+ #include <linux/errno.h>
+ #include <linux/dma-buf.h>
++#include <linux/dma-direct.h>
+ #include <linux/slab.h>
+ #include <linux/types.h>
+ #include <linux/uaccess.h>
+@@ -50,7 +51,7 @@ struct gntdev_dmabuf {
+ 
+ 	/* Number of pages this buffer has. */
+ 	int nr_pages;
+-	/* Pages of this buffer. */
++	/* Pages of this buffer (only for dma-buf export). */
+ 	struct page **pages;
+ };
+ 
+@@ -484,7 +485,7 @@ static int dmabuf_exp_from_refs(struct gntdev_priv *priv, int flags,
+ /* DMA buffer import support. */
+ 
+ static int
+-dmabuf_imp_grant_foreign_access(struct page **pages, u32 *refs,
++dmabuf_imp_grant_foreign_access(unsigned long *gfns, u32 *refs,
+ 				int count, int domid)
+ {
+ 	grant_ref_t priv_gref_head;
+@@ -507,7 +508,7 @@ dmabuf_imp_grant_foreign_access(struct page **pages, u32 *refs,
+ 		}
+ 
+ 		gnttab_grant_foreign_access_ref(cur_ref, domid,
+-						xen_page_to_gfn(pages[i]), 0);
++						gfns[i], 0);
+ 		refs[i] = cur_ref;
+ 	}
+ 
+@@ -529,7 +530,6 @@ static void dmabuf_imp_end_foreign_access(u32 *refs, int count)
+ 
+ static void dmabuf_imp_free_storage(struct gntdev_dmabuf *gntdev_dmabuf)
+ {
+-	kfree(gntdev_dmabuf->pages);
+ 	kfree(gntdev_dmabuf->u.imp.refs);
+ 	kfree(gntdev_dmabuf);
+ }
+@@ -549,12 +549,6 @@ static struct gntdev_dmabuf *dmabuf_imp_alloc_storage(int count)
+ 	if (!gntdev_dmabuf->u.imp.refs)
+ 		goto fail;
+ 
+-	gntdev_dmabuf->pages = kcalloc(count,
+-				       sizeof(gntdev_dmabuf->pages[0]),
+-				       GFP_KERNEL);
+-	if (!gntdev_dmabuf->pages)
+-		goto fail;
+-
+ 	gntdev_dmabuf->nr_pages = count;
+ 
+ 	for (i = 0; i < count; i++)
+@@ -576,7 +570,8 @@ dmabuf_imp_to_refs(struct gntdev_dmabuf_priv *priv, struct device *dev,
+ 	struct dma_buf *dma_buf;
+ 	struct dma_buf_attachment *attach;
+ 	struct sg_table *sgt;
+-	struct sg_page_iter sg_iter;
++	struct sg_dma_page_iter sg_iter;
++	unsigned long *gfns;
+ 	int i;
+ 
+ 	dma_buf = dma_buf_get(fd);
+@@ -624,26 +619,23 @@ dmabuf_imp_to_refs(struct gntdev_dmabuf_priv *priv, struct device *dev,
+ 
+ 	gntdev_dmabuf->u.imp.sgt = sgt;
+ 
+-	/* Now convert sgt to array of pages and check for page validity. */
++	gfns = kcalloc(count, sizeof(*gfns), GFP_KERNEL);
++	if (!gfns)
++		goto fail_unmap;
++
++	/* Now convert sgt to array of gfns without accessing underlying pages. */
+ 	i = 0;
+-	for_each_sgtable_page(sgt, &sg_iter, 0) {
+-		struct page *page = sg_page_iter_page(&sg_iter);
+-		/*
+-		 * Check if page is valid: this can happen if we are given
+-		 * a page from VRAM or other resources which are not backed
+-		 * by a struct page.
+-		 */
+-		if (!pfn_valid(page_to_pfn(page))) {
+-			ret = ERR_PTR(-EINVAL);
+-			goto fail_unmap;
+-		}
++	for_each_sgtable_dma_page(sgt, &sg_iter, 0) {
++		dma_addr_t addr = sg_page_iter_dma_address(&sg_iter);
++		unsigned long pfn = bfn_to_pfn(XEN_PFN_DOWN(dma_to_phys(dev, addr)));
+ 
+-		gntdev_dmabuf->pages[i++] = page;
++		gfns[i++] = pfn_to_gfn(pfn);
+ 	}
+ 
+-	ret = ERR_PTR(dmabuf_imp_grant_foreign_access(gntdev_dmabuf->pages,
++	ret = ERR_PTR(dmabuf_imp_grant_foreign_access(gfns,
+ 						      gntdev_dmabuf->u.imp.refs,
+ 						      count, domid));
++	kfree(gfns);
+ 	if (IS_ERR(ret))
+ 		goto fail_end_access;
+ 
 -- 
-Best regards,
-Dhruva Gole <d-gole@ti.com>
+2.34.1
+
 
