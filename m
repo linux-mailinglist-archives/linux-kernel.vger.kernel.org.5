@@ -1,157 +1,156 @@
-Return-Path: <linux-kernel+bounces-17218-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17219-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F94E8249F3
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 22:02:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 908EE8249F5
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 22:02:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AE49D1F232E0
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 21:02:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 13E8A287C2E
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 21:02:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D25B52C6BA;
-	Thu,  4 Jan 2024 21:01:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EC322C1B5;
+	Thu,  4 Jan 2024 21:02:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="SpnWjdwu"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Gv0a367Q"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81FE52C6B1
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 21:00:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-3367601a301so741157f8f.2
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 13:00:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1704402058; x=1705006858; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=aEAMqcwvVp1DhUld3ZPVwdQv2+1sf5VUPmdEsVkdBtY=;
-        b=SpnWjdwux3KkzMWGFkYybFhMKn+c8ALj5w7SSaR/Itfwums/YjWQKCXlGLANwmvIln
-         cJj/rW3XmXVQJOsJvWDCcz/d0kkOniu2DHDOGxDhMqEY3+9m1taqH5qvVzUsmFTRGbqc
-         5nPA9o8WHTqDnoy200N99Y7bqNm43yLpLJ35RPKVhILaPmewLFgA0gvzFrygGmVSTn+V
-         h5aMxNkl8iHdtoU1XM+DUAcByFgtzqntMwBO2JSsmKwlhZrJUIdTPoyWMC2ZiOrUg9H/
-         QgfWsIxOZWyyylUXeDGeNYwk4p9/6QlFKKMBV1dJGRhWfCWqXZb02O5I5VM36BRVcu9w
-         SfMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704402058; x=1705006858;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=aEAMqcwvVp1DhUld3ZPVwdQv2+1sf5VUPmdEsVkdBtY=;
-        b=UUguN/YYe5jZICRE/AQNqKFqvEU6phCwM+kNSpouP3NcRDgwWzo9OJvnX+T8Yj/CRC
-         SPYQeARBWm1iKlj3lMtLjpeU67Bi8zEKxOfbdEyL84B+kRbWWiaft84A1X/vooOd/GTn
-         3iGTqTIAsIwUaKRv8FFuQeK1VsLoG8Sj4SkomVcH523xuE2LBwnrItn56oBOWOg9wc6s
-         NXbeZVdGc2B+A1KEub0nUP+FW3yt97lT0uY8EJtJBFpk184x+IyYMFGRpxspifl6YSTw
-         fnZT2aMyJNRjMBL9f9sMTuFROg0xUjTO4q2ENo0QS5Lso3HiwfHEz1IE2MbAFTcOWmfV
-         +O+A==
-X-Gm-Message-State: AOJu0Yw+0oR/CmnBpihtXDzxcNmvh6/Bn2fqFpdOimKFSirAFg8Rs4Bw
-	R42dZtQ40DsFlYOvJw9/5DIuz/NPILXL5u0/tZ+ne+hwFjpv
-X-Google-Smtp-Source: AGHT+IGnz0hIaUYAe6KC2sXCl+1eMOmFFLbu8uSOJVy5nDv4gYIVlwfMzQZ5FIzzoEeyNT+igRqC/QQCb41ddjC9nWY=
-X-Received: by 2002:adf:a450:0:b0:336:ddca:4824 with SMTP id
- e16-20020adfa450000000b00336ddca4824mr404049wra.122.1704402057523; Thu, 04
- Jan 2024 13:00:57 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 414CD2C860;
+	Thu,  4 Jan 2024 21:02:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704402124; x=1735938124;
+  h=to:cc:subject:references:date:mime-version:
+   content-transfer-encoding:from:message-id:in-reply-to;
+  bh=jNkbhszzShPbArPxx0L05m7z25QEwrp4u/6skEB2hTk=;
+  b=Gv0a367Qp1IWVeihxWrbKGOoUtniuMwOkajAvtpXUlF7C65xwRq7n4nm
+   eqYcNXSSXZJVnkvJBQizHK3PZr24isxyE9lgSvYyNwuVapVvSeyxdPQ12
+   4OJ4RxpJh1uYhGWyxcEQZBfEo0YVEFmOysLfHo0WkIr2vYBrNaDE1Okm0
+   QTQ00UuD2Cpy03mN7lVkUVBMSnBWekP+h92aPHxHElEgNpLo91oGsFE5O
+   65Wn0Er/xWBFLOnXkH0FFNE6W0goc09F9QTEubZ6A/1ykKGtu00/WOpAq
+   0Wz5r6RXzg/LQ76vFE7Q56jvk3GkkS52xTwLOd1tBeAXTy7WdA+L/LkN9
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10943"; a="376847776"
+X-IronPort-AV: E=Sophos;i="6.04,331,1695711600"; 
+   d="scan'208";a="376847776"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2024 13:02:02 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10943"; a="1027567628"
+X-IronPort-AV: E=Sophos;i="6.04,331,1695711600"; 
+   d="scan'208";a="1027567628"
+Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.168])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 04 Jan 2024 13:02:00 -0800
+Content-Type: text/plain; charset=utf-8; format=flowed; delsp=yes
+To: "Mehta, Sohil" <sohil.mehta@intel.com>, "jarkko@kernel.org"
+ <jarkko@kernel.org>, "x86@kernel.org" <x86@kernel.org>,
+ "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+ "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>, "hpa@zytor.com"
+ <hpa@zytor.com>, "mingo@redhat.com" <mingo@redhat.com>, "tj@kernel.org"
+ <tj@kernel.org>, "mkoutny@suse.com" <mkoutny@suse.com>, "tglx@linutronix.de"
+ <tglx@linutronix.de>, "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "bp@alien8.de"
+ <bp@alien8.de>, "Huang, Kai" <kai.huang@intel.com>, "Dave Hansen"
+ <dave.hansen@intel.com>
+Cc: "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
+ "seanjc@google.com" <seanjc@google.com>, "Zhang, Bo" <zhanb@microsoft.com>,
+ "kristen@linux.intel.com" <kristen@linux.intel.com>, "anakrish@microsoft.com"
+ <anakrish@microsoft.com>, "sean.j.christopherson@intel.com"
+ <sean.j.christopherson@intel.com>, "Li, Zhiquan1" <zhiquan1.li@intel.com>,
+ "yangjie@microsoft.com" <yangjie@microsoft.com>
+Subject: Re: [PATCH v6 09/12] x86/sgx: Restructure top-level EPC reclaim
+ function
+References: <20231030182013.40086-1-haitao.huang@linux.intel.com>
+ <20231030182013.40086-10-haitao.huang@linux.intel.com>
+ <c8fc40dc56b853fbff14ba22db197c80a6d31820.camel@intel.com>
+ <op.2e0yod2lwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <431c5d7f5aee7d11ec2e8aa2e526fde438fa53b4.camel@intel.com>
+ <op.2ftmyampwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <3c27bca678c1b041920a14a7da0d958c9861ebca.camel@intel.com>
+ <op.2f0eo8r1wjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <73ed579be8ad81835df1c309b7c69b491b7f2c8e.camel@intel.com>
+ <op.2f523elowjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <4b28fc01-50cf-469b-8161-7d56b863b42b@intel.com>
+ <op.2g1d81fqwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <2aee5f75-836e-4a47-a29c-b272150227a8@intel.com>
+Date: Thu, 04 Jan 2024 15:01:59 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240104-syscall_64-v1-1-57fe392ef565@google.com>
-In-Reply-To: <20240104-syscall_64-v1-1-57fe392ef565@google.com>
-From: Nick Desaulniers <ndesaulniers@google.com>
-Date: Thu, 4 Jan 2024 13:00:42 -0800
-Message-ID: <CAKwvOdn8ivC1xKUCgZznQ1pZ1DeRYNoUEYZPB=LiQjdHpciC+g@mail.gmail.com>
-Subject: Re: [PATCH] x86/syscalls: shrink entry/syscall_64.i via IWYU
-To: Tanzir Hasan <tanzirh@google.com>
-Cc: Andy Lutomirski <luto@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
-	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
-	"H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org, 
-	Nick Desaulniers <nnn@google.com>, Al Viro <viro@zeniv.linux.org.uk>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: Quoted-Printable
+From: "Haitao Huang" <haitao.huang@linux.intel.com>
+Organization: Intel
+Message-ID: <op.2g1jdlojwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <2aee5f75-836e-4a47-a29c-b272150227a8@intel.com>
+User-Agent: Opera Mail/1.0 (Win32)
 
-On Wed, Jan 3, 2024 at 4:13=E2=80=AFPM Tanzir Hasan <tanzirh@google.com> wr=
-ote:
->
-> This diff uses an open source tool include-what-you-use (IWYU) to modify
-> the include list, changing indirect includes to direct includes. IWYU is
-> implemented using the IWYUScripts github repository which is a tool that
-> is currently undergoing development. These changes seek to improve build
-> times.
->
-> This change to entry/syscall_64.c resulted in a preprocessed size of
-> entry/syscall_64.i from 64003 lines to 24509 lines (-62%) for the x86
-> defconfig.
->
-> Suggested-by: Al Viro <viro@zeniv.linux.org.uk>
-> Signed-off-by: Tanzir Hasan <tanzirh@google.com>
-> ---
->  arch/x86/entry/syscall_64.c | 18 ++++++++++++++----
->  1 file changed, 14 insertions(+), 4 deletions(-)
->
-> diff --git a/arch/x86/entry/syscall_64.c b/arch/x86/entry/syscall_64.c
-> index be120eec1fc9..9e4a3d8957f3 100644
-> --- a/arch/x86/entry/syscall_64.c
-> +++ b/arch/x86/entry/syscall_64.c
-> @@ -1,12 +1,22 @@
->  // SPDX-License-Identifier: GPL-2.0
->  /* System call table for x86-64. */
->
-> -#include <linux/linkage.h>
-> -#include <linux/sys.h>
-> -#include <linux/cache.h>
-> -#include <linux/syscalls.h>
->  #include <asm/syscall.h>
->
-> +struct pt_regs;
-> +typedef long (*sys_call_ptr_t)(const struct pt_regs *);
-> +extern const sys_call_ptr_t sys_call_table[];
-> +#if defined(CONFIG_X86_32)
-> +#define ia32_sys_call_table sys_call_table
-> +#else
-> +/*
-> + * These may not exist, but still put the prototypes in so we
-> + * can use IS_ENABLED().
-> + */
-> +extern const sys_call_ptr_t ia32_sys_call_table[];
-> +extern const sys_call_ptr_t x32_sys_call_table[];
-> +#endif
-> +
+On Thu, 04 Jan 2024 13:27:07 -0600, Dave Hansen <dave.hansen@intel.com> =
+ =
 
-arch/x86/include/asm/syscall.h (which you retained) already includes
-the typedef for sys_call_ptr_t, and the declaration of sys_call_table,
-and everything else.
+wrote:
 
-Was there some additional refactoring that Al mentioned or intended
-for you to do here?  Perhaps as part of a series so it's more obvious
-to reviewers? You can include a Link: tag (see `git log` for examples)
-in a commit message to link back to discussions on lore.kernel.org.
-Doing so can help provide more context to reviewers as to //why// or
-justification for a change.
-
-Otherwise I'm not sure you need any of these additions (other than
-maybe pt_regs).
-
->  #define __SYSCALL(nr, sym) extern long __x64_##sym(const struct pt_regs =
-*);
->  #include <asm/syscalls_64.h>
->  #undef __SYSCALL
+> On 1/4/24 11:11, Haitao Huang wrote:
+>> If those are OK with users and also make it acceptable for merge
+>> quickly, I'm happy to do that =F0=9F=99=82
 >
-> ---
-> base-commit: f5837722ffecbbedf1b1dbab072a063565f0dad1
-> change-id: 20231228-syscall_64-30ba68440a85
->
-> Best regards,
-> --
-> Tanzir Hasan <tanzirh@google.com>
+> How about we put some actual numbers behind this?  How much complexity=
+
+> are we talking about here?  What's the diffstat for the utterly
+> bare-bones implementation and what does it cost on top of that to do t=
+he
+> per-cgroup reclaim?
 >
 
+For bare-bone:
 
---=20
-Thanks,
-~Nick Desaulniers
+  arch/x86/Kconfig                     |  13 ++++++++++++
+  arch/x86/kernel/cpu/sgx/Makefile     |   1 +
+  arch/x86/kernel/cpu/sgx/epc_cgroup.c | 104  =
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++=
+++++++++++++++++++++
+  arch/x86/kernel/cpu/sgx/epc_cgroup.h |  39  =
+
++++++++++++++++++++++++++++++++++++
+  arch/x86/kernel/cpu/sgx/main.c       |  41  =
+
+++++++++++++++++++++++++++++++++++++
+  arch/x86/kernel/cpu/sgx/sgx.h        |   5 +++++
+  include/linux/misc_cgroup.h          |  42  =
+
++++++++++++++++++++++++++++++++++++++
+  kernel/cgroup/misc.c                 |  52  =
+
++++++++++++++++++++++++++++++++---------------
+  8 files changed, 281 insertions(+), 16 deletions(-)
+
+Additional for per-cgroup reclaim:
+
+  arch/x86/kernel/cpu/sgx/encl.c       |  41 +++++++++--------
+  arch/x86/kernel/cpu/sgx/encl.h       |   3 +-
+  arch/x86/kernel/cpu/sgx/epc_cgroup.c | 224  =
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++=
++++++++++++++++++--
+  arch/x86/kernel/cpu/sgx/epc_cgroup.h |  18 ++++++--
+  arch/x86/kernel/cpu/sgx/main.c       | 226  =
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++--------------=
+--------------------
+  arch/x86/kernel/cpu/sgx/sgx.h        |  85  =
+
++++++++++++++++++++++++++++++++++--
+  6 files changed, 480 insertions(+), 117 deletions(-)
+
+
+Thanks
+Haitao
 
