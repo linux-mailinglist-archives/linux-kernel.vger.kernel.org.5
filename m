@@ -1,239 +1,127 @@
-Return-Path: <linux-kernel+bounces-17171-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17172-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 07F12824926
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 20:36:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 852F2824929
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 20:37:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1E3FD1C22171
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 19:36:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 05BB4287218
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 19:37:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF37A2C6B4;
-	Thu,  4 Jan 2024 19:35:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B262E2C855;
+	Thu,  4 Jan 2024 19:35:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="fmOjjJ9f"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-oo1-f45.google.com (mail-oo1-f45.google.com [209.85.161.45])
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3DA02C6A0;
-	Thu,  4 Jan 2024 19:35:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f45.google.com with SMTP id 006d021491bc7-59629f0f67aso117580eaf.0;
-        Thu, 04 Jan 2024 11:35:27 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61E002C859
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 19:35:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-40d894764e7so8416375e9.1
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 11:35:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1704396955; x=1705001755; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=TLfuV7xsXyW+hLKhxRy2JmANDmog6uIMlY97oe3vpGA=;
+        b=fmOjjJ9fZ+iJn4YSNSK/eJgX9cZ3H3w62EDHYon7+YnT2lIEQFQXj/GBYZb90oAcyq
+         Rzd9/CsODZ5mz/sNjJeIpk1m7ajzHI+yVSeD5RMvpH+B15IyU7SaR+WN0ofc1NK1wZfs
+         0fTiHiF+RAHO64CccNJcSVTeaToCfSSAPLXG0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704396927; x=1705001727;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Wp++XMNDXxDK3eCoflFxpDVjis98CPwruo3etDqEbNw=;
-        b=d6EhSpOeVuF/Nb490i0duTTswYaKcoRdfsP646m6hK5oOGAND6S7yp4nCsBLAJKOBX
-         hekTQMgolaWsjUp/cetIcaEl5m+P4pCtpB7GSQhjUkLhtWwYBsexbItnnP/Rl9qEtv4D
-         ekGYt6O94LtTKMfwz31f02a1EfS5luatGZzBdGS1nSwwZw3Rzm+qxpQUdAI8ICJKGv4r
-         ImgKY3ooeaf5DcC8SheaZbDOtoWWAT+OdXpCDkD7aV8s6LIGWUYOABqZHtf1vEaLdUHm
-         on7osSlUiaTmm8j3gOUisQZwiRCh6q2YY420o8M5YUC8FqRd0udiykubXQoRNWksCZrM
-         F+Ag==
-X-Gm-Message-State: AOJu0YwRkjnJ9uRYhw+zoMDToduX1vudW5dktSJIFf8lOsb1U09i0HEb
-	CEq1pwNoHsEuzyUk72YrEsED4uezLl1VIu87JB0=
-X-Google-Smtp-Source: AGHT+IFxnlwS+SBeVjeB4OB7ubF9SRqFf/Sd24+Uw5YIep80l/JL/mJSnOacRGp32v0lpxpCjjM4BNkPBjvtaIgKWdU=
-X-Received: by 2002:a4a:da09:0:b0:596:2965:be22 with SMTP id
- e9-20020a4ada09000000b005962965be22mr1741474oou.1.1704396927060; Thu, 04 Jan
- 2024 11:35:27 -0800 (PST)
+        d=1e100.net; s=20230601; t=1704396955; x=1705001755;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=TLfuV7xsXyW+hLKhxRy2JmANDmog6uIMlY97oe3vpGA=;
+        b=v60dKJStmMl1d3T69S+Q1l0CAccGvp6qa3y5RbwszHTDfq/T8XtCRZG2csBu/XF9H5
+         9V19Yu9N/ovUG5F08zSm5fxhPly6GUjjvffnk43WIRwM4ezzi03Z8nVJRRLwfg7k+4LN
+         3QZvRH0mSlnYjqjqPn5kx+TnLOAF1SepGL5bn/Seg6u+FkdAdSZ5H2cfGxzfrhi5ebtW
+         4DaJd1BPcuKLw6z0XU24ELBKlNzEd8zcJGcIkY2dZZ3Ac2t+eZC0WdvxksCTD/owCFZT
+         9kAR+EHAXbfvwSjOrLboiP84nhruYkIAtlVHzrI4dE/KYwQkzB/wwSwGcIW0izbD3CQ5
+         kynQ==
+X-Gm-Message-State: AOJu0YzIcGC7cCq/TdnOT1sHH5BjpBj5C7mpqCWpoGHc5YzRwnQSXBmh
+	OB+QB71AZT+DwTm4P8FRV97VThd4WO+1paagmZUL+KJWl8RZx9pI
+X-Google-Smtp-Source: AGHT+IEaIkzrIUBpXAOJfcHbAzUMndcTbdg02Fjxg2SWFljy/v5BqBgf7bXf24pjBnufZkxbW4TyEA==
+X-Received: by 2002:a05:600c:c0b:b0:40e:351d:53fd with SMTP id fm11-20020a05600c0c0b00b0040e351d53fdmr377601wmb.239.1704396955335;
+        Thu, 04 Jan 2024 11:35:55 -0800 (PST)
+Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com. [209.85.218.50])
+        by smtp.gmail.com with ESMTPSA id bg10-20020a170906a04a00b00a26a443e98esm13930367ejb.169.2024.01.04.11.35.54
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Jan 2024 11:35:54 -0800 (PST)
+Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a26ed1e05c7so105256566b.2
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 11:35:54 -0800 (PST)
+X-Received: by 2002:a17:906:1194:b0:a28:b79a:37a0 with SMTP id
+ n20-20020a170906119400b00a28b79a37a0mr367224eja.222.1704396954150; Thu, 04
+ Jan 2024 11:35:54 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240104171553.2080674-1-lukasz.luba@arm.com> <20240104171553.2080674-11-lukasz.luba@arm.com>
-In-Reply-To: <20240104171553.2080674-11-lukasz.luba@arm.com>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Thu, 4 Jan 2024 20:35:16 +0100
-Message-ID: <CAJZ5v0grn7RHLxf0Bfxh-PtwvQXfr0F8bGc9bWDuuD3_noLjGw@mail.gmail.com>
-Subject: Re: [PATCH v6 10/23] PM: EM: Add API for memory allocations for new tables
-To: Lukasz Luba <lukasz.luba@arm.com>
-Cc: linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org, rafael@kernel.org, 
-	dietmar.eggemann@arm.com, rui.zhang@intel.com, amit.kucheria@verdurent.com, 
-	amit.kachhap@gmail.com, daniel.lezcano@linaro.org, viresh.kumar@linaro.org, 
-	len.brown@intel.com, pavel@ucw.cz, mhiramat@kernel.org, qyousef@layalina.io, 
-	wvw@google.com
+References: <20240103203246.115732ec@gandalf.local.home> <20240104014837.GO1674809@ZenIV>
+ <20240103212506.41432d12@gandalf.local.home> <20240104043945.GQ1674809@ZenIV>
+ <20240104100544.593030e0@gandalf.local.home> <20240104182502.GR1674809@ZenIV> <20240104141517.0657b9d1@gandalf.local.home>
+In-Reply-To: <20240104141517.0657b9d1@gandalf.local.home>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Thu, 4 Jan 2024 11:35:37 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wgxhmMcVGvyxTxvjeBaenOmG8t_Erahj16-68whbvh-Ug@mail.gmail.com>
+Message-ID: <CAHk-=wgxhmMcVGvyxTxvjeBaenOmG8t_Erahj16-68whbvh-Ug@mail.gmail.com>
+Subject: Re: [PATCH] tracefs/eventfs: Use root and instance inodes as default ownership
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: Al Viro <viro@zeniv.linux.org.uk>, LKML <linux-kernel@vger.kernel.org>, 
+	Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Christian Brauner <brauner@kernel.org>, 
+	linux-fsdevel@vger.kernel.org, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jan 4, 2024 at 6:15=E2=80=AFPM Lukasz Luba <lukasz.luba@arm.com> wr=
-ote:
+On Thu, 4 Jan 2024 at 11:14, Steven Rostedt <rostedt@goodmis.org> wrote:
 >
-> The runtime modified EM table can be provided from drivers. Create
-> mechanism which allows safely allocate and free the table for device
-> drivers. The same table can be used by the EAS in task scheduler code
-> paths, so make sure the memory is not freed when the device driver module
-> is unloaded.
->
-> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
-> ---
->  include/linux/energy_model.h | 11 +++++++++
->  kernel/power/energy_model.c  | 43 ++++++++++++++++++++++++++++++++++--
->  2 files changed, 52 insertions(+), 2 deletions(-)
->
-> diff --git a/include/linux/energy_model.h b/include/linux/energy_model.h
-> index 5f842da3bb0c..753d70d0ce7e 100644
-> --- a/include/linux/energy_model.h
-> +++ b/include/linux/energy_model.h
-> @@ -5,6 +5,7 @@
->  #include <linux/device.h>
->  #include <linux/jump_label.h>
->  #include <linux/kobject.h>
-> +#include <linux/kref.h>
->  #include <linux/rcupdate.h>
->  #include <linux/sched/cpufreq.h>
->  #include <linux/sched/topology.h>
-> @@ -39,10 +40,12 @@ struct em_perf_state {
->  /**
->   * struct em_perf_table - Performance states table
->   * @rcu:       RCU used for safe access and destruction
-> + * @refcount:  Reference count to track the owners
+> "file descriptor" - is just what maps to a specific inode.
 
-"Reference counter to track the users"
+Nope. Technically and traditionally, file descriptor is just the
+integer index that is used to look up a 'struct file *'.
 
-Also it is not really just a counter - it provides the memory release
-mechanism too.
+Except in the kernel, we really just tend to use that term (well, I
+do) for the 'struct file *' itself, since the integer 'fd' is usually
+not really relevant except at the system call interface.
 
->   * @state:     List of performance states, in ascending order
->   */
->  struct em_perf_table {
->         struct rcu_head rcu;
-> +       struct kref refcount;
+Which is *NOT* the inode, because the 'struct file' has other things
+in it (the file position, the permissions that were used at open time
+etc, close-on-exec state etc etc).
 
-So I would just call it kref.
+> "file description" - is how the file is accessed (position in the file and
+>                         flags associated to how it was opened)
 
->         struct em_perf_state state[];
->  };
->
-> @@ -184,6 +187,8 @@ int em_dev_register_perf_domain(struct device *dev, u=
-nsigned int nr_states,
->                                 struct em_data_callback *cb, cpumask_t *s=
-pan,
->                                 bool microwatts);
->  void em_dev_unregister_perf_domain(struct device *dev);
-> +struct em_perf_table __rcu *em_allocate_table(struct em_perf_domain *pd)=
-;
-> +void em_free_table(struct em_perf_table __rcu *table);
->
->  /**
->   * em_pd_get_efficient_state() - Get an efficient performance state from=
- the EM
-> @@ -365,6 +370,12 @@ static inline int em_pd_nr_perf_states(struct em_per=
-f_domain *pd)
->  {
->         return 0;
->  }
-> +static inline
-> +struct em_perf_table __rcu *em_allocate_table(struct em_perf_domain *pd)
-> +{
-> +       return NULL;
-> +}
-> +static inline void em_free_table(struct em_perf_table __rcu *table) {}
->  #endif
->
->  #endif
-> diff --git a/kernel/power/energy_model.c b/kernel/power/energy_model.c
-> index c03010084208..bbc406db0be1 100644
-> --- a/kernel/power/energy_model.c
-> +++ b/kernel/power/energy_model.c
-> @@ -114,12 +114,46 @@ static void em_destroy_table_rcu(struct rcu_head *r=
-p)
->         kfree(table);
->  }
->
-> -static void em_free_table(struct em_perf_table __rcu *table)
-> +static void em_release_table_kref(struct kref *kref)
->  {
-> +       struct em_perf_table __rcu *table;
-> +
-> +       /* It was the last owner of this table so we can free */
-> +       table =3D container_of(kref, struct em_perf_table, refcount);
-> +
->         call_rcu(&table->rcu, em_destroy_table_rcu);
->  }
->
-> -static struct em_perf_table __rcu *
-> +static inline void em_table_inc(struct em_perf_table __rcu *table)
+That's a horrible term that shouldn't be used at all. Apparently some
+people use it for what is our 'struct file *", also known as a "file
+table entry".  Avoid it.
 
-Why not em_table_get()?
+If anything, just use "fd" for the integer representation, and "file"
+for the pointer to a 'struct file".
 
-> +{
-> +       kref_get(&table->refcount);
-> +}
-> +
-> +static void em_table_dec(struct em_perf_table __rcu *table)
+But most of the time the two are conceptually interchangeable, in that
+an 'fd' just translates directly to a 'struct file *'.
 
-And em_table_put() here?
+Note that while there's that conceptual direct translation, there's
+also very much a "time of use" issue, in that a "fd -> file"
+translation happens at one particular time and in one particular user
+context, and then it's *done* (so closing and possibly re-using the fd
+after it's been looked up does not actually affect an existing 'struct
+file *').
 
-Note that I do realize that the "put" and "get" terminology is used in
-one of the subsequent patches - I'll get to it later.
+And while 'fd -> file' lookup is quick and common, the other way
+doesn't exist, because multiple 'fd's can map to one 'struct file *'
+thanks to dup() (and 'fork()', since a 'fd -> file' translation always
+happens within the context of a particular user space, an 'fd' in one
+process is obviously not the same as an 'fd' in another one).
 
-> +{
-> +       kref_put(&table->refcount, em_release_table_kref);
-> +}
-> +
-> +/**
-> + * em_free_table() - Handles safe free of the EM table when needed
-> + * @table : EM memory which is going to be freed
-> + *
-> + * No return values.
-> + */
-> +void em_free_table(struct em_perf_table __rcu *table)
-> +{
-> +       em_table_dec(table);
-> +}
-
-Why is this necessary?  The function called by it could be extern
-instead and wrapped into a static inline wrapper in a header (if you
-really need the alias).
-
-> +
-> +/**
-> + * em_allocate_table() - Handles safe allocation of the new EM table
-
-" - Allocate a new EM table"
-
-And I would call this em_table_alloc() and (maybe) add an
-em_table_free() alias for em_table_put().
-
-> + * @table : EM memory which is going to be freed
-
-So the argument is called "pd" and it is not a table.  It is also used
-for computing the size of the new table AFAICS.
-
-> + *
-> + * Increments the reference counter to mark that there is an owner of th=
-at
-
-"Allocate a new EM table and initialize its kref to indicate that it
-has a user."
-
-> + * EM table. That might be a device driver module or EAS.
-> + * Returns allocated table or error.
-> + */
-> +struct em_perf_table __rcu *
->  em_allocate_table(struct em_perf_domain *pd)
->  {
->         struct em_perf_table __rcu *table;
-> @@ -128,6 +162,11 @@ em_allocate_table(struct em_perf_domain *pd)
->         table_size =3D sizeof(struct em_perf_state) * pd->nr_perf_states;
->
->         table =3D kzalloc(sizeof(*table) + table_size, GFP_KERNEL);
-> +       if (!table)
-> +               return table;
-
-I would return NULL from here explicitly.
-
-> +
-> +       kref_init(&table->refcount);
-> +
->         return table;
->  }
->
-> --
+               Linus
 
