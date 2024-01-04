@@ -1,104 +1,121 @@
-Return-Path: <linux-kernel+bounces-16859-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16860-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0FCDC824514
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 16:36:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EFA96824517
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 16:38:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8BCC2B23BE3
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 15:36:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8ED041F2673C
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 15:38:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8058624207;
-	Thu,  4 Jan 2024 15:36:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47D222420B;
+	Thu,  4 Jan 2024 15:38:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="qMvLBmwe"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="iG5ZOQW1"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.smtpout.orange.fr (smtp-24.smtpout.orange.fr [80.12.242.24])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC0B6219E8
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 15:36:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=wanadoo.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
-Received: from [192.168.1.18] ([92.140.202.140])
-	by smtp.orange.fr with ESMTPA
-	id LPlKrqxpy9TFdLPlKrksRV; Thu, 04 Jan 2024 16:36:03 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-	s=t20230301; t=1704382563;
-	bh=m/73VPI7SQbIGru8DsYnoCGvDgBHipomOllqcMV7BhM=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=qMvLBmwewUDSfZ85F12hloX9gXDpLOZFtg0DcsQBqT2/1V8lvWf1yfDFI9xzDxicR
-	 wYp7aRkv9z1yb8pbNOpr93IK0a/PJOG7y2dIPBb+rniyoln9OfYYBY5w9/DY74/QhB
-	 j7hAWOCv6L5l2pIq4ERxK07Xo9JV2Zkc34B6MWaHx5X8IT6NRMlnp9PVuhvsWu1eJq
-	 JaELC/yuWm/5+6Bggn8iIg62uBNcetCxu5Q9Yi2eSVsaVdiCa/QRGVj1SzH/ysqIAh
-	 9IIt292wmhZkWKaZU8z0H9PAw9r2A5DGU4XcPyym26gDl+ezNCqye/7wdOkIMambzd
-	 4rSj3KTbBAE2Q==
-X-ME-Helo: [192.168.1.18]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Thu, 04 Jan 2024 16:36:03 +0100
-X-ME-IP: 92.140.202.140
-Message-ID: <eacd168f-22dd-4e11-8907-0c79ee33f595@wanadoo.fr>
-Date: Thu, 4 Jan 2024 16:36:00 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22CFF241E0
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 15:38:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1704382680;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=9/vnf7ini+dqsZp2EUqBmVye1hh0Tl8Sv9ZPYE+NvYA=;
+	b=iG5ZOQW13c3H5c2TciOyYklYLt0byXPfjf3cQp7hUSviHsIeQ3JIfpidvO1el8iQPr4yNt
+	A77EucGmZe0kXShJ1aPifPbUKSAWA+hibXzCHkbRMynaQqotlKcaZ6/5lkQJuc5w5qXd46
+	8Ijbe0EBY2IsPvph/r8m+kVvx2RmgLo=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-478-Mf5m6bnRMtSU1UawQ0qGpA-1; Thu,
+ 04 Jan 2024 10:37:58 -0500
+X-MC-Unique: Mf5m6bnRMtSU1UawQ0qGpA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 2DE7028EC10F;
+	Thu,  4 Jan 2024 15:37:58 +0000 (UTC)
+Received: from max-p1.redhat.com (unknown [10.39.208.29])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 335CFC15968;
+	Thu,  4 Jan 2024 15:37:56 +0000 (UTC)
+From: Maxime Coquelin <maxime.coquelin@redhat.com>
+To: mst@redhat.com,
+	jasowang@redhat.com,
+	xuanzhuo@linux.alibaba.com,
+	xieyongji@bytedance.com,
+	virtualization@lists.linux-foundation.org,
+	linux-kernel@vger.kernel.org,
+	david.marchand@redhat.com,
+	lulu@redhat.com
+Cc: Maxime Coquelin <maxime.coquelin@redhat.com>
+Subject: [PATCH v6 0/3] vduse: add support for networking devices
+Date: Thu,  4 Jan 2024 16:37:50 +0100
+Message-ID: <20240104153753.2931026-1-maxime.coquelin@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] android: removed asm-generic/errno-base.h
-Content-Language: fr
-To: Tanzir Hasan <tanzirh@google.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- =?UTF-8?Q?Arve_Hj=C3=B8nnev=C3=A5g?= <arve@android.com>,
- Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>,
- Joel Fernandes <joel@joelfernandes.org>,
- Christian Brauner <brauner@kernel.org>, Carlos Llamas <cmllamas@google.com>,
- Suren Baghdasaryan <surenb@google.com>
-Cc: linux-kernel@vger.kernel.org, Nick Desaulniers <nnn@google.com>,
- Al Viro <viro@zeniv.linux.org.uk>
-References: <20231226-binderfs-v1-1-66829e92b523@google.com>
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-In-Reply-To: <20231226-binderfs-v1-1-66829e92b523@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
 
-Le 26/12/2023 à 18:09, Tanzir Hasan a écrit :
-> asm-generic/errno-base.h can be replaced by linux/errno.h and the file
-> will still build correctly. It is an asm-generic file which should be
-> avoided if possible.
-> 
-> Suggested-by: Al Viro <viro@zeniv.linux.org.uk>
-> Signed-off-by: Tanzir Hasan <tanzirh@google.com>
-> ---
->   drivers/android/binderfs.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/android/binderfs.c b/drivers/android/binderfs.c
-> index 1224ab7aa070..d04ff6029480 100644
-> --- a/drivers/android/binderfs.c
-> +++ b/drivers/android/binderfs.c
-> @@ -29,7 +29,7 @@
->   #include <linux/uaccess.h>
->   #include <linux/user_namespace.h>
->   #include <linux/xarray.h>
-> -#include <uapi/asm-generic/errno-base.h>
-> +#include <linux/errno.h>
+This small series enables virtio-net device type in VDUSE.
+With it, basic operation have been tested, both with
+virtio-vdpa and vhost-vdpa using DPDK Vhost library series
+adding VDUSE support using split rings layout (merged in
+DPDK v23.07-rc1).
 
-linux/errno.h is already included a few lines above.
+Control queue support (and so multiqueue) has also been
+tested, but requires a Kernel series from Jason Wang
+relaxing control queue polling [1] to function reliably,
+so while Jason rework is done, a patch is added to disable
+CVQ and features that depend on it (tested also with DPDK
+v23.07-rc1).
 
-CJ
+In this v5, LSM hooks introduced in previous revision are
+unified into a single hook that covers below operations:
+- VDUSE_CREATE_DEV ioctl on VDUSE control file,
+- VDUSE_DESTROY_DEV ioctl on VDUSE control file,
+- open() on VDUSE device file.
 
->   #include <uapi/linux/android/binder.h>
->   #include <uapi/linux/android/binderfs.h>
->   
-> 
-> ---
-> base-commit: 606d9c29e71fbf52fcfd3fcc3ad92e444c8e1d47
-> change-id: 20231218-binderfs-a758e162e0ba
-> 
-> Best regards,
+In combination with the operations permission, a device type
+permission has to be associated:
+- block: Virtio block device type,
+- net: Virtio networking device type.
+
+changes in v6!
+==============
+- Remove SELinux support from the series, will be handled
+  in a dedicated one.
+- Require CAP_NET_ADMIN for Net devices creation (Jason).
+- Fail init if control queue features are requested for
+  Net device type (Jason).
+- Rebased on latest master.
+
+Changes in v5:
+==============
+- Move control queue disablement patch before Net
+  devices enablement (Jason).
+- Unify operations LSM hooks into a single hook.
+- Rebase on latest master.
+
+Maxime Coquelin (3):
+  vduse: validate block features only with block devices
+  vduse: Temporarily fail if control queue features requested
+  vduse: enable Virtio-net device type
+
+ drivers/vdpa/vdpa_user/vduse_dev.c | 32 ++++++++++++++++++++++++++----
+ 1 file changed, 28 insertions(+), 4 deletions(-)
+
+-- 
+2.43.0
 
 
