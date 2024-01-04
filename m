@@ -1,43 +1,54 @@
-Return-Path: <linux-kernel+bounces-16154-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16155-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44AAC8239BD
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 01:42:00 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF60D8239CE
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 01:47:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D7AEA287569
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 00:41:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 43EE228820F
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 00:47:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19ADA15D4;
-	Thu,  4 Jan 2024 00:41:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B65E15C8;
+	Thu,  4 Jan 2024 00:47:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="2yfrW4Vb"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="kmokchby"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B049A2A;
-	Thu,  4 Jan 2024 00:41:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=TiAiB9M8YbD3b3cX1GLPOOGA6GWJVMdF5A+A3H+oiXA=; b=2yfrW4VbADGreKNe//5WhmlTBz
-	5i2DJJTzLwfl3AB+YT21IS4lFtcdUbab6CUXwB3VDec3N5dwTkhqUZiXjR0P8Bk9XWsHvJ2sbQQLG
-	DDfgjSEaEC23drpk7mta+gNr9Te527r6nsmVFOyp4pkqb15/GL3kjNw1LiNtoHe5SGp2JKnplwy1/
-	hbjbo6poeDfONG0sv4zqdX930WpLWva1O9EeCF+fWVc1ph+1tCBqW7cNw8jY1ZaggCbsySeKGniIg
-	Hyxdmjzy8P4Q7RgiuTjytFgSf0VlkTCFJeuGem18ntT+eiBzUM4nf27wTNDxMz4J99f6eCV8haRbd
-	bF2tMiWQ==;
-Received: from [50.53.46.231] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1rLBny-00CVgF-2l;
-	Thu, 04 Jan 2024 00:41:50 +0000
-Message-ID: <7ed59e89-8222-42b8-a6ce-c104d06b7f32@infradead.org>
-Date: Wed, 3 Jan 2024 16:41:49 -0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03947184F;
+	Thu,  4 Jan 2024 00:47:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 403NxDD4010114;
+	Thu, 4 Jan 2024 00:46:42 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=1u0u+cekK6SHjywKHnBLUlogJbeRDzmxVO7K7k6K7N4=; b=km
+	okchbyqfOBzDREYspDvaZ3JlCItQPzkFSoeNdtlnUuT/a9T/n6gnvV2HuKhQoSDK
+	V4aBkI3ODTJXVFR+ijSwsMwoMk+PFw16fHDAYCLF4K/EyCJe7oN81A+F64zZwWix
+	U9yVZYRMI4Y/B810WRiNQ2f18WqNVwt63yB7658cgpc/t5lMvFVYsxBViUvbcIjC
+	UvzXci4c0UJtyWMYXbqyPkHeN5Xuj0yzKZWn3hChqVzf7BakTKcC6+YEHrZlVG/4
+	Y73ix0pEIOX2BX/X4mPjW4zFQStH1UDPF6QuF9NmuV5Jib5dE4MffklNko/npKAj
+	ywb4iC/KdrEyk2TmOsVw==
+Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vd3mb24nf-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 04 Jan 2024 00:46:42 +0000 (GMT)
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+	by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4040kf2d016654
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 4 Jan 2024 00:46:41 GMT
+Received: from [10.239.132.150] (10.80.80.8) by nasanex01a.na.qualcomm.com
+ (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 3 Jan
+ 2024 16:46:33 -0800
+Message-ID: <02e09c99-3431-4ba1-86bb-c4c68ebdc6b0@quicinc.com>
+Date: Thu, 4 Jan 2024 08:46:30 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -45,57 +56,99 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 8/8] sparc: Fix typos
+Subject: Re: [PATCH] kernel: Introduce a write lock/unlock wrapper for
+ tasklist_lock
 Content-Language: en-US
-To: Bjorn Helgaas <helgaas@kernel.org>, "David S . Miller"
- <davem@davemloft.net>
-Cc: linux-kernel@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
- sparclinux@vger.kernel.org
-References: <20240103231605.1801364-1-helgaas@kernel.org>
- <20240103231605.1801364-9-helgaas@kernel.org>
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20240103231605.1801364-9-helgaas@kernel.org>
-Content-Type: text/plain; charset=UTF-8
+To: Matthew Wilcox <willy@infradead.org>
+CC: "Eric W. Biederman" <ebiederm@xmission.com>,
+        Hillf Danton
+	<hdanton@sina.com>, <kernel@quicinc.com>,
+        <quic_pkondeti@quicinc.com>, <keescook@chromium.org>,
+        <viro@zeniv.linux.org.uk>, <brauner@kernel.org>, <oleg@redhat.com>,
+        <dhowells@redhat.com>, <jarkko@kernel.org>, <paul@paul-moore.com>,
+        <jmorris@namei.org>, <serge@hallyn.com>, <linux-mm@kvack.org>,
+        <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <keyrings@vger.kernel.org>, <linux-security-module@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>
+References: <20231213101745.4526-1-quic_aiquny@quicinc.com>
+ <ZXnaNSrtaWbS2ivU@casper.infradead.org>
+ <87o7eu7ybq.fsf@email.froward.int.ebiederm.org>
+ <ZY30k7OCtxrdR9oP@casper.infradead.org>
+ <cd0f6613-9aa9-4698-bebe-0f61286d7552@quicinc.com>
+ <ZZPT8hMiuT1pCBP7@casper.infradead.org>
+ <99c44790-5f1b-4535-9858-c5e9c752159c@quicinc.com>
+ <ZZWk368hZpOc25X0@casper.infradead.org>
+From: "Aiqun Yu (Maria)" <quic_aiquny@quicinc.com>
+In-Reply-To: <ZZWk368hZpOc25X0@casper.infradead.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: mpBZUrhu1N_Po1rEL0id7yrHQrooFGeq
+X-Proofpoint-ORIG-GUID: mpBZUrhu1N_Po1rEL0id7yrHQrooFGeq
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 impostorscore=0
+ lowpriorityscore=0 bulkscore=0 priorityscore=1501 malwarescore=0
+ mlxscore=0 phishscore=0 spamscore=0 mlxlogscore=707 clxscore=1015
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2401040002
 
 
 
-On 1/3/24 15:16, Bjorn Helgaas wrote:
-> From: Bjorn Helgaas <bhelgaas@google.com>
+On 1/4/2024 2:18 AM, Matthew Wilcox wrote:
+> On Wed, Jan 03, 2024 at 10:58:33AM +0800, Aiqun Yu (Maria) wrote:
+>> On 1/2/2024 5:14 PM, Matthew Wilcox wrote:
+>>>>> -void __lockfunc queued_write_lock_slowpath(struct qrwlock *lock)
+>>>>> +void __lockfunc queued_write_lock_slowpath(struct qrwlock *lock, bool irq)
+>>>>>     {
+>>>>>     	int cnts;
+>>>>> @@ -82,7 +83,11 @@ void __lockfunc queued_write_lock_slowpath(struct qrwlock *lock)
+>>>> Also a new state showed up after the current design:
+>>>> 1. locked flag with _QW_WAITING, while irq enabled.
+>>>> 2. And this state will be only in interrupt context.
+>>>> 3. lock->wait_lock is hold by the write waiter.
+>>>> So per my understanding, a different behavior also needed to be done in
+>>>> queued_write_lock_slowpath:
+>>>>     when (unlikely(in_interrupt())) , get the lock directly.
+>>>
+>>> I don't think so.  Remember that write_lock_irq() can only be called in
+>>> process context, and when interrupts are enabled.
+>> In current kernel drivers, I can see same lock called with write_lock_irq
+>> and write_lock_irqsave in different drivers.
+>>
+>> And this is the scenario I am talking about:
+>> 1. cpu0 have task run and called write_lock_irq.(Not in interrupt context)
+>> 2. cpu0 hold the lock->wait_lock and re-enabled the interrupt.
 > 
-> Fix typos, most reported by "codespell arch/sparc".  Only touches
-> comments, no code changes.
+> Oh, I missed that it was holding the wait_lock.  Yes, we also need to
+> release the wait_lock before spinning with interrupts disabled.
 > 
-> Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-> Cc: sparclinux@vger.kernel.org
-> ---
->  arch/sparc/include/asm/hypervisor.h     | 6 +++---
->  arch/sparc/include/asm/ldc.h            | 2 +-
->  arch/sparc/include/asm/mmu_context_64.h | 4 ++--
->  arch/sparc/include/asm/switch_to_64.h   | 2 +-
->  arch/sparc/kernel/irq_64.c              | 2 +-
->  arch/sparc/kernel/kprobes.c             | 2 +-
->  arch/sparc/kernel/ldc.c                 | 2 +-
->  arch/sparc/kernel/leon_pci_grpci2.c     | 2 +-
->  arch/sparc/kernel/of_device_64.c        | 2 +-
->  arch/sparc/kernel/pci.c                 | 2 +-
->  arch/sparc/kernel/pci_impl.h            | 4 ++--
->  arch/sparc/kernel/pci_schizo.c          | 4 ++--
->  arch/sparc/kernel/perf_event.c          | 2 +-
->  arch/sparc/kernel/prom_irqtrans.c       | 2 +-
->  arch/sparc/kernel/psycho_common.c       | 2 +-
->  arch/sparc/kernel/signal_32.c           | 2 +-
->  arch/sparc/kernel/signal_64.c           | 2 +-
->  arch/sparc/mm/srmmu.c                   | 2 +-
->  arch/sparc/mm/tsb.c                     | 2 +-
->  arch/sparc/net/bpf_jit_comp_32.c        | 6 +++---
->  20 files changed, 27 insertions(+), 27 deletions(-)
+>> I was thinking to support both write_lock_irq and write_lock_irqsave with
+>> interrupt enabled together in queued_write_lock_slowpath.
+>>
+>> That's why I am suggesting in write_lock_irqsave when (in_interrupt()),
+>> instead spin for the lock->wait_lock, spin to get the lock->cnts directly.
 > 
+> Mmm, but the interrupt could come in on a different CPU and that would
+> lead to it stealing the wait_lock from the CPU which is merely waiting
+> for the readers to go away.
+That's right.
+The fairness(or queue mechanism) wouldn't be ensured (only in interrupt 
+context) if we have the special design when (in_interrupt()) spin to get 
+the lock->cnts directly. When in interrupt context, the later 
+write_lock_irqsave may get the lock earlier than the write_lock_irq() 
+which is not in interrupt context.
 
-Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
-
-Thanks.
+This is a side effect of the design, while similar unfairness design in 
+read lock as well. I think it is reasonable to have in_interrupt() 
+waiters get lock earlier from the whole system's performance of view.
+> 
 
 -- 
-#Randy
+Thx and BRs,
+Aiqun(Maria) Yu
 
