@@ -1,122 +1,86 @@
-Return-Path: <linux-kernel+bounces-16433-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16438-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8FFD3823E86
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 10:24:04 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D590F823E97
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 10:26:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 44B891F2507D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 09:24:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5CAA7B23D01
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 09:26:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6371B2032E;
-	Thu,  4 Jan 2024 09:23:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hPu7cp9c"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD27A208B4;
+	Thu,  4 Jan 2024 09:26:16 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9540208A3;
-	Thu,  4 Jan 2024 09:23:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2ADABC433C8;
-	Thu,  4 Jan 2024 09:23:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704360230;
-	bh=2fYZ6vaziMzDK3ZftjJ0AmNeenr6pb42FNCCdQQvYiU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=hPu7cp9cxtIIG1PRxcIJdOhLA6FUGpW7QzSfbPkf0PueMHM+lJzeF3FwQK9trx81U
-	 LRkdE9B4uqDF+PPyXUfVdL85no+50qV16hVtknSb6FBRAUH8TDkvFdZ0HwlU8S9/aM
-	 tmfK7ar37/9KzWV4+cFvWt7adzUSWRVNl3YNOe7DpdV+7LLEpT1JG3sCML5/GyhLzm
-	 H+QrG7G+Rf8tXF27aP5LjSTUA5DW8RpRJvjtUL7dmmZ4XEwGdSCy7afQcI0ksORauL
-	 oqz6YFwnK2dd3X8gEKZgrx2WSJRm8BbaicGYSDNhcUf18L86mWeiEekGaDvkwriE8e
-	 ZHSp50zPl2kNg==
-Date: Thu, 4 Jan 2024 09:23:44 +0000
-From: Simon Horman <horms@kernel.org>
-To: Chris Lew <quic_clew@quicinc.com>
-Cc: Sarannya S <quic_sarannya@quicinc.com>, quic_bjorande@quicinc.com,
-	andersson@kernel.org, mathieu.poirier@linaro.org,
-	linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-	linux-remoteproc@vger.kernel.org,
-	Manivannan Sadhasivam <mani@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	"open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>
-Subject: Re: [PATCH V1] net: qrtr: ns: Ignore ENODEV failures in ns
-Message-ID: <20240104092344.GE31813@kernel.org>
-References: <1703153211-3717-1-git-send-email-quic_sarannya@quicinc.com>
- <20231223135333.GA201037@kernel.org>
- <3e017f77-87dd-78e1-321d-90c3e57a68d9@quicinc.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39A8520314
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 09:26:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: 88f50c82dbbc45f8bd66859107dbd6f6-20240104
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.35,REQID:2062db34-23b2-46e5-9ac8-ea5a9c2c3306,IP:20,
+	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
+	N:release,TS:15
+X-CID-INFO: VERSION:1.1.35,REQID:2062db34-23b2-46e5-9ac8-ea5a9c2c3306,IP:20,UR
+	L:0,TC:0,Content:0,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+	release,TS:15
+X-CID-META: VersionHash:5d391d7,CLOUDID:2de7fb7e-4f93-4875-95e7-8c66ea833d57,B
+	ulkID:2401041718144TDEV6JF,BulkQuantity:1,Recheck:0,SF:24|72|19|44|66|102,
+	TC:nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,Bulk:40,QS:nil,BEC:nil,COL:0,
+	OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
+X-UUID: 88f50c82dbbc45f8bd66859107dbd6f6-20240104
+X-User: zhangyongzhen@kylinos.cn
+Received: from localhost.localdomain [(39.156.73.13)] by mailgw
+	(envelope-from <zhangyongzhen@kylinos.cn>)
+	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+	with ESMTP id 1001171156; Thu, 04 Jan 2024 17:25:58 +0800
+From: Yongzhen Zhang <zhangyongzhen@kylinos.cn>
+To: ocfs2-devel@lists.linux.dev
+Cc: mark@fasheh.com,
+	jlbec@evilplan.org,
+	linux-kernel@vger.kernel.org,
+	Yongzhen Zhang <zhangyongzhen@kylinos.cn>
+Subject: [PATCH] ocfs2: Spelling fix
+Date: Thu,  4 Jan 2024 17:24:27 +0800
+Message-Id: <20240104092427.18119-1-zhangyongzhen@kylinos.cn>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3e017f77-87dd-78e1-321d-90c3e57a68d9@quicinc.com>
+Content-Transfer-Encoding: 8bit
 
-On Tue, Dec 26, 2023 at 04:20:03PM -0800, Chris Lew wrote:
-> 
-> 
-> On 12/23/2023 5:56 AM, Simon Horman wrote:
-> > [Dropped bjorn.andersson@kernel.org, as the correct address seems
-> >   to be andersson@kernel.org, which is already in the CC list.
-> >   kernel.org rejected sending this email without that update.]
-> > 
-> > On Thu, Dec 21, 2023 at 03:36:50PM +0530, Sarannya S wrote:
-> > > From: Chris Lew <quic_clew@quicinc.com>
-> > > 
-> > > Ignore the ENODEV failures returned by kernel_sendmsg(). These errors
-> > > indicate that either the local port has been closed or the remote has
-> > > gone down. Neither of these scenarios are fatal and will eventually be
-> > > handled through packets that are later queued on the control port.
-> > > 
-> > > Signed-off-by: Chris Lew <quic_clew@quicinc.com>
-> > > Signed-off-by: Sarannya Sasikumar <quic_sarannya@quicinc.com>
-> > > ---
-> > >   net/qrtr/ns.c | 11 +++++++----
-> > >   1 file changed, 7 insertions(+), 4 deletions(-)
-> > > 
-> > > diff --git a/net/qrtr/ns.c b/net/qrtr/ns.c
-> > > index abb0c70..8234339 100644
-> > > --- a/net/qrtr/ns.c
-> > > +++ b/net/qrtr/ns.c
-> > > @@ -157,7 +157,7 @@ static int service_announce_del(struct sockaddr_qrtr *dest,
-> > >   	msg.msg_namelen = sizeof(*dest);
-> > >   	ret = kernel_sendmsg(qrtr_ns.sock, &msg, &iv, 1, sizeof(pkt));
-> > > -	if (ret < 0)
-> > > +	if (ret < 0 && ret != -ENODEV)
-> > >   		pr_err("failed to announce del service\n");
-> > >   	return ret;
-> > 
-> > Hi,
-> > 
-> > The caller of service_announce_del() ignores it's return value.
-> > So the only action on error is the pr_err() call above, and so
-> > with this patch -ENODEV is indeed ignored.
-> > 
-> > However, I wonder if it would make things clearer to the reader (me?)
-> > if the return type of service_announce_del was updated void. Because
-> > as things stand -ENODEV may be returned, which implies something might
-> > handle that, even though it doe not.
-> > 
-> > The above notwithstanding, this change looks good to me.
-> > 
-> > Reviewed-by: Simon Horman <horms@kernel.org>
-> > 
-> > ...
-> 
-> Hi Simon, thanks for the review and suggestion. We weren't sure whether we
-> should change the function prototype on these patches on the chance that
-> there will be something that listens and handles this in the future. I think
-> it's a good idea to change it to void and we can change it back if there is
-> such a usecase in the future.
+Modify reques to request in the comment
 
-Hi Chris,
+Fixes: b1b1e15ef6b8 ("ocfs2: NFS hangs in __ocfs2_cluster_lock due to race with ocfs2_unblock_lock")
+Signed-off-by: Yongzhen Zhang <zhangyongzhen@kylinos.cn>
+---
+ fs/ocfs2/dlmglue.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-yes, I think that would be a good approach.
+diff --git a/fs/ocfs2/dlmglue.c b/fs/ocfs2/dlmglue.c
+index 64a6ef638495..cb40cafbc062 100644
+--- a/fs/ocfs2/dlmglue.c
++++ b/fs/ocfs2/dlmglue.c
+@@ -1615,7 +1615,7 @@ static int __ocfs2_cluster_lock(struct ocfs2_super *osb,
+ unlock:
+ 	lockres_clear_flags(lockres, OCFS2_LOCK_UPCONVERT_FINISHING);
+ 
+-	/* ocfs2_unblock_lock reques on seeing OCFS2_LOCK_UPCONVERT_FINISHING */
++	/* ocfs2_unblock_lock request on seeing OCFS2_LOCK_UPCONVERT_FINISHING */
+ 	kick_dc = (lockres->l_flags & OCFS2_LOCK_BLOCKED);
+ 
+ 	spin_unlock_irqrestore(&lockres->l_lock, flags);
+-- 
+2.34.1
+
 
