@@ -1,47 +1,55 @@
-Return-Path: <linux-kernel+bounces-16298-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16299-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 83028823C6A
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 07:57:58 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1CB2B823C70
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 08:02:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2BAE01F25DC8
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 06:57:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7C024B24A06
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 07:02:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F30831DDE7;
-	Thu,  4 Jan 2024 06:57:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E74B01DFE2;
+	Thu,  4 Jan 2024 07:02:39 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from bmailout1.hostsharing.net (bmailout1.hostsharing.net [83.223.95.100])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACEC41F94D
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 06:57:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61E561D699;
+	Thu,  4 Jan 2024 07:02:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wunner.de
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=h08.hostsharing.net
-Received: from h08.hostsharing.net (h08.hostsharing.net [IPv6:2a01:37:1000::53df:5f1c:0])
+Received: from h08.hostsharing.net (h08.hostsharing.net [83.223.95.28])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256
 	 client-signature RSA-PSS (4096 bits) client-digest SHA256)
 	(Client CN "*.hostsharing.net", Issuer "RapidSSL TLS RSA CA G1" (verified OK))
-	by bmailout1.hostsharing.net (Postfix) with ESMTPS id 61C6930000D09;
-	Thu,  4 Jan 2024 07:57:44 +0100 (CET)
+	by bmailout1.hostsharing.net (Postfix) with ESMTPS id 8489130000D0B;
+	Thu,  4 Jan 2024 08:02:35 +0100 (CET)
 Received: by h08.hostsharing.net (Postfix, from userid 100393)
-	id 4131E24ADCF; Thu,  4 Jan 2024 07:57:44 +0100 (CET)
-Date: Thu, 4 Jan 2024 07:57:44 +0100
+	id 67757239FE7; Thu,  4 Jan 2024 08:02:35 +0100 (CET)
+Date: Thu, 4 Jan 2024 08:02:35 +0100
 From: Lukas Wunner <lukas@wunner.de>
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Dan Williams <dan.j.williams@intel.com>, linux-coco@lists.linux.dev,
-	Andrew Morton <akpm@linux-foundation.org>, x86@kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 4/5] mm/slab: Add __free() support for kvfree
-Message-ID: <20240104065744.GA6055@wunner.de>
-References: <169199898909.1782217.10899362240465838600.stgit@dwillia2-xfh.jf.intel.com>
- <169199901230.1782217.9803098171993981037.stgit@dwillia2-xfh.jf.intel.com>
- <2023081449-blurry-bath-248e@gregkh>
- <20230814161731.GN776869@hirez.programming.kicks-ass.net>
+To: Dan Williams <dan.j.williams@intel.com>
+Cc: Ira Weiny <ira.weiny@intel.com>,
+	Jonathan Cameron <jonathan.cameron@huawei.com>,
+	Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>,
+	Shiju Jose <shiju.jose@huawei.com>,
+	Yazen Ghannam <yazen.ghannam@amd.com>,
+	Davidlohr Bueso <dave@stgolabs.net>,
+	Dave Jiang <dave.jiang@intel.com>,
+	Alison Schofield <alison.schofield@intel.com>,
+	Vishal Verma <vishal.l.verma@intel.com>,
+	Ard Biesheuvel <ardb@kernel.org>, linux-efi@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-cxl@vger.kernel.org,
+	Bjorn Helgaas <bhelgaas@google.com>
+Subject: Re: [PATCH v5 8/9] PCI: Define scoped based management functions
+Message-ID: <20240104070235.GA13468@wunner.de>
+References: <20231220-cxl-cper-v5-0-1bb8a4ca2c7a@intel.com>
+ <20231220-cxl-cper-v5-8-1bb8a4ca2c7a@intel.com>
+ <20240104060528.GA10504@wunner.de>
+ <6596539c9729e_8dc6829476@dwillia2-xfh.jf.intel.com.notmuch>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -50,57 +58,42 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230814161731.GN776869@hirez.programming.kicks-ass.net>
+In-Reply-To: <6596539c9729e_8dc6829476@dwillia2-xfh.jf.intel.com.notmuch>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 
-On Mon, Aug 14, 2023 at 06:17:31PM +0200, Peter Zijlstra wrote:
-> On Mon, Aug 14, 2023 at 05:31:27PM +0200, Greg Kroah-Hartman wrote:
-> > On Mon, Aug 14, 2023 at 12:43:32AM -0700, Dan Williams wrote:
-> > > Allow for the declaration of variables that trigger kvfree() when they
-> > > go out of scope.
-> > > 
-> > > Cc: Andrew Morton <akpm@linux-foundation.org>
-> > > Cc: Peter Zijlstra <peterz@infradead.org>
-> > > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > > Signed-off-by: Dan Williams <dan.j.williams@intel.com>
-> > > ---
-> > >  include/linux/slab.h |    2 ++
-> > >  1 file changed, 2 insertions(+)
-> > > 
-> > > diff --git a/include/linux/slab.h b/include/linux/slab.h
-> > > index 848c7c82ad5a..241025367943 100644
-> > > --- a/include/linux/slab.h
-> > > +++ b/include/linux/slab.h
-> > > @@ -746,6 +746,8 @@ static inline __alloc_size(1, 2) void *kvcalloc(size_t n, size_t size, gfp_t fla
-> > >  extern void *kvrealloc(const void *p, size_t oldsize, size_t newsize, gfp_t flags)
-> > >  		      __realloc_size(3);
-> > >  extern void kvfree(const void *addr);
-> > > +DEFINE_FREE(kvfree, void *, if (_T) kvfree(_T))
+On Wed, Jan 03, 2024 at 10:43:40PM -0800, Dan Williams wrote:
+> Lukas Wunner wrote:
+> > On Wed, Dec 20, 2023 at 04:17:35PM -0800, Ira Weiny wrote:
+> > > --- a/include/linux/pci.h
+> > > +++ b/include/linux/pci.h
+> > > @@ -1170,6 +1170,7 @@ int pci_get_interrupt_pin(struct pci_dev *dev, struct pci_dev **bridge);
+> > >  u8 pci_common_swizzle(struct pci_dev *dev, u8 *pinp);
+> > >  struct pci_dev *pci_dev_get(struct pci_dev *dev);
+> > >  void pci_dev_put(struct pci_dev *dev);
+> > > +DEFINE_FREE(pci_dev_put, struct pci_dev *, if (_T) pci_dev_put(_T))
 > > 
-> > No need to check _T before calling this, right (as was also pointed out
-> > earlier).
+> > pci_dev_put() already performs a NULL pointer check internally.
+> > Why duplicate it here?
 > 
-> Well, that does mean you get an unconditional call to kvfree() in the
-> success case. Linus argued against this.
+> Greg asked the same for the introduction of __free(kvfree), and Peter
+> clarified:
 > 
-> This way the compiler sees:
+> http://lore.kernel.org/r/20230814161731.GN776869@hirez.programming.kicks-ass.net
 > 
-> 	buf = NULL;
-> 	if (buf)
-> 		kvfree(buf);
-> 
-> and goes: 'let me clean that up for you'. And all is well.
+> Essentially, that check is more for build-time than runtime because when
+> the macro is expanded the compiler can notice scenarios where @pdev is
+> set to NULL (likely by no_free_ptr()) and skip the call to pci_dev_put()
+> altogether. pci_dev_put() also happens to be out-of-line, so saving a
+> call when @pdev is NULL a small win in that respect as well.
 
-Have you actually verified that assumption in the generated Assembler code?
+Doubtful whether that's correct.  The kernel is compiled with
+-fno-delete-null-pointer-checks since commit a3ca86aea507
+("Add '-fno-delete-null-pointer-checks' to gcc CFLAGS").
 
-The kernel is compiled with -fno-delete-null-pointer-checks since commit
-a3ca86aea507 ("Add '-fno-delete-null-pointer-checks' to gcc CFLAGS").
+So these NULL pointer checks are generally not optimized away.
 
-So NULL pointer checks are *not* optimized away even if the compiler
-knows that a pointer is NULL.
-
-Background story:
-https://lwn.net/Articles/342330/
+I've just responded to the discussion you've linked above:
+https://lore.kernel.org/all/20240104065744.GA6055@wunner.de/
 
 Thanks,
 
