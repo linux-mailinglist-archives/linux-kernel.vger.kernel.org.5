@@ -1,137 +1,291 @@
-Return-Path: <linux-kernel+bounces-17332-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17333-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1FF42824BDB
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 00:34:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F0F0824BDC
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 00:34:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6D97B286EBA
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 23:34:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DD586286F05
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 23:34:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 354592D60D;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 586942D612;
 	Thu,  4 Jan 2024 23:34:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Nufmfek9"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SNCsURMM"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E674D2D601
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 23:34:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704411242; x=1735947242;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=eRD3WvL9IoR+OnjgQsNe+9A2bUim5ab6EW7emX7oXSs=;
-  b=Nufmfek9fBDmhynoOmLueBdBH39sDO5TAYXM4tAgvYh4X9MeAbx4QtlU
-   6UmfQM6cQDH2IxsduJrCD/FWD5npG9rU8Z304LnFeKICmGKEnt0gXLuGp
-   1qx8CeP2j6X1nGG2v4lnpCGqCBr+UBOKxrIv5LJYLVBn/vOVCH41btcwa
-   9wR/vPrn2ymXpQwItzqlxeGXrWAp/sLor+nIN4Y5D41JyTtzR7CsTg3xe
-   ufQzVKBubzXWT4ouCMDsWLelB2AUtmkbhtXzF6e+KV4XS9JIWEfire+8t
-   TVqb4TCeksl/KBfXHq0mZRvQDBeHUS2efDY55qlzzG0RQKWPRvxcjbvrV
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10943"; a="4753179"
-X-IronPort-AV: E=Sophos;i="6.04,332,1695711600"; 
-   d="scan'208";a="4753179"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2024 15:34:01 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,332,1695711600"; 
-   d="scan'208";a="15076835"
-Received: from jlkarden-mobl1.amr.corp.intel.com (HELO [10.212.164.16]) ([10.212.164.16])
-  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2024 15:34:00 -0800
-Message-ID: <b637d627-1f11-43ae-981e-d5d9c6637a93@intel.com>
-Date: Thu, 4 Jan 2024 15:34:00 -0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5DF52D051;
+	Thu,  4 Jan 2024 23:34:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4806FC433C8;
+	Thu,  4 Jan 2024 23:34:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704411243;
+	bh=gbY3raGSprk25DNxWli+kh8jpocIFdqypsvx82WgUEM=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=SNCsURMMk1K5/WdU5XxUz4qDQLQtlBxYUS00b14MiPQs9xQ9OvCH1uC6OJyvIPYP2
+	 ixKQJk5224ThEFVWOiZ0WCSy70MIIM0wNX28ZWm6/5gIH3fhRTnw0g0CfBHl+vHxse
+	 ekz8EljDuSEKsS0+1X9s0GBwSaCztJQPrS6CUBThMnlPqhKMufp8q08Eou2oV1esYi
+	 CFdyZHT4mj1RyJiSaMaIa7N49Xg6h9ZYCJ+TgaK3KBL7LMgV6sRi2xW9D2BnyjXwoz
+	 YwbBwBZzAECu1zPe9oPMC/QiWG0cJdSOrMTrOH6RrRRIQgY3HaSHtL8maTZEQv1/Nw
+	 TX69v9oLBKRPA==
+Date: Thu, 4 Jan 2024 15:34:01 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: Maxime Chevallier <maxime.chevallier@bootlin.com>
+Cc: davem@davemloft.net, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, thomas.petazzoni@bootlin.com, Andrew Lunn
+ <andrew@lunn.ch>, Eric Dumazet <edumazet@google.com>, Paolo Abeni
+ <pabeni@redhat.com>, Russell King <linux@armlinux.org.uk>,
+ linux-arm-kernel@lists.infradead.org, Christophe Leroy
+ <christophe.leroy@csgroup.eu>, Herve Codina <herve.codina@bootlin.com>,
+ Florian Fainelli <f.fainelli@gmail.com>, Heiner Kallweit
+ <hkallweit1@gmail.com>, Vladimir Oltean <vladimir.oltean@nxp.com>,
+ =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>, Jesse Brandeburg
+ <jesse.brandeburg@intel.com>, Jonathan Corbet <corbet@lwn.net>, Marek
+ =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>, Piergiorgio Beruto
+ <piergiorgio.beruto@gmail.com>, Oleksij Rempel <o.rempel@pengutronix.de>,
+ =?UTF-8?B?Tmljb2zDsg==?= Veronese <nicveronese@gmail.com>, Simon Horman
+ <horms@kernel.org>
+Subject: Re: [PATCH net-next v5 07/13] net: ethtool: Introduce a command to
+ list PHYs on an interface
+Message-ID: <20240104153401.08ff9809@kernel.org>
+In-Reply-To: <20231221180047.1924733-8-maxime.chevallier@bootlin.com>
+References: <20231221180047.1924733-1-maxime.chevallier@bootlin.com>
+	<20231221180047.1924733-8-maxime.chevallier@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: x86/csum: Remove unnecessary odd handling
-Content-Language: en-US
-To: Noah Goldstein <goldstein.w.n@gmail.com>,
- David Laight <David.Laight@aculab.com>
-Cc: kernel test robot <lkp@intel.com>, "x86@kernel.org" <x86@kernel.org>,
- "oe-kbuild-all@lists.linux.dev" <oe-kbuild-all@lists.linux.dev>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "edumazet@google.com" <edumazet@google.com>,
- "tglx@linutronix.de" <tglx@linutronix.de>,
- "mingo@redhat.com" <mingo@redhat.com>,
- "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>,
- "bp@alien8.de" <bp@alien8.de>,
- "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
- "hpa@zytor.com" <hpa@zytor.com>
-References: <20230920192300.3772199-1-goldstein.w.n@gmail.com>
- <202309231130.ZI5MdlDc-lkp@intel.com>
- <CAFUsyfKDRiX9kKOhHcA4PLqqT6Q5faHF0eRGiKN+9NSbvrUfDw@mail.gmail.com>
- <d02bd4f823534a00ae4915ead3d92773@AcuMS.aculab.com>
- <CAFUsyfL0M5P4+4s_b1kvJ_fE-ax8YBK0ammbKfoy7yKs1obzrA@mail.gmail.com>
- <CAFUsyfJduB29c6=BNmTtgoWcHAWA1AZ-sdbhyp02JVhvA6Gp0w@mail.gmail.com>
- <CAFUsyfLuo0_Sm91mqbM8Sbo-ncwnM4RaRq=GxQXDmkAN-nQ3uw@mail.gmail.com>
-From: Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
-In-Reply-To: <CAFUsyfLuo0_Sm91mqbM8Sbo-ncwnM4RaRq=GxQXDmkAN-nQ3uw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On 1/4/24 15:28, Noah Goldstein wrote:
->> ping.
-> ping
+On Thu, 21 Dec 2023 19:00:40 +0100 Maxime Chevallier wrote:
+> As we have the ability to track the PHYs connected to a net_device
+> through the link_topology, we can expose this list to userspace. This
+> allows userspace to use these identifiers for phy-specific commands and
+> take the decision of which PHY to target by knowing the link topology.
+> 
+> Add PHY_GET and PHY_DUMP, which can be a filtered DUMP operation to list
+> devices on only one interface.
+> 
+> Signed-off-by: Maxime Chevallier <maxime.chevallier@bootlin.com>
 
-Noah, it would be great to elaborate on what you are pinging about.
-This thread has a note that you "posted v4", but I don't see a
-clearly-tagged v4 in my inbox, just a bunch of identially-titled
-non-standard-subject[1] emails without any indication of what changed in
-the individual patches.
+> diff --git a/Documentation/networking/ethtool-netlink.rst b/Documentation/networking/ethtool-netlink.rst
+> index 3ca6c21e74af..97ff787a7dd8 100644
+> --- a/Documentation/networking/ethtool-netlink.rst
+> +++ b/Documentation/networking/ethtool-netlink.rst
+> @@ -2011,6 +2011,49 @@ The attributes are propagated to the driver through the following structure:
+>  .. kernel-doc:: include/linux/ethtool.h
+>      :identifiers: ethtool_mm_cfg
+>  
+> +PHY_GET
+> +=======
+> +
+> +Retrieve information about a given Ethernet PHY sitting on the link. As there
+> +can be more than one PHY, the DUMP operation can be used to list the PHYs
+> +present on a given interface, by passing an interface index or name in
+> +the dump request
+> +
+> +Request contents:
+> +
+> +  ====================================  ======  ==========================
+> +  ``ETHTOOL_A_PHY_HEADER``              nested  request header
+> +  ====================================  ======  ==========================
+> +
+> +Kernel response contents:
+> +
+> +  ===================================== ======  ==========================
+> +  ``ETHTOOL_A_PHY_HEADER``              nested  request header
+> +  ``ETHTOOL_A_PHY_INDEX``               u32     the phy's unique index, that can
 
-1. https://docs.kernel.org/process/submitting-patches.html
+The fact that lines are longer than the ===== markings doesn't generate
+warnings in htmldoc?
+
+> +                                                be used for phy-specific requests
+> +  ``ETHTOOL_A_PHY_DRVNAME``             string  the phy driver name
+> +  ``ETHTOOL_A_PHY_NAME``                string  the phy device name
+> +  ``ETHTOOL_A_PHY_UPSTREAM_TYPE``       u32     the type of device this phy is
+> +                                                connected to
+> +  ``ETHTOOL_A_PHY_UPSTREAM_PHY``        nested  if the phy is connected to another
+> +                                                phy, this nest contains info on
+> +                                                that connection
+> +  ``ETHTOOL_A_PHY_DOWNSTREAM_SFP_NAME`` string  if the phy controls an sfp bus,
+> +                                                the name of the sfp bus
+
+Is upstream / downstream clear to everyone / from the spec.
+I guess it's scoped to the netdev so upstream means "towards 
+the netdev MAC"?
+
+> +  ``ETHTOOL_A_PHY_ID``                  u32     the phy id if the phy is C22
+> +  ===================================== ======  ==========================
+> +
+> +When ``ETHTOOL_A_PHY_UPSTREAM_TYPE`` is PHY_UPSTREAM_PHY, the PHY's parent is
+> +another PHY. Information on the parent PHY will be set in the
+> +``ETHTOOL_A_PHY_UPSTREAM_PHY`` nest, which has the following structure :
+> +
+> +  =================================== ======  ==========================
+> +  ``ETHTOOL_A_PHY_UPSTREAM_INDEX``    u32     the PHY index of the upstream PHY
+> +  ``ETHTOOL_A_PHY_UPSTREAM_SFP_NAME`` string  if this PHY is connected to it's
+> +                                                parent PHY through an SFP bus, the
+> +                                                name of this sfp bus
+> +  =================================== ======  ==========================
+
+Why is this a nest?
+
+>  Request translation
+>  ===================
+
+> +enum {
+> +	ETHTOOL_A_PHY_UNSPEC,
+> +	ETHTOOL_A_PHY_HEADER,			/* nest - _A_HEADER_* */
+> +	ETHTOOL_A_PHY_INDEX,			/* u32 */
+> +	ETHTOOL_A_PHY_DRVNAME,			/* string */
+> +	ETHTOOL_A_PHY_NAME,			/* string */
+> +	ETHTOOL_A_PHY_UPSTREAM_TYPE,		/* u8 */
+
+The Documentation say it's a u32 as it should be, AFAICT.
+But code and some comments use u8.
+
+> +	ETHTOOL_A_PHY_UPSTREAM,			/* nest - _A_PHY_UPSTREAM_* */
+> +	ETHTOOL_A_PHY_DOWNSTREAM_SFP_NAME,	/* string */
+> +	ETHTOOL_A_PHY_ID,			/* u32 */
+> +
+> +	/* add new constants above here */
+> +	__ETHTOOL_A_PHY_CNT,
+> +	ETHTOOL_A_PHY_MAX = (__ETHTOOL_A_PHY_CNT - 1)
+> +};
+
+> +++ b/net/ethtool/phy.c
+> @@ -0,0 +1,306 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Copyright 2023 Bootlin
+> + *
+> + */
+
+Do you really need 4 lines for the copyright? :)
+
+
+> +/* Caller holds rtnl */
+> +static ssize_t
+> +ethnl_phy_reply_size(const struct ethnl_req_info *req_base,
+> +		     struct netlink_ext_ack *extack)
+> +{
+> +	struct phy_link_topology *topo;
+> +	struct phy_device_node *pdn;
+> +	struct phy_device *phydev;
+> +	unsigned long index;
+> +	size_t size;
+> +
+> +	ASSERT_RTNL();
+> +
+> +	topo = &req_base->dev->link_topo;
+> +
+> +	size = nla_total_size(0);
+
+no comment on this one?
+
+> +
+> +	xa_for_each(&topo->phys, index, pdn) {
+
+Why count all the PHYs, you only output one on doit, right?
+
+> +		phydev = pdn->phy;
+> +
+> +		/* ETHTOOL_A_PHY_INDEX */
+> +		size += nla_total_size(sizeof(u32));
+> +
+> +		/* ETHTOOL_A_DRVNAME */
+> +		size += nla_total_size(strlen(phydev->drv->name) + 1);
+> +
+> +		/* ETHTOOL_A_NAME */
+> +		size += nla_total_size(strlen(dev_name(&phydev->mdio.dev)) + 1);
+> +
+> +		/* ETHTOOL_A_PHY_UPSTREAM_TYPE */
+> +		size += nla_total_size(sizeof(u8));
+> +
+> +		/* ETHTOOL_A_PHY_ID */
+> +		size += nla_total_size(sizeof(u32));
+> +
+> +		if (phy_on_sfp(phydev)) {
+> +			const char *upstream_sfp_name = sfp_get_name(pdn->parent_sfp_bus);
+> +
+> +			/* ETHTOOL_A_PHY_UPSTREAM_SFP_NAME */
+> +			if (upstream_sfp_name)
+> +				size += nla_total_size(strlen(upstream_sfp_name) + 1);
+> +
+> +			/* ETHTOOL_A_PHY_UPSTREAM_INDEX */
+> +			size += nla_total_size(sizeof(u32));
+> +		}
+> +
+> +		/* ETHTOOL_A_PHY_DOWNSTREAM_SFP_NAME */
+> +		if (phydev->sfp_bus) {
+> +			const char *sfp_name = sfp_get_name(phydev->sfp_bus);
+> +
+> +			if (sfp_name)
+> +				size += nla_total_size(strlen(sfp_name) + 1);
+> +		}
+> +	}
+> +
+> +	return size;
+> +}
+
+> +static int ethnl_phy_parse_request(struct ethnl_req_info *req_base,
+> +				   struct nlattr **tb)
+> +{
+> +	struct phy_link_topology *topo = &req_base->dev->link_topo;
+> +	struct phy_req_info *req_info = PHY_REQINFO(req_base);
+> +	struct phy_device_node *pdn;
+> +
+> +	if (!req_base->phydev)
+> +		return 0;
+
+The PHY INDEX should probably be a required attr, with 
+GENL_REQ_ATTR_CHECK()? Without phydev being specified
+what's the point?
+
+> +	pdn = xa_load(&topo->phys, req_base->phydev->phyindex);
+> +	memcpy(&req_info->pdn, pdn, sizeof(*pdn));
+> +
+> +	return 0;
+> +}
+
+> +int ethnl_phy_dumpit(struct sk_buff *skb, struct netlink_callback *cb)
+> +{
+> +	struct ethnl_phy_dump_ctx *ctx = (void *)cb->ctx;
+> +	struct net *net = sock_net(skb->sk);
+> +	unsigned long ifindex = 1;
+
+This doesn't look right, if dump gets full you gotta pick up
+when previous call left off.
+
+> +	struct net_device *dev;
+> +	int ret = 0;
+> +
+> +	rtnl_lock();
+> +
+> +	if (ctx->phy_req_info->base.dev) {
+> +		ret = ethnl_phy_dump_one_dev(skb, ctx->phy_req_info->base.dev, cb);
+> +		ethnl_parse_header_dev_put(&ctx->phy_req_info->base);
+> +		ctx->phy_req_info->base.dev = NULL;
+> +	} else {
+> +		for_each_netdev_dump(net, dev, ifindex) {
+> +			ret = ethnl_phy_dump_one_dev(skb, dev, cb);
+> +			if (ret)
+> +				break;
+> +		}
+> +	}
+> +	rtnl_unlock();
+> +
+> +	if (ret == -EMSGSIZE && skb->len)
+> +		return skb->len;
+> +	return ret;
+> +}
+> +
+
 
