@@ -1,215 +1,358 @@
-Return-Path: <linux-kernel+bounces-17065-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17067-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 87FC68247C8
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 18:50:48 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF52A8247CE
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 18:52:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1EA8328255B
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 17:50:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 13A611C24045
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 17:52:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8E692D035;
-	Thu,  4 Jan 2024 17:48:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A70A728DB8;
+	Thu,  4 Jan 2024 17:52:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=solidrn.onmicrosoft.com header.i=@solidrn.onmicrosoft.com header.b="GSnxSEUI"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="dSl2ffrD"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04on2083.outbound.protection.outlook.com [40.107.8.83])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BA452C856;
-	Thu,  4 Jan 2024 17:48:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=solid-run.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=solid-run.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ag53CVUWHYoiNLoyVg5Ftw3C78kLNnzBevmXT/Lpb4PK167eumoSnXNoaboeIhR3DiHqkQzXRUmsz3grQ2CVKKRDLosuAP7wHzh+TNm3UYsBurWtxt4cqDoJZRmr73deA5b2lqcyD6BPZUCdsXHXPkO1w5vUb8Dgr4+Pu4gvCBFplZqvpD3rmxvDa4l284Fe0FPU4roJo/wDhUavB04zK3FVd7OQ3AVfWg0HS8LrvzFg+EVJWswNf77lwOkBEiC0Mn/EOn+4aLiPqyKjMaAHzeK9z4zZV5ecQi2uuhyKQK9eHtdxDFQFV7aI9W5Nos54w/ADAl4yoA4XtREa4ZnzhQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=dgcl289EmJRwpJtbpRe4wL18fqPn5M9ka+q6zrHa0xg=;
- b=OsgHWFOqpkZ9f6rLTjdJZbGmeCbmFyIL74VqNTQYEV3vimExq1duSJ7nb71Wj8yyqw/c6r6HQ57yO2LK7BS6X+deg54q/5v2O9GO75ZKXGgPheXwYV1+IUHhJL4qQnEt9/yfw9Lley2BWJazcjj4Mo4e71kl1bXU23eIyBlNd2uCuobU3i4Lyp19P2HAQpSI74v47wnUzxSThrKaT3ftpD53lGoYlhPQ9S833YeCFTZLZ+Ak0Jnr5hZJ+sar5/TLh6Qy4YvUEUbhlLxV9yH6qfgkxUT7dIqYnk8jOhRIsIONqULaAljbelLvMupw/LfIKrBXTqYQ8CcqXlKqi4E5LQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=solid-run.com; dmarc=pass action=none
- header.from=solid-run.com; dkim=pass header.d=solid-run.com; arc=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F4B828DA0
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 17:51:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-553e36acfbaso377a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 09:51:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=solidrn.onmicrosoft.com; s=selector1-solidrn-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=dgcl289EmJRwpJtbpRe4wL18fqPn5M9ka+q6zrHa0xg=;
- b=GSnxSEUISUYUEs2Xna+SEX/OFaXEJl7UdFirS+c4IWl9DjxZzbJ7XwWhOiiUS7lJpn7jK9N8buxkK8Lsr4AtI3uSDP7TjCdB31+Jsh14YkgK8YO8E+w/PtKArKq2uhMfo9h5qT/SzKpQYBa7rCZ7b3R/5ntVFSC2H0UcS1qxwaY=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=solid-run.com;
-Received: from AS8PR04MB8963.eurprd04.prod.outlook.com (2603:10a6:20b:42e::18)
- by DB9PR04MB8233.eurprd04.prod.outlook.com (2603:10a6:10:24b::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.14; Thu, 4 Jan
- 2024 17:48:12 +0000
-Received: from AS8PR04MB8963.eurprd04.prod.outlook.com
- ([fe80::daf2:8c54:d469:793d]) by AS8PR04MB8963.eurprd04.prod.outlook.com
- ([fe80::daf2:8c54:d469:793d%6]) with mapi id 15.20.7159.013; Thu, 4 Jan 2024
- 17:48:12 +0000
-From: Josua Mayer <josua@solid-run.com>
-Date: Thu, 04 Jan 2024 18:48:11 +0100
-Subject: [PATCH v5 10/10] arm: dts: marvell: clearfog-gtr-l8: align port
- numbers with enclosure
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240104-support-clearfog-gtr-l8-sfp-v5-10-52be60fc54e3@solid-run.com>
-References: <20240104-support-clearfog-gtr-l8-sfp-v5-0-52be60fc54e3@solid-run.com>
-In-Reply-To: <20240104-support-clearfog-gtr-l8-sfp-v5-0-52be60fc54e3@solid-run.com>
-To: Andrew Lunn <andrew@lunn.ch>, 
- Gregory Clement <gregory.clement@bootlin.com>, 
- Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>, 
- Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, Russell King <linux@armlinux.org.uk>
-Cc: linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org, 
- linux-kernel@vger.kernel.org, Josua Mayer <josua@solid-run.com>
-X-Mailer: b4 0.12.4
-X-ClientProxiedBy: FR4P281CA0409.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:d0::9) To AS8PR04MB8963.eurprd04.prod.outlook.com
- (2603:10a6:20b:42e::18)
+        d=google.com; s=20230601; t=1704390716; x=1704995516; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=B74JqfZyQlvHE8okDbReQQjqktg4m15F066ZG6l5Rrw=;
+        b=dSl2ffrD1Zc6qV1nU7fkxfFrSzWNQNHiuxpU7JoYLlkeZer7asXYAfF2/6ksCYJBnQ
+         M5IXWDgcNER2hrDLCbvJb3QiegNVBqYHqk6qNA21Z1X4wrLtSJmaGMlCFN4Jh9S2n+4v
+         OYFp99+ma8bTIV/iiJhtG2CAH4j+Ro3PQNpPA4UsLLUhdAQQj+wx8JQpnxPLc8vGaPxk
+         Gxu9oNyTgv79kIx0vuNM00d65LrbwLWz3XB4O/Gz7nmiUud2hk0Yh1pCfaeATeHQ3JZD
+         gGK0HVAPiTHD8oO2RxjYPlGfp6KoqA1lBa9ITFhXYiJZl/S6S+whIf6UyNIhyqoKvvr2
+         Ss+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704390716; x=1704995516;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=B74JqfZyQlvHE8okDbReQQjqktg4m15F066ZG6l5Rrw=;
+        b=chraYEE4yh3ACZDkDCvKWLT+3nuFM15ltKRw/of+j13ksU1HyNLEeQ2ZdRxDJJPYM6
+         xco4lIRXLSa4G2JK0QcyZZpeDX2VbNPuz0bmSfNa3O9yh78nN3MrZvbqghLN2g9KvgJY
+         Z+CX3dvFJKho2Q+O4In5t/QT/HTD7DXU7NLMOas9YZZmXBvADezDExi9jKj0RXxdCJVq
+         nN17Yp/+mFv5BtxBjTeuaFqt1gjb0dsxAUlujT53YGe2Kjnno+gzAtdphlSnyGeUF/O+
+         fL+s3Pr2Hd0L4QzfS2JaesfZdaqokM0YlCs+EVORp2cqyGNAWPtulxeI0OZTuAbtWBVC
+         RluA==
+X-Gm-Message-State: AOJu0YxxIc3Eozyzl7/bUenNtVzEc7LIwI/ruDhQ5ZtV9S/HzNqO5YsO
+	IBubL0S5rB/eKcE/ElhCcFmptQHDP2A9vINBsSQRuxh5gp5x
+X-Google-Smtp-Source: AGHT+IFEAPvvuFWx88JngOw4Y9x/ZbIkJrHBt25yhvCdNyPzK4HGYk53JY9+vHuiXlAQeDwGwei73oXLhSnEOfRInXc=
+X-Received: by 2002:a50:d4d2:0:b0:557:1142:d5bb with SMTP id
+ e18-20020a50d4d2000000b005571142d5bbmr4311edj.4.1704390716226; Thu, 04 Jan
+ 2024 09:51:56 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AS8PR04MB8963:EE_|DB9PR04MB8233:EE_
-X-MS-Office365-Filtering-Correlation-Id: 6c8a8fb3-272e-42be-99ae-08dc0d4d5150
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	3dsszoaNtynyG8jkUgZ7FkWNjVPKIyBZSf6KGR7mx/nOfXN098WhH6MzK7SWydTTZLhOAePscQBPGK57sX0UM/Z/kf0pCqQ2Kq7UtyTAB9Z+i/2RTVTZ4t4QcUSSKQq5jCtmTc8WAnjZ8FzgQGQZNhMylF4MEXh68UwyAcfLGHNy4OobPy1MsqhCVHwbstgwIeTNIk1cBunpi7h4TGl3o7qO3mOZ9p128RPBCkZF5iFH4zAOblp5g7C4W67+tXBjzqWcvJaDCfGaifgFu0tAmwEOS0RFAhHyqXHwvCGuvM/XgQWGTfMh9cfc6P2wGuVIhyYIk3UpgHNAVyKdAgFuGLCpqKLXVw0irEjLSz/J6dkaPE7GZpgQ6YIJZh17PZwiUX5bVgy8A+lZRMkGx+2gy+1vLWqU+GOU/hSTSdWHLt4e7ITacqkNjGL0LhViKOfsHScQ93Y6bnOUv5ecRp/0HB3HX7aJGVXlpu4clNfQ+OreJPGOZUJmsnapbQiV7dFuMOzUvgqcAmG6gIXtk3oraMjlC2z4WQTlR/IaubuSeQiL+aGTmHHckZFKxw9sSGSwUY2xF/tcJUpQrI3Gtrs3d5yV0uJDtjseWNCSROcyIHtffSrobiw/SSymb89QsKlG
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB8963.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(376002)(346002)(366004)(396003)(39840400004)(230922051799003)(186009)(64100799003)(451199024)(1800799012)(38100700002)(38350700005)(36756003)(86362001)(26005)(4326008)(107886003)(6512007)(6506007)(66476007)(66946007)(66556008)(8676002)(478600001)(8936002)(6486002)(52116002)(316002)(110136005)(2616005)(83380400001)(41300700001)(5660300002)(7416002)(2906002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?K3ZXVzUvOFFIUklvTWIrQytpVjBlT1ZhdHQ0Q2NxSkNLeEZ4V2NDclFRMkJw?=
- =?utf-8?B?VUh1cXRmNUNOMTBkTUpMelJTRFBLV0lqb2FPR3BSMkYxb3MzWUg5OG5pdkRh?=
- =?utf-8?B?WC80b3hkYXFqeTE2enVLTWdGZGViYmIwbS9pT3BWcExEeXBsQjhRZGFIbU8z?=
- =?utf-8?B?bzFmU0lGY2cyQ3pLTUUrNFdtT3Rpb2QvU1BZdFVIc3FqazZkUjFObGhqN3Jq?=
- =?utf-8?B?NDQ2M1hJWnl6WHZsT1pPcko1N0xKZXduWGtxbTZpdFNvRVJUOW9zTWRDWFBP?=
- =?utf-8?B?Si9idHYvSHJhdDVZT3Q1cFNPd3N5K3daMGVVNEJ1dFlrbUczY2IyTEJCa0F5?=
- =?utf-8?B?Zk9lVG9Ta003bXkyRkdwRlYvbVpOUXpoQWVhS2s5STN3bUdlWjhUYW5ZZFNh?=
- =?utf-8?B?OEowcUwvaVRWWHRGNnZDOWZJQjlYSnVSdytubCtFZC9Yd28wMXhmZXRYaFhw?=
- =?utf-8?B?WnhDczJhbUE0TVgwdjNrVnVmUmlJMHdVbDhoYm8zQ2d6cVZmSlVtU21tanR2?=
- =?utf-8?B?S0lLWVE2OTVCa3IzaU82VlhSTVB1RFJ3MVpzWEkxQ2tqbGcrajVLVVBJZ0tp?=
- =?utf-8?B?N0xxaDIzcjFhZlN2VFdaNGRndXFOeTdIdlRTUlZvdEJueUhLMnF2cTZib2ZC?=
- =?utf-8?B?M0VvaXJLdng2Z3FuL2p2NmFPSlM1cWtOVVVaaUlhMW5QOWZyc0x3THdXYXl0?=
- =?utf-8?B?UHo0QndIRXlxTjBWOUgzSkJ4SHNZVzhncjJkUHhRNlYxZXRMcEduTmVHN1Ux?=
- =?utf-8?B?S1FDM3NqcDM5Q0Jvc0Y3KzhIOFZGMXRhYkpJU093ZHhQK2wvM2RSaUE2L2lk?=
- =?utf-8?B?T05vQlljbTgwdFBhcVNUNFlmYmJSNTZRd09PVmt3eFNRM0ZtYm1Ka2k3c0gw?=
- =?utf-8?B?TTBwVURuZlUzaE85OC94eHZHa05idzJsZnhrRHBUeWZZaXJvOWJaYTg5WG96?=
- =?utf-8?B?c2FkcUNRaG1sV2g3TkVIbDVsWkRvU0tzTi82SHZGV1BUNUk3eURsNEFHMjJl?=
- =?utf-8?B?K3c4VXBxblcraGVvbmFZV2hwQTBuWERNVHhGS21WSzVwS0MwUUc0YVo5eWV3?=
- =?utf-8?B?VUNQYy9tRTJYNURlRURNcW9hd3RnY2NuMlBjcFk1L2tKV3BYZTRmRnVUQzl2?=
- =?utf-8?B?d01NRFRsT3prTDB6RzRJdmgzaEZ1bUgwKytiT1JMQi9BTmxoOXBxUUtocjRF?=
- =?utf-8?B?ZVg1VkMySEZhZUprenZ1NVBPN3dvdWh1MUt5dE14LzIyL3dxT2N0RUpDTTY3?=
- =?utf-8?B?ckh6YzJGMWlQWGMrOTIrVytuZ05lWXhTMGtsYWV3Vlh5Z2YvWXJGNGhIeG5Z?=
- =?utf-8?B?c3laZVhjWmkyR1J0aE95SlE5aXl3Si84OVMwRHk3SmJieTFUaXUzZkR1Zk9n?=
- =?utf-8?B?MlRZU3FWSjdLOEdPSEFFN1NoWGROdlg0bVFWNzhMSnJDYkl1UTFKUEcwMWoz?=
- =?utf-8?B?NTFaVWRUYzI2eDQycHpybmxycUpILytwMytHbWJrNVVkQTdMcXMvUmVMSEwr?=
- =?utf-8?B?U2VkVlFoRldEdktITk1sNTV1K1lkeWwrRXh2N1lDSXZiT3BsVDVCKzVHWER3?=
- =?utf-8?B?cDc4dStHKzlwdUE2YlFSRFRGZG84NysxelJaV1h5ZEtKd3R2RXp3NHc3MWJ3?=
- =?utf-8?B?TXc2SGhrRTFpZGl1V3MreXNFZFl2cWN1YlZPemRwdFJFMnU0Rlp0TnN6Mkhh?=
- =?utf-8?B?b2RPeEtUOG9ReDdKV3ZtcWhGT2Yrc2NwUG9TWXJiakZlcktWQ3FKd0d0Y2VZ?=
- =?utf-8?B?TUN5RklBcWdZUXNpUGRqTjFRMnlzOFF4VUlaNnlLaHhtbzNEd1dERXhlM1Qv?=
- =?utf-8?B?ZmZLTGlJeWhBLzJkL1pHb3JoNE40bC9VUjg5VTFjMmdpK3AvWStYUXZSMTlF?=
- =?utf-8?B?Q2p3R2VPMWxHNytZeHg5bUZHbjlBNHdIWnZxeHBZK2E5MUtiRGlXdWxrcW01?=
- =?utf-8?B?MXZQb0h2U0g2UE15anBzSmlIRllKa2pNTHhMRjJGTTJlRDRjbkUzM3pHY21i?=
- =?utf-8?B?bll2SjRENk4vdXJ6QmltRy9qMjVlenU5UHViL0hBRTl5TXExNkV0OVNQRjNk?=
- =?utf-8?B?UHo1RkxwM0VYRllNS0hxaTdpQWZMeTBpYnU0Y0FwTmNvNnNQZ1l0a1dzVFN1?=
- =?utf-8?Q?oOUoGFKUzKBs3OKDX2cNRmQNn?=
-X-OriginatorOrg: solid-run.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6c8a8fb3-272e-42be-99ae-08dc0d4d5150
-X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB8963.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Jan 2024 17:48:10.8848
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: a4a8aaf3-fd27-4e27-add2-604707ce5b82
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: S3KLQlSOYVXktBVsPD0V0A/ADE2VVU95BU5NkLpIlc9DxNxpP45tDitGVNoxRJWfb0VDQSofwH5qMODNkqJw5g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR04MB8233
+References: <20240104074259.653219-1-irogers@google.com> <ZZam-EG-UepcXtWw@kernel.org>
+ <CAP-5=fV+U4qSwU8nqHJMgAZTwtWs9jEm3i9yDQSVtq9Fbos5HA@mail.gmail.com> <8af821dc-d173-483d-8b69-b8e041538561@linux.intel.com>
+In-Reply-To: <8af821dc-d173-483d-8b69-b8e041538561@linux.intel.com>
+From: Ian Rogers <irogers@google.com>
+Date: Thu, 4 Jan 2024 09:51:44 -0800
+Message-ID: <CAP-5=fVTEcbJdG6_L+GH5RGCtpFhpjWyyhYu0Fhx5CRRqZcqDg@mail.gmail.com>
+Subject: Re: [PATCH v1 1/4] perf vendor events intel: Alderlake/rocketlake
+ metric fixes
+To: "Liang, Kan" <kan.liang@linux.intel.com>, "Wang, Weilin" <weilin.wang@intel.com>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
+	Ingo Molnar <mingo@redhat.com>, Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Namhyung Kim <namhyung@kernel.org>, Adrian Hunter <adrian.hunter@intel.com>, 
+	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Edward Baker <edward.baker@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Clearfog GTR has an official enclosure with labels for all interfaces.
-The "lan" ports on the 8-port switch in device-tree were numbered  in
-reverse wrt. enclosure.
+On Thu, Jan 4, 2024 at 6:30=E2=80=AFAM Liang, Kan <kan.liang@linux.intel.co=
+m> wrote:
+>
+>
+>
+> On 2024-01-04 8:56 a.m., Ian Rogers wrote:
+> >> Testing tma_slow_pause
+> >> Metric 'tma_slow_pause' not printed in:
+> >> # Running 'internals/synthesize' benchmark:
+> >> Computing performance of single threaded perf event synthesis by
+> >> synthesizing events on the perf process itself:
+> >>   Average synthesis took: 49.987 usec (+- 0.049 usec)
+> >>   Average num. events: 47.000 (+- 0.000)
+> >>   Average time per event 1.064 usec
+> >>   Average data synthesis took: 53.490 usec (+- 0.033 usec)
+> >>   Average num. events: 245.000 (+- 0.000)
+> >>   Average time per event 0.218 usec
+> >>
+> >>  Performance counter stats for 'perf bench internals synthesize':
+> >>
+> >>      <not counted>      cpu_core/TOPDOWN.SLOTS/                       =
+                          (0.00%)
+> >>      <not counted>      cpu_core/topdown-retiring/                    =
+                          (0.00%)
+> >>      <not counted>      cpu_core/topdown-mem-bound/                   =
+                          (0.00%)
+> >>      <not counted>      cpu_core/topdown-bad-spec/                    =
+                          (0.00%)
+> >>      <not counted>      cpu_core/topdown-fe-bound/                    =
+                          (0.00%)
+> >>      <not counted>      cpu_core/topdown-be-bound/                    =
+                          (0.00%)
+> >>      <not counted>      cpu_core/RESOURCE_STALLS.SCOREBOARD/          =
+                              (0.00%)
+> >>      <not counted>      cpu_core/EXE_ACTIVITY.1_PORTS_UTIL/           =
+                             (0.00%)
+> >>      <not counted>      cpu_core/EXE_ACTIVITY.BOUND_ON_LOADS/         =
+                               (0.00%)
+> >>      <not counted>      cpu_core/CPU_CLK_UNHALTED.PAUSE/              =
+                          (0.00%)
+> >>      <not counted>      cpu_core/CYCLE_ACTIVITY.STALLS_TOTAL/         =
+                               (0.00%)
+> >>      <not counted>      cpu_core/CPU_CLK_UNHALTED.THREAD/             =
+                           (0.00%)
+> >>      <not counted>      cpu_core/ARITH.DIV_ACTIVE/                    =
+                          (0.00%)
+> >>      <not counted>      cpu_core/EXE_ACTIVITY.2_PORTS_UTIL,umask=3D0xc=
+/                                        (0.00%)
+> >>      <not counted>      cpu_core/EXE_ACTIVITY.3_PORTS_UTIL,umask=3D0x8=
+0/                                        (0.00%)
+> >>
+> >>        1.186254766 seconds time elapsed
+> >>
+> >>        0.427220000 seconds user
+> >>        0.752217000 seconds sys
+> >> Testing smi_cycles
+> >> Testing smi_num
+> >> Testing tsx_aborted_cycles
+> >> Testing tsx_cycles_per_elision
+> >> Testing tsx_cycles_per_transaction
+> >> Testing tsx_transactional_cycles
+> >> test child finished with -1
+> >> ---- end ----
+> >> perf all metrics test: FAILED!
+> >> root@number:~#
+> > Have a try disabling the NMI watchdog. Agreed that there is more to
+> > fix here but I think the PMU driver is in part to blame because
+> > manually breaking the weak group of events is a fix.
+>
+> I think we have a NO_GROUP_EVENTS_NMI metric constraint to mark a group
+> which require disabling of the NMI watchdog.
+> Maybe we should mark the group a NO_GROUP_EVENTS_NMI metric.
 
-Update all device-tree labels to match.
++Weilin due to the affects of event grouping.
 
-Signed-off-by: Josua Mayer <josua@solid-run.com>
----
- arch/arm/boot/dts/marvell/armada-385-clearfog-gtr-l8.dts | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+Thanks Kan, NO_GROUP_EVENTS_NMI would be good. Something I see for
+tma_ports_utilized_1 that may be worsening things is:
 
-diff --git a/arch/arm/boot/dts/marvell/armada-385-clearfog-gtr-l8.dts b/arch/arm/boot/dts/marvell/armada-385-clearfog-gtr-l8.dts
-index 2df388f222ec..da6981677b03 100644
---- a/arch/arm/boot/dts/marvell/armada-385-clearfog-gtr-l8.dts
-+++ b/arch/arm/boot/dts/marvell/armada-385-clearfog-gtr-l8.dts
-@@ -32,49 +32,49 @@ ports {
- 
- 			port@1 {
- 				reg = <1>;
--				label = "lan8";
-+				label = "lan1";
- 				phy-handle = <&switch0phy0>;
- 			};
- 
- 			port@2 {
- 				reg = <2>;
--				label = "lan7";
-+				label = "lan2";
- 				phy-handle = <&switch0phy1>;
- 			};
- 
- 			port@3 {
- 				reg = <3>;
--				label = "lan6";
-+				label = "lan3";
- 				phy-handle = <&switch0phy2>;
- 			};
- 
- 			port@4 {
- 				reg = <4>;
--				label = "lan5";
-+				label = "lan4";
- 				phy-handle = <&switch0phy3>;
- 			};
- 
- 			port@5 {
- 				reg = <5>;
--				label = "lan4";
-+				label = "lan5";
- 				phy-handle = <&switch0phy4>;
- 			};
- 
- 			port@6 {
- 				reg = <6>;
--				label = "lan3";
-+				label = "lan6";
- 				phy-handle = <&switch0phy5>;
- 			};
- 
- 			port@7 {
- 				reg = <7>;
--				label = "lan2";
-+				label = "lan7";
- 				phy-handle = <&switch0phy6>;
- 			};
- 
- 			port@8 {
- 				reg = <8>;
--				label = "lan1";
-+				label = "lan8";
- 				phy-handle = <&switch0phy7>;
- 			};
- 
+```
+Testing tma_ports_utilized_1
+Metric 'tma_ports_utilized_1' not printed in:
+# Running 'internals/synthesize' benchmark:
+Computing performance of single threaded perf event synthesis by
+synthesizing events on the perf process itself:
+  Average synthesis took: 49.581 usec (+- 0.030 usec)
+  Average num. events: 47.000 (+- 0.000)
+  Average time per event 1.055 usec
+  Average data synthesis took: 53.367 usec (+- 0.032 usec)
+  Average num. events: 246.000 (+- 0.000)
+  Average time per event 0.217 usec
 
--- 
-2.35.3
+ Performance counter stats for 'perf bench internals synthesize':
 
+     <not counted>      cpu_core/TOPDOWN.SLOTS/
+                         (0.00%)
+     <not counted>      cpu_core/topdown-retiring/
+                         (0.00%)
+     <not counted>      cpu_core/topdown-mem-bound/
+                         (0.00%)
+     <not counted>      cpu_core/topdown-bad-spec/
+                         (0.00%)
+     <not counted>      cpu_core/topdown-fe-bound/
+                         (0.00%)
+     <not counted>      cpu_core/topdown-be-bound/
+                         (0.00%)
+     <not counted>      cpu_core/RESOURCE_STALLS.SCOREBOARD/
+                             (0.00%)
+     <not counted>      cpu_core/EXE_ACTIVITY.1_PORTS_UTIL/
+                            (0.00%)
+     <not counted>      cpu_core/EXE_ACTIVITY.BOUND_ON_LOADS/
+                              (0.00%)
+     <not counted>      cpu_core/EXE_ACTIVITY.1_PORTS_UTIL/
+                            (0.00%)
+     <not counted>      cpu_core/CYCLE_ACTIVITY.STALLS_TOTAL/
+                              (0.00%)
+     <not counted>      cpu_core/CPU_CLK_UNHALTED.THREAD/
+                          (0.00%)
+     <not counted>      cpu_core/ARITH.DIV_ACTIVE/
+                         (0.00%)
+     <not counted>      cpu_core/EXE_ACTIVITY.2_PORTS_UTIL,umask=3D0xc/
+                                      (0.00%)
+     <not counted>      cpu_core/EXE_ACTIVITY.3_PORTS_UTIL,umask=3D0x80/
+                                       (0.00%)
+
+       1.180394056 seconds time elapsed
+
+       0.409881000 seconds user
+       0.764134000 seconds sys
+```
+
+The event EXE_ACTIVITY.1_PORTS_UTIL is repeated, this is because the
+metric code deduplicates events based purely on their name and so
+doesn't realize EXE_ACTIVITY.1_PORTS_UTIL is the same as
+cpu_core@EXE_ACTIVITY.1_PORTS_UTIL@. This is a hybrid only glitch as
+we only prefix with a PMU for hybrid metrics, and I should find and
+remove why there's no PMU for the 1 case of EXE_ACTIVITY.1_PORTS_UTIL.
+
+This problem doesn't occur for tma_slow_pause and I wondered if you
+could give insight. That metric has the counters below:
+```
+$ perf stat -M tma_slow_pause -a sleep 0.1
+
+Performance counter stats for 'system wide':
+
+    <not counted>      cpu_core/TOPDOWN.SLOTS/
+                        (0.00%)
+    <not counted>      cpu_core/topdown-retiring/
+                        (0.00%)
+    <not counted>      cpu_core/topdown-mem-bound/
+                        (0.00%)
+    <not counted>      cpu_core/topdown-bad-spec/
+                        (0.00%)
+    <not counted>      cpu_core/topdown-fe-bound/
+                        (0.00%)
+    <not counted>      cpu_core/topdown-be-bound/
+                        (0.00%)
+    <not counted>      cpu_core/RESOURCE_STALLS.SCOREBOARD/
+                            (0.00%)
+    <not counted>      cpu_core/EXE_ACTIVITY.1_PORTS_UTIL/
+                           (0.00%)
+    <not counted>      cpu_core/EXE_ACTIVITY.BOUND_ON_LOADS/
+                             (0.00%)
+    <not counted>      cpu_core/CPU_CLK_UNHALTED.PAUSE/
+                        (0.00%)
+    <not counted>      cpu_core/CYCLE_ACTIVITY.STALLS_TOTAL/
+                             (0.00%)
+    <not counted>      cpu_core/CPU_CLK_UNHALTED.THREAD/
+                         (0.00%)
+    <not counted>      cpu_core/ARITH.DIV_ACTIVE/
+                        (0.00%)
+    <not counted>      cpu_core/EXE_ACTIVITY.2_PORTS_UTIL,umask=3D0xc/
+                                     (0.00%)
+    <not counted>      cpu_core/EXE_ACTIVITY.3_PORTS_UTIL,umask=3D0x80/
+                                      (0.00%)
+
+      0.102074888 seconds time elapsed
+```
+
+With -vv I see the event string is:
+'{RESOURCE_STALLS.SCOREBOARD/metric-id=3DRESOURCE_STALLS.SCOREBOARD/,cpu_co=
+re/EXE_ACTIVITY.1_PORTS_UTIL,metric-id=3Dcpu_core!3EXE_ACTIVITY.1_PORTS_UTI=
+L!3/,cpu_core/TOPDOWN.SLOTS,metric-id=3Dcpu_core!3TOPDOWN.SLOTS!3/,cpu_core=
+/EXE_ACTIVITY.BOUND_ON_LOADS,metric-id=3Dcpu_core!3EXE_ACTIVITY.BOUND_ON_LO=
+ADS!3/,cpu_core/topdown-retiring,metric-id=3Dcpu_core!3topdown!1retiring!3/=
+,cpu_core/topdown-mem-bound,metric-id=3Dcpu_core!3topdown!1mem!1bound!3/,cp=
+u_core/topdown-bad-spec,metric-id=3Dcpu_core!3topdown!1bad!1spec!3/,CPU_CLK=
+_UNHALTED.PAUSE/metric-id=3DCPU_CLK_UNHALTED.PAUSE/,cpu_core/CYCLE_ACTIVITY=
+.STALLS_TOTAL,metric-id=3Dcpu_core!3CYCLE_ACTIVITY.STALLS_TOTAL!3/,cpu_core=
+/CPU_CLK_UNHALTED.THREAD,metric-id=3Dcpu_core!3CPU_CLK_UNHALTED.THREAD!3/,c=
+pu_core/ARITH.DIV_ACTIVE,metric-id=3Dcpu_core!3ARITH.DIV_ACTIVE!3/,cpu_core=
+/topdown-fe-bound,metric-id=3Dcpu_core!3topdown!1fe!1bound!3/,cpu_core/EXE_=
+ACTIVITY.2_PORTS_UTIL,umask=3D0xc,metric-id=3Dcpu_core!3EXE_ACTIVITY.2_PORT=
+S_UTIL!0umask!20xc!3/,cpu_core/EXE_ACTIVITY.3_PORTS_UTIL,umask=3D0x80,metri=
+c-id=3Dcpu_core!3EXE_ACTIVITY.3_PORTS_UTIL!0umask!20x80!3/,cpu_core/topdown=
+-be-bound,metric-id=3Dcpu_core!3topdown!1be!1bound!3/}:W'
+
+which without the metric-ids becomes:
+'{RESOURCE_STALLS.SCOREBOARD,cpu_core/EXE_ACTIVITY.1_PORTS_UTIL/,cpu_core/T=
+OPDOWN.SLOTS/,cpu_core/EXE_ACTIVITY.BOUND_ON_LOADS/,cpu_core/topdown-retiri=
+ng/,cpu_core/topdown-mem-bound/,cpu_core/topdown-bad-spec/,CPU_CLK_UNHALTED=
+.PAUSE,cpu_core/CYCLE_ACTIVITY.STALLS_TOTAL/,cpu_core/CPU_CLK_UNHALTED.THRE=
+AD/,cpu_core/ARITH.DIV_ACTIVE/,cpu_core/topdown-fe-bound/,cpu_core/EXE_ACTI=
+VITY.2_PORTS_UTIL,umask=3D0xc/,cpu_core/EXE_ACTIVITY.3_PORTS_UTIL,umask=3D0=
+x80/,cpu_core/topdown-be-bound/}:W'
+
+I count 9 none slots/top-down counters there, but I see
+CPU_CLK_UNHALTED.THREAD can use fixed counter 1. Should
+perf_event_open fail for a CPU that has a pinned use of a fixed
+counter and the group needs the fixed counter? I'm guessing you don't
+want this as CPU_CLK_UNHALTED.THREAD can also go on a generic counter
+and the driver doesn't want to count counter usage, it seems feasible
+to add it though. I guess we need a NO_GROUP_EVENTS_NMI whenever
+CPU_CLK_UNHALTED.THREAD is an event and 8 generic counters are in use.
+
+Checking on Tigerlake I see:
+```
+$ perf stat -M tma_slow_pause -a sleep 0.1
+
+Performance counter stats for 'system wide':
+
+      105,210,913      TOPDOWN.SLOTS                    #      0.1 %
+tma_slow_pause           (72.65%)
+        6,701,129      topdown-retiring
+                        (72.65%)
+       52,359,712      topdown-fe-bound
+                        (72.65%)
+       32,904,532      topdown-be-bound
+                        (72.65%)
+       14,117,814      topdown-bad-spec
+                        (72.65%)
+        6,602,391      RESOURCE_STALLS.SCOREBOARD
+                        (76.17%)
+        4,220,773      cpu/EXE_ACTIVITY.3_PORTS_UTIL,umask=3D0x80/
+                                 (76.73%)
+          421,812      EXE_ACTIVITY.BOUND_ON_STORES
+                        (76.69%)
+        5,164,088      EXE_ACTIVITY.1_PORTS_UTIL
+                        (76.70%)
+          299,681      cpu/INT_MISC.RECOVERY_CYCLES,cmask=3D1,edge/
+                                  (76.69%)
+              245      MISC_RETIRED.PAUSE_INST
+                        (76.67%)
+       58,403,687      CPU_CLK_UNHALTED.THREAD
+                        (76.72%)
+       25,297,841      CYCLE_ACTIVITY.STALLS_MEM_ANY
+                        (76.67%)
+        3,788,772      EXE_ACTIVITY.2_PORTS_UTIL
+                        (62.69%)
+       20,973,875      CYCLE_ACTIVITY.STALLS_TOTAL
+                        (62.16%)
+           68,053      ARITH.DIVIDER_ACTIVE
+                        (62.18%)
+
+      0.102624327 seconds time elapsed
+```
+so 10 generic counters which would never fit and the weak group is
+broken - the difference in the metric explaining why I've not been
+seeing the issue. I think I need to add alderlake/sapphirerapids
+constraints here:
+https://github.com/captain5050/perfmon/blob/main/scripts/create_perf_json.p=
+y#L1382
+Ideally we'd automate the constraint generation (or the PMU driver
+would help us out by failing to open the weak group).
+
+Thanks,
+Ian
+
+
+> Thanks,
+> Kan
+>
+> > Fwiw, if we
+> > switch to the buddy watchdog mechanism then we'll no longer need to
+> > disable the NMI watchdog:
+> > https://lore.kernel.org/lkml/20230421155255.1.I6bf789d21d0c3d75d382e7e5=
+1a804a7a51315f2c@changeid/
+>
 
