@@ -1,152 +1,159 @@
-Return-Path: <linux-kernel+bounces-17189-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17191-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 48AA482495B
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 21:04:03 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 12E28824962
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 21:06:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E70341F23043
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 20:04:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 872B2B21C33
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 20:06:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FC102C681;
-	Thu,  4 Jan 2024 20:03:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D021B2C689;
+	Thu,  4 Jan 2024 20:05:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="RMoy52qN"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA7282C1B3
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 20:03:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 382DCC433C7;
-	Thu,  4 Jan 2024 20:03:54 +0000 (UTC)
-Date: Thu, 4 Jan 2024 15:05:00 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-kernel@vger.kernel.org, Masami Hiramatsu <mhiramat@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>, Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>, Andrew Morton
- <akpm@linux-foundation.org>, Ajay Kaher <akaher@vmware.com>, Al Viro
- <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>
-Subject: Re: [for-next][PATCH 2/3] eventfs: Stop using dcache_readdir() for
- getdents()
-Message-ID: <20240104150500.38b15a62@gandalf.local.home>
-In-Reply-To: <20240104140246.688a3966@gandalf.local.home>
-References: <20240104164703.808999991@goodmis.org>
-	<20240104164738.483305222@goodmis.org>
-	<CAHk-=wiKwDUDv3+jCsv-uacDcHDVTYsXtBR9=6sGM5mqX+DhOg@mail.gmail.com>
-	<20240104140246.688a3966@gandalf.local.home>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D59BC2C1B5
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 20:05:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1d47fae33e0so33575ad.0
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 12:05:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1704398751; x=1705003551; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZvEetwkb9xaGP1xb5l25SZewPP7nYFLZIpeTOK182Ek=;
+        b=RMoy52qNnMYiLdicVgdhF2DjlDmMp1Den7Vb4cfy14nnTEf4DUKnMlTrM8KGHKO6d6
+         HdmJaC2dyrq8Yn/MJKtp4Mc+4pXB8wSX7d27iTahZDDUbkrefy0N6vvOhW6JyKbodYKv
+         eTowJbISzvL/9KlyhqedakIC/h59XnVK/KVbLrqfJzDFKNfuURRaKNkb8zhcQ8Rp6SBe
+         vu/2M1srAjaGG+1A9LyZQyTUQ39nF8kuzsssDmX4BnGTCEavt7iRAV30efP6Ey9uOnB2
+         RrEyFmSSbOWUGE1FXLAarzxr+Ip7TF/AcxjnZercrqMY/BG2cAAf4us30o5XyxX6nOoU
+         UQ9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704398751; x=1705003551;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ZvEetwkb9xaGP1xb5l25SZewPP7nYFLZIpeTOK182Ek=;
+        b=F5ssT5DtCrkITfWaJb7bAYcfVKu/l5fJkgC0WxxL/bMYOapt9s4I2hx+rwRWcvNIV+
+         gjeV0LQ66QEjixoLZAbN/KA87lhnjEwZ0Ix6h2ler7HKG8fsjyprVe+A7MxquTL+B+vw
+         njPFmbiExO27efdO12R5B0kR7EwMKMqvqYogl3GBXwPVQmDd5LtN5LdEWapeUcDl8P99
+         zuo2Nt45TKghIGvBKTCKFiIlcmHMqUO5HWrjg1k/Kkco7SzFu8cBHqs912naVyn4HpBN
+         Den2e12daGSyrztj+LxFl3yhm5IYnTlLxrlQ93pMsfiU/V8lr1O5FIBxnDOyrz5h1Mi6
+         3IPg==
+X-Gm-Message-State: AOJu0YyejfnBUZAf+Al/lAW5bgvmF0vmt88O4A9wfEC2Uhi4Tk0E1DsL
+	OCdxnOrByyU2mwX1ShBzy2vhsTt4AQu9MX7aVB9a4JE+S8U=
+X-Google-Smtp-Source: AGHT+IFtpK9YJeU2jGd3Bpf25IdYM4Caale+wmgEjoLqzqnOsTKnfaX9VNsHJOZHlAHU0P2aZXIT9K2U0qLn/rFYSYA=
+X-Received: by 2002:a17:902:fa50:b0:1d4:69a6:8a9d with SMTP id
+ lb16-20020a170902fa5000b001d469a68a9dmr33072plb.19.1704398750899; Thu, 04 Jan
+ 2024 12:05:50 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20231206081538.17056-1-yunfei.dong@mediatek.com>
+ <20231206081538.17056-5-yunfei.dong@mediatek.com> <ce2110bf-a16a-45ae-979b-7e41be2896cd@xs4all.nl>
+In-Reply-To: <ce2110bf-a16a-45ae-979b-7e41be2896cd@xs4all.nl>
+From: Jeffrey Kardatzke <jkardatzke@google.com>
+Date: Thu, 4 Jan 2024 12:05:39 -0800
+Message-ID: <CA+ddPcM6nz0ufF5NXUq7E_vF6HnFKrEEag5iUDAknT6=hWTCNQ@mail.gmail.com>
+Subject: Re: [PATCH v3,04/21] v4l: add documentation for secure memory flag
+To: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Cc: Yunfei Dong <yunfei.dong@mediatek.com>, 
+	=?UTF-8?B?TsOtY29sYXMgRiAuIFIgLiBBIC4gUHJhZG8=?= <nfraprado@collabora.com>, 
+	Nicolas Dufresne <nicolas.dufresne@collabora.com>, 
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
+	Benjamin Gaignard <benjamin.gaignard@collabora.com>, Nathan Hebert <nhebert@chromium.org>, 
+	Chen-Yu Tsai <wenst@chromium.org>, Yong Wu <yong.wu@mediatek.com>, 
+	Hsin-Yi Wang <hsinyi@chromium.org>, Fritz Koenig <frkoenig@chromium.org>, 
+	Daniel Vetter <daniel@ffwll.ch>, Steve Cho <stevecho@chromium.org>, 
+	Sumit Semwal <sumit.semwal@linaro.org>, Brian Starkey <Brian.Starkey@arm.com>, 
+	John Stultz <jstultz@google.com>, "T . J . Mercier" <tjmercier@google.com>, 
+	=?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
+	Matthias Brugger <matthias.bgg@gmail.com>, dri-devel@lists.freedesktop.org, 
+	linaro-mm-sig@lists.linaro.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-mediatek@lists.infradead.org, 
+	Project_Global_Chrome_Upstream_Group@mediatek.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, 4 Jan 2024 14:02:46 -0500
-Steven Rostedt <rostedt@goodmis.org> wrote:
+On Mon, Dec 11, 2023 at 3:05=E2=80=AFAM Hans Verkuil <hverkuil-cisco@xs4all=
+.nl> wrote:
+>
+> On 06/12/2023 09:15, Yunfei Dong wrote:
+> > From: Jeffrey Kardatzke <jkardatzke@google.com>
+> >
+> > Adds documentation for V4L2_MEMORY_FLAG_SECURE.
+> >
+> > Signed-off-by: Jeffrey Kardatzke <jkardatzke@google.com>
+> > Signed-off-by: Yunfei Dong <yunfei.dong@mediatek.com>
+> > ---
+> >  Documentation/userspace-api/media/v4l/buffer.rst | 8 +++++++-
+> >  1 file changed, 7 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/Documentation/userspace-api/media/v4l/buffer.rst b/Documen=
+tation/userspace-api/media/v4l/buffer.rst
+> > index 52bbee81c080..a5a7d1c72d53 100644
+> > --- a/Documentation/userspace-api/media/v4l/buffer.rst
+> > +++ b/Documentation/userspace-api/media/v4l/buffer.rst
+> > @@ -696,7 +696,7 @@ enum v4l2_memory
+> >
+> >  .. _memory-flags:
+> >
+> > -Memory Consistency Flags
+> > +Memory Flags
+> >  ------------------------
+> >
+> >  .. raw:: latex
+> > @@ -728,6 +728,12 @@ Memory Consistency Flags
+> >       only if the buffer is used for :ref:`memory mapping <mmap>` I/O a=
+nd the
+> >       queue reports the :ref:`V4L2_BUF_CAP_SUPPORTS_MMAP_CACHE_HINTS
+> >       <V4L2-BUF-CAP-SUPPORTS-MMAP-CACHE-HINTS>` capability.
+> > +    * .. _`V4L2-MEMORY-FLAG-SECURE`:
+> > +
+> > +      - ``V4L2_MEMORY_FLAG_SECURE``
+> > +      - 0x00000002
+> > +      - DMA bufs passed into the queue will be validated to ensure the=
+y were
+> > +     allocated from a secure dma-heap.
+>
+> Hmm, that needs a bit more work. How about:
+>
+> - The queued buffers are expected to be in secure memory. If not, an erro=
+r will be
+>   returned. This flag can only be used with ``V4L2_MEMORY_DMABUF``. Typic=
+ally
+>   secure buffers are allocated using a secure dma-heap. This flag can onl=
+y be
+>   specified if the ``V4L2_BUF_CAP_SUPPORTS_SECURE_MEM`` is set.
+>
 
-> > And that very fact actually makes me wonder:
-> >   
-> > >         for (i = 0; i < ei->nr_entries; i++) {
-> > > +               void *cdata = ei->data;
-> > > +
-> > > +               if (c > 0) {
-> > > +                       c--;
-> > > +                       continue;
-> > > +               }    
-> > 
-> > The 'ei->nr_entries' things are in a stable array, so the indexing for
-> > them cannot change (ie even if "is_freed" were to be set the array is
-> > still stable).  
-> 
-> Yeah, the entries is fixed. If the ei itself gets freed, so does all the
-> entries at the same time. The individual entries should too.
-> 
-> Hmm, it probably doesn't even make sense to continue the loop if is_freed
-> is set as the same variable will be checked every time. :-/  Should just be
-> a "break;" not a "continue;"
+Thanks Hans. Yunfei, can you integrate this change into the patch please?
 
-Also, I just realized it breaks if we update the 'c--' before the callback. :-/
+> In addition, the title of this table is currently "Memory Consistency Fla=
+gs": that
+> should be renamed to "Memory Flags".
 
-I have to put this check *after* the callback check.
-
-Reason being, the callback can say "this event doesn't get this file" and
-return 0, which tells eventfs to skip this file.
-
-For example, we have
-
- # ls /sys/kernel/tracing/events/ftrace/function
-format  hist  hist_debug  id  inject
-
-and
-
- # ls /sys/kernel/tracing/events/sched/sched_switch/
-enable  filter  format  hist  hist_debug  id  inject  trigger
-
-The "ftrace" event files are for information only. They describe the
-internal events. For example, the "function" event is what is written into
-the ring buffer by the function tracer. That event is not enabled by the
-events directory. It is only enabled when "function" is written into
-current_tracer.
-
-Same for filtering. The filter logic for function events is done by the
-"set_ftrace_filter" file in tracefs.
-
-But the "sched_switch" event is enabled and filtered by the eventfs
-directory. Here we see "enable" and "filter" files that the user could
-write into to enabled and/or filter the sched_switch event.
-
-Now because the "function" and "sched_switch" registered the same way, the
-callback that handles the two has:
-
-static int event_callback(const char *name, umode_t *mode, void **data,
-			  const struct file_operations **fops)
-{
-	struct trace_event_file *file = *data;
-	struct trace_event_call *call = file->event_call;
-
-[..]
-	if (!(call->flags & TRACE_EVENT_FL_IGNORE_ENABLE)) {
-		if (call->class->reg && strcmp(name, "enable") == 0) {
-			*mode = TRACE_MODE_WRITE;
-			*fops = &ftrace_enable_fops;
-			return 1;
-		}
-
-		if (strcmp(name, "filter") == 0) {
-			*mode = TRACE_MODE_WRITE;
-			*fops = &ftrace_event_filter_fops;
-			return 1;
-		}
-	}
-[..]
-	return 0;
-}
-
-Where the function event has that "TRACE_EVENT_FL_IGNORE_ENABLE" flag set,
-so when the entry for "enable" or "filter" is passed to it, it returns 0.
-
-Before, where we had c-- after the callback, we had:
-
- # ls /sys/kernel/tracing/events/ftrace/function
-format  hist  hist_debug  id  inject
-
-After changing the c-- to before the callback I now get:
-
- # ls /sys/kernel/tracing/events/ftrace/function/
-format  hist  hist  hist_debug  hist_debug  id  inject  inject
-
-Where the missing "enable" and "filter" files caused the indexing to be
-off, and the ls repeated "hist" and "hist_debug" because of it. Oh, and the
-function event doesn't have "trigger" either which is why we get two
-"inject" files.
-
-I have to move the c-- update down. I can still do it before creating the
-dentry though, as if that fails, we should just bail.
-
--- Steve
+Hans, the patch is already renaming the table as you suggested. :)
+(unless there's some other spot I'm missing)
+>
+> Regards,
+>
+>         Hans
+>
+> >
+> >  .. raw:: latex
+> >
+>
 
