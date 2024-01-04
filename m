@@ -1,55 +1,66 @@
-Return-Path: <linux-kernel+bounces-16186-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16187-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 30D3E823A56
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 02:48:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3CA2E823A5B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 02:52:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3FAC81C24B38
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 01:48:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 612581C24B01
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 01:52:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A5261FA1;
-	Thu,  4 Jan 2024 01:48:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEF504432;
+	Thu,  4 Jan 2024 01:52:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="csehxxbi"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="fCF1RXVn"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75E201849;
-	Thu,  4 Jan 2024 01:48:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=Z2pAVgWlAJ8tkGS/VnuzeBYZcCyen7flzxJt+0I1PG0=; b=csehxxbiUXX1KIbA9ZMsrg6t3t
-	TNCSY5LykujCNzDU9sYwdoJBtpx6su8fmxy90j7Xs2qfgdVR9xVfgZLMJ0D7ph0IslBS/1yRUCrm5
-	3leeJBsCIogosyQ0ui0YFC12kuIpfSgcnSPupGnuWcLxPxonHzoD5Jm8Z9faLB6Ru4cKZjJJLEc9k
-	Wfpm0/YW6aNvf6vqkbzlC+aaf4iqNjRTm2LP0quWlICk2wZSceXVJ48y+RC4FleMomvlvdhdFSNZo
-	B/oeZc6wHI9fvGDew9sRLEWj2DHc2lHyVkRYOwd5lZHDcX48FgyPgJJDLwHs2Sjqz9foy3syBtPrq
-	8tyb3j1g==;
-Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
-	id 1rLCqb-0013HX-2t;
-	Thu, 04 Jan 2024 01:48:38 +0000
-Date: Thu, 4 Jan 2024 01:48:37 +0000
-From: Al Viro <viro@zeniv.linux.org.uk>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: LKML <linux-kernel@vger.kernel.org>,
-	Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Christian Brauner <brauner@kernel.org>,
-	linux-fsdevel@vger.kernel.org,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH] tracefs/eventfs: Use root and instance inodes as default
- ownership
-Message-ID: <20240104014837.GO1674809@ZenIV>
-References: <20240103203246.115732ec@gandalf.local.home>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A37901FA1;
+	Thu,  4 Jan 2024 01:52:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704333139; x=1735869139;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=x87hXyg1vD9hfcAbz58oRkGr1NdcwNmNwpY5ZaL9VpU=;
+  b=fCF1RXVnPwtk8vwrtIn9FjP3JzNuWOSZLYeCKDyTfdGYyjw83/J9wDk6
+   l++vR7uhTTtCyLo3oTFRQEpFhR9hvcgiQvPUO6GhxPd/bDZkvaWkjcNjH
+   +/qZd2VPDZivsRM87JVRn7tTFRLenwJ4cehCcoIbKdgq1EIOdfXQ8fR/I
+   pdvdkgb0JoaRJmmH/os2mvov6Z/iLnXlry0m0O4pNy2MFDZz/EAbBmjr+
+   2IkRZHIgaoTl5Bc9pxVNBteTYsIHS6TXKyaH8OCJZKkm1+jPelNVu4Z7I
+   9IS8dBNjUepGJT7VQ+1Fc5zE4LIjjlIa13Bg1z0PtMUpAnIF1WLlLktPC
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10942"; a="4443211"
+X-IronPort-AV: E=Sophos;i="6.04,329,1695711600"; 
+   d="scan'208";a="4443211"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jan 2024 17:52:18 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10942"; a="783692444"
+X-IronPort-AV: E=Sophos;i="6.04,329,1695711600"; 
+   d="scan'208";a="783692444"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by fmsmga007.fm.intel.com with ESMTP; 03 Jan 2024 17:52:15 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rLCu5-000MmM-0C;
+	Thu, 04 Jan 2024 01:52:13 +0000
+Date: Thu, 4 Jan 2024 09:51:30 +0800
+From: kernel test robot <lkp@intel.com>
+To: Bibo Mao <maobibo@loongson.cn>, Huacai Chen <chenhuacai@kernel.org>,
+	Tianrui Zhao <zhaotianrui@loongson.cn>,
+	Juergen Gross <jgross@suse.com>
+Cc: oe-kbuild-all@lists.linux.dev, loongarch@lists.linux.dev,
+	linux-kernel@vger.kernel.org, virtualization@lists.linux.dev,
+	kvm@vger.kernel.org
+Subject: Re: [PATCH 3/5] LoongArch/smp: Refine ipi ops on LoongArch platform
+Message-ID: <202401040952.1JdPfC85-lkp@intel.com>
+References: <20240103071615.3422264-4-maobibo@loongson.cn>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -58,18 +69,77 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240103203246.115732ec@gandalf.local.home>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+In-Reply-To: <20240103071615.3422264-4-maobibo@loongson.cn>
 
-On Wed, Jan 03, 2024 at 08:32:46PM -0500, Steven Rostedt wrote:
+Hi Bibo,
 
-> +	/* Get the tracefs root from the parent */
-> +	inode = d_inode(dentry->d_parent);
-> +	inode = d_inode(inode->i_sb->s_root);
+kernel test robot noticed the following build warnings:
 
-That makes no sense.  First of all, for any positive dentry we have
-dentry->d_sb == dentry->d_inode->i_sb.  And it's the same for all
-dentries on given superblock.  So what's the point of that dance?
-If you want the root inode, just go for d_inode(dentry->d_sb->s_root)
-and be done with that...
+[auto build test WARNING on 610a9b8f49fbcf1100716370d3b5f6f884a2835a]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Bibo-Mao/LoongArch-KVM-Add-hypercall-instruction-emulation-support/20240103-151946
+base:   610a9b8f49fbcf1100716370d3b5f6f884a2835a
+patch link:    https://lore.kernel.org/r/20240103071615.3422264-4-maobibo%40loongson.cn
+patch subject: [PATCH 3/5] LoongArch/smp: Refine ipi ops on LoongArch platform
+config: loongarch-randconfig-r131-20240103 (https://download.01.org/0day-ci/archive/20240104/202401040952.1JdPfC85-lkp@intel.com/config)
+compiler: loongarch64-linux-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20240104/202401040952.1JdPfC85-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202401040952.1JdPfC85-lkp@intel.com/
+
+sparse warnings: (new ones prefixed by >>)
+>> arch/loongarch/kernel/smp.c:192:73: sparse: sparse: incorrect type in argument 4 (different address spaces) @@     expected void [noderef] __percpu *percpu_dev_id @@     got int * @@
+   arch/loongarch/kernel/smp.c:192:73: sparse:     expected void [noderef] __percpu *percpu_dev_id
+   arch/loongarch/kernel/smp.c:192:73: sparse:     got int *
+   arch/loongarch/kernel/smp.c: note: in included file (through arch/loongarch/include/asm/loongarch.h, arch/loongarch/include/asm/cpu-info.h, ...):
+   ../lib/gcc/loongarch64-linux/13.2.0/include/larchintrin.h:332:3: sparse: sparse: undefined identifier '__builtin_loongarch_iocsrwr_d'
+   ../lib/gcc/loongarch64-linux/13.2.0/include/larchintrin.h:284:25: sparse: sparse: undefined identifier '__builtin_loongarch_iocsrrd_w'
+   ../lib/gcc/loongarch64-linux/13.2.0/include/larchintrin.h:284:11: sparse: sparse: cast from unknown type
+   ../lib/gcc/loongarch64-linux/13.2.0/include/larchintrin.h:322:3: sparse: sparse: undefined identifier '__builtin_loongarch_iocsrwr_w'
+   arch/loongarch/kernel/smp.c: note: in included file (through arch/loongarch/include/asm/cpu-info.h, arch/loongarch/include/asm/processor.h, ...):
+   arch/loongarch/include/asm/loongarch.h:1260:1: sparse: sparse: undefined identifier '__builtin_loongarch_csrrd_w'
+   arch/loongarch/include/asm/loongarch.h:1260:1: sparse: sparse: cast from unknown type
+   arch/loongarch/include/asm/loongarch.h:1260:1: sparse: sparse: undefined identifier '__builtin_loongarch_csrwr_w'
+   arch/loongarch/include/asm/loongarch.h:1260:1: sparse: sparse: cast from unknown type
+   arch/loongarch/include/asm/loongarch.h:1260:1: sparse: sparse: undefined identifier '__builtin_loongarch_csrrd_w'
+   arch/loongarch/include/asm/loongarch.h:1260:1: sparse: sparse: cast from unknown type
+   arch/loongarch/include/asm/loongarch.h:1260:1: sparse: sparse: undefined identifier '__builtin_loongarch_csrwr_w'
+   arch/loongarch/include/asm/loongarch.h:1260:1: sparse: sparse: cast from unknown type
+   arch/loongarch/include/asm/loongarch.h:1260:1: sparse: sparse: undefined identifier '__builtin_loongarch_csrrd_w'
+   arch/loongarch/include/asm/loongarch.h:1260:1: sparse: sparse: cast from unknown type
+   arch/loongarch/include/asm/loongarch.h:1260:1: sparse: sparse: undefined identifier '__builtin_loongarch_csrwr_w'
+   arch/loongarch/include/asm/loongarch.h:1260:1: sparse: sparse: cast from unknown type
+   arch/loongarch/kernel/smp.c: note: in included file (through arch/loongarch/include/asm/loongarch.h, arch/loongarch/include/asm/cpu-info.h, ...):
+   ../lib/gcc/loongarch64-linux/13.2.0/include/larchintrin.h:294:30: sparse: sparse: undefined identifier '__builtin_loongarch_iocsrrd_d'
+   ../lib/gcc/loongarch64-linux/13.2.0/include/larchintrin.h:294:11: sparse: sparse: cast from unknown type
+   arch/loongarch/kernel/smp.c: note: in included file (through include/linux/irqflags.h, include/linux/spinlock.h, include/linux/mmzone.h, ...):
+   arch/loongarch/include/asm/percpu.h:30:9: sparse: sparse: undefined identifier '__builtin_loongarch_csrwr_d'
+   arch/loongarch/include/asm/percpu.h:30:9: sparse: sparse: cast from unknown type
+   arch/loongarch/include/asm/percpu.h:30:9: sparse: sparse: cast from unknown type
+
+vim +192 arch/loongarch/kernel/smp.c
+
+   181	
+   182	static void loongson_ipi_init(void)
+   183	{
+   184		int r, ipi_irq;
+   185		static int ipi_dummy_dev;
+   186	
+   187		ipi_irq = get_percpu_irq(INT_IPI);
+   188		if (ipi_irq < 0)
+   189			panic("IPI IRQ mapping failed\n");
+   190	
+   191		irq_set_percpu_devid(ipi_irq);
+ > 192		r = request_percpu_irq(ipi_irq, loongson_ipi_interrupt, "IPI", &ipi_dummy_dev);
+   193		if (r < 0)
+   194			panic("IPI IRQ request failed\n");
+   195	}
+   196	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
