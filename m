@@ -1,155 +1,181 @@
-Return-Path: <linux-kernel+bounces-16702-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16707-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1A8B8242AF
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 14:27:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E5D6E8242C0
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 14:37:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6DAFCB241D5
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 13:27:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9B5BC1F232D1
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 13:37:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32B7A224C4;
-	Thu,  4 Jan 2024 13:27:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D3F6224C6;
+	Thu,  4 Jan 2024 13:37:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="aEis+rWB"
+	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="Iod9vDX/"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE5622230B
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 13:27:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-5563944b3dfso611007a12.3
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 05:27:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1704374819; x=1704979619; darn=vger.kernel.org;
-        h=content-transfer-encoding:to:references:message-id:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7NLOEEKOHl1K8SwVg4x8l8DROTucqom/M/VF0VUr2O4=;
-        b=aEis+rWBVmAFnwYH1KnpAEWQOawFoxikwA+gwAxWCYppwkK9b3WsKd0uaDmSAmjd0U
-         GX8lSD4NAGWmsvIpLBL2gpCOXJxIzfwgtGdoGzUOgynOq3VHP8eevg89/kKLPW8jaEr9
-         rT/fhKVeQk5yPQrp/rHBsacZ1x/0qxmpDYJT8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704374819; x=1704979619;
-        h=content-transfer-encoding:to:references:message-id:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7NLOEEKOHl1K8SwVg4x8l8DROTucqom/M/VF0VUr2O4=;
-        b=WL22wro86NxourK0P34euaZUOphO5XoXtuLlE/pN+VI2/VDzpHx5dU5p4GKp4sJTtf
-         Xul3b5q0ApowUfLCzPw31nW8mJIEpVPE0HCU6CU0eo9zMnpsguDhBjNnu1GbEw9CF2aW
-         VzaWTLrY2d/BxEkR5lK//HapDGi8JwKNl7hfphx5GFbM0RnVfn4oDZGaIKUFJ+ycRl9d
-         w0Fm0/uNSYdAlsiqlxPaXoTflnG/pYDISjcvDagoNNMSoPF58cNTe5Bmd+QhdY9Dy3gI
-         cRhVzOQwQHkvUZIb7kgNlmt4WHRhNM8rJxY9oLGus+tfviJ2Jm7CFzLrtPefsOo1SBps
-         lJWA==
-X-Gm-Message-State: AOJu0Ywf0eh61Wkst23CkPsaqWVHvYtR6jFgr18Nbh40JQSRpmusdxfW
-	uWsJwlmeAXYGpcbyDWPG8WDOidkqg5ulRSQH5PKqZTt99NXeCRMJbFw2pe8gTu0ihP+CUlqus2W
-	/WCqagmLBl+SsoZQDPIi9Zw==
-X-Google-Smtp-Source: AGHT+IHd/WpwPLyNONTm9ogjAA99SQMYsTaEZ3qlb+1RX3wQIK/T9BGDoHBAKS8TMe2iuAmaxN1MUA==
-X-Received: by 2002:a50:c35d:0:b0:557:183b:9028 with SMTP id q29-20020a50c35d000000b00557183b9028mr8478edb.65.1704374819165;
-        Thu, 04 Jan 2024 05:26:59 -0800 (PST)
-Received: from smtpclient.apple ([132.69.236.92])
-        by smtp.gmail.com with ESMTPSA id ef7-20020a05640228c700b00556cf2545desm2249504edb.16.2024.01.04.05.26.55
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 04 Jan 2024 05:26:58 -0800 (PST)
+Received: from smtp.smtpout.orange.fr (smtp-16.smtpout.orange.fr [80.12.242.16])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0817520B34
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 13:37:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=wanadoo.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
+Received: from pop-os.home ([92.140.202.140])
+	by smtp.orange.fr with ESMTPA
+	id LNn9rqZHtmbVqLNn9rhL4z; Thu, 04 Jan 2024 14:29:48 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+	s=t20230301; t=1704374988;
+	bh=ciTbDjeP+vCKPdJby2wMqEkjO/zLT5PPfRKymuvu7Ls=;
+	h=From:To:Cc:Subject:Date;
+	b=Iod9vDX/tgK1aAj3D0pbcF1SNX2aOulCB5ziVBgXc2wj6sOGEGBmLWICLdqZHZt1x
+	 UlTjdr32do3p5szUwUxlGYJXZCS9asBZSRogiJqv6CaSbTb6kt9vprVOAq9m0B1Okf
+	 //EXruuhFxkXyxmZeYu0nHTfn0zzJkFcd3ymeIDLQzLloLnZkyaN43xELjdoI9Ys+y
+	 DIW2rbvPF+wBN8W2CB8VEm4/9Mf/bxfNzmMGqUW1d1P8S8t0mu127k442K2KggsUsv
+	 GC1Jh3+mYzZMGZXRoxl6tidDt02gehE5jJOb8Fz3axGOJPBtvHnAsMeSXwnXWhaulV
+	 N60RtHWbmS6zA==
+X-ME-Helo: pop-os.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Thu, 04 Jan 2024 14:29:48 +0100
+X-ME-IP: 92.140.202.140
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To: Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>,
+	Jan Kara <jack@suse.cz>
+Cc: linux-kernel@vger.kernel.org,
+	kernel-janitors@vger.kernel.org,
+	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+	linux-fsdevel@vger.kernel.org
+Subject: [PATCH] seq_file: Optimize seq_puts()
+Date: Thu,  4 Jan 2024 14:29:37 +0100
+Message-Id: <5c4f7ad7b88f5026940efa9c8be36a58755ec1b3.1704374916.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.300.61.1.2\))
-Subject: Re: [PATCH 1/2] mm/tlb: fix fullmm semantics
-From: Nadav Amit <nadav.amit@broadcom.com>
-In-Reply-To: <ZZN35DTJTNExCNXW@xhacker>
-Date: Thu, 4 Jan 2024 15:26:43 +0200
-Cc: Will Deacon <will@kernel.org>,
- Aneesh Kumar K V <aneesh.kumar@linux.ibm.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Nick Piggin <npiggin@gmail.com>,
- Peter Zijlstra <peterz@infradead.org>,
- Catalin Marinas <catalin.marinas@arm.com>,
- Paul Walmsley <paul.walmsley@sifive.com>,
- Palmer Dabbelt <palmer@dabbelt.com>,
- Albert Ou <aou@eecs.berkeley.edu>,
- Arnd Bergmann <arnd@arndb.de>,
- linux-arch@vger.kernel.org,
- linux-mm <linux-mm@kvack.org>,
- linux-arm-kernel@lists.infradead.org,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- linux-riscv@lists.infradead.org,
- Nadav Amit <namit@vmware.com>,
- Andrea Arcangeli <aarcange@redhat.com>,
- Andy Lutomirski <luto@kernel.org>,
- Dave Hansen <dave.hansen@linux.intel.com>,
- Thomas Gleixner <tglx@linutronix.de>,
- Yu Zhao <yuzhao@google.com>,
- the arch/x86 maintainers <x86@kernel.org>
-Message-Id: <0468E994-273E-4A8B-A521-150723DA9774@broadcom.com>
-References: <20231228084642.1765-1-jszhang@kernel.org>
- <20231228084642.1765-2-jszhang@kernel.org>
- <204B6410-2EFA-462B-9DF7-64CC5F1D3AD2@broadcom.com>
- <ZZN35DTJTNExCNXW@xhacker>
-To: Jisheng Zhang <jszhang@kernel.org>
-X-Mailer: Apple Mail (2.3774.300.61.1.2)
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
+Most of seq_puts() usages are done with a string literal. In such cases,
+the length of the string car be computed at compile time in order to save
+a strlen() call at run-time. seq_write() can then be used instead.
 
+This saves a few cycles.
 
-> On Jan 2, 2024, at 4:41=E2=80=AFAM, Jisheng Zhang <jszhang@kernel.org> wr=
-ote:
->=20
-> On Sat, Dec 30, 2023 at 11:54:02AM +0200, Nadav Amit wrote:
->=20
->>=20
->> My knowledge of arm64 is a bit limited, but the code does not seem
->> to match the comment, so if it is correct (which I strongly doubt),
->> the comment should be updated.
->=20
-> will do if the above change is accepted by arm64
+To have an estimation of how often this optimization triggers:
+   $ git grep seq_puts.*\" | wc -l
+   3391
 
-Jisheng, I expected somebody with arm64 knowledge to point it out, and
-maybe I am wrong, but I really don=E2=80=99t understand something about the
-correctness, if you can please explain.
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+Checked by comparing the output of a few .s files.
+Here is one of these outputs:
 
-In the following code:
+$ diff -u drivers/clk/clk.s.old drivers/clk/clk.s | grep -C6 seq_w
 
---- a/arch/arm64/include/asm/tlb.h
-+++ b/arch/arm64/include/asm/tlb.h
-@@ -62,7 +62,10 @@ static inline void tlb_flush(struct mmu_gather *tlb)
-	 * invalidating the walk-cache, since the ASID allocator won't
-	 * reallocate our ASID without invalidating the entire TLB.
-	 */
--	if (tlb->fullmm) {
-+	if (tlb->fullmm)
-+		return;
+ 	call	clk_prepare_unlock	#
+ # drivers/clk/clk.c:3320: 	seq_puts(s, "}\n");
+ 	movq	%r12, %rdi	# s,
++	movl	$2, %edx	#,
+ 	movq	$.LC66, %rsi	#,
+-	call	seq_puts	#
++	call	seq_write	#
+ 	call	__tsan_func_exit	#
+ # drivers/clk/clk.c:3322: }
+ 	xorl	%eax, %eax	#
+@@ -34520,6 +34521,7 @@
+ 	popq	%rbp	#
+ 	popq	%r12	#
+--
+ # drivers/clk/clk.c:3205: 		seq_puts(s, "-----");
+ 	call	__sanitizer_cov_trace_pc	#
++	movl	$5, %edx	#,
+ 	movq	$.LC72, %rsi	#,
+ 	movq	%r13, %rdi	# s,
+-	call	seq_puts	#
++	call	seq_write	#
+ 	jmp	.L2134	#
+ .L2144:
+ # drivers/clk/clk.c:1793: 	return clk_core_get_accuracy_no_lock(core);
+@@ -35225,20 +35228,23 @@
+ 	leaq	240(%r12), %rdi	#, tmp95
+ 	call	__tsan_read8	#
+--
+ 	movq	%r12, %rdi	# s,
++	movq	$.LC77, %rsi	#,
+ # drivers/clk/clk.c:3244: 	struct hlist_head **lists = s->private;
+ 	movq	240(%r12), %rbp	# s_9(D)->private, lists
+ # drivers/clk/clk.c:3246: 	seq_puts(s, "                                 enable  prepare  protect                                duty  hardware                            connection\n");
+-	call	seq_puts	#
++	call	seq_write	#
+ # drivers/clk/clk.c:3247: 	seq_puts(s, "   clock                          count    count    count        rate   accuracy phase  cycle    enable   consumer                         id\n");
++	movl	$142, %edx	#,
+ 	movq	$.LC78, %rsi	#,
+ 	movq	%r12, %rdi	# s,
+-	call	seq_puts	#
++	call	seq_write	#
+ # drivers/clk/clk.c:3248: 	seq_puts(s, "---------------------------------------------------------------------------------------------------------------------------------------------\n");
++	movl	$142, %edx	#,
+ 	movq	$.LC79, %rsi	#,
+ 	movq	%r12, %rdi	# s,
+-	call	seq_puts	#
++	call	seq_write	#
+ # drivers/clk/clk.c:3251: 	clk_prepare_lock();
+ 	call	clk_prepare_lock	#
+ .L2207:
+@@ -37511,7 +37517,7 @@
+ 	subq	$16, %rsp	#,
+ # drivers/clk/clk.c:3082: {
+---
+ fs/seq_file.c            |  4 ++--
+ include/linux/seq_file.h | 10 +++++++++-
+ 2 files changed, 11 insertions(+), 3 deletions(-)
 
-You skip flush if fullmm is on. But if page-tables are freed, you may
-want to flush immediately and not wait for ASID to be freed to avoid
-speculative page walks; these walks at least on x86 caused a mess.
+diff --git a/fs/seq_file.c b/fs/seq_file.c
+index f5fdaf3b1572..8ef0a07033ca 100644
+--- a/fs/seq_file.c
++++ b/fs/seq_file.c
+@@ -669,7 +669,7 @@ void seq_putc(struct seq_file *m, char c)
+ }
+ EXPORT_SYMBOL(seq_putc);
+ 
+-void seq_puts(struct seq_file *m, const char *s)
++void __seq_puts(struct seq_file *m, const char *s)
+ {
+ 	int len = strlen(s);
+ 
+@@ -680,7 +680,7 @@ void seq_puts(struct seq_file *m, const char *s)
+ 	memcpy(m->buf + m->count, s, len);
+ 	m->count += len;
+ }
+-EXPORT_SYMBOL(seq_puts);
++EXPORT_SYMBOL(__seq_puts);
+ 
+ /**
+  * seq_put_decimal_ull_width - A helper routine for putting decimal numbers
+diff --git a/include/linux/seq_file.h b/include/linux/seq_file.h
+index 234bcdb1fba4..15abf45d62c5 100644
+--- a/include/linux/seq_file.h
++++ b/include/linux/seq_file.h
+@@ -118,7 +118,15 @@ void seq_vprintf(struct seq_file *m, const char *fmt, va_list args);
+ __printf(2, 3)
+ void seq_printf(struct seq_file *m, const char *fmt, ...);
+ void seq_putc(struct seq_file *m, char c);
+-void seq_puts(struct seq_file *m, const char *s);
++void __seq_puts(struct seq_file *m, const char *s);
++#define seq_puts(m, s)						\
++do {								\
++	if (__builtin_constant_p(s))				\
++		seq_write(m, s, __builtin_strlen(s));		\
++	else							\
++		__seq_puts(m, s);				\
++} while (0)
++
+ void seq_put_decimal_ull_width(struct seq_file *m, const char *delimiter,
+ 			       unsigned long long num, unsigned int width);
+ void seq_put_decimal_ull(struct seq_file *m, const char *delimiter,
+-- 
+2.34.1
 
-No?
-
-
---=20
-This electronic communication and the information and any files transmitted=
-=20
-with it, or attached to it, are confidential and are intended solely for=20
-the use of the individual or entity to whom it is addressed and may contain=
-=20
-information that is confidential, legally privileged, protected by privacy=
-=20
-laws, or otherwise restricted from disclosure to anyone else. If you are=20
-not the intended recipient or the person responsible for delivering the=20
-e-mail to the intended recipient, you are hereby notified that any use,=20
-copying, distributing, dissemination, forwarding, printing, or copying of=
-=20
-this e-mail is strictly prohibited. If you received this e-mail in error,=
-=20
-please return the e-mail to the sender, delete it from your computer, and=
-=20
-destroy any printed copy of it.
 
