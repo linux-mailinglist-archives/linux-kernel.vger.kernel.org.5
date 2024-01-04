@@ -1,53 +1,30 @@
-Return-Path: <linux-kernel+bounces-16710-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16711-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C22AD8242C8
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 14:40:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EEC548242CB
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 14:42:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 00B5C1F214EA
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 13:40:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 140DC1C21F29
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 13:42:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 776AA2233B;
-	Thu,  4 Jan 2024 13:40:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Qh1sm27c"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4551224C0;
+	Thu,  4 Jan 2024 13:42:16 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+Received: from proxmox-new.maurer-it.com (proxmox-new.maurer-it.com [94.136.29.106])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C832E2231B;
-	Thu,  4 Jan 2024 13:40:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704375648; x=1735911648;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=izzVXBML3qDVk1WkctSU9+hFRAuWndHA8g3FABv36pI=;
-  b=Qh1sm27cTeD0zcmCEpIvZWzr2UUL4kJKbdQ3G7+iDiZLPKiHmUn2SNor
-   FOUM3NesgRzHH9d1WXrpQcjqvC0j3VoNrEkdrwnndgFE/sAUtv1OxjvB8
-   nWShZagYv/QsFsUtZoAfhxN+4qUGvR2/rgyqG6yfjtxzi2JMg2tZChXgW
-   nANcUce8whJVjW62F3Ktyyv1oAU8p+95HkdbB9he7D84moT4ALTUVprvV
-   PhXldrOTBKPLoUT4XcbE3x7IzwT1BDdmxAcUdT3UH8+K+67/HTQ1pM5uk
-   z090WquNFsUPx2EKM6c2eIBS1xCGY/x4vI1Cev1FttgEKTT9ncRytf2CR
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10943"; a="376733127"
-X-IronPort-AV: E=Sophos;i="6.04,330,1695711600"; 
-   d="scan'208";a="376733127"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2024 05:40:47 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10943"; a="850797439"
-X-IronPort-AV: E=Sophos;i="6.04,330,1695711600"; 
-   d="scan'208";a="850797439"
-Received: from unknown (HELO [10.237.72.75]) ([10.237.72.75])
-  by fmsmga004.fm.intel.com with ESMTP; 04 Jan 2024 05:40:44 -0800
-Message-ID: <adf6c24a-d94b-40e5-b645-0c6b23b2d513@linux.intel.com>
-Date: Thu, 4 Jan 2024 15:40:44 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AE0322313;
+	Thu,  4 Jan 2024 13:42:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=proxmox.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proxmox.com
+Received: from proxmox-new.maurer-it.com (localhost.localdomain [127.0.0.1])
+	by proxmox-new.maurer-it.com (Proxmox) with ESMTP id 1ACD548CD9;
+	Thu,  4 Jan 2024 14:42:04 +0100 (CET)
+Message-ID: <832697b9-3652-422d-a019-8c0574a188ac@proxmox.com>
+Date: Thu, 4 Jan 2024 14:42:01 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -55,53 +32,293 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: i2c-designware: NULL ptr at RIP: 0010:regmap_read+0x12/0x70
-To: "V, Narasimhan" <Narasimhan.V@amd.com>, Borislav Petkov <bp@alien8.de>,
- "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>
-Cc: lkml <linux-kernel@vger.kernel.org>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- Mika Westerberg <mika.westerberg@linux.intel.com>,
- Jan Dabros <jsd@semihalf.com>, Andi Shyti <andi.shyti@kernel.org>,
- "Limonciello, Mario" <Mario.Limonciello@amd.com>
-References: <20231229120820.GCZY62tM7z4v2XmOAZ@fat_crate.local>
- <8169d773-f9ec-4092-b036-9e4fd59966c3@linux.intel.com>
- <DM4PR12MB508654DF49FE079D6C283D658961A@DM4PR12MB5086.namprd12.prod.outlook.com>
- <888da30a-c1ed-4fb0-af81-787fd868ce20@linux.intel.com>
- <DM4PR12MB5086DE2882C7C5044697B1C38967A@DM4PR12MB5086.namprd12.prod.outlook.com>
 Content-Language: en-US
-From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-In-Reply-To: <DM4PR12MB5086DE2882C7C5044697B1C38967A@DM4PR12MB5086.namprd12.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+To: kvm@vger.kernel.org
+Cc: Sean Christopherson <seanjc@google.com>,
+ Paolo Bonzini <pbonzini@redhat.com>,
+ Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
+ linux-mm@kvack.org
+From: Friedrich Weber <f.weber@proxmox.com>
+Subject: Temporary KVM guest hangs connected to KSM and NUMA balancer
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On 1/4/24 08:35, V, Narasimhan wrote:
->> [    6.245173] i2c_designware AMDI0010:00: Unknown Synopsys component type: 0xffffffff
-> 
-> This made me scratching my head since driver probing will fail in this
-> case with -ENODEV and I could not trigger runtime PM activity in such
-> case but perhaps this is timing specific which happens to happen in your
-> case.
-> 
-> Out of curiosity do you see this same "i2c_designware AMDI0010:00:
-> Unknown Synopsys component type: 0xffffffff" error on Vanilla or is it
-> also regression in linux-next?
-> 
-> This does not happen on Vanilla, only on linux-next.
-> 
-This is even more strange. Controller is in reset but I'm blind to see 
-from Andy's patches why. Do you have change to test at these commits?
+Hi,
 
-bd466a892612 ("i2c: designware: Fix PM calls order in dw_i2c_plat_probe()")
-c012fde343d2 ("i2c: designware: Fix reset call order in dw_i2c_plat_probe()"
+some of our (Proxmox VE) users have been reporting [1] that guests
+occasionally become unresponsive with high CPU usage for some time
+(varying between ~1 and more than 60 seconds). After that time, the
+guests come back and continue running fine. Windows guests seem most
+affected (not responding to pings during the hang, RDP sessions time
+out). But we also got reports about Linux guests. This issue was not
+present while we provided (host) kernel 5.15 and was first reported when
+we rolled out a kernel based on 6.2. The reports seem to concern NUMA
+hosts only. Users reported that the issue becomes easier to trigger the
+more memory is assigned to the guests. Setting mitigations=off was
+reported to alleviate (but not eliminate) the issue. The issue seems to
+disappear after disabling KSM.
 
-and maybe the last one
-4bff054b64e1 ("i2c: designware: Fix spelling and other issues in the 
-comments")
+We can reproduce the issue with a Windows guest on a NUMA host, though
+only occasionally and not very reliably. Using a bpftrace script like
+[7] we found the hangs to correlate with long-running invocations of
+`task_numa_work` (more than 500ms), suggesting a connection to the NUMA
+balancer. Indeed, we can't reproduce the issue after disabling the NUMA
+balancer with `echo 0 > /proc/sys/kernel/numa_balancing` [2] and got a
+user confirming this fixes the issue for them [3].
 
-I'm trying to narrow does the regression come from first two patches and 
-if not, then test the last one.
+Since the Windows reproducer is not very stable, we tried to find a
+Linux guest reproducer and have found one (described below [0]) that
+triggers a very similar (hopefully the same) issue. The reproducer
+triggers the hangs also if the host is on current Linux 6.7-rc8
+(610a9b8f). A kernel bisect points to the following as the commit
+introducing the issue:
 
-Andy is out of office and if we can narrow the regression to first two 
-patches we perhaps can revert just them and otherwise need to drop the 
-whole set.
+f47e5bbb ("KVM: x86/mmu: Zap only TDP MMU leafs in zap range and
+mmu_notifier unmap")
+
+which is why I cc'ed Sean and Paolo. Because of the possible KSM
+connection I cc'ed Andrew and linux-mm.
+
+Indeed, on f47e5bbb~1 = a80ced6e ("KVM: SVM: fix panic on out-of-bounds
+guest IRQ") the reproducer does not trigger the hang, and on f47e5bbb it
+triggers the hang.
+
+Currently I don't know enough about the KVM/KSM/NUMA balancer code to
+tell how the patch may trigger these issues. Any idea who we could ask
+about this, or how we could further debug this would be greatly appreciated!
+
+Let me know if I can provide any more information.
+
+Best,
+
+Friedrich
+
+[0]
+
+Reproducer (example outputs with the host on f47e5bbb):
+
+* Host with 256GiB memory, 2 NUMA nodes (for output of `numactl -H` see [4])
+* Disable ksmtuned on the host, then manually enable and "boost" KSM:
+
+  echo 1250 > /sys/kernel/mm/ksm/pages_to_scan
+  echo 1 > /sys/kernel/mm/ksm/run
+
+* Create Linux guest (e.g. Debian 12) with 140GiB memory. There is no
+virtio-balloon-pci device, this is to prevent the host from reclaiming
+memory of the guest (this mimics the behavior of Windows guests). See
+[5] for QEMU 8.2 command line.
+* On the guest, run a program that allocates 128 GiB memory in 1 GiB
+chunks, initializes it with an arbitrary byte (ASCII 'A'), sleeps for
+60s and exits (allocate.c [6]):
+
+  ./allocate 128
+
+* Wait until KSM sharing pages are at >30GiB
+(/sys/kernel/mm/ksm/pages_sharing exceeds 7864320), that takes ~20
+minutes for us.
+* Optionally lower KSM pages_to_scan to a reasonable value to rule it
+out as a factor:
+
+  echo 100 > /sys/kernel/mm/ksm/pages_to_scan
+  echo 1 > /sys/kernel/mm/ksm/run
+
+* From a different machine, run a continuous `ping -D` against the guest
+* On the host, run bpftrace to trace `task_numa_work` invocations over
+500ms [7]
+* On the guest, run the allocation program 32 times in parallel, each
+process allocating 4x1 GiB of memory (32 * 4 = 128):
+
+  for i in $(seq 32); do ./allocate 4 & done
+
+* A few seconds later while the processes are still running, the guest
+becomes unresponsive for some time, thus the ping response times greatly
+increase. For example, here the guest does not respond at all for ~100
+seconds:
+
+[1704360680.898427] 64 bytes from 192.168.18.11: icmp_seq=47 ttl=64
+time=0.447 ms
+[1704360681.922522] 64 bytes from 192.168.18.11: icmp_seq=48 ttl=64
+time=0.515 ms
+[1704360710.369961] From 192.168.16.32 icmp_seq=73 Destination Host
+Unreachable
+[1704360713.442023] From 192.168.16.32 icmp_seq=76 Destination Host
+Unreachable
+... repeats ...
+[1704360786.081958] From 192.168.16.32 icmp_seq=147 Destination Host
+Unreachable
+[1704360789.154021] From 192.168.16.32 icmp_seq=151 Destination Host
+Unreachable
+[1704360790.194049] 64 bytes from 192.168.18.11: icmp_seq=49 ttl=64
+time=107244 ms
+[1704360790.196813] 64 bytes from 192.168.18.11: icmp_seq=50 ttl=64
+time=106227 ms
+[1704360790.196998] 64 bytes from 192.168.18.11: icmp_seq=51 ttl=64
+time=105203 ms
+[1704360790.206355] 64 bytes from 192.168.18.11: icmp_seq=52 ttl=64
+time=104188 ms
+[1704360790.206721] 64 bytes from 192.168.18.11: icmp_seq=53 ttl=64
+time=103165 ms
+[1704360790.206837] 64 bytes from 192.168.18.11: icmp_seq=54 ttl=64
+time=102141 ms
+[...]
+[1704360799.307342] 64 bytes from 192.168.18.11: icmp_seq=163 ttl=64
+time=0.335 ms
+[1704360800.322355] 64 bytes from 192.168.18.11: icmp_seq=164 ttl=64
+time=0.360 ms
+[1704360810.481320] 64 bytes from 192.168.18.11: icmp_seq=165 ttl=64
+time=9135 ms
+[1704360810.481331] 64 bytes from 192.168.18.11: icmp_seq=166 ttl=64
+time=8111 ms
+[1704360810.481334] 64 bytes from 192.168.18.11: icmp_seq=167 ttl=64
+time=7083 ms
+[1704360810.481336] 64 bytes from 192.168.18.11: icmp_seq=168 ttl=64
+time=6059 ms
+[1704360810.481339] 64 bytes from 192.168.18.11: icmp_seq=169 ttl=64
+time=5039 ms
+[1704360810.481409] 64 bytes from 192.168.18.11: icmp_seq=170 ttl=64
+time=4015 ms
+[...]
+[1704360827.906610] 64 bytes from 192.168.18.11: icmp_seq=191 ttl=64
+time=0.591 ms
+[1704360828.930570] 64 bytes from 192.168.18.11: icmp_seq=192 ttl=64
+time=0.576 ms
+
+* At the same time, bpftrace logs long-running invocations of
+`task_numa_work`, some examples:
+
+[1704360683] task_numa_work (tid=15476) took 868 ms
+[1704360683] task_numa_work (tid=15457) took 984 ms
+[1704360683] task_numa_work (tid=15480) took 1104 ms
+[...]
+[1704360751] task_numa_work (tid=15462) took 13916 ms
+[1704360753] task_numa_work (tid=15453) took 21708 ms
+[...]
+[1704360805] task_numa_work (tid=15485) took 1029 ms
+[1704360807] task_numa_work (tid=15485) took 1245 ms
+[1704360807] task_numa_work (tid=15446) took 2483 ms
+[1704360808] task_numa_work (tid=15466) took 4149 ms
+[1704360810] task_numa_work (tid=15446) took 3409 ms
+[...]
+[1704360814] task_numa_work (tid=15464) took 1733 ms
+[1704360816] task_numa_work (tid=15464) took 1844 ms
+
+* After some time (~100s in the example above) the guest comes back and
+ping response times go back to normal. The guest journal logs some soft
+lockups, e.g.:
+
+Jan 04 10:33:10 debian kernel: rcu: INFO: rcu_preempt detected stalls on
+CPUs/tasks:
+Jan 04 10:33:10 debian kernel: watchdog: BUG: soft lockup - CPU#10 stuck
+for 101s! [allocate:1169]
+Jan 04 10:33:10 debian kernel: watchdog: BUG: soft lockup - CPU#31 stuck
+for 101s! [allocate:1180]
+
+* We cannot trigger the hangs anymore after disabling the NUMA balancer
+-- ping response times stay under 1ms then.
+
+[1] https://forum.proxmox.com/threads/130727/
+[2] https://forum.proxmox.com/threads/130727/page-7#post-601617
+[3] https://forum.proxmox.com/threads/130727/page-7#post-603096
+[4]
+
+# numactl -H
+available: 2 nodes (0-1)
+node 0 cpus: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 32 33 34 35 36 37 38
+39 40 41 42 43 44 45 46 47
+node 0 size: 128649 MB
+node 0 free: 124293 MB
+node 1 cpus: 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 48 49 50 51
+52 53 54 55 56 57 58 59 60 61 62 63
+node 1 size: 128971 MB
+node 1 free: 126587 MB
+node distances:
+node   0   1
+  0:  10  21
+  1:  21  10
+
+[5]
+
+./qemu-system-x86_64 \
+  -accel kvm \
+  -chardev
+'socket,id=qmp,path=/var/run/qemu-server/101.qmp,server=on,wait=off' \
+  -mon 'chardev=qmp,mode=control' \
+  -chardev 'socket,id=qmp-event,path=/var/run/qmeventd.sock,reconnect=5' \
+  -mon 'chardev=qmp-event,mode=control' \
+  -pidfile /var/run/qemu-server/101.pid \
+  -smp '64,sockets=1,cores=64,maxcpus=64' \
+  -nodefaults \
+  -vnc 'unix:/var/run/qemu-server/101.vnc,password=on' \
+  -cpu qemu64,enforce,+kvm_pv_eoi,+kvm_pv_unhalt \
+  -m 143360 \
+  -device 'pci-bridge,id=pci.3,chassis_nr=3,bus=pci.0,addr=0x5' \
+  -device 'VGA,id=vga,bus=pci.0,addr=0x2' \
+  -device 'virtio-scsi-pci,id=virtioscsi0,bus=pci.3,addr=0x1' \
+  -drive 'file=/dev/pve/vm-101-disk-0,if=none,id=drive-scsi0,format=raw' \
+  -device
+'scsi-hd,bus=virtioscsi0.0,channel=0,scsi-id=0,lun=0,drive=drive-scsi0,id=scsi0,bootindex=100'
+\
+  -netdev
+'type=tap,id=net0,ifname=tap101i0,script=/var/lib/qemu-server/pve-bridge,downscript=/var/lib/qemu-server/pve-bridgedown,vhost=on'
+\
+  -device
+'virtio-net-pci,mac=BC:24:11:09:20:0C,netdev=net0,bus=pci.0,addr=0x12,id=net0,rx_queue_size=1024,tx_queue_size=256,bootindex=102'
+\
+  -machine 'type=pc'
+
+[6]
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <assert.h>
+
+const size_t chunk_size = 1024 * 1024 * 1024; // 1 GiB
+
+void *alloc_chunk(char ch) {
+	size_t init_size = 65536;
+	size_t init_done = 0;
+	void *base = malloc(chunk_size);
+	assert(base);
+
+	while (init_done < chunk_size && init_done + init_size < chunk_size) {
+		memset((char *)base + init_done, ch, init_size);
+		init_done += init_size;
+	}
+
+	return base;
+}
+
+int main(int argc, char *argv[]) {
+	int num_chunks;
+
+	assert(argc == 2);
+	num_chunks = atoi(argv[1]);
+	assert(num_chunks >= 0 && num_chunks <= 1024);
+
+	char **chunks = malloc(num_chunks * sizeof(char *));
+
+	fprintf(stderr, "alloc %d chunks\n", num_chunks);
+	for (int i = 0; i < num_chunks; i++) {
+		fprintf(stderr, "alloc #%d: %c\n", i, 'A');
+		chunks[i] = alloc_chunk('A');
+	}
+	fprintf(stderr, "sleeping 1min\n");
+	sleep(60);
+	return 0;
+}
+
+[7]
+
+kfunc:task_numa_work { @start[tid] = nsecs; }
+kretfunc:task_numa_work /@start[tid]/ {
+	$diff = nsecs - @start[tid];
+	if ($diff > 500000000) { // 500ms
+		time("[%s] ");
+		printf("task_numa_work (tid=%d) took %d ms\n", tid, $diff / 1000000);
+	}
+	delete(@start[tid]);
+}
+
 
