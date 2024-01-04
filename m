@@ -1,146 +1,526 @@
-Return-Path: <linux-kernel+bounces-16181-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16180-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E4A6A823A3C
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 02:32:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4AEFA823A39
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 02:31:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 876E3B2496D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 01:32:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A009328714D
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 01:31:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5067415CB;
-	Thu,  4 Jan 2024 01:32:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="uWqoZptu"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD4FA1FBB;
+	Thu,  4 Jan 2024 01:31:44 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2044.outbound.protection.outlook.com [40.107.102.44])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 085DA4C65;
-	Thu,  4 Jan 2024 01:32:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=aYu9d6R2trY2vp4zkNoxLGj43leVrMde1M14VW8pC4LWir7MJ35KAWYYzWsm8jyq8cOMQWm/utG1Kf5m7nbgD/Iz0uEG0cKTCYRnOTZOwgSbstyTQyrPPF2QEZU3NjIiUDnpI+Dh1E8jgBpZW1k8C+cw7V1QEwKMNj0Ok0VggdUrMSnUGAf2jB9nNWhFi/lZBC1txF/QqbA4h8fDvi7KkNcFM7UOJdwezEv/jiRF3RRAsqTDsyawqJiYEULqF2ZhtMtmjXTzZK+0RUOzcwG9FYk+8+1XERSr+euBNGINlCluHM0GUGRDFfSR10DYDLI/WNW3FlsapsltEkc78Z2T2Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=EU6cB4aNCNMq6dBsAy+4eBunzy0Kw0LBh13HOFA8Dsk=;
- b=gda2VqMZj+A7TrLM5LGYa686vsy+v1o4vL4A12KwCuc+lvDQ6rfOu6MHenmIVOezwppi3y6o9Q7f0fM6Nn11Up/zrdvWCOcc59esYCGQzigqf+SWWVjdPBMlL1FYw7YT1uNNm59DIDTm2ZYwMzTXjWwnmZEYissKdm/IM4T/t1uRBjzWj8bxu+1ZZ+0+Y2WujkNAF+Vj0pua6+nao/F/J5mLA1aaKr62eU+Zc5/GxlII9TnBZ9+zW/1b81qYnwfu/lVXHdhrFrTu16rNclMN8MdNLZdsdsWNcLld+JkdDOuvammCFUKuDkban3Gis1+uMkAkTR+pr8aVPfCvvJH7mg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.161) smtp.rcpttodomain=google.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EU6cB4aNCNMq6dBsAy+4eBunzy0Kw0LBh13HOFA8Dsk=;
- b=uWqoZptuaJvdiRWjjqE3MfplJHjsObEZyI1YP3CQ/4z6IuIM8p+Gf0AYwjxC6gsid3IkZn54aU2n5R37QlUvyX+4lvTID4FNcfgItl3nZjj2UqeQ2OLPvfwRRQ0YXaJecdIEMhF3FBvW/o1S7o5ykTs7jNgNhs/l8gPeYWE6+GM0h32ib0jcRQRhA3yEqn2MV8/X0BB520Zfd6tl3GF7q7/vrTVvlrVCVSKuWmrMWwIHoHvJZLq2QMio0RqoMWcdNHVQHbOGQcQxBHKVB56vBESA7htHVjOIFx0y8XuYtv9cKgyL9b5EK966GmYTGO4rV8/liDxHPRZaOajUiMVhOw==
-Received: from BY3PR05CA0016.namprd05.prod.outlook.com (2603:10b6:a03:254::21)
- by IA1PR12MB6330.namprd12.prod.outlook.com (2603:10b6:208:3e4::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.13; Thu, 4 Jan
- 2024 01:32:43 +0000
-Received: from SJ1PEPF00001CE7.namprd03.prod.outlook.com
- (2603:10b6:a03:254:cafe::c4) by BY3PR05CA0016.outlook.office365.com
- (2603:10b6:a03:254::21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.12 via Frontend
- Transport; Thu, 4 Jan 2024 01:32:42 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.161) by
- SJ1PEPF00001CE7.mail.protection.outlook.com (10.167.242.23) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7159.9 via Frontend Transport; Thu, 4 Jan 2024 01:32:42 +0000
-Received: from rnnvmail202.nvidia.com (10.129.68.7) by mail.nvidia.com
- (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Wed, 3 Jan 2024
- 17:32:35 -0800
-Received: from rnnvmail204.nvidia.com (10.129.68.6) by rnnvmail202.nvidia.com
- (10.129.68.7) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Wed, 3 Jan 2024
- 17:32:35 -0800
-Received: from vidyas-desktop.nvidia.com (10.127.8.9) by mail.nvidia.com
- (10.129.68.6) with Microsoft SMTP Server id 15.2.986.41 via Frontend
- Transport; Wed, 3 Jan 2024 17:32:32 -0800
-From: Vidya Sagar <vidyas@nvidia.com>
-To: <bhelgaas@google.com>
-CC: <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<treding@nvidia.com>, <jonathanh@nvidia.com>, <kthota@nvidia.com>,
-	<mmaddireddy@nvidia.com>, <vidyas@nvidia.com>, <sagar.tv@gmail.com>
-Subject: [PATCH V1] PCI: Clear errors logged in Secondary Status Register
-Date: Thu, 4 Jan 2024 07:02:29 +0530
-Message-ID: <20240104013229.693041-1-vidyas@nvidia.com>
-X-Mailer: git-send-email 2.25.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 552DF184F;
+	Thu,  4 Jan 2024 01:31:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B8BC7C433C7;
+	Thu,  4 Jan 2024 01:31:42 +0000 (UTC)
+Date: Wed, 3 Jan 2024 20:32:46 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
+ <linux-trace-kernel@vger.kernel.org>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
+ <mathieu.desnoyers@efficios.com>, Linus Torvalds
+ <torvalds@linux-foundation.org>, Al Viro <viro@ZenIV.linux.org.uk>,
+ Christian Brauner <brauner@kernel.org>, linux-fsdevel@vger.kernel.org, Greg
+ Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [PATCH] tracefs/eventfs: Use root and instance inodes as default
+ ownership
+Message-ID: <20240103203246.115732ec@gandalf.local.home>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-NVConfidentiality: public
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ1PEPF00001CE7:EE_|IA1PR12MB6330:EE_
-X-MS-Office365-Filtering-Correlation-Id: a6754d01-fb78-4ac2-86f2-08dc0cc50bb5
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	rCbB0YUs3TIEF36ms8HxZ65+Zi2laMLEbC7bpqlTdX0SAFVuxzQWIdmXyqyQLIQz+ftU4sCd+q/rkETzUStj+cAtRB+KgB7/nWADgaTHL7agJmBT59wXKkaq5n50BDRJrZcEXdkVnm2+nk+FAvZFtcjpnf55rYOXH5EeqWd2qBSNvmwVQhQL1N5fQcH3rawfif8k4RsOLdnyJWu3tfSNzOM7jgXYGbZLNpGZpSdxrybAbdAW+Rp5BfcerqGVFUHIYOgFpJQXap0027OxgSGDVNUq93CasQ2UCC+Mq/pAtQqiS6nAfm5Ay+pQVjI5pjsh190Z+hVN5ZVgvtSp+NXud+jbCodWT0LbRN15BHUz8FxAWeGE1i7zlgPRfu0isGVMc3I8h0qi3V9XKDn30YV+JR1+pSAo4IeiG/7CGdr5Ox4s92+gjxFBwmfvIbTFPOChOCPrBup0Dem8exvTIn0es+TJ2kbYpD/Jkhadaxd8adH7AJ0v4v7MpYh1WYqjNlCFg5EOO5itw7+JLoV62hor+KvIhwhf0Ztpjjk/Q98+X3rkYkzmmbgfnkMs03TzzswliCfPho+TXcH+xCjEx8yztlFpblqMVmydJ5CIqIiUHj83AY2GDm8OJHzbQzXB8PIUHwpbYgI891lu/6gJ+B9Hyvx2JwgsqyCH9BSPhT5ogZSF+UkxXS7cLaIz91D3i7M3xW7jQ1eYuLtsftan8p+kgnaehq57kv/AldMr3jhW092bkEYDBwWxIeuG9UPHcCKbNfczkn6qKJ1B0g3gTScUzO1gA3U0inVOSdZNPagj9T8=
-X-Forefront-Antispam-Report:
-	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(346002)(376002)(136003)(396003)(39860400002)(230922051799003)(451199024)(1800799012)(186009)(64100799003)(82310400011)(46966006)(36840700001)(40470700004)(82740400003)(7636003)(356005)(36756003)(40480700001)(40460700003)(86362001)(426003)(1076003)(26005)(6666004)(7696005)(316002)(478600001)(8936002)(70586007)(4326008)(70206006)(8676002)(966005)(6916009)(54906003)(36860700001)(336012)(83380400001)(47076005)(2616005)(5660300002)(41300700001)(2906002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Jan 2024 01:32:42.4148
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: a6754d01-fb78-4ac2-86f2-08dc0cc50bb5
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	SJ1PEPF00001CE7.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB6330
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-If a downstream port has a PCIe switch connected to it, the enumeration
-process leaves the 'Received Master Abort' bit set in the Secondary
-Status Register of the downstream port because of the Unsupported
-Requests (URs) take place in the downstream hierarchy. Since the
-ownership of Secondary Status Register always lies with the OS including
-systems with Firmware-First approach for error handling[1], clear the
-error status bits in the Secondary Status Register post enumeration.
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-[1] https://lore.kernel.org/all/1fb9d746-0695-4d19-af98-f442f31cd464@nvidia.com/T/
+Instead of walking the dentries on mount/remount to update the gid values of
+all the dentries if a gid option is specified on mount, just update the root
+inode. Add .getattr, .setattr, and .permissions on the tracefs inode
+operations to update the permissions of the files and directories.
 
-Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
+For all files and directories in the top level instance:
+
+ /sys/kernel/tracing/*
+
+It will use the root inode as the default permissions. The inode that
+represents: /sys/kernel/tracing (or wherever it is mounted).
+
+When an instance is created:
+
+ mkdir /sys/kernel/tracing/instance/foo
+
+The directory "foo" and all its files and directories underneath will use
+the default of what foo is when it was created. A remount of tracefs will
+not affect it.
+
+If a user were to modify the permissions of any file or directory in
+tracefs, it will also no longer be modified by a change in ownership of a
+remount.
+
+The events directory, if it is in the top level instance, will use the
+tracefs root inode as the default ownership for itself and all the files and
+directories below it.
+
+For the events directory in an instance ("foo"), it will keep the ownership
+of what it was when it was created, and that will be used as the default
+ownership for the files and directories beneath it.
+
+Link: https://lore.kernel.org/linux-trace-kernel/CAHk-=wjVdGkjDXBbvLn2wbZnqP4UsH46E3gqJ9m7UG6DpX2+WA@mail.gmail.com/
+
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- drivers/pci/probe.c | 3 +++
- 1 file changed, 3 insertions(+)
+ fs/tracefs/event_inode.c |  80 ++++++++++++++-
+ fs/tracefs/inode.c       | 205 ++++++++++++++++++++++-----------------
+ fs/tracefs/internal.h    |   3 +
+ 3 files changed, 198 insertions(+), 90 deletions(-)
 
-diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
-index 43159965e09e..edf8202465d8 100644
---- a/drivers/pci/probe.c
-+++ b/drivers/pci/probe.c
-@@ -1470,6 +1470,9 @@ static int pci_scan_bridge_extend(struct pci_bus *bus, struct pci_dev *dev,
- 	}
+diff --git a/fs/tracefs/event_inode.c b/fs/tracefs/event_inode.c
+index 53d34a4b5a2b..641bffa0f139 100644
+--- a/fs/tracefs/event_inode.c
++++ b/fs/tracefs/event_inode.c
+@@ -45,6 +45,7 @@ enum {
+ 	EVENTFS_SAVE_MODE	= BIT(16),
+ 	EVENTFS_SAVE_UID	= BIT(17),
+ 	EVENTFS_SAVE_GID	= BIT(18),
++	EVENTFS_TOPLEVEL	= BIT(19),
+ };
  
- out:
-+	/* Clear errors in the Secondary Status Register */
-+	pci_write_config_word(dev, PCI_SEC_STATUS, 0xffff);
+ #define EVENTFS_MODE_MASK	(EVENTFS_SAVE_MODE - 1)
+@@ -115,10 +116,17 @@ static int eventfs_set_attr(struct mnt_idmap *idmap, struct dentry *dentry,
+ 		 * The events directory dentry is never freed, unless its
+ 		 * part of an instance that is deleted. It's attr is the
+ 		 * default for its child files and directories.
+-		 * Do not update it. It's not used for its own mode or ownership
++		 * Do not update it. It's not used for its own mode or ownership.
+ 		 */
+-		if (!ei->is_events)
++		if (ei->is_events) {
++			/* But it still needs to know if it was modified */
++			if (iattr->ia_valid & ATTR_UID)
++				ei->attr.mode |= EVENTFS_SAVE_UID;
++			if (iattr->ia_valid & ATTR_GID)
++				ei->attr.mode |= EVENTFS_SAVE_GID;
++		} else {
+ 			update_attr(&ei->attr, iattr);
++		}
+ 
+ 	} else {
+ 		name = dentry->d_name.name;
+@@ -136,9 +144,67 @@ static int eventfs_set_attr(struct mnt_idmap *idmap, struct dentry *dentry,
+ 	return ret;
+ }
+ 
++static void update_top_events_attr(struct eventfs_inode *ei, struct dentry *dentry)
++{
++	struct inode *inode;
 +
- 	pci_write_config_word(dev, PCI_BRIDGE_CONTROL, bctl);
++	/* Only update if the "events" was on the top level */
++	if (!ei || !(ei->attr.mode & EVENTFS_TOPLEVEL))
++		return;
++
++	/* Get the tracefs root from the parent */
++	inode = d_inode(dentry->d_parent);
++	inode = d_inode(inode->i_sb->s_root);
++	ei->attr.uid = inode->i_uid;
++	ei->attr.gid = inode->i_gid;
++}
++
++static void set_top_events_ownership(struct inode *inode)
++{
++	struct tracefs_inode *ti = get_tracefs(inode);
++	struct eventfs_inode *ei = ti->private;
++	struct dentry *dentry;
++
++	/* The top events directory doesn't get automatically updated */
++	if (!ei || !ei->is_events || !(ei->attr.mode & EVENTFS_TOPLEVEL))
++		return;
++
++	dentry = ei->dentry;
++
++	update_top_events_attr(ei, dentry);
++
++	if (!(ei->attr.mode & EVENTFS_SAVE_UID))
++		inode->i_uid = ei->attr.uid;
++
++	if (!(ei->attr.mode & EVENTFS_SAVE_GID))
++		inode->i_gid = ei->attr.gid;
++}
++
++static int eventfs_get_attr(struct mnt_idmap *idmap,
++			    const struct path *path, struct kstat *stat,
++			    u32 request_mask, unsigned int flags)
++{
++	struct dentry *dentry = path->dentry;
++	struct inode *inode = d_backing_inode(dentry);
++
++	set_top_events_ownership(inode);
++
++	generic_fillattr(idmap, request_mask, inode, stat);
++	return 0;
++}
++
++static int eventfs_permission(struct mnt_idmap *idmap,
++			      struct inode *inode, int mask)
++{
++	set_top_events_ownership(inode);
++	return generic_permission(idmap, inode, mask);
++}
++
+ static const struct inode_operations eventfs_root_dir_inode_operations = {
+ 	.lookup		= eventfs_root_lookup,
+ 	.setattr	= eventfs_set_attr,
++	.getattr	= eventfs_get_attr,
++	.permission	= eventfs_permission,
+ };
  
- 	pm_runtime_put(&dev->dev);
+ static const struct inode_operations eventfs_file_inode_operations = {
+@@ -174,6 +240,8 @@ static struct eventfs_inode *eventfs_find_events(struct dentry *dentry)
+ 	} while (!ei->is_events);
+ 	mutex_unlock(&eventfs_mutex);
+ 
++	update_top_events_attr(ei, dentry);
++
+ 	return ei;
+ }
+ 
+@@ -887,6 +955,14 @@ struct eventfs_inode *eventfs_create_events_dir(const char *name, struct dentry
+ 	uid = d_inode(dentry->d_parent)->i_uid;
+ 	gid = d_inode(dentry->d_parent)->i_gid;
+ 
++	/*
++	 * If the events directory is of the top instance, then parent
++	 * is NULL. Set the attr.mode to reflect this and its permissions will
++	 * default to the tracefs root dentry.
++	 */
++	if (!parent)
++		ei->attr.mode = EVENTFS_TOPLEVEL;
++
+ 	/* This is used as the default ownership of the files and directories */
+ 	ei->attr.uid = uid;
+ 	ei->attr.gid = gid;
+diff --git a/fs/tracefs/inode.c b/fs/tracefs/inode.c
+index bc86ffdb103b..63284f18741f 100644
+--- a/fs/tracefs/inode.c
++++ b/fs/tracefs/inode.c
+@@ -91,6 +91,7 @@ static int tracefs_syscall_mkdir(struct mnt_idmap *idmap,
+ 				 struct inode *inode, struct dentry *dentry,
+ 				 umode_t mode)
+ {
++	struct tracefs_inode *ti;
+ 	char *name;
+ 	int ret;
+ 
+@@ -98,6 +99,15 @@ static int tracefs_syscall_mkdir(struct mnt_idmap *idmap,
+ 	if (!name)
+ 		return -ENOMEM;
+ 
++	/*
++	 * This is a new directory that does not take the default of
++	 * the rootfs. It becomes the default permissions for all the
++	 * files and directories underneath it.
++	 */
++	ti = get_tracefs(inode);
++	ti->flags |= TRACEFS_INSTANCE_INODE;
++	ti->private = inode;
++
+ 	/*
+ 	 * The mkdir call can call the generic functions that create
+ 	 * the files within the tracefs system. It is up to the individual
+@@ -141,10 +151,76 @@ static int tracefs_syscall_rmdir(struct inode *inode, struct dentry *dentry)
+ 	return ret;
+ }
+ 
+-static const struct inode_operations tracefs_dir_inode_operations = {
++static void set_tracefs_inode_owner(struct inode *inode)
++{
++	struct tracefs_inode *ti = get_tracefs(inode);
++	struct inode *root_inode = ti->private;
++
++	/*
++	 * If this inode has never been referenced, then update
++	 * the permissions to the superblock.
++	 */
++	if (!(ti->flags & TRACEFS_UID_PERM_SET))
++		inode->i_uid = root_inode->i_uid;
++
++	if (!(ti->flags & TRACEFS_GID_PERM_SET))
++		inode->i_gid = root_inode->i_gid;
++}
++
++static int tracefs_permission(struct mnt_idmap *idmap,
++			      struct inode *inode, int mask)
++{
++	set_tracefs_inode_owner(inode);
++	return generic_permission(idmap, inode, mask);
++}
++
++static int tracefs_getattr(struct mnt_idmap *idmap,
++			   const struct path *path, struct kstat *stat,
++			   u32 request_mask, unsigned int flags)
++{
++	struct inode *inode = d_backing_inode(path->dentry);
++
++	set_tracefs_inode_owner(inode);
++	generic_fillattr(idmap, request_mask, inode, stat);
++	return 0;
++}
++
++static int tracefs_setattr(struct mnt_idmap *idmap, struct dentry *dentry,
++			   struct iattr *attr)
++{
++	unsigned int ia_valid = attr->ia_valid;
++	struct inode *inode = d_inode(dentry);
++	struct tracefs_inode *ti = get_tracefs(inode);
++
++	if (ia_valid & ATTR_UID)
++		ti->flags |= TRACEFS_UID_PERM_SET;
++
++	if (ia_valid & ATTR_GID)
++		ti->flags |= TRACEFS_GID_PERM_SET;
++
++	return simple_setattr(idmap, dentry, attr);
++}
++
++static const struct inode_operations tracefs_instance_dir_inode_operations = {
+ 	.lookup		= simple_lookup,
+ 	.mkdir		= tracefs_syscall_mkdir,
+ 	.rmdir		= tracefs_syscall_rmdir,
++	.permission	= tracefs_permission,
++	.getattr	= tracefs_getattr,
++	.setattr	= tracefs_setattr,
++};
++
++static const struct inode_operations tracefs_dir_inode_operations = {
++	.lookup		= simple_lookup,
++	.permission	= tracefs_permission,
++	.getattr	= tracefs_getattr,
++	.setattr	= tracefs_setattr,
++};
++
++static const struct inode_operations tracefs_file_inode_operations = {
++	.permission	= tracefs_permission,
++	.getattr	= tracefs_getattr,
++	.setattr	= tracefs_setattr,
+ };
+ 
+ struct inode *tracefs_get_inode(struct super_block *sb)
+@@ -183,87 +259,6 @@ struct tracefs_fs_info {
+ 	struct tracefs_mount_opts mount_opts;
+ };
+ 
+-static void change_gid(struct dentry *dentry, kgid_t gid)
+-{
+-	if (!dentry->d_inode)
+-		return;
+-	dentry->d_inode->i_gid = gid;
+-}
+-
+-/*
+- * Taken from d_walk, but without he need for handling renames.
+- * Nothing can be renamed while walking the list, as tracefs
+- * does not support renames. This is only called when mounting
+- * or remounting the file system, to set all the files to
+- * the given gid.
+- */
+-static void set_gid(struct dentry *parent, kgid_t gid)
+-{
+-	struct dentry *this_parent;
+-	struct list_head *next;
+-
+-	this_parent = parent;
+-	spin_lock(&this_parent->d_lock);
+-
+-	change_gid(this_parent, gid);
+-repeat:
+-	next = this_parent->d_subdirs.next;
+-resume:
+-	while (next != &this_parent->d_subdirs) {
+-		struct tracefs_inode *ti;
+-		struct list_head *tmp = next;
+-		struct dentry *dentry = list_entry(tmp, struct dentry, d_child);
+-		next = tmp->next;
+-
+-		/* Note, getdents() can add a cursor dentry with no inode */
+-		if (!dentry->d_inode)
+-			continue;
+-
+-		spin_lock_nested(&dentry->d_lock, DENTRY_D_LOCK_NESTED);
+-
+-		change_gid(dentry, gid);
+-
+-		/* If this is the events directory, update that too */
+-		ti = get_tracefs(dentry->d_inode);
+-		if (ti && (ti->flags & TRACEFS_EVENT_INODE))
+-			eventfs_update_gid(dentry, gid);
+-
+-		if (!list_empty(&dentry->d_subdirs)) {
+-			spin_unlock(&this_parent->d_lock);
+-			spin_release(&dentry->d_lock.dep_map, _RET_IP_);
+-			this_parent = dentry;
+-			spin_acquire(&this_parent->d_lock.dep_map, 0, 1, _RET_IP_);
+-			goto repeat;
+-		}
+-		spin_unlock(&dentry->d_lock);
+-	}
+-	/*
+-	 * All done at this level ... ascend and resume the search.
+-	 */
+-	rcu_read_lock();
+-ascend:
+-	if (this_parent != parent) {
+-		struct dentry *child = this_parent;
+-		this_parent = child->d_parent;
+-
+-		spin_unlock(&child->d_lock);
+-		spin_lock(&this_parent->d_lock);
+-
+-		/* go into the first sibling still alive */
+-		do {
+-			next = child->d_child.next;
+-			if (next == &this_parent->d_subdirs)
+-				goto ascend;
+-			child = list_entry(next, struct dentry, d_child);
+-		} while (unlikely(child->d_flags & DCACHE_DENTRY_KILLED));
+-		rcu_read_unlock();
+-		goto resume;
+-	}
+-	rcu_read_unlock();
+-	spin_unlock(&this_parent->d_lock);
+-	return;
+-}
+-
+ static int tracefs_parse_options(char *data, struct tracefs_mount_opts *opts)
+ {
+ 	substring_t args[MAX_OPT_ARGS];
+@@ -336,10 +331,8 @@ static int tracefs_apply_options(struct super_block *sb, bool remount)
+ 	if (!remount || opts->opts & BIT(Opt_uid))
+ 		inode->i_uid = opts->uid;
+ 
+-	if (!remount || opts->opts & BIT(Opt_gid)) {
+-		/* Set all the group ids to the mount option */
+-		set_gid(sb->s_root, opts->gid);
+-	}
++	if (!remount || opts->opts & BIT(Opt_gid))
++		inode->i_gid = opts->gid;
+ 
+ 	return 0;
+ }
+@@ -573,6 +566,33 @@ struct dentry *eventfs_end_creating(struct dentry *dentry)
+ 	return dentry;
+ }
+ 
++/* Find the inode that this will use for default */
++static struct inode *instance_inode(struct dentry *parent, struct inode *inode)
++{
++	struct tracefs_inode *ti;
++	struct inode *root_inode;
++
++	root_inode = d_inode(inode->i_sb->s_root);
++
++	/* If parent is NULL then use root inode */
++	if (!parent)
++		return root_inode;
++
++	/* Find the inode that is flagged as an instance or the root inode */
++	do {
++		inode = d_inode(parent);
++		if (inode == root_inode)
++			return root_inode;
++
++		ti = get_tracefs(inode);
++
++		if (ti->flags & TRACEFS_INSTANCE_INODE)
++			return inode;
++	} while ((parent = parent->d_parent));
++
++	return NULL;
++}
++
+ /**
+  * tracefs_create_file - create a file in the tracefs filesystem
+  * @name: a pointer to a string containing the name of the file to create.
+@@ -603,6 +623,7 @@ struct dentry *tracefs_create_file(const char *name, umode_t mode,
+ 				   struct dentry *parent, void *data,
+ 				   const struct file_operations *fops)
+ {
++	struct tracefs_inode *ti;
+ 	struct dentry *dentry;
+ 	struct inode *inode;
+ 
+@@ -621,7 +642,11 @@ struct dentry *tracefs_create_file(const char *name, umode_t mode,
+ 	if (unlikely(!inode))
+ 		return tracefs_failed_creating(dentry);
+ 
++	ti = get_tracefs(inode);
++	ti->private = instance_inode(parent, inode);
++
+ 	inode->i_mode = mode;
++	inode->i_op = &tracefs_file_inode_operations;
+ 	inode->i_fop = fops ? fops : &tracefs_file_operations;
+ 	inode->i_private = data;
+ 	inode->i_uid = d_inode(dentry->d_parent)->i_uid;
+@@ -634,6 +659,7 @@ struct dentry *tracefs_create_file(const char *name, umode_t mode,
+ static struct dentry *__create_dir(const char *name, struct dentry *parent,
+ 				   const struct inode_operations *ops)
+ {
++	struct tracefs_inode *ti;
+ 	struct dentry *dentry = tracefs_start_creating(name, parent);
+ 	struct inode *inode;
+ 
+@@ -651,6 +677,9 @@ static struct dentry *__create_dir(const char *name, struct dentry *parent,
+ 	inode->i_uid = d_inode(dentry->d_parent)->i_uid;
+ 	inode->i_gid = d_inode(dentry->d_parent)->i_gid;
+ 
++	ti = get_tracefs(inode);
++	ti->private = instance_inode(parent, inode);
++
+ 	/* directory inodes start off with i_nlink == 2 (for "." entry) */
+ 	inc_nlink(inode);
+ 	d_instantiate(dentry, inode);
+@@ -681,7 +710,7 @@ struct dentry *tracefs_create_dir(const char *name, struct dentry *parent)
+ 	if (security_locked_down(LOCKDOWN_TRACEFS))
+ 		return NULL;
+ 
+-	return __create_dir(name, parent, &simple_dir_inode_operations);
++	return __create_dir(name, parent, &tracefs_dir_inode_operations);
+ }
+ 
+ /**
+@@ -712,7 +741,7 @@ __init struct dentry *tracefs_create_instance_dir(const char *name,
+ 	if (WARN_ON(tracefs_ops.mkdir || tracefs_ops.rmdir))
+ 		return NULL;
+ 
+-	dentry = __create_dir(name, parent, &tracefs_dir_inode_operations);
++	dentry = __create_dir(name, parent, &tracefs_instance_dir_inode_operations);
+ 	if (!dentry)
+ 		return NULL;
+ 
+diff --git a/fs/tracefs/internal.h b/fs/tracefs/internal.h
+index 42bdeb471a07..12b7d0150ae9 100644
+--- a/fs/tracefs/internal.h
++++ b/fs/tracefs/internal.h
+@@ -5,6 +5,9 @@
+ enum {
+ 	TRACEFS_EVENT_INODE		= BIT(1),
+ 	TRACEFS_EVENT_TOP_INODE		= BIT(2),
++	TRACEFS_GID_PERM_SET		= BIT(3),
++	TRACEFS_UID_PERM_SET		= BIT(4),
++	TRACEFS_INSTANCE_INODE		= BIT(5),
+ };
+ 
+ struct tracefs_inode {
 -- 
-2.25.1
+2.42.0
 
 
