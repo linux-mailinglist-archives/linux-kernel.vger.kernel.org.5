@@ -1,173 +1,294 @@
-Return-Path: <linux-kernel+bounces-16699-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16700-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D73C082429F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 14:22:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 340AA8242A7
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 14:25:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EAACA1C21E9A
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 13:22:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B1AAF1F23D10
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 13:25:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAF2C22337;
-	Thu,  4 Jan 2024 13:21:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67E2522333;
+	Thu,  4 Jan 2024 13:25:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="gC3AUGCe"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-oo1-f48.google.com (mail-oo1-f48.google.com [209.85.161.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1390C22313;
-	Thu,  4 Jan 2024 13:21:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f48.google.com with SMTP id 006d021491bc7-59584f41f1eso74784eaf.1;
-        Thu, 04 Jan 2024 05:21:56 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704374516; x=1704979316;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=EO6yGu/hNfKIRPFZyFi3Yd8i7VyVLeoh6f7ilAMeImg=;
-        b=Jxhw9ijCiPpdiHBytCq6fWoP298jEBuqx3Q2bvnXM4QXcApnaA7aa+ws8cuaVXl7im
-         sschgxWW8/5u8qL90/Orhdg7COJrf9fX+zXfIb8m3yN4y/fYR+MwHxXUdnOc0EdRVWqc
-         iTO7s8E9U37rQZQCb3cY5lUcw2kU8ic4lGhKAuJIZk053O9mBlYeYNss0VoYHU47+pLE
-         47IizJ7M9DaPgw0Ny/wLtgIPRwobleLtDFZu3C8aCe2zLMCjZVZ3Z39nod1xi8dvd+CB
-         ynpf01HFe0JyXur+Ysmd8nZwlgH2yE7ZfNpBJ4AoNkWvWIjGhOi7W3so4VSy3oDt8Z0y
-         ZIIQ==
-X-Gm-Message-State: AOJu0YxnW153JzMCYUAgPv6OFaU9DMN5zFFESb22vZO/dc6ejxgNJynb
-	RgDLTRa6E7/Z7cx/vMAtab1mMjxKUPsAtV8gBC4=
-X-Google-Smtp-Source: AGHT+IHGI9ygj6RJgfCVJJy2grElIEhwy9dgb0OilqnwIPrWvCFIrdnNZvrzITFDivU+/1bFoJI9D8gatWGp1VPFa7Q=
-X-Received: by 2002:a4a:a306:0:b0:596:2300:27b7 with SMTP id
- q6-20020a4aa306000000b00596230027b7mr1013014ool.1.1704374516146; Thu, 04 Jan
- 2024 05:21:56 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 243D62111F;
+	Thu,  4 Jan 2024 13:25:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id B74A740E01FE;
+	Thu,  4 Jan 2024 13:25:03 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id r1x95oXWB4s5; Thu,  4 Jan 2024 13:25:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1704374699; bh=mW8/6WyhqJjhljxP6XhSRhYts0OpZuRp9cBGzL263HU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=gC3AUGCeh2V6Qlk7v0bFHouNTHyUTP9DK5IQ222OI9i7D4EA8cTw36MT8rjsBtUYb
+	 g3ddR1v1McA9zwhZWZ3AqGzMaECEB9X1wa0BnQeAcMJUJmh4bFGEqW9de+F1K7iPRU
+	 njUb6IxNARfnWfbjr+e6dQWR9M+0l5nVENqRDxdETxXHXUE1+nwqFIrQawX4vvKR5/
+	 wqjc/IXixH8mm57Bb5nsjfEo77kua/i8Dghurz+gcwUest3CutLTcE13xp5PdLrfHi
+	 a4xKPdIehWD3Xz7+Ard/sBiumZ1qsv7WrsiGcOxZZ9lGf3ITiQdHvXvItRfsKRtvQ3
+	 jtXQn0uHfPf7r2jJ3d2AhSzKDb1o91lhXzaNt4vzMFpHLDHMcN8KAtmNC8dZEJgf8t
+	 tJdUrI5QsBGvkoW+ZZWHqjz2NU9cATrCqCIzMzAzEaFDa+Yxi/EH4WNhhFYtgpVFJ0
+	 4m0W4NzkDB0KCJTBCxsuPxUmriQXFygco+DZvZl5Vk8Cx/ZjMbDk+MECcnKa47a1AY
+	 XXSMhZRHcwaRz0fNk3LNv2hDDvr9nMp6rmG1hCmH4EbTnW2yxLfnaixqnZ0MTrMmHZ
+	 8Ig28dff1Z18zR1GwzzwdgsCGVaT/8Jd+wEiqBLKttzQh3dVo/Qnns9nd5KyhtEgfl
+	 ZlmkU7NjFgA3pAKx/OvRqL44=
+Received: from zn.tnic (pd9530f8c.dip0.t-ipconnect.de [217.83.15.140])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 89C8E40E0177;
+	Thu,  4 Jan 2024 13:24:51 +0000 (UTC)
+Date: Thu, 4 Jan 2024 14:24:46 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Josh Poimboeuf <jpoimboe@kernel.org>
+Cc: "Kaplan, David" <David.Kaplan@amd.com>, Ingo Molnar <mingo@kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-tip-commits@vger.kernel.org" <linux-tip-commits@vger.kernel.org>,
+	"Peter Zijlstra (Intel)" <peterz@infradead.org>,
+	"x86@kernel.org" <x86@kernel.org>,
+	David Howells <dhowells@redhat.com>
+Subject: [PATCH -v2] x86/retpoline: Ensure default return thunk isn't used at
+ runtime
+Message-ID: <20240104132446.GEZZaxnrIgIyat0pqf@fat_crate.local>
+References: <20231018203747.GJZTBCG7mv5HL4w6CC@fat_crate.local>
+ <20231019063527.iwgyioxi2gznnshp@treble>
+ <20231019065928.mrvhtfaya22p2uzw@treble>
+ <20231019141514.GCZTE58qPOvcJCiBp3@fat_crate.local>
+ <SN6PR12MB2702AC3C27D25414FE4260F994D4A@SN6PR12MB2702.namprd12.prod.outlook.com>
+ <20231019143951.GEZTE/t/wECKBxMSjl@fat_crate.local>
+ <20231019152051.4u5xwhopbdisy6zl@treble>
+ <20231024201913.GHZTgmwf6QMkX8BGbo@fat_crate.local>
+ <20240103184656.GEZZWroPmHLJuP6y5H@fat_crate.local>
+ <20240104131210.GDZZauqoeKoZGpYwDd@fat_crate.local>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230905104721.52199-1-lpieralisi@kernel.org> <20231227110038.55453-1-lpieralisi@kernel.org>
- <CAJZ5v0gUBU=VL8E34sjROssoGNbLnhmUQVHGWT60hgBG_ufTHw@mail.gmail.com>
- <86h6jt9vs7.wl-maz@kernel.org> <ZZaeyBXn85AnsIk6@shell.armlinux.org.uk>
-In-Reply-To: <ZZaeyBXn85AnsIk6@shell.armlinux.org.uk>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Thu, 4 Jan 2024 14:21:44 +0100
-Message-ID: <CAJZ5v0jcZ4WEiNUs3sAQUyy1uVJRNWmVJx2j0e3hLwi7heK1+A@mail.gmail.com>
-Subject: Re: [PATCH v4 0/3] irqchip/gic-v3: Enable non-coherent GIC designs probing
-To: "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc: Marc Zyngier <maz@kernel.org>, "Rafael J. Wysocki" <rafael@kernel.org>, 
-	Lorenzo Pieralisi <lpieralisi@kernel.org>, linux-kernel@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-acpi@vger.kernel.org, 
-	acpica-devel@lists.linux.dev, Mark Rutland <mark.rutland@arm.com>, 
-	Robin Murphy <robin.murphy@arm.com>, Fang Xiang <fangxiang3@xiaomi.com>, 
-	Robert Moore <robert.moore@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240104131210.GDZZauqoeKoZGpYwDd@fat_crate.local>
 
-On Thu, Jan 4, 2024 at 1:04=E2=80=AFPM Russell King (Oracle)
-<linux@armlinux.org.uk> wrote:
->
-> On Thu, Jan 04, 2024 at 11:34:48AM +0000, Marc Zyngier wrote:
-> > On Wed, 03 Jan 2024 13:43:16 +0000,
-> > "Rafael J. Wysocki" <rafael@kernel.org> wrote:
-> > >
-> > > On Wed, Dec 27, 2023 at 12:00=E2=80=AFPM Lorenzo Pieralisi
-> > > <lpieralisi@kernel.org> wrote:
-> > > >
-> > > > This series is v4 of previous series:
-> > > >
-> > > > v3: https://lore.kernel.org/all/20231006125929.48591-1-lpieralisi@k=
-ernel.org
-> > > > v2: https://lore.kernel.org/all/20230906094139.16032-1-lpieralisi@k=
-ernel.org
-> > > > v1: https://lore.kernel.org/all/20230905104721.52199-1-lpieralisi@k=
-ernel.org
-> > > >
-> > > > v3 -> v4:
-> > > >         - Dropped patches [1-3], already merged
-> > > >         - Added Linuxized ACPICA changes accepted upstream
-> > > >         - Rebased against v6.7-rc3
-> > > >
-> > > > v2 -> v3:
-> > > >         - Added ACPICA temporary changes and ACPI changes to implem=
-ent
-> > > >           ECR https://bugzilla.tianocore.org/show_bug.cgi?id=3D4557
-> > > >         - ACPI changes are for testing purposes - subject to ECR co=
-de
-> > > >           first approval
-> > > >
-> > > > v1 -> v2:
-> > > >         - Updated DT bindings as per feedback
-> > > >         - Updated patch[2] to use GIC quirks infrastructure
-> > > >
-> > > > Original cover letter
-> > > > ---
-> > > > The GICv3 architecture specifications provide a means for the
-> > > > system programmer to set the shareability and cacheability
-> > > > attributes the GIC components (redistributors and ITSes) use
-> > > > to drive memory transactions.
-> > > >
-> > > > Albeit the architecture give control over shareability/cacheability
-> > > > memory transactions attributes (and barriers), it is allowed to
-> > > > connect the GIC interconnect ports to non-coherent memory ports
-> > > > on the interconnect, basically tying off shareability/cacheability
-> > > > "wires" and de-facto making the redistributors and ITSes non-cohere=
-nt
-> > > > memory observers.
-> > > >
-> > > > This series aims at starting a discussion over a possible solution
-> > > > to this problem, by adding to the GIC device tree bindings the
-> > > > standard dma-noncoherent property. The GIC driver uses the property
-> > > > to force the redistributors and ITSes shareability attributes to
-> > > > non-shareable, which consequently forces the driver to use CMOs
-> > > > on GIC memory tables.
-> > > >
-> > > > On ARM DT DMA is default non-coherent, so the GIC driver can't rely
-> > > > on the generic DT dma-coherent/non-coherent property management lay=
-er
-> > > > (of_dma_is_coherent()) which would default all GIC designs in the f=
-ield
-> > > > as non-coherent; it has to rely on ad-hoc dma-noncoherent property =
-handling.
-> > > >
-> > > > When a consistent approach is agreed upon for DT an equivalent bind=
-ing will
-> > > > be put forward for ACPI based systems.
-> > > >
-> > > > Lorenzo Pieralisi (3):
-> > > >   ACPICA: MADT: Add GICC online capable bit handling
-> > > >   ACPICA: MADT: Add new MADT GICC/GICR/ITS non-coherent flags handl=
-ing
-> > > >   irqchip/gic-v3: Enable non-coherent redistributors/ITSes ACPI pro=
-bing
-> > > >
-> > > >  drivers/acpi/processor_core.c    | 21 +++++++++++++++++++++
-> > > >  drivers/irqchip/irq-gic-common.h |  8 ++++++++
-> > > >  drivers/irqchip/irq-gic-v3-its.c |  4 ++++
-> > > >  drivers/irqchip/irq-gic-v3.c     |  9 +++++++++
-> > > >  include/acpi/actbl2.h            | 12 ++++++++++--
-> > > >  include/linux/acpi.h             |  3 +++
-> > > >  6 files changed, 55 insertions(+), 2 deletions(-)
-> > > >
-> > > > --
-> > >
-> > > I can apply the first 2 patches, but I would need an ACK for the 3rd =
-one.
-> > >
-> > > Alternatively, feel free to add
-> > >
-> > > Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> > >
-> > > to the first 2 patches and route them via ARM64.
-> >
-> > Thanks for that. I have some comments on the third patch, which I'd
-> > like to see addressed beforehand. This is probably all 6.9 material
-> > anyway (nobody is affected by this so far).
->
-> From a purely selfish point of view, it would be useful to have the
-> first patch merged merely to reduce the burden of patches for vcpu
-> hotplug.
+Thoughts? Complaints?
 
-OK, since there will be at least one more iteration of patch [3/3]
-AFAICS, I'll queue up patches [1-2/3] for 6.8 (next week, though).
+---
+From: Josh Poimboeuf <jpoimboe@kernel.org>
+Date: Wed, 3 Jan 2024 19:36:26 +0100
+
+Make sure the default return thunk is not used after all return
+instructions have been patched by the alternatives because the default
+return thunk is insufficient when it comes to mitigating Retbleed or
+SRSO.
+
+Fix based on a earlier version by David Kaplan <david.kaplan@amd.com>.
+
+  [ bp: Use the big-fat "NOTICE NOTICE" banner and fix the compilation
+    error of warn_thunk_thunk being an invisible symbol. ]
+
+Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
+Co-developed-by: Borislav Petkov (AMD) <bp@alien8.de>
+Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
+Link: https://lore.kernel.org/r/20231010171020.462211-4-david.kaplan@amd.com
+---
+ arch/x86/entry/calling.h             | 33 ++++++++++++++++++++++++++++
+ arch/x86/entry/entry.S               |  4 ++++
+ arch/x86/entry/thunk_64.S            | 33 ----------------------------
+ arch/x86/include/asm/nospec-branch.h |  2 ++
+ arch/x86/kernel/cpu/bugs.c           | 16 ++++++++++++++
+ arch/x86/lib/retpoline.S             | 15 +++++--------
+ 6 files changed, 61 insertions(+), 42 deletions(-)
+
+diff --git a/arch/x86/entry/calling.h b/arch/x86/entry/calling.h
+index e59d3073e7cf..a4679e8f30ad 100644
+--- a/arch/x86/entry/calling.h
++++ b/arch/x86/entry/calling.h
+@@ -426,3 +426,36 @@ For 32-bit we have the following conventions - kernel is built with
+ .endm
+ 
+ #endif /* CONFIG_SMP */
++
++/* rdi:	arg1 ... normal C conventions. rax is saved/restored. */
++.macro THUNK name, func
++SYM_FUNC_START(\name)
++	pushq %rbp
++	movq %rsp, %rbp
++
++	pushq %rdi
++	pushq %rsi
++	pushq %rdx
++	pushq %rcx
++	pushq %rax
++	pushq %r8
++	pushq %r9
++	pushq %r10
++	pushq %r11
++
++	call \func
++
++	popq %r11
++	popq %r10
++	popq %r9
++	popq %r8
++	popq %rax
++	popq %rcx
++	popq %rdx
++	popq %rsi
++	popq %rdi
++	popq %rbp
++	RET
++SYM_FUNC_END(\name)
++	_ASM_NOKPROBE(\name)
++.endm
+diff --git a/arch/x86/entry/entry.S b/arch/x86/entry/entry.S
+index 8c8d38f0cb1d..582731f74dc8 100644
+--- a/arch/x86/entry/entry.S
++++ b/arch/x86/entry/entry.S
+@@ -7,6 +7,8 @@
+ #include <linux/linkage.h>
+ #include <asm/msr-index.h>
+ 
++#include "calling.h"
++
+ .pushsection .noinstr.text, "ax"
+ 
+ SYM_FUNC_START(entry_ibpb)
+@@ -20,3 +22,5 @@ SYM_FUNC_END(entry_ibpb)
+ EXPORT_SYMBOL_GPL(entry_ibpb);
+ 
+ .popsection
++
++THUNK warn_thunk_thunk, __warn_thunk
+diff --git a/arch/x86/entry/thunk_64.S b/arch/x86/entry/thunk_64.S
+index 416b400f39db..119ebdc3d362 100644
+--- a/arch/x86/entry/thunk_64.S
++++ b/arch/x86/entry/thunk_64.S
+@@ -9,39 +9,6 @@
+ #include "calling.h"
+ #include <asm/asm.h>
+ 
+-	/* rdi:	arg1 ... normal C conventions. rax is saved/restored. */
+-	.macro THUNK name, func
+-SYM_FUNC_START(\name)
+-	pushq %rbp
+-	movq %rsp, %rbp
+-
+-	pushq %rdi
+-	pushq %rsi
+-	pushq %rdx
+-	pushq %rcx
+-	pushq %rax
+-	pushq %r8
+-	pushq %r9
+-	pushq %r10
+-	pushq %r11
+-
+-	call \func
+-
+-	popq %r11
+-	popq %r10
+-	popq %r9
+-	popq %r8
+-	popq %rax
+-	popq %rcx
+-	popq %rdx
+-	popq %rsi
+-	popq %rdi
+-	popq %rbp
+-	RET
+-SYM_FUNC_END(\name)
+-	_ASM_NOKPROBE(\name)
+-	.endm
+-
+ THUNK preempt_schedule_thunk, preempt_schedule
+ THUNK preempt_schedule_notrace_thunk, preempt_schedule_notrace
+ EXPORT_SYMBOL(preempt_schedule_thunk)
+diff --git a/arch/x86/include/asm/nospec-branch.h b/arch/x86/include/asm/nospec-branch.h
+index 691ff1ef701b..64b175f03cdb 100644
+--- a/arch/x86/include/asm/nospec-branch.h
++++ b/arch/x86/include/asm/nospec-branch.h
+@@ -348,6 +348,8 @@ extern void entry_ibpb(void);
+ 
+ extern void (*x86_return_thunk)(void);
+ 
++extern void __warn_thunk(void);
++
+ #ifdef CONFIG_CALL_DEPTH_TRACKING
+ extern void call_depth_return_thunk(void);
+ 
+diff --git a/arch/x86/kernel/cpu/bugs.c b/arch/x86/kernel/cpu/bugs.c
+index bb0ab8466b91..b96483551299 100644
+--- a/arch/x86/kernel/cpu/bugs.c
++++ b/arch/x86/kernel/cpu/bugs.c
+@@ -2849,3 +2849,19 @@ ssize_t cpu_show_gds(struct device *dev, struct device_attribute *attr, char *bu
+ 	return cpu_show_common(dev, attr, buf, X86_BUG_GDS);
+ }
+ #endif
++
++void __warn_thunk(void)
++{
++	pr_warn_once("\n");
++	pr_warn_once("**********************************************************\n");
++	pr_warn_once("**   NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE   **\n");
++	pr_warn_once("**                                                      **\n");
++	pr_warn_once("**   Unpatched return thunk in use. This should not     **\n");
++	pr_warn_once("**   happen on a production kernel. Please report this  **\n");
++	pr_warn_once("**   to x86@kernel.org.                                 **\n");
++	pr_warn_once("**                                                      **\n");
++	pr_warn_once("**   NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE   **\n");
++	pr_warn_once("**********************************************************\n");
++
++	dump_stack();
++}
+diff --git a/arch/x86/lib/retpoline.S b/arch/x86/lib/retpoline.S
+index 7b2589877d06..5ed0c22f5351 100644
+--- a/arch/x86/lib/retpoline.S
++++ b/arch/x86/lib/retpoline.S
+@@ -369,19 +369,16 @@ SYM_FUNC_END(call_depth_return_thunk)
+  * 'JMP __x86_return_thunk' sites are changed to something else by
+  * apply_returns().
+  *
+- * This should be converted eventually to call a warning function which
+- * should scream loudly when the default return thunk is called after
+- * alternatives have been applied.
+- *
+- * That warning function cannot BUG() because the bug splat cannot be
+- * displayed in all possible configurations, leading to users not really
+- * knowing why the machine froze.
++ * The ALTERNATIVE below adds a really loud warning to catch the case
++ * where the insufficient default return thunk ends up getting used for
++ * whatever reason like miscompilation or failure of
++ * objtool/alternatives/etc to patch all the return sites.
+  */
+ SYM_CODE_START(__x86_return_thunk)
+ 	UNWIND_HINT_FUNC
+ 	ANNOTATE_NOENDBR
+-	ANNOTATE_UNRET_SAFE
+-	ret
++	ALTERNATIVE __stringify(ANNOTATE_UNRET_SAFE; ret), \
++		   "jmp warn_thunk_thunk", X86_FEATURE_ALWAYS
+ 	int3
+ SYM_CODE_END(__x86_return_thunk)
+ EXPORT_SYMBOL(__x86_return_thunk)
+-- 
+2.42.0.rc0.25.ga82fb66fed25
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
 
