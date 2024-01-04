@@ -1,134 +1,102 @@
-Return-Path: <linux-kernel+bounces-16541-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16542-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 723E4823FEB
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 11:52:25 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB48E823FF0
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 11:55:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B5F7BB22AF6
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 10:52:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 609EA1F251DC
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 10:55:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AD1A20DFA;
-	Thu,  4 Jan 2024 10:52:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="iYyjWaP6"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC86320DF0;
+	Thu,  4 Jan 2024 10:55:00 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail115-95.sinamail.sina.com.cn (mail115-95.sinamail.sina.com.cn [218.30.115.95])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AB8E20DE8
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 10:52:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a28ec136715so29148366b.1
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 02:52:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1704365529; x=1704970329; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=I5fZa5BBUNgRC/MuXKPlVg1/H35HoZwMYqORDEqtrMo=;
-        b=iYyjWaP6ZDYkFjkx+R35sNVUvrUOrmoDd691I5eM20pFp7Mt2AGSYsQ/Kla8eFRpFt
-         KqngfhQODGrOdnFvKcYg0Yhk5LLHcZJl0jFfu8IXJ244r003EWS+M8uWQp4YiGEwKM5D
-         aLFT4ZFRek4CVbLaPucYgLn4IDu4ntHonff2apgUc1ITYIjARZxjY32c45WcJygy4VZL
-         /ySOQw3OIcqnRWN4KQ4XXYinpuVq4DUxT7/IyQ/abEr0uY78/lrH/liK+28wsSkHu30F
-         gMZa7+VV8XF8ByPUTO++82QzRSrZ8uDkqMz4dnoxIq0oIdOKSXJc5It9xjM2YeYyCkOk
-         4v2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704365529; x=1704970329;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=I5fZa5BBUNgRC/MuXKPlVg1/H35HoZwMYqORDEqtrMo=;
-        b=gFwyyP8sRzb0f3DUnu/JgP6N0SRAMftOQj++lEo+IvyebtyZjShZ7TYSts245c3Q9y
-         6G6PGM8gOB4dw48mvyyxc12VYfT3gIMowrattatbayKI0kJjagPQaTauhTDb4XeQez2H
-         txxRjvf1xVzMTpRsOxJrgrT33/28QAKgQ2eZOJzgDnRjKqeLq2J7v00O9cQODrTXRvhT
-         JKxyncM9PKigBUTuOqkbKC1fJt67myC3ob4AmibDXoNNQd0/jSmaOenUAEjRkQrarhYL
-         f/DyYSB8yh6aEFCsXXOJrCwyQCowr0seUb/xZvp6teaPTpWtY8m347jAJIVu6b4HU/gG
-         +3kA==
-X-Gm-Message-State: AOJu0Yz0MvDSE/+ZvankxkA0CePVBruNf3bBQJxveR5b+QN5KSCOysFV
-	Z/qn6YZ6X4KpFLWf+dydjEvAYnKFVuGdOA==
-X-Google-Smtp-Source: AGHT+IH2SFA7HOTq7Srx7DUub3qQkU+yO1rsmGqpIPcd4XSv3GgGa5Bl/CgkrtDWu8S+ikAtHQUTUA==
-X-Received: by 2002:a17:906:d9c9:b0:a27:fdc1:593f with SMTP id qk9-20020a170906d9c900b00a27fdc1593fmr240521ejb.67.1704365529270;
-        Thu, 04 Jan 2024 02:52:09 -0800 (PST)
-Received: from localhost (2001-1ae9-1c2-4c00-20f-c6b4-1e57-7965.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:20f:c6b4:1e57:7965])
-        by smtp.gmail.com with ESMTPSA id y2-20020a1709063da200b00a26e4986df8sm10496620ejh.58.2024.01.04.02.52.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Jan 2024 02:52:08 -0800 (PST)
-Date: Thu, 4 Jan 2024 11:52:07 +0100
-From: Andrew Jones <ajones@ventanamicro.com>
-To: linux-riscv@lists.infradead.org, linux-next@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, kvm@vger.kernel.org, kvm-riscv@lists.infradead.org
-Cc: paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu, 
-	anup@brainfault.org, atishp@atishpatra.org, rdunlap@infradead.org, 
-	sfr@canb.auug.org.au, mpe@ellerman.id.au, npiggin@gmail.com, 
-	linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH] RISC-V: KVM: Require HAVE_KVM
-Message-ID: <20240104-d5ebb072b91a6f7abbb2ac76@orel>
-References: <20240104104307.16019-2-ajones@ventanamicro.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86FE020DDE
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 10:54:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sina.com
+X-SMAIL-HELO: localhost.localdomain
+Received: from unknown (HELO localhost.localdomain)([113.118.67.178])
+	by sina.com (172.16.235.24) with ESMTP
+	id 65968E7A00004E93; Thu, 4 Jan 2024 18:54:53 +0800 (CST)
+X-Sender: hdanton@sina.com
+X-Auth-ID: hdanton@sina.com
+Authentication-Results: sina.com;
+	 spf=none smtp.mailfrom=hdanton@sina.com;
+	 dkim=none header.i=none;
+	 dmarc=none action=none header.from=hdanton@sina.com
+X-SMAIL-MID: 67516645089256
+X-SMAIL-UIID: 53E238DDBF6C488EB38F1311581F63D6-20240104-185453-1
+From: Hillf Danton <hdanton@sina.com>
+To: Wesley Cheng <quic_wcheng@quicinc.com>
+Cc: Greg KH <gregkh@linuxfoundation.org>,
+	linux-kernel@vger.kernel.org,
+	linux-sound@vger.kernel.org,
+	linux-usb@vger.kernel.org,
+	Mathias Nyman <mathias.nyman@linux.intel.com>
+Subject: Re: [PATCH v12 02/41] xhci: add helper to stop endpoint and wait for completion
+Date: Thu,  4 Jan 2024 18:54:42 +0800
+Message-Id: <20240104105442.2820-1-hdanton@sina.com>
+In-Reply-To: <20240102214549.22498-3-quic_wcheng@quicinc.com>
+References: <20240102214549.22498-1-quic_wcheng@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240104104307.16019-2-ajones@ventanamicro.com>
+Content-Transfer-Encoding: 8bit
 
+On Tue, 2 Jan 2024 13:45:10 -0800
+> From: Mathias Nyman <mathias.nyman@linux.intel.com>
+> +/*
+> + * Synchronous XHCI stop endpoint helper.  Issues the stop endpoint command and
+> + * waits for the command completion before returning.
+> + */
+> +int xhci_stop_endpoint_sync(struct xhci_hcd *xhci, struct xhci_virt_ep *ep, int suspend,
+> +			    gfp_t gfp_flags)
+> +{
+> +	struct xhci_command *command;
+> +	unsigned long flags;
+> +	int ret;
+> +
+> +	command = xhci_alloc_command(xhci, true, GFP_KERNEL);
 
-This applies to linux-next, but I forgot to append -next to the PATCH
-prefix.
+Given unused gfp_flags, s/GFP_KERNEL/gfp_flags/ ?
 
-On Thu, Jan 04, 2024 at 11:43:08AM +0100, Andrew Jones wrote:
-> KVM requires EVENTFD, which is selected by HAVE_KVM. Other KVM
-> supporting architectures select HAVE_KVM and then their KVM
-> Kconfigs ensure its there with a depends on HAVE_KVM. Make RISCV
-> consistent with that approach which fixes configs which have KVM
-> but not EVENTFD, as was discovered with a randconfig test.
-> 
-> Reported-by: Randy Dunlap <rdunlap@infradead.org>
-> Closes: https://lore.kernel.org/all/44907c6b-c5bd-4e4a-a921-e4d3825539d8@infradead.org/
-
-I think powerpc may need a patch like this as well, since I don't see
-anything ensuring EVENTFD is selected for it anymore either.
-
-Thanks,
-drew
-
-> Signed-off-by: Andrew Jones <ajones@ventanamicro.com>
-> ---
->  arch/riscv/Kconfig     | 1 +
->  arch/riscv/kvm/Kconfig | 2 +-
->  2 files changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-> index a935a5f736b9..daba06a3b76f 100644
-> --- a/arch/riscv/Kconfig
-> +++ b/arch/riscv/Kconfig
-> @@ -128,6 +128,7 @@ config RISCV
->  	select HAVE_KPROBES if !XIP_KERNEL
->  	select HAVE_KPROBES_ON_FTRACE if !XIP_KERNEL
->  	select HAVE_KRETPROBES if !XIP_KERNEL
-> +	select HAVE_KVM
->  	# https://github.com/ClangBuiltLinux/linux/issues/1881
->  	select HAVE_LD_DEAD_CODE_DATA_ELIMINATION if !LD_IS_LLD
->  	select HAVE_MOVE_PMD
-> diff --git a/arch/riscv/kvm/Kconfig b/arch/riscv/kvm/Kconfig
-> index 1fd76aee3b71..36fa8ec9e5ba 100644
-> --- a/arch/riscv/kvm/Kconfig
-> +++ b/arch/riscv/kvm/Kconfig
-> @@ -19,7 +19,7 @@ if VIRTUALIZATION
->  
->  config KVM
->  	tristate "Kernel-based Virtual Machine (KVM) support (EXPERIMENTAL)"
-> -	depends on RISCV_SBI && MMU
-> +	depends on HAVE_KVM && RISCV_SBI && MMU
->  	select HAVE_KVM_IRQCHIP
->  	select HAVE_KVM_IRQ_ROUTING
->  	select HAVE_KVM_MSI
-> -- 
-> 2.43.0
-> 
+> +	if (!command)
+> +		return -ENOMEM;
+> +
+> +	spin_lock_irqsave(&xhci->lock, flags);
+> +	ret = xhci_queue_stop_endpoint(xhci, command, ep->vdev->slot_id,
+> +				       ep->ep_index, suspend);
+> +	if (ret < 0) {
+> +		spin_unlock_irqrestore(&xhci->lock, flags);
+> +		goto out;
+> +	}
+> +
+> +	xhci_ring_cmd_db(xhci);
+> +	spin_unlock_irqrestore(&xhci->lock, flags);
+> +
+> +	ret = wait_for_completion_timeout(command->completion, msecs_to_jiffies(3000));
+> +	if (!ret)
+> +		xhci_warn(xhci, "%s: Unable to stop endpoint.\n",
+> +				__func__);
+> +
+> +	if (command->status == COMP_COMMAND_ABORTED ||
+> +	    command->status == COMP_COMMAND_RING_STOPPED) {
+> +		xhci_warn(xhci, "Timeout while waiting for stop endpoint command\n");
+> +		ret = -ETIME;
+> +	}
+> +out:
+> +	xhci_free_command(xhci, command);
+> +
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL_GPL(xhci_stop_endpoint_sync);
 
