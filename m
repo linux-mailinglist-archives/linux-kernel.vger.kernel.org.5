@@ -1,384 +1,161 @@
-Return-Path: <linux-kernel+bounces-16472-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16465-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90938823F14
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 10:56:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5FF41823EF0
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 10:54:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E22D0B24704
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 09:56:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 63EB01C2397E
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 09:54:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 282DE2137E;
-	Thu,  4 Jan 2024 09:54:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAD8120B04;
+	Thu,  4 Jan 2024 09:53:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="fustg9+o";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="dbXGBzKJ";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="fustg9+o";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="dbXGBzKJ"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="k3udE0bm"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98BAB20DE1;
-	Thu,  4 Jan 2024 09:54:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id A5BB91F7FC;
-	Thu,  4 Jan 2024 09:54:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1704362066; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4i41TaruQR4Pq5LXVEoj7/T9YHF9NQenB4+HeINuBzQ=;
-	b=fustg9+o6qY6TdkQ3bcIke++mqLviQ0aEDOI0jykhmrcW5x4qRYGZjNEUDkZL/krZ41f5i
-	KWUA6mdqYEKTND1s/sQjOp/uNrumayJQa368Ek6PQYjNjwN1ypUWhjWBJoTt0qKCvkNm8Y
-	GzNAFybAGvMDkMpmXNqwfPin/Mkb0PU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1704362066;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4i41TaruQR4Pq5LXVEoj7/T9YHF9NQenB4+HeINuBzQ=;
-	b=dbXGBzKJXvS9A4pyna6aepGghBvFxQypR9kpnM2NVdT36NzRsMZRdwSmbUEkrbgflYoYiu
-	dIl2cW7cX8NyIuBw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1704362066; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4i41TaruQR4Pq5LXVEoj7/T9YHF9NQenB4+HeINuBzQ=;
-	b=fustg9+o6qY6TdkQ3bcIke++mqLviQ0aEDOI0jykhmrcW5x4qRYGZjNEUDkZL/krZ41f5i
-	KWUA6mdqYEKTND1s/sQjOp/uNrumayJQa368Ek6PQYjNjwN1ypUWhjWBJoTt0qKCvkNm8Y
-	GzNAFybAGvMDkMpmXNqwfPin/Mkb0PU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1704362066;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4i41TaruQR4Pq5LXVEoj7/T9YHF9NQenB4+HeINuBzQ=;
-	b=dbXGBzKJXvS9A4pyna6aepGghBvFxQypR9kpnM2NVdT36NzRsMZRdwSmbUEkrbgflYoYiu
-	dIl2cW7cX8NyIuBw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 184EE137E8;
-	Thu,  4 Jan 2024 09:54:26 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 6LObBFKAlmXPZwAAD6G6ig
-	(envelope-from <tzimmermann@suse.de>); Thu, 04 Jan 2024 09:54:26 +0000
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: ardb@kernel.org,
-	tglx@linutronix.de,
-	mingo@redhat.com,
-	bp@alien8.de,
-	dave.hansen@linux.intel.com,
-	x86@kernel.org,
-	hpa@zytor.com,
-	bhelgaas@google.com,
-	arnd@arndb.de,
-	zohar@linux.ibm.com,
-	dmitry.kasatkin@gmail.com,
-	paul@paul-moore.com,
-	jmorris@namei.org,
-	serge@hallyn.com,
-	javierm@redhat.com
-Cc: linux-arch@vger.kernel.org,
-	linux-efi@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-pci@vger.kernel.org,
-	linux-integrity@vger.kernel.org,
-	linux-security-module@vger.kernel.org,
-	Thomas Zimmermann <tzimmermann@suse.de>
-Subject: [PATCH v3 4/4] arch/x86: Do not include <asm/bootparam.h> in several files
-Date: Thu,  4 Jan 2024 10:51:22 +0100
-Message-ID: <20240104095421.12772-5-tzimmermann@suse.de>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240104095421.12772-1-tzimmermann@suse.de>
-References: <20240104095421.12772-1-tzimmermann@suse.de>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BB11208B9;
+	Thu,  4 Jan 2024 09:53:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4047mN1S014984;
+	Thu, 4 Jan 2024 09:53:19 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=IXRZGb3I1tl57Tzisoz/TOJ1kfrS0DgM+Y1DjmEn3BE=; b=k3
+	udE0bm9l7o0p+pZVGDmQAwF4mMr3qMjRk25v7EDR07vtgWZ+OSy6YjCjXbjB3Xa/
+	I5gq5HFZd/WMnDRKsjAROwtwZ1iWR+FWMpMBaCWK7+SBwv5BmiZKK1n5wG6MashR
+	sK8Bg6cilyDw1HFAPk5OWxwraQhyK1jcUycbmGYaKQjelPiwWULXRlca+U3vRQSG
+	cEspQo/eTNLiyOKcGNQH9jqtazaGPrtKc1sS5F+xhZ73WdJ1DjrgKjIuobiYpXcx
+	7BApJszilxp3kwxfnBf9MgnC5kkIu5UjKiMl2LU8KQR8K3H7uHfCsyBdg1uGjgqs
+	RYO/1+gWjymtdMScbw/A==
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vd8s1jem1-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 04 Jan 2024 09:53:19 +0000 (GMT)
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4049rInU002993
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 4 Jan 2024 09:53:18 GMT
+Received: from [10.253.72.77] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 4 Jan
+ 2024 01:53:13 -0800
+Message-ID: <c5263daa-b5f4-4b9c-a216-73d68493a802@quicinc.com>
+Date: Thu, 4 Jan 2024 17:53:10 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Score: 3.40
-X-Spamd-Result: default: False [3.40 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 BAYES_HAM(-3.00)[99.99%];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 R_MISSING_CHARSET(2.50)[];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 BROKEN_CONTENT_TYPE(1.50)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 R_RATELIMIT(0.00)[to_ip_from(RLf6fmkuiuubj71hj5sz5bt3qt)];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 RCPT_COUNT_TWELVE(0.00)[22];
-	 MID_CONTAINS_FROM(1.00)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email];
-	 FREEMAIL_TO(0.00)[kernel.org,linutronix.de,redhat.com,alien8.de,linux.intel.com,zytor.com,google.com,arndb.de,linux.ibm.com,gmail.com,paul-moore.com,namei.org,hallyn.com];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spam-Level: ***
-X-Spam-Flag: NO
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v8 14/14] dt-bindings: net: ar803x: add qca8084 PHY
+ properties
+To: Andrew Lunn <andrew@lunn.ch>
+CC: Christian Marangi <ansuelsmth@gmail.com>,
+        "Russell King (Oracle)"
+	<linux@armlinux.org.uk>,
+        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+        <pabeni@redhat.com>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <hkallweit1@gmail.com>, <corbet@lwn.net>, <p.zabel@pengutronix.de>,
+        <f.fainelli@gmail.com>, <netdev@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-doc@vger.kernel.org>
+References: <f5c5cbce-c36e-498a-97e2-35f06d927d74@lunn.ch>
+ <a9798333-3105-422f-8033-76c0b1d4f439@quicinc.com>
+ <7c05b08a-bb6d-4fa1-8cee-c1051badc9d9@lunn.ch>
+ <ZX2rU5OFcZFyBmGl@shell.armlinux.org.uk>
+ <6abe5d6f-9d00-445f-8c81-9c89b9da3e0a@quicinc.com>
+ <ZX3LqN8DSdKXqsYc@shell.armlinux.org.uk>
+ <1bddd434-024c-45ff-9866-92951a3f555f@quicinc.com>
+ <ZZPeHJJU96y1kdlZ@shell.armlinux.org.uk>
+ <6593e0a3.050a0220.5c543.8e12@mx.google.com>
+ <cee9de2c-bfa4-4ca9-9001-725e2041bc25@quicinc.com>
+ <85590a5b-9d5a-40cb-8a0e-a3a3a1c3720a@lunn.ch>
+Content-Language: en-US
+From: Jie Luo <quic_luoj@quicinc.com>
+In-Reply-To: <85590a5b-9d5a-40cb-8a0e-a3a3a1c3720a@lunn.ch>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: I7BiBPJKFAxZPLJyuounftiweA9NAazj
+X-Proofpoint-ORIG-GUID: I7BiBPJKFAxZPLJyuounftiweA9NAazj
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
+ lowpriorityscore=0 priorityscore=1501 spamscore=0 suspectscore=0
+ impostorscore=0 bulkscore=0 malwarescore=0 mlxlogscore=747 phishscore=0
+ mlxscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2401040074
 
-Remove the include statement for <asm/bootparam.h> from several files
-that don't require it. Limits the exposure of the boot parameters
-within the Linux kernel code.
 
-Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
-Acked-by: Ard Biesheuvel <ardb@kernel.org>
 
----
+On 1/3/2024 10:22 PM, Andrew Lunn wrote:
+>> Yes, APQ8084 is the application SoC.
+>> QCA8084 is the pure PHY chip which has quad-phy.
+> 
+> I think everybody agrees these are terrible names, being so close
+> together but being very different devices.
+> 
+> You have the issues of not giving clear explanations of your
+> hardware. This is resulting in a lot of wasted tome for everybody. S
+> please make your explanations very clear. I personally would avoid
+> using APQ8084 or QCA8084 on there own. Always say the application SoC
+> APQ8084, or the PHY chip QCA8084, or the switch embedded within the
+> application processor APQ8084, or the PHYs embedded within the
+> Application processor etc. This is particularly important when talking
+> about clocks and resets, since the PHYs embedded within the
+> application processor are likely to have different clocks and reset
+> controllers to the PHY chip QCA8084.
+> 
+> 	Andrew
 
-v3:
-	* revert of e820/types.h required
-v2:
-	* clean up misc.h and e820/types.h
-	* include bootparam.h in several source files
----
- arch/x86/boot/compressed/acpi.c       | 2 ++
- arch/x86/boot/compressed/cmdline.c    | 2 ++
- arch/x86/boot/compressed/efi.c        | 2 ++
- arch/x86/boot/compressed/misc.h       | 3 ++-
- arch/x86/boot/compressed/pgtable_64.c | 1 +
- arch/x86/boot/compressed/sev.c        | 1 +
- arch/x86/include/asm/kexec.h          | 1 -
- arch/x86/include/asm/mem_encrypt.h    | 2 +-
- arch/x86/include/asm/sev.h            | 3 ++-
- arch/x86/include/asm/x86_init.h       | 2 --
- arch/x86/kernel/crash.c               | 1 +
- arch/x86/kernel/sev-shared.c          | 2 ++
- arch/x86/platform/pvh/enlighten.c     | 1 +
- arch/x86/xen/enlighten_pvh.c          | 1 +
- arch/x86/xen/vga.c                    | 1 -
- 15 files changed, 18 insertions(+), 7 deletions(-)
+Let me explain it more.
+APQ8084 is the Snapdragon SoC(for smart phone or other applicaiton)
+according to the link below.
+https://www.qualcomm.com/products/mobile/snapdragon/smartphones/snapdragon-8-series-mobile-platforms/snapdragon-processors-805.
+which has nothing to do with QCA8084 or IPQ SoC we are discussing here.
+let's remove out the APQ SoC from the discussion here.
 
-diff --git a/arch/x86/boot/compressed/acpi.c b/arch/x86/boot/compressed/acpi.c
-index 18d15d1ce87d..f196b1d1ddf8 100644
---- a/arch/x86/boot/compressed/acpi.c
-+++ b/arch/x86/boot/compressed/acpi.c
-@@ -5,6 +5,8 @@
- #include "../string.h"
- #include "efi.h"
- 
-+#include <asm/bootparam.h>
-+
- #include <linux/numa.h>
- 
- /*
-diff --git a/arch/x86/boot/compressed/cmdline.c b/arch/x86/boot/compressed/cmdline.c
-index c1bb180973ea..e162d7f59cc5 100644
---- a/arch/x86/boot/compressed/cmdline.c
-+++ b/arch/x86/boot/compressed/cmdline.c
-@@ -1,6 +1,8 @@
- // SPDX-License-Identifier: GPL-2.0
- #include "misc.h"
- 
-+#include <asm/bootparam.h>
-+
- static unsigned long fs;
- static inline void set_fs(unsigned long seg)
- {
-diff --git a/arch/x86/boot/compressed/efi.c b/arch/x86/boot/compressed/efi.c
-index 6edd034b0b30..f2e50f9758e6 100644
---- a/arch/x86/boot/compressed/efi.c
-+++ b/arch/x86/boot/compressed/efi.c
-@@ -7,6 +7,8 @@
- 
- #include "misc.h"
- 
-+#include <asm/bootparam.h>
-+
- /**
-  * efi_get_type - Given a pointer to boot_params, determine the type of EFI environment.
-  *
-diff --git a/arch/x86/boot/compressed/misc.h b/arch/x86/boot/compressed/misc.h
-index c0d502bd8716..01c89c410efd 100644
---- a/arch/x86/boot/compressed/misc.h
-+++ b/arch/x86/boot/compressed/misc.h
-@@ -33,7 +33,6 @@
- #include <linux/elf.h>
- #include <asm/page.h>
- #include <asm/boot.h>
--#include <asm/bootparam.h>
- #include <asm/desc_defs.h>
- 
- #include "tdx.h"
-@@ -53,6 +52,8 @@
- #define memptr unsigned
- #endif
- 
-+struct boot_param;
-+
- /* boot/compressed/vmlinux start and end markers */
- extern char _head[], _end[];
- 
-diff --git a/arch/x86/boot/compressed/pgtable_64.c b/arch/x86/boot/compressed/pgtable_64.c
-index 51f957b24ba7..c882e1f67af0 100644
---- a/arch/x86/boot/compressed/pgtable_64.c
-+++ b/arch/x86/boot/compressed/pgtable_64.c
-@@ -1,5 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0
- #include "misc.h"
-+#include <asm/bootparam.h>
- #include <asm/e820/types.h>
- #include <asm/processor.h>
- #include "pgtable.h"
-diff --git a/arch/x86/boot/compressed/sev.c b/arch/x86/boot/compressed/sev.c
-index 454acd7a2daf..13beae767e48 100644
---- a/arch/x86/boot/compressed/sev.c
-+++ b/arch/x86/boot/compressed/sev.c
-@@ -12,6 +12,7 @@
-  */
- #include "misc.h"
- 
-+#include <asm/bootparam.h>
- #include <asm/pgtable_types.h>
- #include <asm/sev.h>
- #include <asm/trapnr.h>
-diff --git a/arch/x86/include/asm/kexec.h b/arch/x86/include/asm/kexec.h
-index c9f6a6c5de3c..91ca9a9ee3a2 100644
---- a/arch/x86/include/asm/kexec.h
-+++ b/arch/x86/include/asm/kexec.h
-@@ -25,7 +25,6 @@
- 
- #include <asm/page.h>
- #include <asm/ptrace.h>
--#include <asm/bootparam.h>
- 
- struct kimage;
- 
-diff --git a/arch/x86/include/asm/mem_encrypt.h b/arch/x86/include/asm/mem_encrypt.h
-index 359ada486fa9..c1a8a3408c18 100644
---- a/arch/x86/include/asm/mem_encrypt.h
-+++ b/arch/x86/include/asm/mem_encrypt.h
-@@ -15,7 +15,7 @@
- #include <linux/init.h>
- #include <linux/cc_platform.h>
- 
--#include <asm/bootparam.h>
-+struct boot_params;
- 
- #ifdef CONFIG_X86_MEM_ENCRYPT
- void __init mem_encrypt_init(void);
-diff --git a/arch/x86/include/asm/sev.h b/arch/x86/include/asm/sev.h
-index 5b4a1ce3d368..8dad8b1613bf 100644
---- a/arch/x86/include/asm/sev.h
-+++ b/arch/x86/include/asm/sev.h
-@@ -13,7 +13,6 @@
- 
- #include <asm/insn.h>
- #include <asm/sev-common.h>
--#include <asm/bootparam.h>
- #include <asm/coco.h>
- 
- #define GHCB_PROTOCOL_MIN	1ULL
-@@ -22,6 +21,8 @@
- 
- #define	VMGEXIT()			{ asm volatile("rep; vmmcall\n\r"); }
- 
-+struct boot_params;
-+
- enum es_result {
- 	ES_OK,			/* All good */
- 	ES_UNSUPPORTED,		/* Requested operation not supported */
-diff --git a/arch/x86/include/asm/x86_init.h b/arch/x86/include/asm/x86_init.h
-index c878616a18b8..f062715578a0 100644
---- a/arch/x86/include/asm/x86_init.h
-+++ b/arch/x86/include/asm/x86_init.h
-@@ -2,8 +2,6 @@
- #ifndef _ASM_X86_PLATFORM_H
- #define _ASM_X86_PLATFORM_H
- 
--#include <asm/bootparam.h>
--
- struct ghcb;
- struct mpc_bus;
- struct mpc_cpu;
-diff --git a/arch/x86/kernel/crash.c b/arch/x86/kernel/crash.c
-index c92d88680dbf..564cff7ed33a 100644
---- a/arch/x86/kernel/crash.c
-+++ b/arch/x86/kernel/crash.c
-@@ -26,6 +26,7 @@
- #include <linux/vmalloc.h>
- #include <linux/memblock.h>
- 
-+#include <asm/bootparam.h>
- #include <asm/processor.h>
- #include <asm/hardirq.h>
- #include <asm/nmi.h>
-diff --git a/arch/x86/kernel/sev-shared.c b/arch/x86/kernel/sev-shared.c
-index ccb0915e84e1..4962ec42dc68 100644
---- a/arch/x86/kernel/sev-shared.c
-+++ b/arch/x86/kernel/sev-shared.c
-@@ -9,6 +9,8 @@
-  * and is included directly into both code-bases.
-  */
- 
-+#include <asm/setup_data.h>
-+
- #ifndef __BOOT_COMPRESSED
- #define error(v)	pr_err(v)
- #define has_cpuflag(f)	boot_cpu_has(f)
-diff --git a/arch/x86/platform/pvh/enlighten.c b/arch/x86/platform/pvh/enlighten.c
-index 00a92cb2c814..944e0290f2c0 100644
---- a/arch/x86/platform/pvh/enlighten.c
-+++ b/arch/x86/platform/pvh/enlighten.c
-@@ -3,6 +3,7 @@
- 
- #include <xen/hvc-console.h>
- 
-+#include <asm/bootparam.h>
- #include <asm/io_apic.h>
- #include <asm/hypervisor.h>
- #include <asm/e820/api.h>
-diff --git a/arch/x86/xen/enlighten_pvh.c b/arch/x86/xen/enlighten_pvh.c
-index ada3868c02c2..9e9db601bd52 100644
---- a/arch/x86/xen/enlighten_pvh.c
-+++ b/arch/x86/xen/enlighten_pvh.c
-@@ -4,6 +4,7 @@
- 
- #include <xen/hvc-console.h>
- 
-+#include <asm/bootparam.h>
- #include <asm/io_apic.h>
- #include <asm/hypervisor.h>
- #include <asm/e820/api.h>
-diff --git a/arch/x86/xen/vga.c b/arch/x86/xen/vga.c
-index d97adab8420f..f7547807b0bd 100644
---- a/arch/x86/xen/vga.c
-+++ b/arch/x86/xen/vga.c
-@@ -2,7 +2,6 @@
- #include <linux/screen_info.h>
- #include <linux/init.h>
- 
--#include <asm/bootparam.h>
- #include <asm/setup.h>
- 
- #include <xen/interface/xen.h>
--- 
-2.43.0
+1. For IPQ SoC series, there are only ipq4019, ipq5018, ipq6018,
+ipq8074 documented in the current dt-bindings doc qcom,ipq4019-mdio.yaml
+and ipq9574, ipq5332 that are being added by the MDIO patch, and one
+more ipq8064 whose MDIO driver is mdio-ipq8064.c, on more others.
+
+2. For qca8084(pure PHY chip), which is the quad-phy chip, which is just
+    like qca8081 PHY(single port PHY), each port can be linked to maximum
+    speed 2.5G.
+
+    For qca8386(switch chip), which includes the same PHY CHIP as qca8084
+    (4 physical ports and two CPU ports), qca8386 switch can work with
+    the current qca8k.c DSA driver with the supplement patches.
+
+    Both qca8084 and qca8386 includes same network clock controller(let's
+    call it NSSCC, since this clock controller is located in the
+    Ethernet chip qca8084 and qca8386), they have the same clock initial
+    configuration sequence to initialize the Ethernet chip.
+
+   The Ethernet chip qca8084 and qca8386 are only connected with IPQ SoC,
+   Currently qca8084 is connected with IPQ SoC by 10G-QXGMII mode.
+   the 4 PHYs of qca8386 are connected with the internal MAC of qca8386
+   by GMII, the maximum speed is also 2.5G.
+   The port4 of qca8084 or qca8386 is optionally be able to connected
+   with IPQ SoC by sgmii.
+
+
+
+
 
 
