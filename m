@@ -1,197 +1,155 @@
-Return-Path: <linux-kernel+bounces-17099-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17100-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E732782483B
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 19:32:51 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 55BD3824840
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 19:34:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DA7BE1C240C0
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 18:32:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DC151B229F3
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 18:34:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF86C28E24;
-	Thu,  4 Jan 2024 18:32:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AD4328E1E;
+	Thu,  4 Jan 2024 18:34:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EnocWM5g"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Gto5M3Hf"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CAB02C19C;
-	Thu,  4 Jan 2024 18:32:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50C40C433C8;
-	Thu,  4 Jan 2024 18:32:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704393141;
-	bh=6F/ke4aUVOdLoQLcL8fnnAuHNimJm5rztZMuCz1zKwk=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=EnocWM5gleikzv5q0S6ZqkL0CCW31N63mlxKE3kzYthnGpAeVicfp5lf6/0niTXdI
-	 2D9WXsnaFYqlIntsQ3d0J2RJzhb2sx3NRzzkj1ySr1GVbol4TBDneBCgs+yBirIXY7
-	 dtt/QaprNlSZWmZXCgcLn09UeyRp5QE0GRqFlPKZMBr0qsxjMY3alZv6b0bhHclLBT
-	 adO7bp3lNWJrv94FpFQla+XyuAPi03WBX/zUgX/apegSKrZC2VfPicSmJYNSdr19iM
-	 G9qcuUqe6iYOmMKVd/Hq2OJ5imkjyhXNjXpBnkS/SUfmQciLC85otdS0Cn2/KskOrb
-	 Vtj5V6/4WH7lg==
-Date: Thu, 4 Jan 2024 12:32:18 -0600
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Dan Williams <dan.j.williams@intel.com>
-Cc: Bjorn Helgaas <bhelgaas@google.com>, Ira Weiny <ira.weiny@intel.com>,
-	Jonathan Cameron <jonathan.cameron@huawei.com>,
-	Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>,
-	Shiju Jose <shiju.jose@huawei.com>,
-	Yazen Ghannam <yazen.ghannam@amd.com>,
-	Davidlohr Bueso <dave@stgolabs.net>,
-	Dave Jiang <dave.jiang@intel.com>,
-	Alison Schofield <alison.schofield@intel.com>,
-	Vishal Verma <vishal.l.verma@intel.com>,
-	Ard Biesheuvel <ardb@kernel.org>, linux-efi@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-cxl@vger.kernel.org,
-	linux-pci@vger.kernel.org
-Subject: Re: [PATCH v5 8/9] PCI: Define scoped based management functions
-Message-ID: <20240104183218.GA1820872@bhelgaas>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40CE328E06;
+	Thu,  4 Jan 2024 18:34:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704393260; x=1735929260;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=Y5ZQ7s14+htsLTJ2CXBXwYk88AqUJQslodDbp6R4bpA=;
+  b=Gto5M3HfEypJ+ZiifwIViGA/ybx3FCpNOF2GF/2xmvaXfi4Olh0QFa6a
+   hptFOXtHg/oDmXhYXmyuPjS9VJaEimzjc3qNJczvbemohe8ugzFAvHStm
+   R6ShHEh/UB5aYR7GytRXkKeq6ZhABHmIk7lZbIa+a37MaGpWvMFQ0e6Wd
+   NOD2jxBB5YuHv7vgLC5vGOAjgfk9EvwZ3DdegmgvJUWvbJeOrCocgCBra
+   kqEgpyJn4kXqeplOQV0crCJoptZ+dNaf4G3ELEKqTRwCYnlW8QoJIL4S0
+   UINl2LEK+LbrXt3jsB0a2au3fKpTw5jV3DeCFop2pVPB1074v4nPnKCtA
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10943"; a="10717824"
+X-IronPort-AV: E=Sophos;i="6.04,331,1695711600"; 
+   d="scan'208";a="10717824"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2024 10:34:19 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10943"; a="773615135"
+X-IronPort-AV: E=Sophos;i="6.04,331,1695711600"; 
+   d="scan'208";a="773615135"
+Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.252.35.85])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2024 10:34:14 -0800
+Message-ID: <29dc26a4-b95c-42d5-94f8-fbd23c589eaa@intel.com>
+Date: Thu, 4 Jan 2024 20:34:09 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6595f9eec5986_be70229443@dwillia2-xfh.jf.intel.com.notmuch>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] mmc: rpmb: do not force a retune before RPMB switch
+Content-Language: en-US
+To: "Jorge Ramirez-Ortiz, Foundries" <jorge@foundries.io>
+Cc: Avri Altman <Avri.Altman@wdc.com>,
+ "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
+ "christian.loehle@arm.com" <christian.loehle@arm.com>,
+ "jinpu.wang@ionos.com" <jinpu.wang@ionos.com>,
+ "axboe@kernel.dk" <axboe@kernel.dk>, "beanhuo@micron.com"
+ <beanhuo@micron.com>, "yibin.ding@unisoc.com" <yibin.ding@unisoc.com>,
+ "victor.shih@genesyslogic.com.tw" <victor.shih@genesyslogic.com.tw>,
+ "asuk4.q@gmail.com" <asuk4.q@gmail.com>,
+ "hkallweit1@gmail.com" <hkallweit1@gmail.com>,
+ "yangyingliang@huawei.com" <yangyingliang@huawei.com>,
+ "yebin10@huawei.com" <yebin10@huawei.com>,
+ "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20231204150111.3320071-1-jorge@foundries.io>
+ <f83933d3-6426-425c-903e-abbd2691e84a@intel.com>
+ <DM6PR04MB6575A30D162378E82B4D7DDEFC84A@DM6PR04MB6575.namprd04.prod.outlook.com>
+ <ZXBGTxS7sUSILtLs@trax> <ZXbBhjZIn5sj6EYO@trax> <ZZPoRPxdWXuT+cEo@trax>
+ <b88eca08-7f20-4287-802c-ae1c8e3cd5cf@intel.com> <ZZSH1ykwP45fZaLh@trax>
+ <d1fac554-4a51-409e-bc52-100a6bb4f5dd@intel.com> <ZZUm68tU9zHsC+X+@trux>
+From: Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+In-Reply-To: <ZZUm68tU9zHsC+X+@trux>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Wed, Jan 03, 2024 at 04:21:02PM -0800, Dan Williams wrote:
-> Bjorn Helgaas wrote:
-> > On Wed, Jan 03, 2024 at 02:38:57PM -0800, Dan Williams wrote:
-> > > Ira Weiny wrote:
-> > > > Users of pci_dev_get() can benefit from a scoped based put.  Also,
-> > > > locking a PCI device is often done within a single scope.
-> > > > 
-> > > > Define a pci_dev_put() free function and a PCI device lock guard.  These
-> > > > will initially be used in new CXL event processing code but is defined
-> > > > in a separate patch for others to pickup and use/backport easier.
-> > > 
-> > > Any heartburn if I take this through cxl.git with the rest in this
-> > > series? Patch 9 has a dependency on this one.
-> > 
-> > No real heartburn.  I was trying to figure out what this does
-> > since I'm not familiar with the "scoped based put" idea and
-> > 'git grep -i "scope.*base"' wasn't much help.
-> > 
-> > I would kind of like the commit log to say a little more about what
-> > the "scoped based put" (does that have too many past tenses in it?)
-> > means and how users of pci_dev_get() will benefit.
+On 3/01/24 11:20, Jorge Ramirez-Ortiz, Foundries wrote:
+> On 03/01/24 10:03:38, Adrian Hunter wrote:
+>> Thanks for doing that!  That seems to explain the mystery.
+>>
+>> You could hack the test to get an idea of how many successful
+>> iterations there are before getting an error.
+>>
+>> For SDHCI, one difference between tuning and re-tuning is the
+>> setting of bit-7 "Sampling Clock Select" of "Host Control 2 Register".
+>> It is initially 0 and then set to 1 after the successful tuning.
+>> Essentially, leaving it set to 1 is meant to speed up the re-tuning.
+>> You could try setting it to zero instead, and see if that helps.
+>> e.g.
+>>
+>> diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
+>> index c79f73459915..714d8cc39709 100644
+>> --- a/drivers/mmc/host/sdhci.c
+>> +++ b/drivers/mmc/host/sdhci.c
+>> @@ -2732,6 +2732,7 @@ void sdhci_start_tuning(struct sdhci_host *host)
+>>  	ctrl |= SDHCI_CTRL_EXEC_TUNING;
+>>  	if (host->quirks2 & SDHCI_QUIRK2_TUNING_WORK_AROUND)
+>>  		ctrl |= SDHCI_CTRL_TUNED_CLK;
+>> +	ctrl &= ~SDHCI_CTRL_TUNED_CLK;
+>>  	sdhci_writew(host, ctrl, SDHCI_HOST_CONTROL2);
+>>
+>>  	/*
+>>
 > 
-> That is completely fair, and I should have checked to make sure that the
-> changelog clarified the impact of the change.
-
-I see "scoped based put" follows a similar use in cleanup.h, but I
-think "scope-based X" reads better.
-
-> > I don't know what "locking a PCI device is often done within a single
-> > scope" is trying to tell me either.  What if it's *not* done within a
-> > single scope?
-> > 
-> > Does this change anything for callers of pci_dev_get() and
-> > pci_dev_put()?
-> > 
-> > Does this avoid a common programming error?  I just don't know what
-> > the benefit of this is yet.
-> > 
-> > I'm sure this is really cool stuff, but there's little documentation,
-> > few existing users, and I don't know what I need to look for when
-> > reviewing things.
 > 
-> Here a is a re-write of the changelog:
+> Yes with that change, the re-tuning reliability test does pass.
 > 
-> ---
-> PCI: Introduce cleanup helpers for device reference counts and locks
+> root@uz3cg-dwg-sec:/sys/kernel/debug/mmc0#  echo 52 > /sys/kernel/debug/mmc0/mmc0\:0001/test
+> [  237.833585] mmc0: Starting tests of card mmc0:0001...
+> [  237.838759] mmc0: Test case 52. Re-tuning reliability...
+> [  267.845403] mmc0: Result: OK
+> [  267.848365] mmc0: Tests completed.
 > 
-> The "goto error" pattern is notorious for introducing subtle resource
-> leaks. Use the new cleanup.h helpers for PCI device reference counts and
-> locks.
 > 
-> Similar to the new put_device() and device_lock() cleanup helpers,
-> __free(put_device) and guard(device), define the same for PCI devices,
-> __free(pci_dev_put) and guard(pci_dev).  These helpers eliminate the
-> need for "goto free;" and "goto unlock;" patterns. For example, A
-> 'struct pci_dev *' instance declared as:
+> Unfortunately I still see the error when looping on RPMB reads.
 > 
-> 	struct pci_dev *pdev __free(pci_dev_put) = NULL;
-
-I see several similar __free() uses with NULL initializations in gpio,
-but I think this idiom would be slightly improved if the __free()
-function were more closely associated with the actual pci_dev_get():
-
-  struct pci_dev *pdev __free(pci_dev_put) = pci_get_device(...);
-
-Not always possible, I know, but easier to analyze when it is.
-
-> ...will automatically call pci_dev_put() if @pdev is non-NULL when @pdev
-> goes out of scope (automatic variable scope). If a function wants to
-> invoke pci_dev_put() on error, but return @pdev on success, it can do:
+> For instance with this test script
+>  $ while true; do rpmb_read m4hash; usleep 300; done
 > 
-> 	return no_free_ptr(pdev);
+> I can see the error triggering on the serial port after a minute or so.
+> [  151.682907] sdhci-arasan ff160000.mmc: __mmc_blk_ioctl_cmd: data error -84
 > 
-> ...or:
+> Causing OP-TEE to panic since the RPMB read returns an error
+> E/TC:? 0
+> E/TC:? 0 TA panicked with code 0xffff0000
+> E/LD:  Status of TA 22250a54-0bf1-48fe-8002-7b20f1c9c9b1
+> E/LD:   arch: aarch64
+> [...]
 > 
-> 	return_ptr(pdev);
+> if anything else springs to your mind I am happy to test of course - there are
+> so many tunnables in this subsystem that experience is this area has exponential
+> value (and I dont have much).
 > 
-> For potential cleanup opportunity there are 587 open-coded calls to
-> pci_dev_put() in the kernel with 65 instances within 10 lines of a goto
-> statement with the CXL driver threatening to add another one.
+> Would it make sense if re-tuning requests are rejected unless a minimum number
+> of jiffies have passed? should I try that as a change?
 > 
-> The guard() helper holds the associated lock for the remainder of the
-> current scope in which it was invoked. So, for example:
-> 
-> 	func(...)
-> 	{
-> 		if (...) {
-> 			...
-> 			guard(pci_dev); /* pci_dev_lock() invoked here */
-> 			...
-> 		} /* <- implied pci_dev_unlock() triggered here */
-> 	}
+> or maybe delay a bit longer the RPMB access after a retune request?
 
-Thanks for this!  I had skimmed cleanup.h previously, but it makes a
-lot more sense after your description here.  
+It seems re-tuning is not working properly, so ideally the
+SoC vendor / driver implementer would provide a solution.
 
-I think a little introduction along these lines would be even more
-useful in cleanup.h since the concept is general and not PCI-specific.
-E.g., the motivation (avoid resource leaks with "goto error" pattern),
-a definition of "__free() based cleanup function" (IIUC, a function to
-be run when a variable goes out of scope), maybe something about
-ordering (it's important in the "goto error" pattern that the cleanups
-are done in a specific order; how does that translate to __free()?)
+There is also mmc_doing_retune() which could be used to skip
+tuning execution entirely in the case of re-tuning.
 
-But the commit log above is fine with me.  (It does contain tabs,
-which get slightly mangled when "git log" indents it.)
-
-> There are 15 invocations of pci_dev_unlock() in the kernel with 5
-> instances within 10 lines of a goto statement. Again, the CXL driver is
-> threatening to add another.
-> 
-> Introduce these helpers to preclude the addition of new more error prone
-> goto put; / goto unlock; sequences. For now, these helpers are used in
-> drivers/cxl/pci.c to allow ACPI error reports to be fed back into the
-> CXL driver associated with the PCI device identified in the report.
-
-This part is also fine but doesn't seem strictly necessary to me.  I
-think the part about error reports being fed back needs a lot more
-background to understand the connection, and probably only makes sense
-in the context of that patch.
-
-> As for reviewing conversions that use these new helpers, one of the
-> gotchas I have found is that it is easy to make a mistake if a goto
-> still exists in the function after the conversion. So unless and until
-> all of the resources a function acquires, that currently need a goto to
-> unwind them on error, can be converted to cleanup.h based helpers it is
-> best not to mix styles.
-> 
-> I think the function documentation in include/linux/cleanup.h does a
-> decent job of explaining how to use the helpers. However, I am happy to
-> suggest some updates if you think it would help.
-
-Thanks, Dan!
-
-Acked-by: Bjorn Helgaas <bhelgaas@google.com>
 
