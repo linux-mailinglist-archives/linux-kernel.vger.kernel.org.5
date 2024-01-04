@@ -1,217 +1,117 @@
-Return-Path: <linux-kernel+bounces-16804-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16805-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5ED46824422
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 15:51:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A6CC824424
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 15:52:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9405DB2398A
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 14:51:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D741A286458
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 14:52:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8B642375C;
-	Thu,  4 Jan 2024 14:51:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90AE123761;
+	Thu,  4 Jan 2024 14:52:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="BjfY4km8"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="rT0trL4T"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-io1-f41.google.com (mail-io1-f41.google.com [209.85.166.41])
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84E4623755
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 14:51:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-io1-f41.google.com with SMTP id ca18e2360f4ac-7bbe90357d8so26924539f.2
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 06:51:45 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E49823755
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 14:52:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-555f95cc2e4so748493a12.3
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 06:52:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1704379904; x=1704984704; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=or1h/yMnjb6tVAyJBd6HlW28SfRdcpAwUGvNMzv3A58=;
-        b=BjfY4km8d2TyCCCvkH/MBBhr/62VTu+nN/Jzh4dEHBEp7XZHum2le35+8dbDHwiMB2
-         4VxvXDU8apZ0vkHWsEz8TZct98hFG1qKRLH3MHOW9DcJfov99jizBVBhmsoKGoPMbala
-         ywvK6cVy+Oz1uiD0qj9PomcT2GXSmhPGXTN4g=
+        d=linaro.org; s=google; t=1704379947; x=1704984747; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=zZIogcHqx9uTCJq4N+XqsoGveT+CoaQkQRlLlJgbysk=;
+        b=rT0trL4T+rPH20VUfXhX+AJENp6UiC0NJ3ShflemLgDGYmV/5T5kCLCO/IyR003m7f
+         Wc1WcsGTY/xY6j4QRXXuhUZdv4ihScZQwHFqCy26hH8hjkkjmAdQn453LD1DQSY029PS
+         5Z17HxJTOsm/RNR0Cmq+gmsyfGzS3E4g9Q8chCfM/tR3BlEbIMsqXm3qLnuLLZQJ1M6D
+         4pdChcNKfkM+Xx3zR6PkcbJfMjoJYNyjpDcMnutz0h6HB1HDxYG7Ap/DIM3yxhsQ8x7L
+         xtdDJhQ21wMB5+fN4t/PJu7YKati70soKRX3aPYht7QFhriCWbC3mDrxR10PMYSgCRw1
+         bQ9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704379904; x=1704984704;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=or1h/yMnjb6tVAyJBd6HlW28SfRdcpAwUGvNMzv3A58=;
-        b=fio7++tbtA0mFpuBbSMjQaWtZO/Aq5oho8j0LUvcM0QzVcad+OVvgsCix4YxhS7aNt
-         SoZD+IqoQPnIRS+BEkWmjywcx6NM9xTcaAz/BMQ2RyyqPb6kqqSFA+K3kEzopjc/Z7kS
-         42eW0om4v5lF8zlxpq973+Kgce7eMfqKSY6Y8XNe1zD0Uk2ISRx70bi2r6RAjt62ur+f
-         7X4Cp3isBnv8qsZ1pVImBVijhEsqO+u1q9FYi0ucEjSsKmALOhpp5dNLV1s0A+XYcPvM
-         v5KS4qKSNBTaQnNACMSL/6I8KmP7yE3CoHRqafMOBget7XSQwo2Ok5E6LeL+QCp5tEPU
-         Hitg==
-X-Gm-Message-State: AOJu0YzH2ppYsCvyf9LWtc2Ezsx8mP4u6kusrGCvapRfh2T++Br0yZ3p
-	1VtKCrpeJyx8TDqtn4vlQ+g8+D7ERTFu/CXjLgN1SlUpHwR9
-X-Google-Smtp-Source: AGHT+IEYU2DLzWSUIVJNOwHaKCi+sergeBd9wsnJzrR/LxrNBZKPhWi9MLRYEkvnXrh64TiDxyY+/OhPCjGRQQYclA8=
-X-Received: by 2002:a05:6e02:1689:b0:35d:58ce:2322 with SMTP id
- f9-20020a056e02168900b0035d58ce2322mr876045ila.5.1704379904640; Thu, 04 Jan
- 2024 06:51:44 -0800 (PST)
+        d=1e100.net; s=20230601; t=1704379947; x=1704984747;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=zZIogcHqx9uTCJq4N+XqsoGveT+CoaQkQRlLlJgbysk=;
+        b=AkgmZ/MXgRWx+gd4V9YPxMWhSzbpVUO8vrO3RyfZi4z+WP8Cf8wsI9MZ1VlJ78DTrn
+         5M/OUwL5NwfpJEH5IXKIzjQtNo9wJchp2lUG4km3fCJyHngouXxTh4UGuvoMvKbzQHae
+         5HeT+KkuMPDrIm/dHEF85ZWx9N8YNkKxrxEoSzuTm+1QT0n2sAUamQ2DrUWC2Y+IbhWD
+         7ZoZeOCPR7xJSSBzYFuvXSvVg1KQF02m/NrkZDNQhdo4OO2PjrDVmqQyufdwXch87o/C
+         F9xgNN4Zj+1EZLAx1aF884X5Xo75usX09Zrn1QLqWjhtl0hF0/8hOPCypPmwt3cmXQSf
+         Ki0g==
+X-Gm-Message-State: AOJu0YyDcn2wa3Jq5+uxo4/eo560EA9wg1TMDawhstypYb9fIVDnJ1+2
+	ph2dh3KKXyPo8Jld/HVg0LZjq02mYXuxgBwsFMo0ULWWelI=
+X-Google-Smtp-Source: AGHT+IFXAx2ANimczd8Sgl4948w4u3Nl18N4rN5i/YkygdtqRa/cmktNNtOAN3WAuyYeZwnltT6Z0w==
+X-Received: by 2002:a50:c259:0:b0:557:c43:1e51 with SMTP id t25-20020a50c259000000b005570c431e51mr311959edf.23.1704379947335;
+        Thu, 04 Jan 2024 06:52:27 -0800 (PST)
+Received: from [127.0.1.1] ([79.115.23.25])
+        by smtp.gmail.com with ESMTPSA id k24-20020a056402049800b00555e52fed52sm7970592edv.91.2024.01.04.06.52.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Jan 2024 06:52:26 -0800 (PST)
+From: Abel Vesa <abel.vesa@linaro.org>
+Subject: [PATCH 0/2] phy: qualcomm: eusb2-repeater: Some fixes after the
+ regmap rework
+Date: Thu, 04 Jan 2024 16:52:10 +0200
+Message-Id: <20240104-phy-qcom-eusb2-repeater-fixes-v1-0-047b7b6b8333@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240102081402.1226795-1-treapking@chromium.org>
- <eed88b36-ae56-40d3-8588-0d5d75da71a6@collabora.com> <5520e8e3-c75b-480f-b831-c40b5cca029f@collabora.com>
-In-Reply-To: <5520e8e3-c75b-480f-b831-c40b5cca029f@collabora.com>
-From: Pin-yen Lin <treapking@chromium.org>
-Date: Thu, 4 Jan 2024 22:51:33 +0800
-Message-ID: <CAEXTbpeqRsWNgZE3ZgcFKogxv-tjAmQT=D6o6X4ViuG5ZZFCHQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] clk: mediatek: Introduce need_pm_runtime to mtk_clk_desc
-To: Eugen Hristev <eugen.hristev@collabora.com>, 
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Cc: Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, 
-	Matthias Brugger <matthias.bgg@gmail.com>, Chen-Yu Tsai <wenst@chromium.org>, 
-	linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Weiyi Lu <weiyi.lu@mediatek.com>, 
-	linux-mediatek@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIABrGlmUC/x3MQQrCQAxG4auUrA0kaTd6FXFRx1+bhe2YqCild
+ 3dw+fHgrZQIR9KhWynw9vRlbtBdR2Ua5xvYL81kYoOoDFynLz/Kcme88mwcqBifCL76B8llb6K
+ qvfRWqD1q4B/a4njath9VivBTbwAAAA==
+To: Bjorn Andersson <andersson@kernel.org>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Vinod Koul <vkoul@kernel.org>, 
+ Kishon Vijay Abraham I <kishon@kernel.org>
+Cc: linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org, 
+ linux-kernel@vger.kernel.org, Abel Vesa <abel.vesa@linaro.org>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=openpgp-sha256; l=639; i=abel.vesa@linaro.org;
+ h=from:subject:message-id; bh=c+pvrccSCpOgqh7ydKwxbBRfYF462jh89UpoQ5iwwdk=;
+ b=owEBbQKS/ZANAwAKARtfRMkAlRVWAcsmYgBllsYmbj67PZ2TtbJqISo/ydyuy6XlIWLzEi/YC
+ RLLrn2b6wSJAjMEAAEKAB0WIQRO8+4RTnqPKsqn0bgbX0TJAJUVVgUCZZbGJgAKCRAbX0TJAJUV
+ VtK/EADFV3NeX2ydmpryOIbecPaE7INDEqVyyKUK0wmtewgsUL+Z04L7kGWr9dB42XrpBKSjr3M
+ /io8L/lcSjgBSNHQP+NZCD+4t6ce1kyI+GmPxg/A/1CuI8QARQr8eKm96/hOw5c+M16TshuYy6t
+ VERh3FlNrt7JFRa1eHQfNUrVPkfyVzfGwIo7hjyBpadNB43yBamxlWhTBIxsR5f5WW2S9/KK/qA
+ NCgb+3oqLR5pwe2fEAm+Crrc1QZjX3necfvdTf2cCcTANUJ8W07OHPeFaLB4P9bVuhRdXQU5+Bx
+ Wn4eJCcs17xQW3i/ATAOn7NX8/3vY1uiXdSPJ0r64SF4BDKOicoGXH3Ej8I2aUJyKYWMAQUZ31N
+ /0bRVXCd0+0wLiEZDLj2WpQu/jQFZypgbZX3Fo7oiM8taOYDEa60ati6YivJj2CPpx6/rImiS6q
+ njArJwRyZqNFUduN8gFFZCPtsluxUUG5k10IMpnwS4BXn/RdhM8Ce83y/vUdzCfe1Vn2g07ZSpD
+ eSQAQh49FK1UfBR2LCsVvEEcv15hhu0bM6xGr6Aaus1Wi90efLSXg+njYRWnAk7sNrkDVKITTIy
+ PL1Q6l3q2GUn+DVglE7rUcsuje8Ylf+Bvs5tpUKM472dt1Wb+4Fsr/XwzOWkfV4/eYERjR4r+9I
+ ySvKGnl1XeZlUkw==
+X-Developer-Key: i=abel.vesa@linaro.org; a=openpgp;
+ fpr=6AFF162D57F4223A8770EF5AF7BF214136F41FAE
 
-Hi Eugen and Angelo,
+Found the first issue (from first patch) while adding support
+for X Elite (X1E80100) which comes with more than one repeaters.
+The second fix is just bonus.
 
-Unfortunately, I don't have a way to reliably reproduce this either.
+---
+Abel Vesa (2):
+      phy: qualcomm: eusb2-repeater: Fix the regfields for multiple instances
+      phy: qualcomm: eusb2-repeater: Drop the redundant zeroing
 
-We notice this issue from the automatic crash reports sent from the
-users, but we are still not able to reproduce this locally.  So our
-plan is to ship this patch to the users and see if the crash rate goes
-down after a month or so.
+ drivers/phy/qualcomm/phy-qcom-eusb2-repeater.c | 23 ++++++++++-------------
+ 1 file changed, 10 insertions(+), 13 deletions(-)
+---
+base-commit: 0fef202ac2f8e6d9ad21aead648278f1226b9053
+change-id: 20240104-phy-qcom-eusb2-repeater-fixes-c9201113032c
 
-Regards,
-Pin-yen
+Best regards,
+-- 
+Abel Vesa <abel.vesa@linaro.org>
 
-On Wed, Jan 3, 2024 at 9:20=E2=80=AFPM Eugen Hristev
-<eugen.hristev@collabora.com> wrote:
->
-> On 1/3/24 14:19, AngeloGioacchino Del Regno wrote:
-> > Il 02/01/24 09:12, Pin-yen Lin ha scritto:
-> >> Introduce a new need_pm_runtime variable to mtk_clk_desc to indicate
-> >> this clock needs a runtime PM get on the clock controller during the
-> >> probing stage.
-> >>
-> >> Signed-off-by: Pin-yen Lin <treapking@chromium.org>
-> >
-> > Hello Pin-yen,
-> >
-> > We have experienced something similar, but it was really hard to reprod=
-uce after
-> > some changes.
-> >
-> > In an effort to try to solve this issue (but again, reproducing is real=
-ly hard),
-> > Eugen has sent a commit in the hope that someone else found a way to ea=
-sily
-> > reproduce. Please look at [1].
-> >
-> > I'm also adding Eugen to the Cc's of this email.
-> >
-> > Cheers,
-> > Angelo
-> >
-> > [1]:
-> > https://patchwork.kernel.org/project/linux-pm/patch/20231225133615.7899=
-3-1-eugen.hristev@collabora.com/
->
-> Hello Pin-yen,
->
-> Can you try my patch and let me know if this changes anything for you ?
->
-> If it does not change anything, can you also try this one as well ? It's =
-another
-> attempt to fix the synchronization with genpd.
->
-> https://lore.kernel.org/linux-arm-kernel/20231129113120.4907-1-eugen.hris=
-tev@collabora.com/
->
-> Thanks,
-> Eugen
->
-> >
-> >> ---
-> >>
-> >> Changes in v2:
-> >> - Fix the order of error handling
-> >> - Update the commit message and add a comment before the runtime PM ca=
-ll
-> >>
-> >>   drivers/clk/mediatek/clk-mtk.c | 15 +++++++++++++++
-> >>   drivers/clk/mediatek/clk-mtk.h |  2 ++
-> >>   2 files changed, 17 insertions(+)
-> >>
-> >> diff --git a/drivers/clk/mediatek/clk-mtk.c b/drivers/clk/mediatek/clk=
--mtk.c
-> >> index 2e55368dc4d8..c31e535909c8 100644
-> >> --- a/drivers/clk/mediatek/clk-mtk.c
-> >> +++ b/drivers/clk/mediatek/clk-mtk.c
-> >> @@ -13,6 +13,7 @@
-> >>   #include <linux/of.h>
-> >>   #include <linux/of_address.h>
-> >>   #include <linux/platform_device.h>
-> >> +#include <linux/pm_runtime.h>
-> >>   #include <linux/slab.h>
-> >>
-> >>   #include "clk-mtk.h"
-> >> @@ -494,6 +495,14 @@ static int __mtk_clk_simple_probe(struct platform=
-_device *pdev,
-> >>                      return IS_ERR(base) ? PTR_ERR(base) : -ENOMEM;
-> >>      }
-> >>
-> >> +
-> >> +    if (mcd->need_runtime_pm) {
-> >> +            devm_pm_runtime_enable(&pdev->dev);
-> >> +            r =3D pm_runtime_resume_and_get(&pdev->dev);
-> >> +            if (r)
-> >> +                    return r;
-> >> +    }
-> >> +
-> >>      /* Calculate how many clk_hw_onecell_data entries to allocate */
-> >>      num_clks =3D mcd->num_clks + mcd->num_composite_clks;
-> >>      num_clks +=3D mcd->num_fixed_clks + mcd->num_factor_clks;
-> >> @@ -574,6 +583,9 @@ static int __mtk_clk_simple_probe(struct platform_=
-device *pdev,
-> >>                      goto unregister_clks;
-> >>      }
-> >>
-> >> +    if (mcd->need_runtime_pm)
-> >> +            pm_runtime_put(&pdev->dev);
-> >> +
-> >>      return r;
-> >>
-> >>   unregister_clks:
-> >> @@ -604,6 +616,9 @@ static int __mtk_clk_simple_probe(struct platform_=
-device *pdev,
-> >>   free_base:
-> >>      if (mcd->shared_io && base)
-> >>              iounmap(base);
-> >> +
-> >> +    if (mcd->need_runtime_pm)
-> >> +            pm_runtime_put(&pdev->dev);
-> >>      return r;
-> >>   }
-> >>
-> >> diff --git a/drivers/clk/mediatek/clk-mtk.h b/drivers/clk/mediatek/clk=
--mtk.h
-> >> index 22096501a60a..c17fe1c2d732 100644
-> >> --- a/drivers/clk/mediatek/clk-mtk.h
-> >> +++ b/drivers/clk/mediatek/clk-mtk.h
-> >> @@ -237,6 +237,8 @@ struct mtk_clk_desc {
-> >>
-> >>      int (*clk_notifier_func)(struct device *dev, struct clk *clk);
-> >>      unsigned int mfg_clk_idx;
-> >> +
-> >> +    bool need_runtime_pm;
-> >>   };
-> >>
-> >>   int mtk_clk_pdev_probe(struct platform_device *pdev);
-> >
-> >
-> >
-> >
->
 
