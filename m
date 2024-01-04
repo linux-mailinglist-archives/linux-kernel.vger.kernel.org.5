@@ -1,178 +1,196 @@
-Return-Path: <linux-kernel+bounces-16241-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16242-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 48002823B5E
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 05:13:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B2B13823B5F
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 05:13:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1A5EE1C247B7
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 04:13:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 277171F2634E
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 04:13:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FA821DFC1;
-	Thu,  4 Jan 2024 04:12:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B5F810A16;
+	Thu,  4 Jan 2024 04:13:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="X9EJd2Hp";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="Gc/00ctk"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ngH3RJ0o"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D904F1D68D;
-	Thu,  4 Jan 2024 04:12:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40426xe7001730;
-	Thu, 4 Jan 2024 04:12:45 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : content-type :
- mime-version; s=corp-2023-11-20;
- bh=2GK/cHMAwbkwCXxmH03nQa15fC8Jk8FfiHFnToimV0k=;
- b=X9EJd2HpzqpTgFGUgZrhzC8+Xzz5dO5iJPsOcofUxbLmv0/NdrTxOBfajeVUZQc/wxhO
- 0iU17A0unrrwPywK9DtJV3IQk7QP4p1euSY5Un477Mz592rngYTiskRdYOnNlXTn8swe
- IU1JlsAsG3eEBKyWS2XA1+MxKxmliPYXwzyQWY6HQPZQ+voGhLD1qHfvgCJsVnLseeOT
- a1MsJswduVMwijM5OWnSZoTxZmoXgNoyMwj1tMLQIBZoJHkjjoH3lT9ajTPcPUB4VrvB
- bQjGVoiBBpDqJxkJ1u80xeOuiQimlBOojHnq4Z8/P3Cz7j7ytj/4OsIxIQv6PwNiY1sm uA== 
-Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3va9me696g-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 04 Jan 2024 04:12:45 +0000
-Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 40440lU0027018;
-	Thu, 4 Jan 2024 04:12:44 GMT
-Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2168.outbound.protection.outlook.com [104.47.59.168])
-	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3vdn9a8jbs-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 04 Jan 2024 04:12:44 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XveKH7ChnH8uXlRLIRWg1TPtKx+QOmKbIpaR9GoafKh4rNlFClV4DDVhJvViZ3Y3u9sCt+F4zRwwvjuriYew/jrf61qS8YRE8xnPbjrSEMPqlZ1TXR54eNujYcv+xOx457JW+QRwJCxo4ukOdtgrVg76Aqwc4cIy0LxhJ4YUkTGjuehSLPia5yqKY/cwaQdWqnS9jFCpt4lRF+3vXrsvoo9pG5Qq5j0y9wALJrslXDeGdLXkzH+cXzOQ67WETbI6SWajlouE4mYW4XH3rMqaV5g5S4Znp8GTgLHKo/5orBSOgI3wBMLtSJ+VkfLM9MJSrFAFUxkjY6+xp2zZ0PK2/Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=2GK/cHMAwbkwCXxmH03nQa15fC8Jk8FfiHFnToimV0k=;
- b=N5PmjGQA9QXXuR174fdb2fAdKaeIdpXQwNhFMaa0pgr1cP8a3rvxwl5TBc7z+rka3mlCJuYON0KDHyoEEndQWcwgVOOH6ncXR/i6ZKD2AZ6kl/aeLc2fNuFnRC7hVGdv5S61Nxrmeec2vIaDfTJ1YY/EX5sBPe4LgDJMJMH2BP3KFGyfx/St+qgr4sHbwlP1T+Si6TFTB2F+ORe5PfrKL/2CZofXntudR06mSYtyhrgpmfvtJpVXktN2HGlhigxHWGIuUm0NvRjWG6z2LKZ+MFaBXB9CG3jQ2dKse6nioVSfH438DcyH9TeiQ0nFEs+XWQElZ8LKFbyJQbjVqSLDwg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2GK/cHMAwbkwCXxmH03nQa15fC8Jk8FfiHFnToimV0k=;
- b=Gc/00ctkFADcHYNOTwNty0k7fUyLH7Ysz8QmvNZl4KiIS6ux0b7xsZPOCvRmjcc8xaCqI3sWDP/6YV6oVEIMkwEX+KvpOupUjbgIFi6Zx4XWGmnCz7lxwKUUS2aKv/QGgAoCcrx0IHUQkqS0o8v17WeAsJ3rMLhYrEW6GF3Bvzk=
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
- by CH3PR10MB6738.namprd10.prod.outlook.com (2603:10b6:610:149::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.14; Thu, 4 Jan
- 2024 04:12:42 +0000
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::2b0c:62b3:f9a9:5972]) by PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::2b0c:62b3:f9a9:5972%4]) with mapi id 15.20.7159.015; Thu, 4 Jan 2024
- 04:12:42 +0000
-To: Randy Dunlap <rdunlap@infradead.org>
-Cc: linux-kernel@vger.kernel.org,
-        Sathya Prakash Veerichetty
- <sathya.prakash@broadcom.com>,
-        Kashyap Desai
- <kashyap.desai@broadcom.com>,
-        Sumit Saxena <sumit.saxena@broadcom.com>,
-        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
-        mpi3mr-linuxdrv.pdl@broadcom.com,
-        "James E.J. Bottomley"
- <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org
-Subject: Re: [PATCH] scsi: mpi3mr: fix mpi3mr_fw.c kernel-doc warnings
-From: "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq134vdag9a.fsf@ca-mkp.ca.oracle.com>
-References: <20231221053113.32191-1-rdunlap@infradead.org>
-Date: Wed, 03 Jan 2024 23:12:40 -0500
-In-Reply-To: <20231221053113.32191-1-rdunlap@infradead.org> (Randy Dunlap's
-	message of "Wed, 20 Dec 2023 21:31:13 -0800")
-Content-Type: text/plain
-X-ClientProxiedBy: SJ0PR03CA0093.namprd03.prod.outlook.com
- (2603:10b6:a03:333::8) To PH0PR10MB4759.namprd10.prod.outlook.com
- (2603:10b6:510:3d::12)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56D6B1DFE6;
+	Thu,  4 Jan 2024 04:13:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8CC08C433C8;
+	Thu,  4 Jan 2024 04:13:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704341584;
+	bh=ylBARymjYrog7nf4LTQyyVmdSy3x6uAoxe8NKMlZDIw=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=ngH3RJ0oqkizOg0INkeg3QTZAW4PGnt0D+Rp2vvMDnoUfz4CSvldjRre2PcegtRi5
+	 4GuKAcEwUR71kowYEzb9MLihoj8dRM9HGvAJzPVLRhamuvPx+FHCWZc3pIAYmdO+RE
+	 beTK1wQZWPhvkfHIjy/qbm6z16lUyMBvRzIUENKHnstPY/B8VR4tif1yffITu3eGEK
+	 c9vHQp50WVADA/kOdh+XJZs4ydSg9FyAxNg3rBfhv/tqPK8IdU4fYgi4upDte0kQiV
+	 5P0asPSk8PtJBt3nEDNH/X33Fp+/NZtR2ej7ZgcYUwmks+V9PJCWCEi7qRhkweEIr+
+	 Hd2T1jQH2wOsQ==
+Date: Thu, 4 Jan 2024 13:12:59 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Jinghao Jia <jinghao7@illinois.edu>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
+ x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, Peter Zijlstra
+ <peterz@infradead.org>, linux-trace-kernel@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] x86/kprobes: fix incorrect return address calculation
+ in kprobe_emulate_call_indirect
+Message-Id: <20240104131259.d66b4284deb6c4acde992dfa@kernel.org>
+In-Reply-To: <20240102233345.385475-1-jinghao7@illinois.edu>
+References: <20240102233345.385475-1-jinghao7@illinois.edu>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR10MB4759:EE_|CH3PR10MB6738:EE_
-X-MS-Office365-Filtering-Correlation-Id: c8387a66-175e-4c08-dc5e-08dc0cdb65ae
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 
-	YWXbjfeAEycu7IhpW8N1nXsgZWloVJKj6D+lpOHOBbS/WTAMRad2pTsu3ioJTzD0Z+XlHSzdOOYiS0tT2LnksY4wpF/huZsULEZOJ2VX87Xuku7l2poXP/Zef8ROKdX3AZ9qR/wL36HO6a/dNxH2KFt1nbhpIeGzL7AmnEad9hnP0GQn7+gdcBloXfcuq5GK6lsDnKCx9C8N9xB02DqjMkufywmcSN6+GB1Su7I9AtXoYMd0N0dvGvfTWp527tlealxFnvIHcAGOX6FVRV5ZYBpmhPgVHEFVf0yZ/n0pRSL039wK8qcHMsIbvv0DpJY1LAhYvzwjAX/vqqewPbeCwwDu73v27wcR91PtdIWH4IanO6BbE1jrff6BWTrcu2yjaLuCfNE82U89ILvwX+us1+Zqr7CN1bnxdLE0un4y5jZXva77vUPD3PDLeWtdiJpgmpzRRVchKHUZuIjrspDOUaRrvIP5TMMRmExMHlB+DkITX0UBizopuFhw3b65X3RG1WVllStVw4C68Qponfymgs6N3RRIrLwlqroQiJEm9W2Qzy87JVjfdj4zkDXEB4UjRDhhjnFgfguF2Tp/ZW99j8VPEqu1LvC+eztWiY5pAnU=
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(396003)(136003)(376002)(366004)(346002)(230922051799003)(64100799003)(451199024)(186009)(1800799012)(6506007)(6512007)(86362001)(36916002)(478600001)(26005)(54906003)(66946007)(83380400001)(66476007)(66556008)(6486002)(6916009)(316002)(4326008)(8936002)(8676002)(2906002)(38100700002)(41300700001)(5660300002)(558084003)(32563001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?us-ascii?Q?4T95YLfQAsqHkmZ2NwPyk3OUZzstJcTrTMXH+YskWz+iyXnAYFrzXF/4V78x?=
- =?us-ascii?Q?FbHkmJGaYkFWztut6osVIFc5dpLv3NhCmLgj0ApXFyEI55VFk5JDw1iSYG6c?=
- =?us-ascii?Q?U1R7tBp4KxkF6u0UBYAK+S5wZpB9jtYB6LWPVC/ESEK4768Uyj51XtdPWhOT?=
- =?us-ascii?Q?fwFMR9alasTd5jcvuJ6+DH72sxqMRFCXWxshkFhNRZaVJDjK3oFrNlfAaXKg?=
- =?us-ascii?Q?zfPx1n94j7EjqRZ7fXuhUHkU7aLEdQJsOuCc3eOVh1JbXI5GRBN4oomO9IfG?=
- =?us-ascii?Q?bksDMO1J11FW+tLcEs777wM/iVi5OyVOv8VlV/aPlIs5Ecp+j7Y7CLTuiHv6?=
- =?us-ascii?Q?KWmiCtBaUvr32CwnowbgbFzbb+ASvgYplBf0/LN70G3etkm2ak/yHBT7eiq9?=
- =?us-ascii?Q?Wh5JCERB/Z1Qy2lMFxwpwZ3Jg/Jsw0NO5bvstk79ov3xikJzOXyKq36EvyeM?=
- =?us-ascii?Q?KkLpGQIs1P6CwiXzKQMf5uwBwjBlClRR8A3gG2FpZgbnpZqyFecMXTaHfB3x?=
- =?us-ascii?Q?kxt+mmeNuIF9Kv720qG5Vze0UWBl4JBZpJgwPMUt3gMNyQwiZ8iKrnMRqm7y?=
- =?us-ascii?Q?DG0DbrBJSDE8VhI0qXadVmA66mWAdS4QmVKfFBrzAu+9nOb6+Xlt/UYwfcGC?=
- =?us-ascii?Q?/Sx09bNAVGhZar6RvD1AMNRxkseS6T6ZnjdyKbDTnj3bplzbnCJTngSFDjFU?=
- =?us-ascii?Q?PYwFn5SV05L4oAzUrlCMaUMuYhHEdnftsF1B1jODWmbMEyhej52KDeIh9OlH?=
- =?us-ascii?Q?Eit8nDQ2zcWFLXBDAfkT7fJzJudKutbYQhwNAYvcaW/QQqKr/qA14r/0OvBL?=
- =?us-ascii?Q?SRaTArqXf2g2KrklYr0FRrqOnvhiGgIsw+MY7a0JdnaVVGbtaxrVQCjpCE52?=
- =?us-ascii?Q?9HUFjofuiFz2YpsJrZtYnxt0i0UTB0uEFtEN4FWdLNmWkFLRd2oe9SFIa3cg?=
- =?us-ascii?Q?Ke+FvzLvJe109FoRUw0m6gPIwYsQDgXlY6n9TjxSf4b624lQQ4OBZmlThsdx?=
- =?us-ascii?Q?JMLU84CJWEd1NdoSdFjqxbT7cP1yUi6aqUKS8Sb2A4Yc/DCiPpm3o+Nj+oDX?=
- =?us-ascii?Q?yjO51JyfstKJWSQ18F8APJHOnFGVWOyOXNqPEiS4uz/MaybnF3FpoAwdx+Ff?=
- =?us-ascii?Q?MMews/TYnz56BM7p94Acxp3gPWkWN5eYY8iTc1rYDQ672wQXZn1j8dX7VGNJ?=
- =?us-ascii?Q?/l24fCaQ6+D+IxwwG89gG9Tjyajt2tDXmuYxabQHXD9PafYYYXswgj6QgXGR?=
- =?us-ascii?Q?UUv0RsYWc8SZpRkOYhkvTWYdo5z7IhO2N9tg/ei3XWn/dsCrkiyIULnVPbh/?=
- =?us-ascii?Q?kIU7GVJSOs6yGS9X0G4iyJHdkbFz2kFkn2fH3zxRQZVtsBXCgYBhpUs00oYd?=
- =?us-ascii?Q?mmKWpDvqb1MKowFL2OUvQkxg1etHpD744YHt4LvEkplHAtNiscwVR3haluTa?=
- =?us-ascii?Q?Fmk2RPLpnaTpii9GcvDkbdtvWjypxQuvnyTWmDdUJSUxkSdCnJYZNMvRKCat?=
- =?us-ascii?Q?uK5NGov4rrHv2TX25xqcxJGaMHDAscDRLzIALxekE6gAkxOTOYqESI2w8xkT?=
- =?us-ascii?Q?tZHm+txHx+fyV388nLwjAZLAS7uk5zDIx+RydcHz7QbWF3rBGoC9wo/mRu9W?=
- =?us-ascii?Q?7g=3D=3D?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	FXIqIaKXGtqfX3g/7my5BJytwFimnFUF11iI0/OIEHvwcGr4LXarVj65+Nl/9rCAwsG17q+xQOkQypTE5ptfRa/jZe2B8m6F8URlrq9ee7EfqTrhonXX2BoRCkl0uX8Oqldgb5dO0zyVYmDbLjlNZVzAM445TCCnkXkMhcQkv/HMUG9lWRR4oCtVMzGcBhoBv08BiSNcqSxC3aiKaytRukzCuYx1NB8TNyNNy5hILFtnOuBZwmF4Ak4T8h8LQ6YdKZf9cOLiIgsgsi9JMTUyPKYGTMQ9FPTige8Jb8ada4NKKu+T6VGdnuYipF1ZSf1r30xoqOqgSAv8IZ7eEqcxP06tg0LYeNfHSqbvCKHNRJqDTfDqQcHNsZSE0YUQ+lwTtlSSh6GlXVYv+KL1ttFXihwT6luMMN8alLsRoYsjMfsb3dQdiFJSYkIanECy3kh4xMTrqO7nZmGZ9xw1TUgpi4BNRHrrdKvrWtqHXlWey0s/F4iSiFGIdSEchidwv5w4XK55kV2haLFP6W4sYdIGJlAhgYNn6yTzZgs5bRdolvHUFvgUBaNEpSYdIPQ5Q4jOrlehuGyxMGrza5rEbMf2V+x9a4OmiVP7mBiamjMHSc4=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c8387a66-175e-4c08-dc5e-08dc0cdb65ae
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Jan 2024 04:12:42.4001
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: e7k7iIqE0pmCWuBORHh/QcTaNUSP3K7XsyRe3G0KQ28E3w4JfgPsD6pGi9KhDL8N6gsafaz9coNSnp3QGAisrl5naZw1g6/48JJsb8oI8bs=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR10MB6738
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-03_10,2024-01-03_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0 suspectscore=0
- bulkscore=0 mlxscore=0 mlxlogscore=633 malwarescore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
- definitions=main-2401040025
-X-Proofpoint-ORIG-GUID: FmwWvfT_1qgGdsos9H8qGtUcdkgpKAP_
-X-Proofpoint-GUID: FmwWvfT_1qgGdsos9H8qGtUcdkgpKAP_
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
+On Tue,  2 Jan 2024 17:33:45 -0600
+Jinghao Jia <jinghao7@illinois.edu> wrote:
 
-Randy,
+> kprobe_emulate_call_indirect currently uses int3_emulate_call to emulate
+> indirect calls. However, int3_emulate_call always assumes the size of
+> the call to be 5 bytes when calculating the return address. This is
+> incorrect for register-based indirect calls in x86, which can be either
+> 2 or 3 bytes depending on whether REX prefix is used.
 
-> Use correct format for function return values.
-> Delete blank lines that are reported as "bad line:".
+Ah, that's a really good point! Yes, it should handle the shorter
+indirect call with registers.
 
-Applied to 6.8/scsi-staging, thanks!
+> At kprobe runtime,
+> the incorrect return address causes control flow to land onto the wrong
+> place after return -- possibly not a valid instruction boundary. This
+> can lead to a panic like the following:
+> 
+> [    7.308204][    C1] BUG: unable to handle page fault for address: 000000000002b4d8
+> [    7.308883][    C1] #PF: supervisor read access in kernel mode
+> [    7.309168][    C1] #PF: error_code(0x0000) - not-present page
+> [    7.309461][    C1] PGD 0 P4D 0
+> [    7.309652][    C1] Oops: 0000 [#1] SMP
+> [    7.309929][    C1] CPU: 1 PID: 0 Comm: swapper/1 Not tainted 6.7.0-rc5-trace-for-next #6
+> [    7.310397][    C1] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.0-20220807_005459-localhost 04/01/2014
+> [    7.311068][    C1] RIP: 0010:__common_interrupt+0x52/0xc0
+> [    7.311349][    C1] Code: 01 00 4d 85 f6 74 39 49 81 fe 00 f0 ff ff 77 30 4c 89 f7 4d 8b 5e 68 41 ba 91 76 d8 42 45 03 53 fc 74 02 0f 0b cc ff d3 65 48 <8b> 05 30 c7 ff 7e 65 4c 89 3d 28 c7 ff 7e 5b 41 5c 41 5e 41 5f c3
+> [    7.312512][    C1] RSP: 0018:ffffc900000e0fd0 EFLAGS: 00010046
+> [    7.312899][    C1] RAX: 0000000000000001 RBX: 0000000000000023 RCX: 0000000000000001
+> [    7.313334][    C1] RDX: 00000000000003cd RSI: 0000000000000001 RDI: ffff888100d302a4
+> [    7.313702][    C1] RBP: 0000000000000001 R08: 0ef439818636191f R09: b1621ff338a3b482
+> [    7.314146][    C1] R10: ffffffff81e5127b R11: ffffffff81059810 R12: 0000000000000023
+> [    7.314509][    C1] R13: 0000000000000000 R14: ffff888100d30200 R15: 0000000000000000
+> [    7.314951][    C1] FS:  0000000000000000(0000) GS:ffff88813bc80000(0000) knlGS:0000000000000000
+> [    7.315396][    C1] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [    7.315691][    C1] CR2: 000000000002b4d8 CR3: 0000000003028003 CR4: 0000000000370ef0
+> [    7.316153][    C1] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> [    7.316508][    C1] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> [    7.316948][    C1] Call Trace:
+> [    7.317123][    C1]  <IRQ>
+> [    7.317279][    C1]  ? __die_body+0x64/0xb0
+> [    7.317482][    C1]  ? page_fault_oops+0x248/0x370
+> [    7.317712][    C1]  ? __wake_up+0x96/0xb0
+> [    7.317964][    C1]  ? exc_page_fault+0x62/0x130
+> [    7.318211][    C1]  ? asm_exc_page_fault+0x22/0x30
+> [    7.318444][    C1]  ? __cfi_native_send_call_func_single_ipi+0x10/0x10
+> [    7.318860][    C1]  ? default_idle+0xb/0x10
+> [    7.319063][    C1]  ? __common_interrupt+0x52/0xc0
+> [    7.319330][    C1]  common_interrupt+0x78/0x90
+> [    7.319546][    C1]  </IRQ>
+> [    7.319679][    C1]  <TASK>
+> [    7.319854][    C1]  asm_common_interrupt+0x22/0x40
+> [    7.320082][    C1] RIP: 0010:default_idle+0xb/0x10
+> [    7.320309][    C1] Code: 4c 01 c7 4c 29 c2 e9 72 ff ff ff cc cc cc cc 90 90 90 90 90 90 90 90 90 90 90 b8 0c 67 40 a5 66 90 0f 00 2d 09 b9 3b 00 fb f4 <fa> c3 0f 1f 00 90 90 90 90 90 90 90 90 90 90 90 b8 0c 67 40 a5 e9
+> [    7.321449][    C1] RSP: 0018:ffffc9000009bee8 EFLAGS: 00000256
+> [    7.321808][    C1] RAX: ffff88813bca8b68 RBX: 0000000000000001 RCX: 000000000001ef0c
+> [    7.322227][    C1] RDX: 0000000000000000 RSI: 0000000000000001 RDI: 000000000001ef0c
+> [    7.322656][    C1] RBP: ffffc9000009bef8 R08: 8000000000000000 R09: 00000000000008c2
+> [    7.323083][    C1] R10: 0000000000000000 R11: ffffffff81058e70 R12: 0000000000000000
+> [    7.323530][    C1] R13: ffff8881002b30c0 R14: 0000000000000000 R15: 0000000000000000
+> [    7.323948][    C1]  ? __cfi_lapic_next_deadline+0x10/0x10
+> [    7.324239][    C1]  default_idle_call+0x31/0x50
+> [    7.324464][    C1]  do_idle+0xd3/0x240
+> [    7.324690][    C1]  cpu_startup_entry+0x25/0x30
+> [    7.324983][    C1]  start_secondary+0xb4/0xc0
+> [    7.325217][    C1]  secondary_startup_64_no_verify+0x179/0x17b
+> [    7.325498][    C1]  </TASK>
+> [    7.325641][    C1] Modules linked in:
+> [    7.325906][    C1] CR2: 000000000002b4d8
+> [    7.326104][    C1] ---[ end trace 0000000000000000 ]---
+> [    7.326354][    C1] RIP: 0010:__common_interrupt+0x52/0xc0
+> [    7.326614][    C1] Code: 01 00 4d 85 f6 74 39 49 81 fe 00 f0 ff ff 77 30 4c 89 f7 4d 8b 5e 68 41 ba 91 76 d8 42 45 03 53 fc 74 02 0f 0b cc ff d3 65 48 <8b> 05 30 c7 ff 7e 65 4c 89 3d 28 c7 ff 7e 5b 41 5c 41 5e 41 5f c3
+> [    7.327570][    C1] RSP: 0018:ffffc900000e0fd0 EFLAGS: 00010046
+> [    7.327910][    C1] RAX: 0000000000000001 RBX: 0000000000000023 RCX: 0000000000000001
+> [    7.328273][    C1] RDX: 00000000000003cd RSI: 0000000000000001 RDI: ffff888100d302a4
+> [    7.328632][    C1] RBP: 0000000000000001 R08: 0ef439818636191f R09: b1621ff338a3b482
+> [    7.329223][    C1] R10: ffffffff81e5127b R11: ffffffff81059810 R12: 0000000000000023
+> [    7.329780][    C1] R13: 0000000000000000 R14: ffff888100d30200 R15: 0000000000000000
+> [    7.330193][    C1] FS:  0000000000000000(0000) GS:ffff88813bc80000(0000) knlGS:0000000000000000
+> [    7.330632][    C1] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [    7.331050][    C1] CR2: 000000000002b4d8 CR3: 0000000003028003 CR4: 0000000000370ef0
+> [    7.331454][    C1] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> [    7.331854][    C1] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> [    7.332236][    C1] Kernel panic - not syncing: Fatal exception in interrupt
+> [    7.332730][    C1] Kernel Offset: disabled
+> [    7.333044][    C1] ---[ end Kernel panic - not syncing: Fatal exception in interrupt ]---
+> 
+> The relevant assembly code is (from objdump, faulting address
+> highlighted):
+> 
+> ffffffff8102ed9d:       41 ff d3                  call   *%r11
+> ffffffff8102eda0:       65 48 <8b> 05 30 c7 ff    mov    %gs:0x7effc730(%rip),%rax
+> 
+> The emulation incorrectly sets the return address to be ffffffff8102ed9d
+> + 0x5 = ffffffff8102eda2, which is the 8b byte in the middle of the next
+> mov. This in turn causes incorrect subsequent instruction decoding and
+> eventually triggers the page fault above.
+> 
+> Instead of invoking int3_emulate_call, perform push and jmp emulation
+> directly in kprobe_emulate_call_indirect. At this point we can obtain
+> the instruction size from p->ainsn.size so that we can calculate the
+> correct return address.
+
+This looks good to me, because 'p->ainsn.size = insn->length' so the
+'regs->ip - INT3_INSN_SIZE + p->ainsn.size' will point the next instruction
+correctly.
+
+Let me pick it.
+
+Thanks!
+
+> 
+> Fixes: 6256e668b7af ("x86/kprobes: Use int3 instead of debug trap for single-step")
+> Signed-off-by: Jinghao Jia <jinghao7@illinois.edu>
+> ---
+>  arch/x86/kernel/kprobes/core.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/kernel/kprobes/core.c b/arch/x86/kernel/kprobes/core.c
+> index e8babebad7b8..a0ce46c0a2d8 100644
+> --- a/arch/x86/kernel/kprobes/core.c
+> +++ b/arch/x86/kernel/kprobes/core.c
+> @@ -576,7 +576,8 @@ static void kprobe_emulate_call_indirect(struct kprobe *p, struct pt_regs *regs)
+>  {
+>  	unsigned long offs = addrmode_regoffs[p->ainsn.indirect.reg];
+>  
+> -	int3_emulate_call(regs, regs_get_register(regs, offs));
+> +	int3_emulate_push(regs, regs->ip - INT3_INSN_SIZE + p->ainsn.size);
+> +	int3_emulate_jmp(regs, regs_get_register(regs, offs));
+>  }
+>  NOKPROBE_SYMBOL(kprobe_emulate_call_indirect);
+>  
+> -- 
+> 2.43.0
+> 
+
 
 -- 
-Martin K. Petersen	Oracle Linux Engineering
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
