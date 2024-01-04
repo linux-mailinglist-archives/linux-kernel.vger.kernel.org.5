@@ -1,108 +1,96 @@
-Return-Path: <linux-kernel+bounces-17247-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17248-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7823B824A5F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 22:32:54 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A2748824A64
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 22:36:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0131A283FE1
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 21:32:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 392691F2555E
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 21:36:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2DE72C6BE;
-	Thu,  4 Jan 2024 21:32:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CD1F2C84B;
+	Thu,  4 Jan 2024 21:36:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="bZRT78KJ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZB32WZeX"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-qv1-f54.google.com (mail-qv1-f54.google.com [209.85.219.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B75252C6B4
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 21:32:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qv1-f54.google.com with SMTP id 6a1803df08f44-67f7da00237so4011656d6.2
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 13:32:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1704403960; x=1705008760; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=DpIPI5Ed7cmWRlguExtM65PCJHH1IGt9s+3fOm8lXEg=;
-        b=bZRT78KJmeVJ58+RVIE5bTTWT1ih5vDwWGJ37K+k6DNt/XzYGn/n9sejqnp5D2AJ/S
-         hLNJRmJqEKm1ohPylp1A7ibN2PL5Befb9lcPas6Kr+e64huFSGGqi166yPhVUsUl49js
-         5cQyZA4id3muw54tbzLQygADKOw4mOoBwjUFt3vpbChah86UtwHc77fEKUP58YS0BwXY
-         OsTOEIfnuyTmrguLYjaQa1s6+lJZK0H8BoxYFZiZZEvF3j6by5AxbUPw0J/8H5rmWkzj
-         YAdBkgfsphEcN33JAPwWRVDRz+TziT1/2vCzefuLKLw+UPrmFg3h2Gnbt/bjyh5/YHnZ
-         hU1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704403960; x=1705008760;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DpIPI5Ed7cmWRlguExtM65PCJHH1IGt9s+3fOm8lXEg=;
-        b=QKmdRa9XrfRZRZ2UkqEd3nj7hmTJE3HyPUSAyaCfItW/yvjB/s4dOjIMcZXQTCEZqh
-         LGVVdVLOxMGI4LZnkjeDSl/0Aj/fIWEfDYDD5S/3RUNLeTvX2YJfeMhBT36ju4bI93CR
-         HB1uh8KCCahNNtfYNBayIYHOdHVEMl7ejzz0ZKTOZtXmD2gyGkGxHbZcUplxMhNXkyq7
-         bpBqG8BM0lMQqJO8sC00rdDAJKzdLz9eQFZ5qBpdSKbz4pcXhc3hkNRDxKexAlt6l5pM
-         NOxb0tuTXG9nyyOACXAytrGAPGvf21yedt5mMAhQPivi2N1gg0CQTuWMoQ/OfgdNN8sF
-         51Lg==
-X-Gm-Message-State: AOJu0Yxx/W7HDfIwyyjtskDJZ4krMMJ1GMNI4UiTLdOCPi3e/4TeY1GF
-	M/cvT4qrVVxhRBNIUulAejSho2vU4dWQ
-X-Google-Smtp-Source: AGHT+IHQ8kUX4NQIuMSORH9SxLZP7aB6AcltBfUpdUB7GHn56kb1zERlaKSnCAHr72huzFQcPKIR1g==
-X-Received: by 2002:a05:6214:2266:b0:67f:2350:6d35 with SMTP id gs6-20020a056214226600b0067f23506d35mr1509512qvb.39.1704403960559;
-        Thu, 04 Jan 2024 13:32:40 -0800 (PST)
-Received: from [192.168.1.31] (d-65-175-157-166.nh.cpe.atlanticbb.net. [65.175.157.166])
-        by smtp.gmail.com with ESMTPSA id a2-20020a0562140c2200b0067f24bd0afasm98136qvd.101.2024.01.04.13.32.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Jan 2024 13:32:40 -0800 (PST)
-Message-ID: <d6bd59f0-ba79-4e76-9fb7-aa07f86e4043@google.com>
-Date: Thu, 4 Jan 2024 16:32:39 -0500
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8330D2C681;
+	Thu,  4 Jan 2024 21:36:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD073C433C7;
+	Thu,  4 Jan 2024 21:36:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704404204;
+	bh=/gPJhI0luavzDAMUU3piZFqDvBPXXQmqih0y6CbPkDo=;
+	h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+	b=ZB32WZeXi9pWrXUs4nFLQOKWQKvgsLCPhg8HTDvMQhFsZ49JD/Jw1deYXZPm3o/SX
+	 x52TbzbuJ7w7zaPewansJqg+zHb8lttmaWATUuJ4SzSl2jH0rDh8pyJ0iU5ZL7JpUG
+	 vFdiAbo3/Wr0UkClMHKumsYsjy4P6fS5q0ps/1H+5gWzENdb1M7jhPF3lcCu88uGgd
+	 +kSOVjghQwtXpWwsXrwqrQtKVeiA5ju118sbwaMmC//4Joihr8xYDaOi0xhWHdOMRH
+	 S5Xl1Es0N99dCoAyn/X2I5yqMKsNE+B3EYqNsYzomPekVxXw++Ccp437MMTItRCG3i
+	 3UMzW9jMRxsjA==
+Message-ID: <988ae72846dc680382f98b63b61a8c32.sboyd@kernel.org>
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: add inline assembly helpers
- to access array elements
-Content-Language: en-US
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>, mattbobrowski@google.com,
- bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240103153307.553838-1-brho@google.com>
- <20240103153307.553838-3-brho@google.com>
- <CAEf4BzbKT3LbHQSFwpAfoJuhyGy2NpHk7A6ivkFiutN_jnKHYg@mail.gmail.com>
- <bedf07d1-2cd5-4bc8-9e59-a96479a7ff14@google.com>
- <CAEf4BzauYF4DoQLV6AGfFcq3VgP2yi_Pd6pg2vj2Eb7Rt7j0Pg@mail.gmail.com>
-From: Barret Rhoden <brho@google.com>
-In-Reply-To: <CAEf4BzauYF4DoQLV6AGfFcq3VgP2yi_Pd6pg2vj2Eb7Rt7j0Pg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20240104-sm8150-dfs-support-v1-1-a5eebfdc1b12@quicinc.com>
+References: <20240104-sm8150-dfs-support-v1-0-a5eebfdc1b12@quicinc.com> <20240104-sm8150-dfs-support-v1-1-a5eebfdc1b12@quicinc.com>
+Subject: Re: [PATCH 1/3] clk: qcom: gcc-sm8150: Register QUPv3 RCGs for DFS on SM8150
+From: Stephen Boyd <sboyd@kernel.org>
+Cc: linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, Ajit Pandey <quic_ajipan@quicinc.com>, Imran Shaik <quic_imrashai@quicinc.com>, Jagadeesh Kona <quic_jkona@quicinc.com>, Satya Priya Kakitapalli <quic_skakitap@quicinc.com>
+To: Bjorn Andersson <andersson@kernel.org>, Conor Dooley <conor+dt@kernel.org>, Deepak Katragadda <dkatraga@codeaurora.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Michael Turquette <mturquette@baylibre.com>, Rob Herring <robh+dt@kernel.org>, Satya Priya Kakitapalli <quic_skakitap@quicinc.com>, Taniya Das <quic_tdas@quicinc.com>, Vinod Koul <vkoul@kernel.org>
+Date: Thu, 04 Jan 2024 13:36:41 -0800
+User-Agent: alot/0.10
 
-On 1/3/24 16:21, Andrii Nakryiko wrote:
-> On Wed, Jan 3, 2024 at 12:06 PM Barret Rhoden<brho@google.com>  wrote:
->> On 1/3/24 14:51, Andrii Nakryiko wrote:
->>> I'm curious how bpf_cmp_likely/bpf_cmp_unlikely (just applied to
->>> bpf-next) compares to this?
->> these work great!
->>
->> e.g.
->>
->>           if (bpf_cmp_likely(idx, <, NR_MAP_ELEMS))
->>                   map_elems[idx] = i;
->>
->> works fine.  since that's essentially the code that bpf_array_elem() was
->> trying to replace, i'd rather just use the new bpf_cmp helpers than have
->> the special array_elem helpers.
-> ok, cool, thanks for checking! The less special macros, the better.
+Quoting Satya Priya Kakitapalli (2024-01-04 06:23:04)
+> diff --git a/drivers/clk/qcom/gcc-sm8150.c b/drivers/clk/qcom/gcc-sm8150.c
+> index 05d115c52dfe..6d76fd344ddf 100644
+> --- a/drivers/clk/qcom/gcc-sm8150.c
+> +++ b/drivers/clk/qcom/gcc-sm8150.c
+> @@ -453,19 +453,29 @@ static const struct freq_tbl ftbl_gcc_qupv3_wrap0_s=
+0_clk_src[] =3D {
+>         { }
+>  };
+> =20
+> +static struct clk_init_data gcc_qupv3_wrap0_s0_clk_src_init =3D {
 
-sorry - turns out it only worked in testing.  in my actual program, i 
-still run into issues.  the comparison is done, which is what bpf_cmp 
-enforces.  but the compiler is discarding the comparison.  i have more 
-info in the other thread, but figured i'd mention it here too.  =(
+Can these be const?
+
+> +       .name =3D "gcc_qupv3_wrap0_s0_clk_src",
+> +       .parent_data =3D gcc_parents_0,
+> +       .num_parents =3D ARRAY_SIZE(gcc_parents_0),
+> +       .flags =3D CLK_SET_RATE_PARENT,
+> +       .ops =3D &clk_rcg2_ops,
+> +};
+> +
+>  static struct clk_rcg2 gcc_qupv3_wrap0_s0_clk_src =3D {
+>         .cmd_rcgr =3D 0x17148,
+>         .mnd_width =3D 16,
+>         .hid_width =3D 5,
+>         .parent_map =3D gcc_parent_map_0,
+>         .freq_tbl =3D ftbl_gcc_qupv3_wrap0_s0_clk_src,
+> -       .clkr.hw.init =3D &(struct clk_init_data){
+> -               .name =3D "gcc_qupv3_wrap0_s0_clk_src",
+[...]
+> @@ -3786,6 +3850,13 @@ static int gcc_sm8150_probe(struct platform_device=
+ *pdev)
+>         regmap_update_bits(regmap, 0x4d110, 0x3, 0x3);
+>         regmap_update_bits(regmap, 0x71028, 0x3, 0x3);
+> =20
+> +       ret =3D qcom_cc_register_rcg_dfs(regmap, gcc_dfs_clocks,
+> +                                      ARRAY_SIZE(gcc_dfs_clocks));
+> +       if (ret) {
+> +               dev_err(&pdev->dev, "Failed to register with DFS!\n");
+
+Use=20
+
+		return dev_err_probe(...);
 
