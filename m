@@ -1,103 +1,137 @@
-Return-Path: <linux-kernel+bounces-16647-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16648-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 038E98241E1
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 13:37:34 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1751D8241E4
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 13:37:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F337E1C239A1
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 12:37:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A9C131F252DC
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 12:37:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E821E22321;
-	Thu,  4 Jan 2024 12:37:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB9A421A1E;
+	Thu,  4 Jan 2024 12:37:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="mEopR9IX"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 472B522313
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 12:37:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-35ff20816f7so2807575ab.1
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 04:37:25 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65B6121A16
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 12:37:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a2888d65f1fso54906066b.1
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 04:37:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ventanamicro.com; s=google; t=1704371848; x=1704976648; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=b0YjTQ6DAdt/2c3mL0l6eIgN8OTkE75G1dsO8pPOomQ=;
+        b=mEopR9IXAZ8ER49J8Uh++34YDIOVbKN5erpP/wHQxrGUcIhH6DTUSS2g8cEBokav9i
+         A/lEtutWeDCGupSK7OlJH4mldmC3iuDl7iRxGuEzlbfECllUwkBEfZimJrki1xjBqtkm
+         bk6V1yjmESkwv5l/KCjfKGaHNqYF/WZRwFRdNXvx/hLfvdj7uUwnZZhXbmCRjzvDUsfw
+         KEkycmZZU3suE1Pn+x/ApdDpBAAF3T6wqrr15aV6vf2luqt05zKw8GYZHtxf9/JdFeMn
+         es5lO5Dz5tEtTBYrioVFgNKiDrKbYIG3Uz1UwHazFVo3YLrNKKI0jVzXCcmq8XPTvLhK
+         EfkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704371844; x=1704976644;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=4HeOf5CMacP23XHb3eWXrmJA9q5akzC7PyDq4N2GXZo=;
-        b=a7UEVrspoFFl69G1VHDFDHdICZw+uajDJUqj4sJQ863P0JQeqno/elcwlZf+vcL3Ig
-         p8qz5pvmUkOZs6oVkyA8/J3v1+wUGOXoWFNrWS799mAhNMyfFp/W8UVPg2wm52ilcbpI
-         jHqnsVKWBkSGga4ZBAQtoXaTjfjZZMnHy3LtFV+8wGkEdyXr2dKgxY0tN+Sxt39tGsQc
-         VRrQpYsstHesq2sJcXvRzL7Q+O7bOStPGKtn1di35YRELX/gTU7nKMRANL0g5p1t/ZMY
-         tnO0Wh1aRmqT6Wf5zJwyR7U7UZSFGQE9NHN7ybs+Ior6GEnsYn3ZAoGov0+VVNAmqV1t
-         X5gw==
-X-Gm-Message-State: AOJu0YyNoXkRgcvP8junTr0P4sm/pizB+vTkQH+gwEhAo66JtM2WXlFS
-	wNGf39c5D20jxMdPJnHpI1PMuDF4Gxr6uZILRgijuJ57Tj+R
-X-Google-Smtp-Source: AGHT+IH8aqz0BiS5nOsqd+RpHG65AjBWEWpibgEChqgs5KHBu2gS6xbXU/HHoHB9sour9l68NmY9ddmEOI2KHRP+yZc3Yne/Pv1V
+        d=1e100.net; s=20230601; t=1704371848; x=1704976648;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=b0YjTQ6DAdt/2c3mL0l6eIgN8OTkE75G1dsO8pPOomQ=;
+        b=qhy1tHSV8E+yS/SY7y3sCbWQQ6I4K7NxKAx8DPoXB1ErR+AoBOvGHQPjduqDUVVKn4
+         ECAgGD7+OWsDahk4MaTNDwbwwKW+4tG+Nv654KnWQC2om8bzEu76oKudYMJij1YvoRlP
+         9uKyRv1pgl/5We/nu3s0qsLPvsqcwqclDeuRD5aA48AGV1CNbCSZQ9N4nWFtPdRFAdny
+         SAYHutl4BgatWjFZxGW03i5KSk8W6eMtcib/a5b+KF9T3MHjCJU8TuOOxgLiiwCeXfB8
+         B6o4kFbJNicxDoZGAeGF3KXgvS2dI0KP2kJ7S5PFewMJoCe7brlxFkxyGKcj73cyYuta
+         PF4g==
+X-Gm-Message-State: AOJu0YxaFqZ8DF+hxf3QcYkZyJuf3QtdzItoUszZQlq0zAneIvZN7k7I
+	fN0/itnZG4uQf3fJCtRuHOyByAmQzt0nHA==
+X-Google-Smtp-Source: AGHT+IGuKrfQ1OvlUk+ZEceVcHij9CYGgADtdAxpjxUb2xwkyYhUHJZIQ7mR+ZBuQE0/8F7kowQcIw==
+X-Received: by 2002:a17:906:fa90:b0:a26:b71e:f75 with SMTP id lt16-20020a170906fa9000b00a26b71e0f75mr299486ejb.5.1704371848691;
+        Thu, 04 Jan 2024 04:37:28 -0800 (PST)
+Received: from localhost (2001-1ae9-1c2-4c00-20f-c6b4-1e57-7965.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:20f:c6b4:1e57:7965])
+        by smtp.gmail.com with ESMTPSA id gh33-20020a1709073c2100b00a26b3f29f3dsm12649478ejc.43.2024.01.04.04.37.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Jan 2024 04:37:28 -0800 (PST)
+From: Andrew Jones <ajones@ventanamicro.com>
+To: linux-riscv@lists.infradead.org,
+	linux-next@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	kvm@vger.kernel.org,
+	kvm-riscv@lists.infradead.org
+Cc: paul.walmsley@sifive.com,
+	palmer@dabbelt.com,
+	aou@eecs.berkeley.edu,
+	anup@brainfault.org,
+	atishp@atishpatra.org,
+	rdunlap@infradead.org,
+	sfr@canb.auug.org.au,
+	alex@ghiti.fr,
+	mpe@ellerman.id.au,
+	npiggin@gmail.com,
+	linuxppc-dev@lists.ozlabs.org,
+	pbonzini@redhat.com
+Subject: [PATCH -fixes v2] RISC-V: KVM: Require HAVE_KVM
+Date: Thu,  4 Jan 2024 13:37:28 +0100
+Message-ID: <20240104123727.76987-2-ajones@ventanamicro.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:37a0:b0:46d:99c0:d7bf with SMTP id
- w32-20020a05663837a000b0046d99c0d7bfmr39086jal.2.1704371844508; Thu, 04 Jan
- 2024 04:37:24 -0800 (PST)
-Date: Thu, 04 Jan 2024 04:37:24 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000005b7121060e1dfe82@google.com>
-Subject: [syzbot] Monthly reiserfs report (Jan 2024)
-From: syzbot <syzbot+liste925ad15d01465629cb2@syzkaller.appspotmail.com>
-To: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	reiserfs-devel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-type: text/plain
+Content-Transfer-Encoding: 8bit
 
-Hello reiserfs maintainers/developers,
+KVM requires EVENTFD, which is selected by HAVE_KVM. Other KVM
+supporting architectures select HAVE_KVM and then their KVM
+Kconfigs ensure its there with a depends on HAVE_KVM. Make RISCV
+consistent with that approach which fixes configs which have KVM
+but not EVENTFD, as was discovered with a randconfig test.
 
-This is a 31-day syzbot report for the reiserfs subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/reiserfs
-
-During the period, 6 new issues were detected and 0 were fixed.
-In total, 79 issues are still open and 18 have been fixed so far.
-
-Some of the still happening issues:
-
-Ref  Crashes Repro Title
-<1>  40697   Yes   KASAN: null-ptr-deref Read in do_journal_end (2)
-                   https://syzkaller.appspot.com/bug?extid=845cd8e5c47f2a125683
-<2>  7232    Yes   possible deadlock in open_xa_dir
-                   https://syzkaller.appspot.com/bug?extid=8fb64a61fdd96b50f3b8
-<3>  1694    Yes   kernel BUG at fs/reiserfs/journal.c:LINE!
-                   https://syzkaller.appspot.com/bug?extid=6820505ae5978f4f8f2f
-<4>  1593    Yes   possible deadlock in mnt_want_write_file
-                   https://syzkaller.appspot.com/bug?extid=1047e42179f502f2b0a2
-<5>  1259    Yes   WARNING in reiserfs_lookup
-                   https://syzkaller.appspot.com/bug?extid=392ac209604cc18792e5
-<6>  490     Yes   WARNING in journal_end
-                   https://syzkaller.appspot.com/bug?extid=d43f346675e449548021
-<7>  490     Yes   possible deadlock in reiserfs_dirty_inode
-                   https://syzkaller.appspot.com/bug?extid=c319bb5b1014113a92cf
-<8>  440     Yes   possible deadlock in reiserfs_ioctl
-                   https://syzkaller.appspot.com/bug?extid=79c303ad05f4041e0dad
-<9>  317     Yes   KASAN: out-of-bounds Read in leaf_paste_entries (2)
-                   https://syzkaller.appspot.com/bug?extid=38b79774b6c990637f95
-<10> 303     Yes   KASAN: use-after-free Read in leaf_paste_in_buffer
-                   https://syzkaller.appspot.com/bug?extid=55b82aea13452e3d128f
-
+Fixes: 99cdc6c18c2d ("RISC-V: Add initial skeletal KVM support")
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
+Closes: https://lore.kernel.org/all/44907c6b-c5bd-4e4a-a921-e4d3825539d8@infradead.org/
+Signed-off-by: Andrew Jones <ajones@ventanamicro.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
+v2:
+ - Added Fixes tag and -fixes prefix [Alexandre/Anup]
 
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
+ arch/riscv/Kconfig     | 1 +
+ arch/riscv/kvm/Kconfig | 2 +-
+ 2 files changed, 2 insertions(+), 1 deletion(-)
 
-You may send multiple commands in a single email message.
+diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+index a935a5f736b9..daba06a3b76f 100644
+--- a/arch/riscv/Kconfig
++++ b/arch/riscv/Kconfig
+@@ -128,6 +128,7 @@ config RISCV
+ 	select HAVE_KPROBES if !XIP_KERNEL
+ 	select HAVE_KPROBES_ON_FTRACE if !XIP_KERNEL
+ 	select HAVE_KRETPROBES if !XIP_KERNEL
++	select HAVE_KVM
+ 	# https://github.com/ClangBuiltLinux/linux/issues/1881
+ 	select HAVE_LD_DEAD_CODE_DATA_ELIMINATION if !LD_IS_LLD
+ 	select HAVE_MOVE_PMD
+diff --git a/arch/riscv/kvm/Kconfig b/arch/riscv/kvm/Kconfig
+index 1fd76aee3b71..36fa8ec9e5ba 100644
+--- a/arch/riscv/kvm/Kconfig
++++ b/arch/riscv/kvm/Kconfig
+@@ -19,7 +19,7 @@ if VIRTUALIZATION
+ 
+ config KVM
+ 	tristate "Kernel-based Virtual Machine (KVM) support (EXPERIMENTAL)"
+-	depends on RISCV_SBI && MMU
++	depends on HAVE_KVM && RISCV_SBI && MMU
+ 	select HAVE_KVM_IRQCHIP
+ 	select HAVE_KVM_IRQ_ROUTING
+ 	select HAVE_KVM_MSI
+-- 
+2.43.0
+
 
