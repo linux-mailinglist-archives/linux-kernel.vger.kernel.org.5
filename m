@@ -1,212 +1,170 @@
-Return-Path: <linux-kernel+bounces-16331-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16332-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6154823CED
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 08:47:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 25480823CF0
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 08:48:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 663E2B214F8
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 07:47:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 91278B223B3
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 07:48:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7076B200A5;
-	Thu,  4 Jan 2024 07:47:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 439F2200B8;
+	Thu,  4 Jan 2024 07:47:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="mkFEL6Hz"
+	dkim=pass (2048-bit key) header.d=live.com header.i=@live.com header.b="r0Y+08Dw"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from IND01-MAX-obe.outbound.protection.outlook.com (mail-maxind01olkn2093.outbound.protection.outlook.com [40.92.102.93])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E43F200A6
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 07:47:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-555bd21f9fdso275104a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 23:47:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704354434; x=1704959234; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=oGF4/vmIJ8o7IJvlJQyYKaxW9KtTtwYjR9BBLu19fK4=;
-        b=mkFEL6HzI8xj4xcJEgGtfq2/GQfxmpYfCM6qKsp/DwjdhHavpkkdYUNWqZe4tZnbpj
-         nummQLXCZGmtl3W/LPaBOpVBxSLlENm/joY/SgTTfbouINsw8USktKevRISs8zFuewb+
-         olIiZzsqmf5C/b1WyvS/jRc5qi85L6TnOlQLeAkSk2IRBghZDeJDDm6ZiFjNfxK13lJW
-         syVCKMHEvRgKxAlpM1R6Q9agccCRPEosXITT7OS9ZEW71GKv6c3KdBCJXwrFS46CG6ML
-         J/uCEciNYweY5UKPtX5e562LGcpzjXKpA0HLXCRJ6TzEKHT0gMGgjksWdv726GiysYfN
-         YcGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704354434; x=1704959234;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=oGF4/vmIJ8o7IJvlJQyYKaxW9KtTtwYjR9BBLu19fK4=;
-        b=vMUxD/mHvd10p7vhy54CHIbBfDWmFgppezaDa2mYPKG0e8abuYALmT0KfuFgNRU0LC
-         Maj/UsYpUMY6236wx97wg8wnlw0BFZPaE4LMiJu9B8oREz5BUbKAOkj252WYYJ3RgJZN
-         sN240aH8ui/XFS13rLABUoyLMVL0lPoXlw7/85Y7BbKBtmAD4zi3v+u2oz8NNP4w/ByH
-         NyaeNfrEqDPC/SVNxF83WA1/4Vuu28h3qvWz/tgJhceFEWngJT0lsitBTSPDs2sLtpwj
-         kF1pkID1mosTb/ubO6PKeQG93tCh9F+91rip4E2zFYhdp71ajRHF6yZ/PtMWnPDFuaKR
-         dAPg==
-X-Gm-Message-State: AOJu0YwVZp31Np217XNHJWmUS+SvEwCL6E4VX7hsgpacueTfK8RAZW28
-	pno2nvId5em84w88P85BWE4OXyX/kuqsMA==
-X-Google-Smtp-Source: AGHT+IHD4M0r8yDP/YsO00ANonos/KjanteYCjmiTxyH/zJvMcNhKtTUPBA9N36eVzDrvVyTOgmzew==
-X-Received: by 2002:a50:9b4f:0:b0:555:ea2f:a97f with SMTP id a15-20020a509b4f000000b00555ea2fa97fmr98511edj.13.1704354434368;
-        Wed, 03 Jan 2024 23:47:14 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id p12-20020a05640243cc00b0055493aa8905sm14982937edc.63.2024.01.03.23.47.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Jan 2024 23:47:13 -0800 (PST)
-Message-ID: <c4831e26-5ff0-40b1-98d4-addfdc1ee5a8@linaro.org>
-Date: Thu, 4 Jan 2024 08:47:12 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97FB51F951;
+	Thu,  4 Jan 2024 07:47:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=live.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=live.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lDhoJfmGeMJpfGTvjhOQn/gtEeJDDB1SWNS84BCijNe/bmch90OVXY/yJ3k6ajjszb5bxIJ0ROMXMFlXMe5IoI7BuClIMn406GTm7rsdtIOOLg6i7pZ2K1YKn/DLVplcCW1jnbLLGroQ7RGp3nm5NaAUSesepS+rmuY9wfC6GO4PPmSBAJRL5Wr1OhiYiJawzc3/oROwCrNldFhuXnx1NVolCd8p8EeSZIGN3/AQjRC2ynaqKuZiCFeL7CvKlYxbUtfugfbgxPRdgZVRAk0BMd0vq29wIbGSvuYRysyQrIO5CUlbS23b+AC2P7U1u+it6FPqFysYKBQD240hknt4vg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Njjivt4ZmqseCNQUD1hDs1eFP70r2Lk+dHq1ZU1//l4=;
+ b=ZsTbfX0Ys8TVmkb5I42bQGdvX4sK5utk0ooMufNd4lTsSx/Es6XYpVoBwX9U21uPqkTrLV70UYgztxNpqehHVIedM7pdSO8QjAuV+YtwYZVcHPwztmVxd03BEsorgppHA0XpqBntXGAfCCo2v84aOaV6kf96HILJW5khsgx8aidihY5QNlGf7vOvkehb0GSIbMY7rxhr9abKqUdV7OMmTHXYqIeo8XwZv1w+GJjLjuMpKWpl7vi6qpbwJhoB0IHApgU/77K+uQGUTeBgdlJWXfAhH/sCtW0UWVHxZu+sH8U+gdZkoM6ZaHf6b5lHzzeZUC77SX86X3Wa6H3by9+U0w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=live.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Njjivt4ZmqseCNQUD1hDs1eFP70r2Lk+dHq1ZU1//l4=;
+ b=r0Y+08DwmIS02qk/2DrNDfGWRDkUSewhg/groYbGRupHX/CfPcxfNpzd7wYD9WBXPnd16rW12wY13j2Md93Cl9xQ44Yf0sFQFmxB5dt8+KejslyJy1Fd+uO/fnQoek4uCmwwxwQ62YM0utP0hab9pUoOD7YC0Q11KRCkwVnEWhZJi0b0SUVRlA5DMGOwbrwQiSMvib323Q45MxrDPlHEjl2YU4WXgi1EZ7btSz7LAbI+RKtNeMEf/XLSiGm5qhGbYY9i6yl1DaL/Fv4cjA1lPRLIbamYdA0LAq56kwochi1P7V/il/fWDv21PjOuX3QwnWiVMzXsxl7tgFzZCoPkWg==
+Received: from MA0P287MB0217.INDP287.PROD.OUTLOOK.COM (2603:1096:a01:b3::9) by
+ PN3P287MB0070.INDP287.PROD.OUTLOOK.COM (2603:1096:c01:ad::14) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7159.14; Thu, 4 Jan 2024 07:47:38 +0000
+Received: from MA0P287MB0217.INDP287.PROD.OUTLOOK.COM
+ ([fe80::6037:db64:7000:119f]) by MA0P287MB0217.INDP287.PROD.OUTLOOK.COM
+ ([fe80::6037:db64:7000:119f%7]) with mapi id 15.20.7159.013; Thu, 4 Jan 2024
+ 07:47:38 +0000
+From: Aditya Garg <gargaditya08@live.com>
+To: Johan Hovold <johan@kernel.org>
+CC: Sven Peter <sven@svenpeter.dev>, Paul Menzel <pmenzel@molgen.mpg.de>,
+	Felix Zhang <mrman@mrman314.tech>, "linux-bluetooth@vger.kernel.org"
+	<linux-bluetooth@vger.kernel.org>, "stable@vger.kernel.org"
+	<stable@vger.kernel.org>, Johan Hovold <johan+linaro@kernel.org>, Hector
+ Martin <marcan@marcan.st>, Bagas Sanjaya <bagasdotme@gmail.com>, Alyssa
+ Rosenzweig <alyssa@rosenzweig.io>, Marcel Holtmann <marcel@holtmann.org>,
+	Johan Hedberg <johan.hedberg@gmail.com>, Luiz Augusto von Dentz
+	<luiz.dentz@gmail.com>, Orlando Chamberlain <orlandoch.dev@gmail.com>,
+	"kekrby@gmail.com" <kekrby@gmail.com>, "admin@kodeit.net" <admin@kodeit.net>,
+	Janne Grunau <j@jannau.net>, "asahi@lists.linux.dev" <asahi@lists.linux.dev>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3] Bluetooth: Fix Bluetooth for BCM4377 on T2 Intel
+ MacBooks
+Thread-Topic: [PATCH v3] Bluetooth: Fix Bluetooth for BCM4377 on T2 Intel
+ MacBooks
+Thread-Index: AQHaOXLZp5wR1/nwLkmlVTCDisNjXbC+muaAgAq2x24=
+Date: Thu, 4 Jan 2024 07:47:38 +0000
+Message-ID:
+ <MA0P287MB021769BC136ED0B947683709B867A@MA0P287MB0217.INDP287.PROD.OUTLOOK.COM>
+References: <AB87C916-9CF9-4B8C-AFF5-74CA4151C4FC@svenpeter.dev>
+ <ZY1ly_uB8huYl5jO@hovoldconsulting.com>
+In-Reply-To: <ZY1ly_uB8huYl5jO@hovoldconsulting.com>
+Accept-Language: en-IN, en-US
+Content-Language: en-IN
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-ms-exchange-messagesentrepresentingtype: 1
+x-tmn:
+ [saRNkJfKLqoKrQ9yLgL19kF2cyJFPa3CfizjOCFlYxRAprTgkdMo+TAGlNzS9e5lQB27hs7xYgU=]
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: MA0P287MB0217:EE_|PN3P287MB0070:EE_
+x-ms-office365-filtering-correlation-id: 6ef50cbd-4c6c-435f-d9d8-08dc0cf96c44
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ KbxRH8Anp+fIAlQ8JxpGhrvSVJTyTtxsNKu6VDWHlbij2eAHVhCJOX4VMUCAkQge8Ok21ul6M3wUF8GdgkgvMGyZydMP3sef2cyUHxi9z72mvRGtKfZrU96HFhPFrU0UroACMpvC84y/bBYBj6Ya5t1ID4wUHxN6llXvuRoqiDZB/WjVNfHRn41NxWm4Istx0uywB+C71yB4miTzgAAoflngSB5U4v6+3b1gUpjHMbH643OwH82ViXAA2nxpI8/0iK5cgxr9a45GhjRQ2qjYyWaZlYLWurCE8qOPXpSMP7PCylB6Rhn9SA7c8KY6C/cGKQgkj3caQ+XQsKUuIAlYdJBvBuQYIxFUQJBZVaBMr+BS7bgLkNtgCPr4Vk8tCvQxP+T/tQMufRe1bh/FcH9+D/6/uiQq7BFQ0mV379leMS2t79lAcOK/49hj11mwA4tDvXjBDD4kfs+I+s/hBgmfW+HDJjmGS71hzPYjc8iVEdG2qAd/R0+/tkoYgk2ez19pVCZzObZq2tjt73YQ+alwz7+xiBc9kQloEgUNN06h47vF7NomqxuzEAa1Tc8Rym/vOPTJL7HrZCA+WFJSYjWa3/9L9lT9S42O/xLOl6+SHRk=
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?OXVrRjNNYWRiaWZxZUJmbWk2L2lOZmNnYmpReGlGQ3RFZG5VZVoyK3p4MG5x?=
+ =?utf-8?B?RjRydEdzbU82VkQxd0taMVdzNVFURldkb2xaTE94WWZ1aElsNUVBTHM4dTdX?=
+ =?utf-8?B?UHZreTRWR2d2bUR1UjVrUXh4THpUODY1cTk0dGNXMjAwcDk3VWdJMVQ2b3Ba?=
+ =?utf-8?B?MENQRUZTTWdXS1lKRmdwL0ZRU3NydkJ5bDJkS3dMN1ozZ1RiN25LYWhlb0Fx?=
+ =?utf-8?B?VVZDUmZUUUdKTndqRVcrbnJFRCsvZ25ZR0Uyb1FMNGYzUVMzTnZLVkVXQ0pm?=
+ =?utf-8?B?TUNwL0tUdnErRi9ySVl3cGJiU05USms0QUtNVGJsL3U3VUJhODZpSUJMcDI5?=
+ =?utf-8?B?aFZEaDR1My9TencyOC82cGlvZWhwcDRnV2U1R2NPT3ljNlR1YTZOc0plcGxk?=
+ =?utf-8?B?UE5DVHVzbUJwUFRFQ3VmNlFyMkZWbDZka3EraWZ6aG11K3M2OFJ4dy9jeTNN?=
+ =?utf-8?B?dmM1UlZYRnA0c3V0blp5WnJMeVh1S3RxOWZla2JYaG1WMUw2QmIveFJlS2pB?=
+ =?utf-8?B?OGxKcERta3JTdnovT3V5QXVxaDBSdTgxcjNJVmZhRVcwUzljeFBQQnN4Sm9Z?=
+ =?utf-8?B?SGZHaVlzb2tueGxlZ09SVVZHczZta1BHbmxxODVVcGpaYitKVi9GVEhBbG5u?=
+ =?utf-8?B?UVdsOU9DTGNjTkpEMmlURUQzV1VLWloyZkRjOHFpZ0VYT3Q5bCtlTDdZQWVm?=
+ =?utf-8?B?WUdsMVZRbWpMYjYxTWJnTHd1Qk55TUdna3BZUFN4L3V6Z3crZGJLWUVrOE1S?=
+ =?utf-8?B?QWVDLzVHTUZYNnRhWXE4NW5RNTk1Um9pS29wSkJpd2hZbVVFVWRqQTBCcjdZ?=
+ =?utf-8?B?MzFiUncwUENDMWNxc0NRcTcyMFBYSG5GaVVwdk42Z25BanBPRDBHcnludkM2?=
+ =?utf-8?B?NmxOaW1xQVN1dDBGRXIwVWpPR0JRNitleSs5ZEs0ckVFTDE0bUFLMUtqQVg0?=
+ =?utf-8?B?V01RTVY0NDFCd2w4Z0xWR1B0dDJOVWRpSGJxOFZlUmUrRlpJWjRTd3ptZzg3?=
+ =?utf-8?B?Nm5OeEd6N3dodmtaU3p1SGpWdXJWeTBuT01hV1Foa21TMVh2UzROT1docnBO?=
+ =?utf-8?B?TjBPVmxrMndnUS8wRUJ4bUl3cXpvcUtrVWkwcU1NalVUcW5OMXhHdXJRRE9a?=
+ =?utf-8?B?Yi9NMDJONVJiN1N6VTV6Vkt2N1FoNndSL3RYQUs0M05aa2pWWmdvRFhDT2RF?=
+ =?utf-8?B?b0dMMllVWjNxYU5ZcmtwcWgwc3JJN1NhcXhSeHVOWklNdHF1RnBHMzkrZTBM?=
+ =?utf-8?B?cFVNVG5GR002Y1hQM202L09HdUhoWkhZUDcrMGdUaU5Oak8wNzlQNVNucnRr?=
+ =?utf-8?B?d3ltVC9SWmJHdzgyOHNnZW1PU091NUt4MkRNMlFtVG1GYXc1OExVUE82QnRI?=
+ =?utf-8?B?NDBiVUFseVp1dDNxWndsa3ZIeDZUa0xTQ1NEYUE4OFZvMmRpMjA2MUphOVZ1?=
+ =?utf-8?B?ZTZScGMvRUNYQzRGLys5UnFleU9XcGxnMVUwWTYxS2NGVUZ3aVFIQVhBVFVo?=
+ =?utf-8?B?K041c25GRlczRmFSN1hZNTFjSjdLT1pVajJwZlF4NVBYT3EwZUhsYTVoY1hN?=
+ =?utf-8?B?UGJjRHlzSk1URm5BaE54aE9SVitvZytjeVVYbHFkNFNXbDZ5Zjc0YzB0NTdm?=
+ =?utf-8?B?YnY5Um9hMmhCMnorQmJiK1lvTXMzOFQrc09HaG94eGVVaSszTXV0ZWkwRVF3?=
+ =?utf-8?B?TFU2Z0xPZ3hQRjRvcXlTZVpTTElkWmhLRHF3MGdzajNadFhSTmpjZWhnPT0=?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 5/5] dt-bindings: net: ipq4019-mdio: Document ipq5332
- platform
-Content-Language: en-US
-To: Jie Luo <quic_luoj@quicinc.com>, agross@kernel.org, andersson@kernel.org,
- konrad.dybcio@linaro.org, davem@davemloft.net, edumazet@google.com,
- kuba@kernel.org, pabeni@redhat.com, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, andrew@lunn.ch,
- hkallweit1@gmail.com, linux@armlinux.org.uk, robert.marko@sartura.hr
-Cc: linux-arm-msm@vger.kernel.org, netdev@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- quic_srichara@quicinc.com
-References: <20231225084424.30986-1-quic_luoj@quicinc.com>
- <20231225084424.30986-6-quic_luoj@quicinc.com>
- <dee72ce8-b24e-467a-b265-1b965588807f@linaro.org>
- <aeb364a3-6c05-4a1b-ba32-e687a89f20f8@quicinc.com>
- <58dde1a7-ed4a-442c-bb5c-c3f6d926fb7e@linaro.org>
- <06ddbae8-1502-41fb-8cf8-9a3390dad557@quicinc.com>
- <28c8b31c-8dcb-4a19-9084-22c77a74b9a1@linaro.org>
- <d231b7e2-51f5-4676-8fc0-e4bc6154e2d7@quicinc.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <d231b7e2-51f5-4676-8fc0-e4bc6154e2d7@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-bafef.templateTenant
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MA0P287MB0217.INDP287.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6ef50cbd-4c6c-435f-d9d8-08dc0cf96c44
+X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Jan 2024 07:47:38.2126
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PN3P287MB0070
 
-On 28/12/2023 08:38, Jie Luo wrote:
->>> Sorry for this confusion.
->>> Rob said the internal reference source can be decided by the absence of
->>> the property combined with compatible string, because i said the
->>
->> So all your three DT maintainers agree that lack of property for
->> choosing clock, defines the usage of interrupt source.
-> 
-> This is the reference clock source selection of CMN block, which
-> generates the clocks for the Ethernet devices.
-> 
->>
->> Now we had huge amount of arguments that you do not represent properly
->> the clock relationships. Still.
-> 
-> here is the clock topology.
-> reference clock sources ---> CMN PLL ---> various output clocks
-
-How do you guarantee that these clocks are enabled without proper
-relationships described in DT? In current and future designs?
-
-> 
-> the output clocks are provided to the Ethernet devices(such as the
-> qca808x PHY devices).
-> 
-> These information is also provided the commit message of the patch
-> <net: mdio: ipq4019: configure CMN PLL clock for ipq5332>.
-> 
->>
->>> internal 96MHZ is used on ipq5018 currently in the previous message.
->>>
->>> per double checked the current IPQ platforms, the internal 96MHZ is also
->>> possible on ipq9574, and the reference clock source should be kept as
->>> configurable instead of limited by the compatible string, maybe the
->>> different reference clock source is acquired in the future, even
->>> currently it is not used on the special platform for now.
->>>
->>> so i update the solution with a little bit of changes.
->>
->> You still do not want to implement our suggestions and I don't
->> understand your arguments. Nothing in above paragraph explains me why
->> you cannot use clock provider/consumer relationships.
-> 
-> Hi Krzysztof,
-> 
-> The reference clock source can be registered as the fix clock provider,
->  From the current fix clock provider, the clock rate is useful for the
-> clock consumer, the fix clock rate is used to generate the output clocks
-> by the divider or multiplier.
-> 
-> For the CMN block to select reference clock, which is configuring the
-> clock source, we don't know the formula to get the output clock value
-> based on the reference clock value.
-
-I don't understand what does it mean. You do not know how to program CMN
-block?
-
-> 
-> i also see there is an example in the upstream code, which is same as
-> the CMN block to select the reference clock source.
-
-Oh, the old argument. So if there is a bug in the code, you are going
-for example to implement it as well?
-
-> 
-> the property "ref-clock-frequency" is defined in the yaml file below.
-> Documentation/devicetree/bindings/net/wireless/ti,wlcore.yaml.
-
-And how does the hardware look like there? It's TI, so how do you even know?
-
-
-
-Best regards,
-Krzysztof
-
+DQoNCj4gT24gMjgtRGVjLTIwMjMsIGF0IDU6NDHigK9QTSwgSm9oYW4gSG92b2xkIDxqb2hhbkBr
+ZXJuZWwub3JnPiB3cm90ZToNCj4gDQo+IO+7v09uIFRodSwgRGVjIDI4LCAyMDIzIGF0IDEwOjQ2
+OjU3QU0gKzAxMDAsIFN2ZW4gUGV0ZXIgd3JvdGU6DQo+IA0KPj4+PiBPbiBEZWMgMjcsIDIwMjMs
+IGF0IDExOjMwLCBKb2hhbiBIb3ZvbGQgPGpvaGFuQGtlcm5lbC5vcmc+IHdyb3RlOg0KPj4gDQo+
+Pj4+IFRoZSBjb21taXQgeW91IHRyYWNrZWQgdGhpcyBkb3duIHRvIHJlc3RvcmVkIHRoZSBvcmln
+aW5hbCBzZW1hbnRpY3MgZm9yDQo+Pj4gSENJX1FVSVJLX1VTRV9CREFERFJfUFJPUEVSVFksIHdo
+aWNoIG1lYW5zIHRoYXQgaXQgc2hvdWxkIG9ubHkgYmUgc2V0DQo+Pj4gZm9yIGRldmljZXMgd2l0
+aCBhbiBpbnZhbGlkIGFkZHJlc3MuDQo+Pj4gDQo+Pj4gVGhlIEJyb2FkY29tIEJDTTQzNzcgZHJp
+dmVyIGhhcyBzbyBmYXIgYmVlbiBzZXR0aW5nIHRoaXMgZmxhZw0KPj4+IHVuY29uZGl0aW9uYWxs
+eSB3aGljaCBub3cgcG90ZW50aWFsbHkgcmVzdWx0cyBpbiBhbHNvIHZhbGlkIGFkZHJlc3Nlcw0K
+Pj4+IGJlaW5nIG1hcmtlZCBhcyBpbnZhbGlkLg0KPj4+IA0KPj4+IEkndmUganVzdCBzZW50IGEg
+cGF0Y2ggdGhhdCBtYWtlcyBzdXJlIHRvIG9ubHkgbWFyayBpbnZhbGlkIGFkZHJlc3NlcyBhcw0K
+Pj4+IGludmFsaWQ6DQo+Pj4gDQo+Pj4gaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvbGttbC8yMDIz
+MTIyNzEwMTAwMy4xMDUzNC0xLWpvaGFuK2xpbmFyb0BrZXJuZWwub3JnLw0KPj4+IA0KPj4+IE5v
+dGUgaG93ZXZlciB0aGF0IHRoZSBmbGFnIHN0aWxsIG5lZWRzIHRvIGJlIHNldCBpbiBjYXNlIHlv
+dXIgZGV2aWNlDQo+Pj4gbGFja3Mgc3RvcmFnZSBmb3IgYSB1bmlxdWUgZGV2aWNlIGFkZHJlc3Mg
+c28geW91IGNhbm5vdCBzaW1wbHkgZHJvcCBpdA0KPj4+IGZvciBzb21lIGRldmljZSBjbGFzc2Vz
+IGFzIHlvdSBkbyBiZWxvdyAodW5sZXNzIHlvdSBhcmUgY2VydGFpbiB0aGF0DQo+Pj4gdGhlc2Ug
+ZGV2aWNlcyB3aWxsIGFsd2F5cyBoYXZlIGEgdmFsaWQgYWRkcmVzcykuDQo+IA0KPj4gV2UgZG8g
+a25vdyB0aGF0IHRob3VnaC4NCj4+IA0KPj4gQkNNNDM3NyBpcyBwcmVzZW50IG9uIEFwcGxl4oCZ
+cyB4ODYgTWFjcyBhbmQgYWx3YXlzIGhhcyBpbnRlcm5hbCBzdG9yYWdlDQo+PiBmb3IgdGhlIGFk
+ZHJlc3MuIElmIHRoZSBib2FyZCBjb21lcyB1cCB3aXRob3V0IGFuIGFkZHJlc3MgdGhlcmXigJlz
+IG5vdGhpbmcNCj4+IG11Y2ggd2UgY2FuIGRvIGJlY2F1c2UgdGhlIGFkZHJlc3MgaXNu4oCZdCBw
+cm92aWRlZCBieSBBQ1BJIG9yIGFueXRoaW5nDQo+PiBlbHNlIGFuZCBzZXR0aW5nIHRoZSBpbnZh
+bGlkIGFkZHJlc3MgcXVpcmsgZm9yIHRoYXQgc2l0dWF0aW9uIHNlZW1zIGFwcHJvcHJpYXRlLg0K
+Pj4gDQo+PiBCQ000Mzc4LzQzODcgaXMgcHJlc2VudCBvbiBBcHBsZeKAmXMgQVJNIE1hY3MgYW5k
+IG5ldmVyIGhhcyBpbnRlcm5hbCBzdG9yYWdlLg0KPj4gVGhlIGFkZHJlc3MgaXMgYWx3YXlzIHBy
+b3ZpZGVkIGJ5IG91ciBib290bG9hZGVyIGluIHRoZSBkZXZpY2UgdHJlZS4NCj4+IFRoZXNlIHNo
+b3VsZCBhbHdheXMgdW5jb25kaXRpb25hbGx5IHNldCBIQ0lfUVVJUktfVVNFX0JEQUREUl9QUk9Q
+RVJUWQ0KPj4ganVzdCBsaWtlIHRoaXMgcGF0Y2ggZG9lcy4NCj4gDQo+IE9rLCBnb29kLCB0aGVu
+IHRoaXMgcGF0Y2ggYW5kIHRoZSBvbmUgSSBwb3N0ZWQgYXJlIG1vc3RseSBlcXVpdmFsZW50DQo+
+IGFzc3VtaW5nIHRoYXQgdGhlIEJDTTQzNzgvNDM4NyByZXR1cm4gYW4gaW52YWxpZCBhZGRyZXNz
+IGR1cmluZyBzZXR1cC4NCj4gDQo+IFRoaXMgcGF0Y2ggbWF5IGJlIHByZWZlcnJlZCBhcyBpdCBk
+b2VzIG5vdCBuZWVkIHRvIHJlbHkgb24gc3VjaA0KPiBhc3N1bXB0aW9ucywgdGhvdWdoLg0KPiAN
+Cj4gSm9oYW4NCg0KU28gd2hhdCdzIHRoZSBmaW5hbCB0YWtlIG9uIHRoaXM/IFdoaWNoIG9uZSBp
+cyBnb25uYSBiZSBtZXJnZWQgdXBzdHJlYW0/
 
