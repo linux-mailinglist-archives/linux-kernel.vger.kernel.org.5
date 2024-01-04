@@ -1,133 +1,189 @@
-Return-Path: <linux-kernel+bounces-17269-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17275-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA613824AA4
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 23:01:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69AD0824ABB
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 23:10:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 81796283A49
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 22:01:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7AE241C20FF2
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 22:10:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BAF22C863;
-	Thu,  4 Jan 2024 22:01:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C1982C862;
+	Thu,  4 Jan 2024 22:10:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="f8oLuABc"
+	dkim=pass (2048-bit key) header.d=rothwell.id.au header.i=@rothwell.id.au header.b="c1KjIIBQ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+Received: from gimli.rothwell.id.au (gimli.rothwell.id.au [103.230.158.156])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F0AB2C84F;
-	Thu,  4 Jan 2024 22:01:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704405688; x=1735941688;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=otgbQ7H1iBSZqJ3vnujFkHluxQ0XxaU4/8325jzHr+8=;
-  b=f8oLuABcGnWQNiIUZ1iv8qGbfDQyKucdHznj9Pfy7YnBT6UpgObxSKCu
-   NhMG+UrEkI04onGt1tsdKRq5Moc++HERqogZkUK/rN2Y2ozlNaqvNpR4j
-   Uq8v1gV8nT0mpmQSiCdrDAxC8O5pLlFLaJsq8yFP+x8+tTnNhBnb2jpJ0
-   4SmNGvLzAQE3Xv+SarvNXu2Ei4jAHsylTB1QV8/sTjLANkf6JkfmnFUqC
-   8q/LDIZ7CFF+WZjoTjEZFlquMR81vBAkytfQ85gayVVXTI9XQNNqHf4kH
-   ivchovDw72QSR14w+ojKp/+khMukDcsva2otXeSVWB4xYyM5hBugFozNM
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10943"; a="394553013"
-X-IronPort-AV: E=Sophos;i="6.04,331,1695711600"; 
-   d="scan'208";a="394553013"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2024 14:01:24 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10943"; a="846378376"
-X-IronPort-AV: E=Sophos;i="6.04,331,1695711600"; 
-   d="scan'208";a="846378376"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmsmga008.fm.intel.com with ESMTP; 04 Jan 2024 14:01:21 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rLVmB-0000Sy-08;
-	Thu, 04 Jan 2024 22:01:19 +0000
-Date: Fri, 5 Jan 2024 06:01:10 +0800
-From: kernel test robot <lkp@intel.com>
-To: Zack Rusin <zack.rusin@broadcom.com>, linux-kernel@vger.kernel.org
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	Zack Rusin <zack.rusin@broadcom.com>,
-	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Robert Jarzmik <robert.jarzmik@free.fr>,
-	Raul Rangel <rrangel@chromium.org>, linux-input@vger.kernel.org,
-	stable@vger.kernel.org
-Subject: Re: [PATCH v2] input/vmmouse: Fix device name copies
-Message-ID: <202401050506.N1aMF9sD-lkp@intel.com>
-References: <20240104050605.1773158-1-zack.rusin@broadcom.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1BDA1E4A8;
+	Thu,  4 Jan 2024 22:10:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rothwell.id.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rothwell.id.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=rothwell.id.au;
+	s=201702; t=1704405892;
+	bh=If2814HFR+59WDsBz9gf/4ej7C70sl4Dq1sz0ZnVow0=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=c1KjIIBQ43iscQf/typY4aFGldEFLPGs188eQ0bDYCYo4QYVixsQospEPF3mjw/nG
+	 48oEEv6kF4Lp4CkVXn5VTr5siaM6CdCpqqSnh0rG2qCLyLzeo3lioBTw4jeBLwDfPu
+	 xgkyzNl+LFh/uPDQgX/HwdhFMP2qvNExm2rpZgBtSUgHWxN3kjleiI/SzPxGWJWhpg
+	 cAF0MC9Djf+yISgrjElB/zfsTtLQPY58VijdJYR1pQwS+CeYHFkp4bG84wbOJnsnh6
+	 ZYlZV1FDd3rWO77YNkKIqjpapDdqlk3saXdgy4Ue+fkqBCzW0KfHSfpz/hyeflILrY
+	 Uj7JLzqHxOSoQ==
+Received: from authenticated.rothwell.id.au (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.rothwell.id.au (Postfix) with ESMTPSA id 4T5gcM013wzyb9;
+	Fri,  5 Jan 2024 09:04:50 +1100 (AEDT)
+Date: Fri, 5 Jan 2024 09:04:49 +1100
+From: Stephen Rothwell <sfr@rothwell.id.au>
+To: Sean Young <sean@mess.org>
+Cc: Bagas Sanjaya <bagasdotme@gmail.com>, Thierry Reding
+ <thierry.reding@gmail.com>, Lee Jones <lee@kernel.org>, Jingoo Han
+ <jingoohan1@gmail.com>, Linus Torvalds <torvalds@linux-foundation.org>,
+ Stephen Rothwell <sfr@canb.auug.org.au>, Flavio Suligoi
+ <f.suligoi@asem.it>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>, Linux DRI Development
+ <dri-devel@lists.freedesktop.org>
+Subject: Re: (subset) linux-next: build failure after merge of the pwm tree
+Message-ID: <20240105090449.5cf240ec@oak>
+In-Reply-To: <ZZaplFvjLADNz-2m@gofer.mess.org>
+References: <20231221165805.0c4771c1@canb.auug.org.au>
+	<170316329164.542553.8341559295114557258.b4-ty@kernel.org>
+	<20231221125801.GG10102@google.com>
+	<ZYSFUZf8NcK5vvLv@orome.fritz.box>
+	<ZZaCQahr3t8CUumD@archie.me>
+	<ZZaplFvjLADNz-2m@gofer.mess.org>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240104050605.1773158-1-zack.rusin@broadcom.com>
+Content-Type: multipart/signed; boundary="Sig_/xW9ccXYMuSXzGh3Fg8i_Q4P";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-Hi Zack,
+--Sig_/xW9ccXYMuSXzGh3Fg8i_Q4P
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-kernel test robot noticed the following build errors:
+Hi all,
 
-[auto build test ERROR on dtor-input/next]
-[also build test ERROR on dtor-input/for-linus linus/master v6.7-rc8 next-20240104]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+On Thu, 4 Jan 2024 12:50:28 +0000 Sean Young <sean@mess.org> wrote:
+>
+> On Thu, Jan 04, 2024 at 05:02:41PM +0700, Bagas Sanjaya wrote:
+> > [also add Jingoo (additional backlight maintainer) and Linus]
+> >=20
+> > On Thu, Dec 21, 2023 at 07:34:57PM +0100, Thierry Reding wrote: =20
+> > > On Thu, Dec 21, 2023 at 12:58:01PM +0000, Lee Jones wrote: =20
+> > > > On Thu, 21 Dec 2023, Lee Jones wrote:
+> > > >  =20
+> > > > > On Thu, 21 Dec 2023 16:58:05 +1100, Stephen Rothwell wrote: =20
+> > > > > > After merging the backlight tree, today's linux-next build (x86=
+_64
+> > > > > > allmodconfig) failed like this:
+> > > > > >=20
+> > > > > > drivers/video/backlight/mp3309c.c: In function 'mp3309c_bl_upda=
+te_status':
+> > > > > > drivers/video/backlight/mp3309c.c:134:23: error: implicit decla=
+ration of function 'pwm_apply_state'; did you mean 'pwm_apply_args'? [-Werr=
+or=3Dimplicit-function-declaration]
+> > > > > >   134 |                 ret =3D pwm_apply_state(chip->pwmd, &pw=
+mstate);
+> > > > > >       |                       ^~~~~~~~~~~~~~~
+> > > > > >       |                       pwm_apply_args
+> > > > > >=20
+> > > > > > [...] =20
+> > > > >=20
+> > > > > Applied, thanks!
+> > > > >=20
+> > > > > [1/1] linux-next: build failure after merge of the pwm tree
+> > > > >       commit: f7baa9ccef93ba1c36a8ecf58c2f4e86fb3181b9 =20
+> > > >=20
+> > > > Actually it's:
+> > > >=20
+> > > >   f7baa9ccef93b ("backlight: mp3309c: Rename  pwm_apply_state() to =
+pwm_apply_might_sleep()")
+> > > >=20
+> > > > But don't bank on the commit ID staying the same. =20
+> > >=20
+> > > This is likely going to break the build on your branch because
+> > > pwm_apply_might_sleep() is only available in the PWM tree right now. =
+In
+> > > any case, I've now pushed a commit that adds pwm_apply_state() back a=
+s a
+> > > compatibility stub, so it should be okay for you to drop this if you
+> > > run into problems. It's always possible that somebody else wants to a=
+dd
+> > > a new caller of pwm_apply_state() and in retrospect we should've
+> > > probably done this from the start, at least as a transitional measure
+> > > for one or two cycles.
+> > >  =20
+> >=20
+> > Hi Lee and Thierry,
+> >=20
+> > I know that we're still on New Year vibes, so some things are not up to=
+ full
+> > steam for now; but since we're close to v6.7 release and v6.8 merge win=
+dow,
+> > hence allow me to ask:
+> >=20
+> > Stephen Rothwell is still complaining about backlight tree build failure
+> > due to f7baa9ccef93b, yet it has not been fixed so far. Has the culprit
+> > been dropped/reverted as he requested? The worst case is the culprit sl=
+ips
+> > through and become part of backlight PR and Linus will likely not happy
+> > with the build regression (maybe he had to fix by himself). =20
+>=20
+> This should be fixed by 9a216587a03df, and on current linux-next I can't=
+=20
+> reproduce the problem any more (x86_64 allmodconfig).
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Zack-Rusin/input-vmmouse-Fix-device-name-copies/20240104-130724
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/dtor/input.git next
-patch link:    https://lore.kernel.org/r/20240104050605.1773158-1-zack.rusin%40broadcom.com
-patch subject: [PATCH v2] input/vmmouse: Fix device name copies
-config: i386-allmodconfig (https://download.01.org/0day-ci/archive/20240105/202401050506.N1aMF9sD-lkp@intel.com/config)
-compiler: ClangBuiltLinux clang version 17.0.6 (https://github.com/llvm/llvm-project 6009708b4367171ccdbf4b5905cb6a803753fe18)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240105/202401050506.N1aMF9sD-lkp@intel.com/reproduce)
+Of course linux-next is fine, because I have fixed it up in there.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202401050506.N1aMF9sD-lkp@intel.com/
+Here is the problem:  the backlight tree
+(git://git.kernel.org/pub/scm/linux/kernel/git/lee/backlight.git#for-backli=
+ght-next)
+is broken when built in its own because of the above patch (which is
+commit f7baa9ccef93).  In linux-next, I have been merging the previous
+working version of the backlight tree (with head commit 7d84a63a39b7).
+The patch (commit f7baa9ccef93) can only be applied to the merge of the
+backlight tree and the pwm tree
+(git://git.kernel.org/pub/scm/linux/kernel/git/thierry.reding/linux-pwm.git=
+#for-next)
+which is merged much later in the linux-next process.  If the backlight
+tree was merged by Linus before the pwm tree, it would break his build
+(and he would not be happy).  But the patch on the head of the
+backlight tree was made unnecessary by commit 9a216587a03d in the pwm
+tree.  So, please either revert commit f7baa9ccef93 in the backlight
+tree (or simply to a "git reset --hard HEAD^" there).  The patch of
+commit f7baa9ccef93 can be applied some time later (after Linus has
+merged both trees.
 
-All error/warnings (new ones prefixed by >>):
+--=20
+Cheers,
+Stephen Rothwell
 
->> drivers/input/mouse/vmmouse.c:78:5: warning: variable length array used [-Wvla]
-      77 |         char phys[sizeof_field(struct serio, phys) +
-         |                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      78 |                   strlen(VMMOUSE_PHYS_NAME_POSTFIX_STR)];
-         |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->> drivers/input/mouse/vmmouse.c:77:7: error: fields must have a constant size: 'variable length array in structure' extension will never be supported
-      77 |         char phys[sizeof_field(struct serio, phys) +
-         |              ^
-   1 warning and 1 error generated.
+--Sig_/xW9ccXYMuSXzGh3Fg8i_Q4P
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
+-----BEGIN PGP SIGNATURE-----
 
-vim +77 drivers/input/mouse/vmmouse.c
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmWXK4EACgkQAVBC80lX
+0Gy01Qf6A1C5SMeayXoJVjrb1sBes2bSqA6BnrLQT9O2O/FGzvW678lYwOppq2Z4
+vgkvFcEMrBD82x/7DBmRZye3XdnyZwjHwHuHqA7Q+soXunIWOz6DgyaJ89GQ4BBs
+Nyndkrfj/f1xNN9PCxxDzB/Uv45RUVNT9EMMWlVdjZLSrcJLj8YL3NWNEE50++K8
+8eYw2XF8j6SASp55r+bgZfLJEvygCwrzY4IgrPWt9gP5YXSsZ8MpPvo32UhEqUnJ
+Y7vZCwE+W3Geyd1W+ujzT3GnZKyI5L3Jtok5CJI6gzXKC9LYI+aCVwgjy580qtbG
+CZC/3XsFPtr2wLlnB32M7KuCRhoAZA==
+=M1fR
+-----END PGP SIGNATURE-----
 
-    67	
-    68	/**
-    69	 * struct vmmouse_data - private data structure for the vmmouse driver
-    70	 *
-    71	 * @abs_dev: "Absolute" device used to report absolute mouse movement.
-    72	 * @phys: Physical path for the absolute device.
-    73	 * @dev_name: Name attribute name for the absolute device.
-    74	 */
-    75	struct vmmouse_data {
-    76		struct input_dev *abs_dev;
-  > 77		char phys[sizeof_field(struct serio, phys) +
-  > 78			  strlen(VMMOUSE_PHYS_NAME_POSTFIX_STR)];
-    79		char dev_name[128];
-    80	};
-    81	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+--Sig_/xW9ccXYMuSXzGh3Fg8i_Q4P--
 
