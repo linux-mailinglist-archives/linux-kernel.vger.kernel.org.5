@@ -1,166 +1,147 @@
-Return-Path: <linux-kernel+bounces-16578-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16580-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D2013824085
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 12:22:49 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B07282408A
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 12:23:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EA1081C215A2
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 11:22:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9F630B22769
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 11:23:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E5B62110E;
-	Thu,  4 Jan 2024 11:22:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 935532110E;
+	Thu,  4 Jan 2024 11:23:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="DvOBi7ey"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="pOuVTLfN"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CA1121101
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 11:22:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a28aa47bd15so46575866b.2
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 03:22:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704367358; x=1704972158; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=WJ0Gisp1l8i9la4aV7bXjyC+CsrPqgz8AFrIuplCpT0=;
-        b=DvOBi7eycQgF6N2YCmiGAApkU7MPPOFI1/kqoG4OjnDq7LhVokql0Q4ZF/Enf3bMxN
-         +MdC27QZJez4HHzxIoBRyC3YwqlUoyUXW2KsnLraGhMmgWfrokxLg+OMUOSaBw4HHEng
-         C/e8WGCXRp6ha421+FeBI2lTGpMej2rQ75xyRwYUZRp8XJ3/ly7Uil1ZTiVaG3RQZNdh
-         8ndB3IQuJtcQ0kfh9R9M/QciaUd460g0atyWcWc5ZyBae7OJzy4rvY1ddiclL21q9a+i
-         Y1KQ+kcsNnz9E6GEjwkH+Si9pbj9F0HNxLvR+RjFUCnMAuJWN+E1xvAKS/GkNZ0GxeGM
-         HNig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704367358; x=1704972158;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WJ0Gisp1l8i9la4aV7bXjyC+CsrPqgz8AFrIuplCpT0=;
-        b=J1Kz+KgPuBKNDWGG28MPCRYsox+Yum1gB/snq9K27gIhNZwIFl78JTvvaBIvn9hPHn
-         io+e+bgv8AUArTL3jM7M07vT8rUsyRjHS1KNBYuqPak9dwzpZmbxi8tVvlHLhA38HXIk
-         QrXTkqTWEb7r7GKx4Vx5duR3LaiYiPaoRQBfcUtCOD0+CCRE9ffNCkT1iEZqgbIzvNVv
-         HgdyVF+3MrmBgx9PnQmYQzGskoMpBiSZe+SxzYgZYZZFZydhDK14r0QSpicGv1PCrxpK
-         ZvWH8qEDhFGiAvsvRFkf3Gds6kQQgXoIO5JzSPd4vOCFM2HvtjfDg17VghRI8RvF9RnE
-         eY9w==
-X-Gm-Message-State: AOJu0YyzEkS6XUK0u5sJ/5utkNpjNSLHCsol5SN5iTlASFwHDMHi4GvP
-	evO3n43XmSCe9JiEqhI6d2eSHHQMN9fUlA==
-X-Google-Smtp-Source: AGHT+IF/tmW5SrIt21DlWgi1H4xIDAeaL1BSVkvFAiNpK6Q98TqkbQXBw+cdUM4zNq96osIglHR+qA==
-X-Received: by 2002:a17:906:6a21:b0:a26:d607:86e2 with SMTP id qw33-20020a1709066a2100b00a26d60786e2mr344192ejc.11.1704367358568;
-        Thu, 04 Jan 2024 03:22:38 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id vl5-20020a17090730c500b00a2825a9e1d0sm3090239ejb.174.2024.01.04.03.22.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Jan 2024 03:22:38 -0800 (PST)
-Message-ID: <c28ab577-35ad-45f6-8be4-08b441cdb50b@linaro.org>
-Date: Thu, 4 Jan 2024 12:22:19 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E51121347;
+	Thu,  4 Jan 2024 11:23:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4047efg9020092;
+	Thu, 4 Jan 2024 11:23:17 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:mime-version:content-type; s=
+	qcppdkim1; bh=aTyOt6+SodX6bP52NpaT44ugzzw6dI40D4PGBU1bCzU=; b=pO
+	uVTLfNeu6BowS6RRhUJkCKR35oVUAjzDehsKfpC5xwRn4Nm4P25e44WN1Msyv8la
+	dP/rWmLuKTX2rwXCIHlpIiEpSJC4g8P+LzMTNvNEjAiROLso+HM6bGpuuCLJoyyV
+	Ys7ugRSvV5XYccwls6nFB6not6lBrjhITVGlt4vgg5fH3RLp+meM0HB5EIG5Vc6D
+	rvgpyU4EFsqf3+c2tdYhEh6hO3CVgFyNpS5blV/DaIGZ69qweq5L7I6KmXrekAKO
+	apwN6ajJv8+IQvgf/OH1MEDx+ZemqkBNesSoUqXLxz4rbatKHprV4mKYbe4MilKl
+	HSiN05jqZk8QrOVHsUfA==
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vdra38kcq-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 04 Jan 2024 11:23:17 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 404BNGBI028553
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 4 Jan 2024 11:23:16 GMT
+Received: from zhenhuah-gv.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Thu, 4 Jan 2024 03:23:13 -0800
+From: Zhenhua Huang <quic_zhenhuah@quicinc.com>
+To: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>
+CC: <linux-mtd@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <quic_tingweiz@quicinc.com>,
+        <quic_bjorande@quicinc.com>, Zhenhua Huang <quic_zhenhuah@quicinc.com>
+Subject: [PATCH] dt-bindings: mtd: Change the schema for nodename which includes "sram"
+Date: Thu, 4 Jan 2024 19:23:02 +0800
+Message-ID: <1704367382-29979-1-git-send-email-quic_zhenhuah@quicinc.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/5] arm64: dts: add description for solidrun am642 som
- and evaluation board
-Content-Language: en-US
-To: Josua Mayer <josua@solid-run.com>, Nishanth Menon <nm@ti.com>,
- Vignesh Raghavendra <vigneshr@ti.com>, Tero Kristo <kristo@kernel.org>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>
-Cc: "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20240103-add-am64-som-v1-0-dda1f9227aef@solid-run.com>
- <20240103-add-am64-som-v1-2-dda1f9227aef@solid-run.com>
- <eb90f92f-de58-42b2-8eb1-9d78e1fd7a60@linaro.org>
- <0402b960-6daa-446b-8503-d991deac5532@solid-run.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <0402b960-6daa-446b-8503-d991deac5532@solid-run.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: FltXqd4Vq79xg_8J-GVunkFoQIhGr56X
+X-Proofpoint-ORIG-GUID: FltXqd4Vq79xg_8J-GVunkFoQIhGr56X
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 spamscore=0
+ malwarescore=0 mlxlogscore=999 suspectscore=0 priorityscore=1501
+ phishscore=0 bulkscore=0 lowpriorityscore=0 impostorscore=0 adultscore=0
+ clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2401040086
 
-On 04/01/2024 12:01, Josua Mayer wrote:
+Node name which includes "sram" not only represents MTD devices, but also
+lots of sram devices(eg, qcom,imem.yaml, rules in folder sram/*).
 
+To avoid the conflicts, change the schema as:
+ - if node name includes "sram", must select "compatible" to match
+(I have listed all "comptible" string in mtd.yaml by searching
+drivers/mtd/* to find applicable drivers)
+ - if node name is nand/flash, use "nodename" to select.
 
->>> +
->>> +	leds {
->>> +		compatible = "gpio-leds";
->>> +		pinctrl-names = "default";
->>> +		pinctrl-0 = <&leds_pins_default>;
->>> +		status = "okay";
->> Where was it disabled?
-> Nowhere. Better to omit status on new nodes added by new dts file?
+Fixes: 7bdc671822e9 ("dt-bindings: mtd: physmap: Reuse the generic definitions")
+Signed-off-by: Zhenhua Huang <quic_zhenhuah@quicinc.com>
+---
+Hello,
 
-Yes, you should not have any redundant status properties. okay is by
-default.
+Tested a few devicetree nodes, which confirms:
+"qcom,imem.yaml" which in sram/ not matches with mtd.yaml anymore.
+All nodes include string "sram" must have "compatible" which listed in
+mtd.yaml to be matched.
 
->>> +
->>> +		/* D24 */
->>> +		led1: led-1 {
->>> +			label = "led1:green";
->> Use function
-> This board has no default function defined by labels or enclosure.
-> Not sure what to pick for "function" property. Can I omit it and set only color?
-> 
-> If so - should I drop label completely - or keep the "led1"  part?
+Current I just modify the rule for "sram" as it is definitely conflicting with
+rules in sram/*. I have not much backgrounds on nand/flash whether they may have
+similar conflicts.
 
-Then keep label.
+ Documentation/devicetree/bindings/mtd/mtd.yaml | 24 +++++++++++++++++++++---
+ 1 file changed, 21 insertions(+), 3 deletions(-)
 
-
-
-Best regards,
-Krzysztof
+diff --git a/Documentation/devicetree/bindings/mtd/mtd.yaml b/Documentation/devicetree/bindings/mtd/mtd.yaml
+index f322290..1704437 100644
+--- a/Documentation/devicetree/bindings/mtd/mtd.yaml
++++ b/Documentation/devicetree/bindings/mtd/mtd.yaml
+@@ -10,10 +10,28 @@ maintainers:
+   - Miquel Raynal <miquel.raynal@bootlin.com>
+   - Richard Weinberger <richard@nod.at>
+ 
+-properties:
+-  $nodename:
+-    pattern: "^(flash|.*sram|nand)(@.*)?$"
++select:
++  if:
++    properties:
++      $nodename:
++        pattern: "^.*sram(@.*)?$"
++  then:
++    properties:
++      compatible:
++        enum:
++          - arm,vexpress-psram
++          - cypress,cy7c1019dv33-10zsxi
++          - microchip,48l640
++          - mtd-ram
++  else:
++    properties:
++      $nodename:
++        pattern: "^(flash|nand)(@.*)?$"
+ 
++  required:
++    - $nodename
++
++properties:
+   label:
+     description:
+       User-defined MTD device name. Can be used to assign user friendly
+-- 
+2.7.4
 
 
