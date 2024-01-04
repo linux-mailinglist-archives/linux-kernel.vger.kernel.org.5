@@ -1,69 +1,102 @@
-Return-Path: <linux-kernel+bounces-17206-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17207-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8FC4B8249CE
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 21:52:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A27058249D1
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 21:53:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B4D931C22A0D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 20:52:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 577FE1F22EF1
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 20:53:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5BFE2C1BB;
-	Thu,  4 Jan 2024 20:52:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A4F32B9A7;
+	Thu,  4 Jan 2024 20:52:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="MCTW69+I"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mDNpwU21"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [95.215.58.188])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2B071E523;
-	Thu,  4 Jan 2024 20:52:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Thu, 4 Jan 2024 15:52:09 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1704401531;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=QzI/Xr56gasgakS2cGy5UqcYQGUMuAr5ihmMpPGJ9TU=;
-	b=MCTW69+I7VIBBwwIy9bILW1IpWe5T8xRRm6gNkTdoc9Rme/e3dvuzKwIjOakTDS+DSKBif
-	CnptzV1NRw2UBY62hDcFYPwH0kMyzls/Ox0wMVOGB5TqFJS1pjey+9oubQ1J8V6PRrQNSV
-	CxpjA61tQoJMciOPDJZrAo2TF3CIilk=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Martin Steigerwald <martin@lichtvoll.de>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, 
-	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [GIT PULL] bcachefs new years fixes for 6.7
-Message-ID: <7pnbw4c5xvek3d3ina4etosspqjtluhbsfb67nwu7zgn4tzgfm@aeof65j2iaof>
-References: <o7py4ia3s75popzz7paf3c6347te6h3qms675lz3s2k5eltskl@cklacfnvxb7k>
- <6008735.lOV4Wx5bFT@lichtvoll.de>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE8B72C681;
+	Thu,  4 Jan 2024 20:52:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A531BC433C8;
+	Thu,  4 Jan 2024 20:52:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704401576;
+	bh=UeDLFPp+VrbxKGWywntQSZVNGTOQs09CcRcFafJG0IU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=mDNpwU218VdVH3edCbpysDNbCm9m6ohm5gbiNbwa87RS2DpvVRlpf//dhb0Rtw9di
+	 aT8UOxdjMOsnPiENb5lm23TI93nZMo4ee4vDObX/ihGbksr01FKJlFPJdmQMQGgSeb
+	 dAOuOtDfu9BWfB+V8vCc2WIg4vlJMGhN0xiN0hASyCGog5oHvIcVhRO6fwR8KBCSuC
+	 2HboKMRcDKtB2YreBd5ICadRcawPE2O6i6EVmW1F5NDp3enO43fGY09gA/YyjrJSgB
+	 7ixeF1Pph/2N57kx8VBnG5H9rx3dw2QUg1o37duUUuVH/nNjLdUV3rs/6MnK9Poh5H
+	 +h80VrTf2Kqmw==
+Date: Thu, 4 Jan 2024 20:52:51 +0000
+From: Simon Horman <horms@kernel.org>
+To: Jonas =?utf-8?Q?Dre=C3=9Fler?= <verdre@v0yd.nl>
+Cc: Marcel Holtmann <marcel@holtmann.org>,
+	Johan Hedberg <johan.hedberg@gmail.com>,
+	Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+	linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org
+Subject: Re: [PATCH 1/5] Bluetooth: Remove superfluous call to
+ hci_conn_check_pending()
+Message-ID: <20240104205251.GO31813@kernel.org>
+References: <20240102185933.64179-1-verdre@v0yd.nl>
+ <20240102185933.64179-2-verdre@v0yd.nl>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <6008735.lOV4Wx5bFT@lichtvoll.de>
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240102185933.64179-2-verdre@v0yd.nl>
 
-On Thu, Jan 04, 2024 at 07:13:31PM +0100, Martin Steigerwald wrote:
-> Hi Kent.
+On Tue, Jan 02, 2024 at 07:59:28PM +0100, Jonas Dreßler wrote:
+> The "pending connections" feature was originally introduced with commit
+> 4c67bc74f016b0d360b8573e18969c0ff7926974 and
+> 6bd57416127e92d35e6798925502c84e14a3a966 to handle controllers supporting
+> only a single connection request at a time. Later things were extended to
+> also cancel ongoing inquiries on connect() with commit
+> 89e65975fea5c25706e8cc3a89f9f97b20fc45ad.
 > 
-> Kent Overstreet - 01.01.24, 17:57:04 CET:
-> > Hi Linus, some more fixes for you, and some compatibility work so that
-> > 6.7 will be able to handle the disk space accounting rewrite when it
-> > rolls out.
+> With commit a9de9248064bfc8eb0a183a6a951a4e7b5ca10a4,
+> hci_conn_check_pending() was introduced as a helper to consolidate a few
+> places where we check for pending connections (indicated by the
+> BT_CONNECT2 flag) and then try to connect.
 > 
-> Is it required to recreate BCacheFS with updated BCacheFS tools from Git 
-> in order to benefit from that compatibility work or does BCacheFS 
-> automatically update the super block?
+> This refactoring commit also snuck in two more calls to
+> hci_conn_check_pending():
+> 
+> - One is in the failure callback of hci_cs_inquiry(), this one probably
+> makes sense: If we send an "HCI Inquiry" command and then immediately
+> after a "Create Connection" command, the "Create Connection" command might
+> fail before the "HCI Inquiry" command, and then we want to retry the
+> "Create Connection" on failure of the "HCI Inquiry".
+> 
+> - The other added call to hci_conn_check_pending() is in the event handler
+> for the "Remote Name" event, this seems unrelated and is possibly a
+> copy-paste error, so remove that one.
+> 
+> Fixes: a9de9248064bfc8eb0a183a6a951a4e7b5ca10a4
+> Signed-off-by: Jonas Dreßler <verdre@v0yd.nl>
 
-Automatically updated as soon as a new version writes to it, and the old
-versions just ignore the sections they don't know about.
+Nit: a correct format for the fixes tag is
+
+Fixes: a9de9248064b ("[Bluetooth] Switch from OGF+OCF to using only opcodes")
+
+Likewise, in the patch description, it is usual to cite patches
+using a similar format.
+
+e.g. introduced in commit
+     4c67bc74f016 ("[Bluetooth] Support concurrent connect requests")
+
+Note it is usual to use a hash of at least 12 characters
+(and not much more than that).
+
+...
 
