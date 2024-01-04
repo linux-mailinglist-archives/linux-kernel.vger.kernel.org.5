@@ -1,113 +1,107 @@
-Return-Path: <linux-kernel+bounces-16709-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16710-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D8B398242C6
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 14:39:32 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C22AD8242C8
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 14:40:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3466EB21332
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 13:39:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 00B5C1F214EA
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 13:40:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7A8B22334;
-	Thu,  4 Jan 2024 13:39:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 776AA2233B;
+	Thu,  4 Jan 2024 13:40:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Qh1sm27c"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E72E82232E;
-	Thu,  4 Jan 2024 13:39:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4T5SNw0Sxjz4f3jM1;
-	Thu,  4 Jan 2024 21:39:12 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 5FDF91A026E;
-	Thu,  4 Jan 2024 21:39:15 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP1 (Coremail) with SMTP id cCh0CgDn6hACtZZlhgMKFg--.12033S4;
-	Thu, 04 Jan 2024 21:39:15 +0800 (CST)
-From: Li Lingfeng <lilingfeng@huaweicloud.com>
-To: song@kernel.org
-Cc: linux-raid@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	yukuai3@huawei.com,
-	yukuai1@huaweicloud.com,
-	linan122@huawei.com,
-	yi.zhang@huawei.com,
-	yangerkun@huawei.com,
-	lilingfeng@huaweicloud.com,
-	lilingfeng3@huawei.com
-Subject: [PATCH] md: use RCU lock to protect traversal in md_spares_need_change()
-Date: Thu,  4 Jan 2024 21:36:29 +0800
-Message-Id: <20240104133629.1277517-1-lilingfeng@huaweicloud.com>
-X-Mailer: git-send-email 2.39.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C832E2231B;
+	Thu,  4 Jan 2024 13:40:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704375648; x=1735911648;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=izzVXBML3qDVk1WkctSU9+hFRAuWndHA8g3FABv36pI=;
+  b=Qh1sm27cTeD0zcmCEpIvZWzr2UUL4kJKbdQ3G7+iDiZLPKiHmUn2SNor
+   FOUM3NesgRzHH9d1WXrpQcjqvC0j3VoNrEkdrwnndgFE/sAUtv1OxjvB8
+   nWShZagYv/QsFsUtZoAfhxN+4qUGvR2/rgyqG6yfjtxzi2JMg2tZChXgW
+   nANcUce8whJVjW62F3Ktyyv1oAU8p+95HkdbB9he7D84moT4ALTUVprvV
+   PhXldrOTBKPLoUT4XcbE3x7IzwT1BDdmxAcUdT3UH8+K+67/HTQ1pM5uk
+   z090WquNFsUPx2EKM6c2eIBS1xCGY/x4vI1Cev1FttgEKTT9ncRytf2CR
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10943"; a="376733127"
+X-IronPort-AV: E=Sophos;i="6.04,330,1695711600"; 
+   d="scan'208";a="376733127"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2024 05:40:47 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10943"; a="850797439"
+X-IronPort-AV: E=Sophos;i="6.04,330,1695711600"; 
+   d="scan'208";a="850797439"
+Received: from unknown (HELO [10.237.72.75]) ([10.237.72.75])
+  by fmsmga004.fm.intel.com with ESMTP; 04 Jan 2024 05:40:44 -0800
+Message-ID: <adf6c24a-d94b-40e5-b645-0c6b23b2d513@linux.intel.com>
+Date: Thu, 4 Jan 2024 15:40:44 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: i2c-designware: NULL ptr at RIP: 0010:regmap_read+0x12/0x70
+To: "V, Narasimhan" <Narasimhan.V@amd.com>, Borislav Petkov <bp@alien8.de>,
+ "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>
+Cc: lkml <linux-kernel@vger.kernel.org>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Mika Westerberg <mika.westerberg@linux.intel.com>,
+ Jan Dabros <jsd@semihalf.com>, Andi Shyti <andi.shyti@kernel.org>,
+ "Limonciello, Mario" <Mario.Limonciello@amd.com>
+References: <20231229120820.GCZY62tM7z4v2XmOAZ@fat_crate.local>
+ <8169d773-f9ec-4092-b036-9e4fd59966c3@linux.intel.com>
+ <DM4PR12MB508654DF49FE079D6C283D658961A@DM4PR12MB5086.namprd12.prod.outlook.com>
+ <888da30a-c1ed-4fb0-af81-787fd868ce20@linux.intel.com>
+ <DM4PR12MB5086DE2882C7C5044697B1C38967A@DM4PR12MB5086.namprd12.prod.outlook.com>
+Content-Language: en-US
+From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+In-Reply-To: <DM4PR12MB5086DE2882C7C5044697B1C38967A@DM4PR12MB5086.namprd12.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgDn6hACtZZlhgMKFg--.12033S4
-X-Coremail-Antispam: 1UD129KBjvJXoW7WFyxKr1DZr1DZFWfJryxXwb_yoW8JF4xpF
-	s2gFy5uw48X3yrGa45uF95WF1rXw1rKFWjyF97C3y8Z3WDAr1qkry3K390qrZ5GFyIyFyj
-	q3W2va1ku3W3AFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUv014x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-	2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
-	Y2ka0xkIwI1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
-	xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43
-	MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
-	0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVW3JVWrJr1lIxAIcVC2z280aVAFwI0_
-	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VU1
-	a9aPUUUUU==
-X-CM-SenderInfo: polox0xjih0w46kxt4xhlfz01xgou0bp/
 
-From: Li Lingfeng <lilingfeng3@huawei.com>
+On 1/4/24 08:35, V, Narasimhan wrote:
+>> [    6.245173] i2c_designware AMDI0010:00: Unknown Synopsys component type: 0xffffffff
+> 
+> This made me scratching my head since driver probing will fail in this
+> case with -ENODEV and I could not trigger runtime PM activity in such
+> case but perhaps this is timing specific which happens to happen in your
+> case.
+> 
+> Out of curiosity do you see this same "i2c_designware AMDI0010:00:
+> Unknown Synopsys component type: 0xffffffff" error on Vanilla or is it
+> also regression in linux-next?
+> 
+> This does not happen on Vanilla, only on linux-next.
+> 
+This is even more strange. Controller is in reset but I'm blind to see 
+from Andy's patches why. Do you have change to test at these commits?
 
-Since md_start_sync() will be called without the protect of mddev_lock,
-and it can run concurrently with array reconfiguration, traversal of rdev
-in it should be protected by RCU lock.
-Commit bc08041b32ab ("md: suspend array in md_start_sync() if array need
-reconfiguration") added md_spares_need_change() to md_start_sync(),
-casusing use of rdev without any protection.
-Fix this by adding RCU lock in md_spares_need_change().
+bd466a892612 ("i2c: designware: Fix PM calls order in dw_i2c_plat_probe()")
+c012fde343d2 ("i2c: designware: Fix reset call order in dw_i2c_plat_probe()"
 
-Fixes: bc08041b32ab ("md: suspend array in md_start_sync() if array need reconfiguration")
-Signed-off-by: Li Lingfeng <lilingfeng3@huawei.com>
----
- drivers/md/md.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+and maybe the last one
+4bff054b64e1 ("i2c: designware: Fix spelling and other issues in the 
+comments")
 
-diff --git a/drivers/md/md.c b/drivers/md/md.c
-index 9bdd57324c37..902b43b65052 100644
---- a/drivers/md/md.c
-+++ b/drivers/md/md.c
-@@ -9228,9 +9228,14 @@ static bool md_spares_need_change(struct mddev *mddev)
- {
- 	struct md_rdev *rdev;
- 
--	rdev_for_each(rdev, mddev)
--		if (rdev_removeable(rdev) || rdev_addable(rdev))
-+	rcu_read_lock();
-+	rdev_for_each_rcu(rdev, mddev) {
-+		if (rdev_removeable(rdev) || rdev_addable(rdev)) {
-+			rcu_read_unlock();
- 			return true;
-+		}
-+	}
-+	rcu_read_unlock();
- 	return false;
- }
- 
--- 
-2.31.1
+I'm trying to narrow does the regression come from first two patches and 
+if not, then test the last one.
 
+Andy is out of office and if we can narrow the regression to first two 
+patches we perhaps can revert just them and otherwise need to drop the 
+whole set.
 
