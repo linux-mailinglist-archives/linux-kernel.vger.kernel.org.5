@@ -1,70 +1,70 @@
-Return-Path: <linux-kernel+bounces-16944-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16946-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D924824657
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 17:37:49 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 77B2B82465F
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 17:38:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D654E1F22E7A
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 16:37:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B30AFB236EE
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 16:38:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D93B286BF;
-	Thu,  4 Jan 2024 16:37:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D072128E14;
+	Thu,  4 Jan 2024 16:37:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=hotmail.com header.i=@hotmail.com header.b="GKJP9GJg"
+	dkim=pass (2048-bit key) header.d=hotmail.com header.i=@hotmail.com header.b="BZsJKt+k"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12olkn2060.outbound.protection.outlook.com [40.92.23.60])
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12olkn2076.outbound.protection.outlook.com [40.92.23.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EF6E24B5C;
-	Thu,  4 Jan 2024 16:37:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6FD1288CE;
+	Thu,  4 Jan 2024 16:37:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hotmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hotmail.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Atl+IBk7PgEBIXzHdxFheehYbrC2hf0CaR0dJ5W+xKtbruphbA/A70H+GiAvd/D7ceelyRcBzjeItzyS+GJhkxDDNU1Zt3zkqsSG26Pyx6yjETgqIvc9vKG/2j65S3qWbNtKwOzmXYDMF+9qHG1alnsK+blHJ/Q/0AlGOsd3NHDv6cqOjac2WwdgbK0U8n4enn7LfIAEexbE6nrq+tqR/90NBL2OJG3qjgRtvYNvHXbecTZEqbyTM5ZTaDtY2wJGVRukXKx5kS6Yy3tL6x+jqJL6ru0fIQB+NFDPdfGM464Ep4K8frgMF4fH0xSdxIHNXhtx0rKgqjwbX4kTPi6/5g==
+ b=M9FoesxjhRLMYSzHHadrBPW+S+mFJ1IWSps2is+g7b3yM1/LNrajGeUPq6Mb1Qr82MK8c3a0aml5Qppw5Aeusa/tq2h531cSSEzs7j86AWZRlbGBgrCZmxpDnSxZpAKSyVoY6R/A8AaZY9e9x7nSpLR5JOkJgCUSY9blRQtTuCa+zejEkFWzv1Pl3eiY7eTu8mvlNow7uLoOGfxcDBCapUlFDErlZYngBTSrY4298fxuUy6dCk5jiiAvDJEK/ng7wsRckpY80yhOw2csbMOngP6glBpuwD6iiUZY4AE96QkdD+l1gchgdvWXetvl1Qgg9KNQxuDBMopoHNeFHuYzrA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=xGPPzyxW99d6Lw7ezMhtXHhJX44cjofP8jGdKVcHmig=;
- b=m6tcqHbKmxnw3vqsQVXwAf10zluMKPwz/BFsQ9lDio8TMzoIcm63pEgegqzLLhpEe6IfCcX07Y2LFvmcqkmyv4UQ7RoLz5XlMfp1JO/+od3R8EOH8T6qoxdjYom89nRGpJ/dqXaN73awFKT1qCU8j6sZ8CDk2ykm3KHyR0ejhc3uP0t5mzJtTgfDyJgE6vPlmnYq3/OU62EbMaZlb7tvO2rBT2QNwphJIDsWbgyI1566EbGe6I0zd856x+svkiVAXcdiVy0aF+tUxPNH/sY+PAPMg1WLQQSeA/zhD+WoxAhOubuiStys9y89apQ26KQyMFPM/nvAC11a5GNQD9cBeg==
+ bh=BTWLBrb4fL4nzNjk3Tbhv6WCgSXloJeYw3KGYpXWzDY=;
+ b=fxT8rdkb0aCBxRkrMBbzCTx2vQOhehe5vXUAxigYB23lqb+oNR4NpMO6vqHelRqMN799T4jDPyDHPZxWFWHNjST3CtDEoWbM5DuqY58gFAoUQ4EdMwPHXazyj/POXSQJBj1eJlCfJTHAJ/XB3xfAwLQQ4tO8EYkwAB556t+8DfmWnTu6bVZRbA4sxSZzQbSlWd0WWR6NZUwLwui7oEAeFBsrqgPam6ZnkMUxoMV+BqGhybiirPyfxREcVck/JjhvxHDaXRBH8yPH4mNvAwKStWnLsS67PEnx0SsvbbjVIPWKyfnEWJm55LkJ994zRfsEJt14SJAG0VDxfroGfeehVg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
  dkim=none; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xGPPzyxW99d6Lw7ezMhtXHhJX44cjofP8jGdKVcHmig=;
- b=GKJP9GJgETBsp73KphCt8/hQS3m9gAG3M20QmiTudbIdzSvknIKeORQEihCcmPKIFpFkr75nh3HaLef3z9LOft+V6q4JBBXkW2iHuKdxzFOhLGoqyh+SMGiW5aN68YDjNt2eGXLN5Lt/92JmsxrScqEKwg12wr+HYNLI/jFcKAlSAy7VSqsBBhWTmt3L+7qFnXAMDdbnEphvXdOtcJmB2Jvd2wIlrla3vYRN7hvZgymaMyHa9L48bVDeWqw3kzW6ndlFT6Dytwt5Ey4OBGlTpBKUJRBMoEkfFnnyNvx2AqPAaOWlfxpsKysZZLq59kueO2xk6Mh3zhWo9T72xMC4Tw==
+ bh=BTWLBrb4fL4nzNjk3Tbhv6WCgSXloJeYw3KGYpXWzDY=;
+ b=BZsJKt+kADfa8MY5wfZ2mqKQ4zwI3bvS+//kdOO03uAQ8CRlziXdx8rNWYNEr1qPkAl8ASSUxK1z3AdDRpLQ+0dMTPDp+WFVz3JMhMFDKTInZJ4R388+pX01hoIWCdRDMy/DSeyzDIlCLPBbD8bqwr+aMq+f00FBfO/9scrrAKS+tqa+fFEw0obz/5sbGCzSOu3jfGmqKeDyqdFIlfCxkQXnvOnl96rl3sKaw93TzEhxZpO0QwO4EgnAnkSIZAWZoGkrRIw0DKbF5A5CVgrEzd87en8yrJz2g4Qxgai6wdIBlmqHVgWZBhI4MnP1WBYIOhQYaufGz/lG+x64fXVNyA==
 Received: from PH7PR03MB7064.namprd03.prod.outlook.com (2603:10b6:510:2a5::8)
  by CO1PR03MB5906.namprd03.prod.outlook.com (2603:10b6:303:97::18) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.13; Thu, 4 Jan
- 2024 16:36:58 +0000
+ 2024 16:37:01 +0000
 Received: from PH7PR03MB7064.namprd03.prod.outlook.com
  ([fe80::9ca4:4c22:a89:9a8]) by PH7PR03MB7064.namprd03.prod.outlook.com
  ([fe80::9ca4:4c22:a89:9a8%7]) with mapi id 15.20.7159.013; Thu, 4 Jan 2024
- 16:36:58 +0000
+ 16:37:01 +0000
 From: Min Li <lnimi@hotmail.com>
 To: richardcochran@gmail.com,
 	lee@kernel.org
 Cc: linux-kernel@vger.kernel.org,
 	netdev@vger.kernel.org,
 	Min Li <min.li.xe@renesas.com>
-Subject: [PATCH net-next v7 2/5] ptp: clockmatrix: set write phase timer to 0 when not in PCW mode
-Date: Thu,  4 Jan 2024 11:36:38 -0500
+Subject: [PATCH net-next v7 3/5] ptp: clockmatrix: dco input-to-output delay is 20 FOD cycles + 8ns
+Date: Thu,  4 Jan 2024 11:36:39 -0500
 Message-ID:
- <PH7PR03MB7064B38BDED195B1E6239AACA0672@PH7PR03MB7064.namprd03.prod.outlook.com>
+ <PH7PR03MB70646F26958F96D2229424EBA0672@PH7PR03MB7064.namprd03.prod.outlook.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240104163641.15893-1-lnimi@hotmail.com>
 References: <20240104163641.15893-1-lnimi@hotmail.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-TMN: [feSnRVPsTNFnmU0A0FJNRnMJIU3CnqXIkLB9qezCpZ4=]
+X-TMN: [kwEHIb6Ex7SfOdj9bFaEFur/uyAZjZLEh+Dyn8lx3Qs=]
 X-ClientProxiedBy: YQZPR01CA0095.CANPRD01.PROD.OUTLOOK.COM
  (2603:10b6:c01:84::7) To PH7PR03MB7064.namprd03.prod.outlook.com
  (2603:10b6:510:2a5::8)
-X-Microsoft-Original-Message-ID: <20240104163641.15893-2-lnimi@hotmail.com>
+X-Microsoft-Original-Message-ID: <20240104163641.15893-3-lnimi@hotmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -74,38 +74,38 @@ MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: PH7PR03MB7064:EE_|CO1PR03MB5906:EE_
-X-MS-Office365-Filtering-Correlation-Id: bdebb9fa-cc91-4795-9a3c-08dc0d435e6a
+X-MS-Office365-Filtering-Correlation-Id: 5748f0e2-282a-4397-b0bd-08dc0d436004
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	wawvOxvP/eR8VV2gGLFaj28pLcMPn051qWNSefaP0RNT9iws/+/gBibVMjptao+xqai2DIxcItDciBWWiJsv28Mp5c7iNbaRjy34j6n6AO/fOFwk1b3QpQbe+sBfz1K2OUqtuk1LDcMfSdAG9SsBEuJTLD3bgfF0P2pF29cNw5m9ouL+A4q9Pqp7yR0YE+t5Q1LlA9EJgUDcSkPOEif91ULIwVoprb6Aidirwm67/OaoSfuBMdndG2hofwnnfSz9ovR/VeUWoAML1Wpc+DPfgA1KXF4nNtcqOFG9qPm1JCsN/snFDCLSYUk6kt+sP6fRPB2XPMm6kB6yAGBFX/0ROq3fnMfzjNGG0+z8cQfOAPtfFlcceTlEcK7i6sHTzuha1Ur28sIW/c4uDTW17whjqr/rrc5CQwGJHkxTa/cpWg5yiKUuM07qazQBZihNeVDR6HH7jNM5MkDo6NQlalUScbLBHN+WIXwxDUupo2pxzbsGtZ2+r9yrK04/v8hM37bRaKWoATxhLB1Fd8T5lI7CfnUzFRiqXfMCSkBc/WsAiuQqRKq2HoFhM1WkUwUMG3mK
+	jslxLt/Hjq9WkiaDh0QivVWLftFpRcBMafM4zviIVXtzMf5EzBKUx1Ris9/a/nwvKsyNVfWPMHtl0TuheaVglUFrtt0lLjFH9zBLviZVfw4F8Cv3gRj2kv+ETeRexWGUvOrkhWgsxrv2xuwqjNLkS+nghnwwNDyISooUJkr8FZOmoSKhXzxgj6wtHPbhCpzZzJFIFkUbAmzLXXGx01NlfkkOiioRmNgxA1lTXEzIgkpBev+lqHG17pYpylm9qlVqm4Mmz71Dn/IIVrZf1Lywk1zxszaZK4UyfN6K4mQr7u7q4fw4gIdbs7CI2ArZ+IZoFvgKJXx3fV1LY6hg/TbXe4nx4ZUZsUOkaU65oYZfAHjbDVkUjpZ1GAHryK5v0/Fc659oteQuSCRFaxZFcrpqSSkL/MjJO7cX0mbWyPjRMoIlmEqsAy3zk/QrdCSLGGTdUbMHlzJSMOdVeJYuGMPHrdF9ak1fntro2iIrpO/ceMp5Z44L3cGcaI2411DVbcZ6h5It22y4CgbWu/aa5S2og+OZaiRFcJ9dzt2PXql1U3B7NrlrOYO4CcW9NPzjfPqP
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?dSb7pfBpMsMnBsdyiWn30TMgQqiwp4rTqfi1oMo1wql8tUMmf2juN3ydlpl1?=
- =?us-ascii?Q?a9nfuOoHtPTEGcAOE1OIufmGIBKQusYO56vg+CPQ4AN4OWPrfZazcdKr20SP?=
- =?us-ascii?Q?YTkcIFNS2E24uXFjRv1FDQjo3sWNBZ2fXs4MEVux2fFXluuKUCSLHHJ0ZEnx?=
- =?us-ascii?Q?7+ZKl8gLTo2pMnwFtlRFHbJzRSTiX7DZF0SD56RU/5OyIzJckzlZkK72QTiO?=
- =?us-ascii?Q?8e3qagLBpfhGKiNph1Sg6y+b2p850fYtJwd/QFxWvrHnlHVJlcpfLQ6eNRyg?=
- =?us-ascii?Q?ID8Dk7zrWx814Jb1o/3LM75GdjI/oeZPYs/Qr+UsZPrKIy7D9WHS1fnrURRC?=
- =?us-ascii?Q?0SCiqdqa9utXkMmUhCz2M0NJOPn05PPLDDPZkGvtXey83Li7GV7Z/lBA5k0b?=
- =?us-ascii?Q?Bh+SE3fAGa6fgjOB8JFtgJ77neWo6Ew6Cl26uO7u5OGetSO3KJUTCgvOSczV?=
- =?us-ascii?Q?dHQLNjlx1dVat3dmRbzsSA28CyC0v2Zn4Y1HMBRYvCDFeXA2qvM0NDr4BfF9?=
- =?us-ascii?Q?lf5zp1s6HiEEakDB81uR4C/SSfPcbTWEuNTXmj520/fuJVPHnNLkVjXx1hls?=
- =?us-ascii?Q?fIVXZbWrRzKdlY67BqhfA3gAMvN4eEhwugJSgvzzSR0wwDImf0E3C2y9Se0Z?=
- =?us-ascii?Q?bqu4+e9s56GbZ9KfrOp23tRsO8A28LGZVyjcgvx8Jpq9efbCgyPzslFYmF74?=
- =?us-ascii?Q?nGLQkzZJrbbKPVytpIdfawUNIeSPLANRUC/e2PJi5TIyY4oSlGqGdh/AZJbb?=
- =?us-ascii?Q?PjU0BX/BCm8ikyfhAK111u80GgD/MlLiQ2eOygT+n3DLefIIEhvVhiPhmpiJ?=
- =?us-ascii?Q?FpPr4RQeBfPl2rmzkIUJ4blylyOJ1HghN5CF58a8iqjpMAAiEdt7qUVdgUme?=
- =?us-ascii?Q?+1hfIIFq6lopqv6a3h5NoQ3qaDkiynOKwS7RqjPCPcE50AC5LdV+BV6l1oxA?=
- =?us-ascii?Q?FrkY8KHe9lpv8lm1KX/0Ou8A4CmlPFjsMYEKYd1MaKi5X6gRLhBc9HBB0jW/?=
- =?us-ascii?Q?R1chOFFvu4rn8SbhCnzr4Qa+q4OmidMLLHHqpCiq09b0t1SBaALWQoN3+tj2?=
- =?us-ascii?Q?rGcXHXL4iBRtVgOkKMvVrwz95JX5Li/taiNSCGtnSOdWybKfBuoIrK8XYoJQ?=
- =?us-ascii?Q?0l8PwPRembQLJYWtOVYe+11TvXk2eKbGNYoOCuhO9LAgIQj18EGEMCA2JznZ?=
- =?us-ascii?Q?WpdC03OF2UthDNo1KxuilwtRPUqP9Bk2oyB8qQ=3D=3D?=
+	=?us-ascii?Q?i9Q+yAIwbmHRw2zFPCKUzYl02eyxoQ6WoeDpK3u4ijGKXPCzQP8cPtvkNxDO?=
+ =?us-ascii?Q?trdhhdpOm4uuqjRuKCBsj1ilN3hb9IEBebk2oyu1sw1NrHDBj9cKaX75FNq6?=
+ =?us-ascii?Q?6UtHtCIKwgGA4zZ2Ta1kep8acSmSxv7j3mbtYXiQeizGx7jcdRjIOUbZyHWF?=
+ =?us-ascii?Q?atF9n4sCBML0Pd7IbeHpCXjxc+hJ9e0dKDMWNIMquiu2febDgpPeKMtcDyPP?=
+ =?us-ascii?Q?Aj7U7UZJtrRZDpevfDG5e71EIfVjbQ4cjItEE3LJFAL8jkdL3UCO3b2Jyvg8?=
+ =?us-ascii?Q?0eXHwo51CsyHSYpOgrL3zS1aZ2wCcgZbuvTZzULce2XA3jH/hZjaYDhx9MQp?=
+ =?us-ascii?Q?9SbSZX3MTKcsbNiukMlFReFahTyQtu66YozK/UaPNRuUsX8tBBBNGjYrhsmQ?=
+ =?us-ascii?Q?JpJlOeEbbg46zfReXZSKx8pgj75pPRyPWhoruWnfi6svc6cQQA4C6SjS3ayM?=
+ =?us-ascii?Q?1g7Rv0k3CU4bPvD1W4QusyQISIiYFfnCqJ94rdf5r7YvGEDQ5b7Is0ZJQvh3?=
+ =?us-ascii?Q?e3BX1nhBB61BDSiivywoFhA7cyIHKjcsBlPZ0bdn2/a9nNJ6NnpRQ4PMiTMA?=
+ =?us-ascii?Q?BOAkO0AlGF3roIFxi95cpgU9vU3joypgf0hfHlBXOkOWzPAuOFotoebYcMHP?=
+ =?us-ascii?Q?iShIdFydrHFGQ42gssnUdCYaRSl8wdY6D/f0bxtmuSgZSjRd/jnjeokkU/wY?=
+ =?us-ascii?Q?UdlioIOlki4SIIOucjr8HYXA7VmfFmfUAFZvArMX1A4fFEGMKqRLXPWlgt36?=
+ =?us-ascii?Q?f3kLf2zcVveVrgkA+GNybEtukmFSWBp2OO5SukiTA7bZ47pRz7RzQkzk8FpJ?=
+ =?us-ascii?Q?RsUwakLZSkTBeJupbbomEA7n4GA4UGeZ6yp+NkUy7sAM36i/p1Qk1TTpPUsx?=
+ =?us-ascii?Q?apM43idCqeplfX4mI4BC3bmooS/Us+doW6awLKcQ9ZY3lpmEtvjcyxux3RqA?=
+ =?us-ascii?Q?m6uAYzLKMhflv09NdX3RGLPhttBWP1WLlPtjjElE4GiZo7I/i3aiP4cYekEQ?=
+ =?us-ascii?Q?SrdR4H1+MdRM+VdmdK1POsiwUIKX/q+Zs/Y+T/dyKjqIFAV63eEpUZI76r0W?=
+ =?us-ascii?Q?UjqqO+7+FNCz1xjV09haY+QKdCm3i0yXQQ5Mh+DbFXS3kZYREbEyc2K/FM9J?=
+ =?us-ascii?Q?ypxl6/GV2ozKT+qmBUWI4J+ZvMqQ3vVsXpZSsPkTOr8O64Bxefnj6r7UUVx8?=
+ =?us-ascii?Q?ePKcBAv23XiPyPOhIoIPNUTGkvjZ3R0gDNSBIQ=3D=3D?=
 X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-839f4.templateTenant
-X-MS-Exchange-CrossTenant-Network-Message-Id: bdebb9fa-cc91-4795-9a3c-08dc0d435e6a
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5748f0e2-282a-4397-b0bd-08dc0d436004
 X-MS-Exchange-CrossTenant-AuthSource: PH7PR03MB7064.namprd03.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Jan 2024 16:36:58.3066
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Jan 2024 16:37:01.0217
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
@@ -115,40 +115,35 @@ X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR03MB5906
 
 From: Min Li <min.li.xe@renesas.com>
 
-In order for phase pull-in to work, write phase timer shall be 0
-when not in write phase mode. Also Fix u8 -> u16, DPLL_WF_TIMER
-and DPLL_WP_TIMER are 2-byte registers
+Set dco input-to-output delay is 20 FOD cycles + 8ns
 
 Signed-off-by: Min Li <min.li.xe@renesas.com>
 ---
- drivers/ptp/ptp_clockmatrix.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ drivers/ptp/ptp_clockmatrix.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/ptp/ptp_clockmatrix.c b/drivers/ptp/ptp_clockmatrix.c
-index f8556627befa..d069b6e451ef 100644
+index d069b6e451ef..21f3a2c179f5 100644
 --- a/drivers/ptp/ptp_clockmatrix.c
 +++ b/drivers/ptp/ptp_clockmatrix.c
-@@ -1396,6 +1396,20 @@ static int idtcm_set_pll_mode(struct idtcm_channel *channel,
- 	struct idtcm *idtcm = channel->idtcm;
- 	int err;
- 	u8 dpll_mode;
-+	u8 buf[2] = {0};
-+
-+	/* Setup WF/WP timer for phase pull-in to work correctly */
-+	err = idtcm_write(idtcm, channel->dpll_n, DPLL_WF_TIMER,
-+			  buf, sizeof(buf));
-+	if (err)
-+		return err;
-+
-+	if (mode == PLL_MODE_WRITE_PHASE)
-+		buf[0] = 160;
-+	err = idtcm_write(idtcm, channel->dpll_n, DPLL_WP_TIMER,
-+			  buf, sizeof(buf));
-+	if (err)
-+		return err;
+@@ -2165,7 +2165,7 @@ static int configure_channel_pll(struct idtcm_channel *channel)
  
- 	err = idtcm_read(idtcm, channel->dpll_n,
- 			 IDTCM_FW_REG(idtcm->fw_ver, V520, DPLL_MODE),
+ /*
+  * Compensate for the PTP DCO input-to-output delay.
+- * This delay is 18 FOD cycles.
++ * This delay is 20 FOD cycles + 8ns.
+  */
+ static u32 idtcm_get_dco_delay(struct idtcm_channel *channel)
+ {
+@@ -2196,7 +2196,7 @@ static u32 idtcm_get_dco_delay(struct idtcm_channel *channel)
+ 	fodFreq = (u32)div_u64(m, n);
+ 
+ 	if (fodFreq >= 500000000)
+-		return (u32)div_u64(18 * (u64)NSEC_PER_SEC, fodFreq);
++		return (u32)div_u64(20 * (u64)NSEC_PER_SEC, fodFreq) + 8;
+ 
+ 	return 0;
+ }
 -- 
 2.39.2
 
