@@ -1,80 +1,77 @@
-Return-Path: <linux-kernel+bounces-16316-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16317-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E026823CB6
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 08:25:57 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C172823CB7
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 08:26:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EE51A1F236F0
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 07:25:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5DE1FB2512A
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 07:26:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2400720B15;
-	Thu,  4 Jan 2024 07:24:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AF7E20B34;
+	Thu,  4 Jan 2024 07:24:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amarulasolutions.com header.i=@amarulasolutions.com header.b="CH4SDKGZ"
+	dkim=pass (1024-bit key) header.d=amarulasolutions.com header.i=@amarulasolutions.com header.b="aQUFk26r"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
+Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1988208D0
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 07:24:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D7CA1EB36
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 07:24:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=amarulasolutions.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amarulasolutions.com
-Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-50e5a9bcec9so239175e87.3
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 23:24:23 -0800 (PST)
+Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-554e902064aso250070a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 23:24:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amarulasolutions.com; s=google; t=1704353062; x=1704957862; darn=vger.kernel.org;
+        d=amarulasolutions.com; s=google; t=1704353063; x=1704957863; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=tEGmlMiozwdCujUlwuswF2ibPRmO4ymakUkp4ma1zKM=;
-        b=CH4SDKGZJUTpG0OguuvRsb7N4O0dZrUTadz9FDBrqbFMmWwaARAlsTOhYWTYbw1pbY
-         gQTzQUiGwEtBLOPV3+G7GpRfc51JEqaSltImo4PXlNbcrxMGD94LBbAO4i96SFCTI4tl
-         g5JaNNPNIq76ogbGBVNlzjaMwSBaTKEDk3JKc=
+        bh=mFqXTGTlYTvcm2/UHRhYI2FZvx1qxWqmcpgcCxysnrA=;
+        b=aQUFk26rKu88t6kV43PT5bj/eS3iE0LkI+Yevh+RLRHOADTKCfe+Go8KVkpQ8gQfoV
+         HZbpIqQzKxTjfAOt9jsWTBkBtrnmMQm8hkk03kvTadAODP3GBvn6jMNb94+3V80QncSw
+         OWg2DEhiZiLTyzmxDX33xvrDj8ciso17g+/UI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704353062; x=1704957862;
+        d=1e100.net; s=20230601; t=1704353063; x=1704957863;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=tEGmlMiozwdCujUlwuswF2ibPRmO4ymakUkp4ma1zKM=;
-        b=NBsGsBOJ10+MOeQmGHQv2NF2+a/j4AtTVnH2IoU1niJqV/o+kzqQdlxtxu8MaQBAnK
-         YZUoPoutDDa7uOK+dymedkOj4woMcZMxohfch/SrHV8ueYyl+VTxf22AhR6fiM8qsJtX
-         pIeMVtnOZYKThGA5IlEO6e/dec32pM1LamkpnPm5I0Vswg1vtv92QGPWZTlwWjpR9hcD
-         u+V1821qHYnnF1MY5LM2jEt0Rt/mYOz9PvLX9fQ+C93Agj2FshD8AloiLq1MOvSuNFaz
-         CkFIAamREaLQ6XOUuZJMkVlB2o1Fc7bw1dSmdc2Loqzglsw232nYolfI0++GYze1M8Zp
-         4MOQ==
-X-Gm-Message-State: AOJu0YyrTXnzZtNeCQm5QsMvQf1tXve8JI7mpRL9/poQc9d9Db+gmO8V
-	b/xq/8GWX+wdAoPJ3sDzJ4BvRZlaMs0eU6yXVOgaXilgy3o=
-X-Google-Smtp-Source: AGHT+IHw4kddbHAnr5IWzfXghTWfA1MumXEMWOqnoBQ0oz77fbQBP1rZNEUM9SeYcBK8H4ieaThBGw==
-X-Received: by 2002:a2e:a555:0:b0:2cc:dabc:47dd with SMTP id e21-20020a2ea555000000b002ccdabc47ddmr147911ljn.5.1704353061798;
-        Wed, 03 Jan 2024 23:24:21 -0800 (PST)
+        bh=mFqXTGTlYTvcm2/UHRhYI2FZvx1qxWqmcpgcCxysnrA=;
+        b=Km9joYUGKaPpRRYDLph9jiMliKQ6K9+RaVhJDpr3Q7kz5pGQVyrwYC2frwOXsf8nwk
+         EIQylVmMj1Mqmb2TZHO3/NsgBfZcNzNGs3Dek25DFnIBW3Cqdn+PhYOS34KFtTTu7vWf
+         CE6EKNJRiDCiehfxlW0yGAU+iIz6bXFhoi1eIacVSClWWouguLh/AuOWRYuAzfNruG/E
+         UvsTkMis9Dn530CD/oXUhvPlZLFosJZ8vzsyQ9E/LugjaZl3vvHMmY00IncaOURac4yX
+         w+zi5a/7U+C4i7bjEOdcYfHFzaH9UBA79CGV4xPJfkWOv0t0RTVmfS/EDolS5Y0yfxal
+         8GlQ==
+X-Gm-Message-State: AOJu0YxMA1xU0AfszftA/sHoF7DLIZeYeqDutJSUJ6NA/YkAeLY9lITn
+	gNQYp0KbPoi5Q3gz/tqZi3W2ZgdkaSMeGB9cAB/oYCZ5tYI=
+X-Google-Smtp-Source: AGHT+IGolS0OhHeJLWuXVGp17JD5oFnWT5GUJqwxizGFJZGbuBQMMK6lVUcoO2+IH3z6wINukqMX4w==
+X-Received: by 2002:a50:c19a:0:b0:557:c95:1362 with SMTP id m26-20020a50c19a000000b005570c951362mr36824edf.34.1704353063454;
+        Wed, 03 Jan 2024 23:24:23 -0800 (PST)
 Received: from dario-ThinkPad-T14s-Gen-2i.. (net-93-150-255-34.cust.vodafonedsl.it. [93.150.255.34])
-        by smtp.gmail.com with ESMTPSA id d3-20020a056402000300b00553772c2968sm18530735edu.82.2024.01.03.23.24.20
+        by smtp.gmail.com with ESMTPSA id d3-20020a056402000300b00553772c2968sm18530735edu.82.2024.01.03.23.24.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Jan 2024 23:24:21 -0800 (PST)
+        Wed, 03 Jan 2024 23:24:22 -0800 (PST)
 From: Dario Binacchi <dario.binacchi@amarulasolutions.com>
 To: linux-kernel@vger.kernel.org
 Cc: linux-amarula@amarulasolutions.com,
 	Alexandre Torgue <alexandre.torgue@foss.st.com>,
 	Dario Binacchi <dario.binacchi@amarulasolutions.com>,
-	Andre Przywara <andre.przywara@arm.com>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Enric Balletbo i Serra <eballetbo@gmail.com>,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	=?UTF-8?q?Leonard=20G=C3=B6hrs?= <l.goehrs@pengutronix.de>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Patrice Chotard <patrice.chotard@foss.st.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Sean Nyekjaer <sean@geanix.com>,
-	devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-stm32@st-md-mailman.stormreply.com
-Subject: [PATCH v3 6/8] ARM: dts: add stm32f769-disco-mb1225-revb03-mb1166-reva09
-Date: Thu,  4 Jan 2024 08:23:42 +0100
-Message-ID: <20240104072407.41290-7-dario.binacchi@amarulasolutions.com>
+	Daniel Vetter <daniel@ffwll.ch>,
+	David Airlie <airlied@gmail.com>,
+	Jessica Zhang <quic_jesszhan@quicinc.com>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Sam Ravnborg <sam@ravnborg.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	dri-devel@lists.freedesktop.org
+Subject: [PATCH v3 7/8] drm/panel: nt35510: move hardwired parameters to configuration
+Date: Thu,  4 Jan 2024 08:23:43 +0100
+Message-ID: <20240104072407.41290-8-dario.binacchi@amarulasolutions.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240104072407.41290-1-dario.binacchi@amarulasolutions.com>
 References: <20240104072407.41290-1-dario.binacchi@amarulasolutions.com>
@@ -86,16 +83,9 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-As reported in the section 8.3 (i. e. Board revision history) of document
-UM2033 (i. e. Discovery kit with STM32F769NI MCU) these are the changes
-related to the board revisions addressed by the patch:
-- Board MB1225 revision B-03:
-  - Memory MICRON MT48LC4M32B2B5-6A replaced by ISSI IS42S32400F-6BL
-- Board MB1166 revision A-09:
-  - LCD FRIDA FRD397B25009-D-CTK replaced by FRIDA FRD400B25025-A-CTK
-
-The patch only adds the DTS support for the new display which belongs to
-to the Novatek NT35510-based panel family.
+This patch, preparatory for future developments, move the hardwired
+parameters to configuration data to allow the addition of new
+NT35510-based panels.
 
 Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
 
@@ -104,50 +94,222 @@ Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
 (no changes since v2)
 
 Changes in v2:
-- Change the status of panel_backlight node to "disabled"
-- Delete backlight property from panel0 node.
+- Re-write the patch [7/8] "drm/panel: nt35510: refactor panel initialization"
+  in the same style as the original driver in order to maintain the same
+  structure.
 
- arch/arm/boot/dts/st/Makefile                  |  1 +
- ...2f769-disco-mb1225-revb03-mb1166-reva09.dts | 18 ++++++++++++++++++
- 2 files changed, 19 insertions(+)
- create mode 100644 arch/arm/boot/dts/st/stm32f769-disco-mb1225-revb03-mb1166-reva09.dts
+ drivers/gpu/drm/panel/panel-novatek-nt35510.c | 140 ++++++++++++++----
+ 1 file changed, 115 insertions(+), 25 deletions(-)
 
-diff --git a/arch/arm/boot/dts/st/Makefile b/arch/arm/boot/dts/st/Makefile
-index 7892ad69b441..390dbd300a57 100644
---- a/arch/arm/boot/dts/st/Makefile
-+++ b/arch/arm/boot/dts/st/Makefile
-@@ -23,6 +23,7 @@ dtb-$(CONFIG_ARCH_STM32) += \
- 	stm32f469-disco.dtb \
- 	stm32f746-disco.dtb \
- 	stm32f769-disco.dtb \
-+	stm32f769-disco-mb1225-revb03-mb1166-reva09.dts \
- 	stm32429i-eval.dtb \
- 	stm32746g-eval.dtb \
- 	stm32h743i-eval.dtb \
-diff --git a/arch/arm/boot/dts/st/stm32f769-disco-mb1225-revb03-mb1166-reva09.dts b/arch/arm/boot/dts/st/stm32f769-disco-mb1225-revb03-mb1166-reva09.dts
-new file mode 100644
-index 000000000000..014cac192375
---- /dev/null
-+++ b/arch/arm/boot/dts/st/stm32f769-disco-mb1225-revb03-mb1166-reva09.dts
-@@ -0,0 +1,18 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (c) 2023 Dario Binacchi <dario.binacchi@amarulasolutions.com>
-+ */
+diff --git a/drivers/gpu/drm/panel/panel-novatek-nt35510.c b/drivers/gpu/drm/panel/panel-novatek-nt35510.c
+index d6dceb858008..ce8969f48286 100644
+--- a/drivers/gpu/drm/panel/panel-novatek-nt35510.c
++++ b/drivers/gpu/drm/panel/panel-novatek-nt35510.c
+@@ -171,6 +171,10 @@ struct nt35510_config {
+ 	 * timing in the display controller.
+ 	 */
+ 	const struct drm_display_mode mode;
++	/**
++	 * @mode_flags: DSI operation mode related flags
++	 */
++	unsigned long mode_flags;
+ 	/**
+ 	 * @avdd: setting for AVDD ranging from 0x00 = 6.5V to 0x14 = 4.5V
+ 	 * in 0.1V steps the default is 0x05 which means 6.0V
+@@ -273,6 +277,100 @@ struct nt35510_config {
+ 	 * same layout of bytes as @vgp.
+ 	 */
+ 	u8 vgn[NT35510_P1_VGN_LEN];
++	/**
++	 * @dopctr: setting optional control for display
++	 * ERR bits 0..1 in the first byte is the ERR pin output signal setting.
++	 * 0 = Disable, ERR pin output low
++	 * 1 = ERR pin output CRC error only
++	 * 2 = ERR pin output ECC error only
++	 * 3 = ERR pin output CRC and ECC error
++	 * The default is 0.
++	 * N565 bit 2 in the first byte is the 16-bit/pixel format selection.
++	 * 0 = R[4:0] + G[5:3] & G[2:0] + B[4:0]
++	 * 1 = G[2:0] + R[4:0] & B[4:0] + G[5:3]
++	 * The default is 0.
++	 * DIS_EoTP_HS bit 3 in the first byte is "DSI protocol violation" error
++	 * reporting.
++	 * 0 = reporting when error
++	 * 1 = not reporting when error
++	 * DSIM bit 4 in the first byte is the video mode data type enable
++	 * 0 = Video mode data type disable
++	 * 1 = Video mode data type enable
++	 * The default is 0.
++	 * DSIG bit 5 int the first byte is the generic r/w data type enable
++	 * 0 = Generic r/w disable
++	 * 1 = Generic r/w enable
++	 * The default is 0.
++	 * DSITE bit 6 in the first byte is TE line enable
++	 * 0 = TE line is disabled
++	 * 1 = TE line is enabled
++	 * The default is 0.
++	 * RAMKP bit 7 in the first byte is the frame memory keep/loss in
++	 * sleep-in mode
++	 * 0 = contents loss in sleep-in
++	 * 1 = contents keep in sleep-in
++	 * The default is 0.
++	 * CRL bit 1 in the second byte is the source driver data shift
++	 * direction selection. This bit is XOR operation with bit RSMX
++	 * of 3600h command.
++	 * 0 (RMSX = 0) = S1 -> S1440
++	 * 0 (RMSX = 1) = S1440 -> S1
++	 * 1 (RMSX = 0) = S1440 -> S1
++	 * 1 (RMSX = 1) = S1 -> S1440
++	 * The default is 0.
++	 * CTB bit 2 in the second byte is the vertical scanning direction
++	 * selection for gate control signals. This bit is XOR operation
++	 * with bit ML of 3600h command.
++	 * 0 (ML = 0) = Forward (top -> bottom)
++	 * 0 (ML = 1) = Reverse (bottom -> top)
++	 * 1 (ML = 0) = Reverse (bottom -> top)
++	 * 1 (ML = 1) = Forward (top -> bottom)
++	 * The default is 0.
++	 * CRGB bit 3 in the second byte is RGB-BGR order selection. This
++	 * bit is XOR operation with bit RGB of 3600h command.
++	 * 0 (RGB = 0) = RGB/Normal
++	 * 0 (RGB = 1) = BGR/RB swap
++	 * 1 (RGB = 0) = BGR/RB swap
++	 * 1 (RGB = 1) = RGB/Normal
++	 * The default is 0.
++	 * TE_PWR_SEL bit 4 in the second byte is the TE output voltage
++	 * level selection (only valid when DSTB_SEL = 0 or DSTB_SEL = 1,
++	 * VSEL = High and VDDI = 1.665~3.3V).
++	 * 0 = TE output voltage level is VDDI
++	 * 1 = TE output voltage level is VDDA
++	 * The default is 0.
++	 */
++	u8 dopctr[NT35510_P0_DOPCTR_LEN];
++	/**
++	 * @madctl: Memory data access control
++	 * RSMY bit 0 is flip vertical. Flips the display image top to down.
++	 * RSMX bit 1 is flip horizontal. Flips the display image left to right.
++	 * MH bit 2 is the horizontal refresh order.
++	 * RGB bit 3 is the RGB-BGR order.
++	 * 0 = RGB color sequence
++	 * 1 = BGR color sequence
++	 * ML bit 4 is the vertical refresh order.
++	 * MV bit 5 is the row/column exchange.
++	 * MX bit 6 is the column address order.
++	 * MY bit 7 is the row address order.
++	 */
++	u8 madctl;
++	/**
++	 * @sdhdtctr: source output data hold time
++	 * 0x00..0x3F = 0..31.5us in steps of 0.5us
++	 * The default is 0x05 = 2.5us.
++	 */
++	u8 sdhdtctr;
++	/**
++	 * @gseqctr: EQ control for gate signals
++	 * GFEQ_XX[3:0]: time setting of EQ step for falling edge in steps
++	 * of 0.5us.
++	 * The default is 0x07 = 3.5us
++	 * GREQ_XX[7:4]: time setting of EQ step for rising edge in steps
++	 * of 0.5us.
++	 * The default is 0x07 = 3.5us
++	 */
++	u8 gseqctr[NT35510_P0_GSEQCTR_LEN];
+ 	/**
+ 	 * @sdeqctr: Source driver control settings, first byte is
+ 	 * 0 for mode 1 and 1 for mode 2. Mode 1 uses two steps and
+@@ -536,46 +634,28 @@ static int nt35510_setup_display(struct nt35510 *nt)
+ {
+ 	struct mipi_dsi_device *dsi = to_mipi_dsi_device(nt->dev);
+ 	const struct nt35510_config *conf = nt->conf;
+-	u8 dopctr[NT35510_P0_DOPCTR_LEN];
+-	u8 gseqctr[NT35510_P0_GSEQCTR_LEN];
+ 	u8 dpfrctr[NT35510_P0_DPFRCTR1_LEN];
+-	/* FIXME: set up any rotation (assume none for now) */
+-	u8 addr_mode = NT35510_ROTATE_0_SETTING;
+-	u8 val;
+ 	int ret;
+ 
+-	/* Enable TE, EoTP and RGB pixel format */
+-	dopctr[0] = NT35510_DOPCTR_0_DSITE | NT35510_DOPCTR_0_EOTP |
+-		NT35510_DOPCTR_0_N565;
+-	dopctr[1] = NT35510_DOPCTR_1_CTB;
+ 	ret = nt35510_send_long(nt, dsi, NT35510_P0_DOPCTR,
+ 				NT35510_P0_DOPCTR_LEN,
+-				dopctr);
++				conf->dopctr);
+ 	if (ret)
+ 		return ret;
+ 
+-	ret = mipi_dsi_dcs_write(dsi, MIPI_DCS_SET_ADDRESS_MODE, &addr_mode,
+-				 sizeof(addr_mode));
++	ret = mipi_dsi_dcs_write(dsi, MIPI_DCS_SET_ADDRESS_MODE, &conf->madctl,
++				 sizeof(conf->madctl));
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	/*
+-	 * Source data hold time, default 0x05 = 2.5us
+-	 * 0x00..0x3F = 0 .. 31.5us in steps of 0.5us
+-	 * 0x0A = 5us
+-	 */
+-	val = 0x0A;
+-	ret = mipi_dsi_dcs_write(dsi, NT35510_P0_SDHDTCTR, &val,
+-				 sizeof(val));
++	ret = mipi_dsi_dcs_write(dsi, NT35510_P0_SDHDTCTR, &conf->sdhdtctr,
++				 sizeof(conf->sdhdtctr));
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	/* EQ control for gate signals, 0x00 = 0 us */
+-	gseqctr[0] = 0x00;
+-	gseqctr[1] = 0x00;
+ 	ret = nt35510_send_long(nt, dsi, NT35510_P0_GSEQCTR,
+ 				NT35510_P0_GSEQCTR_LEN,
+-				gseqctr);
++				conf->gseqctr);
+ 	if (ret)
+ 		return ret;
+ 
+@@ -896,7 +976,6 @@ static int nt35510_probe(struct mipi_dsi_device *dsi)
+ 	 */
+ 	dsi->hs_rate = 349440000;
+ 	dsi->lp_rate = 9600000;
+-	dsi->mode_flags = MIPI_DSI_CLOCK_NON_CONTINUOUS;
+ 
+ 	/*
+ 	 * Every new incarnation of this display must have a unique
+@@ -908,6 +987,8 @@ static int nt35510_probe(struct mipi_dsi_device *dsi)
+ 		return -ENODEV;
+ 	}
+ 
++	dsi->mode_flags = nt->conf->mode_flags;
 +
-+#include "stm32f769-disco.dts"
-+
-+&panel_backlight {
-+	status = "disabled";
-+};
-+
-+&panel0 {
-+	compatible = "frida,frd400b25025", "novatek,nt35510";
-+	vddi-supply = <&vcc_3v3>;
-+	vdd-supply = <&vcc_3v3>;
-+	/delete-property/backlight;
-+	/delete-property/power-supply;
-+};
+ 	nt->supplies[0].supply = "vdd"; /* 2.3-4.8 V */
+ 	nt->supplies[1].supply = "vddi"; /* 1.65-3.3V */
+ 	ret = devm_regulator_bulk_get(dev, ARRAY_SIZE(nt->supplies),
+@@ -1030,6 +1111,7 @@ static const struct nt35510_config nt35510_hydis_hva40wv1 = {
+ 		.vtotal = 800 + 2 + 0 + 5, /* VBP = 5 */
+ 		.flags = 0,
+ 	},
++	.mode_flags = MIPI_DSI_CLOCK_NON_CONTINUOUS,
+ 	/* 0x09: AVDD = 5.6V */
+ 	.avdd = { 0x09, 0x09, 0x09 },
+ 	/* 0x34: PCK = Hsync/2, BTP = 2 x VDDB */
+@@ -1050,6 +1132,14 @@ static const struct nt35510_config nt35510_hydis_hva40wv1 = {
+ 	.vgp = { 0x00, 0xA3, 0x00 },
+ 	/* VGMP: 0x0A3 = 5.0375V, VGSP = 0V */
+ 	.vgn = { 0x00, 0xA3, 0x00 },
++	/* Enable TE, EoTP and RGB pixel format */
++	.dopctr = { NT35510_DOPCTR_0_DSITE | NT35510_DOPCTR_0_EOTP |
++		    NT35510_DOPCTR_0_N565, NT35510_DOPCTR_1_CTB },
++	.madctl = NT35510_ROTATE_180_SETTING,
++	/* 0x0A: SDT = 5 us */
++	.sdhdtctr = 0x0A,
++	/* EQ control for gate signals, 0x00 = 0 us */
++	.gseqctr = { 0x00, 0x00 },
+ 	/* SDEQCTR: source driver EQ mode 2, 2.5 us rise time on each step */
+ 	.sdeqctr = { 0x01, 0x05, 0x05, 0x05 },
+ 	/* SDVPCTR: Normal operation off color during v porch */
 -- 
 2.43.0
 
