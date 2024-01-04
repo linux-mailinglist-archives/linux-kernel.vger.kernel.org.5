@@ -1,332 +1,371 @@
-Return-Path: <linux-kernel+bounces-16423-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16424-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D5B7823E43
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 10:09:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6BD62823E46
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 10:09:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DBCD4286FFC
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 09:09:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EB05E1F24E82
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 09:09:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19FE9210E2;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D42D5210FA;
 	Thu,  4 Jan 2024 09:07:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Ae8jB8o4"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A60B920DCB
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 09:07:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1704359252;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=oTGzUnuImaRUCmV4376iFTUXoCEDIuJDS3P/LYSpU0A=;
-	b=Ae8jB8o4Nkc4MSbkakiLg/Uniiw43NqqBo0T2fYboqZ6CkicwpVTu5xU6dvj8vR+VPuZa8
-	CfJOUX/1ng8l4HPiggy3Lg9KD3Vv7s9lbbRDwt4zeNdcj8CqIEu+jSZu9w5LR+jWzUg+L1
-	Lnm7ppCP/fRNxy5385HybwpfVgNn6y0=
-Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
- [209.85.208.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-644-J_EUk3pAPYiGnG5YqM732w-1; Thu, 04 Jan 2024 04:07:30 -0500
-X-MC-Unique: J_EUk3pAPYiGnG5YqM732w-1
-Received: by mail-lj1-f200.google.com with SMTP id 38308e7fff4ca-2cd13187886so343921fa.1
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 01:07:29 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704359248; x=1704964048;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=oTGzUnuImaRUCmV4376iFTUXoCEDIuJDS3P/LYSpU0A=;
-        b=HU3dSMAzN5Nz1pTMp/1XVMhIkj/TmQbRTjMbwPcWJ2065IzEtYrfPhYCiyc7iVDF6B
-         URrluVjqauNy8VL6Eh+bAdTyMWl3nsxgFDqZAbqBi25mmN75fADhCVOWnaVt9CoC7oQB
-         dvOGgRo3GowqWBojKgCd6dsVRVBRMTBOpH4emvJulpaeSNAaBUpqqTS6E/m/v7gGakIU
-         c4xAEIV4eUt2sxrN80JwniNI5GOScXZixv3EuzudodYt10+uHiD2ZX20BbSONaxl+WMt
-         THTJSzwFKGHjIGVCmEJRt0wROF1yYFS5SxJEmN61BxBt6rVeITv6ZRIn3O8V5U3Izano
-         cU8w==
-X-Gm-Message-State: AOJu0YxHfs6IUF59YUwRrmQr8ZZ4iXGRBTlps03i6Rc2cjNZaJX6OG3P
-	1T0oOistkQZWOS5+UPuyaA2+ij+95C+QEwZQOyfK/+IgCorGWMPd/zUJshpdAYbuAjzATxAksgX
-	YjVtNFV6qt6yyzrXODGrSxLEgJ4kse08d
-X-Received: by 2002:a05:651c:2128:b0:2cc:6106:6915 with SMTP id a40-20020a05651c212800b002cc61066915mr333325ljq.1.1704359248013;
-        Thu, 04 Jan 2024 01:07:28 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGnMYw/9UPaH47sAKOMKUiXeBh1CKms/mGS5BjNl3Ex387RvjL0pboURedgx5y5Yj7h5q3weA==
-X-Received: by 2002:a05:651c:2128:b0:2cc:6106:6915 with SMTP id a40-20020a05651c212800b002cc61066915mr333299ljq.1.1704359247712;
-        Thu, 04 Jan 2024 01:07:27 -0800 (PST)
-Received: from pstanner-thinkpadt14sgen1.muc.redhat.com (nat-pool-muc-t.redhat.com. [149.14.88.26])
-        by smtp.gmail.com with ESMTPSA id h15-20020a5d430f000000b0033740e109adsm8720864wrq.75.2024.01.04.01.07.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Jan 2024 01:07:27 -0800 (PST)
-From: Philipp Stanner <pstanner@redhat.com>
-To: Bjorn Helgaas <bhelgaas@google.com>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	Randy Dunlap <rdunlap@infradead.org>,
-	NeilBrown <neilb@suse.de>,
-	John Sanpe <sanpeqf@gmail.com>,
-	Kent Overstreet <kent.overstreet@gmail.com>,
-	Niklas Schnelle <schnelle@linux.ibm.com>,
-	Philipp Stanner <pstanner@redhat.com>,
-	Dave Jiang <dave.jiang@intel.com>,
-	Uladzislau Koshchanka <koshchanka@gmail.com>,
-	"Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
-	David Gow <davidgow@google.com>,
-	Kees Cook <keescook@chromium.org>,
-	Rae Moar <rmoar@google.com>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	"wuqiang.matt" <wuqiang.matt@bytedance.com>,
-	Yury Norov <yury.norov@gmail.com>,
-	Jason Baron <jbaron@akamai.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Marco Elver <elver@google.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Ben Dooks <ben.dooks@codethink.co.uk>,
-	dakr@redhat.com
-Cc: linux-kernel@vger.kernel.org,
-	linux-pci@vger.kernel.org,
-	linux-arch@vger.kernel.org,
-	stable@vger.kernel.org,
-	Arnd Bergmann <arnd@kernel.org>
-Subject: [PATCH v5 5/5] lib, pci: unify generic pci_iounmap()
-Date: Thu,  4 Jan 2024 10:07:09 +0100
-Message-ID: <20240104090708.10571-7-pstanner@redhat.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240104090708.10571-2-pstanner@redhat.com>
-References: <20240104090708.10571-2-pstanner@redhat.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66E8E20B1B;
+	Thu,  4 Jan 2024 09:07:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.17])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4T5LKj3M5Rz1g21f;
+	Thu,  4 Jan 2024 17:06:01 +0800 (CST)
+Received: from kwepemm600004.china.huawei.com (unknown [7.193.23.242])
+	by mail.maildlp.com (Postfix) with ESMTPS id E09BD1A0172;
+	Thu,  4 Jan 2024 17:07:27 +0800 (CST)
+Received: from [10.67.121.59] (10.67.121.59) by kwepemm600004.china.huawei.com
+ (7.193.23.242) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 4 Jan
+ 2024 17:07:27 +0800
+Message-ID: <482ffcce-1224-2bf8-cf07-cfc4633897a8@huawei.com>
+Date: Thu, 4 Jan 2024 17:07:26 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH] cpufreq: CPPC: Resolve the large frequency discrepancy
+ from cpuinfo_cur_freq
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+CC: <linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, "linux-acpi@vger.kernel.org"
+	<linux-acpi@vger.kernel.org>, <beata.michalska@arm.com>, <sumitg@nvidia.com>,
+	<ionela.voinescu@arm.com>, <zengheng4@huawei.com>,
+	<yang@os.amperecomputing.com>, <will@kernel.org>, <sudeep.holla@arm.com>,
+	<liuyonglong@huawei.com>, <zhanjie9@hisilicon.com>
+References: <20231212072617.14756-1-lihuisong@huawei.com>
+ <CAJZ5v0jwW0=8cNvC-Vu_o+pEHFpN9nrPD4LXCpmSTgQBTHODgg@mail.gmail.com>
+ <486f8563-42b7-a049-97a2-bc0b553926aa@huawei.com>
+ <26ba9fa9-7871-27c3-0de5-62f61071dacd@huawei.com>
+ <CAJZ5v0jSYajeYP1r+qKOmbwzn4PE5LL9E9LKsuYUygiXxmt2MA@mail.gmail.com>
+From: "lihuisong (C)" <lihuisong@huawei.com>
+In-Reply-To: <CAJZ5v0jSYajeYP1r+qKOmbwzn4PE5LL9E9LKsuYUygiXxmt2MA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ kwepemm600004.china.huawei.com (7.193.23.242)
 
-The implementation of pci_iounmap() is currently scattered over two
-files, drivers/pci/iomap.c and lib/iomap.c. Additionally,
-architectures can define their own version.
 
-To have only one version, it's necessary to create a helper function,
-iomem_is_ioport(), that tells pci_iounmap() whether the passed address
-points to an ioport or normal memory.
-
-iomem_is_ioport() can be provided through two different ways:
-  1. The architecture itself provides it. As of today, the version
-     coming from lib/iomap.c de facto is the x86-specific version and
-     comes into play when CONFIG_GENERIC_IOMAP is selected. This rather
-     confusing naming is an artifact left by the removal of IA64.
-  2. As a default version in include/asm-generic/io.h for those
-     architectures that don't use CONFIG_GENERIC_IOMAP, but also don't
-     provide their own version of iomem_is_ioport().
-
-Once all architectures that support ports provide iomem_is_ioport(), the
-arch-specific definitions for pci_iounmap() can be removed and the archs
-can use the generic implementation, instead.
-
-Create a unified version of pci_iounmap() in drivers/pci/iomap.c.
-Provide the function iomem_is_ioport() in include/asm-generic/io.h
-(generic) and lib/iomap.c ("pseudo-generic" for x86).
-
-Remove the CONFIG_GENERIC_IOMAP guard around
-ARCH_WANTS_GENERIC_PCI_IOUNMAP so that configs that set
-CONFIG_GENERIC_PCI_IOMAP without CONFIG_GENERIC_IOMAP still get the
-function.
-
-Add TODOs for follow-up work on the "generic is not generic but
-x86-specific"-Problem.
-
-Suggested-by: Arnd Bergmann <arnd@kernel.org>
-Signed-off-by: Philipp Stanner <pstanner@redhat.com>
-Reviewed-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/pci/iomap.c         | 46 +++++++++++++------------------------
- include/asm-generic/io.h    | 27 ++++++++++++++++++++--
- include/asm-generic/iomap.h | 21 +++++++++++++++++
- lib/iomap.c                 | 28 ++++++++++++++++------
- 4 files changed, 83 insertions(+), 39 deletions(-)
-
-diff --git a/drivers/pci/iomap.c b/drivers/pci/iomap.c
-index 91285fcff1ba..b7faf22ec8f5 100644
---- a/drivers/pci/iomap.c
-+++ b/drivers/pci/iomap.c
-@@ -135,44 +135,30 @@ void __iomem *pci_iomap_wc(struct pci_dev *dev, int bar, unsigned long maxlen)
- EXPORT_SYMBOL_GPL(pci_iomap_wc);
- 
- /*
-- * pci_iounmap() somewhat illogically comes from lib/iomap.c for the
-- * CONFIG_GENERIC_IOMAP case, because that's the code that knows about
-- * the different IOMAP ranges.
-+ * This check is still necessary due to legacy reasons.
-  *
-- * But if the architecture does not use the generic iomap code, and if
-- * it has _not_ defined it's own private pci_iounmap function, we define
-- * it here.
-- *
-- * NOTE! This default implementation assumes that if the architecture
-- * support ioport mapping (HAS_IOPORT_MAP), the ioport mapping will
-- * be fixed to the range [ PCI_IOBASE, PCI_IOBASE+IO_SPACE_LIMIT [,
-- * and does not need unmapping with 'ioport_unmap()'.
-- *
-- * If you have different rules for your architecture, you need to
-- * implement your own pci_iounmap() that knows the rules for where
-- * and how IO vs MEM get mapped.
-- *
-- * This code is odd, and the ARCH_HAS/ARCH_WANTS #define logic comes
-- * from legacy <asm-generic/io.h> header file behavior. In particular,
-- * it would seem to make sense to do the iounmap(p) for the non-IO-space
-- * case here regardless, but that's not what the old header file code
-- * did. Probably incorrectly, but this is meant to be bug-for-bug
-- * compatible.
-+ * TODO: Have all architectures that provide their own pci_iounmap() provide
-+ * iomem_is_ioport() instead. Remove this #if afterwards.
-  */
- #if defined(ARCH_WANTS_GENERIC_PCI_IOUNMAP)
- 
--void pci_iounmap(struct pci_dev *dev, void __iomem *p)
-+/**
-+ * pci_iounmap - Unmapp a mapping
-+ * @dev: PCI device the mapping belongs to
-+ * @addr: start address of the mapping
-+ *
-+ * Unmapp a PIO or MMIO mapping.
-+ */
-+void pci_iounmap(struct pci_dev *dev, void __iomem *addr)
- {
--#ifdef ARCH_HAS_GENERIC_IOPORT_MAP
--	uintptr_t start = (uintptr_t) PCI_IOBASE;
--	uintptr_t addr = (uintptr_t) p;
--
--	if (addr >= start && addr < start + IO_SPACE_LIMIT) {
--		ioport_unmap(p);
-+#ifdef CONFIG_HAS_IOPORT_MAP
-+	if (iomem_is_ioport(addr)) {
-+		ioport_unmap(addr);
- 		return;
- 	}
- #endif
--	iounmap(p);
-+
-+	iounmap(addr);
- }
- EXPORT_SYMBOL(pci_iounmap);
- 
-diff --git a/include/asm-generic/io.h b/include/asm-generic/io.h
-index bac63e874c7b..58c7bf4080da 100644
---- a/include/asm-generic/io.h
-+++ b/include/asm-generic/io.h
-@@ -1129,11 +1129,34 @@ extern void ioport_unmap(void __iomem *p);
- #endif /* CONFIG_GENERIC_IOMAP */
- #endif /* CONFIG_HAS_IOPORT_MAP */
- 
--#ifndef CONFIG_GENERIC_IOMAP
-+/*
-+ * TODO:
-+ * remove this once all architectures replaced their pci_iounmap() with
-+ * a custom implementation of iomem_is_ioport().
-+ */
- #ifndef pci_iounmap
-+#define pci_iounmap pci_iounmap
- #define ARCH_WANTS_GENERIC_PCI_IOUNMAP
-+#endif /* pci_iounmap */
-+
-+/*
-+ * This function is a helper only needed for the generic pci_iounmap().
-+ * It's provided here if the architecture does not provide its own version.
-+ */
-+#ifndef iomem_is_ioport
-+#define iomem_is_ioport iomem_is_ioport
-+static inline bool iomem_is_ioport(void __iomem *addr_raw)
-+{
-+#ifdef CONFIG_HAS_IOPORT
-+	uintptr_t start = (uintptr_t)PCI_IOBASE;
-+	uintptr_t addr = (uintptr_t)addr_raw;
-+
-+	if (addr >= start && addr < start + IO_SPACE_LIMIT)
-+		return true;
- #endif
--#endif
-+	return false;
-+}
-+#endif /* iomem_is_ioport */
- 
- #ifndef xlate_dev_mem_ptr
- #define xlate_dev_mem_ptr xlate_dev_mem_ptr
-diff --git a/include/asm-generic/iomap.h b/include/asm-generic/iomap.h
-index 196087a8126e..2cdc6988a102 100644
---- a/include/asm-generic/iomap.h
-+++ b/include/asm-generic/iomap.h
-@@ -110,6 +110,27 @@ static inline void __iomem *ioremap_np(phys_addr_t offset, size_t size)
- }
- #endif
- 
-+/*
-+ * If CONFIG_GENERIC_IOMAP is selected and the architecture does NOT provide its
-+ * own version, ARCH_WANTS_GENERIC_IOMEM_IS_IOPORT makes sure that the generic
-+ * version from asm-generic/io.h is NOT used and instead the second "generic"
-+ * version from lib/iomap.c is used.
-+ *
-+ * There are currently two generic versions because of a difficult cleanup
-+ * process. Namely, the version in lib/iomap.c once was really generic when IA64
-+ * still existed. Today, it's only really used by x86.
-+ *
-+ * TODO: Move the version from lib/iomap.c to x86 specific code. Then, remove
-+ * this ARCH_WANTS_GENERIC_IOMEM_IS_IOPORT-mechanism.
-+ */
-+#ifdef CONFIG_GENERIC_IOMAP
-+#ifndef iomem_is_ioport
-+#define iomem_is_ioport iomem_is_ioport
-+bool iomem_is_ioport(void __iomem *addr);
-+#define ARCH_WANTS_GENERIC_IOMEM_IS_IOPORT
-+#endif /* iomem_is_ioport */
-+#endif /* CONFIG_GENERIC_IOMAP */
-+
- #include <asm-generic/pci_iomap.h>
- 
- #endif
-diff --git a/lib/iomap.c b/lib/iomap.c
-index 4f8b31baa575..eb9a879ebf42 100644
---- a/lib/iomap.c
-+++ b/lib/iomap.c
-@@ -418,12 +418,26 @@ EXPORT_SYMBOL(ioport_map);
- EXPORT_SYMBOL(ioport_unmap);
- #endif /* CONFIG_HAS_IOPORT_MAP */
- 
--#ifdef CONFIG_PCI
--/* Hide the details if this is a MMIO or PIO address space and just do what
-- * you expect in the correct way. */
--void pci_iounmap(struct pci_dev *dev, void __iomem * addr)
-+/*
-+ * If CONFIG_GENERIC_IOMAP is selected and the architecture does NOT provide its
-+ * own version, ARCH_WANTS_GENERIC_IOMEM_IS_IOPORT makes sure that the generic
-+ * version from asm-generic/io.h is NOT used and instead the second "generic"
-+ * version from this file here is used.
-+ *
-+ * There are currently two generic versions because of a difficult cleanup
-+ * process. Namely, the version in lib/iomap.c once was really generic when IA64
-+ * still existed. Today, it's only really used by x86.
-+ *
-+ * TODO: Move this function to x86-specific code.
-+ */
-+#if defined(ARCH_WANTS_GENERIC_IOMEM_IS_IOPORT)
-+bool iomem_is_ioport(void __iomem *addr)
- {
--	IO_COND(addr, /* nothing */, iounmap(addr));
-+	unsigned long port = (unsigned long __force)addr;
-+
-+	if (port > PIO_OFFSET && port < PIO_RESERVED)
-+		return true;
-+
-+	return false;
- }
--EXPORT_SYMBOL(pci_iounmap);
--#endif /* CONFIG_PCI */
-+#endif /* ARCH_WANTS_GENERIC_IOMEM_IS_IOPORT */
--- 
-2.43.0
-
+在 2024/1/3 18:59, Rafael J. Wysocki 写道:
+> On Mon, Dec 18, 2023 at 3:15 AM lihuisong (C) <lihuisong@huawei.com> wrote:
+>>
+>> 在 2023/12/15 10:41, lihuisong (C) 写道:
+>>> Hi Rafael,
+>>>
+>>> Thanks for your review.😁
+>>>
+>>> 在 2023/12/15 3:31, Rafael J. Wysocki 写道:
+>>>> On Tue, Dec 12, 2023 at 8:26 AM Huisong Li <lihuisong@huawei.com> wrote:
+>>>>> Many developers found that the cpu current frequency is greater than
+>>>>> the maximum frequency of the platform, please see [1], [2] and [3].
+>>>>>
+>>>>> In the scenarios with high memory access pressure, the patch [1] has
+>>>>> proved the significant latency of cpc_read() which is used to obtain
+>>>>> delivered and reference performance counter cause an absurd frequency.
+>>>>> The sampling interval for this counters is very critical and is
+>>>>> expected
+>>>>> to be equal. However, the different latency of cpc_read() has a direct
+>>>>> impact on their sampling interval.
+>>>>>
+>>>>> This patch adds a interface, cpc_read_arch_counters_on_cpu, to read
+>>>>> delivered and reference performance counter together. According to my
+>>>>> test[4], the discrepancy of cpu current frequency in the scenarios with
+>>>>> high memory access pressure is lower than 0.2% by stress-ng
+>>>>> application.
+>>>>>
+>>>>> [1]
+>>>>> https://lore.kernel.org/all/20231025093847.3740104-4-zengheng4@huawei.com/
+>>>>> [2]
+>>>>> https://lore.kernel.org/all/20230328193846.8757-1-yang@os.amperecomputing.com/
+>>>>> [3]
+>>>>> https://lore.kernel.org/all/20230418113459.12860-7-sumitg@nvidia.com/
+>>>>>
+>>>>> [4] My local test:
+>>>>> The testing platform enable SMT and include 128 logical CPU in total,
+>>>>> and CPU base frequency is 2.7GHz. Reading "cpuinfo_cur_freq" for each
+>>>>> physical core on platform during the high memory access pressure from
+>>>>> stress-ng, and the output is as follows:
+>>>>>     0: 2699133     2: 2699942     4: 2698189     6: 2704347
+>>>>>     8: 2704009    10: 2696277    12: 2702016    14: 2701388
+>>>>>    16: 2700358    18: 2696741    20: 2700091    22: 2700122
+>>>>>    24: 2701713    26: 2702025    28: 2699816    30: 2700121
+>>>>>    32: 2700000    34: 2699788    36: 2698884    38: 2699109
+>>>>>    40: 2704494    42: 2698350    44: 2699997    46: 2701023
+>>>>>    48: 2703448    50: 2699501    52: 2700000    54: 2699999
+>>>>>    56: 2702645    58: 2696923    60: 2697718    62: 2700547
+>>>>>    64: 2700313    66: 2700000    68: 2699904    70: 2699259
+>>>>>    72: 2699511    74: 2700644    76: 2702201    78: 2700000
+>>>>>    80: 2700776    82: 2700364    84: 2702674    86: 2700255
+>>>>>    88: 2699886    90: 2700359    92: 2699662    94: 2696188
+>>>>>    96: 2705454    98: 2699260   100: 2701097   102: 2699630
+>>>>> 104: 2700463   106: 2698408   108: 2697766   110: 2701181
+>>>>> 112: 2699166   114: 2701804   116: 2701907   118: 2701973
+>>>>> 120: 2699584   122: 2700474   124: 2700768   126: 2701963
+>>>>>
+>>>>> Signed-off-by: Huisong Li <lihuisong@huawei.com>
+>>>> First off, please Cc ACPI-related patches to linux-acpi.
+>>> got it.
+>>>
+>>> +linux-acpi@vger.kernel.org
+>>>
+>>>>> ---
+>>>>>    arch/arm64/kernel/topology.c | 43
+>>>>> ++++++++++++++++++++++++++++++++++--
+>>>>>    drivers/acpi/cppc_acpi.c     | 22 +++++++++++++++---
+>>>>>    include/acpi/cppc_acpi.h     |  5 +++++
+>>>>>    3 files changed, 65 insertions(+), 5 deletions(-)
+>>>>>
+>>>>> diff --git a/arch/arm64/kernel/topology.c
+>>>>> b/arch/arm64/kernel/topology.c
+>>>>> index 7d37e458e2f5..c3122154d738 100644
+>>>>> --- a/arch/arm64/kernel/topology.c
+>>>>> +++ b/arch/arm64/kernel/topology.c
+>>>>> @@ -299,6 +299,11 @@ core_initcall(init_amu_fie);
+>>>>>    #ifdef CONFIG_ACPI_CPPC_LIB
+>>>>>    #include <acpi/cppc_acpi.h>
+>>>>>
+>>>>> +struct amu_counters {
+>>>>> +       u64 corecnt;
+>>>>> +       u64 constcnt;
+>>>>> +};
+>>>>> +
+>>>>>    static void cpu_read_corecnt(void *val)
+>>>>>    {
+>>>>>           /*
+>>>>> @@ -322,8 +327,27 @@ static void cpu_read_constcnt(void *val)
+>>>>>                         0UL : read_constcnt();
+>>>>>    }
+>>>>>
+>>>>> +static void cpu_read_amu_counters(void *data)
+>>>>> +{
+>>>>> +       struct amu_counters *cnt = (struct amu_counters *)data;
+>>>>> +
+>>>>> +       /*
+>>>>> +        * The running time of the this_cpu_has_cap() might have a
+>>>>> couple of
+>>>>> +        * microseconds and is significantly increased to tens of
+>>>>> microseconds.
+>>>>> +        * But AMU core and constant counter need to be read togeter
+>>>>> without any
+>>>>> +        * time interval to reduce the calculation discrepancy using
+>>>>> this counters.
+>>>>> +        */
+>>>>> +       if (this_cpu_has_cap(ARM64_WORKAROUND_2457168)) {
+>>>>> +               cnt->corecnt = read_corecnt();
+>>>> This statement is present in both branches, so can it be moved before
+>>>> the if ()?
+>>> Yes.
+>>> Do you mean adding a blank line before if()?
+>> Sorry, I misunderstood you.
+>> The statement "cnt->corecnt = read_corecnt();" cannot be moved before
+>> the if().
+>> The AMU core and constant counter need to be read togeter without any
+>> time interval as described in code comments.
+>> The this_cpu_has_cap() is time-consuming.
+>> That is why I don't use the cpu_read_constcnt() to read constant counter.
+> So define something like
+>
+> static inline void amu_read_counters(struct amu_counters *cnt, bool
+> read_constcnt)
+> {
+>                cnt->corecnt = read_corecnt();
+>                if (read_constcnt)
+>                              cnt->constcnt = read_constcnt();
+>                else
+>                              cnt->constcnt = 0;
+> }
+>
+>>>>> +               cnt->constcnt = 0;
+>>>>> +       } else {
+>>>>> +               cnt->corecnt = read_corecnt();
+>>>>> +               cnt->constcnt = read_constcnt();
+>>>>> +       }
+> and use it like this:
+>
+> amu_read_counters(cnt, !this_cpu_has_cap(ARM64_WORKAROUND_2457168);
+>
+> It should work as expected AFAICS.
+Yes it would work well.
+The new cpc_read_arch_counters_on_cpu() uses the counters_read_on_cpu() 
+to read core counters on specified cpu.
+smp_call_function_single() called by counters_read_on_cpu() just support 
+to pass one argument for "smp_call_func_t func".
+So we cannot define the function as you suggested. what do you think?
+>
+>>>>> +}
+>>>>> +
+>>>>>    static inline
+>>>>> -int counters_read_on_cpu(int cpu, smp_call_func_t func, u64 *val)
+>>>>> +int counters_read_on_cpu(int cpu, smp_call_func_t func, void *data)
+>>>>>    {
+>>>>>           /*
+>>>>>            * Abort call on counterless CPU or when interrupts are
+>>>>> @@ -335,7 +359,7 @@ int counters_read_on_cpu(int cpu,
+>>>>> smp_call_func_t func, u64 *val)
+>>>>>           if (WARN_ON_ONCE(irqs_disabled()))
+>>>>>                   return -EPERM;
+>>>>>
+>>>>> -       smp_call_function_single(cpu, func, val, 1);
+>>>>> +       smp_call_function_single(cpu, func, data, 1);
+>>>>>
+>>>>>           return 0;
+>>>>>    }
+>>>>> @@ -364,6 +388,21 @@ bool cpc_ffh_supported(void)
+>>>>>           return true;
+>>>>>    }
+>>>>>
+>>>>> +int cpc_read_arch_counters_on_cpu(int cpu, u64 *delivered, u64
+>>>>> *reference)
+>>>>> +{
+>>>>> +       struct amu_counters cnts = {0};
+>>>>> +       int ret;
+>>>>> +
+>>>>> +       ret = counters_read_on_cpu(cpu, cpu_read_amu_counters, &cnts);
+>>>>> +       if (ret)
+>>>>> +               return ret;
+>>>>> +
+>>>>> +       *delivered = cnts.corecnt;
+>>>>> +       *reference = cnts.constcnt;
+>>>>> +
+>>>>> +       return 0;
+>>>>> +}
+>>>>> +
+>>>>>    int cpc_read_ffh(int cpu, struct cpc_reg *reg, u64 *val)
+>>>>>    {
+>>>>>           int ret = -EOPNOTSUPP;
+>>>>> diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
+>>>>> index 7ff269a78c20..f303fabd7cfe 100644
+>>>>> --- a/drivers/acpi/cppc_acpi.c
+>>>>> +++ b/drivers/acpi/cppc_acpi.c
+>>>>> @@ -1299,6 +1299,11 @@ bool cppc_perf_ctrs_in_pcc(void)
+>>>>>    }
+>>>>>    EXPORT_SYMBOL_GPL(cppc_perf_ctrs_in_pcc);
+>>>>>
+>>>>> +int __weak cpc_read_arch_counters_on_cpu(int cpu, u64 *delivered,
+>>>>> u64 *reference)
+>>>>> +{
+>>>>> +       return 0;
+>>>>> +}
+>>>>> +
+>>>>>    /**
+>>>>>     * cppc_get_perf_ctrs - Read a CPU's performance feedback counters.
+>>>>>     * @cpunum: CPU from which to read counters.
+>>>>> @@ -1313,7 +1318,8 @@ int cppc_get_perf_ctrs(int cpunum, struct
+>>>>> cppc_perf_fb_ctrs *perf_fb_ctrs)
+>>>>>                   *ref_perf_reg, *ctr_wrap_reg;
+>>>>>           int pcc_ss_id = per_cpu(cpu_pcc_subspace_idx, cpunum);
+>>>>>           struct cppc_pcc_data *pcc_ss_data = NULL;
+>>>>> -       u64 delivered, reference, ref_perf, ctr_wrap_time;
+>>>>> +       u64 delivered = 0, reference = 0;
+>>>>> +       u64 ref_perf, ctr_wrap_time;
+>>>>>           int ret = 0, regs_in_pcc = 0;
+>>>>>
+>>>>>           if (!cpc_desc) {
+>>>>> @@ -1350,8 +1356,18 @@ int cppc_get_perf_ctrs(int cpunum, struct
+>>>>> cppc_perf_fb_ctrs *perf_fb_ctrs)
+>>>>>                   }
+>>>>>           }
+>>>>>
+>>>>> -       cpc_read(cpunum, delivered_reg, &delivered);
+>>>>> -       cpc_read(cpunum, reference_reg, &reference);
+>>>>> +       if (cpc_ffh_supported()) {
+>>>>> +               ret = cpc_read_arch_counters_on_cpu(cpunum,
+>>>>> &delivered, &reference);
+>>>>> +               if (ret) {
+>>>>> +                       pr_debug("read arch counters failed,
+>>>>> ret=%d.\n", ret);
+>>>>> +                       ret = 0;
+>>>>> +               }
+>>>>> +       }
+>>>> The above is surely not applicable to every platform using CPPC.  Also
+>>> cpc_ffh_supported is aimed to control only the platform supported FFH
+>>> to enter.
+>>> cpc_read_arch_counters_on_cpu is also needed to implemented by each
+>>> platform according to their require.
+> Well, exactly.
+>
+>>> Here just implement this interface for arm64.
+> So on x86 cpc_ffh_supported() returns true and
+> cpc_read_arch_counters_on_cpu() will do nothing, so it will always
+> fall back to using cpc_read().  That is not particularly
+> straightforward IMV.
+Understand you.
+But we have to do like this to be compatible with all platforms.
+I am thinking twice about cpc_ffh_supported().
+And I found that calling cpc_ffh_supported() here is redundant for ARM.
+Because counters_read_on_cpu() has verified if this CPU support AMU counter.
+What do you say we remove cpc_ffh_supported() here and directly call 
+this new architecture interface?
+>
+>>>> it looks like in the ARM64_WORKAROUND_2457168 enabled case it is just
+>>>> pointless overhead, because "reference" is always going to be 0 here
+>>>> then.
+>>> Right, it is always going to be 0 here for the
+>>> ARM64_WORKAROUND_2457168 enabled case .
+>>> But ARM64_WORKAROUND_2457168 is a macro releated to ARM.
+>>> It seems that it is not appropriate for this macro to appear this
+>>> common place for all platform, right?
+>>>
+>>>> Please clean that up.
+>>>>
+>>>>> +       if (!delivered || !reference) {
+>>>>> +               cpc_read(cpunum, delivered_reg, &delivered);
+>>>>> +               cpc_read(cpunum, reference_reg, &reference);
+>>>>> +       }
+>>>>> +
+>>>>>           cpc_read(cpunum, ref_perf_reg, &ref_perf);
+>>>>>
+>>>>>           /*
+>>>>> diff --git a/include/acpi/cppc_acpi.h b/include/acpi/cppc_acpi.h
+>>>>> index 6126c977ece0..07d4fd82d499 100644
+>>>>> --- a/include/acpi/cppc_acpi.h
+>>>>> +++ b/include/acpi/cppc_acpi.h
+>>>>> @@ -152,6 +152,7 @@ extern bool cpc_ffh_supported(void);
+>>>>>    extern bool cpc_supported_by_cpu(void);
+>>>>>    extern int cpc_read_ffh(int cpunum, struct cpc_reg *reg, u64 *val);
+>>>>>    extern int cpc_write_ffh(int cpunum, struct cpc_reg *reg, u64 val);
+>>>>> +extern int cpc_read_arch_counters_on_cpu(int cpu, u64 *delivered,
+>>>>> u64 *reference);
+>>>>>    extern int cppc_get_epp_perf(int cpunum, u64 *epp_perf);
+>>>>>    extern int cppc_set_epp_perf(int cpu, struct cppc_perf_ctrls
+>>>>> *perf_ctrls, bool enable);
+>>>>>    extern int cppc_get_auto_sel_caps(int cpunum, struct
+>>>>> cppc_perf_caps *perf_caps);
+>>>>> @@ -209,6 +210,10 @@ static inline int cpc_write_ffh(int cpunum,
+>>>>> struct cpc_reg *reg, u64 val)
+>>>>>    {
+>>>>>           return -ENOTSUPP;
+>>>>>    }
+>>>>> +static inline int cpc_read_arch_counters_on_cpu(int cpu, u64
+>>>>> *delivered, u64 *reference)
+>>>>> +{
+>>>>> +       return -EOPNOTSUPP;
+>>>>> +}
+>>>>>    static inline int cppc_set_epp_perf(int cpu, struct
+>>>>> cppc_perf_ctrls *perf_ctrls, bool enable)
+>>>>>    {
+>>>>>           return -ENOTSUPP;
+>>>>> --
+>>>> .
+>>> _______________________________________________
+>>> linux-arm-kernel mailing list
+>>> linux-arm-kernel@lists.infradead.org
+>>> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+> .
 
