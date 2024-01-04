@@ -1,52 +1,52 @@
-Return-Path: <linux-kernel+bounces-17001-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16996-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C073D824709
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 18:15:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A3C138246FB
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 18:14:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D0B391C240F3
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 17:15:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 749C91C240DA
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 17:14:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0C2B2D614;
-	Thu,  4 Jan 2024 17:12:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 970BE2C1A1;
+	Thu,  4 Jan 2024 17:12:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="LG5xPR1P"
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="rOMK1gaQ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2065.outbound.protection.outlook.com [40.107.220.65])
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2086.outbound.protection.outlook.com [40.107.93.86])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 657282C851;
-	Thu,  4 Jan 2024 17:12:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B7F02C68D;
+	Thu,  4 Jan 2024 17:12:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NFYCAi8Q5t1l/fZwEhy1MGipf9Ua7Wm7XOMWnnvE0v1KjW50h7GfasOO7f/ZhwiyD2SXaqvqYx/u11JUVPyGwf8cupBWxuAb8/DdtBVHbhRgB9eQGUzOnV7ig3pJUcp9g7PIXvi+Z+MtGx0Qo0aOeGFKhuMt/6G8FaM6FbqmVvJMjA5kszd4zi3m3Io9rzXU2cA6RRiGMiUbuW/inMB/kQXRhexX0LiIZPG+XgPbgDoSdw++Gifb03iIxhQuj0Y2b0PdHW5QXlG9ee8QikX8ii8yhXHetXJliiCJBL6EHO8VgsRxdAtFnzsvzIDxuq/qYQquV1nsQXcYP0DBW9dHSg==
+ b=mp8gM+mo5FfYWouLrsaw08N2CGA4qfTNbBlRp5bTlrDqOkA553S1mjrELGLrfKNxmJyyCNT90sdDPAsIYh/E8enphgjth4OKdnPfatCzch1VYLsmtgwfENyew3ZOIXY0s8YN7seCCYvZYU+FoWsJu7tobJYCiuVx0Ta8YUL+iMj95dhrZjbGECgq/tykG0voAMrgPFcd+62kVHeYtDWNPjeDAtOVO/73wjeTRk3MPHXoNLmPSV1BGUTAPV0CKpAduEYUiCn7NNbUXxuu7BzKpnalw6bDRX2a/LKb6mTaBOZ/5K6qFEL+jz3BzA2uU4/+0dlfO33mrDjObg/FrVPZhg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=vBhNvqaRMdtFzSqi5mm/2MbuFLYYK6P5oiVtXFHeKKI=;
- b=BZH2wq6wg4oSl6/LbNxZphtiz8ctBPfXJgbtpHgezkmJ/IXytkffsyUgr6kAf3X5DuUTTJoInCXx5H+1XjNLiXMmzRlVu3OjsXrALEA7rAEIQWhxKGMG4PCoaxBUXQKQyUZRk0HLVKEdeCJ4anEF+SIQvEOeyHDjFLcQNcL67QLC/enWNDtnVHmuxOmQ0sMZrxZXhmF1JDqiwKeLdM1Jfex21XJwR9Xl7E9l50dOR5laLZN8yjoXQsWi2n1tfnXe5gRS/M1p6ZEx5eKW5bSSYnUkl9jlOt7e28vOuwIFAwQ6V8bUYyfR61iFKtXpIgnAkyIEG9j1hGBmNcu2/nXcXw==
+ bh=a0cwSIWaX4xESWMXtNloBt2dXBKHki5Ge3vDIzXrBb4=;
+ b=Uv+dpgvuJpeTx4X/pUe/kXT/+3iXKlRslWBtT2AthuSjDYXIsUjU9j6qFShHHNuxZGKfZn2A2+lMGrLZZCOBnPtu3UwMzAmwtMTa3jTNm7wcdvcW/ZsGT/XdXsF3Y8lboPLbVUo8EOR3ur4l3Rv1ySrBw86Y+DBIr3Fm3yaBvzAWwUSAP8nROckOMp24J2I1csJNO7+z5a3RxtJBDeh5YGVrLy29Lb3nhRl/h9Yo3Fop9fjZl1VoZlmXTUWQeWIhW7Ge67slPeh26RTCiCSDsobwutcEEjv8h+1vPCvJ1QS3bY4ZUIKs6LXkvnuOYyNF9O6fCA1swqLYjD7RY6TF+Q==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  165.204.84.17) smtp.rcpttodomain=davemloft.net smtp.mailfrom=amd.com;
  dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
  header.from=amd.com; dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vBhNvqaRMdtFzSqi5mm/2MbuFLYYK6P5oiVtXFHeKKI=;
- b=LG5xPR1PwggKIVnHTezif/Jc9vXARR63jNiAbvn0WCOMzIsMXy3qncyBiwy5BHyGe/zfh5+ZtRoCYa4jbIJh4JqkOqeimtXqIFtGfquu8TC1rdWQ9OZrqhp5J8pXC5gIyV+7tQPrum8+2nJ1kqo64OTyqlvqKctt+/N0jCMNvCs=
-Received: from DS7PR03CA0236.namprd03.prod.outlook.com (2603:10b6:5:3ba::31)
- by PH0PR12MB5629.namprd12.prod.outlook.com (2603:10b6:510:141::10) with
+ bh=a0cwSIWaX4xESWMXtNloBt2dXBKHki5Ge3vDIzXrBb4=;
+ b=rOMK1gaQr7ELFMj0TxgsuIMrl9HeNvMAa+jHqGdn6fmcDo2DqzY8X7I/DfhCTQ9Kdt2Fb/6my6QctoU5mDsCN0oW57ZteYvYiY5255Nt/rSN9Q7hrhkO51c6fqA/uot9Kap3gR+ZPO5WpZ4PAfiCoNaoKfb0hoGAsj2X3QQhVes=
+Received: from DS7PR03CA0229.namprd03.prod.outlook.com (2603:10b6:5:3ba::24)
+ by SN7PR12MB8436.namprd12.prod.outlook.com (2603:10b6:806:2e3::10) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.15; Thu, 4 Jan
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.14; Thu, 4 Jan
  2024 17:12:42 +0000
 Received: from DS3PEPF000099D7.namprd04.prod.outlook.com
- (2603:10b6:5:3ba:cafe::e6) by DS7PR03CA0236.outlook.office365.com
- (2603:10b6:5:3ba::31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.16 via Frontend
- Transport; Thu, 4 Jan 2024 17:12:41 +0000
+ (2603:10b6:5:3ba:cafe::20) by DS7PR03CA0229.outlook.office365.com
+ (2603:10b6:5:3ba::24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.13 via Frontend
+ Transport; Thu, 4 Jan 2024 17:12:42 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
  smtp.mailfrom=amd.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=amd.com;
@@ -56,18 +56,18 @@ Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
 Received: from SATLEXMB04.amd.com (165.204.84.17) by
  DS3PEPF000099D7.mail.protection.outlook.com (10.167.17.8) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7159.9 via Frontend Transport; Thu, 4 Jan 2024 17:12:41 +0000
+ 15.20.7159.9 via Frontend Transport; Thu, 4 Jan 2024 17:12:42 +0000
 Received: from driver-dev1.pensando.io (10.180.168.240) by SATLEXMB04.amd.com
  (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Thu, 4 Jan
- 2024 11:12:37 -0600
+ 2024 11:12:38 -0600
 From: Brett Creeley <brett.creeley@amd.com>
 To: <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
 	<pabeni@redhat.com>, <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
 CC: <shannon.nelson@amd.com>, <brett.creeley@amd.com>
-Subject: [PATCH net-next 3/8] pds_core: Use struct pdsc for the pdsc_adminq_isr private data
-Date: Thu, 4 Jan 2024 09:12:16 -0800
-Message-ID: <20240104171221.31399-4-brett.creeley@amd.com>
+Subject: [PATCH net-next 4/8] pds_core: Prevent race issues involving the adminq
+Date: Thu, 4 Jan 2024 09:12:17 -0800
+Message-ID: <20240104171221.31399-5-brett.creeley@amd.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20240104171221.31399-1-brett.creeley@amd.com>
 References: <20240104171221.31399-1-brett.creeley@amd.com>
@@ -82,82 +82,213 @@ X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
  (10.181.40.145)
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS3PEPF000099D7:EE_|PH0PR12MB5629:EE_
-X-MS-Office365-Filtering-Correlation-Id: 9ef2253b-a7c1-4d81-32e4-08dc0d485c76
+X-MS-TrafficTypeDiagnostic: DS3PEPF000099D7:EE_|SN7PR12MB8436:EE_
+X-MS-Office365-Filtering-Correlation-Id: db67b6a0-1f26-46d4-55f9-08dc0d485cda
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	0UmF/kWaqEwjrduKNfab4GwOxflMIzRsAamJgiIxh/2BaWTWx3RO5tN4ol/7mwZ3D/yMRDzRvQW4OVHYg+A2IEFx9LyQSjlzU54IF1T+tcGuIccpvK6jcaWZG6/ckGgujMPtqwXyLNmNr9PUCy1qWCJCq/fAU06Pe3aR70mfyjFj1Vi+svCfmOiNznyIlSPU40wiQnXClWGzuow4Nt6Hi5ZCkt+uz/3suY7rj4E3Zv6aPInEJRJFpY79fiEFJJyAT5nPK5BsrKcKpEMxIUE98U3F3oH2U4d7yQlA8A4vG5GC6IRfwB6Xr+co1TzZXjTq+YukIT1BO8D+BWs44oJCrvHu6ONoJJ0jeIyJZMx+r1ScuRm5Z1ExAFNPs5gz5dq44pjjNr7P15NkNBvVWKuZkKye/f5tXDH8wDmWGscB0B1NQSX/UMln67jcXmT05FpsnqPubZTbHcaRQYW6CDx+S+94a4bnc6g2IFGeE3R8BOoxRUREI8J0AqZvUXSxeZYlWUOCqYN7T58XM3Xg7icAcumPPVWaS3GuUDlchHtPOjIc7+pSdbABIAEL7Um8O70cRAzol6TxA/DDo+9sz/8Jyf1CuOEKEodk0AlQdOp+3+0K4paQqh+zTsK93s63jxX7wCHhOWF6Ept2kT6dbHSvsPlu/FokaPSr+G6OrMmWDscRB7Jyv+SLE4NRmHFs+geBrl5nWK5MjYVzyQBDBQ6+C0b39JZY7p8aX7/omB/Fmrt7qlNFMdo3tCqvJke726mVPp5wom2i988dtCHV/2J6Dg==
+	2Z3fLDNeJdZKf/MWMwhpdThjlzrBAQ7MDYpAOt4YwtBRv0pGd6DWYdY3g/jXLELOpNwVp4jNR6vKptWfM1u7OdzLNuwTxpLUv5cCjB8o/3mpgyhi0lx6yY7rcvRdOYZwZG8amIrcrjaBpuIiVZPk1+lMkFLq2XIIcsXlU2Tvfbi0tLgadCNtgcSu2tVH3HwtulctbjJWTrxiOgTRxWdaeeoG0dP9YiYoHJS3wPW77k3cid5p0Mbhn7+L5cbK+I/dEmoBXuE2IyMO5DaMK2eKejEraaKiFZGtd9ko6xBc0A023pxY13MGoXnrGRpE4xFX/kxabgMfpoK0rLvERuK/FmRoUBJk7qGGJHBwnAvfGNx4nfATj5ltNAMCKMFbs8jOxzhQEDH2gmfzpV/5fPZd8Bx1ruD2CGf+g29nqFWRhKk94IhCqJs1q0YUO4IWp9eBuMopdfQas5ekFxExNmBpOrK1sxVm+fop/1jcuhRGLQMx7kNOoZJPfpMN+5CizxqmLsCFrUbFbfnzC678nTOTyZAgZ9M0JBQzdjiUyKviZ5DEXjimBtW5yu/AnBV8s9tsg01jPxczxXs0kFPZ/vPdxTrxVQ6f7y/pXrKItCMR6sl+zieTG57T1QDwjlq2VjcyPt1y8cBStVwdHi0m3ySXccvLmdW0Rgba/pqIXjcFOiPZb+/x+Yvgnf7NLGQSn2TsRfzBNxOC/uiLgJU/iWJHX2+Hkd/pBQhtiXnmziALfdAflMCmzROdV0isaNJClpqDZ4GRA1WwpV3mtKCq+4RiTQ==
 X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(376002)(39860400002)(396003)(346002)(136003)(230922051799003)(82310400011)(186009)(1800799012)(64100799003)(451199024)(36840700001)(46966006)(40470700004)(40460700003)(40480700001)(2616005)(336012)(1076003)(426003)(6666004)(478600001)(26005)(86362001)(36860700001)(36756003)(82740400003)(356005)(81166007)(2906002)(16526019)(41300700001)(47076005)(83380400001)(70586007)(5660300002)(44832011)(8676002)(110136005)(316002)(54906003)(70206006)(4326008)(8936002)(36900700001);DIR:OUT;SFP:1101;
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(346002)(39860400002)(136003)(396003)(376002)(230922051799003)(451199024)(186009)(1800799012)(82310400011)(64100799003)(36840700001)(46966006)(40470700004)(2906002)(4326008)(36860700001)(8936002)(8676002)(47076005)(44832011)(5660300002)(36756003)(82740400003)(356005)(41300700001)(81166007)(6666004)(478600001)(1076003)(26005)(336012)(426003)(2616005)(316002)(54906003)(16526019)(83380400001)(110136005)(70586007)(70206006)(40480700001)(40460700003)(86362001)(36900700001);DIR:OUT;SFP:1101;
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Jan 2024 17:12:41.8574
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Jan 2024 17:12:42.4980
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9ef2253b-a7c1-4d81-32e4-08dc0d485c76
+X-MS-Exchange-CrossTenant-Network-Message-Id: db67b6a0-1f26-46d4-55f9-08dc0d485cda
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
 X-MS-Exchange-CrossTenant-AuthSource:
 	DS3PEPF000099D7.namprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR12MB5629
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB8436
 
-The initial design for the adminq interrupt was done based
-on client drivers having their own adminq and adminq
-interrupt. So, each client driver's adminq isr would use
-their specific adminqcq for the private data struct. For the
-time being the design has changed to only use a single
-adminq for all clients. So, instead use the struct pdsc for
-the private data to simplify things a bit.
+There are multiple paths that can result in using the pdsc's
+adminq.
 
-This also has the benefit of not dereferencing the adminqcq
-to access the pdsc struct when the PDSC_S_STOPPING_DRIVER bit
-is set and the adminqcq has actually been cleared/freed.
+[1] pdsc_adminq_isr and the resulting work from queue_work(),
+    i.e. pdsc_work_thread()->pdsc_process_adminq()
+
+[2] pdsc_adminq_post()
+
+When the device goes through reset via PCIe reset and/or
+a fw_down/fw_up cycle due to bad PCIe state or bad device
+state the adminq is destroyed and recreated.
+
+A NULL pointer dereference can happen if [1] or [2] happens
+after the adminq is already destroyed.
+
+In order to fix this, add some further state checks and
+implement reference counting for adminq uses. Reference
+counting was used because multiple threads can attempt to
+access the adminq at the same time via [1] or [2]. Additionally,
+multiple clients (i.e. pds-vfio-pci) can be using [2]
+at the same time.
+
+The adminq_refcnt is initialized to 1 when the adminq has been
+allocated and is ready to use. Users/clients of the adminq
+(i.e. [1] and [2]) will increment the refcnt when they are using
+the adminq. When the driver goes into a fw_down cycle it will
+set the PDSC_S_FW_DEAD bit and then wait for the adminq_refcnt
+to hit 1. Setting the PDSC_S_FW_DEAD before waiting will prevent
+any further adminq_refcnt increments. Waiting for the
+adminq_refcnt to hit 1 allows for any current users of the adminq
+to finish before the driver frees the adminq. Once the
+adminq_refcnt hits 1 the driver clears the refcnt to signify that
+the adminq is deleted and cannot be used. On the fw_up cycle the
+driver will once again initialize the adminq_refcnt to 1 allowing
+the adminq to be used again.
 
 Signed-off-by: Brett Creeley <brett.creeley@amd.com>
 Reviewed-by: Shannon Nelson <shannon.nelson@amd.com>
 ---
- drivers/net/ethernet/amd/pds_core/adminq.c | 5 +++--
- drivers/net/ethernet/amd/pds_core/core.c   | 2 +-
- 2 files changed, 4 insertions(+), 3 deletions(-)
+ drivers/net/ethernet/amd/pds_core/adminq.c | 31 +++++++++++++++++-----
+ drivers/net/ethernet/amd/pds_core/core.c   | 21 +++++++++++++++
+ drivers/net/ethernet/amd/pds_core/core.h   |  1 +
+ 3 files changed, 47 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/net/ethernet/amd/pds_core/adminq.c b/drivers/net/ethernet/amd/pds_core/adminq.c
-index 5beadabc2136..68be5ea251fc 100644
+index 68be5ea251fc..5edff33d56f3 100644
 --- a/drivers/net/ethernet/amd/pds_core/adminq.c
 +++ b/drivers/net/ethernet/amd/pds_core/adminq.c
-@@ -135,8 +135,8 @@ void pdsc_work_thread(struct work_struct *work)
+@@ -63,6 +63,15 @@ static int pdsc_process_notifyq(struct pdsc_qcq *qcq)
+ 	return nq_work;
+ }
  
- irqreturn_t pdsc_adminq_isr(int irq, void *data)
++static bool pdsc_adminq_inc_if_up(struct pdsc *pdsc)
++{
++	if (pdsc->state & BIT_ULL(PDSC_S_STOPPING_DRIVER) ||
++	    pdsc->state & BIT_ULL(PDSC_S_FW_DEAD))
++		return false;
++
++	return refcount_inc_not_zero(&pdsc->adminq_refcnt);
++}
++
+ void pdsc_process_adminq(struct pdsc_qcq *qcq)
  {
--	struct pdsc_qcq *qcq = data;
--	struct pdsc *pdsc = qcq->pdsc;
-+	struct pdsc *pdsc = data;
-+	struct pdsc_qcq *qcq;
+ 	union pds_core_adminq_comp *comp;
+@@ -75,9 +84,9 @@ void pdsc_process_adminq(struct pdsc_qcq *qcq)
+ 	int aq_work = 0;
+ 	int credits;
  
- 	/* Don't process AdminQ when shutting down */
- 	if (pdsc->state & BIT_ULL(PDSC_S_STOPPING_DRIVER)) {
-@@ -145,6 +145,7 @@ irqreturn_t pdsc_adminq_isr(int irq, void *data)
+-	/* Don't process AdminQ when shutting down */
+-	if (pdsc->state & BIT_ULL(PDSC_S_STOPPING_DRIVER)) {
+-		dev_err(pdsc->dev, "%s: called while PDSC_S_STOPPING_DRIVER\n",
++	/* Don't process AdminQ when it's not up */
++	if (!pdsc_adminq_inc_if_up(pdsc)) {
++		dev_err(pdsc->dev, "%s: called while adminq is unavailable\n",
+ 			__func__);
+ 		return;
+ 	}
+@@ -124,6 +133,7 @@ void pdsc_process_adminq(struct pdsc_qcq *qcq)
+ 		pds_core_intr_credits(&pdsc->intr_ctrl[qcq->intx],
+ 				      credits,
+ 				      PDS_CORE_INTR_CRED_REARM);
++	refcount_dec(&pdsc->adminq_refcnt);
+ }
+ 
+ void pdsc_work_thread(struct work_struct *work)
+@@ -138,9 +148,9 @@ irqreturn_t pdsc_adminq_isr(int irq, void *data)
+ 	struct pdsc *pdsc = data;
+ 	struct pdsc_qcq *qcq;
+ 
+-	/* Don't process AdminQ when shutting down */
+-	if (pdsc->state & BIT_ULL(PDSC_S_STOPPING_DRIVER)) {
+-		dev_err(pdsc->dev, "%s: called while PDSC_S_STOPPING_DRIVER\n",
++	/* Don't process AdminQ when it's not up */
++	if (!pdsc_adminq_inc_if_up(pdsc)) {
++		dev_err(pdsc->dev, "%s: called while adminq is unavailable\n",
+ 			__func__);
  		return IRQ_HANDLED;
  	}
- 
-+	qcq = &pdsc->adminqcq;
+@@ -148,6 +158,7 @@ irqreturn_t pdsc_adminq_isr(int irq, void *data)
+ 	qcq = &pdsc->adminqcq;
  	queue_work(pdsc->wq, &qcq->work);
  	pds_core_intr_mask(&pdsc->intr_ctrl[qcq->intx], PDS_CORE_INTR_MASK_CLEAR);
++	refcount_dec(&pdsc->adminq_refcnt);
  
+ 	return IRQ_HANDLED;
+ }
+@@ -231,6 +242,12 @@ int pdsc_adminq_post(struct pdsc *pdsc,
+ 	int err = 0;
+ 	int index;
+ 
++	if (!pdsc_adminq_inc_if_up(pdsc)) {
++		dev_dbg(pdsc->dev, "%s: preventing adminq cmd %u\n",
++			__func__, cmd->opcode);
++		return -ENXIO;
++	}
++
+ 	wc.qcq = &pdsc->adminqcq;
+ 	index = __pdsc_adminq_post(pdsc, &pdsc->adminqcq, cmd, comp, &wc);
+ 	if (index < 0) {
+@@ -286,6 +303,8 @@ int pdsc_adminq_post(struct pdsc *pdsc,
+ 			queue_work(pdsc->wq, &pdsc->health_work);
+ 	}
+ 
++	refcount_dec(&pdsc->adminq_refcnt);
++
+ 	return err;
+ }
+ EXPORT_SYMBOL_GPL(pdsc_adminq_post);
 diff --git a/drivers/net/ethernet/amd/pds_core/core.c b/drivers/net/ethernet/amd/pds_core/core.c
-index b582729331eb..0356e56a6e99 100644
+index 0356e56a6e99..3b3e1541dd1c 100644
 --- a/drivers/net/ethernet/amd/pds_core/core.c
 +++ b/drivers/net/ethernet/amd/pds_core/core.c
-@@ -125,7 +125,7 @@ static int pdsc_qcq_intr_alloc(struct pdsc *pdsc, struct pdsc_qcq *qcq)
+@@ -450,6 +450,7 @@ int pdsc_setup(struct pdsc *pdsc, bool init)
+ 		pdsc_debugfs_add_viftype(pdsc);
+ 	}
  
- 	snprintf(name, sizeof(name), "%s-%d-%s",
- 		 PDS_CORE_DRV_NAME, pdsc->pdev->bus->number, qcq->q.name);
--	index = pdsc_intr_alloc(pdsc, name, pdsc_adminq_isr, qcq);
-+	index = pdsc_intr_alloc(pdsc, name, pdsc_adminq_isr, pdsc);
- 	if (index < 0)
- 		return index;
- 	qcq->intx = index;
++	refcount_set(&pdsc->adminq_refcnt, 1);
+ 	clear_bit(PDSC_S_FW_DEAD, &pdsc->state);
+ 	return 0;
+ 
+@@ -514,6 +515,24 @@ void pdsc_stop(struct pdsc *pdsc)
+ 					   PDS_CORE_INTR_MASK_SET);
+ }
+ 
++void pdsc_adminq_wait_and_dec_once_unused(struct pdsc *pdsc)
++{
++	/* The driver initializes the adminq_refcnt to 1 when the adminq is
++	 * allocated and ready for use. Other users/requesters will increment
++	 * the refcnt while in use. If the refcnt is down to 1 then the adminq
++	 * is not in use and the refcnt can be cleared and adminq freed. Before
++	 * calling this function the driver will set PDSC_S_FW_DEAD, which
++	 * prevent subsequent attempts to use the adminq and increment the
++	 * refcnt to fail. This guarantees that this function will eventually
++	 * exit.
++	 */
++	while (!refcount_dec_if_one(&pdsc->adminq_refcnt)) {
++		dev_dbg_ratelimited(pdsc->dev, "%s: adminq in use\n",
++				    __func__);
++		cpu_relax();
++	}
++}
++
+ void pdsc_fw_down(struct pdsc *pdsc)
+ {
+ 	union pds_core_notifyq_comp reset_event = {
+@@ -529,6 +548,8 @@ void pdsc_fw_down(struct pdsc *pdsc)
+ 	if (pdsc->pdev->is_virtfn)
+ 		return;
+ 
++	pdsc_adminq_wait_and_dec_once_unused(pdsc);
++
+ 	/* Notify clients of fw_down */
+ 	if (pdsc->fw_reporter)
+ 		devlink_health_report(pdsc->fw_reporter, "FW down reported", pdsc);
+diff --git a/drivers/net/ethernet/amd/pds_core/core.h b/drivers/net/ethernet/amd/pds_core/core.h
+index e35d3e7006bf..cbd5716f46e6 100644
+--- a/drivers/net/ethernet/amd/pds_core/core.h
++++ b/drivers/net/ethernet/amd/pds_core/core.h
+@@ -184,6 +184,7 @@ struct pdsc {
+ 	struct mutex devcmd_lock;	/* lock for dev_cmd operations */
+ 	struct mutex config_lock;	/* lock for configuration operations */
+ 	spinlock_t adminq_lock;		/* lock for adminq operations */
++	refcount_t adminq_refcnt;
+ 	struct pds_core_dev_info_regs __iomem *info_regs;
+ 	struct pds_core_dev_cmd_regs __iomem *cmd_regs;
+ 	struct pds_core_intr __iomem *intr_ctrl;
 -- 
 2.17.1
 
