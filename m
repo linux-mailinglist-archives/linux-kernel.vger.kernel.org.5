@@ -1,125 +1,98 @@
-Return-Path: <linux-kernel+bounces-17104-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17105-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 56A9F824859
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 19:46:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E364824861
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 19:51:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CDE2AB24B27
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 18:46:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BFDB1B24972
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 18:50:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD8C128E1E;
-	Thu,  4 Jan 2024 18:46:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BDDD28E24;
+	Thu,  4 Jan 2024 18:50:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="MDLm+/VZ"
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="M5GeHsjO"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88B1028E1B
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 18:46:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22BED28E09
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 18:50:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-5555f9061b9so1117742a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 10:46:24 -0800 (PST)
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a28fb463a28so49978266b.3
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 10:50:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1704393982; x=1704998782; darn=vger.kernel.org;
+        d=linux-foundation.org; s=google; t=1704394246; x=1704999046; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=kSK+c0gfVwSu7jtoMzSmkd2iBFspX1CIYM8sXAK01vI=;
-        b=MDLm+/VZqQYwPPf0gYVfTIeM7uE+CFSsmYZwGpsQbRroZNF0RdyVCzYwxSJ/f2+YyJ
-         A6WRpP4gwBAApCv3itt4HCS44ImpgpmcfRWVquFNKcAnZCd46Ht3gsvPp8CK9cLFDAh3
-         9Ia2EK53XdX9Dkwy03UZMPgNV/uc1kNJ3y/9E=
+        bh=XxCIeQ9j4EehMbMWWRhFVXo20FPclvu+h4tS5qZG5ug=;
+        b=M5GeHsjOPyRCFdI+6KNsXejVrQqcBitHhXnA/WZ1BLwt6w46rx90tENrYHrvJDr8Ev
+         R7oJTbQSiYHmdtjWwR8bztxs3bgw8kWHB43RRDxdEA5Tynn4zf7E7hm4gF2fRBkbwNcC
+         x1L/XRF/jQ6dSf/wrPgCkdJVTKWqKFN9ETwXA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704393982; x=1704998782;
+        d=1e100.net; s=20230601; t=1704394246; x=1704999046;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=kSK+c0gfVwSu7jtoMzSmkd2iBFspX1CIYM8sXAK01vI=;
-        b=Z/7peboaMXkNP7t2P1MhAx0ufOJL5heAxuKhyysN/SZ0PBmNJ6CWO+cZxDSf6qEQAI
-         gH+0magvpkclXgjcvmI7DTlJ8PzqlKGPa8/2nZkxDo/fgoXvxeyRi5yoEEmviL062fL5
-         PabgKyV/0EaB1nKqzij5fwgnOMOZKar8vLa2vyBD5chD9XtitP3KDQJb5qus2ujpk9uX
-         wUjw0M2MukufGPPxIhS+EWOu53aV4baC3lfD1kiMyFD0wyAkKCEqHnp26IkMF+e0+aLq
-         nnLNI1CPDjKivyHXxNG2lLC07SnuAGslJwx97UIBddnliHAEOBJQ7id8S9tZJA1hogi/
-         svmg==
-X-Gm-Message-State: AOJu0YyqcJ82bq3a4ISMH3JOPZtRTSxLQL3J2FjZEoeITglIIyZtp+DV
-	Zj0sszfvsEus2iLIOI3qLHXnbElq2++k5yojH4aOz4+bdsniKhEu
-X-Google-Smtp-Source: AGHT+IGe4o2UmfYW2rhGDAXtHXpIGxywFpOSd2qcJwH67D1NV8SmxT4Bg4ym8EKHLK1J0Kqt8To2bg==
-X-Received: by 2002:a17:906:3455:b0:a19:940f:b9d3 with SMTP id d21-20020a170906345500b00a19940fb9d3mr622208ejb.25.1704393982500;
-        Thu, 04 Jan 2024 10:46:22 -0800 (PST)
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com. [209.85.208.48])
-        by smtp.gmail.com with ESMTPSA id eu18-20020a170907299200b00a26e53be089sm10821661ejc.44.2024.01.04.10.46.21
+        bh=XxCIeQ9j4EehMbMWWRhFVXo20FPclvu+h4tS5qZG5ug=;
+        b=K54SAkbdHnT6UyWmllybIgNzL65FTYhps410zXKbPDc0NgcsXrsOzAspq5dq1Soidp
+         T+9SSoq38SKcyfBBW5SnqBzl9OG3CnjLxlG9BHTHdVc8e1zvBzKsknQ/GQuJRuJOCgyu
+         ZKxi7gR+bzymYA1MS7Jv31NIaU1zEMo5Hiy3Z14uH+rTZYGNK9vKBngvXx53Aj2Juytm
+         cPrItUZeUeiZyzNoO1uzT+ogMf3D4O6YD1dtO0imRaQOfpTIdoOA4NH7l/TNmJTV3jXU
+         aEZv0cYQ5gf9hOcldkyuTiYl+DN70RDbQqd/dMACD47BS67zvdxlmx9ve3+WO3W6kwLw
+         qDWA==
+X-Gm-Message-State: AOJu0YxX+su0QIowQvg+9+LIPbWo+1+eSmEti3eStrR05HFUQccz4nc6
+	QWhFCitsHJWX0WamCmE2UFba6T/2BcBF6fPqSBkpctK/FX0xMMNe
+X-Google-Smtp-Source: AGHT+IGN6bkZdymB8QSG8sW+lmb2V7EKyPkykE2BqBrhUHNQqCW16vGxbTdQ63vQBRJ3ljR9IFpxpw==
+X-Received: by 2002:a17:906:7856:b0:a27:5446:27d9 with SMTP id p22-20020a170906785600b00a27544627d9mr598726ejm.5.1704394246103;
+        Thu, 04 Jan 2024 10:50:46 -0800 (PST)
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com. [209.85.218.43])
+        by smtp.gmail.com with ESMTPSA id vz10-20020a17090704ca00b00a269b230c0esm14034343ejb.34.2024.01.04.10.50.45
         for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Jan 2024 10:46:21 -0800 (PST)
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-555144cd330so1106799a12.2
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 10:46:21 -0800 (PST)
-X-Received: by 2002:a17:907:26c4:b0:a28:cf59:60c8 with SMTP id
- bp4-20020a17090726c400b00a28cf5960c8mr751629ejc.33.1704393981134; Thu, 04 Jan
- 2024 10:46:21 -0800 (PST)
+        Thu, 04 Jan 2024 10:50:45 -0800 (PST)
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a28fb463a28so49977066b.3
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 10:50:45 -0800 (PST)
+X-Received: by 2002:a17:906:897:b0:a28:b7e2:15b4 with SMTP id
+ n23-20020a170906089700b00a28b7e215b4mr427985eje.88.1704394245242; Thu, 04 Jan
+ 2024 10:50:45 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240104164703.808999991@goodmis.org> <20240104164738.483305222@goodmis.org>
-In-Reply-To: <20240104164738.483305222@goodmis.org>
+References: <CAPM=9txBXQR8YsaU2fO1frcGBP6HKTF473Rqae_hwT_yY-dRrg@mail.gmail.com>
+In-Reply-To: <CAPM=9txBXQR8YsaU2fO1frcGBP6HKTF473Rqae_hwT_yY-dRrg@mail.gmail.com>
 From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Thu, 4 Jan 2024 10:46:04 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wiKwDUDv3+jCsv-uacDcHDVTYsXtBR9=6sGM5mqX+DhOg@mail.gmail.com>
-Message-ID: <CAHk-=wiKwDUDv3+jCsv-uacDcHDVTYsXtBR9=6sGM5mqX+DhOg@mail.gmail.com>
-Subject: Re: [for-next][PATCH 2/3] eventfs: Stop using dcache_readdir() for getdents()
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: linux-kernel@vger.kernel.org, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, Ajay Kaher <akaher@vmware.com>, 
-	Al Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>
+Date: Thu, 4 Jan 2024 10:50:28 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wg26tNyaOE5jAcEg1t_zK37mHXqJN9nzmYDA3dN_WO5kw@mail.gmail.com>
+Message-ID: <CAHk-=wg26tNyaOE5jAcEg1t_zK37mHXqJN9nzmYDA3dN_WO5kw@mail.gmail.com>
+Subject: Re: [git pull] drm fixes for 6.8
+To: Dave Airlie <airlied@gmail.com>
+Cc: Daniel Vetter <daniel.vetter@ffwll.ch>, dri-devel <dri-devel@lists.freedesktop.org>, 
+	LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 
-On Thu, 4 Jan 2024 at 08:46, Steven Rostedt <rostedt@goodmis.org> wrote:
+On Wed, 3 Jan 2024 at 18:30, Dave Airlie <airlied@gmail.com> wrote:
 >
->         list_for_each_entry_srcu(ei_child, &ei->children, list,
->                                  srcu_read_lock_held(&eventfs_srcu)) {
-> +
-> +               if (c > 0) {
-> +                       c--;
-> +                       continue;
->                 }
+> These were from over the holiday period, mainly i915, a couple of
+> qaic, bridge and an mgag200.
+>
+> I have a set of nouveau fixes that I'll send after this, that might be
+> too rich for you at this point.
+>
+> I expect there might also be some more regular fixes before 6.8, but
+> they should be minor.
 
-Thanks for putting that at the top, I really do think it's not just
-more efficient, but "more correct" too - ie if some entry that *used*
-to exist and was previously counted by 'pos' went away, it's actually
-*better* to count it again if we still see it, in order to not skip
-subsequent entries that haven't been seen..
+I'm assuming you're just confused about the numbering, and meant 6.7
+here and in the subject line.
 
-And that very fact actually makes me wonder:
+This seems to be too small of a pull to be an early pull request for
+the 6.8 merge window.
 
->         for (i = 0; i < ei->nr_entries; i++) {
-> +               void *cdata = ei->data;
-> +
-> +               if (c > 0) {
-> +                       c--;
-> +                       continue;
-> +               }
-
-The 'ei->nr_entries' things are in a stable array, so the indexing for
-them cannot change (ie even if "is_freed" were to be set the array is
-still stable).
-
-So I wonder if - just from a 'pos' iterator stability standpoint - you
-should change the tracefs directory iterator to always start with the
-non-directory entries in ei->entries[]?
-
-That way, even if concurrent dynamic add/remove events might change
-the 'ei->children' list, it could never cause an 'ei->entry[]' to
-disappear (or be returned twice).
-
-This is very nitpicky and I doubt it matters, because I doubt the
-whole "ls on a tracefs directory while changing it" case matters, but
-I thought I'd mention it.
-
-              Linus
+               Linus
 
