@@ -1,104 +1,118 @@
-Return-Path: <linux-kernel+bounces-16796-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16797-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6123E8243F7
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 15:40:12 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF3F38243F9
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 15:40:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F3EB31F249E3
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 14:40:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DC287B23846
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 14:40:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A2692375A;
-	Thu,  4 Jan 2024 14:39:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E824823749;
+	Thu,  4 Jan 2024 14:40:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="OwgrRQ0r"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CmMMliqp"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2BB623741
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 14:39:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1704379195;
-	bh=LwJiWNixgLxt6lWwrlS02C+4POupia0P98Da0BOUfU0=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=OwgrRQ0rIDcc/jUhiQv/PCwYmkZNCxYNoy5da/8UTYUGsfAetij6ESu41hWpT1oDb
-	 LmiUYP4ljJJkyONMuLwqiM7bFOYZHW7/MXHqZh6r9jlgh4FQv9/8F376VIVCrxM5gE
-	 QE8n9xStFBpK1KS2EOfXqRBR7Eut5dmc37QM5stdlhqHX7hPMN/XrgUbA648f9MP8x
-	 DiOZEXiQge4FSZMPm+vfoWNSKRDWvL9JHkjW5ZXqmZqV0sctX9e2uiuSRffCH/gFeu
-	 Ipaqr2E/Ezy5HiF3wko5tNF2J6dhQkFwSEbbOR3GgGue6Jnfr8DOibb3r6WrvoxMmz
-	 6GY0PHjmz1Z0Q==
-Received: from localhost (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: cristicc)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id B9BB4378201D;
-	Thu,  4 Jan 2024 14:39:54 +0000 (UTC)
-From: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
-To: Sandy Huang <hjc@rock-chips.com>,
-	=?UTF-8?q?Heiko=20St=C3=BCbner?= <heiko@sntech.de>,
-	Andy Yan <andy.yan@rock-chips.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>
-Cc: dri-devel@lists.freedesktop.org,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F09822F10;
+	Thu,  4 Jan 2024 14:40:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0633AC433C7;
+	Thu,  4 Jan 2024 14:40:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704379221;
+	bh=mKB4DEZxIw57eKu739it6g3eVDl5U5ssEGaV5HTsHMo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=CmMMliqpZQ3d3p5RkVIPwbQ8Unhh9n57IKcVI9zAgcZFqIqGa9h0Hu+55ZdK0D5nq
+	 wt6xrFMuRiHKv/RvSMSvDQFyGvXZxrodci/0xVv4XS49CDNeNLVxXvmY3QEZhQHayg
+	 daO/lorO4VIRrEm//7YzcjlSaAzPRU+1qK7nNO7IptjTby4G8GP/yybFjxN5CN3L7f
+	 UnTX0iHH4qx/J9L22NBgxcfDBVKYRDTZrnbVvl2NMekyRJ9x5bvZVHeLJFOd3DXFyH
+	 1obF2vxG5o8SLmHhqrTE6QMA3pUGnaA2Jlw+hSvh1a+6tx0CfrWYTq2Qr1laOTlWAj
+	 mRjU16QNsUJqA==
+Date: Thu, 4 Jan 2024 14:40:13 +0000
+From: Will Deacon <will@kernel.org>
+To: Nadav Amit <nadav.amit@broadcom.com>
+Cc: Jisheng Zhang <jszhang@kernel.org>,
+	Aneesh Kumar K V <aneesh.kumar@linux.ibm.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Nick Piggin <npiggin@gmail.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>, Arnd Bergmann <arnd@arndb.de>,
+	linux-arch@vger.kernel.org, linux-mm <linux-mm@kvack.org>,
 	linux-arm-kernel@lists.infradead.org,
-	linux-rockchip@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	kernel@collabora.com
-Subject: [PATCH] drm/rockchip: vop2: Drop unused if_dclk_rate variable
-Date: Thu,  4 Jan 2024 16:39:50 +0200
-Message-ID: <20240104143951.85219-2-cristian.ciocaltea@collabora.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240104143951.85219-1-cristian.ciocaltea@collabora.com>
-References: <20240104143951.85219-1-cristian.ciocaltea@collabora.com>
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	linux-riscv@lists.infradead.org, Nadav Amit <namit@vmware.com>,
+	Andrea Arcangeli <aarcange@redhat.com>,
+	Andy Lutomirski <luto@kernel.org>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	Thomas Gleixner <tglx@linutronix.de>, Yu Zhao <yuzhao@google.com>,
+	the arch/x86 maintainers <x86@kernel.org>
+Subject: Re: [PATCH 1/2] mm/tlb: fix fullmm semantics
+Message-ID: <20240104144013.GA7179@willie-the-truck>
+References: <20231228084642.1765-1-jszhang@kernel.org>
+ <20231228084642.1765-2-jszhang@kernel.org>
+ <204B6410-2EFA-462B-9DF7-64CC5F1D3AD2@broadcom.com>
+ <ZZN35DTJTNExCNXW@xhacker>
+ <0468E994-273E-4A8B-A521-150723DA9774@broadcom.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <0468E994-273E-4A8B-A521-150723DA9774@broadcom.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 
-Commit 5a028e8f062f ("drm/rockchip: vop2: Add support for rk3588")
-introduced a variable which ended up being unused.  Remove it.
+On Thu, Jan 04, 2024 at 03:26:43PM +0200, Nadav Amit wrote:
+> 
+> 
+> > On Jan 2, 2024, at 4:41 AM, Jisheng Zhang <jszhang@kernel.org> wrote:
+> > 
+> > On Sat, Dec 30, 2023 at 11:54:02AM +0200, Nadav Amit wrote:
+> > 
+> >> 
+> >> My knowledge of arm64 is a bit limited, but the code does not seem
+> >> to match the comment, so if it is correct (which I strongly doubt),
+> >> the comment should be updated.
+> > 
+> > will do if the above change is accepted by arm64
+> 
+> Jisheng, I expected somebody with arm64 knowledge to point it out, and
+> maybe I am wrong, but I really don’t understand something about the
+> correctness, if you can please explain.
+> 
+> In the following code:
+> 
+> --- a/arch/arm64/include/asm/tlb.h
+> +++ b/arch/arm64/include/asm/tlb.h
+> @@ -62,7 +62,10 @@ static inline void tlb_flush(struct mmu_gather *tlb)
+> 	 * invalidating the walk-cache, since the ASID allocator won't
+> 	 * reallocate our ASID without invalidating the entire TLB.
+> 	 */
+> -	if (tlb->fullmm) {
+> +	if (tlb->fullmm)
+> +		return;
+> 
+> You skip flush if fullmm is on. But if page-tables are freed, you may
+> want to flush immediately and not wait for ASID to be freed to avoid
+> speculative page walks; these walks at least on x86 caused a mess.
+> 
+> No?
 
-rockchip_drm_vop2.c:1688:23: warning: variable ‘if_dclk_rate’ set but not used [-Wunused-but-set-variable]
+I think Catalin made the same observation here:
 
-Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
----
- drivers/gpu/drm/rockchip/rockchip_drm_vop2.c | 2 --
- 1 file changed, 2 deletions(-)
+https://lore.kernel.org/r/ZZWh4c3ZUtadFqD1@arm.com
 
-diff --git a/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c b/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c
-index 44508c2dd614..923985d4161b 100644
---- a/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c
-+++ b/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c
-@@ -1685,7 +1685,6 @@ static unsigned long rk3588_calc_cru_cfg(struct vop2_video_port *vp, int id,
- 	unsigned long dclk_core_rate = v_pixclk >> 2;
- 	unsigned long dclk_rate = v_pixclk;
- 	unsigned long dclk_out_rate;
--	unsigned long if_dclk_rate;
- 	unsigned long if_pixclk_rate;
- 	int K = 1;
- 
-@@ -1700,7 +1699,6 @@ static unsigned long rk3588_calc_cru_cfg(struct vop2_video_port *vp, int id,
- 		}
- 
- 		if_pixclk_rate = (dclk_core_rate << 1) / K;
--		if_dclk_rate = dclk_core_rate / K;
- 		/*
- 		 * *if_pixclk_div = dclk_rate / if_pixclk_rate;
- 		 * *if_dclk_div = dclk_rate / if_dclk_rate;
--- 
-2.43.0
+and it does indeed look broken.
 
+Will
 
