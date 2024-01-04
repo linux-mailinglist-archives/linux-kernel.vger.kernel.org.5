@@ -1,110 +1,106 @@
-Return-Path: <linux-kernel+bounces-17313-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17314-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 22A28824B96
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 00:00:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44BA6824BA5
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 00:05:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C152A283E54
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 23:00:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B7D1F1F23390
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 23:05:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 482212D04E;
-	Thu,  4 Jan 2024 23:00:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8048C2D044;
+	Thu,  4 Jan 2024 23:05:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="X+Cy8w5P"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="FzE5+kcx"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C636B2D021;
-	Thu,  4 Jan 2024 23:00:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F3CC2D036
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 23:05:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704409230; x=1735945230;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=eUSl6twQDRvrorNSmJ/BZ9tkh354py9VtT/zmjpFypY=;
-  b=X+Cy8w5PBs4Bx94DGrPqr+cUmq5jcTF8e+1LzT166/EGsQtWSba4s3el
-   /kOvFXlxSmHl0puMl02R39iF6VgDDxDCeqdXPzsKchVwf92XxW5kAvjJp
-   cQMn1RyJSqE/k9uCqLR8KfI+F99YjvfEPAYIArH8RaLiaZrJxAOaAhfnj
-   Hh70hyXZC7ExgdxavF5EfRmBzQiuSN6A4l7ZYp96wFlEZPkVDCK+Ewb+1
-   HqMj0CP22fbU0Vbz5CRN/aGUKWS0Xu4v22RcEvaofakV+8OoqFz1Gjr8u
-   WcGGRSlhYBbsMcg7n29LoFQpt9ejS+hRVimKZg4vsJbhkmj6PFh3s+hnW
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10943"; a="4753067"
+  t=1704409507; x=1735945507;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=IY6Y+zNUDd3d8W+JgN5MeSLpL+uYQSsqqduTTLgXNlQ=;
+  b=FzE5+kcxMlOLO6dL0VerM4dlVdR2DlYxAmgYfRJvCCwupoxS/SCyb2RL
+   +q7eu1TMljDOXo1BFOrtUW81KBnDk50DH/JXTrABavtJuRo5+xm3MlXo9
+   4bxjpqzP6KoGUwVUDnjTzWo5uH9NfO99w/aOxxBFVeZGO60AFzErfgSC3
+   +lvoLo5wsVavDjBLtTYdVDKm84TT/+mN+jXs/AV1h3OP+oFVUUihJZGsm
+   g3mFMNg9YEvNVb6qvZ1ZuXHGi9YMN3NF8hQ3YbI1xaeVc8vfgcZTMeSbg
+   Q0bWlvuoSdubVhtd1BKoeub5lgOhtXIpHiv0lSXGmC/A/ovsN0nI2+axh
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10943"; a="4491730"
 X-IronPort-AV: E=Sophos;i="6.04,332,1695711600"; 
-   d="scan'208";a="4753067"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2024 15:00:29 -0800
+   d="scan'208";a="4491730"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2024 15:05:07 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10943"; a="903974938"
+X-IronPort-AV: E=McAfee;i="6600,9927,10943"; a="730304240"
 X-IronPort-AV: E=Sophos;i="6.04,332,1695711600"; 
-   d="scan'208";a="903974938"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by orsmga004.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 04 Jan 2024 15:00:28 -0800
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+   d="scan'208";a="730304240"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by orsmga003.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 04 Jan 2024 15:05:06 -0800
+Received: from orsmsx602.amr.corp.intel.com (10.22.229.15) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 4 Jan 2024 15:00:27 -0800
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ 15.1.2507.35; Thu, 4 Jan 2024 15:05:05 -0800
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 4 Jan 2024 15:00:27 -0800
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Thu, 4 Jan 2024 15:00:27 -0800
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.168)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ 15.1.2507.35 via Frontend Transport; Thu, 4 Jan 2024 15:05:05 -0800
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.169)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Thu, 4 Jan 2024 15:00:27 -0800
+ 15.1.2507.35; Thu, 4 Jan 2024 15:05:05 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YFFHK21s0tHS4Ge/8WQzLFxNaOXkzsxVHuBj0baK+5qO9alu1jjo7q9LTempxr3JF6DBc8yVzwxTk0Vn3wQ8EP6LHBq5dEymWmHLqZNu/dSa/APWLe6GBlNHQbMa5PfDZCVK+tS3JsJK9gS0MYFqOC2phhO0yygZorwl6u5yUhWNp8w9sOIGyX8tOpmXtcX8vPB/76TPxGEKiAra3x4rCM6GPoaUvOpQWIISdtIXj97bxmEcCWYnv1JKmKbFOoSC4w6DoM37cYNmD3f92JVu+GRDRLFD4nvCB1PjnxyhHxtvE+pIF5qzCnizo7VJTtu8zbz8RW7duedSz6iTl5Vy2Q==
+ b=Dfo3AEzcEDru1hYfd+ilO7RkGNObyUiER35sTMi9EQP6KUHPoEfwCEqRQJYC0lQCkRnoHKdZNJXd8k0YCcySffameJtFjG6rDOBZQwZeyWvNAMImw1dgszGZzkeQ9ujvQ71pnxwlWn5LjrtdoGRF2JL1K7p+z6Jd/OeT8mP+4/8tImkT0PFEEcqjNZTfvlfBastVu4chGD+WcP4WeeN2cWVL+zdgLdqNHIh/JKgQK0ep8vEDUc0L7+nzrBWLbc6YGVajGhX7CqtN9uuJMmt07wvYm1225ri5k1keUZcoJYWGZhx5lY5nJTkeqPx4jZ96WBIf2K8VxcvLYYSnQjo0fA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=9d/mMwiNgC8br4rhhsDvUrlcQ5z7d0yRzRjFottYu+U=;
- b=ZF02Uvj1fE+rNbubZ23Aw5vokVbpMDrUfoVmgpd4v3PF6GitCcLFDdhM7p/J4IHVr5O5u8/UIGR8VHj04m5XV3MJ7cjnoo6XwkcI1SekjUQMmbtdkMqwSDnsyzYmno9NRv8Njo2rrOeJLn+8+4RJbagJ9B2yKFt0toieKtPxL0EQsSn80UNaMR6cHIjKayG2fVB/MQ2JJvRGbXHLx/H9irATl9BjwhweHI5RGZNsjbBCgEpFWKRO4Tp9gmc1lKvjGnpDNmOmeR8PuHAvexe07apZbHMnuJdeU87gd9itB7zzNDrDnZNsxMqul8I9vvQsvaL8kSQcxDJXVla4vZ9f7Q==
+ bh=8Yv5Kb1obta/Y6MtpWqEHLhmtt5ecNutSnz4B/oSFPg=;
+ b=YJP2JBNmgSYgBcpgSwVrwAG3tQkEFPHSwsF8c+HjW2cVFJyXr1bU8OYF7YfqryawXOkkFyj6LVSHNc5gabIp8xziP9Dqew3+ZzwhUuZURBKfqClHORMBR/XNl2a9/kIjCL1KAXr/lfDxUBtMARazZn6jHAnK3pDc1snCfy8IiCkGmqvHBUgxwnZ20pppuZaab6rlo3qEqj5f+7iyexpJfeoADhOIVx/bkyY8pJDVc7XFlWNMnYPKaBC83Rqt7RcH+J7WCAYJGH+mzSvuNlKjETv8HyoNHyw7NAsZ9iPeg+nUao8jmbtOl1HmrpVQutpShLEFLNBmPJwaCtdFwTOr1g==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
  dkim=pass header.d=intel.com; arc=none
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from SA1PR11MB6733.namprd11.prod.outlook.com (2603:10b6:806:25c::17)
- by SA1PR11MB6565.namprd11.prod.outlook.com (2603:10b6:806:250::10) with
+Received: from PH7PR11MB5984.namprd11.prod.outlook.com (2603:10b6:510:1e3::15)
+ by IA1PR11MB6123.namprd11.prod.outlook.com (2603:10b6:208:3ed::7) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.13; Thu, 4 Jan
- 2024 23:00:25 +0000
-Received: from SA1PR11MB6733.namprd11.prod.outlook.com
- ([fe80::da91:dbe5:857c:fa9c]) by SA1PR11MB6733.namprd11.prod.outlook.com
- ([fe80::da91:dbe5:857c:fa9c%4]) with mapi id 15.20.7159.013; Thu, 4 Jan 2024
- 23:00:25 +0000
-Date: Thu, 4 Jan 2024 15:00:21 -0800
-From: Ira Weiny <ira.weiny@intel.com>
-To: Bjorn Helgaas <helgaas@kernel.org>, Ira Weiny <ira.weiny@intel.com>
-CC: Dan Williams <dan.j.williams@intel.com>, Bjorn Helgaas
-	<bhelgaas@google.com>, Jonathan Cameron <jonathan.cameron@huawei.com>, "Smita
- Koralahalli" <Smita.KoralahalliChannabasappa@amd.com>, Shiju Jose
-	<shiju.jose@huawei.com>, Yazen Ghannam <yazen.ghannam@amd.com>, "Davidlohr
- Bueso" <dave@stgolabs.net>, Dave Jiang <dave.jiang@intel.com>, "Alison
- Schofield" <alison.schofield@intel.com>, Vishal Verma
-	<vishal.l.verma@intel.com>, Ard Biesheuvel <ardb@kernel.org>,
-	<linux-efi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-cxl@vger.kernel.org>, <linux-pci@vger.kernel.org>
-Subject: Re: [PATCH v5 8/9] PCI: Define scoped based management functions
-Message-ID: <659738852ffea_2dc8629466@iweiny-mobl.notmuch>
-References: <6597275045fbf_267e82949d@iweiny-mobl.notmuch>
- <20240104223725.GA1829769@bhelgaas>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20240104223725.GA1829769@bhelgaas>
-X-ClientProxiedBy: BYAPR11CA0053.namprd11.prod.outlook.com
- (2603:10b6:a03:80::30) To SA1PR11MB6733.namprd11.prod.outlook.com
- (2603:10b6:806:25c::17)
+ 2024 23:05:03 +0000
+Received: from PH7PR11MB5984.namprd11.prod.outlook.com
+ ([fe80::6f7b:337d:383c:7ad1]) by PH7PR11MB5984.namprd11.prod.outlook.com
+ ([fe80::6f7b:337d:383c:7ad1%4]) with mapi id 15.20.7135.026; Thu, 4 Jan 2024
+ 23:05:03 +0000
+Message-ID: <ff19b03a-8c3a-43ba-8d34-bd4a218b8950@intel.com>
+Date: Thu, 4 Jan 2024 16:04:58 -0700
+User-Agent: Betterbird (Linux)
+Subject: Re: [PATCH] x86/asm: Remove the __iomem annotation of movdir64b()'s
+ dst argument
+To: Kai Huang <kai.huang@intel.com>, <linux-kernel@vger.kernel.org>
+CC: <x86@kernel.org>, <dave.hansen@intel.com>,
+	<kirill.shutemov@linux.intel.com>, <tglx@linutronix.de>, <bp@alien8.de>,
+	<mingo@redhat.com>, <peterz@infradead.org>, <rafael@kernel.org>,
+	<dan.j.williams@intel.com>, <hpa@zytor.com>, <geert@linux-m68k.org>,
+	<bhe@redhat.com>, <akpm@linux-foundation.org>, <rppt@kernel.org>,
+	<frederic@kernel.org>, <xin3.li@intel.com>, <rick.p.edgecombe@intel.com>,
+	<isaku.yamahata@intel.com>, <yuan.yao@intel.com>
+References: <20240104221219.572258-1-kai.huang@intel.com>
+Content-Language: en-US
+From: Dave Jiang <dave.jiang@intel.com>
+In-Reply-To: <20240104221219.572258-1-kai.huang@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SJ2PR07CA0007.namprd07.prod.outlook.com
+ (2603:10b6:a03:505::12) To PH7PR11MB5984.namprd11.prod.outlook.com
+ (2603:10b6:510:1e3::15)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -112,90 +108,166 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SA1PR11MB6733:EE_|SA1PR11MB6565:EE_
-X-MS-Office365-Filtering-Correlation-Id: bd327c27-d7b8-4ac1-6a67-08dc0d78efe6
+X-MS-TrafficTypeDiagnostic: PH7PR11MB5984:EE_|IA1PR11MB6123:EE_
+X-MS-Office365-Filtering-Correlation-Id: fc69d33c-3869-4f83-228f-08dc0d799557
 X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: zUj94XmQS5lz82lwwAxamCo08huL1siUeBf+D9wrWrNNAkbnGyRcWmckEsmLF45wMBPga+ZPk0uGRsYtj9LTe5qGQVt5cyoX4CCiUv1ayE2zYgS7BoKNGDr8sE5/+5bt2bTmtBLFkqPQPq3ESknfcTx6qdiMYiNXmS1U3vY4PuJIad09c6o1yfBQ9qOvqw922D3qgByyBNosyi2/W3ao+OQQ4/r+KzAob+zMCWwfBL02ZA4e4yuigmid+sqwT2QEz6iXV7Zfm5pcc5YEHD8p/h03Z4dl2YTAGJ1O//aoAqj1lhQSQIbmmuoKPd9Sp9tgTYhq2ppI0a4H6Y3vu5ieMliTqoPIxs3EhXJPNR7XD59oARvCuHbOVNccG39jSWoFvXpqRSh/CgeW9XijCzgaAnc3G0DsinIRR/WvTgfZ88jYCRSQ+laWCbaVBuZiUEfgYaDeyC7vxKCI9o6AR8O8kwcG3W9U54A3xit8yzxvBQtcHLGbpI+I0ASk9/wsyPuekuYwsuC0rblHsWLCxKL17y9UQQik5ivoEgN0Hh3FP2uv+PRJVM0y4CWldPyeTovr
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR11MB6733.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(346002)(376002)(39860400002)(366004)(396003)(230922051799003)(1800799012)(64100799003)(451199024)(186009)(38100700002)(82960400001)(86362001)(6506007)(41300700001)(6666004)(6512007)(9686003)(8936002)(8676002)(54906003)(110136005)(316002)(6486002)(478600001)(4326008)(66476007)(66556008)(66946007)(26005)(2906002)(44832011)(5660300002)(7416002);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: yIDj3dH8XFJ15qoYbuzNTnDYnIZbFwsMSvG7QqUSM6qdUCn3Inka/0fEHnyFw++q2Bb224CWpwInPERi6K+cz6picm2addk7gcflD838SefioRgns9ruokGexelEZbDuy4QsVXtgjCkq9t6E/WGemXW70Kfy160zGYsOcPn8e7M/rZkfJanzptNWK3jTfMtIHpWOauncKaf+6uIM2DlHCMSCKZ/Ev24LODFGiM7kFyUJUEnC6WRN9amAUAhZni5NzvjNpvCTc1XNylsm5rU8VvR1a9QPJ/94hciMazrNQfFPNx8QhaKayK38OH4FKcOxtTlp5dYWSI5xe89QYxFJcyyamAUoPYEQuLAEFcwC8r0+uU8kmk9gbYuBJssLpBheej6iKBlLBqo7Wwg6siu2/k9U0iv/FQY8ajQ/c7hl6OhfVQDOHNNJiMpTJbwH3OCwj6pPp5vZVNQOlwTKr8X3oBodagqXkPS836+3nUDGy3N5wxcQj0U2WnzVu5akoarid2z41xa+AWO4j/HunxmXEsrXoPpBC5yG1hdCZQHfR3N9PDiKs5nCU9YNsWEPMVFt8+2VWM7bIr9qFdGOUE94ZK2T2k7oCtEj5vn2h38Z5A1WcMSdPM7eJd4J5V71enmYSwW6+qg1MyjOFoIZTqVtVQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR11MB5984.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(346002)(136003)(376002)(366004)(39860400002)(230273577357003)(230173577357003)(230922051799003)(1800799012)(186009)(451199024)(64100799003)(8676002)(8936002)(6666004)(6486002)(83380400001)(66476007)(66556008)(41300700001)(2616005)(53546011)(7416002)(6512007)(6506007)(4326008)(66946007)(316002)(26005)(44832011)(5660300002)(31686004)(478600001)(38100700002)(82960400001)(966005)(2906002)(36756003)(31696002)(86362001)(45980500001);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?8n6VvNkvJghk3ZwMd+idfi/XC5Kd/WorD1pMl9sxt4+yeajc1I5IEBBxxSLW?=
- =?us-ascii?Q?pzJCG6tMI5qXk9Lk9vuL8wO0clX9XntSAwR7o6x+Zskwq05DEmFQn5mR3CtN?=
- =?us-ascii?Q?4Q9JvIPsl7BVYlj5Z4QKNk+RcD3wJR6zNaSHhvWf49lgC6e558xlbyn8WpAJ?=
- =?us-ascii?Q?cqrh+lXPIqgu8pIZffRLsPyI/d4vmxQnkXinA21SZILVz/DYDc5HiJu9TBlC?=
- =?us-ascii?Q?u8fO+aZTYc/xrgHB68RjymS6b/RpSdDgv9FSQpyYEEMAHLvlRG8XiceB11x9?=
- =?us-ascii?Q?pEBFLpLZ5GBAjvRJBLVLKzYvHjKqpINDUr+j2SZiRA2Ke4YCwnVQSEBosP9F?=
- =?us-ascii?Q?uYKY1oS5z7QMCRpiJWgX2clywi0ouzi3zwb2/TPx/xvdt6rYDhXJmoOporBi?=
- =?us-ascii?Q?aK0sGnyHMii2+IoYzWXbI42w5iBvoFbvoFaJOfPyWmAgTST76q1ftBFC29yg?=
- =?us-ascii?Q?+y30g0ANT7OAhIu3ZqHMvSUjMcXEghIQZ+B5fXexj5jRMuiUSu2JmVq4PNyk?=
- =?us-ascii?Q?7F0Yk33mWzCgWkLp2q9IK5F62QbmGL+6I7sbegwhiqvii19lRPJ6GMLfBGzX?=
- =?us-ascii?Q?by72LKjkVeqdiL6zrng4tzwB84QZuKywZrJ8JeuLbClGgOClbw5Y1qHHSTB6?=
- =?us-ascii?Q?JnWN5h/y9SzCYmSbGX3qnx9lHcOiAIyj0q9DJWH4A2UXEROHZpyJsZtjQWbL?=
- =?us-ascii?Q?JJgr4Ab74jZaKI+pzSDfXWE3yZFz5DH2Ge9EDN2g3MfY5Daz/bnQdrSi53+E?=
- =?us-ascii?Q?7zrikXtop/njY6oYuFNP0eaMJ3otLmJ4pseQ1W7Yfx1LvAcMFflMiC83dw0p?=
- =?us-ascii?Q?ot70wH7wOhsqclfgt+TfV4ZOSeEI+6zUQQAIekRZEaMJi7lMQYhtIX0UC/Sg?=
- =?us-ascii?Q?VbWrae9/IjnehbrwuDpOuRBtpJu3rvqVB2XHOe63ZeWuVeOPFkkQvFsFaab6?=
- =?us-ascii?Q?6eewK8i5pIbJ5QdOQZB3BqR4kzP0sZ3ZLBtFckTTgbntGxRMjye5E+hUZ2Fv?=
- =?us-ascii?Q?cc4C3yRRk1mnaaQrth4BqL+vuuiQFqqPQMSv9qBs0VfPyQ7J+/ayHJ/4WYzl?=
- =?us-ascii?Q?iB//MGryxRqfUA1H8IxbpDIXHPOmXIRSqhazoUrPZvawyMD5l5J2I8hkqIBU?=
- =?us-ascii?Q?aqlI15al0xCsXunIo0zjWGz3ZNChPb9j8B/8DbVkCIAMia1z51t+vN+s9t/8?=
- =?us-ascii?Q?2aW/D0qga2VloLlv0CvZ4DPHW/4Jj2NmJr+G1a2u4vJxZoD7m16O0VWdSlc5?=
- =?us-ascii?Q?M9TjGmWipt6xXJZDuzHgoQ2Dpfoq/Lvchr2RlBoH2TA6W1fMJ1yZ7fZqkDkp?=
- =?us-ascii?Q?oPZO8+T4QyOfLAQyLiWxRupEzaZvdC53Vp3PGfm1GzuqQZyrx2QTDV80kWNd?=
- =?us-ascii?Q?L5q8E+zaA75jKXWJEW2gA7tU4lLJubEj9ZgZuEk1/SZl7OYp4XNun+FeM4Dg?=
- =?us-ascii?Q?oDramcYs5b1h9IiWkRtlh9ebz6cq/EHt+8Nyvw1i8TIlgIQjP445np5vlMRX?=
- =?us-ascii?Q?ec0lrIrIbLNNQfhiNktlyutDlDEgm4+VpwCvWwRZKUIhQS1qNj88VbbQDWNS?=
- =?us-ascii?Q?CEd6+CkRv5Zx4WtFiRQ8uHMCBeIWgAnpOrF7WgAl?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: bd327c27-d7b8-4ac1-6a67-08dc0d78efe6
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR11MB6733.namprd11.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Q1RPdEIvRXV2MUtWc05ZdGhOQ3l0bG5QOTBVV1pGSm41bVRDbE9qNmhDU0tL?=
+ =?utf-8?B?TGlWWFRYSmoyS28vbjRMV242Q09LTlloaWZ6ZzVRL05DejM5Q0hOcEU3dWpp?=
+ =?utf-8?B?Kzhxa0gxSGRuTnI3M1ZRZkZZL3Y1NkxaTXJyZi9UU1V4RFFOUmlRWGVlckgv?=
+ =?utf-8?B?bkVGQUdXd01DdVRHZXpjN3lkS2RtSm5ZakliVy9zYXU4ZHZ0MWhJNytQcGFm?=
+ =?utf-8?B?L1NEdGovaUZkc3JtK1JNT0dUT2M4cDVvTmJNeVIvamhUUFdCT3ZUMmZqWG5J?=
+ =?utf-8?B?eVh3d0p6QWp2WTVkWmt0MzlnUUkwSGlHdU1FVTlWbU5qKzdvYjk2R01SUStn?=
+ =?utf-8?B?TFpRc28wRlQ4RllWVjBSWWUrV0Y5ZnJNVHJKZ0FXSjZjdDBOaWV0NUNua2ov?=
+ =?utf-8?B?cXhFdnFGVGd1dkZqYXZ4TmVQRjFYNFIrSExqNTlSdVlDYmlkVTNsc213c05H?=
+ =?utf-8?B?RnJ0aEM2RWZUUks1UlZjanhTVGZEQ25JaEpJTVVMdWRwUmJwNzF2WVJuUHRh?=
+ =?utf-8?B?aVBGbDdGazBodnZHTFNSY2o5WEllcFpwQVIwcDQvY2lGZWFLOFpibnlSNFk2?=
+ =?utf-8?B?Tmh4Slh4ZStmVVJxczZTbkZTd0l2QnNjQ3UwR2xtQlQxMU5STWV3RmhHdWM4?=
+ =?utf-8?B?QkoxSE5XRDFmaksxU1lZQUY4VmVMY3N3ODROTDBTU1NPaGhRcWRGMGhhd1pk?=
+ =?utf-8?B?SVVvRy9OMSs4ZUQ0dVRzRmxmcUhsK0JVMnNFMUFjWk5IekpQdEhQSkVnUTRG?=
+ =?utf-8?B?Q2dPSTZCZG15bzdUY1Y4VnQ2dnhLUE95VTJuL3dlM2R4aloyOWFzMm9nV2JI?=
+ =?utf-8?B?QXhTU2d2VXdLekY1dHVuZndYNDA0bEpndmdJbWJXMzVCbmxDMlEvRjh2TWNT?=
+ =?utf-8?B?UzJibXlJU3Y0aGd5MlVKOVNVckdRc0krTG1zSUpaazNQVUFyMWM1SlhLc0d5?=
+ =?utf-8?B?WkZPR3dkTlMrY2U2elNvL0pGaUZRZ1U5cnhVZHBJMXFvM2pEeGhza3doajFZ?=
+ =?utf-8?B?MmtBQnA5eVlqTEdhNVR3T0NQMHNseTR1OHVlOHRQTXRiMWdBVlV2NmxmRG9W?=
+ =?utf-8?B?a2VWS3AxYjhqWHZLM0NGSi8zKzBtbWhMdENxeCtUNGVQM2lxRTkrOWpHV2t2?=
+ =?utf-8?B?bnhlK2Iwdkxqa0FodCtXSDlxbnZPeHh3cjlQUjB0R1VOaVBzenY3a1ZTaldO?=
+ =?utf-8?B?dURZMkozYllXVUVpY2xuZTUxY3NpT0VPbVR0S3liRnFqZlNWaWlFS254T2ow?=
+ =?utf-8?B?aUJVSVFHaTBXMFErRWNpcGNpcTE2M1dpblYvWHQ0TnpBaUtXRkpNMndpNmRy?=
+ =?utf-8?B?elhpakNaczViY2ZicGRsYkZjQWhqcEtOUTZrY1pkMHpTbUZXS1pKcDBNQU8z?=
+ =?utf-8?B?bWxJSHpiU3VxL2N4c2Q5bUNablpjTUpwaXhoTlV2OXRHZEFiVFlVUWNqQzlv?=
+ =?utf-8?B?NFMvb2Nmb1MyeGdoZVRDNGsxRGJYaE84bmNrTmp1dE5iUlpvdGh6Z2V3eXdx?=
+ =?utf-8?B?Si9iRGdIaWNnVGVTQldLQk4zN2Nsb0prN3pzN3hWZDlVeWQyUG5OejVBSDIx?=
+ =?utf-8?B?aDlGT3VjcFJ5Qlg2aHVNZDNiVDZWSlRFSEVWNDFuZHJObFkzb0hlRWUxZkd4?=
+ =?utf-8?B?R2JGTVRYenhwY0x4QTFLejdjWXQxdVpLNTZ0Q1RjY1NFMzNtUVBrT1h4WWh6?=
+ =?utf-8?B?QUt2TDIyYkpXKzl5cDVsaDY3Y1FuUCsrVCtGUHdpdU1Vdmp3ZVp2Y0FpdWla?=
+ =?utf-8?B?emtIbThnZzhKUjRRZ3QvRFRpS1ZTaUYvN0dVaEdNdFoyU1FueGtMQXp3UEky?=
+ =?utf-8?B?NThpa25ORGFabGVKQVcwWjVaTHRWWVBpV2ZjMGFPVGFIaTVVQlBUaHl6cm9s?=
+ =?utf-8?B?Ky9ZS1hKaTBGeGp3RHpyc000RTBHZUQ3cXk1MUJhTWRQT040Rlg0SFVZRStk?=
+ =?utf-8?B?Y3gwamF1VWNTNk5FV3oyWGdid08xQUt3M1Z0SmQxUFFOWCtrNnRTSWk4bmRK?=
+ =?utf-8?B?NzBNVmh3elY4TXlSbUZFa1RGVGVIS0J2WmxzOWVoN0hZaHptanlGanZ1Zzgy?=
+ =?utf-8?B?azQ5ZTg2RkxXZWJYWlBoZXhkR2pybTNvMTdIUlhuN1E3M0NGREFCUTJsQmtl?=
+ =?utf-8?Q?RKbiuz5ZctMMn0artvj7p+4hR?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: fc69d33c-3869-4f83-228f-08dc0d799557
+X-MS-Exchange-CrossTenant-AuthSource: PH7PR11MB5984.namprd11.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Jan 2024 23:00:25.3964
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Jan 2024 23:05:02.9252
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 07iHAjJckr+M0veKpDGvaDh54X/bHOcZDP9kaBialIWU66GTJM8h8ev31YpxAieqzsaWCSyrjmOijlSv//RW/w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR11MB6565
+X-MS-Exchange-CrossTenant-UserPrincipalName: sUDQudppRMGu2ntWI1ayrF47g6SUBW30o1OO8tjSswe8EQlttvuM0NYOV04aUCZlSAi3KFXckGPhui8rk8b15g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR11MB6123
 X-OriginatorOrg: intel.com
 
-Bjorn Helgaas wrote:
-> On Thu, Jan 04, 2024 at 01:46:56PM -0800, Ira Weiny wrote:
-> > Dan Williams wrote:
-> > > Bjorn Helgaas wrote:
 
-[snip]
 
-> > 
-> > Also in this case we need devfn assigned first.
-> > 
-> > Is the above patch compliant with current style guidelines?
-> > 
-> > Or would it be better to do?
-> > 
-> > diff --git a/drivers/cxl/pci.c b/drivers/cxl/pci.c
-> > index b14237f824cf..8a180c6abb67 100644
-> > --- a/drivers/cxl/pci.c
-> > +++ b/drivers/cxl/pci.c
-> > @@ -975,15 +975,14 @@ static void cxl_cper_event_call(enum cxl_event_type ev_type,
-> >                                 struct cxl_cper_event_rec *rec)
-> >  {
-> >         struct cper_cxl_event_devid *device_id = &rec->hdr.device_id;
-> > -       struct pci_dev *pdev __free(pci_dev_put) = NULL;
-> >         enum cxl_event_log_type log_type;
-> >         struct cxl_dev_state *cxlds;
-> > -       unsigned int devfn;
-> > +       unsigned int devfn = PCI_DEVFN(device_id->device_num, device_id->func_num);
-> > +       struct pci_dev *pdev __free(pci_dev_put) = pci_get_domain_bus_and_slot(
-> > +                                                       device_id->segment_num,
-> > +                                                       device_id->bus_num, devfn);
+On 1/4/24 15:12, Kai Huang wrote:
+> Commit e56d28df2f66 ("x86/virt/tdx: Configure global KeyID on all
+> packages") causes below sparse check warning:
 > 
-> I don't really care about this specific instance; my comment was more
-> about the commit log for the "Define scope based management functions"
-> patch, thinking maybe the example could encourage get/put togetherness
-> when it's practical.
+>   arch/x86/virt/vmx/tdx/tdx.c:683:27: warning: incorrect type in argument 1 (different address spaces)
+>   arch/x86/virt/vmx/tdx/tdx.c:683:27:    expected void [noderef] __iomem *dst
+>   arch/x86/virt/vmx/tdx/tdx.c:683:27:    got void *
+> 
+> The reason is TDX must use the MOVDIR64B instruction to convert TDX
+> private memory (which is normal RAM but not MMIO) back to normal.  The
+> TDX code uses existing movdir64b() helper to do that, but the first
+> argument @dst of movdir64b() is annotated with __iomem.
+> 
+> When movdir64b() was firstly introduced in commit 0888e1030d3e
+> ("x86/asm: Carve out a generic movdir64b() helper for general usage"),
+> it didn't have the __iomem annotation.  But this commit also introduced
+> the same "incorrect type" sparse warning because the iosubmit_cmds512(),
+> which was the solo caller of movdir64b(), has the __iomem annotation.
+> 
+> This was later fixed by commit 6ae58d871319 ("x86/asm: Annotate
+> movdir64b()'s dst argument with __iomem").  That fix was reasonable
+> because until TDX code the movdir64b() was only used to move data to
+> MMIO location, as described by the commit message:
+> 
+>   ... The current usages send a 64-bytes command descriptor to an MMIO
+>   location (portal) on a device for consumption. When future usages for
+>   the MOVDIR64B instruction warrant a separate variant of a memory to
+>   memory operation, the argument annotation can be revisited.
+> 
+> Now TDX code uses MOVDIR64B to move data to normal memory so it's time
+> to revisit.
+> 
+> The SDM says the destination of MOVDIR64B is "memory location specified
+> in a general register", thus it's more reasonable that movdir64b() does
+> not have the __iomem annotation on the @dst.
+> 
+> Remove the __iomem annotation from the @dst argument of movdir64b() to
+> fix the sparse warning in TDX code.  Similar to memset_io(), introduce a
+> new movdir64b_io() to cover the case where the destination is an MMIO
+> location, and change the solo caller iosubmit_cmds512() to use the new
+> movdir64b_io().
+> 
+> In movdir64b_io() explicitly use __force in the type casting otherwise
+> there will be below sparse warning:
+> 
+>   warning: cast removes address space '__iomem' of expression
+> 
+> Fixes: e56d28df2f66 ("x86/virt/tdx: Configure global KeyID on all packages")
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: https://lore.kernel.org/oe-kbuild-all/202312311924.tGjsBIQD-lkp@intel.com/
+> Signed-off-by: Kai Huang <kai.huang@intel.com>
 
-Ok thanks!
-Ira
+Reviewed-by: Dave Jiang <dave.jiang@intel.com>
+
+> ---
+>  arch/x86/include/asm/io.h            | 2 +-
+>  arch/x86/include/asm/special_insns.h | 9 +++++++--
+>  2 files changed, 8 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/x86/include/asm/io.h b/arch/x86/include/asm/io.h
+> index 76238842406a..de2dc9837f11 100644
+> --- a/arch/x86/include/asm/io.h
+> +++ b/arch/x86/include/asm/io.h
+> @@ -379,7 +379,7 @@ static inline void iosubmit_cmds512(void __iomem *dst, const void *src,
+>  	const u8 *end = from + count * 64;
+>  
+>  	while (from < end) {
+> -		movdir64b(dst, from);
+> +		movdir64b_io(dst, from);
+>  		from += 64;
+>  	}
+>  }
+> diff --git a/arch/x86/include/asm/special_insns.h b/arch/x86/include/asm/special_insns.h
+> index d6cd9344f6c7..f661277e52d6 100644
+> --- a/arch/x86/include/asm/special_insns.h
+> +++ b/arch/x86/include/asm/special_insns.h
+> @@ -224,10 +224,10 @@ static inline void serialize(void)
+>  }
+>  
+>  /* The dst parameter must be 64-bytes aligned */
+> -static inline void movdir64b(void __iomem *dst, const void *src)
+> +static inline void movdir64b(void *dst, const void *src)
+>  {
+>  	const struct { char _[64]; } *__src = src;
+> -	struct { char _[64]; } __iomem *__dst = dst;
+> +	struct { char _[64]; } *__dst = dst;
+>  
+>  	/*
+>  	 * MOVDIR64B %(rdx), rax.
+> @@ -245,6 +245,11 @@ static inline void movdir64b(void __iomem *dst, const void *src)
+>  		     :  "m" (*__src), "a" (__dst), "d" (__src));
+>  }
+>  
+> +static inline void movdir64b_io(void __iomem *dst, const void *src)
+> +{
+> +	movdir64b((void __force *)dst, src);
+> +}
+> +
+>  /**
+>   * enqcmds - Enqueue a command in supervisor (CPL0) mode
+>   * @dst: destination, in MMIO space (must be 512-bit aligned)
+> 
+> base-commit: 83e1bdc94f32dcf52dfcd2025acc7a2b9376b1e8
 
