@@ -1,147 +1,125 @@
-Return-Path: <linux-kernel+bounces-16988-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16989-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 202A78246E8
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 18:11:52 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 411848246EB
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 18:12:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B1CE31F239AF
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 17:11:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 501781C22327
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 17:12:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1201B25578;
-	Thu,  4 Jan 2024 17:11:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46E2C25578;
+	Thu,  4 Jan 2024 17:12:10 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-oo1-f48.google.com (mail-oo1-f48.google.com [209.85.161.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CB7E25562;
-	Thu,  4 Jan 2024 17:11:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f48.google.com with SMTP id 006d021491bc7-59614694ca2so104632eaf.1;
-        Thu, 04 Jan 2024 09:11:41 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704388300; x=1704993100;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rhZv6WKE21ijDjkX//WJHcBwftHQ98gnRwrr5hSH+/g=;
-        b=k46nqwfpEj7Ci8klWm4VWhhmPO6rWy15OQnLEcgWyyfkHFHEtcSGS8hkTjsHa5qhdi
-         vgagpzbpC0ksCMzFRkinZs9bhHQyEdfgIHT+cQVjJkPZ8wwGT0ydjs+CHcZLNW5w81z0
-         TxFylD171NjkSw0yl9AX2VEl4P3uU7+ROsay4tvehndyI9DKO9wkHYE8c+qpRwqXSO9t
-         uFlwnz+1GBjEdUDWH13MF1+0izwrXhdL0MVT8oaeKWtwvC9G+v/EvJkycQ5o5nTGqvJx
-         A+kGahCwf9Zq50k+OZCQDYKT7rayfZq1M2p8AcBOgYJzQzse6AuSGkkE53vANo8mUpxo
-         a48w==
-X-Gm-Message-State: AOJu0YxWJ4cnE3P1ul5y6hGABucurm3lFtyl3MD75W6iRJwMd0uuQY7z
-	ZP8a8EZ9pYM9qRykdUowFHTWWUbgWwAi63Jc2aU=
-X-Google-Smtp-Source: AGHT+IFEEFQaBzfWwAvTtOe/ABYhj0GW7g/hP6FBd9e54ozQGSs863YGil9cJ11drqzai3yQoGhWif48Sqz5xsSQfFA=
-X-Received: by 2002:a4a:e70a:0:b0:596:27ee:455d with SMTP id
- y10-20020a4ae70a000000b0059627ee455dmr1544834oou.0.1704388300249; Thu, 04 Jan
- 2024 09:11:40 -0800 (PST)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A5DE2556C;
+	Thu,  4 Jan 2024 17:12:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3805BC15;
+	Thu,  4 Jan 2024 09:12:53 -0800 (PST)
+Received: from [192.168.178.6] (unknown [172.31.20.19])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E29513F64C;
+	Thu,  4 Jan 2024 09:12:04 -0800 (PST)
+Message-ID: <a42ae8dd-383c-43c0-88b4-101303d6f548@arm.com>
+Date: Thu, 4 Jan 2024 18:11:56 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240104024819.848979-1-kai.heng.feng@canonical.com>
- <CAJZ5v0gNa7XvUo3B1srXaWBrWx+Bx=w=D7ddi-mqda8xBdWwCQ@mail.gmail.com> <ZZbR4X6z9wkSESzD@mail.minyard.net>
-In-Reply-To: <ZZbR4X6z9wkSESzD@mail.minyard.net>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Thu, 4 Jan 2024 18:11:29 +0100
-Message-ID: <CAJZ5v0ibP7Kn1SgY2QK+7Ky_d0UjKG3CpG+hH+cEaCRG4EdDVg@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] ACPI: IPMI: Add helper to wait for when SMI is selected
-To: minyard@acm.org
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Kai-Heng Feng <kai.heng.feng@canonical.com>, jdelvare@suse.com, 
-	linux@roeck-us.net, Len Brown <lenb@kernel.org>, Robert Moore <robert.moore@intel.com>, 
-	linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	acpica-devel@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] OPP: Add API to update EM after adjustment of voltage
+ for OPPs
+To: Lukasz Luba <lukasz.luba@arm.com>, Viresh Kumar <viresh.kumar@linaro.org>
+Cc: linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, sboyd@kernel.org, nm@ti.com,
+ linux-samsung-soc@vger.kernel.org, daniel.lezcano@linaro.org,
+ rafael@kernel.org, krzysztof.kozlowski@linaro.org, alim.akhtar@samsung.com,
+ m.szyprowski@samsung.com, xuewen.yan94@gmail.com, mhiramat@kernel.org,
+ qyousef@layalina.io, wvw@google.com
+References: <20231220110339.1065505-1-lukasz.luba@arm.com>
+ <20231220110339.1065505-2-lukasz.luba@arm.com>
+ <20231226051228.oe7rpgf34nwgr5ah@vireshk-i7>
+ <9c1fa923-403f-4c98-b03e-37e467366284@arm.com>
+Content-Language: en-US
+From: Dietmar Eggemann <dietmar.eggemann@arm.com>
+In-Reply-To: <9c1fa923-403f-4c98-b03e-37e467366284@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Thu, Jan 4, 2024 at 4:42=E2=80=AFPM Corey Minyard <minyard@acm.org> wrot=
-e:
->
-> On Thu, Jan 04, 2024 at 02:34:52PM +0100, Rafael J. Wysocki wrote:
-> > On Thu, Jan 4, 2024 at 3:48=E2=80=AFAM Kai-Heng Feng
-> > <kai.heng.feng@canonical.com> wrote:
-> > >
-> > > The function of acpi_power_meter module on Dell system requires IPMI
-> > > handler is installed and SMI is selected.
-> >
-> > Does the firmware use _DEP to let the OS know about this dependency?
-> >
-> > > So add a helper to let acpi_power_meter know when IPMI handler and SM=
-I
-> > > are ready.
-> > >
-> > > Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-> > > ---
-> > > v3:
-> > >  - New patch.
-> > >
-> > >  drivers/acpi/acpi_ipmi.c | 17 ++++++++++++++++-
-> > >  include/acpi/acpi_bus.h  |  5 +++++
-> > >  2 files changed, 21 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/drivers/acpi/acpi_ipmi.c b/drivers/acpi/acpi_ipmi.c
-> > > index 0555f68c2dfd..54862cab7171 100644
-> > > --- a/drivers/acpi/acpi_ipmi.c
-> > > +++ b/drivers/acpi/acpi_ipmi.c
-> > > @@ -23,6 +23,8 @@ MODULE_LICENSE("GPL");
-> > >  #define IPMI_TIMEOUT                   (5000)
-> > >  #define ACPI_IPMI_MAX_MSG_LENGTH       64
-> > >
-> > > +static struct completion smi_selected;
-> > > +
-> > >  struct acpi_ipmi_device {
-> > >         /* the device list attached to driver_data.ipmi_devices */
-> > >         struct list_head head;
-> > > @@ -463,8 +465,10 @@ static void ipmi_register_bmc(int iface, struct =
-device *dev)
-> > >                 if (temp->handle =3D=3D handle)
-> > >                         goto err_lock;
-> > >         }
-> > > -       if (!driver_data.selected_smi)
-> > > +       if (!driver_data.selected_smi) {
-> > >                 driver_data.selected_smi =3D ipmi_device;
-> > > +               complete(&smi_selected);
-> > > +       }
-> > >         list_add_tail(&ipmi_device->head, &driver_data.ipmi_devices);
-> > >         mutex_unlock(&driver_data.ipmi_lock);
-> > >
-> > > @@ -578,10 +582,21 @@ acpi_ipmi_space_handler(u32 function, acpi_phys=
-ical_address address,
-> > >         return status;
-> > >  }
-> > >
-> > > +int acpi_wait_for_acpi_ipmi(void)
-> > > +{
-> > > +       long ret;
-> > > +
-> > > +       ret =3D wait_for_completion_interruptible_timeout(&smi_select=
-ed, 2 * HZ);
-> > > +
-> > > +       return ret > 0 ? 0 : -ETIMEDOUT;
-> >
-> > What will happen if the IPMI driver is unloaded after this has returned=
- 0?
->
-> The IPMI driver can't be unloaded if it has a user.
+On 04/01/2024 11:38, Lukasz Luba wrote:
+> Hi Viresh,
+> 
+> On 12/26/23 05:12, Viresh Kumar wrote:
+>> On 20-12-23, 11:03, Lukasz Luba wrote:
+>>> There are device drivers which can modify voltage values for OPPs. It
+>>> could be due to the chip binning and those drivers have specific chip
+>>> knowledge about this. This adjustment can happen after Energy Model is
+>>> registered, thus EM can have stale data about power.
+>>>
+>>> Introduce new API function which can be used by device driver which
+>>> adjusted the voltage for OPPs. The implementation takes care about
+>>> calculating needed internal details in the new EM table ('cost' field).
+>>> It plugs in the new EM table to the framework so other subsystems would
+>>> use the correct data.
+>>>
+>>> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+>>> ---
+>>>   drivers/opp/of.c       | 69 ++++++++++++++++++++++++++++++++++++++++++
+>>>   include/linux/pm_opp.h |  6 ++++
+>>>   2 files changed, 75 insertions(+)
+>>>
+>>> diff --git a/drivers/opp/of.c b/drivers/opp/of.c
+>>> index 81fa27599d58..992434c0b711 100644
+>>> --- a/drivers/opp/of.c
+>>> +++ b/drivers/opp/of.c
+>>> @@ -1596,3 +1596,72 @@ int dev_pm_opp_of_register_em(struct device
+>>> *dev, struct cpumask *cpus)
+>>>       return ret;
+>>>   }
+>>>   EXPORT_SYMBOL_GPL(dev_pm_opp_of_register_em);
+>>> +
+>>> +/**
+>>> + * dev_pm_opp_of_update_em() - Update Energy Model with new power
+>>> values
+>>> + * @dev        : Device for which an Energy Model has to be registered
+>>> + *
+>>> + * This uses the "dynamic-power-coefficient" devicetree property to
+>>> calculate
+>>> + * power values for EM. It uses the new adjusted voltage values
+>>> known for OPPs
+>>> + * which have changed after boot.
+>>> + */
+>>> +int dev_pm_opp_of_update_em(struct device *dev)
+>>
+>> I don't see anything OPP or OF related in this function, I don't think
+>> it needs
+>> to be part of the OPP core. You just want to reuse _get_power() I
+>> guess, which
+>> can be exported then.
+>>
+>> This should really be part of the EM core instead.
+>>
+> 
+> Thank you for having a look at this. OK, that makes sense.
+> When I finish the EM runtime modification core features and get them
+> merged, I'll continue to work on this patch set. I'll try to follow
+> your comment here and export that function (with a different name
+> probably).
 
-Because of the use of the exported symbol, right?
+Just to make sure: If this is the case then you could also add
+em_dev_compute_costs() with this new patch instead providing it with the
+'Introduce runtime modifiable Energy Model' patch-set?
 
-> I've been following this, but I know little about ACPI.  Beyond this
-> solution, the only other solution I could come up with was to start the
-> IPMI driver earlier.  But then you are in a chicken-and-egg situation
-> (https://dictionary.cambridge.org/dictionary/english/chicken-and-egg-situ=
-ation).
-> Which was the reason for the SPMI table, but that's really kind of
-> useless for this, even if the SPMI table existed.
+This would keep dev_pm_opp_of_update_em() and em_dev_compute_costs()
+together. IIRC, all the other new EM interfaces you already use with
+your 'modifiable EM' use case: '[PATCH v5 14/23] PM: EM: Support late
+CPUs booting and capacity adjustment'.
 
-Fine.
 
-Let me reply to the patch with some more comments then.
 
