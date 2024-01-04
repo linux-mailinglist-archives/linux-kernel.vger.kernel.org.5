@@ -1,70 +1,70 @@
-Return-Path: <linux-kernel+bounces-17254-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17255-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3C962824A78
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 22:50:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A8B5A824A7A
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 22:50:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 35BCB1C226A2
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 21:50:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 63EC11F2345D
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 21:50:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E52D2C851;
-	Thu,  4 Jan 2024 21:50:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9C152CCB4;
+	Thu,  4 Jan 2024 21:50:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="C9X8YWpQ"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="gXVti8pJ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
+Received: from mail-pj1-f73.google.com (mail-pj1-f73.google.com [209.85.216.73])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C99D2C6B4
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 21:50:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DB792C871
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 21:50:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--arakesh.bounces.google.com
-Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-5e9de9795dfso19201827b3.0
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 13:50:13 -0800 (PST)
+Received: by mail-pj1-f73.google.com with SMTP id 98e67ed59e1d1-28c05e74e36so982982a91.0
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 13:50:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1704405013; x=1705009813; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1704405017; x=1705009817; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=vr/OBsTWvGDiBKievrq74k8mPQfV1kdauoMo8LQ/tKk=;
-        b=C9X8YWpQAaJNrOHmiZHduX+qHhz74Buc/ehbei978YX1JakLX4HJf/AoBdZP9ufDqs
-         vvXWD61C9AEYH9xLk1kolhEY4mzoer5I+ecudx+8HXH6opiVSv1CBLcBi2eT4r8eT32V
-         IzKr31cNxn/81GKBN4kqhOWrW7WwzHlYb7hhjjwy7ogeDR8TYSeJ9rdaw7kwbtEQ37YF
-         l/mqWLnF7/tylc8aUSboY4IQCz379tSCosTl1blcjV0IcaWdhVYE2g87pWjms8e7+PW5
-         hfs+j++0z8yKo+InDS3Cla57/whu5IHKPT0lRJB6k0Wwk0cOckyJ+WwObWdAwGTcfc9w
-         +9OA==
+        bh=w5MKHKztC7x8oMRAwxikjHpMa6UtBIIOu9HjDctnSZc=;
+        b=gXVti8pJDnBaztizqwCBnrrOGp3l+lNkHIDaIfOu4+f4Q8RoTqLwcsV2vE9YaExgCp
+         nAfvCMe9z6iK1EW5yFFJu4YezqjFHn6SqCc4sQKLzgcDxRkKDOIs3Crk7cfU8+XiRUfl
+         sPr964entFWYV+EvUXIf1nSveBPiZ3q7ghTegEenQ78LAviL5CuLKdx5MaA63IAYVEm7
+         Ut2U0a8KTipMLVIxXAqt/Tc6NLbBzjhUxled52FovWam+eECJD8rtf9Y3lbiz4bJJO5r
+         89SJHv48De5Ad2C5UQzAPwvMXbIVhnF8maFwC4+aU4OYqPUuQrwqsvhxyO+zrAlAexwT
+         /YPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704405013; x=1705009813;
+        d=1e100.net; s=20230601; t=1704405017; x=1705009817;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vr/OBsTWvGDiBKievrq74k8mPQfV1kdauoMo8LQ/tKk=;
-        b=PaRL9uYkSwqjlKh/5enPCmYikLW9GtNo1NqbpoouIUtA7JWDE2wWkHFnbxyOqCATzr
-         V8bz08oeJywQ4Mldw+y0QwO2ovB0ULGcpccMmbEAYK7qpYw/p+36UV1GyyEYr+CKsk2M
-         J06Gtqd32LP2FE1XwtmQFUZ6ZFmaecMionYZO7Ryw7aEJJYKdyQ3L74SHUi/1Y2rsbag
-         LWGJQpY5IOtV9cnwakAxY52uakDD1lmGmMYSJUPQWM8NsVAIBC5nFanX3LplCZj074b/
-         SdqMY0plukWZyciEd4NMbkkcq09KsFO1RPx4BEn/hbjYSgt9I547MYO5kxhWV27SV9Zv
-         cL3A==
-X-Gm-Message-State: AOJu0YxNQ3YO29GG5WR24DFLaQLMPcBscq1x2dYzJLmc0Mmd0VdFyLZf
-	3po/+VNGBf55cBrZtO0DOG9QfpZm9r2fpH0VY8c=
-X-Google-Smtp-Source: AGHT+IHX11kdbCtYUTemM/UsbhmAPpGN/iCqaRNkAgvtkryuwnIP7VFMH0PU+nqEjfZUwAMuJZiUdTuwaCLp
+        bh=w5MKHKztC7x8oMRAwxikjHpMa6UtBIIOu9HjDctnSZc=;
+        b=c6FQkaxkNsyaikBbh3wL3eOb8zmKEAB6rrgnCY5dUwRWHSFtNrlAX5B72GR2NbRbNO
+         BR1Ao4j69aFMK8p0ViSnBqtnVmaTC4WmpNZtGMr2E1xE/p0MEgSCy50vAcqP83naR/db
+         7JRtFM2zuC5BZyMRUE14gYuPRRDVwVgj2Wd23d0HGn/O+SZfhivXoNeuh2YX5EM61YVH
+         AN0g1Gu1LFt1lI6Q2MPQdH/sSpgmR4JPGiVSp4lioY9IQ/ooR/XOtmjVl1CKIo1LkGRV
+         0hv4VHIP2RxCSoQ/JPbmkIiv69kBkNDlmMUGQnMCyxeIdrqiiKP0NgKp4niBcQzylrva
+         ejQA==
+X-Gm-Message-State: AOJu0YzIE+myfDhk6NQepiEybH+kYdUxEECCdrRtwUb0Zu9+NP6nau7M
+	l3hgOJnXlt9nWFxoWaIeJkqWIV2rFAY9aBeXEm8=
+X-Google-Smtp-Source: AGHT+IFJzA6S63F1o2X9Uiv6Huk3vPIJcT/iIlX8KNpC6tCCwRjEHHHRnKAeZKFUnf9T5VCq5PftZj5WddSt
 X-Received: from hi-h2o-specialist.c.googlers.com ([fda3:e722:ac3:cc00:24:72f4:c0a8:3cef])
- (user=arakesh job=sendgmr) by 2002:a25:ef11:0:b0:dbe:9dbe:adb6 with SMTP id
- g17-20020a25ef11000000b00dbe9dbeadb6mr436407ybd.4.1704405013049; Thu, 04 Jan
- 2024 13:50:13 -0800 (PST)
-Date: Thu,  4 Jan 2024 13:50:08 -0800
-In-Reply-To: <20231215210746.821494-1-arakesh@google.com>
+ (user=arakesh job=sendgmr) by 2002:a17:90b:33ce:b0:28b:e0cd:64a4 with SMTP id
+ lk14-20020a17090b33ce00b0028be0cd64a4mr13149pjb.3.1704405017283; Thu, 04 Jan
+ 2024 13:50:17 -0800 (PST)
+Date: Thu,  4 Jan 2024 13:50:09 -0800
+In-Reply-To: <20240104215009.2252452-1-arakesh@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
-References: <20231215210746.821494-1-arakesh@google.com>
+References: <20231215210746.821494-1-arakesh@google.com> <20240104215009.2252452-1-arakesh@google.com>
 X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
-Message-ID: <20240104215009.2252452-1-arakesh@google.com>
-Subject: [PATCH v2 1/2] usb: gadget: uvc: Fix use are free during STREAMOFF
+Message-ID: <20240104215009.2252452-2-arakesh@google.com>
+Subject: [PATCH v2 2/2] usb: gadget: uvc: Remove nested locking
 From: Avichal Rakesh <arakesh@google.com>
 To: arakesh@google.com, gregkh@linuxfoundation.org
 Cc: dan.scally@ideasonboard.com, etalvala@google.com, jchowdhary@google.com, 
@@ -72,76 +72,46 @@ Cc: dan.scally@ideasonboard.com, etalvala@google.com, jchowdhary@google.com,
 	linux-usb@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-There is a path that may lead to freed memory being referenced,
-causing kernel panics.
+When handling error status from uvcg_video_usb_req_queue,
+uvc_video_complete currently calls uvcg_queue_cancel with
+video->req_lock held. uvcg_queue_cancel internally locks
+queue->irqlock, which nests queue->irqlock inside
+video->req_lock. This isn't a functional bug at the
+moment, but does open up possibilities for ABBA
+deadlocks in the future.
 
-The kernel panic has the following stack trace:
-
-Workqueue: uvcgadget uvcg_video_pump.c51fb85fece46625450f86adbf92c56c.cfi_jt
-pstate: 60c00085 (nZCv daIf +PAN +UAO -TCO BTYPE=--)
-pc : __list_del_entry_valid+0xc0/0xd4
-lr : __list_del_entry_valid+0xc0/0xd4
-Call trace:
-  __list_del_entry_valid+0xc0/0xd4
-  uvc_video_free_request+0x60/0x98
-  uvcg_video_pump+0x1cc/0x204
-  process_one_work+0x21c/0x4b8
-  worker_thread+0x29c/0x574
-  kthread+0x158/0x1b0
-  ret_from_fork+0x10/0x30
-
-The root cause is that uvcg_video_usb_req_queue frees the uvc_request
-if is_enabled is false and returns an error status. video_pump also
-frees the associated request if uvcg_video_usb_req_queue returns an
-error status, leading to double free and accessing garbage memory.
-
-To fix the issue, this patch removes freeing logic from
-uvcg_video_usb_req_queue, and lets the callers to the function handle
-queueing errors as they see fit.
+This patch fixes the accidental nesting by dropping
+video->req_lock before calling uvcg_queue_cancel.
 
 Fixes: 6acba0345b68 ("usb:gadget:uvc Do not use worker thread to pump isoc usb requests")
-Tested-by: Avichal Rakesh <arakesh@google.com>
 Signed-off-by: Avichal Rakesh <arakesh@google.com>
 ---
-v1 -> v2: Address review comment; add "Fixes" tag; fix goofy line wrap
+v1 -> v2: Add "Fixes" tag.
 
- drivers/usb/gadget/function/uvc_video.c | 14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
+ drivers/usb/gadget/function/uvc_video.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/usb/gadget/function/uvc_video.c b/drivers/usb/gadget/function/uvc_video.c
-index 98ba524c27f5..7f18dc471be3 100644
+index 7f18dc471be3..dd3241fc6939 100644
 --- a/drivers/usb/gadget/function/uvc_video.c
 +++ b/drivers/usb/gadget/function/uvc_video.c
-@@ -276,10 +276,9 @@ static int uvcg_video_usb_req_queue(struct uvc_video *video,
- 	bool is_bulk = video->max_payload_size;
- 	struct list_head *list = NULL;
-
--	if (!video->is_enabled) {
--		uvc_video_free_request(req->context, video->ep);
-+	if (!video->is_enabled)
- 		return -ENODEV;
--	}
-+
- 	if (queue_to_ep) {
- 		struct uvc_request *ureq = req->context;
- 		/*
-@@ -464,8 +463,15 @@ uvc_video_complete(struct usb_ep *ep, struct usb_request *req)
- 		 * and this thread for isoc endpoints.
- 		 */
- 		ret = uvcg_video_usb_req_queue(video, to_queue, !is_bulk);
--		if (ret < 0)
-+		if (ret < 0) {
-+			/*
-+			 * Endpoint error, but the stream is still enabled.
-+			 * Put request back in req_free for it to be cleaned
-+			 * up later.
-+			 */
- 			uvcg_queue_cancel(queue, 0);
-+			list_add_tail(&to_queue->list, &video->req_free);
-+		}
+@@ -469,13 +469,15 @@ uvc_video_complete(struct usb_ep *ep, struct usb_request *req)
+ 			 * Put request back in req_free for it to be cleaned
+ 			 * up later.
+ 			 */
+-			uvcg_queue_cancel(queue, 0);
+ 			list_add_tail(&to_queue->list, &video->req_free);
+ 		}
  	} else {
  		uvc_video_free_request(ureq, ep);
++		ret = 0;
  	}
+ 	spin_unlock_irqrestore(&video->req_lock, flags);
++	if (ret < 0)
++		uvcg_queue_cancel(queue, 0);
+ }
+
+ static int
 --
 2.43.0.472.g3155946c3a-goog
 
