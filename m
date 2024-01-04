@@ -1,137 +1,101 @@
-Return-Path: <linux-kernel+bounces-16648-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16649-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1751D8241E4
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 13:37:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D1D508241E7
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 13:38:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A9C131F252DC
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 12:37:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6C4BD286B73
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 12:38:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB9A421A1E;
-	Thu,  4 Jan 2024 12:37:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 507DD22334;
+	Thu,  4 Jan 2024 12:37:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="mEopR9IX"
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="BudWBaX3"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
+Received: from mail-oi1-f176.google.com (mail-oi1-f176.google.com [209.85.167.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65B6121A16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA34322303
 	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 12:37:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a2888d65f1fso54906066b.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-oi1-f176.google.com with SMTP id 5614622812f47-3ba14203a34so328556b6e.1
         for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 04:37:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1704371848; x=1704976648; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=b0YjTQ6DAdt/2c3mL0l6eIgN8OTkE75G1dsO8pPOomQ=;
-        b=mEopR9IXAZ8ER49J8Uh++34YDIOVbKN5erpP/wHQxrGUcIhH6DTUSS2g8cEBokav9i
-         A/lEtutWeDCGupSK7OlJH4mldmC3iuDl7iRxGuEzlbfECllUwkBEfZimJrki1xjBqtkm
-         bk6V1yjmESkwv5l/KCjfKGaHNqYF/WZRwFRdNXvx/hLfvdj7uUwnZZhXbmCRjzvDUsfw
-         KEkycmZZU3suE1Pn+x/ApdDpBAAF3T6wqrr15aV6vf2luqt05zKw8GYZHtxf9/JdFeMn
-         es5lO5Dz5tEtTBYrioVFgNKiDrKbYIG3Uz1UwHazFVo3YLrNKKI0jVzXCcmq8XPTvLhK
-         EfkQ==
+        d=ziepe.ca; s=google; t=1704371849; x=1704976649; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Hf/WO7dpSxOwRzBOXg5oe62I+hQuDL4PKjYM4SM/3gc=;
+        b=BudWBaX3rXZ32flH1YDE5MSwR7DrNYSqH9VGDWO4+Q8Dbcjv1ERLA6gUQxGrS640Sk
+         PKEviOs5cGxil6ziJXC8nIi4Ft4AKnlB+aYO8JDuhrAa9lF5UuD760w2M582j30isq+3
+         IqGjiiSjE+t6Iuhai2axIhLEqUbZYe9gVG/tzzWbRPnbIjcS+3nJhTfouevW2DHFR7U8
+         Q0YvHZ5jL1OULtv7kALZ6R6FOV8kWJhcRfS4v4er7iaUQd0S/uttoc62azUQfPALoMEE
+         7xBuRFNGL+0xj6LlJTUDT4B8lQLAw+xEO+FbpeuETIo/IA27imMPEMJGeDDO04e0Facf
+         2JUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704371848; x=1704976648;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=b0YjTQ6DAdt/2c3mL0l6eIgN8OTkE75G1dsO8pPOomQ=;
-        b=qhy1tHSV8E+yS/SY7y3sCbWQQ6I4K7NxKAx8DPoXB1ErR+AoBOvGHQPjduqDUVVKn4
-         ECAgGD7+OWsDahk4MaTNDwbwwKW+4tG+Nv654KnWQC2om8bzEu76oKudYMJij1YvoRlP
-         9uKyRv1pgl/5We/nu3s0qsLPvsqcwqclDeuRD5aA48AGV1CNbCSZQ9N4nWFtPdRFAdny
-         SAYHutl4BgatWjFZxGW03i5KSk8W6eMtcib/a5b+KF9T3MHjCJU8TuOOxgLiiwCeXfB8
-         B6o4kFbJNicxDoZGAeGF3KXgvS2dI0KP2kJ7S5PFewMJoCe7brlxFkxyGKcj73cyYuta
-         PF4g==
-X-Gm-Message-State: AOJu0YxaFqZ8DF+hxf3QcYkZyJuf3QtdzItoUszZQlq0zAneIvZN7k7I
-	fN0/itnZG4uQf3fJCtRuHOyByAmQzt0nHA==
-X-Google-Smtp-Source: AGHT+IGuKrfQ1OvlUk+ZEceVcHij9CYGgADtdAxpjxUb2xwkyYhUHJZIQ7mR+ZBuQE0/8F7kowQcIw==
-X-Received: by 2002:a17:906:fa90:b0:a26:b71e:f75 with SMTP id lt16-20020a170906fa9000b00a26b71e0f75mr299486ejb.5.1704371848691;
-        Thu, 04 Jan 2024 04:37:28 -0800 (PST)
-Received: from localhost (2001-1ae9-1c2-4c00-20f-c6b4-1e57-7965.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:20f:c6b4:1e57:7965])
-        by smtp.gmail.com with ESMTPSA id gh33-20020a1709073c2100b00a26b3f29f3dsm12649478ejc.43.2024.01.04.04.37.28
+        d=1e100.net; s=20230601; t=1704371849; x=1704976649;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Hf/WO7dpSxOwRzBOXg5oe62I+hQuDL4PKjYM4SM/3gc=;
+        b=ikmGA2JzUpjtPI9HnnVHIVqnOeFpuJ6wEdUMA5Xd3N4jkwO5/6Av1EQeoqXV2eP+Hq
+         E1fb0qJLgwx2TqDyzwMrloTK5yHzHUERAPuSObiSAforIh2imcFhOxMnuIAmO0TRkDVA
+         wsXvLILC58oX3IP2e/TOZkuEAHOFswM7lU5x/M6DzHjcI4QN3UzRYxaqzQZrmGLUFwsZ
+         4jqK7VcyD79MMhPqEo7bXwkhrw2M+0ylzgk/uqM/p+SmOULijgz6IQqxzFCNAPVg914F
+         VigTuQ7SMvDL9aRoZQQmh/efgd8O1nrDEyJBg+5Czj+5auuxjfB0kJfxzvoCfhDFIiaO
+         E+yw==
+X-Gm-Message-State: AOJu0YxMqRFRUJUwB4U2jLa1nkIS/gt9PTGWtqR7xUnfYGA5uEbXmXg1
+	YZDE3vfVg+rSu6Xn2LY4scsSv8NtoW1mvQ==
+X-Google-Smtp-Source: AGHT+IGHenxmOLwVI1m0q3Nd7JBq+/yjCUMw/euLk5orZbJN6ioJA9VMp0JTTfG1Gf+gJgKnh1+Khg==
+X-Received: by 2002:a05:6808:2918:b0:3bb:d7ff:982d with SMTP id ev24-20020a056808291800b003bbd7ff982dmr462984oib.98.1704371849776;
+        Thu, 04 Jan 2024 04:37:29 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
+        by smtp.gmail.com with ESMTPSA id z8-20020ad44148000000b0067f7e41de80sm11660650qvp.46.2024.01.04.04.37.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Thu, 04 Jan 2024 04:37:28 -0800 (PST)
-From: Andrew Jones <ajones@ventanamicro.com>
-To: linux-riscv@lists.infradead.org,
-	linux-next@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	kvm@vger.kernel.org,
-	kvm-riscv@lists.infradead.org
-Cc: paul.walmsley@sifive.com,
-	palmer@dabbelt.com,
-	aou@eecs.berkeley.edu,
-	anup@brainfault.org,
-	atishp@atishpatra.org,
-	rdunlap@infradead.org,
-	sfr@canb.auug.org.au,
-	alex@ghiti.fr,
-	mpe@ellerman.id.au,
-	npiggin@gmail.com,
-	linuxppc-dev@lists.ozlabs.org,
-	pbonzini@redhat.com
-Subject: [PATCH -fixes v2] RISC-V: KVM: Require HAVE_KVM
-Date: Thu,  4 Jan 2024 13:37:28 +0100
-Message-ID: <20240104123727.76987-2-ajones@ventanamicro.com>
-X-Mailer: git-send-email 2.43.0
+Received: from jgg by wakko with local (Exim 4.95)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1rLMyW-0017pG-9U;
+	Thu, 04 Jan 2024 08:37:28 -0400
+Date: Thu, 4 Jan 2024 08:37:28 -0400
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Shifeng Li <lishifeng@sangfor.com.cn>
+Cc: leon@kernel.org, wenglianfa@huawei.com, gustavoars@kernel.org,
+	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Shifeng Li <lishifeng1992@126.com>,
+	"Ding, Hui" <dinghui@sangfor.com.cn>
+Subject: Re: [PATCH] RDMA/device: Fix a race between mad_client and cm_client
+ init
+Message-ID: <20240104123728.GC50608@ziepe.ca>
+References: <20240102034335.34842-1-lishifeng@sangfor.com.cn>
+ <20240103184804.GB50608@ziepe.ca>
+ <80cac9fd-7fed-403e-8889-78e2fc7a49b0@sangfor.com.cn>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-type: text/plain
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <80cac9fd-7fed-403e-8889-78e2fc7a49b0@sangfor.com.cn>
 
-KVM requires EVENTFD, which is selected by HAVE_KVM. Other KVM
-supporting architectures select HAVE_KVM and then their KVM
-Kconfigs ensure its there with a depends on HAVE_KVM. Make RISCV
-consistent with that approach which fixes configs which have KVM
-but not EVENTFD, as was discovered with a randconfig test.
+On Thu, Jan 04, 2024 at 02:48:14PM +0800, Shifeng Li wrote:
 
-Fixes: 99cdc6c18c2d ("RISC-V: Add initial skeletal KVM support")
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
-Closes: https://lore.kernel.org/all/44907c6b-c5bd-4e4a-a921-e4d3825539d8@infradead.org/
-Signed-off-by: Andrew Jones <ajones@ventanamicro.com>
----
+> The root cause is that mad_client and cm_client may init concurrently
+> when devices_rwsem write semaphore is downgraded in enable_device_and_get() like:
 
-v2:
- - Added Fixes tag and -fixes prefix [Alexandre/Anup]
+That can't be true, the module loader infrastructue ensures those two
+things are sequential.
 
- arch/riscv/Kconfig     | 1 +
- arch/riscv/kvm/Kconfig | 2 +-
- 2 files changed, 2 insertions(+), 1 deletion(-)
+You are trying to say that the post-client fixup stuff will still see
+the DEVICE_REGISTERED before it reaches the clients_rwsem lock?
 
-diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-index a935a5f736b9..daba06a3b76f 100644
---- a/arch/riscv/Kconfig
-+++ b/arch/riscv/Kconfig
-@@ -128,6 +128,7 @@ config RISCV
- 	select HAVE_KPROBES if !XIP_KERNEL
- 	select HAVE_KPROBES_ON_FTRACE if !XIP_KERNEL
- 	select HAVE_KRETPROBES if !XIP_KERNEL
-+	select HAVE_KVM
- 	# https://github.com/ClangBuiltLinux/linux/issues/1881
- 	select HAVE_LD_DEAD_CODE_DATA_ELIMINATION if !LD_IS_LLD
- 	select HAVE_MOVE_PMD
-diff --git a/arch/riscv/kvm/Kconfig b/arch/riscv/kvm/Kconfig
-index 1fd76aee3b71..36fa8ec9e5ba 100644
---- a/arch/riscv/kvm/Kconfig
-+++ b/arch/riscv/kvm/Kconfig
-@@ -19,7 +19,7 @@ if VIRTUALIZATION
- 
- config KVM
- 	tristate "Kernel-based Virtual Machine (KVM) support (EXPERIMENTAL)"
--	depends on RISCV_SBI && MMU
-+	depends on HAVE_KVM && RISCV_SBI && MMU
- 	select HAVE_KVM_IRQCHIP
- 	select HAVE_KVM_IRQ_ROUTING
- 	select HAVE_KVM_MSI
--- 
-2.43.0
+That probably just says the clients_rwsem should be obtained before
+changing the DEVICE_STATE too :\
 
+Jason
 
