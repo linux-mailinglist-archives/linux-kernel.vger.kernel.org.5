@@ -1,109 +1,97 @@
-Return-Path: <linux-kernel+bounces-16222-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16223-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0668A823AFC
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 04:06:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB01E823B00
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 04:11:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A8C7E1F2605C
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 03:06:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 268AA288440
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 03:11:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D09335681;
-	Thu,  4 Jan 2024 03:06:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44E38525D;
+	Thu,  4 Jan 2024 03:11:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bUHNfUyp"
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="ttiwR0w6"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 415425221;
-	Thu,  4 Jan 2024 03:06:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704337587; x=1735873587;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=2GIFKJWf4IPDktNfbFwm+puuxq1zaaa8xPYrnF49oyY=;
-  b=bUHNfUypWwaaV7UGsnUUuR5DyT9m4AD2FWZaWpNCNL3t57g7YFiVqky3
-   WHWcstucX8vwB/KyGMSIeeIl9UTDzfOuZfj2jognouaD5wcLDKR38daW8
-   y9LVg2yHhcPoGLQJoGomfsQ/Ku5ugMxZxWRwrzklBK9fX6mY8YNlto+RW
-   1p1hOBOZjVTOWKuvuXqH/5T+Di4FTI3DfysBdfHt8davO/5QadL+5i16t
-   +eixHLIE30pUZxZ0TZDVdfZf/QRSs+CWOk/4Lb6tcdwaR1TUOqGBVIzq9
-   39J5JFsZArdY2uuNfNdQbvc6bZZPj18wgDhDRTZKNImRvyfNr/ijFEIxd
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10942"; a="4191474"
-X-IronPort-AV: E=Sophos;i="6.04,329,1695711600"; 
-   d="scan'208";a="4191474"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jan 2024 19:06:26 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10942"; a="953427445"
-X-IronPort-AV: E=Sophos;i="6.04,329,1695711600"; 
-   d="scan'208";a="953427445"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga005.jf.intel.com with ESMTP; 03 Jan 2024 19:06:19 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rLE3l-000Mpw-0G;
-	Thu, 04 Jan 2024 03:06:17 +0000
-Date: Thu, 4 Jan 2024 11:06:02 +0800
-From: kernel test robot <lkp@intel.com>
-To: Sagi Maimon <maimon.sagi@gmail.com>, richardcochran@gmail.com,
-	luto@kernel.org, datglx@linutronix.de, mingo@redhat.com,
-	bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
-	hpa@zytor.com, arnd@arndb.de, geert@linux-m68k.org,
-	peterz@infradead.org, hannes@cmpxchg.org, sohil.mehta@intel.com,
-	rick.p.edgecombe@intel.com, nphamcs@gmail.com, palmer@sifive.com,
-	keescook@chromium.org, legion@kernel.org, mark.rutland@arm.com
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-	linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-	netdev@vger.kernel.org
-Subject: Re: [PATCH v5] posix-timers: add multi_clock_gettime system call
-Message-ID: <202401041000.T0GQPIBW-lkp@intel.com>
-References: <20240102091855.70418-1-maimon.sagi@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 301B15223;
+	Thu,  4 Jan 2024 03:11:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1704337881;
+	bh=9g4Tr4INbzmrWdVTUlA2qZox3cTiBSg1jgQ1KlUSeBg=;
+	h=Date:From:To:Cc:Subject:From;
+	b=ttiwR0w6lkSFErfYr6hke7NMBVqPn5RMYw9lLFcHRNarygpw9nwa+VCVaZLWC9h12
+	 L4SqpwYmUZiQrsL1YWKmI8fWHbzVdJAop/YCT9k+ubjF36n+lgbsfaYwqDpK6vd66C
+	 bu3x9uYqSaqAT4BUt5heeCUNhPWeb6NQDBtNioisIt5IrdcsGKG7Z9qG3rnLycmf7u
+	 lAVKfQqP52ogZR2qcSfQjUPAF2S3omW4Mhe888v1BGAxZ1E4cQhlQcXFp35wcVxBf8
+	 UFwB04/ErsrkSUxWzJUFJf5UO8FPTEXJeMdQjX+DW7/TiZkpfASQGAQXSHRRNR6+Du
+	 UtpBeK9tPOhhA==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4T5BST3HNTz4wcd;
+	Thu,  4 Jan 2024 14:11:21 +1100 (AEDT)
+Date: Thu, 4 Jan 2024 14:11:19 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
+ Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: duplicate patch in the sound-asoc tree
+Message-ID: <20240104141119.205ed261@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240102091855.70418-1-maimon.sagi@gmail.com>
+Content-Type: multipart/signed; boundary="Sig_/9Y1BO=p_h3YeyzwubdY6VN7";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-Hi Sagi,
+--Sig_/9Y1BO=p_h3YeyzwubdY6VN7
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-kernel test robot noticed the following build errors:
+Hi all,
 
-[auto build test ERROR on tip/x86/asm]
-[also build test ERROR on arnd-asm-generic/master tip/timers/core linus/master v6.7-rc8]
-[cannot apply to next-20240103]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+The following commit is also in the sound-current tree as a different
+commit (but the same patch):
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Sagi-Maimon/posix-timers-add-multi_clock_gettime-system-call/20240102-172105
-base:   tip/x86/asm
-patch link:    https://lore.kernel.org/r/20240102091855.70418-1-maimon.sagi%40gmail.com
-patch subject: [PATCH v5] posix-timers: add multi_clock_gettime system call
-config: csky-randconfig-002-20240104 (https://download.01.org/0day-ci/archive/20240104/202401041000.T0GQPIBW-lkp@intel.com/config)
-compiler: csky-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240104/202401041000.T0GQPIBW-lkp@intel.com/reproduce)
+  ce17aa4cf2db ("ASoC: SOF: Intel: hda-codec: Delay the codec device regist=
+ration")
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202401041000.T0GQPIBW-lkp@intel.com/
+This is commit
 
-All errors (new ones prefixed by >>):
+  c344ef36dbc2 ("ASoC: SOF: Intel: hda-codec: Delay the codec device regist=
+ration")
 
->> csky-linux-ld: arch/csky/kernel/syscall_table.o:(.data..page_aligned+0x724): undefined reference to `sys_multi_clock_gettime'
+in the sound-current tree.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/9Y1BO=p_h3YeyzwubdY6VN7
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmWWIdcACgkQAVBC80lX
+0Gwz7QgAnsfz+LgdknbgXsLbF96MIC2couRCodtaDCZvTifLSm9oLccT4BHbX40Z
+bGCVZLMp+enxWeDboCx2bclfPisDhvDpyq4vmFLbtBWpKD9qXrwg1vYkNHpGDK90
+TAsVUuIwuwAhMqceFGEiJRFAy9EbOHexHB+5p26uwOvHqk2nxv2eIrfR1bymjdCq
+u2C2Fnijnwo3pm346XLPzeY+/+ENJWBFHhX7TZ6YxNWtPZrhCW8HRxm6qzAC64FB
+ftYAU4KkAArMI0lFvyMmzlhLqUM+iD7xi3jh2PGZCDt96JIAximDqERgE+VmdSpL
+fvVD+SJ1oCazn1PfLREZOaXJmUKCgA==
+=FkF7
+-----END PGP SIGNATURE-----
+
+--Sig_/9Y1BO=p_h3YeyzwubdY6VN7--
 
