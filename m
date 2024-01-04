@@ -1,157 +1,123 @@
-Return-Path: <linux-kernel+bounces-16782-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16787-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF9BA8243B1
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 15:24:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E79A58243CB
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 15:28:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5CDF5284F4F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 14:24:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8F1DE1F24763
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 14:28:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80CC322EF9;
-	Thu,  4 Jan 2024 14:23:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99756225CD;
+	Thu,  4 Jan 2024 14:27:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="NOwET88z"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ze6JRXNu"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C38B22EE6;
-	Thu,  4 Jan 2024 14:23:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704378225; x=1735914225;
-  h=message-id:date:mime-version:subject:to:references:from:
-   in-reply-to:content-transfer-encoding;
-  bh=kbyW7cxpuIZDLuW3Os9I8ZKDILbXz5KCKp00rYx8VTA=;
-  b=NOwET88z+51QWrf35FMQGfoHlPBGI65N7rpbcDLWBlxtdW8K3ZnqqCny
-   g3wIMHDKjCVQZjjNjrQr6PIh7ukvdHY4Rr9i5R1uWMPiBns9ZhayKXqvL
-   FYwqtA+4S0QtELJnuLCKQyc9Gb2oaaOqD5EvZqwYhLCIQZ/D2hS6WuvAf
-   1chfCJOpY7jUMSMX3O2cAEz7xkG69wQLhnVeSZs4M7AsMwEnuhnEx9Naw
-   yaisNk5Liif3LSd6MxR6l0vjBgp8s+QYJj3glDTcve6sf0lffkniepFwp
-   SRN2iyUEjBD5dQB0Z2/M6Lllw3uJlrLGsGlagFOf+KpgSckk6tCYUHGTE
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10943"; a="382230328"
-X-IronPort-AV: E=Sophos;i="6.04,330,1695711600"; 
-   d="scan'208";a="382230328"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2024 06:23:44 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10943"; a="783886663"
-X-IronPort-AV: E=Sophos;i="6.04,330,1695711600"; 
-   d="scan'208";a="783886663"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga007.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2024 06:23:43 -0800
-Received: from [10.209.154.172] (kliang2-mobl1.ccr.corp.intel.com [10.209.154.172])
+Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by linux.intel.com (Postfix) with ESMTPS id DDE79580D4E;
-	Thu,  4 Jan 2024 06:23:41 -0800 (PST)
-Message-ID: <59bbc646-b1ef-4ef0-9880-79856849a760@linux.intel.com>
-Date: Thu, 4 Jan 2024 09:23:40 -0500
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F4C0225A5
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 14:27:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-5cd51c0e8ebso349790a12.3
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 06:27:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1704378473; x=1704983273; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=KlDNdLgG5ibL0gOyrViS7ps98MSZFg5ogqetKbBuLvU=;
+        b=ze6JRXNu8h4e79QNoCUrmA376CL9Yg0a/MtGOvLGKP/XZfrkJaypWwPZPv8IThbYZn
+         UAqUq0DEjeTfwmpBW1wACMDw7tQUR0u0hhusJmVc+9jsZ266igEJMUdjWBNka2J3QjSM
+         A0+LtJSB7zYXB3G+1LiO7t6NaDZ13YFpMgmMz8Gap3Dvj8CcYT2krXu2JW9VPI0WRGpQ
+         z6DWpZa5XP9LLGVw4mdlf93PVisHMIGycJH9zT/tYJC/msMHV+7ZlYRl2pIEkNy8TLKL
+         z+zgf2uXx/GumC3eVl9fPhnNtfoMo8nz3S1P/NG+prW+emh2BMdz2Or4SEkEvAjG+Lcr
+         sv6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704378473; x=1704983273;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=KlDNdLgG5ibL0gOyrViS7ps98MSZFg5ogqetKbBuLvU=;
+        b=YDpqHM6uEywPTGqIoRyQMYUPGUFbclteMUU86u2ywRypLUAuFMjH0Y4FO6HYERcOXO
+         9jLZBCmp4HK7PsAwB6m5Id/+bX3NRMzXrUiH8HxSaakdsWkyKKkkHo6abtJPRN/HMmzp
+         +9EViPONhWSMQy0fRjsrA76nMWDEe1/5v+8bgmM9mo5wyvEjgSkH1OwKRX2mfbMdFxKj
+         i67PmGI9hEB15N/vudu1rLvwPwbh/PyLfTTCZphr8xmchpQMUSWMVINuLxZ2eMf1sVnZ
+         sqCJ+UpzNV83Rw49CFb8YXoq7S+BWTrZtth2ib6Qprc5mRmOFhm1WvS7EdkPiQSDodt4
+         rUhA==
+X-Gm-Message-State: AOJu0YzAy/zw6IkCxUVxzzatRlWFKebUcNUW/iySljY1k8Q0eDAnIRLl
+	i8Ts40Z8rNHMvNRQM8o24UbfugQKCX1uhFPG49mER1fgvhOJzA==
+X-Google-Smtp-Source: AGHT+IGqvkW6yeaNT+Y7OY+dO+PH6KMDKkNWkiq98aqn0UvOwKKiSD9Z6AiaRMINEuA90J/MiNKP3flBsgcm0JdZv9I=
+X-Received: by 2002:a17:90b:4c4b:b0:286:6cc1:5fde with SMTP id
+ np11-20020a17090b4c4b00b002866cc15fdemr512285pjb.97.1704378473558; Thu, 04
+ Jan 2024 06:27:53 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 1/4] perf vendor events intel: Alderlake/rocketlake
- metric fixes
-To: Ian Rogers <irogers@google.com>, Peter Zijlstra <peterz@infradead.org>,
- Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
- Adrian Hunter <adrian.hunter@intel.com>, linux-perf-users@vger.kernel.org,
- linux-kernel@vger.kernel.org, Edward Baker <edward.baker@intel.com>
-References: <20240104074259.653219-1-irogers@google.com>
-Content-Language: en-US
-From: "Liang, Kan" <kan.liang@linux.intel.com>
-In-Reply-To: <20240104074259.653219-1-irogers@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240101154624.100981-1-sshegde@linux.vnet.ibm.com> <20240101154624.100981-2-sshegde@linux.vnet.ibm.com>
+In-Reply-To: <20240101154624.100981-2-sshegde@linux.vnet.ibm.com>
+From: Vincent Guittot <vincent.guittot@linaro.org>
+Date: Thu, 4 Jan 2024 15:27:42 +0100
+Message-ID: <CAKfTPtDU1osT2NF8p0BDSXBdp4Qjwkt6mBQEaA9oHVd+O8zYGg@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] sched: use existing helper functions to access
+ ->avg_rt and ->avg_dl
+To: Shrikanth Hegde <sshegde@linux.vnet.ibm.com>
+Cc: mingo@kernel.org, peterz@infradead.org, dietmar.eggemann@arm.com, 
+	linux-kernel@vger.kernel.org, srikar@linux.vnet.ibm.com, yu.c.chen@intel.com, 
+	tim.c.chen@linux.intel.com
+Content-Type: text/plain; charset="UTF-8"
 
+On Mon, 1 Jan 2024 at 16:49, Shrikanth Hegde <sshegde@linux.vnet.ibm.com> wrote:
+>
+> There are helper functions called cpu_util_dl and cpu_util_rt which gives
+> the average utilization of DL and RT respectively. But there are few
+> places in code where these variables are used directly.
+>
+> Instead use the helper function so that code becomes simpler and easy to
+> maintain later on. This patch doesn't intend any functional changes.
+>
+> Signed-off-by: Shrikanth Hegde <sshegde@linux.vnet.ibm.com>
 
-
-On 2024-01-04 2:42 a.m., Ian Rogers wrote:
-> Fix that the core PMU is being specified for 2 uncore events. Specify
-> a PMU for the alderlake UNCORE_FREQ metric.
-> 
-> Conversion script updated in:
-> https://github.com/intel/perfmon/pull/126
-> 
-> Reported-by: Arnaldo Carvalho de Melo <acme@kernel.org>
-> Closes: https://lore.kernel.org/lkml/ZZWOdHXJJ_oecWwm@kernel.org/
-> Signed-off-by: Ian Rogers <irogers@google.com>
-
-Thanks Ian. For the series,
-
-Reviewed-by: Kan Liang <kan.liang@linux.intel.com>
-
-Thanks,
-Kan
+Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
 
 > ---
->  .../arch/x86/alderlake/adl-metrics.json           | 15 ++++++++-------
->  .../arch/x86/rocketlake/rkl-metrics.json          |  2 +-
->  2 files changed, 9 insertions(+), 8 deletions(-)
-> 
-> diff --git a/tools/perf/pmu-events/arch/x86/alderlake/adl-metrics.json b/tools/perf/pmu-events/arch/x86/alderlake/adl-metrics.json
-> index 3388b58b8f1a..35124a4ddcb2 100644
-> --- a/tools/perf/pmu-events/arch/x86/alderlake/adl-metrics.json
-> +++ b/tools/perf/pmu-events/arch/x86/alderlake/adl-metrics.json
-> @@ -69,12 +69,6 @@
->          "MetricName": "C9_Pkg_Residency",
->          "ScaleUnit": "100%"
->      },
-> -    {
-> -        "BriefDescription": "Uncore frequency per die [GHZ]",
-> -        "MetricExpr": "tma_info_system_socket_clks / #num_dies / duration_time / 1e9",
-> -        "MetricGroup": "SoC",
-> -        "MetricName": "UNCORE_FREQ"
-> -    },
->      {
->          "BriefDescription": "Percentage of cycles spent in System Management Interrupts.",
->          "MetricExpr": "((msr@aperf@ - cycles) / msr@aperf@ if msr@smi@ > 0 else 0)",
-> @@ -809,6 +803,13 @@
->          "ScaleUnit": "100%",
->          "Unit": "cpu_atom"
->      },
-> +    {
-> +        "BriefDescription": "Uncore frequency per die [GHZ]",
-> +        "MetricExpr": "tma_info_system_socket_clks / #num_dies / duration_time / 1e9",
-> +        "MetricGroup": "SoC",
-> +        "MetricName": "UNCORE_FREQ",
-> +        "Unit": "cpu_core"
-> +    },
->      {
->          "BriefDescription": "This metric represents Core fraction of cycles CPU dispatched uops on execution ports for ALU operations.",
->          "MetricExpr": "(cpu_core@UOPS_DISPATCHED.PORT_0@ + cpu_core@UOPS_DISPATCHED.PORT_1@ + cpu_core@UOPS_DISPATCHED.PORT_5_11@ + cpu_core@UOPS_DISPATCHED.PORT_6@) / (5 * tma_info_core_core_clks)",
-> @@ -1838,7 +1839,7 @@
->      },
->      {
->          "BriefDescription": "Average number of parallel data read requests to external memory",
-> -        "MetricExpr": "UNC_ARB_DAT_OCCUPANCY.RD / cpu_core@UNC_ARB_DAT_OCCUPANCY.RD\\,cmask\\=1@",
-> +        "MetricExpr": "UNC_ARB_DAT_OCCUPANCY.RD / UNC_ARB_DAT_OCCUPANCY.RD@cmask\\=1@",
->          "MetricGroup": "Mem;MemoryBW;SoC",
->          "MetricName": "tma_info_system_mem_parallel_reads",
->          "PublicDescription": "Average number of parallel data read requests to external memory. Accounts for demand loads and L1/L2 prefetches",
-> diff --git a/tools/perf/pmu-events/arch/x86/rocketlake/rkl-metrics.json b/tools/perf/pmu-events/arch/x86/rocketlake/rkl-metrics.json
-> index 0c880e415669..27433fc15ede 100644
-> --- a/tools/perf/pmu-events/arch/x86/rocketlake/rkl-metrics.json
-> +++ b/tools/perf/pmu-events/arch/x86/rocketlake/rkl-metrics.json
-> @@ -985,7 +985,7 @@
->      },
->      {
->          "BriefDescription": "Average number of parallel data read requests to external memory",
-> -        "MetricExpr": "UNC_ARB_DAT_OCCUPANCY.RD / cpu@UNC_ARB_DAT_OCCUPANCY.RD\\,cmask\\=1@",
-> +        "MetricExpr": "UNC_ARB_DAT_OCCUPANCY.RD / UNC_ARB_DAT_OCCUPANCY.RD@cmask\\=1@",
->          "MetricGroup": "Mem;MemoryBW;SoC",
->          "MetricName": "tma_info_system_mem_parallel_reads",
->          "PublicDescription": "Average number of parallel data read requests to external memory. Accounts for demand loads and L1/L2 prefetches"
+>  kernel/sched/fair.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+>
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index bcea3d55d95d..1aeca3f943a8 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -9212,10 +9212,10 @@ static inline bool cfs_rq_has_blocked(struct cfs_rq *cfs_rq)
+>
+>  static inline bool others_have_blocked(struct rq *rq)
+>  {
+> -       if (READ_ONCE(rq->avg_rt.util_avg))
+> +       if (cpu_util_rt(rq))
+>                 return true;
+>
+> -       if (READ_ONCE(rq->avg_dl.util_avg))
+> +       if (cpu_util_dl(rq))
+>                 return true;
+>
+>         if (thermal_load_avg(rq))
+> @@ -9481,8 +9481,8 @@ static unsigned long scale_rt_capacity(int cpu)
+>          * avg_thermal.load_avg tracks thermal pressure and the weighted
+>          * average uses the actual delta max capacity(load).
+>          */
+> -       used = READ_ONCE(rq->avg_rt.util_avg);
+> -       used += READ_ONCE(rq->avg_dl.util_avg);
+> +       used = cpu_util_rt(rq);
+> +       used += cpu_util_dl(rq);
+>         used += thermal_load_avg(rq);
+>
+>         if (unlikely(used >= max))
+> --
+> 2.39.3
+>
 
