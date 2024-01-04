@@ -1,141 +1,108 @@
-Return-Path: <linux-kernel+bounces-16588-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16589-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 161A68240AE
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 12:32:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 39A378240B1
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 12:33:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3C32C1C20E50
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 11:32:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C513E1F21F0D
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 11:33:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3E192111B;
-	Thu,  4 Jan 2024 11:32:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D935F2135D;
+	Thu,  4 Jan 2024 11:33:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=brainfault-org.20230601.gappssmtp.com header.i=@brainfault-org.20230601.gappssmtp.com header.b="qP8srV68"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f171.google.com (mail-il1-f171.google.com [209.85.166.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D44D210F4;
-	Thu,  4 Jan 2024 11:32:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.174])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4T5PYB3DcmzWlkW;
-	Thu,  4 Jan 2024 19:31:10 +0800 (CST)
-Received: from dggpeml500021.china.huawei.com (unknown [7.185.36.21])
-	by mail.maildlp.com (Postfix) with ESMTPS id B3708140487;
-	Thu,  4 Jan 2024 19:31:52 +0800 (CST)
-Received: from [10.174.177.174] (10.174.177.174) by
- dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 4 Jan 2024 19:31:52 +0800
-Message-ID: <6c93726b-75b8-a6a6-34d3-d0f6c7a1f35d@huawei.com>
-Date: Thu, 4 Jan 2024 19:31:51 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF3EE21346
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 11:33:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=brainfault.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=brainfault.org
+Received: by mail-il1-f171.google.com with SMTP id e9e14a558f8ab-36017ab9760so1098085ab.3
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 03:33:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=brainfault-org.20230601.gappssmtp.com; s=20230601; t=1704368001; x=1704972801; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5Dt7uLNKLulzrg/dNC959xAVcdyKjB2fv5qTZvClME8=;
+        b=qP8srV683Nx5VjKLocNoI3lP4d1WSQwwYemqOPlfTCt9LUKdj1V09Ba2t28qrFgzFc
+         7by1AYbyw0bzfgGrgY+9ZuC8s03kOUUEm/W0ulGTKQFIXtSSgrhuuN9lLJh8XHkYpt7W
+         hk9yUoaYC1EWBgEgkmR06zRTu/3IAurCPUg4zt0A2i/5OqY01n+uPEgeNkuB1bhejEvk
+         Uo43G0mls0vRZTyJhrlqyvjsBNhx0Xrj0YhEtGb0eDbOUpGmpa/F8YOu06DaVHWrN4Dt
+         vmv8TWZgMPepuYRxxehNfddm3MYjqLP9AjCJjznQ2lKgvMb0ioCQCsxP37N7TR80kS8c
+         TLHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704368001; x=1704972801;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5Dt7uLNKLulzrg/dNC959xAVcdyKjB2fv5qTZvClME8=;
+        b=MBNgBOkNDHA7a1iYCNta9bS+V/JSbJ6pjbJsWpePNU7SNgHaMB06v0mOZWir2u/KRc
+         1G9FSJYXxZX19pGDzGdAUHUavcIo4+3eylIgvvbCrTg+03NhVLwyqpuSS3fpLRcm46Rf
+         4djj1xOZoVVw2O6hVfSg3UBdfRpheXGfHNZ+S7e1rtBO4z1fKx7UnKIwaxyLaVsBSGjp
+         18tssk3Wzy4tvVnEVqjpDpmqrtMCxc73v6qest2fDohWXPrCP3Un7G9KMFqAL6jbquQt
+         1LpKRcOaJH+mRMmMwZNOnfOB9SCKjYUACeSgTjMV7DyWVnPfTielXtKytmJMs5TY7MFi
+         MgJw==
+X-Gm-Message-State: AOJu0YxyO3JWEMfCaqQrIMYpDtHc58kmHULzsOC5gyLtp141LEibDqkF
+	B9xfbXIJ1IOpsAEvSq986K176oU3FNWskHe3ZDzN+kdhfsbl8WmublqO3A1+3iA=
+X-Google-Smtp-Source: AGHT+IEiLv7qiits4vk8xdWF1s4r4OiPqhbNMM2mLBiLLO2wGlETEHoIcyBn6dRE3jspd9+Bb4GSzadf5GgKpkLl1DU=
+X-Received: by 2002:a05:6e02:17c9:b0:360:16c7:2d6a with SMTP id
+ z9-20020a056e0217c900b0036016c72d6amr482112ilu.48.1704368001050; Thu, 04 Jan
+ 2024 03:33:21 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.1.2
-Subject: Re: [PATCH v2 3/8] ext4: regenerate buddy after block freeing failed
- if under fc replay
-To: Jan Kara <jack@suse.cz>
-CC: <linux-ext4@vger.kernel.org>, <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
-	<ritesh.list@gmail.com>, <linux-kernel@vger.kernel.org>,
-	<yi.zhang@huawei.com>, <yangerkun@huawei.com>, <yukuai3@huawei.com>, Baokun
- Li <libaokun1@huawei.com>
-References: <20231221150558.2740823-1-libaokun1@huawei.com>
- <20231221150558.2740823-4-libaokun1@huawei.com>
- <20240104103336.fjwhqiv2maezquef@quack3>
-Content-Language: en-US
-From: Baokun Li <libaokun1@huawei.com>
-In-Reply-To: <20240104103336.fjwhqiv2maezquef@quack3>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpeml500021.china.huawei.com (7.185.36.21)
+References: <20240104104307.16019-2-ajones@ventanamicro.com>
+ <20240104-d5ebb072b91a6f7abbb2ac76@orel> <752c11ea-7172-40ff-a821-c78aeb6c5518@ghiti.fr>
+ <20240104-6a5a59dde14adcaf3ac22a35@orel>
+In-Reply-To: <20240104-6a5a59dde14adcaf3ac22a35@orel>
+From: Anup Patel <anup@brainfault.org>
+Date: Thu, 4 Jan 2024 17:03:10 +0530
+Message-ID: <CAAhSdy0uVZXsP1_3zZiwXXEXBZGkmWX5ujptirojD8S4nuzQpQ@mail.gmail.com>
+Subject: Re: Re: [PATCH] RISC-V: KVM: Require HAVE_KVM
+To: Andrew Jones <ajones@ventanamicro.com>
+Cc: Alexandre Ghiti <alex@ghiti.fr>, linux-riscv@lists.infradead.org, 
+	linux-next@vger.kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org, 
+	kvm-riscv@lists.infradead.org, paul.walmsley@sifive.com, palmer@dabbelt.com, 
+	aou@eecs.berkeley.edu, atishp@atishpatra.org, rdunlap@infradead.org, 
+	sfr@canb.auug.org.au, mpe@ellerman.id.au, npiggin@gmail.com, 
+	linuxppc-dev@lists.ozlabs.org, pbonzini@redhat.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2024/1/4 18:33, Jan Kara wrote:
-> On Thu 21-12-23 23:05:53, Baokun Li wrote:
->> This reverts [Fixes] under fast commit replay. When we are freeing blocks
->> that have already been freed, the buddy may be corrupted, and we need to
->> regenerate the buddy when the fast commit is being replayed in order to
->> avoid using an corrupted buddy, since it will not mark the group block
->> bitmap as corrupted at that point.
-> I'd rephrase the changelog as:
+On Thu, Jan 4, 2024 at 4:51=E2=80=AFPM Andrew Jones <ajones@ventanamicro.co=
+m> wrote:
 >
-> This mostly reverts commit 6bd97bf273bd ("ext4: remove redundant
-> mb_regenerate_buddy()") and reintroduces mb_regenerate_buddy(). Based on
-> code in mb_free_blocks(), fast commit replay can end up marking as free
-> blocks that are already marked as such. This causes corruption of the
-> buddy bitmap so we need to regenerate it in that case.
+> On Thu, Jan 04, 2024 at 12:07:51PM +0100, Alexandre Ghiti wrote:
+> > On 04/01/2024 11:52, Andrew Jones wrote:
+> > > This applies to linux-next, but I forgot to append -next to the PATCH
+> > > prefix.
+> >
+> >
+> > Shoudn't this go to -fixes instead? With a Fixes tag?
 >
-> Otherwise the patch looks good to me so feel free to add:
+> I'm not sure how urgent it is since it's a randconfig thing, but if we
+> think it deserves the -fixes track then I can do that. The Fixes tag isn'=
+t
+> super easy to select since, while it seems like it should be 8132d887a702
+> ("KVM: remove CONFIG_HAVE_KVM_EVENTFD"), it could also be 99cdc6c18c2d
+> ("RISC-V: Add initial skeletal KVM support").
 >
-> Reviewed-by: Jan Kara <jack@suse.cz>
->
-> 								Honza
-Hello Honza, Happy New Year!
+> I'll leave both the urgency decision and the Fixes tag selection up to
+> the maintainers. Anup? Paolo?
 
-Thank you very much for your review!
-This changelog looks a lot more relevant!
-  I will use this changelog in the next version.
->> Reported-by: Jan Kara <jack@suse.cz>
->> Fixes: 6bd97bf273bd ("ext4: remove redundant mb_regenerate_buddy()")
->> Signed-off-by: Baokun Li <libaokun1@huawei.com>
->> ---
->>   fs/ext4/mballoc.c | 20 ++++++++++++++++++++
->>   1 file changed, 20 insertions(+)
->>
->> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
->> index a95fa6e2b0f9..f6131ba514c8 100644
->> --- a/fs/ext4/mballoc.c
->> +++ b/fs/ext4/mballoc.c
->> @@ -1233,6 +1233,24 @@ void ext4_mb_generate_buddy(struct super_block *sb,
->>   	atomic64_add(period, &sbi->s_mb_generation_time);
->>   }
->>   
->> +static void mb_regenerate_buddy(struct ext4_buddy *e4b)
->> +{
->> +	int count;
->> +	int order = 1;
->> +	void *buddy;
->> +
->> +	while ((buddy = mb_find_buddy(e4b, order++, &count)))
->> +		mb_set_bits(buddy, 0, count);
->> +
->> +	e4b->bd_info->bb_fragments = 0;
->> +	memset(e4b->bd_info->bb_counters, 0,
->> +		sizeof(*e4b->bd_info->bb_counters) *
->> +		(e4b->bd_sb->s_blocksize_bits + 2));
->> +
->> +	ext4_mb_generate_buddy(e4b->bd_sb, e4b->bd_buddy,
->> +		e4b->bd_bitmap, e4b->bd_group, e4b->bd_info);
->> +}
->> +
->>   /* The buddy information is attached the buddy cache inode
->>    * for convenience. The information regarding each group
->>    * is loaded via ext4_mb_load_buddy. The information involve
->> @@ -1921,6 +1939,8 @@ static void mb_free_blocks(struct inode *inode, struct ext4_buddy *e4b,
->>   			ext4_mark_group_bitmap_corrupted(
->>   				sb, e4b->bd_group,
->>   				EXT4_GROUP_INFO_BBITMAP_CORRUPT);
->> +		} else {
->> +			mb_regenerate_buddy(e4b);
->>   		}
->>   		goto done;
->>   	}
->> -- 
->> 2.31.1
->>
+Lets add
 
-Thanks again!
--- 
-With Best Regards,
-Baokun Li
-.
+Fixes: 99cdc6c18c2d ("RISC-V: Add initial skeletal KVM support")
 
+Regards,
+Anup
 
