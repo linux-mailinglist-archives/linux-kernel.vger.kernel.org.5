@@ -1,127 +1,176 @@
-Return-Path: <linux-kernel+bounces-16534-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16535-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E555823FC8
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 11:47:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D1606823FCA
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 11:47:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C10232824CA
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 10:47:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 858A11F24802
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 10:47:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39BE220B33;
-	Thu,  4 Jan 2024 10:46:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19274210E9;
+	Thu,  4 Jan 2024 10:47:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="dbDtUjiK";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="cpu22t34";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="dbDtUjiK";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="cpu22t34"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9BC020DDD;
-	Thu,  4 Jan 2024 10:46:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ghiti.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ghiti.fr
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 8D55FC0006;
-	Thu,  4 Jan 2024 10:46:14 +0000 (UTC)
-Message-ID: <509f3dd7-1c38-4b98-b21b-28d50399a344@ghiti.fr>
-Date: Thu, 4 Jan 2024 11:46:14 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2406210EC;
+	Thu,  4 Jan 2024 10:47:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 13EA61FCD8;
+	Thu,  4 Jan 2024 10:47:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1704365254; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=0xDR6XwHytPud1CbM6v6PSB56naMx2aLdGVZIy/AXAE=;
+	b=dbDtUjiKOkor6Y3Xfq4BCOUXIDTPuiKUNoLANs4QrHuWa3kXncpygSdaQTzERkZYJUIayp
+	IouCbPh+T/wu5w2GJ+ULJW5+kotiw1qCmz4J0jmIp5g05blUsOJ4KenGJL1PZybw+/yrja
+	EVEjqFpLGL4Xq9RFb+ANhQ8QCS/Qjhg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1704365254;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=0xDR6XwHytPud1CbM6v6PSB56naMx2aLdGVZIy/AXAE=;
+	b=cpu22t34NOp7Xz0hFfc1RZVzbaX08YP3sjEGuE3c+Qm6NQXyjLsoxizFJQuVU76h2NdKHm
+	UIUZxm6gyeiPJlAg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1704365254; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=0xDR6XwHytPud1CbM6v6PSB56naMx2aLdGVZIy/AXAE=;
+	b=dbDtUjiKOkor6Y3Xfq4BCOUXIDTPuiKUNoLANs4QrHuWa3kXncpygSdaQTzERkZYJUIayp
+	IouCbPh+T/wu5w2GJ+ULJW5+kotiw1qCmz4J0jmIp5g05blUsOJ4KenGJL1PZybw+/yrja
+	EVEjqFpLGL4Xq9RFb+ANhQ8QCS/Qjhg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1704365254;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=0xDR6XwHytPud1CbM6v6PSB56naMx2aLdGVZIy/AXAE=;
+	b=cpu22t34NOp7Xz0hFfc1RZVzbaX08YP3sjEGuE3c+Qm6NQXyjLsoxizFJQuVU76h2NdKHm
+	UIUZxm6gyeiPJlAg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id F1D7F13722;
+	Thu,  4 Jan 2024 10:47:33 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id egsHO8WMlmXmdwAAD6G6ig
+	(envelope-from <jack@suse.cz>); Thu, 04 Jan 2024 10:47:33 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id ADDE4A07EF; Thu,  4 Jan 2024 11:47:33 +0100 (CET)
+Date: Thu, 4 Jan 2024 11:47:33 +0100
+From: Jan Kara <jack@suse.cz>
+To: Baokun Li <libaokun1@huawei.com>
+Cc: linux-ext4@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
+	jack@suse.cz, ritesh.list@gmail.com, linux-kernel@vger.kernel.org,
+	yi.zhang@huawei.com, yangerkun@huawei.com, yukuai3@huawei.com
+Subject: Re: [PATCH v2 7/8] ext4: avoid allocating blocks from corrupted
+ group in ext4_mb_find_by_goal()
+Message-ID: <20240104104733.d6oyepneq7ky7ote@quack3>
+References: <20231221150558.2740823-1-libaokun1@huawei.com>
+ <20231221150558.2740823-8-libaokun1@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/4] riscv: enable HAVE_FAST_GUP if MMU
-Content-Language: en-US
-To: Jisheng Zhang <jszhang@kernel.org>
-Cc: Paul Walmsley <paul.walmsley@sifive.com>,
- Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
- Will Deacon <will@kernel.org>,
- "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
- Andrew Morton <akpm@linux-foundation.org>, Nick Piggin <npiggin@gmail.com>,
- Peter Zijlstra <peterz@infradead.org>, linux-riscv@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org, linux-mm@kvack.org
-References: <20231219175046.2496-1-jszhang@kernel.org>
- <20231219175046.2496-5-jszhang@kernel.org>
- <3d36ca3c-9a91-41a7-9e68-288982c2c8a8@ghiti.fr> <ZZOCRZjBch1grrFp@xhacker>
-From: Alexandre Ghiti <alex@ghiti.fr>
-In-Reply-To: <ZZOCRZjBch1grrFp@xhacker>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-GND-Sasl: alex@ghiti.fr
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231221150558.2740823-8-libaokun1@huawei.com>
+X-Spam-Score: 1.61
+X-Spamd-Result: default: False [1.61 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 BAYES_HAM(-0.29)[74.55%];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 TAGGED_RCPT(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 RCPT_COUNT_SEVEN(0.00)[10];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.cz:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 FREEMAIL_CC(0.00)[vger.kernel.org,mit.edu,dilger.ca,suse.cz,gmail.com,huawei.com];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spam-Level: *
+X-Spam-Flag: NO
 
-On 02/01/2024 04:25, Jisheng Zhang wrote:
-> On Sun, Dec 31, 2023 at 07:37:33AM +0100, Alexandre Ghiti wrote:
->> On 19/12/2023 18:50, Jisheng Zhang wrote:
->>> Activate the fast gup for riscv mmu platforms. Here are some
->>> GUP_FAST_BENCHMARK performance numbers:
->>>
->>> Before the patch:
->>> GUP_FAST_BENCHMARK: Time: get:53203 put:5085 us
->>>
->>> After the patch:
->>> GUP_FAST_BENCHMARK: Time: get:17711 put:5060 us
->>
->> On which platform did you run this benchmark?
-> T-HEAD th1520(cpufreq isn't enabled since the clk/pll isn't upstreamed,
-> so cpu is running at the default freq set by u-boot)
->>
->>> The get time is reduced by 66.7%! IOW, 3x get speed!
->>
->> Well done!
->>
->> Thanks,
->>
->> Alex
->>
->>
->>> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
->>> ---
->>>    arch/riscv/Kconfig               | 1 +
->>>    arch/riscv/include/asm/pgtable.h | 6 ++++++
->>>    2 files changed, 7 insertions(+)
->>>
->>> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
->>> index d3555173d9f4..04df9920282d 100644
->>> --- a/arch/riscv/Kconfig
->>> +++ b/arch/riscv/Kconfig
->>> @@ -119,6 +119,7 @@ config RISCV
->>>    	select HAVE_FUNCTION_GRAPH_RETVAL if HAVE_FUNCTION_GRAPH_TRACER
->>>    	select HAVE_FUNCTION_TRACER if !XIP_KERNEL && !PREEMPTION
->>>    	select HAVE_EBPF_JIT if MMU
->>> +	select HAVE_FAST_GUP if MMU
->>>    	select HAVE_FUNCTION_ARG_ACCESS_API
->>>    	select HAVE_FUNCTION_ERROR_INJECTION
->>>    	select HAVE_GCC_PLUGINS
->>> diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
->>> index ab00235b018f..c6eb214139e6 100644
->>> --- a/arch/riscv/include/asm/pgtable.h
->>> +++ b/arch/riscv/include/asm/pgtable.h
->>> @@ -673,6 +673,12 @@ static inline int pmd_write(pmd_t pmd)
->>>    	return pte_write(pmd_pte(pmd));
->>>    }
->>> +#define pud_write pud_write
->>> +static inline int pud_write(pud_t pud)
->>> +{
->>> +	return pte_write(pud_pte(pud));
->>> +}
->>> +
->>>    static inline int pmd_dirty(pmd_t pmd)
->>>    {
->>>    	return pte_dirty(pmd_pte(pmd));
+On Thu 21-12-23 23:05:57, Baokun Li wrote:
+> Places the logic for checking if the group's block bitmap is corrupt under
+> the protection of the group lock to avoid allocating blocks from the group
+> with a corrupted block bitmap.
+> 
+> Signed-off-by: Baokun Li <libaokun1@huawei.com>
 
+Looks good. Feel free to add:
 
-Thanks, you can add:
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-Reviewed-by: Alexandre Ghiti <alexghiti@rivosinc.com>
+								Honza
 
-Thanks,
-
-Alex
-
-
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+> ---
+>  fs/ext4/mballoc.c | 9 ++++-----
+>  1 file changed, 4 insertions(+), 5 deletions(-)
+> 
+> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+> index 2bb29f0077bd..b862ca2750fd 100644
+> --- a/fs/ext4/mballoc.c
+> +++ b/fs/ext4/mballoc.c
+> @@ -2340,12 +2340,10 @@ int ext4_mb_find_by_goal(struct ext4_allocation_context *ac,
+>  	if (err)
+>  		return err;
+>  
+> -	if (unlikely(EXT4_MB_GRP_BBITMAP_CORRUPT(e4b->bd_info))) {
+> -		ext4_mb_unload_buddy(e4b);
+> -		return 0;
+> -	}
+> -
+>  	ext4_lock_group(ac->ac_sb, group);
+> +	if (unlikely(EXT4_MB_GRP_BBITMAP_CORRUPT(e4b->bd_info)))
+> +		goto out;
+> +
+>  	max = mb_find_extent(e4b, ac->ac_g_ex.fe_start,
+>  			     ac->ac_g_ex.fe_len, &ex);
+>  	ex.fe_logical = 0xDEADFA11; /* debug value */
+> @@ -2378,6 +2376,7 @@ int ext4_mb_find_by_goal(struct ext4_allocation_context *ac,
+>  		ac->ac_b_ex = ex;
+>  		ext4_mb_use_best_found(ac, e4b);
+>  	}
+> +out:
+>  	ext4_unlock_group(ac->ac_sb, group);
+>  	ext4_mb_unload_buddy(e4b);
+>  
+> -- 
+> 2.31.1
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
