@@ -1,59 +1,59 @@
-Return-Path: <linux-kernel+bounces-16380-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16381-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CDAA8823DAC
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 09:42:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 93CD4823DAE
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 09:43:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D3EA41C20D63
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 08:42:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1BCDF286974
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 08:43:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BAEB20323;
-	Thu,  4 Jan 2024 08:42:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5EE2208C8;
+	Thu,  4 Jan 2024 08:42:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amarulasolutions.com header.i=@amarulasolutions.com header.b="dj6Wrnhb"
+	dkim=pass (1024-bit key) header.d=amarulasolutions.com header.i=@amarulasolutions.com header.b="fH5zyrUY"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66D951EA66
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 08:42:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 856B3200D8
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 08:42:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=amarulasolutions.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amarulasolutions.com
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a27e323fdd3so23274666b.2
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 00:42:19 -0800 (PST)
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-55539cac143so320431a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 00:42:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amarulasolutions.com; s=google; t=1704357737; x=1704962537; darn=vger.kernel.org;
+        d=amarulasolutions.com; s=google; t=1704357738; x=1704962538; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=/mPDNXnb7QOonc0RYCjpM23Kv+HuP4dW7ug+KwP2qeg=;
-        b=dj6WrnhbOC0VgsvsSLpEqAt7r0lE0FfD33CyzxxHVAKHYnQ2elt05Oy8ZR51RpoKON
-         FgX4I2/GHrV/BX6sUhVKUlB5y+trUCRv3LCQdmKSW8DeDGhOHUgLYcewnOiCE0H7/pMG
-         nxHm+W+IoSGc8qCEw8yESE5mCXHH8UDPdjGoY=
+        bh=c6lTYGwOZkH/q3mVT10Wfxgf2APvMbHICMTqCuHaYlQ=;
+        b=fH5zyrUYCmZQGCg6NMEVdBFUpVIM58zto2elXL74n8DzVcZProaDlb4YICAInDAzBS
+         RXwyTYm8nS/aORDJRstiLWLPMwU6eGpXbcqPoM/9phTc9BRaPtyuDYiHcZuScyQldFeJ
+         ORfhp212RB0G0G/oH30ebFwvkSwmqtbQudcDE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704357737; x=1704962537;
+        d=1e100.net; s=20230601; t=1704357738; x=1704962538;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=/mPDNXnb7QOonc0RYCjpM23Kv+HuP4dW7ug+KwP2qeg=;
-        b=pzq8sAb/GZVG5QmYP7TJo+tHnunTLPGYjlXKOA6OA1kswJkYRX7s+B2tmFeuafLt/4
-         AGq22cGcwGwyIKauyP/kPhwqmpwxe/v51gXtdTasP7Ubks8QJjLXuh2lFlm0YYAP55OG
-         faShP4XOjqGu+EKILnrdH+6X60/NZ9YXI0iljRbajAIcBgbmRUprVcTX7tzRRDUgrok0
-         1/5f8HL1rVGF2/ET3wHawcr4vvyO1lUujRsCf97pG6ozLtzInK+1gC1XG0cHzDC0GNvp
-         4uBews4kZjFm/6g1D8DwA5dSTz3ys9QNVmwdSyhW1kcGiJkg0ms0s62AxYLHyLehIxRT
-         wXdg==
-X-Gm-Message-State: AOJu0YwfzfBGRhG0F7nSz8rTYugo9+sCasqDidSDa86HO66O/AnCRozz
-	0DJDTfoo90pvQUJvpQ0CX7z86HD6GZTjSQuiu0bVn22pRyA=
-X-Google-Smtp-Source: AGHT+IGMBrhk2BY1jgoVaREF+PbuJeKGAfw77EEhYC1B1egTY4WydDER/luU0S/HZKRgRr4SQBSKSQ==
-X-Received: by 2002:a17:906:9807:b0:a27:fa1b:def4 with SMTP id lm7-20020a170906980700b00a27fa1bdef4mr98499ejb.17.1704357737328;
-        Thu, 04 Jan 2024 00:42:17 -0800 (PST)
+        bh=c6lTYGwOZkH/q3mVT10Wfxgf2APvMbHICMTqCuHaYlQ=;
+        b=aQ3jCD5U/JC1ymbb3lQhyjWNZvNrVPN591VLOF1feRjVr7dlDPouyPgMiqU0kj6yFi
+         9ZOxULYz3bR0w32wFgKnpXFqiwaEFMBAFLB1xro7uqACTayeBdIOnTklC3sxUj02j4ln
+         8rJkB8laTjUZ3refdOVr1bSUc5j3te5zlryqL+681IRFDeU4/Pt7vgYDn7KXfiPnltRJ
+         DhGGza3xB3EOT2dKUqsVcWhnpNW2oU9NYXex+Rhhnd9ZUbIRKiX4qJu/wt8jn28+XGgP
+         GcZIW3bqlxKrZWp6jWo8e1UcMUcSBqJoxBsjNMjI5hqsrC0aZQQi0BLkSqPSRO/GY1xz
+         TjCg==
+X-Gm-Message-State: AOJu0YzHDTsO+4qGt8Q612U4tY84d0sGuSfZLSGd/Jdcy35dmk5OSgyu
+	QMkVTi+v9o2yBr3TNd6EVlJxWA1M5MDYLuo6XpDF199Nn4Y=
+X-Google-Smtp-Source: AGHT+IEKMwSrOrJmtl4FyW+DrqXhhMIzLZ+2RtqvjY5/wkknrU8YbM1QoSDjBXN33+GQGSiBO6Mk+w==
+X-Received: by 2002:a17:906:cc50:b0:a27:e0ae:99a8 with SMTP id mm16-20020a170906cc5000b00a27e0ae99a8mr112579ejb.145.1704357738586;
+        Thu, 04 Jan 2024 00:42:18 -0800 (PST)
 Received: from dario-ThinkPad-T14s-Gen-2i.amarulasolutions.com (net-93-150-255-34.cust.vodafonedsl.it. [93.150.255.34])
-        by smtp.gmail.com with ESMTPSA id wh14-20020a170906fd0e00b00a233efe6aa7sm13495704ejb.51.2024.01.04.00.42.16
+        by smtp.gmail.com with ESMTPSA id wh14-20020a170906fd0e00b00a233efe6aa7sm13495704ejb.51.2024.01.04.00.42.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Jan 2024 00:42:16 -0800 (PST)
+        Thu, 04 Jan 2024 00:42:18 -0800 (PST)
 From: Dario Binacchi <dario.binacchi@amarulasolutions.com>
 To: linux-kernel@vger.kernel.org
 Cc: linux-amarula@amarulasolutions.com,
@@ -66,9 +66,9 @@ Cc: linux-amarula@amarulasolutions.com,
 	devicetree@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org,
 	linux-stm32@st-md-mailman.stormreply.com
-Subject: [PATCH v4 3/8] ARM: dts: stm32: rename mmc_vcard to vcc-3v3 on stm32f769-disco
-Date: Thu,  4 Jan 2024 09:41:43 +0100
-Message-ID: <20240104084206.721824-4-dario.binacchi@amarulasolutions.com>
+Subject: [PATCH v4 4/8] ARM: dts: stm32: add display support on stm32f769-disco
+Date: Thu,  4 Jan 2024 09:41:44 +0100
+Message-ID: <20240104084206.721824-5-dario.binacchi@amarulasolutions.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240104084206.721824-1-dario.binacchi@amarulasolutions.com>
 References: <20240104084206.721824-1-dario.binacchi@amarulasolutions.com>
@@ -80,47 +80,127 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-In the schematics of document UM2033, the power supply for the micro SD
-card is the same 3v3 voltage that is used to power other devices on the
-board. By generalizing the name of the voltage regulator, it can be
-referenced by other nodes in the device tree without creating
-misunderstandings.
-
-This patch is preparatory for future developments.
+The patch adds display support on the stm32f769-disco board.
 
 Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
 ---
 
 (no changes since v1)
 
- arch/arm/boot/dts/st/stm32f769-disco.dts | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ arch/arm/boot/dts/st/stm32f769-disco.dts | 72 +++++++++++++++++++++++-
+ 1 file changed, 71 insertions(+), 1 deletion(-)
 
 diff --git a/arch/arm/boot/dts/st/stm32f769-disco.dts b/arch/arm/boot/dts/st/stm32f769-disco.dts
-index 5d12ae25b327..8632bd866272 100644
+index 8632bd866272..d1eb5f9c78bf 100644
 --- a/arch/arm/boot/dts/st/stm32f769-disco.dts
 +++ b/arch/arm/boot/dts/st/stm32f769-disco.dts
-@@ -92,9 +92,9 @@ usbotg_hs_phy: usb-phy {
- 		clock-names = "main_clk";
+@@ -41,7 +41,7 @@
+  */
+ 
+ /dts-v1/;
+-#include "stm32f746.dtsi"
++#include "stm32f769.dtsi"
+ #include "stm32f769-pinctrl.dtsi"
+ #include <dt-bindings/input/input.h>
+ #include <dt-bindings/gpio/gpio.h>
+@@ -60,6 +60,19 @@ memory@c0000000 {
+ 		reg = <0xC0000000 0x1000000>;
  	};
  
--	mmc_vcard: mmc_vcard {
-+	vcc_3v3: vcc_3v3 {
- 		compatible = "regulator-fixed";
--		regulator-name = "mmc_vcard";
-+		regulator-name = "vcc_3v3";
- 		regulator-min-microvolt = <3300000>;
- 		regulator-max-microvolt = <3300000>;
++	reserved-memory {
++		#address-cells = <1>;
++		#size-cells = <1>;
++		ranges;
++
++		linux,dma {
++			compatible = "shared-dma-pool";
++			linux,dma-default;
++			no-map;
++			size = <0x100000>;
++		};
++	};
++
+ 	aliases {
+ 		serial0 = &usart1;
  	};
-@@ -128,7 +128,7 @@ &rtc {
+@@ -85,6 +98,13 @@ button-0 {
+ 		};
+ 	};
  
- &sdio2 {
++	panel_backlight: panel-backlight {
++		compatible = "gpio-backlight";
++		gpios = <&gpioi 14 GPIO_ACTIVE_HIGH>;
++		default-on;
++		status = "okay";
++	};
++
+ 	usbotg_hs_phy: usb-phy {
+ 		#phy-cells = <0>;
+ 		compatible = "usb-nop-xceiv";
+@@ -114,6 +134,46 @@ &clk_hse {
+ 	clock-frequency = <25000000>;
+ };
+ 
++&dsi {
++	#address-cells = <1>;
++	#size-cells = <0>;
++	status = "okay";
++
++	ports {
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		port@0 {
++			reg = <0>;
++			dsi_in: endpoint {
++				remote-endpoint = <&ltdc_out_dsi>;
++			};
++		};
++
++		port@1 {
++			reg = <1>;
++			dsi_out: endpoint {
++				remote-endpoint = <&dsi_panel_in>;
++			};
++		};
++	};
++
++	panel0: panel-dsi@0 {
++		compatible = "orisetech,otm8009a";
++		reg = <0>; /* dsi virtual channel (0..3) */
++		reset-gpios = <&gpioj 15 GPIO_ACTIVE_LOW>;
++		power-supply = <&vcc_3v3>;
++		backlight = <&panel_backlight>;
++		status = "okay";
++
++		port {
++			dsi_panel_in: endpoint {
++				remote-endpoint = <&dsi_out>;
++			};
++		};
++	};
++};
++
+ &i2c1 {
+ 	pinctrl-0 = <&i2c1_pins_b>;
+ 	pinctrl-names = "default";
+@@ -122,6 +182,16 @@ &i2c1 {
  	status = "okay";
--	vmmc-supply = <&mmc_vcard>;
-+	vmmc-supply = <&vcc_3v3>;
- 	cd-gpios = <&gpioi 15 GPIO_ACTIVE_LOW>;
- 	broken-cd;
- 	pinctrl-names = "default", "opendrain", "sleep";
+ };
+ 
++&ltdc {
++	status = "okay";
++
++	port {
++		ltdc_out_dsi: endpoint@0 {
++			remote-endpoint = <&dsi_in>;
++		};
++	};
++};
++
+ &rtc {
+ 	status = "okay";
+ };
 -- 
 2.43.0
 
