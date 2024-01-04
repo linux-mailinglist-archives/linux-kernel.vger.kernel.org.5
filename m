@@ -1,133 +1,397 @@
-Return-Path: <linux-kernel+bounces-16131-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16132-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5BDCC82396A
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 01:03:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 344B6823973
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 01:09:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0B5B5287F00
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 00:03:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3F2601C24AAD
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 00:09:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F14201DFD6;
-	Thu,  4 Jan 2024 00:02:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F581641;
+	Thu,  4 Jan 2024 00:09:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Gv0Or1Et"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="s6nyM+eB"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-185.mta1.migadu.com (out-185.mta1.migadu.com [95.215.58.185])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD1E818E0A
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 00:02:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--tanzirh.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dbe9dbe1c62so12627276.1
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 16:02:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1704326575; x=1704931375; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=Gj1perHxCj9XWVSejaCMqniNxeCWVEl0QQogffeEti4=;
-        b=Gv0Or1EtkEvc6Vame+tNmaiIDDh1rMbLrSyp/RcmC2+ouSGdSJ5MNAxpNmhhR1BSVz
-         q7mg8y22bTxxQ8OtuTNOzoCEogHUEa9CPJW91XPTeql08lJj3hBSyt8un5YedhXMf1fn
-         hZjc4wn0GV/ogCzLLii3Kh/JK6xJupwpZKatPvg3ybyWgnwZ8TlXZZHbfzwdnEhV9pvC
-         zd+lyTp+1Y7l7eVbqLzuF6c/iaHFntWL8DRYTBCWVYbCzrhLiKmMO3le1gQ4dvIg7sob
-         hZBe3Y86JEDK+GAJyGSMnpI1gU9ga2cV/qLcBlmg3+GrSgQTD7nt6Mcnvq3UB5PuLSyn
-         vIfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704326575; x=1704931375;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Gj1perHxCj9XWVSejaCMqniNxeCWVEl0QQogffeEti4=;
-        b=tBw/DTbIO1aoSZwOpl8p/3woOSi0/40ZnBi/e5NNYAsi03ct856vHEdplGMRJP8MsW
-         BdKIYVnmOUPDsmGLXXI6v4fkeMyaL3NPK98qYuui7lrJm3Ds2M1QInBNulDuP9tQ444M
-         HSs13Bba2YWOu7htE5cpOheI+v4mzabM+DpLnC+ZKF9l05CLLADsyAo5chapU999p0cX
-         pr/ewo3DU7OLrvhzrYYQpKDHbhV3weKlE8QAP2Ej9X4hApL7plsqsFcmmp/YV9ReYNpK
-         jwEaAkcEm7Pwx0J40psbj7rHE7W4nTam9xTfAurG9MLitLbFG4X8po+wThxYvSer8LdZ
-         i8MQ==
-X-Gm-Message-State: AOJu0Yzmo2ufYEe9gXYDzfM6KXWq/v+PtoP78R+2LRhXx59aAQ2GOrAC
-	554/RSDyyTDQ/69NXqYaxr9m2Q0ciNA1eSGb0l4=
-X-Google-Smtp-Source: AGHT+IG5Nhz7Az572xVTvuubaJM26hrOAzEw0wT0vR5fwWihxB5UhmHz367tQpbHWeVQ1InNfr/d8V1Yljpv
-X-Received: from tanz.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:c4a])
- (user=tanzirh job=sendgmr) by 2002:a25:7802:0:b0:dbe:5e4f:4d37 with SMTP id
- t2-20020a257802000000b00dbe5e4f4d37mr373536ybc.9.1704326574925; Wed, 03 Jan
- 2024 16:02:54 -0800 (PST)
-Date: Thu, 04 Jan 2024 00:02:40 +0000
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D827B367
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 00:09:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Thu, 4 Jan 2024 09:09:19 +0900
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1704326973;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=8frufT5RlWWzipG2q0mi58H0Swj/zq/wij+Dt0ONUuI=;
+	b=s6nyM+eBQL+MMaQjupAHuVd5/ftHBHJXFro7qAhxPZqeIX+BLZ7WcEv26gW7HWhaNU1/vn
+	XwTUKpD6l7C8Z8S0tRqBGqQBQQA45jREYc2LBmc95Bb7weaQ1VSs+OwjhitwWxje3q68sr
+	xgUXsNh8C4JNGh7AU01JFPSiTKUUftM=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Itaru Kitayama <itaru.kitayama@linux.dev>
+To: Ryan Roberts <ryan.roberts@arm.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Matthew Wilcox <willy@infradead.org>,
+	Yin Fengwei <fengwei.yin@intel.com>,
+	David Hildenbrand <david@redhat.com>, Yu Zhao <yuzhao@google.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Anshuman Khandual <anshuman.khandual@arm.com>,
+	Yang Shi <shy828301@gmail.com>,
+	"Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	Itaru Kitayama <itaru.kitayama@gmail.com>,
+	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+	John Hubbard <jhubbard@nvidia.com>,
+	David Rientjes <rientjes@google.com>,
+	Vlastimil Babka <vbabka@suse.cz>, Hugh Dickins <hughd@google.com>,
+	Kefeng Wang <wangkefeng.wang@huawei.com>,
+	Barry Song <21cnbao@gmail.com>,
+	Alistair Popple <apopple@nvidia.com>, linux-mm@kvack.org,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v9 09/10] selftests/mm/cow: Generalize do_run_with_thp()
+ helper
+Message-ID: <ZZX3L11dUDOM2boi@vm3>
+References: <20231207161211.2374093-1-ryan.roberts@arm.com>
+ <20231207161211.2374093-10-ryan.roberts@arm.com>
+ <ZZT9BHVU0+lyKNJF@vm3>
+ <7d07caae-ae22-4cda-a3d0-4f542f52817a@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAJ/1lWUC/2WOQQrCMBBFr1JmbSSZxBJdeQ9xkaTTNlAbSUqol
- N7dtCAiLt9n3mMWSBQ9JbhUC0TKPvkwFsBDBa43Y0fMN4UBOUqBqBnNk7EDMaFbfj4RN2QNlOt
- npNbPe+l2L9z7NIX42sNZbOt/IwsmmEQjtKtrqxS/diF0Ax1deMAWyfgRFRdcfkUsIilr0cnyh m5+xHVd32fra87YAAAA
-X-Developer-Key: i=tanzirh@google.com; a=ed25519; pk=UeRjcUcv5W9AeLGEbAe2+0LptQpcY+o1Zg0LHHo7VN4=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1704326573; l=1653;
- i=tanzirh@google.com; s=20231204; h=from:subject:message-id;
- bh=rmUPiVwkGCODq3/egSGtwu26EPITUG/LNDaJAgdewWU=; b=Ka49qwIXxJ3rMTect0iqGLS/61gkeZRZtx96d59gKHh3FN7KktncXEfpZuIKeJMJ1/WLyt9pz
- 8hsjiTyt+vsBLE9MPgHDjMAFU44nbPOCf7A3jIOdb3F7bgdviq5z8rU
-X-Mailer: b4 0.12.4
-Message-ID: <20240104-extable-v2-1-6fdcb64abcb2@google.com>
-Subject: [PATCH v2] x86/vdso: shrink vdso/extable.i via IWYU
-From: Tanzir Hasan <tanzirh@google.com>
-To: Andy Lutomirski <luto@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
-	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
-	"H. Peter Anvin" <hpa@zytor.com>
-Cc: Nick Desaulniers <nnn@google.com>, linux-kernel@vger.kernel.org, 
-	Nick Desaulniers <ndesaulniers@google.com>, Tanzir Hasan <tanzirh@google.com>
-Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7d07caae-ae22-4cda-a3d0-4f542f52817a@arm.com>
+X-Migadu-Flow: FLOW_OUT
 
-This diff uses an open source tool include-what-you-use (IWYU) to modify
-the include list, changing indirect includes to direct includes. IWYU is
-implemented using the IWYUScripts github repository which is a tool that
-is currently undergoing development. These changes seek to improve build
-times.
+On Wed, Jan 03, 2024 at 08:33:24AM +0000, Ryan Roberts wrote:
+> On 03/01/2024 06:21, Itaru Kitayama wrote:
+> > On Thu, Dec 07, 2023 at 04:12:10PM +0000, Ryan Roberts wrote:
+> >> do_run_with_thp() prepares (PMD-sized) THP memory into different states
+> >> before running tests. With the introduction of multi-size THP, we would
+> >> like to reuse this logic to also test those smaller THP sizes. So let's
+> >> add a thpsize parameter which tells the function what size THP it should
+> >> operate on.
+> >>
+> >> A separate commit will utilize this change to add new tests for
+> >> multi-size THP, where available.
+> >>
+> >> Reviewed-by: David Hildenbrand <david@redhat.com>
+> >> Tested-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+> >> Tested-by: John Hubbard <jhubbard@nvidia.com>
+> >> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+> > 
+> > Tested-by: Itaru Kitayama <itaru.kitayama@linux.dev>
+> 
+> Thanks for testing!
+> 
+> > 
+> > I am replying to all this time; Ryan, do you think it's okay to run
+> > 700 of selftests/mm/cow tests? Even on FVP, they did not take longer
+> > though.
+> 
+> What exactly is your concern, the amount of time it takes to run the tests? I've
+> found (at least on real HW) that the time it takes to run a test is dominated by
+> accessing the folio's memory. So adding all of the new tests that test sizes
+> between order-2 and PMD_ORDER-1 is ~equivalent to running the existing PMD_ORDER
+> tests twice. And the runtime of those is barely noticable compared to the
+> PUD_ORDER HugeTLB tests. So I don't think we are impacting runtime by much.
+> Sounds like your experience says that's also true for FVP?
 
-This change to vdso/extable.c resulted in a preprocessed size of
-vdso/extable.i from 64332 lines to 25563 lines (-61%) for the x86
-defconfig.
+My primary concern was the time amount of time, but going back from
+mm-unstable/mm-stable, which contains your multi THP changes to Linus' master, I see what you were saying - the total number of tests for the "cow" program is the same. And I am convinced that the total time won't be changed much. 
 
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-Tested-by: Nick Desaulniers <ndesaulniers@google.com>
-Signed-off-by: Tanzir Hasan <tanzirh@google.com>
----
-Changes in v2:
-- Removed struct forward declaration
-- Removed linux/mm for a more aggressive cut
-- Link to v1: https://lore.kernel.org/r/20231228-extable-v1-1-32a18c66b440@google.com
----
- arch/x86/entry/vdso/extable.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+On FVP EVP RevC, if those kselftests tests are not focusing on stress testing, tests are processed reasonably "fast".
 
-diff --git a/arch/x86/entry/vdso/extable.c b/arch/x86/entry/vdso/extable.c
-index afcf5b65beef..85e3babdd976 100644
---- a/arch/x86/entry/vdso/extable.c
-+++ b/arch/x86/entry/vdso/extable.c
-@@ -1,8 +1,12 @@
- // SPDX-License-Identifier: GPL-2.0
--#include <linux/err.h>
--#include <linux/mm.h>
-+#include <linux/mm_types.h>
-+#include <linux/sched.h>
-+#include <linux/stddef.h>
-+#include <linux/types.h>
-+
- #include <asm/current.h>
--#include <asm/traps.h>
-+#include <asm/ptrace.h>
-+#include <asm/trapnr.h>
- #include <asm/vdso.h>
- 
- struct vdso_exception_table_entry {
+Lastly, as you tried to come up a series, the way mm kselftests
+executed is not so intuitive to me, as I am starting tests from the
+run_kselftest.sh script, I don't think mm tests are run using the -t
+(specific test) or -c (entire mm collection) options.
 
----
-base-commit: f5837722ffecbbedf1b1dbab072a063565f0dad1
-change-id: 20231228-extable-18f095e0aeba
+Thanks,
+Itaru.
 
-Best regards,
--- 
-Tanzir Hasan <tanzirh@google.com>
-
+> 
+> > 
+> >> ---
+> >>  tools/testing/selftests/mm/cow.c | 121 +++++++++++++++++--------------
+> >>  1 file changed, 67 insertions(+), 54 deletions(-)
+> >>
+> >> diff --git a/tools/testing/selftests/mm/cow.c b/tools/testing/selftests/mm/cow.c
+> >> index 7324ce5363c0..4d0b5a125d3c 100644
+> >> --- a/tools/testing/selftests/mm/cow.c
+> >> +++ b/tools/testing/selftests/mm/cow.c
+> >> @@ -32,7 +32,7 @@
+> >>  
+> >>  static size_t pagesize;
+> >>  static int pagemap_fd;
+> >> -static size_t thpsize;
+> >> +static size_t pmdsize;
+> >>  static int nr_hugetlbsizes;
+> >>  static size_t hugetlbsizes[10];
+> >>  static int gup_fd;
+> >> @@ -734,7 +734,7 @@ enum thp_run {
+> >>  	THP_RUN_PARTIAL_SHARED,
+> >>  };
+> >>  
+> >> -static void do_run_with_thp(test_fn fn, enum thp_run thp_run)
+> >> +static void do_run_with_thp(test_fn fn, enum thp_run thp_run, size_t thpsize)
+> >>  {
+> >>  	char *mem, *mmap_mem, *tmp, *mremap_mem = MAP_FAILED;
+> >>  	size_t size, mmap_size, mremap_size;
+> >> @@ -759,11 +759,11 @@ static void do_run_with_thp(test_fn fn, enum thp_run thp_run)
+> >>  	}
+> >>  
+> >>  	/*
+> >> -	 * Try to populate a THP. Touch the first sub-page and test if we get
+> >> -	 * another sub-page populated automatically.
+> >> +	 * Try to populate a THP. Touch the first sub-page and test if
+> >> +	 * we get the last sub-page populated automatically.
+> >>  	 */
+> >>  	mem[0] = 0;
+> >> -	if (!pagemap_is_populated(pagemap_fd, mem + pagesize)) {
+> >> +	if (!pagemap_is_populated(pagemap_fd, mem + thpsize - pagesize)) {
+> >>  		ksft_test_result_skip("Did not get a THP populated\n");
+> >>  		goto munmap;
+> >>  	}
+> >> @@ -773,12 +773,14 @@ static void do_run_with_thp(test_fn fn, enum thp_run thp_run)
+> >>  	switch (thp_run) {
+> >>  	case THP_RUN_PMD:
+> >>  	case THP_RUN_PMD_SWAPOUT:
+> >> +		assert(thpsize == pmdsize);
+> >>  		break;
+> >>  	case THP_RUN_PTE:
+> >>  	case THP_RUN_PTE_SWAPOUT:
+> >>  		/*
+> >>  		 * Trigger PTE-mapping the THP by temporarily mapping a single
+> >> -		 * subpage R/O.
+> >> +		 * subpage R/O. This is a noop if the THP is not pmdsize (and
+> >> +		 * therefore already PTE-mapped).
+> >>  		 */
+> >>  		ret = mprotect(mem + pagesize, pagesize, PROT_READ);
+> >>  		if (ret) {
+> >> @@ -875,52 +877,60 @@ static void do_run_with_thp(test_fn fn, enum thp_run thp_run)
+> >>  		munmap(mremap_mem, mremap_size);
+> >>  }
+> >>  
+> >> -static void run_with_thp(test_fn fn, const char *desc)
+> >> +static void run_with_thp(test_fn fn, const char *desc, size_t size)
+> >>  {
+> >> -	ksft_print_msg("[RUN] %s ... with THP\n", desc);
+> >> -	do_run_with_thp(fn, THP_RUN_PMD);
+> >> +	ksft_print_msg("[RUN] %s ... with THP (%zu kB)\n",
+> >> +		desc, size / 1024);
+> >> +	do_run_with_thp(fn, THP_RUN_PMD, size);
+> >>  }
+> >>  
+> >> -static void run_with_thp_swap(test_fn fn, const char *desc)
+> >> +static void run_with_thp_swap(test_fn fn, const char *desc, size_t size)
+> >>  {
+> >> -	ksft_print_msg("[RUN] %s ... with swapped-out THP\n", desc);
+> >> -	do_run_with_thp(fn, THP_RUN_PMD_SWAPOUT);
+> >> +	ksft_print_msg("[RUN] %s ... with swapped-out THP (%zu kB)\n",
+> >> +		desc, size / 1024);
+> >> +	do_run_with_thp(fn, THP_RUN_PMD_SWAPOUT, size);
+> >>  }
+> >>  
+> >> -static void run_with_pte_mapped_thp(test_fn fn, const char *desc)
+> >> +static void run_with_pte_mapped_thp(test_fn fn, const char *desc, size_t size)
+> >>  {
+> >> -	ksft_print_msg("[RUN] %s ... with PTE-mapped THP\n", desc);
+> >> -	do_run_with_thp(fn, THP_RUN_PTE);
+> >> +	ksft_print_msg("[RUN] %s ... with PTE-mapped THP (%zu kB)\n",
+> >> +		desc, size / 1024);
+> >> +	do_run_with_thp(fn, THP_RUN_PTE, size);
+> >>  }
+> >>  
+> >> -static void run_with_pte_mapped_thp_swap(test_fn fn, const char *desc)
+> >> +static void run_with_pte_mapped_thp_swap(test_fn fn, const char *desc, size_t size)
+> >>  {
+> >> -	ksft_print_msg("[RUN] %s ... with swapped-out, PTE-mapped THP\n", desc);
+> >> -	do_run_with_thp(fn, THP_RUN_PTE_SWAPOUT);
+> >> +	ksft_print_msg("[RUN] %s ... with swapped-out, PTE-mapped THP (%zu kB)\n",
+> >> +		desc, size / 1024);
+> >> +	do_run_with_thp(fn, THP_RUN_PTE_SWAPOUT, size);
+> >>  }
+> >>  
+> >> -static void run_with_single_pte_of_thp(test_fn fn, const char *desc)
+> >> +static void run_with_single_pte_of_thp(test_fn fn, const char *desc, size_t size)
+> >>  {
+> >> -	ksft_print_msg("[RUN] %s ... with single PTE of THP\n", desc);
+> >> -	do_run_with_thp(fn, THP_RUN_SINGLE_PTE);
+> >> +	ksft_print_msg("[RUN] %s ... with single PTE of THP (%zu kB)\n",
+> >> +		desc, size / 1024);
+> >> +	do_run_with_thp(fn, THP_RUN_SINGLE_PTE, size);
+> >>  }
+> >>  
+> >> -static void run_with_single_pte_of_thp_swap(test_fn fn, const char *desc)
+> >> +static void run_with_single_pte_of_thp_swap(test_fn fn, const char *desc, size_t size)
+> >>  {
+> >> -	ksft_print_msg("[RUN] %s ... with single PTE of swapped-out THP\n", desc);
+> >> -	do_run_with_thp(fn, THP_RUN_SINGLE_PTE_SWAPOUT);
+> >> +	ksft_print_msg("[RUN] %s ... with single PTE of swapped-out THP (%zu kB)\n",
+> >> +		desc, size / 1024);
+> >> +	do_run_with_thp(fn, THP_RUN_SINGLE_PTE_SWAPOUT, size);
+> >>  }
+> >>  
+> >> -static void run_with_partial_mremap_thp(test_fn fn, const char *desc)
+> >> +static void run_with_partial_mremap_thp(test_fn fn, const char *desc, size_t size)
+> >>  {
+> >> -	ksft_print_msg("[RUN] %s ... with partially mremap()'ed THP\n", desc);
+> >> -	do_run_with_thp(fn, THP_RUN_PARTIAL_MREMAP);
+> >> +	ksft_print_msg("[RUN] %s ... with partially mremap()'ed THP (%zu kB)\n",
+> >> +		desc, size / 1024);
+> >> +	do_run_with_thp(fn, THP_RUN_PARTIAL_MREMAP, size);
+> >>  }
+> >>  
+> >> -static void run_with_partial_shared_thp(test_fn fn, const char *desc)
+> >> +static void run_with_partial_shared_thp(test_fn fn, const char *desc, size_t size)
+> >>  {
+> >> -	ksft_print_msg("[RUN] %s ... with partially shared THP\n", desc);
+> >> -	do_run_with_thp(fn, THP_RUN_PARTIAL_SHARED);
+> >> +	ksft_print_msg("[RUN] %s ... with partially shared THP (%zu kB)\n",
+> >> +		desc, size / 1024);
+> >> +	do_run_with_thp(fn, THP_RUN_PARTIAL_SHARED, size);
+> >>  }
+> >>  
+> >>  static void run_with_hugetlb(test_fn fn, const char *desc, size_t hugetlbsize)
+> >> @@ -1091,15 +1101,15 @@ static void run_anon_test_case(struct test_case const *test_case)
+> >>  
+> >>  	run_with_base_page(test_case->fn, test_case->desc);
+> >>  	run_with_base_page_swap(test_case->fn, test_case->desc);
+> >> -	if (thpsize) {
+> >> -		run_with_thp(test_case->fn, test_case->desc);
+> >> -		run_with_thp_swap(test_case->fn, test_case->desc);
+> >> -		run_with_pte_mapped_thp(test_case->fn, test_case->desc);
+> >> -		run_with_pte_mapped_thp_swap(test_case->fn, test_case->desc);
+> >> -		run_with_single_pte_of_thp(test_case->fn, test_case->desc);
+> >> -		run_with_single_pte_of_thp_swap(test_case->fn, test_case->desc);
+> >> -		run_with_partial_mremap_thp(test_case->fn, test_case->desc);
+> >> -		run_with_partial_shared_thp(test_case->fn, test_case->desc);
+> >> +	if (pmdsize) {
+> >> +		run_with_thp(test_case->fn, test_case->desc, pmdsize);
+> >> +		run_with_thp_swap(test_case->fn, test_case->desc, pmdsize);
+> >> +		run_with_pte_mapped_thp(test_case->fn, test_case->desc, pmdsize);
+> >> +		run_with_pte_mapped_thp_swap(test_case->fn, test_case->desc, pmdsize);
+> >> +		run_with_single_pte_of_thp(test_case->fn, test_case->desc, pmdsize);
+> >> +		run_with_single_pte_of_thp_swap(test_case->fn, test_case->desc, pmdsize);
+> >> +		run_with_partial_mremap_thp(test_case->fn, test_case->desc, pmdsize);
+> >> +		run_with_partial_shared_thp(test_case->fn, test_case->desc, pmdsize);
+> >>  	}
+> >>  	for (i = 0; i < nr_hugetlbsizes; i++)
+> >>  		run_with_hugetlb(test_case->fn, test_case->desc,
+> >> @@ -1120,7 +1130,7 @@ static int tests_per_anon_test_case(void)
+> >>  {
+> >>  	int tests = 2 + nr_hugetlbsizes;
+> >>  
+> >> -	if (thpsize)
+> >> +	if (pmdsize)
+> >>  		tests += 8;
+> >>  	return tests;
+> >>  }
+> >> @@ -1329,7 +1339,7 @@ static void run_anon_thp_test_cases(void)
+> >>  {
+> >>  	int i;
+> >>  
+> >> -	if (!thpsize)
+> >> +	if (!pmdsize)
+> >>  		return;
+> >>  
+> >>  	ksft_print_msg("[INFO] Anonymous THP tests\n");
+> >> @@ -1338,13 +1348,13 @@ static void run_anon_thp_test_cases(void)
+> >>  		struct test_case const *test_case = &anon_thp_test_cases[i];
+> >>  
+> >>  		ksft_print_msg("[RUN] %s\n", test_case->desc);
+> >> -		do_run_with_thp(test_case->fn, THP_RUN_PMD);
+> >> +		do_run_with_thp(test_case->fn, THP_RUN_PMD, pmdsize);
+> >>  	}
+> >>  }
+> >>  
+> >>  static int tests_per_anon_thp_test_case(void)
+> >>  {
+> >> -	return thpsize ? 1 : 0;
+> >> +	return pmdsize ? 1 : 0;
+> >>  }
+> >>  
+> >>  typedef void (*non_anon_test_fn)(char *mem, const char *smem, size_t size);
+> >> @@ -1419,7 +1429,7 @@ static void run_with_huge_zeropage(non_anon_test_fn fn, const char *desc)
+> >>  	}
+> >>  
+> >>  	/* For alignment purposes, we need twice the thp size. */
+> >> -	mmap_size = 2 * thpsize;
+> >> +	mmap_size = 2 * pmdsize;
+> >>  	mmap_mem = mmap(NULL, mmap_size, PROT_READ | PROT_WRITE,
+> >>  			MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+> >>  	if (mmap_mem == MAP_FAILED) {
+> >> @@ -1434,11 +1444,11 @@ static void run_with_huge_zeropage(non_anon_test_fn fn, const char *desc)
+> >>  	}
+> >>  
+> >>  	/* We need a THP-aligned memory area. */
+> >> -	mem = (char *)(((uintptr_t)mmap_mem + thpsize) & ~(thpsize - 1));
+> >> -	smem = (char *)(((uintptr_t)mmap_smem + thpsize) & ~(thpsize - 1));
+> >> +	mem = (char *)(((uintptr_t)mmap_mem + pmdsize) & ~(pmdsize - 1));
+> >> +	smem = (char *)(((uintptr_t)mmap_smem + pmdsize) & ~(pmdsize - 1));
+> >>  
+> >> -	ret = madvise(mem, thpsize, MADV_HUGEPAGE);
+> >> -	ret |= madvise(smem, thpsize, MADV_HUGEPAGE);
+> >> +	ret = madvise(mem, pmdsize, MADV_HUGEPAGE);
+> >> +	ret |= madvise(smem, pmdsize, MADV_HUGEPAGE);
+> >>  	if (ret) {
+> >>  		ksft_test_result_fail("MADV_HUGEPAGE failed\n");
+> >>  		goto munmap;
+> >> @@ -1457,7 +1467,7 @@ static void run_with_huge_zeropage(non_anon_test_fn fn, const char *desc)
+> >>  		goto munmap;
+> >>  	}
+> >>  
+> >> -	fn(mem, smem, thpsize);
+> >> +	fn(mem, smem, pmdsize);
+> >>  munmap:
+> >>  	munmap(mmap_mem, mmap_size);
+> >>  	if (mmap_smem != MAP_FAILED)
+> >> @@ -1650,7 +1660,7 @@ static void run_non_anon_test_case(struct non_anon_test_case const *test_case)
+> >>  	run_with_zeropage(test_case->fn, test_case->desc);
+> >>  	run_with_memfd(test_case->fn, test_case->desc);
+> >>  	run_with_tmpfile(test_case->fn, test_case->desc);
+> >> -	if (thpsize)
+> >> +	if (pmdsize)
+> >>  		run_with_huge_zeropage(test_case->fn, test_case->desc);
+> >>  	for (i = 0; i < nr_hugetlbsizes; i++)
+> >>  		run_with_memfd_hugetlb(test_case->fn, test_case->desc,
+> >> @@ -1671,7 +1681,7 @@ static int tests_per_non_anon_test_case(void)
+> >>  {
+> >>  	int tests = 3 + nr_hugetlbsizes;
+> >>  
+> >> -	if (thpsize)
+> >> +	if (pmdsize)
+> >>  		tests += 1;
+> >>  	return tests;
+> >>  }
+> >> @@ -1681,10 +1691,13 @@ int main(int argc, char **argv)
+> >>  	int err;
+> >>  
+> >>  	pagesize = getpagesize();
+> >> -	thpsize = read_pmd_pagesize();
+> >> -	if (thpsize)
+> >> +	pmdsize = read_pmd_pagesize();
+> >> +	if (pmdsize) {
+> >> +		ksft_print_msg("[INFO] detected PMD size: %zu KiB\n",
+> >> +			       pmdsize / 1024);
+> >>  		ksft_print_msg("[INFO] detected THP size: %zu KiB\n",
+> >> -			       thpsize / 1024);
+> >> +			       pmdsize / 1024);
+> >> +	}
+> >>  	nr_hugetlbsizes = detect_hugetlb_page_sizes(hugetlbsizes,
+> >>  						    ARRAY_SIZE(hugetlbsizes));
+> >>  	detect_huge_zeropage();
+> >> -- 
+> >> 2.25.1
+> >>
+> 
 
