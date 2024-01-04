@@ -1,150 +1,122 @@
-Return-Path: <linux-kernel+bounces-16771-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16779-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4BEDF82438C
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 15:20:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 718C48243A3
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 15:22:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5B6371C213D3
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 14:20:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0BAB1282779
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 14:22:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D23724B47;
-	Thu,  4 Jan 2024 14:17:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 028AE225D2;
+	Thu,  4 Jan 2024 14:22:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="TfHpK3Om"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AD0824A14;
-	Thu,  4 Jan 2024 14:17:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.17])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4T5TCj6PV3z29jXp;
-	Thu,  4 Jan 2024 22:16:17 +0800 (CST)
-Received: from dggpeml500021.china.huawei.com (unknown [7.185.36.21])
-	by mail.maildlp.com (Postfix) with ESMTPS id B50271A0172;
-	Thu,  4 Jan 2024 22:17:44 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by dggpeml500021.china.huawei.com
- (7.185.36.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 4 Jan
- 2024 22:17:44 +0800
-From: Baokun Li <libaokun1@huawei.com>
-To: <linux-ext4@vger.kernel.org>
-CC: <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
-	<ritesh.list@gmail.com>, <linux-kernel@vger.kernel.org>,
-	<yi.zhang@huawei.com>, <yangerkun@huawei.com>, <yukuai3@huawei.com>,
-	<libaokun1@huawei.com>
-Subject: [PATCH v3 8/8] ext4: mark the group block bitmap as corrupted before reporting an error
-Date: Thu, 4 Jan 2024 22:20:40 +0800
-Message-ID: <20240104142040.2835097-9-libaokun1@huawei.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20240104142040.2835097-1-libaokun1@huawei.com>
-References: <20240104142040.2835097-1-libaokun1@huawei.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3DB9224D2
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 14:22:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-40e3485f0e1so4382325e9.3
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 06:22:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1704378134; x=1704982934; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=pOIhKXF7biqxz+aA/XDTJ2jcGS5EMuYmWEXbjvsxFhY=;
+        b=TfHpK3Om4QDogYBdE6MnE3msalOcbX+pIXqJiAeHDryTFddbbG7dstHJbWAriphTI8
+         aozIdqm7uaFZ1kBfhATrLEHdVMWW5KGYXBtQfztF9f++TXRV3yEcUTR8ev/A5OK8lBei
+         hmBvD+ItDq6yoT8ztiRdfav0nikyePx0kR4dAPbXZ53/0DGMhVH0LRIVnqamAMCQkbLs
+         tblDrXoruVXyw+ocPTj0kEwqjZ3Q6FFc7fKg20q4Fm5WPrb/VRFhVC7nnHL5cFUqM34r
+         I1XkJHF7DADnxG8uomP1K1h31vDUnIwCn+dAtrxLKicfR54Kj/6LAbIuaEJ0bvvJLxwp
+         XWDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704378134; x=1704982934;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=pOIhKXF7biqxz+aA/XDTJ2jcGS5EMuYmWEXbjvsxFhY=;
+        b=KDoCMJSGPA34A0DvwspHNbphtIk4R2ugJL38xidPV73i7CWTWplArnHw8f3Qlb93C7
+         qNYYbTBKfwUdRWiFrbFvZWL7rGGxynzW77uEdG10vBtu8GD99y/ZXTxPgeuoevCPdSbE
+         7AcraFNXQBPBPUFOCzEHHO1DpdtpmqmHFmRN8F4HrluaVflO863hccHcQVtITRJzgvf1
+         PLTQ7k+TmdmR9Hn9z2uV79DDOqyeNghnj3KSpZcNW2rE6hklTIO0DrWRp4DZXw80Eklx
+         qzeHR22yyFvljj/O1hWK7QB44P1sIp+OeUS9IIgWDq0bBEztNKnJ8ujj+U/uA5VuLOES
+         9A9A==
+X-Gm-Message-State: AOJu0Yy9AVspgWU/A3lzAFjOaae2eXwGgT7LU1rf568zGjONSJi3gF4T
+	kGWHE9yViI8ErR19sagLjzUSJsBr4Qk6Yw==
+X-Google-Smtp-Source: AGHT+IF5WicewklRFmMcWPw5W2zfn/1Y+Xf1MSh9HNXvJ0S8BzwdJIf9dtkChqe702hWNWojBcL1HQ==
+X-Received: by 2002:a1c:4b08:0:b0:40d:628a:1230 with SMTP id y8-20020a1c4b08000000b0040d628a1230mr384503wma.61.1704378134059;
+        Thu, 04 Jan 2024 06:22:14 -0800 (PST)
+Received: from [192.168.1.83] (host-92-17-96-230.as13285.net. [92.17.96.230])
+        by smtp.gmail.com with ESMTPSA id u21-20020a05600c139500b0040d7c3d5454sm5933073wmf.3.2024.01.04.06.22.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Jan 2024 06:22:13 -0800 (PST)
+Message-ID: <641e8800-4735-406b-8555-d4a80201f0b9@linaro.org>
+Date: Thu, 4 Jan 2024 14:22:12 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpeml500021.china.huawei.com (7.185.36.21)
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] clk: qcom: dispcc-sdm845: Adjust internal GDSC wait times
+Content-Language: en-US
+To: Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
+ <sboyd@kernel.org>, Taniya Das <quic_tdas@quicinc.com>
+Cc: Marijn Suijten <marijn.suijten@somainline.org>,
+ linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240103-topic-845gdsc-v1-1-368efbe1a61d@linaro.org>
+From: Caleb Connolly <caleb.connolly@linaro.org>
+In-Reply-To: <20240103-topic-845gdsc-v1-1-368efbe1a61d@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Otherwise unlocking the group in ext4_grp_locked_error may allow other
-processes to modify the core block bitmap that is known to be corrupt.
 
-Signed-off-by: Baokun Li <libaokun1@huawei.com>
-Reviewed-by: Jan Kara <jack@suse.cz>
----
- fs/ext4/mballoc.c | 22 +++++++++++-----------
- 1 file changed, 11 insertions(+), 11 deletions(-)
 
-diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index 90fcf22db098..e2a63cf854a8 100644
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -564,14 +564,14 @@ static void mb_free_blocks_double(struct inode *inode, struct ext4_buddy *e4b,
- 
- 			blocknr = ext4_group_first_block_no(sb, e4b->bd_group);
- 			blocknr += EXT4_C2B(EXT4_SB(sb), first + i);
-+			ext4_mark_group_bitmap_corrupted(sb, e4b->bd_group,
-+					EXT4_GROUP_INFO_BBITMAP_CORRUPT);
- 			ext4_grp_locked_error(sb, e4b->bd_group,
- 					      inode ? inode->i_ino : 0,
- 					      blocknr,
- 					      "freeing block already freed "
- 					      "(bit %u)",
- 					      first + i);
--			ext4_mark_group_bitmap_corrupted(sb, e4b->bd_group,
--					EXT4_GROUP_INFO_BBITMAP_CORRUPT);
- 		}
- 		mb_clear_bit(first + i, e4b->bd_info->bb_bitmap);
- 	}
-@@ -1934,12 +1934,12 @@ static void mb_free_blocks(struct inode *inode, struct ext4_buddy *e4b,
- 
- 		blocknr = ext4_group_first_block_no(sb, e4b->bd_group);
- 		blocknr += EXT4_C2B(sbi, block);
-+		ext4_mark_group_bitmap_corrupted(sb, e4b->bd_group,
-+				EXT4_GROUP_INFO_BBITMAP_CORRUPT);
- 		ext4_grp_locked_error(sb, e4b->bd_group,
- 				      inode ? inode->i_ino : 0, blocknr,
- 				      "freeing already freed block (bit %u); block bitmap corrupt.",
- 				      block);
--		ext4_mark_group_bitmap_corrupted(sb, e4b->bd_group,
--				EXT4_GROUP_INFO_BBITMAP_CORRUPT);
- 		return;
- 	}
- 
-@@ -2412,12 +2412,12 @@ void ext4_mb_simple_scan_group(struct ext4_allocation_context *ac,
- 
- 		k = mb_find_next_zero_bit(buddy, max, 0);
- 		if (k >= max) {
-+			ext4_mark_group_bitmap_corrupted(ac->ac_sb,
-+					e4b->bd_group,
-+					EXT4_GROUP_INFO_BBITMAP_CORRUPT);
- 			ext4_grp_locked_error(ac->ac_sb, e4b->bd_group, 0, 0,
- 				"%d free clusters of order %d. But found 0",
- 				grp->bb_counters[i], i);
--			ext4_mark_group_bitmap_corrupted(ac->ac_sb,
--					 e4b->bd_group,
--					EXT4_GROUP_INFO_BBITMAP_CORRUPT);
- 			break;
- 		}
- 		ac->ac_found++;
-@@ -2468,12 +2468,12 @@ void ext4_mb_complex_scan_group(struct ext4_allocation_context *ac,
- 			 * free blocks even though group info says we
- 			 * have free blocks
- 			 */
-+			ext4_mark_group_bitmap_corrupted(sb, e4b->bd_group,
-+					EXT4_GROUP_INFO_BBITMAP_CORRUPT);
- 			ext4_grp_locked_error(sb, e4b->bd_group, 0, 0,
- 					"%d free clusters as per "
- 					"group info. But bitmap says 0",
- 					free);
--			ext4_mark_group_bitmap_corrupted(sb, e4b->bd_group,
--					EXT4_GROUP_INFO_BBITMAP_CORRUPT);
- 			break;
- 		}
- 
-@@ -2499,12 +2499,12 @@ void ext4_mb_complex_scan_group(struct ext4_allocation_context *ac,
- 		if (WARN_ON(ex.fe_len <= 0))
- 			break;
- 		if (free < ex.fe_len) {
-+			ext4_mark_group_bitmap_corrupted(sb, e4b->bd_group,
-+					EXT4_GROUP_INFO_BBITMAP_CORRUPT);
- 			ext4_grp_locked_error(sb, e4b->bd_group, 0, 0,
- 					"%d free clusters as per "
- 					"group info. But got %d blocks",
- 					free, ex.fe_len);
--			ext4_mark_group_bitmap_corrupted(sb, e4b->bd_group,
--					EXT4_GROUP_INFO_BBITMAP_CORRUPT);
- 			/*
- 			 * The number of free blocks differs. This mostly
- 			 * indicate that the bitmap is corrupt. So exit
+On 03/01/2024 20:20, Konrad Dybcio wrote:
+> SDM845 downstream uses non-default values for GDSC internal waits.
+> Program them accordingly to avoid surprises.
+> 
+> Fixes: 81351776c9fb ("clk: qcom: Add display clock controller driver for SDM845")
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+
+This doesn't break anything, but I'm not exactly sure what it fixes :P
+
+Tested-by: Caleb Connolly <caleb.connolly@linaro.org> # OnePlus 6
+> ---
+>  drivers/clk/qcom/dispcc-sdm845.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/drivers/clk/qcom/dispcc-sdm845.c b/drivers/clk/qcom/dispcc-sdm845.c
+> index 735adfefc379..e792e0b130d3 100644
+> --- a/drivers/clk/qcom/dispcc-sdm845.c
+> +++ b/drivers/clk/qcom/dispcc-sdm845.c
+> @@ -759,6 +759,8 @@ static struct clk_branch disp_cc_mdss_vsync_clk = {
+>  
+>  static struct gdsc mdss_gdsc = {
+>  	.gdscr = 0x3000,
+> +	.en_few_wait_val = 0x6,
+> +	.en_rest_wait_val = 0x5,
+>  	.pd = {
+>  		.name = "mdss_gdsc",
+>  	},
+> 
+> ---
+> base-commit: 0fef202ac2f8e6d9ad21aead648278f1226b9053
+> change-id: 20240103-topic-845gdsc-bcd9d549f153
+> 
+> Best regards,
+
 -- 
-2.31.1
-
+// Caleb (they/them)
 
