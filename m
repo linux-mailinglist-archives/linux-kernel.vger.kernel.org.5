@@ -1,108 +1,155 @@
-Return-Path: <linux-kernel+bounces-16701-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16702-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 981718242AB
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 14:26:45 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id F1A8B8242AF
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 14:27:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3E5C7286C0E
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 13:26:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6DAFCB241D5
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 13:27:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 228ED22336;
-	Thu,  4 Jan 2024 13:26:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32B7A224C4;
+	Thu,  4 Jan 2024 13:27:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="ahn/3crK"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="aEis+rWB"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FC5E2230B;
-	Thu,  4 Jan 2024 13:26:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id B86E740E01B2;
-	Thu,  4 Jan 2024 13:26:34 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id ZqTtG1JNcLTX; Thu,  4 Jan 2024 13:26:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1704374792; bh=1Bga3Oc0/FfATWs4xOTtGXjtDFgHK1/H9XT5vBXq0cE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ahn/3crK6bA90TIXsgmAC6I23fk+n+mUEHzdiLHFWF5R1eFbbFkndV/xK0AEhLpOM
-	 m5ONnFOgbLyRce01Gj6d0TzD/MsGqieMJWM0hhHkz/t49Y7Z1zOpcQWsn12UVd4TlA
-	 JK533nXJ1zANet8Em44kke+XiE/CtkgRozU0MnQrNSCf1yjBT+M+yxJhK0mgYfIKS1
-	 v2Vw2+lxDwhLIHt44wi56r7RQeb/oktUoH3EEg8lnSpJdCtc8dCqpm1tvngkHD+bP0
-	 6HQTPXedQiG321pxNj+OHgbywnYOXb2F6VgGasaifJS74eCAYQ7yzxTK+Zz0LX1/Q1
-	 RFq7oodSYfJgM33W9h9MpCuGPSX+K2jGE9Z7buELhlr0KzducieGGYxcOfht1gsUnJ
-	 cVKAIAcFJtP2dhxz9aho8nD8IwF/l283bX0io/qo1B520jEP1Wx+GnXoxajCP7LHZA
-	 sfjluUFw84ScRjvZcEr8xkcC6ygJoXmPdJi5zqquQjJdSc9cbjdXj5adlQ4R+ndYSR
-	 nwkUkjqPzzMS90d1RHzHV3bIy3aH11A6osGmutZuZT2Qm0Zz1+yxLD6Cm7C2XWEHOO
-	 UsaKyOoV1jEcPDJ+S/SiQ/+/OjTMNULy6tfpujXWnfuPvCB07hoFoLSgzfGTRbYJbD
-	 f0tW+IGJuY/BC7YoAracVf8w=
-Received: from zn.tnic (pd9530f8c.dip0.t-ipconnect.de [217.83.15.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 998A540E0196;
-	Thu,  4 Jan 2024 13:26:24 +0000 (UTC)
-Date: Thu, 4 Jan 2024 14:26:23 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Josh Poimboeuf <jpoimboe@kernel.org>
-Cc: "Kaplan, David" <David.Kaplan@amd.com>, Ingo Molnar <mingo@kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-tip-commits@vger.kernel.org" <linux-tip-commits@vger.kernel.org>,
-	"Peter Zijlstra (Intel)" <peterz@infradead.org>,
-	"x86@kernel.org" <x86@kernel.org>,
-	David Howells <dhowells@redhat.com>
-Subject: Re: [PATCH -v2] x86/retpoline: Ensure default return thunk isn't
- used at runtime
-Message-ID: <20240104132623.GFZZax/wyf5Y3rMX5G@fat_crate.local>
-References: <20231019063527.iwgyioxi2gznnshp@treble>
- <20231019065928.mrvhtfaya22p2uzw@treble>
- <20231019141514.GCZTE58qPOvcJCiBp3@fat_crate.local>
- <SN6PR12MB2702AC3C27D25414FE4260F994D4A@SN6PR12MB2702.namprd12.prod.outlook.com>
- <20231019143951.GEZTE/t/wECKBxMSjl@fat_crate.local>
- <20231019152051.4u5xwhopbdisy6zl@treble>
- <20231024201913.GHZTgmwf6QMkX8BGbo@fat_crate.local>
- <20240103184656.GEZZWroPmHLJuP6y5H@fat_crate.local>
- <20240104131210.GDZZauqoeKoZGpYwDd@fat_crate.local>
- <20240104132446.GEZZaxnrIgIyat0pqf@fat_crate.local>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE5622230B
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 13:27:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-5563944b3dfso611007a12.3
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 05:27:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google; t=1704374819; x=1704979619; darn=vger.kernel.org;
+        h=content-transfer-encoding:to:references:message-id:cc:date
+         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7NLOEEKOHl1K8SwVg4x8l8DROTucqom/M/VF0VUr2O4=;
+        b=aEis+rWBVmAFnwYH1KnpAEWQOawFoxikwA+gwAxWCYppwkK9b3WsKd0uaDmSAmjd0U
+         GX8lSD4NAGWmsvIpLBL2gpCOXJxIzfwgtGdoGzUOgynOq3VHP8eevg89/kKLPW8jaEr9
+         rT/fhKVeQk5yPQrp/rHBsacZ1x/0qxmpDYJT8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704374819; x=1704979619;
+        h=content-transfer-encoding:to:references:message-id:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7NLOEEKOHl1K8SwVg4x8l8DROTucqom/M/VF0VUr2O4=;
+        b=WL22wro86NxourK0P34euaZUOphO5XoXtuLlE/pN+VI2/VDzpHx5dU5p4GKp4sJTtf
+         Xul3b5q0ApowUfLCzPw31nW8mJIEpVPE0HCU6CU0eo9zMnpsguDhBjNnu1GbEw9CF2aW
+         VzaWTLrY2d/BxEkR5lK//HapDGi8JwKNl7hfphx5GFbM0RnVfn4oDZGaIKUFJ+ycRl9d
+         w0Fm0/uNSYdAlsiqlxPaXoTflnG/pYDISjcvDagoNNMSoPF58cNTe5Bmd+QhdY9Dy3gI
+         cRhVzOQwQHkvUZIb7kgNlmt4WHRhNM8rJxY9oLGus+tfviJ2Jm7CFzLrtPefsOo1SBps
+         lJWA==
+X-Gm-Message-State: AOJu0Ywf0eh61Wkst23CkPsaqWVHvYtR6jFgr18Nbh40JQSRpmusdxfW
+	uWsJwlmeAXYGpcbyDWPG8WDOidkqg5ulRSQH5PKqZTt99NXeCRMJbFw2pe8gTu0ihP+CUlqus2W
+	/WCqagmLBl+SsoZQDPIi9Zw==
+X-Google-Smtp-Source: AGHT+IHd/WpwPLyNONTm9ogjAA99SQMYsTaEZ3qlb+1RX3wQIK/T9BGDoHBAKS8TMe2iuAmaxN1MUA==
+X-Received: by 2002:a50:c35d:0:b0:557:183b:9028 with SMTP id q29-20020a50c35d000000b00557183b9028mr8478edb.65.1704374819165;
+        Thu, 04 Jan 2024 05:26:59 -0800 (PST)
+Received: from smtpclient.apple ([132.69.236.92])
+        by smtp.gmail.com with ESMTPSA id ef7-20020a05640228c700b00556cf2545desm2249504edb.16.2024.01.04.05.26.55
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 04 Jan 2024 05:26:58 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240104132446.GEZZaxnrIgIyat0pqf@fat_crate.local>
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.300.61.1.2\))
+Subject: Re: [PATCH 1/2] mm/tlb: fix fullmm semantics
+From: Nadav Amit <nadav.amit@broadcom.com>
+In-Reply-To: <ZZN35DTJTNExCNXW@xhacker>
+Date: Thu, 4 Jan 2024 15:26:43 +0200
+Cc: Will Deacon <will@kernel.org>,
+ Aneesh Kumar K V <aneesh.kumar@linux.ibm.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Nick Piggin <npiggin@gmail.com>,
+ Peter Zijlstra <peterz@infradead.org>,
+ Catalin Marinas <catalin.marinas@arm.com>,
+ Paul Walmsley <paul.walmsley@sifive.com>,
+ Palmer Dabbelt <palmer@dabbelt.com>,
+ Albert Ou <aou@eecs.berkeley.edu>,
+ Arnd Bergmann <arnd@arndb.de>,
+ linux-arch@vger.kernel.org,
+ linux-mm <linux-mm@kvack.org>,
+ linux-arm-kernel@lists.infradead.org,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ linux-riscv@lists.infradead.org,
+ Nadav Amit <namit@vmware.com>,
+ Andrea Arcangeli <aarcange@redhat.com>,
+ Andy Lutomirski <luto@kernel.org>,
+ Dave Hansen <dave.hansen@linux.intel.com>,
+ Thomas Gleixner <tglx@linutronix.de>,
+ Yu Zhao <yuzhao@google.com>,
+ the arch/x86 maintainers <x86@kernel.org>
+Message-Id: <0468E994-273E-4A8B-A521-150723DA9774@broadcom.com>
+References: <20231228084642.1765-1-jszhang@kernel.org>
+ <20231228084642.1765-2-jszhang@kernel.org>
+ <204B6410-2EFA-462B-9DF7-64CC5F1D3AD2@broadcom.com>
+ <ZZN35DTJTNExCNXW@xhacker>
+To: Jisheng Zhang <jszhang@kernel.org>
+X-Mailer: Apple Mail (2.3774.300.61.1.2)
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jan 04, 2024 at 02:24:46PM +0100, Borislav Petkov wrote:
-> +void __warn_thunk(void)
-> +{
-> +	pr_warn_once("\n");
-> +	pr_warn_once("**********************************************************\n");
-> +	pr_warn_once("**   NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE   **\n");
-> +	pr_warn_once("**                                                      **\n");
-> +	pr_warn_once("**   Unpatched return thunk in use. This should not     **\n");
-> +	pr_warn_once("**   happen on a production kernel. Please report this  **\n");
-> +	pr_warn_once("**   to x86@kernel.org.                                 **\n");
 
-I'm not yet sure here whether this should say "upstream kernels" because
-otherwise we'll get a bunch of distro or whatnot downstream kernels
-reports where we can't really do anything about...
 
-Hmmm.
+> On Jan 2, 2024, at 4:41=E2=80=AFAM, Jisheng Zhang <jszhang@kernel.org> wr=
+ote:
+>=20
+> On Sat, Dec 30, 2023 at 11:54:02AM +0200, Nadav Amit wrote:
+>=20
+>>=20
+>> My knowledge of arm64 is a bit limited, but the code does not seem
+>> to match the comment, so if it is correct (which I strongly doubt),
+>> the comment should be updated.
+>=20
+> will do if the above change is accepted by arm64
 
--- 
-Regards/Gruss,
-    Boris.
+Jisheng, I expected somebody with arm64 knowledge to point it out, and
+maybe I am wrong, but I really don=E2=80=99t understand something about the
+correctness, if you can please explain.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+In the following code:
+
+--- a/arch/arm64/include/asm/tlb.h
++++ b/arch/arm64/include/asm/tlb.h
+@@ -62,7 +62,10 @@ static inline void tlb_flush(struct mmu_gather *tlb)
+	 * invalidating the walk-cache, since the ASID allocator won't
+	 * reallocate our ASID without invalidating the entire TLB.
+	 */
+-	if (tlb->fullmm) {
++	if (tlb->fullmm)
++		return;
+
+You skip flush if fullmm is on. But if page-tables are freed, you may
+want to flush immediately and not wait for ASID to be freed to avoid
+speculative page walks; these walks at least on x86 caused a mess.
+
+No?
+
+
+--=20
+This electronic communication and the information and any files transmitted=
+=20
+with it, or attached to it, are confidential and are intended solely for=20
+the use of the individual or entity to whom it is addressed and may contain=
+=20
+information that is confidential, legally privileged, protected by privacy=
+=20
+laws, or otherwise restricted from disclosure to anyone else. If you are=20
+not the intended recipient or the person responsible for delivering the=20
+e-mail to the intended recipient, you are hereby notified that any use,=20
+copying, distributing, dissemination, forwarding, printing, or copying of=
+=20
+this e-mail is strictly prohibited. If you received this e-mail in error,=
+=20
+please return the e-mail to the sender, delete it from your computer, and=
+=20
+destroy any printed copy of it.
 
