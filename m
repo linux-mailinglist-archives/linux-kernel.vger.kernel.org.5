@@ -1,124 +1,102 @@
-Return-Path: <linux-kernel+bounces-16274-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16277-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C63B4823C06
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 07:07:10 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D1536823C13
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 07:09:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 31FA8B24E7A
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 06:07:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B55961C24A9C
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 06:09:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C224D1DFC5;
-	Thu,  4 Jan 2024 06:06:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AF5818EC3;
+	Thu,  4 Jan 2024 06:09:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="1QRK1wQ2"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CM3dDIEk"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B2A01D68E;
-	Thu,  4 Jan 2024 06:06:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=WHH7EjkqAp4gv4LEq1uUq0Aky/vKU/3Flfj3XeBndLY=; b=1QRK1wQ2+BzwBdOIALghzMO+ie
-	k5F/PyUFVVzAw65jMQcC5zjWToU/ZB9UVwIw2fCLSsgZUxcPW18XhVJbps0TDRbq5GUEghbNHvc64
-	wZ30HAw+sZOJ/0LeZr6qKFTLKlDaoiOGSZhSFx19eYBQy6MLrmyoy3LZQ8CGmjpUfUy6Lb3+VW7xE
-	b8dRsuddWyeE/DUf9ugMzsaS5nm9GC4NvnL9ZdO7vR4CTfg2JMzBBbT1mvugm6RPmweAg/tfgeWDd
-	ZFRRKETsb/guzT3SJcisYK+vnIsH8VxX+qLBr1Y8a52urV37Oc3llxre/gkEKQfDlfbeUxsufHZbM
-	0Cw8TBFg==;
-Received: from [50.53.46.231] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1rLGsX-00Cwt8-0b;
-	Thu, 04 Jan 2024 06:06:53 +0000
-Message-ID: <1ab4ff24-4e67-43d7-90b7-0131182b7e1f@infradead.org>
-Date: Wed, 3 Jan 2024 22:06:52 -0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C29811D68D;
+	Thu,  4 Jan 2024 06:09:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-6da55cc8e78so123699b3a.0;
+        Wed, 03 Jan 2024 22:09:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704348542; x=1704953342; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=5ZvQW0xU+LOb9bzaqP41SYyg4D476cxr1BBMCgwep1I=;
+        b=CM3dDIEkdCwEq/fX96iKqcngPz1v4BV/QTxV2oToC1PWcFJ4BjrIP6640Eel3nJfdR
+         EGI8nYu14C9cw7S26Qntl5mFf0IL1BK8lZoDG5HhM8tsalSgnBUISspbIZtxRdDrGmmx
+         YrebOCtW/pC4NEHPSq2HlC/ciSmbRLyiTEpX5dzX6dY1sD+MBxr3mG6TOHpJNHGLsAX2
+         3c0cJESQsI7sV0+JYLBKUR4cgJo5NRkgaUzpW5MF0Vn7Y/w5rcbaqKVZHXSIbOI0f+af
+         DJw4BUIpGNbb7ipot6Hep7Sgcmb7hU2DuRXr5W9vY3cjuxCmf+UuyW1cb/sQa5kTiFob
+         IIyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704348542; x=1704953342;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=5ZvQW0xU+LOb9bzaqP41SYyg4D476cxr1BBMCgwep1I=;
+        b=CZiTXBlDNh8cas5txrPY2E+Wi6gOdJ6Z0/jxzDnyaKjkX0pMLHW1c2QSPsJ3/cCe/q
+         QMppCpkJFmaQUS6SwaUz+E4qGJVL1gOjsnJjfPeL6e4KPIhKkJKbUC11HaQhmlTnJJwA
+         febWzarjR6xSvqtEu7WBu0ByECoHidxBQcbPnFYfJ7G7aYxAw2Xitn8Vk05qytBz5/IH
+         FI7rSurYYaTlZLl/7kOlu4YGOZVlJVxSr+tlh80X/+UsWx8Zon/UB4iXU87KXsyu8Yvx
+         EDy27jGi80ZXa+RfFRsl5U+n1SoUflXZOnWcFddfOLUsiit6oy/Z1kgnD0qo+PKU0b9v
+         SNQA==
+X-Gm-Message-State: AOJu0Yxifjax/3FDZkp+gD/EoWFB1QOue3C6mj0DITQyi4gbI1oKGS0Y
+	Q1ioxUSEuQa4vYIK+ezbhVM=
+X-Google-Smtp-Source: AGHT+IGPx7ipScYKtOWFT5j0xVd85A3lG6Rch/jPBtZBGlh0XwaA+0QEFOoH++nqD7CibZ/idq9h8g==
+X-Received: by 2002:aa7:9e42:0:b0:6da:2898:1d6c with SMTP id z2-20020aa79e42000000b006da28981d6cmr142773pfq.51.1704348541947;
+        Wed, 03 Jan 2024 22:09:01 -0800 (PST)
+Received: from arch-hp.. ([2409:40c2:1059:c189:c8af:e8c3:986e:aea2])
+        by smtp.gmail.com with ESMTPSA id m7-20020a62f207000000b006d9a846036asm19473072pfh.60.2024.01.03.22.08.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Jan 2024 22:09:01 -0800 (PST)
+From: Siddhesh Dharme <siddheshdharme18@gmail.com>
+To: perex@perex.cz,
+	tiwai@suse.com
+Cc: alsa-devel@alsa-project.org,
+	linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Siddhesh Dharme <siddheshdharme18@gmail.com>
+Subject: [PATCH] ALSA: hda/realtek: Fix mute and mic-mute LEDs for HP ProBook 440 G6
+Date: Thu,  4 Jan 2024 11:37:36 +0530
+Message-ID: <20240104060736.5149-1-siddheshdharme18@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: linux-next: Tree for Jan 2 (riscv & KVM problem)
-To: Andrew Jones <ajones@ventanamicro.com>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>,
- Linux Next Mailing List <linux-next@vger.kernel.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- KVM list <kvm@vger.kernel.org>, linux-riscv <linux-riscv@lists.infradead.org>
-References: <20240102165725.6d18cc50@canb.auug.org.au>
- <44907c6b-c5bd-4e4a-a921-e4d3825539d8@infradead.org>
- <20240103-d2201c92e97755a4bb438bc3@orel>
-Content-Language: en-US
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20240103-d2201c92e97755a4bb438bc3@orel>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
+LEDs in 'HP ProBook 440 G6' laptop are controlled by ALC236 codec.
+Enable already existing quirk 'ALC236_FIXUP_HP_MUTE_LED_MICMUTE_VREF'
+to fix mute and mic-mute LEDs.
 
+Signed-off-by: Siddhesh Dharme <siddheshdharme18@gmail.com>
+---
+ sound/pci/hda/patch_realtek.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-On 1/3/24 07:18, Andrew Jones wrote:
-> On Tue, Jan 02, 2024 at 10:07:21AM -0800, Randy Dunlap wrote:
->>
->>
->> On 1/1/24 21:57, Stephen Rothwell wrote:
->>> Hi all,
->>>
->>> Changes since 20231222:
->>>
->>
->> It is possible for a riscv randconfig to create a .config file with
->> CONFIG_KVM enabled but CONFIG_HAVE_KVM is not set.
->> Is that expected?
->>
->> CONFIG_HAVE_KVM_IRQCHIP=y
->> CONFIG_HAVE_KVM_IRQ_ROUTING=y
->> CONFIG_KVM_MMIO=y
->> CONFIG_HAVE_KVM_MSI=y
->> CONFIG_KVM_GENERIC_DIRTYLOG_READ_PROTECT=y
->> CONFIG_HAVE_KVM_VCPU_ASYNC_IOCTL=y
->> CONFIG_KVM_XFER_TO_GUEST_WORK=y
->> CONFIG_KVM_GENERIC_HARDWARE_ENABLING=y
->> CONFIG_KVM_GENERIC_MMU_NOTIFIER=y
->> CONFIG_VIRTUALIZATION=y
->> CONFIG_KVM=m
->>
->> Should arch/riscv/kvm/Kconfig: "config KVM" select HAVE_KVM
->> along with the other selects there or should that "config KVM"
->> depend on HAVE_KVM?
-> 
-> We probably should add a patch which makes RISCV select HAVE_KVM and
-> KVM depend on HAVE_KVM in order for riscv kvm to be consistent with
-> the other KVM supporting architectures.
-> 
-
-Yes, I agree.
-
->>
->>
->> The problem .config file causes build errors because EVENTFD
->> is not set:
->>
->> ../arch/riscv/kvm/../../../virt/kvm/eventfd.c: In function 'kvm_irqfd_assign':
->> ../arch/riscv/kvm/../../../virt/kvm/eventfd.c:335:19: error: implicit declaration of function 'eventfd_ctx_fileget'; did you mean 'eventfd_ctx_fdget'? [-Werror=implicit-function-declaration]
->>   335 |         eventfd = eventfd_ctx_fileget(f.file);
->>       |                   ^~~~~~~~~~~~~~~~~~~
->>       |                   eventfd_ctx_fdget
->> ../arch/riscv/kvm/../../../virt/kvm/eventfd.c:335:17: warning: assignment to 'struct eventfd_ctx *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
->>   335 |         eventfd = eventfd_ctx_fileget(f.file);
->>       |                 ^
->>
-> 
-> Hmm. riscv kvm selects HAVE_KVM_EVENTFD, which selects EVENTFD. I'm
-> not sure how the lack of HAVE_KVM is leading to this.
-
-The "select HAVE_KVM_EVENTFD" is gone in linux-next.
-
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index c80e2f3ac..1dcfba27e 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -9825,6 +9825,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x103c, 0x84da, "HP OMEN dc0019-ur", ALC295_FIXUP_HP_OMEN),
+ 	SND_PCI_QUIRK(0x103c, 0x84e7, "HP Pavilion 15", ALC269_FIXUP_HP_MUTE_LED_MIC3),
+ 	SND_PCI_QUIRK(0x103c, 0x8519, "HP Spectre x360 15-df0xxx", ALC285_FIXUP_HP_SPECTRE_X360),
++	SND_PCI_QUIRK(0x103c, 0x8537, "HP ProBook 440 G6", ALC236_FIXUP_HP_MUTE_LED_MICMUTE_VREF),
+ 	SND_PCI_QUIRK(0x103c, 0x860f, "HP ZBook 15 G6", ALC285_FIXUP_HP_GPIO_AMP_INIT),
+ 	SND_PCI_QUIRK(0x103c, 0x861f, "HP Elite Dragonfly G1", ALC285_FIXUP_HP_GPIO_AMP_INIT),
+ 	SND_PCI_QUIRK(0x103c, 0x869d, "HP", ALC236_FIXUP_HP_MUTE_LED),
 -- 
-#Randy
+2.43.0
+
 
