@@ -1,160 +1,149 @@
-Return-Path: <linux-kernel+bounces-16760-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16758-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A6F5E824370
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 15:17:27 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE98A82436B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 15:17:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 554E8287A21
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 14:17:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2A76AB24187
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 14:17:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26BE9224EC;
-	Thu,  4 Jan 2024 14:17:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4378F224FA;
+	Thu,  4 Jan 2024 14:16:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="o7T2ghRX"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="J9pVgrnm"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66030224E7;
-	Thu,  4 Jan 2024 14:17:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BD257C433C7;
-	Thu,  4 Jan 2024 14:17:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704377832;
-	bh=eQ7aDWTSRpaN+U/7sf3RyfPIiHHdFRSmH7Oa7qM8a5c=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=o7T2ghRXw4rIv6huLtcx/MZoqwwUm6YGdTYWQ2RNBxdKD2k+P0vW+o7u4s2IOa+6c
-	 KKtJrVgACx9in0+Co4If06+MeRNB3rhg9oqeQ/O+613ifpEbxTGJ2QY1HEUE4xWBGL
-	 t1elNAfzSdA2gsywtHizw91x2fVBEMcIRnWVO+hEk+kvxiO1lIdtadvqL07rM1mpYd
-	 tjnAPs3QvdEeXFB2MVeWwx0P3rbuFTdpNPxrkeZetxFsMsyPTmSDYOdPIHvQLnWc2v
-	 O+6e6W1N1eXr+12pPGExAgMcHtZoEvRnnCTG4/OeawcMGNRtyx/WOL0TR63QcuhE11
-	 2YDqVIdar7VoA==
-Received: by mail-oa1-f49.google.com with SMTP id 586e51a60fabf-2043e721daaso279002fac.2;
-        Thu, 04 Jan 2024 06:17:12 -0800 (PST)
-X-Gm-Message-State: AOJu0YwudgSZM0fCY4hKVTdk0z4X8+xs0TL4BQwcaZRfOZYzVLTzTYGV
-	7A8x8p52wNRu+nEcR3wY1Y0o7BFcaDEZnGWw9WA=
-X-Google-Smtp-Source: AGHT+IFNnanMPL/0Df4b9PcVGoF9nPV9liwJQBoRre85bCGoux+sgtqfnrWAYCXOUVSJm+tl3SFJz6Zhji3hH8YZLwM=
-X-Received: by 2002:a05:6870:5390:b0:205:c845:7e24 with SMTP id
- h16-20020a056870539000b00205c8457e24mr472050oan.0.1704377832206; Thu, 04 Jan
- 2024 06:17:12 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81374224C0;
+	Thu,  4 Jan 2024 14:16:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 969C4C433C8;
+	Thu,  4 Jan 2024 14:16:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1704377811;
+	bh=j8bX2+yD9pfzU69Q1L1Kz7U0xyaFH5dtvaYGpvTRB90=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=J9pVgrnmZvFXzF34hpwglQZLfOqYuAtiHcYi1U6ZP/CV0/tAORQsyvfAahy2QVESe
+	 gU59buvTYaVYTH5pQZcvz7xPIIKec4/Zf1F9IRbCA5P6EXf4Loj1GJU04eSNRamuO2
+	 DpAWUomZ0OHZxiR+Cy9CdFrajGbiajj5TwWZ8qT8=
+Date: Thu, 4 Jan 2024 15:16:49 +0100
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Gui-Dong Han <2045gemini@gmail.com>
+Cc: surenb@google.com, 42.hyeyoo@gmail.com, benjamin.tissoires@redhat.com,
+	mhocko@suse.com, ivan.orlov0322@gmail.com,
+	linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+	baijiaju1990@outlook.com, stable@vger.kernel.org,
+	BassCheck <bass@buaa.edu.cn>
+Subject: Re: [PATCH v2] usb: mon: Fix atomicity violation in mon_bin_vma_fault
+Message-ID: <2024010409-poppy-rumor-bff5@gregkh>
+References: <20231222060450.5449-1-2045gemini@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240103135454.376021-1-masahiroy@kernel.org> <CA+icZUX77miqFC5=iH_9e4BZw5hc1Ci8A3cHL1uGPnzHw258Hw@mail.gmail.com>
-In-Reply-To: <CA+icZUX77miqFC5=iH_9e4BZw5hc1Ci8A3cHL1uGPnzHw258Hw@mail.gmail.com>
-From: Masahiro Yamada <masahiroy@kernel.org>
-Date: Thu, 4 Jan 2024 23:16:36 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQYQiuQ2mn=aAqOrx-xsV1hT5Q6UTkWLNkG_4E77NyEog@mail.gmail.com>
-Message-ID: <CAK7LNAQYQiuQ2mn=aAqOrx-xsV1hT5Q6UTkWLNkG_4E77NyEog@mail.gmail.com>
-Subject: Re: [PATCH] linux/export.h: remove unneeded .balign directive
-To: sedat.dilek@gmail.com
-Cc: linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Helge Deller <deller@gmx.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231222060450.5449-1-2045gemini@gmail.com>
 
-On Thu, Jan 4, 2024 at 1:05=E2=80=AFAM Sedat Dilek <sedat.dilek@gmail.com> =
-wrote:
->
-> Happy new 2024 Masahiro,
->
-> some small nits.
->
-> What about adding links to the commits...
->
-> linux/export: Fix alignment for 64-bit ksymtab entries
-> [ Upstream commit f6847807c22f6944c71c981b630b9fff30801e73 ]
->
-> linux/export: Ensure natural alignment of kcrctab array
-> [ Upstream commit 753547de0daecbdbd1af3618987ddade325d9aaa ]
->
-> ^^ AFAICS in linux-stable - v6.6.10-rc1 includes both
-> ^^ Is yours a follow-up and makes sense for linux-stable releases?
+On Fri, Dec 22, 2023 at 02:04:50PM +0800, Gui-Dong Han wrote:
+> In mon_bin_vma_fault():
+> 	offset = vmf->pgoff << PAGE_SHIFT;
+> 	if (offset >= rp->b_size)
+> 		return VM_FAULT_SIGBUS;
+> 	chunk_idx = offset / CHUNK_SIZE;
+> 	pageptr = rp->b_vec[chunk_idx].pg;
+> The code is executed without holding any lock.
+> 
+> In mon_bin_vma_close():
+> 	spin_lock_irqsave(&rp->b_lock, flags);
+> 	rp->mmap_active--;
+> 	spin_unlock_irqrestore(&rp->b_lock, flags);
+> 
+> In mon_bin_ioctl():
+> 	spin_lock_irqsave(&rp->b_lock, flags);
+> 	if (rp->mmap_active) {
+> 		...
+> 	} else {
+> 		...
+> 		kfree(rp->b_vec);
+> 		rp->b_vec  = vec;
+> 		rp->b_size = size;
+> 		...
+> 	}
+> 	spin_unlock_irqrestore(&rp->b_lock, flags);
+> 
+> Concurrent execution of mon_bin_vma_fault() with mon_bin_vma_close() and
+> mon_bin_ioctl() could lead to atomicity violations. mon_bin_vma_fault()
+> accesses rp->b_size and rp->b_vec without locking, risking array
+> out-of-bounds access or use-after-free bugs due to possible modifications
+> in mon_bin_ioctl().
+> 
+> This possible bug is found by an experimental static analysis tool
+> developed by our team, BassCheck[1]. This tool analyzes the locking APIs
+> to extract function pairs that can be concurrently executed, and then
+> analyzes the instructions in the paired functions to identify possible
+> concurrency bugs including data races and atomicity violations. The above
+> possible bug is reported when our tool analyzes the source code of
+> Linux 6.2.
+> 
+> To address this issue, it is proposed to add a spin lock pair in
+> mon_bin_vma_fault() to ensure atomicity. With this patch applied, our tool
+> never reports the possible bug, with the kernel configuration allyesconfig
+> for x86_64. Due to the lack of associated hardware, we cannot test the
+> patch in runtime testing, and just verify it according to the code logic.
+> 
+> [1] https://sites.google.com/view/basscheck/
+> 
+> Fixes: 19e6317d24c25 ("usb: mon: Fix a deadlock in usbmon between ...")
+> Cc: stable@vger.kernel.org
+> Reported-by: BassCheck <bass@buaa.edu.cn>
+> Signed-off-by: Gui-Dong Han <2045gemini@gmail.com>
+> ---
+> v2:
+> * In this patch v2, we've added some information of the static analysis
+> tool used, as per the researcher guidelines. Also, we've added a cc in the
+> signed-off-by area, according to the stable-kernel-rules.
+>   Thank Greg KH for helpful advice.
+> ---
+>  drivers/usb/mon/mon_bin.c | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/usb/mon/mon_bin.c b/drivers/usb/mon/mon_bin.c
+> index 9ca9305243fe..509cd1b8ff13 100644
+> --- a/drivers/usb/mon/mon_bin.c
+> +++ b/drivers/usb/mon/mon_bin.c
+> @@ -1250,12 +1250,16 @@ static vm_fault_t mon_bin_vma_fault(struct vm_fault *vmf)
+>  	struct mon_reader_bin *rp = vmf->vma->vm_private_data;
+>  	unsigned long offset, chunk_idx;
+>  	struct page *pageptr;
+> -
+> +	unsigned long flags;
+> +	spin_lock_irqsave(&rp->b_lock, flags);
 
+Nit, you still need the blank line before spin_lock_irqsave() here,
+right?
 
-No.
+>  	offset = vmf->pgoff << PAGE_SHIFT;
+> -	if (offset >= rp->b_size)
+> +	if (offset >= rp->b_size) {
+> +		spin_unlock_irqrestore(&rp->b_lock, flags);
+>  		return VM_FAULT_SIGBUS;
+> +	}
+>  	chunk_idx = offset / CHUNK_SIZE;
+>  	pageptr = rp->b_vec[chunk_idx].pg;
+> +	spin_unlock_irqrestore(&rp->b_lock, flags);
+>  	get_page(pageptr);
+>  	vmf->page = pageptr;
 
-This patch is a separate clean-up, not a bug fix.
+Shouldn't the unlock go here, not 2 lines above as you are still
+modifying things touched by rp.
 
-No need for back-porting.
+thanks,
 
-
-
-
->
-> ...and CC Helge Deller?
-
-
-You did it.
-
-
-Thanks.
-
-
-
-
-
-> Best regards,
-> -Sedat-
->
-> Link: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git/log/?h=3Dlinux-6.6.y
->
-> On Wed, Jan 3, 2024 at 2:55=E2=80=AFPM Masahiro Yamada <masahiroy@kernel.=
-org> wrote:
-> >
-> > The .export_symbol section is discarded by the linker script, hence
-> > no alignment is needed. Simplify the code.
-> >
-> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> > ---
-> >
-> >  include/linux/export.h | 10 +++-------
-> >  1 file changed, 3 insertions(+), 7 deletions(-)
-> >
-> > diff --git a/include/linux/export.h b/include/linux/export.h
-> > index 0bbd02fd351d..dff230bb5aca 100644
-> > --- a/include/linux/export.h
-> > +++ b/include/linux/export.h
-> > @@ -15,13 +15,9 @@
-> >   */
-> >
-> >  #ifdef CONFIG_64BIT
-> > -#define __EXPORT_SYMBOL_REF(sym)                       \
-> > -       .balign 8                               ASM_NL  \
-> > -       .quad sym
-> > +#define __EXPORT_SYMBOL_PTR    .quad
-> >  #else
-> > -#define __EXPORT_SYMBOL_REF(sym)                       \
-> > -       .balign 4                               ASM_NL  \
-> > -       .long sym
-> > +#define __EXPORT_SYMBOL_PTR    .long
-> >  #endif
-> >
-> >  #define ___EXPORT_SYMBOL(sym, license, ns)             \
-> > @@ -29,7 +25,7 @@
-> >         __export_symbol_##sym:                  ASM_NL  \
-> >                 .asciz license                  ASM_NL  \
-> >                 .asciz ns                       ASM_NL  \
-> > -               __EXPORT_SYMBOL_REF(sym)        ASM_NL  \
-> > +               __EXPORT_SYMBOL_PTR sym         ASM_NL  \
-> >         .previous
-> >
-> >  #if defined(__DISABLE_EXPORTS)
-> > --
-> > 2.40.1
-> >
-> >
->
-
-
---=20
-Best Regards
-Masahiro Yamada
+greg k-h
 
