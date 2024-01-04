@@ -1,43 +1,48 @@
-Return-Path: <linux-kernel+bounces-17224-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17225-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E29F824A00
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 22:08:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 61367824A01
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 22:09:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CDC7D2851BD
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 21:08:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 510721C240AD
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 21:09:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E85342C6A5;
-	Thu,  4 Jan 2024 21:08:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53AB82C844;
+	Thu,  4 Jan 2024 21:09:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="jCQNvj5s"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=su-phil.net header.i=@su-phil.net header.b="wG2DViQf"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from smtp.domeneshop.no (smtp.domeneshop.no [194.63.252.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC0B32C191;
-	Thu,  4 Jan 2024 21:08:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=cOfSf5C8D1sJUiWQ/RlTxPDbyCpmXzMJ+TOzMFfAhf0=; b=jCQNvj5sCf7R/im7v+/FGKmHFd
-	oV/yyDZymsV0NB7nHUIa1Tfu5USCEst/mhUYmJ4A/qOCY8VbMCe4o3ZLMajwGhyPE2hnM7jm7e6mH
-	BG4PUsUhUW9nSN1UAOE+WJanlUmvX3hk1lk6PbBpmShVHjlvPxjaZyo5NdO2DnMo7ZvyIjXGgQGH/
-	8AvtNCcfeFj2YKC4J4Xt3rTIhvvSmXtqu3OLDmGzhgOHETrxaow6zIXfOoBHdIfQTwej0k4ieFoDd
-	x0VaGGGNX+S1WTOZmWqYlr+g8qIZ58NqznE5NBItJI3CUfhIxf+FxCi5qHNY5283Agksl1V3w28gw
-	Ef8g3WiQ==;
-Received: from [50.53.46.231] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1rLUxJ-00FEgP-0Q;
-	Thu, 04 Jan 2024 21:08:45 +0000
-Message-ID: <8fd06532-0ae8-47a7-a4f2-f5b01a25bf93@infradead.org>
-Date: Thu, 4 Jan 2024 13:08:44 -0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D003A2C84E
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 21:09:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=su-phil.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=su-phil.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=su-phil.net
+	; s=ds202310; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:References
+	:To:From:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:Cc:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	List-Post:List-Owner:List-Archive;
+	bh=LiUnuYmXd0VXoxgdXBlW6StpDRjLAQ/6SixO6hl9DVs=; b=wG2DViQfY2vrwysiSdGlhtR9j4
+	pAndxmpnMqVQhSVRaKCEbJPshmS4fpJDQXVo8kuKgDlfZ50+Df3QEIwYl68nkLjPVR91sCD86Kflr
+	NyKhfl0/lmD5JD3/eXN+oIWQykaqwHo2VwUixabLzCBBCUdRm3hfdxTo1qLz7oEqQA+9clRuKnqQa
+	mTGdbxqg8WKF7Ow97Azkp9QK66hxNMcXMxtTgb0UAirp5rPg07yd1BGGw6+EoeMvYwkOpTTSyjarL
+	19H64qDYgNhBJa2Ud44fnBHWnQK+X8gRl9si12fyJ8z1GunLFGal5Q21wUyhEiLWhKVYYvJ4gn/eJ
+	5C83JH/g==;
+Received: from [84.215.119.50] (port=63730 helo=[192.168.0.2])
+	by smtp.domeneshop.no with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <7@su-phil.net>)
+	id 1rLUxU-000Apg-5D
+	for linux-kernel@vger.kernel.org;
+	Thu, 04 Jan 2024 22:08:56 +0100
+Message-ID: <6b50801f-7545-4c22-b490-f01a18b8cd88@su-phil.net>
+Date: Thu, 4 Jan 2024 22:08:55 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -45,60 +50,48 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/5] doc: Improve the description of __folio_mark_dirty
-Content-Language: en-US
-To: "Matthew Wilcox (Oracle)" <willy@infradead.org>,
- Jonathan Corbet <corbet@lwn.net>
-Cc: linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240104163652.3705753-1-willy@infradead.org>
- <20240104163652.3705753-2-willy@infradead.org>
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20240104163652.3705753-2-willy@infradead.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Subject: Re: b7 X (was Fair Pay, Low Jitter, Philosophy)
+From: =?UTF-8?Q?Ywe_C=C3=A6rlyn?= <7@su-phil.net>
+To: linux-kernel@vger.kernel.org
+References: <6ed7a0b8-63ac-407e-9741-72797e43bd81@su-phil.net>
+ <c6458279-a14a-46fb-bf13-8df6a6bb157b@su-phil.net>
+In-Reply-To: <c6458279-a14a-46fb-bf13-8df6a6bb157b@su-phil.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+
+Updated further to Zi, as the concept of The God. Only now in cursive, 
+which is the best handwriting aswell. Now also recognizes the common 
+peace greeting.
+
+Ywe,
+https://su-phil.net/
 
 
 
-On 1/4/24 08:36, Matthew Wilcox (Oracle) wrote:
-> I've learned why it's safe to call __folio_mark_dirty() from
-> mark_buffer_dirty() without holding the folio lock, so update
-> the description to explain why.
+Den 04.01.2024 09:22, skrev Ywe Cærlyn:
+> I updated philosophy again to Ev, as concept of The God. This is also a 
+> right version of Eün for romic alphabet.
 > 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> ---
->  mm/page-writeback.c | 14 +++++++++-----
->  1 file changed, 9 insertions(+), 5 deletions(-)
+> This, in addition to recognizing Gamer, Troll The Shaytan, etc, also 
+> recognises Fairy (Jinn in arabic to the left Iclam.)
 > 
-> diff --git a/mm/page-writeback.c b/mm/page-writeback.c
-> index cd4e4ae77c40..96da6716cb86 100644
-> --- a/mm/page-writeback.c
-> +++ b/mm/page-writeback.c
-> @@ -2652,11 +2652,15 @@ void folio_account_cleaned(struct folio *folio, struct bdi_writeback *wb)
->   * If warn is true, then emit a warning if the folio is not uptodate and has
->   * not been truncated.
->   *
-> - * The caller must hold folio_memcg_lock().  Most callers have the folio
-> - * locked.  A few have the folio blocked from truncation through other
-> - * means (eg zap_vma_pages() has it mapped and is holding the page table
-> - * lock).  This can also be called from mark_buffer_dirty(), which I
-> - * cannot prove is always protected against truncate.
-> + * The caller must hold folio_memcg_lock().  It is the caller's
-> + * responsibility to prevent the folio from being truncated while
-> + * this function is in progress, although it may have been truncated
-> + * before this function is called.  Most callers have the folio locked.
-> + * A few have the folio blocked from truncation through other means (eg
-
-preferably s/eg/e.g./
-
-> + * zap_vma_pages() has it mapped and is holding the page table lock).
-> + * When called from mark_buffer_dirty(), the filesystem should hold a
-> + * reference to the buffer_head that is being marked dirty, which causes
-> + * try_to_free_buffers() to fail.
->   */
->  void __folio_mark_dirty(struct folio *folio, struct address_space *mapping,
->  			     int warn)
-
--- 
-#Randy
+> I hope you follow.
+> 
+> OS now is simply b7 X - "Bitstream System", replacing also the wording 
+> of "fileoriented" with "Bitstream Oriented" freshening this a bit up.
+> 
+> This I believe is the ultimate development.
+> 
+> The Serene Be With You,
+> Ywe Cærlyn,
+> https://su-phil.net/
+> 
+> 
+> 
+> Den 03.01.2024 11:12, skrev Ywe Cærlyn:
+>> I´ve gone through further reflections on this, and it seems the Amiga 
+>> was designed according to Eün (a concept of The God). Hu (a concept of 
+>> The God) would answer and continue this, and A3000UX was already Unix 
+>> oriented.
+>>
 
