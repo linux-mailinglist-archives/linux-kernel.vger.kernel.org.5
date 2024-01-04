@@ -1,292 +1,176 @@
-Return-Path: <linux-kernel+bounces-17110-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17111-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C620D82486B
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 19:52:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id F2E6482486D
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 19:53:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0C6DCB24BBE
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 18:52:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A72F31F230F5
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 18:53:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCD8C2C6A6;
-	Thu,  4 Jan 2024 18:51:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9840728E39;
+	Thu,  4 Jan 2024 18:52:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="la9o0m8e"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bc5zsG09"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97B142C1BB
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 18:51:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1d4a980fdedso5969755ad.1
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 10:51:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1704394312; x=1704999112; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Jycb6hYHwyiIhFY8GEZ+4HXYhrCSpdkd/0XeHo/twrU=;
-        b=la9o0m8eRYvPPmNa9D6NAUgBOQHu0dwEpGW0FFlR3FSM9+WKvDRVQuRSxJrwsPZdQT
-         MzIwXiRxjtnwliKKdsxnhAJieclP6jLyKcf8RTpOe+FKsoin8BNXUXBNN9hKXCCRIUTQ
-         T0QmKhxkAE11UqP88nxa5/8gWLlqtTEQdAD5k=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704394312; x=1704999112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Jycb6hYHwyiIhFY8GEZ+4HXYhrCSpdkd/0XeHo/twrU=;
-        b=GxgJx1OqO4C//b+zZeJTG9F4BcLq1iDxGB+CW2+K6PLp2CMPuoStgH01ffAasp8kPu
-         hBV7naeNQorj9JCc9nTDLtMUHSW8QAQAU1SPhbmqNq/8C6LGEiAM5fqKzXCcXW/xa9An
-         6S4aq+W55W0hJdrJAiFqyXSmpE7nx/kgEAHfkJgUXNUxMuOrj0TvCBdkANrSovMy3Sdf
-         v3pq0iWyYU/5phVArBKUkfJUn0kj+nXFSlvlbcMoL6z/H6aFhVLCXdIVFkQLqiPsOIbE
-         lJBd/yQxXisTgWhx6ptPZLXV98FSKGpl/GjITH0eEckWy6Ve86B6PHn0fh/s3uPgtwqK
-         uIrA==
-X-Gm-Message-State: AOJu0YzIn66WJF4Pym+YN0Kfl265grkka6Ssqo2qc3twhFQAYLFm/uM0
-	lRgzcvbuqAQXI2U8d8LfcU7UwcNUOlyK
-X-Google-Smtp-Source: AGHT+IGiMfjpvphjF5Sdh5G8uUcbaXUgkSlaqH4Fciap9D7iafeQeLa6oLHP/SX6kjaHPtcOmgVn1g==
-X-Received: by 2002:a17:902:7c12:b0:1d4:3012:f4ca with SMTP id x18-20020a1709027c1200b001d43012f4camr942477pll.56.1704394311796;
-        Thu, 04 Jan 2024 10:51:51 -0800 (PST)
-Received: from localhost (34.85.168.34.bc.googleusercontent.com. [34.168.85.34])
-        by smtp.gmail.com with UTF8SMTPSA id p16-20020a170903249000b001cffd42711csm8234968plw.199.2024.01.04.10.51.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Jan 2024 10:51:50 -0800 (PST)
-From: jeffxu@chromium.org
-To: akpm@linux-foundation.org,
-	keescook@chromium.org,
-	jannh@google.com,
-	sroettger@google.com,
-	willy@infradead.org,
-	gregkh@linuxfoundation.org,
-	torvalds@linux-foundation.org,
-	usama.anjum@collabora.com
-Cc: jeffxu@google.com,
-	jorgelo@chromium.org,
-	groeck@chromium.org,
-	linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	linux-mm@kvack.org,
-	pedro.falcato@gmail.com,
-	dave.hansen@intel.com,
-	linux-hardening@vger.kernel.org,
-	deraadt@openbsd.org,
-	Jeff Xu <jeffxu@chromium.org>
-Subject: [RFC PATCH v4 4/4] mseal:add documentation
-Date: Thu,  4 Jan 2024 18:51:37 +0000
-Message-ID: <20240104185138.169307-5-jeffxu@chromium.org>
-X-Mailer: git-send-email 2.43.0.195.gebba966016-goog
-In-Reply-To: <20240104185138.169307-1-jeffxu@chromium.org>
-References: <20240104185138.169307-1-jeffxu@chromium.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF38C28E1C;
+	Thu,  4 Jan 2024 18:52:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704394349; x=1735930349;
+  h=message-id:date:mime-version:subject:to:references:from:
+   in-reply-to:content-transfer-encoding;
+  bh=pYej2JV0JxSIfj3YGPhrGCem9gjewaNhV64H8Y3jT9s=;
+  b=bc5zsG09Tsfijc5EwlsT2V1JRSiO023Mngf7HuIDgH3pxq0mbDNVEbRG
+   WnO0yGofWtFNts54d8x4eUrf0fYsanAzAt+bv4AKmJWK6f9plovAPRpMN
+   ZNICb1AjUljZNESQqYjG2VDZs9yi6xv05xPRwcqJoV9fmIvaIZP+qrgSs
+   qkECYiyJjw6IWJYb8R1rDbDJREoKN94YADTae4LdyfeOY2IOZseNE8WvZ
+   id+pfcywdV9wpP8WPGwJY5B+dtuQyZeih788UhXHEb5wr61fcLy9WgcgU
+   Um6/bHGK1juPtZuTbOn1ovJ4aSe7BWDZCzzZ4Q2FUysZYtGwxUUkM8yuh
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10943"; a="401120795"
+X-IronPort-AV: E=Sophos;i="6.04,331,1695711600"; 
+   d="scan'208";a="401120795"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2024 10:52:29 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10943"; a="780504832"
+X-IronPort-AV: E=Sophos;i="6.04,331,1695711600"; 
+   d="scan'208";a="780504832"
+Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.252.35.85])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2024 10:52:26 -0800
+Message-ID: <3287e3d3-595a-404f-b46c-6cf82e955632@intel.com>
+Date: Thu, 4 Jan 2024 20:52:21 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] mmc: xenon: Add ac5 support via bounce buffer
+Content-Language: en-US
+To: Elad Nachman <enachman@marvell.com>, huziji@marvell.com,
+ ulf.hansson@linaro.org, linux-mmc@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240104173033.2836110-1-enachman@marvell.com>
+From: Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+In-Reply-To: <20240104173033.2836110-1-enachman@marvell.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 
-From: Jeff Xu <jeffxu@chromium.org>
+On 4/01/24 19:30, Elad Nachman wrote:
+> From: Elad Nachman <enachman@marvell.com>
+> 
+> AC5/X/IM SOCs has a variant of the Xenon eMMC controller,
+> in which only 31-bit of addressing pass from the controller
+> on the AXI bus.
+> Since we cannot guarantee that only buffers from the first 2GB
+> of memory will reach the driver, the driver is configured for
+> SDMA mode, without 64-bit mode, overriding the DMA mask to 34-bit
+> to support the DDR memory mapping, which starts at offset 8GB.
+> 
+> Signed-off-by: Elad Nachman <enachman@marvell.com>
 
-Add documentation for mseal().
+Acked-by: Adrian Hunter <adrian.hunter@intel.com>
 
-Signed-off-by: Jeff Xu <jeffxu@chromium.org>
----
- Documentation/userspace-api/mseal.rst | 181 ++++++++++++++++++++++++++
- 1 file changed, 181 insertions(+)
- create mode 100644 Documentation/userspace-api/mseal.rst
-
-diff --git a/Documentation/userspace-api/mseal.rst b/Documentation/userspace-api/mseal.rst
-new file mode 100644
-index 000000000000..1700ce5af218
---- /dev/null
-+++ b/Documentation/userspace-api/mseal.rst
-@@ -0,0 +1,181 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+=====================
-+Introduction of mseal
-+=====================
-+
-+:Author: Jeff Xu <jeffxu@chromium.org>
-+
-+Modern CPUs support memory permissions such as RW and NX bits. The memory
-+permission feature improves security stance on memory corruption bugs, i.e.
-+the attacker can’t just write to arbitrary memory and point the code to it,
-+the memory has to be marked with X bit, or else an exception will happen.
-+
-+Memory sealing additionally protects the mapping itself against
-+modifications. This is useful to mitigate memory corruption issues where a
-+corrupted pointer is passed to a memory management system. For example,
-+such an attacker primitive can break control-flow integrity guarantees
-+since read-only memory that is supposed to be trusted can become writable
-+or .text pages can get remapped. Memory sealing can automatically be
-+applied by the runtime loader to seal .text and .rodata pages and
-+applications can additionally seal security critical data at runtime.
-+
-+A similar feature already exists in the XNU kernel with the
-+VM_FLAGS_PERMANENT flag [1] and on OpenBSD with the mimmutable syscall [2].
-+
-+User API
-+========
-+Two system calls are involved in virtual memory sealing, mseal() and mmap().
-+
-+mseal()
-+-----------
-+The mseal() syscall has following signature:
-+
-+``int mseal(void addr, size_t len, unsigned long flags)``
-+
-+**addr/len**: virtual memory address range.
-+
-+The address range set by ``addr``/``len`` must meet:
-+   - The start address must be in an allocated VMA.
-+   - The start address must be page aligned.
-+   - The end address (``addr`` + ``len``) must be in an allocated VMA.
-+   - no gap (unallocated memory) between start and end address.
-+
-+The ``len`` will be paged aligned implicitly by the kernel.
-+
-+**flags**: reserved for future use.
-+
-+**return values**:
-+
-+- ``0``: Success.
-+
-+- ``-EINVAL``:
-+    - Invalid input ``flags``.
-+    - The start address (``addr``) is not page aligned.
-+    - Address range (``addr`` + ``len``) overflow.
-+
-+- ``-ENOMEM``:
-+    - The start address (``addr``) is not allocated.
-+    - The end address (``addr`` + ``len``) is not allocated.
-+    - A gap (unallocated memory) between start and end address.
-+
-+- ``-EACCES``:
-+    - ``MAP_SEALABLE`` is not set during mmap().
-+
-+- ``-EPERM``:
-+    - sealing is supported only on 64 bit CPUs, 32-bit is not supported.
-+
-+- For above error cases, users can expect the given memory range is
-+  unmodified, i.e. no partial update.
-+
-+- There might be other internal errors/cases not listed here, e.g.
-+  error during merging/splitting VMAs, or the process reaching the max
-+  number of supported VMAs. In those cases, partial updates to the given
-+  memory range could happen. However, those cases shall be rare.
-+
-+**Blocked operations after sealing**:
-+    Unmapping, moving to another location, and shrinking the size,
-+    via munmap() and mremap(), can leave an empty space, therefore
-+    can be replaced with a VMA with a new set of attributes.
-+
-+    Moving or expanding a different VMA into the current location,
-+    via mremap().
-+
-+    Modifying a VMA via mmap(MAP_FIXED).
-+
-+    Size expansion, via mremap(), does not appear to pose any
-+    specific risks to sealed VMAs. It is included anyway because
-+    the use case is unclear. In any case, users can rely on
-+    merging to expand a sealed VMA.
-+
-+    mprotect() and pkey_mprotect().
-+
-+    Some destructive madvice() behaviors (e.g. MADV_DONTNEED)
-+    for anonymous memory, when users don't have write permission to the
-+    memory. Those behaviors can alter region contents by discarding pages,
-+    effectively a memset(0) for anonymous memory.
-+
-+**Note**:
-+
-+- mseal() only works on 64-bit CPUs, not 32-bit CPU.
-+
-+- users can call mseal() multiple times, mseal() on an already sealed memory
-+  is a no-action (not error).
-+
-+- munseal() is not supported.
-+
-+mmap()
-+----------
-+``void *mmap(void* addr, size_t length, int prot, int flags, int fd,
-+off_t offset);``
-+
-+We add two changes in ``prot`` and ``flags`` of  mmap() related to
-+memory sealing.
-+
-+**prot**
-+
-+The ``PROT_SEAL`` bit in ``prot`` field of mmap().
-+
-+When present, it marks the memory is sealed since creation.
-+
-+This is useful as optimization because it avoids having to make two
-+system calls: one for mmap() and one for mseal().
-+
-+It's worth noting that even though the sealing is set via the
-+``prot`` field in mmap(), it can't be set in the ``prot``
-+field in later mprotect(). This is unlike the ``PROT_READ``,
-+``PROT_WRITE``, ``PROT_EXEC`` bits, e.g. if ``PROT_WRITE`` is not set in
-+mprotect(), it means that the region is not writable.
-+
-+Setting ``PROT_SEAL`` implies setting ``MAP_SEALABLE`` below.
-+
-+**flags**
-+
-+The ``MAP_SEALABLE`` bit in the ``flags`` field of mmap().
-+
-+When present, it marks the map as sealable. A map created
-+without ``MAP_SEALABLE`` will not support sealing; In other words,
-+mseal() will fail for such a map.
-+
-+
-+Applications that don't care about sealing will expect their
-+behavior unchanged. For those that need sealing support, opt-in
-+by adding ``MAP_SEALABLE`` in mmap().
-+
-+Note: for a map created without ``MAP_SEALABLE`` or a map created
-+with ``MAP_SEALABLE`` but not sealed yet, mmap(MAP_FIXED) can
-+change the sealable or sealing bit.
-+
-+Use Case:
-+=========
-+- glibc:
-+  The dynamic linker, during loading ELF executables, can apply sealing to
-+  non-writable memory segments.
-+
-+- Chrome browser: protect some security sensitive data-structures.
-+
-+Additional notes:
-+=================
-+As Jann Horn pointed out in [3], there are still a few ways to write
-+to RO memory, which is, in a way, by design. Those cases are not covered
-+by mseal(). If applications want to block such cases, sandbox tools (such as
-+seccomp, LSM, etc) might be considered.
-+
-+Those cases are:
-+
-+- Write to read-only memory through /proc/self/mem interface.
-+- Write to read-only memory through ptrace (such as PTRACE_POKETEXT).
-+- userfaultfd.
-+
-+The idea that inspired this patch comes from Stephen Röttger’s work in V8
-+CFI [4]. Chrome browser in ChromeOS will be the first user of this API.
-+
-+Reference:
-+==========
-+[1] https://github.com/apple-oss-distributions/xnu/blob/1031c584a5e37aff177559b9f69dbd3c8c3fd30a/osfmk/mach/vm_statistics.h#L274
-+
-+[2] https://man.openbsd.org/mimmutable.2
-+
-+[3] https://lore.kernel.org/lkml/CAG48ez3ShUYey+ZAFsU2i1RpQn0a5eOs2hzQ426FkcgnfUGLvA@mail.gmail.com
-+
-+[4] https://docs.google.com/document/d/1O2jwK4dxI3nRcOJuPYkonhTkNQfbmwdvxQMyXgeaRHo/edit#heading=h.bvaojj9fu6hc
--- 
-2.43.0.195.gebba966016-goog
+> ---
+>  drivers/mmc/host/sdhci-xenon.c | 31 +++++++++++++++++++++++++++++++
+>  drivers/mmc/host/sdhci-xenon.h |  3 ++-
+>  2 files changed, 33 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mmc/host/sdhci-xenon.c b/drivers/mmc/host/sdhci-xenon.c
+> index 25ba7aecc3be..0e52867f6e91 100644
+> --- a/drivers/mmc/host/sdhci-xenon.c
+> +++ b/drivers/mmc/host/sdhci-xenon.c
+> @@ -18,6 +18,8 @@
+>  #include <linux/of.h>
+>  #include <linux/pm.h>
+>  #include <linux/pm_runtime.h>
+> +#include <linux/mm.h>
+> +#include <linux/dma-mapping.h>
+>  
+>  #include "sdhci-pltfm.h"
+>  #include "sdhci-xenon.h"
+> @@ -422,6 +424,7 @@ static int xenon_probe_params(struct platform_device *pdev)
+>  	struct xenon_priv *priv = sdhci_pltfm_priv(pltfm_host);
+>  	u32 sdhc_id, nr_sdhc;
+>  	u32 tuning_count;
+> +	struct sysinfo si;
+>  
+>  	/* Disable HS200 on Armada AP806 */
+>  	if (priv->hw_version == XENON_AP806)
+> @@ -450,6 +453,23 @@ static int xenon_probe_params(struct platform_device *pdev)
+>  	}
+>  	priv->tuning_count = tuning_count;
+>  
+> +	/*
+> +	 * AC5/X/IM HW has only 31-bits passed in the crossbar switch.
+> +	 * If we have more than 2GB of memory, this means we might pass
+> +	 * memory pointers which are above 2GB and which cannot be properly
+> +	 * represented. In this case, disable ADMA, 64-bit DMA and allow only SDMA.
+> +	 * This effectively will enable bounce buffer quirk in the
+> +	 * generic SDHCI driver, which will make sure DMA is only done
+> +	 * from supported memory regions:
+> +	 */
+> +	if (priv->hw_version == XENON_AC5) {
+> +		si_meminfo(&si);
+> +		if (si.totalram * si.mem_unit > SZ_2G) {
+> +			host->quirks |= SDHCI_QUIRK_BROKEN_ADMA;
+> +			host->quirks2 |= SDHCI_QUIRK2_BROKEN_64_BIT_DMA;
+> +		}
+> +	}
+> +
+>  	return xenon_phy_parse_params(dev, host);
+>  }
+>  
+> @@ -562,6 +582,16 @@ static int xenon_probe(struct platform_device *pdev)
+>  		goto remove_sdhc;
+>  
+>  	pm_runtime_put_autosuspend(&pdev->dev);
+> +	/*
+> +	 * If we previously detected AC5 with over 2GB of memory,
+> +	 * then we disable ADMA and 64-bit DMA.
+> +	 * This means generic SDHCI driver has set the DMA mask to
+> +	 * 32-bit. Since DDR starts at 0x2_0000_0000, we must use
+> +	 * 34-bit DMA mask to access this DDR memory:
+> +	 */
+> +	if (priv->hw_version == XENON_AC5 &&
+> +	    host->quirks2 & SDHCI_QUIRK2_BROKEN_64_BIT_DMA)
+> +		dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(34));
+>  
+>  	return 0;
+>  
+> @@ -680,6 +710,7 @@ static const struct of_device_id sdhci_xenon_dt_ids[] = {
+>  	{ .compatible = "marvell,armada-ap807-sdhci", .data = (void *)XENON_AP807},
+>  	{ .compatible = "marvell,armada-cp110-sdhci", .data =  (void *)XENON_CP110},
+>  	{ .compatible = "marvell,armada-3700-sdhci", .data =  (void *)XENON_A3700},
+> +	{ .compatible = "marvell,ac5-sdhci",	     .data =  (void *)XENON_AC5},
+>  	{}
+>  };
+>  MODULE_DEVICE_TABLE(of, sdhci_xenon_dt_ids);
+> diff --git a/drivers/mmc/host/sdhci-xenon.h b/drivers/mmc/host/sdhci-xenon.h
+> index 3e9c6c908a79..0460d97aad26 100644
+> --- a/drivers/mmc/host/sdhci-xenon.h
+> +++ b/drivers/mmc/host/sdhci-xenon.h
+> @@ -57,7 +57,8 @@ enum xenon_variant {
+>  	XENON_A3700,
+>  	XENON_AP806,
+>  	XENON_AP807,
+> -	XENON_CP110
+> +	XENON_CP110,
+> +	XENON_AC5
+>  };
+>  
+>  struct xenon_priv {
 
 
