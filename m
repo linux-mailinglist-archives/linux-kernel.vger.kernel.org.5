@@ -1,118 +1,67 @@
-Return-Path: <linux-kernel+bounces-16599-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16601-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B4D528240DD
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 12:43:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BB2BC8240E0
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 12:44:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CA17C1C21A09
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 11:43:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A4EB01C2120B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 11:44:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E647D21347;
-	Thu,  4 Jan 2024 11:43:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A2A721358;
+	Thu,  4 Jan 2024 11:44:37 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 059EB21344;
-	Thu,  4 Jan 2024 11:43:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.162.254])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4T5Pp26WbpzWlj5;
-	Thu,  4 Jan 2024 19:42:18 +0800 (CST)
-Received: from dggpeml500021.china.huawei.com (unknown [7.185.36.21])
-	by mail.maildlp.com (Postfix) with ESMTPS id 314DD18001C;
-	Thu,  4 Jan 2024 19:43:01 +0800 (CST)
-Received: from [10.174.177.174] (10.174.177.174) by
- dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 4 Jan 2024 19:43:00 +0800
-Message-ID: <ec2bb12d-2b35-25c8-740b-30a80dd56d1f@huawei.com>
-Date: Thu, 4 Jan 2024 19:43:00 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 892DA21346
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 11:44:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7bbad6e08b0so40243339f.3
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 03:44:35 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704368674; x=1704973474;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=SE9nY33J67pbxjyY6dUtaj0IxWIqds1NRJCrH0WZNTk=;
+        b=ro63K0OJq22B5zQxAxLSjTbYomeQoXFfE0sg7EcJ4f6pJ0g24RvNRr3Xajf00Tvsa0
+         /Lj2Nywz2I2LxzgTmUiYb4Q5tSYxtZ0n1pcCKDSxzbAFWTfWhn08+0Qw3F8RwEJpJC0m
+         AEymq2xsGAnOsOIgmhEidbBZWxMC872iRh1ESGbWMlNJeVk7v0GHbVq2VmsvIjsqWy8t
+         TZw4ww6cgv5dYjvlra/3wJ/L3xhuXc/my0QJtayzmakSkYqBgguVK6IAVQ7nYpGgEl70
+         KksxVIPyWYz/JZIORgj0JYVQewvjMjgvxVHdJc5W+C45cVIMeszwRgj404/3BzGE3RmH
+         nuSA==
+X-Gm-Message-State: AOJu0YzVR52A8FLvCa/O0m1r1OM7LVk3DDsqIm5CkN2lNzRXo+/PpwSs
+	XjVkr99zCyNzW6MB59aQrWAzjYf7bVyqA0euYPbLP1Uc3xBg1jM=
+X-Google-Smtp-Source: AGHT+IE5qBbgTVEZjHqzhazreJPSxzd96iVq+NVU8eMdCaLH4DqJ1BC6fkhFnuon5O/eYle4sgRcW4WcypmQmYdE3KsTpoLDe6a0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.1.2
-Subject: Re: [PATCH v2 4/8] ext4: avoid bb_free and bb_fragments inconsistency
- in mb_free_blocks()
-Content-Language: en-US
-To: Jan Kara <jack@suse.cz>
-CC: <linux-ext4@vger.kernel.org>, <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
-	<ritesh.list@gmail.com>, <linux-kernel@vger.kernel.org>,
-	<yi.zhang@huawei.com>, <yangerkun@huawei.com>, <yukuai3@huawei.com>,
-	<stable@vger.kernel.org>, Baokun Li <libaokun1@huawei.com>
-References: <20231221150558.2740823-1-libaokun1@huawei.com>
- <20231221150558.2740823-5-libaokun1@huawei.com>
- <20240104104255.eewvmywxyqtfwzug@quack3>
-From: Baokun Li <libaokun1@huawei.com>
-In-Reply-To: <20240104104255.eewvmywxyqtfwzug@quack3>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpeml500021.china.huawei.com (7.185.36.21)
+X-Received: by 2002:a05:6638:4123:b0:46c:d712:4957 with SMTP id
+ ay35-20020a056638412300b0046cd7124957mr34094jab.2.1704368674668; Thu, 04 Jan
+ 2024 03:44:34 -0800 (PST)
+Date: Thu, 04 Jan 2024 03:44:34 -0800
+In-Reply-To: <00000000000082f2f2060dcc3a92@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000006b8ba0060e1d4183@google.com>
+Subject: Re: [syzbot] Re: [syzbot] [net?] general protection fault in htb_tcf_block
+From: syzbot <syzbot+806b0572c8d06b66b234@syzkaller.appspotmail.com>
+To: linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On 2024/1/4 18:42, Jan Kara wrote:
-> On Thu 21-12-23 23:05:54, Baokun Li wrote:
->> After updating bb_free in mb_free_blocks, it is possible to return without
->> updating bb_fragments because the block being freed is found to have
->> already been freed, which leads to inconsistency between bb_free and
->> bb_fragments.
->>
->> Since the group may be unlocked in ext4_grp_locked_error(), this can lead
->> to problems such as dividing by zero when calculating the average fragment
->> length. Hence move the update of bb_free to after the block double-free
->> check guarantees that the corresponding statistics are updated only after
->> the core block bitmap is modified.
->>
->> Fixes: eabe0444df90 ("ext4: speed-up releasing blocks on commit")
->> CC: stable@vger.kernel.org # 3.10
->> Signed-off-by: Baokun Li <libaokun1@huawei.com>
-> Just one nit below but regardless of that feel free to add:
->
-> Reviewed-by: Jan Kara <jack@suse.cz>
->
->> @@ -1941,10 +1936,16 @@ static void mb_free_blocks(struct inode *inode, struct ext4_buddy *e4b,
->>   				EXT4_GROUP_INFO_BBITMAP_CORRUPT);
->>   		} else {
->>   			mb_regenerate_buddy(e4b);
->> +			goto check;
->>   		}
->> -		goto done;
->> +		return;
->>   	}
-> I think this might be more readable when we revert the condition like:
->
-> 		/*
-> 		 * Fastcommit replay can free already freed blocks which
-> 		 * corrupts allocation info. Regenerate it.
-> 		 */
-> 		if (sbi->s_mount_state & EXT4_FC_REPLAY) {
-> 	               	mb_regenerate_buddy(e4b);
-> 			goto check;
-> 		}
->                  ext4_grp_locked_error(sb, e4b->bd_group,
->                                        inode ? inode->i_ino : 0, blocknr,
->                                        "freeing already freed block (bit %u); block bitmap corrupt.",
->                                        block);
->                  ext4_mark_group_bitmap_corrupted(sb, e4b->bd_group,
->                                  EXT4_GROUP_INFO_BBITMAP_CORRUPT);
-> 		return;
-> 	}
->
-> 								Honza
-Yes, it looks much clearer that way!
-I will switch to it in the next version.
+For archival purposes, forwarding an incoming command email to
+linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com.
 
-Thanks a lot!
--- 
-With Best Regards,
-Baokun Li
-.
+***
+
+Subject: Re: [syzbot] [net?] general protection fault in htb_tcf_block
+Author: jiri@resnulli.us
+
+#syz test: https://github.com/jpirko/linux_mlxsw.git wip_tc_block_fix
 
