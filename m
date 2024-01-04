@@ -1,412 +1,121 @@
-Return-Path: <linux-kernel+bounces-16898-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16900-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0154882459D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 17:00:36 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CC34D8245A6
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 17:02:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7C2F91F24A10
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 16:00:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6AF561F225E6
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 16:02:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A320924A14;
-	Thu,  4 Jan 2024 16:00:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60F6724A19;
+	Thu,  4 Jan 2024 16:02:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="q4PD0cGd"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39AAE249FD;
-	Thu,  4 Jan 2024 16:00:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A729DC433C8;
-	Thu,  4 Jan 2024 16:00:22 +0000 (UTC)
-Date: Thu, 4 Jan 2024 11:01:27 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Krishna chaitanya chundru <quic_krichai@quicinc.com>
-Cc: Manivannan Sadhasivam <mani@kernel.org>, Masami Hiramatsu
- <mhiramat@kernel.org>, <linux-kernel@vger.kernel.org>,
- <mhi@lists.linux.dev>, <linux-arm-msm@vger.kernel.org>,
- <linux-trace-kernel@vger.kernel.org>, <quic_vbadigan@quicinc.com>,
- <quic_ramkri@quicinc.com>, <quic_nitegupt@quicinc.com>,
- <quic_skananth@quicinc.com>, <quic_parass@quicinc.com>
-Subject: Re: [PATCH v8] bus: mhi: host: Add tracing support
-Message-ID: <20240104110127.42da8ec8@gandalf.local.home>
-In-Reply-To: <20231207-ftrace_support-v8-1-7f62d4558555@quicinc.com>
-References: <20231207-ftrace_support-v8-1-7f62d4558555@quicinc.com>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C672249F5;
+	Thu,  4 Jan 2024 16:02:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=azJ/J7vywXkqTQ9Hi2IirR6RPgqAfj1yxhz8MRLS2x0=; b=q4PD0cGdukmiPEaNlMlJWJF+pT
+	ZXVvbKF0lx8N6RKDbdA3XnJFCH57UNSdhZ/kO8Iz0hoRFVNagfGq3512N2nRWB7DjAXdStXkQIQWA
+	ncOA4AZhdNj8GPB/A2qakkDxKh6kd0iDbs6UmdffT9uSFK6jyOMkzXooC/E6xuAvuKKbe7Rp3CQTz
+	J1I841KAHRyzTq2XKmovhgML0YXdz5QY3zZHBV6z1JGo68+qVuCERlZ6TC/jEWjXTKRPozGsTHkOr
+	2gLYqGCPigeu8LwNiVrx9UwGlVUWFnDhAyslZYKq4eBvBb5hXDvGsvbI1KfC4At7taj8HX1V2qE8x
+	5swElK2g==;
+Received: from [50.53.46.231] (helo=[192.168.254.15])
+	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+	id 1rLQAp-00EbY6-1D;
+	Thu, 04 Jan 2024 16:02:23 +0000
+Message-ID: <41cdcf9d-d726-4f4f-9616-d67e68a535cb@infradead.org>
+Date: Thu, 4 Jan 2024 08:02:21 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH -fixes v2] RISC-V: KVM: Require HAVE_KVM
+Content-Language: en-US
+To: Andrew Jones <ajones@ventanamicro.com>, linux-riscv@lists.infradead.org,
+ linux-next@vger.kernel.org, linux-kernel@vger.kernel.org,
+ kvm@vger.kernel.org, kvm-riscv@lists.infradead.org
+Cc: paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu,
+ anup@brainfault.org, atishp@atishpatra.org, sfr@canb.auug.org.au,
+ alex@ghiti.fr, mpe@ellerman.id.au, npiggin@gmail.com,
+ linuxppc-dev@lists.ozlabs.org, pbonzini@redhat.com
+References: <20240104123727.76987-2-ajones@ventanamicro.com>
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20240104123727.76987-2-ajones@ventanamicro.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On Thu, 7 Dec 2023 10:00:47 +0530
-Krishna chaitanya chundru <quic_krichai@quicinc.com> wrote:
 
-> This change adds ftrace support for following functions which
-> helps in debugging the issues when there is Channel state & MHI
-> state change and also when we receive data and control events:
-> 1. mhi_intvec_mhi_states
-> 2. mhi_process_data_event_ring
-> 3. mhi_process_ctrl_ev_ring
-> 4. mhi_gen_tre
-> 5. mhi_update_channel_state
-> 6. mhi_tryset_pm_state
-> 7. mhi_pm_st_worker
+
+On 1/4/24 04:37, Andrew Jones wrote:
+> KVM requires EVENTFD, which is selected by HAVE_KVM. Other KVM
+> supporting architectures select HAVE_KVM and then their KVM
+> Kconfigs ensure its there with a depends on HAVE_KVM. Make RISCV
+> consistent with that approach which fixes configs which have KVM
+> but not EVENTFD, as was discovered with a randconfig test.
 > 
-> Where ever the trace events are added, debug messages are removed.
-> 
-> Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
+> Fixes: 99cdc6c18c2d ("RISC-V: Add initial skeletal KVM support")
+> Reported-by: Randy Dunlap <rdunlap@infradead.org>
+> Closes: https://lore.kernel.org/all/44907c6b-c5bd-4e4a-a921-e4d3825539d8@infradead.org/
+> Signed-off-by: Andrew Jones <ajones@ventanamicro.com>
+
+
+Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
+Tested-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
+
+Thanks.
+
+
 > ---
-> Changes in v8:
-> - Pass the structure and derefernce the variables in TP_fast_assign as suggested by steve
-> - Link to v7: https://lore.kernel.org/r/20231206-ftrace_support-v7-1-aca49a04268b@quicinc.com
-
-So this looks good from a tracing POV.
-
-Reviewed-by: Steven Rostedt (Google) <rostedt@goodmis.org>
-
-But I do have some more comments that could be done by new patches.
-
-
-
-> +TRACE_EVENT(mhi_intvec_states,
-> +
-> +	TP_PROTO(struct mhi_controller *mhi_cntrl, int dev_ee, int dev_state),
-> +
-> +	TP_ARGS(mhi_cntrl, dev_ee, dev_state),
-> +
-> +	TP_STRUCT__entry(
-> +		__string(name, mhi_cntrl->mhi_dev->name)
-> +		__field(int, local_ee)
-> +		__field(int, state)
-> +		__field(int, dev_ee)
-> +		__field(int, dev_state)
-> +	),
-> +
-> +	TP_fast_assign(
-> +		__assign_str(name, mhi_cntrl->mhi_dev->name);
-> +		__entry->local_ee = mhi_cntrl->ee;
-> +		__entry->state = mhi_cntrl->dev_state;
-> +		__entry->dev_ee = dev_ee;
-> +		__entry->dev_state = dev_state;
-> +	),
-> +
-> +	TP_printk("%s: local ee: %s state: %s device ee: %s state: %s\n",
-> +		  __get_str(name),
-> +		  TO_MHI_EXEC_STR(__entry->local_ee),
-> +		  mhi_state_str(__entry->state),
-> +		  TO_MHI_EXEC_STR(__entry->dev_ee),
-> +		  mhi_state_str(__entry->dev_state))
-
-So the above may have issues with user space parsing.
-
-For one, that mhi_state_str() is:
-
-static inline const char *mhi_state_str(enum mhi_state state)
-{
-        switch (state) {
-        case MHI_STATE_RESET:
-                return "RESET";
-        case MHI_STATE_READY:
-                return "READY";
-        case MHI_STATE_M0:
-                return "M0";
-        case MHI_STATE_M1:
-                return "M1";
-        case MHI_STATE_M2:
-                return "M2";
-        case MHI_STATE_M3:
-                return "M3";
-        case MHI_STATE_M3_FAST:
-                return "M3 FAST";
-        case MHI_STATE_BHI:
-                return "BHI";
-        case MHI_STATE_SYS_ERR:
-                return "SYS ERROR";
-        default:
-                return "Unknown state";
-        }
-};
- 
-Which if this could be changed into:
-
-#define MHI_STATE_LIST			\
-	EM(RESET,    "RESET")		\
-	EM(READY,    "READY")		\
-	EM(M0,       "M0")		\
-	EM(M1,       "M1")		\
-	EM(M2,       "M2")		\
-	EM(M3,       "M3")		\
-	EM(M3_FAST,  "M3_FAST")		\
-	EM(BHI,      "BHI")		\
-	EMe(SYS_ERR, "SYS ERROR")
-
-#undef EM
-#undef EMe
-
-#define EM(a, b)  case MHI_STATE_##a: return b;
-#define EMe(a, b) case MHI_STATE_##a: return b;
-
-static inline const char *mhi_state_str(enum mhi_state state)
-{
-        switch (state) {
-	MHI_STATE_LIST
-	default:
-		return "Unknown state";
-}
-
-Then you could use that macro in the trace header:
-
-#undef EM
-#undef EMe
-
-#define EM(a, b)	TRACE_DEFINE_ENUM(MHI_STATE_##a);
-#define EMe(a, b)	TRACE_DEFINE_ENUM(MHI_STATE_##a);
-
-MHI_STATE_LIST
-
-And in the print fmts:
-
-#undef EM
-#undef EMe
-
-#define EM(a, b)   { MHI_STATE_##a, b },
-#define EMe(a, b)  { MHI_STATE_##a, b }
-
-
-	TP_printk("%s: local ee: %s state: %s device ee: %s state: %s\n",
-		  __get_str(name),
-		  TO_MHI_EXEC_STR(__entry->local_ee),
-
-		  __print_symbolic(__entry->state), MHI_STATE_LIST),
-
-		  TO_MHI_EXEC_STR(__entry->dev_ee),
-
-		  __print_symbolic(__entry->dev_state, MHI_STATE_LIST))
-
-
-And that will be exported to user space in the
-/sys/kernel/tracing/events/*/*/format file, as:
-
-	__print_symbolic(REC->state, { 
-	        { MHI_STATE_RESET, "RESET"},
-	        { MHI_STATE_READY, "READY"},
-	        { MHI_STATE_M0, "M0"},
-	        { MHI_STATE_M1, "M1"},
-	        { MHI_STATE_M2, "M2"},
-	        { MHI_STATE_M3, "M3"},
-	        { MHI_STATE_M3_FAST, "M3 FAST"},
-	        { MHI_STATE_BHI, "BHI"},
-	        { MHI_STATE_SYS_ERR, "SYS ERROR"} }
-
-Which libtracevent knows how to parse. Oh, it wouldn't even show the enum
-names as the TRACE_DEFINE_ENUM() above, would tell the kernel to replace
-them with their actual numeric values. That way, when trace-cmd or perf
-reads the raw data, it knows how to print it.
-
-Now what about those TO_MHI_EXEC_STR() macros? They are not the same. They are:
-
-#define TO_MHI_EXEC_STR(ee) (((ee) >= MHI_EE_MAX) ? \
-                             "INVALID_EE" : mhi_ee_str[ee])
-
-Where that mhi_ee_str[] is:
-
-const char * const mhi_ee_str[MHI_EE_MAX] = {
-        [MHI_EE_PBL] = "PRIMARY BOOTLOADER",
-        [MHI_EE_SBL] = "SECONDARY BOOTLOADER",
-        [MHI_EE_AMSS] = "MISSION MODE",
-        [MHI_EE_RDDM] = "RAMDUMP DOWNLOAD MODE",
-        [MHI_EE_WFW] = "WLAN FIRMWARE",
-        [MHI_EE_PTHRU] = "PASS THROUGH",
-        [MHI_EE_EDL] = "EMERGENCY DOWNLOAD",
-        [MHI_EE_FP] = "FLASH PROGRAMMER",
-        [MHI_EE_DISABLE_TRANSITION] = "DISABLE",
-        [MHI_EE_NOT_SUPPORTED] = "NOT SUPPORTED",
-};
-
-Which would require doing the same thing for that as well.
-
-#define MHI_EE_LIST 					\
-	EM(PBL,			"PRIMARY BOOTLOADER")	\
-	EM(SBL,			"SECONDARY BOOTLOADER")	\
-	EM(AMSS,		"MISSION MODE")		\
-	EM(RDDM,		"RAMDUMP DOWNLOAD MODE")\
-	EM(WFW,			"WLAN FIRMWARE")	\
-	EM(PTHRU,		"PASS THROUGH")		\
-	EM(EDL,			"EMERGENCY DOWNLOAD")	\
-	EM(FP,			"FLASH PROGRAMMER")	\
-	EM(DISABLE_TRANSITION,	"DISABLE")		\
-	EMe(NOT_SUPPORTED,	"NOT SUPPORTED")
-
-And have:
-
-#undef EM
-#undef EMe
-
-#define EM(a, b)  [MHI_EE_##a] = b,
-#define EMe(a, b) [MHI_EE_##a] = b,
-
-const char * const mhi_ee_str[MHI_EE_MAX] = {
-	MHI_EE_LIST
-};
-
-and so on. That way the user space parsing will know how to properly parse
-these events.
-
-Note, if you don't want to modify the other files, you can still just all
-the above to the trace.h file and it will still properly map the enums to
-the strings. That is, don't modify the mhi_ee_str(), but instead just add
-the MHI_EE_LIST macro in the trace header, and use the __print_symbolic()
-with it.
-
-I only mentioned modifying the strings to make it consistent if new strings
-are added.
-
--- Steve
-
-
-> +);
-> +
-> +TRACE_EVENT(mhi_tryset_pm_state,
-> +
-> +	TP_PROTO(struct mhi_controller *mhi_cntrl, int pm_state),
-> +
-> +	TP_ARGS(mhi_cntrl, pm_state),
-> +
-> +	TP_STRUCT__entry(
-> +		__string(name, mhi_cntrl->mhi_dev->name)
-> +		__field(int, pm_state)
-> +	),
-> +
-> +	TP_fast_assign(
-> +		__assign_str(name, mhi_cntrl->mhi_dev->name);
-> +		if (pm_state)
-> +			pm_state = __fls(pm_state);
-> +		__entry->pm_state = pm_state;
-> +	),
-> +
-> +	TP_printk("%s: PM state: %s\n", __get_str(name),
-> +		  to_mhi_pm_state_str(__entry->pm_state))
-> +);
-> +
-> +DECLARE_EVENT_CLASS(mhi_process_event_ring,
-> +
-> +	TP_PROTO(struct mhi_controller *mhi_cntrl, struct
-> mhi_ring_element *rp), +
-> +	TP_ARGS(mhi_cntrl, rp),
-> +
-> +	TP_STRUCT__entry(
-> +		__string(name, mhi_cntrl->mhi_dev->name)
-> +		__field(__le32, dword0)
-> +		__field(__le32, dword1)
-> +		__field(int, state)
-> +		__field(__le64, ptr)
-> +		__field(void *, rp)
-> +	),
-> +
-> +	TP_fast_assign(
-> +		__assign_str(name, mhi_cntrl->mhi_dev->name);
-> +		__entry->rp = rp;
-> +		__entry->ptr = rp->ptr;
-> +		__entry->dword0 = rp->dword[0];
-> +		__entry->dword1 = rp->dword[1];
-> +		__entry->state = MHI_TRE_GET_EV_STATE(rp);
-> +	),
-> +
-> +	TP_printk("%s: Tre: 0x%p Tre buf: 0x%llx dword0: 0x%08x dword1:
-> 0x%08x state: %s\n",
-> +		  __get_str(name), __entry->rp, __entry->ptr,
-> __entry->dword0,
-> +		  __entry->dword1, mhi_state_str(__entry->state))
-> +);
-> +
-> +DEFINE_EVENT(mhi_process_event_ring, mhi_data_event,
-> +
-> +	TP_PROTO(struct mhi_controller *mhi_cntrl, struct
-> mhi_ring_element *rp), +
-> +	TP_ARGS(mhi_cntrl, rp)
-> +);
-> +
-> +DEFINE_EVENT(mhi_process_event_ring, mhi_ctrl_event,
-> +
-> +	TP_PROTO(struct mhi_controller *mhi_cntrl, struct
-> mhi_ring_element *rp), +
-> +	TP_ARGS(mhi_cntrl, rp)
-> +);
-> +
-> +DECLARE_EVENT_CLASS(mhi_update_channel_state,
-> +
-> +	TP_PROTO(struct mhi_controller *mhi_cntrl, struct mhi_chan
-> *mhi_chan, int state), +
-> +	TP_ARGS(mhi_cntrl, mhi_chan, state),
-> +
-> +	TP_STRUCT__entry(
-> +		__string(name, mhi_cntrl->mhi_dev->name)
-> +		__field(int, ch_num)
-> +		__field(int, state)
-> +	),
-> +
-> +	TP_fast_assign(
-> +		__assign_str(name, mhi_cntrl->mhi_dev->name);
-> +		__entry->ch_num = mhi_chan->chan;
-> +		__entry->state = state;
-> +	),
-> +
-> +	TP_printk("%s: chan%d: Updating state to: %s\n",
-> +		  __get_str(name), __entry->ch_num,
-> +		  TO_CH_STATE_TYPE_STR(__entry->state))
-> +);
-> +
-> +DEFINE_EVENT(mhi_update_channel_state, mhi_channel_command_start,
-> +
-> +	TP_PROTO(struct mhi_controller *mhi_cntrl, struct mhi_chan
-> *mhi_chan, int state), +
-> +	TP_ARGS(mhi_cntrl, mhi_chan, state)
-> +);
-> +
-> +DEFINE_EVENT(mhi_update_channel_state, mhi_channel_command_end,
-> +
-> +	TP_PROTO(struct mhi_controller *mhi_cntrl, struct mhi_chan
-> *mhi_chan, int state), +
-> +	TP_ARGS(mhi_cntrl, mhi_chan, state)
-> +);
-> +
-> +TRACE_EVENT(mhi_pm_st_transition,
-> +
-> +	TP_PROTO(struct mhi_controller *mhi_cntrl, int state),
-> +
-> +	TP_ARGS(mhi_cntrl, state),
-> +
-> +	TP_STRUCT__entry(
-> +		__string(name, mhi_cntrl->mhi_dev->name)
-> +		__field(int, state)
-> +	),
-> +
-> +	TP_fast_assign(
-> +		__assign_str(name, mhi_cntrl->mhi_dev->name);
-> +		__entry->state = state;
-> +	),
-> +
-> +	TP_printk("%s: Handling state transition: %s\n", __get_str(name),
-> +		  TO_DEV_STATE_TRANS_STR(__entry->state))
-> +);
-> +
-> +#endif
-> +#undef TRACE_INCLUDE_PATH
-> +#define TRACE_INCLUDE_PATH ../../drivers/bus/mhi/host
-> +#undef TRACE_INCLUDE_FILE
-> +#define TRACE_INCLUDE_FILE trace
-> +
-> +#include <trace/define_trace.h>
 > 
-> ---
-> base-commit: 3006adf3be79cde4d14b1800b963b82b6e5572e0
-> change-id: 20231005-ftrace_support-6869d4156139
+> v2:
+>  - Added Fixes tag and -fixes prefix [Alexandre/Anup]
 > 
-> Best regards,
+>  arch/riscv/Kconfig     | 1 +
+>  arch/riscv/kvm/Kconfig | 2 +-
+>  2 files changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+> index a935a5f736b9..daba06a3b76f 100644
+> --- a/arch/riscv/Kconfig
+> +++ b/arch/riscv/Kconfig
+> @@ -128,6 +128,7 @@ config RISCV
+>  	select HAVE_KPROBES if !XIP_KERNEL
+>  	select HAVE_KPROBES_ON_FTRACE if !XIP_KERNEL
+>  	select HAVE_KRETPROBES if !XIP_KERNEL
+> +	select HAVE_KVM
+>  	# https://github.com/ClangBuiltLinux/linux/issues/1881
+>  	select HAVE_LD_DEAD_CODE_DATA_ELIMINATION if !LD_IS_LLD
+>  	select HAVE_MOVE_PMD
+> diff --git a/arch/riscv/kvm/Kconfig b/arch/riscv/kvm/Kconfig
+> index 1fd76aee3b71..36fa8ec9e5ba 100644
+> --- a/arch/riscv/kvm/Kconfig
+> +++ b/arch/riscv/kvm/Kconfig
+> @@ -19,7 +19,7 @@ if VIRTUALIZATION
+>  
+>  config KVM
+>  	tristate "Kernel-based Virtual Machine (KVM) support (EXPERIMENTAL)"
+> -	depends on RISCV_SBI && MMU
+> +	depends on HAVE_KVM && RISCV_SBI && MMU
+>  	select HAVE_KVM_IRQCHIP
+>  	select HAVE_KVM_IRQ_ROUTING
+>  	select HAVE_KVM_MSI
 
+-- 
+#Randy
 
