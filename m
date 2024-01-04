@@ -1,92 +1,61 @@
-Return-Path: <linux-kernel+bounces-16852-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16854-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15DA28244EA
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 16:27:34 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C7528244F1
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 16:28:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B8CAE286DA5
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 15:27:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3BEF91F2337C
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 15:28:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31B71241FE;
-	Thu,  4 Jan 2024 15:27:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D64BB24209;
+	Thu,  4 Jan 2024 15:28:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="dBfe4em3";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="cA3HhRsJ";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="dBfe4em3";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="cA3HhRsJ"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Nu1g4vhY"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC527241E7;
-	Thu,  4 Jan 2024 15:27:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id C3B5721DF7;
-	Thu,  4 Jan 2024 15:27:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1704382038; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=KWbky96QGRcwFV5isIsGPDHire/PDOSyRwF8lmzP/DQ=;
-	b=dBfe4em31QIE5R7CSUtW3D0QZPa8MOlx8fDV5S1iGAK42rZ7Po3nISOaPHW2uhDdjsYVQ8
-	nYDd7zBm9HDobZ7st+MAJjfeZAVPWrEG5+bNK1fKYlXa/i77jLSiX438uwLXBmi9pD8L5s
-	7dYHuYQWNVtkubvVWS10Y4WNmKVOGsw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1704382038;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=KWbky96QGRcwFV5isIsGPDHire/PDOSyRwF8lmzP/DQ=;
-	b=cA3HhRsJSPma1JUPEOMAuGboHdH1B7m1qswm1PWd3HD8NBj1W0PB3+GwCmIU+OpIJUKQod
-	yW3sm33pkT5nn+AQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1704382038; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=KWbky96QGRcwFV5isIsGPDHire/PDOSyRwF8lmzP/DQ=;
-	b=dBfe4em31QIE5R7CSUtW3D0QZPa8MOlx8fDV5S1iGAK42rZ7Po3nISOaPHW2uhDdjsYVQ8
-	nYDd7zBm9HDobZ7st+MAJjfeZAVPWrEG5+bNK1fKYlXa/i77jLSiX438uwLXBmi9pD8L5s
-	7dYHuYQWNVtkubvVWS10Y4WNmKVOGsw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1704382038;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=KWbky96QGRcwFV5isIsGPDHire/PDOSyRwF8lmzP/DQ=;
-	b=cA3HhRsJSPma1JUPEOMAuGboHdH1B7m1qswm1PWd3HD8NBj1W0PB3+GwCmIU+OpIJUKQod
-	yW3sm33pkT5nn+AQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id AB59313722;
-	Thu,  4 Jan 2024 15:27:18 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 4XyKKVbOlmXXTgAAD6G6ig
-	(envelope-from <jack@suse.cz>); Thu, 04 Jan 2024 15:27:18 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 020E9A07EF; Thu,  4 Jan 2024 16:27:17 +0100 (CET)
-Date: Thu, 4 Jan 2024 16:27:17 +0100
-From: Jan Kara <jack@suse.cz>
-To: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-Cc: linux-ext4@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
-	Ritesh Harjani <ritesh.list@gmail.com>,
-	linux-kernel@vger.kernel.org, Jan Kara <jack@suse.cz>,
-	glandvador@yahoo.com, bugzilla@eyal.emu.id.au
-Subject: Re: [PATCH 1/1] ext4: fallback to complex scan if aligned scan
- doesn't work
-Message-ID: <20240104152717.rj7mmmij77q3mbiu@quack3>
-References: <cover.1702455010.git.ojaswin@linux.ibm.com>
- <ee033f6dfa0a7f2934437008a909c3788233950f.1702455010.git.ojaswin@linux.ibm.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED6342233B;
+	Thu,  4 Jan 2024 15:28:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704382089; x=1735918089;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=VRf3reILjU1dadO0ad0fDQYzknoLukV/96lMq1a8yjE=;
+  b=Nu1g4vhYnZ+zM62zgXHeg6gMYHy3ETGqwZEOe+TwwNW8P5Wse7YSyvip
+   NRXKTzh/ccIOyETvScyvalWpPFo0zGMIXjtgHiGl4VjwvMRNrwIFjutBn
+   KLltRlhCZdW/43b+qEiwIuPuAugrWZ/mwwELAMZ5sqhvtOE+uDFgu5Xx8
+   +KbVM/OVtxqw2KxcsTciWk2roKOpQAYPJvsk0npY89k7fyF6IHtqaO3RN
+   5ItP2OV/qemipAN+G2bVSjljPue39Pv6ixjQfGIZX/DKfcqrF2aVxI+43
+   O455fOaBM8bxB83gQTcAe4/ZCjN1Pgk281DpUF96Gri2vt7fw4vbw4LyF
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10943"; a="428440877"
+X-IronPort-AV: E=Sophos;i="6.04,331,1695711600"; 
+   d="scan'208";a="428440877"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2024 07:27:38 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10943"; a="1111795355"
+X-IronPort-AV: E=Sophos;i="6.04,331,1695711600"; 
+   d="scan'208";a="1111795355"
+Received: from kuha.fi.intel.com ([10.237.72.185])
+  by fmsmga005.fm.intel.com with SMTP; 04 Jan 2024 07:27:35 -0800
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Thu, 04 Jan 2024 17:27:34 +0200
+Date: Thu, 4 Jan 2024 17:27:34 +0200
+From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To: RD Babiera <rdbabiera@google.com>
+Cc: lk@c--e.de, gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
+	linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH v4] usb: typec: class: fix typec_altmode_put_partner to
+ put plugs
+Message-ID: <ZZbGXa0mVAlmy1Ix@kuha.fi.intel.com>
+References: <20240103181754.2492492-2-rdbabiera@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -95,109 +64,80 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ee033f6dfa0a7f2934437008a909c3788233950f.1702455010.git.ojaswin@linux.ibm.com>
-X-Spam-Level: 
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spamd-Result: default: False [-1.10 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 URIBL_BLOCKED(0.00)[suse.cz:email,suse.com:email];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com,yahoo.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 BAYES_HAM(-3.00)[100.00%];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 RCPT_COUNT_SEVEN(0.00)[8];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.cz:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 FREEMAIL_CC(0.00)[vger.kernel.org,mit.edu,gmail.com,suse.cz,yahoo.com,eyal.emu.id.au];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spam-Score: -1.10
+In-Reply-To: <20240103181754.2492492-2-rdbabiera@google.com>
 
-On Fri 15-12-23 16:49:50, Ojaswin Mujoo wrote:
-> Currently in case the goal length is a multiple of stripe size we use
-> ext4_mb_scan_aligned() to find the stripe size aligned physical blocks.
-> In case we are not able to find any, we again go back to calling
-> ext4_mb_choose_next_group() to search for a different suitable block
-> group. However, since the linear search always begins from the start,
-> most of the times we end up with the same BG and the cycle continues.
+On Wed, Jan 03, 2024 at 06:17:55PM +0000, RD Babiera wrote:
+> When typec_altmode_put_partner is called by a plug altmode upon release,
+> the port altmode the plug belongs to will not remove its reference to the
+> plug. The check to see if the altmode being released is a plug evaluates
+> against the released altmode's partner instead of the calling altmode, so
+> change adev in typec_altmode_put_partner to properly refer to the altmode
+> being released.
 > 
-> With large fliesystems, the CPU can be stuck in this loop for hours
-> which can slow down the whole system. Hence, until we figure out a
-> better way to continue the search (rather than starting from beginning)
-> in ext4_mb_choose_next_group(), lets just fallback to
-> ext4_mb_complex_scan_group() in case aligned scan fails, as it is much
-> more likely to find the needed blocks.
+> Because typec_altmode_set_partner calls get_device() on the port altmode,
+> add partner_adev that points to the port altmode in typec_put_partner to
+> call put_device() on. typec_altmode_set_partner is not called for port
+> altmodes, so add a check in typec_altmode_release to prevent
+> typec_altmode_put_partner() calls on port altmode release.
 > 
-> Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+> Fixes: 8a37d87d72f0 ("usb: typec: Bus type for alternate modes")
+> Cc: stable@vger.kernel.org
+> Co-developed-by: Christian A. Ehrhardt <lk@c--e.de>
+> Signed-off-by: Christian A. Ehrhardt <lk@c--e.de>
+> Signed-off-by: RD Babiera <rdbabiera@google.com>
 
-If I understand the difference right, the problem is that while
-ext4_mb_choose_next_group() guarantees large enough free space extent for
-the CR_GOAL_LEN_FAST or CR_BEST_AVAIL_LEN passes, it does not guaranteed
-large enough *aligned* free space extent. Thus for non-aligned allocations
-we can fail only due to a race with another allocating process but with
-aligned allocations we can consistently fail in ext4_mb_scan_aligned() and
-thus livelock in the allocation loop.
-
-If my understanding is correct, feel free to add:
-
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-								Honza
-
-
+Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 
 > ---
->  fs/ext4/mballoc.c | 21 +++++++++++++--------
->  1 file changed, 13 insertions(+), 8 deletions(-)
+> Changes since v3:
+> * added partner_adev to properly put_device() on port altmode.
+> ---
+>  drivers/usb/typec/class.c | 9 ++++++---
+>  1 file changed, 6 insertions(+), 3 deletions(-)
 > 
-> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-> index d72b5e3c92ec..63f12ec02485 100644
-> --- a/fs/ext4/mballoc.c
-> +++ b/fs/ext4/mballoc.c
-> @@ -2895,14 +2895,19 @@ ext4_mb_regular_allocator(struct ext4_allocation_context *ac)
->  			ac->ac_groups_scanned++;
->  			if (cr == CR_POWER2_ALIGNED)
->  				ext4_mb_simple_scan_group(ac, &e4b);
-> -			else if ((cr == CR_GOAL_LEN_FAST ||
-> -				 cr == CR_BEST_AVAIL_LEN) &&
-> -				 sbi->s_stripe &&
-> -				 !(ac->ac_g_ex.fe_len %
-> -				 EXT4_B2C(sbi, sbi->s_stripe)))
-> -				ext4_mb_scan_aligned(ac, &e4b);
-> -			else
-> -				ext4_mb_complex_scan_group(ac, &e4b);
-> +			else {
-> +				bool is_stripe_aligned = sbi->s_stripe &&
-> +					!(ac->ac_g_ex.fe_len %
-> +					  EXT4_B2C(sbi, sbi->s_stripe));
-> +
-> +				if ((cr == CR_GOAL_LEN_FAST ||
-> +				     cr == CR_BEST_AVAIL_LEN) &&
-> +				    is_stripe_aligned)
-> +					ext4_mb_scan_aligned(ac, &e4b);
-> +
-> +				if (ac->ac_status == AC_STATUS_CONTINUE)
-> +					ext4_mb_complex_scan_group(ac, &e4b);
-> +			}
+> diff --git a/drivers/usb/typec/class.c b/drivers/usb/typec/class.c
+> index 4d11f2b536fa..015aa9253353 100644
+> --- a/drivers/usb/typec/class.c
+> +++ b/drivers/usb/typec/class.c
+> @@ -263,11 +263,13 @@ static void typec_altmode_put_partner(struct altmode *altmode)
+>  {
+>  	struct altmode *partner = altmode->partner;
+>  	struct typec_altmode *adev;
+> +	struct typec_altmode *partner_adev;
 >  
->  			ext4_unlock_group(sb, group);
->  			ext4_mb_unload_buddy(&e4b);
-> -- 
-> 2.39.3
+>  	if (!partner)
+>  		return;
+>  
+> -	adev = &partner->adev;
+> +	adev = &altmode->adev;
+> +	partner_adev = &partner->adev;
+>  
+>  	if (is_typec_plug(adev->dev.parent)) {
+>  		struct typec_plug *plug = to_typec_plug(adev->dev.parent);
+> @@ -276,7 +278,7 @@ static void typec_altmode_put_partner(struct altmode *altmode)
+>  	} else {
+>  		partner->partner = NULL;
+>  	}
+> -	put_device(&adev->dev);
+> +	put_device(&partner_adev->dev);
+>  }
+>  
+>  /**
+> @@ -497,7 +499,8 @@ static void typec_altmode_release(struct device *dev)
+>  {
+>  	struct altmode *alt = to_altmode(to_typec_altmode(dev));
+>  
+> -	typec_altmode_put_partner(alt);
+> +	if (!is_typec_port(dev->parent))
+> +		typec_altmode_put_partner(alt);
+>  
+>  	altmode_id_remove(alt->adev.dev.parent, alt->id);
+>  	kfree(alt);
 > 
+> base-commit: e7d3b9f28654dbfce7e09f8028210489adaf6a33
+> -- 
+> 2.43.0.472.g3155946c3a-goog
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+heikki
 
