@@ -1,160 +1,103 @@
-Return-Path: <linux-kernel+bounces-17035-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17036-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E29B82476A
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 18:26:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 14D8F82476D
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 18:26:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 91FBDB253F0
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 17:26:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6FDB2B25373
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 17:26:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EF7328DC3;
-	Thu,  4 Jan 2024 17:25:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0458528DD4;
+	Thu,  4 Jan 2024 17:25:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ssCieMHq";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="7vRREkty";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ssCieMHq";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="7vRREkty"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="2VtJhetl"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-pg1-f201.google.com (mail-pg1-f201.google.com [209.85.215.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED29B286B1;
-	Thu,  4 Jan 2024 17:25:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id CE61221F99;
-	Thu,  4 Jan 2024 17:25:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1704389126; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=8kM2Xcpu+q93CJKY69SzeuyLvmtyJpPaFQj/dXNDYds=;
-	b=ssCieMHqylV6I6OqXgdO9qIXeeHj4XxUSUUnj44tgz6xvxKPS0oj8QDfDsHoXv/T2SzgwN
-	a5Eku9SsJKZ5ibhYyvkMdnhgphuy3fq+2IuubQzErrWKyQ6MYw2oBqAla6VwDfpHliLDjq
-	ZxpdWxvUc+WYL0CF9IgPaeO5T7P60vI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1704389126;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=8kM2Xcpu+q93CJKY69SzeuyLvmtyJpPaFQj/dXNDYds=;
-	b=7vRREktyd32/nyj3nG2ZW49+/BAQqfVi/iJSijLyT3Lw+hn/+sY6mJxShxxbJXXYdO/hhd
-	Edpnr5fdmKbEzACg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1704389126; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=8kM2Xcpu+q93CJKY69SzeuyLvmtyJpPaFQj/dXNDYds=;
-	b=ssCieMHqylV6I6OqXgdO9qIXeeHj4XxUSUUnj44tgz6xvxKPS0oj8QDfDsHoXv/T2SzgwN
-	a5Eku9SsJKZ5ibhYyvkMdnhgphuy3fq+2IuubQzErrWKyQ6MYw2oBqAla6VwDfpHliLDjq
-	ZxpdWxvUc+WYL0CF9IgPaeO5T7P60vI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1704389126;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=8kM2Xcpu+q93CJKY69SzeuyLvmtyJpPaFQj/dXNDYds=;
-	b=7vRREktyd32/nyj3nG2ZW49+/BAQqfVi/iJSijLyT3Lw+hn/+sY6mJxShxxbJXXYdO/hhd
-	Edpnr5fdmKbEzACg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A6A7413722;
-	Thu,  4 Jan 2024 17:25:26 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id Bm9XKAbqlmW6bQAAD6G6ig
-	(envelope-from <jack@suse.cz>); Thu, 04 Jan 2024 17:25:26 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id CC8F8A07EF; Thu,  4 Jan 2024 18:25:25 +0100 (CET)
-Date: Thu, 4 Jan 2024 18:25:25 +0100
-From: Jan Kara <jack@suse.cz>
-To: Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-Cc: Christoph Hellwig <hch@lst.de>,
-	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-block@vger.kernel.org" <linux-block@vger.kernel.org>
-Subject: Re: [PATCH 08/14] hfsplus: Really remove hfsplus_writepage
-Message-ID: <20240104172525.6yg6lv42vcrluezp@quack3>
-References: <20231215200245.748418-1-willy@infradead.org>
- <20231215200245.748418-9-willy@infradead.org>
- <20231216043328.GF9284@lst.de>
- <50696fa1-a7b9-4f5f-b4ef-73ca99a69cd2@wdc.com>
- <20231218150401.GA19279@lst.de>
- <cdf6a3d8-4f5c-4fce-a93e-9b0304effcb9@wdc.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32DA82557C
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 17:25:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pg1-f201.google.com with SMTP id 41be03b00d2f7-5cde2b113e7so420700a12.2
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 09:25:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1704389138; x=1704993938; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=OJb3XXC8q3g+6tXPhMxO+vJHUZX9WNbrN0ps04n6FVc=;
+        b=2VtJhetlOet7TIeTKVMOu/WcJ2hgdoSNYeUyvNJJgoaG9Xu2zXzf8XGdTkzHa17LQC
+         vmMzDUKs/EaUQh2Mx8U0DCZC2WlfD+mHsB8zA32/ERiz6uQ8DCYxzKXZnEjJYQnsp5rq
+         amsvOhHLqW+/kfvxtFhZLdneCcT3r97B9JJYq4kCcOaKqZl70p2RiQxHK9uxLevKjTo5
+         /syEV+Z6sSWFirdpWERd5NiyIs0fhlqXGzC2bYCz3Ba9ppl8Bo9uE08cGClUoL02NDD3
+         ufOeNSmILCnmgdRzLZ0Nec0sfVtm6pG12ILkNr/ghjFUpy0R2VOXu0JmHFBQkCA26HfT
+         XoGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704389138; x=1704993938;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=OJb3XXC8q3g+6tXPhMxO+vJHUZX9WNbrN0ps04n6FVc=;
+        b=VQj7smdqWNaUls9IiSKZ+YM+kkgak/f5G/ySj0HSNJ0ojbRHU/5bVefWsgyk1Cr6+W
+         iAVrE26oXpabE3MPFc7MOIRTqZhwItIkquvKZ4fViOiKLeXW4y9/X4dDixZKpxU+GLfZ
+         garu1E3/ffjiZLIfxAeqy50OSVuWB+ys/Tje0ld7OhPbVxg6t2NNsEN/JFEBF7awOqTF
+         GmpiuL5S3GSEleBePfbrh2bwqraRayZDpfVzVEKtIbHIiyTSIByKp/79A/1fd01Np/zD
+         jp94bfF6xE4YOsH8Y19V3G+NAQHpHBTE/bbwYTeez8238fJzLbXEI0etYJ2YtRui4/Tz
+         qRCA==
+X-Gm-Message-State: AOJu0YwIfzc/DyVLlX4q9quCVvNs3SyRcRlWdJH0W/y+kfQJTghUd9IJ
+	rPrWKM5IEyBabHiy4HQ61BmJytpRQ5iJ1sfd6Q==
+X-Google-Smtp-Source: AGHT+IGpjKYoYnovb4KpBjlwOvzKTsbKtS1OkjG+MYKimlevQSouppzqYOT0D/JiDpCYFh3Zij/ojr5FuiY=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a65:6a46:0:b0:5ce:a561:8868 with SMTP id
+ o6-20020a656a46000000b005cea5618868mr6011pgu.4.1704389138519; Thu, 04 Jan
+ 2024 09:25:38 -0800 (PST)
+Date: Thu, 4 Jan 2024 09:25:37 -0800
+In-Reply-To: <b327b546-4a5f-462d-baeb-804a33bd3f6a@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cdf6a3d8-4f5c-4fce-a93e-9b0304effcb9@wdc.com>
-X-Spam-Level: 
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -1.84
-X-Spamd-Result: default: False [-1.84 / 50.00];
-	 ARC_NA(0.00)[];
-	 TO_DN_EQ_ADDR_SOME(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
-	 URIBL_BLOCKED(0.00)[suse.com:email];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCPT_COUNT_SEVEN(0.00)[7];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-1.04)[87.62%]
-X-Spam-Flag: NO
+Mime-Version: 1.0
+References: <3d8f5987-e09c-4dd2-a9c0-8ba22c9e948a@paulmck-laptop>
+ <88f49775-2b56-48cc-81b8-651a940b7d6b@paulmck-laptop> <ZZX6pkHnZP777DVi@google.com>
+ <77d7a3e3-f35e-4507-82c2-488405b25fa4@paulmck-laptop> <c6d5dd6e-2dec-423c-af39-213f17b1a9db@paulmck-laptop>
+ <CABgObfYG-ZwiRiFeGbAgctLfj7+PSmgauN9RwGMvZRfxvmD_XQ@mail.gmail.com>
+ <b2775ea5-20c9-4dff-b4b1-bbb212065a22@paulmck-laptop> <b327b546-4a5f-462d-baeb-804a33bd3f6a@redhat.com>
+Message-ID: <ZZbqEYNIlwNwtEx5@google.com>
+Subject: Re: [BUG] Guest OSes die simultaneously (bisected)
+From: Sean Christopherson <seanjc@google.com>
+To: Paolo Bonzini <pbonzini@redhat.com>
+Cc: paulmck@kernel.org, Like Xu <like.xu@linux.intel.com>, 
+	Andi Kleen <ak@linux.intel.com>, Kan Liang <kan.liang@linux.intel.com>, 
+	Luwei Kang <luwei.kang@intel.com>, Peter Zijlstra <peterz@infradead.org>, 
+	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	kvm@vger.kernel.org, Breno Leitao <leitao@debian.org>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Ingo Molnar <mingo@redhat.com>
+Content-Type: text/plain; charset="us-ascii"
 
-On Mon 18-12-23 15:40:42, Johannes Thumshirn wrote:
-> On 18.12.23 16:04, Christoph Hellwig wrote:
-> > On Mon, Dec 18, 2023 at 10:41:27AM +0000, Johannes Thumshirn wrote:
-> >>> although I had some reason to be careful back then.  hfsplus should
-> >>> be testable again that the hfsplus Linux port is back alive.  Is there
-> >>> any volunteer to test hfsplus on the fsdevel list?
-> >>
-> >> What do you have in mind on that side? "Just" running it through fstests
-> >> and see that we don't regress here or more than that?
-> > 
-> > Yeah.  Back in the day I ran hfsplus through xfstests, IIRC that might
-> > even have been the initial motivation for supporting file systems
-> > that don't support sparse files.  I bet a lot has regressed or isn't
-> > support since, though.
-> > 
+On Thu, Jan 04, 2024, Paolo Bonzini wrote:
+> On 1/4/24 17:06, Paul E. McKenney wrote:
+> > Instead, the point I am trying to make is that carefully
+> > constructed tests can serve as tireless and accurate code reviewers.
+> > This won't ever replace actual code review, but my experience indicates
+> > that it will help find more bugs more quickly and more easily.
 > 
-> Let me see what I can do on that front over my winter vacation. As long 
-> as there's no APFS support in Linux its the only way to exchange data 
-> between macOS and Linux anyways, so we shouldn't break it.
+> TBH this (conflict between virtual addresses on the host and the guest
+> leading to corruption of the guest) is probably not the kind of adversarial
+> test that one would have written or suggested right off the bat.
 
-AFAIK macOS actually does support UDF so there are other filesystems you
-can use for data exchange.
+I disagree.  The flaws with PEBS using a virtual address is blatantly obvious to
+anyone that has spent any time dealing with the cross-section of PMU and VMX.
+Intel even explicitly added "isolation" functionality to ensure PEBS can't overrun
+VM-Enter and generate host records in the guest.  Not to mention that Intel
+specifically addressed the virtual addressing issue in the design of Processor
+Trace (PT, a.k.a. RTIT).
 
-								Honza
-
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+In other words, we *knew* exactly what would break *and* there had been breakage
+in the past.  Chalk it up to messed up priorities, poor test infrastructure, or
+anything along those lines.  But we shouldn't pretend that this was some obscure
+edge case that didn't warrant a dedicated test from the get-go.
 
