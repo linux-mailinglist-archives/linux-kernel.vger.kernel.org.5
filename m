@@ -1,237 +1,245 @@
-Return-Path: <linux-kernel+bounces-16613-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16614-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 25CDD824135
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 13:02:40 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 32D25824137
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 13:03:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8CD771F24A4C
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 12:02:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 43729B21678
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 12:02:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC7C2219F2;
-	Thu,  4 Jan 2024 12:02:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="mA9MLCSZ";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="jRA844eL";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="mA9MLCSZ";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="jRA844eL"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8A1621369;
+	Thu,  4 Jan 2024 12:02:32 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D1062135D;
-	Thu,  4 Jan 2024 12:02:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id BC0A11F805;
-	Thu,  4 Jan 2024 12:02:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1704369727; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=mWvdmjnCrvMMkEad6Bqg+px5xJk89umEnoKGFgsKrCs=;
-	b=mA9MLCSZPk9YYyGvchTGE7QGfjuvAxQPIOB5bSqI0ShVGuX15p8YvfG4RITiIv4B9Dzufr
-	pBagJPjiR4Z4ZPrR4rSg3y7kRhQxg3YLJt/5Wk5xAtOKY9ZIcCpHalmOrCoqz7gQD2Ger5
-	HIfrPy1FJ1h/ozC1qSJjAvouN5/Df8A=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1704369727;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=mWvdmjnCrvMMkEad6Bqg+px5xJk89umEnoKGFgsKrCs=;
-	b=jRA844eLB6Y1ZxCGnb1N6KdOvFnePFHAQGW/vxMgV1qx9TUjHNv+uXe5govpUflqSIzCOd
-	q/MKgsENsW38BEBw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1704369727; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=mWvdmjnCrvMMkEad6Bqg+px5xJk89umEnoKGFgsKrCs=;
-	b=mA9MLCSZPk9YYyGvchTGE7QGfjuvAxQPIOB5bSqI0ShVGuX15p8YvfG4RITiIv4B9Dzufr
-	pBagJPjiR4Z4ZPrR4rSg3y7kRhQxg3YLJt/5Wk5xAtOKY9ZIcCpHalmOrCoqz7gQD2Ger5
-	HIfrPy1FJ1h/ozC1qSJjAvouN5/Df8A=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1704369727;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=mWvdmjnCrvMMkEad6Bqg+px5xJk89umEnoKGFgsKrCs=;
-	b=jRA844eLB6Y1ZxCGnb1N6KdOvFnePFHAQGW/vxMgV1qx9TUjHNv+uXe5govpUflqSIzCOd
-	q/MKgsENsW38BEBw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id AA856137E8;
-	Thu,  4 Jan 2024 12:02:07 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id B2+aKT+elmXdDwAAD6G6ig
-	(envelope-from <jack@suse.cz>); Thu, 04 Jan 2024 12:02:07 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 46F2EA07EF; Thu,  4 Jan 2024 13:02:07 +0100 (CET)
-Date: Thu, 4 Jan 2024 13:02:07 +0100
-From: Jan Kara <jack@suse.cz>
-To: Yu Kuai <yukuai1@huaweicloud.com>
-Cc: axboe@kernel.dk, roger.pau@citrix.com, colyli@suse.de,
-	kent.overstreet@gmail.com, joern@lazybastard.org,
-	miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-	sth@linux.ibm.com, hoeppner@linux.ibm.com, hca@linux.ibm.com,
-	gor@linux.ibm.com, agordeev@linux.ibm.com, jejb@linux.ibm.com,
-	martin.petersen@oracle.com, clm@fb.com, josef@toxicpanda.com,
-	dsterba@suse.com, viro@zeniv.linux.org.uk, brauner@kernel.org,
-	nico@fluxnic.net, xiang@kernel.org, chao@kernel.org, tytso@mit.edu,
-	adilger.kernel@dilger.ca, jack@suse.com, konishi.ryusuke@gmail.com,
-	willy@infradead.org, akpm@linux-foundation.org, hare@suse.de,
-	p.raghav@samsung.com, linux-block@vger.kernel.org,
-	linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org,
-	linux-bcache@vger.kernel.org, linux-mtd@lists.infradead.org,
-	linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
-	linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-erofs@lists.ozlabs.org,
-	linux-ext4@vger.kernel.org, linux-nilfs@vger.kernel.org,
-	yukuai3@huawei.com, yi.zhang@huawei.com, yangerkun@huawei.com
-Subject: Re: [PATCH RFC v3 for-6.8/block 11/17] erofs: use bdev api
-Message-ID: <20240104120207.ig7tfc3mgckwkp2n@quack3>
-References: <20231221085712.1766333-1-yukuai1@huaweicloud.com>
- <20231221085826.1768395-1-yukuai1@huaweicloud.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D41421366
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 12:02:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rLMQP-0004kv-8t; Thu, 04 Jan 2024 13:02:13 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rLMQM-000KsV-Aw; Thu, 04 Jan 2024 13:02:10 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rLMQM-003Xuh-0p;
+	Thu, 04 Jan 2024 13:02:10 +0100
+Date: Thu, 4 Jan 2024 13:02:10 +0100
+From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Duje =?utf-8?Q?Mihanovi=C4=87?= <duje.mihanovic@skole.hr>, 
+	Robert Jarzmik <robert.jarzmik@free.fr>, Lubomir Rintel <lkundrak@v3.sk>, 
+	"zhang.songyi" <zhang.songyi@zte.com.cn>, soc@kernel.org, linux-kernel@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH RFC RESEND] soc: pxa: ssp: Cast to enum pxa_ssp_type
+ instead of int
+Message-ID: <ymq7tp3ps4grmmo6o7txpk2sswb2mzxoaplu7lih2xbmbtp6np@b6ycr5wmmbcc>
+References: <20240103210604.16877-1-duje.mihanovic@skole.hr>
+ <rj7ijuyy47jrffi6sk7wikqo3rnutz2swkdrznyegalylacawz@jdncegf3elct>
+ <2295d860-44cf-4816-8a1a-54274974302f@app.fastmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="yn4ddbhj4j5os74o"
 Content-Disposition: inline
-In-Reply-To: <20231221085826.1768395-1-yukuai1@huaweicloud.com>
-X-Spam-Level: *****
-X-Spamd-Bar: +++++
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=mA9MLCSZ;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=jRA844eL
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [5.59 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 BAYES_SPAM(5.10)[100.00%];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 TO_DN_SOME(0.00)[];
-	 R_RATELIMIT(0.00)[to_ip_from(RLhr85cyeg3mfw7iggddtjdkgs)];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 MX_GOOD(-0.01)[];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 ARC_NA(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 FROM_HAS_DN(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 RCPT_COUNT_TWELVE(0.00)[48];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 FREEMAIL_CC(0.00)[kernel.dk,citrix.com,suse.de,gmail.com,lazybastard.org,bootlin.com,nod.at,ti.com,linux.ibm.com,oracle.com,fb.com,toxicpanda.com,suse.com,zeniv.linux.org.uk,kernel.org,fluxnic.net,mit.edu,dilger.ca,infradead.org,linux-foundation.org,samsung.com,vger.kernel.org,lists.xenproject.org,lists.infradead.org,lists.ozlabs.org,huawei.com];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Score: 5.59
-X-Rspamd-Queue-Id: BC0A11F805
-X-Spam-Flag: NO
+In-Reply-To: <2295d860-44cf-4816-8a1a-54274974302f@app.fastmail.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-On Thu 21-12-23 16:58:26, Yu Kuai wrote:
-> From: Yu Kuai <yukuai3@huawei.com>
-> 
-> Avoid to access bd_inode directly, prepare to remove bd_inode from
-> block_device.
-> 
-> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 
-I'm not erofs maintainer but IMO this is quite ugly and grows erofs_buf
-unnecessarily. I'd rather store 'sb' pointer in erofs_buf and then do the
-right thing in erofs_bread() which is the only place that seems to care
-about the erofs_is_fscache_mode() distinction... Also blkszbits is then
-trivially sb->s_blocksize_bits so it would all seem much more
-straightforward.
+--yn4ddbhj4j5os74o
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-								Honza
+Hello Arnd,
 
-> ---
->  fs/erofs/data.c     | 18 ++++++++++++------
->  fs/erofs/internal.h |  2 ++
->  2 files changed, 14 insertions(+), 6 deletions(-)
-> 
-> diff --git a/fs/erofs/data.c b/fs/erofs/data.c
-> index c98aeda8abb2..bbe2fe199bf3 100644
-> --- a/fs/erofs/data.c
-> +++ b/fs/erofs/data.c
-> @@ -32,8 +32,8 @@ void erofs_put_metabuf(struct erofs_buf *buf)
->  void *erofs_bread(struct erofs_buf *buf, erofs_blk_t blkaddr,
->  		  enum erofs_kmap_type type)
->  {
-> -	struct inode *inode = buf->inode;
-> -	erofs_off_t offset = (erofs_off_t)blkaddr << inode->i_blkbits;
-> +	u8 blkszbits = buf->inode ? buf->inode->i_blkbits : buf->blkszbits;
-> +	erofs_off_t offset = (erofs_off_t)blkaddr << blkszbits;
->  	pgoff_t index = offset >> PAGE_SHIFT;
->  	struct page *page = buf->page;
->  	struct folio *folio;
-> @@ -43,7 +43,9 @@ void *erofs_bread(struct erofs_buf *buf, erofs_blk_t blkaddr,
->  		erofs_put_metabuf(buf);
->  
->  		nofs_flag = memalloc_nofs_save();
-> -		folio = read_cache_folio(inode->i_mapping, index, NULL, NULL);
-> +		folio = buf->inode ?
-> +			read_mapping_folio(buf->inode->i_mapping, index, NULL) :
-> +			bdev_read_folio(buf->bdev, offset);
->  		memalloc_nofs_restore(nofs_flag);
->  		if (IS_ERR(folio))
->  			return folio;
-> @@ -67,10 +69,14 @@ void *erofs_bread(struct erofs_buf *buf, erofs_blk_t blkaddr,
->  
->  void erofs_init_metabuf(struct erofs_buf *buf, struct super_block *sb)
->  {
-> -	if (erofs_is_fscache_mode(sb))
-> +	if (erofs_is_fscache_mode(sb)) {
->  		buf->inode = EROFS_SB(sb)->s_fscache->inode;
-> -	else
-> -		buf->inode = sb->s_bdev->bd_inode;
-> +		buf->bdev = NULL;
-> +	} else {
-> +		buf->inode = NULL;
-> +		buf->bdev = sb->s_bdev;
-> +		buf->blkszbits = EROFS_SB(sb)->blkszbits;
-> +	}
->  }
->  
->  void *erofs_read_metabuf(struct erofs_buf *buf, struct super_block *sb,
-> diff --git a/fs/erofs/internal.h b/fs/erofs/internal.h
-> index b0409badb017..c9206351b485 100644
-> --- a/fs/erofs/internal.h
-> +++ b/fs/erofs/internal.h
-> @@ -224,8 +224,10 @@ enum erofs_kmap_type {
->  
->  struct erofs_buf {
->  	struct inode *inode;
-> +	struct block_device *bdev;
->  	struct page *page;
->  	void *base;
-> +	u8 blkszbits;
->  	enum erofs_kmap_type kmap_type;
->  };
->  #define __EROFS_BUF_INITIALIZER	((struct erofs_buf){ .page = NULL })
-> -- 
-> 2.39.2
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+On Thu, Jan 04, 2024 at 11:03:41AM +0100, Arnd Bergmann wrote:
+> On Thu, Jan 4, 2024, at 10:08, Uwe Kleine-K=C3=B6nig wrote:
+> > [adding lakml to Cc for wider audience]
+> >
+> > On Wed, Jan 03, 2024 at 10:06:03PM +0100, Duje Mihanovi=C4=87 wrote:
+> >> On ARM64 platforms, id->data is a 64-bit value and casting it to a
+> >> 32-bit integer causes build errors. Cast it to the corresponding enum
+> >> instead.
+> >>=20
+> >> Signed-off-by: Duje Mihanovi=C4=87 <duje.mihanovic@skole.hr>
+> >> ---
+> >> This patch is necessary for my Marvell PXA1908 series to compile succe=
+ssfully
+> >> with allyesconfig:
+> >> https://lore.kernel.org/all/20231102-pxa1908-lkml-v7-0-cabb1a0cb52b@sk=
+ole.hr/
+> >> ---
+> >>  drivers/soc/pxa/ssp.c | 4 ++--
+> >>  1 file changed, 2 insertions(+), 2 deletions(-)
+> >>=20
+> >> diff --git a/drivers/soc/pxa/ssp.c b/drivers/soc/pxa/ssp.c
+> >> index a1e8a07f7275..e2ffd8fd7e13 100644
+> >> --- a/drivers/soc/pxa/ssp.c
+> >> +++ b/drivers/soc/pxa/ssp.c
+> >> @@ -152,11 +152,11 @@ static int pxa_ssp_probe(struct platform_device =
+*pdev)
+> >>  	if (dev->of_node) {
+> >>  		const struct of_device_id *id =3D
+> >>  			of_match_device(of_match_ptr(pxa_ssp_of_ids), dev);
+> >> -		ssp->type =3D (int) id->data;
+> >> +		ssp->type =3D (enum pxa_ssp_type) id->data;
+> >
+> > I wonder if this is a long-term fix. The error that the compiler throws
+> > is:
+> >
+> > 	drivers/soc/pxa/ssp.c:155:29: error: cast from pointer to integer of=
+=20
+> > different size [-Werror=3Dpointer-to-int-cast]
+> > 	  155 |                 ssp->type =3D (int) id->data;
+> > 	      |                             ^
+> >
+> > enum pxa_ssp_type is an integer type, too, and its width could be
+> > smaller than 64 bit, too.
+>=20
+> I would just change the cast to (uintptr_t), which is what we
+> have elsewhere.
+>=20
+> > diff --git a/include/linux/mod_devicetable.h b/include/linux/mod_device=
+table.h
+> > index f458469c5ce5..fbe16089e4bb 100644
+> > --- a/include/linux/mod_devicetable.h
+> > +++ b/include/linux/mod_devicetable.h
+> > @@ -283,7 +283,10 @@ struct of_device_id {
+> >  	char	name[32];
+> >  	char	type[32];
+> >  	char	compatible[128];
+> > -	const void *data;
+> > +	union {
+> > +		const void *data;
+> > +		kernel_ulong_t driver_data;
+> > +	};
+> >  };
+> >=20
+> >  /* VIO */
+> >
+> > For this driver the change would be nice, as several casts can be
+> > dropped.
+>=20
+> I think this is a nice idea in general, but I would keep
+> it separate from the bugfix, as we might want to do this on
+> a wider scale, or run into problems.
+
+Sure, I didn't intend to put the diff into a commit as is.
+
+Before doing that change it would probably be sensible to check how this
+field is used, I guess most drivers use an integer value and not a
+pointer there. Also while touching that making the same change with the
+same names for the other *_id structs might be nice. Currently we have
+(from include/linux/mod_devicetable.h):
+
+	pci_device_id		kernel_ulong_t driver_data
+	ieee1394_device_id	kernel_ulong_t driver_data
+	usb_device_id		kernel_ulong_t driver_info
+	hid_device_id		kernel_ulong_t driver_data
+	ccw_device_id		kernel_ulong_t driver_info
+	ap_device_id		kernel_ulong_t driver_info
+	css_device_id		kernel_ulong_t driver_data
+	acpi_device_id		kernel_ulong_t driver_data
+	pnp_device_id		kernel_ulong_t driver_data
+	pnp_card_device_id	kernel_ulong_t driver_data
+	serio_device_id		-
+	hda_device_id		unsigned long driver_data
+	sdw_device_id		kernel_ulong_t driver_data
+	of_device_id		const void *data
+	vio_device_id		-
+	pcmcia_device_id	kernel_ulong_t driver_info
+	input_device_id		kernel_ulong_t driver_info
+	eisa_device_id		kernel_ulong_t driver_data
+	parisc_device_id	-
+	sdio_device_id		kernel_ulong_t driver_data
+	ssb_device_id		-
+	bcma_device_id		-
+	virtio_device_id	-
+	hv_vmbus_device_id	kernel_ulong_t driver_data
+	rpmsg_device_id		kernel_ulong_t driver_data
+	i2c_device_id		kernel_ulong_t driver_data
+	pci_epf_device_id	kernel_ulong_t driver_data
+	i3c_device_id		const void *data
+	spi_device_id		kernel_ulong_t driver_data
+	slim_device_id		-
+	apr_device_id		kernel_ulong_t driver_data
+	spmi_device_id		kernel_ulong_t driver_data
+	dmi_system_id		void *driver_data
+	platform_device_id	kernel_ulong_t driver_data
+	mdio_device_id		-
+	zorro_device_id		kernel_ulong_t driver_data
+	isapnp_device_id	kernel_ulong_t driver_data
+	amba_id			void *data
+	mips_cdmm_device_id	-
+	x86_cpu_id		kernel_ulong_t driver_data
+	ipack_device_id		-
+	mei_cl_device_id	kernel_ulong_t driver_info
+	rio_device_id		-
+	mcb_device_id		kernel_ulong_t driver_data
+	ulpi_device_id		kernel_ulong_t driver_data
+	fsl_mc_device_id	-
+	tb_service_id		kernel_ulong_t driver_data
+	typec_device_id		kernel_ulong_t driver_data
+	tee_client_device_id	-
+	wmi_device_id		const void *context
+	mhi_device_id		kernel_ulong_t driver_data
+	auxiliary_device_id	kernel_ulong_t driver_data
+	ssam_device_id		kernel_ulong_t driver_data
+	dfl_device_id		kernel_ulong_t driver_data
+	ishtp_device_id		kernel_ulong_t driver_data
+	cdx_device_id		-
+	vchiq_device_id		-
+
+Note driver_data vs driver_info which is probably not worth to unify.
+
+> In particular, removing tons of casts to (kernel_ulong_t)
+> in other subsystems is probably more valuable than removing
+> casts to (void *) for of_device_id, since kernel_ulong_t
+> is particularly confusing, with a definition that is
+> completely unrelated to the similarly named __kernel_ulong_t.
+
+I'll add that to my list of ideas for big projects :-)
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=C3=B6nig         =
+   |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--yn4ddbhj4j5os74o
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmWWnkEACgkQj4D7WH0S
+/k4rvQgAi6v2FzpEUwI/EBd+PS4DuV2QZih24QLKcD2m1n7gA67cvmeQv/ACLUr1
+Hm4av92zXr7OPwuQDZihJtCknVljzYJpJbs5Y03cLw7gb45mMrVQh5dqo1JX28+F
+yNr9dZl3AOHwEY1mA9uwxbxVK9YgaCTnRPGzOwZZ5LAX2I94/eQXZI5iC1nb754k
+zz4dH6tDtpbPd36byIwCY7ePrhoDo8J4euCQRKlY/L8F1HNuIVEoeUgMPYYXE0yY
+ifxdAZqV8t2dUAILIBTqRZ/gjZ+B9OmxcuAeuyK2/d4oprpO1UcTWiUqteodgCmW
+W5OhxOuf9IAsmOM1I4J3rwmGJ7lDsw==
+=HWXa
+-----END PGP SIGNATURE-----
+
+--yn4ddbhj4j5os74o--
 
