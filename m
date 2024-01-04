@@ -1,134 +1,137 @@
-Return-Path: <linux-kernel+bounces-16643-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16644-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90D9D8241D3
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 13:34:19 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 511FB8241D7
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 13:36:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A4EC41C23CAD
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 12:34:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F3DE0286C26
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 12:36:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6A0821A09;
-	Thu,  4 Jan 2024 12:34:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CE272137C;
+	Thu,  4 Jan 2024 12:36:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="HRHzg9OK"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="UjCgyTSA"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
+Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B3B7219EC
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 12:34:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a28bf46ea11so74809366b.1
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 04:34:10 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 294371EB57
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 12:36:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a1915034144so53148466b.0
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 04:36:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1704371648; x=1704976448; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Ik4uyCYv2TQarb31EWuXmmWrYINJlUytsNJyudVrGMk=;
-        b=HRHzg9OK4sAdYUHQdMm3ZE6PoEL19W/Tz6Cj99EkH2SW8VKHWUcJTY6Jw/jxt59Z5/
-         66pjWDS7J3fASiUj+HvVMNM4JcuRGbywFGXhzgUHkSdtETfDB+6fToN2rrUdVYe419o3
-         VWFTUK8ANGglsN/MeQPysApFjFBFYhqs7QeFWrUYpIL6W+/1cabKKlTvzEmNTZclLSIT
-         iC0E6e0ryjrUACeOc7AkgJLX0gzxR+PjYrkRefHr7JqhwmQFQGFrHx0luCXuKpNFNpGV
-         7If/Kaf/styKSNJxTd2eNjDPrczG5ZLD+5XALBvX81sStU3zhmQGIkjl6XA6aYj498XP
-         +I6Q==
+        d=linaro.org; s=google; t=1704371759; x=1704976559; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=wA8tdLBKnR1x8I35Fv0XH19oWXShs3g89QU/QFpxadM=;
+        b=UjCgyTSAfcLbBbF408fRlDeVqJFxuyWivKrVaKsZDYmxSEHMB7d2WTIiISvlHFmN3j
+         wV/ikltavfEbC5+nPxcHH88Peez0QsPxdqTs3WtnL1y+xesjcQpMuXjUDmZdx5NE9KvA
+         eoYAhm9nuKo9DnlawnslgfHcFEV05iamnBr5ur4qo8f13iVzu4uUXnhkhQzxupCkNwI8
+         4rfvUTeOb0HB+hwPverQoeiQwEIppoNAPMVemGdeU7h+k/YioO1TAzcyDctKBlrWdLgH
+         BAAxAVKxPPPaInfS7b1ecCe+QGo10EsL/cuTSfimwzGkiXNmBQUL4iy7X9YGnvRDbEWc
+         LjBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704371648; x=1704976448;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Ik4uyCYv2TQarb31EWuXmmWrYINJlUytsNJyudVrGMk=;
-        b=dacrtNmfwcPbWgMgmMTT31gpM3j/Gh1Pdcq1G0LyPQBqr12GWkuMitzL0pTWmtDvZX
-         9Q8WqBcOjChPcrPBphm4FP4eL30fFermNM3dwG0VjCJJpr9jZ/BWZT8TTkKjHH8pD0w+
-         sy0hKmMEmQW8k04Gew/ywJsRopynzkOPhyfHuA7i/pG2uc7VpkPb9++/hJbV9X8GYUnd
-         Npt+BR22AjPyjJn6o0lrvrOy8jkXn1IZvtidHKcNIPdKFZp8/Ocav9IZNeScS+F9sRM9
-         ziFgrBfTkt6HiFizEGzH4A2h+3TCTM+RntWHrdNZNRW+UHljR3yFoLkIeP0L5gOJJZNx
-         +QDw==
-X-Gm-Message-State: AOJu0YylTsrWmjL3wVCsDehqLDppDjcP3IYlD3naNBcehll2AlCE6Nq3
-	mr8KhGDO+shDaTOIkxhVZUMMJ7BPcxbvKfPR0Vi9JyberF52b83GeFpT+5khAok=
-X-Google-Smtp-Source: AGHT+IERCr09H6KSLmfFQXyDrlFQIYorvDwOvmuf00b1qBW8NX0+J9jeWqyUIre3qPyVI8Wbm7Z5IHlV/zHPZA4aVyk=
-X-Received: by 2002:a17:906:56d3:b0:a23:5893:1ac8 with SMTP id
- an19-20020a17090656d300b00a2358931ac8mr587088ejc.27.1704371648530; Thu, 04
- Jan 2024 04:34:08 -0800 (PST)
+        d=1e100.net; s=20230601; t=1704371759; x=1704976559;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wA8tdLBKnR1x8I35Fv0XH19oWXShs3g89QU/QFpxadM=;
+        b=vTn/SL9qQB6TWQf002bu0NB2AfgmWdLvVwTm27eDYeegv117NtsYH4F+kuaJzUQOhs
+         BwC8R8WlAOJCcH2Jx6r+cKf6rsuS9UlKe+aOSR44bhc8JAJIxYgKBta3UQOz/2eNmLLl
+         q8UyaIonPa2pOxLVEAZHLT9Vyzxxa2pOMuAozWyCWG7W7mWZUQcfdJXzwZ+sEoUzPSlI
+         BYhdk1eLiX3sfSvB7Y8tRAM6YPGzb/aTYyZFV0Shqy7oxGi82nB81n0Z+7pXS9rz4CwJ
+         i28ALeWUm9Kyt0q/wZT1npBIYXrtUROo0f/cHrqf+Rsb9u2QO6SR7thR0Z7lctloaVnv
+         tG5w==
+X-Gm-Message-State: AOJu0YxYOXz7aOZekim6t/jBEsHGHFM4AwCaQm+MSa9qNZRRXyXsVNGy
+	n+pLN29lssR4INxYAErNlRe6yMKfArBksqso5guPBfkl3Gw=
+X-Google-Smtp-Source: AGHT+IGEsf/5+Eq93O64/3AUioi3tODLzSGliLS5eYTKrhpMxJDu9nQZTe6WatVkiHprqqTI7tEpDQ==
+X-Received: by 2002:a17:906:4:b0:a28:9d4e:f065 with SMTP id 4-20020a170906000400b00a289d4ef065mr215474eja.13.1704371759375;
+        Thu, 04 Jan 2024 04:35:59 -0800 (PST)
+Received: from localhost ([102.140.209.237])
+        by smtp.gmail.com with ESMTPSA id l2-20020a170907914200b00a269b4692a9sm13804758ejs.84.2024.01.04.04.35.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Jan 2024 04:35:59 -0800 (PST)
+Date: Thu, 4 Jan 2024 15:35:55 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Charlie Jenkins <charlie@rivosinc.com>
+Cc: Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Palmer Dabbelt <palmer@rivosinc.com>,
+	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+	kernel test robot <lkp@intel.com>,
+	Dan Carpenter <error27@gmail.com>
+Subject: Re: [PATCH v2 4/4] riscv: Convert relocation iterator to do-while
+Message-ID: <39727434-a265-484b-9ee6-da6611487b47@moroto.mountain>
+References: <20240103-module_loading_fix-v2-0-292b160552c9@rivosinc.com>
+ <20240103-module_loading_fix-v2-4-292b160552c9@rivosinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240102220134.3229156-1-samuel.holland@sifive.com> <20240102220134.3229156-5-samuel.holland@sifive.com>
-In-Reply-To: <20240102220134.3229156-5-samuel.holland@sifive.com>
-From: Alexandre Ghiti <alexghiti@rivosinc.com>
-Date: Thu, 4 Jan 2024 13:33:57 +0100
-Message-ID: <CAHVXubh+qnJCF1e6u8G0h+5fnfoGDHz0jjBr+KW11WZbKt3F9A@mail.gmail.com>
-Subject: Re: [PATCH v4 04/12] riscv: Only send remote fences when some other
- CPU is online
-To: Samuel Holland <samuel.holland@sifive.com>
-Cc: Palmer Dabbelt <palmer@dabbelt.com>, linux-riscv@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240103-module_loading_fix-v2-4-292b160552c9@rivosinc.com>
 
-On Tue, Jan 2, 2024 at 11:01=E2=80=AFPM Samuel Holland
-<samuel.holland@sifive.com> wrote:
->
-> If no other CPU is online, a local cache or TLB flush is sufficient.
-> These checks can be constant-folded when SMP is disabled.
->
-> Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
+On Wed, Jan 03, 2024 at 12:22:03PM -0800, Charlie Jenkins wrote:
+> Use a do-while loop to iterate through relocation entries to prevent
+> curr_type from being marked as uninitialized.
+> 
+> Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
+> Fixes: d8792a5734b0 ("riscv: Safely remove entries from relocation list")
+> Reported-by: kernel test robot <lkp@intel.com>
+> Reported-by: Dan Carpenter <error27@gmail.com>
+> Closes: https://lore.kernel.org/r/202312130859.wnkuzVWY-lkp@intel.com/
 > ---
->
-> Changes in v4:
->  - New patch for v4
->
->  arch/riscv/mm/cacheflush.c | 4 +++-
->  arch/riscv/mm/tlbflush.c   | 4 +++-
->  2 files changed, 6 insertions(+), 2 deletions(-)
->
-> diff --git a/arch/riscv/mm/cacheflush.c b/arch/riscv/mm/cacheflush.c
-> index 47c485bc7df0..f7933ae88a55 100644
-> --- a/arch/riscv/mm/cacheflush.c
-> +++ b/arch/riscv/mm/cacheflush.c
-> @@ -21,7 +21,9 @@ void flush_icache_all(void)
->  {
->         local_flush_icache_all();
->
-> -       if (riscv_use_sbi_for_rfence())
-> +       if (num_online_cpus() < 2)
-> +               return;
-> +       else if (riscv_use_sbi_for_rfence())
->                 sbi_remote_fence_i(NULL);
->         else
->                 on_each_cpu(ipi_remote_fence_i, NULL, 1);
-> diff --git a/arch/riscv/mm/tlbflush.c b/arch/riscv/mm/tlbflush.c
-> index 2f18fe6fc4f3..37b3c93e3c30 100644
-> --- a/arch/riscv/mm/tlbflush.c
-> +++ b/arch/riscv/mm/tlbflush.c
-> @@ -73,7 +73,9 @@ static void __ipi_flush_tlb_all(void *info)
->
->  void flush_tlb_all(void)
->  {
-> -       if (riscv_use_sbi_for_rfence())
-> +       if (num_online_cpus() < 2)
-> +               local_flush_tlb_all();
-> +       else if (riscv_use_sbi_for_rfence())
->                 sbi_remote_sfence_vma_asid(NULL, 0, FLUSH_TLB_MAX_SIZE, F=
-LUSH_TLB_NO_ASID);
->         else
->                 on_each_cpu(__ipi_flush_tlb_all, NULL, 1);
-> --
-> 2.42.0
->
+>  arch/riscv/kernel/module.c | 26 +++++++++++++++++++++-----
+>  1 file changed, 21 insertions(+), 5 deletions(-)
+> 
+> diff --git a/arch/riscv/kernel/module.c b/arch/riscv/kernel/module.c
+> index ceb0adb38715..581e425686ab 100644
+> --- a/arch/riscv/kernel/module.c
+> +++ b/arch/riscv/kernel/module.c
+> @@ -633,15 +633,31 @@ process_accumulated_relocations(struct module *me,
+>  					  bucket_iter->bucket, node) {
+>  			buffer = 0;
+>  			location = rel_head_iter->location;
+> -			list_for_each_entry_safe(rel_entry_iter,
+> -						 rel_entry_iter_tmp,
+> -						 rel_head_iter->rel_entry,
+> -						 head) {
+> +			rel_entry_iter =
+> +				list_first_entry(rel_head_iter->rel_entry,
+> +						 typeof(*rel_entry_iter), head);
+> +			rel_entry_iter_tmp =
+> +				list_next_entry(rel_entry_iter, head);
+> +
+> +			/*
+> +			 * Iterate through all relocation entries that share
+> +			 * this location. This uses a do-while loop instead of
+> +			 * list_for_each_entry_safe since it is known that there
+> +			 * is at least one entry and curr_type needs to be the
+> +			 * value of the last entry when the loop exits.
+> +			 */
 
-on_each_cpu() already deals correctly with a single online cpu, the
-only thing to optimize here is the SBI rfence. So I'd move this new
-test in sbi_remote_sfence_vma_asid() and sbi_remote_fence_i() to avoid
-the superfluous M-mode entry when only one cpu is online by checking
-the cpumask. And since sbi_remote_fence_i() is used in another
-function (flush_icache_mm()), we could also take advantage of this
-optimization when only the local cpu must be flushed.
+I know that I reported this static checker and all, but actually after
+reading this comment, I think we should stay with original code.  So
+long as we know the list has "least one entry" which we do then the
+original code worked fine.
+
+To be honest, I probably would not have even reported this static
+checker warning except that I saw there were some other issues and
+thought "Eh, why not throw this warning in as well, in case the list
+can be empty."
+
+The other three patches look good.
+
+regards,
+dan carpenter
+
 
