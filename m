@@ -1,147 +1,117 @@
-Return-Path: <linux-kernel+bounces-17289-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17290-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90E67824AEF
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 23:37:37 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E2766824AF1
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 23:37:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3E9BF284E0A
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 22:37:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 95C731F232C7
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 22:37:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F6EF2C861;
-	Thu,  4 Jan 2024 22:37:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FD432C855;
+	Thu,  4 Jan 2024 22:37:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ScnU/miw"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fliKLtkR"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9141D2C6A6;
-	Thu,  4 Jan 2024 22:37:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DCDACC433C7;
-	Thu,  4 Jan 2024 22:37:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704407847;
-	bh=02xdEvkQgxl0QgYG12fhILXcS05r5JkyWJF03KY5he4=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=ScnU/miwdyVdmnQmUzdZjXLnbm15i7VEprvnkOTjtX5Al9T7AYsa7YgmbPx5nvJFc
-	 GEueXE2WQxaJXM7k20zgCUnVgMkXS8mEU9lTp2tdw+pOq0CblbrOMB+UyNwZoy1Ifs
-	 2dzwv+SdihVFpfz9+LIyqki5krAbyzeyel2w/XTbyoc0HC6B1+tvRSjZkfVAbNQzxC
-	 NZQFAVEOwbbGersZbL/sWe13DsS7BzJhhL5KiFhpnTOmSbUWbmTChbzQJ4QkTeYwJY
-	 pr48rtHHAOJfA+yt2gNS4WnRGY8oDGkZmUXHVgtSThtdgticui7BVn52DABqJ3B104
-	 6M7Y46I85QToA==
-Date: Thu, 4 Jan 2024 16:37:25 -0600
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Ira Weiny <ira.weiny@intel.com>
-Cc: Dan Williams <dan.j.williams@intel.com>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Jonathan Cameron <jonathan.cameron@huawei.com>,
-	Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>,
-	Shiju Jose <shiju.jose@huawei.com>,
-	Yazen Ghannam <yazen.ghannam@amd.com>,
-	Davidlohr Bueso <dave@stgolabs.net>,
-	Dave Jiang <dave.jiang@intel.com>,
-	Alison Schofield <alison.schofield@intel.com>,
-	Vishal Verma <vishal.l.verma@intel.com>,
-	Ard Biesheuvel <ardb@kernel.org>, linux-efi@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-cxl@vger.kernel.org,
-	linux-pci@vger.kernel.org
-Subject: Re: [PATCH v5 8/9] PCI: Define scoped based management functions
-Message-ID: <20240104223725.GA1829769@bhelgaas>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A60C02CCAD;
+	Thu,  4 Jan 2024 22:37:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-5e76f7ca09cso1023667b3.0;
+        Thu, 04 Jan 2024 14:37:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704407865; x=1705012665; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=jfP13WYF364mOWLMsaSyApRyyJyIZ4hmplq28T3PTRw=;
+        b=fliKLtkRxSGdgiXdmoh/E8+F9SbsayvWfKEhq+DVOWu7DuJ4rUsEISofdBLLOd5jOS
+         L7miFeWcIMM35oSXHWyyMR+VRADha3IbFMVHUouPIHadUTpj8T9p2boxPeLrAmMF4Kze
+         QDJjAkX4h11Ywvowc1lxuMZsVQ2UfcECJ1XcUl2z9Fx7D/uthZcC95CixH7wYOnXie+k
+         jKVo+tpu83aIgsKqLie9oh20rPmJUxGhn8RK0O8s7MckqY+gdF/Geb7m15Vzdl/NRA3e
+         rAVsYYKAdWiLFSghvK3an/kbj5AXABq8ud+5J6ZZzGJz4HsXFzxNRLeuh5KuRl/EjEHj
+         /S3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704407865; x=1705012665;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=jfP13WYF364mOWLMsaSyApRyyJyIZ4hmplq28T3PTRw=;
+        b=j5xytDYVN4HTev16A082SSnPM/WNNcjXzqlw3fIto3xGpngNMDxvYhirkIUzV+Fy1m
+         2Eic3xBTHMkZutHiF33GxyzHDP79JlTIBp3z4U6BgfmkA6xglYQ5nqgwfJCZMP+lymEY
+         60P1nIvUwdACh+ZbJq17sIXTvPBFS8TEo0RpDkvySDxT9b+DAA+rQQk7hSzShq+Ma1oj
+         2NvMmI4IDbhUCWayHx6XfaEBkPRdc6OR59T60GauzSOFY8QXgDhx5EL8LnxMcCjdIO+9
+         p7cPF5+kALQBRPtlTVfBgItPlKMAWRofbO00YxVJgWf91DNvlR4ubfrgXPYg6FMj9qgR
+         1dgQ==
+X-Gm-Message-State: AOJu0Ywy7DKkLBQyzrIKF0CgfeRiy56X9o7zDw1XRjLHpFpUyaoq7Fip
+	BpeiQpwjw4hCJNwBeJskvjw=
+X-Google-Smtp-Source: AGHT+IHq2RMkPMRo0ssm7elkHl7qRL3PSosWZ1lovYwdIkmFGQQYHTR7vHuoUPdorYGIje436U2mXQ==
+X-Received: by 2002:a0d:f3c4:0:b0:5ef:e5ff:ab82 with SMTP id c187-20020a0df3c4000000b005efe5ffab82mr2261109ywf.4.1704407865480;
+        Thu, 04 Jan 2024 14:37:45 -0800 (PST)
+Received: from hoboy.vegasvil.org ([2600:1700:2430:6f6f:e2d5:5eff:fea5:802f])
+        by smtp.gmail.com with ESMTPSA id h65-20020a815344000000b005f46cd4858asm148247ywb.72.2024.01.04.14.37.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Jan 2024 14:37:44 -0800 (PST)
+Date: Thu, 4 Jan 2024 14:37:42 -0800
+From: Richard Cochran <richardcochran@gmail.com>
+To: Mahesh Bandewar <maheshb@google.com>
+Cc: Netdev <netdev@vger.kernel.org>, Linux <linux-kernel@vger.kernel.org>,
+	David Miller <davem@davemloft.net>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
+	Jonathan Corbet <corbet@lwn.net>, John Stultz <jstultz@google.com>,
+	Don Hatchett <hatch@google.com>, Yuliang Li <yuliangli@google.com>,
+	Mahesh Bandewar <mahesh@bandewar.net>,
+	Willem de Bruijn <willemb@google.com>
+Subject: Re: [PATCHv3 net-next 2/3] ptp: add ioctl interface for
+ ptp_gettimex64any()
+Message-ID: <ZZczNlXzM8lrZgH5@hoboy.vegasvil.org>
+References: <20240104212439.3276458-1-maheshb@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <6597275045fbf_267e82949d@iweiny-mobl.notmuch>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240104212439.3276458-1-maheshb@google.com>
 
-On Thu, Jan 04, 2024 at 01:46:56PM -0800, Ira Weiny wrote:
-> Dan Williams wrote:
-> > Bjorn Helgaas wrote:
-> > [..]
-> > > > ---
-> > > > PCI: Introduce cleanup helpers for device reference counts and locks
-> > > > 
-> > > > The "goto error" pattern is notorious for introducing subtle resource
-> > > > leaks. Use the new cleanup.h helpers for PCI device reference counts and
-> > > > locks.
-> > > > 
-> > > > Similar to the new put_device() and device_lock() cleanup helpers,
-> > > > __free(put_device) and guard(device), define the same for PCI devices,
-> > > > __free(pci_dev_put) and guard(pci_dev).  These helpers eliminate the
-> > > > need for "goto free;" and "goto unlock;" patterns. For example, A
-> > > > 'struct pci_dev *' instance declared as:
-> > > > 
-> > > > 	struct pci_dev *pdev __free(pci_dev_put) = NULL;
-> > > 
-> > > I see several similar __free() uses with NULL initializations in gpio,
-> > > but I think this idiom would be slightly improved if the __free()
-> > > function were more closely associated with the actual pci_dev_get():
-> > > 
-> > >   struct pci_dev *pdev __free(pci_dev_put) = pci_get_device(...);
-> > > 
-> > > Not always possible, I know, but easier to analyze when it is.
-> > 
-> > I tend to agree, but it does lead to some long lines, for example:
-> > 
-> > diff --git a/drivers/cxl/pci.c b/drivers/cxl/pci.c
-> > index 4fd1f207c84e..549ba4b8294e 100644
-> > --- a/drivers/cxl/pci.c
-> > +++ b/drivers/cxl/pci.c
-> > @@ -975,15 +975,14 @@ static void cxl_cper_event_call(enum cxl_event_type ev_type,
-> >  				struct cxl_cper_event_rec *rec)
-> >  {
-> >  	struct cper_cxl_event_devid *device_id = &rec->hdr.device_id;
-> > -	struct pci_dev *pdev __free(pci_dev_put) = NULL;
-> >  	enum cxl_event_log_type log_type;
-> >  	struct cxl_dev_state *cxlds;
-> >  	unsigned int devfn;
-> >  	u32 hdr_flags;
-> >  
-> >  	devfn = PCI_DEVFN(device_id->device_num, device_id->func_num);
-> > -	pdev = pci_get_domain_bus_and_slot(device_id->segment_num,
-> > -					   device_id->bus_num, devfn);
-> > +	struct pci_dev *pdev __free(pci_dev_put) = pci_get_domain_bus_and_slot(
-> > +		device_id->segment_num, device_id->bus_num, devfn);
-> >  	if (!pdev)
-> >  		return;
-> >  
-> > ...so I think people are choosing the "... __free(x) = NULL;" style for
-> > code density readability.
-> > 
-> 
-> Also in this case we need devfn assigned first.
-> 
-> Is the above patch compliant with current style guidelines?
-> 
-> Or would it be better to do?
-> 
-> diff --git a/drivers/cxl/pci.c b/drivers/cxl/pci.c
-> index b14237f824cf..8a180c6abb67 100644
-> --- a/drivers/cxl/pci.c
-> +++ b/drivers/cxl/pci.c
-> @@ -975,15 +975,14 @@ static void cxl_cper_event_call(enum cxl_event_type ev_type,
->                                 struct cxl_cper_event_rec *rec)
->  {
->         struct cper_cxl_event_devid *device_id = &rec->hdr.device_id;
-> -       struct pci_dev *pdev __free(pci_dev_put) = NULL;
->         enum cxl_event_log_type log_type;
->         struct cxl_dev_state *cxlds;
-> -       unsigned int devfn;
-> +       unsigned int devfn = PCI_DEVFN(device_id->device_num, device_id->func_num);
-> +       struct pci_dev *pdev __free(pci_dev_put) = pci_get_domain_bus_and_slot(
-> +                                                       device_id->segment_num,
-> +                                                       device_id->bus_num, devfn);
+On Thu, Jan 04, 2024 at 01:24:39PM -0800, Mahesh Bandewar wrote:
 
-I don't really care about this specific instance; my comment was more
-about the commit log for the "Define scope based management functions"
-patch, thinking maybe the example could encourage get/put togetherness
-when it's practical.
+> @@ -226,6 +238,8 @@ struct ptp_pin_desc {
+>  	_IOWR(PTP_CLK_MAGIC, 18, struct ptp_sys_offset_extended)
+>  #define PTP_MASK_CLEAR_ALL  _IO(PTP_CLK_MAGIC, 19)
+>  #define PTP_MASK_EN_SINGLE  _IOW(PTP_CLK_MAGIC, 20, unsigned int)
+> +#define PTP_SYS_OFFSET_ANY \
+> +	_IOWR(PTP_CLK_MAGIC, 21, struct ptp_sys_offset_any)
 
-Bjorn
+As I said before, this functionality really ought to be a new system call.
+
+Did you see these patch series posted on the list?
+
+ 31.Dec'23 Sagi Maimon          [PATCH v4] posix-timers: add multi_clock_gettime system call
+ 31.Dec'23 Andy Lutomirski      ├─>
+ 01.Jan'24 Sagi Maimon          │ └─>
+ 01.Jan'24 kernel test rob      ├─>
+ 01.Jan'24 kernel test rob      └─>
+
+ 02.Jan'24 Sagi Maimon          [PATCH v5] posix-timers: add multi_clock_gettime system call
+ 02.Jan'24 Arnd Bergmann        ├─>
+ 03.Jan'24 Sagi Maimon          │ └─>
+ 04.Jan'24 kernel test rob      └─>
+
+I think this will be the way forward.
+
+Please review the multi_clock_gettime series and help refine it.
+
+Thanks,
+Richard
+
 
