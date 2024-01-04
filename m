@@ -1,240 +1,195 @@
-Return-Path: <linux-kernel+bounces-16868-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16869-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C74E9824530
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 16:42:02 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EA74C824532
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 16:42:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 71D3E282984
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 15:42:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EC1061C221D8
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 15:42:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB2782421B;
-	Thu,  4 Jan 2024 15:41:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B885024219;
+	Thu,  4 Jan 2024 15:42:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="DAOUHpBP"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZwtHzFyx"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oi1-f180.google.com (mail-oi1-f180.google.com [209.85.167.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4407D2375B;
-	Thu,  4 Jan 2024 15:41:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 1A1FF60008;
-	Thu,  4 Jan 2024 15:41:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1704382902;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0FvXN4xvTiTgMyzMRSmABdNVZi9nrUpHczM3Ucu85Gk=;
-	b=DAOUHpBPXnJDXdCxkA8g/d07BxjS9VXflLwgJD9e8K0ZfUUOPbdEAHjvzrQNfEuIxGr6iG
-	kPVLXHuT83EmqiRxq81SgqKJYPkxd3+tI9TARZrf2AbrWRLYOp+FwrBhpjv/V0qFuaU6AV
-	ylOQmD0q0x4jC3edy9+F6hAf91FYPv5kgZHzXQ0XIjO6NaeDfJXU1NkKsRzAtNr923hAJj
-	cIQJSdUqfqiXBMXkCAiwAT+fOuDMj6Wc1w28nZknRrFvgi3XK+hb7lRlymENYYvVpnoWuC
-	p4WGUsMmpiUdh9t/KabjnBWgFqgwmqiGZt53JSMIRE3tiee9EojlgiGxckMkDg==
-Message-ID: <110ac63c-5d93-4f11-a064-b8b4a7994fec@bootlin.com>
-Date: Thu, 4 Jan 2024 16:41:41 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F5E12420A;
+	Thu,  4 Jan 2024 15:42:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=acm.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f180.google.com with SMTP id 5614622812f47-3bb69bfdd96so630850b6e.1;
+        Thu, 04 Jan 2024 07:42:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704382947; x=1704987747; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:reply-to:message-id:subject:cc:to:from:date
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=5oMiGZMowUzqMWGwhCBfkbKcvKR9HrULZLN+Y7bf4S0=;
+        b=ZwtHzFyx+IB3zt4jqUgNXfHgIR25r50eTXw5oPyoQ5Eoz7NGyWPDXK1FiiLEAYr6OC
+         96vFQIb++EO4xp1IzCHWJoc5NTo4Svfiv379UqzGwK1IRAN9r2cZkhdV5KSEvflRm2Mn
+         9l+wk2Z+RYB3MPRgSiyTSjbz4ETnQzNlmmZ/9Kt0gbcF16rLG5BMHi+KXOkAx1GoKxg/
+         Jld/o1Zy0zZJoKreJg7tYJRWt90kB5sSnCn68JbSF3zRiVqhJwrFZ15clzRqTNWkJK6K
+         o+Qz235IfuqFubBfJQ6/CYXEFkSbNUAfNJJg6u+PGCEfFb3Gx0C+ejVFALHi6DBpTHJa
+         4VHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704382947; x=1704987747;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:reply-to:message-id:subject:cc:to:from:date
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=5oMiGZMowUzqMWGwhCBfkbKcvKR9HrULZLN+Y7bf4S0=;
+        b=Y2Y7bQ+x/5pEIQM+439iB9MCs/vk4eDpzitqTswGHYa1IYmeCNSfCP/n9J3nuKJQBZ
+         R4ULaQGvWngA4yQ2uwu6562bg6pw0oBTR3Uoest3Tb1zsTBbf33vPgcYDz7NabMXnZW1
+         dAaVoOe29J5ObdW+DubONF3j8TmlbxJhAVKZbjAZ2sm4HArgNJlXffG/Rul+HvcrWVJ5
+         nHGdUz6ZrQW+96SdUs/A07n+EpFJKOvvB4KcGqrEkFG/9Px5bDwJQTozuiepTOLZS1Z/
+         F8+JmlnP4aGKP2IoQ/W5fxCCx2zv/JnIjaFCL7HpFIdBt+aRr0yE9wUodIhP/bxbXPYF
+         FYdQ==
+X-Gm-Message-State: AOJu0YzggIvwy+1pLzUBPGfdmAXd49hG9LrouozTM9zSq0EkN48/q4Ok
+	OGwGeuI95jRgsMHSA5cEEw==
+X-Google-Smtp-Source: AGHT+IGBVcQOehWgZgtVkqUEVkpT4ymFf47CPxuZ3r/zwB3M65lL8wGjFXR+faDYn1CyfX3tGNuADA==
+X-Received: by 2002:a05:6808:1401:b0:3bc:23ca:b8f8 with SMTP id w1-20020a056808140100b003bc23cab8f8mr293904oiv.27.1704382947589;
+        Thu, 04 Jan 2024 07:42:27 -0800 (PST)
+Received: from serve.minyard.net (serve.minyard.net. [2001:470:b8f6:1b::1])
+        by smtp.gmail.com with ESMTPSA id ct6-20020a056808360600b003bbcc7ad593sm2208336oib.34.2024.01.04.07.42.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Jan 2024 07:42:27 -0800 (PST)
+Sender: Corey Minyard <tcminyard@gmail.com>
+Received: from mail.minyard.net (unknown [IPv6:2001:470:b8f6:1b:8b39:45b4:3a91:698e])
+	by serve.minyard.net (Postfix) with ESMTPSA id 754301800BC;
+	Thu,  4 Jan 2024 15:42:26 +0000 (UTC)
+Date: Thu, 4 Jan 2024 09:42:25 -0600
+From: Corey Minyard <minyard@acm.org>
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: Kai-Heng Feng <kai.heng.feng@canonical.com>, jdelvare@suse.com,
+	linux@roeck-us.net, Len Brown <lenb@kernel.org>,
+	Robert Moore <robert.moore@intel.com>, linux-acpi@vger.kernel.org,
+	linux-kernel@vger.kernel.org, acpica-devel@lists.linux.dev
+Subject: Re: [PATCH v3 1/2] ACPI: IPMI: Add helper to wait for when SMI is
+ selected
+Message-ID: <ZZbR4X6z9wkSESzD@mail.minyard.net>
+Reply-To: minyard@acm.org
+References: <20240104024819.848979-1-kai.heng.feng@canonical.com>
+ <CAJZ5v0gNa7XvUo3B1srXaWBrWx+Bx=w=D7ddi-mqda8xBdWwCQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] wifi: wilc1000: fix RCU usage in connect path
-To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc: ajay.kathat@microchip.com, claudiu.beznea@tuxon.dev, kvalo@kernel.org,
- linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
- thomas.petazzoni@bootlin.com
-References: <20240104143925.194295-1-alexis.lothore@bootlin.com>
- <20240104143925.194295-3-alexis.lothore@bootlin.com>
- <175febb5-f31a-4540-8b70-7206fef83760@wanadoo.fr>
-Content-Language: en-US
-From: =?UTF-8?Q?Alexis_Lothor=C3=A9?= <alexis.lothore@bootlin.com>
-In-Reply-To: <175febb5-f31a-4540-8b70-7206fef83760@wanadoo.fr>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-GND-Sasl: alexis.lothore@bootlin.com
+In-Reply-To: <CAJZ5v0gNa7XvUo3B1srXaWBrWx+Bx=w=D7ddi-mqda8xBdWwCQ@mail.gmail.com>
 
-On 1/4/24 16:30, Christophe JAILLET wrote:
-> Le 04/01/2024 à 15:39, Alexis Lothoré a écrit :
->> From: Alexis Lothoré <alexis.lothore-LDxbnhwyfcJBDgjK7y7TUQ@public.gmane.org>
->>
->> With lockdep enabled, calls to the connect function from cfg802.11 layer
->> lead to the following warning:
->>
->> =============================
->> WARNING: suspicious RCU usage
->> 6.7.0-rc1-wt+ #333 Not tainted
->> -----------------------------
->> drivers/net/wireless/microchip/wilc1000/hif.c:386
->> suspicious rcu_dereference_check() usage!
->> [...]
->> stack backtrace:
->> CPU: 0 PID: 100 Comm: wpa_supplicant Not tainted 6.7.0-rc1-wt+ #333
->> Hardware name: Atmel SAMA5
->>   unwind_backtrace from show_stack+0x18/0x1c
->>   show_stack from dump_stack_lvl+0x34/0x48
->>   dump_stack_lvl from wilc_parse_join_bss_param+0x7dc/0x7f4
->>   wilc_parse_join_bss_param from connect+0x2c4/0x648
->>   connect from cfg80211_connect+0x30c/0xb74
->>   cfg80211_connect from nl80211_connect+0x860/0xa94
->>   nl80211_connect from genl_rcv_msg+0x3fc/0x59c
->>   genl_rcv_msg from netlink_rcv_skb+0xd0/0x1f8
->>   netlink_rcv_skb from genl_rcv+0x2c/0x3c
->>   genl_rcv from netlink_unicast+0x3b0/0x550
->>   netlink_unicast from netlink_sendmsg+0x368/0x688
->>   netlink_sendmsg from ____sys_sendmsg+0x190/0x430
->>   ____sys_sendmsg from ___sys_sendmsg+0x110/0x158
->>   ___sys_sendmsg from sys_sendmsg+0xe8/0x150
->>   sys_sendmsg from ret_fast_syscall+0x0/0x1c
->>
->> This warning is emitted because in the connect path, when trying to parse
->> target BSS parameters, we dereference a RCU pointer whithout being in RCU
->> critical section.
->> Fix RCU dereference usage by moving it to a RCU read critical section. To
->> avoid wrapping the whole wilc_parse_join_bss_param under the critical
->> section, just use the critical section to copy ies data
->>
->> Fixes: c460495ee072 ("staging: wilc1000: fix incorrent type in initializer")
->> Signed-off-by: Alexis Lothoré
->> <alexis.lothore-LDxbnhwyfcJBDgjK7y7TUQ@public.gmane.org>
->> ---
->>   drivers/net/wireless/microchip/wilc1000/hif.c | 35 ++++++++++++-------
->>   1 file changed, 23 insertions(+), 12 deletions(-)
->>
->> diff --git a/drivers/net/wireless/microchip/wilc1000/hif.c
->> b/drivers/net/wireless/microchip/wilc1000/hif.c
->> index 6f1218a51061..806b7337b5ae 100644
->> --- a/drivers/net/wireless/microchip/wilc1000/hif.c
->> +++ b/drivers/net/wireless/microchip/wilc1000/hif.c
->> @@ -377,38 +377,48 @@ struct wilc_join_bss_param *
->>   wilc_parse_join_bss_param(struct cfg80211_bss *bss,
->>                 struct cfg80211_crypto_settings *crypto)
->>   {
->> -    const struct cfg80211_bss_ies *ies = rcu_dereference(bss->ies);
->> -    const u8 *tim_elm, *ssid_elm, *rates_ie, *supp_rates_ie;
->> +    const u8 *ies_data, *tim_elm, *ssid_elm, *rates_ie, *supp_rates_ie;
->>       const u8 *ht_ie, *wpa_ie, *wmm_ie, *rsn_ie;
->>       struct ieee80211_p2p_noa_attr noa_attr;
->> +    const struct cfg80211_bss_ies *ies;
->>       struct wilc_join_bss_param *param;
->> -    u8 rates_len = 0;
->> +    u8 rates_len = 0, ies_len;
->>       int ret;
->>         param = kzalloc(sizeof(*param), GFP_KERNEL);
->>       if (!param)
->>           return NULL;
->>   +    rcu_read_lock();
->> +    ies = rcu_dereference(bss->ies);
->> +    ies_data = kmemdup(ies->data, ies->len, GFP_ATOMIC);
+On Thu, Jan 04, 2024 at 02:34:52PM +0100, Rafael J. Wysocki wrote:
+> On Thu, Jan 4, 2024 at 3:48 AM Kai-Heng Feng
+> <kai.heng.feng@canonical.com> wrote:
+> >
+> > The function of acpi_power_meter module on Dell system requires IPMI
+> > handler is installed and SMI is selected.
 > 
-> Is it mandatory to have GFP_ATOMIC here?
-> If yes, then some other drivers may need to be fixed (at least [1]).
+> Does the firmware use _DEP to let the OS know about this dependency?
+> 
+> > So add a helper to let acpi_power_meter know when IPMI handler and SMI
+> > are ready.
+> >
+> > Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> > ---
+> > v3:
+> >  - New patch.
+> >
+> >  drivers/acpi/acpi_ipmi.c | 17 ++++++++++++++++-
+> >  include/acpi/acpi_bus.h  |  5 +++++
+> >  2 files changed, 21 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/acpi/acpi_ipmi.c b/drivers/acpi/acpi_ipmi.c
+> > index 0555f68c2dfd..54862cab7171 100644
+> > --- a/drivers/acpi/acpi_ipmi.c
+> > +++ b/drivers/acpi/acpi_ipmi.c
+> > @@ -23,6 +23,8 @@ MODULE_LICENSE("GPL");
+> >  #define IPMI_TIMEOUT                   (5000)
+> >  #define ACPI_IPMI_MAX_MSG_LENGTH       64
+> >
+> > +static struct completion smi_selected;
+> > +
+> >  struct acpi_ipmi_device {
+> >         /* the device list attached to driver_data.ipmi_devices */
+> >         struct list_head head;
+> > @@ -463,8 +465,10 @@ static void ipmi_register_bmc(int iface, struct device *dev)
+> >                 if (temp->handle == handle)
+> >                         goto err_lock;
+> >         }
+> > -       if (!driver_data.selected_smi)
+> > +       if (!driver_data.selected_smi) {
+> >                 driver_data.selected_smi = ipmi_device;
+> > +               complete(&smi_selected);
+> > +       }
+> >         list_add_tail(&ipmi_device->head, &driver_data.ipmi_devices);
+> >         mutex_unlock(&driver_data.ipmi_lock);
+> >
+> > @@ -578,10 +582,21 @@ acpi_ipmi_space_handler(u32 function, acpi_physical_address address,
+> >         return status;
+> >  }
+> >
+> > +int acpi_wait_for_acpi_ipmi(void)
+> > +{
+> > +       long ret;
+> > +
+> > +       ret = wait_for_completion_interruptible_timeout(&smi_selected, 2 * HZ);
+> > +
+> > +       return ret > 0 ? 0 : -ETIMEDOUT;
+> 
+> What will happen if the IPMI driver is unloaded after this has returned 0?
 
-From my understanding: yes, because if any sleep occurs in a section protected
-by rcu_read_lock/rcu_read_unlock, it may mess with RCU grace period wait (and
-so, rcu reclaim step may occur while this reader is still in the read section)
+The IPMI driver can't be unloaded if it has a user.
+
+I've been following this, but I know little about ACPI.  Beyond this
+solution, the only other solution I could come up with was to start the
+IPMI driver earlier.  But then you are in a chicken-and-egg situation
+(https://dictionary.cambridge.org/dictionary/english/chicken-and-egg-situation).
+Which was the reason for the SPMI table, but that's really kind of
+useless for this, even if the SPMI table existed.
+
+-corey
 
 > 
->> +    if (!ies_data) {
->> +        rcu_read_unlock();
+> > +}
+> > +EXPORT_SYMBOL_GPL(acpi_wait_for_acpi_ipmi);
+> > +
+> >  static int __init acpi_ipmi_init(void)
+> >  {
+> >         int result;
+> >         acpi_status status;
+> > +       init_completion(&smi_selected);
+> >
+> >         if (acpi_disabled)
+> >                 return 0;
+> > diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
+> > index 1216d72c650f..afa6e4d4bf46 100644
+> > --- a/include/acpi/acpi_bus.h
+> > +++ b/include/acpi/acpi_bus.h
+> > @@ -821,11 +821,16 @@ static inline void acpi_put_acpi_dev(struct acpi_device *adev)
+> >  {
+> >         acpi_dev_put(adev);
+> >  }
+> > +
+> > +int acpi_wait_for_acpi_ipmi(void);
+> > +
+> >  #else  /* CONFIG_ACPI */
+> >
+> >  static inline int register_acpi_bus_type(void *bus) { return 0; }
+> >  static inline int unregister_acpi_bus_type(void *bus) { return 0; }
+> >
+> > +static inline int acpi_wait_for_acpi_ipmi(void) { return 0; }
+> > +
+> >  #endif                         /* CONFIG_ACPI */
+> >
+> >  #endif /*__ACPI_BUS_H__*/
+> > --
 > 
-> 'param' allocated just a few lines above is leaking now.
-
-You are right, good catch, thanks. I will update accordingly.
-> 
-> CJ
-> 
-> 
-> [1]:
-> https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/tree/drivers/pci/p2pdma.c#n660
-> 
-> 
->> +        return NULL;
->> +    }
->> +    ies_len = ies->len;
->> +    rcu_read_unlock();
->> +
->>       param->beacon_period = cpu_to_le16(bss->beacon_interval);
->>       param->cap_info = cpu_to_le16(bss->capability);
->>       param->bss_type = WILC_FW_BSS_TYPE_INFRA;
->>       param->ch = ieee80211_frequency_to_channel(bss->channel->center_freq);
->>       ether_addr_copy(param->bssid, bss->bssid);
->>   -    ssid_elm = cfg80211_find_ie(WLAN_EID_SSID, ies->data, ies->len);
->> +    ssid_elm = cfg80211_find_ie(WLAN_EID_SSID, ies_data, ies_len);
->>       if (ssid_elm) {
->>           if (ssid_elm[1] <= IEEE80211_MAX_SSID_LEN)
->>               memcpy(param->ssid, ssid_elm + 2, ssid_elm[1]);
->>       }
->>   -    tim_elm = cfg80211_find_ie(WLAN_EID_TIM, ies->data, ies->len);
->> +    tim_elm = cfg80211_find_ie(WLAN_EID_TIM, ies_data, ies_len);
->>       if (tim_elm && tim_elm[1] >= 2)
->>           param->dtim_period = tim_elm[3];
->>         memset(param->p_suites, 0xFF, 3);
->>       memset(param->akm_suites, 0xFF, 3);
->>   -    rates_ie = cfg80211_find_ie(WLAN_EID_SUPP_RATES, ies->data, ies->len);
->> +    rates_ie = cfg80211_find_ie(WLAN_EID_SUPP_RATES, ies_data, ies_len);
->>       if (rates_ie) {
->>           rates_len = rates_ie[1];
->>           if (rates_len > WILC_MAX_RATES_SUPPORTED)
->> @@ -419,7 +429,7 @@ wilc_parse_join_bss_param(struct cfg80211_bss *bss,
->>         if (rates_len < WILC_MAX_RATES_SUPPORTED) {
->>           supp_rates_ie = cfg80211_find_ie(WLAN_EID_EXT_SUPP_RATES,
->> -                         ies->data, ies->len);
->> +                         ies_data, ies_len);
->>           if (supp_rates_ie) {
->>               u8 ext_rates = supp_rates_ie[1];
->>   @@ -434,11 +444,11 @@ wilc_parse_join_bss_param(struct cfg80211_bss *bss,
->>           }
->>       }
->>   -    ht_ie = cfg80211_find_ie(WLAN_EID_HT_CAPABILITY, ies->data, ies->len);
->> +    ht_ie = cfg80211_find_ie(WLAN_EID_HT_CAPABILITY, ies_data, ies_len);
->>       if (ht_ie)
->>           param->ht_capable = true;
->>   -    ret = cfg80211_get_p2p_attr(ies->data, ies->len,
->> +    ret = cfg80211_get_p2p_attr(ies_data, ies_len,
->>                       IEEE80211_P2P_ATTR_ABSENCE_NOTICE,
->>                       (u8 *)&noa_attr, sizeof(noa_attr));
->>       if (ret > 0) {
->> @@ -462,7 +472,7 @@ wilc_parse_join_bss_param(struct cfg80211_bss *bss,
->>       }
->>       wmm_ie = cfg80211_find_vendor_ie(WLAN_OUI_MICROSOFT,
->>                        WLAN_OUI_TYPE_MICROSOFT_WMM,
->> -                     ies->data, ies->len);
->> +                     ies_data, ies_len);
->>       if (wmm_ie) {
->>           struct ieee80211_wmm_param_ie *ie;
->>   @@ -477,13 +487,13 @@ wilc_parse_join_bss_param(struct cfg80211_bss *bss,
->>         wpa_ie = cfg80211_find_vendor_ie(WLAN_OUI_MICROSOFT,
->>                        WLAN_OUI_TYPE_MICROSOFT_WPA,
->> -                     ies->data, ies->len);
->> +                     ies_data, ies_len);
->>       if (wpa_ie) {
->>           param->mode_802_11i = 1;
->>           param->rsn_found = true;
->>       }
->>   -    rsn_ie = cfg80211_find_ie(WLAN_EID_RSN, ies->data, ies->len);
->> +    rsn_ie = cfg80211_find_ie(WLAN_EID_RSN, ies_data, ies_len);
->>       if (rsn_ie) {
->>           int rsn_ie_len = sizeof(struct element) + rsn_ie[1];
->>           int offset = 8;
->> @@ -517,6 +527,7 @@ wilc_parse_join_bss_param(struct cfg80211_bss *bss,
->>               param->akm_suites[i] = crypto->akm_suites[i] & 0xFF;
->>       }
->>   +    kfree(ies_data);
->>       return (void *)param;
->>   }
->>   
-> 
-
--- 
-Alexis Lothoré, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
-
 
