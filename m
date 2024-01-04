@@ -1,503 +1,385 @@
-Return-Path: <linux-kernel+bounces-16245-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16246-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD261823B93
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 05:48:15 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C611823B96
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 05:52:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B6E652872EA
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 04:48:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0EB0C1C24C25
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 04:52:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64FC714001;
-	Thu,  4 Jan 2024 04:48:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CBC21864C;
+	Thu,  4 Jan 2024 04:52:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="dKYB2Yk6"
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="LStWGe7i"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2076.outbound.protection.outlook.com [40.107.102.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D69F154AD;
-	Thu,  4 Jan 2024 04:48:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4044hQ3F009553;
-	Thu, 4 Jan 2024 04:47:51 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=0B+T23ftOBKKmlj9igi28YYFTv3HsA9Cd9NaJlkQu24=; b=dK
-	YB2Yk6Op2uAxUai0ndNYtcuelhpDbACLGhWQJIlghgkMIGISxQSs12qhzpXaw3vf
-	0jBWmQWLZ92J1qaTi3MLhgIE2ZLTA3GCVAsoCIpKntBbpaBFHk2G27uuHbvs+OHH
-	K7PIOfO0sX5oqUo9YSmhKk2JbdXLtx2PRqwTlP6z/fqVWTBHz8eA3qd9uzuXjf+y
-	Uztm3JGPT8rO8wOe/xDNgMES/0GyOHrHrzE6JtDyHKTpOLr9rFjSWc8Q1b7DMPn/
-	LbFokL3516kGcPGOa0H567IEoqDkylgoIigxWhj0qoZjhW9jwGY9JUrY2QQa3HDm
-	0/2gC2+7kdRno9guHUsg==
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vd3mb2jgq-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 04 Jan 2024 04:47:51 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4044lo3O018109
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 4 Jan 2024 04:47:50 GMT
-Received: from [10.216.4.201] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 3 Jan
- 2024 20:47:45 -0800
-Message-ID: <ef11f099-d058-7f37-dde0-f7ef3cd52f38@quicinc.com>
-Date: Thu, 4 Jan 2024 10:17:42 +0530
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8F8115485;
+	Thu,  4 Jan 2024 04:52:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=T4rOdDepmXXzTh6bVPOQVGUYR7VMtzU484oH6ZXdMzwoMfQgF2lIb9d/6wAcBssPLaX72actKNVz+FUca4LbmhknBy0fA157eyohyvbOmmL1N7D6Y2qrVUDuAayeuzzMqZruj/sQAqIKnOIGuPChRTOdhcCh9+nfy3GOmULK2b9ArdZxmnlEiIC0x/63NBY9mORiViRwsykH1c2UQsFkPXMSCOMuQd6G/z5D4YVka0y4g3zcOD9HZZfNBOBX4D+WpFvTo6HJY1/fSEwIMfxKZyRHA59aSzLbFH7raMeQ9qZCIKkPTH9Ihs0Ly7HfXkmQRU4CDUkjSdXZgPCa0lepjg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=4pqB1YrR1pUmofr1Nur8tPilzqJVBFMJcQfKdTDzqtc=;
+ b=nGnNqnYERocT0l9xG1jeCRl6Y+uzYPlr7qtr6H+Q0VpVzfVaW/thhIftCmQw5irYeKgEXw+j7zX/X45+H0GpXCGsZxSBB281IMv90g61zWN6oYLpxAlwE5pny1PnPa0stJaMCnLVjGKjgdNv3xeIES9ZGP2uYN6m6VoqJo46nZbL2HI4cDpxY9DoknGjxtz1POMGeRfJYZJiMmhWJHdla5RwoPG5AjdXlipImCuSd4tD/JAIqXa/6xF2DzRNT1bkludYR1Tlxs2yMvkgjtp62FelET/1lkpCvPG2NpqnN2gheS0mHewNVWZ+wZkacYEabHbwmZaKqQQvqlJu1iRNIw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=4pqB1YrR1pUmofr1Nur8tPilzqJVBFMJcQfKdTDzqtc=;
+ b=LStWGe7iiZQ/edzflvzjQzCy+HCr8noE4jz4Rn3iwpcPVEsXOfUgMcXRJqJuWTiUnKjaxA+5+8G5i8ACcwxTRcZvPbduLGuY0H8OojAfiJEOj39trTo/bhjCcxXy1MI1YlvG23tCtJTidwzRIY/7TIrcPPPkqhF5DuTuNcIqhwI=
+Received: from DM6PR12MB3993.namprd12.prod.outlook.com (2603:10b6:5:1c5::29)
+ by MN6PR12MB8541.namprd12.prod.outlook.com (2603:10b6:208:47a::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7135.25; Thu, 4 Jan
+ 2024 04:52:15 +0000
+Received: from DM6PR12MB3993.namprd12.prod.outlook.com
+ ([fe80::b46:e1e6:ac2a:4386]) by DM6PR12MB3993.namprd12.prod.outlook.com
+ ([fe80::b46:e1e6:ac2a:4386%7]) with mapi id 15.20.7113.027; Thu, 4 Jan 2024
+ 04:52:15 +0000
+From: "Manne, Nava kishore" <nava.kishore.manne@amd.com>
+To: "mdf@kernel.org" <mdf@kernel.org>, "hao.wu@intel.com" <hao.wu@intel.com>,
+	"yilun.xu@intel.com" <yilun.xu@intel.com>, "trix@redhat.com"
+	<trix@redhat.com>, "peter.colberg@intel.com" <peter.colberg@intel.com>,
+	"conor.dooley@microchip.com" <conor.dooley@microchip.com>,
+	"v.georgiev@metrotek.ru" <v.georgiev@metrotek.ru>, "Simek, Michal"
+	<michal.simek@amd.com>, Marco Pagani <marpagan@redhat.com>,
+	"gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+	"ruanjinjie@huawei.com" <ruanjinjie@huawei.com>, "linux-fpga@vger.kernel.org"
+	<linux-fpga@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>, "git (AMD-Xilinx)" <git@amd.com>
+Subject: [RFC] FPGA Subsystem User Space Interface Proposal
+Thread-Topic: [RFC] FPGA Subsystem User Space Interface Proposal
+Thread-Index: Ado+yABjPiRB0KySRY6DC56HOLfe9A==
+Date: Thu, 4 Jan 2024 04:52:15 +0000
+Message-ID:
+ <DM6PR12MB3993D5ECA50B27682AEBE19FCD67A@DM6PR12MB3993.namprd12.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DM6PR12MB3993:EE_|MN6PR12MB8541:EE_
+x-ms-office365-filtering-correlation-id: 5470966f-9c40-4d86-8900-08dc0ce0ebfa
+x-ld-processed: 3dd8961f-e488-4e60-8e11-a82d994e183d,ExtAddr
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ L8k6wkfZ5BWoNy/7AhJ9kLeQQAMEyvOhqaRaTreEcDETMhqLCHDPhdhQihTKa/EljgcmVuz0yBLj5Qq+b/7+zTVCU+SUyoCsMgMXOOK96K3Ls2YoP2j9cnRP+QEhnklYwqqFH1Kxzif+U/rA0lL2ktkrmo0/xENAQJSAyQdRFKVxldOdQqDUaTe/kygyeWoUDYtov73yUBQL+VkS8cN/GHgNiIhoyuIQvtDJg1DzGNknDmnf6m76+XnibUJOWA04JVfADvMvxhN9thKpv4D4NuL9QBRc0Dld9dNKMmgktaphkSAQfeiNVD8WMTPv2xgdex4o0GO8fTLa0VMgVlNezNMe+ZdIzpuzJMbwXk+czAdAI+6b2xem8+CVZE8Tv2V04SN1wsACIkZKDxoagQNqIVyjJmI1y3bmcybJnu4pmbilSOxrGquDA+LZdj34a4Fvn1Sht2DJcMuk8YBUCZN25AXWSihbgSIZJ93riX3ILQFpayhBLDkDYoG0ZjtEVjykrF0h1jzwUZGwjsj0C5VJqaLbOdNUyIDh9JJAq9tROOd+bbJ5yv/V3OGDXZr7GbHJQJEtHaCI1YDeFX+sYqi1ssheZVDrlDd6kaJHEEpMtAWniwIjHOCpEGjpeIaDMfDusDiTyGZdT36LGCJ3AyQyiA==
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3993.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(346002)(376002)(396003)(136003)(39860400002)(230922051799003)(1800799012)(64100799003)(186009)(451199024)(26005)(71200400001)(122000001)(3613699003)(921011)(66556008)(83380400001)(38100700002)(110136005)(66946007)(76116006)(966005)(64756008)(66476007)(316002)(66446008)(6636002)(478600001)(86362001)(5660300002)(52536014)(7416002)(2906002)(8936002)(8676002)(33656002)(55016003)(38070700009)(9686003)(7696005)(6506007)(41300700001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?LOx4hEK2VSusPKYj8wkk2cgA4AcBJRkWhKaTrI1yyiRJX4WsN8adkU4u61Uo?=
+ =?us-ascii?Q?LNd2tlbi7h6hJ/LpMgstzeRGpmptO+u/kNAqA+xSqYrSxE+lNguhYpJtjEa+?=
+ =?us-ascii?Q?oHXLK9QMN5DxzjLHLvszAzFFTm+K1aD2/axdrdjYxo2zBuNQXGN0fkRf+vFg?=
+ =?us-ascii?Q?B8FcMMUQFTonRU15T9PwxqeePAl/oSPpYB+bWlT5sEUp9qMKMIC8QpOA/SeK?=
+ =?us-ascii?Q?QXaXHbIWgc0UWS9X1ltNCjXrdfYK3EvsHvBPx9ikKieaA2G1GK9hhAm90Qf0?=
+ =?us-ascii?Q?NZxGtAlMTuycehJFTCGcgOtIHkDALG2h7DBlX9C2LEWomgxFtxPGdccTiUz4?=
+ =?us-ascii?Q?sLWnMEd2355QHoRLaQ7aqn2NI+OecSMARvfoK2Qzx3/vqC0krfM5JyyG5Tb/?=
+ =?us-ascii?Q?quuhoNuRjM7fBKGXn105auLWjav6fEq9N0rE3g28PSX6VnutkAAtaMio35jg?=
+ =?us-ascii?Q?zNL2opqBAk0cKhq18jkMlf6Xhr7Co7sP74AWM3oDAbJheeyH9WxyF3VCCE4p?=
+ =?us-ascii?Q?Gbwfs10mc0BoAX/RC0HhikZBpEjNfiD+wBs5V9rS9dx/JFyvoLvblgBmHmA2?=
+ =?us-ascii?Q?NRd6GjY9rlbGp+jC4nXPo3/XfIyqIrB1q2EbVaNtXl5VfwF0oH6sKwlGPq1V?=
+ =?us-ascii?Q?48lGS8WyXUO0sVhp2kKwbhnoGX7Yiq1dioVucMi5MMvcKBb0W5/PViP0d2zG?=
+ =?us-ascii?Q?7sZmbzwoAt+EnHm/ZkxAhQMfbZYzH5RY9vtC4DFvQDzD3TRZYtcg4quxWXWc?=
+ =?us-ascii?Q?aCXbuWw0hLVKK8/bAxtlmyuwU2zXuuCuWQ1ynTk7cTVA/TEYdFZWu6LILb30?=
+ =?us-ascii?Q?ZpW6EhqjpEA869DRNfvaOgd9XlTQqSybjXDAbDAL5QKSMglNCBVsaaoM1xfm?=
+ =?us-ascii?Q?5LYRN+dRYhfwqdJvdSGCxbR3LKtdai91k6MYH1ZvfeU9GXfGBXFHg2e46QVC?=
+ =?us-ascii?Q?AIdRzUmBvc204F7Xez2Kw35Mg6FKC8gp5MZofLe9QTW+aaS7zvgB6i5nMxVQ?=
+ =?us-ascii?Q?GdPLgcVMclrjckyeetytYu00eoEtAn6Z3PoG6z2rvcubU66cG0eFR7vw0LOd?=
+ =?us-ascii?Q?HUTkVlozlt8VPR/XS8PrLty+EUfpGjtjub4YvtLfFpX5jGfiI8tn6Sj+tTo5?=
+ =?us-ascii?Q?83VhUdc8XWZgkZeO+5SGso4oZNsBTruJPrsbI68YnePitGWXExyXu49dArZV?=
+ =?us-ascii?Q?GAS8xxgXQRALQHyNYhnLlyv7CtxJFfGwh7nuQOtyP7gzKgWnGT/fuyTkN6UE?=
+ =?us-ascii?Q?f5lerxUMPDR1AEILwebyln+HYmXgsfwQ9Y9k7nC63rCd4n+++cp8Nqf8/rP8?=
+ =?us-ascii?Q?vwgs2ouF494OSWD9S9pjU9bxSiSjJ3UtN3tiV9Xqx8/gEWsFqKgHFTQoJ5O1?=
+ =?us-ascii?Q?tryH601cqipi5mqm3BEuQWuwGwodjPLylGZTLWpQhNNV0NEIKu8tDdNBroL8?=
+ =?us-ascii?Q?bhf9NpmPlvfm3lnOOXGhHCzHf9PX0k2+yW0jzHEEtqEQIiyanoVmVRffr/Wl?=
+ =?us-ascii?Q?nbwocQ698etzVxA9QHEoxnWt5M9pQo3Y8p+egUwK4/B96lTgFDb+4lH0LrJi?=
+ =?us-ascii?Q?byxX7HzGdlIl8PQS4+I=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.13.1
-Subject: Re: [PATCH v8] bus: mhi: host: Add tracing support
-Content-Language: en-US
-To: Manivannan Sadhasivam <mani@kernel.org>,
-        Steven Rostedt
-	<rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-CC: <linux-kernel@vger.kernel.org>, <mhi@lists.linux.dev>,
-        <linux-arm-msm@vger.kernel.org>, <linux-trace-kernel@vger.kernel.org>,
-        <quic_vbadigan@quicinc.com>, <quic_ramkri@quicinc.com>,
-        <quic_nitegupt@quicinc.com>, <quic_skananth@quicinc.com>,
-        <quic_parass@quicinc.com>
-References: <20231207-ftrace_support-v8-1-7f62d4558555@quicinc.com>
-From: Krishna Chaitanya Chundru <quic_krichai@quicinc.com>
-In-Reply-To: <20231207-ftrace_support-v8-1-7f62d4558555@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: dqKxVDwNnZvDREsMW8NMPyM1uvncs6JJ
-X-Proofpoint-ORIG-GUID: dqKxVDwNnZvDREsMW8NMPyM1uvncs6JJ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 impostorscore=0
- lowpriorityscore=0 bulkscore=0 priorityscore=1501 malwarescore=0
- mlxscore=0 phishscore=0 spamscore=0 mlxlogscore=999 clxscore=1011
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2401040030
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3993.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5470966f-9c40-4d86-8900-08dc0ce0ebfa
+X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Jan 2024 04:52:15.0709
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: NOMBqcR7DAuoOsXxjjtm1AST+fLf61SgEE8YA0pJEE/QeKSa9wS49Qt8fqwC9S82
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN6PR12MB8541
 
-Hi Steven,
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+| Introduction                                                        |
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+This document provides a detailed overview of the proposed Kernel feature f=
+or FPGA Manager subsystem user interface.
+It describes the problem statement behind the proposal, the problem to be s=
+olved, a top-level solution design.
 
-Can you please review this.
+Table of Contents:
+------------------
+A. Problem Statement and Background
+B. Scope and Out of scope of the proposal
+     B.1 Scope
+     B.2 Out of scope
+C. Proposed Solution
+D. Proposed User Interface Details
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+| A. Problem Statement and Background                                      =
+  |
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+The existing FPGA manager subsystem didn't have any user space interface (o=
+ther than the status/state in sysfs) in Kernel.=20
+Basically, FPGAs are semiconductor devices that can be reprogrammed for des=
+ired hardware functionality.
+FPGAs can be reprogrammed at runtime with different types of logic and IPs =
+as per user need and hence there is a need to use device tree overlays for =
+removing/updating/adding the devices at runtime for the IPs/controllers tha=
+t are present in FPGA.=20
+But we don't have any user interface in kernel for updating the device tree=
+ at runtime.
 
-Thanks & Regards,
+Sometime back there was a series sent by Pantelis Antoniou (https://lore.ke=
+rnel.org/lkml/1414528565-10907-4-git-send-email-pantelis.antoniou@konsulko.=
+com/).
+This patch introduced a user interface configfs for Device Tree overlays, a=
+ method of dynamically altering the kernel's live Device Tree. However,  th=
+is patch series was not accepted in mainline due to various concerns.
+For more details refer to this link: https://elinux.org/Frank%27s_Evolving_=
+Overlay_Thoughts#issues_and_what_needs_to_be_completed_--_Not_an_exhaustive=
+_list
 
-Krishna Chaitanya.
+One of the major valid concerns that were raised with this configfs interfa=
+ce was security as it opens up the interface to users for modifying the liv=
+e device tree.
 
-On 12/7/2023 10:00 AM, Krishna chaitanya chundru wrote:
-> This change adds ftrace support for following functions which
-> helps in debugging the issues when there is Channel state & MHI
-> state change and also when we receive data and control events:
-> 1. mhi_intvec_mhi_states
-> 2. mhi_process_data_event_ring
-> 3. mhi_process_ctrl_ev_ring
-> 4. mhi_gen_tre
-> 5. mhi_update_channel_state
-> 6. mhi_tryset_pm_state
-> 7. mhi_pm_st_worker
->
-> Where ever the trace events are added, debug messages are removed.
->
-> Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
-> ---
-> Changes in v8:
-> - Pass the structure and derefernce the variables in TP_fast_assign as suggested by steve
-> - Link to v7: https://lore.kernel.org/r/20231206-ftrace_support-v7-1-aca49a04268b@quicinc.com
->
-> Changes in v7:
-> - change log format as pointed by mani.
-> - Link to v6: https://lore.kernel.org/r/20231204-ftrace_support-v6-1-9b206546dac2@quicinc.com
->
-> Changes in v6:
-> - use 'rp' directly as suggested by jeffrey.
-> - Link to v5: https://lore.kernel.org/r/20231127-ftrace_support-v5-1-eb67daead4f1@quicinc.com
->
-> Changes in v5:
-> - Use DECLARE_EVENT_CLASS for multiple events as suggested by steve.
-> - Instead of converting to u64 to print address, use %px to print the address to avoid
-> - warnings in some platforms.
-> - Link to v4: https://lore.kernel.org/r/20231111-ftrace_support-v4-1-c83602399461@quicinc.com
->
-> Changes in v4:
-> - Fix compilation issues in previous patch which happended due to rebasing.
-> - In the defconfig FTRACE config is not enabled due to that the compilation issue is not
-> - seen in my workspace.
-> - Link to v3: https://lore.kernel.org/r/20231111-ftrace_support-v3-1-f358d2911a74@quicinc.com
->
-> Changes in v3:
-> - move trace header file from include/trace/events to drivers/bus/mhi/host/ so that
-> - we can include driver header files.
-> - Use macros directly in the trace events as suggested Jeffrey Hugo.
-> - Reorder the structure in the events as suggested by steve to avoid holes in the buffer.
-> - removed the mhi_to_physical function as this can give security issues.
-> - removed macros to define strings as we can get those from driver headers.
-> - Link to v2: https://lore.kernel.org/r/20231013-ftrace_support-v2-1-6e893ce010b5@quicinc.com
->
-> Changes in v2:
-> - Passing the raw state into the trace event and using  __print_symbolic() as suggested by bjorn.
-> - Change mhi_pm_st_worker to mhi_pm_st_transition as suggested by bjorn.
-> - Fixed the kernel test rebot issues.
-> - Link to v1: https://lore.kernel.org/r/20231005-ftrace_support-v1-1-23a2f394fa49@quicinc.com
-> ---
->   drivers/bus/mhi/host/init.c  |   3 +
->   drivers/bus/mhi/host/main.c  |  19 ++--
->   drivers/bus/mhi/host/pm.c    |   7 +-
->   drivers/bus/mhi/host/trace.h | 205 +++++++++++++++++++++++++++++++++++++++++++
->   4 files changed, 221 insertions(+), 13 deletions(-)
->
-> diff --git a/drivers/bus/mhi/host/init.c b/drivers/bus/mhi/host/init.c
-> index f78aefd2d7a3..6acb85f4c5f8 100644
-> --- a/drivers/bus/mhi/host/init.c
-> +++ b/drivers/bus/mhi/host/init.c
-> @@ -20,6 +20,9 @@
->   #include <linux/wait.h>
->   #include "internal.h"
->   
-> +#define CREATE_TRACE_POINTS
-> +#include "trace.h"
-> +
->   static DEFINE_IDA(mhi_controller_ida);
->   
->   const char * const mhi_ee_str[MHI_EE_MAX] = {
-> diff --git a/drivers/bus/mhi/host/main.c b/drivers/bus/mhi/host/main.c
-> index dcf627b36e82..189f4786403e 100644
-> --- a/drivers/bus/mhi/host/main.c
-> +++ b/drivers/bus/mhi/host/main.c
-> @@ -15,6 +15,7 @@
->   #include <linux/skbuff.h>
->   #include <linux/slab.h>
->   #include "internal.h"
-> +#include "trace.h"
->   
->   int __must_check mhi_read_reg(struct mhi_controller *mhi_cntrl,
->   			      void __iomem *base, u32 offset, u32 *out)
-> @@ -491,11 +492,8 @@ irqreturn_t mhi_intvec_threaded_handler(int irq_number, void *priv)
->   
->   	state = mhi_get_mhi_state(mhi_cntrl);
->   	ee = mhi_get_exec_env(mhi_cntrl);
-> -	dev_dbg(dev, "local ee: %s state: %s device ee: %s state: %s\n",
-> -		TO_MHI_EXEC_STR(mhi_cntrl->ee),
-> -		mhi_state_str(mhi_cntrl->dev_state),
-> -		TO_MHI_EXEC_STR(ee), mhi_state_str(state));
->   
-> +	trace_mhi_intvec_states(mhi_cntrl, ee, state);
->   	if (state == MHI_STATE_SYS_ERR) {
->   		dev_dbg(dev, "System error detected\n");
->   		pm_state = mhi_tryset_pm_state(mhi_cntrl,
-> @@ -832,6 +830,8 @@ int mhi_process_ctrl_ev_ring(struct mhi_controller *mhi_cntrl,
->   	while (dev_rp != local_rp) {
->   		enum mhi_pkt_type type = MHI_TRE_GET_EV_TYPE(local_rp);
->   
-> +		trace_mhi_ctrl_event(mhi_cntrl, local_rp);
-> +
->   		switch (type) {
->   		case MHI_PKT_TYPE_BW_REQ_EVENT:
->   		{
-> @@ -997,6 +997,8 @@ int mhi_process_data_event_ring(struct mhi_controller *mhi_cntrl,
->   	while (dev_rp != local_rp && event_quota > 0) {
->   		enum mhi_pkt_type type = MHI_TRE_GET_EV_TYPE(local_rp);
->   
-> +		trace_mhi_data_event(mhi_cntrl, local_rp);
-> +
->   		chan = MHI_TRE_GET_EV_CHID(local_rp);
->   
->   		WARN_ON(chan >= mhi_cntrl->max_chan);
-> @@ -1235,6 +1237,7 @@ int mhi_gen_tre(struct mhi_controller *mhi_cntrl, struct mhi_chan *mhi_chan,
->   	mhi_tre->dword[0] = MHI_TRE_DATA_DWORD0(info->len);
->   	mhi_tre->dword[1] = MHI_TRE_DATA_DWORD1(bei, eot, eob, chain);
->   
-> +	trace_mhi_gen_tre(mhi_cntrl, mhi_chan, mhi_tre);
->   	/* increment WP */
->   	mhi_add_ring_element(mhi_cntrl, tre_ring);
->   	mhi_add_ring_element(mhi_cntrl, buf_ring);
-> @@ -1327,9 +1330,7 @@ static int mhi_update_channel_state(struct mhi_controller *mhi_cntrl,
->   	enum mhi_cmd_type cmd = MHI_CMD_NOP;
->   	int ret;
->   
-> -	dev_dbg(dev, "%d: Updating channel state to: %s\n", mhi_chan->chan,
-> -		TO_CH_STATE_TYPE_STR(to_state));
-> -
-> +	trace_mhi_channel_command_start(mhi_cntrl, mhi_chan, to_state);
->   	switch (to_state) {
->   	case MHI_CH_STATE_TYPE_RESET:
->   		write_lock_irq(&mhi_chan->lock);
-> @@ -1396,9 +1397,7 @@ static int mhi_update_channel_state(struct mhi_controller *mhi_cntrl,
->   		write_unlock_irq(&mhi_chan->lock);
->   	}
->   
-> -	dev_dbg(dev, "%d: Channel state change to %s successful\n",
-> -		mhi_chan->chan, TO_CH_STATE_TYPE_STR(to_state));
-> -
-> +	trace_mhi_channel_command_end(mhi_cntrl, mhi_chan, to_state);
->   exit_channel_update:
->   	mhi_cntrl->runtime_put(mhi_cntrl);
->   	mhi_device_put(mhi_cntrl->mhi_dev);
-> diff --git a/drivers/bus/mhi/host/pm.c b/drivers/bus/mhi/host/pm.c
-> index 8a4362d75fc4..5a2394b5b2e1 100644
-> --- a/drivers/bus/mhi/host/pm.c
-> +++ b/drivers/bus/mhi/host/pm.c
-> @@ -15,6 +15,7 @@
->   #include <linux/slab.h>
->   #include <linux/wait.h>
->   #include "internal.h"
-> +#include "trace.h"
->   
->   /*
->    * Not all MHI state transitions are synchronous. Transitions like Linkdown,
-> @@ -123,6 +124,7 @@ enum mhi_pm_state __must_check mhi_tryset_pm_state(struct mhi_controller *mhi_cn
->   	if (unlikely(!(dev_state_transitions[index].to_states & state)))
->   		return cur_state;
->   
-> +	trace_mhi_tryset_pm_state(mhi_cntrl, state);
->   	mhi_cntrl->pm_state = state;
->   	return mhi_cntrl->pm_state;
->   }
-> @@ -753,7 +755,6 @@ void mhi_pm_st_worker(struct work_struct *work)
->   	struct mhi_controller *mhi_cntrl = container_of(work,
->   							struct mhi_controller,
->   							st_worker);
-> -	struct device *dev = &mhi_cntrl->mhi_dev->dev;
->   
->   	spin_lock_irq(&mhi_cntrl->transition_lock);
->   	list_splice_tail_init(&mhi_cntrl->transition_list, &head);
-> @@ -761,8 +762,8 @@ void mhi_pm_st_worker(struct work_struct *work)
->   
->   	list_for_each_entry_safe(itr, tmp, &head, node) {
->   		list_del(&itr->node);
-> -		dev_dbg(dev, "Handling state transition: %s\n",
-> -			TO_DEV_STATE_TRANS_STR(itr->state));
-> +
-> +		trace_mhi_pm_st_transition(mhi_cntrl, itr->state);
->   
->   		switch (itr->state) {
->   		case DEV_ST_TRANSITION_PBL:
-> diff --git a/drivers/bus/mhi/host/trace.h b/drivers/bus/mhi/host/trace.h
-> new file mode 100644
-> index 000000000000..73c129bb91d9
-> --- /dev/null
-> +++ b/drivers/bus/mhi/host/trace.h
-> @@ -0,0 +1,205 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only */
-> +/*
-> + * Copyright (c) 2023 Qualcomm Innovation Center, Inc. All rights reserved.
-> + */
-> +
-> +#undef TRACE_SYSTEM
-> +#define TRACE_SYSTEM mhi_host
-> +
-> +#if !defined(_TRACE_EVENT_MHI_HOST_H) || defined(TRACE_HEADER_MULTI_READ)
-> +#define _TRACE_EVENT_MHI_HOST_H
-> +
-> +#include <linux/tracepoint.h>
-> +#include <linux/trace_seq.h>
-> +#include "../common.h"
-> +#include "internal.h"
-> +
-> +TRACE_EVENT(mhi_gen_tre,
-> +
-> +	TP_PROTO(struct mhi_controller *mhi_cntrl, struct mhi_chan *mhi_chan,
-> +		 struct mhi_ring_element *mhi_tre),
-> +
-> +	TP_ARGS(mhi_cntrl, mhi_chan, mhi_tre),
-> +
-> +	TP_STRUCT__entry(
-> +		__string(name, mhi_cntrl->mhi_dev->name)
-> +		__field(int, ch_num)
-> +		__field(void *, wp)
-> +		__field(__le64, tre_ptr)
-> +		__field(__le32, dword0)
-> +		__field(__le32, dword1)
-> +	),
-> +
-> +	TP_fast_assign(
-> +		__assign_str(name, mhi_cntrl->mhi_dev->name);
-> +		__entry->ch_num = mhi_chan->chan;
-> +		__entry->wp = mhi_tre;
-> +		__entry->tre_ptr = mhi_tre->ptr;
-> +		__entry->dword0 = mhi_tre->dword[0];
-> +		__entry->dword1 = mhi_tre->dword[1];
-> +	),
-> +
-> +	TP_printk("%s: Chan: %d Tre: 0x%p Tre buf: 0x%llx dword0: 0x%08x dword1: 0x%08x\n",
-> +		  __get_str(name), __entry->ch_num, __entry->wp, __entry->tre_ptr,
-> +		  __entry->dword0, __entry->dword1)
-> +);
-> +
-> +TRACE_EVENT(mhi_intvec_states,
-> +
-> +	TP_PROTO(struct mhi_controller *mhi_cntrl, int dev_ee, int dev_state),
-> +
-> +	TP_ARGS(mhi_cntrl, dev_ee, dev_state),
-> +
-> +	TP_STRUCT__entry(
-> +		__string(name, mhi_cntrl->mhi_dev->name)
-> +		__field(int, local_ee)
-> +		__field(int, state)
-> +		__field(int, dev_ee)
-> +		__field(int, dev_state)
-> +	),
-> +
-> +	TP_fast_assign(
-> +		__assign_str(name, mhi_cntrl->mhi_dev->name);
-> +		__entry->local_ee = mhi_cntrl->ee;
-> +		__entry->state = mhi_cntrl->dev_state;
-> +		__entry->dev_ee = dev_ee;
-> +		__entry->dev_state = dev_state;
-> +	),
-> +
-> +	TP_printk("%s: local ee: %s state: %s device ee: %s state: %s\n",
-> +		  __get_str(name),
-> +		  TO_MHI_EXEC_STR(__entry->local_ee),
-> +		  mhi_state_str(__entry->state),
-> +		  TO_MHI_EXEC_STR(__entry->dev_ee),
-> +		  mhi_state_str(__entry->dev_state))
-> +);
-> +
-> +TRACE_EVENT(mhi_tryset_pm_state,
-> +
-> +	TP_PROTO(struct mhi_controller *mhi_cntrl, int pm_state),
-> +
-> +	TP_ARGS(mhi_cntrl, pm_state),
-> +
-> +	TP_STRUCT__entry(
-> +		__string(name, mhi_cntrl->mhi_dev->name)
-> +		__field(int, pm_state)
-> +	),
-> +
-> +	TP_fast_assign(
-> +		__assign_str(name, mhi_cntrl->mhi_dev->name);
-> +		if (pm_state)
-> +			pm_state = __fls(pm_state);
-> +		__entry->pm_state = pm_state;
-> +	),
-> +
-> +	TP_printk("%s: PM state: %s\n", __get_str(name),
-> +		  to_mhi_pm_state_str(__entry->pm_state))
-> +);
-> +
-> +DECLARE_EVENT_CLASS(mhi_process_event_ring,
-> +
-> +	TP_PROTO(struct mhi_controller *mhi_cntrl, struct mhi_ring_element *rp),
-> +
-> +	TP_ARGS(mhi_cntrl, rp),
-> +
-> +	TP_STRUCT__entry(
-> +		__string(name, mhi_cntrl->mhi_dev->name)
-> +		__field(__le32, dword0)
-> +		__field(__le32, dword1)
-> +		__field(int, state)
-> +		__field(__le64, ptr)
-> +		__field(void *, rp)
-> +	),
-> +
-> +	TP_fast_assign(
-> +		__assign_str(name, mhi_cntrl->mhi_dev->name);
-> +		__entry->rp = rp;
-> +		__entry->ptr = rp->ptr;
-> +		__entry->dword0 = rp->dword[0];
-> +		__entry->dword1 = rp->dword[1];
-> +		__entry->state = MHI_TRE_GET_EV_STATE(rp);
-> +	),
-> +
-> +	TP_printk("%s: Tre: 0x%p Tre buf: 0x%llx dword0: 0x%08x dword1: 0x%08x state: %s\n",
-> +		  __get_str(name), __entry->rp, __entry->ptr, __entry->dword0,
-> +		  __entry->dword1, mhi_state_str(__entry->state))
-> +);
-> +
-> +DEFINE_EVENT(mhi_process_event_ring, mhi_data_event,
-> +
-> +	TP_PROTO(struct mhi_controller *mhi_cntrl, struct mhi_ring_element *rp),
-> +
-> +	TP_ARGS(mhi_cntrl, rp)
-> +);
-> +
-> +DEFINE_EVENT(mhi_process_event_ring, mhi_ctrl_event,
-> +
-> +	TP_PROTO(struct mhi_controller *mhi_cntrl, struct mhi_ring_element *rp),
-> +
-> +	TP_ARGS(mhi_cntrl, rp)
-> +);
-> +
-> +DECLARE_EVENT_CLASS(mhi_update_channel_state,
-> +
-> +	TP_PROTO(struct mhi_controller *mhi_cntrl, struct mhi_chan *mhi_chan, int state),
-> +
-> +	TP_ARGS(mhi_cntrl, mhi_chan, state),
-> +
-> +	TP_STRUCT__entry(
-> +		__string(name, mhi_cntrl->mhi_dev->name)
-> +		__field(int, ch_num)
-> +		__field(int, state)
-> +	),
-> +
-> +	TP_fast_assign(
-> +		__assign_str(name, mhi_cntrl->mhi_dev->name);
-> +		__entry->ch_num = mhi_chan->chan;
-> +		__entry->state = state;
-> +	),
-> +
-> +	TP_printk("%s: chan%d: Updating state to: %s\n",
-> +		  __get_str(name), __entry->ch_num,
-> +		  TO_CH_STATE_TYPE_STR(__entry->state))
-> +);
-> +
-> +DEFINE_EVENT(mhi_update_channel_state, mhi_channel_command_start,
-> +
-> +	TP_PROTO(struct mhi_controller *mhi_cntrl, struct mhi_chan *mhi_chan, int state),
-> +
-> +	TP_ARGS(mhi_cntrl, mhi_chan, state)
-> +);
-> +
-> +DEFINE_EVENT(mhi_update_channel_state, mhi_channel_command_end,
-> +
-> +	TP_PROTO(struct mhi_controller *mhi_cntrl, struct mhi_chan *mhi_chan, int state),
-> +
-> +	TP_ARGS(mhi_cntrl, mhi_chan, state)
-> +);
-> +
-> +TRACE_EVENT(mhi_pm_st_transition,
-> +
-> +	TP_PROTO(struct mhi_controller *mhi_cntrl, int state),
-> +
-> +	TP_ARGS(mhi_cntrl, state),
-> +
-> +	TP_STRUCT__entry(
-> +		__string(name, mhi_cntrl->mhi_dev->name)
-> +		__field(int, state)
-> +	),
-> +
-> +	TP_fast_assign(
-> +		__assign_str(name, mhi_cntrl->mhi_dev->name);
-> +		__entry->state = state;
-> +	),
-> +
-> +	TP_printk("%s: Handling state transition: %s\n", __get_str(name),
-> +		  TO_DEV_STATE_TRANS_STR(__entry->state))
-> +);
-> +
-> +#endif
-> +#undef TRACE_INCLUDE_PATH
-> +#define TRACE_INCLUDE_PATH ../../drivers/bus/mhi/host
-> +#undef TRACE_INCLUDE_FILE
-> +#define TRACE_INCLUDE_FILE trace
-> +
-> +#include <trace/define_trace.h>
->
-> ---
-> base-commit: 3006adf3be79cde4d14b1800b963b82b6e5572e0
-> change-id: 20231005-ftrace_support-6869d4156139
->
-> Best regards,
+So, in order to configure/program the FPGA devices, All the major vendors o=
+f FPGA are using this configfs series as out-of-tree patch for configuring =
+the FPGAs
+and there was never an attempt to introduce a generic interface to configur=
+e/program the FPGA in upstream and hence upstream kernel ended up in not ha=
+ving proper support for FPGAs.
+
+The proposal below tries to address this gap of FPGA programmability by pro=
+viding an interface to the user.
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+| B. Proposed Solution                                                |
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+The proposed interface adds a new sysfs interface (of-fpga-region.c) as par=
+t of the fpga subsystem and it is responsible for supporting the below func=
+tionalities.
+--> Provide the user interface for the FPGA subsystem to handle the below F=
+PGA relevant stuff.
+         - Bridges.
+         - FPGA Configuration.
+         - Driver - Probe/Remove
+                               =20
+--> The new sysfs interface uses Device Tree overlay (DTO) files to configu=
+re/ reprogram an FPGA while an operating system is running.
+                - Restrict the overlay's subsystem usage only to FPGA regio=
+ns in order to mitigate the major security concern with configfs.
+                - Do validation checks on the user provided DTO files.
+                                - If the user provided DTO doesn't target a=
+n FPGA Region which is already part of the running kernel, then return -INV=
+ALID error.
+                                - If the DTO file contains multiple targets=
+, then return -INVALID error.
+                                - It will allow only Child nodes which are =
+part of targeted FPGA Region.
+                - It avoids Overlay notification calls . So that it will no=
+t interrupt the other subsystem's(Like; GPIO, I2C.....etc) exists in the ke=
+rnel.
+               =20
+-->This proposed solution will not change the existing sequence When a=20
+-->DT overlay that targets an FPGA Region is applied
+                - The FPGA Region will do the following:
+                - 1. Disable appropriate FPGA bridges.
+                - 2. Program the FPGA using the FPGA manager.
+                - 3. Enable the FPGA bridges.
+                - 4. The Device Tree overlay is accepted into the live tree=
+.
+                - 5. Child devices are populated.
+                - When the overlay is removed, the child nodes will be remo=
+ved, and the FPGA Region will disable the bridges.
+      =20
+                                                                    . -----=
+---------------------------------.                       .-----------------=
+------------------------.                       =20
+                                                                   |       =
+                                             |                     |       =
+                                                 |
+                                                                   |       =
+                    .------------------|                     |-------------=
+--------.                           |
+                                                                   |       =
+                    | sysfs_load() |<=3D=3D=3D=3D=3D=3D=3D> |Overaly_apply(=
+)|                          |=20
+.---------------------------------.                     |                  =
+         '------------------|                     |---------------------'  =
+                         |
+|                                          |                     |         =
+                                           |                     |         =
+                                               |
+|    New Sysfs interface   |        =3D=3D=3D=3D>   |       of-fpga-region =
+.c               |                     |            DT Overlay.c           =
+           |
+|       load/unload             |                      |                   =
+                                |                     |                    =
+                                    |
+'--------------------------------'                      |                  =
+    .---------------------|                     |-------------------------.=
+                     |
+                                                                    |      =
+               | sysfs_unload() |<=3D=3D=3D=3D=3D=3D=3D> | Overlay_remove()=
+ |                    |
+                                                                    |      =
+                '-------------------- |                     |--------------=
+-----------'                     |
+                                                                    |      =
+                                             |                     |       =
+                                                |
+                                                                     '-----=
+------------------------------ --'                       '-----------------=
+-------------------------'
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+| D. Proposed User Interface Details                                       =
+        |
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+How to use the fpga sysfs interface.
+
+To load Image:
+	 - echo "DTBO file" > /sys/class/of-fpga_region/<region>/load
+
+To unload Image:
+	 - /sys/class/of-fpga_region/<region>/unload
+
+To get the image status (Load/Unload):
+	 - cat /sys/class/of-fpga_region/<region>/status
+
+Base Image
+               - Also called the "static image"
+               - An FPGA image that is designed to do full reconfiguration =
+of the FPGA.
+               - A base image may set up a set of partial reconfiguration r=
+egions that may later be reprogrammed.
+
+     .-----------------------.                       .---------------------=
+-----------------------.
+    | Host CPU              |                   |             FPGA         =
+                             |
+    |                                |                   |                 =
+                                           |
+    |                           -- -|                   |                  =
+-----------             ---------  |
+    |                         | H |                   |       |=3D=3D>| Bri=
+dge0 |<=3D=3D>| PRR0 | |
+    |                         | W|                   |       |         ----=
+-------             --------    |
+    |                         |     |                   |       |          =
+                                         |
+    |                         | B |<=3D=3D=3D=3D=3D>    |<=3D=3D |         =
+-----------             --------   |
+    |                         | R |                   |        |=3D=3D>| Br=
+idge1 |<=3D=3D>| PRR1| |
+    |                         |  I |                   |        |        --=
+---------              --------   |
+    |                         | D |                  |        |            =
+                                       |
+    |                         | G |                  |        |         ---=
+--------               -------   |
+    |                         | E |                   |        |=3D=3D>| Br=
+idge2 |<=3D=3D>| PRR2 ||
+    |                          ----|                  |                   -=
+----------               --------  |
+    |                               |                  |                   =
+                                           |
+     '-----------------------'                     '-----------------------=
+----------------------'
+
+In the above diagram a typical FPGA is setup with a base image that created=
+ three regions.
+Each region (PRR0 - 2) gets its own split of the busses that is independent=
+ly gated by a soft logic bridge (Bridge0 - 2) in the FPGA.
+The contents of each PRR can be reprogrammed independently while the rest o=
+f the system continues to function.
+
+Form the above tropology the sysfs interface looks like as follows.
+
+For Base/static region:
+To load Image:
+                - echo "DTBO file" > /sys/class/of-fpga_region/FPGA/load
+
+To unload Image:
+                - /sys/class/of-fpga_region/FPGA/unload
+
+To get the image status (Load/Unload):
+                - cat /sys/class/of-fpga_region/FPGA/status
+
+For PRR0:
+To load Image:
+                - echo "DTBO file" >   /sys/class/of-fpga_region/PRR0/load
+
+To unload Image:
+                - /sys/class/of-fpga_region/PRR0/unload
+
+To get the image status (Load/Unload):
+                - cat /sys/class/of-fpga_region/PRR0/status
+
+For PRR1:
+To load Image:
+                - echo "DTBO file" >   /sys/class/of-fpga_region/PRR1/load
+
+To unload Image:
+                - /sys/class/of-fpga_region/PRR1/unload
+
+To get the image status (Load/Unload):
+                - cat /sys/class/of-fpga_region/PRR1/status
+
+For PRR1:
+To load Image:
+                - echo "DTBO file" >   /sys/class/of-fpga_region/PRR1/load
+
+To unload Image:
+                - /sys/class/of-fpga_region/PRR1/unload
+
+To get the image status (Load/Unload):
+                - cat /sys/class/of-fpga_region/PRR1/status
 
