@@ -1,35 +1,35 @@
-Return-Path: <linux-kernel+bounces-16208-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16209-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 88B82823ACD
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 03:44:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6DCCD823AD0
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 03:44:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0E1911F26192
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 02:44:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1184F1C24C20
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 02:44:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BDE214F6E;
-	Thu,  4 Jan 2024 02:43:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B75F1D689;
+	Thu,  4 Jan 2024 02:43:43 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from SHSQR01.spreadtrum.com (mx1.unisoc.com [222.66.158.135])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4069812E65
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 02:43:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0ECD1C6A4
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 02:43:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=unisoc.com
 Received: from dlp.unisoc.com ([10.29.3.86])
-	by SHSQR01.spreadtrum.com with ESMTP id 4042h9eS001917;
-	Thu, 4 Jan 2024 10:43:09 +0800 (+08)
+	by SHSQR01.spreadtrum.com with ESMTP id 4042hAVP001950;
+	Thu, 4 Jan 2024 10:43:10 +0800 (+08)
 	(envelope-from Wenhua.Lin@unisoc.com)
 Received: from SHDLP.spreadtrum.com (shmbx06.spreadtrum.com [10.0.1.11])
-	by dlp.unisoc.com (SkyGuard) with ESMTPS id 4T59h94VLzz2Qby50;
-	Thu,  4 Jan 2024 10:36:25 +0800 (CST)
+	by dlp.unisoc.com (SkyGuard) with ESMTPS id 4T59hB2vDtz2Qby5B;
+	Thu,  4 Jan 2024 10:36:26 +0800 (CST)
 Received: from xm9614pcu.spreadtrum.com (10.13.2.29) by shmbx06.spreadtrum.com
  (10.0.1.11) with Microsoft SMTP Server (TLS) id 15.0.1497.23; Thu, 4 Jan 2024
- 10:43:07 +0800
+ 10:43:08 +0800
 From: Wenhua Lin <Wenhua.Lin@unisoc.com>
 To: Linus Walleij <linus.walleij@linaro.org>,
         Andy Shevchenko
@@ -44,9 +44,9 @@ CC: Orson Zhai <orsonzhai@gmail.com>,
         Wenhua Lin <Wenhua.Lin@unisoc.com>,
         Xiongpeng Wu
 	<xiongpeng.wu@unisoc.com>
-Subject: [PATCH V3 3/4] gpio: eic-sprd: Modify the calculation method of eic number
-Date: Thu, 4 Jan 2024 10:42:43 +0800
-Message-ID: <20240104024244.12163-4-Wenhua.Lin@unisoc.com>
+Subject: [PATCH V3 4/4] gpio: eic-sprd: Support 8 banks EIC controller
+Date: Thu, 4 Jan 2024 10:42:44 +0800
+Message-ID: <20240104024244.12163-5-Wenhua.Lin@unisoc.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20240104024244.12163-1-Wenhua.Lin@unisoc.com>
 References: <20240104024244.12163-1-Wenhua.Lin@unisoc.com>
@@ -59,99 +59,45 @@ MIME-Version: 1.0
 Content-Type: text/plain
 X-ClientProxiedBy: SHCAS03.spreadtrum.com (10.0.1.207) To
  shmbx06.spreadtrum.com (10.0.1.11)
-X-MAIL:SHSQR01.spreadtrum.com 4042h9eS001917
+X-MAIL:SHSQR01.spreadtrum.com 4042hAVP001950
 
-When the soc changes, the corresponding gpio-eic-sprd.c
-code needs to be modified, and the corresponding
-Document must also be modified, which is quite troublesome.
-To avoid modifying the driver file, the number of eics
-is automatically calculated by matching dts nodes.
+In order to solve the problem of insufficient eic,
+it supports 8 banks of eic controller, each bank contains 8 eic.
 
 Signed-off-by: Wenhua Lin <Wenhua.Lin@unisoc.com>
 ---
- drivers/gpio/gpio-eic-sprd.c | 45 ++++++++++++++++++------------------
- 1 file changed, 23 insertions(+), 22 deletions(-)
+ drivers/gpio/gpio-eic-sprd.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/gpio/gpio-eic-sprd.c b/drivers/gpio/gpio-eic-sprd.c
-index e492157e5154..1ca3c444957c 100644
+index 1ca3c444957c..715c7d581d7f 100644
 --- a/drivers/gpio/gpio-eic-sprd.c
 +++ b/drivers/gpio/gpio-eic-sprd.c
-@@ -109,34 +109,32 @@ static struct sprd_eic *to_sprd_eic(struct notifier_block *nb)
+@@ -52,10 +52,10 @@
+ #define SPRD_EIC_SYNC_DATA		0x1c
  
- struct sprd_eic_variant_data {
- 	enum sprd_eic_type type;
--	u32 num_eics;
- };
+ /*
+- * The digital-chip EIC controller can support maximum 3 banks, and each bank
++ * The digital-chip EIC controller can support maximum 8 banks, and each bank
+  * contains 8 EICs.
+  */
+-#define SPRD_EIC_MAX_BANK		3
++#define SPRD_EIC_MAX_BANK		8
+ #define SPRD_EIC_PER_BANK_NR		8
+ #define SPRD_EIC_DATA_MASK		GENMASK(7, 0)
+ #define SPRD_EIC_BIT(x)			((x) & (SPRD_EIC_PER_BANK_NR - 1))
+@@ -627,9 +627,9 @@ static int sprd_eic_probe(struct platform_device *pdev)
  
-+#define SPRD_EIC_VAR_DATA(soc_name)						\
-+static const struct sprd_eic_variant_data soc_name##_eic_dbnc_data = {		\
-+	.type = SPRD_EIC_DEBOUNCE,						\
-+};										\
-+										\
-+static const struct sprd_eic_variant_data soc_name##_eic_latch_data = {	\
-+	.type = SPRD_EIC_LATCH,							\
-+};										\
-+										\
-+static const struct sprd_eic_variant_data soc_name##_eic_async_data = {	\
-+	.type = SPRD_EIC_ASYNC,							\
-+};										\
-+										\
-+static const struct sprd_eic_variant_data soc_name##_eic_sync_data = {		\
-+	.type = SPRD_EIC_SYNC,							\
-+}
-+
-+SPRD_EIC_VAR_DATA(sc9860);
-+
- static const char *sprd_eic_label_name[SPRD_EIC_MAX] = {
- 	"eic-debounce", "eic-latch", "eic-async",
- 	"eic-sync",
- };
- 
--static const struct sprd_eic_variant_data sc9860_eic_dbnc_data = {
--	.type = SPRD_EIC_DEBOUNCE,
--	.num_eics = 8,
--};
--
--static const struct sprd_eic_variant_data sc9860_eic_latch_data = {
--	.type = SPRD_EIC_LATCH,
--	.num_eics = 8,
--};
--
--static const struct sprd_eic_variant_data sc9860_eic_async_data = {
--	.type = SPRD_EIC_ASYNC,
--	.num_eics = 8,
--};
--
--static const struct sprd_eic_variant_data sc9860_eic_sync_data = {
--	.type = SPRD_EIC_SYNC,
--	.num_eics = 8,
--};
--
- static inline void __iomem *sprd_eic_offset_base(struct sprd_eic *sprd_eic,
- 						 unsigned int bank)
- {
-@@ -607,6 +605,7 @@ static int sprd_eic_probe(struct platform_device *pdev)
- 	struct gpio_irq_chip *irq;
- 	struct sprd_eic *sprd_eic;
- 	struct resource *res;
-+	u16 num_banks = 0;
- 	int ret, i;
- 
- 	pdata = of_device_get_match_data(dev);
-@@ -640,10 +639,12 @@ static int sprd_eic_probe(struct platform_device *pdev)
- 		sprd_eic->base[i] = devm_ioremap_resource(dev, res);
- 		if (IS_ERR(sprd_eic->base[i]))
- 			return PTR_ERR(sprd_eic->base[i]);
-+
-+		num_banks++;
- 	}
- 
- 	sprd_eic->chip.label = sprd_eic_label_name[sprd_eic->type];
--	sprd_eic->chip.ngpio = pdata->num_eics;
-+	sprd_eic->chip.ngpio = num_banks * SPRD_EIC_PER_BANK_NR;
- 	sprd_eic->chip.base = -1;
- 	sprd_eic->chip.parent = dev;
- 	sprd_eic->chip.direction_input = sprd_eic_direction_input;
+ 	for (i = 0; i < SPRD_EIC_MAX_BANK; i++) {
+ 		/*
+-		 * We can have maximum 3 banks EICs, and each EIC has
++		 * We can have maximum 8 banks EICs, and each EIC has
+ 		 * its own base address. But some platform maybe only
+-		 * have one bank EIC, thus base[1] and base[2] can be
++		 * have one bank EIC, thus base[1] to base[7] can be
+ 		 * optional.
+ 		 */
+ 		res = platform_get_resource(pdev, IORESOURCE_MEM, i);
 -- 
 2.17.1
 
