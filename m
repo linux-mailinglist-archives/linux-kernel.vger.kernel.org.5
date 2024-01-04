@@ -1,116 +1,123 @@
-Return-Path: <linux-kernel+bounces-16226-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16228-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8687F823B1D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 04:28:43 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8ECE0823B23
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 04:31:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D1D4C28889E
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 03:28:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 58E1D1C21518
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 03:31:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53D835394;
-	Thu,  4 Jan 2024 03:28:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 725405684;
+	Thu,  4 Jan 2024 03:31:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="Dsbbhvd3"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="OiUSbn/g"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com [209.85.219.181])
+Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com [209.85.219.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D6EB523D
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 03:28:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9E0C5257
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 03:31:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-yb1-f181.google.com with SMTP id 3f1490d57ef6-dbd7248ac28so89096276.2
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 19:28:34 -0800 (PST)
+Received: by mail-yb1-f175.google.com with SMTP id 3f1490d57ef6-dbe39a45e8eso93607276.1
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 19:31:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1704338914; x=1704943714; darn=vger.kernel.org;
+        d=broadcom.com; s=google; t=1704339073; x=1704943873; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=RjJhlRJd8IebV/Ux2jUleGgIAnCSP1JZTISPsPLyWy4=;
-        b=Dsbbhvd3kSNjdq2vFiy+EC51h1sbB03IF3qSE92WW5QGwvcktf6kPqBGuD3M/tbRbq
-         aJVy+6akzT3JFjruPQJPuYN/i0XaMQ+eNeE4lNp/caTSHKlgwGGuNumWbauBvh8bhPym
-         l7wU6F6sdBpPXiOPXnoGg28HyoikYmuQmzu/w=
+        bh=9n80u1CkaWzx8obyOyFuf0rWVWTZDVHCjinQCoRyPWM=;
+        b=OiUSbn/g+GZHt6LiMHru5HOMX/1hXR3ODMoJvNO2+bTh9f8JC40mU6ajWAF89+TdyY
+         G9eJM6uLDRcS5tmkmcPNn0GXywJ7AMxOM+v6SgE6K1dbFX8EqMRahT8NK5HrS8pyBNFu
+         c/hGMmhcul2e3yvFpAx2g2BnuxQp8rvEhn2o0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704338914; x=1704943714;
+        d=1e100.net; s=20230601; t=1704339073; x=1704943873;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=RjJhlRJd8IebV/Ux2jUleGgIAnCSP1JZTISPsPLyWy4=;
-        b=DmFUcrvW9IbbMPgirVUrO/RVxUy6hrSFqAAs2hKtT6QwyfPm3t55plu3fBFYnvLk2t
-         ajtAPNLmncmcXQ2aXaeeXm1nXkmK6MjfMz6oVUwZeoUyxCm5DYAYZc990ltnDvXSChpS
-         A0bLjqJRp1Z76sbg31cjtI7xj4SRIN7ccztKV47FO1acKSHq9NQ5aZDOb9CUv+HkJc2w
-         iCECWuIu3POy1a+UtCkj3SZs9vWPZg+fdyu4QVyCFO4GHRH40oJrX8m2iWoRTDrNsAWp
-         5kXXp7Fp3FnDbKklwNFpaApsJKpnGH7q7maFgXPOyYDJEvboIEoD9ZyGOeKuW2Z1rLgr
-         8cVg==
-X-Gm-Message-State: AOJu0Yyo4S0TpYVs82SbVp2v4wQ3Gnm/hYgS15MHdtUA6m56p7Q8CLpC
-	ZHyBBnIOUyq+/iqBTtPoZuedMBaLqfP3Rl4TwXe9a48brjt5
-X-Google-Smtp-Source: AGHT+IGnQXJMoLmKebZcu3AExL4W/s42otH47BEQZuiUGpqOkvDW2BL4WUVNvVPN2lb6FY6rYH+lVxDIdaUnEwqPq9M=
-X-Received: by 2002:a5b:8cc:0:b0:db7:dacf:3fc6 with SMTP id
- w12-20020a5b08cc000000b00db7dacf3fc6mr15131ybq.115.1704338913905; Wed, 03 Jan
- 2024 19:28:33 -0800 (PST)
+        bh=9n80u1CkaWzx8obyOyFuf0rWVWTZDVHCjinQCoRyPWM=;
+        b=X84xqA0vB3HzW14gCyB+fDVDkPrTj37fTUjjuoBnUDr5ncbIdlr09SoXobc6vF1qKb
+         WCcBPKB6O8P+9crWWquRkm/WoNThC+9UiywIZLdXnGWNpUPYjDR9JaKLhChed0+k2+94
+         Te439TD1aCSRIz08XSq0ls8i6+zV1nzlO6dUOJeC2RTaeONt2h3keu06BgxiI83s0mrK
+         EZfq6Zist8dLpBduzOodt2BvSaZyWWQagBG1EspW/802EJ7Mwq+mp7JqJiQAUrpFAuxQ
+         OyZ41+p5uWcyRlz+Onz8ywGiIo4mpQuyyVTAUKAG5bz73Nl1LaA2eWb6gjm2BiWjy6zg
+         AhUg==
+X-Gm-Message-State: AOJu0YwW6eEfczetQ3W5SYJl9t50Hb6EAXnr3bNPvVt/kNhvzNvZKLuv
+	iwlRF2lRmFd9FQWA8e32f3rIrFD2lEdmpH0WffXsR7meNPzs
+X-Google-Smtp-Source: AGHT+IGuaPvVtHJ5wEmfvzXQLBsZQkV2dtIVwKwQ499x5ahDUSFOeJ36BveDlqYMHrOi+9ZDmI4LmmToAKYZZcRFj38=
+X-Received: by 2002:a25:a166:0:b0:dbe:a209:3305 with SMTP id
+ z93-20020a25a166000000b00dbea2093305mr10023ybh.98.1704339073736; Wed, 03 Jan
+ 2024 19:31:13 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231204091416.3308430-1-alexious@zju.edu.cn>
-In-Reply-To: <20231204091416.3308430-1-alexious@zju.edu.cn>
+References: <20231215235638.19189-1-rdunlap@infradead.org>
+In-Reply-To: <20231215235638.19189-1-rdunlap@infradead.org>
 From: Zack Rusin <zack.rusin@broadcom.com>
-Date: Wed, 3 Jan 2024 22:28:23 -0500
-Message-ID: <CABQX2QNtfJzT_iq0bdsYkz8eUG=r8c8jXyvJ=sp9ipwqfKSErw@mail.gmail.com>
-Subject: Re: [PATCH] [v2] drm/vmwgfx: fix a memleak in vmw_gmrid_man_get_node
-To: Zhipeng Lu <alexious@zju.edu.cn>
-Cc: Zack Rusin <zackr@vmware.com>, 
-	VMware Graphics Reviewers <linux-graphics-maintainer@vmware.com>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
-	Matthew Auld <matthew.auld@intel.com>, =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
-	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Date: Wed, 3 Jan 2024 22:31:03 -0500
+Message-ID: <CABQX2QMm4ovL51sLOgi-bFtctLUgXuw-T2m0Qcja41HaR3XKkQ@mail.gmail.com>
+Subject: Re: [PATCH] drm/vmwgfx: fix kernel-doc Excess struct member 'base'
+To: Randy Dunlap <rdunlap@infradead.org>
+Cc: linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>, 
+	dri-devel@lists.freedesktop.org, 
+	VMware Graphics Reviewers <linux-graphics-maintainer@vmware.com>, Maxime Ripard <mripard@kernel.org>, 
+	Thomas Zimmermann <tzimmermann@suse.de>, Zack Rusin <zackr@vmware.com>, 
+	Kees Cook <keescook@chromium.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Dec 4, 2023 at 4:15=E2=80=AFAM Zhipeng Lu <alexious@zju.edu.cn> wro=
-te:
+On Fri, Dec 15, 2023 at 6:56=E2=80=AFPM Randy Dunlap <rdunlap@infradead.org=
+> wrote:
 >
-> When ida_alloc_max fails, resources allocated before should be freed,
-> including *res allocated by kmalloc and ttm_resource_init.
+> Fix a new kernel-doc warning reported by kernel test robot:
 >
-> Fixes: d3bcb4b02fe9 ("drm/vmwgfx: switch the TTM backends to self alloc")
-> Signed-off-by: Zhipeng Lu <alexious@zju.edu.cn>
+> vmwgfx_surface.c:55: warning: Excess struct member 'base' description in =
+'vmw_user_surface'
+>
+> The other warning is not correct: it is confused by "__counted_by".
+> Kees has made a separate patch for that.
+>
+> In -Wall mode, kernel-doc still reports 20 warnings of this nature:
+> vmwgfx_surface.c:198: warning: No description found for return value of '=
+vmw_surface_dma_size'
+> but I am not addressing those.
+>
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: https://lore.kernel.org/oe-kbuild-all/202312150701.kNI9LuM3-lkp@i=
+ntel.com/
+> Cc: Kees Cook <keescook@chromium.org>
+> Cc: Zack Rusin <zackr@vmware.com>
+> Cc: VMware Graphics Reviewers <linux-graphics-maintainer@vmware.com>
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+> Cc: Maxime Ripard <mripard@kernel.org>
+> Cc: Thomas Zimmermann <tzimmermann@suse.de>
 > ---
+>  drivers/gpu/drm/vmwgfx/vmwgfx_surface.c |    1 -
+>  1 file changed, 1 deletion(-)
 >
-> Changelog:
->
-> v2: Adding {} to correct the if statement
-> ---
->  drivers/gpu/drm/vmwgfx/vmwgfx_gmrid_manager.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/vmwgfx/vmwgfx_gmrid_manager.c b/drivers/gpu/=
-drm/vmwgfx/vmwgfx_gmrid_manager.c
-> index ceb4d3d3b965..a0b47c9b33f5 100644
-> --- a/drivers/gpu/drm/vmwgfx/vmwgfx_gmrid_manager.c
-> +++ b/drivers/gpu/drm/vmwgfx/vmwgfx_gmrid_manager.c
-> @@ -64,8 +64,11 @@ static int vmw_gmrid_man_get_node(struct ttm_resource_=
-manager *man,
->         ttm_resource_init(bo, place, *res);
->
->         id =3D ida_alloc_max(&gman->gmr_ida, gman->max_gmr_ids - 1, GFP_K=
-ERNEL);
-> -       if (id < 0)
-> +       if (id < 0) {
-> +               ttm_resource_fini(man, *res);
-> +               kfree(*res);
->                 return id;
-> +       }
->
->         spin_lock(&gman->lock);
+> diff -- a/drivers/gpu/drm/vmwgfx/vmwgfx_surface.c b/drivers/gpu/drm/vmwgf=
+x/vmwgfx_surface.c
+> --- a/drivers/gpu/drm/vmwgfx/vmwgfx_surface.c
+> +++ b/drivers/gpu/drm/vmwgfx/vmwgfx_surface.c
+> @@ -44,7 +44,6 @@
+>   * struct vmw_user_surface - User-space visible surface resource
+>   *
+>   * @prime:          The TTM prime object.
+> - * @base:           The TTM base object handling user-space visibility.
+>   * @srf:            The surface metadata.
+>   * @master:         Master of the creating client. Used for security che=
+ck.
+>   */
 
-Thanks, I pushed it to drm-misc-next.
+Thanks, looks great. I went ahead and pushed this one to drm-misc-next.
 
 z
 
