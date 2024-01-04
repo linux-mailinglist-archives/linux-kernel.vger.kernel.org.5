@@ -1,232 +1,259 @@
-Return-Path: <linux-kernel+bounces-16288-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16290-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D683823C4C
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 07:35:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 029E2823C4F
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 07:43:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E4CAB28754C
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 06:35:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A565E287A9C
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 06:43:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FB931CFAF;
-	Thu,  4 Jan 2024 06:35:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E43F200A5;
+	Thu,  4 Jan 2024 06:43:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=codeweavers.com header.i=@codeweavers.com header.b="eBufPN/+"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="AJjKAzYK"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail.codeweavers.com (mail.codeweavers.com [4.36.192.163])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64CBB1DDF5
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 06:35:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeweavers.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=codeweavers.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=codeweavers.com; s=s1; h=Message-ID:Date:Subject:Cc:To:From:Sender;
-	bh=iMphVloIeKUNeeJm3gp+Gr4tQlsmrQhpofACzzv2WRg=; b=eBufPN/+upujT5lGNU/qW8wIZ5
-	dfIWqOb43suhLnI3KLpBNoBX7eWaLZfaoYcjrBCAF11+FlOsT+GK+E8lItWOcN7EuU/5thiLWaEVq
-	Bvpfv6y32jUxkdAxytxSw5mNJ4LV4d24U2Ew/qcy5fXvvfcYiFttFGZxwY5xo/+ZCWEq+l9TVb5y1
-	v12Vq1UrXwcaJIbUoPe82h1wYBXsr31FfTXbFe1h9OUMErPcGmi2H86QTTloLiVG7ofGfEpB/rpye
-	9T9P0xHag0lByTdAK1QAOrMzYMzxmLjeTyZGcIahdeMkNUg2Govrm0NejU78PX6xpAJ6B+tUx6mFr
-	pa9xUJmg==;
-Received: from [10.69.139.5] (helo=uriel.localnet)
-	by mail.codeweavers.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <zfigura@codeweavers.com>)
-	id 1rLHKG-00AxRy-09;
-	Thu, 04 Jan 2024 00:35:32 -0600
-From: Elizabeth Figura <zfigura@codeweavers.com>
-To: Sean Christopherson <seanjc@google.com>, "H. Peter Anvin" <hpa@zytor.com>
-Cc: x86@kernel.org, Linux Kernel <linux-kernel@vger.kernel.org>,
- Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
- Ricardo Neri <ricardo.neri-calderon@linux.intel.com>, wine-devel@winehq.org
-Subject: Re: x86 SGDT emulation for Wine
-Date: Thu, 04 Jan 2024 00:35:28 -0600
-Message-ID: <2451911.jE0xQCEvom@uriel>
-In-Reply-To: <1C37C311-CF8A-44EC-89B5-D826EF458708@zytor.com>
-References:
- <2285758.taCxCBeP46@uriel> <ZZV65qJuJ67E_n9O@google.com>
- <1C37C311-CF8A-44EC-89B5-D826EF458708@zytor.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C2A71F927;
+	Thu,  4 Jan 2024 06:43:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
+	s=s31663417; t=1704350555; x=1704955355; i=quwenruo.btrfs@gmx.com;
+	bh=xida4jYMBmqOqXEefFj9KpfEQTtSxYYAjtuqmqphSmI=;
+	h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
+	b=AJjKAzYKykbZypYugkmRWSuMZ8Z2EMUp0jgQM1BWrY2P+rNfwsKfQPYb/WovdZSB
+	 6dVjuctFqGqhGEvHIuBVPUgbVJTV/RqufXjds0eeOfdsaSKNC+Azi59O3FFaEW1Hm
+	 Rp2mnXOa2DCZ4dRVOPBiadYZ47wPlnVor1hosRzyNCZ4z043ge45D6nmN6JC6eZuZ
+	 h407avVR3H+4YM0daRzJlTPE58trRVg21/1nTsUtiGti6dNLNPXiBJ88jslHp7SR5
+	 uy9Ey53UhwMuVRSSpuhNK3Sq/9CEzw06jp005srBn5eEAAkmZVEkdYA0fKuC73L83
+	 +6kfA1AExe9vKjGhCg==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.153] ([118.211.64.174]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MFsUp-1rQX252zp1-00HKa6; Thu, 04
+ Jan 2024 07:42:35 +0100
+Message-ID: <d321160b-b895-4049-8ac6-4ff6ce5df7d4@gmx.com>
+Date: Thu, 4 Jan 2024 17:12:25 +1030
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 2/4] kstrtox: introduce a safer version of memparse()
+Content-Language: en-US
+To: Randy Dunlap <rdunlap@infradead.org>, Qu Wenruo <wqu@suse.com>,
+ linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+ akpm@linux-foundation.org, christophe.jaillet@wanadoo.fr,
+ andriy.shevchenko@linux.intel.com, David.Laight@ACULAB.COM, ddiss@suse.de,
+ geert@linux-m68k.org
+References: <cover.1704324320.git.wqu@suse.com>
+ <4960b36916d55e22be08fe1689b81e0eefb47578.1704324320.git.wqu@suse.com>
+ <248554b4-a549-4e94-835c-3430403b746c@infradead.org>
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+In-Reply-To: <248554b4-a549-4e94-835c-3430403b746c@infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="UTF-8"
-
-On Wednesday, January 3, 2024 9:33:10 AM CST H. Peter Anvin wrote:
-> On January 3, 2024 7:19:02 AM PST, Sean Christopherson <seanjc@google.com=
->=20
-wrote:
-> >On Tue, Jan 02, 2024, Elizabeth Figura wrote:
-> >> On Wednesday, December 27, 2023 5:58:19 PM CST H. Peter Anvin wrote:
-> >> > On December 27, 2023 2:20:37 PM PST, Elizabeth Figura=20
-<zfigura@codeweavers.com> wrote:
-> >> > >Hello all,
-> >> > >
-> >> > >There is a Windows 98 program, a game called Nuclear Strike, which
-> >> > >wants to
-> >> > >do some amount of direct VGA access. Part of this is port I/O, which
-> >> > >naturally throws SIGILL that we can trivially catch and emulate in
-> >> > >Wine.
-> >> > >The other part is direct access to the video memory at 0xa0000, whi=
-ch
-> >> > >in
-> >> > >general isn't a problem to catch and virtualize as well.
-> >> > >
-> >> > >However, this program is a bit creative about how it accesses that
-> >> > >memory;
-> >> > >instead of just writing to 0xa0000 directly, it looks up a segment
-> >> > >descriptor whose base is at 0xa0000 and then uses the %es override =
-to
-> >
-> >> > >write bytes. In pseudo-C, what it does is:
-> >...
-> >
-> >> > A prctl() to set the UMIP-emulated return values or disable it (givi=
-ng
-> >> > SIGILL) would be easy enough.
-> >> >=20
-> >> > For the non-UMIP case, and probably for a lot of other corner cases
-> >> > like
-> >> > relying on certain magic selector values and what not, the best opti=
-on
-> >> > really would be to wrap the code in a lightweight KVM container. I do
-> >> > *not*
-> >> > mean running the Qemu user space part of KVM; instead have Wine
-> >> > interface
-> >> > with /dev/kvm directly.
-> >> >=20
-> >> > Non-KVM-capable hardware is basically historic at this point.
-> >>=20
-> >> Sorry for the late response=E2=80=94I've been trying to do research on=
- what would
-> >> be necessary to use KVM (plus I made the poor choice of sending this
-> >> during the holiday season...)
-> >>=20
-> >> I'm concerned that KVM is going to be difficult or even intractable. H=
-ere
-> >> are some of the problems that I (perhaps incorrectly) understand:
-> >>=20
-> >> * As I am led to understand, there can only be one hypervisor on the
-> >> machine at a time,
-> >
-> >No.  Only one instance of KVM-the-module is allowed, but there is no
-> >arbitrary limit on the number of VMs that userspace can create.  The only
-> >meaningful limitation is memory, and while struct kvm isn't tiny, it's n=
-ot
-> >_that_ big.>
-
-Ah, thanks for the correction.
-
-So if we're able to have one VM per thread, or one VM per process with one=
-=20
-vcpu per thread (but that one is capped at 1024 at least right now?), and w=
-e=20
-don't risk running into any limits, that does make things a great deal easi=
-er.
-
-Still, as Stefan said, I don't know if using a hypervisor is going to be=20
-plausible for speed reasons.
-
-> >> and KVM has a hard limit on the number of vCPUs.
-> >>=20
-> >>   The obvious way to use KVM for Wine is to make each (guest) thread a
-> >>   vCPU.
-> >>=20
-> >> That will, at the very least, run into the thread limit. In order to
-> >> avoid
-> >> that we'd need to ship a whole scheduler, which is concerning. That's a
-> >> huge component to ship and a huge burden to keep updated. It also means
-> >> we need to hoist *all* of the ipc and sync code into the guest, which
-> >> will take an enormous amount of work.
-> >>=20
-> >>   Moreover, because there can only be one hypervisor, and Wine is a
-> >>   multi-
-> >>=20
-> >> process beast, that means that we suddenly need to throw every process
-> >> into
-> >> the same VM.
-> >
-> >As above, this is wildly inaccurate.  The only KVM restriction with resp=
-ect
-> >to processes is that a VM is bound to the process (address space) that
-> >created the VM.  There are no restrictions on the number of VMs that can
-> >be created, e.g. a single process can create multiple VMs.
-> >
-> >> That has unfortunate implications regarding isolation (it's been a dre=
-am
-> >> for years that we'd be able to share a single wine "VM" between multip=
-le
-> >> users), it complicates memory management (though perhaps not terribly?=
-).
-> >> And it means you can only have one Wine VM at a time, and can't use Wi=
-ne
-> >> at the same time as a "real" VM, neither of which are restrictions that
-> >> currently exist.>>=20
-> >>   And it's not even like we can refactor=E2=80=94we'd have to rewrite =
-tons of
-> >>   code to
-> >>=20
-> >> work inside a VM, but also keep the old code around for the cases where
-> >> we
-> >> don't have a VM and want to delegate scheduling to the host OS.
-> >>=20
-> >> * Besides scheduling, we need to exit the VM every time we would norma=
-lly
-> >> call into Unix code, which in practice is every time that the
-> >> application does an NT syscall, or uses a library which we delegate to
-> >> the host (including e.g. GPU, multimedia, audio...)
-> >
-> >Maybe I misinterpreted Peter's suggestion, but at least in my mind I was=
-n't
-> >thinking that the entire Wine process would run in a VM, but rather Wine
-> >would run just the "problematic" code in a VM.
->=20
-> Yes, the idea would be that you would run the "problematic" code inside a=
- VM
-> *mapped 1:1 with the external address space*, i.e. use KVM simply as a
-> special execution mode to give you more control of the fine grained machi=
-ne
-> state like the GDT. The code that you don't want executed in the VM conte=
-xt
-> simply leave unmapped in the VM page tables and set up #PF to always exit
-> the VM context.
-
-So yes, as long as we *can* organize things such that we exit the hyperviso=
-r=20
-every time we want to call into Unix code, then that's feasible. We have a=
-=20
-well-defined break between Windows and Unix code and it wouldn't be=20
-inordinately difficult to shove the VM exit into that break. My concern was=
-=20
-that limitations on the number of VMs or vCPUs we can create would prevent =
-us=20
-from doing that, and effectively require us to implement a lot more inside =
-the=20
-VM, but as I understand that's not actually a problem.
-
-That still leaves the question of performance though. If having to exit the=
- VM=20
-that often for performance reasons isn't feasible, then that's still going =
-to=20
-force us to implement from scratch an inordinate amount of kernel/library c=
-ode=20
-inside the VM just to avoid the transition. Or, more likely, conclude that =
-a=20
-hypervisor just isn't going to work for us.
+X-Provags-ID: V03:K1:CrVsbMwMt7+YQRPUOmwVq14/SXF/4aS6iv4NElSkHwvms7ll4/O
+ eX37P/ub/HxExSR/zXC5y3VdXKAylUTdGxh+BK4HshhShXDVVwlBllXi2BWQeBUiMzaz7Ep
+ C1C94hPv5pjdC03MEHfSaeFeAmHyr5GKNgDJ0JmtLM3/xGoiZykrAvwwkGAFfUszqj+1wHX
+ weKmfAoReFjUyOl4YaAhw==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:16ck9G6Xcy0=;w2lX4z2ysrT18sPfv7Hmmi8ZSNo
+ Dhu7UaiFK+nHDkG2WdfO3xdGnsdMxmhMRkIr7HGGNy0C3VpYCcv5W9elFq5eRzX2MhdMcgCA3
+ X55yFCWzWaopj36btoDHcVbInAnfkFv3spR8YcpIxbS3MyrM9KkD0KLfnXHt406Ibiqv/vtWc
+ B4eut9gP9wHV+GIr/zuMRvHR5+osQwpkjnkg+7uNDB7OMYv/q65AZsIvlq6DSKeAXav1HSOsx
+ p60STJtIUZXETDIFp4DbJWfN7Ebr1CJ9MHyPW+WwrTwnN64v+FTJSVKfnQEMoYNB50h0CzJtu
+ BRhtlhwLsP7F/gnDlwxThXS/Nv5/pMAmEm70CyXhAO8/eSijp27X0M5agFipfoVKun4xDFUwk
+ LqExkXSoSy0Lk9LIaTwFoR2chSdTmJ8TAvnSq6iXuf6BabR8ndhBwgOS2wkrcltC5Ec9zWVqk
+ GIVHjIvPLn1jE5rBcaZaaR5HeTcs5nnM5hxzu+MnznNEBnFtxZ+dBHOPSuPTfwSkBSmuBmgTm
+ JhCEsiKdxebL6IyXmiSdGb5MHPKeiraoucV6deBi3KTKQW7ZYH5GnyiET0pf52+fMyx/pXtlC
+ kaGD36IWeegOOsFsqdkZ7s+pFErIHFR5K8p9QYm/dKXx7v8s/oA0yarvKGA0tWhf69QZdBcLI
+ Gm/HIACwb3tzHkbnfT5B2OIb4i8pQJXi/fBsTvssdsXgUVSmid4Nq+aRLvL6jwh5QSp/125ws
+ jSx3HvEB4P10V3jt71lo+4aI5ANMYMBX+Ep9+WU2EqFZ9RVFty/snti5LzQzEqNfsyf5xgEWV
+ wGe+X9oEzdzxmU9zHL9UKsm6fz9fFhOgIzKzWcjcjB5lUXoIfBRGEv1FWbQsn5+TBkS1Pbjs5
+ 36F6V0Z3dDjxS5T9z+AdasprB9r3vjHYmSM7tHPBmb76cFI3fUAC1h48V+MNhT9VNu+dCKvMC
+ vxWwNt375Bhk1oaR4nuDpDgcfoc=
 
 
-I'm not at all familiar with the arch code, and I'm sure I'm not asking=20
-anything interesting, but is it really impossible to put CPU_ENTRY_AREA_RO_=
-IDT=20
-somewhere that doesn't truncate to NULL, and to put the GDT at a fixed addr=
-ess=20
-as well?
 
+On 2024/1/4 17:00, Randy Dunlap wrote:
+> Hi,
+>
+[...]
+>> + *		parameter.
+>> + *
+>> + * @suffixes:	The suffixes which should be parsed. Use logical ORed
+>> + *		memparse_suffix enum to indicate the supported suffixes.
+>> + *		The suffixes are case-insensive, all 2 ^ 10 based.
+>
+> 		                 case-insensitive
+>
+>> + *		Supported ones are "KMGPTE".
+>> + *		NOTE: If one suffix out of the supported one is hit, it would
+>
+> 		                                         ones
+>
+>> + *		end the parse normally, with @retptr pointed to the unsupported
+>> + *		suffix.
+>
+> Could you explain (or give an example) of "to the unsupported suffix"?
+> This isn't clear IMO.
 
+Oh, my bad, that sentence itself is not correct.
+
+What I really want to say is:
+
+  If one suffix (one of "KMGPTE") is hit but that suffix is not
+  specified in the @suffxies parameter, it would end the parse normally,
+  with @retptr pointed to the (unsupported) suffix.
+
+The example would be the "68k " case in the ok cases in the next patch.
+We have two different cases for the same "68k" string, with different
+@suffixes and different results:
+
+	"68k ", KMGPTE -> 68 * 1024, @retptr at " ".
+	"68k ", M -> 68, @retptr at 'k'.
+
+I don't have a better expression here unfortunately, maybe the special
+case is not even worthy explaining?
+
+>
+>> + *
+>> + * @res:	Where to write the result.
+>> + *
+>> + * @retptr:	(output) Optional pointer to the next char after parse com=
+pletes.
+>> + *
+>> + * Return 0 if any valid numberic string can be parsed, and @retptr up=
+dated.
+>> + * Return -INVALID if no valid number string can be found.
+>> + * Return -ERANGE if the number overflows.
+>> + * For minus return values, @retptr would not be updated.
+>
+>   * Returns:
+>   * * %0 if any valid numeric string can be parsed, and @retptr is updat=
+ed.
+>   * * %-EINVAL if no valid number string can be found.
+>   * * %-ERANGE if the number overflows.
+>   * * For negative return values, @retptr is not updated.
+>
+>
+> For *ALL* of the comments, I request/suggest that you change the "would =
+be" or
+> "would not be" to "is" or "is not" or whatever present tense words make =
+the
+> most sense.
+
+No problem.
+
+Thanks,
+Qu
+
+>
+>
+>> + */
+>> +noinline int memparse_safe(const char *s, enum memparse_suffix suffixe=
+s,
+>> +			   unsigned long long *res, char **retptr)
+>> +{
+>> +	unsigned long long value;
+>> +	unsigned int rv;
+>> +	int shift =3D 0;
+>> +	int base =3D 0;
+>> +
+>> +	s =3D _parse_integer_fixup_radix(s, &base);
+>> +	rv =3D _parse_integer(s, base, &value);
+>> +	if (rv & KSTRTOX_OVERFLOW)
+>> +		return -ERANGE;
+>> +	if (rv =3D=3D 0)
+>> +		return -EINVAL;
+>> +
+>> +	s +=3D rv;
+>> +	switch (*s) {
+>> +	case 'K':
+>> +	case 'k':
+>> +		if (!(suffixes & MEMPARSE_SUFFIX_K))
+>> +			break;
+>> +		shift =3D 10;
+>> +		break;
+>> +	case 'M':
+>> +	case 'm':
+>> +		if (!(suffixes & MEMPARSE_SUFFIX_M))
+>> +			break;
+>> +		shift =3D 20;
+>> +		break;
+>> +	case 'G':
+>> +	case 'g':
+>> +		if (!(suffixes & MEMPARSE_SUFFIX_G))
+>> +			break;
+>> +		shift =3D 30;
+>> +		break;
+>> +	case 'T':
+>> +	case 't':
+>> +		if (!(suffixes & MEMPARSE_SUFFIX_T))
+>> +			break;
+>> +		shift =3D 40;
+>> +		break;
+>> +	case 'P':
+>> +	case 'p':
+>> +		if (!(suffixes & MEMPARSE_SUFFIX_P))
+>> +			break;
+>> +		shift =3D 50;
+>> +		break;
+>> +	case 'E':
+>> +	case 'e':
+>> +		if (!(suffixes & MEMPARSE_SUFFIX_E))
+>> +			break;
+>> +		shift =3D 60;
+>> +		break;
+>> +	}
+>> +	if (shift) {
+>> +		s++;
+>> +		if (value >> (64 - shift))
+>> +			return -ERANGE;
+>> +		value <<=3D shift;
+>> +	}
+>> +	*res =3D value;
+>> +	if (retptr)
+>> +		*retptr =3D (char *)s;
+>> +	return 0;
+>> +}
+>> +EXPORT_SYMBOL(memparse_safe);
+>> +
+>>   /**
+>>    * kstrtoull - convert a string to an unsigned long long
+>>    * @s: The start of the string. The string must be null-terminated, a=
+nd may also
+>
+> Thanks.
 
