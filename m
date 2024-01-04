@@ -1,53 +1,64 @@
-Return-Path: <linux-kernel+bounces-16304-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16305-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45C3B823C80
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 08:12:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 302A3823C88
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 08:16:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B44BB2883AA
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 07:12:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9A0501F2612A
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 07:16:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA92E1E51A;
-	Thu,  4 Jan 2024 07:12:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 301001DFED;
+	Thu,  4 Jan 2024 07:15:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="fEph5X2O"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="HCrR9rMg"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oa1-f44.google.com (mail-oa1-f44.google.com [209.85.160.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 441D51DFE2;
-	Thu,  4 Jan 2024 07:12:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704352363; x=1735888363;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=BuiT+rA2z6Mm0sjMPQLK1Ojp5SJ1U85xvH6hRCukWEg=;
-  b=fEph5X2ODMIMzxPE6GqtlmNy++ZrU1qk8pCIi4P4rOkzLjwkVfkKerYI
-   f9TFvgf9NZwvofiDXRGT6sTbTDBLuFPBviSTO5ln8T5x3JgsHVC29dAfC
-   w4rwb3Vu1kaXCm46BCeGUSvoVFv167BlFhzl/jmwdKa6hfdAsTsO23G2k
-   aEYYIPF/HgOoFAHi8oFkdT4fTyZKnUVekiZ7aJm8nP1CHaXjGcaXJa1Vb
-   kY3QoufHgL1V7RNKe5uCQuirevAvs5i03lT+jtUSIBfwoe5p9hiGo/fYR
-   nOtF2/KFheDP8LORA/WXh/cHji3gLNZoVrYSgXL/i3bwTudTFGLvHtUfJ
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10942"; a="461454224"
-X-IronPort-AV: E=Sophos;i="6.04,330,1695711600"; 
-   d="scan'208";a="461454224"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jan 2024 23:12:42 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10942"; a="809105147"
-X-IronPort-AV: E=Sophos;i="6.04,330,1695711600"; 
-   d="scan'208";a="809105147"
-Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.252.35.85])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jan 2024 23:12:39 -0800
-Message-ID: <6d0edbac-9b9c-4a90-a3c9-193198e8a088@intel.com>
-Date: Thu, 4 Jan 2024 09:12:35 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF54D1DFE2
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 07:15:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-oa1-f44.google.com with SMTP id 586e51a60fabf-204235d0913so134572fac.1
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 23:15:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1704352549; x=1704957349; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=X2SmQScyvIuLdY3E1hFWKaRhiC86WTLlAjqHutwpfeQ=;
+        b=HCrR9rMg4i+4XQwPdLR2RC9kSODXJQykMjvo18WfW+phQ+MTosBwO9wYhlIxPSQRy6
+         EPA24mm8y7DMmnYLtwSv3Qh+zT7bR8tnvZeZZdycIBl/fxLaVQj2/SlnELpVLGBP7v/M
+         dCPP/g/M7Jtc0z4Yhs36TBrJfgKZotglrdAI7cMbtLZb/I3XsaJR2o3fqh+o2JZYVtMN
+         nWFO6aIG/5dV/nKwnB8C2AiF2u3x4Bbk/Te1ItmrQv3ogQY3OKsZ+DuYqGT48NTNwyGk
+         IStLsi8xhMQ1VQqJW4GBBkoWBsUMK0Za1bLQocRhQ3AMnTIi6xasfEN8LKAAnUm4BzYS
+         m+xQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704352549; x=1704957349;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=X2SmQScyvIuLdY3E1hFWKaRhiC86WTLlAjqHutwpfeQ=;
+        b=WwDOucAZ2Ix8A8GWWxJuL+0dAxt1bXUXq1B/v7JcRp1tFpLE6KdxCuylCRlvg0s3nO
+         EUJqKryCU1uvPHvddMLi96uSd2MJwppx2jPPp6hWrFSdsmEk389vbUV9IaCK0YAZhxNF
+         6dZPiLokG8k9Fw6RchfjUiuzMHxQzdiHiOxFfqTEHJvXui1yxKW/shtlthMAqU4i1Izn
+         ajbGOUqU3ZPVnc+9/AIZDq92ySC/UTHcLD3um9+3tfYxtjnRDX31eSJiRi3jj/suf0iv
+         3fABBlwLX7aM/hzJTUt336yedtg8Yikr1+3m54bAGHJdQrb9luPrCOz+6e5ykCONuEFF
+         wMdA==
+X-Gm-Message-State: AOJu0Ywfj5jfL3VLqZaEYsETE2slLZDj2Sb+Cre3/og/5JWuRzHOpgXm
+	V22+hK6OFk1DPKavQA6nhj58/Qmlo++Gkw==
+X-Google-Smtp-Source: AGHT+IFDtkmc/5Itm2/vrFUrhCZarPV/ONCswJm00ZQe5veImd2aILrozVH3VBmTM9uNWBifaFHrHA==
+X-Received: by 2002:a05:6871:e410:b0:203:ef6e:2319 with SMTP id py16-20020a056871e41000b00203ef6e2319mr251670oac.10.1704352548337;
+        Wed, 03 Jan 2024 23:15:48 -0800 (PST)
+Received: from [192.168.17.16] ([138.84.62.99])
+        by smtp.gmail.com with ESMTPSA id u11-20020a9d4d8b000000b006d9fb0458cdsm4542214otk.39.2024.01.03.23.15.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 03 Jan 2024 23:15:48 -0800 (PST)
+Message-ID: <32ebe3f1-49b7-4ad3-9ea5-ed2adbbd78da@linaro.org>
+Date: Thu, 4 Jan 2024 01:15:45 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -55,73 +66,103 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] mmc: sdhci-esdhc-imx: Fix smatch errors
+Subject: Re: [PATCH 6.6 00/49] 6.6.10-rc1 review
 Content-Language: en-US
-To: Stefan Wahren <wahrenst@gmx.net>,
- Hardevsinh Palaniya <hardevsinh.palaniya@siliconsignals.io>,
- haibo.chen@nxp.com, ulf.hansson@linaro.org, shawnguo@kernel.org,
- s.hauer@pengutronix.de
-Cc: Pengutronix Kernel Team <kernel@pengutronix.de>,
- Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>,
- linux-mmc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org
-References: <20231229130207.3539334-1-hardevsinh.palaniya@siliconsignals.io>
- <838abf56-e2b1-474b-977a-8671a31053ed@gmx.net>
-From: Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-In-Reply-To: <838abf56-e2b1-474b-977a-8671a31053ed@gmx.net>
-Content-Type: text/plain; charset=UTF-8
+From: =?UTF-8?Q?Daniel_D=C3=ADaz?= <daniel.diaz@linaro.org>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
+Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+ torvalds@linux-foundation.org, akpm@linux-foundation.org,
+ linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+ lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+ f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, srw@sladewatkins.net,
+ rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com, leo@leolam.fr,
+ johannes.berg@intel.com
+References: <20240103164834.970234661@linuxfoundation.org>
+ <99fe3993-51b5-4284-8a22-869764f393d8@linaro.org>
+In-Reply-To: <99fe3993-51b5-4284-8a22-869764f393d8@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-On 29/12/23 16:34, Stefan Wahren wrote:
-> Hi Hardevsinh,
+Hello!
+
+On 03/01/24 10:10 p. m., Daniel Díaz wrote:
+> Hello!
 > 
-> the patch subject is a too generic. Maybe something like "fix
-> initialization of target_min/max"
-> 
-> Am 29.12.23 um 14:02 schrieb Hardevsinh Palaniya:
->> Resolve smatch errors in esdhc_executing_tuning()
+> On 03/01/24 10:55 a. m., Greg Kroah-Hartman wrote:
+>> This is the start of the stable review cycle for the 6.6.10 release.
+>> There are 49 patches in this series, all will be posted as a response
+>> to this one.  If anyone has any issues with these being applied, please
+>> let me know.
 >>
->> esdhc_executing_tuning() error: uninitialized symbol 'target_min'
->> esdhc_executing_tuning() error: uninitialized symbol 'target_max'
-> I think this deserve
-> 
-> Fixes: 541a95e64d76 ("mmc: sdhci-esdhc-imx: optimize the manual tuing
-> logic to get the best timing")
-
-Is smatch right though?
-
-	while (max < ESDHC_TUNE_CTRL_MAX) {	// always true first iteration
-
-	max = min + ESDHC_TUNE_CTRL_STEP;	// max > min
-
-		max -= ESDHC_TUNE_CTRL_STEP;
-		break;				// max >= min
-
-	win_length = max - min + 1;		// always > 0 since max >= min
-
-	if (win_length > target_win_length) {	// always true first iteration
-		target_min = min;		// always initialized
-		target_max = max;		// always initialized
-
-> 
-> Thanks
->> Signed-off-by: Hardevsinh Palaniya <hardevsinh.palaniya@siliconsignals.io>
+>> Responses should be made by Fri, 05 Jan 2024 16:47:49 +0000.
+>> Anything received after that time might be too late.
 >>
->> diff --git a/drivers/mmc/host/sdhci-esdhc-imx.c b/drivers/mmc/host/sdhci-esdhc-imx.c
->> index 40a6e2f8145a..839b60138f04 100644
->> --- a/drivers/mmc/host/sdhci-esdhc-imx.c
->> +++ b/drivers/mmc/host/sdhci-esdhc-imx.c
->> @@ -1166,6 +1166,8 @@ static int esdhc_executing_tuning(struct sdhci_host *host, u32 opcode)
->>       min = ESDHC_TUNE_CTRL_MIN;
->>       max = ESDHC_TUNE_CTRL_MIN;
->>       target_win_length = 0;
->> +    target_min = 0;
->> +    target_max = 0;
->>       while (max < ESDHC_TUNE_CTRL_MAX) {
->>           /* find the mininum delay first which can pass tuning */
->>           while (min < ESDHC_TUNE_CTRL_MAX) {
+>> The whole patch series can be found in one patch at:
+>>     https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.6.10-rc1.gz
+>> or in the git tree and branch at:
+>>     git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.6.y
+>> and the diffstat can be found below.
+>>
+>> thanks,
+>>
+>> greg k-h
 > 
+> We're seeing a build regression with x86/GCC-8 and allmodconfig:
+> 
+> -----8<-----
+>    In file included from /builds/linux/include/linux/string.h:294,
+>                     from /builds/linux/include/linux/bitmap.h:11,
+>                     from /builds/linux/include/linux/cpumask.h:12,
+>                     from /builds/linux/arch/x86/include/asm/paravirt.h:17,
+>                     from /builds/linux/arch/x86/include/asm/cpuid.h:62,
+>                     from /builds/linux/arch/x86/include/asm/processor.h:19,
+>                     from /builds/linux/arch/x86/include/asm/cpufeature.h:5,
+>                     from /builds/linux/arch/x86/include/asm/thread_info.h:53,
+>                     from /builds/linux/include/linux/thread_info.h:60,
+>                     from /builds/linux/include/linux/uio.h:9,
+>                     from /builds/linux/include/linux/socket.h:8,
+>                     from /builds/linux/include/uapi/linux/if.h:25,
+>                     from /builds/linux/net/wireless/nl80211.c:11:
+>    In function 'nl80211_set_cqm_rssi.isra.44',
+>        inlined from 'nl80211_set_cqm' at /builds/linux/net/wireless/nl80211.c:13000:10:
+>    /builds/linux/include/linux/fortify-string.h:57:29: error: '__builtin_memcpy' pointer overflow between offset 36 and size [-1, 9223372036854775807] [-Werror=array-bounds]
+>     #define __underlying_memcpy __builtin_memcpy
+>                                 ^
+>    /builds/linux/include/linux/fortify-string.h:648:2: note: in expansion of macro '__underlying_memcpy'
+>      __underlying_##op(p, q, __fortify_size);   \
+>      ^~~~~~~~~~~~~
+>    /builds/linux/include/linux/fortify-string.h:693:26: note: in expansion of macro '__fortify_memcpy_chk'
+>     #define memcpy(p, q, s)  __fortify_memcpy_chk(p, q, s,   \
+>                              ^~~~~~~~~~~~~~~~~~~~
+>    /builds/linux/net/wireless/nl80211.c:12939:3: note: in expansion of macro 'memcpy'
+>       memcpy(cqm_config->rssi_thresholds, thresholds,
+>       ^~~~~~
+>    cc1: all warnings being treated as errors
+>    make[5]: *** [/builds/linux/scripts/Makefile.build:243: net/wireless/nl80211.o] Error 1
+> ----->8-----
+> 
+> This is currently being bisected, so there is more to follow.
+
+Bisection pointed to:
+
+   commit 92045aab1bd9bfd73d816e907ea07739c4550b41
+   Author: Johannes Berg <johannes.berg@intel.com>
+   Date:   Sat Dec 16 05:47:15 2023 +0000
+
+       wifi: cfg80211: fix CQM for non-range use
+       
+       commit 7e7efdda6adb385fbdfd6f819d76bc68c923c394 upstream.
+
+Reverting that was not possible, so I reverted 47f3694a4259 first ("wifi: nl80211: fix deadlock in nl80211_set_cqm_rssi (6.6.x)"), but that was not enough. After reverting both 47f3694a4259 and 92045aab1bd9, the build passed again.
+
+Reproducer:
+
+   tuxmake --runtime podman --target-arch x86_64 --toolchain gcc-8 --kconfig allmodconfig
+
+
+Greetings!
+
+Daniel Díaz
+daniel.diaz@linaro.org
 
 
