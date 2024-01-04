@@ -1,62 +1,62 @@
-Return-Path: <linux-kernel+bounces-16551-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16552-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B0BD1824017
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 12:02:06 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2ABBE82401B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 12:02:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 90509B23972
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 11:02:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B0A68B239AC
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 11:02:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41A4521352;
-	Thu,  4 Jan 2024 11:01:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F26B2137D;
+	Thu,  4 Jan 2024 11:01:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Yly/GkvZ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GLbmi8iV"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA96F210EE;
-	Thu,  4 Jan 2024 11:01:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFB432111E;
+	Thu,  4 Jan 2024 11:01:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-3368d1c7b23so292487f8f.0;
-        Thu, 04 Jan 2024 03:01:28 -0800 (PST)
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-40d6b4e2945so3725455e9.0;
+        Thu, 04 Jan 2024 03:01:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704366087; x=1704970887; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1704366089; x=1704970889; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=h5mxLkh2hEgcMvbfMMh1KibA3U7+O5yTNHMAUzMLGy8=;
-        b=Yly/GkvZwZddKhucgdNEYmCXR+7gFKBeryDF4QEimxcHWHSNXT1K4CjxM/MaarNT9M
-         HJuQNW3W+1g+iBeko6oY5+0jZHa7Ytykt8EoRFO6EQQgzR58LTGjnel8Tm+TwG+NP3GH
-         beXWK9hs0c1xlAYodYqb+7NAJJlv62xYZdM9VY6N9iIp0b5ryPL+Ey8l2fF8lqCDIzgF
-         IfFXXQsF4vUjg9ovwRKjMzEpijrIIxfTLu5XxJtJh0iHiK3DkjUo/s1T/v0rwbB7hbwQ
-         33URza2ccUasDS9i3F9oDIlWDfazzIHEBbX/0j1jQYngTu0e+8UlkRNEW4GORjE76haW
-         DbNg==
+        bh=GcUZ4vm1rSPsRUwCzo7AkcTm5VLBxV3HcN4vc65kHms=;
+        b=GLbmi8iVVfw/li7xkJJBSONlhyc9aS0ul6VOpT/+4QgUEPl6m6leU4H+0a7PRmv0rv
+         2ix3P6SLumG1HByWePoywnvbC/f20VWInuvpuEUPzH1uq5O+hMDL6Ud8lLnwBUuQl9za
+         gjzyh2xNN31JhU+akX2E93R2aQKKNlwSFPRefezvCdLsKF8+pnYxeqgPOHZkvF2EVIeo
+         ZvT1kNxZEkr+N2ahJ9DJWEuSXd6KF/R+Z717ZAeHAm/vSNp6c0TvKkr+5YDV/Z893chp
+         dC4XUZcD+7eGu08inlt2s3ARytQ0ME3LxUipSt46m70wCj1jt4nzewiKFL8N+J5EQiXp
+         dlGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704366087; x=1704970887;
+        d=1e100.net; s=20230601; t=1704366089; x=1704970889;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=h5mxLkh2hEgcMvbfMMh1KibA3U7+O5yTNHMAUzMLGy8=;
-        b=aigLEUJwoMC4pgyHsLQy8UzYMJYHtKNNs6ObNKER/+FGA+wAPWEwfPkLzJOBLe02O9
-         Cg61hNsEvuJYBIiLIwXl9NFiU7AWAQ/yIwaVA7HKuzJQcSdEyoMyg55A2M8tbLWi1Hly
-         +a6fMELVvdJ+/jHqujFBAhqxBRFXgHdIkW1A7DFMHugyqmNv19RU2+iGfzbHncgMXv8Y
-         CNk27dYp1bfgNR8FVe7hteNKKnmO2C71YKTCw+HZaFWWSW3PvpMYJiZTN/90HdWAGLRj
-         XnA3EwgMjf7ric3dIWmC8akK66XZgjHdF61IkVkLuhVVFJ2UQj9oyPHr2ieSGAD2dZKN
-         oLog==
-X-Gm-Message-State: AOJu0YzouND/zQsT+R015Bi017sOEvqFDryhuYfGdUyDXxWhnZ5csMim
-	h4Q63uNUB4uZrir0hhqOskQ=
-X-Google-Smtp-Source: AGHT+IFgM921wyMTaIEK6tB2WeVRkLLjFFl9rS5Stm9t7E8Fr5Ne03cfdh3ooWRH2i/yGy8ml56o/w==
-X-Received: by 2002:a5d:560e:0:b0:337:3ee4:9435 with SMTP id l14-20020a5d560e000000b003373ee49435mr251268wrv.77.1704366086745;
-        Thu, 04 Jan 2024 03:01:26 -0800 (PST)
+        bh=GcUZ4vm1rSPsRUwCzo7AkcTm5VLBxV3HcN4vc65kHms=;
+        b=BSFWrhdWv4nk9sJipqiF21MGxjLqCMdaE5/hhHV0VKR+sYeA6QUieHpS6G+NEBBCSq
+         mOXSLaM7Z5L0Nv1rbzFKwXWokyRzbZu45bhX3hANP2dkWK3Mw78LHW50thszoz59uyTP
+         tnMRcM5fVyszxTLDxF32bTIP58Kz/JYluYRiV8HmTlsmIVdR66W+TyHDhkqQfwQuqv4A
+         fzw7zm75FeZIQZmYObXuauWjAONFRglaPXln7oxicDDaEc8M55+dwo0D/VylHDGXhjIb
+         pzbDvCesSFO+MXVmJrZ72HzhPb8XaqvpOq5A/I7VX+jWKTj8Ym/D4BSLghlcFVatnqqv
+         ZnYA==
+X-Gm-Message-State: AOJu0YxCKoSs1JnWb5y2b66Gv0di0mbGTP3F8qFR68kPGUtXQdu/PfqG
+	ZMljs7XE+qNJD0myQT9E9uw=
+X-Google-Smtp-Source: AGHT+IFQAgwEgUrx4kY0PoYMtT7xEKwCbcr8FnfP625KPtcqR4xZ3Kl3APGhMSaC+DedNeVDazA0yg==
+X-Received: by 2002:a05:600c:78a:b0:40d:87ea:f7fb with SMTP id z10-20020a05600c078a00b0040d87eaf7fbmr173585wmo.93.1704366089164;
+        Thu, 04 Jan 2024 03:01:29 -0800 (PST)
 Received: from localhost.localdomain (host-80-116-159-187.retail.telecomitalia.it. [80.116.159.187])
-        by smtp.googlemail.com with ESMTPSA id b14-20020adff90e000000b003373fe3d345sm9550242wrr.65.2024.01.04.03.01.24
+        by smtp.googlemail.com with ESMTPSA id b14-20020adff90e000000b003373fe3d345sm9550242wrr.65.2024.01.04.03.01.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Jan 2024 03:01:26 -0800 (PST)
+        Thu, 04 Jan 2024 03:01:28 -0800 (PST)
 From: Christian Marangi <ansuelsmth@gmail.com>
 To: Pavel Machek <pavel@ucw.cz>,
 	Lee Jones <lee@kernel.org>,
@@ -85,9 +85,9 @@ To: Pavel Machek <pavel@ucw.cz>,
 	linux-kernel@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org,
 	netdev@vger.kernel.org
-Subject: [net-next PATCH v8 1/5] dt-bindings: net: phy: Make LED active-low property common
-Date: Thu,  4 Jan 2024 12:01:08 +0100
-Message-ID: <20240104110114.2020-2-ansuelsmth@gmail.com>
+Subject: [net-next PATCH v8 2/5] dt-bindings: net: phy: Document LED inactive high impedance mode
+Date: Thu,  4 Jan 2024 12:01:09 +0100
+Message-ID: <20240104110114.2020-3-ansuelsmth@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240104110114.2020-1-ansuelsmth@gmail.com>
 References: <20240104110114.2020-1-ansuelsmth@gmail.com>
@@ -99,124 +99,34 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Move LED active-low property to common.yaml. This property is currently
-defined multiple times by bcm LEDs. This property will now be supported
-in a generic way for PHY LEDs with the use of a generic function.
-
-With active-low bool property not defined, active-high is always
-assumed.
+Document LED inactive high impedance mode to set the LED to require high
+impedance configuration to be turned OFF.
 
 Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
 ---
 Changes v5:
-- Make active-low generic
-Changes v4:
-- Drop support for global active-low
-- Rework to polarity option (for marvell10g series support)
-Changes v3:
-- Out of RFC
-Changes v2:
 - Add this patch
 
- Documentation/devicetree/bindings/leds/common.yaml          | 6 ++++++
- Documentation/devicetree/bindings/leds/leds-bcm63138.yaml   | 4 ----
- Documentation/devicetree/bindings/leds/leds-bcm6328.yaml    | 4 ----
- Documentation/devicetree/bindings/leds/leds-bcm6358.txt     | 2 --
- .../devicetree/bindings/leds/leds-pwm-multicolor.yaml       | 4 ----
- Documentation/devicetree/bindings/leds/leds-pwm.yaml        | 5 -----
- 6 files changed, 6 insertions(+), 19 deletions(-)
+ Documentation/devicetree/bindings/leds/common.yaml | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
 diff --git a/Documentation/devicetree/bindings/leds/common.yaml b/Documentation/devicetree/bindings/leds/common.yaml
-index c8d0ba5f2327..f5b40df6b421 100644
+index f5b40df6b421..9e7b4aabe0bb 100644
 --- a/Documentation/devicetree/bindings/leds/common.yaml
 +++ b/Documentation/devicetree/bindings/leds/common.yaml
-@@ -200,6 +200,12 @@ properties:
-       #trigger-source-cells property in the source node.
-     $ref: /schemas/types.yaml#/definitions/phandle-array
+@@ -206,6 +206,12 @@ properties:
+       Makes LED active low. To turn the LED ON, line needs to be
+       set to low voltage instead of high.
  
-+  active-low:
++  inactive-high-impedance:
 +    type: boolean
 +    description:
-+      Makes LED active low. To turn the LED ON, line needs to be
-+      set to low voltage instead of high.
++      Set LED to high-impedance mode to turn the LED OFF. LED might also
++      describe this mode as tristate.
 +
    # Required properties for flash LED child nodes:
    flash-max-microamp:
      description:
-diff --git a/Documentation/devicetree/bindings/leds/leds-bcm63138.yaml b/Documentation/devicetree/bindings/leds/leds-bcm63138.yaml
-index 52252fb6bb32..bb20394fca5c 100644
---- a/Documentation/devicetree/bindings/leds/leds-bcm63138.yaml
-+++ b/Documentation/devicetree/bindings/leds/leds-bcm63138.yaml
-@@ -52,10 +52,6 @@ patternProperties:
-         maxItems: 1
-         description: LED pin number
- 
--      active-low:
--        type: boolean
--        description: Makes LED active low
--
-     required:
-       - reg
- 
-diff --git a/Documentation/devicetree/bindings/leds/leds-bcm6328.yaml b/Documentation/devicetree/bindings/leds/leds-bcm6328.yaml
-index 51cc0d82c12e..f3a3ef992929 100644
---- a/Documentation/devicetree/bindings/leds/leds-bcm6328.yaml
-+++ b/Documentation/devicetree/bindings/leds/leds-bcm6328.yaml
-@@ -78,10 +78,6 @@ patternProperties:
-           - maximum: 23
-         description: LED pin number (only LEDs 0 to 23 are valid).
- 
--      active-low:
--        type: boolean
--        description: Makes LED active low.
--
-       brcm,hardware-controlled:
-         type: boolean
-         description: Makes this LED hardware controlled.
-diff --git a/Documentation/devicetree/bindings/leds/leds-bcm6358.txt b/Documentation/devicetree/bindings/leds/leds-bcm6358.txt
-index 6e51c6b91ee5..211ffc3c4a20 100644
---- a/Documentation/devicetree/bindings/leds/leds-bcm6358.txt
-+++ b/Documentation/devicetree/bindings/leds/leds-bcm6358.txt
-@@ -25,8 +25,6 @@ LED sub-node required properties:
- 
- LED sub-node optional properties:
-   - label : see Documentation/devicetree/bindings/leds/common.txt
--  - active-low : Boolean, makes LED active low.
--    Default : false
-   - default-state : see
-     Documentation/devicetree/bindings/leds/common.txt
-   - linux,default-trigger : see
-diff --git a/Documentation/devicetree/bindings/leds/leds-pwm-multicolor.yaml b/Documentation/devicetree/bindings/leds/leds-pwm-multicolor.yaml
-index bd6ec04a8727..5edfbe347341 100644
---- a/Documentation/devicetree/bindings/leds/leds-pwm-multicolor.yaml
-+++ b/Documentation/devicetree/bindings/leds/leds-pwm-multicolor.yaml
-@@ -41,10 +41,6 @@ properties:
- 
-           pwm-names: true
- 
--          active-low:
--            description: For PWMs where the LED is wired to supply rather than ground.
--            type: boolean
--
-           color: true
- 
-         required:
-diff --git a/Documentation/devicetree/bindings/leds/leds-pwm.yaml b/Documentation/devicetree/bindings/leds/leds-pwm.yaml
-index 7de6da58be3c..113b7c218303 100644
---- a/Documentation/devicetree/bindings/leds/leds-pwm.yaml
-+++ b/Documentation/devicetree/bindings/leds/leds-pwm.yaml
-@@ -34,11 +34,6 @@ patternProperties:
-           Maximum brightness possible for the LED
-         $ref: /schemas/types.yaml#/definitions/uint32
- 
--      active-low:
--        description:
--          For PWMs where the LED is wired to supply rather than ground.
--        type: boolean
--
-     required:
-       - pwms
-       - max-brightness
 -- 
 2.43.0
 
