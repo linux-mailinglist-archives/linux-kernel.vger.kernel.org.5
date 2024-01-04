@@ -1,249 +1,243 @@
-Return-Path: <linux-kernel+bounces-16303-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16302-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F8B4823C7F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 08:12:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E05D7823C7B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 08:12:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9D423B22282
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 07:12:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 32148288242
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 07:12:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AB641F93C;
-	Thu,  4 Jan 2024 07:12:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18D401EB2B;
+	Thu,  4 Jan 2024 07:12:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b="rbq3Ks1h"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="esBDILJY"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15DDE1F959;
-	Thu,  4 Jan 2024 07:12:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
-	t=1704352269; x=1704957069; i=w_armin@gmx.de;
-	bh=78Xb27rHymDdm3m/9/ReY0W1tCUIfslbc8yhLxW5Go4=;
-	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-	 In-Reply-To;
-	b=rbq3Ks1h+RHSSeZkgZpyw95ZexqqVTxQdTCAI64KACr05VxGx9Fg0y8Bg7PNmSO5
-	 e1rhwy0dFx0UW0cvOJQBiN8roVBQVrj/1B2aNs986edGYIgHNss3vxh8r6JDgwdde
-	 41kHSFBRlJOsCyn6rSj1nXmc2Wv5Kl73JK40MooMfBVU5Yw3RO4oe9v0SwnH/0ft1
-	 cP6Q2XlHqp+6zybQn+s+lHAYEvApWdWAIrRuFaK+vL60v/gE36lKuphGQ8TEZeUU7
-	 igpKU6nXWXo9CCyoraHTzmcZVzUr08Cl/1IYh5D3IvQfDwSkJBMcD8jEEClrx7lT8
-	 xWE01Am9BJBm198gpQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [141.30.226.129] ([141.30.226.129]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MhD2Y-1qhG6Z1mr4-00eJm9; Thu, 04
- Jan 2024 08:11:09 +0100
-Message-ID: <4efe51b7-cdbd-43ca-a6c7-abc6ac93d718@gmx.de>
-Date: Thu, 4 Jan 2024 08:11:07 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF1E21DFE5;
+	Thu,  4 Jan 2024 07:11:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704352319; x=1735888319;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=AfRA2HL4aQXXNjsZOum+XdfejhXHME693qAT5mUB03w=;
+  b=esBDILJYFkXoHCSWs8ezqHKIyJ5+KyO4R3uclgOIfX2L8toLcKP5lX14
+   6J5mFyWn/uqO+a1i/5jTifyZ4TB++BdigxE51/w01IBiiRkHxZqqR9zYq
+   7p2ko+64iWSzf0mJ+05bmKCF2yCJ6AZO4lB9nVchbXGWYVGGrvbL7cWyG
+   y38t6suPUyepOfBrj8csJRDb40YAsNL34Nb5WwrVazoiLLWkpr++cE7s5
+   ocCH33rnWZOGvqp2buyCLUjfCVYk1KPYySW4JwFcfuO5RH/XKkyPfs5m/
+   BEoo9RlEr1/2KLeYgg3pwwTNZx+74X0xO9f3vyiL8uP1cmrTblKJPVgSs
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10942"; a="396026993"
+X-IronPort-AV: E=Sophos;i="6.04,330,1695711600"; 
+   d="scan'208";a="396026993"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jan 2024 23:11:59 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10942"; a="953505032"
+X-IronPort-AV: E=Sophos;i="6.04,330,1695711600"; 
+   d="scan'208";a="953505032"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by orsmga005.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 03 Jan 2024 23:11:58 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 3 Jan 2024 23:11:57 -0800
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Wed, 3 Jan 2024 23:11:57 -0800
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.41) by
+ edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Wed, 3 Jan 2024 23:11:57 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=c+X9iWPDBfOpQejI6pRxC79Ngw6GNUtQGqjle23m91Rmjc9jDo/p5b1xtCuPVoxtv+2kbOQAfeLG1ncp9jpEUK5FlwXnlTT8cHA938g60Y0femae1rXgGH8zhihJRbLmxTrZv6vIdsExo12Nk6piwpoFbEQC/jP4lUXxM/p8cbrMnJ1fzHHskB841T+dvXeibP96cjMxfOpl8MoA8gaNbrTTnGxQg7w8dB3kO7rPlQ9jicfq/jbAKTKzM32Xaw1IOJc0lZpWhFpYO/bFSy8Ma7UITkOCPeSIs+UDZRomz7tzgfnT3IHcEFzzR/Xnqgq78QPUQ+ySp7FE3X0rHG6O3w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=j3ggE3NqAc1kLn50amji4oKJPwIcZkIFH1fuJ5Dc5iQ=;
+ b=icm71zR9Y17OHvOlXo3dl+4yxz5y7wejnmXjjOcoS3EMmTnBjm+JL/63n1d7JBTet4GAXKNcN18TUTFGf9MWK4FwJZgZaqyB7863cSnBkbqNvk5cwH/43whns6ZDTXzaDXwv/qWv0oQfsjFezQkkQwFy5VVlEYZRn09yNMpNRoKNAPJgGScfut7flxNt5afaC8rE7qvhsLj4TewGM83HIxnrM2twhkHq4Qujdzuz+0Kv0CvtZ51Y4AZ6lZtH4XKnWJm3tLz+V4ht8JzQVl8S8sMiJdBB+aJ58AkTIDDhk1wUHfrf/2OyMWiPpqUaNT70rr1omOcJ2YZ0DqVwzunpeQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from PH0PR11MB4965.namprd11.prod.outlook.com (2603:10b6:510:34::7)
+ by IA1PR11MB6193.namprd11.prod.outlook.com (2603:10b6:208:3eb::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.13; Thu, 4 Jan
+ 2024 07:11:55 +0000
+Received: from PH0PR11MB4965.namprd11.prod.outlook.com
+ ([fe80::819:818b:9159:3af1]) by PH0PR11MB4965.namprd11.prod.outlook.com
+ ([fe80::819:818b:9159:3af1%3]) with mapi id 15.20.7159.013; Thu, 4 Jan 2024
+ 07:11:55 +0000
+Message-ID: <5f57ce03-9568-4739-b02d-e9fac6ed381a@intel.com>
+Date: Thu, 4 Jan 2024 15:11:43 +0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v8 00/26] Enable CET Virtualization
+Content-Language: en-US
+To: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
+CC: "pbonzini@redhat.com" <pbonzini@redhat.com>, "seanjc@google.com"
+	<seanjc@google.com>, "kvm@vger.kernel.org" <kvm@vger.kernel.org>, "Hansen,
+ Dave" <dave.hansen@intel.com>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "john.allen@amd.com" <john.allen@amd.com>,
+	"peterz@infradead.org" <peterz@infradead.org>, "Gao, Chao"
+	<chao.gao@intel.com>, "mlevitsk@redhat.com" <mlevitsk@redhat.com>
+References: <20231221140239.4349-1-weijiang.yang@intel.com>
+ <93f118670137933980e9ed263d01afdb532010ed.camel@intel.com>
+From: "Yang, Weijiang" <weijiang.yang@intel.com>
+In-Reply-To: <93f118670137933980e9ed263d01afdb532010ed.camel@intel.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: SI1PR02CA0027.apcprd02.prod.outlook.com
+ (2603:1096:4:1f4::18) To PH0PR11MB4965.namprd11.prod.outlook.com
+ (2603:10b6:510:34::7)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] hwmon: (acpi_power_meter) Ensure IPMI space handler is
- ready on Dell systems
-To: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc: jdelvare@suse.com, linux@roeck-us.net,
- "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>,
- Robert Moore <robert.moore@intel.com>, linux-acpi@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
- acpica-devel@lists.linux.dev
-References: <20231227040401.548977-1-kai.heng.feng@canonical.com>
- <430501f6-47fc-49c8-8db8-9cbdf2ba1ae5@gmx.de>
- <CAAd53p7-NkOa3QPD0szmC0OcHc1VGMBudVbAqWVstvqVm-kwWg@mail.gmail.com>
-Content-Language: en-US
-From: Armin Wolf <W_Armin@gmx.de>
-In-Reply-To: <CAAd53p7-NkOa3QPD0szmC0OcHc1VGMBudVbAqWVstvqVm-kwWg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:JrSN+Di497nPfM7kwf6MDlfs0gSEtxjAPobihfDO+bIESclzbR+
- 14y3aZeFYBsrUnXwZnA8X8CiTK1BsJwa01vTE5rqw+sMYZcPRz/+SazSzcu8hxgX9vKHBqL
- NQ1C7XnpELSLfNU6q1vpgEfsNqtx1DKK3VkUwhdPdMs/vcX00h02rNskkc1IyEyWToD3sNY
- dfkpVhRLlEph8rr8yVFkQ==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:YQHGDss/Qnw=;Ctme1hpSSrpUhnO7aCy580DULFk
- DDooF35581G27KWYcjrsdfJdAvb+hUm2HNieduIUIC0vj3TmbCVV7p4M9BPPcT3kCuZfmt8NN
- SLcyVyjUFRvyIn4d8FunXf+Ez7jZp+ulRDZyBK30wMf18w3T6agu4Rm7G0aUeB47S2ULBItYK
- fbAK38oAluaE1odNkDPxaQLAXSp3OL5pfQ4vd4Y1kIA1I4yziA3kef0W7IrZtRzb8iTbPa6qU
- JH/NB4lzG/4Z2yJtf9uP5QsSLikAVBYHMeX2hcuUoqWbrtRBY9SBfVHuopDd28geaxb+W3bi+
- S8eUNtxGcwFa4jaRFGva2ZnFIjmViRAcGAySsqMYUpS89YV7TTJ5J4UwlMM4/6sUnTm+i5xBW
- MGCY199uotNtFD2Gyyx3067Zso1Gc83GgQTXY+hXTWMyk8a64CBYn4NOFE7lWSzkYqdiUUW3w
- PqPhvUpfmT6r8JvjjsBeb8UBvOOT012iJ2H4F/TgKwakB+qRHoA84F+1TeUfeLb5Ol22PusqD
- ba24sLbGy8zcJAxQZjXDyIXLebq9GHUtKn+9XQP9vmAxyw8xRbpr7UaxdKBaBS1s0Vc+Ohd4R
- tfbhHZYqejj5XN7/dx8Iv5bdXT1Vb6G9WRO74ArS1GXZF5Q+yU7DPTT8XflGtu/MQF4b9uVvt
- Y/bWvq7aksVVmVAu89wBf7RjftOLVvkTsQ+XgAkJm7PNG+MrfQ22R9iFh9C/Y5Yo1Bk5xxwcm
- kdq3G/l04sB1v1LGkRRLDl2Qz52CtsuZm5y7aBJKSv7GAOJ9zC0rNEVxxc2d61Qd2Up32S0Bc
- ZFIEP/PImOrhbxQJplF9yS+De4ZN6ayy+AOhIwi2J1+AsMOcJntb3k4gVZrt64AAhkCADvTud
- NX/oNO5OXe6TwXzqaZ7Bh1Nm7opPJFOi4Hdcap+uILMU2ZLO0kTNpgIQKvZhvWIOESp3Dxz8a
- N/6Azlt+U+W1UTQ6LC/PXExf8cY=
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR11MB4965:EE_|IA1PR11MB6193:EE_
+X-MS-Office365-Filtering-Correlation-Id: 2da064db-fb74-4e5b-1cc2-08dc0cf46ec9
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: I+pGriNeuv26FW7NZFNi65qpNpTYVF5ygmtDAOWv0yHMHHyd2hOc7BbjnlRKInt9+FxchIFIoGNKQ4tX/FjZaQrvGfyocs8No+7QUno+XQYEqw/s3CeSLrJc7nm3SfQ+9AokQPCfFvm2X2A6oHaYo4VBMs40v63I74k7rWxLtH0PooXw2TJbZWSceruf0v/cUIdTKdcyj8eoyD9i8DJcYAUShJYbym/U3ylGT1WqRbeuVH93J69GweYRU4OscrrDp2pdfiFxmviXopEBp/bcQPGDeESzPyOTkL8Tyb36fzfMw1PtwklXUaXlV/N+8kxyRDthPmJChfh+Vw2w/ZY+Uqzmj18CDBKWqZz5Upb8p0r1cvK8YSu3HaKPXKijDR9/RiNfZ2ffq+h7jJZd1itt3r/c/r1ox46WbxwKvIYQdGwF07/0PpIKKi1jACDT2JX+p4lG2A+mlxMwMR6WCK+v4lrwlJsTcg9rGpQdWfBZYxjbOjJmGfoCbCa3ZfIEHYd2dxPMtUNu1SkcAZOW5AmiOB1UTDwFpaZ7AwBqEZBGl3Bv+ja1QFeZ1fBPhv1LO/zNDhJ0qavK3xoH3PLch/1EMcmUIzBxctSpU0FqkKFgUDrZiO3k5DdeTSGMSM87lt9ozdQlXOcb5tXDqjW5yuRASg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB4965.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(346002)(366004)(376002)(39860400002)(136003)(230922051799003)(64100799003)(186009)(451199024)(1800799012)(31686004)(53546011)(26005)(36756003)(86362001)(31696002)(82960400001)(5660300002)(8936002)(6636002)(6862004)(6512007)(6506007)(38100700002)(6666004)(2616005)(316002)(54906003)(37006003)(66476007)(66946007)(4326008)(8676002)(66556008)(4001150100001)(478600001)(41300700001)(2906002)(6486002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?c040MHBNUC9WbFFSQzZBR2I0L1drTmdjeHN4NkVqTEhyenBjc2JFdDBjajlm?=
+ =?utf-8?B?dlZwUUlyTjBYczFUYzR2S2V0dmNhOTNxSzlrcjVrK1MwQ0p1MHV1bGpCaWhY?=
+ =?utf-8?B?MnFDbVRPUS9XKy8ycEo0L1RNQzlhUWMwWE0xUXh1eUpncDU3R1pBVitHL1A4?=
+ =?utf-8?B?M1hEb3kxTzFGZnpuQWQrbG5FZ0tJd01WQ3RZcnUzMC9SVHdlcmJSSkZTV3Yw?=
+ =?utf-8?B?MWdKL3BXVDU3NWVidE81ME52THplNkU2OVVEZnhvOFhEdUFBUWVaRnpoS0Z0?=
+ =?utf-8?B?UzBSWWdINEZpcmMrSGRldDAxWnFxVlArM1Y3OTZOVlRKVVFDb1BQM3dUWXpW?=
+ =?utf-8?B?OHRiMC9HQUJISTVjbDJqL1NLcURJOFRLSE1tYmZjSVFmRFd3TCtTYXFiRzBG?=
+ =?utf-8?B?UFprdnFGUnd4bllGTmlleWhsemp0WmJGS2c0QzcxMEEzaHVUR1VjbmNTTEs5?=
+ =?utf-8?B?QkUvcWNDZnlaUU1UL2Jqc2hrcGwyUzhSQzlZemd6YTJoOHIyZ0hnN0ozUHkx?=
+ =?utf-8?B?bjdpTGkraUZCVjBwNkJvbjVLZVVEZTdoMXlTVDhqQkVQVis4TVlFWFViZnlv?=
+ =?utf-8?B?S2xRa1BTbjMyOVN1cHBjeWp4VWlmRlc3WjZISW5tMTRENmpFbDZvQ3hLSDkz?=
+ =?utf-8?B?d0JYR3J4U09CTTZlWkw2bUJSRWZ6eHB4clFRYTFCY3dmVjhobFM0enFydEFs?=
+ =?utf-8?B?WENqdi9XOEc5d3hFZTlZRXJaekx0V2I2Y1NnZC9ITnl0ZUlBOGhLT0t1cFlp?=
+ =?utf-8?B?Q2Q1d1lxK2hzUkIraERUbGRvUS9sV21GaVA3U0N2TU5Qd0lHeFBmclJCdnYx?=
+ =?utf-8?B?SW02UkNrelRKa0k2L2FVcENRYTdvV1lHUUk4UGhkN1VySHhhNTRqTUFWVXNK?=
+ =?utf-8?B?K1VTSFdrR1JsT3V6SHE2NFVZWklrSFRiMHpLUlh0MmlCM3ZHQ3Z1K3BtNDVS?=
+ =?utf-8?B?c3R0OXQ1SFFzclVmQ1RDOXlsa0tDLzhrUkVZTWFCVlJxcGRIRWN6QmhlTFZS?=
+ =?utf-8?B?c2dZbEVjNWtnV09xS1NmZCtOVnJqd0EydlpNalNCSTdPS2l5ZlhmL0ZTMFZo?=
+ =?utf-8?B?K21PZTVaUGhudXAxK0ZoUTFIbDJrU3d4OEFlbUptekpPTnB5SHBZcWowQytD?=
+ =?utf-8?B?U1kvUzNYZGErQjNSb0lJVlRzeUtkNGY1dlQ1M3hVQUgwQjJvRmQycENseU8x?=
+ =?utf-8?B?OEhJemx6TGRoVE81eGZYbXNFMGVETjc3ejJ3RlA2bXlqWHJXRGkrZzhHVFpo?=
+ =?utf-8?B?QmxITFR2MEtpdWJZYnNiUnQ5TjBjVjRIekhwQ1NUSStabkhJb1ZmdTN1b0Rv?=
+ =?utf-8?B?TU5uSEVReXpPVU1zUWhUWm1mUFZzYitHbTFYVE1jRVdOVzJQNm0rYndwang5?=
+ =?utf-8?B?TEdicG5xams5VjJWc3hBd1dhb0Q3WDdISTVRUG1FQUNnUmtuU0pjUDZNVkZJ?=
+ =?utf-8?B?Y20xZTIyYUcrUnNIWHN0REp3L1dOU3ZmcjJvcS9JV0Fld0RkTzVUQlh3VHgw?=
+ =?utf-8?B?V1MwSDB1RlV2MjR6K3dHQ05wOXcwUklIRnR1SDUyek4xcXRIcHU2Vm9wQ2N6?=
+ =?utf-8?B?dkFrVUpCWnc3NEZaVE9jb0Zici9MbU5jRXVvYjljOGpWVUpuRHNCTnJoaHpM?=
+ =?utf-8?B?QmtoaXdnRlQ3aE92Z3JzZU5HSHJiUjNhUlpWaVMvaThOM2lxT09wWkFhQU5O?=
+ =?utf-8?B?Q3dwcExqR1BXVDNFODhmVmV1NUIweEpTdDZRV29ZYWV6ajBlQnFJUzY3OWwv?=
+ =?utf-8?B?ZDFIa1dDa3M0d0tkWldoU2JJZWFrVW5UYytybTVhRkhUZlNycE5td0lPV1lC?=
+ =?utf-8?B?YjlaSC9QcmdBa3BFWG9hbXJIMDV5TUNSQ3VKK29XSFIzWXh0SkpieExHdGgz?=
+ =?utf-8?B?ckdTaHFwMUFvaUFVZ2RHMEZMTlRMOUZOSWhHNCtxcUFiM2JCNGRONmQ2MU9S?=
+ =?utf-8?B?b2cxQ0F2UHc1dnNtdG5vUGRkdW1jL0ZZaUVjMjl3dkxIOXpIQkdTUkZUdWoz?=
+ =?utf-8?B?MkNHRjc2MTE4Zkx6eWVUcURtMEtpV3phc05ZdnJFb3NtYkFIZDRvNGtPTHBz?=
+ =?utf-8?B?bkg1dzRiT0RJQUlEUEc5NHRVdXBIRE9vbHY1MkZjcllkQWFRaVNCZ2FzR2Nn?=
+ =?utf-8?B?RlhMejQ2dGhSdVlIKzNjSUYxbldWSjdGZktCRjUzWjZoQTAyYk5hVTNPZ01m?=
+ =?utf-8?B?ZlE9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2da064db-fb74-4e5b-1cc2-08dc0cf46ec9
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB4965.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Jan 2024 07:11:55.3476
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: LCx/ITAEKisdcFZ7ysLdzD9VvXcW+KL5TzDn9BBuDXZ7+htaCI8dWcqIFWC1vNcXA+hhVHlv5JoMVzZEj8I4uA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR11MB6193
+X-OriginatorOrg: intel.com
 
-Am 04.01.24 um 03:14 schrieb Kai-Heng Feng:
+On 1/4/2024 2:50 AM, Edgecombe, Rick P wrote:
+> On Thu, 2023-12-21 at 09:02 -0500, Yang Weijiang wrote:
+>> Control-flow Enforcement Technology (CET) is a kind of CPU feature
+>> used
+>> to prevent Return/CALL/Jump-Oriented Programming (ROP/COP/JOP)
+>> attacks.
+>> It provides two sub-features(SHSTK,IBT) to defend against ROP/COP/JOP
+>> style control-flow subversion attacks.
+>>
+>> Shadow Stack (SHSTK):
+>>    A shadow stack is a second stack used exclusively for control
+>> transfer
+>>    operations. The shadow stack is separate from the data/normal stack
+>> and
+>>    can be enabled individually in user and kernel mode. When shadow
+>> stack
+>>    is enabled, CALL pushes the return address on both the data and
+>> shadow
+>>    stack. RET pops the return address from both stacks and compares
+>> them.
+>>    If the return addresses from the two stacks do not match, the
+>> processor
+>>    generates a #CP.
+>>
+>> Indirect Branch Tracking (IBT):
+>>    IBT introduces new instruction(ENDBRANCH)to mark valid target
+>> addresses of
+>>    indirect branches (CALL, JMP etc...). If an indirect branch is
+>> executed
+>>    and the next instruction is _not_ an ENDBRANCH, the processor
+>> generates a
+>>    #CP. These instruction behaves as a NOP on platforms that doesn't
+>> support
+>>    CET.
+> What is the design around CET and the KVM emulator?
 
-> On Thu, Jan 4, 2024 at 5:23=E2=80=AFAM Armin Wolf <W_Armin@gmx.de> wrote=
-:
->> Am 27.12.23 um 05:04 schrieb Kai-Heng Feng:
->>
->>> The following error can be observed at boot:
->>> [    3.717920] ACPI Error: No handler for Region [SYSI] (00000000ab9e6=
-2c5) [IPMI] (20230628/evregion-130)
->>> [    3.717928] ACPI Error: Region IPMI (ID=3D7) has no handler (202306=
-28/exfldio-261)
->>>
->>> [    3.717936] No Local Variables are initialized for Method [_GHL]
->>>
->>> [    3.717938] No Arguments are initialized for method [_GHL]
->>>
->>> [    3.717940] ACPI Error: Aborting method \_SB.PMI0._GHL due to previ=
-ous error (AE_NOT_EXIST) (20230628/psparse-529)
->>> [    3.717949] ACPI Error: Aborting method \_SB.PMI0._PMC due to previ=
-ous error (AE_NOT_EXIST) (20230628/psparse-529)
->>> [    3.717957] ACPI: \_SB_.PMI0: _PMC evaluation failed: AE_NOT_EXIST
->>>
->>> On Dell systems several methods of acpi_power_meter access variables i=
-n
->>> IPMI region [0], so wait until IPMI space handler is installed by
->>> acpi_ipmi and also wait until SMI is selected to make the space handle=
-r
->>> fully functional.
->> Hi,
->>
->> could it be that the ACPI firmware expects us to support the ACPI SPMI =
-table?
->> The ACPI SPMI table contains a description of the IPMI interface used b=
-y the platform,
->> and its purpose seems to be similar to the ACPI ECDT table in that it a=
-llows the OS
->> to access IPMI resources before all ACPI namespaces are enumerated.
->>
->> Adding support for this table would solve this problem without stalling=
- the boot
->> process by waiting for the ACPI IPMI device to probe. It would also avo=
-id any issues
->> should the ACPI IPMI device be removed later.
-> Hi, the ACPI firmware on the system doesn't have SPMI table:
-> $ ls /sys/firmware/acpi/tables/
-> APIC  BERT  data  DMAR  DSDT  dynamic  EINJ  ERST  FACP  FACS  HEST
-> HMAT  HPET  MCFG  MIGT  MSCT  NBFT  OEM4  SLIC  SLIT  SRAT  SSDT1
-> SSDT2  SSDT3  SSDT4  SSDT5  SSDT6  TPM2  UEFI1  UEFI2  VFCT  WSMT
+KVM doesn't emulate CET HW behavior for guest CET, instead it leaves CET related
+checks and handling in guest kernel. E.g., if emulated JMP/CALL in emulator triggers
+mismatch of data stack and shadow stack contents, #CP is generated in non-root
+mode instead of being injected by KVM.  KVM only emulates basic x86 HW behaviors,
+e.g., call/jmp/ret/in/out etc.
+
+> My understanding is that the KVM emulator kind of does what it has to
+> keep things running, and isn't expected to emulate every possible
+> instruction. With CET though, it is changing the behavior of existing
+> supported instructions. I could imagine a guest could skip over CET
+> enforcement by causing an MMIO exit and racing to overwrite the exit-
+> causing instruction from a different vcpu to be an indirect CALL/RET,
+> etc.
+
+Can you elaborate the case? I cannot figure out how it works.
+
+> With reasonable assumptions around the threat model in use by the
+> guest this is probably not a huge problem. And I guess also reasonable
+> assumptions about functional expectations, as a misshandled CALL or RET
+> by the emulator would corrupt the shadow stack.
+
+KVM emulates general x86 HW behaviors, if something wrong happens after emulation
+then it can happen even on bare metal, i.e., guest SW most likely gets wrong somewhere
+and it's expected to trigger CET exceptions in guest kernel.
+
+> But, another thing to do could be to just return X86EMUL_UNHANDLEABLE
+> or X86EMUL_RETRY_INSTR when CET is active and RET or CALL are emulated.
+
+IMHO, translating the CET induced exceptions into X86EMUL_UNHANDLEABLE or X86EMUL_RETRY_INSTR would confuse guest kernel or even VMM, I prefer letting guest kernel handle #CP directly.
+> And I guess also for all instructions if the TRACKER bit is set. It
+> might tie up that loose end without too much trouble.
 >
-> Kai-Heng
+> Anyway, was there a conscious decision to just punt on CET enforcement
+> in the emulator?
 
-Thanks for checking this, in this case you might ignore my suggestion abov=
-e.
+I don't remember we ever discussed it in community, but since KVM maintainers reviewed
+the CET virtualization series for a long time, I assume we're moving on the right way :-)
 
-Armin Wolf
 
->> Armin Wolf
->>
->>> [0] https://www.dell.com/support/manuals/en-us/redhat-enterprise-linux=
--v8.0/rhel8_rn_pub/advanced-configuration-and-power-interface-acpi-error-m=
-essages-displayed-in-dmesg?guid=3Dguid-0d5ae482-1977-42cf-b417-3ed5c3f5ee6=
-2
->>>
->>> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
->>> ---
->>> v2:
->>>    - Use completion instead of request_module().
->>>
->>>    drivers/acpi/acpi_ipmi.c         | 13 ++++++++++++-
->>>    drivers/hwmon/acpi_power_meter.c |  4 ++++
->>>    include/acpi/acpi_bus.h          |  4 ++++
->>>    3 files changed, 20 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/drivers/acpi/acpi_ipmi.c b/drivers/acpi/acpi_ipmi.c
->>> index 0555f68c2dfd..2ea8b7e6cebf 100644
->>> --- a/drivers/acpi/acpi_ipmi.c
->>> +++ b/drivers/acpi/acpi_ipmi.c
->>> @@ -23,6 +23,8 @@ MODULE_LICENSE("GPL");
->>>    #define IPMI_TIMEOUT                        (5000)
->>>    #define ACPI_IPMI_MAX_MSG_LENGTH    64
->>>
->>> +static struct completion smi_selected;
->>> +
->>>    struct acpi_ipmi_device {
->>>        /* the device list attached to driver_data.ipmi_devices */
->>>        struct list_head head;
->>> @@ -463,8 +465,10 @@ static void ipmi_register_bmc(int iface, struct d=
-evice *dev)
->>>                if (temp->handle =3D=3D handle)
->>>                        goto err_lock;
->>>        }
->>> -     if (!driver_data.selected_smi)
->>> +     if (!driver_data.selected_smi) {
->>>                driver_data.selected_smi =3D ipmi_device;
->>> +             complete(&smi_selected);
->>> +     }
->>>        list_add_tail(&ipmi_device->head, &driver_data.ipmi_devices);
->>>        mutex_unlock(&driver_data.ipmi_lock);
->>>
->>> @@ -578,10 +582,17 @@ acpi_ipmi_space_handler(u32 function, acpi_physi=
-cal_address address,
->>>        return status;
->>>    }
->>>
->>> +void wait_for_acpi_ipmi(void)
->>> +{
->>> +     wait_for_completion_interruptible_timeout(&smi_selected, 2 * HZ)=
-;
->>> +}
->>> +EXPORT_SYMBOL_GPL(wait_for_acpi_ipmi);
->>> +
->>>    static int __init acpi_ipmi_init(void)
->>>    {
->>>        int result;
->>>        acpi_status status;
->>> +     init_completion(&smi_selected);
->>>
->>>        if (acpi_disabled)
->>>                return 0;
->>> diff --git a/drivers/hwmon/acpi_power_meter.c b/drivers/hwmon/acpi_pow=
-er_meter.c
->>> index 703666b95bf4..acaf1ae68dc8 100644
->>> --- a/drivers/hwmon/acpi_power_meter.c
->>> +++ b/drivers/hwmon/acpi_power_meter.c
->>> @@ -883,6 +883,10 @@ static int acpi_power_meter_add(struct acpi_devic=
-e *device)
->>>        strcpy(acpi_device_class(device), ACPI_POWER_METER_CLASS);
->>>        device->driver_data =3D resource;
->>>
->>> +     if (dmi_match(DMI_SYS_VENDOR, "Dell Inc.") &&
->>> +         acpi_dev_get_first_match_dev("IPI0001", NULL, -1))
->>> +             wait_for_acpi_ipmi();
->>> +
->>>        res =3D read_capabilities(resource);
->>>        if (res)
->>>                goto exit_free;
->>> diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
->>> index 1216d72c650f..ed59fb89721e 100644
->>> --- a/include/acpi/acpi_bus.h
->>> +++ b/include/acpi/acpi_bus.h
->>> @@ -655,6 +655,7 @@ bool acpi_device_override_status(struct acpi_devic=
-e *adev, unsigned long long *s
->>>    bool acpi_quirk_skip_acpi_ac_and_battery(void);
->>>    int acpi_install_cmos_rtc_space_handler(acpi_handle handle);
->>>    void acpi_remove_cmos_rtc_space_handler(acpi_handle handle);
->>> +void wait_for_acpi_ipmi(void);
->>>    #else
->>>    static inline bool acpi_device_override_status(struct acpi_device *=
-adev,
->>>                                               unsigned long long *stat=
-us)
->>> @@ -672,6 +673,9 @@ static inline int acpi_install_cmos_rtc_space_hand=
-ler(acpi_handle handle)
->>>    static inline void acpi_remove_cmos_rtc_space_handler(acpi_handle h=
-andle)
->>>    {
->>>    }
->>> +static inline void wait_for_acpi_ipmi(void)
->>> +{
->>> +}
->>>    #endif
->>>
->>>    #if IS_ENABLED(CONFIG_X86_ANDROID_TABLETS)
 
