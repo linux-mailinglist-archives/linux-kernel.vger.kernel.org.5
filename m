@@ -1,140 +1,152 @@
-Return-Path: <linux-kernel+bounces-17142-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17143-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A27B38248DB
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 20:16:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 017FC8248DE
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 20:16:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3A14C1F22BD1
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 19:16:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 26F8C1C22700
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 19:16:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7D212C694;
-	Thu,  4 Jan 2024 19:16:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AC962C1A8;
+	Thu,  4 Jan 2024 19:16:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="luapagr2"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GfYUazh+"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1E752C18C;
-	Thu,  4 Jan 2024 19:16:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704395773; x=1735931773;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=Ku8FLhwOfPcaG2mT+8xsOiO9kv0YTJBmD9TowHalxgM=;
-  b=luapagr24kVIb+Y0Mg3bX4xQ0i7G76cwpGmUheVtefSAJDLwZ2pyIrw6
-   BlA5KLN+4OJ7idoNv2Lfoh82g37nD6bCofMRzyk+hItPe5f4ASgtO7YMn
-   auNgFQQikNkjk44ans5tuHmuX5JzPcnmI9BVeGjE/MKzt7aSfsVDTnxPz
-   TNw8y8sC2nQIIU/EpRS8yISA+wKZiTw3aNL9R+Ak+hIoe3h6Y+6Fhivv2
-   +nueC1+hVcJjeVWXcqRpLVh0XIPz9HsZeeOXZbYALXSla/30Fv5Ojjq22
-   6Vn5LMsexzqqBPu8mep52mvZGZ6ASwpLYKKeqGKIs77rco2LAlG7T1ljf
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10943"; a="396223699"
-X-IronPort-AV: E=Sophos;i="6.04,331,1695711600"; 
-   d="scan'208";a="396223699"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2024 11:16:12 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10943"; a="814740125"
-X-IronPort-AV: E=Sophos;i="6.04,331,1695711600"; 
-   d="scan'208";a="814740125"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga001.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2024 11:16:12 -0800
-Received: from [10.209.154.172] (kliang2-mobl1.ccr.corp.intel.com [10.209.154.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by linux.intel.com (Postfix) with ESMTPS id CD158580DC7;
-	Thu,  4 Jan 2024 11:16:10 -0800 (PST)
-Message-ID: <0f9e80de-040d-4803-954f-311b846730c6@linux.intel.com>
-Date: Thu, 4 Jan 2024 14:16:09 -0500
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FC2D2C18C;
+	Thu,  4 Jan 2024 19:16:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EAF7AC433C7;
+	Thu,  4 Jan 2024 19:16:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704395807;
+	bh=9IYhiNNFGexpUZr6GXQKp38uLjqBlUuJ5KSb1AaVyDc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=GfYUazh+5zgvF8w0BFNCESTr7TercBq61Bw7MIK1/0/8TFsMqp8ZW01IwFI7JcSSU
+	 fQQzsWi6ZMw5g/SzaZkI0W+OkLYAf8+SxCm2JQFMDcFGPZerKzCp1tpoJO9ajCHJm/
+	 +aeSLCW5oS5/aYCRjpvyqEW/O4SvJA18SBP248uz3o8jyTAXKgfZEEe4hXUetmiTAo
+	 BD92ABC04wS0w7HFAyzvsS0p7DQK3NdHu98sirisk9YbASvy2WIs1YQ+s1LpWKeKd9
+	 F/RA+T7UIULgDIg98DP+eeRe/YRCcm7iCg9oOe7s+/DKswCaenBCRClGCa7hNd8Bxg
+	 rmnob6mFT6NHA==
+Date: Thu, 4 Jan 2024 19:16:43 +0000
+From: Simon Horman <horms@kernel.org>
+To: Brett Creeley <brett.creeley@amd.com>
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+	pabeni@redhat.com, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, shannon.nelson@amd.com
+Subject: Re: [PATCH net-next 4/8] pds_core: Prevent race issues involving the
+ adminq
+Message-ID: <20240104191643.GL31813@kernel.org>
+References: <20240104171221.31399-1-brett.creeley@amd.com>
+ <20240104171221.31399-5-brett.creeley@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] KVM: x86/pmu: fix masking logic for
- MSR_CORE_PERF_GLOBAL_CTRL
-Content-Language: en-US
-To: Sean Christopherson <seanjc@google.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
- kvm@vger.kernel.org, peterz@infradead.org, linux-perf-users@vger.kernel.org,
- leitao@debian.org, acme@kernel.org, mingo@redhat.com,
- "Paul E . McKenney" <paulmck@kernel.org>, stable@vger.kernel.org,
- Like Xu <like.xu.linux@gmail.com>
-References: <20240104153939.129179-1-pbonzini@redhat.com>
- <a327286a-36a6-4cdc-92bd-777fb763d88a@linux.intel.com>
- <ZZbuwU8ShrcXWdMY@google.com>
-From: "Liang, Kan" <kan.liang@linux.intel.com>
-In-Reply-To: <ZZbuwU8ShrcXWdMY@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240104171221.31399-5-brett.creeley@amd.com>
 
-
-
-On 2024-01-04 1:22 p.m., Sean Christopherson wrote:
-> On Thu, Jan 04, 2024, Liang, Kan wrote:
->>
->>
->> On 2024-01-04 10:39 a.m., Paolo Bonzini wrote:
->>> When commit c59a1f106f5c ("KVM: x86/pmu: Add IA32_PEBS_ENABLE
->>> MSR emulation for extended PEBS") switched the initialization of
->>> cpuc->guest_switch_msrs to use compound literals, it screwed up
->>> the boolean logic:
->>>
->>> +	u64 pebs_mask = cpuc->pebs_enabled & x86_pmu.pebs_capable;
->>> ...
->>> -	arr[0].guest = intel_ctrl & ~cpuc->intel_ctrl_host_mask;
->>> -	arr[0].guest &= ~(cpuc->pebs_enabled & x86_pmu.pebs_capable);
->>> +               .guest = intel_ctrl & (~cpuc->intel_ctrl_host_mask | ~pebs_mask),
->>>
->>> Before the patch, the value of arr[0].guest would have been intel_ctrl &
->>> ~cpuc->intel_ctrl_host_mask & ~pebs_mask.  The intent is to always treat
->>> PEBS events as host-only because, while the guest runs, there is no way
->>> to tell the processor about the virtual address where to put PEBS records
->>> intended for the host.
->>>
->>> Unfortunately, the new expression can be expanded to
->>>
->>> 	(intel_ctrl & ~cpuc->intel_ctrl_host_mask) | (intel_ctrl & ~pebs_mask)
->>>
->>> which makes no sense; it includes any bit that isn't *both* marked as
->>> exclude_guest and using PEBS.  So, reinstate the old logic.  
->>
->> I think the old logic will completely disable the PEBS in guest
->> capability. Because the counter which is assigned to a guest PEBS event
->> will also be set in the pebs_mask. The old logic disable the counter in
->> GLOBAL_CTRL in guest. Nothing will be counted.
->>
->> Like once proposed a fix in the intel_guest_get_msrs().
->> https://lore.kernel.org/lkml/20231129095055.88060-1-likexu@tencent.com/
->> It should work for the issue.
+On Thu, Jan 04, 2024 at 09:12:17AM -0800, Brett Creeley wrote:
+> There are multiple paths that can result in using the pdsc's
+> adminq.
 > 
-> No, that patch only affects the path where hardware supports enabling PEBS in the
-> the guest, i.e. intel_guest_get_msrs() will bail before getting to that code due
-> to the lack of x86_pmu.pebs_ept support, which IIUC is all pre-Icelake Intel CPUs.
+> [1] pdsc_adminq_isr and the resulting work from queue_work(),
+>     i.e. pdsc_work_thread()->pdsc_process_adminq()
 > 
-> 	if (!kvm_pmu || !x86_pmu.pebs_ept)
-> 		return arr;
->
+> [2] pdsc_adminq_post()
+> 
+> When the device goes through reset via PCIe reset and/or
+> a fw_down/fw_up cycle due to bad PCIe state or bad device
+> state the adminq is destroyed and recreated.
+> 
+> A NULL pointer dereference can happen if [1] or [2] happens
+> after the adminq is already destroyed.
+> 
+> In order to fix this, add some further state checks and
+> implement reference counting for adminq uses. Reference
+> counting was used because multiple threads can attempt to
+> access the adminq at the same time via [1] or [2]. Additionally,
+> multiple clients (i.e. pds-vfio-pci) can be using [2]
+> at the same time.
+> 
+> The adminq_refcnt is initialized to 1 when the adminq has been
+> allocated and is ready to use. Users/clients of the adminq
+> (i.e. [1] and [2]) will increment the refcnt when they are using
+> the adminq. When the driver goes into a fw_down cycle it will
+> set the PDSC_S_FW_DEAD bit and then wait for the adminq_refcnt
+> to hit 1. Setting the PDSC_S_FW_DEAD before waiting will prevent
+> any further adminq_refcnt increments. Waiting for the
+> adminq_refcnt to hit 1 allows for any current users of the adminq
+> to finish before the driver frees the adminq. Once the
+> adminq_refcnt hits 1 the driver clears the refcnt to signify that
+> the adminq is deleted and cannot be used. On the fw_up cycle the
+> driver will once again initialize the adminq_refcnt to 1 allowing
+> the adminq to be used again.
+> 
+> Signed-off-by: Brett Creeley <brett.creeley@amd.com>
+> Reviewed-by: Shannon Nelson <shannon.nelson@amd.com>
 
-True, we have to disable all PEBS counters for pre-ICL as well.
+...
 
-I think what I missed is that the disable here is temporary. The
-arr[global_ctrl].guest will be updated later for the x86_pmu.pebs_ept
-platform, so the guest PEBS event should still work.
+> diff --git a/drivers/net/ethernet/amd/pds_core/core.c b/drivers/net/ethernet/amd/pds_core/core.c
+> index 0356e56a6e99..3b3e1541dd1c 100644
+> --- a/drivers/net/ethernet/amd/pds_core/core.c
+> +++ b/drivers/net/ethernet/amd/pds_core/core.c
+> @@ -450,6 +450,7 @@ int pdsc_setup(struct pdsc *pdsc, bool init)
+>  		pdsc_debugfs_add_viftype(pdsc);
+>  	}
+>  
+> +	refcount_set(&pdsc->adminq_refcnt, 1);
+>  	clear_bit(PDSC_S_FW_DEAD, &pdsc->state);
+>  	return 0;
+>  
+> @@ -514,6 +515,24 @@ void pdsc_stop(struct pdsc *pdsc)
+>  					   PDS_CORE_INTR_MASK_SET);
+>  }
+>  
+> +void pdsc_adminq_wait_and_dec_once_unused(struct pdsc *pdsc)
 
-The patch looks good to me.
+Hi Brett,
 
-Reviewed-by: Kan Liang <kan.liang@linux.intel.com>
+a minor nit from my side: pdsc_adminq_wait_and_dec_once_unused is only used
+in this file so perhaps it should be static?
 
-Thanks,
-Kan
+> +{
+> +	/* The driver initializes the adminq_refcnt to 1 when the adminq is
+> +	 * allocated and ready for use. Other users/requesters will increment
+> +	 * the refcnt while in use. If the refcnt is down to 1 then the adminq
+> +	 * is not in use and the refcnt can be cleared and adminq freed. Before
+> +	 * calling this function the driver will set PDSC_S_FW_DEAD, which
+> +	 * prevent subsequent attempts to use the adminq and increment the
+> +	 * refcnt to fail. This guarantees that this function will eventually
+> +	 * exit.
+> +	 */
+> +	while (!refcount_dec_if_one(&pdsc->adminq_refcnt)) {
+> +		dev_dbg_ratelimited(pdsc->dev, "%s: adminq in use\n",
+> +				    __func__);
+> +		cpu_relax();
+> +	}
+> +}
+> +
+>  void pdsc_fw_down(struct pdsc *pdsc)
+>  {
+>  	union pds_core_notifyq_comp reset_event = {
+> @@ -529,6 +548,8 @@ void pdsc_fw_down(struct pdsc *pdsc)
+>  	if (pdsc->pdev->is_virtfn)
+>  		return;
+>  
+> +	pdsc_adminq_wait_and_dec_once_unused(pdsc);
+> +
+>  	/* Notify clients of fw_down */
+>  	if (pdsc->fw_reporter)
+>  		devlink_health_report(pdsc->fw_reporter, "FW down reported", pdsc);
+
+...
 
