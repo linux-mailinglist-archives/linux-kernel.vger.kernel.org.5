@@ -1,121 +1,152 @@
-Return-Path: <linux-kernel+bounces-16150-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16151-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA2AC8239B4
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 01:38:39 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 759968239B6
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 01:39:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 85A021F26049
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 00:38:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 29E3C1F26188
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 00:39:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C007259B;
-	Thu,  4 Jan 2024 00:38:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FE0A4C98;
+	Thu,  4 Jan 2024 00:38:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Ra4f+5iF"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TicdC0MZ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
+Received: from mail-io1-f43.google.com (mail-io1-f43.google.com [209.85.166.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B51F21FC1
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 00:38:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-50e72e3d435so8533956e87.2
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 16:38:33 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22AAE4C6D;
+	Thu,  4 Jan 2024 00:38:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-io1-f43.google.com with SMTP id ca18e2360f4ac-7bb0ab8e79fso363120639f.1;
+        Wed, 03 Jan 2024 16:38:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1704328712; x=1704933512; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:user-agent
-         :from:references:in-reply-to:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1704328732; x=1704933532; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=WeSEM9FnhCQHetUK/2V8lmbOcksPqkXqmCZ/w8B3yNs=;
-        b=Ra4f+5iFh9DeiuZD7AJrQcT9Pa89TqkQ3vjDHB4quHaC2uFszhVyJv640tFP+pwnVt
-         Cf2tbnDli0iwXQTtZo7BDFOKbH5+jFFn8Odn4nVEYioGxZGEYsTzjGgEp6AURIXVBClG
-         9cGGIt29TF1mHrCb9/CP5f/csEoDVRVE9QaGg=
+        bh=LdFZ3Tk4i2v5Ki/jD5QceKjDKTifBKGWYuLRGbT2nQA=;
+        b=TicdC0MZJme9BGREP7ifiEfmHxf+AmgVq1fIyiliuBIGzyxz07o79bfG1P47uGTs5M
+         y9CCum7WB6mdvXcFmHmBVLq4NPqnjJguROFKGx9AYljYT5ecr5usG4ORI3rNFF23O6nL
+         us1307CkJ8n0Ci1DaEwZMzBUb7q2NlE0Qb1YnTW+gMqHOBtHuWEpk3MLgBISjVLpqyeE
+         uAhiBBAFvjQt9zkp0pYogSuF62IJ+EtXWxhqGAapt2Gd2+IbYNcim0HcGJwEJW3bwJTB
+         s2RwXzLLcLKePodzHImjomCtjT71sJozQOWA0PzB/WDXZ+pLK6BcR/F/NUBFDr6mAXwF
+         cyTA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704328712; x=1704933512;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:user-agent
-         :from:references:in-reply-to:mime-version:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=WeSEM9FnhCQHetUK/2V8lmbOcksPqkXqmCZ/w8B3yNs=;
-        b=N/VjV8hhJAaH9Ro8qgMfjQVo297JNGRvr6HrbqmQSEacqtw3F6r09x4TkdmqdakvCo
-         P7IRFuJDB9mJ0UsNqX6ERqjGqGLOcEov58OSzyuBiTqYgxCErTRWQ90Jzsl/9gaSZKye
-         IdySWHjUxdMikA67OTmLtRkUdxaV/2FNBdhaLJLEOd/dyCW//YG2ZKhT8rstxiTdn4x1
-         2okMcl71O4BwFJLT6k7SvpO4QdtESylwD0b0SVpXqQWrkk6W/+EPLFzfsH+5J+BPWTrY
-         1yDfXBkGRpVF/OxtuFuq5abLYXvXUf/cYfPK95WcjvH+o2R9v9Z59TSyMBO/iu6XeQag
-         3iRQ==
-X-Gm-Message-State: AOJu0YwNNKYELNc6cyE5QRuczUaVkMFdofyz68TZKVR0JbI51eytlugi
-	Kotb7si792dfsOjsM5IgIOiK8InJPLjmTS9BKPYbBbVfKxi+
-X-Google-Smtp-Source: AGHT+IH5TiJLJAwWw1IiZgdfve2aCAaTuhmjUVYOptdj5QYk7WMPA8Q7ozG9oW8WM4Og9/cgsdtPKuNPyJe5UgTN9LY=
-X-Received: by 2002:a05:6512:3b9a:b0:50e:710b:a7bf with SMTP id
- g26-20020a0565123b9a00b0050e710ba7bfmr5628850lfv.81.1704328711790; Wed, 03
- Jan 2024 16:38:31 -0800 (PST)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Wed, 3 Jan 2024 16:38:31 -0800
+        d=1e100.net; s=20230601; t=1704328732; x=1704933532;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=LdFZ3Tk4i2v5Ki/jD5QceKjDKTifBKGWYuLRGbT2nQA=;
+        b=Rmgb/FNCNvMVJEyv7CNI2vjLI4E+wuWEYdrJYZLCuZlOmQjKXCSGchOHm/i9WMxgNP
+         X43Fk5hgOc8IwtrnUx9zAuQpZcVW0T/gIOfSvj0bXllvoht8GBI/pgCU/e6StDk5N3Vp
+         mi09ghyIkjw4AYLFxwcOqSckr7JopgykCWAO/qZKxTSGPG28sjAmLhGyp2jzJDPPAr43
+         bdvX8QHG0X7ur9ZU2VE1kq83nPDjCagm52K/SPP+0UmkqmUpg5/oLx+DZ0TtCvFz3+oK
+         kmYdLTHBx+RiCKYPSuCvRKjeJ/nRInsirDqH/3jpJrsBo28qtUt4eZfkXcRacAd+DBgH
+         4aWg==
+X-Gm-Message-State: AOJu0YyzRf/BsTibHeWMoDAPNiY6WR8GfacXDkx7SEtkoR7CZuHUuKnj
+	1Fw/315QtmsudJaFMBSRHZE1cnL3CAzkepT4gfg=
+X-Google-Smtp-Source: AGHT+IF/4lBl1Vvdf7uTT3qi0hf/ACw1cp7fc1TK7LsZJKCrcz7Ep929X6o1Bq0+2vgJ6b/KNFs4rDmdocbi7z8oygE=
+X-Received: by 2002:a5d:9f0f:0:b0:7bb:bd06:d5f2 with SMTP id
+ q15-20020a5d9f0f000000b007bbbd06d5f2mr3391602iot.35.1704328732100; Wed, 03
+ Jan 2024 16:38:52 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CANg-bXCU0Y+GOf9w2j5suoq+F=AnE-NPuhOYjGtpoG3W4WT6-Q@mail.gmail.com>
-References: <20240102210820.2604667-1-markhas@chromium.org>
- <20240102140734.v4.24.Ieee574a0e94fbaae01fd6883ffe2ceeb98d7df28@changeid>
- <CAE-0n50zkwZ8nguUJcL1gjbuavhSU_rLxfGhanxB4YA7N34hLQ@mail.gmail.com>
- <CANg-bXByhaSngW2AAG9h6DYHpiTUvh8+yw3LPU6ZQSCb62M-wg@mail.gmail.com>
- <CAE-0n52u68wMHJGe8=jz4Y1y2=voycFEY15keebz9tPDDBgiqA@mail.gmail.com>
- <CANg-bXDzLJgWLuH8Xj4GLYG=AVfcbmi_EfrA7DaHj4F6i350DA@mail.gmail.com> <CANg-bXCU0Y+GOf9w2j5suoq+F=AnE-NPuhOYjGtpoG3W4WT6-Q@mail.gmail.com>
-From: Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.10
-Date: Wed, 3 Jan 2024 16:38:31 -0800
-Message-ID: <CAE-0n52ri8S6wnSkOkT7frNi+HMVXFrmuwuvBz=hgJCfpYHmOg@mail.gmail.com>
-Subject: Re: [PATCH v4 24/24] platform/chrome: cros_ec: Use PM subsystem to
- manage wakeirq
-To: Mark Hasemeyer <markhas@chromium.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Sudeep Holla <sudeep.holla@arm.com>, 
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Rob Herring <robh@kernel.org>, 
-	Andy Shevchenko <andriy.shevchenko@intel.com>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Raul Rangel <rrangel@chromium.org>, Tzung-Bi Shih <tzungbi@kernel.org>, 
-	Benson Leung <bleung@chromium.org>, Bhanu Prakash Maiya <bhanumaiya@chromium.org>, 
-	Chen-Yu Tsai <wenst@chromium.org>, Guenter Roeck <groeck@chromium.org>, 
-	Prashant Malani <pmalani@chromium.org>, Rob Barnes <robbarnes@google.com>, 
-	chrome-platform@lists.linux.dev
+References: <20240103095006.608744-1-21cnbao@gmail.com> <20240103095006.608744-3-21cnbao@gmail.com>
+In-Reply-To: <20240103095006.608744-3-21cnbao@gmail.com>
+From: Nhat Pham <nphamcs@gmail.com>
+Date: Wed, 3 Jan 2024 16:38:41 -0800
+Message-ID: <CAKEwX=MDNuW72OS81mXgAKMdBnT2MCTGJtXx8cgMLh=J_Nv-ew@mail.gmail.com>
+Subject: Re: [PATCH 2/3] mm/zswap: remove the memcpy if acomp is not asynchronous
+To: Barry Song <21cnbao@gmail.com>
+Cc: herbert@gondor.apana.org.au, davem@davemloft.net, 
+	akpm@linux-foundation.org, ddstreet@ieee.org, sjenning@redhat.com, 
+	vitaly.wool@konsulko.com, linux-crypto@vger.kernel.org, chriscli@google.com, 
+	chrisl@kernel.org, hannes@cmpxchg.org, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org, yosryahmed@google.com, zhouchengming@bytedance.com, 
+	Barry Song <v-songbaohua@oppo.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Quoting Mark Hasemeyer (2024-01-03 14:45:06)
-> On Wed, Jan 3, 2024 at 3:25=E2=80=AFPM Mark Hasemeyer <markhas@chromium.o=
-rg> wrote:
-> >
-> > > The DTS patch would go through the platform maintainer tree and be
-> > > pulled into the soc tree and sent up to mainline from there. The
-> > > platform/chrome patch would go through chrome platform tree and then =
-to
-> > > mainline. The bisection hole will be real.
-> >
-> > I thought it would all get merged in the next merge window. How are
-> > bifurcations like this normally dealt with? Does one wait for the
-> > first series of patches to land in mainline before submitting
-> > dependent patches? That could take two merge windows.
+On Wed, Jan 3, 2024 at 1:50=E2=80=AFAM Barry Song <21cnbao@gmail.com> wrote=
+:
 >
-> The DTS dependency problem must be an exception? How are other
-> dependency problems resolved? For example, this patch relies on
-> changes to 'platform_get_irq()' which is in drivers/base/platform.c,
-> which I imagine is in a different subsystem and gets merged into a
-> different maintainer's tree.
+> From: Barry Song <v-songbaohua@oppo.com>
+>
+> Most compressors are actually CPU-based and won't sleep during
+> compression and decompression. We should remove the redundant
+> memcpy for them.
+>
+> Signed-off-by: Barry Song <v-songbaohua@oppo.com>
+> Tested-by: Chengming Zhou <zhouchengming@bytedance.com>
 
-Cross tree code dependencies like that are usually resolved by having a
-maintainer ack the patch and another maintainer take the code parts.
+nit: it might help to include the test numbers in the changelog in
+this patch here too. Save a couple of clicks to dig out the original
+patch cover for the numbers :)
 
-DT bindings are not supposed to be changed in a way that would break
-compatibility with existing code, hence the compatible property. It's a
-backwards incompatible change to add the wakeup-source property to the
-EC binding and make the driver rely on that property to maintain the
-previous code behavior. That's why I keep saying that if you want to add
-a wakeup-source property and make the driver act the same as before it
-must be done with a new compatible string. Because the driver has always
-set the device to wakeup, the compatible has implicitly conveyed that
-the wakeup-source property is present.
+> ---
+>  mm/zswap.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+>
+> diff --git a/mm/zswap.c b/mm/zswap.c
+> index ca25b676048e..36898614ebcc 100644
+> --- a/mm/zswap.c
+> +++ b/mm/zswap.c
+> @@ -168,6 +168,7 @@ struct crypto_acomp_ctx {
+>         struct crypto_wait wait;
+>         u8 *buffer;
+>         struct mutex mutex;
+> +       bool is_async; /* if acomp can sleep */
+
+nit: seems like this comment isn't necessary. is_async is pretty
+self-explanatory to me. But definitely not a show stopper tho :)
+
+>  };
+>
+>  /*
+> @@ -716,6 +717,7 @@ static int zswap_cpu_comp_prepare(unsigned int cpu, s=
+truct hlist_node *node)
+>                 goto acomp_fail;
+>         }
+>         acomp_ctx->acomp =3D acomp;
+> +       acomp_ctx->is_async =3D acomp_is_async(acomp);
+>
+>         req =3D acomp_request_alloc(acomp_ctx->acomp);
+>         if (!req) {
+> @@ -1370,7 +1372,7 @@ static void __zswap_load(struct zswap_entry *entry,=
+ struct page *page)
+>         mutex_lock(&acomp_ctx->mutex);
+>
+>         src =3D zpool_map_handle(zpool, entry->handle, ZPOOL_MM_RO);
+> -       if (!zpool_can_sleep_mapped(zpool)) {
+> +       if (acomp_ctx->is_async && !zpool_can_sleep_mapped(zpool)) {
+>                 memcpy(acomp_ctx->buffer, src, entry->length);
+>                 src =3D acomp_ctx->buffer;
+>                 zpool_unmap_handle(zpool, entry->handle);
+> @@ -1384,7 +1386,7 @@ static void __zswap_load(struct zswap_entry *entry,=
+ struct page *page)
+>         BUG_ON(acomp_ctx->req->dlen !=3D PAGE_SIZE);
+>         mutex_unlock(&acomp_ctx->mutex);
+>
+> -       if (zpool_can_sleep_mapped(zpool))
+> +       if (!acomp_ctx->is_async || zpool_can_sleep_mapped(zpool))
+>                 zpool_unmap_handle(zpool, entry->handle);
+>  }
+>
+> --
+> 2.34.1
+>
+
+The zswap side looks good to me. I don't have expertise/authority to
+ack the crypto API change (but FWIW it LGTM too based on a cursory
+code read).
+Reviewed-by: Nhat Pham <nphamcs@gmail.com>
 
