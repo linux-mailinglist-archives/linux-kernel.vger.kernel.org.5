@@ -1,53 +1,64 @@
-Return-Path: <linux-kernel+bounces-16434-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16435-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC5B3823E8E
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 10:25:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B677F823E8F
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 10:25:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3EFE4287488
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 09:25:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CE8701C23912
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 09:25:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5357020330;
-	Thu,  4 Jan 2024 09:25:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2DC520323;
+	Thu,  4 Jan 2024 09:25:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="MDVLS0hr"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="DEZWq1mA"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63D002031C;
-	Thu,  4 Jan 2024 09:25:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704360306; x=1735896306;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=iH8mZfy4z3bXeluQ3SiXbNx9xlfsEzn+JeEJgF3IPfM=;
-  b=MDVLS0hruaVcxV9n/BbPgU6mwXCRm56pnERFCT9Mnu2MDJmQiK17FwTn
-   FPt2C/tyvMAtg4k928Q5BB/Gu5JaXn4Y4YkALih7cdAzyxx19artVDbUt
-   aoz1oWOVoL/0giMh09utFks6t5AkFI/JqM92+/GvXoRet7Mp+0OP6DPUr
-   Tdx43dh1USryRjHY7QK3hyQXArKze3WoscbVK1Ms9TSO/hdDDlyqOvMq9
-   tJx70DVGmOOz1v2R49yHmxPid7bqSCjxlKx1e2pRlEfGlu5WLnenJ/2Pf
-   MUhACQY/dX5tEQSpQC3WczeEcOFizWjEtpywDxrei/eo7V9WJBKpXIcqg
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10942"; a="400972584"
-X-IronPort-AV: E=Sophos;i="6.04,330,1695711600"; 
-   d="scan'208";a="400972584"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2024 01:25:05 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10942"; a="814571457"
-X-IronPort-AV: E=Sophos;i="6.04,330,1695711600"; 
-   d="scan'208";a="814571457"
-Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.252.35.85])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2024 01:25:03 -0800
-Message-ID: <a7e6cf13-1873-47b1-a3d8-75d958edafe7@intel.com>
-Date: Thu, 4 Jan 2024 11:24:59 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76CA8208BE
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 09:25:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-50eac018059so372513e87.0
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 01:25:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1704360311; x=1704965111; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=f5UeSk+rYU6U1fSddtaMrbcYWqgT9+CuQL8j56T6xbs=;
+        b=DEZWq1mAWQTUG/j0wxNDzgmhiovZ0ujUiXUAP1ExYZkr+xzIjiNAGGJMOl0ORhpEUk
+         0Pn952519NBn3iG9yT3nv640wmjcg1N96JdRkF5rDsHjoHlNVpbTRp7SxoyerVpuwTVU
+         jC+JZ8AZSrjrvGrDk+Onu8qE5UEUMkfAAT3KEVmVAaeFFYkxgeN5hV/bkFdH+QD+VOBo
+         dV/FDEOOyIL3buNlxEFLe+Vt3jsZ7dLIOHO2VgBCSlqUy8B+8rYqFY+x7qw1Gmi7q9v8
+         njHuTmZ99fSQcBRscg1tS3/Na+bo/XetEQffkwDB7QLj72Iv/MtPHCvnSiWWO5yaLOpL
+         zXGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704360311; x=1704965111;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=f5UeSk+rYU6U1fSddtaMrbcYWqgT9+CuQL8j56T6xbs=;
+        b=Z5VkVc71qvGM5aL+SlnoNiAW/JWQx5hxmc4GYSH0LFJdt9AuKsJGuh03aeNOBq8Qer
+         BOc/uZzk/L5acxyKWF60kbCwNbkdmZjuUCfGcDVhXcKgDOkQ6KhJs5Elk5uT9Yu8cfj6
+         pkn4hYb2ZSnyxdDN2qsDKx7aFgZkl5GoYqLvzv11T4gbMsVOar8MUkirhxCFO7tLyj3S
+         aN2CIfyI+sj/86eS6eJyTzQNk0mSXkaxGOrv65GNpSDJgHipH53U8C6zDR3xG4a81FAT
+         md51JBPETMcYUFZz+n1h1yBA1az3s70QC62jD470d92mOS68b3FjblkuXC8GmmK61Zv0
+         47TQ==
+X-Gm-Message-State: AOJu0YwmVDxxPTnWTFB5SOt6GYg+Anqk4LvsdE/wH0ZGQO+RvONdYvMh
+	3oIxkwYvG9w2gyZybOaOtTbvicxsbKz2JA==
+X-Google-Smtp-Source: AGHT+IGOmKUJHCtEr2ZzdVpiHkMD9NCcF3RO9C/xpRphhwj+uGI82OBiGM8cnTdVitN6ax0sg7G3Xg==
+X-Received: by 2002:a05:6512:2026:b0:50e:a6f8:aace with SMTP id s6-20020a056512202600b0050ea6f8aacemr173198lfs.35.1704360311316;
+        Thu, 04 Jan 2024 01:25:11 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.218.27])
+        by smtp.gmail.com with ESMTPSA id i3-20020a1709061cc300b00a26a9593a68sm12981693ejh.76.2024.01.04.01.25.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Jan 2024 01:25:10 -0800 (PST)
+Message-ID: <9cecc4bd-34ec-4b34-b0c8-de02473f038a@linaro.org>
+Date: Thu, 4 Jan 2024 10:25:08 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -55,109 +66,168 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 1/1] mmc: sdhci-of-dwcmshc: Enable timeout quirk for
- BlueField-3 SoC
+Subject: Re: [RFC PATCH 3/5] dt-bindings: regulator: add documentation entry
+ for 88pm88x-regulator
 Content-Language: en-US
-To: Liming Sun <limings@nvidia.com>,
- Christian Loehle <christian.loehle@arm.com>,
- Ulf Hansson <ulf.hansson@linaro.org>, David Thompson <davthompson@nvidia.com>
-Cc: "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <6082b74cbc681e8c24354828941361f4f4294242.1700315051.git.limings@nvidia.com>
- <3912dd1e-b15b-49a9-9c91-88e00e986efd@arm.com>
- <BN9PR12MB506854D38EA7E2702319F1AAD382A@BN9PR12MB5068.namprd12.prod.outlook.com>
- <66aa74f5-0613-49eb-80d3-ce4381f717ae@intel.com>
- <BN9PR12MB50682F406ABEF9999CEEF1D0D397A@BN9PR12MB5068.namprd12.prod.outlook.com>
-From: Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-In-Reply-To: <BN9PR12MB50682F406ABEF9999CEEF1D0D397A@BN9PR12MB5068.namprd12.prod.outlook.com>
+To: Karel Balej <karelb@gimli.ms.mff.cuni.cz>, Karel Balej
+ <balejk@matfyz.cz>, Lee Jones <lee@kernel.org>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Cc: =?UTF-8?Q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>,
+ ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org
+References: <20231228100208.2932-1-karelb@gimli.ms.mff.cuni.cz>
+ <20231228100208.2932-4-karelb@gimli.ms.mff.cuni.cz>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231228100208.2932-4-karelb@gimli.ms.mff.cuni.cz>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 19/12/23 23:18, Liming Sun wrote:
-> 
-> 
->> -----Original Message-----
->> From: Adrian Hunter <adrian.hunter@intel.com>
->> Sent: Monday, December 11, 2023 6:39 AM
->> To: Liming Sun <limings@nvidia.com>; Christian Loehle
->> <christian.loehle@arm.com>; Ulf Hansson <ulf.hansson@linaro.org>; David
->> Thompson <davthompson@nvidia.com>
->> Cc: linux-mmc@vger.kernel.org; linux-kernel@vger.kernel.org
->> Subject: Re: [PATCH v1 1/1] mmc: sdhci-of-dwcmshc: Enable timeout quirk for
->> BlueField-3 SoC
->>
->> On 30/11/23 15:19, Liming Sun wrote:
->>>
->>>
->>>> -----Original Message-----
->>>> From: Christian Loehle <christian.loehle@arm.com>
->>>> Sent: Monday, November 27, 2023 8:36 AM
->>>> To: Liming Sun <limings@nvidia.com>; Adrian Hunter
->>>> <adrian.hunter@intel.com>; Ulf Hansson <ulf.hansson@linaro.org>; David
->>>> Thompson <davthompson@nvidia.com>
->>>> Cc: linux-mmc@vger.kernel.org; linux-kernel@vger.kernel.org
->>>> Subject: Re: [PATCH v1 1/1] mmc: sdhci-of-dwcmshc: Enable timeout quirk
->> for
->>>> BlueField-3 SoC
->>>>
->>>> On 18/11/2023 13:46, Liming Sun wrote:
->>>>> This commit enables SDHCI_QUIRK_BROKEN_TIMEOUT_VAL to solve the
->>>>> intermittent eMMC timeout issue reported on some cards under eMMC
->>>>> stress test.
->>>>>
->>>>> Reported error message:
->>>>>   dwcmshc MLNXBF30:00: __mmc_blk_ioctl_cmd: data error -110
->>>>>
->>>>> Signed-off-by: Liming Sun <limings@nvidia.com>
->>>>> ---
->>>>>  drivers/mmc/host/sdhci-of-dwcmshc.c | 3 ++-
->>>>>  1 file changed, 2 insertions(+), 1 deletion(-)
->>>>>
->>>>> diff --git a/drivers/mmc/host/sdhci-of-dwcmshc.c
->>>> b/drivers/mmc/host/sdhci-of-dwcmshc.c
->>>>> index 3a3bae6948a8..3c8fe8aec558 100644
->>>>> --- a/drivers/mmc/host/sdhci-of-dwcmshc.c
->>>>> +++ b/drivers/mmc/host/sdhci-of-dwcmshc.c
->>>>> @@ -365,7 +365,8 @@ static const struct sdhci_pltfm_data
->>>> sdhci_dwcmshc_pdata = {
->>>>>  #ifdef CONFIG_ACPI
->>>>>  static const struct sdhci_pltfm_data sdhci_dwcmshc_bf3_pdata = {
->>>>>  	.ops = &sdhci_dwcmshc_ops,
->>>>> -	.quirks = SDHCI_QUIRK_CAP_CLOCK_BASE_BROKEN,
->>>>> +	.quirks = SDHCI_QUIRK_CAP_CLOCK_BASE_BROKEN |
->>>>> +		  SDHCI_QUIRK_BROKEN_TIMEOUT_VAL,
->>>>>  	.quirks2 = SDHCI_QUIRK2_PRESET_VALUE_BROKEN |
->>>>>  		   SDHCI_QUIRK2_ACMD23_BROKEN,
->>>>>  };
->>>>
->>>> __mmc_blk_ioctl_cmd: data error ?
->>>> What stresstest are you running that issues ioctl commands?
->>>> On which commands does the timeout occur?
->>>> Anyway you should be able to increase the timeout in ioctl structure
->>>> directly, i.e. in userspace, or does that not work?
->>>
->>> It's running stress test with tool like "fio --name=randrw_stress_round_1 --
->> ioengine=libaio --direct=1 --time_based=1 --end_fsync=1 --ramp_time=5 --
->> norandommap=1 --randrepeat=0 --group_reporting=1 --numjobs=4 --
->> iodepth=128 --rw=randrw --overwrite=1 --runtime=36000 --
->> bssplit=4K/44:8K/1:12K/1:16K/1:24K/1:28K/1:32K/1:40K/32:64K/5:68K/7:72K
->> /3:76K/3 --filename=/dev/mmcblk0"
->>> The tool(application) is owned by user or with some standard tool.
->>
->> fio does not send mmc ioctls, so I am also a bit confused about
->> how you get "__mmc_blk_ioctl_cmd: data error -110" ?
-> 
-> There are other activities or background task going on. I assume it's other
-> MMC access which are affected by the stress FIO and got timeout. Would it make sense?
+On 28/12/2023 10:39, Karel Balej wrote:
+> From: Karel Balej <balejk@matfyz.cz>
 > 
 
-It depends on whether the IOCTL is overriding the timeout.  In
-struct mmc_ioc_cmd there is data_timeout_ns which overrides the
-mmc core data timeout calculated by mmc_set_data_timeout().  There
-is also cmd_timeout_ms for commands.  You need to check whether
-"__mmc_blk_ioctl_cmd: data error -110" is because data_timeout_ns
-was set too low (but non-zero) by the caller of the IOCTL.
+A nit, subject: drop second/last, redundant "documentation entry". The
+"dt-bindings" prefix is already stating that these are bindings.
+
+> The Marvell 88PM88X PMICs provide regulators among other things.
+> Document how to use them.
+
+
+You did not document them in the bindings. You just added example to
+make it complete. Where is the binding change?
+
+What's more, I have doubts that you tested it.
+
+
+> 
+> Signed-off-by: Karel Balej <balejk@matfyz.cz>
+> ---
+>  .../bindings/mfd/marvell,88pm88x.yaml         | 17 +++++++++++
+>  .../regulator/marvell,88pm88x-regulator.yaml  | 28 +++++++++++++++++++
+>  2 files changed, 45 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/regulator/marvell,88pm88x-regulator.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/mfd/marvell,88pm88x.yaml b/Documentation/devicetree/bindings/mfd/marvell,88pm88x.yaml
+> index 115b41c9f22c..e6944369fc5c 100644
+> --- a/Documentation/devicetree/bindings/mfd/marvell,88pm88x.yaml
+> +++ b/Documentation/devicetree/bindings/mfd/marvell,88pm88x.yaml
+> @@ -54,6 +54,23 @@ examples:
+>          onkey {
+>            compatible = "marvell,88pm88x-onkey";
+>          };
+> +
+> +        regulators {
+> +          ldo2: ldo2 {
+> +            regulator-min-microvolt = <3100000>;
+> +            regulator-max-microvolt = <3300000>;
+> +            };
+> +
+> +          ldo15: ldo15 {
+> +            regulator-min-microvolt = <3300000>;
+> +            regulator-max-microvolt = <3300000>;
+> +            };
+> +
+> +          buck2: buck2 {
+> +            regulator-min-microvolt = <1800000>;
+> +            regulator-max-microvolt = <1800000>;
+> +            };
+> +        };
+>        };
+>      };
+>  ...
+> diff --git a/Documentation/devicetree/bindings/regulator/marvell,88pm88x-regulator.yaml b/Documentation/devicetree/bindings/regulator/marvell,88pm88x-regulator.yaml
+> new file mode 100644
+> index 000000000000..c6ac17b113e7
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/regulator/marvell,88pm88x-regulator.yaml
+> @@ -0,0 +1,28 @@
+> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/regulator/marvell,88pm88x-regulator.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Marvell 88PM88X PMICs regulators
+> +
+> +maintainers:
+> +  - Karel Balej <balejk@matfyz.cz>
+> +
+> +description: |
+> +  This module is part of the Marvell 88PM88X MFD device. For more details
+> +  see Documentation/devicetree/bindings/mfd/marvell,88pm88x.yaml.
+> +
+> +  The regulator controller is represented as a sub-node of the PMIC node
+> +  in the device tree.
+> +
+> +  The valid names for 88PM886 regulator nodes are ldo[1-9], ldo1[0-6], buck[1-5].
+
+Don't repeat constraints in free form text.
+
+> +
+> +patternProperties:
+> +  "^(ldo|buck)[0-9]+$":
+
+You need to fix the pattern to be narrow. buck0 and buck6 are not correct.
+
+
+> +    type: object
+> +    description:
+> +      Properties for single regulator.
+> +    $ref: regulator.yaml#
+
+Not many benefits of this being in its own schema.
+
+> +
+> +additionalProperties: false
+
+Best regards,
+Krzysztof
 
 
