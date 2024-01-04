@@ -1,222 +1,135 @@
-Return-Path: <linux-kernel+bounces-17122-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17123-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 99EFB824893
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 20:05:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 261C48248A3
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 20:08:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id ECB46B21483
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 19:05:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CB5E81F22255
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 19:08:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CE4E2C190;
-	Thu,  4 Jan 2024 19:05:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="gs551/Ji"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B35228E3D;
+	Thu,  4 Jan 2024 19:08:13 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2062.outbound.protection.outlook.com [40.107.92.62])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oi1-f180.google.com (mail-oi1-f180.google.com [209.85.167.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 268C0286AF;
-	Thu,  4 Jan 2024 19:05:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jKcwinse3RLW4TyZHjNbzU18te/2+Wfws0KBYqHJWbgrGNotRzyx7QTiTyQcLbrQbwoqh970sgvzxBj3reA8LkKUEcyYO+TaQS4i6xgCJ73rQW4hvcMgCUoDWtPDEvlarDcTAGr7jO6nOO2MMphZmou1zQgmcXVMK51YBSJIKOtUvt+bEw0nvYZ3tstAMWZJrqLdTcB4KZ1FxM1+DVmLJyxRG9HOeYA5bZ1Re1LCYqNgOq7g4RekKckLZ6fxFit+xC2ZQ9+QbUa2lzyU9dM6TOK06tuD+VlS0KpmHhBVpTQhLqJGuEfqfb5IcNLvSQIQOoTnSFk6NYQgJcNEMS8Lrg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=IvhJ6sg9bHA+panwIqVyh/4I3TUy1y/BTBBzyNNnq2Y=;
- b=I4pbsTgolwq5XaIA7usiJYxjmU5o8e+Lo0eXYR9coU3sLYm1HjvL/w2wo+PHApH18ot4R+Pon8IDrBm6hhDhWbvGKhFMawRASg1I/pGABSUC1F9OEj7WuV9rKOxh2H0hVEA0u779C4dlIsgNL4qqr/er7IW7xIvs3eKJjWOthh7Hb7nL0iSY3VS3DTR2opta3xb5tubRFIk5EFBtXwbNurBD8yNZL0/LPlFZXC/mXdzGJa75RAQY8kc37LCD0OIiVnM2OWghSqBvhDXClmL85GBrbH5XAGVVlpZp/BkkEeTf4PjAL++vJEmN8kZWYucgFSr2lnr5v/ReY0hWlCqXtg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=redhat.com smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=IvhJ6sg9bHA+panwIqVyh/4I3TUy1y/BTBBzyNNnq2Y=;
- b=gs551/JibpGZ/thylPBn5VDa/64K1y3XIivIHa1BQuAGcSQor3tVkWE+BKdmXOb4Ja4a6yRB9ZP7whAhLpru9g/w0SVpi+Zk323UWBPr43t/VV0zBjw+AcbJWafPYOBdzVVDwSzomk+/FXrfTOnRvp1o+5L05isfJHoN/JJKIlI=
-Received: from BL0PR02CA0126.namprd02.prod.outlook.com (2603:10b6:208:35::31)
- by PH0PR12MB8150.namprd12.prod.outlook.com (2603:10b6:510:293::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.16; Thu, 4 Jan
- 2024 19:05:33 +0000
-Received: from MN1PEPF0000ECD6.namprd02.prod.outlook.com
- (2603:10b6:208:35:cafe::b2) by BL0PR02CA0126.outlook.office365.com
- (2603:10b6:208:35::31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.15 via Frontend
- Transport; Thu, 4 Jan 2024 19:05:32 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- MN1PEPF0000ECD6.mail.protection.outlook.com (10.167.242.135) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7159.9 via Frontend Transport; Thu, 4 Jan 2024 19:05:31 +0000
-Received: from purico-ed09host.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Thu, 4 Jan
- 2024 13:05:29 -0600
-From: Ashish Kalra <Ashish.Kalra@amd.com>
-To: <pbonzini@redhat.com>
-CC: <seanjc@google.com>, <tglx@linutronix.de>, <mingo@redhat.com>,
-	<bp@alien8.de>, <dave.hansen@linux.intel.com>, <x86@kernel.org>,
-	<hpa@zytor.com>, <thomas.lendacky@amd.com>, <kvm@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <joro@8bytes.org>
-Subject: [PATCH v3] x86/sev: Add support for allowing zero SEV ASIDs.
-Date: Thu, 4 Jan 2024 19:05:20 +0000
-Message-ID: <20240104190520.62510-1-Ashish.Kalra@amd.com>
-X-Mailer: git-send-email 2.34.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C845E2C18C;
+	Thu,  4 Jan 2024 19:08:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f180.google.com with SMTP id 5614622812f47-3bb7e50679bso188849b6e.0;
+        Thu, 04 Jan 2024 11:08:11 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704395291; x=1705000091;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=oHvkNoyDDxzbLwlNA3wT9KR65mBKm5P0nwrkbLsti3U=;
+        b=q5WBGurLyfQC0VKvO8Rh0sE0OC7StNUhOnNS89gR3ENpkyNkU5kSC1cI8mreV3jz6Z
+         T0uvWexe9TPquoc8qBpbliDGd1URnJ35q9s2jkMpCYQWOwrJGBxn/jLkZZoP6arym3gz
+         ojaMsU3cZBKnoE3xYx8W+OHbJ9LJcGHcTybTmS9rPUWkALCQ+mteA5iEpRR2O3y397N3
+         1TATnv0GRggBasWBXb9epojn1KA522XJ7G/1q3xHEi8MJQSjJwXL+VGBxwkX4MeP8dN2
+         ZwhrhDI0uyeTMUE20fXfFFQ09HN/vhc1mKzU1oaBiVfzMGyfLpM6o12XMh+Y0lzRhHuK
+         koHw==
+X-Gm-Message-State: AOJu0YwOWNxE5sXOo0X2112G6QQVAIM9Tm9Mh/Xf30AZMHzClV55Ww9V
+	912QF2QMBWJUDZd7zqCtZJBDrsnev1fJIODSKZE=
+X-Google-Smtp-Source: AGHT+IECo+vuspUhcs7s76845zh7su3GowH0b83Oe/Q0O+NoCL0hKkiCZtCG9PSj/vh+F3VB8Y+VAKPTsIFuwjG2Ae8=
+X-Received: by 2002:a4a:e70a:0:b0:596:27ee:455b with SMTP id
+ y10-20020a4ae70a000000b0059627ee455bmr1857781oou.1.1704395290859; Thu, 04 Jan
+ 2024 11:08:10 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN1PEPF0000ECD6:EE_|PH0PR12MB8150:EE_
-X-MS-Office365-Filtering-Correlation-Id: 6c018437-03d9-4f01-f435-08dc0d582029
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	OL9qqhS0P6VRh2dAL9xeyzuB1u8vl9hOA+WmSeqbOArccbLg5xEgdt4ZL99V23ejpL/k5E/B8lOnduQW4XJrpUgenrOBfa6nPWRaIh5kLa/kZdJeTKCB0tJsWkemQ5amQLBFXP7RHbwWaW/RQT9v4bIX+k0KZczdUN7KikAAm+wPaiIWSmU0sfffq68gNHtmP0LKvmcwR9U4gIrm/HEFvu2nI3nMt4f2I8EYIF31wJQIGE5ghOkv0pdRg6NL0YuHfk7LIe/VMffTTvg1lVr49fKRS+hQZJpBw7DrS6zJYK/v/IWSTx6n9jsAomvegK9lgCkF0gy7EoFf7vyCvr80qOGS+xtZ/mVInYwlqypudRPZjIxpu82tQeBnj7Nzmsv7ajLjPBKB3ZK7CzyFiEta9XmBckidM6g2Y7LwXOr1Nn6eIpz/nVIY631tGgSEqjbNxyXxMwtWZjXwuU7ty1r87bk0FJydRT1I9fLlWsV3uKzUUZ518ZomTDmRjwATIqK13QIago6uynCSSE0+iaAxjg1MO8cBMGVmn03f6qedsZ7xQhTAhi95FVcJDykrRHDJZ1woOFqkP0NiK2l77fKjXC1u8+L06fQanQ3V/cq4ska8iZExzJXa2SDk2ct59RdJJ2totiFisqj9LKGSW3gt+H+wddXpF71qE/qjIQr50LgdZ7HKEr1fk1tiYxBvVrW3pVshCkLpRc3YVoZ23IZElnHyVSG6aaViXojSoYo4nYAxG1y8CYCGbgKCsIxsDIBEJQnGnMuDVA+ldwpj3uA8uQ==
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(376002)(346002)(396003)(39860400002)(136003)(230922051799003)(1800799012)(186009)(451199024)(64100799003)(82310400011)(46966006)(40470700004)(36840700001)(36756003)(40460700003)(86362001)(40480700001)(81166007)(83380400001)(82740400003)(16526019)(426003)(336012)(54906003)(47076005)(356005)(478600001)(26005)(1076003)(2616005)(7696005)(36860700001)(6666004)(316002)(8936002)(8676002)(70586007)(70206006)(6916009)(2906002)(7416002)(4326008)(41300700001)(5660300002)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Jan 2024 19:05:31.6421
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6c018437-03d9-4f01-f435-08dc0d582029
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	MN1PEPF0000ECD6.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR12MB8150
+References: <20240104171553.2080674-1-lukasz.luba@arm.com> <20240104171553.2080674-3-lukasz.luba@arm.com>
+In-Reply-To: <20240104171553.2080674-3-lukasz.luba@arm.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Thu, 4 Jan 2024 20:07:59 +0100
+Message-ID: <CAJZ5v0jCtS1XHczORnZFhwO7N=FommFNbQC7NdaM5SHKXUnTog@mail.gmail.com>
+Subject: Re: [PATCH v6 02/23] PM: EM: Refactor em_cpufreq_update_efficiencies()
+ arguments
+To: Lukasz Luba <lukasz.luba@arm.com>
+Cc: linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org, rafael@kernel.org, 
+	dietmar.eggemann@arm.com, rui.zhang@intel.com, amit.kucheria@verdurent.com, 
+	amit.kachhap@gmail.com, daniel.lezcano@linaro.org, viresh.kumar@linaro.org, 
+	len.brown@intel.com, pavel@ucw.cz, mhiramat@kernel.org, qyousef@layalina.io, 
+	wvw@google.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Ashish Kalra <ashish.kalra@amd.com>
+The word "refactor" appears to be quite loaded in your patch
+descriptions, but it is not always the best one to use IMV.
 
-Some BIOSes allow the end user to set the minimum SEV ASID value
-(CPUID 0x8000001F_EDX) to be greater than the maximum number of
-encrypted guests, or maximum SEV ASID value (CPUID 0x8000001F_ECX)
-in order to dedicate all the SEV ASIDs to SEV-ES or SEV-SNP.
+For instance, this patch simply extends the argument list of
+em_cpufreq_update_efficiencies(), so I would say just that in the
+subject: "Extend em_cpufreq_update_efficiencies() argument list"
 
-The SEV support, as coded, does not handle the case where the minimum
-SEV ASID value can be greater than the maximum SEV ASID value.
-As a result, the following confusing message is issued:
+On Thu, Jan 4, 2024 at 6:14=E2=80=AFPM Lukasz Luba <lukasz.luba@arm.com> wr=
+ote:
+>
+> In order to prepare the code for the modifiable EM perf_state table,
+> refactor existing function em_cpufreq_update_efficiencies().
 
-[   30.715724] kvm_amd: SEV enabled (ASIDs 1007 - 1006)
+"make em_cpufreq_update_efficiencies() take a pointer to the EM table
+as its second argument and modify it to use that new argument instead
+of the "table" member of dev->em_pd"
 
-Fix the support to properly handle this case.
+or something like this.
 
-Fixes: 916391a2d1dc ("KVM: SVM: Add support for SEV-ES capability in KVM")
-Suggested-by: Sean Christopherson <seanjc@google.com>
-Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
-Cc: stable@vger.kernel.org
----
- arch/x86/kvm/svm/sev.c | 40 ++++++++++++++++++++++++----------------
- 1 file changed, 24 insertions(+), 16 deletions(-)
+> The function now takes the ptr to the EM table as its argument.
+>
+> No functional impact.
+>
+> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+> ---
+>  kernel/power/energy_model.c | 8 +++-----
+>  1 file changed, 3 insertions(+), 5 deletions(-)
+>
+> diff --git a/kernel/power/energy_model.c b/kernel/power/energy_model.c
+> index 8b9dd4a39f63..42486674b834 100644
+> --- a/kernel/power/energy_model.c
+> +++ b/kernel/power/energy_model.c
+> @@ -237,10 +237,10 @@ static int em_create_pd(struct device *dev, int nr_=
+states,
+>         return 0;
+>  }
+>
+> -static void em_cpufreq_update_efficiencies(struct device *dev)
+> +static void
+> +em_cpufreq_update_efficiencies(struct device *dev, struct em_perf_state =
+*table)
+>  {
+>         struct em_perf_domain *pd =3D dev->em_pd;
+> -       struct em_perf_state *table;
+>         struct cpufreq_policy *policy;
+>         int found =3D 0;
+>         int i;
+> @@ -254,8 +254,6 @@ static void em_cpufreq_update_efficiencies(struct dev=
+ice *dev)
+>                 return;
+>         }
+>
+> -       table =3D pd->table;
+> -
+>         for (i =3D 0; i < pd->nr_perf_states; i++) {
+>                 if (!(table[i].flags & EM_PERF_STATE_INEFFICIENT))
+>                         continue;
+> @@ -397,7 +395,7 @@ int em_dev_register_perf_domain(struct device *dev, u=
+nsigned int nr_states,
+>
+>         dev->em_pd->flags |=3D flags;
+>
+> -       em_cpufreq_update_efficiencies(dev);
+> +       em_cpufreq_update_efficiencies(dev, dev->em_pd->table);
+>
+>         em_debug_create_pd(dev);
+>         dev_info(dev, "EM: created perf domain\n");
+> --
 
-diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-index 4900c078045a..2112c94bac76 100644
---- a/arch/x86/kvm/svm/sev.c
-+++ b/arch/x86/kvm/svm/sev.c
-@@ -143,8 +143,20 @@ static void sev_misc_cg_uncharge(struct kvm_sev_info *sev)
- 
- static int sev_asid_new(struct kvm_sev_info *sev)
- {
--	int asid, min_asid, max_asid, ret;
-+	/*
-+	 * SEV-enabled guests must use asid from min_sev_asid to max_sev_asid.
-+	 * SEV-ES-enabled guest can use from 1 to min_sev_asid - 1.
-+	 * Note: min ASID can end up larger than the max if basic SEV support is
-+	 * effectively disabled by disallowing use of ASIDs for SEV guests.
-+	 */
-+	unsigned int min_asid = sev->es_active ? 1 : min_sev_asid;
-+	unsigned int max_asid = sev->es_active ? min_sev_asid - 1 : max_sev_asid;
-+	unsigned int asid;
- 	bool retry = true;
-+	int ret;
-+
-+	if (min_asid > max_asid)
-+		return -ENOTTY;
- 
- 	WARN_ON(sev->misc_cg);
- 	sev->misc_cg = get_current_misc_cg();
-@@ -157,12 +169,6 @@ static int sev_asid_new(struct kvm_sev_info *sev)
- 
- 	mutex_lock(&sev_bitmap_lock);
- 
--	/*
--	 * SEV-enabled guests must use asid from min_sev_asid to max_sev_asid.
--	 * SEV-ES-enabled guest can use from 1 to min_sev_asid - 1.
--	 */
--	min_asid = sev->es_active ? 1 : min_sev_asid;
--	max_asid = sev->es_active ? min_sev_asid - 1 : max_sev_asid;
- again:
- 	asid = find_next_zero_bit(sev_asid_bitmap, max_asid + 1, min_asid);
- 	if (asid > max_asid) {
-@@ -246,21 +252,20 @@ static void sev_unbind_asid(struct kvm *kvm, unsigned int handle)
- static int sev_guest_init(struct kvm *kvm, struct kvm_sev_cmd *argp)
- {
- 	struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
--	int asid, ret;
-+	int ret;
- 
- 	if (kvm->created_vcpus)
- 		return -EINVAL;
- 
--	ret = -EBUSY;
- 	if (unlikely(sev->active))
--		return ret;
-+		return -EINVAL;
- 
- 	sev->active = true;
- 	sev->es_active = argp->id == KVM_SEV_ES_INIT;
--	asid = sev_asid_new(sev);
--	if (asid < 0)
-+	ret = sev_asid_new(sev);
-+	if (ret < 0)
- 		goto e_no_asid;
--	sev->asid = asid;
-+	sev->asid = ret;
- 
- 	ret = sev_platform_init(&argp->error);
- 	if (ret)
-@@ -2229,8 +2234,10 @@ void __init sev_hardware_setup(void)
- 		goto out;
- 	}
- 
--	sev_asid_count = max_sev_asid - min_sev_asid + 1;
--	WARN_ON_ONCE(misc_cg_set_capacity(MISC_CG_RES_SEV, sev_asid_count));
-+	if (min_sev_asid <= max_sev_asid) {
-+		sev_asid_count = max_sev_asid - min_sev_asid + 1;
-+		WARN_ON_ONCE(misc_cg_set_capacity(MISC_CG_RES_SEV, sev_asid_count));
-+	}
- 	sev_supported = true;
- 
- 	/* SEV-ES support requested? */
-@@ -2261,7 +2268,8 @@ void __init sev_hardware_setup(void)
- out:
- 	if (boot_cpu_has(X86_FEATURE_SEV))
- 		pr_info("SEV %s (ASIDs %u - %u)\n",
--			sev_supported ? "enabled" : "disabled",
-+			sev_supported ? (min_sev_asid <= max_sev_asid ?  "enabled" : "unusable")
-+			: "disabled",
- 			min_sev_asid, max_sev_asid);
- 	if (boot_cpu_has(X86_FEATURE_SEV_ES))
- 		pr_info("SEV-ES %s (ASIDs %u - %u)\n",
--- 
-2.34.1
-
+The code change itself LGTM.
 
