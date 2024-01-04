@@ -1,75 +1,141 @@
-Return-Path: <linux-kernel+bounces-16587-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16588-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id ECE548240AC
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 12:31:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 161A68240AE
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 12:32:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8F275B2113E
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 11:31:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3C32C1C20E50
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 11:32:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E5E821119;
-	Thu,  4 Jan 2024 11:31:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="cTBWwb13"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3E192111B;
+	Thu,  4 Jan 2024 11:32:04 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2FA22134E;
-	Thu,  4 Jan 2024 11:31:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 0A29C2000A;
-	Thu,  4 Jan 2024 11:31:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1704367873;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=dNCEmw6CVL0w4M9htlg2iyn94ksGivA6eBFkaY+S0Uw=;
-	b=cTBWwb13EuwlZlGoBLhcvUjFlDoqfWBTnSHOY0B5/DxQnnrjYy+ZcjjA+CK9U/5VoFBR2q
-	FQ+RaUiYmFclFwr8+0VOD3Ivp3rH/b7XtWdz2Mrv+nXfDdSwA4PavC389J+71vq11YU1tv
-	h4y10fpi2Oj8b+3/3ytJvbpg/h+K6d/SUSLkb/IIpp7UbTBHPvSX9FOcNy/duAs96luOjx
-	/csx4NUPsG+L2afC9BkJgej76/JnicdTMM+uZFAt/rHsJzwCP8lfVOuUGV8SgaMsE1/jzR
-	MLzscMkBDXpp3fQFY8TTZf2AqAGTmqHZvP5Pt7fccirU1qTaa71DfLpWnlwZ7A==
-Message-ID: <d8f52066-323d-4622-b6b0-32834a504dfe@bootlin.com>
-Date: Thu, 4 Jan 2024 12:31:11 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D44D210F4;
+	Thu,  4 Jan 2024 11:32:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.174])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4T5PYB3DcmzWlkW;
+	Thu,  4 Jan 2024 19:31:10 +0800 (CST)
+Received: from dggpeml500021.china.huawei.com (unknown [7.185.36.21])
+	by mail.maildlp.com (Postfix) with ESMTPS id B3708140487;
+	Thu,  4 Jan 2024 19:31:52 +0800 (CST)
+Received: from [10.174.177.174] (10.174.177.174) by
+ dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 4 Jan 2024 19:31:52 +0800
+Message-ID: <6c93726b-75b8-a6a6-34d3-d0f6c7a1f35d@huawei.com>
+Date: Thu, 4 Jan 2024 19:31:51 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] thermal: k3_j72xx_bandgap: implement suspend/resume
- support
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.1.2
+Subject: Re: [PATCH v2 3/8] ext4: regenerate buddy after block freeing failed
+ if under fc replay
+To: Jan Kara <jack@suse.cz>
+CC: <linux-ext4@vger.kernel.org>, <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
+	<ritesh.list@gmail.com>, <linux-kernel@vger.kernel.org>,
+	<yi.zhang@huawei.com>, <yangerkun@huawei.com>, <yukuai3@huawei.com>, Baokun
+ Li <libaokun1@huawei.com>
+References: <20231221150558.2740823-1-libaokun1@huawei.com>
+ <20231221150558.2740823-4-libaokun1@huawei.com>
+ <20240104103336.fjwhqiv2maezquef@quack3>
 Content-Language: en-US
-To: rafael@kernel.org, daniel.lezcano@linaro.org
-Cc: rui.zhang@intel.com, lukasz.luba@arm.com, linux-pm@vger.kernel.org,
- linux-kernel@vger.kernel.org, thomas.petazzoni@bootlin.com,
- gregory.clement@bootlin.com, theo.lebrun@bootlin.com, u-kumar1@ti.com
-References: <20231130164953.2043305-1-thomas.richard@bootlin.com>
-From: Thomas Richard <thomas.richard@bootlin.com>
-In-Reply-To: <20231130164953.2043305-1-thomas.richard@bootlin.com>
-Content-Type: text/plain; charset=UTF-8
+From: Baokun Li <libaokun1@huawei.com>
+In-Reply-To: <20240104103336.fjwhqiv2maezquef@quack3>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-GND-Sasl: thomas.richard@bootlin.com
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpeml500021.china.huawei.com (7.185.36.21)
 
-On 11/30/23 17:49, Thomas Richard wrote:
-> From: Théo Lebrun <theo.lebrun@bootlin.com>
-> 
-> This add suspend-to-ram support.
+On 2024/1/4 18:33, Jan Kara wrote:
+> On Thu 21-12-23 23:05:53, Baokun Li wrote:
+>> This reverts [Fixes] under fast commit replay. When we are freeing blocks
+>> that have already been freed, the buddy may be corrupted, and we need to
+>> regenerate the buddy when the fast commit is being replayed in order to
+>> avoid using an corrupted buddy, since it will not mark the group block
+>> bitmap as corrupted at that point.
+> I'd rephrase the changelog as:
+>
+> This mostly reverts commit 6bd97bf273bd ("ext4: remove redundant
+> mb_regenerate_buddy()") and reintroduces mb_regenerate_buddy(). Based on
+> code in mb_free_blocks(), fast commit replay can end up marking as free
+> blocks that are already marked as such. This causes corruption of the
+> buddy bitmap so we need to regenerate it in that case.
+>
+> Otherwise the patch looks good to me so feel free to add:
+>
+> Reviewed-by: Jan Kara <jack@suse.cz>
+>
+> 								Honza
+Hello Honza, Happy New Year!
 
-Hello,
+Thank you very much for your review!
+This changelog looks a lot more relevant!
+  I will use this changelog in the next version.
+>> Reported-by: Jan Kara <jack@suse.cz>
+>> Fixes: 6bd97bf273bd ("ext4: remove redundant mb_regenerate_buddy()")
+>> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+>> ---
+>>   fs/ext4/mballoc.c | 20 ++++++++++++++++++++
+>>   1 file changed, 20 insertions(+)
+>>
+>> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+>> index a95fa6e2b0f9..f6131ba514c8 100644
+>> --- a/fs/ext4/mballoc.c
+>> +++ b/fs/ext4/mballoc.c
+>> @@ -1233,6 +1233,24 @@ void ext4_mb_generate_buddy(struct super_block *sb,
+>>   	atomic64_add(period, &sbi->s_mb_generation_time);
+>>   }
+>>   
+>> +static void mb_regenerate_buddy(struct ext4_buddy *e4b)
+>> +{
+>> +	int count;
+>> +	int order = 1;
+>> +	void *buddy;
+>> +
+>> +	while ((buddy = mb_find_buddy(e4b, order++, &count)))
+>> +		mb_set_bits(buddy, 0, count);
+>> +
+>> +	e4b->bd_info->bb_fragments = 0;
+>> +	memset(e4b->bd_info->bb_counters, 0,
+>> +		sizeof(*e4b->bd_info->bb_counters) *
+>> +		(e4b->bd_sb->s_blocksize_bits + 2));
+>> +
+>> +	ext4_mb_generate_buddy(e4b->bd_sb, e4b->bd_buddy,
+>> +		e4b->bd_bitmap, e4b->bd_group, e4b->bd_info);
+>> +}
+>> +
+>>   /* The buddy information is attached the buddy cache inode
+>>    * for convenience. The information regarding each group
+>>    * is loaded via ext4_mb_load_buddy. The information involve
+>> @@ -1921,6 +1939,8 @@ static void mb_free_blocks(struct inode *inode, struct ext4_buddy *e4b,
+>>   			ext4_mark_group_bitmap_corrupted(
+>>   				sb, e4b->bd_group,
+>>   				EXT4_GROUP_INFO_BBITMAP_CORRUPT);
+>> +		} else {
+>> +			mb_regenerate_buddy(e4b);
+>>   		}
+>>   		goto done;
+>>   	}
+>> -- 
+>> 2.31.1
+>>
 
-Could someone please take a look at this patch ?
-
-Regards,
-
-Thomas
+Thanks again!
+-- 
+With Best Regards,
+Baokun Li
+.
 
 
