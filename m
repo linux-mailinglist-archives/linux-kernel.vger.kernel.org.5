@@ -1,525 +1,325 @@
-Return-Path: <linux-kernel+bounces-16555-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16556-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 018CA824029
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 12:03:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6442582402C
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 12:03:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6B10CB23972
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 11:03:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D81D128653B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 11:03:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31F97224CC;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2FCA224E1;
 	Thu,  4 Jan 2024 11:01:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kcUPnRCA"
+	dkim=pass (1024-bit key) header.d=solidrn.onmicrosoft.com header.i=@solidrn.onmicrosoft.com header.b="OEMyCTNy"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2043.outbound.protection.outlook.com [40.107.21.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 842F62232A;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E38BC22330;
 	Thu,  4 Jan 2024 11:01:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-3374eb61cbcso355836f8f.0;
-        Thu, 04 Jan 2024 03:01:38 -0800 (PST)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=solid-run.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=solid-run.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hyTMf7gvLcrid7eMHtRxs5dWXAPWo1jwsfO+dBuJ+Qw/JIyuM45y+gKAt7PtNzDfjBkTu/C4cqWwMQwdyM+zoayIkqWgA23LgWmZKBldckSVWGM91Qx6kyo8Q6lJDOBis96aREilLSXiNxdNJ1LPDaNNYevGFuypNdafPI/NI5EMpcWf/f0Hhf/KHRg+Vc5pzaehr3dxPawuacS/juREcbKFtczafE/OtZTehxn+Q242hxgTB9/wYKzUt0JHQXuZIC6sdMJNiw0E6525meVbEln18i/3NwjYo4+UIS4hvuzlpujqas95AN57Bh3wuDo5B/C/yL4livJU3cNHrYNA1g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=OWH/VwNKK+ci8G5LzQCQXiFP8IP/lWJolfgj4BN4YbY=;
+ b=VYu91HBaJr3g7JxtMlJN0vw+59MZlFQs0TvidzUgvwumwi4uAoMJLV3FuDAZndEwTCh4061LPGy1HCxS/DrwHxCyDyZSA1Jyth81dH/i5G2GBk4J9F+zhD2pHei5K0KzKF5nNtg395Yc/Uu7vI3isJJew//+igGnBuoE7IZf25u8IcM8kfkJg1yMk0q/D2HcGZF8W3e+tPLoxCukZIBB+ibo0Vsccb2JJ+zfGQ0mHGYjJeOvWs4kC3CTksVq4WQPkPaAVoXUvpdj5Io07RlUJ3Cgx/1t4mrK7gowEdlbaQZVmuQx60usFeJqREjSQAqOG7xc0FiupaFAokTkb3tHXg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=solid-run.com; dmarc=pass action=none
+ header.from=solid-run.com; dkim=pass header.d=solid-run.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704366097; x=1704970897; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=iXaBfwTEcg+IIN1hg+N3EJ5vDzto8EiNj2C7VoOqJUA=;
-        b=kcUPnRCAkP08KgVIoGeoJ8S2dUSie2TeDM9+xl6Q6gE9fIHCyErtwqnGqPZ3tUpI3F
-         MEZlSsxJbiIY1CXbN/VOUN36vbxZbhlu3pwNPYWrbyQtt0D7poN6RkaZPWMN8uvte67X
-         9KPeH6lHaknmb3dQBZEL5+08mrNC6FijO1PpWE0ir10ZV3u0ig8yEaKXCoiHejvso5JV
-         yFf5HKV461ewNxK8WLGz2uJbPJvHq6MmElyAQsm9bARFzwfFa2jbU09V2tRAMToAJ8Ce
-         3cU8ZtR0JbW9wBvsjUYyFvGHmTNDObQSWF7IJAB2WBDmzIkqgPMRd5Yd6YE01DNU5Lsc
-         esUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704366097; x=1704970897;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=iXaBfwTEcg+IIN1hg+N3EJ5vDzto8EiNj2C7VoOqJUA=;
-        b=HjFnqM74y/kDYF3hC02rHl+khSJ4i1Un3Fb5i3e8UYVWBDOIRy/zJEmgB1Epub4KBB
-         4ar+VWphPzhgdXwn76kUcxPfwOuwbJMz//oaD93LUkkXiLq5qpezdBtjQa7t58w1RBiV
-         Nfuu9UK9c1P7+FltEfaLM5uXEuq+Q/HmmST82EdEUEPzKe84ZfsmFM7xIgKQkGmjyB+6
-         uloS6n0dO579OemoKOMUJ/BVek9J50vZZnJ1GRsGFinbB6j6vKFKA7pBVq68r3T62ePO
-         gPpHK7q9POujR7FkT2F+7vnokvBivLRGgl2RFydgoIGSkr2SVNVMU38xp/zLUI8k2ZMZ
-         RxPw==
-X-Gm-Message-State: AOJu0YwowxFWxvaC9L5LT46o9tZJm4t1+Ic4SPvrQEPul2LCv4L67sif
-	qf71NSvqzbD0+Zq0zEiHa3k=
-X-Google-Smtp-Source: AGHT+IGeJH1M76Z8yYVrk1xHcvhoNdcRKQ8R/Sv85JI1vEkmd+e4uZJTv4i8rnPTH5yBQOUE2ykayg==
-X-Received: by 2002:adf:f8c9:0:b0:336:8894:693 with SMTP id f9-20020adff8c9000000b0033688940693mr320157wrq.115.1704366096540;
-        Thu, 04 Jan 2024 03:01:36 -0800 (PST)
-Received: from localhost.localdomain (host-80-116-159-187.retail.telecomitalia.it. [80.116.159.187])
-        by smtp.googlemail.com with ESMTPSA id b14-20020adff90e000000b003373fe3d345sm9550242wrr.65.2024.01.04.03.01.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Jan 2024 03:01:36 -0800 (PST)
-From: Christian Marangi <ansuelsmth@gmail.com>
-To: Pavel Machek <pavel@ucw.cz>,
-	Lee Jones <lee@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	William Zhang <william.zhang@broadcom.com>,
-	Anand Gore <anand.gore@broadcom.com>,
-	Kursad Oney <kursad.oney@broadcom.com>,
-	Florian Fainelli <florian.fainelli@broadcom.com>,
-	=?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
-	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Andrew Lunn <andrew@lunn.ch>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	Jacek Anaszewski <jacek.anaszewski@gmail.com>,
-	=?UTF-8?q?Fern=C3=A1ndez=20Rojas?= <noltari@gmail.com>,
-	Sven Schwermer <sven.schwermer@disruptive-technologies.com>,
-	Christian Marangi <ansuelsmth@gmail.com>,
-	linux-leds@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	netdev@vger.kernel.org
-Subject: [net-next PATCH v8 5/5] net: phy: at803x: add LED support for qca808x
-Date: Thu,  4 Jan 2024 12:01:12 +0100
-Message-ID: <20240104110114.2020-6-ansuelsmth@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240104110114.2020-1-ansuelsmth@gmail.com>
-References: <20240104110114.2020-1-ansuelsmth@gmail.com>
+ d=solidrn.onmicrosoft.com; s=selector1-solidrn-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=OWH/VwNKK+ci8G5LzQCQXiFP8IP/lWJolfgj4BN4YbY=;
+ b=OEMyCTNyke70bFWj+8JvFcz3jOe3v0iDjWm1rB0hrV8PrWNmDGFrfUmS9lVwPaQ52IfoZuaP45UipNIfghAIxia40/Nx/Zp1kPiWj9oUJCst0dOdkKnEg3eqV89DG20SrJwZByZ6Hvu2YkjeASsBU681gZoWh8ZDXTXdE+v4mKA=
+Received: from AS8PR04MB8963.eurprd04.prod.outlook.com (2603:10a6:20b:42e::18)
+ by AS8PR04MB8087.eurprd04.prod.outlook.com (2603:10a6:20b:3fb::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.13; Thu, 4 Jan
+ 2024 11:01:32 +0000
+Received: from AS8PR04MB8963.eurprd04.prod.outlook.com
+ ([fe80::daf2:8c54:d469:793d]) by AS8PR04MB8963.eurprd04.prod.outlook.com
+ ([fe80::daf2:8c54:d469:793d%6]) with mapi id 15.20.7159.013; Thu, 4 Jan 2024
+ 11:01:32 +0000
+From: Josua Mayer <josua@solid-run.com>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Nishanth Menon
+	<nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>, Tero Kristo
+	<kristo@kernel.org>, Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>
+CC: "linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>, "devicetree@vger.kernel.org"
+	<devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/5] arm64: dts: add description for solidrun am642 som
+ and evaluation board
+Thread-Topic: [PATCH 2/5] arm64: dts: add description for solidrun am642 som
+ and evaluation board
+Thread-Index: AQHaPjfQD2Hm5iwN2EeNfOjZgITuSbDJSgwAgAA0RAA=
+Date: Thu, 4 Jan 2024 11:01:32 +0000
+Message-ID: <0402b960-6daa-446b-8503-d991deac5532@solid-run.com>
+References: <20240103-add-am64-som-v1-0-dda1f9227aef@solid-run.com>
+ <20240103-add-am64-som-v1-2-dda1f9227aef@solid-run.com>
+ <eb90f92f-de58-42b2-8eb1-9d78e1fd7a60@linaro.org>
+In-Reply-To: <eb90f92f-de58-42b2-8eb1-9d78e1fd7a60@linaro.org>
+Accept-Language: de-DE, en-US
+Content-Language: de-DE
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=solid-run.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: AS8PR04MB8963:EE_|AS8PR04MB8087:EE_
+x-ms-office365-filtering-correlation-id: 8b28405c-e051-40df-611d-08dc0d14830d
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ ydNWkFJJL5VdP39ZNKbL9VJ1LvMMkFAaQrfo8Vs42dJsB/KrVdf0tzwbWKwulULqhrvqyJDvVWDR8lwZvtzJQrHfL5Rp90BKxZpyWrRV5in5MudRVYo8MwpEMRO52JccQC6gCmPtSI5TF7rTlDfPvXZ1Wf6BgbMGybNWgV9WOVoK0QoLIJd7//mJGIdsg9hZc9FyaTYBsb1d0U+gRHfXyrgEVjbZs1gAP+jpDc0eXR/65IyceGeMq9ThW8B7J8QrAh8BiWrywJMgNtNIJMOiYVuXjwOugIgtHu2zsa/Is7fBgK3QushmbwcKKoW9zp0/gg1BYgvWjicmux/aHAQcrc18Fe8lglP//I1Mnq+FzKjkPuNpbuZQ4Geylng/700fSviAoIpQ8pAlXHo6p1L3wct8G3atjqezxYOv9csjzfiag608tqmizwos+GvKjMXVUSnP33UtB16GaCfjRuww8GqwMxVnWOWwSae0DcZqAiGQaxc2aDvtiPvmj/o4ME3xBn3fOeF9xznlI7M6xGWOoT1m7JfGCPhDhrK6ooOZu/YTu/ZCyIENH1pnBKBT65JdEegwauoyp60aVnF+jRIqMTlyelxBQS4tae+OoVbBMUN7GBcJX2Da6+vMVMGdaQkj
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB8963.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39840400004)(396003)(376002)(136003)(366004)(346002)(230922051799003)(1800799012)(64100799003)(451199024)(186009)(41300700001)(83380400001)(38070700009)(26005)(122000001)(38100700002)(71200400001)(91956017)(64756008)(66556008)(66446008)(66476007)(66946007)(76116006)(2906002)(5660300002)(36756003)(7416002)(86362001)(966005)(6486002)(478600001)(31696002)(31686004)(316002)(2616005)(8936002)(54906003)(8676002)(53546011)(110136005)(6512007)(6506007)(4326008)(45980500001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?RG5pU1RCQ0loT1Rld2lMa0poQURjTGtkcmtLRGhpb20vR3REcHJOTThwQkx3?=
+ =?utf-8?B?Tkx5RXBVaVBmU1VZUUE5OWxWUnN3WlF0NUNWV0xjK2NVbjFMUFFUcFVOQWNv?=
+ =?utf-8?B?Z2JxeS9lZzFITXB6Qlo1NlhnQkxRU01vc2ZINk9JRmpBbVZMRkI2Y1E2UTla?=
+ =?utf-8?B?VFdtdVBhOWl0aGxmTHM1cTVLWkp0Z3lRUk9FUkpOM3pkQWdBdUd1UXNDOUt3?=
+ =?utf-8?B?d2NSZzQ4MkNQT0tvSk1ySndCMjBKYWQ1SkxaRE9xU1U3MmNmSkhkK3JPUFRi?=
+ =?utf-8?B?eXJRTDFZTEFuOE1mL0lnYncycVRzbWJUZDRPR1BtZklabUJTWGJ5cnFibDBx?=
+ =?utf-8?B?NmgweEFaZE5QblBrS1RBSzkzaU00TVlmOFYwYUVwZlkyY1RWNnNkMWU2S2hN?=
+ =?utf-8?B?aGNIeDg2U1NocFRkWmVYeVBDQW5xTDNyc3VtY0pVdzdRUEd3UG9INVN6c2NC?=
+ =?utf-8?B?cVNFWjBWT1VTc1hxZWl6Q2VQaldnamRtTm52MXVVTVd5MWx5UGZTb2pDczJv?=
+ =?utf-8?B?UkVONldxRCt6bkw0NFhQSERjQVNvUm1IRExRZlQxSVVkZkNRRTNmd09kcDZL?=
+ =?utf-8?B?MkZYTFVtM2dpMTRTYy9DSnMrelhrMGNzVnQ3UHVab1E3THVIaVJrSzFxN0s1?=
+ =?utf-8?B?QnFhR0xWTTFyMXdKS3BXUjA1QWRlaG1ienl5R1Q3TXI4eE16NXhVWHh2S0gx?=
+ =?utf-8?B?NUM0TEYwM1QrNmlxZnRML3R0RlM5YTQwdUVUQnEvM2xWek9KRnhZQ3UyZ25y?=
+ =?utf-8?B?UlE1SFRCcEd3N0JUdmNpdnVxWEpaV3lkaVdvT09heHBjUHBRcGxvN2lINm9Q?=
+ =?utf-8?B?SGtKUXRLdFZRM0h1bGJuZGprc0xEVnNXYkZEbFdEcUl6cmRteUxXTG9Dc280?=
+ =?utf-8?B?SGxCbDFPVGJoakNCS2J1YUlnNkZUV2RLVDJIZi8vRmxjMmc1REpZSWtrUjMw?=
+ =?utf-8?B?UCtSRXhMUTN1amx0b1lRSWRFeTRnYU5teWI0VGNEd3lrOWNuK3RYdTRwMGN3?=
+ =?utf-8?B?S24yd2lvbWtrakhxS1FXZWcvbWxPQ0ZPejlJUFVvTzhzalgrOGF3V2RCOUtj?=
+ =?utf-8?B?MUZNSkc5LzU5RFlPT21lSVAwKzFTSTVFMjh1a2dJUXcwYm1UbXY4bFVDWFNV?=
+ =?utf-8?B?aHhEOEMvYkVuV082SXRMbFVnQ0ZkaEJKamZSWWJnOWpsMnRkbnZTY01EK1c4?=
+ =?utf-8?B?UExpTlZZVHNwVzNZK01FZzVvYTQwYVRhZnFVZExkTXJPYk9pdjRIRGJ2ZmZY?=
+ =?utf-8?B?TFQ4Rk56Q1NMTVAvaGFBWk8vbWlxZ0h2M2tKWTZaUXFCU1EwangzREdYQ1hV?=
+ =?utf-8?B?VDY2UmVUc3dVU3NFbURsaVM2RDRKQ2FiUHkvS3pvYUZFanZtdE9LMXI4b2Y2?=
+ =?utf-8?B?bGo5NE5FbHRMaUU1UkNpaVRtOThDa3JFNlAzbExVUnY4SEFVcVdteDV3TG9Q?=
+ =?utf-8?B?aHloRElSNWtSZDBETGtjOWU4RjNXeFNZUTRnUE1ZUnYybSsvblpVamh2WXd5?=
+ =?utf-8?B?R2dxYlNQVzYwck5MWEZiQlZ4NldyVXMwQmxjUm1tS1RzcElsaUtmMXg5WXJv?=
+ =?utf-8?B?KzREWE1UVXE1bEJ1V3VOcXlYdmtUK3FRSDRNR2k3cjJPUk5neURSaWRwV2x2?=
+ =?utf-8?B?YUUzbUoreWZCMUNwNEtXcmQ2R2M2SXE2bkdpMlhXNTBBQ1FST3ZlQmFMNzdF?=
+ =?utf-8?B?MHpRUTNZYmVXZlJnUGh1ckJaMS83WDlXdmR3QmwvNzBZS3BLRFRGS2E0VU1j?=
+ =?utf-8?B?NnBXNGxBYlIxNW44MTF0SDVLdUFHMlNrNnh3Q2ZKSjd2dUJRcWNCWEh4V2h3?=
+ =?utf-8?B?SXJqdk5pbnllcnBXZHFIWTdsc2YzNmtoWW9OSWpGQVc0czZmdnVLWlZZK1lk?=
+ =?utf-8?B?QWN1cWowbWpITzlXb1k4ZWtqM3BXaGJMMllqM2w0Y0xLVE1SWXFXVEE2SHdN?=
+ =?utf-8?B?Q09XRXRIOCs0b0c2THF4aTJqclByaDN4dnJJZVlFYldGelZlSkVGdWRpdGFS?=
+ =?utf-8?B?WTh4NUo0bDZwM0VJOUdGQnR6SGk2bys1YmpxYi80amZGdUU1S0hNMHA3Uytx?=
+ =?utf-8?B?N1ZHMGMyNkdiWHEzM2ZsOVBtL0FvenFKakJTb2xnaHNIS0JGa3REcnFsK0Nv?=
+ =?utf-8?Q?msA40xxtf+qp5TFOsZO9OUBLz?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <6C898CC8A4856642A95F51C28AF774B1@eurprd04.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: solid-run.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB8963.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8b28405c-e051-40df-611d-08dc0d14830d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Jan 2024 11:01:32.8623
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a4a8aaf3-fd27-4e27-add2-604707ce5b82
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: x2sNGD465fBjpq1dfpQOYT6DvogtwMXIQXf5PaVQTL2Z97yB6XJ9kMto43rqzyYJmMckXqC2sgFMxE1/c+XlNg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB8087
 
-Add LED support for QCA8081 PHY.
-
-Documentation for this LEDs PHY is very scarce even with NDA access
-to Documentation for OEMs. Only the blink pattern are documented and are
-very confusing most of the time. No documentation is present about
-forcing the LED on/off or to always blink.
-
-Those settings were reversed by poking the regs and trying to find the
-correct bits to trigger these modes. Some bits mode are not clear and
-maybe the documentation option are not 100% correct. For the sake of LED
-support the reversed option are enough to add support for current LED
-APIs.
-
-Supported HW control modes are:
-- tx
-- rx
-- link10
-- link100
-- link1000
-- half_duplex
-- full_duplex
-
-Also add support for LED polarity set to set LED polarity to active
-high or low. QSDK sets this value to high by default but PHY reset value
-doesn't have this enabled by default.
-
-QSDK also sets 2 additional bits but their usage is not clear, info about
-this is added in the header. It was verified that for correct function
-of the LED if active high is needed, only BIT 6 is needed.
-
-Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
----
-Changes v8:
-- Drop unused ret variable
-Changes v7:
-- Improve set polarity settings (Suggested by Russell)
-Changes v6:
-- Rebase on top of net-next
-Changes v5:
-- Rework to polarity option bitmap
-- Rafactor with new finding from further reverse
-Changes v4:
-- Rework to polarity option (for marvell10g series support)
-- Rework logic to enforce single PHY polarity mode
-Changes v3:
-- Out of RFC
-- Drop link_25000 and add TODO commends waiting for the
-  netdev trigger thing to be merged (I will take care of
-  sending a followup patch later)
-Changes v2:
-- Move to new led_polarity_set implementation
-- Drop special probe
-
- drivers/net/phy/at803x.c | 325 +++++++++++++++++++++++++++++++++++++++
- 1 file changed, 325 insertions(+)
-
-diff --git a/drivers/net/phy/at803x.c b/drivers/net/phy/at803x.c
-index aaf6c654aaed..d22fa14e5812 100644
---- a/drivers/net/phy/at803x.c
-+++ b/drivers/net/phy/at803x.c
-@@ -272,6 +272,87 @@
- #define QCA808X_CDT_STATUS_STAT_OPEN		2
- #define QCA808X_CDT_STATUS_STAT_SHORT		3
- 
-+#define QCA808X_MMD7_LED_GLOBAL			0x8073
-+#define QCA808X_LED_BLINK_1			GENMASK(11, 6)
-+#define QCA808X_LED_BLINK_2			GENMASK(5, 0)
-+/* Values are the same for both BLINK_1 and BLINK_2 */
-+#define QCA808X_LED_BLINK_FREQ_MASK		GENMASK(5, 3)
-+#define QCA808X_LED_BLINK_FREQ_2HZ		FIELD_PREP(QCA808X_LED_BLINK_FREQ_MASK, 0x0)
-+#define QCA808X_LED_BLINK_FREQ_4HZ		FIELD_PREP(QCA808X_LED_BLINK_FREQ_MASK, 0x1)
-+#define QCA808X_LED_BLINK_FREQ_8HZ		FIELD_PREP(QCA808X_LED_BLINK_FREQ_MASK, 0x2)
-+#define QCA808X_LED_BLINK_FREQ_16HZ		FIELD_PREP(QCA808X_LED_BLINK_FREQ_MASK, 0x3)
-+#define QCA808X_LED_BLINK_FREQ_32HZ		FIELD_PREP(QCA808X_LED_BLINK_FREQ_MASK, 0x4)
-+#define QCA808X_LED_BLINK_FREQ_64HZ		FIELD_PREP(QCA808X_LED_BLINK_FREQ_MASK, 0x5)
-+#define QCA808X_LED_BLINK_FREQ_128HZ		FIELD_PREP(QCA808X_LED_BLINK_FREQ_MASK, 0x6)
-+#define QCA808X_LED_BLINK_FREQ_256HZ		FIELD_PREP(QCA808X_LED_BLINK_FREQ_MASK, 0x7)
-+#define QCA808X_LED_BLINK_DUTY_MASK		GENMASK(2, 0)
-+#define QCA808X_LED_BLINK_DUTY_50_50		FIELD_PREP(QCA808X_LED_BLINK_DUTY_MASK, 0x0)
-+#define QCA808X_LED_BLINK_DUTY_75_25		FIELD_PREP(QCA808X_LED_BLINK_DUTY_MASK, 0x1)
-+#define QCA808X_LED_BLINK_DUTY_25_75		FIELD_PREP(QCA808X_LED_BLINK_DUTY_MASK, 0x2)
-+#define QCA808X_LED_BLINK_DUTY_33_67		FIELD_PREP(QCA808X_LED_BLINK_DUTY_MASK, 0x3)
-+#define QCA808X_LED_BLINK_DUTY_67_33		FIELD_PREP(QCA808X_LED_BLINK_DUTY_MASK, 0x4)
-+#define QCA808X_LED_BLINK_DUTY_17_83		FIELD_PREP(QCA808X_LED_BLINK_DUTY_MASK, 0x5)
-+#define QCA808X_LED_BLINK_DUTY_83_17		FIELD_PREP(QCA808X_LED_BLINK_DUTY_MASK, 0x6)
-+#define QCA808X_LED_BLINK_DUTY_8_92		FIELD_PREP(QCA808X_LED_BLINK_DUTY_MASK, 0x7)
-+
-+#define QCA808X_MMD7_LED2_CTRL			0x8074
-+#define QCA808X_MMD7_LED2_FORCE_CTRL		0x8075
-+#define QCA808X_MMD7_LED1_CTRL			0x8076
-+#define QCA808X_MMD7_LED1_FORCE_CTRL		0x8077
-+#define QCA808X_MMD7_LED0_CTRL			0x8078
-+#define QCA808X_MMD7_LED_CTRL(x)		(0x8078 - ((x) * 2))
-+
-+/* LED hw control pattern is the same for every LED */
-+#define QCA808X_LED_PATTERN_MASK		GENMASK(15, 0)
-+#define QCA808X_LED_SPEED2500_ON		BIT(15)
-+#define QCA808X_LED_SPEED2500_BLINK		BIT(14)
-+/* Follow blink trigger even if duplex or speed condition doesn't match */
-+#define QCA808X_LED_BLINK_CHECK_BYPASS		BIT(13)
-+#define QCA808X_LED_FULL_DUPLEX_ON		BIT(12)
-+#define QCA808X_LED_HALF_DUPLEX_ON		BIT(11)
-+#define QCA808X_LED_TX_BLINK			BIT(10)
-+#define QCA808X_LED_RX_BLINK			BIT(9)
-+#define QCA808X_LED_TX_ON_10MS			BIT(8)
-+#define QCA808X_LED_RX_ON_10MS			BIT(7)
-+#define QCA808X_LED_SPEED1000_ON		BIT(6)
-+#define QCA808X_LED_SPEED100_ON			BIT(5)
-+#define QCA808X_LED_SPEED10_ON			BIT(4)
-+#define QCA808X_LED_COLLISION_BLINK		BIT(3)
-+#define QCA808X_LED_SPEED1000_BLINK		BIT(2)
-+#define QCA808X_LED_SPEED100_BLINK		BIT(1)
-+#define QCA808X_LED_SPEED10_BLINK		BIT(0)
-+
-+#define QCA808X_MMD7_LED0_FORCE_CTRL		0x8079
-+#define QCA808X_MMD7_LED_FORCE_CTRL(x)		(0x8079 - ((x) * 2))
-+
-+/* LED force ctrl is the same for every LED
-+ * No documentation exist for this, not even internal one
-+ * with NDA as QCOM gives only info about configuring
-+ * hw control pattern rules and doesn't indicate any way
-+ * to force the LED to specific mode.
-+ * These define comes from reverse and testing and maybe
-+ * lack of some info or some info are not entirely correct.
-+ * For the basic LED control and hw control these finding
-+ * are enough to support LED control in all the required APIs.
-+ *
-+ * On doing some comparison with implementation with qca807x,
-+ * it was found that it's 1:1 equal to it and confirms all the
-+ * reverse done. It was also found further specification with the
-+ * force mode and the blink modes.
-+ */
-+#define QCA808X_LED_FORCE_EN			BIT(15)
-+#define QCA808X_LED_FORCE_MODE_MASK		GENMASK(14, 13)
-+#define QCA808X_LED_FORCE_BLINK_1		FIELD_PREP(QCA808X_LED_FORCE_MODE_MASK, 0x3)
-+#define QCA808X_LED_FORCE_BLINK_2		FIELD_PREP(QCA808X_LED_FORCE_MODE_MASK, 0x2)
-+#define QCA808X_LED_FORCE_ON			FIELD_PREP(QCA808X_LED_FORCE_MODE_MASK, 0x1)
-+#define QCA808X_LED_FORCE_OFF			FIELD_PREP(QCA808X_LED_FORCE_MODE_MASK, 0x0)
-+
-+#define QCA808X_MMD7_LED_POLARITY_CTRL		0x901a
-+/* QSDK sets by default 0x46 to this reg that sets BIT 6 for
-+ * LED to active high. It's not clear what BIT 3 and BIT 4 does.
-+ */
-+#define QCA808X_LED_ACTIVE_HIGH			BIT(6)
-+
- /* QCA808X 1G chip type */
- #define QCA808X_PHY_MMD7_CHIP_TYPE		0x901d
- #define QCA808X_PHY_CHIP_TYPE_1G		BIT(0)
-@@ -317,6 +398,7 @@ struct at803x_priv {
- 	struct regulator_dev *vddio_rdev;
- 	struct regulator_dev *vddh_rdev;
- 	u64 stats[ARRAY_SIZE(qca83xx_hw_stats)];
-+	int led_polarity_mode;
- };
- 
- struct at803x_context {
-@@ -677,6 +759,9 @@ static int at803x_probe(struct phy_device *phydev)
- 	if (!priv)
- 		return -ENOMEM;
- 
-+	/* Init LED polarity mode to -1 */
-+	priv->led_polarity_mode = -1;
-+
- 	phydev->priv = priv;
- 
- 	ret = at803x_parse_dt(phydev);
-@@ -2161,6 +2246,240 @@ static void qca808x_link_change_notify(struct phy_device *phydev)
- 				   phydev->link ? QCA8081_PHY_FIFO_RSTN : 0);
- }
- 
-+static int qca808x_led_parse_netdev(struct phy_device *phydev, unsigned long rules,
-+				    u16 *offload_trigger)
-+{
-+	/* TODO: add link_2500 when added to netdev trigger */
-+	/* Parsing specific to netdev trigger */
-+	if (test_bit(TRIGGER_NETDEV_TX, &rules))
-+		*offload_trigger |= QCA808X_LED_TX_BLINK;
-+	if (test_bit(TRIGGER_NETDEV_RX, &rules))
-+		*offload_trigger |= QCA808X_LED_RX_BLINK;
-+	if (test_bit(TRIGGER_NETDEV_LINK_10, &rules))
-+		*offload_trigger |= QCA808X_LED_SPEED10_ON;
-+	if (test_bit(TRIGGER_NETDEV_LINK_100, &rules))
-+		*offload_trigger |= QCA808X_LED_SPEED100_ON;
-+	if (test_bit(TRIGGER_NETDEV_LINK_1000, &rules))
-+		*offload_trigger |= QCA808X_LED_SPEED1000_ON;
-+	if (test_bit(TRIGGER_NETDEV_HALF_DUPLEX, &rules))
-+		*offload_trigger |= QCA808X_LED_HALF_DUPLEX_ON;
-+	if (test_bit(TRIGGER_NETDEV_FULL_DUPLEX, &rules))
-+		*offload_trigger |= QCA808X_LED_FULL_DUPLEX_ON;
-+
-+	if (rules && !*offload_trigger)
-+		return -EOPNOTSUPP;
-+
-+	/* Enable BLINK_CHECK_BYPASS by default to make the LED
-+	 * blink even with duplex or speed mode not enabled.
-+	 */
-+	*offload_trigger |= QCA808X_LED_BLINK_CHECK_BYPASS;
-+
-+	return 0;
-+}
-+
-+static int qca808x_led_hw_control_enable(struct phy_device *phydev, u8 index)
-+{
-+	u16 reg;
-+
-+	if (index > 2)
-+		return -EINVAL;
-+
-+	reg = QCA808X_MMD7_LED_FORCE_CTRL(index);
-+
-+	return phy_clear_bits_mmd(phydev, MDIO_MMD_AN, reg,
-+				  QCA808X_LED_FORCE_EN);
-+}
-+
-+static int qca808x_led_hw_is_supported(struct phy_device *phydev, u8 index,
-+				       unsigned long rules)
-+{
-+	u16 offload_trigger = 0;
-+
-+	if (index > 2)
-+		return -EINVAL;
-+
-+	return qca808x_led_parse_netdev(phydev, rules, &offload_trigger);
-+}
-+
-+static int qca808x_led_hw_control_set(struct phy_device *phydev, u8 index,
-+				      unsigned long rules)
-+{
-+	u16 reg, offload_trigger = 0;
-+	int ret;
-+
-+	if (index > 2)
-+		return -EINVAL;
-+
-+	reg = QCA808X_MMD7_LED_CTRL(index);
-+
-+	ret = qca808x_led_parse_netdev(phydev, rules, &offload_trigger);
-+	if (ret)
-+		return ret;
-+
-+	ret = qca808x_led_hw_control_enable(phydev, index);
-+	if (ret)
-+		return ret;
-+
-+	return phy_modify_mmd(phydev, MDIO_MMD_AN, reg,
-+			      QCA808X_LED_PATTERN_MASK,
-+			      offload_trigger);
-+}
-+
-+static bool qca808x_led_hw_control_status(struct phy_device *phydev, u8 index)
-+{
-+	u16 reg;
-+	int val;
-+
-+	if (index > 2)
-+		return false;
-+
-+	reg = QCA808X_MMD7_LED_FORCE_CTRL(index);
-+
-+	val = phy_read_mmd(phydev, MDIO_MMD_AN, reg);
-+
-+	return !(val & QCA808X_LED_FORCE_EN);
-+}
-+
-+static int qca808x_led_hw_control_get(struct phy_device *phydev, u8 index,
-+				      unsigned long *rules)
-+{
-+	u16 reg;
-+	int val;
-+
-+	if (index > 2)
-+		return -EINVAL;
-+
-+	/* Check if we have hw control enabled */
-+	if (qca808x_led_hw_control_status(phydev, index))
-+		return -EINVAL;
-+
-+	reg = QCA808X_MMD7_LED_CTRL(index);
-+
-+	/* TODO: add link_2500 when added to netdev trigger */
-+	val = phy_read_mmd(phydev, MDIO_MMD_AN, reg);
-+	if (val & QCA808X_LED_TX_BLINK)
-+		set_bit(TRIGGER_NETDEV_TX, rules);
-+	if (val & QCA808X_LED_RX_BLINK)
-+		set_bit(TRIGGER_NETDEV_RX, rules);
-+	if (val & QCA808X_LED_SPEED10_ON)
-+		set_bit(TRIGGER_NETDEV_LINK_10, rules);
-+	if (val & QCA808X_LED_SPEED100_ON)
-+		set_bit(TRIGGER_NETDEV_LINK_100, rules);
-+	if (val & QCA808X_LED_SPEED1000_ON)
-+		set_bit(TRIGGER_NETDEV_LINK_1000, rules);
-+	if (val & QCA808X_LED_HALF_DUPLEX_ON)
-+		set_bit(TRIGGER_NETDEV_HALF_DUPLEX, rules);
-+	if (val & QCA808X_LED_FULL_DUPLEX_ON)
-+		set_bit(TRIGGER_NETDEV_FULL_DUPLEX, rules);
-+
-+	return 0;
-+}
-+
-+static int qca808x_led_hw_control_reset(struct phy_device *phydev, u8 index)
-+{
-+	u16 reg;
-+
-+	if (index > 2)
-+		return -EINVAL;
-+
-+	reg = QCA808X_MMD7_LED_CTRL(index);
-+
-+	return phy_clear_bits_mmd(phydev, MDIO_MMD_AN, reg,
-+				  QCA808X_LED_PATTERN_MASK);
-+}
-+
-+static int qca808x_led_brightness_set(struct phy_device *phydev,
-+				      u8 index, enum led_brightness value)
-+{
-+	u16 reg;
-+	int ret;
-+
-+	if (index > 2)
-+		return -EINVAL;
-+
-+	if (!value) {
-+		ret = qca808x_led_hw_control_reset(phydev, index);
-+		if (ret)
-+			return ret;
-+	}
-+
-+	reg = QCA808X_MMD7_LED_FORCE_CTRL(index);
-+
-+	return phy_modify_mmd(phydev, MDIO_MMD_AN, reg,
-+			      QCA808X_LED_FORCE_EN | QCA808X_LED_FORCE_MODE_MASK,
-+			      QCA808X_LED_FORCE_EN | value ? QCA808X_LED_FORCE_ON :
-+							     QCA808X_LED_FORCE_OFF);
-+}
-+
-+static int qca808x_led_blink_set(struct phy_device *phydev, u8 index,
-+				 unsigned long *delay_on,
-+				 unsigned long *delay_off)
-+{
-+	int ret;
-+	u16 reg;
-+
-+	if (index > 2)
-+		return -EINVAL;
-+
-+	reg = QCA808X_MMD7_LED_FORCE_CTRL(index);
-+
-+	/* Set blink to 50% off, 50% on at 4Hz by default */
-+	ret = phy_modify_mmd(phydev, MDIO_MMD_AN, QCA808X_MMD7_LED_GLOBAL,
-+			     QCA808X_LED_BLINK_FREQ_MASK | QCA808X_LED_BLINK_DUTY_MASK,
-+			     QCA808X_LED_BLINK_FREQ_256HZ | QCA808X_LED_BLINK_DUTY_50_50);
-+	if (ret)
-+		return ret;
-+
-+	/* We use BLINK_1 for normal blinking */
-+	ret = phy_modify_mmd(phydev, MDIO_MMD_AN, reg,
-+			     QCA808X_LED_FORCE_EN | QCA808X_LED_FORCE_MODE_MASK,
-+			     QCA808X_LED_FORCE_EN | QCA808X_LED_FORCE_BLINK_1);
-+	if (ret)
-+		return ret;
-+
-+	/* We set blink to 4Hz, aka 250ms */
-+	*delay_on = 250 / 2;
-+	*delay_off = 250 / 2;
-+
-+	return 0;
-+}
-+
-+static int qca808x_led_polarity_set(struct phy_device *phydev, int index,
-+				    unsigned long modes)
-+{
-+	struct at803x_priv *priv = phydev->priv;
-+	bool active_low = false;
-+	u32 mode;
-+
-+	for_each_set_bit(mode, &modes, __PHY_LED_MODES_NUM) {
-+		switch (mode) {
-+		case PHY_LED_ACTIVE_LOW:
-+			active_low = true;
-+			break;
-+		default:
-+			return -EINVAL;
-+		}
-+	}
-+
-+	/* PHY polarity is global and can't be set per LED.
-+	 * To detect this, check if last requested polarity mode
-+	 * match the new one.
-+	 */
-+	if (priv->led_polarity_mode >= 0 &&
-+	    priv->led_polarity_mode != active_low) {
-+		phydev_err(phydev, "PHY polarity is global. Mismatched polarity on different LED\n");
-+		return -EINVAL;
-+	}
-+
-+	/* Save the last PHY polarity mode */
-+	priv->led_polarity_mode = active_low;
-+
-+	return phy_modify_mmd(phydev, MDIO_MMD_AN,
-+			      QCA808X_MMD7_LED_POLARITY_CTRL,
-+			      QCA808X_LED_ACTIVE_HIGH,
-+			      active_low ? 0 : QCA808X_LED_ACTIVE_HIGH);
-+}
-+
- static struct phy_driver at803x_driver[] = {
- {
- 	/* Qualcomm Atheros AR8035 */
-@@ -2337,6 +2656,12 @@ static struct phy_driver at803x_driver[] = {
- 	.cable_test_start	= qca808x_cable_test_start,
- 	.cable_test_get_status	= qca808x_cable_test_get_status,
- 	.link_change_notify	= qca808x_link_change_notify,
-+	.led_brightness_set	= qca808x_led_brightness_set,
-+	.led_blink_set		= qca808x_led_blink_set,
-+	.led_hw_is_supported	= qca808x_led_hw_is_supported,
-+	.led_hw_control_set	= qca808x_led_hw_control_set,
-+	.led_hw_control_get	= qca808x_led_hw_control_get,
-+	.led_polarity_set	= qca808x_led_polarity_set,
- }, };
- 
- module_phy_driver(at803x_driver);
--- 
-2.43.0
-
+cmVzZW5kIGJlY2F1c2UgSFRNTCA6KCBzb3JyeSAuLi4NCg0KQW0gMDQuMDEuMjQgdW0gMDg6NTQg
+c2NocmllYiBLcnp5c3p0b2YgS296bG93c2tpOg0KPiBPbiAwMy8wMS8yMDI0IDEyOjI3LCBKb3N1
+YSBNYXllciB3cm90ZToNCj4+IEFkZCBkZXNjcmlwdGlvbiBmb3IgdGhlIFNvbGlkUnVuIEFNNjQy
+IFNvTSwgYW5kIEh1bW1pbmdCb2FyZC1UDQo+PiBldmFsdWF0aW9uIGJvYXJkLg0KPj4NCj4+IFRo
+ZSBTb00gZmVhdHVyZXM6DQo+PiAtIDF4IGNwc3cgZXRoZXJuZXQgd2l0aCBwaHkNCj4+IC0gMngg
+cHJ1IGV0aGVybmV0IHdpdGggcGh5DQo+PiAtIGVNTUMNCj4+IC0gc3BpIGZsYXNoIChhc3NlbWJs
+eSBvcHRpb24pDQo+Pg0KPj4gQWRkaXRpb25hbGx5IG1pY3JvU0QgYW5kIHVzYi0yLjAgb3RnIGFy
+ZSBpbmNsdWRlZCBpbiB0aGUgU29NDQo+PiBkZXNjcmlwdGlvbiBhcyB0aGV5IGFyZSBzdXBwb3J0
+ZWQgYm9vdCBzb3VyY2VzIGZvciB0aGUgU09DIGJvb3Qtcm9tLg0KPj4NCj4+IFRoZSBDYXJyaWVy
+IHByb3ZpZGVzOg0KPj4gLSAzeCBSSjQ1IGNvbm5lY3Rvcg0KPj4gLSAyeCBNLjIgY29ubmVjdG9y
+DQo+PiAtIFVTQi0yLjAgSHViDQo+PiAtIFVTQi1BIENvbm5lY3Rvcg0KPj4gLSBMRURzDQo+PiAt
+IDJ4IENBTiB0cmFuc2NlaXZlcg0KPj4gLSAxeCBSUzQ4NSB0cmFuc2NlaXZlcg0KPj4gLSBzZW5z
+b3JzDQo+Pg0KPj4gVGhlIE0uMiBjb25uZWN0b3JzIHN1cHBvcnQgZWl0aGVyIFVTQi0zLjEgb3Ig
+UENJLUUgZGVwZW5kaW5nIG9uIHN0YXR1cw0KPj4gb2YgYSBtdXguIEJ5IGRlZmF1bHQgdGhlIG11
+eCBpcyBzd2l0Y2hlZCBvZmYuDQo+Pg0KPj4gUkZDOiBkdGJzX2NoZWNrIHJlcG9ydHM6DQo+Pg0K
+Pj4gLSBlcnJvciBpbiBwcnUgZXRoZXJuZXQ6DQo+Pg0KPj4gICBhcmNoL2FybTY0L2Jvb3QvZHRz
+L3RpL2szLWFtNjQyLWh1bW1pbmdib2FyZC10LmR0YjogaWNzc2cxLWV0aDogZG1hczogW1sxMiwg
+NDk2NjQsIDE1XSwgWzEyLCA0OTY2NSwgMTVdLCBbMTIsIDQ5NjY2LCAxNV0sIFsxMiwgNDk2Njcs
+IDE1XSwgWzEyLCA0OTY2OCwgMTVdLCBbMTIsIDQ5NjY5LCAxNV0sIFsxMiwgNDk2NzAsIDE1XSwg
+WzEyLCA0OTY3MSwgMTVdLCBbMTIsIDE2ODk2LCAxNV0sIFsxMiwgMTY4OTcsIDE1XSwgWzEyLCAx
+Njg5OCwgMF0sIFsxMiwgMTY4OTksIDBdXSBpcyB0b28gbG9uZw0KPj4gICBmcm9tIHNjaGVtYSAk
+aWQ6IGh0dHA6Ly9kZXZpY2V0cmVlLm9yZy9zY2hlbWFzL25ldC90aSxpY3NzZy1wcnVldGgueWFt
+bCMNCj4+ICAgYXJjaC9hcm02NC9ib290L2R0cy90aS9rMy1hbTY0Mi1odW1taW5nYm9hcmQtdC5k
+dGI6IGljc3NnMS1ldGg6IFVuZXZhbHVhdGVkIHByb3BlcnRpZXMgYXJlIG5vdCBhbGxvd2VkICgn
+ZG1hcycgd2FzIHVuZXhwZWN0ZWQpDQo+PiAgIGZyb20gc2NoZW1hICRpZDogaHR0cDovL2Rldmlj
+ZXRyZWUub3JnL3NjaGVtYXMvbmV0L3RpLGljc3NnLXBydWV0aC55YW1sIw0KPj4NCj4+ICAgSXQg
+aXMgY2F1c2VkIGJ5IGRlZmluaW50IDEyIGRtYXMsIHdoZW4gdGksaWNzc2ctcHJ1ZXRoLnlhbWwg
+c3BlY2lmaWVzIGENCj4+ICAgbWF4aW11bSBvZiAxMC4gVGhlIHBydSBldGhlcm5ldCBvbiBhbTY0
+IG1vc3RseSBpZGVudGljYWwgdG8gYW02NSAtIHNlZQ0KPj4gICBlLmcuIGFyY2gvYXJtNjQvYm9v
+dC9kdHMvdGkvazMtYW02NTQtaWRrLmR0c28gd2hpY2ggYWxzbyBkZWZpbmVzIDEyIGRtYS4NCj4+
+DQo+PiAgIEF0IGxlYXN0IGZvciB0aGlzIHJldmlzaW9uIEkgYW0gc2tpcHBpbmcgZml4aW5nIHRo
+ZSBiaW5kaW5ncywgYmVjYXVzZQ0KPj4gICBhc2lkZSBmcm9tIHJhaXNpbmcgdGhlIG1heGltdW0g
+dG8gMTIsIGRtYS1uYW1lcyBhbHNvIGhhcyBqdXN0IDEwIGVudHJpZXMNCj4+ICAgLSBhbmQgIGRv
+bid0IGtub3cgd2hpY2ggbmFtZXMgd291bGQgYmUgY29ycmVjdCB0byBhZGQuDQo+Pg0KPj4gLSB1
+bmRvY3VtZW50ZWQgY29tcGF0aWJsZSB0aSxicTI1NzEzIChiYXR0ZXJ5IGNoYXJnZXIpDQo+Pg0K
+Pj4gICBhcmNoL2FybTY0L2Jvb3QvZHRzL3RpL2szLWFtNjQyLWh1bW1pbmdib2FyZC10LXBjaWUu
+ZHRiOiAvYnVzQGY0MDAwL2kyY0AyMDAwMDAwMC9iYXR0ZXJ5LWNoYXJnZXJANmE6IGZhaWxlZCB0
+byBtYXRjaCBhbnkgc2NoZW1hIHdpdGggY29tcGF0aWJsZTogWyd0aSxicTI1NzEzJ10NCj4+DQo+
+PiAgIFRoaXMgc3BlY2lmaWMgY2hhcmdlciBoYXMgbm8gbGludXggc3VwcG9ydCB5ZXQsIEkgYW0g
+bm90IHN1cmUgd2hlcmUNCj4+ICAgKG9yIHdoZXRoZXIpIHRvIGRvY3VtZW50IHRoZSBuZXcgY29t
+cGF0aWJsZS4NCj4+ICAgVGhlIHJlZmVyZW5jZSBjb3VsZCBhbHNvIGJlIGRyb3BwZWQgY29tcGxl
+dGVseSwgc2luY2UgdGhlIGNoYXJnZXIgaXMNCj4+ICAgbm90IGFzc2VibGVkIGJ5IGRlZmF1bHQu
+DQo+Pg0KPj4gLSB1bmRvY3VtZW50ZWQgY29tcGF0aWJsZSBmb3IgcnRjOiAiYWJyYWNvbixhYng4
+MHgiDQo+Pg0KPj4gICBhcmNoL2FybTY0L2Jvb3QvZHRzL3RpL2szLWFtNjQyLWh1bW1pbmdib2Fy
+ZC10LXBjaWUuZHRiOiAvYnVzQGY0MDAwL2kyY0AyMDAxMDAwMC9hbTE4MDVhcUA2OTogZmFpbGVk
+IHRvIG1hdGNoIGFueSBzY2hlbWEgd2l0aCBjb21wYXRpYmxlOiBbJ2FicmFjb24sYWJ4ODB4J10N
+Cj4+DQo+PiAgIEl0IGlzIGFjdHVhbGx5IGRvY3VtZW50ZWQgaW4gdGV4dCBmb3JtYXQ6DQo+PiAg
+IERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9ydGMvYWJyYWNvbixhYng4MHgudHh0
+DQo+Pg0KPj4gLSBwaHlAMDpjZG5zLHBoeS10eXBlOjA6MDogMCBpcyBsZXNzIHRoYW4gdGhlIG1p
+bmltdW0gb2YgMQ0KPj4NCj4+ICAgYXJjaC9hcm02NC9ib290L2R0cy90aS9rMy1hbTY0Mi1odW1t
+aW5nYm9hcmQtdC5kdGI6IHNlcmRlc0BmMDAwMDAwOiBwaHlAMDpjZG5zLHBoeS10eXBlOjA6MDog
+MCBpcyBsZXNzIHRoYW4gdGhlIG1pbmltdW0gb2YgMQ0KPj4gICBmcm9tIHNjaGVtYSAkaWQ6IGh0
+dHA6Ly9kZXZpY2V0cmVlLm9yZy9zY2hlbWFzL3BoeS9waHktY2FkZW5jZS10b3JyZW50LnlhbWwj
+DQo+Pg0KPj4gICBJIHVzZWQgdmFsdWUgMCBoZXJlIG9uIHB1cnBvc2UgKHBoeS5oOiAjZGVmaW5l
+IFBIWV9OT05FIDApLCBob3dldmVyDQo+PiAgIG1heWJlIGJldHRlciB0byBjaG9vc2UgYSBzcGVj
+aWZpYyBwcm90b2NvbD8NCj4+ICAgT3IgYmV0dGVyIHRvIHVwZGF0ZSBiaW5kaW5nIGFuZCBhbGxv
+dyAwPw0KPj4NCj4+IC0gaW50ZXJydXB0IHByb3BlcnRpZXMgbm90IGFsbG93ZWQgZm9yIHNwaSBm
+bGFzaA0KPj4NCj4+ICAgYXJjaC9hcm02NC9ib290L2R0cy90aS9rMy1hbTY0Mi1odW1taW5nYm9h
+cmQtdC5kdGI6IGZsYXNoQDA6IFVuZXZhbHVhdGVkIHByb3BlcnRpZXMgYXJlIG5vdCBhbGxvd2Vk
+ICgnaW50ZXJydXB0LXBhcmVudCcsICdpbnRlcnJ1cHRzJyB3ZXJlIHVuZXhwZWN0ZWQpDQo+PiAg
+IGZyb20gc2NoZW1hICRpZDogaHR0cDovL2RldmljZXRyZWUub3JnL3NjaGVtYXMvbXRkL2plZGVj
+LHNwaS1ub3IueWFtbCMNCj4+DQo+PiAgIFRoZSBhc3NlbWJsZWQgZmxhc2ggbWVtb3J5ICJzaDI4
+aHM1MTJ0IiBkZWZpbml0ZWx5IGhhcyBhbiBpbnRlcnJ1cHQNCj4+ICAgcGluIHdpcmVkIHRvIGEg
+Y3B1IGdwaW8uIFNob3VsZCBpbnRlcnJ1cHRzIGJlIGFkZGVkIHRvIHNwaSBmbGFzaA0KPj4gICBi
+aW5kaW5nPw0KPj4NCj4+IC0gd3JvbmcgbmFtZXMgZm9yIHBpbmN0cmwgbm9kZXMNCj4+DQo+PiAg
+IGFyY2gvYXJtNjQvYm9vdC9kdHMvdGkvazMtYW02NDItaHVtbWluZ2JvYXJkLXQuZHRiOiBwaW5j
+dHJsQGY0MDAwOiAnZXRoZXJuZXQtcGh5LXBpbnMtZGVmYXVsdCcsICdldGhlcm5ldC1waHkwLXBp
+bnMtZGVmYXVsdCcsICdldGhlcm5ldC1waHkxLXBpbnMtZGVmYXVsdCcsICdldGhlcm5ldC1waHky
+LXBpbnMtZGVmYXVsdCcsICdsZWRzLXBpbnMtZGVmYXVsdCcsICdtYWluLWkyYzAtcGlucy1kZWZh
+dWx0JywgJ21haW4taTJjMC1waW5zLWludC1kZWZhdWx0JywgJ21haW4taTJjMS1pbnQtcGlucy1k
+ZWZhdWx0JywgJ21haW4taTJjMS1waW5zLWRlZmF1bHQnLCAnbWFpbi1tY2FuMC1waW5zLWRlZmF1
+bHQnLCAnbWFpbi1tY2FuMS1waW5zLWRlZmF1bHQnLCAnbWFpbi1tbWMxLXBpbnMtZGVmYXVsdCcs
+ICdtYWluLXVhcnQwLXBpbnMtZGVmYXVsdCcsICdtYWluLXVhcnQzLXBpbnMtZGVmYXVsdCcsICdt
+ZGlvMC1waW5zLWRlZmF1bHQnLCAnb3NwaTAtZmxhc2gwLXBpbnMtZGVmYXVsdCcsICdvc3BpMC1w
+aW5zLWRlZmF1bHQnLCAncGNpZTAtcGlucy1kZWZhdWx0JywgJ3BydS1yZ21paTEtcGlucy1kZWZh
+dWx0JywgJ3BydS1yZ21paTItcGlucy1kZWZhdWx0JywgJ3BydTEtbWRpbzAtcGlucy1kZWZhdWx0
+JywgJ3JlZ3VsYXRvci1wY2llLTN2My1waW5zLWRlZmF1bHQnLCAncmVndWxhdG9yLXZwcC0xdjgt
+cGlucy1kZWZhdWx0JywgJ3JnbWlpMS1waW5zLWRlZmF1bHQnLCAnc2VyZGVzLW11eC1waW5zLWRl
+ZmF1bHQnLCAndXNiMC1waW5zLWRlZmF1bHQnIGRvIG5vdCBtYXRjaCBhbnkgb2YgdGhlIHJlZ2V4
+ZXM6ICctcGlucygtWzAtOV0rKT8kfC1waW4kJywgJ3BpbmN0cmwtWzAtOV0rJw0KPj4NCj4+ICAg
+T3RoZXIgVEkgRFRTcyBjb25zaXN0ZW50bHkgZW5kIHdpdGggKi1waW5zLWRlZmF1bHQuIFNob3Vs
+ZCBhIGRpZmZlcmVudA0KPj4gICBuYW1pbmcgY29udmVudGlvbiBiZSB1c2VkPw0KPj4NCj4+IFNp
+Z25lZC1vZmYtYnk6IEpvc3VhIE1heWVyIDxqb3N1YUBzb2xpZC1ydW4uY29tPg0KPj4gLS0tDQo+
+PiAgYXJjaC9hcm02NC9ib290L2R0cy90aS9NYWtlZmlsZSAgICAgICAgICAgICAgICAgICAgfCAg
+IDEgKw0KPj4gIGFyY2gvYXJtNjQvYm9vdC9kdHMvdGkvazMtYW02NDItaHVtbWluZ2JvYXJkLXQu
+ZHRzIHwgMzMzICsrKysrKysrKysrDQo+PiAgYXJjaC9hcm02NC9ib290L2R0cy90aS9rMy1hbTY0
+Mi1zci1zb20uZHRzaSAgICAgICAgfCA2MzggKysrKysrKysrKysrKysrKysrKysrDQo+PiAgMyBm
+aWxlcyBjaGFuZ2VkLCA5NzIgaW5zZXJ0aW9ucygrKQ0KPj4NCj4+IGRpZmYgLS1naXQgYS9hcmNo
+L2FybTY0L2Jvb3QvZHRzL3RpL01ha2VmaWxlIGIvYXJjaC9hcm02NC9ib290L2R0cy90aS9NYWtl
+ZmlsZQ0KPj4gaW5kZXggNzdhMzQ3ZjlmNDdkLi4wNDFjM2I3MTE1NWUgMTAwNjQ0DQo+PiAtLS0g
+YS9hcmNoL2FybTY0L2Jvb3QvZHRzL3RpL01ha2VmaWxlDQo+PiArKysgYi9hcmNoL2FybTY0L2Jv
+b3QvZHRzL3RpL01ha2VmaWxlDQo+PiBAQCAtMzIsNiArMzIsNyBAQCBkdGItJChDT05GSUdfQVJD
+SF9LMykgKz0gazMtYW02MnA1LXNrLmR0Yg0KPj4gIA0KPj4gICMgQm9hcmRzIHdpdGggQU02NHgg
+U29DDQo+PiAgZHRiLSQoQ09ORklHX0FSQ0hfSzMpICs9IGszLWFtNjQyLWV2bS5kdGINCj4+ICtk
+dGItJChDT05GSUdfQVJDSF9LMykgKz0gazMtYW02NDItaHVtbWluZ2JvYXJkLXQuZHRiDQo+PiAg
+ZHRiLSQoQ09ORklHX0FSQ0hfSzMpICs9IGszLWFtNjQyLXBoeWJvYXJkLWVsZWN0cmEtcmRrLmR0
+Yg0KPj4gIGR0Yi0kKENPTkZJR19BUkNIX0szKSArPSBrMy1hbTY0Mi1zay5kdGINCj4+ICBkdGIt
+JChDT05GSUdfQVJDSF9LMykgKz0gazMtYW02NDItdHFtYTY0eHhsLW1iYXg0eHhsLmR0Yg0KPj4g
+ZGlmZiAtLWdpdCBhL2FyY2gvYXJtNjQvYm9vdC9kdHMvdGkvazMtYW02NDItaHVtbWluZ2JvYXJk
+LXQuZHRzIGIvYXJjaC9hcm02NC9ib290L2R0cy90aS9rMy1hbTY0Mi1odW1taW5nYm9hcmQtdC5k
+dHMNCj4+IG5ldyBmaWxlIG1vZGUgMTAwNjQ0DQo+PiBpbmRleCAwMDAwMDAwMDAwMDAuLmY3YjQ4
+YWRhOGVmMw0KPj4gLS0tIC9kZXYvbnVsbA0KPj4gKysrIGIvYXJjaC9hcm02NC9ib290L2R0cy90
+aS9rMy1hbTY0Mi1odW1taW5nYm9hcmQtdC5kdHMNCj4+IEBAIC0wLDAgKzEsMzMzIEBADQo+PiAr
+Ly8gU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IEdQTC0yLjArDQo+PiArLyoNCj4+ICsgKiBDb3B5
+cmlnaHQgKEMpIDIwMjMgSm9zdWEgTWF5ZXIgPGpvc3VhQHNvbGlkLXJ1bi5jb20+DQo+PiArICoN
+Cj4+ICsgKiBEVFMgZm9yIFNvbGlkUnVuIEFNNjQyIEh1bW1pbmdCb2FyZC1ULA0KPj4gKyAqIHJ1
+bm5pbmcgb24gQ29ydGV4IEE1My4NCj4+ICsgKg0KPj4gKyAqLw0KPj4gKw0KPj4gKy9kdHMtdjEv
+Ow0KPj4gKw0KPj4gKyNpbmNsdWRlIDxkdC1iaW5kaW5ncy9waHkvcGh5Lmg+DQo+PiArDQo+PiAr
+I2luY2x1ZGUgImszLWFtNjQyLmR0c2kiDQo+PiArI2luY2x1ZGUgImszLWFtNjQyLXNyLXNvbS5k
+dHNpIg0KPj4gKw0KPj4gKy8gew0KPj4gKwltb2RlbCA9ICJTb2xpZFJ1biBBTTY0MiBIdW1taW5n
+Qm9hcmQtVCI7DQo+PiArCWNvbXBhdGlibGUgPSAic29saWRydW4sYW02NDItaHVtbWluZ2JvYXJk
+LXQiLCAic29saWRydW4sYW02NDItc3Itc29tIiwgInRpLGFtNjQyIjsNCj4+ICsNCj4+ICsJYWxp
+YXNlcyB7DQo+PiArCQlzZXJpYWw1ID0gJm1haW5fdWFydDM7DQo+PiArCX07DQo+PiArDQo+PiAr
+CWxlZHMgew0KPj4gKwkJY29tcGF0aWJsZSA9ICJncGlvLWxlZHMiOw0KPj4gKwkJcGluY3RybC1u
+YW1lcyA9ICJkZWZhdWx0IjsNCj4+ICsJCXBpbmN0cmwtMCA9IDwmbGVkc19waW5zX2RlZmF1bHQ+
+Ow0KPj4gKwkJc3RhdHVzID0gIm9rYXkiOw0KPiBXaGVyZSB3YXMgaXQgZGlzYWJsZWQ/DQpOb3do
+ZXJlLiBCZXR0ZXIgdG8gb21pdCBzdGF0dXMgb24gbmV3IG5vZGVzIGFkZGVkIGJ5IG5ldyBkdHMg
+ZmlsZT8NCj4+ICsNCj4+ICsJCS8qIEQyNCAqLw0KPj4gKwkJbGVkMTogbGVkLTEgew0KPj4gKwkJ
+CWxhYmVsID0gImxlZDE6Z3JlZW4iOw0KPiBVc2UgZnVuY3Rpb24NClRoaXMgYm9hcmQgaGFzIG5v
+IGRlZmF1bHQgZnVuY3Rpb24gZGVmaW5lZCBieSBsYWJlbHMgb3IgZW5jbG9zdXJlLg0KTm90IHN1
+cmUgd2hhdCB0byBwaWNrIGZvciAiZnVuY3Rpb24iIHByb3BlcnR5LiBDYW4gSSBvbWl0IGl0IGFu
+ZCBzZXQgb25seSBjb2xvcj8NCg0KSWYgc28gLSBzaG91bGQgSSBkcm9wIGxhYmVsIGNvbXBsZXRl
+bHkgLSBvciBrZWVwIHRoZSAibGVkMSLCoCBwYXJ0Pw0KDQo+ICBhbmQgY29sb3IgaW5zdGVhZC4N
+CkFjaw0KPj4gKwkJCWdwaW9zID0gPCZtYWluX2dwaW8wIDI5IEdQSU9fQUNUSVZFX0hJR0g+Ow0K
+Pj4gKwkJfTsNCj4+ICsNCj4gLi4uDQo+DQo+PiArDQo+PiArJm1haW5faTJjMCB7DQo+PiArCXBp
+bmN0cmwtMCA9IDwmbWFpbl9pMmMwX3BpbnNfZGVmYXVsdD4sIDwmbWFpbl9pMmMwX2ludF9waW5z
+X2RlZmF1bHQ+Ow0KPj4gKw0KPj4gKwlodW1pZGl0eS1zZW5zb3JANDEgew0KPj4gKwkJY29tcGF0
+aWJsZSA9ICJ0aSxoZGMyMDEwIjsNCj4+ICsJCXJlZyA9IDwweDQxPjsNCj4+ICsJCWludGVycnVw
+dC1wYXJlbnQgPSA8Jm1haW5fZ3BpbzA+Ow0KPj4gKwkJaW50ZXJydXB0cyA9IDwzNyBJUlFfVFlQ
+RV9FREdFX0ZBTExJTkc+Ow0KPj4gKwkJc3RhdHVzID0gIm9rYXkiOw0KPiBXaGVyZSB3YXMgaXQg
+ZGlzYWJsZWQ/DQpOb3doZXJlLg0KPj4gKwl9Ow0KPj4gKw0KPj4gKwlsaWdodC1zZW5zb3JANDQg
+ew0KPj4gKwkJY29tcGF0aWJsZSA9ICJ0aSxvcHQzMDAxIjsNCj4+ICsJCXJlZyA9IDwweDQ0PjsN
+Cj4+ICsJCWludGVycnVwdC1wYXJlbnQgPSA8Jm1haW5fZ3BpbzA+Ow0KPj4gKwkJaW50ZXJydXB0
+cyA9IDwzNyBJUlFfVFlQRV9FREdFX0ZBTExJTkc+Ow0KPj4gKwkJc3RhdHVzID0gIm9rYXkiOw0K
+PiBXaGVyZSB3YXMgaXQgZGlzYWJsZWQ/DQpOb3doZXJlLg0KPj4gKwl9Ow0KPj4gKw0KPj4gKwli
+YXR0ZXJ5LWNoYXJnZXJANmEgew0KPiBjaGFyZ2VyQA0KPg0KPj4gKwkJY29tcGF0aWJsZSA9ICJ0
+aSxicTI1NzEzIjsNCj4+ICsJCXJlZyA9IDwweDZhPjsNCj4+ICsJCXN0YXR1cyA9ICJva2F5IjsN
+Cj4gV2hlcmUgd2FzIGl0IGRpc2FibGVkPw0KTm93aGVyZS4NCj4+ICsJfTsNCj4+ICt9Ow0KPj4g
+Kw0KPj4gKyZtYWluX2kyYzEgew0KPj4gKwlwaW5jdHJsLW5hbWVzID0gImRlZmF1bHQiOw0KPj4g
+KwlwaW5jdHJsLTAgPSA8Jm1haW5faTJjMV9waW5zX2RlZmF1bHQ+LCA8Jm1haW5faTJjMV9pbnRf
+cGluc19kZWZhdWx0PjsNCj4+ICsJc3RhdHVzID0gIm9rYXkiOw0KPj4gKw0KPj4gKwlydGM6IGFt
+MTgwNWFxQDY5IHsNCj4gTm9kZSBuYW1lcyBzaG91bGQgYmUgZ2VuZXJpYy4gU2VlIGFsc28gYW4g
+ZXhwbGFuYXRpb24gYW5kIGxpc3Qgb2YNCj4gZXhhbXBsZXMgKG5vdCBleGhhdXN0aXZlKSBpbiBE
+VCBzcGVjaWZpY2F0aW9uOg0KPiBodHRwczovL2RldmljZXRyZWUtc3BlY2lmaWNhdGlvbi5yZWFk
+dGhlZG9jcy5pby9lbi9sYXRlc3QvY2hhcHRlcjItZGV2aWNldHJlZS1iYXNpY3MuaHRtbCNnZW5l
+cmljLW5hbWVzLXJlY29tbWVuZGF0aW9uDQpBY2suDQo+PiArCQljb21wYXRpYmxlID0gImFicmFj
+b24sYWJ4ODB4IjsNCj4+ICsJCXJlZyA9IDwweDY5PjsNCj4+ICsJCWFicmFjb24sdGMtZGlvZGUg
+PSAic2Nob3R0a3kiOw0KPj4gKwkJYWJyYWNvbix0Yy1yZXNpc3RvciA9IDwzPjsNCj4+ICsJCWlu
+dGVycnVwdC1wYXJlbnQgPSA8Jm1haW5fZ3BpbzA+Ow0KPj4gKwkJaW50ZXJydXB0cyA9IDw0NCBJ
+UlFfVFlQRV9FREdFX0ZBTExJTkc+Ow0KPj4gKwkJc3RhdHVzID0gIm9rYXkiOw0KPiBXaGVyZSB3
+YXMgaXQgZGlzYWJsZWQ/DQpOb3doZXJlLg0KPj4gKwl9Ow0KPj4gK307DQo+PiArDQo+IC4uLg0K
+Pg0KPj4gKw0KPj4gKyZzZXJkZXMwIHsNCj4+ICsJLyoNCj4+ICsJICogU2VyZGVzIFNpZ25hbHMg
+YXJlIHJvdXRlZCB2aWEgbXV4IHRvIGVpdGhlciBtLjIgY29ubmVjdG9yczoNCj4+ICsJICogLSBN
+MTogVVNCLTMuMQ0KPj4gKwkgKiAtIE0yOiBQQ0ktRQ0KPj4gKwkgKi8NCj4+ICsJc3RhdHVzID0g
+Im9rYXkiOw0KSSBzZXQgc3RhdHVzIGhlcmUgYmVjYXVzZSBJIGV4cGVjdCBub2RlcyBpbmhlcml0
+ZWQgZnJvbSBvdGhlciBkdHNpIHRvIGJlIG1heWJlIGRpc2FibGVkLg0KSW4gdGhpcyBpbnN0YW5j
+ZSwgazMtYW02NC1tYWluLmR0c2kgaG93ZXZlciBzZXRzIG5vIHN0YXR1cyBmb3IgInNlcmRlczA6
+IHNlcmRlc0BmMDAwMDAwIiBub2RlLg0KPj4gKw0KPj4gKwlzZXJkZXMwX2xpbms6IHBoeUAwIHsN
+Cj4+ICsJCXJlZyA9IDwwPjsNCj4+ICsJCWNkbnMsbnVtLWxhbmVzID0gPDE+Ow0KPj4gKwkJI3Bo
+eS1jZWxscyA9IDwwPjsNCj4+ICsJCWNkbnMscGh5LXR5cGUgPSA8UEhZX05PTkU+Ow0KPj4gKwkJ
+cmVzZXRzID0gPCZzZXJkZXNfd2l6MCAxPjsNCj4+ICsJCXN0YXR1cyA9ICJva2F5IjsNCj4gV2hl
+cmUgd2FzIGl0IGRpc2FibGVkPw0KTm93aGVyZS4NCj4+ICsJfTsNCj4+ICt9Ow0KPj4gKw0KPj4g
+KyZ1c2IwIHsNCj4+ICsJZHJfbW9kZSA9ICJob3N0IjsNCj4+ICt9Ow0KPj4gZGlmZiAtLWdpdCBh
+L2FyY2gvYXJtNjQvYm9vdC9kdHMvdGkvazMtYW02NDItc3Itc29tLmR0c2kgYi9hcmNoL2FybTY0
+L2Jvb3QvZHRzL3RpL2szLWFtNjQyLXNyLXNvbS5kdHNpDQo+PiBuZXcgZmlsZSBtb2RlIDEwMDY0
+NA0KPj4gaW5kZXggMDAwMDAwMDAwMDAwLi45NTJhMjYyZDY4NzQNCj4+IC0tLSAvZGV2L251bGwN
+Cj4+ICsrKyBiL2FyY2gvYXJtNjQvYm9vdC9kdHMvdGkvazMtYW02NDItc3Itc29tLmR0c2kNCj4+
+IEBAIC0wLDAgKzEsNjM4IEBADQo+PiArLy8gU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IEdQTC0y
+LjArDQo+PiArLyoNCj4+ICsgKiBDb3B5cmlnaHQgKEMpIDIwMjMgSm9zdWEgTWF5ZXIgPGpvc3Vh
+QHNvbGlkLXJ1bi5jb20+DQo+PiArICoNCj4+ICsgKi8NCj4+ICsNCj4+ICsjaW5jbHVkZSA8ZHQt
+YmluZGluZ3MvbmV0L3RpLWRwODM4NjkuaD4NCj4+ICsNCj4+ICsvIHsNCj4+ICsJbW9kZWwgPSAi
+U29saWRSdW4gQU02NDIgU29NIjsNCj4+ICsJY29tcGF0aWJsZSA9ICJzb2xpZHJ1bixhbTY0Mi1z
+ci1zb20iLCAidGksYW02NDIiOw0KPj4gKw0KPj4gKwlhbGlhc2VzIHsNCj4+ICsJCWV0aGVybmV0
+MCA9ICZjcHN3X3BvcnQxOw0KPj4gKwkJZXRoZXJuZXQxID0gJmljc3NnMV9lbWFjMDsNCj4+ICsJ
+CWV0aGVybmV0MiA9ICZpY3NzZzFfZW1hYzE7DQo+PiArCQltbWMwID0gJnNkaGNpMDsNCj4+ICsJ
+CW1tYzEgPSAmc2RoY2kxOw0KPj4gKwkJc2VyaWFsMiA9ICZtYWluX3VhcnQwOw0KPj4gKwl9Ow0K
+Pj4gKw0KPj4gKwljaG9zZW4gew0KPj4gKwkJLyogU29DIGRlZmF1bHQgVUFSVCBjb25zb2xlICov
+DQo+PiArCQlzdGRvdXQtcGF0aCA9ICJzZXJpYWwyOjExNTIwMG44IjsNCj4+ICsJCWJvb3Rhcmdz
+ID0gImVhcmx5Y29uPW5zMTY1NTBhLG1taW8zMiwweDAyODAwMDAwIjsNCj4gRHJvcCBib290YXJn
+cy4gZWFybHljb24gaXMgZm9yIGRlYnVnZ2luZy4NCg0KQWNrLg0KDQpTaW5jZXJlbHkgSm9zdWEg
+TWF5ZXINCg0KDQo=
 
