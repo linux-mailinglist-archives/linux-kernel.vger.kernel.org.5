@@ -1,284 +1,277 @@
-Return-Path: <linux-kernel+bounces-16831-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16833-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE366824497
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 16:07:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C34982449D
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 16:08:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7920F1F21FE7
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 15:07:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 825971C22155
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 15:08:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D42B9241F8;
-	Thu,  4 Jan 2024 15:04:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9386224B28;
+	Thu,  4 Jan 2024 15:04:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="gAo6hyHF"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="cUp25mOO"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2067.outbound.protection.outlook.com [40.107.220.67])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 646DD241EA
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 15:04:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1704380653;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=54czl3D5X40O/vQlC+9Ni2dHi6OnEwWDJH786ySVlbE=;
-	b=gAo6hyHFFctAMVrDq+YJE0SG8sD58e85kLJU9GJOXp23Vo2n3pxnMv0lmuc1i/GPpIuK0w
-	tNUuOOGLuWQVNlxa6n1DnOBcC9bjSWsDhfQkp0fKGoPzCmphLWyqohWM/WHNgNUK/8C6Vz
-	h67YQFv1/jb7rM3k4f4MZ1uWjTkn3SI=
-Received: from mail-pg1-f200.google.com (mail-pg1-f200.google.com
- [209.85.215.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-73-tcV1uLR5NeKtV18hJpqOLg-1; Thu, 04 Jan 2024 10:04:11 -0500
-X-MC-Unique: tcV1uLR5NeKtV18hJpqOLg-1
-Received: by mail-pg1-f200.google.com with SMTP id 41be03b00d2f7-5cec8bc5c66so411734a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 07:04:11 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704380650; x=1704985450;
-        h=content-transfer-encoding:content-disposition:mime-version
-         :references:in-reply-to:message-id:date:subject:cc:to:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=54czl3D5X40O/vQlC+9Ni2dHi6OnEwWDJH786ySVlbE=;
-        b=G1udqKVmGHkdW3upqtRpsbelzdhytDUJ4fUfugamK1DzD0hD6yOoNIBiO2+HdVwTZL
-         X1TihZ70RKWA7U7861uXFas/QLQr39QPRjgym49dMyvl9AhDZYUSSL25VClkcMLeEd9g
-         QiDFsXfQpm3TNFV2/S2dRlWaCzBNmKQnqcAgRdNGCtA3DG7xChrPYMu8YQQE/e952vgN
-         YCFa/r9llVBxSW2GrhhcrFevCztLvuhRU2NmAa/XGDxEQdnMOWi8ocIyN6ImWVuxSkHP
-         6HRCJSGCXZmcWD3JC34JhfI/1yBXAo0+VXiBHb0U+dQJjj1ar9gMsxKDHKZ6BKFHX752
-         TCpQ==
-X-Gm-Message-State: AOJu0Yy7UtMpwz6u49dwDWnMfYk7Z8DIAQIGQ84TtscUX2zK0a2r8HLh
-	IvTRIw2OACPT59hX/5k/f7dACVyyeW7FM0pARmwO7B76xhhmyNqltvvjwj3UW+mcd/Z/DeiHuC0
-	m7FqOVqqsb60DBinveQy2vGu8/04bEgpY
-X-Received: by 2002:a17:902:7ec8:b0:1d4:df66:42fa with SMTP id p8-20020a1709027ec800b001d4df6642famr484767plb.65.1704380650530;
-        Thu, 04 Jan 2024 07:04:10 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFBUSGQH4kHn/+tNl9EDAVAQc3MloODmEGyIqw0UaTuZn9ttpODkJIeEzjf6zBFcG/+1lIqkQ==
-X-Received: by 2002:a17:902:7ec8:b0:1d4:df66:42fa with SMTP id p8-20020a1709027ec800b001d4df6642famr484738plb.65.1704380650191;
-        Thu, 04 Jan 2024 07:04:10 -0800 (PST)
-Received: from localhost.localdomain ([2804:431:c7ec:3b60:7b8a:588b:5256:ce57])
-        by smtp.gmail.com with ESMTPSA id n6-20020a170902d2c600b001d49e742d51sm11304580plc.30.2024.01.04.07.04.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Jan 2024 07:04:09 -0800 (PST)
-From: Leonardo Bras <leobras@redhat.com>
-To: Andrew Jones <ajones@ventanamicro.com>
-Cc: Leonardo Bras <leobras@redhat.com>,
-	guoren@kernel.org,
-	paul.walmsley@sifive.com,
-	palmer@dabbelt.com,
-	panqinglin2020@iscas.ac.cn,
-	bjorn@rivosinc.com,
-	conor.dooley@microchip.com,
-	peterz@infradead.org,
-	keescook@chromium.org,
-	wuwei2016@iscas.ac.cn,
-	xiaoguang.xing@sophgo.com,
-	chao.wei@sophgo.com,
-	unicorn_wang@outlook.com,
-	uwu@icenowy.me,
-	jszhang@kernel.org,
-	wefu@redhat.com,
-	atishp@atishpatra.org,
-	linux-riscv@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Guo Ren <guoren@linux.alibaba.com>
-Subject: Re: Re: Re: [PATCH V2 1/3] riscv: Add Zicbop instruction definitions & cpufeature
-Date: Thu,  4 Jan 2024 12:03:57 -0300
-Message-ID: <ZZbI3clKUbNbNtZj@LeoBras>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240104-4ecfb92d2f8c95fa773ca695@orel>
-References: <20231231082955.16516-1-guoren@kernel.org> <20231231082955.16516-2-guoren@kernel.org> <ZZWs0C19tz763FnH@LeoBras> <20240103-0c96ceea88523b7b946e4ba8@orel> <ZZXEpU-JzsvD2UDW@LeoBras> <20240104-4ecfb92d2f8c95fa773ca695@orel>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BD1B24A0C;
+	Thu,  4 Jan 2024 15:04:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZtEiR9O1tmGyHDRc4GrYRkKWN0wIPtxm1VDZWghKIjlXZLBHxeQx3qWpnzKleANoSaLJKqGq9jkqT6md4SPUR0sCXPeLFGGuTPtVzedOAd0m+tecs7mEs38YxrArnIF2E3gjqsbbsDIWNVJRp4tRvn9TKhvhPahAlm42rNgfvbJHadnHNXC4OKxFj54T/K3QAmy6aq1BxVXdev1cdzIFjFbAERg+ZvdKmnerZ6zrqj6EoiNqTY+rrLpO2Y/0iwgQsfyBEENmTQxqSYMWbB7p+zvarE31U7m1Cz4ABGn5ZUVhauR5v6+RkaKE2zN8Ff6EGMfYgQBlbVqG88QLZg8rGQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=JsVr28K7bOlt8PeqfFwv/0qZReEWmvOWBUHvqgYZKhA=;
+ b=CFj6R+tZUIvtykPlkM1pH4dA5o5LwxmqsHmK5xarNpDm6oEOdYpHffIE9FUEWw2l1eTjo/8BbnGTe4AoWTuLywV9wm6WwocdA3Z0il7ZylI/4CRGHP+tCunoZYA9vxo1wrxNXzovesy19DdHkoYXoiiOhai4YagiY1nF0WZ+ENvkr52N+t7hNO06WdsoC0oiWSjCWOygF21IfbJL611C54RlIVEk3oKCKjKeKh6xP8cWB4MGXwlrasEg7cMzfLLoJvhyq7BCkYiAug7qOII2dgrDP49r0N/bGCDQjFVX02pmEws7TOjZNwxoWPG3KqitDn0by1NWemeNZL/as8MVlA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.118.233) smtp.rcpttodomain=redhat.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=JsVr28K7bOlt8PeqfFwv/0qZReEWmvOWBUHvqgYZKhA=;
+ b=cUp25mOOxtpiegJjTGJTAyUK/Dpp3nQ76qvr6GIpQc0M7e5pZ1cekEcxfxG3XRVwADxIQ4+a9miziVqXtJPPhEqUeWwrkFpAwN6pFBCfK3NfaH7XDCtlTAC/MkmF9lPCzBGec9GJfP204DEcoBc883bbUvyIHnztUmR6xJrAwTSCo+PTcI50c8PfLaa1Bp8mrzuOgAxnAMyg/auA+tcHwlExArKJHUfKO/fkgNFG4uBCdsepWHpw2wFuFKK4+CJSOMyCtgiIdYBj6PMsgz8qhU0djfx2Hmj8l/fhn6hFueFGJvMgvDMspFPaq6njnYDYinkJIrNeBXmaAjgad2LQAQ==
+Received: from BL1PR13CA0096.namprd13.prod.outlook.com (2603:10b6:208:2b9::11)
+ by DM4PR12MB7671.namprd12.prod.outlook.com (2603:10b6:8:104::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7135.23; Thu, 4 Jan
+ 2024 15:04:53 +0000
+Received: from BL6PEPF0001AB4F.namprd04.prod.outlook.com
+ (2603:10b6:208:2b9:cafe::98) by BL1PR13CA0096.outlook.office365.com
+ (2603:10b6:208:2b9::11) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.13 via Frontend
+ Transport; Thu, 4 Jan 2024 15:04:53 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.233)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.118.233 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.118.233; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.118.233) by
+ BL6PEPF0001AB4F.mail.protection.outlook.com (10.167.242.73) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7159.9 via Frontend Transport; Thu, 4 Jan 2024 15:04:53 +0000
+Received: from drhqmail203.nvidia.com (10.126.190.182) by mail.nvidia.com
+ (10.127.129.6) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Thu, 4 Jan 2024
+ 07:04:33 -0800
+Received: from drhqmail201.nvidia.com (10.126.190.180) by
+ drhqmail203.nvidia.com (10.126.190.182) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.41; Thu, 4 Jan 2024 07:04:33 -0800
+Received: from vdi.nvidia.com (10.127.8.12) by mail.nvidia.com
+ (10.126.190.180) with Microsoft SMTP Server id 15.2.986.41 via Frontend
+ Transport; Thu, 4 Jan 2024 07:04:32 -0800
+From: Liming Sun <limings@nvidia.com>
+To: Vadim Pasternak <vadimp@nvidia.com>, David Thompson
+	<davthompson@nvidia.com>, Hans de Goede <hdegoede@redhat.com>, Mark Gross
+	<markgross@kernel.org>, Dan Carpenter <dan.carpenter@linaro.org>
+CC: Liming Sun <limings@nvidia.com>, <platform-driver-x86@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+Subject: [PATCH v1 1/1] Drop Tx network packet when Tx TmFIFO is full
+Date: Thu, 4 Jan 2024 10:04:24 -0500
+Message-ID: <f250079635da4ba75c3a3a1d7c3820f48cfc3f06.1704380474.git.limings@nvidia.com>
+X-Mailer: git-send-email 2.30.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL6PEPF0001AB4F:EE_|DM4PR12MB7671:EE_
+X-MS-Office365-Filtering-Correlation-Id: 8db26d72-499a-4127-e203-08dc0d3681de
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	iSA0GOAjE8kJ1Db2M5kILSXDY6DzbqrXBer5Pw6K6VFTe4kfDAKBxafCrrP//IQThfw/4MZQKU7Afp1ZPMw9tGHiCJVz+1YT4yTBbN0GSJf6nBtPXg2ioH1WRKBTi/9fpSeeL+xu+wajKFL/fFdJHRqlwXTvJdgMEhR4EPCoACY81yHEqZgGPLXKCI12DPC3X31LEcxw7xzeQcXiBVkEecw9c0Zrby/s1aT2RrbSPiZlRJqHKkLNvxjE7YYR8OychfU3WfGLwMpwnojozrBTVtWb/4IWANkbHNK2cjA590ke2l3AaHeIukFdCnuecZOHxEGGtK6PSbj7P2XmGW8Wl1dMSlYd4kxbJydH7pxPf4Abu/6vn9lT00Tf6O9ZqyhCREuBdhBCyxZXZY3sj6tAEun1WI2z2BvMkx0dy2/rj9xdnDR1b5xdJ6ANLA8cFEESAMtrKmkqzSBoGeeQiapyHcVZ3cnsQwS9TYL1HUwFsjtuN45Yfe7Wva5FM/jmJDmN8fRMGD8GVPhsgYIzPw0VMP0GnCwPmUzuwvjP1cMWpBd8SEuBWJhTCJjsUs9g+xLmlAF3eh1NmJoZPHh67tpZnJWZtWiGU36aov5g21qKFSpuMXtvWAmC+jOXQRwKzItv9caAw/QmuY6xQYKegFKkwFeacJmqBKxB0RubUUuJQFXQbyEUKS++ZoHNDtJvPjsMCViQZU1jMPSc+4wCPFk9nYKxfY6+/Zy/bQh70kosHysfj79zsIaDEjTVybd2HtiopootZWijFHqyAiSt8Xzh6VxwjGDGaa27iaSFlYwSamNFMvyWIgYorw2cbhH03cPP
+X-Forefront-Antispam-Report:
+	CIP:216.228.118.233;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge2.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(376002)(39860400002)(346002)(396003)(136003)(230273577357003)(230173577357003)(230922051799003)(1800799012)(64100799003)(451199024)(186009)(82310400011)(36840700001)(46966006)(40470700004)(47076005)(40480700001)(316002)(7696005)(7636003)(110136005)(86362001)(54906003)(4326008)(40460700003)(8936002)(70206006)(70586007)(36756003)(356005)(8676002)(6666004)(36860700001)(5660300002)(478600001)(26005)(2616005)(41300700001)(336012)(426003)(2906002)(83380400001)(82740400003)(21314003);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Jan 2024 15:04:53.6155
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8db26d72-499a-4127-e203-08dc0d3681de
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.233];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	BL6PEPF0001AB4F.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB7671
 
-On Thu, Jan 04, 2024 at 10:47:34AM +0100, Andrew Jones wrote:
-> On Wed, Jan 03, 2024 at 05:33:41PM -0300, Leonardo Bras wrote:
-> > On Wed, Jan 03, 2024 at 08:29:39PM +0100, Andrew Jones wrote:
-> > > On Wed, Jan 03, 2024 at 03:52:00PM -0300, Leonardo Bras wrote:
-> > > > On Sun, Dec 31, 2023 at 03:29:51AM -0500, guoren@kernel.org wrote:
-> ...
-> > > > The shifts seem correct for S-Type, but I would name the IMM defines in a 
-> > > > way we could understand where they fit in IMM:
-> > > > 
-> > > > 
-> > > > INSN_S_SIMM5_SHIFT -> INSN_S_SIMM_0_4_SHIFT
-> > > > INSN_S_SIMM7_SHIFT -> INSN_S_SIMM_5_11_SHIFT
-> > > > 
-> > > > What do you think?
-> > > 
-> > > I'm in favor of this suggestion, but then wonder if we don't need another
-> > > patch before this which renames INSN_I_SIMM12_SHIFT to
-> > > INSN_I_SIMM_0_11_SHIFT in order to keep things consistent.
-> > 
-> > Agree. If it's ok, I can provide a patch doing the rename on top of this 
-> > patchset.
-> 
-> The INSN_I change is only needed if we also take the new INSN_S shift
-> macros, so I think the INSN_I change should be part of this series.
+Starting from Linux 5.16 kernel, Tx timeout mechanism was added
+into the virtio_net driver which prints the "Tx timeout" message
+when a packet is stuck in Tx queue for too long which could happen
+when external host driver is stuck or stopped and failed to read
+the FIFO.
 
-Ok then,
+Below is an example of the reported message:
 
-> 
-> BTW, I just noticed we wrote the numbers backwards. They should be
-> 
->  INSN_I_SIMM_11_0_SHIFT
->  INSN_S_SIMM_11_5_SHIFT
->  INSN_S_SIMM_4_0_SHIFT
->
+"[494105.316739] virtio_net virtio1 tmfifo_net0: TX timeout on
+queue: 0, sq: output.0, vq: 0×1, name: output.0, usecs since
+last trans: 3079892256".
 
-That's right, so it matches ISA documentation :)
+To avoid such "Tx timeout" messages, this commit adds a timeout
+mechanism to drop and release the pending Tx packet if not able to
+transmit for two seconds due to Tx FIFO full.
 
+This commit also handles the special case that the packet is half-
+transmitted into the Tx FIFO. In such case, the packet is discarded
+with remaining length stored in vring->rem_padding. So paddings with
+zeros can be sent out when Tx space is available to maintain the
+integrity of the packet format. The padded packet will be dropped on
+the receiving side.
+
+Signed-off-by: Liming Sun <limings@nvidia.com>
+---
+ drivers/platform/mellanox/mlxbf-tmfifo.c | 67 ++++++++++++++++++++++++
+ 1 file changed, 67 insertions(+)
+
+diff --git a/drivers/platform/mellanox/mlxbf-tmfifo.c b/drivers/platform/mellanox/mlxbf-tmfifo.c
+index 5c683b4eaf10..47ed2a6027a6 100644
+--- a/drivers/platform/mellanox/mlxbf-tmfifo.c
++++ b/drivers/platform/mellanox/mlxbf-tmfifo.c
+@@ -47,6 +47,9 @@
+ /* Message with data needs at least two words (for header & data). */
+ #define MLXBF_TMFIFO_DATA_MIN_WORDS		2
  
-> > > > >  
-> > > > > +#define CBO_PREFETCH_I(base, offset)				\
-> > > > > +	INSN_S(OPCODE_OP_IMM, FUNC3(6), __RS2(0),		\
-> > > > > +	       SIMM12(offset), RS1(base))
-> > > > > +
-> > > > > +#define CBO_PREFETCH_R(base, offset)				\
-> > > > > +	INSN_S(OPCODE_OP_IMM, FUNC3(6), __RS2(1),		\
-> > > > > +	       SIMM12(offset), RS1(base))
-> > > > > +
-> > > > > +#define CBO_PREFETCH_W(base, offset)				\
-> > > > > +	INSN_S(OPCODE_OP_IMM, FUNC3(6), __RS2(3),		\
-> > > > > +	       SIMM12(offset), RS1(base))
-> > > > > +
-> > > > 
-> > > > For OP_IMM & FUNC3(6) we have ORI, right?
-> > > > For ORI, rd will be at bytes 11:7, which in PREFETCH.{i,r,w} is
-> > > > offset[4:0].
-> > > > 
-> > > > IIUC, when the cpu does not support ZICBOP, this should be fine as long as 
-> > > > rd = 0, since changes to r0 are disregarded.
-> > > > 
-> > > > In this case, we need to guarantee offset[4:0] = 0, or else we migth write 
-> > > > on an unrelated register. This can be noticed in ZICBOP documentation pages 
-> > > > 21, 22, 23, as offset[4:0] is always [0 0 0 0 0]. 
-> > > > (Google docs in first comment)
-> > > > 
-> > > > What we need here is something like:
-> > > > + enum {
-> > > > + 	PREFETCH_I,
-> > > > + 	PREFETCH_R,
-> > > > + 	PREFETCH_W,
-> > > > + }	 
-> > > 
-> > > Can't use enum. This header may be included in assembly.
-> > 
-> > Oh, I suggest defines then, since it's better to make it clear instead of 
-> > using 0, 1, 3.
-> 
-> I don't think we gain anything by adding another define in order to create
-> the instruction define. We have to review the number sooner or later. I'd
-> prefer we use the number inside the instruction define so we only need
-> to look one place, which is also consistent with how we use FUNC fields.
-> 
-
-Sorry, I was unable to understand the reasoning.
-
-If we are going to review the numbers sooner or later, would not it be 
-better to have the instruction define to have "PREFETCH_W" instead of a 
-number, and a unified list of defines for instructions.
-
-This way we don't need to look into the code for 0's 1's and 3's, but 
-instead just replace the number in the define list.
-
-What am I missing?  
-
-> > 
-> > > 
-> > > > +
-> > > > + #define CBO_PREFETCH(type, base, offset)                      \
-> > > > +     INSN_S(OPCODE_OP_IMM, FUNC3(6), __RS2(type),              \
-> > > > +            SIMM12(offset & ~0x1f), RS1(base))
-> > > 
-> > > Yes. I suggested we mask offset as well, but ideally we'd detect a caller
-> > > using an offset with nonzero lower 5 bits at compile time.
-> > 
-> > I would suggest the compiler would take care of this, but I am not sure 
-> > about the assembly, since I am not sure if it gets any optimization.
-> > 
-> > I don't think we can detect a caller with non-zero offset at compile time, 
-> > since it will be used in locks which can be at (potentially) any place in 
-> > the block size. (if you have any idea though, please let me know :) )
-> > 
-> > On the other hand, we could create a S-Type macro which deliberately 
-> > ignores imm[4:0], like  
-> > 
-> > + INSN_S_TRUNCATE(OPCODE_OP_IMM, FUNC3(6), __RS2(3),               \
-> > +                 SIMM12(offset), RS1(base))
-> > 
-> > Which saves the bits 11:5 of offset  into imm[11:5], and zero-fill 
-> > imm[4:0], like
-> > 
-> > +#define DEFINE_INSN_S                                                    \
-> > + __DEFINE_ASM_GPR_NUMS                                           \
-> > +"        .macro insn_s, opcode, func3, rs2, simm12, rs1\n"               \
-> > +"        .4byte  ((\\opcode << " __stringify(INSN_S_OPCODE_SHIFT) ") |"  \
-> > +"                 (\\func3 << " __stringify(INSN_S_FUNC3_SHIFT) ") |"    \
-> > +"                 (.L__gpr_num_\\rs2 << " __stringify(INSN_S_RS2_SHIFT) ") |" \
-> > +"                 (.L__gpr_num_\\rs1 << " __stringify(INSN_S_RS1_SHIFT) ") |" \
-> > +"                 (((\\simm12 >> 5) & 0x7f) << " __stringify(INSN_S_SIMM7_SHIFT) "))\n" \
-> > +"        .endm\n"
-> > +
-> > 
-> > Does this make sense?
-> 
-> If we create a special version of INSN_S, then I suggest we create one
-> where its two SIMM fields are independent and then define prefetch
-> instructions like this
-> 
->  #define PREFETCH_W(base, offset) \
->      INSN_S_SPLIT_IMM(OPCODE_OP_IMM, FUNC3(6), __RS2(3), \
->          SIMM_11_5(offset >> 5), SIMM_4_0(0), RS1(base))
-> 
-> which would allow simple review against the spec and potentially
-> support other instructions which use hard coded values in the
-> immediate fields.
-> 
-
-I agree, it looks better this way.
-
-We could have:
-INSN_S_SPLIT_IMM(OPCODE, FUNC3, RS1, RS2, SIMM_11_5, SIMM_4_0)
-
-and implement INSN_S like:
-#define INSN_S(OPCODE, FUNC3, RS1, RS2, SIMM_11_0) \
-	INSN_S_SPLIT_IMM(OPCODE, FUNC3, RS1, RS2,  \
-		SIMM_11_0 >> 5, SIMM_11_0 & 0x1f)
-
-This would avoid extra instructions in asm while not having duplicated 
-code.
-
-
-> But I'm not sure it's worth it. I think
-> 
->  #define PREFETCH_W(base, offset) \
->      INSN_S(OPCODE_OP_IMM, FUNC3(6), __RS2(3), \
->          SIMM12(offset & ~0x1f), RS1(base))
-> 
-> is also pretty easy to review against the spec and we don't have any other
-> instructions yet with other requirements for the immediates.
-> 
-
-It makes sense, but I think having INSN_S being implemented with 
-INSN_S_SPLIT_IMM like suggested above would allow us to have the 
-benefits of a split version without the code duplication.
-
-> Thanks,
-> drew
-> 
-
-Thanks!
-Leo
++/* Tx timeout in milliseconds. */
++#define TMFIFO_TX_TIMEOUT			2000
++
+ /* ACPI UID for BlueField-3. */
+ #define TMFIFO_BF3_UID				1
+ 
+@@ -62,12 +65,14 @@ struct mlxbf_tmfifo;
+  * @drop_desc: dummy desc for packet dropping
+  * @cur_len: processed length of the current descriptor
+  * @rem_len: remaining length of the pending packet
++ * @rem_padding: remaining bytes to send as paddings
+  * @pkt_len: total length of the pending packet
+  * @next_avail: next avail descriptor id
+  * @num: vring size (number of descriptors)
+  * @align: vring alignment size
+  * @index: vring index
+  * @vdev_id: vring virtio id (VIRTIO_ID_xxx)
++ * @tx_timeout: expire time of last tx packet
+  * @fifo: pointer to the tmfifo structure
+  */
+ struct mlxbf_tmfifo_vring {
+@@ -79,12 +84,14 @@ struct mlxbf_tmfifo_vring {
+ 	struct vring_desc drop_desc;
+ 	int cur_len;
+ 	int rem_len;
++	int rem_padding;
+ 	u32 pkt_len;
+ 	u16 next_avail;
+ 	int num;
+ 	int align;
+ 	int index;
+ 	int vdev_id;
++	unsigned long tx_timeout;
+ 	struct mlxbf_tmfifo *fifo;
+ };
+ 
+@@ -819,6 +826,50 @@ static bool mlxbf_tmfifo_rxtx_one_desc(struct mlxbf_tmfifo_vring *vring,
+ 	return true;
+ }
+ 
++static void mlxbf_tmfifo_check_tx_timeout(struct mlxbf_tmfifo_vring *vring)
++{
++	unsigned long flags;
++
++	/* Only handle Tx timeout for network vdev. */
++	if (vring->vdev_id != VIRTIO_ID_NET)
++		return;
++
++	/* Initialize the timeout or return if not expired. */
++	if (!vring->tx_timeout) {
++		/* Initialize the timeout. */
++		vring->tx_timeout = jiffies +
++			msecs_to_jiffies(TMFIFO_TX_TIMEOUT);
++		return;
++	} else if (time_before(jiffies, vring->tx_timeout)) {
++		/* Return if not timeout yet. */
++		return;
++	}
++
++	/*
++         * Drop the packet after timeout. The outstanding packet is
++         * released and the remaining bytes will be sent with padding byte 0x00
++         * as a recovery. On the peer(host) side, the padding bytes 0x00 will be
++         * either dropped directly, or appended into existing outstanding packet
++         * thus dropped as corrupted network packet.
++         */
++	vring->rem_padding = round_up(vring->rem_len, sizeof(u64));
++	mlxbf_tmfifo_release_pkt(vring);
++	vring->cur_len = 0;
++	vring->rem_len = 0;
++	vring->fifo->vring[0] = NULL;
++
++	/*
++	 * Make sure the load/store are in order before
++	 * returning back to virtio.
++	 */
++	virtio_mb(false);
++
++	/* Notify upper layer. */
++	spin_lock_irqsave(&vring->fifo->spin_lock[0], flags);
++	vring_interrupt(0, vring->vq);
++	spin_unlock_irqrestore(&vring->fifo->spin_lock[0], flags);
++}
++
+ /* Rx & Tx processing of a queue. */
+ static void mlxbf_tmfifo_rxtx(struct mlxbf_tmfifo_vring *vring, bool is_rx)
+ {
+@@ -841,6 +892,7 @@ static void mlxbf_tmfifo_rxtx(struct mlxbf_tmfifo_vring *vring, bool is_rx)
+ 		return;
+ 
+ 	do {
++retry:
+ 		/* Get available FIFO space. */
+ 		if (avail == 0) {
+ 			if (is_rx)
+@@ -851,6 +903,17 @@ static void mlxbf_tmfifo_rxtx(struct mlxbf_tmfifo_vring *vring, bool is_rx)
+ 				break;
+ 		}
+ 
++		/* Insert paddings for discarded Tx packet. */
++		if (!is_rx) {
++			vring->tx_timeout = 0;
++			while (vring->rem_padding >= sizeof(u64)) {
++				writeq(0, vring->fifo->tx.data);
++				vring->rem_padding -= sizeof(u64);
++				if (--avail == 0)
++					goto retry;
++			}
++		}
++
+ 		/* Console output always comes from the Tx buffer. */
+ 		if (!is_rx && devid == VIRTIO_ID_CONSOLE) {
+ 			mlxbf_tmfifo_console_tx(fifo, avail);
+@@ -860,6 +923,10 @@ static void mlxbf_tmfifo_rxtx(struct mlxbf_tmfifo_vring *vring, bool is_rx)
+ 		/* Handle one descriptor. */
+ 		more = mlxbf_tmfifo_rxtx_one_desc(vring, is_rx, &avail);
+ 	} while (more);
++
++	/* Check Tx timeout. */
++	if (avail <= 0 && !is_rx)
++		mlxbf_tmfifo_check_tx_timeout(vring);
+ }
+ 
+ /* Handle Rx or Tx queues. */
+-- 
+2.30.1
 
 
