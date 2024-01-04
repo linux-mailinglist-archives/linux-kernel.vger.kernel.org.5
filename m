@@ -1,122 +1,178 @@
-Return-Path: <linux-kernel+bounces-17044-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17045-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 542E0824781
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 18:33:01 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AE212824786
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 18:33:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D2812B21F80
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 17:32:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5C8592878BC
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 17:33:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D129286B8;
-	Thu,  4 Jan 2024 17:32:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E177288DC;
+	Thu,  4 Jan 2024 17:33:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="JozeXy37"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="FUfmc3Qh";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Q1CdOL97";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="sKngIZFV";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="KYUhj4jo"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-qt1-f174.google.com (mail-qt1-f174.google.com [209.85.160.174])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A3C5286AD
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 17:32:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f174.google.com with SMTP id d75a77b69052e-428405a0205so289011cf.1
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 09:32:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1704389569; x=1704994369; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nqY8OgOdC3d88JsYKWQTFxM4+HiTBGWgetv0NzWf6g8=;
-        b=JozeXy37oYwIKcWWaCgMo9e8DJoS3A+AvwboMMvnpsfdODQpIEeeBeTnO5DzmVEkWl
-         uNOaRwArkuX3o5OxPkhTUqGjcJkoERqad2bGBCzafOPC12w+HCnazJ87qGM5Sqa2v1U7
-         wnb67X0t1p57565tYC3AJLctVt1L9bivxjfAxXgxygAOW7YDKWawS5HKa5Gf1lEckjxg
-         ZPF91KvQFf1GlHVsaULQG3s+9fcDfNSKfTdCbE0qg28ozObqdI0mhBHPyk+PEUDrSq7x
-         OJhcdmidoLN/7gW9zfg8PRgqZbPVMIAAcGoQbgFs6XmB35DxMTSo5lTKvQF1Vhl6KmVN
-         wyFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704389569; x=1704994369;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nqY8OgOdC3d88JsYKWQTFxM4+HiTBGWgetv0NzWf6g8=;
-        b=kKVu7W++r56d9IzHT3Iw6U3SfCqJAsEdSgpYcRMQNBI9rpBRVpM04Uwj/waBYFNxw7
-         V2S8gW8t70wAXS0B8g4KvvtWa0p8JmUMc9pWTC6mxBlhnQz5FP232tYJwDmUNE6LDoEo
-         kHGiJ6WxK5K6WQMPdqMHurfqn+FtBlz949C+ldCLfD16DrsgM2PAwB0HFNJP+csakp01
-         NOSz+0tCCNC8jGuyyrUqxEtHXdGXQFWkmS1rgrSAhBst/9IIgO4jHlXZA9IJHnIlzbD7
-         q8CJCAQrQSHhAStpcQDg0jMNuqIkjQ+bJumao4B2x9YnqLZlXpyR64adXHOLDVUURipQ
-         1oCw==
-X-Gm-Message-State: AOJu0Yy5/vUsciyWFXvO7T2Deftcw+YnIQh+FZMXkelSkYMY19VP6jrT
-	aGCsMJy4ArCXeUd8lTUd//nPm7gYpIBZ6u8DKTfbIpxk7pc8
-X-Google-Smtp-Source: AGHT+IGyvqmCqF8cJesbEu56LXfd0VAsNyenEMxT+xOZY2Fven9BKDWbf98GEp+MQNIIsUnmgJj9IlY3RRiaF2oR9U0=
-X-Received: by 2002:ac8:7d49:0:b0:425:918b:f18c with SMTP id
- h9-20020ac87d49000000b00425918bf18cmr521300qtb.11.1704389569148; Thu, 04 Jan
- 2024 09:32:49 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 192B02556C;
+	Thu,  4 Jan 2024 17:33:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id E61EE220E3;
+	Thu,  4 Jan 2024 17:33:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1704389604; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=FsRJvLQnecTvHGtb1HFyEgtgGzgqO3i0oqXp5vlKPWI=;
+	b=FUfmc3Qh0MAGpw9hE1UCALTro4oNQzSromnIwoyARtAD67o1EK5qtJ8XnfjGZJ0Ckmcyin
+	2GvHWi0pkSshwyWmpxnTQxWyE7brQqXjnRdKZ0cJI1hjYbRwYLGOkgEVJniy8RRtZtWALE
+	tqZFBriSBgGuJbmgwggtW2xw//SSWjM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1704389604;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=FsRJvLQnecTvHGtb1HFyEgtgGzgqO3i0oqXp5vlKPWI=;
+	b=Q1CdOL97nApponZ0+Gy2YpFJyPecVMp/76l3qZN6oV6rZSpTGv9AcQbZOzdwOVKQBMAHW+
+	VblZXIeMwLgoNqBA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1704389603; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=FsRJvLQnecTvHGtb1HFyEgtgGzgqO3i0oqXp5vlKPWI=;
+	b=sKngIZFV37auVSfq3UB+l3+cObj5PhuLlhL1lIYtrTEr26ZSQ9JJKbk1nM2CSW2A+VA6mt
+	mZ7xHp0jPIyF65C0y5irRidvaZujqZc9iFkv8qqHkhNQm0uPus/gYobdW4T8IfhQSh07af
+	SM3oACnpH9apOP8kiMiM28EHRYvyk0Y=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1704389603;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=FsRJvLQnecTvHGtb1HFyEgtgGzgqO3i0oqXp5vlKPWI=;
+	b=KYUhj4joWBSk58EDoOrE0oqoK+ObIbf49vSBv976EsBlWrHkhl5lHbNSqx2rH3n4TKe0+8
+	vjuLAiEKwSSzuPDA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D4B1213722;
+	Thu,  4 Jan 2024 17:33:23 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id FLLiM+PrlmW5bwAAD6G6ig
+	(envelope-from <jack@suse.cz>); Thu, 04 Jan 2024 17:33:23 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 650E8A07EF; Thu,  4 Jan 2024 18:33:19 +0100 (CET)
+Date: Thu, 4 Jan 2024 18:33:19 +0100
+From: Jan Kara <jack@suse.cz>
+To: Jingbo Xu <jefflexu@linux.alibaba.com>
+Cc: shr@devkernel.io, akpm@linux-foundation.org, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org, joseph.qi@linux.alibaba.com,
+	linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
+	willy@infradead.org
+Subject: Re: [PATCH v3 1/2] mm: fix arithmetic for bdi min_ratio
+Message-ID: <20240104173319.a7ui5uh4jde5jan4@quack3>
+References: <20231219142508.86265-1-jefflexu@linux.alibaba.com>
+ <20231219142508.86265-2-jefflexu@linux.alibaba.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231226-binderfs-v1-1-66829e92b523@google.com>
- <eacd168f-22dd-4e11-8907-0c79ee33f595@wanadoo.fr> <ZZboVgcBljOgrJAI@google.com>
-In-Reply-To: <ZZboVgcBljOgrJAI@google.com>
-From: Tanzir Hasan <tanzirh@google.com>
-Date: Thu, 4 Jan 2024 09:32:37 -0800
-Message-ID: <CAE-cH4r270umQbs82w=tXAJtK5J5V=Z9zJun_8jYOKJsHWb7qw@mail.gmail.com>
-Subject: Re: [PATCH] android: removed asm-generic/errno-base.h
-To: Carlos Llamas <cmllamas@google.com>
-Cc: Christophe JAILLET <christophe.jaillet@wanadoo.fr>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, =?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>, 
-	Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>, 
-	Joel Fernandes <joel@joelfernandes.org>, Christian Brauner <brauner@kernel.org>, 
-	Suren Baghdasaryan <surenb@google.com>, linux-kernel@vger.kernel.org, 
-	Nick Desaulniers <nnn@google.com>, Al Viro <viro@zeniv.linux.org.uk>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231219142508.86265-2-jefflexu@linux.alibaba.com>
+X-Spam-Level: 
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: E61EE220E3
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=sKngIZFV;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=KYUhj4jo
+X-Spam-Score: -2.92
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spamd-Result: default: False [-2.92 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 URIBL_BLOCKED(0.00)[alibaba.com:email,suse.cz:email,suse.cz:dkim,suse.com:email];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.cz:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_SEVEN(0.00)[9];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-2.91)[99.60%]
 
-On Thu, Jan 4, 2024 at 9:18=E2=80=AFAM Carlos Llamas <cmllamas@google.com> =
-wrote:
->
-> On Thu, Jan 04, 2024 at 04:36:00PM +0100, Christophe JAILLET wrote:
-> > Le 26/12/2023 =C3=A0 18:09, Tanzir Hasan a =C3=A9crit :
-> > > asm-generic/errno-base.h can be replaced by linux/errno.h and the fil=
-e
-> > > will still build correctly. It is an asm-generic file which should be
-> > > avoided if possible.
-> > >
-> > > Suggested-by: Al Viro <viro@zeniv.linux.org.uk>
-> > > Signed-off-by: Tanzir Hasan <tanzirh@google.com>
-> > > ---
-> > >   drivers/android/binderfs.c | 2 +-
-> > >   1 file changed, 1 insertion(+), 1 deletion(-)
-> > >
-> > > diff --git a/drivers/android/binderfs.c b/drivers/android/binderfs.c
-> > > index 1224ab7aa070..d04ff6029480 100644
-> > > --- a/drivers/android/binderfs.c
-> > > +++ b/drivers/android/binderfs.c
-> > > @@ -29,7 +29,7 @@
-> > >   #include <linux/uaccess.h>
-> > >   #include <linux/user_namespace.h>
-> > >   #include <linux/xarray.h>
-> > > -#include <uapi/asm-generic/errno-base.h>
-> > > +#include <linux/errno.h>
-> >
-> > linux/errno.h is already included a few lines above.
-> >
-> > CJ
-> >
->
-> Good catch! Then we should just drop the errno-base.h include.
->
-> --
-> Carlos Llamas
+On Tue 19-12-23 22:25:07, Jingbo Xu wrote:
+> Since now bdi->min_ratio is part per million, fix the wrong arithmetic.
+> Otherwise it will fail with -EINVAL when setting a reasonable min_ratio,
+> as it tries to set min_ratio to (min_ratio * BDI_RATIO_SCALE) in
+> percentage unit, which exceeds 100% anyway.
+> 
+>     # cat /sys/class/bdi/253\:0/min_ratio
+>     0
+>     # cat /sys/class/bdi/253\:0/max_ratio
+>     100
+>     # echo 1 > /sys/class/bdi/253\:0/min_ratio
+>     -bash: echo: write error: Invalid argument
+> 
+> Fixes: 8021fb3232f2 ("mm: split off __bdi_set_min_ratio() function")
+> Reported-by: Joseph Qi <joseph.qi@linux.alibaba.com>
+> Signed-off-by: Jingbo Xu <jefflexu@linux.alibaba.com>
 
-Thanks for bringing that up. I will correct it and just remove the
-asm-generic header instead.
+Looks good. Feel free to add:
 
-Best,
-Tanzir
+Reviewed-by: Jan Kara <jack@suse.cz>
+
+								Honza
+
+
+> ---
+>  mm/page-writeback.c | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/mm/page-writeback.c b/mm/page-writeback.c
+> index ee2fd6a6af40..2140382dd768 100644
+> --- a/mm/page-writeback.c
+> +++ b/mm/page-writeback.c
+> @@ -692,7 +692,6 @@ static int __bdi_set_min_ratio(struct backing_dev_info *bdi, unsigned int min_ra
+>  
+>  	if (min_ratio > 100 * BDI_RATIO_SCALE)
+>  		return -EINVAL;
+> -	min_ratio *= BDI_RATIO_SCALE;
+>  
+>  	spin_lock_bh(&bdi_lock);
+>  	if (min_ratio > bdi->max_ratio) {
+> -- 
+> 2.19.1.6.gb485710b
+> 
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
