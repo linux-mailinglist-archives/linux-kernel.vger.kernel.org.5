@@ -1,184 +1,160 @@
-Return-Path: <linux-kernel+bounces-17034-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17035-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0EB67824767
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 18:25:48 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E29B82476A
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 18:26:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5D15AB24F92
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 17:25:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 91FBDB253F0
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 17:26:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D3F5286BF;
-	Thu,  4 Jan 2024 17:25:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EF7328DC3;
+	Thu,  4 Jan 2024 17:25:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ssCieMHq";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="7vRREkty";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ssCieMHq";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="7vRREkty"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-oo1-f48.google.com (mail-oo1-f48.google.com [209.85.161.48])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F1E8286AD;
-	Thu,  4 Jan 2024 17:25:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f48.google.com with SMTP id 006d021491bc7-59614694ca2so107204eaf.1;
-        Thu, 04 Jan 2024 09:25:22 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704389121; x=1704993921;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SneCguYreyjGXQzF3i7sYG1yhzrxbO3Wd59E1ARonos=;
-        b=Yit4CHdsF5X64/0+vZ1OOcRwY88dhx7daB0xKr+IvWOfD2vonQtd4bNb3OF2EtmHgu
-         WyoM7enu4OW9iaCUt+/cY+ag4adJyXG9/GG5Z3bKBsSTnl7a6Im6NltKIcq4CvY7rYjK
-         Te28rEDd00NwWW1frvm1Xyul/gXG8zaalnYGnVnXI+/jHJaJkEzcK7f+w+GcFt70JJOu
-         z2USa9qn329YdgcIy4Qb01LWxfGnAum0gZzDrD4ne77r8x5Lieut0g1I/WeUd0mbqRMw
-         uvvqr04pXwi30+H6xZbYNNiUD4Kh8rCBJocTwEXusrk3G7w4rfBTRxIOUcHqQHgcDXs1
-         myYQ==
-X-Gm-Message-State: AOJu0Yx3AUXKxZ9vRID4UWLDXPo0dnSNzKB6jpT+dc12O0rB2FyG8wqv
-	Ry09SiXprEWcPA53hVigx6Dvh3Al0n/V9oC6zqI=
-X-Google-Smtp-Source: AGHT+IHlcucd5Gv3cttSuF/+EFuM7u5wlHZiD9dzffo0exNiak1gL9YSVhAbedzFTr8fLCXfvgdLYm5XKtqVXg0WhlA=
-X-Received: by 2002:a4a:da09:0:b0:596:2965:be22 with SMTP id
- e9-20020a4ada09000000b005962965be22mr1405077oou.1.1704389121350; Thu, 04 Jan
- 2024 09:25:21 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED29B286B1;
+	Thu,  4 Jan 2024 17:25:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id CE61221F99;
+	Thu,  4 Jan 2024 17:25:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1704389126; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=8kM2Xcpu+q93CJKY69SzeuyLvmtyJpPaFQj/dXNDYds=;
+	b=ssCieMHqylV6I6OqXgdO9qIXeeHj4XxUSUUnj44tgz6xvxKPS0oj8QDfDsHoXv/T2SzgwN
+	a5Eku9SsJKZ5ibhYyvkMdnhgphuy3fq+2IuubQzErrWKyQ6MYw2oBqAla6VwDfpHliLDjq
+	ZxpdWxvUc+WYL0CF9IgPaeO5T7P60vI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1704389126;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=8kM2Xcpu+q93CJKY69SzeuyLvmtyJpPaFQj/dXNDYds=;
+	b=7vRREktyd32/nyj3nG2ZW49+/BAQqfVi/iJSijLyT3Lw+hn/+sY6mJxShxxbJXXYdO/hhd
+	Edpnr5fdmKbEzACg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1704389126; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=8kM2Xcpu+q93CJKY69SzeuyLvmtyJpPaFQj/dXNDYds=;
+	b=ssCieMHqylV6I6OqXgdO9qIXeeHj4XxUSUUnj44tgz6xvxKPS0oj8QDfDsHoXv/T2SzgwN
+	a5Eku9SsJKZ5ibhYyvkMdnhgphuy3fq+2IuubQzErrWKyQ6MYw2oBqAla6VwDfpHliLDjq
+	ZxpdWxvUc+WYL0CF9IgPaeO5T7P60vI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1704389126;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=8kM2Xcpu+q93CJKY69SzeuyLvmtyJpPaFQj/dXNDYds=;
+	b=7vRREktyd32/nyj3nG2ZW49+/BAQqfVi/iJSijLyT3Lw+hn/+sY6mJxShxxbJXXYdO/hhd
+	Edpnr5fdmKbEzACg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A6A7413722;
+	Thu,  4 Jan 2024 17:25:26 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id Bm9XKAbqlmW6bQAAD6G6ig
+	(envelope-from <jack@suse.cz>); Thu, 04 Jan 2024 17:25:26 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id CC8F8A07EF; Thu,  4 Jan 2024 18:25:25 +0100 (CET)
+Date: Thu, 4 Jan 2024 18:25:25 +0100
+From: Jan Kara <jack@suse.cz>
+To: Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+Cc: Christoph Hellwig <hch@lst.de>,
+	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-block@vger.kernel.org" <linux-block@vger.kernel.org>
+Subject: Re: [PATCH 08/14] hfsplus: Really remove hfsplus_writepage
+Message-ID: <20240104172525.6yg6lv42vcrluezp@quack3>
+References: <20231215200245.748418-1-willy@infradead.org>
+ <20231215200245.748418-9-willy@infradead.org>
+ <20231216043328.GF9284@lst.de>
+ <50696fa1-a7b9-4f5f-b4ef-73ca99a69cd2@wdc.com>
+ <20231218150401.GA19279@lst.de>
+ <cdf6a3d8-4f5c-4fce-a93e-9b0304effcb9@wdc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240104024819.848979-1-kai.heng.feng@canonical.com>
-In-Reply-To: <20240104024819.848979-1-kai.heng.feng@canonical.com>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Thu, 4 Jan 2024 18:25:10 +0100
-Message-ID: <CAJZ5v0g0M4B-01AT6+WBASkSyfqVAYSJUS4oE+rw=obXFT1WcA@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] ACPI: IPMI: Add helper to wait for when SMI is selected
-To: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc: jdelvare@suse.com, linux@roeck-us.net, 
-	"Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, 
-	Robert Moore <robert.moore@intel.com>, linux-acpi@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, acpica-devel@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cdf6a3d8-4f5c-4fce-a93e-9b0304effcb9@wdc.com>
+X-Spam-Level: 
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -1.84
+X-Spamd-Result: default: False [-1.84 / 50.00];
+	 ARC_NA(0.00)[];
+	 TO_DN_EQ_ADDR_SOME(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 MIME_GOOD(-0.10)[text/plain];
+	 URIBL_BLOCKED(0.00)[suse.com:email];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCPT_COUNT_SEVEN(0.00)[7];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-1.04)[87.62%]
+X-Spam-Flag: NO
 
-On Thu, Jan 4, 2024 at 3:48=E2=80=AFAM Kai-Heng Feng
-<kai.heng.feng@canonical.com> wrote:
->
-> The function of acpi_power_meter module on Dell system requires IPMI
-> handler is installed and SMI is selected.
->
-> So add a helper to let acpi_power_meter know when IPMI handler and SMI
-> are ready.
+On Mon 18-12-23 15:40:42, Johannes Thumshirn wrote:
+> On 18.12.23 16:04, Christoph Hellwig wrote:
+> > On Mon, Dec 18, 2023 at 10:41:27AM +0000, Johannes Thumshirn wrote:
+> >>> although I had some reason to be careful back then.  hfsplus should
+> >>> be testable again that the hfsplus Linux port is back alive.  Is there
+> >>> any volunteer to test hfsplus on the fsdevel list?
+> >>
+> >> What do you have in mind on that side? "Just" running it through fstests
+> >> and see that we don't regress here or more than that?
+> > 
+> > Yeah.  Back in the day I ran hfsplus through xfstests, IIRC that might
+> > even have been the initial motivation for supporting file systems
+> > that don't support sparse files.  I bet a lot has regressed or isn't
+> > support since, though.
+> > 
+> 
+> Let me see what I can do on that front over my winter vacation. As long 
+> as there's no APFS support in Linux its the only way to exchange data 
+> between macOS and Linux anyways, so we shouldn't break it.
 
-The changelog is a bit terse.
+AFAIK macOS actually does support UDF so there are other filesystems you
+can use for data exchange.
 
-It could describe the problem at hand in more detail, for example.
+								Honza
 
-Also it wouldn't hurt to provide a Link: tag pointing to a place where
-some extra details could be found.
-
-> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-> ---
-> v3:
->  - New patch.
->
->  drivers/acpi/acpi_ipmi.c | 17 ++++++++++++++++-
->  include/acpi/acpi_bus.h  |  5 +++++
->  2 files changed, 21 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/acpi/acpi_ipmi.c b/drivers/acpi/acpi_ipmi.c
-> index 0555f68c2dfd..54862cab7171 100644
-> --- a/drivers/acpi/acpi_ipmi.c
-> +++ b/drivers/acpi/acpi_ipmi.c
-> @@ -23,6 +23,8 @@ MODULE_LICENSE("GPL");
->  #define IPMI_TIMEOUT                   (5000)
->  #define ACPI_IPMI_MAX_MSG_LENGTH       64
->
-> +static struct completion smi_selected;
-> +
->  struct acpi_ipmi_device {
->         /* the device list attached to driver_data.ipmi_devices */
->         struct list_head head;
-> @@ -463,8 +465,10 @@ static void ipmi_register_bmc(int iface, struct devi=
-ce *dev)
->                 if (temp->handle =3D=3D handle)
->                         goto err_lock;
->         }
-> -       if (!driver_data.selected_smi)
-> +       if (!driver_data.selected_smi) {
->                 driver_data.selected_smi =3D ipmi_device;
-> +               complete(&smi_selected);
-
-It looks like the new completion is at least related to driver_data,
-so should it be a member of the latter?
-
-> +       }
->         list_add_tail(&ipmi_device->head, &driver_data.ipmi_devices);
->         mutex_unlock(&driver_data.ipmi_lock);
->
-> @@ -578,10 +582,21 @@ acpi_ipmi_space_handler(u32 function, acpi_physical=
-_address address,
->         return status;
->  }
->
-> +int acpi_wait_for_acpi_ipmi(void)
-> +{
-> +       long ret;
-> +
-> +       ret =3D wait_for_completion_interruptible_timeout(&smi_selected, =
-2 * HZ);
-
-Why does it wait for 2 ticks and not 3 or 5?
-
-Also it would be nice to have a symbol defined for this timeout value.
-
-> +
-> +       return ret > 0 ? 0 : -ETIMEDOUT;
-
-if (ret <=3D 0)
-        return -ETIMEDOUT;
-
-return 0;
-
-pretty please.
-
-> +}
-> +EXPORT_SYMBOL_GPL(acpi_wait_for_acpi_ipmi);
-> +
->  static int __init acpi_ipmi_init(void)
->  {
->         int result;
->         acpi_status status;
-
-Empty line here, please.
-
-> +       init_completion(&smi_selected);
-
-Does it really make sense to initialize it when ACPI is disabled?
-
->
->         if (acpi_disabled)
->                 return 0;
-> diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
-> index 1216d72c650f..afa6e4d4bf46 100644
-> --- a/include/acpi/acpi_bus.h
-> +++ b/include/acpi/acpi_bus.h
-> @@ -821,11 +821,16 @@ static inline void acpi_put_acpi_dev(struct acpi_de=
-vice *adev)
->  {
->         acpi_dev_put(adev);
->  }
-> +
-> +int acpi_wait_for_acpi_ipmi(void);
-> +
->  #else  /* CONFIG_ACPI */
->
->  static inline int register_acpi_bus_type(void *bus) { return 0; }
->  static inline int unregister_acpi_bus_type(void *bus) { return 0; }
->
-> +static inline int acpi_wait_for_acpi_ipmi(void) { return 0; }
-> +
->  #endif                         /* CONFIG_ACPI */
->
->  #endif /*__ACPI_BUS_H__*/
-> --
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
