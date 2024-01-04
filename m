@@ -1,148 +1,149 @@
-Return-Path: <linux-kernel+bounces-16688-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16689-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EEBD1824274
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 14:08:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A45C082427A
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 14:11:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0F7521C23EE0
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 13:08:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1595D2878D3
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 13:11:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B1FA224CE;
-	Thu,  4 Jan 2024 13:08:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DA0722330;
+	Thu,  4 Jan 2024 13:11:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="b5v08M9Y"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99D1522327;
-	Thu,  4 Jan 2024 13:08:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
-Received: from loongson.cn (unknown [113.200.148.30])
-	by gateway (Coremail) with SMTP id _____8AxnvDHrZZlSPcBAA--.7484S3;
-	Thu, 04 Jan 2024 21:08:23 +0800 (CST)
-Received: from linux.localdomain (unknown [113.200.148.30])
-	by localhost.localdomain (Coremail) with SMTP id AQAAf8DxvofGrZZlR8wBAA--.4535S2;
-	Thu, 04 Jan 2024 21:08:22 +0800 (CST)
-From: Tiezhu Yang <yangtiezhu@loongson.cn>
-To: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>
-Cc: Eduard Zingerman <eddyz87@gmail.com>,
-	bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next v2] bpf: Return -ENOTSUPP if calls are not allowed in non-JITed programs
-Date: Thu,  4 Jan 2024 21:08:17 +0800
-Message-ID: <20240104130817.1221-1-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.42.0
+Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7472C2137A;
+	Thu,  4 Jan 2024 13:11:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-336755f1688so416462f8f.0;
+        Thu, 04 Jan 2024 05:11:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704373874; x=1704978674; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:subject:cc
+         :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=mD0BtoavTOP3v/vUfEDahgNoFQu6hqlrFVAdzIefsBU=;
+        b=b5v08M9YYnBj6Qrzj+Dou/kwsZ2wz5ITrusa37x2RuzvRED09bH6q+7g8zOGVrRMKh
+         lY7cKVAvzj4Mf37PefxR0az2LtIfc/MXG+OAydP8ZF0Y63B8N5NmMm22mBABYGrBcfxI
+         cDRQlRmVjgBBKaJEKS8YzbQy4boDKNy1qndfrjdukhZRN1oCedIVqkyCjWtILgqPMmgx
+         xTGEjkxBcpBnSG7yEdX9gvQWf+gSF0WZT6oxkca03jQ2gdpYOxXGqLvuZFEa5QxocrYA
+         YjexV6aF1+TykL5NXoRJK9Eznsn86FFyvmMFdmNR63eKlHF+FAYWZSdG0J7/y6z2oVNl
+         o2Zw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704373874; x=1704978674;
+        h=in-reply-to:content-disposition:mime-version:references:subject:cc
+         :to:from:date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mD0BtoavTOP3v/vUfEDahgNoFQu6hqlrFVAdzIefsBU=;
+        b=gJ/hnUQK23zNWaevDsip4cPapXMY3/4D8vPJJezMSg/yDyecaTlM9N+vw6fJ+2G+41
+         aWDR7NuFeWwWvtUxKT8eu7Kx2+zJQzDFlCCUZdVz5WBfLCy9kBXWSPZUwOaMSZs0KBCz
+         1DO+jjplVAxt+TMB4CbtVGu7qkvfKC9x1LLWEZ3cRoAp/kg9NxWvzc7lYWOrmH9S6Scw
+         yXiQmClByy9hhjLKfgkVxmnlf2BFpJVvQdpC9oeIDv4erxd3MYma3/1JzstXPryB6nNW
+         H/HwxF1zHLIRejJuIGes+DIF3YYubJmWvtP2IhhCBtEEsoE+YkdJBo7yr0hcoWwbVyf1
+         XEkg==
+X-Gm-Message-State: AOJu0YwW7y4CwL3osk8twZl9Ykim2C0DpDXQLRMD7UNfGo52blIh1oXh
+	xJsDNS47bqHingEB68SBbws=
+X-Google-Smtp-Source: AGHT+IG0LMhhU/gfhoVr7LAviwbZXPweDz/CGpAVxscjxDW2uQY6VEjT58wBpBcmJBrbK9LEtlPxUA==
+X-Received: by 2002:a5d:4004:0:b0:336:8664:54b4 with SMTP id n4-20020a5d4004000000b00336866454b4mr376338wrp.132.1704373873447;
+        Thu, 04 Jan 2024 05:11:13 -0800 (PST)
+Received: from Ansuel-xps. (host-80-116-159-187.retail.telecomitalia.it. [80.116.159.187])
+        by smtp.gmail.com with ESMTPSA id z13-20020adfe54d000000b00333359b522dsm33187913wrm.77.2024.01.04.05.11.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Jan 2024 05:11:13 -0800 (PST)
+Message-ID: <6596ae71.df0a0220.a153a.6407@mx.google.com>
+X-Google-Original-Message-ID: <ZZaubwO3TR6Emo8L@Ansuel-xps.>
+Date: Thu, 4 Jan 2024 14:11:11 +0100
+From: Christian Marangi <ansuelsmth@gmail.com>
+To: Maxime Chevallier <maxime.chevallier@bootlin.com>
+Cc: Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	William Zhang <william.zhang@broadcom.com>,
+	Anand Gore <anand.gore@broadcom.com>,
+	Kursad Oney <kursad.oney@broadcom.com>,
+	Florian Fainelli <florian.fainelli@broadcom.com>,
+	=?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Andrew Lunn <andrew@lunn.ch>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+	=?iso-8859-1?Q?Fern=E1ndez?= Rojas <noltari@gmail.com>,
+	Sven Schwermer <sven.schwermer@disruptive-technologies.com>,
+	linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	netdev@vger.kernel.org
+Subject: Re: [net-next PATCH v8 5/5] net: phy: at803x: add LED support for
+ qca808x
+References: <20240104110114.2020-1-ansuelsmth@gmail.com>
+ <20240104110114.2020-6-ansuelsmth@gmail.com>
+ <20240104124805.1b0ba142@device-28.home>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:AQAAf8DxvofGrZZlR8wBAA--.4535S2
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
-X-Coremail-Antispam: 1Uk129KBj93XoWxGFW3tr1UtrW5ur1xAr48Zrc_yoW5ZFW8pa
-	yUWr9FkF4Yq34xuw17JFs3Cayjv3yvqw47KFy5u34Fyan5CanrJr1fGryIvFyaqrWru348
-	Z3yxuayjgw1UGFgCm3ZEXasCq-sJn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7ZEXa
-	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-	0xBIdaVrnRJUUUkFb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-	0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
-	xVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx
-	1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv
-	67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82IYc2
-	Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s02
-	6x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0x
-	vE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE
-	42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6x
-	kF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07UE-erUUUUU=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240104124805.1b0ba142@device-28.home>
 
-If CONFIG_BPF_JIT_ALWAYS_ON is not set and bpf_jit_enable is 0, there
-exist 6 failed tests.
+On Thu, Jan 04, 2024 at 12:48:05PM +0100, Maxime Chevallier wrote:
+> Hello Christian,
+> 
+> On Thu,  4 Jan 2024 12:01:12 +0100
+> Christian Marangi <ansuelsmth@gmail.com> wrote:
+> 
+> > Add LED support for QCA8081 PHY.
+> > 
+> > Documentation for this LEDs PHY is very scarce even with NDA access
+> > to Documentation for OEMs. Only the blink pattern are documented and are
+> > very confusing most of the time. No documentation is present about
+> > forcing the LED on/off or to always blink.
+> > 
+> > Those settings were reversed by poking the regs and trying to find the
+> > correct bits to trigger these modes. Some bits mode are not clear and
+> > maybe the documentation option are not 100% correct. For the sake of LED
+> > support the reversed option are enough to add support for current LED
+> > APIs.
+> 
+> I have one small comment below :
+> 
+> > +static int qca808x_led_blink_set(struct phy_device *phydev, u8 index,
+> > +				 unsigned long *delay_on,
+> > +				 unsigned long *delay_off)
+> > +{
+> > +	int ret;
+> > +	u16 reg;
+> > +
+> > +	if (index > 2)
+> > +		return -EINVAL;
+> > +
+> > +	reg = QCA808X_MMD7_LED_FORCE_CTRL(index);
+> > +
+> > +	/* Set blink to 50% off, 50% on at 4Hz by default */
+> > +	ret = phy_modify_mmd(phydev, MDIO_MMD_AN, QCA808X_MMD7_LED_GLOBAL,
+> > +			     QCA808X_LED_BLINK_FREQ_MASK | QCA808X_LED_BLINK_DUTY_MASK,
+> > +			     QCA808X_LED_BLINK_FREQ_256HZ | QCA808X_LED_BLINK_DUTY_50_50);
+> 
+> The comment (4Hz) and the blink frequency (256Hz) don't match, is that
+> right ? because I see there exists a QCA808X_LED_BLINK_FREQ_4HZ
+> definition, shouldn't it be used ?
+>
 
-  [root@linux bpf]# echo 0 > /proc/sys/net/core/bpf_jit_enable
-  [root@linux bpf]# echo 0 > /proc/sys/kernel/unprivileged_bpf_disabled
-  [root@linux bpf]# ./test_verifier | grep FAIL
-  #106/p inline simple bpf_loop call FAIL
-  #107/p don't inline bpf_loop call, flags non-zero FAIL
-  #108/p don't inline bpf_loop call, callback non-constant FAIL
-  #109/p bpf_loop_inline and a dead func FAIL
-  #110/p bpf_loop_inline stack locations for loop vars FAIL
-  #111/p inline bpf_loop call in a big program FAIL
-  Summary: 768 PASSED, 15 SKIPPED, 6 FAILED
+Thanks for checking this, oversight by me! Will fix. (the blink
+frequency was discovered only lately)
 
-The test log shows that callbacks are not allowed in non-JITed programs,
-interpreter doesn't support them yet, thus these tests should be skipped
-if jit is disabled, just return -ENOTSUPP instead of -EINVAL for pseudo
-calls in fixup_call_args().
-
-With this patch:
-
-  [root@linux bpf]# echo 0 > /proc/sys/net/core/bpf_jit_enable
-  [root@linux bpf]# echo 0 > /proc/sys/kernel/unprivileged_bpf_disabled
-  [root@linux bpf]# ./test_verifier | grep FAIL
-  Summary: 768 PASSED, 21 SKIPPED, 0 FAILED
-
-Additionally, as Eduard suggested, return -ENOTSUPP instead of -EINVAL
-for the other three places where "non-JITed" is used in error messages
-to keep consistent.
-
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
----
-
-v2:
-  -- rebase on the latest bpf-next tree.
-  -- return -ENOTSUPP instead of -EINVAL for the other three places
-     where "non-JITed" is used in error messages to keep consistent.
-  -- update the patch subject and commit message.
-
- kernel/bpf/verifier.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index d5f4ff1eb235..99558a5186b2 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -8908,7 +8908,7 @@ static int check_map_func_compatibility(struct bpf_verifier_env *env,
- 			goto error;
- 		if (env->subprog_cnt > 1 && !allow_tail_call_in_subprogs(env)) {
- 			verbose(env, "tail_calls are not allowed in non-JITed programs with bpf-to-bpf calls\n");
--			return -EINVAL;
-+			return -ENOTSUPP;
- 		}
- 		break;
- 	case BPF_FUNC_perf_event_read:
-@@ -19069,14 +19069,14 @@ static int fixup_call_args(struct bpf_verifier_env *env)
- #ifndef CONFIG_BPF_JIT_ALWAYS_ON
- 	if (has_kfunc_call) {
- 		verbose(env, "calling kernel functions are not allowed in non-JITed programs\n");
--		return -EINVAL;
-+		return -ENOTSUPP;
- 	}
- 	if (env->subprog_cnt > 1 && env->prog->aux->tail_call_reachable) {
- 		/* When JIT fails the progs with bpf2bpf calls and tail_calls
- 		 * have to be rejected, since interpreter doesn't support them yet.
- 		 */
- 		verbose(env, "tail_calls are not allowed in non-JITed programs with bpf-to-bpf calls\n");
--		return -EINVAL;
-+		return -ENOTSUPP;
- 	}
- 	for (i = 0; i < prog->len; i++, insn++) {
- 		if (bpf_pseudo_func(insn)) {
-@@ -19084,7 +19084,7 @@ static int fixup_call_args(struct bpf_verifier_env *env)
- 			 * have to be rejected, since interpreter doesn't support them yet.
- 			 */
- 			verbose(env, "callbacks are not allowed in non-JITed programs\n");
--			return -EINVAL;
-+			return -ENOTSUPP;
- 		}
- 
- 		if (!bpf_pseudo_call(insn))
 -- 
-2.42.0
-
+	Ansuel
 
