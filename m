@@ -1,265 +1,157 @@
-Return-Path: <linux-kernel+bounces-17217-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17218-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B8278249F2
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 22:01:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F94E8249F3
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 22:02:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F2D2F287C1B
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 21:01:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AE49D1F232E0
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 21:02:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F4142C1B5;
-	Thu,  4 Jan 2024 21:00:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D25B52C6BA;
+	Thu,  4 Jan 2024 21:01:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dKkap8LN"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="SpnWjdwu"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B6EE2D78D;
-	Thu,  4 Jan 2024 21:00:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2C4D5C433C8;
-	Thu,  4 Jan 2024 21:00:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704402017;
-	bh=dmMY+NqMp5EPtMDl4fN5j64AngkjIkbw86hL5YSeuhY=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=dKkap8LNcwOi4O6dx1Yj8GhJyrY2Oj8IVc3t8GA7bK2MnigpF9c0R6Dgivem55J51
-	 aZ+qmB1rQxjDDlcAvl11/G1o3U2kXptANj4ovtzF4r5K3Zf8tPvksKBfJkW7f3ZtPE
-	 /LdbnsQYHA63LhGmahmSbPvfP5ceJKnHGH83ML5XRNz+BMVc9cAni4s8GnkXMPtjBb
-	 OUBjZx8iIV+9RoMetXN5kQ7xo5WIOkITUhFbHtRmdJwxLc/TJDX2uCOxFRM0iSJjFF
-	 TL7z8VCIMWVxEpeOt+yuvNOFPvfKqiCJH9+9jzKS0HWA/GK22bhpBYl0rHGzzAtxHn
-	 5t7ipmqeQNK2w==
-Date: Thu, 4 Jan 2024 13:00:16 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: Shinas Rasheed <srasheed@marvell.com>
-Cc: <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
- <hgani@marvell.com>, <vimleshk@marvell.com>, <sedara@marvell.com>,
- <egallen@redhat.com>, <mschmidt@redhat.com>, <pabeni@redhat.com>,
- <horms@kernel.org>, <wizhao@redhat.com>, <kheib@redhat.com>,
- <konguyen@redhat.com>, Veerasenareddy Burru <vburru@marvell.com>, Satananda
- Burla <sburla@marvell.com>, "David S. Miller" <davem@davemloft.net>, Eric
- Dumazet <edumazet@google.com>
-Subject: Re: [PATCH net-next v2 6/8] octeon_ep_vf: add Tx/Rx processing and
- interrupt support
-Message-ID: <20240104130016.47bc1071@kernel.org>
-In-Reply-To: <20231223134000.2906144-7-srasheed@marvell.com>
-References: <20231223134000.2906144-1-srasheed@marvell.com>
-	<20231223134000.2906144-7-srasheed@marvell.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81FE52C6B1
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 21:00:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-3367601a301so741157f8f.2
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 13:00:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1704402058; x=1705006858; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=aEAMqcwvVp1DhUld3ZPVwdQv2+1sf5VUPmdEsVkdBtY=;
+        b=SpnWjdwux3KkzMWGFkYybFhMKn+c8ALj5w7SSaR/Itfwums/YjWQKCXlGLANwmvIln
+         cJj/rW3XmXVQJOsJvWDCcz/d0kkOniu2DHDOGxDhMqEY3+9m1taqH5qvVzUsmFTRGbqc
+         5nPA9o8WHTqDnoy200N99Y7bqNm43yLpLJ35RPKVhILaPmewLFgA0gvzFrygGmVSTn+V
+         h5aMxNkl8iHdtoU1XM+DUAcByFgtzqntMwBO2JSsmKwlhZrJUIdTPoyWMC2ZiOrUg9H/
+         QgfWsIxOZWyyylUXeDGeNYwk4p9/6QlFKKMBV1dJGRhWfCWqXZb02O5I5VM36BRVcu9w
+         SfMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704402058; x=1705006858;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=aEAMqcwvVp1DhUld3ZPVwdQv2+1sf5VUPmdEsVkdBtY=;
+        b=UUguN/YYe5jZICRE/AQNqKFqvEU6phCwM+kNSpouP3NcRDgwWzo9OJvnX+T8Yj/CRC
+         SPYQeARBWm1iKlj3lMtLjpeU67Bi8zEKxOfbdEyL84B+kRbWWiaft84A1X/vooOd/GTn
+         3iGTqTIAsIwUaKRv8FFuQeK1VsLoG8Sj4SkomVcH523xuE2LBwnrItn56oBOWOg9wc6s
+         NXbeZVdGc2B+A1KEub0nUP+FW3yt97lT0uY8EJtJBFpk184x+IyYMFGRpxspifl6YSTw
+         fnZT2aMyJNRjMBL9f9sMTuFROg0xUjTO4q2ENo0QS5Lso3HiwfHEz1IE2MbAFTcOWmfV
+         +O+A==
+X-Gm-Message-State: AOJu0Yw+0oR/CmnBpihtXDzxcNmvh6/Bn2fqFpdOimKFSirAFg8Rs4Bw
+	R42dZtQ40DsFlYOvJw9/5DIuz/NPILXL5u0/tZ+ne+hwFjpv
+X-Google-Smtp-Source: AGHT+IGnz0hIaUYAe6KC2sXCl+1eMOmFFLbu8uSOJVy5nDv4gYIVlwfMzQZ5FIzzoEeyNT+igRqC/QQCb41ddjC9nWY=
+X-Received: by 2002:adf:a450:0:b0:336:ddca:4824 with SMTP id
+ e16-20020adfa450000000b00336ddca4824mr404049wra.122.1704402057523; Thu, 04
+ Jan 2024 13:00:57 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20240104-syscall_64-v1-1-57fe392ef565@google.com>
+In-Reply-To: <20240104-syscall_64-v1-1-57fe392ef565@google.com>
+From: Nick Desaulniers <ndesaulniers@google.com>
+Date: Thu, 4 Jan 2024 13:00:42 -0800
+Message-ID: <CAKwvOdn8ivC1xKUCgZznQ1pZ1DeRYNoUEYZPB=LiQjdHpciC+g@mail.gmail.com>
+Subject: Re: [PATCH] x86/syscalls: shrink entry/syscall_64.i via IWYU
+To: Tanzir Hasan <tanzirh@google.com>
+Cc: Andy Lutomirski <luto@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
+	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
+	"H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org, 
+	Nick Desaulniers <nnn@google.com>, Al Viro <viro@zeniv.linux.org.uk>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Sat, 23 Dec 2023 05:39:58 -0800 Shinas Rasheed wrote:
-> +static int octep_vf_napi_poll(struct napi_struct *napi, int budget)
-> +{
-> +	struct octep_vf_ioq_vector *ioq_vector =
-> +		container_of(napi, struct octep_vf_ioq_vector, napi);
-> +	u32 tx_pending, rx_done;
-> +
-> +	tx_pending = octep_vf_iq_process_completions(ioq_vector->iq, budget);
-
-completions should use some static budget, say 256, the budget passed
-in is for Rx.
-
-> +	rx_done = octep_vf_oq_process_rx(ioq_vector->oq, budget);
-
-You should not call Rx processing if budget is 0 at all, please see
-NAPI docs. Looks like the function may try to refill Rx buffers with
-budget of 0.
-
-> +	/* need more polling if tx completion processing is still pending or
-> +	 * processed at least 'budget' number of rx packets.
-> +	 */
-> +	if (tx_pending || rx_done >= budget)
-> +		return budget;
-> +
-> +	napi_complete(napi);
-
-please use napi_complete_done().
-
-> +	octep_vf_enable_ioq_irq(ioq_vector->iq, ioq_vector->oq);
-> +	return rx_done;
-> +}
-
->  /**
->   * octep_vf_start_xmit() - Enqueue packet to Octoen hardware Tx Queue.
->   *
-> @@ -184,6 +591,143 @@ static int octep_vf_stop(struct net_device *netdev)
->  static netdev_tx_t octep_vf_start_xmit(struct sk_buff *skb,
->  				       struct net_device *netdev)
->  {
-> [...]
-> +dma_map_sg_err:
-> +	if (si > 0) {
-> +		dma_unmap_single(iq->dev, sglist[0].dma_ptr[0],
-> +				 sglist[0].len[0], DMA_TO_DEVICE);
-> +		sglist[0].len[0] = 0;
-> +	}
-> +	while (si > 1) {
-> +		dma_unmap_page(iq->dev, sglist[si >> 2].dma_ptr[si & 3],
-> +			       sglist[si >> 2].len[si & 3], DMA_TO_DEVICE);
-> +		sglist[si >> 2].len[si & 3] = 0;
-> +		si--;
-> +	}
-> +	tx_buffer->gather = 0;
-> +dma_map_err:
-
-if previous tx had xmit_more() you need to ring the doorbell here
-
-> +	dev_kfree_skb_any(skb);
->  	return NETDEV_TX_OK;
->  }
-
-> @@ -114,8 +158,8 @@ static int octep_vf_setup_oq(struct octep_vf_device *oct, int q_no)
->  		goto desc_dma_alloc_err;
->  	}
->  
-> -	oq->buff_info = (struct octep_vf_rx_buffer *)
-> -			vzalloc(oq->max_count * OCTEP_VF_OQ_RECVBUF_SIZE);
-> +	oq->buff_info = vzalloc(oq->max_count * OCTEP_VF_OQ_RECVBUF_SIZE);
-> +
-
-bad fixup squash?
-
->  	if (unlikely(!oq->buff_info)) {
->  		dev_err(&oct->pdev->dev,
->  			"Failed to allocate buffer info for OQ-%d\n", q_no);
-
-
-> +		/* Swap the length field that is in Big-Endian to CPU */
-> +		buff_info->len = be64_to_cpu(resp_hw->length);
-> +		if (oct->fw_info.rx_ol_flags) {
-> +			/* Extended response header is immediately after
-> +			 * response header (resp_hw)
-> +			 */
-> +			resp_hw_ext = (struct octep_vf_oq_resp_hw_ext *)
-> +				      (resp_hw + 1);
-> +			buff_info->len -= OCTEP_VF_OQ_RESP_HW_EXT_SIZE;
-> +			/* Packet Data is immediately after
-> +			 * extended response header.
-> +			 */
-> +			data_offset = OCTEP_VF_OQ_RESP_HW_SIZE +
-> +				      OCTEP_VF_OQ_RESP_HW_EXT_SIZE;
-> +			rx_ol_flags = resp_hw_ext->rx_ol_flags;
-> +		} else {
-> +			/* Data is immediately after
-> +			 * Hardware Rx response header.
-> +			 */
-> +			data_offset = OCTEP_VF_OQ_RESP_HW_SIZE;
-> +			rx_ol_flags = 0;
-> +		}
-> +		rx_bytes += buff_info->len;
-> +
-> +		if (buff_info->len <= oq->max_single_buffer_size) {
-> +			skb = build_skb((void *)resp_hw, PAGE_SIZE);
-
-napi_build_skb() ?
-
-> +			skb_reserve(skb, data_offset);
-> +			skb_put(skb, buff_info->len);
-> +			read_idx++;
-> +			desc_used++;
-> +			if (read_idx == oq->max_count)
-> +				read_idx = 0;
-> +		} else {
-> +			struct skb_shared_info *shinfo;
-> +			u16 data_len;
-> +
-> +			skb = build_skb((void *)resp_hw, PAGE_SIZE);
-
-ditto
-
-> +			skb_reserve(skb, data_offset);
-> +			/* Head fragment includes response header(s);
-> +			 * subsequent fragments contains only data.
-> +			 */
-> +			skb_put(skb, oq->max_single_buffer_size);
-> +			read_idx++;
-> +			desc_used++;
-> +			if (read_idx == oq->max_count)
-> +				read_idx = 0;
-> +
-> +			shinfo = skb_shinfo(skb);
-> +			data_len = buff_info->len - oq->max_single_buffer_size;
-> +			while (data_len) {
-> +				dma_unmap_page(oq->dev, oq->desc_ring[read_idx].buffer_ptr,
-> +					       PAGE_SIZE, DMA_FROM_DEVICE);
-> +				buff_info = (struct octep_vf_rx_buffer *)
-> +					    &oq->buff_info[read_idx];
-> +				if (data_len < oq->buffer_size) {
-> +					buff_info->len = data_len;
-> +					data_len = 0;
-> +				} else {
-> +					buff_info->len = oq->buffer_size;
-> +					data_len -= oq->buffer_size;
-> +				}
-> +
-> +				skb_add_rx_frag(skb, shinfo->nr_frags,
-> +						buff_info->page, 0,
-> +						buff_info->len,
-> +						buff_info->len);
-> +				buff_info->page = NULL;
-> +				read_idx++;
-> +				desc_used++;
-> +				if (read_idx == oq->max_count)
-> +					read_idx = 0;
-> +			}
-> +		}
-> +
-> +		skb->dev = oq->netdev;
-> +		skb->protocol =  eth_type_trans(skb, skb->dev);
-
-double space
-
-> +		if (feat & NETIF_F_RXCSUM &&
-> +		    OCTEP_VF_RX_CSUM_VERIFIED(rx_ol_flags))
-> +			skb->ip_summed = CHECKSUM_UNNECESSARY;
-> +		else
-> +			skb->ip_summed = CHECKSUM_NONE;
-> +		napi_gro_receive(oq->napi, skb);
-> +	}
-> +
-> +	oq->host_read_idx = read_idx;
-> +	oq->refill_count += desc_used;
-> +	oq->stats.packets += pkt;
-> +	oq->stats.bytes += rx_bytes;
-> +
-> +	return pkt;
-> +}
-
-> +/**
-> + * octep_vf_iq_process_completions() - Process Tx queue completions.
-> + *
-> + * @iq: Octeon Tx queue data structure.
-> + * @budget: max number of completions to be processed in one invocation.
+On Wed, Jan 3, 2024 at 4:13=E2=80=AFPM Tanzir Hasan <tanzirh@google.com> wr=
+ote:
+>
+> This diff uses an open source tool include-what-you-use (IWYU) to modify
+> the include list, changing indirect includes to direct includes. IWYU is
+> implemented using the IWYUScripts github repository which is a tool that
+> is currently undergoing development. These changes seek to improve build
+> times.
+>
+> This change to entry/syscall_64.c resulted in a preprocessed size of
+> entry/syscall_64.i from 64003 lines to 24509 lines (-62%) for the x86
+> defconfig.
+>
+> Suggested-by: Al Viro <viro@zeniv.linux.org.uk>
+> Signed-off-by: Tanzir Hasan <tanzirh@google.com>
+> ---
+>  arch/x86/entry/syscall_64.c | 18 ++++++++++++++----
+>  1 file changed, 14 insertions(+), 4 deletions(-)
+>
+> diff --git a/arch/x86/entry/syscall_64.c b/arch/x86/entry/syscall_64.c
+> index be120eec1fc9..9e4a3d8957f3 100644
+> --- a/arch/x86/entry/syscall_64.c
+> +++ b/arch/x86/entry/syscall_64.c
+> @@ -1,12 +1,22 @@
+>  // SPDX-License-Identifier: GPL-2.0
+>  /* System call table for x86-64. */
+>
+> -#include <linux/linkage.h>
+> -#include <linux/sys.h>
+> -#include <linux/cache.h>
+> -#include <linux/syscalls.h>
+>  #include <asm/syscall.h>
+>
+> +struct pt_regs;
+> +typedef long (*sys_call_ptr_t)(const struct pt_regs *);
+> +extern const sys_call_ptr_t sys_call_table[];
+> +#if defined(CONFIG_X86_32)
+> +#define ia32_sys_call_table sys_call_table
+> +#else
+> +/*
+> + * These may not exist, but still put the prototypes in so we
+> + * can use IS_ENABLED().
 > + */
-> +int octep_vf_iq_process_completions(struct octep_vf_iq *iq, u16 budget)
-> +{
-> [...]
-> +	netdev_tx_completed_queue(iq->netdev_q, compl_pkts, compl_bytes);
+> +extern const sys_call_ptr_t ia32_sys_call_table[];
+> +extern const sys_call_ptr_t x32_sys_call_table[];
+> +#endif
 > +
-> +	if (unlikely(__netif_subqueue_stopped(iq->netdev, iq->q_no)) &&
-> +	    (IQ_INSTR_SPACE(iq) >
-> +	     OCTEP_VF_WAKE_QUEUE_THRESHOLD))
-> +		netif_wake_subqueue(iq->netdev, iq->q_no);
 
-Please use helpers form net/netdev_queues.h
+arch/x86/include/asm/syscall.h (which you retained) already includes
+the typedef for sys_call_ptr_t, and the declaration of sys_call_table,
+and everything else.
 
-> @@ -195,8 +267,7 @@ static void octep_vf_free_iq(struct octep_vf_iq *iq)
->  
->  	desc_ring_size = OCTEP_VF_IQ_DESC_SIZE * CFG_GET_IQ_NUM_DESC(oct->conf);
->  
-> -	if (iq->buff_info)
-> -		vfree(iq->buff_info);
-> +	vfree(iq->buff_info);
+Was there some additional refactoring that Al mentioned or intended
+for you to do here?  Perhaps as part of a series so it's more obvious
+to reviewers? You can include a Link: tag (see `git log` for examples)
+in a commit message to link back to discussions on lore.kernel.org.
+Doing so can help provide more context to reviewers as to //why// or
+justification for a change.
 
-This should be in a previous patch.
+Otherwise I'm not sure you need any of these additions (other than
+maybe pt_regs).
+
+>  #define __SYSCALL(nr, sym) extern long __x64_##sym(const struct pt_regs =
+*);
+>  #include <asm/syscalls_64.h>
+>  #undef __SYSCALL
+>
+> ---
+> base-commit: f5837722ffecbbedf1b1dbab072a063565f0dad1
+> change-id: 20231228-syscall_64-30ba68440a85
+>
+> Best regards,
+> --
+> Tanzir Hasan <tanzirh@google.com>
+>
+
+
+--=20
+Thanks,
+~Nick Desaulniers
 
