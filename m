@@ -1,108 +1,212 @@
-Return-Path: <linux-kernel+bounces-16753-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16755-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E289824359
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 15:11:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4EF92824360
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 15:13:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3A8DEB21BF5
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 14:11:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DD2D5286EF7
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 14:13:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AC9E224E7;
-	Thu,  4 Jan 2024 14:10:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C512D224E5;
+	Thu,  4 Jan 2024 14:13:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="p6NiO/bv"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eoim6jWi"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DD9F2136C
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 14:10:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-40d4a7f0c4dso5311715e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 06:10:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704377451; x=1704982251; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=1IG/HNz7wTqJE1bnao0AkkiNoHMZAFUZYED8cZloi6g=;
-        b=p6NiO/bvtsW3YgLbwGmiWFFzwZrIF9zVcp+Y9ShaOBsDq7xLIhIwCI9SLV1A2Zf8DA
-         Qn8QwXpjOBBYY2rIrUKxWYdnIdrP/Smh5mCdTje7QVQmPCi1lID09nnghil9d/UlEx7d
-         cBfIBbGnl7QJy3ez3fIudQ0udOPpI3G8qc30PKlaBseCzsX3VuwgWIj0MAW4giPS0E7+
-         mRhBMdv64ZDXUB9VoUt3gnUPahsVi8GwZRzMjhAe/0tSOMB22UlVXZd4Ctioy250DIXx
-         r2F/PlrH7tpSta3rPkxiqjPTq8d1dK5o4HlT+EcvIl02Ie+FrdagcCaCuTRUQNAoOAGB
-         xjmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704377451; x=1704982251;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1IG/HNz7wTqJE1bnao0AkkiNoHMZAFUZYED8cZloi6g=;
-        b=srpUAep4O7W9qEBVj2+Vkxw+/c0gn6oGY7hmdo6AypeWiNkdfzEDs5HRG1+hVSer+X
-         euKUWxLx8AD2up1agTjYVoxHP+oBgiqSKEat4IWC9pb1kqruOONsFnfwUCFwIzONquJW
-         TIGGY/nS/SIQSFWTcgNW7aWxyFNF4v6sjGHbJeH5y5/NFGPNKW+vWSdTs5jk5SjMSvLI
-         vBWeDucuKn1/YSUyd69DZZmNZkEmgq3UnVPXMPxVCLg8me/Sj2dg1tX7Y2m/Llpnrj+q
-         Oh9/2c9IGP27ck0VV1cBVf+puMo1rN7CmF5HaPU39YnW+mP8SvpU5droocdb0zWN3zBN
-         BHUw==
-X-Gm-Message-State: AOJu0YzpiR8y/EYdFB07o8KPeNBlKZVRckJnt4oyrx4yIHGE02y7ZINY
-	ymKfNIuVLkCsZKUOdk2egPutW+tGnY8DAA==
-X-Google-Smtp-Source: AGHT+IGvfF8iQXUpHTP+ygPHMlMeDihW13RCa/olJo9wziP2tZDKBt9hQ+LpDxlLi2AYnJJ5mjPeng==
-X-Received: by 2002:a05:600c:3007:b0:40c:486d:6cb4 with SMTP id j7-20020a05600c300700b0040c486d6cb4mr411001wmh.83.1704377451520;
-        Thu, 04 Jan 2024 06:10:51 -0800 (PST)
-Received: from [192.168.10.46] (146725694.box.freepro.com. [130.180.211.218])
-        by smtp.googlemail.com with ESMTPSA id g15-20020a05600c310f00b0040d53588d94sm5857865wmo.46.2024.01.04.06.10.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Jan 2024 06:10:50 -0800 (PST)
-Message-ID: <abd91e5a-cf01-4b86-965b-ed315a58355d@linaro.org>
-Date: Thu, 4 Jan 2024 15:10:49 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12775225AF;
+	Thu,  4 Jan 2024 14:13:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7BE15C433C7;
+	Thu,  4 Jan 2024 14:13:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704377618;
+	bh=5vBZUdnVGG54e1EEHK8EIcIM6ks58SMSIsV6NIeU8EM=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=eoim6jWidQUlAKXMoFo2AKkzo0fTFyfpgISn6i7YGiWDfDr1P53cADXJ7H03Vj18B
+	 3qQePXmFX9Bgary2Aaqzz05x+fgtWEEFZw+L16y/H3Gh6b4U1d9kYevBwt8hapFq48
+	 mRA5QfJZxLT6mtbKWsnV0xuWr/Ae5tp9o/3t8LKVYkxbTAONv0vlKceaFClFYIvrPm
+	 6hX7e95gFqf6fHa4Sy0Nos6OiDadnb4hsN+idkz6dpDLOup/1sB7sUHk4y+9D3Tt6g
+	 fX8Do4Z/rcR5cQVkDvBpAXU1IpZQoBBojIGC4WKGxfyR9GZMsWTWSvXzrPZ9pu1s+p
+	 RFJaJ7SFRd0vQ==
+Received: by mail-oa1-f52.google.com with SMTP id 586e51a60fabf-204301f2934so291209fac.1;
+        Thu, 04 Jan 2024 06:13:38 -0800 (PST)
+X-Gm-Message-State: AOJu0Yw7BVYdWbJ7BZ3SCL2kxxYrm82Z7hUCrnBBd1QYqucn2uawe49j
+	wNSoHPPI1OvPVV4yUuLhfuBaHeote3ai9N2H1R8=
+X-Google-Smtp-Source: AGHT+IEYIyc45VILFYGKdvn3cy03LLuf6ZCG1ABtaafRtjq37IrcYXoPs5dEMs7aJd4hnoKhAUGHWChoMz4iE37O8mA=
+X-Received: by 2002:a05:6870:9720:b0:203:2b71:dad5 with SMTP id
+ n32-20020a056870972000b002032b71dad5mr709423oaq.8.1704377617843; Thu, 04 Jan
+ 2024 06:13:37 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] thermal: k3_j72xx_bandgap: implement suspend/resume
- support
-Content-Language: en-US
-To: Thomas Richard <thomas.richard@bootlin.com>, rafael@kernel.org
-Cc: rui.zhang@intel.com, lukasz.luba@arm.com, linux-pm@vger.kernel.org,
- linux-kernel@vger.kernel.org, thomas.petazzoni@bootlin.com,
- gregory.clement@bootlin.com, theo.lebrun@bootlin.com, u-kumar1@ti.com,
- Keerthy <j-keerthy@ti.com>
-References: <20231130164953.2043305-1-thomas.richard@bootlin.com>
- <d8f52066-323d-4622-b6b0-32834a504dfe@bootlin.com>
-From: Daniel Lezcano <daniel.lezcano@linaro.org>
-In-Reply-To: <d8f52066-323d-4622-b6b0-32834a504dfe@bootlin.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <cover.1703042081.git.kevinmbecause@gmail.com> <941a566eb114701685dc44f708f81891b3bd085b.1703042082.git.kevinmbecause@gmail.com>
+ <CAK7LNAQX+h-a3yBEOqXG2_7mw+6bS5NmJ=UYAEt=oghQvi4W2Q@mail.gmail.com> <d5989a0b-f46f-fb49-8d44-1822d69bc4cf@gmail.com>
+In-Reply-To: <d5989a0b-f46f-fb49-8d44-1822d69bc4cf@gmail.com>
+From: Masahiro Yamada <masahiroy@kernel.org>
+Date: Thu, 4 Jan 2024 23:13:01 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAT1SbgvqjP5p8ZbACZ4prhP8LVdenWBNisdh15f_Dk9LQ@mail.gmail.com>
+Message-ID: <CAK7LNAT1SbgvqjP5p8ZbACZ4prhP8LVdenWBNisdh15f_Dk9LQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] kbuild: Enable decompression for use by
+ EXTRA_FIRMWARE The build system can currently only compress files. This patch
+ adds the functionality to decompress files. Decompression is needed for
+ building firmware files into the kernel if those files are compressed on the
+ filesystem. Compressed firmware files are in use by Gentoo, Fedora, Arch, and others.
+To: Kevin Martin <kevinmbecause@gmail.com>
+Cc: Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, 
+	Nicolas Schier <nicolas@fjasle.eu>, linux-kbuild@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 04/01/2024 12:31, Thomas Richard wrote:
-> On 11/30/23 17:49, Thomas Richard wrote:
->> From: Théo Lebrun <theo.lebrun@bootlin.com>
->>
->> This add suspend-to-ram support.
-> 
-> Hello,
-> 
-> Could someone please take a look at this patch ?
+On Thu, Jan 4, 2024 at 4:04=E2=80=AFPM Kevin Martin <kevinmbecause@gmail.co=
+m> wrote:
+>
+>
+> On Wed, 3 Jan 2024, Masahiro Yamada wrote:
+>
+> > On Wed, Dec 20, 2023 at 7:26=E2=80=AFPM Kevin Martin <kevinmbecause@gma=
+il.com> wrote:
+> > >
+> > > Signed-off-by: Kevin Martin <kevinmbecause@gmail.com>
+> > > ---
+> > >  scripts/Makefile.lib | 6 ++++++
+> > >  1 file changed, 6 insertions(+)
+> > >
+> > > diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
+> > > index 1a965fe68..d043be3dc 100644
+> > > --- a/scripts/Makefile.lib
+> > > +++ b/scripts/Makefile.lib
+> > > @@ -523,6 +523,9 @@ quiet_cmd_xzkern_with_size =3D XZKERN  $@
+> > >  quiet_cmd_xzmisc =3D XZMISC  $@
+> > >        cmd_xzmisc =3D cat $(real-prereqs) | $(XZ) --check=3Dcrc32 --l=
+zma2=3Ddict=3D1MiB > $@
+> > >
+> > > +quiet_cmd_xzdec =3D XZDEC   $@
+> > > +      cmd_xzdec =3D cat $(real-prereqs) | $(XZ) --decompress > $@
+> > > +
+> >
+> >
+> >
+> > Please do not fork the meaningless 'cat' process.
+> >
+> > This should be a single process to take just one input file.
+> >
+> >     cmd_xzdec =3D $(XZ) --decompress --stdout $< > $@
+> >
+> >
+> >
+> >
+> > Commit d3dd3b5a29bb9582957451531fed461628dfc834
+> > was a very bad commit.
+> >
+> > The 'cat' and compression/decompression must be
+> > separate rules.
+> >
+> > We should not repeat the mistake in the past.
+> >
+>
+> Would it be preferable to change all of the compression rules or just the
+> new decompression rules?
 
-Seems like the MAINTAINER file not up to date regarding ti_bandgap.c and 
-ti_j*bandgap.c
 
-[Added Keerthy]
+I do not require you to change the existing code.
+
+For decompression, it is unlikely that the recipe
+takes multiple input files.
+So, 'cat' is unneeded.
 
 
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+> I could change just the new ones and then begin working on a different
+> patch to clean up the 'cat' processes in the compression rules.
 
+
+
+If you get rid of the 'cat', you need to refactor the user code.
+arch/x86/boot/compressed/Makefile relies on 'cat' and 'compress',
+but please double-check no other Makefile uses it.
+
+
+Also, you might need some research about the potential
+impact onto the reproducible builds.
+Without 'cat |', the compressed archive might encode
+the timestamp of the original file.
+GZIP records the timestamp in the header.
+
+
+
+
+>
+> >
+> >
+> > >  # ZSTD
+> > >  # ------------------------------------------------------------------=
+---------
+> > >  # Appends the uncompressed size of the data using size_append. The .=
+zst
+> > > @@ -548,6 +551,9 @@ quiet_cmd_zstd22 =3D ZSTD22  $@
+> > >  quiet_cmd_zstd22_with_size =3D ZSTD22  $@
+> > >        cmd_zstd22_with_size =3D { cat $(real-prereqs) | $(ZSTD) -22 -=
+-ultra; $(size_append); } > $@
+> > >
+> > > +quiet_cmd_zstddec =3D ZSTDDEC $@
+> > > +      cmd_zstddec =3D cat $(real-prereqs) | $(ZSTD) --decompress > $=
+@
+> > > +
+> >
+> >
+> > Same here.
+> > Please make this a single process:
+> >
+> >    cmd_zstddec =3D $(ZSTD) --decompress --force --output=3D$@ $<
+> >
+> >
+> >
+> >
+> >
+> >
+> > One small concern in the future is, if we end up with adding
+> > quiet_cmd_bzip2dec, we will run out of the 7-column of the short log.
+> >
+> >  quiet_cmd_bzip2dec =3D BZIP2DEC$@
+> >
+> > We can increase the column size if needed, so I do not think
+> > it is a big issue.
+> >
+> >
+> >
+> >
+> >
+> >
+> >
+> >
+> >
+> >
+> > >  # ASM offsets
+> > >  # ------------------------------------------------------------------=
+---------
+> > >
+> > > --
+> > > 2.41.0
+> > >
+> >
+> >
+> > --
+> > Best Regards
+> > Masahiro Yamada
+> >
+
+
+
+--=20
+Best Regards
+Masahiro Yamada
 
