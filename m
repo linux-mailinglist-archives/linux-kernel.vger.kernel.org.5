@@ -1,31 +1,31 @@
-Return-Path: <linux-kernel+bounces-16978-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16979-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 799E98246C0
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 17:55:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C4CF68246C5
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 17:59:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2E1DA1F22125
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 16:55:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5CB83286C98
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 16:59:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22D742555D;
-	Thu,  4 Jan 2024 16:55:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E56B225562;
+	Thu,  4 Jan 2024 16:58:54 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D6AD2231F;
-	Thu,  4 Jan 2024 16:55:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE60225550
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 16:58:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A241DC15;
-	Thu,  4 Jan 2024 08:55:59 -0800 (PST)
-Received: from [10.57.88.128] (unknown [10.57.88.128])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7932E3F64C;
-	Thu,  4 Jan 2024 08:55:11 -0800 (PST)
-Message-ID: <22c8d702-dc11-4e25-bb2d-0d29b0481991@arm.com>
-Date: Thu, 4 Jan 2024 16:56:30 +0000
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5BFA4C15;
+	Thu,  4 Jan 2024 08:59:37 -0800 (PST)
+Received: from [10.57.44.155] (unknown [10.57.44.155])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A23ED3F64C;
+	Thu,  4 Jan 2024 08:58:47 -0800 (PST)
+Message-ID: <11c9ffee-5dbc-4f16-90f5-6f5c23293f52@arm.com>
+Date: Thu, 4 Jan 2024 16:58:46 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -33,90 +33,57 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 15/23] PM: EM: Optimize em_cpu_energy() and remove
- division
-Content-Language: en-US
-To: Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc: rui.zhang@intel.com, amit.kucheria@verdurent.com, rafael@kernel.org,
- linux-kernel@vger.kernel.org, amit.kachhap@gmail.com,
- daniel.lezcano@linaro.org, viresh.kumar@linaro.org, len.brown@intel.com,
- pavel@ucw.cz, mhiramat@kernel.org, qyousef@layalina.io, wvw@google.com,
- linux-pm@vger.kernel.org
-References: <20231129110853.94344-1-lukasz.luba@arm.com>
- <20231129110853.94344-16-lukasz.luba@arm.com>
- <ff68662a-6206-4bea-9307-071a50b368f9@arm.com>
- <bf11d4a5-44e0-4e76-b795-dbbb2b338d12@arm.com>
- <52655f7d-4056-42eb-a3c4-1eb8e21ea259@arm.com>
-From: Lukasz Luba <lukasz.luba@arm.com>
-In-Reply-To: <52655f7d-4056-42eb-a3c4-1eb8e21ea259@arm.com>
+Subject: Re: [PATCH v4 1/7] arm64: KVM: Fix renamed function in comment
+Content-Language: en-GB
+To: James Clark <james.clark@arm.com>, coresight@lists.linaro.org,
+ linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+ broonie@kernel.org, maz@kernel.org, acme@kernel.org
+Cc: Oliver Upton <oliver.upton@linux.dev>, James Morse <james.morse@arm.com>,
+ Zenghui Yu <yuzenghui@huawei.com>, Catalin Marinas
+ <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Mike Leach <mike.leach@linaro.org>, Leo Yan <leo.yan@linaro.org>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Anshuman Khandual <anshuman.khandual@arm.com>, Rob Herring
+ <robh@kernel.org>, Miguel Luis <miguel.luis@oracle.com>,
+ Jintack Lim <jintack.lim@linaro.org>, Ard Biesheuvel <ardb@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>, Helge Deller <deller@gmx.de>,
+ Arnd Bergmann <arnd@arndb.de>, Vincent Donnefort <vdonnefort@google.com>,
+ Fuad Tabba <tabba@google.com>,
+ Kristina Martsenko <kristina.martsenko@arm.com>,
+ Joey Gouly <joey.gouly@arm.com>, Akihiko Odaki <akihiko.odaki@daynix.com>,
+ Jing Zhang <jingzhangos@google.com>, linux-kernel@vger.kernel.org
+References: <20240104162714.1062610-1-james.clark@arm.com>
+ <20240104162714.1062610-2-james.clark@arm.com>
+From: Suzuki K Poulose <suzuki.poulose@arm.com>
+In-Reply-To: <20240104162714.1062610-2-james.clark@arm.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 
+On 04/01/2024 16:27, James Clark wrote:
+> finalise_host_mappings() became fix_host_ownership() in
+> commit 0d16d12eb26e ("KVM: arm64: Fix-up hyp stage-1 refcounts for all
+> pages mapped at EL2") so update the comment.
+> 
+> Signed-off-by: James Clark <james.clark@arm.com>
 
+Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
 
-On 1/4/24 16:30, Dietmar Eggemann wrote:
-> On 20/12/2023 09:42, Lukasz Luba wrote:
->>
->>
->> On 12/12/23 18:50, Dietmar Eggemann wrote:
->>> On 29/11/2023 12:08, Lukasz Luba wrote:
+> ---
+>   arch/arm64/kvm/hyp/nvhe/setup.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> [...]
-> 
->>>> With this optimization, the em_cpu_energy() should run faster on the Big
->>>> CPU by 1.43x and on the Little CPU by 1.69x.
->>>
->>> Where are those precise numbers are coming from? Which platform was it?
->>
->> That was mainline big.Little board rockpi4 b w/ rockchip 3399, present
-> 
-> IMHO, you should mention the platform here so people don't wonder.
-> 
->> quite a few commercial devices (e.g. chromebooks or plenty other seen in
->> DT). The numbers are from measuring the time it takes to run this
->> function em_cpu_cost() in a loop for mln of times. Thus, the instruction
->> cache and data cache should be hot, but the operation would impact the
->> different score.
-> 
-> [...]
-> 
->>> Can you not keep the existing comment and only change:
->>>
->>> (a) that ps->cap id ps->performance in (2) and
->>>
->>> (b) that:
->>>
->>>             *             ps->power * cpu_max_freq   cpu_util
->>>             *   cpu_nrg = ------------------------ * ---------     (3)
->>>             *                    ps->freq            scale_cpu
->>>
->>>                           <---- (old) ps->cost --->
->>>
->>>       is now
->>>
->>>                   ps->power * cpu_max_freq       1
->>>       ps-> cost = ------------------------ * ----------
->>>                           ps->freq            scale_cpu
->>>
->>>                   <---- (old) ps->cost --->
->>>
->>> and (c) that (4) has changed to:
->>>
->>>            *   pd_nrg = ps->cost * \Sum cpu_util                   (4)
->>>
->>> which avoid the division?
->>>
->>> Less changes is always much nicer since it makes it so much easier to
->>> detect history and review changes.
->>
->> I'm open to change that, but I will have to contact you offline
->> what you mean. This comment section in code is really tricky to
->> handle right.
-> 
-> OK, the changes you showed me offline LGTM.
-> 
-> [...]
-> 
+> diff --git a/arch/arm64/kvm/hyp/nvhe/setup.c b/arch/arm64/kvm/hyp/nvhe/setup.c
+> index cd2f39388251..b5452e58c49a 100644
+> --- a/arch/arm64/kvm/hyp/nvhe/setup.c
+> +++ b/arch/arm64/kvm/hyp/nvhe/setup.c
+> @@ -150,7 +150,7 @@ static int recreate_hyp_mappings(phys_addr_t phys, unsigned long size,
+>   	 * can't be donated or shared with another entity.
+>   	 *
+>   	 * The ownership transition requires matching changes in the host
+> -	 * stage-2. This will be done later (see finalize_host_mappings()) once
+> +	 * stage-2. This will be done later (see fix_host_ownership()) once
+>   	 * the hyp_vmemmap is addressable.
+>   	 */
+>   	prot = pkvm_mkstate(PAGE_HYP_RO, PKVM_PAGE_SHARED_OWNED);
 
-All good then. Thank you for the comments. I'll send v6.
 
