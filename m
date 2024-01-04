@@ -1,62 +1,77 @@
-Return-Path: <linux-kernel+bounces-17151-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17152-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 852E48248F2
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 20:24:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 844BB8248F5
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 20:24:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 21DD51F2229B
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 19:24:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 16BE71F257DD
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 19:24:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47C532C694;
-	Thu,  4 Jan 2024 19:23:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 177CC2C1AF;
+	Thu,  4 Jan 2024 19:24:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="meNwmT0f"
+	dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b="lZuEGPyN"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F30A2C681;
-	Thu,  4 Jan 2024 19:23:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0EC73C433C8;
-	Thu,  4 Jan 2024 19:23:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704396233;
-	bh=onmE/RNN+R0R622Kj1gpfjhJTPdyiEEgXOtbnFDL9vM=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=meNwmT0f40fUdUnCGT+x2YGTjJ2yCdYWGp93Q0I+AgpYXrr2udoKh2wGh7o51MNlh
-	 xVdhFdmRHIg/iJ2usoZ5K8UPEmrX9dKKCul6s5S9e+4pRH70PvbwiVfoKBcxpDdcU2
-	 8uIyf1AVz0CaGWyDFfECIqiTWgdFKoGwq/II3NMorJm6KyYDSiia2G7ToXF/+e24pU
-	 5YE59CNdkvNFam7dar7dZEhVbi1lZg/XXBSsbshDBUWq0MDdYMl/JPFRGTwNzkqcNc
-	 /WaiUESmmiFJy7DiU4/s6UjRbnANjVtZHo854wjfMLvmhPUZQkyWwyRyqq4cC0ymJ7
-	 3KzuCBOe47+rA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 8F2C6CE06FA; Thu,  4 Jan 2024 11:23:52 -0800 (PST)
-Date: Thu, 4 Jan 2024 11:23:52 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Paolo Bonzini <pbonzini@redhat.com>
-Cc: Sean Christopherson <seanjc@google.com>,
-	Like Xu <like.xu@linux.intel.com>, Andi Kleen <ak@linux.intel.com>,
-	Kan Liang <kan.liang@linux.intel.com>,
-	Luwei Kang <luwei.kang@intel.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-	kvm@vger.kernel.org, Breno Leitao <leitao@debian.org>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Ingo Molnar <mingo@redhat.com>
-Subject: Re: [BUG] Guest OSes die simultaneously (bisected)
-Message-ID: <acb26142-622a-4f5d-aba6-c92601f95fbf@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <3d8f5987-e09c-4dd2-a9c0-8ba22c9e948a@paulmck-laptop>
- <88f49775-2b56-48cc-81b8-651a940b7d6b@paulmck-laptop>
- <ZZX6pkHnZP777DVi@google.com>
- <77d7a3e3-f35e-4507-82c2-488405b25fa4@paulmck-laptop>
- <c6d5dd6e-2dec-423c-af39-213f17b1a9db@paulmck-laptop>
- <CABgObfYG-ZwiRiFeGbAgctLfj7+PSmgauN9RwGMvZRfxvmD_XQ@mail.gmail.com>
- <b2775ea5-20c9-4dff-b4b1-bbb212065a22@paulmck-laptop>
- <b327b546-4a5f-462d-baeb-804a33bd3f6a@redhat.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED4EF2C6AF
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 19:23:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=layalina.io
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a28d61ba65eso104430266b.3
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 11:23:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1704396238; x=1705001038; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=vP64jz0/VAK3xfeL/8CfdG5CwhX3wPofMDHlLSKDnNM=;
+        b=lZuEGPyNKaZ47Yqk/JSy8z5LHLC9wiyQHaoia4AiwaBGIl5EU++NeuC0wxXg2v245S
+         FBUbVhOJrHjQZTqN+Y1qYFUtABeeVcZwg87+TqCoArZazWhnf5vwbQ/Fj+BXUDzcEy5D
+         VFiQehFo9bXCjcc6F0Qt0QrkAuqJdl4Yb9v6vGSuTaK9qqewLpm8kRg/swL6A07tDI2N
+         9Dfz9E4VOCHOGTKoQQ4y+DK20R9KoxmR2fws9U8bG+pVPl9jKStwsnvti9xpXxW5t9vu
+         0Hdpidbv9wr/1kG4/pYLzz0ww6DNbmiIcVtD/cFJpnITDEbQxQ0AOKJ0+BZYMIi0y7+t
+         2naQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704396238; x=1705001038;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vP64jz0/VAK3xfeL/8CfdG5CwhX3wPofMDHlLSKDnNM=;
+        b=LTP9Ibho+dbVPWH9rkt4N8XscalOExsDtEk26MmqYn3KmkGV+DvGAodkYHX33ytaRv
+         tQwNc0cHrsjCGzHIRANd0SpEJXgtBs9iYaBOkR1l83aSfs5YlcTuKOkpqqLYaHPzde9g
+         0jFc8Rn08PYc4g87k+coipnBkCzh3KgT+VVb/rztDnEdux/Ik+ULAMRGDMA5re4vSxmw
+         Z3gFVN5gwThwVYs9JwHbr0+1+fHxfTpthHWVCzThqmKcXIr6iF6tcQREy/U/jbCkCA03
+         NXf0I51MeT0aFdAeoblCoblgG4OeNQl98t/vNqgsQHz3c7Gn6beeuLfhrc3XpjTuyPpy
+         5uwg==
+X-Gm-Message-State: AOJu0Yyob+7SoIIXU8jyCDYLfgxsazpTo0yF3J6QzuE0R0ag9pnrvS3M
+	D7sGP4unNZ/XNf0IfrkPS7FFpsZZat7cnw==
+X-Google-Smtp-Source: AGHT+IGt53v/I2xmcHd9Rpuooy2t5yo5vlHjdZu4FjkULa/G5M5nIe6mNsh4s8NwE5M3u0QLx+68pQ==
+X-Received: by 2002:a17:906:3606:b0:a27:2f10:fa06 with SMTP id q6-20020a170906360600b00a272f10fa06mr431974ejb.109.1704396238232;
+        Thu, 04 Jan 2024 11:23:58 -0800 (PST)
+Received: from airbuntu (92.40.216.189.threembb.co.uk. [92.40.216.189])
+        by smtp.gmail.com with ESMTPSA id ex15-20020a170907954f00b00a26ae85cfeasm13297121ejc.28.2024.01.04.11.23.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Jan 2024 11:23:57 -0800 (PST)
+Date: Thu, 4 Jan 2024 19:23:55 +0000
+From: Qais Yousef <qyousef@layalina.io>
+To: Lukasz Luba <lukasz.luba@arm.com>
+Cc: linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+	rafael@kernel.org, dietmar.eggemann@arm.com, rui.zhang@intel.com,
+	amit.kucheria@verdurent.com, amit.kachhap@gmail.com,
+	daniel.lezcano@linaro.org, viresh.kumar@linaro.org,
+	len.brown@intel.com, pavel@ucw.cz, mhiramat@kernel.org,
+	wvw@google.com
+Subject: Re: [PATCH v5 15/23] PM: EM: Optimize em_cpu_energy() and remove
+ division
+Message-ID: <20240104192355.mrtqnek2cyw7rlkd@airbuntu>
+References: <20231129110853.94344-1-lukasz.luba@arm.com>
+ <20231129110853.94344-16-lukasz.luba@arm.com>
+ <20231228180647.rwz4u7ebk5p2hjcr@airbuntu>
+ <d9bea2d0-3869-4f08-8eb8-0ca33ce525ea@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -65,74 +80,19 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <b327b546-4a5f-462d-baeb-804a33bd3f6a@redhat.com>
+In-Reply-To: <d9bea2d0-3869-4f08-8eb8-0ca33ce525ea@arm.com>
 
-On Thu, Jan 04, 2024 at 05:32:34PM +0100, Paolo Bonzini wrote:
-> On 1/4/24 17:06, Paul E. McKenney wrote:
-> > Although I am happy to have been able to locate the commit (and even
-> > happier that Sean spotted the problem and that you quickly pushed the
-> > fix to mainline!), chasing this consumed a lot of time and systems over
-> > an embarrassingly large number of months.  As in I first spotted this
-> > bug in late July.  Despite a number of increasingly complex attempts,
-> > bisection became feasible only after the buggy commit was backported to
-> > our internal v5.19 code base.  🙁
+On 01/02/24 11:47, Lukasz Luba wrote:
+> > Did you see a problem or just being extra cautious here?
 > 
-> Yes, this strikes two sore points.
-> 
-> One is that I have also experienced being able to bisect only with a
-> somewhat more linear history (namely the CentOS Stream 9 aka c9s
-> frankenkernel [1]) and not with upstream.  Even if the c9s kernel is not a
-> fully linear set of commits, there's some benefit from merge commits that
-> consist of slightly more curated set of patches, where each merge commit
-> includes both new features and bugfixes.  Unfortunately, whether you'll be
-> able to do this with the c9s kernel depends a lot on the subsystems involved
-> and on the bug.  Both are factors that may or may not be known in advance.
+> There is no problem, 'cost' is a private coefficient for EAS only.
 
-I guess I am glad that it is not just me.  ;-)
+Let me  ask differently, what goes wrong if you don't increase the resolution
+here? Why is it necessary?
 
-> The other, of course, is testing.  The KVM selftests infrastructure is meant
-> for this kind of white box problem, but the space of tests that can be
-> written is so large, that there's always too few tests.  It shines when you
-> have a clear bisection but an unclear fix (in the past I have had cases
-> where spending two days to write a test led me to writing a fix in thirty
-> minutes), but boosting the reproducibility is always a good thing.
 
-Agreed, validation never will be perfect, and so improving the test
-suite based on production experience is a good thing, as is creating
-test cases based on the behavior of important production workloads for
-those who run them.
+Cheers
 
-> > And please understand that I am not casting shade on those who wrote,
-> > reviewed, and committed that buggy commit.  As in I freely confess that
-> > I had to stare at Sean's fix for a few minutes before I figured out what
-> > was going on.
-> 
-> Oh don't worry about that---rather, I am going to cast a shade on those that
-> did not review the commit, namely me.  I am somewhat obsessed with Boolean
-> logic and *probably* I would have caught it, or would have asked to split
-> the use of designated initializers to a separate patch.  Any of the two
-> could, at least potentially, have saved you quite some time.
-
-We have all done similar things.  I certainly have!
-
-> > Instead, the point I am trying to make is that carefully
-> > constructed tests can serve as tireless and accurate code reviewers.
-> > This won't ever replace actual code review, but my experience indicates
-> > that it will help find more bugs more quickly and more easily.
-> 
-> TBH this (conflict between virtual addresses on the host and the guest
-> leading to corruption of the guest) is probably not the kind of adversarial
-> test that one would have written or suggested right off the bat.  But it
-> should be written now indeed.
-
-Very good, looking forward to seeing it!
-
-							Thanx, Paul
-
-> Paolo
-> 
-> [1]
-> https://www.theregister.com/2023/06/30/enterprise_distro_feature_devconf/
-> 
+--
+Qais Yousef
 
