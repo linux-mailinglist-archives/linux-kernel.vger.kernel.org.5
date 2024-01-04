@@ -1,64 +1,64 @@
-Return-Path: <linux-kernel+bounces-16445-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16446-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 164B6823EAB
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 10:31:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 537B8823EB3
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 10:33:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8485128606A
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 09:31:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3856D1C23BAA
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 09:33:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24018208B9;
-	Thu,  4 Jan 2024 09:31:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6952E208C0;
+	Thu,  4 Jan 2024 09:33:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Jr/wUvc+"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="p5mtjN9e"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 084F9208A5
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 09:31:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 401F3208A3
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 09:33:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-555bd21f9fdso382093a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 01:31:06 -0800 (PST)
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-555f581aed9so373582a12.3
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 01:33:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704360665; x=1704965465; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1704360786; x=1704965586; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=y+E7YrBlkhYNDogi7xlUtXlc4iitfTsqQEsfWrTgqeM=;
-        b=Jr/wUvc+4E6YkAv19RZysWZWFgw0Y+CyHSueS0SXlVdmuROduSTFrU8/1j+Dj17cld
-         thlo2yIytX1eRgooMuDsd3cFPYz1+D+4gXTZXnzETHE4coO5gJYXNCRS0l6/W38w/PwG
-         tRdSBXEEW5Df4bn8s0en0SZHYn3ECz9f0QiKpQAYM4Zi9KzjAGEwzFS+XC39UzwYgrdF
-         mmEg5xk9MOt+/TOLcopihOxNp+X2te6tgSiUWK7VsZiX2UMYQ8U1++Vh3UY7KlIVp98c
-         txRyBKwW2hLge5dMAqI+oHtT+g3ab/CpucU8odNFUA4msBSwnb964blSNaIJxa1b4k/Q
-         +0DA==
+        bh=qiYJkoIy0pmNV8TbTzTiyxf/Ff6xMk7GjdWetSc+lsI=;
+        b=p5mtjN9eLq7j7m+74MnlDeWjMW7RQW6zVcylEE/z6TKU/neBY8wE7GjyJ+pkHKoJPR
+         B1FB6ex8eWjUm70vgFxT13tlMAvblpE1DIUHiy0WVFL8f0CDH76s09HE+onzX2CU6PcN
+         znmXe+h/1AbEKNxyZIw0A8EEyQhc2bwGl8UzH7FhK2NCZZUi1LbfAQs28+0FdZqMcBQj
+         8C29djgia1ZTIDl6sTRKtXCQ91NqEQBLV5UxCDszJlSuevUSfpzqBTN4Xgv4/+xnj2hg
+         lLycJ6ogS4DBmgYMIMjST9l15ZQROxVnNwtwcUGmBGv8eii7lbF+xBG+G+nfN7PcGSig
+         eM+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704360665; x=1704965465;
+        d=1e100.net; s=20230601; t=1704360786; x=1704965586;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=y+E7YrBlkhYNDogi7xlUtXlc4iitfTsqQEsfWrTgqeM=;
-        b=K7vE8WJm5DVc1F58NSz5ZYPkVirALjIb7Ob0Mu9kZrVjUcYIVXtE+Vy3yON9oPSvrW
-         t1451g7T57//aTXzOlHDk6WxcjoZnWQRprNNo2kEM6JIJY4+3kjOWCDQgl0OjDJ/5Z6z
-         dPt7C+tNRY6aLrcNklNDnZ3FE4/UT+liDP/EoWXgeVud2qiY5QjsesE1U8BYZ7OxXijP
-         AyTuHegQQksm3EST8xG52MNuU+U/RxCJzCcUVjz4eJye/v2pX3KvPnSQsU562RGUKEkd
-         CTfiUPDUJpe8o0bIkr+MBcCLyI5+kQp/SrDg61Bp5giCpcIGFLKZx0MQRLHZ/72kLCY8
-         e/SA==
-X-Gm-Message-State: AOJu0YyxOajTOh1zNGiCC0mo4XbX0haYE440E95KDHs8oSoUiECqKexG
-	DZTh2v5c8IqFAouhg4BKTbT/2ao1WCQ1kw==
-X-Google-Smtp-Source: AGHT+IGaZ00I4iu62g+5yeAUmS84jz3g3vAU1ga1EjhwZdgRSgEqazJbHks6Ja9FHIRKlu3Ut53abg==
-X-Received: by 2002:a17:907:c96:b0:a23:71ca:2bb4 with SMTP id gi22-20020a1709070c9600b00a2371ca2bb4mr149904ejc.144.1704360665262;
-        Thu, 04 Jan 2024 01:31:05 -0800 (PST)
+        bh=qiYJkoIy0pmNV8TbTzTiyxf/Ff6xMk7GjdWetSc+lsI=;
+        b=WcRaEs5cxcB5MfH1R3CKK24M5EB0y5jAv5xpednJvmll+BsUMJgkX1YAtm6JKlde01
+         3EWHcVvfTcxmIPbhwjfvgRn79Gw0zZqaz+VLePZBLzPf0BsUyQEcbNGl4nwOaBFYhTd7
+         zRp0Yl1TbSZCEvQDZUasiNKfFlxkpTjE5Rivf1DiNoJMPX/g+ffAHM3shkGDH1vH8Eii
+         gT003bl1wLbXmZVC6hhwU7W1VhYHiVk6pr7coc+xHW9io1X6h8WxKL+EXjYZgF0Q+Juh
+         5ziJfb47tiu7tGHAIcEGBSwTR048h3fWkW1d2M/Z/5Fhb4irZCtXo3OFDJfA2fXQg1vv
+         KJXA==
+X-Gm-Message-State: AOJu0YwP2k+PIjZHNKznPAOlVPeaLLNdlQ7UnSLRkGsr0egXOSCWur2Y
+	TjvJ/8WTWqJQdDKCj6JH6/ZbVTUPTNWbpg==
+X-Google-Smtp-Source: AGHT+IE0TgiuztMFBLE9AhAcj1CbO8StwcUycV02HGLStY11QlN89ZEdWEw7Bw9SBo2cX8DR6vbrTQ==
+X-Received: by 2002:a50:ccca:0:b0:550:5173:22f0 with SMTP id b10-20020a50ccca000000b00550517322f0mr200455edj.46.1704360786562;
+        Thu, 04 Jan 2024 01:33:06 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id f17-20020a170906495100b00a26b057df46sm9910107ejt.126.2024.01.04.01.31.03
+        by smtp.gmail.com with ESMTPSA id m9-20020aa7c2c9000000b00552666f4745sm18501600edp.22.2024.01.04.01.33.05
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Jan 2024 01:31:04 -0800 (PST)
-Message-ID: <1f66cf69-5d2c-4e15-bf44-4b96a4cc2900@linaro.org>
-Date: Thu, 4 Jan 2024 10:31:03 +0100
+        Thu, 04 Jan 2024 01:33:06 -0800 (PST)
+Message-ID: <65a294e7-1c3c-4022-9498-e83e7415ffb3@linaro.org>
+Date: Thu, 4 Jan 2024 10:33:04 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,21 +66,19 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/3] dt-bindings: clk: sprd: Add UMS9620 support
+Subject: Re: [PATCH] dt-bindings: thermal: k3-j72xx: Update bindings for
+ J721S2 SoCs
 Content-Language: en-US
-To: Chunyan Zhang <zhang.lyra@gmail.com>
-Cc: Chunyan Zhang <chunyan.zhang@unisoc.com>, Stephen Boyd
- <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+To: Manorit Chawdhry <m-chawdhry@ti.com>,
+ "Rafael J. Wysocki" <rafael@kernel.org>,
+ Daniel Lezcano <daniel.lezcano@linaro.org>, Zhang Rui <rui.zhang@intel.com>,
+ Lukasz Luba <lukasz.luba@arm.com>, Rob Herring <robh+dt@kernel.org>,
  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, linux-clk@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- Orson Zhai <orsonzhai@gmail.com>, Baolin Wang <baolin.wang@linux.alibaba.com>
-References: <20231229085156.1490233-1-chunyan.zhang@unisoc.com>
- <20231229085156.1490233-2-chunyan.zhang@unisoc.com>
- <3a290bf9-928d-4d21-9c93-0d1db59d6fff@linaro.org>
- <CAAfSe-stvoKSVynTnoy87CUK3NM+ZEwfTMazO0tfwcx5BXG0Og@mail.gmail.com>
- <b8fdce9e-50d9-4b43-a018-c35350bcec0f@linaro.org>
- <CAAfSe-vRLaCZca2anp7iBnHDPUr-oVexSVy7PKYhNDUZ8GGgaw@mail.gmail.com>
+ Conor Dooley <conor+dt@kernel.org>, J Keerthy <j-keerthy@ti.com>
+Cc: linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Udit Kumar <u-kumar1@ti.com>,
+ Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>
+References: <20231228-b4-upstream-j721s2-vtm-dt-binding-v1-1-e866277f9c64@ti.com>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -126,39 +124,67 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <CAAfSe-vRLaCZca2anp7iBnHDPUr-oVexSVy7PKYhNDUZ8GGgaw@mail.gmail.com>
+In-Reply-To: <20231228-b4-upstream-j721s2-vtm-dt-binding-v1-1-e866277f9c64@ti.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 04/01/2024 10:26, Chunyan Zhang wrote:
->>>> Missing names.
->>>
->>> The names are fixed, but the order are not.
->>
->> Order must be fixed.
+On 28/12/2023 07:39, Manorit Chawdhry wrote:
+> The clock and processor ID for J721S2 differs from the existing
+> compatibles, add a new compatible to represent this change for adding
+> support for Adaptive voltage scaling.
 
-Did you read this? It must be. If it is not, your patchset has issues
-you must fix.
+Subject: everything is "update". Write proper subjects.
+
+A nit, subject: drop second/last, redundant "bindings for". The
+"dt-bindings" prefix is already stating that these are bindings.
 
 
->>
->>>
->>> For example:
->>> clk_a {
->>>     clocks = <&ext_26m>, <&ext_32k>;
->>>     clock-names = "ext-26m", "ext-32k";
->>> };
->>>
->>> clk_b {
->>>     clocks = <&ext_26m>, <&ext_4m>;
->>>     clock-names = "ext-26m", "ext-4m";
->>
->> And here the order is fixed...
+
 > 
-> The order is not fixed, 'clk_b' will cause dtb_check error, since it
-> skips the second one i.e. ext-32k in the clock-names list.
+> Signed-off-by: Manorit Chawdhry <m-chawdhry@ti.com>
+> ---
+>  .../devicetree/bindings/thermal/ti,j72xx-thermal.yaml        | 12 ++++++++----
+>  1 file changed, 8 insertions(+), 4 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/thermal/ti,j72xx-thermal.yaml b/Documentation/devicetree/bindings/thermal/ti,j72xx-thermal.yaml
+> index 171b3622ed84..5792ccc058aa 100644
+> --- a/Documentation/devicetree/bindings/thermal/ti,j72xx-thermal.yaml
+> +++ b/Documentation/devicetree/bindings/thermal/ti,j72xx-thermal.yaml
+> @@ -24,9 +24,13 @@ description: |
+>  
+>  properties:
+>    compatible:
+> -    enum:
+> -      - ti,j721e-vtm
+> -      - ti,j7200-vtm
+> +    anyOf:
 
-Then why do you use the same compatible for two different devices?
+? Eh, what?
+
+> +      - items:
+> +          - enum:
+> +              - ti,j721e-vtm
+> +              - ti,j7200-vtm
+> +              - ti,j721s2-vtm
+> +      - maxItems: 2
+
+What? I really do not understand what are you doing here.
+
+
+>  
+>    reg:
+>      items:
+> @@ -72,7 +76,7 @@ examples:
+>    - |
+>      #include <dt-bindings/soc/ti,sci_pm_domain.h>
+>      wkup_vtm0: thermal-sensor@42040000 {
+> -        compatible = "ti,j721e-vtm";
+> +        compatible = "ti,j721e-vtm", "ti,j7200-vtm";
+
+It's an enum, not a list.
+
+NAK, please read example-schema and other bindings. Then get review from
+TI folks before posting new versions.
 
 Best regards,
 Krzysztof
