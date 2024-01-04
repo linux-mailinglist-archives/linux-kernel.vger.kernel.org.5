@@ -1,104 +1,145 @@
-Return-Path: <linux-kernel+bounces-17222-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17223-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C1C148249FA
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 22:06:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F28658249FD
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 22:06:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 53D1A1F22F1C
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 21:06:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 894F6284DD0
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 21:06:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70B2C2C1BA;
-	Thu,  4 Jan 2024 21:06:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5D102C845;
+	Thu,  4 Jan 2024 21:06:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RbiBNzwJ"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="sbn5zyJt"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 387B3225CC
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 21:06:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-50eab4bf47aso855270e87.0
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 13:06:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704402363; x=1705007163; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=c/veKMHUdNJ5SX/e4HlrsaFpg5vnXvc9Zdcy7jOW3gE=;
-        b=RbiBNzwJ/JWk/Ik/5A12EZfkprQBllYqBvzH/yebrXDLBepiCNC9CkG3EqehqJmxZm
-         p3efYq5/EkGJtNAmD2NbzQ5iXm0qN3Wkpw7n7iTHTcYU7PF809zrVx5eXg1OrHVbdse3
-         HD7X1+p8q1hDePLO3Qn+8i0UZSnbKXgzhXTlZVyn5pPS5NgHihfZKcF33UxXmpp3HuI+
-         G0IfsYLvQmRAoDFhnB3mai9XDKzesmctoBbQvHvnQA2lzVIKhqocp+giImZk3Q8s5iZX
-         NxR7gyqtOcGN5ET1Vr8MDt1Bny8n+5645iXznORymASvz4aeFXiQ5nKXEqbaJ+Nydatq
-         hPhg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704402363; x=1705007163;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=c/veKMHUdNJ5SX/e4HlrsaFpg5vnXvc9Zdcy7jOW3gE=;
-        b=UaqyJieI3WA6aFK6RYDzQo2iXT91omcqYyY427izlMWxEi7kz2infl7J5RaTTqZTzm
-         9wS0D28sMHP3NnJrA5hKkKmnkLzY/ku/P7Y5yoeKmmg2xfkfHXUt4FMpNp6syK07oppA
-         B+wXEJ/DpLpmdcjZ43eL39n29wltOLhivTb7f6n/xH90crUtxqGrALlKUYBv12qn8f80
-         3cYOeMpcaVm2fTHDLL4sO9ctjtdFyA2LMEtKARoUZt8xSHNEcOlIUv7yKXb8dOFR3Hia
-         sjLJQQuoHOIVnkEJ5D2TnHDYbJFysqrxeBai10MRy6aWZQ0VIvjhUyRvmCiWBi6yaOOY
-         QHOg==
-X-Gm-Message-State: AOJu0Yw6ra84qg7efvweVKK2t+s4tAf9ZnLFpZNs7kDfgSdFmYku8Egs
-	pzKeiuc01XsafTUzGKL3upg+/u+WZ1JV5TGFAqs=
-X-Google-Smtp-Source: AGHT+IGmditBjxbHlfhLEurFcCQuX7DE//CxVN1uI+y5wR1YnHpg/cnI2Ro+FI+M2ClOMEKW4sFwMMrogmX9GUc8bfc=
-X-Received: by 2002:a19:2d5c:0:b0:50e:b219:44f with SMTP id
- t28-20020a192d5c000000b0050eb219044fmr82025lft.1.1704402362938; Thu, 04 Jan
- 2024 13:06:02 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26A972C6B6;
+	Thu,  4 Jan 2024 21:06:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=cXLyhOtvZ+uqW+xAdmcmkb7H6C8kaMn0EgnUnAAVSQ0=; b=sbn5zyJtWXapZ7vzZ1mGvsqrxJ
+	Pnkz3PbYnpnNYYpOKUlhcNPoDxiH3vhc258zgOXMe8FTItEt/piPdH3tN9JuzyzRnyNSY3Tw6+1L5
+	CrfuLuCbh2mjgOFOVWIR9bmGBB8im4wdW7ZD4KcrKiP7ZABHaxOqhfMt/f8GgEyQqXYZv167gh696
+	G0PXdO64BtbjkFiniwrZkD2PUwXAth8242vnPlzEcqhnlnmn2ecWqRhOKoAolZIiJIPzRevHTXUYc
+	+8Iyq9Gfl8ruVFRQNVwOyFf/umKCTugBPWLN5Ch5fE/rTh9/Tah0Tq8P9opPWew941j7J1UARCIWU
+	yvMGCNYg==;
+Received: from [50.53.46.231] (helo=[192.168.254.15])
+	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+	id 1rLUup-00FETU-19;
+	Thu, 04 Jan 2024 21:06:11 +0000
+Message-ID: <133cd73f-3080-4362-bc3e-ef4cc8880a20@infradead.org>
+Date: Thu, 4 Jan 2024 13:06:10 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231006122717.3984017-1-make_ruc2021@163.com>
-In-Reply-To: <20231006122717.3984017-1-make_ruc2021@163.com>
-From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Thu, 4 Jan 2024 22:05:50 +0100
-Message-ID: <CAFLxGvytpwjXM0bdLrxt0itfEBPqJSmuM6otB7dTBmsTaAAPgw@mail.gmail.com>
-Subject: Re: [PATCH] um: vector: fix return value check in vector_legacy_rx
-To: Ma Ke <make_ruc2021@163.com>
-Cc: richard@nod.at, anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net, 
-	xiangyang3@huawei.com, linux-um@lists.infradead.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/5] buffer: Add kernel-doc for block_dirty_folio()
+Content-Language: en-US
+To: "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+ Jonathan Corbet <corbet@lwn.net>
+Cc: linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240104163652.3705753-1-willy@infradead.org>
+ <20240104163652.3705753-3-willy@infradead.org>
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20240104163652.3705753-3-willy@infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Fri, Oct 6, 2023 at 2:28=E2=80=AFPM Ma Ke <make_ruc2021@163.com> wrote:
->
-> In vector_legacy_rx, to avoid an unexpected result returned by
-> pskb_trim, we should check the return value of pskb_trim().
->
-> Signed-off-by: Ma Ke <make_ruc2021@163.com>
+
+
+On 1/4/24 08:36, Matthew Wilcox (Oracle) wrote:
+> Turn the excellent documentation for this function into kernel-doc.
+> Replace 'page' with 'folio' and make a few other minor updates.
+> 
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 > ---
->  arch/um/drivers/vector_kern.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/arch/um/drivers/vector_kern.c b/arch/um/drivers/vector_kern.=
-c
-> index 131b7cb29576..822a8c0cdcc1 100644
-> --- a/arch/um/drivers/vector_kern.c
-> +++ b/arch/um/drivers/vector_kern.c
-> @@ -890,7 +890,8 @@ static int vector_legacy_rx(struct vector_private *vp=
-)
->                                         skb->ip_summed =3D CHECKSUM_UNNEC=
-ESSARY;
->                                 }
->                         }
-> -                       pskb_trim(skb, pkt_len - vp->rx_header_size);
-> +                       if (pskb_trim(skb, pkt_len - vp->rx_header_size))
-> +                               return 0;
+>  fs/buffer.c | 54 +++++++++++++++++++++++++++++------------------------
+>  1 file changed, 30 insertions(+), 24 deletions(-)
+> 
+> diff --git a/fs/buffer.c b/fs/buffer.c
+> index 5c29850e4781..31e171382e00 100644
+> --- a/fs/buffer.c
+> +++ b/fs/buffer.c
+> @@ -687,30 +687,36 @@ void mark_buffer_dirty_inode(struct buffer_head *bh, struct inode *inode)
+>  }
+>  EXPORT_SYMBOL(mark_buffer_dirty_inode);
+>  
+> -/*
+> - * Add a page to the dirty page list.
+> - *
+> - * It is a sad fact of life that this function is called from several places
+> - * deeply under spinlocking.  It may not sleep.
+> - *
+> - * If the page has buffers, the uptodate buffers are set dirty, to preserve
+> - * dirty-state coherency between the page and the buffers.  It the page does
+> - * not have buffers then when they are later attached they will all be set
+> - * dirty.
+> - *
+> - * The buffers are dirtied before the page is dirtied.  There's a small race
+> - * window in which a writepage caller may see the page cleanness but not the
+> - * buffer dirtiness.  That's fine.  If this code were to set the page dirty
+> - * before the buffers, a concurrent writepage caller could clear the page dirty
+> - * bit, see a bunch of clean buffers and we'd end up with dirty buffers/clean
+> - * page on the dirty page list.
+> - *
+> - * We use private_lock to lock against try_to_free_buffers while using the
+> - * page's buffer list.  Also use this to protect against clean buffers being
+> - * added to the page after it was set dirty.
+> - *
+> - * FIXME: may need to call ->reservepage here as well.  That's rather up to the
+> - * address_space though.
+> +/**
+> + * block_dirty_folio - Mark a folio as dirty.
+> + * @mapping: The address space containing this folio.
+> + * @folio: The folio to mark dirty.
+> + *
+> + * Filesystems which use buffer_heads can use this function as their
+> + * ->dirty_folio implementation.  Some filesystems need to do a little
+> + * work before calling this function.  Filesystems which do not use
+> + * buffer_heads should call filemap_dirty_folio() instead.
+> + *
+> + * If the folio has buffers, the uptodate buffers are set dirty, to
+> + * preserve dirty-state coherency between the folio and the buffers.
+> + * It the folio does not have buffers then when they are later attached
+> + * they will all be set dirty.
+> + *
+> + * The buffers are dirtied before the folio is dirtied.  There's a small
+> + * race window in which writeback may see the folio cleanness but not the
+> + * buffer dirtiness.  That's fine.  If this code were to set the folio
+> + * dirty before the buffers, writeback could clear the folio dirty flag,
+> + * see a bunch of clean buffers and we'd end up with dirty buffers/clean
+> + * folio on the dirty folio list.
+> + *
+> + * We use private_lock to lock against try_to_free_buffers() while
+> + * using the folio's buffer list.  This also prevents clean buffers
+> + * being added to the folio after it was set dirty.
+> + *
+> + * Context: May only be called from process context.  Does not sleep.
+> + * Caller must ensure that @folio cannot be truncated during this call,
+> + * typically by holding the folio lock or having a page in the folio
+> + * mapped and holding the page table lock.
 
-I think this adds a memory leak. Also, can pskb_trim() really fail in
-this scenario?
-The function controls skb creation and knows all lengths.
+ * Return: tbd
+
+?
+
+>   */
+>  bool block_dirty_folio(struct address_space *mapping, struct folio *folio)
+>  {
+
+-- 
+#Randy
 
