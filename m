@@ -1,102 +1,97 @@
-Return-Path: <linux-kernel+bounces-17318-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17319-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BFEB9824BB6
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 00:11:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AEEC0824BBB
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 00:12:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6E7D6287164
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 23:11:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ADA001C2269F
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 23:12:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBCD42D629;
-	Thu,  4 Jan 2024 23:11:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B94DE2D052;
+	Thu,  4 Jan 2024 23:12:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="JdEeKHis"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="K7uutDbO"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 879B22D618
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 23:10:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1d410fce119so1879175ad.1
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 15:10:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1704409857; x=1705014657; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KRATUcam2DsKzgw19J8wJ+c2TYQe0YbaTJEl3/WnLC0=;
-        b=JdEeKHis3xk2cQIIagub5j2RUebBdCyaF2V8zWoeYIZwzbpWGD83SFa27b9MPKbyDb
-         CA8rGjhc1KJkoG+h3cQkyyJ1aRvyR1TKfgJ33ivbs0Le1sTfOxJpjvpbehokFEB6lv65
-         gRatr80IVSslehGYSdj/n/VEVmn0z4Ar+F0H0QT8gAVZ5kXgeU4Mnx1yhJCLvLAlAcwi
-         uuKQRhbRHDEir2xfgfkmRJ6QKQ94YblE9qblFYggn7uB5eDeXOIcWjoAOQb/xO8QNazq
-         DyHHjZR444wx6dv2/KOnRIXX7rsLi5EAfvotBkAws0VgdpX6V4kgQEzsu/QQ43jmkJJ+
-         cW6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704409857; x=1705014657;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KRATUcam2DsKzgw19J8wJ+c2TYQe0YbaTJEl3/WnLC0=;
-        b=reWg4nvisfN00Al+n/2rt7RKkc8hvmXbPYYMg4zBfzkiaoGCvIvnt9F0qihYoTHdZw
-         BT6N+ooALuZWVixa3Pl7SoQYwrJWofZw/qLwzOEKhnejUh5pUBbbYX8MqayI6Ekc8Egb
-         DevwLY5yHCz0r7OizdqTMjyDZ4hVmY23iKv9cdTsyn5gYCjrdP4Q9ieIaO5WXS3N32cb
-         CIkJbX4zLYFXO9jEvfb+6mc0ySRVeBub39T1aWgF0pjKucBxyPekDgwSfL1Xp3AZoCTj
-         xJI5IBMdjr4vqSpNBdyvCdyPN47egIBKxuZNEIOcp7X1Wr8he1VeZggrCiv4aHFjcvky
-         Mi7A==
-X-Gm-Message-State: AOJu0YzcuQP/nRuL1gt7lmfVjqgfI5+4QZV6KFEntQbJdAxBUefqZDl1
-	zKNc6l0v0myHnRlI4AqMIYByJKkq827Z33y6Pptr8/igDmRmPQ==
-X-Google-Smtp-Source: AGHT+IGorl9bAvLp72x4XJJpPTrI40bt9+r0/TDSYg4iITJ+Fvwng5Di1+1+UdUTZ+I8+TPzWx2DvQ==
-X-Received: by 2002:a05:6a20:1048:b0:196:d709:4cfc with SMTP id gt8-20020a056a20104800b00196d7094cfcmr1974527pzc.6.1704409857342;
-        Thu, 04 Jan 2024 15:10:57 -0800 (PST)
-Received: from [127.0.0.1] ([198.8.77.194])
-        by smtp.gmail.com with ESMTPSA id lo2-20020a056a003d0200b006d9bdc0f765sm179484pfb.53.2024.01.04.15.10.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Jan 2024 15:10:56 -0800 (PST)
-From: Jens Axboe <axboe@kernel.dk>
-To: jgross@suse.com, YouHong Li <liyouhong@kylinos.cn>
-Cc: linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, 
- k2ci <kernel-bot@kylinos.cn>
-In-Reply-To: <20231226095701.172080-1-liyouhong@kylinos.cn>
-References: <20231226095701.172080-1-liyouhong@kylinos.cn>
-Subject: Re: [PATCH v2] drivers/block/xen-blkback/common.h: Fix spelling
- typo in comment
-Message-Id: <170440985586.724469.11218716472152091154.b4-ty@kernel.dk>
-Date: Thu, 04 Jan 2024 16:10:55 -0700
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12D7E2D036;
+	Thu,  4 Jan 2024 23:12:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A4408C433C7;
+	Thu,  4 Jan 2024 23:12:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704409964;
+	bh=pna8e9qSOEoIxNWRYi8FBs+Y3qy9hZxpLEHfzkPhAic=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=K7uutDbOmNGjFWw3LNJOkzdRI12thZbYoWybuII94Oumo+hdXEvUXvCMvw0YYbjyB
+	 eAI19/r67/1Wnl5uwHCoIGnbGMn6A7W20m2Mc0fFC2wQ08RxCydThkigdlrdvToazm
+	 on7ChpgLLum9DQ7HJOPa3wnMKRb0lqG4qG5Ld+cjWesc/R9orAtE/A5IOzD/kTQVbD
+	 hujps7Zm+aO0RSUAgfSgA83ELs2aofO/O7faW3mV2ex2gxpQ1JVhY0nx02iFP1fSR1
+	 J4l1Mbgfa8NajA7xR9HQFOaghWhpitCqKQvVrp4FfyoGWXTJE0f2YhrYRfGJdcOF9z
+	 QU7iTVyedRgvw==
+Date: Thu, 4 Jan 2024 15:12:42 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: Maxime Chevallier <maxime.chevallier@bootlin.com>
+Cc: davem@davemloft.net, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, thomas.petazzoni@bootlin.com, Andrew Lunn
+ <andrew@lunn.ch>, Eric Dumazet <edumazet@google.com>, Paolo Abeni
+ <pabeni@redhat.com>, Russell King <linux@armlinux.org.uk>,
+ linux-arm-kernel@lists.infradead.org, Christophe Leroy
+ <christophe.leroy@csgroup.eu>, Herve Codina <herve.codina@bootlin.com>,
+ Florian Fainelli <f.fainelli@gmail.com>, Heiner Kallweit
+ <hkallweit1@gmail.com>, Vladimir Oltean <vladimir.oltean@nxp.com>,
+ =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>, Jesse Brandeburg
+ <jesse.brandeburg@intel.com>, Jonathan Corbet <corbet@lwn.net>, Marek
+ =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>, Piergiorgio Beruto
+ <piergiorgio.beruto@gmail.com>, Oleksij Rempel <o.rempel@pengutronix.de>,
+ =?UTF-8?B?Tmljb2zDsg==?= Veronese <nicveronese@gmail.com>, Simon Horman
+ <horms@kernel.org>
+Subject: Re: [PATCH net-next v5 01/13] net: phy: Introduce ethernet link
+ topology representation
+Message-ID: <20240104151242.52fa8cb4@kernel.org>
+In-Reply-To: <20231221180047.1924733-2-maxime.chevallier@bootlin.com>
+References: <20231221180047.1924733-1-maxime.chevallier@bootlin.com>
+	<20231221180047.1924733-2-maxime.chevallier@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-f0463
 
+On Thu, 21 Dec 2023 19:00:34 +0100 Maxime Chevallier wrote:
+> @@ -2441,6 +2442,7 @@ struct net_device {
+>  #if IS_ENABLED(CONFIG_CGROUP_NET_PRIO)
+>  	struct netprio_map __rcu *priomap;
+>  #endif
+> +	struct phy_link_topology	link_topo;
 
-On Tue, 26 Dec 2023 17:57:01 +0800, YouHong Li wrote:
-> Fix spelling typo in comment.
-> 
-> Reported-by: k2ci <kernel-bot@kylinos.cn>
-> Signed-off-by: liyouhong <liyouhong@kylinos.cn>
-> Reviewed-by: Juergen Gross <jgross@suse.com>
-> Link: https://lore.kernel.org/r/20231226095701.172080-1-liyouhong@kylinos.cn
-> 
-> [...]
+Perhaps others would disagree but can we make this a pointer instead?
+Only allocate it on demand, when first PHY gets attached?
+Both saves space and netdevice.h will no longer need to know the
+definition of the struct.
 
-Applied, thanks!
+Complete noob question but I thought PHYs get attached at ndo_open
+time for drivers, don't they? We shouldn't want to re-ID in that case.
 
-[1/1] drivers/block/xen-blkback/common.h: Fix spelling typo in comment
-      commit: e3d7581cb13b3f2a415e5cd92769b7f4b7d14ed0
+>  	struct phy_device	*phydev;
+>  	struct sfp_bus		*sfp_bus;
+>  	struct lock_class_key	*qdisc_tx_busylock;
 
-Best regards,
--- 
-Jens Axboe
+> @@ -10872,6 +10873,8 @@ struct net_device *alloc_netdev_mqs(int sizeof_priv, const char *name,
+>  #ifdef CONFIG_NET_SCHED
+>  	hash_init(dev->qdisc_hash);
+>  #endif
+> +	phy_link_topo_init(&dev->link_topo);
+> +
+>  	dev->priv_flags = IFF_XMIT_DST_RELEASE | IFF_XMIT_DST_RELEASE_PERM;
+>  	setup(dev);
+>  
 
-
-
+I think you're missing a call to xa_destroy() somewhere, no?
 
