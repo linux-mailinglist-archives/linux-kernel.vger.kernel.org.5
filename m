@@ -1,147 +1,122 @@
-Return-Path: <linux-kernel+bounces-16984-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16985-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44AB58246DA
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 18:07:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C4F7B8246DD
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 18:07:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AF2E4B21305
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 17:07:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5E97C28317E
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 17:07:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A5B32556E;
-	Thu,  4 Jan 2024 17:06:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60A6C25571;
+	Thu,  4 Jan 2024 17:07:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=renesas.com header.i=@renesas.com header.b="mqISRTRf"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Juuz7xeK"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from JPN01-TYC-obe.outbound.protection.outlook.com (mail-tycjpn01on2128.outbound.protection.outlook.com [40.107.114.128])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E2592555B;
-	Thu,  4 Jan 2024 17:06:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=renesas.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=renesas.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JQH4GCPJurcDuAZEF9BVGTIh1vLEm/nYzXStkmyzC5Yw7NXhm+LNIL9/CqUuNNKLeFIeTF4UsXAjepxDDbR4R57oP9WoI0fcVswTo6iNjwIpvrlO+ZxJdoWaUzv3GZuuVJtz/kJoj7yXA7mgPblegVWSKRPZG0rHJp+AsgXJp4XwI8kPTXsOxIRR9yRBaPA1gdpxrKcevrHPa564wvfxlKqc8UkKceiyKKK2jmu7AoODLeojhxFHmJMaCKZ+NfKg6gK/7AvK8xpB3Rs9EtNp+UreVZjfvtCbRcmqMEX3tj74nEcj06NeNGjhLRjlRx0Sc4UtclO1rM+8ZU6AlqAPiA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=KNmilb/7KkyKv07Xx7JUAYvFteiUdGXypgv+zDcwYo8=;
- b=J3HYmT5xNa1lB+7RDOO6V91emXnoZpeRe5nY1XKQZNgPpZitwaVmmWERphdOL6JK55NLX199QtS7OEkgFdGg42HBclwjf2Le/X4PnOPgMug55ImBAkszwL6eAwoRL1Z7d75GToA+Wj/H4cAcqpNemzSm9CJRVDOBXaii0bk9upc/mvmR/6pOWhYBqp6+c30Dv1G/fO/KaBzfuPFfkh4oWVEGg9sJOGLu/rArWCjFDwIEYC99EKQf0rzYyr+RjWXBFG06Yc+DF/iz/NCaYQeZsDtrM3Z1EacsyyaqqUyTzRs08o/hZceNcaIbF+JE1C5n1s5h8XbEW4zce8vp7XLapQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=renesas.com; dmarc=pass action=none header.from=renesas.com;
- dkim=pass header.d=renesas.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=renesas.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KNmilb/7KkyKv07Xx7JUAYvFteiUdGXypgv+zDcwYo8=;
- b=mqISRTRfBVm++/C37Le/WzYQjz0lf7LJvl9B2SpQKDTkclQmLnEd92cMZOadk+Dyoc65SGGgm/asOlLh7RV/wcGNrYfwGdy9baqAtffbAucknYCfcY9ZGK8UyCaWX0MGIotBYUe9yG8jvp8k5Ysg1w7VjGDvC8MS+Z3gSEx5/K0=
-Received: from OS3PR01MB6593.jpnprd01.prod.outlook.com (2603:1096:604:101::7)
- by TYCPR01MB12058.jpnprd01.prod.outlook.com (2603:1096:400:448::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.14; Thu, 4 Jan
- 2024 17:06:51 +0000
-Received: from OS3PR01MB6593.jpnprd01.prod.outlook.com
- ([fe80::6b76:59e:58b9:4a5a]) by OS3PR01MB6593.jpnprd01.prod.outlook.com
- ([fe80::6b76:59e:58b9:4a5a%4]) with mapi id 15.20.7159.013; Thu, 4 Jan 2024
- 17:06:49 +0000
-From: Min Li <min.li.xe@renesas.com>
-To: Lee Jones <lee@kernel.org>, Min Li <lnimi@hotmail.com>
-CC: "richardcochran@gmail.com" <richardcochran@gmail.com>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Subject: RE: [PATCH net-next v5 2/2] ptp: add FemtoClock3 Wireless as ptp
- hardware clock
-Thread-Topic: [PATCH net-next v5 2/2] ptp: add FemtoClock3 Wireless as ptp
- hardware clock
-Thread-Index: AQHaM1UqSeCl1VZK/0S9Jut3Zk6ROrCz61MAgBYNamA=
-Date: Thu, 4 Jan 2024 17:06:49 +0000
-Message-ID:
- <OS3PR01MB6593208C1466417EBFF2F878BA672@OS3PR01MB6593.jpnprd01.prod.outlook.com>
-References: <20231220145917.7076-1-lnimi@hotmail.com>
- <PH7PR03MB70640D32D7AEC51BFE83A02FA096A@PH7PR03MB7064.namprd03.prod.outlook.com>
- <20231221161604.GP10102@google.com>
-In-Reply-To: <20231221161604.GP10102@google.com>
-Accept-Language: en-CA, en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=renesas.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: OS3PR01MB6593:EE_|TYCPR01MB12058:EE_
-x-ms-office365-filtering-correlation-id: f2bba24e-0c5a-422d-9483-08dc0d478a7f
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- pU44rk//H8MDb/wa20CZ/Ers99X1PNF+X8hvWkKek/pJb4cRt/S9AKjnHq1WmOQ8PZOpt0bD48wcVx6PZwHMsd6/lvWpprzrUhAOYtUno2XFgsLpcwdewpnQUuyNByey4/4hQE6fvVNJ1wvoU0rEQWCG5v1g9cEg8JE9R06TcLdaq7wvmWG/Htp5AC5FTjQinj2bwNPoro3o66GWUjYqYYE5ujVT7le+gH0qWhykA8BMsYob/wpv6pHKK7s/ZMJefLABAIam/AFk5iA9b98a1phSt2f3aGSogALQ34UY40Mh9pMzWfFBqZICuuY7c9+YYQlF9jESqr2xzaQVStDPvaCamC6kGouYfrCcNAZs4F7ACnSXgKTuAadIKGYni0hcpuYWQBs1gcuGPdMJJUq6Ft1T05A4hShQ19ba2H8ROTiZSFI2yWIDEsEGQJWRf05Qif6BAgjHIXLfYrQHu2ckkHT6N0GdzBmiFl6aEIOFmr8PDUsELQcwTX26iPeeZ1wiur4Bi1v1ofPUoEgPJCOhmDHrPHB8ntfhd1Sd1Ludsx7tE7aFIZiloRqFsYyFdCEm8Ylv6bdbgZzKJ2DuleX1YE1cN5AUr9H6Xsdefaxk2R0MdJYfbKqfoHmh9RihSq8e
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OS3PR01MB6593.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(396003)(136003)(346002)(366004)(376002)(230922051799003)(451199024)(1800799012)(186009)(64100799003)(38100700002)(122000001)(38070700009)(55016003)(86362001)(26005)(4744005)(316002)(6506007)(9686003)(7696005)(110136005)(54906003)(8676002)(478600001)(71200400001)(8936002)(66476007)(66446008)(64756008)(66556008)(66946007)(76116006)(33656002)(52536014)(41300700001)(2906002)(4326008)(5660300002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?cEFNUVErSnMxT3VYSVZzQURBU2tyRkp6MlNoajJZMFlrVGxKa0FvZ2FJOThm?=
- =?utf-8?B?cHAzVDJCWGFBeGdFWFRTaHB5QTJpYkE2QXgxU0thcGtLcmd1L2s5M3JvaE1t?=
- =?utf-8?B?MXhteXN4d2R2ZFZIUXF5SWxEQ1lLM2ZmQ2RrQWpaSTBDZ2Z5eUJpTHcrV2lD?=
- =?utf-8?B?T1JXT1JCMFZVN21yVzFRTUtvRkQxMFRodHdBMTkxRGhlNTY4SFdLZ1NBNFBI?=
- =?utf-8?B?UVp1R1VmTHhwN2lYYmJmeG1jT1dVRit0ckxtYUxyTTJRU1B1WUhIRWVkMU5C?=
- =?utf-8?B?Zk9uYXlFU04zMlVEb1JvTjhYRW5mTmlCcTVWUEtqTG82aWl3K3dKa0szY0xt?=
- =?utf-8?B?bmkrV1dHQko4UFIzNFBETE4yZkx1eXY4c0RSejd0U0pQWVJiN0ova0xlbnZN?=
- =?utf-8?B?Sno1eHp2bk5SdEE2TzlMalpRbGlDaUZVQzVVWDVmYVo0TURUNHpvU3VybzZV?=
- =?utf-8?B?b2VheUlMKzh6UXVVNmtLR0VrTGlsNjZQUlJyL2wyTGNncHY0VHljMjBuemZ1?=
- =?utf-8?B?UVFtY3VCMHZOZkdwWVlCU2g4Y3gzTllIQnZHSEpmcGV2dldycmtrVGNlVEw1?=
- =?utf-8?B?K0NkV1ZRbHpobjljdTBkMHdkNHlXRDhEUEFxbmI4TEdVZFIrTmxjekwvVXJN?=
- =?utf-8?B?S1FaanVSbmVuWHRmbjdkOVVqVkNvdXpJT1hZcS9RV1V5bjZkSzdqMnluS2Q0?=
- =?utf-8?B?VC9IWmo3NTVtdDdoc3ZUUWdyMGpCUUlSNXl4TSt6Q1RXK2M5a2tPSG9reDlx?=
- =?utf-8?B?RE5PZkVQNElyYkFCdlkzV2pjeG16V1cyZVJFRGZzS0JPeUN4aWxjYklaVVJI?=
- =?utf-8?B?K3NEaTRkNkJtNTJPWkdUOUh4RHUxMHBhSXFSZ0tyMWdwMUg5OEdyVWx5UVNM?=
- =?utf-8?B?djUrR0orV3VFdVVLMXptNFVpWGZNZzlyZmVod1lWam9SZlVMMHBOY1VjSFFR?=
- =?utf-8?B?aDFKMmUwNStRemgrYlEyUk5zVldvRjUvckpXTjFCWDdEVThDZHlYdjlyZzBT?=
- =?utf-8?B?elJNVDhiZXoxZGJCWGp6Q1AwUzc2Q2lnRUhWcXc2M0xkaVpYaXA5N05vaTZX?=
- =?utf-8?B?TnVDT01nQU9ab3MrenZrcFhtaGUxL2JLMVFEa2NoL1pPbVlMSXhzd2xMTmxs?=
- =?utf-8?B?Q0lLeTAzMnRvTXgzTzRBd2t1c0U2aldBNDZtb1ZYL2JWbXluRklvWlVPQXRF?=
- =?utf-8?B?eW5KcnhkMnJFWUdaRlR6M2tJOHBSV2FvQnUxd3RxdGIwUWExbXZUWVl5M1Uz?=
- =?utf-8?B?Z0xTWGFqN3l0ZWZDenZpanhCZEY1WjdNWGd3UVZCV1lqL2xOenlXMXhMcXU4?=
- =?utf-8?B?ZFJtS2xCSlV1K3BwY29YenRlVHpWR2lIeVd1aDE2NlBBTGNpNVI3a1hxOEdy?=
- =?utf-8?B?WlZoMkZaQjJZUXNhS2ovcWJIUC9wQkdWaGFKdm9BaDhheWhtbnp4QWh4dTQv?=
- =?utf-8?B?NGlVdDJwY1p0WitDZjBvZkdTQXBOMzBqdjhUUEFiajhqKzVFK1JlUFZrUnM4?=
- =?utf-8?B?OWk1Rndncm04SDcvaERoNllNeFRCSWVTclpkYzVCMVZLMXB4ejNRWm1UcnpY?=
- =?utf-8?B?S2RPL1JpMmcxUHZSL25nditEWUpGNGhQTlh5WmxhY2hrVTdvTlFFNnlXZDNn?=
- =?utf-8?B?eDJLd0JBOGN5K3o4bmFGUHdyWHY5czFwMlZRYWZielVFa1pGYXl2WXBZR2o4?=
- =?utf-8?B?TW5qOVFvMHl6NkVaazZvUmJWbTBsZHZpRjlkdDkwS0lyUC96Y2Z3dFcyNGha?=
- =?utf-8?B?SVNzYXN5RGV5QnljVzE2eVU1bTU0N3ZsLzM4M01CY2FNOXl4cGNSeWh1Ly9X?=
- =?utf-8?B?Sld1enJZTVJGVEdjU09GWnhsU2JLU3VnSy8zTk8xYzhYSVk2dlV5YWk1VDdE?=
- =?utf-8?B?S1ZFSDRMMkwzRDNFOStnb0l4N2QyVTEwYXJMNnRjcitncTN3dVpvQmNnWXNz?=
- =?utf-8?B?amFZSUEwTzBFck1qU01mbmpFQnZENklqc2EzTnhZREY3eENvTDZKTThNMGY3?=
- =?utf-8?B?NkFVZ2s4YjJDeEdzQit3SDBrcVF2MGVkUGx3ZitheC90L211QVZEY3dzazIz?=
- =?utf-8?B?ckh2Vjh1UHFzeUI5QU9vQmpubFN0V1Q1dngwa2VPTU5WQkswR1EwNHZNYmh5?=
- =?utf-8?Q?dUAkMHxbmF5QsMu3LdgvVAMom?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2ACB62556D;
+	Thu,  4 Jan 2024 17:07:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-50e7f58c5fbso955074e87.1;
+        Thu, 04 Jan 2024 09:07:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704388039; x=1704992839; darn=vger.kernel.org;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=mUPzHOnfF3iea/GuFmKJkEyxB16BB6l3SJBZkhRVK1U=;
+        b=Juuz7xeKWaK/RfLtDlPHVIMZz+oHr8YDuBPVf5Ks54TkfanJ/j3yPGVknvlQSGIAVR
+         2K+GDcejho/uRC7XjBgupKhkU+7admHPZwIFvSXAMS8E0XGt9eD6MpyVP2vZo9MnPcLu
+         Ly8siHbZCn9vKmatUIWsCJsIZNDONacddqwMCg6CjAlsJWbHCvrNb6W9TRifTYJk/Uxf
+         omD52+XaFL2vC8DmB+gWUJfsPHyJrBEQ/4jRzsnzqvTNZro/ZTUEOdEgK0QtlG7FxmRt
+         tcWCIugPt3qPbnDFqf8iMAjLMyMWXECRk4BvSYW5GCjfQjgFELfyN0wDHNIGD44wwYzr
+         uZjA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704388039; x=1704992839;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=mUPzHOnfF3iea/GuFmKJkEyxB16BB6l3SJBZkhRVK1U=;
+        b=s4QMZNAwPbhCr4vLRcd8A+ztpj37DaQG8yBQMRVR3VMJJFTEDwzNKCQBaZoHC9zPdJ
+         Ncgd20QxW+MqU4E4AlHSsX2dR/FnvnknFRnvM1ppmoHYva3Ch13UNnxCFxqVM0ISWRrG
+         es612hyvEAXSbgDPYqBJ3WT5pMeu12j3ozVOGo+wMEttb517Qj244B/wp5jxEIM7lqr1
+         XoINPH+Z34zGf81NJCqDj2kKC9D4c55gYLPTCr2TEckWDmh21OZeg59oEdUqoBisM1Ao
+         ZShn7QHvUX0bZFudfwF01B38qLHTK7Wll4KMc9/eGH7KajdQxgHcz1FPmaS140O0/Xih
+         t59A==
+X-Gm-Message-State: AOJu0YzwQIJNZQx5usKiz+BMy3TNgMN7M7QYA1raQkfHwNidPueVS5zC
+	g4tQQ/qcm0z88hzN9gsBiTY=
+X-Google-Smtp-Source: AGHT+IEnt/+N2u90wK9ceSSUrk8ig+m7VpFGqLCI4F+9HsEKK64haRTzaqA0g/ZbEfveDAVR/ho3lA==
+X-Received: by 2002:ac2:4c18:0:b0:50e:8f00:f182 with SMTP id t24-20020ac24c18000000b0050e8f00f182mr521046lfq.115.1704388038677;
+        Thu, 04 Jan 2024 09:07:18 -0800 (PST)
+Received: from [127.0.1.1] (2a02-8389-41cf-e200-1f94-8caf-c195-798f.cable.dynamic.v6.surfer.at. [2a02:8389:41cf:e200:1f94:8caf:c195:798f])
+        by smtp.gmail.com with ESMTPSA id hg2-20020a170906f34200b00a26b361ec0esm12820005ejb.118.2024.01.04.09.07.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Jan 2024 09:07:18 -0800 (PST)
+From: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+Date: Thu, 04 Jan 2024 18:07:12 +0100
+Subject: [PATCH] usb: typec: tipd: fix use of device-specific init function
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: renesas.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: OS3PR01MB6593.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f2bba24e-0c5a-422d-9483-08dc0d478a7f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Jan 2024 17:06:49.6654
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 6vRxmn81/v+XOOSFvzos5/bvoSw5DMe1XVGLQhUM3c+B2PfK5g5Tca8bnPOdpEyGGbVTDRvm+lZmQ7dyk1IUuQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYCPR01MB12058
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240104-dev_spec_init-v1-1-1a57e7fd8cc8@gmail.com>
+X-B4-Tracking: v=1; b=H4sIAL/llmUC/x3MTQqAIBBA4avIrBNUjH6uEiGhY83GREMC8e5Jy
+ 2/xXoWMiTDDyiokLJTpDh1yYGCvI5zIyXWDEkoLKTR3WEyOaA0Ferh2fp6kVMtoHfQmJvT0/r9
+ tb+0DXGz/Dl8AAAA=
+To: Heikki Krogerus <heikki.krogerus@linux.intel.com>, 
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+ Roger Quadros <rogerq@kernel.org>, 
+ Javier Carrasco <javier.carrasco@wolfvision.net>
+Cc: linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Javier Carrasco <javier.carrasco.cruz@gmail.com>
+X-Mailer: b4 0.13-dev-4e032
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1704388037; l=1124;
+ i=javier.carrasco.cruz@gmail.com; s=20230509; h=from:subject:message-id;
+ bh=Hbb/poJIkVKNkLIjP1N6v5qai0RdKXdnO+ikZ9Ptu9E=;
+ b=HB5CR8Sel1fxfT3bpyhVa9d7eOorpKu2tyGnP1jubGB/mBJ2hpNeE39T2GB5nyFn2LoVQ4Bq4
+ 5272QhLogkgDEn01bBgbusUxniysU5mvNwgcx9GgKnPjevpbbmk4sRJ
+X-Developer-Key: i=javier.carrasco.cruz@gmail.com; a=ed25519;
+ pk=tIGJV7M+tCizagNijF0eGMBGcOsPD+0cWGfKjl4h6K8=
 
-PiANCj4gQXMgYWJvdmUuICBXaHkgaXMgdGhpcyBiZWluZyBzaG92ZWQgaW4gaGVyZT8NCj4gDQo+
-ID4gKyNlbmRpZg0KPiANCj4gLS0NCg0KSGkgTGVlDQoNClRoZSByZWFzb24gSSBwdXQgdGhlbSBo
-ZXJlIGlzIHdlIGhhdmUgYW5vdGhlciBkcml2ZXIgdW5kZXIgbWlzYyB0aGF0IGFsc28gbmVlZHMg
-dG8gcmVhZC93cml0ZSB0aGUgZGV2aWNlDQphbmQgcGFyc2UgdGhlIGZpcm13YXJlLiBXZSBoYXZl
-bid0IHN1Ym1pdHRlZCB0aGUgbWlzYyBkcml2ZXIgdG8gbGludXggeWV0IGJ1dCB3ZSBtYWludGFp
-biBpdCB0aHJvdWdoIG91cg0KbGludXggcmVwbyBhbmQgZG8gbmVlZCB0aGUgaW50ZXJmYWNlIGxp
-a2UgdGhpcy4gVGhhbmtzDQoNCk1pbg0K
+The current implementation supports device-pecific callbacks for the
+init function with a function pointer. The patch that introduced this
+feature did not update one call to the tps25750 init function to turn it
+into a call with the new pointer in the resume function.
+
+Fixes: d49f90822015 ("usb: typec: tipd: add init and reset functions to tipd_data")
+Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+---
+ drivers/usb/typec/tipd/core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/usb/typec/tipd/core.c b/drivers/usb/typec/tipd/core.c
+index a956eb976906..8a7cdfee27a1 100644
+--- a/drivers/usb/typec/tipd/core.c
++++ b/drivers/usb/typec/tipd/core.c
+@@ -1495,7 +1495,7 @@ static int __maybe_unused tps6598x_resume(struct device *dev)
+ 		return ret;
+ 
+ 	if (ret == TPS_MODE_PTCH) {
+-		ret = tps25750_init(tps);
++		ret = tps->data->init(tps);
+ 		if (ret)
+ 			return ret;
+ 	}
+
+---
+base-commit: e7d3b9f28654dbfce7e09f8028210489adaf6a33
+change-id: 20240104-dev_spec_init-4df8711295cd
+
+Best regards,
+-- 
+Javier Carrasco <javier.carrasco.cruz@gmail.com>
+
 
