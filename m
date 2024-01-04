@@ -1,64 +1,64 @@
-Return-Path: <linux-kernel+bounces-16339-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16341-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 01BF9823D07
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 08:55:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 98A56823D0C
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 08:56:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CA2AAB22E49
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 07:55:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 862901C211FC
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 07:56:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24FB6200BA;
-	Thu,  4 Jan 2024 07:55:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DA4F200B2;
+	Thu,  4 Jan 2024 07:55:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="sQ12h6wX"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="IX3Waag4"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDBF0200A6
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 07:55:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22886200A8
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 07:55:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-5555f9061b9so308268a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 23:55:05 -0800 (PST)
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-5534dcfdd61so369486a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 23:55:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704354904; x=1704959704; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1704354952; x=1704959752; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=nuGydr/gDgSM1WvoXPT9GKh7DxxNbDdyl7y5Lm4/hoU=;
-        b=sQ12h6wXZqXZhOLo5fh5RJWot5JV3iiGnMbOV5DUyL5HkNQcwxClrsH9o/JcVfs5cJ
-         9wbnUrqHXSsMnzQR6icIAgfCzHTedq5IckSytA0i3NUALOI/WIdzShMlO+fXNu+UZ8lC
-         w+3A/leWDuLr/9tvghDJZRUHEX2ISo3YRxNtyb6m+2DUBXm2cDLok13THrYgfQczwpKK
-         i9TEM/8Qkv9Ts4s/ZsIvT3cNW21Oj9OH+dEkTF99Yfl1bdTK1snnjxlln/qy8mre2EMT
-         6T8nzYBFc6xyIDps4fbyz+k6z1y4ntTzbZ9H6+R6zhr0RkPXfpTGswqpQuXf2lR+EVhQ
-         Z2kA==
+        bh=QDvTOk/KWzeqBKI7Ma65OT376dw//nG1/WVMf4soPAU=;
+        b=IX3Waag4v0ZuVdclHSR56wLHHC65pcHqXVIwhfbXJmWMIK1a5JPWHRwFv2y3P4Xk/1
+         QUAkCaB7d3gyYISYR2BStq+QfWwHX6nAoixoQ7XykmUn2+hCbHTPBZV2rLwH4UHy33k+
+         skzb1DPQYIZDmbVV3+hTsfMnWXV7Xy+8pdI9cJzr5TUbCUWfWc2ODVW0Hh4sFr9YpQA2
+         SEyAwaixmDqf9X+C0j5lJ+dRD3bENvftVpVZwLf38p9cNeQkALPLlsaKTZbcvPKhKJMh
+         mSg/IYDyH9wCcNJTGz1B+n1ak9cwZEf2reM7lHgIac/kMGZtJyZdVEaiTxjvKRhhXfn1
+         BVtg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704354904; x=1704959704;
+        d=1e100.net; s=20230601; t=1704354952; x=1704959752;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=nuGydr/gDgSM1WvoXPT9GKh7DxxNbDdyl7y5Lm4/hoU=;
-        b=DDCQizSoP4jYzbbnoVjOnV2GrYK6GMn0KVxMbO8w48d6CL10xKNJPa/wTgpVnaVE3x
-         SOYgDB3UyAaGHFlyHnVPXKsj4uBh2G1FzX7J4KqLnFghwudtQOVXTQvdJHa+r2SVNql5
-         Wbl88rA4L9jM655aCB9tqiOS6aB6JIThLJxh0EinrKSKmnuG+ShhroGouzcGaDGPuLQN
-         Ms7aqwhFMdzR9HyrXViE1OHXmFIKmIfAIIWc4ysolfklsyfyXwrtyvv1E+pws5Kzy6Pm
-         aWpe726yPElcFun0dyzoHh9htHZ20Rkh7I+OBGywXw9FVdOK/QwNBYiZ8DcxFJryWNlI
-         l3zQ==
-X-Gm-Message-State: AOJu0Yw06NmQuGqgAbrt8R80D2HwmcGxQm3iCw05ImZWggUNEMoZqqu6
-	aCo1e7DJKH+3/C4fx8QqOgcqvnwA9Q82TQ==
-X-Google-Smtp-Source: AGHT+IGz18Eo5pXTG40ujd57tImhyWlrvlNg2MQqY8erFhZ0AIGttr4OGgObKkqG5JWEncyVsTGWCg==
-X-Received: by 2002:a05:6402:d49:b0:556:f0ef:2769 with SMTP id ec9-20020a0564020d4900b00556f0ef2769mr88238edb.80.1704354904314;
-        Wed, 03 Jan 2024 23:55:04 -0800 (PST)
+        bh=QDvTOk/KWzeqBKI7Ma65OT376dw//nG1/WVMf4soPAU=;
+        b=f7KPWSE2HaAi34UF/2Ch2Lf1rbbdHrGEWNjWAhCZPaOxr+ZMfhhuRGS+16Tqw3D2y5
+         G/JDo9pEL/tpot+cbYQuxO1WJxXoYMVnzrEZHLXOq1PtVBGGTuKD7i7ASQ+VZh5OiM2B
+         E2EDkfXkBlx9abE9EkfJ9lyVcoYrMz2g8Yc6dag59qGOpucE8gjVXa7/h+Lg0pMpzRu2
+         Z+JQjcoGzIFcHpYpjueKchHX8pOIAMBsE8SyasJic65ncS1dOo/xVeJBZt/5LaEw5e/V
+         WNUp5QcHDUz5vIltPWVwXO3s3Wq8jgV8UcxRSbK1NXZv19GD8bSQxbzNbVfn8GngrVY5
+         JPMw==
+X-Gm-Message-State: AOJu0Yz4IXaSDqmy3r6V2VGdfhG4GjFORM9mf2vvhlngKu/tsXv7o/YH
+	NxBUPZOQHLHAyIYelxcyUKTsOE8+CJSyeQ==
+X-Google-Smtp-Source: AGHT+IHaX3ZpZ6EXao96iHCG12YIB9kNdfzjUv/T9dHV6+c96hrdFRrAwB6VR2ynrYi+brx09lQ9ZA==
+X-Received: by 2002:a50:aa9e:0:b0:552:574a:5390 with SMTP id q30-20020a50aa9e000000b00552574a5390mr166263edc.15.1704354952604;
+        Wed, 03 Jan 2024 23:55:52 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id t15-20020a056402020f00b005534057c72dsm18301480edv.18.2024.01.03.23.55.03
+        by smtp.gmail.com with ESMTPSA id t15-20020a056402020f00b005534057c72dsm18301480edv.18.2024.01.03.23.55.51
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Jan 2024 23:55:03 -0800 (PST)
-Message-ID: <121b9310-3008-48b0-9393-26033250201a@linaro.org>
-Date: Thu, 4 Jan 2024 08:55:03 +0100
+        Wed, 03 Jan 2024 23:55:52 -0800 (PST)
+Message-ID: <d70a035b-b21f-42b1-a2e5-5a2341bb48e6@linaro.org>
+Date: Thu, 4 Jan 2024 08:55:51 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,18 +66,15 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 5/5] arm64: dts: ti: am642-sr-som: enable iep for pru
- ethernet ports
+Subject: Re: [PATCH] dt-bindings: security: tpm: Convert TPM tis spi to yaml
 Content-Language: en-US
-To: Josua Mayer <josua@solid-run.com>, Nishanth Menon <nm@ti.com>,
- Vignesh Raghavendra <vigneshr@ti.com>, Tero Kristo <kristo@kernel.org>,
- Rob Herring <robh+dt@kernel.org>,
+To: Michal Simek <michal.simek@amd.com>, linux-kernel@vger.kernel.org,
+ monstr@monstr.eu, michal.simek@xilinx.com, git@xilinx.com
+Cc: Conor Dooley <conor+dt@kernel.org>, Jarkko Sakkinen <jarkko@kernel.org>,
  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>
-Cc: linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240103-add-am64-som-v1-0-dda1f9227aef@solid-run.com>
- <20240103-add-am64-som-v1-5-dda1f9227aef@solid-run.com>
+ Peter Huewe <peterhuewe@gmx.de>, Rob Herring <robh+dt@kernel.org>,
+ devicetree@vger.kernel.org
+References: <0f59acbb394cd09ae2a7950d8c01f8e40abf9f34.1704272496.git.michal.simek@amd.com>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -123,18 +120,21 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240103-add-am64-som-v1-5-dda1f9227aef@solid-run.com>
+In-Reply-To: <0f59acbb394cd09ae2a7950d8c01f8e40abf9f34.1704272496.git.michal.simek@amd.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 03/01/2024 12:27, Josua Mayer wrote:
-> AM64 SoCs have "Industrial Ethernet Peripherals" (IEP). Link them to the
-> icssg pru ethernet on solidrun am64s som.
+On 03/01/2024 10:01, Michal Simek wrote:
+> Convert binding from txt to yaml. Enforce that node name starts with tpm@
+> which should be generic enough for these devices.
+> Deprecating tcg,tpm_tis-spi because it is using "_" which shouldn't be used
+> by in compatible string that's why infineon compatible string is used for
+> file name too.
+> Also add current TPM maintainers and maintainers of this dt binding too.
 > 
-> Signed-off-by: Josua Mayer <josua@solid-run.com>
-> ---
+> Signed-off-by: Michal Simek <michal.simek@amd.com>
 
-Why this is not part of original submission?
+https://lore.kernel.org/all/953fd4c7519030db88e5b5e12ab6307414ebdd21.1702806810.git.lukas@wunner.de/
 
 Best regards,
 Krzysztof
