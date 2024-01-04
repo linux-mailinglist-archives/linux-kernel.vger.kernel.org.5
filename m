@@ -1,96 +1,109 @@
-Return-Path: <linux-kernel+bounces-16750-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16759-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3127682434B
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 15:09:02 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 35E1682436C
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 15:17:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 402711C21A44
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 14:09:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B0DA1B242F3
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 14:17:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4F02224E3;
-	Thu,  4 Jan 2024 14:08:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B98322EE1;
+	Thu,  4 Jan 2024 14:17:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="I04Ax1cp"
+	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="hB3dCT7j"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90188224CA
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 14:08:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=opensource.cirrus.com
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-	by mx0a-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4046bEgX022991;
-	Thu, 4 Jan 2024 08:08:41 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-	date:from:to:cc:subject:message-id:references:mime-version
-	:content-type:in-reply-to; s=PODMain02222019; bh=HoJJ0zAeIazoo1E
-	QZbHCtVJoKQByFciovvb6JqxXPos=; b=I04Ax1cpzLGXs5eV+UYFkUJlQW+ym7a
-	+w5wx9MUYrYTzDp9l0I7j2h53qgPC84/8w8xiJe1CdUtfCPWl9doVS6wAifR5lmG
-	JwHoqq+fknUDRPl+IyWx4Xv5Rg5vzNt75wXPRBh6HUUka5TunK51mPwLk4EfeI+h
-	PtwrpncE3PxrLjBYTeDSpvzHRrtz7aL/yhP8Bq0KMLjXQF22IBr/cPsyyBSbJ+sN
-	VIl5m5w6bNq9xD0GDbFWgMEoOuU+5Fs0iYp5JlD93QDP5ozertAoqR0G9SWjqMz7
-	L440AgOmNX/1s1RTtd9WbzuvESA/6a0bxokD2zeJ3AXeXM98VmTXNjA==
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3vahg2etp3-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 04 Jan 2024 08:08:40 -0600 (CST)
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 4 Jan
- 2024 14:08:38 +0000
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.40 via Frontend
- Transport; Thu, 4 Jan 2024 14:08:38 +0000
-Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
-	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 8F1EB474;
-	Thu,  4 Jan 2024 14:08:38 +0000 (UTC)
-Date: Thu, 4 Jan 2024 14:08:38 +0000
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-To: Dmitry Antipov <dmantipov@yandex.ru>
-CC: Mark Brown <broonie@kernel.org>,
-        Greg Kroah-Hartman
-	<gregkh@linuxfoundation.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] regmap: fix kcalloc() arguments order
-Message-ID: <20240104140838.GF14858@ediswmail.ad.cirrus.com>
-References: <20231220175829.533700-1-dmantipov@yandex.ru>
+Received: from smtp.smtpout.orange.fr (smtp-24.smtpout.orange.fr [80.12.242.24])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2360F225A5
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 14:17:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=wanadoo.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
+Received: from [192.168.1.18] ([92.140.202.140])
+	by smtp.orange.fr with ESMTPA
+	id LOOSrLWbxQhj4LOPRruE0t; Thu, 04 Jan 2024 15:09:22 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+	s=t20230301; t=1704377362;
+	bh=jbwAKIGk/qogUj3VanIMfnGkTuiYS2UsI5HBNN8+DoQ=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To;
+	b=hB3dCT7jJhJAQj3p40Zm+dmv99GGpaOM1ttYQw4dURZYnkU5fM4QdXHCDcO1lcYfC
+	 ssdqTOPpKQAg9Wmjemm5GjQs7v8reu3zeW9FLU2pS0yk5f9QUW1WjmZqGq/ZvtYWns
+	 xPu7tVtZ3C01Fo6yy8smn0H+PBhDp0GF4pHP7dbLpQXUbtkjFojBSX4NcK+NV0Sweg
+	 IZK7gchUvmWjfbHyQOkX8maWV6iUkCHKdrtQJCvSnkoWc+cRuy7I4L6kuy81N8vHMA
+	 jBljfJ2sQ6pBL7WKOl1gNazqqavhdGBxIKdvbvavESj7XXX9/YhtnWo9/zxdZ9/TJb
+	 P2heprm3bQTYw==
+X-ME-Helo: [192.168.1.18]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Thu, 04 Jan 2024 15:09:22 +0100
+X-ME-IP: 92.140.202.140
+Message-ID: <f3a0ca01-f94d-41e2-be1c-a098f3e8c2fa@wanadoo.fr>
+Date: Thu, 4 Jan 2024 15:09:21 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20231220175829.533700-1-dmantipov@yandex.ru>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-GUID: Q_Y_tU77_X_IfFYRXl0Sa3rdCWneEQAy
-X-Proofpoint-ORIG-GUID: Q_Y_tU77_X_IfFYRXl0Sa3rdCWneEQAy
-X-Proofpoint-Spam-Reason: safe
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] drm/panel: ltk050h3146w: only print message when GPIO
+ getting is not EPROBE_DEFER
+Content-Language: fr
+To: Quentin Schulz <foss+kernel@0leil.net>,
+ Neil Armstrong <neil.armstrong@linaro.org>,
+ Jessica Zhang <quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>
+Cc: Heiko Stuebner <heiko@sntech.de>, dri-devel@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org,
+ Quentin Schulz <quentin.schulz@theobroma-systems.com>
+References: <20240104-ltk-dev_err_probe-v1-0-8ef3c0b585d8@theobroma-systems.com>
+ <20240104-ltk-dev_err_probe-v1-1-8ef3c0b585d8@theobroma-systems.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+In-Reply-To: <20240104-ltk-dev_err_probe-v1-1-8ef3c0b585d8@theobroma-systems.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Wed, Dec 20, 2023 at 08:58:19PM +0300, Dmitry Antipov wrote:
-> When compiling with gcc version 14.0.0 20231220 (experimental)
-> and W=1, I've noticed a bunch of four similar warnings like:
+Le 04/01/2024 à 13:41, Quentin Schulz a écrit :
+> From: Quentin Schulz <quentin.schulz@theobroma-systems.com>
 > 
-> drivers/base/regmap/regmap-ram.c: In function '__regmap_init_ram':
-> drivers/base/regmap/regmap-ram.c:68:37: warning: 'kcalloc' sizes specified with
-> 'sizeof' in the earlier argument and not in the later argument [-Wcalloc-transposed-args]
->    68 |         data->read = kcalloc(sizeof(bool), config->max_register + 1,
->       |                                     ^~~~
+> devm_gpiod_get_optional may return EPROBE_DEFER in case the GPIO
+> controller isn't yet probed when the panel driver is being probed.
 > 
-> Since 'n' and 'size' arguments of 'kcalloc()' are multiplied to
-> calculate the final size, their actual order doesn't affect the
-> result and so this is not a bug. But it's still worth to fix it.
+> In that case, a spurious and confusing error message about not being
+> able to get the reset GPIO is printed even though later on the device
+> actually manages to get probed.
 > 
-> Signed-off-by: Dmitry Antipov <dmantipov@yandex.ru>
+> Use dev_err_probe instead so that the message is only printed when it
+> truly matters.
+> 
+> Cc: Quentin Schulz <foss+kernel@0leil.net>
+> Signed-off-by: Quentin Schulz <quentin.schulz@theobroma-systems.com>
+
+Reviewed-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+
 > ---
+>   drivers/gpu/drm/panel/panel-leadtek-ltk050h3146w.c | 6 ++----
+>   1 file changed, 2 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/panel/panel-leadtek-ltk050h3146w.c b/drivers/gpu/drm/panel/panel-leadtek-ltk050h3146w.c
+> index 30919c872ac8d..ecfa4181c4fd9 100644
+> --- a/drivers/gpu/drm/panel/panel-leadtek-ltk050h3146w.c
+> +++ b/drivers/gpu/drm/panel/panel-leadtek-ltk050h3146w.c
+> @@ -646,10 +646,8 @@ static int ltk050h3146w_probe(struct mipi_dsi_device *dsi)
+>   		return -EINVAL;
+>   
+>   	ctx->reset_gpio = devm_gpiod_get_optional(dev, "reset", GPIOD_OUT_LOW);
+> -	if (IS_ERR(ctx->reset_gpio)) {
+> -		dev_err(dev, "cannot get reset gpio\n");
+> -		return PTR_ERR(ctx->reset_gpio);
+> -	}
+> +	if (IS_ERR(ctx->reset_gpio))
+> +		return dev_err_probe(dev, PTR_ERR(ctx->reset_gpio), "cannot get reset gpio\n");
+>   
+>   	ctx->vci = devm_regulator_get(dev, "vci");
+>   	if (IS_ERR(ctx->vci)) {
+> 
 
-Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-
-Thanks,
-Charles
 
