@@ -1,221 +1,231 @@
-Return-Path: <linux-kernel+bounces-16464-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16468-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C763823EE4
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 10:47:48 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 77974823EFF
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 10:55:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E00B12866FB
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 09:47:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AD0F9B24EAF
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 09:55:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA8E7208C5;
-	Thu,  4 Jan 2024 09:47:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A436320DE2;
+	Thu,  4 Jan 2024 09:54:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="etnyfX8x"
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="0uTSwqWG";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="ZQDdmhGK";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="0uTSwqWG";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="ZQDdmhGK"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 524A820B06
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 09:47:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
-Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-50e7abe4be4so382961e87.2
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 01:47:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1704361656; x=1704966456; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=tjIOzASFKXtnzifSOlgR7uNlr9WKjwKVoy2m9WsQklE=;
-        b=etnyfX8x7PnfmQK9s15o6DjiIedecs7X1ib0odYUMizoHhl9D7GXka3VfufaBx8Kd0
-         gNZHjoeqNhbOSJPNeuOMP6TJYE0MZ17UsVpt4gQbApt1K2gXZMTZSou/9DQcYEm5X0Ae
-         mtFlCl4Xih36VVB10MYYWuXA7Z9lo0SkMOsJ89GmqW3kzkl5KJWUW4XUf/4YbQNhfXMA
-         LiiiHbXvcDIwNcoycf2ValLslh/GK+Ki+Daqsuldn8PMXkwHHBx7jSlcsxt92ZcCpDmX
-         kLSzD9ET6eCsuec8/3IbxFhnAKBQrh28lnjNf00zv4ezY+W/Pl2Yb/xdkSIKJiMDQQ8z
-         pHaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704361656; x=1704966456;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tjIOzASFKXtnzifSOlgR7uNlr9WKjwKVoy2m9WsQklE=;
-        b=gltV/IvsXKv9AzDHP2O+SZuLPjtij/mqYGCXgdE/Vmiv7hzn8SL/fMeExn4reDPEZR
-         RJ6ho9L24dwbBmOOS1oBxl4w2o/hrGdWNNU/uzSHPNTb7JxIbQKcEPC8bst0cIwGzdxU
-         pWzZHGPIot6pk//r/bJUIk9kHnKrWX1J7GcI/efzQiwu9WjAESsGHU+8BTJ9OQdHhIfg
-         iFTVzvWs6vxnLK2tNzgj0qCNSHr/VQX4Cc5GMkjdog0ZPHDQS8fkilX+XKYvT488u0JJ
-         BVw7devIwIj6NF8F671Z82J7BkpEdWNDn7Y+xPRm7xAW6eC7VdMT1TmcvgNc/gXr32dK
-         Bg1A==
-X-Gm-Message-State: AOJu0Yzk42qY5CULfEzXOp7pcdCFKeLOOZ1x/uzjRNp9sYDIIE65Odv1
-	9R6F8/6Kw8z7pCnoeA5voGW/3oDcxhMlKg==
-X-Google-Smtp-Source: AGHT+IHokDrCyFOkfMV2ZJkoKUpPp5Z2frj1npon3QRHNkknpBQw7ofTk3TqPl1odKml1sS1MObQxw==
-X-Received: by 2002:a05:6512:2141:b0:50e:6a07:5c02 with SMTP id s1-20020a056512214100b0050e6a075c02mr201705lfr.15.1704361656189;
-        Thu, 04 Jan 2024 01:47:36 -0800 (PST)
-Received: from localhost (2001-1ae9-1c2-4c00-20f-c6b4-1e57-7965.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:20f:c6b4:1e57:7965])
-        by smtp.gmail.com with ESMTPSA id p9-20020a170907910900b00a26ac5e3683sm12848872ejq.100.2024.01.04.01.47.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Jan 2024 01:47:35 -0800 (PST)
-Date: Thu, 4 Jan 2024 10:47:34 +0100
-From: Andrew Jones <ajones@ventanamicro.com>
-To: Leonardo Bras <leobras@redhat.com>
-Cc: guoren@kernel.org, paul.walmsley@sifive.com, palmer@dabbelt.com, 
-	panqinglin2020@iscas.ac.cn, bjorn@rivosinc.com, conor.dooley@microchip.com, 
-	peterz@infradead.org, keescook@chromium.org, wuwei2016@iscas.ac.cn, 
-	xiaoguang.xing@sophgo.com, chao.wei@sophgo.com, unicorn_wang@outlook.com, uwu@icenowy.me, 
-	jszhang@kernel.org, wefu@redhat.com, atishp@atishpatra.org, 
-	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, Guo Ren <guoren@linux.alibaba.com>
-Subject: Re: Re: Re: [PATCH V2 1/3] riscv: Add Zicbop instruction definitions
- & cpufeature
-Message-ID: <20240104-4ecfb92d2f8c95fa773ca695@orel>
-References: <20231231082955.16516-1-guoren@kernel.org>
- <20231231082955.16516-2-guoren@kernel.org>
- <ZZWs0C19tz763FnH@LeoBras>
- <20240103-0c96ceea88523b7b946e4ba8@orel>
- <ZZXEpU-JzsvD2UDW@LeoBras>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55218208B9;
+	Thu,  4 Jan 2024 09:54:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 3E93921E45;
+	Thu,  4 Jan 2024 09:54:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1704362064; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=IzesxlcAl0bN1e6lTNS2mKw+gXmikmCcEmTGGck0Bk4=;
+	b=0uTSwqWGukZOa1jS1HwOB7kO4VZAZuoeHvxREnZMcWyGqKi0fGOnjQMrA7YQaJ5yqVOrJS
+	4ZoGKWdU8AcWrPP+ZedWLDergRlfhOZ3y6QYoGbdcuLASkBoUwwgHd5PBVwwqhlh4OzxDk
+	zdaNfrSXtrVWRcGhxGaHtS3g5kmig38=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1704362064;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=IzesxlcAl0bN1e6lTNS2mKw+gXmikmCcEmTGGck0Bk4=;
+	b=ZQDdmhGK23qwGI9VuZqXiu5vJ0tDd/JDQZzyIMRvSau7ymLaeVv2++9DQxsrIJ5gPaTnUs
+	ySGJ0mCnOCjNOTDg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1704362064; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=IzesxlcAl0bN1e6lTNS2mKw+gXmikmCcEmTGGck0Bk4=;
+	b=0uTSwqWGukZOa1jS1HwOB7kO4VZAZuoeHvxREnZMcWyGqKi0fGOnjQMrA7YQaJ5yqVOrJS
+	4ZoGKWdU8AcWrPP+ZedWLDergRlfhOZ3y6QYoGbdcuLASkBoUwwgHd5PBVwwqhlh4OzxDk
+	zdaNfrSXtrVWRcGhxGaHtS3g5kmig38=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1704362064;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=IzesxlcAl0bN1e6lTNS2mKw+gXmikmCcEmTGGck0Bk4=;
+	b=ZQDdmhGK23qwGI9VuZqXiu5vJ0tDd/JDQZzyIMRvSau7ymLaeVv2++9DQxsrIJ5gPaTnUs
+	ySGJ0mCnOCjNOTDg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 94A9D137E8;
+	Thu,  4 Jan 2024 09:54:23 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id DELlIk+AlmXPZwAAD6G6ig
+	(envelope-from <tzimmermann@suse.de>); Thu, 04 Jan 2024 09:54:23 +0000
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: ardb@kernel.org,
+	tglx@linutronix.de,
+	mingo@redhat.com,
+	bp@alien8.de,
+	dave.hansen@linux.intel.com,
+	x86@kernel.org,
+	hpa@zytor.com,
+	bhelgaas@google.com,
+	arnd@arndb.de,
+	zohar@linux.ibm.com,
+	dmitry.kasatkin@gmail.com,
+	paul@paul-moore.com,
+	jmorris@namei.org,
+	serge@hallyn.com,
+	javierm@redhat.com
+Cc: linux-arch@vger.kernel.org,
+	linux-efi@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-pci@vger.kernel.org,
+	linux-integrity@vger.kernel.org,
+	linux-security-module@vger.kernel.org,
+	Thomas Zimmermann <tzimmermann@suse.de>
+Subject: [PATCH v3 0/4] arch/x86: Remove unnecessary dependencies on bootparam.h
+Date: Thu,  4 Jan 2024 10:51:18 +0100
+Message-ID: <20240104095421.12772-1-tzimmermann@suse.de>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZZXEpU-JzsvD2UDW@LeoBras>
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Score: 3.19
+X-Spamd-Bar: +++
+X-Spam-Flag: NO
+X-Spamd-Result: default: False [3.19 / 50.00];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 TO_DN_SOME(0.00)[];
+	 R_MISSING_CHARSET(2.50)[];
+	 BROKEN_CONTENT_TYPE(1.50)[];
+	 R_RATELIMIT(0.00)[to_ip_from(RLfgmttzabnpkr34rizty4fwu5)];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_TRACE(0.00)[suse.de:+];
+	 MX_GOOD(-0.01)[];
+	 FREEMAIL_TO(0.00)[kernel.org,linutronix.de,redhat.com,alien8.de,linux.intel.com,zytor.com,google.com,arndb.de,linux.ibm.com,gmail.com,paul-moore.com,namei.org,hallyn.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 BAYES_HAM(-3.00)[100.00%];
+	 ARC_NA(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 FROM_HAS_DN(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 TAGGED_RCPT(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 RCPT_COUNT_TWELVE(0.00)[22];
+	 MID_CONTAINS_FROM(1.00)[];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[];
+	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=0uTSwqWG;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=ZQDdmhGK
+X-Spam-Level: ***
+X-Rspamd-Queue-Id: 3E93921E45
 
-On Wed, Jan 03, 2024 at 05:33:41PM -0300, Leonardo Bras wrote:
-> On Wed, Jan 03, 2024 at 08:29:39PM +0100, Andrew Jones wrote:
-> > On Wed, Jan 03, 2024 at 03:52:00PM -0300, Leonardo Bras wrote:
-> > > On Sun, Dec 31, 2023 at 03:29:51AM -0500, guoren@kernel.org wrote:
-...
-> > > The shifts seem correct for S-Type, but I would name the IMM defines in a 
-> > > way we could understand where they fit in IMM:
-> > > 
-> > > 
-> > > INSN_S_SIMM5_SHIFT -> INSN_S_SIMM_0_4_SHIFT
-> > > INSN_S_SIMM7_SHIFT -> INSN_S_SIMM_5_11_SHIFT
-> > > 
-> > > What do you think?
-> > 
-> > I'm in favor of this suggestion, but then wonder if we don't need another
-> > patch before this which renames INSN_I_SIMM12_SHIFT to
-> > INSN_I_SIMM_0_11_SHIFT in order to keep things consistent.
-> 
-> Agree. If it's ok, I can provide a patch doing the rename on top of this 
-> patchset.
+Reduce built time in some cases by removing unnecessary include statements
+for <asm/bootparam.h>. Reorganize some header files accordingly.
 
-The INSN_I change is only needed if we also take the new INSN_S shift
-macros, so I think the INSN_I change should be part of this series.
+While working on the kernel's boot-up graphics, I noticed that touching
+include/linux/screen_info.h triggers a complete rebuild of the kernel
+on x86. It turns out that the architecture's PCI and EFI headers include
+<asm/bootparam.h>, which depends on <linux/screen_info.h>. But none of
+the drivers have any business with boot parameters or the screen_info
+state.
 
-BTW, I just noticed we wrote the numbers backwards. They should be
+The patchset moves code from bootparam.h and efi.h into separate header
+files and removes obsolete include statements on x86. I did
 
- INSN_I_SIMM_11_0_SHIFT
- INSN_S_SIMM_11_5_SHIFT
- INSN_S_SIMM_4_0_SHIFT
+  make allmodconfig
+  make -j28
+  touch include/linux/screen_info.h
+  time make -j28
 
-> > > >  
-> > > > +#define CBO_PREFETCH_I(base, offset)				\
-> > > > +	INSN_S(OPCODE_OP_IMM, FUNC3(6), __RS2(0),		\
-> > > > +	       SIMM12(offset), RS1(base))
-> > > > +
-> > > > +#define CBO_PREFETCH_R(base, offset)				\
-> > > > +	INSN_S(OPCODE_OP_IMM, FUNC3(6), __RS2(1),		\
-> > > > +	       SIMM12(offset), RS1(base))
-> > > > +
-> > > > +#define CBO_PREFETCH_W(base, offset)				\
-> > > > +	INSN_S(OPCODE_OP_IMM, FUNC3(6), __RS2(3),		\
-> > > > +	       SIMM12(offset), RS1(base))
-> > > > +
-> > > 
-> > > For OP_IMM & FUNC3(6) we have ORI, right?
-> > > For ORI, rd will be at bytes 11:7, which in PREFETCH.{i,r,w} is
-> > > offset[4:0].
-> > > 
-> > > IIUC, when the cpu does not support ZICBOP, this should be fine as long as 
-> > > rd = 0, since changes to r0 are disregarded.
-> > > 
-> > > In this case, we need to guarantee offset[4:0] = 0, or else we migth write 
-> > > on an unrelated register. This can be noticed in ZICBOP documentation pages 
-> > > 21, 22, 23, as offset[4:0] is always [0 0 0 0 0]. 
-> > > (Google docs in first comment)
-> > > 
-> > > What we need here is something like:
-> > > + enum {
-> > > + 	PREFETCH_I,
-> > > + 	PREFETCH_R,
-> > > + 	PREFETCH_W,
-> > > + }	 
-> > 
-> > Can't use enum. This header may be included in assembly.
-> 
-> Oh, I suggest defines then, since it's better to make it clear instead of 
-> using 0, 1, 3.
+to measure the time it takes to rebuild. Results without the patchset
+are around 20 minutes.
 
-I don't think we gain anything by adding another define in order to create
-the instruction define. We have to review the number sooner or later. I'd
-prefer we use the number inside the instruction define so we only need
-to look one place, which is also consistent with how we use FUNC fields.
+  real    20m46,705s
+  user    354m29,166s
+  sys     28m27,359s
 
-> 
-> > 
-> > > +
-> > > + #define CBO_PREFETCH(type, base, offset)                      \
-> > > +     INSN_S(OPCODE_OP_IMM, FUNC3(6), __RS2(type),              \
-> > > +            SIMM12(offset & ~0x1f), RS1(base))
-> > 
-> > Yes. I suggested we mask offset as well, but ideally we'd detect a caller
-> > using an offset with nonzero lower 5 bits at compile time.
-> 
-> I would suggest the compiler would take care of this, but I am not sure 
-> about the assembly, since I am not sure if it gets any optimization.
-> 
-> I don't think we can detect a caller with non-zero offset at compile time, 
-> since it will be used in locks which can be at (potentially) any place in 
-> the block size. (if you have any idea though, please let me know :) )
-> 
-> On the other hand, we could create a S-Type macro which deliberately 
-> ignores imm[4:0], like  
-> 
-> + INSN_S_TRUNCATE(OPCODE_OP_IMM, FUNC3(6), __RS2(3),               \
-> +                 SIMM12(offset), RS1(base))
-> 
-> Which saves the bits 11:5 of offset  into imm[11:5], and zero-fill 
-> imm[4:0], like
-> 
-> +#define DEFINE_INSN_S                                                    \
-> + __DEFINE_ASM_GPR_NUMS                                           \
-> +"        .macro insn_s, opcode, func3, rs2, simm12, rs1\n"               \
-> +"        .4byte  ((\\opcode << " __stringify(INSN_S_OPCODE_SHIFT) ") |"  \
-> +"                 (\\func3 << " __stringify(INSN_S_FUNC3_SHIFT) ") |"    \
-> +"                 (.L__gpr_num_\\rs2 << " __stringify(INSN_S_RS2_SHIFT) ") |" \
-> +"                 (.L__gpr_num_\\rs1 << " __stringify(INSN_S_RS1_SHIFT) ") |" \
-> +"                 (((\\simm12 >> 5) & 0x7f) << " __stringify(INSN_S_SIMM7_SHIFT) "))\n" \
-> +"        .endm\n"
-> +
-> 
-> Does this make sense?
+And with the patchset applied it goes down to less than one minute.
 
-If we create a special version of INSN_S, then I suggest we create one
-where its two SIMM fields are independent and then define prefetch
-instructions like this
+  real    0m56,643s
+  user    4m0,661s
+  sys     0m32,956s
 
- #define PREFETCH_W(base, offset) \
-     INSN_S_SPLIT_IMM(OPCODE_OP_IMM, FUNC3(6), __RS2(3), \
-         SIMM_11_5(offset >> 5), SIMM_4_0(0), RS1(base))
+The test system is an Intel i5-13500.
 
-which would allow simple review against the spec and potentially
-support other instructions which use hard coded values in the
-immediate fields.
+v3:
+	* keep setup_header in bootparam.h (Ard)
+	* implement arch_ima_efi_boot_mode() in source file (Ard)
+v2:
+	* only keep struct boot_params in bootparam.h (Ard)
+	* simplify arch_ima_efi_boot_mode define (Ard)
+	* updated cover letter
 
-But I'm not sure it's worth it. I think
+Thomas Zimmermann (4):
+  arch/x86: Move UAPI setup structures into setup_data.h
+  arch/x86: Move internal setup_data structures into setup_data.h
+  arch/x86: Implement arch_ima_efi_boot_mode() in source file
+  arch/x86: Do not include <asm/bootparam.h> in several files
 
- #define PREFETCH_W(base, offset) \
-     INSN_S(OPCODE_OP_IMM, FUNC3(6), __RS2(3), \
-         SIMM12(offset & ~0x1f), RS1(base))
+ arch/x86/boot/compressed/acpi.c        |  2 +
+ arch/x86/boot/compressed/cmdline.c     |  2 +
+ arch/x86/boot/compressed/efi.c         |  2 +
+ arch/x86/boot/compressed/efi.h         |  9 ---
+ arch/x86/boot/compressed/misc.h        |  3 +-
+ arch/x86/boot/compressed/pgtable_64.c  |  1 +
+ arch/x86/boot/compressed/sev.c         |  1 +
+ arch/x86/include/asm/efi.h             | 14 +----
+ arch/x86/include/asm/kexec.h           |  1 -
+ arch/x86/include/asm/mem_encrypt.h     |  2 +-
+ arch/x86/include/asm/pci.h             | 13 ----
+ arch/x86/include/asm/setup_data.h      | 32 ++++++++++
+ arch/x86/include/asm/sev.h             |  3 +-
+ arch/x86/include/asm/x86_init.h        |  2 -
+ arch/x86/include/uapi/asm/bootparam.h  | 72 +---------------------
+ arch/x86/include/uapi/asm/setup_data.h | 83 ++++++++++++++++++++++++++
+ arch/x86/kernel/crash.c                |  1 +
+ arch/x86/kernel/sev-shared.c           |  2 +
+ arch/x86/platform/efi/efi.c            |  5 ++
+ arch/x86/platform/pvh/enlighten.c      |  1 +
+ arch/x86/xen/enlighten_pvh.c           |  1 +
+ arch/x86/xen/vga.c                     |  1 -
+ 22 files changed, 142 insertions(+), 111 deletions(-)
+ create mode 100644 arch/x86/include/asm/setup_data.h
+ create mode 100644 arch/x86/include/uapi/asm/setup_data.h
 
-is also pretty easy to review against the spec and we don't have any other
-instructions yet with other requirements for the immediates.
 
-Thanks,
-drew
+base-commit: 25232eb8a9ac7fa0dac7e846a4bf7fba2b6db39a
+prerequisite-patch-id: 0aa359f6144c4015c140c8a6750be19099c676fb
+prerequisite-patch-id: c67e5d886a47b7d0266d81100837557fda34cb24
+prerequisite-patch-id: cbc453ee02fae02af22fbfdce56ab732c7a88c36
+prerequisite-patch-id: e7a5405fb48608e0c8e3b41bf983fefa2c8bd1f3
+prerequisite-patch-id: f12b8b5465e519f8588e3743e70166be3294009b
+prerequisite-patch-id: c3de42afb37f6240a840f8b12504262d4483873c
+prerequisite-patch-id: 5f31d981a18037906b0e422c0a1031e7dff91a2d
+prerequisite-patch-id: 2345c90842ae2a9117d21b9bd205fe3b89e89c20
+-- 
+2.43.0
+
 
