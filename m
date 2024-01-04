@@ -1,122 +1,92 @@
-Return-Path: <linux-kernel+bounces-16985-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16986-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4F7B8246DD
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 18:07:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B3A868246E2
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 18:08:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5E97C28317E
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 17:07:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D94051C225CD
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 17:08:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60A6C25571;
-	Thu,  4 Jan 2024 17:07:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 548E225578;
+	Thu,  4 Jan 2024 17:08:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Juuz7xeK"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="l5YIbXbQ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2ACB62556D;
-	Thu,  4 Jan 2024 17:07:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-50e7f58c5fbso955074e87.1;
-        Thu, 04 Jan 2024 09:07:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704388039; x=1704992839; darn=vger.kernel.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=mUPzHOnfF3iea/GuFmKJkEyxB16BB6l3SJBZkhRVK1U=;
-        b=Juuz7xeKWaK/RfLtDlPHVIMZz+oHr8YDuBPVf5Ks54TkfanJ/j3yPGVknvlQSGIAVR
-         2K+GDcejho/uRC7XjBgupKhkU+7admHPZwIFvSXAMS8E0XGt9eD6MpyVP2vZo9MnPcLu
-         Ly8siHbZCn9vKmatUIWsCJsIZNDONacddqwMCg6CjAlsJWbHCvrNb6W9TRifTYJk/Uxf
-         omD52+XaFL2vC8DmB+gWUJfsPHyJrBEQ/4jRzsnzqvTNZro/ZTUEOdEgK0QtlG7FxmRt
-         tcWCIugPt3qPbnDFqf8iMAjLMyMWXECRk4BvSYW5GCjfQjgFELfyN0wDHNIGD44wwYzr
-         uZjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704388039; x=1704992839;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=mUPzHOnfF3iea/GuFmKJkEyxB16BB6l3SJBZkhRVK1U=;
-        b=s4QMZNAwPbhCr4vLRcd8A+ztpj37DaQG8yBQMRVR3VMJJFTEDwzNKCQBaZoHC9zPdJ
-         Ncgd20QxW+MqU4E4AlHSsX2dR/FnvnknFRnvM1ppmoHYva3Ch13UNnxCFxqVM0ISWRrG
-         es612hyvEAXSbgDPYqBJ3WT5pMeu12j3ozVOGo+wMEttb517Qj244B/wp5jxEIM7lqr1
-         XoINPH+Z34zGf81NJCqDj2kKC9D4c55gYLPTCr2TEckWDmh21OZeg59oEdUqoBisM1Ao
-         ZShn7QHvUX0bZFudfwF01B38qLHTK7Wll4KMc9/eGH7KajdQxgHcz1FPmaS140O0/Xih
-         t59A==
-X-Gm-Message-State: AOJu0YzwQIJNZQx5usKiz+BMy3TNgMN7M7QYA1raQkfHwNidPueVS5zC
-	g4tQQ/qcm0z88hzN9gsBiTY=
-X-Google-Smtp-Source: AGHT+IEnt/+N2u90wK9ceSSUrk8ig+m7VpFGqLCI4F+9HsEKK64haRTzaqA0g/ZbEfveDAVR/ho3lA==
-X-Received: by 2002:ac2:4c18:0:b0:50e:8f00:f182 with SMTP id t24-20020ac24c18000000b0050e8f00f182mr521046lfq.115.1704388038677;
-        Thu, 04 Jan 2024 09:07:18 -0800 (PST)
-Received: from [127.0.1.1] (2a02-8389-41cf-e200-1f94-8caf-c195-798f.cable.dynamic.v6.surfer.at. [2a02:8389:41cf:e200:1f94:8caf:c195:798f])
-        by smtp.gmail.com with ESMTPSA id hg2-20020a170906f34200b00a26b361ec0esm12820005ejb.118.2024.01.04.09.07.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Jan 2024 09:07:18 -0800 (PST)
-From: Javier Carrasco <javier.carrasco.cruz@gmail.com>
-Date: Thu, 04 Jan 2024 18:07:12 +0100
-Subject: [PATCH] usb: typec: tipd: fix use of device-specific init function
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3759C25560;
+	Thu,  4 Jan 2024 17:08:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704388081; x=1735924081;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=qPUzoILDd3+YEP2nl1nUfeLW8U963CpH72/0YjAzmlo=;
+  b=l5YIbXbQgXwHC7lMnxYPVkP7JwAllc/RZILLL5Q8nkv6iKiYwMaukAdZ
+   J82zTo5YUdftLlkeElG8WYjJXgqEU0Xey+i7fuOUe2Mu303mA1vLuxyuf
+   sUnPgB651aEkhhZ0dHCEglNBfNZdiyp8OYcUKzx+vsfnfBF4//6hznZ7v
+   QDcEoLxAoTOHTdEk3CeXi8VMKcvqsixonETBhMNdObnOFnRNQ86MAoRFf
+   jh89F3RgxXtPkVsOr9F/8110Gz/KP6uDcyD4XFvryCfbv2iQy7OUaIIJT
+   gxzOHYZOQkz3Fkv2NMo6JF2ekBIkeaZrpsKTqBdbEQpaauubbyfw+NS4R
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10943"; a="4409440"
+X-IronPort-AV: E=Sophos;i="6.04,331,1695711600"; 
+   d="scan'208";a="4409440"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2024 09:07:58 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10943"; a="780475868"
+X-IronPort-AV: E=Sophos;i="6.04,331,1695711600"; 
+   d="scan'208";a="780475868"
+Received: from tassilo.jf.intel.com (HELO tassilo) ([10.54.38.190])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2024 09:07:57 -0800
+Date: Thu, 4 Jan 2024 09:07:56 -0800
+From: Andi Kleen <ak@linux.intel.com>
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: Paolo Bonzini <pbonzini@redhat.com>,
+	Sean Christopherson <seanjc@google.com>,
+	Like Xu <like.xu@linux.intel.com>,
+	Kan Liang <kan.liang@linux.intel.com>,
+	Luwei Kang <luwei.kang@intel.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+	kvm@vger.kernel.org, Breno Leitao <leitao@debian.org>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Ingo Molnar <mingo@redhat.com>
+Subject: Re: [BUG] Guest OSes die simultaneously (bisected)
+Message-ID: <ZZbl7KqomDOR+HUC@tassilo>
+References: <3d8f5987-e09c-4dd2-a9c0-8ba22c9e948a@paulmck-laptop>
+ <88f49775-2b56-48cc-81b8-651a940b7d6b@paulmck-laptop>
+ <ZZX6pkHnZP777DVi@google.com>
+ <77d7a3e3-f35e-4507-82c2-488405b25fa4@paulmck-laptop>
+ <c6d5dd6e-2dec-423c-af39-213f17b1a9db@paulmck-laptop>
+ <CABgObfYG-ZwiRiFeGbAgctLfj7+PSmgauN9RwGMvZRfxvmD_XQ@mail.gmail.com>
+ <b2775ea5-20c9-4dff-b4b1-bbb212065a22@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240104-dev_spec_init-v1-1-1a57e7fd8cc8@gmail.com>
-X-B4-Tracking: v=1; b=H4sIAL/llmUC/x3MTQqAIBBA4avIrBNUjH6uEiGhY83GREMC8e5Jy
- 2/xXoWMiTDDyiokLJTpDh1yYGCvI5zIyXWDEkoLKTR3WEyOaA0Ferh2fp6kVMtoHfQmJvT0/r9
- tb+0DXGz/Dl8AAAA=
-To: Heikki Krogerus <heikki.krogerus@linux.intel.com>, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
- Roger Quadros <rogerq@kernel.org>, 
- Javier Carrasco <javier.carrasco@wolfvision.net>
-Cc: linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Javier Carrasco <javier.carrasco.cruz@gmail.com>
-X-Mailer: b4 0.13-dev-4e032
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1704388037; l=1124;
- i=javier.carrasco.cruz@gmail.com; s=20230509; h=from:subject:message-id;
- bh=Hbb/poJIkVKNkLIjP1N6v5qai0RdKXdnO+ikZ9Ptu9E=;
- b=HB5CR8Sel1fxfT3bpyhVa9d7eOorpKu2tyGnP1jubGB/mBJ2hpNeE39T2GB5nyFn2LoVQ4Bq4
- 5272QhLogkgDEn01bBgbusUxniysU5mvNwgcx9GgKnPjevpbbmk4sRJ
-X-Developer-Key: i=javier.carrasco.cruz@gmail.com; a=ed25519;
- pk=tIGJV7M+tCizagNijF0eGMBGcOsPD+0cWGfKjl4h6K8=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b2775ea5-20c9-4dff-b4b1-bbb212065a22@paulmck-laptop>
 
-The current implementation supports device-pecific callbacks for the
-init function with a function pointer. The patch that introduced this
-feature did not update one call to the tps25750 init function to turn it
-into a call with the new pointer in the resume function.
+> My (completely random) guess is that there is some rare combination
+> of events that causes this code to fail.  If so, is it feasible to
+> construct a test that makes this rare combination of events less rare,
+> so that similar future bugs are caught more quickly?
 
-Fixes: d49f90822015 ("usb: typec: tipd: add init and reset functions to tipd_data")
-Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
----
- drivers/usb/typec/tipd/core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Yes, I tested something similar before. What you need is create lots of 
+PMIs with perf (running perf top should be enough) and a workload that creates
+lots of exits in a guest (e.g. running fio on a virtio device). This 
+will stress test this particular path.
 
-diff --git a/drivers/usb/typec/tipd/core.c b/drivers/usb/typec/tipd/core.c
-index a956eb976906..8a7cdfee27a1 100644
---- a/drivers/usb/typec/tipd/core.c
-+++ b/drivers/usb/typec/tipd/core.c
-@@ -1495,7 +1495,7 @@ static int __maybe_unused tps6598x_resume(struct device *dev)
- 		return ret;
- 
- 	if (ret == TPS_MODE_PTCH) {
--		ret = tps25750_init(tps);
-+		ret = tps->data->init(tps);
- 		if (ret)
- 			return ret;
- 	}
-
----
-base-commit: e7d3b9f28654dbfce7e09f8028210489adaf6a33
-change-id: 20240104-dev_spec_init-4df8711295cd
-
-Best regards,
--- 
-Javier Carrasco <javier.carrasco.cruz@gmail.com>
-
+-Andi
 
