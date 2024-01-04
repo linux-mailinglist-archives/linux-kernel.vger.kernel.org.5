@@ -1,106 +1,109 @@
-Return-Path: <linux-kernel+bounces-16221-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16222-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14D40823AF6
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 04:02:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0668A823AFC
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 04:06:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BBF721F26348
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 03:02:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A8C7E1F2605C
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 03:06:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B50D523D;
-	Thu,  4 Jan 2024 03:02:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D09335681;
+	Thu,  4 Jan 2024 03:06:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Fds30FCP"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bUHNfUyp"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C7D31862D;
-	Thu,  4 Jan 2024 03:02:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 415425221;
+	Thu,  4 Jan 2024 03:06:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704337346; x=1735873346;
+  t=1704337587; x=1735873587;
   h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=kEeu5OoCJZYtIvABKcgN2LQCqoiaYmhWrqX0iME1HsY=;
-  b=Fds30FCPTARE4r0O3lmb+g9x+zqHoGc1e0KObbf+1ZzfphZsANpmcEca
-   Q5k8WzgkDyRaaPNvYwkaQfnRNvDV4qIcRFTQ71vvrAlDC+BH5b5+gw2B+
-   It+AnCaZwTE1sOt8wYmzYJoXRRozteoeLJx4KddYqIqSd/B0ETws0ulug
-   2zI6w1y2xIBQjPBBUwO0T7KZWC5p6FatJYQd0c9uAmZ3pFEGB4CZu47DC
-   zISgpREM3OrTJcz2KUpMIKmiRV/5LKLFaWGkG7oXRWgX/CVqGBDuQNeF6
-   xiKpr2xTcierJE+eDEK9incWCeRL/3ay5u8Cw9MBy1t6X0QmQsFDegSdR
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10942"; a="461426058"
+   mime-version:in-reply-to;
+  bh=2GIFKJWf4IPDktNfbFwm+puuxq1zaaa8xPYrnF49oyY=;
+  b=bUHNfUypWwaaV7UGsnUUuR5DyT9m4AD2FWZaWpNCNL3t57g7YFiVqky3
+   WHWcstucX8vwB/KyGMSIeeIl9UTDzfOuZfj2jognouaD5wcLDKR38daW8
+   y9LVg2yHhcPoGLQJoGomfsQ/Ku5ugMxZxWRwrzklBK9fX6mY8YNlto+RW
+   1p1hOBOZjVTOWKuvuXqH/5T+Di4FTI3DfysBdfHt8davO/5QadL+5i16t
+   +eixHLIE30pUZxZ0TZDVdfZf/QRSs+CWOk/4Lb6tcdwaR1TUOqGBVIzq9
+   39J5JFsZArdY2uuNfNdQbvc6bZZPj18wgDhDRTZKNImRvyfNr/ijFEIxd
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10942"; a="4191474"
 X-IronPort-AV: E=Sophos;i="6.04,329,1695711600"; 
-   d="scan'208";a="461426058"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jan 2024 19:02:25 -0800
+   d="scan'208";a="4191474"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jan 2024 19:06:26 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10942"; a="780197606"
+X-IronPort-AV: E=McAfee;i="6600,9927,10942"; a="953427445"
 X-IronPort-AV: E=Sophos;i="6.04,329,1695711600"; 
-   d="scan'208";a="780197606"
-Received: from ranerica-svr.sc.intel.com ([172.25.110.23])
-  by orsmga002.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jan 2024 19:02:25 -0800
-Date: Wed, 3 Jan 2024 19:04:02 -0800
-From: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
-To: "Rafael J. Wysocki" <rafael@kernel.org>
-Cc: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-	Chen Yu <yu.c.chen@intel.com>, Len Brown <len.brown@intel.com>,
-	Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-	Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>,
-	Zhang Rui <rui.zhang@intel.com>, Zhao Liu <zhao1.liu@intel.com>,
-	linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 4/4] thermal: intel: hfi: Add a suspend notifier
-Message-ID: <20240104030402.GB12718@ranerica-svr.sc.intel.com>
-References: <20240103041459.11113-1-ricardo.neri-calderon@linux.intel.com>
- <20240103041459.11113-5-ricardo.neri-calderon@linux.intel.com>
- <CAJZ5v0jSERoeMki9ZvWtTqiZidETeo1Xm_Qb0Oo2qRG0PMrSJQ@mail.gmail.com>
+   d="scan'208";a="953427445"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga005.jf.intel.com with ESMTP; 03 Jan 2024 19:06:19 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rLE3l-000Mpw-0G;
+	Thu, 04 Jan 2024 03:06:17 +0000
+Date: Thu, 4 Jan 2024 11:06:02 +0800
+From: kernel test robot <lkp@intel.com>
+To: Sagi Maimon <maimon.sagi@gmail.com>, richardcochran@gmail.com,
+	luto@kernel.org, datglx@linutronix.de, mingo@redhat.com,
+	bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
+	hpa@zytor.com, arnd@arndb.de, geert@linux-m68k.org,
+	peterz@infradead.org, hannes@cmpxchg.org, sohil.mehta@intel.com,
+	rick.p.edgecombe@intel.com, nphamcs@gmail.com, palmer@sifive.com,
+	keescook@chromium.org, legion@kernel.org, mark.rutland@arm.com
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+	linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+	netdev@vger.kernel.org
+Subject: Re: [PATCH v5] posix-timers: add multi_clock_gettime system call
+Message-ID: <202401041000.T0GQPIBW-lkp@intel.com>
+References: <20240102091855.70418-1-maimon.sagi@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJZ5v0jSERoeMki9ZvWtTqiZidETeo1Xm_Qb0Oo2qRG0PMrSJQ@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20240102091855.70418-1-maimon.sagi@gmail.com>
 
-On Wed, Jan 03, 2024 at 02:34:26PM +0100, Rafael J. Wysocki wrote:
-> The subject should say "add a PM notifier" to indicate that
-> hibernation is covered too.
-> 
-> On Wed, Jan 3, 2024 at 5:13 AM Ricardo Neri
-> <ricardo.neri-calderon@linux.intel.com> wrote:
-> >
-> > The kernel gives the HFI hardware a memory region that the latter uses to
-> > provide updates to the HFI table. The kernel allocates this memory region
-> > at boot. It remains constant throughout runtime time.
-> >
-> > When resuming from suspend or hibernation, the restore kernel allocates a
-> 
-> The restore kernel is only used during resume from hibernation, so
-> this particular problem is hibernation-specific.
+Hi Sagi,
 
-Agreed. This correction is pertinent.
-> 
-> It is possible, at least in principle, that the address of the HFI
-> table is "lost" by the processor during resume from "deep" suspend
-> (ACPI S3), in which case it may not survive the firmware-driven part
-> of the suspend-resume cycle.  It is thus prudent to disable HFI on
-> suspend and re-enable it on resume for the boot CPU (under the
-> assumption that the other CPUs will be taken care of by CPU offline),
+kernel test robot noticed the following build errors:
 
-Indeed, this patch aims to handle this scenario.
+[auto build test ERROR on tip/x86/asm]
+[also build test ERROR on arnd-asm-generic/master tip/timers/core linus/master v6.7-rc8]
+[cannot apply to next-20240103]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-> but for a somewhat different reason than in the hibernation case.
+url:    https://github.com/intel-lab-lkp/linux/commits/Sagi-Maimon/posix-timers-add-multi_clock_gettime-system-call/20240102-172105
+base:   tip/x86/asm
+patch link:    https://lore.kernel.org/r/20240102091855.70418-1-maimon.sagi%40gmail.com
+patch subject: [PATCH v5] posix-timers: add multi_clock_gettime system call
+config: csky-randconfig-002-20240104 (https://download.01.org/0day-ci/archive/20240104/202401041000.T0GQPIBW-lkp@intel.com/config)
+compiler: csky-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240104/202401041000.T0GQPIBW-lkp@intel.com/reproduce)
 
-I will correct the commit message to reflect this reasoning
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202401041000.T0GQPIBW-lkp@intel.com/
 
+All errors (new ones prefixed by >>):
+
+>> csky-linux-ld: arch/csky/kernel/syscall_table.o:(.data..page_aligned+0x724): undefined reference to `sys_multi_clock_gettime'
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
