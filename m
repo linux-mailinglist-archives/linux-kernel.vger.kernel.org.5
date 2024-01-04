@@ -1,167 +1,157 @@
-Return-Path: <linux-kernel+bounces-16617-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16616-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 594F1824141
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 13:04:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D8CB82413F
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 13:04:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B0752B23D95
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 12:04:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 850FF287730
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 12:04:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 463842136B;
-	Thu,  4 Jan 2024 12:04:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="lS14CG/4"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACBFC21376;
+	Thu,  4 Jan 2024 12:04:27 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EADA219F9;
-	Thu,  4 Jan 2024 12:04:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=8Z/vHoSndZHXrh+DMZJgXjJqVV6ZzD4r7OZ3XIEgP6w=; b=lS14CG/4LTpvtxeCmIGnydE6uV
-	HUw9ht9hNaonRQ/QAnYToxZSM2uoKFReyEI10v20CEB8KL8OEhfmQS3Gnd5tzXk31pI8XjtziS27d
-	pg0YuUX/6rgY92UOthyBJIIANII6F9ClJJiiqHlwu6+a0D9F//8GVthZC6D117a7rVaJktmn80Yu0
-	itYtlqgFaPFUWVxwjIFNcI9urCjUZJ7JEdQpeaE94TFSYV/xCJfhOm/tC5s19lcnO3EQY7x6FbqCu
-	WQh0TGJlt7steaF/JJnjtWvhuwoRX/TIXCv6XwUi27pqqhsTEW2dgjqUcn7S5Nos+VdUhzjB80Nma
-	nnep9jYQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:45974)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1rLMSW-0008SK-2D;
-	Thu, 04 Jan 2024 12:04:24 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1rLMSW-0007OU-6g; Thu, 04 Jan 2024 12:04:24 +0000
-Date: Thu, 4 Jan 2024 12:04:24 +0000
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: Marc Zyngier <maz@kernel.org>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev,
-	Mark Rutland <mark.rutland@arm.com>,
-	Robin Murphy <robin.murphy@arm.com>,
-	Fang Xiang <fangxiang3@xiaomi.com>,
-	Robert Moore <robert.moore@intel.com>
-Subject: Re: [PATCH v4 0/3] irqchip/gic-v3: Enable non-coherent GIC designs
- probing
-Message-ID: <ZZaeyBXn85AnsIk6@shell.armlinux.org.uk>
-References: <20230905104721.52199-1-lpieralisi@kernel.org>
- <20231227110038.55453-1-lpieralisi@kernel.org>
- <CAJZ5v0gUBU=VL8E34sjROssoGNbLnhmUQVHGWT60hgBG_ufTHw@mail.gmail.com>
- <86h6jt9vs7.wl-maz@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0E9321362
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 12:04:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-35fe3fbbea8so2297945ab.1
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 04:04:25 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704369865; x=1704974665;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=5h4zCC2hUS/A4eGxWFau/Ir/9rP/TRBrjlRWoRrC1o8=;
+        b=S3xOGzsYDm4UIIDdm56VjT0oDL0GzV5/fibdCILbBbTWp/uJeiGBtVstBErn8zx+ku
+         2EXy9z655K8t0uDct3xzmLEWwejC6+hILuaikpTHWpMjyNek92/c6H3eWzEp69l1kxBW
+         PYeH1heH/7s/MTQftEvRCpciZ2RZWkFPTf/NYcEzAWXjAheFsRtMQrcVuIbGXLGyNG4O
+         +oNWFR7/pXk4usJpqjVFsEfN9zYWviz89YFBeJTQoLOF5ruYSGeen7hUr/SF16YrhaF8
+         aha2ZjHcM5YTpu0gIvzsMEL6sajuR5OGMYQ1AfHudN8GnCwWqkSv8TKhu8fUJHLPhQR3
+         WtLQ==
+X-Gm-Message-State: AOJu0YyNiQCGrsbWWom55/8BQr43NljsidL88GCDNE1BjtV1WvA/ZjnE
+	wURKYr5fETfUgw6LUGgh/zHj6K1f3a8MLkAVb9JtxSaCftXF
+X-Google-Smtp-Source: AGHT+IEpRdYEUpk+QhT8i+5s3rd/dbOy04wsTYq0jFBu6zIyiwxN5sLmfhVs+S11QU0A2JGZ1WH88c+DRE7pk+Bm7MDN3UCGPqZo
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <86h6jt9vs7.wl-maz@kernel.org>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+X-Received: by 2002:a05:6e02:1a2a:b0:35f:f683:f76b with SMTP id
+ g10-20020a056e021a2a00b0035ff683f76bmr75190ile.3.1704369865137; Thu, 04 Jan
+ 2024 04:04:25 -0800 (PST)
+Date: Thu, 04 Jan 2024 04:04:25 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000060a6c9060e1d8851@google.com>
+Subject: [syzbot] [ntfs3?] KMSAN: kernel-infoleak in listxattr
+From: syzbot <syzbot+608044293020556ff16b@syzkaller.appspotmail.com>
+To: almaz.alexandrovich@paragon-software.com, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, ntfs3@lists.linux.dev, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Thu, Jan 04, 2024 at 11:34:48AM +0000, Marc Zyngier wrote:
-> On Wed, 03 Jan 2024 13:43:16 +0000,
-> "Rafael J. Wysocki" <rafael@kernel.org> wrote:
-> > 
-> > On Wed, Dec 27, 2023 at 12:00 PM Lorenzo Pieralisi
-> > <lpieralisi@kernel.org> wrote:
-> > >
-> > > This series is v4 of previous series:
-> > >
-> > > v3: https://lore.kernel.org/all/20231006125929.48591-1-lpieralisi@kernel.org
-> > > v2: https://lore.kernel.org/all/20230906094139.16032-1-lpieralisi@kernel.org
-> > > v1: https://lore.kernel.org/all/20230905104721.52199-1-lpieralisi@kernel.org
-> > >
-> > > v3 -> v4:
-> > >         - Dropped patches [1-3], already merged
-> > >         - Added Linuxized ACPICA changes accepted upstream
-> > >         - Rebased against v6.7-rc3
-> > >
-> > > v2 -> v3:
-> > >         - Added ACPICA temporary changes and ACPI changes to implement
-> > >           ECR https://bugzilla.tianocore.org/show_bug.cgi?id=4557
-> > >         - ACPI changes are for testing purposes - subject to ECR code
-> > >           first approval
-> > >
-> > > v1 -> v2:
-> > >         - Updated DT bindings as per feedback
-> > >         - Updated patch[2] to use GIC quirks infrastructure
-> > >
-> > > Original cover letter
-> > > ---
-> > > The GICv3 architecture specifications provide a means for the
-> > > system programmer to set the shareability and cacheability
-> > > attributes the GIC components (redistributors and ITSes) use
-> > > to drive memory transactions.
-> > >
-> > > Albeit the architecture give control over shareability/cacheability
-> > > memory transactions attributes (and barriers), it is allowed to
-> > > connect the GIC interconnect ports to non-coherent memory ports
-> > > on the interconnect, basically tying off shareability/cacheability
-> > > "wires" and de-facto making the redistributors and ITSes non-coherent
-> > > memory observers.
-> > >
-> > > This series aims at starting a discussion over a possible solution
-> > > to this problem, by adding to the GIC device tree bindings the
-> > > standard dma-noncoherent property. The GIC driver uses the property
-> > > to force the redistributors and ITSes shareability attributes to
-> > > non-shareable, which consequently forces the driver to use CMOs
-> > > on GIC memory tables.
-> > >
-> > > On ARM DT DMA is default non-coherent, so the GIC driver can't rely
-> > > on the generic DT dma-coherent/non-coherent property management layer
-> > > (of_dma_is_coherent()) which would default all GIC designs in the field
-> > > as non-coherent; it has to rely on ad-hoc dma-noncoherent property handling.
-> > >
-> > > When a consistent approach is agreed upon for DT an equivalent binding will
-> > > be put forward for ACPI based systems.
-> > >
-> > > Lorenzo Pieralisi (3):
-> > >   ACPICA: MADT: Add GICC online capable bit handling
-> > >   ACPICA: MADT: Add new MADT GICC/GICR/ITS non-coherent flags handling
-> > >   irqchip/gic-v3: Enable non-coherent redistributors/ITSes ACPI probing
-> > >
-> > >  drivers/acpi/processor_core.c    | 21 +++++++++++++++++++++
-> > >  drivers/irqchip/irq-gic-common.h |  8 ++++++++
-> > >  drivers/irqchip/irq-gic-v3-its.c |  4 ++++
-> > >  drivers/irqchip/irq-gic-v3.c     |  9 +++++++++
-> > >  include/acpi/actbl2.h            | 12 ++++++++++--
-> > >  include/linux/acpi.h             |  3 +++
-> > >  6 files changed, 55 insertions(+), 2 deletions(-)
-> > >
-> > > --
-> > 
-> > I can apply the first 2 patches, but I would need an ACK for the 3rd one.
-> > 
-> > Alternatively, feel free to add
-> > 
-> > Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> > 
-> > to the first 2 patches and route them via ARM64.
-> 
-> Thanks for that. I have some comments on the third patch, which I'd
-> like to see addressed beforehand. This is probably all 6.9 material
-> anyway (nobody is affected by this so far).
+Hello,
 
-From a purely selfish point of view, it would be useful to have the
-first patch merged merely to reduce the burden of patches for vcpu
-hotplug.
+syzbot found the following issue on:
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+HEAD commit:    8735c7c84d1b Merge tag '6.7rc7-smb3-srv-fix' of git://git...
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=11dec9a1e80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=d4130d4bb32c48ef
+dashboard link: https://syzkaller.appspot.com/bug?extid=608044293020556ff16b
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/03cd0531b6f3/disk-8735c7c8.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/6bb4ebecaed0/vmlinux-8735c7c8.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/e40c5a86a2b5/bzImage-8735c7c8.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+608044293020556ff16b@syzkaller.appspotmail.com
+
+=====================================================
+BUG: KMSAN: kernel-infoleak in instrument_copy_to_user include/linux/instrumented.h:114 [inline]
+BUG: KMSAN: kernel-infoleak in _copy_to_user+0xbc/0x100 lib/usercopy.c:40
+ instrument_copy_to_user include/linux/instrumented.h:114 [inline]
+ _copy_to_user+0xbc/0x100 lib/usercopy.c:40
+ copy_to_user include/linux/uaccess.h:191 [inline]
+ listxattr+0x2e9/0x6a0 fs/xattr.c:843
+ path_listxattr fs/xattr.c:865 [inline]
+ __do_sys_listxattr fs/xattr.c:877 [inline]
+ __se_sys_listxattr fs/xattr.c:874 [inline]
+ __x64_sys_listxattr+0x16b/0x2e0 fs/xattr.c:874
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0x44/0x110 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+
+Uninit was stored to memory at:
+ ntfs_list_ea fs/ntfs3/xattr.c:232 [inline]
+ ntfs_listxattr+0x5d2/0x8d0 fs/ntfs3/xattr.c:733
+ vfs_listxattr fs/xattr.c:494 [inline]
+ listxattr+0x1f0/0x6a0 fs/xattr.c:841
+ path_listxattr fs/xattr.c:865 [inline]
+ __do_sys_listxattr fs/xattr.c:877 [inline]
+ __se_sys_listxattr fs/xattr.c:874 [inline]
+ __x64_sys_listxattr+0x16b/0x2e0 fs/xattr.c:874
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0x44/0x110 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+
+Uninit was created at:
+ slab_post_alloc_hook+0x129/0xa70 mm/slab.h:768
+ slab_alloc_node mm/slub.c:3478 [inline]
+ __kmem_cache_alloc_node+0x5c9/0x970 mm/slub.c:3517
+ __do_kmalloc_node mm/slab_common.c:1006 [inline]
+ __kmalloc+0x121/0x3c0 mm/slab_common.c:1020
+ kmalloc include/linux/slab.h:604 [inline]
+ ntfs_read_ea+0x78c/0x10b0 fs/ntfs3/xattr.c:118
+ ntfs_list_ea fs/ntfs3/xattr.c:204 [inline]
+ ntfs_listxattr+0x173/0x8d0 fs/ntfs3/xattr.c:733
+ vfs_listxattr fs/xattr.c:494 [inline]
+ listxattr+0x1f0/0x6a0 fs/xattr.c:841
+ path_listxattr fs/xattr.c:865 [inline]
+ __do_sys_listxattr fs/xattr.c:877 [inline]
+ __se_sys_listxattr fs/xattr.c:874 [inline]
+ __x64_sys_listxattr+0x16b/0x2e0 fs/xattr.c:874
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0x44/0x110 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+
+Bytes 26-31 of 63 are uninitialized
+Memory access of size 63 starts at ffff888103174b40
+Data copied to user address 0000000020000080
+
+CPU: 0 PID: 5727 Comm: syz-executor.4 Not tainted 6.7.0-rc7-syzkaller-00029-g8735c7c84d1b #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
+=====================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
