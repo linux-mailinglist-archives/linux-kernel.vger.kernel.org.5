@@ -1,147 +1,145 @@
-Return-Path: <linux-kernel+bounces-16321-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16322-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E9EE1823CC7
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 08:33:51 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A8779823CCB
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 08:34:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6FBE628707C
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 07:33:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 18ED9B24AF8
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 07:34:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1AB1200A6;
-	Thu,  4 Jan 2024 07:33:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F36401F94D;
+	Thu,  4 Jan 2024 07:34:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="siffy2q7"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="tG995bZ7"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18050200A0;
-	Thu,  4 Jan 2024 07:33:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 4047Xdm3063000;
-	Thu, 4 Jan 2024 01:33:39 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1704353619;
-	bh=1YL4NazULIndzcTvOUJLeOSh+6JCTKDvgwntK+e06L8=;
-	h=From:To:CC:Subject:Date;
-	b=siffy2q77BbTdXaUwKd9xiGfAyS0v0FF1SmYGbIzpdwDrvAUFF20QFgoTsgyHzGVL
-	 jcRZX/NKUJ78N1BaW9DQTdzJ+3gPSClr/dXDaegC7W3ZlfqiPj8hmUJljwmx/dU/FN
-	 BjZIWpjvVnXIbxA+pfP093qpjcsucFf5/kDcrBe4=
-Received: from DLEE106.ent.ti.com (dlee106.ent.ti.com [157.170.170.36])
-	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 4047XdaZ082970
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Thu, 4 Jan 2024 01:33:39 -0600
-Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE106.ent.ti.com
- (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 4
- Jan 2024 01:33:38 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 4 Jan 2024 01:33:38 -0600
-Received: from dhruva.dhcp.ti.com (dhruva.dhcp.ti.com [172.24.227.68])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 4047Xatc060915;
-	Thu, 4 Jan 2024 01:33:37 -0600
-From: Dhruva Gole <d-gole@ti.com>
-To: Jonathan Corbet <corbet@lwn.net>
-CC: <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Dhruva Gole
-	<d-gole@ti.com>
-Subject: [PATCH] Documentation: index: Minor re-arrangement and improvements
-Date: Thu, 4 Jan 2024 13:03:17 +0530
-Message-ID: <20240104073317.19709-1-d-gole@ti.com>
-X-Mailer: git-send-email 2.34.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C725F200A8
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 07:33:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-556ab8b85e3so329390a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 23:33:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1704353637; x=1704958437; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=DP6M+yDlXDj3yagLaZ2w6HOzz3bnG4toPFPTwIxDIE8=;
+        b=tG995bZ7YixVIDyHIQO3Td8nxkk64GUkbUGNFfSRngtHgHgd0mx3NxgYFEgGLXwE8S
+         i9RJkSSUJhQspjn14xeEF2ZLyw+jhmU8YoLXeyCbyQkyCxPMwvD+pvw+7+M71Uwkx4fr
+         Rm7u1VY0vtSqGMtP3qRtCLVymHhyz0MpeX38M/ZyR2calLKsFJpGORfaWZDXWHkud+78
+         /Kdhpge7TOhZVCGplZUbmctmZBI/MDa3BeKXDRsd9GShP2/T3CM5nVIrPp9YikU2uQZ0
+         zPkOiEYRdougWkctr9E1e9kfpJBIT2IrnRwx0Un2azu6w35/H6egkITLn4mwgzJy3lsS
+         BViA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704353637; x=1704958437;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DP6M+yDlXDj3yagLaZ2w6HOzz3bnG4toPFPTwIxDIE8=;
+        b=nODJx4PAO3If/pSfYvoneZp611NhhFN05x2lOYkLHG3SpAvIWxhw/8cres9mHG5qag
+         ZcwIyi6ep0OCZBFedRj/lXYG/Sad/ZkSzU4Mkj3mfMmHHVrgrJDMx7lAzAvQgpTe8z3Q
+         13Sr+doPfnSBQNjjrbekKxRxNc0mX3am3D7c898tHLe7oMRQw2m256VchBKb6BTGFt9D
+         QpSPelvq7FzgtqRH2m2fo1ss+815oYTFSecjvDIhmO++O/RWbRa0Q5Cu4OGvPYRXB/vX
+         EXasXQ8rHP2Z1Cb0oQdsTrhNsftoReL8JRaXdmyZ0SayZ8aAuw36jcQ0u0FXEuUTblcM
+         3Ilw==
+X-Gm-Message-State: AOJu0YzUlIO+xtxprPMF0nh+OlGksoKcqZdj2q2E3oN29fRgWd5aPa7U
+	zoN2p5LKdQRW9Wbf9oRle1XePNkDz0cu4A==
+X-Google-Smtp-Source: AGHT+IFHJbTkMKbaRRRuUG4J5MwvcTPbcC2ULkVPb5k3m+oW6sp/GtFnGeon3VCpyur6EUd/QUacRw==
+X-Received: by 2002:a05:6402:30b2:b0:557:c42:977 with SMTP id df18-20020a05640230b200b005570c420977mr105466edb.1.1704353636915;
+        Wed, 03 Jan 2024 23:33:56 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.218.27])
+        by smtp.gmail.com with ESMTPSA id cq8-20020a056402220800b0055507ee70a4sm12374444edb.23.2024.01.03.23.33.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 03 Jan 2024 23:33:56 -0800 (PST)
+Message-ID: <3542a18d-0fc4-40b5-8f16-c70cd0dde5b8@linaro.org>
+Date: Thu, 4 Jan 2024 08:33:54 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 1/9] dt-bindings: usb: qcom,dwc3: Fix SDM660 clock
+ description
+To: Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Wesley Cheng <quic_wcheng@quicinc.com>
+Cc: Marijn Suijten <marijn.suijten@somainline.org>,
+ linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230721-topic-rpm_clk_cleanup-v3-0-a66e698932e3@linaro.org>
+ <20230721-topic-rpm_clk_cleanup-v3-1-a66e698932e3@linaro.org>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20230721-topic-rpm_clk_cleanup-v3-1-a66e698932e3@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-* It seems odd that a develper is forced to look at the licensing rules
-  even before they get to the doc or coding guide.
-  This belongs under the "Working with the development community" / "All
-  development docs" page where it does reside even today.
-* Rearrange the section for Internal API manuals to go lower because
-  generally one would want to look at the tools and processes and admin
-  guide pages first and then move onto something deeper like the API
-  manuals.
-* Reword the Dev tools section and title to something a bit more suitable.
+On 03/01/2024 21:15, Konrad Dybcio wrote:
+> SDM660 was abusingly referencing one of the internal bus clocks, that
+> were recently dropped from Linux (because the original implementation
+> did not make much sense), circumventing the interconnect framework.
+> 
+> Drop it.
 
-Signed-off-by: Dhruva Gole <d-gole@ti.com>
----
- Documentation/index.rst | 34 ++++++++++++++++------------------
- 1 file changed, 16 insertions(+), 18 deletions(-)
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-diff --git a/Documentation/index.rst b/Documentation/index.rst
-index 36e61783437c..409eba0b9601 100644
---- a/Documentation/index.rst
-+++ b/Documentation/index.rst
-@@ -28,30 +28,14 @@ community and getting your work upstream.
-    maintainer/index
-    All development-process docs <process/index>
- 
--
--Internal API manuals
--====================
--
--Manuals for use by developers working to interface with the rest of the
--kernel.
--
--.. toctree::
--   :maxdepth: 1
--
--   core-api/index
--   driver-api/index
--   subsystem-apis
--   Locking in the kernel <locking/index>
--
--Development tools and processes
-+Development tools and resources
- ===============================
- 
--Various other manuals with useful information for all kernel developers.
-+Various tools and manuals with useful information for all kernel developers.
- 
- .. toctree::
-    :maxdepth: 1
- 
--   process/license-rules
-    doc-guide/index
-    dev-tools/index
-    dev-tools/testing-overview
-@@ -81,6 +65,20 @@ developers seeking information on the kernel's user-space APIs.
- See also: the `Linux man pages <https://www.kernel.org/doc/man-pages/>`_,
- which are kept separately from the kernel's own documentation.
- 
-+Internal API manuals
-+====================
-+
-+Manuals for use by developers working to interface with the rest of the
-+kernel.
-+
-+.. toctree::
-+   :maxdepth: 1
-+
-+   core-api/index
-+   driver-api/index
-+   subsystem-apis
-+   Locking in the kernel <locking/index>
-+
- Firmware-related documentation
- ==============================
- The following holds information on the kernel's expectations regarding the
-
-base-commit: d0b3c8aa5e37775cd7c3ac07b256218df0fd6678
--- 
-2.34.1
+Best regards,
+Krzysztof
 
 
