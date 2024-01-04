@@ -1,61 +1,64 @@
-Return-Path: <linux-kernel+bounces-16907-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16908-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1056E8245D2
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 17:09:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 935F98245E9
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 17:12:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B50341F22B2F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 16:09:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 98B411C22292
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 16:12:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1B1A24B4B;
-	Thu,  4 Jan 2024 16:08:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02B7D24B41;
+	Thu,  4 Jan 2024 16:11:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="rf5OGYTe"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="I6Lh4QL6"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-qv1-f44.google.com (mail-qv1-f44.google.com [209.85.219.44])
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D1CF24B2B
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 16:08:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
-Received: by mail-qv1-f44.google.com with SMTP id 6a1803df08f44-67f9f6ca479so2958886d6.3
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 08:08:34 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A73C724B29
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 16:11:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a275b3a1167so82296566b.3
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 08:11:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1704384513; x=1704989313; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
+        d=linaro.org; s=google; t=1704384703; x=1704989503; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=qWoFUFj8y9tncvSzwG/Qj6RhTu2GZ8uSYsNg8VQb2Kc=;
-        b=rf5OGYTeSJdNW6OobyVZj4/pPDGU4TL09L1eyQhWb9dyYQRkPa4sAnZ7G2a4SQehNn
-         h9AfDpu5+sms0OnAojgJk0pOurYKi/ROGLYzDwwVOcZrsyYkD+1CqB9kCwE8EgNcvY/r
-         uiQaPv0yyXUHY12Bbuvg6YKx8+d6jWFo78bmo=
+        bh=mE6A3MF22wcuymbS0MlWpK9FBPSYnuu/R6nzxFOvHCw=;
+        b=I6Lh4QL6e13tT0ZcLFAFt+XJEpDGzmPTVOljm3iiJSQ1yPEuzwabqbA4509qJX/f7K
+         5kVmbcBC8t1iht0U+odMBfRqsyVsCyIVnLkKszEpmTEWeDvKDwaI+DoGmG6dU68/Q7DW
+         P8UxE/Vo2WlQTWL2/dpGLrmUhF2vRG3+iko6AbuTr0T9HO84EdImlc9E/Lw9bDSAhE9h
+         eoYt1ljjI4G4V9FoQz9O8w2wOFsoZZ90fEYp1N8lmc0v7lomXk4rR5MZsT1NF7v+CB/g
+         GlGFjb0BCClbSI/X0EB0DGnyPtJXxrEGguPAaiBS6DCW1UWInGyunTF3foQbHtQzG8tz
+         +tMA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704384513; x=1704989313;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1704384703; x=1704989503;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=qWoFUFj8y9tncvSzwG/Qj6RhTu2GZ8uSYsNg8VQb2Kc=;
-        b=uSo88MgwewgHPQi1P3C72Y6hhI7TqbXcX+r0JP8zpOYWcUJtCebd9Bq8xlomA0I+Ak
-         zmZ4DQWllvHTf7IfrurLQO5EeMVruzCphL+I2tov+B7Lg/nTHw7woA78Ps9UmHxcUUUg
-         0gsniya+8m0FMToxlW9guETgWC7kopitdacQxTPQdGZicj4dRwJGn8pnLo28UhLtle5O
-         zPSeOENUPlm/hJFGumQoNF9iXbEoXjkmi2+Jixl/zllhm34/CVCQ+9qfPpk35rSuQQAq
-         bL1mPvWQ5njLLfy3FNZWInDUwZmzbB6OgXQXUNOE6rFdAYEBHvKV8Ev87fU/mvaEF8QX
-         PsXQ==
-X-Gm-Message-State: AOJu0Yz8yZM+U8c8Z9y9ST1pk44ibWrvsa9pFKi47hydjw0RkIc3fy3O
-	1Kc4GZzbg0VCW0fx3LwLt54kMSb3y5qEeg==
-X-Google-Smtp-Source: AGHT+IF7TDITJaTznAYjrrd+kY46g73rnPRz6RfIDo4M5gNoM5TQ/GTUCIrOTwJ++uYKSz9XpVBL9Q==
-X-Received: by 2002:a05:6214:2625:b0:680:d4c2:a5d1 with SMTP id gv5-20020a056214262500b00680d4c2a5d1mr848733qvb.66.1704384513274;
-        Thu, 04 Jan 2024 08:08:33 -0800 (PST)
-Received: from [192.168.0.226] (c-98-249-43-138.hsd1.va.comcast.net. [98.249.43.138])
-        by smtp.gmail.com with ESMTPSA id a15-20020a0cefcf000000b0067f812c4a58sm11592869qvt.60.2024.01.04.08.08.31
+        bh=mE6A3MF22wcuymbS0MlWpK9FBPSYnuu/R6nzxFOvHCw=;
+        b=bNTtR25JORLvkn4YJx0FRhwdz9YylKUGJs2KNS9xeKSdy/0ouKKBYo7Tqugn//pZ7c
+         ekE533F1qYM7nCNkzfkYjLNqf63lvzcdD0YlOrnbQP2VIGpyhbwJHl4EO5C8fR7crb5/
+         S/FVkUk3e0Y1QTFanQPUhVn59SuwQd9DnhbL3ll80hpyKiOmOT8gmfP6VwP7+ifRsjTX
+         1qVrh9F0Rz9zW8WiMjcgCcLoTtmZz9+MoC3u2fNXQTbQO16ioOi9MG7V0U58EydabaKs
+         k2SGHevQ5GBVCHoqncgwldfL+UPuevjBNv5fXq109R4tJU6OezG4yJzZeZoDuguZ7fmq
+         iSBA==
+X-Gm-Message-State: AOJu0Yx7VTiS7HtuftcoQCoScSqoSMMxv5F/ZX3FYlLLZZP/Nl13N8Ka
+	jsj04ZiWfiuXFJ6TjaUIV5GN39xA0Qo4DA==
+X-Google-Smtp-Source: AGHT+IE5CZ31I1LXnZ1vFBITPX99sgkerU5MhGC45J5mwEPr54H5BemGZG90cBHoO7H4jgkpWNjbug==
+X-Received: by 2002:a17:906:a3ca:b0:a26:a4bf:e8c4 with SMTP id ca10-20020a170906a3ca00b00a26a4bfe8c4mr365833ejb.47.1704384703001;
+        Thu, 04 Jan 2024 08:11:43 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.218.27])
+        by smtp.gmail.com with ESMTPSA id et10-20020a170907294a00b00a26a061eef8sm13813434ejc.69.2024.01.04.08.11.39
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Jan 2024 08:08:32 -0800 (PST)
-Message-ID: <4655f620-e43f-4381-b3d4-c8d5555fd739@joelfernandes.org>
-Date: Thu, 4 Jan 2024 11:08:29 -0500
+        Thu, 04 Jan 2024 08:11:42 -0800 (PST)
+Message-ID: <2e17654d-e2f5-480f-aca1-5ece8bc028e7@linaro.org>
+Date: Thu, 4 Jan 2024 17:11:38 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -63,55 +66,97 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] android: removed asm-generic/errno-base.h
-To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
- Tanzir Hasan <tanzirh@google.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- =?UTF-8?Q?Arve_Hj=C3=B8nnev=C3=A5g?= <arve@android.com>,
- Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>,
- Christian Brauner <brauner@kernel.org>, Carlos Llamas <cmllamas@google.com>,
- Suren Baghdasaryan <surenb@google.com>
-Cc: linux-kernel@vger.kernel.org, Nick Desaulniers <nnn@google.com>,
- Al Viro <viro@zeniv.linux.org.uk>
-References: <20231226-binderfs-v1-1-66829e92b523@google.com>
- <eacd168f-22dd-4e11-8907-0c79ee33f595@wanadoo.fr>
+Subject: Re: [PATCH 2/4] reset: add GPIO-based reset controller
 Content-Language: en-US
-From: Joel Fernandes <joel@joelfernandes.org>
-In-Reply-To: <eacd168f-22dd-4e11-8907-0c79ee33f595@wanadoo.fr>
+To: Sean Anderson <sean.anderson@seco.com>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Banajit Goswami <bgoswami@quicinc.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Cc: Bartosz Golaszewski <brgl@bgdev.pl>
+References: <20231222150133.732662-1-krzysztof.kozlowski@linaro.org>
+ <20231222150133.732662-3-krzysztof.kozlowski@linaro.org>
+ <530e3473-eb3b-477c-8599-e7aa12779640@seco.com>
+ <88bd6668-7e67-42c7-97b6-d7029f371349@linaro.org>
+ <075990bb-5fdb-4d30-9484-9df6b978e805@seco.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <075990bb-5fdb-4d30-9484-9df6b978e805@seco.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 
-
-
-On 1/4/2024 10:36 AM, Christophe JAILLET wrote:
-> Le 26/12/2023 à 18:09, Tanzir Hasan a écrit :
->> asm-generic/errno-base.h can be replaced by linux/errno.h and the file
->> will still build correctly. It is an asm-generic file which should be
->> avoided if possible.
->>
->> Suggested-by: Al Viro <viro@zeniv.linux.org.uk>
->> Signed-off-by: Tanzir Hasan <tanzirh@google.com>
->> ---
->>   drivers/android/binderfs.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/android/binderfs.c b/drivers/android/binderfs.c
->> index 1224ab7aa070..d04ff6029480 100644
->> --- a/drivers/android/binderfs.c
->> +++ b/drivers/android/binderfs.c
->> @@ -29,7 +29,7 @@
->>   #include <linux/uaccess.h>
->>   #include <linux/user_namespace.h>
->>   #include <linux/xarray.h>
->> -#include <uapi/asm-generic/errno-base.h>
->> +#include <linux/errno.h>
+On 04/01/2024 17:04, Sean Anderson wrote:
 > 
-> linux/errno.h is already included a few lines above.
+>>> Maybe we take the max? But the driver below seems
+>>> to only have access to one device. Which I suppose begs the question: how do
+>>> we know when it's safe to deassert the reset (e.g. we've gotten to the point
+>>> where all devices using this reset gpio have gotten far enough to detect that
+>>> they use it)?
+>>
+>> The driver (reset consumer) knows when it is safe or not. You must
+>> implement proper reset handling in your driver.
 > 
+> The driver has no idea whether it is safe or not. It just calls
+> reset_assert/deassert at the appropriate time, and the reset
+> framework/controller is supposed to coordinate things so e.g. the device
+> doesn't get reset multiple times as multiple drivers all probe.
 
-Good point! With that nit addressed:
-Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+Hm, wait, now maybe I understand your concern. Did you read the
+patchset? This is for the coordinated, shared, non-exclusive reset by
+design.  And as stated during previous discussions: that's the driver's
+job to be sure it is called like that.
 
-Thanks.
+Best regards,
+Krzysztof
 
 
