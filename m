@@ -1,167 +1,216 @@
-Return-Path: <linux-kernel+bounces-16592-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16594-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B92678240BE
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 12:34:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 827158240C7
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 12:40:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DDAC61C23EE5
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 11:34:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E4FDC286990
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 11:40:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 697C32134A;
-	Thu,  4 Jan 2024 11:34:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3AEF210ED;
+	Thu,  4 Jan 2024 11:40:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="knP3uavG"
+	dkim=pass (2048-bit key) header.d=qualcomm.com header.i=@qualcomm.com header.b="DanfZrdy"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9B9B21117;
-	Thu,  4 Jan 2024 11:34:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28144C433C8;
-	Thu,  4 Jan 2024 11:34:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704368092;
-	bh=2P/Mc4Boujf9+C81JhTvvl3flMRtd8Fdmy/qH4BFF3Y=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=knP3uavGDcmbaVzvhcK37L7HMxE3IxEifdUAoAK1EXKwu1Mr8Kwwkc3B3KR/aA6vq
-	 qfTF+4sh6PNmG4YLL6Sf8vObYJUdf939jt0AcboW3HHWn9TZHS9CtFBtpCbLn+eReJ
-	 ObtpD9yb/ybzVkfDxkutIAMpaykgXL4bHbkV8nD64r8npOclTTNwK4yf3+ToWy3cbU
-	 0PUkc2xQFmTiWpi1Ncy/ciEVUJzVueqb3RibvcglTlpzmF24HmcDKAGomt9/Cr6Tmc
-	 j5gCbrGiN9Ggi67IQGox+AeZKlnJTV/1vMDGfnhM1pq71m1HtORqvU+dR0SQ068QzT
-	 zmP5jBXzap12A==
-Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
-	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <maz@kernel.org>)
-	id 1rLLzt-008mUH-Ky;
-	Thu, 04 Jan 2024 11:34:49 +0000
-Date: Thu, 04 Jan 2024 11:34:48 +0000
-Message-ID: <86h6jt9vs7.wl-maz@kernel.org>
-From: Marc Zyngier <maz@kernel.org>
-To: "Rafael J. Wysocki" <rafael@kernel.org>
-Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-acpi@vger.kernel.org,
-	acpica-devel@lists.linux.dev,
-	Mark Rutland <mark.rutland@arm.com>,
-	Robin Murphy <robin.murphy@arm.com>,
-	Fang Xiang <fangxiang3@xiaomi.com>,
-	Robert Moore <robert.moore@intel.com>
-Subject: Re: [PATCH v4 0/3] irqchip/gic-v3: Enable non-coherent GIC designs probing
-In-Reply-To: <CAJZ5v0gUBU=VL8E34sjROssoGNbLnhmUQVHGWT60hgBG_ufTHw@mail.gmail.com>
-References: <20230905104721.52199-1-lpieralisi@kernel.org>
-	<20231227110038.55453-1-lpieralisi@kernel.org>
-	<CAJZ5v0gUBU=VL8E34sjROssoGNbLnhmUQVHGWT60hgBG_ufTHw@mail.gmail.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
- (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B11A61EA76;
+	Thu,  4 Jan 2024 11:40:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=qti.qualcomm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qti.qualcomm.com
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4046ZkIr027241;
+	Thu, 4 Jan 2024 11:39:30 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
+	from:to:cc:subject:date:message-id:references:in-reply-to
+	:content-type:content-transfer-encoding:mime-version; s=
+	qcppdkim1; bh=tfGhxdx+AZYIJUfOuVqxHR9stBGcMhFXQvHS3uI4Q+Y=; b=Da
+	nfZrdyL/hGdG/mdPq8Hk+jFi4BDjzfd5Z86ovGxbmwzYTdjgabyHTCO2wvGFHdxT
+	8hE0jPPMa/C5owSDFxwByHHGBQC6YfkNgHfbB6iXwZjKYrRQXm06MoQIKdgTCLqw
+	P98zaG/1eOBXusbo4V+2Jo2ubvUAmxxsXwky11SbER2fuXCTp73qEH5pU4LSiQF3
+	xefA+it0xRJEl2nbYECU55hbe7Qo4xWTHbG1lmIFiLs5C0xe+JKgy+0I16A2/LJD
+	bV3IKNvhqI9bXlWNHXUc26unStTDatUK6rz9zZWIsoqMp0Pj7+35IB2i1JUv3UOs
+	gPrbbfTuXJ5sSZ3Z+Hjg==
+Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2168.outbound.protection.outlook.com [104.47.56.168])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vd8s1jp7s-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 04 Jan 2024 11:39:30 +0000 (GMT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RxzrlPDBrKbOWXJed3hBL2ZKdInIgrXAkHRFLOMnZbu+W05Hck6+edUo4ZIkL7iTYe02F970Jns65iXpHQeJpuZnLKuU+JU5GX+4FohYJAF5YG9IY3rZnosRe3Fc8gznQU9cTQTDvat1Wr8erzGK+1IIXJ+AlZ1d8nSyoF68eK7N5pxGzIIy2slWI61nQ0DjFxWO/ue4v0vlVDUDtxk+d+v5FgKD3aWbTag0dXayX0p87KC7lRNgikMJ8nX7oc1gctWnS6CSNecI3xDbLerufjLDn+CahC8rwu6jI1WCCtwPu2xKHuSXVFHpB4B4s8St/P54t8TKIkCepAozfDWq1Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=tfGhxdx+AZYIJUfOuVqxHR9stBGcMhFXQvHS3uI4Q+Y=;
+ b=QmFY8N3254W3CKTm5V5mz4qf2vfjob/L1zoxUoVWOPe5y1CJkywXXINxQ48SgPXhMx1y5wYNbvFXnM08F1qxYNcs/wk7CmZnmhn907bmyxWxD3cFPc/eqRH7tC9WR38vsxA3OHggAuXCRyYui9J58JGP66nmHsHYUpPVeJfkZ5Vp8fRZd+pTQvI8RVcGwpSoBV+VDAfkp6lKM5zUXoZlG0yhmDfGokf1tcyvyTKa1vxnMMAnkmYFWdqgIrev5qrsmSXPsTlKdl25CERiO8qwhzv7CdrPey33mVLAZeMZliKsssiJuUrrZAATk9lrIn/Oof7tTR8MO1xRh7fpxtgOQw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=qti.qualcomm.com; dmarc=pass action=none
+ header.from=qti.qualcomm.com; dkim=pass header.d=qti.qualcomm.com; arc=none
+Received: from BL3PR02MB8234.namprd02.prod.outlook.com (2603:10b6:208:341::13)
+ by SA2PR02MB7771.namprd02.prod.outlook.com (2603:10b6:806:143::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.13; Thu, 4 Jan
+ 2024 11:39:27 +0000
+Received: from BL3PR02MB8234.namprd02.prod.outlook.com
+ ([fe80::6b86:dd1b:d3ae:d013]) by BL3PR02MB8234.namprd02.prod.outlook.com
+ ([fe80::6b86:dd1b:d3ae:d013%5]) with mapi id 15.20.7159.013; Thu, 4 Jan 2024
+ 11:39:26 +0000
+From: Ritesh Kumar <riteshk@qti.qualcomm.com>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        "Ritesh Kumar
+ (QUIC)" <quic_riteshk@quicinc.com>,
+        "dri-devel@lists.freedesktop.org"
+	<dri-devel@lists.freedesktop.org>,
+        "devicetree@vger.kernel.org"
+	<devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>
+CC: "neil.armstrong@linaro.org" <neil.armstrong@linaro.org>,
+        "Jessica Zhang
+ (QUIC)" <quic_jesszhan@quicinc.com>,
+        "sam@ravnborg.org" <sam@ravnborg.org>,
+        "maarten.lankhorst@linux.intel.com" <maarten.lankhorst@linux.intel.com>,
+        "mripard@kernel.org" <mripard@kernel.org>,
+        "tzimmermann@suse.de"
+	<tzimmermann@suse.de>,
+        "airlied@gmail.com" <airlied@gmail.com>,
+        "daniel@ffwll.ch" <daniel@ffwll.ch>,
+        "robh+dt@kernel.org"
+	<robh+dt@kernel.org>,
+        "krzysztof.kozlowski+dt@linaro.org"
+	<krzysztof.kozlowski+dt@linaro.org>,
+        "conor+dt@kernel.org"
+	<conor+dt@kernel.org>,
+        "Abhinav Kumar (QUIC)" <quic_abhinavk@quicinc.com>,
+        "Rajeev Nandan (QUIC)" <quic_rajeevny@quicinc.com>,
+        "Vishnuvardhan Prodduturi
+ (QUIC)" <quic_vproddut@quicinc.com>,
+        "sumit.semwal@linaro.org"
+	<sumit.semwal@linaro.org>
+Subject: RE: [v1 0/2] Add support for Truly NT36672E LCD DSI panel
+Thread-Topic: [v1 0/2] Add support for Truly NT36672E LCD DSI panel
+Thread-Index: AQHaNMcPWiQjaTqUZUqKDGWiC6YkIrC1b0EAgBQrxWA=
+Date: Thu, 4 Jan 2024 11:39:26 +0000
+Message-ID: 
+ <BL3PR02MB8234A267ED4DA78F54D0CF6188672@BL3PR02MB8234.namprd02.prod.outlook.com>
+References: <20231222110710.19397-1-quic_riteshk@quicinc.com>
+ <b2472f53-2e60-46ba-9ae7-aeca1b323f37@linaro.org>
+In-Reply-To: <b2472f53-2e60-46ba-9ae7-aeca1b323f37@linaro.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BL3PR02MB8234:EE_|SA2PR02MB7771:EE_
+x-ms-office365-filtering-correlation-id: bdf4b5f0-da7a-4ece-8738-08dc0d19ce50
+x-ld-processed: 98e9ba89-e1a1-4e38-9007-8bdabc25de1d,ExtAddr
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 
+ ewLEnUKsMwLHE8J6cs4qoIijIJXjMFhs/MqLfgtnUeHy0z0fPtHGCVHaEsCM5Y8G7N76w7HG26xCE2Zv1Qy+GH1QsCJfoD3NYZsswP5aeKyASLzS0vlNbrcfZaG6gYnjGQNMXn+iPBfzZ6+d4Kf1Xom32btXpS/45sf9Czy8R7MBBpJZsA9p+50/sejsC56tWtdzFZiWyX0Mhynh1LcoHfp7TORmJ2a2Kjp0keTqYs7iGGC6FnWhKzokgSppfEYExc10YIpxaHLONaL6MdcRTpGMYO1wBPo617d42mqB7i6ltEhM4bVOSLWlSso0URBiqRR3afT1mcEV1tv++dIk2fc8dr2wcvb8PHGhi7Gjq354JXMxyyqA2cGuqpjcPpUX/anB4YU6/Zxey9d5Qbwopq2b1ZK/zf8y4+LH9Ssi0mSCAnsYnxU3CIkuPB6s4ANO9ajYEA6roKQ0FCFbPBBipjjJn76dwQz5SCaybarQxVMmUjTvfGWzk7No66PDTnpqYFHSGKOl0JQyqUV+yvmeochfRcfwmkuVLnfTH7PEqBEk5RvbYXix5P0wdhR32wkVxJK36kTFAYqDnMCz7jKWqJ5gQ0QcbJ6/u55wKfNLZvmVAAh3ysp1mzI7Q5uaxaZZ6tgSHZzKC97hy7sBvr9tewmnBVInjfIjDNFWqjRK9Ic=
+x-forefront-antispam-report: 
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL3PR02MB8234.namprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(346002)(366004)(39860400002)(396003)(136003)(230922051799003)(230173577357003)(230273577357003)(64100799003)(186009)(451199024)(1800799012)(5660300002)(38070700009)(7416002)(2906002)(55016003)(52536014)(7696005)(122000001)(6506007)(9686003)(4326008)(8676002)(66556008)(66476007)(66946007)(76116006)(8936002)(478600001)(38100700002)(83380400001)(71200400001)(86362001)(54906003)(64756008)(33656002)(110136005)(66446008)(41300700001)(26005)(316002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: 
+ =?utf-8?B?YmVDWXp3YytBcmY3ejFlb3g5ZUNMWit0bk5NZFVtbnh6VWtkcmx6SnJGdGdh?=
+ =?utf-8?B?RjlZZk5ORU8xWjhrbHRrUVVwWlRES00xbU0rY0FZY2NJMSs0dVhJamhPc0Y1?=
+ =?utf-8?B?dkpZTHc5TEppUVVRd2tKa3dFMzBSRk0zV3A5by9FaWFCbHh3OUkwRGlmeUFz?=
+ =?utf-8?B?V0syWnJkbnJzbVMySDRocnhNSllCMjdqN3d6K1JtTHcyZDRkSm9iV2FsMG9p?=
+ =?utf-8?B?a21uUG9waWswa01PVXV3SjZWMy9TTDVmc3lzS2JmS3dkaVJBSVV1Q1doS1FZ?=
+ =?utf-8?B?UU9aV3M4YThHazVrRHdYTUJKNTU1djAxa3d6QzNyMFg2TG5ScU1PN3BHamNO?=
+ =?utf-8?B?OXZraUNxM1VDcTZlQmNSZ0pWZkJRSnRJRWhjRVpnU001NThDcVdnRXRVekpa?=
+ =?utf-8?B?d3lwMTBmVm1BVEszcUgrWFgrR01MYUJNbzB4dmxwZEYxRnJiR0FuZnMzcUwv?=
+ =?utf-8?B?TWV6RitnZm1hSFgwUlZDc3cvR3JsWEFtZWZhSC9VWUw3b2hhb3dWdEpxVTc4?=
+ =?utf-8?B?UndsNTRXMVRPTUZZZFFDZkhKeWxta2Q0c3dJckhBaU9PRzZBQmlTV3JuU3h4?=
+ =?utf-8?B?RjJPWWhhck9SY0Y3UjZsUGdXVDZLMjJFaDBZTlBxQVBaelhGMFR1clM0MlND?=
+ =?utf-8?B?TVNyeFBOZ2hWcnBCL2tBZDZiMVpCOS9OK1l4VlpzbDdUQ2g1TFNUclA1TlRw?=
+ =?utf-8?B?dGJJR0Rmc2ZFV3FnNTJtR2U0SzdLQ2dvZHJJVGsyM0tIcUlRYVdBL2hXZ3Vr?=
+ =?utf-8?B?NWJXOThnZTVycG4ybDh5azVqcUgrQVIwekkzTDlWVS9Oazk2MUp4U20zcS9s?=
+ =?utf-8?B?bFFjVzRNOTYrbFNvOWVaSkZwb0ZMMmo2c0VxNkdHeGVoc2x5WHZWdHZXUjJv?=
+ =?utf-8?B?TzhoRWNWQzZFZGFZYU5nakNMM0lReHNwazlxTTJpZ3pIME9NaklYQm5uM1d3?=
+ =?utf-8?B?aFZqRHhrb29iRlM5YlRhWWUxV3MzeUU2Z2VVdnpvSUt4LzRxaWNDMjM1UUlx?=
+ =?utf-8?B?YzltZEVUa0FXblhxdjBYYVloeTB1OUJhU1ZGbWhsQzFaOW1QMFpseG5GUS9O?=
+ =?utf-8?B?bjdaTjBiQW5jTXowalZkQTgvQlByRVhleTFWQi9HRk1FMkhQZTNNV1grSXRQ?=
+ =?utf-8?B?SC9tQkZmRUJGZHhCQ2VDc054eWxLeHNZaVRGN2UyRmZtTHBnTzloUWNROEhN?=
+ =?utf-8?B?bGg0N2diQ2E2TkVZSjNhaFJTQWV4Mk82Y3pnWXZPR0JUeUZhV2luaEU3cHE5?=
+ =?utf-8?B?UTlZUU5lbE5OYlBWTUhVbk5rQUdYQVVzb2Z5dnFuL0cxa0FLQWoyK1FWVHA3?=
+ =?utf-8?B?NUx5MFhnYnA4d1BtczdDcUdlb3pvdHJUekF0ZzJ3TzRtL2tFSG53SnlUaGY2?=
+ =?utf-8?B?WXM2MDU3TzMxRmdieVZjZk5vOFZueDFRRkFBZ0NWaDRBY0VPbzdMOEpDL2tn?=
+ =?utf-8?B?Z2JqNzZLL3V4bm1VS2tUeDl1MGowOUIwa0MwcVZFdjJEdXVlN2w1UHFtMlc1?=
+ =?utf-8?B?Q2ZMU24zNElhek9RRlk3dGpZclZoZTVoZjJsemlrM0U5aWF5N1pzWllMT2M0?=
+ =?utf-8?B?MVVUalVlVE5zT21mT0Rta3Vad2RIK2E3TUhRRzEwQk51V3FGRVFBU0cxUjdC?=
+ =?utf-8?B?c2ppaGt3RUNMS2VnZ0ZxNHQrRmpuSUpFOUJLWHBmeGpJMWE5d2dwNitzTXZX?=
+ =?utf-8?B?ZU1CNEZqaWdhUW9sSHFHbXZzcjlJdHJXNHBYengxVkY5Y3RjTHZ1aW92UUdu?=
+ =?utf-8?B?ODd4ZDg1RlM1NXNFYkV2bW1uMXRoVW5JZFNISW0vMmZPOFJkbVk2ZkhXL0VV?=
+ =?utf-8?B?bHBzNHZ6NTlubnlqekJiQmh3TlZmQjFZaU1DOE9xYTJCSUdNZkw2SVZzYnJl?=
+ =?utf-8?B?NGl4am9jWWdWMU9JQmRZT2JMUkk4L3dwa1ZWaGhvVGxUU1Y2ZU5WMTNIdnlk?=
+ =?utf-8?B?Y0RwTEVNMmVRMmpid1RKSFFkZ1JPZzlhTkxyR0J4cHZZcW13MXdjREtFUGc5?=
+ =?utf-8?B?NkhzRXFzUVBkYVFOV29NeXdCdlZlaFNDYjQ3ZHZUdzc3aHp6NndrVW0xVWZs?=
+ =?utf-8?B?eHc4RFU5Zit0WFYrZTZFeEk0M1VCWHhSZ1kwK2ZjS0pJQk5pakpsR3pnZVQr?=
+ =?utf-8?Q?J5RcdPgbzNvT1N1jn4iClwwRP?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: rafael@kernel.org, lpieralisi@kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev, mark.rutland@arm.com, robin.murphy@arm.com, fangxiang3@xiaomi.com, robert.moore@intel.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+MIME-Version: 1.0
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
+	qHnjkieerf/r7dS8QPYYWeFcUJybPa/jBovgdsRzZ/vZUb/+Bz8S+PRfAlkzhW/KLN05WWJetMXD6M/AuWS1IXj/PzIdqQ91KbGm3qTbBnmDggw8EgIvirgJ42ZF8Cia3Zxvtni6MY+K0uNo1WTXHh2XDuit5aehY2YNbehb2Ny0guHe8KYCyD9r5OZVxL4ADyobiBjYdx7BUoZTEGDi92biJky1NCYhGhyp74GpdcJbHrQtKEnHejbnEuLFv00emqa9V0RTw3cUtsiTU55Iys2Kdcdy8qk2QJ0VLPVnQD5go9jUwanJIAlkpIBln/Nc+rHJdjaYmt6JXF7lEC40ca6rKf4qWWyxDLmtaS0B1Bf7jxxuQ7ojztiRtmMulWLz+jm/pFFC8bZBapYYB5ISVoOHskI+stZfpD7oNqXObNowLZhLFwaf2DtMCZCjgZ/ich5co7vCOYaOQEpxdcLa+C721IwsaKuoQPO9QP9bNJChJ6+7DD41GPP11HrArLpeX+gcxg8t1xqi8QJkc3ReWf3sWKhVKI1+rhNB4jhaMIgXVP0LnglVakIDSpZrdGjX9sX9M9b5WXRzw0/BmuJQuQCpY3JMnEIEsN9jXRewQWME/aVb6SDMJUTL+Wt++uCX
+X-OriginatorOrg: qti.qualcomm.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BL3PR02MB8234.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bdf4b5f0-da7a-4ece-8738-08dc0d19ce50
+X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Jan 2024 11:39:26.6288
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 98e9ba89-e1a1-4e38-9007-8bdabc25de1d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: v36lcQCO8/SyoRMg9vLy78It08MZp+fHaAJH2vAk3UqHvWAqISYjyPcnVEu4vdY1yERZiNn/FRAI5yNI/+pAFYZhwru/XZITIoCrjQi1LZ4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR02MB7771
+X-Proofpoint-GUID: v-OjL_FtJ6heJ18_2mRJKttwAToAsFLP
+X-Proofpoint-ORIG-GUID: v-OjL_FtJ6heJ18_2mRJKttwAToAsFLP
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011
+ lowpriorityscore=0 priorityscore=1501 spamscore=0 suspectscore=0
+ impostorscore=0 bulkscore=0 malwarescore=0 mlxlogscore=999 phishscore=0
+ mlxscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2401040089
 
-On Wed, 03 Jan 2024 13:43:16 +0000,
-"Rafael J. Wysocki" <rafael@kernel.org> wrote:
->=20
-> On Wed, Dec 27, 2023 at 12:00=E2=80=AFPM Lorenzo Pieralisi
-> <lpieralisi@kernel.org> wrote:
-> >
-> > This series is v4 of previous series:
-> >
-> > v3: https://lore.kernel.org/all/20231006125929.48591-1-lpieralisi@kerne=
-l.org
-> > v2: https://lore.kernel.org/all/20230906094139.16032-1-lpieralisi@kerne=
-l.org
-> > v1: https://lore.kernel.org/all/20230905104721.52199-1-lpieralisi@kerne=
-l.org
-> >
-> > v3 -> v4:
-> >         - Dropped patches [1-3], already merged
-> >         - Added Linuxized ACPICA changes accepted upstream
-> >         - Rebased against v6.7-rc3
-> >
-> > v2 -> v3:
-> >         - Added ACPICA temporary changes and ACPI changes to implement
-> >           ECR https://bugzilla.tianocore.org/show_bug.cgi?id=3D4557
-> >         - ACPI changes are for testing purposes - subject to ECR code
-> >           first approval
-> >
-> > v1 -> v2:
-> >         - Updated DT bindings as per feedback
-> >         - Updated patch[2] to use GIC quirks infrastructure
-> >
-> > Original cover letter
-> > ---
-> > The GICv3 architecture specifications provide a means for the
-> > system programmer to set the shareability and cacheability
-> > attributes the GIC components (redistributors and ITSes) use
-> > to drive memory transactions.
-> >
-> > Albeit the architecture give control over shareability/cacheability
-> > memory transactions attributes (and barriers), it is allowed to
-> > connect the GIC interconnect ports to non-coherent memory ports
-> > on the interconnect, basically tying off shareability/cacheability
-> > "wires" and de-facto making the redistributors and ITSes non-coherent
-> > memory observers.
-> >
-> > This series aims at starting a discussion over a possible solution
-> > to this problem, by adding to the GIC device tree bindings the
-> > standard dma-noncoherent property. The GIC driver uses the property
-> > to force the redistributors and ITSes shareability attributes to
-> > non-shareable, which consequently forces the driver to use CMOs
-> > on GIC memory tables.
-> >
-> > On ARM DT DMA is default non-coherent, so the GIC driver can't rely
-> > on the generic DT dma-coherent/non-coherent property management layer
-> > (of_dma_is_coherent()) which would default all GIC designs in the field
-> > as non-coherent; it has to rely on ad-hoc dma-noncoherent property hand=
-ling.
-> >
-> > When a consistent approach is agreed upon for DT an equivalent binding =
-will
-> > be put forward for ACPI based systems.
-> >
-> > Lorenzo Pieralisi (3):
-> >   ACPICA: MADT: Add GICC online capable bit handling
-> >   ACPICA: MADT: Add new MADT GICC/GICR/ITS non-coherent flags handling
-> >   irqchip/gic-v3: Enable non-coherent redistributors/ITSes ACPI probing
-> >
-> >  drivers/acpi/processor_core.c    | 21 +++++++++++++++++++++
-> >  drivers/irqchip/irq-gic-common.h |  8 ++++++++
-> >  drivers/irqchip/irq-gic-v3-its.c |  4 ++++
-> >  drivers/irqchip/irq-gic-v3.c     |  9 +++++++++
-> >  include/acpi/actbl2.h            | 12 ++++++++++--
-> >  include/linux/acpi.h             |  3 +++
-> >  6 files changed, 55 insertions(+), 2 deletions(-)
-> >
-> > --
->=20
-> I can apply the first 2 patches, but I would need an ACK for the 3rd one.
->=20
-> Alternatively, feel free to add
->=20
-> Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
->=20
-> to the first 2 patches and route them via ARM64.
-
-Thanks for that. I have some comments on the third patch, which I'd
-like to see addressed beforehand. This is probably all 6.9 material
-anyway (nobody is affected by this so far).
-
-	M.
-
---=20
-Without deviation from the norm, progress is not possible.
+SGkgS3J6eXN6dG9mLA0KDQo+LS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj5Gcm9tOiBLcnp5
+c3p0b2YgS296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+DQo+U2VudDog
+RnJpZGF5LCBEZWNlbWJlciAyMiwgMjAyMyA5OjA1IFBNDQo+VG86IFJpdGVzaCBLdW1hciAoUVVJ
+QykgPHF1aWNfcml0ZXNoa0BxdWljaW5jLmNvbT47IGRyaS0NCj5kZXZlbEBsaXN0cy5mcmVlZGVz
+a3RvcC5vcmc7IGRldmljZXRyZWVAdmdlci5rZXJuZWwub3JnOyBsaW51eC0NCj5rZXJuZWxAdmdl
+ci5rZXJuZWwub3JnDQo+Q2M6IG5laWwuYXJtc3Ryb25nQGxpbmFyby5vcmc7IEplc3NpY2EgWmhh
+bmcgKFFVSUMpDQo+PHF1aWNfamVzc3poYW5AcXVpY2luYy5jb20+OyBzYW1AcmF2bmJvcmcub3Jn
+Ow0KPm1hYXJ0ZW4ubGFua2hvcnN0QGxpbnV4LmludGVsLmNvbTsgbXJpcGFyZEBrZXJuZWwub3Jn
+Ow0KPnR6aW1tZXJtYW5uQHN1c2UuZGU7IGFpcmxpZWRAZ21haWwuY29tOyBkYW5pZWxAZmZ3bGwu
+Y2g7DQo+cm9iaCtkdEBrZXJuZWwub3JnOyBrcnp5c3p0b2Yua296bG93c2tpK2R0QGxpbmFyby5v
+cmc7IGNvbm9yK2R0QGtlcm5lbC5vcmc7DQo+QWJoaW5hdiBLdW1hciAoUVVJQykgPHF1aWNfYWJo
+aW5hdmtAcXVpY2luYy5jb20+OyBSYWplZXYgTmFuZGFuIChRVUlDKQ0KPjxxdWljX3JhamVldm55
+QHF1aWNpbmMuY29tPjsgVmlzaG51dmFyZGhhbiBQcm9kZHV0dXJpIChRVUlDKQ0KPjxxdWljX3Zw
+cm9kZHV0QHF1aWNpbmMuY29tPg0KPlN1YmplY3Q6IFJlOiBbdjEgMC8yXSBBZGQgc3VwcG9ydCBm
+b3IgVHJ1bHkgTlQzNjY3MkUgTENEIERTSSBwYW5lbA0KPg0KPldBUk5JTkc6IFRoaXMgZW1haWwg
+b3JpZ2luYXRlZCBmcm9tIG91dHNpZGUgb2YgUXVhbGNvbW0uIFBsZWFzZSBiZSB3YXJ5IG9mDQo+
+YW55IGxpbmtzIG9yIGF0dGFjaG1lbnRzLCBhbmQgZG8gbm90IGVuYWJsZSBtYWNyb3MuDQo+DQo+
+T24gMjIvMTIvMjAyMyAxMjowNywgUml0ZXNoIEt1bWFyIHdyb3RlOg0KPj4gQWRkIHN1cHBvcnQg
+Zm9yIHRoZSAxMDgweDI0MDggVHJ1bHkgTlQzNjY3MkUgTENEIERTSSBtb2RlIHBhbmVsDQo+DQo+
+R29vZ2xlIGRvZXMgbm90IGZpbmQgYW55dGhpbmcgZm9yICJUcnVseSBOVDM2NjcyRSIsIHNvIEkg
+aGF2ZSBzb21lIGRvdWJ0cw0KPndoZXRoZXIgeW91IHVzZWQgY29ycmVjdCB2ZW5kb3IgbmFtZSBv
+ciBwcm9kdWN0IElELg0KDQpOb3ZhdGVrIGlzIHRoZSBERElDIHZlbmRvciBhbmQgVHJ1bHkgaXMg
+dGhlIGdsYXNzIHZlbmRvci4gSXQgc2hvdWxkIGJlICJOb3ZhdGVrIE5UMzY2NzJFIi4gSSB3YXMg
+Y29uZnVzZWQgZWFybGllciBiZXR3ZWVuIFRydWx5IGFuZCBOb3ZhdGVrLg0KV2UgZG9uJ3QgaGF2
+ZSBvbmxpbmUgbGluayBmb3IgdGhlIGRhdGFzaGVldC4gV2UgcmVjZWl2ZWQgaXQgZnJvbSBwYW5l
+bCB2ZW5kb3IuIFRoaXMgcGFuZWwgaXMgYmVpbmcgdXNlZCBvbiBRdWFsY29tbSdzIG11bHRpcGxl
+IGludGVybmFsIHBsYXRmb3Jtcy4NCkkgd2lsbCByZW5hbWUgVHJ1bHkgdG8gTm92YXRlayBpbiBu
+ZXh0IHZlcnNpb24uDQoNClRoYW5rcywNClJpdGVzaA0K
 
