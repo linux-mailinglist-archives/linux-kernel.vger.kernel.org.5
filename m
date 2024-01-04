@@ -1,226 +1,269 @@
-Return-Path: <linux-kernel+bounces-16566-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16567-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A949824055
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 12:11:24 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 29C0A824057
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 12:12:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5378B282E54
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 11:11:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 82961B23DCF
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 11:12:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA53C210ED;
-	Thu,  4 Jan 2024 11:11:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87938210F1;
+	Thu,  4 Jan 2024 11:12:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="r1G5Uiv/"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-m15579.qiye.163.com (mail-m15579.qiye.163.com [101.71.155.79])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68588210E3;
-	Thu,  4 Jan 2024 11:11:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=senarytech.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=senarytech.com
-Received: from book-ThinkStation-P328.. (unknown [61.183.143.78])
-	by mail-m12756.qiye.163.com (Hmail) with ESMTPA id 95295DC0733;
-	Thu,  4 Jan 2024 19:10:49 +0800 (CST)
-From: bo liu <bo.liu@senarytech.com>
-To: perex@perex.cz,
-	tiwai@suse.com
-Cc: linux-sound@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	bo liu <bo.liu@senarytech.com>
-Subject: [PATCH] ALSA: hda/conexant: Fix headset auto detect fail in cx8070 and SN6140
-Date: Thu,  4 Jan 2024 19:10:44 +0800
-Message-Id: <20240104111044.5880-1-bo.liu@senarytech.com>
-X-Mailer: git-send-email 2.34.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D05B1210E8;
+	Thu,  4 Jan 2024 11:12:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7BD4DC433C8;
+	Thu,  4 Jan 2024 11:12:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704366751;
+	bh=ZTYlcyfMaa3S3C+3fVCkNuI7tbLxpzFHsI1DErMHbmc=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=r1G5Uiv/WQdfy8fNqdt5yEW68k/doK+XAT06xU5w251XH5yBWIvyIQEGq5mbOzTCV
+	 Qe3pPsj5P3o3Q6xdXjyhek3InYKVDQv2GMnfpJ9+AjmTpAS2X9nUQ85MJYQQL5mmYL
+	 DSqbMfsnlsm6tPJu1SxRriSpbVe6vjKJ+Xa/7mQBIvrH/gYEbOKezsLLU6Es9zmLiu
+	 aKv7DGe0fe5fbH0KZ1p1wnU5WI3S/6KLsJll9/dTRyiszw8mj9+1GfQvXwpStlXDvD
+	 jF/oP061KaATAIWn+Ypih4EMcXTyMQEQZjSIJYnKjpUhUMOPUMolKwQCkKQ973wXwV
+	 /EwLAWI+kdR3g==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <maz@kernel.org>)
+	id 1rLLeG-008mAO-SY;
+	Thu, 04 Jan 2024 11:12:29 +0000
+Date: Thu, 04 Jan 2024 11:12:28 +0000
+Message-ID: <86il499wtf.wl-maz@kernel.org>
+From: Marc Zyngier <maz@kernel.org>
+To: Lorenzo Pieralisi <lpieralisi@kernel.org>
+Cc: linux-kernel@vger.kernel.org,
+	Robin Murphy <robin.murphy@arm.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	linux-arm-kernel@lists.infradead.org,
+	linux-acpi@vger.kernel.org,
+	acpica-devel@lists.linux.dev,
+	Fang Xiang <fangxiang3@xiaomi.com>,
+	Robert Moore <robert.moore@intel.com>
+Subject: Re: [PATCH v4 3/3] irqchip/gic-v3: Enable non-coherent redistributors/ITSes ACPI probing
+In-Reply-To: <20231227110038.55453-4-lpieralisi@kernel.org>
+References: <20230905104721.52199-1-lpieralisi@kernel.org>
+	<20231227110038.55453-1-lpieralisi@kernel.org>
+	<20231227110038.55453-4-lpieralisi@kernel.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
-	tZV1koWUFITzdXWS1ZQUlXWQ8JGhUIEh9ZQVkaQklMVhpNSR1DThoYQx8dH1UTARMWGhIXJBQOD1
-	lXWRgSC1lBWU1KVUpDSFVKT0hVTENZV1kWGg8SFR0UWUFZT0tIVUpMSk9OTVVKS0tVSkJLS1kG
-X-HM-Tid: 0a8cd42b3162b223kuuu95295dc0733
-X-HM-MType: 1
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Ohw6Cyo*HjwdCDpIEQgDQitD
-	GVYwCjdVSlVKTEtPSE1NTU5LSElOVTMWGhIXVRkUVRcSDjsIHhUaCQIPHhgTVRgUFkVZV1kSC1lB
-	WU1KVUpDSFVKT0hVTENZV1kIAVlBTUNKSzcG
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: lpieralisi@kernel.org, linux-kernel@vger.kernel.org, robin.murphy@arm.com, mark.rutland@arm.com, rafael@kernel.org, linux-arm-kernel@lists.infradead.org, linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev, fangxiang3@xiaomi.com, robert.moore@intel.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
-When OMTP headset plugin the headset jack of CX8070 and SN6160 sound cards,
-the headset type detection circuit will recognize the headset type as CTIA.
-At this point, plugout and plugin the headset will get the correct headset
-type as OMTP.
-The reason for the failure of headset type recognition is that the sound
-card creation will enable the VREF voltage of the headset mic, which
-interferes with the headset type automatic detection circuit. Plugout and
-plugin the headset will restart the headset detection and get the correct
-headset type.
-The patch is disable the VREF voltage when the headset is not present, and
-will enable the VREF voltage when the headset is present.
+On Wed, 27 Dec 2023 11:00:38 +0000,
+Lorenzo Pieralisi <lpieralisi@kernel.org> wrote:
+> 
+> The GIC architecture specification defines a set of registers
+> for redistributors and ITSes that control the sharebility and
+> cacheability attributes of redistributors/ITSes initiator ports
+> on the interconnect (GICR_[V]PROPBASER, GICR_[V]PENDBASER,
+> GITS_BASER<n>).
+> 
+> Architecturally the GIC provides a means to drive shareability
+> and cacheability attributes signals and related IWB/OWB/ISH barriers
 
-Signed-off-by: bo liu <bo.liu@senarytech.com>
----
- sound/pci/hda/patch_conexant.c | 108 ++++++++++++++++++++++++++++++++-
- 1 file changed, 106 insertions(+), 2 deletions(-)
+IWB/OWB *barriers*? Unless you're talking about something else,
+IWB/OWB refers to cacheability, and only that.
 
-diff --git a/sound/pci/hda/patch_conexant.c b/sound/pci/hda/patch_conexant.c
-index a889cccdd607..29c62181dbc3 100644
---- a/sound/pci/hda/patch_conexant.c
-+++ b/sound/pci/hda/patch_conexant.c
-@@ -42,7 +42,8 @@ struct conexant_spec {
- 	unsigned int gpio_led;
- 	unsigned int gpio_mute_led_mask;
- 	unsigned int gpio_mic_led_mask;
--
-+	unsigned int headset_present_flag;
-+	bool is_cx8070_sn6140;
- };
- 
- 
-@@ -164,6 +165,22 @@ static void cxt_init_gpio_led(struct hda_codec *codec)
- 	}
- }
- 
-+static void cx_fixup_headset_recog(struct hda_codec *codec)
-+{
-+	unsigned int mic_persent;
-+
-+	/* fix some headset type recognize fail issue, such as EDIFIER headset */
-+	snd_hda_codec_write(codec, 0x1c, 0, 0x320, 0x010);
-+	snd_hda_codec_write(codec, 0x1c, 0, 0x3b0, 0xe10);
-+	snd_hda_codec_write(codec, 0x1c, 0, 0x4f0, 0x0eb);
-+	/* fix reboot headset type recognize fail issue */
-+	mic_persent = snd_hda_codec_read(codec, 0x19, 0, AC_VERB_GET_PIN_SENSE, 0x0);
-+	if (mic_persent&0x80000000)
-+		snd_hda_codec_write(codec, 0x19, 0, AC_VERB_SET_PIN_WIDGET_CONTROL, 0x24);
-+	else
-+		snd_hda_codec_write(codec, 0x19, 0, AC_VERB_SET_PIN_WIDGET_CONTROL, 0x20);
-+}
-+
- static int cx_auto_init(struct hda_codec *codec)
- {
- 	struct conexant_spec *spec = codec->spec;
-@@ -174,6 +191,9 @@ static int cx_auto_init(struct hda_codec *codec)
- 	cxt_init_gpio_led(codec);
- 	snd_hda_apply_fixup(codec, HDA_FIXUP_ACT_INIT);
- 
-+	if (spec->is_cx8070_sn6140)
-+		cx_fixup_headset_recog(codec);
-+
- 	return 0;
- }
- 
-@@ -192,6 +212,81 @@ static void cx_auto_free(struct hda_codec *codec)
- 	snd_hda_gen_free(codec);
- }
- 
-+enum {
-+	CX_HEADSET_NOPRESENT = 0,
-+	CX_HEADSET_PARTPRESENT,
-+	CX_HEADSET_ALLPRESENT,
-+};
-+
-+static void cx_process_headset_plugin(struct hda_codec *codec)
-+{
-+	unsigned int val;
-+	unsigned int count = 0;
-+
-+	/* Wait headset detect done. */
-+	do {
-+		val = snd_hda_codec_read(codec, 0x1c, 0, 0xca0, 0x0);
-+		if (val&0x080) {
-+			codec_dbg(codec, "headset type detect done!\n");
-+			break;
-+		}
-+		msleep(20);
-+		count++;
-+	} while (count < 3);
-+	val = snd_hda_codec_read(codec, 0x1c, 0, 0xcb0, 0x0);
-+	if (val&0x800) {
-+		codec_dbg(codec, "headset plugin, type is CTIA\n");
-+		snd_hda_codec_write(codec, 0x19, 0, AC_VERB_SET_PIN_WIDGET_CONTROL, 0x24);
-+	} else if (val&0x400) {
-+		codec_dbg(codec, "headset plugin, type is OMTP\n");
-+		snd_hda_codec_write(codec, 0x19, 0, AC_VERB_SET_PIN_WIDGET_CONTROL, 0x24);
-+	} else {
-+		codec_dbg(codec, "headphone plugin\n");
-+	}
-+}
-+
-+static void cx_update_headset_mic_vref(struct hda_codec *codec, unsigned int res)
-+{
-+	unsigned int phone_present, mic_persent, phone_tag, mic_tag;
-+	struct conexant_spec *spec = codec->spec;
-+
-+	/* In cx8070 and sn6140, headset is fixed to use node 16 and node 19.
-+	 * Check hp and mic tag to process headset pulgin and plugout.
-+	 */
-+	phone_tag = snd_hda_codec_read(codec, 0x16, 0, AC_VERB_GET_UNSOLICITED_RESPONSE, 0x0);
-+	mic_tag = snd_hda_codec_read(codec, 0x19, 0, AC_VERB_GET_UNSOLICITED_RESPONSE, 0x0);
-+	if ((phone_tag&(res>>AC_UNSOL_RES_TAG_SHIFT)) || (mic_tag&(res>>AC_UNSOL_RES_TAG_SHIFT))) {
-+		phone_present = snd_hda_codec_read(codec, 0x16, 0, AC_VERB_GET_PIN_SENSE, 0x0);
-+		if (!(phone_present&AC_PINSENSE_PRESENCE)) {/* headphone plugout */
-+			spec->headset_present_flag = CX_HEADSET_NOPRESENT;
-+			snd_hda_codec_write(codec, 0x19, 0, AC_VERB_SET_PIN_WIDGET_CONTROL, 0x20);
-+			return;
-+		}
-+		if (spec->headset_present_flag == CX_HEADSET_NOPRESENT) {
-+			spec->headset_present_flag = CX_HEADSET_PARTPRESENT;
-+		} else if (spec->headset_present_flag == CX_HEADSET_PARTPRESENT) {
-+			mic_persent = snd_hda_codec_read(codec, 0x19, 0,
-+							 AC_VERB_GET_PIN_SENSE, 0x0);
-+			/* headset is present */
-+			if ((phone_present&AC_PINSENSE_PRESENCE) &&
-+			    (mic_persent&AC_PINSENSE_PRESENCE)) {
-+				cx_process_headset_plugin(codec);
-+				spec->headset_present_flag = CX_HEADSET_ALLPRESENT;
-+			}
-+		}
-+	}
-+}
-+
-+static void cx_jack_unsol_event(struct hda_codec *codec, unsigned int res)
-+{
-+	struct conexant_spec *spec = codec->spec;
-+
-+	if (spec->is_cx8070_sn6140)
-+		cx_update_headset_mic_vref(codec, res);
-+
-+	snd_hda_jack_unsol_event(codec, res);
-+}
-+
- #ifdef CONFIG_PM
- static int cx_auto_suspend(struct hda_codec *codec)
- {
-@@ -205,7 +300,7 @@ static const struct hda_codec_ops cx_auto_patch_ops = {
- 	.build_pcms = snd_hda_gen_build_pcms,
- 	.init = cx_auto_init,
- 	.free = cx_auto_free,
--	.unsol_event = snd_hda_jack_unsol_event,
-+	.unsol_event = cx_jack_unsol_event,
- #ifdef CONFIG_PM
- 	.suspend = cx_auto_suspend,
- 	.check_power_status = snd_hda_gen_check_power_status,
-@@ -1042,6 +1137,15 @@ static int patch_conexant_auto(struct hda_codec *codec)
- 	codec->spec = spec;
- 	codec->patch_ops = cx_auto_patch_ops;
- 
-+	/* init cx8070/sn6140 flag and reset headset_present_flag */
-+	switch (codec->core.vendor_id) {
-+	case 0x14f11f86:
-+	case 0x14f11f87:
-+		spec->is_cx8070_sn6140 = true;
-+		spec->headset_present_flag = CX_HEADSET_NOPRESENT;
-+		break;
-+	}
-+
- 	cx_auto_parse_eapd(codec);
- 	spec->gen.own_eapd_ctl = 1;
- 
+> but it is not mandatory for designs to wire up the corresponding
+> interconnect signals that control the cacheability/shareability
+> of transactions.
+> 
+> Redistributors and ITSes interconnect ports can be connected to
+> non-coherent interconnects that are not able to manage the
+> shareability/cacheability attributes; this implicitly makes
+> the redistributors and ITSes non-coherent observers.
+> 
+> So far, the GIC driver on probe executes a write to "probe" for
+> the redistributors and ITSes registers shareability bitfields
+> by writing a value (ie InnerShareable - the shareability domain the
+> CPUs are in) and check it back to detect whether the value sticks or
+> not; this hinges on a GIC programming model behaviour that predates the
+> current specifications, that just define shareability bits as writeable
+> but do not guarantee that writing certain shareability values
+> enable the expected behaviour for the redistributors/ITSes
+> memory interconnect ports.
+> 
+> To enable non-coherent GIC designs on ACPI based systems, parse the MADT
+> GICC/GICR/ITS subtables non-coherent flags to determine whether the
+> respective components are non-coherent observers and force the shareability
+> attributes to be programmed into the redistributors and ITSes registers.
+> 
+> An ACPI global function (acpi_get_madt_revision()) is added to retrieve
+> the MADT revision, in that it is essential to check the MADT revision
+> before checking for flags that were added with MADT revision 7 so that
+> if the kernel is booted with ACPI tables (MADT rev < 7) it skips parsing
+> the newly added flags (that should be zeroed reserved values for MADT
+> versions < 7 but they could turn out to be buggy and should be ignored).
+> 
+> Signed-off-by: Lorenzo Pieralisi <lpieralisi@kernel.org>
+> Cc: Robin Murphy <robin.murphy@arm.com>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: "Rafael J. Wysocki" <rafael@kernel.org>
+> Cc: Marc Zyngier <maz@kernel.org>
+> ---
+>  drivers/acpi/processor_core.c    | 21 +++++++++++++++++++++
+>  drivers/irqchip/irq-gic-common.h |  8 ++++++++
+>  drivers/irqchip/irq-gic-v3-its.c |  4 ++++
+>  drivers/irqchip/irq-gic-v3.c     |  9 +++++++++
+>  include/linux/acpi.h             |  3 +++
+>  5 files changed, 45 insertions(+)
+> 
+> diff --git a/drivers/acpi/processor_core.c b/drivers/acpi/processor_core.c
+> index b203cfe28550..c253d151275e 100644
+> --- a/drivers/acpi/processor_core.c
+> +++ b/drivers/acpi/processor_core.c
+> @@ -215,6 +215,27 @@ phys_cpuid_t __init acpi_map_madt_entry(u32 acpi_id)
+>  	return rv;
+>  }
+>  
+> +u8 __init acpi_get_madt_revision(void)
+> +{
+> +	static u8 madt_revision __initdata;
+> +	static bool madt_read __initdata;
+> +	struct acpi_table_header *madt = NULL;
+> +
+> +	if (!madt_read) {
+> +		madt_read = true;
+
+Huh. Why do we need this hack? What's the issue with accessing the
+MADT? Can it disappear from under our feet? While we're walking it?
+
+> +
+> +		acpi_get_table(ACPI_SIG_MADT, 0, &madt);
+> +		if (!madt)
+> +			return madt_revision;
+
+What does this mean? Can we have a revision 0 of MADT?
+
+> +
+> +		madt_revision = madt->revision;
+> +
+> +		acpi_put_table(madt);
+> +	}
+> +
+> +	return madt_revision;
+> +}
+> +
+>  static phys_cpuid_t map_mat_entry(acpi_handle handle, int type, u32 acpi_id)
+>  {
+>  	struct acpi_buffer buffer = { ACPI_ALLOCATE_BUFFER, NULL };
+> diff --git a/drivers/irqchip/irq-gic-common.h b/drivers/irqchip/irq-gic-common.h
+> index f407cce9ecaa..8dffee95f7e8 100644
+> --- a/drivers/irqchip/irq-gic-common.h
+> +++ b/drivers/irqchip/irq-gic-common.h
+> @@ -6,6 +6,7 @@
+>  #ifndef _IRQ_GIC_COMMON_H
+>  #define _IRQ_GIC_COMMON_H
+>  
+> +#include <linux/acpi.h>
+>  #include <linux/of.h>
+>  #include <linux/irqdomain.h>
+>  #include <linux/irqchip/arm-gic-common.h>
+> @@ -29,6 +30,13 @@ void gic_enable_quirks(u32 iidr, const struct gic_quirk *quirks,
+>  void gic_enable_of_quirks(const struct device_node *np,
+>  			  const struct gic_quirk *quirks, void *data);
+>  
+> +#ifdef CONFIG_ACPI
+> +static inline bool gic_acpi_non_coherent_flag(u32 flags, u32 mask)
+> +{
+> +	return (acpi_get_madt_revision() >= 7) && (flags & mask);
+> +}
+
+Given that this checks *any* flag (or a combination of flags), the
+name of the helper is extremely misleading. Also, GICC flags are not
+necessarily tied to revision 7 of MADT.
+
+To be honest, I don't think this helper bring much, and I'd rather see
+an explicit check (or 3) for the revision in the driver code.
+
+> +#endif
+> +
+>  #define RDIST_FLAGS_PROPBASE_NEEDS_FLUSHING    (1 << 0)
+>  #define RDIST_FLAGS_RD_TABLES_PREALLOCATED     (1 << 1)
+>  #define RDIST_FLAGS_FORCE_NON_SHAREABLE        (1 << 2)
+> diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v3-its.c
+> index 9a7a74239eab..8d088fca65a1 100644
+> --- a/drivers/irqchip/irq-gic-v3-its.c
+> +++ b/drivers/irqchip/irq-gic-v3-its.c
+> @@ -5578,6 +5578,10 @@ static int __init gic_acpi_parse_madt_its(union acpi_subtable_headers *header,
+>  		goto node_err;
+>  	}
+>  
+> +	if (gic_acpi_non_coherent_flag(its_entry->flags,
+> +				       ACPI_MADT_ITS_NON_COHERENT))
+> +		its->flags |= ITS_FLAGS_FORCE_NON_SHAREABLE;
+> +
+>  	err = its_probe_one(its);
+>  	if (!err)
+>  		return 0;
+> diff --git a/drivers/irqchip/irq-gic-v3.c b/drivers/irqchip/irq-gic-v3.c
+> index 98b0329b7154..48e02838fdc8 100644
+> --- a/drivers/irqchip/irq-gic-v3.c
+> +++ b/drivers/irqchip/irq-gic-v3.c
+> @@ -2356,6 +2356,11 @@ gic_acpi_parse_madt_redist(union acpi_subtable_headers *header,
+>  		pr_err("Couldn't map GICR region @%llx\n", redist->base_address);
+>  		return -ENOMEM;
+>  	}
+> +
+> +	if (gic_acpi_non_coherent_flag(redist->flags,
+> +				       ACPI_MADT_GICR_NON_COHERENT))
+> +		gic_data.rdists.flags |= RDIST_FLAGS_FORCE_NON_SHAREABLE;
+> +
+>  	gic_request_region(redist->base_address, redist->length, "GICR");
+>  
+>  	gic_acpi_register_redist(redist->base_address, redist_base);
+> @@ -2380,6 +2385,10 @@ gic_acpi_parse_madt_gicc(union acpi_subtable_headers *header,
+>  		return -ENOMEM;
+>  	gic_request_region(gicc->gicr_base_address, size, "GICR");
+>  
+> +	if (gic_acpi_non_coherent_flag(gicc->flags,
+> +				       ACPI_MADT_GICC_NON_COHERENT))
+> +		gic_data.rdists.flags |= RDIST_FLAGS_FORCE_NON_SHAREABLE;
+> +
+>  	gic_acpi_register_redist(gicc->gicr_base_address, redist_base);
+>  	return 0;
+>  }
+> diff --git a/include/linux/acpi.h b/include/linux/acpi.h
+> index 54189e0e5f41..a292f2bdb693 100644
+> --- a/include/linux/acpi.h
+> +++ b/include/linux/acpi.h
+> @@ -283,6 +283,9 @@ static inline bool invalid_phys_cpuid(phys_cpuid_t phys_id)
+>  	return phys_id == PHYS_CPUID_INVALID;
+>  }
+>  
+> +
+> +u8 __init acpi_get_madt_revision(void);
+> +
+>  /* Validate the processor object's proc_id */
+>  bool acpi_duplicate_processor_id(int proc_id);
+>  /* Processor _CTS control */
+
+Thanks,
+
+	M.
+
 -- 
-2.34.1
-
+Without deviation from the norm, progress is not possible.
 
