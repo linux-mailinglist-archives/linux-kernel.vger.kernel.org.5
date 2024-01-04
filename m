@@ -1,130 +1,156 @@
-Return-Path: <linux-kernel+bounces-16972-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16975-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D37EC8246A9
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 17:51:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D0F98246B6
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 17:52:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 814DE287C0F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 16:51:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 563121C2409A
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 16:52:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FA4B2555F;
-	Thu,  4 Jan 2024 16:51:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8411F25554;
+	Thu,  4 Jan 2024 16:52:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="nB7EuRVq"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="aSboh1XZ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pf1-f202.google.com (mail-pf1-f202.google.com [209.85.210.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2070.outbound.protection.outlook.com [40.107.223.70])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BAA12555A
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 16:51:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--tanzirh.bounces.google.com
-Received: by mail-pf1-f202.google.com with SMTP id d2e1a72fcca58-6d9b09d1afaso754713b3a.3
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 08:51:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1704387082; x=1704991882; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=jm03zStryCFTp1W2rKj9MdI+DmDreeqJY40intfiH2Q=;
-        b=nB7EuRVq2En87atEXYwjtB50SMO6hPyAs1aAcHACN3UPIhPTKKtv3V15XveEux5WlV
-         unDvcOHpYEz5GUCPYAKuo1CxPLyY1TW/Vv9YyLgb9BDGC8JWCqxI8uS9dzQo/vA7rKlq
-         MmDrVb7uH82PCTYLD9rPDdZEgY4l2j/e+DN9F5UuzCR0V37mbj3Uxy6wN6y7z6TZs3Jl
-         4TfDDgNyqUEgsnEetIdwPWPAKjS9sY1Bkko5IfswQ1EMcbhgDg30ZxSJiERELU6LoBon
-         OmvVDS2aNyKE6iGlHEiElhMPi5qMmQj2CqGsWIBntKeUqPsARNMwVy5y9+09e+vlIsme
-         8u0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704387082; x=1704991882;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=jm03zStryCFTp1W2rKj9MdI+DmDreeqJY40intfiH2Q=;
-        b=H606IrdKr3P7U+bNODhTK1AzDSpqiAuer1hCF7RmW0/tLsahUlhuH/WphcRwfh8mC5
-         HNfv7FSuIuz622edAz7E9cySga7eNnq8vjAAxZz2+PWybq2tSr2lg4gD1nJ558m+JrY0
-         0qUxqqhRaDlUS+g00JxYAYTpOJmdSJUAt7b2qhoCIEZO1ibz0g0Tj8ql1bDI8t3Wz/jg
-         dMb4Ds1ChmE/vgX8udZ1lwUJt+nep35dxWiDTjkoBLaVIPvQRjiW5FPf3VKWcEPzV6n6
-         fFdAA7U9jvqoZVPWi4OHyhCmiElgABelMyHxLY0grp2KN0T6ROok1VUBHI8Ri87UUp/0
-         UX2Q==
-X-Gm-Message-State: AOJu0Yzq+75Hd2MAn+AsgsKsIbH03OoKOG8zb+MMU90ZYZFL1ncJ1l8/
-	f/2T4TNcJFk9SkgIuQkLTZb2zPRZBckPU2T+Qo4=
-X-Google-Smtp-Source: AGHT+IHaq2tg9b+ZSO+41GnmDPjqzlyQxaLNcF9d++BmwHPOhBLGk84toxeuB2SWrpX1CA345pLKx6XrRDCl
-X-Received: from tanz.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:c4a])
- (user=tanzirh job=sendgmr) by 2002:a05:6a00:2ea2:b0:6da:b304:fa80 with SMTP
- id fd34-20020a056a002ea200b006dab304fa80mr132704pfb.1.1704387082616; Thu, 04
- Jan 2024 08:51:22 -0800 (PST)
-Date: Thu, 04 Jan 2024 16:51:17 +0000
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40A112555E;
+	Thu,  4 Jan 2024 16:52:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ffP6SjrwfO97KiGElNY3VMcg7hSCJP+de6sKP88QpU6KGHR7mVnID+wYYx46c9+1APYVR+qIK6Au+lHqMKJ3SWmBefDj+4Y5G0zQVWndH/TCik21sVa6oeWH8pkfhK7eU0fLyKk7Z9kXziJt6nRKtkqNwbehHLKm4ct+SnCT52yFvoLl5CKOOIc36FL9w20zBcciCYvKksX6tu1vqR8MVUuTb6IPdnF0mxlMq88ZByfwz91V14bwjjXAoKwNc5SPa1IqEcBOBZooGFTbsdQzTI3DnKEVJ4hNQ7GRqM7cZrcRerbIjwz7boewRFUNKQYa1CIdG2ipnOyJ9v/zoeK0xg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=a9sjA3im0k3mGBN+vO1RwOWI9QwvJEtTGNuIPKopSWU=;
+ b=DemN+wDUJx819YDQSKcaPIw2kJBCRueXURoe6XEFkWp4BwfDk45Ojcx7kj4g8+SZypMtgbhCtzQgamTzDMJejp7+orAcqZKX+IE1d6UkhDwh1AXG1x3vbfRAa8632wWzGn7yNWm0Z1wuRXFHW4+jJU/eUYE7enz61gWPcU25hLR+k8iwvtHyvw4F8S2N1cCTJqfpowiAnMSCvSDnpeVF7KFFrHUxyG4RGXdp0Jjuw7m3DiyG9rFh3qnxabq1A/U8DJt82kGg2l6F5cvrWfCF75U/SeBPFzQg0btFFBaiXqXwinOZ3m7dwZfPnTDGGM4wD/xRWaohbxVyo5w4YUmcdQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.161) smtp.rcpttodomain=linuxfoundation.org
+ smtp.mailfrom=nvidia.com; dmarc=pass (p=reject sp=reject pct=100) action=none
+ header.from=nvidia.com; dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=a9sjA3im0k3mGBN+vO1RwOWI9QwvJEtTGNuIPKopSWU=;
+ b=aSboh1XZfscI6sx8TKEEBfHtqIqqScwHH18pnIKzBIdmsxH/+fRE08/H/fbM0sBmWpY8iIPcB3E2AvqqsU0MdilIhmtWyqQKoga7mQOKYnEV//2LFOVvPJv4Q3XUTskCgGxiTfFQq1SSqX5rn6cvZtQw2HZJWy2JvTGxjYH8ZWkEd8JGFGfecZtxnlwYGUT8Cu8I92zq7llVIHiBz6Rn7xOL4Hh8X3iS99HmxwilVtVatjBitI6oNzNWX1Mugwz4TgALNLHrZ/Pb/di/kEUfjbVhJlwETS/lDEaWCCj4m0KAuXbTdZgCUTUmxg9eBlpCAVtimGzOHtXnWB18dTTMag==
+Received: from DM5PR07CA0119.namprd07.prod.outlook.com (2603:10b6:4:ae::48) by
+ MW4PR12MB5666.namprd12.prod.outlook.com (2603:10b6:303:188::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7135.25; Thu, 4 Jan
+ 2024 16:52:17 +0000
+Received: from DS2PEPF00003446.namprd04.prod.outlook.com
+ (2603:10b6:4:ae:cafe::b5) by DM5PR07CA0119.outlook.office365.com
+ (2603:10b6:4:ae::48) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.13 via Frontend
+ Transport; Thu, 4 Jan 2024 16:52:17 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.161) by
+ DS2PEPF00003446.mail.protection.outlook.com (10.167.17.73) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7159.9 via Frontend Transport; Thu, 4 Jan 2024 16:52:17 +0000
+Received: from rnnvmail202.nvidia.com (10.129.68.7) by mail.nvidia.com
+ (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Thu, 4 Jan 2024
+ 08:52:04 -0800
+Received: from rnnvmail205.nvidia.com (10.129.68.10) by rnnvmail202.nvidia.com
+ (10.129.68.7) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Thu, 4 Jan 2024
+ 08:52:03 -0800
+Received: from jonathanh-vm-01.nvidia.com (10.127.8.9) by mail.nvidia.com
+ (10.129.68.10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41 via Frontend
+ Transport; Thu, 4 Jan 2024 08:52:03 -0800
+From: Jon Hunter <jonathanh@nvidia.com>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	<patches@lists.linux.dev>, <linux-kernel@vger.kernel.org>,
+	<torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
+	<linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
+	<lkft-triage@lists.linaro.org>, <pavel@denx.de>, <jonathanh@nvidia.com>,
+	<f.fainelli@gmail.com>, <sudipm.mukherjee@gmail.com>, <srw@sladewatkins.net>,
+	<rwarsow@gmx.de>, <conor@kernel.org>, <allen.lkml@gmail.com>,
+	<linux-tegra@vger.kernel.org>, <stable@vger.kernel.org>
+Subject: Re: [PATCH 5.15 00/95] 5.15.146-rc1 review
+In-Reply-To: <20240103164853.921194838@linuxfoundation.org>
+References: <20240103164853.921194838@linuxfoundation.org>
+X-NVConfidentiality: public
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAATilmUC/x3MMQqAMAxA0auUzBZqAkW8ijiIjZqlLY0WQby7x
- fEN/z+gXIQVRvNA4SoqKTb0nYH1WOLOVkIzoEPqEQdbgyZC5fPKdmAiH7xbVmJoRS68yf3fpvl 9P66RotFdAAAA
-X-Developer-Key: i=tanzirh@google.com; a=ed25519; pk=UeRjcUcv5W9AeLGEbAe2+0LptQpcY+o1Zg0LHHo7VN4=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1704387081; l=1392;
- i=tanzirh@google.com; s=20231204; h=from:subject:message-id;
- bh=/is5lhdNZtXktnfZ5VlFm0ZvdtEPTHkgA5XkZmmhysM=; b=iocZG2VYIQi9pT+WrIYNtkWlPJx6vb67gLVU7l5KtypTYg1iQfFKqA/K87tuYo9CS80S5Lwbx
- Vo6HkYnNEUaCiAaulfoPXJTSI/P6MraqIZfyDbPPE6M0vyta/gOcI9w
-X-Mailer: b4 0.12.4
-Message-ID: <20240104-vdso32setup-v1-1-1737147bc6ed@google.com>
-Subject: [PATCH] x86/vdso: shrink vdso/vdso32-setup.i via IWYU
-From: Tanzir Hasan <tanzirh@google.com>
-To: Andy Lutomirski <luto@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
-	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
-	"H. Peter Anvin" <hpa@zytor.com>
-Cc: linux-kernel@vger.kernel.org, Nick Desaulniers <nnn@google.com>, 
-	Tanzir Hasan <tanzirh@google.com>
-Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Message-ID: <a0b98e18-5373-422a-a4e7-96b22ac45ffe@rnnvmail205.nvidia.com>
+Date: Thu, 4 Jan 2024 08:52:03 -0800
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS2PEPF00003446:EE_|MW4PR12MB5666:EE_
+X-MS-Office365-Filtering-Correlation-Id: fb5893b8-eef3-4951-046f-08dc0d4582a2
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	2867UbQukGKv49EAQnMwPDI5joqWSyPHLlZY4MQ7KVFn1TLcDs4jAu7LeQV6LQsefE56oVuMSLFNdS+JyZZqJ0YQMx6IVWniTxOsHJAmDnCofMCm0l6jB1WMQgh/SqZ310o1wDMR50yHZu2qTLZlJ5fG/Yj3tMgjDLq6CVFS2wXihPWYVWwq3HkeACUS/fEO1Ixd2hF3yk+I7PxAnIMTpbC1FQPgg1n+wHjjt0USjtUz3w04Z9UYuRv1NLzH3iIutzDosk8xXziGIU8aZYTMPgkShhIHQLPQiKbFYhH8Lb/saBqNZd8o0+y4OlRnrFKQwKxvOt6KaArXMn6zBXtfb7goC0MjtdJ66CgacTrABbYrY/rPamyXrBq5Z2EgWX+GPwFmH5Wa5gSYCfb1x3yR6r13NBgX5unqEovaTzXrB0rIbHlqtMHtqYAakzActUCOf6/HPe1+CB0JOoqoJdWf4iZ9amG+wDggIVOJ8HnFt8QMt5MFOSF0VWmkWccPLTU8k/yTKqT6wNZ3xmHoITnYmGkzPZ+hQ6iitWYF8oXKxH7nA8js2Wr0VqQH+gODljLUzLyY2XPBQa1/Ngwh4R/+l5+eaazOzabIaoG9btYpnVK0RQSG7dfXojQkpnGqDbKeZvMqvqZXc3D3yByMyr1XEKQ7JR79BzwnZnUXuGW8k8N/XAK2UW4jDyfWHT7YsXRAWcRSJHr2I/I4wBNJ/POzhrE/enXo7EnuP7zhP1KUoWYuaeIcIuj9tdOU9itho7SyZkljwMydxGGzeG8BzzCA056VjnH/WJosk27+8DI6NCc=
+X-Forefront-Antispam-Report:
+	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(136003)(396003)(39860400002)(346002)(376002)(230922051799003)(186009)(1800799012)(64100799003)(451199024)(82310400011)(40470700004)(46966006)(36840700001)(31686004)(40480700001)(40460700003)(70586007)(6916009)(86362001)(31696002)(336012)(2906002)(82740400003)(7636003)(356005)(26005)(47076005)(41300700001)(7416002)(426003)(70206006)(478600001)(5660300002)(4326008)(8936002)(54906003)(36860700001)(316002)(8676002)(966005);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Jan 2024 16:52:17.3922
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: fb5893b8-eef3-4951-046f-08dc0d4582a2
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	DS2PEPF00003446.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR12MB5666
 
-This diff uses an open source tool include-what-you-use (IWYU) to modify
-the include list, changing indirect includes to direct includes. IWYU is
-implemented using the IWYUScripts github repository which is a tool that
-is currently undergoing development. These changes seek to improve build
-times.
+On Wed, 03 Jan 2024 17:54:08 +0100, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.15.146 release.
+> There are 95 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Fri, 05 Jan 2024 16:47:49 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.146-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-This change to vdso/vdso32-setup.c resulted in a preprocessed size of
-vdso/vdso32-setup.i from 44009 lines to 18572 lines (-58%) for the x86
-defconfig.
+All tests passing for Tegra ...
 
----
+Test results for stable-v5.15:
+    10 builds:	10 pass, 0 fail
+    26 boots:	26 pass, 0 fail
+    102 tests:	102 pass, 0 fail
 
+Linux version:	5.15.146-rc1-g927631a7bbf0
+Boards tested:	tegra124-jetson-tk1, tegra186-p2771-0000,
+                tegra194-p2972-0000, tegra194-p3509-0000+p3668-0000,
+                tegra20-ventana, tegra210-p2371-2180,
+                tegra210-p3450-0000, tegra30-cardhu-a04
 
-Signed-off-by: Tanzir Hasan <tanzirh@google.com>
----
- arch/x86/entry/vdso/vdso32-setup.c | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
+Tested-by: Jon Hunter <jonathanh@nvidia.com>
 
-diff --git a/arch/x86/entry/vdso/vdso32-setup.c b/arch/x86/entry/vdso/vdso32-setup.c
-index 76e4e74f35b5..8dbe022589a6 100644
---- a/arch/x86/entry/vdso/vdso32-setup.c
-+++ b/arch/x86/entry/vdso/vdso32-setup.c
-@@ -8,13 +8,11 @@
-  */
- 
- #include <linux/init.h>
--#include <linux/smp.h>
--#include <linux/kernel.h>
--#include <linux/mm_types.h>
--#include <linux/elf.h>
-+#include <linux/kstrtox.h>
-+#include <linux/printk.h>
-+#include <linux/stddef.h>
- 
--#include <asm/processor.h>
--#include <asm/vdso.h>
-+#include <asm/cache.h>
- 
- #ifdef CONFIG_COMPAT_VDSO
- #define VDSO_DEFAULT	0
-
----
-base-commit: f5837722ffecbbedf1b1dbab072a063565f0dad1
-change-id: 20231228-vdso32setup-8e336d60ac3e
-
-Best regards,
--- 
-Tanzir Hasan <tanzirh@google.com>
-
+Jon
 
