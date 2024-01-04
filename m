@@ -1,209 +1,142 @@
-Return-Path: <linux-kernel+bounces-16801-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16802-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DAF89824407
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 15:43:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2228D824417
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 15:47:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 73216286902
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 14:43:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B14491F2287F
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 14:47:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A38F23754;
-	Thu,  4 Jan 2024 14:42:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A3A02375B;
+	Thu,  4 Jan 2024 14:47:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="NF40di81"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="dPlcMVr2"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CF8623748;
-	Thu,  4 Jan 2024 14:42:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 4537040E00C5;
-	Thu,  4 Jan 2024 14:42:49 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id Um-BwKp4FekK; Thu,  4 Jan 2024 14:42:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1704379366; bh=dmenayIyDEohIzfSm5J+SPjurlu17a93F377Rlg3Ezg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=NF40di81KTz2ML8IClx26v5lRBSKDg20NnU2kZepG0wtZw81MjeoHhl9l63zHIKJ7
-	 qhh9dC7pEgOLxXb76hPtB3ZW+rge3VvCD0Bji7Zmeaotzvs3o51reiShj7+UVfzjbQ
-	 +K+TftPdWJ2UA6Ikjww8Pxv6Qp8KD5Y5nH5/e1awrefDfRy1whmdj2l33aISGjc4UQ
-	 erPWZklFQs8vSHoqWeR1x7Z4PmJWlADeupXGtD2oFEYQIjE9t5adMI73+mk6zKDEfw
-	 dephRWr0vPjH9dd56gkGoqnukoRoSZcnJPH2qiR3GfD4M38E6EB8YNxJxb8ivSeyI2
-	 Wb3b3ltqYiuNoqo3KtRfLyFv6k9+Ej0XXgaLuULilEfcR92FaKPubQLK3AxmFeUGXF
-	 oGrn+dTNK7wW3hK+gZyuVJc+6ZgPEhH83LtiAxdWx0nhiLvg+z2qb6AqXiuCoo5Uh6
-	 5SOtsGZO3atFxahJmrCTBWHINwTHr+1buDij5ha5zwaeCfoAs2HI4eu8G3noK8da7S
-	 E5R8B0EXdNwzvHHGhZjEkBk6+XBwZwSGhUrYhnOZmDdHamTy2O5YNzpNXXJSt2gvjl
-	 xYxgLVjg8CkLMsGih/F4RJA4et17HCBChOYCI0DkVknU0c4UrvwofaQ3fPpVa1KzJR
-	 tmFzRHv2chtAM3BHVaU4/w34=
-Received: from zn.tnic (pd9530f8c.dip0.t-ipconnect.de [217.83.15.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 5D82A40E0196;
-	Thu,  4 Jan 2024 14:42:08 +0000 (UTC)
-Date: Thu, 4 Jan 2024 15:42:02 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Michael Roth <michael.roth@amd.com>
-Cc: x86@kernel.org, kvm@vger.kernel.org, linux-coco@lists.linux.dev,
-	linux-mm@kvack.org, linux-crypto@vger.kernel.org,
-	linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
-	jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com,
-	ardb@kernel.org, pbonzini@redhat.com, seanjc@google.com,
-	vkuznets@redhat.com, jmattson@google.com, luto@kernel.org,
-	dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com,
-	peterz@infradead.org, srinivas.pandruvada@linux.intel.com,
-	rientjes@google.com, tobin@ibm.com, vbabka@suse.cz,
-	kirill@shutemov.name, ak@linux.intel.com, tony.luck@intel.com,
-	sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com,
-	jarkko@kernel.org, ashish.kalra@amd.com, nikunj.dadhania@amd.com,
-	pankaj.gupta@amd.com, liam.merwick@oracle.com, zhi.a.wang@intel.com,
-	Brijesh Singh <brijesh.singh@amd.com>
-Subject: Re: [PATCH v1 04/26] x86/sev: Add the host SEV-SNP initialization
- support
-Message-ID: <20240104144202.GGZZbDuutFUFmktT7M@fat_crate.local>
-References: <20231230161954.569267-1-michael.roth@amd.com>
- <20231230161954.569267-5-michael.roth@amd.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D044223748;
+	Thu,  4 Jan 2024 14:47:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704379623; x=1735915623;
+  h=message-id:date:mime-version:to:cc:references:from:
+   subject:in-reply-to:content-transfer-encoding;
+  bh=AgNpe/rQhXH4s/zrVu4O6NOZqlKS54MKFZBPb9+vKyQ=;
+  b=dPlcMVr2hjex705BPBxtdxY+dPlW18/Ezfq2Y+Gf/Bklt9mQDB9NPdYq
+   e62DRDhuO8OoxmfrS9G8T+alzrRnX4VZ05nL7jYu/BuB8c20OMnjPqF2D
+   GkrGWTbGofB65Gmt/q7wxNk9XtDPf3L9XEY90WXBwCiMPQPGmuWOlxgqR
+   YrDuA3gbCnytS/RcKV2TdylGTRGFG0XDPRqbHfddwViXZLKbGBTDmZncJ
+   9XZaojziSZs38fXvgvjsecLJa2AU2EYW8iisvQ7qgPA98rpB5VDk1hgNw
+   XKVH6QrNBRXi6pao4dcKO1taAtwaboCEJ5oKJg9BabegH42AxSOZtI9J+
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10943"; a="15895923"
+X-IronPort-AV: E=Sophos;i="6.04,331,1695711600"; 
+   d="scan'208";a="15895923"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2024 06:47:01 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10943"; a="773536659"
+X-IronPort-AV: E=Sophos;i="6.04,330,1695711600"; 
+   d="scan'208";a="773536659"
+Received: from mattu-haswell.fi.intel.com (HELO [10.237.72.199]) ([10.237.72.199])
+  by orsmga007.jf.intel.com with ESMTP; 04 Jan 2024 06:46:52 -0800
+Message-ID: <734591a1-50b4-6dc7-0b93-077355ec12e4@linux.intel.com>
+Date: Thu, 4 Jan 2024 16:48:19 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20231230161954.569267-5-michael.roth@amd.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.13.0
+Content-Language: en-US
+To: Wesley Cheng <quic_wcheng@quicinc.com>, srinivas.kandagatla@linaro.org,
+ mathias.nyman@intel.com, perex@perex.cz, conor+dt@kernel.org,
+ corbet@lwn.net, gregkh@linuxfoundation.org, lgirdwood@gmail.com,
+ andersson@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+ konrad.dybcio@linaro.org, Thinh.Nguyen@synopsys.com, broonie@kernel.org,
+ bgoswami@quicinc.com, tiwai@suse.com, robh+dt@kernel.org, agross@kernel.org
+Cc: linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-sound@vger.kernel.org, linux-usb@vger.kernel.org,
+ linux-arm-msm@vger.kernel.org, linux-doc@vger.kernel.org,
+ alsa-devel@alsa-project.org
+References: <20240102214549.22498-1-quic_wcheng@quicinc.com>
+ <20240102214549.22498-5-quic_wcheng@quicinc.com>
+From: Mathias Nyman <mathias.nyman@linux.intel.com>
+Subject: Re: [PATCH v12 04/41] usb: host: xhci-mem: Cleanup pending secondary
+ event ring events
+In-Reply-To: <20240102214549.22498-5-quic_wcheng@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Sat, Dec 30, 2023 at 10:19:32AM -0600, Michael Roth wrote:
-> +	if (cpu_has(c, X86_FEATURE_SEV_SNP)) {
-> +		/*
-> +		 * RMP table entry format is not architectural and it can vary by processor
-> +		 * and is defined by the per-processor PPR. Restrict SNP support on the
-> +		 * known CPU model and family for which the RMP table entry format is
-> +		 * currently defined for.
-> +		 */
-> +		if (!(c->x86 == 0x19 && c->x86_model <= 0xaf) &&
-> +		    !(c->x86 == 0x1a && c->x86_model <= 0xf))
-> +			setup_clear_cpu_cap(X86_FEATURE_SEV_SNP);
-> +		else if (!snp_probe_rmptable_info())
-> +			setup_clear_cpu_cap(X86_FEATURE_SEV_SNP);
+On 2.1.2024 23.45, Wesley Cheng wrote:
+> As part of xHCI bus suspend, the XHCI is halted.  However, if there are
+> pending events in the secondary event ring, it is observed that the xHCI
+> controller stops responding to further commands upon host or device
+> initiated bus resume.  Iterate through all pending events and update the
+> dequeue pointer to the beginning of the event ring.
+> 
+> Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
+...
+> +/*
+> + * Move the event ring dequeue pointer to skip events kept in the secondary
+> + * event ring.  This is used to ensure that pending events in the ring are
+> + * acknowledged, so the XHCI HCD can properly enter suspend/resume.  The
+> + * secondary ring is typically maintained by an external component.
+> + */
+> +void xhci_skip_sec_intr_events(struct xhci_hcd *xhci,
+> +	struct xhci_ring *ring,	struct xhci_interrupter *ir)
+> +{
+> +	union xhci_trb *erdp_trb, *current_trb;
+> +	u64 erdp_reg;
+> +	u32 iman_reg;
+> +	dma_addr_t deq;
+> +
+> +	/* disable irq, ack pending interrupt and ack all pending events */
+> +	xhci_disable_interrupter(ir);
+> +	iman_reg = readl_relaxed(&ir->ir_set->irq_pending);
+> +	if (iman_reg & IMAN_IP)
+> +		writel_relaxed(iman_reg, &ir->ir_set->irq_pending);
+> +
+> +	/* last acked event trb is in erdp reg  */
+> +	erdp_reg = xhci_read_64(xhci, &ir->ir_set->erst_dequeue);
+> +	deq = (dma_addr_t)(erdp_reg & ERST_PTR_MASK);
+> +	if (!deq) {
+> +		xhci_err(xhci, "event ring handling not required\n");
+> +		return;
 > +	}
+> +
+> +	erdp_trb = current_trb = ir->event_ring->dequeue;
+> +	/* read cycle state of the last acked trb to find out CCS */
+> +	ring->cycle_state = le32_to_cpu(current_trb->event_cmd.flags) & TRB_CYCLE;
+> +
+> +	while (1) {
+> +		inc_deq(xhci, ir->event_ring);
+> +		erdp_trb = ir->event_ring->dequeue;
+> +		/* cycle state transition */
+> +		if ((le32_to_cpu(erdp_trb->event_cmd.flags) & TRB_CYCLE) !=
+> +		    ring->cycle_state)
+> +			break;
+> +	}
+> +
+> +	xhci_update_erst_dequeue(xhci, ir, current_trb, true);
+> +}
 
-IOW, this below.
+Code above is very similar to the existing event ring processing parts of xhci_irq()
+and xhci_handle_event()
 
-Lemme send the ZEN5 thing as a separate patch.
+I'll see if I can refactor the existing event ring processing, decouple it from
+event handling so that it could be used by primary and secondary interrupters with
+handlers, and this case where we just want to clear the event ring.
 
-diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
-index 9492dcad560d..0fa702673e73 100644
---- a/arch/x86/include/asm/cpufeatures.h
-+++ b/arch/x86/include/asm/cpufeatures.h
-@@ -81,10 +81,8 @@
- #define X86_FEATURE_K6_MTRR		( 3*32+ 1) /* AMD K6 nonstandard MTRRs */
- #define X86_FEATURE_CYRIX_ARR		( 3*32+ 2) /* Cyrix ARRs (= MTRRs) */
- #define X86_FEATURE_CENTAUR_MCR		( 3*32+ 3) /* Centaur MCRs (= MTRRs) */
--
--/* CPU types for specific tunings: */
- #define X86_FEATURE_K8			( 3*32+ 4) /* "" Opteron, Athlon64 */
--/* FREE, was #define X86_FEATURE_K7			( 3*32+ 5) "" Athlon */
-+#define X86_FEATURE_ZEN5		( 3*32+ 5) /* "" CPU based on Zen5 microarchitecture */
- #define X86_FEATURE_P3			( 3*32+ 6) /* "" P3 */
- #define X86_FEATURE_P4			( 3*32+ 7) /* "" P4 */
- #define X86_FEATURE_CONSTANT_TSC	( 3*32+ 8) /* TSC ticks at a constant rate */
-diff --git a/arch/x86/kernel/cpu/amd.c b/arch/x86/kernel/cpu/amd.c
-index 0f0d425f0440..46335c2df083 100644
---- a/arch/x86/kernel/cpu/amd.c
-+++ b/arch/x86/kernel/cpu/amd.c
-@@ -539,7 +539,7 @@ static void bsp_init_amd(struct cpuinfo_x86 *c)
- 
- 	/* Figure out Zen generations: */
- 	switch (c->x86) {
--	case 0x17: {
-+	case 0x17:
- 		switch (c->x86_model) {
- 		case 0x00 ... 0x2f:
- 		case 0x50 ... 0x5f:
-@@ -555,8 +555,8 @@ static void bsp_init_amd(struct cpuinfo_x86 *c)
- 			goto warn;
- 		}
- 		break;
--	}
--	case 0x19: {
-+
-+	case 0x19:
- 		switch (c->x86_model) {
- 		case 0x00 ... 0x0f:
- 		case 0x20 ... 0x5f:
-@@ -570,20 +570,31 @@ static void bsp_init_amd(struct cpuinfo_x86 *c)
- 			goto warn;
- 		}
- 		break;
--	}
-+
-+	case 0x1a:
-+		switch (c->x86_model) {
-+		case 0x00 ... 0x0f:
-+			setup_force_cpu_cap(X86_FEATURE_ZEN5);
-+			break;
-+		default:
-+			goto warn;
-+		}
-+		break;
-+
- 	default:
- 		break;
- 	}
- 
- 	if (cpu_has(c, X86_FEATURE_SEV_SNP)) {
- 		/*
--		 * RMP table entry format is not architectural and it can vary by processor
-+		 * RMP table entry format is not architectural, can vary by processor
- 		 * and is defined by the per-processor PPR. Restrict SNP support on the
- 		 * known CPU model and family for which the RMP table entry format is
- 		 * currently defined for.
- 		 */
--		if (!(c->x86 == 0x19 && c->x86_model <= 0xaf) &&
--		    !(c->x86 == 0x1a && c->x86_model <= 0xf))
-+		if (!boot_cpu_has(X86_FEATURE_ZEN3) &&
-+		    !boot_cpu_has(X86_FEATURE_ZEN4) &&
-+		    !boot_cpu_has(X86_FEATURE_ZEN5))
- 			setup_clear_cpu_cap(X86_FEATURE_SEV_SNP);
- 		else if (!snp_probe_rmptable_info())
- 			setup_clear_cpu_cap(X86_FEATURE_SEV_SNP);
-@@ -1055,6 +1066,11 @@ static void init_amd_zen4(struct cpuinfo_x86 *c)
- 		msr_set_bit(MSR_ZEN4_BP_CFG, MSR_ZEN4_BP_CFG_SHARED_BTB_FIX_BIT);
- }
- 
-+static void init_amd_zen5(struct cpuinfo_x86 *c)
-+{
-+	init_amd_zen_common();
-+}
-+
- static void init_amd(struct cpuinfo_x86 *c)
- {
- 	u64 vm_cr;
-@@ -1100,6 +1116,8 @@ static void init_amd(struct cpuinfo_x86 *c)
- 		init_amd_zen3(c);
- 	else if (boot_cpu_has(X86_FEATURE_ZEN4))
- 		init_amd_zen4(c);
-+	else if (boot_cpu_has(X86_FEATURE_ZEN5))
-+		init_amd_zen5(c);
- 
- 	/*
- 	 * Enable workaround for FXSAVE leak on CPUs
+Thanks
+Mathias
 
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
 
