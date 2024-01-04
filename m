@@ -1,209 +1,85 @@
-Return-Path: <linux-kernel+bounces-17279-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17282-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D21D3824ACB
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 23:20:06 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C31B824AD0
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 23:20:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 72A33B22E21
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 22:20:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5A9381C21796
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 22:20:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19D612C863;
-	Thu,  4 Jan 2024 22:19:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B779A2CCD1;
+	Thu,  4 Jan 2024 22:20:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="UrnWQ0N3"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XA8pmP3M"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.smtpout.orange.fr (smtp-23.smtpout.orange.fr [80.12.242.23])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2096E2C846;
-	Thu,  4 Jan 2024 22:19:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=wanadoo.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
-Received: from [192.168.1.18] ([92.140.202.140])
-	by smtp.orange.fr with ESMTPA
-	id LW41rtOjt9TFdLW42rlc93; Thu, 04 Jan 2024 23:19:47 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-	s=t20230301; t=1704406787;
-	bh=3Q7pzHGXPPl1OBa+o5NTSmQy9WdHQt6nO2Rw6zfaTac=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=UrnWQ0N3PgWAhcdHvlw2Q4eGYAx9q6LWSPUSn4/VGNn4Dub21Nb45vE3bjg6bXpm8
-	 jBJGMSbFpn8OIqHFUWT8qyxNMh8nGE8S1vCNbSNuTsOIemyCI7g3wus2b2YoN1vUWj
-	 FCABgrH+QsW+okONfa7ExvkKtMLUEZfhUnZrs7IsgYLGViAO07C3CbOp/z40oAAdS1
-	 LC7X20nXW9v/scaFBkfh6ZNTBBw7staxhcetbY5RA253ZrhakeQt4Gp9433G83ysD4
-	 AjwhBDr8KeZU+IjakzzRojDmghvT8w7FeAyhhCpZKEwXjPO4wAYme9d/Xpf7S+cIA6
-	 euYXEY+N6BhIw==
-X-ME-Helo: [192.168.1.18]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Thu, 04 Jan 2024 23:19:47 +0100
-X-ME-IP: 92.140.202.140
-Message-ID: <9d57f4ea-67d1-48b5-92df-c5556f95f5d6@wanadoo.fr>
-Date: Thu, 4 Jan 2024 23:19:44 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 073D32C860;
+	Thu,  4 Jan 2024 22:20:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 72BC7C433C7;
+	Thu,  4 Jan 2024 22:20:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704406826;
+	bh=MvmGZmrozcWMemmPoI+jhOSNBcJqFQjtCWqa4HzCbIQ=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=XA8pmP3MF96yGkA92skcj+K/MM8N1ih/oM3Wg1HjTMOwR7lrrK7sM4QUegYvImeSS
+	 txG4Aq+N1Khq1iQ6RxiJqlLHDXY3rpzdiDo94YGs19GBOivGVp40T7OAfmT8x9Id8N
+	 1OD6cEo5a8RI7oVYt04yhRksNL1XgHCNE7BWeL78RFa/bkvTDMLao6PAujM6oGamfH
+	 7h50O06PDIfjJ6flUgf5wn5QwEwoO4q63m92KgchCdJjRqfEL9r7dovoe7BLlr5GuU
+	 Z8RuY8mVeKYTimZBEa9MNKf0V58VPwCKZdwFgg4yxRMYxOjbcU2Y6YoUVmXJi/mD4q
+	 BPtqsOCaPI7uA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 585F6C43168;
+	Thu,  4 Jan 2024 22:20:26 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RESEND PATCH 1/2] PM / devfreq: Fix buffer overflow in
- trans_stat_show
-Content-Language: fr
-To: Christian Marangi <ansuelsmth@gmail.com>,
- MyungJoo Ham <myungjoo.ham@samsung.com>,
- Kyungmin Park <kyungmin.park@samsung.com>,
- Chanwoo Choi <cw00.choi@samsung.com>, Jonghwa Lee
- <jonghwa3.lee@samsung.com>, linux-kernel@vger.kernel.org,
- linux-pm@vger.kernel.org
-Cc: stable@vger.kernel.org
-References: <20240104215521.10772-1-ansuelsmth@gmail.com>
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-In-Reply-To: <20240104215521.10772-1-ansuelsmth@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] Bluetooth: hci_sync: Check the correct flag before starting a
+ scan
+From: patchwork-bot+bluetooth@kernel.org
+Message-Id: 
+ <170440682635.8457.5875385181619423548.git-patchwork-notify@kernel.org>
+Date: Thu, 04 Jan 2024 22:20:26 +0000
+References: <20240102180810.54515-1-verdre@v0yd.nl>
+In-Reply-To: <20240102180810.54515-1-verdre@v0yd.nl>
+To: =?utf-8?q?Jonas_Dre=C3=9Fler_=3Cverdre=40v0yd=2Enl=3E?=@codeaurora.org
+Cc: marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com,
+ linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
+ netdev@vger.kernel.org
 
-Le 04/01/2024 à 22:55, Christian Marangi a écrit :
-> Fix buffer overflow in trans_stat_show().
+Hello:
+
+This patch was applied to bluetooth/bluetooth-next.git (master)
+by Luiz Augusto von Dentz <luiz.von.dentz@intel.com>:
+
+On Tue,  2 Jan 2024 19:08:08 +0100 you wrote:
+> There's a very confusing mistake in the code starting a HCI inquiry: We're
+> calling hci_dev_test_flag() to test for HCI_INQUIRY, but hci_dev_test_flag()
+> checks hdev->dev_flags instead of hdev->flags. HCI_INQUIRY is a bit that's
+> set on hdev->flags, not on hdev->dev_flags though.
 > 
-> Convert simple snprintf to the more secure scnprintf with size of
-> PAGE_SIZE.
+> HCI_INQUIRY equals the integer 7, and in hdev->dev_flags, 7 means
+> HCI_BONDABLE, so we were actually checking for HCI_BONDABLE here.
 > 
-> Add condition checking if we are exceeding PAGE_SIZE and exit early from
-> loop. Also add at the end a warning that we exceeded PAGE_SIZE and that
-> stats is disabled.
-> 
-> Return -EFBIG in the case where we don't have enough space to write the
-> full transition table.
-> 
-> Also document in the ABI that this function can return -EFBIG error.
-> 
-> Cc: stable@vger.kernel.org
-> Closes: https://bugzilla.kernel.org/show_bug.cgi?id=218041
-> Fixes: e552bbaf5b98 ("PM / devfreq: Add sysfs node for representing frequency transition information.")
-> Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
-> ---
->   Documentation/ABI/testing/sysfs-class-devfreq |  3 +
->   drivers/devfreq/devfreq.c                     | 57 +++++++++++++------
->   2 files changed, 42 insertions(+), 18 deletions(-)
-> 
-> diff --git a/Documentation/ABI/testing/sysfs-class-devfreq b/Documentation/ABI/testing/sysfs-class-devfreq
-> index 5e6b74f30406..1e7e0bb4c14e 100644
-> --- a/Documentation/ABI/testing/sysfs-class-devfreq
-> +++ b/Documentation/ABI/testing/sysfs-class-devfreq
-> @@ -52,6 +52,9 @@ Description:
->   
->   			echo 0 > /sys/class/devfreq/.../trans_stat
->   
-> +		If the transition table is bigger than PAGE_SIZE, reading
-> +		this will return an -EFBIG error.
-> +
->   What:		/sys/class/devfreq/.../available_frequencies
->   Date:		October 2012
->   Contact:	Nishanth Menon <nm@ti.com>
-> diff --git a/drivers/devfreq/devfreq.c b/drivers/devfreq/devfreq.c
-> index 63347a5ae599..8459512d9b07 100644
-> --- a/drivers/devfreq/devfreq.c
-> +++ b/drivers/devfreq/devfreq.c
-> @@ -1688,7 +1688,7 @@ static ssize_t trans_stat_show(struct device *dev,
->   			       struct device_attribute *attr, char *buf)
->   {
->   	struct devfreq *df = to_devfreq(dev);
-> -	ssize_t len;
-> +	ssize_t len = 0;
->   	int i, j;
->   	unsigned int max_state;
->   
-> @@ -1697,7 +1697,7 @@ static ssize_t trans_stat_show(struct device *dev,
->   	max_state = df->max_state;
->   
->   	if (max_state == 0)
-> -		return sprintf(buf, "Not Supported.\n");
-> +		return scnprintf(buf, PAGE_SIZE, "Not Supported.\n");
+> [...]
 
-Hi,
+Here is the summary with links:
+  - Bluetooth: hci_sync: Check the correct flag before starting a scan
+    https://git.kernel.org/bluetooth/bluetooth-next/c/626cef40faf0
 
-maybe using  sysfs_emit_at() could be even cleaner and less verbose?
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
->   
->   	mutex_lock(&df->lock);
->   	if (!df->stop_polling &&
-> @@ -1707,31 +1707,52 @@ static ssize_t trans_stat_show(struct device *dev,
->   	}
->   	mutex_unlock(&df->lock);
->   
-> -	len = sprintf(buf, "     From  :   To\n");
-> -	len += sprintf(buf + len, "           :");
-> -	for (i = 0; i < max_state; i++)
-> -		len += sprintf(buf + len, "%10lu",
-> -				df->freq_table[i]);
-> +	len += scnprintf(buf + len, PAGE_SIZE - len, "     From  :   To\n");
-> +	len += scnprintf(buf + len, PAGE_SIZE - len, "           :");
-> +	for (i = 0; i < max_state; i++) {
-> +		if (len >= PAGE_SIZE - 1)
-> +			break;
-> +		len += scnprintf(buf + len, PAGE_SIZE - len, "%10lu",
-> +				 df->freq_table[i]);
-> +	}
-> +	if (len >= PAGE_SIZE - 1)
-> +		return PAGE_SIZE - 1;
->   
-> -	len += sprintf(buf + len, "   time(ms)\n");
-> +	len += scnprintf(buf + len, PAGE_SIZE - len, "   time(ms)\n");
->   
->   	for (i = 0; i < max_state; i++) {
-> +		if (len >= PAGE_SIZE - 1)
-> +			break;
-
-I'm not sure that adding all these tests is needed. It could save some 
-cycles in the worse case (when buf could overflow), but in fact wastes 
-cycles in the normel case.
-
-CJ
-
->   		if (df->freq_table[i] == df->previous_freq)
-> -			len += sprintf(buf + len, "*");
-> +			len += scnprintf(buf + len, PAGE_SIZE - len, "*");
->   		else
-> -			len += sprintf(buf + len, " ");
-> +			len += scnprintf(buf + len, PAGE_SIZE - len, " ");
-> +		if (len >= PAGE_SIZE - 1)
-> +			break;
-> +
-> +		len += scnprintf(buf + len, PAGE_SIZE - len, "%10lu:",
-> +				 df->freq_table[i]);
-> +		for (j = 0; j < max_state; j++) {
-> +			if (len >= PAGE_SIZE - 1)
-> +				break;
-> +			len += scnprintf(buf + len, PAGE_SIZE - len, "%10u",
-> +					 df->stats.trans_table[(i * max_state) + j]);
-> +		}
-> +		if (len >= PAGE_SIZE - 1)
-> +			break;
-> +		len += scnprintf(buf + len, PAGE_SIZE - len, "%10llu\n", (u64)
-> +				 jiffies64_to_msecs(df->stats.time_in_state[i]));
-> +	}
->   
-> -		len += sprintf(buf + len, "%10lu:", df->freq_table[i]);
-> -		for (j = 0; j < max_state; j++)
-> -			len += sprintf(buf + len, "%10u",
-> -				df->stats.trans_table[(i * max_state) + j]);
-> +	if (len < PAGE_SIZE - 1)
-> +		len += scnprintf(buf + len, PAGE_SIZE - len, "Total transition : %u\n",
-> +				 df->stats.total_trans);
->   
-> -		len += sprintf(buf + len, "%10llu\n", (u64)
-> -			jiffies64_to_msecs(df->stats.time_in_state[i]));
-> +	if (len >= PAGE_SIZE - 1) {
-> +		pr_warn_once("devfreq transition table exceeds PAGE_SIZE. Disabling\n");
-> +		return -EFBIG;
->   	}
->   
-> -	len += sprintf(buf + len, "Total transition : %u\n",
-> -					df->stats.total_trans);
->   	return len;
->   }
->   
 
 
