@@ -1,139 +1,150 @@
-Return-Path: <linux-kernel+bounces-17131-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17132-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 368058248B9
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 20:11:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E291B8248BB
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 20:12:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DC2EB1F22CD5
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 19:11:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7AD9F281053
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 19:12:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5A2C2C197;
-	Thu,  4 Jan 2024 19:11:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFA5B2C191;
+	Thu,  4 Jan 2024 19:12:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kaVJ8KjB"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="NeUNcOd4"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4ED7A28E26;
-	Thu,  4 Jan 2024 19:11:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704395482; x=1735931482;
-  h=to:cc:subject:references:date:mime-version:
-   content-transfer-encoding:from:message-id:in-reply-to;
-  bh=DBk487czzork4gcCBMCfVeAOw7RW7zZUuFillY2fezs=;
-  b=kaVJ8KjBBZYQ4Nn30niCl6ol+HZ9+vAiIW7yxqbQdKUyAN1h/FAq9p/8
-   W9TRWcvITUihqT6QBKMRWAIAhRCyoNJHo8JJehMpVbbfvQVQz4qmlNcwD
-   Hw7gqzjYTPkBfnO3PWMmLP3LKnUN3d5i/DEGslJC+TBDfX8o8/wueSWd2
-   A4GsAnBODRMac6tq8EmCKBWqwSbIw+Ftg+XRe0y60FLS7INNGB5xS5odS
-   3haix0LBHS25ETisC3bRSXn0r1RFEondJ3XmwnlOsfp/hkAafyzPARt3F
-   GJySZmf6Lz8+gUeSPG87QoU6VNmxhdc/ghlIlmx72xQgptQKmHOkspq46
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10943"; a="4710001"
-X-IronPort-AV: E=Sophos;i="6.04,331,1695711600"; 
-   d="scan'208";a="4710001"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2024 11:11:21 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,331,1695711600"; 
-   d="scan'208";a="22602012"
-Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.168])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 04 Jan 2024 11:11:18 -0800
-Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
-To: "Mehta, Sohil" <sohil.mehta@intel.com>, "jarkko@kernel.org"
- <jarkko@kernel.org>, "x86@kernel.org" <x86@kernel.org>,
- "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
- "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>, "hpa@zytor.com"
- <hpa@zytor.com>, "mingo@redhat.com" <mingo@redhat.com>, "tj@kernel.org"
- <tj@kernel.org>, "mkoutny@suse.com" <mkoutny@suse.com>, "tglx@linutronix.de"
- <tglx@linutronix.de>, "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "bp@alien8.de"
- <bp@alien8.de>, "Huang, Kai" <kai.huang@intel.com>, "Dave Hansen"
- <dave.hansen@intel.com>
-Cc: "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
- "seanjc@google.com" <seanjc@google.com>, "Zhang, Bo" <zhanb@microsoft.com>,
- "kristen@linux.intel.com" <kristen@linux.intel.com>, "anakrish@microsoft.com"
- <anakrish@microsoft.com>, "sean.j.christopherson@intel.com"
- <sean.j.christopherson@intel.com>, "Li, Zhiquan1" <zhiquan1.li@intel.com>,
- "yangjie@microsoft.com" <yangjie@microsoft.com>
-Subject: Re: [PATCH v6 09/12] x86/sgx: Restructure top-level EPC reclaim
- function
-References: <20231030182013.40086-1-haitao.huang@linux.intel.com>
- <20231030182013.40086-10-haitao.huang@linux.intel.com>
- <c8fc40dc56b853fbff14ba22db197c80a6d31820.camel@intel.com>
- <op.2e0yod2lwjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <431c5d7f5aee7d11ec2e8aa2e526fde438fa53b4.camel@intel.com>
- <op.2ftmyampwjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <3c27bca678c1b041920a14a7da0d958c9861ebca.camel@intel.com>
- <op.2f0eo8r1wjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <73ed579be8ad81835df1c309b7c69b491b7f2c8e.camel@intel.com>
- <op.2f523elowjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <4b28fc01-50cf-469b-8161-7d56b863b42b@intel.com>
-Date: Thu, 04 Jan 2024 13:11:15 -0600
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B65BD28E2B
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 19:12:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-40d3352b525so7510055e9.1
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 11:12:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1704395525; x=1705000325; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=7pk9cuwFEjhzJcvplMp4lPOOwwRFJBsF7ZNNKBXT5Uw=;
+        b=NeUNcOd4lX3tPZp88EUtar9+knZIYwRAqOdIwkarRpxuSPKOJcEknbwRt0gATq+Jig
+         d0/SjRj0ORS3U8w0vzInXcruQvSTHyIKPsMYh4dQ7D1/BhhKy0AsxJEzFAo3KbmQ0n8G
+         8qKOvaytEdOQxpahwHSNkhiRz+VkvumepJT+ZG9k+bz2S4ZtXyvEkwUv0LMi0n3Jb4uj
+         A4u5Nvz5KPZC4uDfkJ/mH+d+3WmvBGqyE/R2ibuVIbo0Btq6HzZ7s7wLW2slb7biS5CQ
+         H7CR4n4iZ1zT9EarBWTwqigwNT1ZnciWegopOCp4eJGRn5rUsbfHjSzQ34dMPReqB2B8
+         SDZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704395525; x=1705000325;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=7pk9cuwFEjhzJcvplMp4lPOOwwRFJBsF7ZNNKBXT5Uw=;
+        b=KsCXywnNjXyz+1aIa5MrC8QscmxNPUN1HWKiL//DJlNAmojGkcEtbZAK42gH81SxNA
+         olgd5MFuvZPauiEpbO/+J1XpjjT2f8yGmi0QYYdXyyFxm37BHZINGlAHBPXX9UZdiQV/
+         IPTTGgwxBKBUw6COH8sKugoF/GiOQUrl6Wjnz8HrGCkz7vaBmv0Bjc0G+1QLWQTCPM0W
+         Zk58g6IDNT0jf7+dRsanap1sM+0VUQtGrZFdIf8FfOR6+XY9xq4O/QU5lcrQN0UJmVDZ
+         zWw/CJANmxBoEkSof3DO3XCvpWokikhH1Sbta2oqX84LOVDaxJCbJ2yji8caQPiQdg0m
+         6lNQ==
+X-Gm-Message-State: AOJu0YwE/AFqQhe6hIXgapGGPoSWooKSzEkLDWIyqQLADbL7K8FJjKP/
+	dAyNDP7vNeHCzzKcaukVkgvnHfiVqOhaLA==
+X-Google-Smtp-Source: AGHT+IG87m8RmeKZcR5GXD2cz2yMlvcOizM2Ei/cVDZuD6IZT700mhyVop3wNc9BaJS+ypo5vdA58A==
+X-Received: by 2002:a05:600c:8505:b0:40d:62d5:83f2 with SMTP id gw5-20020a05600c850500b0040d62d583f2mr643369wmb.134.1704395524539;
+        Thu, 04 Jan 2024 11:12:04 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.218.27])
+        by smtp.gmail.com with ESMTPSA id fb20-20020a1709073a1400b00a26a061ae1esm14054583ejc.97.2024.01.04.11.12.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Jan 2024 11:12:04 -0800 (PST)
+Message-ID: <1f6f19f6-f9ca-4500-9bac-05033d6f6682@linaro.org>
+Date: Thu, 4 Jan 2024 20:12:02 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 01/10] dt-bindings: marvell: a38x: convert soc
+ compatibles to yaml
+Content-Language: en-US
+To: Josua Mayer <josua@solid-run.com>, Andrew Lunn <andrew@lunn.ch>,
+ Gregory Clement <gregory.clement@bootlin.com>,
+ Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Russell King <linux@armlinux.org.uk>
+Cc: linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240104-support-clearfog-gtr-l8-sfp-v5-0-52be60fc54e3@solid-run.com>
+ <20240104-support-clearfog-gtr-l8-sfp-v5-1-52be60fc54e3@solid-run.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240104-support-clearfog-gtr-l8-sfp-v5-1-52be60fc54e3@solid-run.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-From: "Haitao Huang" <haitao.huang@linux.intel.com>
-Organization: Intel
-Message-ID: <op.2g1d81fqwjvjmi@hhuan26-mobl.amr.corp.intel.com>
-In-Reply-To: <4b28fc01-50cf-469b-8161-7d56b863b42b@intel.com>
-User-Agent: Opera Mail/1.0 (Win32)
 
-Hi Dave,
+On 04/01/2024 18:48, Josua Mayer wrote:
+> Convert the existing txt binding for armada-38x socs to DT schema
+> format.
+> 
+> The current bindings documentation for armada-38x are only listing SoCs,
+> but no actual boards. Only actual boards should be listed.
+> 
+> Replace the dropped entries with some actual baords that already have
+> valid compatibles in-tree:
+> - armada 380 netgear switch
+> - armada 385 marvell development boards
+> - armada 388 development board
+> 
 
-On Wed, 03 Jan 2024 10:37:35 -0600, Dave Hansen <dave.hansen@intel.com>  
-wrote:
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-> On 12/18/23 13:24, Haitao Huang wrote:> @Dave and @Michal, Your
-> thoughts? Or could you confirm we should not
->> do reclaim per cgroup at all?
-> What's the benefit of doing reclaim per cgroup?  Is that worth the extra
-> complexity?
->
+Best regards,
+Krzysztof
 
-Without reclaiming per cgroup, then we have to always set the limit to  
-enclave's peak usage. This may not be efficient utilization as in many  
-cases each enclave can perform fine with EPC limit set less than peak.  
-Basically each group can not give up some pages for greater good without  
-dying :-)
-
-Also with enclaves enabled with EDMM, the peak usage is not static so hard  
-to determine upfront. Hence it might be an operation/deployment  
-inconvenience.
-
-In case of over-committing (sum of limits > total capacity), one cgroup at  
-peak usage may require swapping pages out in a different cgroup if system  
-is overloaded at that time.
-
-> The key question here is whether we want the SGX VM to be complex and
-> more like the real VM or simple when a cgroup hits its limit.  Right?
->
-
-Although it's fair to say the majority of complexity of this series is in  
-support for reclaiming per cgroup, I think it's manageable and much less  
-than real VM after we removed the enclave killing parts: the only extra  
-effort is to track pages in separate list and reclaim them in separately  
-as opposed to track in on global list and reclaim together. The main  
-reclaiming loop code is still pretty much the same as before.
-
-
-> If stopping at patch 5 and having less code is even remotely an option,
-> why not do _that_?
->
-I hope I described limitations clear enough above.
-If those are OK with users and also make it acceptable for merge quickly,  
-I'm happy to do that :-)
-
-Thanks
-Haitao
 
