@@ -1,145 +1,109 @@
-Return-Path: <linux-kernel+bounces-16322-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16323-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A8779823CCB
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 08:34:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 926DE823CD1
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 08:37:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 18ED9B24AF8
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 07:34:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 20E5528714F
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 07:37:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F36401F94D;
-	Thu,  4 Jan 2024 07:34:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97EE21F612;
+	Thu,  4 Jan 2024 07:37:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="tG995bZ7"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GwubNwgj"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C725F200A8
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 07:33:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-556ab8b85e3so329390a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Jan 2024 23:33:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704353637; x=1704958437; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=DP6M+yDlXDj3yagLaZ2w6HOzz3bnG4toPFPTwIxDIE8=;
-        b=tG995bZ7YixVIDyHIQO3Td8nxkk64GUkbUGNFfSRngtHgHgd0mx3NxgYFEgGLXwE8S
-         i9RJkSSUJhQspjn14xeEF2ZLyw+jhmU8YoLXeyCbyQkyCxPMwvD+pvw+7+M71Uwkx4fr
-         Rm7u1VY0vtSqGMtP3qRtCLVymHhyz0MpeX38M/ZyR2calLKsFJpGORfaWZDXWHkud+78
-         /Kdhpge7TOhZVCGplZUbmctmZBI/MDa3BeKXDRsd9GShP2/T3CM5nVIrPp9YikU2uQZ0
-         zPkOiEYRdougWkctr9E1e9kfpJBIT2IrnRwx0Un2azu6w35/H6egkITLn4mwgzJy3lsS
-         BViA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704353637; x=1704958437;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DP6M+yDlXDj3yagLaZ2w6HOzz3bnG4toPFPTwIxDIE8=;
-        b=nODJx4PAO3If/pSfYvoneZp611NhhFN05x2lOYkLHG3SpAvIWxhw/8cres9mHG5qag
-         ZcwIyi6ep0OCZBFedRj/lXYG/Sad/ZkSzU4Mkj3mfMmHHVrgrJDMx7lAzAvQgpTe8z3Q
-         13Sr+doPfnSBQNjjrbekKxRxNc0mX3am3D7c898tHLe7oMRQw2m256VchBKb6BTGFt9D
-         QpSPelvq7FzgtqRH2m2fo1ss+815oYTFSecjvDIhmO++O/RWbRa0Q5Cu4OGvPYRXB/vX
-         EXasXQ8rHP2Z1Cb0oQdsTrhNsftoReL8JRaXdmyZ0SayZ8aAuw36jcQ0u0FXEuUTblcM
-         3Ilw==
-X-Gm-Message-State: AOJu0YzUlIO+xtxprPMF0nh+OlGksoKcqZdj2q2E3oN29fRgWd5aPa7U
-	zoN2p5LKdQRW9Wbf9oRle1XePNkDz0cu4A==
-X-Google-Smtp-Source: AGHT+IFHJbTkMKbaRRRuUG4J5MwvcTPbcC2ULkVPb5k3m+oW6sp/GtFnGeon3VCpyur6EUd/QUacRw==
-X-Received: by 2002:a05:6402:30b2:b0:557:c42:977 with SMTP id df18-20020a05640230b200b005570c420977mr105466edb.1.1704353636915;
-        Wed, 03 Jan 2024 23:33:56 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id cq8-20020a056402220800b0055507ee70a4sm12374444edb.23.2024.01.03.23.33.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Jan 2024 23:33:56 -0800 (PST)
-Message-ID: <3542a18d-0fc4-40b5-8f16-c70cd0dde5b8@linaro.org>
-Date: Thu, 4 Jan 2024 08:33:54 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D98CE15EA6;
+	Thu,  4 Jan 2024 07:37:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51099C433C8;
+	Thu,  4 Jan 2024 07:37:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704353856;
+	bh=atAczvBpbmGSvkt1pg+/6q2+kUOQhOSbBRS7ljsGUqE=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=GwubNwgjwG0q2RuxyiLvmP9xIKpTZYhvf8OYSsdMEleUGDlxrFnT83li2NF6S3Hz9
+	 JWWXUEv8aqsB3S8ZamxNA9x1Tfuu9RZ8/HDrUgkhYE46hNatUdUXA0el9f5T9LiukR
+	 CVfJUyx/QG/OJfZlRdOhomU1q0fQEm9reN7/wTvhGVDaTnQVW7MSx4HGY7Gjthnt3d
+	 sNlMMn0Ta7gnjYHV752I4Kty1KIW2utSEg8yIlJS/PYnXGFtYwF7x+7rqj7lrvme/e
+	 LbijIPLPnFmYSmGpPoiLDwaxn/j5BRgQuQBZVKEaM8iaGvwzUB4xTR9FP36XI7k4Gl
+	 VwNHKgZxPBmaA==
+Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-50ea8fbf261so210762e87.2;
+        Wed, 03 Jan 2024 23:37:36 -0800 (PST)
+X-Gm-Message-State: AOJu0YzvMvph01jSVlEzGcKku9osLp+PcILUoc6j/bg292BFOfYI6uW8
+	wn0xU3MkLymzEaNUrMIb2Xg8ZXzsjtPSQAFO7cQ=
+X-Google-Smtp-Source: AGHT+IFmREZau6p3FF5i1IODQb129a2+sQctrxPIwV1EN77X8L7RQcox83dtwDiy6GAjhLisb9k8VEpAjECV2P/8HAQ=
+X-Received: by 2002:ac2:5504:0:b0:50e:aa46:7576 with SMTP id
+ j4-20020ac25504000000b0050eaa467576mr94689lfk.7.1704353854547; Wed, 03 Jan
+ 2024 23:37:34 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 1/9] dt-bindings: usb: qcom,dwc3: Fix SDM660 clock
- description
-To: Konrad Dybcio <konrad.dybcio@linaro.org>,
- Bjorn Andersson <andersson@kernel.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Wesley Cheng <quic_wcheng@quicinc.com>
-Cc: Marijn Suijten <marijn.suijten@somainline.org>,
- linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230721-topic-rpm_clk_cleanup-v3-0-a66e698932e3@linaro.org>
- <20230721-topic-rpm_clk_cleanup-v3-1-a66e698932e3@linaro.org>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20230721-topic-rpm_clk_cleanup-v3-1-a66e698932e3@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20231220-cxl-cper-v5-0-1bb8a4ca2c7a@intel.com>
+ <20231220-cxl-cper-v5-8-1bb8a4ca2c7a@intel.com> <20240104060528.GA10504@wunner.de>
+ <6596539c9729e_8dc6829476@dwillia2-xfh.jf.intel.com.notmuch> <20240104070235.GA13468@wunner.de>
+In-Reply-To: <20240104070235.GA13468@wunner.de>
+From: Ard Biesheuvel <ardb@kernel.org>
+Date: Thu, 4 Jan 2024 08:37:23 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXG0QiizpA_oTkV4h2DaF4KuM454_KBno3UngvO7fRm-7g@mail.gmail.com>
+Message-ID: <CAMj1kXG0QiizpA_oTkV4h2DaF4KuM454_KBno3UngvO7fRm-7g@mail.gmail.com>
+Subject: Re: [PATCH v5 8/9] PCI: Define scoped based management functions
+To: Lukas Wunner <lukas@wunner.de>
+Cc: Dan Williams <dan.j.williams@intel.com>, Ira Weiny <ira.weiny@intel.com>, 
+	Jonathan Cameron <jonathan.cameron@huawei.com>, 
+	Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>, Shiju Jose <shiju.jose@huawei.com>, 
+	Yazen Ghannam <yazen.ghannam@amd.com>, Davidlohr Bueso <dave@stgolabs.net>, 
+	Dave Jiang <dave.jiang@intel.com>, Alison Schofield <alison.schofield@intel.com>, 
+	Vishal Verma <vishal.l.verma@intel.com>, linux-efi@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-cxl@vger.kernel.org, 
+	Bjorn Helgaas <bhelgaas@google.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On 03/01/2024 21:15, Konrad Dybcio wrote:
-> SDM660 was abusingly referencing one of the internal bus clocks, that
-> were recently dropped from Linux (because the original implementation
-> did not make much sense), circumventing the interconnect framework.
-> 
-> Drop it.
+On Thu, 4 Jan 2024 at 08:02, Lukas Wunner <lukas@wunner.de> wrote:
+>
+> On Wed, Jan 03, 2024 at 10:43:40PM -0800, Dan Williams wrote:
+> > Lukas Wunner wrote:
+> > > On Wed, Dec 20, 2023 at 04:17:35PM -0800, Ira Weiny wrote:
+> > > > --- a/include/linux/pci.h
+> > > > +++ b/include/linux/pci.h
+> > > > @@ -1170,6 +1170,7 @@ int pci_get_interrupt_pin(struct pci_dev *dev, struct pci_dev **bridge);
+> > > >  u8 pci_common_swizzle(struct pci_dev *dev, u8 *pinp);
+> > > >  struct pci_dev *pci_dev_get(struct pci_dev *dev);
+> > > >  void pci_dev_put(struct pci_dev *dev);
+> > > > +DEFINE_FREE(pci_dev_put, struct pci_dev *, if (_T) pci_dev_put(_T))
+> > >
+> > > pci_dev_put() already performs a NULL pointer check internally.
+> > > Why duplicate it here?
+> >
+> > Greg asked the same for the introduction of __free(kvfree), and Peter
+> > clarified:
+> >
+> > http://lore.kernel.org/r/20230814161731.GN776869@hirez.programming.kicks-ass.net
+> >
+> > Essentially, that check is more for build-time than runtime because when
+> > the macro is expanded the compiler can notice scenarios where @pdev is
+> > set to NULL (likely by no_free_ptr()) and skip the call to pci_dev_put()
+> > altogether. pci_dev_put() also happens to be out-of-line, so saving a
+> > call when @pdev is NULL a small win in that respect as well.
+>
+> Doubtful whether that's correct.  The kernel is compiled with
+> -fno-delete-null-pointer-checks since commit a3ca86aea507
+> ("Add '-fno-delete-null-pointer-checks' to gcc CFLAGS").
+>
+> So these NULL pointer checks are generally not optimized away.
+>
+> I've just responded to the discussion you've linked above:
+> https://lore.kernel.org/all/20240104065744.GA6055@wunner.de/
+>
 
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-
-Best regards,
-Krzysztof
-
+AIUI, Peter is referring to constant propagation of compile time
+constant pointers here, not pointer variables where the NULL check is
+elided if the variable has already been dereferenced.
 
