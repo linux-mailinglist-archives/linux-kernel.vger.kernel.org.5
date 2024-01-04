@@ -1,216 +1,166 @@
-Return-Path: <linux-kernel+bounces-17113-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17114-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6C624824871
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 19:54:19 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A97C824874
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 19:58:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E9EA91F22F88
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 18:54:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C16B2B21019
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 18:58:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24E7F28E28;
-	Thu,  4 Jan 2024 18:54:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCB7328E31;
+	Thu,  4 Jan 2024 18:58:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="T/5VnVSX"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nERtoKPv"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
+Received: from mail-qk1-f174.google.com (mail-qk1-f174.google.com [209.85.222.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D06E52C188
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 18:54:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0ED728E1C;
+	Thu,  4 Jan 2024 18:57:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-555aa7fd668so1014252a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 10:54:07 -0800 (PST)
+Received: by mail-qk1-f174.google.com with SMTP id af79cd13be357-781bbb1f61fso50840485a.3;
+        Thu, 04 Jan 2024 10:57:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704394446; x=1704999246; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=jKANwIhqa+LvmlQt2znhD615O1LJ668Njt6YHHfEb+I=;
-        b=T/5VnVSX7LBA4lR2IMr+1+18gZVAK1z6EJ2Mfun4mSqoVA/aJJUlGQ+vwm/8iiQQ53
-         /cOKXAO9URtteGBf9Tyn2uR9rcmjtZtwzIbVgtZ0vBC0H8csVjTOfaS8jJwXeN4Q7qAT
-         Wat0lcIzemlYj9SV6Sh6y6ajtRv+BqTz0ZBYyzhTLaQmg+YSzkdWC3myNOA1UrLV/WZD
-         lad6u8e06dmtImSXaRkWKJN8QL/Qg/6lYSrVO71aZTNN6rNIWsOkGFTharXIKx6cg7pX
-         A2IwPfHDw3lLWzN1v9fWYspZPUPpoC4XJxeR/wwAEZRNYNmZdnpholTDDQSr/6QvZgk7
-         aOLw==
+        d=gmail.com; s=20230601; t=1704394678; x=1704999478; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Os0Q/0d6OHlr8j+k0IDP+XVC9EPOxnxh9xNoVL0KlNA=;
+        b=nERtoKPvOQ61y3PFH/xXlQoDdelJZLdG9/d+rCfidZBdInDIQyIJN9WHt5k4fPXKug
+         239z/TVCTHx6U1ngHXEB5+NUbQTjWn5LWEn9fCzdmZvJ+gRss9AGjdD0bBKET9043Qs8
+         GwCc7Hdwd3kQrCgSx8phBoBmpazXCwcX/iYbYSnWD3AYb2AszOairnBBu+CuFGcdyege
+         8VK367ohP8TE9Trxc5pFN5UAGqeFdKFGXJDflWvymW+5QSfe8IjmijeSYHVA7u8o+fYs
+         +8nGdzfXbTnLw1otEEkCdZPMojPa5hGmQlQs8DDHvoWNpfJshUHGdfnX7VnCvYcO5cl7
+         zssQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704394446; x=1704999246;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=jKANwIhqa+LvmlQt2znhD615O1LJ668Njt6YHHfEb+I=;
-        b=kWVIeIb9anLu+Uc1aqCYoXHy75qQli4jwkH6ALn/4v6OLOnt38AgwtXIs3ZFP25Kvs
-         BJr5V8qqEl28xiv2R+erKZY7s/1n+FgM1x8nuPyXiC0gceNk3AM2wdzA5ns+9ogMwPVG
-         PVay3BVEE488Rg2+TIqPs0KljRo9/tWvjrI54SJi/JhwA8x/7QvZReZ3weKgvqVnOL9s
-         4iPtos3yBOYYaI7Ij2bFRN1bEYxSR8Tmcl2Pgrpv1Zc1uyl0hJvnoKnrEC0B+DKX62KO
-         0WfqDpIbsfWOjNgEl0hzphLbZOUIGuI6XYp+vvogPgeoRmIQXCmDvXo9stSz4dZYa3PF
-         qGeA==
-X-Gm-Message-State: AOJu0YxIyB3BcT11Tbvq5LVmy7h6BXtjktRUu/gNReHYQSSwAmIfSeFA
-	NRxvi/gVD9kBwaWIbAKbHcA=
-X-Google-Smtp-Source: AGHT+IFhdU/VMhwpjMnGX2lcnofrQbURePzE/VM+99mptm3emNVixnMZdqIgEEfDKwqVyqXeZhYK+g==
-X-Received: by 2002:a17:906:f810:b0:a23:44e8:81b with SMTP id kh16-20020a170906f81000b00a2344e8081bmr562135ejb.73.1704394445767;
-        Thu, 04 Jan 2024 10:54:05 -0800 (PST)
-Received: from EPUAKYIW03DD.. ([91.123.150.198])
-        by smtp.gmail.com with ESMTPSA id d21-20020a170906305500b00a2699b0fd49sm13966430ejd.86.2024.01.04.10.54.04
+        d=1e100.net; s=20230601; t=1704394678; x=1704999478;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Os0Q/0d6OHlr8j+k0IDP+XVC9EPOxnxh9xNoVL0KlNA=;
+        b=sWJh7L23uQtLGfxjwE2bmxI4PgwQaXzOZYmtGFHJ+Nw5tb5fmdmoD6QbjET2OY9oqj
+         5odA7acmuU3VMWwpMA12PnNMJ+VNL0FRyEVG1rNuxQodBe8FocOIrpiAytMMDdAx+TiE
+         T+/tRI6UC52/asrPJIfxzAy1oWwcbDdYz3fFpfW8EbMT76aS0C+37YbEQfuiL25KRsN6
+         rwkwiMCAUIdOKGbhfkSRutrVfoX0oFAycvxiFuSLmckOyeeGMsLx3UzhFcvD80nS2ETg
+         0DlXs7NGLWk+InM3HLRSseeYwyw/pKj3X5kzVuy5Mdua/Koyp039TT7TyW6Pa3hLUbA/
+         MPTQ==
+X-Gm-Message-State: AOJu0YxG9p+EBS+I3HHaXuGZo62xxtZjONBBfUKOyIPtimRT9YSXi7TU
+	OmfbnQ0yqToQ88NNtMMKh9E=
+X-Google-Smtp-Source: AGHT+IG3Jz7XP5tqSJlZd5J/1soCB5RuN3ECigH9ftKKw8A58MZkLBun3ccOrzg/W+xI1CQmHWW0WQ==
+X-Received: by 2002:a05:620a:f0f:b0:781:5e6a:355a with SMTP id v15-20020a05620a0f0f00b007815e6a355amr1082524qkl.155.1704394677738;
+        Thu, 04 Jan 2024 10:57:57 -0800 (PST)
+Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
+        by smtp.gmail.com with ESMTPSA id vq10-20020a05620a558a00b00781df19c062sm15990qkn.59.2024.01.04.10.57.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Jan 2024 10:54:05 -0800 (PST)
-From: Oleksandr Tyshchenko <olekstysh@gmail.com>
-To: xen-devel@lists.xenproject.org,
-	linux-kernel@vger.kernel.org
-Cc: Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
-	=?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	Juergen Gross <jgross@suse.com>,
-	Stefano Stabellini <sstabellini@kernel.org>
-Subject: [PATCH] xen/gntdev: Fix the abuse of underlying struct page in DMA-buf import
-Date: Thu,  4 Jan 2024 20:53:27 +0200
-Message-Id: <20240104185327.177376-1-olekstysh@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        Thu, 04 Jan 2024 10:57:57 -0800 (PST)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+	by mailauth.nyi.internal (Postfix) with ESMTP id BA7FB27C005A;
+	Thu,  4 Jan 2024 13:57:56 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Thu, 04 Jan 2024 13:57:56 -0500
+X-ME-Sender: <xms:s_-WZUQ3a99E-Jwuce37xzgVqXtjfBU-JGOZhjPyPZT4idfpFskjCA>
+    <xme:s_-WZRy886ax7TnoE34U09hMari-SGlBPMjCdM1bn8eRjJY2Dd7yo-7eXdACXycKo
+    9WMS5ir12fSbrn5Sw>
+X-ME-Received: <xmr:s_-WZR2Y-Llr6-Tu5NtCriuuvjsP6gia6eXXNbpsIo9sRUpyKik3c_P_A1k>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdegjedguddukecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhq
+    uhhnucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrf
+    grthhtvghrnhephedugfduffffteeutddvheeuveelvdfhleelieevtdeguefhgeeuveei
+    udffiedvnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    epsghoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqieelvdeghedt
+    ieegqddujeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghilhdrtghomhesfh
+    higihmvgdrnhgrmhgv
+X-ME-Proxy: <xmx:s_-WZYA-Ii3QicgGVI546f6coyNo5vbL2VSK3iaF_Lp5EVj3g5aT1g>
+    <xmx:s_-WZdhg_9WsBTZvOkhG6_aYuqvv2GssNgw0g7EY4PwR03EXem39fQ>
+    <xmx:s_-WZUroxKZjMdChDzY9HjjkV0vCmHcz6LzyBktDmKptNtc1zONoEg>
+    <xmx:tP-WZcSjhowKUlxIbzAiRbvKAaSXSxpUeEi1vtQRf02jt0-IINgRGw>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 4 Jan 2024 13:57:55 -0500 (EST)
+Date: Thu, 4 Jan 2024 10:56:47 -0800
+From: Boqun Feng <boqun.feng@gmail.com>
+To: Alice Ryhl <aliceryhl@google.com>
+Cc: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>,
+	Wedson Almeida Filho <wedsonaf@gmail.com>,
+	Gary Guo <gary@garyguo.net>,
+	=?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
+	Benno Lossin <benno.lossin@proton.me>,
+	Andreas Hindborg <a.hindborg@samsung.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+	Waiman Long <longman@redhat.com>, Tiago Lam <tiagolam@gmail.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Martin Rodriguez Reboredo <yakoyoku@gmail.com>,
+	rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/4] rust: sync: add `CondVar::notify_sync`
+Message-ID: <ZZb_b-6f9Ib1NdOt@boqun-archlinux>
+References: <20240104-rb-new-condvar-methods-v3-0-70b514fcbe52@google.com>
+ <20240104-rb-new-condvar-methods-v3-1-70b514fcbe52@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240104-rb-new-condvar-methods-v3-1-70b514fcbe52@google.com>
 
-From: Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
+On Thu, Jan 04, 2024 at 02:02:41PM +0000, Alice Ryhl wrote:
+> Wake up another thread synchronously.
+> 
+> This method behaves like `notify_one`, except that it hints to the
+> scheduler that the current thread is about to go to sleep, so it should
+> schedule the target thread on the same CPU.
+> 
+> This is used by Rust Binder as a performance optimization. When sending
+> a transaction to a different process, we usually know which thread will
+> handle it, so we can schedule that thread for execution next on this
+> CPU for better cache locality.
+> 
+> Reviewed-by: Benno Lossin <benno.lossin@proton.me>
+> Reviewed-by: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
+> Reviewed-by: Tiago Lam <tiagolam@gmail.com>
+> Signed-off-by: Alice Ryhl <aliceryhl@google.com>
+> ---
+>  rust/kernel/sync/condvar.rs | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/rust/kernel/sync/condvar.rs b/rust/kernel/sync/condvar.rs
+> index f65e19d5a37c..1a3f7b8e03dc 100644
+> --- a/rust/kernel/sync/condvar.rs
+> +++ b/rust/kernel/sync/condvar.rs
+> @@ -155,6 +155,12 @@ fn notify(&self, count: i32, flags: u32) {
+>          };
+>      }
+>  
+> +    /// Calls the kernel function to notify one thread synchronously.
 
-DO NOT access the underlying struct page of an sg table exported
-by DMA-buf in dmabuf_imp_to_refs(), this is not allowed.
-Please see drivers/dma-buf/dma-buf.c:mangle_sg_table() for details.
+I feel like "synchronously" needs some explanation here (e.g. using the
+same description in the commit log), but let's see if other future users
+really need this ;-)
 
-Fortunately, here (for special Xen device) we can avoid using
-pages and calculate gfns directly from dma addresses provided by
-the sg table.
+Reviewed-by: Boqun Feng <boqun.feng@gmail.com>
 
-Suggested-by: Daniel Vetter <daniel@ffwll.ch>
-Signed-off-by: Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
----
-Please note, I didn't manage to test the patch against the latest master branch
-on real HW (patch was only build tested there). Patch was tested on Arm64
-guests using Linux v5.10.41 from vendor's BSP, this is the environment where
-running this use-case is possible and to which I have an access (Xen PV display
-with zero-copy and backend domain as a buffer provider - be-alloc=1, so dma-buf
-import part was involved). A little bit old, but the dma-buf import code
-in gntdev-dmabuf.c hasn't been changed much since that time, all context
-remains allmost the same according to my code inspection.
----
----
- drivers/xen/gntdev-dmabuf.c | 42 +++++++++++++++----------------------
- 1 file changed, 17 insertions(+), 25 deletions(-)
+Regards,
+Boqun
 
-diff --git a/drivers/xen/gntdev-dmabuf.c b/drivers/xen/gntdev-dmabuf.c
-index 4440e626b797..0dde49fca9a5 100644
---- a/drivers/xen/gntdev-dmabuf.c
-+++ b/drivers/xen/gntdev-dmabuf.c
-@@ -11,6 +11,7 @@
- #include <linux/kernel.h>
- #include <linux/errno.h>
- #include <linux/dma-buf.h>
-+#include <linux/dma-direct.h>
- #include <linux/slab.h>
- #include <linux/types.h>
- #include <linux/uaccess.h>
-@@ -50,7 +51,7 @@ struct gntdev_dmabuf {
- 
- 	/* Number of pages this buffer has. */
- 	int nr_pages;
--	/* Pages of this buffer. */
-+	/* Pages of this buffer (only for dma-buf export). */
- 	struct page **pages;
- };
- 
-@@ -484,7 +485,7 @@ static int dmabuf_exp_from_refs(struct gntdev_priv *priv, int flags,
- /* DMA buffer import support. */
- 
- static int
--dmabuf_imp_grant_foreign_access(struct page **pages, u32 *refs,
-+dmabuf_imp_grant_foreign_access(unsigned long *gfns, u32 *refs,
- 				int count, int domid)
- {
- 	grant_ref_t priv_gref_head;
-@@ -507,7 +508,7 @@ dmabuf_imp_grant_foreign_access(struct page **pages, u32 *refs,
- 		}
- 
- 		gnttab_grant_foreign_access_ref(cur_ref, domid,
--						xen_page_to_gfn(pages[i]), 0);
-+						gfns[i], 0);
- 		refs[i] = cur_ref;
- 	}
- 
-@@ -529,7 +530,6 @@ static void dmabuf_imp_end_foreign_access(u32 *refs, int count)
- 
- static void dmabuf_imp_free_storage(struct gntdev_dmabuf *gntdev_dmabuf)
- {
--	kfree(gntdev_dmabuf->pages);
- 	kfree(gntdev_dmabuf->u.imp.refs);
- 	kfree(gntdev_dmabuf);
- }
-@@ -549,12 +549,6 @@ static struct gntdev_dmabuf *dmabuf_imp_alloc_storage(int count)
- 	if (!gntdev_dmabuf->u.imp.refs)
- 		goto fail;
- 
--	gntdev_dmabuf->pages = kcalloc(count,
--				       sizeof(gntdev_dmabuf->pages[0]),
--				       GFP_KERNEL);
--	if (!gntdev_dmabuf->pages)
--		goto fail;
--
- 	gntdev_dmabuf->nr_pages = count;
- 
- 	for (i = 0; i < count; i++)
-@@ -576,7 +570,8 @@ dmabuf_imp_to_refs(struct gntdev_dmabuf_priv *priv, struct device *dev,
- 	struct dma_buf *dma_buf;
- 	struct dma_buf_attachment *attach;
- 	struct sg_table *sgt;
--	struct sg_page_iter sg_iter;
-+	struct sg_dma_page_iter sg_iter;
-+	unsigned long *gfns;
- 	int i;
- 
- 	dma_buf = dma_buf_get(fd);
-@@ -624,26 +619,23 @@ dmabuf_imp_to_refs(struct gntdev_dmabuf_priv *priv, struct device *dev,
- 
- 	gntdev_dmabuf->u.imp.sgt = sgt;
- 
--	/* Now convert sgt to array of pages and check for page validity. */
-+	gfns = kcalloc(count, sizeof(*gfns), GFP_KERNEL);
-+	if (!gfns)
-+		goto fail_unmap;
-+
-+	/* Now convert sgt to array of gfns without accessing underlying pages. */
- 	i = 0;
--	for_each_sgtable_page(sgt, &sg_iter, 0) {
--		struct page *page = sg_page_iter_page(&sg_iter);
--		/*
--		 * Check if page is valid: this can happen if we are given
--		 * a page from VRAM or other resources which are not backed
--		 * by a struct page.
--		 */
--		if (!pfn_valid(page_to_pfn(page))) {
--			ret = ERR_PTR(-EINVAL);
--			goto fail_unmap;
--		}
-+	for_each_sgtable_dma_page(sgt, &sg_iter, 0) {
-+		dma_addr_t addr = sg_page_iter_dma_address(&sg_iter);
-+		unsigned long pfn = bfn_to_pfn(XEN_PFN_DOWN(dma_to_phys(dev, addr)));
- 
--		gntdev_dmabuf->pages[i++] = page;
-+		gfns[i++] = pfn_to_gfn(pfn);
- 	}
- 
--	ret = ERR_PTR(dmabuf_imp_grant_foreign_access(gntdev_dmabuf->pages,
-+	ret = ERR_PTR(dmabuf_imp_grant_foreign_access(gfns,
- 						      gntdev_dmabuf->u.imp.refs,
- 						      count, domid));
-+	kfree(gfns);
- 	if (IS_ERR(ret))
- 		goto fail_end_access;
- 
--- 
-2.34.1
-
+> +    pub fn notify_sync(&self) {
+> +        // SAFETY: `wait_list` points to valid memory.
+> +        unsafe { bindings::__wake_up_sync(self.wait_list.get(), bindings::TASK_NORMAL) };
+> +    }
+> +
+>      /// Wakes a single waiter up, if any.
+>      ///
+>      /// This is not 'sticky' in the sense that if no thread is waiting, the notification is lost
+> 
+> -- 
+> 2.43.0.472.g3155946c3a-goog
+> 
 
