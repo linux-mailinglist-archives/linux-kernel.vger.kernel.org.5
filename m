@@ -1,132 +1,93 @@
-Return-Path: <linux-kernel+bounces-17266-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17262-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA6CF824A9E
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 23:00:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 56A7A824A8C
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 22:58:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 57F5C28435F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 22:00:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E4E1C286026
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 21:58:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A997C2D04B;
-	Thu,  4 Jan 2024 21:59:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCA582C863;
+	Thu,  4 Jan 2024 21:57:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HbdfzHOn"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37B932C861;
-	Thu,  4 Jan 2024 21:59:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D1CB9C43395;
-	Thu,  4 Jan 2024 21:59:41 +0000 (UTC)
-Received: from rostedt by gandalf with local (Exim 4.97)
-	(envelope-from <rostedt@goodmis.org>)
-	id 1rLVlg-00000000vhh-2eTY;
-	Thu, 04 Jan 2024 17:00:48 -0500
-Message-ID: <20240104220048.494956957@goodmis.org>
-User-Agent: quilt/0.67
-Date: Thu, 04 Jan 2024 16:57:15 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org
-Cc: Masami Hiramatsu <mhiramat@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Linus Torvalds <torvalds@linux-foundation.org>,
- Al Viro <viro@zeniv.linux.org.uk>,
- Christian Brauner <brauner@kernel.org>,
- linux-fsdevel@vger.kernel.org,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH 4/4] eventfs: Shortcut eventfs_iterate() by skipping entries already read
-References: <20240104215711.924088454@goodmis.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F32012C850;
+	Thu,  4 Jan 2024 21:57:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-6d98ce84e18so699872b3a.3;
+        Thu, 04 Jan 2024 13:57:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704405472; x=1705010272; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=egHS+o8XmTRrz6Xl0CS5lT3RaLGscP5yKRKwuMkxu20=;
+        b=HbdfzHOnhF0SMEdkzTVBeEXZYBShqGFA2EvcJsHC5I2GBP8NOoEmw7LMqh5J2Tm7sN
+         bFq4nAnj1954lAd3RBLpaGr0SkoEGd6vJ+C60iubG4y7Dy6B+vDeX0IjxtnNRbafzxaT
+         42e2O2k8hhnIY5TVwfUSwqg7p7aTgbevlNLny9JHfYBm52PZJE9rSW7jiU42IBpcPMqU
+         TiFImo0u6LJJwIabpvQ3MFQ2LNjLin2JcUJLnbCf7So1XbuEc9miHE+J36to5qLeMmop
+         KOrVIwtsdANdLx4dZDlrA+3KGJr8OH1fd22bu+4v8Pvh5928f061OZJuKJowXWhogbhi
+         4stA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704405472; x=1705010272;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=egHS+o8XmTRrz6Xl0CS5lT3RaLGscP5yKRKwuMkxu20=;
+        b=UCysPV11bhEiUTREuHNKPOqlqdFdzGR/FBApNsozduwF53u3TFJCArkgHO9rEYcwbY
+         f0frQE45cPkIF+yDALSxbGru15gcdLVRTlnTwnidD9h3jFk6eft1APfaAopf373ayoHV
+         5kv++4AezIZMLhF9lNyOgP89lQnMg4Zlqqu83NTljPQtOgwdSyxTs5o7RsGDtpeGkljv
+         dGA+21S6OV/eEjwjwe/msN5WZ36Aj/abkGF8gMYzPG6QWAuswZk41nIpLq7KpNxJFjTI
+         qN+YYwOLPb/GLNXAqkyK1M3PXDg7VHXsRPVYUVeznIfiKjvvxcFYqcvUwonJeVF4m/IY
+         rv+Q==
+X-Gm-Message-State: AOJu0YxEbJlfDsFougeV/sRTn7HEbnut7OHo0ZjiexFboWW0h28NvUl/
+	OrtuXuqbQbPw35yMG0mPfYc=
+X-Google-Smtp-Source: AGHT+IFjNZNufWHFTZQUVgsfqz2Mj/lvykqlgUgeQzS16YBpxT0iO7eliCi/lNUAkH396cD4SlGf3w==
+X-Received: by 2002:a05:6a00:1949:b0:6da:e0a:9b19 with SMTP id s9-20020a056a00194900b006da0e0a9b19mr1332223pfk.63.1704405472083;
+        Thu, 04 Jan 2024 13:57:52 -0800 (PST)
+Received: from localhost (dhcp-72-253-202-210.hawaiiantel.net. [72.253.202.210])
+        by smtp.gmail.com with ESMTPSA id y14-20020aa79e0e000000b006da04f1b884sm128318pfq.105.2024.01.04.13.57.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Jan 2024 13:57:51 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Thu, 4 Jan 2024 11:57:50 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Daniel Vacek <neelx@redhat.com>
+Cc: Josef Bacik <josef@toxicpanda.com>, Jens Axboe <axboe@kernel.dk>,
+	cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] blk-cgroup: clean up after commit f1c006f1c685
+Message-ID: <ZZcp3nKecqfxxH4Z@mtj.duckdns.org>
+References: <20240104180031.148148-1-neelx@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240104180031.148148-1-neelx@redhat.com>
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+On Thu, Jan 04, 2024 at 07:00:30PM +0100, Daniel Vacek wrote:
+> Commit f1c006f1c685 moved deletion of the list blkg->q_node
+> from blkg_destroy() to blkg_free_workfn(). Clean up the now
+> useless variable.
+> 
+> Signed-off-by: Daniel Vacek <neelx@redhat.com>
 
-As the ei->entries array is fixed for the duration of the eventfs_inode,
-it can be used to skip over already read entries in eventfs_iterate().
+Acked-by: Tejun Heo <tj@kernel.org>
 
-That is, if ctx->pos is greater than zero, there's no reason in doing the
-loop across the ei->entries array for the entries less than ctx->pos.
-Instead, start the lookup of the entries at the current ctx->pos.
+Thanks.
 
-Link: https://lore.kernel.org/all/CAHk-=wiKwDUDv3+jCsv-uacDcHDVTYsXtBR9=6sGM5mqX+DhOg@mail.gmail.com/
-
-Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
- fs/tracefs/event_inode.c | 23 ++++++++++-------------
- 1 file changed, 10 insertions(+), 13 deletions(-)
-
-diff --git a/fs/tracefs/event_inode.c b/fs/tracefs/event_inode.c
-index a1934e0eea3b..fdff53d5a1f8 100644
---- a/fs/tracefs/event_inode.c
-+++ b/fs/tracefs/event_inode.c
-@@ -746,21 +746,15 @@ static int eventfs_iterate(struct file *file, struct dir_context *ctx)
- 	if (!ei || !ei_dentry)
- 		goto out;
- 
--	ret = 0;
--
- 	/*
- 	 * Need to create the dentries and inodes to have a consistent
- 	 * inode number.
- 	 */
--	for (i = 0; i < ei->nr_entries; i++) {
--		void *cdata = ei->data;
--
--		if (c > 0) {
--			c--;
--			continue;
--		}
-+	ret = 0;
- 
--		ctx->pos++;
-+	/* Start at 'c' to jump over already read entries */
-+	for (i = c; i < ei->nr_entries; i++, ctx->pos++) {
-+		void *cdata = ei->data;
- 
- 		entry = &ei->entries[i];
- 		name = entry->name;
-@@ -769,7 +763,7 @@ static int eventfs_iterate(struct file *file, struct dir_context *ctx)
- 		/* If ei->is_freed then just bail here, nothing more to do */
- 		if (ei->is_freed) {
- 			mutex_unlock(&eventfs_mutex);
--			goto out_dec;
-+			goto out;
- 		}
- 		r = entry->callback(name, &mode, &cdata, &fops);
- 		mutex_unlock(&eventfs_mutex);
-@@ -778,14 +772,17 @@ static int eventfs_iterate(struct file *file, struct dir_context *ctx)
- 
- 		dentry = create_file_dentry(ei, i, ei_dentry, name, mode, cdata, fops);
- 		if (!dentry)
--			goto out_dec;
-+			goto out;
- 		ino = dentry->d_inode->i_ino;
- 		dput(dentry);
- 
- 		if (!dir_emit(ctx, name, strlen(name), ino, DT_REG))
--			goto out_dec;
-+			goto out;
- 	}
- 
-+	/* Subtract the skipped entries above */
-+	c -= min((unsigned int)c, (unsigned int)ei->nr_entries);
-+
- 	list_for_each_entry_srcu(ei_child, &ei->children, list,
- 				 srcu_read_lock_held(&eventfs_srcu)) {
- 
 -- 
-2.42.0
-
-
+tejun
 
