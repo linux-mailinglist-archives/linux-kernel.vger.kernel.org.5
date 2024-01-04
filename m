@@ -1,127 +1,141 @@
-Return-Path: <linux-kernel+bounces-16466-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16467-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id BDD2E823EF3
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 10:54:36 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D734A823EF4
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 10:54:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4FE9BB23EA9
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 09:54:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 88DD31F24A67
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 09:54:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B50C720B33;
-	Thu,  4 Jan 2024 09:54:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC150208DA;
+	Thu,  4 Jan 2024 09:54:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="rsxy4YgO"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="beP6Nr+F"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com [209.85.219.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9F9620B07
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 09:53:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-dbd721384c0so302356276.1
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 01:53:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704362038; x=1704966838; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=MP8L5Lud9CCsD/Fvru54/9uS00d5qvumnmZ+CZqZyW0=;
-        b=rsxy4YgODcQxuL7bW+wIYJx3927LFYG7ElsAgAwHxQoOEXsOuPFU1kIUTFx7U5OcTZ
-         h2sC31P6/Zx2Oyfb0vPL66XL034WAc/OT7dubFbd48jg9QbccCLZ7dsNC+yAXZUlJhh1
-         EmkTO8vMO6gDZNL2HVoVuVEJNixl7quyIM+JWmsiVmGZTPgbZ0F/bA6QquVy0p3thBF4
-         l3l84BJJNf7YwZ1VErErFgydwrPkWZI+JHLYX08b16UTIDIqbzT3PZGNE+HJdOS9xmPy
-         IKHZpqIww+whQ/e82MDxBnyMLVVQnG3uOgl6noHkF3moYzBEst346cak4YP0Wjmnmfsn
-         Ggeg==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38016208D1
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 09:54:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1704362057;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=idoDtZ5NCin0uZIqvcSJb60xoWhrFYXpUCkOZ1DBXOE=;
+	b=beP6Nr+FbtBKvG98Pk7EUIHlR3ZAmgueCogUXUvVKHGz8utJu/JN5AjO5UIv/sg9W1c999
+	Jj5x7Reg5rC7PbvjXNXjPt1p30LeoVWuAl2vSUljqwInxcJsDmfHryAWZqw03VefplIkwi
+	qBpYN1a6jU/q+476lwIylovXnjI3V/U=
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
+ [209.85.222.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-460-IQpD8dbWOUi_7UOdmi3Aeg-1; Thu, 04 Jan 2024 04:54:14 -0500
+X-MC-Unique: IQpD8dbWOUi_7UOdmi3Aeg-1
+Received: by mail-qk1-f197.google.com with SMTP id af79cd13be357-7816e45f957so47407985a.1
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 01:54:14 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704362038; x=1704966838;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=MP8L5Lud9CCsD/Fvru54/9uS00d5qvumnmZ+CZqZyW0=;
-        b=S4d9ritt4na6DR9lmOp4LH0beG2ZqpNyJd7JpOrHZX4/I9Wtx49AeAWG/TZwEAzONR
-         vgcn+DQT3OfOHIoGgPqoDCGA4WvLa1+hGqZSRxhSyn/kEdi1SG1FcdlOnXIFrO6oHXkp
-         xbAlUzZnBbm9glfVYymCd6+FdpT+uZUdO6fb8iuRad7UlzWnq2OaWwH7BpAZdgGYUewS
-         kAF9TakG31ac/qBGKQSPHqff2hfh1HZeEJwQTAP4Vu0RIkDNmZ9+syPz9iZyDjEHHb5g
-         u1pF508+pKwxVDqDtuAb97rASom8HZd6igweZYvIfrZ2kKa/y5UmLXGwX0I4FHtCuvmQ
-         qoDg==
-X-Gm-Message-State: AOJu0YzOMRrDuKAdlrtssT9dqKsPQe3udDeNCstn8UNRnNNVUEEU+WKd
-	li1qwsk8NtJGzBEtYGYTNXCqrBHGRxWp7TWT7GwXHAWcA34kEw==
-X-Google-Smtp-Source: AGHT+IFFcrjCxmS6ubVsUTEb6rx/JWQMOaSdrJp5TbG0TiZqSQcnUQ30WLwIwX+fUJ40tdfzsyGpEK26pvzPXlRvyNw=
-X-Received: by 2002:a25:55c2:0:b0:dbe:ace5:c054 with SMTP id
- j185-20020a2555c2000000b00dbeace5c054mr285004ybb.5.1704362037677; Thu, 04 Jan
- 2024 01:53:57 -0800 (PST)
+        d=1e100.net; s=20230601; t=1704362054; x=1704966854;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=idoDtZ5NCin0uZIqvcSJb60xoWhrFYXpUCkOZ1DBXOE=;
+        b=aJ+8gv655zNBuRmYBnExPQAlvOwa7EqY7hh//bK1nU8ZbEWS9N2gyFD7MCYzSzg2tf
+         ORWAjlKyRRtRmfibyXRHjgqDiIHXnruKHomF/aMKw1V776XvHrE4ImecKCqaWmLCLC9T
+         ElmxCRiAPB0hrdMAm1e90oIu9qzbJkR/Vh1o3GNtWvav8uSwz5D5lg3HufaVxnMYOM+7
+         V4sFQRIqAUJqUtj7YqUMIe7sak+viIBBMzKhspQ/u1ycgplNiKNVCEylVoOoej7wGQ7q
+         dHi080z2OlOh8g5jlBY3Seatf6czuYZLzW8WgU/dbRj7PxtoYpYXJmyEKmk/xD6Xkmph
+         pDaw==
+X-Gm-Message-State: AOJu0YzVW8GNkzPYfsHsiI2sQm0M10xVuJOSUt8DqfNRK4P9ChReOYKd
+	DThMkoq2vXlQtuI1YdpFglZaBT/zqIaj5SFucCvzKuKhtrKiElqkM47WllBjgiFYWGYXwP2I0p1
+	YfPhR/ye1dvsJnn7qV+No8EfU2naFaOOl
+X-Received: by 2002:ac8:574c:0:b0:427:7814:f60d with SMTP id 12-20020ac8574c000000b004277814f60dmr378958qtx.134.1704362054116;
+        Thu, 04 Jan 2024 01:54:14 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHrubjIifxF6UK/QtzfUWJNTb3j4QTHKUXOlUFeAgQwcIssh8/juYduNa3KU92LqJ1kFKDhTA==
+X-Received: by 2002:ac8:574c:0:b0:427:7814:f60d with SMTP id 12-20020ac8574c000000b004277814f60dmr378956qtx.134.1704362053833;
+        Thu, 04 Jan 2024 01:54:13 -0800 (PST)
+Received: from vschneid-thinkpadt14sgen2i.remote.csb (213-44-141-166.abo.bbox.fr. [213.44.141.166])
+        by smtp.gmail.com with ESMTPSA id ep5-20020a05622a548500b004282589b74asm3646060qtb.28.2024.01.04.01.54.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Jan 2024 01:54:13 -0800 (PST)
+From: Valentin Schneider <vschneid@redhat.com>
+To: Pierre Gondois <pierre.gondois@arm.com>, linux-kernel@vger.kernel.org
+Cc: Pierre Gondois <pierre.gondois@arm.com>, Ingo Molnar <mingo@redhat.com>,
+ Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>,
+ Vincent Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann
+ <dietmar.eggemann@arm.com>, Steven Rostedt <rostedt@goodmis.org>, Ben
+ Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, Daniel Bristot
+ de Oliveira <bristot@redhat.com>
+Subject: Re: [PATCH 1/2] sched/topology: Annotate RCU pointers properly
+In-Reply-To: <20240103125648.194516-2-pierre.gondois@arm.com>
+References: <20240103125648.194516-1-pierre.gondois@arm.com>
+ <20240103125648.194516-2-pierre.gondois@arm.com>
+Date: Thu, 04 Jan 2024 10:54:10 +0100
+Message-ID: <xhsmh1qaxjuf1.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240104-gcc-docs-update-v1-1-127e4816b798@quicinc.com>
-In-Reply-To: <20240104-gcc-docs-update-v1-1-127e4816b798@quicinc.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Thu, 4 Jan 2024 11:53:46 +0200
-Message-ID: <CAA8EJprsGke9zZBy_x=YSxz7R1aSpx8r3ndjjXVVKhjKBxd=QQ@mail.gmail.com>
-Subject: Re: [PATCH] arm64: dts: qcom: ipq6018: add #power-domain-cells for
- gcc node
-To: quic_fenglinw@quicinc.com
-Cc: kernel@quicinc.com, Andy Gross <agross@kernel.org>, 
-	Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 
-On Thu, 4 Jan 2024 at 10:06, Fenglin Wu via B4 Relay
-<devnull+quic_fenglinw.quicinc.com@kernel.org> wrote:
+On 03/01/24 13:56, Pierre Gondois wrote:
+> Cleanup RCU-related spare errors by annotating RCU pointers.
 >
-> From: Fenglin Wu <quic_fenglinw@quicinc.com>
+> sched_domains_numa_distance:
+>   error: incompatible types in comparison expression
+>   (different address spaces):
+>       int [noderef] __rcu *
+>       int *
 >
-> Property '#power-domain-cells' is required as per defined in qcom,gcc.yaml
-> so add it for ipq6018 gcc device node to eliminate following warning in
-> dtbs_check:
+> sched_domains_numa_masks:
+>   error: incompatible types in comparison expression
+>   (different address spaces):
+>       struct cpumask **[noderef] __rcu *
+>       struct cpumask ***
 >
-> arch/arm64/boot/dts/qcom/ipq6018-cp01-c1.dtb: gcc@1800000:
->         '#power-domain-cells' is a required property
-> from schema $id: http://devicetree.org/schemas/clock/qcom,gcc-ipq6018.yaml#
+> Signed-off-by: Pierre Gondois <pierre.gondois@arm.com>
 
-But ipq6018 doesn't implement GDSC support. So for the sake of fixing
-the warning you are adding a bogus property.
-
->
-> Signed-off-by: Fenglin Wu <quic_fenglinw@quicinc.com>
+That's from when the NUMA topologies were made dynamic, which should be:
+Fixes: 0fb3978b0aac ("sched/numa: Fix NUMA topology for systems with CPU-less nodes")
 > ---
->  arch/arm64/boot/dts/qcom/ipq6018.dtsi | 1 +
->  1 file changed, 1 insertion(+)
+>  kernel/sched/topology.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 >
-> diff --git a/arch/arm64/boot/dts/qcom/ipq6018.dtsi b/arch/arm64/boot/dts/qcom/ipq6018.dtsi
-> index 39cd6b76b4c1..54914912d610 100644
-> --- a/arch/arm64/boot/dts/qcom/ipq6018.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/ipq6018.dtsi
-> @@ -386,6 +386,7 @@ gcc: gcc@1800000 {
->                         reg = <0x0 0x01800000 0x0 0x80000>;
->                         clocks = <&xo>, <&sleep_clk>;
->                         clock-names = "xo", "sleep_clk";
-> +                       #power-domain-cells = <1>;
->                         #clock-cells = <1>;
->                         #reset-cells = <1>;
->                 };
+> diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
+> index 10d1391e7416..0342a4f41f09 100644
+> --- a/kernel/sched/topology.c
+> +++ b/kernel/sched/topology.c
+> @@ -1542,8 +1542,8 @@ static int			sched_domains_numa_levels;
+>  static int			sched_domains_curr_level;
 >
-> ---
-> base-commit: 17cb8a20bde66a520a2ca7aad1063e1ce7382240
-> change-id: 20240103-gcc-docs-update-fa604579e468
+>  int				sched_max_numa_distance;
+> -static int			*sched_domains_numa_distance;
+> -static struct cpumask		***sched_domains_numa_masks;
+> +static int			__rcu *sched_domains_numa_distance;
+> +static struct cpumask		** __rcu *sched_domains_numa_masks;
+
+I understand that's what sparse is asking for, but that looks odd to me. We
+use it as:
+
+  rcu_assign_pointer(sched_domains_numa_masks, foo);
+
+so why isn't it
+
+  __rcu ***sched_domains_numa_masks;
+
+?
+
+This isn't a pointer to an RCU-protected array of masks, this is an
+RCU-protected double array of masks.
+>  #endif
 >
-> Best regards,
+>  /*
 > --
-> Fenglin Wu <quic_fenglinw@quicinc.com>
->
->
+> 2.25.1
 
-
--- 
-With best wishes
-Dmitry
 
