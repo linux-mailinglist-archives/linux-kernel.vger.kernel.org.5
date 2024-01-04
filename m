@@ -1,135 +1,181 @@
-Return-Path: <linux-kernel+bounces-16742-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16743-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 925D682432C
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 14:57:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1DCB982432E
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 14:58:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 076031F253F9
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 13:57:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B83F328746C
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 13:57:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EACC4224DD;
-	Thu,  4 Jan 2024 13:57:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 062D7224D6;
+	Thu,  4 Jan 2024 13:57:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="FgLCAT7+"
+	dkim=pass (2048-bit key) header.d=arista.com header.i=@arista.com header.b="DLsV7sLW"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D37F1224C1;
-	Thu,  4 Jan 2024 13:57:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=lwfKVVx7X4nlA2hPQXF4+V6T0p8TvsOTKoeOLz3fkv4=; b=FgLCAT7+PCX2erOAbptE1TsR3G
-	fBMJFNMH/TOX7AXKwZu3cpsOohCW7t3zRlStq+NNVkokdz6+V9OAaGOXE+QNOb7wklGKyQ77qgLGN
-	NwDsk4QIUIb0/xJGN3Oa9AtFJ4CITRID5ENOiLZ6D+8AclTwYT7VNfYLHFhrXazmUXT8=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1rLODb-004Lvc-37; Thu, 04 Jan 2024 14:57:07 +0100
-Date: Thu, 4 Jan 2024 14:57:07 +0100
-From: Andrew Lunn <andrew@lunn.ch>
-To: Jie Luo <quic_luoj@quicinc.com>
-Cc: Christian Marangi <ansuelsmth@gmail.com>,
-	"Russell King (Oracle)" <linux@armlinux.org.uk>,
-	davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-	pabeni@redhat.com, robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	hkallweit1@gmail.com, corbet@lwn.net, p.zabel@pengutronix.de,
-	f.fainelli@gmail.com, netdev@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-doc@vger.kernel.org
-Subject: Re: [PATCH v8 14/14] dt-bindings: net: ar803x: add qca8084 PHY
- properties
-Message-ID: <50252a5a-e4fb-42d3-b838-9ef04faf4c5c@lunn.ch>
-References: <7c05b08a-bb6d-4fa1-8cee-c1051badc9d9@lunn.ch>
- <ZX2rU5OFcZFyBmGl@shell.armlinux.org.uk>
- <6abe5d6f-9d00-445f-8c81-9c89b9da3e0a@quicinc.com>
- <ZX3LqN8DSdKXqsYc@shell.armlinux.org.uk>
- <1bddd434-024c-45ff-9866-92951a3f555f@quicinc.com>
- <ZZPeHJJU96y1kdlZ@shell.armlinux.org.uk>
- <6593e0a3.050a0220.5c543.8e12@mx.google.com>
- <cee9de2c-bfa4-4ca9-9001-725e2041bc25@quicinc.com>
- <85590a5b-9d5a-40cb-8a0e-a3a3a1c3720a@lunn.ch>
- <c5263daa-b5f4-4b9c-a216-73d68493a802@quicinc.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A06D2224CF
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 13:57:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=arista.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arista.com
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-40d76923ec4so4756365e9.3
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 05:57:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=arista.com; s=google; t=1704376673; x=1704981473; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=T4wmb4F7h9mu12XcfWrx+6kUqvGBAF7BSgy37ShfsWc=;
+        b=DLsV7sLWzBWIhaUqhQ5wRPbwJzAuBBE5CxnxPUG9fFjS+OsirhmgGVn7djWwyqwpzr
+         TdEjOEIZQcXJbt4Xx153bFZrF2aWFBlTFmrRHBl/Sh70jylIcbGgz4CSdiBPZVpEJuoa
+         k7Wf1CnO4TTJYjeJRM1C9sdjGYD5buvFV43jFI42e0tyZ7z4x+KKgmUSZg3Frt4NJPKb
+         NluNluJlL6Djyf5BNvagTiw8IBZWOXbc7XcM0teXsRb+Ljh7EolDQZ/KFdewVWXBv0HU
+         /aa8uozvN3m7e3BFhV/Gb0ZW92cU9gW/159FBT/yvU5Ermh2RGA53+0Txqcx9sc2xvka
+         Cfwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704376673; x=1704981473;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=T4wmb4F7h9mu12XcfWrx+6kUqvGBAF7BSgy37ShfsWc=;
+        b=XRwWS1KxjCvB+rz0/LTtQOZn1EzO3/dCMY341KOyHAF3SNCl/zcaaqQIXdtIeRj/OL
+         ROd27t/KGKbA3p7YSkce27j9NNGU7kl+/SdKGkryq/3niZA6c1sDo0aryvysajYhPR9b
+         g1FhwXsnNbe+czQ+kqpnBgdGtpg6iwV3VCjmoU4wpZsnY1SOKkoOEGrlqD6JP8AIB1HU
+         If6P5ehPz/JP+YAPE3TlUp+v7SE5I3unVsbMvOA5reNeOIKuyQWFLo8muXwmTUUGePEP
+         VKhNL2owLTBmfNwQlc/4vGN6gxLn3Np8NYCfnaV2Qxb51FQiah2Fz4AZUMeSkaI01lH1
+         fj+w==
+X-Gm-Message-State: AOJu0YygQhJ8DxXTOugbLm9eYf9IQp9VpnKr/TucZ5pUIje4F5u19yFF
+	DCZjH6NXTCAl5utacv4/6dgzqC+hqe/W
+X-Google-Smtp-Source: AGHT+IE2jvjkFkwuxql63GSmfDhZZY+qtTSoXWZl+aj/Rq7+NLSjxi+dXKAH5hHdPPEdlP4pmkY6eQ==
+X-Received: by 2002:a05:600c:1c0d:b0:40d:7f71:3f4f with SMTP id j13-20020a05600c1c0d00b0040d7f713f4fmr403356wms.176.1704376672868;
+        Thu, 04 Jan 2024 05:57:52 -0800 (PST)
+Received: from [10.83.37.178] ([217.173.96.166])
+        by smtp.gmail.com with ESMTPSA id u7-20020a05600c19c700b0040d8cd116e4sm5836429wmq.37.2024.01.04.05.57.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Jan 2024 05:57:52 -0800 (PST)
+Message-ID: <d3de02c2-5158-4cae-b6f7-02d0fe7dae35@arista.com>
+Date: Thu, 4 Jan 2024 13:57:49 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c5263daa-b5f4-4b9c-a216-73d68493a802@quicinc.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] net/tcp: Only produce AO/MD5 logs if there are any keys
+Content-Language: en-US
+To: Eric Dumazet <edumazet@google.com>, "David S. Miller"
+ <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>
+Cc: Christian Kujau <lists@nerdbynature.de>,
+ Salam Noureddine <noureddine@arista.com>,
+ Dmitry Safonov <0x7f454c46@gmail.com>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240104-tcp_hash_fail-logs-v1-1-ff3e1f6f9e72@arista.com>
+From: Dmitry Safonov <dima@arista.com>
+In-Reply-To: <20240104-tcp_hash_fail-logs-v1-1-ff3e1f6f9e72@arista.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-> 1. For IPQ SoC series, there are only ipq4019, ipq5018, ipq6018,
-> ipq8074 documented in the current dt-bindings doc qcom,ipq4019-mdio.yaml
-> and ipq9574, ipq5332 that are being added by the MDIO patch, and one
-> more ipq8064 whose MDIO driver is mdio-ipq8064.c, on more others.
+On 1/4/24 13:42, Dmitry Safonov wrote:
+> User won't care about inproper hash options in the TCP header if they
+> don't use neither TCP-AO nor TCP-MD5. Yet, those logs can add up in
+> syslog, while not being a real concern to the host admin:
+>> kernel: TCP: TCP segment has incorrect auth options set for XX.20.239.12.54681->XX.XX.90.103.80 [S]
 > 
-> 2. For qca8084(pure PHY chip), which is the quad-phy chip, which is just
->    like qca8081 PHY(single port PHY), each port can be linked to maximum
->    speed 2.5G.
+> Keep silent and avoid logging when there aren't any keys in the system.
 > 
->    For qca8386(switch chip), which includes the same PHY CHIP as qca8084
->    (4 physical ports and two CPU ports), qca8386 switch can work with
->    the current qca8k.c DSA driver with the supplement patches.
-
-Is the qca8386 purely a switch plus integrated PHYs? There is no CPU
-on it? What is the management path? MDIO?
-
+> Side-note: I also defined static_branch_tcp_*() helpers to avoid more
+> ifdeffery, going to remove more ifdeffery further with their help.
 > 
->    Both qca8084 and qca8386 includes same network clock controller(let's
->    call it NSSCC, since this clock controller is located in the
->    Ethernet chip qca8084 and qca8386), they have the same clock initial
->    configuration sequence to initialize the Ethernet chip.
+> Reported-by: Christian Kujau <lists@nerdbynature.de>
+> Closes: https://lore.kernel.org/all/f6b59324-1417-566f-a976-ff2402718a8d@nerdbynature.de/
 
-You said For "qca8084(pure PHY chip)". Here you just called it an
-Ethernet chip? To me, and Ethernet chip is a MAC, Intel e1000e etc.
-Do you now see how your explanations are confusing. Is it s pure PHY,
-or is it an Ethernet chip?
+Probably, it also can have
 
-O.K. Since we are getting nowhere at the moment, lets take just the
-pure PHY chip, and ignore the rest for the moment.
+Fixes: 2717b5adea9e ("net/tcp: Add tcp_hash_fail() ratelimited logs")
 
-For any pure PHY, there is generally one clock input, which might be a
-crystal, or an actual clock. If you look at other DT bindings for
-PHYs, it is only listed if the clock is expected to come from
-somewhere else, like a SoC, and it needs to be turned on before the
-PHY will work. And generally, a pure PHY has one defined clock
-frequency input. If that is true, there is no need to specify the
-clock. If multiple clock input frequencies are supported, then you do
-need to specify the clock, so its possible to work out what frequency
-it is using. How that clock input is then used internally in the PHY
-is not described in DT, but the driver can set any dividers, PLLs
-needed etc.
+> Signed-off-by: Dmitry Safonov <dima@arista.com>
+> ---
+>  include/net/tcp.h    |  2 --
+>  include/net/tcp_ao.h | 26 +++++++++++++++++++++++---
+>  2 files changed, 23 insertions(+), 5 deletions(-)
+> 
+> diff --git a/include/net/tcp.h b/include/net/tcp.h
+> index 144ba48bb07b..87f0e6c2e1f2 100644
+> --- a/include/net/tcp.h
+> +++ b/include/net/tcp.h
+> @@ -1788,8 +1788,6 @@ struct tcp_md5sig_key *tcp_v4_md5_lookup(const struct sock *sk,
+>  					 const struct sock *addr_sk);
+>  
+>  #ifdef CONFIG_TCP_MD5SIG
+> -#include <linux/jump_label.h>
+> -extern struct static_key_false_deferred tcp_md5_needed;
+>  struct tcp_md5sig_key *__tcp_md5_do_lookup(const struct sock *sk, int l3index,
+>  					   const union tcp_md5_addr *addr,
+>  					   int family, bool any_l3index);
+> diff --git a/include/net/tcp_ao.h b/include/net/tcp_ao.h
+> index 647781080613..b04afced4cc9 100644
+> --- a/include/net/tcp_ao.h
+> +++ b/include/net/tcp_ao.h
+> @@ -127,12 +127,35 @@ struct tcp_ao_info {
+>  	struct rcu_head		rcu;
+>  };
+>  
+> +#ifdef CONFIG_TCP_MD5SIG
+> +#include <linux/jump_label.h>
+> +extern struct static_key_false_deferred tcp_md5_needed;
+> +#define static_branch_tcp_md5()	static_branch_unlikely(&tcp_md5_needed.key)
+> +#else
+> +#define static_branch_tcp_md5()	false
+> +#endif
+> +#ifdef CONFIG_TCP_AO
+> +/* TCP-AO structures and functions */
+> +#include <linux/jump_label.h>
+> +extern struct static_key_false_deferred tcp_ao_needed;
+> +#define static_branch_tcp_ao()	static_branch_unlikely(&tcp_ao_needed.key)
+> +#else
+> +#define static_branch_tcp_ao()	false
+> +#endif
+> +
+> +static inline bool tcp_hash_should_produce_warnings(void)
+> +{
+> +	return static_branch_tcp_md5() || static_branch_tcp_ao();
+> +}
+> +
+>  #define tcp_hash_fail(msg, family, skb, fmt, ...)			\
+>  do {									\
+>  	const struct tcphdr *th = tcp_hdr(skb);				\
+>  	char hdr_flags[6];						\
+>  	char *f = hdr_flags;						\
+>  									\
+> +	if (!tcp_hash_should_produce_warnings())			\
+> +		break;							\
+>  	if (th->fin)							\
+>  		*f++ = 'F';						\
+>  	if (th->syn)							\
+> @@ -159,9 +182,6 @@ do {									\
+>  
+>  #ifdef CONFIG_TCP_AO
+>  /* TCP-AO structures and functions */
+> -#include <linux/jump_label.h>
+> -extern struct static_key_false_deferred tcp_ao_needed;
+> -
+>  struct tcp4_ao_context {
+>  	__be32		saddr;
+>  	__be32		daddr;
+> 
+> ---
+> base-commit: ac865f00af293d081356bec56eea90815094a60e
+> change-id: 20240104-tcp_hash_fail-logs-daa1a4dde694
+> 
+> Best regards,
 
-So, for the pure PHY chip, what is the pinout? Is there one clock
-input? Or 4 clock inputs, one per PHY in the quad package? Typically,
-where does this/these clocks come from? Is the frequency fixed by the
-design, or are a number of input frequencies supported?
+-- 
+Dmitry
 
->   The Ethernet chip qca8084 and qca8386 are only connected with IPQ SoC,
->   Currently qca8084 is connected with IPQ SoC by 10G-QXGMII mode.
->   the 4 PHYs of qca8386 are connected with the internal MAC of qca8386
->   by GMII, the maximum speed is also 2.5G.
->   The port4 of qca8084 or qca8386 is optionally be able to connected
->   with IPQ SoC by sgmii.
-
-To some extent, this does not matter. The DT binding and the driver
-should not care what the pure PHY is connected to. It has standardised
-ports, so in theory it could be connected to any vendors MAC.
-
-Please be very careful with your wording. Because computers
-instructions should be unambiguous, it does what it is told, we also
-expect computer scientists to be unambiguous. Wording is very
-important.
-
-       Andrew
 
