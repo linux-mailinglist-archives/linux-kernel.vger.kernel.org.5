@@ -1,43 +1,34 @@
-Return-Path: <linux-kernel+bounces-16142-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16145-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8189282399B
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 01:24:48 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 38C758239A5
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 01:27:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 17D6F1F26113
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 00:24:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4CEC71C24A9A
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 00:27:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D1604A29;
-	Thu,  4 Jan 2024 00:24:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="GK5GAQ4B"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3666A29;
+	Thu,  4 Jan 2024 00:27:07 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from mx3.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F34F44414;
-	Thu,  4 Jan 2024 00:24:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=z9OvDNJy0durGaaJOE76nAC55m5S+o9VSdvUuuk1bME=; b=GK5GAQ4BMSwaUZWIIZ2yOQz1UH
-	OO2MBjL+L5CE1F6TyxZWqzlVCfYZB/7L2LP7eNsGSKZOOoi/ygBeRr3BEs3GrpyFq0bXRXFoPT7F4
-	twLgyihWq30cr0Yt7vjZGDqibnbRdQvdiBTDRO8Mgw9zO8AhDFKOGzqIAnTYirO3BbWB3xV2i4jXi
-	VGakgW7fwp84UN5koD4GtKxAmnKq/UCYD0NvurK4YYiWiYgNeaCN3Ohcl1EwTkMDsD1jDAoGwEK8t
-	FQJwqLg3gkwAPPfUQoBm2Vls5zic/Cm1Fcz0Cd+E9PaA0nMPOvxU3mGTosGjz/xWFF1k0up787qm+
-	XamtGtFg==;
-Received: from [50.53.46.231] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1rLBXB-00CTy8-15;
-	Thu, 04 Jan 2024 00:24:29 +0000
-Message-ID: <b91cc934-f343-4699-9711-a3b52cfbd39a@infradead.org>
-Date: Wed, 3 Jan 2024 16:24:28 -0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC6D6366;
+	Thu,  4 Jan 2024 00:27:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=molgen.mpg.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=molgen.mpg.de
+Received: from [192.168.0.224] (ip5f5ae9b7.dynamic.kabel-deutschland.de [95.90.233.183])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: pmenzel)
+	by mx.molgen.mpg.de (Postfix) with ESMTPSA id 3B49F61E5FE01;
+	Thu,  4 Jan 2024 01:24:37 +0100 (CET)
+Message-ID: <d8dcef7e-3659-4af4-b391-169081343fba@molgen.mpg.de>
+Date: Thu, 4 Jan 2024 01:24:36 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -45,60 +36,64 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/8] alpha: Fix typos
+Subject: Re: [Intel-wired-lan] [RFC PATCH v3 11/11] ABI: pps: Add ABI
+ documentation for Intel TIO
 Content-Language: en-US
-To: Bjorn Helgaas <helgaas@kernel.org>,
- Richard Henderson <richard.henderson@linaro.org>
-Cc: linux-kernel@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
- Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner
- <mattst88@gmail.com>, linux-alpha@vger.kernel.org
-References: <20240103231605.1801364-1-helgaas@kernel.org>
- <20240103231605.1801364-2-helgaas@kernel.org>
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20240103231605.1801364-2-helgaas@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+To: lakshmi.sowjanya.d@intel.com
+Cc: tglx@linutronix.de, jstultz@google.com, giometti@enneenne.com,
+ corbet@lwn.net, linux-kernel@vger.kernel.org, christopher.s.hall@intel.com,
+ linux-doc@vger.kernel.org, netdev@vger.kernel.org, pandith.n@intel.com,
+ x86@kernel.org, eddie.dong@intel.com, jesse.brandeburg@intel.com,
+ linux-sound@vger.kernel.org, alexandre.torgue@foss.st.com,
+ mallikarjunappa.sangannavar@intel.com, joabreu@synopsys.com,
+ intel-wired-lan@lists.osuosl.org, mcoquelin.stm32@gmail.com,
+ thejesh.reddy.t.r@intel.com, perex@perex.cz, anthony.l.nguyen@intel.com,
+ andriy.shevchenko@linux.intel.com, davem@davemloft.net
+References: <20240103115602.19044-1-lakshmi.sowjanya.d@intel.com>
+ <20240103115602.19044-12-lakshmi.sowjanya.d@intel.com>
+From: Paul Menzel <pmenzel@molgen.mpg.de>
+In-Reply-To: <20240103115602.19044-12-lakshmi.sowjanya.d@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+
+Dear Lakshmi,
 
 
+Thank you for your patch.
 
-On 1/3/24 15:15, Bjorn Helgaas wrote:
-> From: Bjorn Helgaas <bhelgaas@google.com>
+Am 03.01.24 um 12:56 schrieb lakshmi.sowjanya.d@intel.com:
+> From: Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>
 > 
-> Fix typos, most reported by "codespell arch/alpha".  Only touches comments,
-> no code changes.
-> 
-> Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-> Cc: Ivan Kokshaysky <ink@jurassic.park.msu.ru>
-> Cc: Matt Turner <mattst88@gmail.com>
-> Cc: linux-alpha@vger.kernel.org
+> Document sysfs interface for Intel Timed I/O PPS driver
+
+I’d add a dot/period at the end.
+
+> Signed-off-by: Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>
 > ---
->  arch/alpha/boot/bootpz.c             | 4 ++--
->  arch/alpha/include/asm/core_marvel.h | 2 +-
->  arch/alpha/include/asm/fpu.h         | 2 +-
->  arch/alpha/include/asm/sfp-machine.h | 2 +-
->  arch/alpha/include/asm/thread_info.h | 2 +-
->  arch/alpha/include/asm/wrperfmon.h   | 2 +-
->  arch/alpha/include/uapi/asm/mman.h   | 2 +-
->  arch/alpha/kernel/err_impl.h         | 2 +-
->  arch/alpha/kernel/irq_i8259.c        | 2 +-
->  arch/alpha/kernel/osf_sys.c          | 2 +-
->  arch/alpha/kernel/pci_iommu.c        | 4 ++--
->  arch/alpha/kernel/sys_eiger.c        | 4 ++--
->  arch/alpha/kernel/sys_marvel.c       | 2 +-
->  arch/alpha/kernel/sys_miata.c        | 2 +-
->  arch/alpha/kernel/sys_takara.c       | 2 +-
->  arch/alpha/lib/ev6-memcpy.S          | 2 +-
->  arch/alpha/lib/ev6-stxcpy.S          | 2 +-
->  arch/alpha/lib/ev67-strrchr.S        | 2 +-
->  arch/alpha/lib/strrchr.S             | 2 +-
->  arch/alpha/lib/stxcpy.S              | 2 +-
->  20 files changed, 23 insertions(+), 23 deletions(-)
+>   Documentation/ABI/testing/sysfs-platform-pps-tio | 7 +++++++
+>   1 file changed, 7 insertions(+)
+>   create mode 100644 Documentation/ABI/testing/sysfs-platform-pps-tio
 > 
+> diff --git a/Documentation/ABI/testing/sysfs-platform-pps-tio b/Documentation/ABI/testing/sysfs-platform-pps-tio
+> new file mode 100644
+> index 000000000000..24a2eb591a05
+> --- /dev/null
+> +++ b/Documentation/ABI/testing/sysfs-platform-pps-tio
+> @@ -0,0 +1,7 @@
+> +What:		/sys/devices/platform/INTCxxxx/enable
+> +Date:		March 2024
+> +KernelVersion	6.9
+> +Contact:	Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>
+> +Description:
+> +		(RW) Enable or disable PPS TIO generator output, read to
+> +		see the status of hardware(Enabled/Disabled).
 
-Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
+Please add a space before the (.
 
-Thanks.
+Wouldn’t it be more intuitive, if it returned true/false?
 
--- 
-#Randy
+
+Kind regards,
+
+Paul
 
