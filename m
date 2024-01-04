@@ -1,134 +1,175 @@
-Return-Path: <linux-kernel+bounces-17040-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17041-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA884824779
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 18:31:01 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B019382477B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 18:31:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5E080B24D64
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 17:30:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1CBF12861DD
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 17:31:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93EFE28DA5;
-	Thu,  4 Jan 2024 17:30:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71E31286BB;
+	Thu,  4 Jan 2024 17:31:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arista.com header.i=@arista.com header.b="gNH9KVOF"
+	dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b="ReDjxyv1"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6821028DA7
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Jan 2024 17:30:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=arista.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arista.com
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-40e3488e33bso6181785e9.3
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 09:30:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=arista.com; s=google; t=1704389433; x=1704994233; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=/jKy45tTpBF8VrWktAGws3wr3SZV/flltFYKBFtql78=;
-        b=gNH9KVOFQYQqrInrOaKGNkJ15tXEFl4iysSbaTO12M9giBPqZvCTz4jIfq+Zjufmne
-         BSJ+ULojJp4yZjfWUJ5oFnRaua0NDE338wYLGS6z4/Zu30+m65ECfYnRw0wrycNMXmoA
-         qcXl3b1s0WSCO31U4+Atj4zhqsy6jj2Sy5SshEZfzWz3kpk6M1eQQpcR0pZtDn1AT4Iz
-         BpLFrQduy9aliyLav3K6j+XLRJydchBnJJOqo/XJUCQugRW5EmdN4Y7CfrNHhYjd/1FU
-         fTflRV61mB0rxd+DqGC/zTtC4+tHft5/RFvOEgQbnugJ8sb+khjLIT8PNUcDhKmp0G8r
-         dW6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704389433; x=1704994233;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/jKy45tTpBF8VrWktAGws3wr3SZV/flltFYKBFtql78=;
-        b=A3Q35Hevl2e9u3ZW1zewIZRjIjvbcKzGOWYRYeLRLsIUjZlSB42d13LfUKesrc5ARk
-         EfAIs//Hgoi9ILv9TOoqivC4medKijiDgT8rYwl+JzaBKA7M/TmvXgkI+lEp3CZq0RzK
-         QhvZCyrl1i7kZ+hxZV4mrkUAcbZSzCQfBToA9b2Io9VOD92avoRHCf7QBmwYdayQ0tFd
-         LsNwoluuZSWW7GQUknNOg5VPAfMzcSLbjYNcglWcmO5TGdS/I13juyeRAN50qo176xZn
-         46r2BK+641rZoCQBoqPMlPD6rcsD6IQojTKI6hO0jfyHcGvw4cVmjEVwxn9vlLvCKUV/
-         7uJA==
-X-Gm-Message-State: AOJu0YyVNMjaZk9kZQSd72NLonCLbNq8qla3Iy6MwYH9IDJT2CQFJyPm
-	VkB1qvpfUvhRE2MoT6OvgJ7ikMD+nH9I
-X-Google-Smtp-Source: AGHT+IH7v02jmFcnm02BO4OEGoG7+3cWGMprgrMDThkM/ZaCFX321w7OUFlnQld0EGr5QLANcFjw8Q==
-X-Received: by 2002:a05:600c:45d4:b0:40d:1778:c839 with SMTP id s20-20020a05600c45d400b0040d1778c839mr374246wmo.141.1704389433542;
-        Thu, 04 Jan 2024 09:30:33 -0800 (PST)
-Received: from [10.83.37.178] ([217.173.96.166])
-        by smtp.gmail.com with ESMTPSA id x4-20020a5d54c4000000b0033662c2820bsm33125502wrv.117.2024.01.04.09.30.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Jan 2024 09:30:33 -0800 (PST)
-Message-ID: <dca62206-165e-40bc-b834-0df2941fad41@arista.com>
-Date: Thu, 4 Jan 2024 17:30:31 +0000
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BF2A286B1;
+	Thu,  4 Jan 2024 17:31:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.helo=mx0b-0016f401.pphosted.com
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+	by mx0b-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 404AF2II021043;
+	Thu, 4 Jan 2024 09:30:41 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=pfpt0220; bh=+WG/kg7A
+	naWaSZdtZa4RS3yirZT8LfAXiAzW6sHOpEo=; b=ReDjxyv1s61tzxxsZy3wa1l6
+	udlB20uavMm+g7ySvSlX4F8pB7fSQQ1zi+OuYU5AkeVOXuay5pEniZL58y7vq6SR
+	ioIQi7mJGvS5CUj0dLXn9Un5nXOtPNGYuWRARZ3o++BUFA1kBGFO91HTwcXOB+xF
+	tsrDX4mTYJHVaNCaNHLPwQajAAp5J1iTu+hfom7Th8qq7ACXbG9Su/1bz0SsRX3A
+	h4fS0vHxXe8r5fjBw6mOW+YoZZmpB5riU8z0w8xZoToaN3SZlyP+TJRk9A5R46ay
+	BuFoIvUYzgNVbHdPpobgy1oNqeIeBXH5i6qwW9aJdjroSfsUc4oW9SZjSj3JRg==
+Received: from dc5-exch01.marvell.com ([199.233.59.181])
+	by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3vd39qfped-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+	Thu, 04 Jan 2024 09:30:41 -0800 (PST)
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Thu, 4 Jan
+ 2024 09:30:39 -0800
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
+ Transport; Thu, 4 Jan 2024 09:30:39 -0800
+Received: from dc3lp-swdev041.marvell.com (dc3lp-swdev041.marvell.com [10.6.60.191])
+	by maili.marvell.com (Postfix) with ESMTP id 7C58E3F7089;
+	Thu,  4 Jan 2024 09:30:37 -0800 (PST)
+From: Elad Nachman <enachman@marvell.com>
+To: <huziji@marvell.com>, <ulf.hansson@linaro.org>, <adrian.hunter@intel.com>,
+        <linux-mmc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC: <enachman@marvell.com>
+Subject: [PATCH v2] mmc: xenon: Add ac5 support via bounce buffer
+Date: Thu, 4 Jan 2024 19:30:33 +0200
+Message-ID: <20240104173033.2836110-1-enachman@marvell.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] net/tcp: Only produce AO/MD5 logs if there are any keys
-Content-Language: en-US
-To: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>
-Cc: "David S. Miller" <davem@davemloft.net>, Paolo Abeni <pabeni@redhat.com>,
- Christian Kujau <lists@nerdbynature.de>,
- Salam Noureddine <noureddine@arista.com>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, Dmitry Safonov <0x7f454c46@gmail.com>
-References: <20240104-tcp_hash_fail-logs-v1-1-ff3e1f6f9e72@arista.com>
- <20240104075742.71e4399f@kernel.org>
- <335a2669-6902-4f57-bf48-5650cbf55406@arista.com>
- <20240104085855.4c5c5a1f@kernel.org>
- <CANn89iJ79ibHGu-4MCLpkG3w7dr7jqbc7CX1T7Cm+d6vwnwLGg@mail.gmail.com>
-From: Dmitry Safonov <dima@arista.com>
-In-Reply-To: <CANn89iJ79ibHGu-4MCLpkG3w7dr7jqbc7CX1T7Cm+d6vwnwLGg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: n50KVCbTpi0aMhP8-GEBvRh6kMk7havc
+X-Proofpoint-GUID: n50KVCbTpi0aMhP8-GEBvRh6kMk7havc
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
 
-On 1/4/24 16:59, Eric Dumazet wrote:
-> On Thu, Jan 4, 2024 at 5:59 PM Jakub Kicinski <kuba@kernel.org> wrote:
->>
->> On Thu, 4 Jan 2024 16:42:05 +0000 Dmitry Safonov wrote:
->>>>> Keep silent and avoid logging when there aren't any keys in the system.
->>>>>
->>>>> Side-note: I also defined static_branch_tcp_*() helpers to avoid more
->>>>> ifdeffery, going to remove more ifdeffery further with their help.
->>>>
->>>> Wouldn't we be better off converting the prints to trace points.
->>>> The chances for hitting them due to malicious packets feels much
->>>> higher than dealing with a buggy implementation in the wild.
->>>
->>> Do you mean a proper stuff like in net/core/net-traces.c or just
->>> lowering the loglevel to net_dbg_ratelimited() [like Christian
->>> originally proposed], which in turns becomes runtime enabled/disabled?
->>
->> I mean proper tracepoints.
->>
->>> Both seem fine to me, albeit I was a bit reluctant to change it without
->>> a good reason as even pre- 2717b5adea9e TCP-MD5 messages were logged and
->>> some userspace may expect them. I guess we can try and see if anyone
->>> notices/complains over changes to these messages changes or not.
+From: Elad Nachman <enachman@marvell.com>
 
-[to add up context]
-I supposed it's only tests that grep for those messages, but I've looked
-up the code-base and it's wired up to daemon's code to monitor messages
-with a "filter" for rsyslogd. Certainly not an issue for arista as there
-are people maintaining that (and AFAIK, rasdaemon is already used for
-other traces), but I guess provides grounds for my concerns over other
-projects.
+AC5/X/IM SOCs has a variant of the Xenon eMMC controller,
+in which only 31-bit of addressing pass from the controller
+on the AXI bus.
+Since we cannot guarantee that only buffers from the first 2GB
+of memory will reach the driver, the driver is configured for
+SDMA mode, without 64-bit mode, overriding the DMA mask to 34-bit
+to support the DDR memory mapping, which starts at offset 8GB.
 
->> Hm. Perhaps we can do the conversion in net-next. Let me ping Eric :)
-> 
-> Sure, let's wait for the next release for a conversion, thanks !
-> 
-> Reviewed-by: Eric Dumazet <edumazet@google.com>
+Signed-off-by: Elad Nachman <enachman@marvell.com>
+---
+ drivers/mmc/host/sdhci-xenon.c | 31 +++++++++++++++++++++++++++++++
+ drivers/mmc/host/sdhci-xenon.h |  3 ++-
+ 2 files changed, 33 insertions(+), 1 deletion(-)
 
-Thanks!
-
-I'll do the conversion for net-next if you don't mind :-)
-
-That will be pretty nice as it's going to be easy to exercise in tcp-ao
-selftests. Grepping dmesg can't be selftested as reliably/non-flaky.
-
-Thanks,
-            Dmitry
+diff --git a/drivers/mmc/host/sdhci-xenon.c b/drivers/mmc/host/sdhci-xenon.c
+index 25ba7aecc3be..0e52867f6e91 100644
+--- a/drivers/mmc/host/sdhci-xenon.c
++++ b/drivers/mmc/host/sdhci-xenon.c
+@@ -18,6 +18,8 @@
+ #include <linux/of.h>
+ #include <linux/pm.h>
+ #include <linux/pm_runtime.h>
++#include <linux/mm.h>
++#include <linux/dma-mapping.h>
+ 
+ #include "sdhci-pltfm.h"
+ #include "sdhci-xenon.h"
+@@ -422,6 +424,7 @@ static int xenon_probe_params(struct platform_device *pdev)
+ 	struct xenon_priv *priv = sdhci_pltfm_priv(pltfm_host);
+ 	u32 sdhc_id, nr_sdhc;
+ 	u32 tuning_count;
++	struct sysinfo si;
+ 
+ 	/* Disable HS200 on Armada AP806 */
+ 	if (priv->hw_version == XENON_AP806)
+@@ -450,6 +453,23 @@ static int xenon_probe_params(struct platform_device *pdev)
+ 	}
+ 	priv->tuning_count = tuning_count;
+ 
++	/*
++	 * AC5/X/IM HW has only 31-bits passed in the crossbar switch.
++	 * If we have more than 2GB of memory, this means we might pass
++	 * memory pointers which are above 2GB and which cannot be properly
++	 * represented. In this case, disable ADMA, 64-bit DMA and allow only SDMA.
++	 * This effectively will enable bounce buffer quirk in the
++	 * generic SDHCI driver, which will make sure DMA is only done
++	 * from supported memory regions:
++	 */
++	if (priv->hw_version == XENON_AC5) {
++		si_meminfo(&si);
++		if (si.totalram * si.mem_unit > SZ_2G) {
++			host->quirks |= SDHCI_QUIRK_BROKEN_ADMA;
++			host->quirks2 |= SDHCI_QUIRK2_BROKEN_64_BIT_DMA;
++		}
++	}
++
+ 	return xenon_phy_parse_params(dev, host);
+ }
+ 
+@@ -562,6 +582,16 @@ static int xenon_probe(struct platform_device *pdev)
+ 		goto remove_sdhc;
+ 
+ 	pm_runtime_put_autosuspend(&pdev->dev);
++	/*
++	 * If we previously detected AC5 with over 2GB of memory,
++	 * then we disable ADMA and 64-bit DMA.
++	 * This means generic SDHCI driver has set the DMA mask to
++	 * 32-bit. Since DDR starts at 0x2_0000_0000, we must use
++	 * 34-bit DMA mask to access this DDR memory:
++	 */
++	if (priv->hw_version == XENON_AC5 &&
++	    host->quirks2 & SDHCI_QUIRK2_BROKEN_64_BIT_DMA)
++		dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(34));
+ 
+ 	return 0;
+ 
+@@ -680,6 +710,7 @@ static const struct of_device_id sdhci_xenon_dt_ids[] = {
+ 	{ .compatible = "marvell,armada-ap807-sdhci", .data = (void *)XENON_AP807},
+ 	{ .compatible = "marvell,armada-cp110-sdhci", .data =  (void *)XENON_CP110},
+ 	{ .compatible = "marvell,armada-3700-sdhci", .data =  (void *)XENON_A3700},
++	{ .compatible = "marvell,ac5-sdhci",	     .data =  (void *)XENON_AC5},
+ 	{}
+ };
+ MODULE_DEVICE_TABLE(of, sdhci_xenon_dt_ids);
+diff --git a/drivers/mmc/host/sdhci-xenon.h b/drivers/mmc/host/sdhci-xenon.h
+index 3e9c6c908a79..0460d97aad26 100644
+--- a/drivers/mmc/host/sdhci-xenon.h
++++ b/drivers/mmc/host/sdhci-xenon.h
+@@ -57,7 +57,8 @@ enum xenon_variant {
+ 	XENON_A3700,
+ 	XENON_AP806,
+ 	XENON_AP807,
+-	XENON_CP110
++	XENON_CP110,
++	XENON_AC5
+ };
+ 
+ struct xenon_priv {
+-- 
+2.25.1
 
 
