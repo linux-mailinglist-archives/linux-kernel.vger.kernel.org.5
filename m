@@ -1,125 +1,94 @@
-Return-Path: <linux-kernel+bounces-16670-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16671-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A5693824227
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 14:01:14 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 745E582422A
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 14:01:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 903061C2186A
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 13:01:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CFC9F1F21507
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 13:01:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48B87224D5;
-	Thu,  4 Jan 2024 13:00:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CA982231B;
+	Thu,  4 Jan 2024 13:01:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eFf1h/U2"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qk1-f174.google.com (mail-qk1-f174.google.com [209.85.222.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43283224CE;
-	Thu,  4 Jan 2024 13:00:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ghiti.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ghiti.fr
-Received: by mail.gandi.net (Postfix) with ESMTPSA id F3D03E0002;
-	Thu,  4 Jan 2024 13:00:44 +0000 (UTC)
-Message-ID: <6685594f-5a50-4e4d-b6ec-2834e9f8624f@ghiti.fr>
-Date: Thu, 4 Jan 2024 14:00:44 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32F612230B;
+	Thu,  4 Jan 2024 13:01:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qk1-f174.google.com with SMTP id af79cd13be357-7815c5b69e1so29377185a.1;
+        Thu, 04 Jan 2024 05:01:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704373301; x=1704978101; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=T58SQKnZ9f/XAhQbGGB3bCkUckh7sbRsHba15J+0qeE=;
+        b=eFf1h/U2AiR6u549cfIt5SUeQ24WfroIj4rJ25GxCcSXMnFL6+Idh4Gd6PmN5ErKa+
+         TNLKGIPyaSmxp0s1YCJ3Me73o3tKbeelr4jtstI2wWiddkOCuLQAfYkTMax5/I3qhoXq
+         Pk1dd5MALIRGA027Pw1icJ24l7WF+o6OGij3KGiXptKyBdcugAS7Gf0EjCYSuaHcvdRw
+         15NxvHiDLs/8mYosjLpDUbMW+vLxbexO+U61VcwTqOzWeQkqDSTNmUBXXC5ehesaYDac
+         tgT97CPEI+IIqSx/BNN6NFR2sf06qD/KCa57xdQUn/L2KLYPBI656qodLsZCmDwEonyu
+         8BxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704373301; x=1704978101;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=T58SQKnZ9f/XAhQbGGB3bCkUckh7sbRsHba15J+0qeE=;
+        b=DatJ6HQ9Eq31BBtimJXaVPPKHaMfKLVu358xicSSKu+87gie+SI2itm9+bdrhP96xd
+         ejeDw6SBaw3ML8cgPtJXTH487NcVAaKefJ1uh6tRbB4HOpb4GIK4T3jO6noLS57jZUs/
+         qUX/X2SVwieWL69bty6O3sipcZUm7Ph6HrGgY+4JyVCx7Bn+xzMtavwqMU3+GSkTg2GC
+         LA6FLVQ5iivHyjA7FwPWxoaSfXQSyRxa3unieQhTWptRUttvMc0hwO8qtC1tOOwJICxY
+         yAeu0VtrpLCQSHQNeoMU1oPLKiVVQcVTyzNHxKGn3nL5OzlH1Hw8ywdI2be1PXoRreCU
+         VKVw==
+X-Gm-Message-State: AOJu0YwLi/0xLkC/+7kiaeXhBvzf0uHSDuqsb+9J0hNcO01XgtwcJc7u
+	89nG1bwHncHPd3LrG73t18hE2HwTDVTvGMuWy68=
+X-Google-Smtp-Source: AGHT+IFcDZI9hrCkMltXk9QWR9FnqhH+RH0B1LwJDugeCrbUY7Qgi2qlTd+dNkV+hbw7m7RwWabWZ2FnZohJHiUE88c=
+X-Received: by 2002:a05:6214:c64:b0:680:8373:4932 with SMTP id
+ t4-20020a0562140c6400b0068083734932mr552788qvj.69.1704373301098; Thu, 04 Jan
+ 2024 05:01:41 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] riscv: tlb: avoid tlb flushing if fullmm == 1
-Content-Language: en-US
-To: Jisheng Zhang <jszhang@kernel.org>
-Cc: Will Deacon <will@kernel.org>,
- "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
- Andrew Morton <akpm@linux-foundation.org>, Nick Piggin <npiggin@gmail.com>,
- Peter Zijlstra <peterz@infradead.org>,
- Catalin Marinas <catalin.marinas@arm.com>,
- Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
- <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
- Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org,
- linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
-References: <20231228084642.1765-1-jszhang@kernel.org>
- <20231228084642.1765-3-jszhang@kernel.org>
- <e227f095-0c3d-43c4-8ba3-8ec1b925b929@ghiti.fr> <ZZN/IKBgbtyIc+NL@xhacker>
-From: Alexandre Ghiti <alex@ghiti.fr>
-In-Reply-To: <ZZN/IKBgbtyIc+NL@xhacker>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-GND-Sasl: alex@ghiti.fr
+References: <20240104024244.12163-1-Wenhua.Lin@unisoc.com> <20240104024244.12163-4-Wenhua.Lin@unisoc.com>
+In-Reply-To: <20240104024244.12163-4-Wenhua.Lin@unisoc.com>
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+Date: Thu, 4 Jan 2024 15:01:05 +0200
+Message-ID: <CAHp75VcUU-FUYJKN40dzMbe5KmmAR7--0JV00qdgnbNwHqFjQg@mail.gmail.com>
+Subject: Re: [PATCH V3 3/4] gpio: eic-sprd: Modify the calculation method of
+ eic number
+To: Wenhua Lin <Wenhua.Lin@unisoc.com>
+Cc: Linus Walleij <linus.walleij@linaro.org>, Andy Shevchenko <andy@kernel.org>, 
+	Bartosz Golaszewski <brgl@bgdev.pl>, Orson Zhai <orsonzhai@gmail.com>, 
+	Baolin Wang <baolin.wang@linux.alibaba.com>, Chunyan Zhang <zhang.lyra@gmail.com>, 
+	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	wenhua lin <wenhua.lin1994@gmail.com>, Xiongpeng Wu <xiongpeng.wu@unisoc.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 02/01/2024 04:12, Jisheng Zhang wrote:
-> On Sat, Dec 30, 2023 at 07:26:11PM +0100, Alexandre Ghiti wrote:
->> Hi Jisheng,
-> Hi Alex,
+On Thu, Jan 4, 2024 at 4:43=E2=80=AFAM Wenhua Lin <Wenhua.Lin@unisoc.com> w=
+rote:
 >
->> On 28/12/2023 09:46, Jisheng Zhang wrote:
->>> The mmu_gather code sets fullmm=1 when tearing down the entire address
->>> space for an mm_struct on exit or execve. So if the underlying platform
->>> supports ASID, the tlb flushing can be avoided because the ASID
->>> allocator will never re-allocate a dirty ASID.
->>>
->>> Use the performance of Process creation in unixbench on T-HEAD TH1520
->>> platform is improved by about 4%.
->>>
->>> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
->>> ---
->>>    arch/riscv/include/asm/tlb.h | 9 +++++++++
->>>    1 file changed, 9 insertions(+)
->>>
->>> diff --git a/arch/riscv/include/asm/tlb.h b/arch/riscv/include/asm/tlb.h
->>> index 1eb5682b2af6..35f3c214332e 100644
->>> --- a/arch/riscv/include/asm/tlb.h
->>> +++ b/arch/riscv/include/asm/tlb.h
->>> @@ -12,10 +12,19 @@ static void tlb_flush(struct mmu_gather *tlb);
->>>    #define tlb_flush tlb_flush
->>>    #include <asm-generic/tlb.h>
->>> +#include <asm/mmu_context.h>
->>>    static inline void tlb_flush(struct mmu_gather *tlb)
->>>    {
->>>    #ifdef CONFIG_MMU
->>> +	/*
->>> +	 * If ASID is supported, the ASID allocator will either invalidate the
->>> +	 * ASID or mark it as used. So we can avoid TLB invalidation when
->>> +	 * pulling down a full mm.
->>> +	 */
->>
->> Given the number of bits are limited for the ASID, at some point we'll reuse
->> previously allocated ASID so the ASID allocator must make sure to invalidate
->> the entries when reusing an ASID: can you point where this is done?
-> Per my understanding of the code, the path would be
-> set_mm_asid()
->    __new_context()
->      __flush_context()  // set context_tlb_flush_pending
-> if (need_flush_tlb)
->    local_flush_tlb_all()
+> When the soc changes, the corresponding gpio-eic-sprd.c
 
+SoC
 
-Ok thanks, so feel free to add:
+> code needs to be modified, and the corresponding
+> Document must also be modified, which is quite troublesome.
+> To avoid modifying the driver file, the number of eics
+> is automatically calculated by matching dts nodes.
 
-Reviewed-by: Alexandre Ghiti <alexghiti@rivosinc.com>
-
-Thanks!
-
-Alex
-
-
->
-> Thanks
->   
->>> +	if (static_branch_likely(&use_asid_allocator) && tlb->fullmm)
->>> +		return;
->>> +
->>>    	if (tlb->fullmm || tlb->need_flush_all)
->>>    		flush_tlb_mm(tlb->mm);
->>>    	else
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+--=20
+With Best Regards,
+Andy Shevchenko
 
