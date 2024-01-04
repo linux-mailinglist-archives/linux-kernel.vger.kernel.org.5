@@ -1,193 +1,240 @@
-Return-Path: <linux-kernel+bounces-16539-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16540-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D72F7823FE4
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 11:50:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A5F7823FE8
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 11:52:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 84301282BA5
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 10:50:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 20D031C23B47
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Jan 2024 10:52:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4920420DEF;
-	Thu,  4 Jan 2024 10:50:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B93E20DF7;
+	Thu,  4 Jan 2024 10:51:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="eeC8doGE"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="RygVgUgJ";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="qAUBlywq";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="RygVgUgJ";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="qAUBlywq"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E95620DD6;
-	Thu,  4 Jan 2024 10:50:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704365447; x=1735901447;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=783NzBy3M7MqOSyZDODCfrbGjFcGEzOaO/feDRZVE/Q=;
-  b=eeC8doGEZO7YcpTG2X7KyQNSW3vkP4W4tK9JiATGiiaK/cGZtBI+VmYx
-   KHEB+3dibRyR4qQQjYaa8GHNS6vAin2m15vpPUAazR8O2cTail/lHfMxu
-   IOSFFBdWKr9+4Y6uf7X8JVWiym1PrMhnSg1Fdhsl2hwejqRMUf4UZzfcS
-   SJWE5VCZ1i+3yHakXj32YQ9js4WpxMzcD6/7f35rvOFJhL+sqCUeAQTaY
-   5nXFtEKBRwAHvLvnSqdCHTF4gNXvYdz/9H0Rs8WbP5Oz+U9XueARmS8cb
-   hVYhnQcgFP4ocKJZbtK1VMzpIrV1tE4oLvfIff8mxKVlvQil/RRvcou3T
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10942"; a="10775599"
-X-IronPort-AV: E=Sophos;i="6.04,330,1695711600"; 
-   d="scan'208";a="10775599"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2024 02:50:46 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,330,1695711600"; 
-   d="scan'208";a="28741052"
-Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.252.35.85])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2024 02:50:40 -0800
-Message-ID: <d3208fee-9784-4dee-994d-ac1f7c526e74@intel.com>
-Date: Thu, 4 Jan 2024 12:50:34 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AB2B20DD4;
+	Thu,  4 Jan 2024 10:51:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 1471C2208A;
+	Thu,  4 Jan 2024 10:51:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1704365512; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=zFYFf+UB3dBFs5V9ixTsOE5Ni/3M4S6dRh2f4ykJP1M=;
+	b=RygVgUgJ78g2vNmNj9IPoPKK0eDIBzpTOYS2piHBDn6XTP/4SNEXrd7KhB+LLL2kgL27C+
+	8jSjqFh/NIRJ+PrBhknkUAncvRBR0Zru0OpoGE/4MXf88yYF1IHJqDgPa3079dlOgGeuEr
+	Vud1z6ZnoPA2KZ1SrqMjL3g+pGgaDSE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1704365512;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=zFYFf+UB3dBFs5V9ixTsOE5Ni/3M4S6dRh2f4ykJP1M=;
+	b=qAUBlywqfXYHwUWgjmv6rjf1UDp86bhBpvX2iBuAyIzwv0sS1iM/u0xl4uPH0GBsS5ECdI
+	aM9J6jxSNR9+TVBQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1704365512; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=zFYFf+UB3dBFs5V9ixTsOE5Ni/3M4S6dRh2f4ykJP1M=;
+	b=RygVgUgJ78g2vNmNj9IPoPKK0eDIBzpTOYS2piHBDn6XTP/4SNEXrd7KhB+LLL2kgL27C+
+	8jSjqFh/NIRJ+PrBhknkUAncvRBR0Zru0OpoGE/4MXf88yYF1IHJqDgPa3079dlOgGeuEr
+	Vud1z6ZnoPA2KZ1SrqMjL3g+pGgaDSE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1704365512;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=zFYFf+UB3dBFs5V9ixTsOE5Ni/3M4S6dRh2f4ykJP1M=;
+	b=qAUBlywqfXYHwUWgjmv6rjf1UDp86bhBpvX2iBuAyIzwv0sS1iM/u0xl4uPH0GBsS5ECdI
+	aM9J6jxSNR9+TVBQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0961E13722;
+	Thu,  4 Jan 2024 10:51:52 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id sMlIAsiNlmUzeQAAD6G6ig
+	(envelope-from <jack@suse.cz>); Thu, 04 Jan 2024 10:51:52 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id A0FCDA07EF; Thu,  4 Jan 2024 11:51:51 +0100 (CET)
+Date: Thu, 4 Jan 2024 11:51:51 +0100
+From: Jan Kara <jack@suse.cz>
+To: Baokun Li <libaokun1@huawei.com>
+Cc: linux-ext4@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
+	jack@suse.cz, ritesh.list@gmail.com, linux-kernel@vger.kernel.org,
+	yi.zhang@huawei.com, yangerkun@huawei.com, yukuai3@huawei.com
+Subject: Re: [PATCH v2 8/8] ext4: mark the group block bitmap as corrupted
+ before reporting an error
+Message-ID: <20240104105151.3c2yrg3f3efiajgv@quack3>
+References: <20231221150558.2740823-1-libaokun1@huawei.com>
+ <20231221150558.2740823-9-libaokun1@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/4] mmc: xenon: Add ac5 support via bounce buffer
-Content-Language: en-US
-To: Elad Nachman <enachman@marvell.com>, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, andrew@lunn.ch,
- gregory.clement@bootlin.com, sebastian.hesselbarth@gmail.com,
- huziji@marvell.com, ulf.hansson@linaro.org, catalin.marinas@arm.com,
- will@kernel.org, thunder.leizhen@huawei.com, bhe@redhat.com,
- akpm@linux-foundation.org, yajun.deng@linux.dev, chris.zjh@huawei.com,
- linux-mmc@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc: cyuval@marvell.com
-References: <20231227123257.1170590-1-enachman@marvell.com>
- <20231227123257.1170590-5-enachman@marvell.com>
-From: Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-In-Reply-To: <20231227123257.1170590-5-enachman@marvell.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231221150558.2740823-9-libaokun1@huawei.com>
+X-Spam-Level: 
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -2.30
+X-Spamd-Result: default: False [-2.30 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 TAGGED_RCPT(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCPT_COUNT_SEVEN(0.00)[10];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.cz:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 FREEMAIL_CC(0.00)[vger.kernel.org,mit.edu,dilger.ca,suse.cz,gmail.com,huawei.com];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Flag: NO
 
-On 27/12/23 14:32, Elad Nachman wrote:
-> From: Elad Nachman <enachman@marvell.com>
+On Thu 21-12-23 23:05:58, Baokun Li wrote:
+> Otherwise unlocking the group in ext4_grp_locked_error may allow other
+> processes to modify the core block bitmap that is known to be corrupt.
 > 
-> AC5/X/IM SOCs has a variant of the Xenon eMMC controller,
-> in which only 31-bit of addressing pass from the controller
-> on the AXI bus.
-> Since we cannot guarantee that only buffers from the first 2GB
-> of memory will reach the driver, the driver is configured for
-> SDMA mode, without 64-bit mode, overriding the DMA mask to 34-bit
-> to support the DDR memory mapping, which starts at offset 8GB.
-> 
-> Signed-off-by: Elad Nachman <enachman@marvell.com>
+> Signed-off-by: Baokun Li <libaokun1@huawei.com>
 
-One minor comment below otherwise:
+I'm not opposed but I don't think this matters much.
+ext4_grp_locked_error() unlocks the group only in errors=remount-ro case
+these days and in that case we abort the journal so none of the changes
+should make it to disk anyway. Anyway, in the name of defensive programming
+feel free to add:
 
-Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+Reviewed-by: Jan Kara <jack@suse.cz>
+
+:)
+
+								Honza
 
 > ---
->  drivers/mmc/host/sdhci-xenon.c | 33 ++++++++++++++++++++++++++++++++-
->  drivers/mmc/host/sdhci-xenon.h |  3 ++-
->  2 files changed, 34 insertions(+), 2 deletions(-)
+>  fs/ext4/mballoc.c | 23 +++++++++++------------
+>  1 file changed, 11 insertions(+), 12 deletions(-)
 > 
-> diff --git a/drivers/mmc/host/sdhci-xenon.c b/drivers/mmc/host/sdhci-xenon.c
-> index 25ba7aecc3be..4d6df1815da1 100644
-> --- a/drivers/mmc/host/sdhci-xenon.c
-> +++ b/drivers/mmc/host/sdhci-xenon.c
-> @@ -18,6 +18,8 @@
->  #include <linux/of.h>
->  #include <linux/pm.h>
->  #include <linux/pm_runtime.h>
-> +#include <linux/mm.h>
-> +#include <linux/dma-mapping.h>
+> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+> index b862ca2750fd..c43eefebdaa3 100644
+> --- a/fs/ext4/mballoc.c
+> +++ b/fs/ext4/mballoc.c
+> @@ -564,14 +564,14 @@ static void mb_free_blocks_double(struct inode *inode, struct ext4_buddy *e4b,
 >  
->  #include "sdhci-pltfm.h"
->  #include "sdhci-xenon.h"
-> @@ -422,6 +424,7 @@ static int xenon_probe_params(struct platform_device *pdev)
->  	struct xenon_priv *priv = sdhci_pltfm_priv(pltfm_host);
->  	u32 sdhc_id, nr_sdhc;
->  	u32 tuning_count;
-> +	struct sysinfo si;
->  
->  	/* Disable HS200 on Armada AP806 */
->  	if (priv->hw_version == XENON_AP806)
-> @@ -450,6 +453,23 @@ static int xenon_probe_params(struct platform_device *pdev)
+>  			blocknr = ext4_group_first_block_no(sb, e4b->bd_group);
+>  			blocknr += EXT4_C2B(EXT4_SB(sb), first + i);
+> +			ext4_mark_group_bitmap_corrupted(sb, e4b->bd_group,
+> +					EXT4_GROUP_INFO_BBITMAP_CORRUPT);
+>  			ext4_grp_locked_error(sb, e4b->bd_group,
+>  					      inode ? inode->i_ino : 0,
+>  					      blocknr,
+>  					      "freeing block already freed "
+>  					      "(bit %u)",
+>  					      first + i);
+> -			ext4_mark_group_bitmap_corrupted(sb, e4b->bd_group,
+> -					EXT4_GROUP_INFO_BBITMAP_CORRUPT);
+>  		}
+>  		mb_clear_bit(first + i, e4b->bd_info->bb_bitmap);
 >  	}
->  	priv->tuning_count = tuning_count;
+> @@ -1926,14 +1926,13 @@ static void mb_free_blocks(struct inode *inode, struct ext4_buddy *e4b,
+>  		blocknr = ext4_group_first_block_no(sb, e4b->bd_group);
+>  		blocknr += EXT4_C2B(sbi, block);
+>  		if (!(sbi->s_mount_state & EXT4_FC_REPLAY)) {
+> +			ext4_mark_group_bitmap_corrupted(sb, e4b->bd_group,
+> +					EXT4_GROUP_INFO_BBITMAP_CORRUPT);
+>  			ext4_grp_locked_error(sb, e4b->bd_group,
+>  					      inode ? inode->i_ino : 0,
+>  					      blocknr,
+>  					      "freeing already freed block (bit %u); block bitmap corrupt.",
+>  					      block);
+> -			ext4_mark_group_bitmap_corrupted(
+> -				sb, e4b->bd_group,
+> -				EXT4_GROUP_INFO_BBITMAP_CORRUPT);
+>  		} else {
+>  			mb_regenerate_buddy(e4b);
+>  			goto check;
+> @@ -2410,12 +2409,12 @@ void ext4_mb_simple_scan_group(struct ext4_allocation_context *ac,
 >  
-> +	/*
-> +	 * AC5/X/IM HW has only 31-bits passed in the crossbar switch.
-> +	 * If we have more than 2GB of memory, this means we might pass
-> +	 * memory pointers which are above 2GB and which cannot be properly
-> +	 * represented. In this case, disable ADMA, 64-bit DMA and allow only SDMA.
-> +	 * This effectively will enable bounce buffer quirk in the
-> +	 * generic SDHCI driver, which will make sure DMA is only done
-> +	 * from supported memory regions:
-> +	 */
-> +	if (priv->hw_version == XENON_AC5) {
-> +		si_meminfo(&si);
-> +		if (si.totalram * si.mem_unit > SZ_2G) {
-> +			host->quirks |= SDHCI_QUIRK_BROKEN_ADMA;
-> +			host->quirks2 |= SDHCI_QUIRK2_BROKEN_64_BIT_DMA;
-> +		}
-> +	}
-> +
->  	return xenon_phy_parse_params(dev, host);
->  }
+>  		k = mb_find_next_zero_bit(buddy, max, 0);
+>  		if (k >= max) {
+> +			ext4_mark_group_bitmap_corrupted(ac->ac_sb,
+> +					e4b->bd_group,
+> +					EXT4_GROUP_INFO_BBITMAP_CORRUPT);
+>  			ext4_grp_locked_error(ac->ac_sb, e4b->bd_group, 0, 0,
+>  				"%d free clusters of order %d. But found 0",
+>  				grp->bb_counters[i], i);
+> -			ext4_mark_group_bitmap_corrupted(ac->ac_sb,
+> -					 e4b->bd_group,
+> -					EXT4_GROUP_INFO_BBITMAP_CORRUPT);
+>  			break;
+>  		}
+>  		ac->ac_found++;
+> @@ -2466,12 +2465,12 @@ void ext4_mb_complex_scan_group(struct ext4_allocation_context *ac,
+>  			 * free blocks even though group info says we
+>  			 * have free blocks
+>  			 */
+> +			ext4_mark_group_bitmap_corrupted(sb, e4b->bd_group,
+> +					EXT4_GROUP_INFO_BBITMAP_CORRUPT);
+>  			ext4_grp_locked_error(sb, e4b->bd_group, 0, 0,
+>  					"%d free clusters as per "
+>  					"group info. But bitmap says 0",
+>  					free);
+> -			ext4_mark_group_bitmap_corrupted(sb, e4b->bd_group,
+> -					EXT4_GROUP_INFO_BBITMAP_CORRUPT);
+>  			break;
+>  		}
 >  
-> @@ -562,7 +582,17 @@ static int xenon_probe(struct platform_device *pdev)
->  		goto remove_sdhc;
->  
->  	pm_runtime_put_autosuspend(&pdev->dev);
-> -
-> +	/*
-> +	 * If we previously detected AC5 with over 2GB of memory,
-> +	 * then we disable ADMA and 64-bit DMA.
-> +	 * This means generic SDHCI driver has set the DMA mask to
-> +	 * 32-bit. Since DDR starts at 0x2_0000_0000, we must use
-> +	 * 34-bit DMA mask to access this DDR memory:
-> +	 */
-> +	if (priv->hw_version == XENON_AC5) {
-> +		if (host->quirks2 & SDHCI_QUIRK2_BROKEN_64_BIT_DMA)
-
-Kernel style is to avoid nested if-statements i.e.
-
-	if (priv->hw_version == XENON_AC5 &&
-	    host->quirks2 & SDHCI_QUIRK2_BROKEN_64_BIT_DMA)
-		dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(34));
-
-> +			dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(34));
-> +	}
->  	return 0;
->  
->  remove_sdhc:
-> @@ -680,6 +710,7 @@ static const struct of_device_id sdhci_xenon_dt_ids[] = {
->  	{ .compatible = "marvell,armada-ap807-sdhci", .data = (void *)XENON_AP807},
->  	{ .compatible = "marvell,armada-cp110-sdhci", .data =  (void *)XENON_CP110},
->  	{ .compatible = "marvell,armada-3700-sdhci", .data =  (void *)XENON_A3700},
-> +	{ .compatible = "marvell,ac5-sdhci",	     .data =  (void *)XENON_AC5},
->  	{}
->  };
->  MODULE_DEVICE_TABLE(of, sdhci_xenon_dt_ids);
-> diff --git a/drivers/mmc/host/sdhci-xenon.h b/drivers/mmc/host/sdhci-xenon.h
-> index 3e9c6c908a79..0460d97aad26 100644
-> --- a/drivers/mmc/host/sdhci-xenon.h
-> +++ b/drivers/mmc/host/sdhci-xenon.h
-> @@ -57,7 +57,8 @@ enum xenon_variant {
->  	XENON_A3700,
->  	XENON_AP806,
->  	XENON_AP807,
-> -	XENON_CP110
-> +	XENON_CP110,
-> +	XENON_AC5
->  };
->  
->  struct xenon_priv {
-
+> @@ -2497,12 +2496,12 @@ void ext4_mb_complex_scan_group(struct ext4_allocation_context *ac,
+>  		if (WARN_ON(ex.fe_len <= 0))
+>  			break;
+>  		if (free < ex.fe_len) {
+> +			ext4_mark_group_bitmap_corrupted(sb, e4b->bd_group,
+> +					EXT4_GROUP_INFO_BBITMAP_CORRUPT);
+>  			ext4_grp_locked_error(sb, e4b->bd_group, 0, 0,
+>  					"%d free clusters as per "
+>  					"group info. But got %d blocks",
+>  					free, ex.fe_len);
+> -			ext4_mark_group_bitmap_corrupted(sb, e4b->bd_group,
+> -					EXT4_GROUP_INFO_BBITMAP_CORRUPT);
+>  			/*
+>  			 * The number of free blocks differs. This mostly
+>  			 * indicate that the bitmap is corrupt. So exit
+> -- 
+> 2.31.1
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
