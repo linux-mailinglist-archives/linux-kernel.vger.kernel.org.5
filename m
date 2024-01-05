@@ -1,144 +1,184 @@
-Return-Path: <linux-kernel+bounces-18318-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18319-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 82C11825B79
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 21:17:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C9BD825B7A
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 21:17:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A9C511C219B1
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 20:17:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0D57B1F22A9D
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 20:17:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A81763609D;
-	Fri,  5 Jan 2024 20:16:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F38D3608A;
+	Fri,  5 Jan 2024 20:17:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tesarici.cz header.i=@tesarici.cz header.b="Fcelzq8i"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="WXSle+7l"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from bee.tesarici.cz (bee.tesarici.cz [77.93.223.253])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 149E636084;
-	Fri,  5 Jan 2024 20:16:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=tesarici.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tesarici.cz
-Received: from meshulam.tesarici.cz (dynamic-2a00-1028-83b8-1e7a-4427-cc85-6706-c595.ipv6.o2.cz [IPv6:2a00:1028:83b8:1e7a:4427:cc85:6706:c595])
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D70B536087
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 20:17:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1704485842;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=vd1YUEaCt/w4N4YoX8BDZeDQqXK9hd0o4D1WXieyEL8=;
+	b=WXSle+7l8TtibF+85HyvbvmeY1MS5WSQLwWfGs8llYEkNoG2TuFwzfaJ23eiz5+ZOthDDn
+	TjaY3CcwHmetGe2/T2ImSU0x2VSXma86sWPGyKMGe2CVvcz3xpfPVkyQr03bwQ3jOiKe38
+	bXHGXoTCjNR/m3WZC4Hroi5UlLspOWs=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-43-mNga88ZGMVKb53DzxRzGWw-1; Fri, 05 Jan 2024 15:17:21 -0500
+X-MC-Unique: mNga88ZGMVKb53DzxRzGWw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by bee.tesarici.cz (Postfix) with ESMTPSA id 5B37B1A7F5E;
-	Fri,  5 Jan 2024 21:16:49 +0100 (CET)
-Authentication-Results: mail.tesarici.cz; dmarc=fail (p=none dis=none) header.from=tesarici.cz
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tesarici.cz; s=mail;
-	t=1704485809; bh=Rgie3y1MCVWz4iJXdc7cU/di9Mv+ALEzEsBSdqdhNZ0=;
-	h=From:To:Cc:Subject:Date:From;
-	b=Fcelzq8iCxuzuPQK2zfETAdbIYvpguj11nigdMnDb43//ZQ3LSntwKkp2WJJlVU8E
-	 2VBewJoE5nfMlabQYoEk0CCoHZgTdwuVhGzC4KKZBjGIck8XRhUxDGVCvn77NpCMF4
-	 fZpSLE/UQjaWWydS7PN0cnDr2QB7HZcE8IKKaiI8w4l46YBr4JPMI1zAxA5a+FCJm9
-	 7YFebuleq0hQCvv8/YCQxGw4Fq1lmevpJGqtbckxfagIbynmgqGeMZLzG5UCSi8xYj
-	 b5KUjuZ7nEtlYoMSOIILglPzeMBUU18af5teEJh180+wp9OhwZe6kUm9vVKc3hDZ0d
-	 WJc3SWuu84+Hg==
-From: Petr Tesarik <petr@tesarici.cz>
-To: Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Jose Abreu <joabreu@synopsys.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Jisheng Zhang <jszhang@kernel.org>,
-	Andrew Lunn <andrew@lunn.ch>,
-	netdev@vger.kernel.org (open list:STMMAC ETHERNET DRIVER),
-	linux-stm32@st-md-mailman.stormreply.com (moderated list:ARM/STM32 ARCHITECTURE),
-	linux-arm-kernel@lists.infradead.org (moderated list:ARM/STM32 ARCHITECTURE),
-	linux-kernel@vger.kernel.org (open list)
-Cc: Petr Tesarik <petr@tesarici.cz>,
-	stable@vger.kernel.org
-Subject: [PATCH net] net: stmmac: fix ethtool per-queue  statistics
-Date: Fri,  5 Jan 2024 21:16:42 +0100
-Message-ID: <20240105201642.30904-1-petr@tesarici.cz>
-X-Mailer: git-send-email 2.43.0
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id D700A185A781;
+	Fri,  5 Jan 2024 20:17:20 +0000 (UTC)
+Received: from fedora.redhat.com (unknown [10.22.8.247])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id 81A4F51D5;
+	Fri,  5 Jan 2024 20:17:20 +0000 (UTC)
+Received: by fedora.redhat.com (Postfix, from userid 1000)
+	id D025E28EBD2; Fri,  5 Jan 2024 15:17:19 -0500 (EST)
+Date: Fri, 5 Jan 2024 15:17:19 -0500
+From: Vivek Goyal <vgoyal@redhat.com>
+To: Hou Tao <houtao@huaweicloud.com>
+Cc: linux-fsdevel@vger.kernel.org, Miklos Szeredi <miklos@szeredi.hu>,
+	Stefan Hajnoczi <stefanha@redhat.com>,
+	Matthew Wilcox <willy@infradead.org>, linux-kernel@vger.kernel.org,
+	virtualization@lists.linux.dev, houtao1@huawei.com
+Subject: Re: [PATCH v2] virtiofs: use GFP_NOFS when enqueuing request through
+ kworker
+Message-ID: <ZZhjzwnQUEJhNJiq@redhat.com>
+References: <20240105105305.4052672-1-houtao@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240105105305.4052672-1-houtao@huaweicloud.com>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
 
-Fix per-queue statistics for devices with more than one queue.
+On Fri, Jan 05, 2024 at 06:53:05PM +0800, Hou Tao wrote:
+> From: Hou Tao <houtao1@huawei.com>
+> 
+> When invoking virtio_fs_enqueue_req() through kworker, both the
+> allocation of the sg array and the bounce buffer still use GFP_ATOMIC.
+> Considering the size of both the sg array and the bounce buffer may be
+> greater than PAGE_SIZE, use GFP_NOFS instead of GFP_ATOMIC to lower the
+> possibility of memory allocation failure.
+> 
 
-The output data pointer is currently reset in each loop iteration,
-effectively summing all queue statistics in the first four u64 values.
+What's the practical benefit of this patch. Looks like if memory
+allocation fails, we keep retrying at interval of 1ms and don't
+return error to user space.
 
-The summary values are not even labeled correctly. For example, if eth0 has
-2 queues, ethtool -S eth0 shows:
+Thanks
+Vivek
 
-     q0_tx_pkt_n: 374 (actually tx_pkt_n over all queues)
-     q0_tx_irq_n: 23  (actually tx_normal_irq_n over all queues)
-     q1_tx_pkt_n: 462 (actually rx_pkt_n over all queues)
-     q1_tx_irq_n: 446 (actually rx_normal_irq_n over all queues)
-     q0_rx_pkt_n: 0
-     q0_rx_irq_n: 0
-     q1_rx_pkt_n: 0
-     q1_rx_irq_n: 0
-
-Fixes: 133466c3bbe1 ("net: stmmac: use per-queue 64 bit statistics where necessary")
-Cc: stable@vger.kernel.org
-Signed-off-by: Petr Tesarik <petr@tesarici.cz>
----
- drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c | 9 ++-------
- 1 file changed, 2 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
-index f628411ae4ae..112a36a698f1 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
-@@ -543,15 +543,12 @@ static void stmmac_get_per_qstats(struct stmmac_priv *priv, u64 *data)
- 	u32 rx_cnt = priv->plat->rx_queues_to_use;
- 	unsigned int start;
- 	int q, stat;
--	u64 *pos;
- 	char *p;
- 
--	pos = data;
- 	for (q = 0; q < tx_cnt; q++) {
- 		struct stmmac_txq_stats *txq_stats = &priv->xstats.txq_stats[q];
- 		struct stmmac_txq_stats snapshot;
- 
--		data = pos;
- 		do {
- 			start = u64_stats_fetch_begin(&txq_stats->syncp);
- 			snapshot = *txq_stats;
-@@ -559,17 +556,15 @@ static void stmmac_get_per_qstats(struct stmmac_priv *priv, u64 *data)
- 
- 		p = (char *)&snapshot + offsetof(struct stmmac_txq_stats, tx_pkt_n);
- 		for (stat = 0; stat < STMMAC_TXQ_STATS; stat++) {
--			*data++ += (*(u64 *)p);
-+			*data++ = (*(u64 *)p);
- 			p += sizeof(u64);
- 		}
- 	}
- 
--	pos = data;
- 	for (q = 0; q < rx_cnt; q++) {
- 		struct stmmac_rxq_stats *rxq_stats = &priv->xstats.rxq_stats[q];
- 		struct stmmac_rxq_stats snapshot;
- 
--		data = pos;
- 		do {
- 			start = u64_stats_fetch_begin(&rxq_stats->syncp);
- 			snapshot = *rxq_stats;
-@@ -577,7 +572,7 @@ static void stmmac_get_per_qstats(struct stmmac_priv *priv, u64 *data)
- 
- 		p = (char *)&snapshot + offsetof(struct stmmac_rxq_stats, rx_pkt_n);
- 		for (stat = 0; stat < STMMAC_RXQ_STATS; stat++) {
--			*data++ += (*(u64 *)p);
-+			*data++ = (*(u64 *)p);
- 			p += sizeof(u64);
- 		}
- 	}
--- 
-2.43.0
+> Signed-off-by: Hou Tao <houtao1@huawei.com>
+> ---
+> Change log:
+> v2:
+>   * pass gfp_t instead of bool to virtio_fs_enqueue_req() (Suggested by Matthew)
+> 
+> v1: https://lore.kernel.org/linux-fsdevel/20240104015805.2103766-1-houtao@huaweicloud.com
+> 
+>  fs/fuse/virtio_fs.c | 20 +++++++++++---------
+>  1 file changed, 11 insertions(+), 9 deletions(-)
+> 
+> diff --git a/fs/fuse/virtio_fs.c b/fs/fuse/virtio_fs.c
+> index 3aac31d451985..8cf518624ce9e 100644
+> --- a/fs/fuse/virtio_fs.c
+> +++ b/fs/fuse/virtio_fs.c
+> @@ -87,7 +87,8 @@ struct virtio_fs_req_work {
+>  };
+>  
+>  static int virtio_fs_enqueue_req(struct virtio_fs_vq *fsvq,
+> -				 struct fuse_req *req, bool in_flight);
+> +				 struct fuse_req *req, bool in_flight,
+> +				 gfp_t gfp);
+>  
+>  static const struct constant_table dax_param_enums[] = {
+>  	{"always",	FUSE_DAX_ALWAYS },
+> @@ -383,7 +384,7 @@ static void virtio_fs_request_dispatch_work(struct work_struct *work)
+>  		list_del_init(&req->list);
+>  		spin_unlock(&fsvq->lock);
+>  
+> -		ret = virtio_fs_enqueue_req(fsvq, req, true);
+> +		ret = virtio_fs_enqueue_req(fsvq, req, true, GFP_NOFS);
+>  		if (ret < 0) {
+>  			if (ret == -ENOMEM || ret == -ENOSPC) {
+>  				spin_lock(&fsvq->lock);
+> @@ -488,7 +489,7 @@ static void virtio_fs_hiprio_dispatch_work(struct work_struct *work)
+>  }
+>  
+>  /* Allocate and copy args into req->argbuf */
+> -static int copy_args_to_argbuf(struct fuse_req *req)
+> +static int copy_args_to_argbuf(struct fuse_req *req, gfp_t gfp)
+>  {
+>  	struct fuse_args *args = req->args;
+>  	unsigned int offset = 0;
+> @@ -502,7 +503,7 @@ static int copy_args_to_argbuf(struct fuse_req *req)
+>  	len = fuse_len_args(num_in, (struct fuse_arg *) args->in_args) +
+>  	      fuse_len_args(num_out, args->out_args);
+>  
+> -	req->argbuf = kmalloc(len, GFP_ATOMIC);
+> +	req->argbuf = kmalloc(len, gfp);
+>  	if (!req->argbuf)
+>  		return -ENOMEM;
+>  
+> @@ -1119,7 +1120,8 @@ static unsigned int sg_init_fuse_args(struct scatterlist *sg,
+>  
+>  /* Add a request to a virtqueue and kick the device */
+>  static int virtio_fs_enqueue_req(struct virtio_fs_vq *fsvq,
+> -				 struct fuse_req *req, bool in_flight)
+> +				 struct fuse_req *req, bool in_flight,
+> +				 gfp_t gfp)
+>  {
+>  	/* requests need at least 4 elements */
+>  	struct scatterlist *stack_sgs[6];
+> @@ -1140,8 +1142,8 @@ static int virtio_fs_enqueue_req(struct virtio_fs_vq *fsvq,
+>  	/* Does the sglist fit on the stack? */
+>  	total_sgs = sg_count_fuse_req(req);
+>  	if (total_sgs > ARRAY_SIZE(stack_sgs)) {
+> -		sgs = kmalloc_array(total_sgs, sizeof(sgs[0]), GFP_ATOMIC);
+> -		sg = kmalloc_array(total_sgs, sizeof(sg[0]), GFP_ATOMIC);
+> +		sgs = kmalloc_array(total_sgs, sizeof(sgs[0]), gfp);
+> +		sg = kmalloc_array(total_sgs, sizeof(sg[0]), gfp);
+>  		if (!sgs || !sg) {
+>  			ret = -ENOMEM;
+>  			goto out;
+> @@ -1149,7 +1151,7 @@ static int virtio_fs_enqueue_req(struct virtio_fs_vq *fsvq,
+>  	}
+>  
+>  	/* Use a bounce buffer since stack args cannot be mapped */
+> -	ret = copy_args_to_argbuf(req);
+> +	ret = copy_args_to_argbuf(req, gfp);
+>  	if (ret < 0)
+>  		goto out;
+>  
+> @@ -1245,7 +1247,7 @@ __releases(fiq->lock)
+>  		 fuse_len_args(req->args->out_numargs, req->args->out_args));
+>  
+>  	fsvq = &fs->vqs[queue_id];
+> -	ret = virtio_fs_enqueue_req(fsvq, req, false);
+> +	ret = virtio_fs_enqueue_req(fsvq, req, false, GFP_ATOMIC);
+>  	if (ret < 0) {
+>  		if (ret == -ENOMEM || ret == -ENOSPC) {
+>  			/*
+> -- 
+> 2.29.2
+> 
 
 
