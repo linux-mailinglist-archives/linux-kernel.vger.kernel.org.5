@@ -1,174 +1,110 @@
-Return-Path: <linux-kernel+bounces-18290-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18291-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5462F825AF8
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 20:12:56 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E484825AFB
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 20:13:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 644FF1C2373B
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 19:12:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2EA91B22603
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 19:13:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E8B135EFA;
-	Fri,  5 Jan 2024 19:12:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8B7235EFC;
+	Fri,  5 Jan 2024 19:13:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JrFWCUSW"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0C1335EF8
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 19:12:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rLpbk-0005gn-FF; Fri, 05 Jan 2024 20:11:52 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rLpbi-000e8E-Ky; Fri, 05 Jan 2024 20:11:50 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rLpbi-003rVv-1k;
-	Fri, 05 Jan 2024 20:11:50 +0100
-Date: Fri, 5 Jan 2024 20:11:50 +0100
-From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Philipp Stanner <pstanner@redhat.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	"Rafael J. Wysocki" <rafael@kernel.org>, Laurentiu Palcu <laurentiu.palcu@oss.nxp.com>, 
-	Lucas Stach <l.stach@pengutronix.de>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
-	Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, Shawn Guo <shawnguo@kernel.org>, 
-	Sascha Hauer <s.hauer@pengutronix.de>, Pengutronix Kernel Team <kernel@pengutronix.de>, 
-	Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>, 
-	Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.de>, David Gow <davidgow@google.com>, 
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH 1/2] platform_device: add devres function region-reqs
-Message-ID: <5k75ed3czl6rqzkykl7xc4dbyih2frunoor4ypfqxx7yzfs2vd@6ieg4dewtgxf>
-References: <20240105172218.42457-2-pstanner@redhat.com>
- <20240105172218.42457-3-pstanner@redhat.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E936F358AA;
+	Fri,  5 Jan 2024 19:13:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0EB9C433C7;
+	Fri,  5 Jan 2024 19:13:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704481996;
+	bh=TuxsHZPh+jbfgxImCTm71c5GyVdW17unYFAC6L4xxiI=;
+	h=From:Date:Subject:To:Cc:From;
+	b=JrFWCUSW2E4tRnzwwDquw1A+SwIN/7ErdY9UvtNhlpkhKwTNOBKtnqNmSn6JenF8i
+	 DPW1oPh8+jTyFCiC0b4IgljMTI4vFPBra0KQl7W0+i4y00vyK5lYMNhAjr5gmbD++O
+	 IX+16X3Lh3tdODgYB9jxIkOHwvfXTHJWtHp6Q/LAKSoj97YNWqw1mZs+HH0QnQImXQ
+	 6EtdPlLzRT2rieESyqbe+LmIf741E03rgundm0X3z4FTKue90lVW6Wwec05pjzS513
+	 asD4Axef+hrgUO3bz6XmY821dZaHQmAQcqHK15fmYBqSysUswWk5Mx8xblhDV3iDCC
+	 0KCFjNI01ACqQ==
+From: Nathan Chancellor <nathan@kernel.org>
+Date: Fri, 05 Jan 2024 12:13:04 -0700
+Subject: [PATCH] lib/Kconfig.debug: Disable CONFIG_DEBUG_INFO_BTF for
+ Hexagon
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="3o2nisona3kyspak"
-Content-Disposition: inline
-In-Reply-To: <20240105172218.42457-3-pstanner@redhat.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240105-hexagon-disable-btf-v1-1-ddab073e7f74@kernel.org>
+X-B4-Tracking: v=1; b=H4sIAL9UmGUC/x3MQQqAIBBG4avErBvQKIquEi00f2sgLDRCiO6et
+ PwW7z2UEAWJxuqhiFuSHKFA1xUtmwkrWFwxNapplVYdb8hmPQI7ScbuYHt51kC/GNu7zg9UyjP
+ CS/6v0/y+H4xK7h1lAAAA
+To: akpm@linux-foundation.org
+Cc: ndesaulniers@google.com, acme@kernel.org, dwarves@vger.kernel.org, 
+ llvm@lists.linux.dev, linux-hexagon@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, patches@lists.linux.dev, 
+ kernel test robot <lkp@intel.com>, Brian Cain <bcain@quicinc.com>, 
+ Nathan Chancellor <nathan@kernel.org>
+X-Mailer: b4 0.13-dev
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1657; i=nathan@kernel.org;
+ h=from:subject:message-id; bh=TuxsHZPh+jbfgxImCTm71c5GyVdW17unYFAC6L4xxiI=;
+ b=owGbwMvMwCUmm602sfCA1DTG02pJDKkzQk5HJ8ROCf97a3ar7/Tfrxy0Nt5e+fPP3jaWO4c+y
+ vxXSlgk3VHKwiDGxSArpshS/Vj1uKHhnLOMN05NgpnDygQyhIGLUwAm4vyEkeGpa0zO3M1h7lek
+ uvbtamWwNOt8mhnYHmizpnTu3D03WnMZ/goEafGf8ikQfrxT5HuggOF3V1sNSxtdW70Ck12ZW/b
+ zsgAA
+X-Developer-Key: i=nathan@kernel.org; a=openpgp;
+ fpr=2437CB76E544CB6AB3D9DFD399739260CB6CB716
 
+pahole, which generates BTF, relies on elfutils to process DWARF debug
+info. Because kernel modules are relocatable files, elfutils needs to
+resolve relocations when processing the DWARF .debug sections.
 
---3o2nisona3kyspak
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hexagon is not supported in binutils or elfutils, so elfutils is unable
+to process relocations in kernel modules, causing pahole to crash during
+BTF generation.
 
-On Fri, Jan 05, 2024 at 06:22:18PM +0100, Philipp Stanner wrote:
-> Some drivers want to use (request) a region exclusively but nevertheless
-> create several mappings within that region.
->=20
-> Currently, there is no managed devres function to request a region
-> without mapping it.
->=20
-> Add the function devm_platform_get_resource()
->=20
-> Signed-off-by: Philipp Stanner <pstanner@redhat.com>
-> ---
->  drivers/base/platform.c         | 37 +++++++++++++++++++++++++++++++++
->  include/linux/platform_device.h |  2 ++
->  2 files changed, 39 insertions(+)
->=20
-> diff --git a/drivers/base/platform.c b/drivers/base/platform.c
-> index 10c577963418..243b9ec54d04 100644
-> --- a/drivers/base/platform.c
-> +++ b/drivers/base/platform.c
-> @@ -82,6 +82,43 @@ struct resource *platform_get_mem_or_io(struct platfor=
-m_device *dev,
->  }
->  EXPORT_SYMBOL_GPL(platform_get_mem_or_io);
-> =20
-> +/**
-> + * devm_platform_get_and_resource - get and request a resource
+Do not allow CONFIG_DEBUG_INFO_BTF to be selected for Hexagon until it
+is supported in elfutils, so that there are no more cryptic build
+failures during BTF generation.
 
-This function name is wrong.
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202312192107.wMIKiZWw-lkp@intel.com/
+Suggested-by: Nick Desaulniers <ndesaulniers@google.com>
+Acked-by: Brian Cain <bcain@quicinc.com>
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+---
+ lib/Kconfig.debug | 2 ++
+ 1 file changed, 2 insertions(+)
 
-> + *
-> + * @pdev: the platform device to get the resource from
-> + * @type: resource type (either IORESOURCE_MEM or IORESOURCE_IO)
-> + * @num: resource index
-> + * @name: name to be associated with the request
-> + *
-> + * Return: a pointer to the resource on success, an ERR_PTR on failure.
-> + *
-> + * Gets a resource and requests it. Use this instead of
-> + * devm_platform_ioremap_resource() only if you have to create several s=
-ingle
-> + * mappings with devm_ioremap().
-> + */
-> +struct resource *devm_platform_get_resource(struct platform_device *pdev,
-> +		unsigned int type, unsigned int num, const char *name)
-> +{
-> +	struct resource *res;
-> +
-> +	res =3D platform_get_resource(pdev, type, num);
-> +	if (!res)
-> +		return ERR_PTR(-EINVAL);
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index 4405f81248fb..1b939f5583eb 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -378,6 +378,8 @@ config DEBUG_INFO_BTF
+ 	depends on !GCC_PLUGIN_RANDSTRUCT || COMPILE_TEST
+ 	depends on BPF_SYSCALL
+ 	depends on !DEBUG_INFO_DWARF5 || PAHOLE_VERSION >= 121
++	# pahole uses elfutils, which does not have support for Hexagon relocations
++	depends on !HEXAGON
+ 	help
+ 	  Generate deduplicated BTF type information from DWARF debug info.
+ 	  Turning this on expects presence of pahole tool, which will convert
 
-=46rom devm_platform_get_resource I'd expect that it only does
-platform_get_resource() + register a cleanup function to undo it.
+---
+base-commit: 610a9b8f49fbcf1100716370d3b5f6f884a2835a
+change-id: 20240105-hexagon-disable-btf-1ee7cab7d5f8
 
-> +	if (type & IORESOURCE_MEM)
-> +		res =3D devm_request_mem_region(&pdev->dev, res->start, res->end, name=
-);
-> +	else if (type & IORESOURCE_IO)
-> +		res =3D devm_request_region(&pdev->dev, res->start, res->end, name);
-> +	else
-> +		return ERR_PTR(-EINVAL);
+Best regards,
+-- 
+Nathan Chancellor <nathan@kernel.org>
 
-So this part is surprising. IMHO your function's name should include
-"request".
-
-> +	if (!res)
-> +		return ERR_PTR(-EBUSY);
-> +
-> +	return res;
-> +}
-> +EXPORT_SYMBOL_GPL(devm_platform_get_resource);
-> +
->  #ifdef CONFIG_HAS_IOMEM
->  /**
->   * devm_platform_get_and_ioremap_resource - call devm_ioremap_resource()=
- for a
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---3o2nisona3kyspak
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmWYVHUACgkQj4D7WH0S
-/k7XoQf/XQgujb3wJQ7wPs2niAnyXYWMuP6k5VtPrmtieV97iKmKJoovSFpNlN7z
-i1CC2tHW8sXkAROPQmqKUjaYNhA7EaIcR1I5uAaE657JeEAvST4cmrrgH/lBE6XG
-uov7/CgYQNxTRDbix2M47T2fj2BfQiQtPVVIkdYOhkJatWSq7FOx/2Fi74NzISHF
-3GWVPlWVpT4U/hn78DsEmfxtWcw4cdoq3pVYZQyGHKzdEKu79IKgVjllgtBVNiMb
-x0yJ+ifcj7OC2zbfCHjdgd5+igXKmSQw6OJdG6VOOmICgvNwTczUl/QvMCfOt7FB
-sxivF8VqMGJ5VpFauMWtvBS/3oyKrw==
-=2FhD
------END PGP SIGNATURE-----
-
---3o2nisona3kyspak--
 
