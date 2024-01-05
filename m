@@ -1,144 +1,127 @@
-Return-Path: <linux-kernel+bounces-17548-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17549-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8EAF1824F33
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 08:33:39 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AEFDC824F36
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 08:34:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E4C99B2370D
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 07:33:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4E3DD1F2353C
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 07:34:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CD2520314;
-	Fri,  5 Jan 2024 07:33:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C19C01EB48;
+	Fri,  5 Jan 2024 07:34:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kQcWpoGN"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="UaunnmzZ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
+Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F690200AC
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 07:33:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2cd1aeb1bf3so2939501fa.1
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 23:33:27 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D65D20B16
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 07:34:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-50e7b273352so1324587e87.1
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 23:34:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704440006; x=1705044806; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=aHicSr6rOWVvMTesmGW7ZwN5Nw8dTnXVRJbiDId9Yc8=;
-        b=kQcWpoGNxwa3rf3VEYrYbUjpW4zVJao3Rn1TYj7TLuUHttxDRZEv6aKX28LYFkjLaz
-         uTXGt3eSyuuywgQb8eMD3dEwVca6snrWcXKegsmJUUh3uDQrLAxO+Mz5urbAfzuWY+NK
-         oI4tunZuIIdxuTME7YNtSNOSvlWX4WhfQluXEDnMqYGDNT+4maf8lTrwPSLHKUplpIFv
-         jSQ6RHn45kDVdwdIvoFH4in1fHvh/zwD1iDF+2bSEIQLixwL4VGPBITJWlSv6/GXdILQ
-         ogQXQY0wagqVqcbFUk9xjtdv3cwrz6dF1gRcsLo3GOjAJIjMNa0+MCUIGwBE5OkXSyrg
-         JRCA==
+        d=linaro.org; s=google; t=1704440064; x=1705044864; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=00sRjN2CupqB8Q7ctHplMwOy5YYcg3KEnI/LfxuJ5+A=;
+        b=UaunnmzZYwsYEGier6OoSK9iTyNmgQmtsB+gFIfpN8JDJ9shXt/4YgR9xVZcXYGRmE
+         MXLTYUZc3a6pW1C3qajM4cIb5L0FGhs6Q47FTU6heSGQ2lQvL3KaBvCT0prJNAC8kBaK
+         oFnJ1rSWEUdNUa7yL86FjroMnJywOIgEf/3MSBShc7JT4aHu9ElXQEpBFD1RriZ7eHJa
+         hGyvLKcg3u90Tz6uDw22SyyonAk7jpjFCnSvt3jTJRX+AFE4a/5bkvDluCocYfFzgYsh
+         H/QcfI7kWy6kO5+6WQdYHkZiRDLferAujeaaHACRCQBUQZdiMxquWdo3t+/0y41mBnAr
+         ATng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704440006; x=1705044806;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=aHicSr6rOWVvMTesmGW7ZwN5Nw8dTnXVRJbiDId9Yc8=;
-        b=w+S90AUsoGNhvXRxh1A2xSP+GC0S8sFrclEIZg9rMHuEmvGEzPAH1ZsiC67JXf1XLQ
-         7Oi6BMIeSOj+FsQnssJI5gm1QaZ7ef0vUVodiuR/2sBtsbCJlW76p1in/ZeCvQagsgS2
-         kTM7kzJaJ/NaWeGjt6k4TdUmkRgp6R9B7VBCIY7MwcjMuvlFID6K0XNjOTtQ3QsQf39C
-         1kWNootI14/qjr0KAFsql8VqBKuPb+meou9h571hQbM+GbDzFVw6CRccNNYrSDHX+04Q
-         UNLMhNViRqgWVgvUiblEA5jGlhFRXDYjyNYRVGuAN80XF4MDP2VipALWeWb+M/0Yz8S3
-         vo3A==
-X-Gm-Message-State: AOJu0YzHEpNOycZm8iXCWiZPOD8SbaafQRkq4uMo5RKOMD9krhkGJbeT
-	CavL7S8yjWlgJ1G4pd/cIDslqZvBoSrWQ/7f95A=
-X-Google-Smtp-Source: AGHT+IEF8eNazSeWcZCLl5J4WikEWT2ApmNtS2OD3iw0mE1zKSuViISACLJ+zY7W88Oo6QnO5yCoRcVVwHxU7fNbT00=
-X-Received: by 2002:a05:651c:b2c:b0:2cd:1aa5:db82 with SMTP id
- b44-20020a05651c0b2c00b002cd1aa5db82mr979627ljr.21.1704440006026; Thu, 04 Jan
- 2024 23:33:26 -0800 (PST)
+        d=1e100.net; s=20230601; t=1704440064; x=1705044864;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=00sRjN2CupqB8Q7ctHplMwOy5YYcg3KEnI/LfxuJ5+A=;
+        b=GYJfbs8AXpGwmz/voK0enVZhSGWesTwh7Gq8uL7IOW3s6zWXjnm1uIEm0cR4HFq6J2
+         boAdP20XkgJ/M3Um4uC6zw693xgQ/xqIvWvw9HPTXiSYzoDKfZB4YGiVgyRpcGlOx/+i
+         9zLe37jdF9JgPtV0AGeS1TUbLDgeZqJTPur0GVy9rH+AaUqCj+O+YaXG0rj5OiKUN5jJ
+         6467daw6VKP7T3wiYpNFD1Xi5CjiTQQH5YoWd0Ptn4Mdaj0V+0xWLE2F5BR/6q6xTp7H
+         cnIlKLetn35LWQSfp3FgeXQOumND0VsmpZMLyE9VijH8j28h4j700yOXggvPLA8j4vue
+         ByOg==
+X-Gm-Message-State: AOJu0YzoNrXko60wc3UY4+YxAED34rt1GBHp9LOUrxqQVAugY9k8+l3O
+	pGr9tPVYsj2gznRSCsEIQD1Lu/ZgcpI8Sw==
+X-Google-Smtp-Source: AGHT+IFJPeJdKogeOQU8rBCXaTMRowRS002OJPjTz7DXhsqvVsPyf2CuFAyVwGskikaF3cKz713Frw==
+X-Received: by 2002:ac2:5e29:0:b0:50e:7ded:5a2b with SMTP id o9-20020ac25e29000000b0050e7ded5a2bmr672265lfg.43.1704440064409;
+        Thu, 04 Jan 2024 23:34:24 -0800 (PST)
+Received: from localhost ([102.140.209.237])
+        by smtp.gmail.com with ESMTPSA id oq3-20020a170906cc8300b00a293c6cc184sm399089ejb.24.2024.01.04.23.34.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Jan 2024 23:34:24 -0800 (PST)
+Date: Fri, 5 Jan 2024 10:34:20 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Hidenori Kobayashi <hidenorik@chromium.org>
+Cc: Sakari Ailus <sakari.ailus@linux.intel.com>,
+	Bingbu Cao <bingbu.cao@intel.com>,
+	Tianshu Qiu <tian.shu.qiu@intel.com>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] media: staging: ipu3-imgu: Set fields before
+ media_entity_pads_init()
+Message-ID: <a6f9ff72-421a-42c6-b24a-3dbf5a55e631@moroto.mountain>
+References: <20231228093926.748001-1-hidenorik@chromium.org>
+ <27f1c487-78cc-4e56-ba79-1434aba131fd@moroto.mountain>
+ <20240105021856.wpzmwtyzxzqfznrp@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240102175338.62012-1-ryncsn@gmail.com> <20240102175338.62012-5-ryncsn@gmail.com>
- <878r54b6ae.fsf@yhuang6-desk2.ccr.corp.intel.com>
-In-Reply-To: <878r54b6ae.fsf@yhuang6-desk2.ccr.corp.intel.com>
-From: Kairui Song <ryncsn@gmail.com>
-Date: Fri, 5 Jan 2024 15:33:08 +0800
-Message-ID: <CAMgjq7B7iShnLaiT-0MBGEMdVS65bupx_NshjM0ssLmhJm0CFQ@mail.gmail.com>
-Subject: Re: [PATCH v2 4/9] mm/swap: always account swapped in page into
- current memcg
-To: "Huang, Ying" <ying.huang@intel.com>
-Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>, 
-	Chris Li <chrisl@kernel.org>, Hugh Dickins <hughd@google.com>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Matthew Wilcox <willy@infradead.org>, Michal Hocko <mhocko@suse.com>, 
-	Yosry Ahmed <yosryahmed@google.com>, David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240105021856.wpzmwtyzxzqfznrp@google.com>
 
-Huang, Ying <ying.huang@intel.com> =E4=BA=8E2024=E5=B9=B41=E6=9C=885=E6=97=
-=A5=E5=91=A8=E4=BA=94 15:16=E5=86=99=E9=81=93=EF=BC=9A
->
-> Kairui Song <ryncsn@gmail.com> writes:
->
-> > From: Kairui Song <kasong@tencent.com>
-> >
-> > Currently, mem_cgroup_swapin_charge_folio is always called with
-> > mm argument as NULL, except in swapin_direct.
-> >
-> > swapin_direct is used when swapin should skip readahead and
-> > swapcache (SWP_SYNCHRONOUS_IO). Other caller paths of
-> > mem_cgroup_swapin_charge_folio are for swapin that should
-> > not skip readahead and cache.
-> >
-> > This could cause swapin charging to behave differently depending
-> > on swap device. This currently didn't happen because the only call
-> > path of swapin_direct is the direct anon page fault path, where mm
-> > equals to current->mm, but will no longer be true if swapin_direct
-> > is shared and have other callers (eg, swapoff).
-> >
-> > So make swapin_direct also passes NULL for mm, no feature change.
-> >
-> > Signed-off-by: Kairui Song <kasong@tencent.com>
-> > ---
-> >  mm/swap_state.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/mm/swap_state.c b/mm/swap_state.c
-> > index 6130de8d5226..d39c5369da21 100644
-> > --- a/mm/swap_state.c
-> > +++ b/mm/swap_state.c
-> > @@ -881,7 +881,7 @@ struct folio *swapin_direct(swp_entry_t entry, gfp_=
-t gfp_mask,
-> >       folio =3D vma_alloc_folio(GFP_HIGHUSER_MOVABLE, 0,
-> >                               vma, vmf->address, false);
-> >       if (folio) {
-> > -             if (mem_cgroup_swapin_charge_folio(folio, vma->vm_mm,
-> > +             if (mem_cgroup_swapin_charge_folio(folio, NULL,
-> >                                                  GFP_KERNEL, entry)) {
-> >                       folio_put(folio);
-> >                       return NULL;
->
-> I think that why not provide "mm" when it's available?  For
-> swapin_direct() called by do_swap_page(), mm can be provided.  While,
-> for swapin_direct() called by shmem swapin, mm will be NULL.  We can
-> even provide "mm" for __read_swap_cache_async() for VMA based swapin and
-> for the fault address for cluster swapin.
+On Fri, Jan 05, 2024 at 11:19:23AM +0900, Hidenori Kobayashi wrote:
+> On Thu, Jan 04, 2024 at 01:04:27PM +0300, Dan Carpenter wrote:
+> > On Thu, Dec 28, 2023 at 06:39:25PM +0900, Hidenori Kobayashi wrote:
+> > > The pad's flags is checked in media_entity_pads_init(), so it has to be
+> > > initialized beforehand. The ops initialization is also moved together
+> > > for readability.
+> > > 
+> > 
+> > How does this bug look like to a user?  What is the Fixes tag?  Does
+> > this need to be backported to stable?
+> 
+> I suppose I should have included those in the commit message.
+> 
+> 1) To a user, the imgu driver fails to probe with the following message:
+> 
+> [   14.596315] ipu3-imgu 0000:00:05.0: failed initialize subdev media entity (-22)
+> [   14.596322] ipu3-imgu 0000:00:05.0: failed to register subdev0 ret (-22)
+> [   14.596327] ipu3-imgu 0000:00:05.0: failed to register pipes (-22)
+> [   14.596331] ipu3-imgu 0000:00:05.0: failed to create V4L2 devices (-22)
+> 
 
-Hi, Ying.
+Yeah.  This is super useful information.
 
-Thanks for the comment.
+> 2) Re Fixes tag, I see that the first commit of imgu driver already
+> initializes the flags after media_entity_pads_init(). The documentation
+> of this API ( "Drivers must set the direction of every pad ... before
+> calling media_entity_pads_init") predates the first commit. So, I guess
+> 
+> Fixes: a0ca1627b450 ("media: staging/intel-ipu3: Add v4l2 driver based on media framework")
+> 
+> 3) Re stable, I was not sure. The probe failure only appears after a
+> check was added by Commit deb866f9e3a45ae058b21765feeffae6aea6a193. That
+> check is not in linux-6.6.y branch. So I was not sure if this counts as
+> "a real bug that bothers people" mentioned in the document.
 
-Without modifying too much code, providing mm here will change swapin
-charge behaviour on swapoff, we discussed it previously:
-https://lkml.org/lkml/2023/11/19/320
+Hm...  I don't know either.  Wait for a day and see if anyone else has
+an opinion then listen to your gut and resend with whatever your gut
+says?
 
-If we want to avoid the behavior change, we have to extend all direct
-and indirect callers of mem_cgroup_swapin_charge_folio to accept a
-standalone mm argument (including swapin_direct, swap_vma_readahead,
-swap_cluster_readahead, __read_swap_cache_async, swapin_entry_mpol,
-read_swap_cache_async, and some other path may need more audit), and
-sort things our case by case. I'm not sure if that's a good idea...
+regards,
+dan carpenter
 
-Simply dropping it here seems the easiest way to avoid such change.
 
