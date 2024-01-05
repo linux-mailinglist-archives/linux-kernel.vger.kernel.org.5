@@ -1,107 +1,177 @@
-Return-Path: <linux-kernel+bounces-18269-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18270-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E47B825AC2
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 19:54:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E280825AC4
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 19:55:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D97511F246F9
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 18:54:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 63ED21C23351
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 18:55:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFCA235F1A;
-	Fri,  5 Jan 2024 18:48:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD0A035EFC;
+	Fri,  5 Jan 2024 18:51:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BjZrp9kn"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EdiCYPgi"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F72935EF1;
-	Fri,  5 Jan 2024 18:48:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA156C433C8;
-	Fri,  5 Jan 2024 18:48:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1194B35EE4;
+	Fri,  5 Jan 2024 18:51:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12D2AC433C8;
+	Fri,  5 Jan 2024 18:51:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704480502;
-	bh=RkFt9IIYomhELhaSYrco17mS19Uik7xg/MPUw5WN1mw=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=BjZrp9knsEd0ZweLDzWv7N+f87DyNs5OkDTp+5ClbBUICCwtTt04lVT5BmSjVETjA
-	 9O8uzYpxNT7ZIZG0PDZwD7HATJuurUZQvPkbF6SoAHWBttvdaPqM6UhAHEMNEToVYE
-	 uNoc3diHnH1pTjPAg6CK+MtGA2sJwscDXHWjKzgQOeKaiLiDYLkuaRUC1kccOzt70Z
-	 sqxlgBrFr4SIbgt44EyO9UwD553bQ8woCEBrFaQPLbSDrxU6UesHANlPqlIsHIFSKM
-	 oYDkdMDgTHb8Cf/WkhBE8AproKezZiUSD1pOp+1WzXJ6ZSDum0cWyC3AcqYVG8Xswf
-	 9iaekUGjFVYrQ==
-From: Mark Brown <broonie@kernel.org>
-To: conor+dt@kernel.org, krzysztof.kozlowski@linaro.org, 
- Shenghao Ding <shenghao-ding@ti.com>
-Cc: robh+dt@kernel.org, andriy.shevchenko@linux.intel.com, kevin-lu@ti.com, 
- baojun.xu@ti.com, devicetree@vger.kernel.org, lgirdwood@gmail.com, 
- perex@perex.cz, pierre-louis.bossart@linux.intel.com, 13916275206@139.com, 
- linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org, 
- liam.r.girdwood@intel.com, soyer@irl.hu, tiwai@suse.de, peeyush@ti.com, 
- navada@ti.com
-In-Reply-To: <20240104145721.1398-1-shenghao-ding@ti.com>
-References: <20240104145721.1398-1-shenghao-ding@ti.com>
-Subject: Re: [PATCH v5 1/4] ASoC: dt-bindings: move tas2563 from
- tas2562.yaml to tas2781.yaml
-Message-Id: <170448049855.417990.715024813727231807.b4-ty@kernel.org>
-Date: Fri, 05 Jan 2024 18:48:18 +0000
+	s=k20201202; t=1704480687;
+	bh=NZFMZKngRtN0PVnxMxr1iGSCUIwt3NiHAb9WnRmUq5A=;
+	h=From:To:Cc:Subject:Date:From;
+	b=EdiCYPgi22ZCK+1RhS0syG5Wqa7M5hRkq6/kuldcjZIQuDasVQxNXEC0dkosMr7LA
+	 TGUk+SnJpFt8a0lrOMh0VP00pkD159hAezvvTE8qG49wrGTflX0Og6hN67wB1qmYLj
+	 snFzWTPvCcxVdN+myj9Sfi/9kSu8u/EKGl0yee30+SB+xm8YkT4x+beBiiegTUFZfP
+	 nIa4I8UIYzkrYsMj7DnD4R1hHF+FzZO67QPtQIhAh2HSlFnj72URDpJKwi5JjlHWMJ
+	 kXYsFJJNG2EItgZF+D6NI+UsFciJeG7iVTPZTe0wgpGudvFckXxVB30FN4Y3wui6/F
+	 WPEsXvBoy+BGA==
+From: Eric Biggers <ebiggers@kernel.org>
+To: linux-crypto@vger.kernel.org,
+	linux-riscv@lists.infradead.org,
+	Jerry Shih <jerry.shih@sifive.com>
+Cc: linux-kernel@vger.kernel.org,
+	Ard Biesheuvel <ardb@kernel.org>,
+	Heiko Stuebner <heiko@sntech.de>,
+	Phoebe Chen <phoebe.chen@sifive.com>,
+	hongrong.hsu@sifive.com,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Andy Chiu <andy.chiu@sifive.com>
+Subject: [PATCH v2 00/12] RISC-V crypto with reworked asm files
+Date: Fri,  5 Jan 2024 10:49:36 -0800
+Message-ID: <20240105184950.43181-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-5c066
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Thu, 04 Jan 2024 22:57:16 +0800, Shenghao Ding wrote:
-> Move tas2563 from tas2562.yaml to tas2781.yaml to unbind tas2563 from
-> tas2562 driver code and bind it to tas2781 driver code, because tas2563
-> only work in bypass-DSP mode with tas2562 driver. In order to enable DSP
-> mode for tas2563, it has been moved to tas2781 driver. As to the hardware
-> part, such as register setting and DSP firmware, all these are stored in
-> the binary firmware. What tas2781 drivder does is to parse the firmware
-> and download it to the chip, then power on the chip. So, tas2781 driver
-> can be resued as tas2563 driver. Only attention will be paid to
-> downloading corresponding firmware.
-> 
-> [...]
+As discussed previously, the proposed use of the so-called perlasm for
+the RISC-V crypto assembly files makes them difficult to read, and these
+files have some other issues such extensively duplicating source code
+for the different AES key lengths and for the unrolled hash functions.
+There is/was a desire to share code with OpenSSL, but many of the files
+have already diverged significantly; also, for most of the algorithms
+the source code can be quite short anyway, due to the native support for
+them in the RISC-V vector crypto extensions combined with the way the
+RISC-V vector extension naturally scales to arbitrary vector lengths.
 
-Applied to
+Since we're still waiting for prerequisite patches to be merged anyway,
+we have a bit more time to get this cleaned up properly.  So I've had a
+go at cleaning up the patchset to use standard .S files, with the code
+duplication fixed.  I also made some tweaks to make the different
+algorithms consistent with each other and with what exists in the kernel
+already for other architectures, and tried to improve comments.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+The result is this series, which passes all tests and is about 2400
+lines shorter than the latest version with the perlasm
+(https://lore.kernel.org/linux-crypto/20231231152743.6304-1-jerry.shih@sifive.com/).
+All the same functionality and general optimizations are still included,
+except for some minor optimizations in XTS that I dropped since it's not
+clear they are worth the complexity.  (Note that almost all users of XTS
+in the kernel only use it with block-aligned messages, so it's not very
+important to optimize the ciphertext stealing case.)
 
-Thanks!
+This series is based on riscv/for-next
+(https://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git/log/?h=for-next)
+commit f352a28cc2fb4ee8d08c6a6362c9a861fcc84236, and for convenience
+I've included the prerequisite patches too.
 
-[1/4] ASoC: dt-bindings: move tas2563 from tas2562.yaml to tas2781.yaml
-      commit: 3dbb4e3602d217d7139b95a36077a6b7252dc290
-[2/4] ASoC: tas2562: move tas2563 from tas2562 driver to tas2781 driver
-      commit: 645994d21287a1ad2f637818d737f7a3d84e97d7
-[3/4] ASoC: tas2781: Add tas2563 into header file for DSP mode
-      commit: e9aa44736cb75e901d76ee59d80db1ae79d516f1
-[4/4] ASoC: tas2781: Add tas2563 into driver
-      commit: 9f1bcd16e2bd41d758438f1d74e5f2d35f1e8c8e
+Changed in v2:
+  - Merged the AES modules together to prevent a build error.
+  - Only unregister AES algorithms that were registered.
+  - Corrected walksize properties to match the LMUL used by asm code.
+  - Simplified the CTR and XTS glue code slightly.
+  - Minor cleanups.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+Andy Chiu (1):
+  riscv: vector: make Vector always available for softirq context
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+Eric Biggers (1):
+  RISC-V: add TOOLCHAIN_HAS_VECTOR_CRYPTO
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+Greentime Hu (1):
+  riscv: Add support for kernel mode vector
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+Heiko Stuebner (2):
+  RISC-V: add helper function to read the vector VLEN
+  RISC-V: hook new crypto subdir into build-system
 
-Thanks,
-Mark
+Jerry Shih (7):
+  crypto: riscv - add vector crypto accelerated AES-{ECB,CBC,CTR,XTS}
+  crypto: riscv - add vector crypto accelerated ChaCha20
+  crypto: riscv - add vector crypto accelerated GHASH
+  crypto: riscv - add vector crypto accelerated SHA-{256,224}
+  crypto: riscv - add vector crypto accelerated SHA-{512,384}
+  crypto: riscv - add vector crypto accelerated SM3
+  crypto: riscv - add vector crypto accelerated SM4
+
+ arch/riscv/Kbuild                             |   1 +
+ arch/riscv/Kconfig                            |   7 +
+ arch/riscv/crypto/Kconfig                     |  93 +++
+ arch/riscv/crypto/Makefile                    |  26 +
+ arch/riscv/crypto/aes-macros.S                | 156 +++++
+ arch/riscv/crypto/aes-riscv64-glue.c          | 550 ++++++++++++++++++
+ .../crypto/aes-riscv64-zvkned-zvbb-zvkg.S     | 300 ++++++++++
+ arch/riscv/crypto/aes-riscv64-zvkned-zvkb.S   | 146 +++++
+ arch/riscv/crypto/aes-riscv64-zvkned.S        | 180 ++++++
+ arch/riscv/crypto/chacha-riscv64-glue.c       | 101 ++++
+ arch/riscv/crypto/chacha-riscv64-zvkb.S       | 294 ++++++++++
+ arch/riscv/crypto/ghash-riscv64-glue.c        | 168 ++++++
+ arch/riscv/crypto/ghash-riscv64-zvkg.S        |  72 +++
+ arch/riscv/crypto/sha256-riscv64-glue.c       | 137 +++++
+ .../sha256-riscv64-zvknha_or_zvknhb-zvkb.S    | 225 +++++++
+ arch/riscv/crypto/sha512-riscv64-glue.c       | 133 +++++
+ .../riscv/crypto/sha512-riscv64-zvknhb-zvkb.S | 203 +++++++
+ arch/riscv/crypto/sm3-riscv64-glue.c          | 112 ++++
+ arch/riscv/crypto/sm3-riscv64-zvksh-zvkb.S    | 123 ++++
+ arch/riscv/crypto/sm4-riscv64-glue.c          | 107 ++++
+ arch/riscv/crypto/sm4-riscv64-zvksed-zvkb.S   | 117 ++++
+ arch/riscv/include/asm/processor.h            |  14 +-
+ arch/riscv/include/asm/simd.h                 |  48 ++
+ arch/riscv/include/asm/vector.h               |  20 +
+ arch/riscv/kernel/Makefile                    |   1 +
+ arch/riscv/kernel/kernel_mode_vector.c        | 126 ++++
+ arch/riscv/kernel/process.c                   |   1 +
+ crypto/Kconfig                                |   3 +
+ 28 files changed, 3463 insertions(+), 1 deletion(-)
+ create mode 100644 arch/riscv/crypto/Kconfig
+ create mode 100644 arch/riscv/crypto/Makefile
+ create mode 100644 arch/riscv/crypto/aes-macros.S
+ create mode 100644 arch/riscv/crypto/aes-riscv64-glue.c
+ create mode 100644 arch/riscv/crypto/aes-riscv64-zvkned-zvbb-zvkg.S
+ create mode 100644 arch/riscv/crypto/aes-riscv64-zvkned-zvkb.S
+ create mode 100644 arch/riscv/crypto/aes-riscv64-zvkned.S
+ create mode 100644 arch/riscv/crypto/chacha-riscv64-glue.c
+ create mode 100644 arch/riscv/crypto/chacha-riscv64-zvkb.S
+ create mode 100644 arch/riscv/crypto/ghash-riscv64-glue.c
+ create mode 100644 arch/riscv/crypto/ghash-riscv64-zvkg.S
+ create mode 100644 arch/riscv/crypto/sha256-riscv64-glue.c
+ create mode 100644 arch/riscv/crypto/sha256-riscv64-zvknha_or_zvknhb-zvkb.S
+ create mode 100644 arch/riscv/crypto/sha512-riscv64-glue.c
+ create mode 100644 arch/riscv/crypto/sha512-riscv64-zvknhb-zvkb.S
+ create mode 100644 arch/riscv/crypto/sm3-riscv64-glue.c
+ create mode 100644 arch/riscv/crypto/sm3-riscv64-zvksh-zvkb.S
+ create mode 100644 arch/riscv/crypto/sm4-riscv64-glue.c
+ create mode 100644 arch/riscv/crypto/sm4-riscv64-zvksed-zvkb.S
+ create mode 100644 arch/riscv/include/asm/simd.h
+ create mode 100644 arch/riscv/kernel/kernel_mode_vector.c
+
+
+base-commit: f352a28cc2fb4ee8d08c6a6362c9a861fcc84236
+-- 
+2.43.0
 
 
