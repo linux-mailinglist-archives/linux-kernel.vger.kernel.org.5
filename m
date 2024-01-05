@@ -1,420 +1,686 @@
-Return-Path: <linux-kernel+bounces-17653-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17655-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A8AA88250A8
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 10:17:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A3A318250B0
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 10:18:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3E75F285B64
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 09:17:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 06B321F264F6
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 09:18:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21AEB22EEC;
-	Fri,  5 Jan 2024 09:17:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=renesas.com header.i=@renesas.com header.b="bOWKVoQf"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 745E323757;
+	Fri,  5 Jan 2024 09:18:41 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from JPN01-TYC-obe.outbound.protection.outlook.com (mail-tycjpn01on2113.outbound.protection.outlook.com [40.107.114.113])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C15A522EF9
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 09:17:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=renesas.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=renesas.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BGwEIPyGKGvL5UYERQgENSY2z+PQAHe9WZqG0sgJKKMBNbIhhyUamn5/XTSfhTDcDDkWQTzecQcJoPwodsG7p7tzvFJ5sUR3Bo7HCEo3kYg3HznNkrpt8eyq0QZj+oJu/5MLSU/uLlwzKQLazJJasdgnzpqzvCps38FbEsFlD/apZHuTekBiaYPLIvjGvt5MemDmeXE1b5rJcqgE+sYXqLJAQcHnES1fIPyCM+cp23agzQjJQXq75VkazTkQTX/8Yaa8N8wGw9OYnirv5CfP9WUrPelMuzDWDZ8zQ+zJuReWu/vEAw14ZbXDzpUVQg7TBUxXLiGt5c8Icr6j4Fw7pg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Oh7uDn448zLtFZkPFyRKxYVvAyPYjsCBGeRkxSlixAo=;
- b=GwO8fhYn45zN6zl4soqXDPYOHhJ3uj8WoA2Xf2hkq99/mGIOPqcWEJYQlpZD86+Xw9p1B+Vt8TQ8qimkHQGt4IUrDlnSolnraspgsg5Ke22hytm/8NGpH8OS3xRAk5mbDrHFsxqgerCDy5/xLSME9rrG8tczZ5XQfttQjiTk2PF4hX0ABb8LyBVlFJLUIZkXjP0mYvmvOtPpNaona9KyBHxzg48L6BTOm/WcwEJmLQEH4a2vw/ztWVuodgvR/FqGs75aplgh5yFD3Vm+Uag5GSm/BtkQBdkOdcVhrPB89I3BNCvaIVfbuQWBhJnl8ho6/5qvu1jBXUWcn0mIFfjjAA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=renesas.com; dmarc=pass action=none header.from=renesas.com;
- dkim=pass header.d=renesas.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=renesas.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Oh7uDn448zLtFZkPFyRKxYVvAyPYjsCBGeRkxSlixAo=;
- b=bOWKVoQf63qpde7KKo6BTQ+tOF9kT/DN0KvFamTNEvy8xxh8Wk0HMN/hYgjFybq5DmCz6S3fBPgoJAKsWby8oYdWHpIvMip5qv9w1JF9G8Albbm24hAPHwMXcY+eNOKCoxgkfbx8+jAJ+cmJBPcTWsK8gyPX5Nv/jXR5jduKVXY=
-Received: from TYBPR01MB5341.jpnprd01.prod.outlook.com
- (2603:1096:404:8028::13) by TYCPR01MB11687.jpnprd01.prod.outlook.com
- (2603:1096:400:37c::12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.9; Fri, 5 Jan
- 2024 09:17:01 +0000
-Received: from TYBPR01MB5341.jpnprd01.prod.outlook.com
- ([fe80::43bc:a2d0:a5a:9870]) by TYBPR01MB5341.jpnprd01.prod.outlook.com
- ([fe80::43bc:a2d0:a5a:9870%3]) with mapi id 15.20.7181.009; Fri, 5 Jan 2024
- 09:17:00 +0000
-From: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-To: Geert Uytterhoeven <geert@linux-m68k.org>, Dan Carpenter
-	<dan.carpenter@linaro.org>
-CC: "oe-kbuild@lists.linux.dev" <oe-kbuild@lists.linux.dev>, Prabhakar Mahadev
- Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>, "lkp@intel.com"
-	<lkp@intel.com>, "oe-kbuild-all@lists.linux.dev"
-	<oe-kbuild-all@lists.linux.dev>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, Conor Dooley <conor.dooley@microchip.com>,
-	Guo Ren <guoren@kernel.org>
-Subject: RE: drivers/phy/renesas/phy-rcar-gen3-usb2.c:747
- rcar_gen3_phy_usb2_probe() warn: missing error code 'ret'
-Thread-Topic: drivers/phy/renesas/phy-rcar-gen3-usb2.c:747
- rcar_gen3_phy_usb2_probe() warn: missing error code 'ret'
-Thread-Index: AQHaPYtIom5F363UiUO9KruawUvAKrDK87hQ
-Date: Fri, 5 Jan 2024 09:17:00 +0000
-Message-ID:
- <TYBPR01MB5341F6A9AC531F47865D810AD8662@TYBPR01MB5341.jpnprd01.prod.outlook.com>
-References: <8b1bc7f4-f83f-413d-9fa9-3ee68577750d@suswa.mountain>
- <CAMuHMdVFBFDj0B+1E1Bj3ZOyftg=mi8uwQt2Z2bs2vZbgn5YRw@mail.gmail.com>
-In-Reply-To:
- <CAMuHMdVFBFDj0B+1E1Bj3ZOyftg=mi8uwQt2Z2bs2vZbgn5YRw@mail.gmail.com>
-Accept-Language: ja-JP, en-US
-Content-Language: ja-JP
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=renesas.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: TYBPR01MB5341:EE_|TYCPR01MB11687:EE_
-x-ms-office365-filtering-correlation-id: f4fa5955-4747-4fff-ac78-08dc0dcf12eb
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- 3O8aKPHGfO7ZlIiz4NM06fbO0cSpgsBlvMLM6HUxwk81yZPwCO1T9iZ6cZdfzzwbgcQRf2sZXGsnh3h6yN1pWH37+Z0CEOhF/g/5nLNyC9xgOAWC6t4D/Rbqre8bXBZvnnFPxncw4WzlCHH31rTREe+h0CO0/oSHPoCEQ+GViQvyIAZNNBLnxYSOHecyuf+jNh80q/ERjLhdennZmYTGVgDhepFgFW4iITzNb0e+nR41eMaAlYDhIhjSBjOYQGA98MR5B3ixKjRkQfpq8huhbNkod8w+QqRQr7h55ZPWvoIy4qsuCywOj1lRT+ihNvcLTsh1mc/3odciMPiL1Omc2u+FB/FZyNda5h5HTScfno7uPo0E8PoS3XJ8jbX+ez4hGOUn9ri+hyH76AspVdqrdpL/PGA8WUAH9GxGDn9e4R/0sFdIdivd3/ZEAC8ZYm9BpKUbvIHbAzYyBjtZmD1DHtvVbF94g+rZ4KbvLHHqHzLdxmz/bPog2yT7oQ3h9383PSfoqO8GFX8wWPDZpwKbu3LkbLrTLMfXIwLKID+TBx21+pd8NINdjuQFz0saEDvtvA4GKsXgaJRtvXW8CpI4DCjaSre96h4EmsgYxxwO+XBGNklHUkOdhSbhe5U2m8P9dssFTAKY6c/Ny9TLZrMX3Q==
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYBPR01MB5341.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(366004)(346002)(396003)(376002)(136003)(230173577357003)(230273577357003)(230922051799003)(64100799003)(451199024)(186009)(1800799012)(55016003)(7696005)(45080400002)(53546011)(478600001)(966005)(71200400001)(6506007)(9686003)(26005)(38100700002)(122000001)(86362001)(33656002)(2906002)(5660300002)(38070700009)(41300700001)(4001150100001)(83380400001)(30864003)(316002)(110136005)(66556008)(66446008)(54906003)(64756008)(66946007)(52536014)(4326008)(66476007)(76116006)(8936002)(8676002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?U1FZTmN5UG9qV1MvTnZUcUIrdTBKUHM3aExYSUUwSEk5dEczS013ZGtqc0xv?=
- =?utf-8?B?aWh3cnhoV0lmM2dTYnhrQWd4aWFMUXdGUU1WenVJN2VSQTR3SlFJNkYwbzBp?=
- =?utf-8?B?Mkx1SkV2emdmakZQQ01ZYkQxZStNUndNMGxpVjZ0Rkc3VURqbldqNFZpalZz?=
- =?utf-8?B?SW9RNTlLTGxhWU8reGVyWXh4OFJKc1FhSlBuNzJVVkJjNE1tbTFXZ0RkMTlP?=
- =?utf-8?B?RTlVTXJkUTBSR0lWVmt3LzBWOVpMbzRwZGpFYkhCaHFybGZRM1krOWRTRkhT?=
- =?utf-8?B?d1hGMmZrc0x3RjJGRitsaWhyd1gwSnpna3R0eXFLSG5TMFBId2pVdUFMZWRE?=
- =?utf-8?B?Tk55VTdHdW44YzZOaERqazdKTTlrUnY1WHNwNndOcUx5RHZYLzlva1hCRk9v?=
- =?utf-8?B?cDFRcEI0aXQ3NkM0c0pHS3JHSjF4WVpKckJMOElNZ28wTEdsNjVPVGRZMSt5?=
- =?utf-8?B?eGlyQlhTM3pKY3JiWFNRVGVuSEcxQjRrY3ZOOFp2WktYN0VCOHVzL1BqNGt6?=
- =?utf-8?B?Mk1HdWtFeVkzdEsyOWpHQmxNS2hGV0YwZTcxRGFES0I0ZjZzSWFCdjNxd2Jn?=
- =?utf-8?B?TTEvMGd1SUFwTWw4RnU3WHJxYy93NWJFUm9GbDBjaWJwSGZtWGFYWGVEQis0?=
- =?utf-8?B?T2w5WkNlTFl6ZFdGVXJwWUtPUlhsS2ErV3dSbG13aHpodlJoQ0FONGZvQjV5?=
- =?utf-8?B?SXhEaUg3VjM4SnpPMmZuUGtLSzdTeDJsd2JBMU9VMHF0M3pLTkVCSVdrSEdN?=
- =?utf-8?B?VkNJTWZSdEtNNmxPQkZSNHpBeVN3c3FrT21FNXhrYUt6NnBPQVZtK0pLZUto?=
- =?utf-8?B?Z0RCcUlxL1NYUmV6U3YxS256WWczVGx2Z1F1b3c1dXZDU09sRkdyTVM4djRS?=
- =?utf-8?B?T0Q4Ly9vdUVMcUc4c050SE9lL3c5TysxWmJoU1FEa0tBcGtoNmhLdnFudHZH?=
- =?utf-8?B?Q0huTW15dXJ0TC90WUgxdnpwUGloRGlkWXhqbFYyY3A2VXozYUZJOHdvYnlr?=
- =?utf-8?B?aG9HZUwyTDl3SGRDSXdLSEdJa0c1RllZVHRSeFZxQ0ZnNU9tY0xzRWh1Zk9H?=
- =?utf-8?B?REYyZDVZRzFGOFBKMndPSkdPMlJaYXhSWWRoK3IwLzRSeFFyREFvdTIvK25Q?=
- =?utf-8?B?WTRXNWNSWFo3TC9tdHpFajkxNVV1U2krblljUWkxQTQ5MU9xMUttNjZOVG03?=
- =?utf-8?B?bmx4eDBZZXJjbG55b2JhcU1tcDV2cExuT09uK1ZldkMyL3VDamNqc3ZLMlhO?=
- =?utf-8?B?QjlHenowQWxIMVpmV09lRG56VVJNTkxWK3Rzd0E3SDFHWFNROEtjcENkZytk?=
- =?utf-8?B?bk1rcmM0ckxWOVFhUE9MTG11eDZBM0dMODBBZkZoTVlWRG9WNkc1WS9Qa2VW?=
- =?utf-8?B?ZEt0RlF0dDBvaHd1WVJLTy8vS0JINCs3Q1ZyYUljSnlUcDVEUWFxTFkzUnV5?=
- =?utf-8?B?ZXFmK1g3SitDUC8vUXZhaWFuMURMYnNRMlpZZEY4WlJ4cGFTL0ZQLzZJZStV?=
- =?utf-8?B?OGdFSjRzV0NRSkxDNE9icFlCa2J5U2VyaTlpb2FMREJRdHZaZzU3amo4VFcr?=
- =?utf-8?B?L2NOZW5NM3NydVdCTmx5NVdrU3RaQnpFUXAydjhZemgxM2dUL0VCNUV2YWp6?=
- =?utf-8?B?OGkvMzVOdW5GWDNpK29XbzJ6NXRqUVpnN3I2cEZFSklxUHNtMEQ1b3JxdGpo?=
- =?utf-8?B?MC8rUk11bEpUZTVpUW8xOGYxbVhSM2NwUVduNHRTdEZYV1d5MTZOdUtjb1Yw?=
- =?utf-8?B?bFpVMFJ3bzBhdXBzcGpoVVFYYTMwUFlla3ZaR2tqb1VaZ0I4TkQrVVc2WDdT?=
- =?utf-8?B?OG82ZURBOXJuL3BEakc1L25JamJONm95Y01OWENPWTZ0ZUFCdEVLK08wSGN4?=
- =?utf-8?B?V2VJQjAwWlBZYmtiTjRVRGx0TlhCenUyakpLN2dNM2dHTlNSK0JNN3I0ZXZC?=
- =?utf-8?B?Tm5yUHp0ZTh3eGcxc3FKWSt0UE8xK0x3S1RpQWN2TkpuMGVZMkdhNzM5VHF0?=
- =?utf-8?B?SVZKY3l1b216THROcnBPbHRqNkp1bnlRTVFYMVZpWHJWRDNUbC8zVTF0Ri8y?=
- =?utf-8?B?OU5FTVllQjNOSWN0a2xTNXRsVytSNHlOMzc5VUVmRE9wUTdIOUIyRXAzZHZp?=
- =?utf-8?B?cnp4UHZpTXVBRHhKdDFrdUJtM3RkYUNOMjZmaExmcndUZDhoYlhTL2JLZTJ3?=
- =?utf-8?B?c3c9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0422222F13
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 09:18:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5BCCDC15;
+	Fri,  5 Jan 2024 01:19:22 -0800 (PST)
+Received: from [10.57.44.155] (unknown [10.57.44.155])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3A9BE3F7A6;
+	Fri,  5 Jan 2024 01:18:32 -0800 (PST)
+Message-ID: <5b6ee045-b726-44ec-924e-4797d3ff4c13@arm.com>
+Date: Fri, 5 Jan 2024 09:18:30 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: renesas.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TYBPR01MB5341.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f4fa5955-4747-4fff-ac78-08dc0dcf12eb
-X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Jan 2024 09:17:00.6261
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: y58XZPOUpOATWqyeWJGGQ+HaT0oNMu+yyMYUBbh9SAZA+u9rB/AnCQ51NufTtomLFx503lBA4eCUioF06DFJluFfPzZihONPQULGMtdh2+ESzs5eBkR2CtVk0XYJcHnz
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYCPR01MB11687
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 3/7] arm64/sysreg/tools: Move TRFCR definitions to
+ sysreg
+Content-Language: en-GB
+To: James Clark <james.clark@arm.com>, coresight@lists.linaro.org,
+ linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+ broonie@kernel.org, maz@kernel.org, acme@kernel.org
+Cc: Oliver Upton <oliver.upton@linux.dev>, James Morse <james.morse@arm.com>,
+ Zenghui Yu <yuzenghui@huawei.com>, Catalin Marinas
+ <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Mike Leach <mike.leach@linaro.org>, Leo Yan <leo.yan@linaro.org>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Anshuman Khandual <anshuman.khandual@arm.com>, Rob Herring
+ <robh@kernel.org>, Miguel Luis <miguel.luis@oracle.com>,
+ Jintack Lim <jintack.lim@linaro.org>, Ard Biesheuvel <ardb@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>, Quentin Perret <qperret@google.com>,
+ Arnd Bergmann <arnd@arndb.de>, Vincent Donnefort <vdonnefort@google.com>,
+ Kristina Martsenko <kristina.martsenko@arm.com>,
+ Akihiko Odaki <akihiko.odaki@daynix.com>, Fuad Tabba <tabba@google.com>,
+ Joey Gouly <joey.gouly@arm.com>, Jing Zhang <jingzhangos@google.com>,
+ linux-kernel@vger.kernel.org
+References: <20240104162714.1062610-1-james.clark@arm.com>
+ <20240104162714.1062610-4-james.clark@arm.com>
+From: Suzuki K Poulose <suzuki.poulose@arm.com>
+In-Reply-To: <20240104162714.1062610-4-james.clark@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-SGVsbG8sDQoNCj4gRnJvbTogR2VlcnQgVXl0dGVyaG9ldmVuLCBTZW50OiBUdWVzZGF5LCBKYW51
-YXJ5IDIsIDIwMjQgMTE6NTIgUE0NCj4NCj4gQ0MgU2hpbW9kYS1zYW4sDQoNClRoYW5rIHlvdSBm
-b3IgYWRkaW5nIENDIHRvIG1lLg0KDQo+IE9uIFR1ZSwgSmFuIDIsIDIwMjQgYXQgMzowM+KAr1BN
-IERhbiBDYXJwZW50ZXIgPGRhbi5jYXJwZW50ZXJAbGluYXJvLm9yZz4gd3JvdGU6DQo+ID4gdHJl
-ZToNCjxzbmlwIFVSTD4NCj4gbWFzdGVyDQo+ID4gaGVhZDogICAzYmQ3ZDc0ODgxNjkyNzIwMjI2
-OGNiMzM1OTIxZjdmNjhiM2NhNzIzDQo+ID4gY29tbWl0OiA4MjkyNDkzYzIyYzhlMjhiNmU2N2Ew
-MWUwZjVjNmRiMWNmMjMxZWIxIHJpc2N2OiBLY29uZmlnLnNvY3M6IEFkZCBBUkNIX1JFTkVTQVMg
-a2NvbmZpZyBvcHRpb24NCj4NCj4gV3JvbmcgY29tbWl0DQo+DQo+IEZpeGVzOiA0NDFhNjgxYjg4
-NDM0NzRjICgicGh5OiByY2FyLWdlbjMtdXNiMjogZml4IGltcGxlbWVudGF0aW9uIGZvcg0KPiBy
-dW50aW1lIFBNIikNCj4NCj4gPiBjb25maWc6IHJpc2N2LXJhbmRjb25maWctcjA4MS0yMDIzMTIx
-Ng0KPHNuaXAgVVJMPg0KKQ0KPiA+IGNvbXBpbGVyOiBjbGFuZyB2ZXJzaW9uIDE3LjAuMA0KPHNu
-aXAgVVJMPg0KPiA+DQo+ID4gSWYgeW91IGZpeCB0aGUgaXNzdWUgaW4gYSBzZXBhcmF0ZSBwYXRj
-aC9jb21taXQgKGkuZS4gbm90IGp1c3QgYSBuZXcgdmVyc2lvbiBvZg0KPiA+IHRoZSBzYW1lIHBh
-dGNoL2NvbW1pdCksIGtpbmRseSBhZGQgZm9sbG93aW5nIHRhZ3MNCj4gPiB8IFJlcG9ydGVkLWJ5
-OiBrZXJuZWwgdGVzdCByb2JvdCA8bGtwQGludGVsLmNvbT4NCj4gPiB8IFJlcG9ydGVkLWJ5OiBE
-YW4gQ2FycGVudGVyIDxkYW4uY2FycGVudGVyQGxpbmFyby5vcmc+DQo+ID4gfCBDbG9zZXM6DQo8
-c25pcCBVUkw+DQoNCj4gPg0KPiA+IHNtYXRjaCB3YXJuaW5nczoNCj4gPiBkcml2ZXJzL3BoeS9y
-ZW5lc2FzL3BoeS1yY2FyLWdlbjMtdXNiMi5jOjc0NyByY2FyX2dlbjNfcGh5X3VzYjJfcHJvYmUo
-KSB3YXJuOiBtaXNzaW5nIGVycm9yIGNvZGUgJ3JldCcNCj4gPg0KPiA+IHZpbSArL3JldCArNzQ3
-IGRyaXZlcnMvcGh5L3JlbmVzYXMvcGh5LXJjYXItZ2VuMy11c2IyLmMNCj4gPg0KPiA+IGYzYjVh
-OGQ5YjUwZDcxIGRyaXZlcnMvcGh5L3BoeS1yY2FyLWdlbjMtdXNiMi5jICAgICAgICAgWW9zaGlo
-aXJvIFNoaW1vZGEgMjAxNS0xMS0zMCAgNjUyICBzdGF0aWMgaW50DQo+IHJjYXJfZ2VuM19waHlf
-dXNiMl9wcm9iZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpwZGV2KQ0KPiA+IGYzYjVhOGQ5YjUw
-ZDcxIGRyaXZlcnMvcGh5L3BoeS1yY2FyLWdlbjMtdXNiMi5jICAgICAgICAgWW9zaGloaXJvIFNo
-aW1vZGEgMjAxNS0xMS0zMCAgNjUzICB7DQo+ID4gYjA1MTJhNmVjMGNkNmQgZHJpdmVycy9waHkv
-cmVuZXNhcy9waHktcmNhci1nZW4zLXVzYjIuYyBCaWp1IERhcyAgICAgICAgICAyMDIxLTA3LTI3
-ICA2NTQgICAgICAgY29uc3Qgc3RydWN0DQo+IHJjYXJfZ2VuM19waHlfZHJ2X2RhdGEgKnBoeV9k
-YXRhOw0KPiA+IGYzYjVhOGQ5YjUwZDcxIGRyaXZlcnMvcGh5L3BoeS1yY2FyLWdlbjMtdXNiMi5j
-ICAgICAgICAgWW9zaGloaXJvIFNoaW1vZGEgMjAxNS0xMS0zMCAgNjU1ICAgICAgIHN0cnVjdCBk
-ZXZpY2UgKmRldiA9DQo+ICZwZGV2LT5kZXY7DQo+ID4gZjNiNWE4ZDliNTBkNzEgZHJpdmVycy9w
-aHkvcGh5LXJjYXItZ2VuMy11c2IyLmMgICAgICAgICBZb3NoaWhpcm8gU2hpbW9kYSAyMDE1LTEx
-LTMwICA2NTYgICAgICAgc3RydWN0IHJjYXJfZ2VuM19jaGFuDQo+ICpjaGFubmVsOw0KPiA+IGYz
-YjVhOGQ5YjUwZDcxIGRyaXZlcnMvcGh5L3BoeS1yY2FyLWdlbjMtdXNiMi5jICAgICAgICAgWW9z
-aGloaXJvIFNoaW1vZGEgMjAxNS0xMS0zMCAgNjU3ICAgICAgIHN0cnVjdCBwaHlfcHJvdmlkZXIN
-Cj4gKnByb3ZpZGVyOw0KPiA+IDA4YjBhZDM3NWNhNjYxIGRyaXZlcnMvcGh5L3JlbmVzYXMvcGh5
-LXJjYXItZ2VuMy11c2IyLmMgWW9zaGloaXJvIFNoaW1vZGEgMjAyMC0wNy0xNyAgNjU4ICAgICAg
-IGludCByZXQgPSAwLCBpOw0KPiA+IGYzYjVhOGQ5YjUwZDcxIGRyaXZlcnMvcGh5L3BoeS1yY2Fy
-LWdlbjMtdXNiMi5jICAgICAgICAgWW9zaGloaXJvIFNoaW1vZGEgMjAxNS0xMS0zMCAgNjU5DQo+
-ID4gZjNiNWE4ZDliNTBkNzEgZHJpdmVycy9waHkvcGh5LXJjYXItZ2VuMy11c2IyLmMgICAgICAg
-ICBZb3NoaWhpcm8gU2hpbW9kYSAyMDE1LTExLTMwICA2NjAgICAgICAgaWYgKCFkZXYtPm9mX25v
-ZGUpIHsNCj4gPiBmM2I1YThkOWI1MGQ3MSBkcml2ZXJzL3BoeS9waHktcmNhci1nZW4zLXVzYjIu
-YyAgICAgICAgIFlvc2hpaGlybyBTaGltb2RhIDIwMTUtMTEtMzAgIDY2MSAgICAgICAgICAgICAg
-IGRldl9lcnIoZGV2LA0KPiAiVGhpcyBkcml2ZXIgbmVlZHMgZGV2aWNlIHRyZWVcbiIpOw0KPiA+
-IGYzYjVhOGQ5YjUwZDcxIGRyaXZlcnMvcGh5L3BoeS1yY2FyLWdlbjMtdXNiMi5jICAgICAgICAg
-WW9zaGloaXJvIFNoaW1vZGEgMjAxNS0xMS0zMCAgNjYyICAgICAgICAgICAgICAgcmV0dXJuDQo+
-IC1FSU5WQUw7DQo+ID4gZjNiNWE4ZDliNTBkNzEgZHJpdmVycy9waHkvcGh5LXJjYXItZ2VuMy11
-c2IyLmMgICAgICAgICBZb3NoaWhpcm8gU2hpbW9kYSAyMDE1LTExLTMwICA2NjMgICAgICAgfQ0K
-PiA+IGYzYjVhOGQ5YjUwZDcxIGRyaXZlcnMvcGh5L3BoeS1yY2FyLWdlbjMtdXNiMi5jICAgICAg
-ICAgWW9zaGloaXJvIFNoaW1vZGEgMjAxNS0xMS0zMCAgNjY0DQo+ID4gZjNiNWE4ZDliNTBkNzEg
-ZHJpdmVycy9waHkvcGh5LXJjYXItZ2VuMy11c2IyLmMgICAgICAgICBZb3NoaWhpcm8gU2hpbW9k
-YSAyMDE1LTExLTMwICA2NjUgICAgICAgY2hhbm5lbCA9DQo+IGRldm1fa3phbGxvYyhkZXYsIHNp
-emVvZigqY2hhbm5lbCksIEdGUF9LRVJORUwpOw0KPiA+IGYzYjVhOGQ5YjUwZDcxIGRyaXZlcnMv
-cGh5L3BoeS1yY2FyLWdlbjMtdXNiMi5jICAgICAgICAgWW9zaGloaXJvIFNoaW1vZGEgMjAxNS0x
-MS0zMCAgNjY2ICAgICAgIGlmICghY2hhbm5lbCkNCj4gPiBmM2I1YThkOWI1MGQ3MSBkcml2ZXJz
-L3BoeS9waHktcmNhci1nZW4zLXVzYjIuYyAgICAgICAgIFlvc2hpaGlybyBTaGltb2RhIDIwMTUt
-MTEtMzAgIDY2NyAgICAgICAgICAgICAgIHJldHVybg0KPiAtRU5PTUVNOw0KPiA+IGYzYjVhOGQ5
-YjUwZDcxIGRyaXZlcnMvcGh5L3BoeS1yY2FyLWdlbjMtdXNiMi5jICAgICAgICAgWW9zaGloaXJv
-IFNoaW1vZGEgMjAxNS0xMS0zMCAgNjY4DQo+ID4gMGI1NjA0YWZmYmVjMDIgZHJpdmVycy9waHkv
-cmVuZXNhcy9waHktcmNhci1nZW4zLXVzYjIuYyBDaHVuZmVuZyBZdW4gICAgICAyMDIwLTExLTA2
-ICA2NjkgICAgICAgY2hhbm5lbC0+YmFzZSA9DQo+IGRldm1fcGxhdGZvcm1faW9yZW1hcF9yZXNv
-dXJjZShwZGV2LCAwKTsNCj4gPiA4MDFhNjljNzg3ODEyZiBkcml2ZXJzL3BoeS9waHktcmNhci1n
-ZW4zLXVzYjIuYyAgICAgICAgIFlvc2hpaGlybyBTaGltb2RhIDIwMTYtMDMtMDMgIDY3MCAgICAg
-ICBpZg0KPiAoSVNfRVJSKGNoYW5uZWwtPmJhc2UpKQ0KPiA+IDgwMWE2OWM3ODc4MTJmIGRyaXZl
-cnMvcGh5L3BoeS1yY2FyLWdlbjMtdXNiMi5jICAgICAgICAgWW9zaGloaXJvIFNoaW1vZGEgMjAx
-Ni0wMy0wMyAgNjcxICAgICAgICAgICAgICAgcmV0dXJuDQo+IFBUUl9FUlIoY2hhbm5lbC0+YmFz
-ZSk7DQo+ID4gZjNiNWE4ZDliNTBkNzEgZHJpdmVycy9waHkvcGh5LXJjYXItZ2VuMy11c2IyLmMg
-ICAgICAgICBZb3NoaWhpcm8gU2hpbW9kYSAyMDE1LTExLTMwICA2NzINCj4gPiBiMDUxMmE2ZWMw
-Y2Q2ZCBkcml2ZXJzL3BoeS9yZW5lc2FzL3BoeS1yY2FyLWdlbjMtdXNiMi5jIEJpanUgRGFzICAg
-ICAgICAgIDIwMjEtMDctMjcgIDY3Mw0KPiBjaGFubmVsLT5vYmludF9lbmFibGVfYml0cyA9IFVT
-QjJfT0JJTlRfQklUUzsNCj4gPiAwOGIwYWQzNzVjYTY2MSBkcml2ZXJzL3BoeS9yZW5lc2FzL3Bo
-eS1yY2FyLWdlbjMtdXNiMi5jIFlvc2hpaGlybyBTaGltb2RhIDIwMjAtMDctMTcgIDY3NCAgICAg
-ICAvKiBnZXQgaXJxIG51bWJlciBoZXJlDQo+IGFuZCByZXF1ZXN0X2lycSBmb3IgT1RHIGluIHBo
-eV9pbml0ICovDQo+ID4gMDhiMGFkMzc1Y2E2NjEgZHJpdmVycy9waHkvcmVuZXNhcy9waHktcmNh
-ci1nZW4zLXVzYjIuYyBZb3NoaWhpcm8gU2hpbW9kYSAyMDIwLTA3LTE3ICA2NzUgICAgICAgY2hh
-bm5lbC0+aXJxID0NCj4gcGxhdGZvcm1fZ2V0X2lycV9vcHRpb25hbChwZGV2LCAwKTsNCj4gPiA1
-NDliNmI1NWIwMDU1OCBkcml2ZXJzL3BoeS9yZW5lc2FzL3BoeS1yY2FyLWdlbjMtdXNiMi5jIFlv
-c2hpaGlybyBTaGltb2RhIDIwMTktMDQtMTEgIDY3NiAgICAgICBjaGFubmVsLT5kcl9tb2RlID0N
-Cj4gcmNhcl9nZW4zX2dldF9kcl9tb2RlKGRldi0+b2Zfbm9kZSk7DQo+ID4gNzM4MDFiOTBhMzhm
-ZjEgZHJpdmVycy9waHkvcmVuZXNhcy9waHktcmNhci1nZW4zLXVzYjIuYyBZb3NoaWhpcm8gU2hp
-bW9kYSAyMDE4LTA5LTIxICA2NzcgICAgICAgaWYNCj4gKGNoYW5uZWwtPmRyX21vZGUgIT0gVVNC
-X0RSX01PREVfVU5LTk9XTikgew0KPiA+IDdlMDU0MGY0MTMzMmNiIGRyaXZlcnMvcGh5L3JlbmVz
-YXMvcGh5LXJjYXItZ2VuMy11c2IyLmMgWW9zaGloaXJvIFNoaW1vZGEgMjAxNy0xMC0xMiAgNjc4
-ICAgICAgICAgICAgICAgaW50IHJldDsNCj4gPg0KPiA+IEkgd291bGQgZGVsZXRlIHRoaXMgInJl
-dCIgZGVjbGFyYXRpb24uDQo+DQo+IEFncmVlZC4NCg0KSSBnb3QgaXQuDQoNCj4gPg0KPiA+IDdl
-MDU0MGY0MTMzMmNiIGRyaXZlcnMvcGh5L3JlbmVzYXMvcGh5LXJjYXItZ2VuMy11c2IyLmMgWW9z
-aGloaXJvIFNoaW1vZGEgMjAxNy0xMC0xMiAgNjc5DQo+ID4gOTc5YjUxOWM3YTFiZmYgZHJpdmVy
-cy9waHkvcmVuZXNhcy9waHktcmNhci1nZW4zLXVzYjIuYyBZb3NoaWhpcm8gU2hpbW9kYSAyMDE4
-LTA5LTIxICA2ODANCj4gY2hhbm5lbC0+aXNfb3RnX2NoYW5uZWwgPSB0cnVlOw0KPiA+IDhkZGUw
-MDA4ZmZjOWUyIGRyaXZlcnMvcGh5L3JlbmVzYXMvcGh5LXJjYXItZ2VuMy11c2IyLmMgWW9zaGlo
-aXJvIFNoaW1vZGEgMjAxOC0wOS0yMSAgNjgxDQo+IGNoYW5uZWwtPnVzZXNfb3RnX3BpbnMgPSAh
-b2ZfcHJvcGVydHlfcmVhZF9ib29sKGRldi0+b2Zfbm9kZSwNCj4gPiA4ZGRlMDAwOGZmYzllMiBk
-cml2ZXJzL3BoeS9yZW5lc2FzL3BoeS1yY2FyLWdlbjMtdXNiMi5jIFlvc2hpaGlybyBTaGltb2Rh
-IDIwMTgtMDktMjEgIDY4Mg0KPiAicmVuZXNhcyxuby1vdGctcGlucyIpOw0KPiA+IDJiMzg1NDNj
-OGRiMWM3IGRyaXZlcnMvcGh5L3BoeS1yY2FyLWdlbjMtdXNiMi5jICAgICAgICAgWW9zaGloaXJv
-IFNoaW1vZGEgMjAxNi0wNC0yOSAgNjgzDQo+IGNoYW5uZWwtPmV4dGNvbiA9IGRldm1fZXh0Y29u
-X2Rldl9hbGxvY2F0ZShkZXYsDQo+ID4gMmIzODU0M2M4ZGIxYzcgZHJpdmVycy9waHkvcGh5LXJj
-YXItZ2VuMy11c2IyLmMgICAgICAgICBZb3NoaWhpcm8gU2hpbW9kYSAyMDE2LTA0LTI5ICA2ODQN
-Cj4gcmNhcl9nZW4zX3BoeV9jYWJsZSk7DQo+ID4gMmIzODU0M2M4ZGIxYzcgZHJpdmVycy9waHkv
-cGh5LXJjYXItZ2VuMy11c2IyLmMgICAgICAgICBZb3NoaWhpcm8gU2hpbW9kYSAyMDE2LTA0LTI5
-ICA2ODUgICAgICAgICAgICAgICBpZg0KPiAoSVNfRVJSKGNoYW5uZWwtPmV4dGNvbikpDQo+ID4g
-MmIzODU0M2M4ZGIxYzcgZHJpdmVycy9waHkvcGh5LXJjYXItZ2VuMy11c2IyLmMgICAgICAgICBZ
-b3NoaWhpcm8gU2hpbW9kYSAyMDE2LTA0LTI5ICA2ODYNCj4gcmV0dXJuIFBUUl9FUlIoY2hhbm5l
-bC0+ZXh0Y29uKTsNCj4gPiAyYjM4NTQzYzhkYjFjNyBkcml2ZXJzL3BoeS9waHktcmNhci1nZW4z
-LXVzYjIuYyAgICAgICAgIFlvc2hpaGlybyBTaGltb2RhIDIwMTYtMDQtMjkgIDY4Nw0KPiA+IDJi
-Mzg1NDNjOGRiMWM3IGRyaXZlcnMvcGh5L3BoeS1yY2FyLWdlbjMtdXNiMi5jICAgICAgICAgWW9z
-aGloaXJvIFNoaW1vZGEgMjAxNi0wNC0yOSAgNjg4ICAgICAgICAgICAgICAgcmV0ID0NCj4gZGV2
-bV9leHRjb25fZGV2X3JlZ2lzdGVyKGRldiwgY2hhbm5lbC0+ZXh0Y29uKTsNCj4gPiAyYjM4NTQz
-YzhkYjFjNyBkcml2ZXJzL3BoeS9waHktcmNhci1nZW4zLXVzYjIuYyAgICAgICAgIFlvc2hpaGly
-byBTaGltb2RhIDIwMTYtMDQtMjkgIDY4OSAgICAgICAgICAgICAgIGlmIChyZXQgPCAwKQ0KPiB7
-DQo+ID4gMmIzODU0M2M4ZGIxYzcgZHJpdmVycy9waHkvcGh5LXJjYXItZ2VuMy11c2IyLmMgICAg
-ICAgICBZb3NoaWhpcm8gU2hpbW9kYSAyMDE2LTA0LTI5ICA2OTANCj4gZGV2X2VycihkZXYsICJG
-YWlsZWQgdG8gcmVnaXN0ZXIgZXh0Y29uXG4iKTsNCj4gPiAyYjM4NTQzYzhkYjFjNyBkcml2ZXJz
-L3BoeS9waHktcmNhci1nZW4zLXVzYjIuYyAgICAgICAgIFlvc2hpaGlybyBTaGltb2RhIDIwMTYt
-MDQtMjkgIDY5MQ0KPiByZXR1cm4gcmV0Ow0KPiA+IDJiMzg1NDNjOGRiMWM3IGRyaXZlcnMvcGh5
-L3BoeS1yY2FyLWdlbjMtdXNiMi5jICAgICAgICAgWW9zaGloaXJvIFNoaW1vZGEgMjAxNi0wNC0y
-OSAgNjkyICAgICAgICAgICAgICAgfQ0KPiA+IGYzYjVhOGQ5YjUwZDcxIGRyaXZlcnMvcGh5L3Bo
-eS1yY2FyLWdlbjMtdXNiMi5jICAgICAgICAgWW9zaGloaXJvIFNoaW1vZGEgMjAxNS0xMS0zMCAg
-NjkzICAgICAgIH0NCj4gPiBmM2I1YThkOWI1MGQ3MSBkcml2ZXJzL3BoeS9waHktcmNhci1nZW4z
-LXVzYjIuYyAgICAgICAgIFlvc2hpaGlybyBTaGltb2RhIDIwMTUtMTEtMzAgIDY5NA0KPiA+IDQ0
-MWE2ODFiODg0MzQ3IGRyaXZlcnMvcGh5L3BoeS1yY2FyLWdlbjMtdXNiMi5jICAgICAgICAgWW9z
-aGloaXJvIFNoaW1vZGEgMjAxNy0wMy0xNCAgNjk1ICAgICAgIC8qDQo+ID4gNDQxYTY4MWI4ODQz
-NDcgZHJpdmVycy9waHkvcGh5LXJjYXItZ2VuMy11c2IyLmMgICAgICAgICBZb3NoaWhpcm8gU2hp
-bW9kYSAyMDE3LTAzLTE0ICA2OTYgICAgICAgICogZGV2bV9waHlfY3JlYXRlKCkNCj4gd2lsbCBj
-YWxsIHBtX3J1bnRpbWVfZW5hYmxlKCZwaHktPmRldik7DQo+ID4gNDQxYTY4MWI4ODQzNDcgZHJp
-dmVycy9waHkvcGh5LXJjYXItZ2VuMy11c2IyLmMgICAgICAgICBZb3NoaWhpcm8gU2hpbW9kYSAy
-MDE3LTAzLTE0ICA2OTcgICAgICAgICogQW5kIHRoZW4sIHBoeS1jb3JlDQo+IHdpbGwgbWFuYWdl
-IHJ1bnRpbWUgcG0gZm9yIHRoaXMgZGV2aWNlLg0KPiA+IDQ0MWE2ODFiODg0MzQ3IGRyaXZlcnMv
-cGh5L3BoeS1yY2FyLWdlbjMtdXNiMi5jICAgICAgICAgWW9zaGloaXJvIFNoaW1vZGEgMjAxNy0w
-My0xNCAgNjk4ICAgICAgICAqLw0KPiA+IDQ0MWE2ODFiODg0MzQ3IGRyaXZlcnMvcGh5L3BoeS1y
-Y2FyLWdlbjMtdXNiMi5jICAgICAgICAgWW9zaGloaXJvIFNoaW1vZGEgMjAxNy0wMy0xNCAgNjk5
-DQo+IHBtX3J1bnRpbWVfZW5hYmxlKGRldik7DQo+ID4gYjA1MTJhNmVjMGNkNmQgZHJpdmVycy9w
-aHkvcmVuZXNhcy9waHktcmNhci1nZW4zLXVzYjIuYyBCaWp1IERhcyAgICAgICAgICAyMDIxLTA3
-LTI3ICA3MDANCj4gPiBiMDUxMmE2ZWMwY2Q2ZCBkcml2ZXJzL3BoeS9yZW5lc2FzL3BoeS1yY2Fy
-LWdlbjMtdXNiMi5jIEJpanUgRGFzICAgICAgICAgIDIwMjEtMDctMjcgIDcwMSAgICAgICBwaHlf
-ZGF0YSA9DQo+IG9mX2RldmljZV9nZXRfbWF0Y2hfZGF0YShkZXYpOw0KPiA+IGIwNTEyYTZlYzBj
-ZDZkIGRyaXZlcnMvcGh5L3JlbmVzYXMvcGh5LXJjYXItZ2VuMy11c2IyLmMgQmlqdSBEYXMgICAg
-ICAgICAgMjAyMS0wNy0yNyAgNzAyICAgICAgIGlmICghcGh5X2RhdGEpIHsNCj4gPiA1MWUzMzlk
-ZWFiMWU1MSBkcml2ZXJzL3BoeS9yZW5lc2FzL3BoeS1yY2FyLWdlbjMtdXNiMi5jIFdhbmcgTGkg
-ICAgICAgICAgIDIwMjAtMTEtMjYgIDcwMyAgICAgICAgICAgICAgIHJldCA9IC1FSU5WQUw7DQo+
-ID4gNTFlMzM5ZGVhYjFlNTEgZHJpdmVycy9waHkvcmVuZXNhcy9waHktcmNhci1nZW4zLXVzYjIu
-YyBXYW5nIExpICAgICAgICAgICAyMDIwLTExLTI2ICA3MDQgICAgICAgICAgICAgICBnb3RvIGVy
-cm9yOw0KPiA+IDUxZTMzOWRlYWIxZTUxIGRyaXZlcnMvcGh5L3JlbmVzYXMvcGh5LXJjYXItZ2Vu
-My11c2IyLmMgV2FuZyBMaSAgICAgICAgICAgMjAyMC0xMS0yNiAgNzA1ICAgICAgIH0NCj4gPiA1
-ZDgwNDJlOTVmZDQ3MSBkcml2ZXJzL3BoeS9yZW5lc2FzL3BoeS1yY2FyLWdlbjMtdXNiMi5jIEJp
-anUgRGFzICAgICAgICAgIDIwMTktMDQtMTAgIDcwNg0KPiA+IGIwNTEyYTZlYzBjZDZkIGRyaXZl
-cnMvcGh5L3JlbmVzYXMvcGh5LXJjYXItZ2VuMy11c2IyLmMgQmlqdSBEYXMgICAgICAgICAgMjAy
-MS0wNy0yNyAgNzA3DQo+IGNoYW5uZWwtPnNvY19ub19hZHBfY3RybCA9IHBoeV9kYXRhLT5ub19h
-ZHBfY3RybDsNCj4gPiBiMDUxMmE2ZWMwY2Q2ZCBkcml2ZXJzL3BoeS9yZW5lc2FzL3BoeS1yY2Fy
-LWdlbjMtdXNiMi5jIEJpanUgRGFzICAgICAgICAgIDIwMjEtMDctMjcgIDcwOCAgICAgICBpZg0K
-PiAocGh5X2RhdGEtPm5vX2FkcF9jdHJsKQ0KPiA+IGIwNTEyYTZlYzBjZDZkIGRyaXZlcnMvcGh5
-L3JlbmVzYXMvcGh5LXJjYXItZ2VuMy11c2IyLmMgQmlqdSBEYXMgICAgICAgICAgMjAyMS0wNy0y
-NyAgNzA5DQo+IGNoYW5uZWwtPm9iaW50X2VuYWJsZV9iaXRzID0gVVNCMl9PQklOVF9JRENIR19F
-TjsNCj4gPiBiMDUxMmE2ZWMwY2Q2ZCBkcml2ZXJzL3BoeS9yZW5lc2FzL3BoeS1yY2FyLWdlbjMt
-dXNiMi5jIEJpanUgRGFzICAgICAgICAgIDIwMjEtMDctMjcgIDcxMA0KPiA+IDVjOWRjNjM3OWY1
-MzljIGRyaXZlcnMvcGh5L3JlbmVzYXMvcGh5LXJjYXItZ2VuMy11c2IyLmMgWW9zaGloaXJvIFNo
-aW1vZGEgMjAxOS0wNi0xMCAgNzExDQo+IG11dGV4X2luaXQoJmNoYW5uZWwtPmxvY2spOw0KPiA+
-IDU0OWI2YjU1YjAwNTU4IGRyaXZlcnMvcGh5L3JlbmVzYXMvcGh5LXJjYXItZ2VuMy11c2IyLmMg
-WW9zaGloaXJvIFNoaW1vZGEgMjAxOS0wNC0xMSAgNzEyICAgICAgIGZvciAoaSA9IDA7IGkgPA0K
-PiBOVU1fT0ZfUEhZUzsgaSsrKSB7DQo+ID4gNTQ5YjZiNTViMDA1NTggZHJpdmVycy9waHkvcmVu
-ZXNhcy9waHktcmNhci1nZW4zLXVzYjIuYyBZb3NoaWhpcm8gU2hpbW9kYSAyMDE5LTA0LTExICA3
-MTMNCj4gY2hhbm5lbC0+cnBoeXNbaV0ucGh5ID0gZGV2bV9waHlfY3JlYXRlKGRldiwgTlVMTCwN
-Cj4gPiBiMDUxMmE2ZWMwY2Q2ZCBkcml2ZXJzL3BoeS9yZW5lc2FzL3BoeS1yY2FyLWdlbjMtdXNi
-Mi5jIEJpanUgRGFzICAgICAgICAgIDIwMjEtMDctMjcgIDcxNA0KPiBwaHlfZGF0YS0+cGh5X3Vz
-YjJfb3BzKTsNCj4gPiA1NDliNmI1NWIwMDU1OCBkcml2ZXJzL3BoeS9yZW5lc2FzL3BoeS1yY2Fy
-LWdlbjMtdXNiMi5jIFlvc2hpaGlybyBTaGltb2RhIDIwMTktMDQtMTEgIDcxNSAgICAgICAgICAg
-ICAgIGlmDQo+IChJU19FUlIoY2hhbm5lbC0+cnBoeXNbaV0ucGh5KSkgew0KPiA+IGYzYjVhOGQ5
-YjUwZDcxIGRyaXZlcnMvcGh5L3BoeS1yY2FyLWdlbjMtdXNiMi5jICAgICAgICAgWW9zaGloaXJv
-IFNoaW1vZGEgMjAxNS0xMS0zMCAgNzE2DQo+IGRldl9lcnIoZGV2LCAiRmFpbGVkIHRvIGNyZWF0
-ZSBVU0IyIFBIWVxuIik7DQo+ID4gNTQ5YjZiNTViMDA1NTggZHJpdmVycy9waHkvcmVuZXNhcy9w
-aHktcmNhci1nZW4zLXVzYjIuYyBZb3NoaWhpcm8gU2hpbW9kYSAyMDE5LTA0LTExICA3MTcgICAg
-ICAgICAgICAgICAgICAgICAgIHJldA0KPiA9IFBUUl9FUlIoY2hhbm5lbC0+cnBoeXNbaV0ucGh5
-KTsNCj4gPiA0NDFhNjgxYjg4NDM0NyBkcml2ZXJzL3BoeS9waHktcmNhci1nZW4zLXVzYjIuYyAg
-ICAgICAgIFlvc2hpaGlybyBTaGltb2RhIDIwMTctMDMtMTQgIDcxOCAgICAgICAgICAgICAgICAg
-ICAgICAgZ290bw0KPiBlcnJvcjsNCj4gPiBmM2I1YThkOWI1MGQ3MSBkcml2ZXJzL3BoeS9waHkt
-cmNhci1nZW4zLXVzYjIuYyAgICAgICAgIFlvc2hpaGlybyBTaGltb2RhIDIwMTUtMTEtMzAgIDcx
-OSAgICAgICAgICAgICAgIH0NCj4gPiA1NDliNmI1NWIwMDU1OCBkcml2ZXJzL3BoeS9yZW5lc2Fz
-L3BoeS1yY2FyLWdlbjMtdXNiMi5jIFlvc2hpaGlybyBTaGltb2RhIDIwMTktMDQtMTEgIDcyMA0K
-PiBjaGFubmVsLT5ycGh5c1tpXS5jaCA9IGNoYW5uZWw7DQo+ID4gNTQ5YjZiNTViMDA1NTggZHJp
-dmVycy9waHkvcmVuZXNhcy9waHktcmNhci1nZW4zLXVzYjIuYyBZb3NoaWhpcm8gU2hpbW9kYSAy
-MDE5LTA0LTExICA3MjENCj4gY2hhbm5lbC0+cnBoeXNbaV0uaW50X2VuYWJsZV9iaXRzID0gcmNh
-cl9nZW4zX2ludF9lbmFibGVbaV07DQo+ID4gNTQ5YjZiNTViMDA1NTggZHJpdmVycy9waHkvcmVu
-ZXNhcy9waHktcmNhci1nZW4zLXVzYjIuYyBZb3NoaWhpcm8gU2hpbW9kYSAyMDE5LTA0LTExICA3
-MjINCj4gcGh5X3NldF9kcnZkYXRhKGNoYW5uZWwtPnJwaHlzW2ldLnBoeSwgJmNoYW5uZWwtPnJw
-aHlzW2ldKTsNCj4gPiA1NDliNmI1NWIwMDU1OCBkcml2ZXJzL3BoeS9yZW5lc2FzL3BoeS1yY2Fy
-LWdlbjMtdXNiMi5jIFlvc2hpaGlybyBTaGltb2RhIDIwMTktMDQtMTEgIDcyMyAgICAgICB9DQo+
-ID4gZjNiNWE4ZDliNTBkNzEgZHJpdmVycy9waHkvcGh5LXJjYXItZ2VuMy11c2IyLmMgICAgICAg
-ICBZb3NoaWhpcm8gU2hpbW9kYSAyMDE1LTExLTMwICA3MjQNCj4gPiA2ZGNmZDdjMzAwYmYzNSBk
-cml2ZXJzL3BoeS9waHktcmNhci1nZW4zLXVzYjIuYyAgICAgICAgIFlvc2hpaGlybyBTaGltb2Rh
-IDIwMTYtMDMtMDMgIDcyNSAgICAgICBjaGFubmVsLT52YnVzID0NCj4gZGV2bV9yZWd1bGF0b3Jf
-Z2V0X29wdGlvbmFsKGRldiwgInZidXMiKTsNCj4gPiA2ZGNmZDdjMzAwYmYzNSBkcml2ZXJzL3Bo
-eS9waHktcmNhci1nZW4zLXVzYjIuYyAgICAgICAgIFlvc2hpaGlybyBTaGltb2RhIDIwMTYtMDMt
-MDMgIDcyNiAgICAgICBpZg0KPiAoSVNfRVJSKGNoYW5uZWwtPnZidXMpKSB7DQo+ID4gNDQxYTY4
-MWI4ODQzNDcgZHJpdmVycy9waHkvcGh5LXJjYXItZ2VuMy11c2IyLmMgICAgICAgICBZb3NoaWhp
-cm8gU2hpbW9kYSAyMDE3LTAzLTE0ICA3MjcgICAgICAgICAgICAgICBpZg0KPiAoUFRSX0VSUihj
-aGFubmVsLT52YnVzKSA9PSAtRVBST0JFX0RFRkVSKSB7DQo+ID4gNDQxYTY4MWI4ODQzNDcgZHJp
-dmVycy9waHkvcGh5LXJjYXItZ2VuMy11c2IyLmMgICAgICAgICBZb3NoaWhpcm8gU2hpbW9kYSAy
-MDE3LTAzLTE0ICA3MjggICAgICAgICAgICAgICAgICAgICAgIHJldA0KPiA9IFBUUl9FUlIoY2hh
-bm5lbC0+dmJ1cyk7DQo+ID4gNDQxYTY4MWI4ODQzNDcgZHJpdmVycy9waHkvcGh5LXJjYXItZ2Vu
-My11c2IyLmMgICAgICAgICBZb3NoaWhpcm8gU2hpbW9kYSAyMDE3LTAzLTE0ICA3MjkgICAgICAg
-ICAgICAgICAgICAgICAgIGdvdG8NCj4gZXJyb3I7DQo+ID4gNDQxYTY4MWI4ODQzNDcgZHJpdmVy
-cy9waHkvcGh5LXJjYXItZ2VuMy11c2IyLmMgICAgICAgICBZb3NoaWhpcm8gU2hpbW9kYSAyMDE3
-LTAzLTE0ICA3MzAgICAgICAgICAgICAgICB9DQo+ID4gNmRjZmQ3YzMwMGJmMzUgZHJpdmVycy9w
-aHkvcGh5LXJjYXItZ2VuMy11c2IyLmMgICAgICAgICBZb3NoaWhpcm8gU2hpbW9kYSAyMDE2LTAz
-LTAzICA3MzENCj4gY2hhbm5lbC0+dmJ1cyA9IE5VTEw7DQo+ID4gNmRjZmQ3YzMwMGJmMzUgZHJp
-dmVycy9waHkvcGh5LXJjYXItZ2VuMy11c2IyLmMgICAgICAgICBZb3NoaWhpcm8gU2hpbW9kYSAy
-MDE2LTAzLTAzICA3MzIgICAgICAgfQ0KPiA+IDZkY2ZkN2MzMDBiZjM1IGRyaXZlcnMvcGh5L3Bo
-eS1yY2FyLWdlbjMtdXNiMi5jICAgICAgICAgWW9zaGloaXJvIFNoaW1vZGEgMjAxNi0wMy0wMyAg
-NzMzDQo+ID4gOWJiODY3NzdmYjcxZWUgZHJpdmVycy9waHkvcGh5LXJjYXItZ2VuMy11c2IyLmMg
-ICAgICAgICBZb3NoaWhpcm8gU2hpbW9kYSAyMDE2LTExLTA5ICA3MzQNCj4gcGxhdGZvcm1fc2V0
-X2RydmRhdGEocGRldiwgY2hhbm5lbCk7DQo+ID4gOTJmZWMxYzI3Y2FhN2IgZHJpdmVycy9waHkv
-cmVuZXNhcy9waHktcmNhci1nZW4zLXVzYjIuYyBZb3NoaWhpcm8gU2hpbW9kYSAyMDE5LTA0LTEx
-ICA3MzUgICAgICAgY2hhbm5lbC0+ZGV2ID0gZGV2Ow0KPiA+IGYzYjVhOGQ5YjUwZDcxIGRyaXZl
-cnMvcGh5L3BoeS1yY2FyLWdlbjMtdXNiMi5jICAgICAgICAgWW9zaGloaXJvIFNoaW1vZGEgMjAx
-NS0xMS0zMCAgNzM2DQo+ID4gNTQ5YjZiNTViMDA1NTggZHJpdmVycy9waHkvcmVuZXNhcy9waHkt
-cmNhci1nZW4zLXVzYjIuYyBZb3NoaWhpcm8gU2hpbW9kYSAyMDE5LTA0LTExICA3MzcgICAgICAg
-cHJvdmlkZXIgPQ0KPiBkZXZtX29mX3BoeV9wcm92aWRlcl9yZWdpc3RlcihkZXYsIHJjYXJfZ2Vu
-M19waHlfdXNiMl94bGF0ZSk7DQo+ID4gOWJiODY3NzdmYjcxZWUgZHJpdmVycy9waHkvcGh5LXJj
-YXItZ2VuMy11c2IyLmMgICAgICAgICBZb3NoaWhpcm8gU2hpbW9kYSAyMDE2LTExLTA5ICA3Mzgg
-ICAgICAgaWYgKElTX0VSUihwcm92aWRlcikpDQo+IHsNCj4gPiBmM2I1YThkOWI1MGQ3MSBkcml2
-ZXJzL3BoeS9waHktcmNhci1nZW4zLXVzYjIuYyAgICAgICAgIFlvc2hpaGlybyBTaGltb2RhIDIw
-MTUtMTEtMzAgIDczOSAgICAgICAgICAgICAgIGRldl9lcnIoZGV2LA0KPiAiRmFpbGVkIHRvIHJl
-Z2lzdGVyIFBIWSBwcm92aWRlclxuIik7DQo+ID4gNDQxYTY4MWI4ODQzNDcgZHJpdmVycy9waHkv
-cGh5LXJjYXItZ2VuMy11c2IyLmMgICAgICAgICBZb3NoaWhpcm8gU2hpbW9kYSAyMDE3LTAzLTE0
-ICA3NDAgICAgICAgICAgICAgICByZXQgPQ0KPiBQVFJfRVJSKHByb3ZpZGVyKTsNCj4gPiA0NDFh
-NjgxYjg4NDM0NyBkcml2ZXJzL3BoeS9waHktcmNhci1nZW4zLXVzYjIuYyAgICAgICAgIFlvc2hp
-aGlybyBTaGltb2RhIDIwMTctMDMtMTQgIDc0MSAgICAgICAgICAgICAgIGdvdG8gZXJyb3I7DQo+
-ID4gOTc5YjUxOWM3YTFiZmYgZHJpdmVycy9waHkvcmVuZXNhcy9waHktcmNhci1nZW4zLXVzYjIu
-YyBZb3NoaWhpcm8gU2hpbW9kYSAyMDE4LTA5LTIxICA3NDIgICAgICAgfSBlbHNlIGlmDQo+IChj
-aGFubmVsLT5pc19vdGdfY2hhbm5lbCkgew0KPiA+IDliYjg2Nzc3ZmI3MWVlIGRyaXZlcnMvcGh5
-L3BoeS1yY2FyLWdlbjMtdXNiMi5jICAgICAgICAgWW9zaGloaXJvIFNoaW1vZGEgMjAxNi0xMS0w
-OSAgNzQzICAgICAgICAgICAgICAgaW50IHJldDsNCj4gPg0KPiA+IFNoYWRvdyByZXQgZGVjbGFy
-YXRpb24uDQoNCkknbGwgZHJvcCB0aGlzICJpbnQgcmV0IiB0b28uDQoNCj4gPiA5YmI4Njc3N2Zi
-NzFlZSBkcml2ZXJzL3BoeS9waHktcmNhci1nZW4zLXVzYjIuYyAgICAgICAgIFlvc2hpaGlybyBT
-aGltb2RhIDIwMTYtMTEtMDkgIDc0NA0KPiA+IDliYjg2Nzc3ZmI3MWVlIGRyaXZlcnMvcGh5L3Bo
-eS1yY2FyLWdlbjMtdXNiMi5jICAgICAgICAgWW9zaGloaXJvIFNoaW1vZGEgMjAxNi0xMS0wOSAg
-NzQ1ICAgICAgICAgICAgICAgcmV0ID0NCj4gZGV2aWNlX2NyZWF0ZV9maWxlKGRldiwgJmRldl9h
-dHRyX3JvbGUpOw0KPiA+IDliYjg2Nzc3ZmI3MWVlIGRyaXZlcnMvcGh5L3BoeS1yY2FyLWdlbjMt
-dXNiMi5jICAgICAgICAgWW9zaGloaXJvIFNoaW1vZGEgMjAxNi0xMS0wOSAgNzQ2ICAgICAgICAg
-ICAgICAgaWYgKHJldCA8IDApDQo+ID4NCj4gPiBUaGUgInJldCIgaGVyZSBpcyB0aGUgc2hhZG93
-IHJldCBzbyB3ZSBlbmQgdXAgcmV0dXJuaW5nIHN1Y2Nlc3MuDQo+DQo+IE9vcHMuLi4NCg0KSSBk
-aWRuJ3QgcmVhbGl6ZSB0aGF0Li4uIEknbGwgc3VibWl0IGEgZml4ZWQgcGF0Y2ggc29vbi4NCg0K
-QmVzdCByZWdhcmRzLA0KWW9zaGloaXJvIFNoaW1vZGENCg0KPiA+DQo+ID4gNDQxYTY4MWI4ODQz
-NDcgZHJpdmVycy9waHkvcGh5LXJjYXItZ2VuMy11c2IyLmMgICAgICAgICBZb3NoaWhpcm8gU2hp
-bW9kYSAyMDE3LTAzLTE0IEA3NDcgICAgICAgICAgICAgICAgICAgICAgIGdvdG8NCj4gZXJyb3I7
-DQo+ID4gOWJiODY3NzdmYjcxZWUgZHJpdmVycy9waHkvcGh5LXJjYXItZ2VuMy11c2IyLmMgICAg
-ICAgICBZb3NoaWhpcm8gU2hpbW9kYSAyMDE2LTExLTA5ICA3NDggICAgICAgfQ0KPiA+IGYzYjVh
-OGQ5YjUwZDcxIGRyaXZlcnMvcGh5L3BoeS1yY2FyLWdlbjMtdXNiMi5jICAgICAgICAgWW9zaGlo
-aXJvIFNoaW1vZGEgMjAxNS0xMS0zMCAgNzQ5DQo+ID4gNDQxYTY4MWI4ODQzNDcgZHJpdmVycy9w
-aHkvcGh5LXJjYXItZ2VuMy11c2IyLmMgICAgICAgICBZb3NoaWhpcm8gU2hpbW9kYSAyMDE3LTAz
-LTE0ICA3NTAgICAgICAgcmV0dXJuIDA7DQo+ID4gNDQxYTY4MWI4ODQzNDcgZHJpdmVycy9waHkv
-cGh5LXJjYXItZ2VuMy11c2IyLmMgICAgICAgICBZb3NoaWhpcm8gU2hpbW9kYSAyMDE3LTAzLTE0
-ICA3NTENCj4gPiA0NDFhNjgxYjg4NDM0NyBkcml2ZXJzL3BoeS9waHktcmNhci1nZW4zLXVzYjIu
-YyAgICAgICAgIFlvc2hpaGlybyBTaGltb2RhIDIwMTctMDMtMTQgIDc1MiAgZXJyb3I6DQo+ID4g
-NDQxYTY4MWI4ODQzNDcgZHJpdmVycy9waHkvcGh5LXJjYXItZ2VuMy11c2IyLmMgICAgICAgICBZ
-b3NoaWhpcm8gU2hpbW9kYSAyMDE3LTAzLTE0ICA3NTMNCj4gcG1fcnVudGltZV9kaXNhYmxlKGRl
-dik7DQo+ID4gNDQxYTY4MWI4ODQzNDcgZHJpdmVycy9waHkvcGh5LXJjYXItZ2VuMy11c2IyLmMg
-ICAgICAgICBZb3NoaWhpcm8gU2hpbW9kYSAyMDE3LTAzLTE0ICA3NTQNCj4gPiA0NDFhNjgxYjg4
-NDM0NyBkcml2ZXJzL3BoeS9waHktcmNhci1nZW4zLXVzYjIuYyAgICAgICAgIFlvc2hpaGlybyBT
-aGltb2RhIDIwMTctMDMtMTQgIDc1NSAgICAgICByZXR1cm4gcmV0Ow0KPiA+IGYzYjVhOGQ5YjUw
-ZDcxIGRyaXZlcnMvcGh5L3BoeS1yY2FyLWdlbjMtdXNiMi5jICAgICAgICAgWW9zaGloaXJvIFNo
-aW1vZGEgMjAxNS0xMS0zMCAgNzU2ICB9DQo+ID4NCj4gPiAtLQ0KPiA+IDAtREFZIENJIEtlcm5l
-bCBUZXN0IFNlcnZpY2UNCj4gPg0KPiBodHRwczovL2dpdGh1Yi5jb20vaW50ZWwvbGtwLXRlc3Rz
-L3dpa2kNCj4gJTdDeW9zaGloaXJvLnNoaW1vZGEudWglNDByZW5lc2FzLmNvbSU3Q2Q5ZDliZjg5
-ODRkZTQwYzlhMGE3MDhkYzBiYTI2OGZjJTdDNTNkODI1NzFkYTE5NDdlNDljYjQ2MjVhMTY2YTRh
-MmElN0MwJTdDMCUNCj4gN0M2MzgzOTgwMzkzODU2OTE3MDAlN0NVbmtub3duJTdDVFdGcGJHWnNi
-M2Q4ZXlKV0lqb2lNQzR3TGpBd01EQWlMQ0pRSWpvaVYybHVNeklpTENKQlRpSTZJazFoYVd3aUxD
-SlhWQ0k2TW4wJTNEJTdDMzANCj4gMDAlN0MlN0MlN0Mmc2RhdGE9a2owMElsNU91bVVmWHhqOEU5
-OTdsVVBjeEdDbXp3ZENWd0JIRzFtZHFOWSUzRCZyZXNlcnZlZD0wDQo+DQo+IEdye29ldGplLGVl
-dGluZ31zLA0KPg0KPiAgICAgICAgICAgICAgICAgICAgICAgICBHZWVydA0KPg0KPiAtLQ0KPiBH
-ZWVydCBVeXR0ZXJob2V2ZW4gLS0gVGhlcmUncyBsb3RzIG9mIExpbnV4IGJleW9uZCBpYTMyIC0t
-IGdlZXJ0QGxpbnV4LW02OGsub3JnDQo+DQo+IEluIHBlcnNvbmFsIGNvbnZlcnNhdGlvbnMgd2l0
-aCB0ZWNobmljYWwgcGVvcGxlLCBJIGNhbGwgbXlzZWxmIGEgaGFja2VyLiBCdXQNCj4gd2hlbiBJ
-J20gdGFsa2luZyB0byBqb3VybmFsaXN0cyBJIGp1c3Qgc2F5ICJwcm9ncmFtbWVyIiBvciBzb21l
-dGhpbmcgbGlrZSB0aGF0Lg0KPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIC0tIExp
-bnVzIFRvcnZhbGRzDQo=
+Hi James
+
+On 04/01/2024 16:27, James Clark wrote:
+> Add separate definitions for ELx and EL2 as TRFCR_EL1 doesn't have CX.
+> This also mirrors the previous definition so no code change is required.
+> 
+> Also add TRFCR_EL12 which will start to be used in a later commit.
+> 
+> Unfortunately, to avoid breaking the Perf build with duplicate
+> definition errors, the tools copy of the sysreg.h header needs to be
+> updated at the same time rather than the usual second commit. This is
+> because the generated version of sysreg
+> (arch/arm64/include/generated/asm/sysreg-defs.h), is currently shared
+> between the kernel and tools and not copied.
+> 
+> Because the new version of sysreg.h includes kasan-tags.h, that file
+> also now needs to be copied into tools.
+
+Is it possible to split the patch such that, tools/sysreg is updated to
+match the existing kernel headers first and then add the TRFCR changes ?
+This looks like a lot of unrelated changes.
+
+Suzuki
+
+
+> 
+> Signed-off-by: James Clark <james.clark@arm.com>
+> ---
+>   arch/arm64/include/asm/sysreg.h       |  12 -
+>   arch/arm64/tools/sysreg               |  41 +++
+>   tools/arch/arm64/include/asm/sysreg.h | 345 ++++++++++++++++++++++++--
+>   tools/include/linux/kasan-tags.h      |  15 ++
+>   4 files changed, 387 insertions(+), 26 deletions(-)
+>   create mode 100644 tools/include/linux/kasan-tags.h
+> 
+> diff --git a/arch/arm64/include/asm/sysreg.h b/arch/arm64/include/asm/sysreg.h
+> index 5e65f51c10d2..92dfb41af018 100644
+> --- a/arch/arm64/include/asm/sysreg.h
+> +++ b/arch/arm64/include/asm/sysreg.h
+> @@ -280,8 +280,6 @@
+>   #define SYS_RGSR_EL1			sys_reg(3, 0, 1, 0, 5)
+>   #define SYS_GCR_EL1			sys_reg(3, 0, 1, 0, 6)
+>   
+> -#define SYS_TRFCR_EL1			sys_reg(3, 0, 1, 2, 1)
+> -
+>   #define SYS_TCR_EL1			sys_reg(3, 0, 2, 0, 2)
+>   
+>   #define SYS_APIAKEYLO_EL1		sys_reg(3, 0, 2, 1, 0)
+> @@ -499,7 +497,6 @@
+>   #define SYS_VTTBR_EL2			sys_reg(3, 4, 2, 1, 0)
+>   #define SYS_VTCR_EL2			sys_reg(3, 4, 2, 1, 2)
+>   
+> -#define SYS_TRFCR_EL2			sys_reg(3, 4, 1, 2, 1)
+>   #define SYS_VNCR_EL2			sys_reg(3, 4, 2, 2, 0)
+>   #define SYS_HAFGRTR_EL2			sys_reg(3, 4, 3, 1, 6)
+>   #define SYS_SPSR_EL2			sys_reg(3, 4, 4, 0, 0)
+> @@ -949,15 +946,6 @@
+>   /* Safe value for MPIDR_EL1: Bit31:RES1, Bit30:U:0, Bit24:MT:0 */
+>   #define SYS_MPIDR_SAFE_VAL	(BIT(31))
+>   
+> -#define TRFCR_ELx_TS_SHIFT		5
+> -#define TRFCR_ELx_TS_MASK		((0x3UL) << TRFCR_ELx_TS_SHIFT)
+> -#define TRFCR_ELx_TS_VIRTUAL		((0x1UL) << TRFCR_ELx_TS_SHIFT)
+> -#define TRFCR_ELx_TS_GUEST_PHYSICAL	((0x2UL) << TRFCR_ELx_TS_SHIFT)
+> -#define TRFCR_ELx_TS_PHYSICAL		((0x3UL) << TRFCR_ELx_TS_SHIFT)
+> -#define TRFCR_EL2_CX			BIT(3)
+> -#define TRFCR_ELx_ExTRE			BIT(1)
+> -#define TRFCR_ELx_E0TRE			BIT(0)
+> -
+>   /* GIC Hypervisor interface registers */
+>   /* ICH_MISR_EL2 bit definitions */
+>   #define ICH_MISR_EOI		(1 << 0)
+> diff --git a/arch/arm64/tools/sysreg b/arch/arm64/tools/sysreg
+> index 96cbeeab4eec..8fe23eac910f 100644
+> --- a/arch/arm64/tools/sysreg
+> +++ b/arch/arm64/tools/sysreg
+> @@ -2634,3 +2634,44 @@ Field	5	F
+>   Field	4	P
+>   Field	3:0	Align
+>   EndSysreg
+> +
+> +SysregFields TRFCR_EL2
+> +Res0	63:7
+> +UnsignedEnum	6:5	TS
+> +	0b0000	USE_TRFCR_EL1_TS
+> +	0b0001	VIRTUAL
+> +	0b0010	GUEST_PHYSICAL
+> +	0b0011	PHYSICAL
+> +EndEnum
+> +Res0	4
+> +Field	3	CX
+> +Res0	2
+> +Field	1	E2TRE
+> +Field	0	E0HTRE
+> +EndSysregFields
+> +
+> +# TRFCR_EL1 doesn't have the CX bit so redefine it without CX instead of
+> +# using a shared definition between TRFCR_EL2 and TRFCR_EL1
+> +SysregFields TRFCR_ELx
+> +Res0	63:7
+> +UnsignedEnum	6:5	TS
+> +	0b0001	VIRTUAL
+> +	0b0010	GUEST_PHYSICAL
+> +	0b0011	PHYSICAL
+> +EndEnum
+> +Res0	4:2
+> +Field	1	ExTRE
+> +Field	0	E0TRE
+> +EndSysregFields
+> +
+> +Sysreg	TRFCR_EL1	3	0	1	2	1
+> +Fields	TRFCR_ELx
+> +EndSysreg
+> +
+> +Sysreg	TRFCR_EL2	3	4	1	2	1
+> +Fields	TRFCR_EL2
+> +EndSysreg
+> +
+> +Sysreg	TRFCR_EL12	3	5	1	2	1
+> +Fields	TRFCR_ELx
+> +EndSysreg
+> diff --git a/tools/arch/arm64/include/asm/sysreg.h b/tools/arch/arm64/include/asm/sysreg.h
+> index ccc13e991376..92dfb41af018 100644
+> --- a/tools/arch/arm64/include/asm/sysreg.h
+> +++ b/tools/arch/arm64/include/asm/sysreg.h
+> @@ -11,6 +11,7 @@
+>   
+>   #include <linux/bits.h>
+>   #include <linux/stringify.h>
+> +#include <linux/kasan-tags.h>
+>   
+>   #include <asm/gpr-num.h>
+>   
+> @@ -123,6 +124,37 @@
+>   #define SYS_DC_CIGSW			sys_insn(1, 0, 7, 14, 4)
+>   #define SYS_DC_CIGDSW			sys_insn(1, 0, 7, 14, 6)
+>   
+> +#define SYS_IC_IALLUIS			sys_insn(1, 0, 7, 1, 0)
+> +#define SYS_IC_IALLU			sys_insn(1, 0, 7, 5, 0)
+> +#define SYS_IC_IVAU			sys_insn(1, 3, 7, 5, 1)
+> +
+> +#define SYS_DC_IVAC			sys_insn(1, 0, 7, 6, 1)
+> +#define SYS_DC_IGVAC			sys_insn(1, 0, 7, 6, 3)
+> +#define SYS_DC_IGDVAC			sys_insn(1, 0, 7, 6, 5)
+> +
+> +#define SYS_DC_CVAC			sys_insn(1, 3, 7, 10, 1)
+> +#define SYS_DC_CGVAC			sys_insn(1, 3, 7, 10, 3)
+> +#define SYS_DC_CGDVAC			sys_insn(1, 3, 7, 10, 5)
+> +
+> +#define SYS_DC_CVAU			sys_insn(1, 3, 7, 11, 1)
+> +
+> +#define SYS_DC_CVAP			sys_insn(1, 3, 7, 12, 1)
+> +#define SYS_DC_CGVAP			sys_insn(1, 3, 7, 12, 3)
+> +#define SYS_DC_CGDVAP			sys_insn(1, 3, 7, 12, 5)
+> +
+> +#define SYS_DC_CVADP			sys_insn(1, 3, 7, 13, 1)
+> +#define SYS_DC_CGVADP			sys_insn(1, 3, 7, 13, 3)
+> +#define SYS_DC_CGDVADP			sys_insn(1, 3, 7, 13, 5)
+> +
+> +#define SYS_DC_CIVAC			sys_insn(1, 3, 7, 14, 1)
+> +#define SYS_DC_CIGVAC			sys_insn(1, 3, 7, 14, 3)
+> +#define SYS_DC_CIGDVAC			sys_insn(1, 3, 7, 14, 5)
+> +
+> +/* Data cache zero operations */
+> +#define SYS_DC_ZVA			sys_insn(1, 3, 7, 4, 1)
+> +#define SYS_DC_GVA			sys_insn(1, 3, 7, 4, 3)
+> +#define SYS_DC_GZVA			sys_insn(1, 3, 7, 4, 4)
+> +
+>   /*
+>    * Automatically generated definitions for system registers, the
+>    * manual encodings below are in the process of being converted to
+> @@ -162,6 +194,84 @@
+>   #define SYS_DBGDTRTX_EL0		sys_reg(2, 3, 0, 5, 0)
+>   #define SYS_DBGVCR32_EL2		sys_reg(2, 4, 0, 7, 0)
+>   
+> +#define SYS_BRBINF_EL1(n)		sys_reg(2, 1, 8, (n & 15), (((n & 16) >> 2) | 0))
+> +#define SYS_BRBINFINJ_EL1		sys_reg(2, 1, 9, 1, 0)
+> +#define SYS_BRBSRC_EL1(n)		sys_reg(2, 1, 8, (n & 15), (((n & 16) >> 2) | 1))
+> +#define SYS_BRBSRCINJ_EL1		sys_reg(2, 1, 9, 1, 1)
+> +#define SYS_BRBTGT_EL1(n)		sys_reg(2, 1, 8, (n & 15), (((n & 16) >> 2) | 2))
+> +#define SYS_BRBTGTINJ_EL1		sys_reg(2, 1, 9, 1, 2)
+> +#define SYS_BRBTS_EL1			sys_reg(2, 1, 9, 0, 2)
+> +
+> +#define SYS_BRBCR_EL1			sys_reg(2, 1, 9, 0, 0)
+> +#define SYS_BRBFCR_EL1			sys_reg(2, 1, 9, 0, 1)
+> +#define SYS_BRBIDR0_EL1			sys_reg(2, 1, 9, 2, 0)
+> +
+> +#define SYS_TRCITECR_EL1		sys_reg(3, 0, 1, 2, 3)
+> +#define SYS_TRCACATR(m)			sys_reg(2, 1, 2, ((m & 7) << 1), (2 | (m >> 3)))
+> +#define SYS_TRCACVR(m)			sys_reg(2, 1, 2, ((m & 7) << 1), (0 | (m >> 3)))
+> +#define SYS_TRCAUTHSTATUS		sys_reg(2, 1, 7, 14, 6)
+> +#define SYS_TRCAUXCTLR			sys_reg(2, 1, 0, 6, 0)
+> +#define SYS_TRCBBCTLR			sys_reg(2, 1, 0, 15, 0)
+> +#define SYS_TRCCCCTLR			sys_reg(2, 1, 0, 14, 0)
+> +#define SYS_TRCCIDCCTLR0		sys_reg(2, 1, 3, 0, 2)
+> +#define SYS_TRCCIDCCTLR1		sys_reg(2, 1, 3, 1, 2)
+> +#define SYS_TRCCIDCVR(m)		sys_reg(2, 1, 3, ((m & 7) << 1), 0)
+> +#define SYS_TRCCLAIMCLR			sys_reg(2, 1, 7, 9, 6)
+> +#define SYS_TRCCLAIMSET			sys_reg(2, 1, 7, 8, 6)
+> +#define SYS_TRCCNTCTLR(m)		sys_reg(2, 1, 0, (4 | (m & 3)), 5)
+> +#define SYS_TRCCNTRLDVR(m)		sys_reg(2, 1, 0, (0 | (m & 3)), 5)
+> +#define SYS_TRCCNTVR(m)			sys_reg(2, 1, 0, (8 | (m & 3)), 5)
+> +#define SYS_TRCCONFIGR			sys_reg(2, 1, 0, 4, 0)
+> +#define SYS_TRCDEVARCH			sys_reg(2, 1, 7, 15, 6)
+> +#define SYS_TRCDEVID			sys_reg(2, 1, 7, 2, 7)
+> +#define SYS_TRCEVENTCTL0R		sys_reg(2, 1, 0, 8, 0)
+> +#define SYS_TRCEVENTCTL1R		sys_reg(2, 1, 0, 9, 0)
+> +#define SYS_TRCEXTINSELR(m)		sys_reg(2, 1, 0, (8 | (m & 3)), 4)
+> +#define SYS_TRCIDR0			sys_reg(2, 1, 0, 8, 7)
+> +#define SYS_TRCIDR10			sys_reg(2, 1, 0, 2, 6)
+> +#define SYS_TRCIDR11			sys_reg(2, 1, 0, 3, 6)
+> +#define SYS_TRCIDR12			sys_reg(2, 1, 0, 4, 6)
+> +#define SYS_TRCIDR13			sys_reg(2, 1, 0, 5, 6)
+> +#define SYS_TRCIDR1			sys_reg(2, 1, 0, 9, 7)
+> +#define SYS_TRCIDR2			sys_reg(2, 1, 0, 10, 7)
+> +#define SYS_TRCIDR3			sys_reg(2, 1, 0, 11, 7)
+> +#define SYS_TRCIDR4			sys_reg(2, 1, 0, 12, 7)
+> +#define SYS_TRCIDR5			sys_reg(2, 1, 0, 13, 7)
+> +#define SYS_TRCIDR6			sys_reg(2, 1, 0, 14, 7)
+> +#define SYS_TRCIDR7			sys_reg(2, 1, 0, 15, 7)
+> +#define SYS_TRCIDR8			sys_reg(2, 1, 0, 0, 6)
+> +#define SYS_TRCIDR9			sys_reg(2, 1, 0, 1, 6)
+> +#define SYS_TRCIMSPEC(m)		sys_reg(2, 1, 0, (m & 7), 7)
+> +#define SYS_TRCITEEDCR			sys_reg(2, 1, 0, 2, 1)
+> +#define SYS_TRCOSLSR			sys_reg(2, 1, 1, 1, 4)
+> +#define SYS_TRCPRGCTLR			sys_reg(2, 1, 0, 1, 0)
+> +#define SYS_TRCQCTLR			sys_reg(2, 1, 0, 1, 1)
+> +#define SYS_TRCRSCTLR(m)		sys_reg(2, 1, 1, (m & 15), (0 | (m >> 4)))
+> +#define SYS_TRCRSR			sys_reg(2, 1, 0, 10, 0)
+> +#define SYS_TRCSEQEVR(m)		sys_reg(2, 1, 0, (m & 3), 4)
+> +#define SYS_TRCSEQRSTEVR		sys_reg(2, 1, 0, 6, 4)
+> +#define SYS_TRCSEQSTR			sys_reg(2, 1, 0, 7, 4)
+> +#define SYS_TRCSSCCR(m)			sys_reg(2, 1, 1, (m & 7), 2)
+> +#define SYS_TRCSSCSR(m)			sys_reg(2, 1, 1, (8 | (m & 7)), 2)
+> +#define SYS_TRCSSPCICR(m)		sys_reg(2, 1, 1, (m & 7), 3)
+> +#define SYS_TRCSTALLCTLR		sys_reg(2, 1, 0, 11, 0)
+> +#define SYS_TRCSTATR			sys_reg(2, 1, 0, 3, 0)
+> +#define SYS_TRCSYNCPR			sys_reg(2, 1, 0, 13, 0)
+> +#define SYS_TRCTRACEIDR			sys_reg(2, 1, 0, 0, 1)
+> +#define SYS_TRCTSCTLR			sys_reg(2, 1, 0, 12, 0)
+> +#define SYS_TRCVICTLR			sys_reg(2, 1, 0, 0, 2)
+> +#define SYS_TRCVIIECTLR			sys_reg(2, 1, 0, 1, 2)
+> +#define SYS_TRCVIPCSSCTLR		sys_reg(2, 1, 0, 3, 2)
+> +#define SYS_TRCVISSCTLR			sys_reg(2, 1, 0, 2, 2)
+> +#define SYS_TRCVMIDCCTLR0		sys_reg(2, 1, 3, 2, 2)
+> +#define SYS_TRCVMIDCCTLR1		sys_reg(2, 1, 3, 3, 2)
+> +#define SYS_TRCVMIDCVR(m)		sys_reg(2, 1, 3, ((m & 7) << 1), 1)
+> +
+> +/* ETM */
+> +#define SYS_TRCOSLAR			sys_reg(2, 1, 1, 0, 4)
+> +
+> +#define SYS_BRBCR_EL2			sys_reg(2, 4, 9, 0, 0)
+> +
+>   #define SYS_MIDR_EL1			sys_reg(3, 0, 0, 0, 0)
+>   #define SYS_MPIDR_EL1			sys_reg(3, 0, 0, 0, 5)
+>   #define SYS_REVIDR_EL1			sys_reg(3, 0, 0, 0, 6)
+> @@ -170,8 +280,6 @@
+>   #define SYS_RGSR_EL1			sys_reg(3, 0, 1, 0, 5)
+>   #define SYS_GCR_EL1			sys_reg(3, 0, 1, 0, 6)
+>   
+> -#define SYS_TRFCR_EL1			sys_reg(3, 0, 1, 2, 1)
+> -
+>   #define SYS_TCR_EL1			sys_reg(3, 0, 2, 0, 2)
+>   
+>   #define SYS_APIAKEYLO_EL1		sys_reg(3, 0, 2, 1, 0)
+> @@ -202,8 +310,13 @@
+>   #define SYS_ERXCTLR_EL1			sys_reg(3, 0, 5, 4, 1)
+>   #define SYS_ERXSTATUS_EL1		sys_reg(3, 0, 5, 4, 2)
+>   #define SYS_ERXADDR_EL1			sys_reg(3, 0, 5, 4, 3)
+> +#define SYS_ERXPFGF_EL1			sys_reg(3, 0, 5, 4, 4)
+> +#define SYS_ERXPFGCTL_EL1		sys_reg(3, 0, 5, 4, 5)
+> +#define SYS_ERXPFGCDN_EL1		sys_reg(3, 0, 5, 4, 6)
+>   #define SYS_ERXMISC0_EL1		sys_reg(3, 0, 5, 5, 0)
+>   #define SYS_ERXMISC1_EL1		sys_reg(3, 0, 5, 5, 1)
+> +#define SYS_ERXMISC2_EL1		sys_reg(3, 0, 5, 5, 2)
+> +#define SYS_ERXMISC3_EL1		sys_reg(3, 0, 5, 5, 3)
+>   #define SYS_TFSR_EL1			sys_reg(3, 0, 5, 6, 0)
+>   #define SYS_TFSRE0_EL1			sys_reg(3, 0, 5, 6, 1)
+>   
+> @@ -274,6 +387,8 @@
+>   #define SYS_ICC_IGRPEN0_EL1		sys_reg(3, 0, 12, 12, 6)
+>   #define SYS_ICC_IGRPEN1_EL1		sys_reg(3, 0, 12, 12, 7)
+>   
+> +#define SYS_ACCDATA_EL1			sys_reg(3, 0, 13, 0, 5)
+> +
+>   #define SYS_CNTKCTL_EL1			sys_reg(3, 0, 14, 1, 0)
+>   
+>   #define SYS_AIDR_EL1			sys_reg(3, 1, 0, 0, 7)
+> @@ -369,6 +484,7 @@
+>   
+>   #define SYS_SCTLR_EL2			sys_reg(3, 4, 1, 0, 0)
+>   #define SYS_ACTLR_EL2			sys_reg(3, 4, 1, 0, 1)
+> +#define SYS_SCTLR2_EL2			sys_reg(3, 4, 1, 0, 3)
+>   #define SYS_HCR_EL2			sys_reg(3, 4, 1, 1, 0)
+>   #define SYS_MDCR_EL2			sys_reg(3, 4, 1, 1, 1)
+>   #define SYS_CPTR_EL2			sys_reg(3, 4, 1, 1, 2)
+> @@ -381,13 +497,15 @@
+>   #define SYS_VTTBR_EL2			sys_reg(3, 4, 2, 1, 0)
+>   #define SYS_VTCR_EL2			sys_reg(3, 4, 2, 1, 2)
+>   
+> -#define SYS_TRFCR_EL2			sys_reg(3, 4, 1, 2, 1)
+> -#define SYS_HDFGRTR_EL2			sys_reg(3, 4, 3, 1, 4)
+> -#define SYS_HDFGWTR_EL2			sys_reg(3, 4, 3, 1, 5)
+> +#define SYS_VNCR_EL2			sys_reg(3, 4, 2, 2, 0)
+>   #define SYS_HAFGRTR_EL2			sys_reg(3, 4, 3, 1, 6)
+>   #define SYS_SPSR_EL2			sys_reg(3, 4, 4, 0, 0)
+>   #define SYS_ELR_EL2			sys_reg(3, 4, 4, 0, 1)
+>   #define SYS_SP_EL1			sys_reg(3, 4, 4, 1, 0)
+> +#define SYS_SPSR_irq			sys_reg(3, 4, 4, 3, 0)
+> +#define SYS_SPSR_abt			sys_reg(3, 4, 4, 3, 1)
+> +#define SYS_SPSR_und			sys_reg(3, 4, 4, 3, 2)
+> +#define SYS_SPSR_fiq			sys_reg(3, 4, 4, 3, 3)
+>   #define SYS_IFSR32_EL2			sys_reg(3, 4, 5, 0, 1)
+>   #define SYS_AFSR0_EL2			sys_reg(3, 4, 5, 1, 0)
+>   #define SYS_AFSR1_EL2			sys_reg(3, 4, 5, 1, 1)
+> @@ -401,6 +519,18 @@
+>   
+>   #define SYS_MAIR_EL2			sys_reg(3, 4, 10, 2, 0)
+>   #define SYS_AMAIR_EL2			sys_reg(3, 4, 10, 3, 0)
+> +#define SYS_MPAMHCR_EL2			sys_reg(3, 4, 10, 4, 0)
+> +#define SYS_MPAMVPMV_EL2		sys_reg(3, 4, 10, 4, 1)
+> +#define SYS_MPAM2_EL2			sys_reg(3, 4, 10, 5, 0)
+> +#define __SYS__MPAMVPMx_EL2(x)		sys_reg(3, 4, 10, 6, x)
+> +#define SYS_MPAMVPM0_EL2		__SYS__MPAMVPMx_EL2(0)
+> +#define SYS_MPAMVPM1_EL2		__SYS__MPAMVPMx_EL2(1)
+> +#define SYS_MPAMVPM2_EL2		__SYS__MPAMVPMx_EL2(2)
+> +#define SYS_MPAMVPM3_EL2		__SYS__MPAMVPMx_EL2(3)
+> +#define SYS_MPAMVPM4_EL2		__SYS__MPAMVPMx_EL2(4)
+> +#define SYS_MPAMVPM5_EL2		__SYS__MPAMVPMx_EL2(5)
+> +#define SYS_MPAMVPM6_EL2		__SYS__MPAMVPMx_EL2(6)
+> +#define SYS_MPAMVPM7_EL2		__SYS__MPAMVPMx_EL2(7)
+>   
+>   #define SYS_VBAR_EL2			sys_reg(3, 4, 12, 0, 0)
+>   #define SYS_RVBAR_EL2			sys_reg(3, 4, 12, 0, 1)
+> @@ -449,24 +579,49 @@
+>   
+>   #define SYS_CONTEXTIDR_EL2		sys_reg(3, 4, 13, 0, 1)
+>   #define SYS_TPIDR_EL2			sys_reg(3, 4, 13, 0, 2)
+> +#define SYS_SCXTNUM_EL2			sys_reg(3, 4, 13, 0, 7)
+> +
+> +#define __AMEV_op2(m)			(m & 0x7)
+> +#define __AMEV_CRm(n, m)		(n | ((m & 0x8) >> 3))
+> +#define __SYS__AMEVCNTVOFF0n_EL2(m)	sys_reg(3, 4, 13, __AMEV_CRm(0x8, m), __AMEV_op2(m))
+> +#define SYS_AMEVCNTVOFF0n_EL2(m)	__SYS__AMEVCNTVOFF0n_EL2(m)
+> +#define __SYS__AMEVCNTVOFF1n_EL2(m)	sys_reg(3, 4, 13, __AMEV_CRm(0xA, m), __AMEV_op2(m))
+> +#define SYS_AMEVCNTVOFF1n_EL2(m)	__SYS__AMEVCNTVOFF1n_EL2(m)
+>   
+>   #define SYS_CNTVOFF_EL2			sys_reg(3, 4, 14, 0, 3)
+>   #define SYS_CNTHCTL_EL2			sys_reg(3, 4, 14, 1, 0)
+> +#define SYS_CNTHP_TVAL_EL2		sys_reg(3, 4, 14, 2, 0)
+> +#define SYS_CNTHP_CTL_EL2		sys_reg(3, 4, 14, 2, 1)
+> +#define SYS_CNTHP_CVAL_EL2		sys_reg(3, 4, 14, 2, 2)
+> +#define SYS_CNTHV_TVAL_EL2		sys_reg(3, 4, 14, 3, 0)
+> +#define SYS_CNTHV_CTL_EL2		sys_reg(3, 4, 14, 3, 1)
+> +#define SYS_CNTHV_CVAL_EL2		sys_reg(3, 4, 14, 3, 2)
+>   
+>   /* VHE encodings for architectural EL0/1 system registers */
+> +#define SYS_BRBCR_EL12			sys_reg(2, 5, 9, 0, 0)
+>   #define SYS_SCTLR_EL12			sys_reg(3, 5, 1, 0, 0)
+> +#define SYS_CPACR_EL12			sys_reg(3, 5, 1, 0, 2)
+> +#define SYS_SCTLR2_EL12			sys_reg(3, 5, 1, 0, 3)
+> +#define SYS_ZCR_EL12			sys_reg(3, 5, 1, 2, 0)
+> +#define SYS_TRFCR_EL12			sys_reg(3, 5, 1, 2, 1)
+> +#define SYS_SMCR_EL12			sys_reg(3, 5, 1, 2, 6)
+>   #define SYS_TTBR0_EL12			sys_reg(3, 5, 2, 0, 0)
+>   #define SYS_TTBR1_EL12			sys_reg(3, 5, 2, 0, 1)
+>   #define SYS_TCR_EL12			sys_reg(3, 5, 2, 0, 2)
+> +#define SYS_TCR2_EL12			sys_reg(3, 5, 2, 0, 3)
+>   #define SYS_SPSR_EL12			sys_reg(3, 5, 4, 0, 0)
+>   #define SYS_ELR_EL12			sys_reg(3, 5, 4, 0, 1)
+>   #define SYS_AFSR0_EL12			sys_reg(3, 5, 5, 1, 0)
+>   #define SYS_AFSR1_EL12			sys_reg(3, 5, 5, 1, 1)
+>   #define SYS_ESR_EL12			sys_reg(3, 5, 5, 2, 0)
+>   #define SYS_TFSR_EL12			sys_reg(3, 5, 5, 6, 0)
+> +#define SYS_FAR_EL12			sys_reg(3, 5, 6, 0, 0)
+> +#define SYS_PMSCR_EL12			sys_reg(3, 5, 9, 9, 0)
+>   #define SYS_MAIR_EL12			sys_reg(3, 5, 10, 2, 0)
+>   #define SYS_AMAIR_EL12			sys_reg(3, 5, 10, 3, 0)
+>   #define SYS_VBAR_EL12			sys_reg(3, 5, 12, 0, 0)
+> +#define SYS_CONTEXTIDR_EL12		sys_reg(3, 5, 13, 0, 1)
+> +#define SYS_SCXTNUM_EL12		sys_reg(3, 5, 13, 0, 7)
+>   #define SYS_CNTKCTL_EL12		sys_reg(3, 5, 14, 1, 0)
+>   #define SYS_CNTP_TVAL_EL02		sys_reg(3, 5, 14, 2, 0)
+>   #define SYS_CNTP_CTL_EL02		sys_reg(3, 5, 14, 2, 1)
+> @@ -477,6 +632,158 @@
+>   
+>   #define SYS_SP_EL2			sys_reg(3, 6,  4, 1, 0)
+>   
+> +/* AT instructions */
+> +#define AT_Op0 1
+> +#define AT_CRn 7
+> +
+> +#define OP_AT_S1E1R	sys_insn(AT_Op0, 0, AT_CRn, 8, 0)
+> +#define OP_AT_S1E1W	sys_insn(AT_Op0, 0, AT_CRn, 8, 1)
+> +#define OP_AT_S1E0R	sys_insn(AT_Op0, 0, AT_CRn, 8, 2)
+> +#define OP_AT_S1E0W	sys_insn(AT_Op0, 0, AT_CRn, 8, 3)
+> +#define OP_AT_S1E1RP	sys_insn(AT_Op0, 0, AT_CRn, 9, 0)
+> +#define OP_AT_S1E1WP	sys_insn(AT_Op0, 0, AT_CRn, 9, 1)
+> +#define OP_AT_S1E2R	sys_insn(AT_Op0, 4, AT_CRn, 8, 0)
+> +#define OP_AT_S1E2W	sys_insn(AT_Op0, 4, AT_CRn, 8, 1)
+> +#define OP_AT_S12E1R	sys_insn(AT_Op0, 4, AT_CRn, 8, 4)
+> +#define OP_AT_S12E1W	sys_insn(AT_Op0, 4, AT_CRn, 8, 5)
+> +#define OP_AT_S12E0R	sys_insn(AT_Op0, 4, AT_CRn, 8, 6)
+> +#define OP_AT_S12E0W	sys_insn(AT_Op0, 4, AT_CRn, 8, 7)
+> +
+> +/* TLBI instructions */
+> +#define OP_TLBI_VMALLE1OS		sys_insn(1, 0, 8, 1, 0)
+> +#define OP_TLBI_VAE1OS			sys_insn(1, 0, 8, 1, 1)
+> +#define OP_TLBI_ASIDE1OS		sys_insn(1, 0, 8, 1, 2)
+> +#define OP_TLBI_VAAE1OS			sys_insn(1, 0, 8, 1, 3)
+> +#define OP_TLBI_VALE1OS			sys_insn(1, 0, 8, 1, 5)
+> +#define OP_TLBI_VAALE1OS		sys_insn(1, 0, 8, 1, 7)
+> +#define OP_TLBI_RVAE1IS			sys_insn(1, 0, 8, 2, 1)
+> +#define OP_TLBI_RVAAE1IS		sys_insn(1, 0, 8, 2, 3)
+> +#define OP_TLBI_RVALE1IS		sys_insn(1, 0, 8, 2, 5)
+> +#define OP_TLBI_RVAALE1IS		sys_insn(1, 0, 8, 2, 7)
+> +#define OP_TLBI_VMALLE1IS		sys_insn(1, 0, 8, 3, 0)
+> +#define OP_TLBI_VAE1IS			sys_insn(1, 0, 8, 3, 1)
+> +#define OP_TLBI_ASIDE1IS		sys_insn(1, 0, 8, 3, 2)
+> +#define OP_TLBI_VAAE1IS			sys_insn(1, 0, 8, 3, 3)
+> +#define OP_TLBI_VALE1IS			sys_insn(1, 0, 8, 3, 5)
+> +#define OP_TLBI_VAALE1IS		sys_insn(1, 0, 8, 3, 7)
+> +#define OP_TLBI_RVAE1OS			sys_insn(1, 0, 8, 5, 1)
+> +#define OP_TLBI_RVAAE1OS		sys_insn(1, 0, 8, 5, 3)
+> +#define OP_TLBI_RVALE1OS		sys_insn(1, 0, 8, 5, 5)
+> +#define OP_TLBI_RVAALE1OS		sys_insn(1, 0, 8, 5, 7)
+> +#define OP_TLBI_RVAE1			sys_insn(1, 0, 8, 6, 1)
+> +#define OP_TLBI_RVAAE1			sys_insn(1, 0, 8, 6, 3)
+> +#define OP_TLBI_RVALE1			sys_insn(1, 0, 8, 6, 5)
+> +#define OP_TLBI_RVAALE1			sys_insn(1, 0, 8, 6, 7)
+> +#define OP_TLBI_VMALLE1			sys_insn(1, 0, 8, 7, 0)
+> +#define OP_TLBI_VAE1			sys_insn(1, 0, 8, 7, 1)
+> +#define OP_TLBI_ASIDE1			sys_insn(1, 0, 8, 7, 2)
+> +#define OP_TLBI_VAAE1			sys_insn(1, 0, 8, 7, 3)
+> +#define OP_TLBI_VALE1			sys_insn(1, 0, 8, 7, 5)
+> +#define OP_TLBI_VAALE1			sys_insn(1, 0, 8, 7, 7)
+> +#define OP_TLBI_VMALLE1OSNXS		sys_insn(1, 0, 9, 1, 0)
+> +#define OP_TLBI_VAE1OSNXS		sys_insn(1, 0, 9, 1, 1)
+> +#define OP_TLBI_ASIDE1OSNXS		sys_insn(1, 0, 9, 1, 2)
+> +#define OP_TLBI_VAAE1OSNXS		sys_insn(1, 0, 9, 1, 3)
+> +#define OP_TLBI_VALE1OSNXS		sys_insn(1, 0, 9, 1, 5)
+> +#define OP_TLBI_VAALE1OSNXS		sys_insn(1, 0, 9, 1, 7)
+> +#define OP_TLBI_RVAE1ISNXS		sys_insn(1, 0, 9, 2, 1)
+> +#define OP_TLBI_RVAAE1ISNXS		sys_insn(1, 0, 9, 2, 3)
+> +#define OP_TLBI_RVALE1ISNXS		sys_insn(1, 0, 9, 2, 5)
+> +#define OP_TLBI_RVAALE1ISNXS		sys_insn(1, 0, 9, 2, 7)
+> +#define OP_TLBI_VMALLE1ISNXS		sys_insn(1, 0, 9, 3, 0)
+> +#define OP_TLBI_VAE1ISNXS		sys_insn(1, 0, 9, 3, 1)
+> +#define OP_TLBI_ASIDE1ISNXS		sys_insn(1, 0, 9, 3, 2)
+> +#define OP_TLBI_VAAE1ISNXS		sys_insn(1, 0, 9, 3, 3)
+> +#define OP_TLBI_VALE1ISNXS		sys_insn(1, 0, 9, 3, 5)
+> +#define OP_TLBI_VAALE1ISNXS		sys_insn(1, 0, 9, 3, 7)
+> +#define OP_TLBI_RVAE1OSNXS		sys_insn(1, 0, 9, 5, 1)
+> +#define OP_TLBI_RVAAE1OSNXS		sys_insn(1, 0, 9, 5, 3)
+> +#define OP_TLBI_RVALE1OSNXS		sys_insn(1, 0, 9, 5, 5)
+> +#define OP_TLBI_RVAALE1OSNXS		sys_insn(1, 0, 9, 5, 7)
+> +#define OP_TLBI_RVAE1NXS		sys_insn(1, 0, 9, 6, 1)
+> +#define OP_TLBI_RVAAE1NXS		sys_insn(1, 0, 9, 6, 3)
+> +#define OP_TLBI_RVALE1NXS		sys_insn(1, 0, 9, 6, 5)
+> +#define OP_TLBI_RVAALE1NXS		sys_insn(1, 0, 9, 6, 7)
+> +#define OP_TLBI_VMALLE1NXS		sys_insn(1, 0, 9, 7, 0)
+> +#define OP_TLBI_VAE1NXS			sys_insn(1, 0, 9, 7, 1)
+> +#define OP_TLBI_ASIDE1NXS		sys_insn(1, 0, 9, 7, 2)
+> +#define OP_TLBI_VAAE1NXS		sys_insn(1, 0, 9, 7, 3)
+> +#define OP_TLBI_VALE1NXS		sys_insn(1, 0, 9, 7, 5)
+> +#define OP_TLBI_VAALE1NXS		sys_insn(1, 0, 9, 7, 7)
+> +#define OP_TLBI_IPAS2E1IS		sys_insn(1, 4, 8, 0, 1)
+> +#define OP_TLBI_RIPAS2E1IS		sys_insn(1, 4, 8, 0, 2)
+> +#define OP_TLBI_IPAS2LE1IS		sys_insn(1, 4, 8, 0, 5)
+> +#define OP_TLBI_RIPAS2LE1IS		sys_insn(1, 4, 8, 0, 6)
+> +#define OP_TLBI_ALLE2OS			sys_insn(1, 4, 8, 1, 0)
+> +#define OP_TLBI_VAE2OS			sys_insn(1, 4, 8, 1, 1)
+> +#define OP_TLBI_ALLE1OS			sys_insn(1, 4, 8, 1, 4)
+> +#define OP_TLBI_VALE2OS			sys_insn(1, 4, 8, 1, 5)
+> +#define OP_TLBI_VMALLS12E1OS		sys_insn(1, 4, 8, 1, 6)
+> +#define OP_TLBI_RVAE2IS			sys_insn(1, 4, 8, 2, 1)
+> +#define OP_TLBI_RVALE2IS		sys_insn(1, 4, 8, 2, 5)
+> +#define OP_TLBI_ALLE2IS			sys_insn(1, 4, 8, 3, 0)
+> +#define OP_TLBI_VAE2IS			sys_insn(1, 4, 8, 3, 1)
+> +#define OP_TLBI_ALLE1IS			sys_insn(1, 4, 8, 3, 4)
+> +#define OP_TLBI_VALE2IS			sys_insn(1, 4, 8, 3, 5)
+> +#define OP_TLBI_VMALLS12E1IS		sys_insn(1, 4, 8, 3, 6)
+> +#define OP_TLBI_IPAS2E1OS		sys_insn(1, 4, 8, 4, 0)
+> +#define OP_TLBI_IPAS2E1			sys_insn(1, 4, 8, 4, 1)
+> +#define OP_TLBI_RIPAS2E1		sys_insn(1, 4, 8, 4, 2)
+> +#define OP_TLBI_RIPAS2E1OS		sys_insn(1, 4, 8, 4, 3)
+> +#define OP_TLBI_IPAS2LE1OS		sys_insn(1, 4, 8, 4, 4)
+> +#define OP_TLBI_IPAS2LE1		sys_insn(1, 4, 8, 4, 5)
+> +#define OP_TLBI_RIPAS2LE1		sys_insn(1, 4, 8, 4, 6)
+> +#define OP_TLBI_RIPAS2LE1OS		sys_insn(1, 4, 8, 4, 7)
+> +#define OP_TLBI_RVAE2OS			sys_insn(1, 4, 8, 5, 1)
+> +#define OP_TLBI_RVALE2OS		sys_insn(1, 4, 8, 5, 5)
+> +#define OP_TLBI_RVAE2			sys_insn(1, 4, 8, 6, 1)
+> +#define OP_TLBI_RVALE2			sys_insn(1, 4, 8, 6, 5)
+> +#define OP_TLBI_ALLE2			sys_insn(1, 4, 8, 7, 0)
+> +#define OP_TLBI_VAE2			sys_insn(1, 4, 8, 7, 1)
+> +#define OP_TLBI_ALLE1			sys_insn(1, 4, 8, 7, 4)
+> +#define OP_TLBI_VALE2			sys_insn(1, 4, 8, 7, 5)
+> +#define OP_TLBI_VMALLS12E1		sys_insn(1, 4, 8, 7, 6)
+> +#define OP_TLBI_IPAS2E1ISNXS		sys_insn(1, 4, 9, 0, 1)
+> +#define OP_TLBI_RIPAS2E1ISNXS		sys_insn(1, 4, 9, 0, 2)
+> +#define OP_TLBI_IPAS2LE1ISNXS		sys_insn(1, 4, 9, 0, 5)
+> +#define OP_TLBI_RIPAS2LE1ISNXS		sys_insn(1, 4, 9, 0, 6)
+> +#define OP_TLBI_ALLE2OSNXS		sys_insn(1, 4, 9, 1, 0)
+> +#define OP_TLBI_VAE2OSNXS		sys_insn(1, 4, 9, 1, 1)
+> +#define OP_TLBI_ALLE1OSNXS		sys_insn(1, 4, 9, 1, 4)
+> +#define OP_TLBI_VALE2OSNXS		sys_insn(1, 4, 9, 1, 5)
+> +#define OP_TLBI_VMALLS12E1OSNXS		sys_insn(1, 4, 9, 1, 6)
+> +#define OP_TLBI_RVAE2ISNXS		sys_insn(1, 4, 9, 2, 1)
+> +#define OP_TLBI_RVALE2ISNXS		sys_insn(1, 4, 9, 2, 5)
+> +#define OP_TLBI_ALLE2ISNXS		sys_insn(1, 4, 9, 3, 0)
+> +#define OP_TLBI_VAE2ISNXS		sys_insn(1, 4, 9, 3, 1)
+> +#define OP_TLBI_ALLE1ISNXS		sys_insn(1, 4, 9, 3, 4)
+> +#define OP_TLBI_VALE2ISNXS		sys_insn(1, 4, 9, 3, 5)
+> +#define OP_TLBI_VMALLS12E1ISNXS		sys_insn(1, 4, 9, 3, 6)
+> +#define OP_TLBI_IPAS2E1OSNXS		sys_insn(1, 4, 9, 4, 0)
+> +#define OP_TLBI_IPAS2E1NXS		sys_insn(1, 4, 9, 4, 1)
+> +#define OP_TLBI_RIPAS2E1NXS		sys_insn(1, 4, 9, 4, 2)
+> +#define OP_TLBI_RIPAS2E1OSNXS		sys_insn(1, 4, 9, 4, 3)
+> +#define OP_TLBI_IPAS2LE1OSNXS		sys_insn(1, 4, 9, 4, 4)
+> +#define OP_TLBI_IPAS2LE1NXS		sys_insn(1, 4, 9, 4, 5)
+> +#define OP_TLBI_RIPAS2LE1NXS		sys_insn(1, 4, 9, 4, 6)
+> +#define OP_TLBI_RIPAS2LE1OSNXS		sys_insn(1, 4, 9, 4, 7)
+> +#define OP_TLBI_RVAE2OSNXS		sys_insn(1, 4, 9, 5, 1)
+> +#define OP_TLBI_RVALE2OSNXS		sys_insn(1, 4, 9, 5, 5)
+> +#define OP_TLBI_RVAE2NXS		sys_insn(1, 4, 9, 6, 1)
+> +#define OP_TLBI_RVALE2NXS		sys_insn(1, 4, 9, 6, 5)
+> +#define OP_TLBI_ALLE2NXS		sys_insn(1, 4, 9, 7, 0)
+> +#define OP_TLBI_VAE2NXS			sys_insn(1, 4, 9, 7, 1)
+> +#define OP_TLBI_ALLE1NXS		sys_insn(1, 4, 9, 7, 4)
+> +#define OP_TLBI_VALE2NXS		sys_insn(1, 4, 9, 7, 5)
+> +#define OP_TLBI_VMALLS12E1NXS		sys_insn(1, 4, 9, 7, 6)
+> +
+> +/* Misc instructions */
+> +#define OP_BRB_IALL			sys_insn(1, 1, 7, 2, 4)
+> +#define OP_BRB_INJ			sys_insn(1, 1, 7, 2, 5)
+> +#define OP_CFP_RCTX			sys_insn(1, 3, 7, 3, 4)
+> +#define OP_DVP_RCTX			sys_insn(1, 3, 7, 3, 5)
+> +#define OP_CPP_RCTX			sys_insn(1, 3, 7, 3, 7)
+> +
+>   /* Common SCTLR_ELx flags. */
+>   #define SCTLR_ELx_ENTP2	(BIT(60))
+>   #define SCTLR_ELx_DSSBS	(BIT(44))
+> @@ -610,6 +917,19 @@
+>   #define SYS_GCR_EL1_RRND	(BIT(16))
+>   #define SYS_GCR_EL1_EXCL_MASK	0xffffUL
+>   
+> +#ifdef CONFIG_KASAN_HW_TAGS
+> +/*
+> + * KASAN always uses a whole byte for its tags. With CONFIG_KASAN_HW_TAGS it
+> + * only uses tags in the range 0xF0-0xFF, which we map to MTE tags 0x0-0xF.
+> + */
+> +#define __MTE_TAG_MIN		(KASAN_TAG_MIN & 0xf)
+> +#define __MTE_TAG_MAX		(KASAN_TAG_MAX & 0xf)
+> +#define __MTE_TAG_INCL		GENMASK(__MTE_TAG_MAX, __MTE_TAG_MIN)
+> +#define KERNEL_GCR_EL1_EXCL	(SYS_GCR_EL1_EXCL_MASK & ~__MTE_TAG_INCL)
+> +#else
+> +#define KERNEL_GCR_EL1_EXCL	SYS_GCR_EL1_EXCL_MASK
+> +#endif
+> +
+>   #define KERNEL_GCR_EL1		(SYS_GCR_EL1_RRND | KERNEL_GCR_EL1_EXCL)
+>   
+>   /* RGSR_EL1 Definitions */
+> @@ -626,15 +946,6 @@
+>   /* Safe value for MPIDR_EL1: Bit31:RES1, Bit30:U:0, Bit24:MT:0 */
+>   #define SYS_MPIDR_SAFE_VAL	(BIT(31))
+>   
+> -#define TRFCR_ELx_TS_SHIFT		5
+> -#define TRFCR_ELx_TS_MASK		((0x3UL) << TRFCR_ELx_TS_SHIFT)
+> -#define TRFCR_ELx_TS_VIRTUAL		((0x1UL) << TRFCR_ELx_TS_SHIFT)
+> -#define TRFCR_ELx_TS_GUEST_PHYSICAL	((0x2UL) << TRFCR_ELx_TS_SHIFT)
+> -#define TRFCR_ELx_TS_PHYSICAL		((0x3UL) << TRFCR_ELx_TS_SHIFT)
+> -#define TRFCR_EL2_CX			BIT(3)
+> -#define TRFCR_ELx_ExTRE			BIT(1)
+> -#define TRFCR_ELx_E0TRE			BIT(0)
+> -
+>   /* GIC Hypervisor interface registers */
+>   /* ICH_MISR_EL2 bit definitions */
+>   #define ICH_MISR_EOI		(1 << 0)
+> @@ -789,15 +1100,21 @@
+>   /*
+>    * For registers without architectural names, or simply unsupported by
+>    * GAS.
+> + *
+> + * __check_r forces warnings to be generated by the compiler when
+> + * evaluating r which wouldn't normally happen due to being passed to
+> + * the assembler via __stringify(r).
+>    */
+>   #define read_sysreg_s(r) ({						\
+>   	u64 __val;							\
+> +	u32 __maybe_unused __check_r = (u32)(r);			\
+>   	asm volatile(__mrs_s("%0", r) : "=r" (__val));			\
+>   	__val;								\
+>   })
+>   
+>   #define write_sysreg_s(v, r) do {					\
+>   	u64 __val = (u64)(v);						\
+> +	u32 __maybe_unused __check_r = (u32)(r);			\
+>   	asm volatile(__msr_s(r, "%x0") : : "rZ" (__val));		\
+>   } while (0)
+>   
+> diff --git a/tools/include/linux/kasan-tags.h b/tools/include/linux/kasan-tags.h
+> new file mode 100644
+> index 000000000000..4f85f562512c
+> --- /dev/null
+> +++ b/tools/include/linux/kasan-tags.h
+> @@ -0,0 +1,15 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +#ifndef _LINUX_KASAN_TAGS_H
+> +#define _LINUX_KASAN_TAGS_H
+> +
+> +#define KASAN_TAG_KERNEL	0xFF /* native kernel pointers tag */
+> +#define KASAN_TAG_INVALID	0xFE /* inaccessible memory tag */
+> +#define KASAN_TAG_MAX		0xFD /* maximum value for random tags */
+> +
+> +#ifdef CONFIG_KASAN_HW_TAGS
+> +#define KASAN_TAG_MIN		0xF0 /* minimum value for random tags */
+> +#else
+> +#define KASAN_TAG_MIN		0x00 /* minimum value for random tags */
+> +#endif
+> +
+> +#endif /* LINUX_KASAN_TAGS_H */
+
 
