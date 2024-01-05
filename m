@@ -1,170 +1,133 @@
-Return-Path: <linux-kernel+bounces-18310-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18311-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0FA9E825B40
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 20:56:10 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C8E3825B55
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 20:58:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A502B285A29
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 19:56:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 635261C23A0A
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 19:58:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3ADCD36094;
-	Fri,  5 Jan 2024 19:56:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52F853608F;
+	Fri,  5 Jan 2024 19:57:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="exZRLVvw"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ykxk627v"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2070.outbound.protection.outlook.com [40.107.93.70])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F16C035F09;
-	Fri,  5 Jan 2024 19:55:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KML+nAE0b5H0arN/AohHGlJtzEVXXqTZJlIhB7iKODAeTCw/UsW1/bikGCNMvEICyN66DlY/kAkvJEIZQeD6bhJyAJ8Nw6WMUcT6u9fFDZ1wMuqitagFzLywaCvbTWiYFTDbQxnqbvmHvG16cuFBD8+KQuNJYx9/AV+EUdVGEZGQd1ik/43ZjaaZKKM4ohhf9VbCgoMt+JWEIWKrUBHuO9mc5hUi8ldwgQRwez1wfV6t8U4PY4l+ulzknJWmTjrvAFec2ME4ztIET8siqGuxxGJbVkwl/sG1mgSkURwvsA9MXbP64yApbdFv4emwMGUTnC4He8OZ+z5jJGYu/lzdqg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=u+ZXbDEinxacHQ4b+lHj/skW0hxodGzjIOunZEExzoE=;
- b=Dx19Wj4IjE9qOXWBvTa6tjkyGEDZQpEfZU+ZWyNmSqmcZTLxEKSzEREBSCtaXpckS3GSqpulVWpMM+fp/ut6He5s7i/tzUJOqCjn+noUCoWluiGDZgrClCrjB11hVKdtgBU59V5Gom6s2eIe4l8sYBbbo4bSfOwmIX0fIFWyvOgD34Zu7ZUPrf6jSxzq4Wj15TaQgqqw+xPgI0p5rdf5mgwOFJWw7GV6a/pMtmb9Wa9xxd/+mnfi0fyPhtzdUIwv24M5Bt34sqbZZ2Xmye7N9r56u2mDPltcN+4d0ixCNo3mQa8df/Wy6L/v3vibMdl6Uj8qHBgirlLU0Oo1lNnlZw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=u+ZXbDEinxacHQ4b+lHj/skW0hxodGzjIOunZEExzoE=;
- b=exZRLVvwDl/pkOCia4z2pQ0fp9qE2gJEcghxVRGwXtVb/+d2wogHuyIVmMQUkO01USm00QEVPvvMeX5d5i3sP99F+5K3mO+lxenYzeWfOwQBTD7e7MBtsaFEMhDmbRd8z9RtuMGQcZ4zpD/xoqlOIgOnYPGvuU03GyWYkMWExPr6JZyEzCrm8EBlTQ/r0ZDS75Vv6GISInW5LJf8Y5xqPpxczH3lULQRydUWkA+e1sDbHjdX1bC9xvvUMhq2Hf5zs3YuzGFk1kXSJfPpw9wfKHAFBXiUGcR2v352qZi6PPKO6Tc73gF+BK2m0EbR7MS4FWyIa3xTwuuRXFynBCfFvw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by DS7PR12MB6240.namprd12.prod.outlook.com (2603:10b6:8:94::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.17; Fri, 5 Jan
- 2024 19:55:53 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::60d4:c1e3:e1aa:8f93]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::60d4:c1e3:e1aa:8f93%4]) with mapi id 15.20.7159.015; Fri, 5 Jan 2024
- 19:55:53 +0000
-Date: Fri, 5 Jan 2024 15:55:51 -0400
-From: Jason Gunthorpe <jgg@nvidia.com>
-To: Yan Zhao <yan.y.zhao@intel.com>
-Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-	dri-devel@lists.freedesktop.org, pbonzini@redhat.com,
-	seanjc@google.com, olvaffe@gmail.com, kevin.tian@intel.com,
-	zhiyuan.lv@intel.com, zhenyu.z.wang@intel.com, yongwei.ma@intel.com,
-	vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
-	joro@8bytes.org, gurchetansingh@chromium.org, kraxel@redhat.com,
-	zzyiwei@google.com, ankita@nvidia.com, alex.williamson@redhat.com,
-	maz@kernel.org, oliver.upton@linux.dev, james.morse@arm.com,
-	suzuki.poulose@arm.com, yuzenghui@huawei.com
-Subject: Re: [PATCH 0/4] KVM: Honor guest memory types for virtio GPU devices
-Message-ID: <20240105195551.GE50406@nvidia.com>
-References: <20240105091237.24577-1-yan.y.zhao@intel.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240105091237.24577-1-yan.y.zhao@intel.com>
-X-ClientProxiedBy: BL1PR13CA0113.namprd13.prod.outlook.com
- (2603:10b6:208:2b9::28) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1916536AF3;
+	Fri,  5 Jan 2024 19:57:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2cd17a979bcso23706651fa.0;
+        Fri, 05 Jan 2024 11:57:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704484654; x=1705089454; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FRLMdfdFEFGxBekM0Ah4/mWBgPRmZGkIhZJOiMWzNJs=;
+        b=Ykxk627vZgzRP2WO+/5xilXN5k5JLb2+vKIMO4tdy6gQ2OwM2PAti0Qwjs0g0v/dU5
+         bF9BWe0jaC7X8BMnMMtaMASHBsssGk16M+8diw0rK9pkeyBrssmmG6nCUauU2VCaz+xF
+         p+H7NjbBAsVBwPgc3yLxe2uFa1V5Wp89r346Givf3TMopo8s7hXDOIwjfDhlraC8wtVy
+         4swHBD7iKgoONJxlVxHI7rxpY+WRRO11iylEQPDJfjRLRo3aazFpeJRnvLarqku9vEws
+         TfztU/hQYXCtZuHCXc5ElFMcQEXyzALb1R8gNqdGp/EBmjkyhjHZIkzaUt+vVdsBIeOw
+         v2pg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704484654; x=1705089454;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=FRLMdfdFEFGxBekM0Ah4/mWBgPRmZGkIhZJOiMWzNJs=;
+        b=jHsYLNHJml76FwpKvWkv2b4UicjzOQhI9hMrRx/BlHaVGf28JmuA7XhLF2uAqvOgPy
+         t50RBLn/AAw8wvWSHiZ8IoS48kI0LSWv0rh273vNYNRTEael0/zh9Dwyc9PjgOmLuymb
+         a5cc0ZLSAjN3nvTDmNp4siB7HyuLRUjMWBNJ/ZdXGOJMu8O8Oq7PPBzLdQlD/L0XZI5I
+         eczciBbwU5KKfWi41tSau8/efeldfSt8739tkF3+dKZyC2QX8HHtVn/WTD83fLcKVeGa
+         DGGqkrfq4YvPfokrg9pXNdweuaT/c1CGIANd5eybW+GqaZExCt4Tc2ABlI5Vk46nDjka
+         hrwQ==
+X-Gm-Message-State: AOJu0Yw0bJC+F3MzX7jqoqil9eTvWjs7uEVbk/S6TUK9OSchPHJ8nBam
+	RPBR+RKwNsZZtKnuxQ6rbhyaL2B36UVBeDiHv3k=
+X-Google-Smtp-Source: AGHT+IHGDXHjbGA05eHZAKK9YFIY2QI6JAgCi4NVMCV+oKA8gMgpFfW2yWE82rmCIYPb4lI2ZnakHtpo7zPlCtYX4B8=
+X-Received: by 2002:a2e:a683:0:b0:2cc:6fbb:8b07 with SMTP id
+ q3-20020a2ea683000000b002cc6fbb8b07mr565252lje.98.1704484653691; Fri, 05 Jan
+ 2024 11:57:33 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|DS7PR12MB6240:EE_
-X-MS-Office365-Filtering-Correlation-Id: d53bf452-9a85-402f-35f6-08dc0e2852f0
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	Q2o7zy+Az8LBD4TedxHV7Nq+QzpIiToeU0UQI789t9tvTIz8zMgyfb+Sa+AUCXvhYG66V7P13U/twM1jLJNoMh+rar3VnnlBQGMOSSaCqEwz6MVYvHAYvckmczdeaM8DmXeNDwKLZ9cE7UfPmqKusApjYrxoFufA9+aQl6gIuR25nmnf/8nC+wXFiRKLSKTvuwlhstwPbxcNP9Bf9FTdxKaKCC8mC2K2Wwb5XyGysEO/ySsMPD7nIONHMSzTRZEPBugbB3vdXvevrE1GhiTGzAUodS+JOItqh4EJM6t6iw9k0bEbI3CBa7/C+yFbafv2/8M3+rfyPfYjyEGws9kMcnvRklaJYlUYllmEDVE3Z9C3iBVsSSZlZo2LIwAc7zjIEBQNQtJzSIahZ5ECegIKgobFwt0ureu0leHFxPiN9KdBUTvb5dAvaqOyyvEBOg0vHh2NbqFokABA4bnKGxlLM7X1ZK3TdqwGOl0GzquPbROxKVwpiHWB9Ktf34YNdKvoG8hOb6xpMCfXeIX4qqlXgh1/tiehBbVTrJaCJarPBW8qx8nnTk7JDvBItNCHUqOq
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(396003)(346002)(136003)(366004)(39860400002)(230922051799003)(64100799003)(186009)(451199024)(1800799012)(66556008)(66476007)(66946007)(38100700002)(6916009)(6506007)(86362001)(6512007)(107886003)(1076003)(26005)(2616005)(5660300002)(7416002)(478600001)(36756003)(2906002)(33656002)(6486002)(83380400001)(316002)(8936002)(8676002)(4326008)(41300700001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?U4Dl9fv/fpldBexb1HfQQXXj5a4XwftUQYeP9GUGbMZz2ZxgAEY00Le/h1eE?=
- =?us-ascii?Q?3wHtnCITPnpaXMKUPZ7Fo1PGtrkiv4uu7Mv0SfLhr+GrsPrZ//j1WDGuK+dp?=
- =?us-ascii?Q?rbgrOenYS2K4SWCW0aw0CWuhMqJQr3i5msC64a10IHtVv94u4Z3gKjgfCYly?=
- =?us-ascii?Q?V7IQL+IuJG0iNRweMhmaAGTpJaE0i29QkyQjLbPpsOQg554E86A/Gf/kFbM0?=
- =?us-ascii?Q?cJUyb4RV5HGZEqkb7SE34WQhPEApMHnHsn1jZ22VOcqi627YFpaWyLRtF/7Q?=
- =?us-ascii?Q?Vg6t4kbCDkD3122jnABW1/YAFiti075vNKBkLy/5LKkM3NUA/3706Zx54Xqu?=
- =?us-ascii?Q?3NyDrnDoIHhACE3Zfa+fqDb2M4NKAzRU6X+YvQOZTaYc2cP/6Q3OpCaJNOoS?=
- =?us-ascii?Q?/8hltgxKWTkoXmn6wRSUeXkZ66pfq/RPGzvZw1L28lOfiI4x8ULZBVQ41x0V?=
- =?us-ascii?Q?v4QyX2+USFBtDGDg0NR9q+nrZLoO4u2mCz0yDNMBDAKE3iTLP42+mKUBN0sP?=
- =?us-ascii?Q?CrapybSTkbrD9aHs2CBjhdW312sct7+c5U5DK1jWh/y6RU0bcKLywWOCuj7o?=
- =?us-ascii?Q?XPKqRlV7awiZ2PM6cL5/cY9fdpKd+C3Xb2LyDOt7l1Iv1nq2ybUjeGp6dO+F?=
- =?us-ascii?Q?N1MPxFiLYlzk7KBcfrjRaTnbXdFb/qEzQfDIx+40HomeuzsMpKVZRo5MDJqD?=
- =?us-ascii?Q?V9Atx8jod0UDRlldqI8TTtxn8QBponUBE7vevrlNrcROoEe1s1sziuDwoCTJ?=
- =?us-ascii?Q?Z+vw5YYKgE/5rK00n3p+GBJDCxCf2gkJUmTxz8UKQJ48S7uGKRBsrC2twX8+?=
- =?us-ascii?Q?lD+y1Q/UB4l0DJXdp30celSAaHDbl8Ofz2J6jlDr1ahQXbth1Pm2FpFIy6xS?=
- =?us-ascii?Q?LfWTysAlTjh9nRfR/d8SK1vxXkmEEVhNyiwkRSnm9ipBV83RkUIhr5CaYNp9?=
- =?us-ascii?Q?NArB7VrYgBhd/ekJf0Bz4pYx0CLYPwWYDcDH5/zY0XBfuuTNJXg1En8b7upG?=
- =?us-ascii?Q?SP906ws6Ogmwr/EkLZaCyz8p0pEYM6EVI/SjiY49gFDPu0a/HiK2p2i2vodj?=
- =?us-ascii?Q?SBqh+akFgcAanOYW4RTgu4jurhVN+9X0FM8/P4s89qUpbpPl66pLWLQye6KB?=
- =?us-ascii?Q?Yk41Rg6iA9emK+bPNQfo6/OUxWLmx5pbITQCnHH37WUF8X48eTHGKV+PviJa?=
- =?us-ascii?Q?mC7wgzVXYVVbjMMqwDjp3eAvB+NftRG6GG9Q6agX7PYQsY8ErOr9x2F8ln5y?=
- =?us-ascii?Q?d0eC3zCds2gW3fOaPOXGVyVKgW7/9z5vVRXDkENs7+ZL5zF1p3cfEZPr4Cch?=
- =?us-ascii?Q?mw02GEOTjMeeJYRTfxLuYQpOaOoj4aAZNpJ+5rn+PsvaAc2ZDbUp95ygzffZ?=
- =?us-ascii?Q?BJcIU0UBvp7isKBvvufThRUy77uqntIaAsxWLb9npsFpXJWW4GWlrvo0XeFA?=
- =?us-ascii?Q?WxiDPRlCcyhWVqiXEori/AoydVwOEm4NfVMvNR7cuqJ4SNA4SnpGbdiTDF4O?=
- =?us-ascii?Q?Y75vCBDOMPweoYdm2Xh8m+T+L1uL4H/0khL4xzZ+xRMUoerBJla+bCC1jL6X?=
- =?us-ascii?Q?fKkGMxNxPtZTmurW/5Y=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d53bf452-9a85-402f-35f6-08dc0e2852f0
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Jan 2024 19:55:53.4043
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: mG3Ywe2XwtfNoG5mGRY3ZPwX9NvLkUB+5Jc3qF2m3OgrEy1phvYuklxQqkO2kvn2
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR12MB6240
+References: <9e415e37-a5bf-459f-8b9c-a02431e8fcfd@web.de>
+In-Reply-To: <9e415e37-a5bf-459f-8b9c-a02431e8fcfd@web.de>
+From: Steve French <smfrench@gmail.com>
+Date: Fri, 5 Jan 2024 13:57:22 -0600
+Message-ID: <CAH2r5mtDbP3XZTdrT97KB8R4ujZ1qHOkn=4RUsvzsHEcmwLxwg@mail.gmail.com>
+Subject: Re: [PATCH] smb3: Improve exception handling in allocate_mr_list()
+To: Markus Elfring <Markus.Elfring@web.de>
+Cc: linux-cifs@vger.kernel.org, samba-technical@lists.samba.org, 
+	kernel-janitors@vger.kernel.org, Paulo Alcantara <pc@manguebit.com>, 
+	Ronnie Sahlberg <lsahlber@redhat.com>, Shyam Prasad N <sprasad@microsoft.com>, 
+	Steve French <sfrench@samba.org>, Tom Talpey <tom@talpey.com>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jan 05, 2024 at 05:12:37PM +0800, Yan Zhao wrote:
-> This series allow user space to notify KVM of noncoherent DMA status so as
-> to let KVM honor guest memory types in specified memory slot ranges.
-> 
-> Motivation
-> ===
-> A virtio GPU device may want to configure GPU hardware to work in
-> noncoherent mode, i.e. some of its DMAs do not snoop CPU caches.
+merged into cifs-2.6.git for-next
 
-Does this mean some DMA reads do not snoop the caches or does it
-include DMA writes not synchronizing the caches too?
+On Sat, Dec 30, 2023 at 3:47=E2=80=AFAM Markus Elfring <Markus.Elfring@web.=
+de> wrote:
+>
+> From: Markus Elfring <elfring@users.sourceforge.net>
+> Date: Fri, 29 Dec 2023 20:43:12 +0100
+>
+> The kfree() function was called in one case by
+> the allocate_mr_list() function during error handling
+> even if the passed variable contained a null pointer.
+> This issue was detected by using the Coccinelle software.
+>
+> Thus use another label.
+>
+> Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+> ---
+>  fs/smb/client/smbdirect.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/fs/smb/client/smbdirect.c b/fs/smb/client/smbdirect.c
+> index 94df9eec3d8d..d74e829de51c 100644
+> --- a/fs/smb/client/smbdirect.c
+> +++ b/fs/smb/client/smbdirect.c
+> @@ -2136,7 +2136,7 @@ static int allocate_mr_list(struct smbd_connection =
+*info)
+>         for (i =3D 0; i < info->responder_resources * 2; i++) {
+>                 smbdirect_mr =3D kzalloc(sizeof(*smbdirect_mr), GFP_KERNE=
+L);
+>                 if (!smbdirect_mr)
+> -                       goto out;
+> +                       goto cleanup_entries;
+>                 smbdirect_mr->mr =3D ib_alloc_mr(info->pd, info->mr_type,
+>                                         info->max_frmr_depth);
+>                 if (IS_ERR(smbdirect_mr->mr)) {
+> @@ -2162,7 +2162,7 @@ static int allocate_mr_list(struct smbd_connection =
+*info)
+>
+>  out:
+>         kfree(smbdirect_mr);
+> -
+> +cleanup_entries:
+>         list_for_each_entry_safe(smbdirect_mr, tmp, &info->mr_list, list)=
+ {
+>                 list_del(&smbdirect_mr->list);
+>                 ib_dereg_mr(smbdirect_mr->mr);
+> --
+> 2.43.0
+>
+>
 
-> This is generally for performance consideration.
-> In certain platform, GFX performance can improve 20+% with DMAs going to
-> noncoherent path.
-> 
-> This noncoherent DMA mode works in below sequence:
-> 1. Host backend driver programs hardware not to snoop memory of target
->    DMA buffer.
-> 2. Host backend driver indicates guest frontend driver to program guest PAT
->    to WC for target DMA buffer.
-> 3. Guest frontend driver writes to the DMA buffer without clflush stuffs.
-> 4. Hardware does noncoherent DMA to the target buffer.
-> 
-> In this noncoherent DMA mode, both guest and hardware regard a DMA buffer
-> as not cached. So, if KVM forces the effective memory type of this DMA
-> buffer to be WB, hardware DMA may read incorrect data and cause misc
-> failures.
 
-I don't know all the details, but a big concern would be that the
-caches remain fully coherent with the underlying memory at any point
-where kvm decides to revoke the page from the VM.
+--=20
+Thanks,
 
-If you allow an incoherence of cache != physical then it opens a
-security attack where the observed content of memory can change when
-it should not.
-
-ARM64 has issues like this and due to that ARM has to have explict,
-expensive, cache flushing at certain points.
-
-Jason
+Steve
 
