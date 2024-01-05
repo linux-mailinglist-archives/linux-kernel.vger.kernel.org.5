@@ -1,186 +1,261 @@
-Return-Path: <linux-kernel+bounces-17822-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17823-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E7EBD825335
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 13:03:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 31F98825337
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 13:05:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7CA791F23845
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 12:03:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4839B1C22B8C
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 12:05:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DA322D039;
-	Fri,  5 Jan 2024 12:03:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b="TMpxx2RU"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF8F12D039;
+	Fri,  5 Jan 2024 12:05:39 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09A9E2D601;
-	Fri,  5 Jan 2024 12:03:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-	by mx0b-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4054bI95004588;
-	Fri, 5 Jan 2024 04:02:54 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=
-	from:to:cc:subject:date:message-id:mime-version:content-type; s=
-	pfpt0220; bh=6sU5GxlK76ndUKi2361U/O6LtYlGS3aaQIWSH2fN1ig=; b=TMp
-	xx2RUTpG/hU58asUNkoyajWsG/kYsnkEKwzXwi7d0tUsvV0nNPBiMnjJWHBKqJRz
-	Ucx51DqudNvCQYJbupawk94q2zZxv42t8MtCxCcAy9JKmQaaU/Ft4x5AHdtXEsEy
-	JrBln33aCVzfk6g3+4ii/bss4O2ZoZo8x+cDysyg1E8sfKyRWwPuIvDbob0Z/f1g
-	leidiNZt1pYr5OWRUh/DxyNs9pnUjh/dj1n/rPdkxMsoy83NoBNc6fmMrNQSM8Xm
-	aHBWUKE9MQWJ+dBOig/BOPRF0sW/67fUr8y9GfPVkPUo9Sl/1i/mnO7pYwi1R3Dj
-	L/PgOboyyxbwlJYXvfg==
-Received: from dc5-exch02.marvell.com ([199.233.59.182])
-	by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3veaw014hx-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-	Fri, 05 Jan 2024 04:02:53 -0800 (PST)
-Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Fri, 5 Jan
- 2024 04:02:51 -0800
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
- Transport; Fri, 5 Jan 2024 04:02:51 -0800
-Received: from hyd1soter3.marvell.com (unknown [10.29.37.12])
-	by maili.marvell.com (Postfix) with ESMTP id 861A83F7091;
-	Fri,  5 Jan 2024 04:02:48 -0800 (PST)
-From: Geetha sowjanya <gakula@marvell.com>
-To: <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC: <kuba@kernel.org>, <davem@davemloft.net>, <pabeni@redhat.com>,
-        <edumazet@google.com>, <sgoutham@marvell.com>, <gakula@marvell.com>,
-        <sbhatta@marvell.com>, <hkelam@marvell.com>
-Subject: [net-next PATCH] octeontx2-pf: Add support for offload tc with skbedit mark action
-Date: Fri, 5 Jan 2024 17:32:47 +0530
-Message-ID: <20240105120247.14975-1-gakula@marvell.com>
-X-Mailer: git-send-email 2.17.1
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68F122CCBB;
+	Fri,  5 Jan 2024 12:05:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E41DDFEC;
+	Fri,  5 Jan 2024 04:06:22 -0800 (PST)
+Received: from FVFF77S0Q05N (unknown [10.57.86.44])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2D8173F64C;
+	Fri,  5 Jan 2024 04:05:35 -0800 (PST)
+Date: Fri, 5 Jan 2024 12:05:32 +0000
+From: Mark Rutland <mark.rutland@arm.com>
+To: Ian Rogers <irogers@google.com>
+Cc: "Liang, Kan" <kan.liang@linux.intel.com>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Kan Liang <kan.liang@intel.com>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
+	linux-perf-users@vger.kernel.org,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: perf test hybrid failing on 14700K
+Message-ID: <ZZfwjG-HL5yOEh6z@FVFF77S0Q05N>
+References: <ZYbm5L7tw7bdpDpE@kernel.org>
+ <4d86f3b6-eaee-4673-bdf5-3b97c1c1ad17@linux.intel.com>
+ <CAP-5=fUfJ-VBGS1D2+WM_eBu4uPGvxJ2KyD4WXzgKRCfGKHTQQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-GUID: gXxI_aJTxv4kpC8oPZBqBj0QfnQQsdea
-X-Proofpoint-ORIG-GUID: gXxI_aJTxv4kpC8oPZBqBj0QfnQQsdea
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAP-5=fUfJ-VBGS1D2+WM_eBu4uPGvxJ2KyD4WXzgKRCfGKHTQQ@mail.gmail.com>
 
-Support offloading of skbedit mark action.
+On Tue, Jan 02, 2024 at 02:41:07PM -0800, Ian Rogers wrote:
+> On Tue, Jan 2, 2024 at 7:43 AM Liang, Kan <kan.liang@linux.intel.com> wrote:
+> > On 2023-12-23 8:55 a.m., Arnaldo Carvalho de Melo wrote:
+> > > Hi Kan,
+> > >
+> > > I noticed the following problem, are you able to reproduce it?
+> > >
+> > > Happy solstice!
+> >
+> > Happy new year!
 
-For example, to mark with 0x0008, with dest ip 60.60.60.2 on eth2
-interface:
+Godt nytår!
 
- # tc qdisc add dev eth2 ingress
- # tc filter add dev eth2 ingress protocol ip flower \
-      dst_ip 60.60.60.2 action skbedit mark 0x0008 skip_sw
+> > > - Arnaldo
+> > >
+> > > root@number:/home/acme/Downloads# grep "model name" -m1 /proc/cpuinfo
+> > > model name    : Intel(R) Core(TM) i7-14700K
+> > > root@number:/home/acme/Downloads# uname -a
+> > > Linux number 6.6.4-200.fc39.x86_64 #1 SMP PREEMPT_DYNAMIC Sun Dec  3 18:13:11 UTC 2023 x86_64 GNU/Linux
+> > > root@number:/home/acme/Downloads# perf -vv
+> > > perf version 6.7.rc6.g63daba4e2861
+> > >                  dwarf: [ on  ]  # HAVE_DWARF_SUPPORT
+> > >     dwarf_getlocations: [ on  ]  # HAVE_DWARF_GETLOCATIONS_SUPPORT
+> > >          syscall_table: [ on  ]  # HAVE_SYSCALL_TABLE_SUPPORT
+> > >                 libbfd: [ OFF ]  # HAVE_LIBBFD_SUPPORT
+> > >             debuginfod: [ on  ]  # HAVE_DEBUGINFOD_SUPPORT
+> > >                 libelf: [ on  ]  # HAVE_LIBELF_SUPPORT
+> > >                libnuma: [ on  ]  # HAVE_LIBNUMA_SUPPORT
+> > > numa_num_possible_cpus: [ on  ]  # HAVE_LIBNUMA_SUPPORT
+> > >                libperl: [ on  ]  # HAVE_LIBPERL_SUPPORT
+> > >              libpython: [ on  ]  # HAVE_LIBPYTHON_SUPPORT
+> > >               libslang: [ on  ]  # HAVE_SLANG_SUPPORT
+> > >              libcrypto: [ on  ]  # HAVE_LIBCRYPTO_SUPPORT
+> > >              libunwind: [ on  ]  # HAVE_LIBUNWIND_SUPPORT
+> > >     libdw-dwarf-unwind: [ on  ]  # HAVE_DWARF_SUPPORT
+> > >                   zlib: [ on  ]  # HAVE_ZLIB_SUPPORT
+> > >                   lzma: [ on  ]  # HAVE_LZMA_SUPPORT
+> > >              get_cpuid: [ on  ]  # HAVE_AUXTRACE_SUPPORT
+> > >                    bpf: [ on  ]  # HAVE_LIBBPF_SUPPORT
+> > >                    aio: [ on  ]  # HAVE_AIO_SUPPORT
+> > >                   zstd: [ on  ]  # HAVE_ZSTD_SUPPORT
+> > >                libpfm4: [ on  ]  # HAVE_LIBPFM
+> > >          libtraceevent: [ on  ]  # HAVE_LIBTRACEEVENT
+> > >          bpf_skeletons: [ on  ]  # HAVE_BPF_SKEL
+> > > root@number:/home/acme/Downloads# perf test 75
+> > >  75: x86 hybrid                                                      : FAILED!
+> >
+> > The failure should be a regression caused by the a24d9d9dc096 ("perf
+> > parse-events: Make legacy events lower priority than sysfs/JSON")
+> >
+> > @@ -1004,10 +1012,19 @@ static int config_term_pmu(struct
+> > perf_event_attr *attr,
+> >                                                            err_str, /*help=*/NULL);
+> >                         return -EINVAL;
+> >                 }
+> > -               attr->type = PERF_TYPE_HARDWARE;
+> > -               attr->config = term->val.num;
+> > -               if (perf_pmus__supports_extended_type())
+> > -                       attr->config |= (__u64)pmu->type << PERF_PMU_TYPE_SHIFT;
+> > +               /*
+> > +                * If the PMU has a sysfs or json event prefer it over
+> > +                * legacy. ARM requires this.
+> > +                */
+> > +               if (perf_pmu__have_event(pmu, term->config))
+> > For Intel hybrid, the perf_pmu__have_event() should be always true for
+> > all hw events and hw cache events. So the patch will mistakenly update
+> > the type to TYPE_USER. However, On Intel platforms, the type of the hw
+> > events should be TYPE_HARDWARE.
+> >
+> > Seems ARM needs to find another way to distinguish the case.
+> >
+> > Ian, any suggestions?
+> 
+> Hi Kan/Mark,
+> 
+> Firstly, the perf_pmu__have_event is a test of whether
+> /sys/devices/<pmu>/events or the equivalent json events have the
+> specified event string like "inst_retired.any" - ie it isn't a test of
+> whether the event is supported by the kernel. Mark was quite insistent
+> that the behavior be changed so that if a legacy event is specified
+> with a PMU, the PMU's sysfs/json event is the priority which is a big
+> behavior change on x86.
 
-Signed-off-by: Geetha sowjanya <gakula@marvell.com>
----
- .../net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c  |  2 ++
- .../ethernet/marvell/octeontx2/nic/otx2_common.h    |  2 ++
- .../net/ethernet/marvell/octeontx2/nic/otx2_tc.c    | 13 +++++++++++++
- .../net/ethernet/marvell/octeontx2/nic/otx2_txrx.c  |  3 +++
- .../net/ethernet/marvell/octeontx2/nic/otx2_txrx.h  |  3 +++
- 5 files changed, 23 insertions(+)
+For the record, I was insistent that the behaviour was *restored*; that was the
+existing behaivour prior to commit:
 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c
-index c75669c8fde7..6188921e9a20 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c
-@@ -1183,6 +1183,8 @@ static int npc_update_rx_entry(struct rvu *rvu, struct rvu_pfvf *pfvf,
- 			action.pf_func = target;
- 			action.op = NIX_RX_ACTIONOP_UCAST;
- 		}
-+		if (req->match_id)
-+			action.match_id = req->match_id;
- 	}
- 
- 	entry->action = *(u64 *)&action;
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
-index 06910307085e..815ae13c371c 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
-@@ -363,6 +363,7 @@ struct otx2_flow_config {
- 	struct list_head	flow_list;
- 	u32			dmacflt_max_flows;
- 	u16                     max_flows;
-+	u16			mark_flows;
- 	struct list_head	flow_list_tc;
- 	bool			ntuple;
- };
-@@ -465,6 +466,7 @@ struct otx2_nic {
- #define OTX2_FLAG_DMACFLTR_SUPPORT		BIT_ULL(14)
- #define OTX2_FLAG_PTP_ONESTEP_SYNC		BIT_ULL(15)
- #define OTX2_FLAG_ADPTV_INT_COAL_ENABLED BIT_ULL(16)
-+#define OTX2_FLAG_TC_MARK_ENABLED		BIT_ULL(17)
- 	u64			flags;
- 	u64			*cq_op_addr;
- 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c
-index 4fd44b6eecea..fd1d78601811 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c
-@@ -511,7 +511,15 @@ static int otx2_tc_parse_actions(struct otx2_nic *nic,
- 			nr_police++;
- 			break;
- 		case FLOW_ACTION_MARK:
-+			if (act->mark & ~OTX2_RX_MATCH_ID_MASK) {
-+				NL_SET_ERR_MSG_MOD(extack, "Bad flow mark, only 16 bit supported");
-+				return -EOPNOTSUPP;
-+			}
- 			mark = act->mark;
-+			req->match_id = mark & 0xFFFFULL;
-+			req->op = NIX_RX_ACTION_DEFAULT;
-+			nic->flags |= OTX2_FLAG_TC_MARK_ENABLED;
-+			nic->flow_cfg->mark_flows++;
- 			break;
- 
- 		case FLOW_ACTION_RX_QUEUE_MAPPING:
-@@ -1173,6 +1181,11 @@ static int otx2_tc_del_flow(struct otx2_nic *nic,
- 		return -EINVAL;
- 	}
- 
-+	/* Disable TC MARK flag if they are no rules with skbedit mark action */
-+	if (flow_node->req.match_id)
-+		if (!(--flow_cfg->mark_flows))
-+			nic->flags &= ~OTX2_FLAG_TC_MARK_ENABLED;
-+
- 	if (flow_node->is_act_police) {
- 		__clear_bit(flow_node->rq, &nic->rq_bmap);
- 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
-index 4d519ea833b2..d3c9759c9f06 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
-@@ -380,6 +380,9 @@ static void otx2_rcv_pkt_handler(struct otx2_nic *pfvf,
- 	if (pfvf->netdev->features & NETIF_F_RXCSUM)
- 		skb->ip_summed = CHECKSUM_UNNECESSARY;
- 
-+	if (pfvf->flags & OTX2_FLAG_TC_MARK_ENABLED)
-+		skb->mark = parse->match_id;
-+
- 	skb_mark_for_recycle(skb);
- 
- 	napi_gro_frags(napi);
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.h b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.h
-index a82ffca8ce1b..3f1d2655ff77 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.h
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.h
-@@ -62,6 +62,9 @@
- #define CQ_OP_STAT_OP_ERR       63
- #define CQ_OP_STAT_CQ_ERR       46
- 
-+/* Packet mark mask */
-+#define OTX2_RX_MATCH_ID_MASK 0x0000ffff
-+
- struct queue_stats {
- 	u64	bytes;
- 	u64	pkts;
--- 
-2.25.1
+ 5ea8f2ccffb23983 ("perf parse-events: Support hardware events as terms")
 
+... which was itself a big behaviour change for all architectures, in part led
+to the issue that Hector and Martin were hitting on arm/arm64, and provided no
+recourse to get the prior behaviour when desired.
+
+I appreciate that the change I requested was a big behaviour change on x86
+relative to v6.5, but the change above in v6.5 was a big behaviour change on
+arm/arm64 relative to the behaviour established many years prior. I'm sorry
+that I did not catch this earlier at the review stage.
+
+> To get the test passing again I've sent out a test update:
+> https://lore.kernel.org/lkml/20240102215732.1125997-1-irogers@google.com/
+
+FWIW that looks good to me; I've given my Ack there.
+
+Thanks,
+Mark.
+
+> This switches the legacy events in the test to ones which don't have
+> sysfs or json equivalents. The test is somewhat brittle as an x86 PMU
+> change could decide to add /sys/devices/cpu/events/cycles alongside
+> /sys/devices/cpu/events/cpu-cycles. Ideally we'd be testing all events
+> on core PMUs, for legacy events they may have a sysfs/json override
+> and the test expectation should expect this and assert that the type
+> isn't PERF_TYPE_HARDWARE, etc. For now what I sent out is sufficient
+> to get the "x86 hybrid" test passing. I should probably have done the
+> whole Reported-by.. thing, sorry for missing that.
+> 
+> Thanks,
+> Ian
+> 
+> >
+> > +                       term->type_term = PARSE_EVENTS__TERM_TYPE_USER;
+> > +                       term->no_value = true;
+> > +               } else {
+> > +                       attr->type = PERF_TYPE_HARDWARE;
+> > +                       attr->config = term->val.num;
+> > +                       if (perf_pmus__supports_extended_type())
+> > +                               attr->config |= (__u64)pmu->type << PERF_PMU_TYPE_SHIFT;
+> > +               }
+> >                 return 0;
+> >         }
+> >         if (term->type_term == PARSE_EVENTS__TERM_TYPE_USER ||
+> >
+> >
+> > Thanks,
+> > Kan
+> > > root@number:/home/acme/Downloads# perf test -v 75
+> > >  75: x86 hybrid                                                      :
+> > > --- start ---
+> > > test child forked, pid 4111587
+> > > Using CPUID GenuineIntel-6-B7-1
+> > > running test 0 'cpu_core/cpu-cycles/'
+> > > FAILED arch/x86/tests/hybrid.c:30 wrong type
+> > > Event test failure: test 0 'cpu_core/cpu-cycles/'running test 1 '{cpu_core/cpu-cycles/,cpu_core/instructions/}'
+> > > FAILED arch/x86/tests/hybrid.c:42 wrong type
+> > > Event test failure: test 1 '{cpu_core/cpu-cycles/,cpu_core/instructions/}'running test 2 '{cpu-clock,cpu_core/cpu-cycles/}'
+> > > FAILED arch/x86/tests/hybrid.c:65 wrong type
+> > > Event test failure: test 2 '{cpu-clock,cpu_core/cpu-cycles/}'running test 3 '{cpu_core/cpu-cycles/,cpu-clock}'
+> > > FAILED arch/x86/tests/hybrid.c:78 wrong type
+> > > Event test failure: test 3 '{cpu_core/cpu-cycles/,cpu-clock}'running test 4 '{cpu_core/cpu-cycles/k,cpu_core/instructions/u}'
+> > > FAILED arch/x86/tests/hybrid.c:95 wrong type
+> > > Event test failure: test 4 '{cpu_core/cpu-cycles/k,cpu_core/instructions/u}'running test 5 'r1a'
+> > > running test 6 'cpu_core/r1a/'
+> > > running test 7 'cpu_core/config=10,config1,config2=3,period=1000/u'
+> > > WARNING: event 'N/A' not valid (bits 0-1 of config2 '3' not supported by kernel)!
+> > > running test 8 'cpu_core/LLC-loads/'
+> > > test child finished with -1
+> > > ---- end ----
+> > > x86 hybrid: FAILED!
+> > > root@number:/home/acme/Downloads#
+> > >
+> > > root@number:/home/acme/Downloads# perf trace -e perf_event_open perf test -F -v 75
+> > >  75: x86 hybrid                                                      :
+> > > --- start ---
+> > > Using CPUID GenuineIntel-6-B7-1
+> > > running test 0 'cpu_core/cpu-cycles/'
+> > > FAILED arch/x86/tests/hybrid.c:30 wrong type
+> > > Event test failure: test 0 'cpu_core/cpu-cycles/'running test 1 '{cpu_core/cpu-cycles/,cpu_core/instructions/}'
+> > > FAILED arch/x86/tests/hybrid.c:42 wrong type
+> > > Event test failure: test 1 '{cpu_core/cpu-cycles/,cpu_core/instructions/}'running test 2 '{cpu-clock,cpu_core/cpu-cycles/}'
+> > > FAILED arch/x86/tests/hybrid.c:65 wrong type
+> > > Event test failure: test 2 '{cpu-clock,cpu_core/cpu-cycles/}'running test 3 '{cpu_core/cpu-cycles/,cpu-clock}'
+> > > FAILED arch/x86/tests/hybrid.c:78 wrong type
+> > > Event test failure: test 3 '{cpu_core/cpu-cycles/,cpu-clock}'running test 4 '{cpu_core/cpu-cycles/k,cpu_core/instructions/u}'
+> > > FAILED arch/x86/tests/hybrid.c:95 wrong type
+> > > Event test failure: test 4 '{cpu_core/cpu-cycles/k,cpu_core/instructions/u}'running test 5 'r1a'
+> > > running test 6 'cpu_core/r1a/'
+> > > running test 7 'cpu_core/config=10,config1,config2=3,period=1000/u'
+> > > WARNING: event 'N/A' not valid (bits 0-1 of config2 '3' not supported by kernel)!
+> > > running test 8 'cpu_core/LLC-loads/'
+> > > ---- end ----
+> > > x86 hybrid: FAILED!
+> > >      0.000 ( 0.008 ms): :4115165/4115165 perf_event_open(attr_uptr: { type: 0 (PERF_TYPE_HARDWARE), config: 0xa00000000, disabled: 1, { bp_len, config2 }: 0x900000000, branch_sample_type: USER|COUNTERS, sample_regs_user: 0x3ecaddffffffff, sample_stack_user: 4115165, clockid: 925535355, sample_regs_intr: 0x8140c90000a8f7, sample_max_stack: 8, sig_data: 120259084288 }, cpu: -1, group_fd: -1, flags: FD_CLOEXEC) = 3
+> > >      0.010 ( 0.002 ms): :4115165/4115165 perf_event_open(attr_uptr: { type: 0 (PERF_TYPE_HARDWARE), config: 0x400000000, disabled: 1, { bp_len, config2 }: 0x900000000, branch_sample_type: USER|COUNTERS, sample_regs_user: 0x3ecaddffffffff, sample_stack_user: 4115165, clockid: 925538919, sample_regs_intr: 0x8140c90000a8f7, sample_max_stack: 8, sig_data: 120259084288 }, cpu: -1, group_fd: -1, flags: FD_CLOEXEC) = 4
+> > > root@number:/home/acme/Downloads# strace -e perf_event_open perf test -F -v 75
+> > >  75: x86 hybrid                                                      :
+> > > --- start ---
+> > > Using CPUID GenuineIntel-6-B7-1
+> > > running test 0 'cpu_core/cpu-cycles/'
+> > > FAILED arch/x86/tests/hybrid.c:30 wrong type
+> > > Event test failure: test 0 'cpu_core/cpu-cycles/'running test 1 '{cpu_core/cpu-cycles/,cpu_core/instructions/}'
+> > > FAILED arch/x86/tests/hybrid.c:42 wrong type
+> > > Event test failure: test 1 '{cpu_core/cpu-cycles/,cpu_core/instructions/}'running test 2 '{cpu-clock,cpu_core/cpu-cycles/}'
+> > > FAILED arch/x86/tests/hybrid.c:65 wrong type
+> > > Event test failure: test 2 '{cpu-clock,cpu_core/cpu-cycles/}'running test 3 '{cpu_core/cpu-cycles/,cpu-clock}'
+> > > FAILED arch/x86/tests/hybrid.c:78 wrong type
+> > > Event test failure: test 3 '{cpu_core/cpu-cycles/,cpu-clock}'running test 4 '{cpu_core/cpu-cycles/k,cpu_core/instructions/u}'
+> > > FAILED arch/x86/tests/hybrid.c:95 wrong type
+> > > Event test failure: test 4 '{cpu_core/cpu-cycles/k,cpu_core/instructions/u}'running test 5 'r1a'
+> > > running test 6 'cpu_core/r1a/'
+> > > running test 7 'cpu_core/config=10,config1,config2=3,period=1000/u'
+> > > WARNING: event 'N/A' not valid (bits 0-1 of config2 '3' not supported by kernel)!
+> > > running test 8 'cpu_core/LLC-loads/'
+> > > perf_event_open({type=PERF_TYPE_HARDWARE, size=0 /* PERF_ATTR_SIZE_??? */, config=0xa<<32|PERF_COUNT_HW_CPU_CYCLES, sample_period=0, sample_type=0, read_format=0, disabled=1, precise_ip=0 /* arbitrary skid */, ...}, 0, -1, -1, PERF_FLAG_FD_CLOEXEC) = 3
+> > > perf_event_open({type=PERF_TYPE_HARDWARE, size=0 /* PERF_ATTR_SIZE_??? */, config=0x4<<32|PERF_COUNT_HW_CPU_CYCLES, sample_period=0, sample_type=0, read_format=0, disabled=1, precise_ip=0 /* arbitrary skid */, ...}, 0, -1, -1, PERF_FLAG_FD_CLOEXEC) = 4
+> > > ---- end ----
+> > > x86 hybrid: FAILED!
+> > > +++ exited with 0 +++
+> > > root@number:/home/acme/Downloads#
+> > >
 
