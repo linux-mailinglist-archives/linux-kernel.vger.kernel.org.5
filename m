@@ -1,129 +1,127 @@
-Return-Path: <linux-kernel+bounces-17838-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17837-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 70149825371
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 13:44:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A180782536C
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 13:43:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 827CC1C23012
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 12:44:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 26F421F23DB5
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 12:43:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3173A2D602;
-	Fri,  5 Jan 2024 12:44:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B22512D610;
+	Fri,  5 Jan 2024 12:42:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.de header.i=linosanfilippo@gmx.de header.b="U6tNp3c1"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fexVHH7I"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38FC32CCD5;
-	Fri,  5 Jan 2024 12:44:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
-	t=1704458564; x=1705063364; i=linosanfilippo@gmx.de;
-	bh=FeFq9f1LEHSJJFeWAk7/qG+nMMyVg8j/quqe2kNS2K8=;
-	h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:
-	 In-Reply-To;
-	b=U6tNp3c1qGrUfmwFaWxWdK3m7Z9AxbgDAlMKEP/jP8T+9yDAwSNOH8M8skc68r23
-	 vubMOb6KUxUA5pZ7dRVDyvGrJfm6XRJ91QWOUNKccP9j/G33/qNjk7/Hp7tt+skP3
-	 OMVAYnnpfRDpeGleh0A9pTCHV8wwJpNp2Q2+KVJlU3BHDCza3kESAtM8hP0lUHP1F
-	 UIrsRrvdjW7WQSmQzB9IBq3eBVl/z/CN84kzkEB4gcHnvx4KW65AhLN2mEro6khyr
-	 mpBl4z6tQvcFvinBf0CMjnC4Tc44NQSvQsr3FDTNoyKXYfMtpyfyy7Q7PV0UPtxMW
-	 T0MEXhd/Cj3OGqQBZA==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [192.168.2.37] ([84.162.15.98]) by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MdNcA-1qmOma03EG-00ZS1j; Fri, 05
- Jan 2024 13:42:44 +0100
-Subject: Re: [PATCH v7 6/7] serial: omap: do not override settings for RS485
- support
-To: =?UTF-8?Q?Ilpo_J=c3=a4rvinen?= <ilpo.jarvinen@linux.intel.com>,
- Lino Sanfilippo <l.sanfilippo@kunbus.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Jiri Slaby <jirislaby@kernel.org>, u.kleine-koenig@pengutronix.de,
- shawnguo@kernel.org, s.hauer@pengutronix.de, mcoquelin.stm32@gmail.com,
- alexandre.torgue@foss.st.com, cniedermaier@dh-electronics.com,
- hugo@hugovil.com, m.brock@vanmierlo.com, LKML
- <linux-kernel@vger.kernel.org>, linux-serial <linux-serial@vger.kernel.org>,
- Lukas Wunner <lukas@wunner.de>, p.rosenberger@kunbus.com,
- stable@vger.kernel.org
-References: <20240103061818.564-1-l.sanfilippo@kunbus.com>
- <20240103061818.564-7-l.sanfilippo@kunbus.com>
- <c88034d4-cb5-b64e-7a76-194ef35f28@linux.intel.com>
-From: Lino Sanfilippo <LinoSanfilippo@gmx.de>
-Message-ID: <a41ae447-565a-4db3-96ff-30aef6455a7c@gmx.de>
-Date: Fri, 5 Jan 2024 13:42:41 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9604F2D043;
+	Fri,  5 Jan 2024 12:42:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-55559e26ccfso1881484a12.3;
+        Fri, 05 Jan 2024 04:42:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704458570; x=1705063370; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=8Z/sbdKKt/wzLF4s9/xA3JvplJTqpdOGJ3HlSdybqII=;
+        b=fexVHH7IGBSYbV4lVwL8IbLqHOece2LUqKkLgg0Chzilr5AGKZ9eQamatfwBvXbrus
+         8n8wacln57aMue3ywhKbENOZFRPdrEpqZFC16LMzuJyMXPAn+NCpFGu00UsQEGD2O835
+         B99TbMDo4rMBAFrlACmZYCGYvidafOY5M+sjAwzA0zVUQe+55hnpnm+YbX4UAVtwPmle
+         5O2Mom55byRs4XazJcdUoOQFk7hfZBvo8ifmFjS7lrrs5iox/gVa41nqM+issjnDqv07
+         euPL5k/McKI1cwRLA+yMeaf4h14D7ehvhxTQNHBeUQckknk739z00X8Ft2mJyu0r3le1
+         9cfw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704458570; x=1705063370;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=8Z/sbdKKt/wzLF4s9/xA3JvplJTqpdOGJ3HlSdybqII=;
+        b=iRJ505e5/m1MH3pTFpXfzTdUlUbubuw/o8Ka9sRDKbEabSQhg3C6jngTT+oTDHO0dT
+         qzo31ssztmYApBoztDfkuVDOtlVcvAu76F3FwGt9weEJgA5QvGW8yGAWG8RdjoMCumZx
+         vmfZAY9SLQ8sAYH8y+26I4+/jC0GZ06jLo+H7ojC4HDaStwO6U7aIRUT2xNl/SAkjMnT
+         SKpGrUN/UJ9PDIn2vtU22a0TxQEXgTXPpk0ALX0kBtWM1m/kdE0ish1x911JrdK+2FnT
+         Lf5SK9bZuCn+0YMqLFchgt6Uz3w76g/15zckua235i8/yFtPvlbZ71XnFsi5JlXDMGvg
+         Fn+Q==
+X-Gm-Message-State: AOJu0YxH92qZ++VttV0hgkpOAbjFuIcOy1xxr8ZBGL3BMqy4GrhJmz/0
+	WZ9a6GElemPownz/Oq8OSCQ=
+X-Google-Smtp-Source: AGHT+IGbfX1w0N1pem4IEfrQ3cQn6z6SoqBmdwTlzBDIsENtwVd4ZQekXNKiB19iA+prjtO3rEK/Uw==
+X-Received: by 2002:a50:cd15:0:b0:557:1cfd:6efa with SMTP id z21-20020a50cd15000000b005571cfd6efamr432236edi.112.1704458569397;
+        Fri, 05 Jan 2024 04:42:49 -0800 (PST)
+Received: from ?IPV6:2a02:8389:41cf:e200:19ad:2fc2:9145:71e5? (2a02-8389-41cf-e200-19ad-2fc2-9145-71e5.cable.dynamic.v6.surfer.at. [2a02:8389:41cf:e200:19ad:2fc2:9145:71e5])
+        by smtp.gmail.com with ESMTPSA id fd5-20020a056402388500b0055743d6e9ebsm71122edb.41.2024.01.05.04.42.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 05 Jan 2024 04:42:48 -0800 (PST)
+Message-ID: <56a15164-dbce-4740-b59e-b566f613f878@gmail.com>
+Date: Fri, 5 Jan 2024 13:42:47 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <c88034d4-cb5-b64e-7a76-194ef35f28@linux.intel.com>
-Content-Type: text/plain; charset=iso-8859-15
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] usb: typec: tipd: fix use of device-specific init
+ function
+To: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Roger Quadros <rogerq@kernel.org>,
+ Javier Carrasco <javier.carrasco@wolfvision.net>, linux-usb@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240104-dev_spec_init-v1-1-1a57e7fd8cc8@gmail.com>
+ <ZZf2lhtRdmIHmlBq@kuha.fi.intel.com>
 Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:pchYpIMV93nsbeYzl5wDPqzNit1opOGKWax2b+K7V7kiudOo7Xh
- 2XD2YIoFvNvoCM5jJUJINXGblK48tYOxLTRuSyJL8pcV3ci7UXozjlV2Wd9inajSMhUYf9w
- D+xdKApyilZcu/uB6KNXCj2tvU7+a6NCVt/CLRuO8WJGH4M/7ks52EC2ivIY7O7LlaZPKw4
- g9/CTU1ne66xifS1il+Pg==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:T4KpTWouqx0=;OKKxA3jIye+cUL0iCOD9NzRy5pp
- qDkUmW4P62E4SDjw9QRL6nCKpOclFMHVJVj5V9Yul3y+lbLgi/7TJJgPjvclseqD6Ulh4tkFp
- vIG/tjjhAZvHZ74W4fYE9EO9lajkHSwNRSJEKoAOYtUHgrksU88ScnqSry1nXX/q58lPjxP9h
- 3RBVt+AHKH+QbEwC3NAqXLn1nm7ACJZC40IMODouBCLobkgViWb+ovitzvgvX76yP4mAAgmEE
- u7R2nUwspNVBHlh6bEJ7ncwwO/jXjTzVvg7XBmGMcxRTpa3OGeSxS9U6jv3pEMMQyhsopeP7Y
- MiM+W77d0mZAo7Z07t4gwp6rrkoMDfZ78gol9N3oF+XzmT6vryg+0hNvAKKA1Z9hwIIz85hht
- N7HO+nyDUYvdI/uus+3WcZCsjfqLWnDd1xbBtg0ImIqznZ2r4Mp3A9mFBaclh3vF2UV0x3Lbu
- BMiews4A1xHsYP/fQlUvhhsrR7XWgyc0HykF4H5T27046fckP1XhuKbAAMjoCjisBNIPRlk0V
- qs1tRe0OthmuB5itOhddTw00KbBy3xvQuECCI5LGPPp9U1mndHrGprV47ltpe1h+NsiWL5jkf
- EzERKiWRCCBhUErBj3dwmGTzZxJO1JWz/nfq94h2CCqnpIObOfmkQphOYJ8eYIn+bvab1uqz9
- r7Q8ppyuhaaelg3SDmSzyXvWEB7H59WgYfeB7uG/MmDrz69hi1MdJQ/S6oyfEzonf87JTq/z8
- h/gglhvyi++W9AmXuo5XZMcdzbb2TxAzzEsPzAbgHZ0afeWakTqHYKA7mU5D2s9o7Xl1nwOeA
- 7Rc0TEccqor7kMNv1ey7Ng2gwUH0O16Yp+/eNsWGjyDDpwHInbpSetPHngudF2z4+aXfBotig
- LQIk8Bj/M/O5gOS8RzW2S0yTmQZDRlfdO8V9UFtthmNVF895QKCmnZkiT/9uTjDYsUaR7vO6Q
- VgUStIs+MRWnH8OFoqW9tAE8YKA=
+From: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+In-Reply-To: <ZZf2lhtRdmIHmlBq@kuha.fi.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On 03.01.24 at 12:36, Ilpo J=E4rvinen wrote:
-> On Wed, 3 Jan 2024, Lino Sanfilippo wrote:
->
->> The drivers RS485 support is deactivated if there is no RTS GPIO availa=
-ble.
->> This is done by nullifying the ports rs485_supported struct. After that
->> however the settings in serial_omap_rs485_supported are assigned to the
->> same structure unconditionally, which results in an unintended reactiva=
-tion
->> of RS485 support.
+On 05.01.24 13:36, Heikki Krogerus wrote:
+> On Thu, Jan 04, 2024 at 06:07:12PM +0100, Javier Carrasco wrote:
+>> The current implementation supports device-pecific callbacks for the
+>> init function with a function pointer. The patch that introduced this
+>> feature did not update one call to the tps25750 init function to turn it
+>> into a call with the new pointer in the resume function.
 >>
->> Fix this by moving the assignment to the beginning of
->> serial_omap_probe_rs485() and thus before uart_get_rs485_mode() gets
->> called.
->
-> This doesn't seem to accurately reflect what the problem is (which you
-> correctly described in the paragraph above this). The problem doesn't se=
-em
-> to have anything to do with the placement of uart_get_rs485_mode() call
-> but the if (IS_ERR(up->rts_gpiod)) block that clears rs485_supported?
->
+>> Fixes: d49f90822015 ("usb: typec: tipd: add init and reset functions to tipd_data")
+>> Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+> 
+> This was suggested by Roger, no?
+> 
 
-Right, this should be "...Fix this by moving the assignment to the beginni=
-ng of
-serial_omap_probe_rs485() and thus before the check for the RTS GPIO."
-I will correct this.
+Yes, it was. Thanks for the reminder.
 
+Could the following trailer be added before applying?
 
-> A future work item that came to my mind while reviewing this: I suppose
-> uart_disable_rs485_support() could be added into core which memsets
-> rs485_supported and rs485 to zero so this driver could just call it.
->
+Suggested-by: Roger Quadros <rogerq@kernel.org>
 
-Yes, and the ar933x driver could use that as well.
+Otherwise I will resend the patch with that addition.
 
-
-Regards,
-Lino
+> Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+> 
+>> ---
+>>  drivers/usb/typec/tipd/core.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/usb/typec/tipd/core.c b/drivers/usb/typec/tipd/core.c
+>> index a956eb976906..8a7cdfee27a1 100644
+>> --- a/drivers/usb/typec/tipd/core.c
+>> +++ b/drivers/usb/typec/tipd/core.c
+>> @@ -1495,7 +1495,7 @@ static int __maybe_unused tps6598x_resume(struct device *dev)
+>>  		return ret;
+>>  
+>>  	if (ret == TPS_MODE_PTCH) {
+>> -		ret = tps25750_init(tps);
+>> +		ret = tps->data->init(tps);
+>>  		if (ret)
+>>  			return ret;
+>>  	}
+> 
+> thans,
+> 
 
