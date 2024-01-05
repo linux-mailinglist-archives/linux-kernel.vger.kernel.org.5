@@ -1,138 +1,244 @@
-Return-Path: <linux-kernel+bounces-17718-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17720-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A702825197
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 11:14:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B2CBD82519B
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 11:14:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0B040B21F26
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 10:13:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 41C531F23C4D
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 10:14:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A70412C859;
-	Fri,  5 Jan 2024 10:13:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B211E2D611;
+	Fri,  5 Jan 2024 10:13:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="gu0gTVYD"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C8D82C69D;
-	Fri,  5 Jan 2024 10:13:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4T5zmt5sT4z4f3jpr;
-	Fri,  5 Jan 2024 18:13:18 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 9DEFE1A0AD2;
-	Fri,  5 Jan 2024 18:13:20 +0800 (CST)
-Received: from [10.174.176.73] (unknown [10.174.176.73])
-	by APP1 (Coremail) with SMTP id cCh0CgDXJg0_1pdliqpcFg--.48265S3;
-	Fri, 05 Jan 2024 18:13:20 +0800 (CST)
-Subject: Re: [PATCH for-6.8/block RFC v2] block: support to account io_ticks
- precisely
-To: Ming Lei <ming.lei@redhat.com>, Yu Kuai <yukuai1@huaweicloud.com>
-Cc: hch@lst.de, bvanassche@acm.org, axboe@kernel.dk,
- linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
- yi.zhang@huawei.com, yangerkun@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
-References: <20240103071515.2477311-1-yukuai1@huaweicloud.com>
- <ZZduPrwMrwOLQiU7@fedora>
-From: Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <0a7aa14b-2ceb-2551-3600-cac7f9370360@huaweicloud.com>
-Date: Fri, 5 Jan 2024 18:13:19 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C9B72D043
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 10:13:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704449621; x=1735985621;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:content-transfer-encoding:mime-version;
+  bh=yRMxCdjoqIkD75SEuJzObVSQ7nqozqsXnQwiAAoCr5k=;
+  b=gu0gTVYDADCL03lhtYyDYLIXWXM4TwL1aPBxLmJBVN1r53lHApgwIJcF
+   Bwo5YwTA/pAv7c7LBloIPr+Tgb0JMCvbzphMLvn6Mz8VWpwdQF1vpGhVG
+   QcuukhqTTAI896f86KKVf3lEzlL7G593W43kmo4RcJncQT+yYC0Si9cCz
+   2M/G9lZbqRWf24FIa+y0XCd0MvP1DXvXPebiUarqiwtbOCl9UWPhGFtZz
+   x7aXBf/dGS8CmxBH5Zy0d5kEYYXXc50HJAthoEvk7sEKMRT7sR2uVmQxh
+   nt6EV0CKAde4iUiy+dC8qBVJ83QKQWyyTWj1BGL1rVMUiR8yTO4dkrzwN
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10943"; a="376967339"
+X-IronPort-AV: E=Sophos;i="6.04,333,1695711600"; 
+   d="scan'208";a="376967339"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2024 02:13:40 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10943"; a="904113836"
+X-IronPort-AV: E=Sophos;i="6.04,333,1695711600"; 
+   d="scan'208";a="904113836"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by orsmga004.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 05 Jan 2024 02:13:39 -0800
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Fri, 5 Jan 2024 02:13:38 -0800
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Fri, 5 Jan 2024 02:13:38 -0800
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.101)
+ by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Fri, 5 Jan 2024 02:13:38 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LvOPT4fPPq4IvgtnJAWCPlhBTBnSh8obh5loCp0z24UTCb+5/zc/ICv62MTmNt0Glr3pYLKVjDTv9rGCiIFTTrQ/iw8Lq+GlhyB/QXFpwgFWhX0MGtJHZf9nudYwdJ61yX3LBPv9DYtgr/i/5S4+/CkmZ34P2Z/BDu5Jketb3/b4Pz4SlW+4JTOHu0z5xU+E/w1Z47h86lJfHLwJwLP37kSNlYRuUCGzyWrUUPG9kViuScfwlEJuOoZ0gBu3gKa6kBjrTVyv9Q7TmtENgK0WPUYkC3MzkGxPcsNCgxTb37VbujhRZqheVEqQoaAhqLwSmAD4FHm3H+zsSoUVCDNYag==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=dkhLHh0crXwXx0APrqjN+/BQ8dQyd7xvanE/ap6H1sA=;
+ b=R0YFAOPmoB8HM1dirpre1UbtWA91sWhFsIaEyFP13O2mVQJTtfY7Pp0Hp8ekNS7JCKxrIPgOMjeErk8NUul/BiEv+FQNVJu5neFSn7YTYliB/CGGO5PlUPpPkl0ZKwFcs9R9eFZ/c/9/CZrO5dGd4ygGykZ1rRH4B6SC8ICKqojXtX6B1GEr93AtvKQtO2ElzSxT3ymeWkkJpsnMyDLAP/1BFQrUqzsP7l4sz4rnspQeCSW/qJwZVkcWU52A36eiTF/RXcKzMpSe0Gs5foofWiOEwM6U75MZEuy1IGiw5ci/51p9k516E2NeIvtx0NAidveHflbq5jj6hReX0fOwnQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DM4PR11MB5373.namprd11.prod.outlook.com (2603:10b6:5:394::7) by
+ LV3PR11MB8483.namprd11.prod.outlook.com (2603:10b6:408:1b0::7) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7159.14; Fri, 5 Jan 2024 10:13:35 +0000
+Received: from DM4PR11MB5373.namprd11.prod.outlook.com
+ ([fe80::f105:47dd:6794:6821]) by DM4PR11MB5373.namprd11.prod.outlook.com
+ ([fe80::f105:47dd:6794:6821%4]) with mapi id 15.20.7159.015; Fri, 5 Jan 2024
+ 10:13:35 +0000
+From: =?UTF-8?q?Micha=C5=82=20Winiarski?= <michal.winiarski@intel.com>
+To: <intel-xe@lists.freedesktop.org>, <dri-devel@lists.freedesktop.org>,
+	<linux-kernel@vger.kernel.org>
+CC: Rodrigo Vivi <rodrigo.vivi@intel.com>, Michal Wajdeczko
+	<michal.wajdeczko@intel.com>, Maarten Lankhorst
+	<maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
+	Daniel Vetter <daniel@ffwll.ch>, Javier Martinez Canillas
+	<javierm@redhat.com>, =?UTF-8?q?Ma=C3=ADra=20Canal?= <mcanal@igalia.com>,
+	=?UTF-8?q?Micha=C5=82=20Winiarski?= <michal.winiarski@intel.com>
+Subject: [PATCH v4 1/6] drm/managed: Add drmm_release_action
+Date: Fri, 5 Jan 2024 11:13:19 +0100
+Message-ID: <20240105101324.26811-2-michal.winiarski@intel.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240105101324.26811-1-michal.winiarski@intel.com>
+References: <20240105101324.26811-1-michal.winiarski@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: VI1PR0902CA0047.eurprd09.prod.outlook.com
+ (2603:10a6:802:1::36) To BL1PR11MB5365.namprd11.prod.outlook.com
+ (2603:10b6:208:308::18)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <ZZduPrwMrwOLQiU7@fedora>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgDXJg0_1pdliqpcFg--.48265S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7AFyDJry7GF4kur1UuF1Dtrb_yoW8uFWkpF
-	Wjk3WDKw1kXr18CF4DA3WxGas2grZ5Cw45Zr4fGry7Zr1jqrWfAr4xtrWF9F92vFs7Aw1I
-	93W8uF4DAw1UZrDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUU9Y14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-	2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-	W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
-	0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
-	kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
-	67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
-	CI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E
-	3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCT
-	nIWIevJa73UjIFyTuYvjfUoOJ5UUUUU
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM4PR11MB5373:EE_|LV3PR11MB8483:EE_
+X-MS-Office365-Filtering-Correlation-Id: ddd326fb-7d65-4026-4d0a-08dc0dd6f982
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: a+7VUiaacYQS8/rz5N7EEP79Gn2D+/7DBCs1yiXbwA4vxpDinexuBLOWvrU3xJF+F5lLz3EIbRaMCGGC3HsY+7aDerU9UIQEYFLl/jySdagkww/akcK4t3t3yAWf7qc+G8jSHhp2Woeoc9CufZ3YITSd22N1yulcNGf2ygidhy0L4YMYWqIZl8v27+tbFXjXw6Xi3xcmrpN/o9q8EWcTnb0dxBFUtpUplCkO0Z4pHLFxsehc38fw9ASCnIglOACWSXgtHlAlKQBFxIJduKdWaQUYabtSovQHObA2t4X+yiorwhp4glBmReVIY70IbxY33CTg56vmxoq3xJ4Xqxqp68ouBnbcQJivMJ1anriJ1QQyhqpH4LN4D1+pQ9YgrQAAAWtlwsC8uO1IG9kZmb2+HTflxbDKFTCtf4G4tKyWa+mL8065HhmTz/7Xzg10ChuyIglkT7f6ZUKG2qD5wvoHr0YidTaoHgCK+iTuLMYKceeG9W01/em6cqOYaI7LPfAolVzbV1GSa0JvknXA3WinA+Onem/7t3rKoOAjKCFPH07/M7Ufo/MSiv1GW1bZ/DXW
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB5373.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(136003)(396003)(366004)(346002)(39860400002)(230922051799003)(64100799003)(186009)(451199024)(1800799012)(6506007)(6512007)(6666004)(66476007)(478600001)(66556008)(66946007)(8676002)(8936002)(316002)(54906003)(2906002)(6486002)(26005)(1076003)(83380400001)(2616005)(41300700001)(5660300002)(7416002)(4326008)(36756003)(38100700002)(82960400001)(86362001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?V2RzeDErdStZR1RiTnAzMzJrL0dsS2VwSUJDUVpuUE85RVQxTDVQUThLU2ND?=
+ =?utf-8?B?dGUxNWtZbzF0enY1MHdIanhodkswU0FGUUsvTzV0WkVnSlR6TjhybWU3WjUw?=
+ =?utf-8?B?MTl0bzI1NExQZW94MnZyTlk4K1laZDUwQVpIS1BoanU5SjJPVnM5N2lrdjUx?=
+ =?utf-8?B?TmNWc0JvaU9iVktUOVdRN3l4UTVBc3pKc2c4VlkvMFkvcHhZNVczTjNLT0pJ?=
+ =?utf-8?B?b3draDNySmhRVHB6aUhWQ3Zaa2htNzZiQTNsOS9aWm1nTUgzSWovbklrZlpP?=
+ =?utf-8?B?RGo2K3FjcERwbHRVNHN5dGFEMlpoSi9rZmZvUTNQOEV2RHEvcUdGSE8rLzcy?=
+ =?utf-8?B?azEyMncrVXhtY0w1MGlDZ3JRbWx1MHlMZkdNYVdsRTVzNXlQTEtOaFoyaFg4?=
+ =?utf-8?B?Yk9tYTZXREVMOFNDTElDZkdHazhIUVp4WjJmT3JiaittOVlzRWlncGVUR2cx?=
+ =?utf-8?B?cHYzcHluMVAxMHBiQWR6clc3SVhHQTNWMXNXaWh4MVg1MEtJRkN2RUpWUWRM?=
+ =?utf-8?B?dk85YVBpR2duZWVjaEZ2dzBHbHpDVElTSTQ2Z0I1MEU1eUdwVjNSRG5peXZ1?=
+ =?utf-8?B?dnlqc0xZaW5TTTQwbHI4cmFibk85b3NNb2pIRUs5cXFxeHBwZ0NPb1h1Q2Jj?=
+ =?utf-8?B?MjQ1cXg3SGU0bjZWb3hCSjFPb29HbndaR0huQVFnYzdJa0pTeDFNc0RDSnBt?=
+ =?utf-8?B?cVRIWnZhdFRPMjJBRnhyaDVmRVFzcW9ZTnNSSmNGMDl0eElKNUJvQjFPQVpl?=
+ =?utf-8?B?blNUN2ZOZVhFSkpNMGhac0lwWlcyT0wxVktWY05XT01aUVNYUksxZm5CQmRl?=
+ =?utf-8?B?OVA4QWduTUpOa0VReGxrQXNUSU9OV2NXOFVxRmJTNHRuUDBiQ2tFd3laZ3dl?=
+ =?utf-8?B?eHg4TkRtMGFPSXBEWHdic1QrZ0pLK1NSYkJvT05XWklqdHpoTnd4UWNPQ2ds?=
+ =?utf-8?B?Q0U4NFJielRrb283NzVSSDFHTjAwbVl6TldWN0xZQTFBOUQyb0dtUVY0ZHZq?=
+ =?utf-8?B?anM0dHZxb1VtVEU3dzFFa2R1eHk1N0w1bFJRRjdneEcwUHpsZUF5QUZtRmZJ?=
+ =?utf-8?B?N2RSSWhCelVTd1cvNTB2OWpFNXNjVnVJZ1VkeVZxWU1JM21tTFJIdHgxeHZn?=
+ =?utf-8?B?VmpUY3BOVlgwN2FGTlV4ejJoSXlSeWMwR2pxV0NaVDZuU2JQWVl6ajRDb05u?=
+ =?utf-8?B?Zm1DbGpKSy9lODVrSVNzT0NwUG9qd2FsdSs3WCt5OGtjd0tNMTVjSHZNb0Vi?=
+ =?utf-8?B?aTFDWWR4NU9DRzJWSmJNRnVMSlBCaDhhK1VoOHhUYVBRK2pFOXY2Sm1LQXJU?=
+ =?utf-8?B?MngvcVlveDZDTzR3Z24xaFFrRzZzbFB6VVdIdDY3WUhvNVQrSVpXT002VHp5?=
+ =?utf-8?B?Njc1anZnL2haZ1dqZ0VITW82WmoxWVphbDVWa05NVE5tbUlhdnFnY3lFOEdQ?=
+ =?utf-8?B?MU42Mkp4OGVkRjdicVVJSDBiQlVjUUdBSnNlVzlPMk5lL2J2V2JteUpDWHk3?=
+ =?utf-8?B?a2xhMUJVM3FhNmNTNE9HZEhaN3l1VVNJY24ybWp6ZnVLeWV1aDAxajM3MUdu?=
+ =?utf-8?B?TWxudlliMHo5NWZVZ0NPNkExZUVFOUZGZ20yb05PZDZrL0xHTWtjVUZ5V2x1?=
+ =?utf-8?B?dTc2dnBqQ3hhNkJ3TGdzemRPZTdVTkYwa1BFc3REbDRCNXB6YktZUXFyNWhS?=
+ =?utf-8?B?MXdwTG5IVGxuNUUvRzJCOFFyN0tUWG9CWDg0UENXdjNrbHB0RkxJNU03Rmhp?=
+ =?utf-8?B?ZGdyMWlFYkxkZW0zalY1VjZNTmY5VldtWXVvb3I1d0NnaFF3VkhabTM2ZDRI?=
+ =?utf-8?B?WTBBQ0Y0d2M5M2tlWHdWRXhNMjdLdlh0MGJiOGE3MFVRNWhMelY1NnFSb1Yy?=
+ =?utf-8?B?ZTB2ZHFSUDFEV3VOcjU5L0xWQWdKQ3FNQUpEZmpqUlJrbDdlc2s4YytweER1?=
+ =?utf-8?B?TXg2ZzZIWmorQ0NXTHBLeExKZUkvbjZ3Q0ZMK1Z5ZHdqTWxkeGx4M041RFVK?=
+ =?utf-8?B?bzVsbXVseDhFb2xEVllCYkVtYmhqUWRxY3RXNWNZRm1WNGYxUmZDZEZuV2ZG?=
+ =?utf-8?B?TEtqSlJPTUlkbmc1NUpVRTlXcDJUNG9JTjRrVk1sY2J4L0hiVEd4UDNDT1Jr?=
+ =?utf-8?B?SFFoUFdCUTdTWlY2R1owaDZrOHdwUG04NFRIcTJkVTRobjk1U253QXBsZjFD?=
+ =?utf-8?B?Q0E9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: ddd326fb-7d65-4026-4d0a-08dc0dd6f982
+X-MS-Exchange-CrossTenant-AuthSource: BL1PR11MB5365.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Jan 2024 10:13:34.8979
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: DRt69f/Lv302zLnuNenu2hiZ2//4pg6QrNB7QT2gaO2sJSQeYv5MJVO6U+MLxWWBJNnkjljdX7DQl9cEY3IsEM2VwPBDOar0VDl/LAG6/Cc=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV3PR11MB8483
+X-OriginatorOrg: intel.com
 
-Hi, Ming!
+Similar to devres equivalent, it allows to call the "release" action
+directly and remove the resource from the managed resources list.
 
-‘⁄ 2024/01/05 10:49, Ming Lei –¥µ¿:
-> On Wed, Jan 03, 2024 at 03:15:15PM +0800, Yu Kuai wrote:
->> From: Yu Kuai <yukuai3@huawei.com>
->>
->> Currently, io_ticks is accounted based on sampling, specifically
->> update_io_ticks() will always account io_ticks by 1 jiffies from
->> bdev_start_io_acct()/blk_account_io_start(), and the result can be
->> inaccurate, for example(HZ is 250):
->>
->> Test script:
->> fio -filename=/dev/sda -bs=4k -rw=write -direct=1 -name=test -thinktime=4ms
->>
->> Test result: util is about 90%, while the disk is really idle.
->>
->> In order to account io_ticks precisely, update_io_ticks() must know if
->> there are IO inflight already, and this requires overhead slightly,
->> hence precise io accounting is disabled by default, and user can enable
->> it through sysfs entry.
->>
->> Noted that for rq-based devcie, part_stat_local_inc/dec() and
->> part_in_flight() is used to track inflight instead of iterating tags,
->> which is not supposed to be used in fast path because 'tags->lock' is
->> grabbed in blk_mq_find_and_get_req().
->>
->> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
->> ---
->> Changes in v2:
->>   - remove the new parameter for update_io_ticks();
->>   - simplify update_io_ticks();
->>   - use swith in queue_iostats_store();
->>   - add missing part_stat_local_dec() in blk_account_io_merge_request()
-> 
-> Looks fine,
-> 
-> Reviewed-by: Ming Lei <ming.lei@redhat.com>
+Signed-off-by: Micha≈Ç Winiarski <michal.winiarski@intel.com>
+Reviewed-by: Maxime Ripard <mripard@kernel.org>
+---
+ drivers/gpu/drm/drm_managed.c | 39 +++++++++++++++++++++++++++++++++++
+ include/drm/drm_managed.h     |  4 ++++
+ 2 files changed, 43 insertions(+)
 
-Thanks for the review, however, I made a mistake while "simplify
-update_io_ticks()" that first IO will still account by 1 jiffies even if
-precise iostat is enabled:
-
-+       if (unlikely(time_after(now, stamp)) &&
-+           likely(try_cmpxchg(&part->bd_stamp, &stamp, now))) {
-+               if (end || (blk_queue_precise_io_stat(part->bd_queue) &&
-+                           part_in_flight(part)))
-+                       __part_stat_add(part, io_ticks, now - stamp);
-+               else
--> here, should be else if (!blk_queue_precise_io_stat(part->bd_queue))
-+                       __part_stat_add(part, io_ticks, 1);
-
-Alough this is RFC, my apologize for sending this version without fully
-test the functionally. I'll send a formal version soon.
-
-Thanks,
-Kuai
-
-> 
-> 
-> thanks,
-> Ming
-> 
-> .
-> 
+diff --git a/drivers/gpu/drm/drm_managed.c b/drivers/gpu/drm/drm_managed.c
+index bcd111404b128..7646f67bda4e4 100644
+--- a/drivers/gpu/drm/drm_managed.c
++++ b/drivers/gpu/drm/drm_managed.c
+@@ -176,6 +176,45 @@ int __drmm_add_action_or_reset(struct drm_device *dev,
+ }
+ EXPORT_SYMBOL(__drmm_add_action_or_reset);
+ 
++/**
++ * drmm_release_action - release a managed action from a &drm_device
++ * @dev: DRM device
++ * @action: function which would be called when @dev is released
++ * @data: opaque pointer, passed to @action
++ *
++ * This function calls the @action previously added by drmm_add_action()
++ * immediately.
++ * The @action is removed from the list of cleanup actions for @dev,
++ * which means that it won't be called in the final drm_dev_put().
++ */
++void drmm_release_action(struct drm_device *dev,
++			 drmres_release_t action,
++			 void *data)
++{
++	struct drmres *dr_match = NULL, *dr;
++	unsigned long flags;
++
++	spin_lock_irqsave(&dev->managed.lock, flags);
++	list_for_each_entry_reverse(dr, &dev->managed.resources, node.entry) {
++		if (dr->node.release == action) {
++			if (!data || (data && *(void **)dr->data == data)) {
++				dr_match = dr;
++				del_dr(dev, dr_match);
++				break;
++			}
++		}
++	}
++	spin_unlock_irqrestore(&dev->managed.lock, flags);
++
++	if (WARN_ON(!dr_match))
++		return;
++
++	action(dev, data);
++
++	free_dr(dr_match);
++}
++EXPORT_SYMBOL(drmm_release_action);
++
+ /**
+  * drmm_kmalloc - &drm_device managed kmalloc()
+  * @dev: DRM device
+diff --git a/include/drm/drm_managed.h b/include/drm/drm_managed.h
+index ad08f834af408..f547b09ca0239 100644
+--- a/include/drm/drm_managed.h
++++ b/include/drm/drm_managed.h
+@@ -45,6 +45,10 @@ int __must_check __drmm_add_action_or_reset(struct drm_device *dev,
+ 					    drmres_release_t action,
+ 					    void *data, const char *name);
+ 
++void drmm_release_action(struct drm_device *dev,
++			 drmres_release_t action,
++			 void *data);
++
+ void *drmm_kmalloc(struct drm_device *dev, size_t size, gfp_t gfp) __malloc;
+ 
+ /**
+-- 
+2.43.0
 
 
