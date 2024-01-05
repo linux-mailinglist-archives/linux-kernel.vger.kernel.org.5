@@ -1,41 +1,63 @@
-Return-Path: <linux-kernel+bounces-18054-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18055-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D9C68257F2
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 17:20:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD35F8257F7
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 17:21:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CFB321F216AD
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 16:20:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7B7C0284949
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 16:21:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C71263174F;
-	Fri,  5 Jan 2024 16:20:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4B3C3174E;
+	Fri,  5 Jan 2024 16:21:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="urC9BfQr"
+	dkim=pass (1024-bit key) header.d=mailerdienst.de header.i=@mailerdienst.de header.b="S1GKJ1tA"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mxout2.routing.net (mxout2.routing.net [134.0.28.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 186F22E85B;
-	Fri,  5 Jan 2024 16:20:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 9447DC433D9;
-	Fri,  5 Jan 2024 16:20:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704471625;
-	bh=yVeKmEcClyi5B8/xFJ+u1/QIebKfkfq7DhyuYiRjrFQ=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=urC9BfQrFSeJInf4JacBUekwPYgA1d+coWqMWOD46hMO8oiI439sszRZhlG6NuSk8
-	 ROHU8i6u6WAEV4Phbk7XYGhjmweEB0lo8yTHBMbAyl1fzSeAVPUKWzKHc3UMIEDRBS
-	 497GfZA+acmlYL/nTYO3S/SWnl++eTU85GRdSPm6yJ29e9SU+5oBMZwiqugn5Npe/9
-	 Nsnh2xxAJbmbBmDDP8MlbU4T2FUUU4Ss+6a5a9R4HeVx2CUUC02BHIoiN4GlP0/edt
-	 yPNtEtagKys3+PDWd6Bynq9qfli1MOinGJLincUh3DCdRU9g1m0NSjzLjN2mVk4r2t
-	 jfyyg73sg5T7A==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 7F325DCB6D8;
-	Fri,  5 Jan 2024 16:20:25 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B8F22E84A;
+	Fri,  5 Jan 2024 16:21:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fw-web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fw-web.de
+Received: from mxbox3.masterlogin.de (unknown [192.168.10.78])
+	by mxout2.routing.net (Postfix) with ESMTP id CB4AE5FD8F;
+	Fri,  5 Jan 2024 16:21:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailerdienst.de;
+	s=20200217; t=1704471664;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=fn9i81xP7ZEmQqZw0cHUB5qam/4Zd8WwUWJ3g2A50Zs=;
+	b=S1GKJ1tAYxprTNflZhTx9uOs6ybollM4dzkhgH7awAEpawoFGquR+ImYthbmzCyujR8uMn
+	H2ARnzNafZr1Jh9zPlXOlEGVy6zP/+bIivUFnU/5Dq0G1CI+Qki/PVvAlwNC3ZPKrsIDkp
+	DxgkmjUS0us2GbPrEc1CxKmfetbsc/E=
+Received: from frank-G5.. (fttx-pool-80.245.77.34.bambit.de [80.245.77.34])
+	by mxbox3.masterlogin.de (Postfix) with ESMTPSA id B682B360303;
+	Fri,  5 Jan 2024 16:21:02 +0000 (UTC)
+From: Frank Wunderlich <linux@fw-web.de>
+To: Michael Turquette <mturquette@baylibre.com>,
+	Stephen Boyd <sboyd@kernel.org>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>
+Cc: Frank Wunderlich <frank-w@public-files.de>,
+	Sam Shih <sam.shih@mediatek.com>,
+	Daniel Golle <daniel@makrotopia.org>,
+	linux-clk@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	devicetree@vger.kernel.org,
+	linux-mediatek@lists.infradead.org
+Subject: [PATCH v2 0/2] Add reset controller to mt7988 infracfg
+Date: Fri,  5 Jan 2024 17:20:53 +0100
+Message-Id: <20240105162056.43266-1-linux@fw-web.de>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -43,49 +65,30 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v3 0/3] net: gro: reduce extension header parsing
- overhead
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <170447162551.14252.7658609133386405696.git-patchwork-notify@kernel.org>
-Date: Fri, 05 Jan 2024 16:20:25 +0000
-References: <ac6fb684-c00e-449c-92c3-99358a927ade@gmail.com>
-In-Reply-To: <ac6fb684-c00e-449c-92c3-99358a927ade@gmail.com>
-To: Richard Gobert <richardbgobert@gmail.com>
-Cc: davem@davemloft.net, dsahern@kernel.org, edumazet@google.com,
- kuba@kernel.org, pabeni@redhat.com, shuah@kernel.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+X-Mail-ID: d5bc6535-430f-4be9-8228-d74279bce75c
 
-Hello:
+From: Frank Wunderlich <frank-w@public-files.de>
 
-This series was applied to netdev/net-next.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
+Infracfg on mt7988 supports reset controller function which is
+needed to get lvts thermal working.
 
-On Wed, 3 Jan 2024 15:36:41 +0100 you wrote:
-> This series attempts to reduce the parsing overhead of IPv6 extension
-> headers in GRO and GSO, by removing extension header specific code and
-> enabling the frag0 fast path.
-> 
-> The following changes were made:
->  - Removed some unnecessary HBH conditionals by adding HBH offload
->    to inet6_offloads
->  - Added a utility function to support frag0 fast path in ipv6_gro_receive
->  - Added selftests for IPv6 packets with extension headers in GRO
-> 
-> [...]
+Patches are based on clk-next due to recently added mt7988 clock driver:
+https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git
 
-Here is the summary with links:
-  - [net-next,v3,1/3] net: gso: add HBH extension header offload support
-    https://git.kernel.org/netdev/net-next/c/f2e3fc2158e6
-  - [net-next,v3,2/3] net: gro: parse ipv6 ext headers without frag0 invalidation
-    https://git.kernel.org/netdev/net-next/c/dff0b0161ad5
-  - [net-next,v3,3/3] selftests/net: fix GRO coalesce test and add ext header coalesce tests
-    https://git.kernel.org/netdev/net-next/c/4e321d590cec
+changes:
+  v2:
+    - change value of constant to 0 from 9
+    - add missing SoB and commit-message for binding-patch
 
-You are awesome, thank you!
+Frank Wunderlich (2):
+  dt-bindings: reset: mediatek: add MT7988 LVTS reset ID
+  clk: mediatek: add infracfg reset controller for mt7988
+
+ drivers/clk/mediatek/clk-mt7988-infracfg.c    | 20 +++++++++++++++++++
+ .../reset/mediatek,mt7988-resets.h            |  4 ++++
+ 2 files changed, 24 insertions(+)
+
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.34.1
 
 
