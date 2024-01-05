@@ -1,162 +1,134 @@
-Return-Path: <linux-kernel+bounces-17344-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17345-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3A3BB824BFA
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 01:00:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3A3C5824BFD
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 01:02:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C69EE28799F
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 00:00:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E2AC11F22F10
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 00:02:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 510102D611;
-	Fri,  5 Jan 2024 00:00:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49B8E538D;
+	Fri,  5 Jan 2024 00:02:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="TCmSXmbQ"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="3GWR6bCA"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB4F92D601;
-	Fri,  5 Jan 2024 00:00:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1704412810;
-	bh=fKTT20mUaFZY3aDpSIBX+2Ae7sQrUaC79fPao4Mb0Fw=;
-	h=Date:From:To:Cc:Subject:From;
-	b=TCmSXmbQ7Y3+a9JsKY0i5cANtaJ7cT67pUSaPAWxiKxXX2AXU8Q/Jtb0ArC9l7r8q
-	 6fuUbPawVMeksZb6SX/cdSMM0LV9DRMVwI2K22ErZPs1RnoC9mfVTi2XNYN7TgjJZM
-	 r45lOjl18xgtyTKEi8vzf2c2lxDOE27HmGBYtz+qAlpy9U2yW+ZiMsoHQ57+EgnKYj
-	 q7nCjBjxoMvM4AZLTMIJCKVo3/oqXY4crGyn79KhJPJabao7RT7ZApgQBWtOiv9uCL
-	 nFEUlE38VJyosmKK25Iw4kU769waCsFqCYfpjkCnt/3vkY10k3Kxn4XoTKHBN84TmH
-	 QVOT4PYmSXIkw==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4T5k9P1dNMz4x1p;
-	Fri,  5 Jan 2024 11:00:09 +1100 (AEDT)
-Date: Fri, 5 Jan 2024 11:00:07 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Chuck Lever <chuck.lever@oracle.com>
-Cc: Jeff Layton <jlayton@kernel.org>, Jeffrey Layton <jlayton@redhat.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
- Mailing List <linux-next@vger.kernel.org>, NeilBrown <neilb@suse.de>
-Subject: linux-next: manual merge of the nfsd tree with the nfsd-fixes tree
-Message-ID: <20240105110007.3f932561@canb.auug.org.au>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 140095243
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 00:02:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-40d3102d5d6so24145e9.0
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 16:02:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1704412929; x=1705017729; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wHXMgAaiDvuCEzzjXysTUSyo+GMj9feMZFgLfjlT7GE=;
+        b=3GWR6bCAq66TTVzdKEKjBYK02rGjagn5O/rHZNyILgGfZyf/GA7sQahxQIs6cfg5Ji
+         FWIaNYc2vFWwDTUqkIE7gd3oHRN+fjBV5lle661cY5UTvRkdzsjr57OYQXVbBfHQswDk
+         VCa3pABkKn43+2aNMh/JfWdBm0P+IBpnK9e00VNvAr1WHaofVyhexOFg+SF66Zb15bjO
+         nLv0XZ9ZwrUlDi8EssT+G6c6YXz4lqpAQzbDFS89Upi6vsSyv4lF6iKibiz4zP/yDw5L
+         gOKyvooA7h2WwnhEVFVzkPM/RU1Fe3x2dlp1wM92vyc0vIk2Z8w2ADCD21U1ddewU+wf
+         qUXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704412929; x=1705017729;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=wHXMgAaiDvuCEzzjXysTUSyo+GMj9feMZFgLfjlT7GE=;
+        b=nEMwjhXiCHgl76A9XkbcgMM4BFZqmdQoPhcqJurLOLjDqYS5IDbYaBogqbOU3dyGw2
+         x7WNOFce99YVP0Yrrftc2j3UN6I9nFJ25PGNvQ3e0jneEBnBjT2XAJlc06erkDSYi7iR
+         hecJ75yTOZ1c4cJ6XqafhxQ6Ylv9GV73qzfz+FOfRhT98sBrJTU4tWWtfCEObOeWWXMX
+         ufaHHM8rI6TmzFxY9eOLKK7mSnP2W3MDSuzO69j5eWW+rnC8YGZySHAEm6gcajerBJ2N
+         86wgEBDJtIFAiuSuHpzlnRKAapVZZbqiOaMbksUR93scwPy0hl7eMWntZxKl7Ko1F44p
+         C1eg==
+X-Gm-Message-State: AOJu0YyZJyEC33EHF1OD6Upz66suqt/ggbgjH1OZPI7nAkv11+yMjqXc
+	ZxO88VkHgZbg4giofegZ2+jG5SbRzO76vpsXWtLGOKNgl/8=
+X-Google-Smtp-Source: AGHT+IEOmqOOVuHT0+nROpxcqte5fU7rp7PWQHaROvRbfp6SGobElTdaGHCQtRNyzU0KUSwO7zyu0xU9DCGtGEjlQYI=
+X-Received: by 2002:a05:600c:3546:b0:40d:8496:449b with SMTP id
+ i6-20020a05600c354600b0040d8496449bmr61966wmq.4.1704412929202; Thu, 04 Jan
+ 2024 16:02:09 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/4J7C/_dIb=E8/SkMhbC3zsY";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-
---Sig_/4J7C/_dIb=E8/SkMhbC3zsY
-Content-Type: text/plain; charset=US-ASCII
+References: <20231220001856.3710363-1-jstultz@google.com> <20231220001856.3710363-21-jstultz@google.com>
+ <5e57c957-724a-410b-8137-88fd9bbd10d9@arm.com>
+In-Reply-To: <5e57c957-724a-410b-8137-88fd9bbd10d9@arm.com>
+From: John Stultz <jstultz@google.com>
+Date: Thu, 4 Jan 2024 16:01:56 -0800
+Message-ID: <CANDhNCovyXRswmHA0dwNve32HUxiAQmExR+ALadzDQaATVj0nA@mail.gmail.com>
+Subject: Re: [PATCH v7 20/23] sched: Push execution and scheduler context
+ split into deadline and rt paths
+To: Metin Kaya <metin.kaya@arm.com>
+Cc: LKML <linux-kernel@vger.kernel.org>, Joel Fernandes <joelaf@google.com>, 
+	Qais Yousef <qyousef@google.com>, Ingo Molnar <mingo@redhat.com>, 
+	Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>, 
+	Vincent Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>, 
+	Valentin Schneider <vschneid@redhat.com>, Steven Rostedt <rostedt@goodmis.org>, 
+	Ben Segall <bsegall@google.com>, Zimuzo Ezeozue <zezeozue@google.com>, 
+	Youssef Esmat <youssefesmat@google.com>, Mel Gorman <mgorman@suse.de>, 
+	Daniel Bristot de Oliveira <bristot@redhat.com>, Will Deacon <will@kernel.org>, Waiman Long <longman@redhat.com>, 
+	Boqun Feng <boqun.feng@gmail.com>, "Paul E. McKenney" <paulmck@kernel.org>, 
+	Xuewen Yan <xuewen.yan94@gmail.com>, K Prateek Nayak <kprateek.nayak@amd.com>, 
+	Thomas Gleixner <tglx@linutronix.de>, kernel-team@android.com
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi all,
+On Fri, Dec 22, 2023 at 3:33=E2=80=AFAM Metin Kaya <metin.kaya@arm.com> wro=
+te:
+>
+> On 20/12/2023 12:18 am, John Stultz wrote:
+> > From: Connor O'Brien <connoro@google.com>
+> >
+> > In preparation for chain migration, push the awareness
+> > of the split between execution and scheduler context
+> > down into some of the rt/deadline code paths that deal
+> > with load balancing.
+> >
+> > This patch was broken out from a larger chain migration
+> > patch originally by Connor O'Brien.
+> >
+>
+> Nit: Commit header is too long. ` paths` can be dropped.
 
-Today's linux-next merge of the nfsd tree got a conflict in:
+Done.
 
-  fs/nfsd/nfsctl.c
+> > @@ -2079,25 +2079,25 @@ static struct task_struct *pick_earliest_pushab=
+le_dl_task(struct rq *rq, int cpu
+> >
+> >   static DEFINE_PER_CPU(cpumask_var_t, local_cpu_mask_dl);
+> >
+> > -static int find_later_rq(struct task_struct *task)
+> > +static int find_later_rq(struct task_struct *sched_ctx, struct task_st=
+ruct *exec_ctx)
+>
+> Nit: line becomes too long. Same for find_later_rq()'s signature above
+> as well as find_lowest_rq() in rt.c.
 
-between commit:
+While I do try to keep things under 80 where I can, it's no longer the stan=
+dard:
+https://lore.kernel.org/lkml/20120203100743.GA3334@elte.hu/
 
-  76d296a82657 ("nfsd: drop the nfsd_put helper")
+> >
+> > -     if (task->nr_cpus_allowed =3D=3D 1)
+> > +     if (exec_ctx && exec_ctx->nr_cpus_allowed =3D=3D 1)
+>
+> Can exec_ctx be NULL? If so, we may hit a seg. fault at
+> task_rq(exec_ctx) below.
 
-from the nfsd-fixes tree and commits:
+Oh, this is a bad split on my part. Only after find_exec_ctx() is
+introduced can the exec_ctx be null.
+I'll move that change to later in the series.
 
-  3a0b966ab40f ("SUNRPC: discard sv_refcnt, and svc_get/svc_put")
-  9bf4b41b79a3 ("nfsd: rename nfsd_last_thread() to nfsd_destroy_serv()")
-
-from the nfsd tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc fs/nfsd/nfsctl.c
-index 87fed75808ff,cca1dd7b8c55..000000000000
---- a/fs/nfsd/nfsctl.c
-+++ b/fs/nfsd/nfsctl.c
-@@@ -704,15 -707,12 +708,12 @@@ static ssize_t __write_ports_addfd(cha
-  	if (err !=3D 0)
-  		return err;
- =20
- -	err =3D svc_addsock(nn->nfsd_serv, net, fd, buf, SIMPLE_TRANSACTION_LIMI=
-T, cred);
- +	serv =3D nn->nfsd_serv;
- +	err =3D svc_addsock(serv, net, fd, buf, SIMPLE_TRANSACTION_LIMIT, cred);
- =20
-- 	if (err < 0 && !serv->sv_nrthreads && !nn->keep_active)
-- 		nfsd_last_thread(net);
-- 	else if (err >=3D 0 && !serv->sv_nrthreads && !xchg(&nn->keep_active, 1))
-- 		svc_get(serv);
- -	if (!nn->nfsd_serv->sv_nrthreads &&
- -	    list_empty(&nn->nfsd_serv->sv_permsocks))
-++	if (!serv->sv_nrthreads && list_empty(&serv->sv_permsocks))
-+ 		nfsd_destroy_serv(net);
- =20
-- 	svc_put(serv);
-  	return err;
-  }
- =20
-@@@ -750,22 -748,18 +751,17 @@@ static ssize_t __write_ports_addxprt(ch
-  	if (err < 0 && err !=3D -EAFNOSUPPORT)
-  		goto out_close;
- =20
-- 	if (!serv->sv_nrthreads && !xchg(&nn->keep_active, 1))
-- 		svc_get(serv);
--=20
-- 	svc_put(serv);
-  	return 0;
-  out_close:
- -	xprt =3D svc_find_xprt(nn->nfsd_serv, transport, net, PF_INET, port);
- +	xprt =3D svc_find_xprt(serv, transport, net, PF_INET, port);
-  	if (xprt !=3D NULL) {
-  		svc_xprt_close(xprt);
-  		svc_xprt_put(xprt);
-  	}
-  out_err:
-- 	if (!serv->sv_nrthreads && !nn->keep_active)
-- 		nfsd_last_thread(net);
- -	if (!nn->nfsd_serv->sv_nrthreads &&
- -	    list_empty(&nn->nfsd_serv->sv_permsocks))
-++	if (!serv->sv_nrthreads && list_empty(&serv->sv_permsocks))
-+ 		nfsd_destroy_serv(net);
- =20
-- 	svc_put(serv);
-  	return err;
-  }
- =20
-
---Sig_/4J7C/_dIb=E8/SkMhbC3zsY
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmWXRocACgkQAVBC80lX
-0GxoLwf8CAznof5TpCGOMEYHE0qxsUY5kVk9I4YjG9oBj7zdEdV+qmMVWXJRH//t
-PqgfRR3HtE3nGjzWvHzDpvlPtW0q2OzpHgtWPD7QRB6+qc+rv4jW7sdE7MFnXkP1
-JvSzLdSaEuD/eSp3lH7u6/zSRCgE7Bu/zTPtk5Pj77Zv2BYE3jSlPoqXPznjkyor
-6J8WyAMbHuhyBQiGVF8YSSgQ3FgyH+1ILK1KYG2vRtobf3XHzFhZFva+zlCLtKAr
-bF8vLQRietvbjjg0F53rKs2fNHVb4sSAtG8iP9bO88hasNcQNlAUN22r0LVPbL6D
-eNLLgQ2ovLPNLX+SVo4NFY5aQkALgg==
-=1D7m
------END PGP SIGNATURE-----
-
---Sig_/4J7C/_dIb=E8/SkMhbC3zsY--
+thanks
+-john
 
