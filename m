@@ -1,240 +1,269 @@
-Return-Path: <linux-kernel+bounces-17726-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17727-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E73638251A3
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 11:16:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 010C58251A4
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 11:16:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7058E1F212EE
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 10:16:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9D8182821D5
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 10:16:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F255F2E3E8;
-	Fri,  5 Jan 2024 10:14:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70E632D04E;
+	Fri,  5 Jan 2024 10:14:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="K02D7SeK"
+	dkim=fail reason="signature verification failed" (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="lTY2I2j2"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6A7C2DF65
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 10:14:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1704449648;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=cc52LaptPrYh6Z5cf7eSO+K3bI2pANK5fWlsASyxWFY=;
-	b=K02D7SeKADGb3noQAKnAZrmkzZ6ekzzc3gJDJxZ3j5huaPYn3RUeoCQByMjcE0UWssykJ2
-	14dh5YRA/O3QlBrc9QJ02SL9D07oM+xTTRH1I/5MBzXccAy9vv4YMTWBHYt3fE5hm0rJqd
-	bj96DLARl6bczB7ieuex4Oeo6nWW78s=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-118-h4Y868EaNuqojFgIKxBzFQ-1; Fri, 05 Jan 2024 05:14:05 -0500
-X-MC-Unique: h4Y868EaNuqojFgIKxBzFQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48C6A2D042
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 10:14:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 7835040E01B2;
+	Fri,  5 Jan 2024 10:14:15 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=fail (4096-bit key)
+	reason="fail (body has been altered)" header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id POynESw41eVs; Fri,  5 Jan 2024 10:14:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1704449651; bh=SWeBkHNitZrfqaHr9k7hYa07PFXcTJYXmqkwTlWLOqU=;
+	h=From:To:Cc:Subject:Date:From;
+	b=lTY2I2j2tpiQsKMPaeXx3Z0CgKKjXu6lw8qMNLsPYiZHXTeAmfOmJmYmBL/+zdB6d
+	 xpPuFpjYr+YjQThAQu9ptiFN8StHE6wZJKv6Fi//qfRfE0vDl7a+3vbKAAdKyq2jv9
+	 duB8Fr6JqXkVvjA238/nskKSyW1r2FoC87cJwpJa4D3B+TXv3HPaMfui/gPGs07VCk
+	 3QLEs51a0btzL3BBMqABOHqerpX0H17bvcHL6h7dcjMtal9YjhM+nCekR/ANOO2tgH
+	 XUKiL0SbbaawPlLhVCBH/46PsH6AY2cM8wth8XMUb5fupNV+z7eOaWP31/NYpDC1RN
+	 RK/8fdiPMyIcFyaFhuN9enD2vQTQa0RkW+1T2uUTSpy9loE8SGOS1uVoEQfV8GUK7/
+	 k+qZIpAbLhTN+UtHP+C0lLq8F9CJRbIjmLSd048wlc/MM1cPINL8x9vI956cctiiwo
+	 Vou1oDz9oFGOgYalZXduhPsS7NZLVX5isBGeETUMyY1xEYrfScyKzENAzKZpcU3MBj
+	 ZJimpx7l0HV5pa/GrqbvPs0D3OP4EzxOmSX+JV22gC8x3MvLM3t1XxsLv4wewz/W+f
+	 QlRPaoOG/4lmwOcKpo3oquTQihjGoPF24L3C36nh9vIsfCEosG69vYU/s/f6tttjmO
+	 IOhCqSpvi0z5mxJu3Qa6Sdno=
+Received: from zn.tnic (pd9530f8c.dip0.t-ipconnect.de [217.83.15.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 27C4C86F122;
-	Fri,  5 Jan 2024 10:14:05 +0000 (UTC)
-Received: from [10.39.208.29] (unknown [10.39.208.29])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id E1CBD51D5;
-	Fri,  5 Jan 2024 10:14:02 +0000 (UTC)
-Message-ID: <0322ee9e-f6db-45ed-855f-9ebcdfca30a9@redhat.com>
-Date: Fri, 5 Jan 2024 11:14:01 +0100
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id B4D2940E00C5;
+	Fri,  5 Jan 2024 10:14:08 +0000 (UTC)
+From: Borislav Petkov <bp@alien8.de>
+To: X86 ML <x86@kernel.org>
+Cc: Tom Lendacky <thomas.lendacky@amd.com>,
+	LKML <linux-kernel@vger.kernel.org>
+Subject: [PATCH] x86/sev: Harden #VC insn emulation somewhat
+Date: Fri,  5 Jan 2024 11:14:07 +0100
+Message-ID: <20240105101407.11694-1-bp@alien8.de>
+X-Mailer: git-send-email 2.42.0.rc0.25.ga82fb66fed25
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 2/3] vduse: Temporarily fail if control queue features
- requested
-Content-Language: en-US
-To: Eugenio Perez Martin <eperezma@redhat.com>
-Cc: Jason Wang <jasowang@redhat.com>, mst@redhat.com,
- xuanzhuo@linux.alibaba.com, xieyongji@bytedance.com,
- virtualization@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
- david.marchand@redhat.com, lulu@redhat.com
-References: <20240104153753.2931026-1-maxime.coquelin@redhat.com>
- <20240104153753.2931026-3-maxime.coquelin@redhat.com>
- <CACGkMEtmTY0ux8pw8VQ8SAdgGty=rM1VRkh6c-qBVSaqhYuURw@mail.gmail.com>
- <888255d7-e45b-44db-8561-5e9f386603c3@redhat.com>
- <CAJaqyWfrO3c9GD2k+aX=fA8OQLg2aQPHHb4WyTbE09KkmoOesA@mail.gmail.com>
-From: Maxime Coquelin <maxime.coquelin@redhat.com>
-Autocrypt: addr=maxime.coquelin@redhat.com; keydata=
- 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
- Mwqu3GQ=
-In-Reply-To: <CAJaqyWfrO3c9GD2k+aX=fA8OQLg2aQPHHb4WyTbE09KkmoOesA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
+Content-Transfer-Encoding: quoted-printable
 
+From: "Borislav Petkov (AMD)" <bp@alien8.de>
 
+Compare the opcode bytes at rIP for each #VC exit reason to verify the
+instruction which raised the #VC exception is actually the right one.
 
-On 1/5/24 10:59, Eugenio Perez Martin wrote:
-> On Fri, Jan 5, 2024 at 9:12 AM Maxime Coquelin
-> <maxime.coquelin@redhat.com> wrote:
->>
->>
->>
->> On 1/5/24 03:45, Jason Wang wrote:
->>> On Thu, Jan 4, 2024 at 11:38 PM Maxime Coquelin
->>> <maxime.coquelin@redhat.com> wrote:
->>>>
->>>> Virtio-net driver control queue implementation is not safe
->>>> when used with VDUSE. If the VDUSE application does not
->>>> reply to control queue messages, it currently ends up
->>>> hanging the kernel thread sending this command.
->>>>
->>>> Some work is on-going to make the control queue
->>>> implementation robust with VDUSE. Until it is completed,
->>>> let's fail features check if any control-queue related
->>>> feature is requested.
->>>>
->>>> Signed-off-by: Maxime Coquelin <maxime.coquelin@redhat.com>
->>>> ---
->>>>    drivers/vdpa/vdpa_user/vduse_dev.c | 13 +++++++++++++
->>>>    1 file changed, 13 insertions(+)
->>>>
->>>> diff --git a/drivers/vdpa/vdpa_user/vduse_dev.c b/drivers/vdpa/vdpa_user/vduse_dev.c
->>>> index 0486ff672408..94f54ea2eb06 100644
->>>> --- a/drivers/vdpa/vdpa_user/vduse_dev.c
->>>> +++ b/drivers/vdpa/vdpa_user/vduse_dev.c
->>>> @@ -28,6 +28,7 @@
->>>>    #include <uapi/linux/virtio_config.h>
->>>>    #include <uapi/linux/virtio_ids.h>
->>>>    #include <uapi/linux/virtio_blk.h>
->>>> +#include <uapi/linux/virtio_ring.h>
->>>>    #include <linux/mod_devicetable.h>
->>>>
->>>>    #include "iova_domain.h"
->>>> @@ -46,6 +47,15 @@
->>>>
->>>>    #define IRQ_UNBOUND -1
->>>>
->>>> +#define VDUSE_NET_INVALID_FEATURES_MASK         \
->>>> +       (BIT_ULL(VIRTIO_NET_F_CTRL_VQ) |        \
->>>> +        BIT_ULL(VIRTIO_NET_F_CTRL_RX)   |      \
->>>> +        BIT_ULL(VIRTIO_NET_F_CTRL_VLAN) |      \
->>>> +        BIT_ULL(VIRTIO_NET_F_GUEST_ANNOUNCE) | \
->>>> +        BIT_ULL(VIRTIO_NET_F_MQ) |             \
->>>> +        BIT_ULL(VIRTIO_NET_F_CTRL_MAC_ADDR) |  \
->>>> +        BIT_ULL(VIRTIO_NET_F_RSS))
->>>
->>> We need to make this as well:
->>>
->>> VIRTIO_NET_F_CTRL_GUEST_OFFLOADS
->>
->> I missed it, and see others have been added in the Virtio spec
->> repository (BTW, I see this specific one is missing in the dependency
->> list [0], I will submit a patch).
->>
->> I wonder if it is not just simpler to just check for
->> VIRTIO_NET_F_CTRL_VQ is requested. As we fail instead of masking out,
->> the VDUSE driver won't be the one violating the spec so it should be
->> good?
->>
->> It will avoid having to update the mask if new features depending on it
->> are added (or forgetting to update it).
->>
->> WDYT?
->>
-> 
-> I think it is safer to work with a whitelist, instead of a blacklist.
-> As any new feature might require code changes in QEMU. Is that
-> possible?
+Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
+---
+ arch/x86/boot/compressed/sev.c |   4 ++
+ arch/x86/kernel/sev-shared.c   | 102 ++++++++++++++++++++++++++++++++-
+ arch/x86/kernel/sev.c          |   9 ++-
+ 3 files changed, 108 insertions(+), 7 deletions(-)
 
-Well, that's how it was done in previous revision. :)
-
-I changed to a blacklist for consistency with block device's WCE feature
-check after Jason's comment.
-
-I'm not sure moving back to a whitelist brings much advantages when
-compared to the effort of keeping it up to date. Just blacklisting
-VIRTIO_NET_F_CTRL_VQ is enough in my opinion.
-
-Thanks,
-Maxime
-
->> Thanks,
->> Maxime
->>
->> [0]:
->> https://github.com/oasis-tcs/virtio-spec/blob/5fc35a7efb903fc352da81a6d2be5c01810b68d3/device-types/net/description.tex#L129
->>> Other than this,
->>>
->>> Acked-by: Jason Wang <jasowang@redhat.com>
->>>
->>> Thanks
->>>
->>>> +
->>>>    struct vduse_virtqueue {
->>>>           u16 index;
->>>>           u16 num_max;
->>>> @@ -1680,6 +1690,9 @@ static bool features_is_valid(struct vduse_dev_config *config)
->>>>           if ((config->device_id == VIRTIO_ID_BLOCK) &&
->>>>                           (config->features & (1ULL << VIRTIO_BLK_F_CONFIG_WCE)))
->>>>                   return false;
->>>> +       else if ((config->device_id == VIRTIO_ID_NET) &&
->>>> +                       (config->features & VDUSE_NET_INVALID_FEATURES_MASK))
->>>> +               return false;
->>>>
->>>>           return true;
->>>>    }
->>>> --
->>>> 2.43.0
->>>>
->>>
->>
->>
-> 
+diff --git a/arch/x86/boot/compressed/sev.c b/arch/x86/boot/compressed/se=
+v.c
+index 454acd7a2daf..073291832f44 100644
+--- a/arch/x86/boot/compressed/sev.c
++++ b/arch/x86/boot/compressed/sev.c
+@@ -304,6 +304,10 @@ void do_boot_stage2_vc(struct pt_regs *regs, unsigne=
+d long exit_code)
+ 	if (result !=3D ES_OK)
+ 		goto finish;
+=20
++	result =3D vc_check_opcode_bytes(&ctxt, exit_code);
++	if (result !=3D ES_OK)
++		goto finish;
++
+ 	switch (exit_code) {
+ 	case SVM_EXIT_RDTSC:
+ 	case SVM_EXIT_RDTSCP:
+diff --git a/arch/x86/kernel/sev-shared.c b/arch/x86/kernel/sev-shared.c
+index ccb0915e84e1..ec17931bf3cd 100644
+--- a/arch/x86/kernel/sev-shared.c
++++ b/arch/x86/kernel/sev-shared.c
+@@ -10,11 +10,15 @@
+  */
+=20
+ #ifndef __BOOT_COMPRESSED
+-#define error(v)	pr_err(v)
+-#define has_cpuflag(f)	boot_cpu_has(f)
++#define error(v)			pr_err(v)
++#define has_cpuflag(f)			boot_cpu_has(f)
++#define sev_printk(fmt, ...)		printk(fmt, ##__VA_ARGS__)
++#define sev_printk_rtl(fmt, ...)	printk_ratelimited(fmt, ##__VA_ARGS__)
+ #else
+ #undef WARN
+ #define WARN(condition, format...) (!!(condition))
++#define sev_printk(fmt, ...)
++#define sev_printk_rtl(fmt, ...)
+ #endif
+=20
+ /* I/O parameters for CPUID-related helpers */
+@@ -574,6 +578,7 @@ void __init do_vc_no_ghcb(struct pt_regs *regs, unsig=
+ned long exit_code)
+ {
+ 	unsigned int subfn =3D lower_bits(regs->cx, 32);
+ 	unsigned int fn =3D lower_bits(regs->ax, 32);
++	u16 opcode =3D *(unsigned short *)regs->ip;
+ 	struct cpuid_leaf leaf;
+ 	int ret;
+=20
+@@ -581,6 +586,10 @@ void __init do_vc_no_ghcb(struct pt_regs *regs, unsi=
+gned long exit_code)
+ 	if (exit_code !=3D SVM_EXIT_CPUID)
+ 		goto fail;
+=20
++	/* Is it really a CPUID insn? */
++	if (opcode !=3D 0xa20f)
++		goto fail;
++
+ 	leaf.fn =3D fn;
+ 	leaf.subfn =3D subfn;
+=20
+@@ -1170,3 +1179,92 @@ static int vmgexit_psc(struct ghcb *ghcb, struct s=
+np_psc_desc *desc)
+ out:
+ 	return ret;
+ }
++
++static enum es_result vc_check_opcode_bytes(struct es_em_ctxt *ctxt,
++					    unsigned long exit_code)
++{
++	unsigned int opcode =3D (unsigned int)ctxt->insn.opcode.value;
++	u8 modrm =3D ctxt->insn.modrm.value;
++
++	switch (exit_code) {
++
++	case SVM_EXIT_IOIO:
++	case SVM_EXIT_NPF:
++		/* handled separately */
++		return ES_OK;
++
++	case SVM_EXIT_CPUID:
++		if (opcode =3D=3D 0xa20f)
++			return ES_OK;
++		break;
++
++	case SVM_EXIT_INVD:
++		sev_printk_rtl(KERN_ERR "#VC exception for INVD??? Seriously???\n");
++		return ES_UNSUPPORTED;
++		break;
++
++	case SVM_EXIT_MONITOR:
++		if (opcode =3D=3D 0x010f && modrm =3D=3D 0xc8)
++			return ES_OK;
++		break;
++
++	case SVM_EXIT_MWAIT:
++		if (opcode =3D=3D 0x010f && modrm =3D=3D 0xc9)
++			return ES_OK;
++		break;
++
++	case SVM_EXIT_MSR:
++		/* RDMSR */
++		if (opcode =3D=3D 0x320f ||
++		/* WRMSR */
++		    opcode =3D=3D 0x300f)
++			return ES_OK;
++		break;
++
++	case SVM_EXIT_RDPMC:
++		if (opcode =3D=3D 0x330f)
++			return ES_OK;
++		break;
++
++	case SVM_EXIT_RDTSC:
++		if (opcode =3D=3D 0x310f)
++			return ES_OK;
++		break;
++
++	case SVM_EXIT_RDTSCP:
++		if (opcode =3D=3D 0x010f && modrm =3D=3D 0xf9)
++			return ES_OK;
++		break;
++
++	case SVM_EXIT_READ_DR7:
++		if (opcode =3D=3D 0x210f &&
++		    X86_MODRM_REG(ctxt->insn.modrm.value) =3D=3D 7)
++			return ES_OK;
++		break;
++
++	case SVM_EXIT_VMMCALL:
++		if (opcode =3D=3D 0x010f && modrm =3D=3D 0xd9)
++			return ES_OK;
++
++		break;
++
++	case SVM_EXIT_WRITE_DR7:
++		if (opcode =3D=3D 0x230f &&
++		    X86_MODRM_REG(ctxt->insn.modrm.value) =3D=3D 7)
++			return ES_OK;
++		break;
++
++	case SVM_EXIT_WBINVD:
++		if (opcode =3D=3D 0x90f)
++			return ES_OK;
++		break;
++
++	default:
++		break;
++	}
++
++	sev_printk(KERN_ERR "Wrong/unhandled opcode bytes: 0x%x, exit_code: 0x%=
+lx, rIP: 0x%lx\n",
++		   opcode, exit_code, ctxt->regs->ip);
++
++	return ES_UNSUPPORTED;
++}
+diff --git a/arch/x86/kernel/sev.c b/arch/x86/kernel/sev.c
+index c67285824e82..541a1f87b4f1 100644
+--- a/arch/x86/kernel/sev.c
++++ b/arch/x86/kernel/sev.c
+@@ -1752,7 +1752,10 @@ static enum es_result vc_handle_exitcode(struct es=
+_em_ctxt *ctxt,
+ 					 struct ghcb *ghcb,
+ 					 unsigned long exit_code)
+ {
+-	enum es_result result;
++	enum es_result result =3D vc_check_opcode_bytes(ctxt, exit_code);
++
++	if (result !=3D ES_OK)
++		return result;
+=20
+ 	switch (exit_code) {
+ 	case SVM_EXIT_READ_DR7:
+@@ -1771,10 +1774,6 @@ static enum es_result vc_handle_exitcode(struct es=
+_em_ctxt *ctxt,
+ 	case SVM_EXIT_RDPMC:
+ 		result =3D vc_handle_rdpmc(ghcb, ctxt);
+ 		break;
+-	case SVM_EXIT_INVD:
+-		pr_err_ratelimited("#VC exception for INVD??? Seriously???\n");
+-		result =3D ES_UNSUPPORTED;
+-		break;
+ 	case SVM_EXIT_CPUID:
+ 		result =3D vc_handle_cpuid(ghcb, ctxt);
+ 		break;
+--=20
+2.42.0.rc0.25.ga82fb66fed25
 
 
