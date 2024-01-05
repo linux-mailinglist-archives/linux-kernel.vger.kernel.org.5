@@ -1,87 +1,167 @@
-Return-Path: <linux-kernel+bounces-17872-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17867-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47AA8825466
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 14:20:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 18FBE825453
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 14:15:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CCB64284BFC
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 13:20:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C0FDB1F23F8F
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 13:15:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C42B02D629;
-	Fri,  5 Jan 2024 13:20:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="wG4H+KTw"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 286C82D632;
+	Fri,  5 Jan 2024 13:14:41 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from out203-205-221-205.mail.qq.com (out203-205-221-205.mail.qq.com [203.205.221.205])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0CD728DD1
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 13:20:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1704460833; bh=MYY9stIYqlycYBITbBDp8hgnPLSnqcWc70hs+qeH1q4=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=wG4H+KTwtTgWf+fuIJwsjdFGj+X2TXw0V4sCtg2UNqak/2oqWMXcfqzYIYn+jMGp4
-	 kEECMhEaKNbKRej8MSGlVokwtl4EYaPlNxlW6Q4tLa3xeuPN0WCFkvuLjihk+Umil0
-	 sU28+Y8G+wjzaB8W9uM4/izlf4w4gfY39apORq1w=
-Received: from pek-lxu-l1.wrs.com ([111.198.225.215])
-	by newxmesmtplogicsvrszb9-0.qq.com (NewEsmtp) with SMTP
-	id 39719AEB; Fri, 05 Jan 2024 21:14:23 +0800
-X-QQ-mid: xmsmtpt1704460463tqr5ni1r6
-Message-ID: <tencent_684C75F177D366163C3136DE97A436404A09@qq.com>
-X-QQ-XMAILINFO: MQ+wLuVvI2LQe/ZWzugQ8nDB1qPxlZ7xl8XdkJBdsqmWDPftHSFWoX9L6JEu3I
-	 EIStlxHkloUAMsHWvYKJDpdVqKSrprpXpdDnKwV5BoZEvK6490tzodXj0bNZ32WUKwWh+GRVE5ci
-	 WAM2u04n5wRgsL4Ks5744sVCeic5AEW7v7wkiLMhWKs/Tev/K7sv+4rfGCAtsmFLafzeQMYteEE3
-	 KJY/LBPtZAAHTJ0SJy2je8GRjsdJaDf7gJ/ySQVf6YNNSNwJy8ikD4OPFtnTFkcgyxOwHdMmdI0J
-	 aECP9lzlBhWXoEW6ZITa9ugtUM8HYaE4k0y+WMS0kSEG8akavoRWYq7eBF2FmhPclGUNZZgvuBU4
-	 9StzrM9Sxxxb9VhJVJQt8TxgCvgEyadGrMtEEVgSYMLIUUQrincjMn6QmXpCo8rT22N0PS9ehqTK
-	 lcePEAQhkvRtAb+fPj3Dg4LOOLnFlH0jHeoSg5BC9gkn4M9tfXGvyEARCSoyvBMfkU109cgsMNkK
-	 7/SBXVLismeEVr5T6PC8aujlKdW1DOTQxgprd/Lj3bcp3hdXcdUla0KWouneVM8X0ROw6reew35a
-	 SQQ2lByt26MolY+4Qlc/pyqJDRgklRGCy0nyAX153KQ6p+d3rke9s3agh1L6JvrX1xuoNitWjVoG
-	 KOW5n034tbzyuDLOrzWJS1F672z2eil4jcfkBrD/c/KnYFidqpy/nGC28df+/WVbs+wdto/4JQpn
-	 uBJCXOkNl5ZYL75isfO4rsVhxKxKU2WUv/XiwTXWfDEaXtT7hD0xl0z0jR8rRp/RobV10/n4YBC3
-	 1Z1ViCbVD6zKyLwHgmJDcOUdeAIom4KpmmbDQNue8gRXUQNmYbNWok1BH/+qlaoZPbqyfbqLG4ya
-	 YmT5lGZ8kWahfc79doqqT5ovba1Ix6eo6+u/o9rnsZjzSXDdJirzIUHwNhhMLpOP0hkU2vBLWOcD
-	 bRIoHNUVk=
-X-QQ-XMRINFO: OWPUhxQsoeAVDbp3OJHYyFg=
-From: Edward Adam Davis <eadavis@qq.com>
-To: syzbot+63cebbb27f598a7f901b@syzkaller.appspotmail.com
-Cc: linux-kernel@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [reiserfs?] general protection fault in __fget_files (2)
-Date: Fri,  5 Jan 2024 21:14:23 +0800
-X-OQ-MSGID: <20240105131422.664067-2-eadavis@qq.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <000000000000caa956060ddf5db1@google.com>
-References: <000000000000caa956060ddf5db1@google.com>
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88BD52D60F
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 13:14:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 20F23C15;
+	Fri,  5 Jan 2024 05:15:24 -0800 (PST)
+Received: from FVFF77S0Q05N (unknown [10.57.86.44])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 30D123F64C;
+	Fri,  5 Jan 2024 05:14:36 -0800 (PST)
+Date: Fri, 5 Jan 2024 13:14:30 +0000
+From: Mark Rutland <mark.rutland@arm.com>
+To: Leonardo Bras <leobras@redhat.com>
+Cc: Oleg Nesterov <oleg@redhat.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, Mark Brown <broonie@kernel.org>,
+	"Steven Rostedt (Google)" <rostedt@goodmis.org>,
+	Arnd Bergmann <arnd@arndb.de>, Guo Hui <guohui@uniontech.com>,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 1/1] arm64: remove unnecessary ifdefs around
+ is_compat_task()
+Message-ID: <ZZgAtntCQFKbsGiW@FVFF77S0Q05N>
+References: <20240105041458.126602-3-leobras@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240105041458.126602-3-leobras@redhat.com>
 
-please test general protection fault in __fget_files
+On Fri, Jan 05, 2024 at 01:15:00AM -0300, Leonardo Bras wrote:
+> Currently some parts of the codebase will test for CONFIG_COMPAT before
+> testing is_compat_task().
+> 
+> is_compat_task() is a inlined function only present on CONFIG_COMPAT.
+> On the other hand, for !CONFIG_COMPAT, we have in linux/compat.h:
+> 
+> #define is_compat_task() (0)
+> 
+> Since we have this define available in every usage of is_compat_task() for
+> !CONFIG_COMPAT, it's unnecessary to keep the ifdefs, since the compiler is
+> smart enough to optimize-out those snippets on CONFIG_COMPAT=n
+> 
+> Signed-off-by: Leonardo Bras <leobras@redhat.com>
 
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git f5837722ffec
+I tried this atop the arm64 for-next/core branch, using GCC 13.2.0; building
+defconfig + CONFIG_COMPAT=n results in build errors:
 
-diff --git a/fs/file.c b/fs/file.c
-index 5fb0b146e79e..724f60e6cc4f 100644
---- a/fs/file.c
-+++ b/fs/file.c
-@@ -1134,6 +1134,8 @@ static unsigned long __fget_light(unsigned int fd, fmode_t mask)
- 			return 0;
- 		return (unsigned long)file;
- 	} else {
-+		if (!atomic_read_acquire(&files->count))
-+			return 0;
- 		file = __fget(fd, mask);
- 		if (!file)
- 			return 0;
+[mark@lakrids:~/src/linux]% usekorg 13.2.0 make ARCH=arm64 CROSS_COMPILE=aarch64-linux- Image
+  CALL    scripts/checksyscalls.sh
+  CC      arch/arm64/kernel/ptrace.o
+arch/arm64/kernel/ptrace.c: In function 'task_user_regset_view':
+arch/arm64/kernel/ptrace.c:2121:25: error: 'user_aarch32_view' undeclared (first use in this function); did you mean 'user_aarch64_view'?
+ 2121 |                 return &user_aarch32_view;
+      |                         ^~~~~~~~~~~~~~~~~
+      |                         user_aarch64_view
+arch/arm64/kernel/ptrace.c:2121:25: note: each undeclared identifier is reported only once for each function it appears in
+arch/arm64/kernel/ptrace.c:2123:25: error: 'user_aarch32_ptrace_view' undeclared (first use in this function)
+ 2123 |                 return &user_aarch32_ptrace_view;
+      |                         ^~~~~~~~~~~~~~~~~~~~~~~~
+make[4]: *** [scripts/Makefile.build:243: arch/arm64/kernel/ptrace.o] Error 1
+make[3]: *** [scripts/Makefile.build:480: arch/arm64/kernel] Error 2
+make[2]: *** [scripts/Makefile.build:480: arch/arm64] Error 2
+make[1]: *** [/home/mark/src/linux/Makefile:1911: .] Error 2
+make: *** [Makefile:234: __sub-make] Error 2
 
+... and looking at the code, user_aarch32_view and user_aarch32_ptrace_view are
+both defined under ifdeffery for CONFIG_COMPAT, so that's obviously not going
+to work...
+
+That aside, removing ifdeffery is generally nice, so could you please try
+building with CONFIG_COMPAT=n and see where you get to?
+
+Thanks,
+Mark.
+
+> ---
+> Changes since RFCv1:
+> - Removed unnecessary new inlined is_compat_task() for arm64
+> - Adjusted commit text and title
+> Link: https://lore.kernel.org/all/20240104192433.109983-2-leobras@redhat.com/
+> 
+>  arch/arm64/kernel/ptrace.c  | 6 ++----
+>  arch/arm64/kernel/syscall.c | 5 +----
+>  2 files changed, 3 insertions(+), 8 deletions(-)
+> 
+> diff --git a/arch/arm64/kernel/ptrace.c b/arch/arm64/kernel/ptrace.c
+> index 20d7ef82de90a..9f8781f1fdfda 100644
+> --- a/arch/arm64/kernel/ptrace.c
+> +++ b/arch/arm64/kernel/ptrace.c
+> @@ -173,7 +173,6 @@ static void ptrace_hbptriggered(struct perf_event *bp,
+>  	struct arch_hw_breakpoint *bkpt = counter_arch_bp(bp);
+>  	const char *desc = "Hardware breakpoint trap (ptrace)";
+>  
+> -#ifdef CONFIG_COMPAT
+>  	if (is_compat_task()) {
+>  		int si_errno = 0;
+>  		int i;
+> @@ -195,7 +194,7 @@ static void ptrace_hbptriggered(struct perf_event *bp,
+>  						  desc);
+>  		return;
+>  	}
+> -#endif
+> +
+>  	arm64_force_sig_fault(SIGTRAP, TRAP_HWBKPT, bkpt->trigger, desc);
+>  }
+>  
+> @@ -2112,7 +2111,6 @@ long compat_arch_ptrace(struct task_struct *child, compat_long_t request,
+>  
+>  const struct user_regset_view *task_user_regset_view(struct task_struct *task)
+>  {
+> -#ifdef CONFIG_COMPAT
+>  	/*
+>  	 * Core dumping of 32-bit tasks or compat ptrace requests must use the
+>  	 * user_aarch32_view compatible with arm32. Native ptrace requests on
+> @@ -2123,7 +2121,7 @@ const struct user_regset_view *task_user_regset_view(struct task_struct *task)
+>  		return &user_aarch32_view;
+>  	else if (is_compat_thread(task_thread_info(task)))
+>  		return &user_aarch32_ptrace_view;
+> -#endif
+> +
+>  	return &user_aarch64_view;
+>  }
+>  
+> diff --git a/arch/arm64/kernel/syscall.c b/arch/arm64/kernel/syscall.c
+> index 9a70d9746b661..ad198262b9817 100644
+> --- a/arch/arm64/kernel/syscall.c
+> +++ b/arch/arm64/kernel/syscall.c
+> @@ -20,14 +20,11 @@ long sys_ni_syscall(void);
+>  
+>  static long do_ni_syscall(struct pt_regs *regs, int scno)
+>  {
+> -#ifdef CONFIG_COMPAT
+> -	long ret;
+>  	if (is_compat_task()) {
+> -		ret = compat_arm_syscall(regs, scno);
+> +		long ret = compat_arm_syscall(regs, scno);
+>  		if (ret != -ENOSYS)
+>  			return ret;
+>  	}
+> -#endif
+>  
+>  	return sys_ni_syscall();
+>  }
+> -- 
+> 2.43.0
+> 
 
