@@ -1,213 +1,197 @@
-Return-Path: <linux-kernel+bounces-18219-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18220-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93E1A825A23
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 19:30:37 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 28481825A25
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 19:30:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 437B82845D7
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 18:30:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 90C2B1F21DC1
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 18:30:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4402135EE8;
-	Fri,  5 Jan 2024 18:30:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C74235EEC;
+	Fri,  5 Jan 2024 18:30:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FQkpRGa7"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 584B13526E
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 18:30:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-35fc70bd879so13611135ab.3
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Jan 2024 10:30:22 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F8E9347B0;
+	Fri,  5 Jan 2024 18:30:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1d4df66529bso10891055ad.1;
+        Fri, 05 Jan 2024 10:30:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704479440; x=1705084240; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:reply-to:message-id:date
+         :subject:to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=GhZC869aJnqNJACUr8BJ3n7gkdmfHBpgiLz8gKtgcrw=;
+        b=FQkpRGa7QXWxwOGJUT7kgcirjLaKvIEVpTiQLCyN1zBj2q9i0f9oqE1MG1wlVELs18
+         IkSn/SWGPINemAFDPcdeL3XokFhv3Ah1ygy7XiF5SAufGsDM9bks2OLRx/M7oN3T7bsS
+         mS3VHoTmgcbN4FVAlv0RNmUDFhihnyDbU5LQUpTU53tiPw4PEOHqpDZ3qn4rY5ph6WmR
+         4ZAEVhxzvD/46HYNX13WOL84FYKqS6WtQmYZ/zuywsZjJVN77bpTaNyD9HTy3Erep/xt
+         ZwH9D6wD2rgV4ioggsqAYXZrGpmOGgPHU6qWWKZOgXMJMdIW1wx9hdSGksf7fNiMThyL
+         +Fzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704479421; x=1705084221;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0J45BElnGsnlb+hcSi7W72v1ypQ+RzOOzGvT7znb7Wo=;
-        b=Ypp+rq0g5l4IA+l5azu9G3kxBQoZGwJ/pPO4YnGlfdEpigio4MM/dKjoLGRnrXOEJ6
-         nw3viwfHNgrT3c8LcytsVEH/i8GIy1rTdOlRsMjoGNFtS2YzboyzDWmLHEw8gY4lqMus
-         MVXpea2llFar9TEyEDdq+P8owPF72LApnTDrigwiALlO5AcM+27Clq8WEQse1aKwjymU
-         6r2R3bWr4ghEZR5AnGNJQpG69eTm1ekDEQDogwk8ukIN/rb+SMyuH7JG3wfC2A9X6a6S
-         ikdZagp6/W/bDsgLw1C5SVaqdb+GcYJOHEc9wRf8t8bhCM+scP+RNKQjsIkT8ldnY9Np
-         RjUg==
-X-Gm-Message-State: AOJu0Yz66cf2PWyXZAZBWZ292NiCRBN2L6bYvtSbWZe9b1vPmS7BN/G8
-	fUeYaPvVwpuoPWWPGYdmdQqiSSAz1fhlbvzQnibcBRVb21Bf
-X-Google-Smtp-Source: AGHT+IEGT4Djaks5KIMqBFTBFlNraFLsHRpvWbRfL0yQbr/EowfReBZq2t7DXFBJnwknCfAKWKLOy4aab80YIV+6R2awyQ4kPHsh
+        d=1e100.net; s=20230601; t=1704479440; x=1705084240;
+        h=content-transfer-encoding:mime-version:reply-to:message-id:date
+         :subject:to:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=GhZC869aJnqNJACUr8BJ3n7gkdmfHBpgiLz8gKtgcrw=;
+        b=Y9MAeC+tkvWF3i81Uznx6nxVStofWIRrmdQeTRnwuQzqS5ijzsZkoXYDnFGIMqnj2t
+         6bNFQIY3R/vnhNwYf3jFOxZySVOuBz6QFDNbLOeXFc5r22oIc1K5wY0GzycfoBnTQRck
+         Wvz8tHW7jNFkJuX1uzy6PCQCOdblqsyrLGY3EvNOEUvv6/Mr3/VX4kfyy2M2q4XpyCMF
+         tVoAim0xefSdUYKhdnbTkAo+VxrxsFklosozTUAgAt42qLqB1dFoOyIic7Xf0vcc0Pta
+         jnC62n58K0vpX1Spxs8QOg2MB6ywQixMutaMzs9H/XIk7fyjT8WwJLPzpfOnD3mOC4G3
+         CFhQ==
+X-Gm-Message-State: AOJu0YxrsNhbYY5jaM5QWeVnurZrCc8w3UEUjZQFm4TZ8jO147eKBOhq
+	7wz2K7pKbjNxYPGpe59twgg=
+X-Google-Smtp-Source: AGHT+IHXiqb2zLOL212dF7sFCdw/skkZ7ndS0GC2Iw301HIGKXy9MO1ye5sBWak1F9zIaebZIH9sdw==
+X-Received: by 2002:a17:90a:51a2:b0:28c:76b:7cf7 with SMTP id u31-20020a17090a51a200b0028c076b7cf7mr2000773pjh.21.1704479439684;
+        Fri, 05 Jan 2024 10:30:39 -0800 (PST)
+Received: from localhost.localdomain (c-73-254-87-52.hsd1.wa.comcast.net. [73.254.87.52])
+        by smtp.gmail.com with ESMTPSA id 23-20020a17090a195700b002868abc0e6dsm1687293pjh.11.2024.01.05.10.30.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Jan 2024 10:30:39 -0800 (PST)
+From: mhkelley58@gmail.com
+X-Google-Original-From: mhklinux@outlook.com
+To: tglx@linutronix.de,
+	mingo@redhat.com,
+	bp@alien8.de,
+	dave.hansen@linux.intel.com,
+	x86@kernel.org,
+	hpa@zytor.com,
+	kirill.shutemov@linux.intel.com,
+	haiyangz@microsoft.com,
+	wei.liu@kernel.org,
+	decui@microsoft.com,
+	luto@kernel.org,
+	peterz@infradead.org,
+	akpm@linux-foundation.org,
+	urezki@gmail.com,
+	hch@infradead.org,
+	lstoakes@gmail.com,
+	thomas.lendacky@amd.com,
+	ardb@kernel.org,
+	jroedel@suse.de,
+	seanjc@google.com,
+	rick.p.edgecombe@intel.com,
+	sathyanarayanan.kuppuswamy@linux.intel.com,
+	linux-kernel@vger.kernel.org,
+	linux-coco@lists.linux.dev,
+	linux-hyperv@vger.kernel.org,
+	linux-mm@kvack.org
+Subject: [PATCH v3 0/3] x86/hyperv: Mark CoCo VM pages not present when changing encrypted state
+Date: Fri,  5 Jan 2024 10:30:22 -0800
+Message-Id: <20240105183025.225972-1-mhklinux@outlook.com>
+X-Mailer: git-send-email 2.25.1
+Reply-To: mhklinux@outlook.com
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1c8f:b0:360:6243:433f with SMTP id
- w15-20020a056e021c8f00b003606243433fmr333944ill.1.1704479421600; Fri, 05 Jan
- 2024 10:30:21 -0800 (PST)
-Date: Fri, 05 Jan 2024 10:30:21 -0800
-In-Reply-To: <000000000000a62351060e363bdc@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000739c06060e370a49@google.com>
-Subject: Re: [syzbot] [net?] memory leak in ___neigh_create (2)
-From: syzbot <syzbot+42cfec52b6508887bbe8@syzkaller.appspotmail.com>
-To: alexander.mikhalitsyn@virtuozzo.com, davem@davemloft.net, den@openvz.org, 
-	dsahern@kernel.org, edumazet@google.com, f.fainelli@gmail.com, 
-	kuba@kernel.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, 
-	pabeni@redhat.com, razor@blackwall.org, syzkaller-bugs@googlegroups.com, 
-	thomas.zeitlhofer+lkml@ze-it.at, thomas.zeitlhofer@ze-it.at, 
-	wangyuweihx@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-syzbot has found a reproducer for the following issue on:
+From: Michael Kelley <mhklinux@outlook.com>
 
-HEAD commit:    2258c2dc850b Merge tag 'for-linus' of git://git.kernel.org..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=16f67b44480000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=a4fb7ad9185f1501
-dashboard link: https://syzkaller.appspot.com/bug?extid=42cfec52b6508887bbe8
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14e23d44480000
+In a CoCo VM, when transitioning memory from encrypted to decrypted, or
+vice versa, the caller of set_memory_encrypted() or set_memory_decrypted()
+is responsible for ensuring the memory isn't in use and isn't referenced
+while the transition is in progress.  The transition has multiple steps,
+and the memory is in an inconsistent state until all steps are complete.
+A reference while the state is inconsistent could result in an exception
+that can't be cleanly fixed up.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/0e65a45877eb/disk-2258c2dc.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/7617adf885a8/vmlinux-2258c2dc.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/43fb89ea894a/bzImage-2258c2dc.xz
+However, the kernel load_unaligned_zeropad() mechanism could cause a stray
+reference that can't be prevented by the caller of set_memory_encrypted()
+or set_memory_decrypted(), so there's specific code to handle this case.
+But a CoCo VM running on Hyper-V may be configured to run with a paravisor,
+with the #VC or #VE exception routed to the paravisor. There's no
+architectural way to forward the exceptions back to the guest kernel, and
+in such a case, the load_unaligned_zeropad() specific code doesn't work.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+42cfec52b6508887bbe8@syzkaller.appspotmail.com
+To avoid this problem, mark pages as "not present" while a transition
+is in progress. If load_unaligned_zeropad() causes a stray reference, a
+normal page fault is generated instead of #VC or #VE, and the
+page-fault-based fixup handlers for load_unaligned_zeropad() resolve the
+reference. When the encrypted/decrypted transition is complete, mark the
+pages as "present" again.
 
-BUG: memory leak
-unreferenced object 0xffff88810b8ea400 (size 512):
-  comm "kworker/0:3", pid 4440, jiffies 4294938594 (age 1132.680s)
-  hex dump (first 32 bytes):
-    00 9c f8 0a 81 88 ff ff 80 29 23 86 ff ff ff ff  .........)#.....
-    c0 79 79 44 81 88 ff ff 72 78 ff ff 00 00 00 00  .yyD....rx......
-  backtrace:
-    [<ffffffff814f9fe6>] __do_kmalloc_node mm/slab_common.c:967 [inline]
-    [<ffffffff814f9fe6>] __kmalloc+0x46/0x120 mm/slab_common.c:981
-    [<ffffffff83b5234f>] kmalloc include/linux/slab.h:584 [inline]
-    [<ffffffff83b5234f>] kzalloc include/linux/slab.h:720 [inline]
-    [<ffffffff83b5234f>] neigh_alloc net/core/neighbour.c:476 [inline]
-    [<ffffffff83b5234f>] ___neigh_create+0xdf/0xd60 net/core/neighbour.c:661
-    [<ffffffff83f9f886>] ip6_finish_output2+0x776/0x9b0 net/ipv6/ip6_output.c:125
-    [<ffffffff83fa5530>] __ip6_finish_output net/ipv6/ip6_output.c:195 [inline]
-    [<ffffffff83fa5530>] ip6_finish_output+0x270/0x530 net/ipv6/ip6_output.c:206
-    [<ffffffff83fa5893>] NF_HOOK_COND include/linux/netfilter.h:291 [inline]
-    [<ffffffff83fa5893>] ip6_output+0xa3/0x1b0 net/ipv6/ip6_output.c:227
-    [<ffffffff83ff16d9>] dst_output include/net/dst.h:444 [inline]
-    [<ffffffff83ff16d9>] NF_HOOK include/linux/netfilter.h:302 [inline]
-    [<ffffffff83ff16d9>] NF_HOOK.constprop.0+0x49/0x110 include/linux/netfilter.h:296
-    [<ffffffff83ff19c4>] mld_sendpack+0x224/0x350 net/ipv6/mcast.c:1820
-    [<ffffffff83ff5403>] mld_send_cr net/ipv6/mcast.c:2121 [inline]
-    [<ffffffff83ff5403>] mld_ifc_work+0x2a3/0x750 net/ipv6/mcast.c:2653
-    [<ffffffff8129519a>] process_one_work+0x2ba/0x5f0 kernel/workqueue.c:2289
-    [<ffffffff81295ab9>] worker_thread+0x59/0x5b0 kernel/workqueue.c:2436
-    [<ffffffff8129fb05>] kthread+0x125/0x160 kernel/kthread.c:376
-    [<ffffffff8100224f>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:308
+This version of the patch series marks transitioning pages "not present"
+only when running as a Hyper-V guest with a paravisor. Previous
+versions[1] marked transitioning pages "not present" regardless of the
+hypervisor and regardless of whether a paravisor is in use.  That more
+general use had the benefit of decoupling the load_unaligned_zeropad()
+fixup from CoCo VM #VE and #VC exception handling.  But the implementation
+was problematic for SEV-SNP because the SEV-SNP hypervisor callbacks
+require a valid virtual address, not a physical address like with TDX and
+the Hyper-V paravisor.  Marking the transitioning pages "not present"
+causes the virtual address to not be valid, and the PVALIDATE
+instruction in the SEV-SNP callback fails. Constructing a temporary
+virtual address for this purpose is slower and adds complexity that
+negates the benefits of the more general use. So this version narrows
+the applicability of the approach to just where it is required
+because of the #VC and #VE exceptions being routed to a paravisor.
 
-BUG: memory leak
-unreferenced object 0xffff888109a7fa00 (size 512):
-  comm "kworker/0:3", pid 4440, jiffies 4294938594 (age 1132.680s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 80 29 23 86 ff ff ff ff  .........)#.....
-    00 79 79 44 81 88 ff ff 72 78 ff ff 00 00 00 00  .yyD....rx......
-  backtrace:
-    [<ffffffff814f9fe6>] __do_kmalloc_node mm/slab_common.c:967 [inline]
-    [<ffffffff814f9fe6>] __kmalloc+0x46/0x120 mm/slab_common.c:981
-    [<ffffffff83b5234f>] kmalloc include/linux/slab.h:584 [inline]
-    [<ffffffff83b5234f>] kzalloc include/linux/slab.h:720 [inline]
-    [<ffffffff83b5234f>] neigh_alloc net/core/neighbour.c:476 [inline]
-    [<ffffffff83b5234f>] ___neigh_create+0xdf/0xd60 net/core/neighbour.c:661
-    [<ffffffff83f9f886>] ip6_finish_output2+0x776/0x9b0 net/ipv6/ip6_output.c:125
-    [<ffffffff83fa5530>] __ip6_finish_output net/ipv6/ip6_output.c:195 [inline]
-    [<ffffffff83fa5530>] ip6_finish_output+0x270/0x530 net/ipv6/ip6_output.c:206
-    [<ffffffff83fa5893>] NF_HOOK_COND include/linux/netfilter.h:291 [inline]
-    [<ffffffff83fa5893>] ip6_output+0xa3/0x1b0 net/ipv6/ip6_output.c:227
-    [<ffffffff83ff16d9>] dst_output include/net/dst.h:444 [inline]
-    [<ffffffff83ff16d9>] NF_HOOK include/linux/netfilter.h:302 [inline]
-    [<ffffffff83ff16d9>] NF_HOOK.constprop.0+0x49/0x110 include/linux/netfilter.h:296
-    [<ffffffff83ff19c4>] mld_sendpack+0x224/0x350 net/ipv6/mcast.c:1820
-    [<ffffffff83ff5403>] mld_send_cr net/ipv6/mcast.c:2121 [inline]
-    [<ffffffff83ff5403>] mld_ifc_work+0x2a3/0x750 net/ipv6/mcast.c:2653
-    [<ffffffff8129519a>] process_one_work+0x2ba/0x5f0 kernel/workqueue.c:2289
-    [<ffffffff81295ab9>] worker_thread+0x59/0x5b0 kernel/workqueue.c:2436
-    [<ffffffff8129fb05>] kthread+0x125/0x160 kernel/kthread.c:376
-    [<ffffffff8100224f>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:308
+The previous version minimized the TLB flushing done during page
+transitions between encrypted and decrypted. Because this version
+marks the pages "not present" in hypervisor specific callbacks and
+not in __set_memory_enc_pgtable(), doing such optimization is more
+difficult to coordinate. But the page transitions are not a hot path,
+so this version eschews optimization of TLB flushing in favor of
+simplicity.
 
-BUG: memory leak
-unreferenced object 0xffff88810a9fb400 (size 512):
-  comm "dhcpcd", pid 4638, jiffies 4294938595 (age 1132.670s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 80 29 23 86 ff ff ff ff  .........)#.....
-    c0 76 79 44 81 88 ff ff 73 78 ff ff 00 00 00 00  .vyD....sx......
-  backtrace:
-    [<ffffffff814f9fe6>] __do_kmalloc_node mm/slab_common.c:967 [inline]
-    [<ffffffff814f9fe6>] __kmalloc+0x46/0x120 mm/slab_common.c:981
-    [<ffffffff83b5234f>] kmalloc include/linux/slab.h:584 [inline]
-    [<ffffffff83b5234f>] kzalloc include/linux/slab.h:720 [inline]
-    [<ffffffff83b5234f>] neigh_alloc net/core/neighbour.c:476 [inline]
-    [<ffffffff83b5234f>] ___neigh_create+0xdf/0xd60 net/core/neighbour.c:661
-    [<ffffffff83f9f886>] ip6_finish_output2+0x776/0x9b0 net/ipv6/ip6_output.c:125
-    [<ffffffff83fa5530>] __ip6_finish_output net/ipv6/ip6_output.c:195 [inline]
-    [<ffffffff83fa5530>] ip6_finish_output+0x270/0x530 net/ipv6/ip6_output.c:206
-    [<ffffffff83fa5893>] NF_HOOK_COND include/linux/netfilter.h:291 [inline]
-    [<ffffffff83fa5893>] ip6_output+0xa3/0x1b0 net/ipv6/ip6_output.c:227
-    [<ffffffff84062411>] dst_output include/net/dst.h:444 [inline]
-    [<ffffffff84062411>] ip6_local_out+0x51/0x70 net/ipv6/output_core.c:155
-    [<ffffffff83fa6285>] ip6_send_skb+0x25/0xc0 net/ipv6/ip6_output.c:1971
-    [<ffffffff83fa6394>] ip6_push_pending_frames+0x74/0x90 net/ipv6/ip6_output.c:1991
-    [<ffffffff83fec08c>] rawv6_push_pending_frames net/ipv6/raw.c:579 [inline]
-    [<ffffffff83fec08c>] rawv6_sendmsg+0x16ac/0x1ba0 net/ipv6/raw.c:922
-    [<ffffffff83ebe965>] inet_sendmsg+0x45/0x70 net/ipv4/af_inet.c:827
-    [<ffffffff83af7116>] sock_sendmsg_nosec net/socket.c:714 [inline]
-    [<ffffffff83af7116>] sock_sendmsg+0x56/0x80 net/socket.c:734
-    [<ffffffff83af769d>] ____sys_sendmsg+0x38d/0x410 net/socket.c:2476
-    [<ffffffff83afbfe8>] ___sys_sendmsg+0xa8/0x110 net/socket.c:2530
-    [<ffffffff83afc178>] __sys_sendmsg+0x88/0x100 net/socket.c:2559
-    [<ffffffff848ed5b5>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-    [<ffffffff848ed5b5>] do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
-    [<ffffffff84a00087>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
+Since this version no longer touches __set_memory_enc_pgtable(),
+I've also removed patches that add comments about error handling
+in that function.  Rick Edgecombe has proposed patches to improve
+that error handling, and I'll leave those comments to Rick's
+patches.
 
-BUG: memory leak
-unreferenced object 0xffff88810a9fba00 (size 512):
-  comm "dhcpcd", pid 4638, jiffies 4294938595 (age 1132.670s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 80 29 23 86 ff ff ff ff  .........)#.....
-    80 77 79 44 81 88 ff ff 73 78 ff ff 00 00 00 00  .wyD....sx......
-  backtrace:
-    [<ffffffff814f9fe6>] __do_kmalloc_node mm/slab_common.c:967 [inline]
-    [<ffffffff814f9fe6>] __kmalloc+0x46/0x120 mm/slab_common.c:981
-    [<ffffffff83b5234f>] kmalloc include/linux/slab.h:584 [inline]
-    [<ffffffff83b5234f>] kzalloc include/linux/slab.h:720 [inline]
-    [<ffffffff83b5234f>] neigh_alloc net/core/neighbour.c:476 [inline]
-    [<ffffffff83b5234f>] ___neigh_create+0xdf/0xd60 net/core/neighbour.c:661
-    [<ffffffff83f9f886>] ip6_finish_output2+0x776/0x9b0 net/ipv6/ip6_output.c:125
-    [<ffffffff83fa5530>] __ip6_finish_output net/ipv6/ip6_output.c:195 [inline]
-    [<ffffffff83fa5530>] ip6_finish_output+0x270/0x530 net/ipv6/ip6_output.c:206
-    [<ffffffff83fa5893>] NF_HOOK_COND include/linux/netfilter.h:291 [inline]
-    [<ffffffff83fa5893>] ip6_output+0xa3/0x1b0 net/ipv6/ip6_output.c:227
-    [<ffffffff84062411>] dst_output include/net/dst.h:444 [inline]
-    [<ffffffff84062411>] ip6_local_out+0x51/0x70 net/ipv6/output_core.c:155
-    [<ffffffff83fa6285>] ip6_send_skb+0x25/0xc0 net/ipv6/ip6_output.c:1971
-    [<ffffffff83fa6394>] ip6_push_pending_frames+0x74/0x90 net/ipv6/ip6_output.c:1991
-    [<ffffffff83fec08c>] rawv6_push_pending_frames net/ipv6/raw.c:579 [inline]
-    [<ffffffff83fec08c>] rawv6_sendmsg+0x16ac/0x1ba0 net/ipv6/raw.c:922
-    [<ffffffff83ebe965>] inet_sendmsg+0x45/0x70 net/ipv4/af_inet.c:827
-    [<ffffffff83af7116>] sock_sendmsg_nosec net/socket.c:714 [inline]
-    [<ffffffff83af7116>] sock_sendmsg+0x56/0x80 net/socket.c:734
-    [<ffffffff83af769d>] ____sys_sendmsg+0x38d/0x410 net/socket.c:2476
-    [<ffffffff83afbfe8>] ___sys_sendmsg+0xa8/0x110 net/socket.c:2530
-    [<ffffffff83afc178>] __sys_sendmsg+0x88/0x100 net/socket.c:2559
-    [<ffffffff848ed5b5>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-    [<ffffffff848ed5b5>] do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
-    [<ffffffff84a00087>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
+Patch 1 handles implications of the hypervisor callbacks needing
+to do virt-to-phys translations on pages that are temporarily
+marked not present.
 
+Patch 2 makes the existing set_memory_p() function available for
+use in the hypervisor callbacks.
 
+Patch 3 is the core change that marks the transitioning pages
+as not present.
 
----
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+This patch set is based on the linux-next20240103 code tree.
+
+Changes in v3:
+* Major rework and simplification per discussion above.
+
+Changes in v2:
+* Added Patches 3 and 4 to deal with the failure on SEV-SNP
+  [Tom Lendacky]
+* Split the main change into two separate patches (Patch 5 and
+  Patch 6) to improve reviewability and to offer the option of
+  retaining both hypervisor callbacks.
+* Patch 5 moves set_memory_p() out of an #ifdef CONFIG_X86_64
+  so that the code builds correctly for 32-bit, even though it
+  is never executed for 32-bit [reported by kernel test robot]
+
+[1] https://lore.kernel.org/lkml/20231121212016.1154303-1-mhklinux@outlook.com/
+
+Michael Kelley (3):
+  x86/hyperv: Use slow_virt_to_phys() in page transition hypervisor
+    callback
+  x86/mm: Regularize set_memory_p() parameters and make non-static
+  x86/hyperv: Make encrypted/decrypted changes safe for
+    load_unaligned_zeropad()
+
+ arch/x86/hyperv/ivm.c             | 58 ++++++++++++++++++++++++++++---
+ arch/x86/include/asm/set_memory.h |  1 +
+ arch/x86/mm/pat/set_memory.c      | 25 +++++++------
+ 3 files changed, 70 insertions(+), 14 deletions(-)
+
+-- 
+2.25.1
+
 
