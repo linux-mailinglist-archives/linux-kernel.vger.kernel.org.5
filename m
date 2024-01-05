@@ -1,101 +1,162 @@
-Return-Path: <linux-kernel+bounces-18087-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18088-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD0B88258A5
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 17:49:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D26F88258BA
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 17:56:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5121B1F237BA
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 16:49:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DDBA01C23404
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 16:56:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A79D4321B7;
-	Fri,  5 Jan 2024 16:49:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57C0432193;
+	Fri,  5 Jan 2024 16:55:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="V1xsG3UI"
+	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="Acz4kIcq";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="K9BYb8iT"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from wnew3-smtp.messagingengine.com (wnew3-smtp.messagingengine.com [64.147.123.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE00C2E652
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 16:49:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3A39CC433C8;
-	Fri,  5 Jan 2024 16:49:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-	s=korg; t=1704473352;
-	bh=yBEZyO9cmNSe7eUGAlx8l25OeQ5IowyYQAaA786v7DA=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=V1xsG3UIbgoXH8eDWj0UWzj8HxHu9glJsfJhUA/h7oi4aOWcBX8ofZnDfKjidBT20
-	 USkR2ADcNSIrzIq96ywDguXoKUKwlqsllKnlF1Jow00FtpsHPMMk4rv6e07aXhkMH6
-	 mKSA0oyiUx6okJHDgZEPH0wiR/if98XH/hnqRMUY=
-Date: Fri, 5 Jan 2024 08:49:11 -0800
-From: Andrew Morton <akpm@linux-foundation.org>
-To: Huacai Chen <chenhuacai@loongson.cn>
-Cc: Baoquan He <bhe@redhat.com>, Vivek Goyal <vgoyal@redhat.com>, Dave Young
- <dyoung@redhat.com>, Youling Tang <tangyouling@kylinos.cn>,
- kexec@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] kdump: Defer the insertion of crashkernel resources
-Message-Id: <20240105084911.b64f43b12b0c7e25436cb093@linux-foundation.org>
-In-Reply-To: <20231229080213.2622204-1-chenhuacai@loongson.cn>
-References: <20231229080213.2622204-1-chenhuacai@loongson.cn>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4E9A2E823;
+	Fri,  5 Jan 2024 16:55:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+	by mailnew.west.internal (Postfix) with ESMTP id 643F82B002FE;
+	Fri,  5 Jan 2024 11:55:50 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Fri, 05 Jan 2024 11:55:54 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm1; t=1704473749; x=1704480949; bh=QW7jt9Lu7f
+	ke8mG4lP5bYmPmDvOXPBpGzIUDBHIekTk=; b=Acz4kIcq6y/rMD3GdA7cQZFH/X
+	t+UCDk8kiRTwuEzv4ajq3EDfufkIZkO8rGAkbX3sbhxHt16W2NOVO6gW2gQHxnZr
+	G4znBN6j8ey0yPSzv+AlK6ZSJwteCnfW3d+5qDl/eg2aJTqU9Tgdw3YjZEKbWiiA
+	xDjCkNbH8TatuNfFUavrE+ffldAtLl1v9baWSzFGVpUeiYCRlCeZGSoqIOyzPHvn
+	QzvCgTBrCyaLUW/MlTUJL8Udfek55UMpp0KfgTZyqMYearp0x1HoJW30AG1RainQ
+	7jUdJb7RD7OtoMFP4EUhEya/MWTwpfUkkKqXxvWzEKPyF0P6ySZ4aWmCm73g==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1704473749; x=1704480949; bh=QW7jt9Lu7fke8mG4lP5bYmPmDvOX
+	PBpGzIUDBHIekTk=; b=K9BYb8iThvNsRc3uDbU2A4HF+NqmpozLE145a0RZM6s+
+	HlSs93vsFRPOZ4j+D7yanP8AH1MORLgVIUDI/smsj0tgQHb1QcdzskIXumAkTdaI
+	aYWKtH9GM5E2idjjTXJdHaRlRm+zABDB8nY9iGIO+T3ni/GGWRr3B/rAtlNxTMAa
+	442AnTkTIKtZDG71QbRbhfRDzlUBII9A+3MGR239UuUry3gcSCza/5J8eBt8YfDp
+	qSaUg0ncHYhXvJ5JLZQ2x+uSxOHpqddfG6B+3/DQ4dtJ8Bvy8Eo4uJ9FwtXpOXbS
+	lAKesJFuhuTY1UEqKamWKqMwsebhP2LexY2pyWEAjQ==
+X-ME-Sender: <xms:kzSYZaaAy3dR9G7HtiXxWg4Zxmeum0A9kFX20liLaKbR07SHFcyxcg>
+    <xme:kzSYZdYGOayfCataHnEAMMKquFtux6p39JzrR3A07WSDo0A-s4okO5JaDREMOkZsI
+    mghom6qS61yd_6_bg>
+X-ME-Received: <xmr:kzSYZU-FFGlFxqtZW9JrU1DfOghSBraArHdWeqKl_bYBn4B9XbhJJcaTjNPSd7Gh34QiYd3oUUZRytJdmx23CPk7Jxq8EIEzMnNLQ-s>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdegledgleduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    gfrhhlucfvnfffucdljedtmdenucfjughrpeffhffvvefukfhfgggtuggjsehttdfstddt
+    tddvnecuhfhrohhmpeffrghnihgvlhcuighuuceougiguhesugiguhhuuhdrgiihiieqne
+    cuggftrfgrthhtvghrnhepvdefkeetuddufeeigedtheefffekuedukeehudffudfffffg
+    geeitdetgfdvhfdvnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
+    hfrhhomhepugiguhesugiguhhuuhdrgiihii
+X-ME-Proxy: <xmx:kzSYZcooOdkX-X1KqvlBh60yFjwUF6ho3KRoF4sCW1I-TfmvCqZcQA>
+    <xmx:kzSYZVqed9r_UIcFbBgVtpyedquDrgSmBEtX74gK0NVzOv-CO9t0Wg>
+    <xmx:kzSYZaTkEQUWNf-X1GtvBv5FK6CVlonQJvKyRbPer6PmkJB9Vt_cTA>
+    <xmx:lTSYZXSsnZAjmPDbBJ3T6sdwqsgrrVfZBsEsu-lv1wIgRfR5oMP26phlS_0>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 5 Jan 2024 11:55:44 -0500 (EST)
+Date: Fri, 5 Jan 2024 09:55:43 -0700
+From: Daniel Xu <dxu@dxuuu.xyz>
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: alexandre.torgue@foss.st.com, benjamin.tissoires@redhat.com,
+ 	lizefan.x@bytedance.com, Herbert Xu <herbert@gondor.apana.org.au>,
+ dsahern@kernel.org, 	hannes@cmpxchg.org, rostedt@goodmis.org,
+ mcoquelin.stm32@gmail.com, 	pablo@netfilter.org, martin.lau@linux.dev,
+ edumazet@google.com, daniel@iogearbox.net, 	ebiggers@kernel.org,
+ yonghong.song@linux.dev, john.fastabend@gmail.com, 	hawk@kernel.org,
+ steffen.klassert@secunet.com, jikos@kernel.org, kuba@kernel.org,
+ 	fw@strlen.de, ast@kernel.org, song@kernel.org, pabeni@redhat.com,
+ 	shuah@kernel.org, tytso@mit.edu, tj@kernel.org, kadlec@netfilter.org,
+ 	davem@davemloft.net, mhiramat@kernel.org, andrii@kernel.org,
+ 	alexei.starovoitov@gmail.com, quentin@isovalent.com,
+ alan.maguire@oracle.com, memxor@gmail.com, 	kpsingh@kernel.org,
+ sdf@google.com, haoluo@google.com, 	mathieu.desnoyers@efficios.com,
+ mykolal@fb.com, linux-input@vger.kernel.org,
+ 	linux-kernel@vger.kernel.org, fsverity@lists.linux.dev,
+ bpf@vger.kernel.org, 	cgroups@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, netdev@vger.kernel.org,
+ 	netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+ linux-kselftest@vger.kernel.org,
+ 	linux-stm32@st-md-mailman.stormreply.com,
+ linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH bpf-next v2 3/3] bpf: treewide: Annotate BPF kfuncs in BTF
+Message-ID: <4tsn6x45gh3vgdst3ozzmxori5gzylvpx6btxue6sbsmx7siok@6wajzdgwxfpa>
+References: <cover.1704422454.git.dxu@dxuuu.xyz>
+ <a923e3809955bdfd2bc8d6a103c20e01f1636dbc.1704422454.git.dxu@dxuuu.xyz>
+ <ZZgcJTdwMZHglPtr@krava>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZZgcJTdwMZHglPtr@krava>
 
-On Fri, 29 Dec 2023 16:02:13 +0800 Huacai Chen <chenhuacai@loongson.cn> wrote:
-
-> In /proc/iomem, sub-regions should be inserted after their parent,
-> otherwise the insertion of parent resource fails. But after generic
-> crashkernel reservation applied, in both RISC-V and ARM64 (LoongArch
-> will also use generic reservation later on), crashkernel resources are
-> inserted before their parent, which causes the parent disappear in
-> /proc/iomem. So we defer the insertion of crashkernel resources to an
-> early_initcall().
+On Fri, Jan 05, 2024 at 04:11:33PM +0100, Jiri Olsa wrote:
+> On Thu, Jan 04, 2024 at 07:45:49PM -0700, Daniel Xu wrote:
 > 
-> ...
->
-> --- a/kernel/crash_core.c
-> +++ b/kernel/crash_core.c
-> @@ -377,7 +377,6 @@ static int __init reserve_crashkernel_low(unsigned long long low_size)
->  
->  	crashk_low_res.start = low_base;
->  	crashk_low_res.end   = low_base + low_size - 1;
-> -	insert_resource(&iomem_resource, &crashk_low_res);
->  #endif
->  	return 0;
->  }
-> @@ -459,8 +458,19 @@ void __init reserve_crashkernel_generic(char *cmdline,
->  
->  	crashk_res.start = crash_base;
->  	crashk_res.end = crash_base + crash_size - 1;
-> -	insert_resource(&iomem_resource, &crashk_res);
->  }
-> +
-> +static __init int insert_crashkernel_resources(void)
-> +{
-> +	if (crashk_res.start < crashk_res.end)
-> +		insert_resource(&iomem_resource, &crashk_res);
-> +
-> +	if (crashk_low_res.start < crashk_low_res.end)
-> +		insert_resource(&iomem_resource, &crashk_low_res);
-> +
-> +	return 0;
-> +}
-> +early_initcall(insert_crashkernel_resources);
->  #endif
->  
->  int crash_prepare_elf64_headers(struct crash_mem *mem, int need_kernel_map,
+> SNIP
+> 
+> > diff --git a/fs/verity/measure.c b/fs/verity/measure.c
+> > index bf7a5f4cccaf..3969d54158d1 100644
+> > --- a/fs/verity/measure.c
+> > +++ b/fs/verity/measure.c
+> > @@ -159,9 +159,9 @@ __bpf_kfunc int bpf_get_fsverity_digest(struct file *file, struct bpf_dynptr_ker
+> >  
+> >  __bpf_kfunc_end_defs();
+> >  
+> > -BTF_SET8_START(fsverity_set_ids)
+> > +BTF_KFUNCS_START(fsverity_set_ids)
+> >  BTF_ID_FLAGS(func, bpf_get_fsverity_digest, KF_TRUSTED_ARGS)
+> > -BTF_SET8_END(fsverity_set_ids)
+> > +BTF_KFUNCS_END(fsverity_set_ids)
+> >  
+> >  static int bpf_get_fsverity_digest_filter(const struct bpf_prog *prog, u32 kfunc_id)
+> >  {
+> > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> > index 51e8b4bee0c8..8cc718f37a9d 100644
+> > --- a/kernel/bpf/btf.c
+> > +++ b/kernel/bpf/btf.c
+> > @@ -7802,6 +7802,10 @@ int register_btf_kfunc_id_set(enum bpf_prog_type prog_type,
+> >  {
+> >  	enum btf_kfunc_hook hook;
+> >  
+> > +	/* All kfuncs need to be tagged as such in BTF */
+> > +	if (WARN_ON(!(kset->set->flags & BTF_SET8_KFUNCS)))
+> > +		return -EINVAL;
+> 
+> having the warning for module with wrong set8 flags seems wrong to me,
+> I think we should trigger the warn only for kernel calls.. by adding
+> kset->owner check in the condition above
 
-I'm thinking 
+Just checking:
 
-Fixes: 0ab97169aa0 ("crash_core: add generic function to do reservation").
+The reasoning is that =m and out-of-tree modules can and should check
+return code, right?
 
-Also, is this a regression?  Were earlier kernels OK?
+And =y modules or vmlinux-based registrations do not check return code,
+so WARN() is necessary?
+
+If so, I'd agree.
+
+[..]
+
+Thanks,
+Daniel
 
