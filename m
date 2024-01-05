@@ -1,44 +1,44 @@
-Return-Path: <linux-kernel+bounces-18257-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18258-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D9290825AA8
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 19:51:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 31122825AAA
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 19:52:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 726041F213A6
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 18:51:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C74C51F20C27
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 18:52:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9362E3A1AF;
-	Fri,  5 Jan 2024 18:47:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14CE53A1D0;
+	Fri,  5 Jan 2024 18:47:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="QgOl2UJs"
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="miPaG4Hu"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EFAF39FE4
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 18:47:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2496F3A1A5
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 18:47:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1704480435;
-	bh=YBkVn5jKdYvc4x1kT23ZC29JJbOYH68uDMV2t2TN/6Y=;
+	s=mail; t=1704480436;
+	bh=zkWIJ7P9a1m72+FqeXAbXwbM9DM9q7qPsdOCL/PnHw8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=QgOl2UJs08qDGmwrciCZCNsVoDOox4BtpEAkEHtlwtVBVrIZuNVP8ke8kqwz1D+iq
-	 AkWrKDiRFjWApzsL2X/+2iSrDEy++LL4hfhOJb+R9UM7iHnnAjrK8IVR0lDImUZUnl
-	 +3pGTpxWS787PSte07Ad+jmiINWOknqI7KiATFYTyOy4vrAua1N9PzA44bP4um745V
-	 crV6/5sZa24o5ti+d1DL//yfy3+Ukn7VOkRt/dr0NM+VYPH7OBYwSUZYVD64hmfq8U
-	 dN7fcx2Jw29ut3l0oZs6g27aAD49iE2Am2vgdA/wnPfEpSH3Mnxyl+Vy96sYY5H6g4
-	 X1wP/7EUuD0XQ==
+	b=miPaG4HuD6TrsZB5vjF09RmNn3Kv/vL8zJWm0NmB4CXk5oPvt/0pLFN+4ug8zAQXr
+	 QyIVqu8GNWov925rkVbmgYnI591tXKO8ahE62rh/EQEdcE+3QP03LmNEpSLVNIqpA0
+	 Pa4Iv5g9cd5oVudpHQFKDineB2eId4+6Z6lLG+Dpks0WJx1ISR9IqenNM7/M1VidcG
+	 gezJlH6cj3gWqB4Gx67gw71X74QW1RzpBJ/vQyVXjjrTUvQ3NczXrOr4+MaADY0Azh
+	 rz1TypBo10P0asqwX4BuZyr6EJ8ZIvEYvmlM0lxrQsoG/Vmg8nK4ZHHrMgggyFKLQQ
+	 dRHp1x3enna4A==
 Received: from workpc.. (cola.collaboradmins.com [195.201.22.229])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
 	(Authenticated sender: dmitry.osipenko)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id A5ACB378205F;
-	Fri,  5 Jan 2024 18:47:13 +0000 (UTC)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 4E4F83782047;
+	Fri,  5 Jan 2024 18:47:15 +0000 (UTC)
 From: Dmitry Osipenko <dmitry.osipenko@collabora.com>
 To: David Airlie <airlied@gmail.com>,
 	Gerd Hoffmann <kraxel@redhat.com>,
@@ -58,9 +58,9 @@ Cc: dri-devel@lists.freedesktop.org,
 	linux-kernel@vger.kernel.org,
 	kernel@collabora.com,
 	virtualization@lists.linux-foundation.org
-Subject: [PATCH v19 19/30] drm/virtio: Explicitly get and put drm-shmem pages
-Date: Fri,  5 Jan 2024 21:46:13 +0300
-Message-ID: <20240105184624.508603-20-dmitry.osipenko@collabora.com>
+Subject: [PATCH v19 20/30] drm/v3d: Explicitly get and put drm-shmem pages
+Date: Fri,  5 Jan 2024 21:46:14 +0300
+Message-ID: <20240105184624.508603-21-dmitry.osipenko@collabora.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240105184624.508603-1-dmitry.osipenko@collabora.com>
 References: <20240105184624.508603-1-dmitry.osipenko@collabora.com>
@@ -72,53 +72,52 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-We're moving away from implicit get_pages() that is done by
-get_pages_sgt() to simplify the refcnt handling. Drivers will have
-to pin pages while they use sgt. VirtIO-GPU doesn't support shrinker,
-hence pages are pinned and sgt is valid as long as pages' use-count > 0.
+To simplify the drm-shmem refcnt handling, we're moving away from
+the implicit get_pages() that is used by get_pages_sgt(). From now on
+drivers will have to pin pages while they use sgt. V3D driver doesn't
+support shrinker, hence pages are pinned and sgt is valid as long as
+pages' use-count > 0.
 
 Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
 Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
 ---
- drivers/gpu/drm/virtio/virtgpu_object.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/v3d/v3d_bo.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/virtio/virtgpu_object.c b/drivers/gpu/drm/virtio/virtgpu_object.c
-index c7e74cf13022..e58528c562ef 100644
---- a/drivers/gpu/drm/virtio/virtgpu_object.c
-+++ b/drivers/gpu/drm/virtio/virtgpu_object.c
-@@ -67,6 +67,7 @@ void virtio_gpu_cleanup_object(struct virtio_gpu_object *bo)
+diff --git a/drivers/gpu/drm/v3d/v3d_bo.c b/drivers/gpu/drm/v3d/v3d_bo.c
+index 1bdfac8beafd..ccf04ce93e8c 100644
+--- a/drivers/gpu/drm/v3d/v3d_bo.c
++++ b/drivers/gpu/drm/v3d/v3d_bo.c
+@@ -50,6 +50,9 @@ void v3d_free_object(struct drm_gem_object *obj)
+ 	/* GPU execution may have dirtied any pages in the BO. */
+ 	bo->base.pages_mark_dirty_on_put = true;
  
- 	virtio_gpu_resource_id_put(vgdev, bo->hw_res_handle);
- 	if (virtio_gpu_is_shmem(bo)) {
++	if (!obj->import_attach)
 +		drm_gem_shmem_put_pages(&bo->base);
- 		drm_gem_shmem_free(&bo->base);
- 	} else if (virtio_gpu_is_vram(bo)) {
- 		struct virtio_gpu_object_vram *vram = to_virtio_gpu_vram(bo);
-@@ -196,9 +197,13 @@ int virtio_gpu_object_create(struct virtio_gpu_device *vgdev,
- 		return PTR_ERR(shmem_obj);
- 	bo = gem_to_virtio_gpu_obj(&shmem_obj->base);
- 
-+	ret = drm_gem_shmem_get_pages(shmem_obj);
-+	if (ret)
-+		goto err_free_gem;
 +
- 	ret = virtio_gpu_resource_id_get(vgdev, &bo->hw_res_handle);
- 	if (ret < 0)
--		goto err_free_gem;
-+		goto err_put_pages;
+ 	drm_gem_shmem_free(&bo->base);
+ }
  
- 	bo->dumb = params->dumb;
+@@ -139,12 +142,18 @@ struct v3d_bo *v3d_bo_create(struct drm_device *dev, struct drm_file *file_priv,
+ 	bo = to_v3d_bo(&shmem_obj->base);
+ 	bo->vaddr = NULL;
  
-@@ -243,6 +248,8 @@ int virtio_gpu_object_create(struct virtio_gpu_device *vgdev,
- 	kvfree(ents);
- err_put_id:
- 	virtio_gpu_resource_id_put(vgdev, bo->hw_res_handle);
-+err_put_pages:
+-	ret = v3d_bo_create_finish(&shmem_obj->base);
++	ret = drm_gem_shmem_get_pages(shmem_obj);
+ 	if (ret)
+ 		goto free_obj;
+ 
++	ret = v3d_bo_create_finish(&shmem_obj->base);
++	if (ret)
++		goto put_pages;
++
+ 	return bo;
+ 
++put_pages:
 +	drm_gem_shmem_put_pages(shmem_obj);
- err_free_gem:
+ free_obj:
  	drm_gem_shmem_free(shmem_obj);
- 	return ret;
+ 	return ERR_PTR(ret);
 -- 
 2.43.0
 
