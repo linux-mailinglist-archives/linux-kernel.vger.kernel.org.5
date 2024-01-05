@@ -1,177 +1,128 @@
-Return-Path: <linux-kernel+bounces-18030-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18029-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B55CC825779
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 17:02:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3099E825771
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 17:01:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 484FA280D81
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 16:02:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1D4661C218DE
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 16:01:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2A4F3173E;
-	Fri,  5 Jan 2024 16:00:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 541F32E85F;
+	Fri,  5 Jan 2024 16:00:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="SOOEox2n"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="AmGuh7To"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2047.outbound.protection.outlook.com [40.107.93.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qv1-f46.google.com (mail-qv1-f46.google.com [209.85.219.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C4632E852;
-	Fri,  5 Jan 2024 16:00:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CzXpHe+zGmV0I+m+bS4yNJ9v54/XsisM1JDvsJ8ljRSaGwLT5NjwXVXEhpLbTsjEQTQdGhey6MaUJvqfEcTxfiJJiaH+bCIX323sV1VRPEj9zJUZi1t/7Q2iDGE1t6+ni/miBtTKTt6lVadFJKptF8Hvhq5Ykl7dcbEAbfrdMrAgKICXiZqcunUeXx1QnRvBl5zcyEvkD71TrKAlxoH8P3XisuGnY7YlLIbRXvNJZqwIMaXDp0GJPuChzVJwwUADLRMmISECwSmnaWBk0fxU98DiM9FZQVZmsf7S7l0r03XP9iWPARzZDy8awxfH256aXsAK3drZlhs1k5x5vb0hWQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=BgTwTwAA74oG+QG5oi+SaerPwfOPNgXn6yDbXrpeEzQ=;
- b=Px1cxS6TqUktIYr3NF4fsmO07wqhql0X4Jv419GUYSLkQV+94leONBHFt61M3CjcyzBcBAEPu9keG6Y41NOP+k1TvXnAFr84RhBcW0gHBnv9t/tT0cwm2Z0ep5Y5QHzdoVwJzGy2WSxvTTO2o7lmTQgDtKbmZugIlNBUtP87q5qE0iroBH6jrbhA3ScQDzjO19HqGuUhgq4hL7MEWJ7G4LNGhc0yfWTUfG/IAs4AtSNl++/IK2Ykcf5fBWWLthiFPcg8b/t5ogxWtob5WRrMw7mdNGgGMKKgt3JQjQFERGG6Ltzip56g2L2YMaFr7LjbBFIPtoCo+Xk6hFtzmtvUeg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.160) smtp.rcpttodomain=davemloft.net smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BgTwTwAA74oG+QG5oi+SaerPwfOPNgXn6yDbXrpeEzQ=;
- b=SOOEox2n7GBoPGzfEQjMmpWjH04eESfdf1l+Fk6DD0O/7bwcbQMSt5sJRzYh3o7DDqmWDNPxOAZwV8Ro5sv1KhwgrQxwDQyZQu+dpCYzWxsGFq1CT7/Efl9kTin3nJhjWdbZXCMYQ5gyXiqabrH7xIahrnjoHf2Eocb0pO8f9HwkzIia0wM822gIotfiS5cGdnxtpB0v0GlKyZZNQtfUWy2UAeVEFDyDOJL8Rl+GOOSsRJmiLnM4GaKClymd6+j+qlEaS8FdfyHiIV76ydsMnzSgGQYiVXNRts/ZBC9nFl222Qf4A9sU5zdVKJWoXFo/OLqi5/V/uvTcO8vejVlnLQ==
-Received: from BYAPR05CA0086.namprd05.prod.outlook.com (2603:10b6:a03:e0::27)
- by MN2PR12MB4568.namprd12.prod.outlook.com (2603:10b6:208:260::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.17; Fri, 5 Jan
- 2024 16:00:46 +0000
-Received: from SJ5PEPF000001CC.namprd05.prod.outlook.com
- (2603:10b6:a03:e0:cafe::ce) by BYAPR05CA0086.outlook.office365.com
- (2603:10b6:a03:e0::27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.9 via Frontend
- Transport; Fri, 5 Jan 2024 16:00:46 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.160) by
- SJ5PEPF000001CC.mail.protection.outlook.com (10.167.242.41) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7159.9 via Frontend Transport; Fri, 5 Jan 2024 16:00:46 +0000
-Received: from rnnvmail203.nvidia.com (10.129.68.9) by mail.nvidia.com
- (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Fri, 5 Jan 2024
- 08:00:18 -0800
-Received: from rnnvmail201.nvidia.com (10.129.68.8) by rnnvmail203.nvidia.com
- (10.129.68.9) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Fri, 5 Jan 2024
- 08:00:18 -0800
-Received: from vdi.nvidia.com (10.127.8.14) by mail.nvidia.com (10.129.68.8)
- with Microsoft SMTP Server id 15.2.986.41 via Frontend Transport; Fri, 5 Jan
- 2024 08:00:16 -0800
-From: Asmaa Mnebhi <asmaa@nvidia.com>
-To: <davem@davemloft.net>, <f.fainelli@gmail.com>, <edumazet@google.com>,
-	<kuba@kernel.org>, <pabeni@redhat.com>, <tbogendoerfer@suse.de>,
-	<horms@kernel.org>
-CC: Asmaa Mnebhi <asmaa@nvidia.com>, <netdev@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <davthompson@nvidia.com>, Florian Fainelli
-	<florian.fainelli@broadcom.com>
-Subject: [PATCH net v4] mlxbf_gige: Enable the GigE port in mlxbf_gige_open
-Date: Fri, 5 Jan 2024 11:00:14 -0500
-Message-ID: <20240105160014.23353-1-asmaa@nvidia.com>
-X-Mailer: git-send-email 2.30.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BCEB2E852
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 16:00:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-qv1-f46.google.com with SMTP id 6a1803df08f44-67f9f6caabcso7935796d6.3
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Jan 2024 08:00:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1704470442; x=1705075242; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=dn6MgJ/6ZzbMLMCkvKlinwOAEJn5n1fruy8Tzx3bMM0=;
+        b=AmGuh7To2G1MG+2a0NvP8syCW+ZmYIpeFTew1EKC0yp4WVOXm9T0yBGVxTy3MRxfeF
+         uSqdiUwJF80yRdxQPJ82MYvvWky5OSpGf8YjxZZrNJZIAc1CzqJPLEhOBbs4oNFAndEE
+         DVuCZzfy/OhExa9rI5zXC5i01QqpAhQbep5xJ+frtUNfi7OAzHkG2xxW5gPh10bm/PQm
+         5gUOAnys3DOSkBwWm7qQnK40WhiDupi2N/thMnYdtyWjJMWbRYTePyIf0AWAAsKMCa2n
+         u8SEaq5l/PRCT8j2Zrbp1sVSYDqWlbOWxkO87+ytIIsbOVB357/sFXpV4uGU0KlqE/wi
+         CFRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704470442; x=1705075242;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=dn6MgJ/6ZzbMLMCkvKlinwOAEJn5n1fruy8Tzx3bMM0=;
+        b=HRf0l31Oz1ATpKzTAF2XQm12tRk8qTghx581iRBB1L1ULAW8hu/GBiQgz7iZaX2Mga
+         tOANySAKTbDim3x9UdJTnCC0ADbHVD0T/66mzoFBWiGofdohFSYLqJtX9G4HGeNnhN/2
+         epAOi6SRD9MOg5L003t/6oVEUbOCjsy4cSrD4BmlVY0m0F+ZcbLp1/Yp8o5Z9WlL5c/d
+         mCG8CiJciWw5cNhfhuNqDQlM5M9tA+DWqWGymPuxNqPYIuNmBoQhD+Ledfrwy4t7IM/e
+         bk0sV4QPSkynBjCjmWBR5+1rWwnNNRiiBUPs6wsVp9vyZrkmpagw/eoKl3K4SzXksFIm
+         UuMw==
+X-Gm-Message-State: AOJu0YzWyEOvJJpXK3a0HUU9uNzzGHkuaQfrpHA2/LDO2MfuHtY+4qLn
+	l4ck0NnoEN869jxGLQdrAx2X10kzfmjpSoi06PkA4K+d2GUEeA==
+X-Google-Smtp-Source: AGHT+IEw94IZb/sngG0I+NbdEIM9RGCKMXUXlZS80Fe/znbT2cb+xlGnLVD+6GqKGUgMFPnm4VNWJ7bd1MWbspAj8ws=
+X-Received: by 2002:a05:6214:3018:b0:67f:f92:2a05 with SMTP id
+ ke24-20020a056214301800b0067f0f922a05mr2678267qvb.25.1704470442146; Fri, 05
+ Jan 2024 08:00:42 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ5PEPF000001CC:EE_|MN2PR12MB4568:EE_
-X-MS-Office365-Filtering-Correlation-Id: bd9d8fda-6b93-4b08-ee2f-08dc0e077ab1
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	HoB5qxYJrMR9Z4nH9ayCT2GhMDtJM7xnTj1xvVWl5B9u9UUpDE9cSM06yesXv/ikcM0Nvl8TwzrW+E1GwAJSTFqDzswOmph4Ccw8rjiDhRblQ8IlbBIdSHCAypq07/Y0Tj6AV4iEj8wEt8XnCIPmH4nszz+OeR+9sPpDdUFVet0AQcyrzI52+v3EIf3VpCOZwXPZLXX5X+H9v2/HtYz3PdmLe3GWYzVEbzISB5CXrqZUtzwNmnV2Fyj+alzwUCJ0A9AscQtv0Dh0VY3jdvbzsrjwTpnLQzu0jWqGInZUSddfzCDp3q8f1J4IQpJJeI2xWvvc79AQ9rnyHfRH4awO42T+P0qCxFr2pBY+4E1vnLhYPn9OUudoBiGe8nXC30SikvamHy/rNw9q4TUmrbvnxwmwsmfx/EyDWUZXK0aHUGHc+yiIZJOS9aWMaLUid+oVScE5eiRhTvwJ2tli8MpQ0YRKwyOIv14iCUaJUiZwBsNDRx5V7A1eLXVuE1bACoBbll3plP+Ca83noxKMSh3tzadx4OGSYg+x9Vnl8ud8Bqj01mGr8XmpmGjjLrk/oH5RDnDO9VbW9XDLJM62VfbhSg2UsIVWrb4PpgqiTWOk85yFbIK4N+9JOC1oT+8G0oYu8FiEaerLLNa0gdRAV6cnZ6qPNhTpfgKpmcg4yluoZtMY170Jf+nzgSVQz9pO44D3QB1xj0e4FwzQuVgjrv0Bql0e9kWU7KJIcVPGjSxJtD1szSvwCF08FQFWQTRmWPE2
-X-Forefront-Antispam-Report:
-	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(346002)(396003)(376002)(136003)(230922051799003)(82310400011)(186009)(451199024)(1800799012)(64100799003)(46966006)(40470700004)(36840700001)(40460700003)(40480700001)(2616005)(426003)(26005)(1076003)(336012)(7696005)(478600001)(82740400003)(36756003)(86362001)(7636003)(356005)(2906002)(41300700001)(7416002)(54906003)(36860700001)(47076005)(83380400001)(70586007)(110136005)(316002)(70206006)(5660300002)(8936002)(8676002)(4326008);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Jan 2024 16:00:46.5496
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: bd9d8fda-6b93-4b08-ee2f-08dc0e077ab1
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	SJ5PEPF000001CC.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4568
+References: <alpine.DEB.2.22.394.2310032059060.3220@hadrien>
+ <b8ab29de-1775-46e-dd75-cdf98be8b0@inria.fr> <CAKfTPtBhWwk9sf9F1=KwubiAWFDC2A9ZT-SSJ+tgFxme1cFmYA@mail.gmail.com>
+ <alpine.DEB.2.22.394.2312182302310.3361@hadrien> <CAKfTPtALEFtrapi3Kk97KLGQN4259eEQEwwftVUK4RG42Vgoyw@mail.gmail.com>
+ <98b3df1-79b7-836f-e334-afbdd594b55@inria.fr> <CAKfTPtCRN_eWgVdK2-h6E_ifJKwwJEtMjeNjB=5DXZFWyBS+tQ@mail.gmail.com>
+ <93112fbe-30be-eab8-427c-5d4670a0f94e@inria.fr> <CAKfTPtAeFvrZxApK3RruWwCjMxbQvOkU+_YgZSo4QPT_AD6FxA@mail.gmail.com>
+ <9dc451b5-9dd8-89f2-1c9c-7c358faeaad@inria.fr> <CAKfTPtDCsLnDnVje9maP5s-L7TbtSu4CvF19xHOxbkvSNd7vZg@mail.gmail.com>
+ <2359ab5-4556-1a73-9255-3fcf2fc57ec@inria.fr> <6618dcfa-a42f-567c-2a9d-a76786683b29@inria.fr>
+ <CAKfTPtDrULyOB9+RhjoPfCpHKVhx5kRf6dq79DSE6jZgsEairw@mail.gmail.com>
+ <edbd8ecd-148c-b366-fd46-3531dec39d49@inria.fr> <cecfd395-f067-99e1-bdd2-fec2ebc3db3@inria.fr>
+ <CAKfTPtCAcHuzhcDvry6_nH2K29wc-LEo2yOi-J-mnZkwMvGDbw@mail.gmail.com> <cfae246d-9383-59d-ee5b-81ea3dd0a795@inria.fr>
+In-Reply-To: <cfae246d-9383-59d-ee5b-81ea3dd0a795@inria.fr>
+From: Vincent Guittot <vincent.guittot@linaro.org>
+Date: Fri, 5 Jan 2024 17:00:28 +0100
+Message-ID: <CAKfTPtD0B29zadkeEOCWvry123zWVEEm41ouKj7noXwQdoh2+Q@mail.gmail.com>
+Subject: Re: EEVDF and NUMA balancing
+To: Julia Lawall <julia.lawall@inria.fr>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Dietmar Eggemann <dietmar.eggemann@arm.com>, Mel Gorman <mgorman@suse.de>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-At the moment, the GigE port is enabled in the mlxbf_gige_probe
-function. If the mlxbf_gige_open is not executed, this could cause
-pause frames to increase in the case where there is high backgroud
-traffic. This results in clogging the port.
-So move enabling the OOB port to mlxbf_gige_open.
+On Fri, 5 Jan 2024 at 15:51, Julia Lawall <julia.lawall@inria.fr> wrote:
+>
+> > Your system is calling the polling mode and not the default
+> > cpuidle_idle_call() ? This could explain why I don't see such problem
+> > on my system which doesn't have polling
+> >
+> > Are you forcing the use of polling mode ?
+> > If yes, could you check that this problem disappears without forcing
+> > polling mode ?
+>
+> I expanded the code in do_idle to:
+>
+>                 if (cpu_idle_force_poll) { c1++;
+>                         tick_nohz_idle_restart_tick();
+>                         cpu_idle_poll();
+>                 } else if (tick_check_broadcast_expired()) { c2++;
+>                         tick_nohz_idle_restart_tick();
+>                         cpu_idle_poll();
+>                 } else { c3++;
+>                         cpuidle_idle_call();
+>                 }
+>
+> Later, I have:
+>
+>         trace_printk("force poll: %d: c1: %d, c2: %d, c3: %d\n",cpu_idle_force_poll, c1, c2, c3);
+>         flush_smp_call_function_queue();
+>         schedule_idle();
+>
+> force poll, c1 and c2 are always 0, and c3 is always some non-zero value.
+> Sometimes small (often 1), and sometimes large (304 or 305).
+>
+> So I don't think it's calling cpu_idle_poll().
 
-Fixes: f92e1869d74e ("Add Mellanox BlueField Gigabit Ethernet driver")
-Reviewed-by: David Thompson <davthompson@nvidia.com>
-Signed-off-by: Asmaa Mnebhi <asmaa@nvidia.com>
-Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
----
-v3->v4:
-- rebase
-- Fork this patch from bundle of unrelated bug fixes.
-- update the subject format
+I agree that something else
 
- .../ethernet/mellanox/mlxbf_gige/mlxbf_gige_main.c   | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+>
+> x86 has TIF_POLLING_NRFLAG defined to be a non zero value, which I think
+> is sufficient to cause the issue.
 
-diff --git a/drivers/net/ethernet/mellanox/mlxbf_gige/mlxbf_gige_main.c b/drivers/net/ethernet/mellanox/mlxbf_gige/mlxbf_gige_main.c
-index 3385cf1ef9ae..ce50a25c4772 100644
---- a/drivers/net/ethernet/mellanox/mlxbf_gige/mlxbf_gige_main.c
-+++ b/drivers/net/ethernet/mellanox/mlxbf_gige/mlxbf_gige_main.c
-@@ -130,9 +130,15 @@ static int mlxbf_gige_open(struct net_device *netdev)
- {
- 	struct mlxbf_gige *priv = netdev_priv(netdev);
- 	struct phy_device *phydev = netdev->phydev;
-+	u64 control;
- 	u64 int_en;
- 	int err;
- 
-+	/* Perform general init of GigE block */
-+	control = readq(priv->base + MLXBF_GIGE_CONTROL);
-+	control |= MLXBF_GIGE_CONTROL_PORT_EN;
-+	writeq(control, priv->base + MLXBF_GIGE_CONTROL);
-+
- 	err = mlxbf_gige_request_irqs(priv);
- 	if (err)
- 		return err;
-@@ -365,7 +371,6 @@ static int mlxbf_gige_probe(struct platform_device *pdev)
- 	void __iomem *plu_base;
- 	void __iomem *base;
- 	int addr, phy_irq;
--	u64 control;
- 	int err;
- 
- 	base = devm_platform_ioremap_resource(pdev, MLXBF_GIGE_RES_MAC);
-@@ -380,11 +385,6 @@ static int mlxbf_gige_probe(struct platform_device *pdev)
- 	if (IS_ERR(plu_base))
- 		return PTR_ERR(plu_base);
- 
--	/* Perform general init of GigE block */
--	control = readq(base + MLXBF_GIGE_CONTROL);
--	control |= MLXBF_GIGE_CONTROL_PORT_EN;
--	writeq(control, base + MLXBF_GIGE_CONTROL);
--
- 	netdev = devm_alloc_etherdev(&pdev->dev, sizeof(*priv));
- 	if (!netdev)
- 		return -ENOMEM;
--- 
-2.30.1
+Could you trace trace_sched_wake_idle_without_ipi() ans csd traces as well ?
+I don't understand what set need_resched() in your case; having in
+mind that I don't see the problem on my Arm systems and IIRC Peter
+said that he didn't face the problem on his x86 system.
 
+>
+> julia
 
