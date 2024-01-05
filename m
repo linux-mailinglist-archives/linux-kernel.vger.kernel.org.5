@@ -1,113 +1,71 @@
-Return-Path: <linux-kernel+bounces-18177-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18178-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D6298259B8
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 19:09:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C6DC8259BA
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 19:10:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 22CFB1F225A8
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 18:09:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A1CA71F219BC
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 18:10:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF92434CEC;
-	Fri,  5 Jan 2024 18:09:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B771C34CDE;
+	Fri,  5 Jan 2024 18:10:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="TpPm8D0T"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mVYebEZ2"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B7153455D
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 18:09:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-54744e66d27so573a12.0
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Jan 2024 10:09:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1704478184; x=1705082984; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3BigxxSzpNvAGoQIBfaV1OAOS4EMsVFO9Hy0woPRhdQ=;
-        b=TpPm8D0THuXi1FIq5R2hjCd3gktkbRxgejfrMp++MLooGXYzZA01kS0+Wc7dtCjoz0
-         xhiyzFtIoOrMYwNdmnerp7LsEmkFjLIY6yC2di5xCp5JaAhpEWZc4MzBUyPn/x5t6lpo
-         rvr++SARtWwMaYh+wnamWHdTci5CWluRl/weiyNtre3mocFsERTZcCsXma9LgMKhHhwh
-         U6YLzRNarlBw/inS6Lx6V66uaZpGNqMzzT0YZZ5J/w50MPNcw3Thbt5hQ8OmktAx5caT
-         TbfGYbTjdWt552vsItQPz3PyOtfu6eoCIMAm3QGh7EMUGDrolUJ6sg3UGgrK6p3a4AzS
-         /7lg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704478184; x=1705082984;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3BigxxSzpNvAGoQIBfaV1OAOS4EMsVFO9Hy0woPRhdQ=;
-        b=fKQXVaK9ckzL4adnsm3SqTDrQyZRCR2+nKuitXlokcVpIifOmVHKCbog6ruwkwcEc7
-         lVnh52ArHvys0uZwIrbMHZfDDKsjjo3tSjS+bF7IRMR/988peOjzrWS8wC1OUR0Outhk
-         KvicnbJYXf2tTZZw+JrdBbaQp0ruwGcbh5L+RGXrERK1LZ1/GUBiFZ9Wv3sDcjHJR98a
-         V17hDWc8hYCMJKzn8dZ4H+SshtdoMmX7/pZMMdqpTcThU+TkaoIn5ztAnDrm4Sd6S+GA
-         GTffJdn+h/873+f57urgEkkCXMj5AgheAUh+f2fEbKUPkpMlZHPYL4mvurd83MF0P3J6
-         +2Nw==
-X-Gm-Message-State: AOJu0YwDma30yOovz+/OtCSa/JsD5emGJ+bySvN6+JFtl5Nlwy78RUwo
-	aOH2E5xjGxMJt320eJkREc/8CjJPfvuivW9hIFFcSIzu6aQ/
-X-Google-Smtp-Source: AGHT+IH+hgjyFFH8aTaoPlj+NLHD2Ehc4vuo3UPmyggTjmI+gf3BrKdlbPGELyqb3KLnry5DEWM/qtyUb8YMzRWptJw=
-X-Received: by 2002:a50:9f4a:0:b0:555:6529:3bfe with SMTP id
- b68-20020a509f4a000000b0055565293bfemr6452edf.1.1704478183815; Fri, 05 Jan
- 2024 10:09:43 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8E9234CD6
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 18:10:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 57E8EC433C8;
+	Fri,  5 Jan 2024 18:10:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704478219;
+	bh=1HLYg5Tk7fI9rIiNU/+JZuqGBriCKiLmdd9L4ueaysA=;
+	h=Subject:From:In-Reply-To:References:Date:To:List-Id:Cc:From;
+	b=mVYebEZ2CTaj3PaeT8oQVWLjoWrFMcjSl2RIzcBHFntvOEX+7+KJUaBNl3uI/mSd8
+	 I3/BNxa1gWDieP3Jh1cfgB/Bb6j60UijJ0NzkG3fx4B3esVRIdmzDDCKu9jgEkqEAW
+	 d0HdPxXsf7QriZOxqBhK4/O4A6S67Tn9B00H4XVs0qyTRN6s50lV9MHS++LRsIiSKH
+	 MWZzD5dNjmwBPcGdbWPDbtjUuCQXyiNnNsVBfMXsaHGrgL4QDOZwJS6HDqp9Nsvl9Y
+	 C/lunnfT2W59RnqVQvA5pwoqVqyxm28pvrJknQXCG+zlGSsfw4lewl7AOvQ14tO1Fh
+	 OgzI/BrznaabQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 324BDDCB6D8;
+	Fri,  5 Jan 2024 18:10:19 +0000 (UTC)
+Subject: Re: [GIT PULL] ARM: SoC fixes for 6.7, part 3
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <ade6f246-910d-4d9a-aab4-1ae21a18da00@app.fastmail.com>
+References: <ade6f246-910d-4d9a-aab4-1ae21a18da00@app.fastmail.com>
+X-PR-Tracked-List-Id: <linux-arm-kernel.lists.infradead.org>
+X-PR-Tracked-Message-Id: <ade6f246-910d-4d9a-aab4-1ae21a18da00@app.fastmail.com>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/soc/soc.git tags/soc-fixes-6.7-3a
+X-PR-Tracked-Commit-Id: 643fe70e7bcdcc9e2d96952f7fc2bab56385cce5
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 6d0dc8559c847e2dcd66c5dd93dbab3d3d887ff5
+Message-Id: <170447821915.10283.2607340512395858597.pr-tracker-bot@kernel.org>
+Date: Fri, 05 Jan 2024 18:10:19 +0000
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, soc@kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Stefan Wahren <wahrenst@gmx.net>, Chen-Yu Tsai <wens@csie.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20231221140239.4349-1-weijiang.yang@intel.com>
- <93f118670137933980e9ed263d01afdb532010ed.camel@intel.com>
- <5f57ce03-9568-4739-b02d-e9fac6ed381a@intel.com> <6179ddcb25c683bd178e74e7e2455cee63ba74de.camel@intel.com>
- <ZZdLG5W5u19PsnTo@google.com> <a2344e2143ef2b9eca0d153c86091e58e596709d.camel@intel.com>
- <ZZdSSzCqvd-3sdBL@google.com> <8f070910-2b2e-425d-995e-dfa03a7695de@intel.com>
- <ZZgsipXoXTKyvCZT@google.com> <9abd8400d25835dd2a6fd41b0104e3c666ee8a13.camel@intel.com>
-In-Reply-To: <9abd8400d25835dd2a6fd41b0104e3c666ee8a13.camel@intel.com>
-From: Jim Mattson <jmattson@google.com>
-Date: Fri, 5 Jan 2024 10:09:28 -0800
-Message-ID: <CALMp9eRMoWOS5oAywQCdEsCuTkDqmsVG=Do11FkthD5amr96WA@mail.gmail.com>
-Subject: Re: [PATCH v8 00/26] Enable CET Virtualization
-To: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-Cc: "Yang, Weijiang" <weijiang.yang@intel.com>, "seanjc@google.com" <seanjc@google.com>, 
-	"Gao, Chao" <chao.gao@intel.com>, "Hansen, Dave" <dave.hansen@intel.com>, 
-	"peterz@infradead.org" <peterz@infradead.org>, "john.allen@amd.com" <john.allen@amd.com>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "mlevitsk@redhat.com" <mlevitsk@redhat.com>, 
-	"pbonzini@redhat.com" <pbonzini@redhat.com>, "kvm@vger.kernel.org" <kvm@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jan 5, 2024 at 9:53=E2=80=AFAM Edgecombe, Rick P
-<rick.p.edgecombe@intel.com> wrote:
->
-> On Fri, 2024-01-05 at 08:21 -0800, Sean Christopherson wrote:
-> > No, do not inject #UD or do anything else that deviates from
-> > architecturally
-> > defined behavior.
->
-> Here is a, at least partial, list of CET touch points I just created by
-> searching the SDM:
-> 1. The emulator SW fetch with TRACKER=3D1
-> 2. CALL, RET, JMP, IRET, INT, SYSCALL, SYSENTER, SYSEXIT, SYSRET
-> 3. Task switching
+The pull request you sent on Fri, 05 Jan 2024 16:38:43 +0100:
 
-Sigh. KVM is forced to emulate task switch, because the hardware is
-incapable of virtualizing it. How hard would it be to make KVM's
-task-switch emulation CET-aware?
+> https://git.kernel.org/pub/scm/linux/kernel/git/soc/soc.git tags/soc-fixes-6.7-3a
 
-> 4. The new CET instructions (which I guess should be handled by
-> default): CLRSSBSY, INCSSPD, RSTORSSP, SAVEPREVSSP, SETSSBSYY, WRSS,
-> WRUSS
->
-> Not all of those are security checks, but would have some functional
-> implications. It's still not clear to me if this could happen naturally
-> (the TDP shadowing stuff), or only via strange attacker behavior. If we
-> only care about the attacker case, then we could have a smaller list.
->
-> It also sounds like the instructions in 2 could maybe be filtered by
-> mode instead of caring about CET being enabled. But maybe it's not good
-> to mix the CET problem with the bigger emulator issues. Don't know.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/6d0dc8559c847e2dcd66c5dd93dbab3d3d887ff5
+
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
