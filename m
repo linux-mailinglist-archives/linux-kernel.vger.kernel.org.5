@@ -1,110 +1,107 @@
-Return-Path: <linux-kernel+bounces-18376-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18378-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1BEB2825C2F
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 22:42:12 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CABE8825C32
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 22:45:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 85038B2399C
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 21:42:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 613361F258CF
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 21:45:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CA1B360A0;
-	Fri,  5 Jan 2024 21:42:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34DBD225A6;
+	Fri,  5 Jan 2024 21:45:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="a8T5JbaE"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZXIW9Cjx"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C71636093
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 21:41:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-336dcebcdb9so27438f8f.1
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Jan 2024 13:41:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1704490917; x=1705095717; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kkR205sUpUsUJgjcHWSrrYckQvl1gsGMJ7ruJmNqaG0=;
-        b=a8T5JbaEjgRD7TKdjJzSvXq5jkBvfU7ZUfAXia7wJzr539Uon0M0KlxHT0xl6O7pU3
-         SW5NOJ33mMWW13t0mZ+HNp8/hbnfuRFD8gv2hG194IvRXGIRvLYpPSfA3ntpOFqhqB6R
-         qePn98Wl6Nn7PRgXomgS0QugSLcXv9qMALA/Lh/FwxnP70PBU6EKY+iV+C+61wNJFbAz
-         vGiQowU6v599muf068qb6l8F+R24KoWfgxJmpa6gCr6MyAOESp+UFEXb+xoinRLgXdDL
-         FlmaHbkWA6V5XEgeU1f2EE9SRWqRWnTSiz3dheZhfb/xQq+kVnSBo/FDRZhY48Faml2G
-         a9mw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704490917; x=1705095717;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kkR205sUpUsUJgjcHWSrrYckQvl1gsGMJ7ruJmNqaG0=;
-        b=hW8DiRi6UTG3Hk/J1XGgARp1fnuoPvtoR9zbsN2waDaCCZLlqLJ4d23hnxVMIq+b6l
-         Dh+FLmXSN0WuXJYicMTT96g1YXLsnGOsbVJE6XYYVWsq3iFbPdmUsUcQJVfwIAfPzB7z
-         5nv+k4Nn90wdhLgB3s/TJtCo7iydXsJt6oo6EBdsOChYUhE33KW282ZtJMuV5qQsyyTx
-         2pLalAHKk/PYrpq4Y9q1bpg4rN0IQsS+O4F11ZbbTmXUy6e1mXnzk36VX+g1sWg24Pv4
-         boiir38JBoy9r3El7ZLi83LQcpZU/XpARen5ZwZRN/obXJGKjSizpxH6KLmh0cLy4Zx6
-         OzWQ==
-X-Gm-Message-State: AOJu0Yz1oKUNVmnbnGfXyH2ORCw4lnVn6dR0VPQ1r6zH9MNjlvYMQGfF
-	zSM5bwjtYzAxiUX0JKo1A1mqdfAZgM83EDMZbaBguNR1VRda
-X-Google-Smtp-Source: AGHT+IEVQuhZ57a0OHJRpfTSH+a/jt4JulueTBoHz9clH50NEWTtsOgVpTOZ6ZqnmmExu1S4z5hf6dJnLnBe9uA4+B4=
-X-Received: by 2002:adf:f80e:0:b0:336:787d:af5 with SMTP id
- s14-20020adff80e000000b00336787d0af5mr21842wrp.284.1704490917500; Fri, 05 Jan
- 2024 13:41:57 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81E91364A1;
+	Fri,  5 Jan 2024 21:45:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11FD5C433C7;
+	Fri,  5 Jan 2024 21:44:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704491101;
+	bh=S8xwNI2IVLGMzs1d0V3i+KaFfXXiiwzlTAyPMkEB65w=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ZXIW9CjxpEEA78IVJ1b06aYlo7peW1XEcL1cagcL4tc4I8/O/9rDTpXwwuhkFmGOk
+	 dTVCgdLFYIcXYm2xsgMW539leVlZ44OsnpTYmNaJqL12msHAQJkzfAq8ZHq7aK/40/
+	 qUkxlYOnq5wUfUz2jHUBbCPfqzu+MlM6P5GDGFTsLZdbAqpabOmHDFwqVO9vwGsCsQ
+	 9NLNyYKpbLHmMyi1I7Pf3J7WlvAedt7hKI4c6YZjvNCOS6xJsMydT+sGXNK7gNLTLp
+	 Ac8+IJOXQiLbhBhMmPRTaSAR+mj5KgiKkCjtfSy8uxjsMBRgV+afSBjrc0RB/fbeK+
+	 Bo+h9ppcMiK4Q==
+Date: Fri, 5 Jan 2024 21:44:57 +0000
+From: Simon Horman <horms@kernel.org>
+To: Naveen Mamindlapalli <naveenm@marvell.com>
+Cc: davem@davemloft.net, kuba@kernel.org, edumazet@google.com,
+	pabeni@redhat.com, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, sgoutham@marvell.com,
+	Nithin Dabilpuram <ndabilpuram@marvell.com>
+Subject: Re: [net PATCH] octeontx2-af: CN10KB: Fix FIFO length calculation
+ for RPM2
+Message-ID: <20240105214457.GD31813@kernel.org>
+References: <20240105065423.714-1-naveenm@marvell.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240105-newemail-v1-1-c4e0ba2c7c11@google.com>
- <CAKwvOdnbc0Z8poK400k8dhDNjNcpWC8LsbeOSdZ5XxLm=W6k6Q@mail.gmail.com>
- <CAE-cH4oTTfxfGvkGCFrpCiSUOSUyL2W=isbkE+jHcRshWKnb+g@mail.gmail.com> <CAKwvOdnYT2HM9XSRtFg6KkMEEDtq6muCpVGoqgPgE4sOe8H9iQ@mail.gmail.com>
-In-Reply-To: <CAKwvOdnYT2HM9XSRtFg6KkMEEDtq6muCpVGoqgPgE4sOe8H9iQ@mail.gmail.com>
-From: Nick Desaulniers <ndesaulniers@google.com>
-Date: Fri, 5 Jan 2024 13:41:46 -0800
-Message-ID: <CAKwvOdnyMCQq5qSe4xWJN8kjS2movShtvYoprucxt4ydojQB5Q@mail.gmail.com>
-Subject: Re: [PATCH] mailmap: Switch email for Tanzir Hasan
-To: Tanzir Hasan <tanzirh@google.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, 
-	Nick Desaulniers <nnn@google.com>, Tanzir Hasan <tanzhasanwork@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240105065423.714-1-naveenm@marvell.com>
 
-On Fri, Jan 5, 2024 at 1:41=E2=80=AFPM Nick Desaulniers <ndesaulniers@googl=
-e.com> wrote:
->
-> On Fri, Jan 5, 2024 at 1:38=E2=80=AFPM Tanzir Hasan <tanzirh@google.com> =
-wrote:
-> >
-> > On Fri, Jan 5, 2024 at 1:35=E2=80=AFPM Nick Desaulniers <ndesaulniers@g=
-oogle.com> wrote:
-> > >
-> > > On Fri, Jan 5, 2024 at 1:31=E2=80=AFPM Tanzir Hasan <tanzirh@google.c=
-om> wrote:
-> > > >
-> > > > From: Tanzir Hasan <tanzhasanwork@gmail.com>
-> > >
-> > > Hang on, ^ has a different From than the email From.  Did you change
-> > > the authorship to the new email addr?  I don't care which you use but=
-:
-> > > 1. they should match (author and from)
-> > > 2. verify your new email with me (mentioned below)
-> >
-> > I didn't use git commit --amend, I suspect that b4 might be picking
-> > this up?
->
-> Ah, perhaps.  Either way, I verified that Tanzir is the owner of
-> tanzhasanwork@gmail.com.
->
-> Acked-by: Nick Desaulniers <ndesaulniers@google.com>
+On Fri, Jan 05, 2024 at 12:24:23PM +0530, Naveen Mamindlapalli wrote:
+> From: Nithin Dabilpuram <ndabilpuram@marvell.com>
+> 
+> RPM0 and RPM1 on the CN10KB SoC have 8 LMACs each, whereas RPM2
+> has only 4 LMACs. Similarly, the RPM0 and RPM1 have 256KB FIFO,
+> whereas RPM2 has 128KB FIFO. This patch fixes an issue with
+> improper TX credit programming for the RPM2 link.
+> 
+> Signed-off-by: Nithin Dabilpuram <ndabilpuram@marvell.com>
+> Signed-off-by: Naveen Mamindlapalli <naveenm@marvell.com>
 
-Wait, I think .mailmap is sorted! Plz fix!
+If this is a fix for a user-visible bug then it should
+have a Fixes tag. Else it should be targeted at net-next.
 
---=20
-Thanks,
-~Nick Desaulniers
+Also, as a potential follow-up, it looks like this
+file (driver?) could benefit from use of GETMASK/FIELD_GET/FIELD_PREP.
+But, IMHO, there is no need to do that for this change
+which is in a style consistent with the rest of the file.
+
+> ---
+>  drivers/net/ethernet/marvell/octeontx2/af/rpm.c | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rpm.c b/drivers/net/ethernet/marvell/octeontx2/af/rpm.c
+> index 4728ba34b0e3..76218f1cb459 100644
+> --- a/drivers/net/ethernet/marvell/octeontx2/af/rpm.c
+> +++ b/drivers/net/ethernet/marvell/octeontx2/af/rpm.c
+> @@ -506,6 +506,7 @@ u32 rpm2_get_lmac_fifo_len(void *rpmd, int lmac_id)
+>  	rpm_t *rpm = rpmd;
+>  	u8 num_lmacs;
+>  	u32 fifo_len;
+> +	u16 max_lmac;
+>  
+>  	lmac_info = rpm_read(rpm, 0, RPM2_CMRX_RX_LMACS);
+>  	/* LMACs are divided into two groups and each group
+> @@ -513,7 +514,11 @@ u32 rpm2_get_lmac_fifo_len(void *rpmd, int lmac_id)
+>  	 * Group0 lmac_id range {0..3}
+>  	 * Group1 lmac_id range {4..7}
+>  	 */
+> -	fifo_len = rpm->mac_ops->fifo_len / 2;
+> +	max_lmac = (rpm_read(rpm, 0, CGX_CONST) >> 24) & 0xFF;
+> +	if (max_lmac > 4)
+> +		fifo_len = rpm->mac_ops->fifo_len / 2;
+> +	else
+> +		fifo_len = rpm->mac_ops->fifo_len;
+>  
+>  	if (lmac_id < 4) {
+>  		num_lmacs = hweight8(lmac_info & 0xF);
+> -- 
+> 2.39.0.198.ga38d39a4c5
+> 
 
