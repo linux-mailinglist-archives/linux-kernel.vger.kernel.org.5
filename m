@@ -1,188 +1,277 @@
-Return-Path: <linux-kernel+bounces-18059-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18060-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD987825806
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 17:23:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id EACB882580B
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 17:23:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3C9941F21F26
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 16:23:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5FCA71F21AED
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 16:23:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 022E62E824;
-	Fri,  5 Jan 2024 16:23:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9F8C3175A;
+	Fri,  5 Jan 2024 16:23:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="OYPAcKnW"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="TeOlRihf"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2043.outbound.protection.outlook.com [40.107.102.43])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D518B2E829;
-	Fri,  5 Jan 2024 16:23:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=oVGJoipE3UByKP68jML6L3l+o3tUylZOkJUkxUnankXphRHCoPg45yHMlNurNWyd7OsU6T+xKercOczEPELr34elAbs0BGy+Rg6ziIv9jQEiiV2gFXWeHGhYRxjmMIm1y4QMKAxQHMMlIWdOgLoXPG6yf0hcKaQ2KnYjosBUT3Th0qhAAoVIdhMxUjyck31kz4uU+iPGfh7vTXrYrxr78o/7qs1GtQV4kQ3WG5biQ8aaDkLPEm8XZxz6eCsZauxcue2lizogFrcwK3lLOFi7YCXt9YjntjNosWF89BCMOP4vs+PXL9ezKS61vleBx23oSUWHvYyhByPqOcDbg0geyw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ywX6WySuLQYs7bVuIBIt3dSFhjUz5eycYDZS5q50HKs=;
- b=YVSjKcdMk/ZlIEo5hMUBACP2uGe6Xo6b4mjTMWO4AwqHOvoLgKtz7c8qXCPdmDRJuRGrnW79jmIU8CgtnDG9JdlHPKj14TLeT4oGdd6BOjnoPyUUbVIltWfOyQy19CW6S5o0kUFJW0prwzFPxXvsgKeLB4sqyPAo8kc1OjYJ+0NYJCiXMNrLs6tb5lHQbUtxhXa2q0QJnd2TRbDAvm/XT4lBUxJIrc94/9ybNz87LTOcY8h1gH3EgDzLMnQ6FNUlcdz/XKcd9i6TDSw9S7OnLUjZMzOgrthSSoymmpuQ2ZpUUvmSGAcre/AVYwJOJ8ChO8Xr5drxnjcbVUEIckltwA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ywX6WySuLQYs7bVuIBIt3dSFhjUz5eycYDZS5q50HKs=;
- b=OYPAcKnW0j0+6oxlWAsN3dfnYmVWpg/LmSq0qQ7I8PAn+KUPEEUUHk+fTyu6d97zACS3Ye1oyArwdRrylhmY4zZlsH9iji/Ytsts/QmbHwUmvvSXCzjo1EhtqFndaW7YmwafCVMufhySV0hogo+MTTKsc7UmfWwWTZ4YVV4fq72od/kKmRMO5Tj4nv7GUoR8ZeCXuTSD5QMnkkxLRoLEaX2njwsb17E4qq9sF+oFIIV0g/tsGLKBD8qKXrOrxflJ1EZBuKZl7yEv49C+IVZa4hGHKdtfs4dug7qyvQCYNXWlp+S89eHGN4mPmxgUMtfq51qFgYV16NaZzTx7AHtKNQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from CO6PR12MB5444.namprd12.prod.outlook.com (2603:10b6:5:35e::8) by
- MN0PR12MB5884.namprd12.prod.outlook.com (2603:10b6:208:37c::6) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7159.14; Fri, 5 Jan 2024 16:23:07 +0000
-Received: from CO6PR12MB5444.namprd12.prod.outlook.com
- ([fe80::fb84:50ef:dbb8:1ebb]) by CO6PR12MB5444.namprd12.prod.outlook.com
- ([fe80::fb84:50ef:dbb8:1ebb%4]) with mapi id 15.20.7159.015; Fri, 5 Jan 2024
- 16:23:07 +0000
-Message-ID: <5bf8a4d9-2a83-4503-b041-09c45207fe0c@nvidia.com>
-Date: Fri, 5 Jan 2024 16:23:00 +0000
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4.14 00/21] 4.14.335-rc1 review
-Content-Language: en-US
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
-Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
- torvalds@linux-foundation.org, akpm@linux-foundation.org,
- linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
- lkft-triage@lists.linaro.org, pavel@denx.de, f.fainelli@gmail.com,
- sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
- conor@kernel.org, allen.lkml@gmail.com,
- "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>
-References: <20240105143811.536282337@linuxfoundation.org>
-From: Jon Hunter <jonathanh@nvidia.com>
-In-Reply-To: <20240105143811.536282337@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: LO2P265CA0016.GBRP265.PROD.OUTLOOK.COM
- (2603:10a6:600:62::28) To CO6PR12MB5444.namprd12.prod.outlook.com
- (2603:10b6:5:35e::8)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7139E2E852
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 16:23:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1704471821;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=Fe0+JU6CSivbFVNMLw9Ada8Il4xnZLCchtokDQzgYEQ=;
+	b=TeOlRihf5jF5WVOOcaCDjeE6YUVWsn1k4LGoCESIpLER1XIaK/WLvVCF3JpgemgWGmoHf5
+	dm+vctiEL75SsJYQqaFfHyoIJPIeYy/xScNJF8ljvjqTQoQR5/0xNLHQ0eXGVrMQAkeHIz
+	CNhDj1bCQMiWbIV9Z1Xp9mIzESCF1sU=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-438-UetGY8TpOB-Pwhx6L1BDOA-1; Fri, 05 Jan 2024 11:23:38 -0500
+X-MC-Unique: UetGY8TpOB-Pwhx6L1BDOA-1
+Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A15FB83B86E;
+	Fri,  5 Jan 2024 16:23:37 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.14])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 73812492BE6;
+	Fri,  5 Jan 2024 16:23:36 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+	Kingdom.
+	Registered in England and Wales under Company Registration No. 3798903
+From: David Howells <dhowells@redhat.com>
+To: torvalds@linux-foundation.org
+cc: dhowells@redhat.com, Marc Dionne <marc.dionne@auristor.com>,
+    Jeffrey Altman <jaltman@auristor.com>,
+    Oleg Nesterov <oleg@redhat.com>, linux-afs@lists.infradead.org,
+    linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] afs: Improve probe handling, server rotation and RO volume callback handling
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO6PR12MB5444:EE_|MN0PR12MB5884:EE_
-X-MS-Office365-Filtering-Correlation-Id: d3a745f9-dd1e-4fb5-aabf-08dc0e0a99af
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	39aGAkM+0/p37xJfScLZ5sLLhCXx6tzD/kbB/XhxsA9kIvu/v4qfYPDtUD/FytDRAQ/l8Uz+Z3+Tv0aIL7p2iUpQk6oWpuUAkeExN93oj6Y98XTvhec70tiWwD6Pce/9KgwIsIHEXPalvMPvHAOOfsrUypbc9VXk/xgR2rizCGjjj/5pQ0x7I45JFv7O5UqvCeLajtAGF7KZ2hwNEqcyg2ybQn8YPoLsqEjXe0b26QItx1hckdtD+I74vgOzoRDsfQjqscO3GWOMCTkclFhZe3tNfpECN9Ln6olVZavBqJdtm2NgXdUu7Vz9ctBGdEPLc8n8mi1VOBrslPs1OaOIuxqRogn1OQ/rcBHFppNbinhco+MDI995dl9I4zdo8euv9XKCKfwFM2lBxi/sKc3BiNONwaBQZAoydu6xNh4nMH0Vk9bO4GZ4Spu/yHAaBgMWYqTF0RRANe/e9DZEBmKgOxiN3aRHJFuwzzpqW+a3UyRbrttpt4IKgDHRhYe/GMVHLyUIvO5u/3E006k5t6yJsztUFwlGv6V8khNPyKHSlU/+2dwxsGM317uQbA0ErFvAAhrnAWpaj+6ohorUHYBbce0iBTtu1qZy/7eBMu3lz4KaABtT/gLJq9yz1xSSvGwF/+sd2Xh7bvm6iG1UsFTiR4S/aRbfUPBVglPVu76Nb0JxD9m1OoiDqyyNI/KRiSL6
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO6PR12MB5444.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(366004)(136003)(376002)(396003)(39860400002)(230922051799003)(186009)(1800799012)(64100799003)(451199024)(7416002)(2906002)(4326008)(8936002)(8676002)(5660300002)(36756003)(38100700002)(41300700001)(6666004)(6512007)(6506007)(2616005)(6486002)(966005)(316002)(478600001)(66476007)(83380400001)(31686004)(66556008)(66946007)(53546011)(31696002)(86362001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?WjRYR3hPakNXT0FKWlJmY1N3Y1V0NVl6SHdWL1NkUU9EWEFHbThucllJV1Vq?=
- =?utf-8?B?djJBY0VGNmNVd21LL0F4VzMzNHFqWWtvcFh0c1FHc3M4dGZ6aUVsRWZLQjMr?=
- =?utf-8?B?Zjc2eFErNkRYWHZmNHoyV0lUS25OemdMY1NsTStHbDZrQ09BRlV0bUY1WEQw?=
- =?utf-8?B?UXUvb0JjK2I4Rm4xMUh1ZzRIQy9LdlljZHdNL2RjUHhPdmpUOStmY3RtcG9P?=
- =?utf-8?B?a0ZPTUxRWmdmeHlyNzNSSlVKb1piazA5cTVsMk1mbjQzM3VwTlJaZWd0WHdw?=
- =?utf-8?B?Z0RwRGl0Z3puQkpRaUsyZ2RvbEJTYyttUUVjMTVWL0tJL0hGTzlGL20zZFB3?=
- =?utf-8?B?TExZVy9BSnlad293dk8zbU1TdDEwV3lVUzVZU1JxMnZRa3d4emxWaW91UHQ3?=
- =?utf-8?B?MGVvdHZESStodURndjR4RXBoNmExbUkxSUM1N2YxM1BmczlJOUhTaXhveFEz?=
- =?utf-8?B?dTRBVm8zUmwyYUUyaG5HeTBUVkpOT09Xc1U2NmlPUTh2dmh5MG0zMm56cXRD?=
- =?utf-8?B?bDBvT2F0VXFLSm9iTlZ1ekdkaTJwVHU5WXQ2RWhoRlRTWlIzeVJzRGlaczlJ?=
- =?utf-8?B?Vm9MZS9LS0wxalFUREQ0b0RxUlpLU0ZDb1VVRWF0K011VXoxTUswbkMwUXR5?=
- =?utf-8?B?UXB3VU5OOUE2ZW81UmpCK083OXZUcmI5Nkd0NlBuRzZJa1p0WUw1bEpSSjdm?=
- =?utf-8?B?K3dIMUFYL2R3Y29QSSt1MWxXQUN1YUZIczFKMm94Q3lnRE9WR1ViYmFqTGt1?=
- =?utf-8?B?c2hYUWx1bDdpeTJJcmdZQTExcGlRblErNndCakc3ZjdGUHVFWmtrYVV3Nklv?=
- =?utf-8?B?V005WVdSOHBIZU9BT3JwNG5PenEwK3YzNWVOaDFIOGtYcnArRG1jQit4bGcw?=
- =?utf-8?B?VUJ5YjdiTjduRE1paEh5blNuOGRaaGNQem5DUDJSSU1QbGJLQmljcmtHVk5K?=
- =?utf-8?B?ZXFhYS9aZlR3QTNONURrd1JIU1R3TExDd0ZsbDVxNHkxZ1pNZEg0dzhudWNn?=
- =?utf-8?B?T2M3YVRWWTJoTHByaXJ2dTJtaUZqUEtYbjdFUldlQ1NuS2pCVGswZy9zejJM?=
- =?utf-8?B?ZWpNUk9LZjI2V3hDZzhGSk1KSnJmNWhWVCtqR2hIb0xhM0k4WXJPRHUydzN5?=
- =?utf-8?B?SkwvSEV1Zk5lZithRzJBTnVZTGw2MW1vOUVSL2VMUmxKc09GUURyOGwrRVhH?=
- =?utf-8?B?dktMbDltTWVDV2l1VEZDRzQvNUdVSnFrUzNETXJnbTZzU3YwWmVwMnhnckk4?=
- =?utf-8?B?RlM1aFVEQlRVVmJveU5EUEJRWjdhSWlOdUhPK3I2ZHdOR3pTZ0FwZ2RZS0dC?=
- =?utf-8?B?dC9tS0JPbUJ1WkxDNnVHT1RJYmJyYVh6enVKKzNoQUVnS3Y1L1I4aWc4WHRp?=
- =?utf-8?B?OW5ld2UxbE80bWRpT0NQME1zeERLOWdMZHpReHllUVZmVlE5by9HVGpTNjJv?=
- =?utf-8?B?OWJJUk1HRmV6bmdzUXpLRVNNeWlab1NKSytnY2hYaW5aOVJ5TUp6ZUZmWkRl?=
- =?utf-8?B?WXJMRUNzMVJCdVNjTTA5aW1RSmR1eHpjTkhLalNvcnBMZnNiSWdKVUFPZkhi?=
- =?utf-8?B?ZlBhRUEyb1U5RGFXTE9FcURlVmJLMEVxb3Arbkk2S3JzZjZydjV2WmlKMGh0?=
- =?utf-8?B?YUYyeTBseUE0Qk4vcTBOekRJMGl2NTNackFmRmkvZkJHWTNIcWJTUGxXeDVP?=
- =?utf-8?B?SFdvbXo3OWppaWpoNGRKakpKTjZlL0p2NW5LaURSQ0VRNFFUNy9ZaUR3VTlU?=
- =?utf-8?B?TzBOUGlhcU96VW5IblVSY2lQWjlwSXU1bmFjWGZMODk4OCtiaEhkajZJNmpx?=
- =?utf-8?B?TVR1WSsvYldLZG13MldFU05KWWl6ZDFuNWhLZlBPZk15Y0txUE51ai9ueXBm?=
- =?utf-8?B?ajJHaFBkUjBDdEFLVGN1OWdQWXZSVHowMkJzWFBobHArZDZVY3NoYnQ5Z0FS?=
- =?utf-8?B?Z1AwWm9jNEhQdWhsVTBzRlVpRnhwelhqR0tlSkZuSmsvZ1J3dGN4ekNvQzV4?=
- =?utf-8?B?TW1zSXhKN3RBQWtyblhJSWgraGg4NUQvNks2bmFrenN0ZVRTcCszTzRJMTdI?=
- =?utf-8?B?UDg4OFEzQ3c3YUlCcVVMaG5JREgwOW9Hdlc5UUs4eU9NNlBpREcrQWlpWlkw?=
- =?utf-8?B?MC84eFNhOGRaNjRvWkRJcW5NWDk1V1ZnMDdnLzBmQllQZXdLdEZISUVvVWZL?=
- =?utf-8?B?NlVBSDd4RE5CL29acGorcm4rcUdrWHNYd2hZMkxuSnNTdGVhTnkzVFg3bU9a?=
- =?utf-8?B?aFNJT3lXYWtNOTJsK2wzNXFXQmF3PT0=?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d3a745f9-dd1e-4fb5-aabf-08dc0e0a99af
-X-MS-Exchange-CrossTenant-AuthSource: CO6PR12MB5444.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Jan 2024 16:23:07.3637
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: SDtp/dJarfNWwBOd9MWWtZkZM4BeDAGn685/5IemWTER840FcOpE6UAkpcEv3Ufr8uRAPtj0qpQr7P++GF8JZQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR12MB5884
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <1303898.1704471815.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date: Fri, 05 Jan 2024 16:23:35 +0000
+Message-ID: <1303899.1704471815@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
 
-Hi Greg,
+Hi Linus,
 
-On 05/01/2024 14:38, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.14.335 release.
-> There are 21 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sun, 07 Jan 2024 14:38:02 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.335-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.14.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
-> -------------
-> Pseudo-Shortlog of commits:
+Could you pull this in the upcoming merge window please?  The majority of
+the patches are aimed at fixing and improving the AFS filesystem's rotatio=
+n
+over server IP addresses, but there are also some fixes from Oleg Nesterov
+for the use of read_seqbegin_or_lock().
 
-...
+ (1) Fix fileserver probe handling so that the next round of probes doesn'=
+t
+     break ongoing server/address rotation by clearing all the probe resul=
+t
+     tracking.  This could occasionally cause the rotation algorithm to
+     drop straight through, give a 'successful' result without actually
+     emitting any RPC calls, leaving the reply buffer in an undefined
+     state.
 
+     Instead, detach the probe results into a separate struct
+     and allocate a new one each time we start probing and update the
+     pointer to it.  Probes are also sent in order of address preference t=
+o
+     try and improve the chance that the preferred one will complete first=
+.
 
-> Alexis Lothoré <alexis.lothore@bootlin.com>
->      pinctrl: at91-pio4: use dedicated lock class for IRQ
+ (2) Fix server rotation so that it uses configurable address preferences
+     across on the probes that have completed so far than ranking them by
+     RTT as the latter doesn't necessarily give the best route.  The
+     preference list can be altered by writing into
+     /proc/net/afs/addr_prefs.
 
+ (3) Fix the handling of Read-Only (and Backup) volume callbacks as there
+     is one per volume, not one per file, so if someone performs a command
+     that, say, offlines the volume but doesn't change it, when it comes
+     back online we don't spam the server with a status fetch for every
+     vnode we're using.  Instead, check the Creation timestamp in the
+     VolSync record when prompted by a callback break.
 
-I am seeing the following build error for ARM ...
+ (4) Handle volume regression (ie. a RW volume being restored from a
+     backup) by scrubbing all cache data for that volume.  This is detecte=
+d
+     from the VolSync creation timestamp.
 
-drivers/pinctrl/pinctrl-at91-pio4.c: In function ‘atmel_pinctrl_probe’:
-drivers/pinctrl/pinctrl-at91-pio4.c:1054:3: error: too many arguments to function ‘irq_set_lockdep_class’
-    irq_set_lockdep_class(irq, &atmel_lock_key, &atmel_request_key);
-    ^~~~~~~~~~~~~~~~~~~~~
-In file included from include/linux/irq.h:517:0,
-                  from include/linux/gpio/driver.h:7,
-                  from drivers/pinctrl/pinctrl-at91-pio4.c:18:
-include/linux/irqdesc.h:250:1: note: declared here
-  irq_set_lockdep_class(unsigned int irq, struct lock_class_key *class)
-  ^~~~~~~~~~~~~~~~~~~~~
+ (5) Adjust abort handling and abort -> error mapping to match better with
+     what other AFS clients do.
 
-I am guessing it is the above commit.
+ (6) Fix offline and busy volume state handling as they only apply to
+     individual server instances and not entire volumes and the rotation
+     algorithm should go and look at other servers if available.  Also mak=
+e
+     it sleep briefly before each retry if all the volume instances are
+     unavailable.
 
-Jon
--- 
-nvpublic
+Tested-by: Marc Dionne <marc.dionne@auristor.com>
+
+Thanks,
+David
+
+Changes
+=3D=3D=3D=3D=3D=3D=3D
+ver #3)
+ - Return an error from afs_d_revalidate() if validation of parent dir
+   fails with ERESTARTSYS.
+ - afs_update_volume_state() must only update the recorded volume
+   expiration time if we obtained a callback record from the server.
+ - Actually call afs_update_volume_state() (this was being done in a later
+   patch).
+ver #2)
+ - Drop the first two rxrpc fix patches - one has gone through the net tre=
+e
+   and the other needs a bit more work, but neither is necessary for this
+   series.
+ - Add a couple of missing symbol exports.
+ - Treat UAEIO as VIO too.
+ - Switch to using atomic64_t for creation & update times because 64-bit
+   cmpxchg isn't available on some 32-bit arches.
+ - Some patches went upstream separately as fixes (commit
+   5b7ad877e4d81f8904ce83982b1ba5c6e83deccb).
+ - Use atomic64_t for vnode->cb_expires_at() as 64-bit xchg() is not
+   univerally available.
+ - Use rcu_access_pointer() rather than passing an __rcu pointer directly =
+to
+   kfree_rcu().
+
+Link: https://lore.kernel.org/r/20231109154004.3317227-1-dhowells@redhat.c=
+om/ # v1
+Link: https://lore.kernel.org/r/20231213135003.367397-1-dhowells@redhat.co=
+m/ # v2
+
+---
+The following changes since commit 861deac3b092f37b2c5e6871732f3e11486f708=
+2:
+
+  Linux 6.7-rc7 (2023-12-23 16:25:56 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git tags=
+/afs-fix-rotation-20240105
+
+for you to fetch changes up to abcbd3bfbbfe97a8912d0c929d4aa18f50d9bc52:
+
+  afs: trace: Log afs_make_call(), including server address (2024-01-01 16=
+:37:27 +0000)
+
+----------------------------------------------------------------
+AFS fileserver rotation fix
+
+----------------------------------------------------------------
+David Howells (36):
+      afs: Remove whitespace before most ')' from the trace header
+      afs: Automatically generate trace tag enums
+      afs: Add comments on abort handling
+      afs: Turn the afs_addr_list address array into an array of structs
+      rxrpc, afs: Allow afs to pin rxrpc_peer objects
+      afs: Don't skip server addresses for which we didn't get an RTT read=
+ing
+      afs: Rename addr_list::failed to probe_failed
+      afs: Handle the VIO and UAEIO aborts explicitly
+      afs: Use op->nr_iterations=3D-1 to indicate to begin fileserver iter=
+ation
+      afs: Wrap most op->error accesses with inline funcs
+      afs: Don't put afs_call in afs_wait_for_call_to_complete()
+      afs: Simplify error handling
+      afs: Add a tracepoint for struct afs_addr_list
+      afs: Rename some fields
+      afs: Use peer + service_id as call address
+      afs: Fold the afs_addr_cursor struct in
+      rxrpc: Create a procfile to display outstanding client conn bundles
+      afs: Add some more info to /proc/net/afs/servers
+      afs: Remove the unimplemented afs_cmp_addr_list()
+      afs: Provide a way to configure address priorities
+      afs: Mark address lists with configured priorities
+      afs: Dispatch fileserver probes in priority order
+      afs: Dispatch vlserver probes in priority order
+      afs: Keep a record of the current fileserver endpoint state
+      afs: Combine the endpoint state bools into a bitmask
+      afs: Make it possible to find the volumes that are using a server
+      afs: Defer volume record destruction to a workqueue
+      afs: Move the vnode/volume validity checking code into its own file
+      afs: Apply server breaks to mmap'd files in the call processor
+      afs: Fix comment in afs_do_lookup()
+      afs: Don't leave DONTUSE/NEWREPSITE servers out of server list
+      afs: Parse the VolSync record in the reply of a number of RPC ops
+      afs: Overhaul invalidation handling to better support RO volumes
+      afs: Fix fileserver rotation
+      afs: Fix offline and busy message emission
+      afs: trace: Log afs_make_call(), including server address
+
+Oleg Nesterov (4):
+      afs: fix the usage of read_seqbegin_or_lock() in afs_lookup_volume_r=
+cu()
+      afs: fix the usage of read_seqbegin_or_lock() in afs_find_server*()
+      afs: use read_seqbegin() in afs_check_validity() and afs_getattr()
+      rxrpc_find_service_conn_rcu: fix the usage of read_seqbegin_or_lock(=
+)
+
+ fs/afs/Makefile              |   2 +
+ fs/afs/addr_list.c           | 224 +++++--------
+ fs/afs/addr_prefs.c          | 531 +++++++++++++++++++++++++++++
+ fs/afs/afs.h                 |   3 +-
+ fs/afs/callback.c            | 141 +++++---
+ fs/afs/cell.c                |   5 +-
+ fs/afs/cmservice.c           |   5 +-
+ fs/afs/dir.c                 |  66 ++--
+ fs/afs/dir_silly.c           |   2 +-
+ fs/afs/file.c                |  20 +-
+ fs/afs/fs_operation.c        |  85 +++--
+ fs/afs/fs_probe.c            | 323 ++++++++++--------
+ fs/afs/fsclient.c            |  74 +++-
+ fs/afs/inode.c               | 204 +----------
+ fs/afs/internal.h            | 370 +++++++++++++-------
+ fs/afs/main.c                |   1 +
+ fs/afs/misc.c                |  10 +-
+ fs/afs/proc.c                | 102 +++++-
+ fs/afs/rotate.c              | 520 +++++++++++++++++++++--------
+ fs/afs/rxrpc.c               | 107 +++---
+ fs/afs/server.c              | 135 ++++----
+ fs/afs/server_list.c         | 174 ++++++++--
+ fs/afs/super.c               |   7 +-
+ fs/afs/validation.c          | 473 ++++++++++++++++++++++++++
+ fs/afs/vl_alias.c            |  69 +---
+ fs/afs/vl_list.c             |  29 +-
+ fs/afs/vl_probe.c            |  60 ++--
+ fs/afs/vl_rotate.c           | 215 +++++++-----
+ fs/afs/vlclient.c            | 143 +++++---
+ fs/afs/volume.c              |  61 ++--
+ fs/afs/write.c               |   6 +-
+ fs/afs/yfsclient.c           |  25 +-
+ include/net/af_rxrpc.h       |  15 +-
+ include/trace/events/afs.h   | 779 ++++++++++++++++++++++++--------------=
+-----
+ include/trace/events/rxrpc.h |   3 +
+ net/rxrpc/af_rxrpc.c         |  62 +++-
+ net/rxrpc/ar-internal.h      |   6 +-
+ net/rxrpc/call_object.c      |  17 +-
+ net/rxrpc/conn_client.c      |  10 +
+ net/rxrpc/conn_service.c     |   3 +-
+ net/rxrpc/net_ns.c           |   4 +
+ net/rxrpc/peer_object.c      |  58 ++--
+ net/rxrpc/proc.c             |  76 +++++
+ net/rxrpc/sendmsg.c          |  11 +-
+ 44 files changed, 3544 insertions(+), 1692 deletions(-)
+ create mode 100644 fs/afs/addr_prefs.c
+ create mode 100644 fs/afs/validation.c
+
 
