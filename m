@@ -1,44 +1,44 @@
-Return-Path: <linux-kernel+bounces-18263-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18264-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 690F2825AB4
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 19:53:19 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB8F9825AB5
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 19:53:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 09834B23F3A
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 18:53:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4E84D286681
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 18:53:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CED33B790;
-	Fri,  5 Jan 2024 18:47:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C0593BB2D;
+	Fri,  5 Jan 2024 18:47:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="bC32xTjF"
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="koD1jTYA"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 452603B19B
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 18:47:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 935343B2BD
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 18:47:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1704480444;
-	bh=fLJxMhHQEYSpt8Bqc4/bJy7tBd8v7hDnk2PHVorE3qc=;
+	s=mail; t=1704480446;
+	bh=Xy26gJL0rfEIAQ3GTzMQ9EaB0QSmN8Rrgbq8+tRhsXg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=bC32xTjF4i+0BoGAcr5FknxLJTdvHfAZsGZ7CI25/elJxlKVuE3vR6OrI4/hvmfCa
-	 ThiwAnjeHHzZDCJRTuX2A8OwgkO2x+1+kcDl/KxfVobeazReMlnDhpm9QhLTtOfFdo
-	 R5RnbvFX6znHhPkHoEv7fDKAfzt7Psl7QnWxYeWNUbj/ZxJxmxwUNaL6hOMbZfK0jp
-	 hXiZblVuJ9mVWrTR4w/GzjJS1IAQ2qHE5F3R7ZxexU6Zsvz0qub7pSxo3zrJsxvCs7
-	 zVn+JG5PlHelFoc2HMTKOnOfQ1QldimrwoTjebvnpk/OtRQZK7lNR7tTn+X37ZbwTz
-	 dujX/5z5C4kCA==
+	b=koD1jTYASaaq0lH30DCRGwRlLF4icZe6o4RtGhMtxdBXY6SQHCj+AAoMWGtCV5jal
+	 3o38uo19aKWom4br+OTJmNgxqtAXnvCQUYJjZ8hDcNButj0PQLLHni40YT501PCe6q
+	 ErF+M+MYMwDfZlVE+2dFDViPRVojFs1vXPkPZ8WiG92SaZ7MSFVtT17Scs7uYMdJsy
+	 HZalfvQSfjP9e4W+qiuVHBQZioyrxkCXK6FpqhTSHYXKdRKIxj01ioqjERVM7ygUfQ
+	 hQGNr+u92vLMktYspBAr0AJKm4va1ejnViBWlDzvwRtDU+HLnQGiP3yS7a15I0yQuP
+	 J7987sqBJRbVw==
 Received: from workpc.. (cola.collaboradmins.com [195.201.22.229])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
 	(Authenticated sender: dmitry.osipenko)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 50EDA3782046;
-	Fri,  5 Jan 2024 18:47:23 +0000 (UTC)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id E4CC2378206D;
+	Fri,  5 Jan 2024 18:47:24 +0000 (UTC)
 From: Dmitry Osipenko <dmitry.osipenko@collabora.com>
 To: David Airlie <airlied@gmail.com>,
 	Gerd Hoffmann <kraxel@redhat.com>,
@@ -58,9 +58,9 @@ Cc: dri-devel@lists.freedesktop.org,
 	linux-kernel@vger.kernel.org,
 	kernel@collabora.com,
 	virtualization@lists.linux-foundation.org
-Subject: [PATCH v19 25/30] drm/shmem-helper: Don't free refcounted GEM
-Date: Fri,  5 Jan 2024 21:46:19 +0300
-Message-ID: <20240105184624.508603-26-dmitry.osipenko@collabora.com>
+Subject: [PATCH v19 26/30] drm/shmem-helper: Turn warnings about imported GEM into errors
+Date: Fri,  5 Jan 2024 21:46:20 +0300
+Message-ID: <20240105184624.508603-27-dmitry.osipenko@collabora.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240105184624.508603-1-dmitry.osipenko@collabora.com>
 References: <20240105184624.508603-1-dmitry.osipenko@collabora.com>
@@ -72,39 +72,48 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Don't free shmem object if it has pages that are in use at the time of
-the GEM's freeing if DRM driver doesn't manage GEM/pages lifetime properly.
-This prevents memory corruption due to the use-after-free bug in exchange
-to leaking GEM.
+Turn sanity warnings about DRM-SHMEM API misuse into a error conditions
+for cases where imported GEM is used when it shouldn't be used.
 
 Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
 ---
- drivers/gpu/drm/drm_gem_shmem_helper.c | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/drm_gem_shmem_helper.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/gpu/drm/drm_gem_shmem_helper.c b/drivers/gpu/drm/drm_gem_shmem_helper.c
-index e6e6e693ab95..0d95d723b90d 100644
+index 0d95d723b90d..7d2fe12bd793 100644
 --- a/drivers/gpu/drm/drm_gem_shmem_helper.c
 +++ b/drivers/gpu/drm/drm_gem_shmem_helper.c
-@@ -205,9 +205,15 @@ void drm_gem_shmem_free(struct drm_gem_shmem_object *shmem)
- 	if (obj->import_attach)
- 		drm_prime_gem_destroy(obj, shmem->sgt);
+@@ -409,7 +409,8 @@ int drm_gem_shmem_pin(struct drm_gem_shmem_object *shmem)
+ 	struct drm_gem_object *obj = &shmem->base;
+ 	int ret;
  
--	drm_WARN_ON(obj->dev, refcount_read(&shmem->vmap_use_count));
--	drm_WARN_ON(obj->dev, refcount_read(&shmem->pages_use_count));
--	drm_WARN_ON(obj->dev, refcount_read(&shmem->pages_pin_count));
-+	/*
-+	 * Prevent memory corruption caused by the use-after-free bug in a
-+	 * case where shmem user erroneously holds reference to pages while
-+	 * GEM is freed by leaking the GEM.
-+	 */
-+	if (drm_WARN_ON(obj->dev, refcount_read(&shmem->vmap_use_count)) ||
-+	    drm_WARN_ON(obj->dev, refcount_read(&shmem->pages_use_count)) ||
-+	    drm_WARN_ON(obj->dev, refcount_read(&shmem->pages_pin_count)))
-+		return;
+-	drm_WARN_ON(obj->dev, obj->import_attach);
++	if (drm_WARN_ON(obj->dev, obj->import_attach))
++		return -EINVAL;
  
- 	drm_gem_object_release(obj);
- 	kfree(shmem);
+ 	if (refcount_inc_not_zero(&shmem->pages_pin_count))
+ 		return 0;
+@@ -872,7 +873,8 @@ struct sg_table *drm_gem_shmem_get_sg_table(struct drm_gem_shmem_object *shmem)
+ {
+ 	struct drm_gem_object *obj = &shmem->base;
+ 
+-	drm_WARN_ON(obj->dev, obj->import_attach);
++	if (drm_WARN_ON(obj->dev, obj->import_attach))
++		return ERR_PTR(-EINVAL);
+ 
+ 	if (drm_WARN_ON(obj->dev, !shmem->pages))
+ 		return ERR_PTR(-ENOMEM);
+@@ -909,7 +911,8 @@ struct sg_table *drm_gem_shmem_get_pages_sgt_locked(struct drm_gem_shmem_object
+ 	if (shmem->sgt)
+ 		return shmem->sgt;
+ 
+-	drm_WARN_ON(obj->dev, obj->import_attach);
++	if (drm_WARN_ON(obj->dev, obj->import_attach))
++		return ERR_PTR(-EINVAL);
+ 
+ 	sgt = drm_gem_shmem_get_sg_table(shmem);
+ 	if (IS_ERR(sgt))
 -- 
 2.43.0
 
