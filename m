@@ -1,134 +1,97 @@
-Return-Path: <linux-kernel+bounces-17345-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17346-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3A3C5824BFD
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 01:02:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4CAA2824C01
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 01:07:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E2AC11F22F10
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 00:02:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 58A671C22078
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 00:07:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49B8E538D;
-	Fri,  5 Jan 2024 00:02:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71DF8810;
+	Fri,  5 Jan 2024 00:06:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="3GWR6bCA"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EjbcmRYT"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
+Received: from mail-ot1-f48.google.com (mail-ot1-f48.google.com [209.85.210.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 140095243
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 00:02:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-40d3102d5d6so24145e9.0
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 16:02:10 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88024373
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 00:06:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f48.google.com with SMTP id 46e09a7af769-6dc02727c62so574680a34.1
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 16:06:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1704412929; x=1705017729; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wHXMgAaiDvuCEzzjXysTUSyo+GMj9feMZFgLfjlT7GE=;
-        b=3GWR6bCAq66TTVzdKEKjBYK02rGjagn5O/rHZNyILgGfZyf/GA7sQahxQIs6cfg5Ji
-         FWIaNYc2vFWwDTUqkIE7gd3oHRN+fjBV5lle661cY5UTvRkdzsjr57OYQXVbBfHQswDk
-         VCa3pABkKn43+2aNMh/JfWdBm0P+IBpnK9e00VNvAr1WHaofVyhexOFg+SF66Zb15bjO
-         nLv0XZ9ZwrUlDi8EssT+G6c6YXz4lqpAQzbDFS89Upi6vsSyv4lF6iKibiz4zP/yDw5L
-         gOKyvooA7h2WwnhEVFVzkPM/RU1Fe3x2dlp1wM92vyc0vIk2Z8w2ADCD21U1ddewU+wf
-         qUXQ==
+        d=gmail.com; s=20230601; t=1704413213; x=1705018013; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=EYi3ShOTCWSVgfC3FFX6YL88YfXo3L5cnVrx8NMJ+V4=;
+        b=EjbcmRYTatQ+HKC7/dT3uv7ZrdcS2yvcpGUVTtMk/E/8tJW0pVMmq90WFSD/qeqwBs
+         B7xR0lWtCPf0alvsYKYwERr/UInhzUf5tkftK6EUFpjYiv4P+pSXN+/G7eh/e2e3uXHs
+         bOOjyCtD9epShLYSFF/qGfWitoceq+oNv8PD1uNphAVQTitfke1k4Cxsz8muIzYF0QgY
+         VB9rbm5wEtQiq7GaGllEJhHBw6Tdjcqr8XMwCEL7CsEDyO4i1p6O2PFoabcnVmBxnVc/
+         XAGww1cYn4ihOUjsMe0qLpuHKG60UZoEA3cc0HQvDHVu6mORSAiOS3x0Bqsiebwi3Cb7
+         jnkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704412929; x=1705017729;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wHXMgAaiDvuCEzzjXysTUSyo+GMj9feMZFgLfjlT7GE=;
-        b=nEMwjhXiCHgl76A9XkbcgMM4BFZqmdQoPhcqJurLOLjDqYS5IDbYaBogqbOU3dyGw2
-         x7WNOFce99YVP0Yrrftc2j3UN6I9nFJ25PGNvQ3e0jneEBnBjT2XAJlc06erkDSYi7iR
-         hecJ75yTOZ1c4cJ6XqafhxQ6Ylv9GV73qzfz+FOfRhT98sBrJTU4tWWtfCEObOeWWXMX
-         ufaHHM8rI6TmzFxY9eOLKK7mSnP2W3MDSuzO69j5eWW+rnC8YGZySHAEm6gcajerBJ2N
-         86wgEBDJtIFAiuSuHpzlnRKAapVZZbqiOaMbksUR93scwPy0hl7eMWntZxKl7Ko1F44p
-         C1eg==
-X-Gm-Message-State: AOJu0YyZJyEC33EHF1OD6Upz66suqt/ggbgjH1OZPI7nAkv11+yMjqXc
-	ZxO88VkHgZbg4giofegZ2+jG5SbRzO76vpsXWtLGOKNgl/8=
-X-Google-Smtp-Source: AGHT+IEOmqOOVuHT0+nROpxcqte5fU7rp7PWQHaROvRbfp6SGobElTdaGHCQtRNyzU0KUSwO7zyu0xU9DCGtGEjlQYI=
-X-Received: by 2002:a05:600c:3546:b0:40d:8496:449b with SMTP id
- i6-20020a05600c354600b0040d8496449bmr61966wmq.4.1704412929202; Thu, 04 Jan
- 2024 16:02:09 -0800 (PST)
+        d=1e100.net; s=20230601; t=1704413213; x=1705018013;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=EYi3ShOTCWSVgfC3FFX6YL88YfXo3L5cnVrx8NMJ+V4=;
+        b=lmqe1QfDcKuu6OYFOnVKkI6PpmCNdKCI1Iadrdbt1Oyu/v3/S2aOwquJ5M684VZTV7
+         313EA+YH6rtaqEycGyWKdxm87Z64aAFBHrVpBID3SRKKf6zyvjYBcqWp2twMdv2W1T4O
+         uKOOkLfNGtPOkQ/QHS5mh66x3sCr1dKxZhdNN6sGS1s6u2YkAteRIz+aUrB7FdUYf3sP
+         dKRVIu4yO3xD35XFbaRnwnIZ8/TWDbIwg5koUT0J/B/o8G7HLpdItoJMmYiagBvfe1ne
+         TG6zdtQE1ruqZVE50/K0XIQfsSPm8zTE6C4NUCn78QCqG/g8K7worETwCFow8UQVcRGQ
+         wtIw==
+X-Gm-Message-State: AOJu0YziYol8WuGjAWfP4hK53L/+0oRjKEkynKxmLZRR8Q7XN4OACP3A
+	A6PmuMbBpYuuNLykbSi3Ev955ko25vgAhIzrgnU=
+X-Google-Smtp-Source: AGHT+IEmpiVRzbREW2nwmhrrIY7UhYkVxHRB8TLtD0FiWLyUBplV9SWSptffT4rBFcRR7tqo3PnbFC+Jy+HD84pmHx4=
+X-Received: by 2002:a05:6830:10d9:b0:6dc:25a:99fd with SMTP id
+ z25-20020a05683010d900b006dc025a99fdmr1509701oto.24.1704413213609; Thu, 04
+ Jan 2024 16:06:53 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231220001856.3710363-1-jstultz@google.com> <20231220001856.3710363-21-jstultz@google.com>
- <5e57c957-724a-410b-8137-88fd9bbd10d9@arm.com>
-In-Reply-To: <5e57c957-724a-410b-8137-88fd9bbd10d9@arm.com>
-From: John Stultz <jstultz@google.com>
-Date: Thu, 4 Jan 2024 16:01:56 -0800
-Message-ID: <CANDhNCovyXRswmHA0dwNve32HUxiAQmExR+ALadzDQaATVj0nA@mail.gmail.com>
-Subject: Re: [PATCH v7 20/23] sched: Push execution and scheduler context
- split into deadline and rt paths
-To: Metin Kaya <metin.kaya@arm.com>
-Cc: LKML <linux-kernel@vger.kernel.org>, Joel Fernandes <joelaf@google.com>, 
-	Qais Yousef <qyousef@google.com>, Ingo Molnar <mingo@redhat.com>, 
-	Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>, 
-	Vincent Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>, 
-	Valentin Schneider <vschneid@redhat.com>, Steven Rostedt <rostedt@goodmis.org>, 
-	Ben Segall <bsegall@google.com>, Zimuzo Ezeozue <zezeozue@google.com>, 
-	Youssef Esmat <youssefesmat@google.com>, Mel Gorman <mgorman@suse.de>, 
-	Daniel Bristot de Oliveira <bristot@redhat.com>, Will Deacon <will@kernel.org>, Waiman Long <longman@redhat.com>, 
-	Boqun Feng <boqun.feng@gmail.com>, "Paul E. McKenney" <paulmck@kernel.org>, 
-	Xuewen Yan <xuewen.yan94@gmail.com>, K Prateek Nayak <kprateek.nayak@amd.com>, 
-	Thomas Gleixner <tglx@linutronix.de>, kernel-team@android.com
+References: <CAK8ByeK8dGcbxfXghw6=LrhSWLmO0a4XuB8C0nsUc812aoU0Pw@mail.gmail.com>
+ <cover.1701993656.git.jim.cromie@gmail.com> <674f65e71c5c3e874b6b72b6f9d8cdd7a091b6d0.1701993656.git.jim.cromie@gmail.com>
+ <ZYB0gyz-2M3k2kbD@alley> <CAJfuBxyOpPfks69LKOfiz7TPeSmqhCvHzv2qrCwn2CXfZLHJFA@mail.gmail.com>
+ <ZZV_2hTP1VQB3VZm@alley>
+In-Reply-To: <ZZV_2hTP1VQB3VZm@alley>
+From: jim.cromie@gmail.com
+Date: Thu, 4 Jan 2024 17:06:27 -0700
+Message-ID: <CAJfuBxyaEWrKvbGmXf1xPXMBLpx444AJwxLcG7w9p1Jsza+toQ@mail.gmail.com>
+Subject: Re: [re: PATCH v2 00/15 - 03/11] dyndbg: disambiguate quoting in a
+ debug msg
+To: Petr Mladek <pmladek@suse.com>
+Cc: lb@semihalf.com, linux-kernel@vger.kernel.org, akpm@linux-foundation.org, 
+	bleung@google.com, contact@emersion.fr, daniel@ffwll.ch, 
+	dianders@chromium.org, groeck@google.com, jbaron@akamai.com, 
+	john.ogness@linutronix.de, keescook@chromium.org, ppaalanen@gmail.com, 
+	rostedt@goodmis.org, seanpaul@chromium.org, sergey.senozhatsky@gmail.com, 
+	upstream@semihalf.com, vincent.whitchurch@axis.com, yanivt@google.com, 
+	gregkh@linuxfoundation.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Dec 22, 2023 at 3:33=E2=80=AFAM Metin Kaya <metin.kaya@arm.com> wro=
-te:
+> I still thing that using "echo" in the form of
 >
-> On 20/12/2023 12:18 am, John Stultz wrote:
-> > From: Connor O'Brien <connoro@google.com>
-> >
-> > In preparation for chain migration, push the awareness
-> > of the split between execution and scheduler context
-> > down into some of the rt/deadline code paths that deal
-> > with load balancing.
-> >
-> > This patch was broken out from a larger chain migration
-> > patch originally by Connor O'Brien.
-> >
+>      $> echo param param param
 >
-> Nit: Commit header is too long. ` paths` can be dropped.
-
-Done.
-
-> > @@ -2079,25 +2079,25 @@ static struct task_struct *pick_earliest_pushab=
-le_dl_task(struct rq *rq, int cpu
-> >
-> >   static DEFINE_PER_CPU(cpumask_var_t, local_cpu_mask_dl);
-> >
-> > -static int find_later_rq(struct task_struct *task)
-> > +static int find_later_rq(struct task_struct *sched_ctx, struct task_st=
-ruct *exec_ctx)
+> is uncommon and even misleading.
 >
-> Nit: line becomes too long. Same for find_later_rq()'s signature above
-> as well as find_lowest_rq() in rt.c.
+> Best Regards,
+> Petr
 
-While I do try to keep things under 80 where I can, it's no longer the stan=
-dard:
-https://lore.kernel.org/lkml/20120203100743.GA3334@elte.hu/
+we can differ on this.
 
-> >
-> > -     if (task->nr_cpus_allowed =3D=3D 1)
-> > +     if (exec_ctx && exec_ctx->nr_cpus_allowed =3D=3D 1)
->
-> Can exec_ctx be NULL? If so, we may hit a seg. fault at
-> task_rq(exec_ctx) below.
-
-Oh, this is a bad split on my part. Only after find_exec_ctx() is
-introduced can the exec_ctx be null.
-I'll move that change to later in the series.
-
-thanks
--john
+as to the patch itself,
+you dont like it,
+I dont need it,
+we'll drop it and I'll fix the following commit msg
 
