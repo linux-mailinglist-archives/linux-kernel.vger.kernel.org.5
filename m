@@ -1,62 +1,62 @@
-Return-Path: <linux-kernel+bounces-17581-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17582-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 840DB824FBA
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 09:25:04 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 29818824FBD
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 09:25:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0FB6F1F20FD7
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 08:25:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 46BCD1C22C23
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 08:25:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F16E22EEC;
-	Fri,  5 Jan 2024 08:24:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EEDE22EFF;
+	Fri,  5 Jan 2024 08:24:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="fmcXBnBJ"
+	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="OEBXK9LX"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 826C9225A6
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 08:24:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A91EE22EFD
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 08:24:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
-Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-50ea9daac4cso1492367e87.3
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Jan 2024 00:24:12 -0800 (PST)
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a26f73732c5so139453466b.3
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Jan 2024 00:24:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1704443050; x=1705047850; darn=vger.kernel.org;
+        d=tuxon.dev; s=google; t=1704443055; x=1705047855; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Du/ZkBe5Bruy+m802sIrEfXmqTMIQWCN8WeGhFg9WDY=;
-        b=fmcXBnBJ4iEYJTobJ6MYmZBd/d4pm9fQdsfZ17PlMLtc56o6wDHFWpzJPJF3YaEl1G
-         x6vETBI1aCjy6R/71R/h0rMWrufTXeMEYeq/9tfY52GoZ3fzN9SLNcT1z1lsSWToIXgV
-         lrgV8YLQmIvsCrIrFzz9f32VQlJsJYEvURAAkxGhyxHB082N2QNfzUzGRMDcHwIL8mWW
-         Q553Yi26QyjD3Chy2tuCCciFtVSRPoqMFUhLvn9mD5l87uQ0f97u0ycoM7qFu+FCM2a/
-         K5PTDrl3r9pPb26cZhKvwVolUgPi1BhOF3Vqt7zOqBQ/FHoRKQPKZXcMfGluSLMdk3BW
-         NcYQ==
+        bh=p5wciRojDeq9cu3DUNng1ZDH9KltXB/o+T6WijHm3tQ=;
+        b=OEBXK9LXXPkMC8AeSYQ/SnnEHJSJEBC4Rh6xZeoYIOf781rBppmx2Zlw/SVBSZiK/P
+         BpfDutEz2tvJU+LaiOqOCb0ffw7BTfNiVgs6xpsWtdTgJS9FezBBxuQjXnGh96Q1SCeb
+         yxCdOEtZq8rXT3TplgBPb2NN9pYt3dZL/VtHdgGk8wy75yF6IQy+BtyXAgiuMwEGflC7
+         BH2kUABzKEhMkegREn6TroPc5G3TCFJ0G2IAOFyBWNhgqTMX0ckoB63yKIqyD1qEPCSB
+         Ju6SWLzzXXbKeKvaCwmQbJn/sEEIinDHClM0k603+rO9DpWx2ssI/bVBcVXX01nBLQOJ
+         emWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704443050; x=1705047850;
+        d=1e100.net; s=20230601; t=1704443055; x=1705047855;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Du/ZkBe5Bruy+m802sIrEfXmqTMIQWCN8WeGhFg9WDY=;
-        b=gMJzkYbx5f10NmoxJfKR0ou0Uy2uhZ8il7vsqkppl5iikdh5pZXIgWwFB4o7DeZEyY
-         dLnV9YbstfqBKRzJ4xor9mpqzU70pOtJ0Ma74adNDzV8JxHYqVXhntBLgeDhhzXaPigl
-         fdEYhtI/orTZTyiH03VnaKaLf7iXqtnqsAfc42lXvRTKvnAXnQCe76X37VtjBKkI7hCt
-         DZZ35kWqL/3rHQzXTXO0YKbt06RNoKzJw4yTTb991FBs0fhE+FmLmb+0dVa5poDIvivq
-         o6sEZ+nF1XK1ltKBxfuN29NUIB9r5LvWFNZfzTD4ktadJtQPRROFKOA6J/9UqrSXC70r
-         FzZg==
-X-Gm-Message-State: AOJu0Yxc1G+2CugLfRjG1BNhkH9Nl/yycPI6/8/zlTeHRVDlYzSlTuJs
-	g/R+lJWauA2xZf0SnPArt2doqmfmbSPnTA==
-X-Google-Smtp-Source: AGHT+IFhboG1+P5HBJun7vogtFd3YX43LJB9DD2HeBtfLVamFsicSLYXq39z8/gLuEuLcK4z/dYHDw==
-X-Received: by 2002:a19:7906:0:b0:50e:74ec:75f4 with SMTP id u6-20020a197906000000b0050e74ec75f4mr887158lfc.115.1704443050546;
-        Fri, 05 Jan 2024 00:24:10 -0800 (PST)
+        bh=p5wciRojDeq9cu3DUNng1ZDH9KltXB/o+T6WijHm3tQ=;
+        b=DYOkt4Lc8AWirD2jeF+98ePuorWRm+QPFRZDEL9Us+shJBL9zpnJK5TIYRFlSgFivO
+         kWU4Z22jxzvQmz2YXENJxeGIm2ZvRn4EK3cd8mTxQpoTeE5TsPsiwq+sGIJubR84WLtv
+         p3AmWL279i+nosI/OE64z32eMTEu/f2Grf2FXItdlJnP82Y5+jMNQ/j1rGt/LCrnCaDg
+         eOX6z0OvgobZ2Vb70MGYaSJbbePFysnjVMIslXwA0DjZhR3Ogf9ZrAK1xWpSKsioYh+g
+         87NwDu1TWT/nVwQBLaFwEHf1rPodZjhCzKjeu0NLIu/TH34tnVssDZkBCcGacb8yMAtP
+         zIgw==
+X-Gm-Message-State: AOJu0YxroJgKHgB3rsrfHSmd01LUFYlOpisLLTcZMF0/ND8qhCbdjIts
+	zqmk8/+T1orrc/a7GHkVTQ2f7fts8pJB5A==
+X-Google-Smtp-Source: AGHT+IEGbKvYxvuorV/dKUofp9/a9JDbVVxhxZyFu4N4OaE9q2nfPceDdwAMwNk7KsqDlI4AujoDVQ==
+X-Received: by 2002:a17:907:76ac:b0:a28:b9b8:2f8c with SMTP id jw12-20020a17090776ac00b00a28b9b82f8cmr792621ejc.152.1704443055187;
+        Fri, 05 Jan 2024 00:24:15 -0800 (PST)
 Received: from claudiu-X670E-Pro-RS.. ([82.78.167.5])
-        by smtp.gmail.com with ESMTPSA id j15-20020a1709064b4f00b00a28e759a447sm596198ejv.213.2024.01.05.00.24.07
+        by smtp.gmail.com with ESMTPSA id j15-20020a1709064b4f00b00a28e759a447sm596198ejv.213.2024.01.05.00.24.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Jan 2024 00:24:10 -0800 (PST)
+        Fri, 05 Jan 2024 00:24:14 -0800 (PST)
 From: Claudiu <claudiu.beznea@tuxon.dev>
 X-Google-Original-From: Claudiu <claudiu.beznea.uj@bp.renesas.com>
 To: s.shtylyov@omp.ru,
@@ -74,9 +74,9 @@ Cc: netdev@vger.kernel.org,
 	claudiu.beznea@tuxon.dev,
 	geert+renesas@glider.be,
 	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-Subject: [PATCH net-next v3 02/19] net: ravb: Rely on PM domain to enable gptp_clk
-Date: Fri,  5 Jan 2024 10:23:22 +0200
-Message-Id: <20240105082339.1468817-3-claudiu.beznea.uj@bp.renesas.com>
+Subject: [PATCH net-next v3 03/19] net: ravb: Make reset controller support mandatory
+Date: Fri,  5 Jan 2024 10:23:23 +0200
+Message-Id: <20240105082339.1468817-4-claudiu.beznea.uj@bp.renesas.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240105082339.1468817-1-claudiu.beznea.uj@bp.renesas.com>
 References: <20240105082339.1468817-1-claudiu.beznea.uj@bp.renesas.com>
@@ -90,26 +90,13 @@ Content-Transfer-Encoding: 8bit
 
 From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 
-ravb_rzv2m_hw_info::gptp_ref_clk is enabled only for RZ/V2M. RZ/V2M
-is an ARM64-based device which selects power domains by default and
-CONFIG_PM. The RZ/V2M Ethernet DT node has proper power-domain binding
-available in device tree from the commit that added the Ethernet node.
-(4872ca1f92b0 ("arm64: dts: renesas: r9a09g011: Add ethernet nodes")).
-
-Power domain support was available in the rzg2l-cpg.c driver when the
-Ethernet DT node has been enabled in RZ/V2M device tree.
-(ef3c613ccd68 ("clk: renesas: Add CPG core wrapper for RZ/G2L SoC")).
-
-Thus, remove the explicit clock enable for gptp_clk (and treat it as the
-other clocks are treated) as it is not needed and removing it doesn't
-break the ABI according to the above explanations.
-
-By removing the enable/disable operation from the driver we can add
-runtime PM support (which operates on clocks) w/o the need to handle
-the gptp_clk in the Ethernet driver functions like ravb_runtime_nop().
-PM domain does all that is needed.
+On the RZ/G3S SoC the reset controller is mandatory for the IP to work.
+The device tree binding documentation for the ravb driver specifies that
+the resets are mandatory. Based on this, make the resets mandatory also in
+driver for all ravb devices.
 
 Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 ---
 
@@ -119,57 +106,22 @@ Changes in v3:
 Changes in v2:
 - collected tags
 
-
- drivers/net/ethernet/renesas/ravb_main.c | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+ drivers/net/ethernet/renesas/ravb_main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
-index 921f645a7218..1374dc11a7d1 100644
+index 1374dc11a7d1..ce053047a9f2 100644
 --- a/drivers/net/ethernet/renesas/ravb_main.c
 +++ b/drivers/net/ethernet/renesas/ravb_main.c
-@@ -2780,7 +2780,6 @@ static int ravb_probe(struct platform_device *pdev)
- 			error = PTR_ERR(priv->gptp_clk);
- 			goto out_disable_refclk;
- 		}
--		clk_prepare_enable(priv->gptp_clk);
+@@ -2645,7 +2645,7 @@ static int ravb_probe(struct platform_device *pdev)
+ 		return -EINVAL;
  	}
  
- 	ndev->max_mtu = info->rx_max_buf_size - (ETH_HLEN + VLAN_HLEN + ETH_FCS_LEN);
-@@ -2806,7 +2805,7 @@ static int ravb_probe(struct platform_device *pdev)
- 		/* Set GTI value */
- 		error = ravb_set_gti(ndev);
- 		if (error)
--			goto out_disable_gptp_clk;
-+			goto out_disable_refclk;
- 
- 		/* Request GTI loading */
- 		ravb_modify(ndev, GCCR, GCCR_LTI, GCCR_LTI);
-@@ -2826,7 +2825,7 @@ static int ravb_probe(struct platform_device *pdev)
- 			"Cannot allocate desc base address table (size %d bytes)\n",
- 			priv->desc_bat_size);
- 		error = -ENOMEM;
--		goto out_disable_gptp_clk;
-+		goto out_disable_refclk;
- 	}
- 	for (q = RAVB_BE; q < DBAT_ENTRY_NUM; q++)
- 		priv->desc_bat[q].die_dt = DT_EOS;
-@@ -2889,8 +2888,6 @@ static int ravb_probe(struct platform_device *pdev)
- 	/* Stop PTP Clock driver */
- 	if (info->ccc_gac)
- 		ravb_ptp_stop(ndev);
--out_disable_gptp_clk:
--	clk_disable_unprepare(priv->gptp_clk);
- out_disable_refclk:
- 	clk_disable_unprepare(priv->refclk);
- out_release:
-@@ -2925,7 +2922,6 @@ static void ravb_remove(struct platform_device *pdev)
- 
- 	ravb_set_opmode(ndev, CCC_OPC_RESET);
- 
--	clk_disable_unprepare(priv->gptp_clk);
- 	clk_disable_unprepare(priv->refclk);
- 
- 	pm_runtime_put_sync(&pdev->dev);
+-	rstc = devm_reset_control_get_optional_exclusive(&pdev->dev, NULL);
++	rstc = devm_reset_control_get_exclusive(&pdev->dev, NULL);
+ 	if (IS_ERR(rstc))
+ 		return dev_err_probe(&pdev->dev, PTR_ERR(rstc),
+ 				     "failed to get cpg reset\n");
 -- 
 2.39.2
 
