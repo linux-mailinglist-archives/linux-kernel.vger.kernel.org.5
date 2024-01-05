@@ -1,123 +1,111 @@
-Return-Path: <linux-kernel+bounces-17518-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17519-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D2582824EC5
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 07:48:00 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC2EA824EC6
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 07:51:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 75C8A1F22FA9
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 06:48:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4106E284EFA
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 06:51:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E177D1D685;
-	Fri,  5 Jan 2024 06:47:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2364F1DDF1;
+	Fri,  5 Jan 2024 06:51:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="i84fdpBQ"
+	dkim=pass (2048-bit key) header.d=tesarici.cz header.i=@tesarici.cz header.b="rUZM2/Bj"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+Received: from bee.tesarici.cz (bee.tesarici.cz [77.93.223.253])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A254B134A2;
-	Fri,  5 Jan 2024 06:47:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1704437266;
-	bh=QuD06miG5znzX30LcOa9pZChwLNyidD3r2vpNG4arBI=;
-	h=Date:From:To:Cc:Subject:From;
-	b=i84fdpBQZQRuEGchW9ukoqdzoetB31eLTMIqOfR7QiDMaUdBy9MWLYIuYoAw7nyan
-	 03QGxCWeSG6XEnD7UknwiD5GiwnpY+fs+T7FGEivpr2BdXeKcuZf5nVhQkLseGszcx
-	 6l6/RTe2PHmxTuqjy1TyPMbsYu+RCXsiD3tKG1hA2lNw+PyqJpVXQehJNaQRolIjMP
-	 FZmHNPfY/p9c4r9orpt0O9A7nWJiTgeoG9I222of1xBGnNy07k2U5wMSJxl505IEkj
-	 qJF+UwzhadhZjr7Zh9XWEOVg7CoCvzbP5ObtJfcF0RvXVDLUzbht6d3QuBwN89HyE+
-	 KUYqBxrdxA+SQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECDBE1D68C
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 06:51:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=tesarici.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tesarici.cz
+Received: from meshulam.tesarici.cz (dynamic-2a00-1028-83b8-1e7a-4427-cc85-6706-c595.ipv6.o2.cz [IPv6:2a00:1028:83b8:1e7a:4427:cc85:6706:c595])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4T5vCk1l2nz4wc3;
-	Fri,  5 Jan 2024 17:47:46 +1100 (AEDT)
-Date: Fri, 5 Jan 2024 17:47:45 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Dave Airlie <airlied@redhat.com>
-Cc: DRI <dri-devel@lists.freedesktop.org>, Badal Nilawar
- <badal.nilawar@intel.com>, Rodrigo Vivi <rodrigo.vivi@intel.com>, Linux
- Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next Mailing List
- <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the drm tree
-Message-ID: <20240105174745.78b94cb5@canb.auug.org.au>
+	by bee.tesarici.cz (Postfix) with ESMTPSA id CDA611A72AF;
+	Fri,  5 Jan 2024 07:51:10 +0100 (CET)
+Authentication-Results: mail.tesarici.cz; dmarc=fail (p=none dis=none) header.from=tesarici.cz
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tesarici.cz; s=mail;
+	t=1704437470; bh=NPN413BX7veL0ZZ7wcFpIrFwMjUtaFyf8fSTVWxL9IY=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=rUZM2/BjJNY3By53aFMPeWST2d8QK3+nd6GJQtlK/Eua315I29ynJPJ7Sa5dsd4jC
+	 i4DA2glt0PCNyqxeNhKN6wG8ECyQoaj4APHCrBNEe9V5iXyegI6B1eRFvA+mhRFXSN
+	 oxUjV3B3dEU+Dc/Y4iitUaPs2eWirs0OFcALSvUWSQ+duXJNJfH/398JFDzcdoS0Pd
+	 dIb3Q6H8p0wq8siy3wBQvc3RuDa8SUWg4AM3t6CAUXCuCDdkyw6CG506k8nLDVc6M3
+	 tG4tp7vCuTo0v9rP5wUbiAaC79iBhYKzZSJeY/Yl9vA4xqxbYCpkd0azQW6iGzO1gW
+	 p5u/R2FppHTvw==
+Date: Fri, 5 Jan 2024 07:51:09 +0100
+From: Petr =?UTF-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>
+To: Richard Weinberger <richard@nod.at>
+Cc: Petr Tesarik <petrtesarik@huaweicloud.com>, anton ivanov
+ <anton.ivanov@cambridgegreys.com>, Johannes Berg
+ <johannes@sipsolutions.net>, linux-um <linux-um@lists.infradead.org>,
+ linux-kernel <linux-kernel@vger.kernel.org>, Roberto Sassu
+ <roberto.sassu@huaweicloud.com>, Petr Tesarik
+ <petr.tesarik1@huawei-partners.com>
+Subject: Re: [PATCH 0/2] um: improve UML page fault handling
+Message-ID: <20240105075109.4f0e2785@meshulam.tesarici.cz>
+In-Reply-To: <435201914.200552.1704410531143.JavaMail.zimbra@nod.at>
+References: <20231215121431.680-1-petrtesarik@huaweicloud.com>
+	<435201914.200552.1704410531143.JavaMail.zimbra@nod.at>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.39; x86_64-suse-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/rkRETbW9831YEoYRya/g0r1";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-
---Sig_/rkRETbW9831YEoYRya/g0r1
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 
-Hi all,
+Helo Richard,
 
-After merging the drm tree, today's linux-next build (htmldocs) produced
-this warning:
+Am Fri, 5 Jan 2024 00:22:11 +0100 (CET)
+schrieb Richard Weinberger <richard@nod.at>:
 
-Warning: /sys/devices/.../hwmon/hwmon<i>/curr1_crit is defined 2 times:  /h=
-ome/s
-fr/next/next/Documentation/ABI/testing/sysfs-driver-intel-xe-hwmon:35  /hom=
-e/sfr
-/next/next/Documentation/ABI/testing/sysfs-driver-intel-i915-hwmon:52
-Warning: /sys/devices/.../hwmon/hwmon<i>/energy1_input is defined 2 times: =
- /hom
-e/sfr/next/next/Documentation/ABI/testing/sysfs-driver-intel-xe-hwmon:54  /=
-home/
-sfr/next/next/Documentation/ABI/testing/sysfs-driver-intel-i915-hwmon:65
-Warning: /sys/devices/.../hwmon/hwmon<i>/in0_input is defined 2 times:  Doc=
-umentation/ABI/testing/sysfs-driver-intel-xe-hwmon:46  Documentation/ABI/te=
-sting/sysfs-driver-intel-i915-hwmon:0
-Warning: /sys/devices/.../hwmon/hwmon<i>/power1_crit is defined 2 times:  D=
-ocumentation/ABI/testing/sysfs-driver-intel-xe-hwmon:22  Documentation/ABI/=
-testing/sysfs-driver-intel-i915-hwmon:39
-Warning: /sys/devices/.../hwmon/hwmon<i>/power1_max is defined 2 times:  Do=
-cumentation/ABI/testing/sysfs-driver-intel-xe-hwmon:0  Documentation/ABI/te=
-sting/sysfs-driver-intel-i915-hwmon:8
-Warning: /sys/devices/.../hwmon/hwmon<i>/power1_max_interval is defined 2 t=
-imes:  Documentation/ABI/testing/sysfs-driver-intel-xe-hwmon:62  Documentat=
-ion/ABI/testing/sysfs-driver-intel-i915-hwmon:30
-Warning: /sys/devices/.../hwmon/hwmon<i>/power1_rated_max is defined 2 time=
-s:  Documentation/ABI/testing/sysfs-driver-intel-xe-hwmon:14  Documentation=
-/ABI/testing/sysfs-driver-intel-i915-hwmon:22
+> ----- Urspr=C3=BCngliche Mail -----
+> > Von: "Petr Tesarik" <petrtesarik@huaweicloud.com>
+> > An: "richard" <richard@nod.at>, "anton ivanov" <anton.ivanov@cambridgeg=
+reys.com>, "Johannes Berg"
+> > <johannes@sipsolutions.net>, "linux-um" <linux-um@lists.infradead.org>,=
+ "linux-kernel" <linux-kernel@vger.kernel.org>
+> > CC: "Roberto Sassu" <roberto.sassu@huaweicloud.com>, petr@tesarici.cz, =
+"Petr Tesarik"
+> > <petr.tesarik1@huawei-partners.com>
+> > Gesendet: Freitag, 15. Dezember 2023 13:14:29
+> > Betreff: [PATCH 0/2] um: improve UML page fault handling =20
+>=20
+> > From: Petr Tesarik <petr.tesarik1@huawei-partners.com>
+> >=20
+> > Improve UML handling of segmentation faults in kernel mode. Although
+> > such page faults are generally caused by a kernel bug, it is annoying
+> > if they cause an infinite loop, or panic the kernel. More importantly,
+> > a robust implementation allows to write KUnit tests for various guard
+> > pages, preventing potential kernel self-protection regressions.
+> >=20
+> > Petr Tesarik (2):
+> >  um: do not panic on kernel mode faults
+> >  um: oops on accessing an non-present page in the vmalloc area =20
+>=20
+> I think this is a good thing to have.
 
-Introduced by commits
+Thanks for the feedback.
 
-  fb1b70607f73 ("drm/xe/hwmon: Expose power attributes")
-  92d44a422d0d ("drm/xe/hwmon: Expose card reactive critical power")
-  fbcdc9d3bf58 ("drm/xe/hwmon: Expose input voltage attribute")
-  71d0a32524f9 ("drm/xe/hwmon: Expose hwmon energy attribute")
-  4446fcf220ce ("drm/xe/hwmon: Expose power1_max_interval")
+> For the implementation side, this needs to use the oops_* helpers
+> from kernel/panic.c and taint the kernel, etc...
 
---=20
-Cheers,
-Stephen Rothwell
+Yes, I did see that coming but wanted to get some confirmation that
+it's worth the effort.
 
---Sig_/rkRETbW9831YEoYRya/g0r1
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+> See arch/x86/kernel/dumpstack.c die() and friends.
 
------BEGIN PGP SIGNATURE-----
+This implementation also calls die notifiers, but AFAICS different
+architectures are not very consistent in their use. Do you also
+require die notifiers for the UML implementation?
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmWXphEACgkQAVBC80lX
-0GwDDAf/QdADyYbs+140wMJtVkmhoQPgkhOHtW1xoAcLSnkkm5WdPowFB6ahUWrm
-Ckcnra2MKY9FXmERQ08PgWRbUT/M1am7JKzUdkOseO3a3+F4md8zEwhAKP2NvDZp
-1IFL328TJzXYSIPxkokLjMAEDwz7Rfv+myQ5b8x8mQgmrxa+2VLFfYCRdoaTTpIC
-1W2A3EU2gZ6/+xFJHrnv0YsYX78w3N9CdfIoMVGtnqc2pnyo2tspjIdK1ro8/8Hb
-SYop9p8wGbKM42/lA39kS0L4v6v/CcAHeyHN2nkNazD1hNvFj3+AjbD18gygYi8/
-MYOOkujfj74YXppqxrZbGnfnL41RQw==
-=1/CL
------END PGP SIGNATURE-----
-
---Sig_/rkRETbW9831YEoYRya/g0r1--
+Petr T
 
