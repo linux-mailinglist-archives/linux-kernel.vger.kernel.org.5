@@ -1,156 +1,199 @@
-Return-Path: <linux-kernel+bounces-17739-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17740-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F41D8251C9
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 11:22:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BD88F8251CE
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 11:23:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E4BB7B213AF
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 10:22:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C2E9F1C22E78
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 10:23:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB318250E9;
-	Fri,  5 Jan 2024 10:22:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F4D5250E9;
+	Fri,  5 Jan 2024 10:22:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="i3fbB6Tj"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="dOFAPwkS"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3323224B48;
-	Fri,  5 Jan 2024 10:22:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D2CBC433C7;
-	Fri,  5 Jan 2024 10:22:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704450135;
-	bh=oQGOEMuZwhCeZ13+phWxoQu6BEy+A6aOg5LpzwI7iRs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=i3fbB6TjVbslLJNPhjQfrDhvlyjSRyanKmCbk0YWFUz265z7ZAaranr1naJsVccNZ
-	 f/ZVvvsdyhOFCO78G8/QyIEvJIZmKAoPv/yqHkQVlmnJ/9b6wGU7/+5qmd860xWBaO
-	 JR28x4VLae9CE1nRfl/rBFB26xNuhXah1xm9t8DMXgqVtHB8dqi1ICS8Ch2sa0XIZW
-	 jZhEQ25nAA3no30MxSUawrAtdEZkZ6+yk5EVhrTxXNX/0cc8GEjiqxd36g1WPCeh4U
-	 /b+HqnAd1Wp7UbutG+4WD1O8h66w4kBNa1pFLVI+ZXll9fOXlPEw8kYzI+LI/53N80
-	 JZuY8oHjjnAog==
-Date: Fri, 5 Jan 2024 10:22:09 +0000
-From: Simon Horman <horms@kernel.org>
-To: Shinas Rasheed <srasheed@marvell.com>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, hgani@marvell.com,
-	vimleshk@marvell.com, sedara@marvell.com, egallen@redhat.com,
-	mschmidt@redhat.com, pabeni@redhat.com, kuba@kernel.org,
-	wizhao@redhat.com, kheib@redhat.com, konguyen@redhat.com,
-	Veerasenareddy Burru <vburru@marvell.com>,
-	Satananda Burla <sburla@marvell.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>
-Subject: Re: [PATCH net-next v2 2/8] octeon_ep_vf: add hardware configuration
- APIs
-Message-ID: <20240105102209.GR31813@kernel.org>
-References: <20231223134000.2906144-1-srasheed@marvell.com>
- <20231223134000.2906144-3-srasheed@marvell.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3560928E20
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 10:22:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2cd1aeb1b02so16911691fa.2
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Jan 2024 02:22:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1704450169; x=1705054969; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Otn9loBBsw/UzqwebEZy3Ooa0CujzEAcJwFz8Zj1BXs=;
+        b=dOFAPwkSAsJq5YJUiju4J4fVJz0ZZ0Ky14HRIGt40H8EG8j+SXQVMFUUPmE1PGDfsd
+         wmGVc9s2cytmOHs83v1AY5GlxQqu4zXrB7ic70u71nFRkU5wVSkMRLUBpVbzM2ZHfcRy
+         gMDDroO+8usoVtxCxb9xQV/9H/Ky2W1tSOfAXxoBlX4/MrfkCmESsjnLj/NicbL8sVV4
+         cl7pgnGN63tNP8A78galhMAh9rZsobnRg1PjqGZaUp3mRMOmNOV+//cQbbmhZlledYCh
+         r1lB1AXZZDON/hnwU/8ZRrhwGGqnS33FfxNsZaxgPL7TCzXlZ0LrxoAkMxCEU90Y1F8B
+         uwKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704450169; x=1705054969;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Otn9loBBsw/UzqwebEZy3Ooa0CujzEAcJwFz8Zj1BXs=;
+        b=UOMm6M7dLEkMyQ1DARyVVKiAQo9nbtTfxocq2K6s0ydeGNpaSSUyss1ssvYhsk1nqL
+         PIB7bhXmCr/tod6MknkoIWcqMGUiJs5a7iyhEKvoX6K85T8dAfqWVOv90GM6hP/uoyEu
+         4y5GCSPIFuY1WdbU0c5M48iYJD/Ut9Hdu1TeHaV3jl7VxEc5DHZ6aIsOd0wjeK0lzyfS
+         DABjU8ndyz93nOEIARnnVqwYMyskAYzVLlIUrnTROrqJ6CqXMISdkpP0+XMS+n3TlzHa
+         LNBC3gnuQmciBoJV78WvVdvmiJWdSW+DU1xtw4psQPV6KamixyixBWux3ec5UkbwvMbM
+         vy+Q==
+X-Gm-Message-State: AOJu0Ywgn/l0f9Tu5b+g/o9klYdLmkH5fIzZ2wGjn5wRntagy8pV5sgD
+	yY5OXtRqeU+TfD8y4LDXEiT76WMgEvx/9g==
+X-Google-Smtp-Source: AGHT+IE2UecOtUprnsE+wTP7UJCkRZPB7fx0sJ/qDDVGHx8WV3NGtKzjOZu+swh/2+L77+HG7FmkwQ==
+X-Received: by 2002:a2e:a9a2:0:b0:2cc:6bf6:cdc6 with SMTP id x34-20020a2ea9a2000000b002cc6bf6cdc6mr1295046ljq.7.1704450169091;
+        Fri, 05 Jan 2024 02:22:49 -0800 (PST)
+Received: from [192.168.2.107] ([79.115.63.202])
+        by smtp.gmail.com with ESMTPSA id ek21-20020a056402371500b0055732bd1fc0sm474638edb.82.2024.01.05.02.22.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 05 Jan 2024 02:22:48 -0800 (PST)
+Message-ID: <19746c85-6eff-4f63-9370-9592ad73f22c@linaro.org>
+Date: Fri, 5 Jan 2024 10:22:46 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231223134000.2906144-3-srasheed@marvell.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 04/12] tty: serial: samsung: prepare for different IO
+ types
+Content-Language: en-US
+To: Greg KH <gregkh@linuxfoundation.org>
+Cc: peter.griffin@linaro.org, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, mturquette@baylibre.com,
+ sboyd@kernel.org, conor+dt@kernel.org, andi.shyti@kernel.org,
+ alim.akhtar@samsung.com, jirislaby@kernel.org, s.nawrocki@samsung.com,
+ tomasz.figa@gmail.com, cw00.choi@samsung.com, arnd@arndb.de,
+ semen.protsenko@linaro.org, andre.draszik@linaro.org, saravanak@google.com,
+ willmcvicker@google.com, linux-arm-kernel@lists.infradead.org,
+ linux-samsung-soc@vger.kernel.org, linux-clk@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-i2c@vger.kernel.org, linux-serial@vger.kernel.org,
+ kernel-team@android.com
+References: <20231228125805.661725-1-tudor.ambarus@linaro.org>
+ <20231228125805.661725-5-tudor.ambarus@linaro.org>
+ <2024010432-taco-moneyless-53e2@gregkh>
+ <a3a9df6a-4270-4076-9e9b-ce2fc7284d54@linaro.org>
+ <2024010450-heritage-variety-d72d@gregkh>
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <2024010450-heritage-variety-d72d@gregkh>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Sat, Dec 23, 2023 at 05:39:54AM -0800, Shinas Rasheed wrote:
-> Implement hardware resource init and shutdown helper APIs, like
-> hardware Tx/Rx queue init/enable/disable/reset.
+
+
+On 1/4/24 15:56, Greg KH wrote:
+> On Thu, Jan 04, 2024 at 03:41:28PM +0000, Tudor Ambarus wrote:
+>>
+>>
+>> On 1/4/24 15:32, Greg KH wrote:
+>>> On Thu, Dec 28, 2023 at 12:57:57PM +0000, Tudor Ambarus wrote:
+>>>> GS101's Connectivity Peripheral blocks (peric0/1 blocks) which
+>>>> include the I3C and USI (I2C, SPI, UART) only allow 32-bit
+>>>> register accesses. If using 8-bit register accesses, a SError
+>>>> Interrupt is raised causing the system unusable.
+>>>>
+>>>> Instead of specifying the reg-io-width = 4 everywhere, for each node,
+>>>> the requirement should be deduced from the compatible.
+>>>>
+>>>> Prepare the samsung tty driver to allow IO types different than
+>>>> UPIO_MEM. ``struct uart_port::iotype`` is an unsigned char where all
+>>>> its 8 bits are exposed to uapi. We can't make NULL checks on it to
+>>>> verify if it's set, thus always set it from the driver's data.
+>>>>
+>>>> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+>>>> ---
+>>>> v2: new patch
+>>>>
+>>>>  drivers/tty/serial/samsung_tty.c | 9 ++++++++-
+>>>>  1 file changed, 8 insertions(+), 1 deletion(-)
+>>>>
+>>>> diff --git a/drivers/tty/serial/samsung_tty.c b/drivers/tty/serial/samsung_tty.c
+>>>> index 66bd6c090ace..97ce4b2424af 100644
+>>>> --- a/drivers/tty/serial/samsung_tty.c
+>>>> +++ b/drivers/tty/serial/samsung_tty.c
+>>>> @@ -72,6 +72,7 @@ struct s3c24xx_uart_info {
+>>>>  	const char		*name;
+>>>>  	enum s3c24xx_port_type	type;
+>>>>  	unsigned int		port_type;
+>>>> +	unsigned char		iotype;
+>>>>  	unsigned int		fifosize;
+>>>>  	unsigned long		rx_fifomask;
+>>>>  	unsigned long		rx_fifoshift;
+>>>
+>>> Is there a reason you are trying to add unused memory spaces to this
+>>> structure for no valid reason?  I don't think you could have picked a
+>>> more incorrect place in there to add this :)
+>>>
+>>> Please fix.
+>>>
+>>
+>> Will put it after "const char *name".
 > 
-> Signed-off-by: Shinas Rasheed <srasheed@marvell.com>
+> If you do, spend some time with the tool, pahole, and see if that's
+> really the best place for it or not.  Might be, might not be, but you
+> should verify it please.
+> 
 
-Hi Shinas,
+Thanks!
 
-some minor feedback from my side.
+I played with pahole a bit. For arm32 this struct is not as bad defined
+as for arm64, all members fit in the same cacheline. There are some
+holes though and 2 cachelines for arm64 where this struct needs some
+love. The best and minimum invasive change for my iotype member would be
+to put it before the "has_divslot" member, as the has_divslot bitfield
+will be combined with the previous field.
 
-...
+But I think the entire struct has to be reworked and the driver
+butchered a bit so that we get to a better memory footprint and a single
+cacheline. I volunteer to do this in a separate patch set so that we
+don't block this series. I think the final struct can look as following:
 
-> diff --git a/drivers/net/ethernet/marvell/octeon_ep_vf/octep_vf_cn9k.c b/drivers/net/ethernet/marvell/octeon_ep_vf/octep_vf_cn9k.c
+struct s3c24xx_uart_info {
+	const char  *              name;                 /*     0     8 */
+	enum s3c24xx_port_type     type;                 /*     8     4 */
+	unsigned int               port_type;            /*    12     4 */
+	unsigned int               fifosize;             /*    16     4 */
+	u32                        rx_fifomask;          /*    20     4 */
+	u32                        rx_fifoshift;         /*    24     4 */
+	u32                        rx_fifofull;          /*    28     4 */
+	u32                        tx_fifomask;          /*    32     4 */
+	u32                        tx_fifoshift;         /*    36     4 */
+	u32                        tx_fifofull;          /*    40     4 */
+	u32                        clksel_mask;          /*    44     4 */
+	u32                        clksel_shift;         /*    48     4 */
+	u32                        ucon_mask;            /*    52     4 */
+	u8                         def_clk_sel;          /*    56     1 */
+	u8                         num_clks;             /*    57     1 */
+	u8                         iotype;               /*    58     1 */
+	u8                         has_divslot:1;        /*    59: 0  1 */
 
-...
+	/* size: 64, cachelines: 1, members: 17 */
+	/* padding: 4 */
+	/* bit_padding: 7 bits */
+};
 
-> +/* Reset Hardware Tx queue */
-> +static int cn93_vf_reset_iq(struct octep_vf_device *oct, int q_no)
-> +{
-> +	u64 val = 0ULL;
-> +
-> +	dev_dbg(&oct->pdev->dev, "Reset VF IQ-%d\n", q_no);
-> +
-> +	/* Disable the Tx/Instruction Ring */
-> +	octep_vf_write_csr64(oct, CN93_VF_SDP_R_IN_ENABLE(q_no), val);
-> +
-> +	/* clear the Instruction Ring packet/byte counts and doorbell CSRs */
-> +	octep_vf_write_csr64(oct, CN93_VF_SDP_R_IN_INT_LEVELS(q_no), val);
-> +	octep_vf_write_csr64(oct, CN93_VF_SDP_R_IN_PKT_CNT(q_no), val);
-> +	octep_vf_write_csr64(oct, CN93_VF_SDP_R_IN_BYTE_CNT(q_no), val);
-> +	octep_vf_write_csr64(oct, CN93_VF_SDP_R_IN_INSTR_BADDR(q_no), val);
-> +	octep_vf_write_csr64(oct, CN93_VF_SDP_R_IN_INSTR_RSIZE(q_no), val);
-> +
-> +	val = 0xFFFFFFFF;
-> +	octep_vf_write_csr64(oct, CN93_VF_SDP_R_IN_INSTR_DBELL(q_no), val);
-> +
-> +	val = octep_vf_read_csr64(oct, CN93_VF_SDP_R_IN_CNTS(q_no));
-> +	octep_vf_write_csr64(oct, CN93_VF_SDP_R_IN_CNTS(q_no), val & 0xFFFFFFFF);
 
-This function uses values that appear to have special values:
-0, and 0xFFFFFFFF (as a value and a mask).
+This looks a lot better than what we have now:
+	/* size: 120, cachelines: 2, members: 17 */
+	/* sum members: 105, holes: 2, sum holes: 8 */
+	/* sum bitfield members: 1 bits (0 bytes) */
+	/* padding: 4 */
+	/* bit_padding: 23 bits */
+	/* last cacheline: 56 bytes */
 
-I think it would be nice to name these using #defines
-In the case of masks, using GENMASK_ULL() and FILED_PREP()
-may be appropriate.
-
-Likewise elsewhere in this patch.
-Usage of BIT() and BIT_ULL() may also be appropriate.
-
-> +
-> +	return 0;
-> +}
-
-...
-
->  /* Tx/Rx queue interrupt handler */
->  static irqreturn_t octep_vf_ioq_intr_handler_cn93(void *data)
->  {
-> +	struct octep_vf_ioq_vector *vector = (struct octep_vf_ioq_vector *)data;
-
-nit: there is no need to cast a void pointer.
-
-> +	struct octep_vf_oq *oq = vector->oq;
-> +	struct octep_vf_device *oct = vector->octep_vf_dev;
-> +	u64 reg_val = 0ULL;
-
-As it looks like there will be a v3 of this patchset,
-please consider arranging local variables in Networking code
-in reverse xmas tree order - longest line to shortest.
-
-	struct octep_vf_ioq_vector *vector = data;
-	struct octep_vf_device *oct;
-	struct octep_vf_oq *oq;
-	u64 reg_val = 0ULL;
-
-	oct = vector->octep_vf_dev;
-	oq = vector->oq;
-
-...
-
-> diff --git a/drivers/net/ethernet/marvell/octeon_ep_vf/octep_vf_cnxk.c b/drivers/net/ethernet/marvell/octeon_ep_vf/octep_vf_cnxk.c
-
-...
-
->  /* Tx/Rx queue interrupt handler */
->  static irqreturn_t octep_vf_ioq_intr_handler_cnxk(void *data)
->  {
-> +	struct octep_vf_ioq_vector *vector = (struct octep_vf_ioq_vector *)data;
-> +	struct octep_vf_oq *oq = vector->oq;
-> +	struct octep_vf_device *oct = vector->octep_vf_dev;
-> +	u64 reg_val = 0ULL;
-
-Likewise, here too.
-
-...
+I'll put iotype before has_divslot and then follow up with a patch set
+to clean the driver. Cheers,
+ta
 
