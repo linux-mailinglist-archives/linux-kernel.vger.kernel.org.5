@@ -1,263 +1,103 @@
-Return-Path: <linux-kernel+bounces-17352-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17353-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 74203824C21
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 01:22:59 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id DB353824C2A
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 01:33:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B55DCB21A62
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 00:22:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2CF54B22F2A
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 00:33:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69BA01FD9;
-	Fri,  5 Jan 2024 00:22:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43F011102;
+	Fri,  5 Jan 2024 00:33:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="nW1s889E"
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="ernErT6u"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
+Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33B541FA3
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 00:22:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-5efe82b835fso24252487b3.0
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 16:22:44 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8248C1FA5
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 00:33:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-556ea884968so1247714a12.3
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 16:33:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1704414164; x=1705018964; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=SybjoZW/cSlkZVzh68IoTGFRywrzT9vwqlEyGtKNIR8=;
-        b=nW1s889EcBi6/ZEEivT1Tdcz14mP89CvHhu8vTAV3L0Cp3thifcDDnteK6uK4I54XS
-         MNadKGzilIXllqqCva6BeYSzR8wLC36OVmnTI6ahlLQIMihH7oFMQXfj3/xwlXcJUV9+
-         zO+Zg4AeG6Mcwtrv8e+YqMSkO6MLjAdBgQVJ/W2sXf+jAmD11gbhhs4Kpw95l2+5tMqf
-         J+JmFPmNfvK64jZYWr2D9RvyNL/saXbCXTyhHz0T1Y04Rt9Q1+4pDfntnPj39/M5xSbd
-         xYxUvLMnUGqELmSUh3VNps432oyL3VunW/A2hsuKffgYNFhTA6i0Jg4MnEM0s3fTvTqr
-         s1dQ==
+        d=linux-foundation.org; s=google; t=1704414808; x=1705019608; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=jW3PYuiGpDI9Y46QXBSVasJWKk1a/5VUlFNdiuTF92c=;
+        b=ernErT6usSQRpmdsB80aw7LSVXlUr1RFLRLbmZLGyq9qYDV2huWTEHCJ8OkPclNIBx
+         1YmDlOUI+FIQ8Fsui7htTWqKaFbP6rm7ww1LRcMQTRdE99lClYmxiSL7wOofxV6jvgBe
+         GP3CsM95Lq/z1lXynVyNRL6SZbO3ElSmiah48=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704414164; x=1705018964;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=SybjoZW/cSlkZVzh68IoTGFRywrzT9vwqlEyGtKNIR8=;
-        b=VONF6gcVFvsX9XOCyxtAzAAye04S9P3zGN9ROw8TaljJSLTGG+b3ojlg7IsGUiMRHM
-         qI6/7AjPVDTWpHBQS46lMzw4xm31lHyWHYmvklTn2kQklr76kQv5PCnsDpOSnRgpo4QH
-         1tHAgqtKC79amwugGkBNU0I9p9OHiiPPmExe/VDRivIG2AZkDrg5TxG79Hic7Cm29wS9
-         4I1ntjuOPpEHve+wZmPS5LRL91qsttjjYKKvVExagaNeEmYNdlIoDj2XwnpCDUpS14gP
-         QHoWrUU+IiIIYXLulIjdF4IzJYkmCnFPK+rsssxY1QFqIFPNxa5F6YM6lQmrE/Pg5/Rb
-         rKXw==
-X-Gm-Message-State: AOJu0YwJN7WRy2hCn817NLu6uYywGuUsAjnSZ0RM7r9G/1zI9z37YGuH
-	OV6DFrooTyWVOr6ZkehRPy/ULYAVHLohNSWmPA==
-X-Google-Smtp-Source: AGHT+IE2lDtrpQIEVCpgXRAwTbbQce/auhLPKxXM0cM+isW8l4+fyA1xhwXCG5D7sTu+36O5XoJoBYeK4xM=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:a286:0:b0:dbd:5be2:deee with SMTP id
- c6-20020a25a286000000b00dbd5be2deeemr519915ybi.1.1704414164220; Thu, 04 Jan
- 2024 16:22:44 -0800 (PST)
-Date: Thu, 4 Jan 2024 16:22:42 -0800
-In-Reply-To: <6179ddcb25c683bd178e74e7e2455cee63ba74de.camel@intel.com>
+        d=1e100.net; s=20230601; t=1704414808; x=1705019608;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=jW3PYuiGpDI9Y46QXBSVasJWKk1a/5VUlFNdiuTF92c=;
+        b=ZiRis2YZzBZRh+2ElvHYX8+IZKzp2H8RcGIFg/4f4UA0ZZ68dPHub/AS4JYhlfCTBM
+         K3nrXgjiDoC4g2gH5SKn+FKcvQ95C982i4mU6uYizR8p4HpQzeFG+ehEFsgmoA5gdIVr
+         9uqpCBGbYS0o4LkeRv0KETHngrm6V05w1l4UjxC72yKdtzA5lgurvDPBcW2JUvdxH+bU
+         wJbac8TSNmmmMAALYxu3heww/70jTdcWfDwcKLHFg7C3ynBmNxtFiea2u6LtummYkjNW
+         p09vBHeVIRVgPCK8mKVK84b1MqzhCVbgQgHDmNTRYV0+jpLyDZemrwCb7XyopGjbecwl
+         Tj9w==
+X-Gm-Message-State: AOJu0YyB5X05tSJ15m82yr8lz0ojeWPyf1+qIzu74eLhy42CR77wGdkh
+	ALRawFqhZoxAfMw9n1RZvWDfXF8V5hvdUA6993pSPquIe5DRHCqF
+X-Google-Smtp-Source: AGHT+IGPEVi1HTAtZWPjKcKETXABQIBwbsc/O6jvwyxQ4WSQGv3cRS/3vgsVYLuWu5kHrs2dtSpA5Q==
+X-Received: by 2002:aa7:d306:0:b0:540:4c04:ab94 with SMTP id p6-20020aa7d306000000b005404c04ab94mr773299edq.42.1704414808696;
+        Thu, 04 Jan 2024 16:33:28 -0800 (PST)
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com. [209.85.218.44])
+        by smtp.gmail.com with ESMTPSA id d8-20020a50fb08000000b0055350d989dasm285657edq.88.2024.01.04.16.33.27
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Jan 2024 16:33:28 -0800 (PST)
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a28005f9b9cso122455366b.3
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 16:33:27 -0800 (PST)
+X-Received: by 2002:a17:906:489a:b0:a27:7da8:aaee with SMTP id
+ v26-20020a170906489a00b00a277da8aaeemr676587ejq.12.1704414807557; Thu, 04 Jan
+ 2024 16:33:27 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20231221140239.4349-1-weijiang.yang@intel.com>
- <93f118670137933980e9ed263d01afdb532010ed.camel@intel.com>
- <5f57ce03-9568-4739-b02d-e9fac6ed381a@intel.com> <6179ddcb25c683bd178e74e7e2455cee63ba74de.camel@intel.com>
-Message-ID: <ZZdLG5W5u19PsnTo@google.com>
-Subject: Re: [PATCH v8 00/26] Enable CET Virtualization
-From: Sean Christopherson <seanjc@google.com>
-To: Rick P Edgecombe <rick.p.edgecombe@intel.com>
-Cc: Weijiang Yang <weijiang.yang@intel.com>, Chao Gao <chao.gao@intel.com>, 
-	Dave Hansen <dave.hansen@intel.com>, "peterz@infradead.org" <peterz@infradead.org>, 
-	"john.allen@amd.com" <john.allen@amd.com>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "kvm@vger.kernel.org" <kvm@vger.kernel.org>, 
-	"pbonzini@redhat.com" <pbonzini@redhat.com>, "mlevitsk@redhat.com" <mlevitsk@redhat.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+References: <20230920192300.3772199-1-goldstein.w.n@gmail.com>
+ <202309231130.ZI5MdlDc-lkp@intel.com> <CAFUsyfKDRiX9kKOhHcA4PLqqT6Q5faHF0eRGiKN+9NSbvrUfDw@mail.gmail.com>
+ <d02bd4f823534a00ae4915ead3d92773@AcuMS.aculab.com> <CAFUsyfL0M5P4+4s_b1kvJ_fE-ax8YBK0ammbKfoy7yKs1obzrA@mail.gmail.com>
+ <CAFUsyfJduB29c6=BNmTtgoWcHAWA1AZ-sdbhyp02JVhvA6Gp0w@mail.gmail.com>
+ <CAFUsyfLuo0_Sm91mqbM8Sbo-ncwnM4RaRq=GxQXDmkAN-nQ3uw@mail.gmail.com> <CAHk-=wgv6h4ru=z8UR5XyutoRKveOetNpwovHburvRgG9NSa3g@mail.gmail.com>
+In-Reply-To: <CAHk-=wgv6h4ru=z8UR5XyutoRKveOetNpwovHburvRgG9NSa3g@mail.gmail.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Thu, 4 Jan 2024 16:33:10 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wiNUucmvTKGmveWzXXe99SpOwU65nFtH-A2_aUpPsAPJQ@mail.gmail.com>
+Message-ID: <CAHk-=wiNUucmvTKGmveWzXXe99SpOwU65nFtH-A2_aUpPsAPJQ@mail.gmail.com>
+Subject: Re: x86/csum: Remove unnecessary odd handling
+To: Noah Goldstein <goldstein.w.n@gmail.com>
+Cc: David Laight <David.Laight@aculab.com>, kernel test robot <lkp@intel.com>, 
+	"x86@kernel.org" <x86@kernel.org>, 
+	"oe-kbuild-all@lists.linux.dev" <oe-kbuild-all@lists.linux.dev>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "edumazet@google.com" <edumazet@google.com>, 
+	"tglx@linutronix.de" <tglx@linutronix.de>, "mingo@redhat.com" <mingo@redhat.com>, "bp@alien8.de" <bp@alien8.de>, 
+	"dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>, "hpa@zytor.com" <hpa@zytor.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On Thu, Jan 04, 2024, Rick P Edgecombe wrote:
-> On Thu, 2024-01-04 at 15:11 +0800, Yang, Weijiang wrote:
-> > > What is the design around CET and the KVM emulator?
-> >=20
-> > KVM doesn't emulate CET HW behavior for guest CET, instead it leaves CE=
-T
-> > related checks and handling in guest kernel. E.g., if emulated JMP/CALL=
- in
-> > emulator triggers mismatch of data stack and shadow stack contents, #CP=
- is
-> > generated in non-root mode instead of being injected by KVM.=C2=A0 KVM =
-only
-> > emulates basic x86 HW behaviors, e.g., call/jmp/ret/in/out etc.
->=20
-> Right. In the case of CET those basic behaviors (call/jmp/ret) now have
-> host emulation behavior that doesn't match what guest execution would
-> do.
-
-I wouldn't say that KVM emulates "basic" x86.  KVM emulates instructions th=
-at
-BIOS and kernels execute in Big Real Mode (and other "illegal" modes prior =
-to Intel
-adding unrestricted guest), instructions that guests commonly use for MMIO,=
- I/O,
-and page table modifications, and few other tidbits that have cropped up ov=
-er the
-years.
-
-In other words, as Weijiang suspects below, KVM's emulator handles juuust e=
-nough
-stuff to squeak by and not barf on real world guests.  It is not, and has n=
-ever
-been, anything remotely resembling a fully capable architectural emulator.
-
-> > > My understanding is that the KVM emulator kind of does what it has to
-> > > keep things running, and isn't expected to emulate every possible
-> > > instruction. With CET though, it is changing the behavior of existing
-> > > supported instructions. I could imagine a guest could skip over CET
-> > > enforcement by causing an MMIO exit and racing to overwrite the exit-
-> > > causing instruction from a different vcpu to be an indirect CALL/RET,
-> > > etc.
-> >=20
-> > Can you elaborate the case? I cannot figure out how it works.
->=20
-> The point that it should be possible for KVM to emulate call/ret with
-> CET enabled. Not saying the specific case is critical, but the one I
-> used as an example was that the KVM emulator can (or at least in the
-> not too distant past) be forced to emulate arbitrary instructions if
-> the guest overwrites the instruction between the exit and the SW fetch
-> from the host.=C2=A0
->=20
-> The steps are:
-> vcpu 1                         vcpu 2
-> -------------------------------------
-> mov to mmio addr
-> vm exit ept_misconfig
->                                overwrite mov instruction to call %rax
-> host emulator fetches
-> host emulates call instruction
->=20
-> So then the guest call operation will skip the endbranch check. But I'm
-> not sure that there are not less exotic cases that would run across it.
-> I see a bunch of cases where write protected memory kicks to the
-> emulator as well. Not sure the exact scenarios and whether this could
-> happen naturally in races during live migration, dirty tracking, etc.
-
-It's for shadow paging.  Instead of _immediately_ zapping SPTEs on any writ=
-e to
-a shadowed guest PTE, KVM instead tries to emulate the faulting instruction=
- (and
-then still zaps SPTE).  If KVM can't emulate the instruction for whatever r=
-eason,
-then KVM will _usually_ just zap the SPTE and resume the guest, i.e. retry =
-the
-faulting instruction.
-
-The reason KVM doesn't automatically/unconditionally zap and retry is that =
-there
-are circumstances where the guest can't make forward progress, e.g. if an
-instruction is using a guest PTE that it is writing, if L2 is modifying L1 =
-PTEs,
-and probably a few other edge cases I'm forgetting.
-
-> Again, I'm more just asking the exposure and thinking on it.
-
-If you care about exposure to the emulator from a guest security perspectiv=
-e,
-assume that a compromised guest can coerce KVM into attempting to emulate
-arbitrary bytes.  As in the situation described above, it's not _that_ diff=
-icult
-to play games with TLBs and instruction vs. data caches.
-
-If all you care about is not breaking misbehaving guests, I wouldn't worry =
-too
-much about it.
-
-> > > With reasonable assumptions around the threat model in use by the gue=
-st
-> > > this is probably not a huge problem. And I guess also reasonable
-> > > assumptions about functional expectations, as a misshandled CALL or R=
-ET
-> > > by the emulator would corrupt the shadow stack.
-> >=20
-> > KVM emulates general x86 HW behaviors, if something wrong happens after
-> > emulation then it can happen even on bare metal, i.e., guest SW most li=
-kely
-> > gets wrong somewhere and it's expected to trigger CET exceptions in gue=
-st
-> > kernel.
-
-No, the days of KVM making shit up from are done.  IIUC, you're advocating =
-that
-it's ok for KVM to induce a #CP that architecturally should not happen.  Th=
-at is
-not acceptable, full stop.
-
-Retrying the instruction in the guest, exiting to userspace, and even termi=
-nating
-the VM are all perfectly acceptable behaviors if KVM encounters something i=
-t can't
-*correctly* emulate.  But clobbering the shadow stack or not detecting a CF=
-I
-violation, even if the guest is misbehaving, is not ok.
-
-> > > But, another thing to do could be to just return X86EMUL_UNHANDLEABLE=
- or
-> > > X86EMUL_RETRY_INSTR when CET is active and RET or CALL are emulated.
-> >=20
-> > IMHO, translating the CET induced exceptions into X86EMUL_UNHANDLEABLE =
-or
-> > X86EMUL_RETRY_INSTR would confuse guest kernel or even VMM, I prefer
-> > letting guest kernel handle #CP directly.
+On Thu, 4 Jan 2024 at 15:36, Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
 >
-> Doesn't X86EMUL_RETRY_INSTR kick it back to the guest which is what you
-> want? Today it will do the operations without the special CET behavior.
->=20
-> But I do see how this could be tricky to avoid the guest getting stuck
-> in a loop with X86EMUL_RETRY_INSTR. I guess the question is if this
-> situation is encountered, when KVM can't handle the emulation
-> correctly, what should happen? I think usually it returns
-> KVM_INTERNAL_ERROR_EMULATION to userspace? So I don't see why the CET
-> case is different.
->=20
-> If the scenario (call/ret emulation with CET enabled) doesn't happen,
-> how can the guest be confused? If it does happen, won't it be an issue?
->=20
-> > > And I guess also for all instructions if the TRACKER bit is set. It
-> > > might tie up that loose end without too much trouble.
-> > >=20
-> > > Anyway, was there a conscious decision to just punt on CET enforcemen=
-t in
-> > > the emulator?
-> >=20
-> > I don't remember we ever discussed it in community, but since KVM
-> > maintainers reviewed the CET virtualization series for a long time, I
-> > assume we're moving on the right way :-)
->=20
-> It seems like kind of leap that if it never came up that they must be
-> approving of the specific detail. Don't know. Maybe they will chime in.
+> Anyway, since I looked at the thing originally, and feel like I know
+> the x86 side and understand the strange IP csum too, I just applied it
+> directly.
 
-Yeah, I don't even know what the TRACKER bit does (I don't feel like readin=
-g the
-SDM right now), let alone if what KVM does or doesn't do in response is rem=
-otely
-correct.
+I ended up just applying my 40-byte cleanup thing too that I've been
+keeping in my own tree since posting it (as the "Silly csum
+improvement. Maybe" patch).
 
-For CALL/RET (and presumably any branch instructions with IBT?) other instr=
-uctions
-that are directly affected by CET, the simplest thing would probably be to =
-disable
-those in KVM's emulator if shadow stacks and/or IBT are enabled, and let KV=
-M's
-failure paths take it from there.
+I've been running it on my own machine since last June, and I finally
+even enabled the csum KUnit test just to double-check it.
 
-Then, *if* a use case comes along where the guest is utilizing CET and "nee=
-ds"
-KVM to emulate affected instructions, we can add the necessary support the =
-emulator.
-
-Alternatively, if teaching KVM's emulator to play nice with shadow stacks a=
-nd IBT
-is easy-ish, just do that.
+               Linus
 
