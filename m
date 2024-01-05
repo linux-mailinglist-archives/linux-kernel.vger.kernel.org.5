@@ -1,133 +1,123 @@
-Return-Path: <linux-kernel+bounces-18314-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18315-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 462F9825B68
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 21:13:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3877B825B6D
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 21:14:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DA3D6B220AD
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 20:13:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B6E3DB220AD
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 20:14:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B978536094;
-	Fri,  5 Jan 2024 20:13:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BC303609A;
+	Fri,  5 Jan 2024 20:13:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ivuNopkJ"
+	dkim=pass (2048-bit key) header.d=tesarici.cz header.i=@tesarici.cz header.b="IyRRnvIR"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+Received: from bee.tesarici.cz (bee.tesarici.cz [77.93.223.253])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40B5A36085;
-	Fri,  5 Jan 2024 20:13:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704485617; x=1736021617;
-  h=to:cc:subject:references:date:mime-version:
-   content-transfer-encoding:from:message-id:in-reply-to;
-  bh=PVHLn5vPAitcFffraizXuxXVSgSAYNW4jjDAjS3SzWI=;
-  b=ivuNopkJcizvHX9SvQ/4dBoLYeTk0sEovJQJID1p7TUaB4mZ5kjYSCjx
-   RrEqOZbWY5CmQgF3ZSEBSEp6alF5b7MhSksAhlfpKtIPMfe80kdXhlcTa
-   sv65lIpnDqR19Mk4P2hAxDwVNMi93i+mLjM35CS9veEYuEh0XCpx2njZE
-   lQVp2Qr/kuslkz57SYeb+kEHzjmXcyv1Qmxa367QC5lK1LH4NmD775UoJ
-   69UIZimUPg/0983sSTtkapyQobZXSKw2m2JD7KG8zRH21XjuBDKA+PlAk
-   3NDQT02goReKPYPlUrfG3IfSMgrF/UZzRixYkPbKnXeAQp2TVBRB/1ZFO
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10944"; a="394751620"
-X-IronPort-AV: E=Sophos;i="6.04,334,1695711600"; 
-   d="scan'208";a="394751620"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2024 12:13:35 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10944"; a="1112175221"
-X-IronPort-AV: E=Sophos;i="6.04,334,1695711600"; 
-   d="scan'208";a="1112175221"
-Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.168])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 05 Jan 2024 12:13:32 -0800
-Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
-To: jarkko@kernel.org, dave.hansen@linux.intel.com, tj@kernel.org,
- mkoutny@suse.com, linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
- x86@kernel.org, cgroups@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
- bp@alien8.de, hpa@zytor.com, sohil.mehta@intel.com, "Dave Hansen"
- <dave.hansen@intel.com>
-Cc: zhiquan1.li@intel.com, kristen@linux.intel.com, seanjc@google.com,
- zhanb@microsoft.com, anakrish@microsoft.com, mikko.ylinen@linux.intel.com,
- yangjie@microsoft.com
-Subject: Re: [PATCH v6 00/12] Add Cgroup support for SGX EPC memory
-References: <20231030182013.40086-1-haitao.huang@linux.intel.com>
- <772cb101-33e3-4b55-a311-142b22575e7c@intel.com>
-Date: Fri, 05 Jan 2024 14:13:31 -0600
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C0EC36083;
+	Fri,  5 Jan 2024 20:13:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=tesarici.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tesarici.cz
+Received: from meshulam.tesarici.cz (dynamic-2a00-1028-83b8-1e7a-4427-cc85-6706-c595.ipv6.o2.cz [IPv6:2a00:1028:83b8:1e7a:4427:cc85:6706:c595])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by bee.tesarici.cz (Postfix) with ESMTPSA id C11741A8FC8;
+	Fri,  5 Jan 2024 21:13:50 +0100 (CET)
+Authentication-Results: mail.tesarici.cz; dmarc=fail (p=none dis=none) header.from=tesarici.cz
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tesarici.cz; s=mail;
+	t=1704485631; bh=qdEGmoXSPqG4JbD1i3Bm79Ffe7UZE6+DjIAOPeN0k74=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=IyRRnvIR+xXTGvFOFwKNNre/mUzSmkDSN9w4c2vj2tl0J4QkA7mIS+eReSwVFXFkF
+	 PPyecJeVe8o1cDxzGlZGICAl+vniWccUVR6Xin5h411EdTIuJ7IfjXK4gvMi/i+E+G
+	 qZefGhIbVtCXqFxXyVUHXO/LOGS46bXNAHmgvDw7LDNGP76QIhfCMZInO1y+6+FHzS
+	 jYs2MiHsYpSE4i5LQX5rUchHMl159i3CeKkN1mCDGiI/6gJ3vLulIQg+52yx4oUlvn
+	 ayBRu23ikbtm67E2IVd9aMtLqyQoVPA4kKb13TfI3SkNgHIuQ3H5P2N03f73mDbw+9
+	 FFxMp0us9260g==
+Date: Fri, 5 Jan 2024 21:13:49 +0100
+From: Petr =?UTF-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>
+To: Andrew Lunn <andrew@lunn.ch>
+Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>, Jose Abreu
+ <joabreu@synopsys.com>, "David S. Miller" <davem@davemloft.net>, Eric
+ Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo
+ Abeni <pabeni@redhat.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ Jisheng Zhang <jszhang@kernel.org>, "open list:STMMAC ETHERNET DRIVER"
+ <netdev@vger.kernel.org>, "moderated list:ARM/STM32 ARCHITECTURE"
+ <linux-stm32@st-md-mailman.stormreply.com>, "moderated list:ARM/STM32
+ ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>, open list
+ <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] net: stmmac: fix ethtool per-queue  statistics
+Message-ID: <20240105211349.1017573e@meshulam.tesarici.cz>
+In-Reply-To: <14d3ba8c-c01f-42d2-9f5a-d681d9ce3a55@lunn.ch>
+References: <20240105181024.14418-1-petr@tesarici.cz>
+	<14d3ba8c-c01f-42d2-9f5a-d681d9ce3a55@lunn.ch>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.39; x86_64-suse-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-From: "Haitao Huang" <haitao.huang@linux.intel.com>
-Organization: Intel
-Message-ID: <op.2g3bstxxwjvjmi@hhuan26-mobl.amr.corp.intel.com>
-In-Reply-To: <772cb101-33e3-4b55-a311-142b22575e7c@intel.com>
-User-Agent: Opera Mail/1.0 (Win32)
 
-On Fri, 05 Jan 2024 12:29:05 -0600, Dave Hansen <dave.hansen@intel.com>  
-wrote:
+On Fri, 5 Jan 2024 20:54:01 +0100
+Andrew Lunn <andrew@lunn.ch> wrote:
 
-> There's very little about how the LRU design came to be in this cover
-> letter.  Let's add some details.
->
-> How's this?
->
-> Writing this up, I'm a lot more convinced that this series is, in
-> general, taking the right approach.  I honestly don't see any other
-> alternatives.  As much as I'd love to do something stupidly simple like
-> just killing enclaves at the moment they hit the limit, that would be a
-> horrid experience for users _and_ a departure from what the existing
-> reclaim support does.
->
-> That said, there's still a lot of work do to do refactor this series.
-> It's in need of some love to make it more clear what is going on and to
-> making the eventual switch over to per-cgroup LRUs more gradual.  Each
-> patch in the series is still doing way too much, _especially_ in patch  
-> 10.
->
-> ==
->
-> The existing EPC memory management aims to be a miniature version of the
-> core VM where EPC memory can be overcommitted and reclaimed.  EPC
-> allocations can wait for reclaim.  The alternative to waiting would have
-> been to send a signal and let the enclave die.
->
-> This series attempts to implement that same logic for cgroups, for the
-> same reasons: it's preferable to wait for memory to become available and
-> let reclaim happen than to do things that are fatal to enclaves.
->
-> There is currently a global reclaimable page SGX LRU list.  That list
-> (and the existing scanning algorithm) is essentially useless for doing
-> reclaim when a cgroup hits its limit because the cgroup's pages are
-> scattered around that LRU.  It is unspeakably inefficient to scan a
-> linked list with millions of entries for what could be dozens of pages
-> from a cgroup that needs reclaim.
->
-> Even if unspeakably slow reclaim was accepted, the existing scanning
-> algorithm only picks a few pages off the head of the global LRU.  It
-> would either need to hold the list locks for unreasonable amounts of
-> time, or be taught to scan the list in pieces, which has its own  
-> challenges.
->
-> tl;dr: An cgroup hitting its limit should be as similar as possible to
-> the system running out of EPC memory.  The only two choices to implement
-> that are nasty changes the existing LRU scanning algorithm, or to add
-> new LRUs.  The result: Add a new LRU for each cgroup and scans those
-> instead.  Replace the existing global cgroup with the root cgroup's LRU
-> (only when this new support is compiled in, obviously).
->
+> On Fri, Jan 05, 2024 at 07:10:24PM +0100, Petr Tesarik wrote:
+> > Fix per-queue statistics for devices with more than one queue.
+> > 
+> > The output data pointer is currently reset in each loop iteration,
+> > effectively summing all queue statistics in the first four u64 values.
+> > 
+> > The summary values are not even labeled correctly. For example, if eth0 has
+> > 2 queues, ethtool -S eth0 shows:
+> > 
+> >      q0_tx_pkt_n: 374 (actually tx_pkt_n over all queues)
+> >      q0_tx_irq_n: 23  (actually tx_normal_irq_n over all queues)
+> >      q1_tx_pkt_n: 462 (actually rx_pkt_n over all queues)
+> >      q1_tx_irq_n: 446 (actually rx_normal_irq_n over all queues)
+> >      q0_rx_pkt_n: 0
+> >      q0_rx_irq_n: 0
+> >      q1_rx_pkt_n: 0
+> >      q1_rx_irq_n: 0
+> > 
+> > While touching this code, change the pointer type to u64 and get rid of the
+> > weird pointer arithmetic.
+> > 
+> > Signed-off-by: Petr Tesarik <petr@tesarici.cz>
+> > Fixes: 133466c3bbe1 ("net: stmmac: use per-queue 64 bit statistics where necessary")  
+> 
+> Hi Petr
+> 
+> There are a few process things you are missing. Please take a look at
+> 
+> https://www.kernel.org/doc/html/latest/process/maintainer-netdev.html
+> 
+> You need to indicate which tree this is for.
 
-I'll add this to the cover letter as a section justifying the LRU design  
-for per-cgroup reclaiming.
-Thank you very much.
+Ah. Thank you for the pointer. You see, this is my first netdev patch...
 
-Haitao
+> Additionally, your Signed-off-by comes last.
+
+Oh, I'm sorry for that.
+
+> Patches for stable should ideally be minimal. And obviously correct. See:
+> 
+> https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
+> 
+> So the bits about changing the pointer type and removing the weird
+> arithmetic might be better suited for net-next, not net.
+
+Good. Given that I have meanwhile found out that I will have to change
+this whole function to fix the lockup on 32-bit systems, let me just
+discard this part, add "net" to the subject and cc stable.
+
+Resending...
+
+Petr T
 
