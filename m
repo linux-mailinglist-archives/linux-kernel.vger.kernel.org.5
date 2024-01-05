@@ -1,74 +1,42 @@
-Return-Path: <linux-kernel+bounces-17980-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17987-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC67E825645
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 16:02:01 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 65B19825677
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 16:21:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 857C3281D45
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 15:02:00 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 05B5DB20AB8
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 15:21:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D58952E3FD;
-	Fri,  5 Jan 2024 15:01:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CA412E623;
+	Fri,  5 Jan 2024 15:21:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="QWAzhKpe"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="H6z9Lc/S"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32F642E3EF
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 15:01:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a2821884a09so135311966b.2
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Jan 2024 07:01:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1704466910; x=1705071710; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=lQR4Fg8cleRVcvnVry6aYWkKu4ehqJLNDHFhxBeysRs=;
-        b=QWAzhKpeKQWUQuQP2MyvTczQkch8FEQwqwIRd5ueyGCbfrmx6YIG23QJYDh1B1RXow
-         qA2XYnrwVVjAJXi53646aRBntfxo2KRx/MC0iQ8c0Saf0ROp7FoFOn3xEffXvkVnsXPM
-         mbj/PJPl7PaaLWiGSGe8LMxABE0Tcu/OgTX9Ymqu2+3asB5m+SbDiq75F8cPs3PT2Tbp
-         Xo0BXAC3CBi6krWg2N5reD1auiONCC77OPejZ5XCoXe/sjpu6DVXoxWBmvKnZI9mY7aw
-         HcVPQGJQJ7UpcFPRLp4o/24m7Em1/f/4BmN+NGFboGaNEqOdukMkbArLTcCuoMOU/uV8
-         Gx1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704466910; x=1705071710;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lQR4Fg8cleRVcvnVry6aYWkKu4ehqJLNDHFhxBeysRs=;
-        b=BocakpiFJmn7z6BS2OqPK5ka6NJUTFQOCrzBeQWgqsEK83meFpv0LsnEKz+vyyDHY3
-         FWucfVaRbSIwqzFG5dlk+WbHDNWkTWMVFG5fkPm7DtGnMlTLu3zexBDI8p6Lrj5Vl2fd
-         4Es2pTyQCR7ehFcNCeAOog9Vbt60iVZI+OQWB6HjIkD1w8lt/fUaJ0og/PPORhxVEYh7
-         GaowK8vegtc+dz7K2/HkOxdnLm8OuGDoB4LN6UoF0io30SkQIfxmlX+ToSCouSP/elYc
-         Tm3dDpqxKnh6t0PFRgrni3nHay4D/mxkqmAYsTeviFQnuSjZSudoB/Fx5gTPF9osTLuv
-         teTA==
-X-Gm-Message-State: AOJu0Yx9rlAQCM+2rUjrJUU8HtiZvsdFkleZtZC7m1ARZnvNFYRAguux
-	53pESrip8/xU6uQ9QqkkwJoNeDZ0bL44iQ==
-X-Google-Smtp-Source: AGHT+IG4hdWPcou8wDiQkdCfkBpIFfeLKQzUP3/H2ExfW99dzG+PEi22wr0raKPLobI28PfHOrtBBQ==
-X-Received: by 2002:a17:906:22cd:b0:a27:773b:fcf1 with SMTP id q13-20020a17090622cd00b00a27773bfcf1mr1159545eja.9.1704466910388;
-        Fri, 05 Jan 2024 07:01:50 -0800 (PST)
-Received: from alley ([176.114.240.50])
-        by smtp.gmail.com with ESMTPSA id dx10-20020a170906a84a00b00a283185ccd9sm968861ejb.90.2024.01.05.07.01.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Jan 2024 07:01:50 -0800 (PST)
-Date: Fri, 5 Jan 2024 16:01:48 +0100
-From: Petr Mladek <pmladek@suse.com>
-To: Lukas Hruska <lhruska@suse.cz>
-Cc: Miroslav Benes <mbenes@suse.cz>, Josh Poimboeuf <jpoimboe@kernel.org>,
-	Joe Lawrence <joe.lawrence@redhat.com>,
-	live-patching@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-kbuild@vger.kernel.org,
-	Marcos Paulo de Souza <mpdesouza@suse.com>,
-	Josh Poimboeuf <jpoimboe@redhat.com>
-Subject: Re: [PATCH v1 2/5] livepatch: Add klp-convert tool
-Message-ID: <ZZgZ3LYSZARBjYqo@alley>
-References: <20231106162513.17556-1-lhruska@suse.cz>
- <20231106162513.17556-3-lhruska@suse.cz>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 617B42E626;
+	Fri,  5 Jan 2024 15:21:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 80019C433C8;
+	Fri,  5 Jan 2024 15:21:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1704468080;
+	bh=BJfr/NAghFFnbqECv5pu8D17fzlRfxtXE9hL5DIHvkQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=H6z9Lc/Sx4ZGd6NgiFpuCHyanDx953R/XlSXJSSQXeRQ+u/txq8EdHo37DOLj8ZPY
+	 PM1tNQuwDALCwdRlPPNghBD7IdzrPx2qdUBoJDHVblOdJYDP5SuOLrDiLWNbec5c3y
+	 na3YId1CgbpsjAJG2NQpbqhTAXphZ7YgGn2qnIrw=
+Date: Fri, 5 Jan 2024 16:05:18 +0100
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org
+Subject: Re: [PATCH] spi: make spi_bus_type const
+Message-ID: <2024010554-unreached-colony-96dd@gregkh>
+References: <2024010549-erasure-swoop-1cc6@gregkh>
+ <0fcee73a-bdcb-41d5-b6e5-21947ae9e3d7@sirena.org.uk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -77,46 +45,25 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231106162513.17556-3-lhruska@suse.cz>
+In-Reply-To: <0fcee73a-bdcb-41d5-b6e5-21947ae9e3d7@sirena.org.uk>
 
-On Mon 2023-11-06 17:25:10, Lukas Hruska wrote:
-> Livepatches need to access external symbols which can't be handled
-> by the normal relocation mechanism. It is needed for two types
-> of symbols:
+On Fri, Jan 05, 2024 at 02:55:01PM +0000, Mark Brown wrote:
+> On Fri, Jan 05, 2024 at 11:32:50AM +0100, Greg Kroah-Hartman wrote:
+> > Now that the driver core can properly handle constant struct bus_type,
+> > move the spi_bus_type variable to be a constant structure as well,
+> > placing it into read-only memory which can not be modified at runtime.
 > 
-> --- /dev/null
-> +++ b/scripts/livepatch/klp-convert.c
-> @@ -0,0 +1,283 @@
-[...]
-> +/*
-> + * Formats name of klp rela symbol based on another given section (@oldsec)
-> + * and object (@obj_name) name, then returns it
-> + */
-> +static char *alloc_klp_rela_name(struct section *oldsec,
-> +		char *target_objname, struct elf *klp_elf)
-> +{
+> Whatever makes the driver core able to handle this doesn't seem to be in
+> mainline yet - what's the story there?
 
-Nit: Please, use @lp_obj_name instead of @target_objname.
-     It would make it consistent with the caller:
+Odd, what errors are you seeing when you build?  I have had to fix up a
+few subsys_* calls for this type of thing, but I don't see spi_bus_type
+being used in those that I saw in my local tree.  Did I miss something
+else?
 
-	klp_rela_name = alloc_klp_rela_name(oldsec, lp_obj_name, klp_elf);
+Maybe just wait for after 6.8-rc1, it builds properly here locally :)
 
-and also with
+thanks,
 
-#define KLP_RELOC_SYMBOL_POS(LP_OBJ_NAME, SYM_OBJ_NAME, SYM_NAME, SYM_POS)
-
-
-> +	char *klp_rela_name;
-> +	unsigned int length;
-> +	int err;
-
-Just for record. The name "lp_obj_name" came from a discussion between
-me and Lukas about the KLP_RELOC_SYMBOL_POS() parameter names.
-
-The macro has two object name parameters. And LP_OBJ_NAME aka
-LivePatched_OBJ_NAME looked better than TARGET_OBJ_NAME.
-The name "TARGET" is too ambiguous to me.
-
-Best Regards,
-Petr
+greg k-h
 
