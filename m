@@ -1,54 +1,31 @@
-Return-Path: <linux-kernel+bounces-17470-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17471-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 94C3B824DAA
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 05:42:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1CBB6824DB4
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 05:44:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 470ED1F22BAC
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 04:42:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C28681F22BF6
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 04:44:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8C845255;
-	Fri,  5 Jan 2024 04:42:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="LHHYLeRa"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41F74567F;
+	Fri,  5 Jan 2024 04:44:12 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+Received: from out30-110.freemail.mail.aliyun.com (out30-110.freemail.mail.aliyun.com [115.124.30.110])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46F4F5228;
-	Fri,  5 Jan 2024 04:42:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4053qVCM019303;
-	Fri, 5 Jan 2024 04:42:01 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=kETwECccJTubWuIkLIED8QEDY4c1UgxUEHGG4NmaelU=; b=LH
-	HYLeRaJ2Y0PUEXc4HBJdI2/xbLYdjsU6+dv4JcVAxk4rA7pMbsxVXPwjZ6M1zHQd
-	UdZkpwfrt5RjfnN/BimW2c24luyJqZq7CSJ3tm3Xvbz3/2WmCywOzGKuIVjOIm+B
-	/22Q5xgR0j7hzR6Q6LiL5LyCqunBLlGuiA0zLF94cHmxLq7EBPRlAjatkLIVu00P
-	dvOiTqW8+8ApNVVl0bZuInzEZ98x+/OeC6z23VyDj6DOqnvYfyvYFEFv3ZRTdOgh
-	Sh01I2jqUrf4DdpSunpGAPf+p/ltqi0nAzTspDHnsPpghycTO1JLeuY1P9QZQRBK
-	cKpkCLpkufqjgAUKwNxQ==
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ve97r85t9-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 05 Jan 2024 04:42:00 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4054fxpf032656
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 5 Jan 2024 04:41:59 GMT
-Received: from [10.216.5.109] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 4 Jan
- 2024 20:41:56 -0800
-Message-ID: <50e7cf06-dc3c-4324-9a5d-d82bec9cca89@quicinc.com>
-Date: Fri, 5 Jan 2024 10:11:53 +0530
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21CAE5228;
+	Fri,  5 Jan 2024 04:44:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R881e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=49;SR=0;TI=SMTPD_---0VzzUQHt_1704429833;
+Received: from 30.222.33.160(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0VzzUQHt_1704429833)
+          by smtp.aliyun-inc.com;
+          Fri, 05 Jan 2024 12:43:56 +0800
+Message-ID: <a2c7910c-4c2f-4290-a895-1c4255b2ee62@linux.alibaba.com>
+Date: Fri, 5 Jan 2024 12:43:52 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,112 +33,68 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] usb: gadget: ncm: Avoid dropping datagrams of properly
- parsed NTBs
-To: Jack Pham <quic_jackp@quicinc.com>,
-        =?UTF-8?Q?Maciej_=C5=BBenczykowski?=
-	<maze@google.com>
-CC: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hardik Gajjar
-	<hgajjar@de.adit-jv.com>, <linux-usb@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <quic_ppratap@quicinc.com>,
-        <quic_wcheng@quicinc.com>
-References: <20240102055143.3889-1-quic_kriskura@quicinc.com>
- <CANP3RGeirg+f8cBbw_3YR5AvuB1ZxJC_9-wcn+Tb-GXf1ESKCQ@mail.gmail.com>
- <ad60f399-5c6a-4f16-8c28-f4d4e0fde1ff@quicinc.com>
- <CANP3RGf5dg14DNuKOn9pqWd4oSBDsPhwwBB7AJ0c3qHbDT0sBQ@mail.gmail.com>
- <572c21f8-e642-4d30-84aa-673051be6bb4@quicinc.com>
- <20240104211858.GB4127689@hu-jackp-lv.qualcomm.com>
-Content-Language: en-US
-From: Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
-In-Reply-To: <20240104211858.GB4127689@hu-jackp-lv.qualcomm.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: SUZrZqIL7PQLT9VLc6PlXc0m-ULrirpF
-X-Proofpoint-GUID: SUZrZqIL7PQLT9VLc6PlXc0m-ULrirpF
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- phishscore=0 impostorscore=0 spamscore=0 adultscore=0 lowpriorityscore=0
- bulkscore=0 malwarescore=0 mlxlogscore=765 suspectscore=0 clxscore=1015
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2401050036
+Subject: Re: [PATCH RFC v3 for-6.8/block 11/17] erofs: use bdev api
+To: Yu Kuai <yukuai1@huaweicloud.com>, Jan Kara <jack@suse.cz>
+Cc: axboe@kernel.dk, roger.pau@citrix.com, colyli@suse.de,
+ kent.overstreet@gmail.com, joern@lazybastard.org, miquel.raynal@bootlin.com,
+ richard@nod.at, vigneshr@ti.com, sth@linux.ibm.com, hoeppner@linux.ibm.com,
+ hca@linux.ibm.com, gor@linux.ibm.com, agordeev@linux.ibm.com,
+ jejb@linux.ibm.com, martin.petersen@oracle.com, clm@fb.com,
+ josef@toxicpanda.com, dsterba@suse.com, viro@zeniv.linux.org.uk,
+ brauner@kernel.org, nico@fluxnic.net, xiang@kernel.org, chao@kernel.org,
+ tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.com,
+ konishi.ryusuke@gmail.com, willy@infradead.org, akpm@linux-foundation.org,
+ hare@suse.de, p.raghav@samsung.com, linux-block@vger.kernel.org,
+ linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org,
+ linux-bcache@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
+ linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, linux-erofs@lists.ozlabs.org,
+ linux-ext4@vger.kernel.org, linux-nilfs@vger.kernel.org,
+ yi.zhang@huawei.com, yangerkun@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
+References: <20231221085712.1766333-1-yukuai1@huaweicloud.com>
+ <20231221085826.1768395-1-yukuai1@huaweicloud.com>
+ <20240104120207.ig7tfc3mgckwkp2n@quack3>
+ <7f868579-f993-aaa1-b7d7-eccbe0b0173c@huaweicloud.com>
+From: Gao Xiang <hsiangkao@linux.alibaba.com>
+In-Reply-To: <7f868579-f993-aaa1-b7d7-eccbe0b0173c@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
 
 
-On 1/5/2024 2:48 AM, Jack Pham wrote:
-> On Tue, Jan 02, 2024 at 05:04:01PM +0530, Krishna Kurapati PSSNV wrote:
+On 2024/1/4 20:32, Yu Kuai wrote:
+> Hi, Jan!
+> 
+> 在 2024/01/04 20:02, Jan Kara 写道:
+>> On Thu 21-12-23 16:58:26, Yu Kuai wrote:
+>>> From: Yu Kuai <yukuai3@huawei.com>
+>>>
+>>> Avoid to access bd_inode directly, prepare to remove bd_inode from
+>>> block_device.
+>>>
+>>> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 >>
->>
->>>> The above might work. But just wanted to check why this 1 byte would
->>>> come actually ? Any reason for this ? ZLP must not give a 1 byte packet
->>>> of 1 byte AFAIK.
->>>
->>> I'm not a USB expert, but... my (possibly wrong) understanding is:
->>> (note I may be using bad terminology... also the 1024/16384 constants
->>> are USB3 specific, USB2 has afaik max 512 not 1024, I think USB1 is
->>> even 64, but it's likely too old to matter, etc.)
->>>
->>> USB3 payloads can be up to 16384 bytes in size,
->>> on the wire they are split up into packets of between 0 and 1024 bytes.
->>> [a Zero Length Packet is a ZLP]
->>> A usb payload is terminated with a usb packet of < 1024 bytes.
->>>
->>> So a 1524 byte payload would be sent as 2 packets 1024 + 500.
->>> While a 2048 byte payload would be sent as 3 packets 1024 + 1024 + 0 (ie. ZLP)
->>>
->>> A 16384 byte payload could be sent as 16 * 1024 + ZLP,
->>> but since 16384 is the max you might be able to get away with just 16
->>> * 1024 and skip the ZLP...
->>>
->>> I think this is why the Linux usb code base has ZLP / NO_ZLP quirks.
->>> [but do note I may be wrong, I haven't gone looking at what exactly
->>> the zlp quirks do,
->>> not even sure if they're receive or transmit side... or both]
->>>
->>> Different hardware/usb chipsets/etc have different behaviour wrt. ZLPs.
->>>
->>> In general it seems like what needs to happen is much clearer if you
->>> just avoid the need for ZLPs entirely.
->>> I think that's what windows is trying to do here: avoid ever sending a
->>> usb payload with a multiple of 1024 bytes,
->>> so it never has to send ZLPs. This seems easy enough to do...
->>> limit max to 16383 (not 16384) and add 1 byte of zero pad if the
->>> payload ends up being a multiple of 1024.
->>>
->>
->> Got it. Thanks for the explanation. Atleast this gives me an insight into
->> what might be the problem.
+>> I'm not erofs maintainer but IMO this is quite ugly and grows erofs_buf
+>> unnecessarily. I'd rather store 'sb' pointer in erofs_buf and then do the
+>> right thing in erofs_bread() which is the only place that seems to care
+>> about the erofs_is_fscache_mode() distinction... Also blkszbits is then
+>> trivially sb->s_blocksize_bits so it would all seem much more
+>> straightforward.
 > 
-> Hooray to MS for having open-sourced a reference version of their NCM
-> driver on GitHub (under MIT license)--and I think this might explain it:
-> 
-> https://github.com/microsoft/NCM-Driver-for-Windows/blob/release_21H2/host/device.cpp#L902
-> 
-> which states in a comment (pasted line-wrapped for mail-friendliness)
-> 
->          //NCM spec is not explicit if a ZLP shall be sent when
->          //wBlockLength != 0 and it happens to be
->          //multiple of wMaxPacketSize. Our interpretation is that no ZLP
->          //needed if wBlockLength is non-zero,
->          //because the non-zero wBlockLength has already told the
->          //function side the size of transfer to be expected.
->          //
->          //However, there are in-market NCM devices rely on ZLP as long
->          //as the wBlockLength is multiple of wMaxPacketSize.
->          //To deal with such devices, we pad an extra 0 at end so the
->          //transfer is no longer multiple of wMaxPacketSize
-> 
-> If so then would be worth calling this out in commit text and/or code
-> comment.
+> Thanks for your suggestion, I'll follow this unless Gao Xiang has other
+> suggestions.
 
-Thanks for the inputs Jack. Will make sure to add it in commit text clearly.
+Yes, that would be better, I'm fine with that.  Yet in the future we
+may support a seperate large dirblocksize more than block size, but
+we could revisit later.
 
-Regards,
-Krishna,
+Thanks,
+Gao Xiang
+
+> 
+> Kuai
+>>
+>>                                 Honza
+>>
 
