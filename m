@@ -1,194 +1,115 @@
-Return-Path: <linux-kernel+bounces-17460-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17461-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C641B824D8D
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 04:57:08 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B54CC824D8F
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 05:02:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7055F286286
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 03:57:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 33DB7286AF8
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 04:02:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75E7246B8;
-	Fri,  5 Jan 2024 03:57:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F291D46A1;
+	Fri,  5 Jan 2024 04:02:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="eubRL2z+"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LI/gHWf5"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ot1-f54.google.com (mail-ot1-f54.google.com [209.85.210.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFDA7440E;
-	Fri,  5 Jan 2024 03:56:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 4053unah124949;
-	Thu, 4 Jan 2024 21:56:49 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1704427009;
-	bh=eCcQINE1gNlg8v+eYFOWY5Ps37bGRwJ7TfV5v+LjEzM=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To;
-	b=eubRL2z+4ymoCTLm/V27akX7aREf1HvCUTPnJDdDzoA977fUBxF6UHfvWxmnkjvuY
-	 +Vhf5B8u0z9TwZjjzY14yH4GM/3h+efvsM/dZ4G1Zcvz601JB6hAb5RAQ2lmjzkONy
-	 KrltyGysFc/y1MYmCwimbTTzll8j9mA37ch8/7wE=
-Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
-	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 4053unRA043379
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Thu, 4 Jan 2024 21:56:49 -0600
-Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 4
- Jan 2024 21:56:49 -0600
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE107.ent.ti.com
- (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 4 Jan 2024 21:56:48 -0600
-Received: from [172.24.227.36] (a0497641-hp-z2-tower-g9-workstation-desktop-pc.dhcp.ti.com [172.24.227.36])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 4053ujBL126449;
-	Thu, 4 Jan 2024 21:56:46 -0600
-Message-ID: <f930c208-b121-4416-afc9-26812471e1ab@ti.com>
-Date: Fri, 5 Jan 2024 09:26:45 +0530
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B319442C
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 04:02:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f54.google.com with SMTP id 46e09a7af769-6dc02ab3cc9so740946a34.3
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 20:02:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704427326; x=1705032126; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ut37mQnu+DRmmKQT59rSr16i4obzZ+960wl3XdV13xI=;
+        b=LI/gHWf5B9NGMIbmP8+XZqIrpHsJlqXd0C/aqldKOHTwF0q3Nm6rWUWfch54MBVr1Z
+         lM5wXPYhqTLSQxXfRHmFwAjE8aLSVE+ndE1B6hK3GSCkwZcZ4/h2GiUescGOQUOq2sl4
+         BpyvtWJxAhzi2K283nTDIr/pj26E0YjEMmk0U4A+hJHJmzyW1S4eiqoTgZ6unuNyz5zC
+         NBJK65r2AkcTnMsngkzuCIs5sqJv1YnemKXpSI4nalgejciPA4kt5n8VesAQUoSx3WZU
+         Dm7k6ILCMG+ywnU5Rkdhj6Wnnv6Qr+pIKqPyC6pPZzz4f1yMYNbFVKpdgxDmZzhtiYs6
+         RBdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704427326; x=1705032126;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Ut37mQnu+DRmmKQT59rSr16i4obzZ+960wl3XdV13xI=;
+        b=FcasF1OpiPyI5LBP7Al/iixHV+aVHMEa6AYKVgw2VVJ83kvj4qSixkcmUE+ooIAVnj
+         Lcz2u9aPHKyOGEqQFq9jx9pkzSLFY/penD8TqB7dxCDpdzLbtTzsSBQYFF/Ep6K06KKj
+         ArnkmhMzbqaKRxcNZK6+337eZ2OD8itGAT2q9KPzO2jSzsYCm6lxHYBKC/AYLiL6Uj5a
+         aMvIHiZ/CHBr7vRqiVkDZz+kwTAS01znffb+BC3P5r/CAx5Ipqk0VAT15SUx4NRmKetT
+         ONglCUEKVr8L5wU9eXl9h4mFP8YOH85wVaM6abAk5bjlQCV+PNGdcGxQU4gOrGQDT8Ya
+         u31A==
+X-Gm-Message-State: AOJu0YxtK7FWT1DqGsIsAYV0Rku5EfD+ydM04a9UcEBWKjUxf2OeyAQF
+	jBs+RzWHa/Na3HTsNl4mX3s=
+X-Google-Smtp-Source: AGHT+IFsSlRjzmls+aF14SN+Iiys3AtVedz9iz3GmeB6XtIY6pcjYCMdBQTVSC96DL3Ggd2Q9e3MYA==
+X-Received: by 2002:a05:6358:718b:b0:16d:edaa:921c with SMTP id t11-20020a056358718b00b0016dedaa921cmr1662479rwt.12.1704427325840;
+        Thu, 04 Jan 2024 20:02:05 -0800 (PST)
+Received: from localhost.localdomain ([203.205.141.14])
+        by smtp.googlemail.com with ESMTPSA id c5-20020a170902b68500b001bf52834696sm372030pls.207.2024.01.04.20.02.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Jan 2024 20:02:05 -0800 (PST)
+From: Ze Gao <zegao2021@gmail.com>
+X-Google-Original-From: Ze Gao <zegao@tencent.com>
+To: Ben Segall <bsegall@google.com>,
+	Daniel Bristot de Oliveira <bristot@redhat.com>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Ingo Molnar <mingo@redhat.com>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Mel Gorman <mgorman@suse.de>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Valentin Schneider <vschneid@redhat.com>,
+	Vincent Guittot <vincent.guittot@linaro.org>
+Cc: linux-kernel@vger.kernel.org,
+	Ze Gao <zegao@tencent.com>
+Subject: [PATCH] sched: save to call pick_eevdf when TIF_NEED_RESCHED is set
+Date: Thu,  4 Jan 2024 23:01:59 -0500
+Message-ID: <20240105040159.5026-1-zegao@tencent.com>
+X-Mailer: git-send-email 2.41.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] arm64: dts: ti: k3-j721e: Add support for DFS in J721E
- A72
-Content-Language: en-US
-To: Nishanth Menon <nm@ti.com>
-CC: <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <vigneshr@ti.com>, <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <a-nandan@ti.com>, <kristo@kernel.org>, <u-kumar1@ti.com>
-References: <20240104111922.832040-1-n-francis@ti.com>
- <20240104151650.my3cuhgase4yf7gj@luminance>
-From: Neha Malcom Francis <n-francis@ti.com>
-In-Reply-To: <20240104151650.my3cuhgase4yf7gj@luminance>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 8bit
 
-Hi Nishanth,
+We now can have TIF_NEED_RESCHED set from update_curr()
+in check_preempt_wakeup_fair(), so check to save to call
+pick_eevdf once it's set and defer the possible picking
+to where schedule() is called.
 
-On 04/01/24 20:46, Nishanth Menon wrote:
-> On 16:49-20240104, Neha Malcom Francis wrote:
->> Add 2G, 1G, 500M and 250M as the supported frequencies for A72. This
->> enables support for Dynamic Frequency Scaling (DFS). Note that Dynamic
->> Voltage and Frequency Scaling (DVFS) is not supported on J7 devices.
->>
->> J721E SoC has three different speed grade devices (see [1], 7.5
->> Operating Performance Points) which as of today are indiscernible in
->> software, users of a different speed grade device must manually change
->> the DTS to ensure their maximum speed frequency is supported.
->>
->> To obtain clock-latency-ns, the maximum time was found to switch from/to
->> any frequency for a CPU and this value was rounded off and set.
->>
->> [1] https://www.ti.com/lit/gpn/tda4vm
->>
->> Signed-off-by: Neha Malcom Francis <n-francis@ti.com>
->> ---
->> Test and boot logs:
->> https://gist.github.com/nehamalcom/33608837ab5ad3332ff11a7fa7a602e2
->>
->> Changes since v1:
->> https://lore.kernel.org/all/20231214075637.176586-1-n-francis@ti.com/
->> - removed OPPs 1.5G and 750M as they introduced boot regression in
->>    J721E-SK
-> 
-> I do not think this is the right approach precisely for the above
-> reason.
-> 
-> See my comment in V1: https://lore.kernel.org/all/20231214125130.zqtq6ioj4c533wha@elbow/
-> 
-> "
-> I am also concerned if the table should be separated out as a dtsi and
-> included at board.dts level to prevent downstream users going crazy..
-> "
-> 
-> I suspect there is no magic opp configuration that will work with all
-> downstream and board variations. instead of creating a trimmed down
-> non-datasheet tuples of OPP configuration, use the data sheet provided
-> OPP configurations into each dtsi and the boards can apply the dtsi
-> based on the type of sample they have.
-> 
-> I don't see any other scheme (overlays, maybe?).. but this approach is
-> broken and your note above proves why this approach is broken.
-> 
+Signed-off-by: Ze Gao <zegao@tencent.com>
+---
+ kernel/sched/fair.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-Understood... I believed OPPs were an SoC specific thing until this failure came 
-about and it makes sense to take it at the board level now. Will factor this in 
-for v3.
-
->> - Nishanth
->> 	- indicated DVFS not supported in commit message
->> 	- moved critical data sheet info from below tear line to commit
->> 	  message
->> 	- added opp-shared property
->> 	- added clock-latency-ns property
->>
->>   arch/arm64/boot/dts/ti/k3-j721e.dtsi | 31 ++++++++++++++++++++++++++++
->>   1 file changed, 31 insertions(+)
->>
->> diff --git a/arch/arm64/boot/dts/ti/k3-j721e.dtsi b/arch/arm64/boot/dts/ti/k3-j721e.dtsi
->> index a200810df54a..5de6c70bd989 100644
->> --- a/arch/arm64/boot/dts/ti/k3-j721e.dtsi
->> +++ b/arch/arm64/boot/dts/ti/k3-j721e.dtsi
->> @@ -48,6 +48,9 @@ cpu0: cpu@0 {
->>   			d-cache-line-size = <64>;
->>   			d-cache-sets = <256>;
->>   			next-level-cache = <&L2_0>;
->> +			clocks = <&k3_clks 202 2>;
->> +			clock-names = "cpu";
->> +			operating-points-v2 = <&cpu0_opp_table>;
->>   		};
->>   
->>   		cpu1: cpu@1 {
->> @@ -62,6 +65,34 @@ cpu1: cpu@1 {
->>   			d-cache-line-size = <64>;
->>   			d-cache-sets = <256>;
->>   			next-level-cache = <&L2_0>;
->> +			clocks = <&k3_clks 203 0>;
->> +			clock-names = "cpu";
->> +			operating-points-v2 = <&cpu0_opp_table>;
->> +		};
->> +	};
->> +
->> +	cpu0_opp_table: opp-table {
->> +		compatible = "operating-points-v2";
->> +		opp-shared;
->> +
->> +		opp6-2000000000 {
->> +			opp-hz = /bits/ 64 <2000000000>;
->> +			clock-latency-ns = <300000>;
->> +		};
->> +
->> +		opp4-1000000000 {
->> +			opp-hz = /bits/ 64 <1000000000>;
->> +			clock-latency-ns = <300000>;
->> +		};
->> +
->> +		opp2-500000000 {
->> +			opp-hz = /bits/ 64 <500000000>;
->> +			clock-latency-ns = <300000>;
->> +		};
->> +
->> +		opp1-250000000 {
->> +			opp-hz = /bits/ 64 <250000000>;
->> +			clock-latency-ns = <300000>;
->>   		};
->>   	};
->>   
->> -- 
->> 2.34.1
->>
-> 
-
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index d7a3c63a2171..28b2860e1f09 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -8273,6 +8273,12 @@ static void check_preempt_wakeup_fair(struct rq *rq, struct task_struct *p, int
+ 	cfs_rq = cfs_rq_of(se);
+ 	update_curr(cfs_rq);
+ 
++	/*
++	 * We can come here with TIF_NEED_RESCHED already set from update_curr,
++	 * check to save one call to pick_eevdf if it's set.
++	 */
++	if (test_tsk_need_resched(curr))
++		return;
+ 	/*
+ 	 * XXX pick_eevdf(cfs_rq) != se ?
+ 	 */
 -- 
-Thanking You
-Neha Malcom Francis
+2.41.0
+
 
