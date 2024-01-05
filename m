@@ -1,157 +1,159 @@
-Return-Path: <linux-kernel+bounces-17431-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17432-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 306CB824D20
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 03:45:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E9A37824D2A
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 03:46:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 51363286AD7
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 02:45:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 85A101F22F39
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 02:46:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A1DE2109;
-	Fri,  5 Jan 2024 02:45:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BDAD523E;
+	Fri,  5 Jan 2024 02:46:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="LGNPx1de"
+	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="OcasozcO";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="SwtNdc1w"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com [64.147.123.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8A2A20EB
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 02:45:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1704422745;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=42T2XOYsv/Q/QxGLaFEK4T7TNmI9rS29RX3cDmclaks=;
-	b=LGNPx1deMfUnI6QyNnLMc7eZBKQ5d39Oeoeh3QN0TVxhkAXQn7KVssH0bs785HOjKq0Pg+
-	/enj+c73y+Khig7u59/0MRsMb9ziI05P/1E2APFP6PTC/DE8wn4ibNAqY+BjbzSZDpOfde
-	1bv4lty6GjkBLfQCuT5yzmMJfmdSWWQ=
-Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com
- [209.85.216.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-639-jj1yqsfjNbaltjCNf3k7IA-1; Thu, 04 Jan 2024 21:45:44 -0500
-X-MC-Unique: jj1yqsfjNbaltjCNf3k7IA-1
-Received: by mail-pj1-f70.google.com with SMTP id 98e67ed59e1d1-28bdc7e67b5so684447a91.2
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 18:45:44 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704422743; x=1705027543;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=42T2XOYsv/Q/QxGLaFEK4T7TNmI9rS29RX3cDmclaks=;
-        b=Iz3Jv+zLQYQPSLtdYP81RbrR8sP4snzmaEZkCKXMfrY71l8U/O6n/t/fgiE/Bdkikx
-         sUxNQU80VE6trVQaQwhisIsGnaVirkqjGzAcjH6HYhMjAKLWM1qxfj0WQyH89XBGDyXn
-         5YjNK+F2+1/TlTaCCn6i0M6ioQc9dE6sGa8PtvFQ+gBiSVkVlyjKWB9QofyqV37Xxfl/
-         Vwb7xo5rSx67uB5KNY/aJ1jtnMQTIGh83NIH4NBWiYjkfn9HpSHs9BRiX+ZjGWl4KFFg
-         GXGf6f+7QBvqDoZuGedM6vw4f8WEIvDQlOHd0+jQ7cFuHf4iFnoHhLRySRRGdF4af1gm
-         AhSg==
-X-Gm-Message-State: AOJu0Ywq9sfxoQps46+cblHcHQNhEDQt1htpbgQ/vARqbY6FeRsqaB8h
-	7eLE+i+JoL+uhr3snMAkHnPnXN8i1ob3wfrx1t1V1L9Z7LcuXqLs0/EBgIJLpwEhcEnlHLkcJPO
-	nTC8HPdE8HMCa+tcDzF/w/WItP+08Y9lEg4y6ue3AxorSqs4s
-X-Received: by 2002:a17:90a:f2c2:b0:28c:f48c:c875 with SMTP id gt2-20020a17090af2c200b0028cf48cc875mr1383844pjb.45.1704422743331;
-        Thu, 04 Jan 2024 18:45:43 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHU4D4ZC5TBDtzGS71F/hn8ITZAmo7xpBZ+HC+qYcgCmxUeB9oZgTh3hKy8a98xMCSDKoul/pup8VWm2YAwB8E=
-X-Received: by 2002:a17:90a:f2c2:b0:28c:f48c:c875 with SMTP id
- gt2-20020a17090af2c200b0028cf48cc875mr1383834pjb.45.1704422743011; Thu, 04
- Jan 2024 18:45:43 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AB5D5243;
+	Fri,  5 Jan 2024 02:46:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+	by mailout.west.internal (Postfix) with ESMTP id 141D23200AA6;
+	Thu,  4 Jan 2024 21:45:59 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute2.internal (MEProxy); Thu, 04 Jan 2024 21:46:01 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+	:content-transfer-encoding:content-type:date:date:from:from
+	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
+	:to; s=fm1; t=1704422759; x=1704509159; bh=shDcnJN57Ps6qaIAEkU8F
+	J/na3mfjDv3/Jaj5tSn7IU=; b=OcasozcOKOlLR63MynS4l0InDlMwrPX2ZWPYJ
+	sL9DX86SvCu8ClrOS4Ku1E/E8EBuEQzobGdM6lFoJ19nUzSTxgCKGITiBc0S39hY
+	Pcx8qrwaDAdbdjb3cAHv+N28eqVEvlxez12Q/kXRn7DB5NKNh84BW7htzFfSHUzP
+	t7C2OBWu+Z/fYToQmQ2HHxDFUG8sVPELu+y7Jy6YUqM9Rv3m1aZvoJ8b/eQ5Drd+
+	6nh0dDlRQo78k717S8gTcLU5Pf5PoTfbmjVex4vtJCyQgJBOdz2/w8L/k+1/2sNd
+	BqGTyLDGXN6qyiqRdThOXvXF8qsX5Gh5rCsPHobIjIAo0UgyQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:content-transfer-encoding:content-type
+	:date:date:feedback-id:feedback-id:from:from:in-reply-to
+	:message-id:mime-version:reply-to:subject:subject:to:to
+	:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1704422759; x=1704509159; bh=shDcnJN57Ps6qaIAEkU8FJ/na3mf
+	jDv3/Jaj5tSn7IU=; b=SwtNdc1wjrGjwlkXJqmjjSKnRxeS8MdkZ363QWm36EgS
+	mddXCYLacsTRIpi8y8SxIS8ae0Ml5kEBEC9RtfifypPk8QrFoKAPVc/f2lKvwzxR
+	CHvnrpCZZmpkTsRWd75mn9PNlIAYzHMlITEX5pPs6j7V6ItrsrCJVjvsiRlugRKh
+	M6sgk1g2xnckIxYNsFXOGm/0tahh05CI1YQNnusQhdwraz/k9WzJbgFlwrdMhDCV
+	8R7vPIXZrlNYLrikmQG7eWU/6R6izLHa4rHmhyUB2v3ZJcbkDtfzXdPcQuL8hsIz
+	GDxEtPW9f0fy/KfK0Wgne8WAkp7BxV5N0jt4XhgV7Q==
+X-ME-Sender: <xms:Z22XZUIlEeMLUw4eZXushJMMPyaEa929ROSx9QpRmbZrWfO0_caOTQ>
+    <xme:Z22XZUJFlPKG4VNtTOgMa0zpKuAYzMTXAU-J0V1zsNBFwSW5XHBcs-HePrqD7iAX_
+    poZiYAzx0RGczuiGg>
+X-ME-Received: <xmr:Z22XZUshk4uFI3tnHE6aJz1Jhu3SsjSdkhPNxxT1-5m7exUBEYcOBmdhQ4ZIhigtXY7XchBFgVWAu11CirM-dVF-pxN1ELQeKp9TjYr5eRqJSQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdegkedgheduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucgfrhhlucfvnfffucdlfeehmdenucfjughrpefhvf
+    fufffkofgggfestdekredtredttdenucfhrhhomhepffgrnhhivghlucgiuhcuoegugihu
+    segugihuuhhurdighiiiqeenucggtffrrghtthgvrhhnpeffffegjeduheelgfdtudekie
+    ejgfegheehjefgieejveevteeiveeukefgheekjeenucffohhmrghinhepghhithhhuhgs
+    rdgtohhmnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    epugiguhesugiguhhuuhdrgiihii
+X-ME-Proxy: <xmx:Z22XZRb7lZ0XC9c6tko6WdioGTT3Z0Bn3BKhgNG-jAkKoTcA1oNxrw>
+    <xmx:Z22XZbZw_aDZopiaWtoB7ZRtvFEw3EgGf4BGU8wK-vYEJR9L4_kfig>
+    <xmx:Z22XZdAd23temfr2TZAASMVEg7nMo52uH5UCybPO6ETdyKrEtPpncQ>
+    <xmx:Z22XZcLxJGdXT7eBJpfdLcdVP6mzmxdQhoOdVdsU5pMdrvTubM93TA>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 4 Jan 2024 21:45:58 -0500 (EST)
+From: Daniel Xu <dxu@dxuuu.xyz>
+To: bpf@vger.kernel.org,
+	fsverity@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	netfilter-devel@vger.kernel.org,
+	coreteam@netfilter.org,
+	linux-input@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	cgroups@vger.kernel.org,
+	netdev@vger.kernel.org,
+	alexei.starovoitov@gmail.com,
+	olsajiri@gmail.com,
+	quentin@isovalent.com,
+	alan.maguire@oracle.com,
+	memxor@gmail.com
+Subject: [PATCH bpf-next v2 0/3] Annotate kfuncs in .BTF_ids section
+Date: Thu,  4 Jan 2024 19:45:46 -0700
+Message-ID: <cover.1704422454.git.dxu@dxuuu.xyz>
+X-Mailer: git-send-email 2.42.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240104153753.2931026-1-maxime.coquelin@redhat.com> <20240104153753.2931026-3-maxime.coquelin@redhat.com>
-In-Reply-To: <20240104153753.2931026-3-maxime.coquelin@redhat.com>
-From: Jason Wang <jasowang@redhat.com>
-Date: Fri, 5 Jan 2024 10:45:32 +0800
-Message-ID: <CACGkMEtmTY0ux8pw8VQ8SAdgGty=rM1VRkh6c-qBVSaqhYuURw@mail.gmail.com>
-Subject: Re: [PATCH v6 2/3] vduse: Temporarily fail if control queue features requested
-To: Maxime Coquelin <maxime.coquelin@redhat.com>
-Cc: mst@redhat.com, xuanzhuo@linux.alibaba.com, xieyongji@bytedance.com, 
-	virtualization@lists.linux-foundation.org, linux-kernel@vger.kernel.org, 
-	david.marchand@redhat.com, lulu@redhat.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Thu, Jan 4, 2024 at 11:38=E2=80=AFPM Maxime Coquelin
-<maxime.coquelin@redhat.com> wrote:
->
-> Virtio-net driver control queue implementation is not safe
-> when used with VDUSE. If the VDUSE application does not
-> reply to control queue messages, it currently ends up
-> hanging the kernel thread sending this command.
->
-> Some work is on-going to make the control queue
-> implementation robust with VDUSE. Until it is completed,
-> let's fail features check if any control-queue related
-> feature is requested.
->
-> Signed-off-by: Maxime Coquelin <maxime.coquelin@redhat.com>
-> ---
->  drivers/vdpa/vdpa_user/vduse_dev.c | 13 +++++++++++++
->  1 file changed, 13 insertions(+)
->
-> diff --git a/drivers/vdpa/vdpa_user/vduse_dev.c b/drivers/vdpa/vdpa_user/=
-vduse_dev.c
-> index 0486ff672408..94f54ea2eb06 100644
-> --- a/drivers/vdpa/vdpa_user/vduse_dev.c
-> +++ b/drivers/vdpa/vdpa_user/vduse_dev.c
-> @@ -28,6 +28,7 @@
->  #include <uapi/linux/virtio_config.h>
->  #include <uapi/linux/virtio_ids.h>
->  #include <uapi/linux/virtio_blk.h>
-> +#include <uapi/linux/virtio_ring.h>
->  #include <linux/mod_devicetable.h>
->
->  #include "iova_domain.h"
-> @@ -46,6 +47,15 @@
->
->  #define IRQ_UNBOUND -1
->
-> +#define VDUSE_NET_INVALID_FEATURES_MASK         \
-> +       (BIT_ULL(VIRTIO_NET_F_CTRL_VQ) |        \
-> +        BIT_ULL(VIRTIO_NET_F_CTRL_RX)   |      \
-> +        BIT_ULL(VIRTIO_NET_F_CTRL_VLAN) |      \
-> +        BIT_ULL(VIRTIO_NET_F_GUEST_ANNOUNCE) | \
-> +        BIT_ULL(VIRTIO_NET_F_MQ) |             \
-> +        BIT_ULL(VIRTIO_NET_F_CTRL_MAC_ADDR) |  \
-> +        BIT_ULL(VIRTIO_NET_F_RSS))
+=== Description ===
 
-We need to make this as well:
+This is a bpf-treewide change that annotates all kfuncs as such inside
+.BTF_ids. This annotation eventually allows us to automatically generate
+kfunc prototypes from bpftool.
 
-VIRTIO_NET_F_CTRL_GUEST_OFFLOADS
+We store this metadata inside a yet-unused flags field inside struct
+btf_id_set8 (thanks Kumar!). pahole will be taught where to look.
 
-Other than this,
+More details about the full chain of events are available in commit 3's
+description.
 
-Acked-by: Jason Wang <jasowang@redhat.com>
+The accompanying pahole changes (still needs some cleanup) can be viewed
+here on this "frozen" branch [0].
 
-Thanks
+[0]: https://github.com/danobi/pahole/tree/kfunc_btf-mailed
 
-> +
->  struct vduse_virtqueue {
->         u16 index;
->         u16 num_max;
-> @@ -1680,6 +1690,9 @@ static bool features_is_valid(struct vduse_dev_conf=
-ig *config)
->         if ((config->device_id =3D=3D VIRTIO_ID_BLOCK) &&
->                         (config->features & (1ULL << VIRTIO_BLK_F_CONFIG_=
-WCE)))
->                 return false;
-> +       else if ((config->device_id =3D=3D VIRTIO_ID_NET) &&
-> +                       (config->features & VDUSE_NET_INVALID_FEATURES_MA=
-SK))
-> +               return false;
->
->         return true;
->  }
-> --
-> 2.43.0
->
+=== Changelog ===
+
+Changes from v1:
+* Move WARN_ON() up a call level
+* Also return error when kfunc set is not properly tagged
+* Use BTF_KFUNCS_START/END instead of flags
+* Rename BTF_SET8_KFUNC to BTF_SET8_KFUNCS
+
+Daniel Xu (3):
+  bpf: btf: Support flags for BTF_SET8 sets
+  bpf: btf: Add BTF_KFUNCS_START/END macro pair
+  bpf: treewide: Annotate BPF kfuncs in BTF
+
+ drivers/hid/bpf/hid_bpf_dispatch.c            |  8 +++----
+ fs/verity/measure.c                           |  4 ++--
+ include/linux/btf_ids.h                       | 21 +++++++++++++++----
+ kernel/bpf/btf.c                              |  4 ++++
+ kernel/bpf/cpumask.c                          |  4 ++--
+ kernel/bpf/helpers.c                          |  8 +++----
+ kernel/bpf/map_iter.c                         |  4 ++--
+ kernel/cgroup/rstat.c                         |  4 ++--
+ kernel/trace/bpf_trace.c                      |  8 +++----
+ net/bpf/test_run.c                            |  8 +++----
+ net/core/filter.c                             | 16 +++++++-------
+ net/core/xdp.c                                |  4 ++--
+ net/ipv4/bpf_tcp_ca.c                         |  4 ++--
+ net/ipv4/fou_bpf.c                            |  4 ++--
+ net/ipv4/tcp_bbr.c                            |  4 ++--
+ net/ipv4/tcp_cubic.c                          |  4 ++--
+ net/ipv4/tcp_dctcp.c                          |  4 ++--
+ net/netfilter/nf_conntrack_bpf.c              |  4 ++--
+ net/netfilter/nf_nat_bpf.c                    |  4 ++--
+ net/xfrm/xfrm_interface_bpf.c                 |  4 ++--
+ net/xfrm/xfrm_state_bpf.c                     |  4 ++--
+ .../selftests/bpf/bpf_testmod/bpf_testmod.c   |  8 +++----
+ 22 files changed, 77 insertions(+), 60 deletions(-)
+
+-- 
+2.42.1
 
 
