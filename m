@@ -1,65 +1,65 @@
-Return-Path: <linux-kernel+bounces-18417-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18419-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EDF59825D2F
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 00:34:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F55A825D32
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 00:35:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C9C871C23AA7
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 23:34:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BDBF21F23FA9
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 23:35:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02C08364BF;
-	Fri,  5 Jan 2024 23:34:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEAB436AF8;
+	Fri,  5 Jan 2024 23:34:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="LPxoWth0"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="bD2h52WP"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F05A7360B7
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 23:34:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7BC2360BA
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 23:34:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-50e7ddd999bso77839e87.1
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Jan 2024 15:34:19 -0800 (PST)
+Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-50e67f70f34so78713e87.0
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Jan 2024 15:34:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704497658; x=1705102458; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1704497659; x=1705102459; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=pivXLuv3moQJBJFOlfzUjv/WGq0UATAH7Ew9ljEMyg4=;
-        b=LPxoWth0+Dz0gOHJAmUE7pw8+rG9W0gy2HL9by3XMA6B6bYmWXF1XNN6lyVRCHL8qx
-         EcRurGeMKj18ag3NMXEnrhOlZLlF2YjM+oszGsEmISwxLPdSfUbSi2FyYwk+7P1eyG8H
-         bl94sxZoANEQXozFoTi/bya2bIKfuoUBcjEd8fI+VUnFnEwhWSf1ymeeefaxcvROzkba
-         nFZvHkzW6pzx2UihdMjAhgttItpMVyMkGA/xi97IHV7gu0noKFMbpCqxm8zUJv+Tr+UE
-         z5XnsN/ieWb4xRRwuXYrpocGqxg2DJItI1bCzswCkIWS2UZL/vcsyBi3E13HiYl6fOMI
-         n8lA==
+        bh=3T5J8bNQK5XAdBehncduzCFxSoGLPqlnF2Hr6/4OwAc=;
+        b=bD2h52WPzyTiKB+cnPNZ9PVk7tQF8yhUjGALviclp7jn2N8d/xq4PAOhBnjXVIuqNr
+         /5TMwbRMqrkr+LSoOUFOOplX8tBhaDRsxddiI/vxt1J08VG7WyASb5BOrLJSzPOowMFi
+         v/d3CCltApIfdHA3QfIeUhFD8IlOklnAT8pibCidbDtdFfCrusX98ao6kdTHfx92WGxV
+         ssQe5v2PPShz2he7aeaj5ghhFE575rnsURLPY5WwyPIw0M6aSgIbtkPjcOCcGXjaDY2Z
+         RQ3eSJsGl8p0HG0E7+SjEcSOWxfk7zijYk/e/R8EW85L6smXrQIvP1Mt6G0SAn/EwSkU
+         NaCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704497658; x=1705102458;
+        d=1e100.net; s=20230601; t=1704497659; x=1705102459;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=pivXLuv3moQJBJFOlfzUjv/WGq0UATAH7Ew9ljEMyg4=;
-        b=qiZiYHW34gZfXmN8oyF7mpgMX2iAeJqX/PYwkR1zh4CF6zdwl5xDV4EPklrhVI5z6o
-         UxscjgATGpFKzNtOWo7IxlwV+NDM/Lys5ufPPlfQbdthKQwzNPdiIc4vcrBbeuqsPoV0
-         fYb1js3qRUNhO79RGxHCCVRqYvdutVA94l83pT0IcEhQnTJBVTfFrkA9BuwXXGqZjA9Y
-         VqUmoIOqzG4BN6gnk34i6SG2w5xQszz5bj25oowrv9AP5iimBW6eLSvfUPNu1rYODRuM
-         FOEkRAAUR4zDqgrA4Az5Vqci6E63u/3fU/wJqvULcpdV6p7o53HDf5M7sRim6DO/yvI7
-         LeDQ==
-X-Gm-Message-State: AOJu0YxRBDkKFLBQmjJ6iq0BvXmE5nQNScsVIKDG5AHn96n+5Y6zED2r
-	VsvtJI7YNnZ71ORgKXiVOL68QmgDPtOKJFRcEcGIBT2UnEW10A==
-X-Google-Smtp-Source: AGHT+IHjjfgIUzKUmYx8HvWto+XFSDXGxrDrzCnNGlIaweKA9Pizp1MjnofAvmLAwmRQ4ywaKSuTYQ==
-X-Received: by 2002:a05:6512:1304:b0:50e:b206:50f6 with SMTP id x4-20020a056512130400b0050eb20650f6mr105571lfu.62.1704497658026;
+        bh=3T5J8bNQK5XAdBehncduzCFxSoGLPqlnF2Hr6/4OwAc=;
+        b=TsXNUU1hjIXLKpFcPQrZWhJh2iby5634ISEF8a62CCPnSbQC9HdRG/fgJoyTaLrb66
+         Ccr8zK2RKxKRdebn1DdastTaC1qpqJlltZKTv2tHrKT5mCmi9/qP4EEfFvgRdi28jnCH
+         xXdOVGMBmJRMnpLyAzOBEc4ARUvmzpyEsvIRzrSU/isi9eiLxdxd0s5LRcBj8gxYThWT
+         WT16SRfWweg269hfbEqu8U6zcYK5kxPhwwiUsTBZdwE4ILu8GzwDqqdXihCU+Js+uD/E
+         CyO7so4XVvtJqDVdvEuLf1QwUfPpeNA9rlp6Xs8n/eIIf6ReQ3UGVgeMI24aEcJQ7Emu
+         Pw+Q==
+X-Gm-Message-State: AOJu0Ywz6J5RXUrO6I+0itqwiCFjKHZhtRmUcvI/Pok+QKSQ3JDYE8Ty
+	PtUWwZC0IKZSaY8rXcBcUdKGxdo4STEl3Q==
+X-Google-Smtp-Source: AGHT+IHKWE78pMyEjlTpgPNa1sUMzNcI+WPVxfGXQ8Wb1NYK0/u1LUCOQwSo6DSENPY0rC9OYWezvw==
+X-Received: by 2002:a05:6512:246:b0:50e:4acb:3d0d with SMTP id b6-20020a056512024600b0050e4acb3d0dmr65443lfo.47.1704497658844;
         Fri, 05 Jan 2024 15:34:18 -0800 (PST)
 Received: from umbar.lan ([192.130.178.91])
-        by smtp.gmail.com with ESMTPSA id k4-20020ac24f04000000b0050e74d04c8asm362211lfr.132.2024.01.05.15.34.17
+        by smtp.gmail.com with ESMTPSA id k4-20020ac24f04000000b0050e74d04c8asm362211lfr.132.2024.01.05.15.34.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Jan 2024 15:34:17 -0800 (PST)
+        Fri, 05 Jan 2024 15:34:18 -0800 (PST)
 From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Sat, 06 Jan 2024 01:34:15 +0200
-Subject: [PATCH v3 1/4] drm/msm/mdss: generate MDSS data for MDP5 platforms
+Date: Sat, 06 Jan 2024 01:34:16 +0200
+Subject: [PATCH v3 2/4] drm/msm/dpu: support binding to the mdp5 devices
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -68,7 +68,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240106-fd-migrate-mdp5-v3-1-3d2750378063@linaro.org>
+Message-Id: <20240106-fd-migrate-mdp5-v3-2-3d2750378063@linaro.org>
 References: <20240106-fd-migrate-mdp5-v3-0-3d2750378063@linaro.org>
 In-Reply-To: <20240106-fd-migrate-mdp5-v3-0-3d2750378063@linaro.org>
 To: Rob Clark <robdclark@gmail.com>, 
@@ -79,109 +79,186 @@ To: Rob Clark <robdclark@gmail.com>,
 Cc: linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org, 
  freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
 X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2820;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=5597;
  i=dmitry.baryshkov@linaro.org; h=from:subject:message-id;
- bh=LkZVf/+xPhq0hvOZBHDG1k3f2Ti6cdXMRdV8DhuZcww=;
- b=owEBbQGS/pANAwAKAYs8ij4CKSjVAcsmYgBlmJH3neGn4tNLgH5uqv+GRDujihKsIuYzeU+fQ
- q1wipxEVTKJATMEAAEKAB0WIQRMcISVXLJjVvC4lX+LPIo+Aiko1QUCZZiR9wAKCRCLPIo+Aiko
- 1Yx5B/9qCYBUPIhNXXCNksAqS7Arv9TpBfuk3jYAtOIwuslsf84dtngnOJy6DXX8QwgKpSXgDe5
- JhfPlKOHR9iZhYK5hS+C7iwVbnxvAPpdrd9Sywmekw1jdXD/dHqJIh2i5zEfj0rtE8rxaa2TPF9
- deM0w/KJ3NIz8Uu1jb8Bi+PlnwiBb6hF9y0B5Mj4/TNl/a//GjhBJGxY0RCpdck24Tmcm+HrJsP
- wzskwxbkgDYAjlaGhfEYZHoYz5WQddJgOS0LAk/hk4qamQvaJBUlIlZSYNqY0s/JbokBghgyYjA
- ZMWyStoIRyPRfOWmjpgpomAa1vpzfGd8sMkF08lDj+F1roJy
+ bh=r6/gCr+xdab3sdKL6gyWMEBbRFCgBrcmQFNSej3FNt4=;
+ b=owEBbQGS/pANAwAKAYs8ij4CKSjVAcsmYgBlmJH3hkLeNpca5eBe7y5aspXQ7mzoe0WXri4OI
+ ml2TKAybc+JATMEAAEKAB0WIQRMcISVXLJjVvC4lX+LPIo+Aiko1QUCZZiR9wAKCRCLPIo+Aiko
+ 1aYnCACL5b6aY3/WBVU0bHnAtiSYAggE5sIpLL9DBYnCl9x56LYDer3A3MLpui4oSh09ZL+fHES
+ im2z/U0d/I6rqRi53pBWdRLA/oVkdgRmc9JOj0mf9hMI2Xpc0v1J9sZZr3y7JbypSumNTlKeBUN
+ muozWQ4OTUcz4fyVhq706SBY9ebMo/zbpGLrrW8I5jS92qz/Cdy7LV+UJVs/J9E0CFyNdoXKlzh
+ OeXi7QhhvN4nQbooKV7zFi95i8FH7pbB2cUdm7Uiku6DQgS6ADJVQIMZzI1vdtBPM42nfRQB+09
+ 3Bjyiru4YK/nSzRJBvmSyN2zrl62lZ/MXmBRmMiLxQ7DMhFG
 X-Developer-Key: i=dmitry.baryshkov@linaro.org; a=openpgp;
  fpr=8F88381DD5C873E4AE487DA5199BF1243632046A
 
-Older (mdp5) platforms do not use per-SoC compatible strings. Instead
-they use a single compat entry 'qcom,mdss'. To facilitate migrating
-these platforms to the DPU driver provide a way to generate the MDSS /
-UBWC data at runtime, when the DPU driver asks for it.
-
-It is not possible to generate this data structure at the probe time,
-since some platforms might not have MDP_CLK enabled, which makes reading
-HW_REV register return 0.
+Existing MDP5 devices have slightly different bindings. The main
+register region is called `mdp_phys' instead of `mdp'. Also vbif
+register regions are a part of the parent, MDSS device. Add support for
+handling this binding differences.
 
 Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 ---
- drivers/gpu/drm/msm/msm_mdss.c | 51 ++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 51 insertions(+)
+ drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c | 98 ++++++++++++++++++++++++++-------
+ drivers/gpu/drm/msm/msm_drv.h           |  3 +
+ drivers/gpu/drm/msm/msm_io_utils.c      | 13 +++++
+ 3 files changed, 93 insertions(+), 21 deletions(-)
 
-diff --git a/drivers/gpu/drm/msm/msm_mdss.c b/drivers/gpu/drm/msm/msm_mdss.c
-index 455b2e3a0cdd..566a5dd5b8e8 100644
---- a/drivers/gpu/drm/msm/msm_mdss.c
-+++ b/drivers/gpu/drm/msm/msm_mdss.c
-@@ -3,6 +3,7 @@
-  * Copyright (c) 2018, The Linux Foundation
-  */
- 
-+#include <linux/bitfield.h>
- #include <linux/clk.h>
- #include <linux/delay.h>
- #include <linux/interconnect.h>
-@@ -213,6 +214,49 @@ static void msm_mdss_setup_ubwc_dec_40(struct msm_mdss *msm_mdss)
- 	}
+diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
+index 723cc1d82143..aa9e0ad33ebb 100644
+--- a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
++++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
+@@ -1197,6 +1197,78 @@ static int dpu_kms_init(struct drm_device *ddev)
+ 	return 0;
  }
  
-+#define MDSS_HW_MAJ_MIN		GENMASK(31, 16)
-+
-+#define MDSS_HW_MSM8996		0x1007
-+#define MDSS_HW_MSM8937		0x100e
-+#define MDSS_HW_MSM8956		0x1010
-+#define MDSS_HW_MSM8998		0x3000
-+#define MDSS_HW_SDM660		0x3002
-+#define MDSS_HW_SDM630		0x3003
-+
-+/*
-+ * MDP5 platforms use generic qcom,mdp5 compat string, so we have to generate this data
-+ */
-+static const struct msm_mdss_data *msm_mdss_generate_mdp5_mdss_data(struct msm_mdss *mdss)
++static int dpu_kms_mmap_mdp5(struct dpu_kms *dpu_kms)
 +{
-+	struct msm_mdss_data *data;
-+	u32 hw_rev;
++	struct platform_device *pdev = dpu_kms->pdev;
++	struct platform_device *mdss_dev;
++	int ret;
 +
-+	data = devm_kzalloc(mdss->dev, sizeof(*data), GFP_KERNEL);
-+	if (!data)
-+		return NULL;
++	if (dpu_kms->pdev->dev.bus != &platform_bus_type)
++		return -EINVAL;
 +
-+	hw_rev = readl_relaxed(mdss->mmio + HW_REV);
-+	hw_rev = FIELD_GET(MDSS_HW_MAJ_MIN, hw_rev);
++	mdss_dev = to_platform_device(dpu_kms->pdev->dev.parent);
 +
-+	if (hw_rev == MDSS_HW_MSM8996 ||
-+	    hw_rev == MDSS_HW_MSM8937 ||
-+	    hw_rev == MDSS_HW_MSM8956 ||
-+	    hw_rev == MDSS_HW_MSM8998 ||
-+	    hw_rev == MDSS_HW_SDM660 ||
-+	    hw_rev == MDSS_HW_SDM630) {
-+		data->ubwc_dec_version = UBWC_1_0;
-+		data->ubwc_enc_version = UBWC_1_0;
++	dpu_kms->mmio = msm_ioremap(pdev, "mdp_phys");
++	if (IS_ERR(dpu_kms->mmio)) {
++		ret = PTR_ERR(dpu_kms->mmio);
++		DPU_ERROR("mdp register memory map failed: %d\n", ret);
++		dpu_kms->mmio = NULL;
++		return ret;
++	}
++	DRM_DEBUG("mapped dpu address space @%pK\n", dpu_kms->mmio);
++
++	dpu_kms->vbif[VBIF_RT] = msm_ioremap_mdss(mdss_dev,
++						  dpu_kms->pdev,
++						  "vbif_phys");
++	if (IS_ERR(dpu_kms->vbif[VBIF_RT])) {
++		ret = PTR_ERR(dpu_kms->vbif[VBIF_RT]);
++		DPU_ERROR("vbif register memory map failed: %d\n", ret);
++		dpu_kms->vbif[VBIF_RT] = NULL;
++		return ret;
 +	}
 +
-+	if (hw_rev == MDSS_HW_MSM8996 ||
-+	    hw_rev == MDSS_HW_MSM8998)
-+		data->highest_bank_bit = 2;
-+	else
-+		data->highest_bank_bit = 1;
++	dpu_kms->vbif[VBIF_NRT] = msm_ioremap_mdss(mdss_dev,
++						   dpu_kms->pdev,
++						   "vbif_nrt_phys");
++	if (IS_ERR(dpu_kms->vbif[VBIF_NRT])) {
++		dpu_kms->vbif[VBIF_NRT] = NULL;
++		DPU_DEBUG("VBIF NRT is not defined");
++	}
 +
-+	return data;
++	return 0;
 +}
 +
- const struct msm_mdss_data *msm_mdss_get_mdss_data(struct device *dev)
- {
- 	struct msm_mdss *mdss;
-@@ -222,6 +266,13 @@ const struct msm_mdss_data *msm_mdss_get_mdss_data(struct device *dev)
- 
- 	mdss = dev_get_drvdata(dev);
- 
-+	/*
-+	 * We could not do it at the probe time, since hw revision register was
-+	 * not readable. Fill data structure now for the MDP5 platforms.
-+	 */
-+	if (!mdss->mdss_data && mdss->is_mdp5)
-+		mdss->mdss_data = msm_mdss_generate_mdp5_mdss_data(mdss);
++static int dpu_kms_mmap_dpu(struct dpu_kms *dpu_kms)
++{
++	struct platform_device *pdev = dpu_kms->pdev;
++	int ret;
 +
- 	return mdss->mdss_data;
++	dpu_kms->mmio = msm_ioremap(pdev, "mdp");
++	if (IS_ERR(dpu_kms->mmio)) {
++		ret = PTR_ERR(dpu_kms->mmio);
++		DPU_ERROR("mdp register memory map failed: %d\n", ret);
++		dpu_kms->mmio = NULL;
++		return ret;
++	}
++	DRM_DEBUG("mapped dpu address space @%pK\n", dpu_kms->mmio);
++
++	dpu_kms->vbif[VBIF_RT] = msm_ioremap(pdev, "vbif");
++	if (IS_ERR(dpu_kms->vbif[VBIF_RT])) {
++		ret = PTR_ERR(dpu_kms->vbif[VBIF_RT]);
++		DPU_ERROR("vbif register memory map failed: %d\n", ret);
++		dpu_kms->vbif[VBIF_RT] = NULL;
++		return ret;
++	}
++
++	dpu_kms->vbif[VBIF_NRT] = msm_ioremap_quiet(pdev, "vbif_nrt");
++	if (IS_ERR(dpu_kms->vbif[VBIF_NRT])) {
++		dpu_kms->vbif[VBIF_NRT] = NULL;
++		DPU_DEBUG("VBIF NRT is not defined");
++	}
++
++	return 0;
++}
++
+ static int dpu_dev_probe(struct platform_device *pdev)
+ {
+ 	struct device *dev = &pdev->dev;
+@@ -1230,28 +1302,12 @@ static int dpu_dev_probe(struct platform_device *pdev)
+ 
+ 	dpu_kms->base.irq = irq;
+ 
+-	dpu_kms->mmio = msm_ioremap(pdev, "mdp");
+-	if (IS_ERR(dpu_kms->mmio)) {
+-		ret = PTR_ERR(dpu_kms->mmio);
+-		DPU_ERROR("mdp register memory map failed: %d\n", ret);
+-		dpu_kms->mmio = NULL;
+-		return ret;
+-	}
+-	DRM_DEBUG("mapped dpu address space @%pK\n", dpu_kms->mmio);
+-
+-	dpu_kms->vbif[VBIF_RT] = msm_ioremap(pdev, "vbif");
+-	if (IS_ERR(dpu_kms->vbif[VBIF_RT])) {
+-		ret = PTR_ERR(dpu_kms->vbif[VBIF_RT]);
+-		DPU_ERROR("vbif register memory map failed: %d\n", ret);
+-		dpu_kms->vbif[VBIF_RT] = NULL;
++	if (of_device_is_compatible(dpu_kms->pdev->dev.of_node, "qcom,mdp5"))
++		ret = dpu_kms_mmap_mdp5(dpu_kms);
++	else
++		ret = dpu_kms_mmap_dpu(dpu_kms);
++	if (ret)
+ 		return ret;
+-	}
+-
+-	dpu_kms->vbif[VBIF_NRT] = msm_ioremap_quiet(pdev, "vbif_nrt");
+-	if (IS_ERR(dpu_kms->vbif[VBIF_NRT])) {
+-		dpu_kms->vbif[VBIF_NRT] = NULL;
+-		DPU_DEBUG("VBIF NRT is not defined");
+-	}
+ 
+ 	ret = dpu_kms_parse_data_bus_icc_path(dpu_kms);
+ 	if (ret)
+diff --git a/drivers/gpu/drm/msm/msm_drv.h b/drivers/gpu/drm/msm/msm_drv.h
+index 16a7cbc0b7dd..01e783130054 100644
+--- a/drivers/gpu/drm/msm/msm_drv.h
++++ b/drivers/gpu/drm/msm/msm_drv.h
+@@ -476,6 +476,9 @@ void __iomem *msm_ioremap(struct platform_device *pdev, const char *name);
+ void __iomem *msm_ioremap_size(struct platform_device *pdev, const char *name,
+ 		phys_addr_t *size);
+ void __iomem *msm_ioremap_quiet(struct platform_device *pdev, const char *name);
++void __iomem *msm_ioremap_mdss(struct platform_device *mdss_pdev,
++			       struct platform_device *dev,
++			       const char *name);
+ 
+ struct icc_path *msm_icc_get(struct device *dev, const char *name);
+ 
+diff --git a/drivers/gpu/drm/msm/msm_io_utils.c b/drivers/gpu/drm/msm/msm_io_utils.c
+index 59d2788c4510..afedd61c3e28 100644
+--- a/drivers/gpu/drm/msm/msm_io_utils.c
++++ b/drivers/gpu/drm/msm/msm_io_utils.c
+@@ -50,6 +50,19 @@ struct clk *msm_clk_get(struct platform_device *pdev, const char *name)
+ 	return clk;
  }
  
++void __iomem *msm_ioremap_mdss(struct platform_device *mdss_pdev,
++			       struct platform_device *pdev,
++			       const char *name)
++{
++	struct resource *res;
++
++	res = platform_get_resource_byname(mdss_pdev, IORESOURCE_MEM, name);
++	if (!res)
++		return ERR_PTR(-EINVAL);
++
++	return devm_ioremap_resource(&pdev->dev, res);
++}
++
+ static void __iomem *_msm_ioremap(struct platform_device *pdev, const char *name,
+ 				  bool quiet, phys_addr_t *psize)
+ {
 
 -- 
 2.39.2
