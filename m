@@ -1,527 +1,173 @@
-Return-Path: <linux-kernel+bounces-17927-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17930-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A73582553E
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 15:29:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 55934825544
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 15:30:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D90DFB2195D
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 14:29:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A0575286789
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 14:30:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 670CD321B8;
-	Fri,  5 Jan 2024 14:27:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7605E2E656;
+	Fri,  5 Jan 2024 14:28:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QqS4T71y"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Dp3+c0Lv"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C008D31A89;
-	Fri,  5 Jan 2024 14:27:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 820DB2E651;
+	Fri,  5 Jan 2024 14:28:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-40d87df95ddso14271575e9.0;
-        Fri, 05 Jan 2024 06:27:46 -0800 (PST)
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1d4c27cd502so10814835ad.0;
+        Fri, 05 Jan 2024 06:28:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704464865; x=1705069665; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=1RPN76dImVZ9qk/dQRb5vSc4CF59XSeyiqnxzvzXS/Y=;
-        b=QqS4T71y7Bz51SUtMnGpadueGoVE5VOo23pnWLtWqaflXoHy/1vU3xg9K0j3ZeZfIK
-         CazyvZmJqyzEMONNTo3B/JfMhabGaIUST1jFdsuOrHs7niCN5aVyn6Zxu4AbClmxqDkC
-         0CoF0YVA37HETm1YV7pDoYIx74Nro72gg5H8tw8ap7BLQNGKzchb4Op06efHP1rAdDeW
-         C7AJmNguSrGFLN8LzCgGt/jDoTC4yKm//GgPD71twbUToecJMT9+Yjf/WFHNmMc8DLUu
-         PjIz+IejXWi2RO7WKLc7M+9Gquk/c9d5A/OnIFqb8+eX/lfRtUA6RcY3E4IVDb3BvMJ4
-         i59w==
+        d=gmail.com; s=20230601; t=1704464926; x=1705069726; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=7jOEES3GYf9zuoPp0SeFXr4sAT/cFY1YYwBIMigx8go=;
+        b=Dp3+c0LvH4AEUrQXa9ycMxcV2XiEAL980yz5pQVK1B2JwP4A8E85TLhzFiVdhShu+V
+         B6ouQZx99CQAW+GC/8rG/PLsO0Vqa3y3OvqjLgGGvpMZdx3hozyneq1gmJOQOmTDpfpW
+         euG2HFfkyp6bSBWfIi/wGRftvzPJ09/+EI2QdJz1/Yfv6+k05SuFeI2SorK6NP+byijn
+         30YaCX40ONT70pjcgsvH6hMxQZD2GowMZlb6oaBlhqlN4dtTngWREaiQvVS1KNDdrCNF
+         ripzXwe6/NTENRY0H0zSIDV0Pii/l28nOX4mQhQN/yQRd7gnIHeWph6d42nRa7SpcBOc
+         JvXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704464865; x=1705069665;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1RPN76dImVZ9qk/dQRb5vSc4CF59XSeyiqnxzvzXS/Y=;
-        b=LjA/Eu9vEUr3Pg4QIA2nEf4lwkwvvm/wgaT26lwK4BH5JY8LxOgunrwL3+obzKDRb7
-         vj8YhkiWQ5icZrDqIm1c0M1lIuT9gl/IHUG87xs0Lcn+fDP+UIDP1R5gIEG1MY3VjbPF
-         a1Pt6x8CQXZhG5IoH5R7uNdZJKl/YznizvW3QbkRKP19AMWErSoG1FA1Xzp1yWimE7xr
-         8OrEdEme4aXwuKyo/1UBcSUqlIuVq5WAlaUFDXmTpdLUu4jEhxirclIptza9CTgX1T4z
-         AJK3XNINbsGUAXdmpxm9bJkZY2NUfdDvbPoaZML7te8ek0UXhOhLajMqM1xcsKGd+ynD
-         FZgA==
-X-Gm-Message-State: AOJu0YzJjKzX6okc41Cs2n9E6nIQv2wAdEJFs0hUKKGEQTqNNi25Q2PD
-	RCtpFhmPPj1M6BysMgOokCs=
-X-Google-Smtp-Source: AGHT+IHu43QPGzQCbul+r4WQ159aXXuoPh/GzOxgYPcbOIyFUJK74U+H5XDij62VuYdOLrBqbfP+yA==
-X-Received: by 2002:a05:600c:4f4e:b0:40d:5f3e:e985 with SMTP id m14-20020a05600c4f4e00b0040d5f3ee985mr642484wmq.154.1704464864973;
-        Fri, 05 Jan 2024 06:27:44 -0800 (PST)
-Received: from localhost.localdomain (host-80-116-159-187.retail.telecomitalia.it. [80.116.159.187])
-        by smtp.googlemail.com with ESMTPSA id j10-20020a05600c190a00b0040d87100733sm1721901wmq.39.2024.01.05.06.27.42
+        d=1e100.net; s=20230601; t=1704464926; x=1705069726;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=7jOEES3GYf9zuoPp0SeFXr4sAT/cFY1YYwBIMigx8go=;
+        b=Km3qwp7VU3CNzY5mEjek/Vv6Dv7DHKjEuV2McmB/ltchvuVSDFMD+YuqpvYtGgDIG7
+         iYGphHONU6bgzgB7VEVj9QO1wHJwKEy6TP7f9HHzxJkmH+fuKYmH42MqxPrh8GMRlia9
+         8M4pz9Inbww74a5X9UwuBBbLn9s9mOVRXBvuesyCMP9L+bpAC9PZzqHKIvkIbBxJAP0R
+         /cMWSTk7E/SXvNwRqKRbSFR49s3AdM8nAHeDy1KXg29148yL2gspcRxPqe9CmngF2ZVk
+         JDWNbX90ioq8JypuiFXOrYecHB3Xc+prBnY5sD0e50ndGh2/XlhckCor6g9EFD8eWDbY
+         oeMQ==
+X-Gm-Message-State: AOJu0YwKU+a0LiR1+JCBvCp/7TrUpm1/pZwBnJdqqNOLkGUi/FozTSFK
+	zms+wbDAIt35F9apY+MOvFw=
+X-Google-Smtp-Source: AGHT+IFbl6+RcE4ntqGpZAnzFGU5yOeB5cgnpeIQNm8xslXigAxyv2OQHJKXqSzdinR8yr9SDG5pdg==
+X-Received: by 2002:a17:902:ea0b:b0:1d4:7628:381c with SMTP id s11-20020a170902ea0b00b001d47628381cmr2152926plg.3.1704464925623;
+        Fri, 05 Jan 2024 06:28:45 -0800 (PST)
+Received: from archie.me ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id u10-20020a170902e80a00b001cfca7b8ee7sm1465578plg.99.2024.01.05.06.28.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Jan 2024 06:27:44 -0800 (PST)
-From: Christian Marangi <ansuelsmth@gmail.com>
-To: Pavel Machek <pavel@ucw.cz>,
-	Lee Jones <lee@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	William Zhang <william.zhang@broadcom.com>,
-	Anand Gore <anand.gore@broadcom.com>,
-	Kursad Oney <kursad.oney@broadcom.com>,
-	Florian Fainelli <florian.fainelli@broadcom.com>,
-	=?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
-	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Andrew Lunn <andrew@lunn.ch>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	Jacek Anaszewski <jacek.anaszewski@gmail.com>,
-	=?UTF-8?q?Fern=C3=A1ndez=20Rojas?= <noltari@gmail.com>,
-	Sven Schwermer <sven.schwermer@disruptive-technologies.com>,
-	Christian Marangi <ansuelsmth@gmail.com>,
-	linux-leds@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	netdev@vger.kernel.org
-Subject: [net-next PATCH v9 5/5] net: phy: at803x: add LED support for qca808x
-Date: Fri,  5 Jan 2024 15:27:17 +0100
-Message-ID: <20240105142719.11042-6-ansuelsmth@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240105142719.11042-1-ansuelsmth@gmail.com>
-References: <20240105142719.11042-1-ansuelsmth@gmail.com>
+        Fri, 05 Jan 2024 06:28:45 -0800 (PST)
+Received: by archie.me (Postfix, from userid 1000)
+	id 09E92183BE406; Fri,  5 Jan 2024 21:28:40 +0700 (WIB)
+Date: Fri, 5 Jan 2024 21:28:40 +0700
+From: Bagas Sanjaya <bagasdotme@gmail.com>
+To: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	Linux Documentation <linux-doc@vger.kernel.org>
+Cc: Jonathan Corbet <corbet@lwn.net>, Randy Dunlap <rdunlap@infradead.org>
+Subject: Adding warning icon to warning admonitions?
+Message-ID: <ZZgSGFhvT3SOI4fe@archie.me>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="T+v1tXslhN0Y+B0/"
+Content-Disposition: inline
 
-Add LED support for QCA8081 PHY.
 
-Documentation for this LEDs PHY is very scarce even with NDA access
-to Documentation for OEMs. Only the blink pattern are documented and are
-very confusing most of the time. No documentation is present about
-forcing the LED on/off or to always blink.
+--T+v1tXslhN0Y+B0/
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Those settings were reversed by poking the regs and trying to find the
-correct bits to trigger these modes. Some bits mode are not clear and
-maybe the documentation option are not 100% correct. For the sake of LED
-support the reversed option are enough to add support for current LED
-APIs.
+Hi,
 
-Supported HW control modes are:
-- tx
-- rx
-- link10
-- link100
-- link1000
-- half_duplex
-- full_duplex
+On my head, I'm often thinking about adding warning icon (more specifically,
+circle exclamation) to warning admonition blocks. The idea is inspired by
+content safety disclaimers as seen on TikTok (TT) (for example and FYI,
+racing-themed contents there like [1] are more likely to get what I called
+"pro-only" admonition that literally says `The actions in this video are
+performed by professionals or supervised by professionals. Do not attempt.`)
 
-Also add support for LED polarity set to set LED polarity to active
-high or low. QSDK sets this value to high by default but PHY reset value
-doesn't have this enabled by default.
+=46rom above inspiration, I'd like to make the warning admonition block from
+currently:
 
-QSDK also sets 2 additional bits but their usage is not clear, info about
-this is added in the header. It was verified that for correct function
-of the LED if active high is needed, only BIT 6 is needed.
+```
++--------------------------------------------------------------------------=
+--+
+|   Warning:                                                               =
+  |
+|                                                                          =
+  |
+|   Function foo() can produce undefined behavior. Either sanitize         =
+  |
+|   arguments being passed, or use the safer abstraction foo_wrapper().    =
+  |
++--------------------------------------------------------------------------=
+--+
+```
 
-Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
----
-Changes v9:
-- Fix copy-paste error for blink settings
-Changes v8:
-- Drop unused ret variable
-Changes v7:
-- Improve set polarity settings (Suggested by Russell)
-Changes v6:
-- Rebase on top of net-next
-Changes v5:
-- Rework to polarity option bitmap
-- Rafactor with new finding from further reverse
-Changes v4:
-- Rework to polarity option (for marvell10g series support)
-- Rework logic to enforce single PHY polarity mode
-Changes v3:
-- Out of RFC
-- Drop link_25000 and add TODO commends waiting for the
-  netdev trigger thing to be merged (I will take care of
-  sending a followup patch later)
-Changes v2:
-- Move to new led_polarity_set implementation
-- Drop special probe
+into:
 
- drivers/net/phy/at803x.c | 325 +++++++++++++++++++++++++++++++++++++++
- 1 file changed, 325 insertions(+)
+```
++--------------------------------------------------------------------------=
+--+
+|   (!) Warning:                                                           =
+  |
+|                                                                          =
+  |
+|       Function foo() can produce undefined behaivor. Either sanitize     =
+  |
+|       arguments being passed, or use the safer abstraction foo_wrapper().=
+  |
++--------------------------------------------------------------------------=
+--+
+```
 
-diff --git a/drivers/net/phy/at803x.c b/drivers/net/phy/at803x.c
-index aaf6c654aaed..3e3a95e594c7 100644
---- a/drivers/net/phy/at803x.c
-+++ b/drivers/net/phy/at803x.c
-@@ -272,6 +272,87 @@
- #define QCA808X_CDT_STATUS_STAT_OPEN		2
- #define QCA808X_CDT_STATUS_STAT_SHORT		3
- 
-+#define QCA808X_MMD7_LED_GLOBAL			0x8073
-+#define QCA808X_LED_BLINK_1			GENMASK(11, 6)
-+#define QCA808X_LED_BLINK_2			GENMASK(5, 0)
-+/* Values are the same for both BLINK_1 and BLINK_2 */
-+#define QCA808X_LED_BLINK_FREQ_MASK		GENMASK(5, 3)
-+#define QCA808X_LED_BLINK_FREQ_2HZ		FIELD_PREP(QCA808X_LED_BLINK_FREQ_MASK, 0x0)
-+#define QCA808X_LED_BLINK_FREQ_4HZ		FIELD_PREP(QCA808X_LED_BLINK_FREQ_MASK, 0x1)
-+#define QCA808X_LED_BLINK_FREQ_8HZ		FIELD_PREP(QCA808X_LED_BLINK_FREQ_MASK, 0x2)
-+#define QCA808X_LED_BLINK_FREQ_16HZ		FIELD_PREP(QCA808X_LED_BLINK_FREQ_MASK, 0x3)
-+#define QCA808X_LED_BLINK_FREQ_32HZ		FIELD_PREP(QCA808X_LED_BLINK_FREQ_MASK, 0x4)
-+#define QCA808X_LED_BLINK_FREQ_64HZ		FIELD_PREP(QCA808X_LED_BLINK_FREQ_MASK, 0x5)
-+#define QCA808X_LED_BLINK_FREQ_128HZ		FIELD_PREP(QCA808X_LED_BLINK_FREQ_MASK, 0x6)
-+#define QCA808X_LED_BLINK_FREQ_256HZ		FIELD_PREP(QCA808X_LED_BLINK_FREQ_MASK, 0x7)
-+#define QCA808X_LED_BLINK_DUTY_MASK		GENMASK(2, 0)
-+#define QCA808X_LED_BLINK_DUTY_50_50		FIELD_PREP(QCA808X_LED_BLINK_DUTY_MASK, 0x0)
-+#define QCA808X_LED_BLINK_DUTY_75_25		FIELD_PREP(QCA808X_LED_BLINK_DUTY_MASK, 0x1)
-+#define QCA808X_LED_BLINK_DUTY_25_75		FIELD_PREP(QCA808X_LED_BLINK_DUTY_MASK, 0x2)
-+#define QCA808X_LED_BLINK_DUTY_33_67		FIELD_PREP(QCA808X_LED_BLINK_DUTY_MASK, 0x3)
-+#define QCA808X_LED_BLINK_DUTY_67_33		FIELD_PREP(QCA808X_LED_BLINK_DUTY_MASK, 0x4)
-+#define QCA808X_LED_BLINK_DUTY_17_83		FIELD_PREP(QCA808X_LED_BLINK_DUTY_MASK, 0x5)
-+#define QCA808X_LED_BLINK_DUTY_83_17		FIELD_PREP(QCA808X_LED_BLINK_DUTY_MASK, 0x6)
-+#define QCA808X_LED_BLINK_DUTY_8_92		FIELD_PREP(QCA808X_LED_BLINK_DUTY_MASK, 0x7)
-+
-+#define QCA808X_MMD7_LED2_CTRL			0x8074
-+#define QCA808X_MMD7_LED2_FORCE_CTRL		0x8075
-+#define QCA808X_MMD7_LED1_CTRL			0x8076
-+#define QCA808X_MMD7_LED1_FORCE_CTRL		0x8077
-+#define QCA808X_MMD7_LED0_CTRL			0x8078
-+#define QCA808X_MMD7_LED_CTRL(x)		(0x8078 - ((x) * 2))
-+
-+/* LED hw control pattern is the same for every LED */
-+#define QCA808X_LED_PATTERN_MASK		GENMASK(15, 0)
-+#define QCA808X_LED_SPEED2500_ON		BIT(15)
-+#define QCA808X_LED_SPEED2500_BLINK		BIT(14)
-+/* Follow blink trigger even if duplex or speed condition doesn't match */
-+#define QCA808X_LED_BLINK_CHECK_BYPASS		BIT(13)
-+#define QCA808X_LED_FULL_DUPLEX_ON		BIT(12)
-+#define QCA808X_LED_HALF_DUPLEX_ON		BIT(11)
-+#define QCA808X_LED_TX_BLINK			BIT(10)
-+#define QCA808X_LED_RX_BLINK			BIT(9)
-+#define QCA808X_LED_TX_ON_10MS			BIT(8)
-+#define QCA808X_LED_RX_ON_10MS			BIT(7)
-+#define QCA808X_LED_SPEED1000_ON		BIT(6)
-+#define QCA808X_LED_SPEED100_ON			BIT(5)
-+#define QCA808X_LED_SPEED10_ON			BIT(4)
-+#define QCA808X_LED_COLLISION_BLINK		BIT(3)
-+#define QCA808X_LED_SPEED1000_BLINK		BIT(2)
-+#define QCA808X_LED_SPEED100_BLINK		BIT(1)
-+#define QCA808X_LED_SPEED10_BLINK		BIT(0)
-+
-+#define QCA808X_MMD7_LED0_FORCE_CTRL		0x8079
-+#define QCA808X_MMD7_LED_FORCE_CTRL(x)		(0x8079 - ((x) * 2))
-+
-+/* LED force ctrl is the same for every LED
-+ * No documentation exist for this, not even internal one
-+ * with NDA as QCOM gives only info about configuring
-+ * hw control pattern rules and doesn't indicate any way
-+ * to force the LED to specific mode.
-+ * These define comes from reverse and testing and maybe
-+ * lack of some info or some info are not entirely correct.
-+ * For the basic LED control and hw control these finding
-+ * are enough to support LED control in all the required APIs.
-+ *
-+ * On doing some comparison with implementation with qca807x,
-+ * it was found that it's 1:1 equal to it and confirms all the
-+ * reverse done. It was also found further specification with the
-+ * force mode and the blink modes.
-+ */
-+#define QCA808X_LED_FORCE_EN			BIT(15)
-+#define QCA808X_LED_FORCE_MODE_MASK		GENMASK(14, 13)
-+#define QCA808X_LED_FORCE_BLINK_1		FIELD_PREP(QCA808X_LED_FORCE_MODE_MASK, 0x3)
-+#define QCA808X_LED_FORCE_BLINK_2		FIELD_PREP(QCA808X_LED_FORCE_MODE_MASK, 0x2)
-+#define QCA808X_LED_FORCE_ON			FIELD_PREP(QCA808X_LED_FORCE_MODE_MASK, 0x1)
-+#define QCA808X_LED_FORCE_OFF			FIELD_PREP(QCA808X_LED_FORCE_MODE_MASK, 0x0)
-+
-+#define QCA808X_MMD7_LED_POLARITY_CTRL		0x901a
-+/* QSDK sets by default 0x46 to this reg that sets BIT 6 for
-+ * LED to active high. It's not clear what BIT 3 and BIT 4 does.
-+ */
-+#define QCA808X_LED_ACTIVE_HIGH			BIT(6)
-+
- /* QCA808X 1G chip type */
- #define QCA808X_PHY_MMD7_CHIP_TYPE		0x901d
- #define QCA808X_PHY_CHIP_TYPE_1G		BIT(0)
-@@ -317,6 +398,7 @@ struct at803x_priv {
- 	struct regulator_dev *vddio_rdev;
- 	struct regulator_dev *vddh_rdev;
- 	u64 stats[ARRAY_SIZE(qca83xx_hw_stats)];
-+	int led_polarity_mode;
- };
- 
- struct at803x_context {
-@@ -677,6 +759,9 @@ static int at803x_probe(struct phy_device *phydev)
- 	if (!priv)
- 		return -ENOMEM;
- 
-+	/* Init LED polarity mode to -1 */
-+	priv->led_polarity_mode = -1;
-+
- 	phydev->priv = priv;
- 
- 	ret = at803x_parse_dt(phydev);
-@@ -2161,6 +2246,240 @@ static void qca808x_link_change_notify(struct phy_device *phydev)
- 				   phydev->link ? QCA8081_PHY_FIFO_RSTN : 0);
- }
- 
-+static int qca808x_led_parse_netdev(struct phy_device *phydev, unsigned long rules,
-+				    u16 *offload_trigger)
-+{
-+	/* TODO: add link_2500 when added to netdev trigger */
-+	/* Parsing specific to netdev trigger */
-+	if (test_bit(TRIGGER_NETDEV_TX, &rules))
-+		*offload_trigger |= QCA808X_LED_TX_BLINK;
-+	if (test_bit(TRIGGER_NETDEV_RX, &rules))
-+		*offload_trigger |= QCA808X_LED_RX_BLINK;
-+	if (test_bit(TRIGGER_NETDEV_LINK_10, &rules))
-+		*offload_trigger |= QCA808X_LED_SPEED10_ON;
-+	if (test_bit(TRIGGER_NETDEV_LINK_100, &rules))
-+		*offload_trigger |= QCA808X_LED_SPEED100_ON;
-+	if (test_bit(TRIGGER_NETDEV_LINK_1000, &rules))
-+		*offload_trigger |= QCA808X_LED_SPEED1000_ON;
-+	if (test_bit(TRIGGER_NETDEV_HALF_DUPLEX, &rules))
-+		*offload_trigger |= QCA808X_LED_HALF_DUPLEX_ON;
-+	if (test_bit(TRIGGER_NETDEV_FULL_DUPLEX, &rules))
-+		*offload_trigger |= QCA808X_LED_FULL_DUPLEX_ON;
-+
-+	if (rules && !*offload_trigger)
-+		return -EOPNOTSUPP;
-+
-+	/* Enable BLINK_CHECK_BYPASS by default to make the LED
-+	 * blink even with duplex or speed mode not enabled.
-+	 */
-+	*offload_trigger |= QCA808X_LED_BLINK_CHECK_BYPASS;
-+
-+	return 0;
-+}
-+
-+static int qca808x_led_hw_control_enable(struct phy_device *phydev, u8 index)
-+{
-+	u16 reg;
-+
-+	if (index > 2)
-+		return -EINVAL;
-+
-+	reg = QCA808X_MMD7_LED_FORCE_CTRL(index);
-+
-+	return phy_clear_bits_mmd(phydev, MDIO_MMD_AN, reg,
-+				  QCA808X_LED_FORCE_EN);
-+}
-+
-+static int qca808x_led_hw_is_supported(struct phy_device *phydev, u8 index,
-+				       unsigned long rules)
-+{
-+	u16 offload_trigger = 0;
-+
-+	if (index > 2)
-+		return -EINVAL;
-+
-+	return qca808x_led_parse_netdev(phydev, rules, &offload_trigger);
-+}
-+
-+static int qca808x_led_hw_control_set(struct phy_device *phydev, u8 index,
-+				      unsigned long rules)
-+{
-+	u16 reg, offload_trigger = 0;
-+	int ret;
-+
-+	if (index > 2)
-+		return -EINVAL;
-+
-+	reg = QCA808X_MMD7_LED_CTRL(index);
-+
-+	ret = qca808x_led_parse_netdev(phydev, rules, &offload_trigger);
-+	if (ret)
-+		return ret;
-+
-+	ret = qca808x_led_hw_control_enable(phydev, index);
-+	if (ret)
-+		return ret;
-+
-+	return phy_modify_mmd(phydev, MDIO_MMD_AN, reg,
-+			      QCA808X_LED_PATTERN_MASK,
-+			      offload_trigger);
-+}
-+
-+static bool qca808x_led_hw_control_status(struct phy_device *phydev, u8 index)
-+{
-+	u16 reg;
-+	int val;
-+
-+	if (index > 2)
-+		return false;
-+
-+	reg = QCA808X_MMD7_LED_FORCE_CTRL(index);
-+
-+	val = phy_read_mmd(phydev, MDIO_MMD_AN, reg);
-+
-+	return !(val & QCA808X_LED_FORCE_EN);
-+}
-+
-+static int qca808x_led_hw_control_get(struct phy_device *phydev, u8 index,
-+				      unsigned long *rules)
-+{
-+	u16 reg;
-+	int val;
-+
-+	if (index > 2)
-+		return -EINVAL;
-+
-+	/* Check if we have hw control enabled */
-+	if (qca808x_led_hw_control_status(phydev, index))
-+		return -EINVAL;
-+
-+	reg = QCA808X_MMD7_LED_CTRL(index);
-+
-+	/* TODO: add link_2500 when added to netdev trigger */
-+	val = phy_read_mmd(phydev, MDIO_MMD_AN, reg);
-+	if (val & QCA808X_LED_TX_BLINK)
-+		set_bit(TRIGGER_NETDEV_TX, rules);
-+	if (val & QCA808X_LED_RX_BLINK)
-+		set_bit(TRIGGER_NETDEV_RX, rules);
-+	if (val & QCA808X_LED_SPEED10_ON)
-+		set_bit(TRIGGER_NETDEV_LINK_10, rules);
-+	if (val & QCA808X_LED_SPEED100_ON)
-+		set_bit(TRIGGER_NETDEV_LINK_100, rules);
-+	if (val & QCA808X_LED_SPEED1000_ON)
-+		set_bit(TRIGGER_NETDEV_LINK_1000, rules);
-+	if (val & QCA808X_LED_HALF_DUPLEX_ON)
-+		set_bit(TRIGGER_NETDEV_HALF_DUPLEX, rules);
-+	if (val & QCA808X_LED_FULL_DUPLEX_ON)
-+		set_bit(TRIGGER_NETDEV_FULL_DUPLEX, rules);
-+
-+	return 0;
-+}
-+
-+static int qca808x_led_hw_control_reset(struct phy_device *phydev, u8 index)
-+{
-+	u16 reg;
-+
-+	if (index > 2)
-+		return -EINVAL;
-+
-+	reg = QCA808X_MMD7_LED_CTRL(index);
-+
-+	return phy_clear_bits_mmd(phydev, MDIO_MMD_AN, reg,
-+				  QCA808X_LED_PATTERN_MASK);
-+}
-+
-+static int qca808x_led_brightness_set(struct phy_device *phydev,
-+				      u8 index, enum led_brightness value)
-+{
-+	u16 reg;
-+	int ret;
-+
-+	if (index > 2)
-+		return -EINVAL;
-+
-+	if (!value) {
-+		ret = qca808x_led_hw_control_reset(phydev, index);
-+		if (ret)
-+			return ret;
-+	}
-+
-+	reg = QCA808X_MMD7_LED_FORCE_CTRL(index);
-+
-+	return phy_modify_mmd(phydev, MDIO_MMD_AN, reg,
-+			      QCA808X_LED_FORCE_EN | QCA808X_LED_FORCE_MODE_MASK,
-+			      QCA808X_LED_FORCE_EN | value ? QCA808X_LED_FORCE_ON :
-+							     QCA808X_LED_FORCE_OFF);
-+}
-+
-+static int qca808x_led_blink_set(struct phy_device *phydev, u8 index,
-+				 unsigned long *delay_on,
-+				 unsigned long *delay_off)
-+{
-+	int ret;
-+	u16 reg;
-+
-+	if (index > 2)
-+		return -EINVAL;
-+
-+	reg = QCA808X_MMD7_LED_FORCE_CTRL(index);
-+
-+	/* Set blink to 50% off, 50% on at 4Hz by default */
-+	ret = phy_modify_mmd(phydev, MDIO_MMD_AN, QCA808X_MMD7_LED_GLOBAL,
-+			     QCA808X_LED_BLINK_FREQ_MASK | QCA808X_LED_BLINK_DUTY_MASK,
-+			     QCA808X_LED_BLINK_FREQ_4HZ | QCA808X_LED_BLINK_DUTY_50_50);
-+	if (ret)
-+		return ret;
-+
-+	/* We use BLINK_1 for normal blinking */
-+	ret = phy_modify_mmd(phydev, MDIO_MMD_AN, reg,
-+			     QCA808X_LED_FORCE_EN | QCA808X_LED_FORCE_MODE_MASK,
-+			     QCA808X_LED_FORCE_EN | QCA808X_LED_FORCE_BLINK_1);
-+	if (ret)
-+		return ret;
-+
-+	/* We set blink to 4Hz, aka 250ms */
-+	*delay_on = 250 / 2;
-+	*delay_off = 250 / 2;
-+
-+	return 0;
-+}
-+
-+static int qca808x_led_polarity_set(struct phy_device *phydev, int index,
-+				    unsigned long modes)
-+{
-+	struct at803x_priv *priv = phydev->priv;
-+	bool active_low = false;
-+	u32 mode;
-+
-+	for_each_set_bit(mode, &modes, __PHY_LED_MODES_NUM) {
-+		switch (mode) {
-+		case PHY_LED_ACTIVE_LOW:
-+			active_low = true;
-+			break;
-+		default:
-+			return -EINVAL;
-+		}
-+	}
-+
-+	/* PHY polarity is global and can't be set per LED.
-+	 * To detect this, check if last requested polarity mode
-+	 * match the new one.
-+	 */
-+	if (priv->led_polarity_mode >= 0 &&
-+	    priv->led_polarity_mode != active_low) {
-+		phydev_err(phydev, "PHY polarity is global. Mismatched polarity on different LED\n");
-+		return -EINVAL;
-+	}
-+
-+	/* Save the last PHY polarity mode */
-+	priv->led_polarity_mode = active_low;
-+
-+	return phy_modify_mmd(phydev, MDIO_MMD_AN,
-+			      QCA808X_MMD7_LED_POLARITY_CTRL,
-+			      QCA808X_LED_ACTIVE_HIGH,
-+			      active_low ? 0 : QCA808X_LED_ACTIVE_HIGH);
-+}
-+
- static struct phy_driver at803x_driver[] = {
- {
- 	/* Qualcomm Atheros AR8035 */
-@@ -2337,6 +2656,12 @@ static struct phy_driver at803x_driver[] = {
- 	.cable_test_start	= qca808x_cable_test_start,
- 	.cable_test_get_status	= qca808x_cable_test_get_status,
- 	.link_change_notify	= qca808x_link_change_notify,
-+	.led_brightness_set	= qca808x_led_brightness_set,
-+	.led_blink_set		= qca808x_led_blink_set,
-+	.led_hw_is_supported	= qca808x_led_hw_is_supported,
-+	.led_hw_control_set	= qca808x_led_hw_control_set,
-+	.led_hw_control_get	= qca808x_led_hw_control_get,
-+	.led_polarity_set	= qca808x_led_polarity_set,
- }, };
- 
- module_phy_driver(at803x_driver);
--- 
-2.43.0
+or even to match TT:
 
+```
++--------------------------------------------------------------------------=
+--+
+|   (!) Function foo() can produce undefined behavior. Either sanitize     =
+  |
+|       arguments being passed, or use the safer abstraction foo_wrapper().=
+  |
++--------------------------------------------------------------------------=
+--+
+```
+
+In other words, the admonition text should be indented after the warning ic=
+on.
+
+For the icon itself, the approach is to use Font Awesome [2] (many other doc
+sites that uses Sphinx also do that due to site theme they use but Alabaster
+theme don't use the icon, hence this question). I personally prefer regular
+icon variant (like in TT), but alas it is in non-free PRO plan (and only
+solid variant is free and that is what Sphinx themes using).
+
+Does adding warning icon like above idea make sense for the kernel docs? And
+does it require non-trivial (complex) changes to Alabaster theme?
+
+Thanks.
+
+[1]: https://www.tiktok.com/@supercars/video/7301916055063088392?is_from_we=
+bapp=3D1&sender_device=3Dpc&web_id=3D7320595371066557959
+[2]: https://fontawesome.com/icons/circle-exclamation?f=3Dclassic&s=3Dsolid
+
+--=20
+An old man doll... just what I always wanted! - Clara
+
+--T+v1tXslhN0Y+B0/
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZZgSFQAKCRD2uYlJVVFO
+o9jvAP0TsbAmH3dLPsJGiOxLBYbM6Em8AlIS/vNX+mDxeKRIkgD9FfYnRMMn5Fzc
+Lzz8FPzqSBDaIxpzBJSHxRJC6XbsIAg=
+=Gl9J
+-----END PGP SIGNATURE-----
+
+--T+v1tXslhN0Y+B0/--
 
