@@ -1,102 +1,99 @@
-Return-Path: <linux-kernel+bounces-18399-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18400-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F807825C89
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 23:28:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1BC2F825C8B
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 23:34:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B1E1A1F23800
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 22:28:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 433241C23AF3
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 22:34:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 183EB360AF;
-	Fri,  5 Jan 2024 22:28:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1633360AF;
+	Fri,  5 Jan 2024 22:33:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="DzmzuMCY";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="RmIJ7/zh"
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="UvCy5qCH"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B331E3609D
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 22:28:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailout.west.internal (Postfix) with ESMTP id B0D3A32004AE;
-	Fri,  5 Jan 2024 17:28:10 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Fri, 05 Jan 2024 17:28:11 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm1; t=1704493689; x=1704580089; bh=1KOe40KZTR
-	zKDV3JMkZuj+p5G4YTHfXPIyBx+3PJiOU=; b=DzmzuMCY0Zw270ZcqG9N874IJ5
-	TWz8jsa6T/DCXE4UR61G5DdKVb4PCuVhSGLEHnbVmQrTsn1cLWf2RTIarIEEhzTI
-	LQ/7q7Xc6ZozaWKMGH47MzkBn4UsDl+pFAvO1cSCfC1AM8U9MmJUs3ZOO5iG4g0E
-	WIxKfBGcIaIeRWf1zsx00nGmsb3j4SALfwwSk7SpJeXCXEkPL8kvy1ATP3IUfcmK
-	OGEQZmlT3OR34AyVEQJGnInq64rTCdJDB8kFRf+cykV+QZOAIDRn/qJrhyXmR/lX
-	hGdgasm0WYHNn2xpsxxa4N4oGTUEUhPasah+v+ctFD885BOQLuq4DxQyI9Zw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1704493689; x=1704580089; bh=1KOe40KZTRzKDV3JMkZuj+p5G4YT
-	HfXPIyBx+3PJiOU=; b=RmIJ7/zhGcoueyka/Kx5qLPxGXwrbyYPflnUfMNkMDfx
-	lG8IUqsdA9xlnUI1s8L3Ce1SNC2fo8OGtzMLAr7Pyx06OF19m0xPQzFb/JbZxMlH
-	gYYmLXKc3M0oaH5vki4SnncSxwvWWtNI3/vTcyBlyyU4rC9osgo3SCWvJLR4uJso
-	FJu+FNKMmt3YJzStsONKKoLDResl5fxkdi8MCmRPJYtoDmft6IfSMI91wDVM3Ssd
-	m9LWD9XhZAaacpQHQmZ6Ue/av66lzUNBi659pyCJDG1mrbyh0+r6UKpN3WSBJG8o
-	LSDnpLfqQ2L0i3XUbYaxVJ8l3fOjZbuhL+5t5dvDkQ==
-X-ME-Sender: <xms:eYKYZSEc7THCFjJfR2IzFb67nGOxZBR9COHTxD0q2-Wz4-im2aX_zA>
-    <xme:eYKYZTW8nB1iFsn4qUQCKNgVbi7ynVu8LnsUfDBRA2L-Golund7NySN5pZIUHTTQj
-    MIau8RN0sC0RAwoWww>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdegledgudehjecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdet
-    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
-    htthgvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedt
-    keetffenucevlhhushhtvghrufhiiigvpedunecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    grrhhnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:eYKYZcIYENvZjFiDZFMnngJCr2n7tdYgrfUlJM6N_8o2IbCDeAIuuQ>
-    <xmx:eYKYZcFC1A_MT_KSTOrkZdb26jvId-jlxjLLFra9c8s0K3IxDfRa0A>
-    <xmx:eYKYZYWWiZXDy-rzyPeSWGt6mLOfgu87FVpkhdfw2FqA8xwvmDwQAw>
-    <xmx:eYKYZTeFDoDHXzxmNMrjtGxjZeMVh2Slyp74p1cqvcvV4XKqVlj21Q>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 97578B6008D; Fri,  5 Jan 2024 17:28:09 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-1364-ga51d5fd3b7-fm-20231219.001-ga51d5fd3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76BF03609A;
+	Fri,  5 Jan 2024 22:33:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1704494029;
+	bh=rpezY7E7ZYFhLGmpW92hvMon9DAaxzXvUdwXft+X8tc=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=UvCy5qCHEgsGakVwoutRV0dY4JQTExUxsDlnY+N/erjEEJ0aIJi+66jN1Z3xLOTFy
+	 lQyN7ZwqZeoPAqQhPwdLZsAurebpERn8lrKbwKpZfrIV6GUywLwmFTMXffgl1CQUlz
+	 hufERs1nSajfvLeWovN2ZT7MvmsRYLcvqoBuse4Tl9QtOfqjcNPx5mj3/+azOH50g4
+	 /9bsdufZH69jA8HmpK9JAqx55sk1JqYm/pSFR7P6J0g0TclO/4xMJt/yoeTnTwJL2g
+	 lZFBNeR1q/7IWRMYOmtYiyFgX6yLuzq03ObljnkswzLbPpQUaguQ6x193dXt0g7I3G
+	 JuRCtMajxGpqw==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4T6JCJ5yhcz4wnv;
+	Sat,  6 Jan 2024 09:33:48 +1100 (AEDT)
+Date: Sat, 6 Jan 2024 09:33:47 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Chuck Lever <chuck.lever@oracle.com>
+Cc: Jeff Layton <jlayton@kernel.org>, Jeffrey Layton <jlayton@redhat.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
+ Mailing List <linux-next@vger.kernel.org>, NeilBrown <neilb@suse.de>
+Subject: Re: linux-next: manual merge of the nfsd tree with the nfsd-fixes
+ tree
+Message-ID: <20240106093347.15810e18@canb.auug.org.au>
+In-Reply-To: <ZZd8q4RSTTN/5wSq@tissot.1015granger.net>
+References: <20240105110007.3f932561@canb.auug.org.au>
+	<ZZd8q4RSTTN/5wSq@tissot.1015granger.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <1826ab26-5314-4cef-bbb0-716402c7e91b@app.fastmail.com>
-In-Reply-To: <20240103110409.167132-1-martin@kaiser.cx>
-References: <20240103110409.167132-1-martin@kaiser.cx>
-Date: Fri, 05 Jan 2024 23:27:48 +0100
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Martin Kaiser" <martin@kaiser.cx>,
- "Lukas Bulwahn" <lukas.bulwahn@gmail.com>
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ARM: debug: fix DEBUG_UNCOMPRESS help for !MULTIPLATFORM
-Content-Type: text/plain
+Content-Type: multipart/signed; boundary="Sig_/MmCxwecSmrAxXalQUn_hEhd";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-On Wed, Jan 3, 2024, at 12:04, Martin Kaiser wrote:
-> Commit 84fc86360623 ("ARM: make ARCH_MULTIPLATFORM user-visible") modified
-> DEBUG_UNCOMPRESS to prevent using it with multiplatform kernels.
->
-> Update the help text, remove references to multiplatform.
->
-> Signed-off-by: Martin Kaiser <martin@kaiser.cx>
-> ---
->  arch/arm/Kconfig.debug | 11 ++---------
->  1 file changed, 2 insertions(+), 9 deletions(-)
+--Sig_/MmCxwecSmrAxXalQUn_hEhd
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Applied, thanks!
+Hi Chuck,
+
+On Thu, 4 Jan 2024 22:51:07 -0500 Chuck Lever <chuck.lever@oracle.com> wrot=
+e:
+>
+> I plan to rebase nfsd-next as soon as 76d296a82657 ("nfsd: drop the
+> nfsd_put helper") is merged. I'll have a closer look at this
+> conflict tomorrow (my time).
+
+Instead of rebasing your tree just before the merge window, why not
+just merge nfsd-fixes into the nfsd tree?
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/MmCxwecSmrAxXalQUn_hEhd
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmWYg8sACgkQAVBC80lX
+0GxJcAf/ZHPehlLspMqSMbDDHS5utWs2Myw33qiBeO9fpibNe/r6f6cRE77pjTqM
+vcO9cDtniiIngaeK4YSGhBCCQaM5N+/XgTENGd3NLMp+0/kyhJERH5FpGIKhCyLB
+kHIir0OGWmSRsrG5sH9F+Vpwce456kSVsolqgy45nrw4ok6w0sERz5uOvMC5oMck
+tEYKqGkwgkKU1bFV68NoG9zSkq9p/plcE95xLy3/y1baGq2jRjgxggypCRozrN4R
+y7Ov5PPAArTXqWqmitO0A/Jv2sliVvr0I6xdHeYtyb6mbzDJz88xRZPbxSSy8hUv
+qHdVt567wWmo/80QzpTOnHVzdSpkig==
+=5bt7
+-----END PGP SIGNATURE-----
+
+--Sig_/MmCxwecSmrAxXalQUn_hEhd--
 
