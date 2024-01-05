@@ -1,121 +1,156 @@
-Return-Path: <linux-kernel+bounces-17991-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17992-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18CD7825681
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 16:22:53 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F62D825684
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 16:23:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C490E1F22E00
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 15:22:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1EE9BB22F6A
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 15:23:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BADE431A8E;
-	Fri,  5 Jan 2024 15:22:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 123BF2E635;
+	Fri,  5 Jan 2024 15:22:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="UE8vaO1I"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="I81dc2fj"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A85083173E
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 15:22:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com [209.85.208.71])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id F32EF3F468
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 15:22:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-	s=20210705; t=1704468121;
-	bh=3ehRu/Zuzjv9SF1nMloRA0oZhzJAyfoaCoaYcJRfDMg=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version;
-	b=UE8vaO1Ix0h0HypNFxX3xnrcJENd2rJTrb8XVFzVrxiuDQKZqr/t6KO/eCv/49seL
-	 gD2zmqSJXsRDDZU5dbx9zVJRMD6mK6eNFBa5pUO5Q7Sx45Zle0TeF1RYRo3APFRe1P
-	 zXa2cX2I5tSw09U7ZSzhYj7xrUtYhxMT3l07dpcYBGTJIpU8xsqcScIp4OIDUr3+Tt
-	 lKKZf8OC2oWvw67tQsakjKfZwhBRC3Tq5HgOiKKMTZtsvQPLM9R5oCdCA/DlbhA0nQ
-	 knrq4Gn1MJSz6OeuagpPjszITc3XAJx1Xg7aDWr/UkAOwBT5tnWRFbbINfXLWwwXSD
-	 51u4bgTrRtHCg==
-Received: by mail-ed1-f71.google.com with SMTP id 4fb4d7f45d1cf-556415459d2so983322a12.0
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Jan 2024 07:22:00 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3128328B3;
+	Fri,  5 Jan 2024 15:22:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2cc9fa5e8e1so21232771fa.3;
+        Fri, 05 Jan 2024 07:22:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704468133; x=1705072933; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=eAsrQIjxQMwzjAX4MlmzebgjZ3WSzdCGhy6tyRE0rKw=;
+        b=I81dc2fjvTXi9Qf8U1oUGMVEZ0l5/X6eZmSX1VjQVpDa/ORfMIZB3+Cam4XZZMCUsE
+         B3KwA9h3WEY63eXznVBLfdtp85A8FoUmEi1tHVIglFii9sGU2w962DWijO3FM+hRRP/B
+         AQ52MbuaCRpV+qUKap7oV/0qy+kUz8UME2wGq2b0JzmL6m3aWrkfzpWnLIRgULvqQ4Bx
+         evu+6qP9MVTt/kl9B7A2yb4j8Yv9sG2E7Rq2U1cyBVzLkcHOodnZzCLeI+IIzipgJC9+
+         WNhexjNgjlKA5Zt34kaslrH6ubymxthfAKoZFtGaf3A7XSrdjzo+8ElVrFg+URcu9vKG
+         AhRg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704468120; x=1705072920;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1704468133; x=1705072933;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=3ehRu/Zuzjv9SF1nMloRA0oZhzJAyfoaCoaYcJRfDMg=;
-        b=d+VQYJlbbB2RJwOjLsUhFMQuVnb1SbX2yCc3QJcOkKJPHvqRaewlDLKRkCqyXosqKx
-         LtzaiZijK9xm1T3qBP+s5zXUnM0iDvm/flD1Bci2ZS/G4KbOZn0oYag58xgWvrnfK6Y6
-         751pMxBLYT8axQjLRHFCXcP29y2npbDhPIb/+1LM28kWu4G6PueZNK8coLAK+Lh/0fXL
-         p2rEoZF8areEeh/4DcxOaF27zkgy2eSltQ7VTjX+TjdwkyDIQ1mWTYFlSBMVMF/5S4Ku
-         Onx4FWT0wUUGzMtMN9yen1RwBJhWJvRinAQvfiNWG4xHpfDDo+u5yTKO5i1lSVG6oGbM
-         gu4Q==
-X-Gm-Message-State: AOJu0YwYyPNzaAf66U+e37KtXvq0UebwdfYvQ6FTuj1J27s8ONOSgIVG
-	ZNhg1Y2wIiTo1RD628+TunA3gTn7DaY5IEXEwYpHPDMUmQUMNPBT2GeMCrnr1jS2Of3hNMgStw6
-	h1HuRKxkNv6/j515D2jz7oR1Wh9NC6XWPA5HEgA/jsz48nTxcR3x1Mpgy
-X-Received: by 2002:a17:906:e0d8:b0:a27:6e73:a248 with SMTP id gl24-20020a170906e0d800b00a276e73a248mr773799ejb.68.1704468120505;
-        Fri, 05 Jan 2024 07:22:00 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IE1Qf95Xc1DtQrvYbmkcZs/ajyvnuK5OKpFVhctUoOgo9efyvmBIthHb9SYj+TsVGtv7sYLnA==
-X-Received: by 2002:a17:906:e0d8:b0:a27:6e73:a248 with SMTP id gl24-20020a170906e0d800b00a276e73a248mr773791ejb.68.1704468120298;
-        Fri, 05 Jan 2024 07:22:00 -0800 (PST)
-Received: from amikhalitsyn.lan ([91.64.72.41])
-        by smtp.gmail.com with ESMTPSA id i23-20020a170906115700b00a298adde5a1sm345630eja.189.2024.01.05.07.21.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Jan 2024 07:21:59 -0800 (PST)
-From: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
-To: mszeredi@redhat.com
-Cc: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>,
-	Christian Brauner <brauner@kernel.org>,
-	Miklos Szeredi <miklos@szeredi.hu>,
-	linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v1 3/3] fuse: __kuid_val/__kgid_val helpers in fuse_fill_attr_from_inode()
-Date: Fri,  5 Jan 2024 16:21:29 +0100
-Message-Id: <20240105152129.196824-4-aleksandr.mikhalitsyn@canonical.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240105152129.196824-1-aleksandr.mikhalitsyn@canonical.com>
-References: <20240105152129.196824-1-aleksandr.mikhalitsyn@canonical.com>
+        bh=eAsrQIjxQMwzjAX4MlmzebgjZ3WSzdCGhy6tyRE0rKw=;
+        b=ICAX5vRU95rrEWeW2QfdMLENLG5DBRZsiLYuOx8tx9Dge+pi6cHgvk79RJkKopq16t
+         CQHOwD+dArQk8BJ/QIuUovroOlImSROI/sCV4qWzmVqHAkLURjwBLjrT0Csuk1pPt3At
+         NsrKHawmM2slrZ6cGY+nu4wR6LNRDlw7lGVTBt3nFFCgfELp/DTvLfQGCe6/OQKNSy24
+         sWUAxs9qWwoE5JCmjQyB5bx0jRpBTh3KMWFNhfZ27xjSwj3OgtxXSsTgYppupi2VQX4L
+         ShOLvnaaGzwAqhIHrqFh9gykYrLizTEQQ6rCVEoP6vf4Hb2CNthlz0N2SXSattMlorVc
+         C9VQ==
+X-Gm-Message-State: AOJu0YzXMhf/xwPtEQKn4niSkO00CHnUlxaNOnmvCWr78+13YfQcrew8
+	qBu6UayMsdmNw259DeNLJCXSWaNxh4dz8R47CekWu669PBo=
+X-Google-Smtp-Source: AGHT+IHohJ7DdOCL0br8xfbhkXEAecRiduLqQXhdZLb7+bERm65KyWqjkuG6Sx6xCYEgVNlXWk1ELkBsCzRvJdN72bI=
+X-Received: by 2002:a2e:a481:0:b0:2cc:effb:cbd0 with SMTP id
+ h1-20020a2ea481000000b002cceffbcbd0mr1072384lji.55.1704468132560; Fri, 05 Jan
+ 2024 07:22:12 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240105025625.125895-1-clancy_shang@163.com>
+In-Reply-To: <20240105025625.125895-1-clancy_shang@163.com>
+From: Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+Date: Fri, 5 Jan 2024 10:21:59 -0500
+Message-ID: <CABBYNZJRTfDUizZ=+JDGT3rZDRJ1HCvYBssrCfgrxOm4U8d-Qw@mail.gmail.com>
+Subject: Re: [PATCH] Bluetooth: hci_sync: Fix BLE devices were unable to
+ disable the wakeup function
+To: clancy_shang@163.com
+Cc: marcel@holtmann.org, johan.hedberg@gmail.com, 
+	linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	zhongjun.yu@quectel.com, Clancy Shang <clancy.shang@quectel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-For the sake of consistency, let's use these helpers to extract
-{u,g}id_t values from k{u,g}id_t ones.
+Hi Clancy,
 
-There are no functional changes, just to make code cleaner.
+On Thu, Jan 4, 2024 at 9:56=E2=80=AFPM <clancy_shang@163.com> wrote:
+>
+> From: Clancy Shang <clancy.shang@quectel.com>
+>
+> when BLE master enter suspend,  it does not delete the peripheral that
+> in acceptlist. so if disable the wakeup function, the BLE master scans wi=
+th
+> basic filter next time, the peripheral can be scanned which is unexpected
+>
+> Signed-off-by: Clancy Shang <clancy.shang@quectel.com>
+> ---
+>  net/bluetooth/hci_sync.c | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
+>
+> diff --git a/net/bluetooth/hci_sync.c b/net/bluetooth/hci_sync.c
+> index d85a7091a116..abc7f614da5f 100644
+> --- a/net/bluetooth/hci_sync.c
+> +++ b/net/bluetooth/hci_sync.c
+> @@ -2533,6 +2533,7 @@ static u8 hci_update_accept_list_sync(struct hci_de=
+v *hdev)
+>         struct bdaddr_list *b, *t;
+>         u8 num_entries =3D 0;
+>         bool pend_conn, pend_report;
+> +       struct hci_conn_params *conn_params;
+>         u8 filter_policy;
+>         size_t i, n;
+>         int err;
+> @@ -2585,6 +2586,15 @@ static u8 hci_update_accept_list_sync(struct hci_d=
+ev *hdev)
+>                         continue;
+>                 }
+>
+> +               conn_params =3D hci_conn_params_lookup(hdev, &b->bdaddr, =
+b->bdaddr_type);
+> +               /* During suspend, only wakeable devices can be in accept=
+list */
+> +               if (conn_params && hdev->suspended &&
+> +                   !(conn_params->flags & HCI_CONN_FLAG_REMOTE_WAKEUP)) =
+{
+> +                       hci_le_del_accept_list_sync(hdev, &b->bdaddr,
+> +                                                   b->bdaddr_type);
+> +                       continue;
+> +               }
 
-Cc: Christian Brauner <brauner@kernel.org>
-Cc: Miklos Szeredi <miklos@szeredi.hu>
-Cc: <linux-fsdevel@vger.kernel.org>
-Cc: <linux-kernel@vger.kernel.org>
-Signed-off-by: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
----
- fs/fuse/inode.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+This might require a lock since that is not a copy of the conn_params
+which can be updated concurrently, so perhaps something like the
+following is might be safer:
 
-diff --git a/fs/fuse/inode.c b/fs/fuse/inode.c
-index b8636b5e79dc..ab824a8908b7 100644
---- a/fs/fuse/inode.c
-+++ b/fs/fuse/inode.c
-@@ -1489,8 +1489,8 @@ static void fuse_fill_attr_from_inode(struct fuse_attr *attr,
- 		.ctimensec	= ctime.tv_nsec,
- 		.mode		= fi->inode.i_mode,
- 		.nlink		= fi->inode.i_nlink,
--		.uid		= fi->inode.i_uid.val,
--		.gid		= fi->inode.i_gid.val,
-+		.uid		= __kuid_val(fi->inode.i_uid),
-+		.gid		= __kgid_val(fi->inode.i_gid),
- 		.rdev		= fi->inode.i_rdev,
- 		.blksize	= 1u << fi->inode.i_blkbits,
- 	};
--- 
-2.34.1
+diff --git a/net/bluetooth/hci_sync.c b/net/bluetooth/hci_sync.c
+index b3141e3f9cf6..eeb73a54fd26 100644
+--- a/net/bluetooth/hci_sync.c
++++ b/net/bluetooth/hci_sync.c
+@@ -2206,8 +2206,11 @@ static int hci_le_add_accept_list_sync(struct
+hci_dev *hdev,
 
+        /* During suspend, only wakeable devices can be in acceptlist */
+        if (hdev->suspended &&
+-           !(params->flags & HCI_CONN_FLAG_REMOTE_WAKEUP))
++           !(params->flags & HCI_CONN_FLAG_REMOTE_WAKEUP)) {
++               hci_le_del_accept_list_sync(hdev, &params->bdaddr,
++                                           params->bdaddr_type);
+                return 0;
++       }
+
+        /* Select filter policy to accept all advertising */
+        if (*num_entries >=3D hdev->le_accept_list_size)
+
+>                 num_entries++;
+>         }
+>
+> --
+> 2.25.1
+>
+
+
+--=20
+Luiz Augusto von Dentz
 
