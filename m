@@ -1,117 +1,71 @@
-Return-Path: <linux-kernel+bounces-17355-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17356-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A4905824C35
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 01:43:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 03492824C37
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 01:43:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 41F181F23176
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 00:43:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 16F151C22673
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 00:43:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E1031FB2;
-	Fri,  5 Jan 2024 00:43:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D479F1C02;
+	Fri,  5 Jan 2024 00:43:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="XBO/jfZD"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gwPc/S1V"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A40971FA3;
-	Fri,  5 Jan 2024 00:43:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1704415398;
-	bh=B3VvRKT7Vpp6a+w7wdq1LM7SVAhg25085ZnjiGYLjME=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=XBO/jfZDMMdczDta5F2TtDDEGnMS8VSwwDXQ+STl7oI85E35l5CS7Nrf7T4koPrqq
-	 KgoXBgJZy0W5JKPFgyOrtcJqU0r6F+gVBks5RnZMZ4RqWGC1fHrKHxg+ckr8u45yxG
-	 hcRXP8HRzz1NChJqfUzsMBv4QRIW0mkl0UdU/0VfEorev0FatDNLeLBcCNlkEv2bMz
-	 CjUH2+kcUdFQJ030BfR2v3XtLdpOI+sNX/toLQjlgs/Z+7FAUmW4ihc7KrWzssT6OP
-	 70/XyAkvBBWD4yiY6HkU8iZUDaa0adU1op9Y/jPA4yvmqqwytXEd49ATux/t0B6K25
-	 DvcBvXOp2HV4g==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4T5l7B0p1kz4wcg;
-	Fri,  5 Jan 2024 11:43:17 +1100 (AEDT)
-Date: Fri, 5 Jan 2024 11:43:16 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Dan Williams <dan.j.williams@intel.com>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, "Linux Next
- Mailing List" <linux-next@vger.kernel.org>
-Subject: Re: linux-next: duplicate patches in the cxl-fixes tree
-Message-ID: <20240105114316.03aa2a8b@canb.auug.org.au>
-In-Reply-To: <65972daf5c889_8dc68294d2@dwillia2-xfh.jf.intel.com.notmuch>
-References: <20240102023218.3cd3e4ea@canb.auug.org.au>
-	<20240105085306.60979082@canb.auug.org.au>
-	<65972daf5c889_8dc68294d2@dwillia2-xfh.jf.intel.com.notmuch>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26B482119;
+	Fri,  5 Jan 2024 00:43:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id EBEE4C433CA;
+	Fri,  5 Jan 2024 00:43:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704415407;
+	bh=0ALR9i5u4x8CEja2JA3sxpvqLGsyenbxpiX4V7hmgPs=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=gwPc/S1VL3sfYT46lahjXxp89FCPU3fVP53s+NoWmNyMlPVnRmkkHq+IlM/RzPOmQ
+	 3q43CNSWVzMdewu9kwDbuINVK6VfNzYQXVAcRFp0Tepp1T5KbZ2vB/Kj2OZDDoqJmm
+	 SUgphRTBU9NEIyV6dj4r8lk4gtOF872LMG8JazQYzynlYEcA+qnQA3t76sOwzPpE6v
+	 cZgwHI72m07f4JLeE0IhO6FpbeLZu6MdQYw+34IoD4jMxNLc4IOeFU36AHyxV4H0yh
+	 7T5HuZMpW4tziYCFymIoAAFEBNdLBffLs0N1wayuV1QYdaO2Q7pUD627FgU6IJqo6+
+	 O5BkO05g0DpYg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id D8585C4166F;
+	Fri,  5 Jan 2024 00:43:26 +0000 (UTC)
+Subject: Re: [GIT PULL] Networking for v6.7-rc9
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <20240104182252.1963951-1-kuba@kernel.org>
+References: <20240104182252.1963951-1-kuba@kernel.org>
+X-PR-Tracked-List-Id: <netdev.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20240104182252.1963951-1-kuba@kernel.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git net-6.7-rc9
+X-PR-Tracked-Commit-Id: 4c8530dc7d7da4abe97d65e8e038ce9852491369
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 1f874787ed9a2d78ed59cb21d0d90ac0178eceb0
+Message-Id: <170441540687.16491.16965051525476963960.pr-tracker-bot@kernel.org>
+Date: Fri, 05 Jan 2024 00:43:26 +0000
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: torvalds@linux-foundation.org, kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, pabeni@redhat.com
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_//JOj3WKCn6vCSF+63sDrcPI";
- protocol="application/pgp-signature"; micalg=pgp-sha256
 
---Sig_//JOj3WKCn6vCSF+63sDrcPI
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+The pull request you sent on Thu,  4 Jan 2024 10:22:52 -0800:
 
-Hi Dan,
+> git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git net-6.7-rc9
 
-On Thu, 4 Jan 2024 14:14:07 -0800 Dan Williams <dan.j.williams@intel.com> w=
-rote:
->
-> Now fixed, but the divergence is just odd. Most of the commits were
-> identical but below ones were different (trimmed git range-diff
-> cef295b57778...5459e186a5c9). Not even sure where I would pick up a
-> bunch of commits with edited changelogs.
->=20
->   7:  6eb467e165fc !   7:  f40f939917b2 platform/x86: hp-bioscfg: Fix err=
-or handling in hp_add_other_attributes()
->     @@ Commit message
->          used by all the error paths after kobject_init_and_add().
->     =20
->          Fixes: a34fc329b189 ("platform/x86: hp-bioscfg: bioscfg")
->     -    Cc: stable@vger.kernel.org # 6.6.x: acfff1760745: platform/x86: =
-hp-bioscfg: Simplify return check in hp_add_other_attributes()
->     -    Cc: stable@vger.kernel.org # 6.6.x: 9950a86160a1: platform/x86: =
-hp-bioscfg: move mutex_lock() down in hp_add_other_attributes()
->     +    Cc: stable@vger.kernel.org # 6.6.x: c5dbf0416000: platform/x86: =
-hp-bioscfg: Simplify return check in hp_add_other_attributes()
->     +    Cc: stable@vger.kernel.org # 6.6.x: 5736aa9537c9: platform/x86: =
-hp-bioscfg: move mutex_lock() down in hp_add_other_attributes()
->          Reported-by: kernel test robot <lkp@intel.com>
->          Reported-by: Dan Carpenter <error27@gmail.com>
->          Closes: https://lore.kernel.org/r/202309201412.on0VXJGo-lkp@inte=
-l.com/
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/1f874787ed9a2d78ed59cb21d0d90ac0178eceb0
 
-yeah, very weird.
+Thank you!
 
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_//JOj3WKCn6vCSF+63sDrcPI
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmWXUKQACgkQAVBC80lX
-0GzNzQf7BJeP18IqLxHeh0R+Bj4x2t3AQaTEjqsiQJbeHAMBtBhQzmu4/+K5iTIJ
-6FEn0jLRIIgr//QB6fUufqP49OpvV3QH97I00pbRDdsraN4564LL+Te4yPzO9aSo
-a9JeTv5D1f58u+FK0GtOdgqtoF2cct8Wa9WaER7NhGM/pb0CbILxSsAsuYpxKyBL
-ojgetNMHRqVRuOZviGX6joK+x136GnQZYTiNeJmAO3iPj/+mJmXIrqFH1By8bteD
-nPa5vK8SpnORarQam6UhHUEdTnD1+2JTD5Eb1nYDodTL3kj9k+x6KdaggjI7n6ZM
-YxQsdGWwNry59XUyw47ZtuNJjxiiww==
-=UVNz
------END PGP SIGNATURE-----
-
---Sig_//JOj3WKCn6vCSF+63sDrcPI--
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
