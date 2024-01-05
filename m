@@ -1,105 +1,108 @@
-Return-Path: <linux-kernel+bounces-18102-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18103-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4ED588258EE
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 18:19:39 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 547C58258F5
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 18:21:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6A4D41C233F9
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 17:19:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E821CB21AA9
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 17:21:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6BB83219A;
-	Fri,  5 Jan 2024 17:19:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E334E328AF;
+	Fri,  5 Jan 2024 17:21:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="w41Y8yUz"
+	dkim=pass (2048-bit key) header.d=codewreck.org header.i=@codewreck.org header.b="tn6PqWq+";
+	dkim=pass (2048-bit key) header.d=codewreck.org header.i=@codewreck.org header.b="CvojuvDV"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mout.web.de (mout.web.de [212.227.15.4])
+Received: from nautica.notk.org (nautica.notk.org [91.121.71.147])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7802531A9A;
-	Fri,  5 Jan 2024 17:19:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
-	t=1704475159; x=1705079959; i=markus.elfring@web.de;
-	bh=c9a72mh2hIDNLywI3xHSiIa41+RUwXrfonhkfw8ihFg=;
-	h=X-UI-Sender-Class:Date:Subject:From:To:Cc:References:
-	 In-Reply-To;
-	b=w41Y8yUzzl7L3+IINq8nygYzaZVDOQ5yRxV6AZdvboQ6r9yPwsuCJxyYgql45lrr
-	 l8iQ/Z3ZLXiDdWnwr/3zvRk6E7sjZpK27oxnj3HjupD3h0EJb1qVOjiaL96jFxB5H
-	 bcSFVj80MZVrxcxOGv1KmRjw/dBYMIaFhVLSBtmDzzLQGARw/vd8+xI3HJttZF661
-	 tQee9IGBjRkEeNE5oQl319v3sQQx5vd87k7K8k3jbAi/CL6mOnWrMCo/0QxJsvMyL
-	 8gA/Wmvt9XahNUz6rAXub44CxNXolu5x+btyt6z74FOKmYmT4IiQrkDEZ523i3ypv
-	 +uMhc/lwPWpal+sCnw==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb005
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1MPrPT-1rZsUG1vlL-00MhqL; Fri, 05
- Jan 2024 18:19:19 +0100
-Message-ID: <ac431904-993a-4c43-a54d-c183b08b7874@web.de>
-Date: Fri, 5 Jan 2024 18:19:17 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51F9C32186;
+	Fri,  5 Jan 2024 17:21:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codewreck.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=codewreck.org
+Received: by nautica.notk.org (Postfix, from userid 108)
+	id 47DCEC026; Fri,  5 Jan 2024 18:20:55 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
+	t=1704475255; bh=G5QLtqgPgUPlhX16D8cxgZSrhZwA8FdHTj67GHw0qi8=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=tn6PqWq+0UHN3QxCRZid+V+fJBenvC3IrIIcqOsdUbUgqD8BvhWt2WB90oSw7XpPg
+	 QlUFE2ue/FCeJ/DLCFsWomlZCxMLnpaB0lM3wvwMCs4jctG4fvUBqrc03/wmY/sc0S
+	 8N2iRbE0aTsPVsWcNX4DCgvZISkj+1s2RpUktuXRQ7liHWaMGGelG/otThKmTb5+o9
+	 rqsKWauiSE5eYZH82ZaqL1LP0H6bbwJzQQG77J3sBIpVhHOvH02KIeT/rFE6grRJ9i
+	 cHB85E+b1u50A//1wjlYgDkzEh8xzHxoPl97Y55v0xmCQmwlSI3+S7yRacHEVsWfLm
+	 H0mNlD3NjjkYw==
+X-Spam-Level: 
+Received: from gaia (localhost [127.0.0.1])
+	by nautica.notk.org (Postfix) with ESMTPS id 448ADC009;
+	Fri,  5 Jan 2024 18:20:46 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
+	t=1704475254; bh=G5QLtqgPgUPlhX16D8cxgZSrhZwA8FdHTj67GHw0qi8=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=CvojuvDVolRZkDDlIyj4uY5hFwD/G9sunkTM46WaLCaS3QIrYNL/Um2wFEN1Efbub
+	 AMgqrgm0WuuDyTu9RFhh8PxIVWprskRaMfCAUwhNw8adtnNMYHs5Bky4OntLrV86/Q
+	 XmU2feeoZdQm8hdpDIY+BLbeIyzFOjK2HbobG5a9E+yEpXx9TfaYR70WhcumYdlH5T
+	 HkCWSMxrchak5K5WPOkEkbPG2H9CmhaW1116sshIwrG/ZnK1AyARzAH5rYoKYuS2Jk
+	 AqxoyHMYpNvvuolbdXa2aaLMFmQjd42lAcZqTp8w5LAgtmHV3I+9GZc8lkKE5jXWtd
+	 swfGIM6q8sjVg==
+Received: from localhost (gaia [local])
+	by gaia (OpenSMTPD) with ESMTPA id 39ce6c8b;
+	Fri, 5 Jan 2024 17:20:44 +0000 (UTC)
+Date: Sat, 6 Jan 2024 02:20:29 +0900
+From: Dominique Martinet <asmadeus@codewreck.org>
+To: Matthew Wilcox <willy@infradead.org>,
+	David Howells <dhowells@redhat.com>
+Cc: Nathan Chancellor <nathan@kernel.org>,
+	Anna Schumaker <Anna.Schumaker@netapp.com>,
+	Trond Myklebust <trond.myklebust@hammerspace.com>,
+	Jeff Layton <jlayton@kernel.org>, Steve French <smfrench@gmail.com>,
+	Marc Dionne <marc.dionne@auristor.com>,
+	Paulo Alcantara <pc@manguebit.com>,
+	Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>,
+	Eric Van Hensbergen <ericvh@kernel.org>,
+	Ilya Dryomov <idryomov@gmail.com>,
+	Christian Brauner <christian@brauner.io>, linux-cachefs@redhat.com,
+	linux-afs@lists.infradead.org, linux-cifs@vger.kernel.org,
+	linux-nfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+	v9fs@lists.linux.dev, linux-fsdevel@vger.kernel.org,
+	linux-mm@kvack.org, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Fix oops in NFS
+Message-ID: <ZZg6XQOjlOA0CL17@codewreck.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH resent v2 0/2] powerpc/pseries: Fixes for exception
- handling in pSeries_reconfig_add_node()
-Content-Language: en-GB
-From: Markus Elfring <Markus.Elfring@web.de>
-To: kernel-janitors@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
- Christophe Leroy <christophe.leroy@csgroup.eu>,
- Michael Ellerman <mpe@ellerman.id.au>, Nathan Lynch <nathanl@linux.ibm.com>,
- Nicholas Piggin <npiggin@gmail.com>, Paul Moore <paul@paul-moore.com>
-Cc: cocci@inria.fr, LKML <linux-kernel@vger.kernel.org>
-References: <f9303bdc-b1a7-be5e-56c6-dfa8232b8b55@web.de>
- <0981dc33-95d0-4a1b-51d9-168907da99e6@web.de> <871qln8quw.fsf@linux.ibm.com>
- <a01643fd-1e4a-1183-2fa6-000465bc81f3@web.de> <87v8iz75ck.fsf@linux.ibm.com>
- <2f5a00f6-f3fb-9f00-676a-acdcbef90c6c@web.de> <87pm9377qt.fsf@linux.ibm.com>
- <afb528f2-5960-d107-c3ba-42a3356ffc65@web.de>
- <d4bcde15-b4f1-0e98-9072-3153d1bd21bc@web.de>
- <08ddf274-b9a3-a702-dd1b-2c11b316ac5f@web.de>
-In-Reply-To: <08ddf274-b9a3-a702-dd1b-2c11b316ac5f@web.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:fd0DEtRES4E/LNEVX/4GnP30EuZ7SbZmpQ0+c+lSzsJF09hqG+p
- PogCSbXrZbPvufXCVapRZNE9wk9BJ9El0JY+t4w8HAgsTEk6+404fOWX2YDbBz0+3fT1Ozg
- f9z2FVRsbdVL86A5PKSFOsws3EIGiRm61Qc9IQ+gKi7h0gfwbBqMmLbPTY5HAkrZ3wwwFUW
- 3XuOttoKqOtWYLDq1er/g==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:2ese3NzFQnc=;JA9Oql4YFmQCNSHqtztlSaK4GAq
- +fjthp9Vnvv9dESoVYKzh1FrY8Z/qHa3Jw2C5YmaPHUEtZbBwCyf9sR/Ll+Zm9mXGRIWQe9o/
- /UjuKok/SyzZO7FK3X7iQtG5+QnGddNp/39DzCjJdCDHX6DxK95aN6LHMHqFG+yA8mzebV1j4
- DDW28DBcCM6fCIu/Zl0lf2di+c+47luBKHq5Fc6UAK/cqaB7pq+x+2UvnLcXk1RQHy4D6Vj7b
- 0VL96ug72UMDfQrs7HoWBpOyleG8AP156TnGGGlNcnfCJhnl0CnbDx67tkhKmimlLyA4vtcXL
- Ij7TzXHpR7VugLIerNgO+BTelyt8S6qDvWn9rjebFvy7oSKyAhGxmcKvzXPZBi0rD7f7EKK20
- AfPyroG+x86lfOLFLLKOa60lWip2/kGoYn2vM/38qRcxPYSq4M0rEHy14h4Rz5h5CU6F3DjzU
- SPLVukFPjF85byQnZZkQRsnh1tYlQr4as0DOO2U69K31KJdFMzvknf8fNSC0BElk1jz0ud7dJ
- 4OAgjrqcW2w6p9T5pOCCRJgyxpdbsoNov691is66TJ1tjd42/N7pWSonNYIPSrQDATRilWr40
- CjEJRFPV3/2M90D+/tPviPmSCQJghrBW4ncWNAfqgm1IcLMnuQXRfVUx7BzFfJHuTCWSxJqje
- zpeOYgINfnxVrtZfFh364t36ZWK8eAi2bxY81WzAaYPYzwF/bIpWS9C3H/sAeckj1YRzhFnmD
- Ezxz7hwyVZyEFWmtk76AojgAIPDMSGo0yT3v1Z6OffUxdfotJQjwLl+YIwfHtPzBe5S4rlxiH
- nKWJHk2X8RZ471iToxQGj4/hIesJjKmfQMdeO9wD27oK9L9lFVEoPrxq4eyFMqBhH62PqJ7e2
- 9eRmjd3Fj50LIov224u9ZHL0TGpLqASzoT0t+THqJOZ8nF3UOHDP2NrclAQw5fF2YY7BGXPd/
- y0UBkVBoV8GM2hlKh3H9t52bdHY=
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1197168.1704465212@warthog.procyon.org.uk>
+ <ZZgBcJ7OAS7Ui6gi@casper.infradead.org>
 
-> Date: Tue, 21 Mar 2023 11:26:32 +0100
->
-> A few update suggestions were taken into account
-> from static source code analysis.
->
-> Markus Elfring (2):
->   Do not pass an error pointer to of_node_put()
->   Fix exception handling
->
->  arch/powerpc/platforms/pseries/reconfig.c | 26 ++++++++++++-----------
->  1 file changed, 14 insertions(+), 12 deletions(-)
+Matthew Wilcox wrote on Fri, Jan 05, 2024 at 01:17:36PM +0000:
+> host on /host type 9p (rw,relatime,access=client,trans=virtio)
 
-Is this patch series still in review queues?
+David Howells wrote on Fri, Jan 05, 2024 at 02:33:32PM +0000:
+> > This commit (100ccd18bb41 in linux-next 20240104) is bad for me.  After
+> > it, running xfstests gives me first a bunch of errors along these lines:
+> 
+> This may be related to a patch that is in linux-next 20240105, but not
+> 20240104 ("9p: Fix initialisation of netfs_inode for 9p").
 
-Regards,
-Markus
+Yes, you'd be reading zeroes without that patch because the netfs code
+thinks the file has 0 size and doesn't bother reading, that'd explain
+the exec format error loading other modules...
+
+One thing that surprised me is that this also affects cache=none, I
+thought we had different file ops going straight to p9_client_read in
+this case?
+But turning my brain on this would be the read-only mmap case that we
+need to support for execs, which module loading also uses, so this came
+biting there alright.
+
+-- 
+Dominique Martinet | Asmadeus
 
