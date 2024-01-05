@@ -1,112 +1,89 @@
-Return-Path: <linux-kernel+bounces-18020-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18021-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0698F82574B
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 16:56:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E330825750
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 16:57:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 685802820A5
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 15:56:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F0D911F23841
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 15:57:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 976042E82E;
-	Fri,  5 Jan 2024 15:56:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0ACB22E825;
+	Fri,  5 Jan 2024 15:57:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hp8VA9bN"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7DA62E824;
-	Fri,  5 Jan 2024 15:56:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.163])
-	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4T67Lr1f5hz1Q6cn;
-	Fri,  5 Jan 2024 23:54:44 +0800 (CST)
-Received: from dggems704-chm.china.huawei.com (unknown [10.3.19.181])
-	by mail.maildlp.com (Postfix) with ESMTPS id 560911800C6;
-	Fri,  5 Jan 2024 23:56:12 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (7.191.163.240) by
- dggems704-chm.china.huawei.com (10.3.19.181) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Fri, 5 Jan 2024 23:56:11 +0800
-Received: from lhrpeml500005.china.huawei.com ([7.191.163.240]) by
- lhrpeml500005.china.huawei.com ([7.191.163.240]) with mapi id 15.01.2507.035;
- Fri, 5 Jan 2024 15:56:09 +0000
-From: Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
-To: Jason Gunthorpe <jgg@nvidia.com>, "alex.williamson@redhat.com"
-	<alex.williamson@redhat.com>
-CC: "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"yishaih@nvidia.com" <yishaih@nvidia.com>, "kevin.tian@intel.com"
-	<kevin.tian@intel.com>, Linuxarm <linuxarm@huawei.com>, liulongfang
-	<liulongfang@huawei.com>
-Subject: RE: [PATCH] hisi_acc_vfio_pci: Update migration data pointer
- correctly on saving/resume
-Thread-Topic: [PATCH] hisi_acc_vfio_pci: Update migration data pointer
- correctly on saving/resume
-Thread-Index: AQHaG5IKSxqx627vikqShB0juPG9VbCDRMsAgEhisBA=
-Date: Fri, 5 Jan 2024 15:56:09 +0000
-Message-ID: <12f92affadf34f048a2eb2e7e9ecd879@huawei.com>
-References: <20231120091406.780-1-shameerali.kolothum.thodi@huawei.com>
- <20231120142928.GC6083@nvidia.com>
-In-Reply-To: <20231120142928.GC6083@nvidia.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5757B2E650;
+	Fri,  5 Jan 2024 15:57:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 507DCC433C8;
+	Fri,  5 Jan 2024 15:57:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704470261;
+	bh=+xa3cNc4fcmH+9F+ro04yf6AD35CnnniOU6kTmbOkS4=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=hp8VA9bNDcKBrfceM0NBOHZYSQHq8VljuQcPiXyfQUGdtFEHvm7TQC/H4YnkN1adN
+	 gP+ySw25al33GXQEhZPMR1/RlmBJfCk5zousBMQQnKREc0jL7ojHX2tcTnStcKfIcs
+	 WZ0Jlz2mIWTn0v9Y/jz+6E3Khop85p8JSDS7GlO4pKYkrkqSxQ3dkHNN4HGNMLFCVm
+	 3aAaOG8wJL/kt3CkQiBFb/BFlIN0J88W2xbZ/eMKtlAAy0UtL5ly5UHMlJyqSex8zt
+	 +61u68ezphI+HRz3xktBfs6RsPSgsavfKzpBe8/IpRZBEfDFy/kWOaQ2dUAapcMuDl
+	 flcjY5BqB0THQ==
+From: Mark Brown <broonie@kernel.org>
+To: Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, 
+ =?utf-8?q?Andr=C3=A9_Apitzsch?= <git@apitzsch.eu>
+Cc: linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+In-Reply-To: <20240104-tps65132-v2-1-6c77fe2f4787@apitzsch.eu>
+References: <20240104-tps65132-v2-1-6c77fe2f4787@apitzsch.eu>
+Subject: Re: [PATCH v2] dt-bindings: regulator: Convert ti,tps65132 to YAML
+Message-Id: <170447026000.44002.12548824311139188235.b4-ty@kernel.org>
+Date: Fri, 05 Jan 2024 15:57:40 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Mailer: b4 0.13-dev-5c066
 
-Hi Alex,
+On Thu, 04 Jan 2024 23:40:40 +0100, André Apitzsch wrote:
+> Convert TI TPS65132 bindings from .txt to .yaml format.
+> 
+> 
 
-Just a gentle ping on this.=20
+Applied to
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
+
+Thanks!
+
+[1/1] dt-bindings: regulator: Convert ti,tps65132 to YAML
+      commit: 94cc3087aac4103c33c6da84c092301afd783200
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
 Thanks,
-Shameer
+Mark
 
-> -----Original Message-----
-> From: Jason Gunthorpe <jgg@nvidia.com>
-> Sent: Monday, November 20, 2023 2:29 PM
-> To: Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
-> Cc: kvm@vger.kernel.org; linux-kernel@vger.kernel.org;
-> alex.williamson@redhat.com; yishaih@nvidia.com; kevin.tian@intel.com;
-> Linuxarm <linuxarm@huawei.com>; liulongfang <liulongfang@huawei.com>
-> Subject: Re: [PATCH] hisi_acc_vfio_pci: Update migration data pointer cor=
-rectly
-> on saving/resume
->=20
-> On Mon, Nov 20, 2023 at 09:14:06AM +0000, Shameer Kolothum wrote:
-> > When the optional PRE_COPY support was added to speed up the device
-> > compatibility check, it failed to update the saving/resuming data
-> > pointers based on the fd offset. This results in migration data
-> > corruption and when the device gets started on the destination the
-> > following error is reported in some cases,
-> >
-> > [  478.907684] arm-smmu-v3 arm-smmu-v3.2.auto: event 0x10 received:
-> > [  478.913691] arm-smmu-v3 arm-smmu-v3.2.auto:  0x0000310200000010 [
-> > 478.919603] arm-smmu-v3 arm-smmu-v3.2.auto:  0x000002088000007f [
-> > 478.925515] arm-smmu-v3 arm-smmu-v3.2.auto:  0x0000000000000000 [
-> > 478.931425] arm-smmu-v3 arm-smmu-v3.2.auto:  0x0000000000000000 [
-> > 478.947552] hisi_zip 0000:31:00.0: qm_axi_rresp [error status=3D0x1]
-> > found [  478.955930] hisi_zip 0000:31:00.0: qm_db_timeout [error
-> > status=3D0x400] found [  478.955944] hisi_zip 0000:31:00.0: qm sq
-> > doorbell timeout in function 2
-> >
-> > Fixes: d9a871e4a143 ("hisi_acc_vfio_pci: Introduce support for
-> > PRE_COPY state transitions")
-> > Signed-off-by: Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>
-> > ---
-> >  drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.c | 7 +++++--
-> >  1 file changed, 5 insertions(+), 2 deletions(-)
->=20
-> Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
->=20
-> Jason
 
