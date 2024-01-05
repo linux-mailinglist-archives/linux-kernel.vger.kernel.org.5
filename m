@@ -1,90 +1,117 @@
-Return-Path: <linux-kernel+bounces-18410-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18411-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A1E84825D11
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 00:12:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E9F59825D12
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 00:15:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 544921F2463A
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 23:12:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1248D1C2330F
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 23:15:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24170360B5;
-	Fri,  5 Jan 2024 23:12:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A57C6360B7;
+	Fri,  5 Jan 2024 23:15:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="NZuhBA3D"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64D37360A3;
-	Fri,  5 Jan 2024 23:12:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f47.google.com with SMTP id 98e67ed59e1d1-28c075ad8e7so94806a91.2;
-        Fri, 05 Jan 2024 15:12:32 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66EAB3609E
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 23:15:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1704496539;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=SR4FNZ1ZczSS8WEbs/1VXeRwzlcPX29OcKlDtIlAL20=;
+	b=NZuhBA3Dwmz863o/aVeDvECvZjJVkfTLZ1dF+aGMpatlSTz2aQPCmSSRijzzURBIawg5rN
+	WzMob+psjTeO86VKQHLNH+eHx75GQbGzwtDviDNrHmmssXpSMRvrhQsg+iLIjTx973yFo4
+	Iore3UqB+/msIQZFTWA9h9x+ofr5GF4=
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
+ [209.85.222.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-426-jk3fZT5FMpesA5VcPa2h3w-1; Fri, 05 Jan 2024 18:15:38 -0500
+X-MC-Unique: jk3fZT5FMpesA5VcPa2h3w-1
+Received: by mail-qk1-f198.google.com with SMTP id af79cd13be357-781e9899388so7407085a.3
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Jan 2024 15:15:37 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704496351; x=1705101151;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dUAhNqUpdKmg+sUIUDMYqgFuBhU5t8vIbGzf07x8V/w=;
-        b=XZHvOfwQfZ3I4/5wHv1X2j/Po6Z50wGyIEVN0kxPmjoDVpd0phlcHehr2+q4fPrr2r
-         aot5S2EBSl03w0GvN6z3oDn23X2/rF71J4n8qqdW8zrYU0JpjCReBZMxiNHG6PitU3CM
-         b+7erP9wsuduVi/zL/DpVOYWjbOmQUSsnt/+2jj77pkyFVeI+hwQHiidk+6cDMny8zjH
-         yk4cXGArHolG1I1bqXLebmkLdd3N+4FGEYS2xhGumcUc7XxMkk6xatQrE5VXZhfmF363
-         6WpXeUXYJXjlstWL4UVjczL3TihNdphdv2iVDGWfSgiSByOOGKBm4gZ41IuEgfs+6E7k
-         Twsg==
-X-Gm-Message-State: AOJu0YxSfZkBCiZDhiHFuWKSp2vtVW7kTDEtQ7KAh1MTtknC5JLuf2Oe
-	rjgOYP2phsZAI+kDbWaURwit2NkZE/YmZAvsw0tLGoBF
-X-Google-Smtp-Source: AGHT+IGGIGElvesePWzf2AKJd00KSRLZdRgA9eddzlMLNrxojV3lc2haH3+m3r9GCnfVb/oyQA4w7HwES29gQ29TXts=
-X-Received: by 2002:a17:90b:4b81:b0:28c:c667:450c with SMTP id
- lr1-20020a17090b4b8100b0028cc667450cmr170349pjb.66.1704496351484; Fri, 05 Jan
- 2024 15:12:31 -0800 (PST)
+        d=1e100.net; s=20230601; t=1704496537; x=1705101337;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=SR4FNZ1ZczSS8WEbs/1VXeRwzlcPX29OcKlDtIlAL20=;
+        b=lzxynGycbnoV3Yg8U/grpkUpksWjGqsWJhCoQD/J6VurZHDBYGwZOQbm2FIHDOtkji
+         GHfq11KHP6z5TxFGPZXXQHv06/mUN13TTH11nAQ5267C/VHWMV6hdNYco6vYmBCQKAdI
+         /K598nzh+5vVZfHzXyMWIQYNxQylFZF1zltI7US9K8xHOJRlNmbX2ewS5lXeNBq1ElRg
+         TZhwA6DDCyxVLicEiPb2ylu9kk0ulhiSTaqbb/Aim7xP06/ffan7vIa5eKMQ+G4qtOd6
+         0omnnj2GmU3fGF4qmcb+mzJaPxZjdHqktfTN4DZYhorht1epSugTPRX95olmIET9lf/c
+         DWxw==
+X-Gm-Message-State: AOJu0YyzD5iqMtEEeqVs7NSIHinNXIv9ts7WzAxNqsdVV4bB6VxeX/VS
+	MiblaPc1sYCxe89T3eNifjcMb7YJW1vS0QC3D2/ZNH7oTUfdVm8msBF+Ds9CP8IhnuVPFn+PzBp
+	lCfDEivUP0fcdCv/cTtKxUzRxFZoccwQ=
+X-Received: by 2002:a05:620a:2016:b0:783:d29:70d6 with SMTP id c22-20020a05620a201600b007830d2970d6mr146626qka.20.1704496537578;
+        Fri, 05 Jan 2024 15:15:37 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGURTTAvcO6Ox2UfaSzbvaF3XPwF+qniPKVpD0F1FEx3oJvjon3DArqvqc0mtpcKJ61admeNg==
+X-Received: by 2002:a05:620a:2016:b0:783:d29:70d6 with SMTP id c22-20020a05620a201600b007830d2970d6mr146611qka.20.1704496537331;
+        Fri, 05 Jan 2024 15:15:37 -0800 (PST)
+Received: from klayman.redhat.com (net-2-34-31-72.cust.vodafonedsl.it. [2.34.31.72])
+        by smtp.gmail.com with ESMTPSA id i9-20020a05620a0a0900b00781bd8b06f8sm935915qka.62.2024.01.05.15.15.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Jan 2024 15:15:36 -0800 (PST)
+From: Marco Pagani <marpagan@redhat.com>
+To: Moritz Fischer <mdf@kernel.org>,
+	Wu Hao <hao.wu@intel.com>,
+	Xu Yilun <yilun.xu@intel.com>,
+	Tom Rix <trix@redhat.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Marco Pagani <marpagan@redhat.com>,
+	linux-kernel@vger.kernel.org,
+	linux-fpga@vger.kernel.org
+Subject: [RFC PATCH v4 0/1] fpga: improve protection against low-level control module unloading
+Date: Sat,  6 Jan 2024 00:15:25 +0100
+Message-ID: <20240105231526.109247-1-marpagan@redhat.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240102085001.228815-1-leo.yan@linaro.org>
-In-Reply-To: <20240102085001.228815-1-leo.yan@linaro.org>
-From: Namhyung Kim <namhyung@kernel.org>
-Date: Fri, 5 Jan 2024 15:12:20 -0800
-Message-ID: <CAM9d7cg3Qkx240RBGKYegeX-kxgUiQ4-G4R3sJBc=w=o-Msk=Q@mail.gmail.com>
-Subject: Re: [PATCH v8] Documentation: userspace-api: Document perf ring
- buffer mechanism
-To: Leo Yan <leo.yan@linaro.org>
-Cc: Jonathan Corbet <corbet@lwn.net>, Arnaldo Carvalho de Melo <acme@kernel.org>, Ian Rogers <irogers@google.com>, 
-	Thomas Richter <tmricht@linux.ibm.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Ingo Molnar <mingo@kernel.org>, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-perf-users@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-Hi Leo,
+This RFC proposes a solution to keep protecting the fpga manager against
+the unloading of the low-level control modules while addressing the
+limitations of the current implementation. Currently, the code assumes
+that the low-level module registers a driver for the parent device that
+is later used to take the module's refcount. This proposal removes this
+limitation by adding a module owner field to the fpga_manager struct
+that can be set while registering the manager.
 
-On Tue, Jan 2, 2024 at 12:50=E2=80=AFAM Leo Yan <leo.yan@linaro.org> wrote:
->
-> In the Linux perf tool, the ring buffer serves not only as a medium for
-> transferring PMU event data but also as a vital mechanism for hardware
-> tracing using technologies like Intel PT and Arm CoreSight, etc.
->
-> Consequently, the ring buffer mechanism plays a crucial role by ensuring
-> high throughput for data transfer between the kernel and user space
-> while avoiding excessive overhead caused by the ring buffer itself.
->
-> This commit documents the ring buffer mechanism in detail.  It explains
-> the implementation of both the regular ring buffer and the AUX ring
-> buffer.  Additionally, it covers how these ring buffers support various
-> tracing modes and explains the synchronization with memory barriers.
->
-> Signed-off-by: Leo Yan <leo.yan@linaro.org>
+For more context, please refer to these threads:
+https://lore.kernel.org/linux-fpga/ZS6hhlvjUcqyv8zL@yilunxu-OptiPlex-7050
+https://lore.kernel.org/linux-fpga/ZT9qENE9fE3Z0KCW@yilunxu-OptiPlex-7050
 
-Thanks a lot for working on this!
+v4:
+- Use helper macros to set the owner module
+v3:
+- Improved locking
+v2:
+- Fixed protection against races during module removal
 
-Reviewed-by: Namhyung Kim <namhyung@kernel.org>
+Marco Pagani (1):
+  fpga: add an owner and use it to take the low-level module's refcount
 
-Thanks,
-Namhyung
+ drivers/fpga/fpga-mgr.c       | 93 ++++++++++++++++++++++-------------
+ include/linux/fpga/fpga-mgr.h | 80 +++++++++++++++++++++++++++---
+ 2 files changed, 134 insertions(+), 39 deletions(-)
+
+
+base-commit: 610a9b8f49fbcf1100716370d3b5f6f884a2835a
+-- 
+2.43.0
+
 
