@@ -1,138 +1,213 @@
-Return-Path: <linux-kernel+bounces-18145-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18146-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B0D6682596A
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 18:50:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 317A782596C
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 18:51:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 42A3BB23CD4
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 17:50:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CE74028429C
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 17:51:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26F88328D7;
-	Fri,  5 Jan 2024 17:50:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7545328D0;
+	Fri,  5 Jan 2024 17:51:23 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F1A2250E5;
-	Fri,  5 Jan 2024 17:50:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sntech.de
-Received: from i53875a56.versanet.de ([83.135.90.86] helo=diego.localnet)
-	by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <heiko@sntech.de>)
-	id 1rLoL6-0006fs-Ab; Fri, 05 Jan 2024 18:50:36 +0100
-From: Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
-To: Alex Bee <knaerzche@gmail.com>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org,
- dri-devel@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- David Airlie <airlied@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- Sandy Huang <hjc@rock-chips.com>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>
-Subject: Re: (subset) [PATCH v4 00/29] Add HDMI support for RK3128
-Date: Fri, 05 Jan 2024 18:50:35 +0100
-Message-ID: <7002847.tM3a2QDmDi@diego>
-In-Reply-To: <31af9449-67df-4a1d-942c-60405f653409@gmail.com>
-References:
- <20231222174220.55249-1-knaerzche@gmail.com> <2568547.3Lj2Plt8kZ@diego>
- <31af9449-67df-4a1d-942c-60405f653409@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE041328C4
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 17:51:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7ba7b2c0c1cso163888639f.2
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Jan 2024 09:51:21 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704477081; x=1705081881;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=0J45BElnGsnlb+hcSi7W72v1ypQ+RzOOzGvT7znb7Wo=;
+        b=sXZTh2RSxGA96MsfHabAcE23PvX6GM5D4SAOcxe0Pse+MbPHkSF6XnKtmm6w/r6yvr
+         fyfYhTHpAQNv/iPeiBiSKUDJsJ3kTXHQU1DkDY6TXlxsMDP0bQhUg1pAVApt2mGBJzk7
+         TGPmTQf8VV8ivQi10iY2yBXY5iMtRqe8LRLt/18syPgOIGIcrGUnhSgdxZRPD0EwlSeE
+         yTW9/h7bWTqYB1zYdAbgb/DpkmgZRQHlG6NqC6BTD8qcZxRqocyt6yQgfy4tZJHk9BAy
+         6UV5neTEAe5PjDrpRV4eTf5J7SgUftt7ExdHO2Gehn3Ar6Tp1jyKo8qPBRVMUsEbcu4m
+         3iSA==
+X-Gm-Message-State: AOJu0YxmUHOgz9Ltib3b/ThuZ9dvpHUmhpQT6SdCj5pb+3vjTfoznq3p
+	/g+EILQ4l+DxFmzkW+4ssfZRquxr4TmeXeNYyrzmFab02ngq
+X-Google-Smtp-Source: AGHT+IHQFD58vZhMCyrneF8Q0mnkayqmlC0X82FA8MCcD3FnbRlHEk6c1sp8b6hSxlvowrFBJfxiioR7jSryhjtn4+CVio3x7Lg2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
+X-Received: by 2002:a05:6638:16c6:b0:46d:e99b:dc2b with SMTP id
+ g6-20020a05663816c600b0046de99bdc2bmr141654jat.4.1704477081042; Fri, 05 Jan
+ 2024 09:51:21 -0800 (PST)
+Date: Fri, 05 Jan 2024 09:51:21 -0800
+In-Reply-To: <000000000000a62351060e363bdc@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000f1834e060e367e56@google.com>
+Subject: Re: [syzbot] [net?] memory leak in ___neigh_create (2)
+From: syzbot <syzbot+42cfec52b6508887bbe8@syzkaller.appspotmail.com>
+To: alexander.mikhalitsyn@virtuozzo.com, davem@davemloft.net, den@openvz.org, 
+	dsahern@kernel.org, edumazet@google.com, kuba@kernel.org, 
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org, pabeni@redhat.com, 
+	razor@blackwall.org, syzkaller-bugs@googlegroups.com, 
+	thomas.zeitlhofer+lkml@ze-it.at, thomas.zeitlhofer@ze-it.at, 
+	wangyuweihx@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 
-Am Freitag, 5. Januar 2024, 18:33:34 CET schrieb Alex Bee:
->=20
-> Am 05.01.24 um 18:02 schrieb Heiko St=FCbner:
-> > Am Freitag, 5. Januar 2024, 17:47:21 CET schrieb Alex Bee:
-> >> Hi Heiko,
-> >>
-> >>
-> >> Am 04.01.24 um 09:14 schrieb Heiko Stuebner:
-> >>> On Fri, 22 Dec 2023 18:41:51 +0100, Alex Bee wrote:
-> >>>> This is version 4 of my series that aims to add support for the disp=
-lay
-> >>>> controller (VOP) and the HDMI controller block of RK3128 (which is v=
-ery
-> >>>> similar to the one found in RK3036). The original intention of this =
-series
-> >>>> was to add support for this slightly different integration but is by=
- now,
-> >>>> driven by maintainer's feedback, exploded to be a rework of inno-hdmi
-> >>>> driver in large parts. It is, however, a change for the better.
-> >>>>
-> >>>> [...]
-> >>> Applied, thanks!
-> >>>
-> >>> [23/29] drm/rockchip: inno_hdmi: Add variant support
-> >>>           commit: 5f2e93e6719701a91307090f8f7696fd6b3bffdf
-> >>> [24/29] drm/rockchip: inno_hdmi: Add RK3128 support
-> >>>           commit: aa54f334c291effe321aa4b9ac0e67a895fd7b58
-> >>> [25/29] drm/rockchip: inno_hdmi: Add basic mode validation
-> >>>           commit: 701029621d4141d0c9f8b81a88a37b95ec84ce65
-> >>> [26/29] drm/rockchip: inno_hdmi: Drop custom fill_modes hook
-> >>>           commit: 50a3c772bd927dd409c484832ddd9f6bf00b7389
-> >>>
-> >>>
-> >>> For reference, Rob has applied the rk3128 compatible in
-> >>> https://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git/commit=
-/?id=3D21960bda59852ca961fcd27fba9f92750caccd06
-> >> thanks for keeping track on this.
-> >>
-> >> Is there any reason the DT paches aren't merged yet? From what I can s=
-ee
-> >> they should be fine to be merged in your v6.8-armsoc/dts32 branch whic=
-h is
-> >> 6.7-rc1 based. There was only a txt-binding at this point and it's very
-> >> likely that both the rockchip,inno-hdmi.yaml-conversion and the rk3128
-> >> additon will both land in 6.8 (they are both in linux-next). Linus' 6.8
-> >> merge-window will open earliest next week.
-> > Exactly ... and the arm subarchitectures (Rockchip, etc) feed into the
-> > more generic soc-tree[0]  and from there in a set of pull requests.
-> >
-> > Normally everything needs to go to the soc tree before -rc7 .
-> > With the whole xmas stuff, I sent some stragglers in a second pull
-> > request on monday, but that was already before Rob applied the
-> > binding on tuesday.
-> >
-> > So 6.8 devicetree stuff is essentially done and the dts patches
-> > from this series will go in to 6.9 .
-> >
-> >
-> > Hope that explains things a bit :-)
-> I assumed (for some reason) that sub-architecture maintainers are allowed
-> to send PRs to the respective upper tree until the merge window opens and
-> "all the rest" is done within this  ~2 weeks.
-> Thanks for explaining.
+syzbot has found a reproducer for the following issue on:
 
-No worries :-) .
+HEAD commit:    2258c2dc850b Merge tag 'for-linus' of git://git.kernel.org..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=16f67b44480000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=a4fb7ad9185f1501
+dashboard link: https://syzkaller.appspot.com/bug?extid=42cfec52b6508887bbe8
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14e23d44480000
 
-The general rule of thumb is that everything should be done and ready
-before the merge-window opens. Linus often writes very positively about
-people sending him pull-requests even before the merge window opens ;-)
-[meaning their tree is settled early and all test-robots have run]
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/0e65a45877eb/disk-2258c2dc.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/7617adf885a8/vmlinux-2258c2dc.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/43fb89ea894a/bzImage-2258c2dc.xz
 
-And there are different rules in every tree.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+42cfec52b6508887bbe8@syzkaller.appspotmail.com
 
-=46or the soc tree the general rule of thumb of =3D< -rc7 - earlier with la=
-rger
-changesets. On the other side drm-misc stays open all the time, but makes
-a cut at -rc6. So everything targetted at v6.8 needs to be in before
-v6.7-rc6.
+BUG: memory leak
+unreferenced object 0xffff88810b8ea400 (size 512):
+  comm "kworker/0:3", pid 4440, jiffies 4294938594 (age 1132.680s)
+  hex dump (first 32 bytes):
+    00 9c f8 0a 81 88 ff ff 80 29 23 86 ff ff ff ff  .........)#.....
+    c0 79 79 44 81 88 ff ff 72 78 ff ff 00 00 00 00  .yyD....rx......
+  backtrace:
+    [<ffffffff814f9fe6>] __do_kmalloc_node mm/slab_common.c:967 [inline]
+    [<ffffffff814f9fe6>] __kmalloc+0x46/0x120 mm/slab_common.c:981
+    [<ffffffff83b5234f>] kmalloc include/linux/slab.h:584 [inline]
+    [<ffffffff83b5234f>] kzalloc include/linux/slab.h:720 [inline]
+    [<ffffffff83b5234f>] neigh_alloc net/core/neighbour.c:476 [inline]
+    [<ffffffff83b5234f>] ___neigh_create+0xdf/0xd60 net/core/neighbour.c:661
+    [<ffffffff83f9f886>] ip6_finish_output2+0x776/0x9b0 net/ipv6/ip6_output.c:125
+    [<ffffffff83fa5530>] __ip6_finish_output net/ipv6/ip6_output.c:195 [inline]
+    [<ffffffff83fa5530>] ip6_finish_output+0x270/0x530 net/ipv6/ip6_output.c:206
+    [<ffffffff83fa5893>] NF_HOOK_COND include/linux/netfilter.h:291 [inline]
+    [<ffffffff83fa5893>] ip6_output+0xa3/0x1b0 net/ipv6/ip6_output.c:227
+    [<ffffffff83ff16d9>] dst_output include/net/dst.h:444 [inline]
+    [<ffffffff83ff16d9>] NF_HOOK include/linux/netfilter.h:302 [inline]
+    [<ffffffff83ff16d9>] NF_HOOK.constprop.0+0x49/0x110 include/linux/netfilter.h:296
+    [<ffffffff83ff19c4>] mld_sendpack+0x224/0x350 net/ipv6/mcast.c:1820
+    [<ffffffff83ff5403>] mld_send_cr net/ipv6/mcast.c:2121 [inline]
+    [<ffffffff83ff5403>] mld_ifc_work+0x2a3/0x750 net/ipv6/mcast.c:2653
+    [<ffffffff8129519a>] process_one_work+0x2ba/0x5f0 kernel/workqueue.c:2289
+    [<ffffffff81295ab9>] worker_thread+0x59/0x5b0 kernel/workqueue.c:2436
+    [<ffffffff8129fb05>] kthread+0x125/0x160 kernel/kthread.c:376
+    [<ffffffff8100224f>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:308
+
+BUG: memory leak
+unreferenced object 0xffff888109a7fa00 (size 512):
+  comm "kworker/0:3", pid 4440, jiffies 4294938594 (age 1132.680s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 80 29 23 86 ff ff ff ff  .........)#.....
+    00 79 79 44 81 88 ff ff 72 78 ff ff 00 00 00 00  .yyD....rx......
+  backtrace:
+    [<ffffffff814f9fe6>] __do_kmalloc_node mm/slab_common.c:967 [inline]
+    [<ffffffff814f9fe6>] __kmalloc+0x46/0x120 mm/slab_common.c:981
+    [<ffffffff83b5234f>] kmalloc include/linux/slab.h:584 [inline]
+    [<ffffffff83b5234f>] kzalloc include/linux/slab.h:720 [inline]
+    [<ffffffff83b5234f>] neigh_alloc net/core/neighbour.c:476 [inline]
+    [<ffffffff83b5234f>] ___neigh_create+0xdf/0xd60 net/core/neighbour.c:661
+    [<ffffffff83f9f886>] ip6_finish_output2+0x776/0x9b0 net/ipv6/ip6_output.c:125
+    [<ffffffff83fa5530>] __ip6_finish_output net/ipv6/ip6_output.c:195 [inline]
+    [<ffffffff83fa5530>] ip6_finish_output+0x270/0x530 net/ipv6/ip6_output.c:206
+    [<ffffffff83fa5893>] NF_HOOK_COND include/linux/netfilter.h:291 [inline]
+    [<ffffffff83fa5893>] ip6_output+0xa3/0x1b0 net/ipv6/ip6_output.c:227
+    [<ffffffff83ff16d9>] dst_output include/net/dst.h:444 [inline]
+    [<ffffffff83ff16d9>] NF_HOOK include/linux/netfilter.h:302 [inline]
+    [<ffffffff83ff16d9>] NF_HOOK.constprop.0+0x49/0x110 include/linux/netfilter.h:296
+    [<ffffffff83ff19c4>] mld_sendpack+0x224/0x350 net/ipv6/mcast.c:1820
+    [<ffffffff83ff5403>] mld_send_cr net/ipv6/mcast.c:2121 [inline]
+    [<ffffffff83ff5403>] mld_ifc_work+0x2a3/0x750 net/ipv6/mcast.c:2653
+    [<ffffffff8129519a>] process_one_work+0x2ba/0x5f0 kernel/workqueue.c:2289
+    [<ffffffff81295ab9>] worker_thread+0x59/0x5b0 kernel/workqueue.c:2436
+    [<ffffffff8129fb05>] kthread+0x125/0x160 kernel/kthread.c:376
+    [<ffffffff8100224f>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:308
+
+BUG: memory leak
+unreferenced object 0xffff88810a9fb400 (size 512):
+  comm "dhcpcd", pid 4638, jiffies 4294938595 (age 1132.670s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 80 29 23 86 ff ff ff ff  .........)#.....
+    c0 76 79 44 81 88 ff ff 73 78 ff ff 00 00 00 00  .vyD....sx......
+  backtrace:
+    [<ffffffff814f9fe6>] __do_kmalloc_node mm/slab_common.c:967 [inline]
+    [<ffffffff814f9fe6>] __kmalloc+0x46/0x120 mm/slab_common.c:981
+    [<ffffffff83b5234f>] kmalloc include/linux/slab.h:584 [inline]
+    [<ffffffff83b5234f>] kzalloc include/linux/slab.h:720 [inline]
+    [<ffffffff83b5234f>] neigh_alloc net/core/neighbour.c:476 [inline]
+    [<ffffffff83b5234f>] ___neigh_create+0xdf/0xd60 net/core/neighbour.c:661
+    [<ffffffff83f9f886>] ip6_finish_output2+0x776/0x9b0 net/ipv6/ip6_output.c:125
+    [<ffffffff83fa5530>] __ip6_finish_output net/ipv6/ip6_output.c:195 [inline]
+    [<ffffffff83fa5530>] ip6_finish_output+0x270/0x530 net/ipv6/ip6_output.c:206
+    [<ffffffff83fa5893>] NF_HOOK_COND include/linux/netfilter.h:291 [inline]
+    [<ffffffff83fa5893>] ip6_output+0xa3/0x1b0 net/ipv6/ip6_output.c:227
+    [<ffffffff84062411>] dst_output include/net/dst.h:444 [inline]
+    [<ffffffff84062411>] ip6_local_out+0x51/0x70 net/ipv6/output_core.c:155
+    [<ffffffff83fa6285>] ip6_send_skb+0x25/0xc0 net/ipv6/ip6_output.c:1971
+    [<ffffffff83fa6394>] ip6_push_pending_frames+0x74/0x90 net/ipv6/ip6_output.c:1991
+    [<ffffffff83fec08c>] rawv6_push_pending_frames net/ipv6/raw.c:579 [inline]
+    [<ffffffff83fec08c>] rawv6_sendmsg+0x16ac/0x1ba0 net/ipv6/raw.c:922
+    [<ffffffff83ebe965>] inet_sendmsg+0x45/0x70 net/ipv4/af_inet.c:827
+    [<ffffffff83af7116>] sock_sendmsg_nosec net/socket.c:714 [inline]
+    [<ffffffff83af7116>] sock_sendmsg+0x56/0x80 net/socket.c:734
+    [<ffffffff83af769d>] ____sys_sendmsg+0x38d/0x410 net/socket.c:2476
+    [<ffffffff83afbfe8>] ___sys_sendmsg+0xa8/0x110 net/socket.c:2530
+    [<ffffffff83afc178>] __sys_sendmsg+0x88/0x100 net/socket.c:2559
+    [<ffffffff848ed5b5>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+    [<ffffffff848ed5b5>] do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+    [<ffffffff84a00087>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+BUG: memory leak
+unreferenced object 0xffff88810a9fba00 (size 512):
+  comm "dhcpcd", pid 4638, jiffies 4294938595 (age 1132.670s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 80 29 23 86 ff ff ff ff  .........)#.....
+    80 77 79 44 81 88 ff ff 73 78 ff ff 00 00 00 00  .wyD....sx......
+  backtrace:
+    [<ffffffff814f9fe6>] __do_kmalloc_node mm/slab_common.c:967 [inline]
+    [<ffffffff814f9fe6>] __kmalloc+0x46/0x120 mm/slab_common.c:981
+    [<ffffffff83b5234f>] kmalloc include/linux/slab.h:584 [inline]
+    [<ffffffff83b5234f>] kzalloc include/linux/slab.h:720 [inline]
+    [<ffffffff83b5234f>] neigh_alloc net/core/neighbour.c:476 [inline]
+    [<ffffffff83b5234f>] ___neigh_create+0xdf/0xd60 net/core/neighbour.c:661
+    [<ffffffff83f9f886>] ip6_finish_output2+0x776/0x9b0 net/ipv6/ip6_output.c:125
+    [<ffffffff83fa5530>] __ip6_finish_output net/ipv6/ip6_output.c:195 [inline]
+    [<ffffffff83fa5530>] ip6_finish_output+0x270/0x530 net/ipv6/ip6_output.c:206
+    [<ffffffff83fa5893>] NF_HOOK_COND include/linux/netfilter.h:291 [inline]
+    [<ffffffff83fa5893>] ip6_output+0xa3/0x1b0 net/ipv6/ip6_output.c:227
+    [<ffffffff84062411>] dst_output include/net/dst.h:444 [inline]
+    [<ffffffff84062411>] ip6_local_out+0x51/0x70 net/ipv6/output_core.c:155
+    [<ffffffff83fa6285>] ip6_send_skb+0x25/0xc0 net/ipv6/ip6_output.c:1971
+    [<ffffffff83fa6394>] ip6_push_pending_frames+0x74/0x90 net/ipv6/ip6_output.c:1991
+    [<ffffffff83fec08c>] rawv6_push_pending_frames net/ipv6/raw.c:579 [inline]
+    [<ffffffff83fec08c>] rawv6_sendmsg+0x16ac/0x1ba0 net/ipv6/raw.c:922
+    [<ffffffff83ebe965>] inet_sendmsg+0x45/0x70 net/ipv4/af_inet.c:827
+    [<ffffffff83af7116>] sock_sendmsg_nosec net/socket.c:714 [inline]
+    [<ffffffff83af7116>] sock_sendmsg+0x56/0x80 net/socket.c:734
+    [<ffffffff83af769d>] ____sys_sendmsg+0x38d/0x410 net/socket.c:2476
+    [<ffffffff83afbfe8>] ___sys_sendmsg+0xa8/0x110 net/socket.c:2530
+    [<ffffffff83afc178>] __sys_sendmsg+0x88/0x100 net/socket.c:2559
+    [<ffffffff848ed5b5>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+    [<ffffffff848ed5b5>] do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+    [<ffffffff84a00087>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
 
 
-Heiko
 
-
+---
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
