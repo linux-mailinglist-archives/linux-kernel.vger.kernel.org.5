@@ -1,144 +1,194 @@
-Return-Path: <linux-kernel+bounces-17459-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17460-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3C59A824D8A
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 04:55:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C641B824D8D
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 04:57:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4CDE81C21CFD
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 03:55:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7055F286286
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 03:57:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0CFF46B3;
-	Fri,  5 Jan 2024 03:55:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75E7246B8;
+	Fri,  5 Jan 2024 03:57:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="eubRL2z+"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from wind.enjellic.com (wind.enjellic.com [76.10.64.91])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EE144403;
-	Fri,  5 Jan 2024 03:55:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=enjellic.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wind.enjellic.com
-Received: from wind.enjellic.com (localhost [127.0.0.1])
-	by wind.enjellic.com (8.15.2/8.15.2) with ESMTP id 4053sAja017839;
-	Thu, 4 Jan 2024 21:54:10 -0600
-Received: (from greg@localhost)
-	by wind.enjellic.com (8.15.2/8.15.2/Submit) id 4053s9ak017838;
-	Thu, 4 Jan 2024 21:54:09 -0600
-Date: Thu, 4 Jan 2024 21:54:09 -0600
-From: "Dr. Greg" <greg@enjellic.com>
-To: Paul Moore <paul@paul-moore.com>
-Cc: Serge Hallyn <serge@hallyn.com>, linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, corbet@lwn.net
-Subject: Re: [PATCH 02/13] Add TSEM specific documentation.
-Message-ID: <20240105035409.GA17707@wind.enjellic.com>
-Reply-To: "Dr. Greg" <greg@enjellic.com>
-References: <20230710102319.19716-1-greg@enjellic.com> <20230710102319.19716-3-greg@enjellic.com> <ZNKN+ZK6Lfbjb4GZ@jerom> <20230811202254.GA9401@wind.enjellic.com> <CAHC9VhSBnKor21HKiLuvn1kPmtHzNZW2j6FfEQ+cab5R1=_Bdw@mail.gmail.com>
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFDA7440E;
+	Fri,  5 Jan 2024 03:56:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 4053unah124949;
+	Thu, 4 Jan 2024 21:56:49 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1704427009;
+	bh=eCcQINE1gNlg8v+eYFOWY5Ps37bGRwJ7TfV5v+LjEzM=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=eubRL2z+4ymoCTLm/V27akX7aREf1HvCUTPnJDdDzoA977fUBxF6UHfvWxmnkjvuY
+	 +Vhf5B8u0z9TwZjjzY14yH4GM/3h+efvsM/dZ4G1Zcvz601JB6hAb5RAQ2lmjzkONy
+	 KrltyGysFc/y1MYmCwimbTTzll8j9mA37ch8/7wE=
+Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
+	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 4053unRA043379
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Thu, 4 Jan 2024 21:56:49 -0600
+Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 4
+ Jan 2024 21:56:49 -0600
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE107.ent.ti.com
+ (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 4 Jan 2024 21:56:48 -0600
+Received: from [172.24.227.36] (a0497641-hp-z2-tower-g9-workstation-desktop-pc.dhcp.ti.com [172.24.227.36])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 4053ujBL126449;
+	Thu, 4 Jan 2024 21:56:46 -0600
+Message-ID: <f930c208-b121-4416-afc9-26812471e1ab@ti.com>
+Date: Fri, 5 Jan 2024 09:26:45 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHC9VhSBnKor21HKiLuvn1kPmtHzNZW2j6FfEQ+cab5R1=_Bdw@mail.gmail.com>
-User-Agent: Mutt/1.4i
-X-Greylist: Sender passed SPF test, not delayed by milter-greylist-4.2.3 (wind.enjellic.com [127.0.0.1]); Thu, 04 Jan 2024 21:54:10 -0600 (CST)
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] arm64: dts: ti: k3-j721e: Add support for DFS in J721E
+ A72
+Content-Language: en-US
+To: Nishanth Menon <nm@ti.com>
+CC: <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <vigneshr@ti.com>, <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <a-nandan@ti.com>, <kristo@kernel.org>, <u-kumar1@ti.com>
+References: <20240104111922.832040-1-n-francis@ti.com>
+ <20240104151650.my3cuhgase4yf7gj@luminance>
+From: Neha Malcom Francis <n-francis@ti.com>
+In-Reply-To: <20240104151650.my3cuhgase4yf7gj@luminance>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On Thu, Jan 04, 2024 at 10:54:47AM -0500, Paul Moore wrote:
-> On Fri, Aug 11, 2023 at 4:24???PM Dr. Greg <greg@enjellic.com> wrote:
-> > On Tue, Aug 08, 2023 at 01:48:25PM -0500, Serge Hallyn wrote:
-> > > On Mon, Jul 10, 2023 at 05:23:08AM -0500, Dr. Greg wrote:
+Hi Nishanth,
+
+On 04/01/24 20:46, Nishanth Menon wrote:
+> On 16:49-20240104, Neha Malcom Francis wrote:
+>> Add 2G, 1G, 500M and 250M as the supported frequencies for A72. This
+>> enables support for Dynamic Frequency Scaling (DFS). Note that Dynamic
+>> Voltage and Frequency Scaling (DVFS) is not supported on J7 devices.
+>>
+>> J721E SoC has three different speed grade devices (see [1], 7.5
+>> Operating Performance Points) which as of today are indiscernible in
+>> software, users of a different speed grade device must manually change
+>> the DTS to ensure their maximum speed frequency is supported.
+>>
+>> To obtain clock-latency-ns, the maximum time was found to switch from/to
+>> any frequency for a CPU and this value was rounded off and set.
+>>
+>> [1] https://www.ti.com/lit/gpn/tda4vm
+>>
+>> Signed-off-by: Neha Malcom Francis <n-francis@ti.com>
+>> ---
+>> Test and boot logs:
+>> https://gist.github.com/nehamalcom/33608837ab5ad3332ff11a7fa7a602e2
+>>
+>> Changes since v1:
+>> https://lore.kernel.org/all/20231214075637.176586-1-n-francis@ti.com/
+>> - removed OPPs 1.5G and 750M as they introduced boot regression in
+>>    J721E-SK
 > 
-> ...
+> I do not think this is the right approach precisely for the above
+> reason.
 > 
-> > > > +of a model.  This allows a TMA to attest to the trust/security status
-> > > > +of a platform or workload by signing this singular value and
-> > > > +presenting it to a verifying party.
-> > > > +
-> > > > +In TSEM nomenclature, this singular value is referred to as the
-> > > > +'state' of the model.  The attestation model is to use trust
-> > > > +orchestrators to generate the state value of a workload by unit
-> > > > +testing.  This state value can be packaged with a utility or container
-> > > > +to represent a summary trust characteristic that can be attested by a
-> > > > +TMA, eliminating the need for a verifying partner to review and verify
-> > > > +an event log.
-> > > > +
-> > > > +TMA's implement this architecture by maintaining a single instance
-> > > > +vector of the set of security state coefficients that have been
-> > > > +generated.  A state measurement is generated by sorting the vector in
-> > > > +big-endian hash format and then generating a standard measurement
-> > > > +digest over this new vector.
-> >
-> > > Are you saying the TMA will keep every meaningful measurement for
-> > > the duration of the workload, so that it can always sort them?
-> >
-> > Correct, every unique security state coefficient.
-> >
-> > The approach isn't unique and without precedent.  Roberto Sassu is
-> > using a similar strategy in order generate a time/order independent
-> > PCR value for unlocking TPM sealed keys by parsing RPM and .deb
-> > distribution manifests.
-> >
-> > Paul Moore, in his comments in February to the V1 series, even
-> > seriously questioned why we would expose the classic linear extension
-> > measurement from a TMA.
+> See my comment in V1: https://lore.kernel.org/all/20231214125130.zqtq6ioj4c533wha@elbow/
+> 
+> "
+> I am also concerned if the table should be separated out as a dtsi and
+> included at board.dts level to prevent downstream users going crazy..
+> "
+> 
+> I suspect there is no magic opp configuration that will work with all
+> downstream and board variations. instead of creating a trimmed down
+> non-datasheet tuples of OPP configuration, use the data sheet provided
+> OPP configurations into each dtsi and the boards can apply the dtsi
+> based on the type of sample they have.
+> 
+> I don't see any other scheme (overlays, maybe?).. but this approach is
+> broken and your note above proves why this approach is broken.
+> 
 
-> To put my comment from the first revision into the proper context,
-> and with my understanding that TSEM's security model does not
-> consider event ordering/timing, I questioned what TSEM would expose
->					       ^^^^ why??
-> an ordered list of events to userspace in addition to its unordered,
-> sorted list.
->
-> Either ordering is important to the security model, in which case you
-> expose the ordered list, or it isn't, in which case you expose the
-> list in whatever form is most convenient for the tooling/model; it
-> makes little sense to me to expose both.
+Understood... I believed OPPs were an SoC specific thing until this failure came 
+about and it makes sense to take it at the board level now. Will factor this in 
+for v3.
 
-As a generic clarification in furtherance of getting everyone on the
-same page with respect to the focus of our work.
+>> - Nishanth
+>> 	- indicated DVFS not supported in commit message
+>> 	- moved critical data sheet info from below tear line to commit
+>> 	  message
+>> 	- added opp-shared property
+>> 	- added clock-latency-ns property
+>>
+>>   arch/arm64/boot/dts/ti/k3-j721e.dtsi | 31 ++++++++++++++++++++++++++++
+>>   1 file changed, 31 insertions(+)
+>>
+>> diff --git a/arch/arm64/boot/dts/ti/k3-j721e.dtsi b/arch/arm64/boot/dts/ti/k3-j721e.dtsi
+>> index a200810df54a..5de6c70bd989 100644
+>> --- a/arch/arm64/boot/dts/ti/k3-j721e.dtsi
+>> +++ b/arch/arm64/boot/dts/ti/k3-j721e.dtsi
+>> @@ -48,6 +48,9 @@ cpu0: cpu@0 {
+>>   			d-cache-line-size = <64>;
+>>   			d-cache-sets = <256>;
+>>   			next-level-cache = <&L2_0>;
+>> +			clocks = <&k3_clks 202 2>;
+>> +			clock-names = "cpu";
+>> +			operating-points-v2 = <&cpu0_opp_table>;
+>>   		};
+>>   
+>>   		cpu1: cpu@1 {
+>> @@ -62,6 +65,34 @@ cpu1: cpu@1 {
+>>   			d-cache-line-size = <64>;
+>>   			d-cache-sets = <256>;
+>>   			next-level-cache = <&L2_0>;
+>> +			clocks = <&k3_clks 203 0>;
+>> +			clock-names = "cpu";
+>> +			operating-points-v2 = <&cpu0_opp_table>;
+>> +		};
+>> +	};
+>> +
+>> +	cpu0_opp_table: opp-table {
+>> +		compatible = "operating-points-v2";
+>> +		opp-shared;
+>> +
+>> +		opp6-2000000000 {
+>> +			opp-hz = /bits/ 64 <2000000000>;
+>> +			clock-latency-ns = <300000>;
+>> +		};
+>> +
+>> +		opp4-1000000000 {
+>> +			opp-hz = /bits/ 64 <1000000000>;
+>> +			clock-latency-ns = <300000>;
+>> +		};
+>> +
+>> +		opp2-500000000 {
+>> +			opp-hz = /bits/ 64 <500000000>;
+>> +			clock-latency-ns = <300000>;
+>> +		};
+>> +
+>> +		opp1-250000000 {
+>> +			opp-hz = /bits/ 64 <250000000>;
+>> +			clock-latency-ns = <300000>;
+>>   		};
+>>   	};
+>>   
+>> -- 
+>> 2.34.1
+>>
+> 
 
-TSEM is about providing generic infrastructure for security modeling
-and anomaly detection that acts at the most precise level of security
-instrumentation that is available.
-
-Secondary to that pursuit, TSEM offers security architects the ability
-to choose from either a time dependent or a time independent appraisal
-of a security modeling namespace.
-
-The TSEM 'trajectory' file is always time ordered with respect to the
-first unique occurrence of a security event.  In the V3 release, these
-trajectory entries include a nanosecond timestamp reference, relative
-to boot, of when the event occurred.
-
-The 'measurement' pseudo-file allows a relying party to verify that
-the trajectory list, as presented, is order/time consistent, if that
-is what they choose to evaluate.
-
-The 'state' pseudo-file allows a relying party to make a decision on
-whether or not the security status of the system is idempotent, from
-an event perspective, with a known reference state.
-
-It addresses, among other issues, the problem that IMA is currently
-facing with the fact that handling and examining unconstrained event
-logs can be problematic from a number of perspectives.
-
-Alternately, now in V3, a security model implementator can specify
-that a security event stream from a modeling namespace be
-asynchronously exported in its entirety and dealt with in whatever
-fashion an external evaluator desires.
-
-So TSEM doesn't implement or advocate a security model as much as it
-implements security infrastructure.
-
-> paul-moore.com
-
-Have a good weekend.
-
-As always,
-Dr. Greg
-
-The Quixote Project - Flailing at the Travails of Cybersecurity
-              https://github.com/Quixote-Project
+-- 
+Thanking You
+Neha Malcom Francis
 
