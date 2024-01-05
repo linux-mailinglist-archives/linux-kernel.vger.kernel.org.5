@@ -1,164 +1,77 @@
-Return-Path: <linux-kernel+bounces-17400-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17401-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F25A824CA9
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 02:52:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F2C1824CB2
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 03:04:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B6AEB1C21CA0
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 01:52:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E59EF2856FF
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 02:04:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 281341FC8;
-	Fri,  5 Jan 2024 01:52:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4077E1FC8;
+	Fri,  5 Jan 2024 02:04:07 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D2EC1FA3;
-	Fri,  5 Jan 2024 01:52:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
-Received: from loongson.cn (unknown [10.20.42.66])
-	by gateway (Coremail) with SMTP id _____8Bx3+vjYJdlVCUCAA--.8132S3;
-	Fri, 05 Jan 2024 09:52:35 +0800 (CST)
-Received: from lvjianmin$loongson.cn ( [10.20.42.66] ) by
- ajax-webmail-localhost.localdomain (Coremail) ; Fri, 5 Jan 2024 09:52:33
- +0800 (GMT+08:00)
-Date: Fri, 5 Jan 2024 09:52:33 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From: =?UTF-8?B?5ZCV5bu65rCR?= <lvjianmin@loongson.cn>
-To: maobibo <maobibo@loongson.cn>
-Cc: "Huacai Chen" <chenhuacai@kernel.org>,
-	"Jiaxun Yang" <jiaxun.yang@flygoat.com>,
-	"Thomas Gleixner" <tglx@linutronix.de>, linux-mips@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: Re: [PATCH] irqchip/loongson-eiointc: Refine irq affinity
- setting during resume
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version 2023.1-cmXT6 build
- 20230523(b0518e05) Copyright (c) 2002-2024 www.mailtech.cn loongson
-In-Reply-To: <a6661b44-2fab-4c7f-5997-e01a6f64c737@loongson.cn>
-References: <20231219095158.285408-1-maobibo@loongson.cn>
- <a6661b44-2fab-4c7f-5997-e01a6f64c737@loongson.cn>
-Content-Transfer-Encoding: base64
-X-CM-CTRLDATA: MJVw0mZvb3Rlcl90eHQ9NDEzMzo2MTI=
-Content-Type: text/plain; charset=UTF-8
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84B4B1FA5
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 02:04:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-35fffb6fe5bso8967595ab.2
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 18:04:05 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704420244; x=1705025044;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/RbdQNgZhlBOjHEKv4A23bmkYAW5rjv68FkHH8G1De0=;
+        b=AKbsNtXoxSJvb0za2tN8Kz0Jb42rX1PGCRe8wDEQYCX/1sL9Sz99zjMaWKq8ZnW4dI
+         DuveR68imgF0+gtXrrfbaDXIwv1yidHQfOUs2c48qN27roBab+L6VXiWRzveiqCitggD
+         b/DZyVL+Lt2Sp76S6NIDs8ScMoPoadbYOXPXjphl3KuxuuElUiGxAuQMfTTRoXJfvgTL
+         tMnvkmqmpmDCXZh5O3fPBP44z8g9TvLjPhXibGBXnDoZf5wcKGQ5/Yus8z0sZyd6HIFo
+         iaGpqZgZczl4MJtxK/AhKsgqVTByVerqGfVQa1tva8H2kU+dyk0LHQT6z4KvkutA6a4u
+         rWVQ==
+X-Gm-Message-State: AOJu0YyJRrS5phDQp+HVizWnnsECnou4XdLYmt8r8aJA3L2kfCS6GLa2
+	0VsPBLuth7z7kjgC7aGhoLws7WJyTb8Bv9WWXkw+13ZCvMoH6ZE=
+X-Google-Smtp-Source: AGHT+IEnAPcrBY1vGmfkIT0Ny3+54+CxvQ0X1m6/zsgpSN1/FVXlmwOgOf1xsRA1HquLdV7wy7APQT37/WTexpunDC82WBOIewuZ
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <14825118.b0d.18cd752711a.Coremail.lvjianmin@loongson.cn>
-X-Coremail-Locale: en_US
-X-CM-TRANSID:AQAAf8DxPIfhYJdl+acCAA--.293W
-X-CM-SenderInfo: 5oymxthqpl0qxorr0wxvrqhubq/1tbiAQAHDGWXVSgBgAAcsY
-X-Coremail-Antispam: 1Uk129KBj93XoWxGFy7CryUtFWfJw4xJr15ZFc_yoWrAr15pF
-	W5t3Z0kr4UJFyUXryS9r1UZa4av393XrZrKFsxWas7ZF98Z3WDKF4rKF1jvF12krW7G3Wj
-	vF4UXr1xu3WYyacCm3ZEXasCq-sJn29KB7ZKAUJUUUU5529EdanIXcx71UUUUU7KY7ZEXa
-	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-	0xBIdaVrnRJUUUQjb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-	0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
-	Gr0_Gr1UM2vj6VCEFcxC0VAYjxAxZF0EFcxC0VAYjxAxZF0Ew4CEw7xC0VCjxxvEa2IrM2
-	AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx1l5I8CrVACY4xI
-	64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv67AKxVWUJVW8Jw
-	Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFcxC0VAYjxAxZF0Ew4CEw7xC
-	0wACY4xI67k04243AVC20s07MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r
-	4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF
-	67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2I
-	x0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2
-	z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JwCE64xvF2IEb7IF0F
-	y7YxBIdaVFxhVjvjDU0xZFpf9x07UVWlgUUUUU=
+X-Received: by 2002:a05:6e02:1be2:b0:35f:cb88:883e with SMTP id
+ y2-20020a056e021be200b0035fcb88883emr225708ilv.6.1704420244719; Thu, 04 Jan
+ 2024 18:04:04 -0800 (PST)
+Date: Thu, 04 Jan 2024 18:04:04 -0800
+In-Reply-To: <20240105012326.2516274-1-lizhi.xu@windriver.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000003c136b060e2943ae@google.com>
+Subject: Re: [syzbot] [fs?] BUG: unable to handle kernel NULL pointer
+ dereference in do_pagemap_scan
+From: syzbot <syzbot+f9238a0a31f9b5603fef@syzkaller.appspotmail.com>
+To: linux-kernel@vger.kernel.org, lizhi.xu@windriver.com, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-CgoKPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2VzLS0tLS0KPiBGcm9tOiBtYW9iaWJvIDxtYW9iaWJv
-QGxvb25nc29uLmNuPgo+IFNlbmQgdGltZTpUaHVyc2RheSwgMDEvMDQvMjAyNCAxNTo1Mzo1MQo+
-IFRvOiAiSHVhY2FpIENoZW4iIDxjaGVuaHVhY2FpQGtlcm5lbC5vcmc+LCAiSmlheHVuIFlhbmci
-IDxqaWF4dW4ueWFuZ0BmbHlnb2F0LmNvbT4sICJUaG9tYXMgR2xlaXhuZXIiIDx0Z2x4QGxpbnV0
-cm9uaXguZGU+Cj4gQ2M6IGxpbnV4LW1pcHNAdmdlci5rZXJuZWwub3JnLCBsaW51eC1rZXJuZWxA
-dmdlci5rZXJuZWwub3JnLCAiSmlhbm1pbiBMdiIgPGx2amlhbm1pbkBsb29uZ3Nvbi5jbj4KPiBT
-dWJqZWN0OiBSZTogW1BBVENIXSBpcnFjaGlwL2xvb25nc29uLWVpb2ludGM6IFJlZmluZSBpcnEg
-YWZmaW5pdHkgc2V0dGluZyBkdXJpbmcgcmVzdW1lCj4gCj4gKyBpcnFjaGlwIG1haW50YWluZXIg
-VGhvbWFzLgo+IAo+IEppYW5taW4sCj4gCj4gQ291bGQgeW91IGdpdmUgc29tZSBmZWVkYmFjayBh
-Ym91dCB0aGlzIHBhdGNoIHNpbmNlIHlvdSBhcmUgYXV0aG9yIGFib3V0IAo+IHRoaXMgcGF0Y2g/
-IEJ5IHNlYXJjaGluZyBjb2RlIG9mIGFsbCBodyBpcnFjaGlwIGRyaXZlcnMsIHRoZXJlIGlzIG5v
-IAo+IGFmZmluaXR5IHJlc3RvcmluZyBkdXJpbmcgczMvczQuCj4gCj4gUmVnYXJkcwo+IEJpYm8g
-TWFvCj4gCgpIaSwgYmlibwoKSSBsb29rZWQgaW50byB0aGUgcGF0Y2gsIElNTywgdGhlIGNoYW5n
-ZSBoZXJlIGluIHlvdXIgcGF0Y2ggaXMgcmVhc29uYWJsZS4gVGhlIG9yaWdpbmFsIHJlc3Rvcmlu
-ZyBjb2RlIGhlcmUKaXMgYWltZWQgdG8gcmVzdG9yZSBpcnEgcm91dGluZyByZWdpc3RlcnMgZnJv
-bSBpdHMnIGFmZmluaXR5LCBidXQgaXQgc2VlbXMgdGhhdCB0aGUgYWZmaW5pdHkKbWF5IGJlIGNo
-YW5nZWQgZHVyaW5nIGNwdSBvZmZsaW5lLCBzbyB3ZSBzaG91bGQgbm90IHVzZSBpdCB0aGlzIHdh
-eS4gTW9yZW92ZXIsIHRoZSBhZmZpbml0eSBvZiBlYWNoIGlycSB3aWxsCmJlIHNldCB0byBib290
-IGNwdSBhZnRlciBhbGwgb2Ygbm9uLWJvb3QgY3B1cyBhcmUgb2ZmbGluZSBiZWZvcmUgc3VzcGVu
-ZCBjYWxsYmFjaywgc28gaXQgc2VlbXMgdGhhdCBhZmZpbml0eQpyZXN0b3JpbmcgaXMgbm90IG5l
-ZWRlZC4KIAo+IE9uIDIwMjMvMTIvMTkg5LiL5Y2INTo1MSwgQmlibyBNYW8gd3JvdGU6Cj4gPiBE
-dXJpbmcgc3VzcGVuZCBhbmQgcmVzdW1lLCBvdGhlciBDUFVzIGFyZSByZW1vdmVkIGFuZCBJUlFz
-IGFyZSBtaWdyYXRlZAo+ID4gdG8gQ1BVMC4gU28gaXQgaXMgbm90IG5lY2Vzc2FyeSB0byByZXN0
-b3JlIGlycSBhZmZpbml0eSBmb3IgZWlvaW50Yy4KPiA+IAo+ID4gQWxzbyB0aGVyZSBpcyBzb21l
-IG9wdGltaXphdGlvbiBmb3IgZnVuY3Rpb24gZWlvaW50Y19pcnFfZGlzcGF0Y2gsCj4gPiBpbiBn
-ZW5yYWwgdGhlcmUgYXJlIDI1NiBJUlFzIHN1cHBvcnRlZCBmb3IgZWlvaW50Yy4gV2hlbiBpcnEg
-aGFwcGVucywKPiA+IGVpb2ludGMgaXJxIGhhbmRsZXIgcmVhZHMgdGhlIGJpdG1hcCBhbmQgZmlu
-ZCBwZW5kaW5nIGlycXMuIFRoZXJlIGFyZQo+ID4gNCB0aW1lcyBvZiAgY29uc2VjdXRpdmUgaW9j
-c3JfcmVhZDY0IG9wZXJhdGlvbnMgZm9yIHRoZSB0b3RhbCAyNTYgYml0cywKPiA+IGluZGVlZCBp
-biBtb3N0IHNjZW5hcmlvIHBlbmRpbmcgdmFsdWUgaXMgemVybyBpbiAzIHRpbWVzLCBhbmQgbm90
-IHplcm8KPiA+IGluIG9uZSB0aW1lLiBIZXJlIHplcm8gY2hlY2tpbmcgaXMgYWRkZWQgdG8gYXZv
-aWQgc29tZSB1c2VsZXNzCj4gPiBvcGVyYXRpb25zIHN1c2ggYXMgY2xlYXJpbmcgaHcgSVNSLgo+
-ID4gCj4gPiBTaWduZWQtb2ZmLWJ5OiBCaWJvIE1hbyA8bWFvYmlib0Bsb29uZ3Nvbi5jbj4KPiA+
-IC0tLQo+ID4gICBkcml2ZXJzL2lycWNoaXAvaXJxLWxvb25nc29uLWVpb2ludGMuYyB8IDI5ICsr
-KysrKysrKysrLS0tLS0tLS0tLS0tLS0tCj4gPiAgIDEgZmlsZSBjaGFuZ2VkLCAxMiBpbnNlcnRp
-b25zKCspLCAxNyBkZWxldGlvbnMoLSkKPiA+IAo+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvaXJx
-Y2hpcC9pcnEtbG9vbmdzb24tZWlvaW50Yy5jIGIvZHJpdmVycy9pcnFjaGlwL2lycS1sb29uZ3Nv
-bi1laW9pbnRjLmMKPiA+IGluZGV4IDE2MjNjZDc3OTE3NS4uYjAxYmU4NWI4ZWJjIDEwMDY0NAo+
-ID4gLS0tIGEvZHJpdmVycy9pcnFjaGlwL2lycS1sb29uZ3Nvbi1laW9pbnRjLmMKPiA+ICsrKyBi
-L2RyaXZlcnMvaXJxY2hpcC9pcnEtbG9vbmdzb24tZWlvaW50Yy5jCj4gPiBAQCAtMTk4LDYgKzE5
-OCwxNyBAQCBzdGF0aWMgdm9pZCBlaW9pbnRjX2lycV9kaXNwYXRjaChzdHJ1Y3QgaXJxX2Rlc2Mg
-KmRlc2MpCj4gPiAgIAo+ID4gICAJZm9yIChpID0gMDsgaSA8IGVpb2ludGNfcHJpdlswXS0+dmVj
-X2NvdW50IC8gVkVDX0NPVU5UX1BFUl9SRUc7IGkrKykgewo+ID4gICAJCXBlbmRpbmcgPSBpb2Nz
-cl9yZWFkNjQoRUlPSU5UQ19SRUdfSVNSICsgKGkgPDwgMykpOwo+ID4gKwo+ID4gKwkJLyoKPiA+
-ICsJCSAqIEdldCBwZW5kaW5nIGVpb2ludGMgaXJxIGZyb20gYml0bWFwIHN0YXR1cywgdGhlcmUg
-YXJlIDQgdGltZXMKPiA+ICsJCSAqIGNvbnNlY3V0aXZlIGlvY3NyX3JlYWQ2NCBvcGVyYXRpb25z
-IGZvciAyNTYgSVJRcy4KPiA+ICsJCSAqCj4gPiArCQkgKiBJbiBtb3N0IHNjZW5hcmlvIHZhbHVl
-IG9mIHBlbmRpbmcgaXMgMCBpZiBubyBtdWx0aXBsZSBJUlFzCj4gPiArCQkgKiBoYXBwZW4gYXQg
-dGhlIHNhbWUgdGltZQo+ID4gKwkJICovCj4gPiArCQlpZiAoIXBlbmRpbmcpCj4gPiArCQkJY29u
-dGludWU7Cj4gPiArCj4gPiAgIAkJaW9jc3Jfd3JpdGU2NChwZW5kaW5nLCBFSU9JTlRDX1JFR19J
-U1IgKyAoaSA8PCAzKSk7Cj4gPiAgIAkJd2hpbGUgKHBlbmRpbmcpIHsKPiA+ICAgCQkJaW50IGJp
-dCA9IF9fZmZzKHBlbmRpbmcpOwo+ID4gQEAgLTI0MSw3ICsyNTIsNyBAQCBzdGF0aWMgaW50IGVp
-b2ludGNfZG9tYWluX2FsbG9jKHN0cnVjdCBpcnFfZG9tYWluICpkb21haW4sIHVuc2lnbmVkIGlu
-dCB2aXJxLAo+ID4gICAJaW50IHJldDsKPiA+ICAgCXVuc2lnbmVkIGludCBpLCB0eXBlOwo+ID4g
-ICAJdW5zaWduZWQgbG9uZyBod2lycSA9IDA7Cj4gPiAtCXN0cnVjdCBlaW9pbnRjICpwcml2ID0g
-ZG9tYWluLT5ob3N0X2RhdGE7Cj4gPiArCXN0cnVjdCBlaW9pbnRjX3ByaXYgKnByaXYgPSBkb21h
-aW4tPmhvc3RfZGF0YTsKPiA+ICAgCj4gPiAgIAlyZXQgPSBpcnFfZG9tYWluX3RyYW5zbGF0ZV9v
-bmVjZWxsKGRvbWFpbiwgYXJnLCAmaHdpcnEsICZ0eXBlKTsKPiA+ICAgCWlmIChyZXQpCj4gPiBA
-QCAtMzA0LDIzICszMTUsNyBAQCBzdGF0aWMgaW50IGVpb2ludGNfc3VzcGVuZCh2b2lkKQo+ID4g
-ICAKPiA+ICAgc3RhdGljIHZvaWQgZWlvaW50Y19yZXN1bWUodm9pZCkKPiA+ICAgewo+ID4gLQlp
-bnQgaSwgajsKPiA+IC0Jc3RydWN0IGlycV9kZXNjICpkZXNjOwo+ID4gLQlzdHJ1Y3QgaXJxX2Rh
-dGEgKmlycV9kYXRhOwo+ID4gLQo+ID4gICAJZWlvaW50Y19yb3V0ZXJfaW5pdCgwKTsKPiA+IC0K
-PiA+IC0JZm9yIChpID0gMDsgaSA8IG5yX3BpY3M7IGkrKykgewo+ID4gLQkJZm9yIChqID0gMDsg
-aiA8IGVpb2ludGNfcHJpdlswXS0+dmVjX2NvdW50OyBqKyspIHsKPiA+IC0JCQlkZXNjID0gaXJx
-X3Jlc29sdmVfbWFwcGluZyhlaW9pbnRjX3ByaXZbaV0tPmVpb2ludGNfZG9tYWluLCBqKTsKPiA+
-IC0JCQlpZiAoZGVzYyAmJiBkZXNjLT5oYW5kbGVfaXJxICYmIGRlc2MtPmhhbmRsZV9pcnEgIT0g
-aGFuZGxlX2JhZF9pcnEpIHsKPiA+IC0JCQkJcmF3X3NwaW5fbG9jaygmZGVzYy0+bG9jayk7Cj4g
-PiAtCQkJCWlycV9kYXRhID0gaXJxX2RvbWFpbl9nZXRfaXJxX2RhdGEoZWlvaW50Y19wcml2W2ld
-LT5laW9pbnRjX2RvbWFpbiwgaXJxX2Rlc2NfZ2V0X2lycShkZXNjKSk7Cj4gPiAtCQkJCWVpb2lu
-dGNfc2V0X2lycV9hZmZpbml0eShpcnFfZGF0YSwgaXJxX2RhdGEtPmNvbW1vbi0+YWZmaW5pdHks
-IDApOwo+ID4gLQkJCQlyYXdfc3Bpbl91bmxvY2soJmRlc2MtPmxvY2spOwo+ID4gLQkJCX0KPiA+
-IC0JCX0KPiA+IC0JfQo+ID4gICB9Cj4gPiAgIAo+ID4gICBzdGF0aWMgc3RydWN0IHN5c2NvcmVf
-b3BzIGVpb2ludGNfc3lzY29yZV9vcHMgPSB7Cj4gPiAKDQoNCuacrOmCruS7tuWPiuWFtumZhOS7
-tuWQq+aciem+meiKr+S4reenkeeahOWVhuS4muenmOWvhuS/oeaBr++8jOS7hemZkOS6juWPkemA
-gee7meS4iumdouWcsOWdgOS4reWIl+WHuueahOS4quS6uuaIlue+pOe7hOOAguemgeatouS7u+S9
-leWFtuS7luS6uuS7peS7u+S9leW9ouW8j+S9v+eUqO+8iOWMheaLrOS9huS4jemZkOS6juWFqOmD
-qOaIlumDqOWIhuWcsOazhOmcsuOAgeWkjeWItuaIluaVo+WPke+8ieacrOmCruS7tuWPiuWFtumZ
-hOS7tuS4reeahOS/oeaBr+OAguWmguaenOaCqOmUmeaUtuacrOmCruS7tu+8jOivt+aCqOeri+WN
-s+eUteivneaIlumCruS7tumAmuefpeWPkeS7tuS6uuW5tuWIoOmZpOacrOmCruS7tuOAgiANClRo
-aXMgZW1haWwgYW5kIGl0cyBhdHRhY2htZW50cyBjb250YWluIGNvbmZpZGVudGlhbCBpbmZvcm1h
-dGlvbiBmcm9tIExvb25nc29uIFRlY2hub2xvZ3kgLCB3aGljaCBpcyBpbnRlbmRlZCBvbmx5IGZv
-ciB0aGUgcGVyc29uIG9yIGVudGl0eSB3aG9zZSBhZGRyZXNzIGlzIGxpc3RlZCBhYm92ZS4gQW55
-IHVzZSBvZiB0aGUgaW5mb3JtYXRpb24gY29udGFpbmVkIGhlcmVpbiBpbiBhbnkgd2F5IChpbmNs
-dWRpbmcsIGJ1dCBub3QgbGltaXRlZCB0bywgdG90YWwgb3IgcGFydGlhbCBkaXNjbG9zdXJlLCBy
-ZXByb2R1Y3Rpb24gb3IgZGlzc2VtaW5hdGlvbikgYnkgcGVyc29ucyBvdGhlciB0aGFuIHRoZSBp
-bnRlbmRlZCByZWNpcGllbnQocykgaXMgcHJvaGliaXRlZC4gSWYgeW91IHJlY2VpdmUgdGhpcyBl
-bWFpbCBpbiBlcnJvciwgcGxlYXNlIG5vdGlmeSB0aGUgc2VuZGVyIGJ5IHBob25lIG9yIGVtYWls
-IGltbWVkaWF0ZWx5IGFuZCBkZWxldGUgaXQuIA==
+Hello,
 
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+
+Reported-and-tested-by: syzbot+f9238a0a31f9b5603fef@syzkaller.appspotmail.com
+
+Tested on:
+
+commit:         861deac3 Linux 6.7-rc7
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=165ad77ee80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=298e57794135adf0
+dashboard link: https://syzkaller.appspot.com/bug?extid=f9238a0a31f9b5603fef
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=12250a09e80000
+
+Note: testing is done by a robot and is best-effort only.
 
