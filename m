@@ -1,37 +1,37 @@
-Return-Path: <linux-kernel+bounces-18277-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18278-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C852D825AD3
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 19:56:55 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E735825AD4
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 19:56:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 42BD71F22508
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 18:56:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 891FBB20B3C
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 18:56:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F59F374EB;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24379374ED;
 	Fri,  5 Jan 2024 18:51:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TthQKJRh"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lvQiIUti"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 653D93716A;
-	Fri,  5 Jan 2024 18:51:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15D92C433B7;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B8083716C;
+	Fri,  5 Jan 2024 18:51:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9974CC433C7;
 	Fri,  5 Jan 2024 18:51:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704480691;
-	bh=7jev5ISXL0q4vzXpx/yYoZuBMj2H58DTA2kks7vWtTQ=;
+	s=k20201202; t=1704480692;
+	bh=ZLzIzdEx7GCjjZUNcKKMpGHPdTzbQHSSpEA9zWzbM20=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=TthQKJRhjkGNMO6HolENovDrPIVdkuh0k5OuFfm9QJltxX+h+WnK0OlRzbFK7kqNG
-	 fKC3grUQU7EVLGKo+q0JpO5iBOkjEQhSX/Pzq0Ftt51G59jEpJy9DNiHM8OHYEDJWW
-	 cGJceK/iGLMvDyKPe/U1PxycptTaSUbjLGkFZGkiUA7C26P/FI3VKWfjSR9ddi3t6n
-	 pEBIQ3uZIICB6bamOiwjmYqQZtDClVf+htcXv3QpQ4uSl8kZd58Ug40MIKMXN+BqD5
-	 56kBX1LBhUkwFYR/VEhvfA7p13qugMvbxWAsxIwgDitfgOsx0IfGo1R4VHtVreKmJv
-	 32noUE6FDvYNA==
+	b=lvQiIUtigl7CPFWCb/qcbsGJYLNBo59nrII5wvCTucyCGmqH7E/2lO+8t7BvPh9PO
+	 LGD6ZLalBr5u3mlgmzPyXD6HPCE5SbeYGyJERLSXNHjviYcm6AM+PnA3DFQ8I28CoZ
+	 IFW6nKLVmcqPAa4yV2dRYlVD7JS2aXUEHeO/uF1Y2CpvSV5rm1UfHgUKFkjWpzuFAC
+	 P+/d+CUHh7y855XBdFSz6nZafk5OVa0JdtIzBQXQADa11++C91aK/lk5tlsIajdyVL
+	 1+8rQqu5i07qP7CzVA5NSyCt0IqDHOwxiSkBpRzAnCEIjzerRHXpe7qSyY2vBrUhDI
+	 lUrytV36Lj5Cw==
 From: Eric Biggers <ebiggers@kernel.org>
 To: linux-crypto@vger.kernel.org,
 	linux-riscv@lists.infradead.org,
@@ -44,10 +44,12 @@ Cc: linux-kernel@vger.kernel.org,
 	Paul Walmsley <paul.walmsley@sifive.com>,
 	Palmer Dabbelt <palmer@dabbelt.com>,
 	Albert Ou <aou@eecs.berkeley.edu>,
-	Andy Chiu <andy.chiu@sifive.com>
-Subject: [PATCH v2 07/12] crypto: riscv - add vector crypto accelerated ChaCha20
-Date: Fri,  5 Jan 2024 10:49:43 -0800
-Message-ID: <20240105184950.43181-8-ebiggers@kernel.org>
+	Andy Chiu <andy.chiu@sifive.com>,
+	=?UTF-8?q?Christoph=20M=C3=BCllner?= <christoph.muellner@vrull.eu>,
+	Heiko Stuebner <heiko.stuebner@vrull.eu>
+Subject: [PATCH v2 08/12] crypto: riscv - add vector crypto accelerated GHASH
+Date: Fri,  5 Jan 2024 10:49:44 -0800
+Message-ID: <20240105184950.43181-9-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240105184950.43181-1-ebiggers@kernel.org>
 References: <20240105184950.43181-1-ebiggers@kernel.org>
@@ -57,63 +59,66 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
 From: Jerry Shih <jerry.shih@sifive.com>
 
-Add an implementation of ChaCha20 using the Zvkb extension.  The
-assembly code is derived from OpenSSL code (openssl/openssl#21923) that
-was dual-licensed so that it could be reused in the kernel.
-Nevertheless, the assembly has been significantly reworked for
-integration with the kernel, for example by using a regular .S file
-instead of the so-called perlasm, using the assembler instead of bare
-'.inst', and reducing code duplication.
+Add an implementation of GHASH using the zvkg extension.  The assembly
+code is derived from OpenSSL code (openssl/openssl#21923) that was
+dual-licensed so that it could be reused in the kernel.  Nevertheless,
+the assembly has been significantly reworked for integration with the
+kernel, for example by using a regular .S file instead of the so-called
+perlasm, using the assembler instead of bare '.inst', reducing code
+duplication, and eliminating unnecessary endianness conversions.
 
+Co-developed-by: Christoph Müllner <christoph.muellner@vrull.eu>
+Signed-off-by: Christoph Müllner <christoph.muellner@vrull.eu>
+Co-developed-by: Heiko Stuebner <heiko.stuebner@vrull.eu>
+Signed-off-by: Heiko Stuebner <heiko.stuebner@vrull.eu>
 Signed-off-by: Jerry Shih <jerry.shih@sifive.com>
 Co-developed-by: Eric Biggers <ebiggers@google.com>
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- arch/riscv/crypto/Kconfig               |  11 +
- arch/riscv/crypto/Makefile              |   3 +
- arch/riscv/crypto/chacha-riscv64-glue.c | 101 ++++++++
- arch/riscv/crypto/chacha-riscv64-zvkb.S | 294 ++++++++++++++++++++++++
- 4 files changed, 409 insertions(+)
- create mode 100644 arch/riscv/crypto/chacha-riscv64-glue.c
- create mode 100644 arch/riscv/crypto/chacha-riscv64-zvkb.S
+ arch/riscv/crypto/Kconfig              |  10 ++
+ arch/riscv/crypto/Makefile             |   3 +
+ arch/riscv/crypto/ghash-riscv64-glue.c | 168 +++++++++++++++++++++++++
+ arch/riscv/crypto/ghash-riscv64-zvkg.S |  72 +++++++++++
+ 4 files changed, 253 insertions(+)
+ create mode 100644 arch/riscv/crypto/ghash-riscv64-glue.c
+ create mode 100644 arch/riscv/crypto/ghash-riscv64-zvkg.S
 
 diff --git a/arch/riscv/crypto/Kconfig b/arch/riscv/crypto/Kconfig
-index ebe805fa3f5f7..cb59e1d954952 100644
+index cb59e1d954952..676ba5af8f55a 100644
 --- a/arch/riscv/crypto/Kconfig
 +++ b/arch/riscv/crypto/Kconfig
-@@ -11,11 +11,22 @@ config CRYPTO_AES_RISCV64
+@@ -22,11 +22,21 @@ config CRYPTO_CHACHA_RISCV64
+ 	tristate "Ciphers: ChaCha"
+ 	depends on 64BIT && RISCV_ISA_V && TOOLCHAIN_HAS_VECTOR_CRYPTO
+ 	select CRYPTO_SKCIPHER
+ 	select CRYPTO_LIB_CHACHA_GENERIC
  	help
- 	  Block cipher: AES cipher algorithms
- 	  Length-preserving ciphers: AES with ECB, CBC, CTR, XTS
+ 	  Length-preserving ciphers: ChaCha20 stream cipher algorithm
  
  	  Architecture: riscv64 using:
- 	  - Zvkned vector crypto extension
- 	  - Zvbb vector extension (XTS)
- 	  - Zvkb vector crypto extension (CTR)
- 	  - Zvkg vector crypto extension (XTS)
+ 	  - Zvkb vector crypto extension
  
-+config CRYPTO_CHACHA_RISCV64
-+	tristate "Ciphers: ChaCha"
++config CRYPTO_GHASH_RISCV64
++	tristate "Hash functions: GHASH"
 +	depends on 64BIT && RISCV_ISA_V && TOOLCHAIN_HAS_VECTOR_CRYPTO
-+	select CRYPTO_SKCIPHER
-+	select CRYPTO_LIB_CHACHA_GENERIC
++	select CRYPTO_GCM
 +	help
-+	  Length-preserving ciphers: ChaCha20 stream cipher algorithm
++	  GCM GHASH function (NIST SP 800-38D)
 +
 +	  Architecture: riscv64 using:
-+	  - Zvkb vector crypto extension
++	  - Zvkg vector crypto extension
 +
  endmenu
 diff --git a/arch/riscv/crypto/Makefile b/arch/riscv/crypto/Makefile
-index f3e0049611c06..88f57dc8fd7a0 100644
+index 88f57dc8fd7a0..9666a27d76862 100644
 --- a/arch/riscv/crypto/Makefile
 +++ b/arch/riscv/crypto/Makefile
-@@ -1,8 +1,11 @@
- # SPDX-License-Identifier: GPL-2.0-only
+@@ -2,10 +2,13 @@
  #
  # linux/arch/riscv/crypto/Makefile
  #
@@ -121,18 +126,24 @@ index f3e0049611c06..88f57dc8fd7a0 100644
  obj-$(CONFIG_CRYPTO_AES_RISCV64) += aes-riscv64.o
  aes-riscv64-y := aes-riscv64-glue.o aes-riscv64-zvkned.o \
  		 aes-riscv64-zvkned-zvbb-zvkg.o aes-riscv64-zvkned-zvkb.o
+ 
+ obj-$(CONFIG_CRYPTO_CHACHA_RISCV64) += chacha-riscv64.o
+ chacha-riscv64-y := chacha-riscv64-glue.o chacha-riscv64-zvkb.o
 +
-+obj-$(CONFIG_CRYPTO_CHACHA_RISCV64) += chacha-riscv64.o
-+chacha-riscv64-y := chacha-riscv64-glue.o chacha-riscv64-zvkb.o
-diff --git a/arch/riscv/crypto/chacha-riscv64-glue.c b/arch/riscv/crypto/chacha-riscv64-glue.c
++obj-$(CONFIG_CRYPTO_GHASH_RISCV64) += ghash-riscv64.o
++ghash-riscv64-y := ghash-riscv64-glue.o ghash-riscv64-zvkg.o
+diff --git a/arch/riscv/crypto/ghash-riscv64-glue.c b/arch/riscv/crypto/ghash-riscv64-glue.c
 new file mode 100644
-index 0000000000000..10b46f36375af
+index 0000000000000..312e7891fd0a3
 --- /dev/null
-+++ b/arch/riscv/crypto/chacha-riscv64-glue.c
-@@ -0,0 +1,101 @@
++++ b/arch/riscv/crypto/ghash-riscv64-glue.c
+@@ -0,0 +1,168 @@
 +// SPDX-License-Identifier: GPL-2.0-only
 +/*
-+ * ChaCha20 using the RISC-V vector crypto extensions
++ * GHASH using the RISC-V vector crypto extensions
++ *
++ * Copyright (C) 2023 VRULL GmbH
++ * Author: Heiko Stuebner <heiko.stuebner@vrull.eu>
 + *
 + * Copyright (C) 2023 SiFive, Inc.
 + * Author: Jerry Shih <jerry.shih@sifive.com>
@@ -140,103 +151,167 @@ index 0000000000000..10b46f36375af
 +
 +#include <asm/simd.h>
 +#include <asm/vector.h>
-+#include <crypto/internal/chacha.h>
-+#include <crypto/internal/skcipher.h>
++#include <crypto/ghash.h>
++#include <crypto/internal/hash.h>
++#include <crypto/internal/simd.h>
 +#include <linux/linkage.h>
 +#include <linux/module.h>
 +
-+asmlinkage void chacha20_zvkb(const u32 key[8], const u8 *in, u8 *out,
-+			      size_t len, const u32 iv[4]);
++asmlinkage void ghash_zvkg(be128 *accumulator, const be128 *key, const u8 *data,
++			   size_t len);
 +
-+static int riscv64_chacha20_crypt(struct skcipher_request *req)
++struct riscv64_ghash_tfm_ctx {
++	be128 key;
++};
++
++struct riscv64_ghash_desc_ctx {
++	be128 accumulator;
++	u8 buffer[GHASH_BLOCK_SIZE];
++	u32 bytes;
++};
++
++static int riscv64_ghash_setkey(struct crypto_shash *tfm, const u8 *key,
++				unsigned int keylen)
 +{
-+	u32 iv[CHACHA_IV_SIZE / sizeof(u32)];
-+	u8 block_buffer[CHACHA_BLOCK_SIZE];
-+	struct crypto_skcipher *tfm = crypto_skcipher_reqtfm(req);
-+	const struct chacha_ctx *ctx = crypto_skcipher_ctx(tfm);
-+	struct skcipher_walk walk;
-+	unsigned int nbytes;
-+	unsigned int tail_bytes;
-+	int err;
++	struct riscv64_ghash_tfm_ctx *tctx = crypto_shash_ctx(tfm);
 +
-+	iv[0] = get_unaligned_le32(req->iv);
-+	iv[1] = get_unaligned_le32(req->iv + 4);
-+	iv[2] = get_unaligned_le32(req->iv + 8);
-+	iv[3] = get_unaligned_le32(req->iv + 12);
++	if (keylen != GHASH_BLOCK_SIZE)
++		return -EINVAL;
 +
-+	err = skcipher_walk_virt(&walk, req, false);
-+	while (walk.nbytes) {
-+		nbytes = walk.nbytes & ~(CHACHA_BLOCK_SIZE - 1);
-+		tail_bytes = walk.nbytes & (CHACHA_BLOCK_SIZE - 1);
-+		kernel_vector_begin();
-+		if (nbytes) {
-+			chacha20_zvkb(ctx->key, walk.src.virt.addr,
-+				      walk.dst.virt.addr, nbytes, iv);
-+			iv[0] += nbytes / CHACHA_BLOCK_SIZE;
-+		}
-+		if (walk.nbytes == walk.total && tail_bytes > 0) {
-+			memcpy(block_buffer, walk.src.virt.addr + nbytes,
-+			       tail_bytes);
-+			chacha20_zvkb(ctx->key, block_buffer, block_buffer,
-+				      CHACHA_BLOCK_SIZE, iv);
-+			memcpy(walk.dst.virt.addr + nbytes, block_buffer,
-+			       tail_bytes);
-+			tail_bytes = 0;
-+		}
-+		kernel_vector_end();
++	memcpy(&tctx->key, key, GHASH_BLOCK_SIZE);
 +
-+		err = skcipher_walk_done(&walk, tail_bytes);
-+	}
-+
-+	return err;
++	return 0;
 +}
 +
-+static struct skcipher_alg riscv64_chacha_alg = {
-+	.setkey = chacha20_setkey,
-+	.encrypt = riscv64_chacha20_crypt,
-+	.decrypt = riscv64_chacha20_crypt,
-+	.min_keysize = CHACHA_KEY_SIZE,
-+	.max_keysize = CHACHA_KEY_SIZE,
-+	.ivsize = CHACHA_IV_SIZE,
-+	.chunksize = CHACHA_BLOCK_SIZE,
-+	.walksize = 4 * CHACHA_BLOCK_SIZE,
++static int riscv64_ghash_init(struct shash_desc *desc)
++{
++	struct riscv64_ghash_desc_ctx *dctx = shash_desc_ctx(desc);
++
++	*dctx = (struct riscv64_ghash_desc_ctx){};
++
++	return 0;
++}
++
++static inline void
++riscv64_ghash_blocks(const struct riscv64_ghash_tfm_ctx *tctx,
++		     struct riscv64_ghash_desc_ctx *dctx,
++		     const u8 *src, size_t srclen)
++{
++	/* The srclen is nonzero and a multiple of 16. */
++	if (crypto_simd_usable()) {
++		kernel_vector_begin();
++		ghash_zvkg(&dctx->accumulator, &tctx->key, src, srclen);
++		kernel_vector_end();
++	} else {
++		do {
++			crypto_xor((u8 *)&dctx->accumulator, src,
++				   GHASH_BLOCK_SIZE);
++			gf128mul_lle(&dctx->accumulator, &tctx->key);
++			src += GHASH_BLOCK_SIZE;
++			srclen -= GHASH_BLOCK_SIZE;
++		} while (srclen);
++	}
++}
++
++static int riscv64_ghash_update(struct shash_desc *desc, const u8 *src,
++				unsigned int srclen)
++{
++	const struct riscv64_ghash_tfm_ctx *tctx = crypto_shash_ctx(desc->tfm);
++	struct riscv64_ghash_desc_ctx *dctx = shash_desc_ctx(desc);
++	unsigned int len;
++
++	if (dctx->bytes) {
++		if (dctx->bytes + srclen < GHASH_BLOCK_SIZE) {
++			memcpy(dctx->buffer + dctx->bytes, src, srclen);
++			dctx->bytes += srclen;
++			return 0;
++		}
++		memcpy(dctx->buffer + dctx->bytes, src,
++		       GHASH_BLOCK_SIZE - dctx->bytes);
++		riscv64_ghash_blocks(tctx, dctx, dctx->buffer,
++				     GHASH_BLOCK_SIZE);
++		src += GHASH_BLOCK_SIZE - dctx->bytes;
++		srclen -= GHASH_BLOCK_SIZE - dctx->bytes;
++		dctx->bytes = 0;
++	}
++
++	len = round_down(srclen, GHASH_BLOCK_SIZE);
++	if (len) {
++		riscv64_ghash_blocks(tctx, dctx, src, len);
++		src += len;
++		srclen -= len;
++	}
++
++	if (srclen) {
++		memcpy(dctx->buffer, src, srclen);
++		dctx->bytes = srclen;
++	}
++
++	return 0;
++}
++
++static int riscv64_ghash_final(struct shash_desc *desc, u8 *out)
++{
++	const struct riscv64_ghash_tfm_ctx *tctx = crypto_shash_ctx(desc->tfm);
++	struct riscv64_ghash_desc_ctx *dctx = shash_desc_ctx(desc);
++	int i;
++
++	if (dctx->bytes) {
++		for (i = dctx->bytes; i < GHASH_BLOCK_SIZE; i++)
++			dctx->buffer[i] = 0;
++
++		riscv64_ghash_blocks(tctx, dctx, dctx->buffer,
++				     GHASH_BLOCK_SIZE);
++	}
++
++	memcpy(out, &dctx->accumulator, GHASH_DIGEST_SIZE);
++	return 0;
++}
++
++static struct shash_alg riscv64_ghash_alg = {
++	.init = riscv64_ghash_init,
++	.update = riscv64_ghash_update,
++	.final = riscv64_ghash_final,
++	.setkey = riscv64_ghash_setkey,
++	.descsize = sizeof(struct riscv64_ghash_desc_ctx),
++	.digestsize = GHASH_DIGEST_SIZE,
 +	.base = {
-+		.cra_blocksize = 1,
-+		.cra_ctxsize = sizeof(struct chacha_ctx),
++		.cra_blocksize = GHASH_BLOCK_SIZE,
++		.cra_ctxsize = sizeof(struct riscv64_ghash_tfm_ctx),
 +		.cra_priority = 300,
-+		.cra_name = "chacha20",
-+		.cra_driver_name = "chacha20-riscv64-zvkb",
++		.cra_name = "ghash",
++		.cra_driver_name = "ghash-riscv64-zvkg",
 +		.cra_module = THIS_MODULE,
 +	},
 +};
 +
-+static int __init riscv64_chacha_mod_init(void)
++static int __init riscv64_ghash_mod_init(void)
 +{
-+	if (riscv_isa_extension_available(NULL, ZVKB) &&
++	if (riscv_isa_extension_available(NULL, ZVKG) &&
 +	    riscv_vector_vlen() >= 128)
-+		return crypto_register_skcipher(&riscv64_chacha_alg);
++		return crypto_register_shash(&riscv64_ghash_alg);
 +
 +	return -ENODEV;
 +}
 +
-+static void __exit riscv64_chacha_mod_exit(void)
++static void __exit riscv64_ghash_mod_exit(void)
 +{
-+	crypto_unregister_skcipher(&riscv64_chacha_alg);
++	crypto_unregister_shash(&riscv64_ghash_alg);
 +}
 +
-+module_init(riscv64_chacha_mod_init);
-+module_exit(riscv64_chacha_mod_exit);
++module_init(riscv64_ghash_mod_init);
++module_exit(riscv64_ghash_mod_exit);
 +
-+MODULE_DESCRIPTION("ChaCha20 (RISC-V accelerated)");
-+MODULE_AUTHOR("Jerry Shih <jerry.shih@sifive.com>");
++MODULE_DESCRIPTION("GHASH (RISC-V accelerated)");
++MODULE_AUTHOR("Heiko Stuebner <heiko.stuebner@vrull.eu>");
 +MODULE_LICENSE("GPL");
-+MODULE_ALIAS_CRYPTO("chacha20");
-diff --git a/arch/riscv/crypto/chacha-riscv64-zvkb.S b/arch/riscv/crypto/chacha-riscv64-zvkb.S
++MODULE_ALIAS_CRYPTO("ghash");
+diff --git a/arch/riscv/crypto/ghash-riscv64-zvkg.S b/arch/riscv/crypto/ghash-riscv64-zvkg.S
 new file mode 100644
-index 0000000000000..bf057737ac693
+index 0000000000000..f2b43fb4d434f
 --- /dev/null
-+++ b/arch/riscv/crypto/chacha-riscv64-zvkb.S
-@@ -0,0 +1,294 @@
++++ b/arch/riscv/crypto/ghash-riscv64-zvkg.S
+@@ -0,0 +1,72 @@
 +/* SPDX-License-Identifier: Apache-2.0 OR BSD-2-Clause */
 +//
 +// This file is dual-licensed, meaning that you can use it under your
@@ -250,6 +325,7 @@ index 0000000000000..bf057737ac693
 +//
 +// or
 +//
++// Copyright (c) 2023, Christoph Müllner <christoph.muellner@vrull.eu>
 +// Copyright (c) 2023, Jerry Shih <jerry.shih@sifive.com>
 +// Copyright 2024 Google LLC
 +// All rights reserved.
@@ -278,259 +354,36 @@ index 0000000000000..bf057737ac693
 +// The generated code of this file depends on the following RISC-V extensions:
 +// - RV64I
 +// - RISC-V Vector ('V') with VLEN >= 128
-+// - RISC-V Vector Cryptography Bit-manipulation extension ('Zvkb')
++// - RISC-V Vector GCM/GMAC extension ('Zvkg')
 +
 +#include <linux/linkage.h>
 +
 +.text
-+.option arch, +zvkb
++.option arch, +zvkg
 +
-+#define KEYP		a0
-+#define INP		a1
-+#define OUTP		a2
++#define ACCUMULATOR	a0
++#define KEY		a1
++#define DATA		a2
 +#define LEN		a3
-+#define IVP		a4
 +
-+#define CONSTS0		a5
-+#define CONSTS1		a6
-+#define CONSTS2		a7
-+#define CONSTS3		t0
-+#define TMP		t1
-+#define VL		t2
-+#define STRIDE		t3
-+#define NROUNDS		t4
-+#define KEY0		s0
-+#define KEY1		s1
-+#define KEY2		s2
-+#define KEY3		s3
-+#define KEY4		s4
-+#define KEY5		s5
-+#define KEY6		s6
-+#define KEY7		s7
-+#define COUNTER		s8
-+#define NONCE0		s9
-+#define NONCE1		s10
-+#define NONCE2		s11
-+
-+.macro	chacha_round	a0, b0, c0, d0,  a1, b1, c1, d1, \
-+			a2, b2, c2, d2,  a3, b3, c3, d3
-+	// a += b; d ^= a; d = rol(d, 16);
-+	vadd.vv		\a0, \a0, \b0
-+	vadd.vv		\a1, \a1, \b1
-+	vadd.vv		\a2, \a2, \b2
-+	vadd.vv		\a3, \a3, \b3
-+	vxor.vv		\d0, \d0, \a0
-+	vxor.vv		\d1, \d1, \a1
-+	vxor.vv		\d2, \d2, \a2
-+	vxor.vv		\d3, \d3, \a3
-+	vror.vi		\d0, \d0, 32 - 16
-+	vror.vi		\d1, \d1, 32 - 16
-+	vror.vi		\d2, \d2, 32 - 16
-+	vror.vi		\d3, \d3, 32 - 16
-+
-+	// c += d; b ^= c; b = rol(b, 12);
-+	vadd.vv		\c0, \c0, \d0
-+	vadd.vv		\c1, \c1, \d1
-+	vadd.vv		\c2, \c2, \d2
-+	vadd.vv		\c3, \c3, \d3
-+	vxor.vv		\b0, \b0, \c0
-+	vxor.vv		\b1, \b1, \c1
-+	vxor.vv		\b2, \b2, \c2
-+	vxor.vv		\b3, \b3, \c3
-+	vror.vi		\b0, \b0, 32 - 12
-+	vror.vi		\b1, \b1, 32 - 12
-+	vror.vi		\b2, \b2, 32 - 12
-+	vror.vi		\b3, \b3, 32 - 12
-+
-+	// a += b; d ^= a; d = rol(d, 8);
-+	vadd.vv		\a0, \a0, \b0
-+	vadd.vv		\a1, \a1, \b1
-+	vadd.vv		\a2, \a2, \b2
-+	vadd.vv		\a3, \a3, \b3
-+	vxor.vv		\d0, \d0, \a0
-+	vxor.vv		\d1, \d1, \a1
-+	vxor.vv		\d2, \d2, \a2
-+	vxor.vv		\d3, \d3, \a3
-+	vror.vi		\d0, \d0, 32 - 8
-+	vror.vi		\d1, \d1, 32 - 8
-+	vror.vi		\d2, \d2, 32 - 8
-+	vror.vi		\d3, \d3, 32 - 8
-+
-+	// c += d; b ^= c; b = rol(b, 7);
-+	vadd.vv		\c0, \c0, \d0
-+	vadd.vv		\c1, \c1, \d1
-+	vadd.vv		\c2, \c2, \d2
-+	vadd.vv		\c3, \c3, \d3
-+	vxor.vv		\b0, \b0, \c0
-+	vxor.vv		\b1, \b1, \c1
-+	vxor.vv		\b2, \b2, \c2
-+	vxor.vv		\b3, \b3, \c3
-+	vror.vi		\b0, \b0, 32 - 7
-+	vror.vi		\b1, \b1, 32 - 7
-+	vror.vi		\b2, \b2, 32 - 7
-+	vror.vi		\b3, \b3, 32 - 7
-+.endm
-+
-+// void chacha20_zvkb(const u32 key[8], const u8 *in, u8 *out, size_t len,
-+//		      const u32 iv[4]);
++// void ghash_zvkg(be128 *accumulator, const be128 *key, const u8 *data,
++//		   size_t len);
 +//
-+// |len| must be nonzero and a multiple of 64 (CHACHA_BLOCK_SIZE).
-+// The counter is treated as 32-bit, following the RFC7539 convention.
-+SYM_FUNC_START(chacha20_zvkb)
-+	srli		LEN, LEN, 6	// Bytes to blocks
++// |len| must be nonzero and a multiple of 16 (GHASH_BLOCK_SIZE).
++SYM_FUNC_START(ghash_zvkg)
++	vsetivli	zero, 4, e32, m1, ta, ma
++	vle32.v		v1, (ACCUMULATOR)
++	vle32.v		v2, (KEY)
++.Lnext_block:
++	vle32.v		v3, (DATA)
++	vghsh.vv	v1, v2, v3
++	addi		DATA, DATA, 16
++	addi		LEN, LEN, -16
++	bnez		LEN, .Lnext_block
 +
-+	addi		sp, sp, -96
-+	sd		s0, 0(sp)
-+	sd		s1, 8(sp)
-+	sd		s2, 16(sp)
-+	sd		s3, 24(sp)
-+	sd		s4, 32(sp)
-+	sd		s5, 40(sp)
-+	sd		s6, 48(sp)
-+	sd		s7, 56(sp)
-+	sd		s8, 64(sp)
-+	sd		s9, 72(sp)
-+	sd		s10, 80(sp)
-+	sd		s11, 88(sp)
-+
-+	li		STRIDE, 64
-+
-+	// Set up the initial state matrix in scalar registers.
-+	li		CONSTS0, 0x61707865	// "expa" little endian
-+	li		CONSTS1, 0x3320646e	// "nd 3" little endian
-+	li		CONSTS2, 0x79622d32	// "2-by" little endian
-+	li		CONSTS3, 0x6b206574	// "te k" little endian
-+	lw		KEY0, 0(KEYP)
-+	lw		KEY1, 4(KEYP)
-+	lw		KEY2, 8(KEYP)
-+	lw		KEY3, 12(KEYP)
-+	lw		KEY4, 16(KEYP)
-+	lw		KEY5, 20(KEYP)
-+	lw		KEY6, 24(KEYP)
-+	lw		KEY7, 28(KEYP)
-+	lw		COUNTER, 0(IVP)
-+	lw		NONCE0, 4(IVP)
-+	lw		NONCE1, 8(IVP)
-+	lw		NONCE2, 12(IVP)
-+
-+.Lblock_loop:
-+	// Set vl to the number of blocks to process in this iteration.
-+	vsetvli		VL, LEN, e32, m1, ta, ma
-+
-+	// Set up the initial state matrix for the next VL blocks in v0-v15.
-+	// v{i} holds the i'th 32-bit word of the state matrix for all blocks.
-+	// Note that only the counter word, at index 12, differs across blocks.
-+	vmv.v.x		v0, CONSTS0
-+	vmv.v.x		v1, CONSTS1
-+	vmv.v.x		v2, CONSTS2
-+	vmv.v.x		v3, CONSTS3
-+	vmv.v.x		v4, KEY0
-+	vmv.v.x		v5, KEY1
-+	vmv.v.x		v6, KEY2
-+	vmv.v.x		v7, KEY3
-+	vmv.v.x		v8, KEY4
-+	vmv.v.x		v9, KEY5
-+	vmv.v.x		v10, KEY6
-+	vmv.v.x		v11, KEY7
-+	vid.v		v12
-+	vadd.vx		v12, v12, COUNTER
-+	vmv.v.x		v13, NONCE0
-+	vmv.v.x		v14, NONCE1
-+	vmv.v.x		v15, NONCE2
-+
-+	// Load the first half of the input data for each block into v16-v23.
-+	// v{16+i} holds the i'th 32-bit word for all blocks.
-+	vlsseg8e32.v	v16, (INP), STRIDE
-+
-+	li		NROUNDS, 20
-+.Lnext_doubleround:
-+	addi		NROUNDS, NROUNDS, -2
-+	// column round
-+	chacha_round	v0, v4, v8, v12, v1, v5, v9, v13, \
-+			v2, v6, v10, v14, v3, v7, v11, v15
-+	// diagonal round
-+	chacha_round	v0, v5, v10, v15, v1, v6, v11, v12, \
-+			v2, v7, v8, v13, v3, v4, v9, v14
-+	bnez		NROUNDS, .Lnext_doubleround
-+
-+	// Load the second half of the input data for each block into v24-v31.
-+	// v{24+i} holds the {8+i}'th 32-bit word for all blocks.
-+	addi		TMP, INP, 32
-+	vlsseg8e32.v	v24, (TMP), STRIDE
-+
-+	// Finalize the first half of the keystream for each block.
-+	vadd.vx		v0, v0, CONSTS0
-+	vadd.vx		v1, v1, CONSTS1
-+	vadd.vx		v2, v2, CONSTS2
-+	vadd.vx		v3, v3, CONSTS3
-+	vadd.vx		v4, v4, KEY0
-+	vadd.vx		v5, v5, KEY1
-+	vadd.vx		v6, v6, KEY2
-+	vadd.vx		v7, v7, KEY3
-+
-+	// Encrypt/decrypt the first half of the data for each block.
-+	vxor.vv		v16, v16, v0
-+	vxor.vv		v17, v17, v1
-+	vxor.vv		v18, v18, v2
-+	vxor.vv		v19, v19, v3
-+	vxor.vv		v20, v20, v4
-+	vxor.vv		v21, v21, v5
-+	vxor.vv		v22, v22, v6
-+	vxor.vv		v23, v23, v7
-+
-+	// Store the first half of the output data for each block.
-+	vssseg8e32.v	v16, (OUTP), STRIDE
-+
-+	// Finalize the second half of the keystream for each block.
-+	vadd.vx		v8, v8, KEY4
-+	vadd.vx		v9, v9, KEY5
-+	vadd.vx		v10, v10, KEY6
-+	vadd.vx		v11, v11, KEY7
-+	vid.v		v0
-+	vadd.vx		v12, v12, COUNTER
-+	vadd.vx		v13, v13, NONCE0
-+	vadd.vx		v14, v14, NONCE1
-+	vadd.vx		v15, v15, NONCE2
-+	vadd.vv		v12, v12, v0
-+
-+	// Encrypt/decrypt the second half of the data for each block.
-+	vxor.vv		v24, v24, v8
-+	vxor.vv		v25, v25, v9
-+	vxor.vv		v26, v26, v10
-+	vxor.vv		v27, v27, v11
-+	vxor.vv		v29, v29, v13
-+	vxor.vv		v28, v28, v12
-+	vxor.vv		v30, v30, v14
-+	vxor.vv		v31, v31, v15
-+
-+	// Store the second half of the output data for each block.
-+	addi		TMP, OUTP, 32
-+	vssseg8e32.v	v24, (TMP), STRIDE
-+
-+	// Update the counter, the remaining number of blocks, and the input and
-+	// output pointers according to the number of blocks processed (VL).
-+	add		COUNTER, COUNTER, VL
-+	sub		LEN, LEN, VL
-+	slli		TMP, VL, 6
-+	add		OUTP, OUTP, TMP
-+	add		INP, INP, TMP
-+	bnez		LEN, .Lblock_loop
-+
-+	ld		s0, 0(sp)
-+	ld		s1, 8(sp)
-+	ld		s2, 16(sp)
-+	ld		s3, 24(sp)
-+	ld		s4, 32(sp)
-+	ld		s5, 40(sp)
-+	ld		s6, 48(sp)
-+	ld		s7, 56(sp)
-+	ld		s8, 64(sp)
-+	ld		s9, 72(sp)
-+	ld		s10, 80(sp)
-+	ld		s11, 88(sp)
-+	addi		sp, sp, 96
++	vse32.v		v1, (ACCUMULATOR)
 +	ret
-+SYM_FUNC_END(chacha20_zvkb)
++SYM_FUNC_END(ghash_zvkg)
 -- 
 2.43.0
 
