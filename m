@@ -1,212 +1,102 @@
-Return-Path: <linux-kernel+bounces-17409-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17410-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79A8D824CC6
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 03:13:24 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0FC64824CCF
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 03:14:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 840D61C21AC0
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 02:13:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7144CB22DCA
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 02:14:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1A9E20DC1;
-	Fri,  5 Jan 2024 02:13:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FAF81FD9;
+	Fri,  5 Jan 2024 02:14:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="2qqYxwRL"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WtzIKr3+"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pl1-f202.google.com (mail-pl1-f202.google.com [209.85.214.202])
+Received: from mail-ed1-f67.google.com (mail-ed1-f67.google.com [209.85.208.67])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8DB020B0E
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 02:13:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pl1-f202.google.com with SMTP id d9443c01a7336-1d3f888ee39so6003745ad.3
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 18:13:13 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BF183C2C;
+	Fri,  5 Jan 2024 02:14:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f67.google.com with SMTP id 4fb4d7f45d1cf-5451faa3aa7so304416a12.0;
+        Thu, 04 Jan 2024 18:14:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1704420793; x=1705025593; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=5+grBcrGVuvV4liSJu69kJ2ylLSuHocR0OaEGbLjwBA=;
-        b=2qqYxwRLJoVj3b/23IxQUOz6jMEsi3FaLUvszZHbXbbiFXYMHtrHIdLZcWsMM9FybU
-         BnZlbjfQ+Kj9vxOrrPZLYEXeULDS6Cs6eL4t5laXg284xQL0GEF4uveYT/oFuLizLkE/
-         5h9JxyuPeZ3qriAxmiYpD/AL7Y9zBvgAvMaBklS2qlEo6FQuIbQRK4wCnUtgqla30gFk
-         81z8tyD+tltdZ5guZWhLx3hsFcb/zqJK/MhE2YlD+sHkcgKbNLsyykBX6thW+SFWeFJH
-         d+z5O3Qu5wB09fwzFjwdWm38PcAUs1/yTkIYM+7v66aZyM5eCZswEdYNCJOnHIJE+deP
-         ubCw==
+        d=gmail.com; s=20230601; t=1704420846; x=1705025646; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QIhc/XiXTFib4YoSd7gnfHZK2aRrIl/0V0Y6XDlyDD0=;
+        b=WtzIKr3+/ug2feyHKw9bmCZ6HurbvcWIMR/wAbLQXdKjjdxsAZRM9zpd5RU/3AZvUs
+         Rvy8CddAgasFn0s0n9Dwpl3cW1/iHoU7TppJKBJCm7s6/aJ0+EHUyHUQEXdv8nvJXzk5
+         qiDcGFhoKKgl5J3ZxLTWDSWIItJFDFF4ixp99dhNeEYf125iQopYS1XPZ61JwXKnk7FJ
+         CDuP9gUIdu1TTAKF3/UHMaTuKghxX8+h6ie9pVX3tx+5ltnd++qQkbYe9tCt6Mam2+ST
+         23blI/xqmcNfLEqytwn6TrfX70tnS/Q4RJw/+6zyc2DVACOSBsY/asYM9n5E8cosF/SD
+         rLvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704420793; x=1705025593;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=5+grBcrGVuvV4liSJu69kJ2ylLSuHocR0OaEGbLjwBA=;
-        b=Xyo6PJ1/K1GeySghp3wy4Kbxxyyr6WXPa8fqiL/ZRQx1SQL4u8Whm0U/6pwo37q1bA
-         IPOjiA/GnwXIfUa8/BhED5GM9hWKSF/y7kk5qTvc4OqYgX2kge2ckP6ahJUHDnm/F+YF
-         BdhURMJ/UefAHrKAJfLrvjv1rKhy8wzzCGqAQqcrgwvCkJLj/YL0NhgfYeMIAB9oPLsg
-         mX/kaQCGrju6oDauRdSPNgYEzuGc6QnohFibuftSaUl/7BWhVmW+gt3hwtwsfbxkD0j4
-         3dX1N7x1/kSfpyXaod6cVgeOi8HONhe+SDfhilpOrNnNZyNmuG2zm7DqTL8MdyIign6O
-         w/sw==
-X-Gm-Message-State: AOJu0Yy2zX0H4C0lklz3t5ogkZ9ZKfCfvgkXGvEfVt7Ju3CAzQ3xRWNY
-	MW8WMIKHxVus5y5CdJGbqAXvQ3JrE2L/8UfDkw==
-X-Google-Smtp-Source: AGHT+IG/U2QC5Y+0MYUnbGp2rZg3hY/EEchDQ6omkGn7csCqtl3k7PDPSzo6S/WwQ+npbS3ZQhZGaKLX/CY=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:903:2352:b0:1d4:1370:ebca with SMTP id
- c18-20020a170903235200b001d41370ebcamr8366plh.6.1704420793102; Thu, 04 Jan
- 2024 18:13:13 -0800 (PST)
-Date: Thu, 4 Jan 2024 18:13:11 -0800
-In-Reply-To: <daaf098a6219310b6b1c1e3dc147fbb7e48b6f54.camel@redhat.com>
+        d=1e100.net; s=20230601; t=1704420846; x=1705025646;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=QIhc/XiXTFib4YoSd7gnfHZK2aRrIl/0V0Y6XDlyDD0=;
+        b=A7ngn/Kpp0syNeWq5/A30RF08yeoMy7svesM55ZdBtoLx+v+JwkFJaqK51O7c8aOSb
+         TQrN5gvBznkj4NPyOfwgaSOhMp5YiJkLEubInDcoview9Hgw4x1IlBT88o5cOfhTkCb2
+         Csg08XWSe1qm8CiymLZCouJCMuf0U3XalCR3O0KfTrlNfU200l6bJ8w5eshUdix0mhv7
+         CAEU/4jlJV/qSxxITgUTUm9jwOOim0T6O+UwoeblUNNTPsHPpyeoe0nJhtxH/2fH18ix
+         eBvRigIn91BZEnagrsEWg07gzDaAi10x4RK0cciWZ9aVAkcuvxCDTQ8d5LbPf4zqQUMz
+         q2Aw==
+X-Gm-Message-State: AOJu0Yx1UMoeCybFwxuYGmRyGzqmAKu1EW/SLuECEQAMg9mmcTx2UqHf
+	c/OXEPbEViHPZn9on7SlwQeK+rwmzGlUjPkof/M=
+X-Google-Smtp-Source: AGHT+IHZ/vZn6VylOFCLQfKmmztIP/YvCY8H1OYGyActwuYIw30o6YoGNPqiYAt1sMSVmyCWicnxPUMCOWnh7Z6Ucl4=
+X-Received: by 2002:a50:a6d0:0:b0:556:e2b7:c0d9 with SMTP id
+ f16-20020a50a6d0000000b00556e2b7c0d9mr1949673edc.2.1704420846473; Thu, 04 Jan
+ 2024 18:14:06 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20231110235528.1561679-1-seanjc@google.com> <20231110235528.1561679-4-seanjc@google.com>
- <3ad69657ba8e1b19d150db574193619cf0cb34df.camel@redhat.com>
- <ZWk8IMZamuemfwXG@google.com> <daaf098a6219310b6b1c1e3dc147fbb7e48b6f54.camel@redhat.com>
-Message-ID: <ZZdlt2Dm36VF4WL6@google.com>
-Subject: Re: [PATCH 3/9] KVM: x86: Initialize guest cpu_caps based on guest CPUID
-From: Sean Christopherson <seanjc@google.com>
-To: Maxim Levitsky <mlevitsk@redhat.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+References: <20240104024244.12163-1-Wenhua.Lin@unisoc.com> <20240104024244.12163-4-Wenhua.Lin@unisoc.com>
+ <CAHp75VcUU-FUYJKN40dzMbe5KmmAR7--0JV00qdgnbNwHqFjQg@mail.gmail.com>
+In-Reply-To: <CAHp75VcUU-FUYJKN40dzMbe5KmmAR7--0JV00qdgnbNwHqFjQg@mail.gmail.com>
+From: wenhua lin <wenhua.lin1994@gmail.com>
+Date: Fri, 5 Jan 2024 10:13:55 +0800
+Message-ID: <CAB9BWhdN2V7B8vOqrGr_Gy1q3iu93X27dTvqa2RwnwMQwtotag@mail.gmail.com>
+Subject: Re: [PATCH V3 3/4] gpio: eic-sprd: Modify the calculation method of
+ eic number
+To: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: Wenhua Lin <Wenhua.Lin@unisoc.com>, Linus Walleij <linus.walleij@linaro.org>, 
+	Andy Shevchenko <andy@kernel.org>, Bartosz Golaszewski <brgl@bgdev.pl>, Orson Zhai <orsonzhai@gmail.com>, 
+	Baolin Wang <baolin.wang@linux.alibaba.com>, Chunyan Zhang <zhang.lyra@gmail.com>, 
+	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Xiongpeng Wu <xiongpeng.wu@unisoc.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Dec 21, 2023, Maxim Levitsky wrote:
-> On Thu, 2023-11-30 at 17:51 -0800, Sean Christopherson wrote:
-> > On Sun, Nov 19, 2023, Maxim Levitsky wrote:
-> > > On Fri, 2023-11-10 at 15:55 -0800, Sean Christopherson wrote:
-> > > > +/*
-> > > > + * This isn't truly "unsafe", but all callers except kvm_cpu_after_set_cpuid()
-> > > > + * should use __cpuid_entry_get_reg(), which provides compile-time validation
-> > > > + * of the input.
-> > > > + */
-> > > > +static u32 cpuid_get_reg_unsafe(struct kvm_cpuid_entry2 *entry, u32 reg)
-> > > > +{
-> > > > +	switch (reg) {
-> > > > +	case CPUID_EAX:
-> > > > +		return entry->eax;
-> > > > +	case CPUID_EBX:
-> > > > +		return entry->ebx;
-> > > > +	case CPUID_ECX:
-> > > > +		return entry->ecx;
-> > > > +	case CPUID_EDX:
-> > > > +		return entry->edx;
-> > > > +	default:
-> > > > +		WARN_ON_ONCE(1);
-> > > > +		return 0;
-> > > > +	}
-> > > > +}
-> > 
-> > ...
-> > 
-> > > >  static void kvm_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
-> > > >  {
-> > > >  	struct kvm_lapic *apic = vcpu->arch.apic;
-> > > >  	struct kvm_cpuid_entry2 *best;
-> > > >  	bool allow_gbpages;
-> > > > +	int i;
-> > > >  
-> > > > -	memset(vcpu->arch.cpu_caps, 0, sizeof(vcpu->arch.cpu_caps));
-> > > > +	BUILD_BUG_ON(ARRAY_SIZE(reverse_cpuid) != NR_KVM_CPU_CAPS);
-> > > > +
-> > > > +	/*
-> > > > +	 * Reset guest capabilities to userspace's guest CPUID definition, i.e.
-> > > > +	 * honor userspace's definition for features that don't require KVM or
-> > > > +	 * hardware management/support (or that KVM simply doesn't care about).
-> > > > +	 */
-> > > > +	for (i = 0; i < NR_KVM_CPU_CAPS; i++) {
-> > > > +		const struct cpuid_reg cpuid = reverse_cpuid[i];
-> > > > +
-> > > > +		best = kvm_find_cpuid_entry_index(vcpu, cpuid.function, cpuid.index);
-> > > > +		if (best)
-> > > > +			vcpu->arch.cpu_caps[i] = cpuid_get_reg_unsafe(best, cpuid.reg);
-> > > 
-> > > Why not just use __cpuid_entry_get_reg? 
-> > > 
-> > > cpuid.reg comes from read/only 'reverse_cpuid' anyway, and in fact
-> > > it seems that all callers of __cpuid_entry_get_reg, take the reg value from
-> > > x86_feature_cpuid() which also takes it from 'reverse_cpuid'.
-> > > 
-> > > So if the compiler is smart enough to not complain in these cases, I don't
-> > > see why this case is different.
-> > 
-> > It's because the input isn't a compile-time constant, and so the BUILD_BUG() in
-> > the default path will fire. 
-> >  All of the compile-time assertions in reverse_cpuid.h
-> > rely on the feature being a constant value, which allows the compiler to optimize
-> > away the dead paths, i.e. turn __cpuid_entry_get_reg()'s switch statement into
-> > simple pointer arithmetic and thus omit the BUILD_BUG() code.
-> 
-> In the above code, assuming that the compiler really treats the reverse_cpuid
-> as const (if that assumption is not true, then all uses of __cpuid_entry_get_reg
-> are also not compile time constant either),
+On Thu, Jan 4, 2024 at 9:01=E2=80=AFPM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+>
+> On Thu, Jan 4, 2024 at 4:43=E2=80=AFAM Wenhua Lin <Wenhua.Lin@unisoc.com>=
+ wrote:
+> >
+> > When the soc changes, the corresponding gpio-eic-sprd.c
+>
+> SoC
+>
 
-It's not so much the compiler treating something as const as it is the compiler
-generating code that resolves the relevant inputs to compile-time constants.
+Thank you very much for your review.
+I will fix this issue in patch v4.
 
-> then the 'reg' value depends only on 'i', and therefore for each iteration of
-> the loop, the compiler does know the compile time value of the 'reg', and so
-> it can easily prove that 'default' case in __cpuid_entry_get_reg can't be
-> reached, and thus eliminate that BUILD_BUG().
-
-A compiler _could_ know, but as above what truly matters is what code the compiler
-actually generates.  E.g. all helpers are tagged __always_inline to prevent the
-compiler from uninlining the functions (thanks, KASAN), at which point the code
-of the non-inline function is no longer dealing with compile-time constants and
-so the BUILD_BUG_ON() doesn't get eliminated.
-
-For the loop, while all values are indeed constant, the compiler may choose to
-generate a loop instead of unrolling everything.  A sufficiently clever compiler
-could still detect that nothing in the loop can hit the "default" case, but in
-practice neither clang nor gcc does that level of optimization, at least not yet.
-
-> > > Also why not to initialize guest_caps = host_caps & userspace_cpuid?
-> > > 
-> > > If this was the default we won't need any guest_cpu_cap_restrict and such,
-> > > instead it will just work.
-> > 
-> > Hrm, I definitely like the idea.  Unfortunately, unless we do an audit of all
-> > ~120 uses of guest_cpuid_has(), restricting those based on kvm_cpu_caps might
-> > break userspace.
-> 
-> 120 uses is not that bad, IMHO it is worth it - we won't need to deal with that
-> in the future.
-> 
-> How about a compromise - you change the patches such as it will be possible
-> to remove these cases one by one, and also all new cases will be fully
-> automatic?
-
-Hrm, I'm not necessarily opposed to that, but I don't think we should go partway
-unless we are 100% confident that changing the default to "use guest CPUID ANDed
-with KVM capabilities" is the best end state, *and* that someone will actually
-have the bandwidth to do the work soon-ish so that KVM isn't in a half-baked
-state for months on end.  Even then, my preference would definitely be to switch
-everything in one go.
-
-And automatically handling new features would only be feasible for entirely new
-leafs.  E.g. X86_FEATURE_RDPID is buried in CPUID.0x7.0x0.ECX, so to automatically
-handle new features KVM would need to set the default guest_caps for all bits
-*except* RDPID, at which point we're again building a set of features that need
-to opt-out.
-
-> > To be fair, the manual lists predate the governed features.
-> 
-> 100% agree, however the point of governed features was to simplify this list,
-> the point of this patch set is to simplify these lists and yet they still remain,
-> more or less untouched, and we will still need to maintain them.
-> 
-> Again I do think that governed features and/or this patchset are better than
-> the mess that was there before, but a part of me wants to fully get rid of
-> this mess instead of just making it a bit more beautiful. 
-
-Oh, I would love to get rid of the mess too, I _completely_ getting rid of the
-mess isn't realistic.  There are guaranteed to be exceptions to the rule, whether
-the rule is "use guest CPUID by default" or "use guest CPUID constrained by KVM
-capabilities by default".
-
-I.e. there will always be some amount of manual messiness, the question is which
-default behavior would yield the smallest mess.  My gut agrees with you, that
-defaulting to "guest & KVM" would yield the fewest exceptions.  But as above,
-I think we're better off doing the switch as an all-or-nothing things (where "all"
-means within a single series, not within a single patch).
+> > code needs to be modified, and the corresponding
+> > Document must also be modified, which is quite troublesome.
+> > To avoid modifying the driver file, the number of eics
+> > is automatically calculated by matching dts nodes.
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
 
