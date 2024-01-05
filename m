@@ -1,231 +1,131 @@
-Return-Path: <linux-kernel+bounces-17937-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18360-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C81CE825558
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 15:32:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D234C825C0D
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 22:13:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 548891F2213B
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 14:32:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7E57D1F244E6
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 21:13:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B4802E3FB;
-	Fri,  5 Jan 2024 14:31:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 956492D7B2;
+	Fri,  5 Jan 2024 21:13:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=ispras.ru header.i=@ispras.ru header.b="elURLvWM"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail.ispras.ru (mail.ispras.ru [83.149.199.84])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2A951E4B3
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 14:31:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <p.zabel@pengutronix.de>)
-	id 1rLlEH-0002Kr-D9; Fri, 05 Jan 2024 15:31:21 +0100
-Received: from [2a0a:edc0:0:900:1d::4e] (helo=lupine)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <p.zabel@pengutronix.de>)
-	id 1rLlEF-000baM-VY; Fri, 05 Jan 2024 15:31:19 +0100
-Received: from pza by lupine with local (Exim 4.96)
-	(envelope-from <p.zabel@pengutronix.de>)
-	id 1rLlEF-000BgI-2u;
-	Fri, 05 Jan 2024 15:31:19 +0100
-Message-ID: <c15f1a71b01f7d3985ee8d3b42b6e1ae0dddd235.camel@pengutronix.de>
-Subject: Re: [PATCH 2/4] reset: add GPIO-based reset controller
-From: Philipp Zabel <p.zabel@pengutronix.de>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Sean Anderson
- <sean.anderson@seco.com>, Bjorn Andersson <andersson@kernel.org>, Konrad
- Dybcio <konrad.dybcio@linaro.org>, Srinivas Kandagatla
- <srinivas.kandagatla@linaro.org>,  Banajit Goswami <bgoswami@quicinc.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,  Rob
- Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org, 
- linux-sound@vger.kernel.org, devicetree@vger.kernel.org, 
- linux-kernel@vger.kernel.org
-Cc: Bartosz Golaszewski <brgl@bgdev.pl>
-Date: Fri, 05 Jan 2024 15:31:19 +0100
-In-Reply-To: <d2d17b94-6f29-423d-a7e0-e24513a8e59f@linaro.org>
-References: <20231222150133.732662-1-krzysztof.kozlowski@linaro.org>
-	 <20231222150133.732662-3-krzysztof.kozlowski@linaro.org>
-	 <530e3473-eb3b-477c-8599-e7aa12779640@seco.com>
-	 <88bd6668-7e67-42c7-97b6-d7029f371349@linaro.org>
-	 <075990bb-5fdb-4d30-9484-9df6b978e805@seco.com>
-	 <fcbae47b-3b28-42f0-b93f-f83932025dc1@linaro.org>
-	 <2be19fbf-4c73-4594-be42-31587dc7b747@seco.com>
-	 <d2d17b94-6f29-423d-a7e0-e24513a8e59f@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4-2 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61C8735890
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 21:13:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ispras.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ispras.ru
+Received: from [192.168.1.114] (unknown [185.145.125.130])
+	by mail.ispras.ru (Postfix) with ESMTPSA id A64A440F1DF8;
+	Fri,  5 Jan 2024 21:13:28 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.ispras.ru A64A440F1DF8
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ispras.ru;
+	s=default; t=1704489208;
+	bh=FlEa4522VZdZ1YxHNtrr3RlZjAu47jub/SKcUbhgne0=;
+	h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+	b=elURLvWM2R+W2sXvbnDz4yjHrY16N8IpFq79W7EMGRzvJoEc8dMrCRctSn9sjd0+U
+	 /woxhCucAlP8rtdCMojyX0PLD0O7WYXL1/+YZoyTSc244W6+kLdA4+9UngmQis0J9r
+	 3gDjd+wITq/RuM4RGxvSF+N+t0Nj6UZ/ClSeD2HE=
+Subject: Re: [PATCH] tvnv17.c: Adding a NULL pointer check.
+To: Andrey Shumilin <shum.sdl@nppct.ru>, Karol Herbst <kherbst@redhat.com>
+Cc: Lyude Paul <lyude@redhat.com>, Danilo Krummrich <dakr@redhat.com>,
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ =?UTF-8?Q?Noralf_Tr=c3=b8nnes?= <noralf@tronnes.org>,
+ Jani Nikula <jani.nikula@intel.com>, dri-devel@lists.freedesktop.org,
+ nouveau@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+ "lvc-project@linuxtesting.org" <lvc-project@linuxtesting.org>
+References: <20231116065159.37876-1-shum.sdl@nppct.ru>
+From: Alexey Khoroshilov <khoroshilov@ispras.ru>
+Message-ID: <5609ce98-9bbb-29f4-0c4c-a4d3654152f7@ispras.ru>
+Date: Fri, 5 Jan 2024 21:33:07 +0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: p.zabel@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20231116065159.37876-1-shum.sdl@nppct.ru>
+Content-Type: text/plain; charset=utf-8
+Content-Language: ru-RU
+Content-Transfer-Encoding: 7bit
 
-On Do, 2024-01-04 at 20:08 +0100, Krzysztof Kozlowski wrote:
-> On 04/01/2024 17:30, Sean Anderson wrote:
-> > On 1/4/24 11:08, Krzysztof Kozlowski wrote:
-> > > On 04/01/2024 17:04, Sean Anderson wrote:
-> > > > On 1/4/24 03:57, Krzysztof Kozlowski wrote:
-> > > > > The driver (reset consumer) knows when it is safe or not. You mus=
-t
-> > > > > implement proper reset handling in your driver.
-> > > >=20
-> > > > The driver has no idea whether it is safe or not. It just calls
-> > > > reset_assert/deassert at the appropriate time, and the reset
-> > > > framework/controller is supposed to coordinate things so e.g. the d=
-evice
-> > > > doesn't get reset multiple times as multiple drivers all probe.
-> > >=20
-> > > Sorry, then I don't get what you refer to. The driver calls deassert
-> > > when it is safe for it to do it, so the driver *knows*. Now, you clai=
-m
-> > > that driver does not know that... core also does not know, so no one =
-knows.
-> >=20
-> > Yes! That is the problem with this design. Someone has to coordinate th=
-e
-> > reset, and it can't be the driver. But the core also doesn't have enoug=
-h
-> > information. So no one can do it.
->=20
-> The point is that the driver coordinates.
+> Subject: tvnv17.c: Adding a NULL pointer check.
 
-Currently the reset controller API supports two types of shared resets.
-I hope distinguishing the two types and illustrating them helps the
-discussion:
+As
 
-1) For devices that just require the reset to be deasserted while they
-are active, and don't care otherwise, there is the clk-like behavior
-described in [1].
+$ git log --oneline drivers/gpu/drm/nouveau/dispnv04/tvnv17.c
+874ee2d67fc9 drm/nouveau: Remove unnecessary include statements for
+drm_crtc_helper.h
+80ed86d4b6d7 drm/connector: Rename drm_mode_create_tv_properties
+1fd4a5a36f9f drm/connector: Rename legacy TV property
+09838c4efe9a drm/nouveau/kms: Search for encoders' connectors properly
+2574c809d7c0 drm/nouveau/kms/nv04-nv4x: Use match_string() helper to
+simplify the code
+...
 
-  requested reset signal via reset_control_deassert/assert():
-    device A: =E2=8E=BA=E2=8E=BA=E2=8E=BA=E2=8E=BA=E2=8E=BA=E2=8E=BA=E2=8E=
-=BA=E2=8E=BA=E2=8E=BA=E2=8E=BA\=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=
-=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=
-=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD/=E2=8E=BA=E2=8E=BA=
-=E2=8E=BA=E2=8E=BA=E2=8E=BA=E2=8E=BA=E2=8E=BA=E2=8E=BA=E2=8E=BA=E2=8E=BA=E2=
-=8E=BA=E2=8E=BA=E2=8E=BA=E2=8E=BA=E2=8E=BA=E2=8E=BA=E2=8E=BA=E2=8E=BA=E2=8E=
-=BA
-    device B: =E2=8E=BA=E2=8E=BA=E2=8E=BA=E2=8E=BA=E2=8E=BA=E2=8E=BA=E2=8E=
-=BA=E2=8E=BA=E2=8E=BA=E2=8E=BA=E2=8E=BA=E2=8E=BA=E2=8E=BA=E2=8E=BA=E2=8E=BA=
-=E2=8E=BA=E2=8E=BA=E2=8E=BA=E2=8E=BA=E2=8E=BA\=E2=8E=BD=E2=8E=BD=E2=8E=BD=
-=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=
-=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD/=E2=8E=BA=E2=8E=BA=E2=8E=BA=E2=
-=8E=BA=E2=8E=BA=E2=8E=BA=E2=8E=BA=E2=8E=BA=E2=8E=BA=E2=8E=BA=E2=8E=BA=E2=8E=
-=BA
+shows, a better prefix should be
+drm/nouveau:
+and there should not be a dot at the end.
 
-  actual reset signal to both devices:
-              =E2=8E=BA=E2=8E=BA=E2=8E=BA=E2=8E=BA=E2=8E=BA=E2=8E=BA=E2=8E=
-=BA=E2=8E=BA=E2=8E=BA=E2=8E=BA\=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=
-=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=
-=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=
-=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD/=E2=8E=BA=E2=8E=BA=E2=8E=BA=E2=
-=8E=BA=E2=8E=BA=E2=8E=BA=E2=8E=BA=E2=8E=BA=E2=8E=BA=E2=8E=BA=E2=8E=BA=E2=8E=
-=BA
+e.g.
+drm/nouveau: Avoid NPE in nv17_tv_get_XX_modes()
 
-In this scenario, there should be no delays in the reset controller
-driver. reset_control_deassert() may return as soon as the physical
-reset signal is deasserted [2]. Any post-deassert delays required by
-the devices are handled in the device drivers,=C2=A0and they can be
-different for each device. The devices have to be able to cope with a
-(much) longer post-deassert delay than expected (e.g. device B in this
-case). It is assumed that the reset signal is initially asserted.
+On 16.11.2023 09:51, Andrey Shumilin wrote:
+> It is possible to dereference a null pointer if drm_mode_duplicate() returns NULL.
 
-The reset-gpio patchset supports this.
+I would suggest to add a little bit more details:
 
-2) The second type is for devices that require a single reset pulse for
-initialization, at any time before they become active. This is
-described in [3].
+drm_mode_duplicate() may return NULL in case of error, e.g. if memory
+allocation fails. It leads to NULL pointer dereference in
+nv17_tv_get_ld_modes() and nv17_tv_get_hd_modes(), since they do not
+check if drm_mode_duplicate() succeeds.
 
-  requested reset signal via reset_control_reset/rearm():
-    device A: =E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=
-=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD/=E2=8E=BA=E2=8E=BA\=E2=8E=BD=E2=8E=BD=E2=8E=
-=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=
-=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=
-=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=
-=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD
-    device B: =E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=
-=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=
-=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD/=E2=8E=BA=E2=8E=BA\=E2=8E=BD=
-=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=
-=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=
-=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD
+Otherwise, looks good.
 
-  actual reset signal to both devices:
-              =E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=
-=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD/=E2=8E=BA=E2=8E=BA\=E2=8E=BD=E2=8E=BD=E2=8E=
-=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=
-=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=
-=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=
-=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD=E2=8E=BD
+Reviewed-by: Alexey Khoroshilov <khoroshilov@ispras.ru>
 
-Here the reset controller needs to know the delay between assertion and
-deassertion - either baked into the hardware or as a delay call in the
-.reset callback.
 
-This is not supported by the reset-gpio patchset. It could be
-implemented via a delay property in the device tree that would have to
-be the same for all devices sharing the reset line, and by adding the
-.reset callback to the reset controller driver. The only issue is that
-the initial state of the reset line should be deasserted, and at
-reset_control_get() time, when the reset-gpio controller is
-instantiated, it is not yet known which type the driver will use.
-
-Sharing a reset line between devices of different type is not
-supported. Unfortunately, this will only fail at
-reset_control_deassert() / reset_control_reset() time when the second
-device tries to use the reset control in a different way than the
-first.
-
-[1] https://docs.kernel.org/driver-api/reset.html#assertion-and-deassertion
-[2] https://docs.kernel.org/driver-api/reset.html#c.reset_control_deassert
-[3] https://docs.kernel.org/driver-api/reset.html#triggering
-
-> > For example, say we want to share a reset GPIO between two devices. Eac=
-h
-> > device has the following constraints:
-> >=20
-> > device post-assert delay post-deassert delay
-> > =3D=3D=3D=3D=3D=3D =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D =
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > A                  500us                 1ms
-> > B                    1ms               300us
->=20
-> And now imagine that these values are incompatible between them, so
-> using 1ms on device A is wrong - too long.
->=20
-> This is just not doable. You invented some imaginary case to prove that
-> hardware is broken.
->=20
-> Now, if we are back to realistic cases - use just the longest reset time.
-
-Right. This all only works if no device has an upper bound to the
-allowed delays on the shared reset line.
-
-I interpret the post-assert delay to be the desired length of the reset
-pulse between the rising edge and the falling edge in case 2) above,
-since in case 1) a post-assert delay is not useful.
-
-The post-deassert delays are not supposed to be handled by the reset
-controller drivers at all, except where they are needed to reach the
-deasserted state on the reset line. Reset drivers that do have post-
-deassert delays in the .deassert callback might be bending the rules a
-bit for convenience.
-
-regards
-Philipp
-
+> 
+> Found by Linux Verification Center (linuxtesting.org) with SVACE.
+> 
+> Signed-off-by: Andrey Shumilin <shum.sdl@nppct.ru>
+> ---
+>  drivers/gpu/drm/nouveau/dispnv04/tvnv17.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/nouveau/dispnv04/tvnv17.c b/drivers/gpu/drm/nouveau/dispnv04/tvnv17.c
+> index 670c9739e5e1..1f0c5f4a5fd2 100644
+> --- a/drivers/gpu/drm/nouveau/dispnv04/tvnv17.c
+> +++ b/drivers/gpu/drm/nouveau/dispnv04/tvnv17.c
+> @@ -209,7 +209,8 @@ static int nv17_tv_get_ld_modes(struct drm_encoder *encoder,
+>  		struct drm_display_mode *mode;
+>  
+>  		mode = drm_mode_duplicate(encoder->dev, tv_mode);
+> -
+> +		if (mode == NULL)
+> +			continue;
+>  		mode->clock = tv_norm->tv_enc_mode.vrefresh *
+>  			mode->htotal / 1000 *
+>  			mode->vtotal / 1000;
+> @@ -258,6 +259,8 @@ static int nv17_tv_get_hd_modes(struct drm_encoder *encoder,
+>  		if (modes[i].hdisplay == output_mode->hdisplay &&
+>  		    modes[i].vdisplay == output_mode->vdisplay) {
+>  			mode = drm_mode_duplicate(encoder->dev, output_mode);
+> +			if (mode == NULL)
+> +				continue;
+>  			mode->type |= DRM_MODE_TYPE_PREFERRED;
+>  
+>  		} else {
+> 
 
 
