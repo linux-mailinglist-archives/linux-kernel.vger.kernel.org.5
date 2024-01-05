@@ -1,381 +1,200 @@
-Return-Path: <linux-kernel+bounces-18282-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18283-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id ADE85825ADC
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 19:58:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C529825ADD
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 19:58:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 596FE28724E
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 18:58:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 93ED41F2436B
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 18:58:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E56938F99;
-	Fri,  5 Jan 2024 18:51:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24BBB39AD5;
+	Fri,  5 Jan 2024 18:51:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lkwT4I9Y"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="AdDHe1tU"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 994AF38DDE;
-	Fri,  5 Jan 2024 18:51:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 075CFC433C9;
-	Fri,  5 Jan 2024 18:51:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704480694;
-	bh=RbiLylQKIxRy+32CHHmxbyI0KMha2EwUuHCFleL8qb0=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=lkwT4I9YIv6VIDwMcBeb+tx5IUWOLKM0uwsIFscQDEPJN+34HMPeW9I9Lei0MIOE0
-	 9Z1tKAccnvwvuPWD4pqRae1mrOkwpykEoz29Q7mDU4Lpm6oQVhOzz5ptuuGKZnafVc
-	 thv/9zo1N+AzamdwxA0hbRH4xGa2JU7otnNn9yVLIO5BIlc91Tle+GbJ3jf1njHKsR
-	 cCBUZPRlR0X4OwpCVDcEkqWc46I8/UDA10pLNM+XtGJBvICUnartRBPT1L5Mkk0dDy
-	 fATz+2kQuVCvewz6VadiaTzG767nM3bCJ9xRlAhUmJr7rvNL2M1ipP5lmDcs8b0hTi
-	 ttMbY0LkHEFgg==
-From: Eric Biggers <ebiggers@kernel.org>
-To: linux-crypto@vger.kernel.org,
-	linux-riscv@lists.infradead.org,
-	Jerry Shih <jerry.shih@sifive.com>
-Cc: linux-kernel@vger.kernel.org,
-	Ard Biesheuvel <ardb@kernel.org>,
-	Heiko Stuebner <heiko@sntech.de>,
-	Phoebe Chen <phoebe.chen@sifive.com>,
-	hongrong.hsu@sifive.com,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Andy Chiu <andy.chiu@sifive.com>,
-	=?UTF-8?q?Christoph=20M=C3=BCllner?= <christoph.muellner@vrull.eu>,
-	Heiko Stuebner <heiko.stuebner@vrull.eu>
-Subject: [PATCH v2 12/12] crypto: riscv - add vector crypto accelerated SM4
-Date: Fri,  5 Jan 2024 10:49:48 -0800
-Message-ID: <20240105184950.43181-13-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240105184950.43181-1-ebiggers@kernel.org>
-References: <20240105184950.43181-1-ebiggers@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 180FA39AC5;
+	Fri,  5 Jan 2024 18:51:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704480716; x=1736016716;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=IMIhoe+j/f9rBex1PFLbiC4k1JRAnW3KU/gJ1EeL/HM=;
+  b=AdDHe1tUNmx35K745BbL8KcrReBPe7FGlx1JHZVpQy9AkUmjjP3nzeOW
+   IIZ/WwTz0fxTOgwtqa0AgskbP13eDBdzENWpqW2VA2n7ZtId6Cw12Udgl
+   JsgIBZiGHD5+Jpv6RxcmjSozD4JJrIYYEuFPYLD6+hgsIVcUq6wOW2g7s
+   QMCyLnI1wM/dx3ge9dv7PTUC0Uq1c8mpDrFcrKclBDz/caHsUO7WI3+Lg
+   uHZ0gL2uREjSnEIDRw7c8a67AoqVmocriU6csiZYSYkzdeREElrNK8miN
+   73HL/PJvE/Ie5yPrw8b+4HGW8PJ2zYLR86Udp8tYMuv4aW5eiSWyaTjwM
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10944"; a="401348096"
+X-IronPort-AV: E=Sophos;i="6.04,334,1695711600"; 
+   d="scan'208";a="401348096"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2024 10:51:55 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10944"; a="924291033"
+X-IronPort-AV: E=Sophos;i="6.04,334,1695711600"; 
+   d="scan'208";a="924291033"
+Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
+  by fmsmga001.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 05 Jan 2024 10:51:54 -0800
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Fri, 5 Jan 2024 10:51:54 -0800
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Fri, 5 Jan 2024 10:51:53 -0800
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Fri, 5 Jan 2024 10:51:53 -0800
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.100)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Fri, 5 Jan 2024 10:51:53 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hwJvtWvosY3cPRaQq720gj3mGAGkgQRWnBKxzuLnaBqdw4kSPi75QB1LFylFJ5dIt5Cbv7kcuXVaUG5y6WN8B0MnCXjs8LyyUR1D3E4ZH7//K2NM7V9Nwf5Lb2tLKXkYZWXCKTFXUeaC5/z4bs6qEjKfemXOC49C72AMIEtZOQi57RIPfGBqRSYOLnCztUtkvoNonePv5YrddimpGW4L3cZgHsAh4uL0uMCj7oMHr4XUUpgV3KN1l+Z7ZB8hvUl/z5ojHAShLMMUvRokrTVDN3IwjDPc32Wgz8RvHfjsi5xeVMRJ8PQDk56LvdKekroBQvUscxg3KWTRAz3HAc+lWw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=IMIhoe+j/f9rBex1PFLbiC4k1JRAnW3KU/gJ1EeL/HM=;
+ b=gqEQEoa4bebrhp1dH1RWk8XhyxcSfGLEBzFQHr6B4bHo22ILs4T1FJb5T6CWUE523NMAVPe5C3VBZmy++9ZR/+g2sdLK1GutNzBaMVWA+Nzs82Jt/hMgEK8rh/S+3kjC6ZkIfoRQnbbE9mUlpeUf4mJ6EGzAr0oIdXi4+V/EdPi0JIDsppZo08565L5wA8jcF6zoKunJC8kohYJx4lF/Jp9zH+7YooHCyGNTSYe36UXD3dGSklXxRqv1zaWacsEnXGjgYyjlIvpIY2EibxeioXcrN4IQDTAKk3FF4nbqcEiZe2zf590SVS674f+E6YDK0ABotJo/yDnc4l4MpTT3gw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from MN0PR11MB5963.namprd11.prod.outlook.com (2603:10b6:208:372::10)
+ by SA2PR11MB4956.namprd11.prod.outlook.com (2603:10b6:806:112::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.16; Fri, 5 Jan
+ 2024 18:51:51 +0000
+Received: from MN0PR11MB5963.namprd11.prod.outlook.com
+ ([fe80::6dc:cee5:b26b:7d93]) by MN0PR11MB5963.namprd11.prod.outlook.com
+ ([fe80::6dc:cee5:b26b:7d93%4]) with mapi id 15.20.7159.015; Fri, 5 Jan 2024
+ 18:51:51 +0000
+From: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
+To: "jmattson@google.com" <jmattson@google.com>
+CC: "Gao, Chao" <chao.gao@intel.com>, "Yang, Weijiang"
+	<weijiang.yang@intel.com>, "Hansen, Dave" <dave.hansen@intel.com>,
+	"seanjc@google.com" <seanjc@google.com>, "peterz@infradead.org"
+	<peterz@infradead.org>, "john.allen@amd.com" <john.allen@amd.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"mlevitsk@redhat.com" <mlevitsk@redhat.com>, "pbonzini@redhat.com"
+	<pbonzini@redhat.com>, "kvm@vger.kernel.org" <kvm@vger.kernel.org>
+Subject: Re: [PATCH v8 00/26] Enable CET Virtualization
+Thread-Topic: [PATCH v8 00/26] Enable CET Virtualization
+Thread-Index: AQHaM+ybd3H3II6aZU6KWHt3rvxkNLDIg7MAgADO/oCAAOpTAIAANboAgAADMYCAAAXLgIAAj3+AgABzaACAABlggIAABMoAgAAL1wA=
+Date: Fri, 5 Jan 2024 18:51:50 +0000
+Message-ID: <b6ed5961a3a73de532e2ff0610f43ca129151199.camel@intel.com>
+References: <20231221140239.4349-1-weijiang.yang@intel.com>
+	 <93f118670137933980e9ed263d01afdb532010ed.camel@intel.com>
+	 <5f57ce03-9568-4739-b02d-e9fac6ed381a@intel.com>
+	 <6179ddcb25c683bd178e74e7e2455cee63ba74de.camel@intel.com>
+	 <ZZdLG5W5u19PsnTo@google.com>
+	 <a2344e2143ef2b9eca0d153c86091e58e596709d.camel@intel.com>
+	 <ZZdSSzCqvd-3sdBL@google.com>
+	 <8f070910-2b2e-425d-995e-dfa03a7695de@intel.com>
+	 <ZZgsipXoXTKyvCZT@google.com>
+	 <9abd8400d25835dd2a6fd41b0104e3c666ee8a13.camel@intel.com>
+	 <CALMp9eRMoWOS5oAywQCdEsCuTkDqmsVG=Do11FkthD5amr96WA@mail.gmail.com>
+In-Reply-To: <CALMp9eRMoWOS5oAywQCdEsCuTkDqmsVG=Do11FkthD5amr96WA@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+user-agent: Evolution 3.44.4-0ubuntu2 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: MN0PR11MB5963:EE_|SA2PR11MB4956:EE_
+x-ms-office365-filtering-correlation-id: d9347710-8135-43d9-4c12-08dc0e1f60be
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: h/NJ3ZosTOztA/nvExD8Aq9okZzIrwQuI06iyQ2jkR0fiKgWy38y5/VUxwJ8rTpw8s6rMUmsT9yT+rd5hZatAMkrd8vTpAjus5pWTiKK5Bf1pAP89NCcSxvHjdi8IV4O7Mj02WXTpuA0sJ1vZPamNn4r2pNvCT4MsIesmY8fCyjNmAn9bTPY4FK2gRf/38YT3cZC516rnTRoGtl0wD7NQNrIx12EXEUfzInbdoenXn+4K2wGHf+b3FrV74xEDtyksv3PKxHAcDs5HYDI1BEuRaOetQFG0SpANihn5pdhIPwuKnSERT+R/BAibnAWnLB/oejDbSAfSsxW1aC3ORZ+IzYIHntv6UZVhVEJY+7CcxxCStWJBGhNE1aytcmq+ysfGWM9edaYcvzskRKHSPoNaSDGunDmaN3IIeTRjBShaJYrTFoaxUVwijU0TSRAPjrs5QAE01TfftdB82SXAIdW5WSxwVT7PWSXcRJ9Y6XYC6cZ7n+82Ufi2wo298A69GRUTYkm8Bz+FZxSLAfLPYfjDX5xXFtgbxMw9dIqVBowPFjn440TmJuJQsd4q+F0e/fw1LWiqvaGDkrMjhmANjNAiGzffSRb/ATvXS3tFpQfGfgaWQovlBXrK5/D3H+AYJej
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR11MB5963.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(346002)(396003)(366004)(376002)(136003)(230922051799003)(64100799003)(1800799012)(451199024)(186009)(2616005)(26005)(5660300002)(478600001)(71200400001)(6512007)(6486002)(6506007)(38100700002)(122000001)(82960400001)(86362001)(36756003)(2906002)(4744005)(316002)(41300700001)(83380400001)(54906003)(38070700009)(76116006)(91956017)(6916009)(66446008)(66556008)(66476007)(66946007)(8676002)(8936002)(64756008)(4326008);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?bitkRkhOWHY4elM1bGl0aG1LMWcwcUV2Szd0TExFMGFnNEtNeTdhMEtHYjdP?=
+ =?utf-8?B?RnRJV2xXZDhYeXFsR2xqOFB4VmFPdEQyZTRQQURSTDlqenFOS3pvMURmOXh0?=
+ =?utf-8?B?MVNDaWk0VFNRWWVUTlRnV0RPZ1ZhWTVHZHl1eGJ6SW4zd0h6WjI0eGoraXFO?=
+ =?utf-8?B?Yk1LaTlWamgvWUhycTFYcFRMQnVuMGJKN0dyYU03QThKWVRUakZscVBpMlpo?=
+ =?utf-8?B?ZnV3dXRwT3JaditzVFBnTEJ2a29RZjZjWGVlNkN2QmU4czZjK3BLSUQ0Smlt?=
+ =?utf-8?B?eHVxTjR5cERESjhNYTlqUXdWblhCaVBvd2YrdFgvUGRLbDByaHFxT09JTVMv?=
+ =?utf-8?B?S1pMRmdzQzNEeXZheEN3U3VRVytOSFhjTi9Ya0Q3WU5KS3Y0c1ZFQTdrTG1x?=
+ =?utf-8?B?SDU4MW9BUzhIWjJ5MWJRRWcxSW1BS1FvazFHZDJwTWdLbkl0QWdOaXM3Q1Za?=
+ =?utf-8?B?QmUrUnFYdGpzdlNEWUhXNFZ0Qy9HbHVQZ0U2aVlaZ0JvMm1BUVpTTHkwbFFL?=
+ =?utf-8?B?QUNpVGtudlY0R0J4SlQxWXBqb241bFNVQzA3cUswRmp3a2kyWnlESDVQNzlV?=
+ =?utf-8?B?dHR3UCtjSitSb2NZaythU2FEaGlXSy9ONk1nSFlQbVdodmpaaW9yMXVZZXZs?=
+ =?utf-8?B?WmFkZ3M0QXF0aG1Za1NIV1AyREpSZnkwT3B5a3M2OHpGdjZZYmE4QWdGV3or?=
+ =?utf-8?B?MnFPY3RHenFaZThQWEpacjk1bnBNck9WM0s4cUo1enV0dXBEb1E4UVdHKzJ5?=
+ =?utf-8?B?dkFvSFNqUC9qN2V1YlJ5UUcvbmJaWnZab2swSHdzV3dUYnoybU1mdEFtWWxp?=
+ =?utf-8?B?YlBGd1VoL1hTUTdXUHpDWmRCUnYyVnNubWxCNnh1eGFWNndVbW01VVRHak0r?=
+ =?utf-8?B?cjA4ZHJlMElyQyszck9CNlJpMGRqZU1ybER2Z0JXQm1IMzRacnVxSFJpampo?=
+ =?utf-8?B?SXFDKzZKYlRoMXRaeDNxSU92VVpiaUx2dDZXZjI4VDRraDUvNnhiNnFZMGhw?=
+ =?utf-8?B?OHBBMkExUFFuU0UvdmZjNkdGOCtXdnMweUYzSmJmdzd4NXB1c0lQdk9QL3dr?=
+ =?utf-8?B?L2RQWUczMUZ6dkhyK2EzMVZLYnp5VlhXOXVsZWhpVGdpWUgxYm9jM1B2L1d4?=
+ =?utf-8?B?bEo2VE1kdEIvaXJlbHhFQkIwZUVVczlEQlF4QXFoa1J3NFltMGx0SjZSRXJ3?=
+ =?utf-8?B?QndVVW93MlNkVW1MbUNXK2xrV1Z2M0YyMHEwOVJPQ0lKelljMUZaYnNhbUN1?=
+ =?utf-8?B?Qktua01ZanJGamJta2IvNEpVbUxOWFQvWDZnMStycGFSUTNwSkdWaDBLMHpy?=
+ =?utf-8?B?bjB3K3hpN083WkYrTDdCOTMzeXNqQ3ZtWGs3aTFuTjcyRlljaEVsaksySnhR?=
+ =?utf-8?B?SVRMTTA5UVQ1RmJTcDFOYlRQVXJVVGhNVWhtV2pBay9rN1VWVG12d09TVFhJ?=
+ =?utf-8?B?UkZYWlNNTW11MGRGM0w3amFqK0FLNWFhTG8xMW8yRE52ZVhaMkc2cVpIbElG?=
+ =?utf-8?B?MEFxamtQeE1wNG5GY3J0NitYQVUwSWNpY09LTUluMHhZQ2w2MGRINUswalla?=
+ =?utf-8?B?ZzM1WGhmbGZnMUpaNjhYZzI0ZDB4MmEzdWxmNVNZN0FXeWRQOG1JQm1ISjhs?=
+ =?utf-8?B?Wm9YcUtFWGNxbXkxd25DcURvTjhZaVpNNkVEY1NPNkRFSTFiTUlnU0h4aU1U?=
+ =?utf-8?B?ZDNyTnJmeHQ4d0NVNSsrWURKR2JPV2RqV1ZtbG53Mko0bnBFNFpOSTdlM2lu?=
+ =?utf-8?B?U1dsMTB0aCtpcnU5SlVBMzFnaC80OVU5eFg4aVlBa0lxVUdPZUZpcmlVTXZU?=
+ =?utf-8?B?RVNBZXExc2prQkFRWGJGL1BCZmYybUVDMit1Nk9iOVhCcmdhbXZSL1VSb1Vk?=
+ =?utf-8?B?aXNwdEpGNVJ5TlJrbHJrOHlxb0ovOXMyUlQ5djV0MDJFTmhKV2hHOHpOeHU4?=
+ =?utf-8?B?bnQ1UlVUVHRaZElWangvVTl3QTRjaE1naFB2UVVJaEtCcHNHSkNHb2I3Tm9a?=
+ =?utf-8?B?KzJ6WXRXK3N4Vnc4Qnd5ZEtjcGRsZEY0S3JwSUhjelQ5UGh2K0FTbklXdGdy?=
+ =?utf-8?B?d1pBT2owNHg4SVl2bDBoZHdBRXZpdzFFNDNnZElSL3M3dTRYbnhSS2FVZzA5?=
+ =?utf-8?B?MElORFNDYzljdFZIWG5XdkwxZ3MrZ3FwU0prcFdvclhwNDZGM3NWS0RaV0Mv?=
+ =?utf-8?B?b2c9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <BB95D429044FE94DADB957ED1DFB33A0@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MN0PR11MB5963.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d9347710-8135-43d9-4c12-08dc0e1f60be
+X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Jan 2024 18:51:50.9328
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 18avsFztGuKbgqD3ud67FOQLFL4oRXtvQZnJrOKbFW5iyvjNyItw+D21dhdnSGaznGMpr5qwR6/k7wE7qMdmQsp++5bPgL4zY49GU0Nec9o=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR11MB4956
+X-OriginatorOrg: intel.com
 
-From: Jerry Shih <jerry.shih@sifive.com>
-
-Add an implementation of SM4 using the Zvksed extension.  The assembly
-code is derived from OpenSSL code (openssl/openssl#21923) that was
-dual-licensed so that it could be reused in the kernel.  Nevertheless,
-the assembly has been significantly reworked for integration with the
-kernel, for example by using a regular .S file instead of the so-called
-perlasm, using the assembler instead of bare '.inst', and greatly
-reducing code duplication.
-
-Co-developed-by: Christoph Müllner <christoph.muellner@vrull.eu>
-Signed-off-by: Christoph Müllner <christoph.muellner@vrull.eu>
-Co-developed-by: Heiko Stuebner <heiko.stuebner@vrull.eu>
-Signed-off-by: Heiko Stuebner <heiko.stuebner@vrull.eu>
-Signed-off-by: Jerry Shih <jerry.shih@sifive.com>
-Co-developed-by: Eric Biggers <ebiggers@google.com>
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- arch/riscv/crypto/Kconfig                   |  17 +++
- arch/riscv/crypto/Makefile                  |   3 +
- arch/riscv/crypto/sm4-riscv64-glue.c        | 107 ++++++++++++++++++
- arch/riscv/crypto/sm4-riscv64-zvksed-zvkb.S | 117 ++++++++++++++++++++
- 4 files changed, 244 insertions(+)
- create mode 100644 arch/riscv/crypto/sm4-riscv64-glue.c
- create mode 100644 arch/riscv/crypto/sm4-riscv64-zvksed-zvkb.S
-
-diff --git a/arch/riscv/crypto/Kconfig b/arch/riscv/crypto/Kconfig
-index 179d09df8e0ca..2ad44e1d464af 100644
---- a/arch/riscv/crypto/Kconfig
-+++ b/arch/riscv/crypto/Kconfig
-@@ -66,11 +66,28 @@ config CRYPTO_SM3_RISCV64
- 	depends on 64BIT && RISCV_ISA_V && TOOLCHAIN_HAS_VECTOR_CRYPTO
- 	select CRYPTO_HASH
- 	select CRYPTO_SM3
- 	help
- 	  SM3 (ShangMi 3) secure hash function (OSCCA GM/T 0004-2012)
- 
- 	  Architecture: riscv64 using:
- 	  - Zvksh vector crypto extension
- 	  - Zvkb vector crypto extension
- 
-+config CRYPTO_SM4_RISCV64
-+	tristate "Ciphers: SM4 (ShangMi 4)"
-+	depends on 64BIT && RISCV_ISA_V && TOOLCHAIN_HAS_VECTOR_CRYPTO
-+	select CRYPTO_ALGAPI
-+	select CRYPTO_SM4
-+	help
-+	  SM4 block cipher algorithm (OSCCA GB/T 32907-2016,
-+	  ISO/IEC 18033-3:2010/Amd 1:2021)
-+
-+	  SM4 (GBT.32907-2016) is a cryptographic standard issued by the
-+	  Organization of State Commercial Administration of China (OSCCA)
-+	  as an authorized cryptographic algorithm for use within China.
-+
-+	  Architecture: riscv64 using:
-+	  - Zvksed vector crypto extension
-+	  - Zvkb vector crypto extension
-+
- endmenu
-diff --git a/arch/riscv/crypto/Makefile b/arch/riscv/crypto/Makefile
-index 3b154f893e6e2..e74d64bfd6083 100644
---- a/arch/riscv/crypto/Makefile
-+++ b/arch/riscv/crypto/Makefile
-@@ -14,10 +14,13 @@ obj-$(CONFIG_CRYPTO_GHASH_RISCV64) += ghash-riscv64.o
- ghash-riscv64-y := ghash-riscv64-glue.o ghash-riscv64-zvkg.o
- 
- obj-$(CONFIG_CRYPTO_SHA256_RISCV64) += sha256-riscv64.o
- sha256-riscv64-y := sha256-riscv64-glue.o sha256-riscv64-zvknha_or_zvknhb-zvkb.o
- 
- obj-$(CONFIG_CRYPTO_SHA512_RISCV64) += sha512-riscv64.o
- sha512-riscv64-y := sha512-riscv64-glue.o sha512-riscv64-zvknhb-zvkb.o
- 
- obj-$(CONFIG_CRYPTO_SM3_RISCV64) += sm3-riscv64.o
- sm3-riscv64-y := sm3-riscv64-glue.o sm3-riscv64-zvksh-zvkb.o
-+
-+obj-$(CONFIG_CRYPTO_SM4_RISCV64) += sm4-riscv64.o
-+sm4-riscv64-y := sm4-riscv64-glue.o sm4-riscv64-zvksed-zvkb.o
-diff --git a/arch/riscv/crypto/sm4-riscv64-glue.c b/arch/riscv/crypto/sm4-riscv64-glue.c
-new file mode 100644
-index 0000000000000..47fb84ebe577d
---- /dev/null
-+++ b/arch/riscv/crypto/sm4-riscv64-glue.c
-@@ -0,0 +1,107 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * SM4 using the RISC-V vector crypto extensions
-+ *
-+ * Copyright (C) 2023 VRULL GmbH
-+ * Author: Heiko Stuebner <heiko.stuebner@vrull.eu>
-+ *
-+ * Copyright (C) 2023 SiFive, Inc.
-+ * Author: Jerry Shih <jerry.shih@sifive.com>
-+ */
-+
-+#include <asm/simd.h>
-+#include <asm/vector.h>
-+#include <crypto/internal/cipher.h>
-+#include <crypto/internal/simd.h>
-+#include <crypto/sm4.h>
-+#include <linux/linkage.h>
-+#include <linux/module.h>
-+
-+asmlinkage void sm4_expandkey_zvksed_zvkb(const u8 user_key[SM4_KEY_SIZE],
-+					  u32 rkey_enc[SM4_RKEY_WORDS],
-+					  u32 rkey_dec[SM4_RKEY_WORDS]);
-+asmlinkage void sm4_crypt_zvksed_zvkb(const u32 rkey[SM4_RKEY_WORDS],
-+				      const u8 in[SM4_BLOCK_SIZE],
-+				      u8 out[SM4_BLOCK_SIZE]);
-+
-+static int riscv64_sm4_setkey(struct crypto_tfm *tfm, const u8 *key,
-+			      unsigned int keylen)
-+{
-+	struct sm4_ctx *ctx = crypto_tfm_ctx(tfm);
-+
-+	if (crypto_simd_usable()) {
-+		if (keylen != SM4_KEY_SIZE)
-+			return -EINVAL;
-+		kernel_vector_begin();
-+		sm4_expandkey_zvksed_zvkb(key, ctx->rkey_enc, ctx->rkey_dec);
-+		kernel_vector_end();
-+		return 0;
-+	}
-+	return sm4_expandkey(ctx, key, keylen);
-+}
-+
-+static void riscv64_sm4_encrypt(struct crypto_tfm *tfm, u8 *dst, const u8 *src)
-+{
-+	const struct sm4_ctx *ctx = crypto_tfm_ctx(tfm);
-+
-+	if (crypto_simd_usable()) {
-+		kernel_vector_begin();
-+		sm4_crypt_zvksed_zvkb(ctx->rkey_enc, src, dst);
-+		kernel_vector_end();
-+	} else {
-+		sm4_crypt_block(ctx->rkey_enc, dst, src);
-+	}
-+}
-+
-+static void riscv64_sm4_decrypt(struct crypto_tfm *tfm, u8 *dst, const u8 *src)
-+{
-+	const struct sm4_ctx *ctx = crypto_tfm_ctx(tfm);
-+
-+	if (crypto_simd_usable()) {
-+		kernel_vector_begin();
-+		sm4_crypt_zvksed_zvkb(ctx->rkey_dec, src, dst);
-+		kernel_vector_end();
-+	} else {
-+		sm4_crypt_block(ctx->rkey_dec, dst, src);
-+	}
-+}
-+
-+static struct crypto_alg riscv64_sm4_alg = {
-+	.cra_flags = CRYPTO_ALG_TYPE_CIPHER,
-+	.cra_blocksize = SM4_BLOCK_SIZE,
-+	.cra_ctxsize = sizeof(struct sm4_ctx),
-+	.cra_priority = 300,
-+	.cra_name = "sm4",
-+	.cra_driver_name = "sm4-riscv64-zvksed-zvkb",
-+	.cra_cipher = {
-+		.cia_min_keysize = SM4_KEY_SIZE,
-+		.cia_max_keysize = SM4_KEY_SIZE,
-+		.cia_setkey = riscv64_sm4_setkey,
-+		.cia_encrypt = riscv64_sm4_encrypt,
-+		.cia_decrypt = riscv64_sm4_decrypt,
-+	},
-+	.cra_module = THIS_MODULE,
-+};
-+
-+static int __init riscv64_sm4_mod_init(void)
-+{
-+	if (riscv_isa_extension_available(NULL, ZVKSED) &&
-+	    riscv_isa_extension_available(NULL, ZVKB) &&
-+	    riscv_vector_vlen() >= 128)
-+		return crypto_register_alg(&riscv64_sm4_alg);
-+
-+	return -ENODEV;
-+}
-+
-+static void __exit riscv64_sm4_mod_exit(void)
-+{
-+	crypto_unregister_alg(&riscv64_sm4_alg);
-+}
-+
-+module_init(riscv64_sm4_mod_init);
-+module_exit(riscv64_sm4_mod_exit);
-+
-+MODULE_DESCRIPTION("SM4 (RISC-V accelerated)");
-+MODULE_AUTHOR("Heiko Stuebner <heiko.stuebner@vrull.eu>");
-+MODULE_LICENSE("GPL");
-+MODULE_ALIAS_CRYPTO("sm4");
-diff --git a/arch/riscv/crypto/sm4-riscv64-zvksed-zvkb.S b/arch/riscv/crypto/sm4-riscv64-zvksed-zvkb.S
-new file mode 100644
-index 0000000000000..fae62179a4a3d
---- /dev/null
-+++ b/arch/riscv/crypto/sm4-riscv64-zvksed-zvkb.S
-@@ -0,0 +1,117 @@
-+/* SPDX-License-Identifier: Apache-2.0 OR BSD-2-Clause */
-+//
-+// This file is dual-licensed, meaning that you can use it under your
-+// choice of either of the following two licenses:
-+//
-+// Copyright 2023 The OpenSSL Project Authors. All Rights Reserved.
-+//
-+// Licensed under the Apache License 2.0 (the "License"). You can obtain
-+// a copy in the file LICENSE in the source distribution or at
-+// https://www.openssl.org/source/license.html
-+//
-+// or
-+//
-+// Copyright (c) 2023, Christoph Müllner <christoph.muellner@vrull.eu>
-+// Copyright (c) 2023, Jerry Shih <jerry.shih@sifive.com>
-+// Copyright 2024 Google LLC
-+// All rights reserved.
-+//
-+// Redistribution and use in source and binary forms, with or without
-+// modification, are permitted provided that the following conditions
-+// are met:
-+// 1. Redistributions of source code must retain the above copyright
-+//    notice, this list of conditions and the following disclaimer.
-+// 2. Redistributions in binary form must reproduce the above copyright
-+//    notice, this list of conditions and the following disclaimer in the
-+//    documentation and/or other materials provided with the distribution.
-+//
-+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-+// A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-+// OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-+// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-+// LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-+// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-+// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-+
-+// The generated code of this file depends on the following RISC-V extensions:
-+// - RV64I
-+// - RISC-V Vector ('V') with VLEN >= 128
-+// - RISC-V Vector SM4 Block Cipher extension ('Zvksed')
-+// - RISC-V Vector Cryptography Bit-manipulation extension ('Zvkb')
-+
-+#include <linux/linkage.h>
-+
-+.text
-+.option arch, +zvksed, +zvkb
-+
-+// void sm4_expandkey_zksed_zvkb(const u8 user_key[16], u32 rkey_enc[32],
-+//				 u32 rkey_dec[32]);
-+SYM_FUNC_START(sm4_expandkey_zvksed_zvkb)
-+	vsetivli	zero, 4, e32, m1, ta, ma
-+
-+	// Load the user key.
-+	vle32.v		v1, (a0)
-+	vrev8.v		v1, v1
-+
-+	// XOR the user key with the family key.
-+	la		t0, FAMILY_KEY
-+	vle32.v		v2, (t0)
-+	vxor.vv		v1, v1, v2
-+
-+	// Compute the round keys.  Store them in forwards order in rkey_enc
-+	// and in reverse order in rkey_dec.
-+	addi		a2, a2, 31*4
-+	li		t0, -4
-+	.set		i, 0
-+.rept 8
-+	vsm4k.vi	v1, v1, i
-+	vse32.v		v1, (a1)	// Store to rkey_enc.
-+	vsse32.v	v1, (a2), t0	// Store to rkey_dec.
-+.if i < 7
-+	addi		a1, a1, 16
-+	addi		a2, a2, -16
-+.endif
-+	.set		i, i + 1
-+.endr
-+
-+	ret
-+SYM_FUNC_END(sm4_expandkey_zvksed_zvkb)
-+
-+// void sm4_crypt_zvksed_zvkb(const u32 rkey[32], const u8 in[16], u8 out[16]);
-+SYM_FUNC_START(sm4_crypt_zvksed_zvkb)
-+	vsetivli	zero, 4, e32, m1, ta, ma
-+
-+	// Load the input data.
-+	vle32.v		v1, (a1)
-+	vrev8.v		v1, v1
-+
-+	// Do the 32 rounds of SM4, 4 at a time.
-+	.set		i, 0
-+.rept 8
-+	vle32.v		v2, (a0)
-+	vsm4r.vs	v1, v2
-+.if i < 7
-+	addi		a0, a0, 16
-+.endif
-+	.set		i, i + 1
-+.endr
-+
-+	// Store the output data (in reverse element order).
-+	vrev8.v		v1, v1
-+	li		t0, -4
-+	addi		a2, a2, 12
-+	vsse32.v	v1, (a2), t0
-+
-+	ret
-+SYM_FUNC_END(sm4_crypt_zvksed_zvkb)
-+
-+.section ".rodata"
-+.p2align 2
-+.type FAMILY_KEY, @object
-+FAMILY_KEY:
-+	.word 0xA3B1BAC6, 0x56AA3350, 0x677D9197, 0xB27022DC
-+.size FAMILY_KEY, . - FAMILY_KEY
--- 
-2.43.0
-
+T24gRnJpLCAyMDI0LTAxLTA1IGF0IDEwOjA5IC0wODAwLCBKaW0gTWF0dHNvbiB3cm90ZToNCj4g
+PiAzLiBUYXNrIHN3aXRjaGluZw0KPiANCj4gU2lnaC4gS1ZNIGlzIGZvcmNlZCB0byBlbXVsYXRl
+IHRhc2sgc3dpdGNoLCBiZWNhdXNlIHRoZSBoYXJkd2FyZSBpcw0KPiBpbmNhcGFibGUgb2Ygdmly
+dHVhbGl6aW5nIGl0LiBIb3cgaGFyZCB3b3VsZCBpdCBiZSB0byBtYWtlIEtWTSdzDQo+IHRhc2st
+c3dpdGNoIGVtdWxhdGlvbiBDRVQtYXdhcmU/DQoNCihJIGFtIG5vdCB0b28gZmFtaWxpYXIgd2l0
+aCB0aGlzIHBhcnQgb2YgdGhlIGFyY2gpLg0KDQpTZWUgU0RNIFZvbCAzYSwgY2hhcHRlciA3LjMs
+IG51bWJlciA4IGFuZCAxNS4gVGhlIGJlaGF2aW9yIGlzIGFyb3VuZA0KYWN0dWFsIHRhc2sgc3dp
+dGNoaW5nLiBBdCBmaXJzdCBnbGFuY2UsIGl0IGxvb2tzIGFubm95aW5nIGF0IGxlYXN0LiBJdA0K
+d291bGQgbmVlZCB0byBkbyBhIENNUFhDSEcgdG8gZ3Vlc3QgbWVtb3J5IGF0IHNvbWUgcG9pbnRz
+IGFuZCB0YWtlIGNhcmUNCnRvIG5vdCBpbXBsZW1lbnQgdGhlICJDb21wbGV4IFNoYWRvdy1TdGFj
+ayBVcGRhdGVzIiBiZWhhdmlvci4NCg0KQnV0LCB3b3VsZCBhbnlvbmUgdXNlIGl0PyBJJ20gbm90
+IGF3YXJlIG9mIGFueSAzMiBiaXQgc3VwZXJ2aXNvciBzaGFkb3cNCnN0YWNrIHN1cHBvcnQgb3V0
+IHRoZXJlLiBTbyBtYXliZSBpdCBpcyBvayB0byBqdXN0IHB1bnQgdG8gdXNlcnNwYWNlIGluDQp0
+aGlzIGNhc2U/DQoNCg0K
 
