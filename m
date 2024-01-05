@@ -1,93 +1,134 @@
-Return-Path: <linux-kernel+bounces-17841-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17842-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0521D825378
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 13:51:34 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 62325825379
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 13:51:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7C8ED286CDD
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 12:51:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 71CDF1C2307F
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 12:51:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56F3E2D05B;
-	Fri,  5 Jan 2024 12:51:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1ABAC2D609;
+	Fri,  5 Jan 2024 12:51:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="E93C7Ybv"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ogX2BBB5"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C9BD2D602;
-	Fri,  5 Jan 2024 12:51:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B481AC433C7;
-	Fri,  5 Jan 2024 12:51:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1704459086;
-	bh=Z1D8rD3/nRzA4kc+dux1HvFymw8yFf5r7zYbbSNB8vU=;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68D6D2CCBF;
+	Fri,  5 Jan 2024 12:51:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5BC6C433C7;
+	Fri,  5 Jan 2024 12:51:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704459099;
+	bh=DbfRqxiggwOs+/bTVDzKnSxknNbZ1VMNtVqFjwgoLwE=;
 	h=From:To:Cc:Subject:Date:From;
-	b=E93C7YbvTXPqnqBX8lLOXPOsswyYuuh3RpwOTs9I8ScFvWdSSpMKQy+yPx3dlx7V2
-	 0VH7Kitbx14G+asiFGXW5jVQMp+m86pG1AYG3ntIH9t11hCxO/SGzXDQOn1etcriFo
-	 sX7K4y+oDhVgBExMg/OxR+rDCDB9c2t6j5u3ClQA=
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: rafael.j.wysocki@intel.com
-Cc: linux-kernel@vger.kernel.org,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	linux-acpi@vger.kernel.org
-Subject: [PATCH] PNP: make pnp_bus_type const
-Date: Fri,  5 Jan 2024 13:51:21 +0100
-Message-ID: <2024010520-joyfully-cosigner-c2a9@gregkh>
-X-Mailer: git-send-email 2.43.0
+	b=ogX2BBB50BoVEuv/EshJH/AWVRdyMxJl8rR7IHlug3gFq7kj1kz6lU7+O+6BUgpnc
+	 Noe74tZ6XwEH6DnW7dVGd/ICNTSbDF7h8He4S+/Hpk93XIXqgv4S9bckECIdhLbYaR
+	 0h89CED4yHj0YqCxjPfLU+EGSzIr/trdlLzkzIrFmkvq7Qyy3wE1P3p3iE7IzEUTby
+	 bcTU1HHxj4BJ5uwL+2oF7zaWghh/71U9BGmC8PaJ2Ad1BgRdFbgHTFX/vuWvz9dgzv
+	 9ouCM1xG+243wG046PFpVx+feyj+oquvz5TGXUusgcO4P4eG29hfiinzVyn0OpWGO9
+	 iTIVspx0XED1A==
+From: Christian Brauner <brauner@kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Christian Brauner <brauner@kernel.org>,
+	linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [GIT PULL] vfs cachefiles updates
+Date: Fri,  5 Jan 2024 13:51:23 +0100
+Message-ID: <20240105-vfs-cachefiles-c2fe8c0b01b6@brauner>
+X-Mailer: git-send-email 2.42.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Lines: 40
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1348; i=gregkh@linuxfoundation.org; h=from:subject:message-id; bh=Z1D8rD3/nRzA4kc+dux1HvFymw8yFf5r7zYbbSNB8vU=; b=owGbwMvMwCRo6H6F97bub03G02pJDKnTf3voeGhLb/G84dB0Zcc8tYhlpa9mrbjotijt494+U xElvqSSjlgWBkEmBlkxRZYv23iO7q84pOhlaHsaZg4rE8gQBi5OAZjIc0uGBZePK0Ub3b7cIRGc V5znF2jyY/mDdIY53GdaX0fHK7qwnhIXtCx+kZ3UsPUwAA==
-X-Developer-Key: i=gregkh@linuxfoundation.org; a=openpgp; fpr=F4B60CC5BF78C2214A313DCB3147D40DDB2DFB29
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3265; i=brauner@kernel.org; h=from:subject:message-id; bh=DbfRqxiggwOs+/bTVDzKnSxknNbZ1VMNtVqFjwgoLwE=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaRO/+3VFKv/uFQ+pfiK852kKRbrCtu0Vm37N2fqSjf5L NmzxgkiHaUsDGJcDLJiiiwO7Sbhcst5KjYbZWrAzGFlAhnCwMUpABN5rcTI8CCs+YW6B6N+Pt/J 3UHzLffp/o5z4U1dtb3Fn6Ftrzf3TIZfTG5/s799lbpXuDvgwZQ10oIiR74Jhn3eMT97TsHzkjV 13AA=
+X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 Content-Transfer-Encoding: 8bit
 
-Now that the driver core can properly handle constant struct bus_type,
-move the pnp_bus_type variable to be a constant structure as well,
-placing it into read-only memory which can not be modified at runtime.
+Hey Linus,
 
-Cc: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Cc: linux-acpi@vger.kernel.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/pnp/driver.c | 2 +-
- include/linux/pnp.h  | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+/* Summary */
+This contains improvements for on-demand cachefiles. If the daemon crashes and
+the on-demand cachefiles fd is unexpectedly closed in-flight requests and
+subsequent read operations associated with the fd will fail with EIO. This
+causes issues in various scenarios as this failure is currently unrecoverable.
 
-diff --git a/drivers/pnp/driver.c b/drivers/pnp/driver.c
-index 46c534f6b1c9..0a5d0d8befa8 100644
---- a/drivers/pnp/driver.c
-+++ b/drivers/pnp/driver.c
-@@ -256,7 +256,7 @@ static const struct dev_pm_ops pnp_bus_dev_pm_ops = {
- 	.restore = pnp_bus_resume,
- };
- 
--struct bus_type pnp_bus_type = {
-+const struct bus_type pnp_bus_type = {
- 	.name    = "pnp",
- 	.match   = pnp_bus_match,
- 	.probe   = pnp_device_probe,
-diff --git a/include/linux/pnp.h b/include/linux/pnp.h
-index 267fb8a4fb6e..ddbe7c3ca4ce 100644
---- a/include/linux/pnp.h
-+++ b/include/linux/pnp.h
-@@ -435,7 +435,7 @@ struct pnp_protocol {
- #define protocol_for_each_dev(protocol, dev)	\
- 	list_for_each_entry(dev, &(protocol)->devices, protocol_list)
- 
--extern struct bus_type pnp_bus_type;
-+extern const struct bus_type pnp_bus_type;
- 
- #if defined(CONFIG_PNP)
- 
--- 
-2.43.0
+The work contained in this pull request introduces a failover mode and enables
+the daemon to recover in-flight requested-related objects. A restarted daemon
+will be able to process requests as usual.
 
+This requires that in-flight requests are stored during daemon crash or while
+the daemon is offline. In addition, a handle to /dev/cachefiles needs to be
+stored. This can be done by e.g., systemd's fdstore (cf. [1]) which enables the
+restarted daemon to recover state.
+
+Three new states are introduced in this patchset:
+
+(1) CLOSE
+    Object is closed by the daemon.
+(2) OPEN
+    Object is open and ready for processing. IOW, the open request has been
+    handled successfully.
+(3) REOPENING
+    Object has been previously closed and is now reopened due to a read request.
+
+A restarted daemon can recover the /dev/cachefiles fd from systemd's fdstore
+and writes "restore" to the device. This causes the object state to be reset
+from CLOSE to REOPENING and reinitializes the object. The daemon may now handle
+the open request. Any in-flight operations are restored and handled avoiding
+interruptions for users.
+
+[1]: https://systemd.io/FILE_DESCRIPTOR_STORE
+
+/* Testing */
+clang: Debian clang version 16.0.6 (19)
+gcc: (Debian 13.2.0-7) 13.2.0
+
+All patches are based on v6.7-rc1 and have been sitting in linux-next.
+No build failures or warnings were observed.
+
+/* Conflicts */
+At the time of creating this PR no merge conflicts were reported from
+linux-next and no merge conflicts showed up doing a test-merge with
+current mainline.
+
+The following changes since commit b85ea95d086471afb4ad062012a4d73cd328fa86:
+
+  Linux 6.7-rc1 (2023-11-12 16:19:07 -0800)
+
+are available in the Git repository at:
+
+  git@gitolite.kernel.org:pub/scm/linux/kernel/git/vfs/vfs tags/vfs-6.8.cachefiles
+
+for you to fetch changes up to e73fa11a356ca0905c3cc648eaacc6f0f2d2c8b3:
+
+  cachefiles: add restore command to recover inflight ondemand read requests (2023-11-25 16:03:57 +0100)
+
+Please consider pulling these changes from the signed vfs-6.8.cachefiles tag.
+
+Happy New Year!
+Christian
+
+----------------------------------------------------------------
+vfs-6.8.cachefiles
+
+----------------------------------------------------------------
+Jia Zhu (5):
+      cachefiles: introduce object ondemand state
+      cachefiles: extract ondemand info field from cachefiles_object
+      cachefiles: resend an open request if the read request's object is closed
+      cachefiles: narrow the scope of triggering EPOLLIN events in ondemand mode
+      cachefiles: add restore command to recover inflight ondemand read requests
+
+ fs/cachefiles/daemon.c    |  15 ++++-
+ fs/cachefiles/interface.c |   7 +-
+ fs/cachefiles/internal.h  |  59 +++++++++++++++-
+ fs/cachefiles/ondemand.c  | 166 ++++++++++++++++++++++++++++++++++------------
+ 4 files changed, 201 insertions(+), 46 deletions(-)
 
