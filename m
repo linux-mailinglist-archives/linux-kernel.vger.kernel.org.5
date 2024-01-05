@@ -1,128 +1,307 @@
-Return-Path: <linux-kernel+bounces-18312-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18313-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2584E825B59
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 21:01:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D364D825B5B
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 21:02:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 930161F21598
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 20:01:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 48A4B1F24315
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 20:02:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F026D3608F;
-	Fri,  5 Jan 2024 20:00:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6CB436087;
+	Fri,  5 Jan 2024 20:02:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="CwIa9wnV"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="i1I1SDDI"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mout.web.de (mout.web.de [212.227.15.14])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37F7E35F13;
-	Fri,  5 Jan 2024 20:00:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
-	t=1704484819; x=1705089619; i=markus.elfring@web.de;
-	bh=7tKN9THIKO8mzprnhNgRdQfDAhpFFaMZeNyl5X57Uk4=;
-	h=X-UI-Sender-Class:Date:Subject:From:To:Cc:References:
-	 In-Reply-To;
-	b=CwIa9wnVA4pyddnDoXHRiF6n/xRqqyAEPRIdWC7MHKJRe/yjNQ1mIcatZ1Tc6GVG
-	 KCeKgNrX3UNiE70xrYlABgOj+RlB7Lozhvz2Agf1Fm3vGvCIKMNRXCtpruk7+AVEW
-	 h8vY9X3MRhlr/0OjqxRi9yLsoygYK7Pz0Vtv82cQQmtIwyXoRtXjrXBMH/S1k+oG0
-	 oD9Do5ml16+xZkThoA/ijiUOzVv6y1bxllzISyYAW3DYMJ0C2wveEQkLq8DBZTE7Q
-	 OeNeS9aHhGyACWVVy0DjY0clD5kvevTDKm7V7BqbbUJ0KUk+ArP5YlXRvRxtZfRJw
-	 I5K5rCylCNF0UqwHgg==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb006
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1Mtguh-1r41Ou11mp-00ujzR; Fri, 05
- Jan 2024 21:00:19 +0100
-Message-ID: <b8aa03e0-a375-40cb-b12a-7a100a49247d@web.de>
-Date: Fri, 5 Jan 2024 21:00:16 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 481C935EF9;
+	Fri,  5 Jan 2024 20:02:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2cca8eb0509so22983521fa.3;
+        Fri, 05 Jan 2024 12:02:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704484956; x=1705089756; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=EsvjmNHo6qhLAK2xa0iLQABFz+5g9tXEflTtkgq7O+M=;
+        b=i1I1SDDIQG5R3sNa0npsXJSBJGatQr/+Uu8kn+rY7R8GpAu272vrfNtAkXRTBZtrOW
+         211VkZ/L+OzAXKeYrkuzVFalefMZSTRxSwbSyGR0kkiQqEOciZQQ2m3qo0ee8uy8bS7d
+         ol/sIfsbJL9sqr3q61zbrO3AaBFiU4d1FvE2sTM0pEFhSCYkX4TS0Qc8LliKnI6xjx9A
+         zGgRqKGtOdknGM5+7xO6I4rc3B/5LYYqDLoB07/IrsNER5AvPbjFDE/vvF6XAwTuWGMy
+         6j32elw1k7cqJvmzgTumFAhsEF+YuRs8ADt2WCQwnGA3fVd2E5nvI/8GjSsvdqvp44pF
+         V03A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704484956; x=1705089756;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=EsvjmNHo6qhLAK2xa0iLQABFz+5g9tXEflTtkgq7O+M=;
+        b=n8rsqDdSRroNoVea8omeTUNJdizLJYDOf39ADgoDrpRKwEAQ81bT5H60ifrn7e/liF
+         9xlBpFfCEblxjmUFFZtNvexdad+mDVWN3Nt15QVkf0fIaDrsED8IBp3Rbm0LbDXOaQWh
+         APLnBtE75svpmCxTc5PS8hQG2o8b0x3antf7TRXnEed7IIibXo0vcq+sKKsjc0vSu4G5
+         T2oMVzUtDrvjFI64T3pWl9fb6eFA0JJJr8dxoUe6/qRYOn5JmRfOMpBOs+JUxghMt02Q
+         Qxg3FNvEps4DXTwnZSApJ1cp3yq0VTfvT395R57gBq2Y6hpChJTav2YYz/2B9vhtuvw8
+         HqLA==
+X-Gm-Message-State: AOJu0YzRUaRUACSjTqHdmIKza+dqpvjY2vnWdB/nbiBcdiP+cz8g/9BJ
+	Z1BhATGXjXWIYrVJ5F3e7AlG9YqqY2EWt/iJu6U=
+X-Google-Smtp-Source: AGHT+IGoo2kRa4oDQ0+COth+d/bgnyyA6BjWPNzSt7AGxWpS2+BTWIqk0FNjHKw2pxiD5PHURmFFyep7jy7DHf8IfUo=
+X-Received: by 2002:a2e:a405:0:b0:2cc:e9e1:e6a6 with SMTP id
+ p5-20020a2ea405000000b002cce9e1e6a6mr1305443ljn.92.1704484955949; Fri, 05 Jan
+ 2024 12:02:35 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] clk: imx93: Fix an error code assignment in
- imx93_clocks_probe()
-Content-Language: en-GB
-From: Markus Elfring <Markus.Elfring@web.de>
-To: kernel-janitors@vger.kernel.org, linux-clk@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
- kernel@pengutronix.de, Abel Vesa <abelvesa@kernel.org>,
- Michael Turquette <mturquette@baylibre.com>, Peng Fan <peng.fan@nxp.com>,
- Sascha Hauer <s.hauer@pengutronix.de>, Shawn Guo <shawnguo@kernel.org>,
- Stephen Boyd <sboyd@kernel.org>, Zhanhao Hu <zero12113@hust.edu.cn>
-Cc: LKML <linux-kernel@vger.kernel.org>, cocci@inria.fr
-References: <20230601033825.336558-1-zero12113@hust.edu.cn>
- <cf7b69f4-c4b2-5160-e19a-14c272b0dc6e@web.de>
-In-Reply-To: <cf7b69f4-c4b2-5160-e19a-14c272b0dc6e@web.de>
-Content-Type: text/plain; charset=UTF-8
+References: <3349332.1704123610@warthog.procyon.org.uk>
+In-Reply-To: <3349332.1704123610@warthog.procyon.org.uk>
+From: Steve French <smfrench@gmail.com>
+Date: Fri, 5 Jan 2024 14:02:24 -0600
+Message-ID: <CAH2r5mu0XUMH8aM9oSq1LA=x6StNZ9kGOpLS99=mdieoxVnXeg@mail.gmail.com>
+Subject: Re: [PATCH] cifs: Pass unbyteswapped eof value into SMB2_set_eof()
+To: David Howells <dhowells@redhat.com>
+Cc: Steve French <sfrench@samba.org>, Shyam Prasad N <nspmangalore@gmail.com>, 
+	Rohith Surabattula <rohiths.msft@gmail.com>, Jeff Layton <jlayton@kernel.org>, linux-cifs@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:ix32BVSsWMwSZ6Vh5wdmlGvAtykyML3TrHZxPYOle17n3AW20uX
- X+uvlkuJHgff6iM3+VxV8y5npFJ0VopTxi92S6+mAx/UUXpF0OpHrfHidwB57yDfAMPMMhX
- UFzf2ZfEmVTFxIHTI7wl1hjviFq2DNlid7KHBLxqTGf9gUUp19DYWFK2rUKhP23BamJvr3g
- 306mEbXRZbc31cmESO9Xw==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:wFOxBD+xYDk=;IzyD/+s2SdULrl+/cVGgHxXVVdX
- pc9s8QrmnTN3LdZMtPCzXu944QwG4FwGrFJl9kwoVplzJWo6cEBD0i9srcGqktklicFKe8OYo
- WctTQKZZfsgVHzSIlsS2eJ7rQr6r38/2LtcTZKfsbu7E1SoObZYJh3vDx5AcSw1lHiAgaMAAs
- GeNaQTIdKcoYNPM6uzuAt49W7+a3phEtj2X1Gu99GsrygSqSIwyqmFSna9w7SMET5QjAEDX/X
- h4+syBqdERtceKqMabELRwi0zDUpAI5YZfo59lJC0Tfo7hjhoDM/XfWEtvIM5/3sIzd+LFH9G
- 5XkE8GjgfS4Bft9U24NXrFtBvVoGiZ5l/4NN5ve5cyYTTLNIwXjfWlTz3P/ejiSb7UZSQUIup
- rMztxdmf9NRQsWy2BObLQkQETNsi78vnXqYaO/qdNFwBPt0nKYcvq044VYbOwEhqChW7/Rjgl
- 9BbpaXRp7iyyl2Q2ytxkEHYm4s3FaghYMbsfuL7Tw5vAZ8u1FCsu8vhLFKy6omyPByng0cKI6
- 8jgDoU/fIrVl3QGVIQ1Uiu5YcY6UI9qKHm95JMMKTzQog7heMSsE/dRfyrJKzlaKSbwDRMf0q
- TZdWmt2h9hGsVBhZ1D0vEQmEqJfYyT/TNgSsdSDnV0iLNLgoSxbStaaq0Om4ETPuDeXtNzJH6
- N/blfoiaJH5/f1vWennq8JbvqRTt5Mvidt92h5jwcLWqF70L4vfGzVJJ8/DfqTzK1HTb72rFp
- WN2cf8hfJjBoMtp4J3/aVaXkqOoTVVeNGKKSDG+G4rSW8gj9pfO1CBNae8hUR79VjfhIHBycv
- gxrIXtFLvq8HdLQLG1lLMpOvVtv2CoKkAKArMZn//kLqxnjq5Yszvim5c0MHQHGG2OsDf6LV4
- t2f2wNYNSIHwP8BgocNI25C0CnZ07fsZqfvl4TXR71FketuOr3bDtFqgLs57XmbkcsMBHhbDi
- 1RKQD8rf/QT6JAwCrBa8R5kdEA8=
 
-> From: Markus Elfring <elfring@users.sourceforge.net>
-> Date: Tue, 13 Jun 2023 21:50:50 +0200
+merged into cifs-2.6.git for-next
+
+On Mon, Jan 1, 2024 at 9:40=E2=80=AFAM David Howells <dhowells@redhat.com> =
+wrote:
 >
-> The variable =E2=80=9Cbase=E2=80=9D was passed to a call of the function=
- =E2=80=9CPTR_ERR=E2=80=9D
-> in the implementation of the function =E2=80=9Cimx93_clocks_probe=E2=80=
-=9D.
-> Unfortunately, the variable was not assigned to an error pointer
-> before this if branch.
-> Thus use the variable =E2=80=9Canatop_base=E2=80=9D for an error code as=
-signment instead.
+> Hi Steve,
 >
-> Fixes: e02ba11b4576 ("clk: imx93: fix memory leak and missing unwind got=
-o in imx93_clocks_probe")
-> Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+> How about something like the attached?
+>
+> David
 > ---
->  drivers/clk/imx/clk-imx93.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> cifs: Pass unbyteswapped eof value into SMB2_set_eof()
 >
-> diff --git a/drivers/clk/imx/clk-imx93.c b/drivers/clk/imx/clk-imx93.c
-> index b6c7c2725906..44f435103c65 100644
-> --- a/drivers/clk/imx/clk-imx93.c
-> +++ b/drivers/clk/imx/clk-imx93.c
-> @@ -291,7 +291,7 @@ static int imx93_clocks_probe(struct platform_device=
- *pdev)
->  	anatop_base =3D devm_of_iomap(dev, np, 0, NULL);
->  	of_node_put(np);
->  	if (WARN_ON(IS_ERR(anatop_base))) {
-> -		ret =3D PTR_ERR(base);
-> +		ret =3D PTR_ERR(anatop_base);
->  		goto unregister_hws;
->  	}
+> Change SMB2_set_eof() to take eof as CPU order rather than __le64 and pas=
+s
+> it directly rather than by pointer.  This moves the conversion down into
+> SMB_set_eof() rather than all of its callers and means we don't need to
+> undo it for the traceline.
+>
+> Signed-off-by: David Howells <dhowells@redhat.com>
+> cc: Steve French <sfrench@samba.org>
+> cc: Shyam Prasad N <nspmangalore@gmail.com>
+> cc: Rohith Surabattula <rohiths.msft@gmail.com>
+> cc: Jeff Layton <jlayton@kernel.org>
+> cc: linux-cifs@vger.kernel.org
+> ---
+>  fs/smb/client/smb2ops.c   |   37 ++++++++++++++++---------------------
+>  fs/smb/client/smb2pdu.c   |    6 +++---
+>  fs/smb/client/smb2proto.h |    2 +-
+>  3 files changed, 20 insertions(+), 25 deletions(-)
+>
+> diff --git a/fs/smb/client/smb2ops.c b/fs/smb/client/smb2ops.c
+> index 66b310208545..82de0e205607 100644
+> --- a/fs/smb/client/smb2ops.c
+> +++ b/fs/smb/client/smb2ops.c
+> @@ -1923,7 +1923,6 @@ static int
+>  smb2_set_file_size(const unsigned int xid, struct cifs_tcon *tcon,
+>                    struct cifsFileInfo *cfile, __u64 size, bool set_alloc=
+)
+>  {
+> -       __le64 eof =3D cpu_to_le64(size);
+>         struct inode *inode;
+>
+>         /*
+> @@ -1940,7 +1939,7 @@ smb2_set_file_size(const unsigned int xid, struct c=
+ifs_tcon *tcon,
+>         }
+>
+>         return SMB2_set_eof(xid, tcon, cfile->fid.persistent_fid,
+> -                           cfile->fid.volatile_fid, cfile->pid, &eof);
+> +                           cfile->fid.volatile_fid, cfile->pid, size);
+>  }
+>
+>  static int
+> @@ -3324,7 +3323,6 @@ static long smb3_zero_range(struct file *file, stru=
+ct cifs_tcon *tcon,
+>         unsigned long long new_size;
+>         long rc;
+>         unsigned int xid;
+> -       __le64 eof;
+>
+>         xid =3D get_xid();
+>
+> @@ -3354,9 +3352,8 @@ static long smb3_zero_range(struct file *file, stru=
+ct cifs_tcon *tcon,
+>          */
+>         new_size =3D offset + len;
+>         if (keep_size =3D=3D false && (unsigned long long)i_size_read(ino=
+de) < new_size) {
+> -               eof =3D cpu_to_le64(new_size);
+>                 rc =3D SMB2_set_eof(xid, tcon, cfile->fid.persistent_fid,
+> -                                 cfile->fid.volatile_fid, cfile->pid, &e=
+of);
+> +                                 cfile->fid.volatile_fid, cfile->pid, ne=
+w_size);
+>                 if (rc >=3D 0) {
+>                         truncate_setsize(inode, new_size);
+>                         fscache_resize_cookie(cifs_inode_cookie(inode), n=
+ew_size);
+> @@ -3549,7 +3546,7 @@ static long smb3_simple_falloc(struct file *file, s=
+truct cifs_tcon *tcon,
+>         struct cifsFileInfo *cfile =3D file->private_data;
+>         long rc =3D -EOPNOTSUPP;
+>         unsigned int xid;
+> -       __le64 eof;
+> +       loff_t new_eof;
+>
+>         xid =3D get_xid();
+>
+> @@ -3578,14 +3575,14 @@ static long smb3_simple_falloc(struct file *file,=
+ struct cifs_tcon *tcon,
+>                 if (cifsi->cifsAttrs & FILE_ATTRIBUTE_SPARSE_FILE)
+>                         smb2_set_sparse(xid, tcon, cfile, inode, false);
+>
+> -               eof =3D cpu_to_le64(off + len);
+> +               new_eof =3D off + len;
+>                 rc =3D SMB2_set_eof(xid, tcon, cfile->fid.persistent_fid,
+> -                                 cfile->fid.volatile_fid, cfile->pid, &e=
+of);
+> +                                 cfile->fid.volatile_fid, cfile->pid, ne=
+w_eof);
+>                 if (rc =3D=3D 0) {
+> -                       cifsi->server_eof =3D off + len;
+> -                       cifs_setsize(inode, off + len);
+> +                       cifsi->server_eof =3D new_eof;
+> +                       cifs_setsize(inode, new_eof);
+>                         cifs_truncate_page(inode->i_mapping, inode->i_siz=
+e);
+> -                       truncate_setsize(inode, off + len);
+> +                       truncate_setsize(inode, new_eof);
+>                 }
+>                 goto out;
+>         }
+> @@ -3676,8 +3673,7 @@ static long smb3_collapse_range(struct file *file, =
+struct cifs_tcon *tcon,
+>         struct inode *inode =3D file_inode(file);
+>         struct cifsFileInfo *cfile =3D file->private_data;
+>         struct cifsInodeInfo *cifsi =3D CIFS_I(inode);
+> -       __le64 eof;
+> -       loff_t old_eof;
+> +       loff_t old_eof, new_eof;
+>
+>         xid =3D get_xid();
+>
+> @@ -3702,9 +3698,9 @@ static long smb3_collapse_range(struct file *file, =
+struct cifs_tcon *tcon,
+>         if (rc < 0)
+>                 goto out_2;
+>
+> -       eof =3D cpu_to_le64(old_eof - len);
+> +       new_eof =3D old_eof - len;
+>         rc =3D SMB2_set_eof(xid, tcon, cfile->fid.persistent_fid,
+> -                         cfile->fid.volatile_fid, cfile->pid, &eof);
+> +                         cfile->fid.volatile_fid, cfile->pid, new_eof);
+>         if (rc < 0)
+>                 goto out_2;
+>
+> @@ -3728,8 +3724,7 @@ static long smb3_insert_range(struct file *file, st=
+ruct cifs_tcon *tcon,
+>         unsigned int xid;
+>         struct cifsFileInfo *cfile =3D file->private_data;
+>         struct inode *inode =3D file_inode(file);
+> -       __le64 eof;
+> -       __u64  count, old_eof;
+> +       __u64 count, old_eof, new_eof;
+>
+>         xid =3D get_xid();
+>
+> @@ -3742,20 +3737,20 @@ static long smb3_insert_range(struct file *file, =
+struct cifs_tcon *tcon,
+>         }
+>
+>         count =3D old_eof - off;
+> -       eof =3D cpu_to_le64(old_eof + len);
+> +       new_eof =3D old_eof + len;
+>
+>         filemap_invalidate_lock(inode->i_mapping);
+> -       rc =3D filemap_write_and_wait_range(inode->i_mapping, off, old_eo=
+f + len - 1);
+> +       rc =3D filemap_write_and_wait_range(inode->i_mapping, off, new_eo=
+f - 1);
+>         if (rc < 0)
+>                 goto out_2;
+>         truncate_pagecache_range(inode, off, old_eof);
+>
+>         rc =3D SMB2_set_eof(xid, tcon, cfile->fid.persistent_fid,
+> -                         cfile->fid.volatile_fid, cfile->pid, &eof);
+> +                         cfile->fid.volatile_fid, cfile->pid, new_eof);
+>         if (rc < 0)
+>                 goto out_2;
+>
+> -       truncate_setsize(inode, old_eof + len);
+> +       truncate_setsize(inode, new_eof);
+>         fscache_resize_cookie(cifs_inode_cookie(inode), i_size_read(inode=
+));
+>
+>         rc =3D smb2_copychunk_range(xid, cfile, cfile, off, count, off + =
+len);
+> diff --git a/fs/smb/client/smb2pdu.c b/fs/smb/client/smb2pdu.c
+> index 4f971c1061f0..bd25c34dc398 100644
+> --- a/fs/smb/client/smb2pdu.c
+> +++ b/fs/smb/client/smb2pdu.c
+> @@ -5347,18 +5347,18 @@ send_set_info(const unsigned int xid, struct cifs=
+_tcon *tcon,
+>
+>  int
+>  SMB2_set_eof(const unsigned int xid, struct cifs_tcon *tcon, u64 persist=
+ent_fid,
+> -            u64 volatile_fid, u32 pid, __le64 *eof)
+> +            u64 volatile_fid, u32 pid, loff_t new_eof)
+>  {
+>         struct smb2_file_eof_info info;
+>         void *data;
+>         unsigned int size;
+>
+> -       info.EndOfFile =3D *eof;
+> +       info.EndOfFile =3D cpu_to_le64(new_eof);
+>
+>         data =3D &info;
+>         size =3D sizeof(struct smb2_file_eof_info);
+>
+> -       trace_smb3_set_eof(xid, persistent_fid, tcon->tid, tcon->ses->Sui=
+d, le64_to_cpu(*eof));
+> +       trace_smb3_set_eof(xid, persistent_fid, tcon->tid, tcon->ses->Sui=
+d, new_eof);
+>
+>         return send_set_info(xid, tcon, persistent_fid, volatile_fid,
+>                         pid, FILE_END_OF_FILE_INFORMATION, SMB2_O_INFO_FI=
+LE,
+> diff --git a/fs/smb/client/smb2proto.h b/fs/smb/client/smb2proto.h
+> index 0e371f7e2854..95e5ca69fdf3 100644
+> --- a/fs/smb/client/smb2proto.h
+> +++ b/fs/smb/client/smb2proto.h
+> @@ -205,7 +205,7 @@ extern int SMB2_query_directory_init(unsigned int xid=
+, struct cifs_tcon *tcon,
+>  extern void SMB2_query_directory_free(struct smb_rqst *rqst);
+>  extern int SMB2_set_eof(const unsigned int xid, struct cifs_tcon *tcon,
+>                         u64 persistent_fid, u64 volatile_fid, u32 pid,
+> -                       __le64 *eof);
+> +                       loff_t new_eof);
+>  extern int SMB2_set_info_init(struct cifs_tcon *tcon,
+>                               struct TCP_Server_Info *server,
+>                               struct smb_rqst *rqst,
+>
 >
 
-Is this patch still in review queues?
 
-See also:
-https://lore.kernel.org/cocci/cf7b69f4-c4b2-5160-e19a-14c272b0dc6e@web.de/
-https://sympa.inria.fr/sympa/arc/cocci/2023-06/msg00016.html
+--=20
+Thanks,
 
-Regards,
-Markus
+Steve
 
