@@ -1,185 +1,139 @@
-Return-Path: <linux-kernel+bounces-17920-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17922-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3CBDA82551F
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 15:26:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A426825526
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 15:27:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 753991C22E99
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 14:26:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1C86428599F
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 14:27:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27B5D2DF7E;
-	Fri,  5 Jan 2024 14:26:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A8BA2DF95;
+	Fri,  5 Jan 2024 14:27:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dm0zaC+K"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EmWVi5xn"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F8C32D7A7;
-	Fri,  5 Jan 2024 14:26:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88058C433C7;
-	Fri,  5 Jan 2024 14:26:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704464794;
-	bh=2P6hxdoePoEWFrBd8qdykuqOskTZur3E5s/TzD9/Kf8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=dm0zaC+K8TFVMUKvLhwb2WqU25tstzG56X+MJwDu/tyO6OoHe99yFHpk0xJJPeyVE
-	 S37yGN5olSRW3fgqQfFwMpJrVnK0p0/SpgKSgBCy4oON9m6omcnv1SHI89KFBqLSAe
-	 4fzz4YC/UJePyHHDKw/2XnMslC4j0BP5rG+1POKKKghsEzFTa3zo2LPtHTGu5bPtBC
-	 48apqSzfkbfW9n3GOLpNQdStzRIdwnOlaKooK5iY1qm/aq2Z3DwX7FhUr+K2tURLts
-	 o/tnGHvXvDVIQWdbpCGpkRO/EHUSCQ9t30Ivw4D8PGs1xCaD//k/LDu+xTx3xa8NBL
-	 K38/iHxdBNYeg==
-Date: Fri, 5 Jan 2024 15:26:28 +0100
-From: Christian Brauner <brauner@kernel.org>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: LKML <linux-kernel@vger.kernel.org>,
-	Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Al Viro <viro@ZenIV.linux.org.uk>, linux-fsdevel@vger.kernel.org,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH] tracefs/eventfs: Use root and instance inodes as default
- ownership
-Message-ID: <20240105-wegstecken-sachkenntnis-6289842d6d01@brauner>
-References: <20240103203246.115732ec@gandalf.local.home>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00524249E4;
+	Fri,  5 Jan 2024 14:27:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-40e3712d259so9463105e9.3;
+        Fri, 05 Jan 2024 06:27:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704464850; x=1705069650; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=APs6M2apAcMc7l4gyNVGbiDS8kiXtv8paG4oTVl8I+M=;
+        b=EmWVi5xnxcxZZ1XXRNIERX3OCp9zflu6KisHrOmviY58TiVMUSZMcco1e8EtJC6MK7
+         d9IAjs2vnZhI9Rn3kOAW1Z7yC7JH8LFulJ2OYs8GulJnXpoNJFknqLLZiYmoXCWbw7Vs
+         r1cPt1PoFq1NLjsXBBc5NSRtWtA7DWu7TTYM9GghnsilLlFUXn8PmmdoRnIIjd6nFNoy
+         buH1GGrUxCrBanbqYMZgBBgSC/Tg5dw2udn/10hE5ptXBy/+EhJTnwjHbj91Giu/1nXc
+         0fjSc1cILQGPKCxp8U+MHGw5biqNdXnZHdBKNaGc4FKUzCYKNPSP1eX04G1qSBrQWumd
+         BCog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704464850; x=1705069650;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=APs6M2apAcMc7l4gyNVGbiDS8kiXtv8paG4oTVl8I+M=;
+        b=ME154JN+MZq4qWVg/JOUY4ha1L1xHSt2PAPva/ZNI+CKRuMsl0KI0aYZiAQdBrz7NL
+         GhTLyhMj5tgebWTtsLXHSgfR0IIngkncoku1CiPKubHXfs7/PGM1PyaRcfBhjPFprGpW
+         IrwDlgnZDt6fqHb6ERvto+0XsKQ1jWX2ODI7B0n5jVPszWP97ofDa+4MuwgoSP0/Z3jo
+         P+EXNH5HqGEBoyaEN2+hC0dLCKRyR8rYlujyBDqSJqvFDbRGLqNKE05TaWVyYyGOP59Y
+         tbmx7x3cq/OtdGntF1yjTkhUff7tcigfHifR8btlJGUVKao2t/6Linh01Gieu9lPSYbb
+         NAfw==
+X-Gm-Message-State: AOJu0YwPzM+wwUrZMMFtQx9fp4wcWqhxC38LgXRu8Y61RBmTLMMDrdCy
+	KZ+C6RiuqiRzgQtzzL0SD3A=
+X-Google-Smtp-Source: AGHT+IHYUKZEg3ZHc+KdILbEa3OOY5XvzVdKgu2YvZoApQ8eTegy++Sxib9JfwSlgU2ZR06SaA255A==
+X-Received: by 2002:a05:600c:3ac7:b0:40e:3ae4:84ef with SMTP id d7-20020a05600c3ac700b0040e3ae484efmr112839wms.73.1704464849826;
+        Fri, 05 Jan 2024 06:27:29 -0800 (PST)
+Received: from localhost.localdomain (host-80-116-159-187.retail.telecomitalia.it. [80.116.159.187])
+        by smtp.googlemail.com with ESMTPSA id j10-20020a05600c190a00b0040d87100733sm1721901wmq.39.2024.01.05.06.27.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Jan 2024 06:27:29 -0800 (PST)
+From: Christian Marangi <ansuelsmth@gmail.com>
+To: Pavel Machek <pavel@ucw.cz>,
+	Lee Jones <lee@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	William Zhang <william.zhang@broadcom.com>,
+	Anand Gore <anand.gore@broadcom.com>,
+	Kursad Oney <kursad.oney@broadcom.com>,
+	Florian Fainelli <florian.fainelli@broadcom.com>,
+	=?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Andrew Lunn <andrew@lunn.ch>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+	=?UTF-8?q?Fern=C3=A1ndez=20Rojas?= <noltari@gmail.com>,
+	Sven Schwermer <sven.schwermer@disruptive-technologies.com>,
+	Christian Marangi <ansuelsmth@gmail.com>,
+	linux-leds@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	netdev@vger.kernel.org
+Subject: [net-next PATCH v9 0/5] net: phy: generic polarity + LED support for qca808x
+Date: Fri,  5 Jan 2024 15:27:12 +0100
+Message-ID: <20240105142719.11042-1-ansuelsmth@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240103203246.115732ec@gandalf.local.home>
+Content-Transfer-Encoding: 8bit
 
-On Wed, Jan 03, 2024 at 08:32:46PM -0500, Steven Rostedt wrote:
-> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
-> 
-> Instead of walking the dentries on mount/remount to update the gid values of
-> all the dentries if a gid option is specified on mount, just update the root
-> inode. Add .getattr, .setattr, and .permissions on the tracefs inode
-> operations to update the permissions of the files and directories.
-> 
-> For all files and directories in the top level instance:
-> 
->  /sys/kernel/tracing/*
-> 
-> It will use the root inode as the default permissions. The inode that
-> represents: /sys/kernel/tracing (or wherever it is mounted).
-> 
-> When an instance is created:
-> 
->  mkdir /sys/kernel/tracing/instance/foo
-> 
-> The directory "foo" and all its files and directories underneath will use
-> the default of what foo is when it was created. A remount of tracefs will
-> not affect it.
+This small series add LEDs support for qca808x.
 
-That kinda sounds like eventfs should actually be a separate filesystem.
-But I don't know enough about the relationship between the two concepts.
+QCA808x apply on PHY reset a strange polarity settings and require
+some tweak to apply a more common configuration found on devices.
+On adding support for it, it was pointed out that a similar
+feature is also being implemented for a marvell PHY where
+LED polarity is set per LED (and not global) and also have
+a special mode where the LED is tristated.
 
-> 
-> If a user were to modify the permissions of any file or directory in
-> tracefs, it will also no longer be modified by a change in ownership of a
-> remount.
+The first 3 patch are to generalize this as we expect more PHY
+in the future to have a similar configuration.
 
-Very odd semantics and I would recommend to avoid that. It's just plain
-weird imo.
+The implementation is extensible to support additional special
+mode in the future with minimal changes and don't create regression
+on already implemented PHY drivers.
 
-> 
-> The events directory, if it is in the top level instance, will use the
-> tracefs root inode as the default ownership for itself and all the files and
-> directories below it.
-> 
-> For the events directory in an instance ("foo"), it will keep the ownership
-> of what it was when it was created, and that will be used as the default
-> ownership for the files and directories beneath it.
-> 
-> Link: https://lore.kernel.org/linux-trace-kernel/CAHk-=wjVdGkjDXBbvLn2wbZnqP4UsH46E3gqJ9m7UG6DpX2+WA@mail.gmail.com/
-> 
-> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
-> ---
+(changelog present in single patch)
 
-So tracefs supports remounting with different uid/gid mount options and
-then actually wades through _all_ of the inodes and changes their
-ownership internally? What's the use-case for this? Containers?
+Christian Marangi (5):
+  dt-bindings: net: phy: Make LED active-low property common
+  dt-bindings: net: phy: Document LED inactive high impedance mode
+  net: phy: add support for PHY LEDs polarity modes
+  dt-bindings: net: Document QCA808x PHYs
+  net: phy: at803x: add LED support for qca808x
 
-Aside from optimizing this and the special semantics for this eventfs
-stuff that you really should think twice of doing, here's one idea for
-an extension that might alleviate some of the pain:
+ .../devicetree/bindings/leds/common.yaml      |  12 +
+ .../bindings/leds/leds-bcm63138.yaml          |   4 -
+ .../bindings/leds/leds-bcm6328.yaml           |   4 -
+ .../devicetree/bindings/leds/leds-bcm6358.txt |   2 -
+ .../bindings/leds/leds-pwm-multicolor.yaml    |   4 -
+ .../devicetree/bindings/leds/leds-pwm.yaml    |   5 -
+ .../devicetree/bindings/net/qca,qca808x.yaml  |  54 +++
+ drivers/net/phy/at803x.c                      | 325 ++++++++++++++++++
+ drivers/net/phy/phy_device.c                  |  16 +
+ include/linux/phy.h                           |  22 ++
+ 10 files changed, 429 insertions(+), 19 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/net/qca,qca808x.yaml
 
-If you need flexible dynamic ownership change to e.g., be able to
-delegate (all, a directory, a single file of) tracefs to
-unprivileged/containers/whatever then you might want to consider
-supporting idmapped mounts for tracefs. Because then you can do stuff
-like:
+-- 
+2.43.0
 
-user1@localhost:~/data/scripts$ sudo mount --bind -o X-mount.idmap='g:0:1000:1 u:0:1234:1' /run/ /mnt
-user1@localhost:~/data/scripts$ ls -ln /run/
-total 12
-drwxr-xr-x  2 0  0   40 Jan  5 12:12 credentials
-drwx------  2 0  0   40 Jan  5 11:57 cryptsetup
-drwxr-xr-x  2 0  0   60 Jan  5 11:57 dbus
-drwx------  6 0  0  280 Jan  5 11:57 incus_agent
-prw-------  1 0  0    0 Jan  5 11:57 initctl
-drwxrwxrwt  4 0  0   80 Jan  5 11:57 lock
-drwxr-xr-x  3 0  0   60 Jan  5 11:57 log
-drwx------  2 0  0   40 Jan  5 11:57 lvm
--r--r--r--  1 0  0   33 Jan  5 11:57 machine-id
--rw-r--r--  1 0  0  101 Jan  5 11:58 motd.dynamic
-drwxr-xr-x  2 0  0   40 Jan  5 11:57 mount
-drwx------  2 0  0   40 Jan  5 11:57 multipath
-drwxr-xr-x  2 0  0   40 Jan  5 11:57 sendsigs.omit.d
-lrwxrwxrwx  1 0  0    8 Jan  5 11:57 shm -> /dev/shm
-drwx--x--x  2 0  0   40 Jan  5 11:57 sudo
-drwxr-xr-x 24 0  0  660 Jan  5 14:30 systemd
-drwxr-xr-x  6 0  0  140 Jan  5 14:30 udev
-drwxr-xr-x  4 0  0   80 Jan  5 11:58 user
--rw-rw-r--  1 0 43 2304 Jan  5 15:15 utmp
-
-user1@localhost:~/data/scripts$ ls -ln /mnt/
-total 12
-drwxr-xr-x  2 1234  1000   40 Jan  5 12:12 credentials
-drwx------  2 1234  1000   40 Jan  5 11:57 cryptsetup
-drwxr-xr-x  2 1234  1000   60 Jan  5 11:57 dbus
-drwxr-xr-x  2 1234  1000   40 Jan  5 11:57 incus_agent
-prw-------  1 1234  1000    0 Jan  5 11:57 initctl
-drwxr-xr-x  2 1234  1000   40 Jan  5 11:57 lock
-drwxr-xr-x  3 1234  1000   60 Jan  5 11:57 log
-drwx------  2 1234  1000   40 Jan  5 11:57 lvm
--r--r--r--  1 1234  1000   33 Jan  5 11:57 machine-id
--rw-r--r--  1 1234  1000  101 Jan  5 11:58 motd.dynamic
-drwxr-xr-x  2 1234  1000   40 Jan  5 11:57 mount
-drwx------  2 1234  1000   40 Jan  5 11:57 multipath
-drwxr-xr-x  2 1234  1000   40 Jan  5 11:57 sendsigs.omit.d
-lrwxrwxrwx  1 1234  1000    8 Jan  5 11:57 shm -> /dev/shm
-drwx--x--x  2 1234  1000   40 Jan  5 11:57 sudo
-drwxr-xr-x 24 1234  1000  660 Jan  5 14:30 systemd
-drwxr-xr-x  6 1234  1000  140 Jan  5 14:30 udev
-drwxr-xr-x  4 1234  1000   80 Jan  5 11:58 user
--rw-rw-r--  1 1234 65534 2304 Jan  5 15:15 utmp
-
-Where you can see that ownership of this tmpfs instance in this example
-is changed. I'm not trying to advocate here but this will probably
-ultimately be nicer for your users because it means that a container
-manager or whatever can be handed a part of tracefs (or all of it) and
-the ownership and access rights for that thing is correct. And you can
-get rid of that gid based access completely.
-
-You can change uids, gids, or both. You can specify up to 340 individual
-mappings it's quite flexible.
-
-Because then you can have a single tracefs superblock and have multiple
-mounts with different ownership for the relevant parts of tracefs that
-you want to delegate to whoever. If you need an ownership change you can
-then just create another idmapped mount with the new ownership and then
-use MOVE_MOUNT_BENEATH + umount to replace that mount.
-
-Probably even know someone that would implement this for you (not me) if
-that sounds like something that would cover some of the use-case for the
-proposed change here. But maybe I just misunderstood things completely.
 
