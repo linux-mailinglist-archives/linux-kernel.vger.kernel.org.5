@@ -1,208 +1,105 @@
-Return-Path: <linux-kernel+bounces-18397-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18398-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 82299825C80
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 23:21:41 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F71F825C84
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 23:25:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 08ECB1F23CB2
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 22:21:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F0491B23678
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 22:25:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBADB321AC;
-	Fri,  5 Jan 2024 22:21:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CC0036084;
+	Fri,  5 Jan 2024 22:25:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="B84dYjtE"
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="jWbMMa4y";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="d7FRtFqQ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C393360A0
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 22:21:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-553e36acfbaso3614a12.0
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Jan 2024 14:21:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1704493273; x=1705098073; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZfCFHI0ATH0yUix8nEn+6ml6f0afYfikXQ0pRh4IU04=;
-        b=B84dYjtELAjWch+5ecEnjygH+6ylFpflDe1TarPUcHqEdelkA7AYENOCcV+qZbb3N7
-         XvBvZc5fGob378QcKImcMpwtce2UvqPV+7UaqeiO1gTTYm6qads+HnouAWYNAxwiqNsi
-         hGa8N2CTEyAcLSxt3CoTvfMIhtNG2ihYwTyH8iJEQ9GR5Nqh6arMioLGIqN1XFAgmvov
-         vnOILbcaTS9UGDa7OOtbp8Bm1drXXoDT/sSQhJ6Yo9CokCzb/CmGYUpFJxFgBBPg05EB
-         I3PKuiOH/kC4KoDnNHPi5aPS+cnw79ukv6Aco1202B866cy826bIEuQiYOFRcGRPy70V
-         NwIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704493273; x=1705098073;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ZfCFHI0ATH0yUix8nEn+6ml6f0afYfikXQ0pRh4IU04=;
-        b=hJlEuR4CSuDFmCU1IsCbk76yQg3foFogLik3IbGHuGz2GX1ax1Q0sFMGPCGLbuSQXB
-         9yMC9CM1Ek5r14R0WsT17ybG4OXHHl7T0EyF0ChNrTj+CmTNMvteDpqq0BtItxbygujU
-         Ygq4U1HunyUCqy6jUFKWruVTHT1gXoELgC24J7wJLYgQptDSFx0uSzyoFy1Nng3M2Ihk
-         OohJ0+hrCd1Zhj0CgB7VbhHBbHnOmbwiVH21++d0AvezVxhPXnRcy7L8Cg/vsqvY7/B1
-         +PXnu6mSf1rb1Uaaz0LMdUXb+Jlq6oxw3QtlSZJBqixdB2MRqubd6azNIc0/tA5pOKIo
-         V3cw==
-X-Gm-Message-State: AOJu0Yxkm97NeaX1dDVJBlVArJuXaMPdUxcefUE4g/QO2e3YWqUSgBTP
-	S5g07t5Ayn1V0ofZRY7o2ntkgHU8PM5c5c7bXA+zA5NimfOs
-X-Google-Smtp-Source: AGHT+IGg4+IGzhJP7MIvozGiIxeCukCuJJWtYeZy+oldSqLHfpTJmlaKX6GIfSTR9p9KKXpwmgjCbmVxvClD41EsUtA=
-X-Received: by 2002:a50:f605:0:b0:553:b7c6:1e47 with SMTP id
- c5-20020a50f605000000b00553b7c61e47mr51248edn.2.1704493273550; Fri, 05 Jan
- 2024 14:21:13 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2982E35890;
+	Fri,  5 Jan 2024 22:25:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailout.west.internal (Postfix) with ESMTP id DCCDE3200B0C;
+	Fri,  5 Jan 2024 17:25:42 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Fri, 05 Jan 2024 17:25:43 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm1; t=1704493542; x=1704579942; bh=iMsZNlGRtM
+	ubQvf9H8XXkAzcuSCYW1RsMmEmn3Ttxug=; b=jWbMMa4yHlKJwD+tQ0Rhvw7doY
+	6dv6WRbgnzVy3PZ+TxPrQ+NFHeexO9WdgLSzmoq1/8ftV1Cn30IX95Mep8N00/wq
+	HLUrYIr2gy1L4atIW/uSjAximEKDtf3HzT5+CkXfXbf0oLNA0KGUIfr48wHCfjSU
+	Jil44sr93ccglvPw4gQt4C4AoZrCyBf7qJ6FKIrVEXTllnklgC49X0Ua2K4oXySJ
+	GUrDtnLHs9mwwPlJU0LM1EB4O8MQAELonwpgl8jh6/TET5QEjWPh3VhXztrrqfK4
+	nDrkPnaYkw9PM2PExKyy++vGfq75ox8l9cKhv8W5Nv2zKDW1j3E49JpzcCuw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1704493542; x=1704579942; bh=iMsZNlGRtMubQvf9H8XXkAzcuSCY
+	W1RsMmEmn3Ttxug=; b=d7FRtFqQiu0fpvp6v4gM5Z14djHRrSDTtga/y836dLZQ
+	CoZPKkvzkAcL6L88EVaRpiDmsoiKS5wCvCVGEbKbJZFPBcFIREgMfom9tbSqNKB3
+	06Mp3SvObzOhWFCAd+FGw5dYu86Xb1Gta8ekKdPVswccLXKqJ36kDB1iI3bREr4W
+	9yxw4+rGeyASoFZXplZYwAQGo2NmPCoAkdDU/nbuYtmBp1j4r/1Gp9ZWbBthEQA0
+	ythsXxDaTo5ala+dIXawZAOiNfypt2W4V68/4TuPbjaCJypS2aqRQqK/EL02NOSI
+	VUX/7OhrASpxOyZSxX7lER4pyn3L22HyQrdAMn3e7Q==
+X-ME-Sender: <xms:5oGYZbK_POQ_XgLzhr33RWdb3aI4Q6S9GdgBORjkJcTCWALOdLS5VA>
+    <xme:5oGYZfKmJR76dWzzsBV6usUstDl1EqLWuElSY9UK0ozjtq5k2My9zh4Q9GFLCUFb1
+    8K3xh_gOt1qXPGkXsA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdegledgudehjecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdet
+    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
+    htthgvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedt
+    keetffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    grrhhnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:5oGYZTvZfWShhF-8dvpym2EevvLA_rN1_oT_MsoT88IyrLrielYYOA>
+    <xmx:5oGYZUbsB4wpUmA2_rZUfEYIB1D6PA9FuJPDfxQZ7ClVTGxT89TLww>
+    <xmx:5oGYZSZCcn7cGS4gnVltUNSp94i1DVmiMGnSNRQfFTojJ8b1qVLfAA>
+    <xmx:5oGYZVz6ObSSw8yzkAq-jQn16rHNz-Th0vazgHhcfp_rE1T3-flJNA>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 2BE22B6008D; Fri,  5 Jan 2024 17:25:42 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-1364-ga51d5fd3b7-fm-20231219.001-ga51d5fd3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231206150729.54604-1-marpagan@redhat.com>
-In-Reply-To: <20231206150729.54604-1-marpagan@redhat.com>
-From: Rae Moar <rmoar@google.com>
-Date: Fri, 5 Jan 2024 17:21:02 -0500
-Message-ID: <CA+GJov55Una_Ov9oKPhO0WY_zssyhn_agwhbbvpwSws7NuSgDQ@mail.gmail.com>
-Subject: Re: [PATCH v3] kunit: run test suites only after module
- initialization completes
-To: Marco Pagani <marpagan@redhat.com>
-Cc: Brendan Higgins <brendan.higgins@linux.dev>, David Gow <davidgow@google.com>, 
-	Shuah Khan <skhan@linuxfoundation.org>, Jinjie Ruan <ruanjinjie@huawei.com>, 
-	Richard Fitzgerald <rf@opensource.cirrus.com>, Javier Martinez Canillas <javierm@redhat.com>, 
-	linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Message-Id: <9e16b15b-e715-43a3-915e-7f43fb4af935@app.fastmail.com>
+In-Reply-To: <20240104094010.394669-1-stuart.menefy@codasip.com>
+References: <20240104094010.394669-1-stuart.menefy@codasip.com>
+Date: Fri, 05 Jan 2024 23:25:21 +0100
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Stuart Menefy" <stuart.menefy@codasip.com>, linux-kernel@vger.kernel.org
+Cc: Linux-Arch <linux-arch@vger.kernel.org>,
+ "David McKay" <david.mckay@codasip.com>
+Subject: Re: [PATCH] asm-generic: Fix 32 bit __generic_cmpxchg_local
+Content-Type: text/plain
 
-On Wed, Dec 6, 2023 at 10:07=E2=80=AFAM Marco Pagani <marpagan@redhat.com> =
-wrote:
+On Thu, Jan 4, 2024, at 10:40, Stuart Menefy wrote:
+> From: David McKay <david.mckay@codasip.com>
 >
-> Commit 2810c1e99867 ("kunit: Fix wild-memory-access bug in
-> kunit_free_suite_set()") fixed a wild-memory-access bug that could have
-> happened during the loading phase of test suites built and executed as
-> loadable modules. However, it also introduced a problematic side effect
-> that causes test suites modules to crash when they attempt to register
-> fake devices.
+> Commit 656e9007ef58 ("asm-generic: avoid __generic_cmpxchg_local
+> warnings") introduced a typo that means the code is incorrect for 32 bit
+> values. It will work fine for postive numbers, but will fail for
+> negative numbers on a system where longs are 64 bit.
 >
-> When a module is loaded, it traverses the MODULE_STATE_UNFORMED and
-> MODULE_STATE_COMING states before reaching the normal operating state
-> MODULE_STATE_LIVE. Finally, when the module is removed, it moves to
-> MODULE_STATE_GOING before being released. However, if the loading
-> function load_module() fails between complete_formation() and
-> do_init_module(), the module goes directly from MODULE_STATE_COMING to
-> MODULE_STATE_GOING without passing through MODULE_STATE_LIVE.
->
-> This behavior was causing kunit_module_exit() to be called without
-> having first executed kunit_module_init(). Since kunit_module_exit() is
-> responsible for freeing the memory allocated by kunit_module_init()
-> through kunit_filter_suites(), this behavior was resulting in a
-> wild-memory-access bug.
->
-> Commit 2810c1e99867 ("kunit: Fix wild-memory-access bug in
-> kunit_free_suite_set()") fixed this issue by running the tests when the
-> module is still in MODULE_STATE_COMING. However, modules in that state
-> are not fully initialized, lacking sysfs kobjects. Therefore, if a test
-> module attempts to register a fake device, it will inevitably crash.
->
-> This patch proposes a different approach to fix the original
-> wild-memory-access bug while restoring the normal module execution flow
-> by making kunit_module_exit() able to detect if kunit_module_init() has
-> previously initialized the tests suite set. In this way, test modules
-> can once again register fake devices without crashing.
->
-> This behavior is achieved by checking whether mod->kunit_suites is a
-> virtual or direct mapping address. If it is a virtual address, then
-> kunit_module_init() has allocated the suite_set in kunit_filter_suites()
-> using kmalloc_array(). On the contrary, if mod->kunit_suites is still
-> pointing to the original address that was set when looking up the
-> .kunit_test_suites section of the module, then the loading phase has
-> failed and there's no memory to be freed.
->
+> Fixes: 656e9007ef58 ("asm-generic: avoid __generic_cmpxchg_local warnings")
+> Signed-off-by: David McKay <david.mckay@codasip.com>
+> Signed-off-by: Stuart Menefy <stuart.menefy@codasip.com>
 
-Hello,
+Applied to the asm-generic tree, thanks a lot!
 
-I have tested this change and it looks good to me!
-
-Although, it no longer applies cleanly on the kselftest/kunit branch
-so it will need to be rebased.
-
-So besides the need for a rebase,
-Tested-by: Rae Moar <rmoar@google.com>
-
-Thanks for the fix!
-Rae
-
-> v3:
-> - add a comment to clarify why the start address is checked
-> v2:
-> - add include <linux/mm.h>
->
-> Fixes: 2810c1e99867 ("kunit: Fix wild-memory-access bug in kunit_free_sui=
-te_set()")
-> Tested-by: Richard Fitzgerald <rf@opensource.cirrus.com>
-> Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
-> Signed-off-by: Marco Pagani <marpagan@redhat.com>
-> ---
->  lib/kunit/test.c | 14 +++++++++++---
->  1 file changed, 11 insertions(+), 3 deletions(-)
->
-> diff --git a/lib/kunit/test.c b/lib/kunit/test.c
-> index 7aceb07a1af9..3263e0d5e0f6 100644
-> --- a/lib/kunit/test.c
-> +++ b/lib/kunit/test.c
-> @@ -16,6 +16,7 @@
->  #include <linux/panic.h>
->  #include <linux/sched/debug.h>
->  #include <linux/sched.h>
-> +#include <linux/mm.h>
->
->  #include "debugfs.h"
->  #include "hooks-impl.h"
-> @@ -775,12 +776,19 @@ static void kunit_module_exit(struct module *mod)
->         };
->         const char *action =3D kunit_action();
->
-> +       /*
-> +        * Check if the start address is a valid virtual address to detec=
-t
-> +        * if the module load sequence has failed and the suite set has n=
-ot
-> +        * been initialized and filtered.
-> +        */
-> +       if (!suite_set.start || !virt_addr_valid(suite_set.start))
-> +               return;
-> +
->         if (!action)
->                 __kunit_test_suites_exit(mod->kunit_suites,
->                                          mod->num_kunit_suites);
->
-> -       if (suite_set.start)
-> -               kunit_free_suite_set(suite_set);
-> +       kunit_free_suite_set(suite_set);
->  }
->
->  static int kunit_module_notify(struct notifier_block *nb, unsigned long =
-val,
-> @@ -790,12 +798,12 @@ static int kunit_module_notify(struct notifier_bloc=
-k *nb, unsigned long val,
->
->         switch (val) {
->         case MODULE_STATE_LIVE:
-> +               kunit_module_init(mod);
->                 break;
->         case MODULE_STATE_GOING:
->                 kunit_module_exit(mod);
->                 break;
->         case MODULE_STATE_COMING:
-> -               kunit_module_init(mod);
->                 break;
->         case MODULE_STATE_UNFORMED:
->                 break;
->
-> base-commit: 33cc938e65a98f1d29d0a18403dbbee050dcad9a
-> --
-> 2.43.0
->
+      arnd
 
