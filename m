@@ -1,131 +1,122 @@
-Return-Path: <linux-kernel+bounces-18394-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18396-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5DA28825C7B
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 23:20:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8BA4A825C7E
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 23:21:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1477E1F24253
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 22:20:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 110F7285BFD
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 22:21:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7FBE360B0;
-	Fri,  5 Jan 2024 22:20:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBB4D3609A;
+	Fri,  5 Jan 2024 22:20:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b="UTJiNpJS"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="H5M4n4NY"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 511CB35887
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 22:20:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=layalina.io
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-40d5336986cso471695e9.1
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Jan 2024 14:20:27 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4666358A4;
+	Fri,  5 Jan 2024 22:20:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-40d4a222818so5798075e9.0;
+        Fri, 05 Jan 2024 14:20:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1704493225; x=1705098025; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PWGuJgogklqPmh8n8xzFrieuQl+MnLhc8WNAFcUfHaI=;
-        b=UTJiNpJSW7rRdxjXOxMOPKEJP5dTvZgLO5/qb2GqJ6mAUoXVNof6tyEu+CHOgit9Q9
-         Vsnj4uoeZEj5UVlsRMtwHQ9jouInmOnWPxJeH7+D44RGp2mImaiS48HUzbc+XXiXpoQc
-         ZY8WrNi1U/I9Ki2M0W44oA64Z6sJ2hkinkzlmkzh3IrRuUvg2SAGmrU/aA6sBzNWMaQo
-         jA3quIHfSjAQCcp2v9RkAdNq7EigLHri7vTy0H0Aj14sAvUkzm2C7GmvFwcoOs2FWZfB
-         LVtwF6J//W+XCo7pxjR7SWfs8FwfWdqME4IiV66owKYP1vxx+Zn8IAjtmVVM+6mS86JP
-         dmZA==
+        d=gmail.com; s=20230601; t=1704493237; x=1705098037; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=fvAsbhn4zJAhQm5EKfY4yEOpwtln0a+WYL/6ejR1+Jc=;
+        b=H5M4n4NYKGrs3dW6zD6rZeIeVQN3ZMBl6FIdku0f71gC7HK/l6ku2/uMg+k7dh0O+6
+         OGWhzSdSNiaEo4mvr48iPqZMAcdPhG4bZ6m9BMI9WmPMkYuIc+2aWYyqUWRu2oBcIwkJ
+         f6X514zAzcIgzU0tkdDmSniqg3ulPTlajPkYyYFaTM5Jt76CtxqmdYcH95FjjXXHV4yy
+         Fr0i72zh5S+r/H7sI+nmWe8LHQu8fUI2m96iMkfdHiz4X/FyzXx+FY3JGuHXn8UBpSQj
+         790enMq7z01I7NUP0+w1zfXSldnRsxOQ37+hMEqVmO9RbOsKmxh2xzYjFhk34RMzdGcI
+         vd0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704493225; x=1705098025;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PWGuJgogklqPmh8n8xzFrieuQl+MnLhc8WNAFcUfHaI=;
-        b=W1SeNH5rRptm60NmTN24mCXoxvo4mWcTnzhTlggqEPmxWOCYIDtC1UdUP3N/fCxZ42
-         y8iqHwXm9EyWZGUhrvxU3jT9/JsOedClaHKu0e3CjLk6bIZTZWG2WF69Jr9e6nCS0fqq
-         dUXXMYoUhZZqg3OSjpd7wOoFW3i6+fODa9br4z/So7HmL3kIS7Zges6KkSOvF0LOs75n
-         LdBGyvCf2Gipz///VUce6QBKUBUkiDTfTpK87JZsbu/WaDx6Jb2v/YBhdqmcb2QtrDWf
-         5KpNBR8LVAyL/27EOccA8IJJ78MMuaah/p/ghhUO3O+lEBgWLeIXS5ASJeFb9YV0yVcw
-         4mFw==
-X-Gm-Message-State: AOJu0Yy/lYaej+vZ045qDYgBB1QACmK7bi6WnRx/80TJM41w0BcOo5xC
-	WP0YDzDWMJuina201bos8LQ2tU1HyWrP6w==
-X-Google-Smtp-Source: AGHT+IF5e6Ptga6N5JmjnD8EguIHth+StkWxSL4zqokrkjPRbVyUD5cRMvAz9McFy7S5XvoO6fiibw==
-X-Received: by 2002:a05:600c:224d:b0:40d:582a:563a with SMTP id a13-20020a05600c224d00b0040d582a563amr86120wmm.44.1704493225518;
-        Fri, 05 Jan 2024 14:20:25 -0800 (PST)
-Received: from airbuntu.. (host109-154-238-212.range109-154.btcentralplus.com. [109.154.238.212])
-        by smtp.gmail.com with ESMTPSA id q13-20020a05600c46cd00b0040d604dea3bsm2799022wmo.4.2024.01.05.14.20.24
+        d=1e100.net; s=20230601; t=1704493237; x=1705098037;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fvAsbhn4zJAhQm5EKfY4yEOpwtln0a+WYL/6ejR1+Jc=;
+        b=h9xDOOugKFaVgnn7k0RtzlhZ3AYokCOfNIgJAjDQZWYE4Gr6aKvJhUOsNSpQ02IrG5
+         IDvz4pFzg3+Nt7RRdeHZjDYEL1xCnBypRQff03F6u/Rw9e5Taa37S4F0kpsN8eNl4atM
+         xdH42XYH6Ksk5mkEAVNFeiPpbW0/yw1sy/7uYAZVIQyQPV1Nh0n6FNkewaGofohoL6Pl
+         DwVIcAHBcrJEoatA91zi7zA26ZAKJiAKBuVMnZXmFhVwqAXOdNQmraNcb+35+1YDoqpl
+         mczq+y+T3TRlOOVLJd2eQUp/a6Q2pQiaRCC5+XL3L83SiuIQYnEOX8MuJRk47Mz8tiUR
+         KZig==
+X-Gm-Message-State: AOJu0YxTDUYGJ9SDkkc1rDZ653Gkjrb4QXGSlItDIuzNJQcNkRPAQM2y
+	Nj5lBeMlMCTMGM5VjSsL/EM=
+X-Google-Smtp-Source: AGHT+IFcnNmMj2fkzftZMQsq1Do6VXzRlNJrtk6H6XNL9C4WNka4Xtl5CRPRbW5wz9Sfxi8YNcHCCQ==
+X-Received: by 2002:a1c:7903:0:b0:40d:94af:6c25 with SMTP id l3-20020a1c7903000000b0040d94af6c25mr62000wme.24.1704493236909;
+        Fri, 05 Jan 2024 14:20:36 -0800 (PST)
+Received: from debian ([93.184.186.109])
+        by smtp.gmail.com with ESMTPSA id z5-20020a05600c0a0500b0040d772030c2sm2716355wmp.44.2024.01.05.14.20.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Jan 2024 14:20:25 -0800 (PST)
-From: Qais Yousef <qyousef@layalina.io>
-To: Ingo Molnar <mingo@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc: linux-kernel@vger.kernel.org,
-	"Pierre Gondois" <Pierre.Gondois@arm.com>,
-	Qais Yousef <qyousef@layalina.io>
-Subject: [PATCH v4 2/2] sched/topology: Sort asym_cap_list in descending order
-Date: Fri,  5 Jan 2024 22:20:14 +0000
-Message-Id: <20240105222014.1025040-3-qyousef@layalina.io>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240105222014.1025040-1-qyousef@layalina.io>
-References: <20240105222014.1025040-1-qyousef@layalina.io>
+        Fri, 05 Jan 2024 14:20:36 -0800 (PST)
+Date: Fri, 5 Jan 2024 23:20:33 +0100
+From: Dimitri Fedrau <dima.fedrau@gmail.com>
+To: Andrew Lunn <andrew@lunn.ch>
+Cc: Stefan Eichenberger <eichest@gmail.com>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Russell King <linux@armlinux.org.uk>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net: phy: marvell-88q2xxx: add driver for the Marvell
+ 88Q2220 PHY
+Message-ID: <20240105222033.GA40773@debian>
+References: <ZX78ucHcNyEatXLD@eichest-laptop>
+ <20231218090932.GA4319@debian>
+ <ZYAqxPZHICtZO15O@eichest-laptop>
+ <20231219081117.GA3479@debian>
+ <ZYFfzei3SJSts5E/@eichest-laptop>
+ <5d545a9b-feda-4908-8f74-9218806451c1@lunn.ch>
+ <20240105124221.GA30964@debian>
+ <c7b1b220-4a76-4cc0-b68d-cec5977ebadb@lunn.ch>
+ <20240105154351.GA39937@debian>
+ <ca76b515-9659-4fed-8a1a-402923b72868@lunn.ch>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ca76b515-9659-4fed-8a1a-402923b72868@lunn.ch>
 
-So that searches always start from biggest CPU which would help misfit
-detection logic to be more efficient.
+Am Fri, Jan 05, 2024 at 05:06:53PM +0100 schrieb Andrew Lunn:
+> > Hi Andrew,
+> > 
+> > > Do we need to reduce the init sequence? Since this is all undocumented
+> > > magic which nobody understands, it would be safer to just keep with
+> > > the Marvell vendor crap code dump. Unless we really do need to change
+> > > it.
+> > >
+> > You are right, it would be safer to use the vendor code. But when
+> > looking at the vendor code, the init sequence changed a lot from rev. B0
+> > to rev. B1 of the PHY. There are some additional register writes, but
+> > mostly the order of the register writes changed. I don't know if this is
+> > going to be worse in the future. Maintaining different revisions will
+> > probably take some effort or at least result in bloated code. We probably
+> > don't need all of the init sequence. I'm not sure how to deal with it,
+> > keeping the init sequence at a minimum is probably a good idea.
+> 
+> Is the revision in the lower nibble of the ID register? We can handle
+> them as different PHYs, each gets its own init code, and share what
+> can be shared in helper functions.
+>
+Yes, lowest four bits. Handling them as different PHYs would definitely
+help maintaining PHY revisions. Still there is the problem with this
+huge undocumented init sequence. Is this going to be accepted ? Didn't
+see such a long undocumented init sequence in any other phy driver.
 
-Suggested-by: Pierre Gondois <pierre.gondois@arm.com>
-Signed-off-by: Qais Yousef (Google) <qyousef@layalina.io>
----
- kernel/sched/topology.c | 16 ++++++++++++++--
- 1 file changed, 14 insertions(+), 2 deletions(-)
+> 	Andrew
 
-diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-index ba4a0b18ae25..1505677e4247 100644
---- a/kernel/sched/topology.c
-+++ b/kernel/sched/topology.c
-@@ -1384,18 +1384,30 @@ static void free_asym_cap_entry(struct rcu_head *head)
- static inline void asym_cpu_capacity_update_data(int cpu)
- {
- 	unsigned long capacity = arch_scale_cpu_capacity(cpu);
--	struct asym_cap_data *entry = NULL;
-+	struct asym_cap_data *insert_entry = NULL;
-+	struct asym_cap_data *entry;
- 
-+	/*
-+	 * Search if capacity already exits. If not, track which the entry
-+	 * where we should insert to keep the list ordered descendingly.
-+	 */
- 	list_for_each_entry(entry, &asym_cap_list, link) {
- 		if (capacity == entry->capacity)
- 			goto done;
-+		else if (!insert_entry && capacity > entry->capacity)
-+			insert_entry = list_prev_entry(entry, link);
- 	}
- 
- 	entry = kzalloc(sizeof(*entry) + cpumask_size(), GFP_KERNEL);
- 	if (WARN_ONCE(!entry, "Failed to allocate memory for asymmetry data\n"))
- 		return;
- 	entry->capacity = capacity;
--	list_add_rcu(&entry->link, &asym_cap_list);
-+
-+	/* If NULL then the new capacity is the smallest, add last. */
-+	if (!insert_entry)
-+		list_add_tail_rcu(&entry->link, &asym_cap_list);
-+	else
-+		list_add_rcu(&entry->link, &insert_entry->link);
- done:
- 	__cpumask_set_cpu(cpu, cpu_capacity_span(entry));
- }
--- 
-2.34.1
-
+Best regards,
+Dimitri
 
