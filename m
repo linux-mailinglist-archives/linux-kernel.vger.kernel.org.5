@@ -1,196 +1,220 @@
-Return-Path: <linux-kernel+bounces-17482-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17483-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 700AD824E11
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 06:19:59 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 57030824E12
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 06:20:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 195772833D0
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 05:19:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C7A7FB21C02
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 05:20:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74B391DFD4;
-	Fri,  5 Jan 2024 05:19:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DE9853A2;
+	Fri,  5 Jan 2024 05:20:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="Pd3fCgj9"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="p2xANKtV"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55C671DDD8
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 05:19:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1134)
-	id D6BC020B3CC1; Thu,  4 Jan 2024 21:19:42 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com D6BC020B3CC1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1704431982;
-	bh=1j2T2r1/kTZuFH+6j/wt6/kK4oCvAVqb+Ra1bJn+YFc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Pd3fCgj9DTkjtHQItn+NIvUED4siET4ktSUfbojvb/89LbMM9xefXKw4T1B7PdJ5J
-	 ftFNh63mym76En6KoEJndM5Q20O7bvz2miaCMexZEzRgyEdMAar+dF/Q1gsmb7A3zP
-	 b7795R8Yl5+stY1IXk3Z8W6YpxwlL72aaeZeep7s=
-Date: Thu, 4 Jan 2024 21:19:42 -0800
-From: Shradha Gupta <shradhagupta@linux.microsoft.com>
-To: Saurabh Singh Sengar <ssengar@linux.microsoft.com>
-Cc: linux-kernel@vger.kernel.org,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.dev>,
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-	dri-devel@lists.freedesktop.org,
-	Shradha Gupta <shradhagupta@microsoft.com>
-Subject: Re: [PATCH] drm: Check output polling initialized before disabling
-Message-ID: <20240105051942.GA14650@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-References: <1703662035-1373-1-git-send-email-shradhagupta@linux.microsoft.com>
- <20231227103317.GA25288@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E6285392
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 05:20:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-54744e66d27so7861a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 21:20:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1704432015; x=1705036815; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=SsbkFjcHd93kZLPcDQHmq9eO2vUcsoGgoefRxVn1Pxg=;
+        b=p2xANKtVPI+E2phMATS7cq6ota10FCM210l6EPypVOEtA9emtg74APKwj8UfDArNNF
+         I8JG7vPHRDyfbdI6v+nAd46R0+QDjYsMHFEoAbyUfKYWthsHOaR3wVJBQjZ19DVvC3Ab
+         DBNY75pCyiB3mzAyWfaHDjdsYqk/ZezY1pPWc1IyEk1SJCoehZ5/v9LCTyLN/rKQMWor
+         Hfs2ffhlZRX1oKuSxQiOyspi5NAnTsbVIGRJzKoM10nocY0oWq2+gup7uEpEON1nYkjC
+         XTbXzE7exzSLeynlNiLNz+bL2hfycZRXFp7r+EU9qUKFwmEQ82VAhOUFucpIlqP00spJ
+         Wf7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704432015; x=1705036815;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=SsbkFjcHd93kZLPcDQHmq9eO2vUcsoGgoefRxVn1Pxg=;
+        b=L4/M3X3dSQL/w6dbsmohRmtM+EcxIDMBgciaiJiZyjMA8fTXrct4wmE9apprMeVrXe
+         3hXyw7rHBf+oX1ptWPHo21/mprq67pvqTzWr1jRkTGhQkstZTyJe+gqRgaFvQSnVFoJ0
+         16OT+WToFB2WPTJsIGn32ckK2puTLo44/9HpoaTgSAO/GEz+2kUkd2DQ8NJ0rhjq9JOd
+         x6Cx6gHmAhxxGGJa629ODOKcVcussnU+gFT8cdJ+2mNukp4/JR++rt76chqOCsTSK+NW
+         /MJSQ+rw2BmYQ3fOBtvGvsPesYXts9OF3JwUZQf7V+bcGIzAfeQb2uPEiidE5GQ2/ae7
+         MMuw==
+X-Gm-Message-State: AOJu0YxcB5Gc9yA/HXv0lB/4Zft1jmwKq/RnO19mTen8wrqIbVrSVJ3n
+	1nk+uc/OsDmxH0W3agXdw7DtGSIYE555skolki2RB0GY1CXhQron5jKMxeHL
+X-Google-Smtp-Source: AGHT+IGQsVXz2Qw9rvJ2hfxyn/KXQ1bk/bwDrxEzLOVB5kzxYc4L1Jw0NiKh6PNyrmsJUZjI322hhekt10ddzmH2vfM=
+X-Received: by 2002:a50:8743:0:b0:553:5578:2fc9 with SMTP id
+ 3-20020a508743000000b0055355782fc9mr62801edv.5.1704432015363; Thu, 04 Jan
+ 2024 21:20:15 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231227103317.GA25288@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+References: <20231220001856.3710363-1-jstultz@google.com> <20231220001856.3710363-18-jstultz@google.com>
+ <4cdaca00-dc4e-4ac0-a362-56b90ca584f0@arm.com>
+In-Reply-To: <4cdaca00-dc4e-4ac0-a362-56b90ca584f0@arm.com>
+From: John Stultz <jstultz@google.com>
+Date: Thu, 4 Jan 2024 21:20:02 -0800
+Message-ID: <CANDhNCqgiiZSVUn7erAgQ0y3kDsRrqRq2B8qx9JLJQkd-bTP2Q@mail.gmail.com>
+Subject: Re: [PATCH v7 17/23] sched: Initial sched_football test implementation
+To: Metin Kaya <metin.kaya@arm.com>
+Cc: LKML <linux-kernel@vger.kernel.org>, Joel Fernandes <joelaf@google.com>, 
+	Qais Yousef <qyousef@google.com>, Ingo Molnar <mingo@redhat.com>, 
+	Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>, 
+	Vincent Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>, 
+	Valentin Schneider <vschneid@redhat.com>, Steven Rostedt <rostedt@goodmis.org>, 
+	Ben Segall <bsegall@google.com>, Zimuzo Ezeozue <zezeozue@google.com>, 
+	Youssef Esmat <youssefesmat@google.com>, Mel Gorman <mgorman@suse.de>, 
+	Daniel Bristot de Oliveira <bristot@redhat.com>, Will Deacon <will@kernel.org>, Waiman Long <longman@redhat.com>, 
+	Boqun Feng <boqun.feng@gmail.com>, "Paul E. McKenney" <paulmck@kernel.org>, 
+	Xuewen Yan <xuewen.yan94@gmail.com>, K Prateek Nayak <kprateek.nayak@amd.com>, 
+	Thomas Gleixner <tglx@linutronix.de>, kernel-team@android.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Dec 27, 2023 at 02:33:17AM -0800, Saurabh Singh Sengar wrote:
-> On Tue, Dec 26, 2023 at 11:27:15PM -0800, Shradha Gupta wrote:
-> > In drm_mode_config_helper_suspend() check if output polling
-> > support is initialized before enabling/disabling polling.
-> > For drivers like hyperv-drm, that do not initialize connector
-> > polling, if suspend is called without this check, it leads to
-> > suspend failure with following stack
-> > 
-> > [  770.719392] Freezing remaining freezable tasks ... (elapsed 0.001 seconds) done.
-> > [  770.720592] printk: Suspending console(s) (use no_console_suspend to debug)
-> > [  770.948823] ------------[ cut here ]------------
-> > [  770.948824] WARNING: CPU: 1 PID: 17197 at kernel/workqueue.c:3162 __flush_work.isra.0+0x212/0x230
-> > [  770.948831] Modules linked in: rfkill nft_counter xt_conntrack xt_owner udf nft_compat crc_itu_t nft_fib_inet nft_fib_ipv4 nft_fib_ipv6 nft_fib nft_reject_inet nf_reject_ipv4 nf_reject_ipv6 nft_reject nft_ct nft_chain_nat nf_nat nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 ip_set nf_tables nfnetlink vfat fat mlx5_ib ib_uverbs ib_core mlx5_core intel_rapl_msr intel_rapl_common kvm_amd ccp mlxfw kvm psample hyperv_drm tls drm_shmem_helper drm_kms_helper irqbypass pcspkr syscopyarea sysfillrect sysimgblt hv_balloon hv_utils joydev drm fuse xfs libcrc32c pci_hyperv pci_hyperv_intf sr_mod sd_mod cdrom t10_pi sg hv_storvsc scsi_transport_fc hv_netvsc serio_raw hyperv_keyboard hid_hyperv crct10dif_pclmul crc32_pclmul crc32c_intel hv_vmbus ghash_clmulni_intel dm_mirror dm_region_hash dm_log dm_mod
-> > [  770.948863] CPU: 1 PID: 17197 Comm: systemd-sleep Not tainted 5.14.0-362.2.1.el9_3.x86_64 #1
-> > [  770.948865] Hardware name: Microsoft Corporation Virtual Machine/Virtual Machine, BIOS Hyper-V UEFI Release v4.1 05/09/2022
-> > [  770.948866] RIP: 0010:__flush_work.isra.0+0x212/0x230
-> > [  770.948869] Code: 8b 4d 00 4c 8b 45 08 89 ca 48 c1 e9 04 83 e2 08 83 e1 0f 83 ca 02 89 c8 48 0f ba 6d 00 03 e9 25 ff ff ff 0f 0b e9 4e ff ff ff <0f> 0b 45 31 ed e9 44 ff ff ff e8 8f 89 b2 00 66 66 2e 0f 1f 84 00
-> > [  770.948870] RSP: 0018:ffffaf4ac213fb10 EFLAGS: 00010246
-> > [  770.948871] RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffffffff8c992857
-> > [  770.948872] RDX: 0000000000000001 RSI: 0000000000000001 RDI: ffff9aad82b00330
-> > [  770.948873] RBP: ffff9aad82b00330 R08: 0000000000000000 R09: ffff9aad87ee3d10
-> > [  770.948874] R10: 0000000000000200 R11: 0000000000000000 R12: ffff9aad82b00330
-> > [  770.948874] R13: 0000000000000001 R14: 0000000000000000 R15: 0000000000000001
-> > [  770.948875] FS:  00007ff1b2f6bb40(0000) GS:ffff9aaf37d00000(0000) knlGS:0000000000000000
-> > [  770.948878] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > [  770.948878] CR2: 0000555f345cb666 CR3: 00000001462dc005 CR4: 0000000000370ee0
-> > [  770.948879] Call Trace:
-> > [  770.948880]  <TASK>
-> > [  770.948881]  ? show_trace_log_lvl+0x1c4/0x2df
-> > [  770.948884]  ? show_trace_log_lvl+0x1c4/0x2df
-> > [  770.948886]  ? __cancel_work_timer+0x103/0x190
-> > [  770.948887]  ? __flush_work.isra.0+0x212/0x230
-> > [  770.948889]  ? __warn+0x81/0x110
-> > [  770.948891]  ? __flush_work.isra.0+0x212/0x230
-> > [  770.948892]  ? report_bug+0x10a/0x140
-> > [  770.948895]  ? handle_bug+0x3c/0x70
-> > [  770.948898]  ? exc_invalid_op+0x14/0x70
-> > [  770.948899]  ? asm_exc_invalid_op+0x16/0x20
-> > [  770.948903]  ? __flush_work.isra.0+0x212/0x230
-> > [  770.948905]  __cancel_work_timer+0x103/0x190
-> > [  770.948907]  ? _raw_spin_unlock_irqrestore+0xa/0x30
-> > [  770.948910]  drm_kms_helper_poll_disable+0x1e/0x40 [drm_kms_helper]
-> > [  770.948923]  drm_mode_config_helper_suspend+0x1c/0x80 [drm_kms_helper]
-> > [  770.948933]  ? __pfx_vmbus_suspend+0x10/0x10 [hv_vmbus]
-> > [  770.948942]  hyperv_vmbus_suspend+0x17/0x40 [hyperv_drm]
-> > [  770.948944]  ? __pfx_vmbus_suspend+0x10/0x10 [hv_vmbus]
-> > [  770.948951]  dpm_run_callback+0x4c/0x140
-> > [  770.948954]  __device_suspend_noirq+0x74/0x220
-> > [  770.948956]  dpm_noirq_suspend_devices+0x148/0x2a0
-> > [  770.948958]  dpm_suspend_end+0x54/0xe0
-> > [  770.948960]  create_image+0x14/0x290
-> > [  770.948963]  hibernation_snapshot+0xd6/0x200
-> > [  770.948964]  hibernate.cold+0x8b/0x1fb
-> > [  770.948967]  state_store+0xcd/0xd0
-> > [  770.948969]  kernfs_fop_write_iter+0x124/0x1b0
-> > [  770.948973]  new_sync_write+0xff/0x190
-> > [  770.948976]  vfs_write+0x1ef/0x280
-> > [  770.948978]  ksys_write+0x5f/0xe0
-> > [  770.948979]  do_syscall_64+0x5c/0x90
-> > [  770.948981]  ? syscall_exit_work+0x103/0x130
-> > [  770.948983]  ? syscall_exit_to_user_mode+0x12/0x30
-> > [  770.948985]  ? do_syscall_64+0x69/0x90
-> > [  770.948986]  ? do_syscall_64+0x69/0x90
-> > [  770.948987]  ? do_user_addr_fault+0x1d6/0x6a0
-> > [  770.948989]  ? do_syscall_64+0x69/0x90
-> > [  770.948990]  ? exc_page_fault+0x62/0x150
-> > [  770.948992]  entry_SYSCALL_64_after_hwframe+0x72/0xdc
-> > [  770.948995] RIP: 0033:0x7ff1b293eba7
-> > [  770.949010] Code: 0b 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff eb b7 0f 1f 00 f3 0f 1e fa 64 8b 04 25 18 00 00 00 85 c0 75 10 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 51 c3 48 83 ec 28 48 89 54 24 18 48 89 74 24
-> > [  770.949011] RSP: 002b:00007ffde3912128 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-> > [  770.949012] RAX: ffffffffffffffda RBX: 0000000000000005 RCX: 00007ff1b293eba7
-> > [  770.949013] RDX: 0000000000000005 RSI: 00007ffde3912210 RDI: 0000000000000004
-> > [  770.949014] RBP: 00007ffde3912210 R08: 000055d7dd4c9510 R09: 00007ff1b29b14e0
-> > [  770.949014] R10: 00007ff1b29b13e0 R11: 0000000000000246 R12: 0000000000000005
-> > [  770.949015] R13: 000055d7dd4c53e0 R14: 0000000000000005 R15: 00007ff1b29f69e0
-> > [  770.949016]  </TASK>
-> > [  770.949017] ---[ end trace e6fa0618bfa2f31d ]---
-> > 
-> > Built-on: Rhel9, Ubuntu22
-> > Signed-off-by: Shradha Gupta <shradhagupta@linux.microsoft.com>
-> > ---
-> >  drivers/gpu/drm/drm_modeset_helper.c | 9 +++++++--
-> >  1 file changed, 7 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/gpu/drm/drm_modeset_helper.c b/drivers/gpu/drm/drm_modeset_helper.c
-> > index f858dfedf2cf..ac8ce709e3c1 100644
-> > --- a/drivers/gpu/drm/drm_modeset_helper.c
-> > +++ b/drivers/gpu/drm/drm_modeset_helper.c
-> > @@ -194,12 +194,17 @@ int drm_mode_config_helper_suspend(struct drm_device *dev)
-> >  	if (!dev)
-> >  		return 0;
-> >  
-> > -	drm_kms_helper_poll_disable(dev);
-> > +	if (dev->mode_config.poll_enabled)
-> > +		drm_kms_helper_poll_disable(dev);
+On Fri, Dec 22, 2023 at 1:32=E2=80=AFAM Metin Kaya <metin.kaya@arm.com> wro=
+te:
+>
+> On 20/12/2023 12:18 am, John Stultz wrote:
+> > Reimplementation of the sched_football test from LTP:
+> > https://github.com/linux-test-project/ltp/blob/master/testcases/realtim=
+e/func/sched_football/sched_football.c
+> >
+> > But reworked to run in the kernel and utilize mutexes
+> > to illustrate proper boosting of low priority mutex
+> > holders.
+> >
+> > TODO:
+> > * Need a rt_mutex version so it can work w/o proxy-execution
+> > * Need a better place to put it
+>
+> I think also this patch can be upstreamed regardless of other Proxy
+> Execution patches, right?
+
+Well, we would need to use rt_mutexes for the !PROXY case to validate
+inheritance.
+But something like it could be included before PROXY lands.
+
+> > + *
+> > + * This is done via having N offsensive players that are
+>
+>                                  offensive
+
+Fixed.
+
+> > + * medium priority, which constantly are trying to increment the
+> > + * ball_pos counter.
+> > + *
+> > + * Blocking this, are N defensive players that are higher
+> > + * priority which just spin on the cpu, preventing the medium
+> > + * priroity tasks from running.
+>
+>        priority
+
+Fixed.
+
+> > +atomic_t players_ready;
+> > +atomic_t ball_pos;
+> > +int players_per_team;
+>
+> Nit: Number of players cannot be lower than 0. Should it be unsigned then=
+?
+
+Fixed.
+
+> > +bool game_over;
 > > +
-> >  	drm_fb_helper_set_suspend_unlocked(dev->fb_helper, 1);
-> >  	state = drm_atomic_helper_suspend(dev);
-> >  	if (IS_ERR(state)) {
-> >  		drm_fb_helper_set_suspend_unlocked(dev->fb_helper, 0);
-> > -		drm_kms_helper_poll_enable(dev);
+> > +struct mutex *mutex_low_list;
+> > +struct mutex *mutex_mid_list;
 > > +
-> > +		if (dev->mode_config.poll_enabled)
-> > +			drm_kms_helper_poll_enable(dev);
-> 
-> This can be avoided as drm_kms_helper_poll_enable already check for
-> dev->mode_config.poll_enabled.
-Sure, I agree, This check can be skipped. Thanks
-> Further I was thinking may be we can add a similar check in
-> drm_kms_helper_poll_disable but, there is already a function
-> drm_kms_helper_poll_fini which does something similar. May be worth
-> using it instead of drm_kms_helper_poll_disable ?
-If we use drm_kms_helper_poll_fini in suspend, we will have to replace
-the drm_kms_helper_poll_enable in resume call with
-drm_kms_helper_poll_init that would add initialization of work in the
-resume path. I feel it would be better if I move the poll_enabled and
-poll_running checks in the drm_kms_helper_poll_disable call (also maintains
-parity with checks in drm_kms_helper_poll_enable checks). Thought?
-> 
-> Moreover I see the below comments in description of
-> drm_kms_helper_poll_disable. Apparently which is not true. Possibly
-> Daniel or other DRM maintainers can share their opinion on this
-> comment if it can be taken out.
-> "
->  * Drivers can call this helper from their device suspend implementation. It is
->  * not an error to call this even when output polling isn't enabled or already
->  * disabled. 
-> "
-Right, this needs to be corrected. Will update this in the next version
-> 
-> - Saurabh
-> 
+> > +static inline
+> > +struct task_struct *create_fifo_thread(int (*threadfn)(void *data), vo=
+id *data,
+> > +                                    char *name, int prio)
+> > +{
+> > +     struct task_struct *kth;
+> > +     struct sched_attr attr =3D {
+> > +             .size           =3D sizeof(struct sched_attr),
+> > +             .sched_policy   =3D SCHED_FIFO,
+> > +             .sched_nice     =3D 0,
+> > +             .sched_priority =3D prio,
+> > +     };
+> > +     int ret;
 > > +
-> >  		return PTR_ERR(state);
-> >  	}
-> >  
-> > -- 
-> > 2.34.1
+> > +     kth =3D kthread_create(threadfn, data, name);
+> > +     if (IS_ERR(kth)) {
+> > +             pr_warn("%s eerr, kthread_create failed\n", __func__);
+>
+> Extra e at eerr?
+
+Fixed.
+
+
+> > +             return kth;
+> > +     }
+> > +     ret =3D sched_setattr_nocheck(kth, &attr);
+> > +     if (ret) {
+> > +             kthread_stop(kth);
+> > +             pr_warn("%s: failed to set SCHED_FIFO\n", __func__);
+> > +             return ERR_PTR(ret);
+> > +     }
+> > +
+> > +     wake_up_process(kth);
+> > +     return kth;
+>
+> I think the result of this function is actually unused. So,
+> create_fifo_thread()'s return type can be void?
+
+It's not used, but it probably should be. At least I should be
+checking for the failure cases. I'll rework to fix this.
+
+
+
+> > +
+> > +int offense_thread(void *)
+>
+> Does this (no param name) build fine on Android env?
+
+Good point, I've only been testing this bit with qemu. I'll fix it up.
+
+> > +int ref_thread(void *arg)
+> > +{
+> > +     struct task_struct *kth;
+> > +     long game_time =3D (long)arg;
+> > +     unsigned long final_pos;
+> > +     long i;
+> > +
+> > +     pr_info("%s: started ref, game_time: %ld secs !\n", __func__,
+> > +             game_time);
+> > +
+> > +     /* Create low  priority defensive team */
+>
+> Sorry: extra space after `low`.
+
+Fixed.
+
+> > +     mutex_low_list =3D kmalloc_array(players_per_team,  sizeof(struct=
+ mutex), GFP_ATOMIC);
+> > +     mutex_mid_list =3D kmalloc_array(players_per_team,  sizeof(struct=
+ mutex), GFP_ATOMIC);
+>
+> * Extra space after `players_per_team,`.
+> * Shouldn't we check result of `kmalloc_array()`?
+>
+> Same comments for `mutex_low_list` (previous) line.
+
+Yep.
+
+Thanks for all the suggestions!
+-john
 
