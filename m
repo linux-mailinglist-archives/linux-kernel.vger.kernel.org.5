@@ -1,213 +1,351 @@
-Return-Path: <linux-kernel+bounces-18236-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18238-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2787C825A59
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 19:41:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 63FEB825A63
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 19:46:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0A36F1C23852
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 18:41:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 505E51C2341E
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 18:46:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E846C35EED;
-	Fri,  5 Jan 2024 18:41:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AA0D35EF8;
+	Fri,  5 Jan 2024 18:46:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="xPvyC4Px"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D65735EE4
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 18:41:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7baec3f92acso150233739f.3
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Jan 2024 10:41:22 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704480082; x=1705084882;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0J45BElnGsnlb+hcSi7W72v1ypQ+RzOOzGvT7znb7Wo=;
-        b=OVEXMuXB+kDMGuSciJ3NEBVoxr4qkRyLiBGcx0ka7C4rCb2d4ZFus6jS1cZ3MVpd8q
-         zGRhyDuFoNLRzCDyJdjocMQOsF0jto8vn3bLl9JlZ491WV6Uiyu8m8B8ZX25kL4H5wTG
-         rBLjI/HB65vCWdexuYwEY47rI2JG+CPKf9VVXK/vj5cCYzcGozzxXWOmNJGA6MBnxhAR
-         SETg/QgsmOQPOaBFdj1E6H9h1+SLPUkO4E1J1xRcwQ/opjIQeZPXMMQ7L8DhsBMzGnpd
-         wo/Ns9Cvn6RAxhbjJHNnWjejOK8WNHOh7ejA2Ezb5sSTeNeG0diHqLnqteIRwv7WPaDD
-         n0AQ==
-X-Gm-Message-State: AOJu0Yza9AMQ/5qnsos4maNbgpWxP/9f1TAiDhGdo/qBYOytS0ZVHcjr
-	ZhwX7zkskz3Q/fdYXGrO7xJT8AnSC7s9v5tQD7rp1LAv20VR
-X-Google-Smtp-Source: AGHT+IEg85bZw5ZdVo/+pC5ZPBOQIjGrXpm8hX78ThKTlFp+KklQKW7rtirKNPL5EfJCg3xm0bWN6zjc5hXhNe641bZFIf76YGcj
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 922C535EE4
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 18:46:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1704480404;
+	bh=ngrppG4fZWiappMujHqe5Ohm4UprosvoehhPZXB95vA=;
+	h=From:To:Cc:Subject:Date:From;
+	b=xPvyC4PxHnfybrc9yeDNhER2XhHSqn+dF21wvMZ9YwUWw7JG3snCYVhwRTCM6w1X3
+	 R8/WdavzXXk+Lw3CYkZ6VK46WRlm6XMQMTLYgXGeIma7c9EVRSUPf3lKvSqh7UEzCa
+	 y0XhiG7gFT1WtcMUOw8sBmtFT+S+U/+PH/UjyXPymqNjEyY86Dxw3474TvDT3CnMXj
+	 O67PxJpyXbimX3p/d+v6IVvP0lY5N0UVKIjqGKbKwRKiz/dQZs6WFvioYcoD6nHJqD
+	 znwSYX/MdTtL8JXCDj0Wd0zsYt0eesRZwquJ3igVH1Js5USc+0P3IbDs7gYWV+lEAB
+	 w1RZZoLcpRO6Q==
+Received: from workpc.. (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: dmitry.osipenko)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id F070C37813B6;
+	Fri,  5 Jan 2024 18:46:42 +0000 (UTC)
+From: Dmitry Osipenko <dmitry.osipenko@collabora.com>
+To: David Airlie <airlied@gmail.com>,
+	Gerd Hoffmann <kraxel@redhat.com>,
+	Gurchetan Singh <gurchetansingh@chromium.org>,
+	Chia-I Wu <olvaffe@gmail.com>,
+	Daniel Vetter <daniel@ffwll.ch>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	=?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+	Qiang Yu <yuq825@gmail.com>,
+	Steven Price <steven.price@arm.com>,
+	Boris Brezillon <boris.brezillon@collabora.com>,
+	Emma Anholt <emma@anholt.net>,
+	Melissa Wen <mwen@igalia.com>
+Cc: dri-devel@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org,
+	kernel@collabora.com,
+	virtualization@lists.linux-foundation.org
+Subject: [PATCH v19 00/30] Add generic memory shrinker to VirtIO-GPU and Panfrost DRM drivers
+Date: Fri,  5 Jan 2024 21:45:54 +0300
+Message-ID: <20240105184624.508603-1-dmitry.osipenko@collabora.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:34a3:b0:46c:ff0d:2555 with SMTP id
- t35-20020a05663834a300b0046cff0d2555mr223832jal.6.1704480082272; Fri, 05 Jan
- 2024 10:41:22 -0800 (PST)
-Date: Fri, 05 Jan 2024 10:41:22 -0800
-In-Reply-To: <000000000000a62351060e363bdc@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000d4a93c060e373195@google.com>
-Subject: Re: [syzbot] [net?] memory leak in ___neigh_create (2)
-From: syzbot <syzbot+42cfec52b6508887bbe8@syzkaller.appspotmail.com>
-To: alexander.mikhalitsyn@virtuozzo.com, davem@davemloft.net, den@openvz.org, 
-	dsahern@kernel.org, edumazet@google.com, f.fainelli@gmail.com, 
-	kuba@kernel.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, 
-	pabeni@redhat.com, razor@blackwall.org, syzkaller-bugs@googlegroups.com, 
-	thomas.zeitlhofer+lkml@ze-it.at, thomas.zeitlhofer@ze-it.at, 
-	wangyuweihx@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-syzbot has found a reproducer for the following issue on:
+This series:
 
-HEAD commit:    2258c2dc850b Merge tag 'for-linus' of git://git.kernel.org..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=16f67b44480000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=a4fb7ad9185f1501
-dashboard link: https://syzkaller.appspot.com/bug?extid=42cfec52b6508887bbe8
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14e23d44480000
+  1. Adds common drm-shmem memory shrinker
+  2. Moves drm-shmem drivers to new SGT usage policy
+  3. Enables shrinker for VirtIO-GPU driver
+  4. Switches Panfrost driver to the common shrinker
+  5. Fixes bugs and improves/refactors drm-shmem code
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/0e65a45877eb/disk-2258c2dc.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/7617adf885a8/vmlinux-2258c2dc.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/43fb89ea894a/bzImage-2258c2dc.xz
+Mesa: https://gitlab.freedesktop.org/digetx/mesa/-/commits/virgl-madvise
+IGT:  https://gitlab.freedesktop.org/digetx/igt-gpu-tools/-/commits/virtio-madvise
+      https://gitlab.freedesktop.org/digetx/igt-gpu-tools/-/commits/panfrost-madvise
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+42cfec52b6508887bbe8@syzkaller.appspotmail.com
+Changelog:
 
-BUG: memory leak
-unreferenced object 0xffff88810b8ea400 (size 512):
-  comm "kworker/0:3", pid 4440, jiffies 4294938594 (age 1132.680s)
-  hex dump (first 32 bytes):
-    00 9c f8 0a 81 88 ff ff 80 29 23 86 ff ff ff ff  .........)#.....
-    c0 79 79 44 81 88 ff ff 72 78 ff ff 00 00 00 00  .yyD....rx......
-  backtrace:
-    [<ffffffff814f9fe6>] __do_kmalloc_node mm/slab_common.c:967 [inline]
-    [<ffffffff814f9fe6>] __kmalloc+0x46/0x120 mm/slab_common.c:981
-    [<ffffffff83b5234f>] kmalloc include/linux/slab.h:584 [inline]
-    [<ffffffff83b5234f>] kzalloc include/linux/slab.h:720 [inline]
-    [<ffffffff83b5234f>] neigh_alloc net/core/neighbour.c:476 [inline]
-    [<ffffffff83b5234f>] ___neigh_create+0xdf/0xd60 net/core/neighbour.c:661
-    [<ffffffff83f9f886>] ip6_finish_output2+0x776/0x9b0 net/ipv6/ip6_output.c:125
-    [<ffffffff83fa5530>] __ip6_finish_output net/ipv6/ip6_output.c:195 [inline]
-    [<ffffffff83fa5530>] ip6_finish_output+0x270/0x530 net/ipv6/ip6_output.c:206
-    [<ffffffff83fa5893>] NF_HOOK_COND include/linux/netfilter.h:291 [inline]
-    [<ffffffff83fa5893>] ip6_output+0xa3/0x1b0 net/ipv6/ip6_output.c:227
-    [<ffffffff83ff16d9>] dst_output include/net/dst.h:444 [inline]
-    [<ffffffff83ff16d9>] NF_HOOK include/linux/netfilter.h:302 [inline]
-    [<ffffffff83ff16d9>] NF_HOOK.constprop.0+0x49/0x110 include/linux/netfilter.h:296
-    [<ffffffff83ff19c4>] mld_sendpack+0x224/0x350 net/ipv6/mcast.c:1820
-    [<ffffffff83ff5403>] mld_send_cr net/ipv6/mcast.c:2121 [inline]
-    [<ffffffff83ff5403>] mld_ifc_work+0x2a3/0x750 net/ipv6/mcast.c:2653
-    [<ffffffff8129519a>] process_one_work+0x2ba/0x5f0 kernel/workqueue.c:2289
-    [<ffffffff81295ab9>] worker_thread+0x59/0x5b0 kernel/workqueue.c:2436
-    [<ffffffff8129fb05>] kthread+0x125/0x160 kernel/kthread.c:376
-    [<ffffffff8100224f>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:308
+v19:- Addressed v18 review comments from Boris Brezillon:
 
-BUG: memory leak
-unreferenced object 0xffff888109a7fa00 (size 512):
-  comm "kworker/0:3", pid 4440, jiffies 4294938594 (age 1132.680s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 80 29 23 86 ff ff ff ff  .........)#.....
-    00 79 79 44 81 88 ff ff 72 78 ff ff 00 00 00 00  .yyD....rx......
-  backtrace:
-    [<ffffffff814f9fe6>] __do_kmalloc_node mm/slab_common.c:967 [inline]
-    [<ffffffff814f9fe6>] __kmalloc+0x46/0x120 mm/slab_common.c:981
-    [<ffffffff83b5234f>] kmalloc include/linux/slab.h:584 [inline]
-    [<ffffffff83b5234f>] kzalloc include/linux/slab.h:720 [inline]
-    [<ffffffff83b5234f>] neigh_alloc net/core/neighbour.c:476 [inline]
-    [<ffffffff83b5234f>] ___neigh_create+0xdf/0xd60 net/core/neighbour.c:661
-    [<ffffffff83f9f886>] ip6_finish_output2+0x776/0x9b0 net/ipv6/ip6_output.c:125
-    [<ffffffff83fa5530>] __ip6_finish_output net/ipv6/ip6_output.c:195 [inline]
-    [<ffffffff83fa5530>] ip6_finish_output+0x270/0x530 net/ipv6/ip6_output.c:206
-    [<ffffffff83fa5893>] NF_HOOK_COND include/linux/netfilter.h:291 [inline]
-    [<ffffffff83fa5893>] ip6_output+0xa3/0x1b0 net/ipv6/ip6_output.c:227
-    [<ffffffff83ff16d9>] dst_output include/net/dst.h:444 [inline]
-    [<ffffffff83ff16d9>] NF_HOOK include/linux/netfilter.h:302 [inline]
-    [<ffffffff83ff16d9>] NF_HOOK.constprop.0+0x49/0x110 include/linux/netfilter.h:296
-    [<ffffffff83ff19c4>] mld_sendpack+0x224/0x350 net/ipv6/mcast.c:1820
-    [<ffffffff83ff5403>] mld_send_cr net/ipv6/mcast.c:2121 [inline]
-    [<ffffffff83ff5403>] mld_ifc_work+0x2a3/0x750 net/ipv6/mcast.c:2653
-    [<ffffffff8129519a>] process_one_work+0x2ba/0x5f0 kernel/workqueue.c:2289
-    [<ffffffff81295ab9>] worker_thread+0x59/0x5b0 kernel/workqueue.c:2436
-    [<ffffffff8129fb05>] kthread+0x125/0x160 kernel/kthread.c:376
-    [<ffffffff8100224f>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:308
+      - Improved bisectablity of Panfrost and drm-shmem patches by
+        fixing iterim warning splats related to shrinker changes.
 
-BUG: memory leak
-unreferenced object 0xffff88810a9fb400 (size 512):
-  comm "dhcpcd", pid 4638, jiffies 4294938595 (age 1132.670s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 80 29 23 86 ff ff ff ff  .........)#.....
-    c0 76 79 44 81 88 ff ff 73 78 ff ff 00 00 00 00  .vyD....sx......
-  backtrace:
-    [<ffffffff814f9fe6>] __do_kmalloc_node mm/slab_common.c:967 [inline]
-    [<ffffffff814f9fe6>] __kmalloc+0x46/0x120 mm/slab_common.c:981
-    [<ffffffff83b5234f>] kmalloc include/linux/slab.h:584 [inline]
-    [<ffffffff83b5234f>] kzalloc include/linux/slab.h:720 [inline]
-    [<ffffffff83b5234f>] neigh_alloc net/core/neighbour.c:476 [inline]
-    [<ffffffff83b5234f>] ___neigh_create+0xdf/0xd60 net/core/neighbour.c:661
-    [<ffffffff83f9f886>] ip6_finish_output2+0x776/0x9b0 net/ipv6/ip6_output.c:125
-    [<ffffffff83fa5530>] __ip6_finish_output net/ipv6/ip6_output.c:195 [inline]
-    [<ffffffff83fa5530>] ip6_finish_output+0x270/0x530 net/ipv6/ip6_output.c:206
-    [<ffffffff83fa5893>] NF_HOOK_COND include/linux/netfilter.h:291 [inline]
-    [<ffffffff83fa5893>] ip6_output+0xa3/0x1b0 net/ipv6/ip6_output.c:227
-    [<ffffffff84062411>] dst_output include/net/dst.h:444 [inline]
-    [<ffffffff84062411>] ip6_local_out+0x51/0x70 net/ipv6/output_core.c:155
-    [<ffffffff83fa6285>] ip6_send_skb+0x25/0xc0 net/ipv6/ip6_output.c:1971
-    [<ffffffff83fa6394>] ip6_push_pending_frames+0x74/0x90 net/ipv6/ip6_output.c:1991
-    [<ffffffff83fec08c>] rawv6_push_pending_frames net/ipv6/raw.c:579 [inline]
-    [<ffffffff83fec08c>] rawv6_sendmsg+0x16ac/0x1ba0 net/ipv6/raw.c:922
-    [<ffffffff83ebe965>] inet_sendmsg+0x45/0x70 net/ipv4/af_inet.c:827
-    [<ffffffff83af7116>] sock_sendmsg_nosec net/socket.c:714 [inline]
-    [<ffffffff83af7116>] sock_sendmsg+0x56/0x80 net/socket.c:734
-    [<ffffffff83af769d>] ____sys_sendmsg+0x38d/0x410 net/socket.c:2476
-    [<ffffffff83afbfe8>] ___sys_sendmsg+0xa8/0x110 net/socket.c:2530
-    [<ffffffff83afc178>] __sys_sendmsg+0x88/0x100 net/socket.c:2559
-    [<ffffffff848ed5b5>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-    [<ffffffff848ed5b5>] do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
-    [<ffffffff84a00087>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
+      - Improved commit messages
 
-BUG: memory leak
-unreferenced object 0xffff88810a9fba00 (size 512):
-  comm "dhcpcd", pid 4638, jiffies 4294938595 (age 1132.670s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 80 29 23 86 ff ff ff ff  .........)#.....
-    80 77 79 44 81 88 ff ff 73 78 ff ff 00 00 00 00  .wyD....sx......
-  backtrace:
-    [<ffffffff814f9fe6>] __do_kmalloc_node mm/slab_common.c:967 [inline]
-    [<ffffffff814f9fe6>] __kmalloc+0x46/0x120 mm/slab_common.c:981
-    [<ffffffff83b5234f>] kmalloc include/linux/slab.h:584 [inline]
-    [<ffffffff83b5234f>] kzalloc include/linux/slab.h:720 [inline]
-    [<ffffffff83b5234f>] neigh_alloc net/core/neighbour.c:476 [inline]
-    [<ffffffff83b5234f>] ___neigh_create+0xdf/0xd60 net/core/neighbour.c:661
-    [<ffffffff83f9f886>] ip6_finish_output2+0x776/0x9b0 net/ipv6/ip6_output.c:125
-    [<ffffffff83fa5530>] __ip6_finish_output net/ipv6/ip6_output.c:195 [inline]
-    [<ffffffff83fa5530>] ip6_finish_output+0x270/0x530 net/ipv6/ip6_output.c:206
-    [<ffffffff83fa5893>] NF_HOOK_COND include/linux/netfilter.h:291 [inline]
-    [<ffffffff83fa5893>] ip6_output+0xa3/0x1b0 net/ipv6/ip6_output.c:227
-    [<ffffffff84062411>] dst_output include/net/dst.h:444 [inline]
-    [<ffffffff84062411>] ip6_local_out+0x51/0x70 net/ipv6/output_core.c:155
-    [<ffffffff83fa6285>] ip6_send_skb+0x25/0xc0 net/ipv6/ip6_output.c:1971
-    [<ffffffff83fa6394>] ip6_push_pending_frames+0x74/0x90 net/ipv6/ip6_output.c:1991
-    [<ffffffff83fec08c>] rawv6_push_pending_frames net/ipv6/raw.c:579 [inline]
-    [<ffffffff83fec08c>] rawv6_sendmsg+0x16ac/0x1ba0 net/ipv6/raw.c:922
-    [<ffffffff83ebe965>] inet_sendmsg+0x45/0x70 net/ipv4/af_inet.c:827
-    [<ffffffff83af7116>] sock_sendmsg_nosec net/socket.c:714 [inline]
-    [<ffffffff83af7116>] sock_sendmsg+0x56/0x80 net/socket.c:734
-    [<ffffffff83af769d>] ____sys_sendmsg+0x38d/0x410 net/socket.c:2476
-    [<ffffffff83afbfe8>] ___sys_sendmsg+0xa8/0x110 net/socket.c:2530
-    [<ffffffff83afc178>] __sys_sendmsg+0x88/0x100 net/socket.c:2559
-    [<ffffffff848ed5b5>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-    [<ffffffff848ed5b5>] do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
-    [<ffffffff84a00087>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
+      - Reworked Lima patch to avoid adding `put_pages` flag
 
+      - Reworked Panfrost patch that switches driver to explicit
+        get/put pages by moving drm_gem_shmem_put_pages() into
+        gem_mapping_release() instead of gem_free_object().
 
+      - Updated Panfrost patch that switches driver to generic shrinker
+        with more comments and minor imporovemnts.
 
----
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+      - Added new Panfrost patch from Boris that fixes handling of
+        a partially mapped heap BOs.
+
+    - Added link to the related Mesa MR to the commit msg of the patch
+      that adds new DRM_VIRTGPU_MADVISE ioctl, like was requested by
+      Gurchetan Singh.
+
+    - Added ackes/r-b from Boris Brezillon and Maxime Ripard
+
+    - New patches in v19:
+
+        drm/gem: Document locking rule of vmap and evict callbacks
+        drm/panfrost: Fix the error path in panfrost_mmu_map_fault_addr()
+
+    - Factored out couple code changes into these new separate patches:
+
+        drm/shmem-helper: Avoid lockdep warning when pages are released
+        drm/shmem-helper: Turn warnings about imported GEM into errors
+
+v18:- Added new pathes that change sgt allocation policy. Previously once
+      sgt was allocated, it exsited till GEM was freed. Now sgt is destroyed
+      once pages are unpinned and drivers have to manage the pages' pinning
+      refcounting by themselves using get/put() and pin/unpin() pages.
+      This removes pages refcounting ambiguity from the drm-shmem core.
+
+    - Dropped patch that changed drm_gem_shmem_vmap_locked() error handling,
+      like was requested by Boris Brezillon.
+
+    - Added new patches that make minor improvements:
+
+        - Optimize unlocked get_pages_sgt()
+        - Don't free refcounted GEM
+
+    - Dropped t-b from the Panfrost shrinker patch that was given for older
+      patch version since code changed with the new sgt allocation policy.
+
+v17:- Dropped patches that added new drm-shmem sgt flags, fixing dma-buf UAF
+      in drm-prime error code path and preventing invalid page_count when GEM
+      is freed. Will revist them later on and then factor them out into a
+      seprate patchset.
+
+    - Dropped patches that replaced drm_gem_shmem_free() with
+      drm_gem_object_put(), they not needed anymore after changing
+      drm_gem_shmem_free() to not touch reservation lock.
+
+    - Addressed review comments from Boris Brezillon:
+
+        - Added new patch to clean up error unwinding in
+          drm_gem_shmem_vmap_locked()
+
+        - Added new __drm_gem_shmem_put_pages() to let the callers
+          to assert the held reservation lock themselves
+
+        - Moved replacement of shmem->pages check with refcount_read()
+          in drm_gem_shmem_free() to the shrinker addition patch
+
+        - Improved commit message of the vmap_use_count patch
+
+    - Added r-bs from Boris Brezillon that he gave to v16
+
+v16:- Added more comments to the code for the new drm-shmem flags
+
+    - Added r-bs from Boris Brezillon
+
+    - Fixed typos and made impovements pointed out by Boris Brezillon
+
+    - Replaced kref with refcount_t as was suggested by Boris Brezillon
+
+    - Corrected placement of got_sgt flag in the Lima driver, also renamed
+      flag to got_pages_sgt
+
+    - Removed drm_gem_shmem_resv_assert_held() and made drm_gem_shmem_free()
+      to free pages without a new func that doesn't touch resv lock, as was
+      suggested by Boris Brezillon
+
+    - Added pages_pin_count to drm_gem_shmem_print_info()
+
+v15:- Moved drm-shmem reference counters to use kref that allows to
+      optimize unlocked functions, like was suggested by Boris Brezillon.
+
+    - Changed drm/gem/shmem function names to use _locked postfix and
+      dropped the _unlocked, making the naming scheme consistent across
+      DRM code, like was suggested by Boris Brezillon.
+
+    - Added patch that fixes UAF in drm-shmem for drivers that import
+      dma-buf and then release buffer in the import error code path.
+
+    - Added patch that makes drm-shmem use new flag for SGT's get_pages()
+      refcounting, preventing unbalanced refcounting when GEM is freed.
+
+    - Fixed guest blob pinning in virtio-gpu driver that was missed
+      previously in the shrinker patch.
+
+    - Moved VC4 and virtio-gpu drivers to use drm_gem_put() in
+      GEM-creation error code paths, which is now required by drm-shmem
+      and was missed in a previous patch versions.
+
+    - Virtio-GPU now attaches shmem pages to host on first use and not
+      when BO is created. In older patch versions there was a potential
+      race condition in the BO creation code path where both
+      get_sgt()+object_attach() should've been made under same resv lock,
+      otherwise pages could be evicted before attachment is invoked.
+
+    - Virtio-GPU and drm-shmem shrinker patches are split into smaller
+      ones.
+
+v14:- All the prerequisite reservation locking patches landed upstream,
+      previously were a part of this series in v13 and older.
+
+        https://lore.kernel.org/dri-devel/20230529223935.2672495-1-dmitry.osipenko@collabora.com/
+
+    - Added patches to improve locked/unlocked function names, like was
+      suggested by Boris Brezillon for v13.
+
+    - Made all exported drm-shmem symbols GPL, like was previously
+      discussed with Thomas Zimmermann on this series.
+
+    - Improved virtio-gpu shrinker patch. Now it won't detach purged BO
+      when userspace closes GEM. Crosvm (and not qemu) checks res_id on
+      CMD_CTX_DETACH_RESOURCE and prints noisy error message if ID is
+      invalid, which wasn't noticed before.
+
+v13:- Updated virtio-gpu shrinker patch to use drm_gem_shmem_object_pin()
+      directly instead of drm_gem_pin() and dropped patch that exported
+      drm_gem_pin() functions, like was requested by Thomas Zimmermann in
+      v12.
+
+v12:- Fixed the "no previous prototype for function" warning reported by
+      kernel build bot for v11.
+
+    - Fixed the missing reservation lock reported by Intel CI for VGEM
+      driver. Other drivers using drm-shmem were affected similarly to
+      VGEM. The problem was in the dma-buf attachment code path that led
+      to drm-shmem pinning function which assumed the held reservation lock
+      by drm_gem_pin(). In the past that code path was causing trouble for
+      i915 driver and we've changed the locking scheme for the attachment
+      code path in the dma-buf core to let exporters to handle the locking
+      themselves. After a closer investigation, I realized that my assumption
+      about testing of dma-buf export code path using Panfrost driver was
+      incorrect. Now I created additional local test to exrecise the Panfrost
+      export path. I also reproduced the issue reported by the Intel CI for
+      v10. It's all fixed now by making the drm_gem_shmem_pin() to take the
+      resv lock by itself.
+
+    - Patches are based on top of drm-tip, CC'd intel-gfx CI for testing.
+
+v11:- Rebased on a recent linux-next. Added new patch as a result:
+
+        drm/shmem-helper: Export drm_gem_shmem_get_pages_sgt_locked()
+
+        It's needed by the virtio-gpu driver to swap-in/unevict shmem
+        object, previously get_pages_sgt() didn't use locking.
+
+    - Separated the "Add memory shrinker" patch into smaller parts to ease
+      the reviewing, as was requested by Thomas Zimmermann:
+
+        drm/shmem-helper: Factor out pages alloc/release from
+          drm_gem_shmem_get/put_pages()
+        drm/shmem-helper: Add pages_pin_count field
+        drm/shmem-helper: Switch drm_gem_shmem_vmap/vunmap to use pin/unpin
+        drm/shmem-helper: Factor out unpinning part from drm_gem_shmem_purge()
+
+    - Addessed the v10 review comments from Thomas Zimmermann: return errno
+      instead of bool, sort code alphabetically, rename function and etc
+      minor changes.
+
+    - Added new patch to remove the "map->is_iomem" from drm-shmem, as
+      was suggested by Thomas Zimmermann.
+
+    - Added acks and r-b's that were given to v10.
+
+v10:- Was partially applied to misc-fixes/next.
+
+      https://lore.kernel.org/dri-devel/6c16f303-81df-7ebe-85e9-51bb40a8b301@collabora.com/T/
+
+Boris Brezillon (1):
+  drm/panfrost: Fix the error path in panfrost_mmu_map_fault_addr()
+
+Dmitry Osipenko (29):
+  drm/gem: Change locked/unlocked postfix of drm_gem_v/unmap() function
+    names
+  drm/gem: Add _locked postfix to functions that have unlocked
+    counterpart
+  drm/gem: Document locking rule of vmap and evict callbacks
+  drm/shmem-helper: Make all exported symbols GPL
+  drm/shmem-helper: Refactor locked/unlocked functions
+  drm/shmem-helper: Remove obsoleted is_iomem test
+  drm/shmem-helper: Add and use pages_pin_count
+  drm/shmem-helper: Use refcount_t for pages_use_count
+  drm/shmem-helper: Add and use lockless drm_gem_shmem_get_pages()
+  drm/shmem-helper: Switch drm_gem_shmem_vmap/vunmap to use pin/unpin
+  drm/shmem-helper: Use refcount_t for vmap_use_count
+  drm/shmem-helper: Prepare drm_gem_shmem_free() to shrinker addition
+  drm/shmem-helper: Make drm_gem_shmem_get_pages() public
+  drm/shmem-helper: Add drm_gem_shmem_put_pages()
+  drm/shmem-helper: Avoid lockdep warning when pages are released
+  drm/lima: Explicitly get and put drm-shmem pages
+  drm/panfrost: Explicitly get and put drm-shmem pages
+  drm/virtio: Explicitly get and put drm-shmem pages
+  drm/v3d: Explicitly get and put drm-shmem pages
+  drm/shmem-helper: Change sgt allocation policy
+  drm/shmem-helper: Add common memory shrinker
+  drm/shmem-helper: Export drm_gem_shmem_get_pages_sgt_locked()
+  drm/shmem-helper: Optimize unlocked get_pages_sgt()
+  drm/shmem-helper: Don't free refcounted GEM
+  drm/shmem-helper: Turn warnings about imported GEM into errors
+  drm/virtio: Pin display framebuffer BO
+  drm/virtio: Attach shmem BOs dynamically
+  drm/virtio: Support shmem shrinking
+  drm/panfrost: Switch to generic memory shrinker
+
+ drivers/gpu/drm/drm_client.c                  |   6 +-
+ drivers/gpu/drm/drm_gem.c                     |  26 +-
+ drivers/gpu/drm/drm_gem_framebuffer_helper.c  |   6 +-
+ drivers/gpu/drm/drm_gem_shmem_helper.c        | 663 +++++++++++++++---
+ drivers/gpu/drm/drm_internal.h                |   4 +-
+ drivers/gpu/drm/drm_prime.c                   |   4 +-
+ drivers/gpu/drm/lima/lima_gem.c               |  23 +-
+ drivers/gpu/drm/lima/lima_sched.c             |   4 +-
+ drivers/gpu/drm/panfrost/Makefile             |   1 -
+ drivers/gpu/drm/panfrost/panfrost_device.h    |   4 -
+ drivers/gpu/drm/panfrost/panfrost_drv.c       |  31 +-
+ drivers/gpu/drm/panfrost/panfrost_dump.c      |   4 +-
+ drivers/gpu/drm/panfrost/panfrost_gem.c       | 110 ++-
+ drivers/gpu/drm/panfrost/panfrost_gem.h       |   9 -
+ .../gpu/drm/panfrost/panfrost_gem_shrinker.c  | 127 ----
+ drivers/gpu/drm/panfrost/panfrost_job.c       |  18 +-
+ drivers/gpu/drm/panfrost/panfrost_mmu.c       |  39 +-
+ drivers/gpu/drm/panfrost/panfrost_perfcnt.c   |   6 +-
+ drivers/gpu/drm/v3d/v3d_bo.c                  |  11 +-
+ drivers/gpu/drm/virtio/virtgpu_drv.h          |  22 +-
+ drivers/gpu/drm/virtio/virtgpu_gem.c          |  85 +++
+ drivers/gpu/drm/virtio/virtgpu_ioctl.c        |  57 +-
+ drivers/gpu/drm/virtio/virtgpu_kms.c          |   8 +
+ drivers/gpu/drm/virtio/virtgpu_object.c       | 143 +++-
+ drivers/gpu/drm/virtio/virtgpu_plane.c        |  17 +-
+ drivers/gpu/drm/virtio/virtgpu_submit.c       |  15 +-
+ drivers/gpu/drm/virtio/virtgpu_vq.c           |  40 ++
+ include/drm/drm_device.h                      |  10 +-
+ include/drm/drm_gem.h                         |  15 +-
+ include/drm/drm_gem_shmem_helper.h            | 117 +++-
+ include/uapi/drm/virtgpu_drm.h                |  14 +
+ 31 files changed, 1216 insertions(+), 423 deletions(-)
+ delete mode 100644 drivers/gpu/drm/panfrost/panfrost_gem_shrinker.c
+
+-- 
+2.43.0
+
 
