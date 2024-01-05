@@ -1,533 +1,402 @@
-Return-Path: <linux-kernel+bounces-17480-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17481-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C6798824E0C
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 06:17:49 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C9BFD824E0D
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 06:18:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 36CC41F22C03
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 05:17:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 249E7B23EA6
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 05:18:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE9A453AE;
-	Fri,  5 Jan 2024 05:17:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CB2E53AB;
+	Fri,  5 Jan 2024 05:18:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="OXTb/e3Q"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XCdYigKO"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qv1-f50.google.com (mail-qv1-f50.google.com [209.85.219.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1376FC2DB;
-	Fri,  5 Jan 2024 05:17:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4054tGv3032360;
-	Fri, 5 Jan 2024 05:17:28 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=SvvnrQu4AT9u3yX5VFttyS7Pe1Y7RfI3XxDsGfR3Xj8=; b=OX
-	Tb/e3QYfCEF7buSoeBUGMzl+PMBOHXJsJ4aow7MdnZabjFrMUH6HL/X8UGzu1MeZ
-	vPH6Gst8X5vv8cZyk4LnaWwU/Hczo89rI8F96ei4eiqykNdYM0Ged+DAtwXPUfaB
-	eBFsJb37uF0rJf36Hlgc3uJ1Z4TxZDq6OPddPhrZS7HCkRd4oJ9tmfo/vrOy71GC
-	5SUiEcQVEb7+gg35mrUN9U2TqQ+DDidpuPeYPhtmAUS5snCzl9rPW8dL0t86IHxe
-	vQiYj4AL9OY4lki1FkvJDPIRHIUEr6uNi1XPn2M8iYaI2c7F/iowGPAb+w1TrZOx
-	DvU3MP6Fox2cldCuNaKQ==
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ve97r87ev-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 05 Jan 2024 05:17:28 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4055HRf5020766
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 5 Jan 2024 05:17:27 GMT
-Received: from [10.231.195.68] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 4 Jan
- 2024 21:17:23 -0800
-Message-ID: <8d9a302a-35c3-46e6-9c52-c1025f9c55de@quicinc.com>
-Date: Fri, 5 Jan 2024 13:17:20 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4153C5396
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 05:18:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qv1-f50.google.com with SMTP id 6a1803df08f44-67f85fe5632so2077386d6.0
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 21:18:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704431899; x=1705036699; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LMEJFS/riWQam7td2D41ciBjS/JvFKXcDNVzpMi7ZmA=;
+        b=XCdYigKOFo5RcV3T2qKxVkmKUU4lLjJfr16mNuURa/5MBrDLyFhStBZKASH+wPxOo3
+         cJBjhgl0Il1hMoKkWj3H+oLtoPHvoTLVDj7O+hnu579MRsV0ipLZi2o8fWtWIYiNaQqj
+         KmDU9aexdm+fXtmUyLUC9hxUc/pJ5xcm7J/Og7LtyduZH6rUF+Iizz7vXun+PXX6z0/C
+         I59eKd6telWPUsZU1DWHpHmXsY0MBAxsALTU1CsxhWwcylQYEV0rCA9PuoXwAoah5HFh
+         V+N989/QeAjVIasTHZwtFYTJb0XykhflUeeyR7rQi18cTAw87ZUHtn16xLuExPGnfQPK
+         jdoA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704431899; x=1705036699;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=LMEJFS/riWQam7td2D41ciBjS/JvFKXcDNVzpMi7ZmA=;
+        b=bgorgSKd3P7h7K/ns3zOAGAYVGj3eqct5Tf5NwMWWy+ALl6So3ZAkETxDaeoFVBTrU
+         o+6DblwMQXGcovn/J/zlJo/IZy3U0NdBLV4IPsHAA/h60s+Epke33+rx6lFgJKFZzhdi
+         UKsu4vxK6UfK4gqI5UIQBanPsvB8kvRRD2yBMikFiJvslgns89ig06vccmsJapvLAuYo
+         HW5ADYqJJXWh2Pb3RhndACBgj8bXrs1tmzrcjYStVSO3achvbSnpTlY7cBgpSSrIWWRm
+         IHGfGIbLcEe1PCDjjzTHDBQtd4edib+ufO16u0mCIC0m5Y2ycRwiE1pyLwOWoC8VWZ8W
+         Pm/g==
+X-Gm-Message-State: AOJu0YzNF5j5enSh6gAD3ypc5NxFmM6/JuMzAKuNChfaiLL8FLawUAFx
+	UyVqO0U4Y8P0UcCDeci8kS4=
+X-Google-Smtp-Source: AGHT+IGkM6joCNdDgoMqCcvXN++bqn6+2R3Rwbx1UiWguB1t5onVGKoR+rUISMOyuNyXJ/M3BdNCIw==
+X-Received: by 2002:a05:6214:c86:b0:67f:40eb:bfa7 with SMTP id r6-20020a0562140c8600b0067f40ebbfa7mr2349819qvr.48.1704431898995;
+        Thu, 04 Jan 2024 21:18:18 -0800 (PST)
+Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
+        by smtp.gmail.com with ESMTPSA id t3-20020a05621405c300b006809d6fc192sm346295qvz.3.2024.01.04.21.18.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Jan 2024 21:18:18 -0800 (PST)
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+	by mailauth.nyi.internal (Postfix) with ESMTP id 01C7C27C005A;
+	Fri,  5 Jan 2024 00:18:17 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Fri, 05 Jan 2024 00:18:18 -0500
+X-ME-Sender: <xms:GJGXZRfoch5lnwsg6c6AzSGA-8zVbbEmrnjIfRZAjeJRHHI3ppJONQ>
+    <xme:GJGXZfOXm2Knn565ZkbfIKTUu-Hv7qAhzHpgsEFwDnFtQVU9sWrrvBl9O_qEVW9s9
+    zPFTJiEDYFbjMivvA>
+X-ME-Received: <xmr:GJGXZahcKIxwOdBY59IWyKKIDFVsRJaEF0V4rwDwke2kzEvfYn-bf91WtQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdegkedgkeduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhu
+    nhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrg
+    htthgvrhhnpeffheekuefhieegveevjeevffdtheeuveefteelveefgfduieetvdduveei
+    veekudenucffohhmrghinhepghhnuhdrohhrghenucevlhhushhtvghrufhiiigvpedtne
+    curfgrrhgrmhepmhgrihhlfhhrohhmpegsohhquhhnodhmvghsmhhtphgruhhthhhpvghr
+    shhonhgrlhhithihqdeiledvgeehtdeigedqudejjeekheehhedvqdgsohhquhhnrdhfvg
+    hngheppehgmhgrihhlrdgtohhmsehfihigmhgvrdhnrghmvg
+X-ME-Proxy: <xmx:GZGXZa_PMVCAlewKEQ9VFRleCCZWGyQ6qvl0D7GCxdRhX-mzukPO7w>
+    <xmx:GZGXZdtrZFle6Tn5jrqRvxqSU_P6oRMl6Y-UhdnuS0z0FlL6m-rIGA>
+    <xmx:GZGXZZFKcyE8uuny55AZ_K8EDnskt5BUxaBnZ1a8bgUnxkXAexq7Mw>
+    <xmx:GZGXZeMgEPBaVg6JKHu1z2QbyQ432cu43lzDf-5Ggmeuf1bpDgSeUA>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 5 Jan 2024 00:18:16 -0500 (EST)
+Date: Thu, 4 Jan 2024 21:18:15 -0800
+From: Boqun Feng <boqun.feng@gmail.com>
+To: Leonardo Bras <leobras@redhat.com>
+Cc: Will Deacon <will@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>,
+	Andrea Parri <parri.andrea@gmail.com>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Ingo Molnar <mingo@kernel.org>,
+	Andrzej Hajda <andrzej.hajda@intel.com>,
+	linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
+Subject: Re: [PATCH v1 1/5] riscv/cmpxchg: Deduplicate xchg() asm functions
+Message-ID: <ZZeRF2GX6sLLxgrM@Boquns-Mac-mini.home>
+References: <20240103163203.72768-2-leobras@redhat.com>
+ <20240103163203.72768-3-leobras@redhat.com>
+ <ZZcMycoHUqzBmGFs@boqun-archlinux>
+ <ZZcX9vwk1dsZOfYu@LeoBras>
+ <ZZcoWB_8dumgUn5K@boqun-archlinux>
+ <ZZeJdjP2gUnTQCl-@LeoBras>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v8] bus: mhi: host: Add tracing support
-Content-Language: en-US
-To: Krishna Chaitanya Chundru <quic_krichai@quicinc.com>,
-        "Manivannan
- Sadhasivam" <mani@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "Masami
- Hiramatsu" <mhiramat@kernel.org>
-CC: <linux-kernel@vger.kernel.org>, <mhi@lists.linux.dev>,
-        <linux-arm-msm@vger.kernel.org>, <linux-trace-kernel@vger.kernel.org>,
-        <quic_vbadigan@quicinc.com>, <quic_ramkri@quicinc.com>,
-        <quic_nitegupt@quicinc.com>, <quic_skananth@quicinc.com>,
-        <quic_parass@quicinc.com>
-References: <20231207-ftrace_support-v8-1-7f62d4558555@quicinc.com>
- <ef11f099-d058-7f37-dde0-f7ef3cd52f38@quicinc.com>
-From: Baochen Qiang <quic_bqiang@quicinc.com>
-In-Reply-To: <ef11f099-d058-7f37-dde0-f7ef3cd52f38@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: MgFxXwChnYvVvb7geIB3gUM-Urgo1qwQ
-X-Proofpoint-GUID: MgFxXwChnYvVvb7geIB3gUM-Urgo1qwQ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- phishscore=0 impostorscore=0 spamscore=0 adultscore=0 lowpriorityscore=0
- bulkscore=0 malwarescore=0 mlxlogscore=999 suspectscore=0 clxscore=1011
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2401050042
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZZeJdjP2gUnTQCl-@LeoBras>
 
+On Fri, Jan 05, 2024 at 01:45:42AM -0300, Leonardo Bras wrote:
+[...]
+> > > According to gcc.gnu.org:
+> > > 
+> > > ---
+> > > "memory" [clobber]:
+> > > 
+> > >     The "memory" clobber tells the compiler that the assembly code 
+> > >     performs memory reads or writes to items other than those listed in 
+> > >     the input and output operands (for example, accessing the memory 
+> > >     pointed to by one of the input parameters). To ensure memory contains 
+> > 
+> > Note here it says "other than those listed in the input and output
+> > operands", and in the above asm block, the memory pointed by "__ptr" is
+> > already marked as read-and-write by the asm block via "+A" (*__ptr), so
+> > the compiler knows the asm block may modify the memory pointed by
+> > "__ptr", therefore in _relaxed() case, "memory" clobber can be avoided.
+> 
+> Thanks for pointing that out! 
+> That helped me improve my understanding on constraints for asm operands :)
+> (I ended up getting even more info from the gcc manual)
+> 
+> So "+A" constraints means the operand will get read/write and it's an 
+> address stored into a register.
+> 
+> > 
+> > Here is an example showing the difference, considering the follow case:
+> > 
+> > 	this_val = *this;
+> > 	that_val = *that;
+> > 	xchg_relaxed(this, 1);
+> > 	reread_this = *this;
+> > 
+> > by the semantics of _relaxed, compilers can optimize the above into
+> > 
+> > 	this_val = *this;
+> > 	xchg_relaxed(this, 1);
+> > 	that_val = *that;
+> > 	reread_this = *this;
+> > 
+> 
+> Seems correct, since there is no barrier().
+> 
+> > but the "memory" clobber in the xchg_relexed() will provide this.
+> 
+> By 'this' here you mean the barrier? I mean, IIUC "memory" clobber will 
+> avoid the above optimization, right?
+> 
 
+Right, seems I mis-typed "provide" (I meant "prevent")
 
-On 1/4/2024 12:47 PM, Krishna Chaitanya Chundru wrote:
-> Hi Steven,
+> > Needless to say the '"+A" (*__ptr)' prevents compiler from the following
+> > optimization:
+> > 
+> > 	this_val = *this;
+> > 	that_val = *that;
+> > 	xchg_relaxed(this, 1);
+> > 	reread_this = this_val;
+> > 
+> > since the compiler knows the asm block will read and write *this.
+>  
+> Right, the compiler knows that address will be wrote by the asm block, and 
+> so it reloads the value instead of re-using the old one.
 > 
-> Can you please review this.
+
+Correct.
+
 > 
-> Thanks & Regards,
+> A question, though:
+
+Good question ;-)
+
+> Do we need the "memory" clobber in any other xchg / cmpxchg asm?
+
+The "memory" clobber is needed for others, see below:
+
+> I mean, usually the only write to memory will happen in the *__ptr, which 
+> should be safe by "+A".
 > 
-> Krishna Chaitanya.
+> I understand that since the others are not "relaxed" they will need to 
+> have a barrier, but is not the compiler supposed to understand the barrier 
+> instruction and avoid compiler reordering / optimizations across given 
+> instruction ?  
 > 
-> On 12/7/2023 10:00 AM, Krishna chaitanya chundru wrote:
->> This change adds ftrace support for following functions which
->> helps in debugging the issues when there is Channel state & MHI
->> state change and also when we receive data and control events:
->> 1. mhi_intvec_mhi_states
->> 2. mhi_process_data_event_ring
->> 3. mhi_process_ctrl_ev_ring
->> 4. mhi_gen_tre
->> 5. mhi_update_channel_state
->> 6. mhi_tryset_pm_state
->> 7. mhi_pm_st_worker
->>
->> Where ever the trace events are added, debug messages are removed.
-Is there a reason why debug messages have to be removed? From the view 
-of MHI controller, we often need MHI logs to debug, so is it possbile to 
-preserve those logs?
->>
->> Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
->> ---
->> Changes in v8:
->> - Pass the structure and derefernce the variables in TP_fast_assign as 
->> suggested by steve
->> - Link to v7: 
->> https://lore.kernel.org/r/20231206-ftrace_support-v7-1-aca49a04268b@quicinc.com
->>
->> Changes in v7:
->> - change log format as pointed by mani.
->> - Link to v6: 
->> https://lore.kernel.org/r/20231204-ftrace_support-v6-1-9b206546dac2@quicinc.com
->>
->> Changes in v6:
->> - use 'rp' directly as suggested by jeffrey.
->> - Link to v5: 
->> https://lore.kernel.org/r/20231127-ftrace_support-v5-1-eb67daead4f1@quicinc.com
->>
->> Changes in v5:
->> - Use DECLARE_EVENT_CLASS for multiple events as suggested by steve.
->> - Instead of converting to u64 to print address, use %px to print the 
->> address to avoid
->> - warnings in some platforms.
->> - Link to v4: 
->> https://lore.kernel.org/r/20231111-ftrace_support-v4-1-c83602399461@quicinc.com
->>
->> Changes in v4:
->> - Fix compilation issues in previous patch which happended due to 
->> rebasing.
->> - In the defconfig FTRACE config is not enabled due to that the 
->> compilation issue is not
->> - seen in my workspace.
->> - Link to v3: 
->> https://lore.kernel.org/r/20231111-ftrace_support-v3-1-f358d2911a74@quicinc.com
->>
->> Changes in v3:
->> - move trace header file from include/trace/events to 
->> drivers/bus/mhi/host/ so that
->> - we can include driver header files.
->> - Use macros directly in the trace events as suggested Jeffrey Hugo.
->> - Reorder the structure in the events as suggested by steve to avoid 
->> holes in the buffer.
->> - removed the mhi_to_physical function as this can give security issues.
->> - removed macros to define strings as we can get those from driver 
->> headers.
->> - Link to v2: 
->> https://lore.kernel.org/r/20231013-ftrace_support-v2-1-6e893ce010b5@quicinc.com
->>
->> Changes in v2:
->> - Passing the raw state into the trace event and using  
->> __print_symbolic() as suggested by bjorn.
->> - Change mhi_pm_st_worker to mhi_pm_st_transition as suggested by bjorn.
->> - Fixed the kernel test rebot issues.
->> - Link to v1: 
->> https://lore.kernel.org/r/20231005-ftrace_support-v1-1-23a2f394fa49@quicinc.com
->> ---
->>   drivers/bus/mhi/host/init.c  |   3 +
->>   drivers/bus/mhi/host/main.c  |  19 ++--
->>   drivers/bus/mhi/host/pm.c    |   7 +-
->>   drivers/bus/mhi/host/trace.h | 205 
->> +++++++++++++++++++++++++++++++++++++++++++
->>   4 files changed, 221 insertions(+), 13 deletions(-)
->>
->> diff --git a/drivers/bus/mhi/host/init.c b/drivers/bus/mhi/host/init.c
->> index f78aefd2d7a3..6acb85f4c5f8 100644
->> --- a/drivers/bus/mhi/host/init.c
->> +++ b/drivers/bus/mhi/host/init.c
->> @@ -20,6 +20,9 @@
->>   #include <linux/wait.h>
->>   #include "internal.h"
->> +#define CREATE_TRACE_POINTS
->> +#include "trace.h"
->> +
->>   static DEFINE_IDA(mhi_controller_ida);
->>   const char * const mhi_ee_str[MHI_EE_MAX] = {
->> diff --git a/drivers/bus/mhi/host/main.c b/drivers/bus/mhi/host/main.c
->> index dcf627b36e82..189f4786403e 100644
->> --- a/drivers/bus/mhi/host/main.c
->> +++ b/drivers/bus/mhi/host/main.c
->> @@ -15,6 +15,7 @@
->>   #include <linux/skbuff.h>
->>   #include <linux/slab.h>
->>   #include "internal.h"
->> +#include "trace.h"
->>   int __must_check mhi_read_reg(struct mhi_controller *mhi_cntrl,
->>                     void __iomem *base, u32 offset, u32 *out)
->> @@ -491,11 +492,8 @@ irqreturn_t mhi_intvec_threaded_handler(int 
->> irq_number, void *priv)
->>       state = mhi_get_mhi_state(mhi_cntrl);
->>       ee = mhi_get_exec_env(mhi_cntrl);
->> -    dev_dbg(dev, "local ee: %s state: %s device ee: %s state: %s\n",
->> -        TO_MHI_EXEC_STR(mhi_cntrl->ee),
->> -        mhi_state_str(mhi_cntrl->dev_state),
->> -        TO_MHI_EXEC_STR(ee), mhi_state_str(state));
->> +    trace_mhi_intvec_states(mhi_cntrl, ee, state);
->>       if (state == MHI_STATE_SYS_ERR) {
->>           dev_dbg(dev, "System error detected\n");
->>           pm_state = mhi_tryset_pm_state(mhi_cntrl,
->> @@ -832,6 +830,8 @@ int mhi_process_ctrl_ev_ring(struct mhi_controller 
->> *mhi_cntrl,
->>       while (dev_rp != local_rp) {
->>           enum mhi_pkt_type type = MHI_TRE_GET_EV_TYPE(local_rp);
->> +        trace_mhi_ctrl_event(mhi_cntrl, local_rp);
->> +
->>           switch (type) {
->>           case MHI_PKT_TYPE_BW_REQ_EVENT:
->>           {
->> @@ -997,6 +997,8 @@ int mhi_process_data_event_ring(struct 
->> mhi_controller *mhi_cntrl,
->>       while (dev_rp != local_rp && event_quota > 0) {
->>           enum mhi_pkt_type type = MHI_TRE_GET_EV_TYPE(local_rp);
->> +        trace_mhi_data_event(mhi_cntrl, local_rp);
->> +
->>           chan = MHI_TRE_GET_EV_CHID(local_rp);
->>           WARN_ON(chan >= mhi_cntrl->max_chan);
->> @@ -1235,6 +1237,7 @@ int mhi_gen_tre(struct mhi_controller 
->> *mhi_cntrl, struct mhi_chan *mhi_chan,
->>       mhi_tre->dword[0] = MHI_TRE_DATA_DWORD0(info->len);
->>       mhi_tre->dword[1] = MHI_TRE_DATA_DWORD1(bei, eot, eob, chain);
->> +    trace_mhi_gen_tre(mhi_cntrl, mhi_chan, mhi_tre);
->>       /* increment WP */
->>       mhi_add_ring_element(mhi_cntrl, tre_ring);
->>       mhi_add_ring_element(mhi_cntrl, buf_ring);
->> @@ -1327,9 +1330,7 @@ static int mhi_update_channel_state(struct 
->> mhi_controller *mhi_cntrl,
->>       enum mhi_cmd_type cmd = MHI_CMD_NOP;
->>       int ret;
->> -    dev_dbg(dev, "%d: Updating channel state to: %s\n", mhi_chan->chan,
->> -        TO_CH_STATE_TYPE_STR(to_state));
->> -
->> +    trace_mhi_channel_command_start(mhi_cntrl, mhi_chan, to_state);
->>       switch (to_state) {
->>       case MHI_CH_STATE_TYPE_RESET:
->>           write_lock_irq(&mhi_chan->lock);
->> @@ -1396,9 +1397,7 @@ static int mhi_update_channel_state(struct 
->> mhi_controller *mhi_cntrl,
->>           write_unlock_irq(&mhi_chan->lock);
->>       }
->> -    dev_dbg(dev, "%d: Channel state change to %s successful\n",
->> -        mhi_chan->chan, TO_CH_STATE_TYPE_STR(to_state));
->> -
->> +    trace_mhi_channel_command_end(mhi_cntrl, mhi_chan, to_state);
->>   exit_channel_update:
->>       mhi_cntrl->runtime_put(mhi_cntrl);
->>       mhi_device_put(mhi_cntrl->mhi_dev);
->> diff --git a/drivers/bus/mhi/host/pm.c b/drivers/bus/mhi/host/pm.c
->> index 8a4362d75fc4..5a2394b5b2e1 100644
->> --- a/drivers/bus/mhi/host/pm.c
->> +++ b/drivers/bus/mhi/host/pm.c
->> @@ -15,6 +15,7 @@
->>   #include <linux/slab.h>
->>   #include <linux/wait.h>
->>   #include "internal.h"
->> +#include "trace.h"
->>   /*
->>    * Not all MHI state transitions are synchronous. Transitions like 
->> Linkdown,
->> @@ -123,6 +124,7 @@ enum mhi_pm_state __must_check 
->> mhi_tryset_pm_state(struct mhi_controller *mhi_cn
->>       if (unlikely(!(dev_state_transitions[index].to_states & state)))
->>           return cur_state;
->> +    trace_mhi_tryset_pm_state(mhi_cntrl, state);
->>       mhi_cntrl->pm_state = state;
->>       return mhi_cntrl->pm_state;
->>   }
->> @@ -753,7 +755,6 @@ void mhi_pm_st_worker(struct work_struct *work)
->>       struct mhi_controller *mhi_cntrl = container_of(work,
->>                               struct mhi_controller,
->>                               st_worker);
->> -    struct device *dev = &mhi_cntrl->mhi_dev->dev;
->>       spin_lock_irq(&mhi_cntrl->transition_lock);
->>       list_splice_tail_init(&mhi_cntrl->transition_list, &head);
->> @@ -761,8 +762,8 @@ void mhi_pm_st_worker(struct work_struct *work)
->>       list_for_each_entry_safe(itr, tmp, &head, node) {
->>           list_del(&itr->node);
->> -        dev_dbg(dev, "Handling state transition: %s\n",
->> -            TO_DEV_STATE_TRANS_STR(itr->state));
->> +
->> +        trace_mhi_pm_st_transition(mhi_cntrl, itr->state);
->>           switch (itr->state) {
->>           case DEV_ST_TRANSITION_PBL:
->> diff --git a/drivers/bus/mhi/host/trace.h b/drivers/bus/mhi/host/trace.h
->> new file mode 100644
->> index 000000000000..73c129bb91d9
->> --- /dev/null
->> +++ b/drivers/bus/mhi/host/trace.h
->> @@ -0,0 +1,205 @@
->> +/* SPDX-License-Identifier: GPL-2.0-only */
->> +/*
->> + * Copyright (c) 2023 Qualcomm Innovation Center, Inc. All rights 
->> reserved.
->> + */
->> +
->> +#undef TRACE_SYSTEM
->> +#define TRACE_SYSTEM mhi_host
->> +
->> +#if !defined(_TRACE_EVENT_MHI_HOST_H) || 
->> defined(TRACE_HEADER_MULTI_READ)
->> +#define _TRACE_EVENT_MHI_HOST_H
->> +
->> +#include <linux/tracepoint.h>
->> +#include <linux/trace_seq.h>
->> +#include "../common.h"
->> +#include "internal.h"
->> +
->> +TRACE_EVENT(mhi_gen_tre,
->> +
->> +    TP_PROTO(struct mhi_controller *mhi_cntrl, struct mhi_chan 
->> *mhi_chan,
->> +         struct mhi_ring_element *mhi_tre),
->> +
->> +    TP_ARGS(mhi_cntrl, mhi_chan, mhi_tre),
->> +
->> +    TP_STRUCT__entry(
->> +        __string(name, mhi_cntrl->mhi_dev->name)
->> +        __field(int, ch_num)
->> +        __field(void *, wp)
->> +        __field(__le64, tre_ptr)
->> +        __field(__le32, dword0)
->> +        __field(__le32, dword1)
->> +    ),
->> +
->> +    TP_fast_assign(
->> +        __assign_str(name, mhi_cntrl->mhi_dev->name);
->> +        __entry->ch_num = mhi_chan->chan;
->> +        __entry->wp = mhi_tre;
->> +        __entry->tre_ptr = mhi_tre->ptr;
->> +        __entry->dword0 = mhi_tre->dword[0];
->> +        __entry->dword1 = mhi_tre->dword[1];
->> +    ),
->> +
->> +    TP_printk("%s: Chan: %d Tre: 0x%p Tre buf: 0x%llx dword0: 0x%08x 
->> dword1: 0x%08x\n",
->> +          __get_str(name), __entry->ch_num, __entry->wp, 
->> __entry->tre_ptr,
->> +          __entry->dword0, __entry->dword1)
->> +);
->> +
->> +TRACE_EVENT(mhi_intvec_states,
->> +
->> +    TP_PROTO(struct mhi_controller *mhi_cntrl, int dev_ee, int 
->> dev_state),
->> +
->> +    TP_ARGS(mhi_cntrl, dev_ee, dev_state),
->> +
->> +    TP_STRUCT__entry(
->> +        __string(name, mhi_cntrl->mhi_dev->name)
->> +        __field(int, local_ee)
->> +        __field(int, state)
->> +        __field(int, dev_ee)
->> +        __field(int, dev_state)
->> +    ),
->> +
->> +    TP_fast_assign(
->> +        __assign_str(name, mhi_cntrl->mhi_dev->name);
->> +        __entry->local_ee = mhi_cntrl->ee;
->> +        __entry->state = mhi_cntrl->dev_state;
->> +        __entry->dev_ee = dev_ee;
->> +        __entry->dev_state = dev_state;
->> +    ),
->> +
->> +    TP_printk("%s: local ee: %s state: %s device ee: %s state: %s\n",
->> +          __get_str(name),
->> +          TO_MHI_EXEC_STR(__entry->local_ee),
->> +          mhi_state_str(__entry->state),
->> +          TO_MHI_EXEC_STR(__entry->dev_ee),
->> +          mhi_state_str(__entry->dev_state))
->> +);
->> +
->> +TRACE_EVENT(mhi_tryset_pm_state,
->> +
->> +    TP_PROTO(struct mhi_controller *mhi_cntrl, int pm_state),
->> +
->> +    TP_ARGS(mhi_cntrl, pm_state),
->> +
->> +    TP_STRUCT__entry(
->> +        __string(name, mhi_cntrl->mhi_dev->name)
->> +        __field(int, pm_state)
->> +    ),
->> +
->> +    TP_fast_assign(
->> +        __assign_str(name, mhi_cntrl->mhi_dev->name);
->> +        if (pm_state)
->> +            pm_state = __fls(pm_state);
->> +        __entry->pm_state = pm_state;
->> +    ),
->> +
->> +    TP_printk("%s: PM state: %s\n", __get_str(name),
->> +          to_mhi_pm_state_str(__entry->pm_state))
->> +);
->> +
->> +DECLARE_EVENT_CLASS(mhi_process_event_ring,
->> +
->> +    TP_PROTO(struct mhi_controller *mhi_cntrl, struct 
->> mhi_ring_element *rp),
->> +
->> +    TP_ARGS(mhi_cntrl, rp),
->> +
->> +    TP_STRUCT__entry(
->> +        __string(name, mhi_cntrl->mhi_dev->name)
->> +        __field(__le32, dword0)
->> +        __field(__le32, dword1)
->> +        __field(int, state)
->> +        __field(__le64, ptr)
->> +        __field(void *, rp)
->> +    ),
->> +
->> +    TP_fast_assign(
->> +        __assign_str(name, mhi_cntrl->mhi_dev->name);
->> +        __entry->rp = rp;
->> +        __entry->ptr = rp->ptr;
->> +        __entry->dword0 = rp->dword[0];
->> +        __entry->dword1 = rp->dword[1];
->> +        __entry->state = MHI_TRE_GET_EV_STATE(rp);
->> +    ),
->> +
->> +    TP_printk("%s: Tre: 0x%p Tre buf: 0x%llx dword0: 0x%08x dword1: 
->> 0x%08x state: %s\n",
->> +          __get_str(name), __entry->rp, __entry->ptr, __entry->dword0,
->> +          __entry->dword1, mhi_state_str(__entry->state))
->> +);
->> +
->> +DEFINE_EVENT(mhi_process_event_ring, mhi_data_event,
->> +
->> +    TP_PROTO(struct mhi_controller *mhi_cntrl, struct 
->> mhi_ring_element *rp),
->> +
->> +    TP_ARGS(mhi_cntrl, rp)
->> +);
->> +
->> +DEFINE_EVENT(mhi_process_event_ring, mhi_ctrl_event,
->> +
->> +    TP_PROTO(struct mhi_controller *mhi_cntrl, struct 
->> mhi_ring_element *rp),
->> +
->> +    TP_ARGS(mhi_cntrl, rp)
->> +);
->> +
->> +DECLARE_EVENT_CLASS(mhi_update_channel_state,
->> +
->> +    TP_PROTO(struct mhi_controller *mhi_cntrl, struct mhi_chan 
->> *mhi_chan, int state),
->> +
->> +    TP_ARGS(mhi_cntrl, mhi_chan, state),
->> +
->> +    TP_STRUCT__entry(
->> +        __string(name, mhi_cntrl->mhi_dev->name)
->> +        __field(int, ch_num)
->> +        __field(int, state)
->> +    ),
->> +
->> +    TP_fast_assign(
->> +        __assign_str(name, mhi_cntrl->mhi_dev->name);
->> +        __entry->ch_num = mhi_chan->chan;
->> +        __entry->state = state;
->> +    ),
->> +
->> +    TP_printk("%s: chan%d: Updating state to: %s\n",
->> +          __get_str(name), __entry->ch_num,
->> +          TO_CH_STATE_TYPE_STR(__entry->state))
->> +);
->> +
->> +DEFINE_EVENT(mhi_update_channel_state, mhi_channel_command_start,
->> +
->> +    TP_PROTO(struct mhi_controller *mhi_cntrl, struct mhi_chan 
->> *mhi_chan, int state),
->> +
->> +    TP_ARGS(mhi_cntrl, mhi_chan, state)
->> +);
->> +
->> +DEFINE_EVENT(mhi_update_channel_state, mhi_channel_command_end,
->> +
->> +    TP_PROTO(struct mhi_controller *mhi_cntrl, struct mhi_chan 
->> *mhi_chan, int state),
->> +
->> +    TP_ARGS(mhi_cntrl, mhi_chan, state)
->> +);
->> +
->> +TRACE_EVENT(mhi_pm_st_transition,
->> +
->> +    TP_PROTO(struct mhi_controller *mhi_cntrl, int state),
->> +
->> +    TP_ARGS(mhi_cntrl, state),
->> +
->> +    TP_STRUCT__entry(
->> +        __string(name, mhi_cntrl->mhi_dev->name)
->> +        __field(int, state)
->> +    ),
->> +
->> +    TP_fast_assign(
->> +        __assign_str(name, mhi_cntrl->mhi_dev->name);
->> +        __entry->state = state;
->> +    ),
->> +
->> +    TP_printk("%s: Handling state transition: %s\n", __get_str(name),
->> +          TO_DEV_STATE_TRANS_STR(__entry->state))
->> +);
->> +
->> +#endif
->> +#undef TRACE_INCLUDE_PATH
->> +#define TRACE_INCLUDE_PATH ../../drivers/bus/mhi/host
->> +#undef TRACE_INCLUDE_FILE
->> +#define TRACE_INCLUDE_FILE trace
->> +
->> +#include <trace/define_trace.h>
->>
->> ---
->> base-commit: 3006adf3be79cde4d14b1800b963b82b6e5572e0
->> change-id: 20231005-ftrace_support-6869d4156139
->>
->> Best regards,
+
+The barrier semantics (ACQUIRE/RELEASE/FULL) is provided by the combined
+effort of both 1) preventing compiler optimization by "memory" clobber
+and 2) preventing CPU/memory reordering by arch-specific instructions.
+
+In other words, an asm block contains a hardware barrier instruction
+should always have the "memory" clobber, otherwise, there are
+possiblities that compilers reorder the asm block therefore break the
+ordering provided by the hardware instructions.
+
+Regards,
+Boqun
+
+> 
+> Thanks!
+> Leo
+> 
+> > Regards,
+> > Boqun
+> > 
+> > >     correct values, GCC may need to flush specific register values to 
+> > >     memory before executing the asm. Further, the compiler does not assume 
+> > >     that any values read from memory before an asm remain unchanged after 
+> > >     that asm ; it reloads them as needed. Using the "memory" clobber 
+> > >     effectively forms a read/write memory barrier for the compiler.
+> > > 
+> > >     Note that this clobber does not prevent the processor from doing 
+> > >     speculative reads past the asm statement. To prevent that, you need 
+> > >     processor-specific fence instructions.
+> > > ---
+> > > 
+> > > IIUC above text says that having memory accesses to *__ptr would require 
+> > > above asm to have the "memory" clobber, so memory accesses don't get 
+> > > reordered by the compiler. 
+> > > 
+> > > By above affirmation, all asm in this file should have the "memory" 
+> > > clobber, since all atomic operations will change memory pointed by an input 
+> > > ptr. Is that correct?
+> > > 
+> > > Thanks!
+> > > Leo
+> > > 
+> > > 
+> > > > 
+> > > > Regards,
+> > > > Boqun
+> > > > 
+> > > > > -		break;							\
+> > > > > -	case 8:								\
+> > > > > -		__asm__ __volatile__ (					\
+> > > > > -			"	amoswap.d %0, %2, %1\n"			\
+> > > > > -			: "=r" (__ret), "+A" (*__ptr)			\
+> > > > > -			: "r" (__new)					\
+> > > > > -			: "memory");					\
+> > > > > -		break;							\
+> > > > > -	default:							\
+> > > > > -		BUILD_BUG();						\
+> > > > > -	}								\
+> > > > > -	__ret;								\
+> > > > > -})
+> > > > > -
+> > > > > -#define arch_xchg_relaxed(ptr, x)					\
+> > > > > -({									\
+> > > > > -	__typeof__(*(ptr)) _x_ = (x);					\
+> > > > > -	(__typeof__(*(ptr))) __xchg_relaxed((ptr),			\
+> > > > > -					    _x_, sizeof(*(ptr)));	\
+> > > > > +	__asm__ __volatile__ (						\
+> > > > > +		prepend							\
+> > > > > +		"	amoswap" sfx " %0, %2, %1\n"			\
+> > > > > +		append							\
+> > > > > +		: "=r" (r), "+A" (*(p))					\
+> > > > > +		: "r" (n)						\
+> > > > > +		: "memory");						\
+> > > > >  })
+> > > > >  
+> > > > > -#define __xchg_acquire(ptr, new, size)					\
+> > > > > +#define _arch_xchg(ptr, new, sfx, prepend, append)			\
+> > > > >  ({									\
+> > > > >  	__typeof__(ptr) __ptr = (ptr);					\
+> > > > > -	__typeof__(new) __new = (new);					\
+> > > > > -	__typeof__(*(ptr)) __ret;					\
+> > > > > -	switch (size) {							\
+> > > > > +	__typeof__(*(__ptr)) __new = (new);				\
+> > > > > +	__typeof__(*(__ptr)) __ret;					\
+> > > > > +	switch (sizeof(*__ptr)) {					\
+> > > > >  	case 4:								\
+> > > > > -		__asm__ __volatile__ (					\
+> > > > > -			"	amoswap.w %0, %2, %1\n"			\
+> > > > > -			RISCV_ACQUIRE_BARRIER				\
+> > > > > -			: "=r" (__ret), "+A" (*__ptr)			\
+> > > > > -			: "r" (__new)					\
+> > > > > -			: "memory");					\
+> > > > > +		__arch_xchg(".w" sfx, prepend, append,			\
+> > > > > +			      __ret, __ptr, __new);			\
+> > > > >  		break;							\
+> > > > >  	case 8:								\
+> > > > > -		__asm__ __volatile__ (					\
+> > > > > -			"	amoswap.d %0, %2, %1\n"			\
+> > > > > -			RISCV_ACQUIRE_BARRIER				\
+> > > > > -			: "=r" (__ret), "+A" (*__ptr)			\
+> > > > > -			: "r" (__new)					\
+> > > > > -			: "memory");					\
+> > > > > +		__arch_xchg(".d" sfx, prepend, append,			\
+> > > > > +			      __ret, __ptr, __new);			\
+> > > > >  		break;							\
+> > > > >  	default:							\
+> > > > >  		BUILD_BUG();						\
+> > > > >  	}								\
+> > > > > -	__ret;								\
+> > > > > +	(__typeof__(*(__ptr)))__ret;					\
+> > > > >  })
+> > > > >  
+> > > > > -#define arch_xchg_acquire(ptr, x)					\
+> > > > > -({									\
+> > > > > -	__typeof__(*(ptr)) _x_ = (x);					\
+> > > > > -	(__typeof__(*(ptr))) __xchg_acquire((ptr),			\
+> > > > > -					    _x_, sizeof(*(ptr)));	\
+> > > > > -})
+> > > > > +#define arch_xchg_relaxed(ptr, x)					\
+> > > > > +	_arch_xchg(ptr, x, "", "", "")
+> > > > >  
+> > > > > -#define __xchg_release(ptr, new, size)					\
+> > > > > -({									\
+> > > > > -	__typeof__(ptr) __ptr = (ptr);					\
+> > > > > -	__typeof__(new) __new = (new);					\
+> > > > > -	__typeof__(*(ptr)) __ret;					\
+> > > > > -	switch (size) {							\
+> > > > > -	case 4:								\
+> > > > > -		__asm__ __volatile__ (					\
+> > > > > -			RISCV_RELEASE_BARRIER				\
+> > > > > -			"	amoswap.w %0, %2, %1\n"			\
+> > > > > -			: "=r" (__ret), "+A" (*__ptr)			\
+> > > > > -			: "r" (__new)					\
+> > > > > -			: "memory");					\
+> > > > > -		break;							\
+> > > > > -	case 8:								\
+> > > > > -		__asm__ __volatile__ (					\
+> > > > > -			RISCV_RELEASE_BARRIER				\
+> > > > > -			"	amoswap.d %0, %2, %1\n"			\
+> > > > > -			: "=r" (__ret), "+A" (*__ptr)			\
+> > > > > -			: "r" (__new)					\
+> > > > > -			: "memory");					\
+> > > > > -		break;							\
+> > > > > -	default:							\
+> > > > > -		BUILD_BUG();						\
+> > > > > -	}								\
+> > > > > -	__ret;								\
+> > > > > -})
+> > > > > +#define arch_xchg_acquire(ptr, x)					\
+> > > > > +	_arch_xchg(ptr, x, "", "", RISCV_ACQUIRE_BARRIER)
+> > > > >  
+> > > > >  #define arch_xchg_release(ptr, x)					\
+> > > > > -({									\
+> > > > > -	__typeof__(*(ptr)) _x_ = (x);					\
+> > > > > -	(__typeof__(*(ptr))) __xchg_release((ptr),			\
+> > > > > -					    _x_, sizeof(*(ptr)));	\
+> > > > > -})
+> > > > > -
+> > > > > -#define __arch_xchg(ptr, new, size)					\
+> > > > > -({									\
+> > > > > -	__typeof__(ptr) __ptr = (ptr);					\
+> > > > > -	__typeof__(new) __new = (new);					\
+> > > > > -	__typeof__(*(ptr)) __ret;					\
+> > > > > -	switch (size) {							\
+> > > > > -	case 4:								\
+> > > > > -		__asm__ __volatile__ (					\
+> > > > > -			"	amoswap.w.aqrl %0, %2, %1\n"		\
+> > > > > -			: "=r" (__ret), "+A" (*__ptr)			\
+> > > > > -			: "r" (__new)					\
+> > > > > -			: "memory");					\
+> > > > > -		break;							\
+> > > > > -	case 8:								\
+> > > > > -		__asm__ __volatile__ (					\
+> > > > > -			"	amoswap.d.aqrl %0, %2, %1\n"		\
+> > > > > -			: "=r" (__ret), "+A" (*__ptr)			\
+> > > > > -			: "r" (__new)					\
+> > > > > -			: "memory");					\
+> > > > > -		break;							\
+> > > > > -	default:							\
+> > > > > -		BUILD_BUG();						\
+> > > > > -	}								\
+> > > > > -	__ret;								\
+> > > > > -})
+> > > > > +	_arch_xchg(ptr, x, "", RISCV_RELEASE_BARRIER, "")
+> > > > >  
+> > > > >  #define arch_xchg(ptr, x)						\
+> > > > > -({									\
+> > > > > -	__typeof__(*(ptr)) _x_ = (x);					\
+> > > > > -	(__typeof__(*(ptr))) __arch_xchg((ptr), _x_, sizeof(*(ptr)));	\
+> > > > > -})
+> > > > > +	_arch_xchg(ptr, x, ".aqrl", "", "")
+> > > > >  
+> > > > >  #define xchg32(ptr, x)							\
+> > > > >  ({									\
+> > > > > -- 
+> > > > > 2.43.0
+> > > > > 
+> > > > 
+> > > 
+> > 
 > 
 
