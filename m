@@ -1,192 +1,138 @@
-Return-Path: <linux-kernel+bounces-17389-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17396-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id ECDF6824C8E
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 02:26:32 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EBAAA824CA1
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 02:38:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8BC061F22D00
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 01:26:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8EDEBB238F0
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 01:38:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C62361FBE;
-	Fri,  5 Jan 2024 01:24:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F8B01FC8;
+	Fri,  5 Jan 2024 01:38:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="Clbt61oB";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="i+l8k8Vu"
+	dkim=pass (2048-bit key) header.d=posteo.net header.i=@posteo.net header.b="PoaUFHLO"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
+Received: from mout01.posteo.de (mout01.posteo.de [185.67.36.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C9D81C10;
-	Fri,  5 Jan 2024 01:24:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-	by mailout.west.internal (Postfix) with ESMTP id 24AD23200B83;
-	Thu,  4 Jan 2024 20:24:02 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Thu, 04 Jan 2024 20:24:03 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm1; t=1704417841;
-	 x=1704504241; bh=8oxbnZeja7VLjsmNqyq5U5Vh+kwCbUgeDbgUqppXGZw=; b=
-	Clbt61oBxHKzbCGy07g4rOxFGxLX2tL7ztb/4TkbPXfZQuKZQ/QyOJQC/agh/u3h
-	4fxlz6ral5PdX4FkRqJWcF6oOsXVYXhgCtHv1LjN2lvqDGU7s0B9cTK1b0BBwMSN
-	Z21AW0UE1OfncoCrqw/ZTJ03MT0LBK7yK5qE9/P+P351qT15DP1nWGH4RNBxBmGb
-	tO6f5eGnKgZ1kbYkENSmdY8a4F2wJztAWfX5xOY89USB7OLTQuskrt4lGgi3cc9T
-	w7b9FmxorG2Xa4WFoaEXObUiXijrMNw7TQkTptGio3KGcNk8JF3fr8BDUWUuZWqW
-	oKTxhIxshUpNCydt78/Q0Q==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1704417841; x=
-	1704504241; bh=8oxbnZeja7VLjsmNqyq5U5Vh+kwCbUgeDbgUqppXGZw=; b=i
-	+l8k8VuIIdFlO50LVgUeJ1KML/J4piu+x2pGugwd5FztWf51/Ha/wIbikIFRayzp
-	T7n59YgISpvOMgNWfbOfEuBVVvKfosnDYq6HPcq5F1UX6AmEMkdiAIGBHevcT/Dm
-	S2EUPLEmdWoad7JyXOn3jWXU7RWYCArPyw3wcR4dk1suiIFlEOhaMmkts8ndy248
-	9tDIS1kH9aqutke0Bfh6+hh3+vQGe3Af4gHoOI3D7L0FAvpWUBIWHpzgWAsUQlD0
-	PM+Nmh7bZ8JinIJP3b/Ox/mxbQbRQkLLTndWItk2SNGEQRo4mXSvM982IvCXhiQR
-	DjV2EM404gB2LJeKh54tA==
-X-ME-Sender: <xms:MVqXZSKBaN7TBhy4Zc2VdmVgU2iOjocnFdMiSSbj67X6d8369G6Ugw>
-    <xme:MVqXZaKj0WUXZtlpI0oTrRKBjodl_ocKWNAYGm1i6MNkSwITV2NiXAl395E-aWn6-
-    L0B9LCLdQuyStiJ0w>
-X-ME-Received: <xmr:MVqXZSuQ_v8RvaMsu0noBR27s66DAhhJndwlJlMp5FBIwU845HUb6zYQoIxDtwjSyMxcp4UUBAbEpjxAhOsfvQAgaXUxjOPCktOCE2c>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdegkedgfeehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    gfrhhlucfvnfffucdlfeehmdenucfjughrpeffhffvvefukfhfgggtugfgjgestheksfdt
-    tddtjeenucfhrhhomhepffgrnhhivghlucgiuhcuoegugihusegugihuuhhurdighiiiqe
-    enucggtffrrghtthgvrhhnpeffffeggeekjedvjeegheetkeduhffgfeegveeklefhgeeu
-    leejhfeljedtkeevffenucffohhmrghinhepghhithhhuhgsrdgtohhmnecuvehluhhsth
-    gvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepugiguhesugiguhhuuhdr
-    giihii
-X-ME-Proxy: <xmx:MVqXZXZwcSucBHIhiIBwPwtGo9-q9c77HCauzLkeGXV8HjMuHQH7pw>
-    <xmx:MVqXZZaqYqcT9VxtI0DGRaCm_ZP9bPeKhD8rUgvJ66XIhiV9dl2TcA>
-    <xmx:MVqXZTACdMHw1kpLkYuwllTDf7gxzqYcenRHKF_77XgrFHA__kvrTg>
-    <xmx:MVqXZSIUUz5GnIstwKXA44tQlTXR3xA31LFZ7_wMUlud7BuBd_h6yQ>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 4 Jan 2024 20:24:00 -0500 (EST)
-Date: Thu, 4 Jan 2024 18:23:58 -0700
-From: Daniel Xu <dxu@dxuuu.xyz>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Jiri Olsa <olsajiri@gmail.com>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Andrii Nakryiko <andrii@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Alexei Starovoitov <ast@kernel.org>, 
-	Quentin Monnet <quentin@isovalent.com>, Alan Maguire <alan.maguire@oracle.com>, 
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH bpf-next 1/2] bpf: btf: Support optional flags for
- BTF_SET8 sets
-Message-ID: <dpjloyytomne6efi76qe4mmh3mdjp67penogwbak7ojznf23wc@5gs6o7gc2gdt>
-References: <cover.1704324602.git.dxu@dxuuu.xyz>
- <29644dc7906c7c0e6843d8acf92c3e29089845d0.1704324602.git.dxu@dxuuu.xyz>
- <ZZaVFxMvmMjbOlra@krava>
- <CAADnVQKZZw-e12-BOJsMMiA3s+vOskQEYRqhviQC2rBMf4AckA@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEE6A1FA3
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 01:38:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=posteo.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=posteo.net
+Received: from submission (posteo.de [185.67.36.169]) 
+	by mout01.posteo.de (Postfix) with ESMTPS id E88AB24002B
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 02:29:34 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
+	t=1704418174; bh=oAoNUgdOzVQyPdIoTkmvZg6pLTo+MPwqhbIwlJ+mDsQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:
+	 Content-Transfer-Encoding:From;
+	b=PoaUFHLO4ggfYDOsm28CktkHfOMXkkmHb0FdJC2irtJEUAjRqwlhd60lTiXJjdGrg
+	 HLmeG3CxLNnbOO8hfR2CGqfkWvpei3bKL1dOMb9y1k75MLiv7oSpp458twAWGj3O9T
+	 B9aIbRKjQAnAWWm1sHqv2Petl003wePCEj3vrKNJVj9M2cKJn+4MHhIDqMkxqbCgCc
+	 /7vLkCcQQgegOnkTIK/xDMARnH+589Mk9a+Qgc/811gNgCRzQX20kI+lcEHFA9aphX
+	 D+3psfjMu6ZxypgnZ2y9WngQbplGCuaSec+1Njk+ogJfB+HULCdH4I8LNU7ZWUQBwz
+	 VBf2+ZpwHRsCg==
+Received: from customer (localhost [127.0.0.1])
+	by submission (posteo.de) with ESMTPSA id 4T5m8X48yrz6tv5;
+	Fri,  5 Jan 2024 02:29:32 +0100 (CET)
+From: Charalampos Mitrodimas <charmitro@posteo.net>
+To: ojeda@kernel.org,
+	alex.gaynor@gmail.com,
+	wedsonaf@gmail.com,
+	boqun.feng@gmail.com,
+	gary@garyguo.net,
+	bjorn3_gh@protonmail.com,
+	benno.lossin@proton.me,
+	aliceryhl@google.com,
+	a.hindborg@samsung.com
+Cc: rust-for-linux@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Charalampos Mitrodimas <charmitro@posteo.net>
+Subject: [PATCH] rust: sync: `CondVar` rename "wait_list" to "wait_queue_head"
+Date: Fri,  5 Jan 2024 01:29:30 +0000
+Message-Id: <20240105012930.1426214-1-charmitro@posteo.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAADnVQKZZw-e12-BOJsMMiA3s+vOskQEYRqhviQC2rBMf4AckA@mail.gmail.com>
 
-On Thu, Jan 04, 2024 at 09:11:56AM -0800, Alexei Starovoitov wrote:
-> On Thu, Jan 4, 2024 at 3:23 AM Jiri Olsa <olsajiri@gmail.com> wrote:
-> >
-> > On Wed, Jan 03, 2024 at 04:31:55PM -0700, Daniel Xu wrote:
-> > > This commit adds support for optional flags on BTF_SET8s.
-> > > struct btf_id_set8 already supported 32 bits worth of flags, but was
-> > > only used for alignment purposes before.
-> > >
-> > > We now use these bits to encode flags. The next commit will tag all
-> > > kfunc sets with a flag so that pahole can recognize which
-> > > BTF_ID_FLAGS(func, ..) are actual kfuncs.
-> > >
-> > > Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
-> > > ---
-> > >  include/linux/btf_ids.h | 14 +++++++++-----
-> > >  1 file changed, 9 insertions(+), 5 deletions(-)
-> > >
-> > > diff --git a/include/linux/btf_ids.h b/include/linux/btf_ids.h
-> > > index a9cb10b0e2e9..88f914579fa1 100644
-> > > --- a/include/linux/btf_ids.h
-> > > +++ b/include/linux/btf_ids.h
-> > > @@ -183,17 +183,21 @@ extern struct btf_id_set name;
-> > >   * .word (1 << 3) | (1 << 1) | (1 << 2)
-> > >   *
-> > >   */
-> > > -#define __BTF_SET8_START(name, scope)                        \
-> > > +#define ___BTF_SET8_START(name, scope, flags)                \
-> > >  asm(                                                 \
-> > >  ".pushsection " BTF_IDS_SECTION ",\"a\";       \n"   \
-> > >  "." #scope " __BTF_ID__set8__" #name ";        \n"   \
-> > >  "__BTF_ID__set8__" #name ":;                   \n"   \
-> > > -".zero 8                                       \n"   \
-> > > +".zero 4                                       \n"   \
-> > > +".long " #flags                               "\n"   \
-> > >  ".popsection;                                  \n");
-> > >
-> > > -#define BTF_SET8_START(name)                         \
-> > > +#define __BTF_SET8_START(name, scope, flags, ...)    \
-> > > +___BTF_SET8_START(name, scope, flags)
-> > > +
-> > > +#define BTF_SET8_START(name, ...)                    \
-> > >  __BTF_ID_LIST(name, local)                           \
-> > > -__BTF_SET8_START(name, local)
-> > > +__BTF_SET8_START(name, local, ##__VA_ARGS__, 0)
-> >
-> > I think it'd better to use something like:
-> >
-> >   BTF_SET8_KFUNCS_START(fsverity_set_ids)
-> >
-> > instead of:
-> >
-> >   BTF_SET8_START(fsverity_set_ids, BTF_SET8_KFUNC)
-> >
-> > and to keep current BTF_SET8_START without flags argument, like:
-> >
-> >   #define BTF_SET8_START(name) \
-> >     __BTF_SET8_START(... , 0, ...
-> >
-> >   #define BTF_SET8_KFUNCS_START(name) \
-> >     __BTF_SET8_START(... , BTF_SET8_KFUNC, ...
-> 
-> I was about to suggest the same :)
-> 
-> We can drop SET8 part as well, since it's implementation detail.
-> Just BTF_KFUNCS_START and pair it with BTF_KFUNCS_END
-> that will be the same as BTF_SET8_END.
-> Until we need to do something else with these macros.
+Fields named "wait_list" usually are of type "struct list_head". To
+avoid confusion and because it is of type
+"Opaque<bindings::wait_queue_head>" we are renaming "wait_list" to
+"wait_queue_head".
 
-Ack, will change.
+Signed-off-by: Charalampos Mitrodimas <charmitro@posteo.net>
+---
+ rust/kernel/sync/condvar.rs | 20 ++++++++++++--------
+ 1 file changed, 12 insertions(+), 8 deletions(-)
 
-> 
-> >
-> > also I'd rename BTF_SET8_KFUNC to BTF_SET8_KFUNCS (with S)
-> >
-> > do you have the pahole changes somewhere? would be great to
-> > see all the related changes and try the whole thing
-> 
-> +1
-> without corresponding pahole changes it's not clear whether
-> it actually helps.
+diff --git a/rust/kernel/sync/condvar.rs b/rust/kernel/sync/condvar.rs
+index b679b6f6dbeb..ea0d559fbde5 100644
+--- a/rust/kernel/sync/condvar.rs
++++ b/rust/kernel/sync/condvar.rs
+@@ -73,7 +73,7 @@ macro_rules! new_condvar {
+ #[pin_data]
+ pub struct CondVar {
+     #[pin]
+-    pub(crate) wait_list: Opaque<bindings::wait_queue_head>,
++    pub(crate) wait_queue_head: Opaque<bindings::wait_queue_head>,
+ 
+     /// A condvar needs to be pinned because it contains a [`struct list_head`] that is
+     /// self-referential, so it cannot be safely moved once it is initialised.
+@@ -96,7 +96,7 @@ pub fn new(name: &'static CStr, key: &'static LockClassKey) -> impl PinInit<Self
+             _pin: PhantomPinned,
+             // SAFETY: `slot` is valid while the closure is called and both `name` and `key` have
+             // static lifetimes so they live indefinitely.
+-            wait_list <- Opaque::ffi_init(|slot| unsafe {
++            wait_queue_head <- Opaque::ffi_init(|slot| unsafe {
+                 bindings::__init_waitqueue_head(slot, name.as_char_ptr(), key.as_ptr())
+             }),
+         })
+@@ -108,16 +108,20 @@ fn wait_internal<T: ?Sized, B: Backend>(&self, wait_state: u32, guard: &mut Guar
+         // SAFETY: `wait` points to valid memory.
+         unsafe { bindings::init_wait(wait.get()) };
+ 
+-        // SAFETY: Both `wait` and `wait_list` point to valid memory.
++        // SAFETY: Both `wait` and `wait_queue_head` point to valid memory.
+         unsafe {
+-            bindings::prepare_to_wait_exclusive(self.wait_list.get(), wait.get(), wait_state as _)
++            bindings::prepare_to_wait_exclusive(
++                self.wait_queue_head.get(),
++                wait.get(),
++                wait_state as _,
++            )
+         };
+ 
+         // SAFETY: No arguments, switches to another thread.
+         guard.do_unlocked(|| unsafe { bindings::schedule() });
+ 
+-        // SAFETY: Both `wait` and `wait_list` point to valid memory.
+-        unsafe { bindings::finish_wait(self.wait_list.get(), wait.get()) };
++        // SAFETY: Both `wait` and `wait_queue_head` point to valid memory.
++        unsafe { bindings::finish_wait(self.wait_queue_head.get(), wait.get()) };
+     }
+ 
+     /// Releases the lock and waits for a notification in interruptible mode.
+@@ -144,10 +148,10 @@ pub fn wait_uninterruptible<T: ?Sized, B: Backend>(&self, guard: &mut Guard<'_,
+ 
+     /// Calls the kernel function to notify the appropriate number of threads with the given flags.
+     fn notify(&self, count: i32, flags: u32) {
+-        // SAFETY: `wait_list` points to valid memory.
++        // SAFETY: `wait_queue_head` points to valid memory.
+         unsafe {
+             bindings::__wake_up(
+-                self.wait_list.get(),
++                self.wait_queue_head.get(),
+                 bindings::TASK_NORMAL,
+                 count,
+                 flags as _,
+-- 
+2.39.2
 
-Here's a checkpointed branch: https://github.com/danobi/pahole/tree/kfunc_btf-mailed .
-I won't force push to it.
-
-It should work against this patchset. I might need to clean it up a bit still.
-
-Thanks,
-Daniel
 
