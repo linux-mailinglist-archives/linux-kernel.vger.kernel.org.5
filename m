@@ -1,105 +1,120 @@
-Return-Path: <linux-kernel+bounces-17532-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17533-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C405824EED
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 08:07:25 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8481824EF0
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 08:08:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AB934284FD7
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 07:07:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 007A31C22707
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 07:08:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EFE56ABB;
-	Fri,  5 Jan 2024 07:07:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68AA71C687;
+	Fri,  5 Jan 2024 07:08:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cKu2zwOB"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Kp2USlvH"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28AE8747A
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 07:07:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-50ea9daac4cso1433323e87.3
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 23:07:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704438435; x=1705043235; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=tZCwqmMcpVw5DoaGJK5pGXOUlg8HDlZYwX21/6+Ztyk=;
-        b=cKu2zwOBaW7oQLZkIpP+SPBLgljRH/NK2igsrKnK3SajZD63CQyI1jFw9nMUHeUK57
-         mX8eOcztJe2VMDwPskRpzUKFqzHlmkBgOw99Exn0JosYFJyjAcolIiQ+1KqPgDo1HMwQ
-         9bknBFWnqv8hCU36Kc0/fq6JqmfVTOFyZfF3eiZ1DmLN+7WodKB4qJBs4Z8MvyOoj+gH
-         BL2DaCL0T7M7A/LWEwaqVFyQnfn+WEsNFJzLtFq+xDtNHZZ6Vj1Z46a/vfNLW2D+ixfQ
-         GYvc7aLRHfLbERu5FHu5qgboWZrthwBXEE2dUEtg+Uqlw9ckFYsUhBZH4Nk64wJaVXnv
-         TBQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704438435; x=1705043235;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=tZCwqmMcpVw5DoaGJK5pGXOUlg8HDlZYwX21/6+Ztyk=;
-        b=ST/4JyN/CJtzFmn1wRPwiXtxWSnuxyJNdpGeBYRW3RqqC51D/RBJRR4F2yB/UwjvGq
-         t/YVqHXQ9KBWRwrr+jLb5vwCP5hHgvEU3ESKwfM/Rz45AOPFLItCeqn6zafwpqGYfvlg
-         uaVo9R01fD4H9wPyfdoZDqXP+Bxam4A+Xju2ahzliRS7zeIKS9k1ZaGUkG8GHxJhD+b1
-         eX7Dz9vC06lhQe3RVkPaS1A6M7dLWlAsbyTRt2uQSYzhAaJYgWG3DksSVi2KUB7x5MA3
-         7ku+0P+YQTHcXB5f6yO6pMmuQP+qVxRm8msrS4yO2m2XV2ftFqBZxvQaKkW8Qjj3tBzq
-         WDCg==
-X-Gm-Message-State: AOJu0YxVqtMZpH27h3JgucHh4T+RnFJYVVb3OfkLe5lb8reA+x06f9WD
-	K6e2cbp4wQTCEVKzh3WfHbAhocn+PWcrXw==
-X-Google-Smtp-Source: AGHT+IGTH5AlGgPEiEJsNhzZtPETFR0cHfWpgC5+IldWkVVVvZCn7qsNRZUbxOkHfMXD/m5Q0hNwnQ==
-X-Received: by 2002:ac2:4ecc:0:b0:50e:3e13:e142 with SMTP id p12-20020ac24ecc000000b0050e3e13e142mr696610lfr.118.1704438434762;
-        Thu, 04 Jan 2024 23:07:14 -0800 (PST)
-Received: from ?IPV6:2001:14ba:16f8:1500::7? (dc78bmyyyyyyyyyyyyydt-3.rev.dnainternet.fi. [2001:14ba:16f8:1500::7])
-        by smtp.gmail.com with ESMTPSA id o3-20020a056512230300b0050e9a8057f6sm151851lfu.259.2024.01.04.23.07.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Jan 2024 23:07:14 -0800 (PST)
-Message-ID: <d32e0d41-28b8-423a-a8c6-76cae934d7e3@gmail.com>
-Date: Fri, 5 Jan 2024 09:07:13 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FBFD20306;
+	Fri,  5 Jan 2024 07:08:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704438494; x=1735974494;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=k7NPKkHLDmwR2N923yR5n3HVkP/jGh71yLZZpIHTuqI=;
+  b=Kp2USlvHGJK0W+xXcJlXx8uZuBIXp4A+iEP0SWhQF4XmMKeSTsZu08wb
+   1mU9S6uurcY1vct97GNVEKc303wH9qpI9Nr3X/v4pCeKvjW4IoD8dfoH/
+   XJTq51IYt3f0lpqmRmsZ0T/1wqAZ/8fzCWD/c6kXOZxU8yuu3S9rZs8Zx
+   m04H9ToMlms/txifsTc41Zcc8ksjj9GP2kcujKsmrXoKZ8TiSDPkXbMWY
+   89IXpVEbcexnBzUHnRWJoAYsiaIat3MjuVFvq1MwXcJv/zAm9EDkWgFhl
+   1owcSt5Ye3pOrpudBNrXbiMjGMcDc/6SGsVtvZcNU8ma+0q3K8UkjHUQH
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10943"; a="396333881"
+X-IronPort-AV: E=Sophos;i="6.04,333,1695711600"; 
+   d="scan'208";a="396333881"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2024 23:08:13 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10943"; a="1027683361"
+X-IronPort-AV: E=Sophos;i="6.04,333,1695711600"; 
+   d="scan'208";a="1027683361"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga006.fm.intel.com with ESMTP; 04 Jan 2024 23:08:11 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1001)
+	id 0E54129B; Fri,  5 Jan 2024 09:08:09 +0200 (EET)
+Date: Fri, 5 Jan 2024 09:08:09 +0200
+From: Mika Westerberg <mika.westerberg@linux.intel.com>
+To: Sanath S <sanaths2@amd.com>
+Cc: Sanath S <Sanath.S@amd.com>, mario.limonciello@amd.com,
+	andreas.noever@gmail.com, michael.jamet@intel.com,
+	YehezkelShB@gmail.com, linux-usb@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [Patch v2 2/2] thunderbolt: Teardown tunnels and reset
+ downstream ports created by boot firmware
+Message-ID: <20240105070809.GN2543524@black.fi.intel.com>
+References: <20231219122634.GJ1074920@black.fi.intel.com>
+ <0816caa4-81b5-d0f9-2305-80c7fec6abb9@amd.com>
+ <20231219180424.GL1074920@black.fi.intel.com>
+ <20231220125857.GA2543524@black.fi.intel.com>
+ <5bfaa405-b15e-36ef-a4e0-04b93dd983b1@amd.com>
+ <257c694f-5aa2-c29b-891d-3a1f480dd4a1@amd.com>
+ <20231221095307.GB2543524@black.fi.intel.com>
+ <6308b3e6-d935-93cb-b05d-7c9790b091d4@amd.com>
+ <20240103171709.GL2543524@black.fi.intel.com>
+ <39fc8ce8-baab-bf53-d177-1034dfc81be9@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] regulator: event: Ensure atomicity for sequence number
-Content-Language: en-US, en-GB
-To: Naresh Solanki <naresh.solanki@9elements.com>, broonie@kernel.org,
- Liam Girdwood <lgirdwood@gmail.com>
-Cc: linux-kernel@vger.kernel.org
-References: <20240104141314.3337037-1-naresh.solanki@9elements.com>
-From: Matti Vaittinen <mazziesaccount@gmail.com>
-In-Reply-To: <20240104141314.3337037-1-naresh.solanki@9elements.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <39fc8ce8-baab-bf53-d177-1034dfc81be9@amd.com>
 
-Hi Naresh,
-
-On 1/4/24 16:13, Naresh Solanki wrote:
-> Previously, the sequence number in the regulator event subsystem was
-> updated without atomic operations, potentially leading to race
-> conditions. This commit addresses the issue by making the sequence
-> number atomic.
+On Thu, Jan 04, 2024 at 07:20:05PM +0530, Sanath S wrote:
 > 
-> Signed-off-by: Naresh Solanki <naresh.solanki@9elements.com>
+> On 1/3/2024 10:47 PM, Mika Westerberg wrote:
+> > On Wed, Jan 03, 2024 at 07:45:56PM +0530, Sanath S wrote:
+> > > On 12/21/2023 3:23 PM, Mika Westerberg wrote:
+> > > > On Thu, Dec 21, 2023 at 03:01:50PM +0530, Sanath S wrote:
+> > > > > > Sure. I'll check with these combinations.
+> > > > > Can you name any docks that meets these requirements ? I'll try to get
+> > > > > hold of it here and check.
+> > > > Pretty much every Titan Ridge based dock. For instance Dell WD19TB.
+> > > > 
+> > > > I have some hardware here that I can use to try it out too.
+> > > It seems that issue is seen on Dell WD19TB too. So this fix may have to
+> > > extended to TBT3 as well ?
+> > Hm, what issue? I thought this works accross all the supported devices
+> > due to the DFP, no?
+> > 
+> > > I'll give it a try this week and share the observation.
+> Got my hands on Dell WD19TB. And it works!
+> 
+> Here is lspci -t output with and without fix
+> 
+> without fix:
+>            +-03.1-[04-62]----00.0-[05-07]--+-02.0-[06]----00.0
+>            |                               \-04.0-[07]--
+> With fix:
+>            +-03.1-[04-62]----00.0-[05-62]--+-02.0-[06]----00.0
+>            |                               \-04.0-[07-62]--
+> 
+> I'll send out v3 with with splitting into 2/3 patches(Will see how it looks
+> good).
 
-Maybe this deserves a Fixes tag?
+Okay and you checked also that with the WD19TB (and its integrated xHCI)
+there are no additional boot delays because of the reset?
 
-Other than that this looks great - Thanks!
+> Any other comments, we can take it on v3.
 
-Yours,
-	-- Matti
-
-
--- 
-Matti Vaittinen
-Linux kernel developer at ROHM Semiconductors
-Oulu Finland
-
-~~ When things go utterly wrong vim users can always type :help! ~~
-
+Sure.
 
