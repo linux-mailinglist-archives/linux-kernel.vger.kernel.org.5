@@ -1,65 +1,104 @@
-Return-Path: <linux-kernel+bounces-17422-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17426-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE927824CFD
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 03:36:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 32F9E824D0E
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 03:38:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DFC321C222A5
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 02:36:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 307731C2263D
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 02:38:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67FDC5CBE;
-	Fri,  5 Jan 2024 02:35:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5663442C;
+	Fri,  5 Jan 2024 02:38:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="JIXxl8dP"
+	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="VXwCp7hq";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="87Glr2Ll"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+Received: from wnew3-smtp.messagingengine.com (wnew3-smtp.messagingengine.com [64.147.123.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30925524B
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 02:35:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704422140; x=1735958140;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Vi0eoi8r8C+7nkWC6UdV72H0qgS+bhDRqse1pLGLWsQ=;
-  b=JIXxl8dPJA6qTgrJUQ5M0lxdxY10D6bCrGkE49cGQTY+UdPZFKUav2Ku
-   W4UARMw1h5m0SUIIQhik3g7rZfnE5IiLHwxPLw5EpwHvVJC8U1+TC4Two
-   rvyQVMmgJQZzy4v4gvGqu6Ay9YQF4dlJ7Kna90WNdtfw+NTusA3sePoSs
-   YXoKjBSrLT88OpqevtOujprnT3IRHn6YkfUGjRZP20HJgF9ptJFNuxLYo
-   V6CxvUGciV0Y6BD583uo2tHvP4FaW3GtZPDh5Di2h95CX/n28obxurNeW
-   VerRBIIRzy+BPOVobDRrStoAGpmbCO4jjOBYQuvVzcA5I+R315YMFJSIf
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10943"; a="483589562"
-X-IronPort-AV: E=Sophos;i="6.04,332,1695711600"; 
-   d="scan'208";a="483589562"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2024 18:35:39 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,332,1695711600"; 
-   d="scan'208";a="22705950"
-Received: from yy-desk-7060.sh.intel.com (HELO localhost) ([10.239.159.76])
-  by fmviesa001.fm.intel.com with ESMTP; 04 Jan 2024 18:35:34 -0800
-Date: Fri, 5 Jan 2024 10:35:33 +0800
-From: Yuan Yao <yuan.yao@linux.intel.com>
-To: Kai Huang <kai.huang@intel.com>
-Cc: linux-kernel@vger.kernel.org, x86@kernel.org, dave.hansen@intel.com,
-	kirill.shutemov@linux.intel.com, tglx@linutronix.de, bp@alien8.de,
-	mingo@redhat.com, peterz@infradead.org, rafael@kernel.org,
-	dan.j.williams@intel.com, hpa@zytor.com, geert@linux-m68k.org,
-	bhe@redhat.com, akpm@linux-foundation.org, rppt@kernel.org,
-	frederic@kernel.org, dave.jiang@intel.com, xin3.li@intel.com,
-	rick.p.edgecombe@intel.com, isaku.yamahata@intel.com,
-	yuan.yao@intel.com
-Subject: Re: [PATCH] x86/asm: Remove the __iomem annotation of movdir64b()'s
- dst argument
-Message-ID: <20240105023533.4whnuskzbp4h4gbx@yy-desk-7060>
-References: <20240104221219.572258-1-kai.huang@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DAE420F4;
+	Fri,  5 Jan 2024 02:38:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+	by mailnew.west.internal (Postfix) with ESMTP id 4A5472B00474;
+	Thu,  4 Jan 2024 21:38:06 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute2.internal (MEProxy); Thu, 04 Jan 2024 21:38:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm1; t=1704422285; x=1704429485; bh=hhJPu3tNnq
+	xckGttQAIaSboNHKCsm1A0qRCYF/TLTLQ=; b=VXwCp7hqAkbSThJHwvaHtcMONK
+	k7Zbx7LQStUYGpDYxVIB7DZziK1R9H6eFLqamhAL6NMmIB5rjxStP+zT1uOEtTtm
+	lmO+B5RHcvSzLAitr6mr5EhvAJywcsfelYp2Qr6K4D5wFRk/ytVbNEnOVrl9zgvS
+	ui/sPUhKvEY1QlqoOGMeyBz3tuGHLgCQXDRk64IxQ8Vn4/KAawqNmMJHJ2luEhIy
+	5JswRkn6uaLha9Op5HoMyrdCUnk6FzVvOCkgFY0d6FnZlVz3Ebuoo//NqYeRiVlA
+	h1vxMqOpxe2CKRoSMm1YUyko8tBwsegNiNcR7c4ujYDom3eBhbbyiVf2Sd+g==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1704422285; x=1704429485; bh=hhJPu3tNnqxckGttQAIaSboNHKCs
+	m1A0qRCYF/TLTLQ=; b=87Glr2LldJEIX+FphDwBcyLF9pjPSXtkxx2DELFxgZ9h
+	Kv+Yan/y1ssDandSsWJhDewJg36Xk4MsIpgLXd08Jm6JnCQyzHTx88OUL3zSOLz/
+	LmNlJP/2ZqfNmMghYmQuW4tNgvEBjovd5KBdzBbZFPwiEEAAj+j/EkwXtyYyWzC9
+	tmdrcl9bxFK3+sCI4dplPF23HP5T0QT7ZgRmlLVj5s4Iwnepo9rIolQ83zx7zvUE
+	ptVABJbSyD+Br1QWQGQ9m3ztgWnpIpodF1T8TUBya+GhYMIGAJ8WmWmqxNrteng1
+	WuAKri1h6nqVKWdvw7Ma0M4j0bH4ZfwZnNu8kDKH7w==
+X-ME-Sender: <xms:i2uXZQGRqmDUp5xjuBcrMlr4pnlYSVV6jRx37GkJ1Fn4F0KXQXIIcg>
+    <xme:i2uXZZW_yDlVJwqUvAueDKMdSYO3ODzWJmdtp2wCiVwSmHf-RuklamuE6KSilR-kM
+    nWYJ5VEtwjr2XVyZA>
+X-ME-Received: <xmr:i2uXZaLIVcHJYxsG-JJ9HTTQwKGNJvaVHF2HF-0dHSP1AwmhQlQV9kzSMNrO1I1Iq5-xOnt4rENH_83giA-xVGLzvXAUXRZ6nQ8VFZU>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdegkedggeelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    gfrhhlucfvnfffucdljedtmdenucfjughrpeffhffvvefukfhfgggtuggjsehttdfstddt
+    tddvnecuhfhrohhmpeffrghnihgvlhcuighuuceougiguhesugiguhhuuhdrgiihiieqne
+    cuggftrfgrthhtvghrnhepvdefkeetuddufeeigedtheefffekuedukeehudffudfffffg
+    geeitdetgfdvhfdvnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
+    hfrhhomhepugiguhesugiguhhuuhdrgiihii
+X-ME-Proxy: <xmx:i2uXZSFlAxpevVOLGhgMtHzxLXFOOUvIH8Mmq-SLR2_Jbs6qBiUvAg>
+    <xmx:i2uXZWV5_TQEuLzdkEq6lGBqjqe6rs979NfZ5R4AQZ_nj9z0j2ocxw>
+    <xmx:i2uXZVMKAEvxYx8O1pdzsLA1g6wyYTZXAzmuoGkiX6AjVoXnq4DVOA>
+    <xmx:jWuXZR9gwCbaAGWYBSuJd5u7AFKUS3CCeYfxty9rRcyPhRDYua0qfJuNwnA>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 4 Jan 2024 21:38:00 -0500 (EST)
+Date: Thu, 4 Jan 2024 19:37:58 -0700
+From: Daniel Xu <dxu@dxuuu.xyz>
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: benjamin.tissoires@redhat.com, hawk@kernel.org, edumazet@google.com,
+ 	alexandre.torgue@foss.st.com, ebiggers@kernel.org, tj@kernel.org,
+ rostedt@goodmis.org, 	shuah@kernel.org, martin.lau@linux.dev,
+ ast@kernel.org, fw@strlen.de, 	kuba@kernel.org, pablo@netfilter.org,
+ jikos@kernel.org, john.fastabend@gmail.com, 	mcoquelin.stm32@gmail.com,
+ mhiramat@kernel.org, yonghong.song@linux.dev,
+ 	Herbert Xu <herbert@gondor.apana.org.au>, dsahern@kernel.org,
+ hannes@cmpxchg.org, lizefan.x@bytedance.com, 	pabeni@redhat.com,
+ steffen.klassert@secunet.com, daniel@iogearbox.net, 	tytso@mit.edu,
+ andrii@kernel.org, davem@davemloft.net, kadlec@netfilter.org,
+ 	song@kernel.org, alexei.starovoitov@gmail.com, quentin@isovalent.com,
+ 	alan.maguire@oracle.com, memxor@gmail.com, kpsingh@kernel.org,
+ sdf@google.com, 	haoluo@google.com, mathieu.desnoyers@efficios.com,
+ mykolal@fb.com, 	linux-input@vger.kernel.org,
+ linux-kernel@vger.kernel.org, fsverity@lists.linux.dev,
+ 	bpf@vger.kernel.org, cgroups@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, 	netdev@vger.kernel.org,
+ netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+ 	linux-kselftest@vger.kernel.org,
+ linux-stm32@st-md-mailman.stormreply.com,
+ 	linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH bpf-next 2/2] bpf: treewide: Annotate BPF kfuncs in BTF
+Message-ID: <kblwkuzcblwogxqjv6vgkwat3wuwpopdmk25smlbz3nho7qhes@2dfdponsqxwo>
+References: <cover.1704324602.git.dxu@dxuuu.xyz>
+ <68d5598e5708dfe3370406cd5c946565ca4b50f1.1704324602.git.dxu@dxuuu.xyz>
+ <ZZaZf_8RuX2xqZGf@krava>
+ <bix2uwya2mnk2vgno3vkdpg5kyusq763bmfj2ov6zwpbva6q4h@nqgm3vk4byh5>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -68,113 +107,26 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240104221219.572258-1-kai.huang@intel.com>
-User-Agent: NeoMutt/20171215
+In-Reply-To: <bix2uwya2mnk2vgno3vkdpg5kyusq763bmfj2ov6zwpbva6q4h@nqgm3vk4byh5>
 
-On Fri, Jan 05, 2024 at 11:12:19AM +1300, Kai Huang wrote:
-> Commit e56d28df2f66 ("x86/virt/tdx: Configure global KeyID on all
-> packages") causes below sparse check warning:
->
->   arch/x86/virt/vmx/tdx/tdx.c:683:27: warning: incorrect type in argument 1 (different address spaces)
->   arch/x86/virt/vmx/tdx/tdx.c:683:27:    expected void [noderef] __iomem *dst
->   arch/x86/virt/vmx/tdx/tdx.c:683:27:    got void *
->
-> The reason is TDX must use the MOVDIR64B instruction to convert TDX
-> private memory (which is normal RAM but not MMIO) back to normal.  The
-> TDX code uses existing movdir64b() helper to do that, but the first
-> argument @dst of movdir64b() is annotated with __iomem.
->
-> When movdir64b() was firstly introduced in commit 0888e1030d3e
-> ("x86/asm: Carve out a generic movdir64b() helper for general usage"),
-> it didn't have the __iomem annotation.  But this commit also introduced
-> the same "incorrect type" sparse warning because the iosubmit_cmds512(),
-> which was the solo caller of movdir64b(), has the __iomem annotation.
->
-> This was later fixed by commit 6ae58d871319 ("x86/asm: Annotate
-> movdir64b()'s dst argument with __iomem").  That fix was reasonable
-> because until TDX code the movdir64b() was only used to move data to
-> MMIO location, as described by the commit message:
->
->   ... The current usages send a 64-bytes command descriptor to an MMIO
->   location (portal) on a device for consumption. When future usages for
->   the MOVDIR64B instruction warrant a separate variant of a memory to
->   memory operation, the argument annotation can be revisited.
->
-> Now TDX code uses MOVDIR64B to move data to normal memory so it's time
-> to revisit.
->
-> The SDM says the destination of MOVDIR64B is "memory location specified
-> in a general register", thus it's more reasonable that movdir64b() does
-> not have the __iomem annotation on the @dst.
->
-> Remove the __iomem annotation from the @dst argument of movdir64b() to
-> fix the sparse warning in TDX code.  Similar to memset_io(), introduce a
-> new movdir64b_io() to cover the case where the destination is an MMIO
-> location, and change the solo caller iosubmit_cmds512() to use the new
-> movdir64b_io().
->
-> In movdir64b_io() explicitly use __force in the type casting otherwise
-> there will be below sparse warning:
->
->   warning: cast removes address space '__iomem' of expression
->
-> Fixes: e56d28df2f66 ("x86/virt/tdx: Configure global KeyID on all packages")
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202312311924.tGjsBIQD-lkp@intel.com/
-> Signed-off-by: Kai Huang <kai.huang@intel.com>
+On Thu, Jan 04, 2024 at 06:17:50PM -0700, Daniel Xu wrote:
+[...]
+> > 
+> > also given that we can have modules calling register_btf_kfunc_id_set,
+> > should we just return error instead of the warn?
+> 
+> It looks like quite a few registrations go through late_initcall(),
+> in which error codes are thrown away. I'm looking at
+> init/main.c:do_initcall_level:
+> 
+>         for (fn = initcall_levels[level]; fn < initcall_levels[level+1]; fn++)
+>                 do_one_initcall(initcall_from_entry(fn));
+> 
+> Higher level question: if out of tree module does not follow convention,
+> it would still make sense to WARN(), right?
 
-Reviewed-by: Yuan Yao <yuan.yao@intel.com>
+Ah, I got what you meant now. I'd say returning error makes sense but
+WARN() is also useful. I'll send v2 with both.
 
-> ---
->  arch/x86/include/asm/io.h            | 2 +-
->  arch/x86/include/asm/special_insns.h | 9 +++++++--
->  2 files changed, 8 insertions(+), 3 deletions(-)
->
-> diff --git a/arch/x86/include/asm/io.h b/arch/x86/include/asm/io.h
-> index 76238842406a..de2dc9837f11 100644
-> --- a/arch/x86/include/asm/io.h
-> +++ b/arch/x86/include/asm/io.h
-> @@ -379,7 +379,7 @@ static inline void iosubmit_cmds512(void __iomem *dst, const void *src,
->  	const u8 *end = from + count * 64;
->
->  	while (from < end) {
-> -		movdir64b(dst, from);
-> +		movdir64b_io(dst, from);
->  		from += 64;
->  	}
->  }
-> diff --git a/arch/x86/include/asm/special_insns.h b/arch/x86/include/asm/special_insns.h
-> index d6cd9344f6c7..f661277e52d6 100644
-> --- a/arch/x86/include/asm/special_insns.h
-> +++ b/arch/x86/include/asm/special_insns.h
-> @@ -224,10 +224,10 @@ static inline void serialize(void)
->  }
->
->  /* The dst parameter must be 64-bytes aligned */
-> -static inline void movdir64b(void __iomem *dst, const void *src)
-> +static inline void movdir64b(void *dst, const void *src)
->  {
->  	const struct { char _[64]; } *__src = src;
-> -	struct { char _[64]; } __iomem *__dst = dst;
-> +	struct { char _[64]; } *__dst = dst;
->
->  	/*
->  	 * MOVDIR64B %(rdx), rax.
-> @@ -245,6 +245,11 @@ static inline void movdir64b(void __iomem *dst, const void *src)
->  		     :  "m" (*__src), "a" (__dst), "d" (__src));
->  }
->
-> +static inline void movdir64b_io(void __iomem *dst, const void *src)
-> +{
-> +	movdir64b((void __force *)dst, src);
-> +}
-> +
->  /**
->   * enqcmds - Enqueue a command in supervisor (CPL0) mode
->   * @dst: destination, in MMIO space (must be 512-bit aligned)
->
-> base-commit: 83e1bdc94f32dcf52dfcd2025acc7a2b9376b1e8
-> --
-> 2.43.0
->
+[...]
 
