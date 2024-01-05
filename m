@@ -1,65 +1,63 @@
-Return-Path: <linux-kernel+bounces-18347-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18348-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 01924825BDA
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 21:43:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 89AD1825BDD
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 21:44:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 14BA71C237FD
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 20:43:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AE80E1C22CF2
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 20:44:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8F08364BE;
-	Fri,  5 Jan 2024 20:41:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E408636AF6;
+	Fri,  5 Jan 2024 20:42:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="jPvHm4cA"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="XqyiIYzj"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B91FC20B21
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 20:41:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1704487313;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49B8E364D4
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 20:42:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Fri, 5 Jan 2024 20:42:31 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1704487358;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=IXoAVCkoEpEA5h3FLI3eSkWAzRef2kLAyGV2xcy6gn4=;
-	b=jPvHm4cAU6yszFGbmeHtvbrrPdDCk3k/sl2oaaE35IIY+4radox2nREI0p3u9G2+Jbwwv/
-	WrWmfAa8/3d+f0fzGJCgKvU5WTV3MEVIYewcHVIFLUU5ylCjdAWppz5ORINTG9sSUxfdzW
-	FyrgaJXjPT+S7fJPGyL7dKB5sfiEKZc=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-131-4KEFV3L1NWaTJfcbAeu1bw-1; Fri, 05 Jan 2024 15:41:50 -0500
-X-MC-Unique: 4KEFV3L1NWaTJfcbAeu1bw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 86F16845DC3;
-	Fri,  5 Jan 2024 20:41:49 +0000 (UTC)
-Received: from fedora.redhat.com (unknown [10.22.8.247])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id 52B8BC15A0C;
-	Fri,  5 Jan 2024 20:41:49 +0000 (UTC)
-Received: by fedora.redhat.com (Postfix, from userid 1000)
-	id 9D37728EBDA; Fri,  5 Jan 2024 15:41:48 -0500 (EST)
-Date: Fri, 5 Jan 2024 15:41:48 -0500
-From: Vivek Goyal <vgoyal@redhat.com>
-To: Matthew Wilcox <willy@infradead.org>
-Cc: Hou Tao <houtao@huaweicloud.com>, linux-fsdevel@vger.kernel.org,
-	Miklos Szeredi <miklos@szeredi.hu>,
-	Stefan Hajnoczi <stefanha@redhat.com>, linux-kernel@vger.kernel.org,
-	virtualization@lists.linux.dev, houtao1@huawei.com
-Subject: Re: [PATCH v2] virtiofs: use GFP_NOFS when enqueuing request through
- kworker
-Message-ID: <ZZhpjEwDwMS_mq-u@redhat.com>
-References: <20240105105305.4052672-1-houtao@huaweicloud.com>
- <ZZhjzwnQUEJhNJiq@redhat.com>
- <ZZhkrOdbau2O/B59@casper.infradead.org>
+	bh=YIgLwiupop3bcxFtQ1AH4pX9ofQaPh7Mzpc0S80SOXs=;
+	b=XqyiIYzjEWK+lm3UJXl+Vepjb6r75wBWBi9XIOu99PHz4UoyFsf5hyJcpiTvig2PFZqfAa
+	S8QYTaVvSX4WXvUncN3E9CeUPUh98X6eDHybtqCe7gwZPwEYwS8ILIbBFbc0Oq3mJLVPqB
+	H5ExmHtEKBIoIc+f2+qjmPXgY/QWakI=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Oliver Upton <oliver.upton@linux.dev>
+To: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Jason Gunthorpe <jgg@nvidia.com>, ankita@nvidia.com, maz@kernel.org,
+	suzuki.poulose@arm.com, yuzenghui@huawei.com, will@kernel.org,
+	alex.williamson@redhat.com, kevin.tian@intel.com,
+	yi.l.liu@intel.com, ardb@kernel.org, akpm@linux-foundation.org,
+	gshan@redhat.com, linux-mm@kvack.org, aniketa@nvidia.com,
+	cjia@nvidia.com, kwankhede@nvidia.com, targupta@nvidia.com,
+	vsethi@nvidia.com, acurrid@nvidia.com, apopple@nvidia.com,
+	jhubbard@nvidia.com, danw@nvidia.com, mochs@nvidia.com,
+	kvmarm@lists.linux.dev, kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	james.morse@arm.com
+Subject: Re: [PATCH v3 2/2] kvm: arm64: set io memory s2 pte as normalnc for
+ vfio pci devices
+Message-ID: <ZZhpt8vdlnOP7i82@linux.dev>
+References: <20231208164709.23101-1-ankita@nvidia.com>
+ <20231208164709.23101-3-ankita@nvidia.com>
+ <ZXicemDzXm8NShs1@arm.com>
+ <20231212181156.GO3014157@nvidia.com>
+ <ZXoOieQN7rBiLL4A@linux.dev>
+ <ZXsjv+svp44YjMmh@lpieralisi>
+ <ZXszoQ48pZ7FnQNV@linux.dev>
+ <ZYQ7VjApH1v1QwTW@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -68,37 +66,50 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZZhkrOdbau2O/B59@casper.infradead.org>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
+In-Reply-To: <ZYQ7VjApH1v1QwTW@arm.com>
+X-Migadu-Flow: FLOW_OUT
 
-On Fri, Jan 05, 2024 at 08:21:00PM +0000, Matthew Wilcox wrote:
-> On Fri, Jan 05, 2024 at 03:17:19PM -0500, Vivek Goyal wrote:
-> > On Fri, Jan 05, 2024 at 06:53:05PM +0800, Hou Tao wrote:
-> > > From: Hou Tao <houtao1@huawei.com>
-> > > 
-> > > When invoking virtio_fs_enqueue_req() through kworker, both the
-> > > allocation of the sg array and the bounce buffer still use GFP_ATOMIC.
-> > > Considering the size of both the sg array and the bounce buffer may be
-> > > greater than PAGE_SIZE, use GFP_NOFS instead of GFP_ATOMIC to lower the
-> > > possibility of memory allocation failure.
-> > > 
-> > 
-> > What's the practical benefit of this patch. Looks like if memory
-> > allocation fails, we keep retrying at interval of 1ms and don't
-> > return error to user space.
+On Thu, Dec 21, 2023 at 01:19:18PM +0000, Catalin Marinas wrote:
+
+[...]
+
+> > Apologies, I didn't mean to question what's going on here from the
+> > hardware POV. My concern was more from the kernel + user interfaces POV,
+> > this all seems to work (specifically for PCI) by maintaining an
+> > intentional mismatch between the VFIO stage-1 and KVM stage-2 mappings.
 > 
-> You don't deplete the atomic reserves unnecessarily?
+> If you stare at it long enough, the mismatch starts to look fine ;).
+> Even if you have the VFIO stage 1 Normal NC, KVM stage 2 Normal NC, you
+> can still have the guest setting stage 1 to Device and introduce an
+> architectural mismatch. These aliases have some bad reputation but the
+> behaviour is constrained architecturally.
+> 
+> IMHO we should move on from this attribute mismatch since we can't fully
+> solve it anyway and focus instead on what the device, system can
+> tolerate, who's responsible for deciding which MMIO ranges can be mapped
+> as Normal NC.
 
-Sounds reasonable. 
+Fair enough :) The other slightly unsavory part is that we're baking
+the mapping policy into KVM. I'd prefer it if this policy were kept in
+userspace somehow, but there's no actual usecase for userspace selecting
+memory attributes at this point.
 
-With GFP_NOFS specificed, can we still get -ENOMEM? Or this will block
-indefinitely till memory can be allocated. 
+> If we really want to avoid any aliases (though I think we are spending
+> too many cycles on something that's not a real issue), the only way is
+> to have fd-based mappings in KVM so that there's no VMM alias. After
+> that we need to choose between (2) and (3) since the VMM may no longer
+> be able to probe the device and figure out which ranges need what
+> attributes.
 
-I am trying to figure out with GFP_NOFS, do we still need to check for
--ENOMEM while requeuing the req and asking worker thread to retry after
-1ms. 
+These are the sorts of things I was more worried about. I completely
+agree that the patches are fine for relaxing the 'simple' PCIe use
+cases, I just don't want to establish the precedent that the kernel/KVM
+will be on the hook to work out more complex use cases that may require
+the composition of various mappings.
 
-Thanks
-Vivek
+But I'm happy to table that discussion until the usecase arises :)
 
+-- 
+Thanks,
+Oliver
 
