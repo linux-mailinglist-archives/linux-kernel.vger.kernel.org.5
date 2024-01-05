@@ -1,211 +1,215 @@
-Return-Path: <linux-kernel+bounces-17572-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17573-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C4D0824F80
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 09:12:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E847F824F89
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 09:12:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 05CB31F21E1E
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 08:12:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5C7BD1F229C7
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 08:12:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A3AD21A1C;
-	Fri,  5 Jan 2024 08:11:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6ECD920DC5;
+	Fri,  5 Jan 2024 08:12:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="H5s9vNQ5"
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="isopssAo"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 644BA21A10
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 08:11:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1704442262;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=7YkEKbbO8nP6b5SviC5PFVb5K+BMjmcz+gCKF0Kupek=;
-	b=H5s9vNQ5Syabm4e0xczwcmRIBtAi/G4bu7C8BNE/5oPYAVolvbb5WsNl351U1i+eNtN8gk
-	3B3lUmSDzg37R4f2+yio5EZVIgQsfyg6GHxVXoYqTPGYNCm9CJt3IPGFKRHqB3doyxEc7i
-	F3kF/qdCXhdT7+1YZz8f6/5GB3WpnTo=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-480-6yu2_erbP2GDJa0AT-4rVA-1; Fri,
- 05 Jan 2024 03:10:59 -0500
-X-MC-Unique: 6yu2_erbP2GDJa0AT-4rVA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 835023C1E9D0;
-	Fri,  5 Jan 2024 08:10:58 +0000 (UTC)
-Received: from [10.39.208.29] (unknown [10.39.208.29])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id C885851D5;
-	Fri,  5 Jan 2024 08:10:56 +0000 (UTC)
-Message-ID: <888255d7-e45b-44db-8561-5e9f386603c3@redhat.com>
-Date: Fri, 5 Jan 2024 09:10:55 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B7EA20338;
+	Fri,  5 Jan 2024 08:12:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 4058CJ4h029074;
+	Fri, 5 Jan 2024 02:12:19 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1704442339;
+	bh=4oo81setgdnXvo1G15UrQi66PFN+P1vFRVNht1Ndt/8=;
+	h=Date:From:To:CC:Subject:References:In-Reply-To;
+	b=isopssAoWLIMKqOpaG9FF5+09glr9g+cdZBS2gc4UOjA0CY3LhVQm3AtELk9sfRNs
+	 grZCLx1FsfbuclrTuJ3hxp8VvgGKsr5qp7zuXjk6qzOPZSArT96Wld4nmfOXGMB6WV
+	 uYAhmHx6oafE+taFgafaO+9DCzvWkUflx2ft6+SI=
+Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
+	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 4058CJB0024828
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Fri, 5 Jan 2024 02:12:19 -0600
+Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 5
+ Jan 2024 02:12:18 -0600
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Fri, 5 Jan 2024 02:12:18 -0600
+Received: from localhost ([10.249.131.210])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 4058CHcc089216;
+	Fri, 5 Jan 2024 02:12:18 -0600
+Date: Fri, 5 Jan 2024 13:42:16 +0530
+From: Jai Luthra <j-luthra@ti.com>
+To: Javier Carrasco <javier.carrasco@wolfvision.net>, <rogerq@kernel.org>
+CC: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Heikki Krogerus
+	<heikki.krogerus@linux.intel.com>,
+        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <vigneshr@ti.com>, <d-gole@ti.com>, <nm@ti.com>
+Subject: Re: [PATCH v2 0/4] usb: typec: tipd: add patch update support for
+ tps6598x
+Message-ID: <nza4s2kjmcptz6epbyegwy6wh32buyxm5evnk2jultqblgzs4b@6mzuklpqhby7>
+References: <20231207-tps6598x_update-v2-0-f3cfcde6d890@wolfvision.net>
+ <vmngazj6si7xxss7txenezkcukqje2glhvvs7ipdcx3vjiqvlk@ohmmhhhlryws>
+ <2nqiaxakx6setx4tzgddnbjadbh7miegz5p6wamsbbiyrfuq3x@un2uxajbswkg>
+ <f463e49d-9e69-4bff-a663-3ce7c1093202@wolfvision.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 2/3] vduse: Temporarily fail if control queue features
- requested
-Content-Language: en-US
-To: Jason Wang <jasowang@redhat.com>
-Cc: mst@redhat.com, xuanzhuo@linux.alibaba.com, xieyongji@bytedance.com,
- virtualization@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
- david.marchand@redhat.com, lulu@redhat.com
-References: <20240104153753.2931026-1-maxime.coquelin@redhat.com>
- <20240104153753.2931026-3-maxime.coquelin@redhat.com>
- <CACGkMEtmTY0ux8pw8VQ8SAdgGty=rM1VRkh6c-qBVSaqhYuURw@mail.gmail.com>
-From: Maxime Coquelin <maxime.coquelin@redhat.com>
-Autocrypt: addr=maxime.coquelin@redhat.com; keydata=
- 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
- Mwqu3GQ=
-In-Reply-To: <CACGkMEtmTY0ux8pw8VQ8SAdgGty=rM1VRkh6c-qBVSaqhYuURw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="57vfqsvif4i6elyg"
+Content-Disposition: inline
+In-Reply-To: <f463e49d-9e69-4bff-a663-3ce7c1093202@wolfvision.net>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
+--57vfqsvif4i6elyg
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+On Jan 04, 2024 at 17:25:27 +0100, Javier Carrasco wrote:
+> Hi Jai Luthra,
+> On 04.01.24 16:47, Jai Luthra wrote>> FYI, this series breaks boot for
+> TI SK-AM62A and SK-AM62 which use
+> >> TPS6598x as the USB-C PD chip.
+> >>
+> >> The platforms stopped booting since next-20240103 [1], and reverting=
+=20
+> >> this series [4] seems to fix the issue [2]
+> >>
+> >> Is there any change needed in the board device-tree [3] and bindings?
+> >>
+> >> We don't specify any firmware in the device-tree node, but seems like=
+=20
+> >> that is an assumption in this series. I tried reverting it (below=20
+> >> change) but that did *not* help with the stuck boot.
+> >>Thanks a lot for your high-quality feedback. I am glad to see that you
+> even found a solution to the issue.
+>=20
+> The firmware update only happens if the device is in patch mode ('PTCH'
+> in the Mode register - 0x03), which is the expected behavior because the
+> device waits in that mode until a patch arrives. That is probably the
+> reason why your first attempt did not work (no update was triggered).
 
-On 1/5/24 03:45, Jason Wang wrote:
-> On Thu, Jan 4, 2024 at 11:38 PM Maxime Coquelin
-> <maxime.coquelin@redhat.com> wrote:
->>
->> Virtio-net driver control queue implementation is not safe
->> when used with VDUSE. If the VDUSE application does not
->> reply to control queue messages, it currently ends up
->> hanging the kernel thread sending this command.
->>
->> Some work is on-going to make the control queue
->> implementation robust with VDUSE. Until it is completed,
->> let's fail features check if any control-queue related
->> feature is requested.
->>
->> Signed-off-by: Maxime Coquelin <maxime.coquelin@redhat.com>
->> ---
->>   drivers/vdpa/vdpa_user/vduse_dev.c | 13 +++++++++++++
->>   1 file changed, 13 insertions(+)
->>
->> diff --git a/drivers/vdpa/vdpa_user/vduse_dev.c b/drivers/vdpa/vdpa_user/vduse_dev.c
->> index 0486ff672408..94f54ea2eb06 100644
->> --- a/drivers/vdpa/vdpa_user/vduse_dev.c
->> +++ b/drivers/vdpa/vdpa_user/vduse_dev.c
->> @@ -28,6 +28,7 @@
->>   #include <uapi/linux/virtio_config.h>
->>   #include <uapi/linux/virtio_ids.h>
->>   #include <uapi/linux/virtio_blk.h>
->> +#include <uapi/linux/virtio_ring.h>
->>   #include <linux/mod_devicetable.h>
->>
->>   #include "iova_domain.h"
->> @@ -46,6 +47,15 @@
->>
->>   #define IRQ_UNBOUND -1
->>
->> +#define VDUSE_NET_INVALID_FEATURES_MASK         \
->> +       (BIT_ULL(VIRTIO_NET_F_CTRL_VQ) |        \
->> +        BIT_ULL(VIRTIO_NET_F_CTRL_RX)   |      \
->> +        BIT_ULL(VIRTIO_NET_F_CTRL_VLAN) |      \
->> +        BIT_ULL(VIRTIO_NET_F_GUEST_ANNOUNCE) | \
->> +        BIT_ULL(VIRTIO_NET_F_MQ) |             \
->> +        BIT_ULL(VIRTIO_NET_F_CTRL_MAC_ADDR) |  \
->> +        BIT_ULL(VIRTIO_NET_F_RSS))
-> 
-> We need to make this as well:
-> 
-> VIRTIO_NET_F_CTRL_GUEST_OFFLOADS
+Understood. Btw your mail client seems to mess up quotes/spacing above.
 
-I missed it, and see others have been added in the Virtio spec
-repository (BTW, I see this specific one is missing in the dependency
-list [0], I will submit a patch).
+>=20
+> The problem seems to be related to the reset function, as you already
+> noticed. That function is only called in suspend/resume, if the probe
+> fails and in the remove function.
+>=20
+> Did the probe function fail and if so, could you see why? The reset
+> function is identical for the tps25750 and tps6598x ('GAID' with no
+> parameters), so I wonder why that should be the source of the problem.
 
-I wonder if it is not just simpler to just check for
-VIRTIO_NET_F_CTRL_VQ is requested. As we fail instead of masking out,
-the VDUSE driver won't be the one violating the spec so it should be
-good?
+I added some prints and can see that the probe fails once at=20
+fwnode_usb_role_switch_get() because the other endpoint (of USB device)=20
+is not yet probed. It then re-probes later where it passes.
 
-It will avoid having to update the mask if new features depending on it
-are added (or forgetting to update it).
+The GAID reset being done unconditionally in your series seems to cause=20
+the board to get stuck in the boot process when it hits the above error=20
+due to probe-order between USB subsystem and this IC. My guess would be=20
+SoC stops getting power because we reset the PD chip?
 
-WDYT?
+Anyway, I will send below change as a separate "Fixes:" patch for now,=20
+to keep how things as they were before your series.
 
+If you have a better architecture in mind that can reset only when PTCH=20
+has been applied and not for other probe defers, feel free to send it on=20
+top of it.
+
+> > The following change seems to fix boot on SK-AM62A without reverting=20
+> > this whole series:
+> >=20
+> > ------------------
+> >=20
+> > diff --git a/drivers/usb/typec/tipd/core.c b/drivers/usb/typec/tipd/cor=
+e.c
+> > index a956eb976906a5..8ba2aa05db519b 100644
+> > --- a/drivers/usb/typec/tipd/core.c
+> > +++ b/drivers/usb/typec/tipd/core.c
+> > @@ -1223,11 +1223,16 @@ static int cd321x_reset(struct tps6598x *tps)
+> >  	return 0;
+> >  }
+> > =20
+> > -static int tps6598x_reset(struct tps6598x *tps)
+> > +static int tps25750_reset(struct tps6598x *tps)
+> >  {
+> >  	return tps6598x_exec_cmd_tmo(tps, "GAID", 0, NULL, 0, NULL, 2000, 0);
+> >  }
+> > =20
+> > +static int tps6598x_reset(struct tps6598x *tps)
+> > +{
+> > +	return 0;
+> > +}
+> > +
+> >  static int
+> >  tps25750_register_port(struct tps6598x *tps, struct fwnode_handle *fwn=
+ode)
+> >  {
+> > @@ -1545,7 +1550,7 @@ static const struct tipd_data tps25750_data =3D {
+> >  	.trace_status =3D trace_tps25750_status,
+> >  	.apply_patch =3D tps25750_apply_patch,
+> >  	.init =3D tps25750_init,
+> > -	.reset =3D tps6598x_reset,
+> > +	.reset =3D tps25750_reset,
+> >  };
+> > =20
+> >  static const struct of_device_id tps6598x_of_match[] =3D {
+> >=20
+> > ------------------
+> >=20
+> > I am not an expert on this, will let you/others decide on what should b=
+e=20
+> > the correct way to reset TPS6598x for patching without breaking this SK.
+> >=20
+> >=20
+>=20
+> The driver did not support cold resets before, but that does not mean
+> that they should not happen like it does for the tps25750. Your fix just
+> removes the reset function for the tps6598x, and I would like to know
+> why the reset happened in the fist place.
+>=20
+> Thanks and best regards,
+> Javier Carrasco
+
+--=20
 Thanks,
-Maxime
+Jai
 
-[0]: 
-https://github.com/oasis-tcs/virtio-spec/blob/5fc35a7efb903fc352da81a6d2be5c01810b68d3/device-types/net/description.tex#L129
-> Other than this,
-> 
-> Acked-by: Jason Wang <jasowang@redhat.com>
-> 
-> Thanks
-> 
->> +
->>   struct vduse_virtqueue {
->>          u16 index;
->>          u16 num_max;
->> @@ -1680,6 +1690,9 @@ static bool features_is_valid(struct vduse_dev_config *config)
->>          if ((config->device_id == VIRTIO_ID_BLOCK) &&
->>                          (config->features & (1ULL << VIRTIO_BLK_F_CONFIG_WCE)))
->>                  return false;
->> +       else if ((config->device_id == VIRTIO_ID_NET) &&
->> +                       (config->features & VDUSE_NET_INVALID_FEATURES_MASK))
->> +               return false;
->>
->>          return true;
->>   }
->> --
->> 2.43.0
->>
-> 
+GPG Fingerprint: 4DE0 D818 E5D5 75E8 D45A AFC5 43DE 91F9 249A 7145
 
+--57vfqsvif4i6elyg
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEETeDYGOXVdejUWq/FQ96R+SSacUUFAmWXud8ACgkQQ96R+SSa
+cUUU+hAAj1EAQqSGUPQjU14gRTb72SrzCtpQ6q38GXeyW2xvFuebNmL/869JoFhW
+MA1RZXtMPUPgYSvrUIhxycHaRbN+SFPBMKnX7QtWDDMHZDk9Juoz54tHw0/EirCC
+COfhxz2uSqPMNedd354ZGTZaytU4vjr3NfYAvQUkjfz7Te0tfzuHwhx5eV66kP6E
+Pdu+sZi9ipVSZYTQxUSIU1iiXj51sxq4sgXMHZWeSJLj2pE+o+9RebIsLfcgNjsm
+qBph4KyNDkrEGWwS7i/1rSqHb/uloN9vrZSAGaB3NE7l3e7T0nLASem2i73MXt4D
+c8zuVMeaA0Kg76zYO++OTNBLcSYiWo2HYr9HoCwN634KHMAp2SxyE0cdE5aYkWjY
+KnY9ABbpwEO+wQjP+u1sGpNN8E+RiiNVh+eOpTKCNLvK/DBcbw8mHPKxsQoIcZnC
+Q/8KxjOFskaoyEjyMl0m0nNHWE86k6OfzVfBHyoC2Lc5O7CrQeDXWc2QfH2ps4Xb
+s6ijuI7+Cfrpj/HDl9wNAT+UDDYqCop72HudD+phl6RDiYGCre2NkQ3GnWBnU5Sm
+Hudkrlnbl9ZmfMCLeRALUmYcO2MEoUbB2eHtkZU6oM72jkfu4SZOO94n2HcrNB8W
+uiB5SZw2RZu0PoC6eIhTf5mrsxPbOZDNHyQhK1q2uCzyJChpdo8=
+=qU5w
+-----END PGP SIGNATURE-----
+
+--57vfqsvif4i6elyg--
 
