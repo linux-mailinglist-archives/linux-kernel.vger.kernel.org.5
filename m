@@ -1,117 +1,171 @@
-Return-Path: <linux-kernel+bounces-17419-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17420-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C414824CEF
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 03:28:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 16E81824CF7
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 03:35:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 353D1286DF8
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 02:28:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6F9CB1F23123
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 02:35:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD72520EE;
-	Fri,  5 Jan 2024 02:28:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AC6E373;
+	Fri,  5 Jan 2024 02:35:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Zl7EGVya"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="ce4/JgXB";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="ce4/JgXB"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f67.google.com (mail-ed1-f67.google.com [209.85.208.67])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FDA71FC8;
-	Fri,  5 Jan 2024 02:28:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f67.google.com with SMTP id 4fb4d7f45d1cf-55668ccbb87so335430a12.1;
-        Thu, 04 Jan 2024 18:28:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704421694; x=1705026494; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ccOiYM9FLrb1L7l+W0Hq9BB2myR49TNvkRfKeDKACIo=;
-        b=Zl7EGVyao7t6KXhBV4vTEdGyN9y0N60cwP5Bn2xb0gzNWpWR+jEvRw8B6X9pbokzn2
-         m855+xSSwjyfr/cf6vJvVCMIK7Qs3HaI7NT/wARYrmmPA88xGFR4O7BsdSjMu3TPpbtc
-         qYmp0ODh+nVjc6uqMN8HGK1b9pdRmwGZ4doS/ABpLaWRjeLkGrjyYTdOAz6jIlUMnq+A
-         uL1pEzizbvUKEvo6+NEHQzbNOcVMMZD+ppUZCPwRh89cc2NyoQdOYHvMJi25KYuKuhEX
-         7m7F/stGAAKCVnEQHD5uttzKhTxos8mohTTbjkxrKLL4fYBgHVXJwe1GpwTc7IRAHLmR
-         LB7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704421694; x=1705026494;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ccOiYM9FLrb1L7l+W0Hq9BB2myR49TNvkRfKeDKACIo=;
-        b=toneSY0VBEib99m5ZpyEVmp1epIuXE/bFukj/HSE64KG1Cpwqz8xtThVDk24sXLUt8
-         L+awoLrOcjNrwyRajPJ+LeR/ddvD3JOes6IRcjCduCgg+ZmoVSxROq/tP+k7N2UW3pgM
-         LyH8poMLHNOSwZGcCZmPYqezMvelGsgH+kHXGeFB9r2yS/0+dJC6akPGLfhTVwbJTiYN
-         z0xd4KfHODCbeOQs2YIst8T8aNm/nyL9C9jvmttz3CalmYWtn4mE0go8nCWGlsB8N6Kl
-         7irygPVbU4iQChU7t5FvwW2j/kKXQVYFFVBo9YFRzWiTNbSh9qgaaGxtiIvgHJGKIB33
-         K3uA==
-X-Gm-Message-State: AOJu0Yxu9dB3yuy27wUd5P778j/I8EIehhFS7qdZo3QajZtIrCFUPt8y
-	XMftX/FNHu9qlen4Ls+gbC/w2qYE24DEDHCeVi8=
-X-Google-Smtp-Source: AGHT+IH7vLeO1VzORIF4y45mxMnkYzbKl0chApOBZroiwKHiy6VxpzABtQeC3XXhUSOho+a1mfsL7Wm3qo+VIbr/OjY=
-X-Received: by 2002:a17:907:94c3:b0:a27:e2fc:5a67 with SMTP id
- dn3-20020a17090794c300b00a27e2fc5a67mr1618282ejc.7.1704421693620; Thu, 04 Jan
- 2024 18:28:13 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4F2420EB;
+	Fri,  5 Jan 2024 02:35:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 7D91421DFE;
+	Fri,  5 Jan 2024 02:35:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1704422130; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=H0CJ8fANNvO2ixq7Pn+kIG0ltYTB4ZJd1BUKZhfIgRI=;
+	b=ce4/JgXBWP38apNl3rzbGK1QuSVkmQ6Pko+GF2QAlzzGnLJ06qLrhMihwuXxqnWLPD0osl
+	ADI0IpQluppyOH11AFxNcf0hcCqRVqsbUah/9QM0jzIfroo2/Pv5LIkbHFNoyrmj1JbqYD
+	K/2e3GOsbZSiwYN6yWbVPiXtywsgxlM=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1704422130; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=H0CJ8fANNvO2ixq7Pn+kIG0ltYTB4ZJd1BUKZhfIgRI=;
+	b=ce4/JgXBWP38apNl3rzbGK1QuSVkmQ6Pko+GF2QAlzzGnLJ06qLrhMihwuXxqnWLPD0osl
+	ADI0IpQluppyOH11AFxNcf0hcCqRVqsbUah/9QM0jzIfroo2/Pv5LIkbHFNoyrmj1JbqYD
+	K/2e3GOsbZSiwYN6yWbVPiXtywsgxlM=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 36972137E8;
+	Fri,  5 Jan 2024 02:35:23 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id yJZQK+tql2XhbAAAD6G6ig
+	(envelope-from <wqu@suse.com>); Fri, 05 Jan 2024 02:35:23 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	akpm@linux-foundation.org,
+	christophe.jaillet@wanadoo.fr,
+	andriy.shevchenko@linux.intel.com,
+	David.Laight@ACULAB.COM,
+	ddiss@suse.de,
+	geert@linux-m68k.org,
+	rdunlap@infradead.org
+Subject: [PATCH v4 0/4] kstrtox: introduce memparse_safe()
+Date: Fri,  5 Jan 2024 13:04:58 +1030
+Message-ID: <cover.1704422015.git.wqu@suse.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240104024244.12163-1-Wenhua.Lin@unisoc.com> <20240104024244.12163-2-Wenhua.Lin@unisoc.com>
- <CAHp75VfdCHnPovC+LJyVsh=SGTLXDoDowd+0z+0J-wDF2_yjCQ@mail.gmail.com>
- <CAB9BWhc0WyvMMudKcpuOw3=hqiWrC4e47fri6ywqYojULHnAdQ@mail.gmail.com> <CAAfSe-t3mj7ngwL_EZkp=YNWVdb1HhHjY6OY_xFWXieBp0vmOQ@mail.gmail.com>
-In-Reply-To: <CAAfSe-t3mj7ngwL_EZkp=YNWVdb1HhHjY6OY_xFWXieBp0vmOQ@mail.gmail.com>
-From: wenhua lin <wenhua.lin1994@gmail.com>
-Date: Fri, 5 Jan 2024 10:28:02 +0800
-Message-ID: <CAB9BWhdE3G7P=g4C-kLhE96+GnMNOjnNNP8LszjHhY83e=ojFg@mail.gmail.com>
-Subject: Re: [PATCH V3 1/4] gpio: eic-sprd: Keep the clock rtc_1k on
-To: Chunyan Zhang <zhang.lyra@gmail.com>
-Cc: Andy Shevchenko <andy.shevchenko@gmail.com>, Wenhua Lin <Wenhua.Lin@unisoc.com>, 
-	Linus Walleij <linus.walleij@linaro.org>, Andy Shevchenko <andy@kernel.org>, 
-	Bartosz Golaszewski <brgl@bgdev.pl>, Orson Zhai <orsonzhai@gmail.com>, 
-	Baolin Wang <baolin.wang@linux.alibaba.com>, linux-gpio@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Xiongpeng Wu <xiongpeng.wu@unisoc.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Spam-Level: ****
+X-Spam-Level: 
+X-Spamd-Bar: /
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b="ce4/JgXB"
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-0.01 / 50.00];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 R_MISSING_CHARSET(2.50)[];
+	 TO_DN_NONE(0.00)[];
+	 BROKEN_CONTENT_TYPE(1.50)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_TRACE(0.00)[suse.com:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_SEVEN(0.00)[9];
+	 NEURAL_HAM_SHORT(-0.20)[-0.995];
+	 FREEMAIL_TO(0.00)[vger.kernel.org,linux-foundation.org,wanadoo.fr,linux.intel.com,ACULAB.COM,suse.de,linux-m68k.org,infradead.org];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 BAYES_HAM(-0.00)[24.27%];
+	 ARC_NA(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	 URIBL_BLOCKED(0.00)[suse.com:dkim];
+	 FROM_HAS_DN(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[wanadoo.fr];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 DWL_DNSWL_HI(-3.50)[suse.com:dkim];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 MID_CONTAINS_FROM(1.00)[];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 RCVD_TLS_ALL(0.00)[]
+X-Spam-Score: -0.01
+X-Rspamd-Queue-Id: 7D91421DFE
+X-Spam-Flag: NO
 
-On Fri, Jan 5, 2024 at 10:18=E2=80=AFAM Chunyan Zhang <zhang.lyra@gmail.com=
-> wrote:
->
-> On Fri, 5 Jan 2024 at 10:11, wenhua lin <wenhua.lin1994@gmail.com> wrote:
-> >
-> > On Thu, Jan 4, 2024 at 9:00=E2=80=AFPM Andy Shevchenko
-> > <andy.shevchenko@gmail.com> wrote:
-> > >
-> > > On Thu, Jan 4, 2024 at 4:43=E2=80=AFAM Wenhua Lin <Wenhua.Lin@unisoc.=
-com> wrote:
-> > > >
-> > > > The eic debounce does not have a clock of rtc_1k in the sleep state=
-,
-> > > > but the eic debounce will be used to wake up the system, therefore =
-the
-> > > > clock of rtc_1k needs to be kept open.
-> > >
-> > > ...
-> > >
-> > > > +#define SPRD_EIC_DBNC_FORCE_CLK                0x8000
-> > >
-> > > BIT(15) ?
-> > >
-> >
-> > Yes, writing 1 to bit15 of the register can ensure that the clock of
-> > rtc_1k remains normally on.
->
-> Andy's comment means that you should use BIT(15) instead of 0x8000.
->
+[CHANGELOG]
+v4:
+- Extra test cases for supported but not enabled suffixes
 
-OK, thank you very much for your explanation, I will make changes in patch =
-v4.
+- Comments update for memparse_safe() function
 
-> >
-> > > --
-> > > With Best Regards,
-> > > Andy Shevchenko
+v3:
+- Fix the 32bit pointer pattern in the test case
+  The old pointer pattern for 32 bit systems is in fact 40 bits,
+  which would still lead to sparse warning.
+  The newer pattern is using UINTPTR_MAX to trim the pattern, then
+  converted to a pointer, which should not cause any trimmed bits and
+  make sparse happy.
+
+v2:
+- Make _parse_integer_fixup_radix() to always treat "0x" as hex
+  This is to make sure invalid strings like "0x" or "0xG" to fail
+  as expected for memparse_safe().
+  Or they would only parse the first 0, then leaving "x" for caller
+  to handle.
+
+- Update the test case to include above failure cases
+  This including:
+  * "0x", just hex prefix without any suffix/follow up chars
+  * "0xK", just hex prefix and a stray suffix
+  * "0xY", hex prefix with an invalid char
+
+- Fix a bug in btrfs' conversion to memparse_safe()
+  Where I forgot to delete the old memparse() line.
+
+- Fix a compiler warning on m68K
+  On that platform, a pointer (32 bits) is smaller than unsigned long long
+  (64 bits), which can cause static checker to warn.
+
+
+Qu Wenruo (4):
+  kstrtox: always skip the leading "0x" even if no more valid chars
+  kstrtox: introduce a safer version of memparse()
+  kstrtox: add unit tests for memparse_safe()
+  btrfs: migrate to the newer memparse_safe() helper
+
+ arch/x86/boot/string.c  |   2 +-
+ fs/btrfs/ioctl.c        |   6 +-
+ fs/btrfs/super.c        |   9 +-
+ fs/btrfs/sysfs.c        |  14 ++-
+ include/linux/kernel.h  |   8 +-
+ include/linux/kstrtox.h |  15 +++
+ lib/cmdline.c           |   4 +-
+ lib/kstrtox.c           | 101 ++++++++++++++++-
+ lib/test-kstrtox.c      | 244 ++++++++++++++++++++++++++++++++++++++++
+ 9 files changed, 394 insertions(+), 9 deletions(-)
+
+-- 
+2.43.0
+
 
