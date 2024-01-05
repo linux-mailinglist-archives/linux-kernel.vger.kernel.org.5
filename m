@@ -1,67 +1,67 @@
-Return-Path: <linux-kernel+bounces-18180-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18181-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 010388259C0
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 19:11:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0879F8259C1
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 19:11:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 77B5C281FDC
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 18:11:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A9FD31F215EF
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 18:11:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 078E134CEC;
-	Fri,  5 Jan 2024 18:10:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94B8035EE5;
+	Fri,  5 Jan 2024 18:10:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fLp9yzjT"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ranP5ZS/"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5022D358AD;
-	Fri,  5 Jan 2024 18:10:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 263EAC433C8;
-	Fri,  5 Jan 2024 18:10:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E21A734CFB
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 18:10:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id AC77EC433C7;
+	Fri,  5 Jan 2024 18:10:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704478229;
-	bh=0p6QTSUgNzsy9asxqQk+44xwJruAdICSzwzpvoLiajU=;
+	s=k20201202; t=1704478234;
+	bh=HV2Y664w3mLSdcccQxqpMckpIZZA7fliiX+xduyIYU4=;
 	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=fLp9yzjTqfVghbhL0XHqYq7jtiEH/lsZ3gjAcLgE2B7N9HGSIaZa7R45PYSeApc5d
-	 TYBh1gjUUbCHBEqbrh0cd9B42NhhQSwqk9DMmk/pgkv6YdJ9bq0Jg3Y4t83tcA3Bh5
-	 1YWZUuAhGgjccL+/z3GEr0Y1TZmv+HY5kMBQj/gFXXWrukS4TedIhI+pHQHdQ6e8Re
-	 us67HIy09q92LMbv+F3X97qVgj2WYnj+rarYFnf5IEiex5CwPsg2lDghzwgwWC900H
-	 UlTp3rZS4BxdP9+v8N9fytHvNTOdQKMl9UA0ZZTz41TSgqzc42cd/EwKVqYMDuL6oC
-	 62iCNSSh3oNug==
+	b=ranP5ZS/0VAQMFjQQAnHEuL3IvGGnV0EEN04s0gf1WClxJpZOMKgVbULhIbpqXUj4
+	 cF8noUwaCBoqHwI/TU1tle6v5E4yNulcC56t5NMDj8GZ3GLWUe/6SCb/MkDixzMCqo
+	 PJ1xvGWQTuIm1mQ0pxN6vk4PnZ55TEzK/Pf6Yg5WQZjE6AzJfA4sNI8D4YVigzIJZ5
+	 YUYx/ChfRn+VGFBuoiIyeqPLsTn/rj+WxVw/BL02NPeJFJ44VpUhIaIQf7HXY8IeMe
+	 pAqwdi4SvsRMnKP1j4ASRMyq1Yn0bvRwGZD3cyISpJbNkMFVBnum71zw3DfqMHuFrY
+	 NOGBl3ZIG7z8g==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 14362DCB6D8;
-	Fri,  5 Jan 2024 18:10:29 +0000 (UTC)
-Subject: Re: [GIT PULL] SMB3 client multichannel fixes
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 9A222C4167E;
+	Fri,  5 Jan 2024 18:10:34 +0000 (UTC)
+Subject: Re: [GIT PULL] probes: Fixes for v6.7
 From: pr-tracker-bot@kernel.org
-In-Reply-To: <CAH2r5msj3W0t7QqkZuTgP9vW+gF=P2Y53ELGaiQe_Xi-pyTHfA@mail.gmail.com>
-References: <CAH2r5msj3W0t7QqkZuTgP9vW+gF=P2Y53ELGaiQe_Xi-pyTHfA@mail.gmail.com>
-X-PR-Tracked-List-Id: <linux-cifs.vger.kernel.org>
-X-PR-Tracked-Message-Id: <CAH2r5msj3W0t7QqkZuTgP9vW+gF=P2Y53ELGaiQe_Xi-pyTHfA@mail.gmail.com>
-X-PR-Tracked-Remote: git://git.samba.org/sfrench/cifs-2.6.git tags/6.7-rc8-smb3-mchan-fixes
-X-PR-Tracked-Commit-Id: 09eeb0723f219fbd96d8865bf9b935e03ee2ec22
+In-Reply-To: <20240105001858.865e3794558a326e146e9c3a@kernel.org>
+References: <20240105001858.865e3794558a326e146e9c3a@kernel.org>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20240105001858.865e3794558a326e146e9c3a@kernel.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace.git probes-fixes-v6.7-rc8
+X-PR-Tracked-Commit-Id: f5d03da48d062966c94f0199d20be0b3a37a7982
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 3eca89454aec4278c0debc918b4978a3f4a0581e
-Message-Id: <170447822907.11319.13715010278654155092.pr-tracker-bot@kernel.org>
-Date: Fri, 05 Jan 2024 18:10:29 +0000
-To: Steve French <smfrench@gmail.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, LKML <linux-kernel@vger.kernel.org>, CIFS <linux-cifs@vger.kernel.org>
+X-PR-Merge-Commit-Id: 7131c2e9bba7aef8669fc8b21a52de5cf134b010
+Message-Id: <170447823462.11319.12754990664222080547.pr-tracker-bot@kernel.org>
+Date: Fri, 05 Jan 2024 18:10:34 +0000
+To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, Jinghao Jia <jinghao7@illinois.edu>, Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, linux-kernel@vger.kernel.org
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 
-The pull request you sent on Wed, 3 Jan 2024 23:46:36 -0600:
+The pull request you sent on Fri, 5 Jan 2024 00:18:58 +0900:
 
-> git://git.samba.org/sfrench/cifs-2.6.git tags/6.7-rc8-smb3-mchan-fixes
+> git://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace.git probes-fixes-v6.7-rc8
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/3eca89454aec4278c0debc918b4978a3f4a0581e
+https://git.kernel.org/torvalds/c/7131c2e9bba7aef8669fc8b21a52de5cf134b010
 
 Thank you!
 
