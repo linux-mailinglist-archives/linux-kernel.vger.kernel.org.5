@@ -1,74 +1,76 @@
-Return-Path: <linux-kernel+bounces-17876-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17879-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E234E825473
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 14:29:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E3BB282547E
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 14:31:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 28BE4283DBD
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 13:29:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DEB391C21B99
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 13:31:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAA312D638;
-	Fri,  5 Jan 2024 13:29:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82FDA2D61B;
+	Fri,  5 Jan 2024 13:31:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Y+t3z5BE"
+	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="T2rSBTry"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93D872D622
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 13:29:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2ccbbb5eb77so19160091fa.2
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Jan 2024 05:29:04 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 517C72D609
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 13:31:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a27cd5850d6so168528966b.1
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Jan 2024 05:31:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1704461342; x=1705066142; darn=vger.kernel.org;
+        d=ventanamicro.com; s=google; t=1704461500; x=1705066300; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ASWjxY9bYtd6yliDsY5d/0hRbPDLTJ1ay0QqVhdDXiQ=;
-        b=Y+t3z5BEantJQJNDgbWipMM1ZSxq4BGzpsmUYeIIlnuzSbIae/KqSZ5dO0YZkxq0JK
-         tstCj5ZfCb8FP9SvUMXDTHEp+P34/vQR2tYB3E43eubskGrM8+K+tvD8hP+tx7dzmNo3
-         YypRnSo9zIykP4p4UJ5oRWW2JsijzTbHp1akA+8OkpubpkrF5b8bnbbw8alGgagNbL/Y
-         vuJJ+puDe14WQOQEAQy9QNGeWGHxKZi2o5ZJqjsoqF84uDZESv/6S3R/mGUewgnRhYVf
-         3ep1muj1BkPRYEBhxmHKFK2WOuWB7mtEgukT4/iQqxaEnQtKx6wL5wUi6JHR/D5N7aHG
-         0gSw==
+        bh=tgP+th0N7B9odu3YvrC1EGNYppOPseXtnsirIxKlnzQ=;
+        b=T2rSBTry2/mDpiuajiNPPpZdKnz1lWBMk6CVmwc7+qH8meFgkwN8iCJXL1PlMwZVAf
+         exSS/IxZ9wykmVhnQwuWPPToZAH9rLzDg3k84dek4peCydbieojVLpUy1GGJCgsX8uqY
+         FlfYEunHeb99zbDVtFu65nXvUqJdJRfR0B+xzy/MoNtbWbgjBPC+3j7Q+R5M0oRjsaeI
+         hfT79ZjnYxI3DJS3WpYCFeuET49xjqM0nqmTq2oFBVWaE87zaEWvSKLl61Y2xgnq+HPc
+         zdUDVoWmL31am6eu91hO+S3kaUNR33L2dF48e7q/TpJVtGyYVMwHm7bT5pZZeY8A4cUM
+         W4Xg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704461342; x=1705066142;
+        d=1e100.net; s=20230601; t=1704461500; x=1705066300;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ASWjxY9bYtd6yliDsY5d/0hRbPDLTJ1ay0QqVhdDXiQ=;
-        b=ZWecpbJMnU0pZ6eKvTeCBWbiR4xuP4ZXtEuP9YrDLSpfLddw2wkI6gaR371FrtHaLv
-         Audv0D0NaWy3caunEjNIREUO6WNmEIzO23KZHx3h4enYsFmnuGb+L41Ou8oqGGxQ7QrF
-         vAv9KprzqDZhJy4VnZOobg+ELH4vas2FwmPhB/LCfei9UQ2Ge1z9qD1ELM3mbXR/1RY5
-         UiNr0+ELBF4957VTlfR0Rgp4Ozeyv76UJ+/LXQy4DN9qVkNXm3xWtBBvApIp//tCYtP3
-         S7Hz+tcXiekLysL24mHzL7vjZcwnKa7ppDMRazH7AOh0EVSAGT5pd8+IDgLPglnzjVgw
-         KxkQ==
-X-Gm-Message-State: AOJu0YxVlNEkCPnFMlsB3xwtWLJK4TFeJ4qRBfM5wC/k2zdkKFeoBkL/
-	IZbqTkleJoJGwYr6S6P/lgApJL3oklwKSg==
-X-Google-Smtp-Source: AGHT+IHc5l6upSwV5sbrVEe3KVi6IBAXvXZ3/tYg+DD3V9wzguKuMa5CHp8wkjWkZ/MX/Eo/kg1c3g==
-X-Received: by 2002:a2e:99cd:0:b0:2cc:e379:88b6 with SMTP id l13-20020a2e99cd000000b002cce37988b6mr1112771ljj.27.1704461342534;
-        Fri, 05 Jan 2024 05:29:02 -0800 (PST)
-Received: from alley ([176.114.240.50])
-        by smtp.gmail.com with ESMTPSA id o13-20020aa7d3cd000000b0055507ee70a4sm966984edr.23.2024.01.05.05.29.01
+        bh=tgP+th0N7B9odu3YvrC1EGNYppOPseXtnsirIxKlnzQ=;
+        b=M0iIjSEgQFpg8AQYerZC6pymzJZnR2RgHg1i4piBdfsL2SwNnoSG7R3E77gbXejGBU
+         2RGimbmx8QjlgJEaHKmjECvgo0qdzPY8HCr4YdRheyWHI2sERSlQM4qD39Ll00iVEH8F
+         ZAv/SGcVK/sx+d+KgDppkhfHovPe/Wh/IH+doAHpQ2P4TUnJEeCJPvEIPCYFgAnDGxIP
+         mqzNRFvHVGCAYh5MRjuEYE6fqNYCRmr8/gn26M6ZqV4GozLA79gi22hogXux2VT5qBjt
+         QYqnp3uGP43iw+jbUX1UcEQ6qKCjLHOl3opRnPKZRU+3HKRU3/dJGvDf67QNFgMVhzqc
+         7ZqA==
+X-Gm-Message-State: AOJu0YywQGSEoISkvRxkPCLyrCC4C96kEzmdYreeYuuUmpexx85Ruozg
+	4FCg5B0S+iu13SDtOdIQ41iEqf454yf0wQ==
+X-Google-Smtp-Source: AGHT+IHsDn1zlEL9dKqlyookSTiwAgSDkb7D5CEkubKbDV9ro1vL62QGKpKBt5CAdUiG8cQsJUxVQw==
+X-Received: by 2002:a17:906:aad3:b0:a28:b21b:ee5 with SMTP id kt19-20020a170906aad300b00a28b21b0ee5mr1051218ejb.75.1704461500565;
+        Fri, 05 Jan 2024 05:31:40 -0800 (PST)
+Received: from localhost (2001-1ae9-1c2-4c00-20f-c6b4-1e57-7965.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:20f:c6b4:1e57:7965])
+        by smtp.gmail.com with ESMTPSA id k27-20020a1709061c1b00b00a272de16f52sm885194ejg.112.2024.01.05.05.31.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Jan 2024 05:29:02 -0800 (PST)
-Date: Fri, 5 Jan 2024 14:29:00 +0100
-From: Petr Mladek <pmladek@suse.com>
-To: Lukas Hruska <lhruska@suse.cz>
-Cc: Miroslav Benes <mbenes@suse.cz>, Josh Poimboeuf <jpoimboe@kernel.org>,
-	Joe Lawrence <joe.lawrence@redhat.com>,
-	live-patching@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-kbuild@vger.kernel.org,
-	Marcos Paulo de Souza <mpdesouza@suse.com>,
-	Josh Poimboeuf <jpoimboe@redhat.com>
-Subject: Re: [PATCH v1 2/5] livepatch: Add klp-convert tool
-Message-ID: <ZZgEHFIbfCbSWy4N@alley>
-References: <20231106162513.17556-1-lhruska@suse.cz>
- <20231106162513.17556-3-lhruska@suse.cz>
+        Fri, 05 Jan 2024 05:31:39 -0800 (PST)
+Date: Fri, 5 Jan 2024 14:31:39 +0100
+From: Andrew Jones <ajones@ventanamicro.com>
+To: guoren@kernel.org
+Cc: paul.walmsley@sifive.com, palmer@dabbelt.com, 
+	panqinglin2020@iscas.ac.cn, bjorn@rivosinc.com, conor.dooley@microchip.com, 
+	leobras@redhat.com, peterz@infradead.org, keescook@chromium.org, 
+	wuwei2016@iscas.ac.cn, xiaoguang.xing@sophgo.com, chao.wei@sophgo.com, 
+	unicorn_wang@outlook.com, uwu@icenowy.me, jszhang@kernel.org, wefu@redhat.com, 
+	atishp@atishpatra.org, linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	Guo Ren <guoren@linux.alibaba.com>
+Subject: Re: Re: [PATCH V2 2/3] riscv: Add ARCH_HAS_PRETCHW support with Zibop
+Message-ID: <20240105-6dba80fb50413c0869b0beb3@orel>
+References: <20231231082955.16516-1-guoren@kernel.org>
+ <20231231082955.16516-3-guoren@kernel.org>
+ <20240102-7e62facbd8322db4dee4b0dd@orel>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -77,225 +79,73 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231106162513.17556-3-lhruska@suse.cz>
+In-Reply-To: <20240102-7e62facbd8322db4dee4b0dd@orel>
 
-On Mon 2023-11-06 17:25:10, Lukas Hruska wrote:
-> Livepatches need to access external symbols which can't be handled
-> by the normal relocation mechanism. It is needed for two types
-> of symbols:
+On Tue, Jan 02, 2024 at 11:45:08AM +0100, Andrew Jones wrote:
 > 
->   + Symbols which can be local for the original livepatched function.
->     The alternative implementation in the livepatch sees them
->     as external symbols.
+> s/Zibop/Zicbop/ <<<$SUBJECT
 > 
->   + Symbols in modules which are exported via EXPORT_SYMBOL*(). They
->     must be handled special way otherwise the livepatch module would
->     depend on the livepatched one. Loading such livepatch would cause
->     loading the other module as well.
+> On Sun, Dec 31, 2023 at 03:29:52AM -0500, guoren@kernel.org wrote:
+> > From: Guo Ren <guoren@linux.alibaba.com>
+> > 
+> > Enable Linux prefetchw primitive with Zibop cpufeature, which preloads
 > 
-> The address of these symbols can be found via kallsyms. Or they can 
-
-Please, remove the extra space at the end of the line.
-
-> be relocated using livepatch specific relocation sections as specified
-> in Documentation/livepatch/module-elf-format.txt.
+> Also s/Zibop/Zicbop/ here
 > 
-> Currently, there is no trivial way to embed the required information as
-> requested in the final livepatch elf object. klp-convert solves this
-> problem by using annotations in the elf object to convert the relocation
-> accordingly to the specification, enabling it to be handled by the
-> livepatch loader.
+> > cache line into L1 cache for the next write operation.
+> > 
+> > Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+> > Signed-off-by: Guo Ren <guoren@kernel.org>
+> > ---
+> >  arch/riscv/include/asm/processor.h | 16 ++++++++++++++++
+> >  1 file changed, 16 insertions(+)
+> > 
+> > diff --git a/arch/riscv/include/asm/processor.h b/arch/riscv/include/asm/processor.h
+> > index f19f861cda54..8d3a2ab37678 100644
+> > --- a/arch/riscv/include/asm/processor.h
+> > +++ b/arch/riscv/include/asm/processor.h
+> > @@ -13,6 +13,9 @@
+> >  #include <vdso/processor.h>
+> >  
+> >  #include <asm/ptrace.h>
+> > +#include <asm/insn-def.h>
+> > +#include <asm/alternative-macros.h>
+> > +#include <asm/hwcap.h>
+> >  
+> >  #ifdef CONFIG_64BIT
+> >  #define DEFAULT_MAP_WINDOW	(UL(1) << (MMAP_VA_BITS - 1))
+> > @@ -106,6 +109,19 @@ static inline void arch_thread_struct_whitelist(unsigned long *offset,
+> >  #define KSTK_EIP(tsk)		(task_pt_regs(tsk)->epc)
+> >  #define KSTK_ESP(tsk)		(task_pt_regs(tsk)->sp)
+> >  
+> > +#ifdef CONFIG_RISCV_ISA_ZICBOP
+> > +#define ARCH_HAS_PREFETCHW
+> > +
+> > +#define PREFETCHW_ASM(x)						\
+> > +	ALTERNATIVE(__nops(1), CBO_PREFETCH_W(x, 0), 0,			\
+> > +		    RISCV_ISA_EXT_ZICBOP, CONFIG_RISCV_ISA_ZICBOP)
+> > +
+> > +
+> > +static inline void prefetchw(const void *x)
+> > +{
+> > +	__asm__ __volatile__(PREFETCHW_ASM(%0) : : "r" (x) : "memory");
+> > +}
 > 
-> Given the above, create scripts/livepatch to hold tools developed for
-> livepatches and add source files for klp-convert there.
-> 
-> Allow to annotate such external symbols in the livepatch by a macro
-> KLP_RELOC_SYMBOL(). It will create symbol with all needed
-> metadata. For example:
-> 
->   extern char *saved_command_line \
->                  KLP_RELOC_SYMBOL(vmlinux, vmlinux, saved_command_line, 0);
-> 
-> would create symbol
-> 
-> $>readelf -r -W <compiled livepatch module>:
-> Relocation section '.rela.text' at offset 0x32e60 contains 10 entries:
->     Offset             Info             Type               Symbol's Value  Symbol's Name + Addend
-> [...]
-> 0000000000000068  0000003c00000002 R_X86_64_PC32          0000000000000000 .klp.sym.rela.vmlinux.vmlinux.saved_command_line,0 - 4
-> [...]
-> 
-> 
-> Also add scripts/livepatch/klp-convert. The tool transforms symbols
-> created by KLP_RELOC_SYMBOL() to object specific rela sections
-> and rela entries which would later be proceed when the livepatch
-> or the livepatched object is loaded.
-> 
-> For example, klp-convert would replace the above symbols with:
+> Shouldn't we create an interface which exposes the offset input of
+> the instruction, allowing a sequence of calls to be unrolled? But
+> I guess that could be put off until there's a need for it.
 
-s/above symbols/above symbol/
+If we did expose offset, then, because it must be constant and also must
+only have bits 5-11 set, then we could add a static assert. Something like
 
-> $> readelf -r -W <livepatch_module_proceed_by_klp_convert>
-> Relocation section '.klp.rela.vmlinux.text' at offset 0x5cb60 contains 1 entry:
->     Offset             Info             Type               Symbol's Value  Symbol's Name + Addend
-> 0000000000000068  0000003c00000002 R_X86_64_PC32          0000000000000000 .klp.sym.vmlinux.saved_command_line,0 - 4
-> 
-> klp-convert relies on libelf and on a list implementation. Add files
-> scripts/livepatch/elf.c and scripts/livepatch/elf.h, which are a libelf
-> interfacing layer and scripts/livepatch/list.h, which is a list
-> implementation.
-> 
-> Update Makefiles to correctly support the compilation of the new tool,
-> update MAINTAINERS file and add a .gitignore file.
->
-> ---
->  MAINTAINERS                     |   1 +
->  include/linux/livepatch.h       |  19 +
->  scripts/Makefile                |   1 +
->  scripts/livepatch/.gitignore    |   1 +
->  scripts/livepatch/Makefile      |   5 +
->  scripts/livepatch/elf.c         | 817 ++++++++++++++++++++++++++++++++
->  scripts/livepatch/elf.h         |  73 +++
+ #define prefetchw_offset(base, offset) \
+ ({ \
+     static_assert(__builtin_constant_p(offset) && !(offset & ~GENMASK(11, 5))); \
+     __asm__ __volatile__(PREFETCHW_ASM(%0, %1) : : "r" (x), "I" (offset) : "memory"); \
+ })
 
-I see a similar code in
+Probably overkill though...
 
-    tools/objtool/elf.c
-    tools/objtool/include/objtool/elf.h
-
-Both variants have been written by Josh. I wonder if we could share
-one implementation. Josh?
-
->  scripts/livepatch/klp-convert.c | 283 +++++++++++
->  scripts/livepatch/klp-convert.h |  42 ++
->  scripts/livepatch/list.h        | 391 +++++++++++++++
-
-And probably also the list.h
-
->  10 files changed, 1633 insertions(+)
->  create mode 100644 scripts/livepatch/.gitignore
->  create mode 100644 scripts/livepatch/Makefile
->  create mode 100644 scripts/livepatch/elf.c
->  create mode 100644 scripts/livepatch/elf.h
->  create mode 100644 scripts/livepatch/klp-convert.c
->  create mode 100644 scripts/livepatch/klp-convert.h
->  create mode 100644 scripts/livepatch/list.h
-> 
-> --- /dev/null
-> +++ b/scripts/livepatch/klp-convert.c
-> @@ -0,0 +1,283 @@
-[...]
-> +/* Converts rela symbol names */
-> +static bool convert_symbol(struct symbol *s)
-> +{
-> +	char lp_obj_name[MODULE_NAME_LEN];
-> +	char sym_obj_name[MODULE_NAME_LEN];
-> +	char sym_name[KSYM_NAME_LEN];
-> +	char *klp_sym_name;
-> +	unsigned long sym_pos;
-> +	int poslen;
-> +	unsigned int length;
-> +
-> +	static_assert(MODULE_NAME_LEN <= 56, "Update limit in the below sscanf()");
-
-IMHO, there should be "< 56" instead of "<= 56". The sscanf is limited by %55.
-
-Also we should check KSYM_NAME_LEN. Similar to to check in klp_resolve_symbols()
-
-	static_assert(MODULE_NAME_LEN < 56 || KSYM_NAME_LEN != 512,
-		      "Update limit in the below sscanf()");
-
-> +
-> +	if (sscanf(s->name, KLP_SYM_RELA_PREFIX "%55[^.].%55[^.].%511[^,],%lu",
-> +			lp_obj_name, sym_obj_name, sym_name, &sym_pos) != 4) {
-> +		WARN("Invalid format of symbol (%s)\n", s->name);
-> +		return false;
-> +	}
-> +
-> +	poslen = calc_digits(sym_pos);
-> +
-> +	length = strlen(KLP_SYM_PREFIX) + strlen(sym_obj_name)
-> +		 + strlen(sym_name) + sizeof(poslen) + 3;
-> +
-> +	klp_sym_name = calloc(1, length);
-> +	if (!klp_sym_name) {
-> +		WARN("Memory allocation failed (%s%s.%s,%lu)\n", KLP_SYM_PREFIX,
-> +				sym_obj_name, sym_name, sym_pos);
-> +		return false;
-> +	}
-> +
-> +	if (safe_snprintf(klp_sym_name, length, KLP_SYM_PREFIX "%s.%s,%lu",
-> +			  sym_obj_name, sym_name, sym_pos)) {
-> +
-> +		WARN("Length error (%s%s.%s,%lu)", KLP_SYM_PREFIX,
-> +				sym_obj_name, sym_name, sym_pos);
-> +		free(klp_sym_name);
-> +		return false;
-> +	}
-> +
-> +	s->name = klp_sym_name;
-> +	s->sec = NULL;
-> +	s->sym.st_name = -1;
-> +	s->sym.st_shndx = SHN_LIVEPATCH;
-> +
-> +	return true;
-> +}
-> +
-> diff --git a/scripts/livepatch/klp-convert.h b/scripts/livepatch/klp-convert.h
-> new file mode 100644
-> index 000000000000..34842c50c711
-> --- /dev/null
-> +++ b/scripts/livepatch/klp-convert.h
-> @@ -0,0 +1,42 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * Copyright (C) 2016 Josh Poimboeuf <jpoimboe@redhat.com>
-> + * Copyright (C) 2017 Joao Moreira   <jmoreira@suse.de>
-> + *
-> + */
-> +
-> +#define SHN_LIVEPATCH		0xff20
-> +#define SHF_RELA_LIVEPATCH	0x00100000
-> +#define MODULE_NAME_LEN		(64 - sizeof(GElf_Addr))
-> +#define WARN(format, ...) \
-> +	fprintf(stderr, "klp-convert: " format "\n", ##__VA_ARGS__)
-> +
-> +struct sympos {
-> +	char *symbol_name;
-> +	char *object_name;
-> +	char *loading_obj_name;
-> +	int pos;
-> +};
-
-It seems that this structure is not longer used.
-
-> +/*
-> + * klp-convert uses macros and structures defined in the linux sources
-> + * package (see include/uapi/linux/livepatch.h). To prevent the
-> + * dependency when building locally, they are defined below. Also notice
-> + * that these should match the definitions from the targeted kernel.
-> + */
-> +
-> +#define KLP_RELA_PREFIX			".klp.rela."
-> +#define KLP_SYM_RELA_PREFIX		".klp.sym.rela."
-> +#define KLP_SYM_PREFIX			".klp.sym."
-> +
-> +#ifndef __packed
-> +#define __packed        __attribute__((packed))
-> +#endif
-> +
-> +struct klp_module_reloc {
-> +	union {
-> +		void *sym;
-> +		uint64_t sym64;	/* Force 64-bit width */
-> +	};
-> +	uint32_t sympos;
-> +} __packed;
-
-And this one as well.
-
-I do not see any other obvious problem. And it seems to work
-at least for the later added sample module.
-
-Best Regards,
-Petr
+Thanks,
+drew
 
