@@ -1,108 +1,144 @@
-Return-Path: <linux-kernel+bounces-17457-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17459-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6EAC5824D84
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 04:45:41 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C59A824D8A
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 04:55:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 056E52854AA
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 03:45:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4CDE81C21CFD
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 03:55:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EBA946A1;
-	Fri,  5 Jan 2024 03:45:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=landley-net.20230601.gappssmtp.com header.i=@landley-net.20230601.gappssmtp.com header.b="ZCrzf3hA"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0CFF46B3;
+	Fri,  5 Jan 2024 03:55:16 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-qv1-f48.google.com (mail-qv1-f48.google.com [209.85.219.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD7CA440E
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 03:45:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=landley.net
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=landley.net
-Received: by mail-qv1-f48.google.com with SMTP id 6a1803df08f44-67f7bd86cafso5639176d6.0
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 19:45:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=landley-net.20230601.gappssmtp.com; s=20230601; t=1704426333; x=1705031133; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=O8c3ESdi0IpZK01xiWxgeJ4UdiYi9dbopai5vRQAmfM=;
-        b=ZCrzf3hAxojmPURXjyhmjP55vobVpOhNUc+p71kECADzYXsC/m78kAwcFOOuZ2k5SL
-         +D/CJXn8PDyOT1UgdUw+akNGUaIhYHVAvFxlZfZg9FKnb5VIqGpvoaWof03eiYLsVun5
-         +cZMl+K8A56Mq6MCr3uNK5Mja0lNk1Z4pv52W8CJXqG14IfYgw9bCmEBfV9VjOGsYMic
-         1VblRaUocYmokkMkJbt3q6AolZsc7neXzpovAjECE0gAbpSrdEHKQApF8OW+MMMiaGMc
-         F1pFZQ6v+v7HHaOlx3KTJ0r8vVVRNS+1xVEyHHhFyv3rOAaWu+nF3rjBwWAgIMBp/EAn
-         4aaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704426333; x=1705031133;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=O8c3ESdi0IpZK01xiWxgeJ4UdiYi9dbopai5vRQAmfM=;
-        b=Qbg2yCOHJlxRCLz7D9N7hVeoYCMHtAjKfttC2EZkKuwuU8fGDASz71fKXarDR2jVs3
-         UozYb28C3Cg69Vpz3L8Wy31T9sDgoHGbVJM8Cv/uTO21JTNLHDe1JNPtJAQpurzhPYTh
-         BXg+vgUFGlzJ3IlRMdN+Hm6Up1PMfrUBpjzy6wf2EBZhDoEN/eRIvpEgESHx5AR76ck5
-         VHBmQBhSHEoR/tzZc5v3wNQnuOOO9XlS9vWE5Q0mXZuivgdZ2U3Hvp5hufCUqHfdkhth
-         FKlcwbJb7BVcpxoSIAhEBJSMJ+Z4TDzworaXDaNvUUw4Q1Rf6zePYy6OcEoZRwYLFt5D
-         gN8g==
-X-Gm-Message-State: AOJu0Yzb3baAwr30jF7d3C0C0gxQs6MLgIzHbuL3lIgZxEGi4Ltcnt3G
-	cSrRyY7o2OCyuExDZL7vwMWEhI6NHJDj/g==
-X-Google-Smtp-Source: AGHT+IFbkA2aPU2aI39vcY4LyLCBENRrl6F3tJNOaay03B3PVHlOWcvhr88DceJ6bvJ0p4z3390ecg==
-X-Received: by 2002:ad4:5742:0:b0:680:d233:9d7 with SMTP id q2-20020ad45742000000b00680d23309d7mr1637485qvx.125.1704426332729;
-        Thu, 04 Jan 2024 19:45:32 -0800 (PST)
-Received: from [172.16.32.83] ([198.232.126.202])
-        by smtp.gmail.com with ESMTPSA id n12-20020ad444ac000000b0067f75dbf08fsm307623qvt.11.2024.01.04.19.45.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Jan 2024 19:45:32 -0800 (PST)
-Message-ID: <5a1f1ff3-8a61-67cf-59a9-ce498738d912@landley.net>
-Date: Thu, 4 Jan 2024 21:52:00 -0600
+Received: from wind.enjellic.com (wind.enjellic.com [76.10.64.91])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EE144403;
+	Fri,  5 Jan 2024 03:55:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=enjellic.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wind.enjellic.com
+Received: from wind.enjellic.com (localhost [127.0.0.1])
+	by wind.enjellic.com (8.15.2/8.15.2) with ESMTP id 4053sAja017839;
+	Thu, 4 Jan 2024 21:54:10 -0600
+Received: (from greg@localhost)
+	by wind.enjellic.com (8.15.2/8.15.2/Submit) id 4053s9ak017838;
+	Thu, 4 Jan 2024 21:54:09 -0600
+Date: Thu, 4 Jan 2024 21:54:09 -0600
+From: "Dr. Greg" <greg@enjellic.com>
+To: Paul Moore <paul@paul-moore.com>
+Cc: Serge Hallyn <serge@hallyn.com>, linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, corbet@lwn.net
+Subject: Re: [PATCH 02/13] Add TSEM specific documentation.
+Message-ID: <20240105035409.GA17707@wind.enjellic.com>
+Reply-To: "Dr. Greg" <greg@enjellic.com>
+References: <20230710102319.19716-1-greg@enjellic.com> <20230710102319.19716-3-greg@enjellic.com> <ZNKN+ZK6Lfbjb4GZ@jerom> <20230811202254.GA9401@wind.enjellic.com> <CAHC9VhSBnKor21HKiLuvn1kPmtHzNZW2j6FfEQ+cab5R1=_Bdw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Subject: Re: [PATCH 00/36] Remove UCLINUX from LTP
-Content-Language: en-US
-To: Cyril Hrubis <chrubis@suse.cz>, Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Petr Vorel <pvorel@suse.cz>, ltp@lists.linux.it,
- Li Wang <liwang@redhat.com>, Andrea Cervesato <andrea.cervesato@suse.com>,
- Greg Ungerer <gerg@linux-m68k.org>, Jonathan Corbet <corbet@lwn.net>,
- Randy Dunlap <rdunlap@infradead.org>,
- John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
- Christophe Lyon <christophe.lyon@linaro.org>,
- linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
- Linux ARM <linux-arm-kernel@lists.infradead.org>,
- linux-riscv <linux-riscv@lists.infradead.org>,
- Linux-sh list <linux-sh@vger.kernel.org>
-References: <20240103015240.1065284-1-pvorel@suse.cz>
- <CAMuHMdXGwyS-CL0vLdUP4Z4YEYhmcmDyC3YdGCnS=jFkqASqvw@mail.gmail.com>
- <20240103114957.GD1073466@pevik>
- <CAMuHMdX0s0gLRoPtjJmDnSmZ_MNY590dN+JxM1HKAL1g_bjX+w@mail.gmail.com>
- <ZZVOhlGPg5KRyS-F@yuki>
-From: Rob Landley <rob@landley.net>
-In-Reply-To: <ZZVOhlGPg5KRyS-F@yuki>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHC9VhSBnKor21HKiLuvn1kPmtHzNZW2j6FfEQ+cab5R1=_Bdw@mail.gmail.com>
+User-Agent: Mutt/1.4i
+X-Greylist: Sender passed SPF test, not delayed by milter-greylist-4.2.3 (wind.enjellic.com [127.0.0.1]); Thu, 04 Jan 2024 21:54:10 -0600 (CST)
 
-On 1/3/24 06:09, Cyril Hrubis wrote:
-> Hi!
->> I am not sure I agree with this series.
->> Removing support for UCLINUX from LTP is almost a guarantee for
->> not noticing when more breakage is introduced.
->> 
->> How exactly is UCLINUX broken in LTP?
+On Thu, Jan 04, 2024 at 10:54:47AM -0500, Paul Moore wrote:
+> On Fri, Aug 11, 2023 at 4:24???PM Dr. Greg <greg@enjellic.com> wrote:
+> > On Tue, Aug 08, 2023 at 01:48:25PM -0500, Serge Hallyn wrote:
+> > > On Mon, Jul 10, 2023 at 05:23:08AM -0500, Dr. Greg wrote:
 > 
-> As far as we know noone is using it and nobody is maintaing it for a
-> decade,
+> ...
+> 
+> > > > +of a model.  This allows a TMA to attest to the trust/security status
+> > > > +of a platform or workload by signing this singular value and
+> > > > +presenting it to a verifying party.
+> > > > +
+> > > > +In TSEM nomenclature, this singular value is referred to as the
+> > > > +'state' of the model.  The attestation model is to use trust
+> > > > +orchestrators to generate the state value of a workload by unit
+> > > > +testing.  This state value can be packaged with a utility or container
+> > > > +to represent a summary trust characteristic that can be attested by a
+> > > > +TMA, eliminating the need for a verifying partner to review and verify
+> > > > +an event log.
+> > > > +
+> > > > +TMA's implement this architecture by maintaining a single instance
+> > > > +vector of the set of security state coefficients that have been
+> > > > +generated.  A state measurement is generated by sorting the vector in
+> > > > +big-endian hash format and then generating a standard measurement
+> > > > +digest over this new vector.
+> >
+> > > Are you saying the TMA will keep every meaningful measurement for
+> > > the duration of the workload, so that it can always sort them?
+> >
+> > Correct, every unique security state coefficient.
+> >
+> > The approach isn't unique and without precedent.  Roberto Sassu is
+> > using a similar strategy in order generate a time/order independent
+> > PCR value for unlocking TPM sealed keys by parsing RPM and .deb
+> > distribution manifests.
+> >
+> > Paul Moore, in his comments in February to the V1 series, even
+> > seriously questioned why we would expose the classic linear extension
+> > measurement from a TMA.
 
-Nobody is maintaining "uclinux" because that was a distro, but you can build
-nommu support in buildroot and such, and people do.
+> To put my comment from the first revision into the proper context,
+> and with my understanding that TSEM's security model does not
+> consider event ordering/timing, I questioned what TSEM would expose
+>					       ^^^^ why??
+> an ordered list of events to userspace in addition to its unordered,
+> sorted list.
+>
+> Either ordering is important to the security model, in which case you
+> expose the ordered list, or it isn't, in which case you expose the
+> list in whatever form is most convenient for the tooling/model; it
+> makes little sense to me to expose both.
 
-Rob
+As a generic clarification in furtherance of getting everyone on the
+same page with respect to the focus of our work.
+
+TSEM is about providing generic infrastructure for security modeling
+and anomaly detection that acts at the most precise level of security
+instrumentation that is available.
+
+Secondary to that pursuit, TSEM offers security architects the ability
+to choose from either a time dependent or a time independent appraisal
+of a security modeling namespace.
+
+The TSEM 'trajectory' file is always time ordered with respect to the
+first unique occurrence of a security event.  In the V3 release, these
+trajectory entries include a nanosecond timestamp reference, relative
+to boot, of when the event occurred.
+
+The 'measurement' pseudo-file allows a relying party to verify that
+the trajectory list, as presented, is order/time consistent, if that
+is what they choose to evaluate.
+
+The 'state' pseudo-file allows a relying party to make a decision on
+whether or not the security status of the system is idempotent, from
+an event perspective, with a known reference state.
+
+It addresses, among other issues, the problem that IMA is currently
+facing with the fact that handling and examining unconstrained event
+logs can be problematic from a number of perspectives.
+
+Alternately, now in V3, a security model implementator can specify
+that a security event stream from a modeling namespace be
+asynchronously exported in its entirety and dealt with in whatever
+fashion an external evaluator desires.
+
+So TSEM doesn't implement or advocate a security model as much as it
+implements security infrastructure.
+
+> paul-moore.com
+
+Have a good weekend.
+
+As always,
+Dr. Greg
+
+The Quixote Project - Flailing at the Travails of Cybersecurity
+              https://github.com/Quixote-Project
 
