@@ -1,119 +1,132 @@
-Return-Path: <linux-kernel+bounces-18293-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18297-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A30F1825B09
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 20:20:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D479825B14
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 20:22:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 29433B2260B
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 19:20:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 318151F2456F
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 19:22:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3AA935F17;
-	Fri,  5 Jan 2024 19:20:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4979C35F1E;
+	Fri,  5 Jan 2024 19:22:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="aB0j7KDK"
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="sFrkJbmS"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+Received: from mout.web.de (mout.web.de [212.227.15.4])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2119735EFF;
-	Fri,  5 Jan 2024 19:20:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 4CE2040E0196;
-	Fri,  5 Jan 2024 19:20:09 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id 0HqsHS1C0SBX; Fri,  5 Jan 2024 19:20:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1704482406; bh=/a0UKaTZTMHEDAeTcb9/TUYxxz2I8dAfWxoQjcoX6lk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=aB0j7KDKQj5CmPpTDfG8fpfAgLxkhkEPYfftoiRN375Q2eqjmbXSZoLvE1rkW77ur
-	 PBB7Bhkm7hV1hQ5zqE7y3eiSezd+C2GUrHWdxLKpJpHpKDRTaCVdwrUyJBicvK7y8b
-	 n4xfyrSeqlVW7GPisHaI/41JrTno/0pm91uwlQfYucfSvFu3lIcoHt0v19OfT2Bpk7
-	 6gCCZP0zsZRj0YxlIHFJtx2RHMUgIT7eEb0Bm/RzsR5NE03ncesHWgxCtBXEXDZOI2
-	 CgnqiDwNGwZk8xiO+nVW+VLrYMh72Ol3PSuzDEjl26zuhx8gqXscQJGNHR8BIpe82d
-	 fpJj5Fkn//3ajL6hD+dFCKilsF+JYuFLqu9nI6qEAmio/sCcjgB8foNEgyRkjCJlEk
-	 +GT0bLOv49gpGqT3M3tji45NaKScH5oEnYcAC9+6CGNnz1P9JSThezuZuoL4qINjn8
-	 qaUKvknOiIm8IfGkVPGmohdF4wyw8rwWoEq/dvhO84tm3vYhb12ACwTiqUX+/959h5
-	 h26Lgcl/UzvbK3ECtWX85yXyO1KjvTWvCQqJMeV9MetLGDerh1p2AKYryaJb1hCY2C
-	 o1VJqEql+2MuC/k6EYSHlWU/sx+3wxccHJ3FwwEYYtMGqQwcO7gv59LDp4dCIlNMub
-	 AFpDI4YqDo5B71rG79b35ceM=
-Received: from zn.tnic (pd9530f8c.dip0.t-ipconnect.de [217.83.15.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 49A5040E00C5;
-	Fri,  5 Jan 2024 19:19:28 +0000 (UTC)
-Date: Fri, 5 Jan 2024 20:19:21 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Michael Roth <michael.roth@amd.com>
-Cc: x86@kernel.org, kvm@vger.kernel.org, linux-coco@lists.linux.dev,
-	linux-mm@kvack.org, linux-crypto@vger.kernel.org,
-	linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
-	jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com,
-	ardb@kernel.org, pbonzini@redhat.com, seanjc@google.com,
-	vkuznets@redhat.com, jmattson@google.com, luto@kernel.org,
-	dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com,
-	peterz@infradead.org, srinivas.pandruvada@linux.intel.com,
-	rientjes@google.com, tobin@ibm.com, vbabka@suse.cz,
-	kirill@shutemov.name, ak@linux.intel.com, tony.luck@intel.com,
-	sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com,
-	jarkko@kernel.org, ashish.kalra@amd.com, nikunj.dadhania@amd.com,
-	pankaj.gupta@amd.com, liam.merwick@oracle.com, zhi.a.wang@intel.com,
-	Brijesh Singh <brijesh.singh@amd.com>
-Subject: Re: [PATCH v1 04/26] x86/sev: Add the host SEV-SNP initialization
- support
-Message-ID: <20240105191921.GHZZhWObgbgXxP/kkB@fat_crate.local>
-References: <20231230161954.569267-1-michael.roth@amd.com>
- <20231230161954.569267-5-michael.roth@amd.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25B0935F0D;
+	Fri,  5 Jan 2024 19:22:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
+	t=1704482482; x=1705087282; i=markus.elfring@web.de;
+	bh=HUSZWsUiGQOC/YkUR9iqXdqwdp4kixzaBeZcE5ri/Gw=;
+	h=X-UI-Sender-Class:Date:Subject:From:To:Cc:References:
+	 In-Reply-To;
+	b=sFrkJbmSup7D/LvjP3hYO2WjT4up6gCpjH2vXExnVY0ydzcCiTYkCAFKMVVWXi8j
+	 MrXtEbRtJd2hyzBqOwnWRDm2K00YIJQU1k02yHufR1EuuieO0MGBYUdln95ceBN6d
+	 V9PMtwfAOzuXP8BmFcdhoH4jjIyxG44hfqsVyVsq1fctqgKPpmAaHtsqK9lgL7HHv
+	 pAAiNwRH4wSoLAB2NxCCHdecOxrhjp0mpQA2ymo+JdSmS27AoUn2JULH8YPhGK6fk
+	 56iT0+OoXY3dqRSjAmOfAgmT3otYFV0TWrUJ1QBYNnjS678seErytdGsNWT509NEF
+	 7QJkmKbfmBdOcV3Pjg==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb006
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1MW9vi-1rg8aG29tK-00Y4pr; Fri, 05
+ Jan 2024 20:21:22 +0100
+Message-ID: <34068514-27e5-4faf-9b82-2a25bdce9321@web.de>
+Date: Fri, 5 Jan 2024 20:21:19 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20231230161954.569267-5-michael.roth@amd.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/5] drm/amd: Adjustments for three function
+ implementations
+Content-Language: en-GB
+From: Markus Elfring <Markus.Elfring@web.de>
+To: kernel-janitors@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+ dri-devel@lists.freedesktop.org, Alan Liu <HaoPing.Liu@amd.com>,
+ Alex Deucher <alexander.deucher@amd.com>, Alex Hung <alex.hung@amd.com>,
+ Alexey Kodanev <aleksei.kodanev@bell-sw.com>,
+ Aurabindo Pillai <aurabindo.pillai@amd.com>,
+ Bhanuprakash Modem <bhanuprakash.modem@intel.com>,
+ Candice Li <candice.li@amd.com>, Charlene Liu <charlene.liu@amd.com>,
+ =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+ Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>,
+ David Tadokoro <davidbtadokoro@usp.br>, Eryk Brol <eryk.brol@amd.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Hamza Mahfooz <hamza.mahfooz@amd.com>,
+ Harry Wentland <harry.wentland@amd.com>,
+ Hawking Zhang <Hawking.Zhang@amd.com>, hersen wu <hersenxs.wu@amd.com>,
+ Jiapeng Chong <jiapeng.chong@linux.alibaba.com>, Jun Lei <jun.lei@amd.com>,
+ Leo Li <sunpeng.li@amd.com>, Mikita Lipski <mikita.lipski@amd.com>,
+ Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+ Stanley Yang <Stanley.Yang@amd.com>, Tao Zhou <tao.zhou1@amd.com>,
+ Tom Rix <trix@redhat.com>, Victor Zhao <Victor.Zhao@amd.com>,
+ Wayne Lin <Wayne.Lin@amd.com>, Wenjing Liu <wenjing.liu@amd.com>,
+ Xinhui Pan <Xinhui.Pan@amd.com>, YiPeng Chai <YiPeng.Chai@amd.com>,
+ Zhan Liu <zhan.liu@amd.com>
+Cc: cocci@inria.fr, LKML <linux-kernel@vger.kernel.org>
+References: <40c60719-4bfe-b1a4-ead7-724b84637f55@web.de>
+ <1a11455f-ab57-dce0-1677-6beb8492a257@web.de>
+ <2258ce64-2a14-6778-8319-b342b06a1f33@web.de>
+In-Reply-To: <2258ce64-2a14-6778-8319-b342b06a1f33@web.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:7BEoYkau02QTSNEGbr+lcjHZLdsk00FLyCbaxSUukTKrCYX15Hr
+ J/M0C0rCpFuqzOWWas0eRRHRRo6pz2a0sVdU5glBU5fHOxUsaAQiiJ8oycLsVI+KmBX+V3V
+ 3IgW3hUvw972A1pyu8KyvOfdI0J9j552K4rahvu9wJEQAr2Q7ivnaZsdXraHkLemcN6y7/C
+ PC3hJ3gE78VaioUesvBKg==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:6EmgwCH2oOE=;tO9aap8qByf+p7NbHIm8z1VCpLP
+ VEInKE3iDL9hkz52w+6uel79EqVXEPE6JARy3lDjJQWO1SZxsEV/Hp3Ti5NBcnCuI3aYYmf9Z
+ Y+cysq3iYMXzwAA5w8KlkhDtkQ4X12yfZvwL+AVCcBC+AQFKwUHUoHFIfDFQ5OAURoTxTS9+d
+ jxgi+oFqgOXIBUq7flQEc+9Zt4tq+BNJrU4qzcy5q6SgS8jhSHWqbP6GnRXSY6Waa+tXvtK19
+ X3ToL58H5kJdLNQW0aJCofLoHQJh2RSsE6jKaONyGpSQ3OtovztcpDG2f4Zng/hHo80knDRm7
+ jkaqsXMLHcqKpssa9Yv4EHa6wKaSebq3Y8WVNFe09iR9soLXDnSXOwMP0pezWUTJEjBGntSSq
+ 2Eh0PgRQS9ZuBKbjRPH1fKuYKw3LH2jp5EC036m3nCHw0YRX0FYeDjuv38JhsNB6Cf5v+KIV0
+ tmBJw5SNQdfVOVdlDNlLOpsP7fElP6563rXAAsYo3AC+KO3nB8D5ziAz3rV05f7VokncFr0V5
+ 1q7YzlzXUc7CNX2trDyjjUr5uvjibK6d8OycPmGbVRiKettQ2JSMDYcT9ETgIsAKCUWp5IeTt
+ 9la+Ema3KZHHyrwqi0LPdP8cePtgDTD/jUWbaL0Wyl8xXM8N9iVm0uXofwURX5IU8PMNw5Mjk
+ oqbk8j6mXM5ivnYepjPoVE3ibnjhPniiLWmJeo/EdY2+0kCqiNq1yilZSR/Wb9gnWrm8+5uVH
+ f8k5L57VL1aQP5JJ/1ptrIKFPaQmCZcPH2VN8K9pf7BOq06Zb4zLhDuHbbSk4V73q1HAX7+2B
+ aFZR8oSvWcJK+QJm6P+7uqjrmF4DYIAGGeXBayljRSBcW3OSI6umck/8z5dUjf1sbfnzFtbXh
+ x/Dk4BdxeAFgZbGrh8uEsL+yg/zk9FqDxK5CRa6uawOWDZzmWfEVf3HQ5IHFxZ5CASP915Vx7
+ hdhrRQ==
 
-On Sat, Dec 30, 2023 at 10:19:32AM -0600, Michael Roth wrote:
-> +static int __init __snp_rmptable_init(void)
-> +{
-> +	u64 rmptable_size;
-> +	void *rmptable_start;
-> +	u64 val;
+> Date: Tue, 11 Apr 2023 14:36:36 +0200
+>
+> Some update suggestions were taken into account
+> from static source code analysis.
+>
+> Markus Elfring (5)
+>   amdgpu: Move a variable assignment behind a null pointer check in amdg=
+pu_ras_interrupt_dispatch()
+>   display: Move three variable assignments behind condition checks in tr=
+igger_hotplug()
+>   display: Delete three unnecessary variable initialisations in trigger_=
+hotplug()
+>   display: Delete a redundant statement in trigger_hotplug()
+>   display: Move an expression into a return statement in dcn201_link_enc=
+oder_create()
+>
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c       |  3 ++-
+>  .../amd/display/amdgpu_dm/amdgpu_dm_debugfs.c | 19 ++++++++++---------
+>  .../amd/display/dc/dcn201/dcn201_resource.c   |  4 +---
+>  3 files changed, 13 insertions(+), 13 deletions(-)
 
-...
+Is this patch series still in review queues?
 
-Ontop:
+See also:
+https://lore.kernel.org/cocci/2258ce64-2a14-6778-8319-b342b06a1f33@web.de/
+https://sympa.inria.fr/sympa/arc/cocci/2023-04/msg00034.html
 
-diff --git a/arch/x86/virt/svm/sev.c b/arch/x86/virt/svm/sev.c
-index ce7ede9065ed..566bb6f39665 100644
---- a/arch/x86/virt/svm/sev.c
-+++ b/arch/x86/virt/svm/sev.c
-@@ -150,6 +150,11 @@ bool snp_probe_rmptable_info(void)
- 	return true;
- }
- 
-+/*
-+ * Do the necessary preparations which are verified by the firmware as
-+ * described in the SNP_INIT_EX firmware command description in the SNP
-+ * firmware ABI spec.
-+ */
- static int __init __snp_rmptable_init(void)
- {
- 	u64 rmptable_size;
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Regards,
+Markus
 
