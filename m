@@ -1,213 +1,107 @@
-Return-Path: <linux-kernel+bounces-18217-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18218-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B83CF825A1D
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 19:29:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id EF8A1825A21
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 19:30:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4AC872860A7
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 18:29:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A02E5284E09
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 18:30:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1080E358AA;
-	Fri,  5 Jan 2024 18:29:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4830735891;
+	Fri,  5 Jan 2024 18:30:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="M5WCXUV5"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
+Received: from mail-oa1-f49.google.com (mail-oa1-f49.google.com [209.85.160.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23C5235882
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 18:29:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7baf2c8f19eso162907039f.2
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Jan 2024 10:29:20 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D1373526E;
+	Fri,  5 Jan 2024 18:30:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oa1-f49.google.com with SMTP id 586e51a60fabf-20451ecbb80so791201fac.2;
+        Fri, 05 Jan 2024 10:30:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704479410; x=1705084210; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7DOGk97fr88vkauVvriKz/y0vgADMyzdF5fmnXEAejc=;
+        b=M5WCXUV5n04KA7tgC9bO/i0sSGDFoDIdJv8aO3NruUGHwBIly9aoroDImwv0Ozr3x/
+         2SJCImpwU00AjHm3SHObApBsSrKM8ZhSuQAMuuEniwX4x/aink6NoxMbpg9nPidA8Z/8
+         OjD9587guVcxCYH/8PR+NE8eucDUL/Jbw4PLZlhpzOh5VhgU7UmZ4NnVD3bOn5XFh46U
+         EUkVA4d/ytW3DDHUiX76X5UcDJMRScWZALdDGax+81IWdOqbMP71ZrO8F99rn4t+8fPN
+         e9Pwm4IRJOFoyiFR4yDE8pIZz5MDuVNrw8H5oHf9lUBTtrXUaZvJozFnufUwsSPgd2mC
+         2DAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704479360; x=1705084160;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0J45BElnGsnlb+hcSi7W72v1ypQ+RzOOzGvT7znb7Wo=;
-        b=M9eZMUVTHkA0SbyazbHhcCUjOtqz/0fthOFrUfrNnwMaZGb9E2cuXuQWc2Co5k7qZg
-         pcrWwfALj4jD0JkQGl0hIjk6wLwR+WjzsDB+uX/fOv0QbHokP+If6FL/t/Q3wQ/Zzxhh
-         7ewOAuIntBNzQkB7gnxc6+DPYHkwUXPXs8BbslaJEKgMI1LjdnXmZUqcl7B4f+wVmwjH
-         kg6Y9Ff2WBcA82L5kCy1ICt+XNBEgHlwd9v8kYzllUbYAfod0F21AZDkXACGU4AkFc4I
-         Nlg1ZztZ551sdT8CyWvssawMVapUa6H6t4rE7DUfdlqV9ezehWgjzI/zsK2yNe0jhq0F
-         yIag==
-X-Gm-Message-State: AOJu0YyUmkZ3DtpfdOkSLddxXDH0UMp8B1cH7BU8F+kSO4uIeyX/EBqQ
-	FauEmhC3st7NzMyMAiBFQ8EcDIK5T0du5494G5N0qi96WO+Y
-X-Google-Smtp-Source: AGHT+IF8YivRjajEcKTmKNwjgSDNUYewqz+HwZRYjoGRECbfq94en1TIb0C9BZiFpr+qIqUoXx2QdF105f/141Pd7UlAkFWgwGgC
+        d=1e100.net; s=20230601; t=1704479410; x=1705084210;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7DOGk97fr88vkauVvriKz/y0vgADMyzdF5fmnXEAejc=;
+        b=Vy7Xxt4f5GNLEVuXRmVKvaVZuHN9wa1HVf4CKk5fRJTy5HOFhg1ImCzMItieO88IMc
+         6aMiMv60j428yE1maeX7oQTYBvTfrDlKBthup8gFKepawDNWXo7B5HZn+MXafXOVXkFT
+         +OwXpKwE/A9JIqnlzNX4L4wPMZKvIsMs+wFQ75aVLq30IQIClJmPWuONWnHGjEm3RrvI
+         yLA98VlPG8FyneBa+DUV99yN9Wqalfcn3kojELLkXem7ctrUHLuKlqB3CitFsvMhhta0
+         jIuHiJUNL+ENE1cJ/J+voa+L0QYRYmWWPqooRvbq09N8IGWbW6F/zydViVBxyGbUjMhH
+         Alew==
+X-Gm-Message-State: AOJu0Yx1U7RHo33WKgLwtIQa8avi0wTUS46TrzbavDJzaIPLIEJZkPHJ
+	HBfU4gD+S6ovxrhpfk3Tqlqzi5bg7pAUuoyKwLM=
+X-Google-Smtp-Source: AGHT+IFihwckRwPj1sYEoQgYUkLurfzSpN6Kl5Q5syPOkuXTGfqkOp23qHjavxZpVoH/bnWn8Rsqc1uG1SHu6/wsMbw=
+X-Received: by 2002:a05:6870:9f01:b0:203:7035:8a83 with SMTP id
+ xl1-20020a0568709f0100b0020370358a83mr2710796oab.85.1704479410108; Fri, 05
+ Jan 2024 10:30:10 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:4107:b0:46d:3807:f267 with SMTP id
- ay7-20020a056638410700b0046d3807f267mr154672jab.6.1704479360424; Fri, 05 Jan
- 2024 10:29:20 -0800 (PST)
-Date: Fri, 05 Jan 2024 10:29:20 -0800
-In-Reply-To: <000000000000a62351060e363bdc@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000ce1f9e060e3706d4@google.com>
-Subject: Re: [syzbot] [net?] memory leak in ___neigh_create (2)
-From: syzbot <syzbot+42cfec52b6508887bbe8@syzkaller.appspotmail.com>
-To: alexander.mikhalitsyn@virtuozzo.com, davem@davemloft.net, den@openvz.org, 
-	dsahern@kernel.org, edumazet@google.com, f.fainelli@gmail.com, 
-	kuba@kernel.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, 
-	pabeni@redhat.com, razor@blackwall.org, syzkaller-bugs@googlegroups.com, 
-	thomas.zeitlhofer+lkml@ze-it.at, thomas.zeitlhofer@ze-it.at, 
-	wangyuweihx@gmail.com
+References: <566ABCD9.1060404@users.sourceforge.net> <8d614254-1cba-0379-cf84-52ad9bd9f3a7@users.sourceforge.net>
+ <e90eea03-d7e4-4c0b-88c6-749e3528d4a3@web.de>
+In-Reply-To: <e90eea03-d7e4-4c0b-88c6-749e3528d4a3@web.de>
+From: Alex Deucher <alexdeucher@gmail.com>
+Date: Fri, 5 Jan 2024 13:29:58 -0500
+Message-ID: <CADnq5_N_pQr+UfbO8OZ0tEXRQkQB6A7kbZtv4+Ag75GTkgvxRQ@mail.gmail.com>
+Subject: Re: [PATCH 0/5] drm/amdgpu: Fine-tuning for several function implementations
+To: Markus Elfring <Markus.Elfring@web.de>
+Cc: dri-devel@lists.freedesktop.org, Alex Deucher <alexander.deucher@amd.com>, 
+	=?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
+	Chunming Zhou <David1.Zhou@amd.com>, David Airlie <airlied@linux.ie>, Monk Liu <Monk.Liu@amd.com>, 
+	Tom St Denis <tom.stdenis@amd.com>, kernel-janitors@vger.kernel.org, 
+	Julia Lawall <julia.lawall@lip6.fr>, LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-syzbot has found a reproducer for the following issue on:
+On Fri, Jan 5, 2024 at 1:15=E2=80=AFPM Markus Elfring <Markus.Elfring@web.d=
+e> wrote:
+>
+> > Date: Sun, 18 Sep 2016 18:38:48 +0200
+> >
+> > Some update suggestions were taken into account
+> > from static source code analysis.
+> >
+> > Markus Elfring (5):
+> >   Use kmalloc_array() in amdgpu_debugfs_gca_config_read()
+> >   Improve determination of sizes in two functions
+> >   Rename a jump label in amdgpu_debugfs_regs_read()
+> >   Rename a jump label in amdgpu_device_init()
+> >   Adjust checks for null pointers in nine functions
+> >
+> >  drivers/gpu/drm/amd/amdgpu/amdgpu_device.c | 68 +++++++++++++++-------=
+--------
+> >  1 file changed, 33 insertions(+), 35 deletions(-)
+>
+> Is this patch series still in review queues?
 
-HEAD commit:    2258c2dc850b Merge tag 'for-linus' of git://git.kernel.org..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=16f67b44480000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=a4fb7ad9185f1501
-dashboard link: https://syzkaller.appspot.com/bug?extid=42cfec52b6508887bbe8
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14e23d44480000
+Doesn't look like I ever received it.  Can you resend?
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/0e65a45877eb/disk-2258c2dc.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/7617adf885a8/vmlinux-2258c2dc.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/43fb89ea894a/bzImage-2258c2dc.xz
+Alex
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+42cfec52b6508887bbe8@syzkaller.appspotmail.com
-
-BUG: memory leak
-unreferenced object 0xffff88810b8ea400 (size 512):
-  comm "kworker/0:3", pid 4440, jiffies 4294938594 (age 1132.680s)
-  hex dump (first 32 bytes):
-    00 9c f8 0a 81 88 ff ff 80 29 23 86 ff ff ff ff  .........)#.....
-    c0 79 79 44 81 88 ff ff 72 78 ff ff 00 00 00 00  .yyD....rx......
-  backtrace:
-    [<ffffffff814f9fe6>] __do_kmalloc_node mm/slab_common.c:967 [inline]
-    [<ffffffff814f9fe6>] __kmalloc+0x46/0x120 mm/slab_common.c:981
-    [<ffffffff83b5234f>] kmalloc include/linux/slab.h:584 [inline]
-    [<ffffffff83b5234f>] kzalloc include/linux/slab.h:720 [inline]
-    [<ffffffff83b5234f>] neigh_alloc net/core/neighbour.c:476 [inline]
-    [<ffffffff83b5234f>] ___neigh_create+0xdf/0xd60 net/core/neighbour.c:661
-    [<ffffffff83f9f886>] ip6_finish_output2+0x776/0x9b0 net/ipv6/ip6_output.c:125
-    [<ffffffff83fa5530>] __ip6_finish_output net/ipv6/ip6_output.c:195 [inline]
-    [<ffffffff83fa5530>] ip6_finish_output+0x270/0x530 net/ipv6/ip6_output.c:206
-    [<ffffffff83fa5893>] NF_HOOK_COND include/linux/netfilter.h:291 [inline]
-    [<ffffffff83fa5893>] ip6_output+0xa3/0x1b0 net/ipv6/ip6_output.c:227
-    [<ffffffff83ff16d9>] dst_output include/net/dst.h:444 [inline]
-    [<ffffffff83ff16d9>] NF_HOOK include/linux/netfilter.h:302 [inline]
-    [<ffffffff83ff16d9>] NF_HOOK.constprop.0+0x49/0x110 include/linux/netfilter.h:296
-    [<ffffffff83ff19c4>] mld_sendpack+0x224/0x350 net/ipv6/mcast.c:1820
-    [<ffffffff83ff5403>] mld_send_cr net/ipv6/mcast.c:2121 [inline]
-    [<ffffffff83ff5403>] mld_ifc_work+0x2a3/0x750 net/ipv6/mcast.c:2653
-    [<ffffffff8129519a>] process_one_work+0x2ba/0x5f0 kernel/workqueue.c:2289
-    [<ffffffff81295ab9>] worker_thread+0x59/0x5b0 kernel/workqueue.c:2436
-    [<ffffffff8129fb05>] kthread+0x125/0x160 kernel/kthread.c:376
-    [<ffffffff8100224f>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:308
-
-BUG: memory leak
-unreferenced object 0xffff888109a7fa00 (size 512):
-  comm "kworker/0:3", pid 4440, jiffies 4294938594 (age 1132.680s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 80 29 23 86 ff ff ff ff  .........)#.....
-    00 79 79 44 81 88 ff ff 72 78 ff ff 00 00 00 00  .yyD....rx......
-  backtrace:
-    [<ffffffff814f9fe6>] __do_kmalloc_node mm/slab_common.c:967 [inline]
-    [<ffffffff814f9fe6>] __kmalloc+0x46/0x120 mm/slab_common.c:981
-    [<ffffffff83b5234f>] kmalloc include/linux/slab.h:584 [inline]
-    [<ffffffff83b5234f>] kzalloc include/linux/slab.h:720 [inline]
-    [<ffffffff83b5234f>] neigh_alloc net/core/neighbour.c:476 [inline]
-    [<ffffffff83b5234f>] ___neigh_create+0xdf/0xd60 net/core/neighbour.c:661
-    [<ffffffff83f9f886>] ip6_finish_output2+0x776/0x9b0 net/ipv6/ip6_output.c:125
-    [<ffffffff83fa5530>] __ip6_finish_output net/ipv6/ip6_output.c:195 [inline]
-    [<ffffffff83fa5530>] ip6_finish_output+0x270/0x530 net/ipv6/ip6_output.c:206
-    [<ffffffff83fa5893>] NF_HOOK_COND include/linux/netfilter.h:291 [inline]
-    [<ffffffff83fa5893>] ip6_output+0xa3/0x1b0 net/ipv6/ip6_output.c:227
-    [<ffffffff83ff16d9>] dst_output include/net/dst.h:444 [inline]
-    [<ffffffff83ff16d9>] NF_HOOK include/linux/netfilter.h:302 [inline]
-    [<ffffffff83ff16d9>] NF_HOOK.constprop.0+0x49/0x110 include/linux/netfilter.h:296
-    [<ffffffff83ff19c4>] mld_sendpack+0x224/0x350 net/ipv6/mcast.c:1820
-    [<ffffffff83ff5403>] mld_send_cr net/ipv6/mcast.c:2121 [inline]
-    [<ffffffff83ff5403>] mld_ifc_work+0x2a3/0x750 net/ipv6/mcast.c:2653
-    [<ffffffff8129519a>] process_one_work+0x2ba/0x5f0 kernel/workqueue.c:2289
-    [<ffffffff81295ab9>] worker_thread+0x59/0x5b0 kernel/workqueue.c:2436
-    [<ffffffff8129fb05>] kthread+0x125/0x160 kernel/kthread.c:376
-    [<ffffffff8100224f>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:308
-
-BUG: memory leak
-unreferenced object 0xffff88810a9fb400 (size 512):
-  comm "dhcpcd", pid 4638, jiffies 4294938595 (age 1132.670s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 80 29 23 86 ff ff ff ff  .........)#.....
-    c0 76 79 44 81 88 ff ff 73 78 ff ff 00 00 00 00  .vyD....sx......
-  backtrace:
-    [<ffffffff814f9fe6>] __do_kmalloc_node mm/slab_common.c:967 [inline]
-    [<ffffffff814f9fe6>] __kmalloc+0x46/0x120 mm/slab_common.c:981
-    [<ffffffff83b5234f>] kmalloc include/linux/slab.h:584 [inline]
-    [<ffffffff83b5234f>] kzalloc include/linux/slab.h:720 [inline]
-    [<ffffffff83b5234f>] neigh_alloc net/core/neighbour.c:476 [inline]
-    [<ffffffff83b5234f>] ___neigh_create+0xdf/0xd60 net/core/neighbour.c:661
-    [<ffffffff83f9f886>] ip6_finish_output2+0x776/0x9b0 net/ipv6/ip6_output.c:125
-    [<ffffffff83fa5530>] __ip6_finish_output net/ipv6/ip6_output.c:195 [inline]
-    [<ffffffff83fa5530>] ip6_finish_output+0x270/0x530 net/ipv6/ip6_output.c:206
-    [<ffffffff83fa5893>] NF_HOOK_COND include/linux/netfilter.h:291 [inline]
-    [<ffffffff83fa5893>] ip6_output+0xa3/0x1b0 net/ipv6/ip6_output.c:227
-    [<ffffffff84062411>] dst_output include/net/dst.h:444 [inline]
-    [<ffffffff84062411>] ip6_local_out+0x51/0x70 net/ipv6/output_core.c:155
-    [<ffffffff83fa6285>] ip6_send_skb+0x25/0xc0 net/ipv6/ip6_output.c:1971
-    [<ffffffff83fa6394>] ip6_push_pending_frames+0x74/0x90 net/ipv6/ip6_output.c:1991
-    [<ffffffff83fec08c>] rawv6_push_pending_frames net/ipv6/raw.c:579 [inline]
-    [<ffffffff83fec08c>] rawv6_sendmsg+0x16ac/0x1ba0 net/ipv6/raw.c:922
-    [<ffffffff83ebe965>] inet_sendmsg+0x45/0x70 net/ipv4/af_inet.c:827
-    [<ffffffff83af7116>] sock_sendmsg_nosec net/socket.c:714 [inline]
-    [<ffffffff83af7116>] sock_sendmsg+0x56/0x80 net/socket.c:734
-    [<ffffffff83af769d>] ____sys_sendmsg+0x38d/0x410 net/socket.c:2476
-    [<ffffffff83afbfe8>] ___sys_sendmsg+0xa8/0x110 net/socket.c:2530
-    [<ffffffff83afc178>] __sys_sendmsg+0x88/0x100 net/socket.c:2559
-    [<ffffffff848ed5b5>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-    [<ffffffff848ed5b5>] do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
-    [<ffffffff84a00087>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-BUG: memory leak
-unreferenced object 0xffff88810a9fba00 (size 512):
-  comm "dhcpcd", pid 4638, jiffies 4294938595 (age 1132.670s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 80 29 23 86 ff ff ff ff  .........)#.....
-    80 77 79 44 81 88 ff ff 73 78 ff ff 00 00 00 00  .wyD....sx......
-  backtrace:
-    [<ffffffff814f9fe6>] __do_kmalloc_node mm/slab_common.c:967 [inline]
-    [<ffffffff814f9fe6>] __kmalloc+0x46/0x120 mm/slab_common.c:981
-    [<ffffffff83b5234f>] kmalloc include/linux/slab.h:584 [inline]
-    [<ffffffff83b5234f>] kzalloc include/linux/slab.h:720 [inline]
-    [<ffffffff83b5234f>] neigh_alloc net/core/neighbour.c:476 [inline]
-    [<ffffffff83b5234f>] ___neigh_create+0xdf/0xd60 net/core/neighbour.c:661
-    [<ffffffff83f9f886>] ip6_finish_output2+0x776/0x9b0 net/ipv6/ip6_output.c:125
-    [<ffffffff83fa5530>] __ip6_finish_output net/ipv6/ip6_output.c:195 [inline]
-    [<ffffffff83fa5530>] ip6_finish_output+0x270/0x530 net/ipv6/ip6_output.c:206
-    [<ffffffff83fa5893>] NF_HOOK_COND include/linux/netfilter.h:291 [inline]
-    [<ffffffff83fa5893>] ip6_output+0xa3/0x1b0 net/ipv6/ip6_output.c:227
-    [<ffffffff84062411>] dst_output include/net/dst.h:444 [inline]
-    [<ffffffff84062411>] ip6_local_out+0x51/0x70 net/ipv6/output_core.c:155
-    [<ffffffff83fa6285>] ip6_send_skb+0x25/0xc0 net/ipv6/ip6_output.c:1971
-    [<ffffffff83fa6394>] ip6_push_pending_frames+0x74/0x90 net/ipv6/ip6_output.c:1991
-    [<ffffffff83fec08c>] rawv6_push_pending_frames net/ipv6/raw.c:579 [inline]
-    [<ffffffff83fec08c>] rawv6_sendmsg+0x16ac/0x1ba0 net/ipv6/raw.c:922
-    [<ffffffff83ebe965>] inet_sendmsg+0x45/0x70 net/ipv4/af_inet.c:827
-    [<ffffffff83af7116>] sock_sendmsg_nosec net/socket.c:714 [inline]
-    [<ffffffff83af7116>] sock_sendmsg+0x56/0x80 net/socket.c:734
-    [<ffffffff83af769d>] ____sys_sendmsg+0x38d/0x410 net/socket.c:2476
-    [<ffffffff83afbfe8>] ___sys_sendmsg+0xa8/0x110 net/socket.c:2530
-    [<ffffffff83afc178>] __sys_sendmsg+0x88/0x100 net/socket.c:2559
-    [<ffffffff848ed5b5>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-    [<ffffffff848ed5b5>] do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
-    [<ffffffff84a00087>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-
-
----
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+>
+> Regards,
+> Markus
 
