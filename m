@@ -1,180 +1,121 @@
-Return-Path: <linux-kernel+bounces-17525-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17520-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE2C9824EDA
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 07:55:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 30D40824ECC
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 07:53:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 650A01F22A7D
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 06:55:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B3524284F0D
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 06:53:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD9A518ECF;
-	Fri,  5 Jan 2024 06:55:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3340979D1;
+	Fri,  5 Jan 2024 06:53:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="AyWJmm9l"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eHwDU5yd"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 574D61CA85;
-	Fri,  5 Jan 2024 06:55:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704437704; x=1735973704;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=itE2hezhzcfYQfYEK/xtymd29CLOFQR5E8uwHsYdpls=;
-  b=AyWJmm9lveejbxjpkpvz5fcj/hXGCiHyHBc5Yx08j9VJIh9wfTFzL7Op
-   u6sX/UZU1b0MJhf6iDPxT9uWmh9YOncPmLg8EIeqj9FADVWlHkvmnpOna
-   aIR036V00vKJkmiMjeyNt5bU608ADuljJBGsnjlC51Npu6rRBAw1Se5rU
-   MsmsHntH565dpazd/J3U5y1qgOFtFdTQ57SGPITb1+SJZD4zwBppH5hom
-   L22lgye2FSb+R38PkwFDCjvx0iLREkKDfPvrpRGicGGBBRGKqMGxXKdvt
-   vF2RZTnK0lzHP48E18SHJ0FuSV29eHx+xCY9Biuam8SCgH3A02U9iH8DS
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10943"; a="10818749"
-X-IronPort-AV: E=Sophos;i="6.04,332,1695711600"; 
-   d="scan'208";a="10818749"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2024 22:53:46 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10943"; a="773768947"
-X-IronPort-AV: E=Sophos;i="6.04,332,1695711600"; 
-   d="scan'208";a="773768947"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2024 22:53:38 -0800
-From: "Huang, Ying" <ying.huang@intel.com>
-To: Gregory Price <gregory.price@memverge.com>
-Cc: Gregory Price <gourry.memverge@gmail.com>,  <linux-mm@kvack.org>,
-  <linux-doc@vger.kernel.org>,  <linux-fsdevel@vger.kernel.org>,
-  <linux-kernel@vger.kernel.org>,  <linux-api@vger.kernel.org>,
-  <x86@kernel.org>,  <akpm@linux-foundation.org>,  <arnd@arndb.de>,
-  <tglx@linutronix.de>,  <luto@kernel.org>,  <mingo@redhat.com>,
-  <bp@alien8.de>,  <dave.hansen@linux.intel.com>,  <hpa@zytor.com>,
-  <mhocko@kernel.org>,  <tj@kernel.org>,  <corbet@lwn.net>,
-  <rakie.kim@sk.com>,  <hyeongtak.ji@sk.com>,  <honggyu.kim@sk.com>,
-  <vtavarespetr@micron.com>,  <peterz@infradead.org>,
-  <jgroves@micron.com>,  <ravis.opensrc@micron.com>,
-  <sthanneeru@micron.com>,  <emirakhur@micron.com>,  <Hasan.Maruf@amd.com>,
-  <seungjun.ha@samsung.com>,  Srinivasulu Thanneeru
- <sthanneeru.opensrc@micron.com>
-Subject: Re: [PATCH v5 02/11] mm/mempolicy: introduce
- MPOL_WEIGHTED_INTERLEAVE for weighted interleaving
-In-Reply-To: <ZZcAF4zIpsVN3dLd@memverge.com> (Gregory Price's message of "Thu,
-	4 Jan 2024 13:59:35 -0500")
-References: <20231223181101.1954-1-gregory.price@memverge.com>
-	<20231223181101.1954-3-gregory.price@memverge.com>
-	<8734vof3kq.fsf@yhuang6-desk2.ccr.corp.intel.com>
-	<ZYp6ZRLZQVtTHest@memverge.com>
-	<878r58dt31.fsf@yhuang6-desk2.ccr.corp.intel.com>
-	<ZZRybDPSoLme8Ldh@memverge.com>
-	<87mstnc6jz.fsf@yhuang6-desk2.ccr.corp.intel.com>
-	<ZZXbN4+2nVbE/lRe@memverge.com>
-	<875y09d5d8.fsf@yhuang6-desk2.ccr.corp.intel.com>
-	<ZZcAF4zIpsVN3dLd@memverge.com>
-Date: Fri, 05 Jan 2024 14:51:40 +0800
-Message-ID: <87cyugb7cz.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 167D61D68C;
+	Fri,  5 Jan 2024 06:53:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a27cd5850d6so132984966b.1;
+        Thu, 04 Jan 2024 22:53:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704437594; x=1705042394; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=BFOGLpcjoXzhR6JSGe3noB3vFxJi6+WAnSOC6t0PX4w=;
+        b=eHwDU5ydKKSCreOe067V/Fw+AJGfyBStMcopS7b4LIiNqHmcJ0mQs05958cGSxcAlD
+         guwFnbKVsRHD6xvbJ0BVIZbO+owZKtDXoB+GD1qQu+RrpbTQ6U5uxKxqgd1s9G8lIXEI
+         10IiauIO5p3iM1qrZr4+7g4rW+VQLvvL6qA5Hp6TJjCAsOJubtDTwTFLIjarXK/zcSbX
+         nMnZpGqzKFRwb+1hDhrI7DZGdaFUAZ+5AJGdslkPzCDg0h+JjkaKB92HOVDLUnS3+/+q
+         db0d13P+NIg3paI6MTSGlX/s1MoTkUMsiBwwMxcoSOH8uF1QH081hmX9fAl/Gbr1UYvo
+         tOtQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704437594; x=1705042394;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=BFOGLpcjoXzhR6JSGe3noB3vFxJi6+WAnSOC6t0PX4w=;
+        b=kpYy6/KPrrPzTDgjEHg58MOAmG3d0pn0KZRjHdcZCRqhIZsHo+p+vI+vqed7h2ey1M
+         lXqddTxP2vaKi98ImShVYdg/YAMlI4yq2wJXRzCu9P1SZ9c8XsGLDcc77CfA9fYfA81x
+         oaxdIycv8cZULvLs/C7cFJuAp24Fz+H14yvwVsk+p+620W+nDmFNPWGUb+qoRNnM/FJX
+         5odQ0OGjcSdFug6iRze6ji/OvB1WGVShx3yR+LlD/pptiHMJgLuO/MJpvZL6m2/3JOF6
+         bnJr6aOJudfUubqBqN2IiDtOQgL329or02Ct4nDZ2ebRGzbFxAMfo3dDTU0fJs/+mfst
+         bk6Q==
+X-Gm-Message-State: AOJu0YwS095od0ImVW5JjIlBqcHxsBlB25kxaSy7iCkJ6i/QvCijC58u
+	y9iZuciJS8qsxlVXLC04I+I=
+X-Google-Smtp-Source: AGHT+IH/RNoXjBd4MiyX0OLCTI5AmDJmvW3GwmGcu9xsZwFnO7vK/7pdJD2sx5+J69mSkoxXKkB3TQ==
+X-Received: by 2002:a17:906:2ac7:b0:a27:b918:5eba with SMTP id m7-20020a1709062ac700b00a27b9185ebamr777907eje.72.1704437594258;
+        Thu, 04 Jan 2024 22:53:14 -0800 (PST)
+Received: from hex.my.domain (83.11.207.119.ipv4.supernova.orange.pl. [83.11.207.119])
+        by smtp.gmail.com with ESMTPSA id g23-20020a17090669d700b00a28e2b72db2sm518809ejs.56.2024.01.04.22.53.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Jan 2024 22:53:13 -0800 (PST)
+From: Artur Weber <aweber.kernel@gmail.com>
+Subject: [PATCH v2 0/2] Fix panel polarity mixup in S6D7AA0 panel driver
+ and Galaxy Tab 3 8.0 DTSI
+Date: Fri, 05 Jan 2024 07:53:00 +0100
+Message-Id: <20240105-tab3-display-fixes-v2-0-904d1207bf6f@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAEynl2UC/32NQQqDMBBFryKz7pSMtal01XsUFxMTdUCNJBIq4
+ t2beoAu3/+8/3eILoiL8Cx2CC5JFD9nKC8FtAPPvUOxmaFUZaVIEa5sbmglLiNv2MnHRdR30p0
+ ymokJsrgEdxbZezeZB4mrD9v5keiX/p1LhArr+mG4ssaSNq9+YhmvrZ+gOY7jC6NvFfa0AAAA
+To: Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Alim Akhtar <alim.akhtar@samsung.com>, 
+ Neil Armstrong <neil.armstrong@linaro.org>, 
+ Jessica Zhang <quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>, 
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>
+Cc: devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+ linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ dri-devel@lists.freedesktop.org, Artur Weber <aweber.kernel@gmail.com>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1704437592; l=871;
+ i=aweber.kernel@gmail.com; s=20231030; h=from:subject:message-id;
+ bh=wxEs5SLA0q7BDvi+NHXyhorcl91KbDNYCzif/6ZAkt4=;
+ b=Sc7I1CZY2lJP8MxzHRgpRaD31yeQNY6wZgwzLCYkbJfFTTLBbNIjbqBuuSI+0mGf+1P+f6ndf
+ JUdiql2J12/AcfvnW9Sd5sjckGu/Vx11UeAoMAW2xkOnpKIFCqHhJIN
+X-Developer-Key: i=aweber.kernel@gmail.com; a=ed25519;
+ pk=RhDBfWbJEHqDibXbhNEBAnc9FMkyznGxX/hwfhL8bv8=
 
-Gregory Price <gregory.price@memverge.com> writes:
+Two small one-line patches to address a mixup in the Samsung S6D7AA0
+panel driver and the Samsung Galaxy Tab 3 8.0 board it was initially
+added for.
 
-> On Thu, Jan 04, 2024 at 01:39:31PM +0800, Huang, Ying wrote:
->> Gregory Price <gregory.price@memverge.com> writes:
->> 
->> > On Wed, Jan 03, 2024 at 01:46:56PM +0800, Huang, Ying wrote:
->> >> Gregory Price <gregory.price@memverge.com> writes:
->> >> > I'm specifically concerned about:
->> >> > 	weighted_interleave_nid
->> >> > 	alloc_pages_bulk_array_weighted_interleave
->> >> >
->> >> > I'm unsure whether kmalloc/kfree is safe (and non-offensive) in those
->> >> > contexts. If kmalloc/kfree is safe fine, this problem is trivial.
->> >> >
->> >> > If not, there is no good solution to this without pre-allocating a
->> >> > scratch area per-task.
->> >> 
->> >> You need to audit whether it's safe for all callers.  I guess that you
->> >> need to allocate pages after calling, so you can use the same GFP flags
->> >> here.
->> >> 
->> >
->> > After picking away i realized that this code is usually going to get
->> > called during page fault handling - duh.  So kmalloc is almost never
->> > safe (or can fail), and we it's nasty to try to handle those errors.
->> 
->> Why not just OOM for allocation failure?
->>
->
-> 2 notes:
->
-> 1) callers of weighted_interleave_nid do not expect OOM conditions, they
->    expect a node selection.  On error, we would simply return the local
->    numa node without indication of failure.
->
-> 2) callers of alloc_pages_bulk_array_weighted_interleave receive the
->    total number of pages allocated, and they are expected to detect
->    pages allocated != pages requested, and then handle whether to
->    OOM or simply retry (allocation may fail for a variety of reasons).
->
-> By introducing an allocation into this area, if an allocation failure
-> occurs, we would essentially need to silently squash it and return
-> either local_node (interleave_nid) or return 0 (bulk allocator) and
-> allow the allocation logic to handle any subsequent OOM condition.
->
-> That felt less desirable than just allocating a scratch space up front
-> in the mempolicy and avoiding the issue altogether.
->
->> > Instead of doing that, I simply chose to implement the scratch space
->> > in the mempolicy structure
->> >
->> > mempolicy->wil.scratch_weights[MAX_NUMNODES].
->> >
->> > We eat an extra 1kb of memory in the mempolicy, but it gives us a safe
->> > scratch space we can use any time the task is allocating memory, and
->> > prevents the need for any fancy error handling.  That seems like a
->> > perfectly reasonable tradeoff.
->> 
->> I don't think that this is a good idea.  The weight array is temporary.
->> 
->
-> It's temporary, but it's also only used in the context of the task while
-> the alloc lock is held.
->
-> If you think it's fine to introduce another potential OOM generating
-> spot, then I'll just go ahead and allocate the memory on the fly.
->
-> I do want to point out, though, that weighted_interleave_nid is called
-> per allocated page.  So now we're not just collecting weights to
-> calculate the offset, we're doing an allocation (that can fail) per page
-> allocated for that region.
->
-> The bulk allocator amortizes the cost of this allocation by doing it
-> once while allocating a chunk of pages - but the weighted_interleave_nid
-> function is called per-page.
->
-> By comparison, the memory cost to just allocate a static scratch area in
-> the mempolicy struct is only incurred by tasks with a mempolicy.
->
->
-> So we're talking ~1MB for 1024 threads with mempolicies to avoid error
-> conditions mid-page-allocation and to reduce the cost associated with
-> applying weighted interleave.
+Signed-off-by: Artur Weber <aweber.kernel@gmail.com>
+---
+Changes in v2:
+- Add "Fixes" tag to both commits.
+- Link to v1: https://lore.kernel.org/r/20240101-tab3-display-fixes-v1-0-887ba4dbd16b@gmail.com
 
-Think about this again.  Why do we need weights array on stack?  I think
-this is used to keep weights consistent.  If so, we don't need weights
-array on stack.  Just use RCU to access global weights array.
+---
+Artur Weber (2):
+      ARM: dts: exynos4212-tab3: add samsung,invert-vclk flag to fimd
+      drm/panel: samsung-s6d7aa0: drop DRM_BUS_FLAG_DE_HIGH for lsl080al02
 
---
-Best Regards,
-Huang, Ying
+ arch/arm/boot/dts/samsung/exynos4212-tab3.dtsi | 1 +
+ drivers/gpu/drm/panel/panel-samsung-s6d7aa0.c  | 2 +-
+ 2 files changed, 2 insertions(+), 1 deletion(-)
+---
+base-commit: fa4131df22d181c0f721bfc6a68addb8fc62c03d
+change-id: 20240101-tab3-display-fixes-6516f0b6a1a1
+
+Best regards,
+-- 
+Artur Weber <aweber.kernel@gmail.com>
+
 
