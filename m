@@ -1,221 +1,141 @@
-Return-Path: <linux-kernel+bounces-17977-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17981-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9851C82563B
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 15:59:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D14DD825649
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 16:02:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B26D31C2171C
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 14:59:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 853621F2247F
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 15:02:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BCD02E408;
-	Fri,  5 Jan 2024 14:58:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 143FD2E40E;
+	Fri,  5 Jan 2024 15:02:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="OBU69Wcw"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B099F2E3EC;
-	Fri,  5 Jan 2024 14:58:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 402CCC433C8;
-	Fri,  5 Jan 2024 14:58:47 +0000 (UTC)
-Date: Fri, 5 Jan 2024 09:59:54 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Christian Brauner <brauner@kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
- <linux-trace-kernel@vger.kernel.org>, Masami Hiramatsu
- <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Linus Torvalds <torvalds@linux-foundation.org>, Al Viro
- <viro@ZenIV.linux.org.uk>, linux-fsdevel@vger.kernel.org, Greg
- Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH] tracefs/eventfs: Use root and instance inodes as
- default ownership
-Message-ID: <20240105095954.67de63c2@gandalf.local.home>
-In-Reply-To: <20240105-wegstecken-sachkenntnis-6289842d6d01@brauner>
-References: <20240103203246.115732ec@gandalf.local.home>
-	<20240105-wegstecken-sachkenntnis-6289842d6d01@brauner>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D85322E623;
+	Fri,  5 Jan 2024 15:02:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=opensource.cirrus.com
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+	by mx0a-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 405Cpwp4012446;
+	Fri, 5 Jan 2024 09:01:21 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+	date:from:to:cc:subject:message-id:references:mime-version
+	:content-type:in-reply-to; s=PODMain02222019; bh=hCR4EmcMYIBdHpq
+	zJzZE8aUhAR9GR9nB+1npMXbK+K4=; b=OBU69WcwJL0L7H1b4rm47LQphdjUCu6
+	TT9nJj8I2VcYIxXcXFNCjI92WD/6zgEd8dxGEC+u/tIvi2piWm39RRMBcd0xyrUO
+	5e8vDaUwDYLn66eEcspkfpEoLvdZP9shwQ4XaS5sQKL897NDRvAtQZ4SsnoqlFi/
+	8oO7VNws8qymx+sQ5UoGHyBZIAJlj0JyS/koXT0M21fOYChcnQGqd2o/tuTMXG5U
+	ih/yHp61QcvMZJ8q0PKOEDwvwWZEI82hb4RvP7K+6LLA4gvAeYbaFMrGYEgevoSP
+	4XRbQt7AyiG6QYgXVWSkEeeAMWhclGUMxKbb7EBErZeFcxhi7cr3QWQ==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3ve9e8gqbg-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 05 Jan 2024 09:01:21 -0600 (CST)
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 5 Jan
+ 2024 15:01:18 +0000
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.40 via Frontend
+ Transport; Fri, 5 Jan 2024 15:01:03 +0000
+Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
+	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 81A6615A2;
+	Fri,  5 Jan 2024 15:01:03 +0000 (UTC)
+Date: Fri, 5 Jan 2024 15:01:03 +0000
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+To: James Ogletree <jogletre@opensource.cirrus.com>
+CC: James Ogletree <james.ogletree@cirrus.com>,
+        Fred Treven
+	<fred.treven@cirrus.com>,
+        Ben Bright <ben.bright@cirrus.com>,
+        Dmitry Torokhov
+	<dmitry.torokhov@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        "Krzysztof
+ Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>,
+        Simon Trimmer <simont@opensource.cirrus.com>,
+        "Richard
+ Fitzgerald" <rf@opensource.cirrus.com>,
+        Lee Jones <lee@kernel.org>, "Liam
+ Girdwood" <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, "Jaroslav
+ Kysela" <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        James Schulman
+	<james.schulman@cirrus.com>,
+        David Rhodes <david.rhodes@cirrus.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Peng Fan
+	<peng.fan@nxp.com>, Jeff LaBundy <jeff@labundy.com>,
+        Sebastian Reichel
+	<sebastian.reichel@collabora.com>,
+        Jacky Bai <ping.bai@nxp.com>, Weidong Wang
+	<wangweidong.a@awinic.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Herve Codina
+	<herve.codina@bootlin.com>,
+        Shuming Fan <shumingf@realtek.com>,
+        Shenghao Ding
+	<13916275206@139.com>, Ryan Lee <ryans.lee@analog.com>,
+        Linus Walleij
+	<linus.walleij@linaro.org>,
+        "open list:CIRRUS LOGIC HAPTIC DRIVERS"
+	<patches@opensource.cirrus.com>,
+        "open list:INPUT (KEYBOARD, MOUSE, JOYSTICK,
+ TOUCHSCREEN)..." <linux-input@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND
+ FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>,
+        open list
+	<linux-kernel@vger.kernel.org>,
+        "open list:SOUND - SOC LAYER / DYNAMIC AUDIO
+ POWER MANAGEM..." <linux-sound@vger.kernel.org>,
+        "moderated list:CIRRUS LOGIC
+ AUDIO CODEC DRIVERS" <alsa-devel@alsa-project.org>
+Subject: Re: [PATCH v5 4/5] Input: cs40l50 - Add support for the CS40L50
+ haptic driver
+Message-ID: <20240105150103.GI14858@ediswmail.ad.cirrus.com>
+References: <20240104223643.876292-1-jogletre@opensource.cirrus.com>
+ <20240104223643.876292-5-jogletre@opensource.cirrus.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20240104223643.876292-5-jogletre@opensource.cirrus.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Proofpoint-GUID: nInpbhH6Gxayo2Puvzw74qxNoSGhXQlv
+X-Proofpoint-ORIG-GUID: nInpbhH6Gxayo2Puvzw74qxNoSGhXQlv
+X-Proofpoint-Spam-Reason: safe
 
-On Fri, 5 Jan 2024 15:26:28 +0100
-Christian Brauner <brauner@kernel.org> wrote:
-
-> On Wed, Jan 03, 2024 at 08:32:46PM -0500, Steven Rostedt wrote:
-> > From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
-> > 
-> > Instead of walking the dentries on mount/remount to update the gid values of
-> > all the dentries if a gid option is specified on mount, just update the root
-> > inode. Add .getattr, .setattr, and .permissions on the tracefs inode
-> > operations to update the permissions of the files and directories.
-> > 
-> > For all files and directories in the top level instance:
-> > 
-> >  /sys/kernel/tracing/*
-> > 
-> > It will use the root inode as the default permissions. The inode that
-> > represents: /sys/kernel/tracing (or wherever it is mounted).
-> > 
-> > When an instance is created:
-> > 
-> >  mkdir /sys/kernel/tracing/instance/foo
-> > 
-> > The directory "foo" and all its files and directories underneath will use
-> > the default of what foo is when it was created. A remount of tracefs will
-> > not affect it.  
+On Thu, Jan 04, 2024 at 10:36:37PM +0000, James Ogletree wrote:
+> Introduce support for Cirrus Logic Device CS40L50: a
+> haptic driver with waveform memory, integrated DSP,
+> and closed-loop algorithms.
 > 
-> That kinda sounds like eventfs should actually be a separate filesystem.
-> But I don't know enough about the relationship between the two concepts.
-
-It may someday become one, as eventfs is used by perf where the rest of the
-tracefs system is not.
-
+> The input driver provides the interface for control of
+> haptic effects through the device.
 > 
-> > 
-> > If a user were to modify the permissions of any file or directory in
-> > tracefs, it will also no longer be modified by a change in ownership of a
-> > remount.  
-> 
-> Very odd semantics and I would recommend to avoid that. It's just plain
-> weird imo.
-> 
-> > 
-> > The events directory, if it is in the top level instance, will use the
-> > tracefs root inode as the default ownership for itself and all the files and
-> > directories below it.
-> > 
-> > For the events directory in an instance ("foo"), it will keep the ownership
-> > of what it was when it was created, and that will be used as the default
-> > ownership for the files and directories beneath it.
-> > 
-> > Link: https://lore.kernel.org/linux-trace-kernel/CAHk-=wjVdGkjDXBbvLn2wbZnqP4UsH46E3gqJ9m7UG6DpX2+WA@mail.gmail.com/
-> > 
-> > Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
-> > ---  
-> 
-> So tracefs supports remounting with different uid/gid mount options and
-> then actually wades through _all_ of the inodes and changes their
-> ownership internally? What's the use-case for this? Containers?
+> Signed-off-by: James Ogletree <jogletre@opensource.cirrus.com>
+> ---
+> +#include <linux/input.h>
+> +#include <linux/mfd/cs40l50.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/pm_runtime.h>
 
-No, in fact tracing doesn't work well with containers as tracing is global
-to the entire machine. It can work with privileged containers though.
+Need bitfield.h
 
-The reason for this is because tracefs was based off of debugfs where the
-files and directores are created at boot up and mounted later. The reason
-to do this was to allow users to mount with gid=GID to allow a given group
-to have access to tracing. Without this update, tracefs would ignore it
-like debugfs and proc does today.
-
-I think its time I explain the purpose of tracefs and how it came to be.
-
-The tracing system required a way to control tracing and read the traces.
-It could have just used a new system like perf (although
-/sys/kernel/debug/tracing predates perf), where it created a single ioctl()
-like system call do do everything.
-
-As the ftrace tracing came from PREEMPT_RT latency tracer and my own logdev
-tracer, which both have an embedded background, I chose an interface that
-could work with just an unmodified version of busybox. That is, I wanted it
-to work with just cat and echo.
-
-The main difference with tracefs compared to other file systems is that it
-is a control interface, where writes happen as much as reads. The data read
-is controlled. The closest thing I can think of is how cgroups work.
-
-As tracing is a privileged operation, but something that could be changed
-to allow a group to have access to, I wanted to make it easy for an admin
-to decide who gets to do what at boot up via the /etc/fstab file.
-
-> 
-> Aside from optimizing this and the special semantics for this eventfs
-> stuff that you really should think twice of doing, here's one idea for
-> an extension that might alleviate some of the pain:
-> 
-> If you need flexible dynamic ownership change to e.g., be able to
-> delegate (all, a directory, a single file of) tracefs to
-> unprivileged/containers/whatever then you might want to consider
-> supporting idmapped mounts for tracefs. Because then you can do stuff
-> like:
-
-I'm a novice here and have no idea on how id maps work ;-)
-
-> 
-> user1@localhost:~/data/scripts$ sudo mount --bind -o X-mount.idmap='g:0:1000:1 u:0:1234:1' /run/ /mnt
-> user1@localhost:~/data/scripts$ ls -ln /run/
-> total 12
-> drwxr-xr-x  2 0  0   40 Jan  5 12:12 credentials
-> drwx------  2 0  0   40 Jan  5 11:57 cryptsetup
-> drwxr-xr-x  2 0  0   60 Jan  5 11:57 dbus
-> drwx------  6 0  0  280 Jan  5 11:57 incus_agent
-> prw-------  1 0  0    0 Jan  5 11:57 initctl
-> drwxrwxrwt  4 0  0   80 Jan  5 11:57 lock
-> drwxr-xr-x  3 0  0   60 Jan  5 11:57 log
-> drwx------  2 0  0   40 Jan  5 11:57 lvm
-> -r--r--r--  1 0  0   33 Jan  5 11:57 machine-id
-> -rw-r--r--  1 0  0  101 Jan  5 11:58 motd.dynamic
-> drwxr-xr-x  2 0  0   40 Jan  5 11:57 mount
-> drwx------  2 0  0   40 Jan  5 11:57 multipath
-> drwxr-xr-x  2 0  0   40 Jan  5 11:57 sendsigs.omit.d
-> lrwxrwxrwx  1 0  0    8 Jan  5 11:57 shm -> /dev/shm
-> drwx--x--x  2 0  0   40 Jan  5 11:57 sudo
-> drwxr-xr-x 24 0  0  660 Jan  5 14:30 systemd
-> drwxr-xr-x  6 0  0  140 Jan  5 14:30 udev
-> drwxr-xr-x  4 0  0   80 Jan  5 11:58 user
-> -rw-rw-r--  1 0 43 2304 Jan  5 15:15 utmp
-> 
-> user1@localhost:~/data/scripts$ ls -ln /mnt/
-> total 12
-> drwxr-xr-x  2 1234  1000   40 Jan  5 12:12 credentials
-> drwx------  2 1234  1000   40 Jan  5 11:57 cryptsetup
-> drwxr-xr-x  2 1234  1000   60 Jan  5 11:57 dbus
-> drwxr-xr-x  2 1234  1000   40 Jan  5 11:57 incus_agent
-> prw-------  1 1234  1000    0 Jan  5 11:57 initctl
-> drwxr-xr-x  2 1234  1000   40 Jan  5 11:57 lock
-> drwxr-xr-x  3 1234  1000   60 Jan  5 11:57 log
-> drwx------  2 1234  1000   40 Jan  5 11:57 lvm
-> -r--r--r--  1 1234  1000   33 Jan  5 11:57 machine-id
-> -rw-r--r--  1 1234  1000  101 Jan  5 11:58 motd.dynamic
-> drwxr-xr-x  2 1234  1000   40 Jan  5 11:57 mount
-> drwx------  2 1234  1000   40 Jan  5 11:57 multipath
-> drwxr-xr-x  2 1234  1000   40 Jan  5 11:57 sendsigs.omit.d
-> lrwxrwxrwx  1 1234  1000    8 Jan  5 11:57 shm -> /dev/shm
-> drwx--x--x  2 1234  1000   40 Jan  5 11:57 sudo
-> drwxr-xr-x 24 1234  1000  660 Jan  5 14:30 systemd
-> drwxr-xr-x  6 1234  1000  140 Jan  5 14:30 udev
-> drwxr-xr-x  4 1234  1000   80 Jan  5 11:58 user
-> -rw-rw-r--  1 1234 65534 2304 Jan  5 15:15 utmp
-> 
-> Where you can see that ownership of this tmpfs instance in this example
-> is changed. I'm not trying to advocate here but this will probably
-> ultimately be nicer for your users because it means that a container
-> manager or whatever can be handed a part of tracefs (or all of it) and
-> the ownership and access rights for that thing is correct. And you can
-> get rid of that gid based access completely.
-> 
-> You can change uids, gids, or both. You can specify up to 340 individual
-> mappings it's quite flexible.
-> 
-> Because then you can have a single tracefs superblock and have multiple
-> mounts with different ownership for the relevant parts of tracefs that
-> you want to delegate to whoever. If you need an ownership change you can
-> then just create another idmapped mount with the new ownership and then
-> use MOVE_MOUNT_BENEATH + umount to replace that mount.
-> 
-> Probably even know someone that would implement this for you (not me) if
-> that sounds like something that would cover some of the use-case for the
-> proposed change here. But maybe I just misunderstood things completely.
-
-That actually sounds nice. I have no idea how to implement it, but having a
-way to bind mount with different permissions looks like a nifty feature to
-have. Now, can we do that and still keep the dynamic creation of inodes and
-dentries? Does this require having more than one dentry per inode?
-
--- Steve
+Thanks,
+Charles
 
