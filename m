@@ -1,331 +1,477 @@
-Return-Path: <linux-kernel+bounces-17510-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17511-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id F309D824EA0
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 07:25:45 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E551A824EA1
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 07:28:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 612C4B230F6
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 06:25:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5F2571F21B16
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 06:28:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FB098C1C;
-	Fri,  5 Jan 2024 06:25:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97D451DFDA;
+	Fri,  5 Jan 2024 06:27:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="DvBE4kTo"
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="zybvHjHP"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75A601DFD1;
-	Fri,  5 Jan 2024 06:25:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704435930; x=1735971930;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=1lhIJgvpNmrWsoFaDWS8YiGcduUHLJA3usysoBpMoGU=;
-  b=DvBE4kToMTs0EU5CGaPI+yZkWAMOBWC3WATwAL9s8CphW7dEe+JfFc5k
-   BpMB7gSqJqROR84aY2Fc+G89HnF8cDLOtDkhCzYL1PrNtGPBX+lZlPnEZ
-   7KQjyHv9g2eNlQhGuOv03tSxcznRhGcx1hTluPArLVc/9GHhhtnpV+z9w
-   Dk1sqfeYj6+DqDtLwEQtK+hkXWfLG8AraKMylO7tyOWixYvD1uthDOQlC
-   5LuR372fWXhxcB3J5p+gfe0mAPRKJMvUt8M4eShm0TtgsTa8LMMVBfSQZ
-   IRd8jKPLIE1w6FltYeuWKj/RkxQNpdaeTHCaNR/EAOdw5D3T2/MSwVb2h
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10943"; a="387893437"
-X-IronPort-AV: E=Sophos;i="6.04,332,1695711600"; 
-   d="scan'208";a="387893437"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2024 22:25:29 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,332,1695711600"; 
-   d="scan'208";a="22750398"
-Received: from yy-desk-7060.sh.intel.com (HELO localhost) ([10.239.159.76])
-  by fmviesa001.fm.intel.com with ESMTP; 04 Jan 2024 22:25:27 -0800
-Date: Fri, 5 Jan 2024 14:25:26 +0800
-From: Yuan Yao <yuan.yao@linux.intel.com>
-To: Yan Zhao <yan.y.zhao@intel.com>
-Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org, pbonzini@redhat.com,
-	seanjc@google.com, shuah@kernel.org, stevensd@chromium.org
-Subject: Re: [RFC PATCH v2 3/3] KVM: selftests: Add set_memory_region_io to
- test memslots for MMIO BARs
-Message-ID: <20240105062526.4nrczazdbn3ysd62@yy-desk-7060>
-References: <20240103084327.19955-1-yan.y.zhao@intel.com>
- <20240103084535.20162-1-yan.y.zhao@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB24B1DFCB
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 06:27:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1704436073;
+	bh=wB37rMC+UTPbLNXffCOSvGSP759jg7mEntQlnz7Bg2A=;
+	h=Date:From:Subject:To:Cc:References:In-Reply-To:From;
+	b=zybvHjHPeSbfVmJifd5o50z8jGboYHWpyzshj4d3i8s34ntFuYlAYZSCPihEgBxJD
+	 1idGR1jZx9/EH4fOJulDB0MmQRZqNkva6PJ/x1TaLN7+y03VLibJzKT9rWWn0D8qiQ
+	 sxZsor5meAJQxo5xeuJhqYz0bSwNzjmuLmmtvE6K8g3Py30LRbMvx1HPtMxopx+xrL
+	 x3o3pV2rY4xGaQf/2yw3hV+YBgWK1AWXUQ8BPRBYRB2BYUnQ39t4KLyFRprG7GC0F8
+	 Texi117xPPa6YLrlK42fVtyYl4UYCBiEN6QUGimXhpGEloLdDLguUNMiq1y6rHW6v+
+	 BT19DOso5UYmg==
+Received: from [100.96.234.34] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: usama.anjum)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 028D237813B6;
+	Fri,  5 Jan 2024 06:27:49 +0000 (UTC)
+Message-ID: <be3976b5-0a9c-41c6-8160-88e6c1e5d63e@collabora.com>
+Date: Fri, 5 Jan 2024 11:27:53 +0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240103084535.20162-1-yan.y.zhao@intel.com>
-User-Agent: NeoMutt/20171215
+User-Agent: Mozilla Thunderbird
+From: Muhammad Usama Anjum <usama.anjum@collabora.com>
+Subject: Re: [PATCH v4 4/4] selftests/mm: add tests for HWPOISON hugetlbfs
+ read
+To: Jiaqi Yan <jiaqiyan@google.com>, linmiaohe@huawei.com,
+ mike.kravetz@oracle.com, naoya.horiguchi@nec.com
+Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>,
+ akpm@linux-foundation.org, songmuchun@bytedance.com, shy828301@gmail.com,
+ linux-mm@kvack.org, linux-kernel@vger.kernel.org, jthoughton@google.com,
+ "kernel@collabora.com" <kernel@collabora.com>
+References: <20230713001833.3778937-1-jiaqiyan@google.com>
+ <20230713001833.3778937-5-jiaqiyan@google.com>
+Content-Language: en-US
+In-Reply-To: <20230713001833.3778937-5-jiaqiyan@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Wed, Jan 03, 2024 at 04:45:35PM +0800, Yan Zhao wrote:
-> Added a selftest set_memory_region_io to test memslots for MMIO BARs.
+Hi,
 
-Emm.. "set_memory_region_io" doesn't represent the real testing purpose,
-but not sure if things like "memory_region_page_refcount_test" become
-better...
+I'm trying to convert this test to TAP as I think the failures sometimes go
+unnoticed on CI systems if we only depend on the return value of the
+application. I've enabled the following configurations which aren't already
+present in tools/testing/selftests/mm/config:
+CONFIG_MEMORY_FAILURE=y
+CONFIG_HWPOISON_INJECT=m
 
-> The MMIO BARs' backends are compound/non-compound huge pages serving as
-> device resources allocated by a mock device driver.
->
-> This selftest will assert and report "errno=14 - Bad address" in vcpu_run()
-> if any failure is met to add such MMIO BAR memslots.
-> After MMIO memslots removal, page reference counts of the device resources
-> are also checked.
->
-> As this selftest will interacts with a mock device "/dev/kvm_mock_device",
-> it depends on test driver test_kvm_mock_device.ko in the kernel.
-> CONFIG_TEST_KVM_MOCK_DEVICE=m must be enabled in the kernel.
->
-> Currently, this selftest is only compiled for __x86_64__.
->
-> Signed-off-by: Yan Zhao <yan.y.zhao@intel.com>
+I'll send a patch to add these configs later. Right now I'm trying to
+investigate the failure when we are trying to inject the poison page by
+madvise(MADV_HWPOISON). I'm getting device busy every single time. The test
+fails as it doesn't expect any business for the hugetlb memory. I'm not
+sure if the poison handling code has issues or test isn't robust enough.
+
+./hugetlb-read-hwpoison
+Write/read chunk size=0x800
+ ... HugeTLB read regression test...
+ ...  ... expect to read 0x200000 bytes of data in total
+ ...  ... actually read 0x200000 bytes of data in total
+ ... HugeTLB read regression test...TEST_PASSED
+ ... HugeTLB read HWPOISON test...
+[    9.280854] Injecting memory failure for pfn 0x102f01 at process virtual
+address 0x7f28ec101000
+[    9.282029] Memory failure: 0x102f01: huge page still referenced by 511
+users
+[    9.282987] Memory failure: 0x102f01: recovery action for huge page: Failed
+ ...  !!! MADV_HWPOISON failed: Device or resource busy
+ ... HugeTLB read HWPOISON test...TEST_FAILED
+
+I'm testing on v6.7-rc8. Not sure if this was working previously or not.
+
+Regards,
+Usama
+
+On 7/13/23 5:18 AM, Jiaqi Yan wrote:
+> Add tests for the improvement made to read operation on HWPOISON
+> hugetlb page with different read granularities. For each chunk size,
+> three read scenarios are tested:
+> 1. Simple regression test on read without HWPOISON.
+> 2. Sequential read page by page should succeed until encounters the 1st
+>    raw HWPOISON subpage.
+> 3. After skip a raw HWPOISON subpage by lseek, read()s always succeed.
+> 
+> Acked-by: Mike Kravetz <mike.kravetz@oracle.com>
+> Reviewed-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
+> Signed-off-by: Jiaqi Yan <jiaqiyan@google.com>
 > ---
->  tools/testing/selftests/kvm/Makefile          |   1 +
->  .../selftests/kvm/set_memory_region_io.c      | 188 ++++++++++++++++++
->  2 files changed, 189 insertions(+)
->  create mode 100644 tools/testing/selftests/kvm/set_memory_region_io.c
->
-> diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
-> index 4412b42d95de..9d39514b6403 100644
-> --- a/tools/testing/selftests/kvm/Makefile
-> +++ b/tools/testing/selftests/kvm/Makefile
-> @@ -144,6 +144,7 @@ TEST_GEN_PROGS_x86_64 += memslot_modification_stress_test
->  TEST_GEN_PROGS_x86_64 += memslot_perf_test
->  TEST_GEN_PROGS_x86_64 += rseq_test
->  TEST_GEN_PROGS_x86_64 += set_memory_region_test
-> +TEST_GEN_PROGS_x86_64 += set_memory_region_io
->  TEST_GEN_PROGS_x86_64 += steal_time
->  TEST_GEN_PROGS_x86_64 += kvm_binary_stats_test
->  TEST_GEN_PROGS_x86_64 += system_counter_offset_test
-> diff --git a/tools/testing/selftests/kvm/set_memory_region_io.c b/tools/testing/selftests/kvm/set_memory_region_io.c
+>  tools/testing/selftests/mm/.gitignore         |   1 +
+>  tools/testing/selftests/mm/Makefile           |   1 +
+>  .../selftests/mm/hugetlb-read-hwpoison.c      | 322 ++++++++++++++++++
+>  3 files changed, 324 insertions(+)
+>  create mode 100644 tools/testing/selftests/mm/hugetlb-read-hwpoison.c
+> 
+> diff --git a/tools/testing/selftests/mm/.gitignore b/tools/testing/selftests/mm/.gitignore
+> index 7e2a982383c0..cdc9ce4426b9 100644
+> --- a/tools/testing/selftests/mm/.gitignore
+> +++ b/tools/testing/selftests/mm/.gitignore
+> @@ -5,6 +5,7 @@ hugepage-mremap
+>  hugepage-shm
+>  hugepage-vmemmap
+>  hugetlb-madvise
+> +hugetlb-read-hwpoison
+>  khugepaged
+>  map_hugetlb
+>  map_populate
+> diff --git a/tools/testing/selftests/mm/Makefile b/tools/testing/selftests/mm/Makefile
+> index 66d7c07dc177..b7fce9073279 100644
+> --- a/tools/testing/selftests/mm/Makefile
+> +++ b/tools/testing/selftests/mm/Makefile
+> @@ -41,6 +41,7 @@ TEST_GEN_PROGS += gup_longterm
+>  TEST_GEN_PROGS += gup_test
+>  TEST_GEN_PROGS += hmm-tests
+>  TEST_GEN_PROGS += hugetlb-madvise
+> +TEST_GEN_PROGS += hugetlb-read-hwpoison
+>  TEST_GEN_PROGS += hugepage-mmap
+>  TEST_GEN_PROGS += hugepage-mremap
+>  TEST_GEN_PROGS += hugepage-shm
+> diff --git a/tools/testing/selftests/mm/hugetlb-read-hwpoison.c b/tools/testing/selftests/mm/hugetlb-read-hwpoison.c
 > new file mode 100644
-> index 000000000000..e221103091f4
+> index 000000000000..ba6cc6f9cabc
 > --- /dev/null
-> +++ b/tools/testing/selftests/kvm/set_memory_region_io.c
-> @@ -0,0 +1,188 @@
+> +++ b/tools/testing/selftests/mm/hugetlb-read-hwpoison.c
+> @@ -0,0 +1,322 @@
 > +// SPDX-License-Identifier: GPL-2.0
-> +#define _GNU_SOURCE /* for program_invocation_short_name */
-> +#include <fcntl.h>
-> +#include <pthread.h>
-> +#include <sched.h>
-> +#include <semaphore.h>
-> +#include <signal.h>
-> +#include <stdio.h>
+> +
+> +#define _GNU_SOURCE
 > +#include <stdlib.h>
+> +#include <stdio.h>
 > +#include <string.h>
-> +#include <sys/ioctl.h>
+> +
+> +#include <linux/magic.h>
 > +#include <sys/mman.h>
+> +#include <sys/statfs.h>
+> +#include <errno.h>
+> +#include <stdbool.h>
 > +
-> +#include <linux/compiler.h>
+> +#include "../kselftest.h"
 > +
-> +#include <test_util.h>
-> +#include <kvm_util.h>
-> +#include <processor.h>
+> +#define PREFIX " ... "
+> +#define ERROR_PREFIX " !!! "
 > +
-> +#include <../../../../lib/test_kvm_mock_device_uapi.h>
+> +#define MAX_WRITE_READ_CHUNK_SIZE (getpagesize() * 16)
+> +#define MAX(a, b) (((a) > (b)) ? (a) : (b))
 > +
-> +/*
-> + * Somewhat arbitrary location and slot, intended to not overlap anything.
-> + */
-> +#define MEM_REGION_GPA_BASE	0xc0000000
-> +#define RANDOM_OFFSET		0x1000
-> +#define MEM_REGION_GPA_RANDOM	(MEM_REGION_GPA_BASE + RANDOM_OFFSET)
-> +#define MEM_REGION_SLOT_ID	10
+> +enum test_status {
+> +	TEST_PASSED = 0,
+> +	TEST_FAILED = 1,
+> +	TEST_SKIPPED = 2,
+> +};
 > +
-> +static const bool non_compound_supported;
-> +
-> +static const uint64_t BASE_VAL = 0x1111;
-> +static const uint64_t RANDOM_VAL = 0x2222;
-> +
-> +static unsigned long bar_size;
-> +
-> +static sem_t vcpu_ready;
-> +
-> +static void guest_code_read_bar(void)
+> +static char *status_to_str(enum test_status status)
 > +{
-> +	uint64_t val;
-> +
-> +	GUEST_SYNC(0);
-> +
-> +	val = READ_ONCE(*((uint64_t *)MEM_REGION_GPA_RANDOM));
-> +	GUEST_ASSERT_EQ(val, RANDOM_VAL);
-> +
-> +	val = READ_ONCE(*((uint64_t *)MEM_REGION_GPA_BASE));
-> +	GUEST_ASSERT_EQ(val, BASE_VAL);
-> +
-> +	GUEST_DONE();
-> +}
-> +
-> +static void *vcpu_worker(void *data)
-> +{
-> +	struct kvm_vcpu *vcpu = data;
-> +	struct kvm_run *run = vcpu->run;
-> +	struct ucall uc;
-> +	uint64_t cmd;
-> +
-> +	/*
-> +	 * Loop until the guest is done.  Re-enter the guest on all MMIO exits,
-> +	 * which will occur if the guest attempts to access a memslot after it
-> +	 * has been deleted or while it is being moved .
-> +	 */
-> +	while (1) {
-> +		vcpu_run(vcpu);
-> +
-> +		if (run->exit_reason == KVM_EXIT_IO) {
-> +			cmd = get_ucall(vcpu, &uc);
-> +			if (cmd != UCALL_SYNC)
-> +				break;
-> +
-> +			sem_post(&vcpu_ready);
-> +			continue;
-> +		}
-> +
-> +		if (run->exit_reason != KVM_EXIT_MMIO)
-> +			break;
-
-Can the KVM_EXIT_MMIO happen on x86 ? IIUC the accessed GVAs
-in guest code have 1:1 mapping to MEM_REGION_GPA_BASE, which
-is covered by the memslot, and the memory slot is there
-until the guest code path done.
-
-> +
-> +		TEST_ASSERT(!run->mmio.is_write, "Unexpected exit mmio write");
-> +		TEST_ASSERT(run->mmio.len == 8,
-> +			    "Unexpected exit mmio size = %u", run->mmio.len);
-> +
-> +		TEST_ASSERT(run->mmio.phys_addr < MEM_REGION_GPA_BASE ||
-> +			    run->mmio.phys_addr >= MEM_REGION_GPA_BASE + bar_size,
-> +			    "Unexpected exit mmio address = 0x%llx",
-> +			    run->mmio.phys_addr);
-
-Ditto, I just think you don't need this part in this testing.
-
+> +	switch (status) {
+> +	case TEST_PASSED:
+> +		return "TEST_PASSED";
+> +	case TEST_FAILED:
+> +		return "TEST_FAILED";
+> +	case TEST_SKIPPED:
+> +		return "TEST_SKIPPED";
+> +	default:
+> +		return "TEST_???";
 > +	}
-> +
-> +	if (run->exit_reason == KVM_EXIT_IO && cmd == UCALL_ABORT)
-> +		REPORT_GUEST_ASSERT(uc);
-> +
-> +	return NULL;
 > +}
 > +
-> +static void wait_for_vcpu(void)
+> +static int setup_filemap(char *filemap, size_t len, size_t wr_chunk_size)
 > +{
-> +	struct timespec ts;
+> +	char iter = 0;
 > +
-> +	TEST_ASSERT(!clock_gettime(CLOCK_REALTIME, &ts),
-> +		    "clock_gettime() failed: %d\n", errno);
-> +
-> +	ts.tv_sec += 2;
-> +	TEST_ASSERT(!sem_timedwait(&vcpu_ready, &ts),
-> +		    "sem_timedwait() failed: %d\n", errno);
-> +
-> +	/* Wait for the vCPU thread to reenter the guest. */
-> +	usleep(100000);
-
-In this testing it's not needed.
-Because you only check guest state after guest code path done,
-so pthread_join() is enough there.
-
-> +}
-> +
-> +static void test_kvm_mock_device_bar(bool compound)
-> +{
-> +	struct kvm_vm *vm;
-> +	void *mem;
-> +	struct kvm_vcpu *vcpu;
-> +	pthread_t vcpu_thread;
-> +	int fd, ret;
-> +	u32 param_compound = compound;
-> +	u32 inequal = 0;
-> +
-> +	fd = open("/dev/kvm_mock_device", O_RDWR);
-> +	if (fd < 0) {
-> +		pr_info("Please ensure \"CONFIG_TEST_KVM_MOCK_DEVICE=m\" is enabled in the kernel");
-> +		pr_info(", and execute\n\"modprobe test_kvm_mock_device\n");
+> +	for (size_t offset = 0; offset < len;
+> +	     offset += wr_chunk_size) {
+> +		iter++;
+> +		memset(filemap + offset, iter, wr_chunk_size);
 > +	}
-> +	TEST_ASSERT(fd >= 0, "Failed to open kvm mock device.");
-
-Minor:
-May better to move this part into main(), highlight it's a
-must have dependency at beginning.
-
-> +
-> +	ret = ioctl(fd, KVM_MOCK_DEVICE_GET_BAR_SIZE, &bar_size);
-> +	TEST_ASSERT(ret == 0, "Failed to get bar size of kvm mock device");
-> +
-> +	ret = ioctl(fd, KVM_MOCK_DEVICE_PREPARE_RESOURCE, &param_compound);
-> +	TEST_ASSERT(ret == 0, "Failed to prepare resource of kvm mock device");
-> +
-> +	mem = mmap(NULL, (size_t)bar_size, PROT_READ | PROT_WRITE, MAP_SHARED,
-> +		   fd, 0);
-> +	TEST_ASSERT(mem != MAP_FAILED, "Failed to mmap() kvm mock device bar");
-> +
-> +	*(u64 *)mem = BASE_VAL;
-> +	*(u64 *)(mem + RANDOM_OFFSET) = RANDOM_VAL;
-> +
-> +	vm = vm_create_with_one_vcpu(&vcpu, guest_code_read_bar);
-> +
-> +	vm_set_user_memory_region(vm, MEM_REGION_SLOT_ID, 0, MEM_REGION_GPA_BASE,
-> +				  bar_size, mem);
-> +
-> +	virt_map(vm, MEM_REGION_GPA_BASE, MEM_REGION_GPA_BASE,
-> +		 (RANDOM_OFFSET / getpagesize()) + 1);
-> +
-> +	pthread_create(&vcpu_thread, NULL, vcpu_worker, vcpu);
-> +
-> +	/* Ensure the guest thread is spun up. */
-> +	wait_for_vcpu();
-> +
-> +	pthread_join(vcpu_thread, NULL);
-> +
-> +	vm_set_user_memory_region(vm, MEM_REGION_SLOT_ID, 0, 0, 0, 0);
-> +	kvm_vm_free(vm);
-> +
-> +	ret = ioctl(fd, KVM_MOCK_DEVICE_CHECK_BACKEND_REF, &inequal);
-> +	TEST_ASSERT(ret == 0 && inequal == 0, "Incorrect resource ref of KVM device");
-> +
-> +	munmap(mem, bar_size);
-> +	close(fd);
-> +}
-> +
-> +static void test_non_compound_backend(void)
-> +{
-> +	pr_info("Testing non-compound huge page backend for mem slot\n");
-> +	test_kvm_mock_device_bar(false);
-> +}
-> +
-> +static void test_compound_backend(void)
-> +{
-> +	pr_info("Testing compound huge page backend for mem slot\n");
-> +	test_kvm_mock_device_bar(true);
-> +}
-> +
-> +int main(int argc, char *argv[])
-> +{
-> +#ifdef __x86_64__
-> +	test_compound_backend();
-> +	if (non_compound_supported)
-
-Nobody set this, but the mock device looks already supported
-it, so how about just run the 2 testings directly here ?
-
-> +		test_non_compound_backend();
-> +#endif
 > +
 > +	return 0;
 > +}
-> --
-> 2.17.1
->
->
+> +
+> +static bool verify_chunk(char *buf, size_t len, char val)
+> +{
+> +	size_t i;
+> +
+> +	for (i = 0; i < len; ++i) {
+> +		if (buf[i] != val) {
+> +			printf(PREFIX ERROR_PREFIX "check fail: buf[%lu] = %u != %u\n",
+> +				i, buf[i], val);
+> +			return false;
+> +		}
+> +	}
+> +
+> +	return true;
+> +}
+> +
+> +static bool seek_read_hugepage_filemap(int fd, size_t len, size_t wr_chunk_size,
+> +				       off_t offset, size_t expected)
+> +{
+> +	char buf[MAX_WRITE_READ_CHUNK_SIZE];
+> +	ssize_t ret_count = 0;
+> +	ssize_t total_ret_count = 0;
+> +	char val = offset / wr_chunk_size + offset % wr_chunk_size;
+> +
+> +	printf(PREFIX PREFIX "init val=%u with offset=0x%lx\n", val, offset);
+> +	printf(PREFIX PREFIX "expect to read 0x%lx bytes of data in total\n",
+> +	       expected);
+> +	if (lseek(fd, offset, SEEK_SET) < 0) {
+> +		perror(PREFIX ERROR_PREFIX "seek failed");
+> +		return false;
+> +	}
+> +
+> +	while (offset + total_ret_count < len) {
+> +		ret_count = read(fd, buf, wr_chunk_size);
+> +		if (ret_count == 0) {
+> +			printf(PREFIX PREFIX "read reach end of the file\n");
+> +			break;
+> +		} else if (ret_count < 0) {
+> +			perror(PREFIX ERROR_PREFIX "read failed");
+> +			break;
+> +		}
+> +		++val;
+> +		if (!verify_chunk(buf, ret_count, val))
+> +			return false;
+> +
+> +		total_ret_count += ret_count;
+> +	}
+> +	printf(PREFIX PREFIX "actually read 0x%lx bytes of data in total\n",
+> +	       total_ret_count);
+> +
+> +	return total_ret_count == expected;
+> +}
+> +
+> +static bool read_hugepage_filemap(int fd, size_t len,
+> +				  size_t wr_chunk_size, size_t expected)
+> +{
+> +	char buf[MAX_WRITE_READ_CHUNK_SIZE];
+> +	ssize_t ret_count = 0;
+> +	ssize_t total_ret_count = 0;
+> +	char val = 0;
+> +
+> +	printf(PREFIX PREFIX "expect to read 0x%lx bytes of data in total\n",
+> +	       expected);
+> +	while (total_ret_count < len) {
+> +		ret_count = read(fd, buf, wr_chunk_size);
+> +		if (ret_count == 0) {
+> +			printf(PREFIX PREFIX "read reach end of the file\n");
+> +			break;
+> +		} else if (ret_count < 0) {
+> +			perror(PREFIX ERROR_PREFIX "read failed");
+> +			break;
+> +		}
+> +		++val;
+> +		if (!verify_chunk(buf, ret_count, val))
+> +			return false;
+> +
+> +		total_ret_count += ret_count;
+> +	}
+> +	printf(PREFIX PREFIX "actually read 0x%lx bytes of data in total\n",
+> +	       total_ret_count);
+> +
+> +	return total_ret_count == expected;
+> +}
+> +
+> +static enum test_status
+> +test_hugetlb_read(int fd, size_t len, size_t wr_chunk_size)
+> +{
+> +	enum test_status status = TEST_SKIPPED;
+> +	char *filemap = NULL;
+> +
+> +	if (ftruncate(fd, len) < 0) {
+> +		perror(PREFIX ERROR_PREFIX "ftruncate failed");
+> +		return status;
+> +	}
+> +
+> +	filemap = mmap(NULL, len, PROT_READ | PROT_WRITE,
+> +		       MAP_SHARED | MAP_POPULATE, fd, 0);
+> +	if (filemap == MAP_FAILED) {
+> +		perror(PREFIX ERROR_PREFIX "mmap for primary mapping failed");
+> +		goto done;
+> +	}
+> +
+> +	setup_filemap(filemap, len, wr_chunk_size);
+> +	status = TEST_FAILED;
+> +
+> +	if (read_hugepage_filemap(fd, len, wr_chunk_size, len))
+> +		status = TEST_PASSED;
+> +
+> +	munmap(filemap, len);
+> +done:
+> +	if (ftruncate(fd, 0) < 0) {
+> +		perror(PREFIX ERROR_PREFIX "ftruncate back to 0 failed");
+> +		status = TEST_FAILED;
+> +	}
+> +
+> +	return status;
+> +}
+> +
+> +static enum test_status
+> +test_hugetlb_read_hwpoison(int fd, size_t len, size_t wr_chunk_size,
+> +			   bool skip_hwpoison_page)
+> +{
+> +	enum test_status status = TEST_SKIPPED;
+> +	char *filemap = NULL;
+> +	char *hwp_addr = NULL;
+> +	const unsigned long pagesize = getpagesize();
+> +
+> +	if (ftruncate(fd, len) < 0) {
+> +		perror(PREFIX ERROR_PREFIX "ftruncate failed");
+> +		return status;
+> +	}
+> +
+> +	filemap = mmap(NULL, len, PROT_READ | PROT_WRITE,
+> +		       MAP_SHARED | MAP_POPULATE, fd, 0);
+> +	if (filemap == MAP_FAILED) {
+> +		perror(PREFIX ERROR_PREFIX "mmap for primary mapping failed");
+> +		goto done;
+> +	}
+> +
+> +	setup_filemap(filemap, len, wr_chunk_size);
+> +	status = TEST_FAILED;
+> +
+> +	/*
+> +	 * Poisoned hugetlb page layout (assume hugepagesize=2MB):
+> +	 * |<---------------------- 1MB ---------------------->|
+> +	 * |<---- healthy page ---->|<---- HWPOISON page ----->|
+> +	 * |<------------------- (1MB - 8KB) ----------------->|
+> +	 */
+> +	hwp_addr = filemap + len / 2 + pagesize;
+> +	if (madvise(hwp_addr, pagesize, MADV_HWPOISON) < 0) {
+> +		perror(PREFIX ERROR_PREFIX "MADV_HWPOISON failed");
+> +		goto unmap;
+> +	}
+> +
+> +	if (!skip_hwpoison_page) {
+> +		/*
+> +		 * Userspace should be able to read (1MB + 1 page) from
+> +		 * the beginning of the HWPOISONed hugepage.
+> +		 */
+> +		if (read_hugepage_filemap(fd, len, wr_chunk_size,
+> +					  len / 2 + pagesize))
+> +			status = TEST_PASSED;
+> +	} else {
+> +		/*
+> +		 * Userspace should be able to read (1MB - 2 pages) from
+> +		 * HWPOISONed hugepage.
+> +		 */
+> +		if (seek_read_hugepage_filemap(fd, len, wr_chunk_size,
+> +					       len / 2 + MAX(2 * pagesize, wr_chunk_size),
+> +					       len / 2 - MAX(2 * pagesize, wr_chunk_size)))
+> +			status = TEST_PASSED;
+> +	}
+> +
+> +unmap:
+> +	munmap(filemap, len);
+> +done:
+> +	if (ftruncate(fd, 0) < 0) {
+> +		perror(PREFIX ERROR_PREFIX "ftruncate back to 0 failed");
+> +		status = TEST_FAILED;
+> +	}
+> +
+> +	return status;
+> +}
+> +
+> +static int create_hugetlbfs_file(struct statfs *file_stat)
+> +{
+> +	int fd;
+> +
+> +	fd = memfd_create("hugetlb_tmp", MFD_HUGETLB);
+> +	if (fd < 0) {
+> +		perror(PREFIX ERROR_PREFIX "could not open hugetlbfs file");
+> +		return -1;
+> +	}
+> +
+> +	memset(file_stat, 0, sizeof(*file_stat));
+> +	if (fstatfs(fd, file_stat)) {
+> +		perror(PREFIX ERROR_PREFIX "fstatfs failed");
+> +		goto close;
+> +	}
+> +	if (file_stat->f_type != HUGETLBFS_MAGIC) {
+> +		printf(PREFIX ERROR_PREFIX "not hugetlbfs file\n");
+> +		goto close;
+> +	}
+> +
+> +	return fd;
+> +close:
+> +	close(fd);
+> +	return -1;
+> +}
+> +
+> +int main(void)
+> +{
+> +	int fd;
+> +	struct statfs file_stat;
+> +	enum test_status status;
+> +	/* Test read() in different granularity. */
+> +	size_t wr_chunk_sizes[] = {
+> +		getpagesize() / 2, getpagesize(),
+> +		getpagesize() * 2, getpagesize() * 4
+> +	};
+> +	size_t i;
+> +
+> +	for (i = 0; i < ARRAY_SIZE(wr_chunk_sizes); ++i) {
+> +		printf("Write/read chunk size=0x%lx\n",
+> +		       wr_chunk_sizes[i]);
+> +
+> +		fd = create_hugetlbfs_file(&file_stat);
+> +		if (fd < 0)
+> +			goto create_failure;
+> +		printf(PREFIX "HugeTLB read regression test...\n");
+> +		status = test_hugetlb_read(fd, file_stat.f_bsize,
+> +					   wr_chunk_sizes[i]);
+> +		printf(PREFIX "HugeTLB read regression test...%s\n",
+> +		       status_to_str(status));
+> +		close(fd);
+> +		if (status == TEST_FAILED)
+> +			return -1;
+> +
+> +		fd = create_hugetlbfs_file(&file_stat);
+> +		if (fd < 0)
+> +			goto create_failure;
+> +		printf(PREFIX "HugeTLB read HWPOISON test...\n");
+> +		status = test_hugetlb_read_hwpoison(fd, file_stat.f_bsize,
+> +						    wr_chunk_sizes[i], false);
+> +		printf(PREFIX "HugeTLB read HWPOISON test...%s\n",
+> +		       status_to_str(status));
+> +		close(fd);
+> +		if (status == TEST_FAILED)
+> +			return -1;
+> +
+> +		fd = create_hugetlbfs_file(&file_stat);
+> +		if (fd < 0)
+> +			goto create_failure;
+> +		printf(PREFIX "HugeTLB seek then read HWPOISON test...\n");
+> +		status = test_hugetlb_read_hwpoison(fd, file_stat.f_bsize,
+> +						    wr_chunk_sizes[i], true);
+> +		printf(PREFIX "HugeTLB seek then read HWPOISON test...%s\n",
+> +		       status_to_str(status));
+> +		close(fd);
+> +		if (status == TEST_FAILED)
+> +			return -1;
+> +	}
+> +
+> +	return 0;
+> +
+> +create_failure:
+> +	printf(ERROR_PREFIX "Abort test: failed to create hugetlbfs file\n");
+> +	return -1;
+> +}
+
+-- 
+BR,
+Muhammad Usama Anjum
 
