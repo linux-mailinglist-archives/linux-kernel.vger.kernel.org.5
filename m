@@ -1,127 +1,241 @@
-Return-Path: <linux-kernel+bounces-17837-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17839-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A180782536C
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 13:43:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D3913825373
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 13:47:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 26F421F23DB5
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 12:43:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 525411F23A8F
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 12:47:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B22512D610;
-	Fri,  5 Jan 2024 12:42:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E32AD2D60E;
+	Fri,  5 Jan 2024 12:47:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fexVHH7I"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vGJr7qtw"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9604F2D043;
-	Fri,  5 Jan 2024 12:42:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-55559e26ccfso1881484a12.3;
-        Fri, 05 Jan 2024 04:42:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704458570; x=1705063370; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=8Z/sbdKKt/wzLF4s9/xA3JvplJTqpdOGJ3HlSdybqII=;
-        b=fexVHH7IGBSYbV4lVwL8IbLqHOece2LUqKkLgg0Chzilr5AGKZ9eQamatfwBvXbrus
-         8n8wacln57aMue3ywhKbENOZFRPdrEpqZFC16LMzuJyMXPAn+NCpFGu00UsQEGD2O835
-         B99TbMDo4rMBAFrlACmZYCGYvidafOY5M+sjAwzA0zVUQe+55hnpnm+YbX4UAVtwPmle
-         5O2Mom55byRs4XazJcdUoOQFk7hfZBvo8ifmFjS7lrrs5iox/gVa41nqM+issjnDqv07
-         euPL5k/McKI1cwRLA+yMeaf4h14D7ehvhxTQNHBeUQckknk739z00X8Ft2mJyu0r3le1
-         9cfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704458570; x=1705063370;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8Z/sbdKKt/wzLF4s9/xA3JvplJTqpdOGJ3HlSdybqII=;
-        b=iRJ505e5/m1MH3pTFpXfzTdUlUbubuw/o8Ka9sRDKbEabSQhg3C6jngTT+oTDHO0dT
-         qzo31ssztmYApBoztDfkuVDOtlVcvAu76F3FwGt9weEJgA5QvGW8yGAWG8RdjoMCumZx
-         vmfZAY9SLQ8sAYH8y+26I4+/jC0GZ06jLo+H7ojC4HDaStwO6U7aIRUT2xNl/SAkjMnT
-         SKpGrUN/UJ9PDIn2vtU22a0TxQEXgTXPpk0ALX0kBtWM1m/kdE0ish1x911JrdK+2FnT
-         Lf5SK9bZuCn+0YMqLFchgt6Uz3w76g/15zckua235i8/yFtPvlbZ71XnFsi5JlXDMGvg
-         Fn+Q==
-X-Gm-Message-State: AOJu0YxH92qZ++VttV0hgkpOAbjFuIcOy1xxr8ZBGL3BMqy4GrhJmz/0
-	WZ9a6GElemPownz/Oq8OSCQ=
-X-Google-Smtp-Source: AGHT+IGbfX1w0N1pem4IEfrQ3cQn6z6SoqBmdwTlzBDIsENtwVd4ZQekXNKiB19iA+prjtO3rEK/Uw==
-X-Received: by 2002:a50:cd15:0:b0:557:1cfd:6efa with SMTP id z21-20020a50cd15000000b005571cfd6efamr432236edi.112.1704458569397;
-        Fri, 05 Jan 2024 04:42:49 -0800 (PST)
-Received: from ?IPV6:2a02:8389:41cf:e200:19ad:2fc2:9145:71e5? (2a02-8389-41cf-e200-19ad-2fc2-9145-71e5.cable.dynamic.v6.surfer.at. [2a02:8389:41cf:e200:19ad:2fc2:9145:71e5])
-        by smtp.gmail.com with ESMTPSA id fd5-20020a056402388500b0055743d6e9ebsm71122edb.41.2024.01.05.04.42.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 05 Jan 2024 04:42:48 -0800 (PST)
-Message-ID: <56a15164-dbce-4740-b59e-b566f613f878@gmail.com>
-Date: Fri, 5 Jan 2024 13:42:47 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DBB12D602;
+	Fri,  5 Jan 2024 12:47:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79FC5C433C7;
+	Fri,  5 Jan 2024 12:47:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704458824;
+	bh=f7aJUqAeO+62GIOemsYAtg4AYwU9wZ1B8RIVl2IX2Zg=;
+	h=From:To:Cc:Subject:Date:From;
+	b=vGJr7qtwsZz/T4P3Otx5SkXUs+x3QBKWPrH2yQuN2FcOLt8MuhVd+VMUXhKm5aoW7
+	 nwNb+XcFNRHFJuNDTbHXSZx0rTfX686lnJS4WaAmnmwihfjF+K0qoTIEZ6Yj3yfi59
+	 FwLfidcRjJkxUMw7Dqb/wZhzCUpiAATsS/dJWG4sRPf94N0ULNxIYyNsd+ueBUaOOH
+	 Q4GcTrcz2bghhFhD0mYKZFevALT6lMIjFLVn3NgHGoNwn5rLJflSNmDFppxmeW6yF2
+	 WpnFuO0CeiUZeFJ5/xOFMixaa9VJo9ClBHujYeWBjdCfBu+N2kHzwNEG1D9nrejVj5
+	 4GFpz/cQGsyXQ==
+From: Christian Brauner <brauner@kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Christian Brauner <brauner@kernel.org>,
+	linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [GIT PULL] vfs mount api updates
+Date: Fri,  5 Jan 2024 13:46:53 +0100
+Message-ID: <20240105-vfs-mount-5e94596bd1d1@brauner>
+X-Mailer: git-send-email 2.42.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] usb: typec: tipd: fix use of device-specific init
- function
-To: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Roger Quadros <rogerq@kernel.org>,
- Javier Carrasco <javier.carrasco@wolfvision.net>, linux-usb@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240104-dev_spec_init-v1-1-1a57e7fd8cc8@gmail.com>
- <ZZf2lhtRdmIHmlBq@kuha.fi.intel.com>
-Content-Language: en-US
-From: Javier Carrasco <javier.carrasco.cruz@gmail.com>
-In-Reply-To: <ZZf2lhtRdmIHmlBq@kuha.fi.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-Developer-Signature: v=1; a=openpgp-sha256; l=8671; i=brauner@kernel.org; h=from:subject:message-id; bh=f7aJUqAeO+62GIOemsYAtg4AYwU9wZ1B8RIVl2IX2Zg=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaRO/2Vzf7pJ7848R1n7K49Dl90w5NqxMDhEzvCKQ6f1/ EOBNQxBHaUsDGJcDLJiiiwO7Sbhcst5KjYbZWrAzGFlAhnCwMUpABNJqGD4H38+aPHxVPX0xQ9+ NEVu0v7jzHRMbtfs0BanqQvNdPbMk2JkmJl4N2Eh7yONPvNDX3KufXvCOeV/m9S8uv9uMUq7DvR +YwAA
+X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
+Content-Transfer-Encoding: 8bit
 
-On 05.01.24 13:36, Heikki Krogerus wrote:
-> On Thu, Jan 04, 2024 at 06:07:12PM +0100, Javier Carrasco wrote:
->> The current implementation supports device-pecific callbacks for the
->> init function with a function pointer. The patch that introduced this
->> feature did not update one call to the tps25750 init function to turn it
->> into a call with the new pointer in the resume function.
->>
->> Fixes: d49f90822015 ("usb: typec: tipd: add init and reset functions to tipd_data")
->> Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
-> 
-> This was suggested by Roger, no?
-> 
+Hey Linus,
 
-Yes, it was. Thanks for the reminder.
+/* Summary */
+This contains the work to retrieve detailed information about mounts via two
+new system calls. This is hopefully the beginning of the end of the saga that
+started with fsinfo() years ago. The LWN articles in [1] and [2] can serve as a
+summary so we can avoid rehashing everything here.
 
-Could the following trailer be added before applying?
+At LSFMM in May 2022 we got into a room and agreed on what we want to do about
+fsinfo(). Basically, split it into pieces. This is the first part of that
+agreement. Specifically, it is concerned with retrieving information about
+mounts. So this only concerns the mount information retrieval, not the mount
+table change notification, or the extended filesystem specific mount option
+work. That is separate work.
 
-Suggested-by: Roger Quadros <rogerq@kernel.org>
+Currently mounts have a 32bit id. Mount ids are already in heavy use by
+libmount and other low-level userspace but they can't be relied upon because
+they're recycled very quickly. We agreed that mounts should carry a unique
+64bit id by which they can be referenced directly. This is now implemented as
+part of this work. The new 64bit mount id is exposed in statx() through the new
+STATX_MNT_ID_UNIQUE flag. If the flag isn't raised the old mount id is
+returned. If it is raised and the kernel supports the new 64bit mount id the
+flag is raised in the result mask and the new 64bit mount id is returned. New
+and old mount ids do not overlap so they cannot be conflated.
 
-Otherwise I will resend the patch with that addition.
+Two new system calls are introduced that operate on the 64bit mount id:
+statmount() and listmount(). A summary of the api and usage can be found on LWN
+as well (cf. [3]) but of course, I'll provide a summary here as well.
 
-> Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-> 
->> ---
->>  drivers/usb/typec/tipd/core.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/usb/typec/tipd/core.c b/drivers/usb/typec/tipd/core.c
->> index a956eb976906..8a7cdfee27a1 100644
->> --- a/drivers/usb/typec/tipd/core.c
->> +++ b/drivers/usb/typec/tipd/core.c
->> @@ -1495,7 +1495,7 @@ static int __maybe_unused tps6598x_resume(struct device *dev)
->>  		return ret;
->>  
->>  	if (ret == TPS_MODE_PTCH) {
->> -		ret = tps25750_init(tps);
->> +		ret = tps->data->init(tps);
->>  		if (ret)
->>  			return ret;
->>  	}
-> 
-> thans,
-> 
+Both system calls rely on struct mnt_id_req. Which is the request struct used
+to pass the 64bit mount id identifying the mount to operate on. It is
+extensible to allow for the addition of new parameters and for future use in
+other apis that make use of mount ids.
+
+statmount() mimicks the semantics of statx() and exposes a set flags that
+userspace may raise in mnt_id_req to request specific information to be
+retrieved. A statmount() call returns a struct statmount filled in with
+information about the requested mount. Supported requests are indicated by
+raising the request flag passed in struct mnt_id_req in the @mask argument in
+struct statmount. Currently we do support:
+
+* STATMOUNT_SB_BASIC:
+  Basic filesystem info.
+
+* STATMOUNT_MNT_BASIC
+  Mount information (mount id, parent mount id, mount attributes etc.).
+
+* STATMOUNT_PROPAGATE_FROM
+  Propagation from what mount in current namespace.
+
+* STATMOUNT_MNT_ROOT
+  Path of the root of the mount (e.g., mount --bind /bla /mnt returns /bla).
+
+* STATMOUNT_MNT_POINT
+  Path of the mount point (e.g., mount --bind /bla /mnt returns /mnt).
+
+* STATMOUNT_FS_TYPE
+  Name of the filesystem type as the magic number isn't enough due to submounts.
+
+The string options STATMOUNT_MNT_{ROOT,POINT} and STATMOUNT_FS_TYPE are
+appended to the end of the struct. Userspace can use the offsets in @fs_type,
+@mnt_root, and @mnt_point to reference those strings easily.
+
+The struct statmount reserves quite a bit of space currently for future
+extensibility. This isn't really a problem and if this bothers us we can just
+send a follow-up pull request during this cycle.
+
+listmount() is given a 64bit mount id via mnt_id_req just as statmount(). It
+takes a buffer and a size to return an array of the 64bit ids of the child
+mounts of the requested mount. Userspace can thus choose to either retrieve
+child mounts for a mount in batches or iterate through the child mounts. For
+most use-cases it will be sufficient to just leave space for a few child
+mounts. But for big mount tables having an iterator is really helpful.
+Iterating through a mount table works by setting @param in mnt_id_req to the
+mount id of the last child mount retrieved in the previous listmount() call.
+
+[1]: https://lwn.net/Articles/934469
+[2]: https://lwn.net/Articles/829212
+[3]: https://lwn.net/Articles/950569
+
+/* Testing */
+clang: Debian clang version 16.0.6 (19)
+gcc: (Debian 13.2.0-7) 13.2.0
+
+All patches are based on v6.7-rc1 and have been sitting in linux-next.
+No build failures or warnings were observed.
+
+/* Conflicts */
+
+Merge conflicts with other trees
+================================
+
+[1] linux-next: manual merge of the security tree with the vfs-brauner tree
+    https://lore.kernel.org/linux-next/20231120143106.3f8faedd@canb.auug.org.au
+
+    Possible conflict in system call numbering depending on whether the LSM
+    people do send a pull request including their new system calls.
+
+[2] This will have a merge conflict with the vfs misc pull request.
+    https://lore.kernel.org/r/20240105-vfs-misc-62acb84c5066@brauner
+
+    The resolution is as follows:
+
+    diff --cc tools/testing/selftests/Makefile
+    index 27f9f679ed15,da2e1b0e4dd8..000000000000
+    --- a/tools/testing/selftests/Makefile
+    +++ b/tools/testing/selftests/Makefile
+    @@@ -26,7 -26,7 +26,8 @@@ TARGETS += filesystem
+      TARGETS += filesystems/binderfs
+      TARGETS += filesystems/epoll
+      TARGETS += filesystems/fat
+     +TARGETS += filesystems/overlayfs
+    + TARGETS += filesystems/statmount
+      TARGETS += firmware
+      TARGETS += fpu
+      TARGETS += ftrace
+
+The following changes since commit b85ea95d086471afb4ad062012a4d73cd328fa86:
+
+  Linux 6.7-rc1 (2023-11-12 16:19:07 -0800)
+
+are available in the Git repository at:
+
+  git@gitolite.kernel.org:pub/scm/linux/kernel/git/vfs/vfs tags/vfs-6.8.mount
+
+for you to fetch changes up to 5bd3cf8cbc8a286308ef3f40656659d5abc89995:
+
+  add selftest for statmount/listmount (2023-12-14 16:13:59 +0100)
+
+Please consider pulling these changes from the signed vfs-6.8.mount tag.
+
+Happy New Year!
+Christian
+
+----------------------------------------------------------------
+vfs-6.8.mount
+
+----------------------------------------------------------------
+Christian Brauner (3):
+      statmount: simplify numeric option retrieval
+      statmount: simplify string option retrieval
+      fs: keep struct mnt_id_req extensible
+
+Miklos Szeredi (7):
+      add unique mount ID
+      mounts: keep list of mounts in an rbtree
+      namespace: extract show_path() helper
+      add statmount(2) syscall
+      add listmount(2) syscall
+      wire up syscalls for statmount/listmount
+      add selftest for statmount/listmount
+
+ arch/alpha/kernel/syscalls/syscall.tbl             |   2 +
+ arch/arm/tools/syscall.tbl                         |   2 +
+ arch/arm64/include/asm/unistd32.h                  |   4 +
+ arch/m68k/kernel/syscalls/syscall.tbl              |   2 +
+ arch/microblaze/kernel/syscalls/syscall.tbl        |   2 +
+ arch/mips/kernel/syscalls/syscall_n32.tbl          |   2 +
+ arch/mips/kernel/syscalls/syscall_n64.tbl          |   2 +
+ arch/mips/kernel/syscalls/syscall_o32.tbl          |   2 +
+ arch/parisc/kernel/syscalls/syscall.tbl            |   2 +
+ arch/powerpc/kernel/syscalls/syscall.tbl           |   2 +
+ arch/s390/kernel/syscalls/syscall.tbl              |   2 +
+ arch/sh/kernel/syscalls/syscall.tbl                |   2 +
+ arch/sparc/kernel/syscalls/syscall.tbl             |   2 +
+ arch/x86/entry/syscalls/syscall_32.tbl             |   2 +
+ arch/x86/entry/syscalls/syscall_64.tbl             |   2 +
+ arch/xtensa/kernel/syscalls/syscall.tbl            |   2 +
+ fs/internal.h                                      |   2 +
+ fs/mount.h                                         |  27 +-
+ fs/namespace.c                                     | 627 +++++++++++++++++----
+ fs/pnode.c                                         |   2 +-
+ fs/proc_namespace.c                                |  13 +-
+ fs/stat.c                                          |   9 +-
+ include/linux/mount.h                              |   5 +-
+ include/linux/syscalls.h                           |   8 +
+ include/uapi/asm-generic/unistd.h                  |   8 +-
+ include/uapi/linux/mount.h                         |  70 +++
+ include/uapi/linux/stat.h                          |   1 +
+ tools/testing/selftests/Makefile                   |   1 +
+ .../selftests/filesystems/statmount/.gitignore     |   2 +
+ .../selftests/filesystems/statmount/Makefile       |   6 +
+ .../filesystems/statmount/statmount_test.c         | 612 ++++++++++++++++++++
+ 31 files changed, 1298 insertions(+), 129 deletions(-)
+ create mode 100644 tools/testing/selftests/filesystems/statmount/.gitignore
+ create mode 100644 tools/testing/selftests/filesystems/statmount/Makefile
+ create mode 100644 tools/testing/selftests/filesystems/statmount/statmount_test.c
 
