@@ -1,227 +1,173 @@
-Return-Path: <linux-kernel+bounces-17686-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17687-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D8A82825126
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 10:48:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A9A3825129
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 10:49:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DF7FD1C22FDB
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 09:48:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CEBA71F22615
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 09:49:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16A932377F;
-	Fri,  5 Jan 2024 09:48:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A67824A10;
+	Fri,  5 Jan 2024 09:49:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="1lrzoXGC"
+	dkim=pass (1024-bit key) header.d=wolfvision.net header.i=@wolfvision.net header.b="oALvBcnX"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2043.outbound.protection.outlook.com [40.107.21.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F05E224B41
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 09:48:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--vdonnefort.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dbdb46770d7so2065333276.1
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Jan 2024 01:48:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1704448080; x=1705052880; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=d/chp9iYc18PijDbo+8g07Uc+eJNKO0EynyXnVgKIzI=;
-        b=1lrzoXGCnJFvsELNSb+8V8v6buZvlCPDiG7gjszmqMsWo+V4rkXjWVUnVsx2sZKTGJ
-         sbP9WMuU1JTZeJnFAFh6uJo5HIm6n+0t13mVwxfFpkfUi7Yygh7D2mlRzeMvc/VKAeW4
-         fAT0FYQv/GW0LPbVvHaOu9/o8mFd1uJ7rwfN+JaQxN+HrjvNbM+tHD5J4Y6RS2mEkybN
-         SaFylMhFn+bIwQbNB3pxscqS+EeibHxHGHz+TOExYLYmWdKXiQyHnOBQedjtrhAsr685
-         450DaKeAnuUlmh9uo3xMTPPb6l+vg3lhbgpazQEo2PeDJjYy90Ns5ykSYYs48kIHGRd7
-         oH2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704448080; x=1705052880;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=d/chp9iYc18PijDbo+8g07Uc+eJNKO0EynyXnVgKIzI=;
-        b=XJbumlO0VxxGm8GsD5KVD07d44G3La1j2HaM4p2eAeEH37WoIdxZR5t0c7dww85r46
-         KChPleMQb6jzReQ9zuRv+OEPDCxADfliGHN/rdmlXO1FHSpzMzqivnyolcgyNcD8eOlE
-         iUYlEOQEFYWK2q0frlJkPc/VLcJlw52shvCqt8f/1NEo4x3osI5gAZd0QVA+DiuCqwxB
-         k7g8jjUrRIbO/Mj+JmS1kygokQVFgUwTeXWWpQ79s27jbQP3T2BjGxbET2Vd0l6T0379
-         Jow7ED+V3a9qib1bW3WuoDGpPqhla+QQXJzR/n6rbZrGfrd3Z19PAuNbcDSDxiRfSaVD
-         9bWw==
-X-Gm-Message-State: AOJu0Yy69EwkNa2g7JzqG9RUZHpj63KgnUyBsk+C4rtEBoQdq/n3IgMU
-	AKbTVh4rA21G/kzLlmtV6fqwFiO+cPa6K8hTiGiP+ys=
-X-Google-Smtp-Source: AGHT+IGqgJzLxvsE/UVML+foQwlWKr4XAk7ifQHuueX1WxCLsxVxp2uDLH4O0EyYxpEHa6z4eFWlt7dut2YHFTQV
-X-Received: from vdonnefort.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:2eea])
- (user=vdonnefort job=sendgmr) by 2002:a25:bb11:0:b0:db7:dce9:76cd with SMTP
- id z17-20020a25bb11000000b00db7dce976cdmr723549ybg.9.1704448079979; Fri, 05
- Jan 2024 01:47:59 -0800 (PST)
-Date: Fri,  5 Jan 2024 09:47:29 +0000
-In-Reply-To: <20240105094729.2363579-1-vdonnefort@google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAC91249F3;
+	Fri,  5 Jan 2024 09:49:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wolfvision.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wolfvision.net
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=b5FEXOiTNO+tm7m2ZMwDQRfrXuAermp+ysq4We90IAwDcmvREu/D5geUqjNIuehKVPbEUEqqK9WzGHlia8aY33JS5iHsdTN61NEqyGziCspyStOF0bXB0H09sp4dv7ZZO2wp99p4VzjKLCS1+YQDECh16vuvzNPjfxtNWjiL966odh7yFgBP8ckVjhkLDXYdd9KwnWzINXhZFcrE+iar3uVjhiwNo7RLTUIqicmWtMIkpO42jcnlOUQHFbb4x0HB7LxU7IKYdjkga+JbIs0K1W8UIgJzly6cRNLrmi7Wwqc6sz4DS58sv6pytx+/UVOr2CWfnDzOf2m3fxOapU6utA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Qreaq7pIlv3I9KgmB23s4C5L+I54TDWlcB/WPIKD+M0=;
+ b=SMGMw5FEyK4/4n/aPNYmBT/hzc4ryje75svElacZq9lp9I5JSm87XauQbKxeZMzxtmW7TM9nq1AkPizog5tPVuUClV3JnRSUKCSUCN98w4IsQ87OiTfnse8sYT+Ed/B8QqR1v3aRmxKcSO/lCHx9BCDB+vs6lahpdVuDi1NAj0NeU1pYVTxXazZr8+NMg3aPVEtUSkZJNq38DwEKiK+JEjB4wJF+CcbNwe4B3raOLSWbeV3sczJUogNRKIDKD8vAIRpDRNGfflB+jBw/rRcx3r/mSoAdlZC2xLztjhBygLDOIxDOLZtAU7ldSdpS+awPmS2poqUk7bxau8f/dicvhA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wolfvision.net; dmarc=pass action=none
+ header.from=wolfvision.net; dkim=pass header.d=wolfvision.net; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wolfvision.net;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Qreaq7pIlv3I9KgmB23s4C5L+I54TDWlcB/WPIKD+M0=;
+ b=oALvBcnXV24gM06r7Nv7+5X0Xusr3GX8t5hN++zKncr0v1Ttm8XnrsdAidzvoMJyR49sbqg7r6rAzGmp+bCMKorahOgVzS8D9kex5fywpxOTVSjpHlmhBfKE1sQU1A3Chdj94BydNbc5G/fnRlK9uvnqxUsZ0yjgUqTIGyrDChU=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=wolfvision.net;
+Received: from VE1PR08MB4974.eurprd08.prod.outlook.com (2603:10a6:803:111::15)
+ by AM9PR08MB6177.eurprd08.prod.outlook.com (2603:10a6:20b:283::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.15; Fri, 5 Jan
+ 2024 09:49:25 +0000
+Received: from VE1PR08MB4974.eurprd08.prod.outlook.com
+ ([fe80::6b40:1e6f:7c94:71dc]) by VE1PR08MB4974.eurprd08.prod.outlook.com
+ ([fe80::6b40:1e6f:7c94:71dc%4]) with mapi id 15.20.7135.023; Fri, 5 Jan 2024
+ 09:49:25 +0000
+Message-ID: <6e63a1f0-8ed6-41cf-b1bc-34b49099eedf@wolfvision.net>
+Date: Fri, 5 Jan 2024 10:49:22 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 0/4] usb: typec: tipd: add patch update support for
+ tps6598x
+To: Jai Luthra <j-luthra@ti.com>, rogerq@kernel.org
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+ linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org, vigneshr@ti.com,
+ d-gole@ti.com, nm@ti.com
+References: <20231207-tps6598x_update-v2-0-f3cfcde6d890@wolfvision.net>
+ <vmngazj6si7xxss7txenezkcukqje2glhvvs7ipdcx3vjiqvlk@ohmmhhhlryws>
+ <2nqiaxakx6setx4tzgddnbjadbh7miegz5p6wamsbbiyrfuq3x@un2uxajbswkg>
+ <f463e49d-9e69-4bff-a663-3ce7c1093202@wolfvision.net>
+ <nza4s2kjmcptz6epbyegwy6wh32buyxm5evnk2jultqblgzs4b@6mzuklpqhby7>
+Content-Language: en-US
+From: Javier Carrasco <javier.carrasco@wolfvision.net>
+In-Reply-To: <nza4s2kjmcptz6epbyegwy6wh32buyxm5evnk2jultqblgzs4b@6mzuklpqhby7>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: FR4P281CA0005.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:c8::13) To VE1PR08MB4974.eurprd08.prod.outlook.com
+ (2603:10a6:803:111::15)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240105094729.2363579-1-vdonnefort@google.com>
-X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
-Message-ID: <20240105094729.2363579-3-vdonnefort@google.com>
-Subject: [PATCH v10 2/2] tracing: Allow user-space mapping of the ring-buffer
-From: Vincent Donnefort <vdonnefort@google.com>
-To: rostedt@goodmis.org, linux-kernel@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org
-Cc: mhiramat@kernel.org, mathieu.desnoyers@efficios.com, 
-	kernel-team@android.com, Vincent Donnefort <vdonnefort@google.com>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: VE1PR08MB4974:EE_|AM9PR08MB6177:EE_
+X-MS-Office365-Filtering-Correlation-Id: b270fd17-7fe0-403d-1189-08dc0dd399cc
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	Wov3L+NvCTDx9wYKNzGQ4/jkbMadpZRsNiUkyRfwiY38jj7/+kfknVXQX32F+W5elRkvi+lcFsvKbvzREH1xDc83k1AE96LWk33FqZCihfZGicIE7aY4kFQnOBFNFVfTGpc3E/3gbXkt4TVajJ/juL92RlEhsVinw+nMI88ZVSlmPoBd/0iM9l28Jc3aTB8psm0MwjJuswkC8CpYiX7wYv1f2pGuy4wZdiNYFn0OjK4h0aPNym6g4kBhgMbS8XEdkKdI/s+RhtK/JLPGQt7YBR9kmi2360BvYe97rRuJyVBE4INQ7ZHDE0e9osx/OEky0POBziM5fL5Z2amTgMIHy4cj1dAUis5VO3LKLqAHwHSgn+wn3xXj7PcTlbgWhZ4jc832yih8BZyVVpCkaK23pjLqLhpABQ5gTvGlARQY79ZsN0uu/lf33I4lTKvCrLle+rh0731RbwD2t8CLobd9E7wsdBQZy6eBQL8O9J63qVX/rq1QV77f5xj0ZkoJMevbIF4tHzX4OYjL7cZukrNn0gOw6Yd1okaq5VlBdbHrFJH5JYmgzXmsbzT3KQR5fuOPH98a9RZWi4Ftl6q6JnubwMBZnbBA04v6E2URDo1FBv/GFlOTEK1mmjZCJA446T6q41NhBsnpNDtQaaq7Ko6NhQ==
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR08MB4974.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(366004)(396003)(136003)(39850400004)(346002)(230922051799003)(451199024)(1800799012)(64100799003)(186009)(38100700002)(6512007)(83380400001)(8936002)(41300700001)(8676002)(2616005)(4326008)(44832011)(5660300002)(2906002)(6666004)(316002)(54906003)(478600001)(66476007)(53546011)(66556008)(6486002)(66946007)(6506007)(86362001)(31696002)(36756003)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?Z2VubFVNKzNJdC9yemJPY3Y3cHd1a3VQWSthWEpuMDJnQy9Cc1RQcWprNGp2?=
+ =?utf-8?B?U2lUYmJlUDJOQmtQaXoxY0d0SE1sOGJXd2E1VkdwZWhnVTlhdkdnYWhMM1FK?=
+ =?utf-8?B?VE5OdzUvTkNOeURJMzNsZlVOU1VkcjByZUtlNFB3M28xQVZoRnR5R3VSY3hW?=
+ =?utf-8?B?b0M0QXEzejRDbU8xczhmSThDRnpURVp4ODhUU3ZzR3QyTm1xU2JLRXd3VExz?=
+ =?utf-8?B?MjI2VitJV3V0TmE1dnBJVEFYWXJSVmp3RzByT3loYlBxR201MWcvcXRYYTdG?=
+ =?utf-8?B?aUVEYjZpQ3d3NEFDeFZEVEVEemtnM2QwWVF4dG1MeWpUd2pvOHRhUjREZ2xx?=
+ =?utf-8?B?VThOTFFMNHZ3OEQrSkhyRnl2SWhNaWl3UW93QTM4a3MrNFJ4Y0VVWEEyZlZT?=
+ =?utf-8?B?d3pzMTdtS0IvSWRzRXBFcDhkNWYycytaSkptT28xdVBDRFJtWTAyTjJuMzZ5?=
+ =?utf-8?B?NlNDSUlaUFJLM0ZQK0xJNGRNYXgzVE9RaCt2UGFGUVZxdE5PeWp4V1ZCMFZo?=
+ =?utf-8?B?V2pDQVQyTTlIRkNDKzBDNjNJM2dkRHkzdFkwRVJBR2g2bENTMDFORW96YTJF?=
+ =?utf-8?B?QzJlcVkyenFmMFVnWnVGeVpzczVUcFJPY2dCNzRtbUxJWVRzRzhVa2lwTWdk?=
+ =?utf-8?B?TTh1T2FJek5zU0d4S3FyRFhXTkpXVEkvSWh0OER6b0JrR1ovYmJHb3JOTkVQ?=
+ =?utf-8?B?ekRlTWM1WlhTclpNMzM5c1NnVzBTc1ZXSTBUVVhEZjF3QjlEQjBWRm9LUWdn?=
+ =?utf-8?B?VEp1TVpOMkpyRkpYQlp5SlZyUHpJaEJzVlJEOTJzRGtXcnJFRm1MWGR4d3NL?=
+ =?utf-8?B?bDExNjRXTW9Sd2RHcHFHUGJvQWJ3S3RLSklWbjloUWU5enpXNURSU2lCMnNN?=
+ =?utf-8?B?K1dic3prZXBEalphbzJxM0Z6RStNalVRMFZobGlzR0tnaGxWcnNYWWpNODdK?=
+ =?utf-8?B?Yk1GOUJMUUk0Nkl4dmEyam1Yc05IZUdYTXNMankwek1jdGRBUVVFWWVSVlR1?=
+ =?utf-8?B?Ymk2KzdDNXlpbTNXL04xaXBRU3FGTE13dndaelRBa0lEcitXNzg2YnBQVTh5?=
+ =?utf-8?B?d1pwenZMajZlOFEzNS9yTWZnWU9CZjQvZ0VITEZOSVp3NnVmaUNtZll4Y1I5?=
+ =?utf-8?B?UlRCUUtRZlM4a3hDbTI2bE02U083K2I4QmpvYjJXa2tqeHBuUFF5WGg5RUxi?=
+ =?utf-8?B?cjQ0ZkxSanhtQ2M2SGNTcExxRHcyTnZOWEY4Yy9tdXVQY0hnbEg5K1RXN056?=
+ =?utf-8?B?aE02a0owU1dnRlpRaVR4MitMUGplNXdkK21sazlFQWJMSmNGQ2g5Qm5ENXc5?=
+ =?utf-8?B?VWlzSnFKVnE3VDhiT3Yzb3dDNGxYSEo0dTV5U2FVMExFQ0dxWVR3amxzenpx?=
+ =?utf-8?B?bjdINkxPMUxIVDhlbjdyNjAybm9oQkt4VWYzb0tOMG9JN0RVRm5pbjBqUGJI?=
+ =?utf-8?B?RzFkWTRCblZ0RlA2UkNuajR4ckg3N0xvUTVqQy81b1JaZ0FkTldGVTRLREFC?=
+ =?utf-8?B?VmVyMXc5bG5uTHEvMXVXVkVsOE5uQ2pHM3FpTzM0cjk2TWhRdE9nV0xONE1T?=
+ =?utf-8?B?UTYxRng5UTVPSUVjWFRlRkFnOGd6V1ptTEtkbFhob2daQnEvSDF3NlhBSkk0?=
+ =?utf-8?B?ai9SZk1uMkJhTENTcDBHNkNyRlJFTXN0RzhOL2VoQlpML0pobFlRZTQrVFhl?=
+ =?utf-8?B?blFyUVJUcXFEU3licllZOGtUU3JpU1U3MHV3TWxNTm1uMEE3OXZSeHdTcXhm?=
+ =?utf-8?B?OVBwWlFZWU93cE4zTGhpbXBVdWU1RFdWbXRkOHVuNFJ2UWVpejROcEhCd1ll?=
+ =?utf-8?B?d3BlMEE4QWl2M0ZtZVQ0R2xrdHROaFlwdTV5MDdFQS9PUXJBdVlEK2lpT1pQ?=
+ =?utf-8?B?ek9HU3pJWlhsY2owWUtpME1qemlpQ2dZNnl3OTI4UFdONytOQ2F5K29CdDhp?=
+ =?utf-8?B?cExBbVlybUNEcFJxU0dCS0plUkpBM1A0MXBUSjZ6d3ZZbFM5dTVCRSsrN2Jr?=
+ =?utf-8?B?dTRZM3FBcFFWSjFsR2hyaldKcXRYRjA5SEh2S0w5TXF6UmZFZEkxa2ZzN20x?=
+ =?utf-8?B?SE1MVUQrMDUvRGlHK2o4eUo1QkYxR0ZNV3lFa0c1eVVpQXNMcjhweEo0K21r?=
+ =?utf-8?B?WVRsbGRiaTJUbUZQTEZqckFHN1M2OTR2Wk1NNTFITy9TUjBmcmE3SWtZSWxt?=
+ =?utf-8?B?OGp1QjJ2TE9KNWVXTHZzYk1uLyt1cXAxSTI4OVdyVHU2R3NZWUc2c0QrNlFO?=
+ =?utf-8?Q?Mh2rvruPeqkyMuutp79Nj123E8p3wu7ifwPyPCc0ZA=3D?=
+X-OriginatorOrg: wolfvision.net
+X-MS-Exchange-CrossTenant-Network-Message-Id: b270fd17-7fe0-403d-1189-08dc0dd399cc
+X-MS-Exchange-CrossTenant-AuthSource: VE1PR08MB4974.eurprd08.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Jan 2024 09:49:25.1580
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: e94ec9da-9183-471e-83b3-51baa8eb804f
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: EX0wKVafFYiKMWiijGT4iacwEp0moiVVWqVE06FS5yzvukdthY8iJKje3Q5/Eq1pfDVMa3G2HBl3L1uAT/P8bZkMbP1TG0H6XXI+WEFql9k=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR08MB6177
 
-Currently, user-space extracts data from the ring-buffer via splice,
-which is handy for storage or network sharing. However, due to splice
-limitations, it is imposible to do real-time analysis without a copy.
+On 05.01.24 09:12, Jai Luthra wrote:
+> I added some prints and can see that the probe fails once at 
+> fwnode_usb_role_switch_get() because the other endpoint (of USB device) 
+> is not yet probed. It then re-probes later where it passes.
+> 
+> The GAID reset being done unconditionally in your series seems to cause 
+> the board to get stuck in the boot process when it hits the above error 
+> due to probe-order between USB subsystem and this IC. My guess would be 
+> SoC stops getting power because we reset the PD chip?
+> 
+> Anyway, I will send below change as a separate "Fixes:" patch for now, 
+> to keep how things as they were before your series.
+> 
 
-A solution for that problem is to let the user-space map the ring-buffer
-directly.
+My biggest concern is that we are sending GAID for the tps25750 under
+the same circumstances. Could we not have the same problem with that
+device? We would be resetting the PD controller and the SoC would stop
+getting power as well, right? Or is there anything device-specific that
+would avoid that?
 
-The mapping is exposed via the per-CPU file trace_pipe_raw. The first
-element of the mapping is the meta-page. It is followed by each
-subbuffer constituting the ring-buffer, ordered by their unique page ID:
+> If you have a better architecture in mind that can reset only when PTCH 
+> has been applied and not for other probe defers, feel free to send it on 
+> top of it.
+> 
 
-  * Meta-page -- include/uapi/linux/trace_mmap.h for a description
-  * Subbuf ID 0
-  * Subbuf ID 1
-     ...
+I added the cold reset to have the same behavior upon probe failures for
+both devices, given that they use the same command. But if that can
+cause problems, let's leave the reset alone...
 
-It is therefore easy to translate a subbuf ID into an offset in the
-mapping:
-
-  reader_id = meta->reader->id;
-  reader_offset = meta->meta_page_size + reader_id * meta->subbuf_size;
-
-When new data is available, the mapper must call a newly introduced ioctl:
-TRACE_MMAP_IOCTL_GET_READER. This will update the Meta-page reader ID to
-point to the next reader containing unread data.
-
-Signed-off-by: Vincent Donnefort <vdonnefort@google.com>
-
-diff --git a/include/uapi/linux/trace_mmap.h b/include/uapi/linux/trace_mmap.h
-index f950648b0ba9..8c49489c5867 100644
---- a/include/uapi/linux/trace_mmap.h
-+++ b/include/uapi/linux/trace_mmap.h
-@@ -26,4 +26,6 @@ struct trace_buffer_meta {
- 	__u32		meta_struct_len;	/* Len of this struct */
- };
- 
-+#define TRACE_MMAP_IOCTL_GET_READER		_IO('T', 0x1)
-+
- #endif /* _UAPI_TRACE_MMAP_H_ */
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index 46dbe22121e9..cfeaf2cd204e 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -8583,15 +8583,31 @@ tracing_buffers_splice_read(struct file *file, loff_t *ppos,
- 	return ret;
- }
- 
--/* An ioctl call with cmd 0 to the ring buffer file will wake up all waiters */
- static long tracing_buffers_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
- {
- 	struct ftrace_buffer_info *info = file->private_data;
- 	struct trace_iterator *iter = &info->iter;
-+	int err;
- 
--	if (cmd)
--		return -ENOIOCTLCMD;
-+	if (cmd == TRACE_MMAP_IOCTL_GET_READER) {
-+		if (!(file->f_flags & O_NONBLOCK)) {
-+			err = ring_buffer_wait(iter->array_buffer->buffer,
-+					       iter->cpu_file,
-+					       iter->tr->buffer_percent);
-+			if (err)
-+				return err;
-+		}
- 
-+		return ring_buffer_map_get_reader(iter->array_buffer->buffer,
-+						  iter->cpu_file);
-+	} else if (cmd) {
-+		return -ENOTTY;
-+	}
-+
-+	/*
-+	 * An ioctl call with cmd 0 to the ring buffer file will wake up all
-+	 * waiters
-+	 */
- 	mutex_lock(&trace_types_lock);
- 
- 	iter->wait_index++;
-@@ -8604,6 +8620,62 @@ static long tracing_buffers_ioctl(struct file *file, unsigned int cmd, unsigned
- 	return 0;
- }
- 
-+static vm_fault_t tracing_buffers_mmap_fault(struct vm_fault *vmf)
-+{
-+	struct ftrace_buffer_info *info = vmf->vma->vm_file->private_data;
-+	struct trace_iterator *iter = &info->iter;
-+	vm_fault_t ret = VM_FAULT_SIGBUS;
-+	struct page *page;
-+
-+	page = ring_buffer_map_fault(iter->array_buffer->buffer, iter->cpu_file,
-+				     vmf->pgoff);
-+	if (!page)
-+		return ret;
-+
-+	get_page(page);
-+	vmf->page = page;
-+	vmf->page->mapping = vmf->vma->vm_file->f_mapping;
-+	vmf->page->index = vmf->pgoff;
-+
-+	return 0;
-+}
-+
-+static void tracing_buffers_mmap_close(struct vm_area_struct *vma)
-+{
-+	struct ftrace_buffer_info *info = vma->vm_file->private_data;
-+	struct trace_iterator *iter = &info->iter;
-+
-+	ring_buffer_unmap(iter->array_buffer->buffer, iter->cpu_file);
-+}
-+
-+static void tracing_buffers_mmap_open(struct vm_area_struct *vma)
-+{
-+	struct ftrace_buffer_info *info = vma->vm_file->private_data;
-+	struct trace_iterator *iter = &info->iter;
-+
-+	WARN_ON(ring_buffer_map(iter->array_buffer->buffer, iter->cpu_file));
-+}
-+
-+static const struct vm_operations_struct tracing_buffers_vmops = {
-+	.open		= tracing_buffers_mmap_open,
-+	.close		= tracing_buffers_mmap_close,
-+	.fault		= tracing_buffers_mmap_fault,
-+};
-+
-+static int tracing_buffers_mmap(struct file *filp, struct vm_area_struct *vma)
-+{
-+	struct ftrace_buffer_info *info = filp->private_data;
-+	struct trace_iterator *iter = &info->iter;
-+
-+	if (vma->vm_flags & VM_WRITE)
-+		return -EPERM;
-+
-+	vm_flags_mod(vma, VM_DONTCOPY | VM_DONTDUMP, VM_MAYWRITE);
-+	vma->vm_ops = &tracing_buffers_vmops;
-+
-+	return ring_buffer_map(iter->array_buffer->buffer, iter->cpu_file);
-+}
-+
- static const struct file_operations tracing_buffers_fops = {
- 	.open		= tracing_buffers_open,
- 	.read		= tracing_buffers_read,
-@@ -8612,6 +8684,7 @@ static const struct file_operations tracing_buffers_fops = {
- 	.splice_read	= tracing_buffers_splice_read,
- 	.unlocked_ioctl = tracing_buffers_ioctl,
- 	.llseek		= no_llseek,
-+	.mmap		= tracing_buffers_mmap,
- };
- 
- static ssize_t
--- 
-2.43.0.472.g3155946c3a-goog
-
+Best regards,
+Javier Carrasco
 
