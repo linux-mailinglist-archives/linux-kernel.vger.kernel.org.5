@@ -1,203 +1,213 @@
-Return-Path: <linux-kernel+bounces-18149-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18150-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D7658825972
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 18:53:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 687E1825977
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 18:53:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BE6EF1C21DFE
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 17:53:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 80A9C1C226A9
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 17:53:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3633E3589B;
-	Fri,  5 Jan 2024 17:52:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="fkW9U0kp"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F93F34CD3;
+	Fri,  5 Jan 2024 17:53:24 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85D523529C;
-	Fri,  5 Jan 2024 17:52:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704477145; x=1736013145;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=qQ9qSkfe+NOAELUBosiiVzNtLZY6C4+fHUB1QK9Uvgc=;
-  b=fkW9U0kpQlXFtS9te2ZKRhixYMjhSsVOLk8sutLEDqZZANSUsQLhxgwb
-   jboB0XUV5ZIfk6UFCe0BjlvoP49IdHrhxKcTUP7QhsiM/0yII7VJVCCzM
-   s63v/Rn8rgyHAUMI+NFHpvqlMQI5D5KM0S+B3QHgwZVnQvVpBcNJXc4ho
-   nW1EEBX1Bcld0T7qCFLQH5kzawsSsRJk1TnP3OhlLTZIROluIcmX48e1D
-   8pu+x4PVHuc4KnzErtch6TEU4RI3/MUu2GCKoQnUBrQnYBo0+ZJjUxu3d
-   PlE3uDCDk+yFFtjYbcZcmIMlm5JZS7cOWJJJGhK4jEnQCBrt+YafBKfem
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10944"; a="463947062"
-X-IronPort-AV: E=Sophos;i="6.04,334,1695711600"; 
-   d="scan'208";a="463947062"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2024 09:52:24 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10944"; a="1112149834"
-X-IronPort-AV: E=Sophos;i="6.04,334,1695711600"; 
-   d="scan'208";a="1112149834"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by fmsmga005.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 05 Jan 2024 09:52:24 -0800
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Fri, 5 Jan 2024 09:52:23 -0800
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Fri, 5 Jan 2024 09:52:23 -0800
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Fri, 5 Jan 2024 09:52:23 -0800
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.168)
- by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Fri, 5 Jan 2024 09:52:23 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=THer1HTygJQU2E5KFrk9djnjMy4d0N8WsrTseRA3ppqK0J1ICePc1tv8Bk3Tu/OXVnAzTaXdVvHgnZYsQcYfvkNfWiJbPu7u+Oyhf2eSrnU7jLbnHSjvszPjHDbkaAO/uF8CPafKf+mqWGKMvVwCl7IHCkIHdRCgoahI4+m4QmHOwv3Gj6SCiogto7j0FjfjkU1Tee83FNnOK4HEpZSIsbiCAXIJOmY+Xm7+n8rroDlfdtUBcdDLchfzfVaS7Wk/6lmq65fNU12lx7bPBD5ppjqEe+gw0zH/SQ+Ts5p7kykURoCl5aLv60D+mC1w85/5sG/uFlBgdrYsBWnuvFX7RA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=qQ9qSkfe+NOAELUBosiiVzNtLZY6C4+fHUB1QK9Uvgc=;
- b=AMXZww6c0xTt5HgG+yR2m2Zk2QqtjzEkNA0qefaT1Pc9Z/mprNCbJWpEh01rPJjhmJXtJ4w566m3sgUjIBiynLzYA4b/7ZJsb7AwbihfLQ39a331QBmhnFZE7c6bUI6YXm7SvkdSOCgXGsK+A4DEuaohSwPD8Og8pM06WoxjHJaXWu3or5UUaLijhSWUZMrnwRzUAJsD+SRubh0uBvp0Q1hoEY4TZwzKBKenDRHTYJ04aJ5giXUd1/IEAQXEvYZzWpDjk2MdUZIXw+Cc5pY/2tQAKt6moXM1pP6SuGcenaKmwcYy9Dq1L9rjCCKXfHViSDed0E04iaGjGWE954Eb9A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from MN0PR11MB5963.namprd11.prod.outlook.com (2603:10b6:208:372::10)
- by IA0PR11MB7882.namprd11.prod.outlook.com (2603:10b6:208:40f::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.17; Fri, 5 Jan
- 2024 17:52:20 +0000
-Received: from MN0PR11MB5963.namprd11.prod.outlook.com
- ([fe80::6dc:cee5:b26b:7d93]) by MN0PR11MB5963.namprd11.prod.outlook.com
- ([fe80::6dc:cee5:b26b:7d93%4]) with mapi id 15.20.7159.015; Fri, 5 Jan 2024
- 17:52:20 +0000
-From: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-To: "Yang, Weijiang" <weijiang.yang@intel.com>, "seanjc@google.com"
-	<seanjc@google.com>
-CC: "Gao, Chao" <chao.gao@intel.com>, "Hansen, Dave" <dave.hansen@intel.com>,
-	"peterz@infradead.org" <peterz@infradead.org>, "john.allen@amd.com"
-	<john.allen@amd.com>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "mlevitsk@redhat.com" <mlevitsk@redhat.com>,
-	"pbonzini@redhat.com" <pbonzini@redhat.com>, "kvm@vger.kernel.org"
-	<kvm@vger.kernel.org>
-Subject: Re: [PATCH v8 00/26] Enable CET Virtualization
-Thread-Topic: [PATCH v8 00/26] Enable CET Virtualization
-Thread-Index: AQHaM+ybd3H3II6aZU6KWHt3rvxkNLDIg7MAgADO/oCAAOpTAIAANboAgAADMYCAAAXLgIAAj3+AgABzaACAABlggA==
-Date: Fri, 5 Jan 2024 17:52:20 +0000
-Message-ID: <9abd8400d25835dd2a6fd41b0104e3c666ee8a13.camel@intel.com>
-References: <20231221140239.4349-1-weijiang.yang@intel.com>
-	 <93f118670137933980e9ed263d01afdb532010ed.camel@intel.com>
-	 <5f57ce03-9568-4739-b02d-e9fac6ed381a@intel.com>
-	 <6179ddcb25c683bd178e74e7e2455cee63ba74de.camel@intel.com>
-	 <ZZdLG5W5u19PsnTo@google.com>
-	 <a2344e2143ef2b9eca0d153c86091e58e596709d.camel@intel.com>
-	 <ZZdSSzCqvd-3sdBL@google.com>
-	 <8f070910-2b2e-425d-995e-dfa03a7695de@intel.com>
-	 <ZZgsipXoXTKyvCZT@google.com>
-In-Reply-To: <ZZgsipXoXTKyvCZT@google.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-user-agent: Evolution 3.44.4-0ubuntu2 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MN0PR11MB5963:EE_|IA0PR11MB7882:EE_
-x-ms-office365-filtering-correlation-id: eeecd45b-8b14-43f6-54a5-08dc0e1710bd
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: mImAT5kf6FsfBBezJ/c8fGhfnZo52MBNHGyms1IvNeBWin1Mu4wHJZm953JzHHb+mN2ePME9kAiJYNwjwDD6qxHgWLRncGs7rhyFLj3qKQlygIHUSZV5QxSs8X3HdcqZA0rCQC7Vkes31Rde8VUK+sKTvDnNSLsJdikROOugZoQrKqoaJHFd+S+suLJeWFKTVsY7Zotfw9P9adTgPLD6aDRPaqTSjhtO9H3S/HTJ/iyq3ZgUPyPhxdh+IG3tXD3Lv7IrCE5FqFGhBOQsPRKzf9IMpNbXdzh9t4jhUxS0/enEKtVFY33CXcwq/wXISbCaeKUX+KD6kjqWSCzxdn7+P19/1IrNlhUoX6a+KpqsweUTvxYiyHzBfcrffzWjvbODZmQzIfu4+YCRzsh4DkOpxSmKsG9ujIHcxEpKcc1kgVErgeRNKu9Th4fkVowkOkC6X1X6BqDK9dknwole4dXdOUU7KuGJ93VrCYPSq1DfCdndzqqL3bd0ANIedC7tI8SJMjzhPpAoXwSTLQibceo17K+OsMbvKwA2vCNIu8mfm6Lk2m9B9UZLeVzed9uwxai6vKO5PRlAFYYwYuDiUhXgTCUTs6nPqF4UPIBrHoDMZn95RiWFQIsd2r8VEbn5jz2q
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR11MB5963.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(366004)(136003)(346002)(396003)(39860400002)(230922051799003)(1800799012)(451199024)(186009)(64100799003)(38070700009)(83380400001)(26005)(6506007)(6512007)(2616005)(122000001)(38100700002)(71200400001)(5660300002)(54906003)(8676002)(41300700001)(478600001)(2906002)(6486002)(316002)(110136005)(66556008)(4326008)(91956017)(8936002)(76116006)(66476007)(66446008)(64756008)(66946007)(86362001)(36756003)(82960400001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?T2prZ1Z6cFEzUTBVc2ZpVFhiL21BcFE2RkhYbGc2ckMvUlFMWVlCUCtJdldn?=
- =?utf-8?B?MjBOTUl0ZW1LTXBvNFl5Wmp0SVNGUDZjWkhzVlV3ZjVzZWlxbDFvRkpndjd2?=
- =?utf-8?B?bENrdXRqS3Badm4xRTd6UnNBT3gwSFhCTTJZTjZxc3JrSTBNZkdjMlVLendr?=
- =?utf-8?B?SHg3QWJxT2VzUVBHS2ErRWdEWWpGRENEMm5tRXc5SVBmZk45NUNkSWJ2Q2tN?=
- =?utf-8?B?bGovK1Q1Wm5tbjJoeDU4UDJOb1N5NVVxOVRQbnVIQzdrZENNUEFPTzB6dHI3?=
- =?utf-8?B?UlZrcUtDd29rZkNHRWd2T1hXTlpsUEZDT0g2SWk5NGpBeFRkZGd0R09LcXNB?=
- =?utf-8?B?RTdabXVqQVBjc1dQKzdveURZY0o1TFdBb0JkNFNkNERtUUkzeWNtdGVlTk1J?=
- =?utf-8?B?Z0NkZ3ZBczdScUIyWjBCSDNMUkFHQm81S0ZLaG9DL2hDOXJTZjNMVCtab2hx?=
- =?utf-8?B?VDNZSCtNQlZuU1ZaMnp4cC9wbE9rTjNkeGFhS1Z5V3l6azcyUXRMV2FmVWRt?=
- =?utf-8?B?UHFqdEZ4UTBtcVV5NUUwYlQzcllmVEhFVStkeWkxcDZMaXNOYXRmUUJ6dlFT?=
- =?utf-8?B?cVNnQytjSG5SZDNjQ1ppdENwaTRsV2FMV2FiWGt1UGdyT1pwSFRnRGpGVjRI?=
- =?utf-8?B?bzBvaHI1NkllSjVqRVMwRWhXNGl5cnREZ3hSZytGeGhFeDFtSEJyUW1mZi9T?=
- =?utf-8?B?Z2JtWTFheWg1UUpTQWh4Q1ZqSHovZDlPYSt3QVhtb2ZMYnF0QXdPalN3Z3lK?=
- =?utf-8?B?Q29qS1FQeWFxdjI5Qi9xbUVTWUFJY1lQZHJZSVBVeTRMVXJCQ0RyT2NJdGVo?=
- =?utf-8?B?VEpEY1d6d3dTSElvYmNVN3ZVYXRibUtUNExRdmtuTGhrYnhXZWpSMWp4UlQ3?=
- =?utf-8?B?N2gxV09nRkVSQnVKamZoTU8zYkFvOWRTU3lzd2M3b3M0NzJRR0UvazFRTkNa?=
- =?utf-8?B?enJZTXp6SWdGRzEyY2d0VElLZllYak5jMnBDSXhIVm50WGREejRHUSsrL3Ra?=
- =?utf-8?B?bFlsY20zZWVETUFjSXI0bStSZW5lTEFHS1NzZDF2bHN5SDNVeTU2QzUrbFR3?=
- =?utf-8?B?b0Q4VGpXK0N0ckl0L1k0YXNVS2kzdHNadnBCVkhQeUhLcXFaaDFsTEVoRHk2?=
- =?utf-8?B?SW4ybjRBdFpwcGFwMlZjRElRL1kxd20vU1FvNnVNakhYRnlwbFQwL211Z1dE?=
- =?utf-8?B?N2tmOTc0d0xFcWRucU9MenZ0eGU4aklxaGQ2ZFlhVFFXOTlYN1NaeHBWaWhy?=
- =?utf-8?B?b2t2L2pwbUxPNTcrbmdLbWRSVStYWEJsc1hOQllMLzRjNDlyVkFubVlXRmZr?=
- =?utf-8?B?ckxicDNWdHVtZEpVWm9KaWZFa1FWWjYyZUMxZ25TZzViZllHMEdTQjNVa2tE?=
- =?utf-8?B?NWZ1MTlqNlZraFdCbVFHYWtsS01zWENxNklkZXE1OTBuS0pqS3hQSXEyTCs3?=
- =?utf-8?B?RHpvOE9XejlpRkFaK3dMQ1VWeFFIcjQ0VmxCS2c0em9FcW1KRFJjWlM3aWpK?=
- =?utf-8?B?WUVJWGY1SmlQd0pKeU5HbDdmWU12T1h2U0lIdWFWcTlDa3h1YVJncmtTMVVY?=
- =?utf-8?B?ODRkMExSSlA3RFpyTkNOUkVkL1c1WktTR3QydW5vZ05mckxXOHdhU2h0dVJV?=
- =?utf-8?B?NWZEbUJyYjE5ZnlsZDhWWmk0SUlqd0pVNWY4aENWdlpiQndaVTVFNERIRFhm?=
- =?utf-8?B?UXdMUTUwcDBXQ0dIaGdZOEVRRlFHYnQydWRhNXRTZHAvdXhtQUh5R0ZwZkpi?=
- =?utf-8?B?TzFqb0Z6SXJYeU5WVjBVM0FqR1laOVRwOU1ocnRuVFBadzRLSng2ZHdyMkF4?=
- =?utf-8?B?bnZEeGdjdkc3N1Qyd1l1OGtyNlZPcmM4eW1vUWlaZHNnQ3NPNjJWbnBZa0Zk?=
- =?utf-8?B?UCt6RWpuUEp2QWZvT0VEWkprUmZkVVJ6d2dRZlo4WlZnQk5LZ0NjQS9qYWxE?=
- =?utf-8?B?MnpvRWhDMTR6bVo2NlZ6YzRJRjRlYkdvVi82U2xReVpOWHpmUjlnM1IwUHdC?=
- =?utf-8?B?TmpqSWZyVVFvOFBJSmVNNGErUkdlb3dxVEhlengyWkRxaG1ySTVsSGhRRGsr?=
- =?utf-8?B?U2hta09pVjd6aDJHbUpqM2dGK1BibEFiZUhSSFYzL3BZMnViQmJYdGZweTBL?=
- =?utf-8?B?a1phUkNrelBDTzd4QzE1N1ZHUTZKWTdSWjRtQnQyNE0ycG52UlZNaERvbnpo?=
- =?utf-8?B?anc9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <34177FD7D4CAD1489B5697779E1F6B33@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31905328CA
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 17:53:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7b7fe6d256eso228719839f.1
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Jan 2024 09:53:22 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704477201; x=1705082001;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=0J45BElnGsnlb+hcSi7W72v1ypQ+RzOOzGvT7znb7Wo=;
+        b=GcTQvx3IMr6J8rkmarimyWdp15NcB0O88futsWQD6DTeGlc+2NDbaQI0w2UeK0s+Fk
+         O1prb0dVhXmavQQCWVkU+1zjxeLWqHxjBYENWIpdzd21Wit2ek7RLR8qCWVOpoPM0TxH
+         /BRcW9ffEidQpWMdO299vAESZ2Xo3/zgj50WojGTEaur96OoujRUiwLOusi0+oCcIFGJ
+         p9VSnnuuxq2fDPNNWlK/XFqQCUSeX49YdvaaaZfkGoyCv6W652txW0WOnTle84BXo8vE
+         euvp4gb3gR5j1LGAxyMX9LYTUXDGls2BvGKK/tE+x8F4uWVon8UpJ5wOrzj3Dot4EC5x
+         vSDQ==
+X-Gm-Message-State: AOJu0YxD5aA59TOXiH6Rk56tX6GYoQMB/4/ZR+tCs37kb7X5G/n2zAod
+	L7/e7Y7W+x7H2CUIUnFcr8jOA7I8k56u1u8Yk8zWYdsGOsPL
+X-Google-Smtp-Source: AGHT+IEcJoHiQ4KVpQYRGwAeaLcbhZAcCtrzbLyDBMA1yBJkW93EpqVYY7ybAmGIQT9VcceP9LrjiNgHBBGnCyiWkGCcYi5gAGYQ
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MN0PR11MB5963.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: eeecd45b-8b14-43f6-54a5-08dc0e1710bd
-X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Jan 2024 17:52:20.7441
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Hiaeew5doJocg4TVj+9QtfIbKi7m7rMXJQbb6DhBlTxG4rJWqWGCs3ZHJwVoHaXgiVRu2AWxcfruAdTop9luY39RvXtm0ZYGHgiE9PfJB/k=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR11MB7882
-X-OriginatorOrg: intel.com
+X-Received: by 2002:a05:6638:14cc:b0:46d:e373:e3aa with SMTP id
+ l12-20020a05663814cc00b0046de373e3aamr261769jak.4.1704477199981; Fri, 05 Jan
+ 2024 09:53:19 -0800 (PST)
+Date: Fri, 05 Jan 2024 09:53:19 -0800
+In-Reply-To: <000000000000a62351060e363bdc@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000008608c060e3686a6@google.com>
+Subject: Re: [syzbot] [net?] memory leak in ___neigh_create (2)
+From: syzbot <syzbot+42cfec52b6508887bbe8@syzkaller.appspotmail.com>
+To: alexander.mikhalitsyn@virtuozzo.com, davem@davemloft.net, den@openvz.org, 
+	dsahern@kernel.org, edumazet@google.com, kuba@kernel.org, 
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org, pabeni@redhat.com, 
+	razor@blackwall.org, syzkaller-bugs@googlegroups.com, 
+	thomas.zeitlhofer+lkml@ze-it.at, thomas.zeitlhofer@ze-it.at, 
+	wangyuweihx@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 
-T24gRnJpLCAyMDI0LTAxLTA1IGF0IDA4OjIxIC0wODAwLCBTZWFuIENocmlzdG9waGVyc29uIHdy
-b3RlOg0KPiBObywgZG8gbm90IGluamVjdCAjVUQgb3IgZG8gYW55dGhpbmcgZWxzZSB0aGF0IGRl
-dmlhdGVzIGZyb20NCj4gYXJjaGl0ZWN0dXJhbGx5DQo+IGRlZmluZWQgYmVoYXZpb3IuDQoNCkhl
-cmUgaXMgYSwgYXQgbGVhc3QgcGFydGlhbCwgbGlzdCBvZiBDRVQgdG91Y2ggcG9pbnRzIEkganVz
-dCBjcmVhdGVkIGJ5DQpzZWFyY2hpbmcgdGhlIFNETToNCjEuIFRoZSBlbXVsYXRvciBTVyBmZXRj
-aCB3aXRoIFRSQUNLRVI9MQ0KMi4gQ0FMTCwgUkVULCBKTVAsIElSRVQsIElOVCwgU1lTQ0FMTCwg
-U1lTRU5URVIsIFNZU0VYSVQsIFNZU1JFVA0KMy4gVGFzayBzd2l0Y2hpbmcNCjQuIFRoZSBuZXcg
-Q0VUIGluc3RydWN0aW9ucyAod2hpY2ggSSBndWVzcyBzaG91bGQgYmUgaGFuZGxlZCBieQ0KZGVm
-YXVsdCk6IENMUlNTQlNZLCBJTkNTU1BELCBSU1RPUlNTUCwgU0FWRVBSRVZTU1AsIFNFVFNTQlNZ
-WSwgV1JTUywNCldSVVNTDQoNCk5vdCBhbGwgb2YgdGhvc2UgYXJlIHNlY3VyaXR5IGNoZWNrcywg
-YnV0IHdvdWxkIGhhdmUgc29tZSBmdW5jdGlvbmFsDQppbXBsaWNhdGlvbnMuIEl0J3Mgc3RpbGwg
-bm90IGNsZWFyIHRvIG1lIGlmIHRoaXMgY291bGQgaGFwcGVuIG5hdHVyYWxseQ0KKHRoZSBURFAg
-c2hhZG93aW5nIHN0dWZmKSwgb3Igb25seSB2aWEgc3RyYW5nZSBhdHRhY2tlciBiZWhhdmlvci4g
-SWYgd2UNCm9ubHkgY2FyZSBhYm91dCB0aGUgYXR0YWNrZXIgY2FzZSwgdGhlbiB3ZSBjb3VsZCBo
-YXZlIGEgc21hbGxlciBsaXN0Lg0KDQpJdCBhbHNvIHNvdW5kcyBsaWtlIHRoZSBpbnN0cnVjdGlv
-bnMgaW4gMiBjb3VsZCBtYXliZSBiZSBmaWx0ZXJlZCBieQ0KbW9kZSBpbnN0ZWFkIG9mIGNhcmlu
-ZyBhYm91dCBDRVQgYmVpbmcgZW5hYmxlZC4gQnV0IG1heWJlIGl0J3Mgbm90IGdvb2QNCnRvIG1p
-eCB0aGUgQ0VUIHByb2JsZW0gd2l0aCB0aGUgYmlnZ2VyIGVtdWxhdG9yIGlzc3Vlcy4gRG9uJ3Qg
-a25vdy4NCg==
+syzbot has found a reproducer for the following issue on:
+
+HEAD commit:    2258c2dc850b Merge tag 'for-linus' of git://git.kernel.org..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=16f67b44480000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=a4fb7ad9185f1501
+dashboard link: https://syzkaller.appspot.com/bug?extid=42cfec52b6508887bbe8
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14e23d44480000
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/0e65a45877eb/disk-2258c2dc.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/7617adf885a8/vmlinux-2258c2dc.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/43fb89ea894a/bzImage-2258c2dc.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+42cfec52b6508887bbe8@syzkaller.appspotmail.com
+
+BUG: memory leak
+unreferenced object 0xffff88810b8ea400 (size 512):
+  comm "kworker/0:3", pid 4440, jiffies 4294938594 (age 1132.680s)
+  hex dump (first 32 bytes):
+    00 9c f8 0a 81 88 ff ff 80 29 23 86 ff ff ff ff  .........)#.....
+    c0 79 79 44 81 88 ff ff 72 78 ff ff 00 00 00 00  .yyD....rx......
+  backtrace:
+    [<ffffffff814f9fe6>] __do_kmalloc_node mm/slab_common.c:967 [inline]
+    [<ffffffff814f9fe6>] __kmalloc+0x46/0x120 mm/slab_common.c:981
+    [<ffffffff83b5234f>] kmalloc include/linux/slab.h:584 [inline]
+    [<ffffffff83b5234f>] kzalloc include/linux/slab.h:720 [inline]
+    [<ffffffff83b5234f>] neigh_alloc net/core/neighbour.c:476 [inline]
+    [<ffffffff83b5234f>] ___neigh_create+0xdf/0xd60 net/core/neighbour.c:661
+    [<ffffffff83f9f886>] ip6_finish_output2+0x776/0x9b0 net/ipv6/ip6_output.c:125
+    [<ffffffff83fa5530>] __ip6_finish_output net/ipv6/ip6_output.c:195 [inline]
+    [<ffffffff83fa5530>] ip6_finish_output+0x270/0x530 net/ipv6/ip6_output.c:206
+    [<ffffffff83fa5893>] NF_HOOK_COND include/linux/netfilter.h:291 [inline]
+    [<ffffffff83fa5893>] ip6_output+0xa3/0x1b0 net/ipv6/ip6_output.c:227
+    [<ffffffff83ff16d9>] dst_output include/net/dst.h:444 [inline]
+    [<ffffffff83ff16d9>] NF_HOOK include/linux/netfilter.h:302 [inline]
+    [<ffffffff83ff16d9>] NF_HOOK.constprop.0+0x49/0x110 include/linux/netfilter.h:296
+    [<ffffffff83ff19c4>] mld_sendpack+0x224/0x350 net/ipv6/mcast.c:1820
+    [<ffffffff83ff5403>] mld_send_cr net/ipv6/mcast.c:2121 [inline]
+    [<ffffffff83ff5403>] mld_ifc_work+0x2a3/0x750 net/ipv6/mcast.c:2653
+    [<ffffffff8129519a>] process_one_work+0x2ba/0x5f0 kernel/workqueue.c:2289
+    [<ffffffff81295ab9>] worker_thread+0x59/0x5b0 kernel/workqueue.c:2436
+    [<ffffffff8129fb05>] kthread+0x125/0x160 kernel/kthread.c:376
+    [<ffffffff8100224f>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:308
+
+BUG: memory leak
+unreferenced object 0xffff888109a7fa00 (size 512):
+  comm "kworker/0:3", pid 4440, jiffies 4294938594 (age 1132.680s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 80 29 23 86 ff ff ff ff  .........)#.....
+    00 79 79 44 81 88 ff ff 72 78 ff ff 00 00 00 00  .yyD....rx......
+  backtrace:
+    [<ffffffff814f9fe6>] __do_kmalloc_node mm/slab_common.c:967 [inline]
+    [<ffffffff814f9fe6>] __kmalloc+0x46/0x120 mm/slab_common.c:981
+    [<ffffffff83b5234f>] kmalloc include/linux/slab.h:584 [inline]
+    [<ffffffff83b5234f>] kzalloc include/linux/slab.h:720 [inline]
+    [<ffffffff83b5234f>] neigh_alloc net/core/neighbour.c:476 [inline]
+    [<ffffffff83b5234f>] ___neigh_create+0xdf/0xd60 net/core/neighbour.c:661
+    [<ffffffff83f9f886>] ip6_finish_output2+0x776/0x9b0 net/ipv6/ip6_output.c:125
+    [<ffffffff83fa5530>] __ip6_finish_output net/ipv6/ip6_output.c:195 [inline]
+    [<ffffffff83fa5530>] ip6_finish_output+0x270/0x530 net/ipv6/ip6_output.c:206
+    [<ffffffff83fa5893>] NF_HOOK_COND include/linux/netfilter.h:291 [inline]
+    [<ffffffff83fa5893>] ip6_output+0xa3/0x1b0 net/ipv6/ip6_output.c:227
+    [<ffffffff83ff16d9>] dst_output include/net/dst.h:444 [inline]
+    [<ffffffff83ff16d9>] NF_HOOK include/linux/netfilter.h:302 [inline]
+    [<ffffffff83ff16d9>] NF_HOOK.constprop.0+0x49/0x110 include/linux/netfilter.h:296
+    [<ffffffff83ff19c4>] mld_sendpack+0x224/0x350 net/ipv6/mcast.c:1820
+    [<ffffffff83ff5403>] mld_send_cr net/ipv6/mcast.c:2121 [inline]
+    [<ffffffff83ff5403>] mld_ifc_work+0x2a3/0x750 net/ipv6/mcast.c:2653
+    [<ffffffff8129519a>] process_one_work+0x2ba/0x5f0 kernel/workqueue.c:2289
+    [<ffffffff81295ab9>] worker_thread+0x59/0x5b0 kernel/workqueue.c:2436
+    [<ffffffff8129fb05>] kthread+0x125/0x160 kernel/kthread.c:376
+    [<ffffffff8100224f>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:308
+
+BUG: memory leak
+unreferenced object 0xffff88810a9fb400 (size 512):
+  comm "dhcpcd", pid 4638, jiffies 4294938595 (age 1132.670s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 80 29 23 86 ff ff ff ff  .........)#.....
+    c0 76 79 44 81 88 ff ff 73 78 ff ff 00 00 00 00  .vyD....sx......
+  backtrace:
+    [<ffffffff814f9fe6>] __do_kmalloc_node mm/slab_common.c:967 [inline]
+    [<ffffffff814f9fe6>] __kmalloc+0x46/0x120 mm/slab_common.c:981
+    [<ffffffff83b5234f>] kmalloc include/linux/slab.h:584 [inline]
+    [<ffffffff83b5234f>] kzalloc include/linux/slab.h:720 [inline]
+    [<ffffffff83b5234f>] neigh_alloc net/core/neighbour.c:476 [inline]
+    [<ffffffff83b5234f>] ___neigh_create+0xdf/0xd60 net/core/neighbour.c:661
+    [<ffffffff83f9f886>] ip6_finish_output2+0x776/0x9b0 net/ipv6/ip6_output.c:125
+    [<ffffffff83fa5530>] __ip6_finish_output net/ipv6/ip6_output.c:195 [inline]
+    [<ffffffff83fa5530>] ip6_finish_output+0x270/0x530 net/ipv6/ip6_output.c:206
+    [<ffffffff83fa5893>] NF_HOOK_COND include/linux/netfilter.h:291 [inline]
+    [<ffffffff83fa5893>] ip6_output+0xa3/0x1b0 net/ipv6/ip6_output.c:227
+    [<ffffffff84062411>] dst_output include/net/dst.h:444 [inline]
+    [<ffffffff84062411>] ip6_local_out+0x51/0x70 net/ipv6/output_core.c:155
+    [<ffffffff83fa6285>] ip6_send_skb+0x25/0xc0 net/ipv6/ip6_output.c:1971
+    [<ffffffff83fa6394>] ip6_push_pending_frames+0x74/0x90 net/ipv6/ip6_output.c:1991
+    [<ffffffff83fec08c>] rawv6_push_pending_frames net/ipv6/raw.c:579 [inline]
+    [<ffffffff83fec08c>] rawv6_sendmsg+0x16ac/0x1ba0 net/ipv6/raw.c:922
+    [<ffffffff83ebe965>] inet_sendmsg+0x45/0x70 net/ipv4/af_inet.c:827
+    [<ffffffff83af7116>] sock_sendmsg_nosec net/socket.c:714 [inline]
+    [<ffffffff83af7116>] sock_sendmsg+0x56/0x80 net/socket.c:734
+    [<ffffffff83af769d>] ____sys_sendmsg+0x38d/0x410 net/socket.c:2476
+    [<ffffffff83afbfe8>] ___sys_sendmsg+0xa8/0x110 net/socket.c:2530
+    [<ffffffff83afc178>] __sys_sendmsg+0x88/0x100 net/socket.c:2559
+    [<ffffffff848ed5b5>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+    [<ffffffff848ed5b5>] do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+    [<ffffffff84a00087>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+BUG: memory leak
+unreferenced object 0xffff88810a9fba00 (size 512):
+  comm "dhcpcd", pid 4638, jiffies 4294938595 (age 1132.670s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 80 29 23 86 ff ff ff ff  .........)#.....
+    80 77 79 44 81 88 ff ff 73 78 ff ff 00 00 00 00  .wyD....sx......
+  backtrace:
+    [<ffffffff814f9fe6>] __do_kmalloc_node mm/slab_common.c:967 [inline]
+    [<ffffffff814f9fe6>] __kmalloc+0x46/0x120 mm/slab_common.c:981
+    [<ffffffff83b5234f>] kmalloc include/linux/slab.h:584 [inline]
+    [<ffffffff83b5234f>] kzalloc include/linux/slab.h:720 [inline]
+    [<ffffffff83b5234f>] neigh_alloc net/core/neighbour.c:476 [inline]
+    [<ffffffff83b5234f>] ___neigh_create+0xdf/0xd60 net/core/neighbour.c:661
+    [<ffffffff83f9f886>] ip6_finish_output2+0x776/0x9b0 net/ipv6/ip6_output.c:125
+    [<ffffffff83fa5530>] __ip6_finish_output net/ipv6/ip6_output.c:195 [inline]
+    [<ffffffff83fa5530>] ip6_finish_output+0x270/0x530 net/ipv6/ip6_output.c:206
+    [<ffffffff83fa5893>] NF_HOOK_COND include/linux/netfilter.h:291 [inline]
+    [<ffffffff83fa5893>] ip6_output+0xa3/0x1b0 net/ipv6/ip6_output.c:227
+    [<ffffffff84062411>] dst_output include/net/dst.h:444 [inline]
+    [<ffffffff84062411>] ip6_local_out+0x51/0x70 net/ipv6/output_core.c:155
+    [<ffffffff83fa6285>] ip6_send_skb+0x25/0xc0 net/ipv6/ip6_output.c:1971
+    [<ffffffff83fa6394>] ip6_push_pending_frames+0x74/0x90 net/ipv6/ip6_output.c:1991
+    [<ffffffff83fec08c>] rawv6_push_pending_frames net/ipv6/raw.c:579 [inline]
+    [<ffffffff83fec08c>] rawv6_sendmsg+0x16ac/0x1ba0 net/ipv6/raw.c:922
+    [<ffffffff83ebe965>] inet_sendmsg+0x45/0x70 net/ipv4/af_inet.c:827
+    [<ffffffff83af7116>] sock_sendmsg_nosec net/socket.c:714 [inline]
+    [<ffffffff83af7116>] sock_sendmsg+0x56/0x80 net/socket.c:734
+    [<ffffffff83af769d>] ____sys_sendmsg+0x38d/0x410 net/socket.c:2476
+    [<ffffffff83afbfe8>] ___sys_sendmsg+0xa8/0x110 net/socket.c:2530
+    [<ffffffff83afc178>] __sys_sendmsg+0x88/0x100 net/socket.c:2559
+    [<ffffffff848ed5b5>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+    [<ffffffff848ed5b5>] do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+    [<ffffffff84a00087>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+
+
+---
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
