@@ -1,62 +1,62 @@
-Return-Path: <linux-kernel+bounces-18024-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18025-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC47182575F
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 16:59:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E678D825762
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 17:00:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D8B361C23133
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 15:59:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7044B1F22427
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 16:00:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 839F23174F;
-	Fri,  5 Jan 2024 15:59:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5219A31A89;
+	Fri,  5 Jan 2024 15:59:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="TrEFfzKj"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="W7sHsspT"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBB3F2E822
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 15:59:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0C182E854
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 15:59:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-5542a7f1f3cso2102784a12.2
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Jan 2024 07:59:26 -0800 (PST)
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a28bd9ca247so180645466b.1
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Jan 2024 07:59:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704470365; x=1705075165; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1704470367; x=1705075167; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=TDuMrijv2n4yWr4gr0fXQfwtgxk4DAsUrjH6HhYvL7U=;
-        b=TrEFfzKj7DPV5LXPJX+9KUyUi1nniNQ0ubPf/T3T1z9K6arfehVZcEaeylLAy5t/va
-         HdPKHMy+EFgWbCUDEBMp76L0E9pN9ZaLjjb1zazKS8QnfRnCmkjyEj81PZKNwh1qIF+/
-         y06vJD6bD82c0WYVCtTjlngMXgswMkoUd53iqiLAcEBhdqUFBbZAXaq81IpSQWUwK84a
-         GYyo583xEYxMEdhbj3aSCLu/peSuDn1MUFbyJzsROc5P4+GOKflsfTHQDBqJfTLAqpTj
-         eBlklJB5+VGgalvRaBP7+Pup7B63vaIFrNyor3iS0D75xC+FJ5WmmB1Cd3dLYTWMJs5D
-         mF4A==
+        bh=2tTyPxtOHyPhs2m2q+fBlzqfN887mU2OuCBzVF3uVpc=;
+        b=W7sHsspT/V4ihEea9GxR/wqQ3RnazzeC5k6cllOX3977/PLex7eZ/NmG45QcqcGQq1
+         YYtCG4dYNz8BP3pZ1ldRFgZbOoH/v1CpTNEXpFDJlSGv+ieMC8pLuA83Adm6g5yf5yo2
+         eGbyP0xqgmSHN/jnOzT9IHVolhszkJfFKt84HAtGYX/woyQ0MWhiJKQtoyNqmV5BNS5s
+         vMLk4Igu9li+eT8U9K7VYdyveWtGIwBPOxhJQ6dhoWUkcbEVKrhF5gDdqYriupRvxlIJ
+         FBuG9vOoDm+RJQE2FCRfMe5wF9R0gzDy9Hm9vksdg+cUaB08cITuA5zTrD+Y6s+2Ypbw
+         tf3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704470365; x=1705075165;
+        d=1e100.net; s=20230601; t=1704470367; x=1705075167;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=TDuMrijv2n4yWr4gr0fXQfwtgxk4DAsUrjH6HhYvL7U=;
-        b=V4417/gjtXz6FSs5Os2sLsaedeYc219/B+YAWN1Ea9YvKiwUcY7oBSDszWr9qYP6KH
-         pclJykgzXfWnonMlY/B1lP3mQ0cotDqD7rgmG+kHVAlbbs6Pbx9cbmCcXSSIC1BbfbP/
-         22KSC08dmZh6lBf7JJFyu8RTl+2LLjlPszxu9ZYImDfIklk/1iBDMPkDyz815xsH9Wrq
-         BFh7qEw7vqXmg4lBJ+mIBWkYdHQ/XncFL7ah2qkDOXi1iuR/oIOKZetZD2QZf6aHF9/d
-         RAZAdZCdHm03ak0bRfN68rTOvhoEl5IrWwuoZabkXrbsxEEszyl/zvHIP0NtX8NjpPOM
-         ci/g==
-X-Gm-Message-State: AOJu0Yw++xRShDSN+NG31zHjsQBsRqK3BulvBHMjPpoMRcPW9noFByhP
-	2EEvUWHLQTOlm2qx9ICLlOaUsoDHjSNouw==
-X-Google-Smtp-Source: AGHT+IGHO2j43GzLRzecHQARtf8C7nxj4MOciN8ZW/ZXj6BM8h9fz4oBqoa3deDOqDTdz6Ido16D6g==
-X-Received: by 2002:a17:906:4a09:b0:a28:ad3e:7071 with SMTP id w9-20020a1709064a0900b00a28ad3e7071mr1327840eju.118.1704470365032;
-        Fri, 05 Jan 2024 07:59:25 -0800 (PST)
+        bh=2tTyPxtOHyPhs2m2q+fBlzqfN887mU2OuCBzVF3uVpc=;
+        b=oHl/CwsQNPf75OiBasQk4jEyWa/4ziaw2q93Cxt/N2Vc1WsVFvz2GWb4uvavmd+OPb
+         rJqw65+akRHL+3IFHxWQtx0EDJDm1BzD9Wds+DxpOmp412o3gY28dvK9xwirf3LRWaz8
+         9x+Ceo83/lT7d0XjbXjvzRhppZ01+FopNdg4G9ZQ5C/BBW1CpjhqFZXQWbRC0fauHt34
+         FXs0xZ5NxawWDMUEwToOWOpW4j8DUkr6hWr2wSwI7JLiQje9YDKDJa0iH4h167m6jkz7
+         mr35R4SkCn0OrDlccQpxko33UupAAZeF8vvmPG6baTTRAx0hBqwDJjetFiWPy42jj1In
+         jGhQ==
+X-Gm-Message-State: AOJu0YxxDjFrdDvVrjEUhoSAPlmoRkpTPgUzIGuSoKXUtFNDUF9SAeQB
+	0ocO6w+PZ2tStLdYvhjhG6ntatYiemNykQ==
+X-Google-Smtp-Source: AGHT+IEJllJOQYWFJfcK4fFNCU2+uk/9rAtZgBP1Rn9juMOU1AONaO8vekFgnIMLnJEdjkon7/9SEQ==
+X-Received: by 2002:a17:907:98a:b0:a27:d9ef:8ab with SMTP id bf10-20020a170907098a00b00a27d9ef08abmr1310502ejc.2.1704470366902;
+        Fri, 05 Jan 2024 07:59:26 -0800 (PST)
 Received: from krzk-bin.. ([178.197.223.112])
-        by smtp.gmail.com with ESMTPSA id su8-20020a17090703c800b00a29910a9366sm326024ejb.8.2024.01.05.07.59.23
+        by smtp.gmail.com with ESMTPSA id su8-20020a17090703c800b00a29910a9366sm326024ejb.8.2024.01.05.07.59.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Jan 2024 07:59:24 -0800 (PST)
+        Fri, 05 Jan 2024 07:59:26 -0800 (PST)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
 	Banajit Goswami <bgoswami@quicinc.com>,
@@ -78,9 +78,9 @@ To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
 Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
 	Bartosz Golaszewski <brgl@bgdev.pl>,
 	Sean Anderson <sean.anderson@seco.com>
-Subject: [PATCH v2 1/4] reset: gpio: Add GPIO-based reset controller
-Date: Fri,  5 Jan 2024 16:59:15 +0100
-Message-Id: <20240105155918.279657-2-krzysztof.kozlowski@linaro.org>
+Subject: [PATCH v2 2/4] reset: Instantiate reset GPIO controller for shared reset-gpios
+Date: Fri,  5 Jan 2024 16:59:16 +0100
+Message-Id: <20240105155918.279657-3-krzysztof.kozlowski@linaro.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240105155918.279657-1-krzysztof.kozlowski@linaro.org>
 References: <20240105155918.279657-1-krzysztof.kozlowski@linaro.org>
@@ -92,197 +92,278 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add a simple driver to control GPIO-based resets using the reset
-controller API for the cases when the GPIOs are shared and reset should
-be coordinated.  The driver is expected to be used by reset core
-framework for ad-hoc reset controllers.
+Devices sharing a reset GPIO could use the reset framework for
+coordinated handling of that shared GPIO line.  We have several cases of
+such needs, at least for Devicetree-based platforms.
 
+If Devicetree-based device requests a reset line, which is missing but
+there is a reset-gpios property, instantiate a new "reset-gpio" platform
+device which will handle such reset line.  This allows seamless handling
+of such shared reset-gpios without need of changing Devicetree binding [1].
+
+All newly registered "reset-gpio" platform devices will be stored on
+their own list to avoid any duplicated devices.  The key to find each of
+such platform device is the entire Devicetree GPIO specifier: phandle to
+GPIO controller, GPIO number and GPIO flags.  If two devices have
+conflicting "reset-gpios" property, e.g. with different ACTIVE_xxx
+flags, this would spawn two separate "reset-gpio" devices, where the
+second would fail probing on busy GPIO reques
+
+Link: https://lore.kernel.org/all/YXi5CUCEi7YmNxXM@robh.at.kernel.org/ [1]
 Cc: Bartosz Golaszewski <brgl@bgdev.pl>
 Cc: Sean Anderson <sean.anderson@seco.com>
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
- MAINTAINERS                |   5 ++
- drivers/reset/Kconfig      |   9 +++
- drivers/reset/Makefile     |   1 +
- drivers/reset/reset-gpio.c | 121 +++++++++++++++++++++++++++++++++++++
- 4 files changed, 136 insertions(+)
- create mode 100644 drivers/reset/reset-gpio.c
+ drivers/reset/core.c             | 176 ++++++++++++++++++++++++++++---
+ include/linux/reset-controller.h |   4 +
+ 2 files changed, 167 insertions(+), 13 deletions(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 7fe27cd60e1b..a0fbd4814bc7 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -8866,6 +8866,11 @@ F:	Documentation/i2c/muxes/i2c-mux-gpio.rst
- F:	drivers/i2c/muxes/i2c-mux-gpio.c
- F:	include/linux/platform_data/i2c-mux-gpio.h
- 
-+GENERIC GPIO RESET DRIVER
-+M:	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-+S:	Maintained
-+F:	drivers/reset/reset-gpio.c
-+
- GENERIC HDLC (WAN) DRIVERS
- M:	Krzysztof Halasa <khc@pm.waw.pl>
- S:	Maintained
-diff --git a/drivers/reset/Kconfig b/drivers/reset/Kconfig
-index ccd59ddd7610..bb1b5a326eb7 100644
---- a/drivers/reset/Kconfig
-+++ b/drivers/reset/Kconfig
-@@ -66,6 +66,15 @@ config RESET_BRCMSTB_RESCAL
- 	  This enables the RESCAL reset controller for SATA, PCIe0, or PCIe1 on
- 	  BCM7216.
- 
-+config RESET_GPIO
-+	tristate "GPIO reset controller"
-+	help
-+	  This enables a generic reset controller for resets attached via
-+	  GPIOs.  Typically for OF platforms this driver expects "reset-gpios"
-+	  property.
-+
-+	  If compiled as module, it will be called reset-gpio.
-+
- config RESET_HSDK
- 	bool "Synopsys HSDK Reset Driver"
- 	depends on HAS_IOMEM
-diff --git a/drivers/reset/Makefile b/drivers/reset/Makefile
-index 8270da8a4baa..fd8b49fa46fc 100644
---- a/drivers/reset/Makefile
-+++ b/drivers/reset/Makefile
-@@ -11,6 +11,7 @@ obj-$(CONFIG_RESET_BCM6345) += reset-bcm6345.o
- obj-$(CONFIG_RESET_BERLIN) += reset-berlin.o
- obj-$(CONFIG_RESET_BRCMSTB) += reset-brcmstb.o
- obj-$(CONFIG_RESET_BRCMSTB_RESCAL) += reset-brcmstb-rescal.o
-+obj-$(CONFIG_RESET_GPIO) += reset-gpio.o
- obj-$(CONFIG_RESET_HSDK) += reset-hsdk.o
- obj-$(CONFIG_RESET_IMX7) += reset-imx7.o
- obj-$(CONFIG_RESET_INTEL_GW) += reset-intel-gw.o
-diff --git a/drivers/reset/reset-gpio.c b/drivers/reset/reset-gpio.c
-new file mode 100644
-index 000000000000..cf0a867cbc5f
---- /dev/null
-+++ b/drivers/reset/reset-gpio.c
-@@ -0,0 +1,121 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <linux/gpio/consumer.h>
-+#include <linux/mod_devicetable.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
+diff --git a/drivers/reset/core.c b/drivers/reset/core.c
+index 4d5a78d3c085..ec9b3ff419cf 100644
+--- a/drivers/reset/core.c
++++ b/drivers/reset/core.c
+@@ -13,6 +13,7 @@
+ #include <linux/module.h>
+ #include <linux/of.h>
+ #include <linux/acpi.h>
 +#include <linux/platform_device.h>
-+#include <linux/reset-controller.h>
+ #include <linux/reset.h>
+ #include <linux/reset-controller.h>
+ #include <linux/slab.h>
+@@ -23,6 +24,10 @@ static LIST_HEAD(reset_controller_list);
+ static DEFINE_MUTEX(reset_lookup_mutex);
+ static LIST_HEAD(reset_lookup_list);
+ 
++/* Protects reset_gpio_device_list */
++static DEFINE_MUTEX(reset_gpio_device_mutex);
++static LIST_HEAD(reset_gpio_device_list);
 +
-+struct reset_gpio_priv {
-+	struct reset_controller_dev rc;
-+	struct gpio_desc *reset;
+ /**
+  * struct reset_control - a reset control
+  * @rcdev: a pointer to the reset controller device
+@@ -63,6 +68,16 @@ struct reset_control_array {
+ 	struct reset_control *rstc[] __counted_by(num_rstcs);
+ };
+ 
++/**
++ * struct reset_gpio_device - ad-hoc created reset-gpio device
++ * @of_args: phandle to the reset controller with all the args like GPIO number
++ * @list: list entry for the reset_lookup_list
++ */
++struct reset_gpio_device {
++	struct of_phandle_args of_args;
++	struct list_head list;
 +};
 +
-+static inline struct reset_gpio_priv
-+*rc_to_reset_gpio(struct reset_controller_dev *rc)
+ static const char *rcdev_name(struct reset_controller_dev *rcdev)
+ {
+ 	if (rcdev->dev)
+@@ -813,13 +828,119 @@ static void __reset_control_put_internal(struct reset_control *rstc)
+ 	kref_put(&rstc->refcnt, __reset_control_release);
+ }
+ 
++static bool __reset_gpios_args_match(const struct of_phandle_args *a1,
++				     const struct of_phandle_args *a2)
 +{
-+	return container_of(rc, struct reset_gpio_priv, rc);
++	unsigned int i;
++
++	if (!a2)
++		return false;
++
++	if (a1->args_count != a2->args_count)
++		return false;
++
++	for (i = 0; i < a1->args_count; i++)
++		if (a1->args[i] != a2->args[i])
++			break;
++
++	/* All args matched? */
++	if (i == a1->args_count)
++		return true;
++
++	return false;
 +}
 +
-+static int reset_gpio_assert(struct reset_controller_dev *rc, unsigned long id)
++/*
++ * @node:	node of the device requesting reset
++ * @reset_args:	phandle to the reset controller with all the args like GPIO number
++ */
++static int __reset_add_reset_gpio_device(struct device_node *node,
++					 struct of_phandle_args *args)
 +{
-+	struct reset_gpio_priv *priv = rc_to_reset_gpio(rc);
-+
-+	gpiod_set_value_cansleep(priv->reset, 1);
-+
-+	return 0;
-+}
-+
-+static int reset_gpio_deassert(struct reset_controller_dev *rc,
-+			       unsigned long id)
-+{
-+	struct reset_gpio_priv *priv = rc_to_reset_gpio(rc);
-+
-+	gpiod_set_value_cansleep(priv->reset, 0);
-+
-+	return 0;
-+}
-+
-+static int reset_gpio_status(struct reset_controller_dev *rc, unsigned long id)
-+{
-+	struct reset_gpio_priv *priv = rc_to_reset_gpio(rc);
-+
-+	return gpiod_get_value_cansleep(priv->reset);
-+}
-+
-+static const struct reset_control_ops reset_gpio_ops = {
-+	.assert = reset_gpio_assert,
-+	.deassert = reset_gpio_deassert,
-+	.status = reset_gpio_status,
-+};
-+
-+static void reset_gpio_of_args_put(void *data)
-+{
-+	of_node_put(data);
-+}
-+
-+static int reset_gpio_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct device_node **platdata = dev_get_platdata(dev);
-+	struct of_phandle_args gpio_args;
-+	struct reset_gpio_priv *priv;
++	struct reset_gpio_device *rgpio_dev;
++	struct platform_device *pdev;
 +	int ret;
 +
-+	if (!platdata || !*platdata)
-+		return -EINVAL;
++	lockdep_assert_not_held(&reset_list_mutex);
 +
-+	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
++	mutex_lock(&reset_gpio_device_mutex);
 +
-+	platform_set_drvdata(pdev, &priv->rc);
-+	device_set_node(dev, of_fwnode_handle(*platdata));
++	list_for_each_entry(rgpio_dev, &reset_gpio_device_list, list) {
++		if (args->np == rgpio_dev->of_args.np) {
++			if (__reset_gpios_args_match(args,
++						     &rgpio_dev->of_args)) {
++				ret = 0;
++				goto out_unlock;
++			}
++		}
++	}
 +
-+	priv->reset = devm_gpiod_get(dev, "reset", GPIOD_OUT_HIGH);
-+	if (IS_ERR(priv->reset))
-+		return dev_err_probe(dev, PTR_ERR(priv->reset),
-+				     "Could not get reset gpios\n");
++	/* Not freed in normal path, persisent subsyst data */
++	rgpio_dev = kzalloc(sizeof(*rgpio_dev), GFP_KERNEL);
++	if (!rgpio_dev) {
++		ret = -ENOMEM;
++		goto out_unlock;
++	}
 +
-+	ret = of_parse_phandle_with_args(*platdata, "reset-gpios",
-+					 "#gpio-cells", 0, &gpio_args);
-+	if (ret)
-+		return ret;
++	rgpio_dev->of_args = *args;
++	pdev = platform_device_register_data(NULL, "reset-gpio",
++					     PLATFORM_DEVID_AUTO, &node,
++					     sizeof(node));
++	ret = PTR_ERR_OR_ZERO(pdev);
++	if (!ret)
++		list_add(&rgpio_dev->list, &reset_gpio_device_list);
++	else
++		kfree(rgpio_dev);
 +
-+	priv->rc.ops = &reset_gpio_ops;
-+	priv->rc.owner = THIS_MODULE;
-+	priv->rc.dev = dev;
-+	priv->rc.nr_resets = 1;
-+	priv->rc.of_node = gpio_args.np;
-+	ret = devm_add_action_or_reset(dev, reset_gpio_of_args_put,
-+				       priv->rc.of_node);
-+	if (ret)
-+		return ret;
++out_unlock:
++	mutex_unlock(&reset_gpio_device_mutex);
 +
-+	priv->rc.of_args = devm_kmemdup(dev, &gpio_args, sizeof(gpio_args),
-+					GFP_KERNEL);
-+	if (!priv->rc.of_args)
-+		return -ENOMEM;
-+
-+	return devm_reset_controller_register(dev, &priv->rc);
++	return ret;
 +}
 +
-+static const struct platform_device_id reset_gpio_ids[] = {
-+	{ .name = "reset-gpio", },
-+	{}
-+};
-+MODULE_DEVICE_TABLE(platform, reset_gpio_ids);
++static struct reset_controller_dev *__reset_find_rcdev(struct of_phandle_args *args,
++						       bool gpio_fallback,
++						       const void *cookie)
++{
++	struct reset_controller_dev *r, *rcdev;
 +
-+static struct platform_driver reset_gpio_driver = {
-+	.probe		= reset_gpio_probe,
-+	.id_table	= reset_gpio_ids,
-+	.driver	= {
-+		.name = "reset-gpio",
-+	},
-+};
-+module_platform_driver(reset_gpio_driver);
++	lockdep_assert_held(&reset_list_mutex);
 +
-+MODULE_AUTHOR("Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>");
-+MODULE_DESCRIPTION("Generic GPIO reset driver");
-+MODULE_LICENSE("GPL");
++	rcdev = NULL;
++	list_for_each_entry(r, &reset_controller_list, list) {
++		if (args->np == r->of_node) {
++			if (gpio_fallback) {
++				if (__reset_gpios_args_match(args, r->of_args)) {
++					/*
++					 * Fake args (take first reset) and
++					 * args_count (to matcg reset-gpio
++					 * of_reset_n_cells) because reset-gpio
++					 * has only one reset and does not care
++					 * about reset of GPIO specifier.
++					 */
++					args->args[0] = 0;
++					args->args_count = 1;
++					rcdev = r;
++					break;
++				}
++			} else {
++				rcdev = r;
++				break;
++			}
++		}
++	}
++
++	return rcdev;
++}
++
+ struct reset_control *
+ __of_reset_control_get(struct device_node *node, const char *id, int index,
+ 		       bool shared, bool optional, bool acquired)
+ {
++	struct of_phandle_args args = {0};
++	bool gpio_fallback = false;
+ 	struct reset_control *rstc;
+-	struct reset_controller_dev *r, *rcdev;
+-	struct of_phandle_args args;
++	struct reset_controller_dev *rcdev;
+ 	int rstc_id;
+ 	int ret;
+ 
+@@ -839,21 +960,50 @@ __of_reset_control_get(struct device_node *node, const char *id, int index,
+ 					 index, &args);
+ 	if (ret == -EINVAL)
+ 		return ERR_PTR(ret);
+-	if (ret)
+-		return optional ? NULL : ERR_PTR(ret);
++	if (ret) {
++		/*
++		 * There can be only one reset-gpio for regular devices, so
++		 * don't bother with GPIO index.
++		 */
++		ret = of_parse_phandle_with_args(node, "reset-gpios", "#gpio-cells",
++						 0, &args);
++		if (ret)
++			return optional ? NULL : ERR_PTR(ret);
+ 
+-	mutex_lock(&reset_list_mutex);
+-	rcdev = NULL;
+-	list_for_each_entry(r, &reset_controller_list, list) {
+-		if (args.np == r->of_node) {
+-			rcdev = r;
+-			break;
+-		}
++		gpio_fallback = true;
+ 	}
+ 
++	mutex_lock(&reset_list_mutex);
++	rcdev = __reset_find_rcdev(&args, gpio_fallback, NULL);
++
+ 	if (!rcdev) {
+-		rstc = ERR_PTR(-EPROBE_DEFER);
+-		goto out;
++		if (gpio_fallback) {
++			/*
++			 * Registering reset-gpio device might cause immediate
++			 * bind, thus taking reset_list_mutex lock via
++			 * reset_controller_register().
++			 */
++			mutex_unlock(&reset_list_mutex);
++			ret = __reset_add_reset_gpio_device(node, &args);
++			mutex_lock(&reset_list_mutex);
++			if (ret) {
++				rstc = ERR_PTR(ret);
++				goto out;
++			}
++			/*
++			 * Success: reset-gpio could probe immediately, so
++			 * re-check the lookup.
++			 */
++			rcdev = __reset_find_rcdev(&args, gpio_fallback, NULL);
++			if (!rcdev) {
++				rstc = ERR_PTR(-EPROBE_DEFER);
++				goto out;
++			}
++			/* Success, rcdev is valid thus do not bail out */
++		} else {
++			rstc = ERR_PTR(-EPROBE_DEFER);
++			goto out;
++		}
+ 	}
+ 
+ 	if (WARN_ON(args.args_count != rcdev->of_reset_n_cells)) {
+diff --git a/include/linux/reset-controller.h b/include/linux/reset-controller.h
+index 0fa4f60e1186..e064473215de 100644
+--- a/include/linux/reset-controller.h
++++ b/include/linux/reset-controller.h
+@@ -61,6 +61,9 @@ struct reset_control_lookup {
+  * @dev: corresponding driver model device struct
+  * @of_node: corresponding device tree node as phandle target
+  * @of_reset_n_cells: number of cells in reset line specifiers
++ * TODO: of_args have of_node, so we have here duplication
++ * @of_args: for reset-gpios controllers: corresponding phandle args with GPIO
++ *           number complementing of_node
+  * @of_xlate: translation function to translate from specifier as found in the
+  *            device tree to id as given to the reset control ops, defaults
+  *            to :c:func:`of_reset_simple_xlate`.
+@@ -74,6 +77,7 @@ struct reset_controller_dev {
+ 	struct device *dev;
+ 	struct device_node *of_node;
+ 	int of_reset_n_cells;
++	const struct of_phandle_args *of_args;
+ 	int (*of_xlate)(struct reset_controller_dev *rcdev,
+ 			const struct of_phandle_args *reset_spec);
+ 	unsigned int nr_resets;
 -- 
 2.34.1
 
