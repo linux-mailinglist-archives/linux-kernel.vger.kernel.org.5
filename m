@@ -1,97 +1,157 @@
-Return-Path: <linux-kernel+bounces-17680-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17681-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76793825117
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 10:45:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 934AE825119
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 10:45:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 251CC287F79
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 09:45:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 293C3286553
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 09:45:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC1CC24B52;
-	Fri,  5 Jan 2024 09:44:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4ECBA24A0F;
+	Fri,  5 Jan 2024 09:45:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="NHI3SJE3"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="p1Gvid2Y";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Tqecptw3"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-vs1-f44.google.com (mail-vs1-f44.google.com [209.85.217.44])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D53BE2421D
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 09:44:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-vs1-f44.google.com with SMTP id ada2fe7eead31-4673b620d95so285265137.2
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Jan 2024 01:44:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1704447895; x=1705052695; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TFpseWSlXa6VJ8x1Bw84TJ22oa6aTo4EtNJAEkzn/5k=;
-        b=NHI3SJE32/yf9P1jX0pK04v0UXnSp5H5/4Kp0l/CbEQyHc/RYN77xBfVeaZXIggzx3
-         4XEvwzy7pJAWlBiBJwQUVRQvl5VlMZAaJYmbo63qRh2QNsyvvTLOdZoXHtPPhX0rtlym
-         bz6lUg7FfaQ4aGe6Cm48jZME8OORoFo52QY7WRqaAjOH/adnyLqlVvZxy5DHXPLC3Sgg
-         8X3+FnVBcZlkweY26MoQ0GNbxaajtSe9cIo/EvWRIXPTGY8xz+0LMPbNGinBPjkmRSVR
-         +U52U7xnsPUSfymXL/eRecpCGbDmkrzpPCRlhdU5aA5hNxJICbVrf6eTwFV8GsV30Q+V
-         IgfA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704447895; x=1705052695;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TFpseWSlXa6VJ8x1Bw84TJ22oa6aTo4EtNJAEkzn/5k=;
-        b=xNQnRGw/I6UBqY1Y8pkjMbj7IgV7KdfbU8+Uuvjb+/XkEXOepA+J11DS9ZR1eUCUun
-         kKvmPKgY6cZHJsDps7Ifhg2VaID8yFFmm0Rkvbt8pZuSpJ12kZ2MaAfGjw2hMPwwdpGN
-         khdRESzHJjkUH//pp26aKo/AOYOBz2UXdZibg6IToGltZXCX0Sw/e0WE3iIIcVne/jFz
-         EAHlk1YRkgrCler/z/vmFcS1undGd8VMyFjrWB5GkoT/rf63Jp7wnuW0XQ4DKb8yPikD
-         E3sGqZipI/A6wy8RrMrK5z7zyd5RJwONPkhI2C61YLszkBLPKf835sXk/bzMMReyVzJv
-         9cBQ==
-X-Gm-Message-State: AOJu0YzcHTZetuv5wnluCxyrrKSJHiTQb7o8hQuW/WnPoJIpSGyXZUmy
-	owV6CawjUQmS7VkAFndk+55SQSMIum9bfi6q3ZGd1hgxy89N
-X-Google-Smtp-Source: AGHT+IH4FqpMAlNwGaCvWINiNBl7iVD5T08hKuClAAWaczaKj/nZDT0JQx8gWAWE1GGQR/8rwUprdx9cH4a66mdDW1k=
-X-Received: by 2002:a05:6102:440f:b0:467:bacf:5a6e with SMTP id
- df15-20020a056102440f00b00467bacf5a6emr54778vsb.20.1704447895692; Fri, 05 Jan
- 2024 01:44:55 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE16524201;
+	Fri,  5 Jan 2024 09:45:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id F05761F850;
+	Fri,  5 Jan 2024 09:45:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1704447908; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=WjMAyVdiebrt/Q0pS2dmmJub9qx0XoEkNWeuoUlkfwo=;
+	b=p1Gvid2Yx7rB6xquGDuCYppBhbc/gAtKc0wrv0gBT50BqlzJK8hTKFQrytCCjyOzHWLfbE
+	Y2XGpbQrz1c7Q21Zex4/mE+1dqaHMGda58PuiBXIVOfXVJlhO8bcPm8+xGa+sclP5720lq
+	1jW4vWn0cOfeFiuLR8q9NrkKVPpNXnk=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1704447907; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=WjMAyVdiebrt/Q0pS2dmmJub9qx0XoEkNWeuoUlkfwo=;
+	b=Tqecptw3BTnIUZiudoZwWXFz8DvrhvVQ0cdCR01ZJWtLoMYC076yGW/+VYDFm0jYgsOFWe
+	9XhBmBIqpkC/1O3YAtp2rYCgoCC3vXVrS9ggqVEcJJ0V4NRKYrrUJNQcVQxP0nnzdtm9Dk
+	/+AT7ckcg18sWIFSJ0Q9pX8pMUvyYqg=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D8D5413C99;
+	Fri,  5 Jan 2024 09:45:07 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id P5C6NKPPl2WQUgAAD6G6ig
+	(envelope-from <mkoutny@suse.com>); Fri, 05 Jan 2024 09:45:07 +0000
+Date: Fri, 5 Jan 2024 10:45:02 +0100
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: Haitao Huang <haitao.huang@linux.intel.com>
+Cc: jarkko@kernel.org, dave.hansen@linux.intel.com, tj@kernel.org, 
+	linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org, x86@kernel.org, 
+	cgroups@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, 
+	hpa@zytor.com, sohil.mehta@intel.com, zhiquan1.li@intel.com, 
+	kristen@linux.intel.com, seanjc@google.com, zhanb@microsoft.com, anakrish@microsoft.com, 
+	mikko.ylinen@linux.intel.com, yangjie@microsoft.com
+Subject: Re: [PATCH v6 01/12] cgroup/misc: Add per resource callbacks for CSS
+ events
+Message-ID: <5qfjx2vvirtffkro5u6zdbbwia2bhhbjxwgij2igdnxk5hysaq@kpqboajvuzbc>
+References: <20231030182013.40086-1-haitao.huang@linux.intel.com>
+ <20231030182013.40086-2-haitao.huang@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240104-rb-new-condvar-methods-v3-0-70b514fcbe52@google.com>
- <20240104-rb-new-condvar-methods-v3-4-70b514fcbe52@google.com> <ZZc1ZcgzdRHtipr0@boqun-archlinux>
-In-Reply-To: <ZZc1ZcgzdRHtipr0@boqun-archlinux>
-From: Alice Ryhl <aliceryhl@google.com>
-Date: Fri, 5 Jan 2024 10:44:44 +0100
-Message-ID: <CAH5fLggfvRrCLOEmkAhSuEsyZdXpwb6KkvosvfOjFcw=BSvyEQ@mail.gmail.com>
-Subject: Re: [PATCH v3 4/4] rust: sync: update integer types in CondVar
-To: Boqun Feng <boqun.feng@gmail.com>
-Cc: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
-	Wedson Almeida Filho <wedsonaf@gmail.com>, Gary Guo <gary@garyguo.net>, 
-	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
-	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
-	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>, 
-	Waiman Long <longman@redhat.com>, Tiago Lam <tiagolam@gmail.com>, 
-	Thomas Gleixner <tglx@linutronix.de>, Martin Rodriguez Reboredo <yakoyoku@gmail.com>, rust-for-linux@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="gkycr2ejudi4nnse"
+Content-Disposition: inline
+In-Reply-To: <20231030182013.40086-2-haitao.huang@linux.intel.com>
+X-Spam-Level: 
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spamd-Result: default: False [-2.90 / 50.00];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 SIGNED_PGP(-2.00)[];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+,1:+,2:~];
+	 BAYES_HAM(-0.00)[19.25%];
+	 ARC_NA(0.00)[];
+	 URIBL_BLOCKED(0.00)[intel.com:email];
+	 FROM_HAS_DN(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 MIME_GOOD(-0.20)[multipart/signed,text/plain];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 RCPT_COUNT_TWELVE(0.00)[20];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[intel.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[]
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spam-Score: -2.90
+
+
+--gkycr2ejudi4nnse
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jan 4, 2024 at 11:48=E2=80=AFPM Boqun Feng <boqun.feng@gmail.com> w=
-rote:
->
-> On Thu, Jan 04, 2024 at 02:02:44PM +0000, Alice Ryhl wrote:
-> [...]
-> > -use core::ffi::c_long;
-> > +use core::ffi::{c_int, c_long, c_uint};
->
-> core::ffi::c_uint is not needed here. And
->
->         use core::ptr;
->
-> is missing (for the `ptr::mut_null()` below)
+On Mon, Oct 30, 2023 at 11:20:02AM -0700, Haitao Huang <haitao.huang@linux.=
+intel.com> wrote:
+> From: Kristen Carlson Accardi <kristen@linux.intel.com>
+>=20
+> The misc cgroup controller (subsystem) currently does not perform
+> resource type specific action for Cgroups Subsystem State (CSS) events:
+> the 'css_alloc' event when a cgroup is created and the 'css_free' event
+> when a cgroup is destroyed.
+>=20
+> Define callbacks for those events and allow resource providers to
+> register the callbacks per resource type as needed. This will be
+> utilized later by the EPC misc cgroup support implemented in the SGX
+> driver.
 
-Oops, looks like I messed up this patch. Sorry about that.
+I notice now that the callbacks are per resource and per cgroup.
+I think that is an overkill that complicates misc_cg allocation code
+with parent's callbacks while freeing is done by own callbacks.
+It's possibly too much liberal to keep objects' lifecycle understandable
+in the long term too.=20
+
+For some uniformity, I'd suggest struct blkcg_policy array in
+block/blk-cgroup.c as the precedent. (Perhaps indexed with static enum
+misc_res_type instead of dynamic index assignment as
+blkcg_policy_registeer() does.)
+
+I hope you don't really need per-cgroup callbacks :-)
+
+Michal
+
+--gkycr2ejudi4nnse
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZZfPnAAKCRAGvrMr/1gc
+jiP8AP0Q8YvyVS22t8yNx/wVtFr60JLTA5zAgGTIFU7k+w/G+AEA9Jr2ZtxN0QWV
+FYzPie0m1EL3RCqoPrIQleZGYmOfMAw=
+=d7Pm
+-----END PGP SIGNATURE-----
+
+--gkycr2ejudi4nnse--
 
