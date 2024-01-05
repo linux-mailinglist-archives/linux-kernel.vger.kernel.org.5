@@ -1,68 +1,102 @@
-Return-Path: <linux-kernel+bounces-17745-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17747-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1EDB48251EB
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 11:27:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3478E8251F5
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 11:29:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CA05D1F2221E
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 10:27:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CCFA41F22859
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 10:29:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 925C628E1E;
-	Fri,  5 Jan 2024 10:27:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C5C4250F0;
+	Fri,  5 Jan 2024 10:29:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hoBok7HT"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="SDAQLXkn"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E528C28E08
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 10:26:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 684F8C433C8;
-	Fri,  5 Jan 2024 10:26:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704450419;
-	bh=lYtPk7pnl7UFoUPdIHhfhbO5M8cu9gEH+/gq3HHPY9M=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=hoBok7HTiDgbbdG4kCE6da/L0ZXhRPtPPJELfWvyzhLfSDZ9UEmawVkpkt5JY2yL7
-	 kkaigUwqCqnM80HdziRzpjoIdE9gNHSxh8dncVwcM0th3vLymICJYEax8onjVyA9nQ
-	 Gj1XIhzdWOL7IO7btWv1NP9NJAiGcn5CjuQIG7yAJz2mSzBfTAY8dz2rttsiBVMuGU
-	 Gm0/w9IbB5HigZb8TRP2yBKyjQRADUaOjYjxIQe+gZo8+yZqpXA7Gh7MDmSHX4MTVY
-	 lHbP3YCFek84orBlwWu2AbCgXESHk6UKY58gARwYT4Wg+ZtQ9A8DhU22ad2h/rwVVx
-	 s8ZUlw2DApOPg==
-Received: from johan by xi.lan with local (Exim 4.96.2)
-	(envelope-from <johan@kernel.org>)
-	id 1rLhPl-0002zL-0z;
-	Fri, 05 Jan 2024 11:26:58 +0100
-Date: Fri, 5 Jan 2024 11:26:57 +0100
-From: Johan Hovold <johan@kernel.org>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: greybus-dev@lists.linaro.org, linux-kernel@vger.kernel.org,
-	Alex Elder <elder@kernel.org>
-Subject: Re: [PATCH] greybus: make greybus_bus_type const
-Message-ID: <ZZfZccwT9pOb8FVS@hovoldconsulting.com>
-References: <2024010517-handgun-scoreless-05e7@gregkh>
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28D96250E7;
+	Fri,  5 Jan 2024 10:29:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: from linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net (linux.microsoft.com [13.77.154.182])
+	by linux.microsoft.com (Postfix) with ESMTPSA id 8E4F120B3CC1;
+	Fri,  5 Jan 2024 02:29:36 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 8E4F120B3CC1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1704450576;
+	bh=ovwReRwgxvp0zRcHfp5lvTMwMqQKQ9zFOKT4nznwl9o=;
+	h=From:To:Cc:Subject:Date:From;
+	b=SDAQLXknt9VcjaxANAxYyvW559RuOTuhEYKcM2kcX2xYjuOJ9C3LuOmaWegH9Ucyl
+	 bWyn0rlu7xxzL6ad+PvgSchTpWb2t3aN1o2aLhDaV/PDularhnhC8r3e2bLsxQlcnJ
+	 YmQmQUHtalVCZ97FrsJuydD/vEZdLvNR1kws5esI=
+From: Saurabh Sengar <ssengar@linux.microsoft.com>
+To: kys@microsoft.com,
+	haiyangz@microsoft.com,
+	wei.liu@kernel.org,
+	decui@microsoft.com,
+	tglx@linutronix.de,
+	mingo@redhat.com,
+	bp@alien8.de,
+	dave.hansen@linux.intel.com,
+	x86@kernel.org,
+	hpa@zytor.com,
+	linux-hyperv@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: ssengar@microsoft.com
+Subject: [PATCH] x86/hyperv: Allow 15-bit APIC IDs for VTL platforms
+Date: Fri,  5 Jan 2024 02:29:26 -0800
+Message-Id: <1704450566-26576-1-git-send-email-ssengar@linux.microsoft.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2024010517-handgun-scoreless-05e7@gregkh>
 
-On Fri, Jan 05, 2024 at 11:16:17AM +0100, Greg Kroah-Hartman wrote:
-> Now that the driver core can properly handle constant struct bus_type,
-> move the greybus_bus_type variable to be a constant structure as well,
-> placing it into read-only memory which can not be modified at runtime.
-> 
-> Cc: Johan Hovold <johan@kernel.org>
-> Cc: Alex Elder <elder@kernel.org>
-> Cc: greybus-dev@lists.linaro.org
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+The current method for signaling the compatibility of a Hyper-V host
+with MSIs featuring 15-bit APIC IDs relies on a synthetic cpuid leaf.
+However, for higher VTLs, this leaf is not reported, due to the absence
+of an IO-APIC.
 
-Reviewed-by: Johan Hovold <johan@kernel.org>
+As an alternative, assume that when running at a high VTL, the host
+supports 15-bit APIC IDs. This assumption is now deemed safe, as no
+architectural MSIs are employed at higher VTLs.
+
+This unblocks startup of VTL2 environments with more than 256 CPUs.
+
+Signed-off-by: Saurabh Sengar <ssengar@linux.microsoft.com>
+---
+ arch/x86/hyperv/hv_vtl.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/arch/x86/hyperv/hv_vtl.c b/arch/x86/hyperv/hv_vtl.c
+index 539c7b5cfa2b..1c225362f88e 100644
+--- a/arch/x86/hyperv/hv_vtl.c
++++ b/arch/x86/hyperv/hv_vtl.c
+@@ -16,6 +16,11 @@
+ extern struct boot_params boot_params;
+ static struct real_mode_header hv_vtl_real_mode_header;
+ 
++static bool __init hv_vtl_msi_ext_dest_id(void)
++{
++	return true;
++}
++
+ void __init hv_vtl_init_platform(void)
+ {
+ 	pr_info("Linux runs in Hyper-V Virtual Trust Level\n");
+@@ -39,6 +44,8 @@ void __init hv_vtl_init_platform(void)
+ 	x86_platform.legacy.warm_reset = 0;
+ 	x86_platform.legacy.reserve_bios_regions = 0;
+ 	x86_platform.legacy.devices.pnpbios = 0;
++
++	x86_init.hyper.msi_ext_dest_id = hv_vtl_msi_ext_dest_id;
+ }
+ 
+ static inline u64 hv_vtl_system_desc_base(struct ldttss_desc *desc)
+-- 
+2.25.1
+
 
