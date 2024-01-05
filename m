@@ -1,163 +1,213 @@
-Return-Path: <linux-kernel+bounces-18216-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18217-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35D51825A1B
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 19:29:19 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B83CF825A1D
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 19:29:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A4115B22D73
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 18:29:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4AC872860A7
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 18:29:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00878358AE;
-	Fri,  5 Jan 2024 18:29:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="CBs5OSGq"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1080E358AA;
+	Fri,  5 Jan 2024 18:29:23 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F30235887;
-	Fri,  5 Jan 2024 18:29:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704479347; x=1736015347;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=B1cGgk2x4GOJQVRsb0t9LqqD4V45rFbkA/2x1daK9v0=;
-  b=CBs5OSGqs5zxXGVgwHGgrVR0Ydx6SPYLlt/6J5TS1h5IFsc5Kz7C4Mdy
-   nbqJv3AqqT8bU8969wkJwsqMh+xHTrV5USskbEFy/ctjDjtCqS2ZMxNMx
-   ztM6Ttu4xcyn30y7gr8VHmnfP5Uxj30F4gvu9bXtymZ2ks/Ld5EmQWaaC
-   9WxjuUU1OtNgZ635f/MYvna6Bhr+HEvhR80TGzz+XHlJxE9o9WZ9xlU5l
-   Aj04PME1PWEOrxRtl4ui51ZDqbmVKc65mKFZaYpNmQwDcNoS0PQoEcBHJ
-   WIjkIdqeusWXhTFX1qV93mNvDefOTruyZL6ubcyPw00f4Ao0oPZvkGkW9
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10944"; a="4925947"
-X-IronPort-AV: E=Sophos;i="6.04,334,1695711600"; 
-   d="scan'208";a="4925947"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2024 10:29:06 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10944"; a="954018550"
-X-IronPort-AV: E=Sophos;i="6.04,334,1695711600"; 
-   d="scan'208";a="954018550"
-Received: from sbidasar-mobl.amr.corp.intel.com (HELO [10.209.42.45]) ([10.209.42.45])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2024 10:29:05 -0800
-Message-ID: <772cb101-33e3-4b55-a311-142b22575e7c@intel.com>
-Date: Fri, 5 Jan 2024 10:29:05 -0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23C5235882
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 18:29:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7baf2c8f19eso162907039f.2
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Jan 2024 10:29:20 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704479360; x=1705084160;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=0J45BElnGsnlb+hcSi7W72v1ypQ+RzOOzGvT7znb7Wo=;
+        b=M9eZMUVTHkA0SbyazbHhcCUjOtqz/0fthOFrUfrNnwMaZGb9E2cuXuQWc2Co5k7qZg
+         pcrWwfALj4jD0JkQGl0hIjk6wLwR+WjzsDB+uX/fOv0QbHokP+If6FL/t/Q3wQ/Zzxhh
+         7ewOAuIntBNzQkB7gnxc6+DPYHkwUXPXs8BbslaJEKgMI1LjdnXmZUqcl7B4f+wVmwjH
+         kg6Y9Ff2WBcA82L5kCy1ICt+XNBEgHlwd9v8kYzllUbYAfod0F21AZDkXACGU4AkFc4I
+         Nlg1ZztZ551sdT8CyWvssawMVapUa6H6t4rE7DUfdlqV9ezehWgjzI/zsK2yNe0jhq0F
+         yIag==
+X-Gm-Message-State: AOJu0YyUmkZ3DtpfdOkSLddxXDH0UMp8B1cH7BU8F+kSO4uIeyX/EBqQ
+	FauEmhC3st7NzMyMAiBFQ8EcDIK5T0du5494G5N0qi96WO+Y
+X-Google-Smtp-Source: AGHT+IF8YivRjajEcKTmKNwjgSDNUYewqz+HwZRYjoGRECbfq94en1TIb0C9BZiFpr+qIqUoXx2QdF105f/141Pd7UlAkFWgwGgC
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 00/12] Add Cgroup support for SGX EPC memory
-Content-Language: en-US
-To: Haitao Huang <haitao.huang@linux.intel.com>, jarkko@kernel.org,
- dave.hansen@linux.intel.com, tj@kernel.org, mkoutny@suse.com,
- linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org, x86@kernel.org,
- cgroups@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
- hpa@zytor.com, sohil.mehta@intel.com
-Cc: zhiquan1.li@intel.com, kristen@linux.intel.com, seanjc@google.com,
- zhanb@microsoft.com, anakrish@microsoft.com, mikko.ylinen@linux.intel.com,
- yangjie@microsoft.com
-References: <20231030182013.40086-1-haitao.huang@linux.intel.com>
-From: Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
-In-Reply-To: <20231030182013.40086-1-haitao.huang@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a05:6638:4107:b0:46d:3807:f267 with SMTP id
+ ay7-20020a056638410700b0046d3807f267mr154672jab.6.1704479360424; Fri, 05 Jan
+ 2024 10:29:20 -0800 (PST)
+Date: Fri, 05 Jan 2024 10:29:20 -0800
+In-Reply-To: <000000000000a62351060e363bdc@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000ce1f9e060e3706d4@google.com>
+Subject: Re: [syzbot] [net?] memory leak in ___neigh_create (2)
+From: syzbot <syzbot+42cfec52b6508887bbe8@syzkaller.appspotmail.com>
+To: alexander.mikhalitsyn@virtuozzo.com, davem@davemloft.net, den@openvz.org, 
+	dsahern@kernel.org, edumazet@google.com, f.fainelli@gmail.com, 
+	kuba@kernel.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, 
+	pabeni@redhat.com, razor@blackwall.org, syzkaller-bugs@googlegroups.com, 
+	thomas.zeitlhofer+lkml@ze-it.at, thomas.zeitlhofer@ze-it.at, 
+	wangyuweihx@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 
-There's very little about how the LRU design came to be in this cover
-letter.  Let's add some details.
+syzbot has found a reproducer for the following issue on:
 
-How's this?
+HEAD commit:    2258c2dc850b Merge tag 'for-linus' of git://git.kernel.org..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=16f67b44480000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=a4fb7ad9185f1501
+dashboard link: https://syzkaller.appspot.com/bug?extid=42cfec52b6508887bbe8
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14e23d44480000
 
-Writing this up, I'm a lot more convinced that this series is, in
-general, taking the right approach.  I honestly don't see any other
-alternatives.  As much as I'd love to do something stupidly simple like
-just killing enclaves at the moment they hit the limit, that would be a
-horrid experience for users _and_ a departure from what the existing
-reclaim support does.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/0e65a45877eb/disk-2258c2dc.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/7617adf885a8/vmlinux-2258c2dc.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/43fb89ea894a/bzImage-2258c2dc.xz
 
-That said, there's still a lot of work do to do refactor this series.
-It's in need of some love to make it more clear what is going on and to
-making the eventual switch over to per-cgroup LRUs more gradual.  Each
-patch in the series is still doing way too much, _especially_ in patch 10.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+42cfec52b6508887bbe8@syzkaller.appspotmail.com
 
-==
+BUG: memory leak
+unreferenced object 0xffff88810b8ea400 (size 512):
+  comm "kworker/0:3", pid 4440, jiffies 4294938594 (age 1132.680s)
+  hex dump (first 32 bytes):
+    00 9c f8 0a 81 88 ff ff 80 29 23 86 ff ff ff ff  .........)#.....
+    c0 79 79 44 81 88 ff ff 72 78 ff ff 00 00 00 00  .yyD....rx......
+  backtrace:
+    [<ffffffff814f9fe6>] __do_kmalloc_node mm/slab_common.c:967 [inline]
+    [<ffffffff814f9fe6>] __kmalloc+0x46/0x120 mm/slab_common.c:981
+    [<ffffffff83b5234f>] kmalloc include/linux/slab.h:584 [inline]
+    [<ffffffff83b5234f>] kzalloc include/linux/slab.h:720 [inline]
+    [<ffffffff83b5234f>] neigh_alloc net/core/neighbour.c:476 [inline]
+    [<ffffffff83b5234f>] ___neigh_create+0xdf/0xd60 net/core/neighbour.c:661
+    [<ffffffff83f9f886>] ip6_finish_output2+0x776/0x9b0 net/ipv6/ip6_output.c:125
+    [<ffffffff83fa5530>] __ip6_finish_output net/ipv6/ip6_output.c:195 [inline]
+    [<ffffffff83fa5530>] ip6_finish_output+0x270/0x530 net/ipv6/ip6_output.c:206
+    [<ffffffff83fa5893>] NF_HOOK_COND include/linux/netfilter.h:291 [inline]
+    [<ffffffff83fa5893>] ip6_output+0xa3/0x1b0 net/ipv6/ip6_output.c:227
+    [<ffffffff83ff16d9>] dst_output include/net/dst.h:444 [inline]
+    [<ffffffff83ff16d9>] NF_HOOK include/linux/netfilter.h:302 [inline]
+    [<ffffffff83ff16d9>] NF_HOOK.constprop.0+0x49/0x110 include/linux/netfilter.h:296
+    [<ffffffff83ff19c4>] mld_sendpack+0x224/0x350 net/ipv6/mcast.c:1820
+    [<ffffffff83ff5403>] mld_send_cr net/ipv6/mcast.c:2121 [inline]
+    [<ffffffff83ff5403>] mld_ifc_work+0x2a3/0x750 net/ipv6/mcast.c:2653
+    [<ffffffff8129519a>] process_one_work+0x2ba/0x5f0 kernel/workqueue.c:2289
+    [<ffffffff81295ab9>] worker_thread+0x59/0x5b0 kernel/workqueue.c:2436
+    [<ffffffff8129fb05>] kthread+0x125/0x160 kernel/kthread.c:376
+    [<ffffffff8100224f>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:308
 
-The existing EPC memory management aims to be a miniature version of the
-core VM where EPC memory can be overcommitted and reclaimed.  EPC
-allocations can wait for reclaim.  The alternative to waiting would have
-been to send a signal and let the enclave die.
+BUG: memory leak
+unreferenced object 0xffff888109a7fa00 (size 512):
+  comm "kworker/0:3", pid 4440, jiffies 4294938594 (age 1132.680s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 80 29 23 86 ff ff ff ff  .........)#.....
+    00 79 79 44 81 88 ff ff 72 78 ff ff 00 00 00 00  .yyD....rx......
+  backtrace:
+    [<ffffffff814f9fe6>] __do_kmalloc_node mm/slab_common.c:967 [inline]
+    [<ffffffff814f9fe6>] __kmalloc+0x46/0x120 mm/slab_common.c:981
+    [<ffffffff83b5234f>] kmalloc include/linux/slab.h:584 [inline]
+    [<ffffffff83b5234f>] kzalloc include/linux/slab.h:720 [inline]
+    [<ffffffff83b5234f>] neigh_alloc net/core/neighbour.c:476 [inline]
+    [<ffffffff83b5234f>] ___neigh_create+0xdf/0xd60 net/core/neighbour.c:661
+    [<ffffffff83f9f886>] ip6_finish_output2+0x776/0x9b0 net/ipv6/ip6_output.c:125
+    [<ffffffff83fa5530>] __ip6_finish_output net/ipv6/ip6_output.c:195 [inline]
+    [<ffffffff83fa5530>] ip6_finish_output+0x270/0x530 net/ipv6/ip6_output.c:206
+    [<ffffffff83fa5893>] NF_HOOK_COND include/linux/netfilter.h:291 [inline]
+    [<ffffffff83fa5893>] ip6_output+0xa3/0x1b0 net/ipv6/ip6_output.c:227
+    [<ffffffff83ff16d9>] dst_output include/net/dst.h:444 [inline]
+    [<ffffffff83ff16d9>] NF_HOOK include/linux/netfilter.h:302 [inline]
+    [<ffffffff83ff16d9>] NF_HOOK.constprop.0+0x49/0x110 include/linux/netfilter.h:296
+    [<ffffffff83ff19c4>] mld_sendpack+0x224/0x350 net/ipv6/mcast.c:1820
+    [<ffffffff83ff5403>] mld_send_cr net/ipv6/mcast.c:2121 [inline]
+    [<ffffffff83ff5403>] mld_ifc_work+0x2a3/0x750 net/ipv6/mcast.c:2653
+    [<ffffffff8129519a>] process_one_work+0x2ba/0x5f0 kernel/workqueue.c:2289
+    [<ffffffff81295ab9>] worker_thread+0x59/0x5b0 kernel/workqueue.c:2436
+    [<ffffffff8129fb05>] kthread+0x125/0x160 kernel/kthread.c:376
+    [<ffffffff8100224f>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:308
 
-This series attempts to implement that same logic for cgroups, for the
-same reasons: it's preferable to wait for memory to become available and
-let reclaim happen than to do things that are fatal to enclaves.
+BUG: memory leak
+unreferenced object 0xffff88810a9fb400 (size 512):
+  comm "dhcpcd", pid 4638, jiffies 4294938595 (age 1132.670s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 80 29 23 86 ff ff ff ff  .........)#.....
+    c0 76 79 44 81 88 ff ff 73 78 ff ff 00 00 00 00  .vyD....sx......
+  backtrace:
+    [<ffffffff814f9fe6>] __do_kmalloc_node mm/slab_common.c:967 [inline]
+    [<ffffffff814f9fe6>] __kmalloc+0x46/0x120 mm/slab_common.c:981
+    [<ffffffff83b5234f>] kmalloc include/linux/slab.h:584 [inline]
+    [<ffffffff83b5234f>] kzalloc include/linux/slab.h:720 [inline]
+    [<ffffffff83b5234f>] neigh_alloc net/core/neighbour.c:476 [inline]
+    [<ffffffff83b5234f>] ___neigh_create+0xdf/0xd60 net/core/neighbour.c:661
+    [<ffffffff83f9f886>] ip6_finish_output2+0x776/0x9b0 net/ipv6/ip6_output.c:125
+    [<ffffffff83fa5530>] __ip6_finish_output net/ipv6/ip6_output.c:195 [inline]
+    [<ffffffff83fa5530>] ip6_finish_output+0x270/0x530 net/ipv6/ip6_output.c:206
+    [<ffffffff83fa5893>] NF_HOOK_COND include/linux/netfilter.h:291 [inline]
+    [<ffffffff83fa5893>] ip6_output+0xa3/0x1b0 net/ipv6/ip6_output.c:227
+    [<ffffffff84062411>] dst_output include/net/dst.h:444 [inline]
+    [<ffffffff84062411>] ip6_local_out+0x51/0x70 net/ipv6/output_core.c:155
+    [<ffffffff83fa6285>] ip6_send_skb+0x25/0xc0 net/ipv6/ip6_output.c:1971
+    [<ffffffff83fa6394>] ip6_push_pending_frames+0x74/0x90 net/ipv6/ip6_output.c:1991
+    [<ffffffff83fec08c>] rawv6_push_pending_frames net/ipv6/raw.c:579 [inline]
+    [<ffffffff83fec08c>] rawv6_sendmsg+0x16ac/0x1ba0 net/ipv6/raw.c:922
+    [<ffffffff83ebe965>] inet_sendmsg+0x45/0x70 net/ipv4/af_inet.c:827
+    [<ffffffff83af7116>] sock_sendmsg_nosec net/socket.c:714 [inline]
+    [<ffffffff83af7116>] sock_sendmsg+0x56/0x80 net/socket.c:734
+    [<ffffffff83af769d>] ____sys_sendmsg+0x38d/0x410 net/socket.c:2476
+    [<ffffffff83afbfe8>] ___sys_sendmsg+0xa8/0x110 net/socket.c:2530
+    [<ffffffff83afc178>] __sys_sendmsg+0x88/0x100 net/socket.c:2559
+    [<ffffffff848ed5b5>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+    [<ffffffff848ed5b5>] do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+    [<ffffffff84a00087>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
 
-There is currently a global reclaimable page SGX LRU list.  That list
-(and the existing scanning algorithm) is essentially useless for doing
-reclaim when a cgroup hits its limit because the cgroup's pages are
-scattered around that LRU.  It is unspeakably inefficient to scan a
-linked list with millions of entries for what could be dozens of pages
-from a cgroup that needs reclaim.
+BUG: memory leak
+unreferenced object 0xffff88810a9fba00 (size 512):
+  comm "dhcpcd", pid 4638, jiffies 4294938595 (age 1132.670s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 80 29 23 86 ff ff ff ff  .........)#.....
+    80 77 79 44 81 88 ff ff 73 78 ff ff 00 00 00 00  .wyD....sx......
+  backtrace:
+    [<ffffffff814f9fe6>] __do_kmalloc_node mm/slab_common.c:967 [inline]
+    [<ffffffff814f9fe6>] __kmalloc+0x46/0x120 mm/slab_common.c:981
+    [<ffffffff83b5234f>] kmalloc include/linux/slab.h:584 [inline]
+    [<ffffffff83b5234f>] kzalloc include/linux/slab.h:720 [inline]
+    [<ffffffff83b5234f>] neigh_alloc net/core/neighbour.c:476 [inline]
+    [<ffffffff83b5234f>] ___neigh_create+0xdf/0xd60 net/core/neighbour.c:661
+    [<ffffffff83f9f886>] ip6_finish_output2+0x776/0x9b0 net/ipv6/ip6_output.c:125
+    [<ffffffff83fa5530>] __ip6_finish_output net/ipv6/ip6_output.c:195 [inline]
+    [<ffffffff83fa5530>] ip6_finish_output+0x270/0x530 net/ipv6/ip6_output.c:206
+    [<ffffffff83fa5893>] NF_HOOK_COND include/linux/netfilter.h:291 [inline]
+    [<ffffffff83fa5893>] ip6_output+0xa3/0x1b0 net/ipv6/ip6_output.c:227
+    [<ffffffff84062411>] dst_output include/net/dst.h:444 [inline]
+    [<ffffffff84062411>] ip6_local_out+0x51/0x70 net/ipv6/output_core.c:155
+    [<ffffffff83fa6285>] ip6_send_skb+0x25/0xc0 net/ipv6/ip6_output.c:1971
+    [<ffffffff83fa6394>] ip6_push_pending_frames+0x74/0x90 net/ipv6/ip6_output.c:1991
+    [<ffffffff83fec08c>] rawv6_push_pending_frames net/ipv6/raw.c:579 [inline]
+    [<ffffffff83fec08c>] rawv6_sendmsg+0x16ac/0x1ba0 net/ipv6/raw.c:922
+    [<ffffffff83ebe965>] inet_sendmsg+0x45/0x70 net/ipv4/af_inet.c:827
+    [<ffffffff83af7116>] sock_sendmsg_nosec net/socket.c:714 [inline]
+    [<ffffffff83af7116>] sock_sendmsg+0x56/0x80 net/socket.c:734
+    [<ffffffff83af769d>] ____sys_sendmsg+0x38d/0x410 net/socket.c:2476
+    [<ffffffff83afbfe8>] ___sys_sendmsg+0xa8/0x110 net/socket.c:2530
+    [<ffffffff83afc178>] __sys_sendmsg+0x88/0x100 net/socket.c:2559
+    [<ffffffff848ed5b5>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+    [<ffffffff848ed5b5>] do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+    [<ffffffff84a00087>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
 
-Even if unspeakably slow reclaim was accepted, the existing scanning
-algorithm only picks a few pages off the head of the global LRU.  It
-would either need to hold the list locks for unreasonable amounts of
-time, or be taught to scan the list in pieces, which has its own challenges.
 
-tl;dr: An cgroup hitting its limit should be as similar as possible to
-the system running out of EPC memory.  The only two choices to implement
-that are nasty changes the existing LRU scanning algorithm, or to add
-new LRUs.  The result: Add a new LRU for each cgroup and scans those
-instead.  Replace the existing global cgroup with the root cgroup's LRU
-(only when this new support is compiled in, obviously).
+
+---
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
