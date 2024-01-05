@@ -1,173 +1,189 @@
-Return-Path: <linux-kernel+bounces-17466-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17467-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B776D824D9A
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 05:18:06 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 39C2C824D9D
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 05:25:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 52B311F22674
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 04:18:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D4DB1284DC5
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 04:25:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A67D05243;
-	Fri,  5 Jan 2024 04:17:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F1215250;
+	Fri,  5 Jan 2024 04:24:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="D7LDz2On"
+	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="gcOAo5jb"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67C595225
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 04:17:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1704428276;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=3wBtvd8AcUa+3WyzFrFiVlLy0PPCAnv0pduZK21JO48=;
-	b=D7LDz2OntocsgwDidf+YsLjGpfK3+qZHeIyU9OBoA4fNng9uQ0pxmdcA7EYi62an4iEzn+
-	c20l9DlTCRMMGX45OfWZMjOt+NuefhJQtaAvw+m13uUeNhPLvEcoJje5q//v9fujGnfOEv
-	E7Y3TSD3iwKSkN5OAlbTJxAuReNzWAo=
-Received: from mail-pf1-f198.google.com (mail-pf1-f198.google.com
- [209.85.210.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-111-D34ut3twO6GfGwE1G3ifDA-1; Thu, 04 Jan 2024 23:17:54 -0500
-X-MC-Unique: D34ut3twO6GfGwE1G3ifDA-1
-Received: by mail-pf1-f198.google.com with SMTP id d2e1a72fcca58-6d9dfc1fc38so203427b3a.0
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 20:17:54 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D20E5228
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 04:24:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
+Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com [209.85.216.70])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id A96363F2C4
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 04:24:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+	s=20210705; t=1704428690;
+	bh=bMtR0jtLuxQl+BURO8iHeL6NPIGQ4o8OtXkryzx2uQQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type;
+	b=gcOAo5jbqf93v+RW/7kq+GY6i1BqPCBDw9aDMmfdBrRK7abWEYaQP08yeKZla8GSI
+	 xDWBFYl02+O6vvGu9C6IzvZZ8ZcE/CER6ilIsCBJuajbolUg+U1l0mT7irWyAzOHUM
+	 +RgBYcWxu95klnCLPkni6rAD62SGLJNKU4xjh3zSVBayOifK3WNMoHOjDQZt+N1NOS
+	 pr4r5DbdT0SjJEAp25xExKJDwHhTuB2iK3f1y09xPJR3CCvrPrsMUvv90iRpIxMH/Z
+	 FAB7skBv4ld88NxB+pYxY4wyiY+qFVRy947wjaoa1N/tjvUd9zF6dPDf7AJ5GicEjE
+	 5cfW+hV4ShXjg==
+Received: by mail-pj1-f70.google.com with SMTP id 98e67ed59e1d1-28c183f8205so1242549a91.3
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 20:24:50 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704428273; x=1705033073;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=3wBtvd8AcUa+3WyzFrFiVlLy0PPCAnv0pduZK21JO48=;
-        b=OsnNCaWMrEv1R2kkh94294tfedSpiE0fXbWMPjpwG4pW2a69iF6Yh9cznEcK8O3O4z
-         2dekSziuZ+P06esmJTYN11UlnLr6rw1roR9Rh3fqNIk/8M/dRRqIpjYFLFrjBHcJg/51
-         OQStJuL1wDJyYBlIWzVI/Ue7xZytBrA1sC/3fr8sHIDxAJsDod1EVPwfGdL6GCalZuCg
-         aijDCpPU5oNbXK40hZpW1CWnUn2oB94X5G+iuoGGIqI06/252UCQr0j6qzfiZxQKdGsv
-         srphhXYcRQL/FZZcq3qq/xg/IWSZRx1onfeDdyr9IGpkdbJ7vWDNm459QRrIuD4STPtF
-         TDuQ==
-X-Gm-Message-State: AOJu0YzUc5p6YNqAbUTI3wBSsS8PYjYqpGkZ2s2BRFh4lgP3Z28C47XD
-	HWfkWjVFUADGGaT9A+3ySOFhXV4220kJ5RRT1371h/lzltZRyxRAj504VaMgWnVBZRiWuiZMw8F
-	9rF9N1QBmgvVQHYDQu/sYYHUk+jyzxeMx713K5KyX
-X-Received: by 2002:a05:6a20:e104:b0:197:78be:b5f6 with SMTP id kr4-20020a056a20e10400b0019778beb5f6mr1830571pzb.30.1704428272963;
-        Thu, 04 Jan 2024 20:17:52 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEokiFCVyap5KJ89I1Q0gN7ZI5vIsHsS7JOPAzDv9bI+X0Kz7fuEisChZiKFaACtFiEjxUVXg==
-X-Received: by 2002:a05:6a20:e104:b0:197:78be:b5f6 with SMTP id kr4-20020a056a20e10400b0019778beb5f6mr1830559pzb.30.1704428272620;
-        Thu, 04 Jan 2024 20:17:52 -0800 (PST)
-Received: from localhost.localdomain ([2804:431:c7ec:3efd:1dbc:859f:ecb4:d775])
-        by smtp.gmail.com with ESMTPSA id s11-20020a63f04b000000b005cdad153d84sm443222pgj.90.2024.01.04.20.17.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Jan 2024 20:17:51 -0800 (PST)
-From: Leonardo Bras <leobras@redhat.com>
-To: Oleg Nesterov <oleg@redhat.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Mark Brown <broonie@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	"Steven Rostedt (Google)" <rostedt@goodmis.org>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Leonardo Bras <leobras@redhat.com>,
-	Guo Hui <guohui@uniontech.com>
-Cc: linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v1 1/1] arm64: remove unnecessary ifdefs around is_compat_task()
-Date: Fri,  5 Jan 2024 01:15:00 -0300
-Message-ID: <20240105041458.126602-3-leobras@redhat.com>
-X-Mailer: git-send-email 2.43.0
+        d=1e100.net; s=20230601; t=1704428689; x=1705033489;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=bMtR0jtLuxQl+BURO8iHeL6NPIGQ4o8OtXkryzx2uQQ=;
+        b=k+rr6kd13C+6J252i5/fqucHUBzCcVeZzJzQ6jB1JRHuTyFMxhdGvRz+WqCsu3NzlP
+         k2tME3/3ElqNNi8X08Sza55orKL3cRCMCqCYc1VF/htLWnekr/Vxua/QqxeEBarA1XKf
+         ZU90edxRLX8lW0ZdJny+OY8CcHVWhLAU1jtS/5dClDep+SF2AAWXbMyW04xO0Ktp1acd
+         8E1HclYpdsqqr2NjDbETpin9vdseMxzj0ZHIRf6JU2CNRRhh6Mc4wbjmo1BXVIutazBg
+         2Q9rqhQSiOkh+PDu2JHVca8EQAq6Y7MerCXiUH+vOnw4MqLzz1cNTR7eq7h9zHheGYIC
+         6KtA==
+X-Gm-Message-State: AOJu0YxcAFJMRKXDB1/sTylxcRaSmWSdDq9JGMvKFr+5W9Jv7VgB4pmP
+	BJSPqZGGEblow+L8+TaEF8Zrvli3nnn+62yWnn83OG/Hb2XO4PRmN1lE/6Zst9nIVx1T1Jr3CPx
+	YmcOIlsR3XDzW1mpLHGrPiDMsOMDm6qVryJvaV0pP8QZyp6LR44tTawSUoI5DNwOA
+X-Received: by 2002:a17:90b:a58:b0:28b:dfcb:f8dc with SMTP id gw24-20020a17090b0a5800b0028bdfcbf8dcmr1452363pjb.32.1704428689102;
+        Thu, 04 Jan 2024 20:24:49 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGmqabsvalmQhHK3ZGgFt4j7cQYL3oTcPzaAV73xTOZlKRXqu7eGb1RjuLiwJbVaIs3QK+4CjmGMuS+LjAsAUY=
+X-Received: by 2002:a17:90b:a58:b0:28b:dfcb:f8dc with SMTP id
+ gw24-20020a17090b0a5800b0028bdfcbf8dcmr1452361pjb.32.1704428688785; Thu, 04
+ Jan 2024 20:24:48 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240104024819.848979-1-kai.heng.feng@canonical.com> <CAJZ5v0gNa7XvUo3B1srXaWBrWx+Bx=w=D7ddi-mqda8xBdWwCQ@mail.gmail.com>
+In-Reply-To: <CAJZ5v0gNa7XvUo3B1srXaWBrWx+Bx=w=D7ddi-mqda8xBdWwCQ@mail.gmail.com>
+From: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Date: Fri, 5 Jan 2024 12:24:36 +0800
+Message-ID: <CAAd53p4yTYZw4x76Cz8qQhkZBa1T3Cg45Kds6288WN2ZsyF9pQ@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] ACPI: IPMI: Add helper to wait for when SMI is selected
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: jdelvare@suse.com, linux@roeck-us.net, Len Brown <lenb@kernel.org>, 
+	Robert Moore <robert.moore@intel.com>, linux-acpi@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, acpica-devel@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Currently some parts of the codebase will test for CONFIG_COMPAT before
-testing is_compat_task().
+On Thu, Jan 4, 2024 at 9:35=E2=80=AFPM Rafael J. Wysocki <rafael@kernel.org=
+> wrote:
+>
+> On Thu, Jan 4, 2024 at 3:48=E2=80=AFAM Kai-Heng Feng
+> <kai.heng.feng@canonical.com> wrote:
+> >
+> > The function of acpi_power_meter module on Dell system requires IPMI
+> > handler is installed and SMI is selected.
+>
+> Does the firmware use _DEP to let the OS know about this dependency?
 
-is_compat_task() is a inlined function only present on CONFIG_COMPAT.
-On the other hand, for !CONFIG_COMPAT, we have in linux/compat.h:
+No. _DEP is missing.
 
-#define is_compat_task() (0)
+Kai-Heng
 
-Since we have this define available in every usage of is_compat_task() for
-!CONFIG_COMPAT, it's unnecessary to keep the ifdefs, since the compiler is
-smart enough to optimize-out those snippets on CONFIG_COMPAT=n
-
-Signed-off-by: Leonardo Bras <leobras@redhat.com>
----
-Changes since RFCv1:
-- Removed unnecessary new inlined is_compat_task() for arm64
-- Adjusted commit text and title
-Link: https://lore.kernel.org/all/20240104192433.109983-2-leobras@redhat.com/
-
- arch/arm64/kernel/ptrace.c  | 6 ++----
- arch/arm64/kernel/syscall.c | 5 +----
- 2 files changed, 3 insertions(+), 8 deletions(-)
-
-diff --git a/arch/arm64/kernel/ptrace.c b/arch/arm64/kernel/ptrace.c
-index 20d7ef82de90a..9f8781f1fdfda 100644
---- a/arch/arm64/kernel/ptrace.c
-+++ b/arch/arm64/kernel/ptrace.c
-@@ -173,7 +173,6 @@ static void ptrace_hbptriggered(struct perf_event *bp,
- 	struct arch_hw_breakpoint *bkpt = counter_arch_bp(bp);
- 	const char *desc = "Hardware breakpoint trap (ptrace)";
- 
--#ifdef CONFIG_COMPAT
- 	if (is_compat_task()) {
- 		int si_errno = 0;
- 		int i;
-@@ -195,7 +194,7 @@ static void ptrace_hbptriggered(struct perf_event *bp,
- 						  desc);
- 		return;
- 	}
--#endif
-+
- 	arm64_force_sig_fault(SIGTRAP, TRAP_HWBKPT, bkpt->trigger, desc);
- }
- 
-@@ -2112,7 +2111,6 @@ long compat_arch_ptrace(struct task_struct *child, compat_long_t request,
- 
- const struct user_regset_view *task_user_regset_view(struct task_struct *task)
- {
--#ifdef CONFIG_COMPAT
- 	/*
- 	 * Core dumping of 32-bit tasks or compat ptrace requests must use the
- 	 * user_aarch32_view compatible with arm32. Native ptrace requests on
-@@ -2123,7 +2121,7 @@ const struct user_regset_view *task_user_regset_view(struct task_struct *task)
- 		return &user_aarch32_view;
- 	else if (is_compat_thread(task_thread_info(task)))
- 		return &user_aarch32_ptrace_view;
--#endif
-+
- 	return &user_aarch64_view;
- }
- 
-diff --git a/arch/arm64/kernel/syscall.c b/arch/arm64/kernel/syscall.c
-index 9a70d9746b661..ad198262b9817 100644
---- a/arch/arm64/kernel/syscall.c
-+++ b/arch/arm64/kernel/syscall.c
-@@ -20,14 +20,11 @@ long sys_ni_syscall(void);
- 
- static long do_ni_syscall(struct pt_regs *regs, int scno)
- {
--#ifdef CONFIG_COMPAT
--	long ret;
- 	if (is_compat_task()) {
--		ret = compat_arm_syscall(regs, scno);
-+		long ret = compat_arm_syscall(regs, scno);
- 		if (ret != -ENOSYS)
- 			return ret;
- 	}
--#endif
- 
- 	return sys_ni_syscall();
- }
--- 
-2.43.0
-
+>
+> > So add a helper to let acpi_power_meter know when IPMI handler and SMI
+> > are ready.
+> >
+> > Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> > ---
+> > v3:
+> >  - New patch.
+> >
+> >  drivers/acpi/acpi_ipmi.c | 17 ++++++++++++++++-
+> >  include/acpi/acpi_bus.h  |  5 +++++
+> >  2 files changed, 21 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/acpi/acpi_ipmi.c b/drivers/acpi/acpi_ipmi.c
+> > index 0555f68c2dfd..54862cab7171 100644
+> > --- a/drivers/acpi/acpi_ipmi.c
+> > +++ b/drivers/acpi/acpi_ipmi.c
+> > @@ -23,6 +23,8 @@ MODULE_LICENSE("GPL");
+> >  #define IPMI_TIMEOUT                   (5000)
+> >  #define ACPI_IPMI_MAX_MSG_LENGTH       64
+> >
+> > +static struct completion smi_selected;
+> > +
+> >  struct acpi_ipmi_device {
+> >         /* the device list attached to driver_data.ipmi_devices */
+> >         struct list_head head;
+> > @@ -463,8 +465,10 @@ static void ipmi_register_bmc(int iface, struct de=
+vice *dev)
+> >                 if (temp->handle =3D=3D handle)
+> >                         goto err_lock;
+> >         }
+> > -       if (!driver_data.selected_smi)
+> > +       if (!driver_data.selected_smi) {
+> >                 driver_data.selected_smi =3D ipmi_device;
+> > +               complete(&smi_selected);
+> > +       }
+> >         list_add_tail(&ipmi_device->head, &driver_data.ipmi_devices);
+> >         mutex_unlock(&driver_data.ipmi_lock);
+> >
+> > @@ -578,10 +582,21 @@ acpi_ipmi_space_handler(u32 function, acpi_physic=
+al_address address,
+> >         return status;
+> >  }
+> >
+> > +int acpi_wait_for_acpi_ipmi(void)
+> > +{
+> > +       long ret;
+> > +
+> > +       ret =3D wait_for_completion_interruptible_timeout(&smi_selected=
+, 2 * HZ);
+> > +
+> > +       return ret > 0 ? 0 : -ETIMEDOUT;
+>
+> What will happen if the IPMI driver is unloaded after this has returned 0=
+?
+>
+> > +}
+> > +EXPORT_SYMBOL_GPL(acpi_wait_for_acpi_ipmi);
+> > +
+> >  static int __init acpi_ipmi_init(void)
+> >  {
+> >         int result;
+> >         acpi_status status;
+> > +       init_completion(&smi_selected);
+> >
+> >         if (acpi_disabled)
+> >                 return 0;
+> > diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
+> > index 1216d72c650f..afa6e4d4bf46 100644
+> > --- a/include/acpi/acpi_bus.h
+> > +++ b/include/acpi/acpi_bus.h
+> > @@ -821,11 +821,16 @@ static inline void acpi_put_acpi_dev(struct acpi_=
+device *adev)
+> >  {
+> >         acpi_dev_put(adev);
+> >  }
+> > +
+> > +int acpi_wait_for_acpi_ipmi(void);
+> > +
+> >  #else  /* CONFIG_ACPI */
+> >
+> >  static inline int register_acpi_bus_type(void *bus) { return 0; }
+> >  static inline int unregister_acpi_bus_type(void *bus) { return 0; }
+> >
+> > +static inline int acpi_wait_for_acpi_ipmi(void) { return 0; }
+> > +
+> >  #endif                         /* CONFIG_ACPI */
+> >
+> >  #endif /*__ACPI_BUS_H__*/
+> > --
 
