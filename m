@@ -1,89 +1,89 @@
-Return-Path: <linux-kernel+bounces-17779-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17780-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 85222825290
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 12:10:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 468E3825292
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 12:12:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6BAEE1C22B51
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 11:10:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DAF321F23D3B
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 11:12:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C56D728E3F;
-	Fri,  5 Jan 2024 11:10:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rzJ9yVM4"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6D5728E08;
+	Fri,  5 Jan 2024 11:12:37 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19C8228DAF;
-	Fri,  5 Jan 2024 11:10:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 56CAAC433C7;
-	Fri,  5 Jan 2024 11:10:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704453020;
-	bh=O+cAie+Pp6x6gTv9o75/G3gwaNt+TefRyCNwy4EBW4s=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=rzJ9yVM4QHkwqj+tqXnWuUJRFibxyjwfRvVOFIVlxUGDzoxwIQjAtn8QszmiHKrBC
-	 FzlAWmzxJU77B6m1k/QnL6ggqh0QUsUyLOr/xk7a6YWPI1tGUxHR65bSX14+G5ItM8
-	 Nf2ayszhWyf011L+iC5wmqm8HWIfjgklKMazb37KqPGK0kJGJfx+zRMek/nkNLesi1
-	 xFbYuCUd3+LgGdnaQMVluKsu4dV4vdur6zwlecKQo1bmb0hmmad+YTlta/SK95z6Ar
-	 RbMeOaYjs32bMk/RZyLfj2ezqEOJKCPasFVJKZw9AgzDzVdkGvXW4us9XbsvHNNdQP
-	 Drqc6feGsdN9w==
-Date: Fri, 5 Jan 2024 12:10:14 +0100
-From: Robert Richter <rric@kernel.org>
-To: Andi Shyti <andi.shyti@kernel.org>
-Cc: Piyush Malgujar <pmalgujar@marvell.com>, linux-i2c@vger.kernel.org,
-	linux-kernel@vger.kernel.org, cchavva@marvell.com,
-	sgarapati@marvell.com, jannadurai@marvell.com
-Subject: Re: [PATCH v2 0/4] i2c: thunderx: Marvell thunderx i2c changes
-Message-ID: <ZZfjlgN9iOjz2oMx@rric.localdomain>
-References: <20230728120004.19680-1-pmalgujar@marvell.com>
- <20231024201440.ey7pjah7fq33mbwm@zenone.zhora.eu>
- <20231026125429.GA22428@Dell2s-9>
- <nu6py2gosmy33ge4mozuisyfyfdw6i7j4i77o6v2xudyshosso@3x3frfn5gomd>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C99528E10;
+	Fri,  5 Jan 2024 11:12:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+Received: from hamburger.collabora.co.uk (hamburger.collabora.co.uk [IPv6:2a01:4f8:1c1c:f269::1])
+	by madrid.collaboradmins.com (Postfix) with ESMTP id 719FA3781FDF;
+	Fri,  5 Jan 2024 11:12:26 +0000 (UTC)
+From: "Shreeya Patel" <shreeya.patel@collabora.com>
+In-Reply-To: <20240103164842.953224409@linuxfoundation.org>
+Content-Type: text/plain; charset="utf-8"
+X-Forward: 127.0.0.1
+References: <20240103164842.953224409@linuxfoundation.org>
+Date: Fri, 05 Jan 2024 11:12:26 +0000
+Cc: stable@vger.kernel.org, patches@lists.linux.dev, linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com, kernel@collabora.com, "Gustavo Padovan" <gustavo.padovan@collabora.com>
+To: "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <nu6py2gosmy33ge4mozuisyfyfdw6i7j4i77o6v2xudyshosso@3x3frfn5gomd>
+Message-ID: <222-6597e400-1-5c48c500@192081645>
+Subject: =?utf-8?q?Re=3A?= [PATCH =?utf-8?q?5=2E10?= 00/75] 
+ =?utf-8?q?5=2E10=2E206-rc1?= review
+User-Agent: SOGoMail 5.9.1
+Content-Transfer-Encoding: quoted-printable
 
-On 04.01.24 23:06:35, Andi Shyti wrote:
-> On Thu, Oct 26, 2023 at 05:54:29AM -0700, Piyush Malgujar wrote:
-> > On Tue, Oct 24, 2023 at 10:14:40PM +0200, Andi Shyti wrote:
-> > > On Fri, Jul 28, 2023 at 05:00:00AM -0700, Piyush Malgujar wrote:
+On Wednesday, January 03, 2024 22:24 IST, Greg Kroah-Hartman <gregkh@li=
+nuxfoundation.org> wrote:
 
-> > > >  drivers/i2c/busses/i2c-octeon-core.c     | 96 ++++++++++++++++++------
-> > > >  drivers/i2c/busses/i2c-octeon-core.h     | 27 +++++++
-> > > >  drivers/i2c/busses/i2c-thunderx-pcidrv.c | 23 ++++--
-> > > >  3 files changed, 115 insertions(+), 31 deletions(-)
-> > > 
-> > > I was going through the patches that failed to receive an answer,
-> > > is this series still valid? Do you still need a round of review
-> > > here?
-> > > 
-> > > Andi
-> > 
-> > Hi Andi,
-> > 
-> > Yes, these patches are still valid. These have been acked by you
-> > and were waiting to get reply from Robert.
-> > Please review the patches.
-> 
-> sorry for the very late response... I guess we won't receive any
-> answer from Robert... do you mind respinning the series as this
-> doesn't apply anymore?
+> This is the start of the stable review cycle for the 5.10.206 release=
+.
+> There are 75 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, plea=
+se
+> let me know.
+>=20
+> Responses should be made by Fri, 05 Jan 2024 16:47:49 +0000.
+> Anything received after that time might be too late.
+>=20
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.1=
+0.206-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc=
+.git linux-5.10.y
+> and the diffstat can be found below.
 
-I would prefer if someone from Marvell could take over maintainership
-for those ThunderX drivers.
+KernelCI report for stable-rc/linux-5.10.y for this week :-
+
+## stable-rc HEAD for linux-5.10.y:
+
+Date: 2024-01-02
+5.10: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git/log/?h=3Dca4427ebc6269ed2c255db88dc6e7bd2036c3103
+
+## Build failures:
+
+No build failures seen for the stable-rc/linux-5.10.y commit head \o/
+
+## Boot failures:
+
+No **new** boot failures seen for the stable-rc/linux-5.10.y commit hea=
+d \o/
+
+Tested-by: kernelci.org bot <bot@kernelci.org>
 
 Thanks,
+Shreeya Patel
 
--Robert
 
