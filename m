@@ -1,120 +1,228 @@
-Return-Path: <linux-kernel+bounces-17475-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17476-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D83F824DCB
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 05:53:35 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 360C6824DD1
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 05:55:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E01152865DA
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 04:53:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8F9441F22C1A
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 04:55:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D8CB538D;
-	Fri,  5 Jan 2024 04:53:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 559B75397;
+	Fri,  5 Jan 2024 04:54:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="YwnOgb9J"
+	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="ZjDJteR7"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5567D1D68C
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 04:53:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704430393; x=1735966393;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=WvidLthEWzSzfy5yF9FiZEbO1DBPFr/TInVS5SU/bSI=;
-  b=YwnOgb9JJxecE1MGqh7a3O3asI0T706CJUywRpYZonBpMgarawZUzOUw
-   3pPTyvmW65wLgsp/OkSXaOCOZOy8pKVC1u53H54EgBHkBMyby27OIfZy5
-   GyGi4nSOEO36P18cZlUDUlHbWfthS/joNvr9vMAYA/NqXn5mpjTB/su9k
-   IoWxyHgEayxfjwPC5ibv/aIfqfC6/8KE1NbRv/WvCuMStTCgbh0H95qIZ
-   v9C9MngH5Y9j1uvA6hM1b+B2wSVgVWQE3xXg6ZAC/10X2WlkS+BZtxZt0
-   2FkboHeI9V8b2nPtgR++AiahfIj8WK/a4rtUiQbJ12Y1pS4S9wwOjComX
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10943"; a="387882760"
-X-IronPort-AV: E=Sophos;i="6.04,332,1695711600"; 
-   d="scan'208";a="387882760"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2024 20:53:12 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10943"; a="953840950"
-X-IronPort-AV: E=Sophos;i="6.04,332,1695711600"; 
-   d="scan'208";a="953840950"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga005.jf.intel.com with ESMTP; 04 Jan 2024 20:53:11 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rLcCj-0000nQ-0Z;
-	Fri, 05 Jan 2024 04:53:09 +0000
-Date: Fri, 5 Jan 2024 12:52:22 +0800
-From: kernel test robot <lkp@intel.com>
-To: Linus Walleij <linus.walleij@linaro.org>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: drivers/usb/fotg210/fotg210-udc.c:632:17: sparse: sparse: restricted
- __le16 degrades to integer
-Message-ID: <202401051251.541p3ElX-lkp@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C838524C
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 04:54:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
+Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com [209.85.216.72])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 7713D3F2C4
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 04:54:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+	s=20210705; t=1704430494;
+	bh=RmsBGh357gTnxMuX2QZf4f7gG0wqdDy6mYTiBGYGCmk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type;
+	b=ZjDJteR7tyUOrB9JXcB26qKV1MfLohVLIZe24o4y/bAy8rogfmM5LqD+RxY+FQ4oG
+	 z57e7W+RsagyjHDaPT/s837spEcW2E9L/IuJoqMOBhyaH+xQ98oaerxWL1MUn+jGiP
+	 t5bKXd2wkEu6NW9oPSdTZAaJhQlaQX4h74p2k/oi4+rrQ40IFrZBTEexa4izKdEHfE
+	 fcQgr6X5ebhJdF5Wd6AOW9TGtZcyk/2cP9jFCdeYMTmNLpe7U5PjKCsVZDpcYp+A7k
+	 9thJWh8mPb7lJ5WmHusueKJ1ZgseE9vqXKyVlDZ9483HdGzqTiu1ODo9UZg+0Lur85
+	 FtMmulLeBCCUg==
+Received: by mail-pj1-f72.google.com with SMTP id 98e67ed59e1d1-28bbe965866so918903a91.3
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 20:54:54 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704430493; x=1705035293;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=RmsBGh357gTnxMuX2QZf4f7gG0wqdDy6mYTiBGYGCmk=;
+        b=RJPfXhEsL1PvjD7Zi2WCOeKNNvn565DkVyHiZFLcS3Iso7/5yLjvQnEpDNWv5ohyPX
+         2QKcR2gBio+NmzSGiyF7gXml+4SSDtpAlREZF/OTGoQ3udXJXhnYvaGqmJdYA5M02o94
+         RRaezQrM5WYsKTFTCEpPCPRjDUqbl398yNMf4IKravTb09CzFvHClDajsdsBogD1xlG+
+         f6xnuQM0Ldv9diy7oMGsjRfGgLSbC4tDuRwkadgArftG1suZ4rOh3LoWZs6hh+qDBen1
+         OcmKu0/246AGO+0pEA22gUCEM98jIM8HgCswlxlgMi6rk1r/ej7Dsr4ebu87ukT5o//4
+         XwAw==
+X-Gm-Message-State: AOJu0Yx0FjoY2ClrETBnZQp+h9SBdzLtBjBynqqisJcV4dENWC0wUI1P
+	XxK2lLXPFVNcu/qJk8YGsBjd0zPA26DOXa263bh6wr3fW4bFqwYLythOKrehKZr4jN0nGuyz5rq
+	aTfKDjN30xcglYUX6Fo8l2+dhije6iEN8rvJ9+J3I5TaGAteBiAgS4R0kE0Cq8FtQ
+X-Received: by 2002:a17:90a:ba85:b0:28c:28b4:e499 with SMTP id t5-20020a17090aba8500b0028c28b4e499mr1349255pjr.41.1704430492779;
+        Thu, 04 Jan 2024 20:54:52 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHGXrvgRyWcCk+nXIuvq+aAdMLhT+C/Ly2g0LceapXrNcJW2yfM6MB+qExmzmfh5h39hxXlfn20P3F7eXA3Xbg=
+X-Received: by 2002:a17:90a:ba85:b0:28c:28b4:e499 with SMTP id
+ t5-20020a17090aba8500b0028c28b4e499mr1349245pjr.41.1704430492481; Thu, 04 Jan
+ 2024 20:54:52 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20240104024819.848979-1-kai.heng.feng@canonical.com> <CAJZ5v0g0M4B-01AT6+WBASkSyfqVAYSJUS4oE+rw=obXFT1WcA@mail.gmail.com>
+In-Reply-To: <CAJZ5v0g0M4B-01AT6+WBASkSyfqVAYSJUS4oE+rw=obXFT1WcA@mail.gmail.com>
+From: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Date: Fri, 5 Jan 2024 12:54:40 +0800
+Message-ID: <CAAd53p4iLK1gJPgrpr5AuB2WEFYD263RW3VKC9FUp3TgZ54Kvw@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] ACPI: IPMI: Add helper to wait for when SMI is selected
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: jdelvare@suse.com, linux@roeck-us.net, Len Brown <lenb@kernel.org>, 
+	Robert Moore <robert.moore@intel.com>, linux-acpi@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, acpica-devel@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   1f874787ed9a2d78ed59cb21d0d90ac0178eceb0
-commit: 1dd33a9f1b95ab59cd60f14a7a83fed14697867b usb: fotg210: Collect pieces of dual mode controller
-date:   1 year, 2 months ago
-config: microblaze-randconfig-r091-20230814 (https://download.01.org/0day-ci/archive/20240105/202401051251.541p3ElX-lkp@intel.com/config)
-compiler: microblaze-linux-gcc (GCC) 12.3.0
-reproduce: (https://download.01.org/0day-ci/archive/20240105/202401051251.541p3ElX-lkp@intel.com/reproduce)
+On Fri, Jan 5, 2024 at 1:25=E2=80=AFAM Rafael J. Wysocki <rafael@kernel.org=
+> wrote:
+>
+> On Thu, Jan 4, 2024 at 3:48=E2=80=AFAM Kai-Heng Feng
+> <kai.heng.feng@canonical.com> wrote:
+> >
+> > The function of acpi_power_meter module on Dell system requires IPMI
+> > handler is installed and SMI is selected.
+> >
+> > So add a helper to let acpi_power_meter know when IPMI handler and SMI
+> > are ready.
+>
+> The changelog is a bit terse.
+>
+> It could describe the problem at hand in more detail, for example.
+>
+> Also it wouldn't hurt to provide a Link: tag pointing to a place where
+> some extra details could be found.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202401051251.541p3ElX-lkp@intel.com/
+OK. Will add more info in next revision.
 
-sparse warnings: (new ones prefixed by >>)
->> drivers/usb/fotg210/fotg210-udc.c:632:17: sparse: sparse: restricted __le16 degrades to integer
-   drivers/usb/fotg210/fotg210-udc.c:635:51: sparse: sparse: incorrect type in argument 2 (different base types) @@     expected unsigned int [usertype] addr @@     got restricted __le16 [usertype] wValue @@
-   drivers/usb/fotg210/fotg210-udc.c:635:51: sparse:     expected unsigned int [usertype] addr
-   drivers/usb/fotg210/fotg210-udc.c:635:51: sparse:     got restricted __le16 [usertype] wValue
-   drivers/usb/fotg210/fotg210-udc.c:670:33: sparse: sparse: restricted __le16 degrades to integer
-   drivers/usb/fotg210/fotg210-udc.c:680:25: sparse: sparse: restricted __le16 degrades to integer
-   drivers/usb/fotg210/fotg210-udc.c:716:35: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le16 [usertype] ep0_data @@     got int @@
-   drivers/usb/fotg210/fotg210-udc.c:716:35: sparse:     expected restricted __le16 [usertype] ep0_data
-   drivers/usb/fotg210/fotg210-udc.c:716:35: sparse:     got int
-   drivers/usb/fotg210/fotg210-udc.c:722:29: sparse: sparse: restricted __le16 degrades to integer
-   drivers/usb/fotg210/fotg210-udc.c:724:43: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le16 [usertype] ep0_data @@     got int @@
-   drivers/usb/fotg210/fotg210-udc.c:724:43: sparse:     expected restricted __le16 [usertype] ep0_data
-   drivers/usb/fotg210/fotg210-udc.c:724:43: sparse:     got int
+>
+> > Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> > ---
+> > v3:
+> >  - New patch.
+> >
+> >  drivers/acpi/acpi_ipmi.c | 17 ++++++++++++++++-
+> >  include/acpi/acpi_bus.h  |  5 +++++
+> >  2 files changed, 21 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/acpi/acpi_ipmi.c b/drivers/acpi/acpi_ipmi.c
+> > index 0555f68c2dfd..54862cab7171 100644
+> > --- a/drivers/acpi/acpi_ipmi.c
+> > +++ b/drivers/acpi/acpi_ipmi.c
+> > @@ -23,6 +23,8 @@ MODULE_LICENSE("GPL");
+> >  #define IPMI_TIMEOUT                   (5000)
+> >  #define ACPI_IPMI_MAX_MSG_LENGTH       64
+> >
+> > +static struct completion smi_selected;
+> > +
+> >  struct acpi_ipmi_device {
+> >         /* the device list attached to driver_data.ipmi_devices */
+> >         struct list_head head;
+> > @@ -463,8 +465,10 @@ static void ipmi_register_bmc(int iface, struct de=
+vice *dev)
+> >                 if (temp->handle =3D=3D handle)
+> >                         goto err_lock;
+> >         }
+> > -       if (!driver_data.selected_smi)
+> > +       if (!driver_data.selected_smi) {
+> >                 driver_data.selected_smi =3D ipmi_device;
+> > +               complete(&smi_selected);
+>
+> It looks like the new completion is at least related to driver_data,
+> so should it be a member of the latter?
 
-vim +632 drivers/usb/fotg210/fotg210-udc.c
+Sure thing.
 
-b84a8dee23fd41 drivers/usb/gadget/fotg210-udc.c Yuan-Hsin Chen 2013-05-30  628  
-b84a8dee23fd41 drivers/usb/gadget/fotg210-udc.c Yuan-Hsin Chen 2013-05-30  629  static void fotg210_set_address(struct fotg210_udc *fotg210,
-b84a8dee23fd41 drivers/usb/gadget/fotg210-udc.c Yuan-Hsin Chen 2013-05-30  630  				struct usb_ctrlrequest *ctrl)
-b84a8dee23fd41 drivers/usb/gadget/fotg210-udc.c Yuan-Hsin Chen 2013-05-30  631  {
-b84a8dee23fd41 drivers/usb/gadget/fotg210-udc.c Yuan-Hsin Chen 2013-05-30 @632  	if (ctrl->wValue >= 0x0100) {
-b84a8dee23fd41 drivers/usb/gadget/fotg210-udc.c Yuan-Hsin Chen 2013-05-30  633  		fotg210_request_error(fotg210);
-b84a8dee23fd41 drivers/usb/gadget/fotg210-udc.c Yuan-Hsin Chen 2013-05-30  634  	} else {
-b84a8dee23fd41 drivers/usb/gadget/fotg210-udc.c Yuan-Hsin Chen 2013-05-30  635  		fotg210_set_dev_addr(fotg210, ctrl->wValue);
-b84a8dee23fd41 drivers/usb/gadget/fotg210-udc.c Yuan-Hsin Chen 2013-05-30  636  		fotg210_set_cxdone(fotg210);
-b84a8dee23fd41 drivers/usb/gadget/fotg210-udc.c Yuan-Hsin Chen 2013-05-30  637  	}
-b84a8dee23fd41 drivers/usb/gadget/fotg210-udc.c Yuan-Hsin Chen 2013-05-30  638  }
-b84a8dee23fd41 drivers/usb/gadget/fotg210-udc.c Yuan-Hsin Chen 2013-05-30  639  
+>
+> > +       }
+> >         list_add_tail(&ipmi_device->head, &driver_data.ipmi_devices);
+> >         mutex_unlock(&driver_data.ipmi_lock);
+> >
+> > @@ -578,10 +582,21 @@ acpi_ipmi_space_handler(u32 function, acpi_physic=
+al_address address,
+> >         return status;
+> >  }
+> >
+> > +int acpi_wait_for_acpi_ipmi(void)
+> > +{
+> > +       long ret;
+> > +
+> > +       ret =3D wait_for_completion_interruptible_timeout(&smi_selected=
+, 2 * HZ);
+>
+> Why does it wait for 2 ticks and not 3 or 5?
+>
+> Also it would be nice to have a symbol defined for this timeout value.
 
-:::::: The code at line 632 was first introduced by commit
-:::::: b84a8dee23fd41600a8aebcba1410b5bb5b3bdeb usb: gadget: add Faraday fotg210_udc driver
+Sure. Will add a define and comment.
 
-:::::: TO: Yuan-Hsin Chen <yhchen@faraday-tech.com>
-:::::: CC: Felipe Balbi <balbi@ti.com>
+>
+> > +
+> > +       return ret > 0 ? 0 : -ETIMEDOUT;
+>
+> if (ret <=3D 0)
+>         return -ETIMEDOUT;
+>
+> return 0;
+>
+> pretty please.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+OK.
+
+>
+> > +}
+> > +EXPORT_SYMBOL_GPL(acpi_wait_for_acpi_ipmi);
+> > +
+> >  static int __init acpi_ipmi_init(void)
+> >  {
+> >         int result;
+> >         acpi_status status;
+>
+> Empty line here, please.
+
+OK.
+
+>
+> > +       init_completion(&smi_selected);
+>
+> Does it really make sense to initialize it when ACPI is disabled?
+
+OK, will move it further down.
+
+Kai-Heng
+
+>
+> >
+> >         if (acpi_disabled)
+> >                 return 0;
+> > diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
+> > index 1216d72c650f..afa6e4d4bf46 100644
+> > --- a/include/acpi/acpi_bus.h
+> > +++ b/include/acpi/acpi_bus.h
+> > @@ -821,11 +821,16 @@ static inline void acpi_put_acpi_dev(struct acpi_=
+device *adev)
+> >  {
+> >         acpi_dev_put(adev);
+> >  }
+> > +
+> > +int acpi_wait_for_acpi_ipmi(void);
+> > +
+> >  #else  /* CONFIG_ACPI */
+> >
+> >  static inline int register_acpi_bus_type(void *bus) { return 0; }
+> >  static inline int unregister_acpi_bus_type(void *bus) { return 0; }
+> >
+> > +static inline int acpi_wait_for_acpi_ipmi(void) { return 0; }
+> > +
+> >  #endif                         /* CONFIG_ACPI */
+> >
+> >  #endif /*__ACPI_BUS_H__*/
+> > --
 
