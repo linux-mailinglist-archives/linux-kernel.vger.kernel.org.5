@@ -1,76 +1,54 @@
-Return-Path: <linux-kernel+bounces-17879-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17891-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E3BB282547E
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 14:31:48 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44B1782549F
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 14:47:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DEB391C21B99
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 13:31:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9061BB22C01
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 13:47:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82FDA2D61B;
-	Fri,  5 Jan 2024 13:31:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 483062D791;
+	Fri,  5 Jan 2024 13:47:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="T2rSBTry"
+	dkim=pass (2048-bit key) header.d=debian.org header.i=@debian.org header.b="r2qTnBRB"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from stravinsky.debian.org (stravinsky.debian.org [82.195.75.108])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 517C72D609
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 13:31:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a27cd5850d6so168528966b.1
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Jan 2024 05:31:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1704461500; x=1705066300; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=tgP+th0N7B9odu3YvrC1EGNYppOPseXtnsirIxKlnzQ=;
-        b=T2rSBTry2/mDpiuajiNPPpZdKnz1lWBMk6CVmwc7+qH8meFgkwN8iCJXL1PlMwZVAf
-         exSS/IxZ9wykmVhnQwuWPPToZAH9rLzDg3k84dek4peCydbieojVLpUy1GGJCgsX8uqY
-         FlfYEunHeb99zbDVtFu65nXvUqJdJRfR0B+xzy/MoNtbWbgjBPC+3j7Q+R5M0oRjsaeI
-         hfT79ZjnYxI3DJS3WpYCFeuET49xjqM0nqmTq2oFBVWaE87zaEWvSKLl61Y2xgnq+HPc
-         zdUDVoWmL31am6eu91hO+S3kaUNR33L2dF48e7q/TpJVtGyYVMwHm7bT5pZZeY8A4cUM
-         W4Xg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704461500; x=1705066300;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tgP+th0N7B9odu3YvrC1EGNYppOPseXtnsirIxKlnzQ=;
-        b=M0iIjSEgQFpg8AQYerZC6pymzJZnR2RgHg1i4piBdfsL2SwNnoSG7R3E77gbXejGBU
-         2RGimbmx8QjlgJEaHKmjECvgo0qdzPY8HCr4YdRheyWHI2sERSlQM4qD39Ll00iVEH8F
-         ZAv/SGcVK/sx+d+KgDppkhfHovPe/Wh/IH+doAHpQ2P4TUnJEeCJPvEIPCYFgAnDGxIP
-         mqzNRFvHVGCAYh5MRjuEYE6fqNYCRmr8/gn26M6ZqV4GozLA79gi22hogXux2VT5qBjt
-         QYqnp3uGP43iw+jbUX1UcEQ6qKCjLHOl3opRnPKZRU+3HKRU3/dJGvDf67QNFgMVhzqc
-         7ZqA==
-X-Gm-Message-State: AOJu0YywQGSEoISkvRxkPCLyrCC4C96kEzmdYreeYuuUmpexx85Ruozg
-	4FCg5B0S+iu13SDtOdIQ41iEqf454yf0wQ==
-X-Google-Smtp-Source: AGHT+IHsDn1zlEL9dKqlyookSTiwAgSDkb7D5CEkubKbDV9ro1vL62QGKpKBt5CAdUiG8cQsJUxVQw==
-X-Received: by 2002:a17:906:aad3:b0:a28:b21b:ee5 with SMTP id kt19-20020a170906aad300b00a28b21b0ee5mr1051218ejb.75.1704461500565;
-        Fri, 05 Jan 2024 05:31:40 -0800 (PST)
-Received: from localhost (2001-1ae9-1c2-4c00-20f-c6b4-1e57-7965.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:20f:c6b4:1e57:7965])
-        by smtp.gmail.com with ESMTPSA id k27-20020a1709061c1b00b00a272de16f52sm885194ejg.112.2024.01.05.05.31.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Jan 2024 05:31:39 -0800 (PST)
-Date: Fri, 5 Jan 2024 14:31:39 +0100
-From: Andrew Jones <ajones@ventanamicro.com>
-To: guoren@kernel.org
-Cc: paul.walmsley@sifive.com, palmer@dabbelt.com, 
-	panqinglin2020@iscas.ac.cn, bjorn@rivosinc.com, conor.dooley@microchip.com, 
-	leobras@redhat.com, peterz@infradead.org, keescook@chromium.org, 
-	wuwei2016@iscas.ac.cn, xiaoguang.xing@sophgo.com, chao.wei@sophgo.com, 
-	unicorn_wang@outlook.com, uwu@icenowy.me, jszhang@kernel.org, wefu@redhat.com, 
-	atishp@atishpatra.org, linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	Guo Ren <guoren@linux.alibaba.com>
-Subject: Re: Re: [PATCH V2 2/3] riscv: Add ARCH_HAS_PRETCHW support with Zibop
-Message-ID: <20240105-6dba80fb50413c0869b0beb3@orel>
-References: <20231231082955.16516-1-guoren@kernel.org>
- <20231231082955.16516-3-guoren@kernel.org>
- <20240102-7e62facbd8322db4dee4b0dd@orel>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E53E82D781;
+	Fri,  5 Jan 2024 13:47:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=debian.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=debian.org;
+	s=smtpauto.stravinsky; h=X-Debian-User:Content-Type:MIME-Version:Message-ID:
+	Subject:Cc:To:From:Date:Reply-To:Content-Transfer-Encoding:Content-ID:
+	Content-Description:In-Reply-To:References;
+	bh=PiMVdce53Ufudq9W9yWmSnj7Yoq+fvtR1119t1CZpPI=; b=r2qTnBRB5DIJUJWgUPBK2ce91h
+	dJxh9rtiy8G4k2vDEx+FzZP2IlDE65E7d7t1sjmaC89Kh7uyI9LkoMI6eJy57lCa8+zLm26izWOBK
+	W3WB3o1U55DMaq6lXzfw1JrmhIwEL27A2UBch+5I4nT7NSvCyNkZOCqIyBSECfKkMWYotr7F/t+HS
+	AZCE//dKeiM7MDy3XFSzBn2SD6SwB/24j71nBNE+RCVwdJkllEPgsGuT6JrKCXUfI6WeorILn4xbZ
+	yu+jVQVUjIeEpgOf5xXKFew3PUV8KjujZdI/15elLdhEZbIU3sZtEYF2FW/nRnocM+QYUdiSW9E6L
+	9OYYiCGg==;
+Received: from authenticated user
+	by stravinsky.debian.org with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.94.2)
+	(envelope-from <carnil@debian.org>)
+	id 1rLkJu-001i9w-DT; Fri, 05 Jan 2024 13:33:06 +0000
+Received: by eldamar.lan (Postfix, from userid 1000)
+	id 5A7BBBE2DE0; Fri,  5 Jan 2024 14:33:05 +0100 (CET)
+Date: Fri, 5 Jan 2024 14:33:05 +0100
+From: Salvatore Bonaccorso <carnil@debian.org>
+To: Steve French <sfrench@samba.org>, Paulo Alcantara <pc@manguebit.com>,
+	Ronnie Sahlberg <lsahlber@redhat.com>,
+	Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>,
+	Ben Hutchings <benh@debian.org>
+Cc: linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
+	linux-kernel@vger.kernel.org
+Subject: Information on use-after-free in smb2_is_status_io_timeout()?
+Message-ID: <ZZgFEX3QNWWj_VxA@eldamar.lan>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -79,73 +57,58 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240102-7e62facbd8322db4dee4b0dd@orel>
+X-Debian-User: carnil
 
-On Tue, Jan 02, 2024 at 11:45:08AM +0100, Andrew Jones wrote:
-> 
-> s/Zibop/Zicbop/ <<<$SUBJECT
-> 
-> On Sun, Dec 31, 2023 at 03:29:52AM -0500, guoren@kernel.org wrote:
-> > From: Guo Ren <guoren@linux.alibaba.com>
-> > 
-> > Enable Linux prefetchw primitive with Zibop cpufeature, which preloads
-> 
-> Also s/Zibop/Zicbop/ here
-> 
-> > cache line into L1 cache for the next write operation.
-> > 
-> > Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-> > Signed-off-by: Guo Ren <guoren@kernel.org>
-> > ---
-> >  arch/riscv/include/asm/processor.h | 16 ++++++++++++++++
-> >  1 file changed, 16 insertions(+)
-> > 
-> > diff --git a/arch/riscv/include/asm/processor.h b/arch/riscv/include/asm/processor.h
-> > index f19f861cda54..8d3a2ab37678 100644
-> > --- a/arch/riscv/include/asm/processor.h
-> > +++ b/arch/riscv/include/asm/processor.h
-> > @@ -13,6 +13,9 @@
-> >  #include <vdso/processor.h>
-> >  
-> >  #include <asm/ptrace.h>
-> > +#include <asm/insn-def.h>
-> > +#include <asm/alternative-macros.h>
-> > +#include <asm/hwcap.h>
-> >  
-> >  #ifdef CONFIG_64BIT
-> >  #define DEFAULT_MAP_WINDOW	(UL(1) << (MMAP_VA_BITS - 1))
-> > @@ -106,6 +109,19 @@ static inline void arch_thread_struct_whitelist(unsigned long *offset,
-> >  #define KSTK_EIP(tsk)		(task_pt_regs(tsk)->epc)
-> >  #define KSTK_ESP(tsk)		(task_pt_regs(tsk)->sp)
-> >  
-> > +#ifdef CONFIG_RISCV_ISA_ZICBOP
-> > +#define ARCH_HAS_PREFETCHW
-> > +
-> > +#define PREFETCHW_ASM(x)						\
-> > +	ALTERNATIVE(__nops(1), CBO_PREFETCH_W(x, 0), 0,			\
-> > +		    RISCV_ISA_EXT_ZICBOP, CONFIG_RISCV_ISA_ZICBOP)
-> > +
-> > +
-> > +static inline void prefetchw(const void *x)
-> > +{
-> > +	__asm__ __volatile__(PREFETCHW_ASM(%0) : : "r" (x) : "memory");
-> > +}
-> 
-> Shouldn't we create an interface which exposes the offset input of
-> the instruction, allowing a sequence of calls to be unrolled? But
-> I guess that could be put off until there's a need for it.
+Hi,
 
-If we did expose offset, then, because it must be constant and also must
-only have bits 5-11 set, then we could add a static assert. Something like
+There is a Red Hat bugzilla report in
+https://bugzilla.redhat.com/show_bug.cgi?id=2154178 about a
+use-after-free in smb2_is_status_io_timeout() . While the commit noted
+initially there seems not correct, Ben Hutchings raised a question on
+more information in
+https://bugzilla.redhat.com/show_bug.cgi?id=2154178#c24 .
 
- #define prefetchw_offset(base, offset) \
- ({ \
-     static_assert(__builtin_constant_p(offset) && !(offset & ~GENMASK(11, 5))); \
-     __asm__ __volatile__(PREFETCHW_ASM(%0, %1) : : "r" (x), "I" (offset) : "memory"); \
- })
+(there is a CVE assigned for it, CVE-2023-1192)
 
-Probably overkill though...
+To quote the initial message in RHBZ#2154178:
 
-Thanks,
-drew
+> A use after free flaw was found in smb2_is_status_io_timeout() in CIFS
+> in the Linux Kernel. After CIFS transfers response data to system
+> call, there is still a local variable points to the memory region, and
+> if system call frees it faster than CIFS uses it, CIFS will access a
+> free memory region leading to a denial of service.
+
+Ben asked:
+
+> smb2_is_status_io_timeout() is only ever called from cifs_demultiplex_thread().
+> That happens after it conditionally decrypts the original receive buffer (buf) into
+> one or more new buffers (bufs[...]), or otherwise sets bufs[0] = buf.  The
+> decryption process looks like it can free the original buffer, resulting in the
+> reported UAF.
+> 
+> If the error code is part of the encrypted payload, then I think the check for an
+> I/O timeout should use bufs[0] like other code further down the function:
+> 
+> --- a/fs/smb/client/connect.c
+> +++ b/fs/smb/client/connect.c
+> @@ -1236,7 +1236,7 @@ cifs_demultiplex_thread(void *p)
+>                 }
+> 
+>                 if (server->ops->is_status_io_timeout &&
+> -                   server->ops->is_status_io_timeout(buf)) {
+> +                   server->ops->is_status_io_timeout(bufs[0])) {
+>                         num_io_timeout++;
+>                         if (num_io_timeout > MAX_STATUS_IO_TIMEOUT) {
+>                                 cifs_server_dbg(VFS,
+> --- END ---
+> 
+> If the error code does not get encrypted, then the timeout check needs to be done
+> further up the function.
+> 
+> Does anyone have a reproducer for this?
+
+Does anyone knows more on this issue?
+
+Regards,
+Salvatore
 
