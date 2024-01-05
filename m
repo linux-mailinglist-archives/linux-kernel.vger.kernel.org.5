@@ -1,46 +1,54 @@
-Return-Path: <linux-kernel+bounces-17540-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17542-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 60B15824F13
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 08:15:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D9529824F1D
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 08:19:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 862A41C22BB8
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 07:15:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EC35E1C22503
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 07:19:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9F971DDF1;
-	Fri,  5 Jan 2024 07:15:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 875D41EB35;
+	Fri,  5 Jan 2024 07:19:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="RgjONDf5"
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="V68hIClb"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.smtpout.orange.fr (smtp-28.smtpout.orange.fr [80.12.242.28])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBB1E200AC;
-	Fri,  5 Jan 2024 07:15:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=wanadoo.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
-Received: from [192.168.1.18] ([92.140.202.140])
-	by smtp.orange.fr with ESMTPA
-	id LePzrOnjwt8aXLePzrQwGC; Fri, 05 Jan 2024 08:15:00 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-	s=t20230301; t=1704438900;
-	bh=vTHb4fsbw49n+cHEAzUAl+mW7b7a6gshLZ8DtNPyYCU=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=RgjONDf5Bjjrcbs7ci13Gik0ej3zZDIChqvov4AerFaov14WFKjEdPwg2x8I9O7GC
-	 YSCr4ztbjySHqLveMmw7YhxzT+uXQmDNlD6uTAHWCqEuEH+Yp+v/xiQMFwmNeKYW+C
-	 xbzJxFqXzzgYwBjnDzXlsfLLA8+ACz621QUPXWMF/8JMwlYioJYCbf5gZmRRtA687a
-	 AQazUN/HbaRyr8AGcJycpchw60dnFfS3Fm+YbJrweCj75zV2VADH79r58fh9hfN2Gl
-	 cRNB5G66ip187ZGsOl5ArjafSsoaXfljKKrC6JUdNqU1CdHllTcWcXr7E/vvFIauAb
-	 aN/sMoD8pT0aQ==
-X-ME-Helo: [192.168.1.18]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Fri, 05 Jan 2024 08:15:00 +0100
-X-ME-IP: 92.140.202.140
-Message-ID: <63d2b52d-8f0b-4456-896c-ecdaf835c65a@wanadoo.fr>
-Date: Fri, 5 Jan 2024 08:14:59 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A6CE1DDDC;
+	Fri,  5 Jan 2024 07:19:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 4057JKiM065605;
+	Fri, 5 Jan 2024 01:19:20 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1704439160;
+	bh=nnbd4NNKlxIwd09RppD3PPXEsR2CI47y98ZUeI58Kjg=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=V68hIClb9NB4iTuZkakfWhO8/vk5DBlJFqTiIrE81l6Wq1Yqdz/8UMF4SZvLXzMFv
+	 OmpdS2yScv8n8DnYQY5SZmPYUtx/LYrdLkoBTvoYIvDPoBDjcIOkMuiZ76ARG64A1j
+	 tcbGQKQOEpVLh/pUZq4i3FKfgsjIKsIg2TwmtuFA=
+Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
+	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 4057JKaU013603
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Fri, 5 Jan 2024 01:19:20 -0600
+Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 5
+ Jan 2024 01:19:20 -0600
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Fri, 5 Jan 2024 01:19:20 -0600
+Received: from [10.249.132.18] ([10.249.132.18])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 4057JF5I023483;
+	Fri, 5 Jan 2024 01:19:16 -0600
+Message-ID: <e08d7240-6b28-43c4-9ce4-95a041bfad25@ti.com>
+Date: Fri, 5 Jan 2024 12:49:14 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -48,72 +56,93 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] Bluetooth: Avoid potential use-after-free in
- hci_error_reset
-To: yinghsu@chromium.org
-Cc: chromeos-bluetooth-upstreaming@chromium.org,
- linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
- luiz.dentz@gmail.com
-References: <20240104115453.1.Iaa08c695d3dcf819910ea723c3eb502935638172@changeid>
-Content-Language: fr
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-In-Reply-To: <20240104115453.1.Iaa08c695d3dcf819910ea723c3eb502935638172@changeid>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Subject: Re: [PATCH] net: can: Add support for aliases in CAN
+Content-Language: en-US
+To: Simon Horman <horms@kernel.org>
+CC: <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-can@vger.kernel.org>, <mailhol.vincent@wanadoo.fr>,
+        <rcsekar@samsung.com>, <pabeni@redhat.com>, <kuba@kernel.org>,
+        <edumazet@google.com>, <davem@davemloft.net>, <mkl@pengutronix.de>,
+        <wg@grandegger.com>, <vigneshr@ti.com>, <u-kumar1@ti.com>
+References: <20240102102949.138607-1-b-kapoor@ti.com>
+ <20240104171940.GI31813@kernel.org>
+From: Bhavya Kapoor <b-kapoor@ti.com>
+In-Reply-To: <20240104171940.GI31813@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-Le 04/01/2024 à 12:56, Ying Hsu a écrit :
-> While handling the HCI_EV_HARDWARE_ERROR event, if the underlying
-> BT controller is not responding, the GPIO reset mechanism would
-> free the hci_dev and lead to a use-after-free in hci_error_reset.
-> 
-> Here's the call trace observed on a ChromeOS device with Intel AX201:
->     queue_work_on+0x3e/0x6c
->     __hci_cmd_sync_sk+0x2ee/0x4c0 [bluetooth <HASH:3b4a6>]
->     ? init_wait_entry+0x31/0x31
->     __hci_cmd_sync+0x16/0x20 [bluetooth <HASH:3b4a 6>]
->     hci_error_reset+0x4f/0xa4 [bluetooth <HASH:3b4a 6>]
->     process_one_work+0x1d8/0x33f
->     worker_thread+0x21b/0x373
->     kthread+0x13a/0x152
->     ? pr_cont_work+0x54/0x54
->     ? kthread_blkcg+0x31/0x31
->      ret_from_fork+0x1f/0x30
-> 
-> This patch holds the reference count on the hci_dev while processing
-> a HCI_EV_HARDWARE_ERROR event to avoid potential crash.
-> 
-> Signed-off-by: Ying Hsu <yinghsu-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>
-> ---
-> Tested this commit on a chromebook with Intel BT controller.
-> 
->   net/bluetooth/hci_core.c | 2 ++
->   1 file changed, 2 insertions(+)
-> 
-> diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
-> index 65601aa52e0d..a42417926028 100644
-> --- a/net/bluetooth/hci_core.c
-> +++ b/net/bluetooth/hci_core.c
-> @@ -1049,6 +1049,7 @@ static void hci_error_reset(struct work_struct *work)
->   {
->   	struct hci_dev *hdev = container_of(work, struct hci_dev, error_reset);
->   
-> +	hci_dev_hold(hdev);
->   	BT_DBG("%s", hdev->name);
->   
->   	if (hdev->hw_error)
-> @@ -1060,6 +1061,7 @@ static void hci_error_reset(struct work_struct *work)
->   		return;
 
-                 ^^^^^
-Should we also call hci_dev_put() if we hit this return?
+On 04/01/24 22:49, Simon Horman wrote:
+> On Tue, Jan 02, 2024 at 03:59:49PM +0530, Bhavya Kapoor wrote:
+>> When multiple CAN's are present, then names that are getting assigned
+>> changes after every boot even after providing alias in the device tree.
+>> Thus, Add support for implementing CAN aliasing so that names or
+>> alias for CAN will now be provided from device tree.
+>>
+>> Signed-off-by: Bhavya Kapoor <b-kapoor@ti.com>
+> Hi Bhavya,
+>
+> some minor feedback from my side.
+>
+> ...
+>
+>> diff --git a/drivers/net/can/dev/dev.c b/drivers/net/can/dev/dev.c
+>> index 3a3be5cdfc1f..ed483c23ec79 100644
+>> --- a/drivers/net/can/dev/dev.c
+>> +++ b/drivers/net/can/dev/dev.c
+>> @@ -247,12 +247,14 @@ void can_setup(struct net_device *dev)
+>>  
+>>  /* Allocate and setup space for the CAN network device */
+>>  struct net_device *alloc_candev_mqs(int sizeof_priv, unsigned int echo_skb_max,
+>> -				    unsigned int txqs, unsigned int rxqs)
+>> +					unsigned int txqs, unsigned int rxqs,
+>> +					struct device *candev)
+>>  {
+>>  	struct can_ml_priv *can_ml;
+>>  	struct net_device *dev;
+>>  	struct can_priv *priv;
+>> -	int size;
+>> +	int size, aliasid;
+>> +	char devname[6] = "can%d";
+> nit: Please consider arranging local variables in Networking code
+>      in reverse xmas tree order - longest line to shortest.
+Okay, i will keep this in mind from next time.
+>
+>>  
+>>  	/* We put the driver's priv, the CAN mid layer priv and the
+>>  	 * echo skb into the netdevice's priv. The memory layout for
+>> @@ -273,7 +275,14 @@ struct net_device *alloc_candev_mqs(int sizeof_priv, unsigned int echo_skb_max,
+>>  		size = ALIGN(size, sizeof(struct sk_buff *)) +
+>>  			echo_skb_max * sizeof(struct sk_buff *);
+>>  
+>> -	dev = alloc_netdev_mqs(size, "can%d", NET_NAME_UNKNOWN, can_setup,
+>> +	if (candev) {
+>> +		aliasid = of_alias_get_id(candev->of_node, "can");
+>> +		if (aliasid >= 0)
+>> +			snprintf(devname, sizeof(devname), "%s%d", "can", aliasid);
+> The size of devname is 6 bytes (can%d\0).
+> This means that snprintf() will truncate devname if alias is greater than 99.
+> Is this a concern?
 
-CJ
+When sequential naming will be done from can0 in aliases for can, 
 
->   
->   	hci_dev_do_open(hdev);
-> +	hci_dev_put(hdev);
->   }
->   
->   void hci_uuids_clear(struct hci_dev *hdev)
+considering that 99 is still a very large number and so 6 bytes for
 
+devname should suffice.
+
+Regards
+
+> If so, perhaps devname could be declared to be IFNAMSIZ bytes long?
+>
+> Flagged by gcc-13 -Wformat-truncation
+>
+>> +	}
+>> +	dev_dbg(candev, "Name of CAN assigned is : %s\n", devname);
+>> +
+>> +	dev = alloc_netdev_mqs(size, devname, NET_NAME_UNKNOWN, can_setup,
+>>  			       txqs, rxqs);
+>>  	if (!dev)
+>>  		return NULL;
+> ...
 
