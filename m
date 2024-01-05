@@ -1,183 +1,99 @@
-Return-Path: <linux-kernel+bounces-17473-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17474-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 874C2824DBC
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 05:46:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E300824DCA
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 05:53:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 36CE9284743
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 04:46:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0C6811F22F93
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 04:53:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A6A7569F;
-	Fri,  5 Jan 2024 04:46:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC1A85691;
+	Fri,  5 Jan 2024 04:52:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LgtVEfVo"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="VTLZVg7n"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-oa1-f41.google.com (mail-oa1-f41.google.com [209.85.160.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CAB1566E
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 04:46:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f41.google.com with SMTP id 586e51a60fabf-204e1203a22so522364fac.1
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Jan 2024 20:46:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704430007; x=1705034807; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JUfBlkaw9RVz2P7LcdBmGlWAkW41RXh8NLtRAVaPRl0=;
-        b=LgtVEfVoqY6WHPpi1sTHrzIwZiErs2Bwzwth6FWoeNs0md6D4GxSazgXGQ1DKVDE0i
-         cepsrw6cSt/VN3EERxMEmHowkCJiFn6CQXrL0XV1sAs1rcjDDZZD4/BPT2NpjWKicDtN
-         gT2C6/I5CBUEyTUpbPH7viFDHKb/WgYSTHr+oZcdajHYVxDKHBiGi4p0xVSN2U1yHRmq
-         UA3By+viHU6W6TQS8BWgliOkSkrkizh+Yz7QmNPH/ilL+InEBd+IGYUzZcprKEgQo5Rx
-         g285AUSRW0Wx6OD30PczrFl58KyrW4KeyzD4IxViL3pFiqE9S8zrNGOTlGvNXygXMOyU
-         DfkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704430007; x=1705034807;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JUfBlkaw9RVz2P7LcdBmGlWAkW41RXh8NLtRAVaPRl0=;
-        b=eY7TarZry12ibGF5S/GOlJS2epEMFUbkCB64kVA/tezcMHt+amYLq98LJ58eWVY7PZ
-         nm07beNSXrv7tD1VLgAujf5r7R/sIO3bxEMvNi3oJUpamoZIHJj0poTXn+2uGTkuMfSE
-         Nqs3zYCXdR+4NoVoHXmvxFdhVpQEEBZmHwRJK0Ey57S69iivaORlOJEzSxuE3zLOdM6K
-         E3MFvAzLfKpQxshVpbbbM9BtRd3PsjVesha6OBXnZ5HefcYNxu+ChaT03NMbonJdx9zI
-         dTx4CXWB0CD9P85eqNSszHv+rgDABHebWaLIP8ZezPMlmyppSuszFs3tBoRTDhpa/jP9
-         aCGA==
-X-Gm-Message-State: AOJu0YxQJdDQEUxAJo9DFe5tGUnW+jx5V4Yx/HafhnLgML80iQHqRwqB
-	bvHkCADP2wL9PGDJvI1EM34efLXyHUsLzPtfPfY=
-X-Google-Smtp-Source: AGHT+IGFz31oQMEO6zstk6s3c1R2dUfriG3xgKlo5vi3XvjPA9H5/erkA9gCmdFcdH1Yq7BhPAY68MLICW80JxhCy2U=
-X-Received: by 2002:a05:6870:4191:b0:205:c9fa:8b0d with SMTP id
- y17-20020a056870419100b00205c9fa8b0dmr1465559oac.73.1704430007497; Thu, 04
- Jan 2024 20:46:47 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 477DD5242;
+	Fri,  5 Jan 2024 04:52:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=mJPEL62eVi84Xk7Scl6XWRFXGzmJNpF/Y9oGJQjtN1Y=; b=VTLZVg7nKMZm2KMb7lg5o9PvD5
+	EuqpAOQdauiVq2ESgt9amfX38XAf1Eqi30RKATfAQwiC/S26DRQe7Xg551K/uydbVKqSrYBHhgzkQ
+	HZGLojzYHxm4D70Yt265+wjirR1nF8dkpWKbkjDzu7U75qpfE0vlUkN07fYxHbtZEcVQ/SNlbqES4
+	/MN3Pbux3ZFtP4r+fR6Y2T67jx1rtDwl0HLQy38FmRaUjcNxCm0kup5Lqq9a7ASB4vAHdaJN08D6G
+	7RUGVMngFqMssgEZomd1Shj2d37M6lrh7x3H+GYVkuVoLkd8u/f15GD5BFjMiqwewHWlMm3/pAaZ/
+	DtD0tYiw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+	id 1rLcBs-00GuHr-UY; Fri, 05 Jan 2024 04:52:17 +0000
+Date: Fri, 5 Jan 2024 04:52:16 +0000
+From: Matthew Wilcox <willy@infradead.org>
+To: David Howells <dhowells@redhat.com>
+Cc: Nathan Chancellor <nathan@kernel.org>,
+	Anna Schumaker <Anna.Schumaker@netapp.com>,
+	Trond Myklebust <trond.myklebust@hammerspace.com>,
+	Jeff Layton <jlayton@kernel.org>, Steve French <smfrench@gmail.com>,
+	Marc Dionne <marc.dionne@auristor.com>,
+	Paulo Alcantara <pc@manguebit.com>,
+	Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>,
+	Dominique Martinet <asmadeus@codewreck.org>,
+	Eric Van Hensbergen <ericvh@kernel.org>,
+	Ilya Dryomov <idryomov@gmail.com>,
+	Christian Brauner <christian@brauner.io>, linux-cachefs@redhat.com,
+	linux-afs@lists.infradead.org, linux-cifs@vger.kernel.org,
+	linux-nfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+	v9fs@lists.linux.dev, linux-fsdevel@vger.kernel.org,
+	linux-mm@kvack.org, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Fix oops in NFS
+Message-ID: <ZZeLAAf6qiieA5fy@casper.infradead.org>
+References: <2202548.1703245791@warthog.procyon.org.uk>
+ <20231221230153.GA1607352@dev-arch.thelio-3990X>
+ <20231221132400.1601991-1-dhowells@redhat.com>
+ <20231221132400.1601991-38-dhowells@redhat.com>
+ <2229136.1703246451@warthog.procyon.org.uk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240104054030.14733-1-xuewen.yan@unisoc.com> <ZZcJ-3MXF4BPqPtL@boqun-archlinux>
-In-Reply-To: <ZZcJ-3MXF4BPqPtL@boqun-archlinux>
-From: Xuewen Yan <xuewen.yan94@gmail.com>
-Date: Fri, 5 Jan 2024 12:46:36 +0800
-Message-ID: <CAB8ipk9+BAFOa_4Dm2hs-bpfmMC_LHkaAb=JUVBq1CChX11wzA@mail.gmail.com>
-Subject: Re: [PATCH] lock/lockdep: Add missing graph_unlock in validate_chain
-To: Boqun Feng <boqun.feng@gmail.com>
-Cc: Xuewen Yan <xuewen.yan@unisoc.com>, peterz@infradead.org, mingo@redhat.com, 
-	will@kernel.org, longman@redhat.com, ke.wang@unisoc.com, 
-	zhiguo.niu@unisoc.com, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2229136.1703246451@warthog.procyon.org.uk>
 
-Hi
+On Fri, Dec 22, 2023 at 12:00:51PM +0000, David Howells wrote:
+> David Howells <dhowells@redhat.com> wrote:
+> 
+> > A better way, though, is to move the call to nfs_netfs_inode_init()
+> > and give it a flag to say whether or not we want the facility.
+> 
+> Okay, I think I'll fold in the attached change.
 
-On Fri, Jan 5, 2024 at 3:44=E2=80=AFAM Boqun Feng <boqun.feng@gmail.com> wr=
-ote:
->
-> Hi,
->
-> On Thu, Jan 04, 2024 at 01:40:30PM +0800, Xuewen Yan wrote:
-> > The lookup_chain_cache_add will get graph_lock, but the
-> > validate_chain do not unlock before return 0.
-> >
->
-> Thanks for looking into this, a few comment below:
->
-> > So add graph_unlock before return 0.
-> >
-> > Signed-off-by: Xuewen Yan <xuewen.yan@unisoc.com>
-> > Signed-off-by: Zhiguo Niu <zhiguo.niu@unisoc.com>
-> > ---
-> >  kernel/locking/lockdep.c | 11 +++++++----
-> >  1 file changed, 7 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
-> > index 151bd3de5936..24995e1ebc62 100644
-> > --- a/kernel/locking/lockdep.c
-> > +++ b/kernel/locking/lockdep.c
-> > @@ -3855,8 +3855,11 @@ static int validate_chain(struct task_struct *cu=
-rr,
-> >                */
-> >               int ret =3D check_deadlock(curr, hlock);
-> >
-> > -             if (!ret)
-> > +             if (!ret) {
-> > +                     graph_unlock();
->
-> Note that when check_deadlock() return 0, there is a
-> print_deadlock_bug() before the return, so I think it covers the
-> graph_unlock() (see debug_locks_off_graph_unlock()).
+This commit (100ccd18bb41 in linux-next 20240104) is bad for me.  After
+it, running xfstests gives me first a bunch of errors along these lines:
 
-Yes, I did not see the check_deadlock's details carefully.
+00004 depmod: ERROR: failed to load symbols from /lib/modules/6.7.0-rc7-00037-g100ccd18bb41/kernel/fs/gfs2/gfs2.ko: Exec format error
+00004 depmod: ERROR: failed to load symbols from /lib/modules/6.7.0-rc7-00037-g100ccd18bb41/kernel/fs/zonefs/zonefs.ko: Exec format error
+00004 depmod: ERROR: failed to load symbols from /lib/modules/6.7.0-rc7-00037-g100ccd18bb41/kernel/security/keys/encrypted-keys/encrypted-keys.ko: Exec format error
 
->
-> >                       return 0;
-> > +             }
-> > +
-> >               /*
-> >                * Add dependency only if this lock is not the head
-> >                * of the chain, and if the new lock introduces no more
-> > @@ -3865,9 +3868,9 @@ static int validate_chain(struct task_struct *cur=
-r,
-> >                * serializes nesting locks), see the comments for
-> >                * check_deadlock().
-> >                */
-> > -             if (!chain_head && ret !=3D 2) {
-> > -                     if (!check_prevs_add(curr, hlock))
-> > -                             return 0;
-> > +             if (!chain_head && ret !=3D 2 && !check_prevs_add(curr, h=
-lock)) {
-> > +                     graph_unlock();
->
-> This part is interesting, usually when an internal function in lockdep
-> returns 0, it means there is an error (either a deadlock or internal
-> error), and that means a print_*() would be called, and the graph lock
-> will be unlocked in that print_*(). However, in check_prevs_add() there
-> is one condition where it will return 0 without any print_*(), that is:
->
->
-> in check_prev_add():
->
->                         /* <prev> is not found in <next>::locks_before */
->                         return 0;
->
-> it's an internal error where <next> is in the <prev>::locks_after list
-> but <prev> is not in the <next>::locks_before list, which should seldom
-> happen: it's dead code. If you put a graph_unlock() before that return,
-> I think it covers all the cases, unless I'm missing something subtle.
+and then later:
 
-If only this condition does not unlock, It is indeed better to put
-graph_unlock here.
-I would change the patch in the V2.
+00016 generic/001       run fstests generic/001 at 2024-01-05 04:50:46
+00017 [not run] this test requires a valid $TEST_DEV
+00017 generic/002       run fstests generic/002 at 2024-01-05 04:50:46
+00017 [not run] this test requires a valid $TEST_DEV
+00017 generic/003       run fstests generic/003 at 2024-01-05 04:50:47
+00018 [not run] this test requires a valid $SCRATCH_DEV
+...
 
->
-> Are you hitting a real issue or this is found by code reading?
-
-Indeed, we hit a real issue:
-One cpu did not call graph_unlock, as a result, caused a deadlock with
-other cpus,
-because any cpu calling raw_spin_lock would get the graph_lock first.
-
-Thanks!
-
---
-BR
-xuewen
-
->
-> Regards,
-> Boqun
->
-> > +                     return 0;
-> >               }
-> >
-> >               graph_unlock();
-> > --
-> > 2.25.1
-> >
->
+so I think that's page cache corruption of some kind.
 
