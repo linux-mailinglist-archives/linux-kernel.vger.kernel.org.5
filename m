@@ -1,287 +1,172 @@
-Return-Path: <linux-kernel+bounces-17772-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17773-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 26F21825268
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 11:51:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 365E782526D
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 11:52:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C4D24285F55
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 10:51:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 457E81C22E6B
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 10:52:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2ABA28DD7;
-	Fri,  5 Jan 2024 10:51:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gtAjA+qz"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B96EB28E10;
+	Fri,  5 Jan 2024 10:52:09 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B303250ED;
-	Fri,  5 Jan 2024 10:51:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46BD9C433C7;
-	Fri,  5 Jan 2024 10:51:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704451865;
-	bh=5HHiCiAjaAuvHgJa/tj8s1DVpjgUXb7qEvW/V/7Aapw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=gtAjA+qznnwWl93QZ9tvOZhxh0Szm0vvtmllgiwfkyfHxLaVVPaFGmyMycpOeP+vr
-	 WpCTG92zlMM4drY5Zt0ek0Yyt1YhpAoNsFDaBKMdTzZmbkCJdQ04WJSQWYuW/+ePtV
-	 0633wfnere8l2LuGu9R3G+PVQTwNbLgfpj5vhvTidKfruSh2fay5O/vHj4F5ZpQrFb
-	 PXJRsGSNKRtz8I082lnvAslQSMKCbSYxkR6fOZy6BYFJ95Yw4A+zgA7J2YPNvh343k
-	 CPUlY39XZr3bGMsabr2LVQpbtd3AccsTbqRjqILZTDq3zh7muN0oWWpeHisBTvo84/
-	 BPIt3vU6dPstg==
-Date: Fri, 5 Jan 2024 10:50:59 +0000
-From: Simon Horman <horms@kernel.org>
-To: Shinas Rasheed <srasheed@marvell.com>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, hgani@marvell.com,
-	vimleshk@marvell.com, sedara@marvell.com, egallen@redhat.com,
-	mschmidt@redhat.com, pabeni@redhat.com, kuba@kernel.org,
-	wizhao@redhat.com, kheib@redhat.com, konguyen@redhat.com,
-	Veerasenareddy Burru <vburru@marvell.com>,
-	Satananda Burla <sburla@marvell.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>
-Subject: Re: [PATCH net-next v2 4/8] octeon_ep_vf: add Tx/Rx ring resource
- setup and cleanup
-Message-ID: <20240105105059.GS31813@kernel.org>
-References: <20231223134000.2906144-1-srasheed@marvell.com>
- <20231223134000.2906144-5-srasheed@marvell.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8B4E250ED;
+	Fri,  5 Jan 2024 10:52:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4T60dV6Bnfz4f3lVc;
+	Fri,  5 Jan 2024 18:51:58 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id 95B161A05A1;
+	Fri,  5 Jan 2024 18:52:04 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.124.27])
+	by APP1 (Coremail) with SMTP id cCh0CgDnNQxT35dl6D1fFg--.48717S4;
+	Fri, 05 Jan 2024 18:52:04 +0800 (CST)
+From: Hou Tao <houtao@huaweicloud.com>
+To: linux-fsdevel@vger.kernel.org
+Cc: Miklos Szeredi <miklos@szeredi.hu>,
+	Vivek Goyal <vgoyal@redhat.com>,
+	Stefan Hajnoczi <stefanha@redhat.com>,
+	Matthew Wilcox <willy@infradead.org>,
+	linux-kernel@vger.kernel.org,
+	virtualization@lists.linux.dev,
+	houtao1@huawei.com
+Subject: [PATCH v2] virtiofs: use GFP_NOFS when enqueuing request through kworker
+Date: Fri,  5 Jan 2024 18:53:05 +0800
+Message-Id: <20240105105305.4052672-1-houtao@huaweicloud.com>
+X-Mailer: git-send-email 2.29.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231223134000.2906144-5-srasheed@marvell.com>
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:cCh0CgDnNQxT35dl6D1fFg--.48717S4
+X-Coremail-Antispam: 1UD129KBjvJXoWxGF4kXrWrJFyfuF4UWF43Awb_yoWrJr45pr
+	Wqya15GFWrJrW2gF95JF4UCw1YkwnakFW7Ga4rXa4akFW7Xw17uFy8ZFy0qrsavrykCF1x
+	Ar4FqF4q9F47Zw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUgEb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCj
+	c4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4
+	CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1x
+	MIIF0xvE2Ix0cI8IcVCY1x0267AKxVWxJVW8Jr1lIxAIcVCF04k26cxKx2IYs7xG6Fyj6r
+	WUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIY
+	CTnIWIevJa73UjIFyTuYvjxUOyCJDUUUU
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
-On Sat, Dec 23, 2023 at 05:39:56AM -0800, Shinas Rasheed wrote:
-> Implement Tx/Rx ring resource allocation and cleanup.
-> 
-> Signed-off-by: Shinas Rasheed <srasheed@marvell.com>
+From: Hou Tao <houtao1@huawei.com>
 
-Hi Shinas,
+When invoking virtio_fs_enqueue_req() through kworker, both the
+allocation of the sg array and the bounce buffer still use GFP_ATOMIC.
+Considering the size of both the sg array and the bounce buffer may be
+greater than PAGE_SIZE, use GFP_NOFS instead of GFP_ATOMIC to lower the
+possibility of memory allocation failure.
 
-some minor feedback from my side.
+Signed-off-by: Hou Tao <houtao1@huawei.com>
+---
+Change log:
+v2:
+  * pass gfp_t instead of bool to virtio_fs_enqueue_req() (Suggested by Matthew)
 
-...
+v1: https://lore.kernel.org/linux-fsdevel/20240104015805.2103766-1-houtao@huaweicloud.com
 
-> diff --git a/drivers/net/ethernet/marvell/octeon_ep_vf/octep_vf_rx.c b/drivers/net/ethernet/marvell/octeon_ep_vf/octep_vf_rx.c
+ fs/fuse/virtio_fs.c | 20 +++++++++++---------
+ 1 file changed, 11 insertions(+), 9 deletions(-)
 
-...
+diff --git a/fs/fuse/virtio_fs.c b/fs/fuse/virtio_fs.c
+index 3aac31d451985..8cf518624ce9e 100644
+--- a/fs/fuse/virtio_fs.c
++++ b/fs/fuse/virtio_fs.c
+@@ -87,7 +87,8 @@ struct virtio_fs_req_work {
+ };
+ 
+ static int virtio_fs_enqueue_req(struct virtio_fs_vq *fsvq,
+-				 struct fuse_req *req, bool in_flight);
++				 struct fuse_req *req, bool in_flight,
++				 gfp_t gfp);
+ 
+ static const struct constant_table dax_param_enums[] = {
+ 	{"always",	FUSE_DAX_ALWAYS },
+@@ -383,7 +384,7 @@ static void virtio_fs_request_dispatch_work(struct work_struct *work)
+ 		list_del_init(&req->list);
+ 		spin_unlock(&fsvq->lock);
+ 
+-		ret = virtio_fs_enqueue_req(fsvq, req, true);
++		ret = virtio_fs_enqueue_req(fsvq, req, true, GFP_NOFS);
+ 		if (ret < 0) {
+ 			if (ret == -ENOMEM || ret == -ENOSPC) {
+ 				spin_lock(&fsvq->lock);
+@@ -488,7 +489,7 @@ static void virtio_fs_hiprio_dispatch_work(struct work_struct *work)
+ }
+ 
+ /* Allocate and copy args into req->argbuf */
+-static int copy_args_to_argbuf(struct fuse_req *req)
++static int copy_args_to_argbuf(struct fuse_req *req, gfp_t gfp)
+ {
+ 	struct fuse_args *args = req->args;
+ 	unsigned int offset = 0;
+@@ -502,7 +503,7 @@ static int copy_args_to_argbuf(struct fuse_req *req)
+ 	len = fuse_len_args(num_in, (struct fuse_arg *) args->in_args) +
+ 	      fuse_len_args(num_out, args->out_args);
+ 
+-	req->argbuf = kmalloc(len, GFP_ATOMIC);
++	req->argbuf = kmalloc(len, gfp);
+ 	if (!req->argbuf)
+ 		return -ENOMEM;
+ 
+@@ -1119,7 +1120,8 @@ static unsigned int sg_init_fuse_args(struct scatterlist *sg,
+ 
+ /* Add a request to a virtqueue and kick the device */
+ static int virtio_fs_enqueue_req(struct virtio_fs_vq *fsvq,
+-				 struct fuse_req *req, bool in_flight)
++				 struct fuse_req *req, bool in_flight,
++				 gfp_t gfp)
+ {
+ 	/* requests need at least 4 elements */
+ 	struct scatterlist *stack_sgs[6];
+@@ -1140,8 +1142,8 @@ static int virtio_fs_enqueue_req(struct virtio_fs_vq *fsvq,
+ 	/* Does the sglist fit on the stack? */
+ 	total_sgs = sg_count_fuse_req(req);
+ 	if (total_sgs > ARRAY_SIZE(stack_sgs)) {
+-		sgs = kmalloc_array(total_sgs, sizeof(sgs[0]), GFP_ATOMIC);
+-		sg = kmalloc_array(total_sgs, sizeof(sg[0]), GFP_ATOMIC);
++		sgs = kmalloc_array(total_sgs, sizeof(sgs[0]), gfp);
++		sg = kmalloc_array(total_sgs, sizeof(sg[0]), gfp);
+ 		if (!sgs || !sg) {
+ 			ret = -ENOMEM;
+ 			goto out;
+@@ -1149,7 +1151,7 @@ static int virtio_fs_enqueue_req(struct virtio_fs_vq *fsvq,
+ 	}
+ 
+ 	/* Use a bounce buffer since stack args cannot be mapped */
+-	ret = copy_args_to_argbuf(req);
++	ret = copy_args_to_argbuf(req, gfp);
+ 	if (ret < 0)
+ 		goto out;
+ 
+@@ -1245,7 +1247,7 @@ __releases(fiq->lock)
+ 		 fuse_len_args(req->args->out_numargs, req->args->out_args));
+ 
+ 	fsvq = &fs->vqs[queue_id];
+-	ret = virtio_fs_enqueue_req(fsvq, req, false);
++	ret = virtio_fs_enqueue_req(fsvq, req, false, GFP_ATOMIC);
+ 	if (ret < 0) {
+ 		if (ret == -ENOMEM || ret == -ENOSPC) {
+ 			/*
+-- 
+2.29.2
 
-> +/**
-> + * octep_vf_oq_fill_ring_buffers() - fill initial receive buffers for Rx ring.
-> + *
-> + * @oq: Octeon Rx queue data structure.
-> + *
-> + * Return: 0, if successfully filled receive buffers for all descriptors.
-> + *         -1, if failed to allocate a buffer or failed to map for DMA.
-
-I think it is more idiomatic to use well known error codes
-in kernel code. In this case, perhaps -ENOMEM.
-
-Likewise elsewhere in this patch.
-
-> + */
-> +static int octep_vf_oq_fill_ring_buffers(struct octep_vf_oq *oq)
-> +{
-> +	struct octep_vf_oq_desc_hw *desc_ring = oq->desc_ring;
-> +	struct page *page;
-> +	u32 i;
-> +
-> +	for (i = 0; i < oq->max_count; i++) {
-> +		page = dev_alloc_page();
-> +		if (unlikely(!page)) {
-> +			dev_err(oq->dev, "Rx buffer alloc failed\n");
-> +			goto rx_buf_alloc_err;
-> +		}
-> +		desc_ring[i].buffer_ptr = dma_map_page(oq->dev, page, 0,
-> +						       PAGE_SIZE,
-> +						       DMA_FROM_DEVICE);
-> +		if (dma_mapping_error(oq->dev, desc_ring[i].buffer_ptr)) {
-> +			dev_err(oq->dev,
-> +				"OQ-%d buffer alloc: DMA mapping error!\n",
-> +				oq->q_no);
-> +			put_page(page);
-> +			goto dma_map_err;
-
-nit: I think put_page() can be moved to the dma_map_err label.
-
-> +		}
-> +		oq->buff_info[i].page = page;
-> +	}
-> +
-> +	return 0;
-> +
-> +dma_map_err:
-> +rx_buf_alloc_err:
-> +	while (i) {
-> +		i--;
-> +		dma_unmap_page(oq->dev, desc_ring[i].buffer_ptr, PAGE_SIZE, DMA_FROM_DEVICE);
-> +		put_page(oq->buff_info[i].page);
-> +		oq->buff_info[i].page = NULL;
-> +	}
-> +
-> +	return -1;
-> +}
-> +
-> +/**
-> + * octep_vf_setup_oq() - Setup a Rx queue.
-> + *
-> + * @oct: Octeon device private data structure.
-> + * @q_no: Rx queue number to be setup.
-> + *
-> + * Allocate resources for a Rx queue.
-> + */
-> +static int octep_vf_setup_oq(struct octep_vf_device *oct, int q_no)
-> +{
-> +	struct octep_vf_oq *oq;
-> +	u32 desc_ring_size;
-> +
-> +	oq = vzalloc(sizeof(*oq));
-> +	if (!oq)
-> +		goto create_oq_fail;
-> +	oct->oq[q_no] = oq;
-> +
-> +	oq->octep_vf_dev = oct;
-> +	oq->netdev = oct->netdev;
-> +	oq->dev = &oct->pdev->dev;
-> +	oq->q_no = q_no;
-> +	oq->max_count = CFG_GET_OQ_NUM_DESC(oct->conf);
-> +	oq->ring_size_mask = oq->max_count - 1;
-> +	oq->buffer_size = CFG_GET_OQ_BUF_SIZE(oct->conf);
-> +	oq->max_single_buffer_size = oq->buffer_size - OCTEP_VF_OQ_RESP_HW_SIZE;
-> +
-> +	/* When the hardware/firmware supports additional capabilities,
-> +	 * additional header is filled-in by Octeon after length field in
-> +	 * Rx packets. this header contains additional packet information.
-> +	 */
-> +	if (oct->fw_info.rx_ol_flags)
-> +		oq->max_single_buffer_size -= OCTEP_VF_OQ_RESP_HW_EXT_SIZE;
-> +
-> +	oq->refill_threshold = CFG_GET_OQ_REFILL_THRESHOLD(oct->conf);
-> +
-> +	desc_ring_size = oq->max_count * OCTEP_VF_OQ_DESC_SIZE;
-> +	oq->desc_ring = dma_alloc_coherent(oq->dev, desc_ring_size,
-> +					   &oq->desc_ring_dma, GFP_KERNEL);
-> +
-> +	if (unlikely(!oq->desc_ring)) {
-> +		dev_err(oq->dev,
-> +			"Failed to allocate DMA memory for OQ-%d !!\n", q_no);
-> +		goto desc_dma_alloc_err;
-> +	}
-> +
-> +	oq->buff_info = (struct octep_vf_rx_buffer *)
-> +			vzalloc(oq->max_count * OCTEP_VF_OQ_RECVBUF_SIZE);
-
-nit: there is no need to cast a void pointer.
-
-	oq->buff_info = vzalloc(oq->max_count * OCTEP_VF_OQ_RECVBUF_SIZE);
-
-> +	if (unlikely(!oq->buff_info)) {
-> +		dev_err(&oct->pdev->dev,
-> +			"Failed to allocate buffer info for OQ-%d\n", q_no);
-> +		goto buf_list_err;
-> +	}
-> +
-> +	if (octep_vf_oq_fill_ring_buffers(oq))
-> +		goto oq_fill_buff_err;
-> +
-> +	octep_vf_oq_reset_indices(oq);
-> +	oct->hw_ops.setup_oq_regs(oct, q_no);
-> +	oct->num_oqs++;
-> +
-> +	return 0;
-> +
-> +oq_fill_buff_err:
-> +	vfree(oq->buff_info);
-> +	oq->buff_info = NULL;
-> +buf_list_err:
-> +	dma_free_coherent(oq->dev, desc_ring_size,
-> +			  oq->desc_ring, oq->desc_ring_dma);
-> +	oq->desc_ring = NULL;
-> +desc_dma_alloc_err:
-> +	vfree(oq);
-> +	oct->oq[q_no] = NULL;
-> +create_oq_fail:
-> +	return -1;
-> +}
-
-...
-
-> +/**
-> + * octep_vf_free_oq() - Free Rx queue resources.
-> + *
-> + * @oq: Octeon Rx queue data structure.
-> + *
-> + * Free all resources of a Rx queue.
-> + */
-> +static int octep_vf_free_oq(struct octep_vf_oq *oq)
-> +{
-> +	struct octep_vf_device *oct = oq->octep_vf_dev;
-> +	int q_no = oq->q_no;
-> +
-> +	octep_vf_oq_free_ring_buffers(oq);
-> +
-> +	if (oq->buff_info)
-> +		vfree(oq->buff_info);
-
-nit: there is no need to check for NULL as vfree() can handle
-     a NULL argument.
-
-> +
-> +	if (oq->desc_ring)
-> +		dma_free_coherent(oq->dev,
-> +				  oq->max_count * OCTEP_VF_OQ_DESC_SIZE,
-> +				  oq->desc_ring, oq->desc_ring_dma);
-> +
-> +	vfree(oq);
-> +	oct->oq[q_no] = NULL;
-> +	oct->num_oqs--;
-> +	return 0;
-> +}
-
-...
-
-> +/**
-> + * octep_vf_free_iq() - Free Tx queue resources.
-> + *
-> + * @iq: Octeon Tx queue data structure.
-> + *
-> + * Free all the resources allocated for a Tx queue.
-> + */
-> +static void octep_vf_free_iq(struct octep_vf_iq *iq)
-> +{
-> +	struct octep_vf_device *oct = iq->octep_vf_dev;
-> +	u64 desc_ring_size, sglist_size;
-> +	int q_no = iq->q_no;
-> +
-> +	desc_ring_size = OCTEP_VF_IQ_DESC_SIZE * CFG_GET_IQ_NUM_DESC(oct->conf);
-> +
-> +	if (iq->buff_info)
-> +		vfree(iq->buff_info);
-
-Ditto.
-
-> +
-> +	if (iq->desc_ring)
-> +		dma_free_coherent(iq->dev, desc_ring_size,
-> +				  iq->desc_ring, iq->desc_ring_dma);
-> +
-> +	sglist_size = OCTEP_VF_SGLIST_SIZE_PER_PKT *
-> +		      CFG_GET_IQ_NUM_DESC(oct->conf);
-> +	if (iq->sglist)
-> +		dma_free_coherent(iq->dev, sglist_size,
-> +				  iq->sglist, iq->sglist_dma);
-> +
-> +	vfree(iq);
-> +	oct->iq[q_no] = NULL;
-> +	oct->num_iqs--;
->  }
-
-...
 
