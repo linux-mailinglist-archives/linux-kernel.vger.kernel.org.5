@@ -1,97 +1,335 @@
-Return-Path: <linux-kernel+bounces-17802-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17803-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 68F278252ED
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 12:32:47 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D8F3A8252F0
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 12:33:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8F4E91C231D4
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 11:32:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3BA1BB24629
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 11:33:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A4DA2C84F;
-	Fri,  5 Jan 2024 11:32:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 454322C848;
+	Fri,  5 Jan 2024 11:33:26 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 003F02C680;
-	Fri,  5 Jan 2024 11:32:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B0ACEC15;
-	Fri,  5 Jan 2024 03:33:18 -0800 (PST)
-Received: from FVFF77S0Q05N (unknown [10.57.86.44])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2BB6A3F7A6;
-	Fri,  5 Jan 2024 03:32:30 -0800 (PST)
-Date: Fri, 5 Jan 2024 11:32:27 +0000
-From: Mark Rutland <mark.rutland@arm.com>
-To: Edward Adam Davis <eadavis@qq.com>
-Cc: syzbot+07144c543a5c002c7305@syzkaller.appspotmail.com, acme@kernel.org,
-	adrian.hunter@intel.com, alexander.shishkin@linux.intel.com,
-	irogers@google.com, jolsa@kernel.org, linux-kernel@vger.kernel.org,
-	linux-perf-users@vger.kernel.org, mingo@redhat.com,
-	namhyung@kernel.org, netdev@vger.kernel.org, peterz@infradead.org,
-	syzkaller-bugs@googlegroups.com, xrivendell7@gmail.com
-Subject: Re: [PATCH] perf: fix WARNING in perf_event_open
-Message-ID: <ZZfoy7KACsvEFdhr@FVFF77S0Q05N>
-References: <0000000000005b23dc060d58ee7a@google.com>
- <tencent_7FC26D7C2FA56EF89584E89EEE52CD20790A@qq.com>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4379C2C1AE;
+	Fri,  5 Jan 2024 11:33:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=realtek.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=realtek.com
+X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 405BX5faC2341768, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36506.realtek.com.tw[172.21.6.27])
+	by rtits2.realtek.com.tw (8.15.2/2.95/5.92) with ESMTPS id 405BX5faC2341768
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 5 Jan 2024 19:33:05 +0800
+Received: from RTEXDAG02.realtek.com.tw (172.21.6.101) by
+ RTEXH36506.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.17; Fri, 5 Jan 2024 19:33:06 +0800
+Received: from RTDOMAIN (172.21.210.160) by RTEXDAG02.realtek.com.tw
+ (172.21.6.101) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.7; Fri, 5 Jan 2024
+ 19:33:05 +0800
+From: Justin Lai <justinlai0215@realtek.com>
+To: <kuba@kernel.org>
+CC: <davem@davemloft.net>, <edumazet@google.com>, <pabeni@redhat.com>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <andrew@lunn.ch>, <pkshih@realtek.com>, <larry.chiu@realtek.com>,
+        Justin Lai
+	<justinlai0215@realtek.com>
+Subject: [PATCH net-next v16 05/13] rtase: Implement hardware configuration function
+Date: Fri, 5 Jan 2024 19:32:49 +0800
+Message-ID: <20240105113257.381090-1-justinlai0215@realtek.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240105112811.380952-1-justinlai0215@realtek.com>
+References: <20240105112811.380952-1-justinlai0215@realtek.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <tencent_7FC26D7C2FA56EF89584E89EEE52CD20790A@qq.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: RTEXH36505.realtek.com.tw (172.21.6.25) To
+ RTEXDAG02.realtek.com.tw (172.21.6.101)
+X-KSE-ServerInfo: RTEXDAG02.realtek.com.tw, 9
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-Antivirus-Interceptor-Info: fallback
+X-KSE-AntiSpam-Interceptor-Info: fallback
 
-On Tue, Dec 26, 2023 at 03:25:15PM +0800, Edward Adam Davis wrote:
-> The new version of __perf_event_read_size() only has a read action and does not
-> require a mutex, so the mutex assertion in the original loop is removed.
-> 
-> Fixes: 382c27f4ed28 ("perf: Fix perf_event_validate_size()")
-> Reported-and-tested-by: syzbot+07144c543a5c002c7305@syzkaller.appspotmail.com
-> Signed-off-by: Edward Adam Davis <eadavis@qq.com>
-> ---
->  kernel/events/core.c | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
+Implement rtase_hw_config to set default hardware settings, including
+setting interrupt mitigation, tx/rx DMA burst, interframe gap time,
+rx packet filter, near fifo threshold and fill descriptor ring and
+tally counter address, and enable flow control. When filling the
+rx descriptor ring, the first group of queues needs to be processed
+separately because the positions of the first group of queues are not
+regular with other subsequent groups. The other queues are all newly
+added features, but we want to retain the original design. So they were
+not put together.
 
-Thanks for the patch; this should be fixed by:
+Signed-off-by: Justin Lai <justinlai0215@realtek.com>
+---
+ .../net/ethernet/realtek/rtase/rtase_main.c   | 228 ++++++++++++++++++
+ 1 file changed, 228 insertions(+)
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?h=v6.7-rc6&id=7e2c1e4b34f07d9aa8937fab88359d4a0fce468e
+diff --git a/drivers/net/ethernet/realtek/rtase/rtase_main.c b/drivers/net/ethernet/realtek/rtase/rtase_main.c
+index 1bd4634a8bdb..2337c3cf3cd0 100644
+--- a/drivers/net/ethernet/realtek/rtase/rtase_main.c
++++ b/drivers/net/ethernet/realtek/rtase/rtase_main.c
+@@ -466,6 +466,23 @@ static int rtase_init_ring(const struct net_device *dev)
+ 	return -ENOMEM;
+ }
+ 
++static void rtase_interrupt_mitigation(const struct rtase_private *tp)
++{
++	u32 i;
++
++	for (i = 0; i < tp->func_tx_queue_num; i++)
++		rtase_w16(tp, RTASE_INT_MITI_TX + i * 2, tp->tx_int_mit);
++
++	for (i = 0; i < tp->func_rx_queue_num; i++)
++		rtase_w16(tp, RTASE_INT_MITI_RX + i * 2, tp->rx_int_mit);
++}
++
++static void rtase_tally_counter_addr_fill(const struct rtase_private *tp)
++{
++	rtase_w32(tp, RTASE_DTCCR4, upper_32_bits(tp->tally_paddr));
++	rtase_w32(tp, RTASE_DTCCR0, lower_32_bits(tp->tally_paddr));
++}
++
+ static void rtase_tally_counter_clear(const struct rtase_private *tp)
+ {
+ 	u32 cmd = lower_32_bits(tp->tally_paddr);
+@@ -474,6 +491,113 @@ static void rtase_tally_counter_clear(const struct rtase_private *tp)
+ 	rtase_w32(tp, RTASE_DTCCR0, cmd | COUNTER_RESET);
+ }
+ 
++static void rtase_desc_addr_fill(const struct rtase_private *tp)
++{
++	const struct rtase_ring *ring;
++	u16 i, cmd, val;
++	int err;
++
++	for (i = 0; i < tp->func_tx_queue_num; i++) {
++		ring = &tp->tx_ring[i];
++
++		rtase_w32(tp, RTASE_TX_DESC_ADDR0,
++			  lower_32_bits(ring->phy_addr));
++		rtase_w32(tp, RTASE_TX_DESC_ADDR4,
++			  upper_32_bits(ring->phy_addr));
++
++		cmd = i | TX_DESC_CMD_WE | TX_DESC_CMD_CS;
++		rtase_w16(tp, RTASE_TX_DESC_COMMAND, cmd);
++
++		err = read_poll_timeout(rtase_r16, val, !(val & TX_DESC_CMD_CS),
++					10, 1000, false, tp, RTASE_TX_DESC_COMMAND);
++
++		if (err == -ETIMEDOUT)
++			netdev_err(tp->dev, "error occurred in fill tx descriptor\n");
++	}
++
++	for (i = 0; i < tp->func_rx_queue_num; i++) {
++		ring = &tp->rx_ring[i];
++
++		if (i == 0) {
++			rtase_w32(tp, RTASE_Q0_RX_DESC_ADDR0,
++				  lower_32_bits(ring->phy_addr));
++			rtase_w32(tp, RTASE_Q0_RX_DESC_ADDR4,
++				  upper_32_bits(ring->phy_addr));
++		} else {
++			rtase_w32(tp, (RTASE_Q1_RX_DESC_ADDR0 + ((i - 1) * 8)),
++				  lower_32_bits(ring->phy_addr));
++			rtase_w32(tp, (RTASE_Q1_RX_DESC_ADDR4 + ((i - 1) * 8)),
++				  upper_32_bits(ring->phy_addr));
++		}
++	}
++}
++
++static void rtase_hw_set_features(const struct net_device *dev,
++				  netdev_features_t features)
++{
++	const struct rtase_private *tp = netdev_priv(dev);
++	u16 rx_config, val;
++
++	rx_config = rtase_r16(tp, RTASE_RX_CONFIG_0);
++	if (features & NETIF_F_RXALL)
++		rx_config |= (ACCEPT_ERR | ACCEPT_RUNT);
++	else
++		rx_config &= ~(ACCEPT_ERR | ACCEPT_RUNT);
++
++	rtase_w16(tp, RTASE_RX_CONFIG_0, rx_config);
++
++	val = rtase_r16(tp, RTASE_CPLUS_CMD);
++	if (features & NETIF_F_RXCSUM)
++		rtase_w16(tp, RTASE_CPLUS_CMD, val | RX_CHKSUM);
++	else
++		rtase_w16(tp, RTASE_CPLUS_CMD, val & ~RX_CHKSUM);
++
++	rx_config = rtase_r16(tp, RTASE_RX_CONFIG_1);
++	if (dev->features & NETIF_F_HW_VLAN_CTAG_RX)
++		rx_config |= (INNER_VLAN_DETAG_EN | OUTER_VLAN_DETAG_EN);
++	else
++		rx_config &= ~(INNER_VLAN_DETAG_EN | OUTER_VLAN_DETAG_EN);
++
++	rtase_w16(tp, RTASE_RX_CONFIG_1, rx_config);
++}
++
++static void rtase_hw_set_rx_packet_filter(struct net_device *dev)
++{
++	u32 mc_filter[2] = { 0xFFFFFFFF, 0xFFFFFFFF };
++	struct rtase_private *tp = netdev_priv(dev);
++	u16 rx_mode;
++
++	rx_mode = rtase_r16(tp, RTASE_RX_CONFIG_0) & ~ACCEPT_MASK;
++	rx_mode |= ACCEPT_BROADCAST | ACCEPT_MYPHYS;
++
++	if (dev->flags & IFF_PROMISC) {
++		rx_mode |= ACCEPT_MULTICAST | ACCEPT_ALLPHYS;
++	} else if (dev->flags & IFF_ALLMULTI) {
++		rx_mode |= ACCEPT_MULTICAST;
++	} else {
++		struct netdev_hw_addr *hw_addr;
++
++		mc_filter[0] = 0;
++		mc_filter[1] = 0;
++
++		netdev_for_each_mc_addr(hw_addr, dev) {
++			u32 bit_nr = eth_hw_addr_crc(hw_addr);
++			u32 idx = u32_get_bits(bit_nr, BIT(31));
++			u32 bit = u32_get_bits(bit_nr, MULTICAST_FILTER_MASK);
++
++			mc_filter[idx] |= BIT(bit);
++			rx_mode |= ACCEPT_MULTICAST;
++		}
++	}
++
++	if (dev->features & NETIF_F_RXALL)
++		rx_mode |= ACCEPT_ERR | ACCEPT_RUNT;
++
++	rtase_w32(tp, RTASE_MAR0, swab32(mc_filter[1]));
++	rtase_w32(tp, RTASE_MAR1, swab32(mc_filter[0]));
++	rtase_w16(tp, RTASE_RX_CONFIG_0, rx_mode);
++}
++
+ static void rtase_irq_dis_and_clear(const struct rtase_private *tp)
+ {
+ 	const struct rtase_int_vector *ivec = &tp->int_vector[0];
+@@ -545,6 +669,110 @@ static void rtase_hw_reset(const struct net_device *dev)
+ 	rtase_nic_reset(dev);
+ }
+ 
++static void rtase_set_rx_queue(const struct rtase_private *tp)
++{
++	u16 reg_data;
++
++	reg_data = rtase_r16(tp, RTASE_FCR);
++	switch (tp->func_rx_queue_num) {
++	case 1:
++		u16p_replace_bits(&reg_data, 0x1, FCR_RXQ_MASK);
++		break;
++	case 2:
++		u16p_replace_bits(&reg_data, 0x2, FCR_RXQ_MASK);
++		break;
++	case 4:
++		u16p_replace_bits(&reg_data, 0x3, FCR_RXQ_MASK);
++		break;
++	}
++	rtase_w16(tp, RTASE_FCR, reg_data);
++}
++
++static void rtase_set_tx_queue(const struct rtase_private *tp)
++{
++	u16 reg_data;
++
++	reg_data = rtase_r16(tp, RTASE_TX_CONFIG_1);
++	switch (tp->tx_queue_ctrl) {
++	case 1:
++		u16p_replace_bits(&reg_data, 0x0, TC_MODE_MASK);
++		break;
++	case 2:
++		u16p_replace_bits(&reg_data, 0x1, TC_MODE_MASK);
++		break;
++	case 3:
++	case 4:
++		u16p_replace_bits(&reg_data, 0x2, TC_MODE_MASK);
++		break;
++	default:
++		u16p_replace_bits(&reg_data, 0x3, TC_MODE_MASK);
++		break;
++	}
++	rtase_w16(tp, RTASE_TX_CONFIG_1, reg_data);
++}
++
++static void rtase_hw_config(struct net_device *dev)
++{
++	const struct rtase_private *tp = netdev_priv(dev);
++	u32 reg_data32;
++	u16 reg_data16;
++
++	rtase_hw_reset(dev);
++
++	/* set rx dma burst */
++	reg_data16 = rtase_r16(tp, RTASE_RX_CONFIG_0);
++	reg_data16 &= ~(RX_SINGLE_TAG | RX_SINGLE_FETCH);
++	u16p_replace_bits(&reg_data16, RX_DMA_BURST_256, RX_MX_DMA_MASK);
++	rtase_w16(tp, RTASE_RX_CONFIG_0, reg_data16);
++
++	/* new rx descritpor */
++	reg_data16 = rtase_r16(tp, RTASE_RX_CONFIG_1);
++	reg_data16 |= RX_NEW_DESC_FORMAT_EN | PCIE_NEW_FLOW;
++	u16p_replace_bits(&reg_data16, 0xF, RX_MAX_FETCH_DESC_MASK);
++	rtase_w16(tp, RTASE_RX_CONFIG_1, reg_data16);
++
++	rtase_set_rx_queue(tp);
++
++	rtase_interrupt_mitigation(tp);
++
++	/* set tx dma burst size and interframe gap time */
++	reg_data32 = rtase_r32(tp, RTASE_TX_CONFIG_0);
++	u32p_replace_bits(&reg_data32, TX_DMA_BURST_UNLIMITED, TX_DMA_MASK);
++	u32p_replace_bits(&reg_data32, INTERFRAMEGAP, TX_INTER_FRAME_GAP_MASK);
++	rtase_w32(tp, RTASE_TX_CONFIG_0, reg_data32);
++
++	/* new tx descriptor */
++	reg_data16 = rtase_r16(tp, RTASE_TFUN_CTRL);
++	rtase_w16(tp, RTASE_TFUN_CTRL, reg_data16 | TX_NEW_DESC_FORMAT_EN);
++
++	/* tx fetch desc number */
++	rtase_w8(tp, RTASE_TDFNR, 0x10);
++
++	/* tag num select */
++	reg_data16 = rtase_r16(tp, RTASE_MTPS);
++	u16p_replace_bits(&reg_data16, 0x4, TAG_NUM_SEL_MASK);
++	rtase_w16(tp, RTASE_MTPS, reg_data16);
++
++	rtase_set_tx_queue(tp);
++
++	rtase_w16(tp, RTASE_TOKSEL, 0x5555);
++
++	rtase_tally_counter_addr_fill(tp);
++	rtase_desc_addr_fill(tp);
++	rtase_hw_set_features(dev, dev->features);
++
++	/* enable flow control */
++	reg_data16 = rtase_r16(tp, RTASE_CPLUS_CMD);
++	reg_data16 |= (FORCE_TXFLOW_EN | FORCE_RXFLOW_EN);
++	rtase_w16(tp, RTASE_CPLUS_CMD, reg_data16);
++	/* set near fifo threshold - rx missed issue. */
++	rtase_w16(tp, RTASE_RFIFONFULL, 0x190);
++
++	rtase_w16(tp, RTASE_RMS, tp->rx_buf_sz);
++
++	rtase_hw_set_rx_packet_filter(dev);
++}
++
+ static void rtase_nic_enable(const struct net_device *dev)
+ {
+ 	const struct rtase_private *tp = netdev_priv(dev);
+-- 
+2.34.1
 
-... which is in v6.7-rc6.
-
-Mark.
-
-> 
-> diff --git a/kernel/events/core.c b/kernel/events/core.c
-> index 9efd0d7775e7..e71e61b46416 100644
-> --- a/kernel/events/core.c
-> +++ b/kernel/events/core.c
-> @@ -1924,6 +1924,10 @@ static void perf_event__id_header_size(struct perf_event *event)
->  	event->id_header_size = size;
->  }
->  
-> +#define read_for_each_sibling_event(sibling, event)		\
-> +	if ((event)->group_leader == (event))			\
-> +		list_for_each_entry((sibling), &(event)->sibling_list, sibling_list)
-> +
->  /*
->   * Check that adding an event to the group does not result in anybody
->   * overflowing the 64k event limit imposed by the output buffer.
-> @@ -1957,7 +1961,7 @@ static bool perf_event_validate_size(struct perf_event *event)
->  	if (event == group_leader)
->  		return true;
->  
-> -	for_each_sibling_event(sibling, group_leader) {
-> +	read_for_each_sibling_event(sibling, group_leader) {
->  		if (__perf_event_read_size(sibling->attr.read_format,
->  					   group_leader->nr_siblings + 1) > 16*1024)
->  			return false;
-> -- 
-> 2.43.0
-> 
 
