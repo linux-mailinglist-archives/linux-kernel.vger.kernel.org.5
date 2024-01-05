@@ -1,81 +1,98 @@
-Return-Path: <linux-kernel+bounces-17463-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17464-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 27F6D824D91
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 05:04:25 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 37D2C824D95
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 05:06:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CBA3928694E
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 04:04:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 489391C21D51
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 04:06:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5125E63BF;
-	Fri,  5 Jan 2024 04:04:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAA105255;
+	Fri,  5 Jan 2024 04:06:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="AAtIi2Ei"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.gentoo.org (woodpecker.gentoo.org [140.211.166.183])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75AEE6127
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 04:04:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gentoo.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gentoo.org
-Received: by smtp.gentoo.org (Postfix, from userid 559)
-	id 0623D3430AE; Fri,  5 Jan 2024 04:04:10 +0000 (UTC)
-Date: Thu, 4 Jan 2024 23:04:09 -0500
-From: Mike Frysinger <vapier@gentoo.org>
-To: Petr Vorel <pvorel@suse.cz>
-Cc: linux-kernel@vger.kernel.org, Richard Palethorpe <io@richiejp.com>,
-	Alexey Kodanev <aleksei.kodanev@bell-sw.com>,
-	Wanlong Gao <wanlong.gao@easystack.cn>,
-	Wanlong Gao <wanlong.gao@gmail.com>,
-	Jan Stancek <jstancek@redhat.com>,
-	Stanislav Kholmanskikh <stanislav.kholmanskikh@bell-sw.com>,
-	Li Wang <liwang@redhat.com>, Yang Xu <xuyang2018.jy@fujitsu.com>,
-	Andrew Morton <akpm@linux-foundation.org>, ltp@lists.linux.it
-Subject: Re: [PATCH 1/1] MAINTAINERS: Update LTP maintainers
-Message-ID: <ZZd_ucdyTrk5EPYv@vapier>
-References: <20240104154953.1193634-1-pvorel@suse.cz>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8D5E522C;
+	Fri,  5 Jan 2024 04:06:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1704427597;
+	bh=eexsCRR0vFhYtSyAyhCPE/A7PMuaV9PMVzYADLl9gM8=;
+	h=Date:From:To:Cc:Subject:From;
+	b=AAtIi2EiZjC/PKahHYHkQO4wO0NWmitSPIp1f+zlU2tr6yn3xd5jie1z/No3FIL91
+	 eU6U9z1htijYpfS2LTzIMzZA7AgxgcJ0bgSylN+pSflWsdLBW4fF/u5ji8KfCxTyZk
+	 kkEhewNwoDYRyZ6O8Ky0hBplOi79uDyDx7IsiqS00n76bpvgweWl7B/Ri15vmhob5i
+	 ntYEVm4oVVGGGvSTOEKaHQWtaWilkavQfs7WXpYTZz1uXxhJFgGk1fhjoGr2HlMcn+
+	 Tx0iErBzIuA55LS76Alb02UOy2pcgDgWzVXjd9QqwLRWRb3GvsGuirshF/yFW7gYF0
+	 WvkQX8sH+OyYg==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4T5qdn0d7zz4wcg;
+	Fri,  5 Jan 2024 15:06:36 +1100 (AEDT)
+Date: Fri, 5 Jan 2024 15:06:35 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: "Michael S. Tsirkin" <mst@redhat.com>, David Miller
+ <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
+ <pabeni@redhat.com>
+Cc: Networking <netdev@vger.kernel.org>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>
+Subject: linux-next: duplicate patch in the vhost tree
+Message-ID: <20240105150635.2bdc667e@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="ltlYhuj8kbqrfqEj"
-Content-Disposition: inline
-In-Reply-To: <20240104154953.1193634-1-pvorel@suse.cz>
+Content-Type: multipart/signed; boundary="Sig_/FJjWhmfKghEt2Z_rZ=b6iYP";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
+--Sig_/FJjWhmfKghEt2Z_rZ=b6iYP
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
---ltlYhuj8kbqrfqEj
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Hi all,
 
-can't really argue with your logic.  you've been doing so well i don't feel
-the need to contribute that much anymore.  and it doesn't help that my job
-no longer involves LTP ;).
--mike
+The following commits are also in the net tree as a different commit
+(but the same patch):
 
---ltlYhuj8kbqrfqEj
-Content-Type: application/pgp-signature; name="signature.asc"
+  d2c4f1928a3f ("virtio_net: fix missing dma unmap for resize")
+
+This is commit
+
+  2311e06b9bf3 ("virtio_net: fix missing dma unmap for resize")
+
+in the net tree.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/FJjWhmfKghEt2Z_rZ=b6iYP
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAABCAAdFiEEuQK1JxMl+JKsJRrUQWM7n+g39YEFAmWXf7kACgkQQWM7n+g3
-9YG82g/+PkIAolK6M/B1xGaxfCzJytphGvuEWnMJEA6EC6WmIx/UOBDUH76E4ArJ
-3EipmBca/2e4qx6Y3q76yAgLKnAoM2LUwX6qtHLzHjsg3QMLQZjkAh//nDMIOG/D
-SRa/3FlulPD1ZHcDgbvB6gdMvHzdHcZztPRJ3T5ZD5bhwcWrBJY+JSRFXI4mghWm
-ZMRBe/zihTHQvTSJckJASVr99VlIaDSpMmpI1PlXnnz23XkV39qsPVAFuGBdPpwa
-paPDi6NGVxDYFntwCEjto90+MpRmNFWXasxENVk72t06qst0icZGgdAPkeQSkWPK
-123H0JtMuf2yZzRRp0qAj35Nq3OmPGL6umHUEY+CmcBxTaTVf9ccamfBtfJ7HCLF
-ce4Qa4Y36VQvfx2xQf4DfB1iWBYOkd447UKMi06InZERIg9pT/JNvIzfsmRFjjLF
-AxUTFQ/F83ncYyep00IXu8OPjm1GMhulvAHFFSfy6AUflgWa3sAb7zklEnDEmFfx
-8UZqnm/kb0bSvkTg2eMuwr/7NMnPmx7q2P3IWQqVLofR86n2t5mbACq0GcXR4o+w
-et8rjFs0PVeFLVELICoDi3hgElWODCuLFD3MvdxxtBMbqFMYiyuHBTJytcVhvSYm
-zFp6fqibpXCJap+OI2bap3jWFFG5/sxLT7ohBRu+L1jtbwyj58g=
-=XKWI
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmWXgEsACgkQAVBC80lX
+0GyHdAf/SdX8yVbM3Nlw1DxZTNBYg4COvs8JFI+2/AHBH9bb8IDPqcmqZUNR51+Q
+yxZ8W/Rr05OslvMGY9GGrl5WWCnItVKdb7yYrOvIH8p0AwAytr5jOmypmyO6iszo
+1DqLV7eZlDbAh+PFjHfHA+UbXfFJkW2NhKDkE6JFds/f4as/Kli03uUIhKOaeEUF
+BKe2rzuMu94RjTLENZ2J3fBkTVCqyVHVnqJ3vLqNgR1zqAnUUJhv0F8bHqlRJH+I
+1M7/A3IxClO5BBaVYbAH/LmjrC+992xuGNJNMsts7w/8qB2Wt/M0r+s0IS3LV5yl
+X2J23tp0i6LBlxL1DnUGWy9Nt5A0Hw==
+=s94k
 -----END PGP SIGNATURE-----
 
---ltlYhuj8kbqrfqEj--
+--Sig_/FJjWhmfKghEt2Z_rZ=b6iYP--
 
