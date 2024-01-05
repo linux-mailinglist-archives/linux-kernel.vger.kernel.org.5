@@ -1,330 +1,305 @@
-Return-Path: <linux-kernel+bounces-18388-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18390-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA8F3825C63
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 23:13:23 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 56A75825C6C
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 23:15:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 54DAD1F2424F
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 22:13:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A4E00B233FC
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 22:15:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 521792D780;
-	Fri,  5 Jan 2024 22:13:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="dyJLjct8"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F30512E855;
+	Fri,  5 Jan 2024 22:15:27 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com [209.85.219.170])
+Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3905358B3
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 22:13:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
-Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-dbd029beef4so825826276.0
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Jan 2024 14:13:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1704492792; x=1705097592; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rFLXEkuf5S0teJbni+kf0gZVyAMOGMoUV23JohFpwpU=;
-        b=dyJLjct8JGo02L+ylbdBhkpDQCi+zVdtFgnEMs6q3zmAcBvdnjDE1CS+3P2lrug/8E
-         oA+vDqBemhceJM1vew1mVkp7CJwzGujZYzVUJDhjvinlMXhb+TEIH4jO9ZvlPTM42w8D
-         XXTFhMOulfjANj1ODEmA6SInDvFP4sxCtPx/hhFYEQk2Vqp22whAb4HNgkDv6as5Eqix
-         1FgG494x1KUD/Z+9Eg7+cydK1Rc4G0JG4AuipOUlbq0U6TgAR2MCdfCo4zpHd6+qGOhN
-         G7RD6EiJyj9ef25Ge9dr5orD3njxhR0lcYMIPEU68MBZIWDQTAAUgKR/nSKEIolrfKs4
-         jh+A==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C07D2D059;
+	Fri,  5 Jan 2024 22:15:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f47.google.com with SMTP id 98e67ed59e1d1-28cc07d8876so60774a91.1;
+        Fri, 05 Jan 2024 14:15:25 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704492792; x=1705097592;
+        d=1e100.net; s=20230601; t=1704492925; x=1705097725;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=rFLXEkuf5S0teJbni+kf0gZVyAMOGMoUV23JohFpwpU=;
-        b=RQs4X6a7+0IIs+RRLsSPQV3JoEgP64649NQRppQeRRKIjJ9+oJE+lVZ1+Tl5M6P3ax
-         ESik0hEgwl4UoOeI8VEjiGA7UNk2kgOipewsn/I4iw4Lju9TApRnVzkt6k1Aob7+RLWG
-         0oib8RAXXXHrXhh1UuMV3fByzNLKzvA9j+Xju5eUCbZWOuyEi0VXKKS18E74rf5fNWHz
-         qnIJYzt1RRjrOuEDQt84VTRzs6JSst556bFIpO3tF3sTH/Xe+1jyYhw0VR0rR/cMjeB2
-         39dc7JROtaO59YlYgZ0Hs6DHaN8DeYgafkvma3RDAqCrnenMg6jVb4Qwhj6XR3c2r1yD
-         d2bw==
-X-Gm-Message-State: AOJu0Yw6zL/M0QKvI26LLPSfBV9U4xw+7MIZ2oGgoHI89kfByBAFcizp
-	B44J9qn0oQGYeFiqW6jyY2c1qcZqLL4MEBE/QxMkTtO6rHAr
-X-Google-Smtp-Source: AGHT+IEkC9LGjCYjd2rASwNH+fpfnIErYtBXHc9AO1zzyXMpmBhBihEzAWAi9eoEsOn23M88mu6CkcCdg4I+Vpr1Xzg=
-X-Received: by 2002:a25:ad81:0:b0:dbd:9a04:f397 with SMTP id
- z1-20020a25ad81000000b00dbd9a04f397mr122433ybi.14.1704492791662; Fri, 05 Jan
- 2024 14:13:11 -0800 (PST)
+        bh=pFcQhNOZPUpvu7sK4cHRW7uibKIpl4AhU370+Z6q+m4=;
+        b=HTOO6uyPwwD5L4KGLNbOVCisq7X/lUCXy5csiS5ogaPtnTB7lEVS0d3j4Q/TjTZV2b
+         6IpGL24klvc6sf3MXOBCy/S5JSkAazw38HufAghoMsi1h9bgbOEqwOOS7qHmmJvpCvrO
+         svKKq0CgjTkaYD0tlQIUC1YlPMV5L233BSzcZ+kgrt6PB1Ht8ELrW/8KKq2sIV05pXRB
+         lM9JF/rxdWaEu4KXiFakCwVCDM72ODJbE/9WSeRG7vPCpVeh53HdlDG5PbHpPhVHudwD
+         EKm0JbEQjZ4EnLe9ccr3fDpmS5zxRmz8P47yGym5uWbY5kI2t6+MQpcoLtjXkUO9q4kc
+         SM5A==
+X-Gm-Message-State: AOJu0YxVTl2Rfgcig9QZ/raEG3Px/2HLseUZclR1bqkSSUHaRj1xTb4x
+	ShchKQwbzHQhw12nFOZN7EQdZjCGv+gOE4cQdD8=
+X-Google-Smtp-Source: AGHT+IFcjzmHxrjlp2e3Lz2GID6dUChj4N3Zi9GA84HkLKvJEgnxZPxErTDHOFzSsikC3vK4sMq8v07q7Vnig5pSYzY=
+X-Received: by 2002:a17:90a:a103:b0:28b:db13:e9f7 with SMTP id
+ s3-20020a17090aa10300b0028bdb13e9f7mr134755pjp.31.1704492925079; Fri, 05 Jan
+ 2024 14:15:25 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230921061641.273654-1-mic@digikod.net> <20230921061641.273654-4-mic@digikod.net>
- <CAHC9VhQTvFp+i=j7t+55EnG44xg=Pmvkh=Oq=e7ddJWDZXLeSA@mail.gmail.com>
- <20231221.eij3poa3Se4b@digikod.net> <CAHC9VhRiUOe9enkCOko0mGehxt+2tbJNGoJm=jmauhZSPFvzRg@mail.gmail.com>
- <20231229.aex0ijae2The@digikod.net>
-In-Reply-To: <20231229.aex0ijae2The@digikod.net>
-From: Paul Moore <paul@paul-moore.com>
-Date: Fri, 5 Jan 2024 17:13:00 -0500
-Message-ID: <CAHC9VhS4qcn4=3eeOx3vOeHsy3MkDx5MExhPxWYWgH4kF4ZZBA@mail.gmail.com>
-Subject: Re: [RFC PATCH v1 3/7] landlock: Log ruleset creation and release
-To: =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>
-Cc: Eric Paris <eparis@redhat.com>, James Morris <jmorris@namei.org>, 
-	"Serge E . Hallyn" <serge@hallyn.com>, Ben Scarlato <akhna@google.com>, 
-	=?UTF-8?Q?G=C3=BCnther_Noack?= <gnoack@google.com>, 
-	Jeff Xu <jeffxu@google.com>, Jorge Lucangeli Obes <jorgelo@google.com>, 
-	Konstantin Meskhidze <konstantin.meskhidze@huawei.com>, Shervin Oloumi <enlightened@google.com>, 
-	audit@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-security-module@vger.kernel.org
+References: <30bcec9b-30ef-ad13-ec0b-59c6b94b05d1@maine.edu>
+ <CAP-5=fUiRLh0e+V8j7P79pXTVkE1D=WL6t3Vwj29ypxZGaJ+gw@mail.gmail.com>
+ <CAP-5=fXe2vx+cyQCLLPL4VJyOKDfrqBAp0dm3R1U5Ca9bxU6tw@mail.gmail.com> <3f2ec370-2590-a70a-204a-0d9d5b713f4e@maine.edu>
+In-Reply-To: <3f2ec370-2590-a70a-204a-0d9d5b713f4e@maine.edu>
+From: Namhyung Kim <namhyung@kernel.org>
+Date: Fri, 5 Jan 2024 14:15:13 -0800
+Message-ID: <CAM9d7cjuuZUxuzj6CA=TS2o0WuDO1hiU8Cxw5tU4w3B+XgqEUw@mail.gmail.com>
+Subject: Re: [perf] vsyscall, possible circular locking dependency detected
+To: Vince Weaver <vincent.weaver@maine.edu>
+Cc: Ian Rogers <irogers@google.com>, peterz@infradead.org, mingo@redhat.com, 
+	acme@kernel.org, mark.rutland@arm.com, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, jolsa@kernel.org, 
+	adrian.hunter@intel.com, linux-kernel@vger.kernel.org, 
+	linux-perf-users <linux-perf-users@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Dec 29, 2023 at 12:42=E2=80=AFPM Micka=C3=ABl Sala=C3=BCn <mic@digi=
-kod.net> wrote:
-> On Fri, Dec 22, 2023 at 05:42:35PM -0500, Paul Moore wrote:
-> > On Thu, Dec 21, 2023 at 1:45=E2=80=AFPM Micka=C3=ABl Sala=C3=BCn <mic@d=
-igikod.net> wrote:
-> > > On Wed, Dec 20, 2023 at 04:22:15PM -0500, Paul Moore wrote:
-> > > > On Thu, Sep 21, 2023 at 2:17=E2=80=AFAM Micka=C3=ABl Sala=C3=BCn <m=
-ic@digikod.net> wrote:
-> > > > >
-> > > > > Add audit support for ruleset/domain creation and release ...
+Hello,
 
-...
+On Thu, Jan 4, 2024 at 2:21=E2=80=AFPM Vince Weaver <vincent.weaver@maine.e=
+du> wrote:
+>
+>
+> On Wed, Jan 3, 2024 at 10:08=E2=80=AFAM Ian Rogers <irogers@google.com> w=
+rote:
+>
+> > > is there a simple reproduction for this failure? Has there been any
+> > > other progress on this issue?
+>
+> I tried reproducing the issue, but unfortunately restarting the fuzzer
+> with the same input doesn't reliably trigger it.
+>
+> I let the perf_fuzzer run a while on the haswell machine and it was able
+> to eventually trigger it again after a few hours (see below).
+>
+> Vince
+>
+> [77210.091776] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> [77210.097974] WARNING: possible circular locking dependency detected
+> [77210.104181] 6.7.0-rc5+ #1 Tainted: G        W
+> [77210.109344] ------------------------------------------------------
+> [77210.115541] perf_fuzzer/2004640 is trying to acquire lock:
+> [77210.121046] ffff8880180e5358 (&sighand->siglock){-.-.}-{2:2}, at: forc=
+e_sig_info_to_task+0x41/0x260
+> [77210.130133]
+>                but task is already holding lock:
+> [77210.135988] ffff8880d063d4d8 (&rq->__lock){-.-.}-{2:2}, at: raw_spin_r=
+q_lock_nested+0x26/0xb0
+> [77210.144546]
+>                which lock already depends on the new lock.
+>
+> [77210.152744]
+>                the existing dependency chain (in reverse order) is:
+> [77210.160262]
+>                -> #1 (&rq->__lock){-.-.}-{2:2}:
+> [77210.166062]        _raw_spin_lock_nested+0x32/0x40
+> [77210.170894]        raw_spin_rq_lock_nested+0x26/0xb0
+> [77210.175898]        _raw_spin_rq_lock_irqsave+0x23/0x60
+> [77210.181082]        sched_mm_cid_before_execve+0xcd/0x3d0
+> [77210.186435]        exit_signals+0x1a3/0x450
+> [77210.190654]        do_exit+0x24b/0x1100
+> [77210.194526]        __x64_sys_exit+0x2c/0x30
+> [77210.198746]        do_syscall_64+0x41/0x120
+> [77210.202969]        entry_SYSCALL_64_after_hwframe+0x6e/0x76
+> [77210.208579]
+>                -> #0 (&sighand->siglock){-.-.}-{2:2}:
+> [77210.214891]        __lock_acquire+0x1d8d/0x31f0
+> [77210.219462]        lock_acquire+0x16c/0x3e0
+> [77210.223682]        _raw_spin_lock_irqsave+0x47/0x70
+> [77210.228596]        force_sig_info_to_task+0x41/0x260
+> [77210.233600]        force_sig_fault+0xaa/0xf0
 
-> > > > > +void landlock_log_create_ruleset(struct landlock_ruleset *const =
-ruleset)
-> > > > > +{
-> > > > > +       struct audit_buffer *ab;
-> > > > > +
-> > > > > +       WARN_ON_ONCE(ruleset->id);
-> > > > > +
-> > > > > +       ab =3D audit_log_start(audit_context(), GFP_ATOMIC, AUDIT=
-_LANDLOCK);
-> > > > > +       if (!ab)
-> > > > > +               /* audit_log_lost() call */
-> > > > > +               return;
-> > > > > +
-> > > > > +       ruleset->id =3D atomic64_inc_return(&ruleset_and_domain_c=
-ounter);
-> > > > > +       log_task(ab);
-> > > > > +       audit_log_format(ab,
-> > > > > +                        " op=3Dcreate-ruleset ruleset=3D%llu han=
-dled_access_fs=3D",
-> > > > > +                        ruleset->id);
-> > > >
-> > > > "handled_access_fs" seems a bit long for a field name, is there any
-> > > > reason why it couldn't simply be "access_fs" or something similar?
-> > >
-> > > "handled_access_fs" is from the landlock_create_ruleset(2) API, so I'=
-d
-> > > like to use the same name.
-> >
-> > Okay, that's a reasonable reason.
-> >
-> > > However, because the types of handled access
-> > > rights for a ruleset will expand (e.g. we now have a
-> > > handled_access_net), I'm wondering if it would be better to keep this
-> > > (growing) one-line record or if we should use several records for a
-> > > ruleset creation (i.e. one line per type of handled access righs).
-> >
-> > I think it would be better to have a single record for rulesets rather
-> > than multiple records all dealing with rulesets.
->
-> I guess you mean to not create multiple record types specific to ruleset
-> creation.
+It looks like kernelmode_fixup_or_oops() in the page fault handler
+would call force_sig_fault() even if fixup_exception() returns true
+when vsyscall sets the sig_on_uaccess_err flag.
 
-Yes.
+We may need to add a condition that it's handling perf callchains.
 
-> Reusing existing record types (e.g. path) should be OK even
-> for a ruleset creation. However, as proposed below, we might still want
-> a LANDLOCK_ACCESS record type (that can be reused for denied accesses).
+Thanks,
+Namhyung
 
-I would want to see the code to make sure we are not misunderstanding
-each other, but I believe you are on the right track.
 
-> > > > > +               id =3D ruleset->hierarchy->id;
-> > > > > +               WARN_ON_ONCE(ruleset->id);
-> > > > > +       } else {
-> > > > > +               name =3D "ruleset";
-> > > > > +               id =3D ruleset->id;
-> > > > > +       }
-> > > > > +       WARN_ON_ONCE(!id);
-> > > > > +
-> > > > > +       /*
-> > > > > +        * Because this might be called by kernel threads, loggin=
-g
-> > > > > +        * related task information with log_task() would be usel=
-ess.
-> > > > > +        */
-> > > > > +       audit_log_format(ab, "op=3Drelease-%s %s=3D%llu", name, n=
-ame, id);
-> > > >
-> > > > This starts to get a little tricky.  The general guidance is that f=
-or
-> > > > a given audit record type, e.g. AUDIT_LANDLOCK, there should be no
-> > > > change in presence or ordering of fields, yet in
-> > > > landlock_log_create_ruleset() we log the permission information and
-> > > > here in landlock_log_release_ruleset() we do not.  The easy fix is =
-to
-> > > > record the permission information here as well, or simply use a
-> > > > "handled_access_fs=3D?" placeholder.  Something to keep in mind as =
-you
-> > > > move forward.
-> > >
-> > > OK, I used different "op" to specify the related fields, but I should
-> > > use a dedicated record type when it makes sense instead. My reasoning
-> > > was that it would be easier to filter on one or two record types, but
-> > > I like the fixed set of fields per record type.
-> > >
-> > > I plan to add a few record types, something like that:
-> > >
-> > > For a ruleset creation event, several grouped records:
-> > > - AUDIT_LANDLOCK_RULESET: "id=3D[new ruleset ID] op=3Dcreate"
-> > > - AUDIT_LANDLOCK_ACCESS: "type=3D[fs or net] rights=3D[bitmask]"
-> >
-> > I'm guessing that LANDLOCK_RULESET would be for policy changes, and
-> > LANDLOCK_ACCESS would be for individual access grants or denials?  If
-> > so, that looks reasonable.
+> [77210.237903]        exc_page_fault+0x61/0xf0
+> [77210.242126]        asm_exc_page_fault+0x22/0x30
+> [77210.246695]        __get_user_handle_exception+0x0/0x20
+> [77210.251963]        perf_callchain_user+0x2d3/0x390
+> [77210.256792]        get_perf_callchain+0x21a/0x2d0
+> [77210.261541]        perf_callchain+0xc3/0xe0
+> [77210.265760]        perf_prepare_sample+0x4f1/0xc70
+> [77210.270588]        perf_event_output_forward+0xbf/0x270
+> [77210.275851]        __perf_event_overflow+0x1ad/0x3c0
+> [77210.280848]        ___perf_sw_event+0x1f7/0x390
+> [77210.285414]        __schedule+0x1370/0x2560
+> [77210.289638]        preempt_schedule_irq+0x47/0x90
+> [77210.294380]        irqentry_exit+0x31/0x80
+> [77210.298509]        asm_sysvec_apic_timer_interrupt+0x16/0x20
+> [77210.304209]        seqcount_lockdep_reader_access.constprop.0+0x88/0x9=
+0
+> [77210.310866]        ktime_get_real_ts64+0x28/0x120
+> [77210.315610]        __x64_sys_gettimeofday+0x86/0x150
+> [77210.320614]        emulate_vsyscall+0x258/0x590
+> [77210.325177]        do_user_addr_fault+0x346/0x8c0
+> [77210.329918]        exc_page_fault+0x61/0xf0
+> [77210.334137]        asm_exc_page_fault+0x22/0x30
+> [77210.338707]        _end+0x7a5da000/0x0
+> [77210.342491]
+>                other info that might help us debug this:
 >
-> I was thinking about using LANDLOCK_ACCESS for both ruleset creation and
-> denied accesses. That would mkae a ruleset creation event easier to
-> parse and more flexible. Does that look good?
-
-In general, configuration events like ruleset creation use one record
-type, while individual access requests use a different record type.
-
-> Otherwise, we can use this instead:
+> [77210.350530]  Possible unsafe locking scenario:
 >
-> - AUDIT_LANDLOCK_RULESET: "ruleset=3D[new ruleset ID]
->   handled_access_fs=3D[bitmask] handled_access_net=3D[bitmask]"
+> [77210.356488]        CPU0                    CPU1
+> [77210.361051]        ----                    ----
+> [77210.365616]   lock(&rq->__lock);
+> [77210.368883]                                lock(&sighand->siglock);
+> [77210.375190]                                lock(&rq->__lock);
+> [77210.380979]   lock(&sighand->siglock);
+> [77210.384771]
+>                 *** DEADLOCK ***
 >
-> > > For rule addition, several records per landlock_add_rule(2) call.
-> > > Example with a path_beneath rule:
-> > > - AUDIT_LANDLOCK_RULESET: "id=3D[ruleset ID] op=3Dadd_rule"
-> > > - AUDIT_LANDLOCK_PATH: "scope=3Dbeneath path=3D[file path] dev=3D ino=
-=3D"
-> > > - AUDIT_LANDLOCK_ACCESS: "type=3Dfs rights=3D[bitmask]"
-> >
-> > I worry that LANDLOCK_PATH is too much of a duplicate for the existing
-> > PATH record.  Assuming the "scope=3D" field is important, could it live
-> > in the LANDLOCK_ACCESS record and then you could do away with the
-> > dedicated LANDLOCK_PATH record?  Oh, wait ... this is to record the
-> > policy, not a individual access request, gotcha.  If that is the case
-> > and RULESET, PATH, ACCESS are all used simply to record the policy
-> > information I might suggest creation of an AUDIT_LANDLOCK_POLICY
-> > record that captures all of the above.  If you think that is too
-> > cumbersome, then perhaps you can do the object/access-specific record
-> > type, e.g. AUDIT_LANDLOCK_POLICY_FS and AUDIT_LANDLOCK_POLICY_NET.
+> [77210.390730] 3 locks held by perf_fuzzer/2004640:
+> [77210.395378]  #0: ffff8880d063d4d8 (&rq->__lock){-.-.}-{2:2}, at: raw_s=
+pin_rq_lock_nested+0x26/0xb0
+> [77210.404408]  #1: ffffffff831a3ec0 (rcu_read_lock){....}-{1:2}, at: ___=
+perf_sw_event+0x10f/0x390
+> [77210.413168]  #2: ffffffff831a3ec0 (rcu_read_lock){....}-{1:2}, at: per=
+f_event_output_forward+0x8f/0x270
+> [77210.422625]
+>                stack backtrace:
+> [77210.427012] CPU: 0 PID: 2004640 Comm: perf_fuzzer Tainted: G        W =
+         6.7.0-rc5+ #1
+> [77210.435490] Hardware name: LENOVO 10AM000AUS/SHARKBAY, BIOS FBKT72AUS =
+01/26/2014
+> [77210.442926] Call Trace:
+> [77210.445409]  <TASK>
+> [77210.447535]  dump_stack_lvl+0x57/0x90
+> [77210.451234]  check_noncircular+0x24f/0x290
+> [77210.455371]  ? __pfx_check_noncircular+0x10/0x10
+> [77210.460042]  ? lockdep_lock+0xb3/0x170
+> [77210.463829]  ? __pfx_lockdep_lock+0x10/0x10
+> [77210.468048]  ? add_chain_block+0x2dc/0x300
+> [77210.472186]  __lock_acquire+0x1d8d/0x31f0
+> [77210.476251]  ? __pfx___lock_acquire+0x10/0x10
+> [77210.480661]  lock_acquire+0x16c/0x3e0
+> [77210.484366]  ? force_sig_info_to_task+0x41/0x260
+> [77210.489027]  ? __pfx_lock_acquire+0x10/0x10
+> [77210.493256]  ? mark_lock+0x10b/0xd40
+> [77210.496877]  _raw_spin_lock_irqsave+0x47/0x70
+> [77210.501275]  ? force_sig_info_to_task+0x41/0x260
+> [77210.505933]  force_sig_info_to_task+0x41/0x260
+> [77210.510421]  force_sig_fault+0xaa/0xf0
+> [77210.514209]  ? __pfx_force_sig_fault+0x10/0x10
+> [77210.518687]  ? lock_release+0x22a/0x3e0
+> [77210.522567]  ? kernelmode_fixup_or_oops+0x10a/0x150
+> [77210.527489]  exc_page_fault+0x61/0xf0
+> [77210.531195]  asm_exc_page_fault+0x22/0x30
+> [77210.535239] RIP: 0010:__get_user_handle_exception+0x0/0x20
+> [77210.540764] Code: 90 90 90 90 90 90 90 90 90 90 0f 1f 00 0f ae e8 48 8=
+b 10 31 c0 0f 1f 00 c3 cc cc cc cc 66 66 2e 0f 1f 84 00 00 00 00 00 66 90 <=
+0f> 1f 00 31 d2 48 c7 c0 f2 ff ff ff c3 cc cc cc cc cc cc cc cc cc
+> [77210.559590] RSP: 0000:ffffc9000fd8f5d0 EFLAGS: 00010006
+> [77210.564857] RAX: 0000000000000005 RBX: ffffc9000fd8f680 RCX: ffffffff8=
+100a5a3
+> [77210.572030] RDX: 0000000000000004 RSI: ffffffff8100a55d RDI: ffff88802=
+f014028
+> [77210.579209] RBP: 0000000000000005 R08: 000000000000007f R09: 000000000=
+0000000
+> [77210.586381] R10: ffffffff8371fd27 R11: 0000000000000000 R12: ffffc9000=
+fd8f68c
+> [77210.593558] R13: ffffc9000fd8f688 R14: 0000000000000005 R15: ffff88802=
+f014000
+> [77210.600742]  ? perf_callchain_user+0x353/0x390
+> [77210.605225]  ? perf_callchain_user+0x30d/0x390
+> [77210.609709]  perf_callchain_user+0x2d3/0x390
+> [77210.614027]  get_perf_callchain+0x21a/0x2d0
+> [77210.618253]  ? __pfx_get_perf_callchain+0x10/0x10
+> [77210.623007]  ? lock_is_held_type+0xe3/0x140
+> [77210.627237]  ? preempt_schedule_irq+0x47/0x90
+> [77210.631630]  perf_callchain+0xc3/0xe0
+> [77210.635336]  perf_prepare_sample+0x4f1/0xc70
+> [77210.639645]  ? __pfx_perf_prepare_sample+0x10/0x10
+> [77210.644477]  ? lock_release+0x22a/0x3e0
+> [77210.648351]  ? __pfx___lock_acquire+0x10/0x10
+> [77210.652750]  perf_event_output_forward+0xbf/0x270
+> [77210.657498]  ? __pfx_perf_event_output_forward+0x10/0x10
+> [77210.662852]  ? lock_acquire+0x16c/0x3e0
+> [77210.666723]  ? lock_acquire+0x17c/0x3e0
+> [77210.670597]  ? __pfx_lock_acquire+0x10/0x10
+> [77210.674817]  ? __kernel_text_address+0xe/0x40
+> [77210.679213]  ? unwind_get_return_address+0x33/0x50
+> [77210.684048]  __perf_event_overflow+0x1ad/0x3c0
+> [77210.688533]  ___perf_sw_event+0x1f7/0x390
+> [77210.692587]  ? stack_trace_save+0x91/0xd0
+> [77210.696632]  ? __pfx____perf_sw_event+0x10/0x10
+> [77210.701205]  ? preempt_schedule_irq+0x47/0x90
+> [77210.705602]  ? __update_load_avg_se+0x2dc/0x5c0
+> [77210.710172]  ? __update_load_avg_cfs_rq+0x70/0x570
+> [77210.715009]  ? lock_acquire+0x16c/0x3e0
+> [77210.718887]  ? __update_load_avg_se+0x86/0x5c0
+> [77210.723377]  ? update_load_avg+0x154/0xdc0
+> [77210.727514]  ? lock_is_held_type+0xe3/0x140
+> [77210.731738]  ? set_next_entity+0xec/0x1e0
+> [77210.735790]  ? preempt_schedule_irq+0x47/0x90
+> [77210.740185]  ? __schedule+0x1370/0x2560
+> [77210.744054]  __schedule+0x1370/0x2560
+> [77210.747771]  ? __pfx___schedule+0x10/0x10
+> [77210.751822]  ? __pfx___lock_acquire+0x10/0x10
+> [77210.756216]  ? lock_is_held_type+0xe3/0x140
+> [77210.760441]  ? mark_held_locks+0x24/0x90
+> [77210.764410]  preempt_schedule_irq+0x47/0x90
+> [77210.768634]  irqentry_exit+0x31/0x80
+> [77210.772244]  asm_sysvec_apic_timer_interrupt+0x16/0x20
+> [77210.777426] RIP: 0010:seqcount_lockdep_reader_access.constprop.0+0x88/=
+0x90
+> [77210.784346] Code: 31 f6 48 c7 c7 48 7c 1c 83 e8 84 25 f8 ff 48 8b 74 2=
+4 08 48 c7 c7 48 7c 1c 83 e8 93 1c f8 ff e8 6e d2 0c 00 fb 0f 1f 44 00 00 <=
+5a> c3 cc cc cc cc 66 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90
+> [77210.803173] RSP: 0000:ffffc9000fd8fdb8 EFLAGS: 00000206
+> [77210.808436] RAX: 0000000000e1f517 RBX: ffffc9000fd8fe18 RCX: dffffc000=
+0000000
+> [77210.815609] RDX: 0000000000000000 RSI: ffffffff826804e0 RDI: ffffffff8=
+28c8620
+> [77210.822784] RBP: 00007ffc3a66d400 R08: 0000000000000001 R09: 000000000=
+0000001
+> [77210.829958] R10: ffffffff8371fd27 R11: 0000000000000000 R12: 000000000=
+0000000
+> [77210.837128] R13: 0000000000000000 R14: ffff888016c69bc0 R15: ffffc9000=
+fd8fff0
+> [77210.844314]  ? seqcount_lockdep_reader_access.constprop.0+0x82/0x90
+> [77210.850619]  ? ktime_get_real_ts64+0x28/0x120
+> [77210.855017]  ktime_get_real_ts64+0x28/0x120
+> [77210.859240]  __x64_sys_gettimeofday+0x86/0x150
+> [77210.863727]  ? __pfx___x64_sys_gettimeofday+0x10/0x10
+> [77210.868822]  emulate_vsyscall+0x258/0x590
+> [77210.872872]  ? 0xffffffffff600000
+> [77210.876222]  do_user_addr_fault+0x346/0x8c0
+> [77210.880444]  ? rcu_is_watching+0x34/0x60
+> [77210.884407]  ? 0xffffffffff600000
+> [77210.887758]  exc_page_fault+0x61/0xf0
+> [77210.891460]  asm_exc_page_fault+0x22/0x30
+> [77210.895505] RIP: 0033:_end+0x7a5da000/0x0
+> [77210.899551] Code: Unable to access opcode bytes at 0xffffffffff5fffd6.
+> [77210.906114] RSP: 002b:00007ffc3a66d3e8 EFLAGS: 00010246
+> [77210.911378] RAX: ffffffffffffffda RBX: 000000000000000d RCX: 000000000=
+000000a
+> [77210.918549] RDX: 0000000000000010 RSI: 0000000000000000 RDI: 00007ffc3=
+a66d400
+> [77210.925726] RBP: 00007ffc3a66d3f0 R08: 00007f2b06c55230 R09: 00007f2b0=
+6c55280
+> [77210.932905] R10: 00007f2b06c55264 R11: 0000000000000206 R12: 000000000=
+0000000
+> [77210.940077] R13: 00007ffc3a66f878 R14: 000056508bcc7dd8 R15: 00007f2b0=
+6cad000
+> [77210.947269]  </TASK>
 >
-> OK, what about this records for *one* rule addition event?
->
-> - AUDIT_LANDLOCK_RULE: "ruleset=3D[ruleset ID] rule_type=3Dpath_beneath
->   allowed_access=3D[bitmask]"
-> - AUDIT_PATH: "path=3D[file path] dev=3D ino=3D ..."
-
-If the pathname above is for the landlock rule, it should be separate
-from the existing AUDIT_PATH record.  See my previous comments above,
-when I was talking about using the existing AUDIT_PATH record I was
-confusing the rule creation event with the permission check event.
-
-> However, because struct landlock_path_beneath_attr can evolve and get
-> new fields which might be differents than the landlock_net_port_attr's
-> ones, wouldn't it be wiser to use a dedicated AUDIT_LANDLOCK_RULE_FS or
-> AUDIT_LANDLOCK_RULE_PATH_BENEATH record type? These names are getting a
-> bit long though, but types match the UAPI.
-
-I believe we were thinking similarly, see my previous comments above
-about AUDIT_LANDLOCK_POLICY_FS and AUDIT_LANDLOCK_POLICY_NET, etc.
-
-> > You also shouldn't reuse the "type=3D" field.  Steve gets grumpy when
-> > people reuse field names for different things.  You can find a
-> > reasonably complete list of fields here:
-> > https://github.com/linux-audit/audit-documentation/blob/main/specs/fiel=
-ds/field-dictionary.csv
->
-> OK
->
-> >
-> > > For domain creation/restriction:
-> > > - AUDIT_LANDLOCK_DOMAIN: "id=3D[new domain ID] op=3Dcreate"
-> > > - AUDIT_LANDLOCK_RULESET: "id=3D[ruleset ID] op=3Duse"
-> >
-> > I imagine you could capture this in the policy record type?
->
-> What about this?
->
-> - AUDIT_LANDLOCK_RESTRICT: "ruleset=3D[ruleset ID] domain=3D[new domain I=
-D]
->   restrict_type=3Dself"
->
-> >
-> > > For ruleset release:
-> > > - AUDIT_LANDLOCK_RULESET: "id=3D[ruleset ID] op=3Drelease"
-> > >
-> > > For domain release:
-> > > - AUDIT_LANDLOCK_DOMAIN: "id=3D[domain ID] op=3Drelease"
-> >
-> > Same with the above two.
->
-> - AUDIT_LANDLOCK_RELEASE: "id=3D[ruleset or domain ID]
->   release_type=3D[ruleset or domain]"
->
-> The issue with this record is that the "id" field is not the same as for
-> AUDIT_LANDLOCK_{RESTRICT,RULE}... To have "domain" or "ruleset" fields,
-> a dedicated record type would be cleaner:
-> AUDIT_LANDLOCK_RELEASE_{RULESET,DOMAIN}.
-
-If you need separate record types, you need separate record types.
-Regardless of the types used, we need to make sure an administrator
-can match up a creation event with a destruction event.
-
-> > > For denied FS access:
-> > > - AUDIT_LANDLOCK_DENIAL: "id=3D[domain ID] op=3Dmkdir"
-> > > - AUDIT_LANDLOCK_PATH: "scope=3Dexact path=3D[file path] dev=3D ino=
-=3D"
-> >
-> > I would use a single record type, i.e. AUDIT_LANDLOCK_ACCESS, to
-> > capture both access granted and denied events.  I'd also omit the
-> > dedicated LANDLOCK_PATH record here in favor of the generic PATH
-> > record (see my comments above).
->
-> Makes sense for the generic PATH record. We would get this:
->
-> - AUDIT_LANDLOCK_ACCESS: "domain=3D[domain ID] op=3Dmkdir result=3Ddenied=
-"
-> - AUDIT_PATH: "path=3D[file path] dev=3D ino=3D ..."
->
-> >
-> > > For denied net access:
-> > > - AUDIT_LANDLOCK_DENIAL: "id=3D[domain ID] op=3Dconnect"
-> > > - AUDIT_LANDLOCK_PORT: "port=3D"
-> >
-> > I would look at the SOCKADDR record type instead of introducing a new
-> > LANDLOCK_PORT type.
->
-> Good, this is already filled so I don't have to do anything except the
-> AUDIT_LANDLOCK_ACCESS record.
->
-> However, I'm wondering if it would be OK to create a synthetic sockaddr
-> struct to generate a sockaddr audit record when adding a new net_port
-> rule. In this case, we'd have to fill the fill the source and
-> destination addresses with fake values (zeros?) and the source and
-> destination ports with the rule's port. The pros is that it would not
-> add a new record type but the cons is that it will probably not work
-> with future net_port rule properties. It would also be inconsistent with
-> AUDIT_LANDLOCK_ACCESS.
->
-> What about this instead?
->
-> - AUDIT_LANDLOCK_RULE: "ruleset=3D[ruleset ID] rule_type=3Dnet_port
->   allowed_access=3D[bitmask]"
-> - AUDIT_LANDLOCK_PORT: "port=3D[port number]"
-
-Just as we probably don't want to reuse the AUDIT_PATH record, we
-probably shouldn't reuse the sockaddr record.
-
---=20
-paul-moore.com
 
