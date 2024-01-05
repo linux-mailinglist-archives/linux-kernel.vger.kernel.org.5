@@ -1,787 +1,170 @@
-Return-Path: <linux-kernel+bounces-17830-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17831-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 54C90825353
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 13:23:39 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1CAF582535E
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 13:31:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6D21A1C22FEE
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 12:23:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 57D231F234E4
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 12:31:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C5252D052;
-	Fri,  5 Jan 2024 12:23:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="l7AEtpES"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 103292CCD5;
+	Fri,  5 Jan 2024 12:31:46 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73BCF2D60F;
-	Fri,  5 Jan 2024 12:23:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 405BSWaP026370;
-	Fri, 5 Jan 2024 12:23:22 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:date:subject:mime-version:content-type
-	:content-transfer-encoding:message-id:to:cc; s=qcppdkim1; bh=EFt
-	t6faVOZSOHLA4gMdHA7oYChgQcPvlnFB/nSjs27c=; b=l7AEtpESdSCFu/c2ScE
-	+oNH5UsSDIGhXpiBOendjI9qBw3J7PqefqWZnDZd5VgPke7Ud6xFFL24eDPfuefu
-	Kea5hF0H8ZQgqi7RieqD+PJb21SIOE1sXxyeYBJBLcq1usZmPOcz2aaA9me7sp3y
-	iBBrfRHitNya2v83r89YAlpb9pSRepXK4j/ZKg0ddZAYK8LaHC4JRWxCT50oNxvX
-	nXzbCMequg36/rwM2OvwedjAr80VUGnmWanvHxUqobIAAhfQwbxQx6XiLe/i3EhX
-	6Y7bo+MGC/28uR7ttzaTGSnpcrMm27T8AdhTzq5C0plQuMPBghpxPOjfXIbfHr3E
-	DNg==
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ve99as1ny-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 05 Jan 2024 12:23:21 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 405CNLxc008575
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 5 Jan 2024 12:23:21 GMT
-Received: from hu-krichai-hyd.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Fri, 5 Jan 2024 04:23:16 -0800
-From: Krishna chaitanya chundru <quic_krichai@quicinc.com>
-Date: Fri, 5 Jan 2024 17:53:03 +0530
-Subject: [PATCH v9] bus: mhi: host: Add tracing support
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26E9E2D042;
+	Fri,  5 Jan 2024 12:31:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 89753C15;
+	Fri,  5 Jan 2024 04:32:28 -0800 (PST)
+Received: from FVFF77S0Q05N (unknown [10.57.86.44])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DD6D23F64C;
+	Fri,  5 Jan 2024 04:31:40 -0800 (PST)
+Date: Fri, 5 Jan 2024 12:31:38 +0000
+From: Mark Rutland <mark.rutland@arm.com>
+To: Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: "Liang, Kan" <kan.liang@linux.intel.com>,
+	Ian Rogers <irogers@google.com>, Namhyung Kim <namhyung@kernel.org>,
+	maz@kernel.org, marcan@marcan.st, linux-kernel@vger.kernel.org,
+	linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH] perf top: Use evsel's cpus to replace user_requested_cpus
+Message-ID: <ZZf2qmQx_l9KY1Id@FVFF77S0Q05N>
+References: <20231208210855.407580-1-kan.liang@linux.intel.com>
+ <ZXd7ZuxbNNsjAyqm@kernel.org>
+ <07677ab2-c29b-499b-b473-f7535fb27a8c@linux.intel.com>
+ <CAM9d7ci-VVhubefMqkSQgK-B2e2z4QU1=TLJtC49wbWW=VNc8g@mail.gmail.com>
+ <CAP-5=fVd-0aSovYVsOmTo2dfKb5_PHz1KV7ePipi35_JbfJ6qQ@mail.gmail.com>
+ <ZXim6U5251q0_bB2@FVFF77S0Q05N.cambridge.arm.com>
+ <ZXxyanyZgWBTOnoK@kernel.org>
+ <ZXyEJYXVNn2i06ro@FVFF77S0Q05N>
+ <ZXyRmpyzNGd3gKwV@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <20240105-ftrace_support-v9-1-a2dca64cc6ea@quicinc.com>
-X-B4-Tracking: v=1; b=H4sIAKf0l2UC/33RzU7DMAwH8FeZcqYocRIn2Yn3QAil+WA50Ja0q
- 0BT3x1vl1UE8O0fyz/J8YXNqZY0s+Phwmpay1zGgYJ7OLBw8sNb6kqkzICDFJzrLi/Vh/Q6n6d
- prEuHFl1UQqOQjtHQVFMunzfw+YXyqczLWL9u/iqur39Sq+hEB9JDlk5lr9zTx7mEMoTHML6zK
- 7bCDhCyAYAATNbJkLjgvW4BeQeoGkASkKW2EZwQ3qgWUP8DioBgJVLfOYWiBfQOANMAmoDUo4k
- ++ajyLwDeAeCqAZAA1wNHrTD6AC1g9gA2gCHAB/p+zxWg7VvA7oF2BUuAyQhRaW21/nGFbdu+A
- X+yvBd1AgAA
-To: Manivannan Sadhasivam <mani@kernel.org>,
-        Steven Rostedt
-	<rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-CC: <linux-kernel@vger.kernel.org>, <mhi@lists.linux.dev>,
-        <linux-arm-msm@vger.kernel.org>, <linux-trace-kernel@vger.kernel.org>,
-        <linux-trace-kernel@vger.kernel.org>, <quic_vbadigan@quicinc.com>,
-        <quic_ramkri@quicinc.com>, <quic_nitegupt@quicinc.com>,
-        <quic_skananth@quicinc.com>, <quic_parass@quicinc.com>,
-        "Krishna chaitanya
- chundru" <quic_krichai@quicinc.com>
-X-Mailer: b4 0.13-dev-83828
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1704457396; l=22244;
- i=quic_krichai@quicinc.com; s=20230907; h=from:subject:message-id;
- bh=c6100KjiJTQzkvl0acGi7W+MM0lSL64gkA2zsRUTHpg=;
- b=n8fHUGn5OUbNNI62MbdAoZ0jMr00T9y3sHcBErb13lXVtVM2mR0++prddMi/+mINMofU1uRnd
- WNtkC9LVNNED6VoRnBdjEzzF5xl7Np2GfvD0DNc0doJI1fwac6E/9RP
-X-Developer-Key: i=quic_krichai@quicinc.com; a=ed25519;
- pk=10CL2pdAKFyzyOHbfSWHCD0X0my7CXxj8gJScmn1FAg=
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: FJa3FC7vT_upY1ZVzddLigVpWXjIBG3A
-X-Proofpoint-GUID: FJa3FC7vT_upY1ZVzddLigVpWXjIBG3A
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 bulkscore=0
- phishscore=0 clxscore=1015 malwarescore=0 spamscore=0 priorityscore=1501
- mlxlogscore=999 lowpriorityscore=0 impostorscore=0 adultscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2311290000
- definitions=main-2401050106
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZXyRmpyzNGd3gKwV@kernel.org>
 
-This change adds ftrace support for following functions which
-helps in debugging the issues when there is Channel state & MHI
-state change and also when we receive data and control events:
-1. mhi_intvec_mhi_states
-2. mhi_process_data_event_ring
-3. mhi_process_ctrl_ev_ring
-4. mhi_gen_tre
-5. mhi_update_channel_state
-6. mhi_tryset_pm_state
-7. mhi_pm_st_worker
+On Fri, Dec 15, 2023 at 02:49:14PM -0300, Arnaldo Carvalho de Melo wrote:
+> Em Fri, Dec 15, 2023 at 04:51:49PM +0000, Mark Rutland escreveu:
+> > On Fri, Dec 15, 2023 at 12:36:10PM -0300, Arnaldo Carvalho de Melo wrote:
+> > > Em Tue, Dec 12, 2023 at 06:31:05PM +0000, Mark Rutland escreveu:
+> > > > On ARM it'll be essentially the same as on x86: if you open an event with
+> > > > type==PERF_EVENT_TYPE_HARDWARE (without the extended HW type pointing to a
+> > > > specific PMU), and with cpu==-1, it'll go to an arbitrary CPU PMU, whichever
+> > > > happens to be found by perf_init_event() when iterating over the 'pmus' list.
+> 
+> > > > If you open an event with type==PERF_EVENT_TYPE_HARDWARE and cpu!=-1, the event
+> > > > will opened on the appropriate CPU PMU, by virtue of being rejected by others
+> > > > when perf_init_event() iterates over the 'pmus' list.
+> 
+> > > The way that it is working non on my intel hybrid system, with Kan's
+> > > patch, is equivalent to using this on the RK3399pc board I have:
+> 
+> > > root@roc-rk3399-pc:~# perf top -e armv8_cortex_a72/cycles/P,armv8_cortex_a53/cycles/P
+> 
+> > > Wouldn't be better to make 'perf top' on ARM work the way is being done
+> > > in x86 now, i.e. default to opening the two events, one per PMU and
+> > > allow the user to switch back and forth using the TUI/stdio?
+>  
+> > TBH, for perf top I don't know *which* behaviour is preferable, but I agree
+> > that it'd be good for x86 and arm to work in the same way.
+> 
+> Right, reducing the difference in the user experience accross arches.
+>  
+> > For design-cleanliness and consistency with other commands I can see that
+> > opening those separately is probably for the best, but for typical usage of
+> > perf top it's really nice to have those presented together without having to
+> > tab back-and-forth between the distinct PMUs, and so the existing behaviour of
+> 
+> Humm, so you would want two histogram viewers, one for each PMU, side by
+> side?
 
-Change the implementation of the arrays which has enum to strings mapping
-to make it consistent in both trace header file and other files.
+I had meant as an aggregated view (the same as what you'd get if you opened one
+plain PERF_TYPE_HARDWARE event per cpu); I hadn't considered side-by-side views.
 
-Where ever the trace events are added, debug messages are removed.
+To be clear, I'm personally happy to tab between per-pmu views, and if that's
+how x86 works today for heterogeneous PMUs, I'm fine with the same for
+arm/arm64. I was trying to say that I didn't have a strong preference.
 
-Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
-Reviewed-by: "Steven Rostedt (Google)" <rostedt@goodmis.org>
----
-Changes in v9:
-- Change the implementations of some array so that the strings to enum mapping
-- is same in both trace header and other files as suggested by steve.
-- Link to v8: https://lore.kernel.org/r/20231207-ftrace_support-v8-1-7f62d4558555@quicinc.com
+> > using CPU-bound PERF_EVENT_TYPE_HARDWARE events is arguably nicer for the user.
+> 
+> So, on ARM64, start the following 'perf trace' session, then run the
+> stock 'perf top':
+> 
+> root@roc-rk3399-pc:~# perf trace -e perf_event_open
+> <SNIP calls doing capability queries and setting up sideband stuff>
+>    535.764 ( 0.015 ms): perf/15627 perf_event_open(attr_uptr: { type: 0 (PERF_TYPE_HARDWARE), size: 136, config: 0 (PERF_COUNT_HW_CPU_CYCLES), { sample_period, sample_freq }: 4000, sample_type: IP|TID|TIME|CPU|PERIOD, read_format: ID|LOST, disabled: 1, inherit: 1, mmap: 1, comm: 1, freq: 1, task: 1, precise_ip: 3, sample_id_all: 1, mmap2: 1, comm_exec: 1, ksymbol: 1, bpf_event: 1 }, pid: -1, group_fd: -1, flags: FD_CLOEXEC) = 19
+>    535.783 ( 0.067 ms): perf/15627 perf_event_open(attr_uptr: { type: 0 (PERF_TYPE_HARDWARE), size: 136, config: 0 (PERF_COUNT_HW_CPU_CYCLES), { sample_period, sample_freq }: 4000, sample_type: IP|TID|TIME|CPU|PERIOD, read_format: ID|LOST, disabled: 1, inherit: 1, mmap: 1, comm: 1, freq: 1, task: 1, precise_ip: 3, sample_id_all: 1, mmap2: 1, comm_exec: 1, ksymbol: 1, bpf_event: 1 }, pid: -1, cpu: 1, group_fd: -1, flags: FD_CLOEXEC) = 28
+>    535.854 ( 0.063 ms): perf/15627 perf_event_open(attr_uptr: { type: 0 (PERF_TYPE_HARDWARE), size: 136, config: 0 (PERF_COUNT_HW_CPU_CYCLES), { sample_period, sample_freq }: 4000, sample_type: IP|TID|TIME|CPU|PERIOD, read_format: ID|LOST, disabled: 1, inherit: 1, mmap: 1, comm: 1, freq: 1, task: 1, precise_ip: 3, sample_id_all: 1, mmap2: 1, comm_exec: 1, ksymbol: 1, bpf_event: 1 }, pid: -1, cpu: 2, group_fd: -1, flags: FD_CLOEXEC) = 29
+>    535.920 ( 0.015 ms): perf/15627 perf_event_open(attr_uptr: { type: 0 (PERF_TYPE_HARDWARE), size: 136, config: 0 (PERF_COUNT_HW_CPU_CYCLES), { sample_period, sample_freq }: 4000, sample_type: IP|TID|TIME|CPU|PERIOD, read_format: ID|LOST, disabled: 1, inherit: 1, mmap: 1, comm: 1, freq: 1, task: 1, precise_ip: 3, sample_id_all: 1, mmap2: 1, comm_exec: 1, ksymbol: 1, bpf_event: 1 }, pid: -1, cpu: 3, group_fd: -1, flags: FD_CLOEXEC) = 30
+>    535.939 ( 0.016 ms): perf/15627 perf_event_open(attr_uptr: { type: 0 (PERF_TYPE_HARDWARE), size: 136, config: 0 (PERF_COUNT_HW_CPU_CYCLES), { sample_period, sample_freq }: 4000, sample_type: IP|TID|TIME|CPU|PERIOD, read_format: ID|LOST, disabled: 1, inherit: 1, mmap: 1, comm: 1, freq: 1, task: 1, precise_ip: 3, sample_id_all: 1, mmap2: 1, comm_exec: 1, ksymbol: 1, bpf_event: 1 }, pid: -1, cpu: 4, group_fd: -1, flags: FD_CLOEXEC) = 31
+>    535.959 ( 0.011 ms): perf/15627 perf_event_open(attr_uptr: { type: 0 (PERF_TYPE_HARDWARE), size: 136, config: 0 (PERF_COUNT_HW_CPU_CYCLES), { sample_period, sample_freq }: 4000, sample_type: IP|TID|TIME|CPU|PERIOD, read_format: ID|LOST, disabled: 1, inherit: 1, mmap: 1, comm: 1, freq: 1, task: 1, precise_ip: 3, sample_id_all: 1, mmap2: 1, comm_exec: 1, ksymbol: 1, bpf_event: 1 }, pid: -1, cpu: 5, group_fd: -1, flags: FD_CLOEXEC) = 32
+> 
+> root@roc-rk3399-pc:~# grep "CPU part" /proc/cpuinfo  | uniq -c
+>       4 CPU part	: 0xd03
+>       2 CPU part	: 0xd08
+> root@roc-rk3399-pc:~#
+> 
+> It is already doing what you suggest, right? PERF_TYPE_HARDWARE, one
+> counter per CPU, maps to armv8_cortex_a72/cycles/P and
+> armv8_cortex_a53/cycles/P.
 
-Changes in v8:
-- Pass the structure and derefernce the variables in TP_fast_assign as suggested by steve
-- Link to v7: https://lore.kernel.org/r/20231206-ftrace_support-v7-1-aca49a04268b@quicinc.com
+Sounds like it; as above I'm happy for that to change to per-PMU views.
 
-Changes in v7:
-- change log format as pointed by mani.
-- Link to v6: https://lore.kernel.org/r/20231204-ftrace_support-v6-1-9b206546dac2@quicinc.com
+> One thing I'm thinking is that we should split this per PMU at the
+> hist_entry, so that we could show how many samples/events came from each
+> of them...
 
-Changes in v6:
-- use 'rp' directly as suggested by jeffrey.
-- Link to v5: https://lore.kernel.org/r/20231127-ftrace_support-v5-1-eb67daead4f1@quicinc.com
+That sounds sensible to me.
 
-Changes in v5:
-- Use DECLARE_EVENT_CLASS for multiple events as suggested by steve.
-- Instead of converting to u64 to print address, use %px to print the address to avoid
-- warnings in some platforms.
-- Link to v4: https://lore.kernel.org/r/20231111-ftrace_support-v4-1-c83602399461@quicinc.com
+Mark.
 
-Changes in v4:
-- Fix compilation issues in previous patch which happended due to rebasing.
-- In the defconfig FTRACE config is not enabled due to that the compilation issue is not
-- seen in my workspace.
-- Link to v3: https://lore.kernel.org/r/20231111-ftrace_support-v3-1-f358d2911a74@quicinc.com
-
-Changes in v3:
-- move trace header file from include/trace/events to drivers/bus/mhi/host/ so that
-- we can include driver header files.
-- Use macros directly in the trace events as suggested Jeffrey Hugo.
-- Reorder the structure in the events as suggested by steve to avoid holes in the buffer.
-- removed the mhi_to_physical function as this can give security issues.
-- removed macros to define strings as we can get those from driver headers.
-- Link to v2: https://lore.kernel.org/r/20231013-ftrace_support-v2-1-6e893ce010b5@quicinc.com
-
-Changes in v2:
-- Passing the raw state into the trace event and using  __print_symbolic() as suggested by bjorn.
-- Change mhi_pm_st_worker to mhi_pm_st_transition as suggested by bjorn.
-- Fixed the kernel test rebot issues.
-- Link to v1: https://lore.kernel.org/r/20231005-ftrace_support-v1-1-23a2f394fa49@quicinc.com
----
- drivers/bus/mhi/common.h        |  38 +++---
- drivers/bus/mhi/host/init.c     |  63 +++++----
- drivers/bus/mhi/host/internal.h |  40 ++++++
- drivers/bus/mhi/host/main.c     |  19 ++-
- drivers/bus/mhi/host/pm.c       |   7 +-
- drivers/bus/mhi/host/trace.h    | 275 ++++++++++++++++++++++++++++++++++++++++
- 6 files changed, 378 insertions(+), 64 deletions(-)
-
-diff --git a/drivers/bus/mhi/common.h b/drivers/bus/mhi/common.h
-index f794b9c8049e..dda340aaed95 100644
---- a/drivers/bus/mhi/common.h
-+++ b/drivers/bus/mhi/common.h
-@@ -297,30 +297,30 @@ struct mhi_ring_element {
- 	__le32 dword[2];
- };
- 
-+#define MHI_STATE_LIST				\
-+	mhi_state(RESET,	"RESET")	\
-+	mhi_state(READY,	"READY")	\
-+	mhi_state(M0,		"M0")		\
-+	mhi_state(M1,		"M1")		\
-+	mhi_state(M2,		"M2")		\
-+	mhi_state(M3,		"M3")		\
-+	mhi_state(M3_FAST,	"M3_FAST")	\
-+	mhi_state(BHI,		"BHI")		\
-+	mhi_state_end(SYS_ERR,	"SYS ERROR")
-+
-+#undef mhi_state
-+#undef mhi_state_end
-+
-+#define mhi_state(a, b)		case MHI_STATE_##a: return b;
-+#define mhi_state_end(a, b)	case MHI_STATE_##a: return b;
-+
- static inline const char *mhi_state_str(enum mhi_state state)
- {
- 	switch (state) {
--	case MHI_STATE_RESET:
--		return "RESET";
--	case MHI_STATE_READY:
--		return "READY";
--	case MHI_STATE_M0:
--		return "M0";
--	case MHI_STATE_M1:
--		return "M1";
--	case MHI_STATE_M2:
--		return "M2";
--	case MHI_STATE_M3:
--		return "M3";
--	case MHI_STATE_M3_FAST:
--		return "M3 FAST";
--	case MHI_STATE_BHI:
--		return "BHI";
--	case MHI_STATE_SYS_ERR:
--		return "SYS ERROR";
-+	MHI_STATE_LIST
- 	default:
- 		return "Unknown state";
- 	}
--};
-+}
- 
- #endif /* _MHI_COMMON_H */
-diff --git a/drivers/bus/mhi/host/init.c b/drivers/bus/mhi/host/init.c
-index f78aefd2d7a3..c28bc02872fe 100644
---- a/drivers/bus/mhi/host/init.c
-+++ b/drivers/bus/mhi/host/init.c
-@@ -20,50 +20,49 @@
- #include <linux/wait.h>
- #include "internal.h"
- 
-+#define CREATE_TRACE_POINTS
-+#include "trace.h"
-+
- static DEFINE_IDA(mhi_controller_ida);
- 
-+#undef mhi_ee
-+#undef mhi_ee_end
-+
-+#define mhi_ee(a, b)		[MHI_EE_##a] = b,
-+#define mhi_ee_end(a, b)	[MHI_EE_##a] = b,
-+
- const char * const mhi_ee_str[MHI_EE_MAX] = {
--	[MHI_EE_PBL] = "PRIMARY BOOTLOADER",
--	[MHI_EE_SBL] = "SECONDARY BOOTLOADER",
--	[MHI_EE_AMSS] = "MISSION MODE",
--	[MHI_EE_RDDM] = "RAMDUMP DOWNLOAD MODE",
--	[MHI_EE_WFW] = "WLAN FIRMWARE",
--	[MHI_EE_PTHRU] = "PASS THROUGH",
--	[MHI_EE_EDL] = "EMERGENCY DOWNLOAD",
--	[MHI_EE_FP] = "FLASH PROGRAMMER",
--	[MHI_EE_DISABLE_TRANSITION] = "DISABLE",
--	[MHI_EE_NOT_SUPPORTED] = "NOT SUPPORTED",
-+	MHI_EE_LIST
- };
- 
-+#undef dev_st_trans
-+#undef dev_st_trans_end
-+
-+#define dev_st_trans(a, b)	[DEV_ST_TRANSITION_##a] = b,
-+#define dev_st_trans_end(a, b)	[DEV_ST_TRANSITION_##a] = b,
-+
- const char * const dev_state_tran_str[DEV_ST_TRANSITION_MAX] = {
--	[DEV_ST_TRANSITION_PBL] = "PBL",
--	[DEV_ST_TRANSITION_READY] = "READY",
--	[DEV_ST_TRANSITION_SBL] = "SBL",
--	[DEV_ST_TRANSITION_MISSION_MODE] = "MISSION MODE",
--	[DEV_ST_TRANSITION_FP] = "FLASH PROGRAMMER",
--	[DEV_ST_TRANSITION_SYS_ERR] = "SYS ERROR",
--	[DEV_ST_TRANSITION_DISABLE] = "DISABLE",
-+	DEV_ST_TRANSITION_LIST
- };
- 
-+#undef ch_state_type
-+#undef ch_state_type_end
-+
-+#define ch_state_type(a, b)	[MHI_CH_STATE_TYPE_##a] = b,
-+#define ch_state_type_end(a, b)	[MHI_CH_STATE_TYPE_##a] = b,
-+
- const char * const mhi_ch_state_type_str[MHI_CH_STATE_TYPE_MAX] = {
--	[MHI_CH_STATE_TYPE_RESET] = "RESET",
--	[MHI_CH_STATE_TYPE_STOP] = "STOP",
--	[MHI_CH_STATE_TYPE_START] = "START",
-+	MHI_CH_STATE_TYPE_LIST
- };
- 
-+#undef mhi_pm_state
-+#undef mhi_pm_state_end
-+
-+#define mhi_pm_state(a, b)	[MHI_PM_STATE_##a] = b,
-+#define mhi_pm_state_end(a, b)	[MHI_PM_STATE_##a] = b,
-+
- static const char * const mhi_pm_state_str[] = {
--	[MHI_PM_STATE_DISABLE] = "DISABLE",
--	[MHI_PM_STATE_POR] = "POWER ON RESET",
--	[MHI_PM_STATE_M0] = "M0",
--	[MHI_PM_STATE_M2] = "M2",
--	[MHI_PM_STATE_M3_ENTER] = "M?->M3",
--	[MHI_PM_STATE_M3] = "M3",
--	[MHI_PM_STATE_M3_EXIT] = "M3->M0",
--	[MHI_PM_STATE_FW_DL_ERR] = "Firmware Download Error",
--	[MHI_PM_STATE_SYS_ERR_DETECT] = "SYS ERROR Detect",
--	[MHI_PM_STATE_SYS_ERR_PROCESS] = "SYS ERROR Process",
--	[MHI_PM_STATE_SHUTDOWN_PROCESS] = "SHUTDOWN Process",
--	[MHI_PM_STATE_LD_ERR_FATAL_DETECT] = "Linkdown or Error Fatal Detect",
-+	MHI_PM_STATE_LIST
- };
- 
- const char *to_mhi_pm_state_str(u32 state)
-diff --git a/drivers/bus/mhi/host/internal.h b/drivers/bus/mhi/host/internal.h
-index 2e139e76de4c..9a2f2ca2be7c 100644
---- a/drivers/bus/mhi/host/internal.h
-+++ b/drivers/bus/mhi/host/internal.h
-@@ -42,6 +42,11 @@ enum mhi_ch_state_type {
- 	MHI_CH_STATE_TYPE_MAX,
- };
- 
-+#define MHI_CH_STATE_TYPE_LIST				\
-+	ch_state_type(RESET,		"RESET")	\
-+	ch_state_type(STOP,		"STOP")		\
-+	ch_state_type_end(START,	"START")
-+
- extern const char * const mhi_ch_state_type_str[MHI_CH_STATE_TYPE_MAX];
- #define TO_CH_STATE_TYPE_STR(state) (((state) >= MHI_CH_STATE_TYPE_MAX) ? \
- 				     "INVALID_STATE" : \
-@@ -50,6 +55,18 @@ extern const char * const mhi_ch_state_type_str[MHI_CH_STATE_TYPE_MAX];
- #define MHI_INVALID_BRSTMODE(mode) (mode != MHI_DB_BRST_DISABLE && \
- 				    mode != MHI_DB_BRST_ENABLE)
- 
-+#define MHI_EE_LIST						\
-+	mhi_ee(PBL,			"PRIMARY BOOTLOADER")	\
-+	mhi_ee(SBL,			"SECONDARY BOOTLOADER")	\
-+	mhi_ee(AMSS,			"MISSION MODE")		\
-+	mhi_ee(RDDM,			"RAMDUMP DOWNLOAD MODE")\
-+	mhi_ee(WFW,			"WLAN FIRMWARE")	\
-+	mhi_ee(PTHRU,			"PASS THROUGH")		\
-+	mhi_ee(EDL,			"EMERGENCY DOWNLOAD")	\
-+	mhi_ee(FP,			"FLASH PROGRAMMER")	\
-+	mhi_ee(DISABLE_TRANSITION,	"DISABLE")		\
-+	mhi_ee_end(NOT_SUPPORTED,	"NOT SUPPORTED")
-+
- extern const char * const mhi_ee_str[MHI_EE_MAX];
- #define TO_MHI_EXEC_STR(ee) (((ee) >= MHI_EE_MAX) ? \
- 			     "INVALID_EE" : mhi_ee_str[ee])
-@@ -72,6 +89,15 @@ enum dev_st_transition {
- 	DEV_ST_TRANSITION_MAX,
- };
- 
-+#define DEV_ST_TRANSITION_LIST					\
-+	dev_st_trans(PBL,		"PBL")			\
-+	dev_st_trans(READY,		"READY")		\
-+	dev_st_trans(SBL,		"SBL")			\
-+	dev_st_trans(MISSION_MODE,	"MISSION MODE")		\
-+	dev_st_trans(FP,		"FLASH PROGRAMMER")	\
-+	dev_st_trans(SYS_ERR,		"SYS ERROR")		\
-+	dev_st_trans_end(DISABLE,	"DISABLE")
-+
- extern const char * const dev_state_tran_str[DEV_ST_TRANSITION_MAX];
- #define TO_DEV_STATE_TRANS_STR(state) (((state) >= DEV_ST_TRANSITION_MAX) ? \
- 				"INVALID_STATE" : dev_state_tran_str[state])
-@@ -93,6 +119,20 @@ enum mhi_pm_state {
- 	MHI_PM_STATE_MAX
- };
- 
-+#define MHI_PM_STATE_LIST							\
-+	mhi_pm_state(DISABLE,			"DISABLE")			\
-+	mhi_pm_state(POR,			"POWER ON RESET")		\
-+	mhi_pm_state(M0,			"M0")				\
-+	mhi_pm_state(M2,			"M2")				\
-+	mhi_pm_state(M3_ENTER,			"M?->M3")			\
-+	mhi_pm_state(M3,			"M3")				\
-+	mhi_pm_state(M3_EXIT,			"M3->M0")			\
-+	mhi_pm_state(FW_DL_ERR,			"Firmware Download Error")	\
-+	mhi_pm_state(SYS_ERR_DETECT,		"SYS ERROR Detect")		\
-+	mhi_pm_state(SYS_ERR_PROCESS,		"SYS ERROR Process")		\
-+	mhi_pm_state(SHUTDOWN_PROCESS,		"SHUTDOWN Process")		\
-+	mhi_pm_state_end(LD_ERR_FATAL_DETECT,	"Linkdown or Error Fatal Detect")
-+
- #define MHI_PM_DISABLE					BIT(0)
- #define MHI_PM_POR					BIT(1)
- #define MHI_PM_M0					BIT(2)
-diff --git a/drivers/bus/mhi/host/main.c b/drivers/bus/mhi/host/main.c
-index dcf627b36e82..189f4786403e 100644
---- a/drivers/bus/mhi/host/main.c
-+++ b/drivers/bus/mhi/host/main.c
-@@ -15,6 +15,7 @@
- #include <linux/skbuff.h>
- #include <linux/slab.h>
- #include "internal.h"
-+#include "trace.h"
- 
- int __must_check mhi_read_reg(struct mhi_controller *mhi_cntrl,
- 			      void __iomem *base, u32 offset, u32 *out)
-@@ -491,11 +492,8 @@ irqreturn_t mhi_intvec_threaded_handler(int irq_number, void *priv)
- 
- 	state = mhi_get_mhi_state(mhi_cntrl);
- 	ee = mhi_get_exec_env(mhi_cntrl);
--	dev_dbg(dev, "local ee: %s state: %s device ee: %s state: %s\n",
--		TO_MHI_EXEC_STR(mhi_cntrl->ee),
--		mhi_state_str(mhi_cntrl->dev_state),
--		TO_MHI_EXEC_STR(ee), mhi_state_str(state));
- 
-+	trace_mhi_intvec_states(mhi_cntrl, ee, state);
- 	if (state == MHI_STATE_SYS_ERR) {
- 		dev_dbg(dev, "System error detected\n");
- 		pm_state = mhi_tryset_pm_state(mhi_cntrl,
-@@ -832,6 +830,8 @@ int mhi_process_ctrl_ev_ring(struct mhi_controller *mhi_cntrl,
- 	while (dev_rp != local_rp) {
- 		enum mhi_pkt_type type = MHI_TRE_GET_EV_TYPE(local_rp);
- 
-+		trace_mhi_ctrl_event(mhi_cntrl, local_rp);
-+
- 		switch (type) {
- 		case MHI_PKT_TYPE_BW_REQ_EVENT:
- 		{
-@@ -997,6 +997,8 @@ int mhi_process_data_event_ring(struct mhi_controller *mhi_cntrl,
- 	while (dev_rp != local_rp && event_quota > 0) {
- 		enum mhi_pkt_type type = MHI_TRE_GET_EV_TYPE(local_rp);
- 
-+		trace_mhi_data_event(mhi_cntrl, local_rp);
-+
- 		chan = MHI_TRE_GET_EV_CHID(local_rp);
- 
- 		WARN_ON(chan >= mhi_cntrl->max_chan);
-@@ -1235,6 +1237,7 @@ int mhi_gen_tre(struct mhi_controller *mhi_cntrl, struct mhi_chan *mhi_chan,
- 	mhi_tre->dword[0] = MHI_TRE_DATA_DWORD0(info->len);
- 	mhi_tre->dword[1] = MHI_TRE_DATA_DWORD1(bei, eot, eob, chain);
- 
-+	trace_mhi_gen_tre(mhi_cntrl, mhi_chan, mhi_tre);
- 	/* increment WP */
- 	mhi_add_ring_element(mhi_cntrl, tre_ring);
- 	mhi_add_ring_element(mhi_cntrl, buf_ring);
-@@ -1327,9 +1330,7 @@ static int mhi_update_channel_state(struct mhi_controller *mhi_cntrl,
- 	enum mhi_cmd_type cmd = MHI_CMD_NOP;
- 	int ret;
- 
--	dev_dbg(dev, "%d: Updating channel state to: %s\n", mhi_chan->chan,
--		TO_CH_STATE_TYPE_STR(to_state));
--
-+	trace_mhi_channel_command_start(mhi_cntrl, mhi_chan, to_state);
- 	switch (to_state) {
- 	case MHI_CH_STATE_TYPE_RESET:
- 		write_lock_irq(&mhi_chan->lock);
-@@ -1396,9 +1397,7 @@ static int mhi_update_channel_state(struct mhi_controller *mhi_cntrl,
- 		write_unlock_irq(&mhi_chan->lock);
- 	}
- 
--	dev_dbg(dev, "%d: Channel state change to %s successful\n",
--		mhi_chan->chan, TO_CH_STATE_TYPE_STR(to_state));
--
-+	trace_mhi_channel_command_end(mhi_cntrl, mhi_chan, to_state);
- exit_channel_update:
- 	mhi_cntrl->runtime_put(mhi_cntrl);
- 	mhi_device_put(mhi_cntrl->mhi_dev);
-diff --git a/drivers/bus/mhi/host/pm.c b/drivers/bus/mhi/host/pm.c
-index 8a4362d75fc4..5a2394b5b2e1 100644
---- a/drivers/bus/mhi/host/pm.c
-+++ b/drivers/bus/mhi/host/pm.c
-@@ -15,6 +15,7 @@
- #include <linux/slab.h>
- #include <linux/wait.h>
- #include "internal.h"
-+#include "trace.h"
- 
- /*
-  * Not all MHI state transitions are synchronous. Transitions like Linkdown,
-@@ -123,6 +124,7 @@ enum mhi_pm_state __must_check mhi_tryset_pm_state(struct mhi_controller *mhi_cn
- 	if (unlikely(!(dev_state_transitions[index].to_states & state)))
- 		return cur_state;
- 
-+	trace_mhi_tryset_pm_state(mhi_cntrl, state);
- 	mhi_cntrl->pm_state = state;
- 	return mhi_cntrl->pm_state;
- }
-@@ -753,7 +755,6 @@ void mhi_pm_st_worker(struct work_struct *work)
- 	struct mhi_controller *mhi_cntrl = container_of(work,
- 							struct mhi_controller,
- 							st_worker);
--	struct device *dev = &mhi_cntrl->mhi_dev->dev;
- 
- 	spin_lock_irq(&mhi_cntrl->transition_lock);
- 	list_splice_tail_init(&mhi_cntrl->transition_list, &head);
-@@ -761,8 +762,8 @@ void mhi_pm_st_worker(struct work_struct *work)
- 
- 	list_for_each_entry_safe(itr, tmp, &head, node) {
- 		list_del(&itr->node);
--		dev_dbg(dev, "Handling state transition: %s\n",
--			TO_DEV_STATE_TRANS_STR(itr->state));
-+
-+		trace_mhi_pm_st_transition(mhi_cntrl, itr->state);
- 
- 		switch (itr->state) {
- 		case DEV_ST_TRANSITION_PBL:
-diff --git a/drivers/bus/mhi/host/trace.h b/drivers/bus/mhi/host/trace.h
-new file mode 100644
-index 000000000000..c74be0949178
---- /dev/null
-+++ b/drivers/bus/mhi/host/trace.h
-@@ -0,0 +1,275 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+/*
-+ * Copyright (c) 2023 Qualcomm Innovation Center, Inc. All rights reserved.
-+ */
-+
-+#undef TRACE_SYSTEM
-+#define TRACE_SYSTEM mhi_host
-+
-+#if !defined(_TRACE_EVENT_MHI_HOST_H) || defined(TRACE_HEADER_MULTI_READ)
-+#define _TRACE_EVENT_MHI_HOST_H
-+
-+#include <linux/tracepoint.h>
-+#include <linux/trace_seq.h>
-+#include "../common.h"
-+#include "internal.h"
-+
-+#undef mhi_state
-+#undef mhi_state_end
-+
-+#define mhi_state(a, b)		TRACE_DEFINE_ENUM(MHI_STATE_##a);
-+#define mhi_state_end(a, b)	TRACE_DEFINE_ENUM(MHI_STATE_##a);
-+
-+MHI_STATE_LIST
-+
-+#undef mhi_state
-+#undef mhi_state_end
-+
-+#define mhi_state(a, b)		{ MHI_STATE_##a, b },
-+#define mhi_state_end(a, b)	{ MHI_STATE_##a, b }
-+
-+#undef mhi_pm_state
-+#undef mhi_pm_state_end
-+
-+#define mhi_pm_state(a, b)		TRACE_DEFINE_ENUM(MHI_PM_STATE_##a);
-+#define mhi_pm_state_end(a, b)		TRACE_DEFINE_ENUM(MHI_PM_STATE_##a);
-+
-+MHI_PM_STATE_LIST
-+
-+#undef mhi_pm_state
-+#undef mhi_pm_state_end
-+
-+#define mhi_pm_state(a, b)		{ MHI_PM_STATE_##a, b },
-+#define mhi_pm_state_end(a, b)		{ MHI_PM_STATE_##a, b }
-+
-+#undef mhi_ee
-+#undef mhi_ee_end
-+
-+#define mhi_ee(a, b)			TRACE_DEFINE_ENUM(MHI_EE_##a);
-+#define mhi_ee_end(a, b)		TRACE_DEFINE_ENUM(MHI_EE_##a);
-+
-+MHI_EE_LIST
-+
-+#undef mhi_ee
-+#undef mhi_ee_end
-+
-+#define mhi_ee(a, b)			{ MHI_EE_##a, b },
-+#define mhi_ee_end(a, b)		{ MHI_EE_##a, b }
-+
-+#undef ch_state_type
-+#undef ch_state_type_end
-+
-+#define ch_state_type(a, b)		TRACE_DEFINE_ENUM(MHI_CH_STATE_TYPE_##a);
-+#define ch_state_type_end(a, b)		TRACE_DEFINE_ENUM(MHI_CH_STATE_TYPE_##a);
-+
-+MHI_CH_STATE_TYPE_LIST
-+
-+#undef ch_state_type
-+#undef ch_state_type_end
-+
-+#define ch_state_type(a, b)		{ MHI_CH_STATE_TYPE_##a, b },
-+#define ch_state_type_end(a, b)		{ MHI_CH_STATE_TYPE_##a, b }
-+
-+#undef dev_st_trans
-+#undef dev_st_trans_end
-+
-+#define dev_st_trans(a, b)		TRACE_DEFINE_ENUM(DEV_ST_TRANSITION_##a);
-+#define dev_st_trans_end(a, b)		TRACE_DEFINE_ENUM(DEV_ST_TRANSITION_##a);
-+
-+DEV_ST_TRANSITION_LIST
-+
-+#undef dev_st_trans
-+#undef dev_st_trans_end
-+
-+#define dev_st_trans(a, b)		{ DEV_ST_TRANSITION_##a, b },
-+#define dev_st_trans_end(a, b)		{ DEV_ST_TRANSITION_##a, b }
-+
-+TRACE_EVENT(mhi_gen_tre,
-+
-+	TP_PROTO(struct mhi_controller *mhi_cntrl, struct mhi_chan *mhi_chan,
-+		 struct mhi_ring_element *mhi_tre),
-+
-+	TP_ARGS(mhi_cntrl, mhi_chan, mhi_tre),
-+
-+	TP_STRUCT__entry(
-+		__string(name, mhi_cntrl->mhi_dev->name)
-+		__field(int, ch_num)
-+		__field(void *, wp)
-+		__field(__le64, tre_ptr)
-+		__field(__le32, dword0)
-+		__field(__le32, dword1)
-+	),
-+
-+	TP_fast_assign(
-+		__assign_str(name, mhi_cntrl->mhi_dev->name);
-+		__entry->ch_num = mhi_chan->chan;
-+		__entry->wp = mhi_tre;
-+		__entry->tre_ptr = mhi_tre->ptr;
-+		__entry->dword0 = mhi_tre->dword[0];
-+		__entry->dword1 = mhi_tre->dword[1];
-+	),
-+
-+	TP_printk("%s: Chan: %d Tre: 0x%p Tre buf: 0x%llx dword0: 0x%08x dword1: 0x%08x\n",
-+		  __get_str(name), __entry->ch_num, __entry->wp, __entry->tre_ptr,
-+		  __entry->dword0, __entry->dword1)
-+);
-+
-+TRACE_EVENT(mhi_intvec_states,
-+
-+	TP_PROTO(struct mhi_controller *mhi_cntrl, int dev_ee, int dev_state),
-+
-+	TP_ARGS(mhi_cntrl, dev_ee, dev_state),
-+
-+	TP_STRUCT__entry(
-+		__string(name, mhi_cntrl->mhi_dev->name)
-+		__field(int, local_ee)
-+		__field(int, state)
-+		__field(int, dev_ee)
-+		__field(int, dev_state)
-+	),
-+
-+	TP_fast_assign(
-+		__assign_str(name, mhi_cntrl->mhi_dev->name);
-+		__entry->local_ee = mhi_cntrl->ee;
-+		__entry->state = mhi_cntrl->dev_state;
-+		__entry->dev_ee = dev_ee;
-+		__entry->dev_state = dev_state;
-+	),
-+
-+	TP_printk("%s: local ee: %s state: %s device ee: %s state: %s\n",
-+		  __get_str(name),
-+		  __print_symbolic(__entry->local_ee, MHI_EE_LIST),
-+		  __print_symbolic(__entry->state, MHI_STATE_LIST),
-+		  __print_symbolic(__entry->dev_ee, MHI_EE_LIST),
-+		  __print_symbolic(__entry->state, MHI_STATE_LIST))
-+);
-+
-+TRACE_EVENT(mhi_tryset_pm_state,
-+
-+	TP_PROTO(struct mhi_controller *mhi_cntrl, int pm_state),
-+
-+	TP_ARGS(mhi_cntrl, pm_state),
-+
-+	TP_STRUCT__entry(
-+		__string(name, mhi_cntrl->mhi_dev->name)
-+		__field(int, pm_state)
-+	),
-+
-+	TP_fast_assign(
-+		__assign_str(name, mhi_cntrl->mhi_dev->name);
-+		if (pm_state)
-+			pm_state = __fls(pm_state);
-+		__entry->pm_state = pm_state;
-+	),
-+
-+	TP_printk("%s: PM state: %s\n", __get_str(name),
-+		  __print_symbolic(__entry->pm_state, MHI_PM_STATE_LIST))
-+);
-+
-+DECLARE_EVENT_CLASS(mhi_process_event_ring,
-+
-+	TP_PROTO(struct mhi_controller *mhi_cntrl, struct mhi_ring_element *rp),
-+
-+	TP_ARGS(mhi_cntrl, rp),
-+
-+	TP_STRUCT__entry(
-+		__string(name, mhi_cntrl->mhi_dev->name)
-+		__field(__le32, dword0)
-+		__field(__le32, dword1)
-+		__field(int, state)
-+		__field(__le64, ptr)
-+		__field(void *, rp)
-+	),
-+
-+	TP_fast_assign(
-+		__assign_str(name, mhi_cntrl->mhi_dev->name);
-+		__entry->rp = rp;
-+		__entry->ptr = rp->ptr;
-+		__entry->dword0 = rp->dword[0];
-+		__entry->dword1 = rp->dword[1];
-+		__entry->state = MHI_TRE_GET_EV_STATE(rp);
-+	),
-+
-+	TP_printk("%s: Tre: 0x%p Tre buf: 0x%llx dword0: 0x%08x dword1: 0x%08x state: %s\n",
-+		  __get_str(name), __entry->rp, __entry->ptr, __entry->dword0,
-+		  __entry->dword1, __print_symbolic(__entry->state, MHI_STATE_LIST))
-+);
-+
-+DEFINE_EVENT(mhi_process_event_ring, mhi_data_event,
-+
-+	TP_PROTO(struct mhi_controller *mhi_cntrl, struct mhi_ring_element *rp),
-+
-+	TP_ARGS(mhi_cntrl, rp)
-+);
-+
-+DEFINE_EVENT(mhi_process_event_ring, mhi_ctrl_event,
-+
-+	TP_PROTO(struct mhi_controller *mhi_cntrl, struct mhi_ring_element *rp),
-+
-+	TP_ARGS(mhi_cntrl, rp)
-+);
-+
-+DECLARE_EVENT_CLASS(mhi_update_channel_state,
-+
-+	TP_PROTO(struct mhi_controller *mhi_cntrl, struct mhi_chan *mhi_chan, int state),
-+
-+	TP_ARGS(mhi_cntrl, mhi_chan, state),
-+
-+	TP_STRUCT__entry(
-+		__string(name, mhi_cntrl->mhi_dev->name)
-+		__field(int, ch_num)
-+		__field(int, state)
-+	),
-+
-+	TP_fast_assign(
-+		__assign_str(name, mhi_cntrl->mhi_dev->name);
-+		__entry->ch_num = mhi_chan->chan;
-+		__entry->state = state;
-+	),
-+
-+	TP_printk("%s: chan%d: Updating state to: %s\n",
-+		  __get_str(name), __entry->ch_num,
-+		  __print_symbolic(__entry->state, MHI_CH_STATE_TYPE_LIST))
-+);
-+
-+DEFINE_EVENT(mhi_update_channel_state, mhi_channel_command_start,
-+
-+	TP_PROTO(struct mhi_controller *mhi_cntrl, struct mhi_chan *mhi_chan, int state),
-+
-+	TP_ARGS(mhi_cntrl, mhi_chan, state)
-+);
-+
-+DEFINE_EVENT(mhi_update_channel_state, mhi_channel_command_end,
-+
-+	TP_PROTO(struct mhi_controller *mhi_cntrl, struct mhi_chan *mhi_chan, int state),
-+
-+	TP_ARGS(mhi_cntrl, mhi_chan, state)
-+);
-+
-+TRACE_EVENT(mhi_pm_st_transition,
-+
-+	TP_PROTO(struct mhi_controller *mhi_cntrl, int state),
-+
-+	TP_ARGS(mhi_cntrl, state),
-+
-+	TP_STRUCT__entry(
-+		__string(name, mhi_cntrl->mhi_dev->name)
-+		__field(int, state)
-+	),
-+
-+	TP_fast_assign(
-+		__assign_str(name, mhi_cntrl->mhi_dev->name);
-+		__entry->state = state;
-+	),
-+
-+	TP_printk("%s: Handling state transition: %s\n", __get_str(name),
-+		  __print_symbolic(__entry->state, DEV_ST_TRANSITION_LIST))
-+);
-+
-+#endif
-+#undef TRACE_INCLUDE_PATH
-+#define TRACE_INCLUDE_PATH ../../drivers/bus/mhi/host
-+#undef TRACE_INCLUDE_FILE
-+#define TRACE_INCLUDE_FILE trace
-+
-+#include <trace/define_trace.h>
-
----
-base-commit: 3006adf3be79cde4d14b1800b963b82b6e5572e0
-change-id: 20231005-ftrace_support-6869d4156139
-
-Best regards,
--- 
-Krishna chaitanya chundru <quic_krichai@quicinc.com>
-
+> 
+> - Arnaldo
+>  
+> > I don't have a strong feeling either way; I'm personally happy so long as
+> > explicit pmu_name/event/ events don't get silently converted into
+> > PERF_EVENT_TYPE_HARDWARE events, and as long as we correctly set the extended
+> > HW type when we decide to use that.
+> > 
+> > Thanks,
+> > Mark.
+> > 
+> > > Kan, I also noticed that the name of the event is:
+> > > 
+> > > 1K cpu_atom/cycles:P/                                                                                                                                                                         ◆
+> > > 11K cpu_core/cycles:P/
+> > > 
+> > > If I try to use that on the command line:
+> > > 
+> > > root@number:~# perf top -e cpu_atom/cycles:P/
+> > > event syntax error: 'cpu_atom/cycles:P/'
+> > >                               \___ Bad event or PMU
+> > > 
+> > > Unable to find PMU or event on a PMU of 'cpu_atom'
+> > > 
+> > > Initial error:
+> > > event syntax error: 'cpu_atom/cycles:P/'
+> > >                               \___ unknown term 'cycles:P' for pmu 'cpu_atom'
+> > > 
+> > > valid terms: event,pc,edge,offcore_rsp,ldlat,inv,umask,cmask,config,config1,config2,config3,name,period,freq,branch_type,time,call-graph,stack-size,no-inherit,inherit,max-stack,nr,no-overwrite,overwrite,driver-config,percore,aux-output,aux-sample-size,metric-id,raw,legacy-cache,hardware
+> > > Run 'perf list' for a list of valid events
+> > > 
+> > >  Usage: perf top [<options>]
+> > > 
+> > >     -e, --event <event>   event selector. use 'perf list' to list available events
+> > > root@number:~#
+> > > 
+> > > It should be:
+> > > 
+> > >   "cpu_atom/cycles/P"
 
