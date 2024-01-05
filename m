@@ -1,66 +1,66 @@
-Return-Path: <linux-kernel+bounces-17731-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17732-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3CBD88251B0
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 11:17:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B17718251B2
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 11:17:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DA6901F23D01
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 10:17:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 52CDA1F23D07
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 10:17:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 654252D62B;
-	Fri,  5 Jan 2024 10:16:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 831D72D784;
+	Fri,  5 Jan 2024 10:16:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Y/nyzYEZ"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="GYVLloUV"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17E922D616
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 10:16:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E57D2D614
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 10:16:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a28e31563ebso158939266b.2
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Jan 2024 02:16:29 -0800 (PST)
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a1915034144so160303466b.0
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Jan 2024 02:16:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704449788; x=1705054588; darn=vger.kernel.org;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=JEdYVhrehgTxb2xPeGPy8ZmHUEqPAqYAW54ixn4xFbo=;
-        b=Y/nyzYEZ80RacohYjsxkrkDNxwQuQjKd/VrBVYrfvXqQAO0MlHT5Wzd8YKdt49OI37
-         DO4bjavXH+Y6ei4KQByOLAREiQRcf8Zp/EQQyaAjHuByyd6N/PZhbfwANYawFx11mnHe
-         2iLp++xug05085esCafMtuISak/muxSH4tlmFHHFgo2LN2hFfijnhiVXMTj1dl2cPhnj
-         4A1Nsa0o7jYxl0OZVd+xi3u6AobQxx+ARJFT9jkKgplIw5BoIf6jit8HBVur9t/Q9vp2
-         hCoy9EPNf+cSSQuItOqNT05TsHEggY8vUz3aiR50zyM7dHteZvTl9LSxM55Vj2GwBimZ
-         S3KQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704449788; x=1705054588;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=linaro.org; s=google; t=1704449789; x=1705054589; darn=vger.kernel.org;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=JEdYVhrehgTxb2xPeGPy8ZmHUEqPAqYAW54ixn4xFbo=;
-        b=kgxZ7nBmMDi2Sy7jy6v+hPEBoZaMFcZOVrIhQSWto8CyCieI7MCQVMNDIRvhS9oVMY
-         RXheRc7RgaDRHJbUzDY6l3Yv8sRZCFa9MZg9vVHugjMf7KPDKmTCGsQr7g7QFWLDekd1
-         pcXqIGw7nx17N00mHEkej0dw4+zuVgFK8Qkvfim3xX69JzKwaOwWIRJSv/ojAQI4b4Rh
-         r2Hj5kAda8Yu/P0D2ve4R7FA7+FfpNF0OEqDZsrG8f5zhV83KdDkq6jt7p693MT5vo8A
-         bMABz9j+2dAWxDpmvr9uuQvMpCxK9jpKsDESuuRTVdF/oSe6SVyAsQoMVndjaFq4qi6P
-         oD2w==
-X-Gm-Message-State: AOJu0YwVu918zD3644H7rKuZd6BcVyfzeV5XJUp234rqYvFLAF+pTfv7
-	2FWAbuLXgMMbj4HtvhYofOswSS0jYDGexQ==
-X-Google-Smtp-Source: AGHT+IHXszKz6YoDG5ESGGOO/jQA7HvVNO9DLvuBEm1mEOAj0fYQG14FVh+OjKPjAnLApWAgadvYvg==
-X-Received: by 2002:a17:906:c417:b0:a28:e546:1efb with SMTP id u23-20020a170906c41700b00a28e5461efbmr1024879ejz.115.1704449788331;
-        Fri, 05 Jan 2024 02:16:28 -0800 (PST)
+        bh=M2SbbmAUvxuz+3O7vyQxuSBbpMgT1hRNIR0aHAh7TUs=;
+        b=GYVLloUVaVP0riLgSjtPH/PD5jfpGnMu3U5Fr/ojJyQ1Qc/9sOoFRPsQyOdM1LCxk8
+         resGA2jVBNUvbeDFt29mje+kYLvuEH6aj0cnQ41L/RpDFsszRZsdAwLBmiKb+yyNpZph
+         6ZoMuyaSsXbeqR9kRqOdJ6PG1IzkQ3s0WFGpquJqDTwYO8V6Wu3FibnmqCr4wddmgbA2
+         P1TorMuMxLwgC9fRJkn8d6n87hlI69RAVSVJUVTf+TC3KRq1pVnNNcVYjrcNXbl7N8pQ
+         tTqloBygtroU14uoGN6X612TZm/u1965XcZHCEKkLzNWUR+zfsD242BKNy7oDp/y4f4W
+         nwlA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704449789; x=1705054589;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=M2SbbmAUvxuz+3O7vyQxuSBbpMgT1hRNIR0aHAh7TUs=;
+        b=PkgjwG7m0vXnIfUfONFxon88xH/23N0LqyJllcAX9DAGtmKnoAloCZfMwDMfgEtuB1
+         iMgfnTmNYiUtxaNHWuzFl1CnLhfJpRtas3KqcENKIdDiLsAZnDhLzMIVq+r+z9jxa9YX
+         yqBG1qpgN9gYQx2KMSfsRwhXN0SSfg/gWEJT2Y7bZCYvY4vv38v5H547sBtAMu4kqOFg
+         +M1AeUOTjY084aWBqKY1NUJLLcdbQ5RJQe+W3yVX2Cf2UHeS8w8r9jU94tiBFAqB+ijn
+         876rJIDVdtG6Nh0D4dIo5O2Fto8O5xEejPhM/hL8FinOvBwTF5nf4AMRY63GJAo1JLr5
+         +dIA==
+X-Gm-Message-State: AOJu0YzsJfwWxfGJWAwaWPNc6u96+0W9+WFuFwKsnQkjYWPxLTSM7QIS
+	97dbQeEqHWAFNd+hs8Vk3PpRquj5XXuIsA==
+X-Google-Smtp-Source: AGHT+IGXz2g8H97RWKY+7sFScbllJc8+MA2CAHJyVkS1v+Mjo7+A0HD5O0yVEja/MabxVgS6haXrfg==
+X-Received: by 2002:a17:906:1d9:b0:a28:ad97:e214 with SMTP id 25-20020a17090601d900b00a28ad97e214mr1018779ejj.1.1704449789326;
+        Fri, 05 Jan 2024 02:16:29 -0800 (PST)
 Received: from [127.0.1.1] ([79.115.23.25])
-        by smtp.gmail.com with ESMTPSA id o9-20020a170906358900b00a2824bff5b1sm713180ejb.216.2024.01.05.02.16.27
+        by smtp.gmail.com with ESMTPSA id o9-20020a170906358900b00a2824bff5b1sm713180ejb.216.2024.01.05.02.16.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Jan 2024 02:16:27 -0800 (PST)
+        Fri, 05 Jan 2024 02:16:28 -0800 (PST)
 From: Abel Vesa <abel.vesa@linaro.org>
-Subject: [PATCH v2 0/2] phy: qualcomm: eusb2-repeater: Some fixes after the
- regmap rework
-Date: Fri, 05 Jan 2024 12:16:15 +0200
-Message-Id: <20240105-phy-qcom-eusb2-repeater-fixes-v2-0-775d98e7df05@linaro.org>
+Date: Fri, 05 Jan 2024 12:16:16 +0200
+Subject: [PATCH v2 1/2] phy: qualcomm: eusb2-repeater: Fix the regfields
+ for multiple instances
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -69,10 +69,9 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAO/Wl2UC/42NQQ6CMBBFr0Jm7ZhpS0RdeQ/DgtYRJlGKUyQSw
- t2tnMDlez95f4HEKpzgXCygPEmS2GewuwJC1/Qto9wygyVbkqESh27GV4hP5HfyFpUHbkZWvMu
- HE4aTJWOMI2cD5MagvA05ca0zd5LGqPN2N5mf/bc8GSSksvKVP/ijc+7ykL7RuI/aQr2u6xc16
- E+tywAAAA==
+Message-Id: <20240105-phy-qcom-eusb2-repeater-fixes-v2-1-775d98e7df05@linaro.org>
+References: <20240105-phy-qcom-eusb2-repeater-fixes-v2-0-775d98e7df05@linaro.org>
+In-Reply-To: <20240105-phy-qcom-eusb2-repeater-fixes-v2-0-775d98e7df05@linaro.org>
 To: Bjorn Andersson <andersson@kernel.org>, 
  Konrad Dybcio <konrad.dybcio@linaro.org>, Vinod Koul <vkoul@kernel.org>, 
  Kishon Vijay Abraham I <kishon@kernel.org>
@@ -80,52 +79,84 @@ Cc: Elliot Berman <quic_eberman@quicinc.com>, linux-arm-msm@vger.kernel.org,
  linux-phy@lists.infradead.org, linux-kernel@vger.kernel.org, 
  Abel Vesa <abel.vesa@linaro.org>
 X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1305; i=abel.vesa@linaro.org;
- h=from:subject:message-id; bh=xkpoCUfYUnRlKp4mUYR1zyLDW4HOErb0ofza230yj5Q=;
- b=owEBbQKS/ZANAwAKARtfRMkAlRVWAcsmYgBll9bzhtIy9JFvKOV55EJCAuxUM2665z65pjA9O
- MV3tU+LoOmJAjMEAAEKAB0WIQRO8+4RTnqPKsqn0bgbX0TJAJUVVgUCZZfW8wAKCRAbX0TJAJUV
- VmP8D/9l8aBD7nGZ4ofFcmrf5G3oLZn5pbgBkzkdf4mNvLOVgcjfcwQkpL4o8Z75Px8herVyJk7
- SjZYUQOM4TsUu69JNQIen0N+wcaUJlH9OWtIwOLRStJ4cYRYY4N7XXwwELbU2qJhrS2+PDOKHSr
- ztM+2YpCIojhFOhwT6FgkP1OmXiXKu18aQGJHBSTnni1SnFRxXqdld5B9E1oSJgs9r/twfw7hAN
- Vbx4v/aUZlGzkzIqF+/1G2d5NHCd1iADCY6fGWIPiejOdxkUfAmvX9fqEYK/eAvtqVs2YbHRq3u
- lx+GxR8OiUiM56vbc5kUfxk+RQp6cjy7LhFWnDjbF3ra6yHblL4kdvK2m25ZdHvTXzpIdQxMOZh
- zoZccUFVyaO6uY+fzTK0XOCSuI/bnwTMFcBGvtBpEjNDjwFHWP68pMvUqxaXZ9/kTHKitLUfxlB
- mfo29Oxqx/e36B5KGtQAA34RtBtI60a3VOOTO16UwDIAl0mLJ6f/9zjFj7rhcCg6pNl897KJPLf
- Q0QneGWztEmEDnq4h4eDrzPXz14MQWdku8TYN9s27FTfcWLcqGghDx10Rb4+rze4N27Fltjufhb
- VbG4GgVc5P5fqJnfy3B+eRtlIwndJ5Les4ut97e7M6V2ekcCHrjAmM5l9+dyWbs6jKpH14NFy+5
- rHH8bPJHkr1utyQ==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2272; i=abel.vesa@linaro.org;
+ h=from:subject:message-id; bh=vIbUfNQlZTi1v25Ve+Sd4HHhwYJTXbuLuFkWrD7aJiM=;
+ b=owEBbQKS/ZANAwAKARtfRMkAlRVWAcsmYgBll9b412/e8NdvgMxOeqdne0SbNS5xvfDpT5ibA
+ mNOTJNMutmJAjMEAAEKAB0WIQRO8+4RTnqPKsqn0bgbX0TJAJUVVgUCZZfW+AAKCRAbX0TJAJUV
+ VvHvEACX+B/Dfb3IwGS3F1o+zp26fCXYgaMHeIrlqxwCWDSKYGcmjmCH8lBMHKOVzaPSKz+hExZ
+ Q8sVmp0CuZkAAhuTs4YQSywX54L1BLD49ApRdASsfzvucIUXcqOf4aW4E8UvBTXX2YrD2xZG/+b
+ Y9jus7yZF0GCbabI9hnxd4HYaDn+KBzSoWz5+iEzU3kLsYI+MyzkdmNxXJnZwm+khQ3YqjjbXgd
+ FUe9CotAQlXu6OFqSBCC4PJ4uOWdPWT1XB9QK/3PqqH9C1d3A35KC8lG7dybHfsexHrBwxux/1s
+ 1qMtc2xw/yLtQp1OZSyPiHU4OkoyRBiKYMYllWjutWCzxXAqD0FLax+k3AsCcXQLUECjKERivM2
+ 5FMIdxS318g9etxPl/7BsnbOV10/yUoVazYudaCCnXiOlfv6b6gcWRm4zghRc9kt73QPKO35Bt0
+ JsTc/w1u0H8WwceWNV65T2AXOmMLX0b56orO7CGuXtXQJGhc1OaknOcgURit54n0LFtEt9BHh4m
+ PLms9g4BJbcBgqkkkqxFD4Dg+h0zbMKRRHI+k/2Y9wNxX7U9OsYwTtJinUMgNyNHKIHDtIdVyo2
+ CUBQAeg9Ms+1f8fHsSSD6NiYiJbNIeDwBkQSjeg5WXg2Y05qbrEc/AxcY6tKQhoAmeGac8G8W1k
+ pzX3kGTBm2uD7dA==
 X-Developer-Key: i=abel.vesa@linaro.org; a=openpgp;
  fpr=6AFF162D57F4223A8770EF5AF7BF214136F41FAE
 
-Found the first issue (from first patch) while adding support
-for X Elite (X1E80100) which comes with more than one repeaters.
-The second fix is just bonus.
+The global regmap fields offsets currently get incremented with the base
+address of the repeater. This issue doesn't get noticed unless the probe
+defers or there are multiple repeaters on that platform. So instead of
+incrementing the global ones, copy them for each instance of the
+repeater.
 
+Fixes: 4ba2e52718c0 ("phy: qualcomm: phy-qcom-eusb2-repeater: Use regmap_fields")
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
 ---
-Changes in v2:
-- The regfields is being dropped from the repeater init, but it's done
-  in the second patch in order to not break bisectability, as it is
-  still needed by the zero-out loop.
-- Added Konrad's R-b tag to the first patch. Did not add Elliot's T-b
-  tag as the second patch has been reworked massively.
-- The zero-out loop is dropped now by holding a copy of the init_tlb in
-  the container struct. This led to dropping the cfg from the container
-  struct (see second patch commit message for more details).
-- Link to v1: https://lore.kernel.org/r/20240104-phy-qcom-eusb2-repeater-fixes-v1-0-047b7b6b8333@linaro.org
+ drivers/phy/qualcomm/phy-qcom-eusb2-repeater.c | 13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
 
----
-Abel Vesa (2):
-      phy: qualcomm: eusb2-repeater: Fix the regfields for multiple instances
-      phy: qualcomm: eusb2-repeater: Rework init to drop redundant zero-out loop
+diff --git a/drivers/phy/qualcomm/phy-qcom-eusb2-repeater.c b/drivers/phy/qualcomm/phy-qcom-eusb2-repeater.c
+index a623f092b11f..5f5862a68b73 100644
+--- a/drivers/phy/qualcomm/phy-qcom-eusb2-repeater.c
++++ b/drivers/phy/qualcomm/phy-qcom-eusb2-repeater.c
+@@ -101,6 +101,7 @@ struct eusb2_repeater {
+ 	struct regmap_field *regs[F_NUM_FIELDS];
+ 	struct phy *phy;
+ 	struct regulator_bulk_data *vregs;
++	struct reg_field *regfields;
+ 	const struct eusb2_repeater_cfg *cfg;
+ 	enum phy_mode mode;
+ };
+@@ -140,8 +141,8 @@ static int eusb2_repeater_init_vregs(struct eusb2_repeater *rptr)
+ 
+ static int eusb2_repeater_init(struct phy *phy)
+ {
+-	struct reg_field *regfields = eusb2_repeater_tune_reg_fields;
+ 	struct eusb2_repeater *rptr = phy_get_drvdata(phy);
++	struct reg_field *regfields = rptr->regfields;
+ 	struct device_node *np = rptr->dev->of_node;
+ 	u32 init_tbl[F_NUM_TUNE_FIELDS] = { 0 };
+ 	u8 override;
+@@ -262,15 +263,21 @@ static int eusb2_repeater_probe(struct platform_device *pdev)
+ 	if (!regmap)
+ 		return -ENODEV;
+ 
++	rptr->regfields = devm_kmemdup(dev, eusb2_repeater_tune_reg_fields,
++				       sizeof(eusb2_repeater_tune_reg_fields),
++				       GFP_KERNEL);
++	if (!rptr->regfields)
++		return -ENOMEM;
++
+ 	ret = of_property_read_u32(np, "reg", &res);
+ 	if (ret < 0)
+ 		return ret;
+ 
+ 	for (i = 0; i < F_NUM_FIELDS; i++)
+-		eusb2_repeater_tune_reg_fields[i].reg += res;
++		rptr->regfields[i].reg += res;
+ 
+ 	ret = devm_regmap_field_bulk_alloc(dev, regmap, rptr->regs,
+-					   eusb2_repeater_tune_reg_fields,
++					   rptr->regfields,
+ 					   F_NUM_FIELDS);
+ 	if (ret)
+ 		return ret;
 
- drivers/phy/qualcomm/phy-qcom-eusb2-repeater.c | 53 ++++++++++++++------------
- 1 file changed, 28 insertions(+), 25 deletions(-)
----
-base-commit: e2425464bc87159274879ab30f9d4fe624b9fcd2
-change-id: 20240104-phy-qcom-eusb2-repeater-fixes-c9201113032c
-
-Best regards,
 -- 
-Abel Vesa <abel.vesa@linaro.org>
+2.34.1
 
 
