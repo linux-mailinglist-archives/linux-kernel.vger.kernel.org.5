@@ -1,37 +1,37 @@
-Return-Path: <linux-kernel+bounces-18281-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18282-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8CD40825ADA
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 19:57:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id ADE85825ADC
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 19:58:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1BB791F2221C
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 18:57:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 596FE28724E
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 18:58:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF7E838DE4;
-	Fri,  5 Jan 2024 18:51:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E56938F99;
+	Fri,  5 Jan 2024 18:51:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WHB8Ba60"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lkwT4I9Y"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0624B381C3;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 994AF38DDE;
 	Fri,  5 Jan 2024 18:51:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 696CDC433CD;
-	Fri,  5 Jan 2024 18:51:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 075CFC433C9;
+	Fri,  5 Jan 2024 18:51:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704480693;
-	bh=T3+y/jWg1Z/7qHTP0Vdh0JG7I7zyaLVxiK2RQ3H64ms=;
+	s=k20201202; t=1704480694;
+	bh=RbiLylQKIxRy+32CHHmxbyI0KMha2EwUuHCFleL8qb0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=WHB8Ba60HWAUk/o003Fxse6F+oFNc07u3GoK+AkmJIsYzCrXHLWmXW+LFTlt/eHC9
-	 2lDT5Xr+poe5jXbTnSVKRQ+/McwTnxbuRFqlXdjVi7H1g2VpivSO98h9gjMsNHPXnu
-	 Nhd8TFMaz3ziUxqAi3BaAD9y2yCUdLnRCK+q2dL7HBQ5ApOH6e7J5k87xK1qqGBTBP
-	 d1D5aE17HUXkrygC1aNb7gzwrUx+iIXXo+tgfTsgSZZXm3arGnhVbnoZK1Z8/zpDjg
-	 ewONGC4+F3bqVl9kbp8F864NETe+i68JSk+sj8RZ9XHUXApcNAZrQRImCscPBnruAO
-	 6Xtuzs/FzxHKQ==
+	b=lkwT4I9YIv6VIDwMcBeb+tx5IUWOLKM0uwsIFscQDEPJN+34HMPeW9I9Lei0MIOE0
+	 9Z1tKAccnvwvuPWD4pqRae1mrOkwpykEoz29Q7mDU4Lpm6oQVhOzz5ptuuGKZnafVc
+	 thv/9zo1N+AzamdwxA0hbRH4xGa2JU7otnNn9yVLIO5BIlc91Tle+GbJ3jf1njHKsR
+	 cCBUZPRlR0X4OwpCVDcEkqWc46I8/UDA10pLNM+XtGJBvICUnartRBPT1L5Mkk0dDy
+	 fATz+2kQuVCvewz6VadiaTzG767nM3bCJ9xRlAhUmJr7rvNL2M1ipP5lmDcs8b0hTi
+	 ttMbY0LkHEFgg==
 From: Eric Biggers <ebiggers@kernel.org>
 To: linux-crypto@vger.kernel.org,
 	linux-riscv@lists.infradead.org,
@@ -47,9 +47,9 @@ Cc: linux-kernel@vger.kernel.org,
 	Andy Chiu <andy.chiu@sifive.com>,
 	=?UTF-8?q?Christoph=20M=C3=BCllner?= <christoph.muellner@vrull.eu>,
 	Heiko Stuebner <heiko.stuebner@vrull.eu>
-Subject: [PATCH v2 11/12] crypto: riscv - add vector crypto accelerated SM3
-Date: Fri,  5 Jan 2024 10:49:47 -0800
-Message-ID: <20240105184950.43181-12-ebiggers@kernel.org>
+Subject: [PATCH v2 12/12] crypto: riscv - add vector crypto accelerated SM4
+Date: Fri,  5 Jan 2024 10:49:48 -0800
+Message-ID: <20240105184950.43181-13-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240105184950.43181-1-ebiggers@kernel.org>
 References: <20240105184950.43181-1-ebiggers@kernel.org>
@@ -64,7 +64,7 @@ Content-Transfer-Encoding: 8bit
 
 From: Jerry Shih <jerry.shih@sifive.com>
 
-Add an implementation of SM3 using the Zvksh extension.  The assembly
+Add an implementation of SM4 using the Zvksed extension.  The assembly
 code is derived from OpenSSL code (openssl/openssl#21923) that was
 dual-licensed so that it could be reused in the kernel.  Nevertheless,
 the assembly has been significantly reworked for integration with the
@@ -80,50 +80,52 @@ Signed-off-by: Jerry Shih <jerry.shih@sifive.com>
 Co-developed-by: Eric Biggers <ebiggers@google.com>
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- arch/riscv/crypto/Kconfig                  |  12 ++
- arch/riscv/crypto/Makefile                 |   3 +
- arch/riscv/crypto/sm3-riscv64-glue.c       | 112 +++++++++++++++++++
- arch/riscv/crypto/sm3-riscv64-zvksh-zvkb.S | 123 +++++++++++++++++++++
- 4 files changed, 250 insertions(+)
- create mode 100644 arch/riscv/crypto/sm3-riscv64-glue.c
- create mode 100644 arch/riscv/crypto/sm3-riscv64-zvksh-zvkb.S
+ arch/riscv/crypto/Kconfig                   |  17 +++
+ arch/riscv/crypto/Makefile                  |   3 +
+ arch/riscv/crypto/sm4-riscv64-glue.c        | 107 ++++++++++++++++++
+ arch/riscv/crypto/sm4-riscv64-zvksed-zvkb.S | 117 ++++++++++++++++++++
+ 4 files changed, 244 insertions(+)
+ create mode 100644 arch/riscv/crypto/sm4-riscv64-glue.c
+ create mode 100644 arch/riscv/crypto/sm4-riscv64-zvksed-zvkb.S
 
 diff --git a/arch/riscv/crypto/Kconfig b/arch/riscv/crypto/Kconfig
-index 0fd0bf46c9099..179d09df8e0ca 100644
+index 179d09df8e0ca..2ad44e1d464af 100644
 --- a/arch/riscv/crypto/Kconfig
 +++ b/arch/riscv/crypto/Kconfig
-@@ -54,11 +54,23 @@ config CRYPTO_SHA512_RISCV64
- 	tristate "Hash functions: SHA-384 and SHA-512"
+@@ -66,11 +66,28 @@ config CRYPTO_SM3_RISCV64
  	depends on 64BIT && RISCV_ISA_V && TOOLCHAIN_HAS_VECTOR_CRYPTO
- 	select CRYPTO_SHA512
+ 	select CRYPTO_HASH
+ 	select CRYPTO_SM3
  	help
- 	  SHA-384 and SHA-512 secure hash algorithm (FIPS 180)
+ 	  SM3 (ShangMi 3) secure hash function (OSCCA GM/T 0004-2012)
  
  	  Architecture: riscv64 using:
- 	  - Zvknhb vector crypto extension
+ 	  - Zvksh vector crypto extension
  	  - Zvkb vector crypto extension
  
-+config CRYPTO_SM3_RISCV64
-+	tristate "Hash functions: SM3 (ShangMi 3)"
++config CRYPTO_SM4_RISCV64
++	tristate "Ciphers: SM4 (ShangMi 4)"
 +	depends on 64BIT && RISCV_ISA_V && TOOLCHAIN_HAS_VECTOR_CRYPTO
-+	select CRYPTO_HASH
-+	select CRYPTO_SM3
++	select CRYPTO_ALGAPI
++	select CRYPTO_SM4
 +	help
-+	  SM3 (ShangMi 3) secure hash function (OSCCA GM/T 0004-2012)
++	  SM4 block cipher algorithm (OSCCA GB/T 32907-2016,
++	  ISO/IEC 18033-3:2010/Amd 1:2021)
++
++	  SM4 (GBT.32907-2016) is a cryptographic standard issued by the
++	  Organization of State Commercial Administration of China (OSCCA)
++	  as an authorized cryptographic algorithm for use within China.
 +
 +	  Architecture: riscv64 using:
-+	  - Zvksh vector crypto extension
++	  - Zvksed vector crypto extension
 +	  - Zvkb vector crypto extension
 +
  endmenu
 diff --git a/arch/riscv/crypto/Makefile b/arch/riscv/crypto/Makefile
-index 8dbfda1918990..3b154f893e6e2 100644
+index 3b154f893e6e2..e74d64bfd6083 100644
 --- a/arch/riscv/crypto/Makefile
 +++ b/arch/riscv/crypto/Makefile
-@@ -11,10 +11,13 @@ obj-$(CONFIG_CRYPTO_CHACHA_RISCV64) += chacha-riscv64.o
- chacha-riscv64-y := chacha-riscv64-glue.o chacha-riscv64-zvkb.o
- 
- obj-$(CONFIG_CRYPTO_GHASH_RISCV64) += ghash-riscv64.o
+@@ -14,10 +14,13 @@ obj-$(CONFIG_CRYPTO_GHASH_RISCV64) += ghash-riscv64.o
  ghash-riscv64-y := ghash-riscv64-glue.o ghash-riscv64-zvkg.o
  
  obj-$(CONFIG_CRYPTO_SHA256_RISCV64) += sha256-riscv64.o
@@ -131,18 +133,21 @@ index 8dbfda1918990..3b154f893e6e2 100644
  
  obj-$(CONFIG_CRYPTO_SHA512_RISCV64) += sha512-riscv64.o
  sha512-riscv64-y := sha512-riscv64-glue.o sha512-riscv64-zvknhb-zvkb.o
+ 
+ obj-$(CONFIG_CRYPTO_SM3_RISCV64) += sm3-riscv64.o
+ sm3-riscv64-y := sm3-riscv64-glue.o sm3-riscv64-zvksh-zvkb.o
 +
-+obj-$(CONFIG_CRYPTO_SM3_RISCV64) += sm3-riscv64.o
-+sm3-riscv64-y := sm3-riscv64-glue.o sm3-riscv64-zvksh-zvkb.o
-diff --git a/arch/riscv/crypto/sm3-riscv64-glue.c b/arch/riscv/crypto/sm3-riscv64-glue.c
++obj-$(CONFIG_CRYPTO_SM4_RISCV64) += sm4-riscv64.o
++sm4-riscv64-y := sm4-riscv64-glue.o sm4-riscv64-zvksed-zvkb.o
+diff --git a/arch/riscv/crypto/sm4-riscv64-glue.c b/arch/riscv/crypto/sm4-riscv64-glue.c
 new file mode 100644
-index 0000000000000..e1737a970c7c9
+index 0000000000000..47fb84ebe577d
 --- /dev/null
-+++ b/arch/riscv/crypto/sm3-riscv64-glue.c
-@@ -0,0 +1,112 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
++++ b/arch/riscv/crypto/sm4-riscv64-glue.c
+@@ -0,0 +1,107 @@
++// SPDX-License-Identifier: GPL-2.0-only
 +/*
-+ * SM3 using the RISC-V vector crypto extensions
++ * SM4 using the RISC-V vector crypto extensions
 + *
 + * Copyright (C) 2023 VRULL GmbH
 + * Author: Heiko Stuebner <heiko.stuebner@vrull.eu>
@@ -153,111 +158,106 @@ index 0000000000000..e1737a970c7c9
 +
 +#include <asm/simd.h>
 +#include <asm/vector.h>
-+#include <crypto/internal/hash.h>
++#include <crypto/internal/cipher.h>
 +#include <crypto/internal/simd.h>
-+#include <crypto/sm3_base.h>
++#include <crypto/sm4.h>
 +#include <linux/linkage.h>
 +#include <linux/module.h>
 +
-+/*
-+ * Note: the asm function only uses the 'state' field of struct sm3_state.
-+ * It is assumed to be the first field.
-+ */
-+asmlinkage void sm3_transform_zvksh_zvkb(
-+	struct sm3_state *state, const u8 *data, int num_blocks);
++asmlinkage void sm4_expandkey_zvksed_zvkb(const u8 user_key[SM4_KEY_SIZE],
++					  u32 rkey_enc[SM4_RKEY_WORDS],
++					  u32 rkey_dec[SM4_RKEY_WORDS]);
++asmlinkage void sm4_crypt_zvksed_zvkb(const u32 rkey[SM4_RKEY_WORDS],
++				      const u8 in[SM4_BLOCK_SIZE],
++				      u8 out[SM4_BLOCK_SIZE]);
 +
-+static int riscv64_sm3_update(struct shash_desc *desc, const u8 *data,
-+			      unsigned int len)
++static int riscv64_sm4_setkey(struct crypto_tfm *tfm, const u8 *key,
++			      unsigned int keylen)
 +{
-+	/*
-+	 * Ensure struct sm3_state begins directly with the SM3
-+	 * 256-bit internal state, as this is what the asm function expects.
-+	 */
-+	BUILD_BUG_ON(offsetof(struct sm3_state, state) != 0);
++	struct sm4_ctx *ctx = crypto_tfm_ctx(tfm);
++
++	if (crypto_simd_usable()) {
++		if (keylen != SM4_KEY_SIZE)
++			return -EINVAL;
++		kernel_vector_begin();
++		sm4_expandkey_zvksed_zvkb(key, ctx->rkey_enc, ctx->rkey_dec);
++		kernel_vector_end();
++		return 0;
++	}
++	return sm4_expandkey(ctx, key, keylen);
++}
++
++static void riscv64_sm4_encrypt(struct crypto_tfm *tfm, u8 *dst, const u8 *src)
++{
++	const struct sm4_ctx *ctx = crypto_tfm_ctx(tfm);
 +
 +	if (crypto_simd_usable()) {
 +		kernel_vector_begin();
-+		sm3_base_do_update(desc, data, len, sm3_transform_zvksh_zvkb);
++		sm4_crypt_zvksed_zvkb(ctx->rkey_enc, src, dst);
 +		kernel_vector_end();
 +	} else {
-+		sm3_update(shash_desc_ctx(desc), data, len);
++		sm4_crypt_block(ctx->rkey_enc, dst, src);
 +	}
-+	return 0;
 +}
 +
-+static int riscv64_sm3_finup(struct shash_desc *desc, const u8 *data,
-+			     unsigned int len, u8 *out)
++static void riscv64_sm4_decrypt(struct crypto_tfm *tfm, u8 *dst, const u8 *src)
 +{
-+	struct sm3_state *ctx;
++	const struct sm4_ctx *ctx = crypto_tfm_ctx(tfm);
 +
 +	if (crypto_simd_usable()) {
 +		kernel_vector_begin();
-+		if (len)
-+			sm3_base_do_update(desc, data, len,
-+					   sm3_transform_zvksh_zvkb);
-+		sm3_base_do_finalize(desc, sm3_transform_zvksh_zvkb);
++		sm4_crypt_zvksed_zvkb(ctx->rkey_dec, src, dst);
 +		kernel_vector_end();
-+
-+		return sm3_base_finish(desc, out);
++	} else {
++		sm4_crypt_block(ctx->rkey_dec, dst, src);
 +	}
-+
-+	ctx = shash_desc_ctx(desc);
-+	if (len)
-+		sm3_update(ctx, data, len);
-+	sm3_final(ctx, out);
-+
-+	return 0;
 +}
 +
-+static int riscv64_sm3_final(struct shash_desc *desc, u8 *out)
-+{
-+	return riscv64_sm3_finup(desc, NULL, 0, out);
-+}
-+
-+static struct shash_alg riscv64_sm3_alg = {
-+	.init = sm3_base_init,
-+	.update = riscv64_sm3_update,
-+	.final = riscv64_sm3_final,
-+	.finup = riscv64_sm3_finup,
-+	.descsize = sizeof(struct sm3_state),
-+	.digestsize = SM3_DIGEST_SIZE,
-+	.base = {
-+		.cra_blocksize = SM3_BLOCK_SIZE,
-+		.cra_priority = 300,
-+		.cra_name = "sm3",
-+		.cra_driver_name = "sm3-riscv64-zvksh-zvkb",
-+		.cra_module = THIS_MODULE,
++static struct crypto_alg riscv64_sm4_alg = {
++	.cra_flags = CRYPTO_ALG_TYPE_CIPHER,
++	.cra_blocksize = SM4_BLOCK_SIZE,
++	.cra_ctxsize = sizeof(struct sm4_ctx),
++	.cra_priority = 300,
++	.cra_name = "sm4",
++	.cra_driver_name = "sm4-riscv64-zvksed-zvkb",
++	.cra_cipher = {
++		.cia_min_keysize = SM4_KEY_SIZE,
++		.cia_max_keysize = SM4_KEY_SIZE,
++		.cia_setkey = riscv64_sm4_setkey,
++		.cia_encrypt = riscv64_sm4_encrypt,
++		.cia_decrypt = riscv64_sm4_decrypt,
 +	},
++	.cra_module = THIS_MODULE,
 +};
 +
-+static int __init riscv64_sm3_mod_init(void)
++static int __init riscv64_sm4_mod_init(void)
 +{
-+	if (riscv_isa_extension_available(NULL, ZVKSH) &&
++	if (riscv_isa_extension_available(NULL, ZVKSED) &&
 +	    riscv_isa_extension_available(NULL, ZVKB) &&
 +	    riscv_vector_vlen() >= 128)
-+		return crypto_register_shash(&riscv64_sm3_alg);
++		return crypto_register_alg(&riscv64_sm4_alg);
 +
 +	return -ENODEV;
 +}
 +
-+static void __exit riscv64_sm3_mod_exit(void)
++static void __exit riscv64_sm4_mod_exit(void)
 +{
-+	crypto_unregister_shash(&riscv64_sm3_alg);
++	crypto_unregister_alg(&riscv64_sm4_alg);
 +}
 +
-+module_init(riscv64_sm3_mod_init);
-+module_exit(riscv64_sm3_mod_exit);
++module_init(riscv64_sm4_mod_init);
++module_exit(riscv64_sm4_mod_exit);
 +
-+MODULE_DESCRIPTION("SM3 (RISC-V accelerated)");
++MODULE_DESCRIPTION("SM4 (RISC-V accelerated)");
 +MODULE_AUTHOR("Heiko Stuebner <heiko.stuebner@vrull.eu>");
 +MODULE_LICENSE("GPL");
-+MODULE_ALIAS_CRYPTO("sm3");
-diff --git a/arch/riscv/crypto/sm3-riscv64-zvksh-zvkb.S b/arch/riscv/crypto/sm3-riscv64-zvksh-zvkb.S
++MODULE_ALIAS_CRYPTO("sm4");
+diff --git a/arch/riscv/crypto/sm4-riscv64-zvksed-zvkb.S b/arch/riscv/crypto/sm4-riscv64-zvksed-zvkb.S
 new file mode 100644
-index 0000000000000..a2b65d961c04a
+index 0000000000000..fae62179a4a3d
 --- /dev/null
-+++ b/arch/riscv/crypto/sm3-riscv64-zvksh-zvkb.S
-@@ -0,0 +1,123 @@
++++ b/arch/riscv/crypto/sm4-riscv64-zvksed-zvkb.S
+@@ -0,0 +1,117 @@
 +/* SPDX-License-Identifier: Apache-2.0 OR BSD-2-Clause */
 +//
 +// This file is dual-licensed, meaning that you can use it under your
@@ -300,87 +300,81 @@ index 0000000000000..a2b65d961c04a
 +// The generated code of this file depends on the following RISC-V extensions:
 +// - RV64I
 +// - RISC-V Vector ('V') with VLEN >= 128
-+// - RISC-V Vector SM3 Secure Hash extension ('Zvksh')
++// - RISC-V Vector SM4 Block Cipher extension ('Zvksed')
 +// - RISC-V Vector Cryptography Bit-manipulation extension ('Zvkb')
 +
-+#include <linux/cfi_types.h>
++#include <linux/linkage.h>
 +
 +.text
-+.option arch, +zvksh, +zvkb
++.option arch, +zvksed, +zvkb
 +
-+#define STATEP		a0
-+#define DATA		a1
-+#define NUM_BLOCKS	a2
++// void sm4_expandkey_zksed_zvkb(const u8 user_key[16], u32 rkey_enc[32],
++//				 u32 rkey_dec[32]);
++SYM_FUNC_START(sm4_expandkey_zvksed_zvkb)
++	vsetivli	zero, 4, e32, m1, ta, ma
 +
-+#define STATE		v0	// LMUL=2
-+#define PREV_STATE	v2	// LMUL=2
-+#define W0		v4	// LMUL=2
-+#define W1		v6	// LMUL=2
-+#define VTMP		v8	// LMUL=2
++	// Load the user key.
++	vle32.v		v1, (a0)
++	vrev8.v		v1, v1
 +
-+.macro	sm3_8rounds	i, w0, w1
-+	// Do 4 rounds using W_{0+i}..W_{7+i}.
-+	vsm3c.vi	STATE, \w0, \i + 0
-+	vslidedown.vi	VTMP, \w0, 2
-+	vsm3c.vi	STATE, VTMP, \i + 1
++	// XOR the user key with the family key.
++	la		t0, FAMILY_KEY
++	vle32.v		v2, (t0)
++	vxor.vv		v1, v1, v2
 +
-+	// Compute W_{4+i}..W_{11+i}.
-+	vslidedown.vi	VTMP, \w0, 4
-+	vslideup.vi	VTMP, \w1, 4
-+
-+	// Do 4 rounds using W_{4+i}..W_{11+i}.
-+	vsm3c.vi	STATE, VTMP, \i + 2
-+	vslidedown.vi	VTMP, VTMP, 2
-+	vsm3c.vi	STATE, VTMP, \i + 3
-+
-+.if \i < 28
-+	// Compute W_{16+i}..W_{23+i}.
-+	vsm3me.vv	\w0, \w1, \w0
++	// Compute the round keys.  Store them in forwards order in rkey_enc
++	// and in reverse order in rkey_dec.
++	addi		a2, a2, 31*4
++	li		t0, -4
++	.set		i, 0
++.rept 8
++	vsm4k.vi	v1, v1, i
++	vse32.v		v1, (a1)	// Store to rkey_enc.
++	vsse32.v	v1, (a2), t0	// Store to rkey_dec.
++.if i < 7
++	addi		a1, a1, 16
++	addi		a2, a2, -16
 +.endif
-+	// For the next 8 rounds, w0 and w1 are swapped.
-+.endm
++	.set		i, i + 1
++.endr
 +
-+// void sm3_transform_zvksh_zvkb(u32 state[8], const u8 *data, int num_blocks);
-+SYM_TYPED_FUNC_START(sm3_transform_zvksh_zvkb)
-+
-+	// Load the state and endian-swap each 32-bit word.
-+	vsetivli	zero, 8, e32, m2, ta, ma
-+	vle32.v		STATE, (STATEP)
-+	vrev8.v		STATE, STATE
-+
-+.Lnext_block:
-+	addi		NUM_BLOCKS, NUM_BLOCKS, -1
-+
-+	// Save the previous state, as it's needed later.
-+	vmv.v.v		PREV_STATE, STATE
-+
-+	// Load the next 512-bit message block into W0-W1.
-+	vle32.v		W0, (DATA)
-+	addi		DATA, DATA, 32
-+	vle32.v		W1, (DATA)
-+	addi		DATA, DATA, 32
-+
-+	// Do the 64 rounds of SM3.
-+	sm3_8rounds	0, W0, W1
-+	sm3_8rounds	4, W1, W0
-+	sm3_8rounds	8, W0, W1
-+	sm3_8rounds	12, W1, W0
-+	sm3_8rounds	16, W0, W1
-+	sm3_8rounds	20, W1, W0
-+	sm3_8rounds	24, W0, W1
-+	sm3_8rounds	28, W1, W0
-+
-+	// XOR in the previous state.
-+	vxor.vv		STATE, STATE, PREV_STATE
-+
-+	// Repeat if more blocks remain.
-+	bnez		NUM_BLOCKS, .Lnext_block
-+
-+	// Store the new state and return.
-+	vrev8.v		STATE, STATE
-+	vse32.v		STATE, (STATEP)
 +	ret
-+SYM_FUNC_END(sm3_transform_zvksh_zvkb)
++SYM_FUNC_END(sm4_expandkey_zvksed_zvkb)
++
++// void sm4_crypt_zvksed_zvkb(const u32 rkey[32], const u8 in[16], u8 out[16]);
++SYM_FUNC_START(sm4_crypt_zvksed_zvkb)
++	vsetivli	zero, 4, e32, m1, ta, ma
++
++	// Load the input data.
++	vle32.v		v1, (a1)
++	vrev8.v		v1, v1
++
++	// Do the 32 rounds of SM4, 4 at a time.
++	.set		i, 0
++.rept 8
++	vle32.v		v2, (a0)
++	vsm4r.vs	v1, v2
++.if i < 7
++	addi		a0, a0, 16
++.endif
++	.set		i, i + 1
++.endr
++
++	// Store the output data (in reverse element order).
++	vrev8.v		v1, v1
++	li		t0, -4
++	addi		a2, a2, 12
++	vsse32.v	v1, (a2), t0
++
++	ret
++SYM_FUNC_END(sm4_crypt_zvksed_zvkb)
++
++.section ".rodata"
++.p2align 2
++.type FAMILY_KEY, @object
++FAMILY_KEY:
++	.word 0xA3B1BAC6, 0x56AA3350, 0x677D9197, 0xB27022DC
++.size FAMILY_KEY, . - FAMILY_KEY
 -- 
 2.43.0
 
