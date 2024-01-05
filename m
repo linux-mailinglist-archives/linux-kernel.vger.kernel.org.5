@@ -1,122 +1,169 @@
-Return-Path: <linux-kernel+bounces-18367-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18368-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD4D9825C1E
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 22:27:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D2375825C20
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 22:28:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 73E951F244BE
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 21:27:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CE0FB1C235D0
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 21:28:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F922360B4;
-	Fri,  5 Jan 2024 21:27:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86E722DF98;
+	Fri,  5 Jan 2024 21:28:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="gdIXVjlq"
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="fzKXy1xy"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1CEB360A8
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 21:27:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1704490035;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=nvKoTY7AaklNgqFAKz7HE/SEnOyTG3mvRlAEYCQEh+w=;
-	b=gdIXVjlqlNDYFMGmbccXVa6qDxRJxLQczrzueTli+nPako1Qw3SEYkm/VoGE3buJFbt2Lv
-	gZtGByIjWiX4b+noD8MCY6K+JA9qkAllUQCTny5cvg8ozuIKKaQroDpIx96dNwZgbZLXFD
-	PkjULTEFIDvkfjqJVFafXp1OWUdg6x0=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-211-KlLuGbKbM9yD6Qvgmfd9VQ-1; Fri, 05 Jan 2024 16:27:10 -0500
-X-MC-Unique: KlLuGbKbM9yD6Qvgmfd9VQ-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4992E225A6;
+	Fri,  5 Jan 2024 21:28:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 2998E40E016C;
+	Fri,  5 Jan 2024 21:28:30 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id U_6ilrElvZTJ; Fri,  5 Jan 2024 21:28:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1704490107; bh=wMp96QnJYgVKjGepckhcJBPd5Px0XtoqLOg4+sLtFFg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=fzKXy1xy/auYCMgCgKvhP0tdfu5oMOyhYcxsf1lyiNxWQUuHmyGCwGXLiTBjIiAmL
+	 Y3p0YP6b10Ty/jlWXnz51CKkuqQM6RYjO2GWJCF8OPBF8zknpHJk3OivWNvJZW3brP
+	 U9TZj0r5TVc/OR6yMsXu0IzFK6LyFsU2aJ52kLbUH7pcUPkInjNUKQAYSjqZhw7s01
+	 Y5h4hxQH7OrsofIN3DWJmouWAWDTp6ZrqCzoC9yAGbLD1Hgam2kCUj/hn8Hj9mQT1Q
+	 7SNGbnZ5sFnKq2Dx2pirNVfnlMx3+Me5slVtE6xHYDxG9OAyLiTRTF3IBjFsGCZELS
+	 5IGJwqlC0lkni1DkwpRn8VOBZ6gYJ5YYQLbD+IfPACQ63YKDEAmNZ3dZgCI0z8aMIe
+	 9t3rcSzNZuXqxnLldZu0eqB+hBabF+BtxO7uwEND4txRyVTzgkoEF1gfhxzJ70RVv2
+	 Kckcc3C/5t2LpGfj/qnVtAz8eew/OgfiaXXCOiBOnSrFGhlAL9wmfndamKxYNONgKg
+	 HR+CAp2zzwmfOxM4HFuf9fmh6Y3lTnmMoGbr8+xE+Nj/JsPIs7UTo8ZE93c+6IpePo
+	 q0erZiBiXX2+RFqj3E4QgcP/nPS7rULkzbjKaBnYnrMsDQ+Xn+wSofHUKhEA+eDroK
+	 xV/HB2aPCmRMXHB792jfhFqQ=
+Received: from zn.tnic (pd9530f8c.dip0.t-ipconnect.de [217.83.15.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 19578837184;
-	Fri,  5 Jan 2024 21:27:10 +0000 (UTC)
-Received: from fedora.redhat.com (unknown [10.22.8.247])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id A668D1121306;
-	Fri,  5 Jan 2024 21:27:09 +0000 (UTC)
-Received: by fedora.redhat.com (Postfix, from userid 1000)
-	id 0137E28EBE7; Fri,  5 Jan 2024 16:27:08 -0500 (EST)
-Date: Fri, 5 Jan 2024 16:27:08 -0500
-From: Vivek Goyal <vgoyal@redhat.com>
-To: Matthew Wilcox <willy@infradead.org>
-Cc: Hou Tao <houtao@huaweicloud.com>, linux-fsdevel@vger.kernel.org,
-	Miklos Szeredi <miklos@szeredi.hu>,
-	Stefan Hajnoczi <stefanha@redhat.com>, linux-kernel@vger.kernel.org,
-	virtualization@lists.linux.dev, houtao1@huawei.com
-Subject: Re: [PATCH v2] virtiofs: use GFP_NOFS when enqueuing request through
- kworker
-Message-ID: <ZZh0LKpkrVdoU0tH@redhat.com>
-References: <20240105105305.4052672-1-houtao@huaweicloud.com>
- <ZZhjzwnQUEJhNJiq@redhat.com>
- <ZZhkrOdbau2O/B59@casper.infradead.org>
- <ZZhpjEwDwMS_mq-u@redhat.com>
- <ZZhtU0IxUycpLGJe@casper.infradead.org>
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 8C5C840E0177;
+	Fri,  5 Jan 2024 21:27:48 +0000 (UTC)
+Date: Fri, 5 Jan 2024 22:27:42 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Michael Roth <michael.roth@amd.com>
+Cc: x86@kernel.org, kvm@vger.kernel.org, linux-coco@lists.linux.dev,
+	linux-mm@kvack.org, linux-crypto@vger.kernel.org,
+	linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
+	jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com,
+	ardb@kernel.org, pbonzini@redhat.com, seanjc@google.com,
+	vkuznets@redhat.com, jmattson@google.com, luto@kernel.org,
+	dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com,
+	peterz@infradead.org, srinivas.pandruvada@linux.intel.com,
+	rientjes@google.com, tobin@ibm.com, vbabka@suse.cz,
+	kirill@shutemov.name, ak@linux.intel.com, tony.luck@intel.com,
+	sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com,
+	jarkko@kernel.org, ashish.kalra@amd.com, nikunj.dadhania@amd.com,
+	pankaj.gupta@amd.com, liam.merwick@oracle.com, zhi.a.wang@intel.com,
+	Brijesh Singh <brijesh.singh@amd.com>
+Subject: Re: [PATCH v1 04/26] x86/sev: Add the host SEV-SNP initialization
+ support
+Message-ID: <20240105212742.GFZZh0TpMZEmah1bBH@fat_crate.local>
+References: <20231230161954.569267-1-michael.roth@amd.com>
+ <20231230161954.569267-5-michael.roth@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <ZZhtU0IxUycpLGJe@casper.infradead.org>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
+In-Reply-To: <20231230161954.569267-5-michael.roth@amd.com>
 
-On Fri, Jan 05, 2024 at 08:57:55PM +0000, Matthew Wilcox wrote:
-> On Fri, Jan 05, 2024 at 03:41:48PM -0500, Vivek Goyal wrote:
-> > On Fri, Jan 05, 2024 at 08:21:00PM +0000, Matthew Wilcox wrote:
-> > > On Fri, Jan 05, 2024 at 03:17:19PM -0500, Vivek Goyal wrote:
-> > > > On Fri, Jan 05, 2024 at 06:53:05PM +0800, Hou Tao wrote:
-> > > > > From: Hou Tao <houtao1@huawei.com>
-> > > > > 
-> > > > > When invoking virtio_fs_enqueue_req() through kworker, both the
-> > > > > allocation of the sg array and the bounce buffer still use GFP_ATOMIC.
-> > > > > Considering the size of both the sg array and the bounce buffer may be
-> > > > > greater than PAGE_SIZE, use GFP_NOFS instead of GFP_ATOMIC to lower the
-> > > > > possibility of memory allocation failure.
-> > > > > 
-> > > > 
-> > > > What's the practical benefit of this patch. Looks like if memory
-> > > > allocation fails, we keep retrying at interval of 1ms and don't
-> > > > return error to user space.
-> > > 
-> > > You don't deplete the atomic reserves unnecessarily?
-> > 
-> > Sounds reasonable. 
-> > 
-> > With GFP_NOFS specificed, can we still get -ENOMEM? Or this will block
-> > indefinitely till memory can be allocated. 
-> 
-> If you need the "loop indefinitely" behaviour, that's
-> GFP_NOFS | __GFP_NOFAIL.  If you're actually doing something yourself
-> which can free up memory, this is a bad choice.  If you're just sleeping
-> and retrying, you might as well have the MM do that for you.
+On Sat, Dec 30, 2023 at 10:19:32AM -0600, Michael Roth wrote:
+> +static int __init __snp_rmptable_init(void)
 
-I probably don't want to wait indefinitely. There might be some cases
-where I might want to return error to user space. For example, if
-virtiofs device has been hot-unplugged, then there is no point in
-waiting indefinitely for memory allocation. Even if memory was allocated,
-soon we will return error to user space with -ENOTCONN. 
+I already asked a year ago:
 
-We are currently not doing that check after memory allocation failure but
-we probably could as an optimization.
+https://lore.kernel.org/all/Y9ubi0i4Z750gdMm@zn.tnic/
 
-So this patch looks good to me as it is. Thanks Hou Tao.
+why is the __ version - __snp_rmptable_init - carved out but crickets.
+It simply gets ignored. :-\
 
-Reviewed-by: Vivek Goyal <vgoyal@redhat.com>
+So let me do it myself, diff below.
 
-Thanks
-Vivek
+Please add to the next version:
 
+Co-developed-by: Borislav Petkov (AMD) <bp@alien8.de>
+Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
+
+after incorporating all the changes.
+
+Thx.
+
+---
+diff --git a/arch/x86/virt/svm/sev.c b/arch/x86/virt/svm/sev.c
+index 566bb6f39665..feed65f80776 100644
+--- a/arch/x86/virt/svm/sev.c
++++ b/arch/x86/virt/svm/sev.c
+@@ -155,19 +155,25 @@ bool snp_probe_rmptable_info(void)
+  * described in the SNP_INIT_EX firmware command description in the SNP
+  * firmware ABI spec.
+  */
+-static int __init __snp_rmptable_init(void)
++static int __init snp_rmptable_init(void)
+ {
+-	u64 rmptable_size;
+ 	void *rmptable_start;
++	u64 rmptable_size;
+ 	u64 val;
+ 
++	if (!cpu_feature_enabled(X86_FEATURE_SEV_SNP))
++		return 0;
++
++	if (!amd_iommu_snp_en)
++		return 0;
++
+ 	if (!probed_rmp_size)
+-		return 1;
++		goto nosnp;
+ 
+ 	rmptable_start = memremap(probed_rmp_base, probed_rmp_size, MEMREMAP_WB);
+ 	if (!rmptable_start) {
+ 		pr_err("Failed to map RMP table\n");
+-		return 1;
++		goto nosnp;
+ 	}
+ 
+ 	/*
+@@ -195,20 +201,6 @@ static int __init __snp_rmptable_init(void)
+ 	rmptable = (struct rmpentry *)rmptable_start;
+ 	rmptable_max_pfn = rmptable_size / sizeof(struct rmpentry) - 1;
+ 
+-	return 0;
+-}
+-
+-static int __init snp_rmptable_init(void)
+-{
+-	if (!cpu_feature_enabled(X86_FEATURE_SEV_SNP))
+-		return 0;
+-
+-	if (!amd_iommu_snp_en)
+-		return 0;
+-
+-	if (__snp_rmptable_init())
+-		goto nosnp;
+-
+ 	cpuhp_setup_state(CPUHP_AP_ONLINE_DYN, "x86/rmptable_init:online", __snp_enable, NULL);
+ 
+ 	return 0;
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
 
