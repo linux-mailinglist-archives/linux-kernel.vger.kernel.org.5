@@ -1,130 +1,118 @@
-Return-Path: <linux-kernel+bounces-17995-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17996-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 50D2A82568B
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 16:24:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7C4E825691
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 16:28:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E29FA1F22999
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 15:24:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 94BAD284270
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 15:28:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9598D2E63A;
-	Fri,  5 Jan 2024 15:24:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FF5C2E63B;
+	Fri,  5 Jan 2024 15:28:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="g7t5q+CV"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="O27dA7G/"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B23362E62C
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 15:23:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a28a6cef709so185881866b.1
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Jan 2024 07:23:57 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 742AA2E626;
+	Fri,  5 Jan 2024 15:28:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-6da55cc8e78so1230389b3a.0;
+        Fri, 05 Jan 2024 07:28:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1704468236; x=1705073036; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=C8cTJ9cF7f7kjCtZvPbtjoizYwOtu5qwKSGBqgmK7tc=;
-        b=g7t5q+CVqeZp1q4d83VHDDjnuwIBAiBJJjV4Sr7gPQsJS7bzTEEl20LI8afEGjKo1i
-         MDu2pj902Xuq4iRgVsDwxyYsztBc9d+kOtU3mRJo5VKEhaasltrirbXliDAabdsa+emo
-         sLe/L2Bqt9h/97mCPgI0kDzu23Q+3Mo6RirhS4hN7SeXMuflG2YOJTl1cle86Qh9pEi6
-         ME23YGG3ihPwcbw8e9x9LSdbvQcYk+zXQ5tt0tRLzw+ThPxJULA+TFoCMOLZlMVYErf0
-         3ZC7pbu39JKSW56zSX9XsoPmJXzXiuQjSVNyRrwngDW5nb/oVZt00oFa8tLn+HVpZWK4
-         N1wA==
+        d=gmail.com; s=20230601; t=1704468483; x=1705073283; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=ktHGS+j6BB2fCkp0Q1Ok9aJQ6HsRlIXcJkVo6gtPf5s=;
+        b=O27dA7G/170/Y+lVJgsVtfzu/wIsVQLYaObFvu/XTNqJ+ZQGqIV+tMa7rA5qviVy5E
+         DkMC13e3QgnMMG0ZkSQ7mtfp6mU5bObuxN4VIjMQkrFKpArPD0ujIauOamMl2wGJc6Jw
+         WfUdEvKNs6fjNrjyBlYMQTC68zMKB0IgI3Np0/E3paoOuL51W0QedmJTducz7n0aShQQ
+         cmr65qKutrqNixh7GYRnfYSsLmYUERbtnpsBdJQHTfQe+dy8XDukCDQGI/AQBpjai2uy
+         7SLUdBly9c6ehJOmIs+tMGK0oJgsAFyCs44o3GDW3YUAWUevf5wmyp/0AxOZUFZ731cU
+         6leQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704468236; x=1705073036;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=C8cTJ9cF7f7kjCtZvPbtjoizYwOtu5qwKSGBqgmK7tc=;
-        b=LUzwgdKDtBrwNtEzI1tOiWiS3mD8qtSZPzkM2/lpfFbosL9RUaWdHwz1GWFSkc1Y5d
-         rr/baoS0ls3bfnA44uZd0YfOP+82hNDeO6pqlvMKn8f4i2n2d+7jk8Z/bP2LLpaChL9K
-         2YjeT3HZM56iSKUoMoEjy43YUPoMMvfWK+rOYCHH/EQuWoLypnI28UyBnjvv3ZECQVkm
-         cpwbesCkeoExVnjuIbkOJXpDE163cDxcp8GfGUbULgKaARA8yQWJmqL2WqbOAWRnNTEI
-         yd5c34qLAyJY4f7bkqTgO8VdM1+9d3kqptm9eKrhDOjY3izKc1EBPtvOrwHx97Zn586x
-         4oNQ==
-X-Gm-Message-State: AOJu0YwdEGhi0bQYdRw+Ya+libwPKMG4dEPmlt1UzAPJwFLdTnZ/dRgd
-	iQNWLKtc+VNXce7mLfaiWAb0KkotV+VifQ==
-X-Google-Smtp-Source: AGHT+IF/AVMkZdTEK7dBssPlRgpCIZizx+1xhClxtSNldAJa4a7E/wC2JkLpvL+QSwvvBaItTWdiBQ==
-X-Received: by 2002:a17:907:928b:b0:a27:5343:d3e8 with SMTP id bw11-20020a170907928b00b00a275343d3e8mr1511305ejc.97.1704468235960;
-        Fri, 05 Jan 2024 07:23:55 -0800 (PST)
-Received: from alley ([176.114.240.50])
-        by smtp.gmail.com with ESMTPSA id h26-20020a1709066d9a00b00a26aea4942dsm966126ejt.123.2024.01.05.07.23.55
+        d=1e100.net; s=20230601; t=1704468483; x=1705073283;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ktHGS+j6BB2fCkp0Q1Ok9aJQ6HsRlIXcJkVo6gtPf5s=;
+        b=QAFDq126nxJPvrmDnwtee1hx5geR9uKj+fi2JFirHF5lMmvNCqwpa+Q+/gMCM3ECAy
+         O2mGmJqQXL1Ze8NbIK3Dk/P5hYFXGTvFd0ja4dfLuD/LLn3ux7QtMU1z/kM4e++I30dY
+         KF3TlEb6aYgxLcDEusXkSOK8HKv27AfHy+TjjPvVLx3OGLbRCdNjshF055aJElHD5TPD
+         7bz0gYsBkf89AsQ1E1Vxthi1aA73CzeG+8tlodlHWagTQsLWTZTq7oit4wl85N/9FI4o
+         LNEIkjJrYFWUQ6iVcQu9iqa5zuXDakL/p41ED+heSq0dmIShy+9mwDiyFf5pLW07elrv
+         X4YQ==
+X-Gm-Message-State: AOJu0Yx2GI8r3IWk2uai3lg0APPAdf60tuVO21o0mNqpIENu/+KSNrak
+	Cg06/6IFLhFCPbrzwTcbGEo=
+X-Google-Smtp-Source: AGHT+IH8p3k4ac8NQNc+kFJS+pH0O4w5XDqyG53RzmOtCMOURUe9FSLw2f4tOz7YL7GUpuB0ytCUcw==
+X-Received: by 2002:a05:6a00:4b01:b0:6d9:aa5e:3969 with SMTP id kq1-20020a056a004b0100b006d9aa5e3969mr2525870pfb.40.1704468482705;
+        Fri, 05 Jan 2024 07:28:02 -0800 (PST)
+Received: from ?IPv6:2605:59c8:448:b800:82ee:73ff:fe41:9a02? ([2605:59c8:448:b800:82ee:73ff:fe41:9a02])
+        by smtp.googlemail.com with ESMTPSA id h20-20020a056a00231400b006dabdfabe12sm1518428pfh.193.2024.01.05.07.28.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Jan 2024 07:23:55 -0800 (PST)
-Date: Fri, 5 Jan 2024 16:23:53 +0100
-From: Petr Mladek <pmladek@suse.com>
-To: Theodore Ts'o <tytso@mit.edu>
-Cc: Jingzi Meng <mengjingzi@iie.ac.cn>, gregkh@linuxfoundation.org,
-	gpiccoli@igalia.com, john.ogness@linutronix.de,
-	keescook@chromium.org, linux-hardening@vger.kernel.org,
-	linux-kernel@vger.kernel.org, rostedt@goodmis.org,
-	senozhatsky@chromium.org, tony.luck@intel.com
-Subject: Re: [PATCH] cap_syslog: remove CAP_SYS_ADMIN when dmesg_restrict
-Message-ID: <ZZgfCZKho2Dsv7VM@alley>
-References: <2024010306-tweezers-skinhead-083e@gregkh>
- <20240105062007.26965-1-mengjingzi@iie.ac.cn>
- <20240105144944.GA246367@mit.edu>
+        Fri, 05 Jan 2024 07:28:01 -0800 (PST)
+Message-ID: <3f382fdcacc10cf897df9dc7f17c04271839d81a.camel@gmail.com>
+Subject: Re: [PATCH net-next 1/6] mm/page_alloc: modify
+ page_frag_alloc_align() to accept align as an argument
+From: Alexander H Duyck <alexander.duyck@gmail.com>
+To: Yunsheng Lin <linyunsheng@huawei.com>, davem@davemloft.net,
+ kuba@kernel.org,  pabeni@redhat.com
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, Andrew Morton
+	 <akpm@linux-foundation.org>, Eric Dumazet <edumazet@google.com>, 
+	linux-mm@kvack.org
+Date: Fri, 05 Jan 2024 07:28:00 -0800
+In-Reply-To: <20240103095650.25769-2-linyunsheng@huawei.com>
+References: <20240103095650.25769-1-linyunsheng@huawei.com>
+	 <20240103095650.25769-2-linyunsheng@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240105144944.GA246367@mit.edu>
 
-On Fri 2024-01-05 09:49:44, Theodore Ts'o wrote:
-> On Fri, Jan 05, 2024 at 02:20:07PM +0800, Jingzi Meng wrote:
-> > CAP_SYSLOG was separated from CAP_SYS_ADMIN and introduced in Linux
-> > 2.6.37 (2010-11). For a long time, certain syslog actions required
-> > CAP_SYS_ADMIN or CAP_SYSLOG. Maybe it’s time to officially remove
-> > CAP_SYS_ADMIN for more fine-grained control.
-> > 
-> > CAP_SYS_ADMIN was once removed but added back for backwards
-> > compatibility reasons. In commit 38ef4c2e437d ("syslog: check cap_syslog
-> > when dmesg_restrict") (2010-12), CAP_SYS_ADMIN was no longer needed. And
-> > in commit ee24aebffb75 ("cap_syslog: accept CAP_SYS_ADMIN for now")
-> > (2011-02), it was accepted again. Since then, CAP_SYS_ADMIN has been
-> > preserved.
-> > 
-> > Now that almost 13 years have passed, the legacy application may have
-> > had enough time to be updated.
-> 
-> What testing have you done to make sure that this is OK?  "May have
-> had enough time"?  That's not very reassuring?
-> 
-> Also, note that we can't actually reuse the bit position of
-> CAP_SYS_ADMIN since it's likely that there may be pre-existing
-> capability masks that are still using that position.  So there isn't
-> all that much upside in trying to retire CAP_SYS_ADMIN --- if you as a
-> system administrator think it's not too course, then just don't use
-> it.
-> 
-> It's unclear to me what goal you have in trying to mess with the
-> capability definitions?  Perhaps it might be useful if you were to
-> explicitly state your goals in these proposals?
+On Wed, 2024-01-03 at 17:56 +0800, Yunsheng Lin wrote:
+> napi_alloc_frag_align() and netdev_alloc_frag_align() accept
+> align as an argument, and they are thin wrappers around the
+> __napi_alloc_frag_align() and __netdev_alloc_frag_align() APIs
+> doing the align and align_mask conversion, in order to call
+> page_frag_alloc_align() directly.
+>=20
+> As __napi_alloc_frag_align() and __netdev_alloc_frag_align()
+> APIs are only used by the above thin wrappers, it seems that
+> it makes more sense to remove align and align_mask conversion
+> and call page_frag_alloc_align() directly. By doing that, we
+> can also avoid the confusion between napi_alloc_frag_align()
+> accepting align as an argument and page_frag_alloc_align()
+> accepting align_mask as an argument when they both have the
+> 'align' suffix.
+>=20
+> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+> CC: Alexander Duyck <alexander.duyck@gmail.com>
 
-My understanding is that this patch is about reducing overlap of
-capabilities.
+This patch overlooks much of the main reason for having the wrappers.
+By having the in-line wrapper and passing the argument as a mask we can
+avoid having to verify the alignment value during execution time since
+it can usually be handled during compile time.
 
-Allowing the same thing with more capabilities seems to go against
-the idea of separate capabilities.
+By moving it into the function itself we are adding additional CPU
+overhead per page as we will have to go through and validate the
+alignment value for every single page instead of when the driver using
+the function is compiled.
 
-Kernel has printed the warning for 13 years. It is a long
-time to fix configuration for newly installed systems. And I doubt
-that anyone is installing a new kernel on 13 year's old system.
+The overhead may not seem like much, but when you are having to deal
+with it per page and you are processing pages at millions per second it
+can quickly start to add up.
 
-IMHO, this fits into the category that it should be OK until
-anyone complains. But I might miss something.
-
-Best Regards,
-Petr
+This is essentially a code cleanup at the cost of some amount of
+performance.
 
