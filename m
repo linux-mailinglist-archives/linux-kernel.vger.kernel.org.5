@@ -1,131 +1,120 @@
-Return-Path: <linux-kernel+bounces-18360-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17938-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D234C825C0D
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 22:13:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 254A782555B
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 15:33:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7E57D1F244E6
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 21:13:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B8BFE1F22876
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 14:33:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 956492D7B2;
-	Fri,  5 Jan 2024 21:13:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7340C2D02B;
+	Fri,  5 Jan 2024 14:33:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ispras.ru header.i=@ispras.ru header.b="elURLvWM"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eutmiK8m"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail.ispras.ru (mail.ispras.ru [83.149.199.84])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61C8735890
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 21:13:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ispras.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ispras.ru
-Received: from [192.168.1.114] (unknown [185.145.125.130])
-	by mail.ispras.ru (Postfix) with ESMTPSA id A64A440F1DF8;
-	Fri,  5 Jan 2024 21:13:28 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.ispras.ru A64A440F1DF8
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ispras.ru;
-	s=default; t=1704489208;
-	bh=FlEa4522VZdZ1YxHNtrr3RlZjAu47jub/SKcUbhgne0=;
-	h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-	b=elURLvWM2R+W2sXvbnDz4yjHrY16N8IpFq79W7EMGRzvJoEc8dMrCRctSn9sjd0+U
-	 /woxhCucAlP8rtdCMojyX0PLD0O7WYXL1/+YZoyTSc244W6+kLdA4+9UngmQis0J9r
-	 3gDjd+wITq/RuM4RGxvSF+N+t0Nj6UZ/ClSeD2HE=
-Subject: Re: [PATCH] tvnv17.c: Adding a NULL pointer check.
-To: Andrey Shumilin <shum.sdl@nppct.ru>, Karol Herbst <kherbst@redhat.com>
-Cc: Lyude Paul <lyude@redhat.com>, Danilo Krummrich <dakr@redhat.com>,
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- =?UTF-8?Q?Noralf_Tr=c3=b8nnes?= <noralf@tronnes.org>,
- Jani Nikula <jani.nikula@intel.com>, dri-devel@lists.freedesktop.org,
- nouveau@lists.freedesktop.org, linux-kernel@vger.kernel.org,
- "lvc-project@linuxtesting.org" <lvc-project@linuxtesting.org>
-References: <20231116065159.37876-1-shum.sdl@nppct.ru>
-From: Alexey Khoroshilov <khoroshilov@ispras.ru>
-Message-ID: <5609ce98-9bbb-29f4-0c4c-a4d3654152f7@ispras.ru>
-Date: Fri, 5 Jan 2024 21:33:07 +0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD03024B5A;
+	Fri,  5 Jan 2024 14:33:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 435F0C433C8;
+	Fri,  5 Jan 2024 14:33:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704465208;
+	bh=PgXaKGN8DqZgvzqxm7EM/leplkV3k/W5tK0CswY8nxw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=eutmiK8mS7otKfg6XPGuMelGNRsbSuK9AVVvVKyRcSMEKSCGJCcM3oI0VFgUuBExW
+	 3lSEarA0liHmqyg1YBMLz6mDQJ1U8t1uKiVqFSPhB0unRzFwwAfoRw4EPEMSxkYEU+
+	 Z/0d0A6E6W4PNk+kVaGpZ2/FT4ZNrWs5bTR0be8EpZA8PZIdmN//fPUZffx/IZlvWR
+	 qSpmzpE6JcSmia1EWxAXjf9BVhKkp2AjRsMOPpi4f6a+Asuw14u2q+2uA+lgvK4gtu
+	 9rry/bIyj+eKO2dpcVWYjXm0tNIheQvePJQeGGrGWb9aOgJ1+bhVpNKFwgsRweBLb2
+	 iA8pe9otNIa3w==
+Date: Fri, 5 Jan 2024 14:33:21 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Sean Anderson <sean.anderson@seco.com>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+	Banajit Goswami <bgoswami@quicinc.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+	linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
+	linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Bartosz Golaszewski <brgl@bgdev.pl>
+Subject: Re: [PATCH 2/4] reset: add GPIO-based reset controller
+Message-ID: <758c4fe3-1ea1-4a8c-bb6f-3a3df588da75@sirena.org.uk>
+References: <20231222150133.732662-1-krzysztof.kozlowski@linaro.org>
+ <20231222150133.732662-3-krzysztof.kozlowski@linaro.org>
+ <530e3473-eb3b-477c-8599-e7aa12779640@seco.com>
+ <88bd6668-7e67-42c7-97b6-d7029f371349@linaro.org>
+ <075990bb-5fdb-4d30-9484-9df6b978e805@seco.com>
+ <fcbae47b-3b28-42f0-b93f-f83932025dc1@linaro.org>
+ <2be19fbf-4c73-4594-be42-31587dc7b747@seco.com>
+ <d2d17b94-6f29-423d-a7e0-e24513a8e59f@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20231116065159.37876-1-shum.sdl@nppct.ru>
-Content-Type: text/plain; charset=utf-8
-Content-Language: ru-RU
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="vImSMy+icUlzjZXl"
+Content-Disposition: inline
+In-Reply-To: <d2d17b94-6f29-423d-a7e0-e24513a8e59f@linaro.org>
+X-Cookie: Your step will soil many countries.
 
-> Subject: tvnv17.c: Adding a NULL pointer check.
 
-As
+--vImSMy+icUlzjZXl
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-$ git log --oneline drivers/gpu/drm/nouveau/dispnv04/tvnv17.c
-874ee2d67fc9 drm/nouveau: Remove unnecessary include statements for
-drm_crtc_helper.h
-80ed86d4b6d7 drm/connector: Rename drm_mode_create_tv_properties
-1fd4a5a36f9f drm/connector: Rename legacy TV property
-09838c4efe9a drm/nouveau/kms: Search for encoders' connectors properly
-2574c809d7c0 drm/nouveau/kms/nv04-nv4x: Use match_string() helper to
-simplify the code
+On Thu, Jan 04, 2024 at 08:08:50PM +0100, Krzysztof Kozlowski wrote:
+> On 04/01/2024 17:30, Sean Anderson wrote:
+
+> > device post-assert delay post-deassert delay
+> > ====== ================= ===================
+> > A                  500us                 1ms
+> > B                    1ms               300us
+
 ...
 
-shows, a better prefix should be
-drm/nouveau:
-and there should not be a dot at the end.
+> Now, if we are back to realistic cases - use just the longest reset time.
 
-e.g.
-drm/nouveau: Avoid NPE in nv17_tv_get_XX_modes()
+Isn't the main concern here that when one device probes we don't yet
+know the times for the other devices?
 
-On 16.11.2023 09:51, Andrey Shumilin wrote:
-> It is possible to dereference a null pointer if drm_mode_duplicate() returns NULL.
+> > If we leave things up to the drivers, then whoever probes first will get
+> > to decide the reset sequence.
 
-I would suggest to add a little bit more details:
+> In current design yes, but it's not a problem to change it. Where is the
+> limitation? Just read other values and update the reset time.
 
-drm_mode_duplicate() may return NULL in case of error, e.g. if memory
-allocation fails. It leads to NULL pointer dereference in
-nv17_tv_get_ld_modes() and nv17_tv_get_hd_modes(), since they do not
-check if drm_mode_duplicate() succeeds.
+We might have already done a reset by that time and earlier devices
+might prevent later devices from resetting again.  It shouldn't be such
+an issue for the post delay, but might be one for the pre delay.
 
-Otherwise, looks good.
+--vImSMy+icUlzjZXl
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Reviewed-by: Alexey Khoroshilov <khoroshilov@ispras.ru>
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmWYEzAACgkQJNaLcl1U
+h9AUFQf8DiBunWd33PprmdlKCI899IHnZ7UxbOoI6wrUZN2Sv3Eo8tBt+XXsK2ZV
+h61S9/tKulQcEi1z6NLrCKslrceGCewQP3dzTMmas5F14hBDSXE4WEfCrHpcLgtZ
+r6eqUUCKIQSDhBDodrHOPSHFxvizmJqcGoFNlj+UUF6U0Mqxo1S3DY3Q4/6edGqj
+p35k9Tud8KLEQJ4By0206b90rthRaUicLXQXuEqRYrrkLWQsKLIjjnZSZmrOogEb
+OmGTeyk5lY67DXPrhGxYnHI0R+XiaDK4SJm07EfQmJoBfD0ShMgMicPBXod/kkG1
+UUYU+vv8YIrLd/0AWrfdWORkiyteAA==
+=xDYl
+-----END PGP SIGNATURE-----
 
-> 
-> Found by Linux Verification Center (linuxtesting.org) with SVACE.
-> 
-> Signed-off-by: Andrey Shumilin <shum.sdl@nppct.ru>
-> ---
->  drivers/gpu/drm/nouveau/dispnv04/tvnv17.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/nouveau/dispnv04/tvnv17.c b/drivers/gpu/drm/nouveau/dispnv04/tvnv17.c
-> index 670c9739e5e1..1f0c5f4a5fd2 100644
-> --- a/drivers/gpu/drm/nouveau/dispnv04/tvnv17.c
-> +++ b/drivers/gpu/drm/nouveau/dispnv04/tvnv17.c
-> @@ -209,7 +209,8 @@ static int nv17_tv_get_ld_modes(struct drm_encoder *encoder,
->  		struct drm_display_mode *mode;
->  
->  		mode = drm_mode_duplicate(encoder->dev, tv_mode);
-> -
-> +		if (mode == NULL)
-> +			continue;
->  		mode->clock = tv_norm->tv_enc_mode.vrefresh *
->  			mode->htotal / 1000 *
->  			mode->vtotal / 1000;
-> @@ -258,6 +259,8 @@ static int nv17_tv_get_hd_modes(struct drm_encoder *encoder,
->  		if (modes[i].hdisplay == output_mode->hdisplay &&
->  		    modes[i].vdisplay == output_mode->vdisplay) {
->  			mode = drm_mode_duplicate(encoder->dev, output_mode);
-> +			if (mode == NULL)
-> +				continue;
->  			mode->type |= DRM_MODE_TYPE_PREFERRED;
->  
->  		} else {
-> 
-
+--vImSMy+icUlzjZXl--
 
