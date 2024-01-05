@@ -1,202 +1,390 @@
-Return-Path: <linux-kernel+bounces-18402-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18427-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E1B7825C93
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 23:45:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 54309825D48
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 00:58:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 77341B22BF9
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 22:45:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AEB171F22CBC
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 23:58:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0216E36094;
-	Fri,  5 Jan 2024 22:45:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EC58364A3;
+	Fri,  5 Jan 2024 23:58:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=automattic.com header.i=@automattic.com header.b="EwP7MPMT";
-	dkim=pass (2048-bit key) header.d=automattic.com header.i=@automattic.com header.b="GJA8rH2b";
-	dkim=pass (2048-bit key) header.d=automattic.com header.i=@automattic.com header.b="SbOoYEzn";
-	dkim=neutral (0-bit key) header.d=automattic.com header.i=@automattic.com header.b="desECVhM"
+	dkim=pass (2048-bit key) header.d=akamai.com header.i=@akamai.com header.b="jLu+C3WG"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx1.dfw.automattic.com (mx1.dfw.automattic.com [192.0.84.151])
+Received: from mx0a-00190b01.pphosted.com (mx0a-00190b01.pphosted.com [67.231.149.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7BF01E4B8
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 22:45:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=automattic.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=automattic.com
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mx1.dfw.automattic.com (Postfix) with ESMTP id 07E351DBD9F
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 22:45:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=automattic.com;
-	 h=x-mailer:date:date:message-id:subject:subject:mime-version
-	:content-transfer-encoding:content-type:content-type:from:from
-	:received:received:received:received:received:received; s=
-	automattic1; t=1704494742; bh=Up0N2D2TIaUtZ5vQ4loBRKY+1p4GysHJOj
-	eboZtOiRk=; b=EwP7MPMTdgwLatdLmdDcLcWt1VQvK1poEvvzKytpJRZM8b0D0a
-	HLYr6qfs7tF28BY/F7A94uzBItUXNT36TfD+zqHtO1PYAHunnNfk9Ge7Mnp6g9P2
-	KA8U3VtwOPzlmojA2epAFegZJCuZ1ySxV/WM5p2c25o2mAKr5DqTdlUShU8A4CR7
-	5NjZcZ6XE8oWayJseyXcOgP9Wp8hRi94JYMu0x2ixbqUJPpA0f9HFGov30LXtTiz
-	1OUG7jFfSiGGw3chBRPJbNfXdhBZDorlTtje+VHbzYsAH67BPJjFci5UMjshVsYy
-	lEFO1ISNArDEStTx3xwRxDwSBaLljaN6jARA==
-X-Virus-Scanned: Debian amavisd-new at wordpress.com
-Received: from mx1.dfw.automattic.com ([127.0.0.1])
-	by localhost (mx1.dfw.automattic.com [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id RMYjP-64BY1B for <linux-kernel@vger.kernel.org>;
-	Fri,  5 Jan 2024 22:45:42 +0000 (UTC)
-Received: from smtp-gw2.dfw.automattic.com (smtp-gw2.dfw.automattic.com [192.0.95.72])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx1.dfw.automattic.com (Postfix) with ESMTPS id B6A751DBD9E
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 22:45:42 +0000 (UTC)
-Authentication-Results: mail.automattic.com;
-	dkim=pass (2048-bit key; unprotected) header.d=automattic.com header.i=@automattic.com header.b="GJA8rH2b";
-	dkim=pass (2048-bit key; unprotected) header.d=automattic.com header.i=@automattic.com header.b="SbOoYEzn";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=automattic.com header.i=@automattic.com header.b="desECVhM";
-	dkim-atps=neutral
-Received: from smtp-gw2.dfw.automattic.com (localhost.localdomain [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-gw2.dfw.automattic.com (Postfix) with ESMTPS id A7420A03D9
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 22:45:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=automattic.com;
-	s=automattic2; t=1704494742;
-	bh=Up0N2D2TIaUtZ5vQ4loBRKY+1p4GysHJOjeboZtOiRk=;
-	h=From:Subject:Date:To:From;
-	b=GJA8rH2bFcClKBh12J+aJkIJmbiA31/IDuPvimUwfmpA29bMq294mMJ6WxzeOFVtM
-	 IANM0p2RB3xKLX12LqqcgOyKvHEc2tN0gx14m/bpQwIPo29br3riD0SPvpQ1shvd/u
-	 Y6xQiD4y4lVkaAAjz70X7RSmu1kk29vYL7eJ2dui3yLqCK7fg3ot0czdzSs6u6nLFt
-	 Xb3SwWd2Y35qgoWc5ac7pSuopUr9fjNecqoXb+8c58pb/m5kD8RDvz0FPRICED3h96
-	 XZYlOauopDtWCx0cKgZpGMFBEL39XHeKISqjjCo/wgqCHADJnBeC6JhWHXS1iu40/c
-	 +bA5UMlg8mt7Q==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=automattic.com;
-	s=automattic1; t=1704494742;
-	bh=Up0N2D2TIaUtZ5vQ4loBRKY+1p4GysHJOjeboZtOiRk=;
-	h=From:Subject:Date:To:From;
-	b=SbOoYEzn+pgXP0xusJpIEVNPxO4bNHWma7QwvD+wcVF/L3Elj5qVSUA6nWgidBk8b
-	 +eTw5Vpcrtl2nja06eyx2boj2faNDlkXACEfX6dYSBn3PGmMxyJqE4GPiQY4Wk4SkF
-	 Ec0OHhHR+2br5niVG2Yv9UA4KVlaAIJAgj6u8hGYWXjwlr6H1CIdhIrBIkJTicb7oc
-	 N40kXoA2jSRNnDcsM+9rp2M/xCJLNX7x27XEyQvAn60a7Sboc0zo7G2EkaKFIiunGg
-	 drEloAZSxFIW5FzeICDoMRXp6N39+ZPQpGiq3LWk95mf8lirClJoFsNdcXjHBkCHVi
-	 4o2No7opuyWHg==
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com [209.85.221.70])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-gw2.dfw.automattic.com (Postfix) with ESMTPS id 97945A02FD
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 22:45:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=automattic.com;
-	s=automattic2; t=1704494742;
-	bh=Up0N2D2TIaUtZ5vQ4loBRKY+1p4GysHJOjeboZtOiRk=;
-	h=From:Subject:Date:To:From;
-	b=desECVhMC2F1bagGQZT2fZYc3piMjsXzV2PbbVK29xd9Y3i3XfK2HvkU7qyeddfGX
-	 2hdzhlq1XTPkyxs4U1Tb8ImMjExgG1BdMVb6VwC6+y/bRlSHeaWI12vyCMbFIUzca2
-	 ZwMPcOadT8eaIqvkhitBRaNcLpLqCiu8w6j1pM801JQ5wsB+WJ/YQPmYLcUJgMc/07
-	 59HxngHfFGl6zmurD/UuY9WfEuZRL6FP00mkjNHcs691NhVGDJQtf0YhYRIvoGefXa
-	 uTJWDeQOzsLddghKjQ8mHbTL4f9mG9PFgWOnJQINtJNaRBLRupurIyl4aFF3hK0uGI
-	 D+74yp6TM5fQg==
-Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-33688aa4316so32828f8f.2
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Jan 2024 14:45:42 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704494740; x=1705099540;
-        h=to:date:message-id:subject:mime-version:content-transfer-encoding
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ikQDiPyG7zvdjFhCRKhe8GvmQ7gT04TnluWIutkJHQc=;
-        b=nHGnguTuL3sXYFdvlRkVnMyn9ARbx0aNjwwmuSygNj6EKrO/EZ0Twg0+VEmkhtoTMW
-         Mze5ghIE4+KTHYNv+h+XZBT53GyowDAwxVF3HBFxkc8c7poXSKudEvnWSXwaOOXuHMnr
-         71s2wIJyTcamQfKPdf2573oiBFthUsVZHykeX1Ul6FwqB2LH18nlK4ZM8hweMPvD4pbu
-         gtN9v3FsKFAZLa8AVDJOcD8LGzJ8d3PS+QW1umW+fANnj6eu+vQOkrKNXTmKsJNUnFIF
-         Xn8IWgnKohepHl3HFEtD0K/jCao+Yl0absdWmezaqmnZZUCHJNoeY6408tB2BDjCfJE7
-         KrjQ==
-X-Gm-Message-State: AOJu0YxDVrR8WHtvcBsvcegkrcWWsQ/Gh0vjMioedUcj+ty8NshNoIa7
-	VVpAdX0mzvuCJHSOheTkoFAB6+669o3ObBVKZQZLT1XFIYHe8ZUnU3WEOTZw/wx2sO7ZNt22Oto
-	LZ660eti+fnxuK2VordLPq8bziCkelz/HrGIXhkmY
-X-Received: by 2002:adf:f6ce:0:b0:336:787c:6236 with SMTP id y14-20020adff6ce000000b00336787c6236mr50055wrp.65.1704494740689;
-        Fri, 05 Jan 2024 14:45:40 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHk4NO8L5czZuzxTklW9FuZ7NDCE9Rf0p2o3mJVQWpxW9AfFPoi0sRklDy68MESyWt37rFIMg==
-X-Received: by 2002:adf:f6ce:0:b0:336:787c:6236 with SMTP id y14-20020adff6ce000000b00336787c6236mr50051wrp.65.1704494740281;
-        Fri, 05 Jan 2024 14:45:40 -0800 (PST)
-Received: from smtpclient.apple (2-234-153-233.ip223.fastwebnet.it. [2.234.153.233])
-        by smtp.gmail.com with ESMTPSA id c3-20020a5d4f03000000b00336344c3c3fsm2149944wru.90.2024.01.05.14.45.38
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 05 Jan 2024 14:45:39 -0800 (PST)
-From: Ale Crismani <ale.crismani@automattic.com>
-X-Google-Original-From: Ale Crismani <ale.crismani@automattic.com>
-Content-Type: text/plain;
-	charset=us-ascii
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF63B360B9
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 23:58:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=akamai.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=akamai.com
+Received: from pps.filterd (m0122333.ppops.net [127.0.0.1])
+	by mx0a-00190b01.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 405MSlT8024355;
+	Fri, 5 Jan 2024 22:46:53 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=akamai.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	jan2016.eng; bh=E4HinPTkCDFa4QOXQVhGBq5dpkVyw5V778fGHtU+jV0=; b=
+	jLu+C3WGqgJaWO/EBM/U3Cdfeuat/1y3TTUCp/ItG/P6LqyqgE2yjZk1VWTE1RlF
+	x8dsTWS5S+KxDah+RFiZui6bmXJXyxMd/pRs7WxZrWAo35YuX6khEYTMkQzzXlON
+	b4yK/oJ7wItEoA/q00wxQwVFb3Sjv1gQcK3/FDh2B0LiKZtdFKWIgW+CE+6EWB3c
+	txWIR6TiXXiZhM6ImNiRkCcqrmUtueFi9xJU9Yxn4oC7OekMcuD5oiBgRm+UDaEm
+	QgciGna+VpxqJE+B6t6aa3IceC9etajGjCEYdZJg+JnDvxXiCK/mT9/s4a1sBL5H
+	g1NLPuVPyKv4MWnX28Y1jw==
+Received: from prod-mail-ppoint1 (prod-mail-ppoint1.akamai.com [184.51.33.18] (may be forged))
+	by mx0a-00190b01.pphosted.com (PPS) with ESMTPS id 3vetkps4rb-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 05 Jan 2024 22:46:52 +0000 (GMT)
+Received: from pps.filterd (prod-mail-ppoint1.akamai.com [127.0.0.1])
+	by prod-mail-ppoint1.akamai.com (8.17.1.19/8.17.1.19) with ESMTP id 405LJR2J016806;
+	Fri, 5 Jan 2024 17:46:42 -0500
+Received: from prod-mail-relay10.akamai.com ([172.27.118.251])
+	by prod-mail-ppoint1.akamai.com (PPS) with ESMTP id 3ve163yjvv-1;
+	Fri, 05 Jan 2024 17:46:42 -0500
+Received: from [172.19.39.209] (bos-lpa4700a.bos01.corp.akamai.com [172.19.39.209])
+	by prod-mail-relay10.akamai.com (Postfix) with ESMTP id B2CFD6410D;
+	Fri,  5 Jan 2024 22:46:41 +0000 (GMT)
+Message-ID: <69bd53de-0948-469f-ae58-48098af1973c@akamai.com>
+Date: Fri, 5 Jan 2024 17:46:41 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3731.700.6\))
-Subject: Performance regression in ip_set_swap on 6.1.69
-Message-Id: <C0829B10-EAA6-4809-874E-E1E9C05A8D84@automattic.com>
-Date: Fri, 5 Jan 2024 23:45:27 +0100
-To: linux-kernel@vger.kernel.org
-X-Mailer: Apple Mail (2.3731.700.6)
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 10/15] dyndbg: add open and close commands for trace
+Content-Language: en-US
+To: =?UTF-8?Q?=C5=81ukasz_Bartosik?= <lb@semihalf.com>,
+        Jim Cromie <jim.cromie@gmail.com>,
+        Andrew Morton
+ <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>
+Cc: Guenter Roeck <groeck@google.com>, Yaniv Tzoreff <yanivt@google.com>,
+        Benson Leung <bleung@google.com>, Steven Rostedt <rostedt@goodmis.org>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        Pekka Paalanen <ppaalanen@gmail.com>,
+        Sean Paul <seanpaul@chromium.org>, Daniel Vetter <daniel@ffwll.ch>,
+        linux-kernel@vger.kernel.org, upstream@semihalf.com
+References: <20231130234048.157509-1-lb@semihalf.com>
+ <20231130234048.157509-11-lb@semihalf.com>
+From: Jason Baron <jbaron@akamai.com>
+In-Reply-To: <20231130234048.157509-11-lb@semihalf.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-05_08,2024-01-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999 bulkscore=0
+ mlxscore=0 malwarescore=0 adultscore=0 phishscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
+ definitions=main-2401050174
+X-Proofpoint-ORIG-GUID: SLpskQQ9Md09-qCxLEgnluiXmLnUzKB7
+X-Proofpoint-GUID: SLpskQQ9Md09-qCxLEgnluiXmLnUzKB7
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-05_08,2024-01-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 spamscore=0
+ lowpriorityscore=0 priorityscore=1501 phishscore=0 impostorscore=0
+ bulkscore=0 clxscore=1011 adultscore=0 suspectscore=0 malwarescore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2401050175
 
-Dear all,
+On 11/30/23 6:40 PM, Łukasz Bartosik wrote:
+> Add open and close commands for opening and closing trace instances.
+> The open command has to be mandatory followed by a trace instance name.
+> If a trace instance already exists in <debugfs>/tracing/instances
+> directory then the open command will reuse it otherwise a new trace
+> instance with a name provided to the open will be created. Close
+> command closes previously opened trace instance. The close will
+> fail if a user tries to close non-existent trace instances or an
+> instance which was not previously opened.
+> 
+> For example the following command will open (create or reuse existing)
+> trace instance located in <debugfs>/tracing/instances/usbcore:
+> 
+>      echo "open usbcore" > <debugfs>/dynamic_debug/control
 
-When upgrading some of our Debian hosts that compose a Kubernetes =
-cluster we found a regression in ip_set_swap on 6.1.69. Calls to =
-ip_set_swap now take roughly 15ms, while they used to take just tens of =
-microseconds before.
+Hi,
 
-The issue is very visible for use, since we use kube-router as our =
-Kubernetes networking interface, and it uses ipset swap all the time to =
-populate sets that enforce firewall policies between containers.
+I'm wondering why this needs to be part of dynamic debug? Can't we make 
+trace instances via 'mkdir' and then use those from the dynamic debug side?
 
-We tracked the issue down with strace, and then took stats with bpftrace =
-running:
----
-kfunc:ip_set:ip_set_swap {
-        @start[tid] =3D nsecs;
-}
+Thanks,
 
-kretfunc:ip_set:ip_set_swap {
-        if (@start[tid]) {
-                @srlat =3D hist((nsecs - @start[tid])/1000);
-                delete(@start[tid]);
-        }
-}
+-Jason
 
-interval:s:20 {
-        printf("ip_set_swap() latency, milliseconds:\n");
----
 
-On 6.1.69 results look like:
-=20
-ip_set_swap() latency, milliseconds:
-[8K, 16K)           1848 =
-|@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-[16K, 32K)         1017 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-[32K, 64K)         38     |@
 
-while on 6.1.67:
-ip_set_swap() latency, milliseconds:
 
-[0]                  166   |@
-[1]                  378   |@@
-[2, 4)              762   |@@@@@
-[4, 8)              1624 |@@@@@@@@@@@
-[8, 16)            3493 |@@@@@@@@@@@@@@@@@@@@@@@@
-[16, 32)          7308 =
-|@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-[32, 64)          6412 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-[64, 128)              1 |
-
-We tried compiling commits between 6.1.67 and 6.1.69 and it seems the =
-performance regression was introduced by 875ee3a, ip_set_swap is fast on =
-602505 that precedes it, and slow on it.
-
-First time I post here, hope the format is appropriate, and thanks for =
-any help with this! Also, if possible, I'd appreciate if any reply could =
-CC me, as I am not subscribed.
-
-Alessandro Crismani=
+> 
+> Signed-off-by: Łukasz Bartosik <lb@semihalf.com>
+> ---
+>   lib/Kconfig.debug   |   1 +
+>   lib/dynamic_debug.c | 193 ++++++++++++++++++++++++++++++++++++++++++++
+>   2 files changed, 194 insertions(+)
+> 
+> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+> index 5bc56c7247a2..f184c3c91ba3 100644
+> --- a/lib/Kconfig.debug
+> +++ b/lib/Kconfig.debug
+> @@ -181,6 +181,7 @@ config DYNAMIC_DEBUG_CORE
+>   	bool "Enable core function of dynamic debug support"
+>   	depends on PRINTK
+>   	depends on (DEBUG_FS || PROC_FS)
+> +	depends on TRACING
+>   	help
+>   	  Enable core functional support of dynamic debug. It is useful
+>   	  when you want to tie dynamic debug to your kernel modules with
+> diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
+> index 0dc9ec76b867..43e94023a4eb 100644
+> --- a/lib/dynamic_debug.c
+> +++ b/lib/dynamic_debug.c
+> @@ -36,6 +36,7 @@
+>   #include <linux/sched.h>
+>   #include <linux/device.h>
+>   #include <linux/netdevice.h>
+> +#include <linux/trace.h>
+>   
+>   #define CREATE_TRACE_POINTS
+>   #include <trace/events/dyndbg.h>
+> @@ -73,6 +74,25 @@ struct flag_settings {
+>   	unsigned int mask;
+>   };
+>   
+> +#define DD_OPEN_CMD	"open"
+> +#define DD_CLOSE_CMD	"close"
+> +#define DD_TR_EVENT	"0"
+> +
+> +struct ddebug_trace_inst {
+> +	const char *name;
+> +	struct trace_array *arr;
+> +};
+> +
+> +/*
+> + * TRACE_DST_MAX value is reserved for writing
+> + * debug logs to trace events (prdbg, devdbg)
+> + */
+> +struct ddebug_trace {
+> +	struct ddebug_trace_inst inst[TRACE_DST_MAX-1];
+> +	DECLARE_BITMAP(bmap, TRACE_DST_MAX-1);
+> +	int bmap_size;
+> +};
+> +
+>   static DEFINE_MUTEX(ddebug_lock);
+>   static LIST_HEAD(ddebug_tables);
+>   static int verbose;
+> @@ -80,6 +100,8 @@ module_param(verbose, int, 0644);
+>   MODULE_PARM_DESC(verbose, " dynamic_debug/control processing "
+>   		 "( 0 = off (default), 1 = module add/rm, 2 = >control summary, 3 = parsing, 4 = per-site changes)");
+>   
+> +static struct ddebug_trace tr = { .bmap_size = TRACE_DST_MAX-1 };
+> +
+>   static inline struct dd_ctrl *get_ctrl(struct _ddebug *desc)
+>   {
+>   	return &desc->ctrl;
+> @@ -171,6 +193,148 @@ static void vpr_info_dq(const struct ddebug_query *query, const char *msg)
+>   		  query->first_lineno, query->last_lineno, query->class_string);
+>   }
+>   
+> +static bool is_ddebug_cmd(const char *str)
+> +{
+> +	if (!strcmp(str, DD_OPEN_CMD) ||
+> +	    !strcmp(str, DD_CLOSE_CMD))
+> +		return true;
+> +
+> +	return false;
+> +}
+> +
+> +static bool validate_tr_name(const char *str)
+> +{
+> +	/* "0" is reserved for writing debug logs to trace events (prdbg, devdbg) */
+> +	if (!strcmp(str, DD_TR_EVENT))
+> +		return false;
+> +
+> +	/* we allow trace instance names to include ^\w+ and underscore */
+> +	while (*str != '\0') {
+> +		if (!isalnum(*str) && *str != '_')
+> +			return false;
+> +		str++;
+> +	}
+> +
+> +	return true;
+> +}
+> +
+> +static int find_tr_instance(const char *name)
+> +{
+> +	int idx;
+> +
+> +	for_each_set_bit(idx, tr.bmap, tr.bmap_size)
+> +		if (!strcmp(tr.inst[idx].name, name))
+> +			return idx;
+> +
+> +	return -ENOENT;
+> +}
+> +
+> +static int handle_tr_opend_cmd(const char *arg)
+> +{
+> +	struct ddebug_trace_inst *inst;
+> +	int idx, ret = 0;
+> +
+> +	mutex_lock(&ddebug_lock);
+> +
+> +	idx = find_first_zero_bit(tr.bmap, tr.bmap_size);
+> +	if (idx == tr.bmap_size) {
+> +		ret = -ENOSPC;
+> +		goto end;
+> +	}
+> +
+> +	if (!validate_tr_name(arg)) {
+> +		pr_err("invalid instance name:%s\n", arg);
+> +		ret = -EINVAL;
+> +		goto end;
+> +	}
+> +
+> +	if (find_tr_instance(arg) >= 0) {
+> +		pr_err("instance is already opened name:%s\n ", arg);
+> +		ret = -EEXIST;
+> +		goto end;
+> +	}
+> +
+> +	inst = &tr.inst[idx];
+> +	inst->name = kstrdup(arg, GFP_KERNEL);
+> +	if (!inst->name) {
+> +		ret = -ENOMEM;
+> +		goto end;
+> +	}
+> +
+> +	inst->arr = trace_array_get_by_name(inst->name);
+> +	if (!inst->arr) {
+> +		ret = -EINVAL;
+> +		goto end;
+> +	}
+> +
+> +	ret = trace_array_init_printk(inst->arr);
+> +	if (ret) {
+> +		trace_array_put(inst->arr);
+> +		trace_array_destroy(inst->arr);
+> +		goto end;
+> +	}
+> +
+> +	set_bit(idx, tr.bmap);
+> +	v3pr_info("opened trace instance idx=%d, name=%s\n", idx, arg);
+> +end:
+> +	mutex_unlock(&ddebug_lock);
+> +	return ret;
+> +}
+> +
+> +static int handle_tr_close_cmd(const char *arg)
+> +{
+> +	struct ddebug_trace_inst *inst;
+> +	int idx, ret = 0;
+> +
+> +	mutex_lock(&ddebug_lock);
+> +
+> +	idx = find_tr_instance(arg);
+> +	if (idx < 0) {
+> +		ret = idx;
+> +		goto end;
+> +	}
+> +
+> +	inst = &tr.inst[idx];
+> +
+> +	trace_array_put(inst->arr);
+> +	/*
+> +	 * don't destroy trace instance but let user do it manually
+> +	 * with rmdir command at a convenient time later, if it is
+> +	 * destroyed here all debug logs will be lost
+> +	 *
+> +	 * trace_array_destroy(inst->arr);
+> +	 */
+> +	inst->arr = NULL;
+> +
+> +	kfree(inst->name);
+> +	inst->name = NULL;
+> +
+> +	clear_bit(idx, tr.bmap);
+> +	v3pr_info("closed trace instance idx=%d, name=%s\n", idx, arg);
+> +end:
+> +	mutex_unlock(&ddebug_lock);
+> +	return ret;
+> +}
+> +
+> +static int ddebug_parse_cmd(char *words[], int nwords)
+> +{
+> +	int ret;
+> +
+> +	if (nwords != 1)
+> +		return -EINVAL;
+> +
+> +	if (!strcmp(words[0], DD_OPEN_CMD))
+> +		ret = handle_tr_opend_cmd(words[1]);
+> +	else if (!strcmp(words[0], DD_CLOSE_CMD))
+> +		ret = handle_tr_close_cmd(words[1]);
+> +	else {
+> +		pr_err("invalid command %s\n", words[0]);
+> +		ret = -EINVAL;
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+>   static struct ddebug_class_map *ddebug_find_valid_class(struct ddebug_table const *dt,
+>   							  const char *class_string, int *class_id)
+>   {
+> @@ -567,6 +731,11 @@ static int ddebug_exec_query(char *query_string, const char *modname)
+>   		pr_err("tokenize failed\n");
+>   		return -EINVAL;
+>   	}
+> +
+> +	/* check for open, close commands */
+> +	if (is_ddebug_cmd(words[0]))
+> +		return ddebug_parse_cmd(words, nwords-1);
+> +
+>   	/* check flags 1st (last arg) so query is pairs of spec,val */
+>   	if (ddebug_parse_flags(words[nwords-1], &modifiers)) {
+>   		pr_err("flags parse failed\n");
+> @@ -1191,6 +1360,20 @@ static struct _ddebug *ddebug_iter_next(struct ddebug_iter *iter)
+>   	return &iter->table->ddebugs[iter->idx];
+>   }
+>   
+> +/*
+> + * Check if the iterator points to the last _ddebug object
+> + * to traverse.
+> + */
+> +static bool ddebug_iter_is_last(struct ddebug_iter *iter)
+> +{
+> +	if (iter->table == NULL)
+> +		return false;
+> +	if (iter->idx-1 < 0 &&
+> +	    list_is_last(&iter->table->link, &ddebug_tables))
+> +		return true;
+> +	return false;
+> +}
+> +
+>   /*
+>    * Seq_ops start method.  Called at the start of every
+>    * read() call from userspace.  Takes the ddebug_lock and
+> @@ -1281,6 +1464,16 @@ static int ddebug_proc_show(struct seq_file *m, void *p)
+>   	}
+>   	seq_puts(m, "\n");
+>   
+> +	if (ddebug_iter_is_last(iter) &&
+> +	    !bitmap_empty(tr.bmap, tr.bmap_size)) {
+> +		int idx;
+> +
+> +		seq_puts(m, "\n");
+> +		seq_puts(m, "Opened trace instances:\n");
+> +		for_each_set_bit(idx, tr.bmap, tr.bmap_size)
+> +			seq_printf(m, "%s\n", tr.inst[idx].name);
+> +	}
+> +
+>   	return 0;
+>   }
+>   
 
