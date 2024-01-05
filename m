@@ -1,99 +1,117 @@
-Return-Path: <linux-kernel+bounces-17418-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17419-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 37283824CE8
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 03:25:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C414824CEF
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 03:28:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C3F381F213F9
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 02:25:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 353D1286DF8
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 02:28:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C0DE2107;
-	Fri,  5 Jan 2024 02:25:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD72520EE;
+	Fri,  5 Jan 2024 02:28:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="o4GsTItl"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Zl7EGVya"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f67.google.com (mail-ed1-f67.google.com [209.85.208.67])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01CC31FBF;
-	Fri,  5 Jan 2024 02:25:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=9Fm13D6HkTMzEZBlOarDnIVaiSDDHq61aKHqbRpbK1E=; b=o4GsTItlbg+grt7he924K/ku2I
-	5+z0tWqqFd2nbLjRcJ8orIs0aKlySKR+eL+k4wUwmoF4/O5x2EniSQ2Qga17JV0zNUmjgPDIaH1Ee
-	s0V1ZkV/FPJ+h0CtIu6Pel8NQDLjdCDPNaPuqRdEaDINZtPui0O9ZNztJI6M/ncFOrcE=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1rLZtq-004Pl0-14; Fri, 05 Jan 2024 03:25:30 +0100
-Date: Fri, 5 Jan 2024 03:25:30 +0100
-From: Andrew Lunn <andrew@lunn.ch>
-To: Christian Marangi <ansuelsmth@gmail.com>
-Cc: Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	William Zhang <william.zhang@broadcom.com>,
-	Anand Gore <anand.gore@broadcom.com>,
-	Kursad Oney <kursad.oney@broadcom.com>,
-	Florian Fainelli <florian.fainelli@broadcom.com>,
-	=?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
-	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	Jacek Anaszewski <jacek.anaszewski@gmail.com>,
-	=?iso-8859-1?Q?Fern=E1ndez?= Rojas <noltari@gmail.com>,
-	Sven Schwermer <sven.schwermer@disruptive-technologies.com>,
-	linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	netdev@vger.kernel.org
-Subject: Re: [net-next PATCH v8 3/5] net: phy: add support for PHY LEDs
- polarity modes
-Message-ID: <957df01b-bb92-4f8a-9f2b-aacd3de1208d@lunn.ch>
-References: <20240104110114.2020-1-ansuelsmth@gmail.com>
- <20240104110114.2020-4-ansuelsmth@gmail.com>
- <47f18def-d34f-4224-9de2-6e0ae7122a52@lunn.ch>
- <6597286c.050a0220.4684a.182e@mx.google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FDA71FC8;
+	Fri,  5 Jan 2024 02:28:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f67.google.com with SMTP id 4fb4d7f45d1cf-55668ccbb87so335430a12.1;
+        Thu, 04 Jan 2024 18:28:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704421694; x=1705026494; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ccOiYM9FLrb1L7l+W0Hq9BB2myR49TNvkRfKeDKACIo=;
+        b=Zl7EGVyao7t6KXhBV4vTEdGyN9y0N60cwP5Bn2xb0gzNWpWR+jEvRw8B6X9pbokzn2
+         m855+xSSwjyfr/cf6vJvVCMIK7Qs3HaI7NT/wARYrmmPA88xGFR4O7BsdSjMu3TPpbtc
+         qYmp0ODh+nVjc6uqMN8HGK1b9pdRmwGZ4doS/ABpLaWRjeLkGrjyYTdOAz6jIlUMnq+A
+         uL1pEzizbvUKEvo6+NEHQzbNOcVMMZD+ppUZCPwRh89cc2NyoQdOYHvMJi25KYuKuhEX
+         7m7F/stGAAKCVnEQHD5uttzKhTxos8mohTTbjkxrKLL4fYBgHVXJwe1GpwTc7IRAHLmR
+         LB7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704421694; x=1705026494;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ccOiYM9FLrb1L7l+W0Hq9BB2myR49TNvkRfKeDKACIo=;
+        b=toneSY0VBEib99m5ZpyEVmp1epIuXE/bFukj/HSE64KG1Cpwqz8xtThVDk24sXLUt8
+         L+awoLrOcjNrwyRajPJ+LeR/ddvD3JOes6IRcjCduCgg+ZmoVSxROq/tP+k7N2UW3pgM
+         LyH8poMLHNOSwZGcCZmPYqezMvelGsgH+kHXGeFB9r2yS/0+dJC6akPGLfhTVwbJTiYN
+         z0xd4KfHODCbeOQs2YIst8T8aNm/nyL9C9jvmttz3CalmYWtn4mE0go8nCWGlsB8N6Kl
+         7irygPVbU4iQChU7t5FvwW2j/kKXQVYFFVBo9YFRzWiTNbSh9qgaaGxtiIvgHJGKIB33
+         K3uA==
+X-Gm-Message-State: AOJu0Yxu9dB3yuy27wUd5P778j/I8EIehhFS7qdZo3QajZtIrCFUPt8y
+	XMftX/FNHu9qlen4Ls+gbC/w2qYE24DEDHCeVi8=
+X-Google-Smtp-Source: AGHT+IH7vLeO1VzORIF4y45mxMnkYzbKl0chApOBZroiwKHiy6VxpzABtQeC3XXhUSOho+a1mfsL7Wm3qo+VIbr/OjY=
+X-Received: by 2002:a17:907:94c3:b0:a27:e2fc:5a67 with SMTP id
+ dn3-20020a17090794c300b00a27e2fc5a67mr1618282ejc.7.1704421693620; Thu, 04 Jan
+ 2024 18:28:13 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6597286c.050a0220.4684a.182e@mx.google.com>
+References: <20240104024244.12163-1-Wenhua.Lin@unisoc.com> <20240104024244.12163-2-Wenhua.Lin@unisoc.com>
+ <CAHp75VfdCHnPovC+LJyVsh=SGTLXDoDowd+0z+0J-wDF2_yjCQ@mail.gmail.com>
+ <CAB9BWhc0WyvMMudKcpuOw3=hqiWrC4e47fri6ywqYojULHnAdQ@mail.gmail.com> <CAAfSe-t3mj7ngwL_EZkp=YNWVdb1HhHjY6OY_xFWXieBp0vmOQ@mail.gmail.com>
+In-Reply-To: <CAAfSe-t3mj7ngwL_EZkp=YNWVdb1HhHjY6OY_xFWXieBp0vmOQ@mail.gmail.com>
+From: wenhua lin <wenhua.lin1994@gmail.com>
+Date: Fri, 5 Jan 2024 10:28:02 +0800
+Message-ID: <CAB9BWhdE3G7P=g4C-kLhE96+GnMNOjnNNP8LszjHhY83e=ojFg@mail.gmail.com>
+Subject: Re: [PATCH V3 1/4] gpio: eic-sprd: Keep the clock rtc_1k on
+To: Chunyan Zhang <zhang.lyra@gmail.com>
+Cc: Andy Shevchenko <andy.shevchenko@gmail.com>, Wenhua Lin <Wenhua.Lin@unisoc.com>, 
+	Linus Walleij <linus.walleij@linaro.org>, Andy Shevchenko <andy@kernel.org>, 
+	Bartosz Golaszewski <brgl@bgdev.pl>, Orson Zhai <orsonzhai@gmail.com>, 
+	Baolin Wang <baolin.wang@linux.alibaba.com>, linux-gpio@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Xiongpeng Wu <xiongpeng.wu@unisoc.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-> > > +	 * @dev: PHY device which has the LED
-> > > +	 * @index: Which LED of the PHY device or -1
-> > > +	 * @modes: bitmap of LED polarity modes
-> > > +	 *
-> > > +	 * Configure LED with all the required polarity modes in @modes
-> > > +	 * to make it correctly turn ON or OFF.
-> > 
-> > index == -1 should be explained.
+On Fri, Jan 5, 2024 at 10:18=E2=80=AFAM Chunyan Zhang <zhang.lyra@gmail.com=
+> wrote:
+>
+> On Fri, 5 Jan 2024 at 10:11, wenhua lin <wenhua.lin1994@gmail.com> wrote:
 > >
-> 
-> If you are referring to the special way of setting the LED globally,
-> that is not a thing anymore. Rob pointed out that having the double
-> reference in DT is problematic and PHY driver should handle that
-> internally.
+> > On Thu, Jan 4, 2024 at 9:00=E2=80=AFPM Andy Shevchenko
+> > <andy.shevchenko@gmail.com> wrote:
+> > >
+> > > On Thu, Jan 4, 2024 at 4:43=E2=80=AFAM Wenhua Lin <Wenhua.Lin@unisoc.=
+com> wrote:
+> > > >
+> > > > The eic debounce does not have a clock of rtc_1k in the sleep state=
+,
+> > > > but the eic debounce will be used to wake up the system, therefore =
+the
+> > > > clock of rtc_1k needs to be kept open.
+> > >
+> > > ...
+> > >
+> > > > +#define SPRD_EIC_DBNC_FORCE_CLK                0x8000
+> > >
+> > > BIT(15) ?
+> > >
+> >
+> > Yes, writing 1 to bit15 of the register can ensure that the clock of
+> > rtc_1k remains normally on.
+>
+> Andy's comment means that you should use BIT(15) instead of 0x8000.
+>
 
-So it sounds like you need to change
+OK, thank you very much for your explanation, I will make changes in patch =
+v4.
 
-> > > +	 * @index: Which LED of the PHY device or -1
-
-to remove the 'or -1'
-
-   Andrew
+> >
+> > > --
+> > > With Best Regards,
+> > > Andy Shevchenko
 
