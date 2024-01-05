@@ -1,138 +1,179 @@
-Return-Path: <linux-kernel+bounces-18403-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18404-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE820825C95
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 23:49:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EAAD8825C9A
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 23:51:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 434B91F23F5B
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 22:49:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 195191C2345F
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 22:51:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F1B2360A4;
-	Fri,  5 Jan 2024 22:49:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="AldvIK7K"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA09F360AC;
+	Fri,  5 Jan 2024 22:51:18 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from mx.skole.hr (mx2.hosting.skole.hr [161.53.165.186])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22BF536096;
-	Fri,  5 Jan 2024 22:49:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=yMeVG/Fp9FA+UiEjbyTIyLKYgRqI9k4EOU9gvb1YxA4=; b=AldvIK7K5GbQmdvRbtOOisjQUw
-	aQO09FVDccUz/Q5GK6Y4e/j90g2LrQOXK5gb83o75t86u7I+zM6UlRquM7K2+j+9u/r5Khl4YrZWZ
-	Ip+9OI0y6hYkAsOI1jSBZgz/yQ+sNIL252Y70/Vm2itgQxlRYIDFAPUTzt7vOlxCiUAVTAJrPyzyI
-	nYYZYznMuYzIs5pHHygLVmcy78Cg8wsIqUc9ZZ9247oQ3/dcpRcjz6xTheiVqm40FcfFzztc095wC
-	CPZOc6Fu6DJTRDoiCsCMAeun60jdDdgRh0f45Zv3esMwXCi9P2LGIUJ+r1liBGAenWZNwns2uwonS
-	qmk4uDFQ==;
-Received: from [50.53.46.231] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1rLt07-000NKY-0H;
-	Fri, 05 Jan 2024 22:49:15 +0000
-Message-ID: <107b6b5e-ca14-4b2b-ba2e-38ecd74c0ad3@infradead.org>
-Date: Fri, 5 Jan 2024 14:49:14 -0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0D2136094;
+	Fri,  5 Jan 2024 22:51:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=skole.hr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=skole.hr
+Received: from mx2.hosting.skole.hr (localhost.localdomain [127.0.0.1])
+	by mx.skole.hr (mx.skole.hr) with ESMTP id C4FA7852C5;
+	Fri,  5 Jan 2024 23:51:05 +0100 (CET)
+From: =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
+Date: Fri, 05 Jan 2024 23:50:32 +0100
+Subject: [PATCH] dt-bindings: pxa-pwm: Convert to YAML
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Irrelevant documentation recommending the use of
- "include/linux/kernel.h"
-To: Yueh-Shun Li <shamrocklee@posteo.net>, Jonathan Corbet <corbet@lwn.net>
-Cc: linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <bc63acd7ef43bdd8d9609fa48dbf92f9@posteo.net>
-Content-Language: en-US
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <bc63acd7ef43bdd8d9609fa48dbf92f9@posteo.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Message-Id: <20240105-pxa-pwm-yaml-v1-1-4ded9d00c38f@skole.hr>
+X-B4-Tracking: v=1; b=H4sIALeHmGUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDIxMDQwNT3YKKRN2C8lzdysTcHF2LlKQkA4OUtFTzZDMloJaCotS0zAqwcdG
+ xtbUA6x6XOF4AAAA=
+To: Thierry Reding <thierry.reding@gmail.com>, 
+ =?utf-8?q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>, 
+ Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>
+Cc: linux-pwm@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, 
+ =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2935;
+ i=duje.mihanovic@skole.hr; h=from:subject:message-id;
+ bh=exJFcZMfLakzLW30XCN4B+b4XSe/8POoE4BDRUIR0eM=;
+ b=owEBbQKS/ZANAwAIAZoRnrBCLZbhAcsmYgBlmIfChkSh+CgUu/dIC5qbtD5pY+rHr6ydJk/RV
+ aTDzQY4m42JAjMEAAEIAB0WIQRT351NnD/hEPs2LXiaEZ6wQi2W4QUCZZiHwgAKCRCaEZ6wQi2W
+ 4dxwD/9TfUze7+TN88Hg8yHNR7YIBQZvmqCYKjo7YA1FpAf1qrSuGQvzfM/If8UjDPXKOheXriX
+ 7WC5xCwb8dFe5yaefC+rIDQH1WsjZpZcik9V9P72hGMGR2HYNhjNDF0hMTbzesQ1IlNNjU4afoF
+ VgMKpD0agGn3GQaKe6O6pgQLwcaLiBr+m+ukqlq1tn1Ps3kCZpdJH3OLqUsxJ3hfPwS1zpKQ59b
+ zB3OJaPpp9kC2vBjq1aW4UfZiiw6zde1ilk5+paRG/vihqdY1OXfJ0fsf7gy1fFc9xrfRwmPt8H
+ zjtANB/r/DF2Zdj4Bskn5vULn+neGfxkddNokV3zXx/c7Mkudt0A14da4/SXX2WAj8PdFwp0Dp+
+ KXV5Ybt6cKX56BFdy3cg/9BgMEBuAno62+5Iyh7emBF5HTfYfbDEpmHS6d1xIpNKFBs/zIu/TzQ
+ cOMt73isETCb53+iGADWX0gCXcJoHC6yRHp75GhLJHNVWNyTyNDDbsb1HPlcBvEFAFHM5vcSVK2
+ 4FJFEIB2DywIIk1pxxybqxgmSuQgfMr0vs0z7DiWYKRM6VPkbiabuW88WZmChd7J0zktlhFNlZ0
+ 7L4l+OPUyzDAfOdn8ua616idpPWYsBmUxdY6J4y+7W3y2s1N4ticl+KwHy0lzilB5Ldbi0Q8i9N
+ vG/ZHe56sarjNDw==
+X-Developer-Key: i=duje.mihanovic@skole.hr; a=openpgp;
+ fpr=53DF9D4D9C3FE110FB362D789A119EB0422D96E1
 
-Hi,
+Convert the PXA PWM binding file from TXT to YAML.
 
-On 12/17/23 15:46, Yueh-Shun Li wrote:
-> Dear Maintainer,
-> 
-> The section "18) Don't re-invent the kernel macros" in
-> "Linux kernel coding style" (Documentation/process/coding-style.rst)
-> recommends re-using the macros defined in "include/linux/kernel.h"
-> instead of the improvised ones locally.
-> 
-> However, There's a note in the comment block added by commit 40cbf09f060c
-> ("kernel.h: include a note to discourage people from including it in headers")
-> two years ago, saying that there's an in-progress splitting of kernel.h
-> and inclusion in headers under include/ is discouraged.
-> 
-> Considering that the section was added 17 years ago by commit 58637ec90b7c
-> ("Add a new section to CodingStyle, promoting include/linux/kernel.h"),
-> the section about kernel.h in the "Linux kernel coding style" documentation seems outdated.
-> 
+Signed-off-by: Duje Mihanović <duje.mihanovic@skole.hr>
+---
+ Documentation/devicetree/bindings/pwm/pwm-pxa.yaml | 51 ++++++++++++++++++++++
+ Documentation/devicetree/bindings/pwm/pxa-pwm.txt  | 30 -------------
+ 2 files changed, 51 insertions(+), 30 deletions(-)
 
-Yes.
+diff --git a/Documentation/devicetree/bindings/pwm/pwm-pxa.yaml b/Documentation/devicetree/bindings/pwm/pwm-pxa.yaml
+new file mode 100644
+index 000000000000..fb20e4e1daa8
+--- /dev/null
++++ b/Documentation/devicetree/bindings/pwm/pwm-pxa.yaml
+@@ -0,0 +1,51 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/pwm/pwm-pxa.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Marvell PXA PWM
++
++maintainers:
++  - Duje Mihanović <duje.mihanovic@skole.hr>
++
++allOf:
++  - $ref: pwm.yaml#
++
++properties:
++  compatible:
++    enum:
++      - marvell,pxa250-pwm
++      - marvell,pxa270-pwm
++      - marvell,pxa168-pwm
++      - marvell,pxa910-pwm
++
++  reg:
++    # Length should be 0x10
++    maxItems: 1
++
++  "#pwm-cells":
++    # Used for specifying the period length in nanoseconds
++    const: 1
++
++  clocks:
++    maxItems: 1
++
++required:
++  - compatible
++  - reg
++  - "#pwm-cells"
++  - clocks
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/clock/pxa-clock.h>
++
++    pwm0: pwm@40b00000 {
++      compatible = "marvell,pxa250-pwm";
++      reg = <0x40b00000 0x10>;
++      #pwm-cells = <1>;
++      clocks = <&clks CLK_PWM0>;
++    };
+diff --git a/Documentation/devicetree/bindings/pwm/pxa-pwm.txt b/Documentation/devicetree/bindings/pwm/pxa-pwm.txt
+deleted file mode 100644
+index 5ae9f1e3c338..000000000000
+--- a/Documentation/devicetree/bindings/pwm/pxa-pwm.txt
++++ /dev/null
+@@ -1,30 +0,0 @@
+-Marvell PWM controller
+-
+-Required properties:
+-- compatible: should be one or more of:
+-  - "marvell,pxa250-pwm"
+-  - "marvell,pxa270-pwm"
+-  - "marvell,pxa168-pwm"
+-  - "marvell,pxa910-pwm"
+-- reg: Physical base address and length of the registers used by the PWM channel
+-  Note that one device instance must be created for each PWM that is used, so the
+-  length covers only the register window for one PWM output, not that of the
+-  entire PWM controller.  Currently length is 0x10 for all supported devices.
+-- #pwm-cells: Should be 1.  This cell is used to specify the period in
+-  nanoseconds.
+-
+-Example PWM device node:
+-
+-pwm0: pwm@40b00000 {
+-	compatible = "marvell,pxa250-pwm";
+-	reg = <0x40b00000 0x10>;
+-	#pwm-cells = <1>;
+-};
+-
+-Example PWM client node:
+-
+-backlight {
+-	compatible = "pwm-backlight";
+-	pwms = <&pwm0 5000000>;
+-	...
+-}
 
-> Reproduction steps:
-> 
-> ```sh
-> # cd to the kernel source tree
-> cd path/to/source/linux
-> # Show the git blame of the documentation section added in 2006
-> git blame -L 1051,1071 Documentation/process/coding-style.rst
-> # Show the comment note on top of include/linux/kernel.h added in 2022
-> git blame -L 2,10 include/linux/kernel.h
-> ```
-> 
-> Should we change
-> 
-> ```
-> The header file include/linux/kernel.h
-> ```
-> 
-> to something like
-> 
-> ```
-> The header files under the include/linux/ directory
-> ```
+---
+base-commit: 610a9b8f49fbcf1100716370d3b5f6f884a2835a
+change-id: 20240105-pxa-pwm-yaml-8dbb00dfe7c6
 
-the necessary header files in the include/linux/ directory.
-
-
-> 
-> or a specific header that contains standalone helper macros?
-> 
-
-No. That would just end up as another catchall file that
-gets too large (bloated) and contain many headers that are not
-needed for some or many source files.
-
-> It might be out of scope here,
-> but such a header that collects standalone helping macros
-> seems non-existent so far.
-
-I think that we don't want another one.
-
-> It would be great to have one that contains things like
-> "STRINGIFY", "CONCATENATE" (or "PASTE"), "UNIQUE_ID"
-> and other helper macros without external dependencies.
-> There's one called "include/linux/util_macros.h", but it depends on "include/linux/math.h".
-> 
-> It's the first time for me to report an issue in LKML.
-> Please kindly point out anything
-> that I should fix or could improve.
-> 
-> Best regards,
-> 
-> Shamrock
-> 
-
-Thanks.
+Best regards,
 -- 
-#Randy
+Duje Mihanović <duje.mihanovic@skole.hr>
+
+
 
