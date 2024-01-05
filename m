@@ -1,192 +1,236 @@
-Return-Path: <linux-kernel+bounces-17557-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17558-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DFAB824F55
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 08:50:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D341824F60
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 08:52:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1E0DDB2292A
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 07:50:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4C4AC1C21D64
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 07:52:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 094FA200AA;
-	Fri,  5 Jan 2024 07:50:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 255EE2030C;
+	Fri,  5 Jan 2024 07:52:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="cyv6Dk3Z"
+	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="acBnulpf"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp.smtpout.orange.fr (smtp-24.smtpout.orange.fr [80.12.242.24])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8086200AE
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 07:50:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704441041; x=1735977041;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=t8MKxl0UlVrrvohdRZeIZvu2TQYxXODY9FqfArPk0wY=;
-  b=cyv6Dk3ZABNvzutIRgiMpY48z/2SMfOxpTeq77U1wFAK6O9NWtT5+ZUc
-   aIvbnS8w/TkmNgpohCgoDEWlPziCJz6vhr2Bo5Vzx+GQuOe/5j/AEB2+f
-   mPlvR8ussRx4zCNJvi8vwqz5W2YL/s70nKB0WrfIqkQhJpXAWADzt1xaq
-   aqipnIqk+Lr0zN1i0JTFy8tQ3qxHtlktJ/NHAbcRyRrRCbb+YDOU56m35
-   RKm0KI7TtnW/UZ5mzlvdnPaEF+xFPFJx9tns6uM484WT6g04HJOI+i7xf
-   GCTOBPQsdl2MVOSgdFRwlCqSbZfxXOhI2tNjcPXuU9wh/nNVFOq+RkH6s
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10943"; a="18968524"
-X-IronPort-AV: E=Sophos;i="6.04,333,1695711600"; 
-   d="scan'208";a="18968524"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2024 23:50:40 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10943"; a="851067869"
-X-IronPort-AV: E=Sophos;i="6.04,333,1695711600"; 
-   d="scan'208";a="851067869"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmsmga004.fm.intel.com with ESMTP; 04 Jan 2024 23:50:38 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rLeyS-0000xb-2I;
-	Fri, 05 Jan 2024 07:50:36 +0000
-Date: Fri, 5 Jan 2024 15:50:04 +0800
-From: kernel test robot <lkp@intel.com>
-To: Sandipan Das <sandipan.das@amd.com>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-	Peter Zijlstra <peterz@infradead.org>
-Subject: arch/x86/events/amd/uncore.c:941:52: error: '%d' directive output
- may be truncated writing between 1 and 10 bytes into a region of size 8
-Message-ID: <202401051554.teOdw8yt-lkp@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F29521343;
+	Fri,  5 Jan 2024 07:52:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=wanadoo.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
+Received: from [192.168.1.18] ([92.140.202.140])
+	by smtp.orange.fr with ESMTPA
+	id Lf0CrISoa2jhsLf0CrWboE; Fri, 05 Jan 2024 08:52:26 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+	s=t20230301; t=1704441146;
+	bh=t/oh2/wi/UPIqXbHxhouAM8Ei5nFVNd01scfNMRmZt8=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To;
+	b=acBnulpfwzQhiJnYvkh8ZbK1hXLIiDrx1P4Bjjt6RRRAB5dvo+yJqhKXzbJ10eQfw
+	 ilNJDhwVBr7YkbWLcTw9cYTjJMxpbNClwnOQHcGAWkQXbhdotnIHNevu6tZiugSQGb
+	 xnPB1pv2A/2KIhlCyRaVz2mDAts6N4TrQAuCW5JKhA780ZA20xjHXxkWWXnjopP7H8
+	 cq0SdBGEIQBZ1Nmt+DCEtGLW0kVIEf6EgL4eKhF5mnOuigAtlOTb6cl4McxRt8VL28
+	 /ixx5fWyOn6X0qiM1ilypCpgrz9t2WDZ0d4xM5PikvJ4NgKVCnaKGumPzQacnkHLXR
+	 cWWU3FrZ+HXOQ==
+X-ME-Helo: [192.168.1.18]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Fri, 05 Jan 2024 08:52:26 +0100
+X-ME-IP: 92.140.202.140
+Message-ID: <e09c4a19-262e-440c-98d5-92d2f33fb12b@wanadoo.fr>
+Date: Fri, 5 Jan 2024 08:52:24 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RESEND PATCH 1/2] PM / devfreq: Fix buffer overflow in
+ trans_stat_show
+Content-Language: fr
+To: Christian Marangi <ansuelsmth@gmail.com>
+Cc: MyungJoo Ham <myungjoo.ham@samsung.com>,
+ Kyungmin Park <kyungmin.park@samsung.com>,
+ Chanwoo Choi <cw00.choi@samsung.com>, Jonghwa Lee
+ <jonghwa3.lee@samsung.com>, linux-kernel@vger.kernel.org,
+ linux-pm@vger.kernel.org, stable@vger.kernel.org
+References: <20240104215521.10772-1-ansuelsmth@gmail.com>
+ <9d57f4ea-67d1-48b5-92df-c5556f95f5d6@wanadoo.fr>
+ <659735f1.050a0220.efb5.1c0d@mx.google.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+In-Reply-To: <659735f1.050a0220.efb5.1c0d@mx.google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Hi Sandipan,
+Le 04/01/2024 à 23:44, Christian Marangi a écrit :
+> On Thu, Jan 04, 2024 at 11:19:44PM +0100, Christophe JAILLET wrote:
+>> Le 04/01/2024 à 22:55, Christian Marangi a écrit :
+>>> Fix buffer overflow in trans_stat_show().
+>>>
+>>> Convert simple snprintf to the more secure scnprintf with size of
+>>> PAGE_SIZE.
+>>>
+>>> Add condition checking if we are exceeding PAGE_SIZE and exit early from
+>>> loop. Also add at the end a warning that we exceeded PAGE_SIZE and that
+>>> stats is disabled.
+>>>
+>>> Return -EFBIG in the case where we don't have enough space to write the
+>>> full transition table.
+>>>
+>>> Also document in the ABI that this function can return -EFBIG error.
+>>>
+>>> Cc: stable@vger.kernel.org
+>>> Closes: https://bugzilla.kernel.org/show_bug.cgi?id=218041
+>>> Fixes: e552bbaf5b98 ("PM / devfreq: Add sysfs node for representing frequency transition information.")
+>>> Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+>>> ---
+>>>    Documentation/ABI/testing/sysfs-class-devfreq |  3 +
+>>>    drivers/devfreq/devfreq.c                     | 57 +++++++++++++------
+>>>    2 files changed, 42 insertions(+), 18 deletions(-)
+>>>
+>>> diff --git a/Documentation/ABI/testing/sysfs-class-devfreq b/Documentation/ABI/testing/sysfs-class-devfreq
+>>> index 5e6b74f30406..1e7e0bb4c14e 100644
+>>> --- a/Documentation/ABI/testing/sysfs-class-devfreq
+>>> +++ b/Documentation/ABI/testing/sysfs-class-devfreq
+>>> @@ -52,6 +52,9 @@ Description:
+>>>    			echo 0 > /sys/class/devfreq/.../trans_stat
+>>> +		If the transition table is bigger than PAGE_SIZE, reading
+>>> +		this will return an -EFBIG error.
+>>> +
+>>>    What:		/sys/class/devfreq/.../available_frequencies
+>>>    Date:		October 2012
+>>>    Contact:	Nishanth Menon <nm@ti.com>
+>>> diff --git a/drivers/devfreq/devfreq.c b/drivers/devfreq/devfreq.c
+>>> index 63347a5ae599..8459512d9b07 100644
+>>> --- a/drivers/devfreq/devfreq.c
+>>> +++ b/drivers/devfreq/devfreq.c
+>>> @@ -1688,7 +1688,7 @@ static ssize_t trans_stat_show(struct device *dev,
+>>>    			       struct device_attribute *attr, char *buf)
+>>>    {
+>>>    	struct devfreq *df = to_devfreq(dev);
+>>> -	ssize_t len;
+>>> +	ssize_t len = 0;
+>>>    	int i, j;
+>>>    	unsigned int max_state;
+>>> @@ -1697,7 +1697,7 @@ static ssize_t trans_stat_show(struct device *dev,
+>>>    	max_state = df->max_state;
+>>>    	if (max_state == 0)
+>>> -		return sprintf(buf, "Not Supported.\n");
+>>> +		return scnprintf(buf, PAGE_SIZE, "Not Supported.\n");
+>>
+>> Hi,
+>>
+>> maybe using  sysfs_emit_at() could be even cleaner and less verbose?
+>>
+> 
+> If you notice this change is done in the second patch of the series.
+> This patch still use this more generic way to permit this to be
+> backported on stable kernel. (older kernel doesn't have sysfs_emit_at()
+> hence it can't be backported)
 
-FYI, the error/warning still remains.
+Ok. Thanks for the clarification.
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   1f874787ed9a2d78ed59cb21d0d90ac0178eceb0
-commit: 25e56847821f7375bdee7dae1027c7917d07ce4b perf/x86/amd/uncore: Add memory controller support
-date:   3 months ago
-config: x86_64-sof-customedconfig-avs-defconfig (https://download.01.org/0day-ci/archive/20240105/202401051554.teOdw8yt-lkp@intel.com/config)
-compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240105/202401051554.teOdw8yt-lkp@intel.com/reproduce)
+> 
+>>>    	mutex_lock(&df->lock);
+>>>    	if (!df->stop_polling &&
+>>> @@ -1707,31 +1707,52 @@ static ssize_t trans_stat_show(struct device *dev,
+>>>    	}
+>>>    	mutex_unlock(&df->lock);
+>>> -	len = sprintf(buf, "     From  :   To\n");
+>>> -	len += sprintf(buf + len, "           :");
+>>> -	for (i = 0; i < max_state; i++)
+>>> -		len += sprintf(buf + len, "%10lu",
+>>> -				df->freq_table[i]);
+>>> +	len += scnprintf(buf + len, PAGE_SIZE - len, "     From  :   To\n");
+>>> +	len += scnprintf(buf + len, PAGE_SIZE - len, "           :");
+>>> +	for (i = 0; i < max_state; i++) {
+>>> +		if (len >= PAGE_SIZE - 1)
+>>> +			break;
+>>> +		len += scnprintf(buf + len, PAGE_SIZE - len, "%10lu",
+>>> +				 df->freq_table[i]);
+>>> +	}
+>>> +	if (len >= PAGE_SIZE - 1)
+>>> +		return PAGE_SIZE - 1;
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202401051554.teOdw8yt-lkp@intel.com/
+[1]
 
-All errors (new ones prefixed by >>):
+>>> -	len += sprintf(buf + len, "   time(ms)\n");
+>>> +	len += scnprintf(buf + len, PAGE_SIZE - len, "   time(ms)\n");
+>>>    	for (i = 0; i < max_state; i++) {
+>>> +		if (len >= PAGE_SIZE - 1)
+>>> +			break;
+>>
+>> I'm not sure that adding all these tests is needed. It could save some
+>> cycles in the worse case (when buf could overflow), but in fact wastes
+>> cycles in the normel case.
+>>
+> 
+> Consider that cpufreq stats does the same exact checks and I feel the 2
+> thing should be equal (given they do the same exact task)
 
-   arch/x86/events/amd/uncore.c: In function 'amd_uncore_umc_ctx_init':
->> arch/x86/events/amd/uncore.c:941:52: error: '%d' directive output may be truncated writing between 1 and 10 bytes into a region of size 8 [-Werror=format-truncation=]
-       snprintf(pmu->name, sizeof(pmu->name), "amd_umc_%d", index);
-                                                       ^~
-   arch/x86/events/amd/uncore.c:941:43: note: directive argument in the range [0, 2147483647]
-       snprintf(pmu->name, sizeof(pmu->name), "amd_umc_%d", index);
-                                              ^~~~~~~~~~~~
-   arch/x86/events/amd/uncore.c:941:4: note: 'snprintf' output between 10 and 19 bytes into a destination of size 16
-       snprintf(pmu->name, sizeof(pmu->name), "amd_umc_%d", index);
-       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   cc1: all warnings being treated as errors
+Make sense.
+
+But I think that show_trans_table(() could also save some tests.
+I agree with you that limiting these tests to at most 1 per loop should 
+be already a first step.
 
 
-vim +941 arch/x86/events/amd/uncore.c
+Also surprising to me, is that if the output is too big, at [1] (above) 
+we silently truncate it, and at [2] (below) we return an error.
 
-   900	
-   901	static
-   902	int amd_uncore_umc_ctx_init(struct amd_uncore *uncore, unsigned int cpu)
-   903	{
-   904		DECLARE_BITMAP(gmask, UNCORE_GROUP_MAX) = { 0 };
-   905		u8 group_num_pmus[UNCORE_GROUP_MAX] = { 0 };
-   906		u8 group_num_pmcs[UNCORE_GROUP_MAX] = { 0 };
-   907		union amd_uncore_info info;
-   908		struct amd_uncore_pmu *pmu;
-   909		int index = 0, gid, i;
-   910	
-   911		if (pmu_version < 2)
-   912			return 0;
-   913	
-   914		/* Run just once */
-   915		if (uncore->init_done)
-   916			return amd_uncore_ctx_init(uncore, cpu);
-   917	
-   918		/* Find unique groups */
-   919		for_each_online_cpu(i) {
-   920			info = *per_cpu_ptr(uncore->info, i);
-   921			gid = info.split.gid;
-   922			if (test_bit(gid, gmask))
-   923				continue;
-   924	
-   925			__set_bit(gid, gmask);
-   926			group_num_pmus[gid] = hweight32(info.split.aux_data);
-   927			group_num_pmcs[gid] = info.split.num_pmcs;
-   928			uncore->num_pmus += group_num_pmus[gid];
-   929		}
-   930	
-   931		uncore->pmus = kzalloc(sizeof(*uncore->pmus) * uncore->num_pmus,
-   932				       GFP_KERNEL);
-   933		if (!uncore->pmus) {
-   934			uncore->num_pmus = 0;
-   935			goto done;
-   936		}
-   937	
-   938		for_each_set_bit(gid, gmask, UNCORE_GROUP_MAX) {
-   939			for (i = 0; i < group_num_pmus[gid]; i++) {
-   940				pmu = &uncore->pmus[index];
- > 941				snprintf(pmu->name, sizeof(pmu->name), "amd_umc_%d", index);
-   942				pmu->num_counters = group_num_pmcs[gid] / group_num_pmus[gid];
-   943				pmu->msr_base = MSR_F19H_UMC_PERF_CTL + i * pmu->num_counters * 2;
-   944				pmu->rdpmc_base = -1;
-   945				pmu->group = gid;
-   946	
-   947				pmu->ctx = alloc_percpu(struct amd_uncore_ctx *);
-   948				if (!pmu->ctx)
-   949					goto done;
-   950	
-   951				pmu->pmu = (struct pmu) {
-   952					.task_ctx_nr	= perf_invalid_context,
-   953					.attr_groups	= amd_uncore_umc_attr_groups,
-   954					.name		= pmu->name,
-   955					.event_init	= amd_uncore_umc_event_init,
-   956					.add		= amd_uncore_add,
-   957					.del		= amd_uncore_del,
-   958					.start		= amd_uncore_umc_start,
-   959					.stop		= amd_uncore_stop,
-   960					.read		= amd_uncore_read,
-   961					.capabilities	= PERF_PMU_CAP_NO_EXCLUDE | PERF_PMU_CAP_NO_INTERRUPT,
-   962					.module		= THIS_MODULE,
-   963				};
-   964	
-   965				if (perf_pmu_register(&pmu->pmu, pmu->pmu.name, -1)) {
-   966					free_percpu(pmu->ctx);
-   967					pmu->ctx = NULL;
-   968					goto done;
-   969				}
-   970	
-   971				pr_info("%d %s counters detected\n", pmu->num_counters,
-   972					pmu->pmu.name);
-   973	
-   974				index++;
-   975			}
-   976		}
-   977	
-   978	done:
-   979		uncore->num_pmus = index;
-   980		uncore->init_done = true;
-   981	
-   982		return amd_uncore_ctx_init(uncore, cpu);
-   983	}
-   984	
+CJ
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> 
+> Also with case of -EBIG, I would expact the thing to be very big and
+> exiting early might be beneficial, for normal stats I would expact only
+> a few cycle added. Myabe we can reduce them just for the for cycle?
+> 
+>>>    		if (df->freq_table[i] == df->previous_freq)
+>>> -			len += sprintf(buf + len, "*");
+>>> +			len += scnprintf(buf + len, PAGE_SIZE - len, "*");
+>>>    		else
+>>> -			len += sprintf(buf + len, " ");
+>>> +			len += scnprintf(buf + len, PAGE_SIZE - len, " ");
+>>> +		if (len >= PAGE_SIZE - 1)
+>>> +			break;
+>>> +
+>>> +		len += scnprintf(buf + len, PAGE_SIZE - len, "%10lu:",
+>>> +				 df->freq_table[i]);
+>>> +		for (j = 0; j < max_state; j++) {
+>>> +			if (len >= PAGE_SIZE - 1)
+>>> +				break;
+>>> +			len += scnprintf(buf + len, PAGE_SIZE - len, "%10u",
+>>> +					 df->stats.trans_table[(i * max_state) + j]);
+>>> +		}
+>>> +		if (len >= PAGE_SIZE - 1)
+>>> +			break;
+>>> +		len += scnprintf(buf + len, PAGE_SIZE - len, "%10llu\n", (u64)
+>>> +				 jiffies64_to_msecs(df->stats.time_in_state[i]));
+>>> +	}
+>>> -		len += sprintf(buf + len, "%10lu:", df->freq_table[i]);
+>>> -		for (j = 0; j < max_state; j++)
+>>> -			len += sprintf(buf + len, "%10u",
+>>> -				df->stats.trans_table[(i * max_state) + j]);
+>>> +	if (len < PAGE_SIZE - 1)
+>>> +		len += scnprintf(buf + len, PAGE_SIZE - len, "Total transition : %u\n",
+>>> +				 df->stats.total_trans);
+>>> -		len += sprintf(buf + len, "%10llu\n", (u64)
+>>> -			jiffies64_to_msecs(df->stats.time_in_state[i]));
+>>> +	if (len >= PAGE_SIZE - 1) {
+>>> +		pr_warn_once("devfreq transition table exceeds PAGE_SIZE. Disabling\n");
+>>> +		return -EFBIG;
+
+[2]
+
+>>>    	}
+>>> -	len += sprintf(buf + len, "Total transition : %u\n",
+>>> -					df->stats.total_trans);
+>>>    	return len;
+>>>    }
+>>
+> 
+
 
