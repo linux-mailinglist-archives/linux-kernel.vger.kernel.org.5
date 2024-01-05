@@ -1,89 +1,131 @@
-Return-Path: <linux-kernel+bounces-18408-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18409-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 595CA825CF6
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 00:02:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D5835825CFB
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 00:05:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 804981C23280
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 23:02:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E62CA1C227F8
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 23:05:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E44B3360AE;
-	Fri,  5 Jan 2024 23:02:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 396D536091;
+	Fri,  5 Jan 2024 23:05:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mh94wv/f"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="jLKmdtD1"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-qk1-f173.google.com (mail-qk1-f173.google.com [209.85.222.173])
+Received: from mail-pj1-f74.google.com (mail-pj1-f74.google.com [209.85.216.74])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECBE136096;
-	Fri,  5 Jan 2024 23:02:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f173.google.com with SMTP id af79cd13be357-7810d8759e7so209885a.0;
-        Fri, 05 Jan 2024 15:02:17 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D6E43609F
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 23:05:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pj1-f74.google.com with SMTP id 98e67ed59e1d1-28cbd4aaf29so61498a91.2
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Jan 2024 15:05:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704495736; x=1705100536; darn=vger.kernel.org;
-        h=mime-version:user-agent:message-id:date:references:in-reply-to
-         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=pQyFGK18sBCI6dlds62qZM1cJoYfjwJznu/a2Ec9awA=;
-        b=mh94wv/fX1rtF3KIaCOw6KLdhQhB9F+vwZel/IudYalxFSsbImDO1/secBleaDjM92
-         zeIPsZL151vua6jPPhBkjgGgzEy6m/6SbpvzbVc3CHMtughUTHEmc5QgfYcg17B03d4T
-         XteWEksmGNUboQNlShekDgN2R+up0mpM251VrrGs5InLPmiB2p89KS5T9TBefQTkzR7s
-         esG4Tp4MM7qprxunB76nh1WYBQf2jVeP3Kzna1W/jCasj4vQ0RUamTZw2ipOJmkME1el
-         u0YKybInZRcdrEeHdUw7RrDHrRY/F+Jx5KFOWP6rCT1EF8IHt1eCZYxI1Kk/OVF4IHmJ
-         Nndw==
+        d=google.com; s=20230601; t=1704495913; x=1705100713; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=eRvWPDCG4JAZwBNK/6G5GN/cR0tx6Hok+T3LJaZP40Y=;
+        b=jLKmdtD1DWEJ7zx+5s/mqcVjjGALm71JKNNaPtFjcYGqKwSom8TpecdesFklLFmqO7
+         QqOjsnBIqGzJK1uqKp6uJUBxjG8vI/T0WjCw+KuC4/qPYsglFCuXgaMqqWSq/+m8TBOS
+         v+9hYUnrVKs0ZkWtRGLeOE1IUqn2JdP4NHOQRJW4WHEleWi9G3v08A2M38vHX7cfr6Oj
+         rOZYwEgzWGjBLyluRTGiLjGbjt/fdifbJ9k89WdVAXNf2Svb7qD36q4+O2EqOwOaCYzF
+         UtPQwwmbE9I12t3AzDjYXxtq6gC4y+QRR2l6v/hlyC1afR020sZ3k6VOeqHrfrmtcWrQ
+         WPyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704495736; x=1705100536;
-        h=mime-version:user-agent:message-id:date:references:in-reply-to
-         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pQyFGK18sBCI6dlds62qZM1cJoYfjwJznu/a2Ec9awA=;
-        b=NIST+mgNPq5U1xHiH494OxaFUQDj/LZKY4anqwjzNdB0BCz/Eu8TVBxzivFt3FdmzS
-         PRS3hfXP6zZCwQJt/m+DVkITpuc07fYBFXlIRkV25sxbqXXH9u2sOFcKFk+NJ2jUVBuT
-         w+zE3d6RuISgUtk+xtallfPeORT1nKsdevnrabVNhHcFZkBUF0z9yckIKNgPw4OH+zAC
-         F1cpMKHmypuhpEc4+H83GbQ74+B4t/IJwkBbc/SaATnVUwDUEHHt/3sDBLgC8X5xjuud
-         HhroMnm9ZpCBMNeEPU0E70v+3OiPXGBZy1EI6DpwxuzvuYmndNxDy+GfM3d9QE4PEDlx
-         tX6A==
-X-Gm-Message-State: AOJu0YxE6PZHg1Kb7lfegQFhlp1JD60WUBHM3Ntnl96s99hBj14VK3hb
-	nFQMz4WcpS7Z7RMhtSkvbG1VZnYvP+g54A==
-X-Google-Smtp-Source: AGHT+IFVgDckdegLP44yi38RKX0R8iNrnT7y6/H/HAaf0pwJrBcIANZdCupdnUJbeQT85EDnjtRtyg==
-X-Received: by 2002:a05:620a:45a3:b0:783:b9d:ec51 with SMTP id bp35-20020a05620a45a300b007830b9dec51mr235776qkb.4.1704495736290;
-        Fri, 05 Jan 2024 15:02:16 -0800 (PST)
-Received: from davidm-laptop (hlfxns018gw-134-41-185-34.dhcp-dynamic.fibreop.ns.bellaliant.net. [134.41.185.34])
-        by smtp.gmail.com with ESMTPSA id oo24-20020a05620a531800b0078156dd57a3sm934705qkn.15.2024.01.05.15.02.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Jan 2024 15:02:15 -0800 (PST)
-From: David McFarland <corngood@gmail.com>
-To: Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>,  Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>,  Linux Next Mailing List
- <linux-next@vger.kernel.org>
-Subject: Re: linux-next: Signed-off-by missing for commit in the pm tree
-In-Reply-To: <20240105081937.25076977@canb.auug.org.au> (Stephen Rothwell's
-	message of "Fri, 5 Jan 2024 08:19:37 +1100")
-References: <20240105081937.25076977@canb.auug.org.au>
-Date: Fri, 05 Jan 2024 19:02:12 -0400
-Message-ID: <87y1d32xl7.fsf@gmail.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+        d=1e100.net; s=20230601; t=1704495913; x=1705100713;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=eRvWPDCG4JAZwBNK/6G5GN/cR0tx6Hok+T3LJaZP40Y=;
+        b=vZBIfucMJiL74KBfWU3bpzrmJAbDJ0piqQbHwpv94POWvQR8huZ9SMXM48aMH+gqRQ
+         OJnWMtgvqqDUYSTDvHlNPlm+jXZi7ZIBbpJtCHDAu27o7MMxHGeeBYfLiUZUItNbFMQF
+         OvKPztynaMo+h3Dnju3VqRt5dQYLpnhQnTv9Q0XwrpO1X8+Y8JGIGBNsiD8DPiOs8mZo
+         j+FI++KguApmxV5/91Tf6q1vF5MlVu5BytyAUeg2xrySL0heFkygYNDFnGViDvOHRzjV
+         TALxtscrEVuJ0eicEPt6SZWPCzF0lRw4yamtSW1WiReH9D5H1cpDhrwy5OSFWBCVfweM
+         pPog==
+X-Gm-Message-State: AOJu0YydfZc2WlMdJTfibLMHchBP3yTb6wJ5hRvZtYrPVFtHjMa+sV4H
+	+/ntBPnTywG6uxjFP4X3RMv0k4qoHuC7OAJ4ZQ==
+X-Google-Smtp-Source: AGHT+IF/JJByZNwRSzKYk26DF9evJInmWnBhl5gImcO/3d/1Jq4H8t2sm5XmXOpBcIdrUVDpFHDJkzxEV2w=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:90b:3b82:b0:28b:7cfa:a8c with SMTP id
+ pc2-20020a17090b3b8200b0028b7cfa0a8cmr1255pjb.2.1704495913633; Fri, 05 Jan
+ 2024 15:05:13 -0800 (PST)
+Date: Fri, 5 Jan 2024 15:05:12 -0800
+In-Reply-To: <7ca4b7af33646e3f5693472b4394ba0179b550e1.1699368322.git.isaku.yamahata@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain
+Mime-Version: 1.0
+References: <cover.1699368322.git.isaku.yamahata@intel.com> <7ca4b7af33646e3f5693472b4394ba0179b550e1.1699368322.git.isaku.yamahata@intel.com>
+Message-ID: <ZZiLKKobVcmvrPmb@google.com>
+Subject: Re: [PATCH v17 092/116] KVM: TDX: Handle TDX PV HLT hypercall
+From: Sean Christopherson <seanjc@google.com>
+To: isaku.yamahata@intel.com
+Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com, 
+	Sagi Shahar <sagis@google.com>, David Matlack <dmatlack@google.com>, Kai Huang <kai.huang@intel.com>, 
+	Zhi Wang <zhi.wang.linux@gmail.com>, chen.bo@intel.com, hang.yuan@intel.com, 
+	tina.zhang@intel.com
+Content-Type: text/plain; charset="us-ascii"
 
+On Tue, Nov 07, 2023, isaku.yamahata@intel.com wrote:
+> From: Isaku Yamahata <isaku.yamahata@intel.com>
+> 
+> Wire up TDX PV HLT hypercall to the KVM backend function.
+> 
+> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+> ---
+>  arch/x86/kvm/vmx/tdx.c | 42 +++++++++++++++++++++++++++++++++++++++++-
+>  arch/x86/kvm/vmx/tdx.h |  3 +++
+>  2 files changed, 44 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/kvm/vmx/tdx.c b/arch/x86/kvm/vmx/tdx.c
+> index 3a1fe74b95c3..4e48989d364f 100644
+> --- a/arch/x86/kvm/vmx/tdx.c
+> +++ b/arch/x86/kvm/vmx/tdx.c
+> @@ -662,7 +662,32 @@ void tdx_vcpu_load(struct kvm_vcpu *vcpu, int cpu)
+>  
+>  bool tdx_protected_apic_has_interrupt(struct kvm_vcpu *vcpu)
+>  {
+> -	return pi_has_pending_interrupt(vcpu);
+> +	bool ret = pi_has_pending_interrupt(vcpu);
+> +	struct vcpu_tdx *tdx = to_tdx(vcpu);
+> +
+> +	if (ret || vcpu->arch.mp_state != KVM_MP_STATE_HALTED)
+> +		return true;
+> +
+> +	if (tdx->interrupt_disabled_hlt)
+> +		return false;
+> +
+> +	/*
+> +	 * This is for the case where the virtual interrupt is recognized,
+> +	 * i.e. set in vmcs.RVI, between the STI and "HLT".  KVM doesn't have
+> +	 * access to RVI and the interrupt is no longer in the PID (because it
+> +	 * was "recognized".  It doesn't get delivered in the guest because the
+> +	 * TDCALL completes before interrupts are enabled.
+> +	 *
+> +	 * TDX modules sets RVI while in an STI interrupt shadow.
+> +	 * - TDExit(typically TDG.VP.VMCALL<HLT>) from the guest to TDX module.
+> +	 *   The interrupt shadow at this point is gone.
+> +	 * - It knows that there is an interrupt that can be delivered
+> +	 *   (RVI > PPR && EFLAGS.IF=1, the other conditions of 29.2.2 don't
+> +	 *    matter)
+> +	 * - It forwards the TDExit nevertheless, to a clueless hypervisor that
+> +	 *   has no way to glean either RVI or PPR.
 
-Hi Stephen/Rafael,
+WTF.  Seriously, what in the absolute hell is going on.  I reported this internally
+four ***YEARS*** ago.  This is not some obscure theoretical edge case, this is core
+functionality and it's completely broken garbage.
 
-Should I send another patch, or can someone add my sign-off?
+NAK.  Hard NAK.  Fix the TDX module, full stop.
 
-I didn't realise I was supposed to add the tag, but I certainly do
-sign-off on e2605d4039a4.
-
-Sorry about that,
-Dave
+Even worse, TDX 1.5 apparently _already_ has the necessary logic for dealing with
+interrupts that are pending in RVI when handling NESTED VM-Enter.  Really!?!?!
+Y'all went and added nested virtualization support of some kind, but can't find
+the time to get the basics right?
 
