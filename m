@@ -1,78 +1,158 @@
-Return-Path: <linux-kernel+bounces-17844-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17846-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 747CE82537E
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 13:53:22 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1093C825384
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 13:57:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 84CFA1C2309C
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 12:53:21 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7CA86B22582
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 12:56:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0C162D610;
-	Fri,  5 Jan 2024 12:53:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0C0D2D60F;
+	Fri,  5 Jan 2024 12:56:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="wew1HBWw"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="MftBFbOI"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 351012D602;
-	Fri,  5 Jan 2024 12:53:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60CD3C433C9;
-	Fri,  5 Jan 2024 12:53:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1704459191;
-	bh=/OKCBDu+sT7dZNqDjiKljP55Xl6ozfTj6H60TBI/UN8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=wew1HBWw+Fwxi7TpcBJnT1OOVbtF1F4GkUOKrqJbWkamrdDOOlXOEGuQ6luQp1Foi
-	 8jOa7NZzF1z4hhNgVz6dCLuzkguBr7DmL0RN2mtNgmn0mZrHNQlDXmSOD8wFVLtOjW
-	 8fktZJFfYD+APqBQ+dOEBXomSveJlFIW+2XQbgzw=
-Date: Fri, 5 Jan 2024 13:53:09 +0100
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Javier Carrasco <javier.carrasco.cruz@gmail.com>
-Cc: Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-	Roger Quadros <rogerq@kernel.org>,
-	Javier Carrasco <javier.carrasco@wolfvision.net>,
-	linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] usb: typec: tipd: fix use of device-specific init
- function
-Message-ID: <2024010558-unhappy-scandal-b823@gregkh>
-References: <20240104-dev_spec_init-v1-1-1a57e7fd8cc8@gmail.com>
- <ZZf2lhtRdmIHmlBq@kuha.fi.intel.com>
- <56a15164-dbce-4740-b59e-b566f613f878@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A537E2D602;
+	Fri,  5 Jan 2024 12:56:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704459409; x=1735995409;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=IxLjQtYUtIj21vmc1L6JRNZs1Wlol7RrvhIuj03dwkk=;
+  b=MftBFbOI4Ig6WfkNOJqcra5NA6Q9kPo8DYPxl0RGs2VVVsHROeFLyiGx
+   mdeO/9U7lUnhSjqXvJzGfFLA0Ug8sICSIVBNmaAnyhi8gnUjWNvMk9VrI
+   fW8of3QNnNPD15ydS4jm1/hOnPgYWDN7FqtyX3lGFPnVLy+3JG51HkSI2
+   faXmZEMs5CnXYm+XjbNF8OgcZuoCi782DwpvJgKxOLgL5Pom5HYFGvONj
+   OSW5zEWent/WLwg5U1ngeSnN6UXkmjIMnSKh+V3vqLJostlAntpQ5LVtj
+   xft3OyZM8rCNd6y2zxj3s5fuTMbAmjTb+Pdwqwj/CJiOideJzfpP48XmR
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10943"; a="16118576"
+X-IronPort-AV: E=Sophos;i="6.04,333,1695711600"; 
+   d="scan'208";a="16118576"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2024 04:56:48 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10943"; a="851134361"
+X-IronPort-AV: E=Sophos;i="6.04,333,1695711600"; 
+   d="scan'208";a="851134361"
+Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.252.52.83])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2024 04:56:42 -0800
+Message-ID: <ce87308f-1b9b-41b1-8282-04c81d316c58@intel.com>
+Date: Fri, 5 Jan 2024 14:56:37 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <56a15164-dbce-4740-b59e-b566f613f878@gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC V3 4/4] coresight: Have a stab at support for pause /
+ resume
+Content-Language: en-US
+To: James Clark <james.clark@arm.com>
+Cc: Ingo Molnar <mingo@redhat.com>, Mark Rutland <mark.rutland@arm.com>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Heiko Carstens <hca@linux.ibm.com>, Thomas Richter <tmricht@linux.ibm.com>,
+ Hendrik Brueckner <brueckner@linux.ibm.com>,
+ Suzuki K Poulose <suzuki.poulose@arm.com>, Mike Leach
+ <mike.leach@linaro.org>, coresight@lists.linaro.org,
+ linux-arm-kernel@lists.infradead.org, Yicong Yang
+ <yangyicong@hisilicon.com>, Jonathan Cameron <jonathan.cameron@huawei.com>,
+ Will Deacon <will@kernel.org>, Arnaldo Carvalho de Melo <acme@kernel.org>,
+ Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
+ Ian Rogers <irogers@google.com>, linux-kernel@vger.kernel.org,
+ linux-perf-users@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>
+References: <20231208172449.35444-5-adrian.hunter@intel.com>
+ <20231215064242.36251-1-adrian.hunter@intel.com>
+ <e80f75ea-99e9-e4d2-6477-443e521ef90a@arm.com>
+From: Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+In-Reply-To: <e80f75ea-99e9-e4d2-6477-443e521ef90a@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Fri, Jan 05, 2024 at 01:42:47PM +0100, Javier Carrasco wrote:
-> On 05.01.24 13:36, Heikki Krogerus wrote:
-> > On Thu, Jan 04, 2024 at 06:07:12PM +0100, Javier Carrasco wrote:
-> >> The current implementation supports device-pecific callbacks for the
-> >> init function with a function pointer. The patch that introduced this
-> >> feature did not update one call to the tps25750 init function to turn it
-> >> into a call with the new pointer in the resume function.
-> >>
-> >> Fixes: d49f90822015 ("usb: typec: tipd: add init and reset functions to tipd_data")
-> >> Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
-> > 
-> > This was suggested by Roger, no?
-> > 
+On 20/12/23 17:59, James Clark wrote:
 > 
-> Yes, it was. Thanks for the reminder.
 > 
-> Could the following trailer be added before applying?
+> On 15/12/2023 06:42, Adrian Hunter wrote:
+>> For discussion only, un-tested...
+>>
 > 
-> Suggested-by: Roger Quadros <rogerq@kernel.org>
+> If anyone wants to test Coresight, the diff below is required to get the
+> most basic use case working. It also probably needs more thought and
+> some edge case handling:
 
-The tools automatically just added that now, thanks.
+Makes sense to me
 
-greg k-h
+> 
+> diff --git a/drivers/hwtracing/coresight/coresight-etm-perf.c b/drivers/hwtracing/coresight/coresight-etm-perf.c
+> index 596c01e37624..bd0767356277 100644
+> --- a/drivers/hwtracing/coresight/coresight-etm-perf.c
+> +++ b/drivers/hwtracing/coresight/coresight-etm-perf.c
+> @@ -556,7 +556,8 @@ static void etm_event_stop(struct perf_event *event, int mode)
+>  	struct etm_event_data *event_data;
+>  	struct list_head *path;
+>  
+> -	if (mode & PERF_EF_PAUSE && !READ_ONCE(ctxt->pr_allowed))
+> +	if ((mode & PERF_EF_PAUSE && !READ_ONCE(ctxt->pr_allowed)) ||
+> +	    event->hw.state == PERF_HES_STOPPED)
+>  		return;
+>  
+>  	WRITE_ONCE(ctxt->pr_allowed, 0);
+> @@ -573,9 +574,6 @@ static void etm_event_stop(struct perf_event *event, int mode)
+>  	/* Clear the event_data as this ETM is stopping the trace. */
+>  	ctxt->event_data = NULL;
+>  
+> -	if (event->hw.state == PERF_HES_STOPPED)
+> -		goto out_pr_allowed;
+> -
+>  	/* We must have a valid event_data for a running event */
+>  	if (WARN_ON(!event_data))
+>  		return;
+> @@ -586,7 +584,7 @@ static void etm_event_stop(struct perf_event *event, int mode)
+>  	 * nothing needs to be torn down other than outputting a
+>  	 * zero sized record.
+>  	 */
+> -	if (handle->event && (mode & PERF_EF_UPDATE) &&
+> +	if (handle->event && (mode & (PERF_EF_UPDATE | PERF_EF_PAUSE)) &&
+>  	    !cpumask_test_cpu(cpu, &event_data->mask)) {
+>  		event->hw.state = PERF_HES_STOPPED;
+>  		perf_aux_output_end(handle, 0);
+> @@ -616,7 +614,7 @@ static void etm_event_stop(struct perf_event *event, int mode)
+>  	 * handle due to lack of buffer space), we don't
+>  	 * have to do anything here.
+>  	 */
+> -	if (handle->event && (mode & PERF_EF_UPDATE)) {
+> +	if (handle->event && (mode & (PERF_EF_UPDATE | PERF_EF_PAUSE))) {
+>  		if (WARN_ON_ONCE(handle->event != event))
+>  			return;
+>  
+> @@ -646,7 +644,6 @@ static void etm_event_stop(struct perf_event *event, int mode)
+>  	/* Disabling the path make its elements available to other sessions */
+>  	coresight_disable_path(path);
+>  
+> -out_pr_allowed:
+>  	if (mode & PERF_EF_PAUSE)
+>  		WRITE_ONCE(ctxt->pr_allowed, 1);
+>  }
+> @@ -656,7 +653,7 @@ static int etm_event_add(struct perf_event *event, int mode)
+>  	int ret = 0;
+>  	struct hw_perf_event *hwc = &event->hw;
+>  
+> -	if (mode & PERF_EF_START && !READ_ONCE(event->aux_paused)) {
+> +	if (mode & PERF_EF_START) {
+>  		etm_event_start(event, 0);
+>  		if (hwc->state & PERF_HES_STOPPED)
+>  			ret = -EINVAL;
+
 
