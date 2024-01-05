@@ -1,51 +1,79 @@
-Return-Path: <linux-kernel+bounces-17619-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17614-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7EB31825043
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 09:54:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0201B825038
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 09:53:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 188262848BA
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 08:54:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E53D51C22C13
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 08:53:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FF712C688;
-	Fri,  5 Jan 2024 08:53:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA65B22EFB;
+	Fri,  5 Jan 2024 08:52:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="HMjVKDVT"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4388B24A0E;
-	Fri,  5 Jan 2024 08:53:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=realtek.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=realtek.com
-X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 4058qo5mB2286843, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
-	by rtits2.realtek.com.tw (8.15.2/2.95/5.92) with ESMTPS id 4058qo5mB2286843
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 5 Jan 2024 16:52:50 +0800
-Received: from RTEXDAG02.realtek.com.tw (172.21.6.101) by
- RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.32; Fri, 5 Jan 2024 16:52:49 +0800
-Received: from RTDOMAIN (172.21.210.160) by RTEXDAG02.realtek.com.tw
- (172.21.6.101) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.7; Fri, 5 Jan 2024
- 16:52:48 +0800
-From: Justin Lai <justinlai0215@realtek.com>
-To: <kuba@kernel.org>
-CC: <davem@davemloft.net>, <edumazet@google.com>, <pabeni@redhat.com>,
-        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <andrew@lunn.ch>, <pkshih@realtek.com>, <larry.chiu@realtek.com>,
-        Justin Lai
-	<justinlai0215@realtek.com>
-Subject: [PATCH net-next v15 04/13] rtase: Implement the interrupt routine and rtase_poll
-Date: Fri, 5 Jan 2024 16:52:27 +0800
-Message-ID: <20240105085236.376732-5-justinlai0215@realtek.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240105085236.376732-1-justinlai0215@realtek.com>
-References: <20240105085236.376732-1-justinlai0215@realtek.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5464422EE9
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 08:52:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
+Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-5571e662b93so473014a12.2
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Jan 2024 00:52:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tuxon.dev; s=google; t=1704444774; x=1705049574; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=FlR3eGbuxTGTlVk7TBXSN+A3q/aUvoki5BPHPBxyzFU=;
+        b=HMjVKDVT6oLS3C46DLHwtJ6jaBLWh/egO/J2Xf3pX66cytbokTmi9GrTelmxw1W8mE
+         zmPy5wTFZ09YD6/fV04LbR4CgLp7arOuEOeRdcjD2j1FOqEvdZZdwv2DC338dQR/IpvP
+         qP6ruEBSD8wXZSFjh27JmqE21Dpk+4Mn7945r5EgQNnTwXscfXzN7Fetc2eOObaT2pce
+         EmnVS2Hu4TWgS0OABSICE85s7JWstabcWfbtY1E33mt5NA4bmXOEr/BqPwNUBRspgYxf
+         a/qIeB2rTqAA1qwu7JX9S7gWt9hOb5YyMHnz+7vv3DVNOUTNZNHkA2vCLE7TkYgnGXyX
+         qcvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704444774; x=1705049574;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=FlR3eGbuxTGTlVk7TBXSN+A3q/aUvoki5BPHPBxyzFU=;
+        b=YUadC4qzTQQcEdImRs0ne4e37ZJ5Y1xInoilKNVViqRYrfsLbl6fJjG3PLTIFHZLEG
+         0coXtlTmDtcF6AmOUaB0L9yaj/dRI1mL2HhScwVqM8YUFK7u23x1W68honxYsaVNiyot
+         /90dKOJfHMLCZQ2jERGv4sDEP5qwbJFZQxqKOWXU5mQC2m53f9UVFtXZZJqebZBwGSk/
+         6lRzgEOjqYtytN7po/aRqeYE1XVANUNjaFjoyYSPiSdsGtkLAQ0TZXkmicOdi/AVXKcn
+         aLLlz+eB+OSoGg1yJfKG6m1PpQ4sUsLPBUzd1/BIyp7uuPS/86fLGxch5GSqjWBOVsfK
+         8NbQ==
+X-Gm-Message-State: AOJu0YxMVhSa4TGMvKwJSUux9D0eMyV5BOrE+UhopIJCdPSlNptaD9sI
+	xgsvkM65qidfZUUIzqxBpqWAK9ibGU3L0Q==
+X-Google-Smtp-Source: AGHT+IGGcGtR2xGcz7wsEG3qJlCZkp0/nPzS23NJF2ePsVqr7NPQcQC7UCGcqRfoUm7uiccebSoiTA==
+X-Received: by 2002:a50:9b04:0:b0:554:1ef2:37ff with SMTP id o4-20020a509b04000000b005541ef237ffmr1255716edi.12.1704444774693;
+        Fri, 05 Jan 2024 00:52:54 -0800 (PST)
+Received: from claudiu-X670E-Pro-RS.. ([82.78.167.5])
+        by smtp.gmail.com with ESMTPSA id l2-20020a056402344200b005534057c72dsm720124edc.18.2024.01.05.00.52.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Jan 2024 00:52:54 -0800 (PST)
+From: Claudiu <claudiu.beznea@tuxon.dev>
+X-Google-Original-From: Claudiu <claudiu.beznea.uj@bp.renesas.com>
+To: andrew@lunn.ch,
+	hkallweit1@gmail.com,
+	linux@armlinux.org.uk,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	yuiko.oshino@microchip.com
+Cc: netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	claudiu.beznea@tuxon.dev,
+	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+Subject: [PATCH net] net: phy: micrel: populate .soft_reset for KSZ9131
+Date: Fri,  5 Jan 2024 10:52:42 +0200
+Message-Id: <20240105085242.1471050-1-claudiu.beznea.uj@bp.renesas.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -53,141 +81,94 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: RTEXH36506.realtek.com.tw (172.21.6.27) To
- RTEXDAG02.realtek.com.tw (172.21.6.101)
-X-KSE-ServerInfo: RTEXDAG02.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-Antivirus-Interceptor-Info: fallback
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-ServerInfo: RTEXH36505.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-Antivirus-Interceptor-Info: fallback
-X-KSE-AntiSpam-Interceptor-Info: fallback
 
-1. Implement rtase_interrupt to handle txQ0/rxQ0, txQ4~txQ7 interrupts,
-and implement rtase_q_interrupt to handle txQ1/rxQ1, txQ2/rxQ2 and
-txQ3/rxQ3 interrupts.
-2. Implement rtase_poll to call ring_handler to process the tx or
-rx packet of each ring. If the returned value is budget,it means that
-there is still work of a certain ring that has not yet been completed.
+From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 
-Signed-off-by: Justin Lai <justinlai0215@realtek.com>
+The RZ/G3S SMARC Module has 2 KSZ9131 PHYs. In this setup, the KSZ9131 PHY
+is used with the ravb Ethernet driver. It has been discovered that when
+bringing the Ethernet interface down/up continuously, e.g., with the
+following sh script:
+
+$ while :; do ifconfig eth0 down; ifconfig eth0 up; done
+
+the link speed and duplex are wrong after interrupting the bring down/up
+operation even though the Ethernet interface is up. To recover from this
+state the following configuration sequence is necessary (executed
+manually):
+
+$ ifconfig eth0 down
+$ ifconfig eth0 up
+
+The behavior has been identified also on the Microchip SAMA7G5-EK board
+which runs the macb driver and uses the same PHY.
+
+The order of PHY-related operations in ravb_open() is as follows:
+ravb_open() ->
+  ravb_phy_start() ->
+    ravb_phy_init() ->
+      of_phy_connect() ->
+        phy_connect_direct() ->
+	  phy_attach_direct() ->
+	    phy_init_hw() ->
+	      phydev->drv->soft_reset()
+	      phydev->drv->config_init()
+	      phydev->drv->config_intr()
+	    phy_resume()
+	      kszphy_resume()
+
+The order of PHY-related operations in ravb_close is as follows:
+ravb_close() ->
+  phy_stop() ->
+    phy_suspend() ->
+      kszphy_suspend() ->
+        genphy_suspend()
+	  // set BMCR_PDOWN bit in MII_BMCR
+
+In genphy_suspend() setting the BMCR_PDWN bit in MII_BMCR switches the PHY
+to Software Power-Down (SPD) mode (according to the KSZ9131 datasheet).
+Thus, when opening the interface after it has been  previously closed (via
+ravb_close()), the phydev->drv->config_init() and
+phydev->drv->config_intr() reach the KSZ9131 PHY driver via the
+ksz9131_config_init() and kszphy_config_intr() functions.
+
+KSZ9131 specifies that the MII management interface remains operational
+during SPD (Software Power-Down), but (according to manual):
+- Only access to the standard registers (0 through 31) is supported.
+- Access to MMD address spaces other than MMD address space 1 is possible
+  if the spd_clock_gate_override bit is set.
+- Access to MMD address space 1 is not possible.
+
+The spd_clock_gate_override bit is not used in the KSZ9131 driver.
+
+ksz9131_config_init() configures RGMII delay, pad skews and LEDs by
+accessesing MMD registers other than those in address space 1.
+
+The datasheet for the KSZ9131 does not specify what happens if registers
+from an unsupported address space are accessed while the PHY is in SPD.
+
+To fix the issue the .soft_reset method has been instantiated for KSZ9131,
+too. This resets the PHY to the default state before doing any
+configurations to it, thus switching it out of SPD.
+
+Fixes: bff5b4b37372 ("net: phy: micrel: add Microchip KSZ9131 initial driver")
+Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 ---
- .../net/ethernet/realtek/rtase/rtase_main.c   | 89 +++++++++++++++++++
- 1 file changed, 89 insertions(+)
+ drivers/net/phy/micrel.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/ethernet/realtek/rtase/rtase_main.c b/drivers/net/ethernet/realtek/rtase/rtase_main.c
-index 9c7b27744d37..1bd4634a8bdb 100644
---- a/drivers/net/ethernet/realtek/rtase/rtase_main.c
-+++ b/drivers/net/ethernet/realtek/rtase/rtase_main.c
-@@ -582,6 +582,76 @@ static void rtase_hw_start(const struct net_device *dev)
- 	rtase_enable_hw_interrupt(tp);
- }
- 
-+/*  the interrupt handler does RXQ0 and TXQ0, TXQ4~7 interrutp status
-+ */
-+static irqreturn_t rtase_interrupt(int irq, void *dev_instance)
-+{
-+	const struct rtase_private *tp;
-+	struct rtase_int_vector *ivec;
-+	u32 status;
-+
-+	ivec = dev_instance;
-+	tp = ivec->tp;
-+	status = rtase_r32(tp, ivec->isr_addr);
-+
-+	rtase_w32(tp, ivec->imr_addr, 0x0);
-+	rtase_w32(tp, ivec->isr_addr, status & ~FOVW);
-+
-+	if (napi_schedule_prep(&ivec->napi))
-+		__napi_schedule(&ivec->napi);
-+
-+	return IRQ_HANDLED;
-+}
-+
-+/*  the interrupt handler does RXQ1&TXQ1 or RXQ2&TXQ2 or RXQ3&TXQ3 interrupt
-+ *  status according to interrupt vector
-+ */
-+static irqreturn_t rtase_q_interrupt(int irq, void *dev_instance)
-+{
-+	const struct rtase_private *tp;
-+	struct rtase_int_vector *ivec;
-+	u16 status;
-+
-+	ivec = dev_instance;
-+	tp = ivec->tp;
-+	status = rtase_r16(tp, ivec->isr_addr);
-+
-+	rtase_w16(tp, ivec->imr_addr, 0x0);
-+	rtase_w16(tp, ivec->isr_addr, status);
-+
-+	if (napi_schedule_prep(&ivec->napi))
-+		__napi_schedule(&ivec->napi);
-+
-+	return IRQ_HANDLED;
-+}
-+
-+static int rtase_poll(struct napi_struct *napi, int budget)
-+{
-+	const struct rtase_int_vector *ivec;
-+	const struct rtase_private *tp;
-+	struct rtase_ring *ring;
-+	int total_workdone = 0;
-+
-+	ivec = container_of(napi, struct rtase_int_vector, napi);
-+	tp = ivec->tp;
-+
-+	list_for_each_entry(ring, &ivec->ring_list, ring_entry) {
-+		total_workdone += ring->ring_handler(ring, budget);
-+	}
-+
-+	if (total_workdone >= budget)
-+		return budget;
-+
-+	if (napi_complete_done(napi, total_workdone)) {
-+		if (!ivec->index)
-+			rtase_w32(tp, ivec->imr_addr, ivec->imr);
-+		else
-+			rtase_w16(tp, ivec->imr_addr, ivec->imr);
-+	}
-+
-+	return total_workdone;
-+}
-+
- static int rtase_open(struct net_device *dev)
- {
- 	struct rtase_private *tp = netdev_priv(dev);
-@@ -725,9 +795,28 @@ static void rtase_rar_set(const struct rtase_private *tp, const u8 *addr)
- 	rtase_w16(tp, RTASE_LBK_CTRL, LBK_ATLD | LBK_CLR);
- }
- 
-+#ifdef CONFIG_NET_POLL_CONTROLLER
-+/* Polling 'interrupt' - used by things like netconsole to send skbs
-+ * without having to re-enable interrupts. It's not called while
-+ * the interrupt routine is executing.
-+ */
-+static void rtase_netpoll(struct net_device *dev)
-+{
-+	const struct rtase_private *tp = netdev_priv(dev);
-+	const struct pci_dev *pdev = tp->pdev;
-+
-+	disable_irq(pdev->irq);
-+	rtase_interrupt(pdev->irq, dev);
-+	enable_irq(pdev->irq);
-+}
-+#endif
-+
- static const struct net_device_ops rtase_netdev_ops = {
- 	.ndo_open = rtase_open,
- 	.ndo_stop = rtase_close,
-+#ifdef CONFIG_NET_POLL_CONTROLLER
-+	.ndo_poll_controller = rtase_netpoll,
-+#endif
- };
- 
- static void rtase_get_mac_address(struct net_device *dev)
+diff --git a/drivers/net/phy/micrel.c b/drivers/net/phy/micrel.c
+index 08e3915001c3..f31f03dd87dd 100644
+--- a/drivers/net/phy/micrel.c
++++ b/drivers/net/phy/micrel.c
+@@ -4842,6 +4842,7 @@ static struct phy_driver ksphy_driver[] = {
+ 	.flags		= PHY_POLL_CABLE_TEST,
+ 	.driver_data	= &ksz9131_type,
+ 	.probe		= kszphy_probe,
++	.soft_reset	= genphy_soft_reset,
+ 	.config_init	= ksz9131_config_init,
+ 	.config_intr	= kszphy_config_intr,
+ 	.config_aneg	= ksz9131_config_aneg,
 -- 
-2.34.1
+2.39.2
 
 
