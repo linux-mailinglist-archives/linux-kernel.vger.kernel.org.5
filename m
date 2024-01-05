@@ -1,145 +1,105 @@
-Return-Path: <linux-kernel+bounces-17488-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17489-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E3308824E2B
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 06:42:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F487824E4E
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 06:55:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 67F662856CC
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 05:42:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E2F182848B3
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 05:55:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 342558C08;
-	Fri,  5 Jan 2024 05:41:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="sIMnf9mt"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 569D55690;
+	Fri,  5 Jan 2024 05:55:19 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FD1A610E;
-	Fri,  5 Jan 2024 05:41:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1134)
-	id E257A20ACF15; Thu,  4 Jan 2024 21:41:53 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com E257A20ACF15
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1704433313;
-	bh=ZHparnsAXqF4lWmx1ZSpxji42sUlAAumK+J8HFwwj/Y=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=sIMnf9mtuKHXQ7pCG87+/a2xlA8gsERPHy6Y7GMfqcdL+adEw00Kv07zHEkJaXNLX
-	 6fjHOinXlm/bimhEEdaFOFmtYQI+fZGUEZCh0Nf9Uq2XQKOFfnL/HmUvgP0b+GT8G3
-	 1AZqPUbe7ckTTEHPk5rtEwtpyH0KfIZLkHVB2WlA=
-Date: Thu, 4 Jan 2024 21:41:53 -0800
-From: Shradha Gupta <shradhagupta@linux.microsoft.com>
-To: Ani Sinha <anisinha@redhat.com>
-Cc: linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
-	"K. Y. Srinivasan" <kys@microsoft.com>,
-	Haiyang Zhang <haiyangz@microsoft.com>,
-	Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-	Long Li <longli@microsoft.com>, Olaf Hering <olaf@aepfle.de>,
-	Shradha Gupta <shradhagupta@microsoft.com>
-Subject: Re: [PATCH v8] hv/hv_kvp_daemon:Support for keyfile based connection
- profile
-Message-ID: <20240105054153.GA18258@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-References: <1696847920-31125-1-git-send-email-shradhagupta@linux.microsoft.com>
- <A8905E07-2D01-46D6-A40D-C9F7461393EB@redhat.com>
- <CAK3XEhMzLvxTbP+sFjD7btfdjw5uxyAccdT09d4hcw5hkCKXHQ@mail.gmail.com>
- <CAK3XEhOn+k7U88sMF2tXGSyhYvAL9u17sw6qvomL=oYESRMQkw@mail.gmail.com>
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A56E9610E;
+	Fri,  5 Jan 2024 05:55:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
+Received: from mail.maildlp.com (unknown [172.19.163.252])
+	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4T5t2L57llz1Q6vN;
+	Fri,  5 Jan 2024 13:54:34 +0800 (CST)
+Received: from kwepemi500006.china.huawei.com (unknown [7.221.188.68])
+	by mail.maildlp.com (Postfix) with ESMTPS id 3FE8218006F;
+	Fri,  5 Jan 2024 13:55:12 +0800 (CST)
+Received: from [10.67.120.168] (10.67.120.168) by
+ kwepemi500006.china.huawei.com (7.221.188.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Fri, 5 Jan 2024 13:55:11 +0800
+Message-ID: <3d4cdc2e-0053-f486-7323-72127027886f@hisilicon.com>
+Date: Fri, 5 Jan 2024 13:55:11 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK3XEhOn+k7U88sMF2tXGSyhYvAL9u17sw6qvomL=oYESRMQkw@mail.gmail.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.1.0
+Subject: Re: [PATCH for-next 4/6] RDMA/hns: Support flexible pagesize
+Content-Language: en-US
+To: Jason Gunthorpe <jgg@ziepe.ca>
+CC: Leon Romanovsky <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
+	<linuxarm@huawei.com>, <linux-kernel@vger.kernel.org>
+References: <20231225075330.4116470-1-huangjunxian6@hisilicon.com>
+ <20231225075330.4116470-5-huangjunxian6@hisilicon.com>
+ <20231226085202.GA13350@unreal>
+ <fbd65691-b0a2-0963-96fc-7e09a66cd203@hisilicon.com>
+ <20240104202902.GD50608@ziepe.ca>
+From: Junxian Huang <huangjunxian6@hisilicon.com>
+In-Reply-To: <20240104202902.GD50608@ziepe.ca>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemi500006.china.huawei.com (7.221.188.68)
 
-On Sat, Dec 23, 2023 at 01:35:26PM +0530, Ani Sinha wrote:
-> On Sat, Dec 23, 2023 at 12:43???PM Ani Sinha <anisinha@redhat.com> wrote:
-> >
-> > On Fri, Oct 13, 2023 at 3:06???PM Ani Sinha <anisinha@redhat.com> wrote:
-> > >
-> > >
-> > >
-> > > > On 09-Oct-2023, at 4:08 PM, Shradha Gupta <shradhagupta@linux.microsoft.com> wrote:
-> > > >
-> > > > Ifcfg config file support in NetworkManger is deprecated. This patch
-> > > > provides support for the new keyfile config format for connection
-> > > > profiles in NetworkManager. The patch modifies the hv_kvp_daemon code
-> > > > to generate the new network configuration in keyfile
-> > > > format(.ini-style format) along with a ifcfg format configuration.
-> > > > The ifcfg format configuration is also retained to support easy
-> > > > backward compatibility for distro vendors. These configurations are
-> > > > stored in temp files which are further translated using the
-> > > > hv_set_ifconfig.sh script. This script is implemented by individual
-> > > > distros based on the network management commands supported.
-> > > > For example, RHEL's implementation could be found here:
-> > > > https://gitlab.com/redhat/centos-stream/src/hyperv-daemons/-/blob/c9s/hv_set_ifconfig.sh
-> > > > Debian's implementation could be found here:
-> > > > https://github.com/endlessm/linux/blob/master/debian/cloud-tools/hv_set_ifconfig
-> > > >
-> > > > The next part of this support is to let the Distro vendors consume
-> > > > these modified implementations to the new configuration format.
-> > > >
-> > > > Tested-on: Rhel9(Hyper-V, Azure)(nm and ifcfg files verified)
-> > >
-> > > Was this patch tested with ipv6? We are seeing a mix of ipv6 and ipv4 addresses in ipv6 section:
-> >
-> > There is also another issue which is kind of a design problem that
-> > existed from the get go but now is exposed since keyfile support was
-> > added.
-> > Imagine we configure both ipv6 and ipv4 and some interfaces have ipv4
-> > addresses and some have ipv6.
-> > getifaddres() call in kvp_get_ip_info() will return a linked list per
-> > interface. The code sets ip_buffer->addr_family based on the address
-> > family of the address set for the interface. We use this to determine
-> > which section in the keyfile to use, ipv6 or ipv4. However, once we
-> > make this decision, we are locked in. The issue here is that
-> > kvp_process_ip_address() that extracts the IP addresses concatenate
-> > the addresses in a single buffer separating the IPs with ";". Thus
-> > across interfaces, the buffer can contain both ipv4 and ipv6 addresses
-> > separated by ";" if both v4 and v6 are configured. This is problematic
-> > as the addr_family can be either ipv4 or ipv6 but not both.
-> > Essentially, we can have a situation that for a single addr_family in
-> > hv_kvp_ipaddr_value struct, the ip_addr member can be a buffer
-> > containing both ipv6 and ipv4 addresses. Notice that
-> > process_ip_string() handles this by iterating through the string and
-> > for each ip extracted, it individually determines if the IP is a v6 or
-> > a v4 and adds "IPV6ADDR" or "IPADDR" to the ifcfg file accordingly.
-> > process_ip_string_nm() does not do that and solely makes the
-> > determination based on is_ipv6 values which is based on a single
-> > addr_family value above. Thus, it cannot possibly know whether the
-> > specific IP address extracted from the string is a v4 or v6. Unlike
-> > for ifcfg files, fir nm keyfiles, we need to add v4 and v6 addresses
-> > in specific sections and we cannot mix the two. So we need to make two
-> > passes. One for v4 and one for v6 and then add IPs in the respective
-> > sections.
-> >
-> > This issue needs to be looked into and unless it's resolved, we cannot
-> > support both ipv4 and ipv6 addresses at the same time.
+
+
+On 2024/1/5 4:29, Jason Gunthorpe wrote:
+> On Tue, Dec 26, 2023 at 05:16:33PM +0800, Junxian Huang wrote:
+>>
+>>
+>> On 2023/12/26 16:52, Leon Romanovsky wrote:
+>>> On Mon, Dec 25, 2023 at 03:53:28PM +0800, Junxian Huang wrote:
+>>>> From: Chengchang Tang <tangchengchang@huawei.com>
+>>>>
+>>>> In the current implementation, a fixed page size is used to
+>>>> configure the PBL, which is not flexible enough and is not
+>>>> conducive to the performance of the HW.
+>>>>
+>>>> Signed-off-by: Chengchang Tang <tangchengchang@huawei.com>
+>>>> Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
+>>>> ---
+>>>>  drivers/infiniband/hw/hns/hns_roce_alloc.c  |   6 -
+>>>>  drivers/infiniband/hw/hns/hns_roce_device.h |   9 ++
+>>>>  drivers/infiniband/hw/hns/hns_roce_mr.c     | 168 +++++++++++++++-----
+>>>>  3 files changed, 139 insertions(+), 44 deletions(-)
+>>>
+>>> I'm wonder if the ib_umem_find_best_pgsz() API should be used instead.
+>>> What is missing there?
+>>>
+>>> Thanks
+>>
+>> Actually this API is used for umem.
+>> For kmem, we add hns_roce_find_buf_best_pgsz() to do a similar job.
 > 
-> In the short term, we should probably do this to avoid the mismatch :
+> But why do you need to do something like this for kmem? It looked to
+> me like kmem knows its allocation size when it was allocated, how come
+> you need to iterate over all of it again?
 > 
-> diff --git a/tools/hv/hv_kvp_daemon.c b/tools/hv/hv_kvp_daemon.c
-> index 318e2dad27e0..b77c8edfe663 100644
-> --- a/tools/hv/hv_kvp_daemon.c
-> +++ b/tools/hv/hv_kvp_daemon.c
-> @@ -1216,6 +1216,9 @@ static int process_ip_string_nm(FILE *f, char
-> *ip_string, char *subnet,
->                                                        subnet_addr,
->                                                        (MAX_IP_ADDR_SIZE *
->                                                         2))) {
-> +               if (is_ipv6 == is_ipv4((char*) addr))
-> +                   continue;
-> +
->                 if (!is_ipv6)
->                         plen = kvp_subnet_to_plen((char *)subnet_addr);
->                 else
+> Jason
 > 
-> But this is really a short term hack.
-Thanks for bringing this up Ani. I will try to fix this in a new patch
-(would get the new testcases added in our suite as well)
+
+kmem was split into multiple small pages for allocation to prevent allocation
+failure due to memory fragmentation.
+
+And now we add this function to confirm whether these small pages have contiguous
+address. If so, they can be combined into one huge page for use, which is more
+likely when iommu/smmu is enabled.
+
+Junxian
 
