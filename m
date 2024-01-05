@@ -1,93 +1,221 @@
-Return-Path: <linux-kernel+bounces-17752-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17753-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5466C82520C
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 11:33:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1777682520F
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 11:33:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 011971F24E70
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 10:33:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7A9941F24F45
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 10:33:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3ECF224A13;
-	Fri,  5 Jan 2024 10:32:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B528250F5;
+	Fri,  5 Jan 2024 10:33:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="XvBMOKWv"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Yx2bDYc7"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77599250E7;
-	Fri,  5 Jan 2024 10:32:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61627C433C7;
-	Fri,  5 Jan 2024 10:32:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1704450774;
-	bh=tAtGPzyENe7G8V+fHZtEGeUbT9NOsNspX0RJlOE6D7g=;
-	h=From:To:Cc:Subject:Date:From;
-	b=XvBMOKWvx8Ihe9KWS7Xectnpfug8yO72QOOc4B2sgHXITIfWrS9HqDO1TGQltXTRf
-	 vbG9e9YXxghuZYH21HDTNjZn8JTnkUhOE19GkfDHEcWD6SW2IX7uZLNehpNWdofx42
-	 UuCGkto3q9uTq6EGlVX0YXEAzrzjWOfxpU22E2fs=
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: broonie@kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	linux-spi@vger.kernel.org
-Subject: [PATCH] spi: make spi_bus_type const
-Date: Fri,  5 Jan 2024 11:32:50 +0100
-Message-ID: <2024010549-erasure-swoop-1cc6@gregkh>
-X-Mailer: git-send-email 2.43.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23BB428E17
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 10:33:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1704450800;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=2vTzdCgrBtcA7j5NHuC5/JJylMuPL+B3tt+xvWm2XXw=;
+	b=Yx2bDYc7uqQpQw7N6xzFw2DqrPE27O9Hu/XQzTvoaI9Y1OSfmEqt+FVhoN7JT0BEQ5eTI0
+	633UML6sLm1ekXCHbFmmqAmF17n0Xnxx7po29gGr/Ka/tXlEaDLzvjIOsp1veV9m4VYgrj
+	MG7+1rs4IfT3ZfYosiXP6RBDLpTnJYE=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-445-qIBgTU_rPeSjkbO0f1WUPA-1; Fri, 05 Jan 2024 05:33:17 -0500
+X-MC-Unique: qIBgTU_rPeSjkbO0f1WUPA-1
+Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 4AF46833945;
+	Fri,  5 Jan 2024 10:33:16 +0000 (UTC)
+Received: from MiWiFi-R3L-srv.redhat.com (unknown [10.72.116.129])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 78119492BC6;
+	Fri,  5 Jan 2024 10:33:10 +0000 (UTC)
+From: Baoquan He <bhe@redhat.com>
+To: linux-kernel@vger.kernel.org
+Cc: akpm@linux-foundation.org,
+	kexec@lists.infradead.org,
+	hbathini@linux.ibm.com,
+	arnd@arndb.de,
+	ignat@cloudflare.com,
+	eric_devolder@yahoo.com,
+	viro@zeniv.linux.org.uk,
+	ebiederm@xmission.com,
+	x86@kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linuxppc-dev@lists.ozlabs.org,
+	linux-riscv@lists.infradead.org,
+	linux-fsdevel@vger.kernel.org,
+	Baoquan He <bhe@redhat.com>
+Subject: [PATCH 0/5] crash: clean up kdump related config items
+Date: Fri,  5 Jan 2024 18:33:00 +0800
+Message-ID: <20240105103305.557273-1-bhe@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Lines: 40
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1336; i=gregkh@linuxfoundation.org; h=from:subject:message-id; bh=tAtGPzyENe7G8V+fHZtEGeUbT9NOsNspX0RJlOE6D7g=; b=owGbwMvMwCRo6H6F97bub03G02pJDKnTb13iW7v2mPKxmbuzzdd9fqhSfezLz7tp0etP1/c/c 9iypWOOfkcsC4MgE4OsmCLLl208R/dXHFL0MrQ9DTOHlQlkCAMXpwBMxKKZYQ5Pbqy9l+VZDV7z P9fvvt+yMapSSZBhweSzN++FlLXxX12a/2J32qN7HporQwE=
-X-Developer-Key: i=gregkh@linuxfoundation.org; a=openpgp; fpr=F4B60CC5BF78C2214A313DCB3147D40DDB2DFB29
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
 
-Now that the driver core can properly handle constant struct bus_type,
-move the spi_bus_type variable to be a constant structure as well,
-placing it into read-only memory which can not be modified at runtime.
+Motivation:
+=============
+Previously, LKP reported a building error. When investigating, it can't
+be resolved reasonablly with the present messy kdump config items.
 
-Cc: Mark Brown <broonie@kernel.org>
-Cc: linux-spi@vger.kernel.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+https://lore.kernel.org/oe-kbuild-all/202312182200.Ka7MzifQ-lkp@intel.com/
+
+
+The kdump (crash dumping) related config items could causes confusions:
+
+Firstly,
 ---
- drivers/spi/spi.c       | 2 +-
- include/linux/spi/spi.h | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+CRASH_CORE enables codes including
+ - crashkernel reservation parsing;
+ - elfcorehdr updating;
+ - vmcoreinfo saving;
+ - crash hotplug handling;
 
-diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
-index 8ead7acb99f3..6e962befc450 100644
---- a/drivers/spi/spi.c
-+++ b/drivers/spi/spi.c
-@@ -459,7 +459,7 @@ static void spi_shutdown(struct device *dev)
- 	}
- }
- 
--struct bus_type spi_bus_type = {
-+const struct bus_type spi_bus_type = {
- 	.name		= "spi",
- 	.dev_groups	= spi_dev_groups,
- 	.match		= spi_match_device,
-diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
-index 255a0562aea5..f6c157dee55d 100644
---- a/include/linux/spi/spi.h
-+++ b/include/linux/spi/spi.h
-@@ -33,7 +33,7 @@ struct spi_message;
-  * INTERFACES between SPI master-side drivers and SPI slave protocol handlers,
-  * and SPI infrastructure.
-  */
--extern struct bus_type spi_bus_type;
-+extern const struct bus_type spi_bus_type;
- 
- /**
-  * struct spi_statistics - statistics for spi transfers
+Now fadump of powerpc, kcore dynamic debugging and kdump all selects
+CRASH_CORE, while fadump 
+ - fadump needs crashkernel parsing, vmcoreinfo and accessing
+   global variable 'elfcorehdr_addr';
+ - kcore needs saved vmcoreinfo;
+ - kdump needs all of the current kernel/crash_core.c.
+
+So only enabling PROC_CORE or FA_DUMP will enable CRASH_CORE will
+confuse people that we enable the core code of kdump. Actually it's not.
+
+Secondly,
+---
+It's not reasonable to allow KEXEC_CORE select CRASH_CORE.
+
+Because KEXEC_CORE enables codes which allocate control pages, copy
+kexec/kdump segments, and prepare for switching. These codes are
+shared by both kexec_load and kexec_file_load, and by both kexec reboot
+and kdump. We could want kexec reboot, but disable kdump. In that case,
+CRASH_CORE should not be selected.
+
+Thirdly,
+---
+It's not reasonable to allow CRASH_DUMP select KEXEC_CORE.
+
+That could make KEXEC_CORE, CRASH_DUMP are enabled independently from
+KEXEC or KEXEC_FILE. However, w/o KEXEC or KEXEC_FILE, the KEXEC_CORE
+code built in doesn't make any sense because no kernel loading or
+switching will happen to utilize the KEXEC_CORE code.
+
+Changes:
+===========
+1, split CRASH_CORE codes into three parts:
+    1. move the elfcorehdr upating code and crash hotplug handling code
+       into kernel/kexec_core.c. Both KEXEC and KEXEC_FILE will use them.
+    2. split crashkernel reservation code out into kernel/crash_reserve.c,
+       add CRASH_RESERVE to control its enabling;
+    3. rename the left kernel/crash_core.c to kernel/vmcore_info.c since
+       only vmcoreinfo is saved in the file, and add VMCORE_INFO to
+       control its enabling;
+2, rename the current kernel/crash_dump.c to kernel/elfcorehdr.c because
+it only defines elfcorehdr_addr and function parse_elfcorehdr() in the
+file. And build it in when VMCORE_INFO is enabled.
+
+Achievement:
+===========
+With above changes, I can rearrange the config items as below (the right
+item depends on or is selected by the left item):
+
+    PROC_KCORE -----------> VMCORE_INFO
+    
+               |----------> VMCORE_INFO
+    FA_DUMP----|
+               |----------> CRASH_RESERVE
+    
+                                                    ---->VMCORE_INFO
+                                                   /
+                                                   |---->CRASH_RESERVE
+    KEXEC      --|                                /|
+                 |--> KEXEC_CORE--> CRASH_DUMP-->/-|---->PROC_VMCORE
+    KEXEC_FILE --|                               \ |
+                                                   \---->CRASH_HOTPLUG
+    
+    KEXEC      --|
+                 |--> KEXEC_CORE (for kexec reboot only)
+    KEXEC_FILE --|
+
+Baoquan He (5):
+  kexec_core: move kdump related codes from crash_core.c to kexec_core.c
+  kexec: split crashkernel reservation code out from crash_core.c
+  crash: rename crash_core to vmcore_info
+  crash: remove dependency of FA_DUMP on CRASH_DUMP
+  crash: clean up CRASH_DUMP
+
+ arch/arm64/Kconfig                            |    2 +-
+ .../asm/{crash_core.h => crash_reserve.h}     |    4 +-
+ arch/arm64/kernel/Makefile                    |    2 +-
+ .../kernel/{crash_core.c => vmcore_info.c}    |    2 +-
+ arch/powerpc/Kconfig                          |    4 +-
+ arch/powerpc/kernel/setup-common.c            |    2 +-
+ arch/powerpc/mm/nohash/kaslr_booke.c          |    4 +-
+ arch/powerpc/platforms/powernv/opal-core.c    |    2 +-
+ arch/riscv/Kconfig                            |    2 +-
+ .../asm/{crash_core.h => crash_reserve.h}     |    4 +-
+ arch/riscv/kernel/Makefile                    |    2 +-
+ .../kernel/{crash_core.c => vmcore_info.c}    |    2 +-
+ arch/x86/Kconfig                              |    2 +-
+ .../asm/{crash_core.h => crash_reserve.h}     |    6 +-
+ arch/x86/kernel/Makefile                      |    2 +-
+ .../{crash_core_32.c => vmcore_info_32.c}     |    2 +-
+ .../{crash_core_64.c => vmcore_info_64.c}     |    2 +-
+ drivers/firmware/qemu_fw_cfg.c                |   14 +-
+ fs/proc/Kconfig                               |    2 +-
+ fs/proc/kcore.c                               |    2 +-
+ include/linux/buildid.h                       |    2 +-
+ include/linux/crash_reserve.h                 |   48 +
+ include/linux/kexec.h                         |   27 +-
+ include/linux/{crash_core.h => vmcore_info.h} |   78 +-
+ kernel/Kconfig.kexec                          |   12 +-
+ kernel/Makefile                               |    4 +-
+ kernel/crash_core.c                           | 1065 -----------------
+ kernel/crash_reserve.c                        |  453 +++++++
+ kernel/{crash_dump.c => elfcorehdr.c}         |    0
+ kernel/kexec_core.c                           |  408 +++++++
+ kernel/kexec_internal.h                       |    2 +
+ kernel/ksysfs.c                               |    6 +-
+ kernel/printk/printk.c                        |    4 +-
+ kernel/vmcore_info.c                          |  233 ++++
+ lib/buildid.c                                 |    2 +-
+ 35 files changed, 1222 insertions(+), 1186 deletions(-)
+ rename arch/arm64/include/asm/{crash_core.h => crash_reserve.h} (81%)
+ rename arch/arm64/kernel/{crash_core.c => vmcore_info.c} (97%)
+ rename arch/riscv/include/asm/{crash_core.h => crash_reserve.h} (78%)
+ rename arch/riscv/kernel/{crash_core.c => vmcore_info.c} (96%)
+ rename arch/x86/include/asm/{crash_core.h => crash_reserve.h} (92%)
+ rename arch/x86/kernel/{crash_core_32.c => vmcore_info_32.c} (90%)
+ rename arch/x86/kernel/{crash_core_64.c => vmcore_info_64.c} (94%)
+ create mode 100644 include/linux/crash_reserve.h
+ rename include/linux/{crash_core.h => vmcore_info.h} (59%)
+ delete mode 100644 kernel/crash_core.c
+ create mode 100644 kernel/crash_reserve.c
+ rename kernel/{crash_dump.c => elfcorehdr.c} (100%)
+ create mode 100644 kernel/vmcore_info.c
+
 -- 
-2.43.0
+2.41.0
 
 
