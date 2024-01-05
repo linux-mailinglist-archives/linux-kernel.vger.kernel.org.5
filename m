@@ -1,237 +1,225 @@
-Return-Path: <linux-kernel+bounces-17607-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17608-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DCD1182501C
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 09:40:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C83F82501F
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 09:40:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 36577B222EC
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 08:40:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F1355287027
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 08:40:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C20D2136D;
-	Fri,  5 Jan 2024 08:40:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="PWRVAEeG"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 396E1225DB;
+	Fri,  5 Jan 2024 08:40:22 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-il1-f180.google.com (mail-il1-f180.google.com [209.85.166.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1FD0219FE
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 08:40:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-il1-f180.google.com with SMTP id e9e14a558f8ab-3606ebda57cso1663375ab.2
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Jan 2024 00:40:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1704444006; x=1705048806; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8hYTNkHTn/zV3BgYDxe7QnouYI4dlQvnLZozWj8iLVc=;
-        b=PWRVAEeGlxA8QXY+YfFjBK53ZxGIpi39YdCIZ2eQO3ZK3yEapdOZSPhSQFytjwNnX6
-         GcMTvzbTnbwHE6atKoiZuBBUpP2CVL1OWxpAI3hUjFmu/Z5vUOjW+xcDnvwSV043EfVP
-         VLoeReGCrdG+yzn6eESJcXFK5wr2Q+JAOVSLU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704444006; x=1705048806;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8hYTNkHTn/zV3BgYDxe7QnouYI4dlQvnLZozWj8iLVc=;
-        b=O0+e3R/7788NOn2ptxgVcjIEN8PGvuRcyAOye9KjAgh224PtRBp0043wZACKFAUNyA
-         XQ5GC/99fERK9qBGRMBZnb4SzAOfs6x5mQMHMKWU32+dRr/rj7hZbzExFzexgNFlsizW
-         tW13zEIiabJtYlWfdpqBGXrQ0ZomgGnv7mt+Bu1euCuMaAYnMJR9BQ1kPmoqbgS0/Yud
-         isrol3Inf6NI/VseVofjVhcRi4Z8evsGum9atzojQ6nxrTSp8jUaOTXyidMEHD48P8wF
-         xle/O6b4ezQgn7yJL1c22OUY4ktsyO+cqgXJO9JAKEA0IrIdK5oBFVWaYZqjbTNXr8+S
-         lpjQ==
-X-Gm-Message-State: AOJu0YyJdOpmajmh23PUYQmS/pjLboHEjJAyAJ1HwkLdazIpKedN5cZL
-	k7H2z1pVkOaFdDLqiPaqGxI92kujX122hJLVUQKiWFgncWrB
-X-Google-Smtp-Source: AGHT+IG2pc/bVNtoQyA5vLjyh1fbFJLdrI+GkS/9G1KKGXF6RnAflb2KFxD/87ykUzd6ApsxNMt9jeo2n4l5+qagNf8=
-X-Received: by 2002:a05:6e02:1aac:b0:35f:ea02:7491 with SMTP id
- l12-20020a056e021aac00b0035fea027491mr2019344ilv.60.1704444005875; Fri, 05
- Jan 2024 00:40:05 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 198A9225DE;
+	Fri,  5 Jan 2024 08:40:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.162.112])
+	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4T5xjG2Wkkz1vrfH;
+	Fri,  5 Jan 2024 16:40:02 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (unknown [7.185.36.74])
+	by mail.maildlp.com (Postfix) with ESMTPS id 298FF1400DD;
+	Fri,  5 Jan 2024 16:40:16 +0800 (CST)
+Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Fri, 5 Jan
+ 2024 16:40:15 +0800
+Subject: Re: [RFC PATCH net-next v1 4/4] net: page_pool: use netmem_t instead
+ of struct page in API
+To: Mina Almasry <almasrymina@google.com>
+CC: Shakeel Butt <shakeelb@google.com>, Jakub Kicinski <kuba@kernel.org>,
+	<linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+	<bpf@vger.kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar
+	<mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen
+	<dave.hansen@linux.intel.com>, <x86@kernel.org>, "H. Peter Anvin"
+	<hpa@zytor.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J.
+ Wysocki" <rafael@kernel.org>, Sumit Semwal <sumit.semwal@linaro.org>,
+	=?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>, Michael Chan
+	<michael.chan@broadcom.com>, "David S. Miller" <davem@davemloft.net>, Eric
+ Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Alexei
+ Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper
+ Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>,
+	Wei Fang <wei.fang@nxp.com>, Shenwei Wang <shenwei.wang@nxp.com>, Clark Wang
+	<xiaoning.wang@nxp.com>, NXP Linux Team <linux-imx@nxp.com>, Jeroen de Borst
+	<jeroendb@google.com>, Praveen Kaligineedi <pkaligineedi@google.com>,
+	Shailend Chand <shailend@google.com>, Yisen Zhuang <yisen.zhuang@huawei.com>,
+	Salil Mehta <salil.mehta@huawei.com>, Jesse Brandeburg
+	<jesse.brandeburg@intel.com>, Tony Nguyen <anthony.l.nguyen@intel.com>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>, Marcin Wojtas
+	<mw@semihalf.com>, Russell King <linux@armlinux.org.uk>, Sunil Goutham
+	<sgoutham@marvell.com>, Geetha sowjanya <gakula@marvell.com>, Subbaraya
+ Sundeep <sbhatta@marvell.com>, hariprasad <hkelam@marvell.com>, Felix Fietkau
+	<nbd@nbd.name>, John Crispin <john@phrozen.org>, Sean Wang
+	<sean.wang@mediatek.com>, Mark Lee <Mark-MC.Lee@mediatek.com>, Lorenzo
+ Bianconi <lorenzo@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Saeed
+ Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, Horatiu
+ Vultur <horatiu.vultur@microchip.com>, <UNGLinuxDriver@microchip.com>, "K. Y.
+ Srinivasan" <kys@microsoft.com>, Haiyang Zhang <haiyangz@microsoft.com>, Wei
+ Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>, Jassi Brar
+	<jaswinder.singh@linaro.org>, Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>, Jose Abreu
+	<joabreu@synopsys.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Siddharth Vadapalli <s-vadapalli@ti.com>, Ravi Gunasekaran
+	<r-gunasekaran@ti.com>, Roger Quadros <rogerq@kernel.org>, Jiawen Wu
+	<jiawenwu@trustnetic.com>, Mengyuan Lou <mengyuanlou@net-swift.com>, Ronak
+ Doshi <doshir@vmware.com>, VMware PV-Drivers Reviewers
+	<pv-drivers@vmware.com>, Ryder Lee <ryder.lee@mediatek.com>, Shayne Chen
+	<shayne.chen@mediatek.com>, Kalle Valo <kvalo@kernel.org>, Juergen Gross
+	<jgross@suse.com>, Stefano Stabellini <sstabellini@kernel.org>, Oleksandr
+ Tyshchenko <oleksandr_tyshchenko@epam.com>, Andrii Nakryiko
+	<andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu
+	<song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, KP Singh
+	<kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo
+	<haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, Stefan Hajnoczi
+	<stefanha@redhat.com>, Stefano Garzarella <sgarzare@redhat.com>, Shuah Khan
+	<shuah@kernel.org>, =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>,
+	Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers
+	<ndesaulniers@google.com>, Bill Wendling <morbo@google.com>, Justin Stitt
+	<justinstitt@google.com>, Jason Gunthorpe <jgg@nvidia.com>, Willem de Bruijn
+	<willemdebruijn.kernel@gmail.com>
+References: <20231214020530.2267499-1-almasrymina@google.com>
+ <20231214020530.2267499-5-almasrymina@google.com>
+ <ddffff98-f3de-6a5d-eb26-636dacefe9aa@huawei.com>
+ <CAHS8izO2nDHuxKau8iLcAmnho-1TYkzW09MBZ80+JzOo9YyVFA@mail.gmail.com>
+ <20231215021114.ipvdx2bwtxckrfdg@google.com>
+ <20231215190126.1040fa12@kernel.org>
+ <CALvZod5myy2SvuCMNmqjjYeNONqSArV+8y8mrkfnNeog8WLjng@mail.gmail.com>
+ <CAHS8izOLBtjHOqbTS_PiTNe+rTE=jboDWDM9zS108B57vVNcwA@mail.gmail.com>
+ <CAHS8izMkCwv3jak9KUHeDUrkwBNNpdYk4voEX7Cbp7mTpNAQdA@mail.gmail.com>
+ <54f226ef-df2d-9f32-fa3f-e846d6510758@huawei.com>
+ <CAHS8izP63wXGH+Q3y1H=ycT=AHYnhGveBnuyF_rYioAjZ=Hn=g@mail.gmail.com>
+ <7c6d35e3-165f-5883-1c1b-fce82c976028@huawei.com>
+ <CAHS8izNqeiK1tq=48LMbbqq5B4d2mhgbuKRvnFtiBngf73jXZg@mail.gmail.com>
+ <fda068d0-f7fb-90fc-cdd6-1f853a4a225f@huawei.com>
+ <CAHS8izNAxB=DQzSBOGbm6SsiL1cLSijj9n=g3d3egSxnOcBibQ@mail.gmail.com>
+ <99817ed2-8ba6-ef8f-3ccb-2a2ab284b4af@huawei.com>
+ <CAHS8izMMdmWoUHetA=GceJWVBgrCNAutn+B4ErMZFG=gmF5rww@mail.gmail.com>
+From: Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <894177e8-6403-e31c-e246-d9234218626b@huawei.com>
+Date: Fri, 5 Jan 2024 16:40:15 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240102081402.1226795-1-treapking@chromium.org>
- <eed88b36-ae56-40d3-8588-0d5d75da71a6@collabora.com> <5520e8e3-c75b-480f-b831-c40b5cca029f@collabora.com>
- <CAEXTbpeqRsWNgZE3ZgcFKogxv-tjAmQT=D6o6X4ViuG5ZZFCHQ@mail.gmail.com>
-In-Reply-To: <CAEXTbpeqRsWNgZE3ZgcFKogxv-tjAmQT=D6o6X4ViuG5ZZFCHQ@mail.gmail.com>
-From: Pin-yen Lin <treapking@chromium.org>
-Date: Fri, 5 Jan 2024 16:39:55 +0800
-Message-ID: <CAEXTbpdCHa9M=nMQAOdRiqeQqEB3gHYiwSuVUsPhOD0vCkyY8A@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] clk: mediatek: Introduce need_pm_runtime to mtk_clk_desc
-To: Eugen Hristev <eugen.hristev@collabora.com>, 
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Cc: Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, 
-	Matthias Brugger <matthias.bgg@gmail.com>, Chen-Yu Tsai <wenst@chromium.org>, 
-	linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Weiyi Lu <weiyi.lu@mediatek.com>, 
-	linux-mediatek@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAHS8izMMdmWoUHetA=GceJWVBgrCNAutn+B4ErMZFG=gmF5rww@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
 
-On Thu, Jan 4, 2024 at 10:51=E2=80=AFPM Pin-yen Lin <treapking@chromium.org=
-> wrote:
->
-> Hi Eugen and Angelo,
->
-> Unfortunately, I don't have a way to reliably reproduce this either.
->
-> We notice this issue from the automatic crash reports sent from the
-> users, but we are still not able to reproduce this locally.  So our
-> plan is to ship this patch to the users and see if the crash rate goes
-> down after a month or so.
->
-> Regards,
-> Pin-yen
->
-> On Wed, Jan 3, 2024 at 9:20=E2=80=AFPM Eugen Hristev
-> <eugen.hristev@collabora.com> wrote:
-> >
-> > On 1/3/24 14:19, AngeloGioacchino Del Regno wrote:
-> > > Il 02/01/24 09:12, Pin-yen Lin ha scritto:
-> > >> Introduce a new need_pm_runtime variable to mtk_clk_desc to indicate
-> > >> this clock needs a runtime PM get on the clock controller during the
-> > >> probing stage.
-> > >>
-> > >> Signed-off-by: Pin-yen Lin <treapking@chromium.org>
-> > >
-> > > Hello Pin-yen,
-> > >
-> > > We have experienced something similar, but it was really hard to repr=
-oduce after
-> > > some changes.
-> > >
-> > > In an effort to try to solve this issue (but again, reproducing is re=
-ally hard),
-> > > Eugen has sent a commit in the hope that someone else found a way to =
-easily
-> > > reproduce. Please look at [1].
-> > >
-> > > I'm also adding Eugen to the Cc's of this email.
-> > >
-> > > Cheers,
-> > > Angelo
-> > >
-> > > [1]:
-> > > https://patchwork.kernel.org/project/linux-pm/patch/20231225133615.78=
-993-1-eugen.hristev@collabora.com/
-> >
-> > Hello Pin-yen,
-> >
-> > Can you try my patch and let me know if this changes anything for you ?
-> >
-> > If it does not change anything, can you also try this one as well ? It'=
-s another
-> > attempt to fix the synchronization with genpd.
-> >
-> > https://lore.kernel.org/linux-arm-kernel/20231129113120.4907-1-eugen.hr=
-istev@collabora.com/
-> >
-> > Thanks,
-> > Eugen
+On 2024/1/5 2:24, Mina Almasry wrote:
+> On Thu, Jan 4, 2024 at 12:48 AM Yunsheng Lin <linyunsheng@huawei.com> wrote:
+>>
+>> On 2024/1/4 2:38, Mina Almasry wrote:
+>>> On Wed, Jan 3, 2024 at 1:47 AM Yunsheng Lin <linyunsheng@huawei.com> wrote:
+>>>>
+>>>> On 2024/1/3 0:14, Mina Almasry wrote:
+>>>>>
+>>>>> The idea being that skb_frag_page() can return NULL if the frag is not
+>>>>> paged, and the relevant callers are modified to handle that.
+>>>>
+>>>> There are many existing drivers which are not expecting NULL returning for
+>>>> skb_frag_page() as those drivers are not supporting devmem, adding additionl
+>>>> checking overhead in skb_frag_page() for those drivers does not make much
+>>>> sense, IMHO, it may make more sense to introduce a new helper for the driver
+>>>> supporting devmem or networking core that needing dealing with both normal
+>>>> page and devmem.
+>>>>
+>>>> And we are also able to keep the old non-NULL returning semantic for
+>>>> skb_frag_page().
+>>>
+>>> I think I'm seeing agreement that the direction we're heading into
+>>> here is that most net stack & drivers should use the abstract netmem
+>>
+>> As far as I see, at least for the drivers, I don't think we have a clear
+>> agreement if we should have a unified driver facing struct or API for both
+>> normal page and devmem yet.
+>>
+> 
+> To be honest I definitely read that we have agreement that we should
+> have a unified driver facing struct from the responses in this thread
+> like this one:
+> 
+> https://lore.kernel.org/netdev/20231215190126.1040fa12@kernel.org/
 
-Hi Eugen and Angelo,
+Which specific comment made you thinking as above?
+I think it definitely need clarifying here, as I read it differently as
+you did.
 
-After the offline discussion with Chen-yu, we think this series is
-solving a different issue from the patches you mentioned. This one is
-trying to resolve a deadlock in the probe stage, and more details can
-be found in the commit message of the next patch. The referenced
-patches seem to be fixing other race conditions on powering on/off the
-power domain. Sorry for adding the wrong commit message and maybe
-leading to incorrect understanding on this series.
+> 
+> But I'll let folks correct me if I'm wrong.
+> 
+>>> type, and only specific code that needs a page or devmem (like
+>>> tcp_receive_zerocopy or tcp_recvmsg_dmabuf) will be the ones that
+>>> unpack the netmem and get the underlying page or devmem, using
+>>> skb_frag_page() or something like skb_frag_dmabuf(), etc.
+>>>
+>>> As Jason says repeatedly, I'm not allowed to blindly cast a netmem to
+>>> a page and assume netmem==page. Netmem can only be cast to a page
+>>> after checking the low bits and verifying the netmem is actually a
+>>
+>> I thought it would be best to avoid casting a netmem or devmem to a
+>> page in the driver, I think the main argument is that it is hard
+>> to audit very single driver doing a checking before doing the casting
+>> in the future? and we can do better auditting if the casting is limited
+>> to a few core functions in the networking core.
+>>
+> 
+> Correct, the drivers should never cast directly, but helpers like
+> skb_frag_page() must check that the netmem is a page before doing a
+> cast.
+> 
+>>> page. I think any suggestions that blindly cast a netmem to page
+>>> without the checks will get nacked by Jason & Christian, so the
+>>> checking in the specific cases where the code needs to know the
+>>> underlying memory type seems necessary.
+>>>
+>>> IMO I'm not sure the checking is expensive. With likely/unlikely &
+>>> static branches the checks should be very minimal or a straight no-op.
+>>> For example in RFC v2 where we were doing a lot of checks for devmem
+>>> (we don't do that anymore for RFCv5), I had run the page_pool perf
+>>> tests and proved there is little to no perf regression:
+>>
+>> For MAX_SKB_FRAGS being 17, it means we may have 17 additional checking
+>> overhead for the drivers not supporting devmem, not to mention we may
+>> have bigger value for MAX_SKB_FRAGS if BIG TCP is enable.
+>>
+> 
+> With static branch the checks should be complete no-ops unless the
+> user's set up enabled devmem.
 
-By the way, sorry for the top posting in the previous mail.
+What if the user does set up enabled devmem and still want to enable
+page_pool for normal page in the same system?
 
-Regards,
-Pin-yen
-> >
-> > >
-> > >> ---
-> > >>
-> > >> Changes in v2:
-> > >> - Fix the order of error handling
-> > >> - Update the commit message and add a comment before the runtime PM =
-call
-> > >>
-> > >>   drivers/clk/mediatek/clk-mtk.c | 15 +++++++++++++++
-> > >>   drivers/clk/mediatek/clk-mtk.h |  2 ++
-> > >>   2 files changed, 17 insertions(+)
-> > >>
-> > >> diff --git a/drivers/clk/mediatek/clk-mtk.c b/drivers/clk/mediatek/c=
-lk-mtk.c
-> > >> index 2e55368dc4d8..c31e535909c8 100644
-> > >> --- a/drivers/clk/mediatek/clk-mtk.c
-> > >> +++ b/drivers/clk/mediatek/clk-mtk.c
-> > >> @@ -13,6 +13,7 @@
-> > >>   #include <linux/of.h>
-> > >>   #include <linux/of_address.h>
-> > >>   #include <linux/platform_device.h>
-> > >> +#include <linux/pm_runtime.h>
-> > >>   #include <linux/slab.h>
-> > >>
-> > >>   #include "clk-mtk.h"
-> > >> @@ -494,6 +495,14 @@ static int __mtk_clk_simple_probe(struct platfo=
-rm_device *pdev,
-> > >>                      return IS_ERR(base) ? PTR_ERR(base) : -ENOMEM;
-> > >>      }
-> > >>
-> > >> +
-> > >> +    if (mcd->need_runtime_pm) {
-> > >> +            devm_pm_runtime_enable(&pdev->dev);
-> > >> +            r =3D pm_runtime_resume_and_get(&pdev->dev);
-> > >> +            if (r)
-> > >> +                    return r;
-> > >> +    }
-> > >> +
-> > >>      /* Calculate how many clk_hw_onecell_data entries to allocate *=
-/
-> > >>      num_clks =3D mcd->num_clks + mcd->num_composite_clks;
-> > >>      num_clks +=3D mcd->num_fixed_clks + mcd->num_factor_clks;
-> > >> @@ -574,6 +583,9 @@ static int __mtk_clk_simple_probe(struct platfor=
-m_device *pdev,
-> > >>                      goto unregister_clks;
-> > >>      }
-> > >>
-> > >> +    if (mcd->need_runtime_pm)
-> > >> +            pm_runtime_put(&pdev->dev);
-> > >> +
-> > >>      return r;
-> > >>
-> > >>   unregister_clks:
-> > >> @@ -604,6 +616,9 @@ static int __mtk_clk_simple_probe(struct platfor=
-m_device *pdev,
-> > >>   free_base:
-> > >>      if (mcd->shared_io && base)
-> > >>              iounmap(base);
-> > >> +
-> > >> +    if (mcd->need_runtime_pm)
-> > >> +            pm_runtime_put(&pdev->dev);
-> > >>      return r;
-> > >>   }
-> > >>
-> > >> diff --git a/drivers/clk/mediatek/clk-mtk.h b/drivers/clk/mediatek/c=
-lk-mtk.h
-> > >> index 22096501a60a..c17fe1c2d732 100644
-> > >> --- a/drivers/clk/mediatek/clk-mtk.h
-> > >> +++ b/drivers/clk/mediatek/clk-mtk.h
-> > >> @@ -237,6 +237,8 @@ struct mtk_clk_desc {
-> > >>
-> > >>      int (*clk_notifier_func)(struct device *dev, struct clk *clk);
-> > >>      unsigned int mfg_clk_idx;
-> > >> +
-> > >> +    bool need_runtime_pm;
-> > >>   };
-> > >>
-> > >>   int mtk_clk_pdev_probe(struct platform_device *pdev);
-> > >
-> > >
-> > >
-> > >
-> >
+Is there a reason I don't know, which stops you from keeping the old
+helper and introducing a new helper if it is needed for the new netmem
+thing?
+
+> 
+>> Even there is no notiable performance degradation for a specific case,
+>> we should avoid the overhead as much as possible for the existing use
+>> case when supporting a new use case.
+>>
+>>>
+>>> https://lore.kernel.org/netdev/CAHS8izM4w2UETAwfnV7w+ZzTMxLkz+FKO+xTgRdtYKzV8RzqXw@mail.gmail.com/
+>>
+>> The above test case does not even seems to be testing a code path calling
+>> skb_frag_page() as my understanding.
+>>
+>>>
+> 
+> 
+> 
 
