@@ -1,174 +1,118 @@
-Return-Path: <linux-kernel+bounces-18327-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18329-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D2B1825B9C
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 21:32:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 71271825BA9
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 21:37:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 25FE5285CF9
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 20:32:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 04BA1284986
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 20:37:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14F791DFF3;
-	Fri,  5 Jan 2024 20:32:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AFB120316;
+	Fri,  5 Jan 2024 20:37:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="nZhuiscr"
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="JusJDyBO";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="lJrUv454"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mout.web.de (mout.web.de [212.227.15.4])
+Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D3201DFC3;
-	Fri,  5 Jan 2024 20:32:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
-	t=1704486725; x=1705091525; i=markus.elfring@web.de;
-	bh=XGJHY7BedW17ZVM0oJStSYNJNEGaJoAYc7/aRbjvsHk=;
-	h=X-UI-Sender-Class:Date:Subject:From:To:Cc:References:
-	 In-Reply-To;
-	b=nZhuiscruCjRi7o9uQUzT7emYJry3MpX8LYVmegrvIMK9eUKV8PQnO1tjibz6A5T
-	 qmTUdVb3Q8zrGHA5TqIY3JEFGHTekMk8TPPEGvix0SIifr31K0dtkzk+DISGzGI0H
-	 YkIoS0NvOJAH8n2U58hh0XyE3GYYH+5lEr44zA5jkIkbFh0oAZRCY2Hf4OZyxqnD+
-	 VOpM2TEQUjUvLFiqyVdzWAo6hyYxxs/zIgqnjoVdzmqELX9igW5M3dcBVM/Js5Hs/
-	 9k2nf8XUYp8gtiVuETI/6Cz+YbHqEwRRSDIqeIk+8B/5fHuvDp314xi/d5E+O+6pc
-	 umhbXxM6ws/ijYVomg==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb006
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1N9LIO-1r9nfM3ug0-015UC2; Fri, 05
- Jan 2024 21:32:04 +0100
-Message-ID: <71892e93-1545-4d04-9570-a15672f60e81@web.de>
-Date: Fri, 5 Jan 2024 21:32:04 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40EA01DFDE
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 20:37:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailout.nyi.internal (Postfix) with ESMTP id 1D9FC5C01D5;
+	Fri,  5 Jan 2024 15:37:02 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Fri, 05 Jan 2024 15:37:02 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm1; t=1704487022; x=1704573422; bh=bk5Dr8X0YO
+	CHd1Jl3i1ek4zNKLgAMly86kV1nZv04w8=; b=JusJDyBOqH5aYpg1JJ0cZU03Qy
+	8utzg8I/uIquFPhD9KB0o2hhXJ5mmxxBDb9gHFjlixisHcH4rVx/EUrQw91nNcj8
+	oCHfGyIxIupA+0nFVkUsqwWOAIUlX7yrVpD3Ktb2ssZ5C8W0aDBKEZi3vFT6fyzj
+	XU+x71fF2SvAuj4/4gLBe/9qE7VBjlmZV7G+AkeddZ1o6CE7SgPQR+PShW74YZy4
+	rn3gpx3PsUZo+G6x4BMQjjXqPcBFteFQ60Mh4EifYB5EGeCKqPah0o3R15gJo+WF
+	vg2TMbCE3/0+mfhKaJ1nhqNAIjkDAYOJc15tpAypclyVI0Wvst8Pp9ytz6dA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1704487022; x=1704573422; bh=bk5Dr8X0YOCHd1Jl3i1ek4zNKLgA
+	Mly86kV1nZv04w8=; b=lJrUv4548hvfuZxjAOK3VHoopmjb2+gPlkLQtF5nsc08
+	7a6hlKbXyFVPjU/BCjteIWBtETcKIuvICwRo8Gd0sijrFjWeHC8JKTG5vbsnoBFj
+	v45r7Y6JRaf4Z7gorSufAQoOM/2eiikCsY4SVQcsoz6ZNHdevc8dPGfIBOds31m+
+	YxILU9dDYSoFGIU16D6/j/GR3XC32OW+rxHbGudtrejACXjRdnhnUE252YVXvgZi
+	d20tPglqnUhAuZ/EgNNXPfqd7G4wAU0oIj2P7V5KIuOxKA/L13qB+uUCnO4LgED1
+	kU2idQDsU3OiPGHmXItapmJb9JDwDTyI93b8NyBXmQ==
+X-ME-Sender: <xms:bWiYZWTg-TuLeomyKvZ9-Qix5VfNfLMveQnsVvXiMow7raJ3ZG7dng>
+    <xme:bWiYZbx-JOV4n-gVVdez4tTnMBG9C3RQXpL_ZXKBIYPIcBmTFmkMQlO1as-fwMXsw
+    Vmisw1upnxFDtWhPLo>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdegledgudefhecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdet
+    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
+    htthgvrhhnpeeuhfejgeehhfefgfffhfdvjefhueetjeegffeuhfdvffelfffgtddvvefh
+    ledugfenucffohhmrghinhepihhnfhhrrgguvggrugdrohhrghenucevlhhushhtvghruf
+    hiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrhhnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:bWiYZT02Fy93bfKlDbzpWYukqaPGeH7iprJ3XNrQSq9e-TxxR1CNWg>
+    <xmx:bWiYZSBSvBIhTYTe5EudX4cIwDDdYxBs8Wj6UBZKih0lbpzOauDMGg>
+    <xmx:bWiYZfh7u90_0y6VB_Nzp7hGU4eHiV6NmCwEzDu0CYqi5g2E2v6iZw>
+    <xmx:bmiYZaUm8AaU5jWZQYc5gaDVbNKxGGCTA3RS8VJbThLplJ-7P50NRA>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 840EAB6008D; Fri,  5 Jan 2024 15:37:01 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-1364-ga51d5fd3b7-fm-20231219.001-ga51d5fd3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] squashfs: Improve exception handling in
- squashfs_decompressor_create()
-Content-Language: en-GB
-From: Markus Elfring <Markus.Elfring@web.de>
-To: kernel-janitors@vger.kernel.org, Phillip Lougher <phillip@squashfs.org.uk>
-Cc: cocci@inria.fr, LKML <linux-kernel@vger.kernel.org>,
- Minchan Kim <minchan@kernel.org>
-References: <6cbcf640-55e5-2f11-4a09-716fe681c0d2@web.de>
- <f1712777-97ff-d89c-0bdd-d72faed9a7f1@web.de>
-In-Reply-To: <f1712777-97ff-d89c-0bdd-d72faed9a7f1@web.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:Da2fsFoH9DyjyKLEhNG5crxXXvNF9eQ324haxaVQO6ouX0qrq4p
- FoNEhMV+Ywrn993YlIs6lVdmca+/cViI2F9a6pXEf+MEGmOh1FmuYN0LM3mw4ote1T8siDU
- PCjwfOXktl9gL3xQ2tMl/PXTYuXmv5lluB5LdlSYmPYtzeDddRsACp+HkvL78bc3AkBMofj
- PU29q75GXd8fRwwwaLsOg==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:PrI7ZW5BXWo=;rKRQjP/bvgnDb+9M7QFvxNffpeG
- 3nLrZqmPUGvofAN6ogHB8IeUxhRwGYW54sjhYh6qn33T9LW4At0WBlA4qsTc1hFOcQEJiKe46
- o87JoNVJGg7FcGuzxyallP8ypIdzNV4BL4v0yo2yepmoC9sndWGRpXKa8WSPWMKWRC/XLiHmS
- 5A2vWqm0oHqHh+t/YJYbUbquHYxv4Z9jF4u4OkyboXz3P/kWyMoONQKPp74CqCv6imOS4nQEI
- /Th+80fPjtTrNK0CtE6APy0ZUx1v/rhji04Mt43an2a5E3fYNWUJQJHqppztkP+H3N4q7vrNh
- sAFzqVoqEzhftCB0xNk+DUbjiSo+cotgO8fuPgeWL6/AGLFkCr8ZBHHAYKUsS2W8y6lonvwF7
- k0jKB3vQxU/p/vG2Tve4ck2FuLVv1RvYnxPsRZ/5uyAgG7XBcCGh5zMzyyJUekHY66iVkgfBz
- Ez9Luy0acgWcTnT8HEOHhAbjEapcOaNldgpeKk+HcyBVmLF3O5uSC7uJjyv9Xh5S+aTvKSMqm
- G4+2tfBcMjMjCBR9eC2+HQwk7cSFW9+GlHgwF9goJO3uBpUP+bc+ErETWi5URwktt0OOhMp/q
- 00GaBNbabX7z6pokXZlJkNUwH0PNRi74xvHinQ1pOscvsv/b9Tu7tPrC8f4fPmOyktKtVVD0D
- mtMCul58YjzqrQ8LepEcd8aPaK2q9EI/oqYZqHrDe3CqVjDRrkDKwzaeaK4hFmRNi3S9rMUBx
- Tg9N5ZnmCIcQDFULcG7TQFgOe4ue6SGC+6n1CphwvmqRBwAri97wV4lZMGt9YJCtZpTJPFk4U
- kIvAc9rLTe6Zj9sMmOHMIwvWbqUg3gtaVouf43zeylfNZz0wPy6mzXNKGa/7Tqmg7daiqFmw6
- CuEXaKkw3XXIn8xQt4GUEGLWBKAywj5QVO9EMgLxLKu2d+0gf3DzvGuVr1gtHPwNpt+/vj5tr
- rhbIBgNcAApLfOAeUAsIEsP1wEs=
+Message-Id: <20508695-b9e6-4aaa-9c78-84891c1a8f9a@app.fastmail.com>
+In-Reply-To: <ZZhli2FWXwP1XSRG@kbusch-mbp>
+References: <20240103155702.4045835-1-arnd@kernel.org>
+ <ZZhli2FWXwP1XSRG@kbusch-mbp>
+Date: Fri, 05 Jan 2024 21:36:38 +0100
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Keith Busch" <kbusch@kernel.org>, "Arnd Bergmann" <arnd@kernel.org>
+Cc: "Christoph Hellwig" <hch@lst.de>, "Sagi Grimberg" <sagi@grimberg.me>,
+ "Chaitanya Kulkarni" <kch@nvidia.com>, linux-nvme@lists.infradead.org,
+ linux-kernel@vger.kernel.org, "Daniel Wagner" <dwagner@suse.de>,
+ "Hannes Reinecke" <hare@suse.de>
+Subject: Re: [PATCH 1/2] nvmet: re-fix tracing strncpy() warning
+Content-Type: text/plain
 
-> Date: Thu, 30 Mar 2023 18:03:47 +0200
+On Fri, Jan 5, 2024, at 21:24, Keith Busch wrote:
+> On Wed, Jan 03, 2024 at 04:56:55PM +0100, Arnd Bergmann wrote:
+>> @@ -53,8 +53,7 @@ static inline void __assign_req_name(char *name, struct nvmet_req *req)
+>>  		return;
+>>  	}
+>>  
+>> -	strncpy(name, req->ns->device_path,
+>> -		min_t(size_t, DISK_NAME_LEN, strlen(req->ns->device_path)));
+>> +	strscpy_pad(name, req->ns->device_path, DISK_NAME_LEN);
+>>  }
 >
-> The label =E2=80=9Cout=E2=80=9D was used to jump to a kfree() call despi=
-te of
-> the detail in the implementation of the function
-> =E2=80=9Csquashfs_decompressor_create=E2=80=9D that it was determined al=
-ready
-> that a corresponding variable contained a null pointer because of
-> a failed memory allocation.
+> I like this one, however Daniel has a different fix for this already
+> staged in nvme-6.8:
 >
-> Thus perform the following adjustments:
->
-> 1. Return directly after a call of the function =E2=80=9Ckzalloc=E2=80=
-=9D failed
->    at the beginning.
->
-> 2. Use more appropriate labels instead.
->
-> 3. Omit extra initialisations (for the variables =E2=80=9Cdecomp_strm=E2=
-=80=9D and =E2=80=9Cerr=E2=80=9D)
->    which became unnecessary with this refactoring.
->
->
-> This issue was detected by using the Coccinelle software.
->
-> Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
-> ---
->  fs/squashfs/decompressor_multi.c | 17 ++++++++++-------
->  1 file changed, 10 insertions(+), 7 deletions(-)
->
-> diff --git a/fs/squashfs/decompressor_multi.c b/fs/squashfs/decompressor=
-_multi.c
-> index 416c53eedbd1..0a054ba4c541 100644
-> --- a/fs/squashfs/decompressor_multi.c
-> +++ b/fs/squashfs/decompressor_multi.c
-> @@ -62,12 +62,12 @@ static void *squashfs_decompressor_create(struct squ=
-ashfs_sb_info *msblk,
->  				void *comp_opts)
->  {
->  	struct squashfs_stream *stream;
-> -	struct decomp_stream *decomp_strm =3D NULL;
-> -	int err =3D -ENOMEM;
-> +	struct decomp_stream *decomp_strm;
-> +	int err;
->
->  	stream =3D kzalloc(sizeof(*stream), GFP_KERNEL);
->  	if (!stream)
-> -		goto out;
-> +		return ERR_PTR(-ENOMEM);
->
->  	stream->comp_opts =3D comp_opts;
->  	mutex_init(&stream->mutex);
-> @@ -81,22 +81,25 @@ static void *squashfs_decompressor_create(struct squ=
-ashfs_sb_info *msblk,
->  	 * file system works.
->  	 */
->  	decomp_strm =3D kmalloc(sizeof(*decomp_strm), GFP_KERNEL);
-> -	if (!decomp_strm)
-> -		goto out;
-> +	if (!decomp_strm) {
-> +		err =3D -ENOMEM;
-> +		goto free_stream;
-> +	}
->
->  	decomp_strm->stream =3D msblk->decompressor->init(msblk,
->  						stream->comp_opts);
->  	if (IS_ERR(decomp_strm->stream)) {
->  		err =3D PTR_ERR(decomp_strm->stream);
-> -		goto out;
-> +		goto free_decomp_stream;
->  	}
->
->  	list_add(&decomp_strm->list, &stream->strm_list);
->  	stream->avail_decomp =3D 1;
->  	return stream;
->
-> -out:
-> +free_decomp_stream:
->  	kfree(decomp_strm);
-> +free_stream:
->  	kfree(stream);
->  	return ERR_PTR(err);
->  }
+>  
+> https://git.infradead.org/nvme.git/commitdiff/8f6c0eec5fad13785fd53a5b3b5f8b97b722a2a3
 
-Is this patch still in review queues?
++       snprintf(name,
++                min_t(size_t, DISK_NAME_LEN, strlen(req->ns->device_path) + 1),
++                "%s", req->ns->device_path);
 
-See also:
-https://lore.kernel.org/cocci/f1712777-97ff-d89c-0bdd-d72faed9a7f1@web.de/
-https://sympa.inria.fr/sympa/arc/cocci/2023-03/msg00120.html
+Don't we still need the zero-padding here to avoid leaking
+kernel data to userspace?
 
-Regards,
-Markus
+    Arnd
 
