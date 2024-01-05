@@ -1,65 +1,61 @@
-Return-Path: <linux-kernel+bounces-17474-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17475-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E300824DCA
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 05:53:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D83F824DCB
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 05:53:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0C6811F22F93
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 04:53:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E01152865DA
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 04:53:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC1A85691;
-	Fri,  5 Jan 2024 04:52:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D8CB538D;
+	Fri,  5 Jan 2024 04:53:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="VTLZVg7n"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="YwnOgb9J"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 477DD5242;
-	Fri,  5 Jan 2024 04:52:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=mJPEL62eVi84Xk7Scl6XWRFXGzmJNpF/Y9oGJQjtN1Y=; b=VTLZVg7nKMZm2KMb7lg5o9PvD5
-	EuqpAOQdauiVq2ESgt9amfX38XAf1Eqi30RKATfAQwiC/S26DRQe7Xg551K/uydbVKqSrYBHhgzkQ
-	HZGLojzYHxm4D70Yt265+wjirR1nF8dkpWKbkjDzu7U75qpfE0vlUkN07fYxHbtZEcVQ/SNlbqES4
-	/MN3Pbux3ZFtP4r+fR6Y2T67jx1rtDwl0HLQy38FmRaUjcNxCm0kup5Lqq9a7ASB4vAHdaJN08D6G
-	7RUGVMngFqMssgEZomd1Shj2d37M6lrh7x3H+GYVkuVoLkd8u/f15GD5BFjMiqwewHWlMm3/pAaZ/
-	DtD0tYiw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1rLcBs-00GuHr-UY; Fri, 05 Jan 2024 04:52:17 +0000
-Date: Fri, 5 Jan 2024 04:52:16 +0000
-From: Matthew Wilcox <willy@infradead.org>
-To: David Howells <dhowells@redhat.com>
-Cc: Nathan Chancellor <nathan@kernel.org>,
-	Anna Schumaker <Anna.Schumaker@netapp.com>,
-	Trond Myklebust <trond.myklebust@hammerspace.com>,
-	Jeff Layton <jlayton@kernel.org>, Steve French <smfrench@gmail.com>,
-	Marc Dionne <marc.dionne@auristor.com>,
-	Paulo Alcantara <pc@manguebit.com>,
-	Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>,
-	Dominique Martinet <asmadeus@codewreck.org>,
-	Eric Van Hensbergen <ericvh@kernel.org>,
-	Ilya Dryomov <idryomov@gmail.com>,
-	Christian Brauner <christian@brauner.io>, linux-cachefs@redhat.com,
-	linux-afs@lists.infradead.org, linux-cifs@vger.kernel.org,
-	linux-nfs@vger.kernel.org, ceph-devel@vger.kernel.org,
-	v9fs@lists.linux.dev, linux-fsdevel@vger.kernel.org,
-	linux-mm@kvack.org, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Fix oops in NFS
-Message-ID: <ZZeLAAf6qiieA5fy@casper.infradead.org>
-References: <2202548.1703245791@warthog.procyon.org.uk>
- <20231221230153.GA1607352@dev-arch.thelio-3990X>
- <20231221132400.1601991-1-dhowells@redhat.com>
- <20231221132400.1601991-38-dhowells@redhat.com>
- <2229136.1703246451@warthog.procyon.org.uk>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5567D1D68C
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 04:53:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704430393; x=1735966393;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=WvidLthEWzSzfy5yF9FiZEbO1DBPFr/TInVS5SU/bSI=;
+  b=YwnOgb9JJxecE1MGqh7a3O3asI0T706CJUywRpYZonBpMgarawZUzOUw
+   3pPTyvmW65wLgsp/OkSXaOCOZOy8pKVC1u53H54EgBHkBMyby27OIfZy5
+   GyGi4nSOEO36P18cZlUDUlHbWfthS/joNvr9vMAYA/NqXn5mpjTB/su9k
+   IoWxyHgEayxfjwPC5ibv/aIfqfC6/8KE1NbRv/WvCuMStTCgbh0H95qIZ
+   v9C9MngH5Y9j1uvA6hM1b+B2wSVgVWQE3xXg6ZAC/10X2WlkS+BZtxZt0
+   2FkboHeI9V8b2nPtgR++AiahfIj8WK/a4rtUiQbJ12Y1pS4S9wwOjComX
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10943"; a="387882760"
+X-IronPort-AV: E=Sophos;i="6.04,332,1695711600"; 
+   d="scan'208";a="387882760"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2024 20:53:12 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10943"; a="953840950"
+X-IronPort-AV: E=Sophos;i="6.04,332,1695711600"; 
+   d="scan'208";a="953840950"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga005.jf.intel.com with ESMTP; 04 Jan 2024 20:53:11 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rLcCj-0000nQ-0Z;
+	Fri, 05 Jan 2024 04:53:09 +0000
+Date: Fri, 5 Jan 2024 12:52:22 +0800
+From: kernel test robot <lkp@intel.com>
+To: Linus Walleij <linus.walleij@linaro.org>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: drivers/usb/fotg210/fotg210-udc.c:632:17: sparse: sparse: restricted
+ __le16 degrades to integer
+Message-ID: <202401051251.541p3ElX-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -68,32 +64,57 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2229136.1703246451@warthog.procyon.org.uk>
 
-On Fri, Dec 22, 2023 at 12:00:51PM +0000, David Howells wrote:
-> David Howells <dhowells@redhat.com> wrote:
-> 
-> > A better way, though, is to move the call to nfs_netfs_inode_init()
-> > and give it a flag to say whether or not we want the facility.
-> 
-> Okay, I think I'll fold in the attached change.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   1f874787ed9a2d78ed59cb21d0d90ac0178eceb0
+commit: 1dd33a9f1b95ab59cd60f14a7a83fed14697867b usb: fotg210: Collect pieces of dual mode controller
+date:   1 year, 2 months ago
+config: microblaze-randconfig-r091-20230814 (https://download.01.org/0day-ci/archive/20240105/202401051251.541p3ElX-lkp@intel.com/config)
+compiler: microblaze-linux-gcc (GCC) 12.3.0
+reproduce: (https://download.01.org/0day-ci/archive/20240105/202401051251.541p3ElX-lkp@intel.com/reproduce)
 
-This commit (100ccd18bb41 in linux-next 20240104) is bad for me.  After
-it, running xfstests gives me first a bunch of errors along these lines:
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202401051251.541p3ElX-lkp@intel.com/
 
-00004 depmod: ERROR: failed to load symbols from /lib/modules/6.7.0-rc7-00037-g100ccd18bb41/kernel/fs/gfs2/gfs2.ko: Exec format error
-00004 depmod: ERROR: failed to load symbols from /lib/modules/6.7.0-rc7-00037-g100ccd18bb41/kernel/fs/zonefs/zonefs.ko: Exec format error
-00004 depmod: ERROR: failed to load symbols from /lib/modules/6.7.0-rc7-00037-g100ccd18bb41/kernel/security/keys/encrypted-keys/encrypted-keys.ko: Exec format error
+sparse warnings: (new ones prefixed by >>)
+>> drivers/usb/fotg210/fotg210-udc.c:632:17: sparse: sparse: restricted __le16 degrades to integer
+   drivers/usb/fotg210/fotg210-udc.c:635:51: sparse: sparse: incorrect type in argument 2 (different base types) @@     expected unsigned int [usertype] addr @@     got restricted __le16 [usertype] wValue @@
+   drivers/usb/fotg210/fotg210-udc.c:635:51: sparse:     expected unsigned int [usertype] addr
+   drivers/usb/fotg210/fotg210-udc.c:635:51: sparse:     got restricted __le16 [usertype] wValue
+   drivers/usb/fotg210/fotg210-udc.c:670:33: sparse: sparse: restricted __le16 degrades to integer
+   drivers/usb/fotg210/fotg210-udc.c:680:25: sparse: sparse: restricted __le16 degrades to integer
+   drivers/usb/fotg210/fotg210-udc.c:716:35: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le16 [usertype] ep0_data @@     got int @@
+   drivers/usb/fotg210/fotg210-udc.c:716:35: sparse:     expected restricted __le16 [usertype] ep0_data
+   drivers/usb/fotg210/fotg210-udc.c:716:35: sparse:     got int
+   drivers/usb/fotg210/fotg210-udc.c:722:29: sparse: sparse: restricted __le16 degrades to integer
+   drivers/usb/fotg210/fotg210-udc.c:724:43: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le16 [usertype] ep0_data @@     got int @@
+   drivers/usb/fotg210/fotg210-udc.c:724:43: sparse:     expected restricted __le16 [usertype] ep0_data
+   drivers/usb/fotg210/fotg210-udc.c:724:43: sparse:     got int
 
-and then later:
+vim +632 drivers/usb/fotg210/fotg210-udc.c
 
-00016 generic/001       run fstests generic/001 at 2024-01-05 04:50:46
-00017 [not run] this test requires a valid $TEST_DEV
-00017 generic/002       run fstests generic/002 at 2024-01-05 04:50:46
-00017 [not run] this test requires a valid $TEST_DEV
-00017 generic/003       run fstests generic/003 at 2024-01-05 04:50:47
-00018 [not run] this test requires a valid $SCRATCH_DEV
-...
+b84a8dee23fd41 drivers/usb/gadget/fotg210-udc.c Yuan-Hsin Chen 2013-05-30  628  
+b84a8dee23fd41 drivers/usb/gadget/fotg210-udc.c Yuan-Hsin Chen 2013-05-30  629  static void fotg210_set_address(struct fotg210_udc *fotg210,
+b84a8dee23fd41 drivers/usb/gadget/fotg210-udc.c Yuan-Hsin Chen 2013-05-30  630  				struct usb_ctrlrequest *ctrl)
+b84a8dee23fd41 drivers/usb/gadget/fotg210-udc.c Yuan-Hsin Chen 2013-05-30  631  {
+b84a8dee23fd41 drivers/usb/gadget/fotg210-udc.c Yuan-Hsin Chen 2013-05-30 @632  	if (ctrl->wValue >= 0x0100) {
+b84a8dee23fd41 drivers/usb/gadget/fotg210-udc.c Yuan-Hsin Chen 2013-05-30  633  		fotg210_request_error(fotg210);
+b84a8dee23fd41 drivers/usb/gadget/fotg210-udc.c Yuan-Hsin Chen 2013-05-30  634  	} else {
+b84a8dee23fd41 drivers/usb/gadget/fotg210-udc.c Yuan-Hsin Chen 2013-05-30  635  		fotg210_set_dev_addr(fotg210, ctrl->wValue);
+b84a8dee23fd41 drivers/usb/gadget/fotg210-udc.c Yuan-Hsin Chen 2013-05-30  636  		fotg210_set_cxdone(fotg210);
+b84a8dee23fd41 drivers/usb/gadget/fotg210-udc.c Yuan-Hsin Chen 2013-05-30  637  	}
+b84a8dee23fd41 drivers/usb/gadget/fotg210-udc.c Yuan-Hsin Chen 2013-05-30  638  }
+b84a8dee23fd41 drivers/usb/gadget/fotg210-udc.c Yuan-Hsin Chen 2013-05-30  639  
 
-so I think that's page cache corruption of some kind.
+:::::: The code at line 632 was first introduced by commit
+:::::: b84a8dee23fd41600a8aebcba1410b5bb5b3bdeb usb: gadget: add Faraday fotg210_udc driver
+
+:::::: TO: Yuan-Hsin Chen <yhchen@faraday-tech.com>
+:::::: CC: Felipe Balbi <balbi@ti.com>
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
