@@ -1,93 +1,157 @@
-Return-Path: <linux-kernel+bounces-18022-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18023-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6233F825758
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 16:59:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 91ACA82575C
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 16:59:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A32D0B21F82
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 15:59:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0B3D7282435
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 15:59:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 617B32E832;
-	Fri,  5 Jan 2024 15:59:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 600902E838;
+	Fri,  5 Jan 2024 15:59:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="arsegbl6"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="nNGqpVmq"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B14462E828;
-	Fri,  5 Jan 2024 15:59:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 333D9C433C7;
-	Fri,  5 Jan 2024 15:59:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704470348;
-	bh=F2kxE4JGKW+qCcBW5tUptaqFpPukAthh+brPUzfeGP0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=arsegbl6RmS8bRMpLJd4lz9n2iMsUUMlVY2uIbdxDr/GImW39gJqU6PRWuiyWu8Cf
-	 SBgMV9vzFl/gQVkME/9/ak35oipmW2vn1ab4v+BiD2QoNFl5ipWIGWzyDz2j48DYFr
-	 +WG/246JvKEkbzUYb60X/5ZTVaY3g5p+qCvBHqZZnfkvPQ3Yi0Wm2kULD3Hbcl6B+V
-	 N4jCg1Lf+G5Pb86qwWaYcAVk2997FHRVyW0NF9hA/QCGMrYjjegQoHsHy7pYarLgsT
-	 12stSXH/8YioGJgC3LDNXLHJYbhtiRm1aYbl3l1ps/DtLbCk4kxh3WM/MkhjME+JNp
-	 AVbITOKNzfIyg==
-Date: Fri, 5 Jan 2024 15:59:04 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org
-Subject: Re: [PATCH] spi: make spi_bus_type const
-Message-ID: <a58e56bf-22e6-48b6-a70a-2acd3e6a482d@sirena.org.uk>
-References: <2024010549-erasure-swoop-1cc6@gregkh>
- <0fcee73a-bdcb-41d5-b6e5-21947ae9e3d7@sirena.org.uk>
- <2024010554-unreached-colony-96dd@gregkh>
- <50ecc7bb-50ac-4846-8a6e-fad9148c948f@sirena.org.uk>
- <2024010511-wrongness-ashes-f540@gregkh>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00A032E825
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 15:59:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-40d6b4e2945so18238405e9.0
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Jan 2024 07:59:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1704470363; x=1705075163; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ojBQKqXKo4lu+tyGs931tVbnWS1sxtV4aoVa4f902n4=;
+        b=nNGqpVmqfYsekBYwNqnTL9MtQT3xGER4o/P4DD2jxZds1UhuCvHf54Ams4AMwIHvYF
+         koimkBgwiWIUQhGylOhidELmYt0aBt2W23Ney5GyPi9fcLPU2gq0IIDhFda6Vil+6Oas
+         BtZm9nAdGPaX6PHsXjh9y/nog6UBCiJlVx1C+IDl8C6wOf7LtBOcmvGMhHMlnCmmJemB
+         iymZ4bJZZ9hkIuOjUx1bfGwS57ZD2jDi1zeMkWrbi2o5HQUDWg8wXdJmXseFhL00GyKG
+         zZDyTZyt3qkMkc/DXRih0uQbf+JJPwu+VvBCdsWIQaEDBXSjiTuOVLhN/EECSBK6wJWb
+         RLeQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704470363; x=1705075163;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ojBQKqXKo4lu+tyGs931tVbnWS1sxtV4aoVa4f902n4=;
+        b=kvfO4Bdv3OoFjnYWstn65n4u1vQ83jUHj+DHCpF7DKpZjZczxNaCs6qFPvzBYquWlY
+         DblQD9rJIQLMWiCzjzTyQ9I/svQpv7GqSKysfxCiSguIjvdSuH/3t342g8qa1lBzIh8C
+         Y6iR4y5EU1NoczvLnm4oAjyfe7b51vBv8+lAinepw7XzunMlfW0iwcKV2hXAnGehs5wx
+         5tgqCkeaKX5ahOIX/1ld8FIR3QkLZyamAW5uPOFHNAPkVGnKMq3zz4qm4JQor4O7ymde
+         KWoTwJSVKF/A/b6uEXIG0Ndh45KRk3ZMJx64O2nUNTsAT/3GTEXc2tvIS8rEJnSFn1rh
+         aZkg==
+X-Gm-Message-State: AOJu0YzqryRt5YxgfGT9UZsgfqiXchboZvL8vbymEZKxQ1QPfN+JNBl7
+	rDZY6GYdmhFU1Uc4fwcv4X0PP6Km3GBFCw==
+X-Google-Smtp-Source: AGHT+IGwV4OwKKATavp8Q64GytM17HdFfAv5ZKYAelGrsoZCfrrWxmUv3Kzk+4KdvDrMFQQkbNmewA==
+X-Received: by 2002:a05:600c:45c7:b0:40d:5f86:cef4 with SMTP id s7-20020a05600c45c700b0040d5f86cef4mr875290wmo.235.1704470363063;
+        Fri, 05 Jan 2024 07:59:23 -0800 (PST)
+Received: from krzk-bin.. ([178.197.223.112])
+        by smtp.gmail.com with ESMTPSA id su8-20020a17090703c800b00a29910a9366sm326024ejb.8.2024.01.05.07.59.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Jan 2024 07:59:22 -0800 (PST)
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+	Banajit Goswami <bgoswami@quicinc.com>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	alsa-devel@alsa-project.org,
+	linux-arm-msm@vger.kernel.org,
+	linux-sound@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Chris Packham <chris.packham@alliedtelesis.co.nz>,
+	Bartosz Golaszewski <brgl@bgdev.pl>,
+	Sean Anderson <sean.anderson@seco.com>
+Subject: [PATCH v2 0/4] reset: gpio: ASoC: shared GPIO resets
+Date: Fri,  5 Jan 2024 16:59:14 +0100
+Message-Id: <20240105155918.279657-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="SKHNWc4iOrwyyFct"
-Content-Disposition: inline
-In-Reply-To: <2024010511-wrongness-ashes-f540@gregkh>
-X-Cookie: Your step will soil many countries.
+Content-Transfer-Encoding: 8bit
 
+Hi,
 
---SKHNWc4iOrwyyFct
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Changes in v2
+=============
+1. wsa884x.c: add missing return in wsa884x_get_reset(), correct comment.
+2. qcom,wsa8840.yaml: fix oneOf syntax.
+3. reset/core.c:
+   - Revise approach based on Bartosz comments: parse the reset-gpios phandle
+     with arguments, do not use deprecated API and do not rely on gpio_desc
+     pointer.
+   - Create a list of instantiated platform devices to avoid any duplicates.
+   - After creating reset-gpio platform device, try to get new reset controller
+     or return EPROBE_DEFER.
+   - Drop the "cookie" member and add new "of_args" to "struct
+     reset_controller_dev".
+4. reset-gpio.c:
+   - Fix smatch warning on platdata evaluation.
+   - Parse GPIO args and store them in rc.of_args.
 
-On Fri, Jan 05, 2024 at 04:51:04PM +0100, Greg Kroah-Hartman wrote:
-> On Fri, Jan 05, 2024 at 03:45:37PM +0000, Mark Brown wrote:
+Description
+===========
 
-> > so not actually a core thing, I have to confess I didn't notice where
-> > the assignment was when I glanced at the errors.
+We have at least few cases where hardware engineers decided to use one
+powerdown/shutdown/reset GPIO line for multiple devices:
 
-> Ah, missed that, as it was handled by this commit for the i2c tree:
-> 	https://lore.kernel.org/all/2023121942-jumble-unethical-3163@gregkh/
+1. WSA884x (this and previous patch):
+https://lore.kernel.org/all/b7aeda24-d638-45b7-8e30-80d287f498f8@sirena.org.uk/
+2. https://lore.kernel.org/all/20231027033104.1348921-1-chris.packham@alliedtelesis.co.nz/
+3. https://lore.kernel.org/lkml/20191030120440.3699-1-peter.ujfalusi@ti.com/
+4. https://lore.kernel.org/all/20211018234923.1769028-1-sean.anderson@seco.com/
+5. https://social.treehouse.systems/@marcan/111268780311634160
 
-> So just hold off on this until after 6.8-rc1 is out, or I can wait until
-> then as well if you ack it and take it through my tree.
+I try to solve my case, hopefuly Chris' (2), partially Sean's (4) and maybe
+Hectors (5), using Rob's suggestion:
 
-It's OK - I can just drop it in my queue for applying after -rc1.
+https://lore.kernel.org/all/YXi5CUCEi7YmNxXM@robh.at.kernel.org/
 
---SKHNWc4iOrwyyFct
-Content-Type: application/pgp-signature; name="signature.asc"
+Best regards,
+Krzysztof
 
------BEGIN PGP SIGNATURE-----
+Cc: Chris Packham <chris.packham@alliedtelesis.co.nz>
+Cc: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Sean Anderson <sean.anderson@seco.com>
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmWYJ0cACgkQJNaLcl1U
-h9CluQf9ElrFC4CkGIirJZXjX16TDF+9kzTpBFF+Fj81Pw11VV2Dut33vLdy/nDF
-D0/GvitzhQkPARqhjV5cJb+lF6tOPrNIXYQO1TXw13UPF5su+5reTS/s0BpfLXVK
-xmuGJOaPtGTiQOvBrFoonM6k7LikfwFOFF+vTijdrrA3x+Rqg+saj8gnUfZZoutB
-qms5zNTgnYnc7+QB11GVY3aZlFhZUpd5XFqimfgMwnz62ODs1WkmPN05ljbMDio9
-36ARGy/BoTMN4rLsGhE/e/g5CO7SqQNtRHHnq0JmPp2o9o3pKt/bsxvwnWIW7JZ1
-L9qVcBiODCDlACHE3z+hJSkGKVGT/g==
-=UQhW
------END PGP SIGNATURE-----
+Krzysztof Kozlowski (4):
+  reset: gpio: Add GPIO-based reset controller
+  reset: Instantiate reset GPIO controller for shared reset-gpios
+  ASoC: dt-bindings: qcom,wsa8840: Add reset-gpios for shared line
+  ASoC: codecs: wsa884x: Allow sharing reset GPIO
 
---SKHNWc4iOrwyyFct--
+ .../bindings/sound/qcom,wsa8840.yaml          |  11 +-
+ MAINTAINERS                                   |   5 +
+ drivers/reset/Kconfig                         |   9 +
+ drivers/reset/Makefile                        |   1 +
+ drivers/reset/core.c                          | 176 ++++++++++++++++--
+ drivers/reset/reset-gpio.c                    | 121 ++++++++++++
+ include/linux/reset-controller.h              |   4 +
+ sound/soc/codecs/wsa884x.c                    |  53 +++++-
+ 8 files changed, 356 insertions(+), 24 deletions(-)
+ create mode 100644 drivers/reset/reset-gpio.c
+
+-- 
+2.34.1
+
 
