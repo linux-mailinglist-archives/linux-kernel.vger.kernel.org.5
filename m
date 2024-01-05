@@ -1,258 +1,141 @@
-Return-Path: <linux-kernel+bounces-18017-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18018-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7842D82573B
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 16:55:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9CC0482573E
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 16:55:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CF8EDB239F0
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 15:55:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 359E2285BC6
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 15:55:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC1492E858;
-	Fri,  5 Jan 2024 15:54:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BB3E2E831;
+	Fri,  5 Jan 2024 15:55:02 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout-p-101.mailbox.org (mout-p-101.mailbox.org [80.241.56.151])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FA3B2E82B;
-	Fri,  5 Jan 2024 15:54:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-55642663ac4so1967260a12.1;
-        Fri, 05 Jan 2024 07:54:34 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704470073; x=1705074873;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JbaSpzmTDb6aKo/45GWljzrU5ASqXEKi0BCO7IaChNk=;
-        b=QLVs0pqIHHmLfKiToMc8wDMRkcg4oA8ESfIhkBOieIQFDE80fQZCGCL+vMaPXMMKP2
-         RxA4Xeoew33KpiMfBxAbDGQRqBfGjZALPX6rK652Q1OI9GTRyvNx3y7yOKHhqkFRUC9T
-         58AUaHv9PlGgPkMzxMJeGnnms6jGUtAdS0Zvtvm3YqellC49Ut8mt8epWIy7EPNFUD6o
-         1uSLGKdb8bnUUR+0E4qEszTfKzwayoNtYGOkYtyYffO92RE2xBdgR8CmoDs8+e/0wfd1
-         QPoxxwlTs821XafYznEmt5/gcuoougZE8NSI4HpDFM9Vf7kAdlGVXyN4W+D1SdeVQ0X0
-         2Kjg==
-X-Gm-Message-State: AOJu0YxkshvPAmH10M4MZhy3SyK7xjShUfQWNc4kyt/PPuRY4X2/MI07
-	XtF/6X5ujIZiz/op6Eif+6w=
-X-Google-Smtp-Source: AGHT+IE+OteFp3sRNlrDPPup4dAsUX7gWH5CtQwy32Ik6ZXyC6MXvdMZUBr6Hmu7WFNnO4U3tU8cNg==
-X-Received: by 2002:a50:8a96:0:b0:557:aff:2de8 with SMTP id j22-20020a508a96000000b005570aff2de8mr1213773edj.19.1704470072702;
-        Fri, 05 Jan 2024 07:54:32 -0800 (PST)
-Received: from localhost (fwdproxy-cln-007.fbsv.net. [2a03:2880:31ff:7::face:b00c])
-        by smtp.gmail.com with ESMTPSA id fd5-20020a056402388500b0055743d6e9ebsm227571edb.41.2024.01.05.07.54.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Jan 2024 07:54:32 -0800 (PST)
-From: Breno Leitao <leitao@debian.org>
-To: riel@surriel.com,
-	linux-mm@kvack.org,
-	akpm@linux-foundation.org,
-	Shuah Khan <shuah@kernel.org>
-Cc: vegard.nossum@oracle.com,
-	rppt@kernel.org,
-	songmuchun@bytedance.com,
-	shy828301@gmail.com,
-	linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 1/1] selftests/mm: new test that steals pages
-Date: Fri,  5 Jan 2024 07:54:19 -0800
-Message-Id: <20240105155419.1939484-2-leitao@debian.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240105155419.1939484-1-leitao@debian.org>
-References: <20240105155419.1939484-1-leitao@debian.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31E252E652;
+	Fri,  5 Jan 2024 15:54:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=v0yd.nl
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=v0yd.nl
+Received: from smtp2.mailbox.org (smtp2.mailbox.org [IPv6:2001:67c:2050:b231:465::2])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mout-p-101.mailbox.org (Postfix) with ESMTPS id 4T67Lx2F0dz9sp4;
+	Fri,  5 Jan 2024 16:54:49 +0100 (CET)
+Message-ID: <7036c788-7d8c-4e36-8289-64f43a3f8610@v0yd.nl>
+Date: Fri, 5 Jan 2024 16:54:47 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Subject: Re: [PATCH 3/5] Bluetooth: hci_event: Remove limit of 2 reconnection
+ attempts
+Content-Language: en-US
+To: Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+Cc: Marcel Holtmann <marcel@holtmann.org>,
+ Johan Hedberg <johan.hedberg@gmail.com>, linux-bluetooth@vger.kernel.org,
+ linux-kernel@vger.kernel.org, netdev@vger.kernel.org, verdre@v0yd.nl
+References: <20240102185933.64179-1-verdre@v0yd.nl>
+ <20240102185933.64179-4-verdre@v0yd.nl>
+ <CABBYNZLoivEW=yrDtTbu5SjGauESH0zHb7NXs0YaSKSKqre5GQ@mail.gmail.com>
+From: =?UTF-8?Q?Jonas_Dre=C3=9Fler?= <verdre@v0yd.nl>
+In-Reply-To: <CABBYNZLoivEW=yrDtTbu5SjGauESH0zHb7NXs0YaSKSKqre5GQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 4T67Lx2F0dz9sp4
 
-This test stresses the race between of madvise(DONTNEED), a page fault
-and a parallel huge page mmap, which should fail due to lack of
-available page available for mapping.
+Hi Luiz,
 
-This test case must run on a system with one and only one huge page
-available.
+On 1/3/24 17:05, Luiz Augusto von Dentz wrote:
+> Hi Jonas,
+> 
+> On Tue, Jan 2, 2024 at 1:59 PM Jonas Dreßler <verdre@v0yd.nl> wrote:
+>>
+>> Since commit 4c67bc74f016b0d360b8573e18969c0ff7926974, we retry connecting
+>> later when we get a "Command Disallowed" error returned by "Create
+>> Connection".
+>>
+>> In this commit the intention was to retry only once, and give up if we see
+>> "Command Disallowed" again on the second try.
+>>
+>> This made sense back then when the retry was initiated *only* from the
+>> "Connect Complete" event. If we received that event, we knew that now the
+>> card now must have a "free slot" for a new connection request again. These
+>> days we call hci_conn_check_pending() from a few more places though, and
+>> in these places we can't really be sure that there's a "free slot" on the
+>> card, so the second try to "Create Connection" might fail again.
+>>
+>> Deal with this by being less strict about these retries and try again
+>> every time we get "Command Disallowed" errors, removing the limitation to
+>> only two attempts.
+>>
+>> Since this can potentially cause us to enter an endless cycle of
+>> reconnection attempts, we'll add some guarding against that with the next
+>> commit.
+> 
+> Don't see where you are doing such guarding, besides you seem to
+> assume HCI_ERROR_COMMAND_DISALLOWED would always means the controller
+> is busy, or something like that, but it could perform the connection
+> later, but that may not always be the case, thus why I think
+> reconnecting just a few number of times is better, if you really need
+> to keep retrying then this needs to be controlled by a policy in
+> userspace not hardcoded in the kernel, well I can even argument that
+> perhaps the initial number of reconnection shall be configurable so
+> one don't have to recompile the kernel if that needs changing.
 
-	# echo 1 > /sys/kernel/mm/hugepages/hugepages-2048kB/nr_hugepages
+Yes, fair enough, the next commit assumes that COMMAND_DISALLOWED always 
+means busy. The guarding is that we stop retrying as soon as there's no 
+(competing) ongoing connection attempt nor an active inquiry, which 
+should eventually be the case no matter what, no?
 
-During setup, the test allocates the only available page, and starts
-three threads:
+I agree it's probably still better to not rely on this fairly complex 
+sanity check and keep the checking of attempts nonetheless.
 
-  - thread 1:
-      * madvise(MADV_DONTNEED) on the allocated huge page
-  - thread 2:
-      * Write to the allocated huge page
-  - thread 3:
-      * Tries to allocated (steal) an extra huge page (which is not
-        available)
+I think we could keep doing that if we check for 
+!hci_conn_hash_lookup_state(hdev, ACL_LINK, BT_CONNECT) && 
+!test_bit(HCI_INQUIRY, &hdev->flags) in hci_conn_check_pending() before 
+we actually retry, to make sure the retry counter doesn't get 
+incremented wrongly. I'll give that a try.
 
-thread 3 should never succeed in the allocation, since the only huge
-page was never unmapped, and should be reserved.
+> 
+>> Signed-off-by: Jonas Dreßler <verdre@v0yd.nl>
+>> ---
+>>   net/bluetooth/hci_event.c | 7 ++++---
+>>   1 file changed, 4 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
+>> index e8b4a0126..e1f5b6f90 100644
+>> --- a/net/bluetooth/hci_event.c
+>> +++ b/net/bluetooth/hci_event.c
+>> @@ -2323,12 +2323,13 @@ static void hci_cs_create_conn(struct hci_dev *hdev, __u8 status)
+>>
+>>          if (status) {
+>>                  if (conn && conn->state == BT_CONNECT) {
+>> -                       if (status != HCI_ERROR_COMMAND_DISALLOWED || conn->attempt > 2) {
+>> +                       if (status == HCI_ERROR_COMMAND_DISALLOWED) {
+>> +                               conn->state = BT_CONNECT2;
+>> +                       } else {
+>>                                  conn->state = BT_CLOSED;
+>>                                  hci_connect_cfm(conn, status);
+>>                                  hci_conn_del(conn);
+>> -                       } else
+>> -                               conn->state = BT_CONNECT2;
+>> +                       }
+>>                  }
+>>          } else {
+>>                  if (!conn) {
+>> --
+>> 2.43.0
+>>
+> 
+> 
 
-Touching the old page after thread3 allocation will raise a SIGBUS.
-
-Signed-off-by: Breno Leitao <leitao@debian.org>
----
- tools/testing/selftests/mm/.gitignore         |   1 +
- tools/testing/selftests/mm/Makefile           |   1 +
- .../selftests/mm/hugetlb_madv_vs_map.c        | 124 ++++++++++++++++++
- 3 files changed, 126 insertions(+)
- create mode 100644 tools/testing/selftests/mm/hugetlb_madv_vs_map.c
-
-diff --git a/tools/testing/selftests/mm/.gitignore b/tools/testing/selftests/mm/.gitignore
-index 4ff10ea61461..d26e962f2ac4 100644
---- a/tools/testing/selftests/mm/.gitignore
-+++ b/tools/testing/selftests/mm/.gitignore
-@@ -46,3 +46,4 @@ gup_longterm
- mkdirty
- va_high_addr_switch
- hugetlb_fault_after_madv
-+hugetlb_madv_vs_map
-diff --git a/tools/testing/selftests/mm/Makefile b/tools/testing/selftests/mm/Makefile
-index dede0bcf97a3..f6e42a773e1e 100644
---- a/tools/testing/selftests/mm/Makefile
-+++ b/tools/testing/selftests/mm/Makefile
-@@ -70,6 +70,7 @@ TEST_GEN_FILES += ksm_tests
- TEST_GEN_FILES += ksm_functional_tests
- TEST_GEN_FILES += mdwe_test
- TEST_GEN_FILES += hugetlb_fault_after_madv
-+TEST_GEN_FILES += hugetlb_madv_vs_map
- 
- ifneq ($(ARCH),arm64)
- TEST_GEN_FILES += soft-dirty
-diff --git a/tools/testing/selftests/mm/hugetlb_madv_vs_map.c b/tools/testing/selftests/mm/hugetlb_madv_vs_map.c
-new file mode 100644
-index 000000000000..d01e8d4901d0
---- /dev/null
-+++ b/tools/testing/selftests/mm/hugetlb_madv_vs_map.c
-@@ -0,0 +1,124 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * A test case that must run on a system with one and only one huge page available.
-+ *	# echo 1 > /sys/kernel/mm/hugepages/hugepages-2048kB/nr_hugepages
-+ *
-+ * During setup, the test allocates the only available page, and starts three threads:
-+ *  - thread1:
-+ *	* madvise(MADV_DONTNEED) on the allocated huge page
-+ *  - thread 2:
-+ *	* Write to the allocated huge page
-+ *  - thread 3:
-+ *	* Try to allocated an extra huge page (which must not available)
-+ *
-+ *  The test fails if thread3 is able to allocate a page.
-+ *
-+ *  Touching the first page after thread3's allocation will raise a SIGBUS
-+ *
-+ *  Author: Breno Leitao <leitao@debian.org>
-+ */
-+#include <pthread.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <sys/mman.h>
-+#include <sys/types.h>
-+#include <unistd.h>
-+
-+#include "vm_util.h"
-+#include "../kselftest.h"
-+
-+#define MMAP_SIZE (1 << 21)
-+#define INLOOP_ITER 100
-+
-+char *huge_ptr;
-+
-+/* Touch the memory while it is being madvised() */
-+void *touch(void *unused)
-+{
-+	for (int i = 0; i < INLOOP_ITER; i++)
-+		huge_ptr[0] = '.';
-+
-+	return NULL;
-+}
-+
-+void *madv(void *unused)
-+{
-+	for (int i = 0; i < INLOOP_ITER; i++)
-+		madvise(huge_ptr, MMAP_SIZE, MADV_DONTNEED);
-+
-+	return NULL;
-+}
-+
-+/*
-+ * We got here, and there must be no huge page available for mapping
-+ * The other hugepage should be flipping from used <-> reserved, because
-+ * of madvise(DONTNEED).
-+ */
-+void *map_extra(void *unused)
-+{
-+	void *ptr;
-+
-+	for (int i = 0; i < INLOOP_ITER; i++) {
-+		ptr = mmap(NULL, MMAP_SIZE, PROT_READ | PROT_WRITE,
-+			   MAP_PRIVATE | MAP_ANONYMOUS | MAP_HUGETLB,
-+			   -1, 0);
-+
-+		if ((long)ptr != -1) {
-+			/* Touching the other page now will cause a SIGBUG
-+			 * huge_ptr[0] = '1';
-+			 */
-+			return ptr;
-+		}
-+	}
-+
-+	return NULL;
-+}
-+
-+int main(void)
-+{
-+	pthread_t thread1, thread2, thread3;
-+	unsigned long free_hugepages;
-+	void *ret;
-+
-+	/*
-+	 * On kernel 6.7, we are able to reproduce the problem with ~10
-+	 * interactions
-+	 */
-+	int max = 10;
-+
-+	free_hugepages = get_free_hugepages();
-+
-+	if (free_hugepages != 1) {
-+		ksft_exit_skip("This test needs one and only one page to execute. Got %lu\n",
-+			       free_hugepages);
-+	}
-+
-+	while (max--) {
-+		huge_ptr = mmap(NULL, MMAP_SIZE, PROT_READ | PROT_WRITE,
-+				MAP_PRIVATE | MAP_ANONYMOUS | MAP_HUGETLB,
-+				-1, 0);
-+
-+		if ((unsigned long)huge_ptr == -1) {
-+			ksft_exit_skip("Failed to allocated huge page\n");
-+			return KSFT_SKIP;
-+		}
-+
-+		pthread_create(&thread1, NULL, madv, NULL);
-+		pthread_create(&thread2, NULL, touch, NULL);
-+		pthread_create(&thread3, NULL, map_extra, NULL);
-+
-+		pthread_join(thread1, NULL);
-+		pthread_join(thread2, NULL);
-+		pthread_join(thread3, &ret);
-+
-+		if (ret) {
-+			ksft_test_result_fail("Unexpected huge page allocation\n");
-+			return KSFT_FAIL;
-+		}
-+
-+		/* Unmap and restart */
-+		munmap(huge_ptr, MMAP_SIZE);
-+	}
-+
-+	return KSFT_PASS;
-+}
--- 
-2.34.1
-
+Cheers,
+Jonas
 
