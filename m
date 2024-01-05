@@ -1,146 +1,91 @@
-Return-Path: <linux-kernel+bounces-18053-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18054-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F2E68257DF
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 17:16:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D9C68257F2
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 17:20:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 543311C2331C
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 16:16:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CFB321F216AD
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 16:20:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45F50321AE;
-	Fri,  5 Jan 2024 16:15:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C71263174F;
+	Fri,  5 Jan 2024 16:20:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fairphone.com header.i=@fairphone.com header.b="U0SY9mNR"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="urC9BfQr"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1622A2E85F
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 16:15:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fairphone.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fairphone.com
-Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-55719cdc0e1so1425945a12.1
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Jan 2024 08:15:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fairphone.com; s=fair; t=1704471348; x=1705076148; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=2EkrLPpfX68IA8d/5CPpZuMAmVCLu73Yzxl8t1E6w2M=;
-        b=U0SY9mNRzOHLg2oAJuki4XzHlnHxFPPVkogg4Bsg9gAjcixsZ7XWE9nydc3ZOuiHsT
-         Wl9VlAwNnK/OWl7qMZjd+yvuhS2ocl+0uMDZNcEUzlpXGhJqIXLqeyKlO2HHJFxH3Jvz
-         77AacKA9ADY95/ZLd/pWxo6ykcbUfYNIcs4aoRfNLXlQ6RLfYH0K6QSMP7GHRGac2F3R
-         zfL5LlJoZvzwwzSTDfsW9ZH5UPidQ1miL0/CKzbsLHItD4HBf6+ztuMFZBGpd2HaNXbG
-         ZFGykocPpCUUM4yo+esWqko0/GuA+BGj3SJpgSEbFWRtAXryW6aVv2bC3g/bQRDhfCcp
-         rnOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704471348; x=1705076148;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2EkrLPpfX68IA8d/5CPpZuMAmVCLu73Yzxl8t1E6w2M=;
-        b=LBIzj6SNzK69zaZgdmKdlA57IgVxBHvevjCT+2+wK+PtcGr9NvCT4G4bIZ8qJxvahh
-         9xXwUyvbv7+oioJ8Tlo0DJEAdPb+MOkAyEHt6hlirMpPgDHkayTJYfeZsycaUT+f9hHN
-         0COCMK4ZXZvfsAfhkpm7y2XM1sZwk7eD9DQf0TkiIdtM/OHi1nsMICnsRiv1gB8u2cJ9
-         iT52QU4PsXWELl19e9ytpC1mzLu8gqzme27VuKOnNDMNsSC2/eYrYb9ovKjXuvaeLaLz
-         DdCUf6RfasNGQpr7oG6v+MZYVY4xw0/Oz5JnFwSW1MGjOsaV9NSXuaaNSLlp+XyU+9l2
-         agQQ==
-X-Gm-Message-State: AOJu0YyD/4FKr06qsrUAY1yTM/kR4p3ldggwpQRxddxHzs8mEVefr5Wu
-	5cHbSUHo5dz1yVmOCjdf/WOy/OWlTohRhw==
-X-Google-Smtp-Source: AGHT+IF0F4kBNIMfJY2WeUh31uZD8/I9CGX4aE/9HYT9YMdxaniTBXNbap7APj6H4vgi4j2E/4Gi1w==
-X-Received: by 2002:a17:906:261a:b0:a26:d20e:35a7 with SMTP id h26-20020a170906261a00b00a26d20e35a7mr1259647ejc.127.1704471348452;
-        Fri, 05 Jan 2024 08:15:48 -0800 (PST)
-Received: from otso.luca.vpn.lucaweiss.eu (144-178-202-138.static.ef-service.nl. [144.178.202.138])
-        by smtp.gmail.com with ESMTPSA id ft33-20020a170907802100b00a26a5632d8fsm1031726ejc.13.2024.01.05.08.15.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Jan 2024 08:15:47 -0800 (PST)
-From: Luca Weiss <luca.weiss@fairphone.com>
-Date: Fri, 05 Jan 2024 17:15:44 +0100
-Subject: [PATCH 2/2] arm64: dts: qcom: sm6350: Add Crypto Engine
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 186F22E85B;
+	Fri,  5 Jan 2024 16:20:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 9447DC433D9;
+	Fri,  5 Jan 2024 16:20:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704471625;
+	bh=yVeKmEcClyi5B8/xFJ+u1/QIebKfkfq7DhyuYiRjrFQ=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=urC9BfQrFSeJInf4JacBUekwPYgA1d+coWqMWOD46hMO8oiI439sszRZhlG6NuSk8
+	 ROHU8i6u6WAEV4Phbk7XYGhjmweEB0lo8yTHBMbAyl1fzSeAVPUKWzKHc3UMIEDRBS
+	 497GfZA+acmlYL/nTYO3S/SWnl++eTU85GRdSPm6yJ29e9SU+5oBMZwiqugn5Npe/9
+	 Nsnh2xxAJbmbBmDDP8MlbU4T2FUUU4Ss+6a5a9R4HeVx2CUUC02BHIoiN4GlP0/edt
+	 yPNtEtagKys3+PDWd6Bynq9qfli1MOinGJLincUh3DCdRU9g1m0NSjzLjN2mVk4r2t
+	 jfyyg73sg5T7A==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 7F325DCB6D8;
+	Fri,  5 Jan 2024 16:20:25 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240105-sm6350-qce-v1-2-416e5c7319ac@fairphone.com>
-References: <20240105-sm6350-qce-v1-0-416e5c7319ac@fairphone.com>
-In-Reply-To: <20240105-sm6350-qce-v1-0-416e5c7319ac@fairphone.com>
-To: Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>, 
- Konrad Dybcio <konrad.dybcio@linaro.org>, 
- Thara Gopinath <thara.gopinath@gmail.com>, 
- Herbert Xu <herbert@gondor.apana.org.au>, 
- "David S. Miller" <davem@davemloft.net>, Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, 
- Bhupesh Sharma <bhupesh.sharma@linaro.org>
-Cc: ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org, 
- linux-crypto@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Luca Weiss <luca.weiss@fairphone.com>
-X-Mailer: b4 0.12.4
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next v3 0/3] net: gro: reduce extension header parsing
+ overhead
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <170447162551.14252.7658609133386405696.git-patchwork-notify@kernel.org>
+Date: Fri, 05 Jan 2024 16:20:25 +0000
+References: <ac6fb684-c00e-449c-92c3-99358a927ade@gmail.com>
+In-Reply-To: <ac6fb684-c00e-449c-92c3-99358a927ade@gmail.com>
+To: Richard Gobert <richardbgobert@gmail.com>
+Cc: davem@davemloft.net, dsahern@kernel.org, edumazet@google.com,
+ kuba@kernel.org, pabeni@redhat.com, shuah@kernel.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
 
-Add crypto engine (CE) and CE BAM related nodes and definitions for this
-SoC.
+Hello:
 
-For reference:
+This series was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
 
-  [    2.297419] qcrypto 1dfa000.crypto: Crypto device found, version 5.5.1
+On Wed, 3 Jan 2024 15:36:41 +0100 you wrote:
+> This series attempts to reduce the parsing overhead of IPv6 extension
+> headers in GRO and GSO, by removing extension header specific code and
+> enabling the frag0 fast path.
+> 
+> The following changes were made:
+>  - Removed some unnecessary HBH conditionals by adding HBH offload
+>    to inet6_offloads
+>  - Added a utility function to support frag0 fast path in ipv6_gro_receive
+>  - Added selftests for IPv6 packets with extension headers in GRO
+> 
+> [...]
 
-Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
----
- arch/arm64/boot/dts/qcom/sm6350.dtsi | 31 +++++++++++++++++++++++++++++++
- 1 file changed, 31 insertions(+)
+Here is the summary with links:
+  - [net-next,v3,1/3] net: gso: add HBH extension header offload support
+    https://git.kernel.org/netdev/net-next/c/f2e3fc2158e6
+  - [net-next,v3,2/3] net: gro: parse ipv6 ext headers without frag0 invalidation
+    https://git.kernel.org/netdev/net-next/c/dff0b0161ad5
+  - [net-next,v3,3/3] selftests/net: fix GRO coalesce test and add ext header coalesce tests
+    https://git.kernel.org/netdev/net-next/c/4e321d590cec
 
-diff --git a/arch/arm64/boot/dts/qcom/sm6350.dtsi b/arch/arm64/boot/dts/qcom/sm6350.dtsi
-index 8fd6f4d03490..516aadbb16bb 100644
---- a/arch/arm64/boot/dts/qcom/sm6350.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm6350.dtsi
-@@ -1212,6 +1212,37 @@ ufs_mem_phy_lanes: phy@1d87400 {
- 			};
- 		};
- 
-+		cryptobam: dma-controller@1dc4000 {
-+			compatible = "qcom,bam-v1.7.4", "qcom,bam-v1.7.0";
-+			reg = <0 0x01dc4000 0 0x24000>;
-+			interrupts = <GIC_SPI 272 IRQ_TYPE_LEVEL_HIGH>;
-+			#dma-cells = <1>;
-+			qcom,ee = <0>;
-+			qcom,controlled-remotely;
-+			num-channels = <16>;
-+			qcom,num-ees = <4>;
-+			iommus = <&apps_smmu 0x432 0x0000>,
-+				 <&apps_smmu 0x438 0x0001>,
-+				 <&apps_smmu 0x43f 0x0000>,
-+				 <&apps_smmu 0x426 0x0011>,
-+				 <&apps_smmu 0x436 0x0011>;
-+		};
-+
-+		crypto: crypto@1dfa000 {
-+			compatible = "qcom,sm6350-qce", "qcom,sm8150-qce", "qcom,qce";
-+			reg = <0 0x01dfa000 0 0x6000>;
-+			dmas = <&cryptobam 4>, <&cryptobam 5>;
-+			dma-names = "rx", "tx";
-+			iommus = <&apps_smmu 0x432 0x0000>,
-+				 <&apps_smmu 0x438 0x0001>,
-+				 <&apps_smmu 0x43f 0x0000>,
-+				 <&apps_smmu 0x426 0x0011>,
-+				 <&apps_smmu 0x436 0x0011>;
-+			interconnects = <&aggre2_noc MASTER_CRYPTO_CORE_0 QCOM_ICC_TAG_ALWAYS
-+					 &clk_virt SLAVE_EBI_CH0 QCOM_ICC_TAG_ALWAYS>;
-+			interconnect-names = "memory";
-+		};
-+
- 		ipa: ipa@1e40000 {
- 			compatible = "qcom,sm6350-ipa";
- 
-
+You are awesome, thank you!
 -- 
-2.43.0
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
 
