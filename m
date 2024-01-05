@@ -1,61 +1,74 @@
-Return-Path: <linux-kernel+bounces-17900-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17901-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C3548254C4
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 15:01:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0166C8254CC
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 15:03:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A027BB23433
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 14:01:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5A27C1F22964
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 14:03:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 503F42D7B2;
-	Fri,  5 Jan 2024 14:01:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D1092D78D;
+	Fri,  5 Jan 2024 14:03:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="ojvNlEJU"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="XhCvbfkz"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6208F2D7A5;
-	Fri,  5 Jan 2024 14:01:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=rklPmY2oZQIe1/iyTtTeOXrMgE6gpCxUrRBRrMqDWCA=; b=ojvNlEJUAzcy09PNuju1puc+rZ
-	FDqIXr+mkS1hKfFa6t7/eyoSfhcV/N1OA8UMWFO9uCx5YB9ups0RC7gAu2qFM3Fl9yrRksuDsNbxm
-	i3cog/82lX+9LYC6dlbY+/Up2NkFPiqzYt+D7N4dKzESJt2TobqSdivVe4V6Q13jBpgY=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1rLkkt-004SRu-09; Fri, 05 Jan 2024 15:00:59 +0100
-Date: Fri, 5 Jan 2024 15:00:58 +0100
-From: Andrew Lunn <andrew@lunn.ch>
-To: Dimitri Fedrau <dima.fedrau@gmail.com>
-Cc: Stefan Eichenberger <eichest@gmail.com>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net: phy: marvell-88q2xxx: add driver for the Marvell
- 88Q2220 PHY
-Message-ID: <c7b1b220-4a76-4cc0-b68d-cec5977ebadb@lunn.ch>
-References: <20231216221151.GA143483@debian>
- <28cc73bf-ed6d-49d8-b80b-4fbf5fa0442f@lunn.ch>
- <20231217111538.GA3591@debian>
- <ZX78ucHcNyEatXLD@eichest-laptop>
- <20231218090932.GA4319@debian>
- <ZYAqxPZHICtZO15O@eichest-laptop>
- <20231219081117.GA3479@debian>
- <ZYFfzei3SJSts5E/@eichest-laptop>
- <5d545a9b-feda-4908-8f74-9218806451c1@lunn.ch>
- <20240105124221.GA30964@debian>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EBB32D7A5
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 14:03:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a28d25253d2so172663866b.0
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Jan 2024 06:03:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1704463419; x=1705068219; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=K3bnN4quUJEriHwirvyf/MlXpTwHAU6a4DSC6ByIGJA=;
+        b=XhCvbfkz4xkGtCVUYS6P6SCTByNC1xWYpzXGFzGFRpBiJY+Pxp01VrJsLZE8+u2TA0
+         a+9t4jcJXk9DgGBOAcU1a6H3v1y8vkPgQLcOKCZ7JAclZ6ukU2VfhNvvyOv6EmMWwmG8
+         n2gluIJRMq5UvWC9yNMyWHCO3p+j5Bf79pvUhKEjtMgdJCivV+ZNc5uEZqus7UeBZ200
+         M7716C9exydMONEvTM5F2niNIjfpLDIcR/yFvb6rndu6BG9pJvhoWmhph2Z2CjmWnCrR
+         E8+oopJYNv20evry3TRGQMMwSufSykDNXtQkYSh10LoIUCYOqDth7x3Vd+ooxeL0POzT
+         /rJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704463419; x=1705068219;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=K3bnN4quUJEriHwirvyf/MlXpTwHAU6a4DSC6ByIGJA=;
+        b=epXh5ktkd7EB93l+ZL7WjcoNwtHnbzI4aojia01qBYM8C1m3QnkhOLU7NZ7R1A7BLB
+         /0r12khZuQr9tBXiHX5eJ6TvTXlH6HGSR6V3hZxh5J9nZUxpQgltV18s6kcPuD1+jNIF
+         ytsOAS80ivx9Om5F4JQaOigZw18TobPR4/bwTTPZ6BBJ8TGlAfvE6p6b5ijteDvrCgqQ
+         9SMvmjh33cj4NC1D/19jNH90ovw25DZ/B14HUq18w6JJ1AwycVs2TXEVb3F/oTX417aR
+         N3R4OSD1h+0DlyMx13llJFZCLC+UCNnypYBGby1cmuydP81Kxu4cv6hU3weRcNithuTn
+         d+yw==
+X-Gm-Message-State: AOJu0YwBnRxzeQAzfZWzSAXQqzrXgo+6mtWzva2NArnCh941SXGrG7nN
+	eet2sbjWF80sRz2fzwTGkArzaczgpabltw==
+X-Google-Smtp-Source: AGHT+IH67SLFJ8C5gG4C5TbvF/XM8nwvZHERmu7ffu0wKuatbRuETiCLz0Cl7892rpSm45VScaekzA==
+X-Received: by 2002:a17:906:2dcc:b0:a29:18c:8998 with SMTP id h12-20020a1709062dcc00b00a29018c8998mr752587eji.129.1704463418914;
+        Fri, 05 Jan 2024 06:03:38 -0800 (PST)
+Received: from alley ([176.114.240.50])
+        by smtp.gmail.com with ESMTPSA id t13-20020a170906178d00b00a28cf49520asm905749eje.203.2024.01.05.06.03.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Jan 2024 06:03:38 -0800 (PST)
+Date: Fri, 5 Jan 2024 15:03:36 +0100
+From: Petr Mladek <pmladek@suse.com>
+To: Lukas Hruska <lhruska@suse.cz>
+Cc: Miroslav Benes <mbenes@suse.cz>, Josh Poimboeuf <jpoimboe@kernel.org>,
+	Joe Lawrence <joe.lawrence@redhat.com>,
+	live-patching@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-kbuild@vger.kernel.org,
+	Marcos Paulo de Souza <mpdesouza@suse.com>,
+	Josh Poimboeuf <jpoimboe@redhat.com>
+Subject: Re: [PATCH v1 3/5] kbuild/modpost: integrate klp-convert
+Message-ID: <ZZgMOA7s0VWsrTLA@alley>
+References: <20231106162513.17556-1-lhruska@suse.cz>
+ <20231106162513.17556-4-lhruska@suse.cz>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -64,58 +77,37 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240105124221.GA30964@debian>
+In-Reply-To: <20231106162513.17556-4-lhruska@suse.cz>
 
-On Fri, Jan 05, 2024 at 01:42:21PM +0100, Dimitri Fedrau wrote:
-> Am Tue, Dec 19, 2023 at 04:57:50PM +0100 schrieb Andrew Lunn:
-> > > I am not sure that it will be accepted by the maintainers if you use a
-> > > lot of registers that are not documented.
-> > 
-> > Sometimes there is no choice, there is no documentation except the
-> > vendor crap driver which we try to clean up as much as possible, but
-> > we still end up with lots of magic numbers.
-> >
+On Mon 2023-11-06 17:25:11, Lukas Hruska wrote:
+> From: Josh Poimboeuf <jpoimboe@redhat.com>
 > 
-> Hi Andrew, hi Stefan,
-> 
-> tried to reduce the init sequence. This worked for me:
-> 
-> static int mv88q222x_config_init(struct phy_device *phydev)
-> {
-> 	int ret;
-> 
-> 	/* send_s detection threshold, slave and master */
-> 	ret = phy_write_mmd(phydev, MDIO_MMD_AN, 0x8032, 0x2020);
-> 	if (ret < 0)
-> 		return ret;
-> 
-> 	ret = phy_write_mmd(phydev, MDIO_MMD_AN, 0x8031, 0xa28);
-> 	if (ret < 0)
-> 		return ret;
-> 
-> 	ret = phy_write_mmd(phydev, MDIO_MMD_AN, 0x8031, 0xc28);
-> 	if (ret < 0)
-> 		return ret;
-> 
-> 	ret = phy_write_mmd(phydev, MDIO_MMD_PCS, 0xffe4, 0xc);
-> 	if (ret < 0)
-> 		return ret;
-> 
-> 	return mv88q2xxx_config_init(phydev);
-> }
-> 
-> The four register writes were required to make the PHY work in 1000Mbit forced
-> mode. When using autonegotiation or 100Mbit forced mode they weren't needed.
-> It was enough to write them once in mv88q222x_config_init as you can
-> see. Thanks Stefan for the hint with the first three register writes, it
-> helped a lot.
+> Update the modpost program so that it does not warn about unresolved
+> symbols matching the expected format which will be then resolved by
+> klp-convert.
 
-Hi Dimitri
+This in only one part.
 
-Do we need to reduce the init sequence? Since this is all undocumented
-magic which nobody understands, it would be safer to just keep with
-the Marvell vendor crap code dump. Unless we really do need to change
-it.
+The main change is that it klp-convert is called for livepatch modules
+after the final linking.
 
-	Andrew
+I would write something like:
+
+<proposal>
+Call klp-convert for the livepatch modules after the final linking.
+
+Also update the modpost tool so that it does not warn about unresolved
+symbols matching the expected format which will be then resolved by
+klp-convert.
+</proposal>
+
+> Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
+> Signed-off-by: Lukas Hruska <lhruska@suse.cz>
+
+Otherwise the code looks good. With the updated commit message:
+
+Reviewed-by: Petr Mladek <pmladek@suse.com>
+
+Best Regards,
+Petr
 
