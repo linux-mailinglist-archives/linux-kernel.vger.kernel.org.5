@@ -1,213 +1,350 @@
-Return-Path: <linux-kernel+bounces-18150-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18151-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 687E1825977
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 18:53:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1DE72825979
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 18:54:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 80A9C1C226A9
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 17:53:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8022B1F24498
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 17:54:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F93F34CD3;
-	Fri,  5 Jan 2024 17:53:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6040D34565;
+	Fri,  5 Jan 2024 17:53:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="PVIJiCp4"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
+Received: from mail-qk1-f178.google.com (mail-qk1-f178.google.com [209.85.222.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31905328CA
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 17:53:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7b7fe6d256eso228719839f.1
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Jan 2024 09:53:22 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89AE6328CA
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 17:53:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-qk1-f178.google.com with SMTP id af79cd13be357-78102c516a7so124994085a.2
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Jan 2024 09:53:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1704477221; x=1705082021; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=miRb0rXpWLb9jsTXLzk36Q4Oua5evPe+9mfQTaGdXj0=;
+        b=PVIJiCp4xSU42jvaKzNsEvgcjQ4ZpqrexRntLWYZtSPmH18zdnMaDtd2mgXKnT2JMm
+         vrOLgVXaUR46CGKuwKM107j+x6xG+zrVuVmi4gb+2WYblTzxpF5EYHR1cKoueB7z6l+B
+         2K9AayjS11r17Spl9/CYh4LvnAEckblA5AcF2ngUTRoqXO/Z0h1/yecX79KcdZmETfp0
+         xzVGBcTgSz13cEIeAvAhAgkL3SqD79MD4su0hC4pw/59KKbowIVJJcOg5GRnOQxbk0dZ
+         rU3XUyt56kNgGdAWW6h7BXHlsg1JhNPCrzB8z6rp4EKgAGMx63kTIJwCICsaVv8vbbop
+         cWFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704477201; x=1705082001;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0J45BElnGsnlb+hcSi7W72v1ypQ+RzOOzGvT7znb7Wo=;
-        b=GcTQvx3IMr6J8rkmarimyWdp15NcB0O88futsWQD6DTeGlc+2NDbaQI0w2UeK0s+Fk
-         O1prb0dVhXmavQQCWVkU+1zjxeLWqHxjBYENWIpdzd21Wit2ek7RLR8qCWVOpoPM0TxH
-         /BRcW9ffEidQpWMdO299vAESZ2Xo3/zgj50WojGTEaur96OoujRUiwLOusi0+oCcIFGJ
-         p9VSnnuuxq2fDPNNWlK/XFqQCUSeX49YdvaaaZfkGoyCv6W652txW0WOnTle84BXo8vE
-         euvp4gb3gR5j1LGAxyMX9LYTUXDGls2BvGKK/tE+x8F4uWVon8UpJ5wOrzj3Dot4EC5x
-         vSDQ==
-X-Gm-Message-State: AOJu0YxD5aA59TOXiH6Rk56tX6GYoQMB/4/ZR+tCs37kb7X5G/n2zAod
-	L7/e7Y7W+x7H2CUIUnFcr8jOA7I8k56u1u8Yk8zWYdsGOsPL
-X-Google-Smtp-Source: AGHT+IEcJoHiQ4KVpQYRGwAeaLcbhZAcCtrzbLyDBMA1yBJkW93EpqVYY7ybAmGIQT9VcceP9LrjiNgHBBGnCyiWkGCcYi5gAGYQ
+        d=1e100.net; s=20230601; t=1704477221; x=1705082021;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=miRb0rXpWLb9jsTXLzk36Q4Oua5evPe+9mfQTaGdXj0=;
+        b=ttpKVj04YavcNYCkkPR4kSkYs7ZbBgCplVVIYWo+fCJ2AVfK33B7oRmkQJsrnuSJm3
+         FENgyXUJ2+My6ZOD/4oGwtiuGyuRENwx/t0Dg4gFDQkhLB1zOiTWTkSuHDmT6RMyzeTJ
+         +piDgRN1lZyPGL7q7Nvf4AxodRhwIzTLpJIw7KZTs0UvH9+twHPIaZkijtVi2JowbC9W
+         i8x2bn7Hp0HdkJuEU6lBQFNcMYbRtDtWTHJP26hg94nljAwjiObfJyWLv9UUPU37VfOR
+         HXRuj6XbSnYM2EolBbnGzDEJBa0zOibd1zt1/gsuFM9VkC0vC9E/+s411S9cUSGbVqFY
+         pZyA==
+X-Gm-Message-State: AOJu0YwinGSVGlciqMAm1NXM0Do/hXv3+gmb4CGRpIhSsVudcsbyuLo6
+	HbUX6b5e+0030ACWS2AW71kdPaH6HN03FA==
+X-Google-Smtp-Source: AGHT+IGCN+T44qrgo6UkyBazOh1o48d2ZcobTN86dpi+/kaYtJEFnysKgJ7G5TwzHG1++RItZhDUPg==
+X-Received: by 2002:a05:620a:4798:b0:781:1411:9383 with SMTP id dt24-20020a05620a479800b0078114119383mr2669210qkb.94.1704477221299;
+        Fri, 05 Jan 2024 09:53:41 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
+        by smtp.gmail.com with ESMTPSA id c10-20020a37e10a000000b007815a43d297sm746129qkm.40.2024.01.05.09.53.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Jan 2024 09:53:40 -0800 (PST)
+Received: from jgg by wakko with local (Exim 4.95)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1rLoO3-001UdP-Ju;
+	Fri, 05 Jan 2024 13:53:39 -0400
+Date: Fri, 5 Jan 2024 13:53:39 -0400
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Lu Baolu <baolu.lu@linux.intel.com>
+Cc: Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+	Robin Murphy <robin.murphy@arm.com>,
+	Kevin Tian <kevin.tian@intel.com>,
+	Jean-Philippe Brucker <jean-philippe@linaro.org>,
+	Nicolin Chen <nicolinc@nvidia.com>, Yi Liu <yi.l.liu@intel.com>,
+	Jacob Pan <jacob.jun.pan@linux.intel.com>,
+	Longfang Liu <liulongfang@huawei.com>,
+	Yan Zhao <yan.y.zhao@intel.com>, iommu@lists.linux.dev,
+	kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v9 14/14] iommu: Track iopf group instead of last fault
+Message-ID: <20240105175339.GI50608@ziepe.ca>
+References: <20231220012332.168188-1-baolu.lu@linux.intel.com>
+ <20231220012332.168188-15-baolu.lu@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:14cc:b0:46d:e373:e3aa with SMTP id
- l12-20020a05663814cc00b0046de373e3aamr261769jak.4.1704477199981; Fri, 05 Jan
- 2024 09:53:19 -0800 (PST)
-Date: Fri, 05 Jan 2024 09:53:19 -0800
-In-Reply-To: <000000000000a62351060e363bdc@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000008608c060e3686a6@google.com>
-Subject: Re: [syzbot] [net?] memory leak in ___neigh_create (2)
-From: syzbot <syzbot+42cfec52b6508887bbe8@syzkaller.appspotmail.com>
-To: alexander.mikhalitsyn@virtuozzo.com, davem@davemloft.net, den@openvz.org, 
-	dsahern@kernel.org, edumazet@google.com, kuba@kernel.org, 
-	linux-kernel@vger.kernel.org, netdev@vger.kernel.org, pabeni@redhat.com, 
-	razor@blackwall.org, syzkaller-bugs@googlegroups.com, 
-	thomas.zeitlhofer+lkml@ze-it.at, thomas.zeitlhofer@ze-it.at, 
-	wangyuweihx@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231220012332.168188-15-baolu.lu@linux.intel.com>
 
-syzbot has found a reproducer for the following issue on:
+On Wed, Dec 20, 2023 at 09:23:32AM +0800, Lu Baolu wrote:
+>  /**
+> - * iommu_handle_iopf - IO Page Fault handler
+> - * @fault: fault event
+> - * @iopf_param: the fault parameter of the device.
+> + * iommu_report_device_fault() - Report fault event to device driver
+> + * @dev: the device
+> + * @evt: fault event data
+>   *
+> - * Add a fault to the device workqueue, to be handled by mm.
+> + * Called by IOMMU drivers when a fault is detected, typically in a threaded IRQ
+> + * handler. When this function fails and the fault is recoverable, it is the
+> + * caller's responsibility to complete the fault.
 
-HEAD commit:    2258c2dc850b Merge tag 'for-linus' of git://git.kernel.org..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=16f67b44480000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=a4fb7ad9185f1501
-dashboard link: https://syzkaller.appspot.com/bug?extid=42cfec52b6508887bbe8
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14e23d44480000
+This patch seems OK for what it does so:
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/0e65a45877eb/disk-2258c2dc.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/7617adf885a8/vmlinux-2258c2dc.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/43fb89ea894a/bzImage-2258c2dc.xz
+Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+42cfec52b6508887bbe8@syzkaller.appspotmail.com
+However, this seems like a strange design, surely this function should
+just call ops->page_response() when it can't enqueue the fault?
 
-BUG: memory leak
-unreferenced object 0xffff88810b8ea400 (size 512):
-  comm "kworker/0:3", pid 4440, jiffies 4294938594 (age 1132.680s)
-  hex dump (first 32 bytes):
-    00 9c f8 0a 81 88 ff ff 80 29 23 86 ff ff ff ff  .........)#.....
-    c0 79 79 44 81 88 ff ff 72 78 ff ff 00 00 00 00  .yyD....rx......
-  backtrace:
-    [<ffffffff814f9fe6>] __do_kmalloc_node mm/slab_common.c:967 [inline]
-    [<ffffffff814f9fe6>] __kmalloc+0x46/0x120 mm/slab_common.c:981
-    [<ffffffff83b5234f>] kmalloc include/linux/slab.h:584 [inline]
-    [<ffffffff83b5234f>] kzalloc include/linux/slab.h:720 [inline]
-    [<ffffffff83b5234f>] neigh_alloc net/core/neighbour.c:476 [inline]
-    [<ffffffff83b5234f>] ___neigh_create+0xdf/0xd60 net/core/neighbour.c:661
-    [<ffffffff83f9f886>] ip6_finish_output2+0x776/0x9b0 net/ipv6/ip6_output.c:125
-    [<ffffffff83fa5530>] __ip6_finish_output net/ipv6/ip6_output.c:195 [inline]
-    [<ffffffff83fa5530>] ip6_finish_output+0x270/0x530 net/ipv6/ip6_output.c:206
-    [<ffffffff83fa5893>] NF_HOOK_COND include/linux/netfilter.h:291 [inline]
-    [<ffffffff83fa5893>] ip6_output+0xa3/0x1b0 net/ipv6/ip6_output.c:227
-    [<ffffffff83ff16d9>] dst_output include/net/dst.h:444 [inline]
-    [<ffffffff83ff16d9>] NF_HOOK include/linux/netfilter.h:302 [inline]
-    [<ffffffff83ff16d9>] NF_HOOK.constprop.0+0x49/0x110 include/linux/netfilter.h:296
-    [<ffffffff83ff19c4>] mld_sendpack+0x224/0x350 net/ipv6/mcast.c:1820
-    [<ffffffff83ff5403>] mld_send_cr net/ipv6/mcast.c:2121 [inline]
-    [<ffffffff83ff5403>] mld_ifc_work+0x2a3/0x750 net/ipv6/mcast.c:2653
-    [<ffffffff8129519a>] process_one_work+0x2ba/0x5f0 kernel/workqueue.c:2289
-    [<ffffffff81295ab9>] worker_thread+0x59/0x5b0 kernel/workqueue.c:2436
-    [<ffffffff8129fb05>] kthread+0x125/0x160 kernel/kthread.c:376
-    [<ffffffff8100224f>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:308
+It is much cleaner that way, so maybe you can take this into a
+following patch (along with the driver fixes to accomodate. (and
+perhaps iommu_report_device_fault() should return void too)
 
-BUG: memory leak
-unreferenced object 0xffff888109a7fa00 (size 512):
-  comm "kworker/0:3", pid 4440, jiffies 4294938594 (age 1132.680s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 80 29 23 86 ff ff ff ff  .........)#.....
-    00 79 79 44 81 88 ff ff 72 78 ff ff 00 00 00 00  .yyD....rx......
-  backtrace:
-    [<ffffffff814f9fe6>] __do_kmalloc_node mm/slab_common.c:967 [inline]
-    [<ffffffff814f9fe6>] __kmalloc+0x46/0x120 mm/slab_common.c:981
-    [<ffffffff83b5234f>] kmalloc include/linux/slab.h:584 [inline]
-    [<ffffffff83b5234f>] kzalloc include/linux/slab.h:720 [inline]
-    [<ffffffff83b5234f>] neigh_alloc net/core/neighbour.c:476 [inline]
-    [<ffffffff83b5234f>] ___neigh_create+0xdf/0xd60 net/core/neighbour.c:661
-    [<ffffffff83f9f886>] ip6_finish_output2+0x776/0x9b0 net/ipv6/ip6_output.c:125
-    [<ffffffff83fa5530>] __ip6_finish_output net/ipv6/ip6_output.c:195 [inline]
-    [<ffffffff83fa5530>] ip6_finish_output+0x270/0x530 net/ipv6/ip6_output.c:206
-    [<ffffffff83fa5893>] NF_HOOK_COND include/linux/netfilter.h:291 [inline]
-    [<ffffffff83fa5893>] ip6_output+0xa3/0x1b0 net/ipv6/ip6_output.c:227
-    [<ffffffff83ff16d9>] dst_output include/net/dst.h:444 [inline]
-    [<ffffffff83ff16d9>] NF_HOOK include/linux/netfilter.h:302 [inline]
-    [<ffffffff83ff16d9>] NF_HOOK.constprop.0+0x49/0x110 include/linux/netfilter.h:296
-    [<ffffffff83ff19c4>] mld_sendpack+0x224/0x350 net/ipv6/mcast.c:1820
-    [<ffffffff83ff5403>] mld_send_cr net/ipv6/mcast.c:2121 [inline]
-    [<ffffffff83ff5403>] mld_ifc_work+0x2a3/0x750 net/ipv6/mcast.c:2653
-    [<ffffffff8129519a>] process_one_work+0x2ba/0x5f0 kernel/workqueue.c:2289
-    [<ffffffff81295ab9>] worker_thread+0x59/0x5b0 kernel/workqueue.c:2436
-    [<ffffffff8129fb05>] kthread+0x125/0x160 kernel/kthread.c:376
-    [<ffffffff8100224f>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:308
+Also iopf_group_response() should return void (another patch!),
+nothing can do anything with the failure. This implies that
+ops->page_response() must also return void - which is consistent with
+what the drivers do, the failure paths are all integrity validations
+of the fault and should be WARN_ON'd not return codes.
 
-BUG: memory leak
-unreferenced object 0xffff88810a9fb400 (size 512):
-  comm "dhcpcd", pid 4638, jiffies 4294938595 (age 1132.670s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 80 29 23 86 ff ff ff ff  .........)#.....
-    c0 76 79 44 81 88 ff ff 73 78 ff ff 00 00 00 00  .vyD....sx......
-  backtrace:
-    [<ffffffff814f9fe6>] __do_kmalloc_node mm/slab_common.c:967 [inline]
-    [<ffffffff814f9fe6>] __kmalloc+0x46/0x120 mm/slab_common.c:981
-    [<ffffffff83b5234f>] kmalloc include/linux/slab.h:584 [inline]
-    [<ffffffff83b5234f>] kzalloc include/linux/slab.h:720 [inline]
-    [<ffffffff83b5234f>] neigh_alloc net/core/neighbour.c:476 [inline]
-    [<ffffffff83b5234f>] ___neigh_create+0xdf/0xd60 net/core/neighbour.c:661
-    [<ffffffff83f9f886>] ip6_finish_output2+0x776/0x9b0 net/ipv6/ip6_output.c:125
-    [<ffffffff83fa5530>] __ip6_finish_output net/ipv6/ip6_output.c:195 [inline]
-    [<ffffffff83fa5530>] ip6_finish_output+0x270/0x530 net/ipv6/ip6_output.c:206
-    [<ffffffff83fa5893>] NF_HOOK_COND include/linux/netfilter.h:291 [inline]
-    [<ffffffff83fa5893>] ip6_output+0xa3/0x1b0 net/ipv6/ip6_output.c:227
-    [<ffffffff84062411>] dst_output include/net/dst.h:444 [inline]
-    [<ffffffff84062411>] ip6_local_out+0x51/0x70 net/ipv6/output_core.c:155
-    [<ffffffff83fa6285>] ip6_send_skb+0x25/0xc0 net/ipv6/ip6_output.c:1971
-    [<ffffffff83fa6394>] ip6_push_pending_frames+0x74/0x90 net/ipv6/ip6_output.c:1991
-    [<ffffffff83fec08c>] rawv6_push_pending_frames net/ipv6/raw.c:579 [inline]
-    [<ffffffff83fec08c>] rawv6_sendmsg+0x16ac/0x1ba0 net/ipv6/raw.c:922
-    [<ffffffff83ebe965>] inet_sendmsg+0x45/0x70 net/ipv4/af_inet.c:827
-    [<ffffffff83af7116>] sock_sendmsg_nosec net/socket.c:714 [inline]
-    [<ffffffff83af7116>] sock_sendmsg+0x56/0x80 net/socket.c:734
-    [<ffffffff83af769d>] ____sys_sendmsg+0x38d/0x410 net/socket.c:2476
-    [<ffffffff83afbfe8>] ___sys_sendmsg+0xa8/0x110 net/socket.c:2530
-    [<ffffffff83afc178>] __sys_sendmsg+0x88/0x100 net/socket.c:2559
-    [<ffffffff848ed5b5>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-    [<ffffffff848ed5b5>] do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
-    [<ffffffff84a00087>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-BUG: memory leak
-unreferenced object 0xffff88810a9fba00 (size 512):
-  comm "dhcpcd", pid 4638, jiffies 4294938595 (age 1132.670s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 80 29 23 86 ff ff ff ff  .........)#.....
-    80 77 79 44 81 88 ff ff 73 78 ff ff 00 00 00 00  .wyD....sx......
-  backtrace:
-    [<ffffffff814f9fe6>] __do_kmalloc_node mm/slab_common.c:967 [inline]
-    [<ffffffff814f9fe6>] __kmalloc+0x46/0x120 mm/slab_common.c:981
-    [<ffffffff83b5234f>] kmalloc include/linux/slab.h:584 [inline]
-    [<ffffffff83b5234f>] kzalloc include/linux/slab.h:720 [inline]
-    [<ffffffff83b5234f>] neigh_alloc net/core/neighbour.c:476 [inline]
-    [<ffffffff83b5234f>] ___neigh_create+0xdf/0xd60 net/core/neighbour.c:661
-    [<ffffffff83f9f886>] ip6_finish_output2+0x776/0x9b0 net/ipv6/ip6_output.c:125
-    [<ffffffff83fa5530>] __ip6_finish_output net/ipv6/ip6_output.c:195 [inline]
-    [<ffffffff83fa5530>] ip6_finish_output+0x270/0x530 net/ipv6/ip6_output.c:206
-    [<ffffffff83fa5893>] NF_HOOK_COND include/linux/netfilter.h:291 [inline]
-    [<ffffffff83fa5893>] ip6_output+0xa3/0x1b0 net/ipv6/ip6_output.c:227
-    [<ffffffff84062411>] dst_output include/net/dst.h:444 [inline]
-    [<ffffffff84062411>] ip6_local_out+0x51/0x70 net/ipv6/output_core.c:155
-    [<ffffffff83fa6285>] ip6_send_skb+0x25/0xc0 net/ipv6/ip6_output.c:1971
-    [<ffffffff83fa6394>] ip6_push_pending_frames+0x74/0x90 net/ipv6/ip6_output.c:1991
-    [<ffffffff83fec08c>] rawv6_push_pending_frames net/ipv6/raw.c:579 [inline]
-    [<ffffffff83fec08c>] rawv6_sendmsg+0x16ac/0x1ba0 net/ipv6/raw.c:922
-    [<ffffffff83ebe965>] inet_sendmsg+0x45/0x70 net/ipv4/af_inet.c:827
-    [<ffffffff83af7116>] sock_sendmsg_nosec net/socket.c:714 [inline]
-    [<ffffffff83af7116>] sock_sendmsg+0x56/0x80 net/socket.c:734
-    [<ffffffff83af769d>] ____sys_sendmsg+0x38d/0x410 net/socket.c:2476
-    [<ffffffff83afbfe8>] ___sys_sendmsg+0xa8/0x110 net/socket.c:2530
-    [<ffffffff83afc178>] __sys_sendmsg+0x88/0x100 net/socket.c:2559
-    [<ffffffff848ed5b5>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-    [<ffffffff848ed5b5>] do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
-    [<ffffffff84a00087>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-
-
----
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+diff --git a/drivers/iommu/io-pgfault.c b/drivers/iommu/io-pgfault.c
+index 7d11b74e4048e2..2715e24fd64234 100644
+--- a/drivers/iommu/io-pgfault.c
++++ b/drivers/iommu/io-pgfault.c
+@@ -39,7 +39,7 @@ static void iopf_put_dev_fault_param(struct iommu_fault_param *fault_param)
+ 		kfree_rcu(fault_param, rcu);
+ }
+ 
+-void iopf_free_group(struct iopf_group *group)
++static void __iopf_free_group(struct iopf_group *group)
+ {
+ 	struct iopf_fault *iopf, *next;
+ 
+@@ -50,6 +50,11 @@ void iopf_free_group(struct iopf_group *group)
+ 
+ 	/* Pair with iommu_report_device_fault(). */
+ 	iopf_put_dev_fault_param(group->fault_param);
++}
++
++void iopf_free_group(struct iopf_group *group)
++{
++	__iopf_free_group(group);
+ 	kfree(group);
+ }
+ EXPORT_SYMBOL_GPL(iopf_free_group);
+@@ -97,14 +102,49 @@ static int report_partial_fault(struct iommu_fault_param *fault_param,
+ 	return 0;
+ }
+ 
++static struct iopf_group *iopf_group_alloc(struct iommu_fault_param *iopf_param,
++					   struct iopf_fault *evt,
++					   struct iopf_group *abort_group)
++{
++	struct iopf_fault *iopf, *next;
++	struct iopf_group *group;
++
++	group = kzalloc(sizeof(*group), GFP_KERNEL);
++	if (!group) {
++		/*
++		 * We always need to construct the group as we need it to abort
++		 * the request at the driver if it cfan't be handled.
++		 */
++		group = abort_group;
++	}
++
++	group->fault_param = iopf_param;
++	group->last_fault.fault = evt->fault;
++	INIT_LIST_HEAD(&group->faults);
++	INIT_LIST_HEAD(&group->pending_node);
++	list_add(&group->last_fault.list, &group->faults);
++
++	/* See if we have partial faults for this group */
++	mutex_lock(&iopf_param->lock);
++	list_for_each_entry_safe(iopf, next, &iopf_param->partial, list) {
++		if (iopf->fault.prm.grpid == evt->fault.prm.grpid)
++			/* Insert *before* the last fault */
++			list_move(&iopf->list, &group->faults);
++	}
++	list_add(&group->pending_node, &iopf_param->faults);
++	mutex_unlock(&iopf_param->lock);
++
++	return group;
++}
++
+ /**
+  * iommu_report_device_fault() - Report fault event to device driver
+  * @dev: the device
+  * @evt: fault event data
+  *
+  * Called by IOMMU drivers when a fault is detected, typically in a threaded IRQ
+- * handler. When this function fails and the fault is recoverable, it is the
+- * caller's responsibility to complete the fault.
++ * handler. If this function fails then ops->page_response() was called to
++ * complete evt if required.
+  *
+  * This module doesn't handle PCI PASID Stop Marker; IOMMU drivers must discard
+  * them before reporting faults. A PASID Stop Marker (LRW = 0b100) doesn't
+@@ -143,22 +183,24 @@ int iommu_report_device_fault(struct device *dev, struct iopf_fault *evt)
+ {
+ 	struct iommu_fault *fault = &evt->fault;
+ 	struct iommu_fault_param *iopf_param;
+-	struct iopf_fault *iopf, *next;
+-	struct iommu_domain *domain;
++	struct iopf_group abort_group;
+ 	struct iopf_group *group;
+ 	int ret;
+ 
++/*
++  remove this too, it is pointless. The driver should only invoke this function on page_req faults.
+ 	if (fault->type != IOMMU_FAULT_PAGE_REQ)
+ 		return -EOPNOTSUPP;
++*/
+ 
+ 	iopf_param = iopf_get_dev_fault_param(dev);
+-	if (!iopf_param)
++	if (WARN_ON(!iopf_param))
+ 		return -ENODEV;
+ 
+ 	if (!(fault->prm.flags & IOMMU_FAULT_PAGE_REQUEST_LAST_PAGE)) {
+ 		ret = report_partial_fault(iopf_param, fault);
+ 		iopf_put_dev_fault_param(iopf_param);
+-
++		/* A request that is not the last does not need to be ack'd */
+ 		return ret;
+ 	}
+ 
+@@ -170,56 +212,34 @@ int iommu_report_device_fault(struct device *dev, struct iopf_fault *evt)
+ 	 * will send a response to the hardware. We need to clean up before
+ 	 * leaving, otherwise partial faults will be stuck.
+ 	 */
+-	domain = get_domain_for_iopf(dev, fault);
+-	if (!domain) {
+-		ret = -EINVAL;
+-		goto cleanup_partial;
+-	}
+-
+-	group = kzalloc(sizeof(*group), GFP_KERNEL);
+-	if (!group) {
++	group = iopf_group_alloc(iopf_param, evt, &abort_group);
++	if (group == &abort_group) {
+ 		ret = -ENOMEM;
+-		goto cleanup_partial;
++		goto err_abort;
+ 	}
+ 
+-	group->fault_param = iopf_param;
+-	group->last_fault.fault = *fault;
+-	INIT_LIST_HEAD(&group->faults);
+-	INIT_LIST_HEAD(&group->pending_node);
+-	group->domain = domain;
+-	list_add(&group->last_fault.list, &group->faults);
+-
+-	/* See if we have partial faults for this group */
+-	mutex_lock(&iopf_param->lock);
+-	list_for_each_entry_safe(iopf, next, &iopf_param->partial, list) {
+-		if (iopf->fault.prm.grpid == fault->prm.grpid)
+-			/* Insert *before* the last fault */
+-			list_move(&iopf->list, &group->faults);
++	group->domain = get_domain_for_iopf(dev, fault);
++	if (!group->domain) {
++		ret = -EINVAL;
++		goto err_abort;
+ 	}
+-	list_add(&group->pending_node, &iopf_param->faults);
+-	mutex_unlock(&iopf_param->lock);
+ 
+-	ret = domain->iopf_handler(group);
+-	if (ret) {
+-		mutex_lock(&iopf_param->lock);
+-		list_del_init(&group->pending_node);
+-		mutex_unlock(&iopf_param->lock);
++	/*
++	 * On success iopf_handler must call iopf_group_response() and
++	 * iopf_free_group()
++	 */
++	ret = group->domain->iopf_handler(group);
++	if (ret)
++		goto err_abort;
++	return 0;
++
++err_abort:
++	iopf_group_response(group,
++			    IOMMU_PAGE_RESP_FAILURE); //?? right code?
++	if (group == &abort_group)
++		__iopf_free_group(group);
++	else
+ 		iopf_free_group(group);
+-	}
+-
+-	return ret;
+-
+-cleanup_partial:
+-	mutex_lock(&iopf_param->lock);
+-	list_for_each_entry_safe(iopf, next, &iopf_param->partial, list) {
+-		if (iopf->fault.prm.grpid == fault->prm.grpid) {
+-			list_del(&iopf->list);
+-			kfree(iopf);
+-		}
+-	}
+-	mutex_unlock(&iopf_param->lock);
+-	iopf_put_dev_fault_param(iopf_param);
+-
+ 	return ret;
+ }
+ EXPORT_SYMBOL_GPL(iommu_report_device_fault);
+@@ -262,7 +282,7 @@ EXPORT_SYMBOL_GPL(iopf_queue_flush_dev);
+  *
+  * Return 0 on success and <0 on error.
+  */
+-int iopf_group_response(struct iopf_group *group,
++void iopf_group_response(struct iopf_group *group,
+ 			enum iommu_page_response_code status)
+ {
+ 	struct iommu_fault_param *fault_param = group->fault_param;
+@@ -400,9 +420,9 @@ EXPORT_SYMBOL_GPL(iopf_queue_add_device);
+  */
+ void iopf_queue_remove_device(struct iopf_queue *queue, struct device *dev)
+ {
+-	struct iopf_fault *iopf, *next;
++	struct iopf_fault *partial_iopf;
++	struct iopf_fault *next;
+ 	struct iopf_group *group, *temp;
+-	struct iommu_page_response resp;
+ 	struct dev_iommu *param = dev->iommu;
+ 	struct iommu_fault_param *fault_param;
+ 	const struct iommu_ops *ops = dev_iommu_ops(dev);
+@@ -416,15 +436,16 @@ void iopf_queue_remove_device(struct iopf_queue *queue, struct device *dev)
+ 		goto unlock;
+ 
+ 	mutex_lock(&fault_param->lock);
+-	list_for_each_entry_safe(iopf, next, &fault_param->partial, list)
+-		kfree(iopf);
++	list_for_each_entry_safe(partial_iopf, next, &fault_param->partial, list)
++		kfree(partial_iopf);
+ 
+ 	list_for_each_entry_safe(group, temp, &fault_param->faults, pending_node) {
+-		memset(&resp, 0, sizeof(struct iommu_page_response));
+-		iopf = &group->last_fault;
+-		resp.pasid = iopf->fault.prm.pasid;
+-		resp.grpid = iopf->fault.prm.grpid;
+-		resp.code = IOMMU_PAGE_RESP_INVALID;
++		struct iopf_fault *iopf = &group->last_fault;
++		struct iommu_page_response resp = {
++			.pasid = iopf->fault.prm.pasid,
++			.grpid = iopf->fault.prm.grpid,
++			.code = IOMMU_PAGE_RESP_INVALID
++		};
+ 
+ 		if (iopf->fault.prm.flags & IOMMU_FAULT_PAGE_RESPONSE_NEEDS_PASID)
+ 			resp.flags = IOMMU_PAGE_RESP_PASID_VALID;
 
