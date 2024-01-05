@@ -1,97 +1,118 @@
-Return-Path: <linux-kernel+bounces-18298-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18300-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0BA9F825B19
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 20:32:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60E04825B20
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 20:34:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 59625284FB0
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 19:32:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0F78D285671
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 19:34:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 216DB35F18;
-	Fri,  5 Jan 2024 19:32:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 964B13608A;
+	Fri,  5 Jan 2024 19:34:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sYb0c6/9"
+	dkim=pass (2048-bit key) header.d=ucr.edu header.i=@ucr.edu header.b="KTtF4lJL";
+	dkim=pass (1024-bit key) header.d=ucr.edu header.i=@ucr.edu header.b="lrcgdxHr"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mx5.ucr.edu (mx.ucr.edu [138.23.62.67])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E0BD35F03
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 19:32:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 93BF3C433C7;
-	Fri,  5 Jan 2024 19:32:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704483163;
-	bh=CE7UjEaDI5KMulL1/tLDiQr0CWV92dV7m9QiTsWAdrQ=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=sYb0c6/9+4SJRNj0rSrQJokQoxVGDDQ4v12DrEd9BEc2614Sp3o3hdmnsFEzlUzyr
-	 2zam8lIhRG0w9pBRy8vOo7EBUCESyp4gZcqsoILwvBKxlCVy4eU3rvQPKV7P8vx9EH
-	 IX2GXRZM06D9Oe8l1Rgbjaa/a/RjxRBuFZE6aJLs9UeLbT45Qt3Rxy+NqxE+IDPTFS
-	 wV4fVywlSZwWBNxqCcFe7MJjlD9Jx1kh+LvBjaqdareEf8iPtIjmqIVq4u94sAaVhR
-	 Cayg+z1vwxXpH5faIE+B6vTBgC8kha+nyCsaP5ySbXf64gijZQiR5OKXYltuF21BGO
-	 r0VMAl4VxcfNA==
-From: Mark Brown <broonie@kernel.org>
-To: cy_huang@richtek.com
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, 
- Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, 
- linux-kernel@vger.kernel.org
-In-Reply-To: <cover.1703813842.git.cy_huang@richtek.com>
-References: <cover.1703813842.git.cy_huang@richtek.com>
-Subject: Re: [PATCH 0/2] rtq9128: Fix pm runtime and TDM usage
-Message-Id: <170448316228.816841.3370890831614540620.b4-ty@kernel.org>
-Date: Fri, 05 Jan 2024 19:32:42 +0000
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A074A36082
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 19:34:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ucr.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ucr.edu
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=ucr.edu; i=@ucr.edu; q=dns/txt; s=selector3;
+  t=1704483261; x=1736019261;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=x/CY9SqhV19ov+IBOCB9G6eSjA+hDFL4XhUcPEIpaC8=;
+  b=KTtF4lJLqRsC6ZhLAbvOXkzp5iRIqQ83cUzIO7J9NB9ABgwqygK3ViQD
+   SUQs3ZaWXyofVoeo5xwrJmwaBSSnWG4jIT3t2RuKO564hlPJICNY3T1Xc
+   6+GjRepydcTjYEZzpCTOXBHc86l0+d2XemFWtegDbfDPmZOhyuTUsaSZS
+   m9u1gjNE+PyWZ30HxjzKnqUSK0Y6k8J8ZMS+I2tUpJwvSiHOMWc2V1BoI
+   I4NCq+3JiSls838wHZbVbFClbTIK8Npe/X4iwAsP6px1L0GWzlY48hHUv
+   e7YDJWSsgzkS61h4WvMqwoey8fRIUZSUspGKytFpQ470BqPRxh8e61nD4
+   g==;
+X-CSE-ConnectionGUID: CKrCfVssQnGW0X1at4vJuQ==
+X-CSE-MsgGUID: 24zRvTYBT8q3W3uYgSADyQ==
+Received: from mail-pj1-f71.google.com ([209.85.216.71])
+  by smtpmx5.ucr.edu with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 05 Jan 2024 11:33:12 -0800
+Received: by mail-pj1-f71.google.com with SMTP id 98e67ed59e1d1-28be2bd2ba4so1599703a91.1
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Jan 2024 11:33:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ucr.edu; s=rmail; t=1704483191; x=1705087991; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=HxlsttIvEzyojTFQZ0SaO2ARdSYUd7/ebhcJHQ29FLg=;
+        b=lrcgdxHr9FN5y22HLhPyKjcFHFmtgzqhGtMOn7LyM4F1Eva598J+hFxwZYYzl6+Nqs
+         HZObsc0VPvxk5ekBXtCVtLOI5T6axGoSu20djkwgTA7Q8GcOt38u9sX9NCMDM/vDxsn3
+         0MpZ0qYoL1F03IoEcmBqaLxesqNrGaR4jBPPc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704483191; x=1705087991;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=HxlsttIvEzyojTFQZ0SaO2ARdSYUd7/ebhcJHQ29FLg=;
+        b=YfBd+7ZRSgqrGk9qOZAEcnPKWL/CY5BcHmDanJNkT7wg6KGQP08ssq/Be9+RmnlGbx
+         W1Hx85878efI0XIiWmDx3UuBZ+/9AA5WQj14uCnrSEevD6NLSKX/AUIgnU9rXQqJUB80
+         yvJAV2ePx+8QOO4sQnUN/fOoZt35r43eD1W93DuGX60Uz7sOHdjdq/iFtp6slIn4Up1r
+         hkM1rcl8b6ntptbWhHD84ql/yrtHmQEVgZl4KxL4HQUN/YFSJ7tutCeZRWz8oiIJ9QRG
+         AlyDmeRfkbToDvt7ecGP+2Nv8lzl4K2utzfWOHXIcY2sWwQp7l8EERPaEFM13pJycFpa
+         WjlQ==
+X-Gm-Message-State: AOJu0YxINFTZ1wDpJPPCkKAn509dq07IdJtPKGPMuQ6KD2pzG2yuR/W0
+	t3t8oZrs+hFrRnr2BgtH35bcsCu5mV9Yc4q0NyP5YmI0dH/7tF4voN9Rcg+LiczQgPDPYToIrPf
+	LQS6ccHIbNLSXv6giI+M9mCntzbwzsuyYwg==
+X-Received: by 2002:a17:90a:ba97:b0:28b:e9ed:2a9d with SMTP id t23-20020a17090aba9700b0028be9ed2a9dmr2132123pjr.50.1704483191634;
+        Fri, 05 Jan 2024 11:33:11 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHioz/I4K9ut3ub7C76aj18It19F6YjEnZGz+AiRTzVsSogT/oTQ7Gu4049ADVceQNy/syT3g==
+X-Received: by 2002:a17:90a:ba97:b0:28b:e9ed:2a9d with SMTP id t23-20020a17090aba9700b0028be9ed2a9dmr2132116pjr.50.1704483191306;
+        Fri, 05 Jan 2024 11:33:11 -0800 (PST)
+Received: from localhost (kq.cs.ucr.edu. [169.235.27.223])
+        by smtp.gmail.com with UTF8SMTPSA id sc1-20020a17090b510100b0028d0b013880sm1598264pjb.0.2024.01.05.11.33.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 05 Jan 2024 11:33:11 -0800 (PST)
+From: Xiaochen Zou <xzou017@ucr.edu>
+To: aivazian.tigran@gmail.com
+Cc: linux-kernel@vger.kernel.org,
+	Xiaochen Zou <xzou017@ucr.edu>
+Subject: [PATCH] fs/bfs: Null check to prevent null-ptr-deref bug
+Date: Fri,  5 Jan 2024 11:33:31 -0800
+Message-Id: <20240105193331.1180331-1-xzou017@ucr.edu>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-5c066
+Content-Transfer-Encoding: 8bit
 
-On Fri, 29 Dec 2023 09:46:00 +0800, cy_huang@richtek.com wrote:
-> This patch series fix rtq9128 pm_runtime and TDM usage.
-> 
-> ChiYuan Huang (2):
->   ASoC: codecs: rtq9128: Fix PM_RUNTIME usage
->   ASoC: codecs: rtq9128: Fix TDM enable and DAI format control flow
-> 
->  sound/soc/codecs/rtq9128.c | 73 +++++++++++++++++++++-----------------
->  1 file changed, 41 insertions(+), 32 deletions(-)
-> 
-> [...]
+Similar to ea2b62f3058 (fs/sysv: Null check to prevent
+null-ptr-deref bug), bfs is lack of return value check for
+sb_getblk(). Adding a null check to prevent null-ptr-defer bug
 
-Applied to
+Signed-off-by: Xiaochen Zou <xzou017@ucr.edu>
+---
+ fs/bfs/file.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-
-Thanks!
-
-[1/2] ASoC: codecs: rtq9128: Fix PM_RUNTIME usage
-      commit: 35040410372ca27a33cec8382d42c90b6b6c99f6
-[2/2] ASoC: codecs: rtq9128: Fix TDM enable and DAI format control flow
-      commit: 415d10ccef712f3ec73cd880c1fef3eb48601c3a
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+diff --git a/fs/bfs/file.c b/fs/bfs/file.c
+index adc2230079c6..35688424bde3 100644
+--- a/fs/bfs/file.c
++++ b/fs/bfs/file.c
+@@ -39,6 +39,8 @@ static int bfs_move_block(unsigned long from, unsigned long to,
+ 	if (!bh)
+ 		return -EIO;
+ 	new = sb_getblk(sb, to);
++	if (unlikely(!new))
++		return -ENOMEM;
+ 	memcpy(new->b_data, bh->b_data, bh->b_size);
+ 	mark_buffer_dirty(new);
+ 	bforget(bh);
+-- 
+2.25.1
 
 
