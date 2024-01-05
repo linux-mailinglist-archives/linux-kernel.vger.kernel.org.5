@@ -1,103 +1,121 @@
-Return-Path: <linux-kernel+bounces-17869-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17870-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 58D8982545C
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 14:17:48 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66262825462
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 14:18:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 070A828265A
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 13:17:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0789B1F238D4
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 13:18:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 270F12D7B0;
-	Fri,  5 Jan 2024 13:17:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0C042D7A6;
+	Fri,  5 Jan 2024 13:18:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="ldi8gPtP"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 714E32D046
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 13:17:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7bb6983237fso133257139f.2
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Jan 2024 05:17:25 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704460644; x=1705065444;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=xcaKQn4ZrzJMyg8IlqVO++Y6AG8+CZXSU/axxuPlUpI=;
-        b=t6AQNqC8znNYcwVxvTZzqdJN38RVUUGlS7ZKCR6262pCVsMfhJqH4iAusxFCiaeB6+
-         qlBiMmXleWqnjGFm6r0SqnvoeN9nzQEoYwRLT6RjshtYjH84EkPJn1UzvQcsVyiT/UiL
-         Hzq0sx7diP5PTADqbd8SiPQMIJ311i0ea0NiRh+M3wuGgeYWHWl7aXLZY3HHeTebsnDg
-         mRZHkKW4zqrB0aO6y6+rSlxX4TYsY1lWLI+s6oF7hgSyHq9T6iuw2CgXpki2vqxgWawm
-         t0RMd3G0j2uUT+E0m3IgihuJQ0rPYr/2ZN69C4+/UonID9Si47tZDoxwworrGyYmUL1O
-         IKow==
-X-Gm-Message-State: AOJu0Yy3BenpPNxs1/7ABkPXsUIh8CaRH0ngFUyu8S5nC7t497jX95Qt
-	hkRhcbsOcnEtfvMssr4rjVsAI0V1W1YZ/RddhL2Q6eppo8FdJag=
-X-Google-Smtp-Source: AGHT+IE5L/US2FP5ty+hAS6bRkslPj1vqmG/tWftM+xH0aPLpDc6MkbpLYSBz6gkLY8LBd7UERrdMjrJk75WbhTm5VPJTJnH3G3y
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF6082E3F1;
+	Fri,  5 Jan 2024 13:18:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=lXZ6dhmE/ICvc6we7INUfg+/UsVr/HBiAoyEO42qbxw=; b=ldi8gPtPJVmH9PdcSI9hE76OmP
+	bSn24xnqUB/dIB3NWE1ZGvL1k9CyH/2/b5W1F/xMfNwPeQQB8PA61QIxM+nIJ5tkN5BPmEIKRdLf5
+	AGGnnFACaQ/HDlLDCE1LCLhlSIWVcflkgdChZ+jbY5EcHxk2EqRdKTdDhSsU9gOj+PHEb8nLqdxhd
+	nyO7BW9T/tc2hbvgNfhJN9et9ro64C9it0YlSwWohR/nGEl+9x4Tr/CneDxq+NYe75aC0dykUGEkD
+	/kVD9g/WG/FB8exdmfKBXOKQA2+e97wKF1RCOKeizvhWR5ypDLW4jACYvZs77dCxU5RIdEuHKMR/1
+	q/l2Rjyg==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+	id 1rLk4u-000FpH-Mk; Fri, 05 Jan 2024 13:17:36 +0000
+Date: Fri, 5 Jan 2024 13:17:36 +0000
+From: Matthew Wilcox <willy@infradead.org>
+To: David Howells <dhowells@redhat.com>
+Cc: Nathan Chancellor <nathan@kernel.org>,
+	Anna Schumaker <Anna.Schumaker@netapp.com>,
+	Trond Myklebust <trond.myklebust@hammerspace.com>,
+	Jeff Layton <jlayton@kernel.org>, Steve French <smfrench@gmail.com>,
+	Marc Dionne <marc.dionne@auristor.com>,
+	Paulo Alcantara <pc@manguebit.com>,
+	Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>,
+	Dominique Martinet <asmadeus@codewreck.org>,
+	Eric Van Hensbergen <ericvh@kernel.org>,
+	Ilya Dryomov <idryomov@gmail.com>,
+	Christian Brauner <christian@brauner.io>, linux-cachefs@redhat.com,
+	linux-afs@lists.infradead.org, linux-cifs@vger.kernel.org,
+	linux-nfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+	v9fs@lists.linux.dev, linux-fsdevel@vger.kernel.org,
+	linux-mm@kvack.org, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Fix oops in NFS
+Message-ID: <ZZgBcJ7OAS7Ui6gi@casper.infradead.org>
+References: <ZZeLAAf6qiieA5fy@casper.infradead.org>
+ <2202548.1703245791@warthog.procyon.org.uk>
+ <20231221230153.GA1607352@dev-arch.thelio-3990X>
+ <20231221132400.1601991-1-dhowells@redhat.com>
+ <20231221132400.1601991-38-dhowells@redhat.com>
+ <2229136.1703246451@warthog.procyon.org.uk>
+ <1094259.1704449575@warthog.procyon.org.uk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1aad:b0:360:6649:29da with SMTP id
- l13-20020a056e021aad00b00360664929damr332479ilv.3.1704460644715; Fri, 05 Jan
- 2024 05:17:24 -0800 (PST)
-Date: Fri, 05 Jan 2024 05:17:24 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000043127b060e32ab2a@google.com>
-Subject: [syzbot] Monthly usb report (Jan 2024)
-From: syzbot <syzbot+listd2a1ebc22715cc638b5a@syzkaller.appspotmail.com>
-To: linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1094259.1704449575@warthog.procyon.org.uk>
 
-Hello usb maintainers/developers,
+On Fri, Jan 05, 2024 at 10:12:55AM +0000, David Howells wrote:
+> Matthew Wilcox <willy@infradead.org> wrote:
+> 
+> > This commit (100ccd18bb41 in linux-next 20240104) is bad for me.  After
+> > it, running xfstests gives me first a bunch of errors along these lines:
+> > 
+> > 00004 depmod: ERROR: failed to load symbols from /lib/modules/6.7.0-rc7-00037-g100ccd18bb41/kernel/fs/gfs2/gfs2.ko: Exec format error
+> > 00004 depmod: ERROR: failed to load symbols from /lib/modules/6.7.0-rc7-00037-g100ccd18bb41/kernel/fs/zonefs/zonefs.ko: Exec format error
+> > 00004 depmod: ERROR: failed to load symbols from /lib/modules/6.7.0-rc7-00037-g100ccd18bb41/kernel/security/keys/encrypted-keys/encrypted-keys.ko: Exec format error
+> > 
+> > and then later:
+> > 
+> > 00016 generic/001       run fstests generic/001 at 2024-01-05 04:50:46
+> > 00017 [not run] this test requires a valid $TEST_DEV
+> > 00017 generic/002       run fstests generic/002 at 2024-01-05 04:50:46
+> > 00017 [not run] this test requires a valid $TEST_DEV
+> > 00017 generic/003       run fstests generic/003 at 2024-01-05 04:50:47
+> > 00018 [not run] this test requires a valid $SCRATCH_DEV
+> > ...
+> > 
+> > so I think that's page cache corruption of some kind.
+> 
+> Is that being run on NFS?  Is /lib on NFS?
 
-This is a 31-day syzbot report for the usb subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/usb
+No NFS involvement; this is supposed to be an XFS test ...
 
-During the period, 0 new issues were detected and 0 were fixed.
-In total, 62 issues are still open and 331 have been fixed so far.
+/dev/sda on / type ext4 (rw,relatime)
+host on /host type 9p (rw,relatime,access=client,trans=virtio)
+/dev/sdb on /mnt/test type xfs (rw,relatime,attr2,inode64,logbufs=8,logbsize=32k,noquota)
 
-Some of the still happening issues:
+CONFIG_NETFS_SUPPORT=y
+# CONFIG_NETFS_STATS is not set
+# CONFIG_FSCACHE is not set
+CONFIG_NETWORK_FILESYSTEMS=y
+# CONFIG_NFS_FS is not set
+# CONFIG_NFSD is not set
+# CONFIG_CEPH_FS is not set
+# CONFIG_CIFS is not set
+# CONFIG_SMB_SERVER is not set
+# CONFIG_CODA_FS is not set
+# CONFIG_AFS_FS is not set
+CONFIG_9P_FS=y
+# CONFIG_9P_FS_POSIX_ACL is not set
+# CONFIG_9P_FS_SECURITY is not set
+CONFIG_NLS=y
 
-Ref  Crashes Repro Title
-<1>  2979    Yes   WARNING in firmware_fallback_sysfs
-                   https://syzkaller.appspot.com/bug?extid=95f2e2439b97575ec3c0
-<2>  2797    Yes   KMSAN: uninit-value in dib3000mb_attach (2)
-                   https://syzkaller.appspot.com/bug?extid=c88fc0ebe0d5935c70da
-<3>  832     Yes   general protection fault in ir_raw_event_store_with_filter
-                   https://syzkaller.appspot.com/bug?extid=34008406ee9a31b13c73
-<4>  548     Yes   INFO: task hung in hub_port_init (3)
-                   https://syzkaller.appspot.com/bug?extid=b6f11035e572f08bc20f
-<5>  429     Yes   INFO: task hung in usbdev_open (2)
-                   https://syzkaller.appspot.com/bug?extid=b73659f5bb96fac34820
-<6>  385     Yes   INFO: task hung in r871xu_dev_remove
-                   https://syzkaller.appspot.com/bug?extid=f39c1dad0b7db49ca4a8
-<7>  304     Yes   KASAN: use-after-free Read in v4l2_fh_init
-                   https://syzkaller.appspot.com/bug?extid=c025d34b8eaa54c571b8
-<8>  240     No    INFO: task hung in hub_event (3)
-                   https://syzkaller.appspot.com/bug?extid=a7edecbf389d11a369d4
-<9>  239     Yes   INFO: task hung in netdev_run_todo (2)
-                   https://syzkaller.appspot.com/bug?extid=9d77543f47951a63d5c1
-<10> 216     Yes   INFO: rcu detected stall in hub_event
-                   https://syzkaller.appspot.com/bug?extid=ec5f884c4a135aa0dbb9
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
-
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
-
-You may send multiple commands in a single email message.
 
