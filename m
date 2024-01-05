@@ -1,106 +1,213 @@
-Return-Path: <linux-kernel+bounces-17834-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17835-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6680D825364
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 13:36:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B3AD825368
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 13:41:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 94F3D1C23044
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 12:36:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 845191C23035
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 12:41:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87A192D04A;
-	Fri,  5 Jan 2024 12:36:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D4C42D60F;
+	Fri,  5 Jan 2024 12:41:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ZhiWwE3E"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Px2zEA+x"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E7B12D056;
-	Fri,  5 Jan 2024 12:36:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704458185; x=1735994185;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=JLekH6LfdH1XcYg0zsP8rHQamQXBAPOrmRtK5D1F5i4=;
-  b=ZhiWwE3E3uWJmUfcG0AWopTAUvEdfd5PZa4iAqMsBiTc0Sij1gdXVVwT
-   dHLs6viEroUixC/f8RUWLYtz90pR7FOEj5w2Pi0oGi/puBrTX9wgx4QTg
-   ix3OvLcfuSYuKyCpxhsu2Q751j+JpMWBvhYjANkHwNYwuNyVNTxkUykL3
-   E4LR8MxljI6aS/1R0K1sgmrXqj9LAX+gU1Getp6/G5lQYaTAkkgKEL13h
-   KAyd8/9Q24w/iAjZ+IjXPaJLGAH7MOkBlLAmgzZJUFL6MaNDZjWy0/rRK
-   k0Gq7nh0/IqLp3kJjRBsluo62ESrTR/lbRNHUddmVA2LEneogaCRLMJX3
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10943"; a="376987681"
-X-IronPort-AV: E=Sophos;i="6.04,333,1695711600"; 
-   d="scan'208";a="376987681"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2024 04:36:24 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10943"; a="730467578"
-X-IronPort-AV: E=Sophos;i="6.04,333,1695711600"; 
-   d="scan'208";a="730467578"
-Received: from kuha.fi.intel.com ([10.237.72.185])
-  by orsmga003.jf.intel.com with SMTP; 05 Jan 2024 04:36:21 -0800
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Fri, 05 Jan 2024 14:36:20 +0200
-Date: Fri, 5 Jan 2024 14:36:20 +0200
-From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To: Javier Carrasco <javier.carrasco.cruz@gmail.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Roger Quadros <rogerq@kernel.org>,
-	Javier Carrasco <javier.carrasco@wolfvision.net>,
-	linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] usb: typec: tipd: fix use of device-specific init
- function
-Message-ID: <ZZf2lhtRdmIHmlBq@kuha.fi.intel.com>
-References: <20240104-dev_spec_init-v1-1-1a57e7fd8cc8@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA44F2D047;
+	Fri,  5 Jan 2024 12:41:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15A95C433C7;
+	Fri,  5 Jan 2024 12:41:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704458509;
+	bh=u3IoHKqhZk9Ch274EqJvdQ1Aj2eqXJTBHOito1o2uss=;
+	h=From:To:Cc:Subject:Date:From;
+	b=Px2zEA+xkxIrJwF2KbpZInwLxwCYQ8Efj4s459NusfqAf9dH6A1xxIaR/Ip8BgEt2
+	 fAA0qda0Y6larecc+4s5oAkGdeY/Cm9Tw9hzRLhYe1HevjQXd4N65jjD3P02Rk5X+7
+	 aEvugM12Ag2Al6JyGsCwUY9bEcHqDDuffT6Yow9EvpDkgczC9rF2TGD6rc7vZBJCL2
+	 BUT76nZ7I+3EI7p4YHXcCsaDSHZIWwzxVMmN07hwOg66QONiFiSoiPa7X8m5a227/+
+	 m6WAilAVeBt+uzhwyvhuic26KOCZVjDxBTpZ+IGEmVSsQexiZIOaMUImgjROperrrn
+	 gnzvGjQSvH6Fw==
+From: Christian Brauner <brauner@kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Christian Brauner <brauner@kernel.org>,
+	linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [GIT PULL] vfs super updates
+Date: Fri,  5 Jan 2024 13:41:03 +0100
+Message-ID: <20240105-vfs-super-4092d802972c@brauner>
+X-Mailer: git-send-email 2.42.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240104-dev_spec_init-v1-1-1a57e7fd8cc8@gmail.com>
+X-Developer-Signature: v=1; a=openpgp-sha256; l=6757; i=brauner@kernel.org; h=from:subject:message-id; bh=SYQRbVQy++VoeuP9iXJknGLdzmD5ZQdqwwELdAIWLy0=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaRO/3H/ffv5RMEgh4xloRdWGrR8fHJo69Vby2bPdC1fX J/9tOHwz45SFgYxLgZZMUUWh3aTcLnlPBWbjTI1YOawMoEMYeDiFICJmP9mZHhW9GPis828Cgrz 67QYUr/2NrEK/5bMeZxespq5fdnpiACG/xlmOvtXd76aNC3s/2+bltoKrSB/VYbLe15sfjgxasq T6UwA
+X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
+Content-Transfer-Encoding: 8bit
 
-On Thu, Jan 04, 2024 at 06:07:12PM +0100, Javier Carrasco wrote:
-> The current implementation supports device-pecific callbacks for the
-> init function with a function pointer. The patch that introduced this
-> feature did not update one call to the tps25750 init function to turn it
-> into a call with the new pointer in the resume function.
-> 
-> Fixes: d49f90822015 ("usb: typec: tipd: add init and reset functions to tipd_data")
-> Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+Hey Linus,
 
-This was suggested by Roger, no?
+/* Summary */
+This contains the super work for this cycle including the long-awaited series
+by Jan to make it possible to prevent writing to mounted block devices:
 
-Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+* Writing to mounted devices is dangerous and can lead to filesystem
+  corruption as well as crashes. Furthermore syzbot comes with more and more
+  involved examples how to corrupt block device under a mounted filesystem
+  leading to kernel crashes and reports we can do nothing about. Add tracking
+  of writers to each block device and a kernel cmdline argument which controls
+  whether other writeable opens to block devices open with
+  BLK_OPEN_RESTRICT_WRITES flag are allowed.
 
-> ---
->  drivers/usb/typec/tipd/core.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/usb/typec/tipd/core.c b/drivers/usb/typec/tipd/core.c
-> index a956eb976906..8a7cdfee27a1 100644
-> --- a/drivers/usb/typec/tipd/core.c
-> +++ b/drivers/usb/typec/tipd/core.c
-> @@ -1495,7 +1495,7 @@ static int __maybe_unused tps6598x_resume(struct device *dev)
->  		return ret;
->  
->  	if (ret == TPS_MODE_PTCH) {
-> -		ret = tps25750_init(tps);
-> +		ret = tps->data->init(tps);
->  		if (ret)
->  			return ret;
->  	}
+  Note that this effectively only prevents modification of the particular block
+  device's page cache by other writers. The actual device content can still be
+  modified by other means - e.g. by issuing direct scsi commands, by doing
+  writes through devices lower in the storage stack (e.g. in case loop devices,
+  DM, or MD are involved) etc. But blocking direct modifications of the block
+  device page cache is enough to give filesystems a chance to perform data
+  validation when loading data from the underlying storage and thus prevent
+  kernel crashes.
 
-thans,
+  Syzbot can use this cmdline argument option to avoid uninteresting crashes.
+  Also users whose userspace setup does not need writing to mounted block
+  devices can set this option for hardening. We expect that this will be
+  interesting to quite a few workloads.
 
--- 
-heikki
+  Btrfs is currently opted out of this because they still haven't merged
+  patches we require for this to work from three kernel releases ago.
+
+* Reimplement block device freezing and thawing as holder operations on the
+  block device.
+
+  This allows us to extend block device freezing to all devices associated with
+  a superblock and not just the main device. It also allows us to remove
+  get_active_super() and thus another function that scans the global list of
+  superblocks.
+
+  Freezing via additional block devices only works if the filesystem chooses to
+  use @fs_holder_ops for these additional devices as well. That currently only
+  includes ext4 and xfs.
+
+  Earlier releases switched get_tree_bdev() and mount_bdev() to use
+  @fs_holder_ops. The remaining nilfs2 open-coded version of mount_bdev() has
+  been converted to rely on @fs_holder_ops as well. So block device freezing
+  for the main block device will continue to work as before.
+
+  There should be no regressions in functionality. The only special case is
+  btrfs where block device freezing for the main block device never worked
+  because sb->s_bdev isn't set. Block device freezing for btrfs can be fixed
+  once they can switch to @fs_holder_ops but that can happen whenever they're
+  ready.
+
+* Various cleanups.
+
+/* Testing */
+clang: Debian clang version 16.0.6 (19)
+gcc: (Debian 13.2.0-7) 13.2.0
+
+All patches are based on v6.7-rc1 and have been sitting in linux-next.
+No build failures or warnings were observed.
+
+/* Conflicts */
+
+Merge conflicts with mainline
+=============================
+
+[1] linux-next: manual merge of the vfs-brauner tree with Linus' tree
+    https://lore.kernel.org/linux-next/20231204103510.0eb5ea5f@canb.auug.org.au
+
+Merge conflicts with other trees
+================================
+
+[1] linux-next: manual merge of the vfs-brauner tree with the btrfs tree
+    https://lore.kernel.org/linux-next/20231127092001.54a021e8@canb.auug.org.au
+
+    The needed fix is presented in:
+
+    https://lore.kernel.org/linux-next/20231128213344.GA3423530@dev-arch.thelio-3990X
+
+[2] linux-next: manual merge of the vfs tree with the vfs-brauner tree
+    https://lore.kernel.org/linux-next/20231220104110.56ae9b36@canb.auug.org.au
+
+The following changes since commit b85ea95d086471afb4ad062012a4d73cd328fa86:
+
+  Linux 6.7-rc1 (2023-11-12 16:19:07 -0800)
+
+are available in the Git repository at:
+
+  git@gitolite.kernel.org:pub/scm/linux/kernel/git/vfs/vfs tags/vfs-6.8.super
+
+for you to fetch changes up to 8ff363ade395e72dc639810b6f59849c743c363e:
+
+  block: Fix a memory leak in bdev_open_by_dev() (2023-12-28 11:48:17 +0100)
+
+Please consider pulling these changes from the signed vfs-6.8.super tag.
+
+Happy New Year!
+Christian
+
+----------------------------------------------------------------
+vfs-6.8.super
+
+----------------------------------------------------------------
+Christian Brauner (17):
+      fs: massage locking helpers
+      bdev: rename freeze and thaw helpers
+      bdev: surface the error from sync_blockdev()
+      bdev: add freeze and thaw holder operations
+      bdev: implement freeze and thaw holder operations
+      fs: remove get_active_super()
+      super: remove bd_fsfreeze_sb
+      fs: remove unused helper
+      porting: document block device freeze and thaw changes
+      blkdev: comment fs_holder_ops
+      fs: simplify setup_bdev_super() calls
+      xfs: simplify device handling
+      ext4: simplify device handling
+      fs: remove dead check
+      fs: handle freezing from multiple devices
+      super: massage wait event mechanism
+      super: don't bother with WARN_ON_ONCE()
+
+Christoph Hellwig (1):
+      fs: streamline thaw_super_locked
+
+Christophe JAILLET (1):
+      block: Fix a memory leak in bdev_open_by_dev()
+
+Jan Kara (8):
+      nilfs2: simplify device handling
+      bcachefs: Convert to bdev_open_by_path()
+      block: Remove blkdev_get_by_*() functions
+      block: Add config option to not allow writing to mounted devices
+      btrfs: Do not restrict writes to btrfs devices
+      fs: Block writes to mounted block devices
+      xfs: Block writes to log device
+      ext4: Block writes to journal device
+
+ Documentation/filesystems/porting.rst |  12 +
+ block/Kconfig                         |  20 ++
+ block/bdev.c                          | 258 ++++++++++--------
+ drivers/md/dm.c                       |   4 +-
+ fs/bcachefs/fs-ioctl.c                |   4 +-
+ fs/bcachefs/super-io.c                |  19 +-
+ fs/bcachefs/super_types.h             |   1 +
+ fs/btrfs/super.c                      |   2 +
+ fs/ext4/ioctl.c                       |   4 +-
+ fs/ext4/super.c                       |   8 +-
+ fs/f2fs/file.c                        |   4 +-
+ fs/nilfs2/super.c                     |   8 -
+ fs/super.c                            | 498 +++++++++++++++++++---------------
+ fs/xfs/xfs_fsops.c                    |   4 +-
+ fs/xfs/xfs_super.c                    |  24 +-
+ include/linux/blk_types.h             |   8 +-
+ include/linux/blkdev.h                |  29 +-
+ include/linux/fs.h                    |  19 +-
+ 18 files changed, 531 insertions(+), 395 deletions(-)
 
