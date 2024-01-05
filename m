@@ -1,141 +1,122 @@
-Return-Path: <linux-kernel+bounces-17981-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17980-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D14DD825649
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 16:02:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC67E825645
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 16:02:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 853621F2247F
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 15:02:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 857C3281D45
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 15:02:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 143FD2E40E;
-	Fri,  5 Jan 2024 15:02:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D58952E3FD;
+	Fri,  5 Jan 2024 15:01:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="OBU69Wcw"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="QWAzhKpe"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D85322E623;
-	Fri,  5 Jan 2024 15:02:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=opensource.cirrus.com
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-	by mx0a-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 405Cpwp4012446;
-	Fri, 5 Jan 2024 09:01:21 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-	date:from:to:cc:subject:message-id:references:mime-version
-	:content-type:in-reply-to; s=PODMain02222019; bh=hCR4EmcMYIBdHpq
-	zJzZE8aUhAR9GR9nB+1npMXbK+K4=; b=OBU69WcwJL0L7H1b4rm47LQphdjUCu6
-	TT9nJj8I2VcYIxXcXFNCjI92WD/6zgEd8dxGEC+u/tIvi2piWm39RRMBcd0xyrUO
-	5e8vDaUwDYLn66eEcspkfpEoLvdZP9shwQ4XaS5sQKL897NDRvAtQZ4SsnoqlFi/
-	8oO7VNws8qymx+sQ5UoGHyBZIAJlj0JyS/koXT0M21fOYChcnQGqd2o/tuTMXG5U
-	ih/yHp61QcvMZJ8q0PKOEDwvwWZEI82hb4RvP7K+6LLA4gvAeYbaFMrGYEgevoSP
-	4XRbQt7AyiG6QYgXVWSkEeeAMWhclGUMxKbb7EBErZeFcxhi7cr3QWQ==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3ve9e8gqbg-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 05 Jan 2024 09:01:21 -0600 (CST)
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 5 Jan
- 2024 15:01:18 +0000
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.40 via Frontend
- Transport; Fri, 5 Jan 2024 15:01:03 +0000
-Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
-	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 81A6615A2;
-	Fri,  5 Jan 2024 15:01:03 +0000 (UTC)
-Date: Fri, 5 Jan 2024 15:01:03 +0000
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-To: James Ogletree <jogletre@opensource.cirrus.com>
-CC: James Ogletree <james.ogletree@cirrus.com>,
-        Fred Treven
-	<fred.treven@cirrus.com>,
-        Ben Bright <ben.bright@cirrus.com>,
-        Dmitry Torokhov
-	<dmitry.torokhov@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        "Krzysztof
- Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley
-	<conor+dt@kernel.org>,
-        Simon Trimmer <simont@opensource.cirrus.com>,
-        "Richard
- Fitzgerald" <rf@opensource.cirrus.com>,
-        Lee Jones <lee@kernel.org>, "Liam
- Girdwood" <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, "Jaroslav
- Kysela" <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        James Schulman
-	<james.schulman@cirrus.com>,
-        David Rhodes <david.rhodes@cirrus.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Peng Fan
-	<peng.fan@nxp.com>, Jeff LaBundy <jeff@labundy.com>,
-        Sebastian Reichel
-	<sebastian.reichel@collabora.com>,
-        Jacky Bai <ping.bai@nxp.com>, Weidong Wang
-	<wangweidong.a@awinic.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Herve Codina
-	<herve.codina@bootlin.com>,
-        Shuming Fan <shumingf@realtek.com>,
-        Shenghao Ding
-	<13916275206@139.com>, Ryan Lee <ryans.lee@analog.com>,
-        Linus Walleij
-	<linus.walleij@linaro.org>,
-        "open list:CIRRUS LOGIC HAPTIC DRIVERS"
-	<patches@opensource.cirrus.com>,
-        "open list:INPUT (KEYBOARD, MOUSE, JOYSTICK,
- TOUCHSCREEN)..." <linux-input@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND
- FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>,
-        open list
-	<linux-kernel@vger.kernel.org>,
-        "open list:SOUND - SOC LAYER / DYNAMIC AUDIO
- POWER MANAGEM..." <linux-sound@vger.kernel.org>,
-        "moderated list:CIRRUS LOGIC
- AUDIO CODEC DRIVERS" <alsa-devel@alsa-project.org>
-Subject: Re: [PATCH v5 4/5] Input: cs40l50 - Add support for the CS40L50
- haptic driver
-Message-ID: <20240105150103.GI14858@ediswmail.ad.cirrus.com>
-References: <20240104223643.876292-1-jogletre@opensource.cirrus.com>
- <20240104223643.876292-5-jogletre@opensource.cirrus.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32F642E3EF
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 15:01:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a2821884a09so135311966b.2
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Jan 2024 07:01:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1704466910; x=1705071710; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=lQR4Fg8cleRVcvnVry6aYWkKu4ehqJLNDHFhxBeysRs=;
+        b=QWAzhKpeKQWUQuQP2MyvTczQkch8FEQwqwIRd5ueyGCbfrmx6YIG23QJYDh1B1RXow
+         qA2XYnrwVVjAJXi53646aRBntfxo2KRx/MC0iQ8c0Saf0ROp7FoFOn3xEffXvkVnsXPM
+         mbj/PJPl7PaaLWiGSGe8LMxABE0Tcu/OgTX9Ymqu2+3asB5m+SbDiq75F8cPs3PT2Tbp
+         Xo0BXAC3CBi6krWg2N5reD1auiONCC77OPejZ5XCoXe/sjpu6DVXoxWBmvKnZI9mY7aw
+         HcVPQGJQJ7UpcFPRLp4o/24m7Em1/f/4BmN+NGFboGaNEqOdukMkbArLTcCuoMOU/uV8
+         Gx1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704466910; x=1705071710;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lQR4Fg8cleRVcvnVry6aYWkKu4ehqJLNDHFhxBeysRs=;
+        b=BocakpiFJmn7z6BS2OqPK5ka6NJUTFQOCrzBeQWgqsEK83meFpv0LsnEKz+vyyDHY3
+         FWucfVaRbSIwqzFG5dlk+WbHDNWkTWMVFG5fkPm7DtGnMlTLu3zexBDI8p6Lrj5Vl2fd
+         4Es2pTyQCR7ehFcNCeAOog9Vbt60iVZI+OQWB6HjIkD1w8lt/fUaJ0og/PPORhxVEYh7
+         GaowK8vegtc+dz7K2/HkOxdnLm8OuGDoB4LN6UoF0io30SkQIfxmlX+ToSCouSP/elYc
+         Tm3dDpqxKnh6t0PFRgrni3nHay4D/mxkqmAYsTeviFQnuSjZSudoB/Fx5gTPF9osTLuv
+         teTA==
+X-Gm-Message-State: AOJu0Yx9rlAQCM+2rUjrJUU8HtiZvsdFkleZtZC7m1ARZnvNFYRAguux
+	53pESrip8/xU6uQ9QqkkwJoNeDZ0bL44iQ==
+X-Google-Smtp-Source: AGHT+IG4hdWPcou8wDiQkdCfkBpIFfeLKQzUP3/H2ExfW99dzG+PEi22wr0raKPLobI28PfHOrtBBQ==
+X-Received: by 2002:a17:906:22cd:b0:a27:773b:fcf1 with SMTP id q13-20020a17090622cd00b00a27773bfcf1mr1159545eja.9.1704466910388;
+        Fri, 05 Jan 2024 07:01:50 -0800 (PST)
+Received: from alley ([176.114.240.50])
+        by smtp.gmail.com with ESMTPSA id dx10-20020a170906a84a00b00a283185ccd9sm968861ejb.90.2024.01.05.07.01.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Jan 2024 07:01:50 -0800 (PST)
+Date: Fri, 5 Jan 2024 16:01:48 +0100
+From: Petr Mladek <pmladek@suse.com>
+To: Lukas Hruska <lhruska@suse.cz>
+Cc: Miroslav Benes <mbenes@suse.cz>, Josh Poimboeuf <jpoimboe@kernel.org>,
+	Joe Lawrence <joe.lawrence@redhat.com>,
+	live-patching@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-kbuild@vger.kernel.org,
+	Marcos Paulo de Souza <mpdesouza@suse.com>,
+	Josh Poimboeuf <jpoimboe@redhat.com>
+Subject: Re: [PATCH v1 2/5] livepatch: Add klp-convert tool
+Message-ID: <ZZgZ3LYSZARBjYqo@alley>
+References: <20231106162513.17556-1-lhruska@suse.cz>
+ <20231106162513.17556-3-lhruska@suse.cz>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240104223643.876292-5-jogletre@opensource.cirrus.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-GUID: nInpbhH6Gxayo2Puvzw74qxNoSGhXQlv
-X-Proofpoint-ORIG-GUID: nInpbhH6Gxayo2Puvzw74qxNoSGhXQlv
-X-Proofpoint-Spam-Reason: safe
+In-Reply-To: <20231106162513.17556-3-lhruska@suse.cz>
 
-On Thu, Jan 04, 2024 at 10:36:37PM +0000, James Ogletree wrote:
-> Introduce support for Cirrus Logic Device CS40L50: a
-> haptic driver with waveform memory, integrated DSP,
-> and closed-loop algorithms.
+On Mon 2023-11-06 17:25:10, Lukas Hruska wrote:
+> Livepatches need to access external symbols which can't be handled
+> by the normal relocation mechanism. It is needed for two types
+> of symbols:
 > 
-> The input driver provides the interface for control of
-> haptic effects through the device.
-> 
-> Signed-off-by: James Ogletree <jogletre@opensource.cirrus.com>
-> ---
-> +#include <linux/input.h>
-> +#include <linux/mfd/cs40l50.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/pm_runtime.h>
+> --- /dev/null
+> +++ b/scripts/livepatch/klp-convert.c
+> @@ -0,0 +1,283 @@
+[...]
+> +/*
+> + * Formats name of klp rela symbol based on another given section (@oldsec)
+> + * and object (@obj_name) name, then returns it
+> + */
+> +static char *alloc_klp_rela_name(struct section *oldsec,
+> +		char *target_objname, struct elf *klp_elf)
+> +{
 
-Need bitfield.h
+Nit: Please, use @lp_obj_name instead of @target_objname.
+     It would make it consistent with the caller:
 
-Thanks,
-Charles
+	klp_rela_name = alloc_klp_rela_name(oldsec, lp_obj_name, klp_elf);
+
+and also with
+
+#define KLP_RELOC_SYMBOL_POS(LP_OBJ_NAME, SYM_OBJ_NAME, SYM_NAME, SYM_POS)
+
+
+> +	char *klp_rela_name;
+> +	unsigned int length;
+> +	int err;
+
+Just for record. The name "lp_obj_name" came from a discussion between
+me and Lukas about the KLP_RELOC_SYMBOL_POS() parameter names.
+
+The macro has two object name parameters. And LP_OBJ_NAME aka
+LivePatched_OBJ_NAME looked better than TARGET_OBJ_NAME.
+The name "TARGET" is too ambiguous to me.
+
+Best Regards,
+Petr
 
