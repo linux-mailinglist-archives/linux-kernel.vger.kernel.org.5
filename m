@@ -1,39 +1,39 @@
-Return-Path: <linux-kernel+bounces-18380-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18383-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 709D7825C3F
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 22:50:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 105B7825C42
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 22:50:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1FA02285AFD
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 21:50:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9C189285BB8
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 21:50:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E871D3608A;
-	Fri,  5 Jan 2024 21:50:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 178FC3609E;
+	Fri,  5 Jan 2024 21:50:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XIwjEhlb"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PDb6/Lrk"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39DFC23772
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 21:50:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id E2788C433CC;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6280F2DF98;
+	Fri,  5 Jan 2024 21:50:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id EABEAC43395;
 	Fri,  5 Jan 2024 21:50:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704491427;
-	bh=zZbKh0bXY4jP2LnG1owu/TGlfOhgMqLikZKmb67mDlg=;
+	s=k20201202; t=1704491428;
+	bh=pxH3U9z6khx6tVHIWqaGql+jUBJveUc94c4ZoAPEGGw=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=XIwjEhlb4OOUssD1jGBzURaXALBo0jBKlPcdvjF10U85umoyNI/ZXOBgaVwX49pgc
-	 QsTHWwlk22gCrm9Q8rFUvwiQ7E1xkW13/saKttLuS2Jn+K6ohnkGZP2Ura36SHh6uy
-	 Ece4XXBTW99nm8Eq/RFFJq09LmuBKdo4gfeWHT2ZwGrbvhwBVWkzjVDo/hD4+yjd7w
-	 Y6lQnAOvD3JcTr3uNLc3AVu5EFzLPR6CHqzW7IZXyLhWcN+90JMBHATeXWPBbe+fIN
-	 ARQlM8ZzWTuhU5vkqUgzXjgV1+8AYoMxwQf1r/I4bkFuCIv6KX6ribWLc2xRYLryS8
-	 7inC75tPPsbXw==
+	b=PDb6/LrkfooIlMm82I88mGQhEXQJW8ViFM/Tz44pviB3OSSSGgxcOYwOk5/iS3l5E
+	 6896QZax1frH6o66NaAcQIq/c6xxZmaw8yEJDPthHuhGD9R3zw4ARSP3PDpfbdcjhw
+	 kgRuvPXlHJAmcKwBC7imZYworvWieB3g8trxxrJctwfXCQp0BmNsyI2Ny6h/c2nUBA
+	 TuyCmg/PfR8DnxE3A+dRFKHwq6u6wpcLAr3R2kmvxQ2uFuqRCl7kiSbdgIth1f+plT
+	 fwOgYxZqzEVGSuwt4pjyeThQpEtLySJKb/7zOKpzVoKci3PbhoWIcqan347hQSVqQg
+	 e9LZovdjaKx8w==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id CB91FDCB6F9;
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id D623EC4167E;
 	Fri,  5 Jan 2024 21:50:27 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
@@ -43,43 +43,38 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH 0/3] riscv: CPU operations cleanup
+Subject: Re: [PATCH] dt-bindings: riscv: cpus: Add AMD MicroBlaze V compatible
 From: patchwork-bot+linux-riscv@kernel.org
 Message-Id: 
- <170449142782.26226.4217701485670023420.git-patchwork-notify@kernel.org>
+ <170449142786.26226.3590037133806155543.git-patchwork-notify@kernel.org>
 Date: Fri, 05 Jan 2024 21:50:27 +0000
-References: <20231121234736.3489608-1-samuel.holland@sifive.com>
-In-Reply-To: <20231121234736.3489608-1-samuel.holland@sifive.com>
-To: Samuel Holland <samuel.holland@sifive.com>
-Cc: linux-riscv@lists.infradead.org, palmer@dabbelt.com,
- linux-kernel@vger.kernel.org
+References: <d442d916204d26f82c1c3a924a4cdfb117960e1b.1699270661.git.michal.simek@amd.com>
+In-Reply-To: <d442d916204d26f82c1c3a924a4cdfb117960e1b.1699270661.git.michal.simek@amd.com>
+To: Michal Simek <michal.simek@amd.com>
+Cc: linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+ monstr@monstr.eu, michal.simek@xilinx.com, git@xilinx.com,
+ aou@eecs.berkeley.edu, conor@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+ palmer@dabbelt.com, paul.walmsley@sifive.com, robh+dt@kernel.org,
+ devicetree@vger.kernel.org
 
 Hello:
 
-This series was applied to riscv/linux.git (for-next)
+This patch was applied to riscv/linux.git (for-next)
 by Palmer Dabbelt <palmer@rivosinc.com>:
 
-On Tue, 21 Nov 2023 15:47:23 -0800 you wrote:
-> This series cleans up some duplicated and dead code around the RISC-V
-> CPU operations, that was copied from arm64 but is not needed here. The
-> result is a bit of memory savings and removal of a few SBI calls during
-> boot, with no functional change.
+On Mon, 6 Nov 2023 12:37:47 +0100 you wrote:
+> MicroBlaze V is new AMD/Xilinx soft-core 32bit RISC-V processor IP.
+> It is hardware compatible with classic MicroBlaze processor.
 > 
+> Signed-off-by: Michal Simek <michal.simek@amd.com>
+> ---
 > 
-> Samuel Holland (3):
->   riscv: Deduplicate code in setup_smp()
->   riscv: Remove unused members from struct cpu_operations
->   riscv: Use the same CPU operations for all CPUs
-> 
-> [...]
+>  Documentation/devicetree/bindings/riscv/cpus.yaml | 1 +
+>  1 file changed, 1 insertion(+)
 
 Here is the summary with links:
-  - [1/3] riscv: Deduplicate code in setup_smp()
-    https://git.kernel.org/riscv/c/a4166aec1130
-  - [2/3] riscv: Remove unused members from struct cpu_operations
-    https://git.kernel.org/riscv/c/79093f3ec39c
-  - [3/3] riscv: Use the same CPU operations for all CPUs
-    https://git.kernel.org/riscv/c/62ff262227a4
+  - dt-bindings: riscv: cpus: Add AMD MicroBlaze V compatible
+    https://git.kernel.org/riscv/c/4a6b93f56296
 
 You are awesome, thank you!
 -- 
