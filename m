@@ -1,119 +1,197 @@
-Return-Path: <linux-kernel+bounces-18326-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18328-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A791A825B9A
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 21:28:38 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 10FF7825BA0
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 21:33:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 57450287140
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 20:28:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4C18FB22A0F
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 20:33:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67634360B1;
-	Fri,  5 Jan 2024 20:28:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F92E1DFE8;
+	Fri,  5 Jan 2024 20:32:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="YX6k0R7g"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="TeH3Z9Ki"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AFFA3608A
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 20:28:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1704486504;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=LBcU8Ucgw9WvEv4ml+FP6D15OBNp3BTNZQ7NFOWnOwY=;
-	b=YX6k0R7gQNWL5JgNyX2eo8jRk1v/9F3S57pMuaUEkINXH8B4iKi0dv2nGIJ8/Iz4CdlVr6
-	Rt2USJUwtfSMJIuedCnqoeiLx/if3eD2KjreN9Z02Lcm19HZ7NAWwGtyk3yT/31Bz/PJZT
-	IUzs2nHs/4HwMDjTKBkvE9TLlmshKOI=
-Received: from mail-vk1-f199.google.com (mail-vk1-f199.google.com
- [209.85.221.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-554-Rd1A_LzWOCa48M8vZOVUBQ-1; Fri, 05 Jan 2024 15:28:23 -0500
-X-MC-Unique: Rd1A_LzWOCa48M8vZOVUBQ-1
-Received: by mail-vk1-f199.google.com with SMTP id 71dfb90a1353d-4b7213832b5so987484e0c.1
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Jan 2024 12:28:23 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704486502; x=1705091302;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=LBcU8Ucgw9WvEv4ml+FP6D15OBNp3BTNZQ7NFOWnOwY=;
-        b=lHdq1gVHlYmjls/vYJSE+WTHIuCF5qVxdsVxOXwlQVe95NRcX/qX1xRUXEnyk6Xxkl
-         QTEV1PHC6flehzEt2kSnGgk9wo1SyYmDNRiNWsXd/d7IAQxoEIYWqfngJ+8PtCE+Bier
-         fMpBZEo0PPqGwS+epsxkpFPaz38DrKj7UvwFg4DDLGxgXqNDWVSMR0RIpCsJ4Y8OLXCS
-         Zn97rog9E9MLQgDkqOQA6y9uBW5m06unErxl/+g2zrfWax8xGdZAwvLMaNS6MMzlBZNB
-         dFY9OdS2Fnwp7x89Wr+WvcUA8Yt5OqdmBdZQnwgeeAy3yR8hMf1I0KW4YI2Ses4g+eG0
-         qdGQ==
-X-Gm-Message-State: AOJu0YzMkxceGV4hUa4jbkDLUUB8qSHFC6nOkWChm36Eb71bDlGY+AJL
-	sYf+orJCE8M20kBIT3F1Ow6i7XeDOtv9R3hDx12KT2aIgSK/8qVnUIK5VJp9UaGlchh5hN7bUWL
-	0X6GViZSEne2e9kQueWvftwJQ4uYCMhNjQebftZRGDvJRn/ACXEIuD65ayvU=
-X-Received: by 2002:a05:6122:45aa:b0:4b7:49f9:c6f4 with SMTP id de42-20020a05612245aa00b004b749f9c6f4mr2001561vkb.4.1704486501818;
-        Fri, 05 Jan 2024 12:28:21 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGpDQHytoso1sLg6hnmUDkdBNPRRBqKeJtkvYB7/gPCh6lk57PZqRfGAY6qPDWdrCcQuJAioLMk24w/y+nIyFA=
-X-Received: by 2002:a05:6122:45aa:b0:4b7:49f9:c6f4 with SMTP id
- de42-20020a05612245aa00b004b749f9c6f4mr2001554vkb.4.1704486501520; Fri, 05
- Jan 2024 12:28:21 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 208F835887;
+	Fri,  5 Jan 2024 20:32:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704486774; x=1736022774;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=wbTeGMlBKA/AVTTq5b6G1kJb0VGKlmedWGZfUpkygms=;
+  b=TeH3Z9KiZY5pZqalwQuPgH693J880lHHnpDX5jKdq2fogYGXnsh0jkJy
+   iR1f7dQP/SKGo8XxWqlvfNs4IkZfwlrNTNCruV+9iPm24OVXKva7VLQY0
+   CjN4Cu2Kk6mGBvWZTjwtlpEQG7c6C6GbVgBE3KTQH8VeeLfVE5iWvhrSy
+   Xip8mg/lYKN4zeTD8RCnOzMVQ2RgFkXcl+g/av0V4NRuvry0/uYcLzKw6
+   iKKNT9Y6SC0dO3cV+Sn4ZGtXdWtfQIEOSScmgnYI11ZVEJYOvx0SWPJ1c
+   CqvmVXJxFXU5cJp53eff/jZK8XrY3crbLYVJ/u3jJksLxbEHYCOVQGnGy
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10944"; a="400337997"
+X-IronPort-AV: E=Sophos;i="6.04,334,1695711600"; 
+   d="scan'208";a="400337997"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2024 12:32:53 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10944"; a="904239728"
+X-IronPort-AV: E=Sophos;i="6.04,334,1695711600"; 
+   d="scan'208";a="904239728"
+Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
+  by orsmga004.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 05 Jan 2024 12:32:53 -0800
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Fri, 5 Jan 2024 12:32:52 -0800
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Fri, 5 Jan 2024 12:32:52 -0800
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Fri, 5 Jan 2024 12:32:52 -0800
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.40) by
+ edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Fri, 5 Jan 2024 12:32:52 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KOvju0H/Xd5gVw0YcgVQ4quy9C7hrgisfHHsfBgtzHAJuLabHNs8V+3H7Jl5NP0OeqFy9Upe89B3ZX2lwv1/NK62CYz5DdBBfDuceXcIL59BXsqoG0WDf5IClCJPfTwrkQ4gV6GpeBPCT2XxLYUB54A4dUAg8MqB9a1uFSEQ7Fp9JhbpunBRrVk+Gg8bf1wtXhv3Ss63uoq1MI2ZYJN4OIplaHsPmGFbvHKVJeWmF5ZNrIJLTgrhS6I05i6LUD5I+u6KHKRaVNj501a84CZIaxbxPoFqDC+HU5ieNTh6zrjhNj8xNwP3jkwKqnJqdbbyqNytWA8angKyaZQY92Oz6A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=pBtu4l3ZHak0YgPw3ewFT+G5AQ1ISOsCDvF45epAybs=;
+ b=TOIqAjkAdH2ShRuHIrie55kkdTVlDyZ04bx0eHXAkyn3wIvWSpu5WrJfL51PXpXryFxHNMejJVeoIADYr5HSKRPPq2KjORdQtDXehIId9r54eFVmmKmczi2OlgzRN8vtUGLBntGt2e1Olf6rybzR/X/FDqtcStPS3lakFXG4rHc+suunRV3Tbq0AO7HWrjGK0Mvj9mxOTbn4ZhsmXLNCtwS/ZxdMwEW1Rgb1tXTC/t/2lUjSHU7xUz02M1CK4j5u3FLChv37hqa8dhBPuO+j0RfVAMHzmeKwgxxLTsZ57yicAaTHhw9aWCBNCYkkQuQuhk1cLmDk5gXgJdMxuDB3aQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from PH7PR11MB6522.namprd11.prod.outlook.com (2603:10b6:510:212::12)
+ by DS7PR11MB7781.namprd11.prod.outlook.com (2603:10b6:8:e1::7) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7159.17; Fri, 5 Jan 2024 20:32:50 +0000
+Received: from PH7PR11MB6522.namprd11.prod.outlook.com
+ ([fe80::b9a8:8221:e4a1:4cda]) by PH7PR11MB6522.namprd11.prod.outlook.com
+ ([fe80::b9a8:8221:e4a1:4cda%4]) with mapi id 15.20.7159.015; Fri, 5 Jan 2024
+ 20:32:50 +0000
+Date: Fri, 5 Jan 2024 20:31:55 +0000
+From: Matthew Brost <matthew.brost@intel.com>
+To: Dan Carpenter <dan.carpenter@linaro.org>
+CC: Himal Prasad Ghimiray <himal.prasad.ghimiray@intel.com>, Matt Roper
+	<matthew.d.roper@intel.com>, Thomas =?iso-8859-1?Q?Hellstr=F6m?=
+	<thomas.hellstrom@linux.intel.com>, <kernel-janitors@vger.kernel.org>, "Lucas
+ De Marchi" <lucas.demarchi@intel.com>, Oded Gabbay <ogabbay@kernel.org>,
+	<linux-kernel@vger.kernel.org>, Maxime Ripard <mripard@kernel.org>,
+	<dri-devel@lists.freedesktop.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+	Rodrigo Vivi <rodrigo.vivi@intel.com>, <intel-xe@lists.freedesktop.org>
+Subject: Re: [PATCH] drm/xe/device: clean up on error in probe()
+Message-ID: <ZZhnO9JlP8h/Q/EG@DUT025-TGLU.fm.intel.com>
+References: <c8984fe2-dc1a-4ba8-97c9-5c83f53a0d09@moroto.mountain>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <c8984fe2-dc1a-4ba8-97c9-5c83f53a0d09@moroto.mountain>
+X-ClientProxiedBy: SJ0PR03CA0071.namprd03.prod.outlook.com
+ (2603:10b6:a03:331::16) To PH7PR11MB6522.namprd11.prod.outlook.com
+ (2603:10b6:510:212::12)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240104205959.4128825-1-pbonzini@redhat.com> <20240104205959.4128825-2-pbonzini@redhat.com>
- <ZZhUzm9r5Z5l567Z@google.com>
-In-Reply-To: <ZZhUzm9r5Z5l567Z@google.com>
-From: Paolo Bonzini <pbonzini@redhat.com>
-Date: Fri, 5 Jan 2024 21:28:09 +0100
-Message-ID: <CABgObfYvuBeN6Vhp7TUBP9g8G8H2DvMQ=RJGWGNdCoS8k+AWfw@mail.gmail.com>
-Subject: Re: [PATCH 1/4] KVM: introduce CONFIG_KVM_COMMON
-To: Sean Christopherson <seanjc@google.com>
-Cc: linux-kernel@vger.kernel.org, kvm@vger.kernel.org, ajones@ventanamicro.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH7PR11MB6522:EE_|DS7PR11MB7781:EE_
+X-MS-Office365-Filtering-Correlation-Id: 8baf0a1d-8aa9-4ae6-4937-08dc0e2d7c5a
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ITXVeWvtMnKj4jS1NGGj4j9YI/TGlhowbmkpRNQm5Xb3Iy4gPux/HiQGUMB9n2jmkCjTzQ5JMYvi7hGSaA1nVmllj7wTIS5ssdPf3JE0pzdP6T4u5s/NOdZHIWQJCc70lHaaaKCq51vkth8W6FfikThz/pqM6i++3edOm/hPI998bVyfR4ZHykas0jHB6/T/adrOCRGSeLavL8jS6yxCY2dzWkkAiImFVUsbxJPky7RoOATQ13JzJjYFy6yZel65uDiFiYaoeqjIfuKUCKgrG1Y00sjBKmckbxaOhq3XgdmfotGtbS2kcCTBA8vg4dCKFttlArpIO2uKe4wYFBCRG4cV/An8us+hhvykjPqgggvchypdlK4hpJWNS5LpfSFsH7uXGfaiB0EAB2BKQoZuJzcX3ywsYIxPRnFozPmTq2bU39FivGXQpz3pGyRnQGnrmyIrhwCBoh7riG+JnOA7aqXF0XOXOQS2gy9a5qxBtq5BqTRby3lqKo9jjGNM9ySvRL5kw2tQelQy1+OmTHZCsaNYXx9pHBK3r9wuXllJYE6gGL5mJI9HC1b2x+apcHysYp0qCSv2zBul2lCMwYnwk8jwAF/kzZB2qxYiO0gLqyfOZsYYwT5JSzUBDNP3CQu1
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR11MB6522.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(366004)(39860400002)(376002)(136003)(346002)(230273577357003)(230173577357003)(230922051799003)(64100799003)(1800799012)(451199024)(186009)(26005)(6486002)(6506007)(6512007)(478600001)(83380400001)(2906002)(41300700001)(66476007)(54906003)(66556008)(66946007)(316002)(6916009)(8676002)(8936002)(44832011)(5660300002)(4326008)(38100700002)(86362001)(82960400001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?IbOI/r3MfIKGFTqqEfocRex9Mzo5ZeTtfGWlCOB1XwItTAPH3UAjwy528VMD?=
+ =?us-ascii?Q?6dzm57EkdFgW8pwdQbsYTNxAPLXJGY/yPlrAjsZRlr31+nRn4kn7K5E0sG13?=
+ =?us-ascii?Q?aegvxmZU/DcH+J4BLNovV2IDxs3HTASigMKUbPXsb7tfJuRpPEspj0roFjqU?=
+ =?us-ascii?Q?O4xnJCcd38O449bhQzbmnugTRDX6sfWTej96kLteBJxklOlRUWCH0+W3TP5M?=
+ =?us-ascii?Q?1ED5kQe10SpTNSlmKvXvLeCqUa24ivSrmk6RBwkrCRqmopFfh+WV9tqd6otw?=
+ =?us-ascii?Q?LwGpSykgxIF3pHYPDDxS/+Jx0/4jegMskvGtiA5wpfGRcDxx/TDtSdr+4BQV?=
+ =?us-ascii?Q?yAznyVcodJI/5QFoynoQ23uS/OiiUlHoAasSAZPRogaotJQHD2+kzbsET7QH?=
+ =?us-ascii?Q?lkwLJY2pgSoBqmHeGUKUvwJPb2Uh712eWXq8hd2fLkal0OGwToCerufm+fQk?=
+ =?us-ascii?Q?K5P2OnsVCK176Gq0y3p5TEipYN67MlZCX9qd3DgQ8ACxU7NnIyJLCGGpJi0d?=
+ =?us-ascii?Q?y1aeEBLo5H77MgbmnyWDq4QYZfZYTsn08tNC76jScmlmO3Lmj74S8HQjVeI5?=
+ =?us-ascii?Q?a9nRU+Q+my+APryE+Of/HH00UmWponr1pNzCTXRn529M8o7myik7Q8e1p9fc?=
+ =?us-ascii?Q?CfIJ5v/mctFew0ml/ayYwYRVgxtvAX6tr3O0Y6TF9oquOwQRBi5WqVFXT0B2?=
+ =?us-ascii?Q?rAv7Z0A2FGyCbHIXgJ++7duPFgNRlOhHYpocrNspBc3ldh4jOFwDfUi0s7gL?=
+ =?us-ascii?Q?43sRkxlPW9sthy9yokp9l+JZGNEi3BKjqTZ/ibM5XN/s1e/slJ0xvOI/6fJm?=
+ =?us-ascii?Q?hdmC6ORfqpnGdh0ala3HKcmf7AY7XKFiMHj8WdP8J5ZPOwuWD2rMyHAX3yG2?=
+ =?us-ascii?Q?yoMnykXx6tRRUV2Fkazibsgw1CWEAv4eD5xB4pVO7/Zi1cTU35zyDiK+Kce3?=
+ =?us-ascii?Q?MDyz0oV+pgitqg6oBGKGAK+ZjVIvod6+n42AhRXfI5icpjUUmPff3C+vHf3E?=
+ =?us-ascii?Q?o8HXBwH3+Oto5XzYz1SPhJ6SLP8He0SGm4jfgfzKw45Hk0XB2S3eDBlXMor3?=
+ =?us-ascii?Q?lDWaV+nz8CXzivxP8XQaijjcG2Qg9A+Nwr2eHEISxDCjIRV+ZG6Dil1Ixxhy?=
+ =?us-ascii?Q?j/eLMOBdaRRfUXtJCGG8IjAUB8ULCFezvbHng3+VVuDuxGu+SAtN5mxhl5+d?=
+ =?us-ascii?Q?ZQW3pRajU5eX1/k4ZVB+VjKzAk10fiweqLA+v7+mRv9HbbqD8WRvMd5xa7P2?=
+ =?us-ascii?Q?tQKG5lUzhVTTQjNpKMdwcRdjha/lgNAeVWGdMcW0ehW/jywkYua9v3ydW4Gy?=
+ =?us-ascii?Q?zZcVo5CL+zu/iPbZ67i+gUJENSMLFr2ci57LKT+g7Qfg9ji1tgZUdoPbTAck?=
+ =?us-ascii?Q?cQLckSJJZAYBcHUAB+jzAwvp46Isl+FE4mFhKMDuZ41VrYWDjNxI+QhZKng5?=
+ =?us-ascii?Q?lkJ5sD82LRJbfQHybBEKuuVEhiLn12BYjgq1yNw3f+VwVJzJNR+d4c8VmQDW?=
+ =?us-ascii?Q?lMSGleLJ9OAbDIz07tCioCS1VGWfsFS3hOTTBui/Sf9OoZmPFCKireCJ59nc?=
+ =?us-ascii?Q?f8ji6GuIFp6ywXMpl9kDvV4svYg8yBV8pI0Iy8YygrG87jIAhv4hlPTIggif?=
+ =?us-ascii?Q?/Q=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8baf0a1d-8aa9-4ae6-4937-08dc0e2d7c5a
+X-MS-Exchange-CrossTenant-AuthSource: PH7PR11MB6522.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Jan 2024 20:32:50.3687
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: oHxgsCUsISuO9Bixvu9592golvTogpw/4wkhMXJH6fblCluHuMCTVZhUrDiAelxE7rDFxhStDpD1wM4pMR1KNA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR11MB7781
+X-OriginatorOrg: intel.com
 
-On Fri, Jan 5, 2024 at 8:13=E2=80=AFPM Sean Christopherson <seanjc@google.c=
-om> wrote:
-> > Start by introducing such a new Kconfig symbol, CONFIG_KVM_COMMON.
-> > Unlike CONFIG_HAVE_KVM, it is selected by CONFIG_KVM, not by
-> > architecture code.
->
-> Why?  I don't get it, just have code that cares do IS_ENABLED(CONFIG_KVM)=
-.  Except
-> for the MIPS usage of HAVE_KVM that you solved by adding CPU_SUPPORTS_VZ,=
- I got
-> all the way there using just CONFIG_KVM[*].
->
-> Ah, and so does this series for the most part, the only usage of CONFIG_K=
-VM_COMMON
-> is in scripts/gdb/linux/constants.py.in.  Honestly, adding a Kconfig just=
- so that
-> VMX's posted interrupts that arrive in the host can be printed when KVM i=
-s built
-> as a module is a waste of a Kconfig.
+On Fri, Jan 05, 2024 at 03:22:23PM +0300, Dan Carpenter wrote:
+> This error path should clean up before returning.
+> 
+> Smatch detected this bug:
+>   drivers/gpu/drm/xe/xe_device.c:487 xe_device_probe() warn: missing unwind goto?
+> 
+> Fixes: 4cb12b71923b ("drm/xe/xe2: Determine bios enablement for flat ccs on igfx")
+> Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
 
-There is one extra thing that CONFIG_KVM_COMMON does, which is to
-avoid having to select common requirements in all architectures.
+Reviewed-by: Matthew Brost <matthew.brost@intel.com>
 
-I jotted this to solve the reported randconfig failure, which is why
-CONFIG_KVM_COMMON only requires "select EVENTFD", but looking more
-closely it should also select PREEMPT_NOTIFIERS and INTERVAL_TREE.
-Both are used by virt/kvm/kvm_main.c, and loongarch + riscv both lack
-INTERVAL_TREE so I do think it's a good idea to introduce this symbol
-(though it requires a v2).
-
-> [*] https://lore.kernel.org/all/20230916003118.2540661-12-seanjc@google.c=
-om
-
-I guess you mean
-https://lore.kernel.org/all/20230916003118.2540661-8-seanjc@google.com/.
-
-Paolo
-
+> ---
+> Speeking of static analysis, someone should probably run Sparse on this
+> driver.  There are some missing annotations.
+> 
+> drivers/gpu/drm/xe/xe_mmio.h:65:72: warning: incorrect type in argument 1 (different address spaces)
+> drivers/gpu/drm/xe/xe_mmio.h:65:72:    expected void const volatile [noderef] __iomem *addr
+> drivers/gpu/drm/xe/xe_mmio.h:65:72:    got void *
+> 
+>  drivers/gpu/drm/xe/xe_device.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/xe/xe_device.c b/drivers/gpu/drm/xe/xe_device.c
+> index d9ae77fe7382..b8d8da546670 100644
+> --- a/drivers/gpu/drm/xe/xe_device.c
+> +++ b/drivers/gpu/drm/xe/xe_device.c
+> @@ -484,7 +484,7 @@ int xe_device_probe(struct xe_device *xe)
+>  
+>  	err = xe_device_set_has_flat_ccs(xe);
+>  	if (err)
+> -		return err;
+> +		goto err_irq_shutdown;
+>  
+>  	err = xe_mmio_probe_vram(xe);
+>  	if (err)
+> -- 
+> 2.42.0
+> 
 
