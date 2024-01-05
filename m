@@ -1,213 +1,146 @@
-Return-Path: <linux-kernel+bounces-18146-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18147-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 317A782596C
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 18:51:35 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D30D782596E
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 18:52:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CE74028429C
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 17:51:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 415D51F22B69
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 17:52:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7545328D0;
-	Fri,  5 Jan 2024 17:51:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C3C4328CA;
+	Fri,  5 Jan 2024 17:52:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="P/RP+rQ+"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
+Received: from mail-qv1-f54.google.com (mail-qv1-f54.google.com [209.85.219.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE041328C4
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 17:51:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7ba7b2c0c1cso163888639f.2
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Jan 2024 09:51:21 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A223328D0
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 17:52:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qv1-f54.google.com with SMTP id 6a1803df08f44-67f85fe5632so6155466d6.0
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Jan 2024 09:52:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1704477127; x=1705081927; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WQGdqN4Kfk15tpyoA9m2c9B6GFS99Vf93jSd2R5n3Hw=;
+        b=P/RP+rQ+zWoggbgn0PVtWoFaKrUYNmqXmeIOpvFLWl6VaTYgFeyxe3aPUJZVP822wc
+         ndYR4L6eUiNMu2lyN9iRVkxsNQR/V8h3np15c0WqlZk6e7TUMZL9i+yPJueyo9HuUHuB
+         f9wHpzrYe1g3X+rR2/mh7JSHxkHdk160mztVPhlTkpHGVmOVu5Etq5mjpBRtcqpYF8qc
+         SyJAAZ76n71ofJP6fDbvz2h97GQIdFrPBlh3ZkgPdhTZB4KQQJeMd4KuzUlSK7VmwzmO
+         j9QawZbJJawxWsHViYSyKRJ/CRCA7TDT0oFprnFhxxENzbo0AG24ijVa5kSKayFr7srq
+         345g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704477081; x=1705081881;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0J45BElnGsnlb+hcSi7W72v1ypQ+RzOOzGvT7znb7Wo=;
-        b=sXZTh2RSxGA96MsfHabAcE23PvX6GM5D4SAOcxe0Pse+MbPHkSF6XnKtmm6w/r6yvr
-         fyfYhTHpAQNv/iPeiBiSKUDJsJ3kTXHQU1DkDY6TXlxsMDP0bQhUg1pAVApt2mGBJzk7
-         TGPmTQf8VV8ivQi10iY2yBXY5iMtRqe8LRLt/18syPgOIGIcrGUnhSgdxZRPD0EwlSeE
-         yTW9/h7bWTqYB1zYdAbgb/DpkmgZRQHlG6NqC6BTD8qcZxRqocyt6yQgfy4tZJHk9BAy
-         6UV5neTEAe5PjDrpRV4eTf5J7SgUftt7ExdHO2Gehn3Ar6Tp1jyKo8qPBRVMUsEbcu4m
-         3iSA==
-X-Gm-Message-State: AOJu0YxmUHOgz9Ltib3b/ThuZ9dvpHUmhpQT6SdCj5pb+3vjTfoznq3p
-	/g+EILQ4l+DxFmzkW+4ssfZRquxr4TmeXeNYyrzmFab02ngq
-X-Google-Smtp-Source: AGHT+IHQFD58vZhMCyrneF8Q0mnkayqmlC0X82FA8MCcD3FnbRlHEk6c1sp8b6hSxlvowrFBJfxiioR7jSryhjtn4+CVio3x7Lg2
+        d=1e100.net; s=20230601; t=1704477127; x=1705081927;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WQGdqN4Kfk15tpyoA9m2c9B6GFS99Vf93jSd2R5n3Hw=;
+        b=WHPlhKk0A1HdUaK/1E8ixqghQY1XcqNxkAg6WULNa7QFeojJfLLpTTWEtZ8uVceu6R
+         VKVpRfTJHCJ+8cuM48u+Eqd+gYfMi9UgznkZfNGpXX7cLuCQrfD+hTjCG3dRE27+YKKz
+         EuTrk2eQAXL+IWu5Wg5HezoDVvy5VfKqgMf/tkQXkpqvFKx08fiJu+4NQVgbBiladL57
+         3l96Qy6OTeMujQOwosoC0IKS2qFAqQ1XsplHwcmnUD0JZygvFHWqVGxWgNCGnHdT/I42
+         wcOB/dQYryWBagYERHhDYuEY6c5b5BSlpjIxfvkKZipyXkUusDC1TppVW+Erv40F5+vv
+         qKFg==
+X-Gm-Message-State: AOJu0YwS/yrY240xT2hsylgr4vGxsL1Ck5tVphzaJfYFY/H/JRG19lPj
+	eQJhnhDg2YyzyfX/Bc6M5Fn/D4OD/ecado5Ak5NF+nkl2uUQ
+X-Google-Smtp-Source: AGHT+IE90IxceJSGKiXicuQdISFFetHKGY9O0fote8zibDrvMDHy00OZx50Ky1T/9JY0JgTpTE929PJ/P+bIQR2+q6g=
+X-Received: by 2002:a05:6214:2aae:b0:67f:8391:7d40 with SMTP id
+ js14-20020a0562142aae00b0067f83917d40mr3062417qvb.51.1704477127304; Fri, 05
+ Jan 2024 09:52:07 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:16c6:b0:46d:e99b:dc2b with SMTP id
- g6-20020a05663816c600b0046de99bdc2bmr141654jat.4.1704477081042; Fri, 05 Jan
- 2024 09:51:21 -0800 (PST)
-Date: Fri, 05 Jan 2024 09:51:21 -0800
-In-Reply-To: <000000000000a62351060e363bdc@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f1834e060e367e56@google.com>
-Subject: Re: [syzbot] [net?] memory leak in ___neigh_create (2)
-From: syzbot <syzbot+42cfec52b6508887bbe8@syzkaller.appspotmail.com>
-To: alexander.mikhalitsyn@virtuozzo.com, davem@davemloft.net, den@openvz.org, 
-	dsahern@kernel.org, edumazet@google.com, kuba@kernel.org, 
-	linux-kernel@vger.kernel.org, netdev@vger.kernel.org, pabeni@redhat.com, 
-	razor@blackwall.org, syzkaller-bugs@googlegroups.com, 
-	thomas.zeitlhofer+lkml@ze-it.at, thomas.zeitlhofer@ze-it.at, 
-	wangyuweihx@gmail.com
+References: <20240104212439.3276458-1-maheshb@google.com> <ZZczNlXzM8lrZgH5@hoboy.vegasvil.org>
+In-Reply-To: <ZZczNlXzM8lrZgH5@hoboy.vegasvil.org>
+From: =?UTF-8?B?TWFoZXNoIEJhbmRld2FyICjgpK7gpLngpYfgpLYg4KSs4KSC4KSh4KWH4KS14KS+4KSwKQ==?= <maheshb@google.com>
+Date: Fri, 5 Jan 2024 09:51:40 -0800
+Message-ID: <CAF2d9jga9oc4OST6PMU=C9rz_NDrURCcLGx-1tP31U00z63vbA@mail.gmail.com>
+Subject: Re: [PATCHv3 net-next 2/3] ptp: add ioctl interface for ptp_gettimex64any()
+To: Richard Cochran <richardcochran@gmail.com>
+Cc: Netdev <netdev@vger.kernel.org>, Linux <linux-kernel@vger.kernel.org>, 
+	David Miller <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, 
+	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, 
+	Jonathan Corbet <corbet@lwn.net>, John Stultz <jstultz@google.com>, Don Hatchett <hatch@google.com>, 
+	Yuliang Li <yuliangli@google.com>, Mahesh Bandewar <mahesh@bandewar.net>, 
+	Willem de Bruijn <willemb@google.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-syzbot has found a reproducer for the following issue on:
+On Thu, Jan 4, 2024 at 2:37=E2=80=AFPM Richard Cochran <richardcochran@gmai=
+l.com> wrote:
+>
+> On Thu, Jan 04, 2024 at 01:24:39PM -0800, Mahesh Bandewar wrote:
+>
+> > @@ -226,6 +238,8 @@ struct ptp_pin_desc {
+> >       _IOWR(PTP_CLK_MAGIC, 18, struct ptp_sys_offset_extended)
+> >  #define PTP_MASK_CLEAR_ALL  _IO(PTP_CLK_MAGIC, 19)
+> >  #define PTP_MASK_EN_SINGLE  _IOW(PTP_CLK_MAGIC, 20, unsigned int)
+> > +#define PTP_SYS_OFFSET_ANY \
+> > +     _IOWR(PTP_CLK_MAGIC, 21, struct ptp_sys_offset_any)
+>
+> As I said before, this functionality really ought to be a new system call=
+.
+>
+> Did you see these patch series posted on the list?
+>
+>  31.Dec'23 Sagi Maimon          [PATCH v4] posix-timers: add multi_clock_=
+gettime system call
+>  31.Dec'23 Andy Lutomirski      =E2=94=9C=E2=94=80>
+>  01.Jan'24 Sagi Maimon          =E2=94=82 =E2=94=94=E2=94=80>
+>  01.Jan'24 kernel test rob      =E2=94=9C=E2=94=80>
+>  01.Jan'24 kernel test rob      =E2=94=94=E2=94=80>
+>
+>  02.Jan'24 Sagi Maimon          [PATCH v5] posix-timers: add multi_clock_=
+gettime system call
+>  02.Jan'24 Arnd Bergmann        =E2=94=9C=E2=94=80>
+>  03.Jan'24 Sagi Maimon          =E2=94=82 =E2=94=94=E2=94=80>
+>  04.Jan'24 kernel test rob      =E2=94=94=E2=94=80>
+>
+> I think this will be the way forward.
+>
+> Please review the multi_clock_gettime series and help refine it.
+>
 
-HEAD commit:    2258c2dc850b Merge tag 'for-linus' of git://git.kernel.org..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=16f67b44480000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=a4fb7ad9185f1501
-dashboard link: https://syzkaller.appspot.com/bug?extid=42cfec52b6508887bbe8
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14e23d44480000
+While multi_clock_gettime streamlines POSIX clock reads (defined in
+posix-timers.h: struct k_time), this proposal targets precision
+enhancements for PTP hardware clocks (defined in ptp_clock_kernel.h:
+struct ptp_clock_info).
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/0e65a45877eb/disk-2258c2dc.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/7617adf885a8/vmlinux-2258c2dc.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/43fb89ea894a/bzImage-2258c2dc.xz
+Key distinctions:
+       1. Target clocks: multi_clock_gettime operates on POSIX clocks
+(posix-timers.h), while this proposal focuses on PTP hardware clocks
+(ptp_clock_kernel.h).
+       2. Purpose: multi_clock_gettime addresses scheduling latencies
+by consolidating multiple clock reads. This proposal aims to enhance
+PTP clock-read precision by measuring syscall width.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+42cfec52b6508887bbe8@syzkaller.appspotmail.com
+POSIX clocks are employed in this series for syscall width
+measurement, potentially leading to misunderstandings about
+overlapping functionality. However, their roles are distinct and serve
+different purposes.
+Both approaches address time-related challenges, but with different
+goals and techniques.
+multi_clock_gettime optimizes scheduling efficiency for POSIX clocks,
+while this proposal refines PTP hardware clock-read accuracy.
+They complement each other, catering to diverse application needs
+within the timekeeping domain.
 
-BUG: memory leak
-unreferenced object 0xffff88810b8ea400 (size 512):
-  comm "kworker/0:3", pid 4440, jiffies 4294938594 (age 1132.680s)
-  hex dump (first 32 bytes):
-    00 9c f8 0a 81 88 ff ff 80 29 23 86 ff ff ff ff  .........)#.....
-    c0 79 79 44 81 88 ff ff 72 78 ff ff 00 00 00 00  .yyD....rx......
-  backtrace:
-    [<ffffffff814f9fe6>] __do_kmalloc_node mm/slab_common.c:967 [inline]
-    [<ffffffff814f9fe6>] __kmalloc+0x46/0x120 mm/slab_common.c:981
-    [<ffffffff83b5234f>] kmalloc include/linux/slab.h:584 [inline]
-    [<ffffffff83b5234f>] kzalloc include/linux/slab.h:720 [inline]
-    [<ffffffff83b5234f>] neigh_alloc net/core/neighbour.c:476 [inline]
-    [<ffffffff83b5234f>] ___neigh_create+0xdf/0xd60 net/core/neighbour.c:661
-    [<ffffffff83f9f886>] ip6_finish_output2+0x776/0x9b0 net/ipv6/ip6_output.c:125
-    [<ffffffff83fa5530>] __ip6_finish_output net/ipv6/ip6_output.c:195 [inline]
-    [<ffffffff83fa5530>] ip6_finish_output+0x270/0x530 net/ipv6/ip6_output.c:206
-    [<ffffffff83fa5893>] NF_HOOK_COND include/linux/netfilter.h:291 [inline]
-    [<ffffffff83fa5893>] ip6_output+0xa3/0x1b0 net/ipv6/ip6_output.c:227
-    [<ffffffff83ff16d9>] dst_output include/net/dst.h:444 [inline]
-    [<ffffffff83ff16d9>] NF_HOOK include/linux/netfilter.h:302 [inline]
-    [<ffffffff83ff16d9>] NF_HOOK.constprop.0+0x49/0x110 include/linux/netfilter.h:296
-    [<ffffffff83ff19c4>] mld_sendpack+0x224/0x350 net/ipv6/mcast.c:1820
-    [<ffffffff83ff5403>] mld_send_cr net/ipv6/mcast.c:2121 [inline]
-    [<ffffffff83ff5403>] mld_ifc_work+0x2a3/0x750 net/ipv6/mcast.c:2653
-    [<ffffffff8129519a>] process_one_work+0x2ba/0x5f0 kernel/workqueue.c:2289
-    [<ffffffff81295ab9>] worker_thread+0x59/0x5b0 kernel/workqueue.c:2436
-    [<ffffffff8129fb05>] kthread+0x125/0x160 kernel/kthread.c:376
-    [<ffffffff8100224f>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:308
+Hope this helps.
 
-BUG: memory leak
-unreferenced object 0xffff888109a7fa00 (size 512):
-  comm "kworker/0:3", pid 4440, jiffies 4294938594 (age 1132.680s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 80 29 23 86 ff ff ff ff  .........)#.....
-    00 79 79 44 81 88 ff ff 72 78 ff ff 00 00 00 00  .yyD....rx......
-  backtrace:
-    [<ffffffff814f9fe6>] __do_kmalloc_node mm/slab_common.c:967 [inline]
-    [<ffffffff814f9fe6>] __kmalloc+0x46/0x120 mm/slab_common.c:981
-    [<ffffffff83b5234f>] kmalloc include/linux/slab.h:584 [inline]
-    [<ffffffff83b5234f>] kzalloc include/linux/slab.h:720 [inline]
-    [<ffffffff83b5234f>] neigh_alloc net/core/neighbour.c:476 [inline]
-    [<ffffffff83b5234f>] ___neigh_create+0xdf/0xd60 net/core/neighbour.c:661
-    [<ffffffff83f9f886>] ip6_finish_output2+0x776/0x9b0 net/ipv6/ip6_output.c:125
-    [<ffffffff83fa5530>] __ip6_finish_output net/ipv6/ip6_output.c:195 [inline]
-    [<ffffffff83fa5530>] ip6_finish_output+0x270/0x530 net/ipv6/ip6_output.c:206
-    [<ffffffff83fa5893>] NF_HOOK_COND include/linux/netfilter.h:291 [inline]
-    [<ffffffff83fa5893>] ip6_output+0xa3/0x1b0 net/ipv6/ip6_output.c:227
-    [<ffffffff83ff16d9>] dst_output include/net/dst.h:444 [inline]
-    [<ffffffff83ff16d9>] NF_HOOK include/linux/netfilter.h:302 [inline]
-    [<ffffffff83ff16d9>] NF_HOOK.constprop.0+0x49/0x110 include/linux/netfilter.h:296
-    [<ffffffff83ff19c4>] mld_sendpack+0x224/0x350 net/ipv6/mcast.c:1820
-    [<ffffffff83ff5403>] mld_send_cr net/ipv6/mcast.c:2121 [inline]
-    [<ffffffff83ff5403>] mld_ifc_work+0x2a3/0x750 net/ipv6/mcast.c:2653
-    [<ffffffff8129519a>] process_one_work+0x2ba/0x5f0 kernel/workqueue.c:2289
-    [<ffffffff81295ab9>] worker_thread+0x59/0x5b0 kernel/workqueue.c:2436
-    [<ffffffff8129fb05>] kthread+0x125/0x160 kernel/kthread.c:376
-    [<ffffffff8100224f>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:308
+Thanks,
+--mahesh..
 
-BUG: memory leak
-unreferenced object 0xffff88810a9fb400 (size 512):
-  comm "dhcpcd", pid 4638, jiffies 4294938595 (age 1132.670s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 80 29 23 86 ff ff ff ff  .........)#.....
-    c0 76 79 44 81 88 ff ff 73 78 ff ff 00 00 00 00  .vyD....sx......
-  backtrace:
-    [<ffffffff814f9fe6>] __do_kmalloc_node mm/slab_common.c:967 [inline]
-    [<ffffffff814f9fe6>] __kmalloc+0x46/0x120 mm/slab_common.c:981
-    [<ffffffff83b5234f>] kmalloc include/linux/slab.h:584 [inline]
-    [<ffffffff83b5234f>] kzalloc include/linux/slab.h:720 [inline]
-    [<ffffffff83b5234f>] neigh_alloc net/core/neighbour.c:476 [inline]
-    [<ffffffff83b5234f>] ___neigh_create+0xdf/0xd60 net/core/neighbour.c:661
-    [<ffffffff83f9f886>] ip6_finish_output2+0x776/0x9b0 net/ipv6/ip6_output.c:125
-    [<ffffffff83fa5530>] __ip6_finish_output net/ipv6/ip6_output.c:195 [inline]
-    [<ffffffff83fa5530>] ip6_finish_output+0x270/0x530 net/ipv6/ip6_output.c:206
-    [<ffffffff83fa5893>] NF_HOOK_COND include/linux/netfilter.h:291 [inline]
-    [<ffffffff83fa5893>] ip6_output+0xa3/0x1b0 net/ipv6/ip6_output.c:227
-    [<ffffffff84062411>] dst_output include/net/dst.h:444 [inline]
-    [<ffffffff84062411>] ip6_local_out+0x51/0x70 net/ipv6/output_core.c:155
-    [<ffffffff83fa6285>] ip6_send_skb+0x25/0xc0 net/ipv6/ip6_output.c:1971
-    [<ffffffff83fa6394>] ip6_push_pending_frames+0x74/0x90 net/ipv6/ip6_output.c:1991
-    [<ffffffff83fec08c>] rawv6_push_pending_frames net/ipv6/raw.c:579 [inline]
-    [<ffffffff83fec08c>] rawv6_sendmsg+0x16ac/0x1ba0 net/ipv6/raw.c:922
-    [<ffffffff83ebe965>] inet_sendmsg+0x45/0x70 net/ipv4/af_inet.c:827
-    [<ffffffff83af7116>] sock_sendmsg_nosec net/socket.c:714 [inline]
-    [<ffffffff83af7116>] sock_sendmsg+0x56/0x80 net/socket.c:734
-    [<ffffffff83af769d>] ____sys_sendmsg+0x38d/0x410 net/socket.c:2476
-    [<ffffffff83afbfe8>] ___sys_sendmsg+0xa8/0x110 net/socket.c:2530
-    [<ffffffff83afc178>] __sys_sendmsg+0x88/0x100 net/socket.c:2559
-    [<ffffffff848ed5b5>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-    [<ffffffff848ed5b5>] do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
-    [<ffffffff84a00087>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-BUG: memory leak
-unreferenced object 0xffff88810a9fba00 (size 512):
-  comm "dhcpcd", pid 4638, jiffies 4294938595 (age 1132.670s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 80 29 23 86 ff ff ff ff  .........)#.....
-    80 77 79 44 81 88 ff ff 73 78 ff ff 00 00 00 00  .wyD....sx......
-  backtrace:
-    [<ffffffff814f9fe6>] __do_kmalloc_node mm/slab_common.c:967 [inline]
-    [<ffffffff814f9fe6>] __kmalloc+0x46/0x120 mm/slab_common.c:981
-    [<ffffffff83b5234f>] kmalloc include/linux/slab.h:584 [inline]
-    [<ffffffff83b5234f>] kzalloc include/linux/slab.h:720 [inline]
-    [<ffffffff83b5234f>] neigh_alloc net/core/neighbour.c:476 [inline]
-    [<ffffffff83b5234f>] ___neigh_create+0xdf/0xd60 net/core/neighbour.c:661
-    [<ffffffff83f9f886>] ip6_finish_output2+0x776/0x9b0 net/ipv6/ip6_output.c:125
-    [<ffffffff83fa5530>] __ip6_finish_output net/ipv6/ip6_output.c:195 [inline]
-    [<ffffffff83fa5530>] ip6_finish_output+0x270/0x530 net/ipv6/ip6_output.c:206
-    [<ffffffff83fa5893>] NF_HOOK_COND include/linux/netfilter.h:291 [inline]
-    [<ffffffff83fa5893>] ip6_output+0xa3/0x1b0 net/ipv6/ip6_output.c:227
-    [<ffffffff84062411>] dst_output include/net/dst.h:444 [inline]
-    [<ffffffff84062411>] ip6_local_out+0x51/0x70 net/ipv6/output_core.c:155
-    [<ffffffff83fa6285>] ip6_send_skb+0x25/0xc0 net/ipv6/ip6_output.c:1971
-    [<ffffffff83fa6394>] ip6_push_pending_frames+0x74/0x90 net/ipv6/ip6_output.c:1991
-    [<ffffffff83fec08c>] rawv6_push_pending_frames net/ipv6/raw.c:579 [inline]
-    [<ffffffff83fec08c>] rawv6_sendmsg+0x16ac/0x1ba0 net/ipv6/raw.c:922
-    [<ffffffff83ebe965>] inet_sendmsg+0x45/0x70 net/ipv4/af_inet.c:827
-    [<ffffffff83af7116>] sock_sendmsg_nosec net/socket.c:714 [inline]
-    [<ffffffff83af7116>] sock_sendmsg+0x56/0x80 net/socket.c:734
-    [<ffffffff83af769d>] ____sys_sendmsg+0x38d/0x410 net/socket.c:2476
-    [<ffffffff83afbfe8>] ___sys_sendmsg+0xa8/0x110 net/socket.c:2530
-    [<ffffffff83afc178>] __sys_sendmsg+0x88/0x100 net/socket.c:2559
-    [<ffffffff848ed5b5>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-    [<ffffffff848ed5b5>] do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
-    [<ffffffff84a00087>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-
-
----
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+> Thanks,
+> Richard
+>
 
