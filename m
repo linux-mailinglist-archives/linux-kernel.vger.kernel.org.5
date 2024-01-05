@@ -1,66 +1,66 @@
-Return-Path: <linux-kernel+bounces-18114-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18116-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 01C2C825911
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 18:32:46 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B7AE3825917
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 18:33:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5275B1F24161
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 17:32:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B2B2F1C23521
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 17:33:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF3C2321B7;
-	Fri,  5 Jan 2024 17:32:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 060A9321AC;
+	Fri,  5 Jan 2024 17:33:27 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D837732197
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 17:32:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1923C321A1
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 17:33:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-3607a12e8d6so637505ab.1
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Jan 2024 09:32:32 -0800 (PST)
+Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7bbb3de4dcbso206166939f.1
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Jan 2024 09:33:24 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704475952; x=1705080752;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Svuds5nWmkTRysazOE1rePqcGuoz5iMcVS2neEnNYH0=;
-        b=nZLLOxx8h/0QzP2xXlXH+kx6Smj0X8PkqULyBC6qyJ11OB9i5Z1DBl5GeidTk3HXJ/
-         9mAAM9XaorGzdoDrto0OAJI4TvkFKGi/eMFOROevdxLW1b48Xi9pe3ERcL8PVd3zjxAw
-         XTXzUDVeLoMq3fF6M46Gs5XD35cwkUoG3AOq4JxMZBrN5A2joRoeDMAiJjPE6ljdUIqK
-         n/17XTtg1JRSxCmD8K+SK8XeYnYtytd+1zrhEPqWllF0Ff6r/XPlC58GAUAt0YFSFay5
-         1YoXPo2wFAIpk+D2pHBsMFPpdY0KFSPWEgbxmuMi6tttc5T/Ye6FGh5H3MpobogwYYEm
-         r1ng==
-X-Gm-Message-State: AOJu0YxKLow/+3QTeALvvio/+mR6CSthZCI/YnvYgcKV56mOL/3wgs+f
-	oi1C5+4/wN7bYVV8HVse8EtQeRd1GEa1I/9ensLv70M4oAxV
-X-Google-Smtp-Source: AGHT+IEKreZ3Zfcgob4xcmnH4SNPc8aF/icLUPgAcYWmGPjaKv74kwc8PQ+RIWtT4IMEYew1IMbWsaPGgH715kzQZr6yqxg3wbkc
+        d=1e100.net; s=20230601; t=1704476004; x=1705080804;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=0J45BElnGsnlb+hcSi7W72v1ypQ+RzOOzGvT7znb7Wo=;
+        b=snxX3PjUr8HwsyUH92sjmfV5rHUxyYTj491fbyUabaEiHWweTZkoI/m0GRdFJcqlSm
+         MaEkmsYje1V5fuPGFWLLnTeWgowEfe1vz3U6zbVKqNu/dnrLCL79kcaEnkwPms5sUJJ0
+         SddMe8TsrcflDMQcgi4STOjXNc55ug6yLEWDjXT0KBrxEdTP3BBNCzzcmrNo8XFlIUNo
+         bkXOWQzAu+Oc0WaPTaI6ZGS4Lq+LvSlGzVwIJRc+cYOrFlYsVeuVTlxMu1jsqb7m8r7q
+         lcM7SChTOHyN+KgC9w1gS4O8shmUjKEI3EiOmRdjzzLFaGzUmOZhbOkYSkVnQuT93u5O
+         wF1Q==
+X-Gm-Message-State: AOJu0YyaKggn3a+1kNrS3CMT1L+FLVEqLIAJi3hp5pcDTyNqfOl3hRJv
+	gZRXFlmTg3K7JP4Zw3Zl30Ueqs9+FaB8nbZf4H9YlJwJeOJj
+X-Google-Smtp-Source: AGHT+IHcPlAlQz3UrSDm5Fgw1cMuWVrD4sfRhAZlzj7wK5Ipir2gwPuSlTQY8Z601xmG+AiYojZm3DpWreyNzPVhkb+RgudNXtM5
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1548:b0:35f:e864:f6f with SMTP id
- j8-20020a056e02154800b0035fe8640f6fmr339412ilu.0.1704475952027; Fri, 05 Jan
- 2024 09:32:32 -0800 (PST)
-Date: Fri, 05 Jan 2024 09:32:32 -0800
+X-Received: by 2002:a05:6e02:2190:b0:35f:a338:44ae with SMTP id
+ j16-20020a056e02219000b0035fa33844aemr358570ila.3.1704476004277; Fri, 05 Jan
+ 2024 09:33:24 -0800 (PST)
+Date: Fri, 05 Jan 2024 09:33:24 -0800
+In-Reply-To: <000000000000a62351060e363bdc@google.com>
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000a62351060e363bdc@google.com>
-Subject: [syzbot] [net?] memory leak in ___neigh_create (2)
+Message-ID: <000000000000c36ca1060e363ef7@google.com>
+Subject: Re: [syzbot] [net?] memory leak in ___neigh_create (2)
 From: syzbot <syzbot+42cfec52b6508887bbe8@syzkaller.appspotmail.com>
 To: alexander.mikhalitsyn@virtuozzo.com, davem@davemloft.net, den@openvz.org, 
 	dsahern@kernel.org, edumazet@google.com, kuba@kernel.org, 
 	linux-kernel@vger.kernel.org, netdev@vger.kernel.org, pabeni@redhat.com, 
 	razor@blackwall.org, syzkaller-bugs@googlegroups.com, 
-	thomas.zeitlhofer+lkml@ze-it.at, wangyuweihx@gmail.com
+	thomas.zeitlhofer+lkml@ze-it.at, thomas.zeitlhofer@ze-it.at, 
+	wangyuweihx@gmail.com
 Content-Type: text/plain; charset="UTF-8"
 
-Hello,
-
-syzbot found the following issue on:
+syzbot has found a reproducer for the following issue on:
 
 HEAD commit:    2258c2dc850b Merge tag 'for-linus' of git://git.kernel.org..
 git tree:       upstream
@@ -207,27 +207,7 @@ unreferenced object 0xffff88810a9fba00 (size 512):
 
 
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
 If you want syzbot to run the reproducer, reply with:
 #syz test: git://repo/address.git branch-or-commit-hash
 If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
