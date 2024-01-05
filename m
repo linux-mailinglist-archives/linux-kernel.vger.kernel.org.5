@@ -1,120 +1,127 @@
-Return-Path: <linux-kernel+bounces-18422-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18423-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 59838825D39
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 00:48:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id F0BF3825D3D
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 00:50:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AE4742832FE
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 23:48:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 167A31C234ED
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 23:50:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74D59360BE;
-	Fri,  5 Jan 2024 23:47:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FC4F364A2;
+	Fri,  5 Jan 2024 23:50:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="CZWJ+NS3"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="YT6YAHVI"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41C22360AB
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 23:47:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 405NHbCV020756;
-	Fri, 5 Jan 2024 23:47:23 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=dk/9wd6mk3XvZJWT8D4yhYy3MZa/HSdG4Hz96XTchxU=; b=CZ
-	WJ+NS3JjiyZGK8T76F0FHD6IbqLXfW7zbXwuPixpQRzp+N9sYxVVJLVNafizcSX3
-	ak8M+IpPImgZMIL/344Eq+bM3CFo1eZIpuF7nk9Jgg7S4sAIwPeF7EE8O5W32He7
-	vCFNite6oVl9f2bn+Uw6QbeW1kf4XXV++K7FgurEkJvXHkEf+U9l30ctK+zl70RL
-	fmuyb9iGkG1zNXUdntfj3geoxZKQxBk0TBil4qfVkJYb+2mE6USZbfrFtrPIcFAs
-	8c4xIqK7aEgY/AEPtAr6F9g/y0Q0Uz+hnUvql+Rw+rpwPgUL0dddBPOxSaYCJsMM
-	lH0hpHA9JIqEEhj+moYw==
-Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ve95utghp-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 05 Jan 2024 23:47:22 +0000 (GMT)
-Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
-	by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 405NkwMo026789
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 5 Jan 2024 23:46:58 GMT
-Received: from [10.110.39.102] (10.80.80.8) by nasanex01c.na.qualcomm.com
- (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 5 Jan
- 2024 15:46:57 -0800
-Message-ID: <b9b5b669-0318-93c8-c6a0-dbbb797320f2@quicinc.com>
-Date: Fri, 5 Jan 2024 15:46:55 -0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5F35360B7
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 23:50:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2cca5d81826so685091fa.2
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Jan 2024 15:50:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1704498613; x=1705103413; darn=vger.kernel.org;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=zgIr5KjeQ801ktUcvEq9tOSFsZbUarwYEDM+BV8WLFA=;
+        b=YT6YAHVInHs/bJP5lG0FPUcvm3FtjDcTXWb4ehVMppo7UNNZ69xiYhXcMVosCmkiXE
+         RrvFcpddWLXKKtrKAlONQNIpTF8jXdyHjnQ76WYNYJxxtoyc+5Ilth8IPFKX48sajmUd
+         lYxbvmg1cJbIWRFZjfS+g4vUqYWmhtOxzFXsR52ABPHUGWnpgzb7z0r+/5gzSOvOgWfs
+         7U2H70PRyZlxPC3V5zLL15Pp5ARtvhb3KfIppX7K8eq5c7KYSYZWitenYSM6MvMuK0IH
+         mxjwtowBZGwFxdIrjFAFmGbdWMLYzTWsRQisEq8yXdisOWUBJ39WMzso3TBfkMTSMXn7
+         u4Dg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704498613; x=1705103413;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=zgIr5KjeQ801ktUcvEq9tOSFsZbUarwYEDM+BV8WLFA=;
+        b=hJiRskE5PB1PjZ+diwZ3gXaHsTCwa1r3mnf/bCtLbKhP3It53aRn6cz4etRcO94n9O
+         ncckYk0hCi21PxiLKvlDMMkFHn5Rthl7r2JePwpH1hGdiVozBuq/xHbTfyJ5kuDiYmhk
+         c8w/cujUiu26wG2nnL8asnW0OriExcQs3VC/5rLCpm2s822QqGhpA1wkVQeUJ8075lC1
+         h2Uod/IydkMTago0AIiq23Ee4H268XpKuUeaD+VACNBWsZFK2Gzuqlfk7iUltSDJFw6+
+         +nXszrIlf3ry++IPjhxyoevb/mi3y08GZRuNBLwEDzLscbfgAtp7gklP9SDr2qmDwc8Y
+         Nf+w==
+X-Gm-Message-State: AOJu0YzxAacWuTT0CdsMraUJavHHAZ4VRbdCyd4Xn077oqaRc49o98rf
+	QycBsV/HxY1zjDoqKPk9WSOuFuV0VLgusA==
+X-Google-Smtp-Source: AGHT+IEeBbWCgqwqpQYOR/iZ1DVjP4wiVNLe6VxZxGScfvx35vnY4HypTMhHt3kImH3vRzo4e9Vr8g==
+X-Received: by 2002:a2e:9ed4:0:b0:2cc:675a:10ee with SMTP id h20-20020a2e9ed4000000b002cc675a10eemr50853ljk.78.1704498612830;
+        Fri, 05 Jan 2024 15:50:12 -0800 (PST)
+Received: from umbar.lan ([192.130.178.91])
+        by smtp.gmail.com with ESMTPSA id x26-20020a2ea99a000000b002cceac0fdacsm465056ljq.126.2024.01.05.15.50.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Jan 2024 15:50:12 -0800 (PST)
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Sat, 06 Jan 2024 01:50:11 +0200
+Subject: [PATCH] drm/msm/dpu: make "vblank timeout" more useful
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH] mm,page_alloc,cma: configurable CMA utilization
-Content-Language: en-US
-To: Minchan Kim <minchan@kernel.org>,
-        Chris Goldsworthy
-	<quic_cgoldswo@quicinc.com>
-CC: Roman Gushchin <roman.gushchin@linux.dev>,
-        Andrew Morton
-	<akpm@linux-foundation.org>,
-        Rik van Riel <riel@surriel.com>, Roman Gushchin
-	<guro@fb.com>,
-        Vlastimil Babka <vbabka@suse.cz>, Joonsoo Kim
-	<js1304@gmail.com>,
-        Georgi Djakov <quic_c_gdjako@quicinc.com>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20230131071052.GB19285@hu-sbhattip-lv.qualcomm.com>
- <Y9lZoI89Nw4bjjOZ@P9FQF9L96D.corp.robot.car>
- <20230131201001.GA8585@hu-sbhattip-lv.qualcomm.com>
- <Y9mraBHucYdnHXiS@P9FQF9L96D.corp.robot.car>
- <20230201040628.GA3767@hu-cgoldswo-sd.qualcomm.com>
- <Y9r6LtMOPHfxr7UL@google.com>
-From: Sukadev Bhattiprolu <quic_sukadev@quicinc.com>
-In-Reply-To: <Y9r6LtMOPHfxr7UL@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01c.na.qualcomm.com (10.45.79.139)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: -c1JALMRyMNc0HBfXDpf2g4SW5q-enf8
-X-Proofpoint-ORIG-GUID: -c1JALMRyMNc0HBfXDpf2g4SW5q-enf8
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 mlxscore=0
- phishscore=0 impostorscore=0 priorityscore=1501 lowpriorityscore=0
- malwarescore=0 adultscore=0 mlxlogscore=439 suspectscore=0 spamscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2401050182
+Message-Id: <20240106-fd-dpu-debug-timeout-v1-1-6d9762884641@linaro.org>
+X-B4-Tracking: v=1; b=H4sIALKVmGUC/x3MSQqAMAxA0atI1gZSlTpcRVyoTWsWDrRWBPHuF
+ pdv8f8Dgb1wgC57wPMlQfYtQeUZzMu4OUYxyVBQUZEijdagOSIanqLDU1be44ncqtrSNDekS0j
+ p4dnK/W/74X0/OpMcKGYAAAA=
+To: Rob Clark <robdclark@gmail.com>, 
+ Abhinav Kumar <quic_abhinavk@quicinc.com>, Sean Paul <sean@poorly.run>, 
+ Marijn Suijten <marijn.suijten@somainline.org>, 
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>
+Cc: linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org, 
+ freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
+ Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1232;
+ i=dmitry.baryshkov@linaro.org; h=from:subject:message-id;
+ bh=YlE6Y0Xns3P31n5Refq7dS9qQ/5BgtlDWj7ZX0gAmHE=;
+ b=owEBbQGS/pANAwAKAYs8ij4CKSjVAcsmYgBlmJW0SyaFLLT16qHzBkNy9w9VfQQTtHjumXc8G
+ ehTggFWw26JATMEAAEKAB0WIQRMcISVXLJjVvC4lX+LPIo+Aiko1QUCZZiVtAAKCRCLPIo+Aiko
+ 1Y/XCACauqkupaBDpfAh57h+imFyIUuQC+PVqXl/Xj6YmYMMfhgQSaWUbh+a7qObFJKzI/rc+Sm
+ Tzqf9gSWXcgGZCbsHKj9K0f0eapMiGVOWCzYncRwOrSvDfZJ34Q5j42eRkpsFdl+iM0uFbOV9Mq
+ 6e2RRnhEhHBxMgge7rkFNXZhjhAjI4PL/wVtAB/3M82FFy125DUo0nmUb3RNfomh+UXLJCPS377
+ ahwF4ewfR+2orJ0zHbYWIaxd+5d7dqF2sD4fbUdHMmq6P5z0BqGg8Cw4/ptyTstV3Zx9lMoPPCm
+ mAEvZOMyhdjwZwssqGYGHpggNu8Nnn04tznaNUy+aAcQkWCp
+X-Developer-Key: i=dmitry.baryshkov@linaro.org; a=openpgp;
+ fpr=8F88381DD5C873E4AE487DA5199BF1243632046A
 
+We have several reports of vblank timeout messages. However after some
+debugging it was found that there might be different causes to that.
+Include the actual CTL_FLUSH value into the timeout message. This allows
+us to identify the DPU block that gets stuck.
 
-On 2/1/2023 3:47 PM, Minchan Kim wrote:
->
-> I like this patch for different reason but for the specific problem you
-> mentioned, How about making reclaimer/compaction aware of the problem:
->
-> IOW, when the GFP_KERNEL/DMA allocation happens but not enough memory
-> in the zones, let's migrates movable pages in those zones into CMA
-> area/movable zone if they are plenty of free memory.
+Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+---
+ drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Hi Minchan,
+diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c
+index d0f56c5c4cce..fb34067ab6af 100644
+--- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c
++++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c
+@@ -489,7 +489,7 @@ static int dpu_encoder_phys_vid_wait_for_commit_done(
+ 		(hw_ctl->ops.get_flush_register(hw_ctl) == 0),
+ 		msecs_to_jiffies(50));
+ 	if (ret <= 0) {
+-		DPU_ERROR("vblank timeout\n");
++		DPU_ERROR("vblank timeout: %x\n", hw_ctl->ops.get_flush_register(hw_ctl));
+ 		return -ETIMEDOUT;
+ 	}
+ 
 
-Coming back to this thread after a while.
+---
+base-commit: 39676dfe52331dba909c617f213fdb21015c8d10
+change-id: 20240106-fd-dpu-debug-timeout-e917f0bc8063
 
-If the CMA region is usually free, allocating pages first in the non-CMA
-region and then moving them into the CMA region would be extra work since
-it would happen most of the time. In such cases, wouldn't it be better to
-allocate from the CMA region itself?
-
-Sukadev
+Best regards,
+-- 
+Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
 
