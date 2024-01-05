@@ -1,344 +1,201 @@
-Return-Path: <linux-kernel+bounces-17795-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17796-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1FED88252DE
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 12:28:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A1A568252E0
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 12:29:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 38E2D1C22F30
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 11:28:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 39213287A16
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 11:29:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 978032D610;
-	Fri,  5 Jan 2024 11:27:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="eeaDqJLa"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A4072C691;
+	Fri,  5 Jan 2024 11:28:49 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 626372D794;
-	Fri,  5 Jan 2024 11:27:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704454063; x=1735990063;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=kR6iE6AEvZSwRlwNTc873KfVG2hddl+2KEMVRuzw/cU=;
-  b=eeaDqJLaTMXpc5hGUxzjgBJvMIznHgx0AiTtYHFVJOKLxCtVq4B0zhAc
-   0hQKUEjFd4NHBV4c7Z+UlUBKaZOnHgnlJWa4/q8Upop2yA+trxcztt0Mo
-   a3PnM0QVymhI2XzkeOXYwhpLgZKm6ohTGtZKlXTPauNOGdIXjiMMEPh7F
-   m0BieJgRlH1c16Rmei3cqFzU8DLpST52P6tbDk4qCEMZmHYQ3EkX8cn17
-   XWVMnQnK91FEXylCfYpB/enetHdFOnmiYrFbvngknetrnAOLK2VwXWS3r
-   01USXuQJf6zrIcTK9uH4D+IkwpNchTTIYXkmkB/dTh5Ed4zR2Z6baq4z3
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10943"; a="10858583"
-X-IronPort-AV: E=Sophos;i="6.04,333,1695711600"; 
-   d="scan'208";a="10858583"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2024 03:27:43 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10943"; a="773827930"
-X-IronPort-AV: E=Sophos;i="6.04,333,1695711600"; 
-   d="scan'208";a="773827930"
-Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.246.32.38])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2024 03:27:36 -0800
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To: linux-pci@vger.kernel.org,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-	Rob Herring <robh@kernel.org>,
-	=?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-	Lukas Wunner <lukas@wunner.de>,
-	Alexandru Gagniuc <mr.nuke.me@gmail.com>,
-	Krishna chaitanya chundru <quic_krichai@quicinc.com>,
-	Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	linux-pm@vger.kernel.org,
-	Shuah Khan <shuah@kernel.org>,
-	=?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-	linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Cc: Alex Deucher <alexdeucher@gmail.com>,
-	Daniel Lezcano <daniel.lezcano@linaro.org>,
-	Amit Kucheria <amitk@kernel.org>,
-	Zhang Rui <rui.zhang@intel.com>
-Subject: [PATCH v4 8/8] selftests/pcie_bwctrl: Create selftests
-Date: Fri,  5 Jan 2024 13:25:47 +0200
-Message-Id: <20240105112547.7301-9-ilpo.jarvinen@linux.intel.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240105112547.7301-1-ilpo.jarvinen@linux.intel.com>
-References: <20240105112547.7301-1-ilpo.jarvinen@linux.intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F20028E1A;
+	Fri,  5 Jan 2024 11:28:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=realtek.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=realtek.com
+X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 405BSI2l82336498, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
+	by rtits2.realtek.com.tw (8.15.2/2.95/5.92) with ESMTPS id 405BSI2l82336498
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 5 Jan 2024 19:28:18 +0800
+Received: from RTEXDAG02.realtek.com.tw (172.21.6.101) by
+ RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.32; Fri, 5 Jan 2024 19:28:19 +0800
+Received: from RTDOMAIN (172.21.210.160) by RTEXDAG02.realtek.com.tw
+ (172.21.6.101) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.7; Fri, 5 Jan 2024
+ 19:28:18 +0800
+From: Justin Lai <justinlai0215@realtek.com>
+To: <kuba@kernel.org>
+CC: <davem@davemloft.net>, <edumazet@google.com>, <pabeni@redhat.com>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <andrew@lunn.ch>, <pkshih@realtek.com>, <larry.chiu@realtek.com>,
+        Justin Lai
+	<justinlai0215@realtek.com>
+Subject: [PATCH net-next v16 00/13] Add Realtek automotive PCIe driver
+Date: Fri, 5 Jan 2024 19:27:58 +0800
+Message-ID: <20240105112811.380952-1-justinlai0215@realtek.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: RTEXH36506.realtek.com.tw (172.21.6.27) To
+ RTEXDAG02.realtek.com.tw (172.21.6.101)
+X-KSE-ServerInfo: RTEXDAG02.realtek.com.tw, 9
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-Antivirus-Interceptor-Info: fallback
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-ServerInfo: RTEXH36505.realtek.com.tw, 9
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-Antivirus-Interceptor-Info: fallback
+X-KSE-AntiSpam-Interceptor-Info: fallback
 
-Create selftests for PCIe BW control through the PCIe cooling device
-sysfs interface.
+This series includes adding realtek automotive ethernet driver 
+and adding rtase ethernet driver entry in MAINTAINERS file.
 
-First, the BW control selftest finds the PCIe Port to test with. By
-default, the PCIe Port with the highest Link Speed is selected but
-another PCIe Port can be provided with -d parameter.
+This ethernet device driver for the PCIe interface of 
+Realtek Automotive Ethernet Switch,applicable to 
+RTL9054, RTL9068, RTL9072, RTL9075, RTL9068, RTL9071.
 
-The actual test steps the cur_state of the cooling device one-by-one
-from max_state to what the cur_state was initially. The speed change
-is confirmed by observing the current_link_speed for the corresponding
-PCIe Port.
+v1 -> v2:
+- Remove redundent debug message.
+- Modify coding rule.
+- Remove other function codes not related to netdev.
 
-Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
----
- MAINTAINERS                                   |   1 +
- tools/testing/selftests/Makefile              |   1 +
- tools/testing/selftests/pcie_bwctrl/Makefile  |   2 +
- .../pcie_bwctrl/set_pcie_cooling_state.sh     | 122 ++++++++++++++++++
- .../selftests/pcie_bwctrl/set_pcie_speed.sh   |  67 ++++++++++
- 5 files changed, 193 insertions(+)
- create mode 100644 tools/testing/selftests/pcie_bwctrl/Makefile
- create mode 100755 tools/testing/selftests/pcie_bwctrl/set_pcie_cooling_state.sh
- create mode 100755 tools/testing/selftests/pcie_bwctrl/set_pcie_speed.sh
+v2 -> v3:
+- Remove SR-IOV function - We will add the SR-IOV function together when
+uploading the vf driver in the future.
+- Remove other unnecessary code and macro.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 0cacc7e777c5..b59e5ffdeac0 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -16773,6 +16773,7 @@ S:	Supported
- F:	drivers/pci/pcie/bwctrl.c
- F:	drivers/thermal/pcie_cooling.c
- F:	include/linux/pci-bwctrl.h
-+F:	tools/testing/selftests/pcie_bwctrl/
- 
- PCIE DRIVER FOR AMAZON ANNAPURNA LABS
- M:	Jonathan Chocron <jonnyc@amazon.com>
-diff --git a/tools/testing/selftests/Makefile b/tools/testing/selftests/Makefile
-index 3b2061d1c1a5..a86f78c80372 100644
---- a/tools/testing/selftests/Makefile
-+++ b/tools/testing/selftests/Makefile
-@@ -60,6 +60,7 @@ TARGETS += net/mptcp
- TARGETS += net/openvswitch
- TARGETS += netfilter
- TARGETS += nsfs
-+TARGETS += pcie_bwctrl
- TARGETS += perf_events
- TARGETS += pidfd
- TARGETS += pid_namespace
-diff --git a/tools/testing/selftests/pcie_bwctrl/Makefile b/tools/testing/selftests/pcie_bwctrl/Makefile
-new file mode 100644
-index 000000000000..3e84e26341d1
---- /dev/null
-+++ b/tools/testing/selftests/pcie_bwctrl/Makefile
-@@ -0,0 +1,2 @@
-+TEST_PROGS = set_pcie_cooling_state.sh
-+include ../lib.mk
-diff --git a/tools/testing/selftests/pcie_bwctrl/set_pcie_cooling_state.sh b/tools/testing/selftests/pcie_bwctrl/set_pcie_cooling_state.sh
-new file mode 100755
-index 000000000000..3a8f91f0309e
---- /dev/null
-+++ b/tools/testing/selftests/pcie_bwctrl/set_pcie_cooling_state.sh
-@@ -0,0 +1,122 @@
-+#!/bin/bash
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+
-+SYSFS=
-+# Kselftest framework requirement - SKIP code is 4.
-+ksft_skip=4
-+retval=0
-+skipmsg="skip all tests:"
-+
-+PCIEPORTTYPE="PCIe_Port_Link_Speed"
-+
-+prerequisite()
-+{
-+	local ports
-+
-+	if [ $UID != 0 ]; then
-+		echo $skipmsg must be run as root >&2
-+		exit $ksft_skip
-+	fi
-+
-+	SYSFS=`mount -t sysfs | head -1 | awk '{ print $3 }'`
-+
-+	if [ ! -d "$SYSFS" ]; then
-+		echo $skipmsg sysfs is not mounted >&2
-+		exit $ksft_skip
-+	fi
-+
-+	if ! ls $SYSFS/class/thermal/cooling_device* > /dev/null 2>&1; then
-+		echo $skipmsg thermal cooling devices missing >&2
-+		exit $ksft_skip
-+        fi
-+
-+	ports=`grep -e "^$PCIEPORTTYPE" $SYSFS/class/thermal/cooling_device*/type | wc -l`
-+	if [ $ports -eq 0 ]; then
-+		echo $skipmsg pcie cooling devices missing >&2
-+		exit $ksft_skip
-+	fi
-+}
-+
-+testport=
-+find_pcie_port()
-+{
-+	local patt="$1"
-+	local pcieports
-+	local max
-+	local cur
-+	local delta
-+	local bestdelta=-1
-+
-+	pcieports=`grep -l -F -e "$patt" /sys/class/thermal/cooling_device*/type`
-+	if [ -z "$pcieports" ]; then
-+		return
-+	fi
-+	pcieports=${pcieports//\/type/}
-+	# Find the port with the highest PCIe Link Speed
-+	for port in $pcieports; do
-+		max=`cat $port/max_state`
-+		cur=`cat $port/cur_state`
-+		delta=$((max-cur))
-+		if [ $delta -gt $bestdelta ]; then
-+			testport="$port"
-+			bestdelta=$delta
-+		fi
-+	done
-+}
-+
-+sysfspcidev=
-+find_sysfs_pci_dev()
-+{
-+	local typefile="$1/type"
-+	local pcidir
-+
-+	pcidir="$SYSFS/bus/pci/devices/`sed -e "s|^${PCIEPORTTYPE}_||g" $typefile`"
-+
-+	if [ -r "$pcidir/current_link_speed" ]; then
-+		sysfspcidev="$pcidir/current_link_speed"
-+	fi
-+}
-+
-+usage()
-+{
-+	echo "Usage $0 [ -d dev ]"
-+	echo -e "\t-d: PCIe port BDF string (e.g., 0000:00:04.0)"
-+}
-+
-+pattern="$PCIEPORTTYPE"
-+parse_arguments()
-+{
-+	while getopts d:h opt; do
-+		case $opt in
-+			h)
-+				usage "$0"
-+				exit 0
-+				;;
-+			d)
-+				pattern="$PCIEPORTTYPE_$OPTARG"
-+				;;
-+			*)
-+				usage "$0"
-+				exit 0
-+				;;
-+		esac
-+	done
-+}
-+
-+parse_arguments "$@"
-+prerequisite
-+find_pcie_port "$pattern"
-+if [ -z "$testport" ]; then
-+	echo $skipmsg "pcie cooling device not found from sysfs" >&2
-+	exit $ksft_skip
-+fi
-+find_sysfs_pci_dev "$testport"
-+if [ -z "$sysfspcidev" ]; then
-+	echo $skipmsg "PCIe port device not found from sysfs" >&2
-+	exit $ksft_skip
-+fi
-+
-+./set_pcie_speed.sh "$testport" "$sysfspcidev"
-+retval=$?
-+
-+exit $retval
-diff --git a/tools/testing/selftests/pcie_bwctrl/set_pcie_speed.sh b/tools/testing/selftests/pcie_bwctrl/set_pcie_speed.sh
-new file mode 100755
-index 000000000000..584596949312
---- /dev/null
-+++ b/tools/testing/selftests/pcie_bwctrl/set_pcie_speed.sh
-@@ -0,0 +1,67 @@
-+#!/bin/bash
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+
-+set -e
-+
-+TESTNAME=set_pcie_speed
-+
-+declare -a PCIELINKSPEED=(
-+	"2.5 GT/s PCIe"
-+	"5.0 GT/s PCIe"
-+	"8.0 GT/s PCIe"
-+	"16.0 GT/s PCIe"
-+	"32.0 GT/s PCIe"
-+	"64.0 GT/s PCIe"
-+)
-+
-+# Kselftest framework requirement - SKIP code is 4.
-+ksft_skip=4
-+retval=0
-+
-+coolingdev="$1"
-+statefile="$coolingdev/cur_state"
-+maxfile="$coolingdev/max_state"
-+linkspeedfile="$2"
-+
-+oldstate=`cat $statefile`
-+maxstate=`cat $maxfile`
-+
-+set_state()
-+{
-+	local state=$1
-+	local linkspeed
-+	local expected_linkspeed
-+
-+	echo $state > $statefile
-+
-+	sleep 1
-+
-+	linkspeed="`cat $linkspeedfile`"
-+	expected_linkspeed=$((maxstate-state))
-+	expected_str="${PCIELINKSPEED[$expected_linkspeed]}"
-+	if [ ! "${expected_str}" = "${linkspeed}" ]; then
-+		echo "$TESTNAME failed: expected: ${expected_str}; got ${linkspeed}"
-+		retval=1
-+	fi
-+}
-+
-+cleanup_skip ()
-+{
-+	set_state $oldstate
-+	exit $ksft_skip
-+}
-+
-+trap cleanup_skip EXIT
-+
-+echo "$TESTNAME: testing states $maxstate .. $oldstate with $coolingdev"
-+for i in $(seq $maxstate -1 $oldstate); do
-+	set_state "$i"
-+done
-+
-+trap EXIT
-+if [ $retval -eq 0 ]; then
-+	echo "$TESTNAME [PASS]"
-+else
-+	echo "$TESTNAME [FAIL]"
-+fi
-+exit $retval
+v3 -> v4:
+- Remove function prototype - Our driver does not use recursion, so we
+have reordered the code and removed the function prototypes.
+- Define macro precisely - Improve macro code readability to make the
+source code cleaner.
+
+v4 -> v5:
+- Modify ethtool function - Remove some unnecessary code.
+- Don't use inline function - Let the compiler decide.
+
+v5 -> v6:
+- Some old macro definitions have been removed and replaced with the
+lastest usage.
+- Replace s32 with int to ensure consistency.
+- Clearly point out the objects of the service and remove unnecessary
+struct.
+
+v6 -> v7:
+- Split this driver into multiple patches.
+- Reorganize this driver code and remove redundant code to make this
+driver more concise.
+
+v7 -> v8:
+- Add the function to calculate time mitigation and the function to 
+calculate packet number mitigation. Users can use these two functions 
+to calculate the reg value that needs to be set for the mitigation value
+they want to set.
+- This device is usually used in automotive embedded systems. The page
+pool api will use more memory in receiving packets and requires more 
+verification, so we currently do not plan to use it in this patch.
+
+v8 -> v9:
+- Declare functions that are not extern as static functions and increase
+the size of the character array named name in the rtase_int_vector struct
+to correct the build warning noticed by the kernel test robot.
+
+v9 -> v10:
+- Currently we change to use the page pool api. However, when we allocate
+more than one page to an rx buffer, it will cause system errors
+in some cases. Therefore, we set the rx buffer to fixed size with 3776
+(PAGE_SIZE - SKB_DATA_ALIGN(sizeof(skb_shared_info) )), and the maximum 
+value of mtu is set to 3754(rx buffer size - VLAN_ETH_HLEN - ETH_FCS_LEN).
+- When ndo_tx_timeout is called, it will dump some device information,
+which can be used for debugging.
+- When the mtu is greater than 1500, the device supports checksums
+but not TSO.
+- Fix compiler warnning.
+
+v10 -> v11:
+- Added error handling of rtase_init_ring().
+- Modify the error related to asymmetric pause in rtase_get_settings.
+- Fix compiler error.
+
+v11 -> v12:
+- Use pm_sleep_ptr and related macros.
+- Remove multicast filter limit.
+- Remove VLAN support and CBS offload functions. 
+- Remove redundent code.
+- Fix compiler warnning.
+
+v12 -> v13:
+- Fixed the compiler warning of unuse rtase_suspend() and rtase_resume()
+when there is no define CONFIG_PM_SLEEP.
+
+v13 -> v14:
+- Remove unuse include.
+- call eth_hw_addr_random() to generate random MAC and set device flag 
+- use pci_enable_msix_exact() instead of pci_enable_msix_range() 
+- If dev->dma_mask is non-NULL, dma_set_mask_and_coherent with a 64-bit
+mask will never fail, so remove the part that determines the 32-bit mask.
+- set dev->pcpu_stat_type before register_netdev() and core will allocate
+stats 
+- call NAPI instance at the right location
+
+v14 -> v15:
+- In rtase_open, when the request interrupt fails, all request interrupts
+are freed.
+- When calling netif_device_detach, there is no need to call
+netif_stop_queue.
+- Call netif_tx_disable() instead of stop_queue(), it takes the tx lock so
+there is no need to worry about the packets being transmitted.
+- In rtase_tx_handler, napi budget is no longer used, but a customized
+tx budget is used.
+- Use the start / stop macros from include/net/netdev_queues.h. 
+- Remove redundent code.
+
+v15 -> v16:
+- Re-upload v15 patch set
+
+Justin Lai (13):
+  rtase: Add pci table supported in this module
+  rtase: Implement the .ndo_open function
+  rtase: Implement the rtase_down function
+  rtase: Implement the interrupt routine and rtase_poll
+  rtase: Implement hardware configuration function
+  rtase: Implement .ndo_start_xmit function
+  rtase: Implement a function to receive packets
+  rtase: Implement net_device_ops
+  rtase: Implement pci_driver suspend and resume function
+  rtase: Implement ethtool function
+  rtase: Add a Makefile in the rtase folder
+  realtek: Update the Makefile and Kconfig in the realtek folder
+  MAINTAINERS: Add the rtase ethernet driver entry
+
+ MAINTAINERS                                   |    7 +
+ drivers/net/ethernet/realtek/Kconfig          |   17 +
+ drivers/net/ethernet/realtek/Makefile         |    1 +
+ drivers/net/ethernet/realtek/rtase/Makefile   |   10 +
+ drivers/net/ethernet/realtek/rtase/rtase.h    |  336 +++
+ .../net/ethernet/realtek/rtase/rtase_main.c   | 2314 +++++++++++++++++
+ 6 files changed, 2685 insertions(+)
+ create mode 100644 drivers/net/ethernet/realtek/rtase/Makefile
+ create mode 100644 drivers/net/ethernet/realtek/rtase/rtase.h
+ create mode 100644 drivers/net/ethernet/realtek/rtase/rtase_main.c
+
 -- 
-2.39.2
+2.34.1
 
 
