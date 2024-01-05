@@ -1,145 +1,221 @@
-Return-Path: <linux-kernel+bounces-17979-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-17977-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 30762825641
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 15:59:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9851C82563B
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 15:59:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C3F58B22DAE
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 14:59:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B26D31C2171C
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 14:59:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 485A32E3F9;
-	Fri,  5 Jan 2024 14:59:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="pmnw6U6t"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BCD02E408;
+	Fri,  5 Jan 2024 14:58:49 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3AEA2E623;
-	Fri,  5 Jan 2024 14:59:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 405CRg7u009167;
-	Fri, 5 Jan 2024 14:59:30 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=srVFGRu3fKLXSKgBecGL2P7rO5z7cc9P6fOF/yabDLg=;
- b=pmnw6U6tj31dw5SpY47xUj6dhUPMktXqwM4PGn7LHR3FdnfTbt3lAkIHEkSXythiyRSq
- C+iMicm+nPBECq46DdNC0UJs9AMBZps/BqbC54WWYsnzbI2MkBszMsCMkTmQpk2ugOs3
- VdkC9E8BcO7a3HP50cWm3QZD7klCYtDv/nd/xuELdeOh9wDWeVOBIUi5pIczHrcjdKet
- 56ZWWV0qKWFTUAWY8zSddAhbohAu1teXzp1UwACH69lLs2/sveJjgjQCcud4m+8sBG/t
- vs3YRcMNPAOUrXOC9jdJb/TOG1C7L98kZbplmDi5ukulyvqbMlnMwF+U0oCHhu1t5GWw 3g== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vehsnc7nu-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 05 Jan 2024 14:59:29 +0000
-Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 405EKn7t002127;
-	Fri, 5 Jan 2024 14:59:29 GMT
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vehsnc7n2-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 05 Jan 2024 14:59:28 +0000
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 405EbBjd017991;
-	Fri, 5 Jan 2024 14:59:28 GMT
-Received: from smtprelay04.wdc07v.mail.ibm.com ([172.16.1.71])
-	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3vayrkyqg9-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 05 Jan 2024 14:59:28 +0000
-Received: from smtpav04.dal12v.mail.ibm.com (smtpav04.dal12v.mail.ibm.com [10.241.53.103])
-	by smtprelay04.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 405ExRD841288236
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 5 Jan 2024 14:59:27 GMT
-Received: from smtpav04.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id E68FF5805E;
-	Fri,  5 Jan 2024 14:59:26 +0000 (GMT)
-Received: from smtpav04.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 65DEF58063;
-	Fri,  5 Jan 2024 14:59:26 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.61.173.4])
-	by smtpav04.dal12v.mail.ibm.com (Postfix) with ESMTP;
-	Fri,  5 Jan 2024 14:59:26 +0000 (GMT)
-Message-ID: <16ae3e51dc4eeb2b2e674b8ff1051ac315fa492c.camel@linux.ibm.com>
-Subject: Re: Re: [PATCH] integrity: don't throw an error immediately when
- failed to add a cert to the .machine keyring
-From: Mimi Zohar <zohar@linux.ibm.com>
-To: Coiby Xu <coxu@redhat.com>
-Cc: linux-integrity@vger.kernel.org, itrymybest80@protonmail.com,
-        Dmitry
- Kasatkin <dmitry.kasatkin@gmail.com>,
-        Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        "open list:SECURITY SUBSYSTEM" <linux-security-module@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Date: Fri, 05 Jan 2024 09:59:14 -0500
-In-Reply-To: <35tiggwgbrb2sapyykv3umio5l2xqhmzc43wy33dxmz4hyu24c@bprgz7skpxma>
-References: <20231227044156.166009-1-coxu@redhat.com>
-	 <39e5612eb2d4dea2759310ccce39c1ad40b5388f.camel@linux.ibm.com>
-	 <35tiggwgbrb2sapyykv3umio5l2xqhmzc43wy33dxmz4hyu24c@bprgz7skpxma>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5 (3.28.5-22.el8) 
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: DjDUnVaF_nPsRvGPV58oT1rYzNdxVAPX
-X-Proofpoint-GUID: sHIjKXT9Ew1vDO8zBib0u7QMiLv7rSs-
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B099F2E3EC;
+	Fri,  5 Jan 2024 14:58:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 402CCC433C8;
+	Fri,  5 Jan 2024 14:58:47 +0000 (UTC)
+Date: Fri, 5 Jan 2024 09:59:54 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Christian Brauner <brauner@kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
+ <linux-trace-kernel@vger.kernel.org>, Masami Hiramatsu
+ <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Linus Torvalds <torvalds@linux-foundation.org>, Al Viro
+ <viro@ZenIV.linux.org.uk>, linux-fsdevel@vger.kernel.org, Greg
+ Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH] tracefs/eventfs: Use root and instance inodes as
+ default ownership
+Message-ID: <20240105095954.67de63c2@gandalf.local.home>
+In-Reply-To: <20240105-wegstecken-sachkenntnis-6289842d6d01@brauner>
+References: <20240103203246.115732ec@gandalf.local.home>
+	<20240105-wegstecken-sachkenntnis-6289842d6d01@brauner>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-05_08,2024-01-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- adultscore=0 spamscore=0 priorityscore=1501 impostorscore=0 phishscore=0
- mlxscore=0 mlxlogscore=805 bulkscore=0 suspectscore=0 malwarescore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2401050125
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Fri, 2024-01-05 at 21:27 +0800, Coiby Xu wrote:
-> On Tue, Jan 02, 2024 at 12:54:02PM -0500, Mimi Zohar wrote:
-> >Hi Coiby,
+On Fri, 5 Jan 2024 15:26:28 +0100
+Christian Brauner <brauner@kernel.org> wrote:
+
+> On Wed, Jan 03, 2024 at 08:32:46PM -0500, Steven Rostedt wrote:
+> > From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+> > 
+> > Instead of walking the dentries on mount/remount to update the gid values of
+> > all the dentries if a gid option is specified on mount, just update the root
+> > inode. Add .getattr, .setattr, and .permissions on the tracefs inode
+> > operations to update the permissions of the files and directories.
+> > 
+> > For all files and directories in the top level instance:
+> > 
+> >  /sys/kernel/tracing/*
+> > 
+> > It will use the root inode as the default permissions. The inode that
+> > represents: /sys/kernel/tracing (or wherever it is mounted).
+> > 
+> > When an instance is created:
+> > 
+> >  mkdir /sys/kernel/tracing/instance/foo
+> > 
+> > The directory "foo" and all its files and directories underneath will use
+> > the default of what foo is when it was created. A remount of tracefs will
+> > not affect it.  
 > 
-> Hi Mimi,
-> 
-> >
-> >According to https://docs.kernel.org/process/submitting-patches.html,the
-> summary line should be no more than  70 - 75 characters.
-> 
-> Thanks for pointing me to this limit! How about 
-> integrity: eliminate harmless error "Problem loading X.509 certificate -126"
+> That kinda sounds like eventfs should actually be a separate filesystem.
+> But I don't know enough about the relationship between the two concepts.
 
-Still >75.   How about the following?
-
-integrity: eliminate unnecessary "Problem loading X.509 certificate" msg
-
-Mimi         
+It may someday become one, as eventfs is used by perf where the rest of the
+tracefs system is not.
 
 > 
-> >
-> >On Wed, 2023-12-27 at 12:41 +0800, Coiby Xu wrote:
-> >> Currently when the kernel fails to add a cert to the .machine keyring,
-> >> it will throw an error immediately in the function integrity_add_key.
-> >>
-> >> Since the kernel will try adding to the .platform keyring next or throw
-> >> an error (in the caller of integrity_add_key i.e. add_to_machine_keyring),
-> >> so there is no need to throw an error immediately in integrity_add_key.
-> >>
-> >> Reported-by: itrymybest80@protonmail.com
-> >> Closes: https://bugzilla.redhat.com/show_bug.cgi?id=2239331
-> >> Signed-off-by: Coiby Xu <coxu@redhat.com>
-> >
-> >Otherwise, the patch looks good.
+> > 
+> > If a user were to modify the permissions of any file or directory in
+> > tracefs, it will also no longer be modified by a change in ownership of a
+> > remount.  
 > 
-> Thanks for reviewing the patch!
+> Very odd semantics and I would recommend to avoid that. It's just plain
+> weird imo.
+> 
+> > 
+> > The events directory, if it is in the top level instance, will use the
+> > tracefs root inode as the default ownership for itself and all the files and
+> > directories below it.
+> > 
+> > For the events directory in an instance ("foo"), it will keep the ownership
+> > of what it was when it was created, and that will be used as the default
+> > ownership for the files and directories beneath it.
+> > 
+> > Link: https://lore.kernel.org/linux-trace-kernel/CAHk-=wjVdGkjDXBbvLn2wbZnqP4UsH46E3gqJ9m7UG6DpX2+WA@mail.gmail.com/
+> > 
+> > Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+> > ---  
+> 
+> So tracefs supports remounting with different uid/gid mount options and
+> then actually wades through _all_ of the inodes and changes their
+> ownership internally? What's the use-case for this? Containers?
 
+No, in fact tracing doesn't work well with containers as tracing is global
+to the entire machine. It can work with privileged containers though.
 
+The reason for this is because tracefs was based off of debugfs where the
+files and directores are created at boot up and mounted later. The reason
+to do this was to allow users to mount with gid=GID to allow a given group
+to have access to tracing. Without this update, tracefs would ignore it
+like debugfs and proc does today.
+
+I think its time I explain the purpose of tracefs and how it came to be.
+
+The tracing system required a way to control tracing and read the traces.
+It could have just used a new system like perf (although
+/sys/kernel/debug/tracing predates perf), where it created a single ioctl()
+like system call do do everything.
+
+As the ftrace tracing came from PREEMPT_RT latency tracer and my own logdev
+tracer, which both have an embedded background, I chose an interface that
+could work with just an unmodified version of busybox. That is, I wanted it
+to work with just cat and echo.
+
+The main difference with tracefs compared to other file systems is that it
+is a control interface, where writes happen as much as reads. The data read
+is controlled. The closest thing I can think of is how cgroups work.
+
+As tracing is a privileged operation, but something that could be changed
+to allow a group to have access to, I wanted to make it easy for an admin
+to decide who gets to do what at boot up via the /etc/fstab file.
+
+> 
+> Aside from optimizing this and the special semantics for this eventfs
+> stuff that you really should think twice of doing, here's one idea for
+> an extension that might alleviate some of the pain:
+> 
+> If you need flexible dynamic ownership change to e.g., be able to
+> delegate (all, a directory, a single file of) tracefs to
+> unprivileged/containers/whatever then you might want to consider
+> supporting idmapped mounts for tracefs. Because then you can do stuff
+> like:
+
+I'm a novice here and have no idea on how id maps work ;-)
+
+> 
+> user1@localhost:~/data/scripts$ sudo mount --bind -o X-mount.idmap='g:0:1000:1 u:0:1234:1' /run/ /mnt
+> user1@localhost:~/data/scripts$ ls -ln /run/
+> total 12
+> drwxr-xr-x  2 0  0   40 Jan  5 12:12 credentials
+> drwx------  2 0  0   40 Jan  5 11:57 cryptsetup
+> drwxr-xr-x  2 0  0   60 Jan  5 11:57 dbus
+> drwx------  6 0  0  280 Jan  5 11:57 incus_agent
+> prw-------  1 0  0    0 Jan  5 11:57 initctl
+> drwxrwxrwt  4 0  0   80 Jan  5 11:57 lock
+> drwxr-xr-x  3 0  0   60 Jan  5 11:57 log
+> drwx------  2 0  0   40 Jan  5 11:57 lvm
+> -r--r--r--  1 0  0   33 Jan  5 11:57 machine-id
+> -rw-r--r--  1 0  0  101 Jan  5 11:58 motd.dynamic
+> drwxr-xr-x  2 0  0   40 Jan  5 11:57 mount
+> drwx------  2 0  0   40 Jan  5 11:57 multipath
+> drwxr-xr-x  2 0  0   40 Jan  5 11:57 sendsigs.omit.d
+> lrwxrwxrwx  1 0  0    8 Jan  5 11:57 shm -> /dev/shm
+> drwx--x--x  2 0  0   40 Jan  5 11:57 sudo
+> drwxr-xr-x 24 0  0  660 Jan  5 14:30 systemd
+> drwxr-xr-x  6 0  0  140 Jan  5 14:30 udev
+> drwxr-xr-x  4 0  0   80 Jan  5 11:58 user
+> -rw-rw-r--  1 0 43 2304 Jan  5 15:15 utmp
+> 
+> user1@localhost:~/data/scripts$ ls -ln /mnt/
+> total 12
+> drwxr-xr-x  2 1234  1000   40 Jan  5 12:12 credentials
+> drwx------  2 1234  1000   40 Jan  5 11:57 cryptsetup
+> drwxr-xr-x  2 1234  1000   60 Jan  5 11:57 dbus
+> drwxr-xr-x  2 1234  1000   40 Jan  5 11:57 incus_agent
+> prw-------  1 1234  1000    0 Jan  5 11:57 initctl
+> drwxr-xr-x  2 1234  1000   40 Jan  5 11:57 lock
+> drwxr-xr-x  3 1234  1000   60 Jan  5 11:57 log
+> drwx------  2 1234  1000   40 Jan  5 11:57 lvm
+> -r--r--r--  1 1234  1000   33 Jan  5 11:57 machine-id
+> -rw-r--r--  1 1234  1000  101 Jan  5 11:58 motd.dynamic
+> drwxr-xr-x  2 1234  1000   40 Jan  5 11:57 mount
+> drwx------  2 1234  1000   40 Jan  5 11:57 multipath
+> drwxr-xr-x  2 1234  1000   40 Jan  5 11:57 sendsigs.omit.d
+> lrwxrwxrwx  1 1234  1000    8 Jan  5 11:57 shm -> /dev/shm
+> drwx--x--x  2 1234  1000   40 Jan  5 11:57 sudo
+> drwxr-xr-x 24 1234  1000  660 Jan  5 14:30 systemd
+> drwxr-xr-x  6 1234  1000  140 Jan  5 14:30 udev
+> drwxr-xr-x  4 1234  1000   80 Jan  5 11:58 user
+> -rw-rw-r--  1 1234 65534 2304 Jan  5 15:15 utmp
+> 
+> Where you can see that ownership of this tmpfs instance in this example
+> is changed. I'm not trying to advocate here but this will probably
+> ultimately be nicer for your users because it means that a container
+> manager or whatever can be handed a part of tracefs (or all of it) and
+> the ownership and access rights for that thing is correct. And you can
+> get rid of that gid based access completely.
+> 
+> You can change uids, gids, or both. You can specify up to 340 individual
+> mappings it's quite flexible.
+> 
+> Because then you can have a single tracefs superblock and have multiple
+> mounts with different ownership for the relevant parts of tracefs that
+> you want to delegate to whoever. If you need an ownership change you can
+> then just create another idmapped mount with the new ownership and then
+> use MOVE_MOUNT_BENEATH + umount to replace that mount.
+> 
+> Probably even know someone that would implement this for you (not me) if
+> that sounds like something that would cover some of the use-case for the
+> proposed change here. But maybe I just misunderstood things completely.
+
+That actually sounds nice. I have no idea how to implement it, but having a
+way to bind mount with different permissions looks like a nifty feature to
+have. Now, can we do that and still keep the dynamic creation of inodes and
+dentries? Does this require having more than one dentry per inode?
+
+-- Steve
 
