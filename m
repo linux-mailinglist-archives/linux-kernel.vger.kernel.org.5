@@ -1,524 +1,150 @@
-Return-Path: <linux-kernel+bounces-18109-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18110-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1DF85825901
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 18:24:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EABDA825904
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 18:27:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A68C62854AD
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 17:24:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1C98D1C23131
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 17:27:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2565935286;
-	Fri,  5 Jan 2024 17:24:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1C0732197;
+	Fri,  5 Jan 2024 17:27:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="HGlB60/O"
+	dkim=pass (1024-bit key) header.d=inria.fr header.i=@inria.fr header.b="JLFDFkQX"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from mail2-relais-roc.national.inria.fr (mail2-relais-roc.national.inria.fr [192.134.164.83])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1DB13527E
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 17:24:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1704475465;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=AcCfcMHHiY1xTXjDETQi+ZV8peDXU9PZV5o5VdbUcHQ=;
-	b=HGlB60/O7E0vOx515w4OQI7wjpbfKXxB3+J0B5LT+zEeKD1jH1NtKFCCk9UkgdEhWpSq+E
-	fT17pvBJUOMxUmDeG0WzcH5mbUwcGH6Em2sEpBZooNCmQ4VJuv+UWPQbPmdNcmAjycMu/f
-	Q2Xpnin4je05uvqm47D7FFb40cZ7MMk=
-Received: from mail-oa1-f70.google.com (mail-oa1-f70.google.com
- [209.85.160.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-17-CDbZ4FFOMDuPkuTEmrSCaw-1; Fri, 05 Jan 2024 12:24:24 -0500
-X-MC-Unique: CDbZ4FFOMDuPkuTEmrSCaw-1
-Received: by mail-oa1-f70.google.com with SMTP id 586e51a60fabf-203f9920bd9so490854fac.1
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Jan 2024 09:24:24 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704475463; x=1705080263;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=AcCfcMHHiY1xTXjDETQi+ZV8peDXU9PZV5o5VdbUcHQ=;
-        b=C921WsNervdfHYnh171GwHM2BFekTgdvPlEy3cnT4pZqzL6iiMepAJx3B4Ueq/PQlq
-         Kvenmis17OaM60VzlNP8X2XLzw72nLPw9kC/UbpHrIJULLwVde15jw7cw++TOSKXCxhR
-         b+Rhn2sNX7SjAYKHXhMZl/uaUbExilUAW9nLIOM538QtKZpJ1VLAaknf4BubCZiWXpNP
-         O3AZrZXi4P7Nh/x+qHf0qxWwi7Q3xUzVKX7tEBULIGewQLao13kV6OSYFNDNVzqmsV/h
-         SKSMXyB3LMzrT08MI955XlkbD7fhBq328UdNhgblUmxMu3VycPjOBLkFxjbQrnxNlsi1
-         r8BA==
-X-Gm-Message-State: AOJu0YzqlpB5s/j7q/1nu+RQQsGV791+T8DuGwwLajP6/uL00My4twYw
-	kjZ6TRzjk+J7jX5K+amWbGtts2tElXaYrCkGH0q7GjGLLnNDsRR9vv/Ysv6LDCZtU0tgmO4PtVC
-	ODdlikkReXgQbNdGkM2f0mESlxZ/pyZr00X7NwHLB
-X-Received: by 2002:a05:6871:8a2:b0:205:c547:fa6c with SMTP id r34-20020a05687108a200b00205c547fa6cmr4932325oaq.4.1704475463451;
-        Fri, 05 Jan 2024 09:24:23 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFjzRlE7Iybtswflx60D1g0bfKqdl1Kcf5GIUUDSFjG04C5BzXoRzYM9sa3o3sJe5gVMnN7gg==
-X-Received: by 2002:a05:6871:8a2:b0:205:c547:fa6c with SMTP id r34-20020a05687108a200b00205c547fa6cmr4932307oaq.4.1704475463104;
-        Fri, 05 Jan 2024 09:24:23 -0800 (PST)
-Received: from pstanner-thinkpadt14sgen1.remote.csb ([2001:9e8:32d1:a900:227b:d2ff:fe26:2a7a])
-        by smtp.gmail.com with ESMTPSA id l27-20020a05620a211b00b00781c8423ca1sm721994qkl.121.2024.01.05.09.24.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Jan 2024 09:24:22 -0800 (PST)
-From: Philipp Stanner <pstanner@redhat.com>
-To: Laurentiu Palcu <laurentiu.palcu@oss.nxp.com>,
-	Lucas Stach <l.stach@pengutronix.de>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>
-Cc: NXP Linux Team <linux-imx@nxp.com>,
-	dri-devel@lists.freedesktop.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Philipp Stanner <pstanner@redhat.com>
-Subject: [PATCH] drm/imx/dcss: have all init functions use devres
-Date: Fri,  5 Jan 2024 18:24:04 +0100
-Message-ID: <20240105172403.42951-2-pstanner@redhat.com>
-X-Mailer: git-send-email 2.43.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5E4D3218B
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Jan 2024 17:27:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=inria.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=inria.fr
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=inria.fr; s=dc;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=VqiJARujdkxeAMeRdhavxlMPshsb2MlXN5EuWtr5CFg=;
+  b=JLFDFkQXDyCnx8GbqNE5wQV2SKmuc4QO5nMi6YXntj0IWbPtt4KcNbPw
+   AUX61Ka0vVX45dePdafwiB28/zQMoZ7wxAcpiDyIdfE57EYprsyMgj0MB
+   xTnGKYLDpQolbnhHgfonjMOC+yx7Gs/YeGoyvfOwVU31ymW+3FdqgsgUC
+   4=;
+Authentication-Results: mail2-relais-roc.national.inria.fr; dkim=none (message not signed) header.i=none; spf=SoftFail smtp.mailfrom=julia.lawall@inria.fr; dmarc=fail (p=none dis=none) d=inria.fr
+X-IronPort-AV: E=Sophos;i="6.04,334,1695679200"; 
+   d="scan'208";a="145129745"
+Received: from dt-lawall.paris.inria.fr ([128.93.67.65])
+  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2024 18:27:20 +0100
+Date: Fri, 5 Jan 2024 18:27:19 +0100 (CET)
+From: Julia Lawall <julia.lawall@inria.fr>
+To: Julia Lawall <julia.lawall@inria.fr>
+cc: Vincent Guittot <vincent.guittot@linaro.org>, 
+    Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+    Dietmar Eggemann <dietmar.eggemann@arm.com>, Mel Gorman <mgorman@suse.de>, 
+    linux-kernel@vger.kernel.org
+Subject: Re: EEVDF and NUMA balancing
+In-Reply-To: <7a845b43-bd8e-6c7d-6bca-2e6f174f671@inria.fr>
+Message-ID: <36f2cc93-db10-5977-78ab-d9d07c3f445@inria.fr>
+References: <alpine.DEB.2.22.394.2310032059060.3220@hadrien> <CAKfTPtALEFtrapi3Kk97KLGQN4259eEQEwwftVUK4RG42Vgoyw@mail.gmail.com> <98b3df1-79b7-836f-e334-afbdd594b55@inria.fr> <CAKfTPtCRN_eWgVdK2-h6E_ifJKwwJEtMjeNjB=5DXZFWyBS+tQ@mail.gmail.com>
+ <93112fbe-30be-eab8-427c-5d4670a0f94e@inria.fr> <CAKfTPtAeFvrZxApK3RruWwCjMxbQvOkU+_YgZSo4QPT_AD6FxA@mail.gmail.com> <9dc451b5-9dd8-89f2-1c9c-7c358faeaad@inria.fr> <CAKfTPtDCsLnDnVje9maP5s-L7TbtSu4CvF19xHOxbkvSNd7vZg@mail.gmail.com>
+ <2359ab5-4556-1a73-9255-3fcf2fc57ec@inria.fr> <6618dcfa-a42f-567c-2a9d-a76786683b29@inria.fr> <CAKfTPtDrULyOB9+RhjoPfCpHKVhx5kRf6dq79DSE6jZgsEairw@mail.gmail.com> <edbd8ecd-148c-b366-fd46-3531dec39d49@inria.fr> <cecfd395-f067-99e1-bdd2-fec2ebc3db3@inria.fr>
+ <CAKfTPtCAcHuzhcDvry6_nH2K29wc-LEo2yOi-J-mnZkwMvGDbw@mail.gmail.com> <cfae246d-9383-59d-ee5b-81ea3dd0a795@inria.fr> <CAKfTPtD0B29zadkeEOCWvry123zWVEEm41ouKj7noXwQdoh2+Q@mail.gmail.com> <7a845b43-bd8e-6c7d-6bca-2e6f174f671@inria.fr>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 
-dcss currently allocates and ioremaps quite a few resources in its probe
-function's call graph. Devres now provides convenient functions which
-perform the same task but do the cleanup automatically.
 
-Port all memory allocations and ioremap() calls to the devres
-counterparts.
 
-Signed-off-by: Philipp Stanner <pstanner@redhat.com>
----
-This is a separate patch because it can be applied independently from my
-other patch-series that applies the region-request for this driver.
----
- drivers/gpu/drm/imx/dcss/dcss-blkctl.c | 14 +++-----------
- drivers/gpu/drm/imx/dcss/dcss-ctxld.c  | 15 ++++-----------
- drivers/gpu/drm/imx/dcss/dcss-dev.c    | 11 ++---------
- drivers/gpu/drm/imx/dcss/dcss-dpr.c    | 25 ++++++-------------------
- drivers/gpu/drm/imx/dcss/dcss-drv.c    | 12 +++---------
- drivers/gpu/drm/imx/dcss/dcss-dtg.c    | 23 ++++-------------------
- drivers/gpu/drm/imx/dcss/dcss-scaler.c | 22 ++++------------------
- drivers/gpu/drm/imx/dcss/dcss-ss.c     | 11 +++--------
- 8 files changed, 29 insertions(+), 104 deletions(-)
+On Fri, 5 Jan 2024, Julia Lawall wrote:
 
-diff --git a/drivers/gpu/drm/imx/dcss/dcss-blkctl.c b/drivers/gpu/drm/imx/dcss/dcss-blkctl.c
-index c9b54bb2692d..58e12ec65f80 100644
---- a/drivers/gpu/drm/imx/dcss/dcss-blkctl.c
-+++ b/drivers/gpu/drm/imx/dcss/dcss-blkctl.c
-@@ -41,15 +41,15 @@ void dcss_blkctl_cfg(struct dcss_blkctl *blkctl)
- int dcss_blkctl_init(struct dcss_dev *dcss, unsigned long blkctl_base)
- {
- 	struct dcss_blkctl *blkctl;
-+	struct device *dev = dcss->dev;
- 
--	blkctl = kzalloc(sizeof(*blkctl), GFP_KERNEL);
-+	blkctl = devm_kzalloc(dev, sizeof(*blkctl), GFP_KERNEL);
- 	if (!blkctl)
- 		return -ENOMEM;
- 
--	blkctl->base_reg = ioremap(blkctl_base, SZ_4K);
-+	blkctl->base_reg = devm_ioremap(dev, blkctl_base, SZ_4K);
- 	if (!blkctl->base_reg) {
- 		dev_err(dcss->dev, "unable to remap BLK CTRL base\n");
--		kfree(blkctl);
- 		return -ENOMEM;
- 	}
- 
-@@ -60,11 +60,3 @@ int dcss_blkctl_init(struct dcss_dev *dcss, unsigned long blkctl_base)
- 
- 	return 0;
- }
--
--void dcss_blkctl_exit(struct dcss_blkctl *blkctl)
--{
--	if (blkctl->base_reg)
--		iounmap(blkctl->base_reg);
--
--	kfree(blkctl);
--}
-diff --git a/drivers/gpu/drm/imx/dcss/dcss-ctxld.c b/drivers/gpu/drm/imx/dcss/dcss-ctxld.c
-index 3a84cb3209c4..444511d0f382 100644
---- a/drivers/gpu/drm/imx/dcss/dcss-ctxld.c
-+++ b/drivers/gpu/drm/imx/dcss/dcss-ctxld.c
-@@ -199,10 +199,11 @@ static int dcss_ctxld_alloc_ctx(struct dcss_ctxld *ctxld)
- 
- int dcss_ctxld_init(struct dcss_dev *dcss, unsigned long ctxld_base)
- {
-+	struct device *dev = dcss->dev;
- 	struct dcss_ctxld *ctxld;
- 	int ret;
- 
--	ctxld = kzalloc(sizeof(*ctxld), GFP_KERNEL);
-+	ctxld = devm_kzalloc(dev, sizeof(*ctxld), GFP_KERNEL);
- 	if (!ctxld)
- 		return -ENOMEM;
- 
-@@ -217,7 +218,7 @@ int dcss_ctxld_init(struct dcss_dev *dcss, unsigned long ctxld_base)
- 		goto err;
- 	}
- 
--	ctxld->ctxld_reg = ioremap(ctxld_base, SZ_4K);
-+	ctxld->ctxld_reg = devm_ioremap(dev, ctxld_base, SZ_4K);
- 	if (!ctxld->ctxld_reg) {
- 		dev_err(dcss->dev, "ctxld: unable to remap ctxld base\n");
- 		ret = -ENOMEM;
-@@ -226,18 +227,14 @@ int dcss_ctxld_init(struct dcss_dev *dcss, unsigned long ctxld_base)
- 
- 	ret = dcss_ctxld_irq_config(ctxld, to_platform_device(dcss->dev));
- 	if (ret)
--		goto err_irq;
-+		goto err;
- 
- 	dcss_ctxld_hw_cfg(ctxld);
- 
- 	return 0;
- 
--err_irq:
--	iounmap(ctxld->ctxld_reg);
--
- err:
- 	dcss_ctxld_free_ctx(ctxld);
--	kfree(ctxld);
- 
- 	return ret;
- }
-@@ -246,11 +243,7 @@ void dcss_ctxld_exit(struct dcss_ctxld *ctxld)
- {
- 	free_irq(ctxld->irq, ctxld);
- 
--	if (ctxld->ctxld_reg)
--		iounmap(ctxld->ctxld_reg);
--
- 	dcss_ctxld_free_ctx(ctxld);
--	kfree(ctxld);
- }
- 
- static int dcss_ctxld_enable_locked(struct dcss_ctxld *ctxld)
-diff --git a/drivers/gpu/drm/imx/dcss/dcss-dev.c b/drivers/gpu/drm/imx/dcss/dcss-dev.c
-index efd3a998652d..d5a0bfaf458e 100644
---- a/drivers/gpu/drm/imx/dcss/dcss-dev.c
-+++ b/drivers/gpu/drm/imx/dcss/dcss-dev.c
-@@ -109,8 +109,6 @@ static int dcss_submodules_init(struct dcss_dev *dcss)
- 	dcss_ctxld_exit(dcss->ctxld);
- 
- ctxld_err:
--	dcss_blkctl_exit(dcss->blkctl);
--
- 	dcss_clocks_disable(dcss);
- 
- 	return ret;
-@@ -183,7 +181,7 @@ struct dcss_dev *dcss_dev_create(struct device *dev, bool hdmi_output)
- 		return res;
- 	}
- 
--	dcss = kzalloc(sizeof(*dcss), GFP_KERNEL);
-+	dcss = devm_kzalloc(dev, sizeof(*dcss), GFP_KERNEL);
- 	if (!dcss)
- 		return ERR_PTR(-ENOMEM);
- 
-@@ -194,7 +192,7 @@ struct dcss_dev *dcss_dev_create(struct device *dev, bool hdmi_output)
- 	ret = dcss_clks_init(dcss);
- 	if (ret) {
- 		dev_err(dev, "clocks initialization failed\n");
--		goto err;
-+		return ret;
- 	}
- 
- 	dcss->of_port = of_graph_get_port_by_id(dev->of_node, 0);
-@@ -226,9 +224,6 @@ struct dcss_dev *dcss_dev_create(struct device *dev, bool hdmi_output)
- clks_err:
- 	dcss_clks_release(dcss);
- 
--err:
--	kfree(dcss);
--
- 	return ERR_PTR(ret);
- }
- 
-@@ -246,8 +241,6 @@ void dcss_dev_destroy(struct dcss_dev *dcss)
- 	dcss_submodules_stop(dcss);
- 
- 	dcss_clks_release(dcss);
--
--	kfree(dcss);
- }
- 
- static int dcss_dev_suspend(struct device *dev)
-diff --git a/drivers/gpu/drm/imx/dcss/dcss-dpr.c b/drivers/gpu/drm/imx/dcss/dcss-dpr.c
-index df9dab949bf2..d6b2ad5e6977 100644
---- a/drivers/gpu/drm/imx/dcss/dcss-dpr.c
-+++ b/drivers/gpu/drm/imx/dcss/dcss-dpr.c
-@@ -125,7 +125,8 @@ static void dcss_dpr_write(struct dcss_dpr_ch *ch, u32 val, u32 ofs)
- 	dcss_ctxld_write(dpr->ctxld, dpr->ctx_id, val, ch->base_ofs + ofs);
- }
- 
--static int dcss_dpr_ch_init_all(struct dcss_dpr *dpr, unsigned long dpr_base)
-+static int dcss_dpr_ch_init_all(struct device *dev, struct dcss_dpr *dpr,
-+		unsigned long dpr_base)
- {
- 	struct dcss_dpr_ch *ch;
- 	int i;
-@@ -135,7 +136,7 @@ static int dcss_dpr_ch_init_all(struct dcss_dpr *dpr, unsigned long dpr_base)
- 
- 		ch->base_ofs = dpr_base + i * 0x1000;
- 
--		ch->base_reg = ioremap(ch->base_ofs, SZ_4K);
-+		ch->base_reg = devm_ioremap(dev, ch->base_ofs, SZ_4K);
- 		if (!ch->base_reg) {
- 			dev_err(dpr->dev, "dpr: unable to remap ch %d base\n",
- 				i);
-@@ -154,8 +155,9 @@ static int dcss_dpr_ch_init_all(struct dcss_dpr *dpr, unsigned long dpr_base)
- int dcss_dpr_init(struct dcss_dev *dcss, unsigned long dpr_base)
- {
- 	struct dcss_dpr *dpr;
-+	struct device *dev = dcss->dev;
- 
--	dpr = kzalloc(sizeof(*dpr), GFP_KERNEL);
-+	dpr = devm_kzalloc(dev, sizeof(*dpr), GFP_KERNEL);
- 	if (!dpr)
- 		return -ENOMEM;
- 
-@@ -164,18 +166,8 @@ int dcss_dpr_init(struct dcss_dev *dcss, unsigned long dpr_base)
- 	dpr->ctxld = dcss->ctxld;
- 	dpr->ctx_id = CTX_SB_HP;
- 
--	if (dcss_dpr_ch_init_all(dpr, dpr_base)) {
--		int i;
--
--		for (i = 0; i < 3; i++) {
--			if (dpr->ch[i].base_reg)
--				iounmap(dpr->ch[i].base_reg);
--		}
--
--		kfree(dpr);
--
-+	if (dcss_dpr_ch_init_all(dev, dpr, dpr_base))
- 		return -ENOMEM;
--	}
- 
- 	return 0;
- }
-@@ -189,12 +181,7 @@ void dcss_dpr_exit(struct dcss_dpr *dpr)
- 		struct dcss_dpr_ch *ch = &dpr->ch[ch_no];
- 
- 		dcss_writel(0, ch->base_reg + DCSS_DPR_SYSTEM_CTRL0);
--
--		if (ch->base_reg)
--			iounmap(ch->base_reg);
- 	}
--
--	kfree(dpr);
- }
- 
- static u32 dcss_dpr_x_pix_wide_adjust(struct dcss_dpr_ch *ch, u32 pix_wide,
-diff --git a/drivers/gpu/drm/imx/dcss/dcss-drv.c b/drivers/gpu/drm/imx/dcss/dcss-drv.c
-index b61cec0cc79d..bd3f9d58042c 100644
---- a/drivers/gpu/drm/imx/dcss/dcss-drv.c
-+++ b/drivers/gpu/drm/imx/dcss/dcss-drv.c
-@@ -51,15 +51,13 @@ static int dcss_drv_platform_probe(struct platform_device *pdev)
- 
- 	of_node_put(remote);
- 
--	mdrv = kzalloc(sizeof(*mdrv), GFP_KERNEL);
-+	mdrv = devm_kzalloc(dev, sizeof(*mdrv), GFP_KERNEL);
- 	if (!mdrv)
- 		return -ENOMEM;
- 
- 	mdrv->dcss = dcss_dev_create(dev, hdmi_output);
--	if (IS_ERR(mdrv->dcss)) {
--		err = PTR_ERR(mdrv->dcss);
--		goto err;
--	}
-+	if (IS_ERR(mdrv->dcss))
-+		return PTR_ERR(mdrv->dcss);
- 
- 	dev_set_drvdata(dev, mdrv);
- 
-@@ -75,8 +73,6 @@ static int dcss_drv_platform_probe(struct platform_device *pdev)
- dcss_shutoff:
- 	dcss_dev_destroy(mdrv->dcss);
- 
--err:
--	kfree(mdrv);
- 	return err;
- }
- 
-@@ -87,8 +83,6 @@ static int dcss_drv_platform_remove(struct platform_device *pdev)
- 	dcss_kms_detach(mdrv->kms);
- 	dcss_dev_destroy(mdrv->dcss);
- 
--	kfree(mdrv);
--
- 	return 0;
- }
- 
-diff --git a/drivers/gpu/drm/imx/dcss/dcss-dtg.c b/drivers/gpu/drm/imx/dcss/dcss-dtg.c
-index 30de00540f63..5c0f697587e6 100644
---- a/drivers/gpu/drm/imx/dcss/dcss-dtg.c
-+++ b/drivers/gpu/drm/imx/dcss/dcss-dtg.c
-@@ -151,8 +151,9 @@ int dcss_dtg_init(struct dcss_dev *dcss, unsigned long dtg_base)
- {
- 	int ret = 0;
- 	struct dcss_dtg *dtg;
-+	struct device *dev = dcss->dev;
- 
--	dtg = kzalloc(sizeof(*dtg), GFP_KERNEL);
-+	dtg = devm_kzalloc(dev, sizeof(*dtg), GFP_KERNEL);
- 	if (!dtg)
- 		return -ENOMEM;
- 
-@@ -160,11 +161,10 @@ int dcss_dtg_init(struct dcss_dev *dcss, unsigned long dtg_base)
- 	dtg->dev = dcss->dev;
- 	dtg->ctxld = dcss->ctxld;
- 
--	dtg->base_reg = ioremap(dtg_base, SZ_4K);
-+	dtg->base_reg = devm_ioremap(dev, dtg_base, SZ_4K);
- 	if (!dtg->base_reg) {
- 		dev_err(dcss->dev, "dtg: unable to remap dtg base\n");
--		ret = -ENOMEM;
--		goto err_ioremap;
-+		return -ENOMEM;
- 	}
- 
- 	dtg->base_ofs = dtg_base;
-@@ -176,16 +176,6 @@ int dcss_dtg_init(struct dcss_dev *dcss, unsigned long dtg_base)
- 		((dtg->alpha << DEFAULT_FG_ALPHA_POS) & DEFAULT_FG_ALPHA_MASK);
- 
- 	ret = dcss_dtg_irq_config(dtg, to_platform_device(dcss->dev));
--	if (ret)
--		goto err_irq;
--
--	return 0;
--
--err_irq:
--	iounmap(dtg->base_reg);
--
--err_ioremap:
--	kfree(dtg);
- 
- 	return ret;
- }
-@@ -193,11 +183,6 @@ int dcss_dtg_init(struct dcss_dev *dcss, unsigned long dtg_base)
- void dcss_dtg_exit(struct dcss_dtg *dtg)
- {
- 	free_irq(dtg->ctxld_kick_irq, dtg);
--
--	if (dtg->base_reg)
--		iounmap(dtg->base_reg);
--
--	kfree(dtg);
- }
- 
- void dcss_dtg_sync_set(struct dcss_dtg *dtg, struct videomode *vm)
-diff --git a/drivers/gpu/drm/imx/dcss/dcss-scaler.c b/drivers/gpu/drm/imx/dcss/dcss-scaler.c
-index 47852b9dd5ea..3dbd0ed68ac1 100644
---- a/drivers/gpu/drm/imx/dcss/dcss-scaler.c
-+++ b/drivers/gpu/drm/imx/dcss/dcss-scaler.c
-@@ -302,7 +302,7 @@ static int dcss_scaler_ch_init_all(struct dcss_scaler *scl,
- 
- 		ch->base_ofs = scaler_base + i * 0x400;
- 
--		ch->base_reg = ioremap(ch->base_ofs, SZ_4K);
-+		ch->base_reg = devm_ioremap(dev, ch->base_ofs, SZ_4K);
- 		if (!ch->base_reg) {
- 			dev_err(scl->dev, "scaler: unable to remap ch base\n");
- 			return -ENOMEM;
-@@ -317,8 +317,9 @@ static int dcss_scaler_ch_init_all(struct dcss_scaler *scl,
- int dcss_scaler_init(struct dcss_dev *dcss, unsigned long scaler_base)
- {
- 	struct dcss_scaler *scaler;
-+	struct device *dev = dcss->dev;
- 
--	scaler = kzalloc(sizeof(*scaler), GFP_KERNEL);
-+	scaler = devm_kzalloc(dev, sizeof(*scaler), GFP_KERNEL);
- 	if (!scaler)
- 		return -ENOMEM;
- 
-@@ -327,18 +328,8 @@ int dcss_scaler_init(struct dcss_dev *dcss, unsigned long scaler_base)
- 	scaler->ctxld = dcss->ctxld;
- 	scaler->ctx_id = CTX_SB_HP;
- 
--	if (dcss_scaler_ch_init_all(scaler, scaler_base)) {
--		int i;
--
--		for (i = 0; i < 3; i++) {
--			if (scaler->ch[i].base_reg)
--				iounmap(scaler->ch[i].base_reg);
--		}
--
--		kfree(scaler);
--
-+	if (dcss_scaler_ch_init_all(dev, scaler, scaler_base))
- 		return -ENOMEM;
--	}
- 
- 	return 0;
- }
-@@ -351,12 +342,7 @@ void dcss_scaler_exit(struct dcss_scaler *scl)
- 		struct dcss_scaler_ch *ch = &scl->ch[ch_no];
- 
- 		dcss_writel(0, ch->base_reg + DCSS_SCALER_CTRL);
--
--		if (ch->base_reg)
--			iounmap(ch->base_reg);
- 	}
--
--	kfree(scl);
- }
- 
- void dcss_scaler_ch_enable(struct dcss_scaler *scl, int ch_num, bool en)
-diff --git a/drivers/gpu/drm/imx/dcss/dcss-ss.c b/drivers/gpu/drm/imx/dcss/dcss-ss.c
-index 8ddf08da911b..0a8320adc302 100644
---- a/drivers/gpu/drm/imx/dcss/dcss-ss.c
-+++ b/drivers/gpu/drm/imx/dcss/dcss-ss.c
-@@ -82,8 +82,9 @@ static void dcss_ss_write(struct dcss_ss *ss, u32 val, u32 ofs)
- int dcss_ss_init(struct dcss_dev *dcss, unsigned long ss_base)
- {
- 	struct dcss_ss *ss;
-+	struct device *dev = dcss->dev;
- 
--	ss = kzalloc(sizeof(*ss), GFP_KERNEL);
-+	ss = devm_kzalloc(dev, sizeof(*ss), GFP_KERNEL);
- 	if (!ss)
- 		return -ENOMEM;
- 
-@@ -91,10 +92,9 @@ int dcss_ss_init(struct dcss_dev *dcss, unsigned long ss_base)
- 	ss->dev = dcss->dev;
- 	ss->ctxld = dcss->ctxld;
- 
--	ss->base_reg = ioremap(ss_base, SZ_4K);
-+	ss->base_reg = devm_ioremap(dev, ss_base, SZ_4K);
- 	if (!ss->base_reg) {
- 		dev_err(dcss->dev, "ss: unable to remap ss base\n");
--		kfree(ss);
- 		return -ENOMEM;
- 	}
- 
-@@ -108,11 +108,6 @@ void dcss_ss_exit(struct dcss_ss *ss)
- {
- 	/* stop SS */
- 	dcss_writel(0, ss->base_reg + DCSS_SS_SYS_CTRL);
--
--	if (ss->base_reg)
--		iounmap(ss->base_reg);
--
--	kfree(ss);
- }
- 
- void dcss_ss_subsam_set(struct dcss_ss *ss)
--- 
-2.43.0
+>
+>
+> On Fri, 5 Jan 2024, Vincent Guittot wrote:
+>
+> > On Fri, 5 Jan 2024 at 15:51, Julia Lawall <julia.lawall@inria.fr> wrote:
+> > >
+> > > > Your system is calling the polling mode and not the default
+> > > > cpuidle_idle_call() ? This could explain why I don't see such problem
+> > > > on my system which doesn't have polling
+> > > >
+> > > > Are you forcing the use of polling mode ?
+> > > > If yes, could you check that this problem disappears without forcing
+> > > > polling mode ?
+> > >
+> > > I expanded the code in do_idle to:
+> > >
+> > >                 if (cpu_idle_force_poll) { c1++;
+> > >                         tick_nohz_idle_restart_tick();
+> > >                         cpu_idle_poll();
+> > >                 } else if (tick_check_broadcast_expired()) { c2++;
+> > >                         tick_nohz_idle_restart_tick();
+> > >                         cpu_idle_poll();
+> > >                 } else { c3++;
+> > >                         cpuidle_idle_call();
+> > >                 }
+> > >
+> > > Later, I have:
+> > >
+> > >         trace_printk("force poll: %d: c1: %d, c2: %d, c3: %d\n",cpu_idle_force_poll, c1, c2, c3);
+> > >         flush_smp_call_function_queue();
+> > >         schedule_idle();
+> > >
+> > > force poll, c1 and c2 are always 0, and c3 is always some non-zero value.
+> > > Sometimes small (often 1), and sometimes large (304 or 305).
+> > >
+> > > So I don't think it's calling cpu_idle_poll().
+> >
+> > I agree that something else
+> >
+> > >
+> > > x86 has TIF_POLLING_NRFLAG defined to be a non zero value, which I think
+> > > is sufficient to cause the issue.
+> >
+> > Could you trace trace_sched_wake_idle_without_ipi() ans csd traces as well ?
+> > I don't understand what set need_resched() in your case; having in
+> > mind that I don't see the problem on my Arm systems and IIRC Peter
+> > said that he didn't face the problem on his x86 system.
+>
+> TIF_POLLING_NRFLAG doesn't seem to be defined on Arm.
+>
+> Peter said that he didn't see the problem, but perhaps that was just
+> random.  It requires a NUMA move to occur.  I make 20 runs to be sure to
+> see the problem at least once.  But another machine might behave
+> differently.
+>
+> I believe the call chain is:
+>
+> scheduler_tick
+>   trigger_load_balance
+>     nohz_balancer_kick
+>       kick_ilb
+>         smp_call_function_single_async
+>           generic_exec_single
+>             __smp_call_single_queue
+>               send_call_function_single_ipi
+>                 call_function_single_prep_ipi
+>                   set_nr_if_polling <====== sets need_resched
+>
+> I'll make a trace to reverify that.
 
+This is what I see at a tick, which corresponds to the call chain shown
+above:
+
+          bt.B.x-4184  [046]   466.410605: bputs:                scheduler_tick: calling trigger_load_balance
+          bt.B.x-4184  [046]   466.410605: bputs:                trigger_load_balance: calling nohz_balancer_kick
+          bt.B.x-4184  [046]   466.410605: bputs:                trigger_load_balance: calling kick_ilb
+          bt.B.x-4184  [046]   466.410607: bprint:               trigger_load_balance: calling smp_call_function_single_async 22
+          bt.B.x-4184  [046]   466.410607: bputs:                smp_call_function_single_async: calling generic_exec_single
+          bt.B.x-4184  [046]   466.410607: bputs:                generic_exec_single: calling __smp_call_single_queue
+          bt.B.x-4184  [046]   466.410608: bputs:                __smp_call_single_queue: calling send_call_function_single_ipi
+          bt.B.x-4184  [046]   466.410608: bputs:                __smp_call_single_queue: calling call_function_single_prep_ipi
+          bt.B.x-4184  [046]   466.410608: bputs:                call_function_single_prep_ipi: calling set_nr_if_polling
+          bt.B.x-4184  [046]   466.410609: sched_wake_idle_without_ipi: cpu=22
+
+julia
 
