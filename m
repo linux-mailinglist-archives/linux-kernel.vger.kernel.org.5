@@ -1,105 +1,80 @@
-Return-Path: <linux-kernel+bounces-18012-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18013-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D4F1182570B
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 16:48:57 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 85CC582571C
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 16:51:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 57B7F284817
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 15:48:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 25750B234C9
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Jan 2024 15:51:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B21D2E82B;
-	Fri,  5 Jan 2024 15:48:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 220E42E821;
+	Fri,  5 Jan 2024 15:51:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XhU4Gg2P"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uLhiE6Mf"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 958D32E64B;
-	Fri,  5 Jan 2024 15:48:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-28be024282bso1245762a91.3;
-        Fri, 05 Jan 2024 07:48:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704469722; x=1705074522; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=oHjuD7i+UA3Qw3m7etGOaevmlRCqaIA5WQMiwQTIlE8=;
-        b=XhU4Gg2PcmI7njWY5cFISo4UwEBpJMRQ0RsEl5xZipS4Te9VNzBI//n8OnUHFxdcj4
-         aap0nncn6bQYrgoMv8bCTAAiKUgRYOlGvReAoL2GIzBP3wHFiAEJU6qhP4A9p2zr1bkD
-         LtvHV2FeTmX+XMwypxncDQ6qXnR1cfommRLTgx4XcgDnFyX9ZUYBY2nTCjptAvXOQhGu
-         lNszmqNvqvgGsDVwWYZrFd0JZ5ikY+ny/0KcrBqdHnMjZhIKDp6HxugfdrgANAqmPCLp
-         y6VoaFLM6lZ78KetCW1uJrVRDHDIPvkFKiBKQnfGkzzaFD8C3cvea3naiidp8otiHkDa
-         JCRg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704469722; x=1705074522;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=oHjuD7i+UA3Qw3m7etGOaevmlRCqaIA5WQMiwQTIlE8=;
-        b=ejEAG5MDjgP17fMHaeF2yxdkn6IFDJpps/oRRDOXs+PM/+WyqUK/XRfhdH5IaRr7D5
-         cDg4u1bGARBBHWtRnG3iwAQGUnetOsJwaOYl/6uiFwcUyR/HbiLCxlANdGbZKxj4w+pu
-         dLOVK0EU0D/W+fyAUk367yRL2UU4GXxFyo8RQJnijCh05Q0Bt8qS1NCYIwcQL0gUeB7T
-         8LsdyFejb7uoL6/6ixR6SrqX9DIVGsFsAgg1qPso52jcX4S4t/0Jtd7ZAXG4u2jn2+mP
-         V9HYtLkN/wZmr+B4z71U43gZk+Z9CWzIv5aFGnEEPFtJ52pDelsOmuMNOm3NS2c5fs6f
-         QcNw==
-X-Gm-Message-State: AOJu0YwuRfM2SQiyUzSMB27ku6mSrGkcy4urld7+yNcwmDexgKdXfJjG
-	D8zVcDcfKKGXEljCliiR1Ac=
-X-Google-Smtp-Source: AGHT+IG4JLyKQE+gM4c27FKh73op2FHqLSCwte9ikVSJ5ZEE7F/zmt6FTbncQktxxFKJuFQG75IOqA==
-X-Received: by 2002:a17:90a:5512:b0:28c:ef1a:db1a with SMTP id b18-20020a17090a551200b0028cef1adb1amr1858002pji.35.1704469721772;
-        Fri, 05 Jan 2024 07:48:41 -0800 (PST)
-Received: from ?IPv6:2605:59c8:448:b800:82ee:73ff:fe41:9a02? ([2605:59c8:448:b800:82ee:73ff:fe41:9a02])
-        by smtp.googlemail.com with ESMTPSA id gj9-20020a17090b108900b0028be4f51d2dsm1420897pjb.5.2024.01.05.07.48.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Jan 2024 07:48:41 -0800 (PST)
-Message-ID: <ec7f36ffdb2a76fe5cac7272da07242b3a6296f4.camel@gmail.com>
-Subject: Re: [PATCH net-next 5/6] net: introduce page_frag_cache_drain()
-From: Alexander H Duyck <alexander.duyck@gmail.com>
-To: Yunsheng Lin <linyunsheng@huawei.com>, davem@davemloft.net,
- kuba@kernel.org,  pabeni@redhat.com
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, Jason Wang
- <jasowang@redhat.com>, Jeroen de Borst <jeroendb@google.com>, Praveen
- Kaligineedi <pkaligineedi@google.com>, Shailend Chand
- <shailend@google.com>, Eric Dumazet <edumazet@google.com>, Felix Fietkau
- <nbd@nbd.name>, John Crispin <john@phrozen.org>, Sean Wang
- <sean.wang@mediatek.com>, Mark Lee <Mark-MC.Lee@mediatek.com>, Lorenzo
- Bianconi <lorenzo@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Keith
- Busch <kbusch@kernel.org>,  Jens Axboe <axboe@kernel.dk>, Christoph Hellwig
- <hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>,  Chaitanya Kulkarni
- <kch@nvidia.com>, "Michael S. Tsirkin" <mst@redhat.com>, Andrew Morton
- <akpm@linux-foundation.org>, linux-arm-kernel@lists.infradead.org, 
- linux-mediatek@lists.infradead.org, linux-nvme@lists.infradead.org, 
- kvm@vger.kernel.org, virtualization@lists.linux.dev, linux-mm@kvack.org
-Date: Fri, 05 Jan 2024 07:48:39 -0800
-In-Reply-To: <20240103095650.25769-6-linyunsheng@huawei.com>
-References: <20240103095650.25769-1-linyunsheng@huawei.com>
-	 <20240103095650.25769-6-linyunsheng@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EF262E634;
+	Fri,  5 Jan 2024 15:51:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ACBD1C433CA;
+	Fri,  5 Jan 2024 15:51:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704469862;
+	bh=n231lDFtC1PQZJ6m2SX0PpmC/fNZapwiRnhDq0AcIcc=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=uLhiE6MfNuVf6SHhUxaQVY2mw+jq0fPsfzb6nmD7w/qPgUasARdwHMR6wWizw4IFB
+	 UN4o7prHaliVIhiQLo0n0ZVhiEqxbl+DppSYDdtRZVsHypb2FVmMzolmzpnB7r+3c8
+	 4xO+APtPR8i/f9XWAlY39TzDghGimHZGMo+KtDYIT0aKCJQKxEzbyU4sM8cX0Nmo6X
+	 5MwrVWlUtu+cuzKUTXq6iDDDxVcwVAJe4BRJPXCOjo8NNfmglq2cH/Rvh6p9FSq78P
+	 S6gvMIZzrWfzq1bcgZt1rmg/GGEsHdbMfWIbKEMFecMY6FN+RhTBqVNzSYT3Snjgx6
+	 fOVxmkZShRH2g==
+Date: Fri, 5 Jan 2024 09:51:00 -0600
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Michael Schaller <michael@5challer.de>
+Cc: Kai-Heng Feng <kai.heng.feng@canonical.com>, bhelgaas@google.com,
+	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+	regressions@lists.linux.dev, macro@orcam.me.uk,
+	ajayagarwal@google.com, sathyanarayanan.kuppuswamy@linux.intel.com,
+	gregkh@linuxfoundation.org, hkallweit1@gmail.com,
+	michael.a.bottini@linux.intel.com, johan+linaro@kernel.org
+Subject: Re: [Regression] [PCI/ASPM] [ASUS PN51] Reboot on resume attempt
+ (bisect done; commit found)
+Message-ID: <20240105155100.GA1861423@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <954f0b86-dd9e-4d84-8d67-fba7e80bc94e@5challer.de>
 
-On Wed, 2024-01-03 at 17:56 +0800, Yunsheng Lin wrote:
-> When draining a page_frag_cache, most user are doing
-> the similar steps, so introduce an API to avoid code
-> duplication.
->=20
-> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
-> Acked-by: Jason Wang <jasowang@redhat.com>
+On Fri, Jan 05, 2024 at 12:18:32PM +0100, Michael Schaller wrote:
+> On 05.01.24 04:25, Kai-Heng Feng wrote:
+> > Just wondering, does `echo 0 > /sys/power/pm_asysnc` help?
+> 
+> Yes, `echo 0 | sudo tee /sys/power/pm_async` does indeed also result in a
+> working resume. I've tested this on kernel 6.6.9 (which still has commit
+> 08d0cc5f3426). I've also attached the relevant dmesg output of the
+> suspend/resume cycle in case this helps.
 
-Looks good to me.
+Thanks for testing that!
 
-Reviewed-by: Alexander Duyck <alexanderduyck@fb.com>
+> Furthermore does this mean that commit 08d0cc5f3426 isn't at fault but
+> rather that we are dealing with a timing issue?
 
+PCI does have a few software timing requirements, mostly related to
+reset and power state (D0/D3cold).  ASPM has some timing parameters,
+too, but I think they're all requirements on the hardware, not on
+software.
+
+Adding an arbitrary delay anywhere shouldn't break anything, and other
+than those few required situations, it shouldn't fix anything either.
+
+Bjorn
 
