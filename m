@@ -1,258 +1,370 @@
-Return-Path: <linux-kernel+bounces-18662-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18663-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 59D788260B3
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 17:50:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 115588260B5
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 17:52:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E3F02282E0D
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 16:50:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AE735282DFE
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 16:52:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 605C8C13E;
-	Sat,  6 Jan 2024 16:50:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE34C8BFD;
+	Sat,  6 Jan 2024 16:52:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="Z043RiT0"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="nw3cE7fk"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2081.outbound.protection.outlook.com [40.107.22.81])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3DC68495;
-	Sat,  6 Jan 2024 16:50:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UwNxNP4c+tx3XgPRivoEJHHOaSPJPAYwlGvJAvsu5S55/i4ta/EO1AHjyxHR1/dAFXcP6wzZmtCgacCn3y4tIU4u/b0sZ50Y9ghQNyMN5FDOS0QpIxUFqRuk7z2cJ/59BDDB4gPAb3+gdpxUnJXcphumAzgYlb2DcABKohteq5qLSlAHnCy0wia4KcxTH5OR3tH79yrcfyg5zcDGdjDrwhz9PYSOJwWeO7xpDFFellAH7wqM4J3581NJKtLrgrE9BUCHFSlZ2jTzzMjPWEieRVIuQhNSBx/RRwQCXHixQ4OV/TSy8GQzMF1bRRRzmXWBfGxTyoPhYsb2lJbDW2W4kw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=djT/2ArV1NVeObskytQ0tgqY6b/N93M6RD2cMVPkE4g=;
- b=Gf7ITErQowNJBTw+n6HgK7NKWIrdKklpVRiPEpZADTkzxuwxC4Nz7jrWZWZ/yUhZAt5bLw82qHbzD0lXkrWhdTsuFSkQ1HiEEqOu3KvrJ0ixIsADlpgO1lEQmulZU67/uJzymT68s9d8wP5jG4j/GhJlO3fRi8cCEZ5p7su3GGKj33LiqPaesjrjxBd1LuBH8Lws1W+oV0TP9fv9cxCWmwNVajZMWLulHm1NO2INgZPMkgLpylmyMavo6mkk4/I3a4Z/w6JVVavDcob+23lauyTUGAAdgKkSsuK2OpznSNG5YFd67e47nzUEr5iumTYS6C3LDap3NV1euxrQKzny3Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=djT/2ArV1NVeObskytQ0tgqY6b/N93M6RD2cMVPkE4g=;
- b=Z043RiT08bvm8pyjEBrowwty+8FAFsU7Rkh34OjV6IbaoPT7lWghDtL6h18+SOXQE5bFoqVnGRITmHcueh5hzLvW2bnciFoQD2b/IRBuAU0ZmV/L1kRAsKU0d/zK19TKVz9btnMR+rLe+WOPXSY1BQVZCfBMGPAX8oD7neVU20E=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from AS8PR04MB7511.eurprd04.prod.outlook.com (2603:10a6:20b:23f::5)
- by DU2PR04MB8598.eurprd04.prod.outlook.com (2603:10a6:10:2d9::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.19; Sat, 6 Jan
- 2024 16:50:39 +0000
-Received: from AS8PR04MB7511.eurprd04.prod.outlook.com
- ([fe80::8ee3:bac5:a2da:d469]) by AS8PR04MB7511.eurprd04.prod.outlook.com
- ([fe80::8ee3:bac5:a2da:d469%4]) with mapi id 15.20.7159.018; Sat, 6 Jan 2024
- 16:50:39 +0000
-Date: Sat, 6 Jan 2024 11:50:28 -0500
-From: Frank Li <Frank.li@nxp.com>
-To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc: krzysztof.kozlowski@linaro.org, bhelgaas@google.com,
-	conor+dt@kernel.org, devicetree@vger.kernel.org, festevam@gmail.com,
-	helgaas@kernel.org, hongxing.zhu@nxp.com, imx@lists.linux.dev,
-	kernel@pengutronix.de, krzysztof.kozlowski+dt@linaro.org,
-	kw@linux.com, l.stach@pengutronix.de,
-	linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
-	linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-	lpieralisi@kernel.org, robh@kernel.org, s.hauer@pengutronix.de,
-	shawnguo@kernel.org
-Subject: Re: [PATCH v7 02/16] PCI: imx6: Simplify phy handling by using by
- using IMX6_PCIE_FLAG_HAS_PHY
-Message-ID: <ZZmE1NV6ShVBm5FU@lizhi-Precision-Tower-5810>
-References: <20231227182727.1747435-1-Frank.Li@nxp.com>
- <20231227182727.1747435-3-Frank.Li@nxp.com>
- <20240106153323.GE2512@thinkpad>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240106153323.GE2512@thinkpad>
-X-ClientProxiedBy: BY5PR17CA0062.namprd17.prod.outlook.com
- (2603:10b6:a03:167::39) To AS8PR04MB7511.eurprd04.prod.outlook.com
- (2603:10a6:20b:23f::5)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 735468831
+	for <linux-kernel@vger.kernel.org>; Sat,  6 Jan 2024 16:52:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-55745901085so653077a12.0
+        for <linux-kernel@vger.kernel.org>; Sat, 06 Jan 2024 08:52:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1704559932; x=1705164732; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=sVqediJv1KtA2x3sKI/uoMPOfqw0gkrUK/6P+U5oMOg=;
+        b=nw3cE7fk0HPriSExHLi/9U+3bbLq1vDIbHtCO/wFk5zLykdlLxBYJO7P6pC1Bj8uzY
+         8ZtyxUhDTdmwUmbC2oDsLZNAnAKYc5sH4DcsjrkFo5MXbIiegyars23y8cQXUNCvHIk9
+         NHRn/iNEdJpS9EEB93j4+U40S+iYswXp8ZR25uOD1nXTM+mIU8sqAq0ghCi5bqsOcXgb
+         nCy8xABSLJmDge64Tl1x2QTUKhmPv0uUPr7fjuNKLi7PVWgmDt6CHvPw0eoaa/cEsgmk
+         WE2yogTRoK6AFzkbKtqatERsxoKx1GwSLMgg80c+o0pZcn6CYFt8lV3AbZ8+OwrD6dqJ
+         PM/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704559932; x=1705164732;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=sVqediJv1KtA2x3sKI/uoMPOfqw0gkrUK/6P+U5oMOg=;
+        b=E9QImhGkX4ad1AK9/TE+AgR1UI1XFahBaZPiPZcNFhJe93p5IPAafBA1m1Kj3VDhjv
+         eV+GmdjJbhCYfne5IspQo11A4X4/k3KPO01A246SADqi+ossV1OiypMSBkHyNgzrzrJI
+         tMQ7Dxd0ca5f2OLFl73sipw+0LJLMOUwTNB/bV9KkmH6sKMU9tSCJt7FeJxlHiPSccci
+         v4wxDJohL3mfbUnvwk5GWVMUF6sTnok2TgBS911fhLAsd1MOIJeFBdUMlvSZcxRUHMFy
+         1FpLrfPg+On8imZvV2lVUDGgIuw5P4cwLcmFLID+EZ+btUMklT1t7zqcmk/5zUp/S/Qm
+         soXg==
+X-Gm-Message-State: AOJu0YwKAuAQHfsl15HhFflvXanjueUngiGZVsj4x494+/3byiC8uFlU
+	UpdE7KOSLp/OjQyoKKkAV7Y9N5+Y6Iy6Eg==
+X-Google-Smtp-Source: AGHT+IEwE+tUD3w27m962Osls9KLTIhEGVUkCOS+7sNsnJYqGJpW97OkLMyRZEvtdb7PI3t/YFVsFg==
+X-Received: by 2002:a17:906:16d5:b0:a27:8953:a70f with SMTP id t21-20020a17090616d500b00a278953a70fmr495612ejd.70.1704559931675;
+        Sat, 06 Jan 2024 08:52:11 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.223.112])
+        by smtp.gmail.com with ESMTPSA id ez5-20020a1709070bc500b00a2a09be8a2dsm490926ejc.114.2024.01.06.08.52.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 06 Jan 2024 08:52:11 -0800 (PST)
+Message-ID: <6f7e65e8-ae83-4f92-b931-a56328d6ad87@linaro.org>
+Date: Sat, 6 Jan 2024 17:52:09 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AS8PR04MB7511:EE_|DU2PR04MB8598:EE_
-X-MS-Office365-Filtering-Correlation-Id: a6a1e80c-5c31-4d49-67d7-08dc0ed79ca5
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	DeYAsw/7AeO3qtLjEMTEyz8PfEzjGj8pFpDGyRfItnh+GEjbwmVH4qqiXxniXW1dPWmH4c3ITDDTe5vYfspkkY0cdXZ1bSj/Eat0vdfn+8kdKrJQ1ekSMhlycvgByg1AbXYisLmrxJ6k7fWhBwtyxoC5DrS5hYzRNHH0AV6AN9yb7vmGPZIxPBLq2GUTIYHblzWFNf7uCScW8/Zq4wMFW+RqUZ7pqSF4ZaAiqTc1Thnd5qpUDbbv4LXZkHmtT/sFRitva8s3YkDQYTARdRcP7vbgUVpcrQIULdETdVxvUph8iml0POnsaoC+Kp9D258ruMAlaZKc/HoDYXU8tnEcFKHSLDHoNJfJIuQ0rxfyse5MDNPKjHSHV956KEq+EjmZI5bVppa3los8S6YGulFJO6w/CXhPSkcBicES3d+rrFAIujbBR70yn2b+ncE0u0HamMKt1tAomhdJJTp5MaG+TuNlbRxoy/YXgeRhrPFREgWVzmoyFGqTHBnYhYU5AG63wolNoF0Bm8godl4aprLNlxKQlwP6KR5Y1tHCShYGhfjpT4hroDp0sNWkLuszfJbCfeUmDv5/XXHd7KZNwYcoEFrxpMs+T8qgy/Gx68pdeprHYAiRK/IqjLBLXZxdkgP6aHRqzTSwJeagciMwp+GaQdVFQkNGbPWAOUZ6Qy4goDw=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB7511.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(376002)(396003)(136003)(346002)(39850400004)(366004)(230273577357003)(230922051799003)(230173577357003)(1800799012)(451199024)(64100799003)(186009)(6486002)(52116002)(26005)(9686003)(478600001)(6506007)(6512007)(6666004)(83380400001)(5660300002)(2906002)(7416002)(41300700001)(33716001)(66476007)(66556008)(66946007)(6916009)(316002)(4326008)(8936002)(8676002)(38100700002)(86362001)(38350700005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?ODV0OURxL1FmaG1LeTcvWjI0M25ZUEdyUnRvd21ueVgrT1dFV0dnMFlzNFdR?=
- =?utf-8?B?NlpEWmwxVUg2RWRlMEdNQ01nTGY2WWxTbUZpaGtuOGNCZndHbGRERGdscFJ6?=
- =?utf-8?B?SDQ1NDZ6ampGRmlvMmRBVVcvR0RKbDlYOStQdzRDMEhtaEU3STRmdy9TNnVR?=
- =?utf-8?B?MzFKRzJuNlBPK1UxRkhFWm45VHM3VnYwTkVpdEFDeVB5ZUlxWDNMRnpUYytO?=
- =?utf-8?B?U0FkQUEydk1FdmhmQmtKVWZKRDh0NHQzaGZkMFduQ3RrK1owcTRrMEM2eDAw?=
- =?utf-8?B?cGZsaENxV3dVLzNMNjZDN3AyTVBFaUhvYnV0ZHRxQ0grUnFCZSt2RWRSbmpK?=
- =?utf-8?B?NUdiQmI3VXprZWc4eklRbWIrWm5SNm5IdU1HYkNaamxvVytjcVM3QUZyeEFD?=
- =?utf-8?B?TVpZK0xLM0RCeE5iWWc0U0hmVzdUYUJXcXlVWEVzaFFCZFRvVHdoSGYyU0lI?=
- =?utf-8?B?ZVBidzRNeTJpcXV2L3NweUxZeC91aDl2dm9sMTBLMTltaHB6VHBaZm1YelAy?=
- =?utf-8?B?M3JKR1ZHY2FkOHRZSWRPU01BdHFvSjJJeG1LOXRydWJ1RUFKbnpZNDBiNTRT?=
- =?utf-8?B?dEFJT2J5WExDWFlEZlBEOHR0WWpvNS9uWmNQVFdvQjJLUFp1YjdyWWdkTzg3?=
- =?utf-8?B?WlJQZWxCRmovV0w0VjRwbkRvYzVaUDFzd3JpUlU0R3hMeC90cHRiV2RBa2ht?=
- =?utf-8?B?ZDZjS2FndDZZTzhKY2FlL1JMOTRrZXp5RVRLTVJEM1BManhaOHl5clFUWHdj?=
- =?utf-8?B?bTY2UVVkZDIvTnVKc2VxVmN4dlhPektJUnlmSmFPcTF6NE5wNGU2aVduTDUw?=
- =?utf-8?B?aFRnV01PK3JhTmJSbHJ4YVZJK3ZJMnZkV2xwbUpLQXFheFhodXRKNkdQTW5S?=
- =?utf-8?B?dGdPU3N3RDNUTk8weG11Tnowcmh0RnFqNzkyd3NsSVNmdkhRbGt3R0hWSkR6?=
- =?utf-8?B?SlVqUitjWnJPaXcySGV1M0F2cEhsc0h2Mm03RjRBQURRTkxWRU5BQnFCeTg0?=
- =?utf-8?B?a09UbFU1a2IrWUtnd0grblNVZnJsbGQ3bzFBTHBaN2YxK1BuSmdzUDdlRXZJ?=
- =?utf-8?B?dFgwQ0xiNzJEd2JQU2VwRjNpRHNNRzVrL1Y4dUorMGNmazlHKy9ZQVVsUVlY?=
- =?utf-8?B?bUdrUHJNdkRoRGxubXdLdk5hU2w5cWJiNC93d1o2SEpuYkxQQWp5Z2hOdWtr?=
- =?utf-8?B?dVJsbUovNk5ZWWpkeS9BUmhiQUI3NlEwWDN3YXBrOU9FVGhPZWtCMnRxcE15?=
- =?utf-8?B?eGlyNWNRSSthZjF4dkVIMS96T01zQmE1VWMrY2c5U0MvdWlmRGxxajVHWVZr?=
- =?utf-8?B?TzdoclUrb3dIamswT2NVNEN2dGQvdVo3YnFGOVU0ZHJGbzFvbXJ2L0hyNnVl?=
- =?utf-8?B?L1NoVlpBbFdnNTRhdFhrZFRKNEZ6MWd2ZGpiRC9pYW5Iamgvb0ZOYmxtSVhw?=
- =?utf-8?B?WW9hRFN6NXRrdXhLeS83V2N0cHRyRDRNdmtDSng5clZRWUZqSU1RQmJKVDJ1?=
- =?utf-8?B?aVR5Rko2cmI4blRPeHpGQjVPMDVJMWhyNGczSmtKVUR6QkJkMzdveTkyOTRY?=
- =?utf-8?B?MlN4d0hmWENZZ0pWZ1U4bVlaUDBhSXVtenczS1BmdE4wekxkNjJhNFNtcVY3?=
- =?utf-8?B?T05Uck50MmJIK3dJbW1XLzlVWk1WU2ZSdTZXVEhvc2RoZzhnMHk3STY3Wity?=
- =?utf-8?B?UmhzWTBpdlkxREFZanhMbGhRSmgwWmxaNkJyRzJQYUJXMlFJRVU5WGVTZDZY?=
- =?utf-8?B?REhsbkpsN1RsSWxGZmdUa2xST1lZblFSTUZ5TDJFU0JnM25wT285T0hEVXBs?=
- =?utf-8?B?TjI0TnF3MHZmemxXV3MwdGl3MmlVcEU5YXcxYnBmayszVHBoSkQ1U3lsNGFm?=
- =?utf-8?B?eGVJRWJtL0h3ditNZEZ4VlZkV3VYd1FBRFVqTEZ3bkkvL1pqZ0o5ajRsUi9x?=
- =?utf-8?B?Vnova09paDJBOVhlT241djdScXg3bWFYMWNYQ0dHQldaRzBWdGhLZGU4RzMz?=
- =?utf-8?B?T1NmaW9zL1pnaTRaS2RBZ0hEaHJ5S2hCaFlSUDBLWXJ5WmFNM05vODBoRXNz?=
- =?utf-8?B?Y0o1cnEyRVlCbmw0UnU3VFZDbTh6ZC9ENDlKQ3FvbjA4Rmd6UFRTcWs2YUFz?=
- =?utf-8?Q?W+ak=3D?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a6a1e80c-5c31-4d49-67d7-08dc0ed79ca5
-X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB7511.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Jan 2024 16:50:38.9669
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Zw8HiBb3Sx+ZvQXtqcZNdg6UGKWWjNgGdwnRfs4hrDX2txjvuldcvRS+cMAR7XtmFpC60AP3oxftRkRBLizXAg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU2PR04MB8598
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/2] power: supply: Add STC3117 fuel gauge unit driver
+Content-Language: en-US
+To: Bhavin Sharma <bhavin.sharma@siliconsignals.io>, sre@kernel.org
+Cc: Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Hardevsinh Palaniya <hardevsinh.palaniya@siliconsignals.io>,
+ linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240106133546.936261-1-bhavin.sharma@siliconsignals.io>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240106133546.936261-1-bhavin.sharma@siliconsignals.io>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Sat, Jan 06, 2024 at 09:03:23PM +0530, Manivannan Sadhasivam wrote:
-> On Wed, Dec 27, 2023 at 01:27:13PM -0500, Frank Li wrote:
-> > Refactors the phy handling logic in the imx6 PCI driver by adding
-> > IMX6_PCIE_FLAG_HAS_PHY bitmask define for drvdata::flags.
-> > 
-> > The drvdata::flags and a bitmask ensures a cleaner and more scalable
-> > switch-case structure for handling phy.
-> > 
-> > Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> > ---
-> > 
-> > Notes:
-> >     Change from v4 to v5:
-> >     - none, Keep IMX6_PCIE_FLAG_HAS_PHY to indicate dts mismatch when platform
-> >     require phy suppport.
-> >     
-> >     Change from v1 to v3:
-> >     - none
-> > 
-> >  drivers/pci/controller/dwc/pci-imx6.c | 23 ++++++++++++++++-------
-> >  1 file changed, 16 insertions(+), 7 deletions(-)
-> > 
-> > diff --git a/drivers/pci/controller/dwc/pci-imx6.c b/drivers/pci/controller/dwc/pci-imx6.c
-> > index 50d9faaa17f71..4d620249f3d52 100644
-> > --- a/drivers/pci/controller/dwc/pci-imx6.c
-> > +++ b/drivers/pci/controller/dwc/pci-imx6.c
-> > @@ -60,6 +60,9 @@ enum imx6_pcie_variants {
-> >  #define IMX6_PCIE_FLAG_IMX6_PHY			BIT(0)
-> >  #define IMX6_PCIE_FLAG_IMX6_SPEED_CHANGE	BIT(1)
-> >  #define IMX6_PCIE_FLAG_SUPPORTS_SUSPEND		BIT(2)
-> > +#define IMX6_PCIE_FLAG_HAS_PHY			BIT(3)
+On 06/01/2024 14:35, Bhavin Sharma wrote:
+> Adding support for stc3117 fuel gauge driver with
+> minimal functionality to read voltage level currently
 > 
-> Every PCIe setup requires PHY for its operation. Perhaps you are referring to
-> external PHY? If so, please rename this to IMX6_PCIE_FLAG_HAS_EXT_PHY.
+> Signed-off-by: Bhavin Sharma <bhavin.sharma@siliconsignals.io>
+> ---
+>  drivers/power/supply/Kconfig              |   7 ++
+>  drivers/power/supply/Makefile             |   1 +
+>  drivers/power/supply/stc3117_fuel_gauge.c | 136 ++++++++++++++++++++++
+>  3 files changed, 144 insertions(+)
+>  create mode 100644 drivers/power/supply/stc3117_fuel_gauge.c
+> 
+> diff --git a/drivers/power/supply/Kconfig b/drivers/power/supply/Kconfig
+> index f21cb0581..02df55b0d 100644
+> --- a/drivers/power/supply/Kconfig
+> +++ b/drivers/power/supply/Kconfig
+> @@ -875,6 +875,13 @@ config FUEL_GAUGE_SC27XX
+>  	  Say Y here to enable support for fuel gauge with SC27XX
+>  	  PMIC chips.
+>  
+> +config FUEL_GAUGE_STC3117
+> +	tristate "STMicroelectronics STC3117 fuel gauge driver"
+> +	depends on I2C
+> +	help
+> +	  Say Y here to enable support for fuel gauge with STC3117
+> +	  PMIC chips.
+> +
+>  config CHARGER_UCS1002
+>  	tristate "Microchip UCS1002 USB Port Power Controller"
+>  	depends on I2C
+> diff --git a/drivers/power/supply/Makefile b/drivers/power/supply/Makefile
+> index 58b567278..f8ed3e5a8 100644
+> --- a/drivers/power/supply/Makefile
+> +++ b/drivers/power/supply/Makefile
+> @@ -104,6 +104,7 @@ obj-$(CONFIG_CHARGER_CROS_USBPD)	+= cros_usbpd-charger.o
+>  obj-$(CONFIG_CHARGER_CROS_PCHG)	+= cros_peripheral_charger.o
+>  obj-$(CONFIG_CHARGER_SC2731)	+= sc2731_charger.o
+>  obj-$(CONFIG_FUEL_GAUGE_SC27XX)	+= sc27xx_fuel_gauge.o
+> +obj-$(CONFIG_FUEL_GAUGE_STC3117)	+= stc3117_fuel_gauge.o
+>  obj-$(CONFIG_CHARGER_UCS1002)	+= ucs1002_power.o
+>  obj-$(CONFIG_CHARGER_BD99954)	+= bd99954-charger.o
+>  obj-$(CONFIG_CHARGER_WILCO)	+= wilco-charger.o
+> diff --git a/drivers/power/supply/stc3117_fuel_gauge.c b/drivers/power/supply/stc3117_fuel_gauge.c
+> new file mode 100644
+> index 000000000..bf87bc1b9
+> --- /dev/null
+> +++ b/drivers/power/supply/stc3117_fuel_gauge.c
+> @@ -0,0 +1,136 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * stc3117_fuel_gauge.c - STMicroelectronics STC3117 Fuel Gauge Driver
+> + *
+> + * Copyright (c) 2024 Silicon Signals Pvt Ltd.
+> + * Author:      Bhavin Sharma <bhavin.sharma@siliconsignals.io>
+> + *              Hardevsinh Palaniya <hardevsinh.palaniya@siliconsignals.com>
+> + */
+> +
+> +
 
-Actually, it means use phy driver. How about using IMX6_PCIE_HAS_PHYDRV?
+Just one blank line
 
-> 
-> > +
-> > +#define imx6_check_flag(pci, val)     (pci->drvdata->flags & val)
-> >  
-> >  #define IMX6_PCIE_MAX_CLKS       6
-> >  
-> > @@ -1277,6 +1280,13 @@ static int imx6_pcie_probe(struct platform_device *pdev)
-> >  	if (ret)
-> >  		return ret;
-> >  
-> > +	if (imx6_check_flag(imx6_pcie, IMX6_PCIE_FLAG_HAS_PHY)) {
-> 
-> IMO, we would not need these kind of checks in the driver if the DT binding is
-> properly validated using schema. But folks always want to validate "broken DT"
-> in the drivers :(
-> 
-> But I'm fine with this check for now since not everyone agree with above.
-> 
-> - Mani
-> 
-> > +		imx6_pcie->phy = devm_phy_get(dev, "pcie-phy");
-> > +		if (IS_ERR(imx6_pcie->phy))
-> > +			return dev_err_probe(dev, PTR_ERR(imx6_pcie->phy),
-> > +					     "failed to get pcie phy\n");
-> > +	}
-> > +
-> >  	switch (imx6_pcie->drvdata->variant) {
-> >  	case IMX7D:
-> >  		if (dbi_base->start == IMX8MQ_PCIE2_BASE_ADDR)
-> > @@ -1306,11 +1316,6 @@ static int imx6_pcie_probe(struct platform_device *pdev)
-> >  			return dev_err_probe(dev, PTR_ERR(imx6_pcie->apps_reset),
-> >  					     "failed to get pcie apps reset control\n");
-> >  
-> > -		imx6_pcie->phy = devm_phy_get(dev, "pcie-phy");
-> > -		if (IS_ERR(imx6_pcie->phy))
-> > -			return dev_err_probe(dev, PTR_ERR(imx6_pcie->phy),
-> > -					     "failed to get pcie phy\n");
-> > -
-> >  		break;
-> >  	default:
-> >  		break;
-> > @@ -1444,13 +1449,15 @@ static const struct imx6_pcie_drvdata drvdata[] = {
-> >  	},
-> >  	[IMX8MM] = {
-> >  		.variant = IMX8MM,
-> > -		.flags = IMX6_PCIE_FLAG_SUPPORTS_SUSPEND,
-> > +		.flags = IMX6_PCIE_FLAG_SUPPORTS_SUSPEND |
-> > +			 IMX6_PCIE_FLAG_HAS_PHY,
-> >  		.gpr = "fsl,imx8mm-iomuxc-gpr",
-> >  		.clk_names = {"pcie_bus", "pcie", "pcie_aux"},
-> >  	},
-> >  	[IMX8MP] = {
-> >  		.variant = IMX8MP,
-> > -		.flags = IMX6_PCIE_FLAG_SUPPORTS_SUSPEND,
-> > +		.flags = IMX6_PCIE_FLAG_SUPPORTS_SUSPEND |
-> > +			 IMX6_PCIE_FLAG_HAS_PHY,
-> >  		.gpr = "fsl,imx8mp-iomuxc-gpr",
-> >  		.clk_names = {"pcie_bus", "pcie", "pcie_aux"},
-> >  	},
-> > @@ -1462,12 +1469,14 @@ static const struct imx6_pcie_drvdata drvdata[] = {
-> >  	},
-> >  	[IMX8MM_EP] = {
-> >  		.variant = IMX8MM_EP,
-> > +		.flags = IMX6_PCIE_FLAG_HAS_PHY,
-> >  		.mode = DW_PCIE_EP_TYPE,
-> >  		.gpr = "fsl,imx8mm-iomuxc-gpr",
-> >  		.clk_names = {"pcie_bus", "pcie", "pcie_aux"},
-> >  	},
-> >  	[IMX8MP_EP] = {
-> >  		.variant = IMX8MP_EP,
-> > +		.flags = IMX6_PCIE_FLAG_HAS_PHY,
-> >  		.mode = DW_PCIE_EP_TYPE,
-> >  		.gpr = "fsl,imx8mp-iomuxc-gpr",
-> >  		.clk_names = {"pcie_bus", "pcie", "pcie_aux"},
-> > -- 
-> > 2.34.1
-> > 
-> 
-> -- 
-> மணிவண்ணன் சதாசிவம்
+> +#include <linux/i2c.h>
+> +#include <linux/i2c-dev.h>
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +#include <linux/uaccess.h>
+> +#include <linux/power_supply.h>
+> +
+> +#define VOLTAGE_REG_ADDR	0x08
+> +#define VOLTAGE_REG_ADDR_SIZE	1		//in bytes
+> +#define VOLTAGE_DATA_SIZE	2		//in bytes
+> +#define LSB_VALUE		2200		//in micro-volts
+
+LSB of what? This is very poor naming.
+
+
+Missing spaces after //
+
+> +
+> +
+
+One blank line
+
+> +static int stc3117_probe(struct i2c_client *client);
+> +static void stc3117_dev_remove(struct i2c_client *client);
+> +
+> +static int stc3117_get_property(struct power_supply *psy,
+> +	enum power_supply_property psp, union power_supply_propval *val);
+> +static int stc3117_get_batt_volt(const struct i2c_client *client);
+
+Drop all these.
+
+> +
+> +const struct i2c_client *tmp_client;
+
+Drop
+
+> +struct power_supply *stc_sply;
+
+Drop
+
+> +
+> +static const struct of_device_id stc3117_of_match[] = {
+
+This goes next to driver structure.
+
+> +	{ .compatible = "st,stc3117-fgu" },
+> +	{},
+> +};
+> +
+
+No blank line
+
+> +MODULE_DEVICE_TABLE(of, stc3117_of_match);
+> +
+> +static const struct i2c_device_id stc3117_id[] = {
+
+The same.
+
+> +	{"stc3117", 0},
+> +	{},
+> +};
+> +
+> +
+
+No blank lines
+
+> +MODULE_DEVICE_TABLE(i2c, stc3117_id);
+> +
+> +struct i2c_driver stc3117_i2c_driver = {
+
+Where did you place it? Open existing drivers and see how it is done.
+
+> +	.driver = {
+> +		.name = "stc3117_i2c_driver",
+> +		.owner = THIS_MODULE,
+
+Drop, ok, this is some ancient vendor driver which you just send
+upstream. Sorry, no. You must clean it from all that ancient cruft.
+
+You must run smatch, sparse and coccinelle/coccicheck.
+
+> +		.of_match_table = of_match_ptr(stc3117_of_match),
+
+Drop of_match_ptr
+
+> +	},
+> +	.probe = stc3117_probe,
+> +	.id_table = stc3117_id,
+> +	.remove = stc3117_dev_remove,
+> +};
+> +
+> +
+> +static enum power_supply_property stc3117_battery_props[] = {
+> +	POWER_SUPPLY_PROP_VOLTAGE_NOW,
+> +};
+> +
+> +static const struct power_supply_desc stc3117_battery_desc = {
+> +	.name = "stc3117-battery",
+> +	.type = POWER_SUPPLY_TYPE_BATTERY,
+> +	.get_property = stc3117_get_property,
+> +	.properties = stc3117_battery_props,
+> +	.num_properties = ARRAY_SIZE(stc3117_battery_props),
+> +};
+> +
+> +static int stc3117_get_property(struct power_supply *psy,
+> +	enum power_supply_property psp, union power_supply_propval *val)
+> +{
+> +	switch (psp) {
+> +	case POWER_SUPPLY_PROP_VOLTAGE_NOW:
+> +		val->intval = stc3117_get_batt_volt(tmp_client);
+> +	break;
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +	return 0;
+> +}
+> +
+> +
+
+What's with this double blank lines?
+
+> +static int stc3117_get_batt_volt(const struct i2c_client *stc_client)
+> +{
+> +	int ret, volt = 0;
+> +	char i2c_tx = VOLTAGE_REG_ADDR, i2c_rx[2] = {0};
+> +
+> +	ret = i2c_master_send(stc_client, &i2c_tx, VOLTAGE_REG_ADDR_SIZE);
+> +	if (ret > 0) {
+> +
+> +		ret = i2c_master_recv(stc_client, i2c_rx, VOLTAGE_DATA_SIZE);
+> +		if (ret > 0) {
+> +
+> +			volt = (i2c_rx[1] << 8) + i2c_rx[0];
+> +			volt *= LSB_VALUE;
+> +
+> +			return volt;
+> +		}
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+> +static int stc3117_probe(struct i2c_client *client)
+> +{
+> +	struct power_supply_config psy_cfg = {};
+> +	struct device *dev;
+> +
+> +	dev = &client->dev;
+> +
+> +	psy_cfg.of_node = dev->of_node;
+> +
+> +	tmp_client = client;
+> +
+> +	stc_sply = power_supply_register(dev, &stc3117_battery_desc, &psy_cfg);
+
+devm
+
+> +	if (IS_ERR(stc_sply))
+> +		pr_err("failed to register battery\n");
+
+dev_err
+
+> +
+> +	return 0;
+> +}
+> +
+> +static void stc3117_dev_remove(struct i2c_client *client)
+> +{
+> +	power_supply_unregister(stc_sply);
+> +}
+> +
+> +module_i2c_driver(stc3117_i2c_driver);
+> +
+> +MODULE_LICENSE("GPL");
+> +MODULE_AUTHOR("Bhavin Sharma <bhavin.sharma@siliconsignals.io>");
+> +MODULE_AUTHOR("Hardevsinh Palaniya <hardevsinh.palaniya@siliconsignals.io>");
+> +MODULE_DESCRIPTION("STC3117 Fuel Gauge Driver");
+
+Best regards,
+Krzysztof
+
 
