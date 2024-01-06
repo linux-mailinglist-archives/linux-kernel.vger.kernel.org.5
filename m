@@ -1,132 +1,114 @@
-Return-Path: <linux-kernel+bounces-18586-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18585-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9BF4B825FC1
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 15:03:49 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D9433825FBF
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 15:03:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AA27F1C2120F
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 14:03:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2DD29B225FC
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 14:03:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00E3279FE;
-	Sat,  6 Jan 2024 14:03:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0705F7482;
+	Sat,  6 Jan 2024 14:03:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PHwUCxXd"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="gzi1mMo6"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1134B79F1
-	for <linux-kernel@vger.kernel.org>; Sat,  6 Jan 2024 14:03:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-28be52a85b9so265819a91.1
-        for <linux-kernel@vger.kernel.org>; Sat, 06 Jan 2024 06:03:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704549810; x=1705154610; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NS8AIREFz1XWmTAMUhkfxle7maAtwV7jGirdI2uRztQ=;
-        b=PHwUCxXdEU7bwoIf8mjeALzg82qdYIYNc8Goj6mH2SqLSf6dzkK7ZU9bCy/h/5LRjd
-         meH7WekP+VzorUVg5v+00KKEozUFSdYVgIVXiGCipvXe7YugMHaSFQufyGtDMrjveV73
-         FsDs90p+2hzm4ywxZ8wmymO2DMBy3sJN8hVrX3r0F7ZUyd9/LAnpS2SXz72owtT375sv
-         ZWUTu+eYUvYVYNfUYL6ONf2JysLBAqFa1yKGb3p6hc2xoTOTSrXr5J0fMyf4XCJb4a0j
-         XnXQZQl6a5NECvHfNn4ri2JlpqltQDYxTv9xxrA0ty2t4P8PYpQn6NQtIs0x5R6MRHdv
-         7r6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704549810; x=1705154610;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=NS8AIREFz1XWmTAMUhkfxle7maAtwV7jGirdI2uRztQ=;
-        b=OHNF9I4yFzkqmAb+DHrbGiTnHQfaTsb6vsUcetezVs9pmVZLJPQtWBXmw8b1TfRGil
-         eqpS/A1glW//e60bga+jSw11AcgbbK7OTmMwdP9SttzM4x18j+gN3bkDw/9zT9riH820
-         2OJe3YPAu346URWCmoMQS80v+D9e6n4WOLfCqvXSVvP11atL2aXplnu56Cphz9SAb4D2
-         oLQ1EYgrilJQTamzW/QX1Hdq5qNM8P2l8iQMfvYe6ed0ZH3uMsmqGmkFK8X0RwepiGAj
-         /KZAqmAPm4UZRoHamd5pRv9bJkvpZrAo92CXv2/N6o/ZW8xRWO95gJh8X6zmcBo38wRp
-         koCQ==
-X-Gm-Message-State: AOJu0YztiV1noiXgnJcggL/KSUUlzgjeOV/aYaRWj/BSgL0AfYtJ7dcK
-	f/wNtC9pU9zMf+efjjgH1T8=
-X-Google-Smtp-Source: AGHT+IG4c74Zx8hbqiQVId29IZQbC6NTlq/Z51ofPKz6crwPf/GIf/VzHhswWMqbUus7RJOZFgdIpA==
-X-Received: by 2002:a17:902:7004:b0:1d4:2df6:95c0 with SMTP id y4-20020a170902700400b001d42df695c0mr382327plk.114.1704549810223;
-        Sat, 06 Jan 2024 06:03:30 -0800 (PST)
-Received: from anfanite396-Predator-PH315-51.. ([202.43.120.140])
-        by smtp.gmail.com with ESMTPSA id bj12-20020a170902850c00b001d058ad8770sm3071576plb.306.2024.01.06.06.03.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 06 Jan 2024 06:03:29 -0800 (PST)
-From: Dipam Turkar <dipamt1729@gmail.com>
-To: maarten.lankhorst@linux.intel.com
-Cc: mripard@kernel.org,
-	tzimmermann@suse.de,
-	airlied@gmail.com,
-	daniel@ffwll.ch,
-	dri-devel@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org,
-	Dipam Turkar <dipamt1729@gmail.com>
-Subject: [PATCH v3 1/1] drm/tests: Add KUnit tests for drm_mode_create_dvi_i_properties()
-Date: Sat,  6 Jan 2024 19:31:18 +0530
-Message-Id: <20240106140117.9777-1-dipamt1729@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <CALHmwspWRT=pj+mPDhf8YTwSpTz6LiNjq18wbUk7wCW3ijKU4A@mail.gmail.com>
-References: <CALHmwspWRT=pj+mPDhf8YTwSpTz6LiNjq18wbUk7wCW3ijKU4A@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B69DE7469;
+	Sat,  6 Jan 2024 14:03:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704549804; x=1736085804;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=9ogaUlkTNyQ8yFeIfvapqG67agMRheSqoW502ha8cXQ=;
+  b=gzi1mMo6N/Yi3FTS0b4s4qfGKnsmTrDMJM4501Qu0UlgjKQpV4EYD+3s
+   MLw1JnTZPKOi+213CRRtGvpgB1+SSKrmCpWQf0Mji+XlDkerWDKU0OnvL
+   vJMhQRApUntKVVNfg6LVEjfyjPvokSdD6dwArs0JSFIFZIPV6AW2QCuRH
+   d52lcV5DRI1lGq85aUwZvCLmu0uI8QU+pjCZ07DQY4MaC0pFTKRJg3+sw
+   UPS/HijQB4f2vQ1TZ0qylpKoclr79tf9ZgAY65kRQp2iUDpMpOul2uBum
+   OkVtOZlp1iCwO9rIcd1y/cMa8cG11fFhrWoa07nIjv/v11Mn/+jeRnvNq
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10945"; a="11012917"
+X-IronPort-AV: E=Sophos;i="6.04,337,1695711600"; 
+   d="scan'208";a="11012917"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jan 2024 06:03:24 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10945"; a="846811425"
+X-IronPort-AV: E=Sophos;i="6.04,337,1695711600"; 
+   d="scan'208";a="846811425"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga008.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jan 2024 06:03:21 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rM7Gg-0000000BvJ5-1RCR;
+	Sat, 06 Jan 2024 16:03:18 +0200
+Date: Sat, 6 Jan 2024 16:03:17 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Petre Rodan <petre.rodan@subdimension.ro>
+Cc: linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Andreas Klinger <ak@it-klinger.de>,
+	Jonathan Cameron <jic23@kernel.org>,
+	Lars-Peter Clausen <lars@metafoo.de>,
+	Angel Iglesias <ang.iglesiasg@gmail.com>,
+	Matti Vaittinen <mazziesaccount@gmail.com>
+Subject: Re: [PATCH v2 07/10] iio: pressure: mprls0025pa.c whitespace cleanup
+Message-ID: <ZZldpV13HaRUrQBU@smile.fi.intel.com>
+References: <20231224143500.10940-1-petre.rodan@subdimension.ro>
+ <20231224143500.10940-8-petre.rodan@subdimension.ro>
+ <ZYxSERlEAfwWpqWP@smile.fi.intel.com>
+ <ZYxhUJlAb63wRJE-@sunspire>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZYxhUJlAb63wRJE-@sunspire>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
----
- drivers/gpu/drm/tests/drm_connector_test.c | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
+On Wed, Dec 27, 2023 at 07:39:28PM +0200, Petre Rodan wrote:
+> On Wed, Dec 27, 2023 at 06:34:25PM +0200, Andy Shevchenko wrote:
+> > On Sun, Dec 24, 2023 at 04:34:52PM +0200, Petre Rodan wrote:
+> > > Fix indentation and whitespace in code that will not get refactored.
+> > > 
+> > > Make URL inside comment copy-paste friendly.
+> > 
+> > >  			return dev_err_probe(dev, ret,
+> > > -				"honeywell,pmin-pascal could not be read\n");
+> > > +				   "honeywell,pmin-pascal could not be read\n");
+> > 
+> > As done elsewhere, here and in other similar places fix the indentation
+> > by making first character on the latter line to be in the same column as
+> > the first character after the opening parenthesis.
+> 
+> I triple-checked that I am following the max 80 column rule, the parenthesis
+> rule and the 'do not split printk messages' rules in all my code in these 10 patches.
+> precisely so I don't get feedback like this one.
+> if the parenthesis rule makes the line longer then 80 chars I right-align to
+> column 80 as seen above.
+> that is what I understand from the latest coding style document and that is what
+> I will follow.
+> 
+> in this particular case if I were to ignore the 80 column rule we would end up on
+> column 90 if I were to follow your feedback (open parenthesis is at column 45
+> and the error takes 45 chars more).
 
-diff --git a/drivers/gpu/drm/tests/drm_connector_test.c b/drivers/gpu/drm/tests/drm_connector_test.c
-index c66aa2dc8d9d..aad63839b5e5 100644
---- a/drivers/gpu/drm/tests/drm_connector_test.c
-+++ b/drivers/gpu/drm/tests/drm_connector_test.c
-@@ -4,6 +4,9 @@
-  */
- 
- #include <drm/drm_connector.h>
-+#include <drm/drm_device.h>
-+#include <drm/drm_drv.h>
-+#include <drm/drm_kunit_helpers.h>
- 
- #include <kunit/test.h>
- 
-@@ -58,10 +61,27 @@ static void drm_test_get_tv_mode_from_name_truncated(struct kunit *test)
- 	KUNIT_EXPECT_LT(test, ret, 0);
- };
- 
-+static void drm_test_mode_create_dvi_i_properties(struct kunit *test)
-+{
-+	struct drm_device *drm;
-+	struct device *dev;
-+
-+	dev = drm_kunit_helper_alloc_device(test);
-+	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, dev);
-+
-+	drm = __drm_kunit_helper_alloc_drm_device(test, dev, sizeof(*drm), 0, DRIVER_MODESET);
-+	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, drm);
-+
-+	KUNIT_EXPECT_EQ(test, drm_mode_create_dvi_i_properties(drm), 0);
-+	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, drm->mode_config.dvi_i_select_subconnector_property);
-+	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, drm->mode_config.dvi_i_subconnector_property);
-+}
-+
- static struct kunit_case drm_get_tv_mode_from_name_tests[] = {
- 	KUNIT_CASE_PARAM(drm_test_get_tv_mode_from_name_valid,
- 			 drm_get_tv_mode_from_name_valid_gen_params),
- 	KUNIT_CASE(drm_test_get_tv_mode_from_name_truncated),
-+	KUNIT_CASE(drm_test_mode_create_dvi_i_properties),
- 	{ }
- };
- 
+checkpatch has got an exceptional rule _not_ to warn on the long string
+literals for 10+ years. It had happened much earlier than 100 relaxation one.
+
 -- 
-2.34.1
+With Best Regards,
+Andy Shevchenko
+
 
 
