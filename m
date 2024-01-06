@@ -1,154 +1,121 @@
-Return-Path: <linux-kernel+bounces-18698-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18699-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6496E826140
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 20:10:52 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BF31B82614C
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 20:17:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CF16FB22069
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 19:10:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E48421C21778
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 19:17:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E8A1F51E;
-	Sat,  6 Jan 2024 19:10:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F7E0E57C;
+	Sat,  6 Jan 2024 19:16:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ad7qaAEI"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="mkzBSV6h"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4210E579;
-	Sat,  6 Jan 2024 19:10:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-40d5f40ce04so7355135e9.2;
-        Sat, 06 Jan 2024 11:10:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704568226; x=1705173026; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=XN11DcyrjCYH4UjdpvhQMOODqptexpORHaHrc+DxqLo=;
-        b=Ad7qaAEIu6rGtZu7FRJNbkn/W6Vn0yExBQDyDxWsA+UFC49sTYp7oIFJX8nR5V6GBn
-         5R3s8qOuwIKLXPU8ONFpzaDy10ePgoIDF/uhh80AfGrQ8lQnlCVMgHZkZAq/lsdtkOr8
-         m11Aljor9AIO0kwn6Ol6JDH3sms+RlQWTmolCOzWdmf3IwNw4oIt30qIhUvMfwQkdTwV
-         +gS5AbmZFF+7an834PGr3dELKytMDxOaCLfVhpMUBbB+EdJBVlZu6BmbKGDP5UiNnL3/
-         UoGNlsDH2ktnRiAPGEPSHKe8E0jdQUJ1up1w8kD7cl7wvGepRjrTwaH965kBnUhLTDQU
-         qgkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704568226; x=1705173026;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XN11DcyrjCYH4UjdpvhQMOODqptexpORHaHrc+DxqLo=;
-        b=aLqBWsMWNuc+04ABplB8ptm02CAdcSJR47Lsjq1KbtJjCUA4THw57RSoGnXTg5gp0f
-         mwd3zarmz7zvMxLBWjTy1L2Cbb5g74IhWyMf08p+03Qs2Sp92E+dvHrM3W43cB4c/ZCl
-         pbtb1DcHOnumPQUJODBtAIvOL/WoE3/AYAnG7OekLlJYXl5UA2Cc3QSEkMhRYVS1tpZP
-         9mAUwn9Cr7x83e8nN6kng96gpLNa3zJkAZG+cUFTu3ngBLt0AIZvQ7MLjH9nXTWeJfCk
-         THekz0y/sSqBlEGXoBB2KTJegiOUyBzZGJNU/AgigY8ryyugCsqDsj59Nj4Cffzs2Jxz
-         noAw==
-X-Gm-Message-State: AOJu0YxFuTtdl0r+WObK0+BPRSxQvC91Bt7zeh0QsNQrlomBPfKW09cL
-	53wCXPuESoNnhT46/yxLmGY=
-X-Google-Smtp-Source: AGHT+IESwPxvVB/8ipXpccypJwcC+FaZlc0B4G0s35S17F9bfUk+r34RM+hEvGsKxoK3mBTpdLR0ZQ==
-X-Received: by 2002:a05:600c:1e01:b0:40d:871c:558d with SMTP id ay1-20020a05600c1e0100b0040d871c558dmr730414wmb.32.1704568225771;
-        Sat, 06 Jan 2024 11:10:25 -0800 (PST)
-Received: from krava ([83.240.62.111])
-        by smtp.gmail.com with ESMTPSA id h17-20020a05600c351100b0040d5f466deesm5459251wmq.38.2024.01.06.11.10.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 06 Jan 2024 11:10:25 -0800 (PST)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Sat, 6 Jan 2024 20:10:23 +0100
-To: Daniel Xu <dxu@dxuuu.xyz>
-Cc: Jiri Olsa <olsajiri@gmail.com>, alexandre.torgue@foss.st.com,
-	benjamin.tissoires@redhat.com, lizefan.x@bytedance.com,
-	Herbert Xu <herbert@gondor.apana.org.au>, dsahern@kernel.org,
-	hannes@cmpxchg.org, rostedt@goodmis.org, mcoquelin.stm32@gmail.com,
-	pablo@netfilter.org, martin.lau@linux.dev, edumazet@google.com,
-	daniel@iogearbox.net, ebiggers@kernel.org, yonghong.song@linux.dev,
-	john.fastabend@gmail.com, hawk@kernel.org,
-	steffen.klassert@secunet.com, jikos@kernel.org, kuba@kernel.org,
-	fw@strlen.de, ast@kernel.org, song@kernel.org, pabeni@redhat.com,
-	shuah@kernel.org, tytso@mit.edu, tj@kernel.org,
-	kadlec@netfilter.org, davem@davemloft.net, mhiramat@kernel.org,
-	andrii@kernel.org, alexei.starovoitov@gmail.com,
-	quentin@isovalent.com, alan.maguire@oracle.com, memxor@gmail.com,
-	kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
-	mathieu.desnoyers@efficios.com, mykolal@fb.com,
-	linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-	fsverity@lists.linux.dev, bpf@vger.kernel.org,
-	cgroups@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
-	coreteam@netfilter.org, linux-kselftest@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH bpf-next v2 3/3] bpf: treewide: Annotate BPF kfuncs in BTF
-Message-ID: <ZZmln7mwvLRjqqRo@krava>
-References: <cover.1704422454.git.dxu@dxuuu.xyz>
- <a923e3809955bdfd2bc8d6a103c20e01f1636dbc.1704422454.git.dxu@dxuuu.xyz>
- <ZZgcJTdwMZHglPtr@krava>
- <4tsn6x45gh3vgdst3ozzmxori5gzylvpx6btxue6sbsmx7siok@6wajzdgwxfpa>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06783DF4C;
+	Sat,  6 Jan 2024 19:16:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 406J28af002663;
+	Sat, 6 Jan 2024 19:15:26 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:mime-version:content-type; s=
+	qcppdkim1; bh=WKPh7IvIQvD2msUo8q8oDJlSIRzNpjO+foZ7NbVBD7Y=; b=mk
+	zBSV6hRIGDBTvzZVt6pO7ERtsyePf6+pqA2Z3kf2O/V8etCmXaV6XZ5zhV3xDVfT
+	SP/s2ZNL9M9Por2qoZm5p0XGDB5ATwg8W4r44rEtzZeA+FHPveLEeuoiqcrUGj/D
+	u9NwbaTNPHBlGC3xqjyywOLBAWE8HPmBWcA1NkpKeZiUQzV3JbpfisQR2JuhEGEZ
+	oXMnkVGSORjVMyLkEocyeJPDAUVPmnpJ/s4VlAU36hG/Elx6VcXoKAT0HBRXg5zH
+	sxO8NCJCYv8HwS5NADSTeD3GkwhHTka9U2A+42xAhMhW9ejJNsoC+MuHeRotWZFU
+	mk2/12cN7wMfSe9zF4pA==
+Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3veymm91kq-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sat, 06 Jan 2024 19:15:26 +0000 (GMT)
+Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
+	by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 406JFPqH030897
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sat, 6 Jan 2024 19:15:25 GMT
+Received: from codeaurora.org (10.80.80.8) by nasanex01c.na.qualcomm.com
+ (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Sat, 6 Jan
+ 2024 11:15:23 -0800
+From: Manaf Meethalavalappu Pallikunhi <quic_manafm@quicinc.com>
+To: "Rafael J . Wysocki" <rafael@kernel.org>,
+        Daniel Lezcano
+	<daniel.lezcano@linaro.org>,
+        Zhang Rui <rui.zhang@intel.com>, Lukasz Luba
+	<lukasz.luba@arm.com>
+CC: <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        "Manaf
+ Meethalavalappu Pallikunhi" <quic_manafm@quicinc.com>
+Subject: [PATCH] thermal/sysfs: Always enable hysteresis write support
+Date: Sun, 7 Jan 2024 00:45:02 +0530
+Message-ID: <20240106191502.29126-1-quic_manafm@quicinc.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4tsn6x45gh3vgdst3ozzmxori5gzylvpx6btxue6sbsmx7siok@6wajzdgwxfpa>
+Content-Type: text/plain
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01c.na.qualcomm.com (10.45.79.139)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: Mqo0o9bUz5b5aII9FhGjleUms7yd-vG9
+X-Proofpoint-GUID: Mqo0o9bUz5b5aII9FhGjleUms7yd-vG9
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 impostorscore=0
+ mlxlogscore=748 spamscore=0 phishscore=0 malwarescore=0 bulkscore=0
+ suspectscore=0 adultscore=0 mlxscore=0 priorityscore=1501
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2401060128
 
-On Fri, Jan 05, 2024 at 09:55:43AM -0700, Daniel Xu wrote:
-> On Fri, Jan 05, 2024 at 04:11:33PM +0100, Jiri Olsa wrote:
-> > On Thu, Jan 04, 2024 at 07:45:49PM -0700, Daniel Xu wrote:
-> > 
-> > SNIP
-> > 
-> > > diff --git a/fs/verity/measure.c b/fs/verity/measure.c
-> > > index bf7a5f4cccaf..3969d54158d1 100644
-> > > --- a/fs/verity/measure.c
-> > > +++ b/fs/verity/measure.c
-> > > @@ -159,9 +159,9 @@ __bpf_kfunc int bpf_get_fsverity_digest(struct file *file, struct bpf_dynptr_ker
-> > >  
-> > >  __bpf_kfunc_end_defs();
-> > >  
-> > > -BTF_SET8_START(fsverity_set_ids)
-> > > +BTF_KFUNCS_START(fsverity_set_ids)
-> > >  BTF_ID_FLAGS(func, bpf_get_fsverity_digest, KF_TRUSTED_ARGS)
-> > > -BTF_SET8_END(fsverity_set_ids)
-> > > +BTF_KFUNCS_END(fsverity_set_ids)
-> > >  
-> > >  static int bpf_get_fsverity_digest_filter(const struct bpf_prog *prog, u32 kfunc_id)
-> > >  {
-> > > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> > > index 51e8b4bee0c8..8cc718f37a9d 100644
-> > > --- a/kernel/bpf/btf.c
-> > > +++ b/kernel/bpf/btf.c
-> > > @@ -7802,6 +7802,10 @@ int register_btf_kfunc_id_set(enum bpf_prog_type prog_type,
-> > >  {
-> > >  	enum btf_kfunc_hook hook;
-> > >  
-> > > +	/* All kfuncs need to be tagged as such in BTF */
-> > > +	if (WARN_ON(!(kset->set->flags & BTF_SET8_KFUNCS)))
-> > > +		return -EINVAL;
-> > 
-> > having the warning for module with wrong set8 flags seems wrong to me,
-> > I think we should trigger the warn only for kernel calls.. by adding
-> > kset->owner check in the condition above
-> 
-> Just checking:
-> 
-> The reasoning is that =m and out-of-tree modules can and should check
-> return code, right?
-> 
-> And =y modules or vmlinux-based registrations do not check return code,
-> so WARN() is necessary?
-> 
-> If so, I'd agree.
+The commit 2e38a2a981b2("thermal/core: Add a generic
+thermal_zone_set_trip() function") adds the support to update
+trip hysteresis even if set_trip_hyst() operation is not defined.
+But during hysteresis attribute creation, if this operation is
+defined then only it enables hysteresis write access. It leads
+to a case where hysteresis sysfs will be read only for a thermal
+zone when its set_trip_hyst() operation is not defined.
 
-right, I was also concerned we could flood console with loading module
-that just uses wrong set8.. perhaps we could just use WARN_ON_ONCE with
-no additional checks
+Fix this by removing the check whether set_trip_hyst() operation
+is defined or not during hysteresis attribute initialization.
 
-jirka
+Signed-off-by: Manaf Meethalavalappu Pallikunhi <quic_manafm@quicinc.com>
+---
+ drivers/thermal/thermal_sysfs.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/thermal/thermal_sysfs.c b/drivers/thermal/thermal_sysfs.c
+index eef40d4f3063..08be016d7221 100644
+--- a/drivers/thermal/thermal_sysfs.c
++++ b/drivers/thermal/thermal_sysfs.c
+@@ -504,13 +504,9 @@ static int create_trip_attrs(struct thermal_zone_device *tz, int mask)
+ 		sysfs_attr_init(&tz->trip_hyst_attrs[indx].attr.attr);
+ 		tz->trip_hyst_attrs[indx].attr.attr.name =
+ 					tz->trip_hyst_attrs[indx].name;
+-		tz->trip_hyst_attrs[indx].attr.attr.mode = S_IRUGO;
++		tz->trip_hyst_attrs[indx].attr.attr.mode = S_IRUGO | S_IWUSR;
+ 		tz->trip_hyst_attrs[indx].attr.show = trip_point_hyst_show;
+-		if (tz->ops->set_trip_hyst) {
+-			tz->trip_hyst_attrs[indx].attr.attr.mode |= S_IWUSR;
+-			tz->trip_hyst_attrs[indx].attr.store =
+-					trip_point_hyst_store;
+-		}
++		tz->trip_hyst_attrs[indx].attr.store = trip_point_hyst_store;
+ 		attrs[indx + tz->num_trips * 2] =
+ 					&tz->trip_hyst_attrs[indx].attr.attr;
+ 	}
+
 
