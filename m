@@ -1,93 +1,109 @@
-Return-Path: <linux-kernel+bounces-18533-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18534-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A07A8825EE2
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 09:38:23 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 36872825EE4
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 09:39:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B12361C234D1
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 08:38:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8388D284D1D
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 08:39:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 067215380;
-	Sat,  6 Jan 2024 08:38:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85CFA5244;
+	Sat,  6 Jan 2024 08:38:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GsAB2/Q9"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="0svUTfy0"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-qk1-f181.google.com (mail-qk1-f181.google.com [209.85.222.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E15D522B
-	for <linux-kernel@vger.kernel.org>; Sat,  6 Jan 2024 08:38:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f181.google.com with SMTP id af79cd13be357-78158569dc6so41181385a.3
-        for <linux-kernel@vger.kernel.org>; Sat, 06 Jan 2024 00:38:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704530294; x=1705135094; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=kppXyXVQVtZYAC+jpLWN5j5UxASoZa6NImaunFYNEuc=;
-        b=GsAB2/Q9sLMvHZ7VJN4DAxlwj2luW4djqwTnJvH0zRZh1xs5cvR0b2BQRk/B0pv7RJ
-         +7uEQ9zML7xFkHcchCISi5xQRHU/b2qczgYsacwNG9Bw+Ki2tTkUW/pYrd1wwOBPQyGU
-         HMq1dkgUpnWXGxLc3I2tKjRhL/9spZgQCGRkk/ycmjHpqFpx3R9tYFtTOg/nqqnGwvej
-         ZoskpgAh7qywkF64EhZ0fy2BQLsdgJk5Y1T7IkUlsFaRdz+oS55C4AjDEK2/gGXTPkYI
-         Ib+ZErJMtkH6hKNO170yWSjRojsW+uH7pSOaRf9BEqsTFNipum+icaMYrGkmq6qqUI7s
-         0nYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704530294; x=1705135094;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=kppXyXVQVtZYAC+jpLWN5j5UxASoZa6NImaunFYNEuc=;
-        b=SJJVHdQKNNPBpS+feKqbJ8VfuZCHVvudenpAiqmsD1DToWtG7STs/6kcVy/dFE6+ca
-         VIoknEAIwOUmHX1/1VdrlqHJBBSUyesorXT4jir+qr9kTDgNq9yIgvmNt4+Pfo7p+Cyk
-         HZ6JexPRftKltcs55e+JeV9O+8A2YPc5tsXHM38OECQQ+1zBWXgH1eB0tspBpzqnqi6G
-         baHuIg/PtUptqT0tFYyGjai0X1x73FIqRYqW7sZKtWfp2UV2JLig3lXmNNo7zXgYjx1A
-         ZXlLUZp9QsvyQHuiCyzgHBbSZ0GRF/zsGSWohXN938TP1MzM5ttUTJYlN/fWgLkxfwSi
-         5V2w==
-X-Gm-Message-State: AOJu0YwW7P/TahU84MVvsSAcHif1OA1yf2gpwwbMHHxPwI8vUAaj5m2/
-	AE1m4X4iZFTD+QSE7W9VPYZ3hwk45uYn9snnFcIS10pQIjQ=
-X-Google-Smtp-Source: AGHT+IF1ptMzrzkP7UVAJOyCkG+0k2rHWOY17WnNkENu8LWtrGvMgeOeoVP9787nJtW/Dm65hPB84tkJzXu+uJUhxyM=
-X-Received: by 2002:a05:620a:1197:b0:783:11d3:8ffe with SMTP id
- b23-20020a05620a119700b0078311d38ffemr611611qkk.91.1704530293837; Sat, 06 Jan
- 2024 00:38:13 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EB9563AA;
+	Sat,  6 Jan 2024 08:38:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4FD0FC433C8;
+	Sat,  6 Jan 2024 08:38:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1704530336;
+	bh=7vuXNlpf9BnOyE4McDlBL7Bb7sZyBrF0fs7gPJBM3V0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=0svUTfy0dGrx5HeFZZ/hDbP4X/F8+SOMotQ3FfZhBYDqoUx/NkU+39mEMagngMbR/
+	 t1MBIVJcEmV6+8YOpkN0L/Y5e43njc7NRcaRfsk4v4JWYPzZcOBFEwQYI/FOxxPbUC
+	 TixtuLqkovVEJGoFWpyH3f1+GUfu3NxZMLT4M/kc=
+Date: Sat, 6 Jan 2024 09:38:52 +0100
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Daniel =?iso-8859-1?Q?D=EDaz?= <daniel.diaz@linaro.org>
+Cc: stable@vger.kernel.org, patches@lists.linux.dev,
+	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+	jonathanh@nvidia.com, f.fainelli@gmail.com,
+	sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+	conor@kernel.org, allen.lkml@gmail.com, jpanis@baylibre.com
+Subject: Re: [PATCH 5.4 00/47] 5.4.266-rc1 review
+Message-ID: <2024010639-sinuous-expansion-417c@gregkh>
+References: <20240105143815.541462991@linuxfoundation.org>
+ <77569e45-ab73-4049-b90e-cd60cbb872ef@linaro.org>
+ <92d8ecc9-7b51-4d54-9942-efc5beb156cf@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240105193331.1180331-1-xzou017@ucr.edu>
-In-Reply-To: <20240105193331.1180331-1-xzou017@ucr.edu>
-From: Tigran Aivazian <aivazian.tigran@gmail.com>
-Date: Sat, 6 Jan 2024 08:38:02 +0000
-Message-ID: <CAK+_RLm93haEd13Z0hVPSRqG4STsDHMHfu4FBdaBW1QP0m_c6w@mail.gmail.com>
-Subject: Re: [PATCH] fs/bfs: Null check to prevent null-ptr-deref bug
-To: Xiaochen Zou <xzou017@ucr.edu>
-Cc: linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <92d8ecc9-7b51-4d54-9942-efc5beb156cf@linaro.org>
 
-Hello,
+On Fri, Jan 05, 2024 at 11:01:44AM -0600, Daniel Díaz wrote:
+> Hello!
+> 
+> On 05/01/24 10:04 a. m., Daniel Díaz wrote:
+> > Hello!
+> > 
+> > On 05/01/24 8:38 a. m., Greg Kroah-Hartman wrote:
+> > > This is the start of the stable review cycle for the 5.4.266 release.
+> > > There are 47 patches in this series, all will be posted as a response
+> > > to this one.  If anyone has any issues with these being applied, please
+> > > let me know.
+> > > 
+> > > Responses should be made by Sun, 07 Jan 2024 14:38:02 +0000.
+> > > Anything received after that time might be too late.
+> > > 
+> > > The whole patch series can be found in one patch at:
+> > >     https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.266-rc1.gz
+> > > or in the git tree and branch at:
+> > >     git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
+> > > and the diffstat can be found below.
+> > > 
+> > > thanks,
+> > > 
+> > > greg k-h
+> > 
+> > Quick note that there are Arm32 failures:
+> > 
+> > -----8<-----
+> >    /builds/linux/drivers/bus/ti-sysc.c: In function 'sysc_reset':
+> >    /builds/linux/drivers/bus/ti-sysc.c:1847:4: error: implicit declaration of function 'fsleep'; did you mean 'ssleep'? [-Werror=implicit-function-declaration]
+> >     1847 |    fsleep(ddata->cfg.srst_udelay);
+> >          |    ^~~~~~
+> >          |    ssleep
+> >    cc1: some warnings being treated as errors
+> >    make[3]: *** [/builds/linux/scripts/Makefile.build:262: drivers/bus/ti-sysc.o] Error 1
+> > ----->8-----
+> 
+> Bisection points to:
+> 
+>   commit bed75624164c501b39531927d07a4fadc5738847
+>   Author: Julien Panis <jpanis@baylibre.com>
+>   Date:   Mon Aug 21 16:24:18 2023 +0200
+> 
+>       bus: ti-sysc: Use fsleep() instead of usleep_range() in sysc_reset()
+>       [ Upstream commit d929b2b7464f95ec01e47f560b1e687482ba8929 ]
+> 
+> Reverting (swapping back the content of that commit, as it wasn't a clean revert) did make the build pass.
 
-On Fri, 5 Jan 2024 at 19:33, Xiaochen Zou <xzou017@ucr.edu> wrote:
-> Similar to ea2b62f3058 (fs/sysv: Null check to prevent
-> null-ptr-deref bug), bfs is lack of return value check for
-> sb_getblk(). Adding a null check to prevent null-ptr-defer bug
+Thanks, now dropped and will push out a -rc2
 
-> diff --git a/fs/bfs/file.c b/fs/bfs/file.c
-> index adc2230079c6..35688424bde3 100644
-> --- a/fs/bfs/file.c
-> +++ b/fs/bfs/file.c
-> @@ -39,6 +39,8 @@ static int bfs_move_block(unsigned long from, unsigned long to,
->         if (!bh)
->                 return -EIO;
->         new = sb_getblk(sb, to);
-> +       if (unlikely(!new))
-> +               return -ENOMEM;
-
-Thank you, yes, that makes sense. Please apply the patch.
-
-Acknowledged-By; Tigran Aivazian <aivazian.tigran@gmail.com>
+greg k-h
 
