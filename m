@@ -1,64 +1,63 @@
-Return-Path: <linux-kernel+bounces-18624-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18623-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E59B082602A
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 16:31:33 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 00B0C826029
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 16:31:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B9310B222F4
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 15:31:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 29E7BB22403
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 15:31:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6E678C12;
-	Sat,  6 Jan 2024 15:31:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2E038493;
+	Sat,  6 Jan 2024 15:31:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lgjGy4Lp"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="OtwZVw6D"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D8CC8485
-	for <linux-kernel@vger.kernel.org>; Sat,  6 Jan 2024 15:31:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E3CA8475
+	for <linux-kernel@vger.kernel.org>; Sat,  6 Jan 2024 15:31:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704555072; x=1736091072;
+  t=1704555070; x=1736091070;
   h=date:from:to:cc:subject:message-id:mime-version;
-  bh=qxhMfseHGKVfoAB+AFQXw+VctGHT8dZFf2jspGvSUe4=;
-  b=lgjGy4Lp4w8zUecFihTTOx1fA5p1OPcGGjpj5lEakeNeb+3fGlym+7co
-   hmrxTYHm84ghNMI6wfsTFFDB9zlFKFXUPhPxNTZp/5yBfR+2Wgj5egoCJ
-   tXPX/qLo0q5RDZK6drJYlUlMZ0/Jq3XMMnXlePSwplB3B38lvGzpG1zBT
-   J3+lhM5RuvXoL/Nb/2TV+EGCAEQJ01QLgxlYNpZZGLcGqEok192Echw+6
-   qLAyNgKtRunrkr7XPaRIi+QSTHESlQus8Rp327Bb5ootFol/DLMWEEBsk
-   zMuKLt3okm8UOA9M3iY24DvaCEO79b22iHolJ0qkrI/yZ9bJRctcj9QYF
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10945"; a="388116350"
+  bh=Mn/6av/XNJuAb/ztGwlHaZRbtQEQ/y06WilMKnwMVLc=;
+  b=OtwZVw6DDYtZIu7eQv8JYDBq7BGoyPcNC5/Cwt4W3x9B7GcPtUB61oOn
+   zHZg+Ed0fioHIdtjYMfNdk4izTP8jZB1Zar+o7KVqZOxRVc7+hO9V7rGp
+   r9JFbMSrECKOBZOEn85k2ePakAPRYLqopTcaAvg5TAKXecaou1bmi7pWs
+   TeaR/uwKsTgTajYlswVm0Q/jQIch1Tqnu3NzoNGJI49EYXaIHxEb4KV8l
+   Yap7oBu1hMRPk9UpMDe9duxkTDiFxt+jGUb+mA02oC9H99q/z69TgbrW1
+   mOuD9jGbjsXAwK9j45EEXpCkjGPjmvOwvnncMT8NMi6ZzvxjV21KhHKM9
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10945"; a="388116347"
 X-IronPort-AV: E=Sophos;i="6.04,337,1695711600"; 
-   d="scan'208";a="388116350"
+   d="scan'208";a="388116347"
 Received: from orsmga001.jf.intel.com ([10.7.209.18])
   by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jan 2024 07:31:09 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10945"; a="815208056"
+X-IronPort-AV: E=McAfee;i="6600,9927,10945"; a="815208055"
 X-IronPort-AV: E=Sophos;i="6.04,337,1695711600"; 
-   d="scan'208";a="815208056"
+   d="scan'208";a="815208055"
 Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
   by orsmga001.jf.intel.com with ESMTP; 06 Jan 2024 07:31:07 -0800
 Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
 	(envelope-from <lkp@intel.com>)
-	id 1rM8dd-0002d5-26;
+	id 1rM8dd-0002d2-1r;
 	Sat, 06 Jan 2024 15:31:05 +0000
-Date: Sat, 6 Jan 2024 23:30:48 +0800
+Date: Sat, 6 Jan 2024 23:30:57 +0800
 From: kernel test robot <lkp@intel.com>
-To: Jakub Jelinek <jakub@redhat.com>
+To: "Geoffrey D. Bennett" <g@b4.vu>
 Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-	"Peter Zijlstra (Intel)" <peterz@infradead.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Linux Memory Management List <linux-mm@kvack.org>
-Subject: security/keys/proc.c:217:45: warning: 'sprintf' may write a
- terminating nul past the end of the destination
-Message-ID: <202401062301.BVsuAP57-lkp@intel.com>
+	Takashi Iwai <tiwai@suse.de>
+Subject: sound/usb/mixer_scarlett2.c:3226:48: warning: ' Volume Control
+ Playback Enum' directive output may be truncated writing 29 bytes into a
+ region of size between 25 and 33
+Message-ID: <202401062344.AzZCYlpa-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -70,118 +69,145 @@ Content-Disposition: inline
 
 tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
 head:   95c8a35f1c017327eab3b6a2ff5c04255737c856
-commit: 2f78788b55baa3410b1ec91a576286abe1ad4d6a ilog2: improve ilog2 for constant arguments
-date:   3 years, 1 month ago
-config: arm-nhk8815_defconfig (https://download.01.org/0day-ci/archive/20240106/202401062301.BVsuAP57-lkp@intel.com/config)
-compiler: arm-linux-gnueabi-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240106/202401062301.BVsuAP57-lkp@intel.com/reproduce)
+commit: efc3d7d20361cc59325a9f0525e079333b4459c0 ALSA: scarlett2: Rename scarlett_gen2 to scarlett2
+date:   2 months ago
+config: arm64-randconfig-001-20240106 (https://download.01.org/0day-ci/archive/20240106/202401062344.AzZCYlpa-lkp@intel.com/config)
+compiler: aarch64-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240106/202401062344.AzZCYlpa-lkp@intel.com/reproduce)
 
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202401062301.BVsuAP57-lkp@intel.com/
+| Closes: https://lore.kernel.org/oe-kbuild-all/202401062344.AzZCYlpa-lkp@intel.com/
 
 All warnings (new ones prefixed by >>):
 
-   security/keys/proc.c: In function 'proc_keys_show':
->> security/keys/proc.c:217:45: warning: 'sprintf' may write a terminating nul past the end of the destination [-Wformat-overflow=]
-     217 |                         sprintf(xbuf, "%lluw", div_u64(timo, 60 * 60 * 24 * 7));
-         |                                             ^
-   security/keys/proc.c:217:25: note: 'sprintf' output between 3 and 17 bytes into a destination of size 16
-     217 |                         sprintf(xbuf, "%lluw", div_u64(timo, 60 * 60 * 24 * 7));
-         |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   security/keys/proc.c:215:45: warning: 'sprintf' may write a terminating nul past the end of the destination [-Wformat-overflow=]
-     215 |                         sprintf(xbuf, "%llud", div_u64(timo, 60 * 60 * 24));
-         |                                             ^
-   security/keys/proc.c:215:25: note: 'sprintf' output between 3 and 17 bytes into a destination of size 16
-     215 |                         sprintf(xbuf, "%llud", div_u64(timo, 60 * 60 * 24));
-         |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->> security/keys/proc.c:213:44: warning: 'h' directive writing 1 byte into a region of size between 0 and 15 [-Wformat-overflow=]
-     213 |                         sprintf(xbuf, "%lluh", div_u64(timo, 60 * 60));
-         |                                            ^
-   security/keys/proc.c:213:25: note: 'sprintf' output between 3 and 18 bytes into a destination of size 16
-     213 |                         sprintf(xbuf, "%lluh", div_u64(timo, 60 * 60));
-         |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   sound/usb/mixer_scarlett2.c: In function 'scarlett2_add_line_out_ctls':
+>> sound/usb/mixer_scarlett2.c:3226:48: warning: ' Volume Control Playback Enum' directive output may be truncated writing 29 bytes into a region of size between 25 and 33 [-Wformat-truncation=]
+    3226 |                                  "Line Out %02d Volume Control Playback Enum",
+         |                                                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   sound/usb/mixer_scarlett2.c:3225:25: note: 'snprintf' output between 41 and 49 bytes into a destination of size 44
+    3225 |                         snprintf(s, sizeof(s),
+         |                         ^~~~~~~~~~~~~~~~~~~~~~
+    3226 |                                  "Line Out %02d Volume Control Playback Enum",
+         |                                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    3227 |                                  i + 1);
+         |                                  ~~~~~~
+
+Kconfig warnings: (for reference only)
+   WARNING: unmet direct dependencies detected for VIDEO_OV2640
+   Depends on [n]: MEDIA_SUPPORT [=y] && VIDEO_DEV [=y] && VIDEO_CAMERA_SENSOR [=n]
+   Selected by [m]:
+   - VIDEO_EM28XX_V4L2 [=m] && USB [=y] && MEDIA_SUPPORT [=y] && MEDIA_USB_SUPPORT [=y] && (MEDIA_CAMERA_SUPPORT [=y] || MEDIA_ANALOG_TV_SUPPORT [=y] || MEDIA_DIGITAL_TV_SUPPORT [=y]) && VIDEO_EM28XX [=m] && MEDIA_SUBDRV_AUTOSELECT [=y] && MEDIA_CAMERA_SUPPORT [=y]
+   WARNING: unmet direct dependencies detected for VIDEO_OV7640
+   Depends on [n]: MEDIA_SUPPORT [=y] && VIDEO_DEV [=y] && VIDEO_CAMERA_SENSOR [=n]
+   Selected by [m]:
+   - VIDEO_GO7007 [=m] && MEDIA_SUPPORT [=y] && MEDIA_USB_SUPPORT [=y] && MEDIA_ANALOG_TV_SUPPORT [=y] && VIDEO_DEV [=y] && I2C [=y] && SND [=m] && USB [=y] && MEDIA_SUBDRV_AUTOSELECT [=y] && MEDIA_CAMERA_SUPPORT [=y]
+   WARNING: unmet direct dependencies detected for VIDEO_MT9V011
+   Depends on [n]: MEDIA_SUPPORT [=y] && VIDEO_DEV [=y] && VIDEO_CAMERA_SENSOR [=n]
+   Selected by [m]:
+   - VIDEO_EM28XX_V4L2 [=m] && USB [=y] && MEDIA_SUPPORT [=y] && MEDIA_USB_SUPPORT [=y] && (MEDIA_CAMERA_SUPPORT [=y] || MEDIA_ANALOG_TV_SUPPORT [=y] || MEDIA_DIGITAL_TV_SUPPORT [=y]) && VIDEO_EM28XX [=m] && MEDIA_SUBDRV_AUTOSELECT [=y] && MEDIA_CAMERA_SUPPORT [=y]
 
 
-vim +/sprintf +217 security/keys/proc.c
+vim +3226 sound/usb/mixer_scarlett2.c
 
-^1da177e4c3f41 Linus Torvalds 2005-04-16  152  
-^1da177e4c3f41 Linus Torvalds 2005-04-16  153  static int proc_keys_show(struct seq_file *m, void *v)
-^1da177e4c3f41 Linus Torvalds 2005-04-16  154  {
-^1da177e4c3f41 Linus Torvalds 2005-04-16  155  	struct rb_node *_p = v;
-^1da177e4c3f41 Linus Torvalds 2005-04-16  156  	struct key *key = rb_entry(_p, struct key, serial_node);
-ab5c69f01313c8 Eric Biggers   2017-09-27  157  	unsigned long flags;
-927942aabbbe50 David Howells  2010-06-11  158  	key_ref_t key_ref, skey_ref;
-074d58989569b3 Baolin Wang    2017-11-15  159  	time64_t now, expiry;
-03dab869b7b239 David Howells  2016-10-26  160  	char xbuf[16];
-363b02dab09b32 David Howells  2017-10-04  161  	short state;
-074d58989569b3 Baolin Wang    2017-11-15  162  	u64 timo;
-06ec7be557a125 Michael LeMay  2006-06-26  163  	int rc;
-06ec7be557a125 Michael LeMay  2006-06-26  164  
-4bdf0bc3003141 David Howells  2013-09-24  165  	struct keyring_search_context ctx = {
-ede0fa98a900e6 Eric Biggers   2019-02-22  166  		.index_key		= key->index_key,
-4aa68e07d84556 Eric Biggers   2017-09-18  167  		.cred			= m->file->f_cred,
-462919591a1791 David Howells  2014-09-16  168  		.match_data.cmp		= lookup_user_key_possessed,
-462919591a1791 David Howells  2014-09-16  169  		.match_data.raw_data	= key,
-462919591a1791 David Howells  2014-09-16  170  		.match_data.lookup_type	= KEYRING_SEARCH_LOOKUP_DIRECT,
-dcf49dbc8077e2 David Howells  2019-06-26  171  		.flags			= (KEYRING_SEARCH_NO_STATE_CHECK |
-dcf49dbc8077e2 David Howells  2019-06-26  172  					   KEYRING_SEARCH_RECURSE),
-4bdf0bc3003141 David Howells  2013-09-24  173  	};
-4bdf0bc3003141 David Howells  2013-09-24  174  
-028db3e290f15a Linus Torvalds 2019-07-10  175  	key_ref = make_key_ref(key, 0);
-927942aabbbe50 David Howells  2010-06-11  176  
-927942aabbbe50 David Howells  2010-06-11  177  	/* determine if the key is possessed by this process (a test we can
-927942aabbbe50 David Howells  2010-06-11  178  	 * skip if the key does not indicate the possessor can view it
-927942aabbbe50 David Howells  2010-06-11  179  	 */
-028db3e290f15a Linus Torvalds 2019-07-10  180  	if (key->perm & KEY_POS_VIEW) {
-028db3e290f15a Linus Torvalds 2019-07-10  181  		rcu_read_lock();
-e59428f721ee09 David Howells  2019-06-19  182  		skey_ref = search_cred_keyrings_rcu(&ctx);
-028db3e290f15a Linus Torvalds 2019-07-10  183  		rcu_read_unlock();
-927942aabbbe50 David Howells  2010-06-11  184  		if (!IS_ERR(skey_ref)) {
-927942aabbbe50 David Howells  2010-06-11  185  			key_ref_put(skey_ref);
-927942aabbbe50 David Howells  2010-06-11  186  			key_ref = make_key_ref(key, 1);
-927942aabbbe50 David Howells  2010-06-11  187  		}
-927942aabbbe50 David Howells  2010-06-11  188  	}
-927942aabbbe50 David Howells  2010-06-11  189  
-4aa68e07d84556 Eric Biggers   2017-09-18  190  	/* check whether the current task is allowed to view the key */
-f5895943d91b41 David Howells  2014-03-14  191  	rc = key_task_permission(key_ref, ctx.cred, KEY_NEED_VIEW);
-06ec7be557a125 Michael LeMay  2006-06-26  192  	if (rc < 0)
-028db3e290f15a Linus Torvalds 2019-07-10  193  		return 0;
-^1da177e4c3f41 Linus Torvalds 2005-04-16  194  
-074d58989569b3 Baolin Wang    2017-11-15  195  	now = ktime_get_real_seconds();
-^1da177e4c3f41 Linus Torvalds 2005-04-16  196  
-028db3e290f15a Linus Torvalds 2019-07-10  197  	rcu_read_lock();
-028db3e290f15a Linus Torvalds 2019-07-10  198  
-^1da177e4c3f41 Linus Torvalds 2005-04-16  199  	/* come up with a suitable timeout value */
-ab5c69f01313c8 Eric Biggers   2017-09-27  200  	expiry = READ_ONCE(key->expiry);
-ab5c69f01313c8 Eric Biggers   2017-09-27  201  	if (expiry == 0) {
-^1da177e4c3f41 Linus Torvalds 2005-04-16  202  		memcpy(xbuf, "perm", 5);
-074d58989569b3 Baolin Wang    2017-11-15  203  	} else if (now >= expiry) {
-^1da177e4c3f41 Linus Torvalds 2005-04-16  204  		memcpy(xbuf, "expd", 5);
-7b1b9164598286 David Howells  2009-09-02  205  	} else {
-074d58989569b3 Baolin Wang    2017-11-15  206  		timo = expiry - now;
-^1da177e4c3f41 Linus Torvalds 2005-04-16  207  
-^1da177e4c3f41 Linus Torvalds 2005-04-16  208  		if (timo < 60)
-074d58989569b3 Baolin Wang    2017-11-15  209  			sprintf(xbuf, "%llus", timo);
-^1da177e4c3f41 Linus Torvalds 2005-04-16  210  		else if (timo < 60*60)
-074d58989569b3 Baolin Wang    2017-11-15  211  			sprintf(xbuf, "%llum", div_u64(timo, 60));
-^1da177e4c3f41 Linus Torvalds 2005-04-16  212  		else if (timo < 60*60*24)
-074d58989569b3 Baolin Wang    2017-11-15 @213  			sprintf(xbuf, "%lluh", div_u64(timo, 60 * 60));
-^1da177e4c3f41 Linus Torvalds 2005-04-16  214  		else if (timo < 60*60*24*7)
-074d58989569b3 Baolin Wang    2017-11-15  215  			sprintf(xbuf, "%llud", div_u64(timo, 60 * 60 * 24));
-^1da177e4c3f41 Linus Torvalds 2005-04-16  216  		else
-074d58989569b3 Baolin Wang    2017-11-15 @217  			sprintf(xbuf, "%lluw", div_u64(timo, 60 * 60 * 24 * 7));
-^1da177e4c3f41 Linus Torvalds 2005-04-16  218  	}
-^1da177e4c3f41 Linus Torvalds 2005-04-16  219  
-363b02dab09b32 David Howells  2017-10-04  220  	state = key_read_state(key);
-363b02dab09b32 David Howells  2017-10-04  221  
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3166  
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3167  static int scarlett2_add_line_out_ctls(struct usb_mixer_interface *mixer)
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3168  {
+e46f2195c86b00 sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2021-06-21  3169  	struct scarlett2_data *private = mixer->private_data;
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3170  	const struct scarlett2_device_info *info = private->info;
+e2cc91ac8f4e1b sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2021-06-22  3171  	const int (*port_count)[SCARLETT2_PORT_DIRNS] = info->port_count;
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3172  	int num_line_out =
+e2cc91ac8f4e1b sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2021-06-22  3173  		port_count[SCARLETT2_PORT_TYPE_ANALOGUE][SCARLETT2_PORT_OUT];
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3174  	int err, i;
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3175  	char s[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3176  
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3177  	/* Add R/O HW volume control */
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3178  	if (info->line_out_hw_vol) {
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3179  		snprintf(s, sizeof(s), "Master HW Playback Volume");
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3180  		err = scarlett2_add_new_ctl(mixer,
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3181  					    &scarlett2_master_volume_ctl,
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3182  					    0, 1, s, &private->master_vol_ctl);
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3183  		if (err < 0)
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3184  			return err;
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3185  	}
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3186  
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3187  	/* Add volume controls */
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3188  	for (i = 0; i < num_line_out; i++) {
+9cfe1276a6736f sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2021-06-23  3189  		int index = line_out_remap(private, i);
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3190  
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3191  		/* Fader */
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3192  		if (info->line_out_descrs[i])
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3193  			snprintf(s, sizeof(s),
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3194  				 "Line %02d (%s) Playback Volume",
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3195  				 i + 1, info->line_out_descrs[i]);
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3196  		else
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3197  			snprintf(s, sizeof(s),
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3198  				 "Line %02d Playback Volume",
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3199  				 i + 1);
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3200  		err = scarlett2_add_new_ctl(mixer,
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3201  					    &scarlett2_line_out_volume_ctl,
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3202  					    i, 1, s, &private->vol_ctls[i]);
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3203  		if (err < 0)
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3204  			return err;
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3205  
+0c88f9db1910ff sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2021-06-22  3206  		/* Mute Switch */
+0c88f9db1910ff sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2021-06-22  3207  		snprintf(s, sizeof(s),
+0c88f9db1910ff sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2021-06-22  3208  			 "Line %02d Mute Playback Switch",
+0c88f9db1910ff sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2021-06-22  3209  			 i + 1);
+0c88f9db1910ff sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2021-06-22  3210  		err = scarlett2_add_new_ctl(mixer,
+0c88f9db1910ff sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2021-06-22  3211  					    &scarlett2_mute_ctl,
+0c88f9db1910ff sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2021-06-22  3212  					    i, 1, s,
+0c88f9db1910ff sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2021-06-22  3213  					    &private->mute_ctls[i]);
+0c88f9db1910ff sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2021-06-22  3214  		if (err < 0)
+0c88f9db1910ff sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2021-06-22  3215  			return err;
+0c88f9db1910ff sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2021-06-22  3216  
+0c88f9db1910ff sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2021-06-22  3217  		/* Make the fader and mute controls read-only if the
+0c88f9db1910ff sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2021-06-22  3218  		 * SW/HW switch is set to HW
+0c88f9db1910ff sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2021-06-22  3219  		 */
+9cfe1276a6736f sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2021-06-23  3220  		if (private->vol_sw_hw_switch[index])
+06250c89d47cef sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2021-06-22  3221  			scarlett2_vol_ctl_set_writable(mixer, i, 0);
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3222  
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3223  		/* SW/HW Switch */
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3224  		if (info->line_out_hw_vol) {
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3225  			snprintf(s, sizeof(s),
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29 @3226  				 "Line Out %02d Volume Control Playback Enum",
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3227  				 i + 1);
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3228  			err = scarlett2_add_new_ctl(mixer,
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3229  						    &scarlett2_sw_hw_enum_ctl,
+f02da6534810ac sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2021-06-23  3230  						    i, 1, s,
+f02da6534810ac sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2021-06-23  3231  						    &private->sw_hw_ctls[i]);
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3232  			if (err < 0)
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3233  				return err;
+e914d8432cb4b9 sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2021-06-23  3234  
+e914d8432cb4b9 sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2021-06-23  3235  			/* Make the switch read-only if the line is
+e914d8432cb4b9 sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2021-06-23  3236  			 * involved in speaker switching
+e914d8432cb4b9 sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2021-06-23  3237  			 */
+e914d8432cb4b9 sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2021-06-23  3238  			if (private->speaker_switching_switch && i < 4)
+e914d8432cb4b9 sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2021-06-23  3239  				scarlett2_sw_hw_ctl_ro(private, i);
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3240  		}
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3241  	}
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3242  
+dbd82c0550633c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2021-06-21  3243  	/* Add dim/mute controls */
+03bdbcf08a8cb7 sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2021-06-21  3244  	if (info->line_out_hw_vol)
+dbd82c0550633c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2021-06-21  3245  		for (i = 0; i < SCARLETT2_DIM_MUTE_COUNT; i++) {
+03bdbcf08a8cb7 sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2021-06-21  3246  			err = scarlett2_add_new_ctl(
+dbd82c0550633c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2021-06-21  3247  				mixer, &scarlett2_dim_mute_ctl,
+dbd82c0550633c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2021-06-21  3248  				i, 1, scarlett2_dim_mute_names[i],
+dbd82c0550633c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2021-06-21  3249  				&private->dim_mute_ctls[i]);
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3250  			if (err < 0)
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3251  				return err;
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3252  		}
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3253  
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3254  	return 0;
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3255  }
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3256  
 
-:::::: The code at line 217 was first introduced by commit
-:::::: 074d58989569b39f04294c90ef36dd82b8c2cc1a security: keys: Replace time_t/timespec with time64_t
+:::::: The code at line 3226 was first introduced by commit
+:::::: 9e4d5c1be21f0c00e747e92186784f3298309b3e ALSA: usb-audio: Scarlett Gen 2 mixer interface
 
-:::::: TO: Baolin Wang <baolin.wang@linaro.org>
-:::::: CC: David Howells <dhowells@redhat.com>
+:::::: TO: Geoffrey D. Bennett <g@b4.vu>
+:::::: CC: Takashi Iwai <tiwai@suse.de>
 
 -- 
 0-DAY CI Kernel Test Service
