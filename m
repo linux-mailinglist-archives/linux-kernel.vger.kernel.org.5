@@ -1,88 +1,101 @@
-Return-Path: <linux-kernel+bounces-18600-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18601-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 470FA825FE3
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 15:35:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A3D3E825FE8
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 15:36:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 30CA81C211B9
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 14:35:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 540072828F8
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 14:36:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBE928475;
-	Sat,  6 Jan 2024 14:35:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB06B79F9;
+	Sat,  6 Jan 2024 14:36:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bpDJb+l6"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ms+Xe2FU"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C20E179D7;
-	Sat,  6 Jan 2024 14:35:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704551718; x=1736087718;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=ZNNysimiaIE8kJDewUd2Rel+W4OnxP7QCkFhwCl3gQA=;
-  b=bpDJb+l6aKOzo8Xlk8sMDrwVdm0cQgPkrppklXV0/+S5RdOMgtwtTVPx
-   U3bnF3xxg66iBrTVptNRNoPy6ue511zHffBjFbZYs0p5pBJpQULpBVTRx
-   Urhv3u69vVY6zRb+88Evgjq6oKmN+2SCSBhqkDh6Q1mqVIRK3Z5TuDw8r
-   QJL+s7H38tH5R9DxXBr8oYH9uTLsCZxsrm8BBZ3oB9aoiYg/k0jwR5oca
-   iSHcibAcRcNE0t6hgALfUUBNaKpvy9eOeJK3uw8jHTUQ7m/ZtdmF3MOwm
-   4DxlDTCJB/iHjz9NSLDNq5Sy2jxuifrDy9FT+NzishGSxaZWvebcIUm/m
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10945"; a="428843917"
-X-IronPort-AV: E=Sophos;i="6.04,337,1695711600"; 
-   d="scan'208";a="428843917"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jan 2024 06:35:18 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10945"; a="809803693"
-X-IronPort-AV: E=Sophos;i="6.04,337,1695711600"; 
-   d="scan'208";a="809803693"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga008.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jan 2024 06:35:15 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rM7lY-0000000Bvj0-0Zba;
-	Sat, 06 Jan 2024 16:35:12 +0200
-Date: Sat, 6 Jan 2024 16:35:11 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-	akpm@linux-foundation.org, christophe.jaillet@wanadoo.fr,
-	David.Laight@aculab.com, ddiss@suse.de, geert@linux-m68k.org,
-	rdunlap@infradead.org
-Subject: Re: [PATCH v4 0/4] kstrtox: introduce memparse_safe()
-Message-ID: <ZZllH1Aw_XKw1EW5@smile.fi.intel.com>
-References: <cover.1704422015.git.wqu@suse.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F281ABE5A;
+	Sat,  6 Jan 2024 14:36:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BBB26C433C7;
+	Sat,  6 Jan 2024 14:36:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704551788;
+	bh=Z6nfSKtyFMKfBfwqZITl9eQ0v7SjF99tb+baXN8Wsjg=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=ms+Xe2FUCLlTFexDslAG8r+I+RMbTNiCsCYj3n1YVIKSanKw90hzwnW6smxVyvvc4
+	 kG6c+10QPTixW9eJzoxwEMPn31YEEsnKR23tVSEE2bvgnSGGvrYwgnmVel49XJ/SVd
+	 SXS809SpDTQeCZnDcOXM5hqosk5h0qiTzqts14EfKIp/PwhXOjPUI1K1/KxHZPREZQ
+	 c5yOJqXs1PZw7VHvSxWwvmhHbXfsbW+WbLUhRxHf6toKzR0SKUPMYPt3ztBnT00t5h
+	 FAvOxgB2MoVnd65X6G1iBsw7tmfnqhoeQQHao6+jxh6BXeS4b7BSyAFWWi4lgNGEvN
+	 Nymp8pesFy27w==
+Received: (nullmailer pid 1158634 invoked by uid 1000);
+	Sat, 06 Jan 2024 14:36:26 -0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1704422015.git.wqu@suse.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+From: Rob Herring <robh@kernel.org>
+To: Bhavin Sharma <bhavin.sharma@siliconsignals.io>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Rob Herring <robh+dt@kernel.org>, sre@kernel.org, Hardevsinh Palaniya <hardevsinh.palaniya@siliconsignals.io>, linux-kernel@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>, linux-pm@vger.kernel.org, devicetree@vger.kernel.org
+In-Reply-To: <20240106133546.936261-2-bhavin.sharma@siliconsignals.io>
+References: <20240106133546.936261-1-bhavin.sharma@siliconsignals.io>
+ <20240106133546.936261-2-bhavin.sharma@siliconsignals.io>
+Message-Id: <170455178667.1158618.9584358369325670417.robh@kernel.org>
+Subject: Re: [PATCH v2 2/2] dt-bindings: power: supply: stc3117: Convert to
+ DT schema format
+Date: Sat, 06 Jan 2024 07:36:26 -0700
 
-On Fri, Jan 05, 2024 at 01:04:58PM +1030, Qu Wenruo wrote:
-> [CHANGELOG]
-> v4:
-> - Extra test cases for supported but not enabled suffixes
+
+On Sat, 06 Jan 2024 19:05:44 +0530, Bhavin Sharma wrote:
+> Convert the binding to DT schema format.
 > 
-> - Comments update for memparse_safe() function
+> Changes in V2 resolved below errors:
+> 	1. string value is redundantly quoted with any quotes (quoted-strings)
+> 	2. found character '\t' that cannot start any token
+> 
+> Signed-off-by: Bhavin Sharma <bhavin.sharma@siliconsignals.io>
+> ---
+>  .../bindings/power/supply/stc3117-fg.yaml     | 41 +++++++++++++++++++
+>  1 file changed, 41 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/power/supply/stc3117-fg.yaml
+> 
 
-Same comment is applied as per v3.
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
--- 
-With Best Regards,
-Andy Shevchenko
+yamllint warnings/errors:
 
+dtschema/dtc warnings/errors:
+Error: Documentation/devicetree/bindings/power/supply/stc3117-fg.example.dts:18.9-14 syntax error
+FATAL ERROR: Unable to parse input tree
+make[2]: *** [scripts/Makefile.lib:419: Documentation/devicetree/bindings/power/supply/stc3117-fg.example.dtb] Error 1
+make[2]: *** Waiting for unfinished jobs....
+make[1]: *** [/builds/robherring/dt-review-ci/linux/Makefile:1424: dt_binding_check] Error 2
+make: *** [Makefile:234: __sub-make] Error 2
+
+doc reference errors (make refcheckdocs):
+
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20240106133546.936261-2-bhavin.sharma@siliconsignals.io
+
+The base for the series is generally the latest rc1. A different dependency
+should be noted in *this* patch.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit after running the above command yourself. Note
+that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+your schema. However, it must be unset to test all examples with your schema.
 
 
