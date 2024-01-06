@@ -1,221 +1,442 @@
-Return-Path: <linux-kernel+bounces-18620-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18621-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF27482601F
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 16:26:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AFE31826021
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 16:27:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E75F11C21AA3
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 15:26:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 58E8D28255C
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 15:27:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 792EE8495;
-	Sat,  6 Jan 2024 15:25:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A8438475;
+	Sat,  6 Jan 2024 15:27:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="DdDSQofk"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="SLJfWpJz"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
+Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7552B8479
-	for <linux-kernel@vger.kernel.org>; Sat,  6 Jan 2024 15:25:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4674679FE
+	for <linux-kernel@vger.kernel.org>; Sat,  6 Jan 2024 15:27:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-556fc91aba9so591682a12.1
-        for <linux-kernel@vger.kernel.org>; Sat, 06 Jan 2024 07:25:51 -0800 (PST)
+Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-6da202aa138so445424b3a.2
+        for <linux-kernel@vger.kernel.org>; Sat, 06 Jan 2024 07:27:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704554750; x=1705159550; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=OcjHfgODRNt+KFLJZW+qt8wg+xFuzUGbD/7t6KtlsPc=;
-        b=DdDSQofknDd7UUpCZ5h7u7Gyfdc416oilOljBG1Z5TYPCdDdcAMcvMH0WkK/dDUwLs
-         74Coa15Dg0+2ITbL5NS8wvjeKDm1YCt1YNNURI2Qb4qmlfm1+McEDxf6aDi5TaRcfXxl
-         Yt/1GfR2JsPKiX4pIbig+41swWO80EuG+d/epcOMutUhG2Ig4HYSi4j9oeKsJM0vn+qi
-         glgoVmc68Xa3qKvFIkiR0FPBuubWvaP8tgpv8K+0TuG5FtJmoHKcDOawYZMkOaCTsBER
-         PNyRIkeiT7z83P46um0ktGBKOu7/umW7aaThTfIEBEBb/M/5pQ4p1KUxCOhh1jXLfhyf
-         /Rnw==
+        d=linaro.org; s=google; t=1704554835; x=1705159635; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=IGnHddRRR39bPJdc9yil/sTAP9OrR9P0NakHbvwB6io=;
+        b=SLJfWpJznVa0++wPNDikZLZp1dla1dz4Fu3o1dxYkCkQltn6N4bOl8oxM4LSI93cx2
+         PifnN0IADQwkO7LEsGxcCJnN8LGBV81WaM8oJOcPLtXPHgPRhbH925AMtfCq40f8+H52
+         NThHWUWG9pB3x74kaN1wl/nxdVtADW1ENP9u3uYTXgXEpNYPQeSDHttZe6+K4SOEhYN0
+         fwpjmGV+PeX5woNE5SmxOxS+XUuw0BKVuG03bTGoFulLq6I/TT9bf+ceGR75mnwIo38S
+         em65eMJGrl7NlCIh3ehLiJGeMQtMC81KCpPRuwm9sH/etERIJEeUmASVHu1F1d/NODNj
+         +cQQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704554750; x=1705159550;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OcjHfgODRNt+KFLJZW+qt8wg+xFuzUGbD/7t6KtlsPc=;
-        b=hnnuwVbHxgw/6P4QSw47Q17A3F7+UqXl23Zt+/O8EEmoC2uUYN7Q5gODCENmBzeBCI
-         1RGukWXWYVTKOOIc1+DWn3KP3Sa5Bvcrijozu5yzcEb7lry8Sa+v/5IXZqvcCBlS24nG
-         s1BYpSiZNPFl1IoFpbczSYAbeD6ItRltvCCmB1rZprGI88ze3gQ+01cs0b+ONZcJBKNf
-         BLBhqsffAAJFLN/uerb3JsRSb9MwsujwbeGAwW/MGyHHjqKGG8DtOMWJA60d497J/WTg
-         s9AtMhP6m1xNK3SUMVtGkG9HDm3SsESG//YRgox9VSZttpVLRP8cfBVcI+6ODF/Plajg
-         XirQ==
-X-Gm-Message-State: AOJu0YyafZ6Dw2Mx5INq6aBjc2szbELaeBunVArhb9KNCm5Xx0Qr1wsO
-	Fv6yha8gtNWoxldkQ4ZIoXFGTtmJ6RbDVw==
-X-Google-Smtp-Source: AGHT+IFB0zGz9gSAgm1ISn8yYjF8oEreli2U1lqQx7WM65GroIfSdMClbQh9kAKJ7fNVREJ/zVWMwQ==
-X-Received: by 2002:a17:906:80ca:b0:a28:ad2c:f0e4 with SMTP id a10-20020a17090680ca00b00a28ad2cf0e4mr476053ejx.42.1704554749609;
-        Sat, 06 Jan 2024 07:25:49 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.223.112])
-        by smtp.gmail.com with ESMTPSA id jo21-20020a170906f6d500b00a275637e699sm2050304ejb.166.2024.01.06.07.25.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 06 Jan 2024 07:25:49 -0800 (PST)
-Message-ID: <bbe3bc57-1d5e-42d4-b860-15a27c7c57bd@linaro.org>
-Date: Sat, 6 Jan 2024 16:25:46 +0100
+        d=1e100.net; s=20230601; t=1704554835; x=1705159635;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=IGnHddRRR39bPJdc9yil/sTAP9OrR9P0NakHbvwB6io=;
+        b=l+eK7XvsBFBBV9j+CQ5RWoZtUk6OFOnXuNdfblaCDJuPG7y6VAfgruEw9NE5CmoemO
+         cStTYke0JTl4CuyFA/9+I1gBJ7r0uFzvcadVkbMUTsVXZTswrcwCQHFOslqlD6VRPavD
+         UDTNFVyaF2o4kC3uNzV3p2ew1/RMFIQ+tRjlPErhCgs8hzIYt4FgkzgitTkez197La4u
+         dDr+LSC2oXpiUpNyQo0upKZ2RaLdxjY63ZlFtmDZwlWKHt6bBZcKkY6yxuC/x1ieu+wZ
+         WuLKeR020D5aGhRKpUIKd5yaLCCa6Lyyamj5+LRWvy6KhuIH5VynQKvaZOMXmq31XrOo
+         /8XQ==
+X-Gm-Message-State: AOJu0YwBudil0f4tTCCDbTi+/5okJs84Q66cpIcTHtSFC8Qf7k6zi4ac
+	8YLPue6JLbdYyAwlXMo5VEhUOzjyf+x8
+X-Google-Smtp-Source: AGHT+IG6/ogh81hP2GuC/tJj4VtpQbaF24F7gXWXt/dWAVTZ98B31mEVpIdxzv2ekE28yV9KXpz+9Q==
+X-Received: by 2002:a05:6a20:12c6:b0:199:2927:45 with SMTP id v6-20020a056a2012c600b0019929270045mr1215916pzg.101.1704554835437;
+        Sat, 06 Jan 2024 07:27:15 -0800 (PST)
+Received: from thinkpad ([103.197.115.97])
+        by smtp.gmail.com with ESMTPSA id o23-20020a056a001b5700b006cecaff9e29sm3202904pfv.128.2024.01.06.07.27.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 06 Jan 2024 07:27:15 -0800 (PST)
+Date: Sat, 6 Jan 2024 20:57:08 +0530
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To: Frank Li <Frank.Li@nxp.com>
+Cc: krzysztof.kozlowski@linaro.org, bhelgaas@google.com,
+	conor+dt@kernel.org, devicetree@vger.kernel.org, festevam@gmail.com,
+	helgaas@kernel.org, hongxing.zhu@nxp.com, imx@lists.linux.dev,
+	kernel@pengutronix.de, krzysztof.kozlowski+dt@linaro.org,
+	kw@linux.com, l.stach@pengutronix.de,
+	linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
+	linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+	lpieralisi@kernel.org, robh@kernel.org, s.hauer@pengutronix.de,
+	shawnguo@kernel.org
+Subject: Re: [PATCH v7 01/16] PCI: imx6: Simplify clock handling by using
+ bulk_clk_*() function
+Message-ID: <20240106152708.GD2512@thinkpad>
+References: <20231227182727.1747435-1-Frank.Li@nxp.com>
+ <20231227182727.1747435-2-Frank.Li@nxp.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/3] clk: qcom: hfpll: Add QCS404-specific compatible
-To: Luca Weiss <luca@z3ntu.xyz>, ~postmarketos/upstreaming@lists.sr.ht,
- phone-devel@vger.kernel.org, Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>,
- Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
- <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>
-Cc: linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231231-hfpll-yaml-v1-0-359d44a4e194@z3ntu.xyz>
- <20231231-hfpll-yaml-v1-2-359d44a4e194@z3ntu.xyz>
- <588dd6c3-7d2b-48db-b5ea-48a07077dc5d@linaro.org>
- <6706261.DvuYhMxLoT@z3ntu.xyz>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <6706261.DvuYhMxLoT@z3ntu.xyz>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231227182727.1747435-2-Frank.Li@nxp.com>
 
-On 06/01/2024 11:19, Luca Weiss wrote:
-> On Dienstag, 2. Jänner 2024 11:41:26 CET Krzysztof Kozlowski wrote:
->> On 31/12/2023 15:48, Luca Weiss wrote:
->>> It doesn't appear that the configuration is for the HFPLL is generic, so
->>
->> That's ok...
->>
->>> add a qcs404-specific compatible and rename the existing struct to
->>
->> but why this is the solution? If the qcom,hfpll compatible was
->> deprecated, but it is not. This commit is contradictory to the bindings.
->>
->>> qcs404.
->>>
->>> Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
->>> ---
->>>
->>>  drivers/clk/qcom/hfpll.c | 6 ++++--
->>>  1 file changed, 4 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/drivers/clk/qcom/hfpll.c b/drivers/clk/qcom/hfpll.c
->>> index dac27e31ef60..5b12982519be 100644
->>> --- a/drivers/clk/qcom/hfpll.c
->>> +++ b/drivers/clk/qcom/hfpll.c
->>> @@ -14,7 +14,7 @@
->>>
->>>  #include "clk-regmap.h"
->>>  #include "clk-hfpll.h"
->>>
->>> -static const struct hfpll_data hdata = {
->>> +static const struct hfpll_data qcs404 = {
->>>
->>>  	.mode_reg = 0x00,
->>>  	.l_reg = 0x04,
->>>  	.m_reg = 0x08,
->>>
->>> @@ -84,10 +84,12 @@ static const struct hfpll_data msm8976_cci = {
->>>
->>>  };
->>>  
->>>  static const struct of_device_id qcom_hfpll_match_table[] = {
->>>
->>> -	{ .compatible = "qcom,hfpll", .data = &hdata },
->>>
->>>  	{ .compatible = "qcom,msm8976-hfpll-a53", .data = &msm8976_a53 },
->>>  	{ .compatible = "qcom,msm8976-hfpll-a72", .data = &msm8976_a72 },
->>>  	{ .compatible = "qcom,msm8976-hfpll-cci", .data = &msm8976_cci },
->>>
->>> +	{ .compatible = "qcom,qcs404-hfpll", .data = &qcs404 },
->>> +	/* deprecated, use SoC-specific compatible */
->>
->> Why? That's not a deprecated compatible. You now expect to create many
->> unnecessary entries, which is not really needed. This is opposite of
->> what we try to achieve with compatibility lists.
+On Wed, Dec 27, 2023 at 01:27:12PM -0500, Frank Li wrote:
+
+Subject mentions, 'bulk_clk' APIs but there is no such thing. It should be
+'clk_bulk()' APIs.
+
+> Refactors the clock handling logic. Adds clk_names[] define in drvdata.
+> Using clk_bulk*() api simplifies the code.
 > 
-> Just "qcom,hfpll" is not allowed by the bindings.
 
-Okay... sentence is correct but how is it related to the driver?
+I've mentioned this many times in the past. But let me reiterate here again:
 
-> The problem is that it's actually unclear to me what "qcom,hfpll" was supposed 
-> to be currently. It was added originally for MSM8974 and friends (see git log) 
-> but then is currently only used by QCS404 while in QCS404 downstream msm-4.4 
-> (I think it was 4.4) I see different driver data than what's here.
+Commit message should be in imperative mood as per Linux Kernel rules for
+submitting patches. Please see here:
+Documentation/process/submitting-patches.rst
 
-I discourage from using generic compatibles, because their meaning is
-too often fluid, but if we already have it then: it is supposed to be
-whatever driver and bindings defined it when they were added.
+The relevant part is:
 
+"Describe your changes in imperative mood, e.g. "make xyzzy do frotz"
+instead of "[This patch] makes xyzzy do frotz" or "[I] changed xyzzy
+to do frotz", as if you are giving orders to the codebase to change
+its behaviour."
+
+Please use this same format for rest of the patches as well for future ones.
+
+> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> ---
 > 
-> So I wanted to just move what's used here to be qcs404-specific and then in an 
-> upcoming patch add a msm8974-specific compatible with different driver data.
+> Notes:
+>     Change from v4 to v5
+>     - update commit message
+>     - direct using clk name list, instead of macro
+>     - still keep caculate clk list count because sizeof return pre allocated
+>     array size.
+>     
+>     Change from v3 to v4
+>     - using clk_bulk_*() API
+>     Change from v1 to v3
+>     - none
 > 
-> Also wouldn't the "don't extend driver lists when not neccessary" mean using 
-> something like "qcom,msm1234-hfpll", "qcom,qcs404-hfpll", "qcom,hfpll" then?
+>  drivers/pci/controller/dwc/pci-imx6.c | 125 ++++++++------------------
+>  1 file changed, 35 insertions(+), 90 deletions(-)
+> 
+> diff --git a/drivers/pci/controller/dwc/pci-imx6.c b/drivers/pci/controller/dwc/pci-imx6.c
+> index 74703362aeec7..50d9faaa17f71 100644
+> --- a/drivers/pci/controller/dwc/pci-imx6.c
+> +++ b/drivers/pci/controller/dwc/pci-imx6.c
+> @@ -61,12 +61,15 @@ enum imx6_pcie_variants {
+>  #define IMX6_PCIE_FLAG_IMX6_SPEED_CHANGE	BIT(1)
+>  #define IMX6_PCIE_FLAG_SUPPORTS_SUSPEND		BIT(2)
+>  
+> +#define IMX6_PCIE_MAX_CLKS       6
+> +
+>  struct imx6_pcie_drvdata {
+>  	enum imx6_pcie_variants variant;
+>  	enum dw_pcie_device_mode mode;
+>  	u32 flags;
+>  	int dbi_length;
+>  	const char *gpr;
+> +	const char *clk_names[IMX6_PCIE_MAX_CLKS];
+>  };
+>  
+>  struct imx6_pcie {
+> @@ -74,11 +77,8 @@ struct imx6_pcie {
+>  	int			reset_gpio;
+>  	bool			gpio_active_high;
+>  	bool			link_is_up;
+> -	struct clk		*pcie_bus;
+> -	struct clk		*pcie_phy;
+> -	struct clk		*pcie_inbound_axi;
+> -	struct clk		*pcie;
+> -	struct clk		*pcie_aux;
+> +	struct clk_bulk_data	clks[IMX6_PCIE_MAX_CLKS];
+> +	u32			clks_cnt;
+>  	struct regmap		*iomuxc_gpr;
+>  	u16			msi_ctrl;
+>  	u32			controller_id;
+> @@ -407,13 +407,18 @@ static void imx7d_pcie_wait_for_phy_pll_lock(struct imx6_pcie *imx6_pcie)
+>  
+>  static int imx6_setup_phy_mpll(struct imx6_pcie *imx6_pcie)
+>  {
+> -	unsigned long phy_rate = clk_get_rate(imx6_pcie->pcie_phy);
+> +	unsigned long phy_rate = 0;
+>  	int mult, div;
+>  	u16 val;
+> +	int i;
+>  
+>  	if (!(imx6_pcie->drvdata->flags & IMX6_PCIE_FLAG_IMX6_PHY))
+>  		return 0;
+>  
+> +	for (i = 0; i < imx6_pcie->clks_cnt; i++)
+> +		if (strncmp(imx6_pcie->clks[i].id, "pcie_phy", 8) == 0)
+> +			phy_rate = clk_get_rate(imx6_pcie->clks[i].clk);
+> +
+>  	switch (phy_rate) {
+>  	case 125000000:
+>  		/*
+> @@ -550,19 +555,11 @@ static int imx6_pcie_attach_pd(struct device *dev)
+>  
+>  static int imx6_pcie_enable_ref_clk(struct imx6_pcie *imx6_pcie)
+>  {
+> -	struct dw_pcie *pci = imx6_pcie->pci;
+> -	struct device *dev = pci->dev;
+>  	unsigned int offset;
+>  	int ret = 0;
+>  
+>  	switch (imx6_pcie->drvdata->variant) {
+>  	case IMX6SX:
+> -		ret = clk_prepare_enable(imx6_pcie->pcie_inbound_axi);
+> -		if (ret) {
+> -			dev_err(dev, "unable to enable pcie_axi clock\n");
+> -			break;
+> -		}
+> -
+>  		regmap_update_bits(imx6_pcie->iomuxc_gpr, IOMUXC_GPR12,
+>  				   IMX6SX_GPR12_PCIE_TEST_POWERDOWN, 0);
+>  		break;
+> @@ -589,12 +586,6 @@ static int imx6_pcie_enable_ref_clk(struct imx6_pcie *imx6_pcie)
+>  	case IMX8MQ_EP:
+>  	case IMX8MP:
+>  	case IMX8MP_EP:
+> -		ret = clk_prepare_enable(imx6_pcie->pcie_aux);
+> -		if (ret) {
+> -			dev_err(dev, "unable to enable pcie_aux clock\n");
+> -			break;
+> -		}
+> -
+>  		offset = imx6_pcie_grp_offset(imx6_pcie);
+>  		/*
+>  		 * Set the over ride low and enabled
+> @@ -615,9 +606,6 @@ static int imx6_pcie_enable_ref_clk(struct imx6_pcie *imx6_pcie)
+>  static void imx6_pcie_disable_ref_clk(struct imx6_pcie *imx6_pcie)
+>  {
+>  	switch (imx6_pcie->drvdata->variant) {
+> -	case IMX6SX:
+> -		clk_disable_unprepare(imx6_pcie->pcie_inbound_axi);
+> -		break;
+>  	case IMX6QP:
+>  	case IMX6Q:
+>  		regmap_update_bits(imx6_pcie->iomuxc_gpr, IOMUXC_GPR1,
+> @@ -631,14 +619,6 @@ static void imx6_pcie_disable_ref_clk(struct imx6_pcie *imx6_pcie)
+>  				   IMX7D_GPR12_PCIE_PHY_REFCLK_SEL,
+>  				   IMX7D_GPR12_PCIE_PHY_REFCLK_SEL);
+>  		break;
+> -	case IMX8MM:
+> -	case IMX8MM_EP:
+> -	case IMX8MQ:
+> -	case IMX8MQ_EP:
+> -	case IMX8MP:
+> -	case IMX8MP_EP:
+> -		clk_disable_unprepare(imx6_pcie->pcie_aux);
+> -		break;
+>  	default:
+>  		break;
+>  	}
+> @@ -650,23 +630,9 @@ static int imx6_pcie_clk_enable(struct imx6_pcie *imx6_pcie)
+>  	struct device *dev = pci->dev;
+>  	int ret;
+>  
+> -	ret = clk_prepare_enable(imx6_pcie->pcie_phy);
+> -	if (ret) {
+> -		dev_err(dev, "unable to enable pcie_phy clock\n");
+> +	ret =  clk_bulk_prepare_enable(imx6_pcie->clks_cnt, imx6_pcie->clks);
 
-qcs404 and hfpll are the same aren't they? Then why would third
-compatible appear?
+Extra space after =
 
-> That was kind of my idea if some other SoC can reuse e.g. qcs404 data?
+> +	if (ret)
+>  		return ret;
+> -	}
+> -
+> -	ret = clk_prepare_enable(imx6_pcie->pcie_bus);
+> -	if (ret) {
+> -		dev_err(dev, "unable to enable pcie_bus clock\n");
+> -		goto err_pcie_bus;
+> -	}
+> -
+> -	ret = clk_prepare_enable(imx6_pcie->pcie);
+> -	if (ret) {
+> -		dev_err(dev, "unable to enable pcie clock\n");
+> -		goto err_pcie;
+> -	}
+>  
+>  	ret = imx6_pcie_enable_ref_clk(imx6_pcie);
+>  	if (ret) {
+> @@ -679,11 +645,7 @@ static int imx6_pcie_clk_enable(struct imx6_pcie *imx6_pcie)
+>  	return 0;
+>  
+>  err_ref_clk:
+> -	clk_disable_unprepare(imx6_pcie->pcie);
+> -err_pcie:
+> -	clk_disable_unprepare(imx6_pcie->pcie_bus);
+> -err_pcie_bus:
+> -	clk_disable_unprepare(imx6_pcie->pcie_phy);
+> +	clk_bulk_disable_unprepare(imx6_pcie->clks_cnt, imx6_pcie->clks);
+>  
+>  	return ret;
+>  }
+> @@ -691,9 +653,7 @@ static int imx6_pcie_clk_enable(struct imx6_pcie *imx6_pcie)
+>  static void imx6_pcie_clk_disable(struct imx6_pcie *imx6_pcie)
+>  {
+>  	imx6_pcie_disable_ref_clk(imx6_pcie);
+> -	clk_disable_unprepare(imx6_pcie->pcie);
+> -	clk_disable_unprepare(imx6_pcie->pcie_bus);
+> -	clk_disable_unprepare(imx6_pcie->pcie_phy);
+> +	clk_bulk_disable_unprepare(imx6_pcie->clks_cnt, imx6_pcie->clks);
+>  }
+>  
+>  static void imx6_pcie_assert_core_reset(struct imx6_pcie *imx6_pcie)
+> @@ -1305,32 +1265,19 @@ static int imx6_pcie_probe(struct platform_device *pdev)
+>  		return imx6_pcie->reset_gpio;
+>  	}
+>  
+> -	/* Fetch clocks */
+> -	imx6_pcie->pcie_bus = devm_clk_get(dev, "pcie_bus");
+> -	if (IS_ERR(imx6_pcie->pcie_bus))
+> -		return dev_err_probe(dev, PTR_ERR(imx6_pcie->pcie_bus),
+> -				     "pcie_bus clock source missing or invalid\n");
+> +	while (imx6_pcie->drvdata->clk_names[imx6_pcie->clks_cnt]) {
+> +		int i = imx6_pcie->clks_cnt;
 
-If any other SoC wants to reuse qcs404, why that SoC cannot use hfpll?
-If hfpll compatible is not correct, it should be deprecated, which is
-not happening in this patchset.
+Why can't you initialize i to 0 directly?
 
-Best regards,
-Krzysztof
+Rest looks good to me.
 
+- Mani
+
+> +
+> +		imx6_pcie->clks[i].id = imx6_pcie->drvdata->clk_names[i];
+> +		imx6_pcie->clks_cnt++;
+> +	}
+>  
+> -	imx6_pcie->pcie = devm_clk_get(dev, "pcie");
+> -	if (IS_ERR(imx6_pcie->pcie))
+> -		return dev_err_probe(dev, PTR_ERR(imx6_pcie->pcie),
+> -				     "pcie clock source missing or invalid\n");
+> +	/* Fetch clocks */
+> +	ret = devm_clk_bulk_get(dev, imx6_pcie->clks_cnt, imx6_pcie->clks);
+> +	if (ret)
+> +		return ret;
+>  
+>  	switch (imx6_pcie->drvdata->variant) {
+> -	case IMX6SX:
+> -		imx6_pcie->pcie_inbound_axi = devm_clk_get(dev,
+> -							   "pcie_inbound_axi");
+> -		if (IS_ERR(imx6_pcie->pcie_inbound_axi))
+> -			return dev_err_probe(dev, PTR_ERR(imx6_pcie->pcie_inbound_axi),
+> -					     "pcie_inbound_axi clock missing or invalid\n");
+> -		break;
+> -	case IMX8MQ:
+> -	case IMX8MQ_EP:
+> -		imx6_pcie->pcie_aux = devm_clk_get(dev, "pcie_aux");
+> -		if (IS_ERR(imx6_pcie->pcie_aux))
+> -			return dev_err_probe(dev, PTR_ERR(imx6_pcie->pcie_aux),
+> -					     "pcie_aux clock source missing or invalid\n");
+> -		fallthrough;
+>  	case IMX7D:
+>  		if (dbi_base->start == IMX8MQ_PCIE2_BASE_ADDR)
+>  			imx6_pcie->controller_id = 1;
+> @@ -1353,10 +1300,6 @@ static int imx6_pcie_probe(struct platform_device *pdev)
+>  	case IMX8MM_EP:
+>  	case IMX8MP:
+>  	case IMX8MP_EP:
+> -		imx6_pcie->pcie_aux = devm_clk_get(dev, "pcie_aux");
+> -		if (IS_ERR(imx6_pcie->pcie_aux))
+> -			return dev_err_probe(dev, PTR_ERR(imx6_pcie->pcie_aux),
+> -					     "pcie_aux clock source missing or invalid\n");
+>  		imx6_pcie->apps_reset = devm_reset_control_get_exclusive(dev,
+>  									 "apps");
+>  		if (IS_ERR(imx6_pcie->apps_reset))
+> @@ -1372,14 +1315,6 @@ static int imx6_pcie_probe(struct platform_device *pdev)
+>  	default:
+>  		break;
+>  	}
+> -	/* Don't fetch the pcie_phy clock, if it has abstract PHY driver */
+> -	if (imx6_pcie->phy == NULL) {
+> -		imx6_pcie->pcie_phy = devm_clk_get(dev, "pcie_phy");
+> -		if (IS_ERR(imx6_pcie->pcie_phy))
+> -			return dev_err_probe(dev, PTR_ERR(imx6_pcie->pcie_phy),
+> -					     "pcie_phy clock source missing or invalid\n");
+> -	}
+> -
+>  
+>  	/* Grab turnoff reset */
+>  	imx6_pcie->turnoff_reset = devm_reset_control_get_optional_exclusive(dev, "turnoff");
+> @@ -1477,6 +1412,7 @@ static const struct imx6_pcie_drvdata drvdata[] = {
+>  			 IMX6_PCIE_FLAG_IMX6_SPEED_CHANGE,
+>  		.dbi_length = 0x200,
+>  		.gpr = "fsl,imx6q-iomuxc-gpr",
+> +		.clk_names = {"pcie_bus", "pcie", "pcie_phy"},
+>  	},
+>  	[IMX6SX] = {
+>  		.variant = IMX6SX,
+> @@ -1484,6 +1420,7 @@ static const struct imx6_pcie_drvdata drvdata[] = {
+>  			 IMX6_PCIE_FLAG_IMX6_SPEED_CHANGE |
+>  			 IMX6_PCIE_FLAG_SUPPORTS_SUSPEND,
+>  		.gpr = "fsl,imx6q-iomuxc-gpr",
+> +		.clk_names = {"pcie_bus", "pcie", "pcie_phy", "pcie_inbound_axi"},
+>  	},
+>  	[IMX6QP] = {
+>  		.variant = IMX6QP,
+> @@ -1492,40 +1429,48 @@ static const struct imx6_pcie_drvdata drvdata[] = {
+>  			 IMX6_PCIE_FLAG_SUPPORTS_SUSPEND,
+>  		.dbi_length = 0x200,
+>  		.gpr = "fsl,imx6q-iomuxc-gpr",
+> +		.clk_names = {"pcie_bus", "pcie", "pcie_phy"},
+>  	},
+>  	[IMX7D] = {
+>  		.variant = IMX7D,
+>  		.flags = IMX6_PCIE_FLAG_SUPPORTS_SUSPEND,
+>  		.gpr = "fsl,imx7d-iomuxc-gpr",
+> +		.clk_names = {"pcie_bus", "pcie", "pcie_phy"},
+>  	},
+>  	[IMX8MQ] = {
+>  		.variant = IMX8MQ,
+>  		.gpr = "fsl,imx8mq-iomuxc-gpr",
+> +		.clk_names = {"pcie_bus", "pcie", "pcie_phy", "pcie_aux"},
+>  	},
+>  	[IMX8MM] = {
+>  		.variant = IMX8MM,
+>  		.flags = IMX6_PCIE_FLAG_SUPPORTS_SUSPEND,
+>  		.gpr = "fsl,imx8mm-iomuxc-gpr",
+> +		.clk_names = {"pcie_bus", "pcie", "pcie_aux"},
+>  	},
+>  	[IMX8MP] = {
+>  		.variant = IMX8MP,
+>  		.flags = IMX6_PCIE_FLAG_SUPPORTS_SUSPEND,
+>  		.gpr = "fsl,imx8mp-iomuxc-gpr",
+> +		.clk_names = {"pcie_bus", "pcie", "pcie_aux"},
+>  	},
+>  	[IMX8MQ_EP] = {
+>  		.variant = IMX8MQ_EP,
+>  		.mode = DW_PCIE_EP_TYPE,
+>  		.gpr = "fsl,imx8mq-iomuxc-gpr",
+> +		.clk_names = {"pcie_bus", "pcie", "pcie_phy", "pcie_aux"},
+>  	},
+>  	[IMX8MM_EP] = {
+>  		.variant = IMX8MM_EP,
+>  		.mode = DW_PCIE_EP_TYPE,
+>  		.gpr = "fsl,imx8mm-iomuxc-gpr",
+> +		.clk_names = {"pcie_bus", "pcie", "pcie_aux"},
+>  	},
+>  	[IMX8MP_EP] = {
+>  		.variant = IMX8MP_EP,
+>  		.mode = DW_PCIE_EP_TYPE,
+>  		.gpr = "fsl,imx8mp-iomuxc-gpr",
+> +		.clk_names = {"pcie_bus", "pcie", "pcie_aux"},
+>  	},
+>  };
+>  
+> -- 
+> 2.34.1
+> 
+
+-- 
+மணிவண்ணன் சதாசிவம்
 
