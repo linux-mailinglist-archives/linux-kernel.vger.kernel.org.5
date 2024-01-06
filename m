@@ -1,185 +1,204 @@
-Return-Path: <linux-kernel+bounces-18581-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18587-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 20D41825FB6
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 14:36:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41FC6825FC3
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 15:04:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9FDB91F22408
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 13:36:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 45E741C211F1
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 14:04:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAB55847C;
-	Sat,  6 Jan 2024 13:36:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D9D07483;
+	Sat,  6 Jan 2024 14:04:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux-watchdog.org header.i=@linux-watchdog.org header.b="XDlqgqcS"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from IND01-BMX-obe.outbound.protection.outlook.com (mail-bmxind01on2071.outbound.protection.outlook.com [40.107.239.71])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90E197494;
-	Sat,  6 Jan 2024 13:36:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=siliconsignals.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=siliconsignals.io
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HpOrq9IYDkg/U91nxfM46FOdSh9PLm1/ho0Pv12Y1cPCjbbLokliG/aCUwcydxIoWEq9NlzPCI26LqjY+jARKK51EsU7GmHY03vu/E6Yr7rNjBenBexqOWBFGA8g3k9QjTIM/YlRYSbZFg4OyA6N1A3VuUcCmM1HfnCVrNvHPTUypiGSSDJ+eIZ0YLPLSMJ9eQgm6LkkWaTYFN4S7usLE1KQCnUowkEEZrlKT4CxOi3eTDK+bPeOSqm+9DMUKrdQDgwzW/UWVPt8vu2V9s8vknyKuW4YXibozmwfGiS00dK7C4EXRJsQU5yqZP5karEmYvOnsxKs5XWvvUdhkmaaFw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=YKHXj3F2NfYxp+0VyvmYXwCr4S5KoL8DGhvuXgVBe1k=;
- b=bdIf/Q/4zdD/T/nXA8aGaMKibgRPJnCBuQ39lkRkLjvxLUvKGY+DzO4wmPwg/qaBVSn7baJPGnoNpytotR5HY4Vfy0Yo8ZBDg7jM6ZfOyJt5qwBdhpsTYPX9gXsPb/VyHST5mAJ/4H//IJylws71lNU8ZyyahlmRBXkZlBXJQEl2kDcREqhtty13Ou+BM8zt15mtnUgu3XFt/RNSbYqT5sXoyTxTApTE4tFwWYEoIiPAIgcSfZPKKWQRE4w2vW7RPxpX/4XwGN1+t21lhi2COOFohEuRM9AeewgWqDQXzruLhdqOoQvJtoRRuW/rOB9VCxDxsh5bHjEkaDO9HHJDsQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=siliconsignals.io; dmarc=pass action=none
- header.from=siliconsignals.io; dkim=pass header.d=siliconsignals.io; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=siliconsignals.io;
-Received: from MAZPR01MB6957.INDPRD01.PROD.OUTLOOK.COM (2603:1096:a01:42::6)
- by MA0PR01MB8931.INDPRD01.PROD.OUTLOOK.COM (2603:1096:a01:bc::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.18; Sat, 6 Jan
- 2024 13:36:10 +0000
-Received: from MAZPR01MB6957.INDPRD01.PROD.OUTLOOK.COM
- ([fe80::c1b:b2aa:7fc0:6532]) by MAZPR01MB6957.INDPRD01.PROD.OUTLOOK.COM
- ([fe80::c1b:b2aa:7fc0:6532%7]) with mapi id 15.20.7159.015; Sat, 6 Jan 2024
- 13:36:10 +0000
-From: Bhavin Sharma <bhavin.sharma@siliconsignals.io>
-To: sre@kernel.org
-Cc: Bhavin Sharma <bhavin.sharma@siliconsignals.io>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Hardevsinh Palaniya <hardevsinh.palaniya@siliconsignals.io>,
-	linux-pm@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/2] dt-bindings: power: supply: stc3117: Convert to DT schema format
-Date: Sat,  6 Jan 2024 19:05:44 +0530
-Message-Id: <20240106133546.936261-2-bhavin.sharma@siliconsignals.io>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240106133546.936261-1-bhavin.sharma@siliconsignals.io>
-References: <20240106133546.936261-1-bhavin.sharma@siliconsignals.io>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: BMXPR01CA0096.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:b00:54::36) To MAZPR01MB6957.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:a01:42::6)
+Received: from www.linux-watchdog.org (www.linux-watchdog.org [185.87.125.42])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17AA48C0A;
+	Sat,  6 Jan 2024 14:04:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=linux-watchdog.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux-watchdog.org
+Received: by www.linux-watchdog.org (Postfix, from userid 500)
+	id 0A668409F1; Sat,  6 Jan 2024 14:44:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 www.linux-watchdog.org 0A668409F1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-watchdog.org;
+	s=odk20180602; t=1704548667;
+	bh=3wXHJ5X0Y/5UXPZ+cSSBwup9eb5KfXFSoUe6hAGQfEo=;
+	h=Date:From:To:Cc:Subject:From;
+	b=XDlqgqcSKAuuaZtp6IM02qFkinnhHJF/rqpkVnrrDx3gvW9VkcYdbqnOSibkYCXQi
+	 uSlrZF1s0ShjcvtdK531vxgDACVcojL77mchveENsuyHw5WeaD5PmMQmb4IKx06Fqp
+	 WlEJZ07DbYDHQcqh7bHFgqhUhJbAm5LjNBq9GuKk=
+Date: Sat, 6 Jan 2024 14:44:11 +0100
+From: Wim Van Sebroeck <wim@linux-watchdog.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	Linux Watchdog Mailing List <linux-watchdog@vger.kernel.org>,
+	Guenter Roeck <linux@roeck-us.net>,
+	Ben Dooks <ben.dooks@codethink.co.uk>,
+	Biju Das <biju.das.jz@bp.renesas.com>,
+	Curtis Klein <curtis.klein@hpe.com>,
+	Daniel Golle <daniel@makrotopia.org>,
+	Douglas Anderson <dianders@chromium.org>,
+	Jerry Hoemann <jerry.hoemann@hpe.com>,
+	Johan Hovold <johan+linaro@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+	Nik Bune <n2h9z4@gmail.com>,
+	Nikita Shubin <nikita.shubin@maquefel.me>,
+	Randy Dunlap <rdunlap@infradead.org>,
+	Stefan Wahren <wahrenst@gmx.net>,
+	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Werner Fischer <devlists@wefi.net>
+Subject: [GIT PULL REQUEST] watchdog - v6.8 release cycle.
+Message-ID: <20240106134410.GA19394@www.linux-watchdog.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MAZPR01MB6957:EE_|MA0PR01MB8931:EE_
-X-MS-Office365-Filtering-Correlation-Id: a32f7af2-0684-473c-80f6-08dc0ebc71ce
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	L4nMEUlJL1nSJgGaG+d7sEv9Ud0MJVpUpZOjXSVaNThUsdD4l4NR5W/VC4N4GQcdC/Zw4xM6LwpavN28z10ipSjOBNKjTf/c3pGXTsDphWGgmysrNB+Se17+3U+qGKucwyXFVuY/Ug/uCYgIAs1cPI0EQHPYEv2gRheFcx0nKodPD9T+s/3jY2wRF6HYWNpn1gBKjSUqvsx0yjA1/lzwfxGJL5QbR8iBPv9hWbuf2Lc5wK1B2a0TkdF+4BjEOe4N3UUsDgxJtGsvho2ZPgwlvZY0nO2vNTFrX1NGiccdU7hPsOp+le1HmjfxsXdcVBRtGwmKqPLXkR1OTh4oppXNSEWy3JXdtUl6WkVh8N0Y/gqlLyKKtmFDLSSbv8Vi7rJInuITjUgbCQ/jQmIUmY9mW3N9eL6MeGkxia1KbvRKXiaO/3LQ18Lb8YOG/gNNuswdqhpYJE4EnbJR5y2PdGTUS0KYhAQsVfa1t8XY7fjHOQaekBwJXwJmdX6VRipQgG7SvyU+D3GajfozepbMEJDxVgrKe+Qz6lJg1cbSF3qIf7yKEJbWqzCtuem7rV5fJPx6QDVi9PiOWUQmL9UnqYTaHp+GBl6KY/q5LzUrEHsova8=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MAZPR01MB6957.INDPRD01.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(366004)(376002)(346002)(39830400003)(396003)(136003)(230922051799003)(451199024)(186009)(64100799003)(1800799012)(38100700002)(44832011)(4326008)(5660300002)(2906002)(38350700005)(6512007)(478600001)(6666004)(6506007)(52116002)(966005)(26005)(2616005)(1076003)(54906003)(316002)(66946007)(66476007)(6916009)(36756003)(66556008)(8936002)(8676002)(6486002)(86362001)(41300700001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?s8dgmjUWA08k2jnZigZrjpO0B0vbo75Jq1a7lAu6yoV4ngct9rzkWL6uX4+s?=
- =?us-ascii?Q?3b9lOy5lQpEznGbVOfPE0PC7gVhp3d1TgiwO3aRzGSwf/bheLu0HuE/rwM2K?=
- =?us-ascii?Q?0gMO635yuB3najjFBxBMC6Jtt7Fg42SLqwteJn5PXMjPcVMMDH3lcg4W7w3Y?=
- =?us-ascii?Q?yxmB8jXyWe4sXG8kpnUVqB2JC9/NZcPhilu5qqztfopnwtNdGAyJlp0a/PHB?=
- =?us-ascii?Q?GE3kJ8FceRPHYminA13fu5I+euPxndI8L90xbIyOvIfHyhHr3LmLSazZyBP4?=
- =?us-ascii?Q?r82SvOVwg3dthLlU8HX7cRUjfVTlTVPwAb5S5uR7bovPfLVmFeRhbjwtk/Fy?=
- =?us-ascii?Q?Bu6eUyz4/v1DOOHhvPSd6QWpmyDPIMntUNT+jNCLgnOlApUSD4EMOC+v0+Ee?=
- =?us-ascii?Q?TJqgJpg3hT83XDB0Jmv9zy7M/ovHPIfJCq6g076nB7Qgw2OJVt8NE73chwDe?=
- =?us-ascii?Q?QDBtxflpzQUdjNtGomS06mH9d8snD2RXHCm3XKZUEcM16VF8cUYXjr81jgza?=
- =?us-ascii?Q?V0Fh10isXh73G7JGTcyw/oerww3SNW5U/0VwMmoIOpcDQ3TQ18NWA5eym0Ob?=
- =?us-ascii?Q?/feE9HHCgtJNpK1BTwtwEROPZYQYv65iZ0An0OALiOBeibYI8JI2jGkSZYxs?=
- =?us-ascii?Q?tqfkc0z04rCdSRxOfrqMu9zFEl2pDX2VasVg5V9XhXjRl5GnKS12KkQRWjw2?=
- =?us-ascii?Q?66mgFCo1xSlKz0hqfQeG4QKFUe+6vjvZnwGQ7K/DRC6JKZK9+HQh9sT84JHM?=
- =?us-ascii?Q?3P7hWJahX1d8cZsbumZ2lQ7F+TOTqf9oDtK/zi9tc837qE9zlLzX4dDJXG2f?=
- =?us-ascii?Q?2a+2VSeQOmhtUfbJhaX0SGyGjgzvHv25o1T8AqLrmktdTQDkUMTPbxECRYvw?=
- =?us-ascii?Q?KbeA+EU9YSgtVuff+9USfOYZiCyLaUcJbVKi5573WSabYGXCkyt9v71KD1S5?=
- =?us-ascii?Q?bz6q0zLN3NtY6L8Md6z14kUgAnPghC+W7TbIJF7evx4pAgwFFIL6XS9nygvm?=
- =?us-ascii?Q?Gq4er4BfTXQVGGIz9hgqXoy7+EXqEEWcz0Wkl5tcDTCDxzn9IXSwLqKXr0W6?=
- =?us-ascii?Q?u3QPpWj5wPjN3AePGC5s9kMYryPd8p4xPjavNvKRSEsP3OZK86JDDQHJw381?=
- =?us-ascii?Q?7DXctwNtmMhtaLCbX3Y+5FFD8ZxxrPlBBKRifnEg0+Z9RR+kmCbHpmh2iS2S?=
- =?us-ascii?Q?KwjScWcCOXwQiSsKrSd8O25Dyom26ivkBUVn7ybRIspbRIKRZWAzv/wVlqXf?=
- =?us-ascii?Q?ynEw2EQ5vHAMmld3LD22Zz83c0acKq3thN3qQ7DsRFqPv1p6uhUTneUeghJv?=
- =?us-ascii?Q?L5KqI+NZ/uzxsjcv7v1HQz8rVG4ONmBNrKCrm4DX8VkmdnT69uICuS/6d1+f?=
- =?us-ascii?Q?hmt0ib7gF9kzkpPbMJcCKGCNen+TUBSEMfLXX5jZqaCwmCyVBZ/Zc7T+Hjk2?=
- =?us-ascii?Q?vFCs3IFCn/rj91Q+K0tnrj6crxZOKjGnEnLniz+zKm9ESmJUUqoaaAnE+C9W?=
- =?us-ascii?Q?W7QqOvi7+3Lfx3PoshObdVSj3tW7DVjgdIiq2QmDHZSklk3zoNHJJS3DjqPu?=
- =?us-ascii?Q?xQtpo0C1TWoT8ZIRogrt+dWldvb7tdIT5ZvG9U9LtvOZ+PSEUsXXapapRIV+?=
- =?us-ascii?Q?Idg0Tnev5f/Z7ygowLcH3G8=3D?=
-X-OriginatorOrg: siliconsignals.io
-X-MS-Exchange-CrossTenant-Network-Message-Id: a32f7af2-0684-473c-80f6-08dc0ebc71ce
-X-MS-Exchange-CrossTenant-AuthSource: MAZPR01MB6957.INDPRD01.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Jan 2024 13:36:10.6740
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 7ec5089e-a433-4bd1-a638-82ee62e21d37
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: kxwNhclPz5KhwcHi42/MzYMjHUmRuMlKuOXWPAmx3+x1arUcGcaYsYQDDdUh9PgQNethsFCz/m6B35hcQ48iE0t6XMB8SFMtaNxZRGN7bEk=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MA0PR01MB8931
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+User-Agent: Mutt/1.5.20 (2009-12-10)
 
-Convert the binding to DT schema format.
+Hi Linus,
 
-Changes in V2 resolved below errors:
-	1. string value is redundantly quoted with any quotes (quoted-strings)
-	2. found character '\t' that cannot start any token
+Please pull following watchdog changes for the v6.8 release cycle (once the window is open :-) ).
 
-Signed-off-by: Bhavin Sharma <bhavin.sharma@siliconsignals.io>
----
- .../bindings/power/supply/stc3117-fg.yaml     | 41 +++++++++++++++++++
- 1 file changed, 41 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/power/supply/stc3117-fg.yaml
+This series contains:
+* Add Mediatek MT7988 watchdog
+* Add IT8659 watchdog
+* watchdog: set cdev owner before adding
+* hpwdt: Only claim UNKNOWN NMI if from iLO
+* Various other fixes and improvements
 
-diff --git a/Documentation/devicetree/bindings/power/supply/stc3117-fg.yaml b/Documentation/devicetree/bindings/power/supply/stc3117-fg.yaml
-new file mode 100644
-index 000000000..d6607a5ea
---- /dev/null
-+++ b/Documentation/devicetree/bindings/power/supply/stc3117-fg.yaml
-@@ -0,0 +1,41 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/power/supply/stc3117-fg.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: STMicroelectronics STC3117 Fuel Gauge Unit Power Supply
-+
-+maintainers:
-+  - Bhavin Sharma <bhavin.sharma@siliconsignals.io>
-+  - Hardevsinh Palaniya <hardevsinh.palaniya@siliconsignals.io>
-+
-+allOf:
-+  - $ref: power-supply.yaml#
-+
-+properties:
-+  compatible:
-+    enum:
-+      - st,stc3117-fgu
-+
-+  reg:
-+    maxItems: 1
-+
-+required:
-+  - compatible
-+  - reg
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    &i2c6 {
-+      #address-cells = <1>;
-+      #size-cells = <0>;
-+
-+      st3117: stc3117@70 {
-+        compatible = "st,stc3117-fgu";
-+        reg = <0x70>;
-+        status = "okay";
-+      };
-+    };
--- 
-2.25.1
+The output from git request-pull:
+----------------------------------------------------------------
+The following changes since commit b85ea95d086471afb4ad062012a4d73cd328fa86:
+
+  Linux 6.7-rc1 (2023-11-12 16:19:07 -0800)
+
+are available in the git repository at:
+
+  git://www.linux-watchdog.org/linux-watchdog.git tags/linux-watchdog-6.8-rc1
+
+for you to fetch changes up to 9546b21ea672aa961d5a89ea754214afed013f02:
+
+  watchdog: mlx_wdt: fix all kernel-doc warnings (2023-12-24 10:44:40 +0100)
+
+----------------------------------------------------------------
+linux-watchdog 6.8-rc1 tag
+
+----------------------------------------------------------------
+Ben Dooks (1):
+      watchdog: starfive: add lock annotations to fix context imbalances
+
+Biju Das (2):
+      dt-bindings: watchdog: dlg,da9062-watchdog: Add fallback for DA9061 watchdog
+      dt-bindings: watchdog: dlg,da9062-watchdog: Document DA9063 watchdog
+
+Curtis Klein (1):
+      watchdog: set cdev owner before adding
+
+Daniel Golle (2):
+      dt-bindings: watchdog: mediatek,mtk-wdt: add MT7988 watchdog and toprgu
+      watchdog: mediatek: mt7988: add wdt support
+
+Douglas Anderson (1):
+      dt-bindings: watchdog: qcom-wdt: Make the interrupt example edge triggered
+
+Jerry Hoemann (3):
+      watchdog/hpwdt: Only claim UNKNOWN NMI if from iLO
+      watchdog/hpwdt: Remove redundant test.
+      watchdog/hpwdt: Remove unused variable
+
+Johan Hovold (1):
+      dt-bindings: watchdog: qcom,pm8916-wdt: add parent spmi node to example
+
+Krzysztof Kozlowski (2):
+      dt-bindings: watchdog: re-order entries to match coding convention
+      dt-bindings: watchdog: intel,keembay: reference common watchdog schema
+
+Lukas Bulwahn (1):
+      MAINTAINERS: rectify entry for DIALOG SEMICONDUCTOR DRIVERS
+
+Nik Bune (3):
+      dt-bindings: watchdog: realtek,rtd1295-watchdog: convert txt to yaml
+      dt-bindings: watchdog: qca,ar7130-wdt: convert txt to yaml
+      dt-bindings: watchdog: nxp,pnx4008-wdt: convert txt to yaml
+
+Nikita Shubin (1):
+      dt-bindings: wdt: Add ts72xx
+
+Randy Dunlap (1):
+      watchdog: mlx_wdt: fix all kernel-doc warnings
+
+Stefan Wahren (1):
+      watchdog: bcm2835_wdt: Fix WDIOC_SETTIMEOUT handling
+
+Uwe Kleine-König (5):
+      watchdog: at91sam9: Stop using module_platform_driver_probe()
+      watchdog: txx9: Stop using module_platform_driver_probe()
+      watchdog: at91sam9_wdt: Convert to platform remove callback returning void
+      watchdog: starfive-wdt: Convert to platform remove callback returning void
+      watchdog: txx9wdt: Convert to platform remove callback returning void
+
+Vignesh Raghavendra (1):
+      watchdog: rti_wdt: Drop runtime pm reference count when watchdog is unused
+
+Werner Fischer (4):
+      watchdog: it87_wdt: add blank line after variable declaration
+      watchdog: it87_wdt: Remove redundant max_units setting
+      watchdog: it87_wdt: Add IT8659 ID
+      watchdog: it87_wdt: Keep WDTCTRL bit 3 unmodified for IT8784/IT8786
+
+ .../bindings/watchdog/allwinner,sun4i-a10-wdt.yaml |  6 +--
+ .../bindings/watchdog/alphascale,asm9260-wdt.yaml  |  6 +--
+ .../devicetree/bindings/watchdog/apple,wdt.yaml    |  6 +--
+ .../devicetree/bindings/watchdog/arm-smc-wdt.yaml  |  6 +--
+ .../bindings/watchdog/brcm,bcm7038-wdt.yaml        | 10 ++---
+ .../bindings/watchdog/cnxt,cx92755-wdt.yaml        |  6 +--
+ .../bindings/watchdog/dlg,da9062-watchdog.yaml     | 12 ++++--
+ .../bindings/watchdog/intel,keembay-wdt.yaml       |  5 ++-
+ .../bindings/watchdog/maxim,max63xx.yaml           |  8 ++--
+ .../bindings/watchdog/mediatek,mtk-wdt.yaml        |  1 +
+ .../bindings/watchdog/nxp,pnx4008-wdt.yaml         | 34 ++++++++++++++++
+ .../devicetree/bindings/watchdog/pnx4008-wdt.txt   | 17 --------
+ .../bindings/watchdog/qca,ar7130-wdt.yaml          | 33 ++++++++++++++++
+ .../bindings/watchdog/qca-ar7130-wdt.txt           | 13 -------
+ .../bindings/watchdog/qcom,pm8916-wdt.yaml         | 33 +++++++++-------
+ .../devicetree/bindings/watchdog/qcom-wdt.yaml     |  2 +-
+ .../bindings/watchdog/realtek,rtd119x.txt          | 17 --------
+ .../watchdog/realtek,rtd1295-watchdog.yaml         | 38 ++++++++++++++++++
+ .../devicetree/bindings/watchdog/snps,dw-wdt.yaml  | 10 ++---
+ .../bindings/watchdog/technologic,ts7200-wdt.yaml  | 45 ++++++++++++++++++++++
+ MAINTAINERS                                        |  2 +-
+ drivers/watchdog/at91sam9_wdt.c                    | 12 +++---
+ drivers/watchdog/bcm2835_wdt.c                     |  3 +-
+ drivers/watchdog/hpwdt.c                           |  9 +----
+ drivers/watchdog/it87_wdt.c                        | 29 ++++++++++----
+ drivers/watchdog/mlx_wdt.c                         |  4 +-
+ drivers/watchdog/mtk_wdt.c                         | 42 ++++++++++++++++++++
+ drivers/watchdog/rti_wdt.c                         | 13 ++++++-
+ drivers/watchdog/starfive-wdt.c                    |  8 ++--
+ drivers/watchdog/txx9wdt.c                         | 11 +++---
+ drivers/watchdog/watchdog_dev.c                    |  3 +-
+ 31 files changed, 307 insertions(+), 137 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/watchdog/nxp,pnx4008-wdt.yaml
+ delete mode 100644 Documentation/devicetree/bindings/watchdog/pnx4008-wdt.txt
+ create mode 100644 Documentation/devicetree/bindings/watchdog/qca,ar7130-wdt.yaml
+ delete mode 100644 Documentation/devicetree/bindings/watchdog/qca-ar7130-wdt.txt
+ delete mode 100644 Documentation/devicetree/bindings/watchdog/realtek,rtd119x.txt
+ create mode 100644 Documentation/devicetree/bindings/watchdog/realtek,rtd1295-watchdog.yaml
+ create mode 100644 Documentation/devicetree/bindings/watchdog/technologic,ts7200-wdt.yaml
+----------------------------------------------------------------
+
+Kind regards,
+Wim.
 
 
