@@ -1,114 +1,107 @@
-Return-Path: <linux-kernel+bounces-18717-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18718-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B14C8261B0
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 22:22:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B64DE8261B1
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 22:23:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ED88B282F8B
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 21:22:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 32B9A2830C0
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 21:23:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C344F9D3;
-	Sat,  6 Jan 2024 21:22:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A9D7101CD;
+	Sat,  6 Jan 2024 21:23:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=alu.unizg.hr header.i=@alu.unizg.hr header.b="io8SxOGU";
-	dkim=pass (2048-bit key) header.d=alu.unizg.hr header.i=@alu.unizg.hr header.b="wiG91a4O"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="hoQ2+bNb"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from domac.alu.hr (domac.alu.unizg.hr [161.53.235.3])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98E07F9C2;
-	Sat,  6 Jan 2024 21:22:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alu.unizg.hr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alu.unizg.hr
-Received: from localhost (localhost [127.0.0.1])
-	by domac.alu.hr (Postfix) with ESMTP id 1BF036017E;
-	Sat,  6 Jan 2024 22:22:18 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-	t=1704576138; bh=HEghdAHf2OKYHZqGEPG2Q6QZWWANdcfdstEIe037x7Y=;
-	h=Date:From:Subject:To:Cc:From;
-	b=io8SxOGUCiMm6CxLIoDDO1c8jF0PaeopV2fNsqrx4fyShU60orB7FQYAzI67Tklu5
-	 rP9OconP2IY+XKiKCHpujk8YoMEYnxjrGLDk/Gi5WGaWXivbUl+qF9UwzeI2SQh/JN
-	 LvySEXgKAF8ktYfPRK2dXp/sRoeV6/yRx+4TOTeln8EZfIT+b2Ld9KF5mMSPk1xY9U
-	 Mdgc/ncsPeDjNKEyheTqekjkSWx4Zz95mVMzFXDXjimEphCZx99xRFhdmGBS9X01lB
-	 Dn0APyqZ3BKDFRGtCBgi6UAhJinweevMDB7W37KPr7nyUkpYkaJtRBrm1ymoHo6jK0
-	 JWGQ4xWh8GfMQ==
-X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
-Received: from domac.alu.hr ([127.0.0.1])
-	by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id cIT5aPRSWNP9; Sat,  6 Jan 2024 22:22:15 +0100 (CET)
-Received: from [192.168.92.51] (unknown [95.168.116.36])
-	by domac.alu.hr (Postfix) with ESMTPSA id 4623F60171;
-	Sat,  6 Jan 2024 22:22:15 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-	t=1704576135; bh=HEghdAHf2OKYHZqGEPG2Q6QZWWANdcfdstEIe037x7Y=;
-	h=Date:From:Subject:To:Cc:From;
-	b=wiG91a4O1YSbVh1kJaOISQh8b5bRvI3j6zYRL5qSNUMgUrBTpsNqqNuoHvedlAHzd
-	 hSvdoq1Vv42xtP7PFRC8nkHLWOvySbYOa5VPOOPZTn9A5l52kdJf+ndPmE0wRTIlB0
-	 sKJBH2N02e52x9rHgkuZZEHA1U5KNdMETwg+4NbDRSNPKyxAZBvoLLshmIC65Ic23W
-	 JN1uafLN2sZK5k61oQ+shmyLxoyQ4o1vmh83upRZgsDypAMxnMxfEx2mRELkybx16u
-	 DokFl5yYHe0YOtQbR9Mzih3NywomTeAQ2Itct0oDhhudLDYsCiQytROdeZT/OWMZQS
-	 FrUap4rmPcZLg==
-Message-ID: <36c37fba-fb1f-4e7e-bc92-c75b426ea72c@alu.unizg.hr>
-Date: Sat, 6 Jan 2024 22:22:14 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65EB3101C6
+	for <linux-kernel@vger.kernel.org>; Sat,  6 Jan 2024 21:23:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704576207; x=1736112207;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=IYox++9NPxL9ZZQ0SaHmzRmKVlaZ8r8CyO0y8u2ghD0=;
+  b=hoQ2+bNbq5nNqdyRA7zgFzO0dOSInU3/qYp8O9ju3p4llyDcfG3h39Ot
+   MZ4vfx+LWHxF/wDR1/0lUhu0Wq3AzjXgKSnYY5fIvU5cXWoVRSZAcp3w6
+   WSUp4Z1L/mtHf3770Wbu6ckKn4F43PtgoF78BUvCPJJJSXQh8pIcFsQnd
+   VDoCZwXEe8f1QYf0GmkAL7sfp7bl3b9VP2SWogtvb/BpercRIjv8c5XHa
+   gFmn6uzO79TUnmk0a0VUwuiRWbscAQJLCUkXFY3BjNg3wIxcW4D3yeJyu
+   /RCHEfDcOS97JKr5I7d677Q5tAXeqpUNDipISlcuzsCCHVbbP062+WjVd
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10945"; a="19188515"
+X-IronPort-AV: E=Sophos;i="6.04,337,1695711600"; 
+   d="scan'208";a="19188515"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jan 2024 13:23:26 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10945"; a="924511284"
+X-IronPort-AV: E=Sophos;i="6.04,337,1695711600"; 
+   d="scan'208";a="924511284"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by fmsmga001.fm.intel.com with ESMTP; 06 Jan 2024 13:23:25 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rME8Z-00031y-04;
+	Sat, 06 Jan 2024 21:23:23 +0000
+Date: Sun, 7 Jan 2024 05:22:37 +0800
+From: kernel test robot <lkp@intel.com>
+To: Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: drivers/misc/dw-xdata-pcie.c:20:41: warning: 'snprintf' output may
+ be truncated before the last format character
+Message-ID: <202401070541.9jGvpTOU-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US, hr
-From: Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
-Subject: [BUG] selftests: alsa: conf.c: wrong parm passed to printf [FIXED]
-To: linux-kernel@vger.kernel.org
-Cc: Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, Shuah Khan <shuah@kernel.org>,
- linux-sound@vger.kernel.org, linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Hi, all,
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   95c8a35f1c017327eab3b6a2ff5c04255737c856
+commit: e8a30eef6ef6da4998fcdaaffaaf8d29777c5d7d misc: Add Synopsys DesignWare xData IP driver
+date:   2 years, 9 months ago
+config: x86_64-randconfig-001-20240105 (https://download.01.org/0day-ci/archive/20240107/202401070541.9jGvpTOU-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240107/202401070541.9jGvpTOU-lkp@intel.com/reproduce)
 
-There is a minor omission in selftests/alsa/conf.c, returning errno where there is
-strerror(errno) passed in the sibling calls to printf().
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202401070541.9jGvpTOU-lkp@intel.com/
 
-The bug was apparently introduced with the commit aba51cd0949ae
-("selftests: alsa - add PCM test").
+All warnings (new ones prefixed by >>):
 
-As a diff speaks like a thousand words, the fix is simple:
+   drivers/misc/dw-xdata-pcie.c: In function 'dw_xdata_pcie_probe':
+>> drivers/misc/dw-xdata-pcie.c:20:41: warning: 'snprintf' output may be truncated before the last format character [-Wformat-truncation=]
+      20 | #define DW_XDATA_DRIVER_NAME            "dw-xdata-pcie"
+         |                                         ^~~~~~~~~~~~~~~
+   drivers/misc/dw-xdata-pcie.c:342:38: note: in expansion of macro 'DW_XDATA_DRIVER_NAME'
+     342 |         snprintf(name, sizeof(name), DW_XDATA_DRIVER_NAME ".%d", id);
+         |                                      ^~~~~~~~~~~~~~~~~~~~
+   drivers/misc/dw-xdata-pcie.c:390:64: note: format string is defined here
+     390 |         if (sscanf(dw->misc_dev.name, DW_XDATA_DRIVER_NAME ".%d", &id) != 1)
+         |                                                                ^
+   drivers/misc/dw-xdata-pcie.c:342:9: note: 'snprintf' output between 16 and 25 bytes into a destination of size 24
+     342 |         snprintf(name, sizeof(name), DW_XDATA_DRIVER_NAME ".%d", id);
+         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Regards,
-Mirsad
 
------ cut -----
-diff --git a/tools/testing/selftests/alsa/conf.c b/tools/testing/selftests/alsa/conf.c
-index 00925eb8d9f4..89e3656a042d 100644
---- a/tools/testing/selftests/alsa/conf.c
-+++ b/tools/testing/selftests/alsa/conf.c
-@@ -179,7 +179,7 @@ static char *sysfs_get(const char *sysfs_root, const char *id)
-        close(fd);
-        if (len < 0)
-                ksft_exit_fail_msg("sysfs: unable to read value '%s': %s\n",
--                                  path, errno);
-+                                  path, strerror(errno));
-        while (len > 0 && path[len-1] == '\n')
-                len--;
-        path[len] = '\0';
+vim +/snprintf +20 drivers/misc/dw-xdata-pcie.c
 
+    19	
+  > 20	#define DW_XDATA_DRIVER_NAME		"dw-xdata-pcie"
+    21	
 
 -- 
-Mirsad Goran Todorovac
-Sistem inženjer
-Grafički fakultet | Akademija likovnih umjetnosti
-Sveučilište u Zagrebu
- 
-System engineer
-Faculty of Graphic Arts | Academy of Fine Arts
-University of Zagreb, Republic of Croatia
-The European Union
-
-"I see something approaching fast ... Will it be friends with me?"
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
