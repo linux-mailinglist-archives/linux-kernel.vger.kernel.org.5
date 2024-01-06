@@ -1,280 +1,89 @@
-Return-Path: <linux-kernel+bounces-18539-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18541-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93052825EEF
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 09:40:54 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E096825EF7
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 09:54:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1DBFC1F22532
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 08:40:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 59F1D1C231D0
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 08:54:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1DEE63AB;
-	Sat,  6 Jan 2024 08:40:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="E7djhcVz"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 569C95666;
+	Sat,  6 Jan 2024 08:54:34 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mail115-79.sinamail.sina.com.cn (mail115-79.sinamail.sina.com.cn [218.30.115.79])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44FB946A6;
-	Sat,  6 Jan 2024 08:40:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32F1BC433C8;
-	Sat,  6 Jan 2024 08:40:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1704530436;
-	bh=UsADQTTl4pkS387/hPrZjKAT6tIXeXDbMa8lR+GzyNE=;
-	h=From:To:Cc:Subject:Date:From;
-	b=E7djhcVznwcjLWz0rI5atEGt5fHMCBYii56lm9mUmrSs4wsmDxfSUYX1t68QY3Cej
-	 v+amcbvzVfBw/l+/es3gdpgkK3tVq8qXfCDIh+S8gtnplhIUnxOIPisWJ6Xzo075nN
-	 w58hxvostpCDng6k/gU9iZamkusNl1I84anhwHEs=
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: stable@vger.kernel.org
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	patches@lists.linux.dev,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02A7C523F
+	for <linux-kernel@vger.kernel.org>; Sat,  6 Jan 2024 08:54:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sina.com
+X-SMAIL-HELO: localhost.localdomain
+Received: from unknown (HELO localhost.localdomain)([113.118.71.254])
+	by sina.com (10.75.12.45) with ESMTP
+	id 65991535000053A2; Sat, 6 Jan 2024 16:54:21 +0800 (CST)
+X-Sender: hdanton@sina.com
+X-Auth-ID: hdanton@sina.com
+Authentication-Results: sina.com;
+	 spf=none smtp.mailfrom=hdanton@sina.com;
+	 dkim=none header.i=none;
+	 dmarc=none action=none header.from=hdanton@sina.com
+X-SMAIL-MID: 73732131458000
+X-SMAIL-UIID: 708C57B39F3247B4A02A0CF645A356FD-20240106-165421-1
+From: Hillf Danton <hdanton@sina.com>
+To: Wesley Cheng <quic_wcheng@quicinc.com>
+Cc: gregkh@linuxfoundation.org,
+	tiwai@suse.com,
+	robh+dt@kernel.org,
 	linux-kernel@vger.kernel.org,
-	torvalds@linux-foundation.org,
-	akpm@linux-foundation.org,
-	linux@roeck-us.net,
-	shuah@kernel.org,
-	patches@kernelci.org,
-	lkft-triage@lists.linaro.org,
-	pavel@denx.de,
-	jonathanh@nvidia.com,
-	f.fainelli@gmail.com,
-	sudipm.mukherjee@gmail.com,
-	srw@sladewatkins.net,
-	rwarsow@gmx.de,
-	conor@kernel.org,
-	allen.lkml@gmail.com
-Subject: [PATCH 5.4 00/45] 5.4.266-rc2 review
-Date: Sat,  6 Jan 2024 09:40:33 +0100
-Message-ID: <20240106084016.200641776@linuxfoundation.org>
-X-Mailer: git-send-email 2.43.0
+	linux-sound@vger.kernel.org,
+	linux-usb@vger.kernel.org
+Subject: Re: [PATCH v12 00/41] Introduce QC USB SND audio offloading support
+Date: Sat,  6 Jan 2024 16:54:03 +0800
+Message-Id: <20240106085403.3076-1-hdanton@sina.com>
+In-Reply-To: <20240102214549.22498-1-quic_wcheng@quicinc.com>
+References: <20240102214549.22498-1-quic_wcheng@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: quilt/0.67
-X-stable: review
-X-Patchwork-Hint: ignore
-X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.266-rc2.gz
-X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-X-KernelTest-Branch: linux-5.4.y
-X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
-X-KernelTest-Version: 5.4.266-rc2
-X-KernelTest-Deadline: 2024-01-08T08:40+00:00
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-This is the start of the stable review cycle for the 5.4.266 release.
-There are 45 patches in this series, all will be posted as a response
-to this one.  If anyone has any issues with these being applied, please
-let me know.
+On Tue, 2 Jan 2024 13:45:08 -0800 Wesley Cheng <quic_wcheng@quicinc.com>
+> Changes in v2:
+> 
+> XHCI:
+> - Replaced XHCI and HCD changes with Mathias' XHCI interrupter changes
+> in his tree:
+> https://git.kernel.org/pub/scm/linux/kernel/git/mnyman/xhci.git/log/?h=feature_interrupters
+> 
+> Adjustments made to Mathias' changes:
+>   - Created xhci-intr.h to export/expose interrupter APIs versus exposing xhci.h.
+>     Moved dependent structures to this file as well. (so clients can parse out
+>     information from "struct xhci_interrupter")
+>   - Added some basic locking when requesting interrupters.
+>   - Fixed up some sanity checks.
+>   - Removed clearing of the ERSTBA during freeing of the interrupter. (pending
+>     issue where SMMU fault occurs if DMA addr returned is 64b - TODO)
+> 
+> - Clean up pending events in the XHCI secondary interrupter.  While testing USB
+> bus suspend, it was seen that on bus resume, the xHCI HC would run into a command
+> timeout.
+> - Added offloading APIs to xHCI to fetch transfer and event ring information.
+> 
+> ASoC:
+> - Modified soc-usb to allow for multiple USB port additions.  For this to work,
+> the USB offload driver has to have a reference to the USB backend by adding
+> a "usb-soc-be" DT entry to the device saved into XHCI sysdev.
 
-Responses should be made by Mon, 08 Jan 2024 08:39:59 +0000.
-Anything received after that time might be too late.
+Could you tip point to where the usb-soc-be DT entry is added?
 
-The whole patch series can be found in one patch at:
-	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.266-rc2.gz
-or in the git tree and branch at:
-	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-and the diffstat can be found below.
-
-thanks,
-
-greg k-h
-
--------------
-Pseudo-Shortlog of commits:
-
-Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-    Linux 5.4.266-rc2
-
-Sarthak Kukreti <sarthakkukreti@chromium.org>
-    block: Don't invalidate pagecache for invalid falloc modes
-
-Steven Rostedt (Google) <rostedt@goodmis.org>
-    ring-buffer: Fix wake ups when buffer_percent is set to 100
-
-Paulo Alcantara <pc@manguebit.com>
-    smb: client: fix OOB in smbCalcSize()
-
-Dan Carpenter <dan.carpenter@linaro.org>
-    usb: fotg210-hcd: delete an incorrect bounds test
-
-Thomas Gleixner <tglx@linutronix.de>
-    x86/alternatives: Sync core before enabling interrupts
-
-Rouven Czerwinski <r.czerwinski@pengutronix.de>
-    net: rfkill: gpio: set GPIO direction
-
-Fedor Pchelkin <pchelkin@ispras.ru>
-    net: 9p: avoid freeing uninit memory in p9pdu_vreadf
-
-Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
-    Bluetooth: hci_event: Fix not checking if HCI_OP_INQUIRY has been sent
-
-Reinhard Speyerer <rspmn@arcor.de>
-    USB: serial: option: add Quectel RM500Q R13 firmware support
-
-Slark Xiao <slark_xiao@163.com>
-    USB: serial: option: add Foxconn T99W265 with new baseline
-
-Alper Ak <alperyasinak1@gmail.com>
-    USB: serial: option: add Quectel EG912Y module support
-
-Mark Glover <mark.glover@actisense.com>
-    USB: serial: ftdi_sio: update Actisense PIDs constant names
-
-Johannes Berg <johannes.berg@intel.com>
-    wifi: cfg80211: fix certs build to not depend on file order
-
-Chen-Yu Tsai <wens@kernel.org>
-    wifi: cfg80211: Add my certificate
-
-Wadim Egorov <w.egorov@phytec.de>
-    iio: adc: ti_am335x_adc: Fix return value check of tiadc_request_dma()
-
-Javier Carrasco <javier.carrasco.cruz@gmail.com>
-    iio: common: ms_sensors: ms_sensors_i2c: fix humidity conversion time table
-
-Wei Yongjun <weiyongjun1@huawei.com>
-    scsi: bnx2fc: Fix skb double free in bnx2fc_rcv()
-
-Haoran Liu <liuhaoran14@163.com>
-    Input: ipaq-micro-keys - add error handling for devm_kmemdup
-
-Su Hui <suhui@nfschina.com>
-    iio: imu: inv_mpu6050: fix an error code problem in inv_mpu6050_read_raw
-
-Mike Tipton <quic_mdtipton@quicinc.com>
-    interconnect: Treat xlate() returning NULL node as an error
-
-Josef Bacik <josef@toxicpanda.com>
-    btrfs: do not allow non subvolume root targets for snapshot
-
-Paulo Alcantara <pc@manguebit.com>
-    smb: client: fix NULL deref in asn1_ber_decoder()
-
-Kai Vehmanen <kai.vehmanen@linux.intel.com>
-    ALSA: hda/hdmi: add force-connect quirk for NUC5CPYB
-
-Kai Vehmanen <kai.vehmanen@linux.intel.com>
-    ALSA: hda/hdmi: Add quirk to force pin connectivity on NUC10
-
-Alexis Lothoré <alexis.lothore@bootlin.com>
-    pinctrl: at91-pio4: use dedicated lock class for IRQ
-
-Quan Nguyen <quan@os.amperecomputing.com>
-    i2c: aspeed: Handle the coalesced stop conditions with the start conditions.
-
-David Howells <dhowells@redhat.com>
-    afs: Fix overwriting of result of DNS query
-
-Eric Dumazet <edumazet@google.com>
-    net: check dev->gso_max_size in gso_features_check()
-
-Heiner Kallweit <hkallweit1@gmail.com>
-    net: warn if gso_type isn't set for a GSO SKB
-
-David Howells <dhowells@redhat.com>
-    afs: Fix dynamic root lookup DNS check
-
-David Howells <dhowells@redhat.com>
-    afs: Fix the dynamic root's d_delete to always delete unused dentries
-
-Liu Jian <liujian56@huawei.com>
-    net: check vlan filter feature in vlan_vids_add_by_dev() and vlan_vids_del_by_dev()
-
-Eric Dumazet <edumazet@google.com>
-    net/rose: fix races in rose_kill_by_device()
-
-Zhipeng Lu <alexious@zju.edu.cn>
-    ethernet: atheros: fix a memleak in atl1e_setup_ring_resources
-
-Eric Dumazet <edumazet@google.com>
-    net: sched: ife: fix potential use-after-free
-
-Rahul Rameshbabu <rrameshbabu@nvidia.com>
-    net/mlx5e: Correct snprintf truncation handling for fw_version buffer used by representors
-
-Moshe Shemesh <moshe@nvidia.com>
-    net/mlx5: Fix fw tracer first block check
-
-Hu Haowen <xianfengting221@163.com>
-    net/mlx5: improve some comments
-
-Vlad Buslov <vladbu@nvidia.com>
-    Revert "net/mlx5e: fix double free of encap_header"
-
-Johannes Berg <johannes.berg@intel.com>
-    wifi: mac80211: mesh_plink: fix matches_local logic
-
-Heiko Carstens <hca@linux.ibm.com>
-    s390/vx: fix save/restore of fpu kernel context
-
-Geert Uytterhoeven <geert+renesas@glider.be>
-    reset: Fix crash when freeing non-existent optional resets
-
-Kunwu Chan <chentao@kylinos.cn>
-    ARM: OMAP2+: Fix null pointer dereference and memory leak in omap_soc_device_init
-
-Namjae Jeon <linkinjeon@kernel.org>
-    ksmbd: fix wrong name of SMB2_CREATE_ALLOCATION_SIZE
-
-Bin Li <bin.li@canonical.com>
-    ALSA: hda/realtek: Enable headset on Lenovo M90 Gen5
-
-
--------------
-
-Diffstat:
-
- Makefile                                           |  4 +-
- arch/arm/mach-omap2/id.c                           |  5 ++
- arch/s390/include/asm/fpu/api.h                    |  2 +-
- arch/x86/kernel/alternative.c                      |  2 +-
- drivers/i2c/busses/i2c-aspeed.c                    | 48 ++++++++----
- drivers/iio/adc/ti_am335x_adc.c                    |  4 +-
- drivers/iio/common/ms_sensors/ms_sensors_i2c.c     |  4 +-
- drivers/iio/imu/inv_mpu6050/inv_mpu_core.c         |  4 +-
- drivers/input/keyboard/ipaq-micro-keys.c           |  3 +
- drivers/interconnect/core.c                        |  3 +
- drivers/net/ethernet/atheros/atl1e/atl1e_main.c    |  5 +-
- .../ethernet/mellanox/mlx5/core/diag/fw_tracer.c   |  4 +-
- .../net/ethernet/mellanox/mlx5/core/en/tc_tun.c    | 10 ++-
- drivers/net/ethernet/mellanox/mlx5/core/en_rep.c   |  2 +-
- drivers/pinctrl/pinctrl-at91-pio4.c                |  8 ++
- drivers/reset/core.c                               |  3 +
- drivers/scsi/bnx2fc/bnx2fc_fcoe.c                  |  9 +--
- drivers/usb/host/fotg210-hcd.c                     |  3 -
- drivers/usb/serial/ftdi_sio.c                      |  6 +-
- drivers/usb/serial/ftdi_sio_ids.h                  |  6 +-
- drivers/usb/serial/option.c                        |  5 ++
- fs/afs/cell.c                                      |  6 +-
- fs/afs/dynroot.c                                   | 31 ++++----
- fs/block_dev.c                                     |  9 ++-
- fs/btrfs/ioctl.c                                   |  9 +++
- fs/cifs/misc.c                                     |  4 +
- fs/cifs/smb2misc.c                                 | 26 +++----
- fs/cifs/smb2pdu.h                                  |  2 +-
- kernel/trace/ring_buffer.c                         |  9 ++-
- net/8021q/vlan_core.c                              |  9 ++-
- net/9p/protocol.c                                  | 17 ++++-
- net/bluetooth/hci_event.c                          |  3 +-
- net/core/dev.c                                     |  8 ++
- net/ife/ife.c                                      |  1 +
- net/mac80211/mesh_plink.c                          | 10 +--
- net/rfkill/rfkill-gpio.c                           |  8 ++
- net/rose/af_rose.c                                 | 39 ++++++++--
- net/wireless/certs/wens.hex                        | 87 ++++++++++++++++++++++
- sound/pci/hda/patch_hdmi.c                         |  2 +
- sound/pci/hda/patch_realtek.c                      |  1 +
- 40 files changed, 320 insertions(+), 101 deletions(-)
-
-
+> - Created separate dt-bindings for defining USB_RX port.
+> - Increased APR timeout to accommodate the situation where the AFE port start
+> command could be delayed due to having to issue a USB bus resume while
+> handling the QMI stream start command.
 
