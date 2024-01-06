@@ -1,122 +1,93 @@
-Return-Path: <linux-kernel+bounces-18519-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18521-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BBC2D825EA3
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 08:07:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 84D72825EB2
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 08:23:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5D3D2284D24
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 07:07:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0F0AF284F98
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 07:23:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 540C66129;
-	Sat,  6 Jan 2024 07:07:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 495FC5253;
+	Sat,  6 Jan 2024 07:23:21 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A38435668
-	for <linux-kernel@vger.kernel.org>; Sat,  6 Jan 2024 07:07:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.44])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4T6WZB4G6Yz29dPn;
-	Sat,  6 Jan 2024 15:05:54 +0800 (CST)
-Received: from kwepemd100006.china.huawei.com (unknown [7.221.188.47])
-	by mail.maildlp.com (Postfix) with ESMTPS id E021F14040D;
-	Sat,  6 Jan 2024 15:07:22 +0800 (CST)
-Received: from [10.174.176.82] (10.174.176.82) by
- kwepemd100006.china.huawei.com (7.221.188.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.2.1258.28; Sat, 6 Jan 2024 15:07:21 +0800
-Message-ID: <20924c0f-b752-4f58-91ce-21ed3b305481@huawei.com>
-Date: Sat, 6 Jan 2024 15:07:21 +0800
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3C2846B4
+	for <linux-kernel@vger.kernel.org>; Sat,  6 Jan 2024 07:23:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
+Received: from loongson.cn (unknown [10.20.42.239])
+	by gateway (Coremail) with SMTP id _____8AxDOvl_5hlT5YCAA--.9126S3;
+	Sat, 06 Jan 2024 15:23:17 +0800 (CST)
+Received: from [10.20.42.239] (unknown [10.20.42.239])
+	by localhost.localdomain (Coremail) with SMTP id AQAAf8Cxid3i_5hlhVcEAA--.11456S3;
+	Sat, 06 Jan 2024 15:23:16 +0800 (CST)
+Subject: Re: [PATCH 1/1] LoongArch: defconfig: Enable Generic PCIE by default
+From: gaosong <gaosong@loongson.cn>
+To: chenhuacai@kernel.org, kernel@xen0n.name
+Cc: loongarch@lists.linux.dev, linux-kernel@vger.kernel.org,
+ raven@themaw.net, davem@davemloft.net, svenjoac@gmx.de,
+ anthony.l.nguyen@intel.com, richard.henderson@linaro.org,
+ peter.maydell@linaro.org, philmd@linaro.org, maobibo@loongson.cn
+References: <20231222024628.3138406-1-gaosong@loongson.cn>
+Message-ID: <16576063-1df9-5aa4-1aaa-1a99c4a660cb@loongson.cn>
+Date: Sat, 6 Jan 2024 15:23:13 +0800
+User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 0/2] iommu/iova: Make the rcache depot properly
- flexible
-To: Ethan Zhao <haifeng.zhao@linux.intel.com>
-CC: <joro@8bytes.org>, <will@kernel.org>, <iommu@lists.linux.dev>,
-	<linux-kernel@vger.kernel.org>, <john.g.garry@oracle.com>,
-	<dheerajkumar.srivastava@amd.com>, <jsnitsel@redhat.com>, Ido Schimmel
-	<idosch@idosch.org>, Robin Murphy <robin.murphy@arm.com>
-References: <cover.1694535580.git.robin.murphy@arm.com>
- <ZY1osaGLyT-sdKE8@shredder> <ZZO6NV-Kq-ktnyo5@shredder>
- <f8ae34f0-dab2-48fa-b3f8-5e969ed028b7@linux.intel.com>
-From: "zhangzekun (A)" <zhangzekun11@huawei.com>
-In-Reply-To: <f8ae34f0-dab2-48fa-b3f8-5e969ed028b7@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+In-Reply-To: <20231222024628.3138406-1-gaosong@loongson.cn>
+Content-Type: text/plain; charset=gbk; format=flowed
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemd100006.china.huawei.com (7.221.188.47)
+Content-Language: en-US
+X-CM-TRANSID:AQAAf8Cxid3i_5hlhVcEAA--.11456S3
+X-CM-SenderInfo: 5jdr20tqj6z05rqj20fqof0/
+X-Coremail-Antispam: 1Uk129KBj9xXoWrZr4kKr45GFyfuFyftr47GFX_yoWfJFc_JF
+	W2kw4UCr48AFWkW39Fqw4rGa1DC3WxC3Z8JFnrZr1xXa1aqr43tw4DX3W7C3Z093yDWrZx
+	ZaykAF9xCr18tosvyTuYvTs0mTUanT9S1TB71UUUUjDqnTZGkaVYY2UrUUUUj1kv1TuYvT
+	s0mT0YCTnIWjqI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUI
+	cSsGvfJTRUUUbDAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20x
+	vaj40_Wr0E3s1l1IIY67AEw4v_Jrv_JF1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
+	w2x7M28EF7xvwVC0I7IYx2IY67AKxVWUCVW8JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
+	WUJVW8JwA2z4x0Y4vEx4A2jsIE14v26r4j6F4UM28EF7xvwVC2z280aVCY1x0267AKxVW8
+	JVW8Jr1ln4kS14v26r126r1DM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2
+	x26I8E6xACxx1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r126r1D
+	McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7
+	I2V7IY0VAS07AlzVAYIcxG8wCY1x0262kKe7AKxVWUAVWUtwCF04k20xvY0x0EwIxGrwCF
+	x2IqxVCFs4IE7xkEbVWUJVW8JwCFI7km07C267AKxVWUAVWUtwC20s026c02F40E14v26r
+	1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij
+	64vIr41lIxAIcVC0I7IYx2IY67AKxVWUCVW8JwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr
+	0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF
+	0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07j5o7tUUUUU=
 
+Ping!
 
-
-在 2024/1/6 12:21, Ethan Zhao 写道:
+�� 2023/12/22 ����10:46, Song Gao д��:
+> Enable generic PCIe by default in the LoongArch defconfig.
+> QEMU requires this configuration when booting the kernel with FDT.
 >
-> On 1/2/2024 3:24 PM, Ido Schimmel wrote:
->> On Thu, Dec 28, 2023 at 02:23:20PM +0200, Ido Schimmel wrote:
->>> On Tue, Sep 12, 2023 at 05:28:04PM +0100, Robin Murphy wrote:
->>>> v2: 
->>>> https://lore.kernel.org/linux-iommu/cover.1692641204.git.robin.murphy@arm.com/
->>>>
->>>> Hi all,
->>>>
->>>> I hope this is good to go now, just fixed the locking (and threw
->>>> lockdep at it to confirm, which of course I should have done to begin
->>>> with...) and picked up tags.
->>> Hi,
->>>
->>> After pulling the v6.7 changes we started seeing the following memory
->>> leaks [1] of 'struct iova_magazine'. I'm not sure how to reproduce it,
->>> which is why I didn't perform bisection. However, looking at the
->>> mentioned code paths, they seem to have been changed in v6.7 as part of
->>> this patchset. I reverted both patches and didn't see any memory leaks
->>> when running a full regression (~10 hours), but I will repeat it to be
->>> sure.
->> FYI, we didn't see the leaks since reverting these two patches whereas
->> before we saw them almost everyday, so I'm quite sure they introduced
->> the leaks.
+> Signed-off-by: Song Gao <gaosong@loongson.cn>
+> ---
+>   arch/loongarch/configs/loongson3_defconfig | 1 +
+>   1 file changed, 1 insertion(+)
 >
-> Seems some magazines were not freed when one CPU is dead (hot 
-> unplugged) ?
->
-> static void free_cpu_cached_iovas(unsigned int cpu, struct iova_domain 
-> *iovad)
-> {
->     struct iova_cpu_rcache *cpu_rcache;
->     struct iova_rcache *rcache;
->     unsigned long flags;
->     int i;
->
->     for (i = 0; i < IOVA_RANGE_CACHE_MAX_SIZE; ++i) {
->         rcache = &iovad->rcaches[i];
->         cpu_rcache = per_cpu_ptr(rcache->cpu_rcaches, cpu);
->         spin_lock_irqsave(&cpu_rcache->lock, flags);
->         iova_magazine_free_pfns(cpu_rcache->loaded, iovad);
->
-> +     iova_magazine_free(cpu_rcache->loaded);
->
->         iova_magazine_free_pfns(cpu_rcache->prev, iovad);
->
-> +     iova_magazine_free(cpu_rcache->prev);
->
->         spin_unlock_irqrestore(&cpu_rcache->lock, flags);
->     }
-> }
-It seems cpu_rcache->loaded and cpu_rcache->prev will be freed in 
-free_iova_rcaches(), and it should not cause memory leak because 
-iova_magazine_free() will be called for each possible cpu.
-free_cpu_cached_iovas() is used to free cached iovas in magazines.
-
-Thanks,
-Zekun
-
+> diff --git a/arch/loongarch/configs/loongson3_defconfig b/arch/loongarch/configs/loongson3_defconfig
+> index 33795e4a5bd6..6350be7e8ec8 100644
+> --- a/arch/loongarch/configs/loongson3_defconfig
+> +++ b/arch/loongarch/configs/loongson3_defconfig
+> @@ -348,6 +348,7 @@ CONFIG_NET_9P=y
+>   CONFIG_NET_9P_VIRTIO=y
+>   CONFIG_CEPH_LIB=m
+>   CONFIG_PCIEPORTBUS=y
+> +CONFIG_PCI_HOST_GENERIC=y
+>   CONFIG_HOTPLUG_PCI_PCIE=y
+>   CONFIG_PCIEAER=y
+>   # CONFIG_PCIEASPM is not set
 
 
