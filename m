@@ -1,62 +1,62 @@
-Return-Path: <linux-kernel+bounces-18503-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18504-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8EF2825E67
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 06:59:28 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 21765825E68
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 06:59:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 34590B21931
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 05:59:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9A4A2B236BF
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 05:59:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCD07FBFB;
-	Sat,  6 Jan 2024 05:56:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24BD3107AB;
+	Sat,  6 Jan 2024 05:56:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=darkphysics.net header.i=@darkphysics.net header.b="R7WVcETC"
+	dkim=pass (2048-bit key) header.d=darkphysics.net header.i=@darkphysics.net header.b="KqdgBc3H"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180])
+Received: from mail-ot1-f51.google.com (mail-ot1-f51.google.com [209.85.210.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAED5E570
-	for <linux-kernel@vger.kernel.org>; Sat,  6 Jan 2024 05:56:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EC76F9C1
+	for <linux-kernel@vger.kernel.org>; Sat,  6 Jan 2024 05:56:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=darkphysics.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=darkphysics.net
-Received: by mail-pg1-f180.google.com with SMTP id 41be03b00d2f7-53fbf2c42bfso189900a12.3
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Jan 2024 21:56:19 -0800 (PST)
+Received: by mail-ot1-f51.google.com with SMTP id 46e09a7af769-6dbbc637df7so216209a34.2
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Jan 2024 21:56:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=darkphysics.net; s=google; t=1704520579; x=1705125379; darn=vger.kernel.org;
+        d=darkphysics.net; s=google; t=1704520580; x=1705125380; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=JVzWH1kTIs3O+aFZdU9/JNQTpKc+IEiawn+wHaJsvIU=;
-        b=R7WVcETCkWBK2qXub5gsdCY/qI/9fFWEf+QiZVIXJFfd49t+g4UpHeYNQwmej+Hq2K
-         TjQ8bz2FnM4i66dP+8InMEEwBNN1zw/ApSFGitbPqLrst1J2HzGFSDV+sEOzWK6Ywl2U
-         htnlChNoXgmpLRDCFhpX0Z6Mo7VFCdEewV172aSMbes+mWWy0RWLVHdraRM4yVLnprHi
-         c9PacPu9iYhqI8UVoHbvGdpJYL5hVQUdCWBkf9mXB3/uYSt9YQrEEuTy1IaPfmO3vEff
-         AlqZN6fciJcaz79KqPYPcWoXeHsxnc1swR8+4CdXsv7TueqSVMTUQHt0wBhHdgY3Ueai
-         kzHg==
+        bh=uKJQFXd3zRjGrXlevR2KqTB8Zpv5dll5vctsB1WQiTE=;
+        b=KqdgBc3HbEPsGj9utn7KCOjPgNpD2NOjyk2iOznSsAO8DwjTjwxkK6h1ML86Lhubfs
+         qvVXv1wkyM6z2U805Tp7ipXDOzxPkBINuJfygCCo9V5CrU+8arMdtR5m0Q8aQ0/xmwkh
+         lIhbr20jg5cjT7SCT175YLLK8QjdWp0u1lctphW1ctH0Sgi5QEKBewR828U4MmOzdCEo
+         2y5KykvzB1ikM1B4jXtmY3OV5YBa8vJKygyRPcdMuW321Dcc4ZqjQuAIfMKBjJ2Dt5DW
+         iAbhJDT81BeBTct3MR8TMYWXlrotQN5sWfYb7UOZ63plbsdR3rEDtyjuOBuCMwZNtDY9
+         ggKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704520579; x=1705125379;
+        d=1e100.net; s=20230601; t=1704520580; x=1705125380;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=JVzWH1kTIs3O+aFZdU9/JNQTpKc+IEiawn+wHaJsvIU=;
-        b=no++dVIgh7T/EDN73H8DUXo+8Vr2IE2oZK8TytPpZjpQl67tspjOyS2LFYF0KnbmGN
-         9wKK3UHPSEhYslSqXSbTb79qIc0Ft3FsVS3S8ID1hhNtS7xpdfCU6M7I+o6tGC+3PD6q
-         iXOOzYyvnF+gwOFrxzYKCCXPjp+7IEnUmYJWMPvAizhzrQoKisgMdnJjPY5YK8sFQO0p
-         K6FBy0MgcJe5sFMjP5gdXfIPpXli/Crq4qgCTQYzMIKPsBnNsyFk838jWOq+ML+p6/+7
-         GkxBzD6mWAQimG180hQeiDThfhF+bkgIWRStSsUSNENaP53VlBX8urp4h50S+02zQd0g
-         4e9Q==
-X-Gm-Message-State: AOJu0YxnotkJAfGICyzkMkQFpt/XI5QnrOmd2ylRJF1WoAWwIBK8C7dk
-	Sf7tyX4AJckcJmaVIIzL2q9XTJJixnxCCA==
-X-Google-Smtp-Source: AGHT+IGCyk5AExPvdo1CxuYOSK/ddtSEBK7+OX4zn6mMDV0yv9ueqB/tE95aHpZ2veaorXuUdGP0qg==
-X-Received: by 2002:a05:6a20:811a:b0:196:5861:6242 with SMTP id g26-20020a056a20811a00b0019658616242mr443386pza.125.1704520579291;
-        Fri, 05 Jan 2024 21:56:19 -0800 (PST)
+        bh=uKJQFXd3zRjGrXlevR2KqTB8Zpv5dll5vctsB1WQiTE=;
+        b=hoqeAZRXMbMnCXmQFvxL9YyjnpCsRqrbeRe4eEhOxceG4AXOiwPGCe974YWyn8c4nH
+         1mXbHq06dg1d5T0nkhRKs+mdf65vg6m9XaBWevpK1KHiM2pQpkBaLtZgtySrjcThZMHj
+         oLZdeZlf4NXhGvRV6ykgDnsruDi2I53i8CZkSm9q7eUx/P3uV0mc9OGdpuHdxJIJAD+t
+         UX7UQUQhZo2TBuqcHec5U6MLQUlxaDGH0XFpJ6DhEBG444LTbgC0fegN9AN1GcAblZ/T
+         XNhf4RwUK6Og/5zWBvpuYO6pScBuxghv10JHwo8QeO3MB4FJfYvzl418E8yFD90nVLQX
+         HZ5Q==
+X-Gm-Message-State: AOJu0YzNXncb+VjNHDCp7axHXA6Qfrt6hFhnX4D66b1VSdnvgcekG6QS
+	oxQ+ous/FwnTIu8dsGYkkpA7KDzDuQ6B2w==
+X-Google-Smtp-Source: AGHT+IGG3k4pihsX+GgVGhkDXFcsF0YQU6PLWBkcS8Powtc1Yp3V5H5QTRquYYVlG/szEy/UutV67w==
+X-Received: by 2002:a05:6830:1e0e:b0:6dc:aff:196a with SMTP id s14-20020a0568301e0e00b006dc0aff196amr517791otr.60.1704520580422;
+        Fri, 05 Jan 2024 21:56:20 -0800 (PST)
 Received: from oatmeal.darkphysics (c-76-146-178-2.hsd1.wa.comcast.net. [76.146.178.2])
-        by smtp.gmail.com with ESMTPSA id y29-20020a056a00181d00b006d99d986624sm2280873pfa.151.2024.01.05.21.56.18
+        by smtp.gmail.com with ESMTPSA id y29-20020a056a00181d00b006d99d986624sm2280873pfa.151.2024.01.05.21.56.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Jan 2024 21:56:18 -0800 (PST)
+        Fri, 05 Jan 2024 21:56:19 -0800 (PST)
 From: Tree Davies <tdavies@darkphysics.net>
 To: gregkh@linuxfoundation.org,
 	philipp.g.hortmann@gmail.com,
@@ -64,9 +64,9 @@ To: gregkh@linuxfoundation.org,
 Cc: linux-staging@lists.linux.dev,
 	linux-kernel@vger.kernel.org,
 	Tree Davies <tdavies@darkphysics.net>
-Subject: [PATCH 13/21] Staging: rtl8192e: Rename variable SlotNum
-Date: Fri,  5 Jan 2024 21:55:48 -0800
-Message-Id: <20240106055556.430948-14-tdavies@darkphysics.net>
+Subject: [PATCH 14/21] Staging: rtl8192e: Rename variable RemoveAllTS
+Date: Fri,  5 Jan 2024 21:55:49 -0800
+Message-Id: <20240106055556.430948-15-tdavies@darkphysics.net>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240106055556.430948-1-tdavies@darkphysics.net>
 References: <20240106055556.430948-1-tdavies@darkphysics.net>
@@ -78,70 +78,55 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Rename variable SlotNum to slot_num to fix checkpatch warning Avoid
+Rename variable RemoveAllTS to remove_all_ts to fix checkpatch warning Avoid
 CamelCase.
 
 Signed-off-by: Tree Davies <tdavies@darkphysics.net>
 ---
- drivers/staging/rtl8192e/rtl8192e/rtl_core.c | 4 ++--
- drivers/staging/rtl8192e/rtllib.h            | 2 +-
- drivers/staging/rtl8192e/rtllib_softmac.c    | 4 ++--
- 3 files changed, 5 insertions(+), 5 deletions(-)
+ drivers/staging/rtl8192e/rtl819x_TSProc.c | 2 +-
+ drivers/staging/rtl8192e/rtllib.h         | 2 +-
+ drivers/staging/rtl8192e/rtllib_softmac.c | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/staging/rtl8192e/rtl8192e/rtl_core.c b/drivers/staging/rtl8192e/rtl8192e/rtl_core.c
-index 34e30b03c545..f4e48b4a122d 100644
---- a/drivers/staging/rtl8192e/rtl8192e/rtl_core.c
-+++ b/drivers/staging/rtl8192e/rtl8192e/rtl_core.c
-@@ -922,12 +922,12 @@ static void _rtl92e_update_rxcounts(struct r8192_priv *priv, u32 *TotalRxBcnNum,
- 	*TotalRxDataNum = 0;
+diff --git a/drivers/staging/rtl8192e/rtl819x_TSProc.c b/drivers/staging/rtl8192e/rtl819x_TSProc.c
+index 7e73d31dcccf..48374cae816d 100644
+--- a/drivers/staging/rtl8192e/rtl819x_TSProc.c
++++ b/drivers/staging/rtl8192e/rtl819x_TSProc.c
+@@ -402,7 +402,7 @@ void RemovePeerTS(struct rtllib_device *ieee, u8 *addr)
+ }
+ EXPORT_SYMBOL(RemovePeerTS);
  
- 	slot_index = (priv->rtllib->link_detect_info.slot_index++) %
--			(priv->rtllib->link_detect_info.SlotNum);
-+			(priv->rtllib->link_detect_info.slot_num);
- 	priv->rtllib->link_detect_info.RxBcnNum[slot_index] =
- 			priv->rtllib->link_detect_info.NumRecvBcnInPeriod;
- 	priv->rtllib->link_detect_info.RxDataNum[slot_index] =
- 			priv->rtllib->link_detect_info.NumRecvDataInPeriod;
--	for (i = 0; i < priv->rtllib->link_detect_info.SlotNum; i++) {
-+	for (i = 0; i < priv->rtllib->link_detect_info.slot_num; i++) {
- 		*TotalRxBcnNum += priv->rtllib->link_detect_info.RxBcnNum[i];
- 		*TotalRxDataNum += priv->rtllib->link_detect_info.RxDataNum[i];
- 	}
+-void RemoveAllTS(struct rtllib_device *ieee)
++void remove_all_ts(struct rtllib_device *ieee)
+ {
+ 	struct ts_common_info *ts, *pTmpTS;
+ 
 diff --git a/drivers/staging/rtl8192e/rtllib.h b/drivers/staging/rtl8192e/rtllib.h
-index 5cab1aa6455a..26ceb579afeb 100644
+index 26ceb579afeb..ed9ca77fbcb9 100644
 --- a/drivers/staging/rtl8192e/rtllib.h
 +++ b/drivers/staging/rtl8192e/rtllib.h
-@@ -1115,7 +1115,7 @@ struct rt_link_detect {
+@@ -1789,7 +1789,7 @@ void rtllib_ts_init(struct rtllib_device *ieee);
+ void TsStartAddBaProcess(struct rtllib_device *ieee,
+ 			 struct tx_ts_record *pTxTS);
+ void RemovePeerTS(struct rtllib_device *ieee, u8 *addr);
+-void RemoveAllTS(struct rtllib_device *ieee);
++void remove_all_ts(struct rtllib_device *ieee);
  
- 	u32				RxBcnNum[RT_MAX_LD_SLOT_NUM];
- 	u32				RxDataNum[RT_MAX_LD_SLOT_NUM];
--	u16				SlotNum;
-+	u16				slot_num;
- 	u16				slot_index;
- 
- 	u32				num_tx_ok_in_period;
+ static inline const char *escape_essid(const char *essid, u8 essid_len)
+ {
 diff --git a/drivers/staging/rtl8192e/rtllib_softmac.c b/drivers/staging/rtl8192e/rtllib_softmac.c
-index 9a9b8f63218b..d7edfa1dca65 100644
+index d7edfa1dca65..b9750c9b3952 100644
 --- a/drivers/staging/rtl8192e/rtllib_softmac.c
 +++ b/drivers/staging/rtl8192e/rtllib_softmac.c
-@@ -1072,7 +1072,7 @@ static void rtllib_associate_complete_wq(void *data)
- 			    ieee->ht_info->enable_ht);
- 		memset(ieee->dot11ht_oper_rate_set, 0, 16);
+@@ -2002,7 +2002,7 @@ void rtllib_stop_protocol(struct rtllib_device *ieee)
+ 		rtllib_disassociate(ieee);
  	}
--	ieee->link_detect_info.SlotNum = 2 * (1 +
-+	ieee->link_detect_info.slot_num = 2 * (1 +
- 				       ieee->current_network.beacon_interval /
- 				       500);
- 	if (ieee->link_detect_info.NumRecvBcnInPeriod == 0 ||
-@@ -2073,7 +2073,7 @@ int rtllib_softmac_init(struct rtllib_device *ieee)
- 		ieee->seq_ctrl[i] = 0;
  
- 	ieee->link_detect_info.slot_index = 0;
--	ieee->link_detect_info.SlotNum = 2;
-+	ieee->link_detect_info.slot_num = 2;
- 	ieee->link_detect_info.NumRecvBcnInPeriod = 0;
- 	ieee->link_detect_info.NumRecvDataInPeriod = 0;
- 	ieee->link_detect_info.num_tx_ok_in_period = 0;
+-	RemoveAllTS(ieee);
++	remove_all_ts(ieee);
+ 	ieee->proto_stoppping = 0;
+ 
+ 	kfree(ieee->assocreq_ies);
 -- 
 2.39.2
 
