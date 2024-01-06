@@ -1,130 +1,125 @@
-Return-Path: <linux-kernel+bounces-18449-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18450-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E3F00825DBB
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 02:45:48 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A638D825DBE
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 02:51:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 95E7F1F24190
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 01:45:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ADF331C23A8F
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 01:51:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F149015AB;
-	Sat,  6 Jan 2024 01:45:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3E5115B1;
+	Sat,  6 Jan 2024 01:51:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ARAFEXx0"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="aYl4H2UP"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE90A136F;
-	Sat,  6 Jan 2024 01:45:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C45715AB;
+	Sat,  6 Jan 2024 01:51:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704505537; x=1736041537;
-  h=to:cc:subject:references:date:mime-version:
-   content-transfer-encoding:from:message-id:in-reply-to;
-  bh=I7ISMq5q/B01ovQP1nPBuwY/StwXPNKBMHk+gR7gvYU=;
-  b=ARAFEXx0RqAecQeGLXCaCMAKjIXuUYM9fKXb8bHfDxHqy8776jO7q+M7
-   I45hx1Yddpl1lNo6DfeKrldqMBy0ifmKeeA04e5A6Zlgvt+Oy7A76v/Pg
-   TJcWVnz998neg7W1LQtuz4zw+VtMz5/d952ai0MB5KTSFTJoNo9lm7/pS
-   d9/Kt1zcbDbh35wEo61YRBMSjldIQ5kTImXlgqzuTnWVL0/1/QQUsKCEH
-   Fc5Lm8L4FZjKHUooHqh/IiN7JlUcKZfkodFWqQ1npWYB2QO6V93CzAZOk
-   8Inqb0rHse3r/Rf1iSaFRz8F8n3pXN/1o8Chm20HJ4kCLuQ5TOR/cI9+h
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10944"; a="396510003"
+  t=1704505866; x=1736041866;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=kENHpnKp3Mc72FB3iQsqSSxWwNZF4fgvq/yw+UTQgsk=;
+  b=aYl4H2UPYpJsRBLJvtcQikx89dTDbNxLqEkDHbr9kndpijnp9/TKyNMg
+   cpGNgxJeVWybNPQgQ5FoEGNBUXM4uYKlEuG81sEZnsa09lKhDMms81g0B
+   dsfDIRP8OGvkcTSywI89lQgzSjxyPDaj837xgG9N/5wwoJh/2C5mi3W6y
+   W9T1MoidWjE35cy4uQPAKObSa5BhvCbE5B9pDUH1REqFd38q+oZZkE2vu
+   eLYmLznxh2zKXGm56FHynciRQYdG20hiE7dpjL1niFfcbZcu2Qvi3WW+v
+   +Dz+zvzphb2iFq0sXeOXCR+Xle9Ll663Y0gxc3APqhNAneD5rqhad9BhN
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10944"; a="4984486"
 X-IronPort-AV: E=Sophos;i="6.04,335,1695711600"; 
-   d="scan'208";a="396510003"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2024 17:45:26 -0800
+   d="scan'208";a="4984486"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2024 17:51:06 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10944"; a="899805978"
+X-IronPort-AV: E=McAfee;i="6600,9927,10944"; a="904298606"
 X-IronPort-AV: E=Sophos;i="6.04,335,1695711600"; 
-   d="scan'208";a="899805978"
-Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.168])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 05 Jan 2024 17:45:23 -0800
-Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
-To: jarkko@kernel.org, dave.hansen@linux.intel.com, tj@kernel.org,
- mkoutny@suse.com, linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
- x86@kernel.org, cgroups@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
- bp@alien8.de, hpa@zytor.com, sohil.mehta@intel.com, "Dave Hansen"
- <dave.hansen@intel.com>
-Cc: zhiquan1.li@intel.com, kristen@linux.intel.com, seanjc@google.com,
- zhanb@microsoft.com, anakrish@microsoft.com, mikko.ylinen@linux.intel.com,
- yangjie@microsoft.com, "Sean Christopherson" <sean.j.christopherson@intel.com>
-Subject: Re: [PATCH v6 07/12] x86/sgx: Introduce EPC page states
-References: <20231030182013.40086-1-haitao.huang@linux.intel.com>
- <20231030182013.40086-8-haitao.huang@linux.intel.com>
- <0f3ae753-031f-4f33-b577-8c863b4621a1@intel.com>
-Date: Fri, 05 Jan 2024 19:45:23 -0600
+   d="scan'208";a="904298606"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga004.jf.intel.com with ESMTP; 05 Jan 2024 17:51:03 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rLvq0-0001u8-2R;
+	Sat, 06 Jan 2024 01:51:00 +0000
+Date: Sat, 6 Jan 2024 09:50:06 +0800
+From: kernel test robot <lkp@intel.com>
+To: Brett Creeley <brett.creeley@amd.com>, davem@davemloft.net,
+	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: oe-kbuild-all@lists.linux.dev, shannon.nelson@amd.com,
+	brett.creeley@amd.com
+Subject: Re: [PATCH net-next 4/8] pds_core: Prevent race issues involving the
+ adminq
+Message-ID: <202401060952.4J8S3LbP-lkp@intel.com>
+References: <20240104171221.31399-5-brett.creeley@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-From: "Haitao Huang" <haitao.huang@linux.intel.com>
-Organization: Intel
-Message-ID: <op.2g3q5xxfwjvjmi@hhuan26-mobl.amr.corp.intel.com>
-In-Reply-To: <0f3ae753-031f-4f33-b577-8c863b4621a1@intel.com>
-User-Agent: Opera Mail/1.0 (Win32)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240104171221.31399-5-brett.creeley@amd.com>
 
-On Fri, 05 Jan 2024 11:57:03 -0600, Dave Hansen <dave.hansen@intel.com>  
-wrote:
+Hi Brett,
 
-> On 10/30/23 11:20, Haitao Huang wrote:
->> @@ -527,16 +530,13 @@ void sgx_mark_page_reclaimable(struct  
->> sgx_epc_page *page)
->>  int sgx_unmark_page_reclaimable(struct sgx_epc_page *page)
->>  {
->>  	spin_lock(&sgx_global_lru.lock);
->> -	if (page->flags & SGX_EPC_PAGE_RECLAIMER_TRACKED) {
->> -		/* The page is being reclaimed. */
->> -		if (list_empty(&page->list)) {
->> -			spin_unlock(&sgx_global_lru.lock);
->> -			return -EBUSY;
->> -		}
->> -
->> -		list_del(&page->list);
->> -		page->flags &= ~SGX_EPC_PAGE_RECLAIMER_TRACKED;
->> +	if (sgx_epc_page_reclaim_in_progress(page->flags)) {
->> +		spin_unlock(&sgx_global_lru.lock);
->> +		return -EBUSY;
->>  	}
->> +
->> +	list_del(&page->list);
->> +	sgx_epc_page_reset_state(page);
->
-> I want to know how much if this series is basically line-for-line
-> abstraction shifting like:
->
-> -	page->flags &= ~SGX_EPC_PAGE_RECLAIMER_TRACKED;
-> +	sgx_epc_page_reset_state(page);
->
-> versus actually adding complexity.  That way, I might be able to offer
-> some advice on where this can be pared down.  That's really hard to do
-> with the current series.
->
-> Please don't just "introduce new page states".  This should have first
-> abstracted out the sgx_epc_page_reclaim_in_progress() operation, using
-> the list_empty() check as the implementation.
->
-> Then, in a separate patch, introduce the concept of the "reclaim in
-> progress" flag and finally flip the implementation over.
->
-> Ditto for the sgx_epc_page_reset_state() abstraction.  It should have
-> been introduced separately as a concept and then have the implementation
-> changed.
->
-> On in to patch 10 (which is much too big) which introduces the
-> sgx_lru_list() abstraction.
->
+kernel test robot noticed the following build warnings:
 
-Sure. I'll try to refactor according to this plan.
-Thanks
-Haitao
+[auto build test WARNING on net-next/main]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Brett-Creeley/pds_core-Prevent-health-thread-from-running-during-reset-remove/20240105-011706
+base:   net-next/main
+patch link:    https://lore.kernel.org/r/20240104171221.31399-5-brett.creeley%40amd.com
+patch subject: [PATCH net-next 4/8] pds_core: Prevent race issues involving the adminq
+config: s390-allmodconfig (https://download.01.org/0day-ci/archive/20240106/202401060952.4J8S3LbP-lkp@intel.com/config)
+compiler: s390-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240106/202401060952.4J8S3LbP-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202401060952.4J8S3LbP-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> drivers/net/ethernet/amd/pds_core/core.c:518:6: warning: no previous prototype for 'pdsc_adminq_wait_and_dec_once_unused' [-Wmissing-prototypes]
+     518 | void pdsc_adminq_wait_and_dec_once_unused(struct pdsc *pdsc)
+         |      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+vim +/pdsc_adminq_wait_and_dec_once_unused +518 drivers/net/ethernet/amd/pds_core/core.c
+
+   517	
+ > 518	void pdsc_adminq_wait_and_dec_once_unused(struct pdsc *pdsc)
+   519	{
+   520		/* The driver initializes the adminq_refcnt to 1 when the adminq is
+   521		 * allocated and ready for use. Other users/requesters will increment
+   522		 * the refcnt while in use. If the refcnt is down to 1 then the adminq
+   523		 * is not in use and the refcnt can be cleared and adminq freed. Before
+   524		 * calling this function the driver will set PDSC_S_FW_DEAD, which
+   525		 * prevent subsequent attempts to use the adminq and increment the
+   526		 * refcnt to fail. This guarantees that this function will eventually
+   527		 * exit.
+   528		 */
+   529		while (!refcount_dec_if_one(&pdsc->adminq_refcnt)) {
+   530			dev_dbg_ratelimited(pdsc->dev, "%s: adminq in use\n",
+   531					    __func__);
+   532			cpu_relax();
+   533		}
+   534	}
+   535	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
