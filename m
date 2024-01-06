@@ -1,51 +1,48 @@
-Return-Path: <linux-kernel+bounces-18695-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18696-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15ACE82612F
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 20:03:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 64E35826133
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 20:08:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AB7CA1F22261
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 19:03:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0405A1F221C6
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 19:08:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70E3EEADF;
-	Sat,  6 Jan 2024 19:03:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E44AF4E4;
+	Sat,  6 Jan 2024 19:07:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tMTxhAP4"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GZYi4m4t"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFDC8E54E;
-	Sat,  6 Jan 2024 19:03:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88CDEC433C8;
-	Sat,  6 Jan 2024 19:03:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C024E549;
+	Sat,  6 Jan 2024 19:07:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A580FC433C8;
+	Sat,  6 Jan 2024 19:07:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704567815;
-	bh=bRD/aygV8YP62Vz+smxGR1HhyVBL/a1oriAC4WeJvc4=;
+	s=k20201202; t=1704568070;
+	bh=zWynsKb/SiXuFdVAnbWgtFsh2AcTQtELMGzqTUSlExc=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=tMTxhAP4/B6LnKI1TA9fcYq3Q3ApW4EBzunT5LmUZdkFSi+QPpjO9hhkW5LpSee4D
-	 VxsOoNNsd5N1hOht9TqJVcQiDdDd0jLninbJOLKgM3qRYKTW0H5C9OTJ05HcXYqgqM
-	 jLegNqI/kWw2CUJZOl7MgMPyScmjBfGIbMALrrEzVFfZzatKdIaSZr+mNy/CBWd7hI
-	 pLiRRb1udwFwEX4bjnOuRj8PELjcODmvFFziOamQxEztn7+uEx3rUnhLgM687Rn8eZ
-	 +JD92ZHHSNFMuZCMby2P3YgunzyRMKrH5hkMw9W0JaLjgEV3Ng/VensBKsu7yIK2ep
-	 E4WGutAle6vcA==
-Date: Sat, 6 Jan 2024 19:03:29 +0000
+	b=GZYi4m4t+jMzMSLoUKFzVzF20hsfGfPk60Fb6djUmG7tpl5lPrm4C6QnamZgfaP7L
+	 7MRcOm/TE6uW3xaRx5xVuXHNkWh/jHUC5P6T/S6A+a5cB6Sxcb+PwfxgbWMz1vKmG9
+	 yVF7cgpKTP9hhUwiKxj0bmwv0DcfKTLnoWvOIaTIMrfqcZPK5Ml44uVSDUGpzV1BSr
+	 yztbiRsEoV38UE8J8cWB+XN4GLANQ1/NOflfhdMY1sgtnaJscghVTCLXkIbJqt/6Rz
+	 FERhbBweMkQTfRjZa8E+IyiyYwd+ELCMx1fS1MZXUkz1vpokA6saa08ZIE5BpGjvLL
+	 QrIK/bT7m55uQ==
+Date: Sat, 6 Jan 2024 19:07:45 +0000
 From: Simon Horman <horms@kernel.org>
 To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc: Louis Peens <louis.peens@corigine.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
+Cc: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
 	alexis.lothore@bootlin.com, linux-kernel@vger.kernel.org,
-	kernel-janitors@vger.kernel.org, oss-drivers@corigine.com,
-	netdev@vger.kernel.org
-Subject: Re: [PATCH net-next] nfp: flower: Remove usage of the deprecated
- ida_simple_xx() API
-Message-ID: <20240106190329.GE31813@kernel.org>
-References: <de9e2b0be80f92dead2c8c66584bb34b9c95aab0.1704445716.git.christophe.jaillet@wanadoo.fr>
+	kernel-janitors@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH 1/2 net-next] ipvlan: Fix a typo in a comment
+Message-ID: <20240106190745.GF31813@kernel.org>
+References: <5adda8a3ce7af63bc980ba6b4b3fbfd6344e336b.1704446747.git.christophe.jaillet@wanadoo.fr>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -54,24 +51,18 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <de9e2b0be80f92dead2c8c66584bb34b9c95aab0.1704445716.git.christophe.jaillet@wanadoo.fr>
+In-Reply-To: <5adda8a3ce7af63bc980ba6b4b3fbfd6344e336b.1704446747.git.christophe.jaillet@wanadoo.fr>
 
-On Fri, Jan 05, 2024 at 10:10:37AM +0100, Christophe JAILLET wrote:
-> ida_alloc() and ida_free() should be preferred to the deprecated
-> ida_simple_get() and ida_simple_remove().
-> 
-> This is less verbose.
-> 
-> Note that the upper bound of ida_alloc_range() is inclusive while the one
-> of ida_simple_get() was exclusive.
-> So NFP_FL_LAG_GROUP_MAX has been decreased by 1. It now better watch the
-> comment stating that "1 to 31 are valid".
-> 
-> The only other user of NFP_FL_LAG_GROUP_MAX has been updated accordingly in
-> nfp_fl_lag_put_unprocessed().
+On Fri, Jan 05, 2024 at 10:27:08AM +0100, Christophe JAILLET wrote:
+> s/diffentiate/differentiate/
 > 
 > Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-Reviewed-by: Simon Horman <horms@kernel.org>
+Thanks,
 
+this looks good to me.
+And it appears this was the only spelling error that
+codespell sees in this file.
+
+Reviewed-by: Simon Horman <horms@kernel.org>
 
