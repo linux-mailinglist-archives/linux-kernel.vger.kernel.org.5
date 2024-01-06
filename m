@@ -1,145 +1,130 @@
-Return-Path: <linux-kernel+bounces-18641-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18650-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 84F2C826061
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 17:04:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C958082607C
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 17:07:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2804FB22B03
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 16:04:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 27DBBB23E7F
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 16:07:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2AB1F9F6;
-	Sat,  6 Jan 2024 16:03:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5FEB883B;
+	Sat,  6 Jan 2024 16:06:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=subdimension.ro header.i=@subdimension.ro header.b="W4KlRPNK"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="f+Tc4YOg"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail.subdimension.ro (skycaves.subdimension.ro [172.104.132.142])
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E144FF516;
-	Sat,  6 Jan 2024 16:03:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=subdimension.ro
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=subdimension.ro
-Received: from sunspire (unknown [188.24.94.216])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	by mail.subdimension.ro (Postfix) with ESMTPSA id 3D16728B53B;
-	Sat,  6 Jan 2024 16:02:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=subdimension.ro;
-	s=skycaves; t=1704556974;
-	bh=Cm940zKVyu6a9aez1H379JbaXjqxCkC1bSHDLSDNWZs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=W4KlRPNK6dqWpx+TR7mH+uYK5BgMn/lM9v7TO9syhA3mH4/I+em6EbPmbfBh1oxpN
-	 n3kExN2INgg1tovd2GR34YbhOiepDDUDjfr9MyyaLGRqR13DGlX+RXI6Tw/6kht68p
-	 Yxyljco9lHrzC31FTwSUEHxjIS4pKhOOfdl0ktoY=
-Date: Sat, 6 Jan 2024 18:02:52 +0200
-From: Petre Rodan <petre.rodan@subdimension.ro>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Andreas Klinger <ak@it-klinger.de>,
-	Jonathan Cameron <jic23@kernel.org>,
-	Lars-Peter Clausen <lars@metafoo.de>,
-	Angel Iglesias <ang.iglesiasg@gmail.com>,
-	Matti Vaittinen <mazziesaccount@gmail.com>
-Subject: Re: [PATCH v3 10/10] iio: pressure: mprls0025pa add SPI driver
-Message-ID: <ZZl5rBPOKwvxZAAx@sunspire>
-References: <20231229092445.30180-1-petre.rodan@subdimension.ro>
- <20231229092445.30180-11-petre.rodan@subdimension.ro>
- <ZZlyDT0J4n1_YXh4@smile.fi.intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1D2A8820;
+	Sat,  6 Jan 2024 16:06:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704557189; x=1736093189;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=8+aVIg+Wk08nweCOUOZlJw89CNCLOYDE563yrRwYD+k=;
+  b=f+Tc4YOgXrEM49imVFtvdyMocnUeI8Fq2UW+3L9KLwnxYxeZBBo8AgTM
+   5IZmYZtCfbPXQFkaaezaEBH5dW9Atc7bG+Mhva/fbs8/yG0ghHRmHLug4
+   tWCszzP/k/twEy2ytZ0fzxxsxrFpSAm6Jdpe54lQN+SzpA3KNblvsG13J
+   b5XR3hE9M1nS0GnoqmMjuZiP7CPqjmuTbrUV71jCmH/zFuFGV6PF6lgdZ
+   YLJbZHuACcugFK1eUHQyt3hW9yjL6NmFeJdayg4zRx67+nK9y/xprYgZ5
+   UyWQvzkCCxjMR2oIbOUPp7ws1VZFojn1u1Ep5pHJrgttE1TOvMyMXzIbQ
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10945"; a="401446500"
+X-IronPort-AV: E=Sophos;i="6.04,337,1695711600"; 
+   d="scan'208";a="401446500"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jan 2024 08:06:29 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10945"; a="781016603"
+X-IronPort-AV: E=Sophos;i="6.04,337,1695711600"; 
+   d="scan'208";a="781016603"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga002.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jan 2024 08:06:26 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rM9Bn-0000000BwpI-2BN1;
+	Sat, 06 Jan 2024 18:06:23 +0200
+Date: Sat, 6 Jan 2024 18:06:23 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Cc: "V, Narasimhan" <Narasimhan.V@amd.com>, Borislav Petkov <bp@alien8.de>,
+	"linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
+	lkml <linux-kernel@vger.kernel.org>,
+	Mika Westerberg <mika.westerberg@linux.intel.com>,
+	Jan Dabros <jsd@semihalf.com>, Andi Shyti <andi.shyti@kernel.org>,
+	"Limonciello, Mario" <Mario.Limonciello@amd.com>
+Subject: Re: i2c-designware: NULL ptr at RIP: 0010:regmap_read+0x12/0x70
+Message-ID: <ZZl6f05pJKw8rnAa@smile.fi.intel.com>
+References: <20231229120820.GCZY62tM7z4v2XmOAZ@fat_crate.local>
+ <8169d773-f9ec-4092-b036-9e4fd59966c3@linux.intel.com>
+ <DM4PR12MB508654DF49FE079D6C283D658961A@DM4PR12MB5086.namprd12.prod.outlook.com>
+ <888da30a-c1ed-4fb0-af81-787fd868ce20@linux.intel.com>
+ <DM4PR12MB5086DE2882C7C5044697B1C38967A@DM4PR12MB5086.namprd12.prod.outlook.com>
+ <adf6c24a-d94b-40e5-b645-0c6b23b2d513@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="GAFEAXN8xuUBlkzd"
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <ZZlyDT0J4n1_YXh4@smile.fi.intel.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <adf6c24a-d94b-40e5-b645-0c6b23b2d513@linux.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+
+On Thu, Jan 04, 2024 at 03:40:44PM +0200, Jarkko Nikula wrote:
+> On 1/4/24 08:35, V, Narasimhan wrote:
+> > > [    6.245173] i2c_designware AMDI0010:00: Unknown Synopsys component type: 0xffffffff
+> > 
+> > This made me scratching my head since driver probing will fail in this
+> > case with -ENODEV and I could not trigger runtime PM activity in such
+> > case but perhaps this is timing specific which happens to happen in your
+> > case.
+> > 
+> > Out of curiosity do you see this same "i2c_designware AMDI0010:00:
+> > Unknown Synopsys component type: 0xffffffff" error on Vanilla or is it
+> > also regression in linux-next?
+> > 
+> > This does not happen on Vanilla, only on linux-next.
+> > 
+> This is even more strange. Controller is in reset but I'm blind to see from
+> Andy's patches why. Do you have change to test at these commits?
+> 
+> bd466a892612 ("i2c: designware: Fix PM calls order in dw_i2c_plat_probe()")
+> c012fde343d2 ("i2c: designware: Fix reset call order in dw_i2c_plat_probe()"
+> 
+> and maybe the last one
+> 4bff054b64e1 ("i2c: designware: Fix spelling and other issues in the
+> comments")
+> 
+> I'm trying to narrow does the regression come from first two patches and if
+> not, then test the last one.
+> 
+> Andy is out of office and if we can narrow the regression to first two
+> patches we perhaps can revert just them and otherwise need to drop the whole
+> set.
+
+Since I saw this email...
+
+First of all, it's easy just to go patch-by-patch and see if it helps.
+Or simple bisect among 24 commits (4 iterations only).
+
+Second, it seems that we are using autosuspend but we don't prevent
+the PM to go down during the ->probe(). So, a WA can be to take a reference
+count preventing PM from going down.
+
+->remove, for instance, uses RPM get/put calls.
+
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
---GAFEAXN8xuUBlkzd
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-
-hello Andy,
-
-On Sat, Jan 06, 2024 at 05:30:21PM +0200, Andy Shevchenko wrote:
-> On Fri, Dec 29, 2023 at 11:24:38AM +0200, Petre Rodan wrote:
-> > Add SPI component of the driver.
->=20
-> > Tested with mprls0015pa0000sa in spi mode on BeagleBone Black on
-> > slightly patched 6.7.0-rc6 mainline.
->=20
-> > Tested with mprls0025pa in i2c mode on BeagleBone Black with togreg
-> > branch on
-> > git://git.kernel.org/pub/scm/linux/kernel/git/jic23/iio.git
-> > (tag: iio-for-6.8a)
->=20
-> I believe these paragraphs can be moved to the patch submission comments =
-=66rom
-> the commit message...
->=20
-> > Tested-by: Andreas Klinger <ak@it-klinger.de>
-> > Signed-off-by: Petre Rodan <petre.rodan@subdimension.ro>
-> > ---
-> > v2 -> v3 removed iio.h include line
->=20
-> ...somewhere here.
->=20
-> ...
->=20
-> > +#include <linux/mod_devicetable.h>
-> > +#include <linux/module.h>
-> > +#include <linux/spi/spi.h>
-> > +#include <linux/stddef.h>
->=20
-> Basically here we need additionally these ones:
->=20
-> device.h
-> errno.h
-> types.h
-
-ok, I'll add errno.h. the other two are in the shared .h file.
-
-cheers,
-peter
-
-> (I haven't checked i2c counterpart for the similarities).
->=20
-> --=20
-> With Best Regards,
-> Andy Shevchenko
->=20
->=20
-
---=20
-petre rodan
-
---GAFEAXN8xuUBlkzd
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEE2Ap/wXYVGTXsPl+pzyaZmYROfzAFAmWZeagACgkQzyaZmYRO
-fzA8tA/8CuTLOuHDKpjZ86++xEJoWwzqi22ttcVBzdZIfdmAKgZNGmCzBczvJG4I
-uiPlhyI7MilWFYfjWx1uPRV3nkDc2iMOxNBwM9JzAE0kryEo3azaRfox2SnmkGVn
-cFfV4b3O8UY+fqNGNEFu5bLoeztSnyYokstYUd8qoI3S0L1KTvpbkAUIa+aOionv
-QIYvP1tadfogwWg4yYBiLDevJsB7VjdyYfVXHKca8EP8ubQC5xH0Tf2P+AaY8Hsl
-VJXR2pGwy7CscpwpQm4K9T6IS2Xtuyzvmfz7I9nEuiS2obqFm6Gpk4+WS++gnQg9
-lntd93DQFTPRVQbGCpoUZZ9/T/o9oWsB3yT14jRhFyaVngbzZugDya2Pq+uTs8ZW
-fwieiYeZbybYCQOw0SHCQ06qdzTsWxHxkCuNmmL9/Q7CR6nwdSSPTZpzcocWvaBW
-DFoGsHp2jWEfaovjW1Np5QeDUqhwPFC2J2+ydCfxs+Cxl9G/1ujOvLELSDEay3WH
-IrAgPuPkrubg3AAwc84sb2kLIDjKlQwJlQ5+i3ea4KYfuR4cGB2YLcebXlZfECAe
-7rehc4EiGCpR9VMrc57N8Or4dPqasfO3BHOqyKcqWeHJz7ITyRuCAXu4If4wIFuW
-Gd+s/ov/RqFXv4F89RBgtyCkQvutJx5Ph4av+IrQTzJeMbuw3FA=
-=xmDc
------END PGP SIGNATURE-----
-
---GAFEAXN8xuUBlkzd--
 
