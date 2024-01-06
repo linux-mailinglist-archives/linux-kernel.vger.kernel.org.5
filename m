@@ -1,116 +1,299 @@
-Return-Path: <linux-kernel+bounces-18735-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18736-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D7BB08261FF
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 23:43:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8907A826202
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 23:55:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 658ACB21ADB
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 22:43:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1403A1F21F08
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 22:55:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B251101DB;
-	Sat,  6 Jan 2024 22:43:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B547E101F0;
+	Sat,  6 Jan 2024 22:54:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b="JXbv8KoV"
+	dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b="bMlpjIHz"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail.manjaro.org (mail.manjaro.org [116.203.91.91])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EAF610787;
-	Sat,  6 Jan 2024 22:43:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
-	t=1704580892; x=1705185692; i=w_armin@gmx.de;
-	bh=rGKAWbb6mv2MvQvmMWvtbAEkan0WCklL9CFLbJgURSI=;
-	h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-	b=JXbv8KoV6cRdOCWdJmGOV0tksVZtgXKGpfZBvXpliALP9wg093yY64mq9Gc7ryhj
-	 TF7zOW/cZXWkidd7DirmpII+WfbJ1BhDkLGt9q9xzoph8caOPxpEv8J7/1e6zW1TS
-	 wG7OGEwX6RB5Ir3pjQJ2SNAY//R0mfaQZzFQZeT49aD/p2Dm1zaU97N+3RzXQ4/eo
-	 +2KCRp5FDn/yRtbtEUTi5hI3Dpq5xYXsrCdv4uwKdPRkFwzmMN4CfWy+QtLWdCq9C
-	 feaer1YS94zTpijlG0hb1OLB70e1O3IfGa/YnFuYraLUe3KNmv8bgC+wirYQKyPnI
-	 97VIwIMtg9UZd+KZZg==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from mx-amd-b650.users.agdsn.de ([141.30.226.129]) by mail.gmx.net
- (mrgmx004 [212.227.17.190]) with ESMTPSA (Nemesis) id
- 1MryXH-1qs9Gw3kCj-00o2HB; Sat, 06 Jan 2024 23:41:31 +0100
-From: Armin Wolf <W_Armin@gmx.de>
-To: jithu.joseph@intel.com
-Cc: hdegoede@redhat.com,
-	ilpo.jarvinen@linux.intel.com,
-	platform-driver-x86@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] platform/x86: intel-wmi-sbl-fw-update: Fix function name in error message
-Date: Sat,  6 Jan 2024 23:41:26 +0100
-Message-Id: <20240106224126.13803-1-W_Armin@gmx.de>
-X-Mailer: git-send-email 2.39.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F199101C8;
+	Sat,  6 Jan 2024 22:54:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=manjaro.org
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:9BAjZBJl7gR/XFYztgEXLa6G4yMtLMv9Q46uL/pXEy7hTNGA7OL
- Wivy3wxyhqoFKWVaR7/pXFA3K4h1l05ROcwER5BqLHdgb5/tVnxfXkx69JjYsERxa6QALTF
- zLIVbgoNPIPT8byt5SZvND5spdVR9CnCrc5DtvyCqrwg1dnxg3OFSZKnpA/DvIqYzrj6c19
- jmE4CdTtUFdYVky/1mWKg==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:aFw9eUN7Bts=;YG58MA7+Rok80yWchiFPjYdyWOR
- dx+94u7v0av3NUoUFSqk3yNzdx7QRK1P1WcQghmXk6w+RMZgUH9fqAlzYQb3X2V5FCYVLMyBK
- vrTZ1VlI3+xLGLjazHvSz8t6t8lSGWCD5dMV69PEsERj24WtSH2NsrSXIqq/mfSzegOC4kL7I
- P4ZnBaEyuh0826XtGNvxRhfVY2npG6h/mJttJQ69J4ALx7VfQ7gJ4x8bOaQ/bZoog3lX/1Ll1
- 5VaD2wGuu9pRYyK2bQmlCGLILuXiBwp1URZscKj35qKoOprttpZ+iMQaHEeBU51UIE2bXj+fu
- DaZUMLuhT2AnQXwmQyile82stB65+6EbNT7NwOx/g8cXa2ZmWT+DYwZt4fWQPl/CCv61ioHCe
- 4+Lo+Zbk643RRLBAgbXGNmNkKZlR64019le/RyJdwyCwC+nz1onT8rhF7HDRBGf2DsgBkUgqh
- uMJCArT2Axn4bZ6v1fjke8Cml9EUcY/G6jNMU9jGVdImkQLVIThISZiVDZprl5aAV6TT+w9A4
- 0p+NPoUiRw7hO7rwRuu3ohm9abU8nb3ZmBVuLWsbIUQU2Hf+Brh6y9aEb+0RH0LdUdojp7R71
- wfQVgjUGmgL+HjnGB5UQfnb03PhvfzUVMs0Ounl3u8k9UuRl7gPGsom9XBFIc08WSX688PhAn
- E2SnT2jXPhIxS4niPSNFNHfS2M+Y54Fz5S6QISUgmBKjJ4Pi0E/+zmQvtL18m3Arllt29nIa3
- IbdA6Xp1PWlyJz3/HEpUGxWN4LW3KMtoD9AJ6ovwWodO/3RGFnOCGdh2Bekfo9G8Gk0+8qOFy
- CimrnSzQaXXNhYJYMMRf8Nt0Xnjj3YEVGXNwX8kEaNa7Oe+AWRyPEtoftFu6c75ooiDRQ7tfc
- BlU3CvaO/6uDPi9WRZZ5lCQsYOt5xw9IrA+kSfeG1PVq2Zhch0F7Qakwjm6fXhKN57QKZlIDV
- SRxV0DYZL6jUnym1hY4QLhGdSw8=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manjaro.org; s=2021;
+	t=1704581680;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=bi/9uuw0QbO+5ghXCWyrtwMbNZZbLyDpZzMphz145b0=;
+	b=bMlpjIHzUH1cktNyniTdaMiRZJPB3lejcN6ljBuaiqQuwv8Dx/9UEHB/eReAwqGAZx6hpU
+	waHvxdQ8f8h0AvVHSWKFBYnD3uuI+L6RPBP1+eEuhHgAx0c5nQMX5cy2ox8DrElCfb+vL+
+	0R07a7U87KzwnVs+JISf6zmEdVGgo54RpKXwKF6l/4Owc972S/j0F2133C1g4IYiySCmYs
+	i12ErAy9jVgP2dz8cBavQrXUY+fNiHT58esk+PFtL48WUus9RWij9g4bfJObSil8j0tYZw
+	W05YdxK3PgBEWjrmwwFIYQ9Cp0Q25dcJ1MHCGqH2YDU8ozHaYuNupzSzu7wgnQ==
+Date: Sat, 06 Jan 2024 23:54:39 +0100
+From: Dragan Simic <dsimic@manjaro.org>
+To: Alexey Charkov <alchark@gmail.com>
+Cc: Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+ Heiko Stuebner <heiko@sntech.de>, Sebastian Reichel
+ <sebastian.reichel@collabora.com>, Cristian Ciocaltea
+ <cristian.ciocaltea@collabora.com>, Christopher Obbard
+ <chris.obbard@collabora.com>, =?UTF-8?Q?Tam=C3=A1s_Sz=C5=B1cs?=
+ <szucst@iit.uni-miskolc.hu>, Shreeya Patel <shreeya.patel@collabora.com>,
+ Kever Yang <kever.yang@rock-chips.com>, Chris Morgan
+ <macromorgan@hotmail.com>, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: dts: rockchip: enable built-in thermal monitoring
+ on rk3588
+In-Reply-To: <20240106222357.23835-1-alchark@gmail.com>
+References: <20240106222357.23835-1-alchark@gmail.com>
+Message-ID: <e0302da12345e5539583b2c96d747592@manjaro.org>
+X-Sender: dsimic@manjaro.org
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Authentication-Results: ORIGINATING;
+	auth=pass smtp.auth=dsimic@manjaro.org smtp.mailfrom=dsimic@manjaro.org
 
-Since when the driver was converted to use the bus-based WMI
-interface, the old GUID-based WMI functions are not used anymore.
-Update the error message to avoid confusing users.
+Hello Alexey,
 
-Compile-tested only.
+Please see my comments below.
 
-Fixes: 75c487fcb69c ("platform/x86: intel-wmi-sbl-fw-update: Use bus-based=
- WMI interface")
-Signed-off-by: Armin Wolf <W_Armin@gmx.de>
-=2D--
- drivers/platform/x86/intel/wmi/sbl-fw-update.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+On 2024-01-06 23:23, Alexey Charkov wrote:
+> Include thermal zones information in device tree for rk3588 variants
+> and enable the built-in thermal sensing ADC on RADXA Rock 5B
+> 
+> Signed-off-by: Alexey Charkov <alchark@gmail.com>
+> ---
+>  .../boot/dts/rockchip/rk3588-rock-5b.dts      |   4 +
+>  arch/arm64/boot/dts/rockchip/rk3588s.dtsi     | 143 ++++++++++++++++++
+>  2 files changed, 147 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts
+> b/arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts
+> index a5a104131403..f9d540000de3 100644
+> --- a/arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts
+> +++ b/arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts
+> @@ -772,3 +772,7 @@ &usb_host1_ehci {
+>  &usb_host1_ohci {
+>  	status = "okay";
+>  };
+> +
+> +&tsadc {
+> +	status = "okay";
+> +};
+> diff --git a/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
+> b/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
+> index 8aa0499f9b03..8235991e3112 100644
+> --- a/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
+> +++ b/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
+> @@ -10,6 +10,7 @@
+>  #include <dt-bindings/reset/rockchip,rk3588-cru.h>
+>  #include <dt-bindings/phy/phy.h>
+>  #include <dt-bindings/ata/ahci.h>
+> +#include <dt-bindings/thermal/thermal.h>
+> 
+>  / {
+>  	compatible = "rockchip,rk3588";
+> @@ -2112,6 +2113,148 @@ tsadc: tsadc@fec00000 {
+>  		status = "disabled";
+>  	};
+> 
+> +	thermal_zones: thermal-zones {
+> +		soc_thermal: soc-thermal {
 
-diff --git a/drivers/platform/x86/intel/wmi/sbl-fw-update.c b/drivers/plat=
-form/x86/intel/wmi/sbl-fw-update.c
-index 9cf5ed0f8dc2..040153ad67c1 100644
-=2D-- a/drivers/platform/x86/intel/wmi/sbl-fw-update.c
-+++ b/drivers/platform/x86/intel/wmi/sbl-fw-update.c
-@@ -32,7 +32,7 @@ static int get_fwu_request(struct device *dev, u32 *out)
- 		return -ENODEV;
+It should be better to name it cpu_thermal instead.  In the end, that's 
+what it is.
 
- 	if (obj->type !=3D ACPI_TYPE_INTEGER) {
--		dev_warn(dev, "wmi_query_block returned invalid value\n");
-+		dev_warn(dev, "wmidev_block_query returned invalid value\n");
- 		kfree(obj);
- 		return -EINVAL;
- 	}
-@@ -55,7 +55,7 @@ static int set_fwu_request(struct device *dev, u32 in)
+> +			polling-delay-passive = <20>; /* milliseconds */
+> +			polling-delay = <1000>; /* milliseconds */
+> +			sustainable-power = <2100>; /* milliwatts */
 
- 	status =3D wmidev_block_set(to_wmi_device(dev), 0, &input);
- 	if (ACPI_FAILURE(status)) {
--		dev_err(dev, "wmi_set_block failed\n");
-+		dev_err(dev, "wmidev_block_set failed\n");
- 		return -ENODEV;
- 	}
+These three comments above are pretty much redundant.
 
-=2D-
-2.39.2
+> +
+> +			thermal-sensors = <&tsadc 0>;
 
+An empty line should be added here.
+
+> +			trips {
+> +				threshold: trip-point-0 {
+
+It should be better to name it cpu_alert0 instead, because that's what 
+other newer dtsi files already use.
+
+> +					temperature = <75000>;
+> +					hysteresis = <2000>;
+> +					type = "passive";
+> +				};
+> +				target: trip-point-1 {
+
+It should be better to name it cpu_alert1 instead, because that's what 
+other newer dtsi files already use.
+
+> +					temperature = <85000>;
+> +					hysteresis = <2000>;
+> +					type = "passive";
+> +				};
+> +				soc_crit: soc-crit {
+
+It should be better to name it cpu_crit instead, because that's what 
+other newer dtsi files already use.
+
+> +					/* millicelsius */
+> +					temperature = <115000>;
+> +					/* millicelsius */
+
+These two comments above are pretty much redundant.  It also applies to 
+all other similar comments below.
+
+> +					hysteresis = <2000>;
+> +					type = "critical";
+> +				};
+> +			};
+> +			cooling-maps {
+> +				map0 {
+> +					trip = <&target>;
+
+Shouldn't &threshold (i.e. &cpu_alert0) be referenced here instead?
+
+> +					cooling-device = <&cpu_l0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
+
+Shouldn't all big CPU cores be listed here instead?
+
+> +					contribution = <1024>;
+> +				};
+> +				map1 {
+> +					trip = <&target>;
+
+Shouldn't &target (i.e. &cpu_alert1) be referenced here instead?
+
+> +					cooling-device = <&cpu_b0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
+
+Shouldn't all little and big CPU cores be listed here instead?
+
+> +					contribution = <1024>;
+> +				};
+> +				map2 {
+> +					trip = <&target>;
+> +					cooling-device = <&cpu_b2 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
+> +					contribution = <1024>;
+> +				};
+
+Isn't this cooling map redundant?
+
+> +			};
+> +		};
+> +
+> +		bigcore0_thermal: bigcore0-thermal {
+> +			polling-delay-passive = <20>; /* milliseconds */
+> +			polling-delay = <1000>; /* milliseconds */
+> +			thermal-sensors = <&tsadc 1>;
+> +
+> +			trips {
+> +				big0_crit: big0-crit {
+> +					/* millicelsius */
+> +					temperature = <115000>;
+> +					/* millicelsius */
+> +					hysteresis = <2000>;
+> +					type = "critical";
+> +				};
+> +			};
+> +		};
+> +
+> +		bigcore1_thermal: bigcore1-thermal {
+> +			polling-delay-passive = <20>; /* milliseconds */
+> +			polling-delay = <1000>; /* milliseconds */
+> +			thermal-sensors = <&tsadc 2>;
+> +
+> +			trips {
+> +				big1_crit: big1-crit {
+> +					/* millicelsius */
+> +					temperature = <115000>;
+> +					/* millicelsius */
+> +					hysteresis = <2000>;
+> +					type = "critical";
+> +				};
+> +			};
+> +		};
+> +
+> +		little_core_thermal: littlecore-thermal {
+> +			polling-delay-passive = <20>; /* milliseconds */
+> +			polling-delay = <1000>; /* milliseconds */
+> +			thermal-sensors = <&tsadc 3>;
+> +
+> +			trips {
+> +				little_crit: little-crit {
+> +					/* millicelsius */
+> +					temperature = <115000>;
+> +					/* millicelsius */
+> +					hysteresis = <2000>;
+> +					type = "critical";
+> +				};
+> +			};
+> +		};
+> +
+> +		center_thermal: center-thermal {
+> +			polling-delay-passive = <20>; /* milliseconds */
+> +			polling-delay = <1000>; /* milliseconds */
+> +			thermal-sensors = <&tsadc 4>;
+> +
+> +			trips {
+> +				center_crit: center-crit {
+> +					/* millicelsius */
+> +					temperature = <115000>;
+> +					/* millicelsius */
+> +					hysteresis = <2000>;
+> +					type = "critical";
+> +				};
+> +			};
+> +		};
+> +
+> +		gpu_thermal: gpu-thermal {
+> +			polling-delay-passive = <20>; /* milliseconds */
+> +			polling-delay = <1000>; /* milliseconds */
+> +			thermal-sensors = <&tsadc 5>;
+> +
+> +			trips {
+> +				gpu_crit: gpu-crit {
+> +					/* millicelsius */
+> +					temperature = <115000>;
+> +					/* millicelsius */
+> +					hysteresis = <2000>;
+> +					type = "critical";
+> +				};
+> +			};
+> +		};
+> +
+> +		npu_thermal: npu-thermal {
+> +			polling-delay-passive = <20>; /* milliseconds */
+> +			polling-delay = <1000>; /* milliseconds */
+> +			thermal-sensors = <&tsadc 6>;
+> +
+> +			trips {
+> +				npu_crit: npu-crit {
+> +					/* millicelsius */
+> +					temperature = <115000>;
+> +					/* millicelsius */
+> +					hysteresis = <2000>;
+> +					type = "critical";
+> +				};
+> +			};
+> +		};
+> +	};
+> +
+>  	saradc: adc@fec10000 {
+>  		compatible = "rockchip,rk3588-saradc";
+>  		reg = <0x0 0xfec10000 0x0 0x10000>;
 
