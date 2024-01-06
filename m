@@ -1,61 +1,63 @@
-Return-Path: <linux-kernel+bounces-18559-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18560-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 044F0825F59
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 12:23:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 07ED5825F5F
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 12:39:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CBB311C211BA
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 11:23:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 294B31C20C0A
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 11:39:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 771966FBA;
-	Sat,  6 Jan 2024 11:23:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Rdgeft1J"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33E5D6FCB;
+	Sat,  6 Jan 2024 11:39:29 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oi1-f172.google.com (mail-oi1-f172.google.com [209.85.167.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12AF06FA6
-	for <linux-kernel@vger.kernel.org>; Sat,  6 Jan 2024 11:23:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704540209; x=1736076209;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=na2IvgtcsxM8r4u0dVnCU1Paxkw5pEKmSUMQNQ7GYXw=;
-  b=Rdgeft1JVub9KS4mRtvKEX/C76m/QDG71Ugy3zxab5yJsb+vtCBkrGbT
-   l/HCbkDovIUkuAa9d494tf7szRaBm05o4UkiOwgehn4w5G3KdFj9I/XHw
-   i4u7DUfMDF2Ddfq2mCYSvBqPT9l2MgU9hovKOEkgqtsuiXYGTKj2AE8+v
-   mPNh1x7kZMw7gaOQH14cAPQepdvdDKSgYWEinTMNu/M7oTz9PyxM29+MW
-   6orlPl/ppYTwIvKSWo6+uO2ZInArsSQ2vn6iJdwK6pVrf4t4yAcPZCi2N
-   4FgXGAR/P1p/pRKMtfMc3s8qJW6tNhUX6kMkNgMCF3sp4Km0Aq2fKuv6i
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10944"; a="396535245"
-X-IronPort-AV: E=Sophos;i="6.04,336,1695711600"; 
-   d="scan'208";a="396535245"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jan 2024 03:23:28 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,336,1695711600"; 
-   d="scan'208";a="15472699"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmviesa002.fm.intel.com with ESMTP; 06 Jan 2024 03:23:27 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rM4lw-0002Pa-10;
-	Sat, 06 Jan 2024 11:23:24 +0000
-Date: Sat, 6 Jan 2024 19:22:24 +0800
-From: kernel test robot <lkp@intel.com>
-To: Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	linux-kernel@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>
-Subject: drivers/powercap/dtpm.c:602: warning: Function parameter or member
- 'dtpm_match_table' not described in 'dtpm_create_hierarchy'
-Message-ID: <202401061934.0O0E30H8-lkp@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 477066FA4;
+	Sat,  6 Jan 2024 11:39:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f172.google.com with SMTP id 5614622812f47-3bbc7746812so433939b6e.2;
+        Sat, 06 Jan 2024 03:39:27 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704541166; x=1705145966;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=W4aBvxAPfagC6kuMJsXEP+HsUh4f67uuppDzujaVx5Y=;
+        b=UoP9JHOQCGlnGApUEhhV0DFfHDDy2IxW4ZhR9m/34ESOnXJGdIS0NAl5F/kRnk0M1V
+         p4w1I5iuk5cZE/4FYdJBiJxxIdRAhJK7McwArnjWKIrwV7m0PzXtgWYicGHe4eEfsdZw
+         iFMNs8QF6K1VOxvmQ2A39Zzs/cwat+/5qjKLU49ftUP0bvVRU5tWCabwbAG+v3lV4kz2
+         Dfx1Iqa1zrfwarEx9vdg8vOWXs9y7I2VEjdHowaP0qP3EyWhCltmDhWJLoXeSWpMGuoU
+         GT3ozqIUpvLvD1Hrmx31/h8j/1BEfR1X9R592EiXsIByDw5h0VKMegnXX9a2ihqKuw+h
+         7aCw==
+X-Gm-Message-State: AOJu0YxUdvSg7b1lv/CfswJaQ9sXPenSS9x7JshG6rv/da5EhPoq0b7m
+	t9LDKquRAMT1hMwlEw8jyls=
+X-Google-Smtp-Source: AGHT+IHtt7Ebhm64abLBP+hiZj3KfFPWNDsN+KAlSQP0xK1nAEoWCbzhDv2unHiitrskCWf22gjd1Q==
+X-Received: by 2002:a05:6808:f8a:b0:3bd:21f5:4889 with SMTP id o10-20020a0568080f8a00b003bd21f54889mr531743oiw.5.1704541166284;
+        Sat, 06 Jan 2024 03:39:26 -0800 (PST)
+Received: from localhost (fpd11144dd.ap.nuro.jp. [209.17.68.221])
+        by smtp.gmail.com with ESMTPSA id w6-20020aa78586000000b006d9b38f2e75sm2894625pfn.32.2024.01.06.03.39.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 06 Jan 2024 03:39:25 -0800 (PST)
+Date: Sat, 6 Jan 2024 20:39:23 +0900
+From: Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+To: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	Michal Simek <michal.simek@amd.com>,
+	Thippeswamy Havalige <thippeswamy.havalige@amd.com>,
+	Bharat Kumar Gogada <bharat.kumar.gogada@amd.com>,
+	linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org, dan.carpenter@linaro.org,
+	kernel-janitors@vger.kernel.org, error27@gmail.com
+Subject: Re: [PATCH next] PCI: xilinx-xdma: Fix error code in
+ xilinx_pl_dma_pcie_init_irq_domain()
+Message-ID: <20240106113923.GA3450972@rocinante>
+References: <20231030072757.3236546-1-harshit.m.mogalapalli@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -64,63 +66,43 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20231030072757.3236546-1-harshit.m.mogalapalli@oracle.com>
 
-Hi Daniel,
+Hello,
 
-FYI, the error/warning still remains.
+> Return -ENOMEM instead of zero(success) when it fails to get IRQ domain.
+> 
+> Fixes: 8d786149d78c ("PCI: xilinx-xdma: Add Xilinx XDMA Root Port driver")
+> Signed-off-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+> ---
+> This is found with smatch and the patch is only compile tested.
+> ---
+>  drivers/pci/controller/pcie-xilinx-dma-pl.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/pci/controller/pcie-xilinx-dma-pl.c b/drivers/pci/controller/pcie-xilinx-dma-pl.c
+> index 2f7d676c683c..52f3211d11cd 100644
+> --- a/drivers/pci/controller/pcie-xilinx-dma-pl.c
+> +++ b/drivers/pci/controller/pcie-xilinx-dma-pl.c
+> @@ -576,7 +576,7 @@ static int xilinx_pl_dma_pcie_init_irq_domain(struct pl_dma_pcie *port)
+>  						  &intx_domain_ops, port);
+>  	if (!port->intx_domain) {
+>  		dev_err(dev, "Failed to get a INTx IRQ domain\n");
+> -		return PTR_ERR(port->intx_domain);
+> +		return -ENOMEM;
+>  	}
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   95c8a35f1c017327eab3b6a2ff5c04255737c856
-commit: 3759ec678e8944dc2ea70cab77a300408f78ae27 powercap/drivers/dtpm: Add hierarchy creation
-date:   1 year, 11 months ago
-config: i386-randconfig-003-20240105 (https://download.01.org/0day-ci/archive/20240106/202401061934.0O0E30H8-lkp@intel.com/config)
-compiler: ClangBuiltLinux clang version 17.0.6 (https://github.com/llvm/llvm-project 6009708b4367171ccdbf4b5905cb6a803753fe18)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240106/202401061934.0O0E30H8-lkp@intel.com/reproduce)
+This looks good.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202401061934.0O0E30H8-lkp@intel.com/
+However, there is probably another issue here on the failure path.  I don't
+see any of_node_put() to release the pcie_intc_node taken at the top of the
+xilinx_pl_dma_pcie_init_irq_domain() function.
 
-All warnings (new ones prefixed by >>):
+I would imagine a similar approach to the error handling as what we can see
+from xilinx_cpm_pcie_init_irq_domain() function in the older driver.
 
->> drivers/powercap/dtpm.c:602: warning: Function parameter or member 'dtpm_match_table' not described in 'dtpm_create_hierarchy'
->> drivers/powercap/dtpm.c:602: warning: Excess function parameter 'hierarchy' description in 'dtpm_create_hierarchy'
+Thippeswamy, can you have a look and see if this can be improved?  I would
+love to get a fix before Bjorn sends a Pull Request for the next release.
 
-
-vim +602 drivers/powercap/dtpm.c
-
-   574	
-   575	/**
-   576	 * dtpm_create_hierarchy - Create the dtpm hierarchy
-   577	 * @hierarchy: An array of struct dtpm_node describing the hierarchy
-   578	 *
-   579	 * The function is called by the platform specific code with the
-   580	 * description of the different node in the hierarchy. It creates the
-   581	 * tree in the sysfs filesystem under the powercap dtpm entry.
-   582	 *
-   583	 * The expected tree has the format:
-   584	 *
-   585	 * struct dtpm_node hierarchy[] = {
-   586	 *	[0] { .name = "topmost", type =  DTPM_NODE_VIRTUAL },
-   587	 *	[1] { .name = "package", .type = DTPM_NODE_VIRTUAL, .parent = &hierarchy[0] },
-   588	 *	[2] { .name = "/cpus/cpu0", .type = DTPM_NODE_DT, .parent = &hierarchy[1] },
-   589	 *	[3] { .name = "/cpus/cpu1", .type = DTPM_NODE_DT, .parent = &hierarchy[1] },
-   590	 *	[4] { .name = "/cpus/cpu2", .type = DTPM_NODE_DT, .parent = &hierarchy[1] },
-   591	 *	[5] { .name = "/cpus/cpu3", .type = DTPM_NODE_DT, .parent = &hierarchy[1] },
-   592	 *	[6] { }
-   593	 * };
-   594	 *
-   595	 * The last element is always an empty one and marks the end of the
-   596	 * array.
-   597	 *
-   598	 * Return: zero on success, a negative value in case of error. Errors
-   599	 * are reported back from the underlying functions.
-   600	 */
-   601	int dtpm_create_hierarchy(struct of_device_id *dtpm_match_table)
- > 602	{
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+	Krzysztof
 
