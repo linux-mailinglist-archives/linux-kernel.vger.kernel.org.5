@@ -1,73 +1,77 @@
-Return-Path: <linux-kernel+bounces-18612-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18604-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4630B826004
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 16:00:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 07111825FF4
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 15:49:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D35521F220E7
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 15:00:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 94B661F22830
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 14:49:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 026CD847A;
-	Sat,  6 Jan 2024 14:59:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 801B0883B;
+	Sat,  6 Jan 2024 14:49:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Xm4fBVLg"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="W36lyC2I"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8CA0846F;
-	Sat,  6 Jan 2024 14:59:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 855BD8830;
+	Sat,  6 Jan 2024 14:49:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704553196; x=1736089196;
+  t=1704552549; x=1736088549;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=JnCYGoOQs0yi8PaGnxuB0NsSgyv/YTGrF0XZ0KOj6K8=;
-  b=Xm4fBVLgnwUlNPHMOx9qpsyDQErqfanP9HfdKdSIzKhMMrAleriDv0R4
-   Zf3j/XwIKd96KeqGoskwW7227XczsL4ywFJkU3DDLeysqJNF5J29PwZMv
-   BjTAYryJ7etAD9kvq3XJp8NTnM6g843TpyeFifA1hsz5MEyveyRUVUTAb
-   C6Y0Diip2FVSLcaDXoOtKLuCbOj88c/4UVlqbheaKDLsHM+dmeIRTdhfx
-   L3SO6Ot45wDc15BCrUkxvLx57YhI73F0pDi2Iw3i5whDP5R0NFmaYS55d
-   bI8mYANg3wnXTFMkVjLaq4OwAs6sUXZKp5E6TfxojmTaHi4pm5K2jJ3W4
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10945"; a="5017136"
+  bh=HJZn9Bd9/mDRcam41rK8W3n5XGqyC9dgm7NvSJ76+b4=;
+  b=W36lyC2ITrVGz6L88dJ12pIfOXh8YQaJUeup4YVvpolrCIslgfx0mBTA
+   7EvoRFidmn9vOW9YmJ84nD4oQh5lvYFbTuLkKmwFiJ+/FoDso8bRFSEjN
+   kPnKitLS5XIgvGePeDucwgFzucJ+pC5s49/8e3J9Z+N213HknS+D6CEQs
+   4NLter4LGbo5b1qUpKkxVIMlF1cLnkIU2nKKpxmZ6SwFkCMrZgcJ7jh+j
+   dvcCI11BB4VHDbLp10uzZn1zTLlT0WYPSlJyhN5ht4smpN4CeeURgW/AI
+   yFKTntXtiSmtkqKWDB+6hXW15TXxRWlc663sHY3AmmGK8eCOgv4UmepCE
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10945"; a="464062410"
 X-IronPort-AV: E=Sophos;i="6.04,337,1695711600"; 
-   d="scan'208";a="5017136"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jan 2024 06:59:55 -0800
+   d="scan'208";a="464062410"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jan 2024 06:49:08 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10945"; a="846816279"
+X-IronPort-AV: E=McAfee;i="6600,9927,10945"; a="851384333"
 X-IronPort-AV: E=Sophos;i="6.04,337,1695711600"; 
-   d="scan'208";a="846816279"
+   d="scan'208";a="851384333"
 Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga008.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jan 2024 06:59:51 -0800
+  by fmsmga004.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jan 2024 06:49:04 -0800
 Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rM7nJ-0000000BvkH-23ko;
-	Sat, 06 Jan 2024 16:37:01 +0200
-Date: Sat, 6 Jan 2024 16:37:01 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Pierre Gondois <pierre.gondois@arm.com>
-Cc: linux-kernel@vger.kernel.org,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
-	Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Christian Brauner <brauner@kernel.org>,
-	Carlos Llamas <cmllamas@google.com>,
-	Suren Baghdasaryan <surenb@google.com>, Coly Li <colyli@suse.de>,
-	Kent Overstreet <kent.overstreet@gmail.com>,
-	Kees Cook <keescook@chromium.org>, Marco Elver <elver@google.com>,
-	Jani Nikula <jani.nikula@intel.com>, Ingo Molnar <mingo@kernel.org>,
-	linux-bcache@vger.kernel.org
-Subject: Re: [PATCH v2 0/3] list: Add hlist_count_nodes()
-Message-ID: <ZZlljaqUr44CPicD@smile.fi.intel.com>
-References: <20240104164937.424320-1-pierre.gondois@arm.com>
+	(envelope-from <andriy.shevchenko@intel.com>)
+	id 1rM7uA-0000000Bvpg-0Juu;
+	Sat, 06 Jan 2024 16:44:06 +0200
+Date: Sat, 6 Jan 2024 16:44:05 +0200
+From: Andy Shevchenko <andriy.shevchenko@intel.com>
+To: Mark Hasemeyer <markhas@chromium.org>
+Cc: LKML <linux-kernel@vger.kernel.org>,
+	Sudeep Holla <sudeep.holla@arm.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Raul Rangel <rrangel@chromium.org>,
+	Tzung-Bi Shih <tzungbi@kernel.org>,
+	Bartosz Golaszewski <brgl@bgdev.pl>, Len Brown <lenb@kernel.org>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Mika Westerberg <mika.westerberg@linux.intel.com>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Wolfram Sang <wsa@kernel.org>, linux-acpi@vger.kernel.org,
+	linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org
+Subject: Re: [PATCH v4 02/24] gpiolib: acpi: Modify
+ acpi_dev_irq_wake_get_by() to use resource
+Message-ID: <ZZlnNR1-yKLSIWeF@smile.fi.intel.com>
+References: <20240102210820.2604667-1-markhas@chromium.org>
+ <20240102140734.v4.2.Ifd0903f1c351e84376d71dbdadbd43931197f5ea@changeid>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,23 +80,51 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240104164937.424320-1-pierre.gondois@arm.com>
+In-Reply-To: <20240102140734.v4.2.Ifd0903f1c351e84376d71dbdadbd43931197f5ea@changeid>
 Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Thu, Jan 04, 2024 at 05:49:32PM +0100, Pierre Gondois wrote:
-> v2:
-> - Add usages of the function to avoid considering it as dead code.
-> v1:
-> - https://lore.kernel.org/all/20240103090241.164817-1-pierre.gondois@arm.com/
+On Tue, Jan 02, 2024 at 02:07:26PM -0700, Mark Hasemeyer wrote:
+> Other information besides wake capability can be provided about GPIO
+> IRQs such as triggering, polarity, and sharability. Use resource flags
+> to provide this information to the caller if they want it.
 > 
-> Add a generic hlist_count_nodes() function.
+> This should keep the API more robust over time as flags are added,
+> modified, or removed. It also more closely matches acpi_irq_get() which
+> take a resource as an argument.
 > 
-> This function aims to be used in a private module. As suggested by
-> Marco, having it used would avoid to consider it as dead code.
-> Thus, add some usages of the function in two drivers.
+> Rename the function to acpi_dev_get_gpio_irq_resource() to better
+> describe the function's new behavior.
 
-With or without a nit-pick being addressed,
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Missing blank line.
+We put a commit message as
+
+$SUMARY
+...blank line...
+$DESCRIPTION (can contain blank lines)
+...blank line...
+$TAG block (may not contain blank lines)
+
+> Signed-off-by: Mark Hasemeyer <markhas@chromium.org>
+
+...
+
+> +			unsigned long res_flags;
+
+Why not calling it irq_flags?
+
+...
+
+> +struct resource;
+
+This...
+
+> +	struct resource r = {};
+
+> +	return ret ?: r.start;
+
+...does _not_ cover these cases.
+
+Hence ioport.h must be included. Did I miss it?
 
 -- 
 With Best Regards,
