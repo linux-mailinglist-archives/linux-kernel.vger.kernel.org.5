@@ -1,231 +1,352 @@
-Return-Path: <linux-kernel+bounces-18545-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18546-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 85F64825F05
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 10:37:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF5CE825F08
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 10:40:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2F29028496F
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 09:37:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4C541283DEF
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 09:40:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 916B563C5;
-	Sat,  6 Jan 2024 09:37:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0D6F63BA;
+	Sat,  6 Jan 2024 09:40:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="OObAYfDr"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="XwJ0fHN/"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-qk1-f180.google.com (mail-qk1-f180.google.com [209.85.222.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A4E163A8
-	for <linux-kernel@vger.kernel.org>; Sat,  6 Jan 2024 09:37:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-qk1-f180.google.com with SMTP id af79cd13be357-78314e00337so8230985a.0
-        for <linux-kernel@vger.kernel.org>; Sat, 06 Jan 2024 01:37:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704533867; x=1705138667; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2R/NCLZ1G/4/Oo+PkhRK09jxtahsnTTNbgFR00sNUzI=;
-        b=OObAYfDrGsVVdnPMtsIA3ORjRt+pHzjnahdH88sp/DbfaOTD7cn/vy0SUAvb1PZwPt
-         AghrGlWWMSidPA33GcFgo0GjgiXaJzwDJBd4GjD1U5Jbm5RwbjJ0MPFtByrv2k1RjmID
-         Z9PYRZl4IrFx2aXW3LoaITZ6wKVk2Di/ZXvu/DOFhJ2zwNQ2Bs1T0it6KkBSDwMp5UNY
-         +f5Vk6HHCY/d/au8yrfiBWFgOrfv9uA6G5jBvO6dQJbs/UUSaXoRtqhCgSm5a6O8lwNG
-         VCz1joMRyzoHdV/EzSVukX9pnqR2zGLwb1mcmVX4TcQgsj/nWG9KiDAiZmnJuUEL3DVe
-         TJcw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704533867; x=1705138667;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2R/NCLZ1G/4/Oo+PkhRK09jxtahsnTTNbgFR00sNUzI=;
-        b=q2rrxDwpcL6AI1RaOaA2GKEE40Wvw/XmuHlDLkMQP3m1FGvgSvu5Y3gk7IMlvWN3BU
-         gnW5yYMtukAsVEl26Pp3XXbIakAHm0iBsw/xmZMs/4pwjcKzDPnNINOD6dZLkjUYBIJt
-         EjmGQFzXlBi+n9cNZhzF33kIqToc4dazrm04aOU9VyRHbExl6SywY+WLwt9o0cCMCAje
-         rx6N7Qd4wyRGHKCjFPmyKFTIZ3qVzuaKwrt23cVpTRLcWuqun/tYLEDcKxIGPpZAqZyR
-         NBDoJFmzKq0eivYJl1fHj/uJJ/BstwgJezDxSA1sTfqCDiCOomXK2eF2RctEtxqiN33c
-         EvBg==
-X-Gm-Message-State: AOJu0YxxY7PvF8SExGJ/sShXD1NzcYM5DKvvJxQ3CAxjykMir0dxoVnt
-	jnx0tsxDFnUVLMO8++c7PAU9J6J65VRMKOrY33jle7uCCAFFRA==
-X-Google-Smtp-Source: AGHT+IEcm3ftG3NEuuYVf6CdkOH9cT3RZyUFa9FvQEWR+mUSiDhy4ZApeY+gCtI5FmZGyE4rkuPihRiIHhrvC+B9ZWQ=
-X-Received: by 2002:a05:620a:17a3:b0:783:14fc:2e0e with SMTP id
- ay35-20020a05620a17a300b0078314fc2e0emr178638qkb.29.1704533867182; Sat, 06
- Jan 2024 01:37:47 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C70C63AC
+	for <linux-kernel@vger.kernel.org>; Sat,  6 Jan 2024 09:40:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704534022; x=1736070022;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=Zb/Y4q0vX7rJj+VsLRIe4g01p7UiMdDlU1hEh/KHgQQ=;
+  b=XwJ0fHN/QJPR6w/4LCKvGRXi9j04Hq4eu1UnkIj1A2pGrs6W5d8Vm8W6
+   dCDMjPrftX7T8piuKDkliaNEx3AMAUHHNpYIifh9ayWu+KKQeqsi6cXJI
+   KkZ1aXvXC++pIu/uyAhTR3ZpcgqN8BzZCzBinuJIUG3EkBG6Yhsmhz5EI
+   egPCha8fky1ZlaBdZIAbagDPXZgy3sJZULFX1+1nFX+QrcXLY0Kut7yuI
+   jx7O8Xtkkj/Jss8FV+F54ieOl9hJOnSn8OHJgB6gQbdbOT4o2o1LLMjzC
+   AKy1tRHZMCBOHB2ZQmAXPT3Ndhyo7ph3ro0BC9ch0yhwVBg5fRiiE5iPH
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10944"; a="377136802"
+X-IronPort-AV: E=Sophos;i="6.04,336,1695711600"; 
+   d="scan'208";a="377136802"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jan 2024 01:40:21 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10944"; a="851348524"
+X-IronPort-AV: E=Sophos;i="6.04,336,1695711600"; 
+   d="scan'208";a="851348524"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by fmsmga004.fm.intel.com with ESMTP; 06 Jan 2024 01:40:19 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rM3A9-0002I8-25;
+	Sat, 06 Jan 2024 09:40:17 +0000
+Date: Sat, 6 Jan 2024 17:40:16 +0800
+From: kernel test robot <lkp@intel.com>
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+	Linus Walleij <linus.walleij@linaro.org>
+Subject: arch/alpha/include/asm/core_t2.h:587:23: warning: no previous
+ prototype for 't2_ioread64'
+Message-ID: <202401061736.yM5FZ2oV-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240105143813.957669139@linuxfoundation.org>
-In-Reply-To: <20240105143813.957669139@linuxfoundation.org>
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Sat, 6 Jan 2024 15:07:35 +0530
-Message-ID: <CA+G9fYtN2Dqh48zRGZW1wQTQfrw6eaCMG0tA5Q4y__CwT-w5AA@mail.gmail.com>
-Subject: Re: [PATCH 4.19 00/41] 4.19.304-rc1 review
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: stable@vger.kernel.org, patches@lists.linux.dev, 
-	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, 
-	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, 
-	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, 
-	jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, 
-	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On Fri, 5 Jan 2024 at 20:10, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 4.19.304 release.
-> There are 41 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Sun, 07 Jan 2024 14:38:02 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.19.304-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.19.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+Hi Arnd,
 
+FYI, the error/warning still remains.
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   95c8a35f1c017327eab3b6a2ff5c04255737c856
+commit: e19d4ebc536dadb607fe305fdaf48218d3e32d7c alpha: add full ioread64/iowrite64 implementation
+date:   1 year, 3 months ago
+config: alpha-allnoconfig (https://download.01.org/0day-ci/archive/20240106/202401061736.yM5FZ2oV-lkp@intel.com/config)
+compiler: alpha-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240106/202401061736.yM5FZ2oV-lkp@intel.com/reproduce)
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202401061736.yM5FZ2oV-lkp@intel.com/
 
-## Build
-* kernel: 4.19.304-rc1
-* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-* git branch: linux-4.19.y
-* git commit: 3ddaf9daf2cf5540f0abc2fd86938b7a93e099c6
-* git describe: v4.19.303-42-g3ddaf9daf2cf
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.19.y/build/v4.19=
-.303-42-g3ddaf9daf2cf
+All warnings (new ones prefixed by >>):
 
-## Test Regressions (compared to v4.19.302)
-
-## Metric Regressions (compared to v4.19.302)
-
-## Test Fixes (compared to v4.19.302)
-
-## Metric Fixes (compared to v4.19.302)
-
-## Test result summary
-total: 55092, pass: 46334, fail: 1606, skip: 7118, xfail: 34
-
-## Build Summary
-* arc: 10 total, 10 passed, 0 failed
-* arm: 111 total, 105 passed, 6 failed
-* arm64: 37 total, 32 passed, 5 failed
-* i386: 21 total, 18 passed, 3 failed
-* mips: 20 total, 20 passed, 0 failed
-* parisc: 3 total, 0 passed, 3 failed
-* powerpc: 24 total, 24 passed, 0 failed
-* s390: 6 total, 6 passed, 0 failed
-* sh: 10 total, 10 passed, 0 failed
-* sparc: 6 total, 6 passed, 0 failed
-* x86_64: 31 total, 26 passed, 5 failed
-
-## Test suites summary
-* boot
-* kselftest-android
-* kselftest-arm64
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers-dma-buf
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-filesystems-binderfs
-* kselftest-filesystems-epoll
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-ftrace
-* kselftest-futex
-* kselftest-gpio
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-net-forwarding
-* kselftest-net-mptcp
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-user
-* kselftest-vm
-* kselftest-zram
-* kunit
-* log-parser-boot
-* log-parser-test
-* ltp-cap_bounds
-* ltp-commands
-* ltp-containers
-* ltp-controllers
-* ltp-crypto
-* ltp-cve
-* ltp-fcntl-locktests
-* ltp-filecaps
-* ltp-fs
-* ltp-fs_bind
-* ltp-fs_perms_simple
-* ltp-fsx
-* ltp-hugetlb
-* ltp-io
-* ltp-ipc
-* ltp-math
-* ltp-mm
-* ltp-nptl
-* ltp-pty
-* ltp-sched
-* ltp-securebits
-* ltp-smoke
-* ltp-syscalls
-* ltp-tracing
-* rcutorture
-
+   In file included from arch/alpha/kernel/core_t2.c:15:
+   arch/alpha/include/asm/core_t2.h:465:20: warning: no previous prototype for 't2_readb' [-Wmissing-prototypes]
+     465 | __EXTERN_INLINE u8 t2_readb(const volatile void __iomem *xaddr)
+         |                    ^~~~~~~~
+   arch/alpha/include/asm/core_t2.h:476:21: warning: no previous prototype for 't2_readw' [-Wmissing-prototypes]
+     476 | __EXTERN_INLINE u16 t2_readw(const volatile void __iomem *xaddr)
+         |                     ^~~~~~~~
+   arch/alpha/include/asm/core_t2.h:491:21: warning: no previous prototype for 't2_readl' [-Wmissing-prototypes]
+     491 | __EXTERN_INLINE u32 t2_readl(const volatile void __iomem *xaddr)
+         |                     ^~~~~~~~
+   arch/alpha/include/asm/core_t2.h:502:21: warning: no previous prototype for 't2_readq' [-Wmissing-prototypes]
+     502 | __EXTERN_INLINE u64 t2_readq(const volatile void __iomem *xaddr)
+         |                     ^~~~~~~~
+   arch/alpha/include/asm/core_t2.h:515:22: warning: no previous prototype for 't2_writeb' [-Wmissing-prototypes]
+     515 | __EXTERN_INLINE void t2_writeb(u8 b, volatile void __iomem *xaddr)
+         |                      ^~~~~~~~~
+   arch/alpha/include/asm/core_t2.h:526:22: warning: no previous prototype for 't2_writew' [-Wmissing-prototypes]
+     526 | __EXTERN_INLINE void t2_writew(u16 b, volatile void __iomem *xaddr)
+         |                      ^~~~~~~~~
+   arch/alpha/include/asm/core_t2.h:541:22: warning: no previous prototype for 't2_writel' [-Wmissing-prototypes]
+     541 | __EXTERN_INLINE void t2_writel(u32 b, volatile void __iomem *xaddr)
+         |                      ^~~~~~~~~
+   arch/alpha/include/asm/core_t2.h:550:22: warning: no previous prototype for 't2_writeq' [-Wmissing-prototypes]
+     550 | __EXTERN_INLINE void t2_writeq(u64 b, volatile void __iomem *xaddr)
+         |                      ^~~~~~~~~
+   arch/alpha/include/asm/core_t2.h:562:31: warning: no previous prototype for 't2_ioportmap' [-Wmissing-prototypes]
+     562 | __EXTERN_INLINE void __iomem *t2_ioportmap(unsigned long addr)
+         |                               ^~~~~~~~~~~~
+   arch/alpha/include/asm/core_t2.h:567:31: warning: no previous prototype for 't2_ioremap' [-Wmissing-prototypes]
+     567 | __EXTERN_INLINE void __iomem *t2_ioremap(unsigned long addr,
+         |                               ^~~~~~~~~~
+   arch/alpha/include/asm/core_t2.h:573:21: warning: no previous prototype for 't2_is_ioaddr' [-Wmissing-prototypes]
+     573 | __EXTERN_INLINE int t2_is_ioaddr(unsigned long addr)
+         |                     ^~~~~~~~~~~~
+   arch/alpha/include/asm/core_t2.h:578:21: warning: no previous prototype for 't2_is_mmio' [-Wmissing-prototypes]
+     578 | __EXTERN_INLINE int t2_is_mmio(const volatile void __iomem *addr)
+         |                     ^~~~~~~~~~
+   arch/alpha/include/asm/core_t2.h:587:23: warning: no previous prototype for 't2_ioread8' [-Wmissing-prototypes]
+     587 | __EXTERN_INLINE u##NS t2_ioread##NS(const void __iomem *xaddr)          \
+         |                       ^~~~~~~~~
+   arch/alpha/include/asm/core_t2.h:602:1: note: in expansion of macro 'IOPORT'
+     602 | IOPORT(b, 8)
+         | ^~~~~~
+   arch/alpha/include/asm/core_t2.h:594:22: warning: no previous prototype for 't2_iowrite8' [-Wmissing-prototypes]
+     594 | __EXTERN_INLINE void t2_iowrite##NS(u##NS b, void __iomem *xaddr)       \
+         |                      ^~~~~~~~~~
+   arch/alpha/include/asm/core_t2.h:602:1: note: in expansion of macro 'IOPORT'
+     602 | IOPORT(b, 8)
+         | ^~~~~~
+   arch/alpha/include/asm/core_t2.h:587:23: warning: no previous prototype for 't2_ioread16' [-Wmissing-prototypes]
+     587 | __EXTERN_INLINE u##NS t2_ioread##NS(const void __iomem *xaddr)          \
+         |                       ^~~~~~~~~
+   arch/alpha/include/asm/core_t2.h:603:1: note: in expansion of macro 'IOPORT'
+     603 | IOPORT(w, 16)
+         | ^~~~~~
+   arch/alpha/include/asm/core_t2.h:594:22: warning: no previous prototype for 't2_iowrite16' [-Wmissing-prototypes]
+     594 | __EXTERN_INLINE void t2_iowrite##NS(u##NS b, void __iomem *xaddr)       \
+         |                      ^~~~~~~~~~
+   arch/alpha/include/asm/core_t2.h:603:1: note: in expansion of macro 'IOPORT'
+     603 | IOPORT(w, 16)
+         | ^~~~~~
+   arch/alpha/include/asm/core_t2.h:587:23: warning: no previous prototype for 't2_ioread32' [-Wmissing-prototypes]
+     587 | __EXTERN_INLINE u##NS t2_ioread##NS(const void __iomem *xaddr)          \
+         |                       ^~~~~~~~~
+   arch/alpha/include/asm/core_t2.h:604:1: note: in expansion of macro 'IOPORT'
+     604 | IOPORT(l, 32)
+         | ^~~~~~
+   arch/alpha/include/asm/core_t2.h:594:22: warning: no previous prototype for 't2_iowrite32' [-Wmissing-prototypes]
+     594 | __EXTERN_INLINE void t2_iowrite##NS(u##NS b, void __iomem *xaddr)       \
+         |                      ^~~~~~~~~~
+   arch/alpha/include/asm/core_t2.h:604:1: note: in expansion of macro 'IOPORT'
+     604 | IOPORT(l, 32)
+         | ^~~~~~
+>> arch/alpha/include/asm/core_t2.h:587:23: warning: no previous prototype for 't2_ioread64' [-Wmissing-prototypes]
+     587 | __EXTERN_INLINE u##NS t2_ioread##NS(const void __iomem *xaddr)          \
+         |                       ^~~~~~~~~
+   arch/alpha/include/asm/core_t2.h:605:1: note: in expansion of macro 'IOPORT'
+     605 | IOPORT(q, 64)
+         | ^~~~~~
+>> arch/alpha/include/asm/core_t2.h:594:22: warning: no previous prototype for 't2_iowrite64' [-Wmissing-prototypes]
+     594 | __EXTERN_INLINE void t2_iowrite##NS(u##NS b, void __iomem *xaddr)       \
+         |                      ^~~~~~~~~~
+   arch/alpha/include/asm/core_t2.h:605:1: note: in expansion of macro 'IOPORT'
+     605 | IOPORT(q, 64)
+         | ^~~~~~
+   In file included from arch/alpha/kernel/core_t2.c:14:
+   arch/alpha/include/asm/core_t2.h:614:33: warning: no previous prototype for 't2_iounmap' [-Wmissing-prototypes]
+     614 | #define __IO_PREFIX             t2
+         |                                 ^~
+   arch/alpha/include/asm/io.h:137:25: note: in definition of macro '_IO_CONCAT'
+     137 | #define _IO_CONCAT(a,b) a ## _ ## b
+         |                         ^
+   arch/alpha/include/asm/io_trivial.h:141:22: note: in expansion of macro 'IO_CONCAT'
+     141 | __EXTERN_INLINE void IO_CONCAT(__IO_PREFIX,iounmap)(volatile void __iomem *a)
+         |                      ^~~~~~~~~
+   arch/alpha/include/asm/io_trivial.h:141:32: note: in expansion of macro '__IO_PREFIX'
+     141 | __EXTERN_INLINE void IO_CONCAT(__IO_PREFIX,iounmap)(volatile void __iomem *a)
+         |                                ^~~~~~~~~~~
 --
-Linaro LKFT
-https://lkft.linaro.org
+   In file included from arch/alpha/kernel/sys_jensen.c:12:
+   arch/alpha/include/asm/jensen.h:92:22: warning: no previous prototype for 'jensen_set_hae' [-Wmissing-prototypes]
+      92 | __EXTERN_INLINE void jensen_set_hae(unsigned long addr)
+         |                      ^~~~~~~~~~~~~~
+   arch/alpha/include/asm/jensen.h:115:30: warning: no previous prototype for 'jensen_local_inb' [-Wmissing-prototypes]
+     115 | __EXTERN_INLINE unsigned int jensen_local_inb(unsigned long addr)
+         |                              ^~~~~~~~~~~~~~~~
+   arch/alpha/include/asm/jensen.h:120:22: warning: no previous prototype for 'jensen_local_outb' [-Wmissing-prototypes]
+     120 | __EXTERN_INLINE void jensen_local_outb(u8 b, unsigned long addr)
+         |                      ^~~~~~~~~~~~~~~~~
+   arch/alpha/include/asm/jensen.h:126:30: warning: no previous prototype for 'jensen_bus_inb' [-Wmissing-prototypes]
+     126 | __EXTERN_INLINE unsigned int jensen_bus_inb(unsigned long addr)
+         |                              ^~~~~~~~~~~~~~
+   arch/alpha/include/asm/jensen.h:135:22: warning: no previous prototype for 'jensen_bus_outb' [-Wmissing-prototypes]
+     135 | __EXTERN_INLINE void jensen_bus_outb(u8 b, unsigned long addr)
+         |                      ^~~~~~~~~~~~~~~
+   arch/alpha/include/asm/jensen.h:155:20: warning: no previous prototype for 'jensen_inb' [-Wmissing-prototypes]
+     155 | __EXTERN_INLINE u8 jensen_inb(unsigned long addr)
+         |                    ^~~~~~~~~~
+   arch/alpha/include/asm/jensen.h:163:22: warning: no previous prototype for 'jensen_outb' [-Wmissing-prototypes]
+     163 | __EXTERN_INLINE void jensen_outb(u8 b, unsigned long addr)
+         |                      ^~~~~~~~~~~
+   arch/alpha/include/asm/jensen.h:171:21: warning: no previous prototype for 'jensen_inw' [-Wmissing-prototypes]
+     171 | __EXTERN_INLINE u16 jensen_inw(unsigned long addr)
+         |                     ^~~~~~~~~~
+   arch/alpha/include/asm/jensen.h:181:21: warning: no previous prototype for 'jensen_inl' [-Wmissing-prototypes]
+     181 | __EXTERN_INLINE u32 jensen_inl(unsigned long addr)
+         |                     ^~~~~~~~~~
+>> arch/alpha/include/asm/jensen.h:187:21: warning: no previous prototype for 'jensen_inq' [-Wmissing-prototypes]
+     187 | __EXTERN_INLINE u64 jensen_inq(unsigned long addr)
+         |                     ^~~~~~~~~~
+   arch/alpha/include/asm/jensen.h:193:22: warning: no previous prototype for 'jensen_outw' [-Wmissing-prototypes]
+     193 | __EXTERN_INLINE void jensen_outw(u16 b, unsigned long addr)
+         |                      ^~~~~~~~~~~
+   arch/alpha/include/asm/jensen.h:200:22: warning: no previous prototype for 'jensen_outl' [-Wmissing-prototypes]
+     200 | __EXTERN_INLINE void jensen_outl(u32 b, unsigned long addr)
+         |                      ^~~~~~~~~~~
+>> arch/alpha/include/asm/jensen.h:207:22: warning: no previous prototype for 'jensen_outq' [-Wmissing-prototypes]
+     207 | __EXTERN_INLINE void jensen_outq(u64 b, unsigned long addr)
+         |                      ^~~~~~~~~~~
+   arch/alpha/include/asm/jensen.h:218:20: warning: no previous prototype for 'jensen_readb' [-Wmissing-prototypes]
+     218 | __EXTERN_INLINE u8 jensen_readb(const volatile void __iomem *xaddr)
+         |                    ^~~~~~~~~~~~
+   arch/alpha/include/asm/jensen.h:230:21: warning: no previous prototype for 'jensen_readw' [-Wmissing-prototypes]
+     230 | __EXTERN_INLINE u16 jensen_readw(const volatile void __iomem *xaddr)
+         |                     ^~~~~~~~~~~~
+   arch/alpha/include/asm/jensen.h:242:21: warning: no previous prototype for 'jensen_readl' [-Wmissing-prototypes]
+     242 | __EXTERN_INLINE u32 jensen_readl(const volatile void __iomem *xaddr)
+         |                     ^~~~~~~~~~~~
+   arch/alpha/include/asm/jensen.h:250:21: warning: no previous prototype for 'jensen_readq' [-Wmissing-prototypes]
+     250 | __EXTERN_INLINE u64 jensen_readq(const volatile void __iomem *xaddr)
+         |                     ^~~~~~~~~~~~
+   arch/alpha/include/asm/jensen.h:263:22: warning: no previous prototype for 'jensen_writeb' [-Wmissing-prototypes]
+     263 | __EXTERN_INLINE void jensen_writeb(u8 b, volatile void __iomem *xaddr)
+         |                      ^~~~~~~~~~~~~
+   arch/alpha/include/asm/jensen.h:271:22: warning: no previous prototype for 'jensen_writew' [-Wmissing-prototypes]
+     271 | __EXTERN_INLINE void jensen_writew(u16 b, volatile void __iomem *xaddr)
+         |                      ^~~~~~~~~~~~~
+   arch/alpha/include/asm/jensen.h:279:22: warning: no previous prototype for 'jensen_writel' [-Wmissing-prototypes]
+     279 | __EXTERN_INLINE void jensen_writel(u32 b, volatile void __iomem *xaddr)
+         |                      ^~~~~~~~~~~~~
+   arch/alpha/include/asm/jensen.h:287:22: warning: no previous prototype for 'jensen_writeq' [-Wmissing-prototypes]
+     287 | __EXTERN_INLINE void jensen_writeq(u64 b, volatile void __iomem *xaddr)
+         |                      ^~~~~~~~~~~~~
+   arch/alpha/include/asm/jensen.h:297:31: warning: no previous prototype for 'jensen_ioportmap' [-Wmissing-prototypes]
+     297 | __EXTERN_INLINE void __iomem *jensen_ioportmap(unsigned long addr)
+         |                               ^~~~~~~~~~~~~~~~
+   arch/alpha/include/asm/jensen.h:302:31: warning: no previous prototype for 'jensen_ioremap' [-Wmissing-prototypes]
+     302 | __EXTERN_INLINE void __iomem *jensen_ioremap(unsigned long addr,
+         |                               ^~~~~~~~~~~~~~
+   arch/alpha/include/asm/jensen.h:308:21: warning: no previous prototype for 'jensen_is_ioaddr' [-Wmissing-prototypes]
+     308 | __EXTERN_INLINE int jensen_is_ioaddr(unsigned long addr)
+         |                     ^~~~~~~~~~~~~~~~
+   arch/alpha/include/asm/jensen.h:313:21: warning: no previous prototype for 'jensen_is_mmio' [-Wmissing-prototypes]
+     313 | __EXTERN_INLINE int jensen_is_mmio(const volatile void __iomem *addr)
+         |                     ^~~~~~~~~~~~~~
+   arch/alpha/include/asm/jensen.h:322:23: warning: no previous prototype for 'jensen_ioread8' [-Wmissing-prototypes]
+     322 | __EXTERN_INLINE u##NS jensen_ioread##NS(const void __iomem *xaddr)      \
+         |                       ^~~~~~~~~~~~~
+   arch/alpha/include/asm/jensen.h:337:1: note: in expansion of macro 'IOPORT'
+     337 | IOPORT(b, 8)
+         | ^~~~~~
+   arch/alpha/include/asm/jensen.h:329:22: warning: no previous prototype for 'jensen_iowrite8' [-Wmissing-prototypes]
+     329 | __EXTERN_INLINE void jensen_iowrite##NS(u##NS b, void __iomem *xaddr)   \
+         |                      ^~~~~~~~~~~~~~
+   arch/alpha/include/asm/jensen.h:337:1: note: in expansion of macro 'IOPORT'
+     337 | IOPORT(b, 8)
+         | ^~~~~~
+   arch/alpha/include/asm/jensen.h:322:23: warning: no previous prototype for 'jensen_ioread16' [-Wmissing-prototypes]
+     322 | __EXTERN_INLINE u##NS jensen_ioread##NS(const void __iomem *xaddr)      \
+         |                       ^~~~~~~~~~~~~
+   arch/alpha/include/asm/jensen.h:338:1: note: in expansion of macro 'IOPORT'
+     338 | IOPORT(w, 16)
+         | ^~~~~~
+   arch/alpha/include/asm/jensen.h:329:22: warning: no previous prototype for 'jensen_iowrite16' [-Wmissing-prototypes]
+     329 | __EXTERN_INLINE void jensen_iowrite##NS(u##NS b, void __iomem *xaddr)   \
+         |                      ^~~~~~~~~~~~~~
+   arch/alpha/include/asm/jensen.h:338:1: note: in expansion of macro 'IOPORT'
+     338 | IOPORT(w, 16)
+         | ^~~~~~
+   arch/alpha/include/asm/jensen.h:322:23: warning: no previous prototype for 'jensen_ioread32' [-Wmissing-prototypes]
+     322 | __EXTERN_INLINE u##NS jensen_ioread##NS(const void __iomem *xaddr)      \
+         |                       ^~~~~~~~~~~~~
+   arch/alpha/include/asm/jensen.h:339:1: note: in expansion of macro 'IOPORT'
+     339 | IOPORT(l, 32)
+         | ^~~~~~
+   arch/alpha/include/asm/jensen.h:329:22: warning: no previous prototype for 'jensen_iowrite32' [-Wmissing-prototypes]
+     329 | __EXTERN_INLINE void jensen_iowrite##NS(u##NS b, void __iomem *xaddr)   \
+         |                      ^~~~~~~~~~~~~~
+   arch/alpha/include/asm/jensen.h:339:1: note: in expansion of macro 'IOPORT'
+     339 | IOPORT(l, 32)
+         | ^~~~~~
+>> arch/alpha/include/asm/jensen.h:322:23: warning: no previous prototype for 'jensen_ioread64' [-Wmissing-prototypes]
+     322 | __EXTERN_INLINE u##NS jensen_ioread##NS(const void __iomem *xaddr)      \
+         |                       ^~~~~~~~~~~~~
+   arch/alpha/include/asm/jensen.h:340:1: note: in expansion of macro 'IOPORT'
+     340 | IOPORT(q, 64)
+         | ^~~~~~
+>> arch/alpha/include/asm/jensen.h:329:22: warning: no previous prototype for 'jensen_iowrite64' [-Wmissing-prototypes]
+     329 | __EXTERN_INLINE void jensen_iowrite##NS(u##NS b, void __iomem *xaddr)   \
+         |                      ^~~~~~~~~~~~~~
+   arch/alpha/include/asm/jensen.h:340:1: note: in expansion of macro 'IOPORT'
+     340 | IOPORT(q, 64)
+         | ^~~~~~
+   In file included from arch/alpha/kernel/sys_jensen.c:11:
+   arch/alpha/include/asm/jensen.h:348:33: warning: no previous prototype for 'jensen_iounmap' [-Wmissing-prototypes]
+     348 | #define __IO_PREFIX             jensen
+         |                                 ^~~~~~
+   arch/alpha/include/asm/io.h:137:25: note: in definition of macro '_IO_CONCAT'
+     137 | #define _IO_CONCAT(a,b) a ## _ ## b
+         |                         ^
+   arch/alpha/include/asm/io_trivial.h:141:22: note: in expansion of macro 'IO_CONCAT'
+     141 | __EXTERN_INLINE void IO_CONCAT(__IO_PREFIX,iounmap)(volatile void __iomem *a)
+         |                      ^~~~~~~~~
+   arch/alpha/include/asm/io_trivial.h:141:32: note: in expansion of macro '__IO_PREFIX'
+     141 | __EXTERN_INLINE void IO_CONCAT(__IO_PREFIX,iounmap)(volatile void __iomem *a)
+         |                                ^~~~~~~~~~~
+
+
+vim +/t2_ioread64 +587 arch/alpha/include/asm/core_t2.h
+
+   582	
+   583	/* New-style ioread interface.  The mmio routines are so ugly for T2 that
+   584	   it doesn't make sense to merge the pio and mmio routines.  */
+   585	
+   586	#define IOPORT(OS, NS)							\
+ > 587	__EXTERN_INLINE u##NS t2_ioread##NS(const void __iomem *xaddr)		\
+   588	{									\
+   589		if (t2_is_mmio(xaddr))						\
+   590			return t2_read##OS(xaddr);				\
+   591		else								\
+   592			return t2_in##OS((unsigned long)xaddr - T2_IO);		\
+   593	}									\
+ > 594	__EXTERN_INLINE void t2_iowrite##NS(u##NS b, void __iomem *xaddr)	\
+   595	{									\
+   596		if (t2_is_mmio(xaddr))						\
+   597			t2_write##OS(b, xaddr);					\
+   598		else								\
+   599			t2_out##OS(b, (unsigned long)xaddr - T2_IO);		\
+   600	}
+   601	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
