@@ -1,76 +1,61 @@
-Return-Path: <linux-kernel+bounces-18658-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18660-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67A928260A3
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 17:36:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0BBD88260AD
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 17:49:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0C9561F21268
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 16:36:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AFB99283678
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 16:49:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9C57D537;
-	Sat,  6 Jan 2024 16:36:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7543AC14E;
+	Sat,  6 Jan 2024 16:48:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="E2jTszp5"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="LETTDTeq"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DCCBD51B
-	for <linux-kernel@vger.kernel.org>; Sat,  6 Jan 2024 16:36:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-50e741123acso532442e87.0
-        for <linux-kernel@vger.kernel.org>; Sat, 06 Jan 2024 08:36:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704558986; x=1705163786; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=2PkbTEqLvSjOGH4gAdgvm5eYy4RG+4E+lRHHV2QJza4=;
-        b=E2jTszp5GaANSCDdcDKruErCsroQtjocwhWXqUt8CPZrsj5SgFUCRr9qoAgYsKGPSA
-         WtQIv57y+z1KWgNbZ6spOtDimcIC1YDbk3Qgd0kXFf2VdMj8IB+JTRsQ49cLLfh/UxH9
-         YBk6zdfG3mgYUoM5gEnZIEP3139HrE7T8S9GlBw45wXy5cUFiOVqvuySsIiysxYUELmU
-         3yUCbrXEFZv0LzMy58fq3+FEDmt8GhU7XNc1ctG1NuvzGRQlRhLvuAhe18e0cyjgyt+r
-         LuVdcuvnK1RgJsFvP1pO7Zf+HHHXv2CcGkBYDMfixI6AZfIjvmTY/ZKtxKHsa0/Aht1l
-         Wwkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704558986; x=1705163786;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2PkbTEqLvSjOGH4gAdgvm5eYy4RG+4E+lRHHV2QJza4=;
-        b=BSAKxpjHr9JW7QZHnFdvjqlGuV7kFIaPIsFR3dyO/KlME06XVM0N5KYYMNGPvq7k5Y
-         4uNXiTOMvGMFYnvo2RdKCO0dk99/kEcriqYANoAeqZu4h+mtTN3J2QBRanpUBu6Wiru5
-         +qyHj0Y6ovrjSEIggqI1GX2gx0VDx0olG//M1CnDh8DjJB3Cn0rcaQ6esYJDDoQCnazz
-         fA+tpEvACXTqlrN9CNYNAIJWM9MOmgrabPv2C4RUEeBXjk2Im/j8HNCThVai+cmfM6jp
-         6EyKBxEWMn0r4mpScm1U64pa3I8QRq23dQp4jd32GU/jUzPVIRqmdNPnecYPPiEOVi0W
-         cQfA==
-X-Gm-Message-State: AOJu0YxTrsR3NxiqdunJklzZbSjeE71N2grra5+ywVcNemVAAhHFlqE8
-	1wYYTicdZ54lsPxvbxdS1+k=
-X-Google-Smtp-Source: AGHT+IGx58E/aB8XT4+HDN2sbb8Yr4CM8JOoydFTdDzNP6CGkX6RTKDZF4zPDJyYa3KMVmh4U0huNQ==
-X-Received: by 2002:a05:6512:36d3:b0:50e:7f88:f541 with SMTP id e19-20020a05651236d300b0050e7f88f541mr437850lfs.16.1704558986281;
-        Sat, 06 Jan 2024 08:36:26 -0800 (PST)
-Received: from pc636 (host-185-121-47-193.sydskane.nu. [185.121.47.193])
-        by smtp.gmail.com with ESMTPSA id r8-20020ac25f88000000b0050e67d56093sm566500lfe.224.2024.01.06.08.36.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 06 Jan 2024 08:36:25 -0800 (PST)
-From: Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date: Sat, 6 Jan 2024 17:36:23 +0100
-To: Wen Gu <guwen@linux.alibaba.com>
-Cc: Uladzislau Rezki <urezki@gmail.com>,
-	shaozhengchao <shaozhengchao@huawei.com>, linux-mm@kvack.org,
-	LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 04/11] mm: vmalloc: Remove global vmap_area_root
- rb-tree
-Message-ID: <ZZmBh-g_evLcNHT1@pc636>
-References: <20240102184633.748113-1-urezki@gmail.com>
- <20240102184633.748113-5-urezki@gmail.com>
- <238e63cd-e0e8-4fbf-852f-bc4d5bc35d5a@linux.alibaba.com>
- <ZZfe4O850fFaxOgQ@pc638.lan>
- <52766da2-41de-41ce-b60b-1118da343b8a@linux.alibaba.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D0F4C2D3
+	for <linux-kernel@vger.kernel.org>; Sat,  6 Jan 2024 16:48:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704559727; x=1736095727;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=x0n2sLYSHnRQR+pDy17ki+35kyrUtMrsKb3NLMRjXQs=;
+  b=LETTDTeq6i3eDsCuKl1KGEB52PV352tklVUtTWboWgw8pASODrJznHvy
+   7TKvyW7KPqlECJynEb3wMT4+lk4W00ppsGE2xfUV+4jtcWuvrd4j082Gs
+   U5HxrKVBWpqWHib9MkvERiiZj/p3qH0BfjuxvnEWVejepKSJ1HXtJ52Ro
+   emB8w7V3YzMT0/Ll7srZUXmRU9uHlB+nHp8aR3AI2Ruw9Pf5CzHj7FGtY
+   AR9seqB2LrHlbv/YKh/H1FtFdLJ+NmD4FvcPbTHGjFa1QdUEKI9ToCpxV
+   5PKzrNp+UIjH6548UQSu7vkDitHeq2m0cB11dbdJpekhVdgR6lSMkoTr2
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10945"; a="397392952"
+X-IronPort-AV: E=Sophos;i="6.04,337,1695711600"; 
+   d="scan'208";a="397392952"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jan 2024 08:48:47 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10945"; a="781022052"
+X-IronPort-AV: E=Sophos;i="6.04,337,1695711600"; 
+   d="scan'208";a="781022052"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga002.jf.intel.com with ESMTP; 06 Jan 2024 08:48:45 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rM9ql-0002lF-1p;
+	Sat, 06 Jan 2024 16:48:43 +0000
+Date: Sun, 7 Jan 2024 00:48:13 +0800
+From: kernel test robot <lkp@intel.com>
+To: Linus Walleij <linus.walleij@linaro.org>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: drivers/usb/fotg210/fotg210-udc.c:632:17: sparse: sparse: restricted
+ __le16 degrades to integer
+Message-ID: <202401070055.Xxcgz44O-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -79,79 +64,57 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <52766da2-41de-41ce-b60b-1118da343b8a@linux.alibaba.com>
 
-> 
-> On 2024/1/5 18:50, Uladzislau Rezki wrote:
-> 
-> > Hello, Wen Gu.
-> > 
-> > > 
-> > > Hi Uladzislau Rezki,
-> > > 
-> 
-> <...>
-> 
-> > > Fortunately, thank you for this patch set, the global vmap_area_lock was
-> > > removed and per node lock vn->busy.lock is introduced. it is really helpful:
-> > > 
-> > > In 48 CPUs qemu environment, the Requests/s increased by 5 times:
-> > > - nginx
-> > > - wrk -c 1000 -t 96 -d 30 http://127.0.0.1:80
-> > > 
-> > >                  vzalloced shmem      vzalloced shmem(with this patch set)
-> > > Requests/sec          113536.56            583729.93
-> > > 
-> > > 
-> > Thank you for the confirmation that your workload is improved. The "nginx"
-> > is 5 times better!
-> > 
-> 
-> Yes, thank you very much for the improvement!
-> 
-> > > But it also has some overhead, compared to using kzalloced shared memory
-> > > or unsetting CONFIG_HARDENED_USERCOPY, which won't involve finding vmap area:
-> > > 
-> > >                  kzalloced shmem      vzalloced shmem(unset CONFIG_HARDENED_USERCOPY)
-> > > Requests/sec          831950.39            805164.78
-> > > 
-> > > 
-> > The CONFIG_HARDENED_USERCOPY prevents coping "wrong" memory regions. That is
-> > why if it is a vmalloced memory it wants to make sure it is really true,
-> > if not user-copy is aborted.
-> > 
-> > So there is an extra work that involves finding a VA associated with an address.
-> > 
-> 
-> Yes, and lock contention in finding VA is likely to be a performance bottleneck,
-> which is mitigated a lot by your work.
-> 
-> > > So, as a newbie in Linux-mm, I would like to ask for some suggestions:
-> > > 
-> > > Is it possible to further eliminate the overhead caused by lock contention
-> > > in find_vmap_area() in this scenario (maybe this is asking too much), or the
-> > > only way out is not setting CONFIG_HARDENED_USERCOPY or not using vzalloced
-> > > buffer in the situation where cocurrent kernel-userspace-copy happens?
-> > > 
-> > Could you please try below patch, if it improves this series further?
-> > Just in case:
-> > 
-> 
-> Thank you! I tried the patch, and it seems that the wait for rwlock_t
-> also exists, as much as using spinlock_t. (The flamegraph is attached.
-> Not sure why the read_lock waits so long, given that there is no frequent
-> write_lock competition)
-> 
->                vzalloced shmem(spinlock_t)   vzalloced shmem(rwlock_t)
-> Requests/sec         583729.93                     460007.44
-> 
-> So I guess the overhead in finding vmap area is inevitable here and the
-> original spin_lock is fine in this series.
-> 
-I have also noticed a erformance difference between rwlock and spinlock. 
-So, yes. This is what we need to do extra if CONFIG_HARDENED_USERCOPY is
-set, i.e. find a VA.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   95c8a35f1c017327eab3b6a2ff5c04255737c856
+commit: 1dd33a9f1b95ab59cd60f14a7a83fed14697867b usb: fotg210: Collect pieces of dual mode controller
+date:   1 year, 2 months ago
+config: microblaze-randconfig-r091-20230814 (https://download.01.org/0day-ci/archive/20240107/202401070055.Xxcgz44O-lkp@intel.com/config)
+compiler: microblaze-linux-gcc (GCC) 12.3.0
+reproduce: (https://download.01.org/0day-ci/archive/20240107/202401070055.Xxcgz44O-lkp@intel.com/reproduce)
 
---
-Uladzislau Rezki
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202401070055.Xxcgz44O-lkp@intel.com/
+
+sparse warnings: (new ones prefixed by >>)
+>> drivers/usb/fotg210/fotg210-udc.c:632:17: sparse: sparse: restricted __le16 degrades to integer
+   drivers/usb/fotg210/fotg210-udc.c:635:51: sparse: sparse: incorrect type in argument 2 (different base types) @@     expected unsigned int [usertype] addr @@     got restricted __le16 [usertype] wValue @@
+   drivers/usb/fotg210/fotg210-udc.c:635:51: sparse:     expected unsigned int [usertype] addr
+   drivers/usb/fotg210/fotg210-udc.c:635:51: sparse:     got restricted __le16 [usertype] wValue
+   drivers/usb/fotg210/fotg210-udc.c:670:33: sparse: sparse: restricted __le16 degrades to integer
+   drivers/usb/fotg210/fotg210-udc.c:680:25: sparse: sparse: restricted __le16 degrades to integer
+   drivers/usb/fotg210/fotg210-udc.c:716:35: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le16 [usertype] ep0_data @@     got int @@
+   drivers/usb/fotg210/fotg210-udc.c:716:35: sparse:     expected restricted __le16 [usertype] ep0_data
+   drivers/usb/fotg210/fotg210-udc.c:716:35: sparse:     got int
+   drivers/usb/fotg210/fotg210-udc.c:722:29: sparse: sparse: restricted __le16 degrades to integer
+   drivers/usb/fotg210/fotg210-udc.c:724:43: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le16 [usertype] ep0_data @@     got int @@
+   drivers/usb/fotg210/fotg210-udc.c:724:43: sparse:     expected restricted __le16 [usertype] ep0_data
+   drivers/usb/fotg210/fotg210-udc.c:724:43: sparse:     got int
+
+vim +632 drivers/usb/fotg210/fotg210-udc.c
+
+b84a8dee23fd41 drivers/usb/gadget/fotg210-udc.c Yuan-Hsin Chen 2013-05-30  628  
+b84a8dee23fd41 drivers/usb/gadget/fotg210-udc.c Yuan-Hsin Chen 2013-05-30  629  static void fotg210_set_address(struct fotg210_udc *fotg210,
+b84a8dee23fd41 drivers/usb/gadget/fotg210-udc.c Yuan-Hsin Chen 2013-05-30  630  				struct usb_ctrlrequest *ctrl)
+b84a8dee23fd41 drivers/usb/gadget/fotg210-udc.c Yuan-Hsin Chen 2013-05-30  631  {
+b84a8dee23fd41 drivers/usb/gadget/fotg210-udc.c Yuan-Hsin Chen 2013-05-30 @632  	if (ctrl->wValue >= 0x0100) {
+b84a8dee23fd41 drivers/usb/gadget/fotg210-udc.c Yuan-Hsin Chen 2013-05-30  633  		fotg210_request_error(fotg210);
+b84a8dee23fd41 drivers/usb/gadget/fotg210-udc.c Yuan-Hsin Chen 2013-05-30  634  	} else {
+b84a8dee23fd41 drivers/usb/gadget/fotg210-udc.c Yuan-Hsin Chen 2013-05-30  635  		fotg210_set_dev_addr(fotg210, ctrl->wValue);
+b84a8dee23fd41 drivers/usb/gadget/fotg210-udc.c Yuan-Hsin Chen 2013-05-30  636  		fotg210_set_cxdone(fotg210);
+b84a8dee23fd41 drivers/usb/gadget/fotg210-udc.c Yuan-Hsin Chen 2013-05-30  637  	}
+b84a8dee23fd41 drivers/usb/gadget/fotg210-udc.c Yuan-Hsin Chen 2013-05-30  638  }
+b84a8dee23fd41 drivers/usb/gadget/fotg210-udc.c Yuan-Hsin Chen 2013-05-30  639  
+
+:::::: The code at line 632 was first introduced by commit
+:::::: b84a8dee23fd41600a8aebcba1410b5bb5b3bdeb usb: gadget: add Faraday fotg210_udc driver
+
+:::::: TO: Yuan-Hsin Chen <yhchen@faraday-tech.com>
+:::::: CC: Felipe Balbi <balbi@ti.com>
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
