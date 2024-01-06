@@ -1,132 +1,132 @@
-Return-Path: <linux-kernel+bounces-18708-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18709-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED9E3826171
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 21:20:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5EE80826175
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 21:27:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9AC0E1C21042
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 20:19:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 04E2A1F2206C
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 20:27:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78170FBF4;
-	Sat,  6 Jan 2024 20:19:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="AuSnb9Hb"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4707AF51E;
+	Sat,  6 Jan 2024 20:26:55 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68087F51E
-	for <linux-kernel@vger.kernel.org>; Sat,  6 Jan 2024 20:19:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704572377; x=1736108377;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=Oaxnl+WDuKCrzJhLjIRx+yriqNXpMAN+vqLtYP3D1Hc=;
-  b=AuSnb9HbA1+bom+SpEIeaardajq+voDNnXLOgGtFxCvLu+x+avRi2Jyo
-   TbonKc3pAzklTo7vE4Bmlyl3fcVsRFEH10w+SDDJ2iDz+TqJxYUW3LrxA
-   ebscBl675HgtGIiWCCnyMcBGotcScLG00NrPOa+GwVDeb+dhuNir9eQga
-   JdvIilNaX9ts2xT3GwPcPuPm1HP2xKWCnCJvB1SugQCO+w77+i2aXkhEi
-   GJ0SfSV7/GPIh/wayPF0V3GVP0kMV58TELFRfXuQFHaiWinvFMZQrKzGD
-   +auTlD70PlCcorUQChIHfX8aZ5MSbjtKLd1nef6FANClebGWh3Eym92b6
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10945"; a="19185503"
-X-IronPort-AV: E=Sophos;i="6.04,337,1695711600"; 
-   d="scan'208";a="19185503"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jan 2024 12:19:24 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10945"; a="781047314"
-X-IronPort-AV: E=Sophos;i="6.04,337,1695711600"; 
-   d="scan'208";a="781047314"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga002.jf.intel.com with ESMTP; 06 Jan 2024 12:19:23 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rMD8a-0002xo-2U;
-	Sat, 06 Jan 2024 20:19:20 +0000
-Date: Sun, 7 Jan 2024 04:19:13 +0800
-From: kernel test robot <lkp@intel.com>
-To: Jens Axboe <axboe@kernel.dk>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: fs/eventpoll.c:526:9: sparse: sparse: restricted __poll_t degrades
- to integer
-Message-ID: <202401070458.AoQY32kd-lkp@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 508FDF4E4;
+	Sat,  6 Jan 2024 20:26:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=omp.ru
+Received: from [192.168.1.104] (31.173.84.255) by msexch01.omp.ru
+ (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Sat, 6 Jan
+ 2024 23:26:41 +0300
+Subject: Re: [PATCH net-next v3 10/19] net: ravb: Move delay mode set in the
+ driver's ndo_open API
+To: Claudiu <claudiu.beznea@tuxon.dev>, <davem@davemloft.net>,
+	<edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+	<richardcochran@gmail.com>, <p.zabel@pengutronix.de>,
+	<yoshihiro.shimoda.uh@renesas.com>, <wsa+renesas@sang-engineering.com>
+CC: <netdev@vger.kernel.org>, <linux-renesas-soc@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <geert+renesas@glider.be>, Claudiu Beznea
+	<claudiu.beznea.uj@bp.renesas.com>
+References: <20240105082339.1468817-1-claudiu.beznea.uj@bp.renesas.com>
+ <20240105082339.1468817-11-claudiu.beznea.uj@bp.renesas.com>
+From: Sergey Shtylyov <s.shtylyov@omp.ru>
+Organization: Open Mobile Platform
+Message-ID: <89ed8383-4466-fa3e-f975-b6ad1b424c85@omp.ru>
+Date: Sat, 6 Jan 2024 23:26:41 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <20240105082339.1468817-11-claudiu.beznea.uj@bp.renesas.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
+ (10.188.4.12)
+X-KSE-ServerInfo: msexch01.omp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 6.1.0, Database issued on: 01/06/2024 20:13:03
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 59
+X-KSE-AntiSpam-Info: Lua profiles 182473 [Jan 06 2024]
+X-KSE-AntiSpam-Info: Version: 6.1.0.3
+X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
+X-KSE-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a
+X-KSE-AntiSpam-Info: {rep_avail}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: {relay has no DNS name}
+X-KSE-AntiSpam-Info: {SMTP from is not routable}
+X-KSE-AntiSpam-Info: {Found in DNSBL: 31.173.84.255 in (user)
+ b.barracudacentral.org}
+X-KSE-AntiSpam-Info: {Found in DNSBL: 31.173.84.255 in (user)
+ dbl.spamhaus.org}
+X-KSE-AntiSpam-Info:
+	d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;omp.ru:7.1.1
+X-KSE-AntiSpam-Info: ApMailHostAddress: 31.173.84.255
+X-KSE-AntiSpam-Info: {DNS response errors}
+X-KSE-AntiSpam-Info: Rate: 59
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
+ smtp.mailfrom=omp.ru;dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 01/06/2024 20:16:00
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 1/6/2024 6:35:00 PM
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   95c8a35f1c017327eab3b6a2ff5c04255737c856
-commit: caf1aeaffc3b09649a56769e559333ae2c4f1802 eventpoll: add EPOLL_URING_WAKE poll wakeup flag
-date:   1 year, 2 months ago
-config: i386-randconfig-063-20240105 (https://download.01.org/0day-ci/archive/20240107/202401070458.AoQY32kd-lkp@intel.com/config)
-compiler: ClangBuiltLinux clang version 17.0.6 (https://github.com/llvm/llvm-project 6009708b4367171ccdbf4b5905cb6a803753fe18)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240107/202401070458.AoQY32kd-lkp@intel.com/reproduce)
+On 1/5/24 11:23 AM, Claudiu wrote:
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202401070458.AoQY32kd-lkp@intel.com/
+> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+> 
+> Delay parsing and setting were done in the driver's probe API. As some IP
+> variants switch to reset mode (and thus registers content is lost) when
+> setting clocks (due to module standby functionality) to be able to
+> implement runtime PM keep the delay parsing in the driver's probe function
+> and move the delay applying function to the driver's ndo_open API.
+> 
+> Along with it, both delay specific functions were kept together.
+> 
+> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 
-sparse warnings: (new ones prefixed by >>)
->> fs/eventpoll.c:526:9: sparse: sparse: restricted __poll_t degrades to integer
->> fs/eventpoll.c:526:9: sparse: sparse: cast to restricted __poll_t
->> fs/eventpoll.c:1213:53: sparse: sparse: incorrect type in argument 3 (different base types) @@     expected unsigned int pollflags @@     got restricted __poll_t @@
-   fs/eventpoll.c:1213:53: sparse:     expected unsigned int pollflags
-   fs/eventpoll.c:1213:53: sparse:     got restricted __poll_t
+Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
 
-vim +526 fs/eventpoll.c
+[...]
 
-   493	
-   494	static void ep_poll_safewake(struct eventpoll *ep, struct epitem *epi,
-   495				     unsigned pollflags)
-   496	{
-   497		struct eventpoll *ep_src;
-   498		unsigned long flags;
-   499		u8 nests = 0;
-   500	
-   501		/*
-   502		 * To set the subclass or nesting level for spin_lock_irqsave_nested()
-   503		 * it might be natural to create a per-cpu nest count. However, since
-   504		 * we can recurse on ep->poll_wait.lock, and a non-raw spinlock can
-   505		 * schedule() in the -rt kernel, the per-cpu variable are no longer
-   506		 * protected. Thus, we are introducing a per eventpoll nest field.
-   507		 * If we are not being call from ep_poll_callback(), epi is NULL and
-   508		 * we are at the first level of nesting, 0. Otherwise, we are being
-   509		 * called from ep_poll_callback() and if a previous wakeup source is
-   510		 * not an epoll file itself, we are at depth 1 since the wakeup source
-   511		 * is depth 0. If the wakeup source is a previous epoll file in the
-   512		 * wakeup chain then we use its nests value and record ours as
-   513		 * nests + 1. The previous epoll file nests value is stable since its
-   514		 * already holding its own poll_wait.lock.
-   515		 */
-   516		if (epi) {
-   517			if ((is_file_epoll(epi->ffd.file))) {
-   518				ep_src = epi->ffd.file->private_data;
-   519				nests = ep_src->nests;
-   520			} else {
-   521				nests = 1;
-   522			}
-   523		}
-   524		spin_lock_irqsave_nested(&ep->poll_wait.lock, flags, nests);
-   525		ep->nests = nests + 1;
- > 526		wake_up_locked_poll(&ep->poll_wait, EPOLLIN | pollflags);
-   527		ep->nests = 0;
-   528		spin_unlock_irqrestore(&ep->poll_wait.lock, flags);
-   529	}
-   530	
+> diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
+> index f386a3b7effb..946abd7606ca 100644
+> --- a/drivers/net/ethernet/renesas/ravb_main.c
+> +++ b/drivers/net/ethernet/renesas/ravb_main.c
+[...]
+> @@ -1772,6 +1825,8 @@ static int ravb_open(struct net_device *ndev)
+>  	if (info->nc_queues)
+>  		napi_enable(&priv->napi[RAVB_NC]);
+>  
+> +	ravb_set_delay_mode(ndev);
+> +
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+   Please consider moving to either ravb_dmac_init() or ravb_emac_init(),
+at least in the future...
+
+>  	/* Device init */
+>  	error = ravb_dmac_init(ndev);
+>  	if (error)
+[...]
+
+MBR, Sergey
 
