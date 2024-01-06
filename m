@@ -1,213 +1,101 @@
-Return-Path: <linux-kernel+bounces-18656-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18657-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F87E8260A0
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 17:30:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EEC098260A2
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 17:35:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C8624B22F6A
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 16:30:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8742E1F225A0
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 16:35:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 079ABC15F;
-	Sat,  6 Jan 2024 16:30:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0161F8C12;
+	Sat,  6 Jan 2024 16:35:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=solidrn.onmicrosoft.com header.i=@solidrn.onmicrosoft.com header.b="CTcsUydT"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Pt8kLSNi"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from EUR01-DB5-obe.outbound.protection.outlook.com (mail-db5eur01on2073.outbound.protection.outlook.com [40.107.15.73])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oa1-f41.google.com (mail-oa1-f41.google.com [209.85.160.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1291AC12A;
-	Sat,  6 Jan 2024 16:30:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=solid-run.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=solid-run.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Rx5Yluv0Ar7BXVlFQblaOMcZT9g/R6pSnt+oIl+Yp1O/6DTOu8+0BqS9BfVAVLpCFiu1tRZYqJ+1OHg+/tporCexeMMdy00dV6mMJzxgkgwx/kJpF1drcL90PBEUonwFJUFOAuWJf0s+An80A3Rse/Zny9cJn5ADKBTlkufGnIy0hXERgjh3SGAneoTKuESsXHOcre153uXke4lsxvVCY1dKnkL4BTxQEMex2bVnXbGisVjn103Td9s+tArY3IvTyTB6hn2NtRXYLoJVqWfBZVF3bZXylDgKm2UjABGgXrHX8/1c7Yn7GU6K4No332QrfH4usBq8eBp9vkdWjXDcBQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=C6yTUm7MTX2gUH9a3AkDi4lA8c3/2xWhvLKLFJRvfjw=;
- b=a2puCL9YakJcAlon94DIk4XBMzWvjtZ22e3QO96Oxj4MyJTZUe0PX/8jmjYE4qV01oViKUhsJAhSjeQAPymz2Fr/ddj4nn4/kQtwwteLRsvHS/JAdeldJfd4hmdwEsJiucBmWPfafnEJfJiXKI1TfKFVdtAxKyPlxAJZuuTrjw6fZt+3GPKGxwB6H1UwClgS4z+jjUwirQJ+0+fFxT/PaTg3gSqaDEBPkVxnbhCQLgRG/TCnk0ya3mAvmkA35sMIJoNnSq+HNq3h2d9baX3JcnRroa6+LkRNIGEYn0cmautQNS7y6WL1ozTlHQ3Wc2c9Ozxxfzvqvs+RTn0YYkxw/w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=solid-run.com; dmarc=pass action=none
- header.from=solid-run.com; dkim=pass header.d=solid-run.com; arc=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B8198820
+	for <linux-kernel@vger.kernel.org>; Sat,  6 Jan 2024 16:35:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-oa1-f41.google.com with SMTP id 586e51a60fabf-2045bedb806so546011fac.3
+        for <linux-kernel@vger.kernel.org>; Sat, 06 Jan 2024 08:35:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=solidrn.onmicrosoft.com; s=selector1-solidrn-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=C6yTUm7MTX2gUH9a3AkDi4lA8c3/2xWhvLKLFJRvfjw=;
- b=CTcsUydTHunn0WfJgJVpXxSrlkEVaNbwOC6sfyMdyf3vw3umqTEKiMopRtilT5r7flsGOYqxDmGLAkQXr/gJoNpCCTKaxW1yhRQQCsn1cJZetLjvLdJN988HNkwJdcbqudQpIHR47vv//9nze/rEDTF7y+pUSk9s/6mIq+yZHVk=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=solid-run.com;
-Received: from AS8PR04MB8963.eurprd04.prod.outlook.com (2603:10a6:20b:42e::18)
- by AS1PR04MB9429.eurprd04.prod.outlook.com (2603:10a6:20b:4db::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.14; Sat, 6 Jan
- 2024 16:30:08 +0000
-Received: from AS8PR04MB8963.eurprd04.prod.outlook.com
- ([fe80::daf2:8c54:d469:793d]) by AS8PR04MB8963.eurprd04.prod.outlook.com
- ([fe80::daf2:8c54:d469:793d%6]) with mapi id 15.20.7159.018; Sat, 6 Jan 2024
- 16:30:08 +0000
-From: Josua Mayer <josua@solid-run.com>
-Date: Sat, 06 Jan 2024 17:29:56 +0100
-Subject: [PATCH] net: sfp: add fixup for tplink 2.5gbase-t rj45 modules
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240106-tplink-25gbaset-sfp-fixup-v1-1-8d26696bd2f4@solid-run.com>
-X-B4-Tracking: v=1; b=H4sIAAOAmWUC/x2MywqEMAwAf0VyNhDr+sBfEQ9dTTUotTQqgvjvW
- /Y4DDMPKEdhhS57IPIlKrtPUOQZjIv1M6NMicGQ+VBBNR5hE7+iqeavVT5QXUAn9xmQeLTGta6
- pSoLUh8hJ/N/98L4/SMtVUmsAAAA=
-To: Russell King <linux@armlinux.org.uk>, Andrew Lunn <andrew@lunn.ch>, 
- Heiner Kallweit <hkallweit1@gmail.com>, 
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Josua Mayer <josua@solid-run.com>
-X-Mailer: b4 0.12.4
-X-ClientProxiedBy: FR4P281CA0060.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:cc::20) To AS8PR04MB8963.eurprd04.prod.outlook.com
- (2603:10a6:20b:42e::18)
+        d=google.com; s=20230601; t=1704558935; x=1705163735; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=fz/Di55aeQBffTUgd13EseLNrnnt2s1rAMNRl9hJG0s=;
+        b=Pt8kLSNi+Rar4uy6u8yF/jnHe5Zj4DETbwm3Dd5U5BX2/gHn+NRCO9u9iqxmzdOKdt
+         b6B1pMIo98t04lfYTaZWBjI4BW8ZTBTvpqzZPdbU+ctkOWrtMpKnOE0Ahh95Y2NRbbsp
+         0JNslAC1vNnQQkMbewXequozzmJIzwzIYZcZh94azpU+BfjD4Xigwz/Fk6j4RuW6CZ73
+         I9cEzY3AFvNzmaL74wc0nPg0NstgJ6AOi3XvczRDWwLQCJxNnUpH0TMpC4HvcH6q7Daw
+         FIFOR59lQtGlh4PI0sDri7nzGqDd59dDgBse27l7OAWIm9sBXfvKD1GF1ePN3LDpRxFq
+         1v4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704558935; x=1705163735;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fz/Di55aeQBffTUgd13EseLNrnnt2s1rAMNRl9hJG0s=;
+        b=LJoLpEkNoVc3mCzvA7fbwGHArxBcSBUr4EjNP0uwihrrdaY7BxG2xcvtVFzSO6MRWg
+         fxSFZCSMpmFFNRtNN3NJOw8dH/PNNkvv3gsBS38nGu848kS7OzfdGYgSYFNXrOCGHmd7
+         1u68z1oaGyGuMyRTOkG0jr/Eopts2oKbN6wBBjIlDPfaSiaUuv1ls3WbeTGCQFzLTwaC
+         AMiIDJ19yOB59TwVEFx47D4HeHDN5jBmW2vAY43tsUd6QdN5U1PNOd5pLNTsoZzv9FVy
+         5gNMtN0MBXT6/0f+da1PzQrE3dk1SXvtS4LJZ1CM30USwVhmhP4YERzkU7cEKuIETVUt
+         JIcg==
+X-Gm-Message-State: AOJu0YwxHH0SaSHDKPO4sUgXasUMwR4K6YynM3u8IKYnHq2BV8OQMKj2
+	y69ow/3GTKd83k7NhfsvCSZo2MiCqtXN
+X-Google-Smtp-Source: AGHT+IGg1/bFKA1jzYpuKIirevRWdlpM+F72B+/xTtSyfpfMGxKF5YlnOPGWEcI5ZyN6JrjuXjucwQ==
+X-Received: by 2002:a05:6871:814:b0:205:ee93:1875 with SMTP id q20-20020a056871081400b00205ee931875mr1823529oap.73.1704558934798;
+        Sat, 06 Jan 2024 08:35:34 -0800 (PST)
+Received: from google.com (77.62.105.34.bc.googleusercontent.com. [34.105.62.77])
+        by smtp.gmail.com with ESMTPSA id f33-20020a635561000000b005c6aa4d4a0dsm3171674pgm.45.2024.01.06.08.35.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 06 Jan 2024 08:35:34 -0800 (PST)
+Date: Sat, 6 Jan 2024 16:35:30 +0000
+From: Carlos Llamas <cmllamas@google.com>
+To: Tanzir Hasan <tanzirh@google.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
+	Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Christian Brauner <brauner@kernel.org>,
+	Suren Baghdasaryan <surenb@google.com>,
+	Nick Desaulniers <nnn@google.com>, linux-kernel@vger.kernel.org,
+	Nick Desaulniers <ndesaulniers@google.com>
+Subject: Re: [PATCH] android: removed duplicate linux/errno
+Message-ID: <ZZmBUtX82fE1c47z@google.com>
+References: <20240104-removeduperror-v1-1-d170d4b3675a@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AS8PR04MB8963:EE_|AS1PR04MB9429:EE_
-X-MS-Office365-Filtering-Correlation-Id: f830f1bf-9e6f-4611-9564-08dc0ed4beee
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	FsWJHfameDa/oMwvu8kuwFJ9xpqhG7+S5OivZ6tJYIEe0YdkhtrRXO7cvKSX9nT2H1sNvxEZ/u8CBo65S/qnxipI37eqj2aI1aWgsKRGQmn+5z1GYWO9wiPQ3u5PPjiCOviA+op0eh/6fCc9jMQpKilVgQ1zdJtDp6IF+JxNKJYy5cVZgLlD7DHuR8hsuxdybzDy7jXnVwaJWF1Kd0iDjwvqzHrbX7kvrU0Wc7rJtJe50Sxdgv6+FWy83OJkUfs+UQHrQWVaj7scyqvZ7HqViz9bcJ4vZJo7rtb+EbcmEuZZi2IWxKGn/jyZckH1H90mYd8UjxEseBqrcPG+oDKp3itbsclb3hi3v349tAlQxmgsVeQqOaaOCegvjm2vhxI6MZNFusFWjqkyLPGEAo/MyrL+wSymxY7zIgTuFoBd4Oga+ktp3FRiYXRDLl1cKUTPkq7StiPaWsow/QCAuuzOB1rAr/Z78ihDCtp9j0Y8aMDH2C2zqaZr4fbmVm2lhzMD+vVPG6IWhuv8S986nlEZENkg/kgvO1ZU8SYKRRW+eGP+qJlbZq3Es3Y1IoFQbPtnYQiDdmei/m4hrh8Gq7whsnPdgODurHMObo2iHk0ZlIXbB9Ona1F00KqPrdjZHUKv
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB8963.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(346002)(136003)(396003)(376002)(39830400003)(230922051799003)(1800799012)(64100799003)(186009)(451199024)(36756003)(38100700002)(38350700005)(86362001)(6506007)(8936002)(6512007)(107886003)(2616005)(8676002)(6486002)(316002)(66946007)(66556008)(4326008)(66476007)(478600001)(110136005)(6666004)(52116002)(26005)(41300700001)(5660300002)(2906002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?MENaamJJMExxcGNuN05UajFiVHYwV2p6Rk5ndUdYZEI3QWJiNlEwa2VGU0sy?=
- =?utf-8?B?VUY4OXFVLys2bTc0MzdPNjFZc1lUZmR1bmF3RGUwcnJTTzdrMTRBeWlPNFhB?=
- =?utf-8?B?NmVPWloxYlVzQ1JDcnhDYzZUUW1DY2xMZVM0RUMya2FYZ2VvWVoyY2VtSHlr?=
- =?utf-8?B?Q0lWMVJ1ZnFQZnBGYUMwMTB1TFVJUVdFbWI1MmFReVoxOHNaZy80OFN0REFM?=
- =?utf-8?B?R2RxSmNsMnY2TXI1cVVJSzFoai9iSkF5NGJOK3E4cTIwY3JZbGx2cGMzNGht?=
- =?utf-8?B?bGRVTkE1RUVxdnZtdG93bm1FT2l6YkQvTUFzRHpuVnBkTFdzNWtlU0VDK3gx?=
- =?utf-8?B?NGlOYUhpZFhFcHcxdlN1UHBxejByRXp3V2xRejdvTUtXM2tXWEszdlFrbnpB?=
- =?utf-8?B?UUJyY3grUE5scisxMkFPWlZMK01menNwWGZCRFNVMEppSzBRU1kyV0tIM1hv?=
- =?utf-8?B?RlBRQ2NrUGp5Um1KQVJJRFlrZFZzbSt4L0VaZDNJT0JWd0toN3ZwZXJvQWYz?=
- =?utf-8?B?R00zTzZ1dEZCTHFBK3Fia2hFZG8rb2pNa0hGbHRSdXBROFJzUll6NTgrb3hP?=
- =?utf-8?B?cHVEYmtWY3lqaFlDd3FBUHBGeXI2TVNyZ2tJYUE5NTZnV1RvaGx5TDhXQk9Z?=
- =?utf-8?B?T2RFTkEra3MwcTAzYVc5dUlRQTlSOCt1T1EvOWdYeHVNVjBsMGluZVkzMHVa?=
- =?utf-8?B?TldtclAvajBSK0xkcDJiSE5VYzhPWW5QdmQyU2dyWVdCR1JCY0R1anhkVWhu?=
- =?utf-8?B?TnJldmROejh1TjNqdVBpQWxVY1ZkM2ZzSm9UdTdXTGlHRmxuMXlJVzh3TE5C?=
- =?utf-8?B?QTAyQ1FhUjBsaGVNZEVwNm00ODQ0RmFiT3Vvd1E3aEhTMXg0aUhSb1JyTVpv?=
- =?utf-8?B?Y0FieStRSmJsR2VQVU1RWFNIZ011MWlhVm9Wck0xeXVYMk1tUG1WZ3VveVR1?=
- =?utf-8?B?Z1Z4LzBjalJVZjRZR3NiRzVxTXV6UTZiU0xlYTFjeHJCRENFNnlLengzK2tk?=
- =?utf-8?B?eHNjNUlma3FNQ2MyK3VLRVpLVi8rNWQwUVpHSStIbEcwZ3A0d2JjQ3dEVmFp?=
- =?utf-8?B?QVhlc0g4S1p4dUprVEc1MmdKZXJwczJlWHZjV1R4VVJkV2Eza2JEcXNmQndU?=
- =?utf-8?B?VXZmd1YwZC9mMTAwdEh2RDNkRXprdnRmRWMvZmlwdld4dVl4eDFMejNWUUlB?=
- =?utf-8?B?Vyt4N1ZVaDVHdTRWcmtoKy9NaFYyQUhaU1lkb2drWGJUVWpEakZ5bm1UNklV?=
- =?utf-8?B?S2QzcHpLWHo1M1NEQUV6bjRKTXMzT3ZBeFAwdkV3bEZCeGcvamE0elZuZWlB?=
- =?utf-8?B?UGd5TW1FWkljWmlud20vN0JmVDVuVHRiOGhNbGNwdlJiZFRBOGVZanNjNk93?=
- =?utf-8?B?T21Wa0tzZXI1NkNEMndYWkRTZFU0WGpjekVFcDVaWXJkNFR6dmlOaVlnd0VE?=
- =?utf-8?B?bnFSbG5RYUdkbldrUStodGxJaEg3QlgvU2hzcC9hb2lQMFpzYjNMNEo0UUJv?=
- =?utf-8?B?R3NrQlpGM0Eyd3RiNW02VTJiUnJiRS9JV3UrcXdGb2ZRVlBMU083WDBmKy9U?=
- =?utf-8?B?Y0paSm9DajlwMGdLYW04U3JaZzFlelI3bVZmdHZpUkMrcURxUmV1andremZM?=
- =?utf-8?B?ck1RTnhOcGVnTmx4WEtqRndtR1B2ZnprZmpIeTBHR0tQMk02M1hnYkRyQm95?=
- =?utf-8?B?b0kyNXZGbTJGS2Z1NUJpNlRuaTNyckpWY1JLTkw4RlZmQkRSWWNpVlR2Tmpz?=
- =?utf-8?B?a29HTHEyT1NKdWRXQW91bks5YXp2ZExmUTE5UllrbW4zYU5MTXBMSHhYb1lI?=
- =?utf-8?B?NWxkWUZEeTdkQ0Y2cktybkEyZXliKy9yYUlTVnBzdjU2NFpUbWI3TzNCQ0lv?=
- =?utf-8?B?UjlMTzJFY3c1OW02a2hKTU95cTRWSlM2NWJxTm1rQnZvTkdlL1lEVWlhTFFI?=
- =?utf-8?B?dkZqZUJXQmpLNWx6TlZyQjgwb25JMld2WWk1ZE5xdkNKYVNmWXdwQngwWG1H?=
- =?utf-8?B?NFlpRUR5c3lUQTdKTnVxRzRwclk4ZHBVR2hUQjVZK3FBQTRuTTdUNFYvZURS?=
- =?utf-8?B?amVDMUNzUjdJbkFvWU5QT1hLRXZWTnhBdVpGZHJINXZXOVh3N3o5RUp5cnBW?=
- =?utf-8?Q?TIZSCCdjiE+bP3zwCrfDCmhX0?=
-X-OriginatorOrg: solid-run.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f830f1bf-9e6f-4611-9564-08dc0ed4beee
-X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB8963.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Jan 2024 16:30:08.0169
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: a4a8aaf3-fd27-4e27-add2-604707ce5b82
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: aPIFi+3e4/dgqC42WZxSK7OEE0LOOi564eWRcNKVO4i7+aZfLOh+3gJWiLOQM3DEWKrQ22sCdtvXs1K++4Vm3g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS1PR04MB9429
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240104-removeduperror-v1-1-d170d4b3675a@google.com>
 
-TP-Link TL-SM410U modules are single-rate 2.5GBase-T RJ45 SFP modules.
-The EEPROM data is lying about connector and extended cc,
-reporting 25Gbps fiber.
+On Thu, Jan 04, 2024 at 07:31:36PM +0000, Tanzir Hasan wrote:
+> There are two linux/errno.h inclusions in this file. The second one has
+> been removed and the file builds correctly.
+> 
+> Fixes: 54ffdab82080 ("android: binder: binderfs.c: removed asm-generic/errno-base.h")
 
-Add fixup for these specific modules forcing RJ45 @ 2.5Gbase-T.
+I'm not sure that we can I this tag before the patch hits mainline. I
+suppose it's ok since char-misc doesn't do forced updates?
 
-For reference original eeprom data dump from ethtool:
+Greg, is this fine?
 
-Identifier                : 0x03 (SFP)
-Extended identifier       : 0x04 (GBIC/SFP defined by 2-wire interface ID)
-Connector                 : 0x07 (LC)
-Transceiver codes         : 0x00 0x00 0x00 0x00 0x00 0x00 0x40 0x00 0x00
-Transceiver type          : FC: Twisted Pair (TP)
-Encoding                  : 0x01 (8B/10B)
-BR, Nominal               : 3100MBd
-Rate identifier           : 0x00 (unspecified)
-Length (SMF,km)           : 0km
-Length (SMF)              : 0m
-Length (50um)             : 0m
-Length (62.5um)           : 0m
-Length (Copper)           : 0m
-Length (OM3)              : 0m
-Laser wavelength          : 0nm
-Vendor name               : TP-LINK
-Vendor OUI                : 00:00:00
-Vendor PN                 : TL-SM410U
-Vendor rev                : 1.0
-Option values             : 0x00 0x18
-Option                    : TX_FAULT implemented
-Option                    : TX_DISABLE implemented
-BR margin, max            : 0%
-BR margin, min            : 0%
-Vendor SN                 : 12154J6001608
-Date code                 : 210611
+If it is, then:
+Acked-by: Carlos Llamas <cmllamas@google.com>
 
-Signed-off-by: Josua Mayer <josua@solid-run.com>
----
- drivers/net/phy/sfp.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
-
-diff --git a/drivers/net/phy/sfp.c b/drivers/net/phy/sfp.c
-index 5468bd209fab..a5bb9d569381 100644
---- a/drivers/net/phy/sfp.c
-+++ b/drivers/net/phy/sfp.c
-@@ -340,6 +340,12 @@ static const struct of_device_id sfp_of_match[] = {
- };
- MODULE_DEVICE_TABLE(of, sfp_of_match);
- 
-+static void sfp_fixup_2500baset(struct sfp *sfp)
-+{
-+	sfp->id.base.connector = SFF8024_CONNECTOR_RJ45;
-+	sfp->id.base.extended_cc = SFF8024_ECC_2_5GBASE_T;
-+}
-+
- static void sfp_fixup_long_startup(struct sfp *sfp)
- {
- 	sfp->module_t_start_up = T_START_UP_BAD_GPON;
-@@ -503,6 +509,10 @@ static const struct sfp_quirk sfp_quirks[] = {
- 	SFP_QUIRK_F("OEM", "RTSFP-10G", sfp_fixup_rollball_cc),
- 	SFP_QUIRK_F("Turris", "RTSFP-10", sfp_fixup_rollball),
- 	SFP_QUIRK_F("Turris", "RTSFP-10G", sfp_fixup_rollball),
-+
-+	// tp-link 2.5Gbase-T modules wrongly report 25Gbps fiber connector
-+	// in their EEPROM
-+	SFP_QUIRK_F("TP-LINK", "TL-SM410U", sfp_fixup_2500baset),
- };
- 
- static size_t sfp_strlen(const char *str, size_t maxlen)
-
----
-base-commit: b85ea95d086471afb4ad062012a4d73cd328fa86
-change-id: 20240106-tplink-25gbaset-sfp-fixup-0eca2f8f7530
-
-Sincerely,
--- 
-Josua Mayer <josua@solid-run.com>
-
+Thanks,
+--
+Carlos Llamas
 
