@@ -1,204 +1,439 @@
-Return-Path: <linux-kernel+bounces-18587-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18584-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41FC6825FC3
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 15:04:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 97F4C825FBD
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 14:59:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 45E741C211F1
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 14:04:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B14F51C2119F
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 13:59:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D9D07483;
-	Sat,  6 Jan 2024 14:04:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A742F748F;
+	Sat,  6 Jan 2024 13:59:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-watchdog.org header.i=@linux-watchdog.org header.b="XDlqgqcS"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pOJIMp+C"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from www.linux-watchdog.org (www.linux-watchdog.org [185.87.125.42])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17AA48C0A;
-	Sat,  6 Jan 2024 14:04:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=linux-watchdog.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux-watchdog.org
-Received: by www.linux-watchdog.org (Postfix, from userid 500)
-	id 0A668409F1; Sat,  6 Jan 2024 14:44:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 www.linux-watchdog.org 0A668409F1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-watchdog.org;
-	s=odk20180602; t=1704548667;
-	bh=3wXHJ5X0Y/5UXPZ+cSSBwup9eb5KfXFSoUe6hAGQfEo=;
-	h=Date:From:To:Cc:Subject:From;
-	b=XDlqgqcSKAuuaZtp6IM02qFkinnhHJF/rqpkVnrrDx3gvW9VkcYdbqnOSibkYCXQi
-	 uSlrZF1s0ShjcvtdK531vxgDACVcojL77mchveENsuyHw5WeaD5PmMQmb4IKx06Fqp
-	 WlEJZ07DbYDHQcqh7bHFgqhUhJbAm5LjNBq9GuKk=
-Date: Sat, 6 Jan 2024 14:44:11 +0100
-From: Wim Van Sebroeck <wim@linux-watchdog.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	Linux Watchdog Mailing List <linux-watchdog@vger.kernel.org>,
-	Guenter Roeck <linux@roeck-us.net>,
-	Ben Dooks <ben.dooks@codethink.co.uk>,
-	Biju Das <biju.das.jz@bp.renesas.com>,
-	Curtis Klein <curtis.klein@hpe.com>,
-	Daniel Golle <daniel@makrotopia.org>,
-	Douglas Anderson <dianders@chromium.org>,
-	Jerry Hoemann <jerry.hoemann@hpe.com>,
-	Johan Hovold <johan+linaro@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-	Nik Bune <n2h9z4@gmail.com>,
-	Nikita Shubin <nikita.shubin@maquefel.me>,
-	Randy Dunlap <rdunlap@infradead.org>,
-	Stefan Wahren <wahrenst@gmx.net>,
-	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Werner Fischer <devlists@wefi.net>
-Subject: [GIT PULL REQUEST] watchdog - v6.8 release cycle.
-Message-ID: <20240106134410.GA19394@www.linux-watchdog.org>
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F27F27482
+	for <linux-kernel@vger.kernel.org>; Sat,  6 Jan 2024 13:59:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 41CF3C433C7;
+	Sat,  6 Jan 2024 13:59:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704549584;
+	bh=Pq8SfrXdgj+ly7z2v4/coodhuaROaXljdjD7G4bZz18=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=pOJIMp+CI1AcyHVPfUiCCgrfFWVuKGAJMbpb2JUC83deTMMJGquMbGaVnLg5dtKMM
+	 L2X2KDLTssUBWSUobZHiXPXqJXC68vfb+KMUBYLy/3fAHlKXO71oqoJR4S8xCwCcm1
+	 uwDbHzPQgK/piaq7bgKLjqUx/M6o8lYFXqV1u4UEM9HH+/dlm5k4iy6lbVD3jLIuwC
+	 V8VWaVN0PA8XlzusPtvQCnXqexFVWF4hn1Yh7Z5c4lQtFqVmhx3JvHnFNCoLeDbRX7
+	 fmn6G90LiIRWqqL/i2aT36VDYSv0ktHWj4f8o5p/tSRmMsJ3ej3HgYDjiDItwZ1QjO
+	 SEAf8c09HCphw==
+Date: Sat, 6 Jan 2024 21:47:00 +0800
+From: Jisheng Zhang <jszhang@kernel.org>
+To: Alexandre Ghiti <alexghiti@rivosinc.com>
+Cc: Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>, linux-riscv@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] riscv: Add support for BATCHED_UNMAP_TLB_FLUSH
+Message-ID: <ZZlZ1HEhDuj4Ojwd@xhacker>
+References: <20240102141851.105144-1-alexghiti@rivosinc.com>
+ <ZZU9s7iHDTBD39C0@xhacker>
+ <CAHVXubgpMFesz8C-tY4qY0OGzB3Jfyp1eK6YafN8GQN=u7Etyg@mail.gmail.com>
+ <CAHVXubij+L84tpwM-O1W6HV31D8Q7Gb0OerobYJVcmznXaQ2eg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-User-Agent: Mutt/1.5.20 (2009-12-10)
+In-Reply-To: <CAHVXubij+L84tpwM-O1W6HV31D8Q7Gb0OerobYJVcmznXaQ2eg@mail.gmail.com>
 
-Hi Linus,
+On Fri, Jan 05, 2024 at 02:36:44PM +0100, Alexandre Ghiti wrote:
+> On Thu, Jan 4, 2024 at 6:42 PM Alexandre Ghiti <alexghiti@rivosinc.com> wrote:
+> >
+> > Hi Jisheng,
+> >
+> > On Wed, Jan 3, 2024 at 12:10 PM Jisheng Zhang <jszhang@kernel.org> wrote:
+> > >
+> > > On Tue, Jan 02, 2024 at 03:18:51PM +0100, Alexandre Ghiti wrote:
+> > > > Allow to defer the flushing of the TLB when unmapping pges, which allows
+> > > > to reduce the numbers of IPI and the number of sfence.vma.
+> > > >
+> > > > The ubenchmarch used in commit 43b3dfdd0455 ("arm64: support
+> > > > batched/deferred tlb shootdown during page reclamation/migration") shows
+> > > > good performance improvement and perf reports an important decrease in
+> > > > time spent flushing the tlb (results come from qemu):
+> > >
+> > > Hi Alex,
+> > >
+> > > I tried this micro benchmark with your patch on T-HEAD TH1520 platform, I
+> > > didn't see any performance improvement for the micro benchmark. Per
+> > > myunderstanding, the micro benchmark is special case for arm64 because
+> > > in a normal tlb flush flow, below sequence is necessary:
+> > >
+> > > tlbi
+> > > dsb
+> > >
+> > >
+> > > while with BATCHED_UNMAP_TLB_FLUSH, the arm64 just does 'tlbi', leaving
+> > > the dsb to the arch_tlbbatch_flush(). So the final result is
+> > >
+> > > several 'tlbi + dsb' sequence VS. several 'tlbi' instructions + only one dsb
+> > > The performance improvement comes from the unnecessary dsb eliminations.
+> >
+> > Some batching should take place, and with this patch, we only send one
+> > "full" sfence.vma instead of a "local" sfence.vma for each page, it
+> > seems weird that you don't see any improvement, I would have thought
+> > that one "full" sfence.vma would be better.
+> >
+> > >
+> > > Do you have suitable benchmark(s) for BATCHED_UNMAP_TLB_FLUSH on riscv?
+> >
+> > Can you give the following benchmark a try? I simply created threads
+> > and dispatched them on all the cpus to force IPI usage, that should be
+> > way better if the batching of the first ubenchmark is not enough to
+> > exacerbate performance improvements, let me know and thanks for your
+> > tests!
+> >
+> > #define _GNU_SOURCE
+> > #include <pthread.h>
+> > #include <sys/types.h>
+> > #include <unistd.h>
+> > #include <sys/mman.h>
+> > #include <string.h>
+> > #include <errno.h>
+> > #include <sched.h>
+> > #include <time.h>
+> >
+> > int stick_this_thread_to_core(int core_id) {
+> >         int num_cores = sysconf(_SC_NPROCESSORS_ONLN);
+> >         if (core_id < 0 || core_id >= num_cores)
+> >            return EINVAL;
+> >
+> >         cpu_set_t cpuset;
+> >         CPU_ZERO(&cpuset);
+> >         CPU_SET(core_id, &cpuset);
+> >
+> >         pthread_t current_thread = pthread_self();
+> >         return pthread_setaffinity_np(current_thread,
+> > sizeof(cpu_set_t), &cpuset);
+> > }
+> >
+> > static void *fn_thread (void *p_data)
+> > {
+> >         int ret;
+> >         pthread_t thread;
+> >
+> >         stick_this_thread_to_core((int)p_data);
+> >
+> >         while (1) {
+> >                 sleep(1);
+> >         }
+> >
+> >         return NULL;
+> > }
+> >
+> > int main()
+> > {
+> > #define SIZE (1 * 1024 * 1024)
+> >         volatile unsigned char *p = mmap(NULL, SIZE, PROT_READ | PROT_WRITE,
+> >                                          MAP_SHARED | MAP_ANONYMOUS, -1, 0);
+> >         pthread_t threads[4];
+> >         int ret;
+> >
+> >         for (int i = 0; i < 4; ++i) {
+> >                 ret = pthread_create(&threads[i], NULL, fn_thread, (void *)i);
+> >                 if (ret)
+> >                 {
+> >                         printf("%s", strerror (ret));
+> >                 }
+> >         }
+> >
+> >         memset(p, 0x88, SIZE);
+> >
+> >         for (int k = 0; k < 500 /* 10000 */; k++) {
+> >                 /* swap in */
+> >                 for (int i = 0; i < SIZE; i += 4096) {
+> >                         (void)p[i];
+> >                 }
+> >
+> >                 /* swap out */
+> >                 madvise(p, SIZE, MADV_PAGEOUT);
+> >         }
+> >
+> >         for (int i = 0; i < 4; i++)
+> >         {
+> >                 pthread_cancel(threads[i]);
+> >         }
+> >
+> >         for (int i = 0; i < 4; i++)
+> >         {
+> >                 pthread_join(threads[i], NULL);
+> >         }
+> >
+> >         return 0;
+> >
+> > }
+> >
+> 
+> So I removed the dust from my unmatched and ran the benchmarks I proposed:
+> 
+> Without this patch:
+> * benchmark from commit 43b3dfdd0455 (4 runs)  : ~20.3s
+> * same benchmark with threads (4 runs)                : ~27.4s
+> 
+> With this patch:
+> * benchmark from commit 43b3dfdd0455 (4 runs)  : ~17.9s
+> * same benchmark with threads (4 runs)                : ~18.1s
+> 
+> So a small improvement for the single thread benchmark, but it depends
+> on the number of pages that get flushed, so to me that's not
+> applicable for the general case. For the same benchmark with multiple
+> threads, that's ~34% improvement. I'll add those numbers to the v2,
+> and JIsheng if you can provide some too, I'll add them too!
 
-Please pull following watchdog changes for the v6.8 release cycle (once the window is open :-) ).
+Hi Alex,
 
-This series contains:
-* Add Mediatek MT7988 watchdog
-* Add IT8659 watchdog
-* watchdog: set cdev owner before adding
-* hpwdt: Only claim UNKNOWN NMI if from iLO
-* Various other fixes and improvements
+the threaded version show ~78% improvement! impressive!
 
-The output from git request-pull:
-----------------------------------------------------------------
-The following changes since commit b85ea95d086471afb4ad062012a4d73cd328fa86:
+So for the patch:
 
-  Linux 6.7-rc1 (2023-11-12 16:19:07 -0800)
+Reviewed-by: Jisheng Zhang <jszhang@kernel.org>
+Tested-by: Jisheng Zhang <jszhang@kernel.org>
 
-are available in the git repository at:
-
-  git://www.linux-watchdog.org/linux-watchdog.git tags/linux-watchdog-6.8-rc1
-
-for you to fetch changes up to 9546b21ea672aa961d5a89ea754214afed013f02:
-
-  watchdog: mlx_wdt: fix all kernel-doc warnings (2023-12-24 10:44:40 +0100)
-
-----------------------------------------------------------------
-linux-watchdog 6.8-rc1 tag
-
-----------------------------------------------------------------
-Ben Dooks (1):
-      watchdog: starfive: add lock annotations to fix context imbalances
-
-Biju Das (2):
-      dt-bindings: watchdog: dlg,da9062-watchdog: Add fallback for DA9061 watchdog
-      dt-bindings: watchdog: dlg,da9062-watchdog: Document DA9063 watchdog
-
-Curtis Klein (1):
-      watchdog: set cdev owner before adding
-
-Daniel Golle (2):
-      dt-bindings: watchdog: mediatek,mtk-wdt: add MT7988 watchdog and toprgu
-      watchdog: mediatek: mt7988: add wdt support
-
-Douglas Anderson (1):
-      dt-bindings: watchdog: qcom-wdt: Make the interrupt example edge triggered
-
-Jerry Hoemann (3):
-      watchdog/hpwdt: Only claim UNKNOWN NMI if from iLO
-      watchdog/hpwdt: Remove redundant test.
-      watchdog/hpwdt: Remove unused variable
-
-Johan Hovold (1):
-      dt-bindings: watchdog: qcom,pm8916-wdt: add parent spmi node to example
-
-Krzysztof Kozlowski (2):
-      dt-bindings: watchdog: re-order entries to match coding convention
-      dt-bindings: watchdog: intel,keembay: reference common watchdog schema
-
-Lukas Bulwahn (1):
-      MAINTAINERS: rectify entry for DIALOG SEMICONDUCTOR DRIVERS
-
-Nik Bune (3):
-      dt-bindings: watchdog: realtek,rtd1295-watchdog: convert txt to yaml
-      dt-bindings: watchdog: qca,ar7130-wdt: convert txt to yaml
-      dt-bindings: watchdog: nxp,pnx4008-wdt: convert txt to yaml
-
-Nikita Shubin (1):
-      dt-bindings: wdt: Add ts72xx
-
-Randy Dunlap (1):
-      watchdog: mlx_wdt: fix all kernel-doc warnings
-
-Stefan Wahren (1):
-      watchdog: bcm2835_wdt: Fix WDIOC_SETTIMEOUT handling
-
-Uwe Kleine-K�nig (5):
-      watchdog: at91sam9: Stop using module_platform_driver_probe()
-      watchdog: txx9: Stop using module_platform_driver_probe()
-      watchdog: at91sam9_wdt: Convert to platform remove callback returning void
-      watchdog: starfive-wdt: Convert to platform remove callback returning void
-      watchdog: txx9wdt: Convert to platform remove callback returning void
-
-Vignesh Raghavendra (1):
-      watchdog: rti_wdt: Drop runtime pm reference count when watchdog is unused
-
-Werner Fischer (4):
-      watchdog: it87_wdt: add blank line after variable declaration
-      watchdog: it87_wdt: Remove redundant max_units setting
-      watchdog: it87_wdt: Add IT8659 ID
-      watchdog: it87_wdt: Keep WDTCTRL bit 3 unmodified for IT8784/IT8786
-
- .../bindings/watchdog/allwinner,sun4i-a10-wdt.yaml |  6 +--
- .../bindings/watchdog/alphascale,asm9260-wdt.yaml  |  6 +--
- .../devicetree/bindings/watchdog/apple,wdt.yaml    |  6 +--
- .../devicetree/bindings/watchdog/arm-smc-wdt.yaml  |  6 +--
- .../bindings/watchdog/brcm,bcm7038-wdt.yaml        | 10 ++---
- .../bindings/watchdog/cnxt,cx92755-wdt.yaml        |  6 +--
- .../bindings/watchdog/dlg,da9062-watchdog.yaml     | 12 ++++--
- .../bindings/watchdog/intel,keembay-wdt.yaml       |  5 ++-
- .../bindings/watchdog/maxim,max63xx.yaml           |  8 ++--
- .../bindings/watchdog/mediatek,mtk-wdt.yaml        |  1 +
- .../bindings/watchdog/nxp,pnx4008-wdt.yaml         | 34 ++++++++++++++++
- .../devicetree/bindings/watchdog/pnx4008-wdt.txt   | 17 --------
- .../bindings/watchdog/qca,ar7130-wdt.yaml          | 33 ++++++++++++++++
- .../bindings/watchdog/qca-ar7130-wdt.txt           | 13 -------
- .../bindings/watchdog/qcom,pm8916-wdt.yaml         | 33 +++++++++-------
- .../devicetree/bindings/watchdog/qcom-wdt.yaml     |  2 +-
- .../bindings/watchdog/realtek,rtd119x.txt          | 17 --------
- .../watchdog/realtek,rtd1295-watchdog.yaml         | 38 ++++++++++++++++++
- .../devicetree/bindings/watchdog/snps,dw-wdt.yaml  | 10 ++---
- .../bindings/watchdog/technologic,ts7200-wdt.yaml  | 45 ++++++++++++++++++++++
- MAINTAINERS                                        |  2 +-
- drivers/watchdog/at91sam9_wdt.c                    | 12 +++---
- drivers/watchdog/bcm2835_wdt.c                     |  3 +-
- drivers/watchdog/hpwdt.c                           |  9 +----
- drivers/watchdog/it87_wdt.c                        | 29 ++++++++++----
- drivers/watchdog/mlx_wdt.c                         |  4 +-
- drivers/watchdog/mtk_wdt.c                         | 42 ++++++++++++++++++++
- drivers/watchdog/rti_wdt.c                         | 13 ++++++-
- drivers/watchdog/starfive-wdt.c                    |  8 ++--
- drivers/watchdog/txx9wdt.c                         | 11 +++---
- drivers/watchdog/watchdog_dev.c                    |  3 +-
- 31 files changed, 307 insertions(+), 137 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/watchdog/nxp,pnx4008-wdt.yaml
- delete mode 100644 Documentation/devicetree/bindings/watchdog/pnx4008-wdt.txt
- create mode 100644 Documentation/devicetree/bindings/watchdog/qca,ar7130-wdt.yaml
- delete mode 100644 Documentation/devicetree/bindings/watchdog/qca-ar7130-wdt.txt
- delete mode 100644 Documentation/devicetree/bindings/watchdog/realtek,rtd119x.txt
- create mode 100644 Documentation/devicetree/bindings/watchdog/realtek,rtd1295-watchdog.yaml
- create mode 100644 Documentation/devicetree/bindings/watchdog/technologic,ts7200-wdt.yaml
-----------------------------------------------------------------
-
-Kind regards,
-Wim.
-
+Thanks
+> 
+> Thanks,
+> 
+> Alex
+> 
+> > >
+> > > Thanks
+> > >
+> > > >
+> > > > Before this patch:
+> > > >
+> > > > real  2m1.135s
+> > > > user  0m0.980s
+> > > > sys   2m0.096s
+> > > >
+> > > > 4.83%  batch_tlb  [kernel.kallsyms]            [k] __flush_tlb_range
+> > > >
+> > > > After this patch:
+> > > >
+> > > > real  1m0.543s
+> > > > user  0m1.059s
+> > > > sys   0m59.489s
+> > > >
+> > > > 0.14%  batch_tlb  [kernel.kallsyms]            [k] __flush_tlb_range
+> > > >
+> > > > Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
+> > > > ---
+> > > >  arch/riscv/Kconfig                |  1 +
+> > > >  arch/riscv/include/asm/tlbbatch.h | 15 +++++++
+> > > >  arch/riscv/include/asm/tlbflush.h | 10 +++++
+> > > >  arch/riscv/mm/tlbflush.c          | 71 ++++++++++++++++++++++---------
+> > > >  4 files changed, 77 insertions(+), 20 deletions(-)
+> > > >  create mode 100644 arch/riscv/include/asm/tlbbatch.h
+> > > >
+> > > > diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+> > > > index 7603bd8ab333..aa07bd43b138 100644
+> > > > --- a/arch/riscv/Kconfig
+> > > > +++ b/arch/riscv/Kconfig
+> > > > @@ -53,6 +53,7 @@ config RISCV
+> > > >       select ARCH_USE_MEMTEST
+> > > >       select ARCH_USE_QUEUED_RWLOCKS
+> > > >       select ARCH_USES_CFI_TRAPS if CFI_CLANG
+> > > > +     select ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH if SMP && MMU
+> > > >       select ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT if MMU
+> > > >       select ARCH_WANT_FRAME_POINTERS
+> > > >       select ARCH_WANT_GENERAL_HUGETLB if !RISCV_ISA_SVNAPOT
+> > > > diff --git a/arch/riscv/include/asm/tlbbatch.h b/arch/riscv/include/asm/tlbbatch.h
+> > > > new file mode 100644
+> > > > index 000000000000..46014f70b9da
+> > > > --- /dev/null
+> > > > +++ b/arch/riscv/include/asm/tlbbatch.h
+> > > > @@ -0,0 +1,15 @@
+> > > > +/* SPDX-License-Identifier: GPL-2.0-only */
+> > > > +/*
+> > > > + * Copyright (C) 2023 Rivos Inc.
+> > > > + */
+> > > > +
+> > > > +#ifndef _ASM_RISCV_TLBBATCH_H
+> > > > +#define _ASM_RISCV_TLBBATCH_H
+> > > > +
+> > > > +#include <linux/cpumask.h>
+> > > > +
+> > > > +struct arch_tlbflush_unmap_batch {
+> > > > +     struct cpumask cpumask;
+> > > > +};
+> > > > +
+> > > > +#endif /* _ASM_RISCV_TLBBATCH_H */
+> > > > diff --git a/arch/riscv/include/asm/tlbflush.h b/arch/riscv/include/asm/tlbflush.h
+> > > > index 8f3418c5f172..f0b731ccc0c2 100644
+> > > > --- a/arch/riscv/include/asm/tlbflush.h
+> > > > +++ b/arch/riscv/include/asm/tlbflush.h
+> > > > @@ -46,6 +46,16 @@ void flush_tlb_kernel_range(unsigned long start, unsigned long end);
+> > > >  void flush_pmd_tlb_range(struct vm_area_struct *vma, unsigned long start,
+> > > >                       unsigned long end);
+> > > >  #endif
+> > > > +
+> > > > +#ifdef CONFIG_ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH
+> > > > +bool arch_tlbbatch_should_defer(struct mm_struct *mm);
+> > > > +void arch_tlbbatch_add_pending(struct arch_tlbflush_unmap_batch *batch,
+> > > > +                            struct mm_struct *mm,
+> > > > +                            unsigned long uaddr);
+> > > > +void arch_flush_tlb_batched_pending(struct mm_struct *mm);
+> > > > +void arch_tlbbatch_flush(struct arch_tlbflush_unmap_batch *batch);
+> > > > +#endif /* CONFIG_ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH */
+> > > > +
+> > > >  #else /* CONFIG_SMP && CONFIG_MMU */
+> > > >
+> > > >  #define flush_tlb_all() local_flush_tlb_all()
+> > > > diff --git a/arch/riscv/mm/tlbflush.c b/arch/riscv/mm/tlbflush.c
+> > > > index e6659d7368b3..bb623bca0a7d 100644
+> > > > --- a/arch/riscv/mm/tlbflush.c
+> > > > +++ b/arch/riscv/mm/tlbflush.c
+> > > > @@ -93,29 +93,23 @@ static void __ipi_flush_tlb_range_asid(void *info)
+> > > >       local_flush_tlb_range_asid(d->start, d->size, d->stride, d->asid);
+> > > >  }
+> > > >
+> > > > -static void __flush_tlb_range(struct mm_struct *mm, unsigned long start,
+> > > > -                           unsigned long size, unsigned long stride)
+> > > > +static void __flush_tlb_range(struct cpumask *cmask, unsigned long asid,
+> > > > +                           unsigned long start, unsigned long size,
+> > > > +                           unsigned long stride)
+> > > >  {
+> > > >       struct flush_tlb_range_data ftd;
+> > > > -     const struct cpumask *cmask;
+> > > > -     unsigned long asid = FLUSH_TLB_NO_ASID;
+> > > >       bool broadcast;
+> > > >
+> > > > -     if (mm) {
+> > > > -             unsigned int cpuid;
+> > > > +     if (cpumask_empty(cmask))
+> > > > +             return;
+> > > >
+> > > > -             cmask = mm_cpumask(mm);
+> > > > -             if (cpumask_empty(cmask))
+> > > > -                     return;
+> > > > +     if (cmask != cpu_online_mask) {
+> > > > +             unsigned int cpuid;
+> > > >
+> > > >               cpuid = get_cpu();
+> > > >               /* check if the tlbflush needs to be sent to other CPUs */
+> > > >               broadcast = cpumask_any_but(cmask, cpuid) < nr_cpu_ids;
+> > > > -
+> > > > -             if (static_branch_unlikely(&use_asid_allocator))
+> > > > -                     asid = atomic_long_read(&mm->context.id) & asid_mask;
+> > > >       } else {
+> > > > -             cmask = cpu_online_mask;
+> > > >               broadcast = true;
+> > > >       }
+> > > >
+> > > > @@ -135,25 +129,34 @@ static void __flush_tlb_range(struct mm_struct *mm, unsigned long start,
+> > > >               local_flush_tlb_range_asid(start, size, stride, asid);
+> > > >       }
+> > > >
+> > > > -     if (mm)
+> > > > +     if (cmask != cpu_online_mask)
+> > > >               put_cpu();
+> > > >  }
+> > > >
+> > > > +static inline unsigned long get_mm_asid(struct mm_struct *mm)
+> > > > +{
+> > > > +     return static_branch_unlikely(&use_asid_allocator) ?
+> > > > +                     atomic_long_read(&mm->context.id) & asid_mask : FLUSH_TLB_NO_ASID;
+> > > > +}
+> > > > +
+> > > >  void flush_tlb_mm(struct mm_struct *mm)
+> > > >  {
+> > > > -     __flush_tlb_range(mm, 0, FLUSH_TLB_MAX_SIZE, PAGE_SIZE);
+> > > > +     __flush_tlb_range(mm_cpumask(mm), get_mm_asid(mm),
+> > > > +                       0, FLUSH_TLB_MAX_SIZE, PAGE_SIZE);
+> > > >  }
+> > > >
+> > > >  void flush_tlb_mm_range(struct mm_struct *mm,
+> > > >                       unsigned long start, unsigned long end,
+> > > >                       unsigned int page_size)
+> > > >  {
+> > > > -     __flush_tlb_range(mm, start, end - start, page_size);
+> > > > +     __flush_tlb_range(mm_cpumask(mm), get_mm_asid(mm),
+> > > > +                       start, end - start, page_size);
+> > > >  }
+> > > >
+> > > >  void flush_tlb_page(struct vm_area_struct *vma, unsigned long addr)
+> > > >  {
+> > > > -     __flush_tlb_range(vma->vm_mm, addr, PAGE_SIZE, PAGE_SIZE);
+> > > > +     __flush_tlb_range(mm_cpumask(vma->vm_mm), get_mm_asid(vma->vm_mm),
+> > > > +                       addr, PAGE_SIZE, PAGE_SIZE);
+> > > >  }
+> > > >
+> > > >  void flush_tlb_range(struct vm_area_struct *vma, unsigned long start,
+> > > > @@ -185,18 +188,46 @@ void flush_tlb_range(struct vm_area_struct *vma, unsigned long start,
+> > > >               }
+> > > >       }
+> > > >
+> > > > -     __flush_tlb_range(vma->vm_mm, start, end - start, stride_size);
+> > > > +     __flush_tlb_range(mm_cpumask(vma->vm_mm), get_mm_asid(vma->vm_mm),
+> > > > +                       start, end - start, stride_size);
+> > > >  }
+> > > >
+> > > >  void flush_tlb_kernel_range(unsigned long start, unsigned long end)
+> > > >  {
+> > > > -     __flush_tlb_range(NULL, start, end - start, PAGE_SIZE);
+> > > > +     __flush_tlb_range((struct cpumask *)cpu_online_mask, FLUSH_TLB_NO_ASID,
+> > > > +                       start, end - start, PAGE_SIZE);
+> > > >  }
+> > > >
+> > > >  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+> > > >  void flush_pmd_tlb_range(struct vm_area_struct *vma, unsigned long start,
+> > > >                       unsigned long end)
+> > > >  {
+> > > > -     __flush_tlb_range(vma->vm_mm, start, end - start, PMD_SIZE);
+> > > > +     __flush_tlb_range(mm_cpumask(vma->vm_mm), get_mm_asid(vma->vm_mm),
+> > > > +                       start, end - start, PMD_SIZE);
+> > > >  }
+> > > >  #endif
+> > > > +
+> > > > +#ifdef CONFIG_ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH
+> > > > +bool arch_tlbbatch_should_defer(struct mm_struct *mm)
+> > > > +{
+> > > > +     return true;
+> > > > +}
+> > > > +
+> > > > +void arch_tlbbatch_add_pending(struct arch_tlbflush_unmap_batch *batch,
+> > > > +                            struct mm_struct *mm,
+> > > > +                            unsigned long uaddr)
+> > > > +{
+> > > > +     cpumask_or(&batch->cpumask, &batch->cpumask, mm_cpumask(mm));
+> > > > +}
+> > > > +
+> > > > +void arch_flush_tlb_batched_pending(struct mm_struct *mm)
+> > > > +{
+> > > > +     flush_tlb_mm(mm);
+> > > > +}
+> > > > +
+> > > > +void arch_tlbbatch_flush(struct arch_tlbflush_unmap_batch *batch)
+> > > > +{
+> > > > +     __flush_tlb_range(&batch->cpumask, FLUSH_TLB_NO_ASID, 0,
+> > > > +                       FLUSH_TLB_MAX_SIZE, PAGE_SIZE);
+> > > > +}
+> > > > +#endif /* CONFIG_ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH */
+> > > > --
+> > > > 2.39.2
+> > > >
+> > > >
+> > > > _______________________________________________
+> > > > linux-riscv mailing list
+> > > > linux-riscv@lists.infradead.org
+> > > > http://lists.infradead.org/mailman/listinfo/linux-riscv
 
