@@ -1,109 +1,114 @@
-Return-Path: <linux-kernel+bounces-18594-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18590-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D301825FD4
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 15:18:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A8A5825FC9
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 15:12:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C2DA1B22096
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 14:18:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 396FA1F21569
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 14:12:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BA4C8485;
-	Sat,  6 Jan 2024 14:18:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="fBU+SB2N"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84FE4749A;
+	Sat,  6 Jan 2024 14:12:17 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+Received: from mx.skole.hr (mx1.hosting.skole.hr [161.53.165.185])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3762C847B
-	for <linux-kernel@vger.kernel.org>; Sat,  6 Jan 2024 14:18:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704550714; x=1736086714;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=IZCz/MZA6E72BOm/MHR3k5Pv0uD88Tp+9lsZbl+gfxE=;
-  b=fBU+SB2NBr1tdqCcUwOsk+6L5l5BGvOP78Vx/U4+reWKnXzobxUWmOKg
-   O34iLDPlOtAj9HtZbcbqav0C+ViTa3Dbbzk6lklAyu4DclZhZhdg0Hso1
-   Z0sBwfDb1bzclkCqpYUmhEbwjBqXL0MWOupC7p5iiaffLc/y3QDKSnDoR
-   4ao4akMu4Dd20n0nAIMYvUAlJKfTkV/+m5GuoWcVcVQgJi7hyw5LtXG0r
-   4pc2F2Hn5meexpU+L+OoVX2ASJvVUKeOe9qQ3k4qYPoS7isMRUZ6u6xQh
-   KWWdHZZ5RcwebekPgBTMV1JBMsdI/U4SS7K3My8E3EL9mqRyyHXlYI60f
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10945"; a="16266400"
-X-IronPort-AV: E=Sophos;i="6.04,337,1695711600"; 
-   d="scan'208";a="16266400"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jan 2024 06:18:33 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10945"; a="954223935"
-X-IronPort-AV: E=Sophos;i="6.04,337,1695711600"; 
-   d="scan'208";a="954223935"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga005.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jan 2024 06:18:28 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rM7MG-0000000BvMv-1HXB;
-	Sat, 06 Jan 2024 16:09:04 +0200
-Date: Sat, 6 Jan 2024 16:09:04 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Mark Hasemeyer <markhas@chromium.org>
-Cc: LKML <linux-kernel@vger.kernel.org>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Rob Herring <robh@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Sudeep Holla <sudeep.holla@arm.com>,
-	Raul Rangel <rrangel@chromium.org>,
-	Tzung-Bi Shih <tzungbi@kernel.org>, David Gow <davidgow@google.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Mark Brown <broonie@kernel.org>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Takashi Iwai <tiwai@suse.de>,
-	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-Subject: Re: [PATCH v3 23/24] platform: Modify platform_get_irq_optional() to
- use resource
-Message-ID: <ZZlfADa5_-NnK4UI@smile.fi.intel.com>
-References: <20231226192149.1830592-1-markhas@chromium.org>
- <20231226122113.v3.23.Ife9ebad2bbfbab3a05e90040f344d750aa0aac7e@changeid>
- <ZYxfLjCzjnocKaTo@smile.fi.intel.com>
- <CANg-bXAPrhS9iYASSSXFJguYEvejL_NcgMCWCHU=6mvP9AstLA@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 162057494
+	for <linux-kernel@vger.kernel.org>; Sat,  6 Jan 2024 14:12:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=skole.hr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=skole.hr
+Received: from mx1.hosting.skole.hr (localhost.localdomain [127.0.0.1])
+	by mx.skole.hr (mx.skole.hr) with ESMTP id 758DA84071;
+	Sat,  6 Jan 2024 15:12:04 +0100 (CET)
+From: =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
+Date: Sat, 06 Jan 2024 15:11:33 +0100
+Subject: [PATCH v2] soc: pxa: ssp: fix casts
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANg-bXAPrhS9iYASSSXFJguYEvejL_NcgMCWCHU=6mvP9AstLA@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Message-Id: <20240106-pxa-ssp-v2-1-69ac9f028bba@skole.hr>
+X-B4-Tracking: v=1; b=H4sIAJRfmWUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyjHQUlJIzE
+ vPSU3UzU4B8JSMDIxMDQwMz3YKKRN3i4gJdUyMjcxPTFBMjE0MLJaDqgqLUtMwKsEnRsbW1AHa
+ lQ3lZAAAA
+To: Arnd Bergmann <arnd@arndb.de>, 
+ =?utf-8?q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>, 
+ Robert Jarzmik <robert.jarzmik@free.fr>
+Cc: Lubomir Rintel <lkundrak@v3.sk>, zhang songyi <zhang.songyi@zte.com.cn>, 
+ soc@kernel.org, linux-arm-kernel@lists.infradead.org, 
+ linux-kernel@vger.kernel.org, 
+ =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1552;
+ i=duje.mihanovic@skole.hr; h=from:subject:message-id;
+ bh=nG1Ud3E/McbOgiucrgVOFbNv69PsS0D3QewrfR7q2qI=;
+ b=owEBbQKS/ZANAwAIAZoRnrBCLZbhAcsmYgBlmV+erp7NYDOlDGSNcq79EREE1t7nDQqu0YJxQ
+ CpPJ52xTf2JAjMEAAEIAB0WIQRT351NnD/hEPs2LXiaEZ6wQi2W4QUCZZlfngAKCRCaEZ6wQi2W
+ 4XezEACZ5xs9RVZqA8fSBiecFOpVS6RMzaeMScr8A02opWHWnRLJb5mGbECUwjRsFqT1vX2Bl+t
+ T9NMx5aLt4jhYTE1Uj0qN3mooLCes/VIKg6+VJMELbnFe5F7e/YR/MHVoP0MlRJ6PPL0zuwCi3k
+ 4TY0/jzpRWi/OfNyhDT0G9VBFQahAHMyAQdSEPJ7iARzGRicXq4bTyIXvrIq11EQ0l5bDEHEQ6C
+ 4/HWJL18DKOSOQGW0bhaIX+Terkt5sLiP1he60rdqlf4/Yv8vX1nUVxGWUmbj2w3TphbIeO4jBa
+ 0jIrsOGPgQrI6R+PDYmVqAlDN48ccKUx32aueMABRPknJckb2fVYC7miJSmEHuo0/eu41mAJpLW
+ 1Lj6tSouB8TiQc20pZEXGYVuvJ9D2q/D7s8QMO+5HYoxblyVsEPDZhuoqGVTrqy3VwVIV+QJ+nk
+ FUU+8UnmYGAOS1NT46/NFTWV2T83g4u09tiOKG0M3nGc5bInfgcIpnAWjpx85KKw7X6/boN75gy
+ fYBOZm1gjun8MMcE+UL743T/dobU64ujdEgO5VRFD+zeTNetcuS47yZ54+nv1UQiYIrOqkBHs4R
+ l86dEDA1HVzG/um26eg3ZusbpcDJGRE4D3iac7kPjdDi7gOk3bpBIYUfjC0mvubq1CujTZ6l2lG
+ W8G8qP6LIJo1kjQ==
+X-Developer-Key: i=duje.mihanovic@skole.hr; a=openpgp;
+ fpr=53DF9D4D9C3FE110FB362D789A119EB0422D96E1
 
-On Wed, Dec 27, 2023 at 01:33:14PM -0700, Mark Hasemeyer wrote:
-> > > -     struct resource *r;
-> >         ...
-> > > +     struct resource *platform_res = platform_get_resource(dev, IORESOURCE_IRQ, num);
-> >
-> > This is quite unusual (as far as cleanup.h is not used and there is no place
-> > for it here).
-> 
-> Sorry, what's unusual? The declaration of a separate 'platform_res'?
-> If so, I introduced it because I wanted to avoid setting 'r' if
-> 'irq_get_irq_data()' fails below.
+On ARM64 platforms, id->data is a 64-bit value and casting it to a
+32-bit integer causes build errors. Cast it to uintptr_t instead.
 
-Defining the variable in the depth of the code.
-There are exceptions, but usually we follow the style that definitions are
-grouped at the top of the {} scope(s).
+The id->driver_data cast is unnecessary, so drop it.
 
+Signed-off-by: Duje Mihanović <duje.mihanovic@skole.hr>
+---
+This patch is necessary for my Marvell PXA1908 series to compile successfully
+with allyesconfig:
+https://lore.kernel.org/all/20231102-pxa1908-lkml-v7-0-cabb1a0cb52b@skole.hr/
 
+Changes in v2:
+- Change first cast to (uintptr_t)
+- Drop second cast
+- Link to v1: https://lore.kernel.org/20240103210604.16877-1-duje.mihanovic@skole.hr
+---
+ drivers/soc/pxa/ssp.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/soc/pxa/ssp.c b/drivers/soc/pxa/ssp.c
+index a1e8a07f7275..7af04e8b8163 100644
+--- a/drivers/soc/pxa/ssp.c
++++ b/drivers/soc/pxa/ssp.c
+@@ -152,11 +152,11 @@ static int pxa_ssp_probe(struct platform_device *pdev)
+ 	if (dev->of_node) {
+ 		const struct of_device_id *id =
+ 			of_match_device(of_match_ptr(pxa_ssp_of_ids), dev);
+-		ssp->type = (int) id->data;
++		ssp->type = (uintptr_t) id->data;
+ 	} else {
+ 		const struct platform_device_id *id =
+ 			platform_get_device_id(pdev);
+-		ssp->type = (int) id->driver_data;
++		ssp->type = id->driver_data;
+ 
+ 		/* PXA2xx/3xx SSP ports starts from 1 and the internal pdev->id
+ 		 * starts from 0, do a translation here
+
+---
+base-commit: 610a9b8f49fbcf1100716370d3b5f6f884a2835a
+change-id: 20240106-pxa-ssp-522745d42418
+
+Best regards,
 -- 
-With Best Regards,
-Andy Shevchenko
+Duje Mihanović <duje.mihanovic@skole.hr>
 
 
 
