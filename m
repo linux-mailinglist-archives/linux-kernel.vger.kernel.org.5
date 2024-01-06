@@ -1,94 +1,263 @@
-Return-Path: <linux-kernel+bounces-18460-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18461-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1DB4E825DF7
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 03:49:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 293C5825DFC
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 03:52:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 159E2B2344E
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 02:48:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 91D361F245F3
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 02:52:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73E243D62;
-	Sat,  6 Jan 2024 02:48:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD49817CB;
+	Sat,  6 Jan 2024 02:52:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=atishpatra.org header.i=@atishpatra.org header.b="cbY/qe/X"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com [209.85.208.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECB9C2FB6;
-	Sat,  6 Jan 2024 02:48:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4T6PsH5nN9z4f3lfV;
-	Sat,  6 Jan 2024 10:48:35 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 8DE5F1A0273;
-	Sat,  6 Jan 2024 10:48:41 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-	by APP1 (Coremail) with SMTP id cCh0CgC3BAuFv5hlkomfFg--.12268S2;
-	Sat, 06 Jan 2024 10:48:41 +0800 (CST)
-Subject: Re: [PATCH v2] virtiofs: use GFP_NOFS when enqueuing request through
- kworker
-To: Matthew Wilcox <willy@infradead.org>, Vivek Goyal <vgoyal@redhat.com>
-Cc: linux-fsdevel@vger.kernel.org, Miklos Szeredi <miklos@szeredi.hu>,
- Stefan Hajnoczi <stefanha@redhat.com>, linux-kernel@vger.kernel.org,
- virtualization@lists.linux.dev, houtao1@huawei.com
-References: <20240105105305.4052672-1-houtao@huaweicloud.com>
- <ZZhjzwnQUEJhNJiq@redhat.com> <ZZhkrOdbau2O/B59@casper.infradead.org>
-From: Hou Tao <houtao@huaweicloud.com>
-Message-ID: <1e4b0ed0-8879-9044-75b6-d8371ddc50fc@huaweicloud.com>
-Date: Sat, 6 Jan 2024 10:48:37 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7BA515AC
+	for <linux-kernel@vger.kernel.org>; Sat,  6 Jan 2024 02:52:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=atishpatra.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=atishpatra.org
+Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2ccbc328744so1464941fa.3
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Jan 2024 18:52:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=atishpatra.org; s=google; t=1704509545; x=1705114345; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vKh9BmOj21iuAqSENO/xdERxW3QeKR5djoMlE8KCUEE=;
+        b=cbY/qe/Xj+Dg0MT0WIXQlsmi0I3uDeBzMPP3Ny+/Z2tLReqt7wQiDlXLr7azyGol/v
+         XDTwUXbXmC0IOyksxZwAfCm8O58MGickCt0OP99o0KGI1MWWs38T7taezZcRQFk71AoM
+         yL4K8SZDCW0ItEomvHtM4z8H9xk7j3phGl/D4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704509545; x=1705114345;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vKh9BmOj21iuAqSENO/xdERxW3QeKR5djoMlE8KCUEE=;
+        b=TWD6zMIsoTKxiLD7zqbTF6DonpByNSV7P3/aTf+P0oxnRDr1mhwL4ng9/Y/4EhFi/v
+         9oMfDzIt1YsY+qSEJjc5XA4hrkTegFwEMPQMREVNLS/d+wrviuoaxZUfFWg3KkjLrKiu
+         JX8YU4joTjyVCl/bhLkdvNHh2PNRLtruI7RGCj2PKD9ZNif4nuYZ7Dqq6TiMb3y0zZdB
+         oMEWp2nq0F08ObNVVSBx4j5Ve1OX1+We8CrSEITd2MQHaD77rSeKERaeEMbC2Goix4BB
+         QcrICttGYKRTETnj3o+q3mwPP+ft1QM1W5SdoRdYrKWYb/25gvz1k77gRZXVj/T3SxtY
+         N81A==
+X-Gm-Message-State: AOJu0YzGMcInkzcFuR65jk7deR8TrJ4dPoZ94tvysCdoCE6IDBdDzW98
+	dYz30zYxyXzAhKagg6WuAONt8n1QQnmDPIguQ8PAwy0x263R2913AFBHl9y4aQ==
+X-Google-Smtp-Source: AGHT+IEmVW5WFkfcPShNUfss77u377U1lwtoz/zN0/cjZUA+a6QTwiua4e01S2bKUn5fKF5veb231gk13iU65HlSsl0=
+X-Received: by 2002:a2e:979a:0:b0:2cd:2c3e:ae09 with SMTP id
+ y26-20020a2e979a000000b002cd2c3eae09mr108950lji.40.1704509544147; Fri, 05 Jan
+ 2024 18:52:24 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <ZZhkrOdbau2O/B59@casper.infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-CM-TRANSID:cCh0CgC3BAuFv5hlkomfFg--.12268S2
-X-Coremail-Antispam: 1UD129KBjvdXoWrKFWkZw47Cw43WrW3uF1fCrg_yoWfZwb_Wr
-	4q9F17Cw18JF1UW3Z7Jr4F9FZFya18Wr4jqFZ8XrW7Z3WYqa93GrnY9r4Sv347G3ySyrWr
-	uFWSvasIv3WSkjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUb7xYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E6xAIw20E
-	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
-	A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x02
-	67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0E
-	wIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E74
-	80Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0
-	I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04
-	k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
-	c7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UQzVbUUUUU=
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+References: <20231213-fencei-v3-0-b75158238eb7@rivosinc.com> <20231213-fencei-v3-2-b75158238eb7@rivosinc.com>
+In-Reply-To: <20231213-fencei-v3-2-b75158238eb7@rivosinc.com>
+From: Atish Patra <atishp@atishpatra.org>
+Date: Fri, 5 Jan 2024 18:52:12 -0800
+Message-ID: <CAOnJCULhAMmz22bH6A5AXv7aaJpH8SVGBATQyx-bfKAn4eFxsQ@mail.gmail.com>
+Subject: Re: [PATCH v3 2/2] documentation: Document PR_RISCV_SET_ICACHE_FLUSH_CTX
+ prctl
+To: Charlie Jenkins <charlie@rivosinc.com>
+Cc: Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	Albert Ou <aou@eecs.berkeley.edu>, Jonathan Corbet <corbet@lwn.net>, 
+	Conor Dooley <conor.dooley@microchip.com>, =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>, 
+	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	linux-doc@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, Dec 13, 2023 at 2:48=E2=80=AFPM Charlie Jenkins <charlie@rivosinc.c=
+om> wrote:
+>
+> Provide documentation that explains how to properly do CMODX in riscv.
+>
+> Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
+> ---
+>  Documentation/arch/riscv/cmodx.rst | 98 ++++++++++++++++++++++++++++++++=
+++++++
+>  Documentation/arch/riscv/index.rst |  1 +
+>  2 files changed, 99 insertions(+)
+>
+> diff --git a/Documentation/arch/riscv/cmodx.rst b/Documentation/arch/risc=
+v/cmodx.rst
+> new file mode 100644
+> index 000000000000..20f327d85116
+> --- /dev/null
+> +++ b/Documentation/arch/riscv/cmodx.rst
+> @@ -0,0 +1,98 @@
+> +.. SPDX-License-Identifier: GPL-2.0
+> +
+> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D
+> +Concurrent Modification and Execution of Instructions (CMODX) for RISC-V=
+ Linux
+> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D
+> +
+> +CMODX is a programming technique where a program executes instructions t=
+hat were
+> +modified by the program itself. Instruction storage and the instruction =
+cache
+> +(icache) is not guaranteed to be synchronized on RISC-V hardware. Theref=
+ore, the
+> +program must enforce its own synchonization with the unprivileged fence.=
+i/
+
+/s/synchonization/synchronization
+
+> +instruction.
+> +
+> +However, the default Linux ABI prohibits the use of fence.i in userspace
+> +applications. At any point the scheduler may migrate a task onto a new h=
+art. If
+> +migration occurs after the userspace synchronized the icache and instruc=
+tion
+> +storage with fence.i, the icache will no longer be clean. This is due to=
+ the
+> +behavior of fence.i only affecting the hart that it is called on. Thus, =
+the hart
+> +that the task has been migrated to, may not have synchronized instructio=
+n
+> +storage and icache.
+> +
+> +There are two ways to solve this problem: use the riscv_flush_icache() s=
+yscall,
+> +or use the ``PR_RISCV_SET_ICACHE_FLUSH_CTX`` prctl(). The syscall should=
+ be used
+> +when the application very rarely needs to flush the icache. If the icach=
+e will
+
+The syscall is a one time operation while prctl is sticky.
+It would be great if we can add a little more context why the syscall
+behaves this way compared to prctl.
+
+> +need to be flushed many times in the lifetime of the application, the pr=
+ctl
+> +should be used.
+> +
+> +The prctl informs the kernel that it must emit synchronizing instruction=
+s upon
+> +task migration. The program itself must emit synchonizing instructions w=
+hen
+
+/s/synchonizing/synchronizing
+
+> +necessary as well.
+> +
+> +1.  prctl() Interface
+> +---------------------
+> +
+> +Before the program emits their first icache flushing instruction, the pr=
+ogram
+> +must call this prctl().
+> +
+> +* prctl(PR_RISCV_SET_ICACHE_FLUSH_CTX, unsigned long ctx, unsigned long =
+per_thread)
+> +
+> +       Sets the icache flushing context. If per_thread is 0, context wil=
+l be
+> +       applied per process, otherwise if per_thread is 1 context will be
+> +       per-thread. Any other number will have undefined behavior.
+> +
+> +       * :c:macro:`PR_RISCV_CTX_SW_FENCEI`: Allow fence.i to be called i=
+n
+> +         userspace.
+> +
+> +Example usage:
+> +
+> +The following files are meant to be compiled and linked with each other.=
+ The
+> +modify_instruction() function replaces an add with 0 with an add with on=
+e,
+> +causing the instruction sequence in get_value() to change from returning=
+ a zero
+> +to returning a one.
+> +
+> +cmodx.c::
+> +
+> +       #include <stdio.h>
+> +       #include <sys/prctl.h>
+> +
+> +       extern int get_value();
+> +       extern void modify_instruction();
+> +
+> +       int main()
+> +       {
+> +               int value =3D get_value();
+> +               printf("Value before cmodx: %d\n", value);
+> +
+> +               // Call prctl before first fence.i is called inside modif=
+y_instruction
+> +               prctl(PR_RISCV_SET_ICACHE_FLUSH_CTX, PR_RISCV_CTX_SW_FENC=
+EI, 0);
+> +               modify_instruction();
+> +
+> +               value =3D get_value();
+> +               printf("Value after cmodx: %d\n", value);
+> +               return 0;
+> +       }
+> +
+> +cmodx.S::
+> +
+> +       .option norvc
+> +
+> +       .text
+> +       .global modify_instruction
+> +       modify_instruction:
+> +       lw a0, new_insn
+> +       lui a5,%hi(old_insn)
+> +       sw  a0,%lo(old_insn)(a5)
+> +       fence.i
+> +       ret
+> +
+> +       .section modifiable, "awx"
+> +       .global get_value
+> +       get_value:
+> +       li a0, 0
+> +       old_insn:
+> +       addi a0, a0, 0
+> +       ret
+> +
+> +       .data
+> +       new_insn:
+> +       addi a0, a0, 1
+> diff --git a/Documentation/arch/riscv/index.rst b/Documentation/arch/risc=
+v/index.rst
+> index 4dab0cb4b900..eecf347ce849 100644
+> --- a/Documentation/arch/riscv/index.rst
+> +++ b/Documentation/arch/riscv/index.rst
+> @@ -13,6 +13,7 @@ RISC-V architecture
+>      patch-acceptance
+>      uabi
+>      vector
+> +    cmodx
+>
+>      features
+>
+>
+> --
+> 2.43.0
+>
+>
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
 
 
 
-On 1/6/2024 4:21 AM, Matthew Wilcox wrote:
-> On Fri, Jan 05, 2024 at 03:17:19PM -0500, Vivek Goyal wrote:
->> On Fri, Jan 05, 2024 at 06:53:05PM +0800, Hou Tao wrote:
->>> From: Hou Tao <houtao1@huawei.com>
->>>
->>> When invoking virtio_fs_enqueue_req() through kworker, both the
->>> allocation of the sg array and the bounce buffer still use GFP_ATOMIC.
->>> Considering the size of both the sg array and the bounce buffer may be
->>> greater than PAGE_SIZE, use GFP_NOFS instead of GFP_ATOMIC to lower the
->>> possibility of memory allocation failure.
->>>
->> What's the practical benefit of this patch. Looks like if memory
->> allocation fails, we keep retrying at interval of 1ms and don't
->> return error to user space.
-> You don't deplete the atomic reserves unnecessarily?
-Beside that, I think the proposed GFP_NOFS may reduce unnecessary
-retries. I Should mention that in the commit message. Should I post a v3
-to do that ?
-
+--=20
+Regards,
+Atish
 
