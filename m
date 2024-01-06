@@ -1,161 +1,111 @@
-Return-Path: <linux-kernel+bounces-18444-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18445-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 36097825DA5
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 02:27:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 17FC4825DA7
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 02:30:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C665B1F24322
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 01:27:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C0B3F1F2426F
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 01:30:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C96B417D2;
-	Sat,  6 Jan 2024 01:27:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D916915BB;
+	Sat,  6 Jan 2024 01:30:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="nCmdR2iP"
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="ISjjADD2"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ot1-f47.google.com (mail-ot1-f47.google.com [209.85.210.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B067E10E6;
-	Sat,  6 Jan 2024 01:27:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4061A1J4016035;
-	Sat, 6 Jan 2024 01:25:09 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=sZ0M91xzoxHthsWUFUQNJs4RTh8cCxAMRlkqvgwdmDo=; b=nC
-	mdR2iPLceqqxiQViLDCrSHRPAxJCufFSfkYwki/Cakg0JikmFeMNolnwGVzorrW7
-	S/riKNdr+8TCZ1N05W2ORg8jORgzMDnVmYpoKbrw8I7TEqQMkqf3ppJeR/9ZWRo7
-	xarpP/Kl+Ug118TnaZZzWuFfWrqVvHzxaLcbb0+vE5u8cL6KpYkHZiwEwvg76YmB
-	ZEiYP4Nau2HFmGpZPLlhVQGwJwX4MKW5y2hCRV43TSky2kNfRexDJuIQ2/8vRRHK
-	XbXoahvRDPNUjQ2PdgMIlGZdvQNw6s6+f3gExQ/cgKwrMi5WjA/mYTuepZFiFQnL
-	xTNKIfYLuuHjLy5OgbGA==
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ve94rapxp-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sat, 06 Jan 2024 01:25:08 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4061P7j0012092
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sat, 6 Jan 2024 01:25:07 GMT
-Received: from [10.110.42.177] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 5 Jan
- 2024 17:25:05 -0800
-Message-ID: <6c9f087d-ac1f-4601-91f0-d84fb77b3989@quicinc.com>
-Date: Fri, 5 Jan 2024 17:25:04 -0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4E001374
+	for <linux-kernel@vger.kernel.org>; Sat,  6 Jan 2024 01:30:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-ot1-f47.google.com with SMTP id 46e09a7af769-6dc20b4595bso108587a34.0
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Jan 2024 17:30:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1704504627; x=1705109427; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=uenrlMRPsRutka3ylqscmBMBSunDEpkSYimf7XoR7pg=;
+        b=ISjjADD2HXfTePGW08F17+dvXmmFxIOlFnvx3qE3L0mvzvXDkUBFeX31k95jayWIj3
+         nc6hMOaZJb30FD85tc73bd7/2AKtW+1Zj/Feu6hWRx9TyymL1qmia243yhtNbC8TwNXf
+         50RZKwSAvh2e0Y7SzDjxTRPkLShJ2PQs5SzAQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704504627; x=1705109427;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=uenrlMRPsRutka3ylqscmBMBSunDEpkSYimf7XoR7pg=;
+        b=fya8E2nJs5wAKiT+f+e4PEvTi6WR+WouWdjZCdr0VZiATYKKlvoMSmM3cWt7TIHslE
+         OPQ1R6PvfhIkIuvP+00oPQbTtp39EX1v8KiQZXOL0Lh3YWZqOzhet6VEpVV9kAEo4UIQ
+         7IAL6rDCqn0CKlvqqcWOrkFO7fAEM4E9lbQU9NgEazxY2t2IQZ2+Hkqs21COn3KqNe3a
+         L1nZ+wQ7DFnfvdESD7TvuaTAqcUXnu17m7GzcxRrAfaRe9vTVsEdn/xepOHc+W8qOkpx
+         jyejW4VyPbMb/flZvpdGGxz4OcSgK3HvyCQTyGXhzSBMkF9/t/+mPeXaaiPpeiAJGlKl
+         Xi8A==
+X-Gm-Message-State: AOJu0Yy2OdinW0EwFEbmQFJyf+FrOvSKjzCCd4WelrogT8PUtmMQS8X1
+	AesuWpAr8rBlK2JZ2xPBmfpw2Qeb8EeX
+X-Google-Smtp-Source: AGHT+IGKrZE3RF/VPZPnZJhRPku95hyprnJnVax+/mJZRgJw3HIFof+xXAXIg+RY7oWDic64Yhx/pg==
+X-Received: by 2002:a05:6808:1802:b0:3bc:3cf4:f082 with SMTP id bh2-20020a056808180200b003bc3cf4f082mr367676oib.81.1704504626824;
+        Fri, 05 Jan 2024 17:30:26 -0800 (PST)
+Received: from google.com (KD124209171220.ppp-bb.dion.ne.jp. [124.209.171.220])
+        by smtp.gmail.com with ESMTPSA id d3-20020a17090ac24300b0028c8a2a9c73sm1919418pjx.25.2024.01.05.17.30.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Jan 2024 17:30:26 -0800 (PST)
+Date: Sat, 6 Jan 2024 10:30:21 +0900
+From: Sergey Senozhatsky <senozhatsky@chromium.org>
+To: Barry Song <21cnbao@gmail.com>
+Cc: minchan@kernel.org, senozhatsky@chromium.org, axboe@kernel.dk,
+	linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+	Barry Song <v-songbaohua@oppo.com>,
+	Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH] zram: easy the allocation of zcomp_strm's buffers with 2
+ pages
+Message-ID: <20240106013021.GA123449@google.com>
+References: <20240103003011.211382-1-v-songbaohua@oppo.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC 5/9] PCI/pwrseq: add pwrseq core code
-Content-Language: en-US
-To: Bartosz Golaszewski <brgl@bgdev.pl>, Kalle Valo <kvalo@kernel.org>,
-        "David
- S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>, Jakub
- Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Rob Herring
-	<robh+dt@kernel.org>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio
-	<konrad.dybcio@linaro.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will
- Deacon <will@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-        Heiko Stuebner
-	<heiko@sntech.de>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Chris Morgan
-	<macromorgan@hotmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Geert
- Uytterhoeven <geert+renesas@glider.be>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Neil
- Armstrong <neil.armstrong@linaro.org>,
-        =?UTF-8?Q?N=C3=ADcolas_F_=2E_R_=2E_A_=2E_Prado?= <nfraprado@collabora.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Peng Fan <peng.fan@nxp.com>, Robert Richter <rrichter@amd.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Terry Bowman
-	<terry.bowman@amd.com>,
-        Kuppuswamy Sathyanarayanan
-	<sathyanarayanan.kuppuswamy@linux.intel.com>,
-        =?UTF-8?Q?Ilpo_J=C3=A4rvinen?=
-	<ilpo.jarvinen@linux.intel.com>,
-        Huacai Chen <chenhuacai@kernel.org>, Alex
- Elder <elder@linaro.org>,
-        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC: <linux-wireless@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <linux-pci@vger.kernel.org>,
-        Bartosz Golaszewski
-	<bartosz.golaszewski@linaro.org>
-References: <20240104130123.37115-1-brgl@bgdev.pl>
- <20240104130123.37115-6-brgl@bgdev.pl>
-From: Jeff Johnson <quic_jjohnson@quicinc.com>
-In-Reply-To: <20240104130123.37115-6-brgl@bgdev.pl>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: _m5tdcl3MxwGGxAp0Gpf_2hIa6-ygr-_
-X-Proofpoint-GUID: _m5tdcl3MxwGGxAp0Gpf_2hIa6-ygr-_
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 phishscore=0
- impostorscore=0 malwarescore=0 priorityscore=1501 suspectscore=0
- adultscore=0 mlxlogscore=918 spamscore=0 bulkscore=0 mlxscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2401060005
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240103003011.211382-1-v-songbaohua@oppo.com>
 
-On 1/4/2024 5:01 AM, Bartosz Golaszewski wrote:
-...
-> diff --git a/drivers/pci/pcie/pwrseq/Kconfig b/drivers/pci/pcie/pwrseq/Kconfig
-> new file mode 100644
-> index 000000000000..010e31f432c9
-> --- /dev/null
-> +++ b/drivers/pci/pcie/pwrseq/Kconfig
-> @@ -0,0 +1,8 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +
-> +menuconfig PCIE_PWRSEQ
-> +	bool "PCIe Power Sequencing support"
-> +	depends on PCIEPORTBUS
-> +	help
-> +	  Say yes here to enable support for PCIe power sequencing
-> +	  drivers.
+On (24/01/03 13:30), Barry Song wrote:
+> There is no need to keep zcomp_strm's buffers contiguous physically.
+> And rarely, 1-order allocation can fail while buddy is seriously
+> fragmented.
 
-Do we really need this configuration? I'm concerned about how do we let
-the end user know when this needs to be enabled. Speaking specifically
-about ath11k, almost all ath11k devices will not require this, but it
-then becomes a support issue that if you are using QCA6390 then you need
-to enable it.
+Dunno. Some of these don't sound like convincing reasons, I'm afraid.
+We don't allocate compression streams all the time, we do it once
+per-CPU. And if the system is under such a terrible memory pressure
+then one probably should not use zram at all, because zsmalloc needs
+pages for its pool.
 
-I see that in [RFC 8/9] PCI/pwrseq: add a pwrseq driver for QCA6390
-there is an option to enable config PCIE_PWRSEQ_QCA6390 if PCIE_PWRSEQ
-is enabled, but you then have the menuconfig dilemma that you won't know
-that you need to enable PCIE_PWRSEQ if you are using QCA6390.
+I also wonder whether Android uses HW compression, in which case we
+may need to have physically contig pages. Not to mention TLB shootdowns
+that virt contig pages add to the picture.
 
-Let me speak more to that in my review of that patch.
-
-/jeff
+[..]
+> @@ -37,7 +38,7 @@ static void zcomp_strm_free(struct zcomp_strm *zstrm)
+>  {
+>  	if (!IS_ERR_OR_NULL(zstrm->tfm))
+>  		crypto_free_comp(zstrm->tfm);
+> -	free_pages((unsigned long)zstrm->buffer, 1);
+> +	vfree(zstrm->buffer);
+>  	zstrm->tfm = NULL;
+>  	zstrm->buffer = NULL;
+>  }
+> @@ -53,7 +54,7 @@ static int zcomp_strm_init(struct zcomp_strm *zstrm, struct zcomp *comp)
+>  	 * allocate 2 pages. 1 for compressed data, plus 1 extra for the
+>  	 * case when compressed size is larger than the original one
+>  	 */
+> -	zstrm->buffer = (void *)__get_free_pages(GFP_KERNEL | __GFP_ZERO, 1);
+> +	zstrm->buffer = vzalloc(2 * PAGE_SIZE);
+>  	if (IS_ERR_OR_NULL(zstrm->tfm) || !zstrm->buffer) {
+>  		zcomp_strm_free(zstrm);
+>  		return -ENOMEM;
 
