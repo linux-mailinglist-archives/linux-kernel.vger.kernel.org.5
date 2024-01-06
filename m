@@ -1,126 +1,103 @@
-Return-Path: <linux-kernel+bounces-18650-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18651-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C958082607C
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 17:07:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B47C82607E
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 17:08:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 27DBBB23E7F
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 16:07:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F176B283E47
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 16:08:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5FEB883B;
-	Sat,  6 Jan 2024 16:06:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EED0847C;
+	Sat,  6 Jan 2024 16:08:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="f+Tc4YOg"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="TyVVyCqT"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1D2A8820;
-	Sat,  6 Jan 2024 16:06:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AC30C134;
+	Sat,  6 Jan 2024 16:08:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704557189; x=1736093189;
+  t=1704557281; x=1736093281;
   h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=8+aVIg+Wk08nweCOUOZlJw89CNCLOYDE563yrRwYD+k=;
-  b=f+Tc4YOgXrEM49imVFtvdyMocnUeI8Fq2UW+3L9KLwnxYxeZBBo8AgTM
-   5IZmYZtCfbPXQFkaaezaEBH5dW9Atc7bG+Mhva/fbs8/yG0ghHRmHLug4
-   tWCszzP/k/twEy2ytZ0fzxxsxrFpSAm6Jdpe54lQN+SzpA3KNblvsG13J
-   b5XR3hE9M1nS0GnoqmMjuZiP7CPqjmuTbrUV71jCmH/zFuFGV6PF6lgdZ
-   YLJbZHuACcugFK1eUHQyt3hW9yjL6NmFeJdayg4zRx67+nK9y/xprYgZ5
-   UyWQvzkCCxjMR2oIbOUPp7ws1VZFojn1u1Ep5pHJrgttE1TOvMyMXzIbQ
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10945"; a="401446500"
+   mime-version:in-reply-to;
+  bh=Vqb1BuBpq6ps1wxzqF4mNcJIhHMSXlmXzWIUyPgEXOc=;
+  b=TyVVyCqTgxDq1rHkoIaELojADZ8CXLOSqlBcSgges4EWl+ScOSMM5b1t
+   f0lU2CjCmpBjrtdBbB8tDuC4SbvPkMiroAiC/+l8mez5VEvcJ+edeVX0Z
+   sJAZMtArwyYstx9+5Ehc8bA1UH98Oxa3Bl2g/8VP2fE0Vks9Q7+B4y0fx
+   BLU1vj919FRcsXGZ2AYS4oxjBV2Y2QvbBK7TA+puGdV84mtnwWqaMlUhh
+   QLc0UgwZfhmevj9T8ZCdT/5Wvr+UHZIxyi9j0cE4C09O2PXHp7OYFNjyo
+   ej9DlOx36OcMXy9q/ptlWl3NXZx9ACwJTFe63iey8Z8ZSfVEzkzND9tIJ
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10945"; a="388118834"
 X-IronPort-AV: E=Sophos;i="6.04,337,1695711600"; 
-   d="scan'208";a="401446500"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jan 2024 08:06:29 -0800
+   d="scan'208";a="388118834"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jan 2024 08:08:00 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10945"; a="781016603"
+X-IronPort-AV: E=McAfee;i="6600,9927,10945"; a="784460887"
 X-IronPort-AV: E=Sophos;i="6.04,337,1695711600"; 
-   d="scan'208";a="781016603"
+   d="scan'208";a="784460887"
 Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga002.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jan 2024 08:06:26 -0800
+  by fmsmga007.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jan 2024 08:07:58 -0800
 Received: from andy by smile.fi.intel.com with local (Exim 4.97)
 	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rM9Bn-0000000BwpI-2BN1;
-	Sat, 06 Jan 2024 18:06:23 +0200
-Date: Sat, 6 Jan 2024 18:06:23 +0200
+	id 1rM9DH-0000000Bwqt-1dlC;
+	Sat, 06 Jan 2024 18:07:55 +0200
+Date: Sat, 6 Jan 2024 18:07:55 +0200
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Cc: "V, Narasimhan" <Narasimhan.V@amd.com>, Borislav Petkov <bp@alien8.de>,
-	"linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
-	lkml <linux-kernel@vger.kernel.org>,
-	Mika Westerberg <mika.westerberg@linux.intel.com>,
-	Jan Dabros <jsd@semihalf.com>, Andi Shyti <andi.shyti@kernel.org>,
-	"Limonciello, Mario" <Mario.Limonciello@amd.com>
-Subject: Re: i2c-designware: NULL ptr at RIP: 0010:regmap_read+0x12/0x70
-Message-ID: <ZZl6f05pJKw8rnAa@smile.fi.intel.com>
-References: <20231229120820.GCZY62tM7z4v2XmOAZ@fat_crate.local>
- <8169d773-f9ec-4092-b036-9e4fd59966c3@linux.intel.com>
- <DM4PR12MB508654DF49FE079D6C283D658961A@DM4PR12MB5086.namprd12.prod.outlook.com>
- <888da30a-c1ed-4fb0-af81-787fd868ce20@linux.intel.com>
- <DM4PR12MB5086DE2882C7C5044697B1C38967A@DM4PR12MB5086.namprd12.prod.outlook.com>
- <adf6c24a-d94b-40e5-b645-0c6b23b2d513@linux.intel.com>
+To: Petre Rodan <petre.rodan@subdimension.ro>
+Cc: linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Andreas Klinger <ak@it-klinger.de>,
+	Jonathan Cameron <jic23@kernel.org>,
+	Lars-Peter Clausen <lars@metafoo.de>,
+	Angel Iglesias <ang.iglesiasg@gmail.com>,
+	Matti Vaittinen <mazziesaccount@gmail.com>
+Subject: Re: [PATCH v3 10/10] iio: pressure: mprls0025pa add SPI driver
+Message-ID: <ZZl628UdGQ_Bu2jy@smile.fi.intel.com>
+References: <20231229092445.30180-1-petre.rodan@subdimension.ro>
+ <20231229092445.30180-11-petre.rodan@subdimension.ro>
+ <ZZlyDT0J4n1_YXh4@smile.fi.intel.com>
+ <ZZl5rBPOKwvxZAAx@sunspire>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <adf6c24a-d94b-40e5-b645-0c6b23b2d513@linux.intel.com>
+In-Reply-To: <ZZl5rBPOKwvxZAAx@sunspire>
 Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Thu, Jan 04, 2024 at 03:40:44PM +0200, Jarkko Nikula wrote:
-> On 1/4/24 08:35, V, Narasimhan wrote:
-> > > [    6.245173] i2c_designware AMDI0010:00: Unknown Synopsys component type: 0xffffffff
-> > 
-> > This made me scratching my head since driver probing will fail in this
-> > case with -ENODEV and I could not trigger runtime PM activity in such
-> > case but perhaps this is timing specific which happens to happen in your
-> > case.
-> > 
-> > Out of curiosity do you see this same "i2c_designware AMDI0010:00:
-> > Unknown Synopsys component type: 0xffffffff" error on Vanilla or is it
-> > also regression in linux-next?
-> > 
-> > This does not happen on Vanilla, only on linux-next.
-> > 
-> This is even more strange. Controller is in reset but I'm blind to see from
-> Andy's patches why. Do you have change to test at these commits?
-> 
-> bd466a892612 ("i2c: designware: Fix PM calls order in dw_i2c_plat_probe()")
-> c012fde343d2 ("i2c: designware: Fix reset call order in dw_i2c_plat_probe()"
-> 
-> and maybe the last one
-> 4bff054b64e1 ("i2c: designware: Fix spelling and other issues in the
-> comments")
-> 
-> I'm trying to narrow does the regression come from first two patches and if
-> not, then test the last one.
-> 
-> Andy is out of office and if we can narrow the regression to first two
-> patches we perhaps can revert just them and otherwise need to drop the whole
-> set.
+On Sat, Jan 06, 2024 at 06:02:52PM +0200, Petre Rodan wrote:
+> On Sat, Jan 06, 2024 at 05:30:21PM +0200, Andy Shevchenko wrote:
+> > On Fri, Dec 29, 2023 at 11:24:38AM +0200, Petre Rodan wrote:
+> > > Add SPI component of the driver.
 
-Since I saw this email...
+> > > +#include <linux/mod_devicetable.h>
+> > > +#include <linux/module.h>
+> > > +#include <linux/spi/spi.h>
+> > > +#include <linux/stddef.h>
+> > 
+> > Basically here we need additionally these ones:
+> > 
+> > device.h
+> > errno.h
+> > types.h
+> 
+> ok, I'll add errno.h. the other two are in the shared .h file.
 
-First of all, it's easy just to go patch-by-patch and see if it helps.
-Or simple bisect among 24 commits (4 iterations only).
+Yes, but it's better to follow IWYI principle. Generally speaking
+there is no guarantee that above will be _always_ the case.
 
-Second, it seems that we are using autosuspend but we don't prevent
-the PM to go down during the ->probe(). So, a WA can be to take a reference
-count preventing PM from going down.
-
-->remove, for instance, uses RPM get/put calls.
+Anyway, I leave this to Jonathan.
 
 -- 
 With Best Regards,
