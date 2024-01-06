@@ -1,57 +1,76 @@
-Return-Path: <linux-kernel+bounces-18683-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18684-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E37C8260F1
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 18:50:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 673A18260F7
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 18:57:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 659B5B230A8
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 17:50:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8E19F1C20D74
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 17:57:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CA0BCA7A;
-	Sat,  6 Jan 2024 17:50:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5796ED275;
+	Sat,  6 Jan 2024 17:57:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="mO0vgzdJ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="logIENqj"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [91.218.175.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D7E6C2D9
-	for <linux-kernel@vger.kernel.org>; Sat,  6 Jan 2024 17:50:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Sat, 6 Jan 2024 17:50:23 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1704563428;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=yQ9HOtbgql3gNCXw9K/urpYebkD4txIvPdMOuw8HG/0=;
-	b=mO0vgzdJ4D7GWICW/2dqAj+wRcim04Bd6gHfMcNOfYagypsVB0ptVYq6YatG+sEJW/I4HO
-	sr6dZC9xfviQNV8BfPbb0zbW1McK7A74o2cooXH0S1uGujt9zmByUU36Q1m2FqdtaM4tO3
-	n4kyeOWnXn8lQ7PT+oK/P2MvAAjAbJg=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Oliver Upton <oliver.upton@linux.dev>
-To: Marc Zyngier <maz@kernel.org>
-Cc: Ilkka Koskinen <ilkka@os.amperecomputing.com>,
-	James Morse <james.morse@arm.com>,
-	Suzuki K Poulose <suzuki.poulose@arm.com>,
-	Zenghui Yu <yuzenghui@huawei.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Gavin Shan <gshan@redhat.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Raghavendra Rao Ananta <rananta@google.com>,
-	D Scott Phillips <scott@os.amperecomputing.com>,
-	linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH] KVM: arm64: Workaround for Ampere AC03_CPU_36
- (exception taken to an incorrect EL)
-Message-ID: <ZZmS32lXXlULIArw@linux.dev>
-References: <20240105213251.4141-1-ilkka@os.amperecomputing.com>
- <ZZiWZkNP8Owytecw@linux.dev>
- <87sf3au0bu.wl-maz@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C68BC8D2;
+	Sat,  6 Jan 2024 17:57:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a29058bb2ceso57242066b.0;
+        Sat, 06 Jan 2024 09:57:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704563830; x=1705168630; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ayftTtZ8YCt/OAxuOOsBAiLw6iK2Sj5mQxrpX9AKLaw=;
+        b=logIENqjSge78w2n9nhFL2HY/0fcCuYsu6Uen0sIjr8/T93q7dLaDTE8Gprdl1kcb5
+         yoluJaoObH9w4gk9dfh8fCy4ImIdWKCNyWsRfXKYAqUCGi/1dtnh9LNVfgxDoHA/+aK9
+         e+cq840AaLJ6Dh4IKGLwVD4eea2IB/WdwUXwDdYrbQtBwSt86KMYUg/G+YUyf1qDT5Jk
+         inq2zKxztAom4AqP2wSxQRLguHv5eep2CKAOuYM/ecqU/ob4xnH5tomMT9ojPcdWTejV
+         1Zv9AbBmtvgRYVktblnO2AxlYqPUfhkg2lvb7p5fluBOEPFkgKaUx5jSUjjNKqC4YNVR
+         jR5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704563830; x=1705168630;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ayftTtZ8YCt/OAxuOOsBAiLw6iK2Sj5mQxrpX9AKLaw=;
+        b=TWxOTSKANaF4SW2KmG/TtkKAT0zDWlZ1u89nyuaOJXOxDck/wGoSwAdE+ir6jO4eho
+         /AIKhYwcfgWUMeKhxnhoyKpeUyGpHje3E0irhZOoHRLNXRtrF9hggZS2uU0yXTwko3If
+         c0xGhIAlkyZ8R+044pvHV0NfGAGBwLBDAf33PWTNDdzvEUJGJ5NW+EtdRDnU1ciT0jpJ
+         +6CCSLlBUwuaKEFOmrlLLjl0yKCDGgr9wwbbcFgrYtxWVe0rFiQydPqYprYWVlNSGwM3
+         3NzdKSBoQL78JhopibZGRY/aEGiGbrPq2ZmSyb8MnJDKO2NjfDc5BD0QUQTBNiQcRdm+
+         UtdQ==
+X-Gm-Message-State: AOJu0Yzt6PkPfRk0pCdGtK0G9AFwkmMCBPKkRfBoJ63V9HWkYxgJiwJM
+	UxaYVzyDqaJt5HWakIVVA+Q=
+X-Google-Smtp-Source: AGHT+IE0uN+TM2n9f/3lN6P/+RkP08uWhdbyAD7eRYSJ5p0Rqs2uEymo7ubCJiBUdy9bgfh0fTTKdQ==
+X-Received: by 2002:a17:907:bd1:b0:a29:1cb8:46fe with SMTP id ez17-20020a1709070bd100b00a291cb846femr280946ejc.5.1704563830130;
+        Sat, 06 Jan 2024 09:57:10 -0800 (PST)
+Received: from cjw-notebook (2a02-8388-0502-f480-6c32-186a-368b-d6a9.cable.dynamic.v6.surfer.at. [2a02:8388:502:f480:6c32:186a:368b:d6a9])
+        by smtp.gmail.com with ESMTPSA id m21-20020a1709061ed500b00a236378a43fsm2179351ejj.62.2024.01.06.09.57.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 06 Jan 2024 09:57:09 -0800 (PST)
+Date: Sat, 6 Jan 2024 18:57:06 +0100
+From: Christoph Winklhofer <cj.winklhofer@gmail.com>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Rob Herring <robh+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>,
+	Rob Herring <robh@kernel.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jiri Slaby <jirislaby@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Jonathan Corbet <corbet@lwn.net>, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+	linux-doc@vger.kernel.org
+Subject: Re: [PATCH v4 0/3] w1: add UART w1 bus driver
+Message-ID: <ZZmUcr7Ct7g42PD2@cjw-notebook>
+References: <20240106-w1-uart-v4-0-7fe1378a8b3e@gmail.com>
+ <1aeff309-6867-4296-8983-a60e8fd31614@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -60,46 +79,43 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87sf3au0bu.wl-maz@kernel.org>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <1aeff309-6867-4296-8983-a60e8fd31614@linaro.org>
 
-On Sat, Jan 06, 2024 at 12:13:09PM +0000, Marc Zyngier wrote:
-
-[...]
-
-> > From 265cb193190c13c651d8e008d34d1d18505d4804 Mon Sep 17 00:00:00 2001
-> > From: Oliver Upton <oliver.upton@linux.dev>
-> > Date: Fri, 5 Jan 2024 23:18:14 +0000
-> > Subject: [PATCH] KVM: arm64: Mitigate AmpereOne erratum AC03_CPU_36
+On Sat, Jan 06, 2024 at 05:56:34PM +0100, Krzysztof Kozlowski wrote:
+> On 06/01/2024 17:02, Christoph Winklhofer via B4 Relay wrote:
+> > Hello!
 > > 
-> > The AmpereOne design suffers from an erratum where if an asynchronous
-> > exception arrives while EL2 is modifying hypervisor exception controls
-> > (i.e. HCR_EL2, SCTLR_EL2) the PE may take an invalid exception to
-> > another EL.
+> > This patch contains a driver for a 1-Wire bus over UART. The driver
+> > utilizes the UART interface via the Serial Device Bus to create the
+> > 1-Wire timing patterns.
+> > 
+> > Changes in v4:
+> > - rework baud-rate configuration: also check max bit-time, support higher
+> >   baud-rates by adding a delay to complete 1-Wire cycle.
+> > - dt-binding w1-uart: specify baud-rates for 1-Wire operations
+> > - Link to v3: https://lore.kernel.org/r/20240105-w1-uart-v3-0-8687093b2e76@gmail.com
+> > 
 > 
-> Same questions about SCTLR_EL2 and the notion of "another EL".
-
-I've got the same questions :) This is just a rewording of Ampere's
-erratum description.
-
-https://amperecomputing.com/customer-connect/products/AmpereOne-device-documentation
-
-> Other than the passing comments, I'm OK with this patch. However, I am
-> very worried that this is only the start of a very long game of
-> whack-a-mole, because there is no actual documentation on what goes
-> wrong.
+> You can slow down a bit. You sent v2 too late to be applied. Then you
+> sent v3 and next day v4.
 > 
-> For example, we have plenty of writes to SCTLR_EL2 (using the
-> SCTLR_EL1 alias if running VHE) for MTE. Are any of those affected?
+> While I like approach to release early, release often, it does not
+> necessarily apply to the bindings. Bindings should be complete, which
+> means they should describe the hardware as fully as possible.
 > 
-> Short of having some solid handle on what is happening, I don't see
-> how we can promise to support this system.
+> About the driver, you can develop it incrementally, it is a good idea,
+> however since ~rc6 my w1 tree is closed. It will remain closed till next
+> rc1 is released (merge window finished). Nothing will get applied during
+> that time, so if you intend to add new features, better to send v5 after
+> the merge window (instead v4 now, v5 tomorrow, v6 next week and then v7
+> after rc1).
+> 
+> Best regards,
+> Krzysztof
+> 
 
-Completely agree. At least on the AmpereOne machines I have access to
-this seems to do the trick, but that observation is no replacement for
-full documentation.
+Ok sorry, understood - thank you for the clarification.
 
--- 
-Thanks,
-Oliver
+Kind regards,
+Christoph
 
