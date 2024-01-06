@@ -1,118 +1,141 @@
-Return-Path: <linux-kernel+bounces-18724-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18725-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B04E8261D3
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 23:05:56 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C67498261D8
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 23:07:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 98FF71C20FAA
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 22:05:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A8501B21DE6
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 22:07:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49A53101CA;
-	Sat,  6 Jan 2024 22:05:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51ACF101D3;
+	Sat,  6 Jan 2024 22:07:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b="Q4MtuX3d"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="dLni0YNJ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 103A3F9EC;
-	Sat,  6 Jan 2024 22:05:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
-	t=1704578697; x=1705183497; i=w_armin@gmx.de;
-	bh=o4ZQiy7T7H4VBO5ZGkKv7nQ22efRB5aoihpH8d8Yz38=;
-	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-	 In-Reply-To;
-	b=Q4MtuX3dl/H80xW206xG6/TCGUhLgba8lKHeiV9JhoM+vJlKVl7IPSPlnYA5wa/y
-	 ke5ZlBBLpHlNvnRiLrSeHbkj0/+JSX4O/bEfza1dYhvVKAMJJ2oST6xzbLeLGH+Zj
-	 4R+7uFJzqp22D6yxlGwVztUGhholcxoGRb36RjxNVQFsDF0IEhGKkOSFySQySkgNs
-	 qmi8EI2aTTVtIL1v9Ivijrur4myHHoBmnl/7sCqkAPJspjjm+dyPM3Y+pWtfuRPui
-	 pG8w8JoNqeIaJ7fs/BLyXxyvmzf5cJv4vPW7YhC5pCLb8u934Eax97dY6OicZL/98
-	 RYOlVTjct0RQapp7kg==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [141.30.226.129] ([141.30.226.129]) by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MUosN-1rmKOO07wv-00QgbU; Sat, 06
- Jan 2024 23:04:57 +0100
-Message-ID: <19a31d3b-d13a-4665-9c84-55cdabfad3f8@gmx.de>
-Date: Sat, 6 Jan 2024 23:04:55 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2552B101C1
+	for <linux-kernel@vger.kernel.org>; Sat,  6 Jan 2024 22:07:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704578859; x=1736114859;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=Wy6JHqjvhw0b/x6yg5/uHqP+swkw0ISE2LQMWyeEpCw=;
+  b=dLni0YNJymXwLhA+Uk2wJsOCEuPYpefo2e68Nl9jQf3qCmCbnsraSO1C
+   nT5AAtFpGN2v4UQ/7ehP+wZvSURf9q/vaMFnAsWs+BpqN6EyDrtt0aiYD
+   yWTN12FDcH13OO+Y2IyTOF2g7E3XjMTapCpdMuJ4hrW1rMubd7fYYltzs
+   FFhMJ5J+bfTwppPueR2ffwQBIlfD7Sx1AzSC+KyUq3/2iIrRlf+sPdhiw
+   IPEMVDIKH0xoAPQp+3yUvdWvrhH0XttZ+Vw9JwnndcPDWTK0gITow3HqX
+   A4TA9Cu+fWuw8ELzeWmx40MprRR0bMxyr+Y5T3EzMswKM5nU8jAbqDKJA
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10945"; a="5040717"
+X-IronPort-AV: E=Sophos;i="6.04,337,1695711600"; 
+   d="scan'208";a="5040717"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jan 2024 14:07:39 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10945"; a="815254710"
+X-IronPort-AV: E=Sophos;i="6.04,337,1695711600"; 
+   d="scan'208";a="815254710"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga001.jf.intel.com with ESMTP; 06 Jan 2024 14:07:36 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rMEpK-00034e-0V;
+	Sat, 06 Jan 2024 22:07:34 +0000
+Date: Sun, 7 Jan 2024 06:06:36 +0800
+From: kernel test robot <lkp@intel.com>
+To: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+	Bjorn Helgaas <helgaas@kernel.org>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Subject: drivers/pci/controller/dwc/pcie-designware.c:898:50: warning: '%d'
+ directive output may be truncated writing between 1 and 11 bytes into a
+ region of size 3
+Message-ID: <202401070641.pZEzdKIs-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] platform/x86: wmi: Fix wmi_dev_probe()
-To: Dan Carpenter <dan.carpenter@linaro.org>
-Cc: Hans de Goede <hdegoede@redhat.com>,
- =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
- platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
- kernel-janitors@vger.kernel.org
-References: <9c81251b-bc87-4ca3-bb86-843dc85e5145@moroto.mountain>
-Content-Language: en-US
-From: Armin Wolf <W_Armin@gmx.de>
-In-Reply-To: <9c81251b-bc87-4ca3-bb86-843dc85e5145@moroto.mountain>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:B8SoiBX+mZ4LtbySoEE/uBop4v8l4OqMxX2eaFDkW+m/x8FlVrb
- YCTKxF7+mqW/Vzk9EDB23XU2oULmtbKqR2AU0a6XM11o1GIspuUjYg/7CTh3MvouNBfmIqu
- /C1msjReMLlAvfy4AqErYhTrQ8RoUGc3ITLyHs4ss+xA1wpBIowO/i1236NXpqI+3KgUocm
- ENhjzYG3BkPRFXdddOWxA==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:YJ4U83dyBas=;dgFjxe4YCjjQb4bQt9JeYp/f9dE
- xddwpD9ChpBK2R5BNb7JVmmHptRc1/iMsgirraZ4zInkpnnhp4Y+sgwpr9Yrp20rKQzlV49ow
- tBEwtM3uthN2yLERg2WbIt53IPY+GPYnLiPfEhVeTBm408fkASPEadKh38hkMJihtR9v0deD5
- cf+fXCRzN7yBcbtyerGeLO1VWvoxeYCSH7epmpCUeJe7iZ42y5kT4yYE3G1Pk/W45dogYgv8K
- JSH9TiBtsG2+wLtdk0whWPD+xH2kT9UNu08xEcYxCzcney2E3TbH3xlXiwJnikDVQVPPcldQW
- 20x8eP1FSlGLBx8AttM9ySikO5DE0ZUTPfIB8RKX/bdWPw7bSoYyj8bvHdcVDdbx+2uhWtotj
- HP5U7NjHUXWWTEEf8SIT1j19SDIbWZOnlHS4oGb9OZ6dXUlimxhRCdepVk95mdzhQisQPPRSQ
- 9d3yfZ/pIRdnrbTBtm6ZIbfLBCrPEwEg85zw8EYyjQpTQ/Tqlj7ulTm7uywEmO2JlZnllBPX/
- 3fM35dL+uHS4TgqSs0Ke/hlLInmMH3OJGwouzPSshZ7hIHBXKQw6a3NfRI1zzX+De4M33kc5+
- Qdo0hTIjt158S9G1SUh/fsYJk0hLLCQg3TgRPZjZpdKUcMXFYJ1qGkN5AQTU8GQDKQXQWV/Hc
- f5k6kiPuHDkvH8vZ67s+qvqLhnJkk8wAnP63wUpLWwXF/djZHVJcuVBWNohYwcWfgD0NnQ5qz
- n5NYCXatPasSJmWJE1zMmtjg9GWaUOxpLQoP23A1zMCjSjP/vBmjvyVI7RR1PzS1oseQ5zWFf
- BYJZ2lyiDD1ATLfu4lOV8VROwnfFSWXmL5sYVeFabb+zVRq1dFwBg7Fu8NksNVNelPH5fmnVb
- UVppvZhnOlcpDfk6icuvlTCmld2mTQSSEyKQ1C25v04qFkd+cCwlsDKGBcgMEhsKECx17lzWu
- 7ktdQY8LH5ZDEMmMYZE0iq581Ro=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Am 05.01.24 um 14:47 schrieb Dan Carpenter:
+Hi Serge,
 
-> This has a reversed if statement so it accidentally disables the wmi
-> method before returning.
+FYI, the error/warning still remains.
 
-Good catch, you are absolutely right!
-And on top of that it also breaks WMI event drivers since the WMI_PROBED
-flag will not be set when the driver successfully probes and instead will
-be set when the driver fails to probe.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   95c8a35f1c017327eab3b6a2ff5c04255737c856
+commit: 939fbcd568fd294034c96edc92ff5b9de1a5fce8 PCI: dwc: Add Root Port and Endpoint controller eDMA engine support
+date:   11 months ago
+config: x86_64-randconfig-016-20240106 (https://download.01.org/0day-ci/archive/20240107/202401070641.pZEzdKIs-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240107/202401070641.pZEzdKIs-lkp@intel.com/reproduce)
 
-For the patch:
-Reviewed-by: Armin Wolf <W_Armin@gmx.de>
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202401070641.pZEzdKIs-lkp@intel.com/
 
-Thanks,
-Armin Wolf
+All warnings (new ones prefixed by >>):
 
->
-> Fixes: 704af3a40747 ("platform/x86: wmi: Remove chardev interface")
-> Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
-> ---
->   drivers/platform/x86/wmi.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/platform/x86/wmi.c b/drivers/platform/x86/wmi.c
-> index 157f1ce8ac0a..e6f6fa2fd080 100644
-> --- a/drivers/platform/x86/wmi.c
-> +++ b/drivers/platform/x86/wmi.c
-> @@ -868,7 +868,7 @@ static int wmi_dev_probe(struct device *dev)
->   	if (wdriver->probe) {
->   		ret =3D wdriver->probe(dev_to_wdev(dev),
->   				find_guid_context(wblock, wdriver));
-> -		if (!ret) {
-> +		if (ret) {
->   			if (ACPI_FAILURE(wmi_method_enable(wblock, false)))
->   				dev_warn(dev, "Failed to disable device\n");
->
+   drivers/pci/controller/dwc/pcie-designware.c: In function 'dw_pcie_edma_detect':
+>> drivers/pci/controller/dwc/pcie-designware.c:898:50: warning: '%d' directive output may be truncated writing between 1 and 11 bytes into a region of size 3 [-Wformat-truncation=]
+     898 |                 snprintf(name, sizeof(name), "dma%d", pci->edma.nr_irqs);
+         |                                                  ^~
+   In function 'dw_pcie_edma_irq_verify',
+       inlined from 'dw_pcie_edma_detect' at drivers/pci/controller/dwc/pcie-designware.c:949:8:
+   drivers/pci/controller/dwc/pcie-designware.c:898:46: note: directive argument in the range [-2147483648, 22]
+     898 |                 snprintf(name, sizeof(name), "dma%d", pci->edma.nr_irqs);
+         |                                              ^~~~~~~
+   drivers/pci/controller/dwc/pcie-designware.c:898:17: note: 'snprintf' output between 5 and 15 bytes into a destination of size 6
+     898 |                 snprintf(name, sizeof(name), "dma%d", pci->edma.nr_irqs);
+         |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+vim +898 drivers/pci/controller/dwc/pcie-designware.c
+
+   878	
+   879	static int dw_pcie_edma_irq_verify(struct dw_pcie *pci)
+   880	{
+   881		struct platform_device *pdev = to_platform_device(pci->dev);
+   882		u16 ch_cnt = pci->edma.ll_wr_cnt + pci->edma.ll_rd_cnt;
+   883		char name[6];
+   884		int ret;
+   885	
+   886		if (pci->edma.nr_irqs == 1)
+   887			return 0;
+   888		else if (pci->edma.nr_irqs > 1)
+   889			return pci->edma.nr_irqs != ch_cnt ? -EINVAL : 0;
+   890	
+   891		ret = platform_get_irq_byname_optional(pdev, "dma");
+   892		if (ret > 0) {
+   893			pci->edma.nr_irqs = 1;
+   894			return 0;
+   895		}
+   896	
+   897		for (; pci->edma.nr_irqs < ch_cnt; pci->edma.nr_irqs++) {
+ > 898			snprintf(name, sizeof(name), "dma%d", pci->edma.nr_irqs);
+   899	
+   900			ret = platform_get_irq_byname_optional(pdev, name);
+   901			if (ret <= 0)
+   902				return -EINVAL;
+   903		}
+   904	
+   905		return 0;
+   906	}
+   907	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
