@@ -1,93 +1,97 @@
-Return-Path: <linux-kernel+bounces-18521-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18522-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 84D72825EB2
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 08:23:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B943825EB3
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 08:28:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0F0AF284F98
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 07:23:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0DF491F24787
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 07:28:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 495FC5253;
-	Sat,  6 Jan 2024 07:23:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95C0F4439;
+	Sat,  6 Jan 2024 07:28:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HFBgWamQ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3C2846B4
-	for <linux-kernel@vger.kernel.org>; Sat,  6 Jan 2024 07:23:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
-Received: from loongson.cn (unknown [10.20.42.239])
-	by gateway (Coremail) with SMTP id _____8AxDOvl_5hlT5YCAA--.9126S3;
-	Sat, 06 Jan 2024 15:23:17 +0800 (CST)
-Received: from [10.20.42.239] (unknown [10.20.42.239])
-	by localhost.localdomain (Coremail) with SMTP id AQAAf8Cxid3i_5hlhVcEAA--.11456S3;
-	Sat, 06 Jan 2024 15:23:16 +0800 (CST)
-Subject: Re: [PATCH 1/1] LoongArch: defconfig: Enable Generic PCIE by default
-From: gaosong <gaosong@loongson.cn>
-To: chenhuacai@kernel.org, kernel@xen0n.name
-Cc: loongarch@lists.linux.dev, linux-kernel@vger.kernel.org,
- raven@themaw.net, davem@davemloft.net, svenjoac@gmx.de,
- anthony.l.nguyen@intel.com, richard.henderson@linaro.org,
- peter.maydell@linaro.org, philmd@linaro.org, maobibo@loongson.cn
-References: <20231222024628.3138406-1-gaosong@loongson.cn>
-Message-ID: <16576063-1df9-5aa4-1aaa-1a99c4a660cb@loongson.cn>
-Date: Sat, 6 Jan 2024 15:23:13 +0800
-User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1787440D
+	for <linux-kernel@vger.kernel.org>; Sat,  6 Jan 2024 07:28:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 41362C433D9
+	for <linux-kernel@vger.kernel.org>; Sat,  6 Jan 2024 07:28:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704526102;
+	bh=lhf3MLOvX3QLGLPvF4jkBHul2Uw+I6bWhrUpHadrfCM=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=HFBgWamQpSOQNEiltrpowIF30Z181pHv1+B0+tJjm5USv88gjnyzU6wrpFkC8LnY3
+	 0nY7R9fuKhKif8eEfhF5UJ0hdbq9r0jze6bI9mqwRftYmzpI/fnZdvBqDQksvf0llP
+	 V0UhFb3xh9R/P44YO/EfQDdhPoFKaQfYM+G8VtJNNVGhL0a17SRL1xGC9VkQLXyeHW
+	 wyuR0s5RPqPN54z53nLwoGhAhyDL4h/7f7FbnHwuAMzTwIC11Zf3aBgqxm+S4PAc+z
+	 kPgvWx9tERGcEu2WkCMunKDz+T1hFAsa2OermmPMHria0ZxTdC0G2q5oGFVhg0fKAH
+	 1KPCe8HDbx4Ew==
+Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-50e67e37661so370630e87.0
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Jan 2024 23:28:22 -0800 (PST)
+X-Gm-Message-State: AOJu0Yymoxq2HGd+UUmxML/Kkd5DULImEHCfQR6YAUTWD+l4Q4EQJj3Y
+	04i13FHHDxrn2YmhMzGWEwDT2psavZKttWfXFd4=
+X-Google-Smtp-Source: AGHT+IGlVypcm0Z7RU4BmHn/uLgMYyoQ4TNagnEGxOuCUk4gjZwYe7bEkPVC962xqRuEbgODKVgJ9S9iGqbA6g1BrGQ=
+X-Received: by 2002:a05:6512:31ca:b0:50e:74c6:8961 with SMTP id
+ j10-20020a05651231ca00b0050e74c68961mr252997lfe.100.1704526100239; Fri, 05
+ Jan 2024 23:28:20 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20231222024628.3138406-1-gaosong@loongson.cn>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-CM-TRANSID:AQAAf8Cxid3i_5hlhVcEAA--.11456S3
-X-CM-SenderInfo: 5jdr20tqj6z05rqj20fqof0/
-X-Coremail-Antispam: 1Uk129KBj9xXoWrZr4kKr45GFyfuFyftr47GFX_yoWfJFc_JF
-	W2kw4UCr48AFWkW39Fqw4rGa1DC3WxC3Z8JFnrZr1xXa1aqr43tw4DX3W7C3Z093yDWrZx
-	ZaykAF9xCr18tosvyTuYvTs0mTUanT9S1TB71UUUUjDqnTZGkaVYY2UrUUUUj1kv1TuYvT
-	s0mT0YCTnIWjqI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUI
-	cSsGvfJTRUUUbDAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20x
-	vaj40_Wr0E3s1l1IIY67AEw4v_Jrv_JF1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-	w2x7M28EF7xvwVC0I7IYx2IY67AKxVWUCVW8JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-	WUJVW8JwA2z4x0Y4vEx4A2jsIE14v26r4j6F4UM28EF7xvwVC2z280aVCY1x0267AKxVW8
-	JVW8Jr1ln4kS14v26r126r1DM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2
-	x26I8E6xACxx1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r126r1D
-	McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7
-	I2V7IY0VAS07AlzVAYIcxG8wCY1x0262kKe7AKxVWUAVWUtwCF04k20xvY0x0EwIxGrwCF
-	x2IqxVCFs4IE7xkEbVWUJVW8JwCFI7km07C267AKxVWUAVWUtwC20s026c02F40E14v26r
-	1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij
-	64vIr41lIxAIcVC0I7IYx2IY67AKxVWUCVW8JwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr
-	0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF
-	0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07j5o7tUUUUU=
+References: <20231222024628.3138406-1-gaosong@loongson.cn> <16576063-1df9-5aa4-1aaa-1a99c4a660cb@loongson.cn>
+In-Reply-To: <16576063-1df9-5aa4-1aaa-1a99c4a660cb@loongson.cn>
+From: Huacai Chen <chenhuacai@kernel.org>
+Date: Sat, 6 Jan 2024 15:28:07 +0800
+X-Gmail-Original-Message-ID: <CAAhV-H7YhSMJNOiyCFmmpn+rmE69X3RPhUDTxSw3nFmeE6R+-Q@mail.gmail.com>
+Message-ID: <CAAhV-H7YhSMJNOiyCFmmpn+rmE69X3RPhUDTxSw3nFmeE6R+-Q@mail.gmail.com>
+Subject: Re: [PATCH 1/1] LoongArch: defconfig: Enable Generic PCIE by default
+To: gaosong <gaosong@loongson.cn>
+Cc: kernel@xen0n.name, loongarch@lists.linux.dev, linux-kernel@vger.kernel.org, 
+	raven@themaw.net, davem@davemloft.net, svenjoac@gmx.de, 
+	anthony.l.nguyen@intel.com, richard.henderson@linaro.org, 
+	peter.maydell@linaro.org, philmd@linaro.org, maobibo@loongson.cn
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Ping!
+Queued, thanks.
 
-ÔÚ 2023/12/22 ÉÏÎç10:46, Song Gao Ð´µÀ:
-> Enable generic PCIe by default in the LoongArch defconfig.
-> QEMU requires this configuration when booting the kernel with FDT.
+Huacai
+
+On Sat, Jan 6, 2024 at 3:23=E2=80=AFPM gaosong <gaosong@loongson.cn> wrote:
 >
-> Signed-off-by: Song Gao <gaosong@loongson.cn>
-> ---
->   arch/loongarch/configs/loongson3_defconfig | 1 +
->   1 file changed, 1 insertion(+)
+> Ping!
 >
-> diff --git a/arch/loongarch/configs/loongson3_defconfig b/arch/loongarch/configs/loongson3_defconfig
-> index 33795e4a5bd6..6350be7e8ec8 100644
-> --- a/arch/loongarch/configs/loongson3_defconfig
-> +++ b/arch/loongarch/configs/loongson3_defconfig
-> @@ -348,6 +348,7 @@ CONFIG_NET_9P=y
->   CONFIG_NET_9P_VIRTIO=y
->   CONFIG_CEPH_LIB=m
->   CONFIG_PCIEPORTBUS=y
-> +CONFIG_PCI_HOST_GENERIC=y
->   CONFIG_HOTPLUG_PCI_PCIE=y
->   CONFIG_PCIEAER=y
->   # CONFIG_PCIEASPM is not set
-
+> =E5=9C=A8 2023/12/22 =E4=B8=8A=E5=8D=8810:46, Song Gao =E5=86=99=E9=81=93=
+:
+> > Enable generic PCIe by default in the LoongArch defconfig.
+> > QEMU requires this configuration when booting the kernel with FDT.
+> >
+> > Signed-off-by: Song Gao <gaosong@loongson.cn>
+> > ---
+> >   arch/loongarch/configs/loongson3_defconfig | 1 +
+> >   1 file changed, 1 insertion(+)
+> >
+> > diff --git a/arch/loongarch/configs/loongson3_defconfig b/arch/loongarc=
+h/configs/loongson3_defconfig
+> > index 33795e4a5bd6..6350be7e8ec8 100644
+> > --- a/arch/loongarch/configs/loongson3_defconfig
+> > +++ b/arch/loongarch/configs/loongson3_defconfig
+> > @@ -348,6 +348,7 @@ CONFIG_NET_9P=3Dy
+> >   CONFIG_NET_9P_VIRTIO=3Dy
+> >   CONFIG_CEPH_LIB=3Dm
+> >   CONFIG_PCIEPORTBUS=3Dy
+> > +CONFIG_PCI_HOST_GENERIC=3Dy
+> >   CONFIG_HOTPLUG_PCI_PCIE=3Dy
+> >   CONFIG_PCIEAER=3Dy
+> >   # CONFIG_PCIEASPM is not set
+>
+>
 
