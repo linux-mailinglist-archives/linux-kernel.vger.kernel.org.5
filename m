@@ -1,62 +1,62 @@
-Return-Path: <linux-kernel+bounces-18496-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18497-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 65C69825E60
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 06:57:31 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8FFBE825E61
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 06:57:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8D9FC1C23BEA
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 05:57:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 51A98B23412
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 05:57:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A263879FD;
-	Sat,  6 Jan 2024 05:56:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D74C8829;
+	Sat,  6 Jan 2024 05:56:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=darkphysics.net header.i=@darkphysics.net header.b="RG0A7ORw"
+	dkim=pass (2048-bit key) header.d=darkphysics.net header.i=@darkphysics.net header.b="C94NzbNr"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176])
+Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC4B66FB2
-	for <linux-kernel@vger.kernel.org>; Sat,  6 Jan 2024 05:56:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A1B56FD0
+	for <linux-kernel@vger.kernel.org>; Sat,  6 Jan 2024 05:56:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=darkphysics.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=darkphysics.net
-Received: by mail-pg1-f176.google.com with SMTP id 41be03b00d2f7-5c21e185df5so196572a12.1
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Jan 2024 21:56:13 -0800 (PST)
+Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-6d9b13fe9e9so256570b3a.2
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Jan 2024 21:56:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=darkphysics.net; s=google; t=1704520573; x=1705125373; darn=vger.kernel.org;
+        d=darkphysics.net; s=google; t=1704520574; x=1705125374; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=XmWdmd80J+zop+fmRCsw8E/0vFIy5DUmsZqrKkyF7Pk=;
-        b=RG0A7ORwBvrQ5FXuy6ONd6cSEseg7yAWaKbY7X7Nd04RXDnrLo+EnpkPLIWHWkaMxA
-         Y7tjuK436RzvlWYRflxn50iBTVPdd2nPbxG7BNsQgmG0KQ1U1akQj/n0XNQPZznA0WsW
-         1cAz69EZ+aANoCxQP12P+Eem4xiHRdaKtaEtxhCSpODKYFcI5VA4GDXq2xFc4B9P6rgv
-         xeiJMvwAw/TY2kjqsBvtBUvafy2d0+ZLtWbqrbf+zfzbWrig0AVc7m74oFQxHV9xstCZ
-         Eb4+J2bm06xePXsWusbwsW7Cbm16Qr0SqHqQ6DvAQ0j/0ocl8kPkJhOfLVH5aP3bZG49
-         k6xA==
+        bh=StnyJgFOT64M/Chcxu97Xz0SNkYawN5oNQ23pftyJ9s=;
+        b=C94NzbNrPvmjl85S1R9JieHfjjFe0WSRy46EtW8Sd8PRtGWP1YLLIKeqXYO423V5D/
+         bUgAsItzmcX5JtyUPeGpHy9EMgnNed7fEGzP/5qS6OPHb8upc2KH8REIU3MKzKsZ/d71
+         GeaUPs0MYye4PAgds1OxI4Ud2h5sRHzf3yCm8fyVLR/uMyUbE3R462+Vf3pigutKOoKv
+         9butqaRKl8Jyrlfe5SRcMrUr20cS8oeVSCowait3iUDMmAWk3bfSih+X7OTUPdgAd2xt
+         sFrYShtf5rbegAovRMaw0xomXWok7pG2+iIFBHBSUn9YOYSVhjmJclUQ6ES70e5x/ZuP
+         RvrQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704520573; x=1705125373;
+        d=1e100.net; s=20230601; t=1704520574; x=1705125374;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=XmWdmd80J+zop+fmRCsw8E/0vFIy5DUmsZqrKkyF7Pk=;
-        b=cN2aTWL77tUw0xXMELK6IVGDYpmDaqYYgr9X4f7MUvkR9HzeqCidzXalP5xt9uq3JX
-         L/EHBsOx2T1nVlB7iZ6X2ygqceNsaHnE9QVHZ2Ef2Th5Q6z/kv8/VoEdRDzWRbHB1CQ0
-         XsLE7yqCHET+J2U68l+mPivYSP+MsFSyipZhrfHdAOwyeT0LPmaouZOk4Rqbbo0feaAi
-         IXSjHcg3M3y8aQhEkQMOjc8DdMS6n1c98vZDU6Fn0SrhSFrSHYMpFDoss+iC31lVkGRZ
-         qoHzRAVIqRC3C+2mcKdFznxgJOBMajARuP9MRJpJCE0O+UNLFmDmr47LCFUzKspiADzr
-         aFjQ==
-X-Gm-Message-State: AOJu0YwEs0XwVbKWbyWZTkQuUc7C3KTcdnGF2ANcPhgEcHrOj1W/guuv
-	9C7me0G2iCkMRHttmvLKgcSuHiKLsJW0wQ==
-X-Google-Smtp-Source: AGHT+IHqNuWhcwGKjBi6G8KUeFW4GUoOXvZHNgDK186Hk8yLD7zU3ESc10VfdmL/H7ct75fVz5ytKw==
-X-Received: by 2002:a05:6a20:d423:b0:18f:97c:9792 with SMTP id il35-20020a056a20d42300b0018f097c9792mr507479pzb.122.1704520573100;
+        bh=StnyJgFOT64M/Chcxu97Xz0SNkYawN5oNQ23pftyJ9s=;
+        b=Ij2YcUw/pOjP4WPajpW8LMN8SO43IK4pOeSaYrzHIxVphJVd6gVMon52zNeaRqPGWo
+         +VVK5rh0UKOel4pgy98y/977cHRg3tasgvkf1fjLNhah+DcsgldPwGM8s0SQVT7lnn+N
+         x37CVXsAOUEl+rmozW1rhVW3wzubdb9SZHueeMx/8hHr+cgoQlP4DH7EiOP/ugEjg6R6
+         TXXMWZsxhKsALOpuGj7VktJMSKax4QgCgmHWdUzk72vNdDrpXjJj5YcCi+gPjggcppbr
+         Oza8xj4+OD84Wmpce/cHMlxuelOWmaxdQ72372d+O/1ALQnTw96Tp+0zKk7ze/jQf/Xs
+         5TZg==
+X-Gm-Message-State: AOJu0YyChG/DH9IOC4Zq/QwCzDgVc3S7Tixok+1YpOZr6+ZNs5hQY4xf
+	bbAccTlCUasp+rYTir4uMJJlTTItXP1OnA==
+X-Google-Smtp-Source: AGHT+IGHYzKL2jjs5bDEPHvlZnNLlDRAvqneSLlW81rUavWMoEaQa5Y5vl6ZtMdPyhiTa7dNbPhKyQ==
+X-Received: by 2002:a05:6a00:4e57:b0:6d9:b320:94c9 with SMTP id gu23-20020a056a004e5700b006d9b32094c9mr540868pfb.33.1704520573848;
         Fri, 05 Jan 2024 21:56:13 -0800 (PST)
 Received: from oatmeal.darkphysics (c-76-146-178-2.hsd1.wa.comcast.net. [76.146.178.2])
-        by smtp.gmail.com with ESMTPSA id y29-20020a056a00181d00b006d99d986624sm2280873pfa.151.2024.01.05.21.56.12
+        by smtp.gmail.com with ESMTPSA id y29-20020a056a00181d00b006d99d986624sm2280873pfa.151.2024.01.05.21.56.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Jan 2024 21:56:12 -0800 (PST)
+        Fri, 05 Jan 2024 21:56:13 -0800 (PST)
 From: Tree Davies <tdavies@darkphysics.net>
 To: gregkh@linuxfoundation.org,
 	philipp.g.hortmann@gmail.com,
@@ -64,9 +64,9 @@ To: gregkh@linuxfoundation.org,
 Cc: linux-staging@lists.linux.dev,
 	linux-kernel@vger.kernel.org,
 	Tree Davies <tdavies@darkphysics.net>
-Subject: [PATCH 06/21] Staging: rtl8192e: Rename variable bAwakePktSent
-Date: Fri,  5 Jan 2024 21:55:41 -0800
-Message-Id: <20240106055556.430948-7-tdavies@darkphysics.net>
+Subject: [PATCH 07/21] Staging: rtl8192e: Rename variable bSupportNmode
+Date: Fri,  5 Jan 2024 21:55:42 -0800
+Message-Id: <20240106055556.430948-8-tdavies@darkphysics.net>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240106055556.430948-1-tdavies@darkphysics.net>
 References: <20240106055556.430948-1-tdavies@darkphysics.net>
@@ -78,64 +78,47 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Rename variable bAwakePktSent to awake_pkt_sent to fix checkpatch
+Rename variable bSupportNmode to support_nmode to fix checkpatch
 warning Avoid CamelCase.
 
 Signed-off-by: Tree Davies <tdavies@darkphysics.net>
 ---
- drivers/staging/rtl8192e/rtl8192e/rtl_core.c | 2 +-
- drivers/staging/rtl8192e/rtllib.h            | 2 +-
- drivers/staging/rtl8192e/rtllib_softmac.c    | 4 ++--
- 3 files changed, 4 insertions(+), 4 deletions(-)
+ drivers/staging/rtl8192e/rtllib_softmac.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/staging/rtl8192e/rtl8192e/rtl_core.c b/drivers/staging/rtl8192e/rtl8192e/rtl_core.c
-index 67938e212db1..c9d7484fe1cd 100644
---- a/drivers/staging/rtl8192e/rtl8192e/rtl_core.c
-+++ b/drivers/staging/rtl8192e/rtl8192e/rtl_core.c
-@@ -1257,7 +1257,7 @@ static short _rtl92e_tx(struct net_device *dev, struct sk_buff *skb)
- 	int   idx;
- 	u32 fwinfo_size = 0;
- 
--	priv->rtllib->bAwakePktSent = true;
-+	priv->rtllib->awake_pkt_sent = true;
- 
- 	fwinfo_size = sizeof(struct tx_fwinfo_8190pci);
- 
-diff --git a/drivers/staging/rtl8192e/rtllib.h b/drivers/staging/rtl8192e/rtllib.h
-index 9d3c79105508..9d6704fc86ff 100644
---- a/drivers/staging/rtl8192e/rtllib.h
-+++ b/drivers/staging/rtl8192e/rtllib.h
-@@ -1374,7 +1374,7 @@ struct rtllib_device {
- 
- 	/* for PS mode */
- 	unsigned long last_rx_ps_time;
--	bool			bAwakePktSent;
-+	bool			awake_pkt_sent;
- 	u8			LPSDelayCnt;
- 
- 	/* used if IEEE_SOFTMAC_SINGLE_QUEUE is set */
 diff --git a/drivers/staging/rtl8192e/rtllib_softmac.c b/drivers/staging/rtl8192e/rtllib_softmac.c
-index 0d53e0a92a4c..08ff55c2f1be 100644
+index 08ff55c2f1be..85e6e727bec7 100644
 --- a/drivers/staging/rtl8192e/rtllib_softmac.c
 +++ b/drivers/staging/rtl8192e/rtllib_softmac.c
-@@ -1378,7 +1378,7 @@ static short rtllib_sta_ps_sleep(struct rtllib_device *ieee, u64 *time)
- 		return 0;
+@@ -1648,7 +1648,7 @@ static void rtllib_rx_auth_resp(struct rtllib_device *ieee, struct sk_buff *skb)
+ 	int errcode;
+ 	u8 *challenge;
+ 	int chlen = 0;
+-	bool bSupportNmode = true, bHalfSupportNmode = false;
++	bool support_nmode = true, bHalfSupportNmode = false;
  
- 	if (time) {
--		if (ieee->bAwakePktSent) {
-+		if (ieee->awake_pkt_sent) {
- 			psc->LPSAwakeIntvl = 1;
- 		} else {
- 			u8 max_period = 5;
-@@ -1461,7 +1461,7 @@ static inline void rtllib_sta_ps(struct work_struct *work)
- 			spin_unlock_irqrestore(&ieee->mgmt_tx_lock, flags2);
+ 	errcode = auth_parse(ieee->dev, skb, &challenge, &chlen);
+ 
+@@ -1666,16 +1666,16 @@ static void rtllib_rx_auth_resp(struct rtllib_device *ieee, struct sk_buff *skb)
+ 		if (!(ieee->ht_info->iot_action & HT_IOT_ACT_PURE_N_MODE)) {
+ 			if (!ieee->GetNmodeSupportBySecCfg(ieee->dev)) {
+ 				if (is_ht_half_nmode_aps(ieee)) {
+-					bSupportNmode = true;
++					support_nmode = true;
+ 					bHalfSupportNmode = true;
+ 				} else {
+-					bSupportNmode = false;
++					support_nmode = false;
+ 					bHalfSupportNmode = false;
+ 				}
+ 			}
  		}
- 
--		ieee->bAwakePktSent = false;
-+		ieee->awake_pkt_sent = false;
- 
- 	} else if (sleep == 2) {
- 		spin_lock_irqsave(&ieee->mgmt_tx_lock, flags2);
+ 		/* Dummy wirless mode setting to avoid encryption issue */
+-		if (bSupportNmode) {
++		if (support_nmode) {
+ 			ieee->set_wireless_mode(ieee->dev,
+ 					      ieee->current_network.mode);
+ 		} else {
 -- 
 2.39.2
 
