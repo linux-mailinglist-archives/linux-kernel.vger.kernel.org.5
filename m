@@ -1,121 +1,143 @@
-Return-Path: <linux-kernel+bounces-18684-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18685-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 673A18260F7
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 18:57:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 713358260F9
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 19:01:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8E19F1C20D74
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 17:57:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4AC081C20DE9
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 18:01:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5796ED275;
-	Sat,  6 Jan 2024 17:57:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AA5DCA7A;
+	Sat,  6 Jan 2024 18:01:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="logIENqj"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fvbCttM3"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
+Received: from mail-ot1-f48.google.com (mail-ot1-f48.google.com [209.85.210.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C68BC8D2;
-	Sat,  6 Jan 2024 17:57:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4C7BC8F1;
+	Sat,  6 Jan 2024 18:01:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a29058bb2ceso57242066b.0;
-        Sat, 06 Jan 2024 09:57:11 -0800 (PST)
+Received: by mail-ot1-f48.google.com with SMTP id 46e09a7af769-6dbaf9b1674so376152a34.2;
+        Sat, 06 Jan 2024 10:01:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704563830; x=1705168630; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ayftTtZ8YCt/OAxuOOsBAiLw6iK2Sj5mQxrpX9AKLaw=;
-        b=logIENqjSge78w2n9nhFL2HY/0fcCuYsu6Uen0sIjr8/T93q7dLaDTE8Gprdl1kcb5
-         yoluJaoObH9w4gk9dfh8fCy4ImIdWKCNyWsRfXKYAqUCGi/1dtnh9LNVfgxDoHA/+aK9
-         e+cq840AaLJ6Dh4IKGLwVD4eea2IB/WdwUXwDdYrbQtBwSt86KMYUg/G+YUyf1qDT5Jk
-         inq2zKxztAom4AqP2wSxQRLguHv5eep2CKAOuYM/ecqU/ob4xnH5tomMT9ojPcdWTejV
-         1Zv9AbBmtvgRYVktblnO2AxlYqPUfhkg2lvb7p5fluBOEPFkgKaUx5jSUjjNKqC4YNVR
-         jR5Q==
+        d=gmail.com; s=20230601; t=1704564084; x=1705168884; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=SlF5MKSukDXBsWTKudYrkR+clX5vSSACkqiWizoDMjg=;
+        b=fvbCttM36NJtBB4NO8zwDWQcsDvo0fzYvq4+z6X1kdRnrL9gXxxcJsOkX1NMwBcTpG
+         KOVDE4XxalScLiDZKJhgwladPPJSA5rkXEHiZ3GrSSrNcSS+Mxu42mI8lQXDapVmfJAX
+         B0JbGxmi8HCDm+iaHqHcy6w83qzFTBjHv0JsjRgB2MUH/ocbPpmyV6lX/52ub/oQtXV6
+         Ccre7ygaIrceiJabQJXX5RF7OjjMpv/RT8bF9peWcngR5DvoxuQjU4B76RpuTt5y5OeY
+         L3jHSyv0Me43Wb/4Gj0xcEWJgDzxyzTgWJZq8uFODw5M/O0zCRJyHWHKgVNahn3+tfd6
+         b/fQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704563830; x=1705168630;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ayftTtZ8YCt/OAxuOOsBAiLw6iK2Sj5mQxrpX9AKLaw=;
-        b=TWxOTSKANaF4SW2KmG/TtkKAT0zDWlZ1u89nyuaOJXOxDck/wGoSwAdE+ir6jO4eho
-         /AIKhYwcfgWUMeKhxnhoyKpeUyGpHje3E0irhZOoHRLNXRtrF9hggZS2uU0yXTwko3If
-         c0xGhIAlkyZ8R+044pvHV0NfGAGBwLBDAf33PWTNDdzvEUJGJ5NW+EtdRDnU1ciT0jpJ
-         +6CCSLlBUwuaKEFOmrlLLjl0yKCDGgr9wwbbcFgrYtxWVe0rFiQydPqYprYWVlNSGwM3
-         3NzdKSBoQL78JhopibZGRY/aEGiGbrPq2ZmSyb8MnJDKO2NjfDc5BD0QUQTBNiQcRdm+
-         UtdQ==
-X-Gm-Message-State: AOJu0Yzt6PkPfRk0pCdGtK0G9AFwkmMCBPKkRfBoJ63V9HWkYxgJiwJM
-	UxaYVzyDqaJt5HWakIVVA+Q=
-X-Google-Smtp-Source: AGHT+IE0uN+TM2n9f/3lN6P/+RkP08uWhdbyAD7eRYSJ5p0Rqs2uEymo7ubCJiBUdy9bgfh0fTTKdQ==
-X-Received: by 2002:a17:907:bd1:b0:a29:1cb8:46fe with SMTP id ez17-20020a1709070bd100b00a291cb846femr280946ejc.5.1704563830130;
-        Sat, 06 Jan 2024 09:57:10 -0800 (PST)
-Received: from cjw-notebook (2a02-8388-0502-f480-6c32-186a-368b-d6a9.cable.dynamic.v6.surfer.at. [2a02:8388:502:f480:6c32:186a:368b:d6a9])
-        by smtp.gmail.com with ESMTPSA id m21-20020a1709061ed500b00a236378a43fsm2179351ejj.62.2024.01.06.09.57.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 06 Jan 2024 09:57:09 -0800 (PST)
-Date: Sat, 6 Jan 2024 18:57:06 +0100
-From: Christoph Winklhofer <cj.winklhofer@gmail.com>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Rob Herring <robh+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>,
-	Rob Herring <robh@kernel.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jiri Slaby <jirislaby@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Jonathan Corbet <corbet@lwn.net>, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-	linux-doc@vger.kernel.org
-Subject: Re: [PATCH v4 0/3] w1: add UART w1 bus driver
-Message-ID: <ZZmUcr7Ct7g42PD2@cjw-notebook>
-References: <20240106-w1-uart-v4-0-7fe1378a8b3e@gmail.com>
- <1aeff309-6867-4296-8983-a60e8fd31614@linaro.org>
+        d=1e100.net; s=20230601; t=1704564084; x=1705168884;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=SlF5MKSukDXBsWTKudYrkR+clX5vSSACkqiWizoDMjg=;
+        b=R90nwurwv9CaykDToZamE0wFHaHXrOuK66C4ryDvKMiALkEnWNe02C1W2tJPkyenmd
+         6UCqvztuHwpSM6WC2zl8A5SO7zn1SSoMNcHqy2/BQIJMyv9Jx6YARo18ZtDtW3kZwO+7
+         oscg1XVZw8n/8BvI/YPHZ+7YLnmk8Qk4pNq6WPCRpsMiJQoTJd+RHQCUsWypo4oZkBOA
+         XXt93yvPAqvrIHsgaR39h0fBIGhT57iC+y4D1CtZ616KYCCSK9UdBH8BouhDqybHPs9D
+         mWjzBdgsbcBT+Gknq0422ahQdxYNNa53MRfGuF2d1OGNpFXlbV5LWEQ1QSCczZ22dX0o
+         ITkw==
+X-Gm-Message-State: AOJu0YyaVrM+/EsyBQ6OYU58nd02XRuIUQwcmUWKZPNNeUHmXBhMBpe/
+	CwHkKQaATZgA6SDjrjcT6t2VOu7FbIOdd8HhuZE=
+X-Google-Smtp-Source: AGHT+IHFMAuY9wP4JZeMq0AGVSNp/s3w+mHEB0XJgEh9v1FVbyJOrTHPgtffWFKIufHuW/WwSLScpnFmGY/VTT9kHXU=
+X-Received: by 2002:a9d:5d06:0:b0:6db:d330:b8ca with SMTP id
+ b6-20020a9d5d06000000b006dbd330b8camr685486oti.57.1704564084515; Sat, 06 Jan
+ 2024 10:01:24 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1aeff309-6867-4296-8983-a60e8fd31614@linaro.org>
+References: <20231206151600.26833-1-quic_pintu@quicinc.com>
+ <20231208203128.GA2646347-robh@kernel.org> <CAOuPNLg90T69USVQ8Ti6c8fXb_XrnaR035in_CbJHmNMUYLqOg@mail.gmail.com>
+ <CAOuPNLj4_pQiAHoER2VJpW_2NEaq8+zF8p1br+tf0Toe1t1UDg@mail.gmail.com>
+In-Reply-To: <CAOuPNLj4_pQiAHoER2VJpW_2NEaq8+zF8p1br+tf0Toe1t1UDg@mail.gmail.com>
+From: Pintu Agarwal <pintu.ping@gmail.com>
+Date: Sat, 6 Jan 2024 23:31:12 +0530
+Message-ID: <CAOuPNLh+V1-Uu_rnnbdu7p6DGjHOJf0yJnaxnchwpzh_YyP=_Q@mail.gmail.com>
+Subject: Re: [PATCH] of: reserved_mem: fix error log for reserved mem init failure
+To: Rob Herring <robh@kernel.org>, vichy.kuo@gmail.com
+Cc: Pintu Kumar <quic_pintu@quicinc.com>, linux-kernel@vger.kernel.org, 
+	akpm@linux-foundation.org, linux-mm@kvack.org, frowand.list@gmail.com, 
+	devicetree@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Sat, Jan 06, 2024 at 05:56:34PM +0100, Krzysztof Kozlowski wrote:
-> On 06/01/2024 17:02, Christoph Winklhofer via B4 Relay wrote:
-> > Hello!
-> > 
-> > This patch contains a driver for a 1-Wire bus over UART. The driver
-> > utilizes the UART interface via the Serial Device Bus to create the
-> > 1-Wire timing patterns.
-> > 
-> > Changes in v4:
-> > - rework baud-rate configuration: also check max bit-time, support higher
-> >   baud-rates by adding a delay to complete 1-Wire cycle.
-> > - dt-binding w1-uart: specify baud-rates for 1-Wire operations
-> > - Link to v3: https://lore.kernel.org/r/20240105-w1-uart-v3-0-8687093b2e76@gmail.com
-> > 
-> 
-> You can slow down a bit. You sent v2 too late to be applied. Then you
-> sent v3 and next day v4.
-> 
-> While I like approach to release early, release often, it does not
-> necessarily apply to the bindings. Bindings should be complete, which
-> means they should describe the hardware as fully as possible.
-> 
-> About the driver, you can develop it incrementally, it is a good idea,
-> however since ~rc6 my w1 tree is closed. It will remain closed till next
-> rc1 is released (merge window finished). Nothing will get applied during
-> that time, so if you intend to add new features, better to send v5 after
-> the merge window (instead v4 now, v5 tomorrow, v6 next week and then v7
-> after rc1).
-> 
-> Best regards,
-> Krzysztof
-> 
+Hi,
 
-Ok sorry, understood - thank you for the clarification.
+On Thu, 14 Dec 2023 at 22:47, Pintu Agarwal <pintu.ping@gmail.com> wrote:
+>
+> On Mon, 11 Dec 2023 at 20:13, Pintu Agarwal <pintu.ping@gmail.com> wrote:
+> >
+> > Hi,
+> >
+> > On Sat, 9 Dec 2023 at 02:01, Rob Herring <robh@kernel.org> wrote:
+> > >
+> > > On Wed, Dec 06, 2023 at 08:46:00PM +0530, Pintu Kumar wrote:
+> > > > During fdt_init_reserved_mem() when __reserved_mem_init_node()
+> > > > fail we are using pr_info to print error.
+> > > >
+> > > > So, if we change the loglevel to 4 (or below), this error
+> > > > message will be missed.
+> > > >
+> > > > Thus, change the pr_info to pr_err for fail case.
+> > > >
+> > > > Signed-off-by: Pintu Kumar <quic_pintu@quicinc.com>
+> > > > ---
+> > > >  drivers/of/of_reserved_mem.c | 2 +-
+> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > >
+> > > > diff --git a/drivers/of/of_reserved_mem.c b/drivers/of/of_reserved_mem.c
+> > > > index 7ec94cfcbddb..473665e76b6f 100644
+> > > > --- a/drivers/of/of_reserved_mem.c
+> > > > +++ b/drivers/of/of_reserved_mem.c
+> > > > @@ -334,7 +334,7 @@ void __init fdt_init_reserved_mem(void)
+> > > >               if (err == 0) {
+> > > >                       err = __reserved_mem_init_node(rmem);
+> > > >                       if (err != 0 && err != -ENOENT) {
+> > > > -                             pr_info("node %s compatible matching fail\n",
+> > > > +                             pr_err("node %s compatible matching fail\n",
+> > >
+> > > Isn't the message just wrong. If compatible match fails, we return
+> > > ENOENT. The failure here would be from the init function.
+> > >
+> > Okay.
+> > You mean to say, if __reserved_mem_init_node fails with default err
+> > (ENOENT) then it may not hit this condition.
+> > Instead it will hit the 'else' case which is wrong ?
+> > Also, the "initfn" inside "__reserved_mem_init_node" may fail in which
+> > case also it may return default err.
+> >
+> > Maybe, the initial author's intention was to free the memory only if
+> > the failure type is not the default ENOENT type.
+> >
+> > This seems to be a different issue.
+> > Can we address this separately in a different patch ?
+> >
+> > And how do we fix this ?
+> > One option is to add another "if" condition with just ENOENT error check ?
+> > if (err == -ENOENT) {
+> >     pr_err("node %s compatible matching fail\n", rmem->name);
+> >     return;
+> > }
+> > Then, correct the existing log with a different message:
+> > pr_err("node %s matching reserved mem not found.\n", rmem->name);
+> > Or, add one more "if else" condition ?
+> > Or, fix the calling function itself : __reserved_mem_init_node ?
+> >
+>
+> Any further comments on this ?
 
-Kind regards,
-Christoph
+Any further comments or suggestions on the above ?
+Shall we just fix the log message, or correct the if/else case as well ?
 
