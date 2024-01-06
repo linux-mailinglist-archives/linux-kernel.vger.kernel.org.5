@@ -1,117 +1,126 @@
-Return-Path: <linux-kernel+bounces-18571-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18572-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D612A825F81
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 13:42:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E746825F83
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 13:44:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0767BB2278E
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 12:42:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9012E1F225A0
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 12:43:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7FE9747D;
-	Sat,  6 Jan 2024 12:42:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A32B37489;
+	Sat,  6 Jan 2024 12:43:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RWMUhiWo"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hKa7qmvb"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+Received: from mail-ot1-f50.google.com (mail-ot1-f50.google.com [209.85.210.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8CDD7460;
-	Sat,  6 Jan 2024 12:42:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B34546FD0;
+	Sat,  6 Jan 2024 12:43:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-40e37524fafso4939205e9.1;
-        Sat, 06 Jan 2024 04:42:16 -0800 (PST)
+Received: by mail-ot1-f50.google.com with SMTP id 46e09a7af769-6dc05ddb656so264987a34.1;
+        Sat, 06 Jan 2024 04:43:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704544935; x=1705149735; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=/0Suv6vzFBcJ+SsSx39OTc6z6wFXvzjX7d7HBkY6jok=;
-        b=RWMUhiWoFSkJduu4qN/InXxREDA9heLxndFLQaRyAA1vSTC708xPq4AdH+BeG0grgu
-         lI7vW3eeewLZvVFcFxHaGDHyjgAK93yW6MJF38/lCcTJJVGV4XB0YJ4cNEOYPzJN+No9
-         By6OZSHhNKpqrO6juExvFS+bRBLGOMWhSB/cisuds2F5MaDxHVLfXdbDS5/vNgrgpsWB
-         aDiTnC1iosrNHbX0SP+gBS/tQDl6iNZy1XKu5IJWiNIP0eTTi9zb7y66Wel4lkXZMosj
-         VkurzhSY8NlPrh7v7/DiqKtfiQ59VmQD8DIUM0p8JfFnNLgRaml6SmwkLNw7zAqflBrz
-         ufRQ==
+        d=gmail.com; s=20230601; t=1704545029; x=1705149829; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=vBYt17eSTZ21Zqe1EdrV1063sy3OdziEyJXUnnmkLcI=;
+        b=hKa7qmvb9GZOiRWuWYoZ9IYJqvzIqpTLIy01HUm3QJalh6ufo1Sx+FRFfgBhu3M4dt
+         HtXU81EMgpzA0TFqNX2U5u2aByhR8vblgW8g1s+POC4y3R+ECSgUokPckzbqovftllCP
+         n3lFx+z0Mnhllzy6kDZjq+G8gQyXoTVe85Wl9p8TwQ7qh22PJufA0tIeLJplBQ2KEz0t
+         YVncxh9DZdq2ezCAaW+1op0e+zuVB8igO+BHGatbEiOlNTNiw1Utge+XaNdJlLlEWXdv
+         BGJde4oCiXnIwWbaf+JfWeeUmweoMdYAP2qZF8U8et0kmzmda/6I1uf7Er7yLOO19g07
+         n+/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704544935; x=1705149735;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=/0Suv6vzFBcJ+SsSx39OTc6z6wFXvzjX7d7HBkY6jok=;
-        b=jOD/kTbufEvw0EvfwtffHCgCFkq3sQ5VNEUymkYJOjbuIpw+nNPMEdcuVKbHzAGJd4
-         kNO9ohuWVi/au4S8Dd6N6wMsLo6OhF3pAk5lNYaak7YXt311oiKEzc9bDl2fuC2EqMTn
-         IyHoEascpkNrGJZoMJLjwM+G1iQpmVWIEcFPWuEKcwzyvX/v9ZRZnO1/dLbHv/LLxB5K
-         02B8ljmoXQdOBF79382VLfGY45vO2O2MAMAGOin2ROxUbHT8zHHjGWSwqtteoOH6kJco
-         M/5OtGEToiDUO4hVQqtwD8rc4Svv7Mn9nC1Su8fxoxTsZrUR+e+ZMamLRTCZFK4qcVx+
-         61Jw==
-X-Gm-Message-State: AOJu0YwnOzYe7yJ2AycJvOqj1QeBtgLhtNZuzM5pJSSDBfLc2VAFidgT
-	QGMqgpd8yUxSG4JDV793lJL6KdRxsLg=
-X-Google-Smtp-Source: AGHT+IFrkzRgV/gv7FAO9JRFh/XcDmwNGvDyTskg1q4LQSQ28sa30tIiulxogkC1T/j5A4oCCi0rqQ==
-X-Received: by 2002:a7b:ce90:0:b0:40d:7fbe:e966 with SMTP id q16-20020a7bce90000000b0040d7fbee966mr518086wmj.40.1704544934665;
-        Sat, 06 Jan 2024 04:42:14 -0800 (PST)
-Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
-        by smtp.gmail.com with ESMTPSA id h17-20020a05600c351100b0040d5f466deesm4568664wmq.38.2024.01.06.04.42.13
+        d=1e100.net; s=20230601; t=1704545029; x=1705149829;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vBYt17eSTZ21Zqe1EdrV1063sy3OdziEyJXUnnmkLcI=;
+        b=XfwrbOF/HFztzrupx7qm8G5QNJSsk6ltWiVoKv/O6jC+znSu+fls8dumfSZZ9clg9K
+         CjSHwDl01x+NqhWwhRAHh2OESpYAMZ3K/rCYohzVfXgXQ+G9usZXVF3N+Y25QPTdjByJ
+         QZqQaR+GgwFIo2Raa6F4kJSBZwqzdGw9aTW6WV4DVQ0cX4YpWdCh/K0PoJF6YlCXwxXY
+         e4LD5+xtnIiOK6+DXYNAS8r0LuXWLVh1q6Ml45HVcCEQxOfKxBhf4OGZARXpPAt+8DUN
+         i64vdLEKfKHe8WIl0ah/BKYy1XOULujmKKvxoaM1FujGRvJAEj0aFsWCUeUNuZvym4c6
+         jH5A==
+X-Gm-Message-State: AOJu0YwYnGssRg1gqh0D2YC6hZUwuzdRgHOrf1ibglOFyIXJRz4JXlyQ
+	xzVz0BN8O7QaO+vztM6wMioOCNCX7IMGSg==
+X-Google-Smtp-Source: AGHT+IHh3j6sU452FOvZV/tmf+udIqdT47jfwFVJ7MBxs/3IRiQ6WQzI+Q0jnhVA/9NLyrW27zl8gg==
+X-Received: by 2002:a9d:5f04:0:b0:6dc:14e5:b212 with SMTP id f4-20020a9d5f04000000b006dc14e5b212mr494715oti.41.1704545029598;
+        Sat, 06 Jan 2024 04:43:49 -0800 (PST)
+Received: from archie.me ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id t185-20020a625fc2000000b006d942f43140sm3115414pfb.34.2024.01.06.04.43.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 06 Jan 2024 04:42:14 -0800 (PST)
-From: Colin Ian King <colin.i.king@gmail.com>
-To: Oded Gabbay <ogabbay@kernel.org>,
-	Ofir Bitton <obitton@habana.ai>,
-	Benjamin Dotan <bdotan@habana.ai>,
-	dri-devel@lists.freedesktop.org
-Cc: kernel-janitors@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH][next] accel/habanalabs: remove redundant assignment to pointer 'input'
-Date: Sat,  6 Jan 2024 12:42:13 +0000
-Message-Id: <20240106124213.51392-1-colin.i.king@gmail.com>
-X-Mailer: git-send-email 2.39.2
+        Sat, 06 Jan 2024 04:43:48 -0800 (PST)
+Received: by archie.me (Postfix, from userid 1000)
+	id 6A06B1848A087; Sat,  6 Jan 2024 19:43:44 +0700 (WIB)
+Date: Sat, 6 Jan 2024 19:43:44 +0700
+From: Bagas Sanjaya <bagasdotme@gmail.com>
+To: Jonathan Corbet <corbet@lwn.net>,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	Linux Documentation <linux-doc@vger.kernel.org>
+Cc: Randy Dunlap <rdunlap@infradead.org>
+Subject: Re: Adding warning icon to warning admonitions?
+Message-ID: <ZZlLAOm1g_R01VGj@archie.me>
+References: <ZZgSGFhvT3SOI4fe@archie.me>
+ <87edev3jya.fsf@meer.lwn.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="p+Y4J1/u4I3DMW0O"
+Content-Disposition: inline
+In-Reply-To: <87edev3jya.fsf@meer.lwn.net>
 
-From: Colin Ian King <colin.i.king@intel.com>
 
-The pointer input is assigned a value that is not read, it is
-being re-assigned again later with the same value. Resolve this
-by moving the declaration to input into the if block.
+--p+Y4J1/u4I3DMW0O
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Cleans up clang scan build warning:
-warning: Value stored to 'input' during its initialization is never
-read [deadcode.DeadStores]
+On Fri, Jan 05, 2024 at 07:59:09AM -0700, Jonathan Corbet wrote:
+> Bagas Sanjaya <bagasdotme@gmail.com> writes:
+>=20
+> > For the icon itself, the approach is to use Font Awesome [2] (many othe=
+r doc
+> > sites that uses Sphinx also do that due to site theme they use but Alab=
+aster
+> > theme don't use the icon, hence this question). I personally prefer reg=
+ular
+> > icon variant (like in TT), but alas it is in non-free PRO plan (and only
+> > solid variant is free and that is what Sphinx themes using).
+> >
+> > Does adding warning icon like above idea make sense for the kernel docs=
+? And
+> > does it require non-trivial (complex) changes to Alabaster theme?
+>=20
+> It can probably be done with a bit of CSS tweaking.  I don't really like
+> the idea of requiring the installation of another font to build the
+> docs, though, and Font Awesome looks like it could bring in licensing
+> issues of its own - that's not clear from the site at all.
 
-Signed-off-by: Colin Ian King <colin.i.king@intel.com>
----
- drivers/accel/habanalabs/goya/goya_coresight.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+OK, thanks!
 
-diff --git a/drivers/accel/habanalabs/goya/goya_coresight.c b/drivers/accel/habanalabs/goya/goya_coresight.c
-index 41cae5fd843b..3827ea4c02f7 100644
---- a/drivers/accel/habanalabs/goya/goya_coresight.c
-+++ b/drivers/accel/habanalabs/goya/goya_coresight.c
-@@ -576,7 +576,6 @@ static int goya_config_spmu(struct hl_device *hdev,
- 		struct hl_debug_params *params)
- {
- 	u64 base_reg;
--	struct hl_debug_params_spmu *input = params->input;
- 	u64 *output;
- 	u32 output_arr_len;
- 	u32 events_num;
-@@ -592,7 +591,7 @@ static int goya_config_spmu(struct hl_device *hdev,
- 	base_reg = debug_spmu_regs[params->reg_idx] - CFG_BASE;
- 
- 	if (params->enable) {
--		input = params->input;
-+		struct hl_debug_params_spmu *input = params->input;
- 
- 		if (!input)
- 			return -EINVAL;
--- 
-2.43.0
+--=20
+An old man doll... just what I always wanted! - Clara
 
+--p+Y4J1/u4I3DMW0O
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZZlK+wAKCRD2uYlJVVFO
+ozv4AQDLKhtm3f3wVzlRJe+V9Qbe29j2gZ9Uf9PSB0MlriG0JwD/ZVJ3HuXLmg8/
+e3LCJN5tl1yFcGDHPwXOHL8Pm1JAOQw=
+=4kjx
+-----END PGP SIGNATURE-----
+
+--p+Y4J1/u4I3DMW0O--
 
