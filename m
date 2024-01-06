@@ -1,57 +1,57 @@
-Return-Path: <linux-kernel+bounces-18588-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18594-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B550825FC6
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 15:06:09 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D301825FD4
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 15:18:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1C99EB2187B
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 14:06:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C2DA1B22096
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 14:18:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BB03748E;
-	Sat,  6 Jan 2024 14:05:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BA4C8485;
+	Sat,  6 Jan 2024 14:18:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="WnhsEeM4"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="fBU+SB2N"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62CC07469;
-	Sat,  6 Jan 2024 14:05:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3762C847B
+	for <linux-kernel@vger.kernel.org>; Sat,  6 Jan 2024 14:18:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704549955; x=1736085955;
+  t=1704550714; x=1736086714;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=b8S9YQ723Vakq/AypdH+EFs2g1D+6lWqicTwgFrXQVY=;
-  b=WnhsEeM47w4acjUoTE0d+WugJ3tUhpSkBWxmi66OWMQ3eGckmWG26yda
-   n9AU4MOEs2fm3QLE+Y4iw1LVS7fgPhDocTbKK5w0z+UxRSuB9fgenqrz/
-   kRRz/rq/J0A+X//rFleXgYrMzGXKzoqXor3nIKJpPjUNyt/ECWEAEtygf
-   YrCxcm/Q13p21vH37Ft+f9G7JddjO5+RWOIiBDUbPWXGMhY/JuEl4vlpU
-   ppOToTOxeVhNkxdd6zxxmVYSBzp1nwtvw9LzXn3cIWL2xVQlnWyBeVJcq
-   mb1HWSsxucJ6hsN90yQNA6kazJKzNyayxKuGe9XAshKExeCiPDrwDHRWf
+  bh=IZCz/MZA6E72BOm/MHR3k5Pv0uD88Tp+9lsZbl+gfxE=;
+  b=fBU+SB2NBr1tdqCcUwOsk+6L5l5BGvOP78Vx/U4+reWKnXzobxUWmOKg
+   O34iLDPlOtAj9HtZbcbqav0C+ViTa3Dbbzk6lklAyu4DclZhZhdg0Hso1
+   Z0sBwfDb1bzclkCqpYUmhEbwjBqXL0MWOupC7p5iiaffLc/y3QDKSnDoR
+   4ao4akMu4Dd20n0nAIMYvUAlJKfTkV/+m5GuoWcVcVQgJi7hyw5LtXG0r
+   4pc2F2Hn5meexpU+L+OoVX2ASJvVUKeOe9qQ3k4qYPoS7isMRUZ6u6xQh
+   KWWdHZZ5RcwebekPgBTMV1JBMsdI/U4SS7K3My8E3EL9mqRyyHXlYI60f
    Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10945"; a="5025338"
+X-IronPort-AV: E=McAfee;i="6600,9927,10945"; a="16266400"
 X-IronPort-AV: E=Sophos;i="6.04,337,1695711600"; 
-   d="scan'208";a="5025338"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jan 2024 06:05:54 -0800
+   d="scan'208";a="16266400"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jan 2024 06:18:33 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10945"; a="1112336317"
+X-IronPort-AV: E=McAfee;i="6600,9927,10945"; a="954223935"
 X-IronPort-AV: E=Sophos;i="6.04,337,1695711600"; 
-   d="scan'208";a="1112336317"
+   d="scan'208";a="954223935"
 Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga005.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jan 2024 06:05:49 -0800
+  by orsmga005.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jan 2024 06:18:28 -0800
 Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@intel.com>)
-	id 1rM7J4-0000000BvKX-1CLt;
-	Sat, 06 Jan 2024 16:05:46 +0200
-Date: Sat, 6 Jan 2024 16:05:46 +0200
-From: Andy Shevchenko <andriy.shevchenko@intel.com>
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rM7MG-0000000BvMv-1HXB;
+	Sat, 06 Jan 2024 16:09:04 +0200
+Date: Sat, 6 Jan 2024 16:09:04 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To: Mark Hasemeyer <markhas@chromium.org>
 Cc: LKML <linux-kernel@vger.kernel.org>,
 	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
@@ -60,23 +60,19 @@ Cc: LKML <linux-kernel@vger.kernel.org>,
 	Konrad Dybcio <konrad.dybcio@linaro.org>,
 	Sudeep Holla <sudeep.holla@arm.com>,
 	Raul Rangel <rrangel@chromium.org>,
-	Tzung-Bi Shih <tzungbi@kernel.org>,
-	Daniel Scally <djrscally@gmail.com>,
-	Frank Rowand <frowand.list@gmail.com>,
+	Tzung-Bi Shih <tzungbi@kernel.org>, David Gow <davidgow@google.com>,
 	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-	Len Brown <lenb@kernel.org>,
+	Mark Brown <broonie@kernel.org>,
 	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Sakari Ailus <sakari.ailus@linux.intel.com>,
-	devicetree@vger.kernel.org, linux-acpi@vger.kernel.org
-Subject: Re: [PATCH v3 21/24] device property: Modify fwnode irq_get() to use
- resource
-Message-ID: <ZZleOi6-ekoTL-Jk@smile.fi.intel.com>
+	Takashi Iwai <tiwai@suse.de>,
+	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
+Subject: Re: [PATCH v3 23/24] platform: Modify platform_get_irq_optional() to
+ use resource
+Message-ID: <ZZlfADa5_-NnK4UI@smile.fi.intel.com>
 References: <20231226192149.1830592-1-markhas@chromium.org>
- <20231226122113.v3.21.I38ac58ab04985a404ed6551eb5813fa7841ef410@changeid>
- <ZYxdwrJw7_JudQXB@smile.fi.intel.com>
- <CANg-bXBwWXaJWv9gMtjYvRBnOaP3E8U1nh5-ScWOoyRayzn7Zw@mail.gmail.com>
+ <20231226122113.v3.23.Ife9ebad2bbfbab3a05e90040f344d750aa0aac7e@changeid>
+ <ZYxfLjCzjnocKaTo@smile.fi.intel.com>
+ <CANg-bXAPrhS9iYASSSXFJguYEvejL_NcgMCWCHU=6mvP9AstLA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -85,43 +81,25 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CANg-bXBwWXaJWv9gMtjYvRBnOaP3E8U1nh5-ScWOoyRayzn7Zw@mail.gmail.com>
+In-Reply-To: <CANg-bXAPrhS9iYASSSXFJguYEvejL_NcgMCWCHU=6mvP9AstLA@mail.gmail.com>
 Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Wed, Dec 27, 2023 at 12:09:19PM -0700, Mark Hasemeyer wrote:
-> > A side note: in all files where you use ioport.h check if you actually included it.
-
-...
-
-> > > -#include <linux/types.h>
-> > > -#include <linux/list.h>
-> > >  #include <linux/bits.h>
-> > >  #include <linux/err.h>
-> > > +#include <linux/ioport.h>
-> > > +#include <linux/list.h>
-> > > +#include <linux/types.h>
+On Wed, Dec 27, 2023 at 01:33:14PM -0700, Mark Hasemeyer wrote:
+> > > -     struct resource *r;
+> >         ...
+> > > +     struct resource *platform_res = platform_get_resource(dev, IORESOURCE_IRQ, num);
 > >
-> > Fine, but no. This file is still not using the iopoll.h.
-> > See the forward declarations below? It should be there.
-> >
-> > >  struct fwnode_operations;
-> > >  struct device;
-
-...
-
-> > > --- a/include/linux/property.h
-> > > +++ b/include/linux/property.h
-> >
-> > Same comment(s) here.
+> > This is quite unusual (as far as cleanup.h is not used and there is no place
+> > for it here).
 > 
-> I don't fully follow. Are you suggesting adding an explicit 'struct
-> resource' declaration as opposed to including ioport.h?
+> Sorry, what's unusual? The declaration of a separate 'platform_res'?
+> If so, I introduced it because I wanted to avoid setting 'r' if
+> 'irq_get_irq_data()' fails below.
 
-Yes.
+Defining the variable in the depth of the code.
+There are exceptions, but usually we follow the style that definitions are
+grouped at the top of the {} scope(s).
 
-> If so, why? To reduce scope?
-
-Build time, better granularity, less include hellness.
 
 -- 
 With Best Regards,
