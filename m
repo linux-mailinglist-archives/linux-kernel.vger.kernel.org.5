@@ -1,141 +1,78 @@
-Return-Path: <linux-kernel+bounces-18515-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18516-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C63C825E83
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 07:26:31 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D6A6825E87
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 07:31:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8AA06B23060
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 06:26:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5E107B22C26
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 06:31:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D77524409;
-	Sat,  6 Jan 2024 06:26:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04B733C15;
+	Sat,  6 Jan 2024 06:31:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="fPY0SbxM"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 183FC1FB9;
-	Sat,  6 Jan 2024 06:26:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4T6VhH1pt4z4f3l2g;
-	Sat,  6 Jan 2024 14:26:07 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 9B5101A0979;
-	Sat,  6 Jan 2024 14:26:10 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-	by APP1 (Coremail) with SMTP id cCh0CgDHlg978phlm+ILAA--.18165S2;
-	Sat, 06 Jan 2024 14:26:07 +0800 (CST)
-Subject: Re: [PATCH v2] virtiofs: use GFP_NOFS when enqueuing request through
- kworker
-To: Vivek Goyal <vgoyal@redhat.com>, Matthew Wilcox <willy@infradead.org>
-Cc: linux-fsdevel@vger.kernel.org, Miklos Szeredi <miklos@szeredi.hu>,
- Stefan Hajnoczi <stefanha@redhat.com>, linux-kernel@vger.kernel.org,
- virtualization@lists.linux.dev, houtao1@huawei.com
-References: <20240105105305.4052672-1-houtao@huaweicloud.com>
- <ZZhjzwnQUEJhNJiq@redhat.com> <ZZhkrOdbau2O/B59@casper.infradead.org>
- <ZZhpjEwDwMS_mq-u@redhat.com> <ZZhtU0IxUycpLGJe@casper.infradead.org>
- <ZZh0LKpkrVdoU0tH@redhat.com>
-From: Hou Tao <houtao@huaweicloud.com>
-Message-ID: <9c193ad9-801d-a3d3-faf6-3a655a6fa209@huaweicloud.com>
-Date: Sat, 6 Jan 2024 14:26:03 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0611A3C3B
+	for <linux-kernel@vger.kernel.org>; Sat,  6 Jan 2024 06:30:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:
+	Content-ID:Content-Description:In-Reply-To:References;
+	bh=TqNHSUYA6sM9H01tReCTGLhW5nBEUnAS7xmyhZeLS9Y=; b=fPY0SbxMiQXHm7SQxROTgpC+al
+	eKSm0CXpMFMGm9A0gI/RRdFhiQoB9bJtTLJ91OwjU9rrDchPZqmDtM0iNdUOlvfww77KFC+99d8d7
+	WLYMV2R5DgHa2QGSS8ZRYCt6ihWswvhjRUIKCq6VWn8rVM31uTrv5gzEvSx3foCqpGLAs8lI/j/vA
+	IEOFP/wSHW5AP9lruPhPVSdM9uqhjKD4QQc+svybhrSKJ+z1p4acTjR4Xlxa8VMXOsjUcROROiVjO
+	m8lSF7AV2kgfHc9NanBzhmjGUUwXwYD8oF9ntkKCk+djJe03K69GKjmk11NJp+IS+KEczS+mtM51x
+	Wj6zsUlw==;
+Received: from [50.53.46.231] (helo=bombadil.infradead.org)
+	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+	id 1rM0Cq-000qTD-08;
+	Sat, 06 Jan 2024 06:30:52 +0000
+From: Randy Dunlap <rdunlap@infradead.org>
+To: linux-kernel@vger.kernel.org
+Cc: Randy Dunlap <rdunlap@infradead.org>,
+	Andrew Morton <akpm@linux-foundation.org>
+Subject: [PATCH] mailmap: add old address mappings for myself
+Date: Fri,  5 Jan 2024 22:30:44 -0800
+Message-ID: <20240106063051.13623-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <ZZh0LKpkrVdoU0tH@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-CM-TRANSID:cCh0CgDHlg978phlm+ILAA--.18165S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxXrWxXrW5Ww1xXFyDCw4UJwb_yoW5CF48pr
-	W2ya48ZF1kJrW7AFZ2yw1UGFyFya1kWrWUX3sYvr9YkFZFqr1I9ryIkF409asrArykCw10
-	qFWrXa92qFyDZaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUkjb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
-	64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
-	8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE
-	2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
-	xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
-	c7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UWE__UUUUU=
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Hi Vivek,
+Add my old email addresses so that git send-email will map them
+to my current email address.
 
-On 1/6/2024 5:27 AM, Vivek Goyal wrote:
-> On Fri, Jan 05, 2024 at 08:57:55PM +0000, Matthew Wilcox wrote:
->> On Fri, Jan 05, 2024 at 03:41:48PM -0500, Vivek Goyal wrote:
->>> On Fri, Jan 05, 2024 at 08:21:00PM +0000, Matthew Wilcox wrote:
->>>> On Fri, Jan 05, 2024 at 03:17:19PM -0500, Vivek Goyal wrote:
->>>>> On Fri, Jan 05, 2024 at 06:53:05PM +0800, Hou Tao wrote:
->>>>>> From: Hou Tao <houtao1@huawei.com>
->>>>>>
->>>>>> When invoking virtio_fs_enqueue_req() through kworker, both the
->>>>>> allocation of the sg array and the bounce buffer still use GFP_ATOMIC.
->>>>>> Considering the size of both the sg array and the bounce buffer may be
->>>>>> greater than PAGE_SIZE, use GFP_NOFS instead of GFP_ATOMIC to lower the
->>>>>> possibility of memory allocation failure.
->>>>>>
->>>>> What's the practical benefit of this patch. Looks like if memory
->>>>> allocation fails, we keep retrying at interval of 1ms and don't
->>>>> return error to user space.
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+---
+ .mailmap |    3 +++
+ 1 file changed, 3 insertions(+)
 
-Motivation for GFP_NOFS comes another fix proposed for virtiofs [1] in
-which when trying to insert a big kernel module kept in a cache-disabled
-virtiofs, the length of fuse args will be large (e.g., 10MB), and the
-memory allocation in copy_args_to_argbuf() will fail forever. The
-proposed fix tries to fix the problem by limit the length of data kept
-in fuse arg, but because the limitation is still large (256KB in that
-patch), so I think using GFP_NOFS will also be helpful for such memory
-allocation.
-
-[1]:
-https://lore.kernel.org/linux-fsdevel/20240103105929.1902658-1-houtao@huaweicloud.com/
->>>> You don't deplete the atomic reserves unnecessarily?
->>> Sounds reasonable. 
->>>
->>> With GFP_NOFS specificed, can we still get -ENOMEM? Or this will block
->>> indefinitely till memory can be allocated. 
->> If you need the "loop indefinitely" behaviour, that's
->> GFP_NOFS | __GFP_NOFAIL.  If you're actually doing something yourself
->> which can free up memory, this is a bad choice.  If you're just sleeping
->> and retrying, you might as well have the MM do that for you.
-
-Even with GFP_NOFS, I think -ENOMEM is still possible, so the retry
-logic is still necessary.
-> I probably don't want to wait indefinitely. There might be some cases
-> where I might want to return error to user space. For example, if
-> virtiofs device has been hot-unplugged, then there is no point in
-> waiting indefinitely for memory allocation. Even if memory was allocated,
-> soon we will return error to user space with -ENOTCONN. 
->
-> We are currently not doing that check after memory allocation failure but
-> we probably could as an optimization.
-
-Yes. It seems virtio_fs_enqueue_req() only checks fsvq->connected before
-writing sg list to virtual queue, so if the virtio device is
-hot-unplugged and the free memory is low, it may do unnecessary retry.
-Even worse, it may hang. I volunteer to post a patch to check the
-connected status after memory allocation failed if you are OK with that.
-
->
-> So this patch looks good to me as it is. Thanks Hou Tao.
->
-> Reviewed-by: Vivek Goyal <vgoyal@redhat.com>
->
-> Thanks
-> Vivek
-
+diff -- a/.mailmap b/.mailmap
+--- a/.mailmap
++++ b/.mailmap
+@@ -505,6 +505,9 @@ Ralf Baechle <ralf@linux-mips.org>
+ Ralf Wildenhues <Ralf.Wildenhues@gmx.de>
+ Ram Chandra Jangir <quic_rjangir@quicinc.com> <rjangir@codeaurora.org>
+ Randy Dunlap <rdunlap@infradead.org> <rdunlap@xenotime.net>
++Randy Dunlap <rdunlap@infradead.org> <randy.dunlap@oracle.com>
++Randy Dunlap <rdunlap@infradead.org> <rddunlap@osdl.org>
++Randy Dunlap <rdunlap@infradead.org> <randy.dunlap@intel.com>
+ Ravi Kumar Bokka <quic_rbokka@quicinc.com> <rbokka@codeaurora.org>
+ Ravi Kumar Siddojigari <quic_rsiddoji@quicinc.com> <rsiddoji@codeaurora.org>
+ Rémi Denis-Courmont <rdenis@simphalempin.com>
 
