@@ -1,132 +1,118 @@
-Return-Path: <linux-kernel+bounces-18709-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18710-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5EE80826175
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 21:27:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id DF2D4826177
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 21:27:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 04E2A1F2206C
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 20:27:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7AC2F1F21F1D
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 20:27:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4707AF51E;
-	Sat,  6 Jan 2024 20:26:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DB0FF507;
+	Sat,  6 Jan 2024 20:27:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gAAAo91a"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 508FDF4E4;
-	Sat,  6 Jan 2024 20:26:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=omp.ru
-Received: from [192.168.1.104] (31.173.84.255) by msexch01.omp.ru
- (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Sat, 6 Jan
- 2024 23:26:41 +0300
-Subject: Re: [PATCH net-next v3 10/19] net: ravb: Move delay mode set in the
- driver's ndo_open API
-To: Claudiu <claudiu.beznea@tuxon.dev>, <davem@davemloft.net>,
-	<edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-	<richardcochran@gmail.com>, <p.zabel@pengutronix.de>,
-	<yoshihiro.shimoda.uh@renesas.com>, <wsa+renesas@sang-engineering.com>
-CC: <netdev@vger.kernel.org>, <linux-renesas-soc@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <geert+renesas@glider.be>, Claudiu Beznea
-	<claudiu.beznea.uj@bp.renesas.com>
-References: <20240105082339.1468817-1-claudiu.beznea.uj@bp.renesas.com>
- <20240105082339.1468817-11-claudiu.beznea.uj@bp.renesas.com>
-From: Sergey Shtylyov <s.shtylyov@omp.ru>
-Organization: Open Mobile Platform
-Message-ID: <89ed8383-4466-fa3e-f975-b6ad1b424c85@omp.ru>
-Date: Sat, 6 Jan 2024 23:26:41 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3933FF4EA;
+	Sat,  6 Jan 2024 20:27:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-40e43e489e4so71605e9.1;
+        Sat, 06 Jan 2024 12:27:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704572852; x=1705177652; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=+qZcxiKBLoslTbSETaLsQdzVkOAcIfS6HTz3Ex8jpyI=;
+        b=gAAAo91asu00xcGu9p6IfphTTFcXnYgm38pgjgwNEv7VzEG8MtWyUtId7CNyzk/xLY
+         0APuhFTAjR5iy38xQJaGZZyJGkvTQ87kgHaw2gjnhgx5KMDmQdOSSP6ZT3E//AfNkfP5
+         EmlfBmTBUFN1aT5cmrUAO9M0GfTcl7WCk6lxIEpm1fOgDRb7vUHbo0GDMBSEsTShn5v5
+         /V9iPAh955zDxzjPd+bYxtQdKFaScoJW2kP0wzlmJoAouW/0DxYpTLzMjGnZaTnzdwtj
+         Ekd5+vQSEMfQ9BOmVATU6Z4j8vmefnrr4LwXbZWGRTk9wAe5AO2yoByFXg7E1puvRVrf
+         7Ncg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704572852; x=1705177652;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=+qZcxiKBLoslTbSETaLsQdzVkOAcIfS6HTz3Ex8jpyI=;
+        b=H86PfwMZY653/iM3jPZRFBYURw8i7zlO+1RcWGuIpckfIn73sGHzx+GFXX8ChoJb5w
+         5ISR397NnbpZnQE8laSwZJRBu6FaVt5UaCIZIOP77odvLcvqs8u2eD28QA/tS61yRhZB
+         jchauQXDAlZ1FVrDf6p2gL1r97mQb6GX7gmbxtW9bDxoZa9l4SyTi8zKu81CdSKVvUUS
+         XXyooKC0ASNmXjbJ+U2SEie7F+I6j6gouZfJK3gBvfLlbKT0XRco+/MDvAA66/pPOGXj
+         FM4XTiAwYxS0PHbWhrxHguPIyAV2jdGIuAWVPptEfKFHY224VdaPBWQHxAbt7ln5rRti
+         3DzQ==
+X-Gm-Message-State: AOJu0Yx7ZruK/2AjvzDcfEsi1OhiTxH/odLJF9Ph1tqDf2oLMsNmiDEP
+	iffdkWC1ReFiVtW350PH+H1TbGNFrzR9rw==
+X-Google-Smtp-Source: AGHT+IF5iAofWhWU64cSQMRwO2U7enBcruZdFFzhEg/Z1fcKWSrXAkhwpvhmzOYS1vOSXDKhsckfwA==
+X-Received: by 2002:a05:600c:cc6:b0:40e:3ce8:a5be with SMTP id fk6-20020a05600c0cc600b0040e3ce8a5bemr695925wmb.164.1704572852308;
+        Sat, 06 Jan 2024 12:27:32 -0800 (PST)
+Received: from latitude-fedora.lan ([2001:8f8:183b:50fb::d35])
+        by smtp.gmail.com with ESMTPSA id k5-20020a05600c1c8500b0040e418494absm1707955wms.46.2024.01.06.12.27.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 06 Jan 2024 12:27:31 -0800 (PST)
+From: Alexey Charkov <alchark@gmail.com>
+To: Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Heiko Stuebner <heiko@sntech.de>,
+	Sebastian Reichel <sebastian.reichel@collabora.com>,
+	Cristian Ciocaltea <cristian.ciocaltea@collabora.com>,
+	Christopher Obbard <chris.obbard@collabora.com>,
+	=?UTF-8?q?Tam=C3=A1s=20Sz=C5=B1cs?= <szucst@iit.uni-miskolc.hu>,
+	Shreeya Patel <shreeya.patel@collabora.com>,
+	devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-rockchip@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Cc: Alexey Charkov <alchark@gmail.com>
+Subject: [PATCH] arm64: dts: rockchip: add rfkill node for M.2 Key E WiFi on rock-5b
+Date: Sun,  7 Jan 2024 00:26:45 +0400
+Message-ID: <20240106202650.22310-1-alchark@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240105082339.1468817-11-claudiu.beznea.uj@bp.renesas.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
- (10.188.4.12)
-X-KSE-ServerInfo: msexch01.omp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 6.1.0, Database issued on: 01/06/2024 20:13:03
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 59
-X-KSE-AntiSpam-Info: Lua profiles 182473 [Jan 06 2024]
-X-KSE-AntiSpam-Info: Version: 6.1.0.3
-X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
-X-KSE-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a
-X-KSE-AntiSpam-Info: {rep_avail}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: {relay has no DNS name}
-X-KSE-AntiSpam-Info: {SMTP from is not routable}
-X-KSE-AntiSpam-Info: {Found in DNSBL: 31.173.84.255 in (user)
- b.barracudacentral.org}
-X-KSE-AntiSpam-Info: {Found in DNSBL: 31.173.84.255 in (user)
- dbl.spamhaus.org}
-X-KSE-AntiSpam-Info:
-	d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;omp.ru:7.1.1
-X-KSE-AntiSpam-Info: ApMailHostAddress: 31.173.84.255
-X-KSE-AntiSpam-Info: {DNS response errors}
-X-KSE-AntiSpam-Info: Rate: 59
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
- smtp.mailfrom=omp.ru;dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 01/06/2024 20:16:00
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 1/6/2024 6:35:00 PM
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+Content-Transfer-Encoding: 8bit
 
-On 1/5/24 11:23 AM, Claudiu wrote:
+By default the GPIO pin that connects to the WiFi enable signal
+inside the M.2 Key E slot is driven low, resulting in impossibility
+to connect to any network. Add a DT node to expose it as an RFKILL
+device, which lets the WiFi driver or userspace toggle it as
+required.
 
-> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-> 
-> Delay parsing and setting were done in the driver's probe API. As some IP
-> variants switch to reset mode (and thus registers content is lost) when
-> setting clocks (due to module standby functionality) to be able to
-> implement runtime PM keep the delay parsing in the driver's probe function
-> and move the delay applying function to the driver's ndo_open API.
-> 
-> Along with it, both delay specific functions were kept together.
-> 
-> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+Signed-off-by: Alexey Charkov <alchark@gmail.com>
+---
+ arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
+diff --git a/arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts b/arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts
+index 741f631db345..a5a104131403 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts
++++ b/arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts
+@@ -59,6 +59,13 @@ fan: pwm-fan {
+ 		#cooling-cells = <2>;
+ 	};
+ 
++	rfkill {
++		compatible = "rfkill-gpio";
++		label = "rfkill-pcie-wlan";
++		radio-type = "wlan";
++		shutdown-gpios = <&gpio4 RK_PA2 GPIO_ACTIVE_HIGH>;
++	};
++
+ 	vcc3v3_pcie2x1l0: vcc3v3-pcie2x1l0-regulator {
+ 		compatible = "regulator-fixed";
+ 		enable-active-high;
+-- 
+2.43.0
 
-[...]
-
-> diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
-> index f386a3b7effb..946abd7606ca 100644
-> --- a/drivers/net/ethernet/renesas/ravb_main.c
-> +++ b/drivers/net/ethernet/renesas/ravb_main.c
-[...]
-> @@ -1772,6 +1825,8 @@ static int ravb_open(struct net_device *ndev)
->  	if (info->nc_queues)
->  		napi_enable(&priv->napi[RAVB_NC]);
->  
-> +	ravb_set_delay_mode(ndev);
-> +
-
-   Please consider moving to either ravb_dmac_init() or ravb_emac_init(),
-at least in the future...
-
->  	/* Device init */
->  	error = ravb_dmac_init(ndev);
->  	if (error)
-[...]
-
-MBR, Sergey
 
