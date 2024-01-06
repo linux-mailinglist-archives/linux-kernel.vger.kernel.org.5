@@ -1,103 +1,114 @@
-Return-Path: <linux-kernel+bounces-18458-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18459-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 03F17825DEB
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 03:30:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DAE8E825DF5
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 03:48:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B15251F245F5
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 02:30:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 05BCF1C21A81
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 02:48:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7E7015C4;
-	Sat,  6 Jan 2024 02:29:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IyOdidQe"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0D1B15C4;
+	Sat,  6 Jan 2024 02:48:34 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail115-24.sinamail.sina.com.cn (mail115-24.sinamail.sina.com.cn [218.30.115.24])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0688B15A0;
-	Sat,  6 Jan 2024 02:29:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-2866b15b013so48079a91.0;
-        Fri, 05 Jan 2024 18:29:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704508193; x=1705112993; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FPX7qJSKC7zBGjoAIF3y+hVE3LHYC0FMBRmwWU1yb78=;
-        b=IyOdidQeoly6le+O/+jHoqKwKzJJLKOqw+wdlUAys2YvqNctOrtFz1NeXhVhlP7FsD
-         4t/P/8539elDY0/zaBcldAMGf13VQP8Yw4nCiQZH2dC4yzCkOjrPAtK1cp1/qG0rWIGW
-         sorRzPnKckwAfgqm0ma9IvqGFH0qLLXohwfFnqTzJTNtxrNeWQM28HruZ5TD4fKoIVu/
-         V8lGapKdTwDm03SxON+H2bxp0ArRIx5Y1JxeSyJONJEX1gI6+iaUwpqr9ZrgWllzkoaQ
-         4j3rEIhLW6/5n6ePS1k7tfWkBWEEE+oQk0y/WNo6chHm3TvXORGoUfg3wclxDFik7tFK
-         2LJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704508193; x=1705112993;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FPX7qJSKC7zBGjoAIF3y+hVE3LHYC0FMBRmwWU1yb78=;
-        b=gDh7uNQn5Vg4Focm3rF99nIxbM+S7p245V4XwR6h2+1FX1I26AQsfLPPprOUnhCK+i
-         epAkePYYIqSY8gn3na0r2sYpejTctdjMWc4IPLGy4PYUnuWUC6Q2Z00byUtnELPzWYVC
-         DkcI7OwavQpGV5kesrk6QTCy25Oc/XaOO1hKkoLEVfcgGt419t+hJRkaQ7AFMNcbvSsh
-         Y8rVloNyX8blAuh4gVr0CWcgnKF0H57QaWbZSwLYTb7sD3miUWX3QJ2Q0+UrfGFFbgWF
-         vvbyySKTtlWmvU131cOpvgIJg33EXKXbD2MMkWPINWwVB1v1Q+ax0Qzs5qzrD8jXLpjS
-         2O3w==
-X-Gm-Message-State: AOJu0YwSX82EFITrDRXbizNH2x8UBFn1+o0VzG8ESDgfJSa7mFP0V9LF
-	YV/eQl29HSuRkt6dQ1aME+VFxvIhU261QLd3czs=
-X-Google-Smtp-Source: AGHT+IEXDwSaz6j2wlPQbuLx7ykHdUVF2khGx+tE93dmEYsto+uB5HJvfF/6l31SoEAfLfcRScroTs5PvIs9GtN0XGM=
-X-Received: by 2002:a17:90a:ab16:b0:28c:fe8c:aa93 with SMTP id
- m22-20020a17090aab1600b0028cfe8caa93mr615127pjq.1.1704508193078; Fri, 05 Jan
- 2024 18:29:53 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7C3015AC
+	for <linux-kernel@vger.kernel.org>; Sat,  6 Jan 2024 02:48:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sina.com
+X-SMAIL-HELO: localhost.localdomain
+Received: from unknown (HELO localhost.localdomain)([113.118.71.254])
+	by sina.com (10.75.12.45) with ESMTP
+	id 6598BF71000029E5; Sat, 6 Jan 2024 10:48:20 +0800 (CST)
+X-Sender: hdanton@sina.com
+X-Auth-ID: hdanton@sina.com
+Authentication-Results: sina.com;
+	 spf=none smtp.mailfrom=hdanton@sina.com;
+	 dkim=none header.i=none;
+	 dmarc=none action=none header.from=hdanton@sina.com
+X-SMAIL-MID: 48107731457776
+X-SMAIL-UIID: E4633905762A40B7A2DD360CE9870677-20240106-104820-1
+From: Hillf Danton <hdanton@sina.com>
+To: syzbot <syzbot+a43d4f48b8397d0e41a9@syzkaller.appspotmail.com>
+Cc: linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [ext4?] INFO: task hung in ext4_quota_write
+Date: Sat,  6 Jan 2024 10:48:07 +0800
+Message-Id: <20240106024807.3011-1-hdanton@sina.com>
+In-Reply-To: <000000000000c8a56a060de13553@google.com>
+References: <000000000000c8a56a060de13553@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240106015623.193503-1-aford173@gmail.com>
-In-Reply-To: <20240106015623.193503-1-aford173@gmail.com>
-From: Fabio Estevam <festevam@gmail.com>
-Date: Fri, 5 Jan 2024 23:29:41 -0300
-Message-ID: <CAOMZO5D6RrTy6e=1gEUKxxR3T5VmqDZmcmR7945qBbnPhihi+A@mail.gmail.com>
-Subject: Re: [PATCH V5 1/2] dt-bindings: display: imx: add binding for i.MX8MP
- HDMI PVI
-To: Adam Ford <aford173@gmail.com>
-Cc: dri-devel@lists.freedesktop.org, Lucas Stach <l.stach@pengutronix.de>, 
-	Laurent Pinchart <laurent.pinchart@ideasonboard.com>, 
-	Conor Dooley <conor.dooley@microchip.com>, Philipp Zabel <p.zabel@pengutronix.de>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
-	Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>, 
-	Pengutronix Kernel Team <kernel@pengutronix.de>, NXP Linux Team <linux-imx@nxp.com>, Liu Ying <victor.liu@nxp.com>, 
-	Andrzej Hajda <andrzej.hajda@intel.com>, Neil Armstrong <neil.armstrong@linaro.org>, 
-	Robert Foss <rfoss@kernel.org>, Jonas Karlman <jonas@kwiboo.se>, 
-	Jernej Skrabec <jernej.skrabec@gmail.com>, devicetree@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-Hi Adam,
+On Mon, 01 Jan 2024 04:06:21 -0800
+> HEAD commit:    f5837722ffec Merge tag 'mm-hotfixes-stable-2023-12-27-15-0..
+> git tree:       upstream
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13177855e80000
 
-Thanks for moving this forward.
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git  master
 
-On Fri, Jan 5, 2024 at 10:56=E2=80=AFPM Adam Ford <aford173@gmail.com> wrot=
-e:
->
-> From: Lucas Stach <l.stach@pengutronix.de>
->
-> Add binding for the i.MX8MP HDMI parallel video interface block.
->
-> Signed-off-by: Lucas Stach <l.stach@pengutronix.de>
-> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
-
-You missed your own Signed-off-by tag.
+--- x/include/linux/sched.h
++++ y/include/linux/sched.h
+@@ -1544,6 +1544,7 @@ struct task_struct {
+ 	struct user_event_mm		*user_event_mm;
+ #endif
+ 
++	unsigned long	bfl;
+ 	/*
+ 	 * New fields for task_struct should be added above here, so that
+ 	 * they are included in the randomized portion of task_struct.
+--- x/include/linux/buffer_head.h
++++ y/include/linux/buffer_head.h
+@@ -78,6 +78,7 @@ struct buffer_head {
+ 	spinlock_t b_uptodate_lock;	/* Used by the first bh in a page, to
+ 					 * serialise IO completion of other
+ 					 * buffers in the page */
++	struct task_struct *lko;
+ };
+ 
+ /*
+@@ -402,6 +403,9 @@ static inline void lock_buffer(struct bu
+ 	might_sleep();
+ 	if (!trylock_buffer(bh))
+ 		__lock_buffer(bh);
++	bh->lko = current;
++	get_task_struct(bh->lko);
++	bh->lko->bfl = (unsigned long) bh;
+ }
+ 
+ static inline void bh_readahead(struct buffer_head *bh, blk_opf_t op_flags)
+--- x/fs/ext4/super.c
++++ y/fs/ext4/super.c
+@@ -7248,6 +7248,7 @@ static ssize_t ext4_quota_write(struct s
+ 		brelse(bh);
+ 		return err;
+ 	}
++	BUG_ON(current->bfl == (unsigned long) bh);
+ 	lock_buffer(bh);
+ 	memcpy(bh->b_data+offset, data, len);
+ 	flush_dcache_page(bh->b_page);
+--- x/fs/buffer.c
++++ y/fs/buffer.c
+@@ -77,6 +77,11 @@ void unlock_buffer(struct buffer_head *b
+ 	clear_bit_unlock(BH_Lock, &bh->b_state);
+ 	smp_mb__after_atomic();
+ 	wake_up_bit(&bh->b_state, BH_Lock);
++	if (!bh->lko)
++		return;
++	bh->lko->bfl = 0;
++	put_task_struct(bh->lko);
++	bh->lko = NULL;
+ }
+ EXPORT_SYMBOL(unlock_buffer);
+ 
+--
 
