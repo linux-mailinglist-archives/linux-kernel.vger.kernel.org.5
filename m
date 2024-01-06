@@ -1,114 +1,115 @@
-Return-Path: <linux-kernel+bounces-18561-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18562-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1EC50825F63
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 13:04:27 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CEC2C825F65
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 13:09:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 974C0B20C0C
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 12:04:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C5D6FB20E65
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 12:09:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 119816FAE;
-	Sat,  6 Jan 2024 12:04:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kiGhdiYG"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8B7E6FC9;
+	Sat,  6 Jan 2024 12:09:06 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 432C26FA1
-	for <linux-kernel@vger.kernel.org>; Sat,  6 Jan 2024 12:04:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A580EC433C8;
-	Sat,  6 Jan 2024 12:04:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704542655;
-	bh=PZMVTdiXRx8xTYwPS5q4JHkR6cGOewyIuP/6PhphI/M=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=kiGhdiYGImGuOSP86sFhnuYDqkFOpRUTP1xYzkuxSNYxdeAaqq4sJJYHPTTjFlN/L
-	 uMicvscCEDFaT5F+CKB/ScrZuK+/44saiqNYm4+nXXNMjVQuqGcka4uFhel8ejSlmT
-	 8gjjJ/1rclhz1mMrjOeFld/7SpZeSjS0njPZRqKnQHHLyxiyvVlmbKYjivIgNECXE0
-	 BUPiH2fMZ5ni/JFSOaimhhg75JUSUh6uB3smHGBrREy40dKQT6JxgrrdLtlMd82wuQ
-	 7AGk8iEiYQRdPVYn14TiGDrnOj4dQAoAyJ+xOyoZqiZClVGpfiiPwuu5vrzfJ90Uhl
-	 mESNnH7RUUvAQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 42F04CE0EDC; Sat,  6 Jan 2024 04:04:15 -0800 (PST)
-Date: Sat, 6 Jan 2024 04:04:15 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Feng Tang <feng.tang@intel.com>
-Cc: Jiri Wiesner <jwiesner@suse.de>, linux-kernel@vger.kernel.org,
-	John Stultz <jstultz@google.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Stephen Boyd <sboyd@kernel.org>, rui.zhang@intel.com
-Subject: Re: [PATCH] clocksource: Skip watchdog check for large watchdog
- intervals
-Message-ID: <14611f96-af33-456d-9a39-49970fd60ee8@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20240103112113.GA6108@incl>
- <5b8fd9ba-1622-4ec7-b3cc-2db3a78122f1@paulmck-laptop>
- <20240104163050.GC3303@incl>
- <dd62437f-b7a2-4844-89f6-94a88a08f227@paulmck-laptop>
- <ZZjBDaW9tqSEicNM@feng-clx>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C2E86FC3
+	for <linux-kernel@vger.kernel.org>; Sat,  6 Jan 2024 12:09:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rM5Tn-00044i-Rv; Sat, 06 Jan 2024 13:08:43 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rM5Tl-000nqO-Is; Sat, 06 Jan 2024 13:08:41 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rM5Tl-00405a-1S;
+	Sat, 06 Jan 2024 13:08:41 +0100
+Date: Sat, 6 Jan 2024 13:08:35 +0100
+From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Duje =?utf-8?Q?Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
+Cc: Arnd Bergmann <arnd@arndb.de>, Robert Jarzmik <robert.jarzmik@free.fr>, 
+	Lubomir Rintel <lkundrak@v3.sk>, "zhang.songyi" <zhang.songyi@zte.com.cn>, soc@kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH RFC RESEND] soc: pxa: ssp: Cast to enum pxa_ssp_type
+ instead of int
+Message-ID: <ffwxkd53wb7kgmn5s3gbmujkzsiw3jhw5hohc6wpnxbfkcokj4@ysox2f4z7kcy>
+References: <20240103210604.16877-1-duje.mihanovic@skole.hr>
+ <rj7ijuyy47jrffi6sk7wikqo3rnutz2swkdrznyegalylacawz@jdncegf3elct>
+ <2295d860-44cf-4816-8a1a-54274974302f@app.fastmail.com>
+ <9215826.CDJkKcVGEf@radijator>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="t25hjcghedybu66p"
 Content-Disposition: inline
-In-Reply-To: <ZZjBDaW9tqSEicNM@feng-clx>
+In-Reply-To: <9215826.CDJkKcVGEf@radijator>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-On Sat, Jan 06, 2024 at 10:55:09AM +0800, Feng Tang wrote:
-> On Thu, Jan 04, 2024 at 11:19:56AM -0800, Paul E. McKenney wrote:
-> > On Thu, Jan 04, 2024 at 05:30:50PM +0100, Jiri Wiesner wrote:
-> > > On Wed, Jan 03, 2024 at 02:08:08PM -0800, Paul E. McKenney wrote:
-> > > > I believe that there were concerns about a similar approach in the case
-> > > > where the jiffies counter is the clocksource
-> > > 
-> > > I ran a few simple tests on a 2 NUMA node Intel machine and found nothing 
-> > > so far. I tried booting with clocksource=jiffies and I changed the 
-> > > "nr_online_nodes <= 4" check in tsc_clocksource_as_watchdog() to enable 
-> > > the watchdog on my machine. I have a debugging module that monitors 
-> > > clocksource and watchdog reads in clocksource_watchdog() with kprobes. I 
-> > > see the cs/wd reads executed roughly every 0.5 second, as expected. When 
-> > > the machine is idle the average watchdog interval is 501.61 milliseconds 
-> > > (+-15.57 ms, with a minimum of 477.07 ms and a maximum of 517.93 ms). The 
-> > > result is similar when the CPUs of the machine are fully saturated with 
-> > > netperf processes. I also tried booting with clocksource=jiffies and 
-> > > tsc=watchdog. The watchdog interval was similar to the previous test.
-> > > 
-> > > AFAIK, the jiffies clocksource does get checked by the watchdog itself. 
-> > > And with that, I have run out of ideas.
-> > 
-> > If I recall correctly (ha!), the concern was that with the jiffies as
-> > clocksource, we would be using jiffies (via timers) to check jiffies
-> > (the clocksource), and that this could cause issues if the jiffies got
-> > behind, then suddenly updated while the clocksource watchdog was running.
-> 
-> Yes, we also met problem when 'jiffies' was used as clocksource/watchdog,
-> but don't know if it's the same problem you mentioned. Our problem
-> ('jiffies' as watchdog marks clocksource TSC as unstable) only happens
-> in early boot phase with serial earlyprintk enabled, that the updating
-> of 'jiffies' relies on HW timer's periodic interrupt, but early printk
-> will disable interrupt during printing and cause some timer interrupts
-> lost, and hence big lagging in 'jiffies'. Rui once proposed a patch to
-> prevent 'jiffies' from being a watchdog due to it unreliability [1].
-> 
-> And I think skipping the watchdog check one time when detecting some
-> abnormal condition won't hurt the overall check much.
 
-Works for me!
+--t25hjcghedybu66p
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-							Thanx, Paul
+Hello Duje,
 
-> [1]. https://lore.kernel.org/lkml/bd5b97f89ab2887543fc262348d1c7cafcaae536.camel@intel.com/
-> 
-> Thanks,
-> Feng
-> 
-> > Thoughts?
-> > 
-> > 							Thanx, Paul
+On Thu, Jan 04, 2024 at 03:23:09PM +0100, Duje Mihanovi=C4=87 wrote:
+> for v2 I will change the first cast to (uintptr_t) as Arnd suggested and =
+drop=20
+> the second cast completely as Uwe suggested.
+>=20
+> As a long-term solution (at least for this particular driver), the few PX=
+A=20
+> platforms and drivers still depending on or using this driver at first se=
+em=20
+> trivial to convert to pxa2xx-spi, while the navpoint driver seemingly cou=
+ld be=20
+> removed entirely as all boards using it have been removed. If there are n=
+o=20
+> objections I am willing to do this conversion.
+
+In case you need encouragement: Sounds like a nice plan; no objections
+=66rom my side.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=C3=B6nig         =
+   |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--t25hjcghedybu66p
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmWZQrkACgkQj4D7WH0S
+/k4zmgf/X/csmCXZWwLFGhiky+uKwTuiNGE8sP4UV2IM8S/JMyvWX0jU3ZQOBV6w
+5ffuYJSltcwr+kQdsYl1ij/+8Kdff6iL9SvR3nZzkIeZZ9OhXibssspVm06H72Q1
+IuXRyGDw+rkonfNLUQ/hu/DkK85f1X6jaAAONgQ2E0iALhE1Lk/4rmb9cJUp+uh/
++tbWIn0LWA6oTTxQn/r9ySWPAcwds+fB/pH7v59izw4mqYQeVSI5PEnfyqdXDuBc
+LP6JGC1i6nZG985t2zGetlzis4nFEak85su5KZGLuUuOML2uxUu7TEXcWrg5ZqFa
+ZlRsDkowKyz8CqruorKZm4AAHOyAPA==
+=i8u6
+-----END PGP SIGNATURE-----
+
+--t25hjcghedybu66p--
 
