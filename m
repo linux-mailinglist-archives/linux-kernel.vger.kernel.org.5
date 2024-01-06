@@ -1,160 +1,188 @@
-Return-Path: <linux-kernel+bounces-18670-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18671-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 31C378260CC
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 17:59:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2990A8260D0
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 18:02:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 492EB1C21164
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 16:59:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A80741F222E0
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 17:02:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8EC0F9D7;
-	Sat,  6 Jan 2024 16:58:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10329C12F;
+	Sat,  6 Jan 2024 17:02:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="mFiyK5Af"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Xnt7OpnT"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2068.outbound.protection.outlook.com [40.107.244.68])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2995E563;
-	Sat,  6 Jan 2024 16:58:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LtFjnryOp7/so/PIAFiLTiKCAXp8TiWduO1tcSXtyAjniYNx0cxDYFU6eSN1lzMhmosEEAPcGyQ5psqBakNkC2ahPx9KkCPgg2jfiMVRe4Ir/8zMplFVt4uIMxqwjDW4j8AFYoKm9VCK7Ku94cDBLBwcAIpRbsERx8JROunpfP3hMokRNl2e0sHgxH294lDzKQ0ZAtaaS3ZFqaRbGbkViy5XLOxdcSFQSk7YiaR07TBBxM2y4bD0j6o7u+Dl7IiRnGs2QPCX+3SfedtAGiZ5xDAQxhtAQi0yGoT8IrJiXUlIoQkZwpE5KSv9U4pUYvnp0/QApj9t8azZoi/1+istgg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ZG75d1RbsQ5i8KFAD28H1o+tle8JynPzlvR/lkNzQNI=;
- b=HmB8FFAwIIMvHY3pkwiP8jaRXkpvLtm2LYLrhXTefBodiEH6C5zTbHt2oeXEtQghfU0qNq+AIavdZ7/rGDK4wDTocf7R55QXkRKT0hTKekwVaU57ybAm8uI1EnCQbKfNu/LmyNlQNR18pb2Ftm7pkq0lFUFmRAwupTz8riYRZF+bQIJ+T8/0xbTHA0HVR1HNwOEUItS+cH0Egz0+mW3BZ8Kom6eRCuLl6bLdXMU/WY090LtOAOhsoYSkouvPRfOajdsfbV1uXanm6grdue28puJzKID9H24h5A3ZcvNnYv1n3Vfo4h4+uyNUFsADOcNktSPNDcjD2PSe4srx/axExA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=gmail.com smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZG75d1RbsQ5i8KFAD28H1o+tle8JynPzlvR/lkNzQNI=;
- b=mFiyK5Af+oAnCGqKA66/DYSHwWTu3OQ4oLb+0xZizDRCY7MrOO+GWw1Es045cvMdH1j4cyeu/ITLUBJ1UIQhnvVfL3ip/3XFShN9TEeAbQJ5q2mmBP7rQDwpWxGXOnqgHqzIN19FsSlLEgXCPmkYySuQfD1YOeZE2mMQ0ttCwnE=
-Received: from MW4PR04CA0211.namprd04.prod.outlook.com (2603:10b6:303:87::6)
- by MW4PR12MB7167.namprd12.prod.outlook.com (2603:10b6:303:225::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.16; Sat, 6 Jan
- 2024 16:58:13 +0000
-Received: from CO1PEPF000044FC.namprd21.prod.outlook.com
- (2603:10b6:303:87:cafe::a2) by MW4PR04CA0211.outlook.office365.com
- (2603:10b6:303:87::6) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.19 via Frontend
- Transport; Sat, 6 Jan 2024 16:58:13 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CO1PEPF000044FC.mail.protection.outlook.com (10.167.241.202) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7202.3 via Frontend Transport; Sat, 6 Jan 2024 16:58:13 +0000
-Received: from jatayu.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Sat, 6 Jan
- 2024 10:58:10 -0600
-From: Sanath S <Sanath.S@amd.com>
-To: <mario.limonciello@amd.com>, <andreas.noever@gmail.com>,
-	<michael.jamet@intel.com>, <mika.westerberg@linux.intel.com>,
-	<YehezkelShB@gmail.com>, <linux-usb@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>
-CC: Sanath S <Sanath.S@amd.com>
-Subject: [Patch v3 4/4] thunderbolt: Teardown tunnels and reset downstream ports created by boot firmware
-Date: Sat, 6 Jan 2024 22:27:23 +0530
-Message-ID: <20240106165723.3377789-5-Sanath.S@amd.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240106165723.3377789-1-Sanath.S@amd.com>
-References: <20240106165723.3377789-1-Sanath.S@amd.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDB68C13F
+	for <linux-kernel@vger.kernel.org>; Sat,  6 Jan 2024 17:02:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-556aa7fe765so541918a12.2
+        for <linux-kernel@vger.kernel.org>; Sat, 06 Jan 2024 09:02:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1704560520; x=1705165320; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=JCMJes3uYKkCryxEbGM2VUkg48F43meYed1FV/C3aXc=;
+        b=Xnt7OpnT4rjoEWVvCJlFCHkZ75q2qyumvBalysLnF3wRA+ZG7d9NzYBt+XxUbCRnov
+         C2YSNj1p2hpCO2rb0Df+dL7I+YCvBDRtQ5DZsKfUGCu/SvnSN95X67W/NpAKsJnsrEs4
+         Cd+lRWqwozz5lDoyysSqxgAt5SsLlN4wY0UP2HXxjyJT9Bt1etKtupCnBDUJMui86sz3
+         8HsxBHvY1MjF5SiSM4AvRIfoiUzlJ0A5Gop84TLZidxt0iGTKUjAkrmlHZMKirj7EPzw
+         xj+rpuF6aahUxfjOTm6oAgUdaSwW8lIdR1L7t6FIUoUCmrWn6jQ41Ooo4fCEP1cAiUwJ
+         YDuw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704560520; x=1705165320;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=JCMJes3uYKkCryxEbGM2VUkg48F43meYed1FV/C3aXc=;
+        b=A8lMzbClowHGERQEdNp+vq1j6ZEo9CEapfF5+3TtnOlDCVQKRew8y+Xp7ULdQQHfMv
+         1e4U15HGsape5HLmTAdb18ipfdsaUQD3NrjQpo1mDmhuv2nzYuP2THCz5OTmQ9y1uZlj
+         eKWU+cSB5y9EXZyphfANVWFq6Due/xPXlNfvu3JiZ5zpHgKkqGw2z7b2Inq0WDjH9tcB
+         bpumKgmZqHMsdm64Q/lpQcYvwzBgMhOEZ6J7NCY89dvE1OPC9JaQj0tjNV2//rmc8Zab
+         jEW8SSsMrjiqZJjmB/gYb9sO1wi0HtrVGRI5blMNESg/xlDYHiL5VgQKsiuiwxfgPQnn
+         yxnw==
+X-Gm-Message-State: AOJu0YyEjhfmF10LRKSjtfVDxRfLkDpj6i3wr05qZ2TVy92PPUerfKqG
+	UH2E5hwpz3P3aPtr6yqYc3ttoSvE6ZZg3Q==
+X-Google-Smtp-Source: AGHT+IG90m61uakoUltG7UrE6s04sqSPOvyQ7N8JIrrLW/IwXri52BZ0NEg/9cMXRmcx0vnSErJG7A==
+X-Received: by 2002:a05:6402:14c8:b0:554:d4f4:7f78 with SMTP id f8-20020a05640214c800b00554d4f47f78mr628862edx.45.1704560519965;
+        Sat, 06 Jan 2024 09:01:59 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.223.112])
+        by smtp.gmail.com with ESMTPSA id x2-20020a50d602000000b0055298b38768sm2357835edi.80.2024.01.06.09.01.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 06 Jan 2024 09:01:59 -0800 (PST)
+Message-ID: <2f886744-e6da-4412-8876-306ba4210da0@linaro.org>
+Date: Sat, 6 Jan 2024 18:01:58 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] dt-bindings: pxa-pwm: Convert to YAML
+Content-Language: en-US
+To: =?UTF-8?Q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>,
+ Thierry Reding <thierry.reding@gmail.com>,
+ =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>
+Cc: linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240105-pxa-pwm-yaml-v1-1-4ded9d00c38f@skole.hr>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240105-pxa-pwm-yaml-v1-1-4ded9d00c38f@skole.hr>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1PEPF000044FC:EE_|MW4PR12MB7167:EE_
-X-MS-Office365-Filtering-Correlation-Id: 82b4dae0-fd80-487b-8af3-08dc0ed8aba4
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	U9q5D/Os7X4VmV/Px+fkbMu/5hq5OiJVzn/8iu7mbWH3vhA1PDZR9m4NNrwBVFkxIKc7eVeeSMpyv0xqDn1Hso3IPqj4X3y9kRGItGPwIcsnsnA1uXJ2I/KxB2r+dFLZ9dW0mdIh0Bo1pu+yNymX2jlAtZFjVHS8clyuEWQea/Jqdle7ALCGPDhoYPeBxt+WNSPaZIqJyWIqRCGXpW4jfG2YroAB316S8F1rfMpZLg2nn/9JcmIlLQ4BcmDPzKrjEUwAHvod46GAMgv77rIn2hN5cdM8upunt4g1dZqgQyug3zY3JAmbSEguJFmgJNjyR4qRkaoPZw5mtKz3MGKyvSoTHoFr7L7gtHtFqAk4OuvH98mQIZVQKQ3S73j88DPoc/SuzqB28ytxsVX0de8XLVEwRtbzx5Ko6PUpYTfkAWufB4uuV4e4aomdEsgS7p1rhEV/4D/zuPAs99uwWVxdB9eT1ubG34UlfDOBNe4cfG11atp83yl8YYXtG9QpPyHZeP7m9AMkbWGk9y9iHpIF+dqO+kWa7mziE/mmcEbCAYxgF1fBf0IRS5e3nacBHulXJ6n6u5k2YEznVcqOS6RUH+W1vftdrv7OnlyVdx2dzKFsSFcZa/tR9LwyHWg2HhUos3suNj/rSVtwcnJlc2MN9qQRnaMqkKYMT1cV0BcEWG1FN+vWpwTyjKfiwntJyDWE5hQvkHz0GrGtpUIXVNTqJ2QhnepilNHTibmYXo0FTTunxbYP+DRAb35wG0UAyQE91f0V6h0LSE4D3gLPxXzdYfTONW0Ty9aQDfQl72QSnDc=
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(346002)(376002)(39860400002)(136003)(396003)(230922051799003)(451199024)(1800799012)(82310400011)(64100799003)(186009)(46966006)(40470700004)(36840700001)(83380400001)(336012)(16526019)(426003)(2616005)(26005)(47076005)(36860700001)(316002)(2906002)(8936002)(8676002)(4326008)(6666004)(7696005)(5660300002)(110136005)(70206006)(70586007)(478600001)(1076003)(36756003)(41300700001)(82740400003)(86362001)(356005)(81166007)(40480700001)(40460700003)(2101003)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Jan 2024 16:58:13.3148
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 82b4dae0-fd80-487b-8af3-08dc0ed8aba4
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	CO1PEPF000044FC.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR12MB7167
 
-Boot firmware might have created tunnels of its own. Since we cannot
-be sure they are usable for us. Tear them down and reset the ports
-to handle it as a new hotplug for USB4 v1 routers.
+On 05/01/2024 23:50, Duje Mihanović wrote:
+> Convert the PXA PWM binding file from TXT to YAML.
+> 
+> Signed-off-by: Duje Mihanović <duje.mihanovic@skole.hr>
+> ---
+>  Documentation/devicetree/bindings/pwm/pwm-pxa.yaml | 51 ++++++++++++++++++++++
+>  Documentation/devicetree/bindings/pwm/pxa-pwm.txt  | 30 -------------
+>  2 files changed, 51 insertions(+), 30 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/pwm/pwm-pxa.yaml b/Documentation/devicetree/bindings/pwm/pwm-pxa.yaml
+> new file mode 100644
+> index 000000000000..fb20e4e1daa8
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/pwm/pwm-pxa.yaml
 
-Suggested-by: Mario Limonciello <mario.limonciello@amd.com>
-Signed-off-by: Sanath S <Sanath.S@amd.com>
----
- drivers/thunderbolt/tb.c | 27 +++++++++++++++++++++------
- 1 file changed, 21 insertions(+), 6 deletions(-)
+Please keep new style of naming, so:
+marvell,pxa-pwm.yaml
 
-diff --git a/drivers/thunderbolt/tb.c b/drivers/thunderbolt/tb.c
-index 740bf2ff1fcd..462616e3075c 100644
---- a/drivers/thunderbolt/tb.c
-+++ b/drivers/thunderbolt/tb.c
-@@ -2596,12 +2596,27 @@ static int tb_start(struct tb *tb, bool reset)
- 	tb_switch_tmu_configure(tb->root_switch, TB_SWITCH_TMU_MODE_LOWRES);
- 	/* Enable TMU if it is off */
- 	tb_switch_tmu_enable(tb->root_switch);
--	/* Full scan to discover devices added before the driver was loaded. */
--	tb_scan_switch(tb->root_switch);
--	/* Find out tunnels created by the boot firmware */
--	tb_discover_tunnels(tb);
--	/* Add DP resources from the DP tunnels created by the boot firmware */
--	tb_discover_dp_resources(tb);
-+
-+	/*
-+	 * Boot firmware might have created tunnels of its own. Since we cannot
-+	 * be sure they are usable for us, Tear them down and reset the ports
-+	 * to handle it as new hotplug for USB4 routers.
-+	 */
-+	if (reset && usb4_switch_version(tb->root_switch) == 1) {
-+		ret = tb_switch_reset(tb->root_switch);
-+		if (ret) {
-+			tb_sw_warn(tb->root_switch, "failed to reset\n");
-+			return ret;
-+		}
-+	} else {
-+		/* Full scan to discover devices added before the driver was loaded. */
-+		tb_scan_switch(tb->root_switch);
-+		/* Find out tunnels created by the boot firmware */
-+		tb_discover_tunnels(tb);
-+		/* Add DP resources from the DP tunnels created by the boot firmware */
-+		tb_discover_dp_resources(tb);
-+	}
-+
- 	/*
- 	 * If the boot firmware did not create USB 3.x tunnels create them
- 	 * now for the whole topology.
--- 
-2.34.1
+> @@ -0,0 +1,51 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/pwm/pwm-pxa.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Marvell PXA PWM
+> +
+> +maintainers:
+> +  - Duje Mihanović <duje.mihanovic@skole.hr>
+> +
+> +allOf:
+> +  - $ref: pwm.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - marvell,pxa250-pwm
+> +      - marvell,pxa270-pwm
+> +      - marvell,pxa168-pwm
+> +      - marvell,pxa910-pwm
+> +
+> +  reg:
+> +    # Length should be 0x10
+> +    maxItems: 1
+> +
+> +  "#pwm-cells":
+> +    # Used for specifying the period length in nanoseconds
+> +    const: 1
+> +
+> +  clocks:
+> +    maxItems: 1
+
+These were not in the original binding. Please mention briefly such
+change in commit msg.
+
+
+Best regards,
+Krzysztof
 
 
