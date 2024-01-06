@@ -1,452 +1,207 @@
-Return-Path: <linux-kernel+bounces-18435-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18436-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5DE02825D65
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 01:38:40 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1DC0B825D69
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 01:39:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B4E3A284740
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 00:38:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7D044B22F78
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 00:39:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B89CF15BE;
-	Sat,  6 Jan 2024 00:38:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29E803C0E;
+	Sat,  6 Jan 2024 00:39:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="QibGyKyt"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="cRJXwrrv"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com [209.85.219.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 694671104
-	for <linux-kernel@vger.kernel.org>; Sat,  6 Jan 2024 00:38:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1d3ea8d0f9dso29505ad.1
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Jan 2024 16:38:25 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6AFB33E7
+	for <linux-kernel@vger.kernel.org>; Sat,  6 Jan 2024 00:39:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f176.google.com with SMTP id 3f1490d57ef6-dbe344a6cf4so128946276.0
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Jan 2024 16:39:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1704501505; x=1705106305; darn=vger.kernel.org;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=OUD33VKpxR/NM0Z7MpxcwlTlOFQrCymDr6l5Rozswjk=;
-        b=QibGyKytXQf/52ziEP7S001OYKLkgW6EGG3qVXGo8r+9K/ktZUzfw7qfoRthyY1PAp
-         yBA+BDfQdhvyzg5cX0lGEcePg1fne1/KkqXNyltO4gXY1wWIME5f42+2f9M1Xep60I11
-         tp/hZXzv6Tzq4qDD5SQM731M58HK5CS22F4XXc8vZcZ6euVK6pQmAQ6bTi74kRJKaW+s
-         amdKRCctyjfrnmzPHp6Mg0A9DCde54+6HJaN4sI89EKQQBnGvYoIRSqfQpkkdwkXA8XS
-         Em51BBt1IuAi3Z4HhBYcNH89mUh0QaMatfDIiJSz8r5F4k7CVphXNWRdBmnfGs6eyJLk
-         vBHg==
+        d=linaro.org; s=google; t=1704501548; x=1705106348; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=CWItgsviLevELUTQOy8l4EFaye3LXQAVmYfKWfZE4dg=;
+        b=cRJXwrrvzfoQSIVoDoO9eaWRXf5v3av1Lonxx9Koywhr65fO9CHKjURRDUyxqOAWk0
+         F2NeJdeHmMbFblx5f1MK3/rWgojPts/7KwWvtkxg92cly2O+Juf7aVHKVXSjO0y3NltH
+         odTNnt67s6BX5+zikAQ/+KQ9Yg755I1BSQhBMDE/0eYytxWvvWUTrEWa3NVZbreRdAlY
+         3twhmuYHyjB18LTCkdtrZa69x32oN4UvWYRbR63IuRXPq4X/rIFlzMhHYTrq/p9Y3VaW
+         TLjgASPu2mNSw22QNIa1L48wQfqZt+2h4DD5NA1FcpgrotX4zia5OlkfGOVMaa4ObnRT
+         Q5Lg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704501505; x=1705106305;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=OUD33VKpxR/NM0Z7MpxcwlTlOFQrCymDr6l5Rozswjk=;
-        b=v2w5cVypuYrimISyVrcOVXcTx29JexP8jRPdlRWozTGQ4ahP5j0LstRug3zkxxvETF
-         kGyprpdgyWsxhxt+fZ2BHDlaGFe9gtJNIWspu6+eBEv2yob9l7efvbSN9ppjISvWsjuo
-         mhHjmSqxfC/SjIETqwHhinBAIHaK/IkGm6gfI9NIP31aoGu4pTHVuYmP2Rf4cHacJl+L
-         ITG+SmynE5nEaviQ3gwt264HYO0dW6hB4OwZRLUFsl5FRH/jL4LsdnUENTiayC8SuM0m
-         CYoyCAS/7QnCT7VM2e73iq87Jl8QclSpX7ZefZgVFKH5bEq64gF9tJVUvhJFp5c62vBx
-         sIXw==
-X-Gm-Message-State: AOJu0Yx544pJMtpwa4alDmWWsh8xzdM5rDbM07Iiyx9mxlPocsj+eRLf
-	u2q3/7H2BI2FvgUf+JnoUTSvljH3x2Te
-X-Google-Smtp-Source: AGHT+IGun2AjNpQEhYtpk7UgWnyqdJ861IR+r/6MI2rt0P4xYDuYpCceEhV6u9wK/p76/7UD4gDpLA==
-X-Received: by 2002:a17:903:645:b0:1d3:7db1:388b with SMTP id kh5-20020a170903064500b001d37db1388bmr46427plb.11.1704501504804;
-        Fri, 05 Jan 2024 16:38:24 -0800 (PST)
-Received: from [2620:0:1008:15:e621:8fdd:e5e:628] ([2620:0:1008:15:e621:8fdd:e5e:628])
-        by smtp.gmail.com with ESMTPSA id bb12-20020a170902bc8c00b001d077da4ac4sm1953293plb.212.2024.01.05.16.38.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Jan 2024 16:38:24 -0800 (PST)
-Date: Fri, 5 Jan 2024 16:38:23 -0800 (PST)
-From: David Rientjes <rientjes@google.com>
-To: Sourav Panda <souravpanda@google.com>
-cc: corbet@lwn.net, gregkh@linuxfoundation.org, rafael@kernel.org, 
-    Andrew Morton <akpm@linux-foundation.org>, mike.kravetz@oracle.com, 
-    muchun.song@linux.dev, rppt@kernel.org, david@redhat.com, 
-    rdunlap@infradead.org, chenlinxuan@uniontech.com, yang.yang29@zte.com.cn, 
-    tomas.mudrunka@gmail.com, bhelgaas@google.com, ivan@cloudflare.com, 
-    pasha.tatashin@soleen.com, yosryahmed@google.com, hannes@cmpxchg.org, 
-    shakeelb@google.com, kirill.shutemov@linux.intel.com, 
-    wangkefeng.wang@huawei.com, adobriyan@gmail.com, 
-    Vlastimil Babka <vbabka@suse.cz>, 
-    "Liam R. Howlett" <Liam.Howlett@oracle.com>, surenb@google.com, 
-    linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-    linux-doc@vger.kernel.org, linux-mm@kvack.org, 
-    Matthew Wilcox <willy@infradead.org>, weixugc@google.com
-Subject: Re: [PATCH v6 1/1] mm: report per-page metadata information
-In-Reply-To: <b425ba6e-50b8-d1a6-7cb1-f94ba9e06c35@google.com>
-Message-ID: <9266a9f9-71a5-dd88-df7b-facc037aaaff@google.com>
-References: <20231205223118.3575485-1-souravpanda@google.com> <20231205223118.3575485-2-souravpanda@google.com> <b425ba6e-50b8-d1a6-7cb1-f94ba9e06c35@google.com>
+        d=1e100.net; s=20230601; t=1704501548; x=1705106348;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=CWItgsviLevELUTQOy8l4EFaye3LXQAVmYfKWfZE4dg=;
+        b=Xiu8ohfdAby+y7nY9ZlIVQ5V4K1+BLg3mjDGRW4nC69AoK3P6bnBZqy2KuUDiMglqJ
+         IyTFFmAZ0TriNBZCWVcILcLc3aV6orxuLjcIgB2nvO8vh10uHWDvuiyw1cBH9nmgE2WU
+         DH6qfCjoDkd5oCkB6eWNFuTqUtWcnm+Z1i0V9SQ50ZEmmATAjh7YmRUYKWaALxL7fEdh
+         I/5gsrfFGSvh36QxewFBFlg83Ay5Za/XwkJTShIEP98CcbCNlBHXMZ3ssKtW4VXiZDMA
+         ZAodhIBaHoLR52M+utoey5ht2PE5YtunN3l9gPRze4GCM+7t7tJq+clmykppOBw5+XR8
+         1t/A==
+X-Gm-Message-State: AOJu0Yx2r9uYUtMzYinhc8tO2VDePnlkX+oBPQ26tk2khWlphV+8FR6r
+	OgjmIZRbGU7fOnmfuiEUhQ6EmLoK/31wRdgqIs0VFJniUGUvdQ==
+X-Google-Smtp-Source: AGHT+IGnvK2SJ9w6gTmUsRLVRNS3RTVaJ8/Pp4IUrvSHuf9v1HiVqYLlHIA28KAi30M1XBd80naFcN+Tklt5i2+a/aU=
+X-Received: by 2002:a25:f624:0:b0:dbe:3500:a42b with SMTP id
+ t36-20020a25f624000000b00dbe3500a42bmr135029ybd.42.1704501548600; Fri, 05 Jan
+ 2024 16:39:08 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <20240106-fd-migrate-mdp5-v3-0-3d2750378063@linaro.org>
+ <20240106-fd-migrate-mdp5-v3-3-3d2750378063@linaro.org> <c8d6769b-eb28-337c-fa55-4dae86611da5@quicinc.com>
+In-Reply-To: <c8d6769b-eb28-337c-fa55-4dae86611da5@quicinc.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Sat, 6 Jan 2024 02:38:57 +0200
+Message-ID: <CAA8EJpoF3uKobGzjHbLMKYvcQbdqYzur7Mn1cNDPyc+wiiZ+SQ@mail.gmail.com>
+Subject: Re: [PATCH v3 3/4] drm/msm: add a kernel param to select between MDP5
+ and DPU drivers
+To: Carl Vanderlip <quic_carlv@quicinc.com>
+Cc: Rob Clark <robdclark@gmail.com>, Abhinav Kumar <quic_abhinavk@quicinc.com>, 
+	Sean Paul <sean@poorly.run>, Marijn Suijten <marijn.suijten@somainline.org>, 
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, linux-arm-msm@vger.kernel.org, 
+	freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, Stephen Boyd <swboyd@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 
-On Fri, 5 Jan 2024, David Rientjes wrote:
+On Sat, 6 Jan 2024 at 02:04, Carl Vanderlip <quic_carlv@quicinc.com> wrote:
+>
+>
+> On 1/5/2024 3:34 PM, Dmitry Baryshkov wrote:
+> > For some of the platforms (e.g. SDM660, SDM630, MSM8996, etc.) it is
+> > possible to support this platform via the DPU driver (e.g. to provide
+> > support for DP, multirect, etc). Add a modparam to be able to switch
+> > between these two drivers.
+> >
+> > All platforms supported by both drivers are by default handled by the
+> > MDP5 driver. To let them be handled by the DPU driver pass the
+> > `msm.prefer_mdp5=false` kernel param.
+> >
+> > Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+> > Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> > ---
+> >   drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c  |  3 +++
+> >   drivers/gpu/drm/msm/disp/mdp5/mdp5_kms.c |  3 +++
+> >   drivers/gpu/drm/msm/msm_drv.c            | 31 +++++++++++++++++++++++++++++++
+> >   drivers/gpu/drm/msm/msm_drv.h            |  1 +
+> >   4 files changed, 38 insertions(+)
+> >
+> > diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
+> > index aa9e0ad33ebb..8f11a98491a1 100644
+> > --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
+> > +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
+> > @@ -1276,6 +1276,9 @@ static int dpu_dev_probe(struct platform_device *pdev)
+> >       int irq;
+> >       int ret = 0;
+> >
+> > +     if (!msm_disp_drv_should_bind(&pdev->dev, true))
+> > +             return -ENODEV;
+> > +
+> >       dpu_kms = devm_kzalloc(dev, sizeof(*dpu_kms), GFP_KERNEL);
+> >       if (!dpu_kms)
+> >               return -ENOMEM;
+> > diff --git a/drivers/gpu/drm/msm/disp/mdp5/mdp5_kms.c b/drivers/gpu/drm/msm/disp/mdp5/mdp5_kms.c
+> > index 0827634664ae..43d05851c54d 100644
+> > --- a/drivers/gpu/drm/msm/disp/mdp5/mdp5_kms.c
+> > +++ b/drivers/gpu/drm/msm/disp/mdp5/mdp5_kms.c
+> > @@ -866,6 +866,9 @@ static int mdp5_dev_probe(struct platform_device *pdev)
+> >
+> >       DBG("");
+> >
+> > +     if (!msm_disp_drv_should_bind(&pdev->dev, false))
+> > +             return -ENODEV;
+> > +
+> >       mdp5_kms = devm_kzalloc(&pdev->dev, sizeof(*mdp5_kms), GFP_KERNEL);
+> >       if (!mdp5_kms)
+> >               return -ENOMEM;
+> > diff --git a/drivers/gpu/drm/msm/msm_drv.c b/drivers/gpu/drm/msm/msm_drv.c
+> > index 50b65ffc24b1..ef57586fbeca 100644
+> > --- a/drivers/gpu/drm/msm/msm_drv.c
+> > +++ b/drivers/gpu/drm/msm/msm_drv.c
+> > @@ -969,6 +969,37 @@ static int add_components_mdp(struct device *master_dev,
+> >       return 0;
+> >   }
+> >
+> > +#if !IS_REACHABLE(CONFIG_DRM_MSM_MDP5) || !IS_REACHABLE(CONFIG_DRM_MSM_DPU)
+> > +bool msm_disp_drv_should_bind(struct device *dev, bool mdp5_driver)
+>
+> s/mdp5_driver/dpu_driver/
 
-> On Tue, 5 Dec 2023, Sourav Panda wrote:
-> 
-> > diff --git a/Documentation/filesystems/proc.rst b/Documentation/filesystems/proc.rst
-> > index 49ef12df631b..d5901d04e082 100644
-> > --- a/Documentation/filesystems/proc.rst
-> > +++ b/Documentation/filesystems/proc.rst
-> > @@ -993,6 +993,7 @@ Example output. You may not have all of these fields.
-> >      AnonPages:       4654780 kB
-> >      Mapped:           266244 kB
-> >      Shmem:              9976 kB
-> > +    PageMetadata:     513419 kB
-> >      KReclaimable:     517708 kB
-> >      Slab:             660044 kB
-> >      SReclaimable:     517708 kB
-> > @@ -1095,6 +1096,8 @@ Mapped
-> >                files which have been mmapped, such as libraries
-> >  Shmem
-> >                Total memory used by shared memory (shmem) and tmpfs
-> > +PageMetadata
-> > +              Memory used for per-page metadata
-> >  KReclaimable
-> >                Kernel allocations that the kernel will attempt to reclaim
-> >                under memory pressure. Includes SReclaimable (below), and other
-> > diff --git a/fs/proc/meminfo.c b/fs/proc/meminfo.c
-> > index 45af9a989d40..f141bb2a550d 100644
-> > --- a/fs/proc/meminfo.c
-> > +++ b/fs/proc/meminfo.c
-> > @@ -39,7 +39,9 @@ static int meminfo_proc_show(struct seq_file *m, void *v)
-> >  	long available;
-> >  	unsigned long pages[NR_LRU_LISTS];
-> >  	unsigned long sreclaimable, sunreclaim;
-> > +	unsigned long nr_page_metadata;
-> 
-> Initialize it here (if we actually need this variable)?
-> 
-> >  	int lru;
-> > +	int nid;
-> >  
-> >  	si_meminfo(&i);
-> >  	si_swapinfo(&i);
-> > @@ -57,6 +59,10 @@ static int meminfo_proc_show(struct seq_file *m, void *v)
-> >  	sreclaimable = global_node_page_state_pages(NR_SLAB_RECLAIMABLE_B);
-> >  	sunreclaim = global_node_page_state_pages(NR_SLAB_UNRECLAIMABLE_B);
-> >  
-> > +	nr_page_metadata = 0;
-> > +	for_each_online_node(nid)
-> > +		nr_page_metadata += node_page_state(NODE_DATA(nid), NR_PAGE_METADATA);
-> 
-> Is this intended to be different than 
-> global_node_page_state_pages(NR_PAGE_METADATA)?  
-> 
-> If so, any hint as to why we want to discount page metadata on offline 
-> nodes?  We can't make an inference that metadata is always allocated 
-> locally, memoryless nodes need things like struct page allocated on nodes 
-> with memory.
-> 
+Well, ignored_driver, but your suggestion is better.
 
-Sorry, meant a node with only ZONE_MOVABLE here so metadata can't be 
-allocated locally.
+>
+> > +{
+> > +     /* If just a single driver is enabled, use it no matter what */
+> > +     return true;
+> > +}
+>
+> This will cause both MDP/DPU probes to return -ENODEV, rather than
+> select the enabled one.
 
-But would be very interested to learn why this subtlety exists to sum up 
-only online nodes.
+No. The code (e.g. for DPU) is:
 
-> So even if a memoryless node is offline, we'd still be including its 
-> metadata here with the current implementation.
-> 
-> Or maybe I'm missing a subtlety here for why this is not already 
-> global_node_page_state_pages().
-> 
+       if (!msm_disp_drv_should_bind(&pdev->dev, true))
+                return -ENODEV;
+
+So the driver returns -ENODEV if msm_disp_drv_should_bind() returns
+false. Which is logical from the function name point of view.
+
+>
+> > +#else
 > > +
-> >  	show_val_kb(m, "MemTotal:       ", i.totalram);
-> >  	show_val_kb(m, "MemFree:        ", i.freeram);
-> >  	show_val_kb(m, "MemAvailable:   ", available);
-> > @@ -104,6 +110,7 @@ static int meminfo_proc_show(struct seq_file *m, void *v)
-> >  	show_val_kb(m, "Mapped:         ",
-> >  		    global_node_page_state(NR_FILE_MAPPED));
-> >  	show_val_kb(m, "Shmem:          ", i.sharedram);
-> > +	show_val_kb(m, "PageMetadata:   ", nr_page_metadata);
-> >  	show_val_kb(m, "KReclaimable:   ", sreclaimable +
-> >  		    global_node_page_state(NR_KERNEL_MISC_RECLAIMABLE));
-> >  	show_val_kb(m, "Slab:           ", sreclaimable + sunreclaim);
-> > diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-> > index 3c25226beeed..ef176152be7c 100644
-> > --- a/include/linux/mmzone.h
-> > +++ b/include/linux/mmzone.h
-> > @@ -207,6 +207,10 @@ enum node_stat_item {
-> >  	PGPROMOTE_SUCCESS,	/* promote successfully */
-> >  	PGPROMOTE_CANDIDATE,	/* candidate pages to promote */
-> >  #endif
-> > +	NR_PAGE_METADATA,	/* Page metadata size (struct page and page_ext)
-> > +				 * in pages
-> > +				 */
-> > +	NR_PAGE_METADATA_BOOT,	/* NR_PAGE_METADATA for bootmem */
-> 
-> So if some vmemmap pages are freed, then MemTotal could be incremented by 
-> a portion of NR_PAGE_METADATA_BOOT and then this stat is decremented?  Is 
-> the goal that the sum of MemTotal + SUM(nr_page_metadata_boot) is always 
-> constant?
-> 
-> >  	NR_VM_NODE_STAT_ITEMS
-> >  };
-> >  
-> > diff --git a/include/linux/vmstat.h b/include/linux/vmstat.h
-> > index fed855bae6d8..af096a881f03 100644
-> > --- a/include/linux/vmstat.h
-> > +++ b/include/linux/vmstat.h
-> > @@ -656,4 +656,8 @@ static inline void lruvec_stat_sub_folio(struct folio *folio,
-> >  {
-> >  	lruvec_stat_mod_folio(folio, idx, -folio_nr_pages(folio));
-> >  }
+> > +static bool prefer_mdp5 = true;
+> > +MODULE_PARM_DESC(prefer_mdp5, "Select whether MDP5 or DPU driver should be preferred");
+> > +module_param(prefer_mdp5, bool, 0444);
 > > +
-> > +void __init mod_node_early_perpage_metadata(int nid, long delta);
-> > +void __init store_early_perpage_metadata(void);
+> > +/* list all platforms supported by both mdp5 and dpu drivers */
+> > +static const char *const msm_mdp5_dpu_migration[] = {
+> > +     NULL,
+> > +};
 > > +
-> >  #endif /* _LINUX_VMSTAT_H */
-> > diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
-> > index 87818ee7f01d..5b10d8d2b471 100644
-> > --- a/mm/hugetlb_vmemmap.c
-> > +++ b/mm/hugetlb_vmemmap.c
-> > @@ -230,10 +230,14 @@ static int vmemmap_remap_range(unsigned long start, unsigned long end,
-> >   */
-> >  static inline void free_vmemmap_page(struct page *page)
-> >  {
-> > -	if (PageReserved(page))
-> > +	if (PageReserved(page)) {
-> >  		free_bootmem_page(page);
-> > -	else
-> > +		mod_node_page_state(page_pgdat(page), NR_PAGE_METADATA_BOOT,
-> > +				    -1);
-> > +	} else {
-> >  		__free_page(page);
-> > +		mod_node_page_state(page_pgdat(page), NR_PAGE_METADATA, -1);
-> > +	}
-> >  }
-> >  
-> >  /* Free a list of the vmemmap pages */
-> > @@ -389,6 +393,7 @@ static int vmemmap_remap_free(unsigned long start, unsigned long end,
-> >  		copy_page(page_to_virt(walk.reuse_page),
-> >  			  (void *)walk.reuse_addr);
-> >  		list_add(&walk.reuse_page->lru, vmemmap_pages);
-> > +		mod_node_page_state(NODE_DATA(nid), NR_PAGE_METADATA, 1);
-> >  	}
-> >  
-> >  	/*
-> > @@ -437,14 +442,20 @@ static int alloc_vmemmap_page_list(unsigned long start, unsigned long end,
-> >  	unsigned long nr_pages = (end - start) >> PAGE_SHIFT;
-> >  	int nid = page_to_nid((struct page *)start);
-> >  	struct page *page, *next;
-> > +	int i;
-> >  
-> > -	while (nr_pages--) {
-> > +	for (i = 0; i < nr_pages; i++) {
-> >  		page = alloc_pages_node(nid, gfp_mask, 0);
-> > -		if (!page)
-> > +		if (!page) {
-> > +			mod_node_page_state(NODE_DATA(nid), NR_PAGE_METADATA,
-> > +					    i);
-> >  			goto out;
-> > +		}
-> >  		list_add(&page->lru, list);
-> >  	}
-> >  
-> > +	mod_node_page_state(NODE_DATA(nid), NR_PAGE_METADATA, nr_pages);
+> > +bool msm_disp_drv_should_bind(struct device *dev, bool dpu_driver)
+> > +{
+> > +     /* If it is not an MDP5 device, do not try MDP5 driver */
+> > +     if (!of_device_is_compatible(dev->of_node, "qcom,mdp5"))
+> > +             return dpu_driver;
 > > +
-> >  	return 0;
-> >  out:
-> >  	list_for_each_entry_safe(page, next, list, lru)
-> > diff --git a/mm/mm_init.c b/mm/mm_init.c
-> > index 077bfe393b5e..38f8e1f454a0 100644
-> > --- a/mm/mm_init.c
-> > +++ b/mm/mm_init.c
-> > @@ -26,6 +26,7 @@
-> >  #include <linux/pgtable.h>
-> >  #include <linux/swap.h>
-> >  #include <linux/cma.h>
-> > +#include <linux/vmstat.h>
-> >  #include "internal.h"
-> >  #include "slab.h"
-> >  #include "shuffle.h"
-> > @@ -1656,6 +1657,8 @@ static void __init alloc_node_mem_map(struct pglist_data *pgdat)
-> >  			panic("Failed to allocate %ld bytes for node %d memory map\n",
-> >  			      size, pgdat->node_id);
-> >  		pgdat->node_mem_map = map + offset;
-> > +		mod_node_early_perpage_metadata(pgdat->node_id,
-> > +						DIV_ROUND_UP(size, PAGE_SIZE));
-> >  	}
-> >  	pr_debug("%s: node %d, pgdat %08lx, node_mem_map %08lx\n",
-> >  				__func__, pgdat->node_id, (unsigned long)pgdat,
-> > diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> > index 733732e7e0ba..dd78017105b0 100644
-> > --- a/mm/page_alloc.c
-> > +++ b/mm/page_alloc.c
-> > @@ -5636,6 +5636,7 @@ void __init setup_per_cpu_pageset(void)
-> >  	for_each_online_pgdat(pgdat)
-> >  		pgdat->per_cpu_nodestats =
-> >  			alloc_percpu(struct per_cpu_nodestat);
-> > +	store_early_perpage_metadata();
-> >  }
-> >  
-> >  __meminit void zone_pcp_init(struct zone *zone)
-> > diff --git a/mm/page_ext.c b/mm/page_ext.c
-> > index 4548fcc66d74..4ca9f298f34e 100644
-> > --- a/mm/page_ext.c
-> > +++ b/mm/page_ext.c
-> > @@ -201,6 +201,8 @@ static int __init alloc_node_page_ext(int nid)
-> >  		return -ENOMEM;
-> >  	NODE_DATA(nid)->node_page_ext = base;
-> >  	total_usage += table_size;
-> > +	mod_node_page_state(NODE_DATA(nid), NR_PAGE_METADATA_BOOT,
-> > +			    DIV_ROUND_UP(table_size, PAGE_SIZE));
-> >  	return 0;
-> >  }
-> >  
-> > @@ -255,12 +257,15 @@ static void *__meminit alloc_page_ext(size_t size, int nid)
-> >  	void *addr = NULL;
-> >  
-> >  	addr = alloc_pages_exact_nid(nid, size, flags);
-> > -	if (addr) {
-> > +	if (addr)
-> >  		kmemleak_alloc(addr, size, 1, flags);
-> > -		return addr;
-> > -	}
-> > +	else
-> > +		addr = vzalloc_node(size, nid);
-> >  
-> > -	addr = vzalloc_node(size, nid);
-> > +	if (addr) {
-> > +		mod_node_page_state(NODE_DATA(nid), NR_PAGE_METADATA,
-> > +				    DIV_ROUND_UP(size, PAGE_SIZE));
-> > +	}
-> >  
-> >  	return addr;
-> >  }
-> > @@ -303,18 +308,27 @@ static int __meminit init_section_page_ext(unsigned long pfn, int nid)
-> >  
-> >  static void free_page_ext(void *addr)
-> >  {
-> > +	size_t table_size;
-> > +	struct page *page;
-> > +	struct pglist_data *pgdat;
+> > +     /* If it is not in the migration list, use MDP5 */
+> > +     if (!of_device_compatible_match(dev->of_node, msm_mdp5_dpu_migration))
+> > +             return !dpu_driver;
 > > +
-> > +	table_size = page_ext_size * PAGES_PER_SECTION;
-> > +
-> >  	if (is_vmalloc_addr(addr)) {
-> > +		page = vmalloc_to_page(addr);
-> > +		pgdat = page_pgdat(page);
-> >  		vfree(addr);
-> >  	} else {
-> > -		struct page *page = virt_to_page(addr);
-> > -		size_t table_size;
-> > -
-> > -		table_size = page_ext_size * PAGES_PER_SECTION;
-> > -
-> > +		page = virt_to_page(addr);
-> > +		pgdat = page_pgdat(page);
-> >  		BUG_ON(PageReserved(page));
-> >  		kmemleak_free(addr);
-> >  		free_pages_exact(addr, table_size);
-> >  	}
-> > +
-> > +	mod_node_page_state(pgdat, NR_PAGE_METADATA,
-> > +			    -1L * (DIV_ROUND_UP(table_size, PAGE_SIZE)));
-> > +
-> >  }
-> >  
-> >  static void __free_page_ext(unsigned long pfn)
-> > diff --git a/mm/sparse-vmemmap.c b/mm/sparse-vmemmap.c
-> > index a2cbe44c48e1..054b49539843 100644
-> > --- a/mm/sparse-vmemmap.c
-> > +++ b/mm/sparse-vmemmap.c
-> > @@ -469,5 +469,13 @@ struct page * __meminit __populate_section_memmap(unsigned long pfn,
-> >  	if (r < 0)
-> >  		return NULL;
-> >  
-> > +	if (system_state == SYSTEM_BOOTING) {
-> > +		mod_node_page_state(NODE_DATA(nid), NR_PAGE_METADATA_BOOT,
-> > +				    DIV_ROUND_UP(end - start, PAGE_SIZE));
-> > +	} else {
-> > +		mod_node_page_state(NODE_DATA(nid), NR_PAGE_METADATA,
-> > +				    DIV_ROUND_UP(end - start, PAGE_SIZE));
-> > +	}
-> > +
-> >  	return pfn_to_page(pfn);
-> >  }
-> > diff --git a/mm/sparse.c b/mm/sparse.c
-> > index 77d91e565045..0c100ae1cf8b 100644
-> > --- a/mm/sparse.c
-> > +++ b/mm/sparse.c
-> > @@ -14,7 +14,7 @@
-> >  #include <linux/swap.h>
-> >  #include <linux/swapops.h>
-> >  #include <linux/bootmem_info.h>
-> > -
-> > +#include <linux/vmstat.h>
-> >  #include "internal.h"
-> >  #include <asm/dma.h>
-> >  
-> > @@ -465,6 +465,9 @@ static void __init sparse_buffer_init(unsigned long size, int nid)
-> >  	 */
-> >  	sparsemap_buf = memmap_alloc(size, section_map_size(), addr, nid, true);
-> >  	sparsemap_buf_end = sparsemap_buf + size;
-> > +#ifndef CONFIG_SPARSEMEM_VMEMMAP
-> > +	mod_node_early_perpage_metadata(nid, DIV_ROUND_UP(size, PAGE_SIZE));
+> > +     return prefer_mdp5 ? !dpu_driver : dpu_driver;
+> > +}
 > > +#endif
-> >  }
-> >  
-> >  static void __init sparse_buffer_fini(void)
-> > @@ -641,6 +644,8 @@ static void depopulate_section_memmap(unsigned long pfn, unsigned long nr_pages,
-> >  	unsigned long start = (unsigned long) pfn_to_page(pfn);
-> >  	unsigned long end = start + nr_pages * sizeof(struct page);
-> >  
-> > +	mod_node_page_state(page_pgdat(pfn_to_page(pfn)), NR_PAGE_METADATA,
-> > +			    -1L * (DIV_ROUND_UP(end - start, PAGE_SIZE)));
-> >  	vmemmap_free(start, end, altmap);
-> >  }
-> >  static void free_map_bootmem(struct page *memmap)
-> > diff --git a/mm/vmstat.c b/mm/vmstat.c
-> > index 359460deb377..23e88d8c21b7 100644
-> > --- a/mm/vmstat.c
-> > +++ b/mm/vmstat.c
-> > @@ -1249,7 +1249,8 @@ const char * const vmstat_text[] = {
-> >  	"pgpromote_success",
-> >  	"pgpromote_candidate",
-> >  #endif
-> > -
-> > +	"nr_page_metadata",
-> > +	"nr_page_metadata_boot",
-> >  	/* enum writeback_stat_item counters */
-> >  	"nr_dirty_threshold",
-> >  	"nr_dirty_background_threshold",
-> > @@ -2278,4 +2279,27 @@ static int __init extfrag_debug_init(void)
-> >  }
-> >  
-> >  module_init(extfrag_debug_init);
 > > +
-> >  #endif
-> > +
-> > +/*
-> > + * Page metadata size (struct page and page_ext) in pages
-> > + */
-> > +static unsigned long early_perpage_metadata[MAX_NUMNODES] __initdata;
-> > +
-> > +void __init mod_node_early_perpage_metadata(int nid, long delta)
-> > +{
-> > +	early_perpage_metadata[nid] += delta;
-> > +}
-> > +
-> > +void __init store_early_perpage_metadata(void)
-> > +{
-> > +	int nid;
-> > +	struct pglist_data *pgdat;
-> > +
-> > +	for_each_online_pgdat(pgdat) {
-> > +		nid = pgdat->node_id;
-> > +		mod_node_page_state(NODE_DATA(nid), NR_PAGE_METADATA_BOOT,
-> > +				    early_perpage_metadata[nid]);
-> > +	}
-> > +}
-> > -- 
-> > 2.43.0.472.g3155946c3a-goog
-> > 
-> > 
-> > 
-> 
+> >   /*
+> >    * We don't know what's the best binding to link the gpu with the drm device.
+> >    * Fow now, we just hunt for all the possible gpus that we support, and add them
+> > diff --git a/drivers/gpu/drm/msm/msm_drv.h b/drivers/gpu/drm/msm/msm_drv.h
+> > index 01e783130054..762e13e2df74 100644
+> > --- a/drivers/gpu/drm/msm/msm_drv.h
+> > +++ b/drivers/gpu/drm/msm/msm_drv.h
+> > @@ -563,5 +563,6 @@ int msm_drv_probe(struct device *dev,
+> >       struct msm_kms *kms);
+> >   void msm_kms_shutdown(struct platform_device *pdev);
+> >
+> > +bool msm_disp_drv_should_bind(struct device *dev, bool dpu_driver);
+> >
+> >   #endif /* __MSM_DRV_H__ */
+> >
+
+
+
+-- 
+With best wishes
+Dmitry
 
