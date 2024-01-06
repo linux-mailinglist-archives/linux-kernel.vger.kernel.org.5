@@ -1,52 +1,52 @@
-Return-Path: <linux-kernel+bounces-18477-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18478-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA3CB825E30
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 05:22:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 51213825E31
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 05:25:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BAE1D1C2174E
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 04:22:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A3CB7284FE3
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 04:25:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C4BD1872;
-	Sat,  6 Jan 2024 04:21:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DE4B187F;
+	Sat,  6 Jan 2024 04:25:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Scd2Vxl2"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="M24gs8nG"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 348F917D2
-	for <linux-kernel@vger.kernel.org>; Sat,  6 Jan 2024 04:21:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B718B17E1
+	for <linux-kernel@vger.kernel.org>; Sat,  6 Jan 2024 04:25:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704514915; x=1736050915;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=mBilgYmmWvnzHNgPRu5X/8Sdp74P0JzNXf6aWiYwelQ=;
-  b=Scd2Vxl2Q2wMZZyvKDlbeO6wzGT8BeKmRTL+TTPiMhntm69dzfxnnoFc
-   e/C8YgJnDs3B07SOz093rBmjcBuKzbVpuCAxEuOJgckOF/jJUx7ADwqLw
-   ZafWTBaHT/fOo+evP/ATliFTXL05CY4tcj/HpqX+AuS1F/I3IwqTLxv2r
-   CKa42htJQb7sSfk2BeelwpUUSaZqNY2r9DoUyAPwmB7Msle3rWkB99wgn
-   EZPeeXpe+OsBvcKlUwrPDM7JXVke6FuWALs7nFErwednWZ/l2nJHNHdJb
-   L0ny/8gEhCTk3FPRSY/dq9yKML3IFfrh4YHzx2iZLfAKKfup/rJSwhitL
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10944"; a="461932857"
+  t=1704515138; x=1736051138;
+  h=message-id:date:mime-version:subject:from:to:cc:
+   references:in-reply-to:content-transfer-encoding;
+  bh=K1pFfrfdo49D8TOTL//jcobRos+2Vcr3hksOB7Gvjc8=;
+  b=M24gs8nGim641V7jIMeLiHWgYyPhMz/q79sdE/hpT1iWWkDjD0o72FQt
+   qnYng/9f0ABkOlchxZGRS7eTStLUMAfsPhtmT5QkffK/fxtr3LdML6Z/C
+   /CLfPxEHzICFDPfRcnkILmscQbLirDutO0WhBA6CFubZLH0qYR30vJ6eB
+   Iztmgacj6SinsFr7Fzs3QcPQBpueMRk64dzBhccAkyHTNEO4UtvOO5aSK
+   NufRqXEmdJkWzVTdnshz4rIZ5iew2BJdXJ6Za0O3iaptNczGtGr7Gyp/P
+   W0T5AuupkBZXA9Ru0zDJVhaUMWRP5tQLBm49cPhcPT5Tjy6KzMvEkmGGb
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10944"; a="464035040"
 X-IronPort-AV: E=Sophos;i="6.04,335,1695711600"; 
-   d="scan'208";a="461932857"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2024 20:21:54 -0800
+   d="scan'208";a="464035040"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2024 20:25:38 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.04,335,1695711600"; 
-   d="scan'208";a="15418641"
+   d="scan'208";a="23022493"
 Received: from zhaohaif-mobl.ccr.corp.intel.com (HELO [10.93.16.94]) ([10.93.16.94])
-  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2024 20:21:52 -0800
-Message-ID: <f8ae34f0-dab2-48fa-b3f8-5e969ed028b7@linux.intel.com>
-Date: Sat, 6 Jan 2024 12:21:49 +0800
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2024 20:25:37 -0800
+Message-ID: <b913d3d5-cac6-4713-8590-2c56ad7c69ee@linux.intel.com>
+Date: Sat, 6 Jan 2024 12:25:34 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -54,75 +54,184 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 0/2] iommu/iova: Make the rcache depot properly
- flexible
-To: Ido Schimmel <idosch@idosch.org>, Robin Murphy <robin.murphy@arm.com>
-Cc: joro@8bytes.org, will@kernel.org, iommu@lists.linux.dev,
- linux-kernel@vger.kernel.org, zhangzekun11@huawei.com,
- john.g.garry@oracle.com, dheerajkumar.srivastava@amd.com, jsnitsel@redhat.com
-References: <cover.1694535580.git.robin.murphy@arm.com>
- <ZY1osaGLyT-sdKE8@shredder> <ZZO6NV-Kq-ktnyo5@shredder>
+Subject: Re: [Regression] [iommu/iova] iova_rbtree_lock contended seriously
+ causing performance bottleneck (bisect done; commit found)
 From: Ethan Zhao <haifeng.zhao@linux.intel.com>
-In-Reply-To: <ZZO6NV-Kq-ktnyo5@shredder>
+To: robin.murphy@arm.com
+Cc: iommu@lists.linux.dev, linux-kernel@vger.kernel.org,
+ regressions@lists.linux.dev
+References: <20240103045506.1077586-1-haifeng.zhao@linux.intel.com>
+ <fdf1c2b8-6f8a-4f3c-b063-0211fe688121@linux.intel.com>
+In-Reply-To: <fdf1c2b8-6f8a-4f3c-b063-0211fe688121@linux.intel.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
 
-On 1/2/2024 3:24 PM, Ido Schimmel wrote:
-> On Thu, Dec 28, 2023 at 02:23:20PM +0200, Ido Schimmel wrote:
->> On Tue, Sep 12, 2023 at 05:28:04PM +0100, Robin Murphy wrote:
->>> v2: https://lore.kernel.org/linux-iommu/cover.1692641204.git.robin.murphy@arm.com/
->>>
->>> Hi all,
->>>
->>> I hope this is good to go now, just fixed the locking (and threw
->>> lockdep at it to confirm, which of course I should have done to begin
->>> with...) and picked up tags.
->> Hi,
+On 1/3/2024 12:57 PM, Ethan Zhao wrote:
+>
+> On 1/3/2024 12:55 PM, Ethan Zhao wrote:
+> part of the mail got lost after sent
+> past here
+>
+> Issue:
+> When network throughput is large (>1GB/s), the performance of
+> application nginx hits bottleneck, most of cpu cycles are cost
+> by spin lock, it takes a lot of cycles to aquire iova_rbtree_lock
+> for  __alloc_and_insert_iova_range().
+>> flame graph
 >>
->> After pulling the v6.7 changes we started seeing the following memory
->> leaks [1] of 'struct iova_magazine'. I'm not sure how to reproduce it,
->> which is why I didn't perform bisection. However, looking at the
->> mentioned code paths, they seem to have been changed in v6.7 as part of
->> this patchset. I reverted both patches and didn't see any memory leaks
->> when running a full regression (~10 hours), but I will repeat it to be
->> sure.
-> FYI, we didn't see the leaks since reverting these two patches whereas
-> before we saw them almost everyday, so I'm quite sure they introduced
-> the leaks.
-
-Seems some magazines were not freed when one CPU is dead (hot unplugged) ?
-
-static void free_cpu_cached_iovas(unsigned int cpu, struct iova_domain 
-*iovad)
-{
-     struct iova_cpu_rcache *cpu_rcache;
-     struct iova_rcache *rcache;
-     unsigned long flags;
-     int i;
-
-     for (i = 0; i < IOVA_RANGE_CACHE_MAX_SIZE; ++i) {
-         rcache = &iovad->rcaches[i];
-         cpu_rcache = per_cpu_ptr(rcache->cpu_rcaches, cpu);
-         spin_lock_irqsave(&cpu_rcache->lock, flags);
-         iova_magazine_free_pfns(cpu_rcache->loaded, iovad);
-
-+     iova_magazine_free(cpu_rcache->loaded);
-
-         iova_magazine_free_pfns(cpu_rcache->prev, iovad);
-
-+     iova_magazine_free(cpu_rcache->prev);
-
-         spin_unlock_irqrestore(&cpu_rcache->lock, flags);
-     }
-}
-
+>>
+>> queued_spin_lock_slowpath-------------\
+>> do_raw_spin_lock                       \
+>> _raw_spin_lock_irqsave                  \
+>> __alloc_and_insert_iova_range            \
+>> alloc_iova_fast                           \
+>> iommu_dma_alloc_iova                       \
+>> __iommu_dma_map                             \
+>> iommu_dma_map_page                           \
+>> ice_tx_map.isra.0                             \
+>> ice_xmit_frame_ring                            \
+>> dev_hard_start_xmit                             \
+>> sch_direct_xmit                                  \
+>> __dev_xmit_skb                                    \
+>> __dev_queue_xmit                                   \
+>> ip_finish_output2                                   \
+>> __ip_queue_xmit                                     \
+>> __tcp_transmit_skb                                   \
+>> tcp_write_xmit                                       \
+>> __tcp_push_pending_frames                             \
+>> tcp_sendmsg_locked                                     \
+>> tcp_sendmsg                                             \
+>> tcp_sendmsg                                              \
+>> sock_write_iter                                           \
+>> do_iter_readv_writev                                       \
+>> do_iter_write                                               \
+>> vfs_writev                                                   \
+>> do_writev                                                     \
+>> do_syscall_64                                                 \
+>> entry_SYSCALL_64_after_hwframe                                 \
+>> __GI___writev \
+>> [nginx] \
+>> ngx_linux_sendfile_chain \
+>> ngx_http_write_filter \
+>> ngx_output_chain \
+>> ngx_http_send_response \
+>> ngx_http_script_return_code \
+>> [nginx] \
+>> ngx_http_core_run_phases \
+>> ngx_http_process_request \
+>>
+>> Setup:
+>> 1. configure server nginx with following nginx.conf (appended to the 
+>> tail)
+>>
+>> 2. request server with WRK
+>>     ./wrk -t 64 -c 1024 -d 40 --latency http://$server_ip:10802/1KB.json
+>>
+>> Debugging summary:
+>>   Bisect identified "commit 371d7955e310 iommu/iova: Improve restart 
+>> logic"
+>>   as cause.
+>>
+>> nginx.conf
+>> user nginx;
+>> worker_processes 16;
+>> error_log /var/log/nginx/error.log crit;
+>> pid /var/run/nginx.pid;
+>> events {
+>> worker_connections 4000;
+>> use epoll;
+>> multi_accept on;
+>> }
+>> http {
+>> include /etc/nginx/mime.types;
+>> default_type application/octet-stream;
+>> log_format main '$remote_addr - $remote_user [$time_local] "$request" '
+>>         '$status $body_bytes_sent "$http_referer" '
+>>         '"$http_user_agent" "$http_x_forwarded_for"';
+>> access_log off;
+>> sendfile on;
+>> tcp_nopush on;
+>> tcp_nodelay on;
+>> keepalive_timeout 65;
+>> keepalive_requests 20480;
+>> gzip_min_length 10240;
+>> gzip_comp_level 1;
+>> gzip_vary on;
+>> gzip_disable msie6;
+>> gzip_proxied expired no-cache no-store private auth;
+>> gzip_types
+>> # text/html is always compressed by HttpGzipModule
+>>     text/css
+>>     text/javascript
+>>     text/xml
+>>     text/plain
+>>     text/x-component
+>>     application/javascript
+>>     application/x-javascript
+>>     application/json
+>>     application/xml
+>>     application/rss+xml
+>>     application/atom+xml
+>>     font/truetype
+>>     font/opentype
+>>     application/vnd.ms-fontobject
+>>     image/svg+xml;
+>>
+>> reset_timedout_connection on;
+>> client_body_timeout 10;
+>> send_timeout 2;
+>> include /etc/nginx/conf.d/*.conf;
+>> server {
+>>     listen 10802;
+>>      server_name  localhost;
+>>      location / {
+>>          root   /usr/share/nginx/html;
+>>          index  index.html index.htm;
+>>      }
+>>      error_page   500 502 503 504  /50x.html;
+>>      location = /50x.html {
+>>          #root   /usr/share/nginx/html;
+>>          root   /ramdisk;
+>>     }
+>>      location /1KB.json {
+>>                 return 202 '{"status":"success","result":"\
+>>                             Hello from  NGINX, 2KB test\
+>>                             Nanchang, which was the capital of 
+>> Yuzhang Prefecture during the HanDynasty, \
+>>                             now falls under the jurisdiction of 
+>> Hongzhou. It straddles the borderof the \
+>>                             influence of the Ye and Zhen 
+>> constellations , and is adjacent to theHeng \
+>>                             and the Lu mountains . The three rivers 
+>> enfold it like the frontpart \
+>>                             of a garment and the five lakes encircle 
+>> it like a girdle. Itcontrols \
+>>                             nature’s jewels. The radiance of its 
+>> legendary sword shootsdirectly upward \
+>>                             between the constellations Niu and Dou. 
+>> Its talented peopleare outstanding,\
+>>                             and the spirit of intelligence pervades 
+>> the place. This wasthe place where Xu \
+>>                             Ru spent the night on his visit to Chen 
+>> Fan (10). The mightyHongzhou spreads \
+>>                             meteors chasing one another.\
+>>                             "}';
+>>            }
+>>   }
+>> }
+>
+>
+> Thanks,
+>
+> Ethan
+>
+Please ignore this report, looks like negtive, a running out of rcache 
+case.
 
 
 Thanks,
 
 Ethan
 
-> Thanks
->
 
