@@ -1,189 +1,141 @@
-Return-Path: <linux-kernel+bounces-18712-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18713-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0DFE826183
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 21:46:25 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AECF882618A
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 22:00:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 51E482830E7
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 20:46:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ACB391C20EC5
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 21:00:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30C06F513;
-	Sat,  6 Jan 2024 20:46:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B239BF9C7;
+	Sat,  6 Jan 2024 21:00:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="YMUmvnwW"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx.skole.hr (mx2.hosting.skole.hr [161.53.165.186])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93841F9C2;
-	Sat,  6 Jan 2024 20:46:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=skole.hr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=skole.hr
-Received: from mx2.hosting.skole.hr (localhost.localdomain [127.0.0.1])
-	by mx.skole.hr (mx.skole.hr) with ESMTP id 4FF1A85794;
-	Sat,  6 Jan 2024 21:46:11 +0100 (CET)
-From: =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
-Date: Sat, 06 Jan 2024 21:45:46 +0100
-Subject: [PATCH v2] dt-bindings: pxa-pwm: Convert to YAML
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1A66E575;
+	Sat,  6 Jan 2024 21:00:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
+	s=s31663417; t=1704574717; x=1705179517; i=quwenruo.btrfs@gmx.com;
+	bh=q8kMFaYUTh0daI3iKSMpizdypHcTuUe091zMsPWVA7o=;
+	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+	 In-Reply-To;
+	b=YMUmvnwWRYWPC1YGxp+W6l0N32b1yaxD8jkLg8KWqXF9bfFmsoT0+sF1+IvmW/v6
+	 fmA0WUMMdVZmsJTSxY7re4/ygV7zHzZ2uhzVb3gPgmOQhVD1APjqMqxOUuViMw6KR
+	 aJ5OQBXZP8qyaP74neY/q1/6wp43pYtLaKG06k8HSPr3YiLaaUnWz66xuGCA3bWeh
+	 ubOLzQPi6fb4SY1lB4gC35RXN7z0JY6O58Ig/07WTK2dHXmSD21UWc+6gNa7BWo0Z
+	 vsl9jACIiIO9xQA4FGSdLF3CJFn2NNIFyIk1fbnV/vtjY+vuaEupm5MnMtuUx4EGn
+	 IUe+IAkbsPNlYRpDTw==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.153] ([118.211.64.174]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1Msq6C-1r2LNl0Qky-00tFut; Sat, 06
+ Jan 2024 21:58:37 +0100
+Message-ID: <7708fc8b-738c-4d58-b89e-801ce6a4832a@gmx.com>
+Date: Sun, 7 Jan 2024 07:28:27 +1030
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20240106-pxa-pwm-yaml-v2-1-9578ff5f2d7f@skole.hr>
-X-B4-Tracking: v=1; b=H4sIAPm7mWUC/3XMyw6CMBCF4Vchs3bMFFGRle9hWEA7tRO5NK1BC
- OHdrexd/ic53wqRg3CEKlsh8CRRxiFFfshAu2Z4MopJDTnlBSk6o58b9J8el6bvsDRtS2QsX/U
- F0sUHtjLv3KNO7SS+x7Ds+qR+6x9oUqiwMGxuhkifSnuPr7HjowtQb9v2BatjkD2nAAAA
-To: Thierry Reding <thierry.reding@gmail.com>, 
- =?utf-8?q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>, 
- Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>
-Cc: linux-pwm@vger.kernel.org, devicetree@vger.kernel.org, 
- linux-kernel@vger.kernel.org, 
- =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3332;
- i=duje.mihanovic@skole.hr; h=from:subject:message-id;
- bh=KY4CNJMb5bu/b1IMZAKf3rxFy79ecGdfzqi7aByQaSA=;
- b=owEBbQKS/ZANAwAIAZoRnrBCLZbhAcsmYgBlmbv9kPQbYS/Zry38ioyNv2pV5E/TQ70/QmEWf
- uM9LUHqdKGJAjMEAAEIAB0WIQRT351NnD/hEPs2LXiaEZ6wQi2W4QUCZZm7/QAKCRCaEZ6wQi2W
- 4cDTD/9/orFpJLwg3vHE2JbDVLSYwM2/kqB0p4fN8meLwVyhuiha4eihm/6LX4TRdi5DliqR5H1
- IK0GiE3G+BI8WYfNyKp4rMchIUSCjQWgGFUkkdcXek6YjM9gzii7IL+UcPYpzWW/g99izT6PVub
- 7He16tvmCDRY0YgwXUWOUBPtGV9GTH52qglMoI0pP9i/3bsqUyTEUydoMqyyEdecSDGjVkB7Emi
- EoBhywmo6Zz7/q3FtBYS2Sybk82kDUfid/nkHHN7oj8f2IOr4oX+0Rmf0umX5kivo7C0N0az8pY
- BgWOlUnjfs/5qzb+I46k+tLDn4HjYdVXQa59FMgcD9BizbR7FAJLzWkRxHjQ8aIb/g1UBWqQp0y
- pkbsreqVbzRQJBhgmFXSMGDU0sT8F7HWERFDJk+mIl/a9kFmV+OzuQf3aX2Byj6cM+cStYjXFDc
- oAj1ZnJx8Twl5liQHnlwBH3E6dRBW0menAUmmkqKGFGUQAZtxwaBCs5DrCt6uNppZycBHvFit4V
- KYUznjQZTaIHkx0Sb5ICOLtpxfaCHASGClZzwAxI7NDz0+qWg67AZ/IryrLgXj65yNSMUdIxgdx
- zDdJIHdxmoAV2wOYNazfIV3bbOJWbTDp16Vc+T2jo0Xmi0UYs6CndJTC87Bu6SRhmhy4arMQh4v
- PG71gxJzScjAXVQ==
-X-Developer-Key: i=duje.mihanovic@skole.hr; a=openpgp;
- fpr=53DF9D4D9C3FE110FB362D789A119EB0422D96E1
-
-Convert the PXA PWM binding file from TXT to YAML.
-
-The original binding does not mention any clocks, but the PWM controller
-will not probe without a clock.
-
-Reviewed-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-Signed-off-by: Duje Mihanović <duje.mihanovic@skole.hr>
----
-Changes in v2:
-- Rename to marvell,pxa-pwm.yaml
-- Note addition of clock property
-- Update trailers
-- Link to v1: https://lore.kernel.org/r/20240105-pxa-pwm-yaml-v1-1-4ded9d00c38f@skole.hr
----
- .../devicetree/bindings/pwm/marvell,pxa-pwm.yaml   | 51 ++++++++++++++++++++++
- Documentation/devicetree/bindings/pwm/pxa-pwm.txt  | 30 -------------
- 2 files changed, 51 insertions(+), 30 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/pwm/marvell,pxa-pwm.yaml b/Documentation/devicetree/bindings/pwm/marvell,pxa-pwm.yaml
-new file mode 100644
-index 000000000000..fb20e4e1daa8
---- /dev/null
-+++ b/Documentation/devicetree/bindings/pwm/marvell,pxa-pwm.yaml
-@@ -0,0 +1,51 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/pwm/pwm-pxa.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Marvell PXA PWM
-+
-+maintainers:
-+  - Duje Mihanović <duje.mihanovic@skole.hr>
-+
-+allOf:
-+  - $ref: pwm.yaml#
-+
-+properties:
-+  compatible:
-+    enum:
-+      - marvell,pxa250-pwm
-+      - marvell,pxa270-pwm
-+      - marvell,pxa168-pwm
-+      - marvell,pxa910-pwm
-+
-+  reg:
-+    # Length should be 0x10
-+    maxItems: 1
-+
-+  "#pwm-cells":
-+    # Used for specifying the period length in nanoseconds
-+    const: 1
-+
-+  clocks:
-+    maxItems: 1
-+
-+required:
-+  - compatible
-+  - reg
-+  - "#pwm-cells"
-+  - clocks
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/clock/pxa-clock.h>
-+
-+    pwm0: pwm@40b00000 {
-+      compatible = "marvell,pxa250-pwm";
-+      reg = <0x40b00000 0x10>;
-+      #pwm-cells = <1>;
-+      clocks = <&clks CLK_PWM0>;
-+    };
-diff --git a/Documentation/devicetree/bindings/pwm/pxa-pwm.txt b/Documentation/devicetree/bindings/pwm/pxa-pwm.txt
-deleted file mode 100644
-index 5ae9f1e3c338..000000000000
---- a/Documentation/devicetree/bindings/pwm/pxa-pwm.txt
-+++ /dev/null
-@@ -1,30 +0,0 @@
--Marvell PWM controller
--
--Required properties:
--- compatible: should be one or more of:
--  - "marvell,pxa250-pwm"
--  - "marvell,pxa270-pwm"
--  - "marvell,pxa168-pwm"
--  - "marvell,pxa910-pwm"
--- reg: Physical base address and length of the registers used by the PWM channel
--  Note that one device instance must be created for each PWM that is used, so the
--  length covers only the register window for one PWM output, not that of the
--  entire PWM controller.  Currently length is 0x10 for all supported devices.
--- #pwm-cells: Should be 1.  This cell is used to specify the period in
--  nanoseconds.
--
--Example PWM device node:
--
--pwm0: pwm@40b00000 {
--	compatible = "marvell,pxa250-pwm";
--	reg = <0x40b00000 0x10>;
--	#pwm-cells = <1>;
--};
--
--Example PWM client node:
--
--backlight {
--	compatible = "pwm-backlight";
--	pwms = <&pwm0 5000000>;
--	...
--}
-
----
-base-commit: 610a9b8f49fbcf1100716370d3b5f6f884a2835a
-change-id: 20240105-pxa-pwm-yaml-8dbb00dfe7c6
-
-Best regards,
--- 
-Duje Mihanović <duje.mihanovic@skole.hr>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 0/4] kstrtox: introduce memparse_safe()
+Content-Language: en-US
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+ akpm@linux-foundation.org, christophe.jaillet@wanadoo.fr,
+ David.Laight@aculab.com, ddiss@suse.de, geert@linux-m68k.org
+References: <cover.1704324320.git.wqu@suse.com>
+ <ZZllAi_GbsoDF5Eg@smile.fi.intel.com>
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+In-Reply-To: <ZZllAi_GbsoDF5Eg@smile.fi.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:jzsjw6N+nkYBtBUo8TeUj/nImXMjGzZkF4q87f2bxzL/n4qFIUn
+ T+ggO+aWnkHu4MQv/w1ircSIcOiQ8luYDoccBBlJQJX8qG+45objSsB7C+TqISDnangino6
+ /G/EXgArbQeHv4/TaBHbwp+JAKH4BWZ/BI7KmfwpYrnsVj2FDsdwwKIeeiCSDOmOGad6G9W
+ p/RQgcCvNohiuxlj7IHfg==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:TD8zMtWHZ9A=;DD1MjWag+zbXE0ueYEvBgdfdlOJ
+ GQ2qRVdqw3dyB+znbAiRJ0ADVH5b2/jKv/YoWHA4x3uOJEE4x7aaL6mY6uCTZNlRLNKAFdkCq
+ CO0jPZt1apTqp8UH6h0pmDw9HoCCrC6qmx0ApH6xGTR/dkURRQB79RO5OhNiw3rFtqTrkfTxk
+ TDn+0uVolXhJYibOIiWpTgYeqsRayzMiZRDmTsyrOV9brMtlFCf7hQ43VKHsjDyIXE+r/Cgy7
+ QnlO/COTcthibcRSw1k89UtGlkr0R6MClhfUjTSTdvM2lssQ5yEd+p49Z1RdsIA8cnM8Xewzs
+ MZl66mlszqiMuk6FV6TB82s17dThGaIhmDgyUHmhq4pU+8kQopC4xJ3PpstdlUl12evuPB6CU
+ rUgI0qllZaE71Zqj+QjOS7O4jXcoC+iB6chkj0sn6MUhkRIgLDc8ElmBtU+s8lOy+PGsZ/jlf
+ C/WdXtW9CMe3zVvLb6GBwNsnRVKuqttdXzs1JdgmoGtNrKnF2yvovnkuNuRj5GpB6VGZG/57Z
+ aaIYHi9ONtsM5V/JGkqFttfO/60L8gaY1DTbmJf4eEiZXg8Ix2WXN6/KrzPrAHcXw4n1f+uVK
+ F9L5k2clvbMXvDUZdEgSLDETTo++pXnFQku5XXT+DueNd3fsa1erOi6nv9mZOEnTYvA+GjUyI
+ MoY5GUOResTISrVksxL6XguUrWvQRltbiQ5Wp02+lzt8535wpDlv41Cc1C2M/khsxsudTyXxQ
+ Mt8r2HgHaayJfJvVDNwX7q4Vd9AY92LSKkdI1xG2PbhbYIydzft2qTsBDIqW+v5NV0Z5Q9eC6
+ AO60521eZlSxgteZkPpBZnqCbN9iQMTN0nd9JFfWWUAPHakoKwK6yTbIyj98+rQUihUboaSEG
+ xC6E7DjLfa746I2JlZO7YZ1+VsNg3FEjZmZTXPi/pBbYPWRpSnobd7FiAuVyKT4vnG6kxMLAM
+ Sitb2Q==
 
 
+
+On 2024/1/7 01:04, Andy Shevchenko wrote:
+> On Thu, Jan 04, 2024 at 09:57:47AM +1030, Qu Wenruo wrote:
+>> [CHANGELOG]
+>> v3:
+>> - Fix the 32bit pointer pattern in the test case
+>>    The old pointer pattern for 32 bit systems is in fact 40 bits,
+>>    which would still lead to sparse warning.
+>>    The newer pattern is using UINTPTR_MAX to trim the pattern, then
+>>    converted to a pointer, which should not cause any trimmed bits and
+>>    make sparse happy.
+>
+> Having test cases is quite good, thanks!
+> But as I understood what Alexey wanted, is not using the kstrtox files f=
+or this.
+> You can introduce it in the cmdline.c, correct? Just include local "kstr=
+tox.h".
+
+Not really possible, all the needed parsing helpers are internal inside
+kstrtox.c.
+
+Furthermore, this also means memparse() can not be enhanced due to:
+
+- Lack of ways to return errors
+
+- Unable to call the parsing helpers inside cmdline.c
+
+Thanks,
+Qu
+
+>
+> I'm on leave till end of the month, I'll look at this later.
+>
 
