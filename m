@@ -1,134 +1,135 @@
-Return-Path: <linux-kernel+bounces-18578-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18579-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2CF23825FA2
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 14:14:55 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1BCED825FA9
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 14:24:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D70F91F22BFC
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 13:14:54 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 584A4B20A92
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 13:24:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF361748E;
-	Sat,  6 Jan 2024 13:14:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7CB17494;
+	Sat,  6 Jan 2024 13:24:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="atfioCXw"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="paGwgqXz"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EFAA6FA4
-	for <linux-kernel@vger.kernel.org>; Sat,  6 Jan 2024 13:14:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704546885; x=1736082885;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=08jgx8ytAVS3L9xXxt21JJeOVjwVtOFl6ZHUWa31dLE=;
-  b=atfioCXwx4zY3Hx4kFTdtUopOEjRyVi8QDbgqaYLJodfOQIzy8LCjgfH
-   DpqBcS84j+9meuZW+XM7HhvLjs8ORiorSpRq3XLJgowjYcK6X8x3PDQjx
-   Xo1X/fysp095GkVvlAtVqo03f0lJ6guUPVa3Ev78Zo/Dx/qguVevVFA0H
-   q3klMZ5ZfDFGnRapo5a+8kcKRlqS8cUo3jMPJWOO/V4NcQU8ZIFKQC5Dv
-   wTCNoDC4I+nu8PjJxQRnt/7WNi7h1zqPOcI9WVpNiHGr5ryMGXTMqrj/M
-   i+Hoq5Mq38vilk5f6zNU73TXWK4wJx8KHZgvNcTUDLYptbG0W75DjDzG1
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10944"; a="461955813"
-X-IronPort-AV: E=Sophos;i="6.04,337,1695711600"; 
-   d="scan'208";a="461955813"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jan 2024 05:14:44 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10944"; a="924456737"
-X-IronPort-AV: E=Sophos;i="6.04,337,1695711600"; 
-   d="scan'208";a="924456737"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmsmga001.fm.intel.com with ESMTP; 06 Jan 2024 05:14:43 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rM6Vc-0002W2-0l;
-	Sat, 06 Jan 2024 13:14:40 +0000
-Date: Sat, 6 Jan 2024 21:14:09 +0800
-From: kernel test robot <lkp@intel.com>
-To: Oliver Upton <oupton@google.com>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-	Marc Zyngier <maz@kernel.org>, Reiji Watanabe <reijiw@google.com>
-Subject: arch/arm64/kvm/sys_regs.c:2402: warning: Function parameter or
- member 'params' not described in 'kvm_handle_cp_32'
-Message-ID: <202401062105.Xv4LmwCQ-lkp@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E326F7460;
+	Sat,  6 Jan 2024 13:24:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5C1BC433C8;
+	Sat,  6 Jan 2024 13:24:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704547453;
+	bh=TlMHSqxHU37Zxw/t3TKF2WBr6mHeSCy9KXBlDmERdnk=;
+	h=Date:From:To:Cc:Subject:From;
+	b=paGwgqXzM6syGnihaK6y0SzCZpVqQd6fmrlC+lF4bwXikZlL+wwKFN2nSINPrk9Dz
+	 iprVrFIEgOxafJ3W7yGiO38c/8qe3ktAUCvfaZQMK4IzoujltB9CnoE3M1oIx6Jc7h
+	 MllwFCaAz5hTvrf9mai9FhKDKxVScIgbihkYOZLRx+Kh7MFzoq+GZq6ELDpVLQ5US2
+	 xnfrXCez5laHrnsvGnGVTJL2nfcbu6LH/H8z8h637Oz3m9cj7tIbChU9kHYW5bOApq
+	 u9YN8x1po9Tr09DFAw0CdPQHIhzYnNvZ5CsNRQrTRKtyytiUCS9fkzH9hrO8/+1/Ue
+	 I7wvF/1VAGVug==
+Date: Sat, 6 Jan 2024 14:24:10 +0100
+From: Wolfram Sang <wsa@kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Peter Rosin <peda@axentia.se>, Bartosz Golaszewski <brgl@bgdev.pl>,
+	Andi Shyti <andi.shyti@kernel.org>
+Subject: [PULL REQUEST] i2c-for-6.7-final
+Message-ID: <ZZlUemoyS-PDZc0q@ninjato>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Peter Rosin <peda@axentia.se>, Bartosz Golaszewski <brgl@bgdev.pl>,
+	Andi Shyti <andi.shyti@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="qO5l4UjlZX/eRPzZ"
+Content-Disposition: inline
+
+
+--qO5l4UjlZX/eRPzZ
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-Hi Oliver,
+Linus,
 
-FYI, the error/warning still remains.
+this branch was tested by buildbots successfully in the last days.
+Sadly, I had to rebase it a few minutes ago because I needed to fixup
+the name of one author and also added a few Link:-tags for the crucial
+commit here, so we have better documentation. So, no code changes, only
+changes to the commit messages. Sorry for not catching this earlier!
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   95c8a35f1c017327eab3b6a2ff5c04255737c856
-commit: e65197666773f39e4378161925e5a1c7771cff29 KVM: arm64: Wire up CP15 feature registers to their AArch64 equivalents
-date:   1 year, 8 months ago
-config: arm64-defconfig (https://download.01.org/0day-ci/archive/20240106/202401062105.Xv4LmwCQ-lkp@intel.com/config)
-compiler: aarch64-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240106/202401062105.Xv4LmwCQ-lkp@intel.com/reproduce)
+All the best for 2024,
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202401062105.Xv4LmwCQ-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   arch/arm64/kvm/sys_regs.c:2305: warning: Function parameter or member 'global' not described in 'kvm_handle_cp_64'
-   arch/arm64/kvm/sys_regs.c:2305: warning: Function parameter or member 'nr_global' not described in 'kvm_handle_cp_64'
-   arch/arm64/kvm/sys_regs.c:2305: warning: Excess function parameter 'run' description in 'kvm_handle_cp_64'
->> arch/arm64/kvm/sys_regs.c:2402: warning: Function parameter or member 'params' not described in 'kvm_handle_cp_32'
-   arch/arm64/kvm/sys_regs.c:2402: warning: Function parameter or member 'global' not described in 'kvm_handle_cp_32'
-   arch/arm64/kvm/sys_regs.c:2402: warning: Function parameter or member 'nr_global' not described in 'kvm_handle_cp_32'
-   arch/arm64/kvm/sys_regs.c:2402: warning: Excess function parameter 'run' description in 'kvm_handle_cp_32'
+   Wolfram
 
 
-vim +2402 arch/arm64/kvm/sys_regs.c
+The following changes since commit 861deac3b092f37b2c5e6871732f3e11486f7082:
 
-e65197666773f3 Oliver Upton 2022-05-03  2392  
-62a89c44954f09 Marc Zyngier 2013-02-07  2393  /**
-7769db905bd2df Shannon Zhao 2016-01-13  2394   * kvm_handle_cp_32 -- handles a mrc/mcr trap on a guest CP14/CP15 access
-62a89c44954f09 Marc Zyngier 2013-02-07  2395   * @vcpu: The VCPU pointer
-62a89c44954f09 Marc Zyngier 2013-02-07  2396   * @run:  The kvm_run struct
-62a89c44954f09 Marc Zyngier 2013-02-07  2397   */
-72564016aae45f Marc Zyngier 2014-04-24  2398  static int kvm_handle_cp_32(struct kvm_vcpu *vcpu,
-e65197666773f3 Oliver Upton 2022-05-03  2399  			    struct sys_reg_params *params,
-72564016aae45f Marc Zyngier 2014-04-24  2400  			    const struct sys_reg_desc *global,
-dcaffa7bf91157 James Morse  2020-06-22  2401  			    size_t nr_global)
-62a89c44954f09 Marc Zyngier 2013-02-07 @2402  {
-c667186f1c01ca Marc Zyngier 2017-04-27  2403  	int Rt  = kvm_vcpu_sys_get_rt(vcpu);
-62a89c44954f09 Marc Zyngier 2013-02-07  2404  
-e65197666773f3 Oliver Upton 2022-05-03  2405  	params->regval = vcpu_get_reg(vcpu, Rt);
-62a89c44954f09 Marc Zyngier 2013-02-07  2406  
-e65197666773f3 Oliver Upton 2022-05-03  2407  	if (emulate_cp(vcpu, params, global, nr_global)) {
-e65197666773f3 Oliver Upton 2022-05-03  2408  		if (!params->is_write)
-e65197666773f3 Oliver Upton 2022-05-03  2409  			vcpu_set_reg(vcpu, Rt, params->regval);
-72564016aae45f Marc Zyngier 2014-04-24  2410  		return 1;
-2ec5be3dbfdcb6 Pavel Fedin  2015-12-04  2411  	}
-72564016aae45f Marc Zyngier 2014-04-24  2412  
-e65197666773f3 Oliver Upton 2022-05-03  2413  	unhandled_cp_access(vcpu, params);
-62a89c44954f09 Marc Zyngier 2013-02-07  2414  	return 1;
-62a89c44954f09 Marc Zyngier 2013-02-07  2415  }
-62a89c44954f09 Marc Zyngier 2013-02-07  2416  
+  Linux 6.7-rc7 (2023-12-23 16:25:56 -0800)
 
-:::::: The code at line 2402 was first introduced by commit
-:::::: 62a89c44954f09072bf07a714c8f68bda14ab87e arm64: KVM: 32bit handling of coprocessor traps
+are available in the Git repository at:
 
-:::::: TO: Marc Zyngier <marc.zyngier@arm.com>
-:::::: CC: Marc Zyngier <marc.zyngier@arm.com>
+  git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git tags/i2c-for-6.7-final
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+for you to fetch changes up to a3368e1186e3ce8e38f78cbca019622095b1f331:
+
+  i2c: core: Fix atomic xfer check for non-preempt config (2024-01-06 14:10:10 +0100)
+
+----------------------------------------------------------------
+Improve the detection when to run atomic transfer handlers for kernels
+with preemption disabled. This removes some false positive splats a
+number of users were seeing if their driver didn't have support for
+atomic transfers. Also, fix a typo in the docs while we are here.
+
+----------------------------------------------------------------
+Attreyee Mukherjee (1):
+      Documentation/i2c: fix spelling error in i2c-address-translators
+
+Benjamin Bara (1):
+      i2c: core: Fix atomic xfer check for non-preempt config
+
+
+with much appreciated quality assurance from
+----------------------------------------------------------------
+Michael Walle (1):
+      (Test) i2c: core: Fix atomic xfer check for non-preempt config
+
+Tor Vic (1):
+      (Test) i2c: core: Fix atomic xfer check for non-preempt config
+
+ Documentation/i2c/i2c-address-translators.rst | 2 +-
+ drivers/i2c/i2c-core.h                        | 4 +++-
+ 2 files changed, 4 insertions(+), 2 deletions(-)
+
+--qO5l4UjlZX/eRPzZ
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmWZVHkACgkQFA3kzBSg
+KbaZWQ//Q3ygs6zzVgJpyYIXJ1XHQvqZ7oHO8CJJ88KDWOCosWKBhKdSkCZUO5TC
+y9FxLSuRob8rWy9/Ps+mbSSWEVCR7tmwPcR+Mg24EfhAju6R/79DGycbCZg83aA5
+CVqsVi2PZGA9reAkxIjvF4bh1A9ph0wh/2aUQkrO/Yf7DKqI0BuiYExe+woZg093
+aEWs/toQba9wzfCpx8bceFSo2bp3XciVggMcyDlYl1fBjRaINQckLNnL2MdncwmO
+lUQfW1AQ1Ou45Bs6l/BaFK8kVbBekuQgc7+MWMV51SN9D/xEGg93EsBaGPfEtvmA
+NuopC9f/DT363vZxtdEqIei/fDMPLw5XRy6xv+otdoT+XxNvcoeZ+lUi6GkXsGTN
+Ju5OrmR8CpcyGR4ARS45CCE+2Keb6nhlbX+2WU6jNh2RDzxE5k9MBWHYoELnZZzf
+JMMWPGRuqX9Peo8lXRcekaVaBRHzPu2zqwA0VEh53ET5931OYj5wpDsDp1X94WQp
+13Sx758jr632VSoH6Rhwqfu2EjQgJT1BFxq00KApolrFJ8uu2+6RRiiBVZfbhB7B
+swp39mfXFVCVR4rVBju8MzlaflIqIbJKQb1dZBYZvBeGpdHUz0e56QhBcMjFjvvq
+//PNkrHf1tPQAMR38EeoeEtd0kghSt1+hZBCL3jRcEJ6g/emrBQ=
+=ar59
+-----END PGP SIGNATURE-----
+
+--qO5l4UjlZX/eRPzZ--
 
