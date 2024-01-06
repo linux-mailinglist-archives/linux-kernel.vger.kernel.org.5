@@ -1,161 +1,116 @@
-Return-Path: <linux-kernel+bounces-18734-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18735-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 505D88261FD
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 23:40:48 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D7BB08261FF
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 23:43:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F1EB8282223
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 22:40:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 658ACB21ADB
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 22:43:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2E5A1097C;
-	Sat,  6 Jan 2024 22:40:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B251101DB;
+	Sat,  6 Jan 2024 22:43:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lxlhELK6"
+	dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b="JXbv8KoV"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-io1-f51.google.com (mail-io1-f51.google.com [209.85.166.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B044F107B4;
-	Sat,  6 Jan 2024 22:40:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-io1-f51.google.com with SMTP id ca18e2360f4ac-7bade847536so41218139f.0;
-        Sat, 06 Jan 2024 14:40:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704580807; x=1705185607; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TFJmQIFj0A0tInfs7hU9PMq1MKbXz8YKwehmuSMd3n8=;
-        b=lxlhELK6jKh7qXZC1wNbRPWJW5Dp3EAxSjD9hmrGZBfsZR3cljN1kxR0rs6hygJ9cz
-         qE5cI3TF5kk0Zib0uwUx/R4X0YYNidfEHZvkCgBFoJRtOsI9ezrlqTkmeWvsulgRS43M
-         8jIeeTFUvXegbN8hzCeEqKvkQvxbvo4KkxhpLN74WeMRuU+GMqFoGnJ8Eyozmz0rRPp4
-         7SX60BpvabW1lwRuXVSCmXT5ZBdVNWNrL5WNvEb7ArlHIOcc7bPdPIxVjiuamWOURwWM
-         dPqNd8/52BRaVozE7ghycE7ZWtYdxAe5Hn/M6I0XlMBq/q9Lu9MC0xJlnZwPUQItOE4K
-         TD5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704580807; x=1705185607;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TFJmQIFj0A0tInfs7hU9PMq1MKbXz8YKwehmuSMd3n8=;
-        b=mh2ziD1TFjGLG64mCx2DBA95KGUd+ery0RijGpmWgb2eUlp8uXAgEdGBuQ4xCDH9jE
-         EK3hi9NN6Jri9IoeYEv3GV+orjMNadowu0oSiLVSv0JA10wVWt0YjdGyGjs0U/toWBg7
-         xzpi6GG4NyDDsolDXyprwlJRhcKxfRgfRDx1KF3t6jNdGnVf2/dgUOB+uDpPUPfYsU6z
-         51SbY4o84WLELwotYbueK/9KZ3SLVtA64D+B8K4dI9EBy5HH1YTqfdvNx6YGmNujGL+r
-         SKHlIGaCK0+7EK4GlWzO/x8BoUv0kjbT+PB1OD/fc2f8Vv0yiJanjNADAExtPtK627A/
-         jWAg==
-X-Gm-Message-State: AOJu0YzLeCvz4E6GK0xZZ3krL8gzz7//2s56xjjwJiP5qOXA5k+qh1Q4
-	ppVI6Vo8wHmjIyN3n+aey4QU+iP/URSdtA==
-X-Google-Smtp-Source: AGHT+IE69x8jS3gwN3hKFTtSb/EzuvmDnKpSai31R1x002W1zv0DPDc8yR+2xWlEmUylCYPANiIiNg==
-X-Received: by 2002:a05:6e02:1787:b0:360:197:55d1 with SMTP id y7-20020a056e02178700b00360019755d1mr3326542ilu.23.1704580807209;
-        Sat, 06 Jan 2024 14:40:07 -0800 (PST)
-Received: from aford-System-Version.lan ([2601:447:d002:5be:af2f:17f0:33a3:d6fe])
-        by smtp.gmail.com with ESMTPSA id l13-20020a056e021c0d00b0035ffe828182sm735346ilh.37.2024.01.06.14.40.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 06 Jan 2024 14:40:06 -0800 (PST)
-From: Adam Ford <aford173@gmail.com>
-To: linux-pm@vger.kernel.org
-Cc: Lucas Stach <l.stach@pengutronix.de>,
-	Adam Ford <aford173@gmail.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	NXP Linux Team <linux-imx@nxp.com>,
-	Ulf Hansson <ulf.hansson@linaro.org>,
-	devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EAF610787;
+	Sat,  6 Jan 2024 22:43:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
+	t=1704580892; x=1705185692; i=w_armin@gmx.de;
+	bh=rGKAWbb6mv2MvQvmMWvtbAEkan0WCklL9CFLbJgURSI=;
+	h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+	b=JXbv8KoV6cRdOCWdJmGOV0tksVZtgXKGpfZBvXpliALP9wg093yY64mq9Gc7ryhj
+	 TF7zOW/cZXWkidd7DirmpII+WfbJ1BhDkLGt9q9xzoph8caOPxpEv8J7/1e6zW1TS
+	 wG7OGEwX6RB5Ir3pjQJ2SNAY//R0mfaQZzFQZeT49aD/p2Dm1zaU97N+3RzXQ4/eo
+	 +2KCRp5FDn/yRtbtEUTi5hI3Dpq5xYXsrCdv4uwKdPRkFwzmMN4CfWy+QtLWdCq9C
+	 feaer1YS94zTpijlG0hb1OLB70e1O3IfGa/YnFuYraLUe3KNmv8bgC+wirYQKyPnI
+	 97VIwIMtg9UZd+KZZg==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from mx-amd-b650.users.agdsn.de ([141.30.226.129]) by mail.gmx.net
+ (mrgmx004 [212.227.17.190]) with ESMTPSA (Nemesis) id
+ 1MryXH-1qs9Gw3kCj-00o2HB; Sat, 06 Jan 2024 23:41:31 +0100
+From: Armin Wolf <W_Armin@gmx.de>
+To: jithu.joseph@intel.com
+Cc: hdegoede@redhat.com,
+	ilpo.jarvinen@linux.intel.com,
+	platform-driver-x86@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] arm64: dts: imx8mp: add HDMI power-domains
-Date: Sat,  6 Jan 2024 16:39:50 -0600
-Message-ID: <20240106223951.387067-3-aford173@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240106223951.387067-1-aford173@gmail.com>
-References: <20240106223951.387067-1-aford173@gmail.com>
+Subject: [PATCH] platform/x86: intel-wmi-sbl-fw-update: Fix function name in error message
+Date: Sat,  6 Jan 2024 23:41:26 +0100
+Message-Id: <20240106224126.13803-1-W_Armin@gmx.de>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:9BAjZBJl7gR/XFYztgEXLa6G4yMtLMv9Q46uL/pXEy7hTNGA7OL
+ Wivy3wxyhqoFKWVaR7/pXFA3K4h1l05ROcwER5BqLHdgb5/tVnxfXkx69JjYsERxa6QALTF
+ zLIVbgoNPIPT8byt5SZvND5spdVR9CnCrc5DtvyCqrwg1dnxg3OFSZKnpA/DvIqYzrj6c19
+ jmE4CdTtUFdYVky/1mWKg==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:aFw9eUN7Bts=;YG58MA7+Rok80yWchiFPjYdyWOR
+ dx+94u7v0av3NUoUFSqk3yNzdx7QRK1P1WcQghmXk6w+RMZgUH9fqAlzYQb3X2V5FCYVLMyBK
+ vrTZ1VlI3+xLGLjazHvSz8t6t8lSGWCD5dMV69PEsERj24WtSH2NsrSXIqq/mfSzegOC4kL7I
+ P4ZnBaEyuh0826XtGNvxRhfVY2npG6h/mJttJQ69J4ALx7VfQ7gJ4x8bOaQ/bZoog3lX/1Ll1
+ 5VaD2wGuu9pRYyK2bQmlCGLILuXiBwp1URZscKj35qKoOprttpZ+iMQaHEeBU51UIE2bXj+fu
+ DaZUMLuhT2AnQXwmQyile82stB65+6EbNT7NwOx/g8cXa2ZmWT+DYwZt4fWQPl/CCv61ioHCe
+ 4+Lo+Zbk643RRLBAgbXGNmNkKZlR64019le/RyJdwyCwC+nz1onT8rhF7HDRBGf2DsgBkUgqh
+ uMJCArT2Axn4bZ6v1fjke8Cml9EUcY/G6jNMU9jGVdImkQLVIThISZiVDZprl5aAV6TT+w9A4
+ 0p+NPoUiRw7hO7rwRuu3ohm9abU8nb3ZmBVuLWsbIUQU2Hf+Brh6y9aEb+0RH0LdUdojp7R71
+ wfQVgjUGmgL+HjnGB5UQfnb03PhvfzUVMs0Ounl3u8k9UuRl7gPGsom9XBFIc08WSX688PhAn
+ E2SnT2jXPhIxS4niPSNFNHfS2M+Y54Fz5S6QISUgmBKjJ4Pi0E/+zmQvtL18m3Arllt29nIa3
+ IbdA6Xp1PWlyJz3/HEpUGxWN4LW3KMtoD9AJ6ovwWodO/3RGFnOCGdh2Bekfo9G8Gk0+8qOFy
+ CimrnSzQaXXNhYJYMMRf8Nt0Xnjj3YEVGXNwX8kEaNa7Oe+AWRyPEtoftFu6c75ooiDRQ7tfc
+ BlU3CvaO/6uDPi9WRZZ5lCQsYOt5xw9IrA+kSfeG1PVq2Zhch0F7Qakwjm6fXhKN57QKZlIDV
+ SRxV0DYZL6jUnym1hY4QLhGdSw8=
 
-From: Lucas Stach <l.stach@pengutronix.de>
+Since when the driver was converted to use the bus-based WMI
+interface, the old GUID-based WMI functions are not used anymore.
+Update the error message to avoid confusing users.
 
-This adds the PGC and HDMI blk-ctrl nodes providing power control for
-HDMI subsystem peripherals.
+Compile-tested only.
 
-Signed-off-by: Lucas Stach <l.stach@pengutronix.de>
-Signed-off-by: Adam Ford <aford173@gmail.com>
----
-V2:  Added the fdcc to hdmi_blk_ctrl per NXP's downstream kernel guidance
+Fixes: 75c487fcb69c ("platform/x86: intel-wmi-sbl-fw-update: Use bus-based=
+ WMI interface")
+Signed-off-by: Armin Wolf <W_Armin@gmx.de>
+=2D--
+ drivers/platform/x86/intel/wmi/sbl-fw-update.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-     I (Adam) tried to help move this along, so I took Lucas' patch and
-     attempted to apply fixes based on feedback.  I don't have
-     all the history, so apologies for that.
+diff --git a/drivers/platform/x86/intel/wmi/sbl-fw-update.c b/drivers/plat=
+form/x86/intel/wmi/sbl-fw-update.c
+index 9cf5ed0f8dc2..040153ad67c1 100644
+=2D-- a/drivers/platform/x86/intel/wmi/sbl-fw-update.c
++++ b/drivers/platform/x86/intel/wmi/sbl-fw-update.c
+@@ -32,7 +32,7 @@ static int get_fwu_request(struct device *dev, u32 *out)
+ 		return -ENODEV;
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mp.dtsi b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
-index 76c73daf546b..d695c80e710c 100644
---- a/arch/arm64/boot/dts/freescale/imx8mp.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
-@@ -836,6 +836,23 @@ pgc_mediamix: power-domain@10 {
- 							 <&clk IMX8MP_CLK_MEDIA_APB_ROOT>;
- 					};
- 
-+					pgc_hdmimix: power-domains@14 {
-+						#power-domain-cells = <0>;
-+						reg = <IMX8MP_POWER_DOMAIN_HDMIMIX>;
-+						clocks = <&clk IMX8MP_CLK_HDMI_ROOT>,
-+							 <&clk IMX8MP_CLK_HDMI_APB>;
-+						assigned-clocks = <&clk IMX8MP_CLK_HDMI_AXI>,
-+								  <&clk IMX8MP_CLK_HDMI_APB>;
-+						assigned-clock-parents = <&clk IMX8MP_SYS_PLL2_500M>,
-+									 <&clk IMX8MP_SYS_PLL1_133M>;
-+						assigned-clock-rates = <500000000>, <133000000>;
-+					};
-+
-+					pgc_hdmi_phy: power-domains@15 {
-+						#power-domain-cells = <0>;
-+						reg = <IMX8MP_POWER_DOMAIN_HDMI_PHY>;
-+					};
-+
- 					pgc_mipi_phy2: power-domain@16 {
- 						#power-domain-cells = <0>;
- 						reg = <IMX8MP_POWER_DOMAIN_MIPI_PHY2>;
-@@ -1361,6 +1378,25 @@ eqos: ethernet@30bf0000 {
- 				intf_mode = <&gpr 0x4>;
- 				status = "disabled";
- 			};
-+
-+			hdmi_blk_ctrl: blk-ctrl@32fc0000 {
-+				compatible = "fsl,imx8mp-hdmi-blk-ctrl", "syscon";
-+				reg = <0x32fc0000 0x23c>;
-+				clocks = <&clk IMX8MP_CLK_HDMI_APB>,
-+					 <&clk IMX8MP_CLK_HDMI_ROOT>,
-+					 <&clk IMX8MP_CLK_HDMI_REF_266M>,
-+					 <&clk IMX8MP_CLK_HDMI_24M>,
-+					 <&clk IMX8MP_CLK_HDMI_FDCC_TST>;
-+				clock-names = "apb", "axi", "ref_266m", "ref_24m", "fdcc";
-+				power-domains = <&pgc_hdmimix>, <&pgc_hdmimix>,
-+						<&pgc_hdmimix>, <&pgc_hdmimix>,
-+						<&pgc_hdmimix>, <&pgc_hdmimix>,
-+						<&pgc_hdmimix>, <&pgc_hdmi_phy>;
-+				power-domain-names = "bus", "irqsteer", "lcdif",
-+						     "pai", "pvi", "trng",
-+						     "hdmi-tx", "hdmi-tx-phy";
-+				#power-domain-cells = <1>;
-+			};
- 		};
- 
- 		aips5: bus@30c00000 {
--- 
-2.43.0
+ 	if (obj->type !=3D ACPI_TYPE_INTEGER) {
+-		dev_warn(dev, "wmi_query_block returned invalid value\n");
++		dev_warn(dev, "wmidev_block_query returned invalid value\n");
+ 		kfree(obj);
+ 		return -EINVAL;
+ 	}
+@@ -55,7 +55,7 @@ static int set_fwu_request(struct device *dev, u32 in)
+
+ 	status =3D wmidev_block_set(to_wmi_device(dev), 0, &input);
+ 	if (ACPI_FAILURE(status)) {
+-		dev_err(dev, "wmi_set_block failed\n");
++		dev_err(dev, "wmidev_block_set failed\n");
+ 		return -ENODEV;
+ 	}
+
+=2D-
+2.39.2
 
 
