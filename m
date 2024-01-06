@@ -1,350 +1,102 @@
-Return-Path: <linux-kernel+bounces-18564-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18565-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 57EC3825F6B
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 13:13:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 80260825F6D
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 13:16:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DD37F283E0B
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 12:13:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 206B81F221A9
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 12:16:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62E6E6FC3;
-	Sat,  6 Jan 2024 12:13:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE3BB7460;
+	Sat,  6 Jan 2024 12:15:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="g3SQt0fW"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lrEdypnU"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A089B749A;
-	Sat,  6 Jan 2024 12:13:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC234C433C7;
-	Sat,  6 Jan 2024 12:13:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F363B6FAE;
+	Sat,  6 Jan 2024 12:15:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E3244C433C7;
+	Sat,  6 Jan 2024 12:15:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704543193;
-	bh=b5ch+fFwc6i/oEYTDtJVOgxZX9nH0TdKL88SudTV1WM=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=g3SQt0fWqAo+xZtJ7uAEX06I7F+OhstEU1boWye/bS/AtzW3DsyU0MZnpbXbZoWrw
-	 QAqVLCsIheGCCrmJCxMBVMNZBhxx/YQvPNp8o1bOLpvqLBmPa/FTkxK6OtvizV2o+N
-	 OUKsxC1m9OwxKx/bFf8G6P2gTkfDX7edtdeMStf5FdWh2P9IbNKZ5bST+k5aPsJMfz
-	 W/IyWt+mJAaDhlbhEJA/aBX3Cn3jTfMRqMj2ivBRxFiQ4uRKORSAvQOEPKsi3jtqCd
-	 juSsAfJz1w8Uu29fP1QEcpcOCOJy43uvBVVQlcu7H4AhKR4TsK8NhyDv024ahTp4KG
-	 zsk/wEDbG4Lkg==
-Received: from sofa.misterjones.org ([185.219.108.64] helo=wait-a-minute.misterjones.org)
-	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <maz@kernel.org>)
-	id 1rM5Y6-009NHz-2L;
-	Sat, 06 Jan 2024 12:13:10 +0000
-Date: Sat, 06 Jan 2024 12:13:09 +0000
-Message-ID: <87sf3au0bu.wl-maz@kernel.org>
-From: Marc Zyngier <maz@kernel.org>
-To: Oliver Upton <oliver.upton@linux.dev>, Ilkka Koskinen <ilkka@os.amperecomputing.com>
-Cc: 	James Morse <james.morse@arm.com>,
-	Suzuki K Poulose <suzuki.poulose@arm.com>,
-	Zenghui Yu <yuzenghui@huawei.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Gavin Shan <gshan@redhat.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Raghavendra Rao Ananta <rananta@google.com>,
-	D Scott Phillips <scott@os.amperecomputing.com>,
-	linux-arm-kernel@lists.infradead.org,
-	kvmarm@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH] KVM: arm64: Workaround for Ampere AC03_CPU_36 (exception taken to an incorrect EL)
-In-Reply-To: <ZZiWZkNP8Owytecw@linux.dev>
-References: <20240105213251.4141-1-ilkka@os.amperecomputing.com>
-	<ZZiWZkNP8Owytecw@linux.dev>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
- (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+	s=k20201202; t=1704543350;
+	bh=cABL46fpGQIFj7II8jVK92sjpTNi0UyS6ulbvmxPVrI=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=lrEdypnUC+MOSjqedtjkkPfTB6x/r0bE0Hc2Ss3kMU9J37gDD6dgVHUBpY6TnUSbn
+	 KWxm5qt+NWuWzw+lvaf3ukZcegld180sJWUuTfrECUpynNFeZKhxnkiusybA/FHvQI
+	 RiFsYM9VvMFkPJXsCj/hrIsfeP8tP66DOrS4+IxyvuXLpdZ56WEz0EMmU1wDYpfCFv
+	 XOUv34eDvy2uzbLwGR3Mx5XMsGofQ39eZBW7wIDK8EvyWXoJRDeZp1LHazGcTvG8gk
+	 XjLF+3Hquz7LYwrcRySzZ/owtw+dgk517kI5KHKrbGMExcjZ80GYyECH8MXATpSc2P
+	 6N0Plih1RItvQ==
+Received: (nullmailer pid 914644 invoked by uid 1000);
+	Sat, 06 Jan 2024 12:15:48 -0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: oliver.upton@linux.dev, ilkka@os.amperecomputing.com, james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com, catalin.marinas@arm.com, will@kernel.org, gshan@redhat.com, mark.rutland@arm.com, rananta@google.com, scott@os.amperecomputing.com, linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, linux-kernel@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+MIME-Version: 1.0
+From: Rob Herring <robh@kernel.org>
+To: Bhavin Sharma <bhavin.sharma@siliconsignals.io>
+Cc: devicetree@vger.kernel.org, linux-pm@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org, sre@kernel.org
+In-Reply-To: <20240106101435.2927116-2-bhavin.sharma@siliconsignals.io>
+References: <20240106101435.2927116-1-bhavin.sharma@siliconsignals.io>
+ <20240106101435.2927116-2-bhavin.sharma@siliconsignals.io>
+Message-Id: <170454334882.914615.2127705669393189024.robh@kernel.org>
+Subject: Re: [PATCH 2/2] dt-bindings: power: supply: stc3117: Convert to DT
+ schema format
+Date: Sat, 06 Jan 2024 05:15:48 -0700
 
-[reviewing both patches in one go, as it is way easier]
 
-On Fri, 05 Jan 2024 23:53:10 +0000,
-Oliver Upton <oliver.upton@linux.dev> wrote:
+On Sat, 06 Jan 2024 15:44:34 +0530, Bhavin Sharma wrote:
+> Convert the binding to DT schema format.
 > 
-> Hi Ilkka,
-> 
-> On Fri, Jan 05, 2024 at 01:32:51PM -0800, Ilkka Koskinen wrote:
-> > Due to erratum AC03_CPU_36 on AmpereOne, if an Asynchronous Exception
-> > (interrupts or SErrors) occurs to EL2, while EL2 software is modifying
-> > system register bits that control EL2 exception behavior, the processor
-> > may take an exception to an incorrect Exception Level.
-
-What needs to be described (both in the commit message and as part of
-the code) is under what circumstances this mis-routing happens.
-
-Is it that just clearing TGE while being at EL2 always results in the
-asynchronous exception being routed to the wrong exception level? Or
-is it a more subtle issue related to synchronisation?
-
-Also worth describing is to which other exception level is the
-exception delivered? EL1? EL3?
-
-> > 
-> > The affected system registers are HCR_EL2 and SCTLR_EL2, which contain
-> > control bits for routing and enabling of EL2 exceptions.
-
-How does SCTLR_EL2 affects interrupt delivery? Is this related to
-FEAT_NMI and SCTLR_EL2.{NMI,SPINTMASK}? Because this is the only part
-of this register that has anything to do with interrupts.
-
-> > 
-> > The issue is triggered when HGE.TGE bit is cleared while having
-> > AMO/IMO/FMO bits cleared too. To avoid the exception getting taken
-> > at a wrong Exception Level, we set AMO/IMO/FMO.
-> 
-> We toggle HCR_EL2 for other things besides TLB invalidations, and the
-> changelog does not describe why they're apparently unaffected.
-> 
-> > Suggested-by: D Scott Phillips <scott@os.amperecomputing.com>
-> > Signed-off-by: Ilkka Koskinen <ilkka@os.amperecomputing.com>
-> 
-> This isn't an acceptable way to go about errata mitigations. Besides
-> extremely unusual circumstances, the pattern is to use a cpucap &&
-> alternatives to only enable the workaround on affected designs. We then
-> document the errata in the expected places (Kconfig and kernel
-> documentation) such that the folks saddled with maintaining this stuff
-> know how to handle it years down the line.
-
-+1. This hack will have to live forever, while the lack of
-documentation makes it totally unmaintainable. The KVM code *will*
-change in ways that cannot be anticipated today, and without
-exhaustive documentation, we will not be able to do a good job at
-maintaining this system alive by correctly mitigating the erratum.
-
-> 
-> > ---
-> >  arch/arm64/kvm/hyp/vhe/tlb.c | 12 +++++++++---
-> >  1 file changed, 9 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/arch/arm64/kvm/hyp/vhe/tlb.c b/arch/arm64/kvm/hyp/vhe/tlb.c
-> > index b32e2940df7d..c72fdd2e4549 100644
-> > --- a/arch/arm64/kvm/hyp/vhe/tlb.c
-> > +++ b/arch/arm64/kvm/hyp/vhe/tlb.c
-> > @@ -61,9 +61,15 @@ static void __tlb_switch_to_guest(struct kvm_s2_mmu *mmu,
-> >  	 * has an ISB in order to deal with this.
-> >  	 */
-> >  	__load_stage2(mmu, mmu->arch);
-> > -	val = read_sysreg(hcr_el2);
-> > -	val &= ~HCR_TGE;
-> > -	write_sysreg(val, hcr_el2);
-> > +
-> > +	/*
-> > +	 * With {E2H,TGE} == {1,0}, IMO == 1 is required so that IRQs are not
-> > +	 * all masked.
-> 
-> Huh? HCR_EL2.IMO affects the *routing* of IRQs at exception levels
-> *lower than* EL2.
-
-Yup, and there is *zero* requirement for IMO to have any particular
-value while running at EL2. As long as you're at EL2, physical
-interrupts that are not targeting EL3 are taken at EL2, full stop.
-
-I'm all for being creative, but reinventing the architecture as a
-justification for an erratum workaround is taking it *way* too far.
-
-> 
-> > This also works around AmpereOne erratum AC03_CPU_36
-> > +	 * which can incorrectly route an IRQ to EL1 when HCR_EL2.{E2H,TGE} is
-> > +	 * written from {1,1} to {1,0} with interrupts unmasked.
-> > +	 */
-> > +	sysreg_clear_set(hcr_el2, HCR_TGE, HCR_AMO | HCR_IMO | HCR_FMO);
-> > +
-> 
-> Rather than further modifying the exception controls, why not mask DAIF
-> like we do on guest entry/exit? AFAICT that is the only reason KVM_RUN
-> is unaffected by this erratum.
-> 
-> This is what I have been using on a few AmpereOne systems:
-> 
-> From 265cb193190c13c651d8e008d34d1d18505d4804 Mon Sep 17 00:00:00 2001
-> From: Oliver Upton <oliver.upton@linux.dev>
-> Date: Fri, 5 Jan 2024 23:18:14 +0000
-> Subject: [PATCH] KVM: arm64: Mitigate AmpereOne erratum AC03_CPU_36
-> 
-> The AmpereOne design suffers from an erratum where if an asynchronous
-> exception arrives while EL2 is modifying hypervisor exception controls
-> (i.e. HCR_EL2, SCTLR_EL2) the PE may take an invalid exception to
-> another EL.
-
-Same questions about SCTLR_EL2 and the notion of "another EL".
-
-> 
-> KVM's guest entry/exit path is unaffected because DAIF is already masked
-> when modifying HCR_EL2. However, KVM only masks IRQs when switching to
-> the guest MMU context for a TLB invalidation, meaning it is possible for
-> an intervening exception to trigger the erratum.
-
-This is a bit unclear, because masking interrupts is commonly done
-using DAIF. You may want to talk about pseudo-NMIs early on and
-explain that we rely on PMR for masking in this case, still allowing
-interrupts to be handled.
-
-> This becomes
-> immediately obvious when profiling a KVM VM with pseudo-NMIs enabled,
-> such as:
-> 
->   perf record ./dirty_log_perf_test -m 2 -s anonymous_thp -v 4 -b 4G
-> 
-> Mitigate the erratum by masking DAIF completely before switching to the
-> guest MMU context.
-> 
-> Signed-off-by: Oliver Upton <oliver.upton@linux.dev>
+> Signed-off-by: Bhavin Sharma <bhavin.sharma@siliconsignals.io>
 > ---
->  Documentation/arch/arm64/silicon-errata.rst |  2 ++
->  arch/arm64/Kconfig                          | 16 ++++++++++++++++
->  arch/arm64/kernel/cpu_errata.c              |  7 +++++++
->  arch/arm64/kvm/hyp/vhe/tlb.c                | 20 ++++++++++++++++++--
->  arch/arm64/tools/cpucaps                    |  1 +
->  5 files changed, 44 insertions(+), 2 deletions(-)
+>  .../bindings/power/supply/stc3117-fg.yaml     | 42 +++++++++++++++++++
+>  1 file changed, 42 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/power/supply/stc3117-fg.yaml
 > 
-> diff --git a/Documentation/arch/arm64/silicon-errata.rst b/Documentation/arch/arm64/silicon-errata.rst
-> index f47f63bcf67c..aea7a75ae434 100644
-> --- a/Documentation/arch/arm64/silicon-errata.rst
-> +++ b/Documentation/arch/arm64/silicon-errata.rst
-> @@ -52,6 +52,8 @@ stable kernels.
->  | Allwinner      | A64/R18         | UNKNOWN1        | SUN50I_ERRATUM_UNKNOWN1     |
->  +----------------+-----------------+-----------------+-----------------------------+
->  +----------------+-----------------+-----------------+-----------------------------+
-> +| Ampere         | AmpereOne       | AC03_CPU_36     | AMPERE_ERRATUM_AC03_CPU_36  |
-> ++----------------+-----------------+-----------------+-----------------------------+
->  | Ampere         | AmpereOne       | AC03_CPU_38     | AMPERE_ERRATUM_AC03_CPU_38  |
->  +----------------+-----------------+-----------------+-----------------------------+
->  +----------------+-----------------+-----------------+-----------------------------+
-> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-> index 7b071a00425d..9ba04b90e945 100644
-> --- a/arch/arm64/Kconfig
-> +++ b/arch/arm64/Kconfig
-> @@ -434,6 +434,22 @@ config AMPERE_ERRATUM_AC03_CPU_38
->  
->  	  If unsure, say Y.
->  
-> +config AMPERE_ERRATUM_AC03_CPU_36
-> +	bool "AmpereOne: AC03_CPU_36: CPU takes invalid asynchronous exception while changing exception controls"
-> +	default y
-> +	help
-> +	  This option adds an alternative code sequence to work around Ampere
-> +	  erratum AC03_CPU_36 on AmpereOne parts.
-> +
-> +	  The affected designs can take an invalid exception to an incorrect
-> +	  exception level if an asynchronous exception arrives while software
-> +	  is changing the EL2 exception controls (i.e. HCR_EL2, SCTLR_EL2).
-> +
-> +	  The workaround forces KVM to mask all asynchronous exception sources
-> +	  when switching to the guest MMU context for TLB invalidations.
-> +
-> +	  If unsure, say Y.
-> +
->  config ARM64_WORKAROUND_CLEAN_CACHE
->  	bool
->  
-> diff --git a/arch/arm64/kernel/cpu_errata.c b/arch/arm64/kernel/cpu_errata.c
-> index e29e0fea63fb..7e2856360f38 100644
-> --- a/arch/arm64/kernel/cpu_errata.c
-> +++ b/arch/arm64/kernel/cpu_errata.c
-> @@ -727,6 +727,13 @@ const struct arm64_cpu_capabilities arm64_errata[] = {
->  		.capability = ARM64_WORKAROUND_AMPERE_AC03_CPU_38,
->  		ERRATA_MIDR_ALL_VERSIONS(MIDR_AMPERE1),
->  	},
-> +#endif
-> +#ifdef CONFIG_AMPERE_ERRATUM_AC03_CPU_36
-> +	{
-> +		.desc = "AmpereOne erratum AC03_CPU_36",
-> +		.capability = ARM64_WORKAROUND_AMPERE_AC03_CPU_36,
-> +		ERRATA_MIDR_ALL_VERSIONS(MIDR_AMPERE1),
-> +	},
->  #endif
->  	{
->  	}
-> diff --git a/arch/arm64/kvm/hyp/vhe/tlb.c b/arch/arm64/kvm/hyp/vhe/tlb.c
-> index b636b4111dbf..cedfb0a32fa0 100644
-> --- a/arch/arm64/kvm/hyp/vhe/tlb.c
-> +++ b/arch/arm64/kvm/hyp/vhe/tlb.c
-> @@ -17,13 +17,29 @@ struct tlb_inv_context {
->  	u64			sctlr;
->  };
->  
-> +#define __tlb_daif_save(flags)						\
-> +({									\
-> +	if (cpus_have_final_cap(ARM64_WORKAROUND_AMPERE_AC03_CPU_36))	\
-> +		flags = local_daif_save();				\
-> +	else								\
-> +		local_irq_save(flags);					\
-> +})
-> +
-> +#define __tlb_daif_restore(flags)					\
-> +({									\
-> +	if (cpus_have_final_cap(ARM64_WORKAROUND_AMPERE_AC03_CPU_36))	\
-> +		local_daif_restore(flags);				\
-> +	else								\
-> +		local_irq_restore(flags);				\
-> +})
-> +
 
-I'd really like a comment about *why* we are doing that.
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
->  static void __tlb_switch_to_guest(struct kvm_s2_mmu *mmu,
->  				  struct tlb_inv_context *cxt)
->  {
->  	struct kvm_vcpu *vcpu = kvm_get_running_vcpu();
->  	u64 val;
->  
-> -	local_irq_save(cxt->flags);
-> +	__tlb_daif_save(cxt->flags);
->  
->  	if (vcpu && mmu != vcpu->arch.hw_mmu)
->  		cxt->mmu = vcpu->arch.hw_mmu;
-> @@ -86,7 +102,7 @@ static void __tlb_switch_to_host(struct tlb_inv_context *cxt)
->  		write_sysreg_el1(cxt->sctlr, SYS_SCTLR);
->  	}
->  
-> -	local_irq_restore(cxt->flags);
-> +	__tlb_daif_restore(cxt->flags);
->  }
->  
->  void __kvm_tlb_flush_vmid_ipa(struct kvm_s2_mmu *mmu,
-> diff --git a/arch/arm64/tools/cpucaps b/arch/arm64/tools/cpucaps
-> index b98c38288a9d..cfaae3b4d2d0 100644
-> --- a/arch/arm64/tools/cpucaps
-> +++ b/arch/arm64/tools/cpucaps
-> @@ -85,6 +85,7 @@ WORKAROUND_2457168
->  WORKAROUND_2645198
->  WORKAROUND_2658417
->  WORKAROUND_2966298
-> +WORKAROUND_AMPERE_AC03_CPU_36
->  WORKAROUND_AMPERE_AC03_CPU_38
->  WORKAROUND_TRBE_OVERWRITE_FILL_MODE
->  WORKAROUND_TSB_FLUSH_FAILURE
+yamllint warnings/errors:
+./Documentation/devicetree/bindings/power/supply/stc3117-fg.yaml:4:6: [error] string value is redundantly quoted with any quotes (quoted-strings)
+./Documentation/devicetree/bindings/power/supply/stc3117-fg.yaml:5:10: [error] string value is redundantly quoted with any quotes (quoted-strings)
+./Documentation/devicetree/bindings/power/supply/stc3117-fg.yaml:39:1: [error] syntax error: found character '\t' that cannot start any token (syntax)
 
-Other than the passing comments, I'm OK with this patch. However, I am
-very worried that this is only the start of a very long game of
-whack-a-mole, because there is no actual documentation on what goes
-wrong.
+dtschema/dtc warnings/errors:
+make[2]: *** Deleting file 'Documentation/devicetree/bindings/power/supply/stc3117-fg.example.dts'
+Documentation/devicetree/bindings/power/supply/stc3117-fg.yaml:39:1: found a tab character where an indentation space is expected
+make[2]: *** [Documentation/devicetree/bindings/Makefile:26: Documentation/devicetree/bindings/power/supply/stc3117-fg.example.dts] Error 1
+make[2]: *** Waiting for unfinished jobs....
+./Documentation/devicetree/bindings/power/supply/stc3117-fg.yaml:39:1: found a tab character where an indentation space is expected
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/power/supply/stc3117-fg.yaml: ignoring, error parsing file
+make[1]: *** [/builds/robherring/dt-review-ci/linux/Makefile:1424: dt_binding_check] Error 2
+make: *** [Makefile:234: __sub-make] Error 2
 
-For example, we have plenty of writes to SCTLR_EL2 (using the
-SCTLR_EL1 alias if running VHE) for MTE. Are any of those affected?
+doc reference errors (make refcheckdocs):
 
-Short of having some solid handle on what is happening, I don't see
-how we can promise to support this system.
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20240106101435.2927116-2-bhavin.sharma@siliconsignals.io
 
-	M.
+The base for the series is generally the latest rc1. A different dependency
+should be noted in *this* patch.
 
--- 
-Without deviation from the norm, progress is not possible.
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit after running the above command yourself. Note
+that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+your schema. However, it must be unset to test all examples with your schema.
+
 
