@@ -1,124 +1,170 @@
-Return-Path: <linux-kernel+bounces-18631-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18632-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D59F826042
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 16:47:57 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0FC3E826043
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 16:56:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E0EA4283E46
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 15:47:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 58FB0B226E2
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 15:56:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C63B1848A;
-	Sat,  6 Jan 2024 15:47:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B52F48493;
+	Sat,  6 Jan 2024 15:56:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HTW3Fo9K"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="D8VPnFYC"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A52BE79FE;
-	Sat,  6 Jan 2024 15:47:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-3368d1c7b23so526429f8f.0;
-        Sat, 06 Jan 2024 07:47:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704556062; x=1705160862; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=bKMLLD2ZxyA0kUaU9sIopyxyu3bVgkbt2roLK+GW/Zc=;
-        b=HTW3Fo9KieSGr41owv+U5S/YF3euDRVkKkrZO6I/7uUKRj7IE7Lxp7vdwzWhXoWS5H
-         apj6FO9RzghVMarBiXplIuPMvuC23V785JBtgJIGf/2Shvrop2A8lSXCc7VggTs6Mvhs
-         yuK4dsjHW0t7BoOjrtWbICwGZUB/ziiEr3VQ7mCtwa8imR7dJGqB3jk4A6M7DQkvA8Nf
-         AKs4QlkxSCc/o4cOx8smSILwfcoxKMouG2JWkGzo2wseLwYcnz17B+2P2qIAANpMEcjR
-         up32mgpggxvkjB8pGdAtiwMG+2qFJscnQOfM0h4ZS9cL2f4ywalLx3Cvu6Wln6+MKjBq
-         Qg+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704556062; x=1705160862;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=bKMLLD2ZxyA0kUaU9sIopyxyu3bVgkbt2roLK+GW/Zc=;
-        b=ezzs2y7NMDqqjw1RsMaQ6aGzCy1iWnayYi6t4/rB+/9LVMNumJwW5CKmxq+OGMw7mk
-         Dxcz/88T+o2HrS8rhDBkxZjeli3Y4FRyNinlRBNtd6LXoUUXDDiUqf2AerQhWmoq/6Wi
-         OJHjDINbt/Rn9ictm6E1DgPkPCNL7rIuxgcjC54a40AYtHAyg/hSU8abgOB78BwIg4M+
-         njaEfuwwjcgLlAnCLEpLyDNUf7InYurOtpeIsWqY6Q3F3Ztjk+Knm+kz9zyyi4jOvw0/
-         axvqvCNbCpcbttJGIVjkCEJMDtoJiSwLiXgk47WWm1IdoQYRdw+gpt425xSroM3WEMuo
-         IpdA==
-X-Gm-Message-State: AOJu0YwqnPbJYwMtGwfdJUeWWqalFjFV9OxGOHloWiR7bz9XfQ4lJl1x
-	ZyzRO/8AJ1OWoLzmJ2m4nXk=
-X-Google-Smtp-Source: AGHT+IGVlZUFr7ve40PWM95dSxWGeu3aAnifrfL2vCyVtUxia66Gh2Z9Rm5K/5YvquVm7HGYMfgF6Q==
-X-Received: by 2002:a05:6000:1971:b0:336:873b:6b21 with SMTP id da17-20020a056000197100b00336873b6b21mr629967wrb.33.1704556061797;
-        Sat, 06 Jan 2024 07:47:41 -0800 (PST)
-Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
-        by smtp.gmail.com with ESMTPSA id j1-20020adfe501000000b0033686e8f02dsm3585831wrm.45.2024.01.06.07.47.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 06 Jan 2024 07:47:41 -0800 (PST)
-From: Colin Ian King <colin.i.king@gmail.com>
-To: Henrique de Moraes Holschuh <hmh@hmh.eng.br>,
-	Hans de Goede <hdegoede@redhat.com>,
-	=?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-	ibm-acpi-devel@lists.sourceforge.net,
-	platform-driver-x86@vger.kernel.org
-Cc: kernel-janitors@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH][next] platform/x86: thinkpad_acpi: remove redundant assignment to variable i
-Date: Sat,  6 Jan 2024 15:47:40 +0000
-Message-Id: <20240106154740.55202-1-colin.i.king@gmail.com>
-X-Mailer: git-send-email 2.39.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 554268479
+	for <linux-kernel@vger.kernel.org>; Sat,  6 Jan 2024 15:56:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704556572; x=1736092572;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=kb2OCBOKgj0HgngYqYUWIt76b9Hd9B5BBzKHeZg0v/s=;
+  b=D8VPnFYCSFw/RJOvI2IFF8ELZRSBtqp/0BHTr+gjYW1OuXJu300StsjO
+   bq6Ix4O5FKflhhQCyYPx7Uq+kex6rAsEZVUTmQIj0PYy6H0BcJm4YQEbS
+   HrT8Q4g6DIBv67mbO8B1uuayfZMN08WhWpcWpKoZ/NUTUVAgCSDdF4KkP
+   sYpAV2ed7TxAu25Sda0GMrs4Uvz+r9wHLctsG/0XCiU5AJgzxO4ofyXer
+   gAQrCmPsfqGSBbyUARdVQdj9Dji9c2Ts/e+o7soR0ThQoBPc4ongUdUuG
+   HYcZI+i6v7gaMk+kGPXs+j6vuExZatwELIaZz4tL2B4m0oUL6HzS4B0gv
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10945"; a="19172946"
+X-IronPort-AV: E=Sophos;i="6.04,337,1695711600"; 
+   d="scan'208";a="19172946"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jan 2024 07:56:11 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10945"; a="899932856"
+X-IronPort-AV: E=Sophos;i="6.04,337,1695711600"; 
+   d="scan'208";a="899932856"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by fmsmga002.fm.intel.com with ESMTP; 06 Jan 2024 07:56:09 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rM91r-0002eS-1W;
+	Sat, 06 Jan 2024 15:56:07 +0000
+Date: Sat, 6 Jan 2024 23:55:18 +0800
+From: kernel test robot <lkp@intel.com>
+To: Ben Skeggs <bskeggs@redhat.com>
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	linux-kernel@vger.kernel.org, Gourav Samaiya <gsamaiya@nvidia.com>
+Subject: drivers/gpu/drm/nouveau/nvkm/subdev/acr/lsfw.c:221:7: warning:
+ variable 'loc' set but not used
+Message-ID: <202401062340.4wmRg7ye-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-The variable i is being initialized with the value 0 that is never
-read, it is being re-assigned 0 again in a for-loop statement later
-on. The initialization is redundant and can be removed.
+Hi Ben,
 
-The initialization of variable n can also be deferred after the
-sanity check on pointer n and the declaration of all the int variables
-can be combined as a final code clear-up.
+FYI, the error/warning still remains.
 
-Cleans up clang scan build warning:
-warning: Value stored to 'i' is never read [deadcode.DeadStores]
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   95c8a35f1c017327eab3b6a2ff5c04255737c856
+commit: 4b569ded09fdadb0c14f797c8dae4e8bc4bbad9f drm/nouveau/acr/ga102: initial support
+date:   1 year, 2 months ago
+config: x86_64-buildonly-randconfig-002-20240105 (https://download.01.org/0day-ci/archive/20240106/202401062340.4wmRg7ye-lkp@intel.com/config)
+compiler: ClangBuiltLinux clang version 17.0.6 (https://github.com/llvm/llvm-project 6009708b4367171ccdbf4b5905cb6a803753fe18)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240106/202401062340.4wmRg7ye-lkp@intel.com/reproduce)
 
-Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
----
- drivers/platform/x86/thinkpad_acpi.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202401062340.4wmRg7ye-lkp@intel.com/
 
-diff --git a/drivers/platform/x86/thinkpad_acpi.c b/drivers/platform/x86/thinkpad_acpi.c
-index c4895e9bc714..7bf91cfd3e51 100644
---- a/drivers/platform/x86/thinkpad_acpi.c
-+++ b/drivers/platform/x86/thinkpad_acpi.c
-@@ -6208,17 +6208,15 @@ static int thermal_get_sensor(int idx, s32 *value)
- 
- static int thermal_get_sensors(struct ibm_thermal_sensors_struct *s)
- {
--	int res, i;
--	int n;
--
--	n = 8;
--	i = 0;
-+	int res, i, n;
- 
- 	if (!s)
- 		return -EINVAL;
- 
- 	if (thermal_read_mode == TPACPI_THERMAL_TPEC_16)
- 		n = 16;
-+	else
-+		n = 8;
- 
- 	for (i = 0 ; i < n; i++) {
- 		res = thermal_get_sensor(i, &s->temp[i]);
+All warnings (new ones prefixed by >>):
+
+>> drivers/gpu/drm/nouveau/nvkm/subdev/acr/lsfw.c:221:7: warning: variable 'loc' set but not used [-Wunused-but-set-variable]
+     221 |                 u32 loc, sig, cnt, *meta;
+         |                     ^
+   1 warning generated.
+
+
+vim +/loc +221 drivers/gpu/drm/nouveau/nvkm/subdev/acr/lsfw.c
+
+   179	
+   180	int
+   181	nvkm_acr_lsfw_load_sig_image_desc_v2(struct nvkm_subdev *subdev,
+   182					     struct nvkm_falcon *falcon,
+   183					     enum nvkm_acr_lsf_id id,
+   184					     const char *path, int ver,
+   185					     const struct nvkm_acr_lsf_func *func)
+   186	{
+   187		const struct firmware *fw;
+   188		struct nvkm_acr_lsfw *lsfw;
+   189		const struct nvfw_ls_desc_v2 *desc;
+   190		int ret = 0;
+   191	
+   192		lsfw = nvkm_acr_lsfw_load_sig_image_desc_(subdev, falcon, id, path, ver, func, &fw);
+   193		if (IS_ERR(lsfw))
+   194			return PTR_ERR(lsfw);
+   195	
+   196		desc = nvfw_ls_desc_v2(subdev, fw->data);
+   197	
+   198		lsfw->secure_bootloader = desc->secure_bootloader;
+   199		lsfw->bootloader_size = ALIGN(desc->bootloader_size, 256);
+   200		lsfw->bootloader_imem_offset = desc->bootloader_imem_offset;
+   201	
+   202		lsfw->app_size = ALIGN(desc->app_size, 256);
+   203		lsfw->app_start_offset = desc->app_start_offset;
+   204		lsfw->app_imem_entry = desc->app_imem_entry;
+   205		lsfw->app_resident_code_offset = desc->app_resident_code_offset;
+   206		lsfw->app_resident_code_size = desc->app_resident_code_size;
+   207		lsfw->app_resident_data_offset = desc->app_resident_data_offset;
+   208		lsfw->app_resident_data_size = desc->app_resident_data_size;
+   209		lsfw->app_imem_offset = desc->app_imem_offset;
+   210		lsfw->app_dmem_offset = desc->app_dmem_offset;
+   211	
+   212		lsfw->ucode_size = ALIGN(lsfw->app_resident_data_offset, 256) + lsfw->bootloader_size;
+   213		lsfw->data_size = lsfw->app_size + lsfw->bootloader_size - lsfw->ucode_size;
+   214	
+   215		nvkm_firmware_put(fw);
+   216	
+   217		if (lsfw->secure_bootloader) {
+   218			const struct firmware *hsbl;
+   219			const struct nvfw_ls_hsbl_bin_hdr *hdr;
+   220			const struct nvfw_ls_hsbl_hdr *hshdr;
+ > 221			u32 loc, sig, cnt, *meta;
+   222	
+   223			ret = nvkm_firmware_load_name(subdev, path, "hs_bl_sig", ver, &hsbl);
+   224			if (ret)
+   225				return ret;
+   226	
+   227			hdr = nvfw_ls_hsbl_bin_hdr(subdev, hsbl->data);
+   228			hshdr = nvfw_ls_hsbl_hdr(subdev, hsbl->data + hdr->header_offset);
+   229			meta = (u32 *)(hsbl->data + hshdr->meta_data_offset);
+   230			loc = *(u32 *)(hsbl->data + hshdr->patch_loc);
+   231			sig = *(u32 *)(hsbl->data + hshdr->patch_sig);
+   232			cnt = *(u32 *)(hsbl->data + hshdr->num_sig);
+   233	
+   234			lsfw->fuse_ver = meta[0];
+   235			lsfw->engine_id = meta[1];
+   236			lsfw->ucode_id = meta[2];
+   237			lsfw->sig_size = hshdr->sig_prod_size / cnt;
+   238			lsfw->sig_nr = cnt;
+   239			lsfw->sigs = kmemdup(hsbl->data + hshdr->sig_prod_offset + sig,
+   240					     lsfw->sig_nr * lsfw->sig_size, GFP_KERNEL);
+   241			nvkm_firmware_put(hsbl);
+   242			if (!lsfw->sigs)
+   243				ret = -ENOMEM;
+   244		}
+   245	
+   246		return ret;
+   247	}
+   248	
+
 -- 
-2.39.2
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
