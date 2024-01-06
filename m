@@ -1,102 +1,108 @@
-Return-Path: <linux-kernel+bounces-18481-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18482-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90994825E3B
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 05:56:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 98C89825E3E
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 06:01:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9BB511C21A54
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 04:56:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BBEEF1C23BF0
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 05:01:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6EA41FDF;
-	Sat,  6 Jan 2024 04:55:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A98C82914;
+	Sat,  6 Jan 2024 05:01:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XhosMP+S"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="oq33Yq4E"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com [209.85.219.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B97AD1842;
-	Sat,  6 Jan 2024 04:55:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-dbed9659496so12181276.0;
-        Fri, 05 Jan 2024 20:55:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704516954; x=1705121754; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=h1x2gNIr/WIAbQ1ZNzOSYJRRU8w0tdP5X24inX9f+L0=;
-        b=XhosMP+Sqch7YX3avKC95YfiTXdXMDaqfjAJ1IwT3QQYQvwhRzb8Oislb8fh2l4rPI
-         08xwtK8zhZhPN7bnzTh8YDu/oTtfxOJGGuQaDg74x8mDrRb2XVjhh4hOPxRyF4/jFF1O
-         diWQE7riRjXubVrYKGKHGlMNf1ooLCGPTSOoFXzYhhbTrBC0hSexLRY0f8E3v1fni3/V
-         IC6NOxnCm7Ax/FK30I34QilXva93pjxouUMV5xVdjW6TM9T2Y7j6CFM013pdQY8O2aCD
-         1MWIHzIZUDC6JGDs57GVHz9MDdvkvgaqmGc/VPzzj9LfIJgM5Gqzecaax205dx6jxMWB
-         Impg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704516954; x=1705121754;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=h1x2gNIr/WIAbQ1ZNzOSYJRRU8w0tdP5X24inX9f+L0=;
-        b=LttynxTbsJcvNvqYjvPQawiurGV/w+GpBHpyn7r24jHDuiyGYtpVAQsaIdL1rO26Jd
-         dYqigEzpZ/fLdpKHMVFXOG0RG/GFVvqc2mc5WI8Bs82bsUCmlltiJoFwaL3G3nLPBVjT
-         gn9zN6p86ihDcYTwMRISwpYP3iWF1hPmWUIAA5XicYGR8enCn/LfZVOPUXBe1Bvg71XJ
-         yg4fUMG4fehvvHAUfusJon18Bi2euI+jAwvaeIAtBV7TXlHE1GuV1qWibq+P14d/KSKH
-         8acgubDWqsGyEjfoky98GnIqOuh2ct0Ws5fEwaxAR3LFLwqhbaCUkNS3PjCGtr6F+wBu
-         N+OQ==
-X-Gm-Message-State: AOJu0YwC3Iuf3AAs4/BnUu/bZYNB3xJQYyiSm2xyw3FKkKd7LoOua0fw
-	5jTxMPRCx2YVJ25en5c/RyQ=
-X-Google-Smtp-Source: AGHT+IHYXdXHoXXZq/8QrYbujSvvi8QBDHVvlGCiIZr6j5Iy8ItXwxDyfYqpa4yg5R+6xg2DXArkbQ==
-X-Received: by 2002:a0d:e906:0:b0:5f0:d188:8588 with SMTP id s6-20020a0de906000000b005f0d1888588mr438273ywe.3.1704516954633;
-        Fri, 05 Jan 2024 20:55:54 -0800 (PST)
-Received: from hoboy.vegasvil.org ([2600:1700:2430:6f6f:e2d5:5eff:fea5:802f])
-        by smtp.gmail.com with ESMTPSA id z8-20020a81f808000000b005d746ac7f6bsm694386ywm.69.2024.01.05.20.55.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Jan 2024 20:55:54 -0800 (PST)
-Date: Fri, 5 Jan 2024 20:55:46 -0800
-From: Richard Cochran <richardcochran@gmail.com>
-To: Mahesh Bandewar =?utf-8?B?KOCkruCkueClh+CktiDgpKzgpILgpKHgpYfgpLXgpL4=?=
-	=?utf-8?B?4KSwKQ==?= <maheshb@google.com>
-Cc: Netdev <netdev@vger.kernel.org>, Linux <linux-kernel@vger.kernel.org>,
-	David Miller <davem@davemloft.net>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
-	Jonathan Corbet <corbet@lwn.net>, John Stultz <jstultz@google.com>,
-	Don Hatchett <hatch@google.com>, Yuliang Li <yuliangli@google.com>,
-	Mahesh Bandewar <mahesh@bandewar.net>,
-	Willem de Bruijn <willemb@google.com>
-Subject: Re: [PATCHv3 net-next 2/3] ptp: add ioctl interface for
- ptp_gettimex64any()
-Message-ID: <ZZjdUlaYyHZSiwSM@hoboy.vegasvil.org>
-References: <20240104212439.3276458-1-maheshb@google.com>
- <ZZczNlXzM8lrZgH5@hoboy.vegasvil.org>
- <CAF2d9jga9oc4OST6PMU=C9rz_NDrURCcLGx-1tP31U00z63vbA@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89F8B1FAA;
+	Sat,  6 Jan 2024 05:01:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+	Content-ID:Content-Description:In-Reply-To:References;
+	bh=MJ0H78UHHZfBubPdCEmrW7qODFgKoeU0EZzyOmoW/vM=; b=oq33Yq4ElkA+BHqzwYqustEj4b
+	tqa5TEvg+HA8uQtsytTTiYzigHB2ANGce+l3Rl201FUkzEYnxDkIZ0o6RFgJM7pktQmQTnstlUg0L
+	Cci+hCd20/am6dv0Y84tS9NAv60fKtb/sGyt+N8xI2eeB5Q4UBMfXdf5BF55uL13MVrr1TvJ3hhCg
+	oY1bZ5E6m14cHIje0TT21Dc97QemBwpPBpuuWiGQKDElzU5LqWfVem4ePQ+GCe45h6lT0riNbBq+C
+	vtkC3rp2bhDtk0G2ayvGzUNPjTrGW1eRYoQlAnmEGWzohxzxOfsiA44ERqqaeDg+td6aavdIb+sup
+	m2Skevdw==;
+Received: from [50.53.46.231] (helo=bombadil.infradead.org)
+	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+	id 1rLyoU-000kGv-0R;
+	Sat, 06 Jan 2024 05:01:38 +0000
+From: Randy Dunlap <rdunlap@infradead.org>
+To: linux-kernel@vger.kernel.org
+Cc: Randy Dunlap <rdunlap@infradead.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	linux-doc@vger.kernel.org
+Subject: [PATCH] doc-guide: kernel-doc: tell about object-like macros
+Date: Fri,  5 Jan 2024 21:01:37 -0800
+Message-ID: <20240106050137.6445-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAF2d9jga9oc4OST6PMU=C9rz_NDrURCcLGx-1tP31U00z63vbA@mail.gmail.com>
 
-On Fri, Jan 05, 2024 at 09:51:40AM -0800, Mahesh Bandewar (महेश बंडेवार) wrote:
+Since 2014 kernel-doc has supported describing object-like macros
+macros but it is not documented anywhere. I should have required
+some documentation for it when I merged the patch. :(
 
-> POSIX clocks are employed in this series for syscall width
-> measurement, potentially leading to misunderstandings about
-> overlapping functionality. However, their roles are distinct and serve
-> different purposes.
+There are currently only 3 uses of this (all in DRM headers, in
+include/drm/*.h). There have recently been a few other attempts
+at using kernel-doc for object-like macros, but they didn't use the
+"define" keyword and I mistakenly told them that kernel-doc does
+not support such documentation.  :( again.
 
-I don't see any difference in purposes.  The multi_clock_gettime call
-is a more general solution.  Thus it will obviate the need for any new
-PTP ioctls.
+Add object-like kernel-doc documentation now so that more may know
+about it and use it.
 
-Thanks,
-Richard
+Fixes: cbb4d3e6510b ("scripts/kernel-doc: handle object-like macros")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: linux-doc@vger.kernel.org
+---
+ Documentation/doc-guide/kernel-doc.rst |   21 +++++++++++++++++++++
+ 1 file changed, 21 insertions(+)
+
+diff -- a/Documentation/doc-guide/kernel-doc.rst b/Documentation/doc-guide/kernel-doc.rst
+--- a/Documentation/doc-guide/kernel-doc.rst
++++ b/Documentation/doc-guide/kernel-doc.rst
+@@ -341,6 +341,27 @@ Typedefs with function prototypes can al
+    */
+    typedef void (*type_name)(struct v4l2_ctrl *arg1, void *arg2);
+ 
++Object-like macro documentation
++-------------------------------
++
++Object-like macros are distinct from function-like macros. They are
++differentiated by whether the macro name is immediately followed by a
++left parenthesis ('(') for function-like macros or not followed by one
++for object-like macros.
++
++Function-like macros are handled like functions by ``scripts/kernel-doc``.
++They may have a parameter list. Object-like macros have do not have a
++parameter list.
++
++The general format of an object-like macro kernel-doc comment is::
++
++  /**
++   * define object_name - Brief description.
++   *
++   * Description of the object.
++   */
++
++
+ Highlights and cross-references
+ -------------------------------
+ 
 
