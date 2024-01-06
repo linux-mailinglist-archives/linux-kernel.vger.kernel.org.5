@@ -1,127 +1,120 @@
-Return-Path: <linux-kernel+bounces-18574-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18575-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8717A825F87
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 13:47:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B3D9825F89
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 13:48:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 264481F225F4
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 12:47:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D5616284197
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 12:48:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 220D6747D;
-	Sat,  6 Jan 2024 12:47:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A80B9748E;
+	Sat,  6 Jan 2024 12:48:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZrN7Uv6P"
+	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="FSJLArIM"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
+Received: from smtp.smtpout.orange.fr (smtp-19.smtpout.orange.fr [80.12.242.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED3C46FC3
-	for <linux-kernel@vger.kernel.org>; Sat,  6 Jan 2024 12:47:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2cd3aea2621so871021fa.1
-        for <linux-kernel@vger.kernel.org>; Sat, 06 Jan 2024 04:47:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704545224; x=1705150024; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=zsO/+64idbZilW8qozlP/EFQixW3V6s4CGGRG0UI8MI=;
-        b=ZrN7Uv6PZRJGi/CtWZEfjYaujadmJBQvGk9mhF37Ta58o1aOCFAvGMpScUlYF86ths
-         kXLrmgTudTGfrWfWKkm+pN2savdvk/JMVXBgVzhKSY+w3Q2DBuNWKlvXgAKttpb7hgXU
-         UaSoJW1blgYc45vE98VGBw/rFOeCqH6c3CYRWoP3kLHeVfuKsu9ofFp/TgFThpRQDFvj
-         rWk2IDSCEOMZE3P5bgT7hI+51XNl2rwNsLsKfZRUbmw7xJqM0VR2cK0CM1uL+hApVHIV
-         LwUgGmNDE307FKWk+sUtYxwxfLGxt16dPttLOlsBhi9NVLBSns0vupCphA7FZBMxDbHL
-         pDhw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704545224; x=1705150024;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zsO/+64idbZilW8qozlP/EFQixW3V6s4CGGRG0UI8MI=;
-        b=Fh3k1hNhdObQEuwz7C0kHLIhflwhpY6/G5oUXaEAkjhtmR6/rQuiouSldRGtcU0Sux
-         vBNK574MMr5lJ94XYQWZbdPDnH5Rj7FAgsOkFjmiD6bRke8ML74F9In7HFFR48vF7hO7
-         xXTbwp5bNCFRVhe8V9Dq15e0RiHUgKcFB5v/jTahoUgOFbBaCvV2wC0kaJTCfjGYw2Jb
-         cTEUafPoslBouL7/FvWXqGOW0FAIvKgA4kcRiBY3ppxDKRByJp/LPkgnnqa+Bb37Ff6E
-         uVuzpP/scaRnrYyeRFgR+s1BoSav6sU8rcvc6NOtMsiyCNF1mRFfi1I80nHERmQbglsp
-         WxGw==
-X-Gm-Message-State: AOJu0YxfD+MYbk89nlzdAoAfDlA0D4TJpJBQSub/nTRfvBPeu46SZtwm
-	pBZaqVgugX2ZRtA1oCqHzW8be+smpEzY+Q==
-X-Google-Smtp-Source: AGHT+IEJj+WI4BTSVat3LiOlKwD3Sz+ByErlpx6sAPXp+Pz5/mt4Pxiep4xU8HSCDa8DAQf/Nt3/Uw==
-X-Received: by 2002:a05:6512:2806:b0:50e:7719:4693 with SMTP id cf6-20020a056512280600b0050e77194693mr883100lfb.0.1704545223675;
-        Sat, 06 Jan 2024 04:47:03 -0800 (PST)
-Received: from [192.168.0.104] (p54a07fa0.dip0.t-ipconnect.de. [84.160.127.160])
-        by smtp.gmail.com with ESMTPSA id z11-20020a170906668b00b00a26ade46619sm1912043ejo.121.2024.01.06.04.47.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 06 Jan 2024 04:47:03 -0800 (PST)
-Message-ID: <0d79f685-e54a-4d83-933b-2ee225bca5d8@gmail.com>
-Date: Sat, 6 Jan 2024 13:47:01 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5775A6FC8
+	for <linux-kernel@vger.kernel.org>; Sat,  6 Jan 2024 12:48:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=wanadoo.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
+Received: from pop-os.home ([92.140.202.140])
+	by smtp.orange.fr with ESMTPA
+	id M66OrfxTUx8edM66OrYd6Z; Sat, 06 Jan 2024 13:48:37 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+	s=t20230301; t=1704545317;
+	bh=wMo3OL1UV9ggs46JbwA/uXhDsmPRILP1vW1vh9k8l3Y=;
+	h=From:To:Cc:Subject:Date;
+	b=FSJLArIMjWvmTKEo9wcC5fNVOSpcPdnq6T4CdnN/LQpV9xQ6rGRHCLfSWyob0lRTP
+	 uLwyVHoVsJlm0T8zPZTFwWjrUYh0pbIJrelo1xD7fnY92y5oI3PcPKYmOGYOeTtUxS
+	 j3NFrZchazAoZIjrXYpf3TdILkwJU/pDtFwKnqLGO9utncm1TRm8Zfp2gMuHDrFoIH
+	 7nFyM1GSkhRGxZU9FG4XV9veJ8FfXE+AukCtEZXS9gw2HoiVY5UzLDIqGBVSnZGD+z
+	 Fy5VbmQm9pZGaIhr8bQ1v7j/e6a00Aw2Aa33TC5Y+nnGK7t/KAQcMbuu6KSMBEG8dj
+	 bp6GCUlGN2xbg==
+X-ME-Helo: pop-os.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sat, 06 Jan 2024 13:48:37 +0100
+X-ME-IP: 92.140.202.140
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To: Ard Biesheuvel <ardb@kernel.org>,
+	Andi Shyti <andi.shyti@kernel.org>,
+	Andy Shevchenko <andy.shevchenko@gmail.com>,
+	Wolfram Sang <wsa@kernel.org>
+Cc: linux-kernel@vger.kernel.org,
+	kernel-janitors@vger.kernel.org,
+	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+	linux-i2c@vger.kernel.org
+Subject: [PATCH 1/2] i2c: synquacer: Fix an error handling path in synquacer_i2c_probe()
+Date: Sat,  6 Jan 2024 13:48:24 +0100
+Message-Id: <a0fdf90803ab44508aa07f9190af5e00272231df.1704545258.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 00/21] Staging: rtl8192e: checkpatch fixes for
- rtllib_softmac.c
-To: Tree Davies <tdavies@darkphysics.net>, gregkh@linuxfoundation.org,
- anjan@momi.ca
-Cc: linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-References: <20240106055556.430948-1-tdavies@darkphysics.net>
-Content-Language: en-US
-From: Philipp Hortmann <philipp.g.hortmann@gmail.com>
-In-Reply-To: <20240106055556.430948-1-tdavies@darkphysics.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 1/6/24 06:55, Tree Davies wrote:
-> This series' focus is on fixing checkpatch warnings regarding
-> drivers/staging/rtl8192e/rtllib_softmac.c
-> 
-> Thank you in advance to reviewers
-> ~ Tree
-> 
-> Tree Davies (21):
->    Staging: rtl8192e: Remove unnecessary parenthesis in
->      rtllib_softmac_new_net()
->    Staging: rtl8192e: Rename variable SlotIndex
->    Staging: rtl8192e: Rename function rtllib_MgntDisconnectAP()
->    Staging: rtl8192e: Rename variable bMulticast
->    Staging: rtl8192e: Rename variable MaxPeriod
->    Staging: rtl8192e: Rename variable bAwakePktSent
->    Staging: rtl8192e: Rename variable bSupportNmode
->    Staging: rtl8192e: Rename variable bBusyTraffic
->    Staging: rtl8192e: Rename function rtllib_MgntDisconnect()
->    Staging: rtl8192e: Rename variable bFilterOutNonAssociatedBSSID
->    Staging: rtl8192e: Rename variable array Bssid
->    Staging: rtl8192e: Rename variable NumRxUnicastOkInPeriod
->    Staging: rtl8192e: Rename variable SlotNum
->    Staging: rtl8192e: Rename variable RemoveAllTS
->    Staging: rtl8192e: Rename function RemovePeerTS()
->    Staging: rtl8192e: Rename function rtllib_MlmeDisassociateRequest()
->    Staging: rtl8192e: Rename function SendDisassociation()
->    Staging: rtl8192e: Rename variable bHalfSupportNmode
->    Staging: rtl8192e: Rename variable PMKCacheIdx
->    Staging: rtl8192e: Rename function GetNmodeSupportBySecCfg()
->    Staging: rtl8192e: Rename variable AsocRetryCount
-> 
->   .../staging/rtl8192e/rtl8192e/r8192E_dev.c    |  8 +-
->   drivers/staging/rtl8192e/rtl8192e/rtl_core.c  | 32 +++----
->   drivers/staging/rtl8192e/rtl8192e/rtl_wx.c    |  2 +-
->   drivers/staging/rtl8192e/rtl819x_TSProc.c     |  6 +-
->   drivers/staging/rtl8192e/rtllib.h             | 26 +++---
->   drivers/staging/rtl8192e/rtllib_rx.c          |  6 +-
->   drivers/staging/rtl8192e/rtllib_softmac.c     | 86 +++++++++----------
->   drivers/staging/rtl8192e/rtllib_tx.c          | 10 +--
->   drivers/staging/rtl8192e/rtllib_wx.c          |  2 +-
->   9 files changed, 89 insertions(+), 89 deletions(-)
-> 
+If an error occurs after the clk_prepare_enable() call, it should be undone
+by a corresponding clk_disable_unprepare() call, as already done in the
+remove() function.
 
-Is working fine on hardware.
+As devm_clk_get() is used, we can switch to devm_clk_get_enabled() to
+handle it automatically and fix the probe.
 
-Bye Philipp
+Update the remove() function accordingly and remove the now useless
+clk_disable_unprepare() call.
+
+Fixes: 0d676a6c4390 ("i2c: add support for Socionext SynQuacer I2C controller")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+ drivers/i2c/busses/i2c-synquacer.c | 20 +++++++-------------
+ 1 file changed, 7 insertions(+), 13 deletions(-)
+
+diff --git a/drivers/i2c/busses/i2c-synquacer.c b/drivers/i2c/busses/i2c-synquacer.c
+index bbea521b05dd..a73f5bb9a164 100644
+--- a/drivers/i2c/busses/i2c-synquacer.c
++++ b/drivers/i2c/busses/i2c-synquacer.c
+@@ -550,17 +550,13 @@ static int synquacer_i2c_probe(struct platform_device *pdev)
+ 	device_property_read_u32(&pdev->dev, "socionext,pclk-rate",
+ 				 &i2c->pclkrate);
+ 
+-	i2c->pclk = devm_clk_get(&pdev->dev, "pclk");
+-	if (PTR_ERR(i2c->pclk) == -EPROBE_DEFER)
+-		return -EPROBE_DEFER;
+-	if (!IS_ERR_OR_NULL(i2c->pclk)) {
+-		dev_dbg(&pdev->dev, "clock source %p\n", i2c->pclk);
+-
+-		ret = clk_prepare_enable(i2c->pclk);
+-		if (ret)
+-			return dev_err_probe(&pdev->dev, ret, "failed to enable clock\n");
+-		i2c->pclkrate = clk_get_rate(i2c->pclk);
+-	}
++	i2c->pclk = devm_clk_get_enabled(&pdev->dev, "pclk");
++	if (IS_ERR(i2c->pclk))
++		return dev_err_probe(&pdev->dev, PTR_ERR(i2c->pclk),
++				     "failed to get and enable clock\n");
++
++	dev_dbg(&pdev->dev, "clock source %p\n", i2c->pclk);
++	i2c->pclkrate = clk_get_rate(i2c->pclk);
+ 
+ 	if (i2c->pclkrate < SYNQUACER_I2C_MIN_CLK_RATE ||
+ 	    i2c->pclkrate > SYNQUACER_I2C_MAX_CLK_RATE)
+@@ -615,8 +611,6 @@ static void synquacer_i2c_remove(struct platform_device *pdev)
+ 	struct synquacer_i2c *i2c = platform_get_drvdata(pdev);
+ 
+ 	i2c_del_adapter(&i2c->adapter);
+-	if (!IS_ERR(i2c->pclk))
+-		clk_disable_unprepare(i2c->pclk);
+ };
+ 
+ static const struct of_device_id synquacer_i2c_dt_ids[] __maybe_unused = {
+-- 
+2.34.1
+
 
