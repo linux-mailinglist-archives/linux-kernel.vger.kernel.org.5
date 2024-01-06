@@ -1,143 +1,183 @@
-Return-Path: <linux-kernel+bounces-18685-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18686-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 713358260F9
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 19:01:35 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5ABCE8260FB
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 19:01:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4AC081C20DE9
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 18:01:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E08461F2235D
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 18:01:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AA5DCA7A;
-	Sat,  6 Jan 2024 18:01:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4788D2FC;
+	Sat,  6 Jan 2024 18:01:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fvbCttM3"
+	dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b="IrwcmRO7"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ot1-f48.google.com (mail-ot1-f48.google.com [209.85.210.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4C7BC8F1;
-	Sat,  6 Jan 2024 18:01:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f48.google.com with SMTP id 46e09a7af769-6dbaf9b1674so376152a34.2;
-        Sat, 06 Jan 2024 10:01:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704564084; x=1705168884; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=SlF5MKSukDXBsWTKudYrkR+clX5vSSACkqiWizoDMjg=;
-        b=fvbCttM36NJtBB4NO8zwDWQcsDvo0fzYvq4+z6X1kdRnrL9gXxxcJsOkX1NMwBcTpG
-         KOVDE4XxalScLiDZKJhgwladPPJSA5rkXEHiZ3GrSSrNcSS+Mxu42mI8lQXDapVmfJAX
-         B0JbGxmi8HCDm+iaHqHcy6w83qzFTBjHv0JsjRgB2MUH/ocbPpmyV6lX/52ub/oQtXV6
-         Ccre7ygaIrceiJabQJXX5RF7OjjMpv/RT8bF9peWcngR5DvoxuQjU4B76RpuTt5y5OeY
-         L3jHSyv0Me43Wb/4Gj0xcEWJgDzxyzTgWJZq8uFODw5M/O0zCRJyHWHKgVNahn3+tfd6
-         b/fQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704564084; x=1705168884;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=SlF5MKSukDXBsWTKudYrkR+clX5vSSACkqiWizoDMjg=;
-        b=R90nwurwv9CaykDToZamE0wFHaHXrOuK66C4ryDvKMiALkEnWNe02C1W2tJPkyenmd
-         6UCqvztuHwpSM6WC2zl8A5SO7zn1SSoMNcHqy2/BQIJMyv9Jx6YARo18ZtDtW3kZwO+7
-         oscg1XVZw8n/8BvI/YPHZ+7YLnmk8Qk4pNq6WPCRpsMiJQoTJd+RHQCUsWypo4oZkBOA
-         XXt93yvPAqvrIHsgaR39h0fBIGhT57iC+y4D1CtZ616KYCCSK9UdBH8BouhDqybHPs9D
-         mWjzBdgsbcBT+Gknq0422ahQdxYNNa53MRfGuF2d1OGNpFXlbV5LWEQ1QSCczZ22dX0o
-         ITkw==
-X-Gm-Message-State: AOJu0YyaVrM+/EsyBQ6OYU58nd02XRuIUQwcmUWKZPNNeUHmXBhMBpe/
-	CwHkKQaATZgA6SDjrjcT6t2VOu7FbIOdd8HhuZE=
-X-Google-Smtp-Source: AGHT+IHFMAuY9wP4JZeMq0AGVSNp/s3w+mHEB0XJgEh9v1FVbyJOrTHPgtffWFKIufHuW/WwSLScpnFmGY/VTT9kHXU=
-X-Received: by 2002:a9d:5d06:0:b0:6db:d330:b8ca with SMTP id
- b6-20020a9d5d06000000b006dbd330b8camr685486oti.57.1704564084515; Sat, 06 Jan
- 2024 10:01:24 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C846EC8C3;
+	Sat,  6 Jan 2024 18:01:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arinc9.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 213CC40004;
+	Sat,  6 Jan 2024 18:01:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arinc9.com; s=gm1;
+	t=1704564092;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=rFWawH0E560JxudljiU+bgsrIpK63GPFMn0rSwov+Lc=;
+	b=IrwcmRO7+If4cFKJdvrDmMOZosXpRPRKYskT0KyXZaFeGd7T8DWlFFb+B0jmTYZTPULITg
+	gJ5QfnFCjuUHOtbY4klSUqXA1iEMSE9HRKHX8MJX9epmF2L7DPTN7QqCErD7hsi1aTBBZd
+	4ZFyWjezIaYeLFF86AblzoSZUlFk9AP57ebrE7XFmgCNVZNAhPqv3o4wREhZYsEJGBh/F4
+	tlQj/U9aqQZ+lz14IHVDeMJ7Vx4QCE1XF8qnmkdoDBiuJqBIECYYXi4R+0c91PA3IfM1Lj
+	cDnb8QzRwJBDjWFS4S7PbOJ+NWvGV0aV2ZOYGGYP8wGQFRMzHqsNc/8Y3UiqQw==
+Message-ID: <2ad136ed-be3a-407f-bf3c-5faf664b927c@arinc9.com>
+Date: Sat, 6 Jan 2024 20:01:25 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231206151600.26833-1-quic_pintu@quicinc.com>
- <20231208203128.GA2646347-robh@kernel.org> <CAOuPNLg90T69USVQ8Ti6c8fXb_XrnaR035in_CbJHmNMUYLqOg@mail.gmail.com>
- <CAOuPNLj4_pQiAHoER2VJpW_2NEaq8+zF8p1br+tf0Toe1t1UDg@mail.gmail.com>
-In-Reply-To: <CAOuPNLj4_pQiAHoER2VJpW_2NEaq8+zF8p1br+tf0Toe1t1UDg@mail.gmail.com>
-From: Pintu Agarwal <pintu.ping@gmail.com>
-Date: Sat, 6 Jan 2024 23:31:12 +0530
-Message-ID: <CAOuPNLh+V1-Uu_rnnbdu7p6DGjHOJf0yJnaxnchwpzh_YyP=_Q@mail.gmail.com>
-Subject: Re: [PATCH] of: reserved_mem: fix error log for reserved mem init failure
-To: Rob Herring <robh@kernel.org>, vichy.kuo@gmail.com
-Cc: Pintu Kumar <quic_pintu@quicinc.com>, linux-kernel@vger.kernel.org, 
-	akpm@linux-foundation.org, linux-mm@kvack.org, frowand.list@gmail.com, 
-	devicetree@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next 07/15] net: dsa: mt7530: do not run
+ mt7530_setup_port5() if port 5 is disabled
+Content-Language: en-US
+To: Dan Carpenter <dan.carpenter@linaro.org>
+Cc: Vladimir Oltean <olteanv@gmail.com>, Simon Horman <horms@kernel.org>,
+ Daniel Golle <daniel@makrotopia.org>, Landen Chao
+ <Landen.Chao@mediatek.com>, DENG Qingfang <dqfext@gmail.com>,
+ Sean Wang <sean.wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>,
+ Florian Fainelli <f.fainelli@gmail.com>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-mediatek@lists.infradead.org,
+ Frank Wunderlich <frank-w@public-files.de>,
+ Bartel Eerdekens <bartel.eerdekens@constell8.be>, mithat.guner@xeront.com,
+ erkin.bozoglu@xeront.com
+References: <20231118123205.266819-1-arinc.unal@arinc9.com>
+ <20231118123205.266819-8-arinc.unal@arinc9.com>
+ <20231121185358.GA16629@kernel.org>
+ <a2826485-70a6-4ba7-89e1-59e68e622901@arinc9.com>
+ <90fde560-054e-4188-b15c-df2e082d3e33@moroto.mountain>
+ <20231207184015.u7uoyfhdxiyuw6hh@skbuf>
+ <9b729dab-aebc-4c0c-a5e1-164845cd0948@suswa.mountain>
+ <20231208184652.k2max4kf7r3fgksg@skbuf>
+ <c3a0fc6a-825c-4de3-b5cf-b454a6d4d3cf@arinc9.com>
+ <48b664fb-edf9-4170-abde-2eb99e04f0e5@suswa.mountain>
+From: =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
+In-Reply-To: <48b664fb-edf9-4170-abde-2eb99e04f0e5@suswa.mountain>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: arinc.unal@arinc9.com
 
-Hi,
+On 1/2/24 13:16, Dan Carpenter wrote:
+> On Sun, Dec 17, 2023 at 03:22:27PM +0300, Arınç ÜNAL wrote:
+>> On 8.12.2023 21:46, Vladimir Oltean wrote:
+>>> Hmm, maybe the problem, all along, was that we let the -ENODEV return
+>>> code from of_get_phy_mode() pass through? "interface" will really be
+>>> uninitialized in that case. It's not a false positive.
+>>>
+>>> Instead of:
+>>>
+>>> 	ret = of_get_phy_mode(mac_np, &interface);
+>>> 	if (ret && ret != -ENODEV) {
+>>> 		...
+>>> 		return ret;
+>>> 	}
+>>>
+>>> it should have been like this, to not complain:
+>>>
+>>> 	ret = of_get_phy_mode(mac_np, &interface);
+>>> 	if (ret) {
+>>> 		...
+>>> 		return ret;
+>>> 	}
+>>>
+>>
+>> I just tried this, smatch still reports "interface" as uninitialised.
+>>
+>> $ export ARCH=mips CROSS_COMPILE=mips-linux-gnu-
+>> $ ../smatch/smatch_scripts/kchecker --spammy drivers/net/dsa/mt7530.c
+>>
+>>    UPD     include/config/kernel.release
+>>    UPD     include/generated/utsrelease.h
+>>    CHECK   scripts/mod/empty.c
+>>    CALL    scripts/checksyscalls.sh
+>>    CC      drivers/net/dsa/mt7530.o
+>>    CHECK   drivers/net/dsa/mt7530.c
+>> drivers/net/dsa/mt7530.c:217 mt7530_mii_read() warn: call of 'warn_slowpath_fmt' with non-constant format argument
+>> drivers/net/dsa/mt7530.c:454 mt7530_setup_port6() error: uninitialized symbol 'ncpo1'.
+>> drivers/net/dsa/mt7530.c:868 mt7530_set_ageing_time() error: uninitialized symbol 'age_count'.
+>> drivers/net/dsa/mt7530.c:868 mt7530_set_ageing_time() error: uninitialized symbol 'age_unit'.
+>> drivers/net/dsa/mt7530.c:2324 mt7530_setup() error: uninitialized symbol 'interface'.
+> 
+> That's so strange.
+> 
+> Vladimir was right that I was misreading what he said and also hadn't
+> noticed the break.
+> 
+> For me, his approach silences the warning with or without the cross
+> function DB.  Also of_get_phy_mode() initializes interface on all paths
+> so checking for -EINVAL doesn't matter as far as this warning is
+> concerned.
 
-On Thu, 14 Dec 2023 at 22:47, Pintu Agarwal <pintu.ping@gmail.com> wrote:
->
-> On Mon, 11 Dec 2023 at 20:13, Pintu Agarwal <pintu.ping@gmail.com> wrote:
-> >
-> > Hi,
-> >
-> > On Sat, 9 Dec 2023 at 02:01, Rob Herring <robh@kernel.org> wrote:
-> > >
-> > > On Wed, Dec 06, 2023 at 08:46:00PM +0530, Pintu Kumar wrote:
-> > > > During fdt_init_reserved_mem() when __reserved_mem_init_node()
-> > > > fail we are using pr_info to print error.
-> > > >
-> > > > So, if we change the loglevel to 4 (or below), this error
-> > > > message will be missed.
-> > > >
-> > > > Thus, change the pr_info to pr_err for fail case.
-> > > >
-> > > > Signed-off-by: Pintu Kumar <quic_pintu@quicinc.com>
-> > > > ---
-> > > >  drivers/of/of_reserved_mem.c | 2 +-
-> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > >
-> > > > diff --git a/drivers/of/of_reserved_mem.c b/drivers/of/of_reserved_mem.c
-> > > > index 7ec94cfcbddb..473665e76b6f 100644
-> > > > --- a/drivers/of/of_reserved_mem.c
-> > > > +++ b/drivers/of/of_reserved_mem.c
-> > > > @@ -334,7 +334,7 @@ void __init fdt_init_reserved_mem(void)
-> > > >               if (err == 0) {
-> > > >                       err = __reserved_mem_init_node(rmem);
-> > > >                       if (err != 0 && err != -ENOENT) {
-> > > > -                             pr_info("node %s compatible matching fail\n",
-> > > > +                             pr_err("node %s compatible matching fail\n",
-> > >
-> > > Isn't the message just wrong. If compatible match fails, we return
-> > > ENOENT. The failure here would be from the init function.
-> > >
-> > Okay.
-> > You mean to say, if __reserved_mem_init_node fails with default err
-> > (ENOENT) then it may not hit this condition.
-> > Instead it will hit the 'else' case which is wrong ?
-> > Also, the "initfn" inside "__reserved_mem_init_node" may fail in which
-> > case also it may return default err.
-> >
-> > Maybe, the initial author's intention was to free the memory only if
-> > the failure type is not the default ENOENT type.
-> >
-> > This seems to be a different issue.
-> > Can we address this separately in a different patch ?
-> >
-> > And how do we fix this ?
-> > One option is to add another "if" condition with just ENOENT error check ?
-> > if (err == -ENOENT) {
-> >     pr_err("node %s compatible matching fail\n", rmem->name);
-> >     return;
-> > }
-> > Then, correct the existing log with a different message:
-> > pr_err("node %s matching reserved mem not found.\n", rmem->name);
-> > Or, add one more "if else" condition ?
-> > Or, fix the calling function itself : __reserved_mem_init_node ?
-> >
->
-> Any further comments on this ?
+I must be missing something.
 
-Any further comments or suggestions on the above ?
-Shall we just fix the log message, or correct the if/else case as well ?
+diff --git a/drivers/net/dsa/mt7530.c b/drivers/net/dsa/mt7530.c
+index 7f9d63b61168..05ce3face47c 100644
+--- a/drivers/net/dsa/mt7530.c
++++ b/drivers/net/dsa/mt7530.c
+@@ -2325,7 +2325,7 @@ mt7530_setup(struct dsa_switch *ds)
+  
+  			if (phy_node->parent == priv->dev->of_node->parent) {
+  				ret = of_get_phy_mode(mac_np, &interface);
+-				if (ret && ret != -ENODEV) {
++				if (ret) {
+  					of_node_put(mac_np);
+  					of_node_put(phy_node);
+  					return ret;
+
+$ ../smatch/smatch_scripts/kchecker --spammy drivers/net/dsa/mt7530.c
+   CHECK   scripts/mod/empty.c
+   CALL    scripts/checksyscalls.sh
+   DESCEND objtool
+   INSTALL libsubcmd_headers
+   CC      drivers/net/dsa/mt7530.o
+   CHECK   drivers/net/dsa/mt7530.c
+drivers/net/dsa/mt7530.c:469 mt7530_pad_clk_setup() error: uninitialized symbol 'ncpo1'.
+drivers/net/dsa/mt7530.c:895 mt7530_set_ageing_time() error: uninitialized symbol 'age_count'.
+drivers/net/dsa/mt7530.c:895 mt7530_set_ageing_time() error: uninitialized symbol 'age_unit'.
+drivers/net/dsa/mt7530.c:2346 mt7530_setup() error: uninitialized symbol 'interface'.
+
+Just so you know, I intend to remove this whole PHY muxing feature once I
+bring changing DSA conduit support to this subdriver. I've got two strong
+reasons for this.
+
+- Changing the DSA conduit achieves the same result with the only overhead
+   being the DSA header included on every frame.
+
+- There can't be proper dt-bindings for it as the nature of the feature
+   shows that it represents an optional way to operate the hardware, it does
+   not represent a hardware design. Overall, the implementation is a hack to
+   make it work for specific hardware (switch must be connected to gmac1 of
+   a MediaTek SoC, no PHY must be present at address 0 or 4 on the MDIO bus
+   of the SoC. It should rather be configurable on userspace. Which will
+   never happen as it is specific to this switch and the changing DSA
+   conduit feature is the perfect substitute for this.
+
+Let me know if you've got any suggestions that can get rid of the warning
+without reworking the whole code block. Otherwise, I'm just going to ignore
+it until I get rid of the whole code block.
+
+Arınç
 
