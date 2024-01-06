@@ -1,160 +1,160 @@
-Return-Path: <linux-kernel+bounces-18665-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18666-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 379AB8260C0
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 17:56:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5FC2B8260C3
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 17:58:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 75195B2203D
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 16:56:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 08AEF283626
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 16:58:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF3A8C12F;
-	Sat,  6 Jan 2024 16:56:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE93C8C0A;
+	Sat,  6 Jan 2024 16:58:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="MyEtwTUw"
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="q8vs3frD"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2085.outbound.protection.outlook.com [40.107.220.85])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C54C4C13F
-	for <linux-kernel@vger.kernel.org>; Sat,  6 Jan 2024 16:56:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-5542a7f1f3cso563732a12.2
-        for <linux-kernel@vger.kernel.org>; Sat, 06 Jan 2024 08:56:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704560197; x=1705164997; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=m3RK8M7nZjmwg4vSv0KVTgjny+F4gwHfQQ0/FeMDQeg=;
-        b=MyEtwTUwH2dcipUNbcbijO46yviikphZBrzSQle+/s/xEXp5b0QFP4smrkEktpyny3
-         R+/IE8zaIJu1QtmxqYuZ3zwXOpol7+7hoAcBIS+sGuLilKvu0i34mRmGr+9cyBxnUJML
-         LjYIYgSHabDekVkN4Zoc5oVHx4BNjuezPD/2AdN+e2M8wDoU/34XEumNf5z0fADjZnWY
-         VyJ5PVlLzoSwhtWDDlnJJYtIKT5YSIbN8zNBeYgulY8Ad4PgtcElU+CfQTPbnELJ6bo5
-         vpDAB9Nf7oSIdoBSCabQAA2bxWqdz0gxVermQD0V04xvAB5y1x2rbgv70ZNHwcnLfoR8
-         E1Kw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704560197; x=1705164997;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=m3RK8M7nZjmwg4vSv0KVTgjny+F4gwHfQQ0/FeMDQeg=;
-        b=crtt2KssLz4nKAFc2JYuOHpGtz9bZlLMR3rWEOot5O0RkXWXUotQM3QffQDhJgpqa6
-         yygj7aI3teZwXRxy2mqGWNU9wtJlyQcfhfptnUH5/PkgzHhz3AqEdoC10HxCv9FOD59/
-         5R+jVmfn2N8+kBEwMUib2gSRF3FUYmSEIbWoeMqCq+otYBYJU+fqdtkjz+G6XQMuc6Zk
-         ylWvGYYetdXIrgjUVmqidFbeRG3UcL28zR8BWfN2e1A2dC2dwEuTPsoDTarW5u39r6hG
-         IAj+nob+UCSPzKgQxVwOtevw9d/A/WZYL/G3iqc1Nk1gFPMvSVtsawr8Wy2CXs8rSiEM
-         4Syw==
-X-Gm-Message-State: AOJu0YymsXFAEbDNNOVGQZL1peg6B/omp7YMAuqBqOhDDWV3Akpv6XnW
-	P3/Mpx8Ol5PC5yC4q1+gdjXYuxD7sL5L6w==
-X-Google-Smtp-Source: AGHT+IECPwnKhvzCjYKxro2ZGhjfoCUP5QqyjBZ1p68pC+adiLkXI8Us/3oeeLjqqbaLrpWfvQXqeQ==
-X-Received: by 2002:a17:907:c902:b0:a23:8a00:cfbe with SMTP id ui2-20020a170907c90200b00a238a00cfbemr411822ejc.132.1704560197092;
-        Sat, 06 Jan 2024 08:56:37 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.223.112])
-        by smtp.gmail.com with ESMTPSA id v26-20020a1709064e9a00b00a26a061ae1esm2135066eju.97.2024.01.06.08.56.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 06 Jan 2024 08:56:36 -0800 (PST)
-Message-ID: <1aeff309-6867-4296-8983-a60e8fd31614@linaro.org>
-Date: Sat, 6 Jan 2024 17:56:34 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65D1CC8DE;
+	Sat,  6 Jan 2024 16:57:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CQGUGiWsg+Jd/R7i8+Ysff900Ea2HHRGz9GWHM8gQRymUTyUCYKmnOgYd2EJwHOpSoWiNUrfDxdhp30a6QyqcZZ5msiIK47CNsjumcRLkb2/0I2X9onKf1LOJ/sqSlIdNio3pqDDs8GEIsL6cn2JC049cz4lJB1h6xAGcJP9nxjUIckOwuVpa/nDJaPc6XV2F2CFk9N7mNj99+SNDc46ek8HhALW35ARgl46CTOnU5Qoa/3pVOAbBY6ZSIv08F9jGHM2HYvTFBja1saZqLD/pWIQaL7b63igTEq43+GaE2VpoWU9vYcqXa8RQAVNsG9o2hLdvAjtTW/ttetf0QCiPw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=lLqDbC/VkWwHpJsvacZD8fVAgDKcEC649GsjpOYm2q8=;
+ b=I0JPw1kiIUDpJYhXu09B135oydO3FfMXecuCdoj+eq3KNLYiysua7cqqfjlP5qPGdOqnpKsbnNe9BEV7wYG7dO1kXwCB1qTomQXqjKfiFHQWx4yTS9C3YjS/lFImXmBAPjr7mOEuYjblRDJEIiIPXO7xoS6RSF8alS4yMDlx8wk+bzbI2HlK9Ec4Aq1gwI8BgNaBQ3Pp+IqUBQKNTXt7W/cdVAdcDJPIO+kPVnCFYpOhCRTmf8I7Up7UaQxgYxApg2hczqLoJK1inoIRHMN+EIvYTt7SOSJy3BNmEvftAGjNiORhdQr6r1pqoiF7pGt/vsN/SryrpH7jLpxhX63Xwg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=gmail.com smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=lLqDbC/VkWwHpJsvacZD8fVAgDKcEC649GsjpOYm2q8=;
+ b=q8vs3frDpMVY6pIuBv5W04NTPow2bUNWS0ais3auqVvu9JceUS6mxkTpIugVnPCNy63jK8r+f7vDRA0AQDH1+ui7x8hBTrWmRMssBpMBAh8HUVVSRyE67PycvQCZ8D641kmDojvgY8p/i9oHObN/QExYsaX54MzF8bDIoJPeFwM=
+Received: from MW4PR04CA0253.namprd04.prod.outlook.com (2603:10b6:303:88::18)
+ by DM4PR12MB5278.namprd12.prod.outlook.com (2603:10b6:5:39e::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.19; Sat, 6 Jan
+ 2024 16:57:55 +0000
+Received: from CO1PEPF000044FB.namprd21.prod.outlook.com
+ (2603:10b6:303:88:cafe::d9) by MW4PR04CA0253.outlook.office365.com
+ (2603:10b6:303:88::18) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.19 via Frontend
+ Transport; Sat, 6 Jan 2024 16:57:55 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ CO1PEPF000044FB.mail.protection.outlook.com (10.167.241.201) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7202.2 via Frontend Transport; Sat, 6 Jan 2024 16:57:54 +0000
+Received: from jatayu.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Sat, 6 Jan
+ 2024 10:57:51 -0600
+From: Sanath S <Sanath.S@amd.com>
+To: <mario.limonciello@amd.com>, <andreas.noever@gmail.com>,
+	<michael.jamet@intel.com>, <mika.westerberg@linux.intel.com>,
+	<YehezkelShB@gmail.com>, <linux-usb@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+CC: Sanath S <Sanath.S@amd.com>
+Subject: [Patch v3 0/4] Add support for downstream port reset(DPR)
+Date: Sat, 6 Jan 2024 22:27:19 +0530
+Message-ID: <20240106165723.3377789-1-Sanath.S@amd.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 0/3] w1: add UART w1 bus driver
-Content-Language: en-US
-To: cj.winklhofer@gmail.com, Rob Herring <robh+dt@kernel.org>,
- Conor Dooley <conor+dt@kernel.org>, Rob Herring <robh@kernel.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Jiri Slaby <jirislaby@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Jonathan Corbet <corbet@lwn.net>
-Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-serial@vger.kernel.org, linux-doc@vger.kernel.org
-References: <20240106-w1-uart-v4-0-7fe1378a8b3e@gmail.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240106-w1-uart-v4-0-7fe1378a8b3e@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CO1PEPF000044FB:EE_|DM4PR12MB5278:EE_
+X-MS-Office365-Filtering-Correlation-Id: a7a010ea-3cc3-442c-bfe0-08dc0ed8a0ac
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	JivbEMQ4UZa56ouO07XMltPmnsjuhkAfdfXIt+n0sjTaED94La3n/KHZe7bc7VqBEfoLfRqWh/WZZk94tn9Bn4aBgyJbkG7XCtOXPfqNtWk03F5fCC0TXlBVb97ggbTU1KvB3rA065KHMoE+vN4gcPdp+f+PNfeJTgjTkv4kZDv620GDU7dOqFBDeELroeQ8EReKvqPLpUR7tQYEPvq+4XoZPVO210ilbwOu5rotEzWvQV2fU4R1rimlRGyaVLJZuvmR9kF+O8Yq3um6fwiA36FNKy0OrIWt6JpnjRD2L3bz+NiSPkkpnhyaiVmNuyz8tWrZxBBonI3ImX5hwGpgq636gn7yvSCR3dG8svBvy5ci8xcvFQ7fTPAy8mwr1SFqV7akgJpHM8GCvxEoUmvMci+ek8/4TWdtHQphD2rTxL53JKxwBD3IYvGwOfzg6GVQ4sRpQjpvhCjyXBzc0+2ecQKVVLBbTBp3Vr5BSiMcdL2o2lz5OsxKISs/VPuEoGknalUZa5qtWONZFemvGgS+AV2Cp6UY4WgVvS0SpzoATJQYfI1LcYC0XkEd7CKNWZwuPMIwY34zTXN93wU6T3NRRo//1oTZ36cW8wqujGePE3mEptxAPet2K2aQjarP7VZYNI0kDgc60m2Zyv3HyEPdw0/kWuvG3Ki6/eFyYzCcCTy05qCVkYeFyMqqBcU0FGH50wOVv/DVBOYCKZ7PqfEehdBdteVfjVvDOSixY7HxNiO3PV/moP8FZ/Ulw7RRjNfzeh8PE+aUEVSmzURYNIhiQcSgFySOAZ2tLOIn06ey1k8=
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(136003)(376002)(346002)(39860400002)(396003)(230922051799003)(1800799012)(451199024)(82310400011)(64100799003)(186009)(36840700001)(46966006)(40470700004)(1076003)(26005)(426003)(336012)(2616005)(478600001)(6666004)(7696005)(16526019)(47076005)(36860700001)(83380400001)(66574015)(2906002)(5660300002)(41300700001)(316002)(70206006)(110136005)(4326008)(8936002)(8676002)(70586007)(82740400003)(86362001)(356005)(81166007)(36756003)(40460700003)(40480700001)(2101003)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Jan 2024 16:57:54.9605
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: a7a010ea-3cc3-442c-bfe0-08dc0ed8a0ac
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	CO1PEPF000044FB.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5278
 
-On 06/01/2024 17:02, Christoph Winklhofer via B4 Relay wrote:
-> Hello!
-> 
-> This patch contains a driver for a 1-Wire bus over UART. The driver
-> utilizes the UART interface via the Serial Device Bus to create the
-> 1-Wire timing patterns.
-> 
-> Changes in v4:
-> - rework baud-rate configuration: also check max bit-time, support higher
->   baud-rates by adding a delay to complete 1-Wire cycle.
-> - dt-binding w1-uart: specify baud-rates for 1-Wire operations
-> - Link to v3: https://lore.kernel.org/r/20240105-w1-uart-v3-0-8687093b2e76@gmail.com
-> 
+Tunnels created by boot firmware results in incorrect PCI resource
+allocation, which results in failure of extending daisy chain.
+This series aims to resolve inconsistent tunnels or paths created
+by boot firmware.
 
-You can slow down a bit. You sent v2 too late to be applied. Then you
-sent v3 and next day v4.
+Before:
+           +-03.1-[04-62]----00.0-[05-07]--+-02.0-[06]----00.0
+           |                               \-04.0-[07]--
+After:
+           +-03.1-[04-62]----00.0-[05-62]--+-02.0-[06]----00.0
+           |                               \-04.0-[07-62]-- 
 
-While I like approach to release early, release often, it does not
-necessarily apply to the bindings. Bindings should be complete, which
-means they should describe the hardware as fully as possible.
+This series also aligns with windows behaviour of performing a teardown
+of tunnels and resetting the downstream ports using DPR during the init
+sequence.
 
-About the driver, you can develop it incrementally, it is a good idea,
-however since ~rc6 my w1 tree is closed. It will remain closed till next
-rc1 is released (merge window finished). Nothing will get applied during
-that time, so if you intend to add new features, better to send v5 after
-the merge window (instead v4 now, v5 tomorrow, v6 next week and then v7
-after rc1).
+Changes since V3:
+ - Remove discover_tunnel() api before resetting DPR.
+ - Add lane and protocol adapters reset in tb_switch_reset()
+ - Addition of tb_lc_reset_port() for TBT1, TBT2 and TBT3 routers.
+ - Addition of tb_path_deactivate_hop() api to help suppport path
+   reset of given hop index.
+ - Addition on new patch to store and indicate host router reset 
+   status of USB4 v2
 
-Best regards,
-Krzysztof
+Changes since V2:
+ - Perform DPR only for USB4 routers.
+ - Update kernel-doc and return value to -EOPNOTSUPP.
+ - Limit delay range to 10-15ms.
+
+Sanath S (4):
+  thunderbolt: Introduce usb4_port_reset() and tb_lc_reset_port()
+  thunderbolt: Extend tb_switch_reset() to support lane and protocol
+    adapter reset
+  thunderbolt: Store host router reset status in nhi_probe()
+  thunderbolt: Teardown tunnels and reset downstream ports created by
+    boot firmware
+
+ drivers/thunderbolt/domain.c  |  5 +--
+ drivers/thunderbolt/icm.c     |  2 +-
+ drivers/thunderbolt/lc.c      | 44 +++++++++++++++++++++++++
+ drivers/thunderbolt/nhi.c     | 19 +++++++----
+ drivers/thunderbolt/path.c    | 13 ++++++++
+ drivers/thunderbolt/switch.c  | 61 +++++++++++++++++++++++++++++++++--
+ drivers/thunderbolt/tb.c      | 29 +++++++++++++----
+ drivers/thunderbolt/tb.h      |  7 ++--
+ drivers/thunderbolt/tb_regs.h |  4 +++
+ drivers/thunderbolt/usb4.c    | 39 ++++++++++++++++++++++
+ 10 files changed, 202 insertions(+), 21 deletions(-)
+
+-- 
+2.34.1
 
 
