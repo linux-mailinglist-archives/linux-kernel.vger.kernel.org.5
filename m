@@ -1,114 +1,150 @@
-Return-Path: <linux-kernel+bounces-18590-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18591-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A8A5825FC9
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 15:12:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 01C1B825FCF
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 15:15:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 396FA1F21569
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 14:12:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9F8F9283D14
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 14:15:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84FE4749A;
-	Sat,  6 Jan 2024 14:12:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFF2779E1;
+	Sat,  6 Jan 2024 14:15:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XOtG4yaR"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx.skole.hr (mx1.hosting.skole.hr [161.53.165.185])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oi1-f180.google.com (mail-oi1-f180.google.com [209.85.167.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 162057494
-	for <linux-kernel@vger.kernel.org>; Sat,  6 Jan 2024 14:12:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=skole.hr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=skole.hr
-Received: from mx1.hosting.skole.hr (localhost.localdomain [127.0.0.1])
-	by mx.skole.hr (mx.skole.hr) with ESMTP id 758DA84071;
-	Sat,  6 Jan 2024 15:12:04 +0100 (CET)
-From: =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
-Date: Sat, 06 Jan 2024 15:11:33 +0100
-Subject: [PATCH v2] soc: pxa: ssp: fix casts
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED3AB79C3
+	for <linux-kernel@vger.kernel.org>; Sat,  6 Jan 2024 14:14:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f180.google.com with SMTP id 5614622812f47-3bbd6e37a9bso591504b6e.0
+        for <linux-kernel@vger.kernel.org>; Sat, 06 Jan 2024 06:14:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704550499; x=1705155299; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=70BmQ1AAqBQF/HMHseYDQ1nTDNOHkvcVEOwfs5CBfAw=;
+        b=XOtG4yaRuQko11eLz9TgCAdWPCyv61OKM/sqlt+ObOmFY06bXEKndh5uC9B1b8R2Bv
+         x5T+PutvcEJ+Bn57SQsgGwSv8a6co2wmK/uKYTuF0I4zII8XrQ4WV5WXxdxpVol1RnDe
+         sEL7GyXi+CL6oxOKHwXQvvVjFb3TKC5T9VnL70EGitgynCAMU3r/32m04zxlKsbkKrqt
+         twJ6CrzEX1Y2oHJ8CNXcvUaSyHOElNmbqoDiB/r56rYSD7j7LxNvBiPXa+lu+V32DWr+
+         vhJIcf2fhtq7iMzMUw4ERXMyTaWY5uZunmgg71V1euv1RKdoTXdWU2Qc7rUL71YWcMB9
+         sPQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704550499; x=1705155299;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=70BmQ1AAqBQF/HMHseYDQ1nTDNOHkvcVEOwfs5CBfAw=;
+        b=VNrnIn/8GfyY3FlRFYEVQDNq4GxCpDgViKakD6mLouFhCbNmruSkjwrYzuNZT8i+o2
+         DM4f/S4giCUD5yZ4OM7uUWH6OyXOk8A12pZvpH2g1aYu9izumgPxVAhCI4+sibXr8v7a
+         fT+78sPeHuXvLn42DztvUGjkSyL6i+rSyoVdfnJne/SBTMQcyV4rm9/yGUnIejOJ6668
+         ERnQ8MQrLCB69hic4kM5usCVs3ZbwvT3G4ohJMD6heLnZPgALqULbDnfST2sXX2MN/8m
+         ahGn5l2trJjRHrIad4zX99D/KDu1KW1jhtdI1nlvWA3f4iDpCvSLSfxI/JBWDuiAM0Ak
+         7h0w==
+X-Gm-Message-State: AOJu0Yzn52q7tWIkE/5uuzO7PiHRToIA9zgrgHdBXAkNhV5uReRXAFbx
+	1JoHIHgJHtUcwAh0XRSl7Tk=
+X-Google-Smtp-Source: AGHT+IGSdb9c7+Nu8KHp/gytkNLMwMgd3BPpCK1bPyMhFIqjH0pYoq/PPNkGN5lmBKH/185POMYmVA==
+X-Received: by 2002:a05:6358:70c:b0:170:ee27:bfa1 with SMTP id e12-20020a056358070c00b00170ee27bfa1mr986956rwj.5.1704550498730;
+        Sat, 06 Jan 2024 06:14:58 -0800 (PST)
+Received: from anfanite396-Predator-PH315-51.. ([202.43.120.140])
+        by smtp.gmail.com with ESMTPSA id qj14-20020a17090b28ce00b0028afdb88d08sm3050268pjb.23.2024.01.06.06.14.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 06 Jan 2024 06:14:58 -0800 (PST)
+From: Dipam Turkar <dipamt1729@gmail.com>
+To: alexander.deucher@amd.com
+Cc: christian.koenig@amd.com,
+	Xinhui.Pan@amd.com,
+	airlied@gmail.com,
+	daniel@ffwll.ch,
+	amd-gfx@lists.freedesktop.org,
+	dri-devel@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org,
+	Dipam Turkar <dipamt1729@gmail.com>
+Subject: [PATCH 1/1] Refactor radeon driver to use drm_gem_create_map_offset() instead of its custom implementation for associating GEM object with a fake offset. Since, we already have a generic implementation, we don't need the custom function and it is better to standardize the code.
+Date: Sat,  6 Jan 2024 19:44:23 +0530
+Message-Id: <20240106141422.10734-1-dipamt1729@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20240106-pxa-ssp-v2-1-69ac9f028bba@skole.hr>
-X-B4-Tracking: v=1; b=H4sIAJRfmWUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyjHQUlJIzE
- vPSU3UzU4B8JSMDIxMDQwMz3YKKRN3i4gJdUyMjcxPTFBMjE0MLJaDqgqLUtMwKsEnRsbW1AHa
- lQ3lZAAAA
-To: Arnd Bergmann <arnd@arndb.de>, 
- =?utf-8?q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>, 
- Robert Jarzmik <robert.jarzmik@free.fr>
-Cc: Lubomir Rintel <lkundrak@v3.sk>, zhang songyi <zhang.songyi@zte.com.cn>, 
- soc@kernel.org, linux-arm-kernel@lists.infradead.org, 
- linux-kernel@vger.kernel.org, 
- =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1552;
- i=duje.mihanovic@skole.hr; h=from:subject:message-id;
- bh=nG1Ud3E/McbOgiucrgVOFbNv69PsS0D3QewrfR7q2qI=;
- b=owEBbQKS/ZANAwAIAZoRnrBCLZbhAcsmYgBlmV+erp7NYDOlDGSNcq79EREE1t7nDQqu0YJxQ
- CpPJ52xTf2JAjMEAAEIAB0WIQRT351NnD/hEPs2LXiaEZ6wQi2W4QUCZZlfngAKCRCaEZ6wQi2W
- 4XezEACZ5xs9RVZqA8fSBiecFOpVS6RMzaeMScr8A02opWHWnRLJb5mGbECUwjRsFqT1vX2Bl+t
- T9NMx5aLt4jhYTE1Uj0qN3mooLCes/VIKg6+VJMELbnFe5F7e/YR/MHVoP0MlRJ6PPL0zuwCi3k
- 4TY0/jzpRWi/OfNyhDT0G9VBFQahAHMyAQdSEPJ7iARzGRicXq4bTyIXvrIq11EQ0l5bDEHEQ6C
- 4/HWJL18DKOSOQGW0bhaIX+Terkt5sLiP1he60rdqlf4/Yv8vX1nUVxGWUmbj2w3TphbIeO4jBa
- 0jIrsOGPgQrI6R+PDYmVqAlDN48ccKUx32aueMABRPknJckb2fVYC7miJSmEHuo0/eu41mAJpLW
- 1Lj6tSouB8TiQc20pZEXGYVuvJ9D2q/D7s8QMO+5HYoxblyVsEPDZhuoqGVTrqy3VwVIV+QJ+nk
- FUU+8UnmYGAOS1NT46/NFTWV2T83g4u09tiOKG0M3nGc5bInfgcIpnAWjpx85KKw7X6/boN75gy
- fYBOZm1gjun8MMcE+UL743T/dobU64ujdEgO5VRFD+zeTNetcuS47yZ54+nv1UQiYIrOqkBHs4R
- l86dEDA1HVzG/um26eg3ZusbpcDJGRE4D3iac7kPjdDi7gOk3bpBIYUfjC0mvubq1CujTZ6l2lG
- W8G8qP6LIJo1kjQ==
-X-Developer-Key: i=duje.mihanovic@skole.hr; a=openpgp;
- fpr=53DF9D4D9C3FE110FB362D789A119EB0422D96E1
 
-On ARM64 platforms, id->data is a 64-bit value and casting it to a
-32-bit integer causes build errors. Cast it to uintptr_t instead.
-
-The id->driver_data cast is unnecessary, so drop it.
-
-Signed-off-by: Duje Mihanović <duje.mihanovic@skole.hr>
+Signed-off-by: Dipam Turkar <dipamt1729@gmail.com>
 ---
-This patch is necessary for my Marvell PXA1908 series to compile successfully
-with allyesconfig:
-https://lore.kernel.org/all/20231102-pxa1908-lkml-v7-0-cabb1a0cb52b@skole.hr/
+ drivers/gpu/drm/radeon/radeon_drv.c |  2 +-
+ drivers/gpu/drm/radeon/radeon_gem.c | 24 ++----------------------
+ 2 files changed, 3 insertions(+), 23 deletions(-)
 
-Changes in v2:
-- Change first cast to (uintptr_t)
-- Drop second cast
-- Link to v1: https://lore.kernel.org/20240103210604.16877-1-duje.mihanovic@skole.hr
----
- drivers/soc/pxa/ssp.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/soc/pxa/ssp.c b/drivers/soc/pxa/ssp.c
-index a1e8a07f7275..7af04e8b8163 100644
---- a/drivers/soc/pxa/ssp.c
-+++ b/drivers/soc/pxa/ssp.c
-@@ -152,11 +152,11 @@ static int pxa_ssp_probe(struct platform_device *pdev)
- 	if (dev->of_node) {
- 		const struct of_device_id *id =
- 			of_match_device(of_match_ptr(pxa_ssp_of_ids), dev);
--		ssp->type = (int) id->data;
-+		ssp->type = (uintptr_t) id->data;
- 	} else {
- 		const struct platform_device_id *id =
- 			platform_get_device_id(pdev);
--		ssp->type = (int) id->driver_data;
-+		ssp->type = id->driver_data;
+diff --git a/drivers/gpu/drm/radeon/radeon_drv.c b/drivers/gpu/drm/radeon/radeon_drv.c
+index fa531493b111..f590ed65ffba 100644
+--- a/drivers/gpu/drm/radeon/radeon_drv.c
++++ b/drivers/gpu/drm/radeon/radeon_drv.c
+@@ -578,7 +578,7 @@ static const struct drm_driver kms_driver = {
+ 	.ioctls = radeon_ioctls_kms,
+ 	.num_ioctls = ARRAY_SIZE(radeon_ioctls_kms),
+ 	.dumb_create = radeon_mode_dumb_create,
+-	.dumb_map_offset = radeon_mode_dumb_mmap,
++	.dumb_map_offset = drm_gem_dumb_map_offset,
+ 	.fops = &radeon_driver_kms_fops,
  
- 		/* PXA2xx/3xx SSP ports starts from 1 and the internal pdev->id
- 		 * starts from 0, do a translation here
-
----
-base-commit: 610a9b8f49fbcf1100716370d3b5f6f884a2835a
-change-id: 20240106-pxa-ssp-522745d42418
-
-Best regards,
+ 	.gem_prime_import_sg_table = radeon_gem_prime_import_sg_table,
+diff --git a/drivers/gpu/drm/radeon/radeon_gem.c b/drivers/gpu/drm/radeon/radeon_gem.c
+index 358d19242f4b..99794c550d2c 100644
+--- a/drivers/gpu/drm/radeon/radeon_gem.c
++++ b/drivers/gpu/drm/radeon/radeon_gem.c
+@@ -31,6 +31,7 @@
+ 
+ #include <drm/drm_device.h>
+ #include <drm/drm_file.h>
++#include <drm/dem_gem.h>
+ #include <drm/drm_gem_ttm_helper.h>
+ #include <drm/radeon_drm.h>
+ 
+@@ -480,33 +481,12 @@ int radeon_gem_set_domain_ioctl(struct drm_device *dev, void *data,
+ 	return r;
+ }
+ 
+-int radeon_mode_dumb_mmap(struct drm_file *filp,
+-			  struct drm_device *dev,
+-			  uint32_t handle, uint64_t *offset_p)
+-{
+-	struct drm_gem_object *gobj;
+-	struct radeon_bo *robj;
+-
+-	gobj = drm_gem_object_lookup(filp, handle);
+-	if (gobj == NULL) {
+-		return -ENOENT;
+-	}
+-	robj = gem_to_radeon_bo(gobj);
+-	if (radeon_ttm_tt_has_userptr(robj->rdev, robj->tbo.ttm)) {
+-		drm_gem_object_put(gobj);
+-		return -EPERM;
+-	}
+-	*offset_p = radeon_bo_mmap_offset(robj);
+-	drm_gem_object_put(gobj);
+-	return 0;
+-}
+-
+ int radeon_gem_mmap_ioctl(struct drm_device *dev, void *data,
+ 			  struct drm_file *filp)
+ {
+ 	struct drm_radeon_gem_mmap *args = data;
+ 
+-	return radeon_mode_dumb_mmap(filp, dev, args->handle, &args->addr_ptr);
++	return drm_gem_dumb_map_offset(filp, dev, args->handle, &args->addr_ptr);
+ }
+ 
+ int radeon_gem_busy_ioctl(struct drm_device *dev, void *data,
 -- 
-Duje Mihanović <duje.mihanovic@skole.hr>
-
+2.34.1
 
 
