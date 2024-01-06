@@ -1,102 +1,124 @@
-Return-Path: <linux-kernel+bounces-18630-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18631-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 58E9882603E
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 16:45:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D59F826042
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 16:47:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 04436283E46
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 15:45:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E0EA4283E46
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 15:47:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C4DF8826;
-	Sat,  6 Jan 2024 15:45:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C63B1848A;
+	Sat,  6 Jan 2024 15:47:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="OSXQfSwW"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HTW3Fo9K"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACBFF79D2;
-	Sat,  6 Jan 2024 15:45:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=tNlB7/uA5K4ebymu4kVPBZ4jtrA/OS7aEQ6lXpdIR98=; b=OSXQfSwWh2SrU+sRxW2RNmUfGR
-	aFSo3urtubLOcYgj4i+G6VGqiNBD5HQ0aBEMe35JjazFXiN5FUwRrnQ2Wj0MngjhmFtAHZAQt6dxY
-	BogU3KL6nkFDnfXYEf4EC+QPmbi4fRpdld+4u5o7Vaw1KHPCl/kLfluZiRpPoEbjHon0=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1rM8rE-004WpA-CJ; Sat, 06 Jan 2024 16:45:08 +0100
-Date: Sat, 6 Jan 2024 16:45:08 +0100
-From: Andrew Lunn <andrew@lunn.ch>
-To: Sergey Ryazanov <ryazanov.s.a@gmail.com>
-Cc: Jie Luo <quic_luoj@quicinc.com>, agross@kernel.org,
-	andersson@kernel.org, konrad.dybcio@linaro.org, davem@davemloft.net,
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org, hkallweit1@gmail.com, linux@armlinux.org.uk,
-	robert.marko@sartura.hr, linux-arm-msm@vger.kernel.org,
-	netdev@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, quic_srichara@quicinc.com
-Subject: Re: [PATCH v4 0/5] support ipq5332 platform
-Message-ID: <895eadd7-1631-4b6b-8db4-d371f2e52611@lunn.ch>
-References: <20231225084424.30986-1-quic_luoj@quicinc.com>
- <a6a50fb6-871f-424c-a146-12b2628b8b64@gmail.com>
- <cfb04c82-3cc3-49f6-9a8a-1f6d1a22df40@quicinc.com>
- <dd05a599-247a-4516-8ad3-7550ceea99f7@gmail.com>
- <ac1977f5-cd6a-4f16-b0a0-f4322c34c5f5@quicinc.com>
- <bdeca791-f2e5-4256-b386-a75c03f93686@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A52BE79FE;
+	Sat,  6 Jan 2024 15:47:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-3368d1c7b23so526429f8f.0;
+        Sat, 06 Jan 2024 07:47:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704556062; x=1705160862; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=bKMLLD2ZxyA0kUaU9sIopyxyu3bVgkbt2roLK+GW/Zc=;
+        b=HTW3Fo9KieSGr41owv+U5S/YF3euDRVkKkrZO6I/7uUKRj7IE7Lxp7vdwzWhXoWS5H
+         apj6FO9RzghVMarBiXplIuPMvuC23V785JBtgJIGf/2Shvrop2A8lSXCc7VggTs6Mvhs
+         yuK4dsjHW0t7BoOjrtWbICwGZUB/ziiEr3VQ7mCtwa8imR7dJGqB3jk4A6M7DQkvA8Nf
+         AKs4QlkxSCc/o4cOx8smSILwfcoxKMouG2JWkGzo2wseLwYcnz17B+2P2qIAANpMEcjR
+         up32mgpggxvkjB8pGdAtiwMG+2qFJscnQOfM0h4ZS9cL2f4ywalLx3Cvu6Wln6+MKjBq
+         Qg+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704556062; x=1705160862;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=bKMLLD2ZxyA0kUaU9sIopyxyu3bVgkbt2roLK+GW/Zc=;
+        b=ezzs2y7NMDqqjw1RsMaQ6aGzCy1iWnayYi6t4/rB+/9LVMNumJwW5CKmxq+OGMw7mk
+         Dxcz/88T+o2HrS8rhDBkxZjeli3Y4FRyNinlRBNtd6LXoUUXDDiUqf2AerQhWmoq/6Wi
+         OJHjDINbt/Rn9ictm6E1DgPkPCNL7rIuxgcjC54a40AYtHAyg/hSU8abgOB78BwIg4M+
+         njaEfuwwjcgLlAnCLEpLyDNUf7InYurOtpeIsWqY6Q3F3Ztjk+Knm+kz9zyyi4jOvw0/
+         axvqvCNbCpcbttJGIVjkCEJMDtoJiSwLiXgk47WWm1IdoQYRdw+gpt425xSroM3WEMuo
+         IpdA==
+X-Gm-Message-State: AOJu0YwqnPbJYwMtGwfdJUeWWqalFjFV9OxGOHloWiR7bz9XfQ4lJl1x
+	ZyzRO/8AJ1OWoLzmJ2m4nXk=
+X-Google-Smtp-Source: AGHT+IGVlZUFr7ve40PWM95dSxWGeu3aAnifrfL2vCyVtUxia66Gh2Z9Rm5K/5YvquVm7HGYMfgF6Q==
+X-Received: by 2002:a05:6000:1971:b0:336:873b:6b21 with SMTP id da17-20020a056000197100b00336873b6b21mr629967wrb.33.1704556061797;
+        Sat, 06 Jan 2024 07:47:41 -0800 (PST)
+Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
+        by smtp.gmail.com with ESMTPSA id j1-20020adfe501000000b0033686e8f02dsm3585831wrm.45.2024.01.06.07.47.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 06 Jan 2024 07:47:41 -0800 (PST)
+From: Colin Ian King <colin.i.king@gmail.com>
+To: Henrique de Moraes Holschuh <hmh@hmh.eng.br>,
+	Hans de Goede <hdegoede@redhat.com>,
+	=?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+	ibm-acpi-devel@lists.sourceforge.net,
+	platform-driver-x86@vger.kernel.org
+Cc: kernel-janitors@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH][next] platform/x86: thinkpad_acpi: remove redundant assignment to variable i
+Date: Sat,  6 Jan 2024 15:47:40 +0000
+Message-Id: <20240106154740.55202-1-colin.i.king@gmail.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <bdeca791-f2e5-4256-b386-a75c03f93686@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-> I just realized that the UNIPHY block is a MII (probably SGMII) controller.
-> Isn't it? And I expect that it responsible more then just for clock
-> enabling. It should also activate and perform a basic configuration of MII
-> for actual data transmission. If so, then it should placed somewhere under
-> drivers/net/phy or drivers/net/pcs.
+The variable i is being initialized with the value 0 that is never
+read, it is being re-assigned 0 again in a for-loop statement later
+on. The initialization is redundant and can be removed.
 
-Before we decide that, we need a description of what the UNIPHY
-actually does, what registers it has, etc. Sometimes blocks like this
-get split into a generic PHY, aka drivers/phy/ and a PCS driver. This
-would be true if the UNIPHY is also used for USB SERDES, SATA SERDES
-etc. The SERDES parts go into a generic PHY driver, and the SGMII on
-to of the SERDES is placed is a PCS driver.
+The initialization of variable n can also be deferred after the
+sanity check on pointer n and the declaration of all the int variables
+can be combined as a final code clear-up.
 
-The problem i have so far is that there is no usable description of
-any of this hardware, and the developers trying to produce drivers for
-this hardware don't actually seem to understand the Linux architecture
-for things like this.
+Cleans up clang scan build warning:
+warning: Value stored to 'i' is never read [deadcode.DeadStores]
 
-> As far as I understand, we basically agree that clocks configuration can be
-> implemented based on the clock API using a more specialized driver(s) than
-> MDIO. The only obstacle is the PHY chip initialization issue explained
-> below.
-> Thank you for this compact yet detailed summary. Now it much more clear,
-> what this phy chip requires to be initialized.
-> 
-> Looks like you need to implement at least two drivers:
-> 1. chip (package) level driver that is responsible for basic "package"
-> initialization;
-> 2. phy driver to handle actual phy capabilities.
+Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+---
+ drivers/platform/x86/thinkpad_acpi.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
-Nope. As i keep saying, please look at the work Christian is
-doing. phylib already has the concept of a PHY package, e.g. look at
-the MSCC driver, and how it uses devm_phy_package_join(). What is
-missing is a DT binding which allows package properties to be
-expressed in DT. And this is what Christian is adding.
+diff --git a/drivers/platform/x86/thinkpad_acpi.c b/drivers/platform/x86/thinkpad_acpi.c
+index c4895e9bc714..7bf91cfd3e51 100644
+--- a/drivers/platform/x86/thinkpad_acpi.c
++++ b/drivers/platform/x86/thinkpad_acpi.c
+@@ -6208,17 +6208,15 @@ static int thermal_get_sensor(int idx, s32 *value)
+ 
+ static int thermal_get_sensors(struct ibm_thermal_sensors_struct *s)
+ {
+-	int res, i;
+-	int n;
+-
+-	n = 8;
+-	i = 0;
++	int res, i, n;
+ 
+ 	if (!s)
+ 		return -EINVAL;
+ 
+ 	if (thermal_read_mode == TPACPI_THERMAL_TPEC_16)
+ 		n = 16;
++	else
++		n = 8;
+ 
+ 	for (i = 0 ; i < n; i++) {
+ 		res = thermal_get_sensor(i, &s->temp[i]);
+-- 
+2.39.2
 
-	  Andrew
 
