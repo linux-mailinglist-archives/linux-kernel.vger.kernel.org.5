@@ -1,131 +1,94 @@
-Return-Path: <linux-kernel+bounces-18598-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18599-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DCFD4825FE0
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 15:34:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 190D8825FE1
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 15:35:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EAE001C21376
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 14:34:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B9CED283FFC
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 14:34:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25E7F79F4;
-	Sat,  6 Jan 2024 14:34:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4468883D;
+	Sat,  6 Jan 2024 14:34:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b="Be2kNutc"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="RWzMiQrY"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD47B8820;
-	Sat,  6 Jan 2024 14:34:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arinc9.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 3B016FF803;
-	Sat,  6 Jan 2024 14:33:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arinc9.com; s=gm1;
-	t=1704551644;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=O9f0inLiNdvMCgAXDzTOMFJm8AwgD4xAovOKS/w8Rdk=;
-	b=Be2kNutcdju7oMbb8ncEf8YM/PrItPtdRjqrlnG7cw6TyUUav9PHvJ6jwQbyfXhTgsJO8W
-	k1LoS4yVcy+iNJ4cEeBnHsSiKt1iflrelvfXAjxc7P8q9E292mPmfUkZWlTpcohM/dgEe3
-	q6ELEjoYY4JU9TEE8gYio88A7Vq5WRmZo3vEaN69Cbhjy5jaF+dFOIK0zXsnf9EJlZL8NB
-	pQLt99kLI7XB3BYcD45A8ZtaQ9l+AnW33Ex0iqDP2kqQdTIMIsRB7WRki4bebDi4g3xK3f
-	U11zqQdYEUpWVwWKVep6KvzPtSPXtR9ivGJlF8uQj5hRCCvnSRSpeo456xLi+A==
-Message-ID: <6d6169bc-ce33-46e2-8226-0fef9f92949b@arinc9.com>
-Date: Sat, 6 Jan 2024 17:33:56 +0300
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 277178826;
+	Sat,  6 Jan 2024 14:34:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704551689; x=1736087689;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=upqLxaJtbw7oUd8/dQ4/u1/YUv0bdd0aioloGDo7Hss=;
+  b=RWzMiQrYvgpPx8dSiXAH4eEi1ny5YF3qriirfNCy0WtMtDjrMjGQb5o2
+   IOHIo+Ee+iJC84QQfJPx7Hm6VUVo5gi/VB/UXeQPV7eTRKvApTazewDd/
+   3YTwrRNmN3THN07g5E2hWE5dsSFqcbDIz92yblsAPL3pszyH6EqRpGcd7
+   RnK4bbExscNl/m4xKN30HcM3zP9eINN9QMtTRMWt5UUdxvd/f/9cvj8WT
+   5wq/w6hph0j5jdEF5X1UvPtGAkhF5CoLRCeA9nG08jP93pW3xxH+bEYTG
+   szvxArIlgAUpy3zdQL0gOGTNK8FpPPb4cr4PwPqDl8L3V9Edu8mkKjPVb
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10945"; a="401440963"
+X-IronPort-AV: E=Sophos;i="6.04,337,1695711600"; 
+   d="scan'208";a="401440963"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jan 2024 06:34:48 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10945"; a="730726614"
+X-IronPort-AV: E=Sophos;i="6.04,337,1695711600"; 
+   d="scan'208";a="730726614"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga003.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jan 2024 06:34:45 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rM7l4-0000000Bvia-1jXH;
+	Sat, 06 Jan 2024 16:34:42 +0200
+Date: Sat, 6 Jan 2024 16:34:42 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+	akpm@linux-foundation.org, christophe.jaillet@wanadoo.fr,
+	David.Laight@aculab.com, ddiss@suse.de, geert@linux-m68k.org
+Subject: Re: [PATCH v3 0/4] kstrtox: introduce memparse_safe()
+Message-ID: <ZZllAi_GbsoDF5Eg@smile.fi.intel.com>
+References: <cover.1704324320.git.wqu@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v2 1/7] net: dsa: mt7530: always trap frames to
- active CPU port on MT7530
-To: Vladimir Oltean <olteanv@gmail.com>
-Cc: Daniel Golle <daniel@makrotopia.org>,
- Landen Chao <Landen.Chao@mediatek.com>, DENG Qingfang <dqfext@gmail.com>,
- Sean Wang <sean.wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>,
- Florian Fainelli <f.fainelli@gmail.com>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- Russell King <linux@armlinux.org.uk>,
- Frank Wunderlich <frank-w@public-files.de>,
- Bartel Eerdekens <bartel.eerdekens@constell8.be>, mithat.guner@xeront.com,
- erkin.bozoglu@xeront.com, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-mediatek@lists.infradead.org
-References: <20231227044347.107291-1-arinc.unal@arinc9.com>
- <20231227044347.107291-1-arinc.unal@arinc9.com>
- <20231227044347.107291-2-arinc.unal@arinc9.com>
- <20231227044347.107291-2-arinc.unal@arinc9.com>
- <20240104152232.jkoqiuwk3rd24rpm@skbuf>
-Content-Language: en-US
-From: =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
-In-Reply-To: <20240104152232.jkoqiuwk3rd24rpm@skbuf>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: arinc.unal@arinc9.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1704324320.git.wqu@suse.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On 4.01.2024 18:22, Vladimir Oltean wrote:
-> On Wed, Dec 27, 2023 at 07:43:41AM +0300, Arınç ÜNAL wrote:
->> @@ -3075,6 +3071,38 @@ static int mt753x_set_mac_eee(struct dsa_switch *ds, int port,
->>   	return 0;
->>   }
->>   
->> +static void
->> +mt753x_conduit_state_change(struct dsa_switch *ds,
->> +			    const struct net_device *conduit,
->> +			    bool operational)
->> +{
->> +	struct dsa_port *cpu_dp = conduit->dsa_ptr;
->> +	struct mt7530_priv *priv = ds->priv;
->> +	u8 mask;
->> +	int val = 0;
-> 
-> Longest line first.
-> 
->> +
->> +	/* Set the CPU port to trap frames to for MT7530. Trapped frames will be
->> +	 * forwarded to the numerically smallest CPU port which the DSA conduit
->> +	 * interface its affine to is up.
-> 
-> "first CPU port whose conduit interface is up"
-> 
->> +	 */
->> +	if (priv->id != ID_MT7530 && priv->id != ID_MT7621)
->> +		return;
->> +
->> +	mask = BIT(cpu_dp->index);
->> +
->> +	if (operational)
->> +		priv->active_cpu_ports |= mask;
->> +	else
->> +		priv->active_cpu_ports &= ~mask;
->> +
->> +	if (priv->active_cpu_ports)
->> +		val =
->> +		    CPU_EN |
->> +		    CPU_PORT(__ffs((unsigned long)priv->active_cpu_ports));
-> 
-> I don't think the type cast is necessary (implicit type promotion takes place).
-> 
-> Also, it is customary to put {} for multi-line "if" blocks, even if they are
-> made up of a single expression.
-> 
-> But without the type cast, it could look like this.
-> 
-> 	if (priv->active_cpu_ports)
-> 		val = CPU_EN | CPU_PORT(__ffs(priv->active_cpu_ports));
+On Thu, Jan 04, 2024 at 09:57:47AM +1030, Qu Wenruo wrote:
+> [CHANGELOG]
+> v3:
+> - Fix the 32bit pointer pattern in the test case
+>   The old pointer pattern for 32 bit systems is in fact 40 bits,
+>   which would still lead to sparse warning.
+>   The newer pattern is using UINTPTR_MAX to trim the pattern, then
+>   converted to a pointer, which should not cause any trimmed bits and
+>   make sparse happy.
 
-Will do. Thanks for dealing with my rookie mistakes. :)
+Having test cases is quite good, thanks!
+But as I understood what Alexey wanted, is not using the kstrtox files for this.
+You can introduce it in the cmdline.c, correct? Just include local "kstrtox.h".
 
-Arınç
+I'm on leave till end of the month, I'll look at this later.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
 
