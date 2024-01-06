@@ -1,103 +1,131 @@
-Return-Path: <linux-kernel+bounces-18597-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18598-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C489825FDE
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 15:33:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DCFD4825FE0
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 15:34:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AEA68283F78
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 14:33:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EAE001C21376
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 14:34:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A71B79F1;
-	Sat,  6 Jan 2024 14:33:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25E7F79F4;
+	Sat,  6 Jan 2024 14:34:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b="Be2kNutc"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5371C79D0
-	for <linux-kernel@vger.kernel.org>; Sat,  6 Jan 2024 14:32:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rM7jC-0008H8-MT; Sat, 06 Jan 2024 15:32:46 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rM7jA-000pLJ-Ua; Sat, 06 Jan 2024 15:32:44 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rM7jA-00414h-2m;
-	Sat, 06 Jan 2024 15:32:44 +0100
-Date: Sat, 6 Jan 2024 15:32:44 +0100
-From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Duje =?utf-8?Q?Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
-Cc: Arnd Bergmann <arnd@arndb.de>, Robert Jarzmik <robert.jarzmik@free.fr>, 
-	Lubomir Rintel <lkundrak@v3.sk>, zhang songyi <zhang.songyi@zte.com.cn>, soc@kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] soc: pxa: ssp: fix casts
-Message-ID: <nrdjrxey27v4lodthfmut3g4ms7uf7az5zruzkmfdwijmktjjz@6sphjciyk6p4>
-References: <20240106-pxa-ssp-v2-1-69ac9f028bba@skole.hr>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD47B8820;
+	Sat,  6 Jan 2024 14:34:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arinc9.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 3B016FF803;
+	Sat,  6 Jan 2024 14:33:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arinc9.com; s=gm1;
+	t=1704551644;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=O9f0inLiNdvMCgAXDzTOMFJm8AwgD4xAovOKS/w8Rdk=;
+	b=Be2kNutcdju7oMbb8ncEf8YM/PrItPtdRjqrlnG7cw6TyUUav9PHvJ6jwQbyfXhTgsJO8W
+	k1LoS4yVcy+iNJ4cEeBnHsSiKt1iflrelvfXAjxc7P8q9E292mPmfUkZWlTpcohM/dgEe3
+	q6ELEjoYY4JU9TEE8gYio88A7Vq5WRmZo3vEaN69Cbhjy5jaF+dFOIK0zXsnf9EJlZL8NB
+	pQLt99kLI7XB3BYcD45A8ZtaQ9l+AnW33Ex0iqDP2kqQdTIMIsRB7WRki4bebDi4g3xK3f
+	U11zqQdYEUpWVwWKVep6KvzPtSPXtR9ivGJlF8uQj5hRCCvnSRSpeo456xLi+A==
+Message-ID: <6d6169bc-ce33-46e2-8226-0fef9f92949b@arinc9.com>
+Date: Sat, 6 Jan 2024 17:33:56 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="3ocldl2dp53qaj2y"
-Content-Disposition: inline
-In-Reply-To: <20240106-pxa-ssp-v2-1-69ac9f028bba@skole.hr>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v2 1/7] net: dsa: mt7530: always trap frames to
+ active CPU port on MT7530
+To: Vladimir Oltean <olteanv@gmail.com>
+Cc: Daniel Golle <daniel@makrotopia.org>,
+ Landen Chao <Landen.Chao@mediatek.com>, DENG Qingfang <dqfext@gmail.com>,
+ Sean Wang <sean.wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>,
+ Florian Fainelli <f.fainelli@gmail.com>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ Russell King <linux@armlinux.org.uk>,
+ Frank Wunderlich <frank-w@public-files.de>,
+ Bartel Eerdekens <bartel.eerdekens@constell8.be>, mithat.guner@xeront.com,
+ erkin.bozoglu@xeront.com, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-mediatek@lists.infradead.org
+References: <20231227044347.107291-1-arinc.unal@arinc9.com>
+ <20231227044347.107291-1-arinc.unal@arinc9.com>
+ <20231227044347.107291-2-arinc.unal@arinc9.com>
+ <20231227044347.107291-2-arinc.unal@arinc9.com>
+ <20240104152232.jkoqiuwk3rd24rpm@skbuf>
+Content-Language: en-US
+From: =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
+In-Reply-To: <20240104152232.jkoqiuwk3rd24rpm@skbuf>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: arinc.unal@arinc9.com
 
+On 4.01.2024 18:22, Vladimir Oltean wrote:
+> On Wed, Dec 27, 2023 at 07:43:41AM +0300, Arınç ÜNAL wrote:
+>> @@ -3075,6 +3071,38 @@ static int mt753x_set_mac_eee(struct dsa_switch *ds, int port,
+>>   	return 0;
+>>   }
+>>   
+>> +static void
+>> +mt753x_conduit_state_change(struct dsa_switch *ds,
+>> +			    const struct net_device *conduit,
+>> +			    bool operational)
+>> +{
+>> +	struct dsa_port *cpu_dp = conduit->dsa_ptr;
+>> +	struct mt7530_priv *priv = ds->priv;
+>> +	u8 mask;
+>> +	int val = 0;
+> 
+> Longest line first.
+> 
+>> +
+>> +	/* Set the CPU port to trap frames to for MT7530. Trapped frames will be
+>> +	 * forwarded to the numerically smallest CPU port which the DSA conduit
+>> +	 * interface its affine to is up.
+> 
+> "first CPU port whose conduit interface is up"
+> 
+>> +	 */
+>> +	if (priv->id != ID_MT7530 && priv->id != ID_MT7621)
+>> +		return;
+>> +
+>> +	mask = BIT(cpu_dp->index);
+>> +
+>> +	if (operational)
+>> +		priv->active_cpu_ports |= mask;
+>> +	else
+>> +		priv->active_cpu_ports &= ~mask;
+>> +
+>> +	if (priv->active_cpu_ports)
+>> +		val =
+>> +		    CPU_EN |
+>> +		    CPU_PORT(__ffs((unsigned long)priv->active_cpu_ports));
+> 
+> I don't think the type cast is necessary (implicit type promotion takes place).
+> 
+> Also, it is customary to put {} for multi-line "if" blocks, even if they are
+> made up of a single expression.
+> 
+> But without the type cast, it could look like this.
+> 
+> 	if (priv->active_cpu_ports)
+> 		val = CPU_EN | CPU_PORT(__ffs(priv->active_cpu_ports));
 
---3ocldl2dp53qaj2y
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Will do. Thanks for dealing with my rookie mistakes. :)
 
-Hello Duje,
-
-On Sat, Jan 06, 2024 at 03:11:33PM +0100, Duje Mihanovi=C4=87 wrote:
-> On ARM64 platforms, id->data is a 64-bit value and casting it to a
-> 32-bit integer causes build errors. Cast it to uintptr_t instead.
->=20
-> The id->driver_data cast is unnecessary, so drop it.
->=20
-> Signed-off-by: Duje Mihanovi=C4=87 <duje.mihanovic@skole.hr>
-
-Reviewed-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
-
-Thanks
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=C3=B6nig         =
-   |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---3ocldl2dp53qaj2y
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmWZZIsACgkQj4D7WH0S
-/k7AqwgApVowd0L0QXcUTJ4iXTbT4jKrA7ZfmmagX+WClWlOwl431TSDCdkp55+z
-uzmEnpmEjSftVTHmw4gq1a+TXM0dmxExJ1Rw6klFWu30RWmFbas7pgaB9iHwcNOU
-gCBBMWdTsogJ5TMtfzCtWOasPxubowK38vNhcKBRFTCUF389eDsd4gvuR1kivqzd
-56ZPsiOKVLiio9n+daUSgRWsUGZteZwLIyHk2dX0Znty40trcHJWkBHbv+cah/Bp
-hdWa45xzzN1jWBPykdsoeEW3yEZH2PzD5C7S4ewqeEZ2eODxY6Jujkh0lo6lpKsx
-s4kAwp5pdjk/DR7irLKXCTVtbZuAzQ==
-=JH91
------END PGP SIGNATURE-----
-
---3ocldl2dp53qaj2y--
+Arınç
 
