@@ -1,64 +1,44 @@
-Return-Path: <linux-kernel+bounces-18723-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18724-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B00F8261CD
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 23:03:55 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B04E8261D3
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 23:05:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A32B128303F
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 22:03:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 98FF71C20FAA
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Jan 2024 22:05:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB2F3101D0;
-	Sat,  6 Jan 2024 22:03:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49A53101CA;
+	Sat,  6 Jan 2024 22:05:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nJQ1aIUW"
+	dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b="Q4MtuX3d"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 807CAF9EC;
-	Sat,  6 Jan 2024 22:03:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-3368b1e056eso665367f8f.3;
-        Sat, 06 Jan 2024 14:03:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704578618; x=1705183418; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Lsex701tK5pEY9KKRutw30UPF14FTBUAFWLK2f3CQHw=;
-        b=nJQ1aIUWgaj80sClMj6gXPIMV3QI8mB4mI7KHOFwb8DEJ7gxixsHnZqVcwEgvzD+PF
-         SvRtaLohc3Myh4aMYP19gZcp0uDT+KknFeT1FbR0yCX4RNdKyoTpjH+NWoPGo9QowcJ9
-         yvVy2QIlAZ+GP+hEm+4ipaPXo9PxSq4naZbrQIOEbNVMhoMcF2KP/iBizO3CkjneveYY
-         Yq6+cWGzeAe2n5P4CAV3dIW/Cspx4KjPUyspdUWmxD5WCJH1NnjmVlKLohF+Kd2xJMnx
-         iUsnP59SHrAnxbxcKl6POQUBdSKJdZi8jZ0TCi+szQ19wUwnVD2EvG/FiYMoollJgUa+
-         mQUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704578618; x=1705183418;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Lsex701tK5pEY9KKRutw30UPF14FTBUAFWLK2f3CQHw=;
-        b=laH2UaLNEHvgPYv+RfxQkqwZxtUjCdwP0GB/RVzLkjmqplGbkGMS0GlZhV3Lkc7zhZ
-         GU9evoq0p6dKdpYl+usUuH6h+q3bAZfXPtX1IiW5l/Y895eAnkC56gYRWi80Sganz+5z
-         VFZvLWRaoxrtWKJ+OevWFofENJyt5eNyrz/XgsmgkXhrGbZAl1lnMbBKFbo/1FkieEaJ
-         da8JTJK78QhGgTnYvYTkg333XaN7SEkLrPDXH+/EDl1qiTXhGR1CrV/QbcFSw6fbLwaG
-         35W83ep2w+GRmpQZoqp8iBUlRqhZ1w35Y3yRGpQsGQEQwT95Uchzwrz7AFzCKqbp/E1l
-         QXjg==
-X-Gm-Message-State: AOJu0YzVDZ4TwRd1o3GzC4uDYQzUQWVCsX8zC21cLKQZwtJrnuDzk38v
-	hFvsvFtJs7QqvCWZ1H5jgQw=
-X-Google-Smtp-Source: AGHT+IGDeerTecMM96jf2+5wf4xdFVF5xLpyn984JWv3i9RYFRE/cXWCFvw3+Vz08LFiSgm/8FroqA==
-X-Received: by 2002:a5d:408a:0:b0:337:555b:d320 with SMTP id o10-20020a5d408a000000b00337555bd320mr747108wrp.39.1704578617487;
-        Sat, 06 Jan 2024 14:03:37 -0800 (PST)
-Received: from [192.168.0.3] ([69.6.8.124])
-        by smtp.gmail.com with ESMTPSA id r16-20020a056000015000b003373ef060d5sm4069972wrx.113.2024.01.06.14.03.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 06 Jan 2024 14:03:36 -0800 (PST)
-Message-ID: <1df87389-d78c-48e0-b743-0fd11bd82b85@gmail.com>
-Date: Sun, 7 Jan 2024 00:03:34 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 103A3F9EC;
+	Sat,  6 Jan 2024 22:05:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
+	t=1704578697; x=1705183497; i=w_armin@gmx.de;
+	bh=o4ZQiy7T7H4VBO5ZGkKv7nQ22efRB5aoihpH8d8Yz38=;
+	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+	 In-Reply-To;
+	b=Q4MtuX3dl/H80xW206xG6/TCGUhLgba8lKHeiV9JhoM+vJlKVl7IPSPlnYA5wa/y
+	 ke5ZlBBLpHlNvnRiLrSeHbkj0/+JSX4O/bEfza1dYhvVKAMJJ2oST6xzbLeLGH+Zj
+	 4R+7uFJzqp22D6yxlGwVztUGhholcxoGRb36RjxNVQFsDF0IEhGKkOSFySQySkgNs
+	 qmi8EI2aTTVtIL1v9Ivijrur4myHHoBmnl/7sCqkAPJspjjm+dyPM3Y+pWtfuRPui
+	 pG8w8JoNqeIaJ7fs/BLyXxyvmzf5cJv4vPW7YhC5pCLb8u934Eax97dY6OicZL/98
+	 RYOlVTjct0RQapp7kg==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [141.30.226.129] ([141.30.226.129]) by mail.gmx.net (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MUosN-1rmKOO07wv-00QgbU; Sat, 06
+ Jan 2024 23:04:57 +0100
+Message-ID: <19a31d3b-d13a-4665-9c84-55cdabfad3f8@gmx.de>
+Date: Sat, 6 Jan 2024 23:04:55 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,87 +46,73 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 0/5] support ipq5332 platform
+Subject: Re: [PATCH] platform/x86: wmi: Fix wmi_dev_probe()
+To: Dan Carpenter <dan.carpenter@linaro.org>
+Cc: Hans de Goede <hdegoede@redhat.com>,
+ =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+ platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+ kernel-janitors@vger.kernel.org
+References: <9c81251b-bc87-4ca3-bb86-843dc85e5145@moroto.mountain>
 Content-Language: en-US
-To: Andrew Lunn <andrew@lunn.ch>
-Cc: Jie Luo <quic_luoj@quicinc.com>, agross@kernel.org, andersson@kernel.org,
- konrad.dybcio@linaro.org, davem@davemloft.net, edumazet@google.com,
- kuba@kernel.org, pabeni@redhat.com, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- hkallweit1@gmail.com, linux@armlinux.org.uk, robert.marko@sartura.hr,
- linux-arm-msm@vger.kernel.org, netdev@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- quic_srichara@quicinc.com
-References: <20231225084424.30986-1-quic_luoj@quicinc.com>
- <a6a50fb6-871f-424c-a146-12b2628b8b64@gmail.com>
- <cfb04c82-3cc3-49f6-9a8a-1f6d1a22df40@quicinc.com>
- <dd05a599-247a-4516-8ad3-7550ceea99f7@gmail.com>
- <ac1977f5-cd6a-4f16-b0a0-f4322c34c5f5@quicinc.com>
- <bdeca791-f2e5-4256-b386-a75c03f93686@gmail.com>
- <895eadd7-1631-4b6b-8db4-d371f2e52611@lunn.ch>
-From: Sergey Ryazanov <ryazanov.s.a@gmail.com>
-In-Reply-To: <895eadd7-1631-4b6b-8db4-d371f2e52611@lunn.ch>
+From: Armin Wolf <W_Armin@gmx.de>
+In-Reply-To: <9c81251b-bc87-4ca3-bb86-843dc85e5145@moroto.mountain>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:B8SoiBX+mZ4LtbySoEE/uBop4v8l4OqMxX2eaFDkW+m/x8FlVrb
+ YCTKxF7+mqW/Vzk9EDB23XU2oULmtbKqR2AU0a6XM11o1GIspuUjYg/7CTh3MvouNBfmIqu
+ /C1msjReMLlAvfy4AqErYhTrQ8RoUGc3ITLyHs4ss+xA1wpBIowO/i1236NXpqI+3KgUocm
+ ENhjzYG3BkPRFXdddOWxA==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:YJ4U83dyBas=;dgFjxe4YCjjQb4bQt9JeYp/f9dE
+ xddwpD9ChpBK2R5BNb7JVmmHptRc1/iMsgirraZ4zInkpnnhp4Y+sgwpr9Yrp20rKQzlV49ow
+ tBEwtM3uthN2yLERg2WbIt53IPY+GPYnLiPfEhVeTBm408fkASPEadKh38hkMJihtR9v0deD5
+ cf+fXCRzN7yBcbtyerGeLO1VWvoxeYCSH7epmpCUeJe7iZ42y5kT4yYE3G1Pk/W45dogYgv8K
+ JSH9TiBtsG2+wLtdk0whWPD+xH2kT9UNu08xEcYxCzcney2E3TbH3xlXiwJnikDVQVPPcldQW
+ 20x8eP1FSlGLBx8AttM9ySikO5DE0ZUTPfIB8RKX/bdWPw7bSoYyj8bvHdcVDdbx+2uhWtotj
+ HP5U7NjHUXWWTEEf8SIT1j19SDIbWZOnlHS4oGb9OZ6dXUlimxhRCdepVk95mdzhQisQPPRSQ
+ 9d3yfZ/pIRdnrbTBtm6ZIbfLBCrPEwEg85zw8EYyjQpTQ/Tqlj7ulTm7uywEmO2JlZnllBPX/
+ 3fM35dL+uHS4TgqSs0Ke/hlLInmMH3OJGwouzPSshZ7hIHBXKQw6a3NfRI1zzX+De4M33kc5+
+ Qdo0hTIjt158S9G1SUh/fsYJk0hLLCQg3TgRPZjZpdKUcMXFYJ1qGkN5AQTU8GQDKQXQWV/Hc
+ f5k6kiPuHDkvH8vZ67s+qvqLhnJkk8wAnP63wUpLWwXF/djZHVJcuVBWNohYwcWfgD0NnQ5qz
+ n5NYCXatPasSJmWJE1zMmtjg9GWaUOxpLQoP23A1zMCjSjP/vBmjvyVI7RR1PzS1oseQ5zWFf
+ BYJZ2lyiDD1ATLfu4lOV8VROwnfFSWXmL5sYVeFabb+zVRq1dFwBg7Fu8NksNVNelPH5fmnVb
+ UVppvZhnOlcpDfk6icuvlTCmld2mTQSSEyKQ1C25v04qFkd+cCwlsDKGBcgMEhsKECx17lzWu
+ 7ktdQY8LH5ZDEMmMYZE0iq581Ro=
 
-On 06.01.2024 17:45, Andrew Lunn wrote:
->> I just realized that the UNIPHY block is a MII (probably SGMII) controller.
->> Isn't it? And I expect that it responsible more then just for clock
->> enabling. It should also activate and perform a basic configuration of MII
->> for actual data transmission. If so, then it should placed somewhere under
->> drivers/net/phy or drivers/net/pcs.
-> 
-> Before we decide that, we need a description of what the UNIPHY
-> actually does, what registers it has, etc. Sometimes blocks like this
-> get split into a generic PHY, aka drivers/phy/ and a PCS driver. This
-> would be true if the UNIPHY is also used for USB SERDES, SATA SERDES
-> etc. The SERDES parts go into a generic PHY driver, and the SGMII on
-> to of the SERDES is placed is a PCS driver.
+Am 05.01.24 um 14:47 schrieb Dan Carpenter:
 
-As far as I understand, UNIPHY only contains SGMII/PSGMII/whatever and a 
-simple clock controller. PCIe & USB phys are implemented in other 
-hardware blocks. See the lately merged USB support code for similar 
-IPQ5018 SoC. But I can only speak to what I found searching online and 
-checking the vendor's qca-ssdk "driver".
+> This has a reversed if statement so it accidentally disables the wmi
+> method before returning.
 
-https://git.codelinaro.org/clo/qsdk/oss/lklm/qca-ssdk/-/tree/NHSS.QSDK.12.4.5.r3
+Good catch, you are absolutely right!
+And on top of that it also breaks WMI event drivers since the WMI_PROBED
+flag will not be set when the driver successfully probes and instead will
+be set when the driver fails to probe.
 
-I hope Luo can clarify with more confidence.
+For the patch:
+Reviewed-by: Armin Wolf <W_Armin@gmx.de>
 
-> The problem i have so far is that there is no usable description of
-> any of this hardware, and the developers trying to produce drivers for
-> this hardware don't actually seem to understand the Linux architecture
-> for things like this.
+Thanks,
+Armin Wolf
+
 >
->> As far as I understand, we basically agree that clocks configuration can be
->> implemented based on the clock API using a more specialized driver(s) than
->> MDIO. The only obstacle is the PHY chip initialization issue explained
->> below.
->> Thank you for this compact yet detailed summary. Now it much more clear,
->> what this phy chip requires to be initialized.
->>
->> Looks like you need to implement at least two drivers:
->> 1. chip (package) level driver that is responsible for basic "package"
->> initialization;
->> 2. phy driver to handle actual phy capabilities.
-> 
-> Nope. As i keep saying, please look at the work Christian is
-> doing. phylib already has the concept of a PHY package, e.g. look at
-> the MSCC driver, and how it uses devm_phy_package_join(). What is
-> missing is a DT binding which allows package properties to be
-> expressed in DT. And this is what Christian is adding.
-
-Andrew, thank you so much for pointing me to that API and Christian's 
-work. I have checked the DT change proposal and it fits this QCA8084 
-case perfectly.
-
-Am I right that all one has to do to solve this QCA8084 initialization 
-case is wrap phys in a ethernet-phy-package node and use 
-devm_phy_package_join() / phy_package_init_once() to do the basic 
-initialization? So simple?
-
-I came to put my 2c in and learnt a couple of new tricks. What a nice day :)
-
---
-Sergey
+> Fixes: 704af3a40747 ("platform/x86: wmi: Remove chardev interface")
+> Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
+> ---
+>   drivers/platform/x86/wmi.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/platform/x86/wmi.c b/drivers/platform/x86/wmi.c
+> index 157f1ce8ac0a..e6f6fa2fd080 100644
+> --- a/drivers/platform/x86/wmi.c
+> +++ b/drivers/platform/x86/wmi.c
+> @@ -868,7 +868,7 @@ static int wmi_dev_probe(struct device *dev)
+>   	if (wdriver->probe) {
+>   		ret =3D wdriver->probe(dev_to_wdev(dev),
+>   				find_guid_context(wblock, wdriver));
+> -		if (!ret) {
+> +		if (ret) {
+>   			if (ACPI_FAILURE(wmi_method_enable(wblock, false)))
+>   				dev_warn(dev, "Failed to disable device\n");
+>
 
