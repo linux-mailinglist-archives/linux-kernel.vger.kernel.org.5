@@ -1,96 +1,194 @@
-Return-Path: <linux-kernel+bounces-18848-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18849-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BBE598263EF
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 12:44:57 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2708A8263F2
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 12:47:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5F28E1F2191D
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 11:44:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B96B6B216E2
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 11:47:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7EF812E5C;
-	Sun,  7 Jan 2024 11:44:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 384D012E4E;
+	Sun,  7 Jan 2024 11:47:33 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
+Received: from mx.skole.hr (mx1.hosting.skole.hr [161.53.165.185])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9298412E4A
-	for <linux-kernel@vger.kernel.org>; Sun,  7 Jan 2024 11:44:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-315-3rmU9uLGNsK9_7Ue5NSFgQ-1; Sun, 07 Jan 2024 11:44:39 +0000
-X-MC-Unique: 3rmU9uLGNsK9_7Ue5NSFgQ-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Sun, 7 Jan
- 2024 11:44:19 +0000
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Sun, 7 Jan 2024 11:44:19 +0000
-From: David Laight <David.Laight@ACULAB.COM>
-To: "'H. Peter Anvin'" <hpa@zytor.com>, 'Linus Torvalds'
-	<torvalds@linux-foundation.org>
-CC: Noah Goldstein <goldstein.w.n@gmail.com>, "x86@kernel.org"
-	<x86@kernel.org>, "oe-kbuild-all@lists.linux.dev"
-	<oe-kbuild-all@lists.linux.dev>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "edumazet@google.com" <edumazet@google.com>,
-	"tglx@linutronix.de" <tglx@linutronix.de>, "mingo@redhat.com"
-	<mingo@redhat.com>, "bp@alien8.de" <bp@alien8.de>,
-	"dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>
-Subject: RE: x86/csum: Remove unnecessary odd handling
-Thread-Topic: x86/csum: Remove unnecessary odd handling
-Thread-Index: AQHZ7ib2fs4a8+P0bkWBCjHsrqR0abAo6HRAgKIYy6qAAJmVUIAAjHgAgAHC99CAAEWrgIAArarg
-Date: Sun, 7 Jan 2024 11:44:19 +0000
-Message-ID: <5dd4c01e4337455b9b2c0f5635d7f6f9@AcuMS.aculab.com>
-References: <20230920192300.3772199-1-goldstein.w.n@gmail.com>
- <202309231130.ZI5MdlDc-lkp@intel.com>
- <CAFUsyfKDRiX9kKOhHcA4PLqqT6Q5faHF0eRGiKN+9NSbvrUfDw@mail.gmail.com>
- <d02bd4f823534a00ae4915ead3d92773@AcuMS.aculab.com>
- <CAFUsyfL0M5P4+4s_b1kvJ_fE-ax8YBK0ammbKfoy7yKs1obzrA@mail.gmail.com>
- <CAFUsyfJduB29c6=BNmTtgoWcHAWA1AZ-sdbhyp02JVhvA6Gp0w@mail.gmail.com>
- <CAFUsyfLuo0_Sm91mqbM8Sbo-ncwnM4RaRq=GxQXDmkAN-nQ3uw@mail.gmail.com>
- <CAHk-=wgv6h4ru=z8UR5XyutoRKveOetNpwovHburvRgG9NSa3g@mail.gmail.com>
- <CAHk-=wiNUucmvTKGmveWzXXe99SpOwU65nFtH-A2_aUpPsAPJQ@mail.gmail.com>
- <5354eeec562345f6a1de84f0b2081b75@AcuMS.aculab.com>
- <CAHk-=wg8vssPVO68_qH_BHBCj6_DDawKQHBOgZh4gw5YFmpCKA@mail.gmail.com>
- <124b21857fe44e499e29800cbf4f63f8@AcuMS.aculab.com>
- <4313F9BB-DE2E-448F-A366-A68CAEA2BFE0@zytor.com>
-In-Reply-To: <4313F9BB-DE2E-448F-A366-A68CAEA2BFE0@zytor.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4FD012E45;
+	Sun,  7 Jan 2024 11:47:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=skole.hr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=skole.hr
+Received: from mx1.hosting.skole.hr (localhost.localdomain [127.0.0.1])
+	by mx.skole.hr (mx.skole.hr) with ESMTP id 387B8829CB;
+	Sun,  7 Jan 2024 12:47:26 +0100 (CET)
+From: =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
+Date: Sun, 07 Jan 2024 12:46:59 +0100
+Subject: [PATCH v3] dt-bindings: pxa-pwm: Convert to YAML
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Message-Id: <20240107-pxa-pwm-yaml-v3-1-92ac90911c3f@skole.hr>
+X-B4-Tracking: v=1; b=H4sIADKPmmUC/3XMyw6CMBCF4Vcxs3bMtNxd+R7GBdCpNHJLayqE8
+ O4WVsTE5TnJ9y/g2Bp2cD0tYNkbZ4Y+jOh8grop+yejUWGDJBmToATHqcTx0+Fcdi3mqqqIlOa
+ sTiGQ0bI20567P8JujHsPdt7rXmzvn5AXKDBWrApFVEe5vrnX0PKlsbB1vDza9MfKYIsky7VOt
+ FTZ0a7r+gWndv7T4wAAAA==
+To: Thierry Reding <thierry.reding@gmail.com>, 
+ =?utf-8?q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>, 
+ Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>
+Cc: linux-pwm@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, 
+ =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3506;
+ i=duje.mihanovic@skole.hr; h=from:subject:message-id;
+ bh=D5+69pz0DJ/NuhMmCIyJCiC9/OywEyKOFSRpOUxuPIM=;
+ b=owEBbQKS/ZANAwAIAZoRnrBCLZbhAcsmYgBlmo83hLsKp79wDlnFj7VAeWO8yn1C80KlCtp2Q
+ LjOAXq4o6eJAjMEAAEIAB0WIQRT351NnD/hEPs2LXiaEZ6wQi2W4QUCZZqPNwAKCRCaEZ6wQi2W
+ 4SGcD/4mlTp6zanjhNOCnKZpcZLQch0MmSVz8zJvdvnI7V+oxWg7d6K5jxRPd30jCL971t6BxYF
+ Rg+jg3jcJlUS0sSxj79CIZwa4H69NUsvaPkNFXxDt4jDiw1pvSU8EhFGAb9rkY4TtyXrWYcnjaK
+ zztr63oTYHBBvzR2TPbvmK5/O+mVdlirbRQwNlRDJtVik2AXySOoXvPY8LWbcAJQEqd+eo/S6EC
+ 4ESYIl3D60/pCGaEVzNBV1N0EWtCnumHpXn89JgRrn9mRSb4N1Rw3/0EaAD5HQScZ8URHD/E5VA
+ UCDSAvfGdbnR7kKE8x0F30IyjAbdW/oCSNT98HLNBRE2mSJVkjIEVp2Cs/6XF+F+vG60G8FUqNU
+ AaMxoGaqT6uH9ZPiRep/Y44kJhea7qTmL0NQa9VBztbT5FgKJcmoBdCyJXfMkrWSTD2hbQo6/lq
+ g0yjlzgcZAo7mRz6zzVjC9qbkNeIU0N9ViitPExOyiXmDu5X03sxOWwr8/YhM+oz7Str6sOiLtE
+ k89ls8GicN6XeppYsun+QONFltiiQVD6nDBJWhV0WU9ZAo2Gcucs9WTh5E28TMN55Ps2BvwkJWf
+ BEvrAWnWNdTNoAaEonOieQ4tMYIWbMJTXD5US1zWVAjMObWTW0Rksnnhj8ypATJAsAcqVlgyrQG
+ r4a/rjectKGuh4w==
+X-Developer-Key: i=duje.mihanovic@skole.hr; a=openpgp;
+ fpr=53DF9D4D9C3FE110FB362D789A119EB0422D96E1
 
-RnJvbTogSC4gUGV0ZXIgQW52aW4NCj4gU2VudDogMDcgSmFudWFyeSAyMDI0IDAxOjA5DQo+IA0K
-PiBPbiBKYW51YXJ5IDYsIDIwMjQgMjowODo0OCBQTSBQU1QsIERhdmlkIExhaWdodCA8RGF2aWQu
-TGFpZ2h0QEFDVUxBQi5DT00+IHdyb3RlOg0KLi4uDQo+ID5UaGUgYmVzdCBsb29wIGZvciAyNTYr
-IGJ5dGVzIGlzIGFuIGFkeGMvYWR4byBvbmUuDQo+ID5Ib3dldmVyIHRoYXQgcmVxdWlyZXMgdGhl
-IHJ1bi10aW1lIHBhdGNoaW5nLg0KLi4uDQo+IFJhdGhlciB0aGFuIHJ1bnRpbWUgcGF0Y2hpbmcg
-cGVyaGFwcyBzZXBhcmF0ZSBwYXRocy4uLg0KDQpJdCB3aWxsIG5lZWQgdG8gZGV0ZWN0IHRoZSBj
-cHUgdHlwZSBlYXJsaWVyLCBzbyBhIHN0YXRpYw0KYnJhbmNoIGlzIHByb2JhYmx5IGVub3VnaC4N
-CkVhc2llciB0aGFuIHN1YnN0aXR1dGluZyB0aGUgZW50aXJlIGNvZGUgYmxvY2suDQoNCkkgdGhp
-bmsgaXQgaXMgc2lsdmVybW9udCBhbmQga25pZ2h0J3MgbGFuZGluZyB0aGF0IGhhdmUNCmEgNCBj
-bG9jayBwZW5hbHR5IGZvciA2NGJpdCBhZHhjIChJbnRlbCBhdG9tIGZhbWlseSkuDQpUaGF0IG1p
-Z2h0IG9ubHkgYmUgYSBkZWNvZGUgcGVuYWx0eSwgc28gZG9lc24ndCBhZmZlY3QNCnRoZSBsb29w
-ICd0aGF0IG11Y2gnIChhZGMgaXMgMiBjbG9ja3Mgb24gdGhvc2UgY3B1KS4NClNvIHByb2JhYmx5
-IG5vdCBhY3R1YWxseSB3b3J0aCBkb2luZyBhIHJ1bi10aW1lDQpwZXJmb3JtYW5jZSBjaGVjay4N
-Cg0KSSBtaWdodCAnY29vayB1cCcgYSBmdWxsIGNoZWNrc3VtIGZ1bmN0aW9uIGxhdGVyLg0KDQoJ
-RGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1v
-dW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRpb24gTm86IDEz
-OTczODYgKFdhbGVzKQ0K
+Convert the PXA PWM binding file from TXT to YAML.
+
+The original binding does not mention any clocks, but the PWM controller
+will not probe without a clock.
+
+Reviewed-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+Signed-off-by: Duje Mihanović <duje.mihanovic@skole.hr>
+---
+Changes in v3:
+- Change id to marvell,pxa-pwm.yaml (forgot to do in v2)
+- Link to v2: https://lore.kernel.org/r/20240106-pxa-pwm-yaml-v2-1-9578ff5f2d7f@skole.hr
+
+Changes in v2:
+- Rename to marvell,pxa-pwm.yaml
+- Note addition of clock property
+- Update trailers
+- Link to v1: https://lore.kernel.org/r/20240105-pxa-pwm-yaml-v1-1-4ded9d00c38f@skole.hr
+---
+ .../devicetree/bindings/pwm/marvell,pxa-pwm.yaml   | 51 ++++++++++++++++++++++
+ Documentation/devicetree/bindings/pwm/pxa-pwm.txt  | 30 -------------
+ 2 files changed, 51 insertions(+), 30 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/pwm/marvell,pxa-pwm.yaml b/Documentation/devicetree/bindings/pwm/marvell,pxa-pwm.yaml
+new file mode 100644
+index 000000000000..ba6325575ea0
+--- /dev/null
++++ b/Documentation/devicetree/bindings/pwm/marvell,pxa-pwm.yaml
+@@ -0,0 +1,51 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/pwm/marvell,pxa-pwm.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Marvell PXA PWM
++
++maintainers:
++  - Duje Mihanović <duje.mihanovic@skole.hr>
++
++allOf:
++  - $ref: pwm.yaml#
++
++properties:
++  compatible:
++    enum:
++      - marvell,pxa250-pwm
++      - marvell,pxa270-pwm
++      - marvell,pxa168-pwm
++      - marvell,pxa910-pwm
++
++  reg:
++    # Length should be 0x10
++    maxItems: 1
++
++  "#pwm-cells":
++    # Used for specifying the period length in nanoseconds
++    const: 1
++
++  clocks:
++    maxItems: 1
++
++required:
++  - compatible
++  - reg
++  - "#pwm-cells"
++  - clocks
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/clock/pxa-clock.h>
++
++    pwm0: pwm@40b00000 {
++      compatible = "marvell,pxa250-pwm";
++      reg = <0x40b00000 0x10>;
++      #pwm-cells = <1>;
++      clocks = <&clks CLK_PWM0>;
++    };
+diff --git a/Documentation/devicetree/bindings/pwm/pxa-pwm.txt b/Documentation/devicetree/bindings/pwm/pxa-pwm.txt
+deleted file mode 100644
+index 5ae9f1e3c338..000000000000
+--- a/Documentation/devicetree/bindings/pwm/pxa-pwm.txt
++++ /dev/null
+@@ -1,30 +0,0 @@
+-Marvell PWM controller
+-
+-Required properties:
+-- compatible: should be one or more of:
+-  - "marvell,pxa250-pwm"
+-  - "marvell,pxa270-pwm"
+-  - "marvell,pxa168-pwm"
+-  - "marvell,pxa910-pwm"
+-- reg: Physical base address and length of the registers used by the PWM channel
+-  Note that one device instance must be created for each PWM that is used, so the
+-  length covers only the register window for one PWM output, not that of the
+-  entire PWM controller.  Currently length is 0x10 for all supported devices.
+-- #pwm-cells: Should be 1.  This cell is used to specify the period in
+-  nanoseconds.
+-
+-Example PWM device node:
+-
+-pwm0: pwm@40b00000 {
+-	compatible = "marvell,pxa250-pwm";
+-	reg = <0x40b00000 0x10>;
+-	#pwm-cells = <1>;
+-};
+-
+-Example PWM client node:
+-
+-backlight {
+-	compatible = "pwm-backlight";
+-	pwms = <&pwm0 5000000>;
+-	...
+-}
+
+---
+base-commit: 610a9b8f49fbcf1100716370d3b5f6f884a2835a
+change-id: 20240105-pxa-pwm-yaml-8dbb00dfe7c6
+
+Best regards,
+-- 
+Duje Mihanović <duje.mihanovic@skole.hr>
+
 
 
