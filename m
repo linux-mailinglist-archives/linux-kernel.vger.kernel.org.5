@@ -1,97 +1,66 @@
-Return-Path: <linux-kernel+bounces-18953-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18954-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D7FCD82659C
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 19:32:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1243A82659E
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 19:32:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8693528153A
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 18:32:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B909B1F218D8
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 18:32:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44E7B10A36;
-	Sun,  7 Jan 2024 18:32:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="CNd4uLQZ"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4D7010A3B;
+	Sun,  7 Jan 2024 18:32:32 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FF1610A1B;
-	Sun,  7 Jan 2024 18:32:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=3ITLUw3/wwzNbCgnrBc39myl7J+F3NZ5Z7SwgjR2fQQ=; b=CNd4uLQZPqShcuU+wNi7F7AamO
-	TJ50Wk/4AoY4GAayKb6qKIen+J3kf1sMDWzFNwkEiTJncIBb/JBcjnKAnMRoZkQWH/6cs+Y8TSZQg
-	IV/+I6GhLRGCUGX8AnZjObGq5zVrHF/XnzKDlkQUIhq6Mqk6i93h+NO30OHI3hpohq2w=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1rMXwB-004aDT-G4; Sun, 07 Jan 2024 19:31:55 +0100
-Date: Sun, 7 Jan 2024 19:31:55 +0100
-From: Andrew Lunn <andrew@lunn.ch>
-To: Sergey Ryazanov <ryazanov.s.a@gmail.com>
-Cc: Christian Marangi <ansuelsmth@gmail.com>,
-	Robert Marko <robert.marko@sartura.hr>,
-	Vladimir Oltean <olteanv@gmail.com>,
-	Rob Herring <robh+dt@kernel.org>, Luo Jie <quic_luoj@quicinc.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Andy Gross <agross@kernel.org>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	netdev@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org
-Subject: Re: [net-next PATCH RFC v3 1/8] dt-bindings: net: document ethernet
- PHY package nodes
-Message-ID: <1437d9df-2868-43f5-aebd-e0c57fe4d905@lunn.ch>
-References: <20231126015346.25208-1-ansuelsmth@gmail.com>
- <20231126015346.25208-2-ansuelsmth@gmail.com>
- <0926ea46-1ce4-4118-a04c-b6badc0b9e15@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D56410A1B;
+	Sun,  7 Jan 2024 18:32:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D106CC433C7;
+	Sun,  7 Jan 2024 18:32:30 +0000 (UTC)
+Date: Sun, 7 Jan 2024 13:32:28 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Christian Brauner <brauner@kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
+ <linux-trace-kernel@vger.kernel.org>, Masami Hiramatsu
+ <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Linus Torvalds <torvalds@linux-foundation.org>, Al Viro
+ <viro@zeniv.linux.org.uk>, linux-fsdevel@vger.kernel.org, Greg
+ Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH] tracefs/eventfs: Use root and instance inodes as
+ default ownership
+Message-ID: <20240107133228.05b0f485@rorschach.local.home>
+In-Reply-To: <20240107132912.71b109d8@rorschach.local.home>
+References: <20240103203246.115732ec@gandalf.local.home>
+	<20240105-wegstecken-sachkenntnis-6289842d6d01@brauner>
+	<20240105095954.67de63c2@gandalf.local.home>
+	<20240107-getrickst-angeeignet-049cea8cad13@brauner>
+	<20240107132912.71b109d8@rorschach.local.home>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0926ea46-1ce4-4118-a04c-b6badc0b9e15@gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-> And I would like to ask you about another issue raised by Vladimir [1].
-> These phy chips become SoC with all these built-in PHYs, PCSs, clocks,
-> interrupt controllers, etc. Should we address this now? Or should we go with
-> the proposed solution for now and postpone modeling of other peripherals
-> until we get a real hardware, as Andrew suggested?
+On Sun, 7 Jan 2024 13:29:12 -0500
+Steven Rostedt <rostedt@goodmis.org> wrote:
+
+> > 
+> > IOW, the inode_permission() in lookup_one_len() that eventfs does is
+> > redundant and just wrong.  
 > 
-> I'm asking because it looks like we have got a real hardware. Luo currently
-> trying to push QCA8084 (multi-phy/switch chip) support, and this chip
-> exactly contains a huge clock/reset controller [2,3].
+> I don't think so.
 
-Ideally the reset controller is modelled as a Linux reset
-controller. The clock part of it is modelled using the common clock
-framework. When done correctly, the PHY should not really care. All it
-does is ask for its clock to be enabled, and its reset to be disabled.
+Just to make it clear. eventfs has nothing to do with mkdir instance/foo.
+It exists without that. Although one rationale to do eventfs was so
+that the instance directories wouldn't recreate the same 10thousands
+event inodes and dentries for every mkdir done.
 
-Also, given how difficult it is proving to be to make any progress at
-all, i want to get one little part correctly described, the pure
-PHY. Once we have that, we can start on the next little part. So long
-as we keep to the Linux architecture of blocks or hardware with
-standard Linux drivers, and DT to glue them together, a small step by
-step approach should work out.
-
-     Andrew
+-- Steve
 
