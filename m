@@ -1,149 +1,130 @@
-Return-Path: <linux-kernel+bounces-18792-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18793-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 511EA826318
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 06:55:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 86CCD826319
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 06:56:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D9E0D1F21C5A
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 05:55:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B5AA31C213E1
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 05:56:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AF54125B7;
-	Sun,  7 Jan 2024 05:55:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F770125B4;
+	Sun,  7 Jan 2024 05:56:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="AOzVSo3X"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="hDDUrmo7"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8AB2125B1
-	for <linux-kernel@vger.kernel.org>; Sun,  7 Jan 2024 05:55:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-28bcc273833so778935a91.1
-        for <linux-kernel@vger.kernel.org>; Sat, 06 Jan 2024 21:55:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704606920; x=1705211720; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=npkPTWZbSrPT/J2qTivWUqWZDlbUUJa861d4n1crd6s=;
-        b=AOzVSo3XuBr//L8//JwBoD9vygIZwyOMjsRiMaAzqaAPi1+Y+thjiOYBNEiXpUeGSh
-         S2ar7i8r5IEpK7ENCra3pCU/IMWRpwMbnACdGXkB81OfR7YXoZA4YVfafllDFhmQlLRO
-         QS+I1XSupkAscskSOJLVsOFmc77n8sGuhL5KFQBwKw/zlmuvhYYomS1ohZHLRAnsKrXM
-         kXVSs/pIm36f6gcxRmMasPLl8V83skDO6gUJR3GylJoroqPzZuPxv2x1YSvtEmgSh1u1
-         tAMxwrZnWYDEl/J/vJx7x8NXPzPw0usn+D+j784jwWusupsZPve3ufiwGlg/bYMAXJEq
-         QuWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704606920; x=1705211720;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=npkPTWZbSrPT/J2qTivWUqWZDlbUUJa861d4n1crd6s=;
-        b=te7w92ZY/7l5RhTWJKJx9nUgFIAcHqx/KB4TnQBrd7YnbtpFQFSKsX0v0c6BqjOpSt
-         HzpG3seGkUZ+YLE/cBZYK6LNjqNVuHsozIlbtXVqW4gOygmpcN66qsWol8azQcJgTH4W
-         gN5uJ/xkzkCizOjbPVxR/sHbH2BXoyoEJ7KVL83tBsYYXaEzd0W700Q6RF7EkgjvPKra
-         MsFsYWy0pwqajtZZXvWTjZF89sYvIOs4yuTfPDR7ZBXAyrGPTUgWa1+F4wizr+uRDzXj
-         d4hB36WGEFxucil299vqmpSla0sWNHPalvRziXNJabJRkIhdjZ1HNkSrjEOjewI0e4CP
-         jcEg==
-X-Gm-Message-State: AOJu0YzOZZymOYYyWaJ9Yjj78I5HxZgKqgMIjGpnAFxBDidNxwqqYDM2
-	RwHCN+/YL5HvJCYkdvUD+FggZxaxmuQ9
-X-Google-Smtp-Source: AGHT+IGyYHLcrSwSasOKfyMhzH4xhR/SbgU0ri+aHf3n40oDj/JY/IkyQis8SJwfZ2Us7GRm5TN95g==
-X-Received: by 2002:a05:6a20:7a82:b0:199:8953:6e0c with SMTP id u2-20020a056a207a8200b0019989536e0cmr1255512pzh.52.1704606920277;
-        Sat, 06 Jan 2024 21:55:20 -0800 (PST)
-Received: from thinkpad ([103.197.115.97])
-        by smtp.gmail.com with ESMTPSA id 9-20020a17090a018900b0028a4c85a55csm4287287pjc.27.2024.01.06.21.55.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 06 Jan 2024 21:55:19 -0800 (PST)
-Date: Sun, 7 Jan 2024 11:25:10 +0530
-From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To: Frank Li <Frank.Li@nxp.com>
-Cc: krzysztof.kozlowski@linaro.org, bhelgaas@google.com,
-	conor+dt@kernel.org, devicetree@vger.kernel.org, festevam@gmail.com,
-	helgaas@kernel.org, hongxing.zhu@nxp.com, imx@lists.linux.dev,
-	kernel@pengutronix.de, krzysztof.kozlowski+dt@linaro.org,
-	kw@linux.com, l.stach@pengutronix.de,
-	linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
-	linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-	lpieralisi@kernel.org, robh@kernel.org, s.hauer@pengutronix.de,
-	shawnguo@kernel.org
-Subject: Re: [PATCH v7 13/16] PCI: imx6: Clean up get addr_space code
-Message-ID: <20240107055510.GM3416@thinkpad>
-References: <20231227182727.1747435-1-Frank.Li@nxp.com>
- <20231227182727.1747435-14-Frank.Li@nxp.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D528125AE
+	for <linux-kernel@vger.kernel.org>; Sun,  7 Jan 2024 05:56:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704606965; x=1736142965;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=CDM7O/aNwXft08O1jKgAlrtcGQec92BLDNxyXa3INsU=;
+  b=hDDUrmo7RLRkswS3MJUInTfQkOXkcYQ7NJ4Jgp+nbOLEqxbCl3jxUZdO
+   v20Q4jFGXEdyzXwEkR7oD1Kz6J87uxVYALHMKzrWAVaauQ5rna0qmt41L
+   g36U8dA+SdqZ/bZh6+KnBCdL26InqAhvZi6Q3nUf3kizDria3dOHaBpfh
+   Dt22F9uwn5BN7agzINeaXaPOYhgAUubCNQglPfzbg5CE1lAwS1Ct3BkAS
+   DRHqH9mOFftw3c+4DxVOMP1egwnJnLrOXKn0KzqbEChOBrBMby12xDk+u
+   QLRvztM8gXdifesd578gR+A7HUSNCu9MfWTcY4oQWDDl12iYfl477HdtZ
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10945"; a="4457723"
+X-IronPort-AV: E=Sophos;i="6.04,338,1695711600"; 
+   d="scan'208";a="4457723"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jan 2024 21:56:05 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10945"; a="730823476"
+X-IronPort-AV: E=Sophos;i="6.04,338,1695711600"; 
+   d="scan'208";a="730823476"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga003.jf.intel.com with ESMTP; 06 Jan 2024 21:56:02 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rMM8e-0003SM-1E;
+	Sun, 07 Jan 2024 05:56:00 +0000
+Date: Sun, 7 Jan 2024 13:55:46 +0800
+From: kernel test robot <lkp@intel.com>
+To: Vladimir Oltean <vladimir.oltean@nxp.com>
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	linux-kernel@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+	Simon Horman <simon.horman@corigine.com>
+Subject: drivers/net/ethernet/freescale/enetc/enetc.c:2713:3: warning:
+ 'snprintf' will always be truncated; specified size is 80, but format string
+ expands to at least 110
+Message-ID: <202401071345.gs4ThqGA-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231227182727.1747435-14-Frank.Li@nxp.com>
 
-On Wed, Dec 27, 2023 at 01:27:24PM -0500, Frank Li wrote:
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   52b1853b080a082ec3749c3a9577f6c71b1d4a90
+commit: 800db2d125c2bc22c448e2386c3518e663d6db71 net: enetc: ensure we always have a minimum number of TXQs for stack
+date:   11 months ago
+config: arm64-allyesconfig (https://download.01.org/0day-ci/archive/20240107/202401071345.gs4ThqGA-lkp@intel.com/config)
+compiler: clang version 18.0.0git (https://github.com/llvm/llvm-project 7e186d366d6c7def0543acc255931f617e76dff0)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240107/202401071345.gs4ThqGA-lkp@intel.com/reproduce)
 
-Subject: PCI: imx6: Rely on DWC core to fetch 'addr_space' region 
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202401071345.gs4ThqGA-lkp@intel.com/
 
-> The common dw_pcie_ep_init() already do the same thing. Needn't platform
-> driver do it again.
-> 
+All warnings (new ones prefixed by >>):
 
-'Since the dw_pcie_ep_init() function is already fetching the 'addr_space'
-region, no need to do the same in this driver.'
+>> drivers/net/ethernet/freescale/enetc/enetc.c:2713:3: warning: 'snprintf' will always be truncated; specified size is 80, but format string expands to at least 110 [-Wformat-truncation]
+    2713 |                 NL_SET_ERR_MSG_FMT_MOD(extack,
+         |                 ^
+   include/linux/netlink.h:131:2: note: expanded from macro 'NL_SET_ERR_MSG_FMT_MOD'
+     131 |         NL_SET_ERR_MSG_FMT((extack), KBUILD_MODNAME ": " fmt, ##args)
+         |         ^
+   include/linux/netlink.h:116:6: note: expanded from macro 'NL_SET_ERR_MSG_FMT'
+     116 |         if (snprintf(__extack->_msg_buf, NETLINK_MAX_FMTMSG_LEN,               \
+         |             ^
+   1 warning generated.
 
-> Signed-off-by: Frank Li <Frank.Li@nxp.com>
 
-With above changes,
+vim +/snprintf +2713 drivers/net/ethernet/freescale/enetc/enetc.c
 
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-
-- Mani
-
-> ---
-> 
-> Notes:
->     Change from v1 to v3
->     - new patches
-> 
->  drivers/pci/controller/dwc/pci-imx6.c | 9 +--------
->  1 file changed, 1 insertion(+), 8 deletions(-)
-> 
-> diff --git a/drivers/pci/controller/dwc/pci-imx6.c b/drivers/pci/controller/dwc/pci-imx6.c
-> index 9e60ab6f1885a..4b2b9aafad1b4 100644
-> --- a/drivers/pci/controller/dwc/pci-imx6.c
-> +++ b/drivers/pci/controller/dwc/pci-imx6.c
-> @@ -1080,7 +1080,6 @@ static int imx6_add_pcie_ep(struct imx6_pcie *imx6_pcie,
->  	int ret;
->  	unsigned int pcie_dbi2_offset;
->  	struct dw_pcie_ep *ep;
-> -	struct resource *res;
->  	struct dw_pcie *pci = imx6_pcie->pci;
->  	struct dw_pcie_rp *pp = &pci->pp;
->  	struct device *dev = pci->dev;
-> @@ -1099,14 +1098,8 @@ static int imx6_add_pcie_ep(struct imx6_pcie *imx6_pcie,
->  		pcie_dbi2_offset = SZ_4K;
->  		break;
->  	}
-> -	pci->dbi_base2 = pci->dbi_base + pcie_dbi2_offset;
-> -	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "addr_space");
-> -	if (!res)
-> -		return -EINVAL;
->  
-> -	ep->phys_base = res->start;
-> -	ep->addr_size = resource_size(res);
-> -	ep->page_size = SZ_64K;
-> +	pci->dbi_base2 = pci->dbi_base + pcie_dbi2_offset;
->  
->  	ret = dw_pcie_ep_init(ep);
->  	if (ret) {
-> -- 
-> 2.34.1
-> 
+  2703	
+  2704	static int enetc_setup_xdp_prog(struct net_device *ndev, struct bpf_prog *prog,
+  2705					struct netlink_ext_ack *extack)
+  2706	{
+  2707		int num_xdp_tx_queues = prog ? num_possible_cpus() : 0;
+  2708		struct enetc_ndev_priv *priv = netdev_priv(ndev);
+  2709		bool extended;
+  2710	
+  2711		if (priv->min_num_stack_tx_queues + num_xdp_tx_queues >
+  2712		    priv->num_tx_rings) {
+> 2713			NL_SET_ERR_MSG_FMT_MOD(extack,
+  2714					       "Reserving %d XDP TXQs does not leave a minimum of %d TXQs for network stack (total %d available)",
+  2715					       num_xdp_tx_queues,
+  2716					       priv->min_num_stack_tx_queues,
+  2717					       priv->num_tx_rings);
+  2718			return -EBUSY;
+  2719		}
+  2720	
+  2721		extended = !!(priv->active_offloads & ENETC_F_RX_TSTAMP);
+  2722	
+  2723		/* The buffer layout is changing, so we need to drain the old
+  2724		 * RX buffers and seed new ones.
+  2725		 */
+  2726		return enetc_reconfigure(priv, extended, enetc_reconfigure_xdp_cb, prog);
+  2727	}
+  2728	
 
 -- 
-மணிவண்ணன் சதாசிவம்
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
