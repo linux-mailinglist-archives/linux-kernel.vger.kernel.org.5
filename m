@@ -1,100 +1,122 @@
-Return-Path: <linux-kernel+bounces-18903-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18908-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id ACA378264E8
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 17:07:55 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 861D1826500
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 17:13:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 502381F21561
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 16:07:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 33B331F22D06
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 16:13:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D324C13ADB;
-	Sun,  7 Jan 2024 16:07:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C85D313AD1;
+	Sun,  7 Jan 2024 16:13:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lyQLmV3f"
+	dkim=pass (2048-bit key) header.d=alu.unizg.hr header.i=@alu.unizg.hr header.b="Shbq+oJk";
+	dkim=pass (2048-bit key) header.d=alu.unizg.hr header.i=@alu.unizg.hr header.b="inMs222D"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from domac.alu.hr (domac.alu.unizg.hr [161.53.235.3])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2678E13AC7;
-	Sun,  7 Jan 2024 16:07:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AC203C433C8;
-	Sun,  7 Jan 2024 16:07:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704643661;
-	bh=irwiB0glJqtkW5oESCUx2inVytpmIwtrLKY8B2VSb7U=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=lyQLmV3fl2YZWdk+11aDymPdtPvyIECQmIjD3cct2tyigiLrV+ZJYslhW46z6o6CM
-	 JFjSKGvnSHwCpKoO+SpWMODGqM0nLA479N9H0e4p3sfCdFfg5Gp94iqT3NuLmZHnb5
-	 z9hbf6x0ioRke7ZVI9psr5vnCtTZI5xvdKSbmrWp7VienhV1VcRbgvQ7FTNpNHLJ/d
-	 ywm/RVObu0u6tQ+KXyWuFPYzEzmUbejYwx3QOuCNHThlvU5urMO6nwgWNfkpCoX+zX
-	 oxfdzGz1XphUo2pHuVqhhS+/UALoEzHX03C7YvDQRTKsXLujGWTijFR9KN+mD2wVFg
-	 AtQt8VsXqPYYw==
-Date: Sun, 7 Jan 2024 16:07:36 +0000
-From: Jonathan Cameron <jic23@kernel.org>
-To: Colin Ian King <colin.i.king@gmail.com>
-Cc: Lars-Peter Clausen <lars@metafoo.de>, Jean-Baptiste Maneyrol
- <jean-baptiste.maneyrol@tdk.com>, Andy Shevchenko
- <andy.shevchenko@gmail.com>, linux-iio@vger.kernel.org,
- kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] iio: invensense: remove redundant initialization
- of variable period
-Message-ID: <20240107160736.14f3ae1d@jic23-huawei>
-In-Reply-To: <20240106153202.54861-1-colin.i.king@gmail.com>
-References: <20240106153202.54861-1-colin.i.king@gmail.com>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.39; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7118A13AD5;
+	Sun,  7 Jan 2024 16:13:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alu.unizg.hr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alu.unizg.hr
+Received: from localhost (localhost [127.0.0.1])
+	by domac.alu.hr (Postfix) with ESMTP id B30526017E;
+	Sun,  7 Jan 2024 17:13:23 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+	t=1704644003; bh=Sqyazqf+I3sxa6oIV+CQ1c1xogqVDFsZgo/HDXl6h4c=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=Shbq+oJkdaYUMvteotVpTwXoPWBX2425VrlSyVaXaPgd9BsPuyfMBcbuzGbsQPA7p
+	 +neXvvTTtcZgF3N1V8zS0E0IEzclj8cWRwhgGwbNpBFrurnMhAmBMGkgN23gtq2iHJ
+	 W5/JykWzH71tMr3vqiLc2g1jWefONlnnoBQQTukXIR2gqmWM17HlVbz2Tmzzw4GPHw
+	 dHn3P6/BRwN25FiKq6IS+bHd1kaKN8kyA2PP2/Qnl9JY3O+gLTwJMxK7SREbVacFRa
+	 n9YBGZM3GLnQZ2/A0AIHHqcl6+VW+1NR0t+4paiQ3/6wDz7SWwvUZdaQTAyAgxYC7E
+	 fsevD64XuOPDw==
+X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
+Received: from domac.alu.hr ([127.0.0.1])
+	by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id paAB-XWW8jKS; Sun,  7 Jan 2024 17:13:21 +0100 (CET)
+Received: from defiant.. (unknown [95.168.121.73])
+	by domac.alu.hr (Postfix) with ESMTPSA id 15F2A60171;
+	Sun,  7 Jan 2024 17:13:20 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+	t=1704644001; bh=Sqyazqf+I3sxa6oIV+CQ1c1xogqVDFsZgo/HDXl6h4c=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=inMs222DImzyXeTwjDLg1WKq+EdlfWqipP5C3iQDhW9vmioZ9aonARAmYUnc9tB3b
+	 l6L6DzDmTlKqjmTJoyvzoDNNGo1vqSRuL9UcZ6qUN3npw4MAkKiKFgb42oMf1L9Q4l
+	 HzP4tBL2arZMG7ThOM8uDUsTVdiYubx4PRFtTlvY/yeP69bExH7MEjz02tEugHXzf8
+	 +w48AkBrZx2qszw+bFCCCc46tnVdcRPJW6I3yMAJNwq4/TdNf3K7HlT1ziCaP2s7w8
+	 Qm2XRiJU8/Vy/xLbIFSJexX03sO28x7VzBn+evRR9M3cf4KqhmWQFWFjnUyxyxgixp
+	 DHWZD3s6ljz8w==
+From: Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
+To: =?UTF-8?q?N=C3=ADcolas=20F=2E=20R=2E=20A=2E=20Prado?= <nfraprado@collabora.com>,
+	linux-sound@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	Mark Brown <broonie@kernel.org>,
+	Shuah Khan <shuah@kernel.org>,
+	Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
+Subject: [PATCH v1 4/4] selftests: alsa: Fix the exit error message parameter in sysfs_get()
+Date: Sun,  7 Jan 2024 17:07:48 +0100
+Message-Id: <20240107160747.934470-1-mirsad.todorovac@alu.unizg.hr>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20240107151218.933806-1-mirsad.todorovac@alu.unizg.hr>
+References: 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Sat,  6 Jan 2024 15:32:02 +0000
-Colin Ian King <colin.i.king@gmail.com> wrote:
+GCC 13.2.0 reported the warning of the print format specifier:
 
-> The variable period is being initialized with a value that is never
-> read, it is being re-assigned a new value later on before it is read.
-> The initialization is redundant and can be removed.
-> 
-> Cleans up clang scan build warning:
-> Value stored to 'period' during its initialization is never
-> read [deadcode.DeadStores]
-> 
-> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
-Hi Colin,
+conf.c: In function ‘sysfs_get’:
+conf.c:181:72: warning: format ‘%s’ expects argument of type ‘char *’, \
+			but argument 3 has type ‘int’ [-Wformat=]
+  181 |                 ksft_exit_fail_msg("sysfs: unable to read value '%s': %s\n",
+      |                                                                       ~^
+      |                                                                        |
+      |                                                                        char *
+      |                                                                       %d
 
-I definitely want input from someone who can test this.
-There is direct use of ts->period as well as the local
-variable that is indeed overwritten as you've noted.
-Feels like naming needs some work and perhaps reduce the scope of
-the period local variable so it's obvious it was only intended
-for more local use than it currently looks like.
+The fix passes strerror(errno) as it was intended, like in the sibling error
+exit message.
 
-Thanks,
+Fixes: aba51cd0949ae ("selftests: alsa - add PCM test")
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.com>
+Cc: Shuah Khan <shuah@kernel.org>
+Cc: linux-sound@vger.kernel.org
+Cc: linux-kselftest@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
+---
+ tools/testing/selftests/alsa/conf.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Jonathan
-
-> ---
->  drivers/iio/common/inv_sensors/inv_sensors_timestamp.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/iio/common/inv_sensors/inv_sensors_timestamp.c b/drivers/iio/common/inv_sensors/inv_sensors_timestamp.c
-> index 03823ee57f59..3b0f9598a7c7 100644
-> --- a/drivers/iio/common/inv_sensors/inv_sensors_timestamp.c
-> +++ b/drivers/iio/common/inv_sensors/inv_sensors_timestamp.c
-> @@ -126,7 +126,7 @@ void inv_sensors_timestamp_interrupt(struct inv_sensors_timestamp *ts,
->  	struct inv_sensors_timestamp_interval *it;
->  	int64_t delta, interval;
->  	const uint32_t fifo_mult = fifo_period / ts->chip.clock_period;
-> -	uint32_t period = ts->period;
-> +	uint32_t period;
->  	bool valid = false;
->  
->  	if (fifo_nb == 0)
+diff --git a/tools/testing/selftests/alsa/conf.c b/tools/testing/selftests/alsa/conf.c
+index 00925eb8d9f4..89e3656a042d 100644
+--- a/tools/testing/selftests/alsa/conf.c
++++ b/tools/testing/selftests/alsa/conf.c
+@@ -179,7 +179,7 @@ static char *sysfs_get(const char *sysfs_root, const char *id)
+ 	close(fd);
+ 	if (len < 0)
+ 		ksft_exit_fail_msg("sysfs: unable to read value '%s': %s\n",
+-				   path, errno);
++				   path, strerror(errno));
+ 	while (len > 0 && path[len-1] == '\n')
+ 		len--;
+ 	path[len] = '\0';
+-- 
+2.40.1
 
 
