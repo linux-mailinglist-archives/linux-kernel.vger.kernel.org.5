@@ -1,118 +1,254 @@
-Return-Path: <linux-kernel+bounces-18759-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18760-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9FC1D82629E
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 02:39:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C0BDA82629F
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 02:43:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F1972B21612
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 01:39:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 33EE61F21E4D
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 01:43:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EB4E17E2;
-	Sun,  7 Jan 2024 01:39:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAF201FC6;
+	Sun,  7 Jan 2024 01:42:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="gzVsCGfe"
+	dkim=pass (1024-bit key) header.d=0x0f.com header.i=@0x0f.com header.b="Ez1akidL"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oi1-f180.google.com (mail-oi1-f180.google.com [209.85.167.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2D3D136F
-	for <linux-kernel@vger.kernel.org>; Sun,  7 Jan 2024 01:39:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704591586; x=1736127586;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=XgnOkhK9fejltKBtlhNb55PRWtAH72xobPj1cDWjITc=;
-  b=gzVsCGfe2t9xh4Lq/6x3WhPcPxzjUiF7zzkahwoRsCoxIEm13DOfEern
-   PaCVB06HDq2j67vstHTuV3A83p2Ag6Xd3gA9wQSkPO4VsiXvRlL5IAXS+
-   gF6mxgqjxOkyoDXZyHEsezlH6Ms82zLGZBBrPaVgeCF1cg8A/LGf1O1uP
-   Sg/lEWIU+A7EXBsHD1fcbB0XAkuXLNrf/bpX18cD9Za5T6APa0kLHHXd5
-   XFLIkvquewU58tme0LA3QptnEvD7wIFSEh+BoHO4Yy7aJTeWYi/LF34EY
-   WoHqGa8TlhEaM+S1WQsIiybuilkG8O1aJcLOkLDjIOJIYsgH9nYZoojyg
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10945"; a="464094278"
-X-IronPort-AV: E=Sophos;i="6.04,338,1695711600"; 
-   d="scan'208";a="464094278"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jan 2024 17:39:45 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10945"; a="815279318"
-X-IronPort-AV: E=Sophos;i="6.04,338,1695711600"; 
-   d="scan'208";a="815279318"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga001.jf.intel.com with ESMTP; 06 Jan 2024 17:39:43 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rMI8b-0003Fs-1o;
-	Sun, 07 Jan 2024 01:39:41 +0000
-Date: Sun, 7 Jan 2024 09:39:03 +0800
-From: kernel test robot <lkp@intel.com>
-To: Thomas Gleixner <tglx@linutronix.de>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-	Peter Zijlstra <peterz@infradead.org>
-Subject: arch/x86/kernel/callthunks.c:332:35: warning: '%lu' directive
- writing between 1 and 10 bytes into a region of size 7
-Message-ID: <202401070957.QH0oQjgO-lkp@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C035717D8
+	for <linux-kernel@vger.kernel.org>; Sun,  7 Jan 2024 01:42:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=0x0f.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=0x0f.com
+Received: by mail-oi1-f180.google.com with SMTP id 5614622812f47-3bbc7746812so844193b6e.2
+        for <linux-kernel@vger.kernel.org>; Sat, 06 Jan 2024 17:42:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=0x0f.com; s=google; t=1704591774; x=1705196574; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=matoZ5S2fV8t/Ms3FWjpgYbZ+hH9ZfZByV/p/hEQelk=;
+        b=Ez1akidLPPN88xomlvERlqVdhWCP+WGOCEVLH7rjLrLocASuai7NFNya/+/AlpO6jF
+         0thhBNyQ3uhXIEzf6IrRSUAzl/TM3fs9PBIw2S90+tQYLeUhBmnsKSRj+VkusKfstt0D
+         rShXyadZWq8jFlbNhRLv9uy0HmaxaSJ+L4XGk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704591774; x=1705196574;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=matoZ5S2fV8t/Ms3FWjpgYbZ+hH9ZfZByV/p/hEQelk=;
+        b=iVdQfBIEb6FX8OqIL2gyb7WD4mYMZqHgGkLkn70N8wbB7sicfNRdvx9GYUQAxPWm+x
+         DvTk7mAz2yEXMsP6jR1Yyww8pKkOS1TPuQd3OeVok042hGnooZIM4qM8vAsN0y1w0SK2
+         7m6q387XrElvUhsvi4XLmVY/ihTFD9jmf7ZYw2wY04+ES/VJVL42tmhEhFECxcW1+rsF
+         HcEGceflwd3y5kg8HOWL/CZBLmxpKSCNBONH9QeJCrUJ3RMCf8A97a0Vu5BjmWNT5HKm
+         7cp/VaOSrIUvPaDTRAv4H8EAbzK7GexuODsQJpV3JFZAW+goeyIYJhAIe2Vl+A4tPhvs
+         UTow==
+X-Gm-Message-State: AOJu0YzRKQzq3NaePEZNcsZw3Rntfi2yk9rVd3rWFhl+LldQvvIFEGLX
+	7ht2gio3jMUVov9B+TzwacVVKHWYBqPyaHZ6TmVZ/5ll3u4=
+X-Google-Smtp-Source: AGHT+IFJWW8JzNX6Yzr/MOCXwGIuUzfOgEE8tqgTuOd4awAl24W81lc9UOxCjEtKyyyEbW8ANyCMjw==
+X-Received: by 2002:a05:6808:3a11:b0:3bb:e3d4:6694 with SMTP id gr17-20020a0568083a1100b003bbe3d46694mr2851385oib.37.1704591774623;
+        Sat, 06 Jan 2024 17:42:54 -0800 (PST)
+Received: from shiro.work.home.arpa ([2400:4162:2428:2ffe:618e:93fb:c5ea:6eba])
+        by smtp.googlemail.com with ESMTPSA id a23-20020a17090a6d9700b0028d2521dc53sm2370585pjk.46.2024.01.06.17.42.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 06 Jan 2024 17:42:54 -0800 (PST)
+From: Daniel Palmer <daniel@0x0f.com>
+To: gerg@linux-m68k.org,
+	geert@linux-m68k.org
+Cc: linux-m68k@lists.linux-m68k.org,
+	linux-kernel@vger.kernel.org,
+	Daniel Palmer <daniel@0x0f.com>
+Subject: [PATCH] m68k: Use macro to generate 68000 interrupt entry sleds
+Date: Sun,  7 Jan 2024 10:42:48 +0900
+Message-ID: <20240107014248.3651022-1-daniel@0x0f.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 
-Hi Thomas,
+In preparation for decoupling the plain 68000 code from
+the DragonBall support clean entry.S a little bit by
+using a macro to generic the interrupt sleds (needed to
+put the vector number on the stack as the 68000 doesn't
+do that) and use the correct numbers.
 
-FYI, the error/warning still remains.
+The function to call from the sled is a parameter so that
+other interrupt types (i.e. autovectored ones) can specify
+their handler when they are added later.
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   52b1853b080a082ec3749c3a9577f6c71b1d4a90
-commit: f5c1bb2afe93396d41c5cbdcb909b08a75b8dde4 x86/calldepth: Add ret/call counting for debug
-date:   1 year, 3 months ago
-config: x86_64-randconfig-r052-20240106 (https://download.01.org/0day-ci/archive/20240107/202401070957.QH0oQjgO-lkp@intel.com/config)
-compiler: gcc-11 (Debian 11.3.0-12) 11.3.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240107/202401070957.QH0oQjgO-lkp@intel.com/reproduce)
+Signed-off-by: Daniel Palmer <daniel@0x0f.com>
+---
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202401070957.QH0oQjgO-lkp@intel.com/
+This is a small patch to show that I'm working on this before someone
+comes along and deletes everything. For plain 68000 I have:
+  - working QEMU setup using the newish m68k virt machine
+  - working u-boot for mc68000 (Works on QEMU for now, will work on
+    real hardware too..)
+  - u-boot creates a devicetree from the bootinfo and the kernel uses
+    that so things are *modern*.
+  - buildroot working enough that it can generate a rootfs
+  - kernel working enough that it can mount the rootfs over virtio
+    and run the shell (there are some problems after that though..)
 
-All warnings (new ones prefixed by >>):
+ arch/m68k/68000/entry.S | 100 ++++++++--------------------------------
+ arch/m68k/68000/ints.c  |  14 +++---
+ 2 files changed, 27 insertions(+), 87 deletions(-)
 
-   arch/x86/kernel/callthunks.c: In function 'callthunks_debugfs_init':
->> arch/x86/kernel/callthunks.c:332:35: warning: '%lu' directive writing between 1 and 10 bytes into a region of size 7 [-Wformat-overflow=]
-     332 |                 sprintf(name, "cpu%lu", cpu);
-         |                                   ^~~
-   arch/x86/kernel/callthunks.c:332:31: note: directive argument in the range [0, 4294967294]
-     332 |                 sprintf(name, "cpu%lu", cpu);
-         |                               ^~~~~~~~
-   arch/x86/kernel/callthunks.c:332:17: note: 'sprintf' output between 5 and 14 bytes into a destination of size 10
-     332 |                 sprintf(name, "cpu%lu", cpu);
-         |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-vim +332 arch/x86/kernel/callthunks.c
-
-   321	
-   322	static int __init callthunks_debugfs_init(void)
-   323	{
-   324		struct dentry *dir;
-   325		unsigned long cpu;
-   326	
-   327		dir = debugfs_create_dir("callthunks", NULL);
-   328		for_each_possible_cpu(cpu) {
-   329			void *arg = (void *)cpu;
-   330			char name [10];
-   331	
- > 332			sprintf(name, "cpu%lu", cpu);
-
+diff --git a/arch/m68k/68000/entry.S b/arch/m68k/68000/entry.S
+index 72e95663b62f..e1fc740412f2 100644
+--- a/arch/m68k/68000/entry.S
++++ b/arch/m68k/68000/entry.S
+@@ -23,13 +23,6 @@
+ .globl ret_from_exception
+ .globl sys_call_table
+ .globl bad_interrupt
+-.globl inthandler1
+-.globl inthandler2
+-.globl inthandler3
+-.globl inthandler4
+-.globl inthandler5
+-.globl inthandler6
+-.globl inthandler7
+ 
+ badsys:
+ 	movel	#-ENOSYS,%sp@(PT_OFF_D0)
+@@ -119,85 +112,32 @@ Lsignal_return:
+ 	addql	#4,%sp
+ 	jra	1b
+ 
+-/*
+- * This is the main interrupt handler, responsible for calling process_int()
+- */
+-inthandler1:
+-	SAVE_ALL_INT
+-	movew	%sp@(PT_OFF_FORMATVEC), %d0
+-	and	#0x3ff, %d0
+-
+-	movel	%sp,%sp@-
+-	movel	#65,%sp@- 		/*  put vector # on stack*/
+-	jbsr	process_int		/*  process the IRQ*/
+-3:     	addql	#8,%sp			/*  pop parameters off stack*/
+-	bra	ret_from_exception
+-
+-inthandler2:
+-	SAVE_ALL_INT
+-	movew	%sp@(PT_OFF_FORMATVEC), %d0
+-	and	#0x3ff, %d0
+-
+-	movel	%sp,%sp@-
+-	movel	#66,%sp@- 		/*  put vector # on stack*/
+-	jbsr	process_int		/*  process the IRQ*/
+-3:     	addql	#8,%sp			/*  pop parameters off stack*/
+-	bra	ret_from_exception
+-
+-inthandler3:
+-	SAVE_ALL_INT
+-	movew	%sp@(PT_OFF_FORMATVEC), %d0
+-	and	#0x3ff, %d0
+-
+-	movel	%sp,%sp@-
+-	movel	#67,%sp@- 		/*  put vector # on stack*/
+-	jbsr	process_int		/*  process the IRQ*/
+-3:     	addql	#8,%sp			/*  pop parameters off stack*/
+-	bra	ret_from_exception
+-
+-inthandler4:
++/* Create an interrupt vector sled */
++ .macro inthandler num func
++	.globl inthandler\num
++	inthandler\num:
+ 	SAVE_ALL_INT
+ 	movew	%sp@(PT_OFF_FORMATVEC), %d0
+ 	and	#0x3ff, %d0
+ 
+ 	movel	%sp,%sp@-
+-	movel	#68,%sp@- 		/*  put vector # on stack*/
+-	jbsr	process_int		/*  process the IRQ*/
+-3:     	addql	#8,%sp			/*  pop parameters off stack*/
+-	bra	ret_from_exception
+-
+-inthandler5:
+-	SAVE_ALL_INT
+-	movew	%sp@(PT_OFF_FORMATVEC), %d0
+-	and	#0x3ff, %d0
+-
+-	movel	%sp,%sp@-
+-	movel	#69,%sp@- 		/*  put vector # on stack*/
+-	jbsr	process_int		/*  process the IRQ*/
+-3:     	addql	#8,%sp			/*  pop parameters off stack*/
+-	bra	ret_from_exception
+-
+-inthandler6:
+-	SAVE_ALL_INT
+-	movew	%sp@(PT_OFF_FORMATVEC), %d0
+-	and	#0x3ff, %d0
+-
+-	movel	%sp,%sp@-
+-	movel	#70,%sp@- 		/*  put vector # on stack*/
+-	jbsr	process_int		/*  process the IRQ*/
+-3:     	addql	#8,%sp			/*  pop parameters off stack*/
+-	bra	ret_from_exception
+-
+-inthandler7:
+-	SAVE_ALL_INT
+-	movew	%sp@(PT_OFF_FORMATVEC), %d0
+-	and	#0x3ff, %d0
+-
+-	movel	%sp,%sp@-
+-	movel	#71,%sp@- 		/*  put vector # on stack*/
+-	jbsr	process_int		/*  process the IRQ*/
+-3:     	addql	#8,%sp			/*  pop parameters off stack*/
++	/* put vector # on stack*/
++	movel	#\num,%sp@-
++	/* process the IRQ*/
++	jbsr	\func
++	/* pop parameters off stack*/
++	addql	#8,%sp
+ 	bra	ret_from_exception
++ .endm
++
++/* Dragonball interrupts */
++inthandler 65 process_int
++inthandler 66 process_int
++inthandler 67 process_int
++inthandler 68 process_int
++inthandler 69 process_int
++inthandler 70 process_int
++inthandler 71 process_int
+ 
+ inthandler:
+ 	SAVE_ALL_INT
+diff --git a/arch/m68k/68000/ints.c b/arch/m68k/68000/ints.c
+index 2ba9926e91ae..3d93255c2fe4 100644
+--- a/arch/m68k/68000/ints.c
++++ b/arch/m68k/68000/ints.c
+@@ -63,13 +63,13 @@ asmlinkage void trap46(void);
+ asmlinkage void trap47(void);
+ asmlinkage irqreturn_t bad_interrupt(int, void *);
+ asmlinkage irqreturn_t inthandler(void);
+-asmlinkage irqreturn_t inthandler1(void);
+-asmlinkage irqreturn_t inthandler2(void);
+-asmlinkage irqreturn_t inthandler3(void);
+-asmlinkage irqreturn_t inthandler4(void);
+-asmlinkage irqreturn_t inthandler5(void);
+-asmlinkage irqreturn_t inthandler6(void);
+-asmlinkage irqreturn_t inthandler7(void);
++asmlinkage irqreturn_t inthandler65(void);
++asmlinkage irqreturn_t inthandler66(void);
++asmlinkage irqreturn_t inthandler67(void);
++asmlinkage irqreturn_t inthandler68(void);
++asmlinkage irqreturn_t inthandler69(void);
++asmlinkage irqreturn_t inthandler70(void);
++asmlinkage irqreturn_t inthandler71(void);
+ 
+ /* The 68k family did not have a good way to determine the source
+  * of interrupts until later in the family.  The EC000 core does
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.43.0
+
 
