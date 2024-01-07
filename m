@@ -1,233 +1,211 @@
-Return-Path: <linux-kernel+bounces-18796-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18797-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 182CC826320
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 07:27:14 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 58E8A826324
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 07:29:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6252A1F21C6A
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 06:27:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C32B7B217A3
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 06:29:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A1C5125C1;
-	Sun,  7 Jan 2024 06:27:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 178DB125C4;
+	Sun,  7 Jan 2024 06:29:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="zA9CRdIX"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="GLSliuBl"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03F02125BA
-	for <linux-kernel@vger.kernel.org>; Sun,  7 Jan 2024 06:27:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-28cec7ae594so782418a91.3
-        for <linux-kernel@vger.kernel.org>; Sat, 06 Jan 2024 22:27:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704608823; x=1705213623; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=iW5VT/4eLpp7PKquWlruWMTFNJDHZ9lSGytu3Jmlq4E=;
-        b=zA9CRdIXn+ZYSXunSBqQhUiccYwFAQOTHKctUCKlHRm1K1xqpH2ejGm+Y0eeTJN6YJ
-         7WXeZK1RXn/gLGVQBYldbYrVhw2KciSqqo5j4BasF8+bRd6F5EMNSW0bRAX7dkgKvk34
-         2KMeCtVeMaMU4Us/BT8TkZaPF82TihdQGHccZVU+18URwkoN6XQNT/eTFh9I/UEdf6+/
-         16cm/1G9xNq8ckB1LygB6oAHBsq9YlxC/E8YORpweja32z+LmMltkRi7k++L76fjz2qw
-         Qc4DBdKlePrQraXcCRCHqQcnL4p9M00mWzScC0cOwzoU6hZfGN/tbDy7TDIybJ/1/RBW
-         wjIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704608823; x=1705213623;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=iW5VT/4eLpp7PKquWlruWMTFNJDHZ9lSGytu3Jmlq4E=;
-        b=wfQPgem3bvlR2hXMk5GNdysB866gxIi79InBuGfrPbAPRqjvlRpvDTm/kReemMSS8M
-         q+nuqWqI3istevdBu00pYzIqQNXaYh0qAjfGsEATHusBXbZeq40YM0QSxxNCi/1WLi9U
-         +UkwO3LnMedw3/AiklPebRk6uBU5WvpOqm4LFKOyJYNJw9bYxR5EmnETCg4Sxn3PAXKU
-         jK6uZlyGnADklQeGARRIJA1w/IKoI9Qih+zm17xt31qmB2Gx0g+6h8vC7bmRWEJzQVIh
-         RCDmChVA92lzsShbiWRx6Fv6AIG38Wliir3v72zT2ehXDm5yYzP6juucQma80accRNWb
-         J0JA==
-X-Gm-Message-State: AOJu0YxTK+HNSKpYL24FmSKyhU5ABWruil3ugPjdhW3YKpYMZDiyVISc
-	cbPTU0cDI5kDIB6KHSudPzD/E+Ilr9v1
-X-Google-Smtp-Source: AGHT+IF9EIsAdvfe7SNGb3Xs8d3OsvAgoF/ITk2xEdFgJKxUc+1zTbZHj5eHo35V0G3bc6Ra+uzqcw==
-X-Received: by 2002:a17:902:b70f:b0:1d4:e2bc:88f2 with SMTP id d15-20020a170902b70f00b001d4e2bc88f2mr2077033pls.88.1704608823306;
-        Sat, 06 Jan 2024 22:27:03 -0800 (PST)
-Received: from thinkpad ([103.197.115.97])
-        by smtp.gmail.com with ESMTPSA id b9-20020a170902b60900b001d4c984e02bsm3906425pls.11.2024.01.06.22.26.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 06 Jan 2024 22:27:02 -0800 (PST)
-Date: Sun, 7 Jan 2024 11:56:54 +0530
-From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To: Frank Li <Frank.Li@nxp.com>
-Cc: krzysztof.kozlowski@linaro.org, bhelgaas@google.com,
-	conor+dt@kernel.org, devicetree@vger.kernel.org, festevam@gmail.com,
-	helgaas@kernel.org, hongxing.zhu@nxp.com, imx@lists.linux.dev,
-	kernel@pengutronix.de, krzysztof.kozlowski+dt@linaro.org,
-	kw@linux.com, l.stach@pengutronix.de,
-	linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
-	linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-	lpieralisi@kernel.org, robh@kernel.org, s.hauer@pengutronix.de,
-	shawnguo@kernel.org
-Subject: Re: [PATCH v7 16/16] PCI: imx6: Add iMX95 Endpoint (EP) function
- support
-Message-ID: <20240107062654.GO3416@thinkpad>
-References: <20231227182727.1747435-1-Frank.Li@nxp.com>
- <20231227182727.1747435-17-Frank.Li@nxp.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38664125BA
+	for <linux-kernel@vger.kernel.org>; Sun,  7 Jan 2024 06:29:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704608947; x=1736144947;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=pLNxWRLGinYwoO6b+jXWZyov/23Zqk6a3b4h1iCi38I=;
+  b=GLSliuBldAWy7vOK4dKVuyiBFze+On2w8wnupWyd4zuZ/viKEE1MMcd7
+   HB+sCffkFS0oGIQpGCNYrtS1IJYv00OFdorIyknKS0IPy91IfGJG2jl40
+   HrhnUaetItVk36Hl1MwtpUjRZuqnKOyTxXbS5hBJ9vKINjRHFYMWj+iYr
+   fr7Xg8wtcW5+Q63lATbuokZ6NeH9Ct1asHKaol3piZ2iCYJRssdmgKuQO
+   80DJax5QiHxYiyV88YyP8UljOAIHBALP0Jcn1gnMYGXxr16GDL+99Pnhf
+   +aOlrQEhcLnkVQWAn3aXUl5zqRXJZ6bBamoSxSDB6/+9uISzcAvkOE5pp
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10945"; a="11189494"
+X-IronPort-AV: E=Sophos;i="6.04,338,1695711600"; 
+   d="scan'208";a="11189494"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jan 2024 22:29:05 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10945"; a="784560731"
+X-IronPort-AV: E=Sophos;i="6.04,338,1695711600"; 
+   d="scan'208";a="784560731"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by fmsmga007.fm.intel.com with ESMTP; 06 Jan 2024 22:29:03 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rMMeb-0003Tw-0x;
+	Sun, 07 Jan 2024 06:29:01 +0000
+Date: Sun, 7 Jan 2024 14:28:17 +0800
+From: kernel test robot <lkp@intel.com>
+To: wenxu <wenxu@ucloud.cn>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+	Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: net/netfilter/nf_flow_table_offload.c:88:25: sparse: sparse:
+ incorrect type in assignment (different base types)
+Message-ID: <202401071423.v3PWGH9j-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231227182727.1747435-17-Frank.Li@nxp.com>
 
-On Wed, Dec 27, 2023 at 01:27:27PM -0500, Frank Li wrote:
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   52b1853b080a082ec3749c3a9577f6c71b1d4a90
+commit: 3e1b0c168f6c8648f217c78ed6a4135af8c9d830 netfilter: flowtable: add vlan match offload support
+date:   2 years, 9 months ago
+config: i386-randconfig-r132-20240106 (https://download.01.org/0day-ci/archive/20240107/202401071423.v3PWGH9j-lkp@intel.com/config)
+compiler: ClangBuiltLinux clang version 17.0.6 (https://github.com/llvm/llvm-project 6009708b4367171ccdbf4b5905cb6a803753fe18)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240107/202401071423.v3PWGH9j-lkp@intel.com/reproduce)
 
-Subject: PCI: imx6: Add iMX95 Endpoint (EP) support
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202401071423.v3PWGH9j-lkp@intel.com/
 
-> Add iMX95 EP function support and add 64bit address support. Internal bus
+sparse warnings: (new ones prefixed by >>)
+   net/netfilter/nf_flow_table_offload.c:46:32: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __be32 [usertype] keyid @@     got unsigned int @@
+   net/netfilter/nf_flow_table_offload.c:46:32: sparse:     expected restricted __be32 [usertype] keyid
+   net/netfilter/nf_flow_table_offload.c:46:32: sparse:     got unsigned int
+   net/netfilter/nf_flow_table_offload.c:56:44: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __be32 [usertype] src @@     got unsigned int @@
+   net/netfilter/nf_flow_table_offload.c:56:44: sparse:     expected restricted __be32 [usertype] src
+   net/netfilter/nf_flow_table_offload.c:56:44: sparse:     got unsigned int
+   net/netfilter/nf_flow_table_offload.c:58:44: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __be32 [usertype] dst @@     got unsigned int @@
+   net/netfilter/nf_flow_table_offload.c:58:44: sparse:     expected restricted __be32 [usertype] dst
+   net/netfilter/nf_flow_table_offload.c:58:44: sparse:     got unsigned int
+>> net/netfilter/nf_flow_table_offload.c:88:25: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __be16 [usertype] vlan_tpid @@     got int @@
+   net/netfilter/nf_flow_table_offload.c:88:25: sparse:     expected restricted __be16 [usertype] vlan_tpid
+   net/netfilter/nf_flow_table_offload.c:88:25: sparse:     got int
+   net/netfilter/nf_flow_table_offload.c:147:32: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __be32 [usertype] src @@     got unsigned int @@
+   net/netfilter/nf_flow_table_offload.c:147:32: sparse:     expected restricted __be32 [usertype] src
+   net/netfilter/nf_flow_table_offload.c:147:32: sparse:     got unsigned int
+   net/netfilter/nf_flow_table_offload.c:149:32: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __be32 [usertype] dst @@     got unsigned int @@
+   net/netfilter/nf_flow_table_offload.c:149:32: sparse:     expected restricted __be32 [usertype] dst
+   net/netfilter/nf_flow_table_offload.c:149:32: sparse:     got unsigned int
+   net/netfilter/nf_flow_table_offload.c:164:29: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __be16 [usertype] n_proto @@     got int @@
+   net/netfilter/nf_flow_table_offload.c:164:29: sparse:     expected restricted __be16 [usertype] n_proto
+   net/netfilter/nf_flow_table_offload.c:164:29: sparse:     got int
+   net/netfilter/nf_flow_table_offload.c:182:22: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __be16 [usertype] src @@     got int @@
+   net/netfilter/nf_flow_table_offload.c:182:22: sparse:     expected restricted __be16 [usertype] src
+   net/netfilter/nf_flow_table_offload.c:182:22: sparse:     got int
+   net/netfilter/nf_flow_table_offload.c:184:22: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __be16 [usertype] dst @@     got int @@
+   net/netfilter/nf_flow_table_offload.c:184:22: sparse:     expected restricted __be16 [usertype] dst
+   net/netfilter/nf_flow_table_offload.c:184:22: sparse:     got int
+   net/netfilter/nf_flow_table_offload.c:247:30: sparse: sparse: incorrect type in argument 4 (different base types) @@     expected restricted __be32 const [usertype] *value @@     got unsigned int * @@
+   net/netfilter/nf_flow_table_offload.c:247:30: sparse:     expected restricted __be32 const [usertype] *value
+   net/netfilter/nf_flow_table_offload.c:247:30: sparse:     got unsigned int *
+   net/netfilter/nf_flow_table_offload.c:247:36: sparse: sparse: incorrect type in argument 5 (different base types) @@     expected restricted __be32 const [usertype] *mask @@     got unsigned int * @@
+   net/netfilter/nf_flow_table_offload.c:247:36: sparse:     expected restricted __be32 const [usertype] *mask
+   net/netfilter/nf_flow_table_offload.c:247:36: sparse:     got unsigned int *
+   net/netfilter/nf_flow_table_offload.c:252:30: sparse: sparse: incorrect type in argument 4 (different base types) @@     expected restricted __be32 const [usertype] *value @@     got unsigned int * @@
+   net/netfilter/nf_flow_table_offload.c:252:30: sparse:     expected restricted __be32 const [usertype] *value
+   net/netfilter/nf_flow_table_offload.c:252:30: sparse:     got unsigned int *
+   net/netfilter/nf_flow_table_offload.c:252:36: sparse: sparse: incorrect type in argument 5 (different base types) @@     expected restricted __be32 const [usertype] *mask @@     got unsigned int * @@
+   net/netfilter/nf_flow_table_offload.c:252:36: sparse:     expected restricted __be32 const [usertype] *mask
+   net/netfilter/nf_flow_table_offload.c:252:36: sparse:     got unsigned int *
+   net/netfilter/nf_flow_table_offload.c:306:30: sparse: sparse: incorrect type in argument 4 (different base types) @@     expected restricted __be32 const [usertype] *value @@     got unsigned int * @@
+   net/netfilter/nf_flow_table_offload.c:306:30: sparse:     expected restricted __be32 const [usertype] *value
+   net/netfilter/nf_flow_table_offload.c:306:30: sparse:     got unsigned int *
+   net/netfilter/nf_flow_table_offload.c:306:36: sparse: sparse: incorrect type in argument 5 (different base types) @@     expected restricted __be32 const [usertype] *mask @@     got unsigned int * @@
+   net/netfilter/nf_flow_table_offload.c:306:36: sparse:     expected restricted __be32 const [usertype] *mask
+   net/netfilter/nf_flow_table_offload.c:306:36: sparse:     got unsigned int *
+   net/netfilter/nf_flow_table_offload.c:312:30: sparse: sparse: incorrect type in argument 4 (different base types) @@     expected restricted __be32 const [usertype] *value @@     got unsigned int * @@
+   net/netfilter/nf_flow_table_offload.c:312:30: sparse:     expected restricted __be32 const [usertype] *value
+   net/netfilter/nf_flow_table_offload.c:312:30: sparse:     got unsigned int *
+   net/netfilter/nf_flow_table_offload.c:312:36: sparse: sparse: incorrect type in argument 5 (different base types) @@     expected restricted __be32 const [usertype] *mask @@     got unsigned int * @@
+   net/netfilter/nf_flow_table_offload.c:312:36: sparse:     expected restricted __be32 const [usertype] *mask
+   net/netfilter/nf_flow_table_offload.c:312:36: sparse:     got unsigned int *
+   net/netfilter/nf_flow_table_offload.c:323:20: sparse: sparse: incorrect type in initializer (different base types) @@     expected unsigned int [usertype] mask @@     got restricted __be32 @@
+   net/netfilter/nf_flow_table_offload.c:323:20: sparse:     expected unsigned int [usertype] mask
+   net/netfilter/nf_flow_table_offload.c:323:20: sparse:     got restricted __be32
+   net/netfilter/nf_flow_table_offload.c:341:37: sparse: sparse: incorrect type in argument 5 (different base types) @@     expected restricted __be32 const [usertype] *mask @@     got unsigned int * @@
+   net/netfilter/nf_flow_table_offload.c:341:37: sparse:     expected restricted __be32 const [usertype] *mask
+   net/netfilter/nf_flow_table_offload.c:341:37: sparse:     got unsigned int *
+   net/netfilter/nf_flow_table_offload.c:350:20: sparse: sparse: incorrect type in initializer (different base types) @@     expected unsigned int [usertype] mask @@     got restricted __be32 @@
+   net/netfilter/nf_flow_table_offload.c:350:20: sparse:     expected unsigned int [usertype] mask
+   net/netfilter/nf_flow_table_offload.c:350:20: sparse:     got restricted __be32
+   net/netfilter/nf_flow_table_offload.c:368:37: sparse: sparse: incorrect type in argument 5 (different base types) @@     expected restricted __be32 const [usertype] *mask @@     got unsigned int * @@
+   net/netfilter/nf_flow_table_offload.c:368:37: sparse:     expected restricted __be32 const [usertype] *mask
+   net/netfilter/nf_flow_table_offload.c:368:37: sparse:     got unsigned int *
+   net/netfilter/nf_flow_table_offload.c:390:20: sparse: sparse: incorrect type in initializer (different base types) @@     expected unsigned int [usertype] mask @@     got restricted __be32 @@
+   net/netfilter/nf_flow_table_offload.c:390:20: sparse:     expected unsigned int [usertype] mask
+   net/netfilter/nf_flow_table_offload.c:390:20: sparse:     got restricted __be32
+   net/netfilter/nf_flow_table_offload.c:407:60: sparse: sparse: incorrect type in argument 4 (different base types) @@     expected restricted __be32 const [usertype] *mask @@     got unsigned int * @@
+   net/netfilter/nf_flow_table_offload.c:407:60: sparse:     expected restricted __be32 const [usertype] *mask
+   net/netfilter/nf_flow_table_offload.c:407:60: sparse:     got unsigned int *
+   net/netfilter/nf_flow_table_offload.c:415:20: sparse: sparse: incorrect type in initializer (different base types) @@     expected unsigned int [usertype] mask @@     got restricted __be32 @@
+   net/netfilter/nf_flow_table_offload.c:415:20: sparse:     expected unsigned int [usertype] mask
+   net/netfilter/nf_flow_table_offload.c:415:20: sparse:     got restricted __be32
+   net/netfilter/nf_flow_table_offload.c:432:60: sparse: sparse: incorrect type in argument 4 (different base types) @@     expected restricted __be32 const [usertype] *mask @@     got unsigned int * @@
+   net/netfilter/nf_flow_table_offload.c:432:60: sparse:     expected restricted __be32 const [usertype] *mask
+   net/netfilter/nf_flow_table_offload.c:432:60: sparse:     got unsigned int *
+   net/netfilter/nf_flow_table_offload.c:467:22: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [assigned] [usertype] port @@     got restricted __be32 [usertype] @@
+   net/netfilter/nf_flow_table_offload.c:467:22: sparse:     expected unsigned int [assigned] [usertype] port
+   net/netfilter/nf_flow_table_offload.c:467:22: sparse:     got restricted __be32 [usertype]
+   net/netfilter/nf_flow_table_offload.c:468:22: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] mask @@     got restricted __be32 @@
+   net/netfilter/nf_flow_table_offload.c:468:22: sparse:     expected unsigned int [usertype] mask
+   net/netfilter/nf_flow_table_offload.c:468:22: sparse:     got restricted __be32
+   net/netfilter/nf_flow_table_offload.c:473:22: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [assigned] [usertype] port @@     got restricted __be32 [usertype] @@
+   net/netfilter/nf_flow_table_offload.c:473:22: sparse:     expected unsigned int [assigned] [usertype] port
+   net/netfilter/nf_flow_table_offload.c:473:22: sparse:     got restricted __be32 [usertype]
+   net/netfilter/nf_flow_table_offload.c:474:22: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] mask @@     got restricted __be32 @@
+   net/netfilter/nf_flow_table_offload.c:474:22: sparse:     expected unsigned int [usertype] mask
+   net/netfilter/nf_flow_table_offload.c:474:22: sparse:     got restricted __be32
+   net/netfilter/nf_flow_table_offload.c:481:30: sparse: sparse: incorrect type in argument 4 (different base types) @@     expected restricted __be32 const [usertype] *value @@     got unsigned int * @@
+   net/netfilter/nf_flow_table_offload.c:481:30: sparse:     expected restricted __be32 const [usertype] *value
+   net/netfilter/nf_flow_table_offload.c:481:30: sparse:     got unsigned int *
+   net/netfilter/nf_flow_table_offload.c:481:37: sparse: sparse: incorrect type in argument 5 (different base types) @@     expected restricted __be32 const [usertype] *mask @@     got unsigned int * @@
+   net/netfilter/nf_flow_table_offload.c:481:37: sparse:     expected restricted __be32 const [usertype] *mask
+   net/netfilter/nf_flow_table_offload.c:481:37: sparse:     got unsigned int *
+   net/netfilter/nf_flow_table_offload.c:497:22: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [assigned] [usertype] port @@     got restricted __be32 [usertype] @@
+   net/netfilter/nf_flow_table_offload.c:497:22: sparse:     expected unsigned int [assigned] [usertype] port
+   net/netfilter/nf_flow_table_offload.c:497:22: sparse:     got restricted __be32 [usertype]
+   net/netfilter/nf_flow_table_offload.c:498:22: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] mask @@     got restricted __be32 @@
+   net/netfilter/nf_flow_table_offload.c:498:22: sparse:     expected unsigned int [usertype] mask
+   net/netfilter/nf_flow_table_offload.c:498:22: sparse:     got restricted __be32
+   net/netfilter/nf_flow_table_offload.c:503:22: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [assigned] [usertype] port @@     got restricted __be32 [usertype] @@
+   net/netfilter/nf_flow_table_offload.c:503:22: sparse:     expected unsigned int [assigned] [usertype] port
+   net/netfilter/nf_flow_table_offload.c:503:22: sparse:     got restricted __be32 [usertype]
+   net/netfilter/nf_flow_table_offload.c:504:22: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] mask @@     got restricted __be32 @@
+   net/netfilter/nf_flow_table_offload.c:504:22: sparse:     expected unsigned int [usertype] mask
+   net/netfilter/nf_flow_table_offload.c:504:22: sparse:     got restricted __be32
+   net/netfilter/nf_flow_table_offload.c:511:30: sparse: sparse: incorrect type in argument 4 (different base types) @@     expected restricted __be32 const [usertype] *value @@     got unsigned int * @@
+   net/netfilter/nf_flow_table_offload.c:511:30: sparse:     expected restricted __be32 const [usertype] *value
+   net/netfilter/nf_flow_table_offload.c:511:30: sparse:     got unsigned int *
+   net/netfilter/nf_flow_table_offload.c:511:37: sparse: sparse: incorrect type in argument 5 (different base types) @@     expected restricted __be32 const [usertype] *mask @@     got unsigned int * @@
+   net/netfilter/nf_flow_table_offload.c:511:37: sparse:     expected restricted __be32 const [usertype] *mask
 
-Remove 'function' as that refers to endpoint function.
+vim +88 net/netfilter/nf_flow_table_offload.c
 
-> bridge for PCI support 64bit dma address in iMX95. So set call
-> dma_set_mask_and_coherent(dev, DMA_BIT_MASK(64)).
-> 
-
-'Hence, call dma_set_mask_and_coherent() to set 64 bit DMA mask.'
-
-> Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> ---
-> 
-> Notes:
->     Change from v3 to v4
->     - change align to 4k for imx95
->     Change from v1 to v3
->     - new patches at v3
-> 
->  drivers/pci/controller/dwc/pci-imx6.c | 45 +++++++++++++++++++++++++++
->  1 file changed, 45 insertions(+)
-> 
-> diff --git a/drivers/pci/controller/dwc/pci-imx6.c b/drivers/pci/controller/dwc/pci-imx6.c
-> index 6a58fd63a9dd2..00ec59867c17b 100644
-> --- a/drivers/pci/controller/dwc/pci-imx6.c
-> +++ b/drivers/pci/controller/dwc/pci-imx6.c
-> @@ -75,6 +75,7 @@ enum imx6_pcie_variants {
->  	IMX8MQ_EP,
->  	IMX8MM_EP,
->  	IMX8MP_EP,
-> +	IMX95_EP,
->  };
->  
->  #define IMX6_PCIE_FLAG_IMX6_PHY			BIT(0)
-> @@ -84,6 +85,7 @@ enum imx6_pcie_variants {
->  #define IMX6_PCIE_FLAG_HAS_APP_RESET		BIT(4)
->  #define IMX6_PCIE_FLAG_HAS_PHY_RESET		BIT(5)
->  #define IMX6_PCIE_FLAG_HAS_SERDES		BIT(6)
-> +#define IMX6_PCIE_FLAG_SUPPORT_64BIT		BIT(7)
->  
->  #define imx6_check_flag(pci, val)     (pci->drvdata->flags & val)
->  
-> @@ -620,6 +622,7 @@ static int imx6_pcie_enable_ref_clk(struct imx6_pcie *imx6_pcie)
->  		break;
->  	case IMX7D:
->  	case IMX95:
-> +	case IMX95_EP:
->  		break;
->  	case IMX8MM:
->  	case IMX8MM_EP:
-> @@ -1063,6 +1066,23 @@ static const struct pci_epc_features imx8m_pcie_epc_features = {
->  	.align = SZ_64K,
->  };
->  
-> +/*
-> + * BAR#	| Default BAR enable	| Default BAR Type	| Default BAR Size	| BAR Sizing Scheme
-> + * ================================================================================================
-> + * BAR0	| Enable		| 64-bit		| 1 MB			| Programmable Size
-> + * BAR1	| Disable		| 32-bit		| 64 KB			| Fixed Size
-> + *	| (BAR0 is 64-bit)	| if BAR0 is 32-bit	|			| As Bar0 is 64bit
-
-I couldn't understand above. And not aligned properly.
-
-> + * BAR2	| Enable		| 32-bit		| 1 MB			| Programmable Size
-> + * BAR3	| Enable		| 32-bit		| 64 KB			| Programmable Size
-> + * BAR4	| Enable		| 32-bit		| 1M			| Programmable Size
-> + * BAR5	| Enable		| 32-bit		| 64 KB			| Programmable Size
-> + */
-> +static const struct pci_epc_features imx95_pcie_epc_features = {
-> +	.msi_capable = true,
-> +	.bar_fixed_size[1] = SZ_64K,
-> +	.align = SZ_4K,
-> +};
-> +
->  static const struct pci_epc_features*
->  imx6_pcie_ep_get_features(struct dw_pcie_ep *ep)
->  {
-> @@ -1105,6 +1125,14 @@ static int imx6_add_pcie_ep(struct imx6_pcie *imx6_pcie,
->  
->  	pci->dbi_base2 = pci->dbi_base + pcie_dbi2_offset;
->  
-> +	/*
-
-Use FIXME here.
-
-- Mani
-
-> +	 * db2 information should fetch from dtb file. dw_pcie_ep_init() can get dbi_base2 from
-> +	 * "dbi2" if pci->dbi_base2 is NULL. All code related pcie_dbi2_offset should be removed
-> +	 * after all dts added "dbi2" reg.
-> +	 */
-> +	if (imx6_pcie->drvdata->variant == IMX95_EP)
-> +		pci->dbi_base2 = NULL;
-> +
->  	ret = dw_pcie_ep_init(ep);
->  	if (ret) {
->  		dev_err(dev, "failed to initialize endpoint\n");
-> @@ -1355,6 +1383,9 @@ static int imx6_pcie_probe(struct platform_device *pdev)
->  					     "unable to find iomuxc registers\n");
->  	}
->  
-> +	if (imx6_check_flag(imx6_pcie, IMX6_PCIE_FLAG_SUPPORT_64BIT))
-> +		dma_set_mask_and_coherent(dev, DMA_BIT_MASK(64));
-> +
->  	/* Grab PCIe PHY Tx Settings */
->  	if (of_property_read_u32(node, "fsl,tx-deemph-gen1",
->  				 &imx6_pcie->tx_deemph_gen1))
-> @@ -1557,6 +1588,19 @@ static const struct imx6_pcie_drvdata drvdata[] = {
->  		.mode_mask[0] = IMX6Q_GPR12_DEVICE_TYPE,
->  		.epc_features = &imx8m_pcie_epc_features,
->  	},
-> +	[IMX95_EP] = {
-> +		.variant = IMX95_EP,
-> +		.flags = IMX6_PCIE_FLAG_HAS_SERDES |
-> +			 IMX6_PCIE_FLAG_SUPPORT_64BIT,
-> +		.clk_names = {"pcie_bus", "pcie", "pcie_phy", "pcie_aux"},
-> +		.ltssm_off = IMX95_PE0_GEN_CTRL_3,
-> +		.ltssm_mask = IMX95_PCIE_LTSSM_EN,
-> +		.mode_off[0]  = IMX95_PE0_GEN_CTRL_1,
-> +		.mode_mask[0] = IMX95_PCIE_DEVICE_TYPE,
-> +		.init_phy = imx95_pcie_init_phy,
-> +		.epc_features = &imx95_pcie_epc_features,
-> +		.mode = DW_PCIE_EP_TYPE,
-> +	},
->  };
->  
->  static const struct of_device_id imx6_pcie_of_match[] = {
-> @@ -1571,6 +1615,7 @@ static const struct of_device_id imx6_pcie_of_match[] = {
->  	{ .compatible = "fsl,imx8mq-pcie-ep", .data = &drvdata[IMX8MQ_EP], },
->  	{ .compatible = "fsl,imx8mm-pcie-ep", .data = &drvdata[IMX8MM_EP], },
->  	{ .compatible = "fsl,imx8mp-pcie-ep", .data = &drvdata[IMX8MP_EP], },
-> +	{ .compatible = "fsl,imx95-pcie-ep", .data = &drvdata[IMX95_EP], },
->  	{},
->  };
->  
-> -- 
-> 2.34.1
-> 
+    80	
+    81	static void nf_flow_rule_vlan_match(struct flow_dissector_key_vlan *key,
+    82					    struct flow_dissector_key_vlan *mask,
+    83					    u16 vlan_id, __be16 proto)
+    84	{
+    85		key->vlan_id = vlan_id;
+    86		mask->vlan_id = VLAN_VID_MASK;
+    87		key->vlan_tpid = proto;
+  > 88		mask->vlan_tpid = 0xffff;
+    89	}
+    90	
 
 -- 
-மணிவண்ணன் சதாசிவம்
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
