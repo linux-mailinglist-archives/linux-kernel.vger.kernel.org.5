@@ -1,132 +1,106 @@
-Return-Path: <linux-kernel+bounces-18919-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18920-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DBFB782651D
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 17:31:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9509582651F
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 17:32:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EBE631C2158A
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 16:31:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3C4091F215F9
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 16:32:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0548134C4;
-	Sun,  7 Jan 2024 16:31:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B627E134B0;
+	Sun,  7 Jan 2024 16:32:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="UVqpfz47"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uGhrVE5i"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7BDC13AE6
-	for <linux-kernel@vger.kernel.org>; Sun,  7 Jan 2024 16:31:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704645094; x=1736181094;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=oNMzL668MgSACBaTvRfKi5Y6xEU5aNxKtjNOaM4E8Os=;
-  b=UVqpfz47fUY3M3E3Xd5mpYcJAT/wO6+p6otRrEu6frbKD35/QDPLiP8a
-   3icx5cNDvvRTgTYlg7zWnzBqdF0e/EeQhoypqiXRbzh60imHWU8i2eyCQ
-   /Yd34wAY1CWMDiSEIOaODnXhVhI/bOR7eQ9w97NqJD6oNeuMvJ+Xl2O1p
-   NBVIrxfyDRxfaYN1TehutnqFi4QYDspYg3Emdaia1VLUDUzf8cCAc6vZf
-   1+9bZnVb5hxHB3jk+j7pJYLEWfcGtpGJdL2bza3oI2Zc1VmASFdXvFVZK
-   1V67E5RmpVXAOgWfbPjpxwG5mYqJ41rSd+MrR3wXzWX1OUN83cjfWQaky
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10946"; a="464140700"
-X-IronPort-AV: E=Sophos;i="6.04,339,1695711600"; 
-   d="scan'208";a="464140700"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jan 2024 08:31:33 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10946"; a="1028190538"
-X-IronPort-AV: E=Sophos;i="6.04,339,1695711600"; 
-   d="scan'208";a="1028190538"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmsmga006.fm.intel.com with ESMTP; 07 Jan 2024 08:31:31 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rMW3d-0003wE-27;
-	Sun, 07 Jan 2024 16:31:29 +0000
-Date: Mon, 8 Jan 2024 00:31:22 +0800
-From: kernel test robot <lkp@intel.com>
-To: Rick Edgecombe <rick.p.edgecombe@intel.com>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	Yu-cheng Yu <yu-cheng.yu@intel.com>,
-	"Borislav Petkov (AMD)" <bp@alien8.de>,
-	Kees Cook <keescook@chromium.org>
-Subject: arch/x86/kernel/shstk.c:295:55: sparse: sparse: cast removes address
- space '__user' of expression
-Message-ID: <202401080003.duO4RmjK-lkp@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10E4413FE3;
+	Sun,  7 Jan 2024 16:32:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9F73DC433C7;
+	Sun,  7 Jan 2024 16:32:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704645144;
+	bh=exh9kYUXjvd715QZ32/MSnUargXIWrOgxzdke+sLuKA=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=uGhrVE5iJDZYQeAfO9XWjw0R53LcCKY8K2RMtvhzCzfJbwHlDMXWqTB+Uths0/qQx
+	 FTE1CgvhVNWbk4lNmwQv1xRWl6YNdN/1Qp38jkXUmnuZUg29q/h0OU1SIUvoC9zV6y
+	 x/NzMZdKf3zPjN2n2v/4RqH1GwTqfjfoyxD7shL9NRjRZyBDSXh7Rah7JBHgrFPw0C
+	 usHSOIILG06OPxYi7AH/lz8MYopZdquj1JXLiYx3QG35d/3wtqJxPfo4gjfA3QXAia
+	 PgYlopKkdAYyQ0dMUryZK9EJXr+7Wso4VGIgtpzflG3JvJyl5kRXKFUiuPLAqvdrk+
+	 CzLrY+bLnwWgw==
+Date: Sun, 7 Jan 2024 16:32:15 +0000
+From: Jonathan Cameron <jic23@kernel.org>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Petre Rodan <petre.rodan@subdimension.ro>, linux-iio@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Andreas Klinger <ak@it-klinger.de>,
+ Lars-Peter Clausen <lars@metafoo.de>, Angel Iglesias
+ <ang.iglesiasg@gmail.com>, Matti Vaittinen <mazziesaccount@gmail.com>
+Subject: Re: [PATCH v3 10/10] iio: pressure: mprls0025pa add SPI driver
+Message-ID: <20240107163215.427b563d@jic23-huawei>
+In-Reply-To: <ZZl628UdGQ_Bu2jy@smile.fi.intel.com>
+References: <20231229092445.30180-1-petre.rodan@subdimension.ro>
+	<20231229092445.30180-11-petre.rodan@subdimension.ro>
+	<ZZlyDT0J4n1_YXh4@smile.fi.intel.com>
+	<ZZl5rBPOKwvxZAAx@sunspire>
+	<ZZl628UdGQ_Bu2jy@smile.fi.intel.com>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.39; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   52b1853b080a082ec3749c3a9577f6c71b1d4a90
-commit: 05e36022c0543ba55a3de55af455b00cb3eb4fcc x86/shstk: Handle signals for shadow stack
-date:   5 months ago
-config: x86_64-randconfig-123-20240106 (https://download.01.org/0day-ci/archive/20240108/202401080003.duO4RmjK-lkp@intel.com/config)
-compiler: ClangBuiltLinux clang version 17.0.6 (https://github.com/llvm/llvm-project 6009708b4367171ccdbf4b5905cb6a803753fe18)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240108/202401080003.duO4RmjK-lkp@intel.com/reproduce)
+On Sat, 6 Jan 2024 18:07:55 +0200
+Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202401080003.duO4RmjK-lkp@intel.com/
+> On Sat, Jan 06, 2024 at 06:02:52PM +0200, Petre Rodan wrote:
+> > On Sat, Jan 06, 2024 at 05:30:21PM +0200, Andy Shevchenko wrote:  
+> > > On Fri, Dec 29, 2023 at 11:24:38AM +0200, Petre Rodan wrote:  
+> > > > Add SPI component of the driver.  
+> 
+> > > > +#include <linux/mod_devicetable.h>
+> > > > +#include <linux/module.h>
+> > > > +#include <linux/spi/spi.h>
+> > > > +#include <linux/stddef.h>  
+> > > 
+> > > Basically here we need additionally these ones:
+> > > 
+> > > device.h
+> > > errno.h
+> > > types.h  
+> > 
+> > ok, I'll add errno.h. the other two are in the shared .h file.  
+> 
+> Yes, but it's better to follow IWYI principle. Generally speaking
+> there is no guarantee that above will be _always_ the case.
+> 
+> Anyway, I leave this to Jonathan.
+> 
+When it's a local include to the driver like this I don't mind
+as much if the includes aren't there in the c file, but do generally
+'slightly prefer' them to be so.  As such I've added them here and
+in the i2c file (I also renamed that patch as 'refactor' isn't
+exactly descriptive in the patch title!)  I suspect none of us
+feel that strongly about this so rather than slowing things down
+I took a fairly random decision that let me apply the series today.
 
-sparse warnings: (new ones prefixed by >>)
-   arch/x86/kernel/shstk.c:244:29: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected unsigned long long [noderef] [usertype] __user *addr @@     got void *[noderef] __user @@
-   arch/x86/kernel/shstk.c:244:29: sparse:     expected unsigned long long [noderef] [usertype] __user *addr
-   arch/x86/kernel/shstk.c:244:29: sparse:     got void *[noderef] __user
->> arch/x86/kernel/shstk.c:295:55: sparse: sparse: cast removes address space '__user' of expression
+Anyhow, along with dropping the text on what this was tested on in
+the final patch - series applied to the togreg branch of iio.git.
 
-vim +/__user +295 arch/x86/kernel/shstk.c
+However, I'll be rebasing that tree on rc1 once available hence
+for now this will only be pushed out as testing for 0-day to get
+a head start on poking it.
 
-   271	
-   272	int setup_signal_shadow_stack(struct ksignal *ksig)
-   273	{
-   274		void __user *restorer = ksig->ka.sa.sa_restorer;
-   275		unsigned long ssp;
-   276		int err;
-   277	
-   278		if (!cpu_feature_enabled(X86_FEATURE_USER_SHSTK) ||
-   279		    !features_enabled(ARCH_SHSTK_SHSTK))
-   280			return 0;
-   281	
-   282		if (!restorer)
-   283			return -EINVAL;
-   284	
-   285		ssp = get_user_shstk_addr();
-   286		if (unlikely(!ssp))
-   287			return -EINVAL;
-   288	
-   289		err = shstk_push_sigframe(&ssp);
-   290		if (unlikely(err))
-   291			return err;
-   292	
-   293		/* Push restorer address */
-   294		ssp -= SS_FRAME_SIZE;
- > 295		err = write_user_shstk_64((u64 __user *)ssp, (u64)restorer);
-   296		if (unlikely(err))
-   297			return -EFAULT;
-   298	
-   299		fpregs_lock_and_load();
-   300		wrmsrl(MSR_IA32_PL3_SSP, ssp);
-   301		fpregs_unlock();
-   302	
-   303		return 0;
-   304	}
-   305	
+Thanks,
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Jonathan
+
+
 
