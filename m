@@ -1,241 +1,242 @@
-Return-Path: <linux-kernel+bounces-18789-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18790-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 029FD82630F
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 06:45:14 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C8C6826312
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 06:51:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F32C71C2123D
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 05:45:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C8DAE1F21DA1
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 05:51:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CC2E125B1;
-	Sun,  7 Jan 2024 05:45:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4404E125B6;
+	Sun,  7 Jan 2024 05:51:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="j1TTiN8q"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="sVFCHCKR"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57E05125AB
-	for <linux-kernel@vger.kernel.org>; Sun,  7 Jan 2024 05:45:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704606304; x=1736142304;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=cypbT8fxXl5raFtj+qyGPU2t4rs3XLXM4ybpGmnc+w0=;
-  b=j1TTiN8q2TDu4+qvu1eo45/EWfMcchVqdbEb4VFDeVpbhFrYLYjV9ttQ
-   63ZJIeN6xOOSiwJdjJ1x9NHxS8ubop+sjnxPI0JzCS7T4yJCFjC8aQXp1
-   36qYPDW+66bPg+ykp5PmePgSxpeHELTVI2gInkJItF0LlukaEJcBNXpz9
-   CETAwwzEiz+97fNN1J1/cfE/tQY8p0u+2imQ7fChM0/SflJpufJIFi85r
-   K9+95mNOoELhAuBC9bY2OJXidIMstH2CZkg7bDotJR4Z9GKGUIIpjlsQr
-   SHnf6DBPOxhRNhKj2CJZ7+WSyqgvFjGRjgkpauzORuSgil6cl6VlaarVP
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10945"; a="401481558"
-X-IronPort-AV: E=Sophos;i="6.04,338,1695711600"; 
-   d="scan'208";a="401481558"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jan 2024 21:45:03 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10945"; a="815308986"
-X-IronPort-AV: E=Sophos;i="6.04,338,1695711600"; 
-   d="scan'208";a="815308986"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga001.jf.intel.com with ESMTP; 06 Jan 2024 21:45:02 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rMLxz-0003RU-2x;
-	Sun, 07 Jan 2024 05:44:59 +0000
-Date: Sun, 7 Jan 2024 13:44:59 +0800
-From: kernel test robot <lkp@intel.com>
-To: Chengming Zhou <zhouchengming@bytedance.com>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-	Peter Zijlstra <peterz@infradead.org>
-Subject: kernel/sched/core.c:711:31: sparse: sparse: incorrect type in
- argument 1 (different address spaces)
-Message-ID: <202401071320.DgkEuvyo-lkp@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 245ED11CBE
+	for <linux-kernel@vger.kernel.org>; Sun,  7 Jan 2024 05:51:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-28ca8a37adeso777571a91.3
+        for <linux-kernel@vger.kernel.org>; Sat, 06 Jan 2024 21:51:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1704606673; x=1705211473; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=7eAcb8U/Xr8Afw7sKhM8tyCYADsawYa0chI/2tUTwyk=;
+        b=sVFCHCKRMN19zJwxsPsAv5adID2Zkgkjy5MzrPgRV1igje5sHwz28Vm+8zWLbX1Wo0
+         RO1RX0U8P4Y4qRUHGvqIlCpC9P5JRa1iBhvbSg67b+PebP+aN5Klpo21LYYqjkcreg69
+         XW9FEV8SYxGg4dlKajcUSt1287VrrRxiM0dSP/BY0qykMnSYjNKBeyu7rbBdcapNAUfi
+         lgjW08WUPMJXHT/LZ5wbU1obx13OrBW6fxaTqAfgBZtFa1KbWPtdm2zTqRZhhzCrkDkY
+         amrtntCNRzpvuBIEzsyT+CRKObL7SkTxDJbIg06XBcyPm0FusWV8LwWlNwdOwMkLTjaV
+         mh4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704606673; x=1705211473;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=7eAcb8U/Xr8Afw7sKhM8tyCYADsawYa0chI/2tUTwyk=;
+        b=Oj2hR+ABc30JQerZ7Pu1FDRmpjVVrzAzmaCgUAyT5cmF2pptNvSsAf1jji37GBENCZ
+         zfvls83ThS44JiUT910u3GFhQyOMMNMGW7IgO1P+xqn28uap2vNbc5x8oYlS+Cr8FVZA
+         2kwmUSr2A/XnIKNVOAo9nyJ6NfvN12ptdN/N/0tD8i2VjmX2GRbyFOT0/4N5qVuvWzZL
+         R0FwIsjyy2o/2/zHiSI60KWukJcCws69K/ji6b0YB3U7qivm1XvI69kSz0AUj8nDPxBM
+         V+Prij5P/K5kaO0TrW8B5wHE7LY9ZTkVfjjKxYR+fm1/vvIAfJiUObUNdMKjyXpsSrPD
+         Vi7w==
+X-Gm-Message-State: AOJu0YyM+4C3di9WkdPOqDsDAAUukRwRi+21OJi6JSr6euptn+WCf4Ym
+	cAeTTZkJrsTmtRfbDw0Nr21zoI1JmQUA
+X-Google-Smtp-Source: AGHT+IGj5EZz0+/fbauC6AN45sMZrVe29Er1ZlBQrJrIMByIAuVk+Xns2TcTYLTphPA7A9ofGaCdPA==
+X-Received: by 2002:a17:902:f54f:b0:1d3:c942:144c with SMTP id h15-20020a170902f54f00b001d3c942144cmr2692451plf.80.1704606673385;
+        Sat, 06 Jan 2024 21:51:13 -0800 (PST)
+Received: from thinkpad ([103.197.115.97])
+        by smtp.gmail.com with ESMTPSA id j5-20020a170902da8500b001d4e05828a9sm3874717plx.260.2024.01.06.21.51.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 06 Jan 2024 21:51:12 -0800 (PST)
+Date: Sun, 7 Jan 2024 11:21:06 +0530
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To: Frank Li <Frank.Li@nxp.com>
+Cc: krzysztof.kozlowski@linaro.org, bhelgaas@google.com,
+	conor+dt@kernel.org, devicetree@vger.kernel.org, festevam@gmail.com,
+	helgaas@kernel.org, hongxing.zhu@nxp.com, imx@lists.linux.dev,
+	kernel@pengutronix.de, krzysztof.kozlowski+dt@linaro.org,
+	kw@linux.com, l.stach@pengutronix.de,
+	linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
+	linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+	lpieralisi@kernel.org, robh@kernel.org, s.hauer@pengutronix.de,
+	shawnguo@kernel.org
+Subject: Re: [PATCH v7 12/16] PCI: imx6: Add iMX95 PCIe support
+Message-ID: <20240107055106.GL3416@thinkpad>
+References: <20231227182727.1747435-1-Frank.Li@nxp.com>
+ <20231227182727.1747435-13-Frank.Li@nxp.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231227182727.1747435-13-Frank.Li@nxp.com>
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   52b1853b080a082ec3749c3a9577f6c71b1d4a90
-commit: 52b1364ba0b105122d6de0e719b36db705011ac1 sched/psi: Add PSI_IRQ to track IRQ/SOFTIRQ pressure
-date:   1 year, 4 months ago
-config: x86_64-randconfig-122-20240106 (https://download.01.org/0day-ci/archive/20240107/202401071320.DgkEuvyo-lkp@intel.com/config)
-compiler: ClangBuiltLinux clang version 17.0.6 (https://github.com/llvm/llvm-project 6009708b4367171ccdbf4b5905cb6a803753fe18)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240107/202401071320.DgkEuvyo-lkp@intel.com/reproduce)
+On Wed, Dec 27, 2023 at 01:27:23PM -0500, Frank Li wrote:
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202401071320.DgkEuvyo-lkp@intel.com/
+Mention 'RC' in subject.
 
-sparse warnings: (new ones prefixed by >>)
->> kernel/sched/core.c:711:31: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct task_struct *task @@     got struct task_struct [noderef] __rcu *curr @@
-   kernel/sched/core.c:711:31: sparse:     expected struct task_struct *task
-   kernel/sched/core.c:711:31: sparse:     got struct task_struct [noderef] __rcu *curr
-   kernel/sched/core.c:781:48: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected struct task_struct *p @@     got struct task_struct [noderef] __rcu *curr @@
-   kernel/sched/core.c:781:48: sparse:     expected struct task_struct *p
-   kernel/sched/core.c:781:48: sparse:     got struct task_struct [noderef] __rcu *curr
-   kernel/sched/core.c:1028:38: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected struct task_struct *curr @@     got struct task_struct [noderef] __rcu *curr @@
-   kernel/sched/core.c:1028:38: sparse:     expected struct task_struct *curr
-   kernel/sched/core.c:1028:38: sparse:     got struct task_struct [noderef] __rcu *curr
-   kernel/sched/core.c:2192:33: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct task_struct *p @@     got struct task_struct [noderef] __rcu *curr @@
-   kernel/sched/core.c:2192:33: sparse:     expected struct task_struct *p
-   kernel/sched/core.c:2192:33: sparse:     got struct task_struct [noderef] __rcu *curr
-   kernel/sched/core.c:2192:68: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct task_struct *tsk @@     got struct task_struct [noderef] __rcu *curr @@
-   kernel/sched/core.c:2192:68: sparse:     expected struct task_struct *tsk
-   kernel/sched/core.c:2192:68: sparse:     got struct task_struct [noderef] __rcu *curr
-   kernel/sched/core.c:3592:17: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct sched_domain *[assigned] sd @@     got struct sched_domain [noderef] __rcu *parent @@
-   kernel/sched/core.c:3592:17: sparse:     expected struct sched_domain *[assigned] sd
-   kernel/sched/core.c:3592:17: sparse:     got struct sched_domain [noderef] __rcu *parent
-   kernel/sched/core.c:3789:28: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct task_struct const *p @@     got struct task_struct [noderef] __rcu *curr @@
-   kernel/sched/core.c:3789:28: sparse:     expected struct task_struct const *p
-   kernel/sched/core.c:3789:28: sparse:     got struct task_struct [noderef] __rcu *curr
-   kernel/sched/core.c:9156:43: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected struct task_struct *push_task @@     got struct task_struct [noderef] __rcu *curr @@
-   kernel/sched/core.c:9156:43: sparse:     expected struct task_struct *push_task
-   kernel/sched/core.c:9156:43: sparse:     got struct task_struct [noderef] __rcu *curr
-   kernel/sched/core.c:5441:38: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected struct task_struct *curr @@     got struct task_struct [noderef] __rcu *curr @@
-   kernel/sched/core.c:5441:38: sparse:     expected struct task_struct *curr
-   kernel/sched/core.c:5441:38: sparse:     got struct task_struct [noderef] __rcu *curr
-   kernel/sched/core.c:6387:14: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct task_struct *prev @@     got struct task_struct [noderef] __rcu *curr @@
-   kernel/sched/core.c:6387:14: sparse:     expected struct task_struct *prev
-   kernel/sched/core.c:6387:14: sparse:     got struct task_struct [noderef] __rcu *curr
-   kernel/sched/core.c:6913:17: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/sched/core.c:6913:17: sparse:    struct task_struct *
-   kernel/sched/core.c:6913:17: sparse:    struct task_struct [noderef] __rcu *
-   kernel/sched/core.c:7129:22: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/sched/core.c:7129:22: sparse:    struct task_struct [noderef] __rcu *
-   kernel/sched/core.c:7129:22: sparse:    struct task_struct *
-   kernel/sched/core.c:11188:25: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct task_struct *p @@     got struct task_struct [noderef] __rcu *curr @@
-   kernel/sched/core.c:11188:25: sparse:     expected struct task_struct *p
-   kernel/sched/core.c:11188:25: sparse:     got struct task_struct [noderef] __rcu *curr
-   kernel/sched/core.c: note: in included file:
-   kernel/sched/sched.h:1323:17: sparse: sparse: self-comparison always evaluates to true
-   kernel/sched/core.c:537:6: sparse: sparse: context imbalance in 'raw_spin_rq_lock_nested' - wrong count at exit
-   kernel/sched/sched.h:1323:17: sparse: sparse: self-comparison always evaluates to true
-   kernel/sched/core.c:562:6: sparse: sparse: context imbalance in 'raw_spin_rq_trylock' - wrong count at exit
-   kernel/sched/core.c:586:6: sparse: sparse: context imbalance in 'raw_spin_rq_unlock' - unexpected unlock
-   kernel/sched/sched.h:1582:9: sparse: sparse: context imbalance in '__task_rq_lock' - wrong count at exit
-   kernel/sched/sched.h:1582:9: sparse: sparse: context imbalance in 'task_rq_lock' - wrong count at exit
-   kernel/sched/core.c: note: in included file:
-   kernel/sched/pelt.h:97:13: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct task_struct const *p @@     got struct task_struct [noderef] __rcu *curr @@
-   kernel/sched/pelt.h:97:13: sparse:     expected struct task_struct const *p
-   kernel/sched/pelt.h:97:13: sparse:     got struct task_struct [noderef] __rcu *curr
-   kernel/sched/core.c:781:11: sparse: sparse: dereference of noderef expression
-   kernel/sched/core.c:2183:33: sparse: sparse: dereference of noderef expression
-   kernel/sched/core.c:2184:19: sparse: sparse: dereference of noderef expression
-   kernel/sched/core.c:2185:18: sparse: sparse: dereference of noderef expression
-   kernel/sched/core.c: note: in included file:
-   kernel/sched/sched.h:2060:25: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/sched/sched.h:2060:25: sparse:    struct task_struct [noderef] __rcu *
-   kernel/sched/sched.h:2060:25: sparse:    struct task_struct *
-   kernel/sched/sched.h:2217:9: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/sched/sched.h:2217:9: sparse:    struct task_struct [noderef] __rcu *
-   kernel/sched/sched.h:2217:9: sparse:    struct task_struct *
-   kernel/sched/core.c:2158:38: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/sched/core.c:2158:38: sparse:    struct task_struct [noderef] __rcu *
-   kernel/sched/core.c:2158:38: sparse:    struct task_struct const *
-   kernel/sched/sched.h:2060:25: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/sched/sched.h:2060:25: sparse:    struct task_struct [noderef] __rcu *
-   kernel/sched/sched.h:2060:25: sparse:    struct task_struct *
-   kernel/sched/sched.h:2217:9: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/sched/sched.h:2217:9: sparse:    struct task_struct [noderef] __rcu *
-   kernel/sched/sched.h:2217:9: sparse:    struct task_struct *
-   kernel/sched/sched.h:2217:9: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/sched/sched.h:2217:9: sparse:    struct task_struct [noderef] __rcu *
-   kernel/sched/sched.h:2217:9: sparse:    struct task_struct *
-   kernel/sched/sched.h:2060:25: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/sched/sched.h:2060:25: sparse:    struct task_struct [noderef] __rcu *
-   kernel/sched/sched.h:2060:25: sparse:    struct task_struct *
-   kernel/sched/sched.h:2217:9: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/sched/sched.h:2217:9: sparse:    struct task_struct [noderef] __rcu *
-   kernel/sched/sched.h:2217:9: sparse:    struct task_struct *
-   kernel/sched/sched.h:2060:25: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/sched/sched.h:2060:25: sparse:    struct task_struct [noderef] __rcu *
-   kernel/sched/sched.h:2060:25: sparse:    struct task_struct *
-   kernel/sched/sched.h:2217:9: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/sched/sched.h:2217:9: sparse:    struct task_struct [noderef] __rcu *
-   kernel/sched/sched.h:2217:9: sparse:    struct task_struct *
-   kernel/sched/sched.h:2060:25: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/sched/sched.h:2060:25: sparse:    struct task_struct [noderef] __rcu *
-   kernel/sched/sched.h:2060:25: sparse:    struct task_struct *
-   kernel/sched/sched.h:2217:9: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/sched/sched.h:2217:9: sparse:    struct task_struct [noderef] __rcu *
-   kernel/sched/sched.h:2217:9: sparse:    struct task_struct *
-   kernel/sched/sched.h:2060:25: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/sched/sched.h:2060:25: sparse:    struct task_struct [noderef] __rcu *
-   kernel/sched/sched.h:2060:25: sparse:    struct task_struct *
-   kernel/sched/sched.h:2217:9: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/sched/sched.h:2217:9: sparse:    struct task_struct [noderef] __rcu *
-   kernel/sched/sched.h:2217:9: sparse:    struct task_struct *
+> Add iMX95 PCIe basic root complex function support.
+> 
 
-vim +711 kernel/sched/core.c
+Add iMX95 PCIe Root Complex support.
 
-   675	
-   676	/*
-   677	 * RQ-clock updating methods:
-   678	 */
-   679	
-   680	static void update_rq_clock_task(struct rq *rq, s64 delta)
-   681	{
-   682	/*
-   683	 * In theory, the compile should just see 0 here, and optimize out the call
-   684	 * to sched_rt_avg_update. But I don't trust it...
-   685	 */
-   686		s64 __maybe_unused steal = 0, irq_delta = 0;
-   687	
-   688	#ifdef CONFIG_IRQ_TIME_ACCOUNTING
-   689		irq_delta = irq_time_read(cpu_of(rq)) - rq->prev_irq_time;
-   690	
-   691		/*
-   692		 * Since irq_time is only updated on {soft,}irq_exit, we might run into
-   693		 * this case when a previous update_rq_clock() happened inside a
-   694		 * {soft,}irq region.
-   695		 *
-   696		 * When this happens, we stop ->clock_task and only update the
-   697		 * prev_irq_time stamp to account for the part that fit, so that a next
-   698		 * update will consume the rest. This ensures ->clock_task is
-   699		 * monotonic.
-   700		 *
-   701		 * It does however cause some slight miss-attribution of {soft,}irq
-   702		 * time, a more accurate solution would be to update the irq_time using
-   703		 * the current rq->clock timestamp, except that would require using
-   704		 * atomic ops.
-   705		 */
-   706		if (irq_delta > delta)
-   707			irq_delta = delta;
-   708	
-   709		rq->prev_irq_time += irq_delta;
-   710		delta -= irq_delta;
- > 711		psi_account_irqtime(rq->curr, irq_delta);
-   712	#endif
-   713	#ifdef CONFIG_PARAVIRT_TIME_ACCOUNTING
-   714		if (static_key_false((&paravirt_steal_rq_enabled))) {
-   715			steal = paravirt_steal_clock(cpu_of(rq));
-   716			steal -= rq->prev_steal_time_rq;
-   717	
-   718			if (unlikely(steal > delta))
-   719				steal = delta;
-   720	
-   721			rq->prev_steal_time_rq += steal;
-   722			delta -= steal;
-   723		}
-   724	#endif
-   725	
-   726		rq->clock_task += delta;
-   727	
+> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> ---
+> 
+> Notes:
+>     Change from v1 to v3
+>     - none
+> 
+>  drivers/pci/controller/dwc/pci-imx6.c | 90 +++++++++++++++++++++++++--
+>  1 file changed, 85 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/pci/controller/dwc/pci-imx6.c b/drivers/pci/controller/dwc/pci-imx6.c
+> index d66a2db53bdb7..9e60ab6f1885a 100644
+> --- a/drivers/pci/controller/dwc/pci-imx6.c
+> +++ b/drivers/pci/controller/dwc/pci-imx6.c
+> @@ -42,6 +42,25 @@
+>  #define IMX8MQ_GPR_PCIE_VREG_BYPASS		BIT(12)
+>  #define IMX8MQ_GPR12_PCIE2_CTRL_DEVICE_TYPE	GENMASK(11, 8)
+>  
+> +#define IMX95_PCIE_PHY_GEN_CTRL			0x0
+> +#define IMX95_PCIE_REF_USE_PAD			BIT(17)
+> +
+> +#define IMX95_PCIE_PHY_MPLLA_CTRL		0x10
+> +#define IMX95_PCIE_PHY_MPLL_STATE		BIT(30)
+> +
+> +#define IMX95_PCIE_SS_RW_REG_0			0xf0
+> +#define IMX95_PCIE_REF_CLKEN			BIT(23)
+> +#define IMX95_PCIE_PHY_CR_PARA_SEL		BIT(9)
+> +
+> +#define IMX95_PE0_GEN_CTRL_1			0x1050
+> +#define IMX95_PCIE_DEVICE_TYPE			GENMASK(3, 0)
+> +
+> +#define IMX95_PE0_GEN_CTRL_3			0x1058
+> +#define IMX95_PCIE_LTSSM_EN			BIT(0)
+> +
+> +#define IMX95_PE0_PM_STS			0x1064
+> +#define IMX95_PCIE_PM_LINKST_IN_L2		BIT(14)
+> +
+>  #define to_imx6_pcie(x)	dev_get_drvdata((x)->dev)
+>  
+>  enum imx6_pcie_variants {
+> @@ -52,6 +71,7 @@ enum imx6_pcie_variants {
+>  	IMX8MQ,
+>  	IMX8MM,
+>  	IMX8MP,
+> +	IMX95,
+>  	IMX8MQ_EP,
+>  	IMX8MM_EP,
+>  	IMX8MP_EP,
+> @@ -63,6 +83,7 @@ enum imx6_pcie_variants {
+>  #define IMX6_PCIE_FLAG_HAS_PHY			BIT(3)
+>  #define IMX6_PCIE_FLAG_HAS_APP_RESET		BIT(4)
+>  #define IMX6_PCIE_FLAG_HAS_PHY_RESET		BIT(5)
+> +#define IMX6_PCIE_FLAG_HAS_SERDES		BIT(6)
+>  
+>  #define imx6_check_flag(pci, val)     (pci->drvdata->flags & val)
+>  
+> @@ -179,6 +200,24 @@ static unsigned int imx6_pcie_grp_offset(const struct imx6_pcie *imx6_pcie)
+>  	return imx6_pcie->controller_id == 1 ? IOMUXC_GPR16 : IOMUXC_GPR14;
+>  }
+>  
+> +static int imx95_pcie_init_phy(struct imx6_pcie *imx6_pcie)
+> +{
+> +	regmap_update_bits(imx6_pcie->iomuxc_gpr,
+> +			IMX95_PCIE_SS_RW_REG_0,
+> +			IMX95_PCIE_PHY_CR_PARA_SEL,
+> +			IMX95_PCIE_PHY_CR_PARA_SEL);
+> +
+> +	regmap_update_bits(imx6_pcie->iomuxc_gpr,
+> +			   IMX95_PCIE_PHY_GEN_CTRL,
+> +			   IMX95_PCIE_REF_USE_PAD, 0);
+> +	regmap_update_bits(imx6_pcie->iomuxc_gpr,
+> +			   IMX95_PCIE_SS_RW_REG_0,
+> +			   IMX95_PCIE_REF_CLKEN,
+> +			   IMX95_PCIE_REF_CLKEN);
+> +
+> +	return 0;
+> +}
+> +
+>  static void imx6_pcie_configure_type(struct imx6_pcie *imx6_pcie)
+>  {
+>  	const struct imx6_pcie_drvdata *drvdata = imx6_pcie->drvdata;
+> @@ -579,6 +618,7 @@ static int imx6_pcie_enable_ref_clk(struct imx6_pcie *imx6_pcie)
+>  				   IMX6Q_GPR1_PCIE_REF_CLK_EN, 1 << 16);
+>  		break;
+>  	case IMX7D:
+> +	case IMX95:
+>  		break;
+>  	case IMX8MM:
+>  	case IMX8MM_EP:
+> @@ -696,10 +736,19 @@ static int imx6_pcie_deassert_core_reset(struct imx6_pcie *imx6_pcie)
+>  {
+>  	struct dw_pcie *pci = imx6_pcie->pci;
+>  	struct device *dev = pci->dev;
+> +	u32 val;
+>  
+>  	reset_control_deassert(imx6_pcie->pciephy_reset);
+>  
+>  	switch (imx6_pcie->drvdata->variant) {
+> +	case IMX95:
+> +		/* Polling the MPLL_STATE */
+> +		if (regmap_read_poll_timeout(imx6_pcie->iomuxc_gpr,
+> +					IMX95_PCIE_PHY_MPLLA_CTRL, val,
+> +					val & IMX95_PCIE_PHY_MPLL_STATE,
+> +					10, 10000))
+> +			dev_err(dev, "PCIe PLL lock timeout\n");
+
+You should return err here because, if core deassert is not performed then the
+core itself cannot be used.
+
+> +		break;
+>  	case IMX7D:
+>  		/* Workaround for ERR010728, failure of PCI-e PLL VCO to
+>  		 * oscillate, especially when cold.  This turns off "Duty-cycle
+> @@ -1281,12 +1330,32 @@ static int imx6_pcie_probe(struct platform_device *pdev)
+>  		return PTR_ERR(imx6_pcie->turnoff_reset);
+>  	}
+>  
+> +	if (imx6_pcie->drvdata->gpr) {
+>  	/* Grab GPR config register range */
+> -	imx6_pcie->iomuxc_gpr =
+> -		 syscon_regmap_lookup_by_compatible(imx6_pcie->drvdata->gpr);
+> -	if (IS_ERR(imx6_pcie->iomuxc_gpr)) {
+> -		dev_err(dev, "unable to find iomuxc registers\n");
+> -		return PTR_ERR(imx6_pcie->iomuxc_gpr);
+> +		imx6_pcie->iomuxc_gpr =
+> +			 syscon_regmap_lookup_by_compatible(imx6_pcie->drvdata->gpr);
+> +		if (IS_ERR(imx6_pcie->iomuxc_gpr))
+> +			return dev_err_probe(dev, PTR_ERR(imx6_pcie->iomuxc_gpr),
+> +					     "unable to find iomuxc registers\n");
+> +	}
+> +
+> +	if (imx6_check_flag(imx6_pcie, IMX6_PCIE_FLAG_HAS_SERDES)) {
+> +		void __iomem *off = devm_platform_ioremap_resource_byname(pdev, "app");
+> +
+> +		if (IS_ERR(off))
+> +			return dev_err_probe(dev, PTR_ERR(off),
+> +					     "unable to find serdes registers\n");
+> +
+> +		static struct regmap_config regmap_config = {
+
+const
+
+- Mani
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+மணிவண்ணன் சதாசிவம்
 
