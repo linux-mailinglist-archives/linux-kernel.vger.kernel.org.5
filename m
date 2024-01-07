@@ -1,102 +1,181 @@
-Return-Path: <linux-kernel+bounces-19014-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19015-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0134B8266BE
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 00:09:40 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC2FB8266C7
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 00:36:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9B2041F213BB
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 23:09:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C4AF11C2128F
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 23:36:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9ACDC134A9;
-	Sun,  7 Jan 2024 23:09:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B74E13AEE;
+	Sun,  7 Jan 2024 23:36:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="DExZUOoP"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36906125A8;
-	Sun,  7 Jan 2024 23:09:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D1270C433C7;
-	Sun,  7 Jan 2024 23:09:25 +0000 (UTC)
-Date: Sun, 7 Jan 2024 18:09:24 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Masami Hiramatsu
- <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Al Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>,
- linux-fsdevel@vger.kernel.org
-Subject: [GIT PULL] eventfs: Updates for v6.8
-Message-ID: <20240107180924.38e25155@rorschach.local.home>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A5C5134C3
+	for <linux-kernel@vger.kernel.org>; Sun,  7 Jan 2024 23:36:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704670566; x=1736206566;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=dZMoaqRD2icEdZxI18+pbwqsJfeDjeq99NLbNWVrP2c=;
+  b=DExZUOoP/hkW/pv2Rk+wCY96GTG7+mWzGF2R2FlapQDN2rDbLcKl3TfF
+   NSn9nl05eVXEB1e5wk9HgzrXSqzCEi9/RyaJQ4EfoALgRgFj4N2+3mBn4
+   nc/sKFq2d1tz5piOOSXIzjzkrxxl7EXTVhRHAb3StAVAP6JBiS5U1RmS9
+   t8OV60ue7R2CWuzw8KcB0JPFZ8lolCBmj4wd8bwi+2D+v5ViFGBCxi57j
+   os+81k4ORyeD3fXhr2PxbM3Wz/BFyA5T08aoDx9JBND5YIit+eMDIqaMS
+   jFNLcRhX6jT91u1lP0+KGQUzsoP7qNVAUveRNH4jzT9mVb3F9fvd56MgZ
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10946"; a="11248473"
+X-IronPort-AV: E=Sophos;i="6.04,340,1695711600"; 
+   d="scan'208";a="11248473"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jan 2024 15:36:05 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,340,1695711600"; 
+   d="scan'208";a="15745594"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by fmviesa002.fm.intel.com with ESMTP; 07 Jan 2024 15:36:03 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rMcgT-0004Hq-0X;
+	Sun, 07 Jan 2024 23:36:01 +0000
+Date: Mon, 8 Jan 2024 07:35:51 +0800
+From: kernel test robot <lkp@intel.com>
+To: Christian Brauner <brauner@kernel.org>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: fs/file.c:862:14: sparse: sparse: incorrect type in assignment
+ (different address spaces)
+Message-ID: <202401080703.g6Aje7mw-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   0dd3ee31125508cd67f7e7172247f05b7fd1753a
+commit: 0ede61d8589cc2d93aa78230d74ac58b5b8d0244 file: convert to SLAB_TYPESAFE_BY_RCU
+date:   3 months ago
+config: x86_64-randconfig-123-20240106 (https://download.01.org/0day-ci/archive/20240108/202401080703.g6Aje7mw-lkp@intel.com/config)
+compiler: ClangBuiltLinux clang version 17.0.6 (https://github.com/llvm/llvm-project 6009708b4367171ccdbf4b5905cb6a803753fe18)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240108/202401080703.g6Aje7mw-lkp@intel.com/reproduce)
 
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202401080703.g6Aje7mw-lkp@intel.com/
 
-Linus,
+sparse warnings: (new ones prefixed by >>)
+   fs/file.c:379:17: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct file **old_fds @@     got struct file [noderef] __rcu **fd @@
+   fs/file.c:379:17: sparse:     expected struct file **old_fds
+   fs/file.c:379:17: sparse:     got struct file [noderef] __rcu **fd
+   fs/file.c:380:17: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct file **new_fds @@     got struct file [noderef] __rcu **fd @@
+   fs/file.c:380:17: sparse:     expected struct file **new_fds
+   fs/file.c:380:17: sparse:     got struct file [noderef] __rcu **fd
+   fs/file.c:395:17: sparse: sparse: incompatible types in comparison expression (different address spaces):
+   fs/file.c:395:17: sparse:    struct file [noderef] __rcu *
+   fs/file.c:395:17: sparse:    struct file *
+   fs/file.c:430:54: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected struct file *file @@     got struct file [noderef] __rcu *[assigned] __ret @@
+   fs/file.c:470:28: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected struct fdtable [noderef] __rcu *fdt @@     got struct fdtable * @@
+   fs/file.c:646:14: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct file *file @@     got struct file [noderef] __rcu * @@
+   fs/file.c:841:30: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct file *file @@     got struct file [noderef] __rcu * @@
+>> fs/file.c:862:14: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct file [noderef] __rcu *file @@     got struct file * @@
+>> fs/file.c:866:13: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct atomic64_t [usertype] *v @@     got struct atomic64_t [noderef] __rcu * @@
+>> fs/file.c:869:23: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct file [noderef] __rcu *file_reloaded @@     got struct file * @@
+>> fs/file.c:892:24: sparse: sparse: incorrect type in return expression (different address spaces) @@     expected struct file * @@     got struct file [noderef] __rcu *file_reloaded @@
+>> fs/file.c:894:14: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct file * @@     got struct file [noderef] __rcu *file @@
+   fs/file.c:915:22: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct file [noderef] __rcu *file @@     got struct file * @@
+>> fs/file.c:922:24: sparse: sparse: incorrect type in return expression (different address spaces) @@     expected struct file * @@     got struct file [noderef] __rcu *file @@
+   fs/file.c:1212:16: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct file *tofree @@     got struct file [noderef] __rcu * @@
 
-This is only for tracefs/eventfs. It does not contain any of the
-tracing subsystem updates. It may also conflict with vfs subsystem as
-they had a change in the dentry walk, but that code that conflicts is
-deleted by this pull request.
+vim +862 fs/file.c
 
-eventfs updates for v6.8:
+   855	
+   856	static struct file *__get_file_rcu(struct file __rcu **f)
+   857	{
+   858		struct file __rcu *file;
+   859		struct file __rcu *file_reloaded;
+   860		struct file __rcu *file_reloaded_cmp;
+   861	
+ > 862		file = rcu_dereference_raw(*f);
+   863		if (!file)
+   864			return NULL;
+   865	
+ > 866		if (unlikely(!atomic_long_inc_not_zero(&file->f_count)))
+   867			return ERR_PTR(-EAGAIN);
+   868	
+ > 869		file_reloaded = rcu_dereference_raw(*f);
+   870	
+   871		/*
+   872		 * Ensure that all accesses have a dependency on the load from
+   873		 * rcu_dereference_raw() above so we get correct ordering
+   874		 * between reuse/allocation and the pointer check below.
+   875		 */
+   876		file_reloaded_cmp = file_reloaded;
+   877		OPTIMIZER_HIDE_VAR(file_reloaded_cmp);
+   878	
+   879		/*
+   880		 * atomic_long_inc_not_zero() above provided a full memory
+   881		 * barrier when we acquired a reference.
+   882		 *
+   883		 * This is paired with the write barrier from assigning to the
+   884		 * __rcu protected file pointer so that if that pointer still
+   885		 * matches the current file, we know we have successfully
+   886		 * acquired a reference to the right file.
+   887		 *
+   888		 * If the pointers don't match the file has been reallocated by
+   889		 * SLAB_TYPESAFE_BY_RCU.
+   890		 */
+   891		if (file == file_reloaded_cmp)
+ > 892			return file_reloaded;
+   893	
+ > 894		fput(file);
+   895		return ERR_PTR(-EAGAIN);
+   896	}
+   897	
+   898	/**
+   899	 * get_file_rcu - try go get a reference to a file under rcu
+   900	 * @f: the file to get a reference on
+   901	 *
+   902	 * This function tries to get a reference on @f carefully verifying that
+   903	 * @f hasn't been reused.
+   904	 *
+   905	 * This function should rarely have to be used and only by users who
+   906	 * understand the implications of SLAB_TYPESAFE_BY_RCU. Try to avoid it.
+   907	 *
+   908	 * Return: Returns @f with the reference count increased or NULL.
+   909	 */
+   910	struct file *get_file_rcu(struct file __rcu **f)
+   911	{
+   912		for (;;) {
+   913			struct file __rcu *file;
+   914	
+   915			file = __get_file_rcu(f);
+   916			if (unlikely(!file))
+   917				return NULL;
+   918	
+   919			if (unlikely(IS_ERR(file)))
+   920				continue;
+   921	
+ > 922			return file;
+   923		}
+   924	}
+   925	EXPORT_SYMBOL_GPL(get_file_rcu);
+   926	
 
-Note, this has no new features but only restructures the eventfs and
-tracefs code to simplify it and depend less on how dentry works.
-
-- Remove "lookup" parameter of create_dir_dentry() and
-  create_file_dentry(). These functions were called by lookup and the
-  readdir logic, where readdir needed it to up the ref count of the dentry
-  but the lookup did not. A "lookup" parameter was passed in to tell it
-  what to do, but this complicated the code. It is better to just always
-  up the ref count and require the caller to decrement it, even for
-  lookup.
-
-- Modify the .iterate_shared callback to not use the dcache_readdir()
-  logic and just handle what gets displayed by that one function. This
-  removes the need for eventfs to hijack the file->private_data from the
-  dcache_readdir() "cursor" pointer, and makes the code a bit more sane.
-
-- Use the root and instance inodes for default ownership. Instead of
-  walking the dentry tree and updating each dentry gid, use the getattr(),
-  setattr() and permission() callbacks to set the ownership and
-  permissions using the root or instance as the default.
-
-- Some other optimizations with the eventfs iterate_shared logic.
-
-
-Please pull the latest eventfs-v6.8 tree, which can be found at:
-
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace.git
-eventfs-v6.8
-
-Tag SHA1: b24ec2b23e8b77b46510e215ea34887bfb550453
-Head SHA1: 1de94b52d5e8d8b32f0252f14fad1f1edc2e71f1
-
-
-Steven Rostedt (Google) (7):
-      eventfs: Remove "lookup" parameter from create_dir/file_dentry()
-      eventfs: Stop using dcache_readdir() for getdents()
-      tracefs/eventfs: Use root and instance inodes as default ownership
-      eventfs: Have eventfs_iterate() stop immediately if ei->is_freed is set
-      eventfs: Do ctx->pos update for all iterations in eventfs_iterate()
-      eventfs: Read ei->entries before ei->children in eventfs_iterate()
-      eventfs: Shortcut eventfs_iterate() by skipping entries already read
-
-----
- fs/tracefs/event_inode.c | 341 +++++++++++++++++++++++------------------------
- fs/tracefs/inode.c       | 198 +++++++++++++++------------
- fs/tracefs/internal.h    |   3 +
- 3 files changed, 283 insertions(+), 259 deletions(-)
----------------------------
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
