@@ -1,124 +1,115 @@
-Return-Path: <linux-kernel+bounces-18879-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18880-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E9CB882647F
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 15:28:09 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 900E8826482
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 15:29:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1C52C1C20B90
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 14:28:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 32C9BB214C4
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 14:29:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52AA3134BD;
-	Sun,  7 Jan 2024 14:28:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F00D134C6;
+	Sun,  7 Jan 2024 14:29:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AwjER7Ox"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JYizFOa7"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ot1-f51.google.com (mail-ot1-f51.google.com [209.85.210.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CA8C134B3
-	for <linux-kernel@vger.kernel.org>; Sun,  7 Jan 2024 14:28:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 027DDC433C8;
-	Sun,  7 Jan 2024 14:27:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704637681;
-	bh=1X8Ul3/Opyp81lNAQ1SojmK3B7nENWcPC3AhiW2tNXo=;
-	h=Date:From:To:Cc:Subject:From;
-	b=AwjER7OxQTN4kEGqX4G0D8NVb3CQu5oecegYAWJPwbtMJHlLm+jBnt//mv3+dEOpn
-	 W2Rue0U8EcKxyrFUfuw3pqeta4+PcVj7O+K90bUuwMBqOUTaRfavGe4zigV+3mdP3H
-	 ZebUw+TrTcntfmexRxDz5Rk4PsPqN+p6weYRYSTei27KIcR9VFi6mqBKQqE/vyPu3N
-	 L6+oE6Vca/i4QW0G/HpH2wNKylHbnRtpOWUpTw/JulQPSIYsEo0pqvjza3/4IomHdj
-	 ATCrV12lkXbKRWg7naII7wX21j5s3ycyP5iZAbxJP6LA53YHW5zsZl5+TTYkfhk/Z3
-	 KmBNROPzxdP3w==
-Date: Sun, 7 Jan 2024 22:27:56 +0800
-From: Gao Xiang <xiang@kernel.org>
-To: Linus Torvalds <torvalds@linuxfoundation.org>
-Cc: linux-erofs@lists.ozlabs.org, LKML <linux-kernel@vger.kernel.org>,
-	Jingbo Xu <jefflexu@linux.alibaba.com>, Chao Yu <chao@kernel.org>,
-	Yue Hu <huyue2@coolpad.com>
-Subject: [GIT PULL] erofs updates for 6.8-rc1
-Message-ID: <ZZq07DNl8EB/wlgK@debian>
-Mail-Followup-To: Linus Torvalds <torvalds@linuxfoundation.org>,
-	linux-erofs@lists.ozlabs.org, LKML <linux-kernel@vger.kernel.org>,
-	Jingbo Xu <jefflexu@linux.alibaba.com>, Chao Yu <chao@kernel.org>,
-	Yue Hu <huyue2@coolpad.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93C61134B3;
+	Sun,  7 Jan 2024 14:29:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f51.google.com with SMTP id 46e09a7af769-6dc02ab3cc9so886634a34.3;
+        Sun, 07 Jan 2024 06:29:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704637771; x=1705242571; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=eGfKDZU2v02JYj8j4xt04rkLEro10sjs/HZeZU+mIfg=;
+        b=JYizFOa70HBccYJOoZAJc2NAY4qe3jkaJK40VJsfbmP+qyx4qSxz5C86x2zVTiKtTi
+         2FGwLjB5W7+86yoA7BlmPYR481bRau6p3K0ALhZ8vb4E+fAw9T1W+mfN1xOsOEzlanpW
+         Ln4+oD1y9SFy1oKrEhW7GQO68qrHnogUnUnUB1i8cDs4Ww140kSEDs9Nt2sUQAnc7BSt
+         0wDkcI67lGUQhuA4XZSeOBFRmIDNAq/lXTJhKLjg1jep7f4ihzD0cV1JMJaQNYi4Mmi9
+         KesOOg2yb8/fq0l/732ukqRepgtDYHbRUujzifuemKMULtjS654p+y3bXar+mbiwrTWM
+         lcrw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704637771; x=1705242571;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=eGfKDZU2v02JYj8j4xt04rkLEro10sjs/HZeZU+mIfg=;
+        b=WX7NkfFxIC1SH+XjmULXGAT/RRx8kercdU4G/jjLhoE9xbKzU+3z1XUgtoiILBfB7G
+         iRWuu0FP4l/Afb+b5DWEvUs4+jjzwvtjljOPzP8arO1CNqH2szADNi+UDVlH0E7GbZva
+         1kcpsw0/xZxr2d3vrUrMPjw4dYb+q1iNB0YM1koA6uw8oH1hgeFHK2knzKOrHsKbhmhk
+         0KYXF5I1nJTkV/gSg9laI3PLGDSKT8fU2fo1Cp1kE8MPJjKxutJTjgjAATvaFFXFICJy
+         tHOjChqnUwbE7Ls4FzUCEnUIu+D1Q///LY93v8qa8sFlOK2XdWptXq6isWR/H/bgC389
+         7VWA==
+X-Gm-Message-State: AOJu0Yy1/YvtgFSpYb2Ep/ZFhFvOBa7gtNkFb6jVUB8/GOTobPHkdV/M
+	DAF5cjQgXacRUUOXdtNu/fMX31rcEQ2oABNehbg=
+X-Google-Smtp-Source: AGHT+IGN0eC3tUJD1D2LgL2Ag3j92/KIUXQUEmoyoyxjkJa09kgyiqq1FJMICAshXVC9CqeiXAALCcuMb3opn+/A8cc=
+X-Received: by 2002:a05:6830:314e:b0:6db:e5a0:f142 with SMTP id
+ c14-20020a056830314e00b006dbe5a0f142mr2422716ots.58.1704637771617; Sun, 07
+ Jan 2024 06:29:31 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+References: <20240106065941.180796-1-wangrui@loongson.cn>
+In-Reply-To: <20240106065941.180796-1-wangrui@loongson.cn>
+From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date: Sun, 7 Jan 2024 15:29:20 +0100
+Message-ID: <CANiq72=M5TrUL+9Z0nqKKcD=KHwyDA79fNYHgU2EJ+7u6Ct8qw@mail.gmail.com>
+Subject: Re: [PATCH] LoongArch: Enable initial Rust support
+To: WANG Rui <wangrui@loongson.cn>
+Cc: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
+	Wedson Almeida Filho <wedsonaf@gmail.com>, Huacai Chen <chenhuacai@kernel.org>, 
+	Jonathan Corbet <corbet@lwn.net>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
+	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
+	Alice Ryhl <aliceryhl@google.com>, WANG Xuerui <kernel@xen0n.name>, rust-for-linux@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, loongarch@lists.linux.dev, 
+	linux-doc@vger.kernel.org, loongson-kernel@lists.loongnix.cn
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Linus,
+On Sat, Jan 6, 2024 at 8:04=E2=80=AFAM WANG Rui <wangrui@loongson.cn> wrote=
+:
+>
+>  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D
+>  Architecture  Level of support  Constraints
+>  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D
+> +``loongarch`` Maintained
 
-Could you consider this pull request for 6.8-rc1?
+On top of what Huacai said, it would be nice to add another character
+and realign the table so that `loongarch` it doesn't overflow (perhaps
+best done in an additional, previous patch).
 
-In this cycle, we'd like to enable basic sub-page compressed data
-support for Android ecosystem (for vendors to try out 16k page size
-with 4k-block images in their compatibility mode) as well as container
-images (so that 4k-block images can be parsed on arm64 cloud servers
-using 64k page size.)
+> +    } else if cfg.has("LOONGARCH") {
 
-In addition, there are several bugfixes and cleanups as usual.  All
-commits have been in -next for a while and no potential merge conflict
-is observed.
+Would it be possible to do it without a custom target in
+`scripts/generate_rust_target.rs`? If it is not possible (e.g. there
+is something that you cannot tweak otherwise on top of a built-in
+target via the CLI flags), it is fine to use a custom target for the
+moment.
 
-Thanks,
-Gao Xiang
+For instance, this is how ARM is doing it:
+https://lore.kernel.org/rust-for-linux/20231020155056.3495121-1-Jamie.Cunli=
+ffe@arm.com/
 
-The following changes since commit 2cc14f52aeb78ce3f29677c2de1f06c0e91471ab:
+Thanks!
 
-  Linux 6.7-rc3 (2023-11-26 19:59:33 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/xiang/erofs.git tags/erofs-for-6.8-rc1
-
-for you to fetch changes up to 070aafcd2482dc31a12a3eda5d459c45496d6fb6:
-
-  erofs: make erofs_{err,info}() support NULL sb parameter (2024-01-04 00:23:13 +0800)
-
-----------------------------------------------------------------
-Changes since last update:
-
- - Add basic sub-page compressed data support;
-
- - Fix a memory leak on MicroLZMA and DEFLATE compression;
-
- - Fix a rare LZ4 inplace decompression issue on recent x86 CPUs;
-
- - Two syzbot fixes around crafted images;
-
- - Some cleanups.
-
-----------------------------------------------------------------
-Chunhai Guo (1):
-      erofs: make erofs_{err,info}() support NULL sb parameter
-
-Gao Xiang (10):
-      erofs: fix memory leak on short-lived bounced pages
-      erofs: fix lz4 inplace decompression
-      erofs: support I/O submission for sub-page compressed blocks
-      erofs: record `pclustersize` in bytes instead of pages
-      erofs: fix up compacted indexes for block size < 4096
-      erofs: fix ztailpacking for subpage compressed blocks
-      erofs: refine z_erofs_transform_plain() for sub-page block support
-      erofs: enable sub-page compressed block support
-      erofs: fix inconsistent per-file compression format
-      erofs: avoid debugging output for (de)compressed data
-
-Yue Hu (1):
-      erofs: allow partially filled compressed bvecs
-
- fs/erofs/decompressor.c         | 122 +++++++++---------
- fs/erofs/decompressor_deflate.c |   2 +-
- fs/erofs/inode.c                |   6 +-
- fs/erofs/super.c                |  10 +-
- fs/erofs/zdata.c                | 267 ++++++++++++++++++----------------------
- fs/erofs/zmap.c                 |  41 +++---
- 6 files changed, 218 insertions(+), 230 deletions(-)
+Cheers,
+Miguel
 
