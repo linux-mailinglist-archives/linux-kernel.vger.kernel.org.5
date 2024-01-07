@@ -1,43 +1,58 @@
-Return-Path: <linux-kernel+bounces-18740-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18741-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 05F2782626F
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 01:01:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 13B25826273
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 01:11:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 902EDB21EC0
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 00:01:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A25B11F21F4F
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 00:11:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88BB6101F1;
-	Sun,  7 Jan 2024 00:01:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B03AA7EC;
+	Sun,  7 Jan 2024 00:11:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="y6ozcBqw"
+	dkim=pass (2048-bit key) header.d=alu.unizg.hr header.i=@alu.unizg.hr header.b="fv+9twWf";
+	dkim=pass (2048-bit key) header.d=alu.unizg.hr header.i=@alu.unizg.hr header.b="kKaEzs/r"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from domac.alu.hr (domac.alu.unizg.hr [161.53.235.3])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EC751078A;
-	Sun,  7 Jan 2024 00:01:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=1SxmdIFSRjpJFxGtPnHV34ru+LdpMa81TZvqC7nDGIQ=; b=y6ozcBqwUBF/69wfUBFmleLuxH
-	NGskmODUlwW/1rFsQaEYeLz76jdXb+8PUi/dyHhUQ5ztkeSDoELb2ak1wynttyPrqCjmUXF9h+PGb
-	SZZgCUSnthQKeVJfk38Dwp0+yvlgZT5RG+6o8Hq28ZaW05X2bqCyR6+eka7oVAGqNa1sNmJerjRFc
-	mYK1YwXiODMilzwuZzRQMq9+XuppmfOKor5LQPJyMUkZKQLDWeDDO4yiiA5HQc4if9vK7ha9O28r1
-	t8SJ2//LIvpCf8oQmMhQW3epv1z7UHycSpLSNCSY5OE4iLVwOkkot1n4zzCz96icf8x2/gzQbVQQe
-	GCRnlbnw==;
-Received: from [50.53.46.231] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1rMGaY-0024wo-2c;
-	Sun, 07 Jan 2024 00:00:26 +0000
-Message-ID: <cca3f0d2-8742-4985-8c9b-1d009dd0cba6@infradead.org>
-Date: Sat, 6 Jan 2024 16:00:25 -0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77393137F;
+	Sun,  7 Jan 2024 00:11:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alu.unizg.hr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alu.unizg.hr
+Received: from localhost (localhost [127.0.0.1])
+	by domac.alu.hr (Postfix) with ESMTP id 2D8E16017E;
+	Sun,  7 Jan 2024 01:11:25 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+	t=1704586285; bh=io6bVbjfD9MLx3dCArThBXRDeqsxHoH4H3cJLntGxTs=;
+	h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
+	b=fv+9twWfnSR6B7G1e3KF79xVVuX4TvE+nDFKj8/5udkS8uvlUHVGgNaxvsv7pL7Vp
+	 CZO7GynaY9cISXI4JyNr2azRBqGcIFF/MdYq1aYl3TmSDJu6Ghr+22Rg9SyDS41Quq
+	 aXswChLOKEUC3M6e0lJ1Yd5C2Ny1D4lfFLU2TMgQC8z0Z8BvJA9pEJEkcq1iNLrxe4
+	 mPMHPqFxvraKmMapMb92sBNKV4DSDVapiDKK7Jij27OFvGkf/clBbs6BbAihzhhMJd
+	 p6GUDVGKuLRITBe77FhJSQJ31aWpH1GlFelA1zl0Fmg3wNjFJN7ydoCjS2KGrCG7Sx
+	 QMPHm5xZEEhww==
+X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
+Received: from domac.alu.hr ([127.0.0.1])
+	by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id bzMzb-QkuWYS; Sun,  7 Jan 2024 01:11:23 +0100 (CET)
+Received: from [192.168.92.51] (unknown [95.168.116.36])
+	by domac.alu.hr (Postfix) with ESMTPSA id 3153C60171;
+	Sun,  7 Jan 2024 01:11:22 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+	t=1704586283; bh=io6bVbjfD9MLx3dCArThBXRDeqsxHoH4H3cJLntGxTs=;
+	h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
+	b=kKaEzs/rckAz7btXlgiVUlTnJ2tV90ms5iFXuyZCwQ2lZDRg1rVcpHSJz4jA2PoNY
+	 2MK0S4dU1qcZX87/XSnjrkgki/IqdkpXIe4tcRML/cEnW8UioAHzuzMYB/2vu6639S
+	 TRBFEgcbqowQ80PS/7BIMn0kY95d5X4uYEte+ZpEAjR5WApDQzuKtmLvL+ABIhI0YB
+	 oVGIe6FcwKUaS8TN80nqxRI92UyDMaq9qbPvnhEBmVYu339lvydG+NFnsxwKWsbxY/
+	 KU5Vh40o2wVtQKKW7VxAFFwOKcZG/dHvYwOJF/g8H3J1g2F0JQLuUcGIlbEFVeKjYM
+	 yGO4ba71wOUCA==
+Message-ID: <acce064f-23c1-4f32-b9d8-d8c47d81fdb2@alu.unizg.hr>
+Date: Sun, 7 Jan 2024 01:11:21 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -45,66 +60,58 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] platform/x86: intel-wmi-sbl-fw-update: Fix function name
- in error message
-Content-Language: en-US
-To: Armin Wolf <W_Armin@gmx.de>, jithu.joseph@intel.com
-Cc: hdegoede@redhat.com, ilpo.jarvinen@linux.intel.com,
- platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240106224126.13803-1-W_Armin@gmx.de>
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20240106224126.13803-1-W_Armin@gmx.de>
+Subject: Re: selftest: net: fcnal-test.sh TIMEOUT
+Content-Language: en-US, hr
+From: Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
+To: David Ahern <dsahern@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Cc: "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Shuah Khan <shuah@kernel.org>,
+ netdev@vger.kernel.org, linux-kselftest@vger.kernel.org
+References: <0b9a2827-c9c5-41d6-a4f1-dbd91262c474@alu.unizg.hr>
+ <e0a52f62-3ea8-48c4-a5c4-307f7642cd45@kernel.org>
+ <5f46cd87-ecad-4cad-bb03-b5bf22dff3b7@alu.unizg.hr>
+In-Reply-To: <5f46cd87-ecad-4cad-bb03-b5bf22dff3b7@alu.unizg.hr>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
+On 06. 01. 2024. 22:02, Mirsad Todorovac wrote:
+> On 06. 01. 2024. 17:16, David Ahern wrote:
+>> On 1/5/24 2:41 AM, Mirsad Todorovac wrote:
+>>> diff --git a/tools/testing/selftests/net/settings
+>>> b/tools/testing/selftests/net/settings index dfc27cdc6c05..ed8418e8217a
+>>> 100644 --- a/tools/testing/selftests/net/settings +++
+>>> b/tools/testing/selftests/net/settings @@ -1 +1 @@ -timeout=1500
+>>> +timeout=3600
+>>
+>> bumping the timeout is fine to me. that script is running a lot of
+>> permutations.
+> 
+> Well, aren't bugs best discovered if all cases or permutations are tested?
+> 
+> I recall some cases with Giullaume and Ido fixing them the last Summer or so.
 
+Hi, David,
 
-On 1/6/24 14:41, Armin Wolf wrote:
-> Since when the driver was converted to use the bus-based WMI
-> interface, the old GUID-based WMI functions are not used anymore.
-> Update the error message to avoid confusing users.
-> 
-> Compile-tested only.
-> 
-> Fixes: 75c487fcb69c ("platform/x86: intel-wmi-sbl-fw-update: Use bus-based WMI interface")
-> Signed-off-by: Armin Wolf <W_Armin@gmx.de>
+I apologise for my poor understanding of American English phrases.
 
+If increasing the timeout value is OK with you, will you guys do it
+or should I submit the formal patch?
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
-
-Thanks.
-
-> ---
->  drivers/platform/x86/intel/wmi/sbl-fw-update.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/platform/x86/intel/wmi/sbl-fw-update.c b/drivers/platform/x86/intel/wmi/sbl-fw-update.c
-> index 9cf5ed0f8dc2..040153ad67c1 100644
-> --- a/drivers/platform/x86/intel/wmi/sbl-fw-update.c
-> +++ b/drivers/platform/x86/intel/wmi/sbl-fw-update.c
-> @@ -32,7 +32,7 @@ static int get_fwu_request(struct device *dev, u32 *out)
->  		return -ENODEV;
-> 
->  	if (obj->type != ACPI_TYPE_INTEGER) {
-> -		dev_warn(dev, "wmi_query_block returned invalid value\n");
-> +		dev_warn(dev, "wmidev_block_query returned invalid value\n");
->  		kfree(obj);
->  		return -EINVAL;
->  	}
-> @@ -55,7 +55,7 @@ static int set_fwu_request(struct device *dev, u32 in)
-> 
->  	status = wmidev_block_set(to_wmi_device(dev), 0, &input);
->  	if (ACPI_FAILURE(status)) {
-> -		dev_err(dev, "wmi_set_block failed\n");
-> +		dev_err(dev, "wmidev_block_set failed\n");
->  		return -ENODEV;
->  	}
-> 
-> --
-> 2.39.2
-> 
-> 
+Thank you,
+Mirsad
 
 -- 
-#Randy
+Mirsad Goran Todorovac
+Sistem inženjer
+Grafički fakultet | Akademija likovnih umjetnosti
+Sveučilište u Zagrebu
+ 
+System engineer
+Faculty of Graphic Arts | Academy of Fine Arts
+University of Zagreb, Republic of Croatia
+The European Union
+
+"I see something approaching fast ... Will it be friends with me?"
+
 
