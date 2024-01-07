@@ -1,86 +1,100 @@
-Return-Path: <linux-kernel+bounces-18890-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18891-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4CFF08264B1
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 16:26:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 765F68264B5
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 16:26:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 41F1A1C20AB1
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 15:26:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7E35E1C213C2
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 15:26:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79143134C0;
-	Sun,  7 Jan 2024 15:25:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D29CF13AC8;
+	Sun,  7 Jan 2024 15:26:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="dv18yQUR"
+	dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b="Ymf4zCPK"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C39C134B7
-	for <linux-kernel@vger.kernel.org>; Sun,  7 Jan 2024 15:25:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1704641152;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ylOv8BQBQt2VBif1MnRK1t3TEEf3M7l9VEdncX+QjJw=;
-	b=dv18yQURQA7G12cnokm8nVvToZrLGjGmDPTvvvF9lgzXBg30ngCVHyjF4Gi3jFL++LK+0I
-	1B852apuP7g7IuJqRiE9f74IM917Pirpawth0JOVG+h8jvSrA7JR/6H5Vt7LK/Pt6j+M0G
-	tkYrn5SOnCXy5D1s0EAq6A55J8md9Cw=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-694-NeqLaP77OfCcKSj3qjZtbg-1; Sun, 07 Jan 2024 10:25:48 -0500
-X-MC-Unique: NeqLaP77OfCcKSj3qjZtbg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 23B00807F54;
-	Sun,  7 Jan 2024 15:25:48 +0000 (UTC)
-Received: from fedora.redhat.com (unknown [10.39.192.66])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 8A6641121306;
-	Sun,  7 Jan 2024 15:25:45 +0000 (UTC)
-From: Jose Ignacio Tornos Martinez <jtornosm@redhat.com>
-To: masahiroy@kernel.org
-Cc: dcavalca@meta.com,
-	jtornosm@redhat.com,
-	linux-kbuild@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	nathan@kernel.org,
-	ndesaulniers@google.com,
-	nicolas@fjasle.eu,
-	stable@vger.kernel.org
-Subject: Re: [PATCH v4] rpm-pkg: simplify installkernel %post
-Date: Sun,  7 Jan 2024 16:25:42 +0100
-Message-ID: <20240107152544.9091-1-jtornosm@redhat.com>
-In-Reply-To: <CAK7LNAR_wgQBs-q9NH1icb_FPBoVMNEhQpvV8qzH2dFsrDS0pQ@mail.gmail.com>
-References: <CAK7LNAR_wgQBs-q9NH1icb_FPBoVMNEhQpvV8qzH2dFsrDS0pQ@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AE91134BE;
+	Sun,  7 Jan 2024 15:26:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.helo=mx0b-0016f401.pphosted.com
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+	by mx0b-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 407EvqbT029122;
+	Sun, 7 Jan 2024 07:26:04 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=pfpt0220; bh=E5WheNxt
+	E7KIkYNksOdMvdibyOlZ+13KdYGfnetHwPQ=; b=Ymf4zCPKtJp3L3WPIFv8GrQN
+	lQ9H5VchrHDrG/uQFN4KKxM/Bs4prtajI398Xs4zVo3fL43nexFpRoDOWZIjg0js
+	1fSu+keVFf742Tou4MNUB2axDu7OUBXNw97vtX7J4mIx/EIo7sc3fu64ulTuuUII
+	QGHflJrMgafwbM9DnWS6RN9XYVLz1yAO6Tw44e3xPjHeYAi9Smgr9lpGm4/sbG0N
+	OXjUE5sRZ57f2D2I1F0kGwVpqT2Iv7mPRcfgf/vrB+7MYy4ovlkjyn29ZBc7Ic1Z
+	sSLh5SvwEbuUAFYyoaSYUle5yPY1NSS6SbtI+IaGccpiYtp8fFkKsnB4lMZQBg==
+Received: from dc5-exch02.marvell.com ([199.233.59.182])
+	by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3vf78n29jm-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+	Sun, 07 Jan 2024 07:26:04 -0800 (PST)
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Sun, 7 Jan
+ 2024 07:26:02 -0800
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
+ Transport; Sun, 7 Jan 2024 07:26:02 -0800
+Received: from dc3lp-swdev041.marvell.com (dc3lp-swdev041.marvell.com [10.6.60.191])
+	by maili.marvell.com (Postfix) with ESMTP id 6EC373F7093;
+	Sun,  7 Jan 2024 07:26:00 -0800 (PST)
+From: Elad Nachman <enachman@marvell.com>
+To: <gregkh@linuxfoundation.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-usb@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC: <enachman@marvell.com>
+Subject: [PATCH] dt-bindings: usb: Add Marvell ac5
+Date: Sun, 7 Jan 2024 17:25:57 +0200
+Message-ID: <20240107152557.3561341-1-enachman@marvell.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: Y5RTahJgokMjyWMMpqEtt-U1bWBPK9sI
+X-Proofpoint-GUID: Y5RTahJgokMjyWMMpqEtt-U1bWBPK9sI
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
 
-Hello Masahiro,
- 
-Sorry for the delay in answering, I was on holiday.
+From: Elad Nachman <enachman@marvell.com>
 
-Good catch
-Ok, I will create a new patch including your suggestion and I will test it with Fedora, openSUSE and others if possible.
+Add Marvell ac5 device tree bindings to generic EHCI.
+This compatible enables the Marvell Orion platform code
+to properly configure the DMA mask for the Marvell AC5 SOC.
 
-Thank you again for your help
+Signed-off-by: Elad Nachman <enachman@marvell.com>
+---
+ Documentation/devicetree/bindings/usb/generic-ehci.yaml | 1 +
+ 1 file changed, 1 insertion(+)
 
-Best regards
-José Ignacio
+diff --git a/Documentation/devicetree/bindings/usb/generic-ehci.yaml b/Documentation/devicetree/bindings/usb/generic-ehci.yaml
+index 87986c45be88..2ed178f16a78 100644
+--- a/Documentation/devicetree/bindings/usb/generic-ehci.yaml
++++ b/Documentation/devicetree/bindings/usb/generic-ehci.yaml
+@@ -77,6 +77,7 @@ properties:
+           - const: usb-ehci
+       - enum:
+           - generic-ehci
++          - marvell,ac5-ehci
+           - marvell,armada-3700-ehci
+           - marvell,orion-ehci
+           - nuvoton,npcm750-ehci
+-- 
+2.25.1
 
 
