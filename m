@@ -1,164 +1,257 @@
-Return-Path: <linux-kernel+bounces-18804-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18805-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 19CC6826330
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 07:40:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CCBA1826334
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 07:44:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C0ED0B21687
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 06:40:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 519011F21C05
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 06:44:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B646112B66;
-	Sun,  7 Jan 2024 06:40:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93DF512B78;
+	Sun,  7 Jan 2024 06:44:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="hJKKjD6K"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mkM8r+Q8"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f65.google.com (mail-wm1-f65.google.com [209.85.128.65])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C8A1125CD
-	for <linux-kernel@vger.kernel.org>; Sun,  7 Jan 2024 06:40:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704609606; x=1736145606;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=f/RZLPT6p0ebDjCoyzION04uQw5odX9ZXvphidLuD5Y=;
-  b=hJKKjD6KY+QDLwY4UbsRECMFsxLX1/n3CfQ0E6lgX25o6BPsgUhVIo7b
-   yHzx+QR6S1j8t0y4+m5Q7Tg4OgHit+tcO2eIfg9stFtkvgAMxB0iQFwb9
-   TGMn5SXqbb/DclkxLABwXmGuzhApnGtdfzzDoXt5mJ2AkHu21H7iCGmGr
-   bRUFfRVNfpF4eX6JpCa4gicdp9xQvdaP8H/EC7/IbRR7VTFnSXPzieL0T
-   wYJFI7AzQywLEROAtoKcv+GFuKiwM2Nl0OifdDFKcWWn/FWDvtalURSNG
-   Q3M/x9lACHi/7fsnMa/fqWO5jvCXuE+m+ot+oINr2G3HLSaH+rSPiFaae
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10945"; a="388160480"
-X-IronPort-AV: E=Sophos;i="6.04,338,1695711600"; 
-   d="scan'208";a="388160480"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jan 2024 22:40:06 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,338,1695711600"; 
-   d="scan'208";a="22855899"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orviesa002.jf.intel.com with ESMTP; 06 Jan 2024 22:40:05 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rMMpF-0003UW-27;
-	Sun, 07 Jan 2024 06:40:01 +0000
-Date: Sun, 7 Jan 2024 14:39:05 +0800
-From: kernel test robot <lkp@intel.com>
-To: Kah Jing Lee <kah.jing.lee@intel.com>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-	Radu Bacrau <radu.bacrau@intel.com>,
-	Ang Tien Sung <tien.sung.ang@intel.com>,
-	Dinh Nguyen <dinguyen@kernel.org>
-Subject: drivers/firmware/stratix10-rsu.c:93: warning: Function parameter or
- member 'dcmf_status' not described in 'stratix10_rsu_priv'
-Message-ID: <202401071443.x9tmUlhW-lkp@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B0F0125AF;
+	Sun,  7 Jan 2024 06:44:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f65.google.com with SMTP id 5b1f17b1804b1-40e43e489e4so2908645e9.1;
+        Sat, 06 Jan 2024 22:44:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704609869; x=1705214669; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:from:content-language
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tgblN3HcigowbWqXBnPjGd+MmpbzJDJ5UWz+u8rMOAE=;
+        b=mkM8r+Q8frRdXMwdnhvlKLRLdjx/+ei9saaTq/sFQOiNbNfWkzBDPiNypptzojGwCL
+         i/pTANmi8Dic7mgIIhq+RhYoMRUo73HjaGVUXAgr5TuqNYL8USar7gi1CfCRRmLu319J
+         Sr7HD0di5rwlAXFxWV16W6OL42dSvzFwlMezc2MGTH5CQoRokux7t7Llc4VgndOfZV3E
+         dwt9cMqwBEY8bAWStcCkNE042p63UGMt8W8dB/viJTh+75h2q/xljei7Gsb9spgED1co
+         q687JhijZuw935l0AR9UT04LSi8FjPkKJ3wJguyqJxVirrKSepcHms/KM4/7hUQG0LE9
+         FOiw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704609869; x=1705214669;
+        h=content-transfer-encoding:cc:to:subject:from:content-language
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=tgblN3HcigowbWqXBnPjGd+MmpbzJDJ5UWz+u8rMOAE=;
+        b=OHJhegLI+9SR7DAgr+i0nWgCgcIM2S9gJ6hSsHMWzw7KGyTaNppxwN8IYcel8SZoa1
+         sIcGMFBq42qgXzIpdhJx22MEQ0aHvjEdYFvCgzPO6jsi23lDlR4sx05Qxfliispkxh8/
+         /LQ/yoPtDjjU6gYgCc+nEm6HjoZzCc8K8kNItLO//7pPdZu1xHPcgvx6MHK9UlJmwBJ5
+         etDwPy865jFgcRjRdX1imHdTXS2z307/n921W43Pmg00MnN2HdmLpThF9FdqnPQF0vhK
+         pakSKyrp392nWKUhQDjFhrEJssdSZ4vbQxiu7F+FB5vdBoMW3g2ieojwUMD3ALx7y8Kr
+         5Fcg==
+X-Gm-Message-State: AOJu0Yznt+LU6h2HFC0xOcsGAi7d99+W+twcfqoIToj1iDYgqJdKhboA
+	APIkb0gj8Q53JFKhjL9vgB8=
+X-Google-Smtp-Source: AGHT+IEAFQmvda4HBy3z9WBFN501KNJDs2F6x8J/2VqOwWvjD6vx5tJx6o7ebX8iB2b9zmKLZnAFEA==
+X-Received: by 2002:a7b:c2b2:0:b0:40d:8892:f372 with SMTP id c18-20020a7bc2b2000000b0040d8892f372mr976687wmk.57.1704609869195;
+        Sat, 06 Jan 2024 22:44:29 -0800 (PST)
+Received: from ?IPV6:2a04:ee41:81:c881:8dae:eb66:b750:3c50? ([2a04:ee41:81:c881:8dae:eb66:b750:3c50])
+        by smtp.gmail.com with ESMTPSA id z9-20020a170906714900b00a28479fcb8esm2699045ejj.103.2024.01.06.22.44.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 06 Jan 2024 22:44:28 -0800 (PST)
+Message-ID: <1cf96afe-6a27-4fd5-975e-96122f72df2e@gmail.com>
+Date: Sun, 7 Jan 2024 07:44:27 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+From: Nicolas Maier <nicolas.maier.dev@gmail.com>
+Subject: [PATCH] can: bcm: add recvmsg flags for own, local and remote traffic
+To: socketcan@hartkopp.net, mkl@pengutronix.de, linux-can@vger.kernel.org
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+ pabeni@redhat.com, corbet@lwn.net, netdev@vger.kernel.org,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hi Kah,
+CAN RAW sockets allow userspace to tell if a received CAN frame comes
+from the same socket, another socket on the same host, or another host.
+See commit 1e55659ce6dd ("can-raw: add msg_flags to distinguish local
+traffic"). However, this feature is missing in CAN BCM sockets.
 
-FYI, the error/warning still remains.
+Add the same feature to CAN BCM sockets. When reading a received frame
+(opcode RX_CHANGED) using recvmsg, two flags in msg->msg_flags may be
+set following the previous convention (from CAN RAW), to distinguish
+between 'own', 'local' and 'remote' CAN traffic.
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   52b1853b080a082ec3749c3a9577f6c71b1d4a90
-commit: 1b4394c5d731593063f53df9d72467335c3b0367 firmware: stratix10-svc: extend svc to support RSU feature
-date:   1 year, 6 months ago
-config: arm64-defconfig (https://download.01.org/0day-ci/archive/20240107/202401071443.x9tmUlhW-lkp@intel.com/config)
-compiler: aarch64-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240107/202401071443.x9tmUlhW-lkp@intel.com/reproduce)
+Update the documentation to reflect this change.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202401071443.x9tmUlhW-lkp@intel.com/
+Signed-off-by: Nicolas Maier <nicolas.maier.dev@gmail.com>
+---
+ Documentation/networking/can.rst | 34 ++++++++++++++------------
+ net/can/bcm.c                    | 42 +++++++++++++++++++++++++++++---
+ 2 files changed, 56 insertions(+), 20 deletions(-)
 
-All warnings (new ones prefixed by >>):
-
-   drivers/firmware/stratix10-rsu.c:93: warning: Function parameter or member 'status' not described in 'stratix10_rsu_priv'
-   drivers/firmware/stratix10-rsu.c:93: warning: Function parameter or member 'dcmf_version' not described in 'stratix10_rsu_priv'
->> drivers/firmware/stratix10-rsu.c:93: warning: Function parameter or member 'dcmf_status' not described in 'stratix10_rsu_priv'
-
-
-vim +93 drivers/firmware/stratix10-rsu.c
-
-4526ebbc77732b Richard Gong 2019-09-03  37  
-4526ebbc77732b Richard Gong 2019-09-03  38  typedef void (*rsu_callback)(struct stratix10_svc_client *client,
-4526ebbc77732b Richard Gong 2019-09-03  39  			     struct stratix10_svc_cb_data *data);
-4526ebbc77732b Richard Gong 2019-09-03  40  /**
-4526ebbc77732b Richard Gong 2019-09-03  41   * struct stratix10_rsu_priv - rsu data structure
-4526ebbc77732b Richard Gong 2019-09-03  42   * @chan: pointer to the allocated service channel
-4526ebbc77732b Richard Gong 2019-09-03  43   * @client: active service client
-4526ebbc77732b Richard Gong 2019-09-03  44   * @completion: state for callback completion
-4526ebbc77732b Richard Gong 2019-09-03  45   * @lock: a mutex to protect callback completion state
-4526ebbc77732b Richard Gong 2019-09-03  46   * @status.current_image: address of image currently running in flash
-4526ebbc77732b Richard Gong 2019-09-03  47   * @status.fail_image: address of failed image in flash
-75bc73fc0188ef Richard Gong 2020-06-15  48   * @status.version: the interface version number of RSU firmware
-4526ebbc77732b Richard Gong 2019-09-03  49   * @status.state: the state of RSU system
-4526ebbc77732b Richard Gong 2019-09-03  50   * @status.error_details: error code
-4526ebbc77732b Richard Gong 2019-09-03  51   * @status.error_location: the error offset inside the image that failed
-75bc73fc0188ef Richard Gong 2020-06-15  52   * @dcmf_version.dcmf0: Quartus dcmf0 version
-75bc73fc0188ef Richard Gong 2020-06-15  53   * @dcmf_version.dcmf1: Quartus dcmf1 version
-75bc73fc0188ef Richard Gong 2020-06-15  54   * @dcmf_version.dcmf2: Quartus dcmf2 version
-75bc73fc0188ef Richard Gong 2020-06-15  55   * @dcmf_version.dcmf3: Quartus dcmf3 version
-4a6c8c565db1d0 Kah Jing Lee 2022-07-11  56   * @dcmf_status.dcmf0: dcmf0 status
-4a6c8c565db1d0 Kah Jing Lee 2022-07-11  57   * @dcmf_status.dcmf1: dcmf1 status
-4a6c8c565db1d0 Kah Jing Lee 2022-07-11  58   * @dcmf_status.dcmf2: dcmf2 status
-4a6c8c565db1d0 Kah Jing Lee 2022-07-11  59   * @dcmf_status.dcmf3: dcmf3 status
-4526ebbc77732b Richard Gong 2019-09-03  60   * @retry_counter: the current image's retry counter
-75bc73fc0188ef Richard Gong 2020-06-15  61   * @max_retry: the preset max retry value
-4526ebbc77732b Richard Gong 2019-09-03  62   */
-4526ebbc77732b Richard Gong 2019-09-03  63  struct stratix10_rsu_priv {
-4526ebbc77732b Richard Gong 2019-09-03  64  	struct stratix10_svc_chan *chan;
-4526ebbc77732b Richard Gong 2019-09-03  65  	struct stratix10_svc_client client;
-4526ebbc77732b Richard Gong 2019-09-03  66  	struct completion completion;
-4526ebbc77732b Richard Gong 2019-09-03  67  	struct mutex lock;
-4526ebbc77732b Richard Gong 2019-09-03  68  	struct {
-4526ebbc77732b Richard Gong 2019-09-03  69  		unsigned long current_image;
-4526ebbc77732b Richard Gong 2019-09-03  70  		unsigned long fail_image;
-4526ebbc77732b Richard Gong 2019-09-03  71  		unsigned int version;
-4526ebbc77732b Richard Gong 2019-09-03  72  		unsigned int state;
-4526ebbc77732b Richard Gong 2019-09-03  73  		unsigned int error_details;
-4526ebbc77732b Richard Gong 2019-09-03  74  		unsigned int error_location;
-4526ebbc77732b Richard Gong 2019-09-03  75  	} status;
-75bc73fc0188ef Richard Gong 2020-06-15  76  
-75bc73fc0188ef Richard Gong 2020-06-15  77  	struct {
-75bc73fc0188ef Richard Gong 2020-06-15  78  		unsigned int dcmf0;
-75bc73fc0188ef Richard Gong 2020-06-15  79  		unsigned int dcmf1;
-75bc73fc0188ef Richard Gong 2020-06-15  80  		unsigned int dcmf2;
-75bc73fc0188ef Richard Gong 2020-06-15  81  		unsigned int dcmf3;
-75bc73fc0188ef Richard Gong 2020-06-15  82  	} dcmf_version;
-75bc73fc0188ef Richard Gong 2020-06-15  83  
-4a6c8c565db1d0 Kah Jing Lee 2022-07-11  84  	struct {
-4a6c8c565db1d0 Kah Jing Lee 2022-07-11  85  		unsigned int dcmf0;
-4a6c8c565db1d0 Kah Jing Lee 2022-07-11  86  		unsigned int dcmf1;
-4a6c8c565db1d0 Kah Jing Lee 2022-07-11  87  		unsigned int dcmf2;
-4a6c8c565db1d0 Kah Jing Lee 2022-07-11  88  		unsigned int dcmf3;
-4a6c8c565db1d0 Kah Jing Lee 2022-07-11  89  	} dcmf_status;
-4a6c8c565db1d0 Kah Jing Lee 2022-07-11  90  
-4526ebbc77732b Richard Gong 2019-09-03  91  	unsigned int retry_counter;
-75bc73fc0188ef Richard Gong 2020-06-15  92  	unsigned int max_retry;
-4526ebbc77732b Richard Gong 2019-09-03 @93  };
-4526ebbc77732b Richard Gong 2019-09-03  94  
-
-:::::: The code at line 93 was first introduced by commit
-:::::: 4526ebbc77732bcae965ee374cf3e8d86436b2ad firmware: add Intel Stratix10 remote system update driver
-
-:::::: TO: Richard Gong <richard.gong@intel.com>
-:::::: CC: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+diff --git a/Documentation/networking/can.rst b/Documentation/networking/can.rst
+index d7e1ada905b2..62519d38c58b 100644
+--- a/Documentation/networking/can.rst
++++ b/Documentation/networking/can.rst
+@@ -444,6 +444,24 @@ definitions are specified for CAN specific MTUs in include/linux/can.h:
+   #define CANFD_MTU (sizeof(struct canfd_frame)) == 72  => CAN FD frame
+ 
+ 
++Returned Message Flags
++----------------------
++
++When using the system call recvmsg(2) on a RAW or a BCM socket, the
++msg->msg_flags field may contain the following flags:
++
++MSG_DONTROUTE:
++	set when the received frame was created on the local host.
++
++MSG_CONFIRM:
++	set when the frame was sent via the socket it is received on.
++	This flag can be interpreted as a 'transmission confirmation' when the
++	CAN driver supports the echo of frames on driver level, see
++	:ref:`socketcan-local-loopback1` and :ref:`socketcan-local-loopback2`.
++	(Note: In order to receive such messages on a RAW socket,
++	CAN_RAW_RECV_OWN_MSGS must be set.)
++
++
+ .. _socketcan-raw-sockets:
+ 
+ RAW Protocol Sockets with can_filters (SOCK_RAW)
+@@ -693,22 +711,6 @@ where the CAN_INV_FILTER flag is set in order to notch single CAN IDs or
+ CAN ID ranges from the incoming traffic.
+ 
+ 
+-RAW Socket Returned Message Flags
+-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-
+-When using recvmsg() call, the msg->msg_flags may contain following flags:
+-
+-MSG_DONTROUTE:
+-	set when the received frame was created on the local host.
+-
+-MSG_CONFIRM:
+-	set when the frame was sent via the socket it is received on.
+-	This flag can be interpreted as a 'transmission confirmation' when the
+-	CAN driver supports the echo of frames on driver level, see
+-	:ref:`socketcan-local-loopback1` and :ref:`socketcan-local-loopback2`.
+-	In order to receive such messages, CAN_RAW_RECV_OWN_MSGS must be set.
+-
+-
+ Broadcast Manager Protocol Sockets (SOCK_DGRAM)
+ -----------------------------------------------
+ 
+diff --git a/net/can/bcm.c b/net/can/bcm.c
+index 9168114fc87f..32345e155006 100644
+--- a/net/can/bcm.c
++++ b/net/can/bcm.c
+@@ -72,9 +72,11 @@
+ #define BCM_TIMER_SEC_MAX (400 * 24 * 60 * 60)
+ 
+ /* use of last_frames[index].flags */
++#define RX_LOCAL   0x10 /* frame was created on the local host */
++#define RX_OWN     0x20 /* frame was sent via the socket it was received on */
+ #define RX_RECV    0x40 /* received data for this element */
+ #define RX_THR     0x80 /* element not been sent due to throttle feature */
+-#define BCM_CAN_FLAGS_MASK 0x3F /* to clean private flags after usage */
++#define BCM_CAN_FLAGS_MASK 0x0F /* to clean private flags after usage */
+ 
+ /* get best masking value for can_rx_register() for a given single can_id */
+ #define REGMASK(id) ((id & CAN_EFF_FLAG) ? \
+@@ -138,6 +140,19 @@ static LIST_HEAD(bcm_notifier_list);
+ static DEFINE_SPINLOCK(bcm_notifier_lock);
+ static struct bcm_sock *bcm_busy_notifier;
+ 
++/* Return pointer to store the extra msg flags for bcm_recvmsg().
++ * We use the space of one unsigned int beyond the 'struct sockaddr_can'
++ * in skb->cb.
++ */
++static inline unsigned int *bcm_flags(struct sk_buff *skb)
++{
++	sock_skb_cb_check_size(sizeof(struct sockaddr_can) +
++			       sizeof(unsigned int));
++
++	/* return pointer after struct sockaddr_can */
++	return (unsigned int *)(&((struct sockaddr_can *)skb->cb)[1]);
++}
++
+ static inline struct bcm_sock *bcm_sk(const struct sock *sk)
+ {
+ 	return (struct bcm_sock *)sk;
+@@ -325,6 +340,7 @@ static void bcm_send_to_user(struct bcm_op *op, struct bcm_msg_head *head,
+ 	struct sock *sk = op->sk;
+ 	unsigned int datalen = head->nframes * op->cfsiz;
+ 	int err;
++	unsigned int *pflags;
+ 
+ 	skb = alloc_skb(sizeof(*head) + datalen, gfp_any());
+ 	if (!skb)
+@@ -344,8 +360,16 @@ static void bcm_send_to_user(struct bcm_op *op, struct bcm_msg_head *head,
+ 		 * relevant for updates that are generated by the
+ 		 * BCM, where nframes is 1
+ 		 */
+-		if (head->nframes == 1)
++		if (head->nframes == 1) {
++			pflags = bcm_flags(skb);
++			*pflags = 0;
++			if (firstframe->flags & RX_LOCAL)
++				*pflags |= MSG_DONTROUTE;
++			if (firstframe->flags & RX_OWN)
++				*pflags |= MSG_CONFIRM;
++
+ 			firstframe->flags &= BCM_CAN_FLAGS_MASK;
++		}
+ 	}
+ 
+ 	if (has_timestamp) {
+@@ -444,7 +468,7 @@ static void bcm_rx_changed(struct bcm_op *op, struct canfd_frame *data)
+ 		op->frames_filtered = op->frames_abs = 0;
+ 
+ 	/* this element is not throttled anymore */
+-	data->flags &= (BCM_CAN_FLAGS_MASK|RX_RECV);
++	data->flags &= ~RX_THR;
+ 
+ 	memset(&head, 0, sizeof(head));
+ 	head.opcode  = RX_CHANGED;
+@@ -642,7 +666,7 @@ static enum hrtimer_restart bcm_rx_thr_handler(struct hrtimer *hrtimer)
+ static void bcm_rx_handler(struct sk_buff *skb, void *data)
+ {
+ 	struct bcm_op *op = (struct bcm_op *)data;
+-	const struct canfd_frame *rxframe = (struct canfd_frame *)skb->data;
++	struct canfd_frame *rxframe = (struct canfd_frame *)skb->data;
+ 	unsigned int i;
+ 
+ 	if (op->can_id != rxframe->can_id)
+@@ -657,6 +681,13 @@ static void bcm_rx_handler(struct sk_buff *skb, void *data)
+ 			return;
+ 	}
+ 
++	/* add flags to distinguish between own/local/remote CAN traffic */
++	if (skb->sk) {
++		rxframe->flags |= RX_LOCAL;
++		if (skb->sk == op->sk)
++			rxframe->flags |= RX_OWN;
++	}
++
+ 	/* disable timeout */
+ 	hrtimer_cancel(&op->timer);
+ 
+@@ -1675,6 +1706,9 @@ static int bcm_recvmsg(struct socket *sock, struct msghdr *msg, size_t size,
+ 		memcpy(msg->msg_name, skb->cb, msg->msg_namelen);
+ 	}
+ 
++	/* assign the flags that have been recorded in bcm_send_to_user() */
++	msg->msg_flags |= *(bcm_flags(skb));
++
+ 	skb_free_datagram(sk, skb);
+ 
+ 	return size;
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.34.1
+
 
