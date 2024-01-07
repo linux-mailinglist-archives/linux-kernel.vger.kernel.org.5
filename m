@@ -1,98 +1,140 @@
-Return-Path: <linux-kernel+bounces-19010-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19011-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C35C826669
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 23:40:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A851782666C
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 23:50:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B49FA1F21477
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 22:40:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4206C281AA7
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 22:50:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A5981400A;
-	Sun,  7 Jan 2024 22:40:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1262A12B71;
+	Sun,  7 Jan 2024 22:50:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ch+/YL1V"
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="uN07giFm"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 682C813FE0
-	for <linux-kernel@vger.kernel.org>; Sun,  7 Jan 2024 22:40:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79B02C433C7;
-	Sun,  7 Jan 2024 22:40:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704667235;
-	bh=gMeYwznrjbIU8oGXfP+WnPDxDzH5U/iZaLqQJDBkChs=;
-	h=From:Date:Subject:To:List-Id:Cc:From;
-	b=Ch+/YL1VL+p4NtQnARIOOvL4qWL68Ui0QhykfB4b/pOBtjQKZozTQkoGQQyMv+v+z
-	 OX0jtC9KynReOz1mP1Zwvzj9sHFOqvxAzhfU6J+oKdR0YP+3YM7UrvjbnZqVQ3Uobb
-	 mPi8FeOYKqMJ9RCY9m5BLt5WKh8M5nxdP7qeM+xzl8/Dfzjcn1dDXOaMqScZhwL+Rq
-	 bw7fayEX2Zlpb3pn+0EAseAYmbxjpCdlI6DcL2xndgxnGmvh32HnkXiA5ZH9BbTWi6
-	 KTpP3oXOisn5a2r2HWDc9hrvC0gkuGUhk906yzxjWLords+GAit3PHEY+MkbZKebwN
-	 YYIkeuMioaTGg==
-From: Mark Brown <broonie@kernel.org>
-Date: Sun, 07 Jan 2024 22:40:29 +0000
-Subject: [PATCH] ARM: multi_v7_defconfig: Enable STM32 IPCC mailbox driver
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE793125A5;
+	Sun,  7 Jan 2024 22:50:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1704667803;
+	bh=qeeLPSRcaG41tQhl/NP0bNXSAdBbnIiIqEBXhjiAZ+k=;
+	h=Date:From:To:Cc:Subject:From;
+	b=uN07giFmwlOjPs4lBnyOkaC5TA4v5X37vMMIdRMw/Nyp3AEsPSafZnvezRdsTXljI
+	 XTVxyR9YXHWPh045csAqjOs7VU9EmUXG5xXXzqvqSDhVfAGMrQvhDqTIBtfOR7RkfJ
+	 gk7LS4JKUqMPTp463c9TMciyVvpowKHfNOHW2E2KsTCKn8N5cx/vBdF7rDtK+1tkjn
+	 eYhT77SaARarbn509X6ZojxmvNqa6y90AJ6mmX0g0h0FpgiHZKJ/gAgc0An6vwMnGv
+	 uqfwAgtuit6OZ/AYRgFg6CAKVBRUaf95jO4jG6eFqhRBu+NpspmfY4241CdUfStb/q
+	 +V2nyYld+q81g==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4T7XT34KFrz4wcc;
+	Mon,  8 Jan 2024 09:49:59 +1100 (AEDT)
+Date: Mon, 8 Jan 2024 09:49:57 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Palmer Dabbelt <palmer@dabbelt.com>, Paul Walmsley <paul@pwsan.com>
+Cc: Andrew Jones <ajones@ventanamicro.com>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>, Palmer Dabbelt <palmer@rivosinc.com>
+Subject: linux-next: manual merge of the risc-v tree with Linus' tree
+Message-ID: <20240108094957.2cc727e0@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240107-arm-defconfig-stm32-ipcc-v1-1-924721db5661@kernel.org>
-X-B4-Tracking: v=1; b=H4sIAFwom2UC/x3MMQrDMAxA0asEzRXIboggVykdjCwnGmwHu5RCy
- N1rMr7h/xO6NtMO63RC0691q2XAPSaQPZRN0eIwePIzOWIMLWPUJLUk27B/8tOjHSK4zETshEN
- khpEfTZP97vXrfV1/dKzoIGoAAAA=
-To: Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
- Alexandre Torgue <alexandre.torgue@foss.st.com>
-Cc: linux-stm32@st-md-mailman.stormreply.com, soc@kernel.org, 
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
- Mark Brown <broonie@kernel.org>
-X-Mailer: b4 0.13-dev-0438c
-X-Developer-Signature: v=1; a=openpgp-sha256; l=924; i=broonie@kernel.org;
- h=from:subject:message-id; bh=gMeYwznrjbIU8oGXfP+WnPDxDzH5U/iZaLqQJDBkChs=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBlmyhg2lXCL3MIQsuRcxZL6PRQTJ7KfgTBogFnh
- kEGv+36+OaJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZZsoYAAKCRAk1otyXVSH
- 0NjRB/4r9gayJx9sLsDkrCbccgsHwsdKSDyE5usVSohEHTWmpBpP/xjYkadUXQydpUw6NnJVofa
- Wzpv1APyGBl3kcdHZ0wBtQT8+LUDnaLek7FPGhVzEBAjpWwotHbpOF0hP9JcPiEAKpNeO7ytTvb
- Az6HYTN830yfs+Uf+tZUJOdkUjEeSeObsl2yaOx3810jVLC1mEN9o1CxsGh6j5JaoUGIVqR4uIb
- kjVOi+0O0BY7oYRnLdLWZLnSXsWSoBJ14/O9uxPniT3Xhm5k756YuyvUVAo8yCKXAw3GY+2LMgE
- htQUGy6rTPa9cVobOQW8wTKh2r3GpGSGiGW591lPXMQB9VTC
-X-Developer-Key: i=broonie@kernel.org; a=openpgp;
- fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
+Content-Type: multipart/signed; boundary="Sig_/qgD8engf.b9+KAHyIK2gWbO";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-The STM32 systems have a mailbox used for communication with non-Linux
-processors like the M4 on the STM32MP157A.  Enable the driver for the
-mailbox so it is available for testing.
+--Sig_/qgD8engf.b9+KAHyIK2gWbO
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Hi all,
+
+Today's linux-next merge of the risc-v tree got a conflict in:
+
+  arch/riscv/kernel/sys_riscv.c
+
+between commit:
+
+  777c0d761be7 ("RISC-V: hwprobe: Always use u64 for extension bits")
+
+from Linus' tree and commit:
+
+  53b2b22850e1 ("RISC-V: Move the hwprobe syscall to its own file")
+
+from the risc-v tree.
+
+I fixed it up (I used the latter version of this file and applied the
+following merge fix patch) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Date: Mon, 8 Jan 2024 09:46:10 +1100
+Subject: [PATCH] fix up for "RISC-V: Move the hwprobe syscall to its own fi=
+le"
+
+interacting with commit
+
+  777c0d761be7 ("RISC-V: hwprobe: Always use u64 for extension bits")
+
+from Linus' tree.
+
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
 ---
- arch/arm/configs/multi_v7_defconfig | 1 +
- 1 file changed, 1 insertion(+)
+ arch/riscv/kernel/sys_hwprobe.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm/configs/multi_v7_defconfig b/arch/arm/configs/multi_v7_defconfig
-index 10fd74bf85f9..f43ae4532586 100644
---- a/arch/arm/configs/multi_v7_defconfig
-+++ b/arch/arm/configs/multi_v7_defconfig
-@@ -1073,6 +1073,7 @@ CONFIG_OMAP2PLUS_MBOX=y
- CONFIG_BCM2835_MBOX=y
- CONFIG_QCOM_APCS_IPC=y
- CONFIG_QCOM_IPCC=y
-+CONFIG_STM32_IPCC=m
- CONFIG_OMAP_IOMMU=y
- CONFIG_OMAP_IOMMU_DEBUG=y
- CONFIG_ROCKCHIP_IOMMU=y
+diff --git a/arch/riscv/kernel/sys_hwprobe.c b/arch/riscv/kernel/sys_hwprob=
+e.c
+index ccf61b040536..41f45acb156b 100644
+--- a/arch/riscv/kernel/sys_hwprobe.c
++++ b/arch/riscv/kernel/sys_hwprobe.c
+@@ -136,7 +136,7 @@ static void hwprobe_isa_ext0(struct riscv_hwprobe *pair,
+ 	pair->value &=3D ~missing;
+ }
+=20
+-static bool hwprobe_ext0_has(const struct cpumask *cpus, unsigned long ext)
++static bool hwprobe_ext0_has(const struct cpumask *cpus, u64 ext)
+ {
+ 	struct riscv_hwprobe pair;
+=20
+--=20
+2.43.0
 
----
-base-commit: 610a9b8f49fbcf1100716370d3b5f6f884a2835a
-change-id: 20240107-arm-defconfig-stm32-ipcc-640071c7ad77
+--=20
+Cheers,
+Stephen Rothwell
 
-Best regards,
--- 
-Mark Brown <broonie@kernel.org>
+--Sig_/qgD8engf.b9+KAHyIK2gWbO
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmWbKpUACgkQAVBC80lX
+0GyuhAf/V3Iydy1RkyrNTOhogC/nFKraBax2Z1CK0wX9YtbZz0SkPbIbxPv63ogg
+o9Uy+HuCt//TwoATGnnVZdCplDCdZkon9ZzYH68QgYlGJuXQjn7YZmDv6K+P6AV+
+ySAXjSX41seCWlDcXf3OeNL2tQVWKEFQWd5+1dCanrJJb5sJc9le3dPSg5y4GD6w
+DFC9nrd+6FFhyJfuvncA4A9EqIk4QiK05QV+cwqVRyUvRxBalJRvCsKRtcVyq8EL
+XePLUsyB6062qGg1qm5IQjWRV2VB/9YAguoA0rzDXd1gqrBFNIrQcHpyU4E/FDaA
+9QyLpP56OY4rrrXDia9o7qcv/jorcQ==
+=P4Gb
+-----END PGP SIGNATURE-----
+
+--Sig_/qgD8engf.b9+KAHyIK2gWbO--
 
