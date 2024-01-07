@@ -1,170 +1,106 @@
-Return-Path: <linux-kernel+bounces-19002-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19004-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D18FF826658
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 23:20:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E13482665B
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 23:23:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E311F1C20B69
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 22:20:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D4F771F2147D
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 22:23:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45ABB125A1;
-	Sun,  7 Jan 2024 22:20:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9BC0125CE;
+	Sun,  7 Jan 2024 22:23:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lCf6z4E4"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mout-p-101.mailbox.org (mout-p-101.mailbox.org [80.241.56.151])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA4EE11C80;
-	Sun,  7 Jan 2024 22:20:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=v0yd.nl
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=v0yd.nl
-Received: from smtp2.mailbox.org (smtp2.mailbox.org [10.196.197.2])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mout-p-101.mailbox.org (Postfix) with ESMTPS id 4T7Wpl2Spqz9sZF;
-	Sun,  7 Jan 2024 23:20:15 +0100 (CET)
-Message-ID: <9b728113-8bb5-44df-8ba8-b0ee535100c8@v0yd.nl>
-Date: Sun, 7 Jan 2024 23:20:13 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CFD611C89
+	for <linux-kernel@vger.kernel.org>; Sun,  7 Jan 2024 22:23:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704666183; x=1736202183;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=HMj843mC5kF19nX71tADQb2uwOdpYpgbOkjxDPCIjP4=;
+  b=lCf6z4E4wE9U9Umbzt2jkwzuWlmY+IJqMyWkmbjSMQqLI33qZ+nJa4Iu
+   5rJGaIZxMDH8KGxN6kW7xniZFEi/WIV6yYHdr7J5OEUJbO4xV4of1qFGE
+   jsnghCy0cqgoaic0YhOpIBQRCdkUqlnc1sOMcRmZIKb1bkfxtm+/CRk+6
+   +uzr2gxW0Ms9pUfDW4t/8IbFRtBUZ8Xl2A1PxG5P9//n03Devz5obPb4S
+   D2NWCaRpdtcyFz+eXExJZwEw1zvv9JnL5M8SVaqD5UkjjpFB7v1TBHLbe
+   M/kcVt8YuNTuJg0c93gdKzfZTo/B0QpBPHUuN7IQn9Duv3Pcvx+AXONsa
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10946"; a="16360308"
+X-IronPort-AV: E=Sophos;i="6.04,340,1695711600"; 
+   d="scan'208";a="16360308"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jan 2024 14:23:01 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10946"; a="1028230076"
+X-IronPort-AV: E=Sophos;i="6.04,340,1695711600"; 
+   d="scan'208";a="1028230076"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by fmsmga006.fm.intel.com with ESMTP; 07 Jan 2024 14:22:59 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rMbXl-0004Cy-1e;
+	Sun, 07 Jan 2024 22:22:57 +0000
+Date: Mon, 8 Jan 2024 06:22:01 +0800
+From: kernel test robot <lkp@intel.com>
+To: Baoquan He <bhe@redhat.com>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Linux Memory Management List <linux-mm@kvack.org>,
+	Eric DeVolder <eric.devolder@oracle.com>,
+	Valentin Schneider <vschneid@redhat.com>
+Subject: kernel/crash_core.c:749:1: sparse: sparse: symbol
+ '__crash_hotplug_lock' was not declared. Should it be static?
+Message-ID: <202401080654.IjjU5oK7-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH 3/5] Bluetooth: hci_event: Remove limit of 2 reconnection
- attempts
-Content-Language: en-US
-To: Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-Cc: Marcel Holtmann <marcel@holtmann.org>,
- Johan Hedberg <johan.hedberg@gmail.com>, linux-bluetooth@vger.kernel.org,
- linux-kernel@vger.kernel.org, netdev@vger.kernel.org, verdre@v0yd.nl
-References: <20240102185933.64179-1-verdre@v0yd.nl>
- <20240102185933.64179-4-verdre@v0yd.nl>
- <CABBYNZLoivEW=yrDtTbu5SjGauESH0zHb7NXs0YaSKSKqre5GQ@mail.gmail.com>
- <7036c788-7d8c-4e36-8289-64f43a3f8610@v0yd.nl>
- <CABBYNZLBf24vkTWEgWd8jHBfwh8jA2wDUbZZUW7QGHuUax5jcw@mail.gmail.com>
-From: =?UTF-8?Q?Jonas_Dre=C3=9Fler?= <verdre@v0yd.nl>
-In-Reply-To: <CABBYNZLBf24vkTWEgWd8jHBfwh8jA2wDUbZZUW7QGHuUax5jcw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Hi Luiz,
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   0dd3ee31125508cd67f7e7172247f05b7fd1753a
+commit: e2a8f20dd8e9df695f736e51cd9115ae55be92d1 Crash: add lock to serialize crash hotplug handling
+date:   3 months ago
+config: i386-randconfig-061-20240106 (https://download.01.org/0day-ci/archive/20240108/202401080654.IjjU5oK7-lkp@intel.com/config)
+compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240108/202401080654.IjjU5oK7-lkp@intel.com/reproduce)
 
-On 1/5/24 17:05, Luiz Augusto von Dentz wrote:
-> Hi Jonas,
-> 
-> On Fri, Jan 5, 2024 at 10:54 AM Jonas Dreßler <verdre@v0yd.nl> wrote:
->>
->> Hi Luiz,
->>
->> On 1/3/24 17:05, Luiz Augusto von Dentz wrote:
->>> Hi Jonas,
->>>
->>> On Tue, Jan 2, 2024 at 1:59 PM Jonas Dreßler <verdre@v0yd.nl> wrote:
->>>>
->>>> Since commit 4c67bc74f016b0d360b8573e18969c0ff7926974, we retry connecting
->>>> later when we get a "Command Disallowed" error returned by "Create
->>>> Connection".
->>>>
->>>> In this commit the intention was to retry only once, and give up if we see
->>>> "Command Disallowed" again on the second try.
->>>>
->>>> This made sense back then when the retry was initiated *only* from the
->>>> "Connect Complete" event. If we received that event, we knew that now the
->>>> card now must have a "free slot" for a new connection request again. These
->>>> days we call hci_conn_check_pending() from a few more places though, and
->>>> in these places we can't really be sure that there's a "free slot" on the
->>>> card, so the second try to "Create Connection" might fail again.
->>>>
->>>> Deal with this by being less strict about these retries and try again
->>>> every time we get "Command Disallowed" errors, removing the limitation to
->>>> only two attempts.
->>>>
->>>> Since this can potentially cause us to enter an endless cycle of
->>>> reconnection attempts, we'll add some guarding against that with the next
->>>> commit.
->>>
->>> Don't see where you are doing such guarding, besides you seem to
->>> assume HCI_ERROR_COMMAND_DISALLOWED would always means the controller
->>> is busy, or something like that, but it could perform the connection
->>> later, but that may not always be the case, thus why I think
->>> reconnecting just a few number of times is better, if you really need
->>> to keep retrying then this needs to be controlled by a policy in
->>> userspace not hardcoded in the kernel, well I can even argument that
->>> perhaps the initial number of reconnection shall be configurable so
->>> one don't have to recompile the kernel if that needs changing.
->>
->> Yes, fair enough, the next commit assumes that COMMAND_DISALLOWED always
->> means busy. The guarding is that we stop retrying as soon as there's no
->> (competing) ongoing connection attempt nor an active inquiry, which
->> should eventually be the case no matter what, no?
->>
->> I agree it's probably still better to not rely on this fairly complex
->> sanity check and keep the checking of attempts nonetheless.
->>
->> I think we could keep doing that if we check for
->> !hci_conn_hash_lookup_state(hdev, ACL_LINK, BT_CONNECT) &&
->> !test_bit(HCI_INQUIRY, &hdev->flags) in hci_conn_check_pending() before
->> we actually retry, to make sure the retry counter doesn't get
->> incremented wrongly. I'll give that a try.
-> 
-> Perhaps I'm missing something, but it should be possible to block
-> concurrent access to HCI while a command is pending with use of
-> hci_cmd_sync, at least on LE we do that by waiting the connection
-> complete event so connection attempts are serialized but we don't seem
-> to be doing the same for BR/EDR.
-> 
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202401080654.IjjU5oK7-lkp@intel.com/
 
-That's a good point, it might even allow for a nice little cleanup 
-because we can then cancel inquiries in hci_acl_create_connection() 
-synchronously, too.
+sparse warnings: (new ones prefixed by >>)
+>> kernel/crash_core.c:749:1: sparse: sparse: symbol '__crash_hotplug_lock' was not declared. Should it be static?
 
-Question is just whether there's any devices out there that actually do 
-support paging with more than a single device at a time and if we want 
-to support that?
+vim +/__crash_hotplug_lock +749 kernel/crash_core.c
 
-> 
->>>
->>>> Signed-off-by: Jonas Dreßler <verdre@v0yd.nl>
->>>> ---
->>>>    net/bluetooth/hci_event.c | 7 ++++---
->>>>    1 file changed, 4 insertions(+), 3 deletions(-)
->>>>
->>>> diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
->>>> index e8b4a0126..e1f5b6f90 100644
->>>> --- a/net/bluetooth/hci_event.c
->>>> +++ b/net/bluetooth/hci_event.c
->>>> @@ -2323,12 +2323,13 @@ static void hci_cs_create_conn(struct hci_dev *hdev, __u8 status)
->>>>
->>>>           if (status) {
->>>>                   if (conn && conn->state == BT_CONNECT) {
->>>> -                       if (status != HCI_ERROR_COMMAND_DISALLOWED || conn->attempt > 2) {
->>>> +                       if (status == HCI_ERROR_COMMAND_DISALLOWED) {
->>>> +                               conn->state = BT_CONNECT2;
->>>> +                       } else {
->>>>                                   conn->state = BT_CLOSED;
->>>>                                   hci_connect_cfm(conn, status);
->>>>                                   hci_conn_del(conn);
->>>> -                       } else
->>>> -                               conn->state = BT_CONNECT2;
->>>> +                       }
->>>>                   }
->>>>           } else {
->>>>                   if (!conn) {
->>>> --
->>>> 2.43.0
->>>>
->>>
->>>
->>
->> Cheers,
->> Jonas
-> 
-> 
-> 
-> --
-> Luiz Augusto von Dentz
+   741	
+   742	/*
+   743	 * Different than kexec/kdump loading/unloading/jumping/shrinking which
+   744	 * usually rarely happen, there will be many crash hotplug events notified
+   745	 * during one short period, e.g one memory board is hot added and memory
+   746	 * regions are online. So mutex lock  __crash_hotplug_lock is used to
+   747	 * serialize the crash hotplug handling specifically.
+   748	 */
+ > 749	DEFINE_MUTEX(__crash_hotplug_lock);
+   750	#define crash_hotplug_lock() mutex_lock(&__crash_hotplug_lock)
+   751	#define crash_hotplug_unlock() mutex_unlock(&__crash_hotplug_lock)
+   752	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
