@@ -1,66 +1,75 @@
-Return-Path: <linux-kernel+bounces-18954-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18958-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1243A82659E
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 19:32:53 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A7018265AF
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 19:48:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B909B1F218D8
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 18:32:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9C2CC281FFA
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 18:48:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4D7010A3B;
-	Sun,  7 Jan 2024 18:32:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C873F10A3B;
+	Sun,  7 Jan 2024 18:48:16 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mail-out.m-online.net (mail-out.m-online.net [212.18.0.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D56410A1B;
-	Sun,  7 Jan 2024 18:32:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D106CC433C7;
-	Sun,  7 Jan 2024 18:32:30 +0000 (UTC)
-Date: Sun, 7 Jan 2024 13:32:28 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Christian Brauner <brauner@kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
- <linux-trace-kernel@vger.kernel.org>, Masami Hiramatsu
- <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Linus Torvalds <torvalds@linux-foundation.org>, Al Viro
- <viro@zeniv.linux.org.uk>, linux-fsdevel@vger.kernel.org, Greg
- Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH] tracefs/eventfs: Use root and instance inodes as
- default ownership
-Message-ID: <20240107133228.05b0f485@rorschach.local.home>
-In-Reply-To: <20240107132912.71b109d8@rorschach.local.home>
-References: <20240103203246.115732ec@gandalf.local.home>
-	<20240105-wegstecken-sachkenntnis-6289842d6d01@brauner>
-	<20240105095954.67de63c2@gandalf.local.home>
-	<20240107-getrickst-angeeignet-049cea8cad13@brauner>
-	<20240107132912.71b109d8@rorschach.local.home>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 184E010A1F;
+	Sun,  7 Jan 2024 18:48:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nefkom.net
+Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
+	by mail-out.m-online.net (Postfix) with ESMTP id 4T7Qxh08bDz1sBq3;
+	Sun,  7 Jan 2024 19:40:55 +0100 (CET)
+Received: from localhost (dynscan1.mnet-online.de [192.168.6.68])
+	by mail.m-online.net (Postfix) with ESMTP id 4T7Qxg5Slpz1qqlS;
+	Sun,  7 Jan 2024 19:40:55 +0100 (CET)
+X-Virus-Scanned: amavis at mnet-online.de
+Received: from mail.mnet-online.de ([192.168.8.182])
+ by localhost (dynscan1.mail.m-online.net [192.168.6.68]) (amavis, port 10024)
+ with ESMTP id xkFHhBBJOFcf; Sun,  7 Jan 2024 19:40:54 +0100 (CET)
+X-Auth-Info: /W4ayZJD3y3xzE2nctsIdMXMG3SGQlPURR+PFDNHw9uO7xJQj9/m8RstH8iW2NKE
+Received: from igel.home (aftr-62-216-202-6.dynamic.mnet-online.de [62.216.202.6])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.mnet-online.de (Postfix) with ESMTPSA;
+	Sun,  7 Jan 2024 19:40:54 +0100 (CET)
+Received: by igel.home (Postfix, from userid 1000)
+	id 7D9912C12EA; Sun,  7 Jan 2024 19:40:54 +0100 (CET)
+From: Andreas Schwab <schwab@linux-m68k.org>
+To: Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
+Cc: =?utf-8?Q?N=C3=ADcolas?= F. R. A. Prado <nfraprado@collabora.com>,  Mark
+ Brown
+ <broonie@kernel.org>,  linux-sound@vger.kernel.org,
+  linux-kselftest@vger.kernel.org,  linux-kernel@vger.kernel.org,  Jaroslav
+ Kysela <perex@perex.cz>,  Takashi Iwai <tiwai@suse.com>,  Shuah Khan
+ <shuah@kernel.org>
+Subject: Re: [PATCH v1 3/4] ksellftest: alsa: Fix the printf format
+ specifier to unsigned int
+In-Reply-To: <20240107151218.933806-4-mirsad.todorovac@alu.unizg.hr> (Mirsad
+	Todorovac's message of "Sun, 7 Jan 2024 16:12:20 +0100")
+References: <20240107151218.933806-1-mirsad.todorovac@alu.unizg.hr>
+	<20240107151218.933806-4-mirsad.todorovac@alu.unizg.hr>
+X-Yow: --``I love KATRINKA because she drives a PONTIAC.  We're going away now.
+ I fed the cat. - Zippy''
+Date: Sun, 07 Jan 2024 19:40:54 +0100
+Message-ID: <87r0itm1ft.fsf@igel.home>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 
-On Sun, 7 Jan 2024 13:29:12 -0500
-Steven Rostedt <rostedt@goodmis.org> wrote:
+s/ksellftest/kselftest/
 
-> > 
-> > IOW, the inode_permission() in lookup_one_len() that eventfs does is
-> > redundant and just wrong.  
-> 
-> I don't think so.
-
-Just to make it clear. eventfs has nothing to do with mkdir instance/foo.
-It exists without that. Although one rationale to do eventfs was so
-that the instance directories wouldn't recreate the same 10thousands
-event inodes and dentries for every mkdir done.
-
--- Steve
+-- 
+Andreas Schwab, schwab@linux-m68k.org
+GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
+"And now for something completely different."
 
