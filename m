@@ -1,124 +1,96 @@
-Return-Path: <linux-kernel+bounces-18847-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18848-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D7C778263EC
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 12:41:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BBE598263EF
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 12:44:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0A1BC1C20B9C
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 11:41:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5F28E1F2191D
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 11:44:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E6CC12E49;
-	Sun,  7 Jan 2024 11:40:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jpMl/DAp"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7EF812E5C;
+	Sun,  7 Jan 2024 11:44:50 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D980812E43;
-	Sun,  7 Jan 2024 11:40:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68363C433CB;
-	Sun,  7 Jan 2024 11:40:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704627658;
-	bh=KQJUCEC7wnTKCIo50Pged7pb30CnSsqMSPKxkjd8bV8=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=jpMl/DApy9BflKzi/bigEcrcHyqTABTsL2n2Skq287wk0/NRw8HGW7HRCuMx5My2C
-	 RuM8Sp37+3FLZeysf6m8O0nBrZ/YR/zAZaBntzAXbjxgLv8iW2+SA55XfcEWKGlwYd
-	 rA3g4A94YULCjM0Oc17KQIpzIlG+XQjOa603IIyUTD3rDw3DTqEUjoMDb6P9woV2xn
-	 fJNPx0beXH7B1obp9ur0QUQ4Ie4/D+d1BwWaBbNLGnph7tBXUR/WoPTzORueBLmWrv
-	 r/NbzGtQNg6oZ/vcYacu1LCH4Og0uVZkrqHJPUuJqiuLFqSZuaaGkOakjVhWKS5fEv
-	 3Q5GhenWVjdjA==
-Received: by mail-oi1-f176.google.com with SMTP id 5614622812f47-3bbd6e37af4so1072428b6e.1;
-        Sun, 07 Jan 2024 03:40:58 -0800 (PST)
-X-Gm-Message-State: AOJu0YxOZGD057PI6NNRhs3coD84EvYsBj869hka5wzAmf6UcPO6Pnpe
-	p45fnj13kprwK+N6HgOO7cO32UZHEWOBkWFh7dk=
-X-Google-Smtp-Source: AGHT+IFFrzGJgGnlrrI4ZRi8Ec3xtEL3bM945qmS5f4mAGwC42G6tiP05ogTLF7dempm+ERA4cDea3TXpn4t+eIPQ4k=
-X-Received: by 2002:a05:6871:5226:b0:204:6141:746a with SMTP id
- ht38-20020a056871522600b002046141746amr2306962oac.2.1704627657681; Sun, 07
- Jan 2024 03:40:57 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9298412E4A
+	for <linux-kernel@vger.kernel.org>; Sun,  7 Jan 2024 11:44:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-315-3rmU9uLGNsK9_7Ue5NSFgQ-1; Sun, 07 Jan 2024 11:44:39 +0000
+X-MC-Unique: 3rmU9uLGNsK9_7Ue5NSFgQ-1
+Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
+ (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Sun, 7 Jan
+ 2024 11:44:19 +0000
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Sun, 7 Jan 2024 11:44:19 +0000
+From: David Laight <David.Laight@ACULAB.COM>
+To: "'H. Peter Anvin'" <hpa@zytor.com>, 'Linus Torvalds'
+	<torvalds@linux-foundation.org>
+CC: Noah Goldstein <goldstein.w.n@gmail.com>, "x86@kernel.org"
+	<x86@kernel.org>, "oe-kbuild-all@lists.linux.dev"
+	<oe-kbuild-all@lists.linux.dev>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "edumazet@google.com" <edumazet@google.com>,
+	"tglx@linutronix.de" <tglx@linutronix.de>, "mingo@redhat.com"
+	<mingo@redhat.com>, "bp@alien8.de" <bp@alien8.de>,
+	"dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>
+Subject: RE: x86/csum: Remove unnecessary odd handling
+Thread-Topic: x86/csum: Remove unnecessary odd handling
+Thread-Index: AQHZ7ib2fs4a8+P0bkWBCjHsrqR0abAo6HRAgKIYy6qAAJmVUIAAjHgAgAHC99CAAEWrgIAArarg
+Date: Sun, 7 Jan 2024 11:44:19 +0000
+Message-ID: <5dd4c01e4337455b9b2c0f5635d7f6f9@AcuMS.aculab.com>
+References: <20230920192300.3772199-1-goldstein.w.n@gmail.com>
+ <202309231130.ZI5MdlDc-lkp@intel.com>
+ <CAFUsyfKDRiX9kKOhHcA4PLqqT6Q5faHF0eRGiKN+9NSbvrUfDw@mail.gmail.com>
+ <d02bd4f823534a00ae4915ead3d92773@AcuMS.aculab.com>
+ <CAFUsyfL0M5P4+4s_b1kvJ_fE-ax8YBK0ammbKfoy7yKs1obzrA@mail.gmail.com>
+ <CAFUsyfJduB29c6=BNmTtgoWcHAWA1AZ-sdbhyp02JVhvA6Gp0w@mail.gmail.com>
+ <CAFUsyfLuo0_Sm91mqbM8Sbo-ncwnM4RaRq=GxQXDmkAN-nQ3uw@mail.gmail.com>
+ <CAHk-=wgv6h4ru=z8UR5XyutoRKveOetNpwovHburvRgG9NSa3g@mail.gmail.com>
+ <CAHk-=wiNUucmvTKGmveWzXXe99SpOwU65nFtH-A2_aUpPsAPJQ@mail.gmail.com>
+ <5354eeec562345f6a1de84f0b2081b75@AcuMS.aculab.com>
+ <CAHk-=wg8vssPVO68_qH_BHBCj6_DDawKQHBOgZh4gw5YFmpCKA@mail.gmail.com>
+ <124b21857fe44e499e29800cbf4f63f8@AcuMS.aculab.com>
+ <4313F9BB-DE2E-448F-A366-A68CAEA2BFE0@zytor.com>
+In-Reply-To: <4313F9BB-DE2E-448F-A366-A68CAEA2BFE0@zytor.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1704353568.git.kevinmbecause@gmail.com> <941a566eb114701685dc44f708f81891b3bd085b.1704353568.git.kevinmbecause@gmail.com>
-In-Reply-To: <941a566eb114701685dc44f708f81891b3bd085b.1704353568.git.kevinmbecause@gmail.com>
-From: Masahiro Yamada <masahiroy@kernel.org>
-Date: Sun, 7 Jan 2024 20:40:21 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQe3xpJwOBzKEhTPSV4sL1kjU7dHn8-wfvxCFHRXBpxQQ@mail.gmail.com>
-Message-ID: <CAK7LNAQe3xpJwOBzKEhTPSV4sL1kjU7dHn8-wfvxCFHRXBpxQQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] kbuild: Enable decompression for use by EXTRA_FIRMWARE
-To: Kevin Martin <kevinmbecause@gmail.com>
-Cc: Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, 
-	Nicolas Schier <nicolas@fjasle.eu>, linux-kbuild@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 
-On Fri, Jan 5, 2024 at 3:11=E2=80=AFPM Kevin Martin <kevinmbecause@gmail.co=
-m> wrote:
->
-> The build system can currently only compress files. This patch adds the
-> functionality to decompress files. Decompression is needed for building
-> firmware files into the kernel if those files are compressed on the
-> filesystem. Compressed firmware files are in use by Gentoo, Fedora, Arch,
-> and others.
->
-> Signed-off-by: Kevin Martin <kevinmbecause@gmail.com>
-> ---
-> Changes in v2:
-> - Skipped running 'cat' and now just pass the file names directly.
-> - Added '--quiet' since 'zstd' started printing the status of each file
-> now that it knows the file names.
->
+RnJvbTogSC4gUGV0ZXIgQW52aW4NCj4gU2VudDogMDcgSmFudWFyeSAyMDI0IDAxOjA5DQo+IA0K
+PiBPbiBKYW51YXJ5IDYsIDIwMjQgMjowODo0OCBQTSBQU1QsIERhdmlkIExhaWdodCA8RGF2aWQu
+TGFpZ2h0QEFDVUxBQi5DT00+IHdyb3RlOg0KLi4uDQo+ID5UaGUgYmVzdCBsb29wIGZvciAyNTYr
+IGJ5dGVzIGlzIGFuIGFkeGMvYWR4byBvbmUuDQo+ID5Ib3dldmVyIHRoYXQgcmVxdWlyZXMgdGhl
+IHJ1bi10aW1lIHBhdGNoaW5nLg0KLi4uDQo+IFJhdGhlciB0aGFuIHJ1bnRpbWUgcGF0Y2hpbmcg
+cGVyaGFwcyBzZXBhcmF0ZSBwYXRocy4uLg0KDQpJdCB3aWxsIG5lZWQgdG8gZGV0ZWN0IHRoZSBj
+cHUgdHlwZSBlYXJsaWVyLCBzbyBhIHN0YXRpYw0KYnJhbmNoIGlzIHByb2JhYmx5IGVub3VnaC4N
+CkVhc2llciB0aGFuIHN1YnN0aXR1dGluZyB0aGUgZW50aXJlIGNvZGUgYmxvY2suDQoNCkkgdGhp
+bmsgaXQgaXMgc2lsdmVybW9udCBhbmQga25pZ2h0J3MgbGFuZGluZyB0aGF0IGhhdmUNCmEgNCBj
+bG9jayBwZW5hbHR5IGZvciA2NGJpdCBhZHhjIChJbnRlbCBhdG9tIGZhbWlseSkuDQpUaGF0IG1p
+Z2h0IG9ubHkgYmUgYSBkZWNvZGUgcGVuYWx0eSwgc28gZG9lc24ndCBhZmZlY3QNCnRoZSBsb29w
+ICd0aGF0IG11Y2gnIChhZGMgaXMgMiBjbG9ja3Mgb24gdGhvc2UgY3B1KS4NClNvIHByb2JhYmx5
+IG5vdCBhY3R1YWxseSB3b3J0aCBkb2luZyBhIHJ1bi10aW1lDQpwZXJmb3JtYW5jZSBjaGVjay4N
+Cg0KSSBtaWdodCAnY29vayB1cCcgYSBmdWxsIGNoZWNrc3VtIGZ1bmN0aW9uIGxhdGVyLg0KDQoJ
+RGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1v
+dW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRpb24gTm86IDEz
+OTczODYgKFdhbGVzKQ0K
 
-
-Acked-by: Masahiro Yamada <masahiroy@kernel.org>
-
-
-
->  scripts/Makefile.lib | 6 ++++++
->  1 file changed, 6 insertions(+)
->
-> diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
-> index 1a965fe68..d043be3dc 100644
-> --- a/scripts/Makefile.lib
-> +++ b/scripts/Makefile.lib
-> @@ -523,6 +523,9 @@ quiet_cmd_xzkern_with_size =3D XZKERN  $@
->  quiet_cmd_xzmisc =3D XZMISC  $@
->        cmd_xzmisc =3D cat $(real-prereqs) | $(XZ) --check=3Dcrc32 --lzma2=
-=3Ddict=3D1MiB > $@
->
-> +quiet_cmd_xzdec =3D XZDEC   $@
-> +      cmd_xzdec =3D $(XZ) --decompress --stdout $< > $@
-> +
->  # ZSTD
->  # ----------------------------------------------------------------------=
------
->  # Appends the uncompressed size of the data using size_append. The .zst
-> @@ -548,6 +551,9 @@ quiet_cmd_zstd22 =3D ZSTD22  $@
->  quiet_cmd_zstd22_with_size =3D ZSTD22  $@
->        cmd_zstd22_with_size =3D { cat $(real-prereqs) | $(ZSTD) -22 --ult=
-ra; $(size_append); } > $@
->
-> +quiet_cmd_zstddec =3D ZSTDDEC $@
-> +      cmd_zstddec =3D $(ZSTD) --decompress --force --quiet -o $@ $<
-> +
->  # ASM offsets
->  # ----------------------------------------------------------------------=
------
->
-> --
-> 2.41.0
->
-
-
---=20
-Best Regards
-Masahiro Yamada
 
