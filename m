@@ -1,64 +1,65 @@
-Return-Path: <linux-kernel+bounces-18842-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18843-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 262A28263DE
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 12:08:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D5D98263E4
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 12:23:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C38282822AC
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 11:08:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B56FF28226A
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 11:23:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6E1F12E49;
-	Sun,  7 Jan 2024 11:08:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FAA212E57;
+	Sun,  7 Jan 2024 11:23:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="y7kQ+YdX"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="imM5v+Dw"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
+Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A80D412E45
-	for <linux-kernel@vger.kernel.org>; Sun,  7 Jan 2024 11:08:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3413512E44
+	for <linux-kernel@vger.kernel.org>; Sun,  7 Jan 2024 11:23:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-55590da560dso1023155a12.0
-        for <linux-kernel@vger.kernel.org>; Sun, 07 Jan 2024 03:08:22 -0800 (PST)
+Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a271a28aeb4so85625166b.2
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Jan 2024 03:23:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704625701; x=1705230501; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=st1+8bhIrSIgmjya+Y1Yx6Q0DetFGsUb9xjG84ScjLI=;
-        b=y7kQ+YdXYo9WuemkHtI+nYO2L/pt7Zi7WCcJOTodPbWmSx2kNuRLHYCp9bvsu7V7ic
-         Zw0bizivRyBEAQ38+S7br8oWw/vG+wOC+58cgXh1BsO3M8FXPoWnzRbzIdvmpBStJ6Ha
-         HxQXTrlKQvyLQ2qQ2+QL+YhD8/N07ECOcegdOUpLYBtI2ScVB+AXk52InQI1e/p3XBgQ
-         0n5d6teNLd8UicjR9y2jnSBH0lKtx6+fBUHeMyysjIinWjJtpO4k4LPXKVKcD/qYX2rM
-         +aWuQvqBubH2NEhwqdeOo/L7TWJgH80ARaLltVTQSn8LhrE79OXfpGm7T/Hh5niYroSd
-         F27A==
+        d=linaro.org; s=google; t=1704626604; x=1705231404; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=GWEh2DbEAoAQjMX/SvxtXsAkCcimheIp/yoARvh6EP8=;
+        b=imM5v+DwX6LlrEY/G4lKQVXOiviXaCLMPxe258VvOA4vnKGptkO3RJDRA0qG+pyRr8
+         vB94Mne3XlW8xaw6AXDcUvH5AxtrF1g8LWCYkmBYqbBURmlwnUeqpCCkesindlX0ksiX
+         b6ILKoUmdpQeyyWUftDuhAGRj6H57+NaHSxXF+KHGPxkLjKdV09/G45G8iF97YuZHsJy
+         2x6XyGjyvQ1ikAjdlGDEja6nMLYFnOlx4//Jjglw2HKlxqhJjzAKZhkdSeX7c5GEErAs
+         X+6/Usb/bLK/MSXkYc8hVhKiNLDLDL7zCzr83dYOEWA1p2qadrOihIQeouOueS/G7nfm
+         Y3HQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704625701; x=1705230501;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=st1+8bhIrSIgmjya+Y1Yx6Q0DetFGsUb9xjG84ScjLI=;
-        b=q00apCEX/9eJXQ6dC+g7i6nplJL2PZRQHqmaQX8DVI7ApU8MgjVDXhmJTVqS/yPJ8w
-         J3kFayQcKF8GziuciDNOHcFGj+ksLedDatQYFSVPk6S2kEaVLiotEv1lbLCfdonNdYPL
-         G+NLswWDKaanRQ0+nk3kMkMfGjLvF/74GE2nRP9rta20l0Wu2qu6MD9drM3R7qlvsHCF
-         Qz+7Nc5hu+RuxYSrnvYuXV5xdjb57g8ADfkdIQzIKIBqd9mgfjzRyAvVL130XvqztgPC
-         vFELPF+hYIQ6jLXmG2LYCHYwd2lFOMBcjBNIre3HtP55NJ3PMSGJUZqkTFjbWyxm898e
-         hkRQ==
-X-Gm-Message-State: AOJu0Yzvp64Qog1ddTxDC6l4taTVDt1UgU/Ka13e67vZrDTqCw938Xmw
-	frlnvtXM9on+DUVt/PTNpL9GNQvmZ8t4Sw==
-X-Google-Smtp-Source: AGHT+IEdZgz61Nfqx4oHm1CeCLo6aMj+uMfhDW02HyruB6m8lCsdbNdz/l1+Ofra5LFRV6h3br21SA==
-X-Received: by 2002:a50:a459:0:b0:553:73c4:87db with SMTP id v25-20020a50a459000000b0055373c487dbmr944634edb.15.1704625700636;
-        Sun, 07 Jan 2024 03:08:20 -0800 (PST)
+        d=1e100.net; s=20230601; t=1704626604; x=1705231404;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=GWEh2DbEAoAQjMX/SvxtXsAkCcimheIp/yoARvh6EP8=;
+        b=eIVGKqn1m6Wc3LqiDavVT6xjvFkjhXnu5nGKCB+vB4h56DKeworgUyIy+5ZoTIMn9Y
+         T4DPnd0NWZzRUNqai6mquiX1CXqERq+swtRVLdKx/VLA77GrVofx3dRPwkqg/Q56M+sL
+         qCy7WCCTj17Hhcu+E/ZQJdpHaH/1ERrpQDIVY/UwJg9DHmkiYijk1+mLkHFlbKavjN9c
+         qWWUdClsTsTh7s6al9NNit0I6LwKEG/aJlMzYwiVOT1x3xrgKvjJeXC2UOq4SLFNzC0p
+         cHAJKbLepcVghDztSZESBCOju3zgfPP4hS4+EO10E/YwZk/fPDFfXe0DdnIvGF0Z6+aG
+         H8fQ==
+X-Gm-Message-State: AOJu0Yx77ArE09wIfzVphjqiA45CfIvLstKQLPKh306Av+om68Ymz7b5
+	1udhdh44YE0SVOzYiU0uJLWkqc1MyU8wCA==
+X-Google-Smtp-Source: AGHT+IH9WGSDG1MqPzhVpNBXQSCrK9M4FGaBcVIi/fZVFgFjBsN2lZoH+1DEVmYm/j7R0XsTtwEzGw==
+X-Received: by 2002:a17:906:c09a:b0:a27:361f:da4b with SMTP id f26-20020a170906c09a00b00a27361fda4bmr759273ejz.144.1704626604449;
+        Sun, 07 Jan 2024 03:23:24 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.223.112])
-        by smtp.gmail.com with ESMTPSA id m14-20020a50ef0e000000b00554930be765sm3137154eds.97.2024.01.07.03.08.18
+        by smtp.gmail.com with ESMTPSA id b21-20020a1709063f9500b00a269597d173sm2916908ejj.135.2024.01.07.03.23.22
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 07 Jan 2024 03:08:20 -0800 (PST)
-Message-ID: <e30051ae-ddb0-447e-9874-ebbc8f37898b@linaro.org>
-Date: Sun, 7 Jan 2024 12:08:17 +0100
+        Sun, 07 Jan 2024 03:23:24 -0800 (PST)
+Message-ID: <965c6b87-819f-4f56-ba5a-308c77913dde@linaro.org>
+Date: Sun, 7 Jan 2024 12:23:21 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,23 +67,23 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/3] dt-bindings: display: panel: Add Himax HX83112A
-Content-Language: en-US
-To: Luca Weiss <luca.weiss@fairphone.com>,
- Neil Armstrong <neil.armstrong@linaro.org>,
- Jessica Zhang <quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>,
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- Rob Herring <robh+dt@kernel.org>,
+Subject: Re: [PATCH v2 1/2] dt-bindings: reset: mediatek: add MT7988 LVTS
+ reset ID
+To: Frank Wunderlich <linux@fw-web.de>,
+ Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
+ <sboyd@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ Philipp Zabel <p.zabel@pengutronix.de>, Rob Herring <robh+dt@kernel.org>,
  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc: ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
- dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
-References: <20240105-fp4-panel-v1-0-1afbabc55276@fairphone.com>
- <20240105-fp4-panel-v1-1-1afbabc55276@fairphone.com>
+ Conor Dooley <conor+dt@kernel.org>
+Cc: Frank Wunderlich <frank-w@public-files.de>,
+ Sam Shih <sam.shih@mediatek.com>, Daniel Golle <daniel@makrotopia.org>,
+ linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-mediatek@lists.infradead.org
+References: <20240105162056.43266-1-linux@fw-web.de>
+ <20240105162056.43266-2-linux@fw-web.de>
+Content-Language: en-US
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -128,21 +129,20 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240105-fp4-panel-v1-1-1afbabc55276@fairphone.com>
+In-Reply-To: <20240105162056.43266-2-linux@fw-web.de>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 05/01/2024 15:29, Luca Weiss wrote:
-> Himax HX83112A is a display driver IC used to drive LCD DSI panels.
-> Describe it.
+On 05/01/2024 17:20, Frank Wunderlich wrote:
+> From: Frank Wunderlich <frank-w@public-files.de>
 > 
-> Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
+> Add reset constant for using as index in driver and dts.
+> 
+> Signed-off-by: Frank Wunderlich <frank-w@public-files.de>
 > ---
->  .../bindings/display/panel/himax,hx83112a.yaml     | 75 ++++++++++++++++++++++
->  1 file changed, 75 insertions(+)
-> 
+> v2:
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
 Best regards,
 Krzysztof
