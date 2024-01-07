@@ -1,64 +1,64 @@
-Return-Path: <linux-kernel+bounces-18835-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18837-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15F358263C5
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 11:35:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B6B618263CB
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 11:37:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E1E9EB20B06
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 10:35:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2438A1F21B05
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 10:37:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C392E10A29;
-	Sun,  7 Jan 2024 10:35:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D1BC12E44;
+	Sun,  7 Jan 2024 10:37:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="WXZrki91"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="nsKBTuuo"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9934F12B8D
-	for <linux-kernel@vger.kernel.org>; Sun,  7 Jan 2024 10:35:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1818712B92
+	for <linux-kernel@vger.kernel.org>; Sun,  7 Jan 2024 10:37:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-40e461c1f5cso1523285e9.3
-        for <linux-kernel@vger.kernel.org>; Sun, 07 Jan 2024 02:35:16 -0800 (PST)
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-554fe147ddeso996808a12.3
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Jan 2024 02:37:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704623715; x=1705228515; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1704623829; x=1705228629; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=kxDyb8bH5aiyYSse1Op29PEaCrCqKvgBEwfeUtur/O0=;
-        b=WXZrki91pc39sKBlL69CfFyRM9y8rrkTogITTPUAt2gVVCdbDmjJInKJUUa4YWVCqX
-         7fDmLfM4l6kBL+MNJ0vomDyUvu5cLGf9BI/GDqQ9od2cidzcy72uUy+xLlMowVfMY5UQ
-         HEKeEWRGMlsSg1WDsNK8jzsDuQXiAsoN+YuZX6NdtG/Q05llqmim6T7uiTcbTK6+kp6M
-         cZZKLI9kGgvuE9mah/2VHFllpOSV8DLASM/Rr6qmxVNvLgIaSWDRx9kWllEBsOAGpt7M
-         JprUNEToQ4YDuxN6+f5WYkCbFKQgqBVJbWdDLNRrh4WqLOOn5/Ljdbi0qtU14jA6BtJe
-         S4EA==
+        bh=kIgemb2Rdi0WBRHK4fsngj11Jgi64KqO0CWcIupsp64=;
+        b=nsKBTuuoYqWrYtMvr7LPW7y9zGGjFtEwqQlgZPKB7su0WaCXkqJJv5N+YLVKoa16FZ
+         AO0rjGljmjXuHvhNJZV2qVj5ZzOGH2CA5GQzJ0kiBc2K0f4dCbIWYz58p/365tQRDv16
+         eXo5i+hd8THLSIokFX5ITw/oCfDXdlwvJbKGfPx5c4EvCrN0nbJZx6GDXRmZUoyx70gn
+         PdzwIQrgdkR6PV6Yd1v1n4dGySRL/JBTHiwRIYXOmfdB58+/ceAL6L0PO/DTows6uFxm
+         r2tkj7BFA0hkVBii5u4OTomffOqIhU66HBdEedgU4S3Ic0Lb44LepFOd7OYhjGn7HtlL
+         gg3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704623715; x=1705228515;
+        d=1e100.net; s=20230601; t=1704623829; x=1705228629;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=kxDyb8bH5aiyYSse1Op29PEaCrCqKvgBEwfeUtur/O0=;
-        b=Lpo0DP27y+Z47h2lOOB3li8rF2jb3nUldoI/IFOloqPs28DHEBhKosDakn54uBolFf
-         65Nv7Rew7bu9LOQRRSRTHxSmM7RMJobbthzCGRUSRUafWASXHNJaEF+STT9mlBXTYS2V
-         LeSrfYoXA86dUbH2BYsRMX4vLOawZEObJHVxD6BQMnIubfD943DAdEVOPGgvxGzW1jy+
-         9/l0XOHS0FFUtvOcXjQ6h3+XdoldU7D0rheGJumuLsRTnp23qb4VU3Sf2pqrIg6B2V9z
-         1BtNXZ/I+HpVwcto0Igq3sIYhaIzBRxAkb1Edtp1UlL6aKy1ENnwd29weH2T6YSBZ0u+
-         e4ug==
-X-Gm-Message-State: AOJu0YyfG1mrfyxVRxmP7FwjgHuv2jO8N4hVzPt5rebuc0dVj0JfN3CN
-	XZz+WKKj0nyxT5/4LfzP+kcELNEwkB/EdQ==
-X-Google-Smtp-Source: AGHT+IE08eZqRiZv7pnx+fWR+ZyMeL1kIlMBakHSrvbNG1nsNJguPN5HVDE8A8im8+2iglCpD4edig==
-X-Received: by 2002:a1c:770a:0:b0:40c:2417:3b51 with SMTP id t10-20020a1c770a000000b0040c24173b51mr728144wmi.74.1704623714775;
-        Sun, 07 Jan 2024 02:35:14 -0800 (PST)
+        bh=kIgemb2Rdi0WBRHK4fsngj11Jgi64KqO0CWcIupsp64=;
+        b=Xy2Kww0zpFwXqz+qAK1mRxugO8mKz+26kGXxiaXrAohigMfT84FpiklIAptahCp107
+         dAOzdOfPbtoj6R3esZqNxyqvqN3WstWG+27FsrxxV5/Oj3EN6CLw8FkeAbvxwANxcnEV
+         zl3nwDqYdfnY6M557vlOh+HSAkbc4FANZdzOFOgk48iZSzKEo8x+Nys1dzW41AEEIG8d
+         ebBrpD98jkZ49A/thz2+QOGr7lHCeej69bCBddJ9VIbfi2ymdCAsrL76x1N3O8l+oXc0
+         Xx94EZiZbg94pAxQH8dfqU9cNRql9XBc5R0dd96dungv13TxK0hLZhLXpviIHkvm/wmF
+         eRqA==
+X-Gm-Message-State: AOJu0Yytb7eUrOqYcdCw4ym0NIuyYcXGD9bvaLKcoNSIGtw2AYPOxgGq
+	Qpiy+OP3feRbWyPuQn9+XPWgIa9MKCG0iw==
+X-Google-Smtp-Source: AGHT+IGorJnH6R3ByF4X62/vqH+zk3IilAur1DbvmTZfyZqHt3hy7TnQFx0EcOYZhbCeW1WTAJF+OQ==
+X-Received: by 2002:a50:955a:0:b0:557:2c3e:206a with SMTP id v26-20020a50955a000000b005572c3e206amr986573eda.0.1704623829353;
+        Sun, 07 Jan 2024 02:37:09 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.223.112])
-        by smtp.gmail.com with ESMTPSA id o18-20020a1709064f9200b00a28ace8fb17sm2870616eju.206.2024.01.07.02.35.13
+        by smtp.gmail.com with ESMTPSA id d35-20020a056402402300b005572a1159b9sm2998935eda.22.2024.01.07.02.37.08
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 07 Jan 2024 02:35:14 -0800 (PST)
-Message-ID: <e5e2ff07-fe29-4ff1-abc8-7250c756154e@linaro.org>
-Date: Sun, 7 Jan 2024 11:35:13 +0100
+        Sun, 07 Jan 2024 02:37:08 -0800 (PST)
+Message-ID: <b7c17e8b-ad21-487d-869f-0f12ad11315e@linaro.org>
+Date: Sun, 7 Jan 2024 11:37:07 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,19 +66,17 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 4/5] regulator: add 88pm88x regulators driver
+Subject: Re: [PATCH v2] dt-bindings: pxa-pwm: Convert to YAML
 Content-Language: en-US
-To: Karel Balej <karelb@gimli.ms.mff.cuni.cz>, Karel Balej
- <balejk@matfyz.cz>, Lee Jones <lee@kernel.org>,
+To: =?UTF-8?Q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>,
+ Thierry Reding <thierry.reding@gmail.com>,
+ =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
  Rob Herring <robh+dt@kernel.org>,
  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org,
+ Conor Dooley <conor+dt@kernel.org>
+Cc: linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org
-Cc: =?UTF-8?Q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>,
- ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org
-References: <20231228100208.2932-1-karelb@gimli.ms.mff.cuni.cz>
- <20231228100208.2932-5-karelb@gimli.ms.mff.cuni.cz>
+References: <20240106-pxa-pwm-yaml-v2-1-9578ff5f2d7f@skole.hr>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -124,36 +122,44 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231228100208.2932-5-karelb@gimli.ms.mff.cuni.cz>
+In-Reply-To: <20240106-pxa-pwm-yaml-v2-1-9578ff5f2d7f@skole.hr>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 28/12/2023 10:39, Karel Balej wrote:
-> diff --git a/drivers/mfd/88pm88x.c b/drivers/mfd/88pm88x.c
-> index 69a8e39d43b3..999d0539b720 100644
-> --- a/drivers/mfd/88pm88x.c
-> +++ b/drivers/mfd/88pm88x.c
-> @@ -68,6 +68,21 @@ static struct mfd_cell pm886_devs[] = {
->  		.num_resources = ARRAY_SIZE(pm88x_onkey_resources),
->  		.resources = pm88x_onkey_resources,
->  	},
-> +	{
-> +		.name = "88pm88x-regulator",
-> +		.id = PM88X_REGULATOR_ID_LDO2,
-> +		.of_compatible = "marvell,88pm88x-regulator",
-> +	},
-> +	{
-> +		.name = "88pm88x-regulator",
-> +		.id = PM88X_REGULATOR_ID_LDO15,
-> +		.of_compatible = "marvell,88pm88x-regulator",
-> +	},
-> +	{
-> +		.name = "88pm88x-regulator",
-> +		.id = PM886_REGULATOR_ID_BUCK2,
-> +		.of_compatible = "marvell,88pm88x-regulator",
+On 06/01/2024 21:45, Duje Mihanović wrote:
+> Convert the PXA PWM binding file from TXT to YAML.
+> 
+> The original binding does not mention any clocks, but the PWM controller
+> will not probe without a clock.
+> 
+> Reviewed-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+> Signed-off-by: Duje Mihanović <duje.mihanovic@skole.hr>
+> ---
+> Changes in v2:
+> - Rename to marvell,pxa-pwm.yaml
+> - Note addition of clock property
+> - Update trailers
+> - Link to v1: https://lore.kernel.org/r/20240105-pxa-pwm-yaml-v1-1-4ded9d00c38f@skole.hr
+> ---
+>  .../devicetree/bindings/pwm/marvell,pxa-pwm.yaml   | 51 ++++++++++++++++++++++
+>  Documentation/devicetree/bindings/pwm/pxa-pwm.txt  | 30 -------------
+>  2 files changed, 51 insertions(+), 30 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/pwm/marvell,pxa-pwm.yaml b/Documentation/devicetree/bindings/pwm/marvell,pxa-pwm.yaml
+> new file mode 100644
+> index 000000000000..fb20e4e1daa8
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/pwm/marvell,pxa-pwm.yaml
+> @@ -0,0 +1,51 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/pwm/pwm-pxa.yaml#
 
-Same compatible per each regulator looks suspicious, if not even wrong.
-What are these?
+It does not look like you tested the bindings, at least after quick
+look. Please run `make dt_binding_check` (see
+Documentation/devicetree/bindings/writing-schema.rst for instructions).
+Maybe you need to update your dtschema and yamllint.
 
 Best regards,
 Krzysztof
