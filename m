@@ -1,97 +1,137 @@
-Return-Path: <linux-kernel+bounces-18969-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18970-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 442698265D5
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 20:47:12 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3EAAA8265D6
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 20:47:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D696F1F2142B
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 19:47:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D494CB21233
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 19:47:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A452111AA;
-	Sun,  7 Jan 2024 19:47:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EFB81170A;
+	Sun,  7 Jan 2024 19:47:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BxQVZ7lE"
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="jtgW04aF"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-qk1-f170.google.com (mail-qk1-f170.google.com [209.85.222.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F60511193
-	for <linux-kernel@vger.kernel.org>; Sun,  7 Jan 2024 19:47:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f170.google.com with SMTP id af79cd13be357-7831f567100so48463085a.0
-        for <linux-kernel@vger.kernel.org>; Sun, 07 Jan 2024 11:47:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704656821; x=1705261621; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Bgw6P5LZhwAlCIvVPfp2eYZqWEaTiqAWQo/dlHlVaXI=;
-        b=BxQVZ7lEndiAHfiLse42mznMDyJC3NIey3+yBfNeqavKNKfSEkf/FI0j21yJParchK
-         L8Rl+zu1YqmeT5PswMvnRm2BDOSNE2HLtK2KnBrDK7lWqDgN9YWBWlLuDhGlKelSLF9b
-         ICGMN9Bu5SO0Y8ja2812JCFQTyf7eUFByBa79HEw/SbbokjJMIU4Qb8eTWxJR23k0F6n
-         90NkP+3IbGB0/G32nOP70+Aqere5CsWKoLGhmIecS5pzYtFuQD4eDphR1spQ7ERMfQt6
-         NB59ib7nTuxoLad821AJwGpPMkVRSrhHhKvA1Er9CVguVQVX/zqiLk7Xv9PjvHf6Ldn5
-         h93A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704656821; x=1705261621;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Bgw6P5LZhwAlCIvVPfp2eYZqWEaTiqAWQo/dlHlVaXI=;
-        b=tUyzkbeGKRncubty2RfwthawhLFD6SgY7DQ6p//pUfyUZzHu3/mkQ4YraYLUOJHgbs
-         MGXZNq0Hgc8I9u9KsV77abGpoyzoXO268k5cyea2+GEiqFYssSqxXBPdf2P2JTLkxTCP
-         bOlZ8M/WVQpOx0ld3oycYVNmupv78RtJLwvS51A19x35OZTJ7i7bwGJ94D/yuI657Uok
-         w+tSKwwlzToIQpxJOsMMy2hlHwy1UpXdV+cgbox0KiRZ0no+5N/qz0f2oKClVtk/H82Q
-         ExxNaMXgwDhqauFpCJ9xg172G+ihC5S+vE1laUvmvZrGufeJTTK2e7WdFWM3QokUyH4f
-         v2Lw==
-X-Gm-Message-State: AOJu0YxebzT1GtPWyF6gFNTK+rz/1FxwBJ9Zbnat9x1SH3Z2Jd3TD2Cr
-	rFs5fiHy7E9k6bnPNsWrTIomhzDDe/1XqgwV79M=
-X-Google-Smtp-Source: AGHT+IGcTlPUiVIo4ImmPte03fF77QlSaouekvVBUc7VviYy4OCu8x8Y2c+1mJTb0YRoNxHun78P8T2uiOmCPPq6Uig=
-X-Received: by 2002:a05:6214:2a8e:b0:67f:3991:ef38 with SMTP id
- jr14-20020a0562142a8e00b0067f3991ef38mr4009781qvb.122.1704656821115; Sun, 07
- Jan 2024 11:47:01 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FAD111706
+	for <linux-kernel@vger.kernel.org>; Sun,  7 Jan 2024 19:47:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 245F440E01F9;
+	Sun,  7 Jan 2024 19:47:35 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id O5-U9mV-3SS6; Sun,  7 Jan 2024 19:47:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1704656852; bh=kqESimdcXy57y8GBtFttloiGQkW4AhZT/hHCXZDbvZ8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=jtgW04aFLcX3afBxceVCZklNSktZ7Xv+409DcrmdrGuYn6rcM2LfPAD3MCqRLdsjM
+	 Qhhq8qYMspMPIrD5pGiliR/nN37BVfqJedzXvepaHoSrhmVSlfzgZYdPoNHlwBZR51
+	 2ELHjfOjG8Wtp7QNB13wYigt8X9zn1h32YH/qbo2T2R8gwEIbHO/MUy0A5hLUzCNKR
+	 ymfHcPRHakqSup5kYE0wSKwlxyP65qleYd4B3DyUEByTXkCWfof2rzKs2htd9zf2gA
+	 d3cbtlQMug747iHA24X2qmCzDMGb0yd63fwhf5KAzlsDgO1ybPJE/g2eisb+Tk6zeM
+	 MyoT0Wjlj7CIxPE5x+ipChzc/n8OErBXvZljWn53gR3kIlJgcnWSWNVEEWR5eZYead
+	 +hZEp9AwEW9NH+PBkUi5IqawixJRy4yQh/Cbe8K1msn6io0qAvUj10zY3QSNiccdaq
+	 /l8ZXCmdCKiE+qMveTTgH5UreRDN34OihkaX/X0V7vrVD7jULDoENJ4Bm+ZAt6NZGv
+	 buVmS6DqkBORuElWlyhEzQ9jn0D544Sy7m+su4De2aDIKnmQhD37E6kTrX1+6vGug7
+	 mt1RJI916Sc6NIe95f7KkHgQ0qmTlwHh/orLQR7Lmg/QpC4KwVSNnvhu9huPAvTbEb
+	 SrB286Uoa9gKR6D+KB3npMuE=
+Received: from zn.tnic (pd9530f8c.dip0.t-ipconnect.de [217.83.15.140])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 9B5B440E00C5;
+	Sun,  7 Jan 2024 19:47:25 +0000 (UTC)
+Date: Sun, 7 Jan 2024 20:47:16 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Aleksander Mazur <deweloper@wp.pl>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	linux-kernel@vger.kernel.org, "H. Peter Anvin" <hpa@zytor.com>
+Subject: Re: [PATCH] x86/Kconfig: Transmeta Crusoe is cpu family 5, not 6
+Message-ID: <20240107194716.GDZZr/xBl3+G8O7i7E@fat_crate.local>
+References: <1517697968-19014-3-git-send-email-tedheadster@gmail.com>
+ <20240107140609.2c1709e3@mocarz>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <202401070901.68H00NFa-lkp@intel.com> <CAGb2v64zGvceVXy_F7pVTrFYY7-eLQktoWZB4Xcb1MQtFu=1Ww@mail.gmail.com>
-In-Reply-To: <CAGb2v64zGvceVXy_F7pVTrFYY7-eLQktoWZB4Xcb1MQtFu=1Ww@mail.gmail.com>
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Date: Sun, 7 Jan 2024 21:46:24 +0200
-Message-ID: <CAHp75VfiTCCa+Rjn4JavxvSziNmjBTXEgUq-UT+PHkD8__5dhw@mail.gmail.com>
-Subject: Re: drivers/iio/adc/axp20x_adc.c:572:26: sparse: sparse: dubious: x & !y
-To: wens@csie.org
-Cc: kernel test robot <lkp@intel.com>, Aidan MacDonald <aidanmacdonald.0x0@gmail.com>, 
-	oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org, 
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240107140609.2c1709e3@mocarz>
 
-On Sun, Jan 7, 2024 at 7:37=E2=80=AFAM Chen-Yu Tsai <wens@csie.org> wrote:
-> On Sun, Jan 7, 2024 at 9:30=E2=80=AFAM kernel test robot <lkp@intel.com> =
-wrote:
+On Sun, Jan 07, 2024 at 02:16:57PM +0100, Aleksander Mazur wrote:
+> I found out I am no longer able to boot kernel compiled with CONFIG_MCRUSOE=y on
+> my HP t5300 with CPU: Transmeta(tm) Crusoe(tm) Processor TM5500 (family: 0x5,
+> model: 0x4, stepping: 0x3). It says:
+> 
+> > This kernel requires an i686 CPU, but only detected an i586 CPU.
+> > Unable to boot - please use a kernel appropriate for your CPU.    
+> 
+> It looks like this is caused by 25d76ac888216c369dea91768764728b83769799 which
+> started setting X86_MINIMUM_CPU_FAMILY=6 for MCRUSOE while CPUID gives family=5.
+> 
+> I was able to fix the problem with a patch included below. It just changes
+> X86_MINIMUM_CPU_FAMILY to 5
 
-...
+... for MCRUSOE.
 
-> > sparse warnings: (new ones prefixed by >>)
-> > >> drivers/iio/adc/axp20x_adc.c:572:26: sparse: sparse: dubious: x & !y
-> >    drivers/iio/adc/axp20x_adc.c:577:26: sparse: sparse: dubious: x & !y
->
-> This looks like a false positive. The code is doing exactly what we want:
-> val =3D val ? 1 : 0, but in a shorter format.
+> No other change was necessary (using -march=i686
+> seems fine).
+> 
+> /proc/cpuinfo:
+> processor	: 0
+> vendor_id	: GenuineTMx86
+> cpu family	: 5
+> model		: 4
+> model name	: Transmeta(tm) Crusoe(tm) Processor TM5500
+> stepping	: 3
+> cpu MHz		: 532.091
+> cache size	: 256 KB
+> fdiv_bug	: no
+> f00f_bug	: no
+> coma_bug	: no
+> fpu		: yes
+> fpu_exception	: yes
+> cpuid level	: 1
+> wp		: yes
+> flags		: fpu vme de pse tsc msr cx8 sep cmov mmx longrun lrti constant_tsc cpuid
+> bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs itlb_multihit mmio_unknown
+> bogomips	: 1064.18
+> clflush size	: 32
+> cache_alignment	: 32
+> address sizes	: 32 bits physical, 32 bits virtual
+> power management:
+> 
+> --- a/arch/x86/Kconfig.cpu
+> +++ b/arch/x86/Kconfig.cpu
+> @@ -375,7 +375,7 @@
+>  config X86_MINIMUM_CPU_FAMILY
+>  	int
+>  	default "64" if X86_64
+> -	default "6" if X86_32 && (MPENTIUM4 || MPENTIUMM || MPENTIUMIII || MPENTIUMII || M686 || MVIAC3_2 || MVIAC7 || MEFFICEON || MATOM || MCRUSOE || MCORE2 || MK7 || MK8)
+> +	default "6" if X86_32 && (MPENTIUM4 || MPENTIUMM || MPENTIUMIII || MPENTIUMII || M686 || MVIAC3_2 || MVIAC7 || MEFFICEON || MATOM || MCORE2 || MK7 || MK8)
+>  	default "5" if X86_32 && X86_CMPXCHG64
+>  	default "4"
 
-Yes, but the problem is that FIELD_PREP() is a macro.
-You can replace these by ternary (here and in other cases) to satisfy
-sparse. Compiler will optimize that anyway, so no branch is expected
-in the generated code.
+Care to turn this into a proper patch with your SOB etc?
 
---=20
-With Best Regards,
-Andy Shevchenko
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
 
