@@ -1,207 +1,234 @@
-Return-Path: <linux-kernel+bounces-19089-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19016-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 469CB8267BA
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 06:23:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C79D8266CB
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 00:49:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AED901F21B2E
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 05:23:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C809F1F214C7
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 23:49:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84AFB849C;
-	Mon,  8 Jan 2024 05:23:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B902213AE3;
+	Sun,  7 Jan 2024 23:49:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jsl+Je/H"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from CHN02-BJS-obe.outbound.protection.partner.outlook.cn (mail-bjschn02on2071.outbound.protection.partner.outlook.cn [139.219.17.71])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A559779C2;
-	Mon,  8 Jan 2024 05:22:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=starfivetech.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TcJ47kYUYRTgrySJRrpep914ZwwJ0wuvtqpR2K/xBpZAHxHyhiAL8100EDjPFRHWwQjzmQsnyFwkM1jnlSYfken1Xv9RHxDcibzHklyK+8/0MjcGwpwIfEA+/30Lh6UXqnwjH5idj/92+ycEZpJ1W80REeswIsZiYfPqEuevvAZFR+OuQEY7fbFm/iPaoXhu4Gqb7ljd7ywHws5QcTVVgP9akrJTPd4BkKHocHTa5EW9j8JaPiiIyajzHtQRLgmABFiTbym/eRPo6LBW7SpPh7lzpDgDtDmTz+EWdgjI7dsBpYEkfLM9SyT49ndlGOlz3xM7HC+hPgL4fP+dBcuIjg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=FcvonXjMC1UsUrzhChkwYUxc9/tjgBofxieUt34tVd4=;
- b=eEszzH4jpCIoyZU37dnQ5EEouNeckcXZlkya/IUuaTJIXL17Sw7N/tQh5Vi0k9cckrjKQEUZYSNpjIp4nsNqcOlr+ZyX+9XOqIya+CyM/hJGDC0/1VkG9UmzVJIDVDGiME16sxpkFMmWxyWllT3ES6Ks2mJr/4YJllVJ+NZ5Z+1BzNMetXzXFqaQcmkra6fHitRsEiggW12oXP6dLTj27/sIeDvFNs4gJEOzjXF9xXf9T1fJQmgZ+HlWWDUalftpKaSW4fiVM+WisLw3Q0h118U0Vfj/CAJdXx9H8BC9EGVBWrFqEzejXtg3yWoBLb/gkb8j09gb8XP1K95fWqbHCg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=starfivetech.com; dmarc=pass action=none
- header.from=starfivetech.com; dkim=pass header.d=starfivetech.com; arc=none
-Received: from ZQ0PR01MB1160.CHNPR01.prod.partner.outlook.cn
- (2406:e500:c550:19::6) by ZQ0PR01MB1096.CHNPR01.prod.partner.outlook.cn
- (2406:e500:c550:c::10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7135.21; Sun, 7 Jan
- 2024 23:47:17 +0000
-Received: from ZQ0PR01MB1160.CHNPR01.prod.partner.outlook.cn
- ([fe80::1dbb:b090:7d89:4e22]) by
- ZQ0PR01MB1160.CHNPR01.prod.partner.outlook.cn ([fe80::1dbb:b090:7d89:4e22%4])
- with mapi id 15.20.7135.032; Sun, 7 Jan 2024 23:47:17 +0000
-From: JiSheng Teoh <jisheng.teoh@starfivetech.com>
-To: "andi.shyti@kernel.org" <andi.shyti@kernel.org>
-CC: JiSheng Teoh <jisheng.teoh@starfivetech.com>, Leyfoon Tan
-	<leyfoon.tan@starfivetech.com>, "linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, "linux-i2c@vger.kernel.org"
-	<linux-i2c@vger.kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "michal.simek@amd.com" <michal.simek@amd.com>
-Subject: RE: [PATCH v2] i2c: cadence: Add system suspend and resume PM support
-Thread-Topic: [PATCH v2] i2c: cadence: Add system suspend and resume PM
- support
-Thread-Index: AQHaKqHICsIFtOoPykiU4PTXtMLy1rCg6VYAgACMaYCAAG4PAIAASqKAgC0BRBA=
-Date: Sun, 7 Jan 2024 23:47:17 +0000
-Message-ID:
- <ZQ0PR01MB1160E73BE852925A270DBE95EB64A@ZQ0PR01MB1160.CHNPR01.prod.partner.outlook.cn>
-References: <20231210115412.hztjrubacnmenbvz@zenone.zhora.eu>
- <20231210162119.364-1-jisheng.teoh@starfivetech.com>
-In-Reply-To: <20231210162119.364-1-jisheng.teoh@starfivetech.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=starfivetech.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: ZQ0PR01MB1160:EE_|ZQ0PR01MB1096:EE_
-x-ms-office365-filtering-correlation-id: e284a4bf-755f-4a45-2744-08dc0fdafb3f
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- LQx0sz7Cg2zi5i7jLXkrrxyJoPkiEiZDv02RctFQzp537OhbYUhUBU5t6qZ6G8RI06S7CSK3JrSjhf9RCcdhdhEgLlG6O1pUalWYC32czqdkzNrAmatKJsSiI4NEagj/52Aeh+J4RYOT+qA71SynNtKSSUD1NoXh1kiOkQnXGlX6QxRY1lta1MImjTLxT9KxHyeat7bv5j1mJwL03StYq/ZS6vpF4wBNj2zmsJbA6bAFn7/hveKWgK9LTbh+elKTGmOrpHAnYTWvSf5MNzve0iJoOngJ4oqAj4wbtN93JleeTJ4+1NrbB7xfne4SrvuL2LGVVLdoHuMBHih5cf7256ifX+KpL2svFU0jm0X8Ldk3Y0CrXw52pmQ0Pocq+pGEwskT/HoWmtKB7B3e12jdhuuINEE4XbU2JdMXRJNpyHhY2Bb9UqCe0Wge3Uy0G4gQ/dkWZ8n/26PdV8LHpudlymL2VYOpEJHE2e/MuguM90Zz+/sqKyVbyONKVU/l964j3Pu02PMyhDxOMsiHMKTMiMd7hgP1m2szn1K4yEkIMIcWQHog7Jl69QxncpWyUGaQkGMTAdmR9qsnw1WKIPXjY7LfynP18mEUoxNKhoritZo6KswVjKe4qFhko3vK5DmPiJek8BL+3NjkSp2kxcmlqg==
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:ZQ0PR01MB1160.CHNPR01.prod.partner.outlook.cn;PTR:;CAT:NONE;SFS:(13230031)(396003)(346002)(136003)(39830400003)(366004)(230922051799003)(186009)(1800799012)(64100799003)(451199024)(66446008)(7696005)(66476007)(6916009)(66556008)(40180700001)(64756008)(966005)(9686003)(71200400001)(66946007)(76116006)(41320700001)(508600001)(54906003)(38070700009)(40160700002)(8676002)(15650500001)(5660300002)(8936002)(4326008)(86362001)(26005)(122000001)(55016003)(38100700002)(83380400001)(2906002)(33656002)(41300700001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?lhBfLWmWMeCJEu2l1id5B8mF01sWaYdf9NxdkvfUYIV8Qt5y49HKIvdcIi5k?=
- =?us-ascii?Q?oFqJa/mL3cfPvGEuHC71AHL5abohKGcDUAfX/CsayXoOsvkuC9T6cGy3OQBE?=
- =?us-ascii?Q?1zZxp3IwDBxHc9aB60jDxllg0TKrm9op8aVCpgRgc6kuZlBoXs3FJGQpyMPh?=
- =?us-ascii?Q?+rSXj41H0rAe7K5XDZ7MCTb0i2WfmiPxh8JSnGP1nANVtbS3F5+o/6n4i/5n?=
- =?us-ascii?Q?HUcR/fCiLxCvIVoJZOduqBLL4e+D9SXFyQ1IWPZbN2qfa0nCgWSb7KEK/rHh?=
- =?us-ascii?Q?6WDZhmRxLtaX5YSi3hO7gIGjZ4fhHThsNOmxChTwzh5x4YD3za8DWezJUSn9?=
- =?us-ascii?Q?nMpwx/eYAHZAbMHkCPSF7NjWHwUYh/ega8xFRre8Y+/UHmfosm1c3+mqNxtn?=
- =?us-ascii?Q?WZOQpXlP62jDIgvls39rA5tRon/AbtONsghzClLlqa/ddR6SmwuqBEEmWQXM?=
- =?us-ascii?Q?Pt8B9pkxU31kQAoh7KwcHKKifravOTKh4Z0RBwp0MLo6utLO/3sHIYDcUmBH?=
- =?us-ascii?Q?SXAOqHEkpHQrvbq6S/gOFfL53xBWfyODkrOCmbzslUP62Fcn/ObPy4GP9vng?=
- =?us-ascii?Q?HMJ88m9hdCTTfpP5jp2KSBDavjDBvY6qVHK016+yXgGSkD7A+mk/aoM97s6w?=
- =?us-ascii?Q?fhhU0pwmyOglNXn3LEjA5u11EbDJQex2Lx8YvXqwNmu1A69sGCwOIjMOWMpt?=
- =?us-ascii?Q?TM8ha4NuIh7dqdr+dZWrElzqIrYy5Rsw27ERCXZz91rD5gRceNPqvBssrMmF?=
- =?us-ascii?Q?nlhMAO/P7utimNeP95Jf9D3QyzhQATSE2TNq4KqMDFBUrsKudlvLg1fnbOxk?=
- =?us-ascii?Q?kOB/xOsW1GfyfT6TIYQe/3Y/WBrlrxLSgC+vA7okPJvFmVag1myOGcN1XsbE?=
- =?us-ascii?Q?Jl1yH5OPUMoknbvxvNwpPxkqdUuQRedI8mU2RSDUrsYnNfmW7hYryhBMcL5g?=
- =?us-ascii?Q?VDqrFxEqlz3lYvuTg61bUfmnmkkWySRlUxu2wjZsRq4CrJ11flFHzNJHHwfD?=
- =?us-ascii?Q?i42RU1QEVU6eh8w3EGeKNND15sHBUDXcShHXj40BuWckDsix6IGhZQNdw88+?=
- =?us-ascii?Q?HQLMKvDveoifHS+/iTQYp4cLlUJ3aj0BEJy9prQ7gDp8P97fsJ6GiD/tNNjV?=
- =?us-ascii?Q?9QmjBuiTnqTdDE1Ii0/DsDFocTFsCVFmEbpcUp5HDGtWYF8ApoKrmSglioTm?=
- =?us-ascii?Q?1NHfZ1uBZpdyOJKmCNQSDK3kXbDLQ+giq7CsvbOPYCCMFzi/+0gzEAtf7umm?=
- =?us-ascii?Q?F+xXLujsi5jDhF9PmChZ107Ew9g1pmCh8Y2VgYRKeZFPnKDL8hxU/HxXCaqp?=
- =?us-ascii?Q?mr5AwV8qAIYG9NsGQfd54dBgAGupSQhfGMr7ORuniSsESlMYSBSEcWZYTXd4?=
- =?us-ascii?Q?ykEroGFBtW3OwK/qPT2XLV1dM+FxL7UoiJnGGov2QMw3YrbtXvNvwFJoHcdn?=
- =?us-ascii?Q?PTjsyae+EDmlnUPpuEOkLX6BPJuQSLLuUXS9mcuGPzUFo9uokhBCj+BH586E?=
- =?us-ascii?Q?xBgR7+eZ8DUD3R2yUIL+JmluIDKMFrNq7Yq2ZRBSIekoDrrhbFFQuVH0PTLa?=
- =?us-ascii?Q?nimAJhDkPvtjWumrJa8S+jjUw81ghEqfNJ+NQ9zAavES1o86/2nTiGDx5I3B?=
- =?us-ascii?Q?zw=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A024125A8;
+	Sun,  7 Jan 2024 23:49:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2cd1eac006eso11730751fa.3;
+        Sun, 07 Jan 2024 15:49:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704671369; x=1705276169; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=pQWucGX8i5M7geCueH7j+J5ARbbBVLCsirvzYyDvJyI=;
+        b=jsl+Je/HcPCh6EpXtzzkpmDxO7Ji6KmGd02u6/S9qXJ2EoD77Z5oi6PMRqq5maejie
+         eMFrae+8qh0lgn0tPm+A65lKDZVaZgZ3FEazgL9bGv7Gr+CyDXq8KFTEhcPrNWuEswPh
+         fEtLFSw8g9zZpndY7LzAEDEXWywIuztc9SlI6SV54rnTXkpBbJmq+NYm5vsi8rENpu7/
+         m1Nj7IObzWTS9u0AYE8owtzmT79Qj7rgCP/GiWZHFU4kNrGLAu3H6NiRQ1Rf9I9MOcKK
+         Knp7G0RjRQKnzMF6TASn8dBavF61xSN5VZN+Cn2T+K0c4lvapAb2K9IhBjjUXJSBiK8e
+         /Ylg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704671369; x=1705276169;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=pQWucGX8i5M7geCueH7j+J5ARbbBVLCsirvzYyDvJyI=;
+        b=lLp68MWdCkpz4YeGQvFSQjM+8VxY6eDQgwpnFRwALX0ES6fBBu64V3Lc908WHBiDkL
+         g0hYDoh+dYnKNfadfNivPJjWC9CjFjNICz50LrScMxrDwFjh2zV3qArbwuBw38PN7547
+         0uSSWOwQXxTreXHXqXFLshn6DTIXYfr6hsI3Z4ydXRerrN85OTDspPwRYW4rNQ0pml/Z
+         zMHMEL70FJiDuJWuE+BStXuc5usogDhdghyTMEp2Qoqft4x/SqQWt/wzLlRYkAfF+yfP
+         OaQijzmKGTil5DDmozZgl9z3rnjX1mEPxfuYJnL56p6UDFWwlxoFrOw4IgwYf8V63CjY
+         F1zg==
+X-Gm-Message-State: AOJu0YypS+CNrNZKwaBQyPR8YZ2eQq7+pcFDLePk454oyILe9n5IrVe9
+	RaB8lCdv0Ps72j7JJYKa7aZcMXnj2B00iuQpZtg=
+X-Google-Smtp-Source: AGHT+IFPJH2xLFCsPjV21ID/GJ6Pvx6zTs1vWa5/cqBc0W02pC6fpCI21nVgsaIBLdUbwZdjhdcNtRr3RbwaTRpQ4HQ=
+X-Received: by 2002:a2e:720d:0:b0:2cd:3141:5d43 with SMTP id
+ n13-20020a2e720d000000b002cd31415d43mr671051ljc.0.1704671368815; Sun, 07 Jan
+ 2024 15:49:28 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: starfivetech.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: ZQ0PR01MB1160.CHNPR01.prod.partner.outlook.cn
-X-MS-Exchange-CrossTenant-Network-Message-Id: e284a4bf-755f-4a45-2744-08dc0fdafb3f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Jan 2024 23:47:17.1897
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 06fe3fa3-1221-43d3-861b-5a4ee687a85c
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: fB+lhLyfQ7TSY5YmZhV92G+A1udROa3hf7NtmQQz4zlNKcA1RrT84XoaoREhf9T1GHyWSgPjHUaTTF7aP2a4u+QMlav4+sg96Q7H/SRvS1c=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: ZQ0PR01MB1096
+References: <20240102181946.57288-1-verdre@v0yd.nl> <CABBYNZ+sTko6reoJO43W2LHGW58f0kK_8Zgc3mep7xki355=iA@mail.gmail.com>
+ <548fb407-ef57-4108-aa26-52deafdca55c@v0yd.nl> <f9f638bf-676e-43bf-8d83-256cae8f7bfe@v0yd.nl>
+In-Reply-To: <f9f638bf-676e-43bf-8d83-256cae8f7bfe@v0yd.nl>
+From: Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+Date: Sun, 7 Jan 2024 18:49:15 -0500
+Message-ID: <CABBYNZL26agc8mDaWZhSpWO1uzhZ78QY96n3OEQW3GJw9+UPYQ@mail.gmail.com>
+Subject: Re: [PATCH v2 0/4] Power off HCI devices before rfkilling them
+To: =?UTF-8?Q?Jonas_Dre=C3=9Fler?= <verdre@v0yd.nl>
+Cc: Marcel Holtmann <marcel@holtmann.org>, Johan Hedberg <johan.hedberg@gmail.com>, asahi@lists.linux.dev, 
+	linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Andi,
+Hi Jonas,
 
-> On Sun, 10 Dec 2023 12:54:12 +0100
-> Andi Shyti <andi.shyti@kernel.org> wrote:
->=20
-> > Hi Ji Sheng,
+On Sun, Jan 7, 2024 at 1:11=E2=80=AFPM Jonas Dre=C3=9Fler <verdre@v0yd.nl> =
+wrote:
+>
+> On 1/3/24 13:15, Jonas Dre=C3=9Fler wrote:
+> > Hi Luiz,
 > >
-> > [...]
+> > On 1/2/24 19:39, Luiz Augusto von Dentz wrote:
+> >> Hi Jonas,
+> >>
+> >> On Tue, Jan 2, 2024 at 1:19=E2=80=AFPM Jonas Dre=C3=9Fler <verdre@v0yd=
+.nl> wrote:
+> >>>
+> >>> In theory the firmware is supposed to power off the bluetooth card
+> >>> when we use rfkill to block it. This doesn't work on a lot of laptops
+> >>> though, leading to weird issues after turning off bluetooth, like the
+> >>> connection timing out on the peripherals which were connected, and
+> >>> bluetooth not connecting properly when the adapter is turned on again
+> >>> quickly after rfkilling.
+> >>>
+> >>> This series hooks into the rfkill driver from the bluetooth subsystem
+> >>> to send a HCI_POWER_OFF command to the adapter before actually
+> >>> submitting
+> >>> the rfkill to the firmware and killing the HCI connection.
+> >>>
+> >>> ---
+> >>>
+> >>> v1 -> v2: Fixed commit message title to make CI happy
+> >>>
+> >>> Jonas Dre=C3=9Fler (4):
+> >>>    Bluetooth: Remove HCI_POWER_OFF_TIMEOUT
+> >>>    Bluetooth: mgmt: Remove leftover queuing of power_off work
+> >>>    Bluetooth: Add new state HCI_POWERING_DOWN
+> >>>    Bluetooth: Queue a HCI power-off command before rfkilling adapters
+> >>
+> >> Apart from the assumption of RFKILL actually killing the RF
+> >> immediately or not, I'm fine with these changes, that said it would be
+> >> great if we can have some proper way to test the behavior of rfkill,
+> >> perhaps via mgmt-tester, since it should behave like the
+> >> MGMT_OP_SET_POWERED.
 > >
-> > > > > +static int __maybe_unused cdns_i2c_resume(struct device *dev) {
-> > > >
-> > > > I am not really understanding what you are trying to do here:
-> > > >
-> > > > > +	struct cdns_i2c *xi2c =3D dev_get_drvdata(dev);
-> > > > > +	int err;
-> > > > > +
-> > > > > +	err =3D cdns_i2c_runtime_resume(dev);
-> > > >
-> > > > First you try to resume...
-> > > >
-> > > > > +	if (err)
-> > > > > +		return err;
-> > > > > +
-> > > > > +	if (pm_runtime_status_suspended(dev)) {
-> > > >
-> > > > ... then you check if you are suspended ...
-> > >
-> > > This serves as a check and balance to ensure that when the system
-> > > resumes with device in runtime suspend state, we disable the clock
-> > > enabled in earlier cdns_i2c_runtime_resume() to ensure a balanced
-> > > clock reference count for subsequent runtime resume transition.
-> > > Similar implementation can be found in this commit:
-> > > https://github.com/torvalds/linux/commit/44c99904cf61f945d02ac9976ab
-> > > 10dd5ccaea393
-> > >
-> >
-> > OK, this is done purely for clock balancing, but then, I still don't
-> > understand the case. I expect the clock counter to be unbalanced when
-> > you suspend (because is moving towards '0').
-> >
-> > While, if you check if the clock is unbalanced when resuming, it means
-> > that the clock had a negative counter (which is impossible because the
-> > clock counter is unsigned).
-> >
-> > If there is any unbalancing at this stage, then I recommend you to
-> > check what has happened previously.
-> >
-> > ... Or is there anything I am missing?
-> >
-> > Thanks,
-> > Andi
->=20
-> You are right, the clock counter will move towards 0 during system suspen=
-d.
-> Conversely during system resume, the clock counter is incremented to 1 ea=
-rly on in cdns_i2c_runtime_resume(). So the clock counter
-> is not negative to start with.
-> At this point of time, clock counter is 1. If the device is in runtime su=
-spend, we decrement the clock counter back to 0, so the
-> subsequent runtime resume could increment it back to 1. In a sense, balan=
-cing the clock counter.
-> Please help correct me if I've got it wrong.
->=20
-Just to check on the status of this patch. Let me know if the above stateme=
-nt makes sense.
-> >
-> > > > > +		err =3D cdns_i2c_runtime_suspend(dev);
-> > > >
-> > > > ... and suspend again? Shouldn't this be _resume()?
-> > > >
-> > > > Thanks,
-> > > > Andi
-> > > >
-> > > > > +		if (err)
-> > > > > +			return err;
-> > > > > +	}
-> > > > > +
-> > > > > +	i2c_mark_adapter_resumed(&xi2c->adap);
-> > > > > +
-> > > > > +	return 0;
-> > > > > +}
->=20
+> > Testing this sounds like a good idea, I guess we'd have to teach
+> > mgmt-tester to write to rfkill. The bigger problem seems to be that
+> > there's no MGMT event for power changes and also no MGMT_OP_GET_POWERED=
+,
+> > so that's a bit concerning, could userspace even be notified about
+> > changes to adapter power?
+>
+> Sent v3 of the patchset now, I didn't add a test to mgmt-tester because
+> it's actually quite tricky to notice the full shutdown sequence happened
+> rather than just closing the device. As long as no devices are
+> connected, the difference is mostly in a few (faily random) events:
+>
+> btmon without the patch:
+>
+> @ MGMT Event: Class Of Device Changed (0x0007) plen 3
+>
+>         {0x0001} [hci0] 169.101804
+>          Class: 0x000000
+>            Major class: Miscellaneous
+>            Minor class: 0x00
+> @ MGMT Event: New Settings (0x0006) plen 4
+>
+>         {0x0001} [hci0] 169.101820
+>          Current settings: 0x00000ac0
+>            Secure Simple Pairing
+>            BR/EDR
+>            Low Energy
+>            Secure Connections
+>
+> btmon with the patch:
+>
+> < HCI Command: Write Scan Enable (0x03|0x001a) plen 1
+>
+>               #109 [hci0] 7.031852
+>          Scan enable: No Scans (0x00)
+>  > HCI Event: Command Complete (0x0e) plen 4
+>
+>                #110 [hci0] 7.033026
+>        Write Scan Enable (0x03|0x001a) ncmd 1
+>          Status: Success (0x00)
+> < HCI Command: LE Set Extended Advertising Enable (0x08|0x0039) plen 2
+>
+>               #111 [hci0] 7.033055
+>          Extended advertising: Disabled (0x00)
+>          Number of sets: Disable all sets (0x00)
+>  > HCI Event: Command Complete (0x0e) plen 4
+>
+>                #112 [hci0] 7.034202
+>        LE Set Extended Advertising Enable (0x08|0x0039) ncmd 1
+>          Status: Success (0x00)
+> < HCI Command: LE Clear Advertising Sets (0x08|0x003d) plen 0
+>
+>               #113 [hci0] 7.034233
+>  > HCI Event: Command Complete (0x0e) plen 4
+>
+>                #114 [hci0] 7.035527
+>        LE Clear Advertising Sets (0x08|0x003d) ncmd 1
+>          Status: Success (0x00)
+> @ MGMT Event: Class Of Device Changed (0x0007) plen 3
+>
+>           {0x0001} [hci0] 7.035554
+>          Class: 0x000000
+>            Major class: Miscellaneous
+>            Minor class: 0x00
+> @ MGMT Event: New Settings (0x0006) plen 4
+>
+>           {0x0001} [hci0] 7.035568
+>          Current settings: 0x00000ac0
+>            Secure Simple Pairing
+>            BR/EDR
+>            Low Energy
+>            Secure Connections
+>
+> Maybe we could add a fake connection and check whether that is
+> disconnected on the rfkill, but I don't think mgmt-tester supports that..
+>
+> Fwiw, I don't think having a test for this is super important, this is a
+> regression a lot of people would notice very quickly I think.
 
+Afaik we did something similar to suspend to test its sequence when
+suspending while connected, I will look it up tomorrow since I
+responding from my phone.
+
+> >
+> > Another thing I'm thinking about now is that queuing the HCI command
+> > using hci_cmd_sync_queue() might not be enough: The command is still
+> > executed async in a thread, and we won't actually block until it has
+> > been sent, so this might be introducing a race (rfkill could kill the
+> > adapter before we actually send the HCI command). The proper way might
+> > be to use a completion and wait until the
+> > set_powered_off_sync_complete() callback is invoked?
+> >
+> >>
+> >>>   include/net/bluetooth/hci.h |  2 +-
+> >>>   net/bluetooth/hci_core.c    | 33 ++++++++++++++++++++++++++++++---
+> >>>   net/bluetooth/hci_sync.c    | 16 +++++++++++-----
+> >>>   net/bluetooth/mgmt.c        | 30 ++++++++++++++----------------
+> >>>   4 files changed, 56 insertions(+), 25 deletions(-)
+> >>>
+> >>> --
+> >>> 2.43.0
+> >>>
+> >>
+> >>
+> >
+> > Cheers,
+> > Jonas
+>
+> Cheers,
+> Jonas
+
+
+
+--=20
+Luiz Augusto von Dentz
 
