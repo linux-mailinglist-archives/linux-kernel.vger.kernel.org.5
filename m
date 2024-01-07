@@ -1,146 +1,150 @@
-Return-Path: <linux-kernel+bounces-18861-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18862-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD4E8826419
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 13:53:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0942782641A
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 13:57:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B0B6E1C20FD4
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 12:53:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 54C96282336
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 12:57:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E039134AE;
-	Sun,  7 Jan 2024 12:52:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F726134AD;
+	Sun,  7 Jan 2024 12:57:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="YHnRe3YC"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFF8B134A4;
-	Sun,  7 Jan 2024 12:52:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
-Received: from [2a02:8108:8980:2478:5054:ff:feb3:8f48] (helo=regzbot.fritz.box); authenticated
-	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	id 1rMSdy-0003t6-9M; Sun, 07 Jan 2024 13:52:46 +0100
-From: "Regzbot (on behalf of Thorsten Leemhuis)" <regressions@leemhuis.info>
-To: LKML <linux-kernel@vger.kernel.org>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Linux regressions mailing list <regressions@lists.linux.dev>
-Subject: Linux regressions report  for mainline [2024-01-07]
-Date: Sun,  7 Jan 2024 12:52:45 +0000
-Message-Id: <170463193667.1966610.7165124970993807605@leemhuis.info>
-X-Mailer: git-send-email 2.40.1
-Content-Type: text/plain; charset="utf-8"
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23681134A0
+	for <linux-kernel@vger.kernel.org>; Sun,  7 Jan 2024 12:57:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 09F2340E01F9;
+	Sun,  7 Jan 2024 12:57:04 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id cNWX0paTR2NN; Sun,  7 Jan 2024 12:57:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1704632222; bh=wY32Z7/3lgoSyXYC+87XpGQX8RmNGRz5d5SrIr3DRyQ=;
+	h=Date:From:To:Cc:Subject:From;
+	b=YHnRe3YCbfIZ+3DjKAZlSJ+4/9zevCG3t3dhxiVHLZ/PviOK9xtrTrc/FTi6/rz9j
+	 7/EZyvmYLPDhwatCQXTm9dXITg5R9p6YqUnB2+F+hdgL12CIx2JWIBRVdlwfIIMbQa
+	 dtlwh1R904c11MHiGDevdZS0lsTOubVOzaobwIcg4J62yKJoT1buR05LO1/bIE0G5N
+	 ZJHr884dwbd9i93zY7xF7vtjE6pjqCwYuTpP7IgLOQ+a+txAejkqVDNzipSuhXxpCB
+	 BAj9WDBRqM+VShBW7yeMtl9Hv4sUuiKtvGbd4MYXOzFUk8jt1qT8TaOXI/x0ioKmn5
+	 H1At2U23v2D+Ddf3IwCRQf3OVsOQDpJPniLJ+zZwCYl88jIMFyTQaJLOB6kjIXMqin
+	 DSBl1cpA7tIpdSIpxGWUoeMJh1o2TdbwuZ2G87C8BsiAiIxcj4iFzWB5FAQJt8/mLw
+	 9eYmyZ3B0vFgv1ZLtSqCw/jEON9CtNlBAm6tO8UaVNYeOPxXRhAqTTQkMpcQHjXlLV
+	 uI3+WQceG0iyLnEjvfeBHkGlq0msNFp6WbDcJIOubdNaKHncVcrbQDmTWUR9EfTh/c
+	 YDaplh4yUKxSkTHvswOMfq/DEjMa35hnVevoSJKNjU1MDVn5RzwD27ASY37SsjOxnK
+	 86j6z4uBhcGJPUKROYMCS8tE=
+Received: from zn.tnic (pd9530f8c.dip0.t-ipconnect.de [217.83.15.140])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E73E440E016C;
+	Sun,  7 Jan 2024 12:56:58 +0000 (UTC)
+Date: Sun, 7 Jan 2024 13:56:53 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] ras/core for v6.8
+Message-ID: <20240107125653.GAZZqflcax9rVtvbcj@fat_crate.local>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1704631973;193a4d4b;
-X-HE-SMSGID: 1rMSdy-0003t6-9M
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 
-Hi Linus. I noticed a handful of regression reports coming in over the
-festive days, but fixes for most of those found their way into mainline
-in the past few days. So from here it looks like the -rc8 was definitely
-a wise move.
+Hi Linus,
 
-In the end I'm down to three regressions now (as usual: there are likely
-more, but I can't have my eyes everywhere).
+please pull a bunch of RAS changes for v6.8.
 
-One regression[1] seems to have stalled due to lack of activity from the
-reporter. It's similar with another that came in ~10 days ago[2]. The
-third[3] came in before Christmas with a simple patch to fix it, but
-sadly that afaics was not reviewed.
+Thx.
 
-[1] https://bugzilla.kernel.org/show_bug.cgi?id=218198
-[2] https://lore.kernel.org/lkml/ZY4T7YxrJZCxhMxx@a4bf019067fa.jf.intel.com/
-[3] https://lore.kernel.org/lkml/20231218164532.411125-2-mailingradian@gmail.com/
-
-Ciao, Thorsten
 ---
 
-Hi, this is regzbot, the Linux kernel regression tracking bot.
+The following changes since commit b85ea95d086471afb4ad062012a4d73cd328fa86:
 
-Currently I'm aware of 3 regressions in linux-mainline. Find the
-current status below and the latest on the web:
+  Linux 6.7-rc1 (2023-11-12 16:19:07 -0800)
 
-https://linux-regtracking.leemhuis.info/regzbot/mainline/
+are available in the Git repository at:
 
-Bye bye, hope to see you soon for the next report.
-   Regzbot (on behalf of Thorsten Leemhuis)
+  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/ras_core_for_v6.8
+
+for you to fetch changes up to 1f68ce2a027250aeeb1756391110cdc4dc97c797:
+
+  x86/mce: Handle Intel threshold interrupt storms (2023-12-15 14:53:42 +0100)
+
+----------------------------------------------------------------
+- Convert the hw error storm handling into a finer-grained, per-bank
+  solution which allows for more timely detection and reporting of
+  errors
+
+- Start a documentation section which will hold down relevant
+  RAS features description and how they should be used
+
+- Add new AMD error bank types
+
+- Slim down and remove error type descriptions from the kernel side of
+  error decoding to rasdaemon which can be used from now on to decode
+  hw errors on AMD
+
+- Mark pages containing uncorrectable errors as poison so that kdump can
+  avoid them and thus not cause another panic
+
+- The usual cleanups and fixlets
+
+----------------------------------------------------------------
+Borislav Petkov (AMD) (1):
+      Documentation: Begin a RAS section
+
+Muralidhara M K (2):
+      EDAC/mce_amd: Remove SMCA Extended Error code descriptions
+      x86/MCE/AMD: Add new MA_LLC, USR_DP, and USR_CP bank types
+
+Nikolay Borisov (1):
+      x86/mce: Remove redundant check from mce_device_create()
+
+Tony Luck (3):
+      x86/mce: Remove old CMCI storm mitigation code
+      x86/mce: Add per-bank CMCI storm mitigation
+      x86/mce: Handle Intel threshold interrupt storms
+
+Yazen Ghannam (2):
+      x86/mce/inject: Clear test status value
+      x86/mce/amd, EDAC/mce_amd: Move long names to decoder module
+
+Zhiquan Li (1):
+      x86/mce: Mark fatal MCE's page as poison to avoid panic in the kdump kernel
+
+ Documentation/RAS/ras.rst           |  26 ++
+ Documentation/index.rst             |   1 +
+ arch/x86/include/asm/mce.h          |   4 +-
+ arch/x86/kernel/cpu/mce/amd.c       |  80 +++---
+ arch/x86/kernel/cpu/mce/core.c      |  72 +++--
+ arch/x86/kernel/cpu/mce/inject.c    |   1 +
+ arch/x86/kernel/cpu/mce/intel.c     | 304 +++++++++------------
+ arch/x86/kernel/cpu/mce/internal.h  |  66 ++++-
+ arch/x86/kernel/cpu/mce/threshold.c | 115 ++++++++
+ drivers/edac/mce_amd.c              | 526 +++---------------------------------
+ 10 files changed, 457 insertions(+), 738 deletions(-)
+ create mode 100644 Documentation/RAS/ras.rst
 
 
-======================================================
-current cycle (v6.6.. aka v6.7-rc), culprit identified
-======================================================
+-- 
+Regards/Gruss,
+    Boris.
 
-
-[ *NEW* ] memblock: platforms supporting SGX fail to kexec
-----------------------------------------------------------
-https://linux-regtracking.leemhuis.info/regzbot/regression/lore/ZY4T7YxrJZCxhMxx@a4bf019067fa.jf.intel.com/
-https://lore.kernel.org/lkml/ZY4T7YxrJZCxhMxx@a4bf019067fa.jf.intel.com/
-
-By Ashok Raj; 9 days ago; 3 activities, latest 7 days ago.
-Introduced in e96c6b8f212a (v6.7-rc1)
-
-Recent activities from: Mike Rapoport (1), Borislav Petkov (1), Ashok
-  Raj (1)
-
-
-[ *NEW* ] usb: gadget: u_ether: network gadgets don't work
-----------------------------------------------------------
-https://linux-regtracking.leemhuis.info/regzbot/regression/lore/20231218164532.411125-2-mailingradian@gmail.com/
-https://lore.kernel.org/lkml/20231218164532.411125-2-mailingradian@gmail.com/
-
-By Richard Acayan; 19 days ago; 4 activities, latest 9 days ago.
-Introduced in f49449fbc21e (v6.7-rc1)
-
-Fix incoming:
-* usb: gadget: u_ether: Re-attach netif device to mirror detachment
-  https://lore.kernel.org/lkml/9e7cb70d-1eff-4240-841f-e08a91ca995c@leemhuis.info/
-
-
-system after successful resuming the CPU won't enter lower Package Sates below pc2
-----------------------------------------------------------------------------------
-https://linux-regtracking.leemhuis.info/regzbot/regression/bugzilla.kernel.org/218198/
-https://bugzilla.kernel.org/show_bug.cgi?id=218198
-https://lore.kernel.org/regressions/4cbd1ad9-d343-421a-b9de-30dc8e2d02c1@leemhuis.info/
-
-By Dieter Mummenschanz and Dieter Mummenschanz; 40 days ago; 37 activities, latest 20 days ago.
-Introduced in d035e4eb38b3 (v6.7-rc1)
-
-
-=============
-End of report
-=============
-
-All regressions marked '[ *NEW* ]' were added since the previous report,
-which can be found here:
-https://lore.kernel.org/r/170335196500.1276302.7317913928045121362@leemhuis.info
-
-Thanks for your attention, have a nice day!
-
-  Regzbot, your hard working Linux kernel regression tracking robot
-
-
-P.S.: Wanna know more about regzbot or how to use it to track regressions
-for your subsystem? Then check out the getting started guide or the
-reference documentation:
-
-https://gitlab.com/knurd42/regzbot/-/blob/main/docs/getting_started.md
-https://gitlab.com/knurd42/regzbot/-/blob/main/docs/reference.md
-
-The short version: if you see a regression report you want to see
-tracked, just send a reply to the report where you Cc
-regressions@lists.linux.dev with a line like this:
-
-#regzbot introduced: v5.13..v5.14-rc1
-
-If you want to fix a tracked regression, just do what is expected
-anyway: add a 'Link:' tag with the url to the report, e.g.:
-
-Link: https://lore.kernel.org/all/30th.anniversary.repost@klaava.Helsinki.FI/
+https://people.kernel.org/tglx/notes-about-netiquette
 
