@@ -1,63 +1,63 @@
-Return-Path: <linux-kernel+bounces-18771-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18772-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 516F68262CE
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 04:23:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D1F18262D1
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 04:25:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id ECB4B1F21C61
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 03:23:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 568391C21280
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 03:25:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8622C111AE;
-	Sun,  7 Jan 2024 03:23:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61EA5111A9;
+	Sun,  7 Jan 2024 03:25:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="tdW+K43B"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="QL7ccs8L"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-oa1-f42.google.com (mail-oa1-f42.google.com [209.85.160.42])
+Received: from mail-oo1-f54.google.com (mail-oo1-f54.google.com [209.85.161.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6930411198
-	for <linux-kernel@vger.kernel.org>; Sun,  7 Jan 2024 03:22:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 583C81119A
+	for <linux-kernel@vger.kernel.org>; Sun,  7 Jan 2024 03:25:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-oa1-f42.google.com with SMTP id 586e51a60fabf-2044d093b3fso734290fac.3
-        for <linux-kernel@vger.kernel.org>; Sat, 06 Jan 2024 19:22:58 -0800 (PST)
+Received: by mail-oo1-f54.google.com with SMTP id 006d021491bc7-59641a03f31so631322eaf.2
+        for <linux-kernel@vger.kernel.org>; Sat, 06 Jan 2024 19:25:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704597777; x=1705202577; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1704597904; x=1705202704; darn=vger.kernel.org;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:from:date:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=ZIgdoPCMR+IJzRuNyLi5sJHouzirHwH/wc+njy54058=;
-        b=tdW+K43BQnYuPMqrgncumMc16XNaV6S5i2g/6Yr6Ui0Eec0tiLi5OFX3wO3oSGdu0Q
-         egxfOOpmGkhkv4tdnEixN4QqoKtJdO+5xwjuyYYoBi0kVtSD70BzTJVnI6Im9XqxXWGr
-         E9zphI0FKakjbZKS+5hGLrH4AWwnzinvBZGWYfoGMFaVGcw4GZBjpOQHMac/7nxgDb7d
-         qPsafS90j2HtEgHdhPApBZ9VXF2XKBEm+joyr6RkTvxlOw1ddqaskvhdLl/z2U72LuFO
-         hEtDiq/cWZj0O8z+cBzW7wgI1pDZTpnptcgSskp3ZYEiwol+3MhWUBMRqlW6tOi/JJhA
-         IJDw==
+        bh=JT8PzdZBJLSbhtU2oJSCK4IIB9jqkagcV3B13A1Ehp4=;
+        b=QL7ccs8LZfTJUu2iPhPihFPI/anIk08E6iSd+PNsX9xSYQ/VJFRIDjTYt3Cpj1hsPP
+         ZvutDgCuKbQWcUB1mkredk3DgtXhVbuVHOvCxP1w4qLSJ1phxE1GC5aarTd08Z3h0Fax
+         LjZLeo0+P3H2Xu59fZIhetQBK07wuTbeTfV6ST0QF/rto1qwXq1DVoFO9LcE4cCsz62e
+         zy0NaTlG/eh4q3mTKhlqrVkF+wR46GScSO9C8rZhJqPjd0IFIxp3zC+PeEm1H4uUPdPx
+         HmQod8PS/IEIsyP+HdB7/a5/6NtwYJCvqPCNH0YshXQluJIG7mzjvKj0opFdfmjeDHnf
+         K09g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704597777; x=1705202577;
+        d=1e100.net; s=20230601; t=1704597904; x=1705202704;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZIgdoPCMR+IJzRuNyLi5sJHouzirHwH/wc+njy54058=;
-        b=pTObZnXA+v1QZ3lyCDVqi+1fgPJAUoUsT3ei379i2lMlon3L0DJjfFkMIK1yP6D1jl
-         yqGjPcB+44KkKeC+/0iTN41p060hrEwUwE3WEt//JHprXoYek5V6i5Pm1UQczyWjmI8m
-         V32EFaCA8Xvaix0foBYuv+BxT43QbdpTnjIXBwYoe3BZjasJvayjr0J7F5VEVVBxXklz
-         rAFFlrGJDDtjD0ItWxM2e6RsiobdiUVPjtiIAsQxRGKLFrW9GTOqDDA33Pt/gqTsi6OJ
-         9EJW18glkx3FDb5KZaAXMSPGwgOAKoJz3trCMbjAxEO5Bnjg/VKA2ZsQW+H8xw3c58Fd
-         kfCw==
-X-Gm-Message-State: AOJu0YyyjNGzVBiuptaYoIUg7OAQLLqcAZDo46aG6EI6aVkskSfBv7NB
-	v882jl4gT0kKm1LfVuYCalnGZJjGdCSa
-X-Google-Smtp-Source: AGHT+IGAXgmBcYgN21344z3oOE0XiMGvh81COK2jDEQmYLpG/eNaQc5M+YRYlk5YHUYhAXu4plGZ/g==
-X-Received: by 2002:a05:6870:1b07:b0:206:b2a:78be with SMTP id hl7-20020a0568701b0700b002060b2a78bemr1655818oab.105.1704597777369;
-        Sat, 06 Jan 2024 19:22:57 -0800 (PST)
+        bh=JT8PzdZBJLSbhtU2oJSCK4IIB9jqkagcV3B13A1Ehp4=;
+        b=jze2h/78V75DeMERpwcCLQA9YoNAvutleTACCBzJBdphzIQNvS/v62/1Tp5VMgA6ii
+         l3YaTioKIWlT2N0p/k2L0wy89qfICE/CB30lEj8q1c7qfO3WFfYC50bktSqf2FRq2w8O
+         5CDxy3Klf6VR0l6z8EtWj+ppItTqOGKRS8wB5yILIYTHZxmMFLXdND1n9y87FpL1ayQf
+         nrwwkjfOHeLaZ/istk6TBnsoZfBbyKbAsJHN7yn4abFCaLWYmIIEEANMNwngolGMsQEl
+         0xWEUVlZAOxxS3vK+MBGUdrOv5fEyaOADbLmsOtO4lFZtjAejv/via1EIhzttEfGGF+B
+         WbIA==
+X-Gm-Message-State: AOJu0YxHgYHxaZckx/VogqWMXRJH2qz2ePuTv8ctbDivFHEymYyEdp2j
+	aJc3Rdtn5PzE3MeOGroLG0rF5dMHrMrU
+X-Google-Smtp-Source: AGHT+IHff8Egcia+tCBq4/ujZo7qI22JNBSI2y6azf6TA1QKj7wiLnydPvISo8qBHWU0i/bPamewsQ==
+X-Received: by 2002:a05:6870:9a1d:b0:204:521a:505f with SMTP id fo29-20020a0568709a1d00b00204521a505fmr2577606oab.57.1704597904376;
+        Sat, 06 Jan 2024 19:25:04 -0800 (PST)
 Received: from thinkpad ([103.197.115.97])
-        by smtp.gmail.com with ESMTPSA id c5-20020a63ef45000000b005cda7a1d72dsm3839469pgk.74.2024.01.06.19.22.51
+        by smtp.gmail.com with ESMTPSA id t6-20020a63dd06000000b005b9083b81f0sm3608131pgg.36.2024.01.06.19.24.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 06 Jan 2024 19:22:56 -0800 (PST)
-Date: Sun, 7 Jan 2024 08:52:48 +0530
+        Sat, 06 Jan 2024 19:25:03 -0800 (PST)
+Date: Sun, 7 Jan 2024 08:54:56 +0530
 From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 To: Frank Li <Frank.Li@nxp.com>
 Cc: krzysztof.kozlowski@linaro.org, bhelgaas@google.com,
@@ -69,10 +69,11 @@ Cc: krzysztof.kozlowski@linaro.org, bhelgaas@google.com,
 	linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
 	lpieralisi@kernel.org, robh@kernel.org, s.hauer@pengutronix.de,
 	shawnguo@kernel.org
-Subject: Re: [PATCH v7 05/16] PCI: imx6: Using "linux,pci-domain" as slot ID
-Message-ID: <20240107032248.GD3416@thinkpad>
+Subject: Re: [PATCH v7 06/16] PCI: imx6: Simplify ltssm_enable() by using
+ ltssm_off and ltssm_mask
+Message-ID: <20240107032456.GE3416@thinkpad>
 References: <20231227182727.1747435-1-Frank.Li@nxp.com>
- <20231227182727.1747435-6-Frank.Li@nxp.com>
+ <20231227182727.1747435-7-Frank.Li@nxp.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -82,88 +83,112 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231227182727.1747435-6-Frank.Li@nxp.com>
+In-Reply-To: <20231227182727.1747435-7-Frank.Li@nxp.com>
 
-On Wed, Dec 27, 2023 at 01:27:16PM -0500, Frank Li wrote:
-> Avoid use get slot id by compared with register physical address. If there
-> are more than 2 slots, compared logic will become complex.
-> 
-> "linux,pci-domain" already exist at dts since commit:
-> 	commit (c0b70f05c87f3b arm64: dts: imx8mq: use_dt_domains for pci node).
-> 
-> So it is safe to remove compare basic address code:
-> 	...
-> 	if (dbi_base->start == IMX8MQ_PCIE2_BASE_ADDR)
-> 		imx6_pcie->controller_id = 1;
-> 	...
+On Wed, Dec 27, 2023 at 01:27:17PM -0500, Frank Li wrote:
+> Add drvdata::ltssm_off and drvdata::ltssm_mask to simple
+> imx6_pcie_ltssm_enable(disable)() logic.
 > 
 > Signed-off-by: Frank Li <Frank.Li@nxp.com>
 
-One comment below. With that fixed,
-
 Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+
+- Mani
 
 > ---
 > 
 > Notes:
->     Change from v3 to v4
->     - remove compare basic address logic
->     Change from v2 to v3
+>     Change from v1 to v3
 >     - none
->     Change from v1 to v2
->     - fix of_get_pci_domain_nr return value check logic
 > 
->  drivers/pci/controller/dwc/pci-imx6.c | 17 +++++++++--------
->  1 file changed, 9 insertions(+), 8 deletions(-)
+>  drivers/pci/controller/dwc/pci-imx6.c | 37 ++++++++++++---------------
+>  1 file changed, 16 insertions(+), 21 deletions(-)
 > 
 > diff --git a/drivers/pci/controller/dwc/pci-imx6.c b/drivers/pci/controller/dwc/pci-imx6.c
-> index 294f61a9c6fd9..332c392f8e5bc 100644
+> index 332c392f8e5bc..588bfb616260e 100644
 > --- a/drivers/pci/controller/dwc/pci-imx6.c
 > +++ b/drivers/pci/controller/dwc/pci-imx6.c
-> @@ -33,6 +33,7 @@
->  #include <linux/pm_domain.h>
->  #include <linux/pm_runtime.h>
+> @@ -75,6 +75,8 @@ struct imx6_pcie_drvdata {
+>  	int dbi_length;
+>  	const char *gpr;
+>  	const char *clk_names[IMX6_PCIE_MAX_CLKS];
+> +	const u32 ltssm_off;
+> +	const u32 ltssm_mask;
+>  };
 >  
-> +#include "../../pci.h"
->  #include "pcie-designware.h"
->  
->  #define IMX8MQ_GPR_PCIE_REF_USE_PAD		BIT(9)
-> @@ -40,7 +41,6 @@
->  #define IMX8MQ_GPR_PCIE_CLK_REQ_OVERRIDE	BIT(11)
->  #define IMX8MQ_GPR_PCIE_VREG_BYPASS		BIT(12)
->  #define IMX8MQ_GPR12_PCIE2_CTRL_DEVICE_TYPE	GENMASK(11, 8)
-> -#define IMX8MQ_PCIE2_BASE_ADDR			0x33c00000
->  
->  #define to_imx6_pcie(x)	dev_get_drvdata((x)->dev)
->  
-> @@ -1279,13 +1279,14 @@ static int imx6_pcie_probe(struct platform_device *pdev)
->  					     "Failed to get PCIEPHY reset control\n");
->  	}
+>  struct imx6_pcie {
+> @@ -775,18 +777,11 @@ static int imx6_pcie_wait_for_speed_change(struct imx6_pcie *imx6_pcie)
+>  static void imx6_pcie_ltssm_enable(struct device *dev)
+>  {
+>  	struct imx6_pcie *imx6_pcie = dev_get_drvdata(dev);
+> +	const struct imx6_pcie_drvdata *drvdata = imx6_pcie->drvdata;
 >  
 > -	switch (imx6_pcie->drvdata->variant) {
-> -	case IMX7D:
-> -		if (dbi_base->start == IMX8MQ_PCIE2_BASE_ADDR)
-> -			imx6_pcie->controller_id = 1;
+> -	case IMX6Q:
+> -	case IMX6SX:
+> -	case IMX6QP:
+> -		regmap_update_bits(imx6_pcie->iomuxc_gpr, IOMUXC_GPR12,
+> -				   IMX6Q_GPR12_PCIE_CTL_2,
+> -				   IMX6Q_GPR12_PCIE_CTL_2);
+> -		break;
 > -	default:
 > -		break;
 > -	}
-> +	/* Using linux,pci-domain as PCI slot id */
-> +	imx6_pcie->controller_id = of_get_pci_domain_nr(node);
-> +	/* If there are not "linux,pci-domain" in dts file, means only 1 controller */
-
-"If there are no "linux,pci-domain" property specified in DT, then assume only
-one controller is available."
-
-- Mani
-
-> +	if (imx6_pcie->controller_id == -EINVAL)
-> +		imx6_pcie->controller_id = 0;
-> +	else if (imx6_pcie->controller_id < 0)
-> +		return dev_err_probe(dev, imx6_pcie->controller_id,
-> +				     "linux,pci-domain have wrong value\n");
+> +	if (drvdata->ltssm_mask)
+> +		regmap_update_bits(imx6_pcie->iomuxc_gpr, drvdata->ltssm_off, drvdata->ltssm_mask,
+> +				   drvdata->ltssm_mask);
 >  
->  	/* Grab turnoff reset */
->  	imx6_pcie->turnoff_reset = devm_reset_control_get_optional_exclusive(dev, "turnoff");
+>  	reset_control_deassert(imx6_pcie->apps_reset);
+>  }
+> @@ -794,17 +789,11 @@ static void imx6_pcie_ltssm_enable(struct device *dev)
+>  static void imx6_pcie_ltssm_disable(struct device *dev)
+>  {
+>  	struct imx6_pcie *imx6_pcie = dev_get_drvdata(dev);
+> +	const struct imx6_pcie_drvdata *drvdata = imx6_pcie->drvdata;
+>  
+> -	switch (imx6_pcie->drvdata->variant) {
+> -	case IMX6Q:
+> -	case IMX6SX:
+> -	case IMX6QP:
+> -		regmap_update_bits(imx6_pcie->iomuxc_gpr, IOMUXC_GPR12,
+> -				   IMX6Q_GPR12_PCIE_CTL_2, 0);
+> -		break;
+> -	default:
+> -		break;
+> -	}
+> +	if (drvdata->ltssm_mask)
+> +		regmap_update_bits(imx6_pcie->iomuxc_gpr, drvdata->ltssm_off,
+> +				   drvdata->ltssm_mask, 0);
+>  
+>  	reset_control_assert(imx6_pcie->apps_reset);
+>  }
+> @@ -1385,6 +1374,8 @@ static const struct imx6_pcie_drvdata drvdata[] = {
+>  		.dbi_length = 0x200,
+>  		.gpr = "fsl,imx6q-iomuxc-gpr",
+>  		.clk_names = {"pcie_bus", "pcie", "pcie_phy"},
+> +		.ltssm_off = IOMUXC_GPR12,
+> +		.ltssm_mask = IMX6Q_GPR12_PCIE_CTL_2,
+>  	},
+>  	[IMX6SX] = {
+>  		.variant = IMX6SX,
+> @@ -1393,6 +1384,8 @@ static const struct imx6_pcie_drvdata drvdata[] = {
+>  			 IMX6_PCIE_FLAG_SUPPORTS_SUSPEND,
+>  		.gpr = "fsl,imx6q-iomuxc-gpr",
+>  		.clk_names = {"pcie_bus", "pcie", "pcie_phy", "pcie_inbound_axi"},
+> +		.ltssm_off = IOMUXC_GPR12,
+> +		.ltssm_mask = IMX6Q_GPR12_PCIE_CTL_2,
+>  	},
+>  	[IMX6QP] = {
+>  		.variant = IMX6QP,
+> @@ -1402,6 +1395,8 @@ static const struct imx6_pcie_drvdata drvdata[] = {
+>  		.dbi_length = 0x200,
+>  		.gpr = "fsl,imx6q-iomuxc-gpr",
+>  		.clk_names = {"pcie_bus", "pcie", "pcie_phy"},
+> +		.ltssm_off = IOMUXC_GPR12,
+> +		.ltssm_mask = IMX6Q_GPR12_PCIE_CTL_2,
+>  	},
+>  	[IMX7D] = {
+>  		.variant = IMX7D,
 > -- 
 > 2.34.1
 > 
