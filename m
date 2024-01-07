@@ -1,87 +1,142 @@
-Return-Path: <linux-kernel+bounces-18887-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18888-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9CB0B8264A8
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 16:20:36 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EA5CC8264AB
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 16:22:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2A7871F218F3
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 15:20:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 843A7B21338
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 15:22:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F4E4134DE;
-	Sun,  7 Jan 2024 15:20:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09A4A134DA;
+	Sun,  7 Jan 2024 15:22:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SP4fwjtG"
+	dkim=pass (2048-bit key) header.d=alu.unizg.hr header.i=@alu.unizg.hr header.b="j8kxmGcf";
+	dkim=pass (2048-bit key) header.d=alu.unizg.hr header.i=@alu.unizg.hr header.b="eS5//H02"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from domac.alu.hr (domac.alu.unizg.hr [161.53.235.3])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78631134AE;
-	Sun,  7 Jan 2024 15:20:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id E5552C433C9;
-	Sun,  7 Jan 2024 15:20:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704640822;
-	bh=UPMVEb64skjeUyHTn9TCQZW9IZRq3RvDVB/yqJfBkO8=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=SP4fwjtGEouAgElcfOGY+DuI1KXe75cc4fL5EzEf8qjVnlfFLOkqHYFmFpnAZMAFJ
-	 BC9+C/9BuJJFb8NXmwdlQwM/NtA+nwZuyt3AmguMt1XMT8AD5CAMTPn26emtnZxCwR
-	 gr+irB83wLUyaGiSj0fkj2mDrhExQzlr9ypQYTGKhvg7V7xSly167DkZhTde47B+Ys
-	 1ykOiFkEJvGKsu8CMJws+Qhk+voKeMY718dAKdAIkIB3NsGBOMhT6BEmRVgxAXUvyB
-	 7sJz8b0jBMH5OKiCbHqbsKRhVFvHUzWYdAzCn1qZ6uLv0ljm3fx4bT0B5cBUIdjf+m
-	 B2rwia2n6WtKw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id CD02AC4167D;
-	Sun,  7 Jan 2024 15:20:21 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C46A2134CB;
+	Sun,  7 Jan 2024 15:22:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alu.unizg.hr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alu.unizg.hr
+Received: from localhost (localhost [127.0.0.1])
+	by domac.alu.hr (Postfix) with ESMTP id 3C5436017E;
+	Sun,  7 Jan 2024 16:22:20 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+	t=1704640940; bh=4VScd3SKktXVRNK8bEiQlJVTk6Q2TgicT0Kv2F9OPZ4=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=j8kxmGcfIcLOJGlEWOmE4Hhl9y5B7XeBslbq/W4sOz4fDwiSXZfgwOJ7duVKm79WQ
+	 t00ACqJFtCFLTFG2FNwnwqdxfNQgP2byi1lUrzzpuGFV6OsxBk0Rh5YU/k01+D6tsO
+	 5+Xh/U+2H3doHz5SFfiPKsOVxOp+mtd4DGGU1Cxt8/KRpa0G6W2gzAtqnxieGpH1w7
+	 aqKBon2CbuKCsafa7GkcwXwnQNfozxqKBck3qv3TB5mqvjNdyVu2V3iE143nBexXOf
+	 IRkVRPcFLzJPAguG7iSpccfJhb6Cmls4v70zhmCL9T+RchPMAb1fQEoRVKwiHhKSCd
+	 uuM1NS1DHaKsg==
+X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
+Received: from domac.alu.hr ([127.0.0.1])
+	by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id Pw0gCxwYNRI5; Sun,  7 Jan 2024 16:22:18 +0100 (CET)
+Received: from [192.168.6.51] (unknown [95.168.121.73])
+	by domac.alu.hr (Postfix) with ESMTPSA id 1438960171;
+	Sun,  7 Jan 2024 16:22:17 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+	t=1704640938; bh=4VScd3SKktXVRNK8bEiQlJVTk6Q2TgicT0Kv2F9OPZ4=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=eS5//H02PSLeKUXsq0X+3cKS6ngCLB0V+rOtKApc4O7DK8WVFpVVClIrVjUay8rbx
+	 3QvjF7tc8+A5qyLgHf72vDnVJmKqI4KH5GPKQyP5OOT6BhjVA4ChSAqjLN6v+BnSNy
+	 s/W9juwRuap8aiat/xdHaqpHUucvZnniMdH4aNfwnNwvhqwmsxaIvddF9DqQhoEGoH
+	 kGwv0U+C8DDrOpSwe3wvydnIvpSBBgEj2AwF7YLDMpR3MP7hm42wtroANmHC7Kfc4V
+	 I4rmv5FXXMBBbupGscCvbfEiyNLgdIub076vZmdA+pebhtuzGdd9EjyVTzEcvIkj/H
+	 zyI4hzDuKOsLg==
+Message-ID: <b91e4879-e8e6-433b-9859-2a74ee38d199@alu.unizg.hr>
+Date: Sun, 7 Jan 2024 16:22:16 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 1/1] selftests: net: increase timeout value for tests
+Content-Language: en-US, hr
+To: Hangbin Liu <liuhangbin@gmail.com>
+Cc: netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ linux-kernel@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Shuah Khan <shuah@kernel.org>,
+ David Ahern <dsahern@kernel.org>
+References: <20240107003929.891669-1-mirsad.todorovac@alu.unizg.hr>
+ <ZZqd8PqvHlYCqbMX@Laptop-X1>
+From: Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
+In-Reply-To: <ZZqd8PqvHlYCqbMX@Laptop-X1>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net v4] mlxbf_gige: Fix intermittent no ip issue
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <170464082183.11926.8134099660170040578.git-patchwork-notify@kernel.org>
-Date: Sun, 07 Jan 2024 15:20:21 +0000
-References: <20240105155946.23121-1-asmaa@nvidia.com>
-In-Reply-To: <20240105155946.23121-1-asmaa@nvidia.com>
-To: Asmaa Mnebhi <asmaa@nvidia.com>
-Cc: davem@davemloft.net, f.fainelli@gmail.com, edumazet@google.com,
- kuba@kernel.org, pabeni@redhat.com, tbogendoerfer@suse.de, horms@kernel.org,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org, davthompson@nvidia.com
 
-Hello:
-
-This patch was applied to netdev/net.git (main)
-by David S. Miller <davem@davemloft.net>:
-
-On Fri, 5 Jan 2024 10:59:46 -0500 you wrote:
-> Although the link is up, there is no ip assigned on setups with high background
-> traffic. Nothing is transmitted nor received. The RX error count keeps on
-> increasing. After several minutes, the RX error count stagnates and the
-> GigE interface finally gets an ip.
+On 07. 01. 2024. 13:49, Hangbin Liu wrote:
+> On Sun, Jan 07, 2024 at 01:39:29AM +0100, Mirsad Todorovac wrote:
+>> In particular, fcnal-test.sh timed out on slower hardware after
+>> some new permutations of tests were added.
+>>
+>> This single test ran for almost an hour instead of the expected
+>> 25 min (1500s). 75 minutes should suffice for most systems.
+>>
+>> Cc: David Ahern <dsahern@kernel.org>
+>> Cc: "David S. Miller" <davem@davemloft.net>
+>> Cc: Eric Dumazet <edumazet@google.com>
+>> Cc: Jakub Kicinski <kuba@kernel.org>
+>> Cc: Paolo Abeni <pabeni@redhat.com>
+>> Cc: Shuah Khan <shuah@kernel.org>
+>> Cc: netdev@vger.kernel.org
+>> Cc: linux-kselftest@vger.kernel.org
+>> Signed-off-by: Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
+>> ---
+>>  tools/testing/selftests/net/settings | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/tools/testing/selftests/net/settings b/tools/testing/selftests/net/settings
+>> index dfc27cdc6c05..ed8418e8217a 100644
+>> --- a/tools/testing/selftests/net/settings
+>> +++ b/tools/testing/selftests/net/settings
+>> @@ -1 +1 @@
+>> -timeout=1500
+>> +timeout=4500
+>> -- 
+>> 2.40.1
+>>
 > 
-> The issue is that mlxbf_gige_rx_init() is called before phy_start().
-> As soon as the RX DMA is enabled in mlxbf_gige_rx_init(), the RX CI reaches the max
-> of 128, and becomes equal to RX PI. RX CI doesn't decrease since the code hasn't
-> ran phy_start yet.
-> Bring the PHY up before starting the RX.
+> FYI, the net-next patch 779283b7770f ("selftests/net: convert fcnal-test.sh
+> to run it in unique namespace") has extended the timeout to 3600s.
 > 
-> [...]
+> Thanks
+> Hangbin
 
-Here is the summary with links:
-  - [net,v4] mlxbf_gige: Fix intermittent no ip issue
-    https://git.kernel.org/netdev/net/c/ef210ef85d5c
+Copy that.
 
-You are awesome, thank you!
+Haven't checked the net-next tree, sorry.
+
+As your patch is prior art, then this commit is duplicate work.
+
+Haven't yet found howto follow all the next-trees required to fix selftests,
+though :-/ 
+
+Best regards,
+Mirsad
+
+
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Mirsad Goran Todorovac
+Sistem inženjer
+Grafički fakultet | Akademija likovnih umjetnosti
+Sveučilište u Zagrebu
+ 
+System engineer
+Faculty of Graphic Arts | Academy of Fine Arts
+University of Zagreb, Republic of Croatia
+The European Union
 
+"I see something approaching fast ... Will it be friends with me?"
 
 
