@@ -1,140 +1,113 @@
-Return-Path: <linux-kernel+bounces-18746-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18747-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 160BF82627E
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 01:19:10 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B3574826280
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 01:34:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B83AE1F239FD
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 00:19:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2E349B21D28
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 00:34:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55AC6A92F;
-	Sun,  7 Jan 2024 00:17:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DECA115A6;
+	Sun,  7 Jan 2024 00:34:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="T/MEG4Um"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from cae.in-ulm.de (cae.in-ulm.de [217.10.14.231])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42EE346A9;
-	Sun,  7 Jan 2024 00:17:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=c--e.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=c--e.de
-Received: by cae.in-ulm.de (Postfix, from userid 1000)
-	id 32AEA14056A; Sun,  7 Jan 2024 01:17:53 +0100 (CET)
-From: "Christian A. Ehrhardt" <lk@c--e.de>
-To: Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-	linux-usb@vger.kernel.org
-Cc: "Christian A. Ehrhardt" <lk@c--e.de>,
-	Dell.Client.Kernel@dell.com,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Hans de Goede <hdegoede@redhat.com>,
-	Jack Pham <quic_jackp@quicinc.com>,
-	Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
-	=?UTF-8?q?Samuel=20=C4=8Cavoj?= <samuel@cavoj.net>,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 4/4] usb: ucsi: Apply UCSI_ACK_CONNECTOR_CHANGE_ACK_CMD to Dell systems
-Date: Sun,  7 Jan 2024 01:17:01 +0100
-Message-Id: <20240107001701.130535-5-lk@c--e.de>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20240107001701.130535-1-lk@c--e.de>
-References: <20240107001701.130535-1-lk@c--e.de>
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21AA3136F
+	for <linux-kernel@vger.kernel.org>; Sun,  7 Jan 2024 00:34:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704587681; x=1736123681;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=Jc1fr3TXXUiLWh/K84lcAKk/jX1fGwGlU8eyrDNE7+k=;
+  b=T/MEG4UmcpWjHuQHnrOty4UVwygkst5Lkk6xDbwG2ADQkP6WWUniAer+
+   PmfFlDjYKuZHxN+EKADu8AgqOmgto/DAReso6KLEAQoZINdYzFo1TUvdV
+   LZQeXvaYZ+5D8axxkqBCSzOWuxhMTW2UNcla76Qz8Px90DsiFvcizZ2WY
+   3bvPpSdD+1+kKr+DpeWAgW4vXie8JIB09sPJVj0Yx2fWwX+AuwKk558vH
+   R4u5D+L1V4Tk2a+Y/98Mm67B/wW+m/vTy8vO3WRJXhc+H7AgoYrnWMGqX
+   js3IVgD3Gny9IvmXn3x1D3J+dvCG2vsYikvh9t6fCz2GlV7h5ClnlL1k1
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10945"; a="4445188"
+X-IronPort-AV: E=Sophos;i="6.04,338,1695711600"; 
+   d="scan'208";a="4445188"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jan 2024 16:34:39 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10945"; a="809877671"
+X-IronPort-AV: E=Sophos;i="6.04,338,1695711600"; 
+   d="scan'208";a="809877671"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga008.jf.intel.com with ESMTP; 06 Jan 2024 16:34:38 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rMH7b-0003Cq-2g;
+	Sun, 07 Jan 2024 00:34:35 +0000
+Date: Sun, 7 Jan 2024 08:33:47 +0800
+From: kernel test robot <lkp@intel.com>
+To: Ang Tien Sung <tien.sung.ang@intel.com>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+	Dinh Nguyen <dinguyen@kernel.org>
+Subject: drivers/firmware/stratix10-svc.c:58: warning: Function parameter or
+ member 'intel_svc_fcs' not described in 'stratix10_svc'
+Message-ID: <202401070808.wIHGhXPr-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Apply the UCSI_ACK_CONNECTOR_CHANGE_ACK_CMD to all Dell systems.
+Hi Ang,
 
-There are various reports that ucsi does not work on Dell systems
-with "GET_CONNECTOR_STATUS failed". At least some of these are
-most likely due to the need for this quirk.
+FYI, the error/warning still remains.
 
-If the logic is wrong users can still use the new quirk override
-for the typec_ucsi module to disable the quirk.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   52b1853b080a082ec3749c3a9577f6c71b1d4a90
+commit: e6281c26674e037798bf674f26a7593a324cdf39 firmware: stratix10-svc: Add support for FCS
+date:   1 year, 6 months ago
+config: arm64-defconfig (https://download.01.org/0day-ci/archive/20240107/202401070808.wIHGhXPr-lkp@intel.com/config)
+compiler: aarch64-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240107/202401070808.wIHGhXPr-lkp@intel.com/reproduce)
 
-Signed-off-by: Christian A. Ehrhardt <lk@c--e.de>
----
- drivers/usb/typec/ucsi/ucsi_acpi.c | 36 +++++++++++++++++++++++++-----
- 1 file changed, 31 insertions(+), 5 deletions(-)
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202401070808.wIHGhXPr-lkp@intel.com/
 
-diff --git a/drivers/usb/typec/ucsi/ucsi_acpi.c b/drivers/usb/typec/ucsi/ucsi_acpi.c
-index 78a0d13584ad..690d5e55bdc4 100644
---- a/drivers/usb/typec/ucsi/ucsi_acpi.c
-+++ b/drivers/usb/typec/ucsi/ucsi_acpi.c
-@@ -27,6 +27,11 @@ struct ucsi_acpi {
- 	u64 cmd;
- };
- 
-+struct ucsi_acpi_attach_data {
-+	const struct ucsi_operations *ops;
-+	unsigned int quirks;
-+};
-+
- static int ucsi_acpi_dsm(struct ucsi_acpi *ua, int func)
- {
- 	union acpi_object *obj;
-@@ -121,12 +126,30 @@ static const struct ucsi_operations ucsi_zenbook_ops = {
- 	.async_write = ucsi_acpi_async_write
- };
- 
--static const struct dmi_system_id zenbook_dmi_id[] = {
-+static const struct ucsi_acpi_attach_data ucsi_acpi_default_attach_data = {
-+	.ops = &ucsi_acpi_ops,
-+	.quirks = 0
-+};
-+
-+static const struct dmi_system_id ucsi_acpi_quirks[] = {
- 	{
- 		.matches = {
- 			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
- 			DMI_MATCH(DMI_PRODUCT_NAME, "ZenBook UX325UA_UM325UA"),
- 		},
-+		.driver_data = &(struct ucsi_acpi_attach_data) {
-+			.ops = &ucsi_zenbook_ops,
-+			.quirks = 0
-+		},
-+	},
-+	{
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
-+		},
-+		.driver_data = &(struct ucsi_acpi_attach_data) {
-+			.ops = &ucsi_acpi_ops,
-+			.quirks = UCSI_ACK_CONNECTOR_CHANGE_ACK_CMD
-+		},
- 	},
- 	{ }
- };
-@@ -152,7 +175,8 @@ static void ucsi_acpi_notify(acpi_handle handle, u32 event, void *data)
- static int ucsi_acpi_probe(struct platform_device *pdev)
- {
- 	struct acpi_device *adev = ACPI_COMPANION(&pdev->dev);
--	const struct ucsi_operations *ops = &ucsi_acpi_ops;
-+	const struct dmi_system_id *id;
-+	const struct ucsi_acpi_attach_data *attach;
- 	struct ucsi_acpi *ua;
- 	struct resource *res;
- 	acpi_status status;
-@@ -182,10 +206,12 @@ static int ucsi_acpi_probe(struct platform_device *pdev)
- 	init_completion(&ua->complete);
- 	ua->dev = &pdev->dev;
- 
--	if (dmi_check_system(zenbook_dmi_id))
--		ops = &ucsi_zenbook_ops;
-+	attach = &ucsi_acpi_default_attach_data;
-+	id = dmi_first_match(ucsi_acpi_quirks);
-+	if (id)
-+		attach = id->driver_data;
- 
--	ua->ucsi = ucsi_create(&pdev->dev, ops, 0);
-+	ua->ucsi = ucsi_create(&pdev->dev, attach->ops, attach->quirks);
- 	if (IS_ERR(ua->ucsi))
- 		return PTR_ERR(ua->ucsi);
- 
+All warnings (new ones prefixed by >>):
+
+>> drivers/firmware/stratix10-svc.c:58: warning: Function parameter or member 'intel_svc_fcs' not described in 'stratix10_svc'
+
+
+vim +58 drivers/firmware/stratix10-svc.c
+
+7ca5ce896524f5 Richard Gong  2018-11-13  50  
+b5dc75c915cdae Richard Gong  2019-09-03  51  /**
+b5dc75c915cdae Richard Gong  2019-09-03  52   * struct stratix10_svc - svc private data
+b5dc75c915cdae Richard Gong  2019-09-03  53   * @stratix10_svc_rsu: pointer to stratix10 RSU device
+b5dc75c915cdae Richard Gong  2019-09-03  54   */
+b5dc75c915cdae Richard Gong  2019-09-03  55  struct stratix10_svc {
+b5dc75c915cdae Richard Gong  2019-09-03  56  	struct platform_device *stratix10_svc_rsu;
+e6281c26674e03 Ang Tien Sung 2022-07-11  57  	struct platform_device *intel_svc_fcs;
+b5dc75c915cdae Richard Gong  2019-09-03 @58  };
+b5dc75c915cdae Richard Gong  2019-09-03  59  
+
+:::::: The code at line 58 was first introduced by commit
+:::::: b5dc75c915cdaebab9b9875022e45638d6b14a7e firmware: stratix10-svc: extend svc to support new RSU features
+
+:::::: TO: Richard Gong <richard.gong@intel.com>
+:::::: CC: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 -- 
-2.40.1
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
