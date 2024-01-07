@@ -1,118 +1,144 @@
-Return-Path: <linux-kernel+bounces-18753-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18754-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0721682628E
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 02:07:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DD651826296
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 02:19:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 226B81C21040
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 01:07:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 769D91F21E6D
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 01:19:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A45FD17D8;
-	Sun,  7 Jan 2024 01:06:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E743715A6;
+	Sun,  7 Jan 2024 01:19:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="G1o1rEaA"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b="iZSEy6m2"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+Received: from mail.zytor.com (terminus.zytor.com [198.137.202.136])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A802136F;
-	Sun,  7 Jan 2024 01:06:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704589608; x=1736125608;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=BL/G2+DBgzyngkKxm1Okb/HyxO0E8Sb22Xv27tX30GE=;
-  b=G1o1rEaAoiTz68/7FW5P5J7DYZpaV0UgiJ+Rj9kfnj8HAYm1exHQRC95
-   R4LwBQ/XJV7W7nmUg0qIM5Hl9kwLzFc+HpugpNtvhXfDI94H/Q8YGla4Q
-   sCeMvJZDfxgFTPIiKwZz451pJq1J2/FQaLnBJcHrJHZtyynmx5OC5Xv9E
-   Q07sZ0h7fbI3ObEw8TsJjb2jN/dsQtk52OISKFr3Wo1U4Km+v7quytg6y
-   /1qaTH0RfqNnp9NQgQpMZ9V08zCAjetyLYL7+4J5T4XGXQ+TXupUqn8i4
-   BiJQLRd79IubFNY3/EXRRZQ/87/hmbHTIYs/YA9Gg2xoJiGt4WSiU5IgD
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10945"; a="382661489"
-X-IronPort-AV: E=Sophos;i="6.04,338,1695711600"; 
-   d="scan'208";a="382661489"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jan 2024 17:06:47 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10945"; a="899999269"
-X-IronPort-AV: E=Sophos;i="6.04,338,1695711600"; 
-   d="scan'208";a="899999269"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmsmga002.fm.intel.com with ESMTP; 06 Jan 2024 17:06:42 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rMHce-0003EK-0f;
-	Sun, 07 Jan 2024 01:06:40 +0000
-Date: Sun, 7 Jan 2024 09:06:33 +0800
-From: kernel test robot <lkp@intel.com>
-To: WANG Rui <wangrui@loongson.cn>, Miguel Ojeda <ojeda@kernel.org>,
-	Alex Gaynor <alex.gaynor@gmail.com>,
-	Wedson Almeida Filho <wedsonaf@gmail.com>,
-	Huacai Chen <chenhuacai@kernel.org>,
-	Jonathan Corbet <corbet@lwn.net>
-Cc: oe-kbuild-all@lists.linux.dev, Boqun Feng <boqun.feng@gmail.com>,
-	Gary Guo <gary@garyguo.net>,
-	=?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
-	Benno Lossin <benno.lossin@proton.me>,
-	Andreas Hindborg <a.hindborg@samsung.com>,
-	Alice Ryhl <aliceryhl@google.com>, WANG Xuerui <kernel@xen0n.name>,
-	rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
-	loongarch@lists.linux.dev, linux-doc@vger.kernel.org,
-	loongson-kernel@lists.loongnix.cn, WANG Rui <wangrui@loongson.cn>
-Subject: Re: [PATCH] LoongArch: Enable initial Rust support
-Message-ID: <202401070815.6tdJWFme-lkp@intel.com>
-References: <20240106065941.180796-1-wangrui@loongson.cn>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D94B137F
+	for <linux-kernel@vger.kernel.org>; Sun,  7 Jan 2024 01:19:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zytor.com
+Received: from [IPv6:::1] ([172.56.208.238])
+	(authenticated bits=0)
+	by mail.zytor.com (8.17.2/8.17.1) with ESMTPSA id 4071HJpr962781
+	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+	Sat, 6 Jan 2024 17:17:21 -0800
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 4071HJpr962781
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+	s=2023121201; t=1704590243;
+	bh=NC2CrnQRyBY2GhZKHwqRwBQvMsjgYLB7PY/48PwpD80=;
+	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
+	b=iZSEy6m20clspqHdRl10tIH4WTqAgVZXCZC4ZB3I2Kj8owfPsB7SlQ/eOE7U35W9Q
+	 HFHZPq1eQ8aMP6z7M2oSp+vq6mgw8XSv+Cr3dIhJL//zmB+Z5PH9XOCB/G6D7JKTS6
+	 r+DZJB3DEGduOsd28mPTOYyUsWxaxHNZPQRq4lJ0zvADus1/M72vOuQfXTndf3JfI3
+	 +EVdI4BUeDFFTDce+vkMCrvnI+9CDCfSPhr2VK5DDylmjC0DCyDoLHUYDOYv4y9VDo
+	 G3vFPf8oDAw9WIpdq3WbDZlsEFtY576PkK4gPw/Xi9EfyCil5J7bb5KuGONHcZt6X0
+	 jKaYMf+2wnItA==
+Date: Sat, 06 Jan 2024 17:09:09 -0800
+From: "H. Peter Anvin" <hpa@zytor.com>
+To: David Laight <David.Laight@ACULAB.COM>,
+        "'Linus Torvalds'" <torvalds@linux-foundation.org>
+CC: Noah Goldstein <goldstein.w.n@gmail.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "oe-kbuild-all@lists.linux.dev" <oe-kbuild-all@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>, "bp@alien8.de" <bp@alien8.de>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>
+Subject: RE: x86/csum: Remove unnecessary odd handling
+User-Agent: K-9 Mail for Android
+In-Reply-To: <124b21857fe44e499e29800cbf4f63f8@AcuMS.aculab.com>
+References: <20230920192300.3772199-1-goldstein.w.n@gmail.com> <202309231130.ZI5MdlDc-lkp@intel.com> <CAFUsyfKDRiX9kKOhHcA4PLqqT6Q5faHF0eRGiKN+9NSbvrUfDw@mail.gmail.com> <d02bd4f823534a00ae4915ead3d92773@AcuMS.aculab.com> <CAFUsyfL0M5P4+4s_b1kvJ_fE-ax8YBK0ammbKfoy7yKs1obzrA@mail.gmail.com> <CAFUsyfJduB29c6=BNmTtgoWcHAWA1AZ-sdbhyp02JVhvA6Gp0w@mail.gmail.com> <CAFUsyfLuo0_Sm91mqbM8Sbo-ncwnM4RaRq=GxQXDmkAN-nQ3uw@mail.gmail.com> <CAHk-=wgv6h4ru=z8UR5XyutoRKveOetNpwovHburvRgG9NSa3g@mail.gmail.com> <CAHk-=wiNUucmvTKGmveWzXXe99SpOwU65nFtH-A2_aUpPsAPJQ@mail.gmail.com> <5354eeec562345f6a1de84f0b2081b75@AcuMS.aculab.com> <CAHk-=wg8vssPVO68_qH_BHBCj6_DDawKQHBOgZh4gw5YFmpCKA@mail.gmail.com> <124b21857fe44e499e29800cbf4f63f8@AcuMS.aculab.com>
+Message-ID: <4313F9BB-DE2E-448F-A366-A68CAEA2BFE0@zytor.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240106065941.180796-1-wangrui@loongson.cn>
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Hi WANG,
+On January 6, 2024 2:08:48 PM PST, David Laight <David=2ELaight@ACULAB=2ECO=
+M> wrote:
+>From: Linus Torvalds
+>> Sent: 05 January 2024 18:06
+>>=20
+>> On Fri, 5 Jan 2024 at 02:41, David Laight <David=2ELaight@aculab=2Ecom>=
+ wrote:
+>> >
+>> > Interesting, I'm pretty sure trying to get two blocks of
+>> >  'adc' scheduled in parallel like that doesn't work=2E
+>>=20
+>> You should check out the benchmark at
+>>=20
+>>        https://github=2Ecom/fenrus75/csum_partial
+>>=20
+>> and see if you can improve on it=2E I'm including the patch (on top of
+>> that code by Arjan) to implement the actual current kernel version as
+>> "New version"=2E
+>
+>Annoyingly (for me) you are partially right=2E=2E=2E
+>
+>I found where my ip checksum perf code was hiding and revisited it=2E
+>Although I found comments elsewhere that the 'jecxz, adc, adc, lea, jmp'
+>did an adc every clock it isn't happening for me now=2E
+>
+>I'm only measuring the inner loop for multiples of 64 bytes=2E
+>The code less than 8 bytes and partial final words is a
+>separate problem=2E
+>The less unrolled the main loop, the less overhead there'll
+>be for 'normal' sizes=2E
+>So I've changed your '80 byte' block to 64 bytes for consistency=2E
+>
+>I'm ignoring pre-sandy bridge cpu (no split flags) and pre-broadwell
+>(adc takes two clocks - although adc to alternate regs is one clock
+>on sandy bridge)=2E
+>My test system is an i7-7700, I think anything from broadwell (gen 4)
+>will be at least as good=2E
+>I don't have a modern amd cpu=2E
+>
+>The best loop for 256+ bytes is an adxc/adxo one=2E
+>However that requires the run-time patching=2E
+>Followed by new kernel version (two blocks of 4 adc)=2E
+>The surprising one is:
+>		xor	sum, sum
+>	1:	adc	(buff), sum
+>		adc	8(buff), sum
+>		lea	16(buff), buff
+>		dec	count
+>		jnz	1b
+>		adc	$0, sum
+>For 256 bytes it is only a couple of clocks slower=2E
+>Maybe 10% slower for 512+ bytes=2E
+>But it need almost no extra code for 'normal' buffer sizes=2E
+>By comparison the adxc/adxo one is 20% faster=2E
+>
+>The code is doing:
+>	old =3D rdpmc
+>	mfence
+>	csum =3D do_csum(buf, len);
+>	mfence
+>	clocks =3D rdpmc - old
+>(That is directly reading the pmc register=2E)
+>With 'no-op' function it takes 160 clocks (I-cache resident)=2E
+>Without the mfence 40 - but pretty much everything can execute
+>after the 2nd rdpmc=2E
+>
+>I've attached my (horrid) test program=2E
+>
+>	David
+>
+>-
+>Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1=
+ 1PT, UK
+>Registration No: 1397386 (Wales)
 
-kernel test robot noticed the following build warnings:
-
-[auto build test WARNING on rust/rust-next]
-[also build test WARNING on linus/master v6.7-rc8 next-20240105]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/WANG-Rui/LoongArch-Enable-initial-Rust-support/20240106-150902
-base:   https://github.com/Rust-for-Linux/linux rust-next
-patch link:    https://lore.kernel.org/r/20240106065941.180796-1-wangrui%40loongson.cn
-patch subject: [PATCH] LoongArch: Enable initial Rust support
-reproduce: (https://download.01.org/0day-ci/archive/20240107/202401070815.6tdJWFme-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202401070815.6tdJWFme-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> Documentation/rust/arch-support.rst:18: WARNING: Malformed table.
-
-vim +18 Documentation/rust/arch-support.rst
-
-    14	
-    15	============  ================  ==============================================
-    16	Architecture  Level of support  Constraints
-    17	============  ================  ==============================================
-  > 18	``loongarch`` Maintained
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Rather than runtime patching perhaps separate paths=2E=2E=2E
 
