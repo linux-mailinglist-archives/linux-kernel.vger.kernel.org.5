@@ -1,306 +1,153 @@
-Return-Path: <linux-kernel+bounces-18786-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18787-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7156982630A
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 06:36:11 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF36182630B
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 06:37:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D19451F21B8D
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 05:36:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1770AB2150A
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 05:37:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A7DD125A8;
-	Sun,  7 Jan 2024 05:36:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="O3HNTsqB"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49F7D125B3;
+	Sun,  7 Jan 2024 05:37:45 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-oa1-f42.google.com (mail-oa1-f42.google.com [209.85.160.42])
+Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14492882D
-	for <linux-kernel@vger.kernel.org>; Sun,  7 Jan 2024 05:35:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-oa1-f42.google.com with SMTP id 586e51a60fabf-2044d093b3fso778881fac.3
-        for <linux-kernel@vger.kernel.org>; Sat, 06 Jan 2024 21:35:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704605757; x=1705210557; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=r/6veTlb3b926dnqCGkB7UbG60YqZdxmlPhte48QgzE=;
-        b=O3HNTsqBVmOw17byi/3AfjELWYFYqdw3lF9jnXBnlbZkYKz2T9I2gBUZZpRk0IX65+
-         MRFKgdKA+gxR/gTqjVnVs6gKec0ln3WpREZ3/BfqDtJvUo7N/A7mQ2JqfWTgzUtcB6yF
-         AH71+QX72LoLvaHfiav9T1eMUlxEtQMrghB7Hhhg5KquLoPT3lAJa7LHxiQYSAVwW6f+
-         do0tIJp1P974GeUd8hB6MZlZyXHpfvG17g2EkM8qqnefd+e8XMGzfUQRwbTi+DpfdgGo
-         ZGVmF1rK/RXhdkKT5oqGMelcgVuhzPc3JF+G/Y3X4tZJ/znPR7pEKuQ9gogsxZpCEQwW
-         /ZHg==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E76E5125A8
+	for <linux-kernel@vger.kernel.org>; Sun,  7 Jan 2024 05:37:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=csie.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-28cec7ae594so767604a91.3
+        for <linux-kernel@vger.kernel.org>; Sat, 06 Jan 2024 21:37:42 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704605757; x=1705210557;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=r/6veTlb3b926dnqCGkB7UbG60YqZdxmlPhte48QgzE=;
-        b=KdfOhH6SPZKNcmzt+7kgMq7TtyOFNwTRTwvtJQ/rUmw80ez19c1zi3AtsVwhsjKy73
-         kTsP2+6P0VEcr9hhylkYid0cLX5CyZ4yVKywxiKwcE5bAIm/WxDT34OSm2yfNTIoWApJ
-         ZtvWvvGfK77fI2UEnoEKR4hsyC7LEr5uQQ3VOCImoztXTldzMhiCSULBqoMJer7ivYq6
-         ZLznCPcL4ThlyeMekcfazDpagKE6/AYhoQeQYaH+OkFVZ1Z4ZjYArfCnOOOqKGFpibhL
-         l3JWJPS0ysGVEWMusOXV/mLUvZD0tlm9YPmrMw9jp6bG6xnLjAJmSrn23V3QHdfvLoK6
-         dGRw==
-X-Gm-Message-State: AOJu0YyoxeMeVBqo6qzEn9zPejnfdY+ah2fNlJ7gHkha3u1DS9ZK+6e/
-	hBZTcF2+OGTtgPjMOfEKKPYSHrVMg/Fe
-X-Google-Smtp-Source: AGHT+IFXc64B6/7sj5HFrrtDScgVdo7dG+eDO48hZml6hX469TEyYIhRL22ervoCQYA10NefWOg3rw==
-X-Received: by 2002:a05:6871:7a0e:b0:203:2b71:dad5 with SMTP id pc14-20020a0568717a0e00b002032b71dad5mr2370437oac.8.1704605757126;
-        Sat, 06 Jan 2024 21:35:57 -0800 (PST)
-Received: from thinkpad ([103.197.115.97])
-        by smtp.gmail.com with ESMTPSA id p3-20020a056a0026c300b006da19433468sm3833811pfw.61.2024.01.06.21.35.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 06 Jan 2024 21:35:56 -0800 (PST)
-Date: Sun, 7 Jan 2024 11:05:48 +0530
-From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To: Frank Li <Frank.li@nxp.com>
-Cc: krzysztof.kozlowski@linaro.org, bhelgaas@google.com,
-	conor+dt@kernel.org, devicetree@vger.kernel.org, festevam@gmail.com,
-	helgaas@kernel.org, hongxing.zhu@nxp.com, imx@lists.linux.dev,
-	kernel@pengutronix.de, krzysztof.kozlowski+dt@linaro.org,
-	kw@linux.com, l.stach@pengutronix.de,
-	linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
-	linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-	lpieralisi@kernel.org, robh@kernel.org, s.hauer@pengutronix.de,
-	shawnguo@kernel.org
-Subject: Re: [PATCH v7 07/16] PCI: imx6: Simplify configure_type() by using
- mode_off and mode_mask
-Message-ID: <20240107053548.GK3416@thinkpad>
-References: <20231227182727.1747435-1-Frank.Li@nxp.com>
- <20231227182727.1747435-8-Frank.Li@nxp.com>
- <20240107051655.GF3416@thinkpad>
- <ZZo3XpYkzxDolK47@lizhi-Precision-Tower-5810>
+        d=1e100.net; s=20230601; t=1704605862; x=1705210662;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :reply-to:in-reply-to:references:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=6/Ikl/wsBruZZnJgrPfryZ7WZjdWW20BEXg4XALLfsg=;
+        b=r/zz5IkSuTyY7CFM1WXSBnU6wNOZsXTNKdcWUDAFbPOazijWc+CeLTXSnhXalKdPYT
+         dwNjKPUz8f2YMMh0m+TmX13JxioJ76+d5d3pcoQ8dbyVqbWYWHnVQ2PNaDaCtSj0jjs/
+         dPC5AEHFGpXjSX7RpXwDNPTHY2f+14iFVmYRIKiop0wflVFsJfztWbcAo7VXoqXnuoRw
+         xPVav/7+ly7CZ5BzvR6L7q8l4oebpG6gsGjoWZ3SQOnSVG6YQTqGDFIbOpU6hnl/BzdX
+         /1aWESoYQhT55xljGEKwkS4mviLuj+8b0tLZL5p/+H34yn9qAMHLhM46z9ejDym9SiVe
+         z19Q==
+X-Gm-Message-State: AOJu0YyNmk/iSQE+4G3R4oq3jfeTo/QmkGrlaDeXgHDNBcmKIJA22Ng5
+	15ED5BbTYmMuADsaHOgk/mWa2jZsE6Y=
+X-Google-Smtp-Source: AGHT+IFx5iar9FgEcblVDhKz0xe8PwOxuf92NPEQ+EKmb1C6T70cC1DtqtJfQWum0++GWc92/2I2cQ==
+X-Received: by 2002:a05:6a20:4a21:b0:194:f56a:dd96 with SMTP id fr33-20020a056a204a2100b00194f56add96mr1725939pzb.124.1704605861936;
+        Sat, 06 Jan 2024 21:37:41 -0800 (PST)
+Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com. [209.85.210.173])
+        by smtp.gmail.com with ESMTPSA id z22-20020a62d116000000b006d9cf4b56edsm4094282pfg.175.2024.01.06.21.37.41
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 06 Jan 2024 21:37:41 -0800 (PST)
+Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-6d99980b2e0so745888b3a.2
+        for <linux-kernel@vger.kernel.org>; Sat, 06 Jan 2024 21:37:41 -0800 (PST)
+X-Received: by 2002:aa7:9205:0:b0:6da:23d7:3786 with SMTP id
+ 5-20020aa79205000000b006da23d73786mr1718281pfo.21.1704605861547; Sat, 06 Jan
+ 2024 21:37:41 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZZo3XpYkzxDolK47@lizhi-Precision-Tower-5810>
+References: <202401070901.68H00NFa-lkp@intel.com>
+In-Reply-To: <202401070901.68H00NFa-lkp@intel.com>
+Reply-To: wens@csie.org
+From: Chen-Yu Tsai <wens@csie.org>
+Date: Sun, 7 Jan 2024 13:37:30 +0800
+X-Gmail-Original-Message-ID: <CAGb2v64zGvceVXy_F7pVTrFYY7-eLQktoWZB4Xcb1MQtFu=1Ww@mail.gmail.com>
+Message-ID: <CAGb2v64zGvceVXy_F7pVTrFYY7-eLQktoWZB4Xcb1MQtFu=1Ww@mail.gmail.com>
+Subject: Re: drivers/iio/adc/axp20x_adc.c:572:26: sparse: sparse: dubious: x & !y
+To: kernel test robot <lkp@intel.com>
+Cc: Aidan MacDonald <aidanmacdonald.0x0@gmail.com>, oe-kbuild-all@lists.linux.dev, 
+	linux-kernel@vger.kernel.org, Jonathan Cameron <Jonathan.Cameron@huawei.com>, 
+	Andy Shevchenko <andy.shevchenko@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Sun, Jan 07, 2024 at 12:32:14AM -0500, Frank Li wrote:
-> On Sun, Jan 07, 2024 at 10:46:55AM +0530, Manivannan Sadhasivam wrote:
-> > On Wed, Dec 27, 2023 at 01:27:18PM -0500, Frank Li wrote:
-> > > Add drvdata::mode_off and drvdata::mode_mask to simple
-> > 
-> > simplify
-> > 
-> > > imx6_pcie_configure_type() logic.
-> > > 
-> > > Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> > 
-> > Couple of comments below.
-> > 
-> > > ---
-> > > 
-> > > Notes:
-> > >     Change from v2 to v3
-> > >     - none
-> > >     Change from v1 to v2
-> > >     - use ffs() to fixe build error.
-> > > 
-> > >  drivers/pci/controller/dwc/pci-imx6.c | 60 ++++++++++++++++++---------
-> > >  1 file changed, 40 insertions(+), 20 deletions(-)
-> > > 
-> > > diff --git a/drivers/pci/controller/dwc/pci-imx6.c b/drivers/pci/controller/dwc/pci-imx6.c
-> > > index 588bfb616260e..717e8fa030deb 100644
-> > > --- a/drivers/pci/controller/dwc/pci-imx6.c
-> > > +++ b/drivers/pci/controller/dwc/pci-imx6.c
-> > > @@ -68,6 +68,7 @@ enum imx6_pcie_variants {
-> > >  
-> > >  #define IMX6_PCIE_MAX_CLKS       6
-> > >  
-> > > +#define IMX6_PCIE_MAX_INSTANCES			2
-> > >  struct imx6_pcie_drvdata {
-> > >  	enum imx6_pcie_variants variant;
-> > >  	enum dw_pcie_device_mode mode;
-> > > @@ -77,6 +78,8 @@ struct imx6_pcie_drvdata {
-> > >  	const char *clk_names[IMX6_PCIE_MAX_CLKS];
-> > >  	const u32 ltssm_off;
-> > >  	const u32 ltssm_mask;
-> > > +	const u32 mode_off[IMX6_PCIE_MAX_INSTANCES];
-> > > +	const u32 mode_mask[IMX6_PCIE_MAX_INSTANCES];
-> > >  };
-> > >  
-> > >  struct imx6_pcie {
-> > > @@ -174,32 +177,25 @@ static unsigned int imx6_pcie_grp_offset(const struct imx6_pcie *imx6_pcie)
-> > >  
-> > >  static void imx6_pcie_configure_type(struct imx6_pcie *imx6_pcie)
-> > >  {
-> > > -	unsigned int mask, val, mode;
-> > > +	const struct imx6_pcie_drvdata *drvdata = imx6_pcie->drvdata;
-> > > +	unsigned int mask, val, mode, id;
-> > >  
-> > > -	if (imx6_pcie->drvdata->mode == DW_PCIE_EP_TYPE)
-> > > +	if (drvdata->mode == DW_PCIE_EP_TYPE)
-> > >  		mode = PCI_EXP_TYPE_ENDPOINT;
-> > >  	else
-> > >  		mode = PCI_EXP_TYPE_ROOT_PORT;
-> > >  
-> > > -	switch (imx6_pcie->drvdata->variant) {
-> > > -	case IMX8MQ:
-> > > -	case IMX8MQ_EP:
-> > > -		if (imx6_pcie->controller_id == 1) {
-> > > -			mask = IMX8MQ_GPR12_PCIE2_CTRL_DEVICE_TYPE;
-> > > -			val  = FIELD_PREP(IMX8MQ_GPR12_PCIE2_CTRL_DEVICE_TYPE,
-> > > -					  mode);
-> > > -		} else {
-> > > -			mask = IMX6Q_GPR12_DEVICE_TYPE;
-> > > -			val  = FIELD_PREP(IMX6Q_GPR12_DEVICE_TYPE, mode);
-> > > -		}
-> > > -		break;
-> > > -	default:
-> > > -		mask = IMX6Q_GPR12_DEVICE_TYPE;
-> > > -		val  = FIELD_PREP(IMX6Q_GPR12_DEVICE_TYPE, mode);
-> > > -		break;
-> > > -	}
-> > > +	id = imx6_pcie->controller_id;
-> > > +
-> > > +	/* If mode_mask[id] is zero, means each controller have its individual gpr */
-> > > +	if (!drvdata->mode_mask[id])
-> > > +		id = 0;
-> > > +
-> > > +	mask = drvdata->mode_mask[id];
-> > > +	/* FIELD_PREP mask have been constant */
-> > 
-> > No need of this comment.
-> > 
-> > > +	val = mode << (ffs(mask) - 1);
-> > >  
-> > > -	regmap_update_bits(imx6_pcie->iomuxc_gpr, IOMUXC_GPR12, mask, val);
-> > > +	regmap_update_bits(imx6_pcie->iomuxc_gpr, drvdata->mode_off[id], mask, val);
-> > >  }
-> > >  
-> > >  static int pcie_phy_poll_ack(struct imx6_pcie *imx6_pcie, bool exp_val)
-> > > @@ -1376,6 +1372,8 @@ static const struct imx6_pcie_drvdata drvdata[] = {
-> > >  		.clk_names = {"pcie_bus", "pcie", "pcie_phy"},
-> > >  		.ltssm_off = IOMUXC_GPR12,
-> > >  		.ltssm_mask = IMX6Q_GPR12_PCIE_CTL_2,
-> > > +		.mode_off[0] = IOMUXC_GPR12,
-> > > +		.mode_mask[0] = IMX6Q_GPR12_DEVICE_TYPE,
-> > >  	},
-> > >  	[IMX6SX] = {
-> > >  		.variant = IMX6SX,
-> > > @@ -1386,6 +1384,8 @@ static const struct imx6_pcie_drvdata drvdata[] = {
-> > >  		.clk_names = {"pcie_bus", "pcie", "pcie_phy", "pcie_inbound_axi"},
-> > >  		.ltssm_off = IOMUXC_GPR12,
-> > >  		.ltssm_mask = IMX6Q_GPR12_PCIE_CTL_2,
-> > > +		.mode_off[0] = IOMUXC_GPR12,
-> > > +		.mode_mask[0] = IMX6Q_GPR12_DEVICE_TYPE,
-> > >  	},
-> > >  	[IMX6QP] = {
-> > >  		.variant = IMX6QP,
-> > > @@ -1397,6 +1397,8 @@ static const struct imx6_pcie_drvdata drvdata[] = {
-> > >  		.clk_names = {"pcie_bus", "pcie", "pcie_phy"},
-> > >  		.ltssm_off = IOMUXC_GPR12,
-> > >  		.ltssm_mask = IMX6Q_GPR12_PCIE_CTL_2,
-> > > +		.mode_off[0] = IOMUXC_GPR12,
-> > > +		.mode_mask[0] = IMX6Q_GPR12_DEVICE_TYPE,
-> > >  	},
-> > >  	[IMX7D] = {
-> > >  		.variant = IMX7D,
-> > > @@ -1405,6 +1407,8 @@ static const struct imx6_pcie_drvdata drvdata[] = {
-> > >  			 IMX6_PCIE_FLAG_HAS_PHY_RESET,
-> > >  		.gpr = "fsl,imx7d-iomuxc-gpr",
-> > >  		.clk_names = {"pcie_bus", "pcie", "pcie_phy"},
-> > > +		.mode_off[0] = IOMUXC_GPR12,
-> > > +		.mode_mask[0] = IMX6Q_GPR12_DEVICE_TYPE,
-> > >  	},
-> > >  	[IMX8MQ] = {
-> > >  		.variant = IMX8MQ,
-> > > @@ -1412,6 +1416,10 @@ static const struct imx6_pcie_drvdata drvdata[] = {
-> > >  			 IMX6_PCIE_FLAG_HAS_PHY_RESET,
-> > >  		.gpr = "fsl,imx8mq-iomuxc-gpr",
-> > >  		.clk_names = {"pcie_bus", "pcie", "pcie_phy", "pcie_aux"},
-> > > +		.mode_off[0] = IOMUXC_GPR12,
-> > > +		.mode_mask[0] = IMX6Q_GPR12_DEVICE_TYPE,
-> > > +		.mode_off[1] = IOMUXC_GPR12,
-> > > +		.mode_mask[1] = IMX8MQ_GPR12_PCIE2_CTRL_DEVICE_TYPE,
-> > 
-> > Is the mode_mask differ between SoCs or fixed based on instances? I mean, if
-> > there is a guarantee that it is going to be IMX6Q_GPR12_DEVICE_TYPE for instance
-> > 1 and IMX8MQ_GPR12_PCIE2_CTRL_DEVICE_TYPE for instance 2 etc...
-> > 
-> > Then we can avoid these SoC specific config and simplify the code further.
-> 
-> No, iMX95 will change it. 
-> 
+On Sun, Jan 7, 2024 at 9:30=E2=80=AFAM kernel test robot <lkp@intel.com> wr=
+ote:
+>
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.gi=
+t master
+> head:   52b1853b080a082ec3749c3a9577f6c71b1d4a90
+> commit: 8957e5344353e9cd3f6b1e3004942e35449fa0e8 iio: adc: axp20x_adc: Mi=
+nor code cleanups
+> date:   10 months ago
+> config: x86_64-randconfig-121-20240106 (https://download.01.org/0day-ci/a=
+rchive/20240107/202401070901.68H00NFa-lkp@intel.com/config)
+> compiler: ClangBuiltLinux clang version 17.0.6 (https://github.com/llvm/l=
+lvm-project 6009708b4367171ccdbf4b5905cb6a803753fe18)
+> reproduce (this is a W=3D1 build): (https://download.01.org/0day-ci/archi=
+ve/20240107/202401070901.68H00NFa-lkp@intel.com/reproduce)
+>
+> If you fix the issue in a separate patch/commit (i.e. not just a new vers=
+ion of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202401070901.68H00NFa-lkp=
+@intel.com/
+>
+> sparse warnings: (new ones prefixed by >>)
+> >> drivers/iio/adc/axp20x_adc.c:572:26: sparse: sparse: dubious: x & !y
+>    drivers/iio/adc/axp20x_adc.c:577:26: sparse: sparse: dubious: x & !y
 
-Ok, fine then.
+This looks like a false positive. The code is doing exactly what we want:
+val =3D val ? 1 : 0, but in a shorter format.
 
-- Mani
+ChenYu
 
-> Frank
-> 
-> > 
-> > - Mani
-> > 
-> > >  	},
-> > >  	[IMX8MM] = {
-> > >  		.variant = IMX8MM,
-> > > @@ -1420,6 +1428,8 @@ static const struct imx6_pcie_drvdata drvdata[] = {
-> > >  			 IMX6_PCIE_FLAG_HAS_APP_RESET,
-> > >  		.gpr = "fsl,imx8mm-iomuxc-gpr",
-> > >  		.clk_names = {"pcie_bus", "pcie", "pcie_aux"},
-> > > +		.mode_off[0] = IOMUXC_GPR12,
-> > > +		.mode_mask[0] = IMX6Q_GPR12_DEVICE_TYPE,
-> > >  	},
-> > >  	[IMX8MP] = {
-> > >  		.variant = IMX8MP,
-> > > @@ -1428,6 +1438,8 @@ static const struct imx6_pcie_drvdata drvdata[] = {
-> > >  			 IMX6_PCIE_FLAG_HAS_APP_RESET,
-> > >  		.gpr = "fsl,imx8mp-iomuxc-gpr",
-> > >  		.clk_names = {"pcie_bus", "pcie", "pcie_aux"},
-> > > +		.mode_off[0] = IOMUXC_GPR12,
-> > > +		.mode_mask[0] = IMX6Q_GPR12_DEVICE_TYPE,
-> > >  	},
-> > >  	[IMX8MQ_EP] = {
-> > >  		.variant = IMX8MQ_EP,
-> > > @@ -1436,6 +1448,10 @@ static const struct imx6_pcie_drvdata drvdata[] = {
-> > >  		.mode = DW_PCIE_EP_TYPE,
-> > >  		.gpr = "fsl,imx8mq-iomuxc-gpr",
-> > >  		.clk_names = {"pcie_bus", "pcie", "pcie_phy", "pcie_aux"},
-> > > +		.mode_off[0] = IOMUXC_GPR12,
-> > > +		.mode_mask[0] = IMX6Q_GPR12_DEVICE_TYPE,
-> > > +		.mode_off[1] = IOMUXC_GPR12,
-> > > +		.mode_mask[1] = IMX8MQ_GPR12_PCIE2_CTRL_DEVICE_TYPE,
-> > >  	},
-> > >  	[IMX8MM_EP] = {
-> > >  		.variant = IMX8MM_EP,
-> > > @@ -1443,6 +1459,8 @@ static const struct imx6_pcie_drvdata drvdata[] = {
-> > >  		.mode = DW_PCIE_EP_TYPE,
-> > >  		.gpr = "fsl,imx8mm-iomuxc-gpr",
-> > >  		.clk_names = {"pcie_bus", "pcie", "pcie_aux"},
-> > > +		.mode_off[0] = IOMUXC_GPR12,
-> > > +		.mode_mask[0] = IMX6Q_GPR12_DEVICE_TYPE,
-> > >  	},
-> > >  	[IMX8MP_EP] = {
-> > >  		.variant = IMX8MP_EP,
-> > > @@ -1450,6 +1468,8 @@ static const struct imx6_pcie_drvdata drvdata[] = {
-> > >  		.mode = DW_PCIE_EP_TYPE,
-> > >  		.gpr = "fsl,imx8mp-iomuxc-gpr",
-> > >  		.clk_names = {"pcie_bus", "pcie", "pcie_aux"},
-> > > +		.mode_off[0] = IOMUXC_GPR12,
-> > > +		.mode_mask[0] = IMX6Q_GPR12_DEVICE_TYPE,
-> > >  	},
-> > >  };
-> > >  
-> > > -- 
-> > > 2.34.1
-> > > 
-> > 
-> > -- 
-> > மணிவண்ணன் சதாசிவம்
-
--- 
-மணிவண்ணன் சதாசிவம்
+>
+> vim +572 drivers/iio/adc/axp20x_adc.c
+>
+>    551
+>    552  static int axp20x_write_raw(struct iio_dev *indio_dev,
+>    553                              struct iio_chan_spec const *chan, int=
+ val, int val2,
+>    554                              long mask)
+>    555  {
+>    556          struct axp20x_adc_iio *info =3D iio_priv(indio_dev);
+>    557          unsigned int regmask, regval;
+>    558
+>    559          /*
+>    560           * The AXP20X PMIC allows the user to choose between 0V a=
+nd 0.7V offsets
+>    561           * for (independently) GPIO0 and GPIO1 when in ADC mode.
+>    562           */
+>    563          if (mask !=3D IIO_CHAN_INFO_OFFSET)
+>    564                  return -EINVAL;
+>    565
+>    566          if (val !=3D 0 && val !=3D 700000)
+>    567                  return -EINVAL;
+>    568
+>    569          switch (chan->channel) {
+>    570          case AXP20X_GPIO0_V:
+>    571                  regmask =3D AXP20X_GPIO10_IN_RANGE_GPIO0;
+>  > 572                  regval =3D FIELD_PREP(AXP20X_GPIO10_IN_RANGE_GPIO=
+0, !!val);
+>    573                  break;
+>    574
+>    575          case AXP20X_GPIO1_V:
+>    576                  regmask =3D AXP20X_GPIO10_IN_RANGE_GPIO1;
+>    577                  regval =3D FIELD_PREP(AXP20X_GPIO10_IN_RANGE_GPIO=
+1, !!val);
+>    578                  break;
+>    579
+>    580          default:
+>    581                  return -EINVAL;
+>    582          }
+>    583
+>    584          return regmap_update_bits(info->regmap, AXP20X_GPIO10_IN_=
+RANGE, regmask, regval);
+>    585  }
+>    586
+>
+> --
+> 0-DAY CI Kernel Test Service
+> https://github.com/intel/lkp-tests/wiki
 
