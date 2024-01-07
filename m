@@ -1,89 +1,128 @@
-Return-Path: <linux-kernel+bounces-18947-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18948-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69576826589
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 19:14:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 31A8C82658B
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 19:21:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C64F6281B26
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 18:14:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BF1AC28191F
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 18:21:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE09413FFF;
-	Sun,  7 Jan 2024 18:14:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B899D13FF8;
+	Sun,  7 Jan 2024 18:21:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TPhVtzEx"
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="dwENUuli"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E18613FE7;
-	Sun,  7 Jan 2024 18:14:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CBBC1C433C8;
-	Sun,  7 Jan 2024 18:14:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704651287;
-	bh=D5Nom47ccMZ97QeLtyaOdTVnONRBDihub2rgb4f09og=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=TPhVtzExBoCgx5NuC2ZbvarxZ/zJCcbZK3JJZFOzuEd1EjYISOZrFuppVVq1/amdR
-	 n4tuzDLmnGFKLwa18If3m4HcRdVhfR9Gd3UpzYqGGObucyOTz5i3QWP+9u6LHAajRe
-	 reuKOvNkfoEXG9QetuLmggbJPADJBYdsWgvNYLUjXow8cAMbR355XbR60++LuoOPXK
-	 PC9g58QW8vWNqGCVg3v2UCoxGiILF+UtHatQRUmO/Ax2YqdyyGkFK/rdIM5Cxxzu0Q
-	 F09orz7R7wmFRrEu0LEf9erUj5jDcAwI4z+MskYcAMJk5CQsBVxoPYJUKad5T82vUU
-	 lGdnmzoMjEIHg==
-Date: Sun, 7 Jan 2024 18:14:43 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
-Cc: =?iso-8859-1?Q?N=EDcolas_F=2E_R=2E_A=2E?= Prado <nfraprado@collabora.com>,
-	linux-sound@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>, Shuah Khan <shuah@kernel.org>
-Subject: Re: [PATCH v1 3/4] ksellftest: alsa: Fix the printf format specifier
- to unsigned int
-Message-ID: <ZZrqE4iCRMqTX/3v@finisterre.sirena.org.uk>
-References: <20240107151218.933806-1-mirsad.todorovac@alu.unizg.hr>
- <20240107151218.933806-4-mirsad.todorovac@alu.unizg.hr>
- <ZZrEXSU3Bx85rSGo@finisterre.sirena.org.uk>
- <34121d01-34dd-4c29-b31e-91f3e8ea15bc@alu.unizg.hr>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABB3E13FF0
+	for <linux-kernel@vger.kernel.org>; Sun,  7 Jan 2024 18:21:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DF2FDC433C8;
+	Sun,  7 Jan 2024 18:21:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+	s=korg; t=1704651664;
+	bh=sZPBGcFilnJgnQg/CYPYjTdMMjgjwjmQd4ivbtePeo8=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=dwENUuliYF0nyFc92wP0odwzDw6aRV3mytuf+PZjrGFOYpUd7Ezxyeyxi0wk2Egpx
+	 osKfrTzGM/WcEL+7B5syCr0rK7pRVC4IbMyNWOH8JVJqqPxICMNKtKrZpyoCg3FaRc
+	 7NwZy+Vj0O8vpxN6eARxoDrgbjPmTUSe/5FtLDIk=
+Date: Sun, 7 Jan 2024 10:21:03 -0800
+From: Andrew Morton <akpm@linux-foundation.org>
+To: Baoquan He <bhe@redhat.com>
+Cc: linux-kernel@vger.kernel.org, pmladek@suse.com, gcc@gcc.gnu.org
+Subject: Re: [PATCH] panic: suppress gnu_printf warning
+Message-Id: <20240107102103.3c0ba0cfa4df37df4b59090e@linux-foundation.org>
+In-Reply-To: <20240107091641.579849-1-bhe@redhat.com>
+References: <20240107091641.579849-1-bhe@redhat.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="XCxdPNrpuVCVekfZ"
-Content-Disposition: inline
-In-Reply-To: <34121d01-34dd-4c29-b31e-91f3e8ea15bc@alu.unizg.hr>
-X-Cookie: You might have mail.
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
+On Sun,  7 Jan 2024 17:16:41 +0800 Baoquan He <bhe@redhat.com> wrote:
 
---XCxdPNrpuVCVekfZ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> with GCC 13.2.1 and W=1, there's compiling warning like this:
+> 
+> kernel/panic.c: In function ‘__warn’:
+> kernel/panic.c:676:17: warning: function ‘__warn’ might be a candidate for ‘gnu_printf’ format attribute [-Wsuggest-attribute=format]
+>   676 |                 vprintk(args->fmt, args->args);
+>       |                 ^~~~~~~
+> 
+> The normal __printf(x,y) adding can't fix it. So add workaround which
+> disables -Wsuggest-attribute=format to mute it.
+> 
+> ...
+>
+> --- a/kernel/panic.c
+> +++ b/kernel/panic.c
+> @@ -666,8 +666,13 @@ void __warn(const char *file, int line, void *caller, unsigned taint,
+>  		pr_warn("WARNING: CPU: %d PID: %d at %pS\n",
+>  			raw_smp_processor_id(), current->pid, caller);
+>  
+> +#pragma GCC diagnostic push
+> +#ifndef __clang__
+> +#pragma GCC diagnostic ignored "-Wsuggest-attribute=format"
+> +#endif
+>  	if (args)
+>  		vprintk(args->fmt, args->args);
+> +#pragma GCC diagnostic pop
+>  
+>  	print_modules();
 
-On Sun, Jan 07, 2024 at 05:21:00PM +0100, Mirsad Todorovac wrote:
+__warn() clearly isn't such a candidate.  I'm suspecting that gcc's
+implementation of this warning is pretty crude.  Is it a new thing in
+gcc-13.2?  
 
-> I guess I can keep the Acked-by tags. Will the patchwork find the tag in
-> the v1 patch set?
+A bit of context for gcc@gcc.gnu.org:
 
-No, you need to include it.
+struct warn_args {
+	const char *fmt;
+	va_list args;
+};
 
---XCxdPNrpuVCVekfZ
-Content-Type: application/pgp-signature; name="signature.asc"
+...
 
------BEGIN PGP SIGNATURE-----
+void __warn(const char *file, int line, void *caller, unsigned taint,
+	    struct pt_regs *regs, struct warn_args *args)
+{
+	disable_trace_on_warning();
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmWa6hMACgkQJNaLcl1U
-h9DqiAf9H/lxmjuXFFoExRxTy9SeGZtlRitB+Mjw32/2JiK5kwlTJEiiyaqzTQQV
-15hvrrGbDHWGGFy6TwMFAC7xK2C9ahvJeOOQNmt7F605eds03YVe+LqbonqamMCc
-Txt48KAJhcv8SocP/OTJvLquz6ALoaeGU/Cb2Q7NkbzUHt/78jH1U7n4Q4UPSssq
-1QOeEWsMAin4piwRPthM0/D33jawybLQDsWVaq1G85Y909dT/4nhQySRpgsZn1wS
-1+y8y6xhK7x8WnXoLJgIXhV7Dwqraorbk68FYGjvUyG32giCyJLbE5Mu8r8iMvZF
-MXQUzFUQNHYtE0OGgYD8/mMHRrxEOA==
-=TwJb
------END PGP SIGNATURE-----
+	if (file)
+		pr_warn("WARNING: CPU: %d PID: %d at %s:%d %pS\n",
+			raw_smp_processor_id(), current->pid, file, line,
+			caller);
+	else
+		pr_warn("WARNING: CPU: %d PID: %d at %pS\n",
+			raw_smp_processor_id(), current->pid, caller);
 
---XCxdPNrpuVCVekfZ--
+	if (args)
+		vprintk(args->fmt, args->args);
+
+	print_modules();
+
+	if (regs)
+		show_regs(regs);
+
+	check_panic_on_warn("kernel");
+
+	if (!regs)
+		dump_stack();
+
+	print_irqtrace_events(current);
+
+	print_oops_end_marker();
+	trace_error_report_end(ERROR_DETECTOR_WARN, (unsigned long)caller);
+
+	/* Just a warning, don't kill lockdep. */
+	add_taint(taint, LOCKDEP_STILL_OK);
+}
+
 
