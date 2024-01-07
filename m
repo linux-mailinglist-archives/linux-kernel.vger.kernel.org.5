@@ -1,119 +1,129 @@
-Return-Path: <linux-kernel+bounces-18912-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18913-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA7F482650D
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 17:20:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9195882650F
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 17:21:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0B3CD1C20BAC
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 16:20:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1C3E91F2168E
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 16:21:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACB0B13AEC;
-	Sun,  7 Jan 2024 16:19:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA96413ADE;
+	Sun,  7 Jan 2024 16:21:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZqFx6g7I"
+	dkim=pass (2048-bit key) header.d=alu.unizg.hr header.i=@alu.unizg.hr header.b="LlK3CcnI";
+	dkim=pass (2048-bit key) header.d=alu.unizg.hr header.i=@alu.unizg.hr header.b="INyv2SkI"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from domac.alu.hr (domac.alu.unizg.hr [161.53.235.3])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02B7F13AD5;
-	Sun,  7 Jan 2024 16:19:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 54A02C433C8;
-	Sun,  7 Jan 2024 16:19:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704644397;
-	bh=uIAD5Kp2kfFIl9FoggQDWcZuqpMzhfaqIRSk/vA2DQM=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=ZqFx6g7ImUgF+nkjBx9CrvDhk+3HY7beJOk1JAw5Kb9KYcl5sIoIiil23pNiWFIzE
-	 H5ZYXTaENWD3s4Uw170hu52T+13Zeeanp2+wBT7DQR25FhAzFzovEQ4EdBuiKcJ0Xa
-	 /RhA7Jel5bjtL+7TszdlfUvkHaW+uWLH28EjLNloNXAcAa+4NFNE5XosVe754Yyx+C
-	 piZIiaGdfBRsXukEtf9LZmdDM4p2OyudONueEz/4iPfAxtFsRJC893biNgAP/hlpjb
-	 yJdCutBCKdCv5it4noOCIsPjQxlvh/giq3Pq00HVigTVlLp4GRBEW61dRyz0FvSl/8
-	 ZmJNeztyA8pIQ==
-Date: Sun, 7 Jan 2024 16:19:49 +0000
-From: Jonathan Cameron <jic23@kernel.org>
-To: <cy_huang@richtek.com>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
- <conor+dt@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>, Rob Herring
- <robh+dt@kernel.org>, Uwe =?UTF-8?B?S2xlaW5lLUvDtm5pZw==?=
- <u.kleine-koenig@pengutronix.de>, <linux-iio@vger.kernel.org>,
- <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 2/2] iio: adc: rtq6056: Add support for the whole
- RTQ6056 family
-Message-ID: <20240107161949.04ec0011@jic23-huawei>
-In-Reply-To: <2980b67de00bae1fc25004188e8aabf53073d940.1704357933.git.cy_huang@richtek.com>
-References: <cover.1704357933.git.cy_huang@richtek.com>
-	<2980b67de00bae1fc25004188e8aabf53073d940.1704357933.git.cy_huang@richtek.com>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.39; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6297513ADB;
+	Sun,  7 Jan 2024 16:21:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alu.unizg.hr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alu.unizg.hr
+Received: from localhost (localhost [127.0.0.1])
+	by domac.alu.hr (Postfix) with ESMTP id 2E4C96017E;
+	Sun,  7 Jan 2024 17:21:04 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+	t=1704644464; bh=MMADYUgUtx/GtzC1SV4l8PB3GSRejcIo1JrQv03N/20=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=LlK3CcnIOMFypVQhOKTNqHzNc9sRgOiAVBcR9hX76Jxx2O5meAKGIpb40FJv6MKNL
+	 R+Hao27kCh9Ves60Ai6LrncTc0fqMK1433s7sf21O2wAy8sbf3Xu8eAzyuV11apbIk
+	 YSNPvN5ioHefHYFKj3pMcf4qhhz5vUe96bx8p9gk+CF+xvaIHq265HqM5mSHxM4nE2
+	 ZpYd5WVzc1U0FHwR6zePZPruXjp2LfKIW3RH/pb0KPSVLH1r9S0YpmpSXZ5M5GmxwF
+	 wamdtTtCCyRd/l+gfQg0T1OsTuD3LFrUIN0yuY8Gmst+PVJDAmbKkWVBfF2L1lZfpN
+	 Dfe5ZGNJZQoNQ==
+X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
+Received: from domac.alu.hr ([127.0.0.1])
+	by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id 1uqqC2Ckj3wx; Sun,  7 Jan 2024 17:21:01 +0100 (CET)
+Received: from [192.168.6.51] (unknown [95.168.121.73])
+	by domac.alu.hr (Postfix) with ESMTPSA id 2E7CB60171;
+	Sun,  7 Jan 2024 17:21:01 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+	t=1704644461; bh=MMADYUgUtx/GtzC1SV4l8PB3GSRejcIo1JrQv03N/20=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=INyv2SkI8oeHUWDzPa7cvsMFr5gPHYwLRK+57wmeYhintD0iVI8PNG5nmRCGvhYTM
+	 T4jlx+Pzv+mIvsp7/hLYMkLiQ4g+GMov56pcncvAAbHfuRqNseOvAuxb0yMBDbxivY
+	 7lhovzMp3A08ooj9gPoGr/N1yCxBMctamuag03gkghy9sJJ/UUc0L65pgPfssdesdu
+	 e024PZuXtUCx1EUzutUw4bmbP5brzoSBAv+u1JpyzF26iza7kSPK16BECSz8K5E0vU
+	 hbMWQ7BGbCCUPzX7AJSbPiEgh+vdCqKl2qdaHdx2rR03PhhLmYj5JnyxnQYFnYhPYP
+	 jC9bQnaPl34HQ==
+Message-ID: <34121d01-34dd-4c29-b31e-91f3e8ea15bc@alu.unizg.hr>
+Date: Sun, 7 Jan 2024 17:21:00 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 3/4] ksellftest: alsa: Fix the printf format specifier
+ to unsigned int
+Content-Language: en-US, hr
+To: Mark Brown <broonie@kernel.org>
+Cc: =?UTF-8?B?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= <nfraprado@collabora.com>,
+ linux-sound@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>, Shuah Khan <shuah@kernel.org>
+References: <20240107151218.933806-1-mirsad.todorovac@alu.unizg.hr>
+ <20240107151218.933806-4-mirsad.todorovac@alu.unizg.hr>
+ <ZZrEXSU3Bx85rSGo@finisterre.sirena.org.uk>
+From: Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
+In-Reply-To: <ZZrEXSU3Bx85rSGo@finisterre.sirena.org.uk>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Thu, 4 Jan 2024 17:03:31 +0800
-<cy_huang@richtek.com> wrote:
+On 07. 01. 2024. 16:33, Mark Brown wrote:
+> On Sun, Jan 07, 2024 at 04:12:20PM +0100, Mirsad Todorovac wrote:
+> 
+>> mixer-test.c:350:80: warning: format ‘%ld’ expects argument of type ‘long int’, \
+>> 			      but argument 5 has type ‘unsigned int’ [-Wformat=]
+> 
+> If this is the issue then...
+> 
+>> -			ksft_print_msg("%s.%d value %ld more than item count %ld\n",
+>> +			ksft_print_msg("%s.%d value %ld more than item count %d\n",
+>>  				       ctl->name, index, int_val,
+>>  				       snd_ctl_elem_info_get_items(ctl->info));
+> 
+> ...why are we not using an unsigned format specifier here?  I am very
+> suprised this doesn't continue to warn.
 
-> From: ChiYuan Huang <cy_huang@richtek.com>
-> 
-> RTQ6053 and RTQ6059 are the same series of RTQ6056.
-> 
-> The respective differences with RTQ6056 are listed below
-> RTQ6053
-> - chip package type
-> 
-> RTQ6059
-> - Reduce the pinout for vbus sensing pin
-> - Some internal ADC scaling change
-> 
-> Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
-Hi. 
+I double-checked and there is no warning, but I will fix it as you
+suggested.
 
-One last follow on comment based on v4 changes to the enum naming.
-I think you missed one place they should be updated - the reg_field
-definitions.
+> Please submit patches using subject lines reflecting the style for the
+> subsystem, this makes it easier for people to identify relevant patches.
+> Look at what existing commits in the area you're changing are doing and
+> make sure your subject lines visually resemble what they're doing.
+> There's no need to resubmit to fix this alone.
+
+I am just looking at the `git log --oneline tools/testing/selftests/alsa`
+and I can't seem to get inspiration.
+
+I guess I can keep the Acked-by tags. Will the patchwork find the tag in
+the v1 patch set?
+
+Sorry for the lag in [PATCH v1 4/4]. I thought I pressed submit, but I
+obviously did not.
 
 Thanks,
+Mirsad
 
-Jonathan
+-- 
+Mirsad Goran Todorovac
+Sistem inženjer
+Grafički fakultet | Akademija likovnih umjetnosti
+Sveučilište u Zagrebu
+ 
+System engineer
+Faculty of Graphic Arts | Academy of Fine Arts
+University of Zagreb, Republic of Croatia
+The European Union
 
-
->  
-> +/*
-> + * The enum is to present the 0x00 CONFIG RG bitfield for the 16bit RG value
-> + * field value order from LSB to MSB
-> + * RTQ6053/6 is OPMODE->VSHUNTCT->VBUSCT->AVG->RESET
-> + * RTQ6059 is OPMODE->SADC->BADC->PGA->RESET
-> + */
->  enum {
->  	F_OPMODE = 0,
->  	F_VSHUNTCT,
-> +	F_RTQ6059_SADC = F_VSHUNTCT,
->  	F_VBUSCT,
-> +	F_RTQ6059_BADC = F_VBUSCT,
->  	F_AVG,
-> +	F_RTQ6059_PGA = F_AVG,
->  	F_RESET,
->  	F_MAX_FIELDS
->  };
-
->  
-> +static const struct reg_field rtq6059_reg_fields[F_MAX_FIELDS] = {
-> +	[F_OPMODE] = REG_FIELD(RTQ6056_REG_CONFIG, 0, 2),
-> +	[F_VSHUNTCT] = REG_FIELD(RTQ6056_REG_CONFIG, 3, 6),
-> +	[F_VBUSCT] = REG_FIELD(RTQ6056_REG_CONFIG, 7, 10),
-> +	[F_AVG]	= REG_FIELD(RTQ6056_REG_CONFIG, 11, 12),
-> +	[F_RESET] = REG_FIELD(RTQ6056_REG_CONFIG, 15, 15),
-
-Given these are the rtq6059 regfield definitions should they not be
-using the new enum names?
-
-> +};
-> +
+"I see something approaching fast ... Will it be friends with me?"
 
 
