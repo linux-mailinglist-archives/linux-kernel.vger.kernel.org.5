@@ -1,63 +1,78 @@
-Return-Path: <linux-kernel+bounces-18980-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18981-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C9D48265F2
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 21:36:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3FCA78265F6
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 21:39:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9C6441F211C7
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 20:36:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2EF681C2157B
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 20:39:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AD391171C;
-	Sun,  7 Jan 2024 20:35:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C442511739;
+	Sun,  7 Jan 2024 20:38:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="CH5Hgg1u"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YDO0NDbu"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83D7311700
-	for <linux-kernel@vger.kernel.org>; Sun,  7 Jan 2024 20:35:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704659753; x=1736195753;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=ZocXyGs3K8RwSITndxX5WUhZkUHWMPzaU9We0EHy10U=;
-  b=CH5Hgg1uBsLfdQPtnSO78uFjQZiaOiWN6Ess8H1YA7GIERlGH032MDt6
-   y8do4Iln3uIWcSkrKrwuJ8G1l6VxDgd46j6sjG/oMjAwGcpABFosVvGbK
-   ChQnvFo+fYuy0JF9I5GeXuDLcFQg69BuQmHyh7cQZGWKmw02TNUjnbmof
-   LHTZjMrcMOqgmmhQaBb88rYvECNn51VDA46YXQFR1RFKOcSp1BhsVWGQh
-   QkcAKGdQJ9B0TFeLjDjCsQoCvc4S0NEJxF58aEOXPme8sPXHbfbK0LFQZ
-   O12Yal6qfhE18cjbEbnKlOYe4znk0Xfak0MTHcg1Nafb2trBoh5whZGxA
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10946"; a="462046999"
-X-IronPort-AV: E=Sophos;i="6.04,339,1695711600"; 
-   d="scan'208";a="462046999"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jan 2024 12:35:52 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10946"; a="954455052"
-X-IronPort-AV: E=Sophos;i="6.04,339,1695711600"; 
-   d="scan'208";a="954455052"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga005.jf.intel.com with ESMTP; 07 Jan 2024 12:35:51 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rMZs5-00048O-0h;
-	Sun, 07 Jan 2024 20:35:49 +0000
-Date: Mon, 8 Jan 2024 04:35:42 +0800
-From: kernel test robot <lkp@intel.com>
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-	Christian Brauner <brauner@kernel.org>,
-	Alexander Gordeev <agordeev@linux.ibm.com>
-Subject: arch/parisc/kernel/pdt.c:65:6: warning: no previous prototype for
- 'arch_report_meminfo'
-Message-ID: <202401080456.5qtlJuny-lkp@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8036D11700;
+	Sun,  7 Jan 2024 20:38:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2cd053d5683so12399381fa.2;
+        Sun, 07 Jan 2024 12:38:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704659930; x=1705264730; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=rWIKvi1hnVUw865j4JFaimjjwkxSfRuC7mbyHpWGOpM=;
+        b=YDO0NDbu3elSTD2vkS+8CifYqNyHYrWjZN9LuNtVrI08RW3FetlNE1LeSgh5H2QM+B
+         Szjw1T3pHuRdsRJFbB/cW6SdiDqbE9YyHV4ZXWfaZJC3Jqh5iJqjxvafBipwdNKFMCdk
+         AgIsyx32lyaIcpF1PhRM2Gu7tKVv1SOIGsdfRBh2LJR60q5qlGgUI0zOp3CxGJxjQHE8
+         RZKnj57wn5aFIadogTT+u6TAHj30ujYWZe4tF/XqGTr5ppwJbJZW+0z5IzNgaZFGrt7T
+         et3SRIVtWL/Y06MoqtvPuhC1BdlFJtVtJpzzpcf7Y1X1DZY3jmq1K4Gf8qE+42R/KfR5
+         zp4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704659930; x=1705264730;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rWIKvi1hnVUw865j4JFaimjjwkxSfRuC7mbyHpWGOpM=;
+        b=ej2VUfyveZbODMwf2GUHyopWHcokTSqtL51i0EWZqD5edfj0No6ylyhW1qDH3RBC7q
+         4vMxDIWMcKsapjv3paE0k5n4/WywqE6HIWna6r7wqLUetYFdccZEjpnjBCL5+yRgOw5T
+         XhaWHM7j2C2J2Yp593cs9WW/4GSTTAKS1tXUS1yH32lN7zMOnGyQnHaTDllDfLIr+2qv
+         HUxT0oA+s+2pQ6K9nbY1Kymap6+hQzf7OZUzGcPLx+rB3SeGJ+5xh6yJiu9cemrT1SK8
+         /cHxVKKDgp7sh68tIRgkBuTGxrzovgkrE9JPWGHzLvtBEV1nDfbSMk/cI6nxbDTHMDNm
+         xJZQ==
+X-Gm-Message-State: AOJu0YwSoUCK+w6qhkhy3T3s5mPXIcjnwRV5FlagDxoJv77RZwUOZaHQ
+	XeKyDEyw/2rjVYnXPCb2VbI=
+X-Google-Smtp-Source: AGHT+IGf/Yyv7wSMS0i9F/tpUZxtbrw3bOb3lTUoMOnmKCIdtuSDBq6EtPRjB7mAxRnLhJyTVDlImQ==
+X-Received: by 2002:ac2:5fa6:0:b0:50e:698c:2d93 with SMTP id s6-20020ac25fa6000000b0050e698c2d93mr685779lfe.57.1704659930101;
+        Sun, 07 Jan 2024 12:38:50 -0800 (PST)
+Received: from mobilestation ([95.79.203.166])
+        by smtp.gmail.com with ESMTPSA id w10-20020ac2598a000000b0050e7e38c9e0sm918192lfn.62.2024.01.07.12.38.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 07 Jan 2024 12:38:49 -0800 (PST)
+Date: Sun, 7 Jan 2024 23:38:46 +0300
+From: Serge Semin <fancer.lancer@gmail.com>
+To: Leong Ching Swee <leong.ching.swee@intel.com>
+Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
+	Alexandre Torgue <alexandre.torgue@foss.st.com>, Jose Abreu <joabreu@synopsys.com>, 
+	"David S . Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+	Conor Dooley <conor+dt@kernel.org>, Giuseppe Cavallaro <peppe.cavallaro@st.com>, 
+	linux-stm32@st-md-mailman.stormreply.com, linux-arm-kernel@lists.infradead.org, 
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org, devicetree@vger.kernel.org, 
+	Teoh Ji Sheng <ji.sheng.teoh@intel.com>
+Subject: Re: [PATCH net-next v2 3/4] net: stmmac: Add support for TX/RX
+ channel interrupt
+Message-ID: <xybq2523vgod6rbefw4zjs2kb2xtfmizecdwdjzyl6l2iovjqq@o3q4t2qny55o>
+References: <20240105070925.2948871-1-leong.ching.swee@intel.com>
+ <20240105070925.2948871-4-leong.ching.swee@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,54 +81,111 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20240105070925.2948871-4-leong.ching.swee@intel.com>
 
-Hi Arnd,
+On Fri, Jan 05, 2024 at 03:09:24PM +0800, Leong Ching Swee wrote:
+> From: Swee Leong Ching <leong.ching.swee@intel.com>
+> 
+> Enable TX/RX channel interrupt registration for MAC that interrupts CPU
+> through shared peripheral interrupt (SPI).
+> 
+> Per channel interrupts and interrupt-names are registered through,
+> Eg: 4 tx and 4 rx channels:
+> interrupts = <GIC_SPI 100 IRQ_TYPE_LEVEL_HIGH>,
+>              <GIC_SPI 101 IRQ_TYPE_LEVEL_HIGH>,
+>              <GIC_SPI 102 IRQ_TYPE_LEVEL_HIGH>,
+>              <GIC_SPI 103 IRQ_TYPE_LEVEL_HIGH>;
+>              <GIC_SPI 104 IRQ_TYPE_LEVEL_HIGH>;
+>              <GIC_SPI 105 IRQ_TYPE_LEVEL_HIGH>;
+>              <GIC_SPI 106 IRQ_TYPE_LEVEL_HIGH>;
+>              <GIC_SPI 107 IRQ_TYPE_LEVEL_HIGH>;
+> interrupt-names = "dma_tx0",
+>                   "dma_tx1",
+>                   "dma_tx2",
+>                   "dma_tx3",
+>                   "dma_rx0",
+>                   "dma_rx1",
+>                   "dma_rx2",
+>                   "dma_rx3";
+> 
+> Signed-off-by: Teoh Ji Sheng <ji.sheng.teoh@intel.com>
+> Signed-off-by: Swee Leong Ching <leong.ching.swee@intel.com>
+> ---
+>  .../ethernet/stmicro/stmmac/stmmac_platform.c | 28 +++++++++++++++++++
+>  1 file changed, 28 insertions(+)
+> 
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
+> index 70eadc83ca68..ae6859153e98 100644
+> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
+> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
+> @@ -710,6 +710,10 @@ EXPORT_SYMBOL_GPL(devm_stmmac_probe_config_dt);
+>  int stmmac_get_platform_resources(struct platform_device *pdev,
+>  				  struct stmmac_resources *stmmac_res)
+>  {
 
-FYI, the error/warning still remains.
+> +	char irq_name[9];
+> +	int i;
+> +	int irq;
+> +
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   52b1853b080a082ec3749c3a9577f6c71b1d4a90
-commit: ef104443bffa004f631729dfc924f0b84abbd602 procfs: consolidate arch_report_meminfo declaration
-date:   8 months ago
-config: parisc-randconfig-r062-20240107 (https://download.01.org/0day-ci/archive/20240108/202401080456.5qtlJuny-lkp@intel.com/config)
-compiler: hppa-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240108/202401080456.5qtlJuny-lkp@intel.com/reproduce)
+Reverse xmas tree please. Also what the point in having "i" and "irq"
+defined separately? Wouldn't it be better to merge them into a single
+statement:
++	char irq_name[9];
++	int i, irq;
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202401080456.5qtlJuny-lkp@intel.com/
+>  	memset(stmmac_res, 0, sizeof(*stmmac_res));
+>  
+>  	/* Get IRQ information early to have an ability to ask for deferred
+> @@ -743,6 +747,30 @@ int stmmac_get_platform_resources(struct platform_device *pdev,
+>  		dev_info(&pdev->dev, "IRQ eth_lpi not found\n");
+>  	}
+>  
 
-All warnings (new ones prefixed by >>):
+> +	/* For RX Channel */
 
->> arch/parisc/kernel/pdt.c:65:6: warning: no previous prototype for 'arch_report_meminfo' [-Wmissing-prototypes]
-      65 | void arch_report_meminfo(struct seq_file *m)
-         |      ^~~~~~~~~~~~~~~~~~~
+Why haven't you added a more descriptive comment as I suggested on v1:
 
++	/* Get optional Tx/Rx DMA per-channel IRQs, which otherwise
++	 * are supposed to be delivered via the common MAC IRQ line
++	 */
 
-vim +/arch_report_meminfo +65 arch/parisc/kernel/pdt.c
+?
 
-c9c2877d08d9aa Helge Deller 2017-05-11  63  
-c9c2877d08d9aa Helge Deller 2017-05-11  64  /* report PDT entries via /proc/meminfo */
-c9c2877d08d9aa Helge Deller 2017-05-11 @65  void arch_report_meminfo(struct seq_file *m)
-c9c2877d08d9aa Helge Deller 2017-05-11  66  {
-c9c2877d08d9aa Helge Deller 2017-05-11  67  	if (pdt_type == PDT_NONE)
-c9c2877d08d9aa Helge Deller 2017-05-11  68  		return;
-c9c2877d08d9aa Helge Deller 2017-05-11  69  
-c9c2877d08d9aa Helge Deller 2017-05-11  70  	seq_printf(m, "PDT_max_entries: %7lu\n",
-c9c2877d08d9aa Helge Deller 2017-05-11  71  			pdt_status.pdt_size);
-c9c2877d08d9aa Helge Deller 2017-05-11  72  	seq_printf(m, "PDT_cur_entries: %7lu\n",
-c9c2877d08d9aa Helge Deller 2017-05-11  73  			pdt_status.pdt_entries);
-c9c2877d08d9aa Helge Deller 2017-05-11  74  }
-c9c2877d08d9aa Helge Deller 2017-05-11  75  
+> +	for (i = 0; i < MTL_MAX_RX_QUEUES; i++) {
+> +		snprintf(irq_name, sizeof(irq_name), "dma_rx%i", i);
+> +		irq = platform_get_irq_byname_optional(pdev, irq_name);
+> +		if (irq == -EPROBE_DEFER)
+> +			return irq;
+> +		else if (irq < 0)
+> +			break;
+> +
+> +		stmmac_res->rx_irq[i] = irq;
+> +	}
+> +
 
-:::::: The code at line 65 was first introduced by commit
-:::::: c9c2877d08d9aa0ca0a5c227ac795fbb76269300 parisc: Add Page Deallocation Table (PDT) support
+> +	/* For TX Channel */
 
-:::::: TO: Helge Deller <deller@gmx.de>
-:::::: CC: Helge Deller <deller@gmx.de>
+* see the comment above
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+-Serge(y)
+
+> +	for (i = 0; i < MTL_MAX_TX_QUEUES; i++) {
+> +		snprintf(irq_name, sizeof(irq_name), "dma_tx%i", i);
+> +		irq = platform_get_irq_byname_optional(pdev, irq_name);
+> +		if (irq == -EPROBE_DEFER)
+> +			return irq;
+> +		else if (irq < 0)
+> +			break;
+> +
+> +		stmmac_res->tx_irq[i] = irq;
+> +	}
+> +
+>  	stmmac_res->addr = devm_platform_ioremap_resource(pdev, 0);
+>  
+>  	return PTR_ERR_OR_ZERO(stmmac_res->addr);
+> -- 
+> 2.34.1
+> 
+> 
 
