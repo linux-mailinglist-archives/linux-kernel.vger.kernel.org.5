@@ -1,117 +1,111 @@
-Return-Path: <linux-kernel+bounces-18741-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18742-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13B25826273
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 01:11:46 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D3C63826276
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 01:18:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A25B11F21F4F
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 00:11:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2E153B21C3C
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 00:17:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B03AA7EC;
-	Sun,  7 Jan 2024 00:11:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=alu.unizg.hr header.i=@alu.unizg.hr header.b="fv+9twWf";
-	dkim=pass (2048-bit key) header.d=alu.unizg.hr header.i=@alu.unizg.hr header.b="kKaEzs/r"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E54A15A2;
+	Sun,  7 Jan 2024 00:17:48 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from domac.alu.hr (domac.alu.unizg.hr [161.53.235.3])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77393137F;
-	Sun,  7 Jan 2024 00:11:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alu.unizg.hr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alu.unizg.hr
-Received: from localhost (localhost [127.0.0.1])
-	by domac.alu.hr (Postfix) with ESMTP id 2D8E16017E;
-	Sun,  7 Jan 2024 01:11:25 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-	t=1704586285; bh=io6bVbjfD9MLx3dCArThBXRDeqsxHoH4H3cJLntGxTs=;
-	h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
-	b=fv+9twWfnSR6B7G1e3KF79xVVuX4TvE+nDFKj8/5udkS8uvlUHVGgNaxvsv7pL7Vp
-	 CZO7GynaY9cISXI4JyNr2azRBqGcIFF/MdYq1aYl3TmSDJu6Ghr+22Rg9SyDS41Quq
-	 aXswChLOKEUC3M6e0lJ1Yd5C2Ny1D4lfFLU2TMgQC8z0Z8BvJA9pEJEkcq1iNLrxe4
-	 mPMHPqFxvraKmMapMb92sBNKV4DSDVapiDKK7Jij27OFvGkf/clBbs6BbAihzhhMJd
-	 p6GUDVGKuLRITBe77FhJSQJ31aWpH1GlFelA1zl0Fmg3wNjFJN7ydoCjS2KGrCG7Sx
-	 QMPHm5xZEEhww==
-X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
-Received: from domac.alu.hr ([127.0.0.1])
-	by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id bzMzb-QkuWYS; Sun,  7 Jan 2024 01:11:23 +0100 (CET)
-Received: from [192.168.92.51] (unknown [95.168.116.36])
-	by domac.alu.hr (Postfix) with ESMTPSA id 3153C60171;
-	Sun,  7 Jan 2024 01:11:22 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-	t=1704586283; bh=io6bVbjfD9MLx3dCArThBXRDeqsxHoH4H3cJLntGxTs=;
-	h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
-	b=kKaEzs/rckAz7btXlgiVUlTnJ2tV90ms5iFXuyZCwQ2lZDRg1rVcpHSJz4jA2PoNY
-	 2MK0S4dU1qcZX87/XSnjrkgki/IqdkpXIe4tcRML/cEnW8UioAHzuzMYB/2vu6639S
-	 TRBFEgcbqowQ80PS/7BIMn0kY95d5X4uYEte+ZpEAjR5WApDQzuKtmLvL+ABIhI0YB
-	 oVGIe6FcwKUaS8TN80nqxRI92UyDMaq9qbPvnhEBmVYu339lvydG+NFnsxwKWsbxY/
-	 KU5Vh40o2wVtQKKW7VxAFFwOKcZG/dHvYwOJF/g8H3J1g2F0JQLuUcGIlbEFVeKjYM
-	 yGO4ba71wOUCA==
-Message-ID: <acce064f-23c1-4f32-b9d8-d8c47d81fdb2@alu.unizg.hr>
-Date: Sun, 7 Jan 2024 01:11:21 +0100
+Received: from cae.in-ulm.de (cae.in-ulm.de [217.10.14.231])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66C897EC;
+	Sun,  7 Jan 2024 00:17:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=c--e.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=c--e.de
+Received: by cae.in-ulm.de (Postfix, from userid 1000)
+	id 9BC681402B8; Sun,  7 Jan 2024 01:17:41 +0100 (CET)
+From: "Christian A. Ehrhardt" <lk@c--e.de>
+To: Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+	linux-usb@vger.kernel.org
+Cc: "Christian A. Ehrhardt" <lk@c--e.de>,
+	Dell.Client.Kernel@dell.com,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Hans de Goede <hdegoede@redhat.com>,
+	Jack Pham <quic_jackp@quicinc.com>,
+	Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
+	=?UTF-8?q?Samuel=20=C4=8Cavoj?= <samuel@cavoj.net>,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 0/4] Make UCSI on Dell Latitude work
+Date: Sun,  7 Jan 2024 01:16:57 +0100
+Message-Id: <20240107001701.130535-1-lk@c--e.de>
+X-Mailer: git-send-email 2.30.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: selftest: net: fcnal-test.sh TIMEOUT
-Content-Language: en-US, hr
-From: Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
-To: David Ahern <dsahern@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Cc: "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Shuah Khan <shuah@kernel.org>,
- netdev@vger.kernel.org, linux-kselftest@vger.kernel.org
-References: <0b9a2827-c9c5-41d6-a4f1-dbd91262c474@alu.unizg.hr>
- <e0a52f62-3ea8-48c4-a5c4-307f7642cd45@kernel.org>
- <5f46cd87-ecad-4cad-bb03-b5bf22dff3b7@alu.unizg.hr>
-In-Reply-To: <5f46cd87-ecad-4cad-bb03-b5bf22dff3b7@alu.unizg.hr>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-On 06. 01. 2024. 22:02, Mirsad Todorovac wrote:
-> On 06. 01. 2024. 17:16, David Ahern wrote:
->> On 1/5/24 2:41 AM, Mirsad Todorovac wrote:
->>> diff --git a/tools/testing/selftests/net/settings
->>> b/tools/testing/selftests/net/settings index dfc27cdc6c05..ed8418e8217a
->>> 100644 --- a/tools/testing/selftests/net/settings +++
->>> b/tools/testing/selftests/net/settings @@ -1 +1 @@ -timeout=1500
->>> +timeout=3600
->>
->> bumping the timeout is fine to me. that script is running a lot of
->> permutations.
-> 
-> Well, aren't bugs best discovered if all cases or permutations are tested?
-> 
-> I recall some cases with Giullaume and Ido fixing them the last Summer or so.
+The UCSI interface on a Dell Latitude 5431 stops working after
+the first async event with:
 
-Hi, David,
+    GET_CONNECTOR_STATUS failed (-110)
 
-I apologise for my poor understanding of American English phrases.
+The core problem is that when sending the ACK_CC_CI command to
+clear the connector status changed condition the PPM expects us
+to send anothr ack for the command completion condition. However,
+the UCSI spec states that no ack for the command completion is
+required when the command is ACK_CC_CI (or PPM_RESET).
 
-If increasing the timeout value is OK with you, will you guys do it
-or should I submit the formal patch?
+There are various reports that suggest that several Dell laptops
+are affected by this problem. E.g. the kernel bugzilla has this
+report which is most likely an instance of this bug:
 
-Thank you,
-Mirsad
+    https://bugzilla.kernel.org/show_bug.cgi?id=216426
+
+This led me to the somewhat bold conclusion that the quirk should
+probably be applied to all Dell systems. However, I'm open to
+suggestions on how to proceed with this.
+
+While debugging another issue was found that is present for all systems
+but only triggered with the quirk active: The ACK_CC_CI command
+to ack the connector status change is sent without any lock which
+allows for a race where this command is sent while another command
+is currently in progress.
+
+The series consists of 4 changes:
+- Add the missing lock around ucsi_acknowledge_connector_change.
+  This change is a generic bugfix.
+- Add infrastructure for quirks and a quirk override module parameter
+  to the typec_ucsi module. There's at least one other change in the
+  works that wants something similar here:
+    https://lore.kernel.org/all/20231023215327.695720-2-dmitry.baryshkov@linaro.org/
+  Additionally, doing the dell quirk is a bit easier in the gereric
+  UCSI code. The module parameter will allow users to fix things if
+  the DMI matching goes wrong. Additionally, we can easily ask users
+  to test different quirks without the need to recompile.
+- Actually add the required quirk to ucsi.c.
+- Finally, refactor DMI matching in ucsi_acpi.c and enable the new
+  quirk for all DELL systems. The latter is kind of bold and I'm open
+  to suggestings on how to proceed here.
+  I'm CC'ing Dell.Client.Kernel@dell.com because this seems to be a
+  list where Dell people are that might be able to provide more
+  insight on this.
+
+Christian A. Ehrhardt (4):
+  usb: ucsi: Add quirk infrastructure
+  usb: ucsi: Add missing ppm_lock
+  usb: ucsi: Quirk to ack a connector change ack cmd
+  usb: ucsi: Apply UCSI_ACK_CONNECTOR_CHANGE_ACK_CMD to DELL systems
+
+ .../admin-guide/kernel-parameters.txt         |  5 +++
+ drivers/usb/typec/ucsi/ucsi.c                 | 21 ++++++++-
+ drivers/usb/typec/ucsi/ucsi.h                 |  7 ++-
+ drivers/usb/typec/ucsi/ucsi_acpi.c            | 45 ++++++++++++++++---
+ drivers/usb/typec/ucsi/ucsi_ccg.c             |  2 +-
+ drivers/usb/typec/ucsi/ucsi_glink.c           |  2 +-
+ drivers/usb/typec/ucsi/ucsi_stm32g0.c         |  2 +-
+ 7 files changed, 73 insertions(+), 11 deletions(-)
 
 -- 
-Mirsad Goran Todorovac
-Sistem inženjer
-Grafički fakultet | Akademija likovnih umjetnosti
-Sveučilište u Zagrebu
- 
-System engineer
-Faculty of Graphic Arts | Academy of Fine Arts
-University of Zagreb, Republic of Croatia
-The European Union
-
-"I see something approaching fast ... Will it be friends with me?"
+2.40.1
 
 
