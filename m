@@ -1,86 +1,133 @@
-Return-Path: <linux-kernel+bounces-18751-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18752-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0D3D826289
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 01:50:02 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A286682628B
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 01:54:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 63AE31F21EAC
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 00:49:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C58EE1C20B93
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 00:54:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D9D015A3;
-	Sun,  7 Jan 2024 00:49:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="enPzEd0A"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9359415A6;
+	Sun,  7 Jan 2024 00:54:47 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E644137F
-	for <linux-kernel@vger.kernel.org>; Sun,  7 Jan 2024 00:49:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0552C433C7;
-	Sun,  7 Jan 2024 00:49:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704588589;
-	bh=+zMBNVNcBRxMqLOkvk51UWJra7kOFYLL5nN74pm91Gs=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=enPzEd0A+HtzD82JzD/mCUvqz7T4CpIFes6VWTw/9MBEcKhJOwzUg3Q0yCREolsLp
-	 NoMr/cmGCWeGbOmUSj8xX3HiVWFr8zBdw6Oik5316LjWtw5PUSLMvSc5z2id3O6g6z
-	 iacvLO50QggUVOQGWIE2dVWDpq6FcXhPmHOn48qRhNcgB+RzaqtqIMCBo1GaPH5l0O
-	 FF/SStRtyyHuAXbIpuI3XhPOWXGH7zUVeH1enpdmTct4rIiRFt3TIPeS+H71CtPUjO
-	 chH/Fako32S/g7wQgrgYdBUrbPyeO/oPhjBCJ2OGMGnNB3Sqo0Q8bPslawhNwV6S8z
-	 +8ZDeUmQGuDdw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 39788CE1466; Sat,  6 Jan 2024 16:49:49 -0800 (PST)
-Date: Sat, 6 Jan 2024 16:49:49 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Frederic Weisbecker <frederic@kernel.org>
-Cc: linux-kernel@vger.kernel.org
-Subject: Re: Prototype patch to avoid TREE07 rcu_torture_writer() stalls
-Message-ID: <127b057c-446e-4b3f-bb04-d1c4efdded0f@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <a40344c8-a260-41f3-bd7a-6a63d8660489@paulmck-laptop>
- <ZZiIQvu+2CGufvOL@lothringen>
- <3da2e014-ed54-4b2a-9fde-99d6eef3e897@paulmck-laptop>
- <8c135e1a-5f66-42ae-9749-71a65f86dcbf@paulmck-laptop>
- <ZZnV0xt9ZhAu-vUh@localhost.localdomain>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F286F138D;
+	Sun,  7 Jan 2024 00:54:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-28cec7ae594so679832a91.3;
+        Sat, 06 Jan 2024 16:54:45 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704588885; x=1705193685;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=07EwMmHf0Kbina4nYu91Rh7NfrieYISV1KY8Y5DE2tI=;
+        b=APKFHkYYScfNGjW5zj8aJkoBTiNVcU9Z1yfMdbfr284IldYJezkW97Hsn6HNYwSpUd
+         L7S0DdkhuAD1Mw1tz3oDsLqwIFr7tUZ7gcLg+UHKanMjZLc2J8OiBGMi2nXAqN5Fbjjb
+         kh0LMs8nclzDgPxy3OOf/bQtqmBlq4pkTsPHZq9ZBgzu3jJ36SAd1P2gygUvu5hhD+dy
+         IhObTPkiKFkVJ0FxhrLyjRR4pB4xG5C/7N1jEk+An572SwM18B4ejMzvEd4MwvQ+GSQT
+         5GdmRoX0mqLX6zrqIXsFg45JXw15MrSVlB8mfL8Rf84qh2b0nKlGzWn68wHc5Y6pPu4S
+         4kpA==
+X-Gm-Message-State: AOJu0Yww+QDbsU8GhbatCAz2pHxAs4duSASOD3zs0paCWrABiJj16qB4
+	qKzwIOO6pARDpt0ollk7sOdSz1wCRzjNWWg3LPnunmUI
+X-Google-Smtp-Source: AGHT+IF9UcMCzcFSRZQYyyd4CXlp0lYPRrL/+ha+GXNlKOa3Xrd7IhaPIdXp1xe1dbYwH9xG8D/PX8jwiVjBaK+Lk9o=
+X-Received: by 2002:a17:903:32c7:b0:1d4:a179:13f9 with SMTP id
+ i7-20020a17090332c700b001d4a17913f9mr1978986plr.101.1704588885262; Sat, 06
+ Jan 2024 16:54:45 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZZnV0xt9ZhAu-vUh@localhost.localdomain>
+References: <20231205031519.853779502@linuxfoundation.org> <c8ebf598-4d9a-4ce0-bccf-2109150919dc@oracle.com>
+ <2023120618-around-duplicity-8f8f@gregkh>
+In-Reply-To: <2023120618-around-duplicity-8f8f@gregkh>
+From: Namhyung Kim <namhyung@kernel.org>
+Date: Sat, 6 Jan 2024 16:54:34 -0800
+Message-ID: <CAM9d7cjNgbLPbKV11045zH8ULJxwPWUr3wikFU2Ex1cH_0XxQA@mail.gmail.com>
+Subject: Re: [PATCH 5.15 00/67] 5.15.142-rc1 review
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>, stable@vger.kernel.org, 
+	patches@lists.linux.dev, linux-kernel@vger.kernel.org, 
+	torvalds@linux-foundation.org, akpm@linux-foundation.org, linux@roeck-us.net, 
+	shuah@kernel.org, patches@kernelci.org, lkft-triage@lists.linaro.org, 
+	pavel@denx.de, jonathanh@nvidia.com, f.fainelli@gmail.com, 
+	sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de, 
+	conor@kernel.org, allen.lkml@gmail.com, 
+	Vegard Nossum <vegard.nossum@oracle.com>, Darren Kenny <darren.kenny@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Sat, Jan 06, 2024 at 11:36:03PM +0100, Frederic Weisbecker wrote:
-> Le Sat, Jan 06, 2024 at 06:55:14AM -0800, Paul E. McKenney a écrit :
-> > > Is this related?
-> > > 
-> > > But then the system picks itself up, dusts itself off, and goes along
-> > > as if nothing had happened.
-> > > 
-> > > Maybe a long-running IRQ, NMI, or SMI?
-> > 
-> > Or, based on a recent bug chase of another type, high contention on
-> > an IRQ-disabled spinlock?
-> 
-> Before checking the guest's dmesg, I should probably have checked the host's.
-> It seems to report some softlockups, perhaps due to too many instances
-> in parallel where memory is not that generous.
+Hello,
 
-That would do it!
+On Tue, Dec 5, 2023 at 10:17=E2=80=AFAM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> On Tue, Dec 05, 2023 at 12:46:43PM +0530, Harshit Mogalapalli wrote:
+> > Hi Greg,
+> >
+> > On 05/12/23 8:46 am, Greg Kroah-Hartman wrote:
+> > > This is the start of the stable review cycle for the 5.15.142 release=
+.
+> > > There are 67 patches in this series, all will be posted as a response
+> > > to this one.  If anyone has any issues with these being applied, plea=
+se
+> > > let me know.
+> > >
+> > > Responses should be made by Thu, 07 Dec 2023 03:14:57 +0000.
+> > > Anything received after that time might be too late.
+> > >
+> > > The whole patch series can be found in one patch at:
+> > >     https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.15.142-rc1.gz
+> > > or in the git tree and branch at:
+> > >     git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.15.y
+> > > and the diffstat can be found below.
+> > >
+> > > thanks,
+> > >
+> > > greg k-h
+> > > Adrian Hunter <adrian.hunter@intel.com>
+> > >      perf inject: Fix GEN_ELF_TEXT_OFFSET for jit
+> > >
+> > >
+> >
+> > ^^ This commit is causing the perf/ build failure:
+> >
+> > In file included from util/jitdump.c:29:
+> > util/genelf.h:5:10: fatal error: linux/math.h: No such file or director=
+y
+> >     5 | #include <linux/math.h>
+> >       |          ^~~~~~~~~~~~~~
+> > compilation terminated.
+> >
+> > This was previously reported on 5.15.136-rc:
+> >
+> > Vegard shared his analysis on ways to fix here:
+> >
+> > https://lore.kernel.org/stable/fb1ce733-d612-4fa3-a1e4-716545625822@ora=
+cle.com/
+>
+> Now dropped from here and 4.19.y
 
-> Let me try to run as much time (250 hours) but with fewer instances in
-> parallel.
+Sorry for the super late reply and happy new year!
 
-I just today saw an extended stall on one instance of TREE03, also
-RCU grace-period kthread starvation.  But this was in -next, which
-is also having other yet-as-unanalyzed issues.
+As Vegard noted we can change the header to <linux/kernel.h>
+to avoid the build issue.  I don't expect more changes in this
+code so it's unlikely we have conflicts here.  Let me know if
+it happens later.
 
-							Thanx, Paul
+Anyway this code is needed to handle JIT-dump binaries
+generated by perf inject.  I'll send a patch if it's ok to you.
+
+Thanks,
+Namhyung
 
