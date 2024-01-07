@@ -1,66 +1,61 @@
-Return-Path: <linux-kernel+bounces-18970-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18971-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3EAAA8265D6
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 20:47:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1111D8265D8
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 20:53:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D494CB21233
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 19:47:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B6E5328195D
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 19:52:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EFB81170A;
-	Sun,  7 Jan 2024 19:47:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA50911700;
+	Sun,  7 Jan 2024 19:52:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="jtgW04aF"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RdZwIGQJ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FAD111706
-	for <linux-kernel@vger.kernel.org>; Sun,  7 Jan 2024 19:47:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 245F440E01F9;
-	Sun,  7 Jan 2024 19:47:35 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id O5-U9mV-3SS6; Sun,  7 Jan 2024 19:47:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1704656852; bh=kqESimdcXy57y8GBtFttloiGQkW4AhZT/hHCXZDbvZ8=;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A7A71119B;
+	Sun,  7 Jan 2024 19:52:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EB244C433C8;
+	Sun,  7 Jan 2024 19:52:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704657168;
+	bh=0mJ6xiLJKj/jFKQ9JbI84trjO4v1ZovLdA3D35k6E5E=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=jtgW04aFLcX3afBxceVCZklNSktZ7Xv+409DcrmdrGuYn6rcM2LfPAD3MCqRLdsjM
-	 Qhhq8qYMspMPIrD5pGiliR/nN37BVfqJedzXvepaHoSrhmVSlfzgZYdPoNHlwBZR51
-	 2ELHjfOjG8Wtp7QNB13wYigt8X9zn1h32YH/qbo2T2R8gwEIbHO/MUy0A5hLUzCNKR
-	 ymfHcPRHakqSup5kYE0wSKwlxyP65qleYd4B3DyUEByTXkCWfof2rzKs2htd9zf2gA
-	 d3cbtlQMug747iHA24X2qmCzDMGb0yd63fwhf5KAzlsDgO1ybPJE/g2eisb+Tk6zeM
-	 MyoT0Wjlj7CIxPE5x+ipChzc/n8OErBXvZljWn53gR3kIlJgcnWSWNVEEWR5eZYead
-	 +hZEp9AwEW9NH+PBkUi5IqawixJRy4yQh/Cbe8K1msn6io0qAvUj10zY3QSNiccdaq
-	 /l8ZXCmdCKiE+qMveTTgH5UreRDN34OihkaX/X0V7vrVD7jULDoENJ4Bm+ZAt6NZGv
-	 buVmS6DqkBORuElWlyhEzQ9jn0D544Sy7m+su4De2aDIKnmQhD37E6kTrX1+6vGug7
-	 mt1RJI916Sc6NIe95f7KkHgQ0qmTlwHh/orLQR7Lmg/QpC4KwVSNnvhu9huPAvTbEb
-	 SrB286Uoa9gKR6D+KB3npMuE=
-Received: from zn.tnic (pd9530f8c.dip0.t-ipconnect.de [217.83.15.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 9B5B440E00C5;
-	Sun,  7 Jan 2024 19:47:25 +0000 (UTC)
-Date: Sun, 7 Jan 2024 20:47:16 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Aleksander Mazur <deweloper@wp.pl>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	linux-kernel@vger.kernel.org, "H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [PATCH] x86/Kconfig: Transmeta Crusoe is cpu family 5, not 6
-Message-ID: <20240107194716.GDZZr/xBl3+G8O7i7E@fat_crate.local>
-References: <1517697968-19014-3-git-send-email-tedheadster@gmail.com>
- <20240107140609.2c1709e3@mocarz>
+	b=RdZwIGQJFl8v61u03DHLyxb8H18WGB3ANDT6V1AoQakIo4HuJ/ZgwABc/u2PG+cJg
+	 SQ4Ezh7Z4iuRBNuy5xVFSOoDRhawTG7oBLNtgZlQLMWkGAWk0mlupo7rv9CGgUtNoe
+	 HCgQipBweZqqyE3p2Sf1SNQqEfJW75qYDw8YbM9lXPYKwUMkOhexuDF/ed4g7gMjor
+	 2ArRk9zQ1BakM6/jOjxT2vYFEeNvALvfYC3H0NJmNdDKuFky4BgjzTmd+bvLIuzVXL
+	 61sJ2EUJuu2mqWvyvtDQJqR+v4Z+p6+HZzW/lGopyoF8Cxdu8/y2Xfh8h4JHFbQnW8
+	 3cAoYaBGML5+w==
+Date: Sun, 7 Jan 2024 19:52:41 +0000
+From: Simon Horman <horms@kernel.org>
+To: =?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
+Cc: Daniel Golle <daniel@makrotopia.org>,
+	Landen Chao <Landen.Chao@mediatek.com>,
+	DENG Qingfang <dqfext@gmail.com>,
+	Sean Wang <sean.wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>,
+	Florian Fainelli <f.fainelli@gmail.com>,
+	Vladimir Oltean <olteanv@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	David Bauer <mail@david-bauer.net>, mithat.guner@xeront.com,
+	erkin.bozoglu@xeront.com,
+	Luiz Angelo Daros de Luca <luizluca@gmail.com>,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH net-next] net: dsa: mt7530: support OF-based registration
+ of switch MDIO bus
+Message-ID: <20240107195241.GB132648@kernel.org>
+References: <20240106122142.235389-1-arinc.unal@arinc9.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -69,69 +64,105 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240107140609.2c1709e3@mocarz>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240106122142.235389-1-arinc.unal@arinc9.com>
 
-On Sun, Jan 07, 2024 at 02:16:57PM +0100, Aleksander Mazur wrote:
-> I found out I am no longer able to boot kernel compiled with CONFIG_MCRUSOE=y on
-> my HP t5300 with CPU: Transmeta(tm) Crusoe(tm) Processor TM5500 (family: 0x5,
-> model: 0x4, stepping: 0x3). It says:
+On Sat, Jan 06, 2024 at 03:21:42PM +0300, Arınç ÜNAL wrote:
+> From: David Bauer <mail@david-bauer.net>
 > 
-> > This kernel requires an i686 CPU, but only detected an i586 CPU.
-> > Unable to boot - please use a kernel appropriate for your CPU.    
+> Currently the MDIO bus of the switches the MT7530 DSA subdriver controls
+> can only be registered as non-OF-based. Bring support for registering the
+> bus OF-based.
 > 
-> It looks like this is caused by 25d76ac888216c369dea91768764728b83769799 which
-> started setting X86_MINIMUM_CPU_FAMILY=6 for MCRUSOE while CPUID gives family=5.
+> The subdrivers that control switches [with MDIO bus] probed on OF must
+> follow this logic to support all cases properly:
 > 
-> I was able to fix the problem with a patch included below. It just changes
-> X86_MINIMUM_CPU_FAMILY to 5
-
-... for MCRUSOE.
-
-> No other change was necessary (using -march=i686
-> seems fine).
+> No switch MDIO bus defined: Populate ds->user_mii_bus, register the MDIO
+> bus, set the interrupts for PHYs if "interrupt-controller" is defined at
+> the switch node. This case should only be covered for the switches which
+> their dt-bindings documentation didn't document the MDIO bus from the
+> start. This is to keep supporting the device trees that do not describe the
+> MDIO bus on the device tree but the MDIO bus is being used nonetheless.
 > 
-> /proc/cpuinfo:
-> processor	: 0
-> vendor_id	: GenuineTMx86
-> cpu family	: 5
-> model		: 4
-> model name	: Transmeta(tm) Crusoe(tm) Processor TM5500
-> stepping	: 3
-> cpu MHz		: 532.091
-> cache size	: 256 KB
-> fdiv_bug	: no
-> f00f_bug	: no
-> coma_bug	: no
-> fpu		: yes
-> fpu_exception	: yes
-> cpuid level	: 1
-> wp		: yes
-> flags		: fpu vme de pse tsc msr cx8 sep cmov mmx longrun lrti constant_tsc cpuid
-> bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs itlb_multihit mmio_unknown
-> bogomips	: 1064.18
-> clflush size	: 32
-> cache_alignment	: 32
-> address sizes	: 32 bits physical, 32 bits virtual
-> power management:
+> Switch MDIO bus defined: Don't populate ds->user_mii_bus, register the MDIO
+> bus, set the interrupts for PHYs if ["interrupt-controller" is defined at
+> the switch node and "interrupts" is defined at the PHY nodes under the
+> switch MDIO bus node].
 > 
-> --- a/arch/x86/Kconfig.cpu
-> +++ b/arch/x86/Kconfig.cpu
-> @@ -375,7 +375,7 @@
->  config X86_MINIMUM_CPU_FAMILY
->  	int
->  	default "64" if X86_64
-> -	default "6" if X86_32 && (MPENTIUM4 || MPENTIUMM || MPENTIUMIII || MPENTIUMII || M686 || MVIAC3_2 || MVIAC7 || MEFFICEON || MATOM || MCRUSOE || MCORE2 || MK7 || MK8)
-> +	default "6" if X86_32 && (MPENTIUM4 || MPENTIUMM || MPENTIUMIII || MPENTIUMII || M686 || MVIAC3_2 || MVIAC7 || MEFFICEON || MATOM || MCORE2 || MK7 || MK8)
->  	default "5" if X86_32 && X86_CMPXCHG64
->  	default "4"
+> Switch MDIO bus defined but explicitly disabled: If the device tree says
+> status = "disabled" for the MDIO bus, we shouldn't need an MDIO bus at all.
+> Instead, just exit as early as possible and do not call any MDIO API.
+> 
+> The use of ds->user_mii_bus is inappropriate when the MDIO bus of the
+> switch is described on the device tree [1], which is why we don't populate
+> ds->user_mii_bus in that case.
+> 
+> Link: https://lore.kernel.org/netdev/20231213120656.x46fyad6ls7sqyzv@skbuf/ [1]
+> Suggested-by: David Bauer <mail@david-bauer.net>
+> Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
+> ---
+>  drivers/net/dsa/mt7530.c | 18 ++++++++++++++----
+>  1 file changed, 14 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/net/dsa/mt7530.c b/drivers/net/dsa/mt7530.c
+> index 391c4dbdff42..39d7e7ad7154 100644
+> --- a/drivers/net/dsa/mt7530.c
+> +++ b/drivers/net/dsa/mt7530.c
+> @@ -2153,17 +2153,25 @@ mt7530_free_irq(struct mt7530_priv *priv)
+>  static int
+>  mt7530_setup_mdio(struct mt7530_priv *priv)
+>  {
+> +	struct device_node *mnp, *np = priv->dev->of_node;
+>  	struct dsa_switch *ds = priv->ds;
+>  	struct device *dev = priv->dev;
+>  	struct mii_bus *bus;
+>  	static int idx;
+> -	int ret;
+> +	int ret = 0;
+> +
+> +	mnp = of_get_child_by_name(np, "mdio");
+> +
+> +	if (mnp && !of_device_is_available(mnp))
+> +		goto out;
 
-Care to turn this into a proper patch with your SOB etc?
+nit: I think it would easier on the eyes to simply
 
-Thx.
+		return 0;
 
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+>  
+>  	bus = devm_mdiobus_alloc(dev);
+>  	if (!bus)
+>  		return -ENOMEM;
+>  
+> -	ds->user_mii_bus = bus;
+> +	if (!mnp)
+> +		ds->user_mii_bus = bus;
+> +
+>  	bus->priv = priv;
+>  	bus->name = KBUILD_MODNAME "-mii";
+>  	snprintf(bus->id, MII_BUS_ID_SIZE, KBUILD_MODNAME "-%d", idx++);
+> @@ -2174,16 +2182,18 @@ mt7530_setup_mdio(struct mt7530_priv *priv)
+>  	bus->parent = dev;
+>  	bus->phy_mask = ~ds->phys_mii_mask;
+>  
+> -	if (priv->irq)
+> +	if (priv->irq && !mnp)
+>  		mt7530_setup_mdio_irq(priv);
+>  
+> -	ret = devm_mdiobus_register(dev, bus);
+> +	ret = devm_of_mdiobus_register(dev, bus, mnp);
+> +	of_node_put(mnp);
+>  	if (ret) {
+>  		dev_err(dev, "failed to register MDIO bus: %d\n", ret);
+>  		if (priv->irq)
+>  			mt7530_free_mdio_irq(priv);
+>  	}
+>  
+> +out:
+>  	return ret;
+>  }
+>  
+> -- 
+> 2.40.1
+> 
 
