@@ -1,240 +1,238 @@
-Return-Path: <linux-kernel+bounces-18777-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18778-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E33578262E4
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 05:48:05 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7ED2E8262E8
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 05:53:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6E744282C4C
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 04:48:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DEAE6B21DFC
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 04:53:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E5C8125AE;
-	Sun,  7 Jan 2024 04:47:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88323125A3;
+	Sun,  7 Jan 2024 04:53:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="ppo8SZj6"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="NlOfQ+eZ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on2052.outbound.protection.outlook.com [40.107.7.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oi1-f179.google.com (mail-oi1-f179.google.com [209.85.167.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8C1111C8B;
-	Sun,  7 Jan 2024 04:47:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AsWTOP63BQL83mUgRboSv4mxfD2F3lEsnFJx+RY7M5FazwcbujULKUfSaVyiKxnoxJaC0Dy1KVpZYZQmlvlClgou+syo6qflIHpMk8BJipUKzMBLI4ErTZOgXEMmxKY6XzwIuDNjGBT3BwbwCyCjI67E/uHfZPDtFbhu0Zo7U8IoizafC/NCJ8m9pzCmqtyLZTlz7PffayRDsbflGqX90m3M23TnrVMsUiLncsIUW+6/Gwn/YfLGPDqTC+l7w/wEosUGHfDXEZtZZfzO3tsvizMIyGROCJ7zO9aEH5mwlVUAb1t/5FMdO8cL61xSPZZGWcqZZ0/c6jfEoEYuZ+F6Rw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Lah4of7i259VvGLz3f31uFgrjVuGLjjRoQWwOvCZsc0=;
- b=kdAgZY14pbGPRCJ7L1TLfy/GBD/RzwF1MtWX3PLJ6Gskdgafov6ORk0VPX/qNT7FwV3AngA48y4MX+bca6TKR1mu3Ak/mNpJzEHEazYW40KtQ3X6uQOaCIAsEwfPumIROtPGwlfZnZ+C4TJzQ6cXW4PfU4ldHr9b+Juzx/vKFp/V4L4G9rv/DwS3CUgfg4een06z1PWPWwxwPyhKTYOXSZTGRaRDeaWDUj4vnftSR9FuLFfjG8sRftWWs9ROYmHghI9+cmIyFIN/IyBiy2pxpuN78w19lLv+p8ypx+W8HU2AvaAp7ZwXLh+JH9Yo4mzOqpNGdQUJMrhfmf21vgYPig==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Lah4of7i259VvGLz3f31uFgrjVuGLjjRoQWwOvCZsc0=;
- b=ppo8SZj6uzDUi8p46M8104jOn/IcKW5KTBu50rSt3JMc5eURbCrbY9VQHQ+p+kvWuuiFzTWA1ixu6L55DkRSf1StFCpMKRmW2lZC9teuwuUxo8iD7hhs3wXpifXflba1Drwh8hluNaZG6VyMDKpKKBwOfADr8CfNRLbyLwUzOM4=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from AS8PR04MB7511.eurprd04.prod.outlook.com (2603:10a6:20b:23f::5)
- by AM8PR04MB7363.eurprd04.prod.outlook.com (2603:10a6:20b:1c7::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.20; Sun, 7 Jan
- 2024 04:47:47 +0000
-Received: from AS8PR04MB7511.eurprd04.prod.outlook.com
- ([fe80::8ee3:bac5:a2da:d469]) by AS8PR04MB7511.eurprd04.prod.outlook.com
- ([fe80::8ee3:bac5:a2da:d469%4]) with mapi id 15.20.7159.020; Sun, 7 Jan 2024
- 04:47:47 +0000
-Date: Sat, 6 Jan 2024 23:47:36 -0500
-From: Frank Li <Frank.li@nxp.com>
-To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc: krzysztof.kozlowski@linaro.org, bhelgaas@google.com,
-	conor+dt@kernel.org, devicetree@vger.kernel.org, festevam@gmail.com,
-	helgaas@kernel.org, hongxing.zhu@nxp.com, imx@lists.linux.dev,
-	kernel@pengutronix.de, krzysztof.kozlowski+dt@linaro.org,
-	kw@linux.com, l.stach@pengutronix.de,
-	linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
-	linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-	lpieralisi@kernel.org, robh@kernel.org, s.hauer@pengutronix.de,
-	shawnguo@kernel.org
-Subject: Re: [PATCH v7 04/16] dt-bindings: imx6q-pcie: Add linux,pci-domain
- as required for iMX8MQ
-Message-ID: <ZZos6LDk4NTfQHyU@lizhi-Precision-Tower-5810>
-References: <20231227182727.1747435-1-Frank.Li@nxp.com>
- <20231227182727.1747435-5-Frank.Li@nxp.com>
- <20240107031506.GC3416@thinkpad>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240107031506.GC3416@thinkpad>
-X-ClientProxiedBy: SJ0PR03CA0094.namprd03.prod.outlook.com
- (2603:10b6:a03:333::9) To AS8PR04MB7511.eurprd04.prod.outlook.com
- (2603:10a6:20b:23f::5)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 948FB11CAD
+	for <linux-kernel@vger.kernel.org>; Sun,  7 Jan 2024 04:53:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-oi1-f179.google.com with SMTP id 5614622812f47-3bbd6e37af4so925187b6e.1
+        for <linux-kernel@vger.kernel.org>; Sat, 06 Jan 2024 20:53:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1704603186; x=1705207986; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dl9r2/q2PwhHPnHwLB723Iewv3wGn8s1NZQNePFqWBk=;
+        b=NlOfQ+eZmM/CXmP9RVopWTRoyUX+D/2MFtpF2s2/MzGk7g/235z/HKcLQFAQ7d45a5
+         JsAOciF+1ZWNixIBuDrqihj3/USgJBknULiitQqKc0CiWOIKiZ1/YccH6FBoFCogha4G
+         J2vwixMkeNZslWeo7dAmHWWqN1BOmMGiXxugXKRGB3xRKMEuhuhQ2YFYI+tfxPbQvSjB
+         3L1/mlBFAfeYGvSwRUN6tzbKuJ24BMJa+zk+1VxZOyLOTHmRKbOxDxEeN+BgpQZGdXgl
+         m4XtEMDCbEYJsasoxXZ1SWohs+da+l8IZeIaU2vJLxfIj7gIU6l9Awpo4NDXT7xPU2Iu
+         YhyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704603186; x=1705207986;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=dl9r2/q2PwhHPnHwLB723Iewv3wGn8s1NZQNePFqWBk=;
+        b=o6PuLugrW2wMePDrFaOuWO1dhyRrH4CER01QeEUtJvuKDCPxb+hip/PMoHTctrSi9l
+         IJ+5qf1MfJ5D/0vID148ljB7Y/hMccdkDndFGM6OU0FoY8hwowjdtP9GGn/+Npn3gxjF
+         nE426drii7kzEEG+AtcIODZ6lf5bq20Ng+5YMEYLRsBzmO+mB6i+Mk0thXiQHovACgew
+         F6CZAISYYiyDtiBXltbAh0S+cBwHeliHQIyWocNbxbCJ+m9mb0Mk86R9ZtnJ6hXAECx/
+         Z/zUnWnka1YRrTZB4aJcqLbfHxI2pVJSBY+4aIQwI+1nRj6k91n9iXytqZxqjQGLpwmP
+         CGjg==
+X-Gm-Message-State: AOJu0YwI2kqhFYyGPvPykxCv/I9OlTbn9Jk3FzAQrsrncZ/JS7DDfRXp
+	VV/g8SWM1gJZ34B+fnDr/+WW0pdqnwUellWa6Ufur8gz0Ncypw==
+X-Google-Smtp-Source: AGHT+IGikCciqYIPubPRPb5hmvQ05w8Ucfr/MdPFC+v+3JAxbueRiPJO9WoD26dIZV3/xQJ5pZsKX5LwlyiBo9mD0Tc=
+X-Received: by 2002:a05:6808:5c9:b0:3bb:fc83:7c78 with SMTP id
+ d9-20020a05680805c900b003bbfc837c78mr1825451oij.90.1704603186582; Sat, 06 Jan
+ 2024 20:53:06 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AS8PR04MB7511:EE_|AM8PR04MB7363:EE_
-X-MS-Office365-Filtering-Correlation-Id: 27d23a14-ef46-4a94-733f-08dc0f3bcb90
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	H/WV4bO9AFRrQLp8GH/r7uDW7ody62cc0NkHTO9CQ9qews6EjYsh3QsSPkqICaDPu0deZxvwZvUW7pMn2kxGiBpfgUbXfNRQigB036/FjTGxNfPDkjf/P1I3eEdf41fnCZ+Wqp8mzUqLqGBja17C3Wj1uufpUQaEhi5zStESLEYtveyOhKHvSctGnxZwy+xTz8zdg8U+WPidBf7OkAI2BkP4AfCBbVVBGpyEALbvkoQXEdyy/eT293LYm5DQkrApI+rGmspbNa7M7mZIqAENpnek3bb5wQyNH+8VRwIzcO56CBGVxK3EZxc10FYN6qGp8u4on9Hh8F9lo/pzh5vylNePtaClU0Vgk19j7hVEBbdd9AnTicmKA81UApqH2pbWRh+qb1DIk2BfyQnHKUVg5o9Ntj2i2oDGy2wxDNjV7WqC4O3qNeNRGP5kOaYzbxj5WR3RAvdX4CFVvf88SDuSlqgls8ugccxQ8MchxRmVY4zG7HA4ZdCGYjMSzjXCw0MfU8ZQ9cOv2SHKKMkohY8+6dpLAsnZnViGkNc+vycVE+Xzm0Gzeq8eZKwThpI0F6Vqn0IpawG+U1vo0k/cVeSq+X9h2oXisO4cKu1e829MuhhfbnKCu/JkgXnCafKXE+29pkh+QrFsUU4mSG4641x3o10I+RF+TyPXEL337cWjCJ7Bl+wz4QtZARrzugFTSkl3
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB7511.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(39860400002)(396003)(376002)(346002)(136003)(366004)(230273577357003)(230173577357003)(230922051799003)(64100799003)(451199024)(1800799012)(186009)(33716001)(8676002)(8936002)(316002)(6916009)(5660300002)(4326008)(83380400001)(478600001)(9686003)(6506007)(6512007)(6666004)(52116002)(26005)(66946007)(66556008)(66476007)(38350700005)(6486002)(41300700001)(38100700002)(7416002)(2906002)(86362001)(32563001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?TExNU0Q3VVFCcFFaSkpCYmpybUdIV09JOGhuWUdzVmp6KzVzdE9oajFDbXJY?=
- =?utf-8?B?LzF4R2VzUmNqREhGSFBLanVzWjI3S2tMYWFnV3JGa2tOakROSHRsNXlwWjlE?=
- =?utf-8?B?aVprVFE2eGxEUGU2bkEzR3MxS1J3UkRtaXNuRHVtbzZJczNaU3NGYnZDRGF4?=
- =?utf-8?B?VmJLbXpIZWxvbVk3TFUrREkyMW4wQkxpN2xpcFQxMW1OVVJEWmtUdU93RUJi?=
- =?utf-8?B?M1hUNmQ1cDduN3ZSTlBMRUEyRHRCeFZwczBmTWcvR0lISDE3YXJjVk95M2ls?=
- =?utf-8?B?VUxUVHQ5UUpmZHNnQ0JqN2xxRkVkV0hkcTZQV2taSVMzcFY5Vm1wWlRGckV1?=
- =?utf-8?B?SHlIMGdYVWcvcks4VDlkK3hKWGxSaFN1djc0eEloaTA2ZkU1dGFINzBjdkY2?=
- =?utf-8?B?UE9henYzSU1BSThZT0ZnZVVXaEU0OWlsazFiREN5b05zSm1IdGI1ckdtQytX?=
- =?utf-8?B?QlhPUi9aY0ZmcUtZUk11UzU4c0g1TS9sWmtJb2RlVHdNclNvTFhkTWNwd1kv?=
- =?utf-8?B?T3lFQVZmS0p1YVlLSGc5K1ZTYVg5ZGEwZnVYcWl1L01CN2k0MGZsUDhkODRM?=
- =?utf-8?B?VVNTOWxlcWdsNFpMSWtnTzNQNWxKMWtDZitHVDlHSzAxUHNYdkY0TVZobDRj?=
- =?utf-8?B?UTdDM2NSVU9Pc042bjlpcGpDNUFqTVdzaktpYWZRaDRkWmFpVndtOWY0T0dH?=
- =?utf-8?B?b1hDdk9oVVJwWDdOUENEYUtzTWUrVDJWbmpMUUV4VHJjWlJYTkpZT3NTUkR2?=
- =?utf-8?B?SytqUlpaSmljN21SVVNaODFvZXlCbkk2dzBzUUpvd2FYMVp5Um8rbm5hN1dH?=
- =?utf-8?B?SlVaZzJONjgzeWRSNkZtS0hkRXJwdE1idFlvNi9Lc09TWW1kQWtQRkFqZmtj?=
- =?utf-8?B?ZFY4MzR5SHpJUjNwL095QjJnWjhEMGR6S1hyVEhkY29LYXJoempLVU9pcVJl?=
- =?utf-8?B?SmRrN0VJREN0eHBiQkhRR1R1NlhmZGVzWGoxSTJjN0hLK3o1ZTROTDRSNDRi?=
- =?utf-8?B?WUJFTWhrMWxzT2hNWnRodjUxZU4xRURBNmJFcjd5SFV3VFVlZnBsdVBOM3hT?=
- =?utf-8?B?cm4xaVgxQzl6TkMxU0NJU1FlNWJQOGJqSmFORzJqV0tpN3hCZFhoWVhNc3dE?=
- =?utf-8?B?cUZuZjNPYlNic3dvbHdaTkVGalYwU2N6SWcvYm12aWhOeW04R2NHTTZQTnVX?=
- =?utf-8?B?a000YlU0UGVndDBXamJONFIycnE3RlRLTFFBUUF3TmJyR0o1cmhvd3Rjd093?=
- =?utf-8?B?emk0NXZPeG1jVlJ6djNGeThTOW16bVJpNUpyN3RrUkQ1cURsRmlnbDhrOXNl?=
- =?utf-8?B?eE5CTVdBSG5YQUR0LzFJaVA5OEQ0c3FaZDVuRHNXK1VtRVlRNnZ3SzI2OEI3?=
- =?utf-8?B?RzluMm1hOURpL1JEa05nNnBVMXVpQUl0cExHSHA2TTFHV1Y4b0pRWUZDT2Vq?=
- =?utf-8?B?N3ppMU9wYjhIbTJnUmdmVHIzQ1liamwvTXJkek9tbEpBL3g1Q3hINlRteklL?=
- =?utf-8?B?ZW5DdzdjbmZHUUhOTnFvdW9QMzIwZWlKT1ovdGZTZjJWTGlBYkhtZ1lXVDBJ?=
- =?utf-8?B?NFdPZGZoOElNNFVwVTVVSTVBOWt1bTMvK3NNS2dKaWpWcEFMV2tGTnk4SjFT?=
- =?utf-8?B?Ykh4RUFLb3BOMUFzNTZGbUNBVmltSlp4Z1F5K2d6SU5BaXBwcHZqR3VraFkw?=
- =?utf-8?B?SnprUEN0Wm9VZHVieXVoUTI0ZHIrZU40QWk0aDQwVnp2dlpzNzJRWW5VM0dj?=
- =?utf-8?B?T3VkODZsaXRmYzJIay9vTmZHM2FGR3QyY0R2RDlEVjYwYUV1WlFhdHNvK1pn?=
- =?utf-8?B?UHFubGE2ZTZFME9KNlRyWnl6SWdlcFFqWXE3dVdXblcyUU5jWjB1dXNGYnkz?=
- =?utf-8?B?MUYxQXVlQTczWkduWk5QU2ZKdnlYbGhiZ1ZEWWl5WU14N3llOHZxK20xYTRt?=
- =?utf-8?B?L0RLRUxhWWs1dmpUTEpSUzdFS1dpTFpSYmovUjFwWkF5MGN2N2QyOE1abWlz?=
- =?utf-8?B?QkxZTFltb1cwWVJQKzVWbXpRQ1RmMjMxNUJVWnFlMnNHR0RySzJPTWRYU2I4?=
- =?utf-8?B?VjVIZ1pLR2p1SlFRMnRLeVpkRlp3bXo5RjJWSjNYUkpaSlkvYmJIdXpVSjNB?=
- =?utf-8?Q?s5Z8=3D?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 27d23a14-ef46-4a94-733f-08dc0f3bcb90
-X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB7511.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Jan 2024 04:47:47.4312
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: zn1MvnIXNkWyhceYvtx16711qu/ieXyZ69VkEw/pmfVwdbbWAf8E+Yr/QhGmRXaZF4vTlo4PLv+qDUFYMCB/gw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM8PR04MB7363
+References: <20240106084016.200641776@linuxfoundation.org>
+In-Reply-To: <20240106084016.200641776@linuxfoundation.org>
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Sun, 7 Jan 2024 10:22:55 +0530
+Message-ID: <CA+G9fYsqWVEHhow8kaCOUQHstT_7r6=7C4xCr4grmCR6mTtx=Q@mail.gmail.com>
+Subject: Re: [PATCH 5.4 00/45] 5.4.266-rc2 review
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: stable@vger.kernel.org, patches@lists.linux.dev, 
+	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, 
+	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, 
+	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, 
+	jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, 
+	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Sun, Jan 07, 2024 at 08:45:06AM +0530, Manivannan Sadhasivam wrote:
-> On Wed, Dec 27, 2023 at 01:27:15PM -0500, Frank Li wrote:
-> > iMX8MQ have two pci controllers. Adds "linux,pci-domain" as required
-> > proptery for iMX8MQ to indicate pci controller index.
-> > 
-> 
-> property
-> 
-> > This adjustment paves the way for eliminating the hardcoded check on the
-> > base register for acquiring the controller_id.
-> > 
-> > 	...
-> > 	if (dbi_base->start == IMX8MQ_PCIE2_BASE_ADDR)
-> > 		imx6_pcie->controller_id = 1;
-> > 	...
-> > 
-> > The controller_id is crucial and utilized for certain register bit
-> > positions. It must align precisely with the controller index in the SoC.
-> > An auto-incremented ID don't fit this case. The DTS or fuse configurations
-> > may deactivate specific PCI controllers.
-> > 
-> 
-> You cannot change the binding for the sake of driver. But you can make this
-> change in other way. See below...
-> 
-> > Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> > ---
-> > 
-> > Notes:
-> >     Change from v5 to v6
-> >     - rework commit message to explain why need required and why auto increase
-> >     id not work
-> >     
-> >     Change from v4 to v5
-> >     - new patch at v5
-> > 
-> >  .../bindings/pci/fsl,imx6q-pcie-common.yaml           | 11 +++++++++++
-> >  1 file changed, 11 insertions(+)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie-common.yaml b/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie-common.yaml
-> > index d91b639ae7ae7..8f39b4e6e8491 100644
-> > --- a/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie-common.yaml
-> > +++ b/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie-common.yaml
-> > @@ -265,6 +265,17 @@ allOf:
-> >              - const: apps
-> >              - const: turnoff
-> >  
-> > +  - if:
-> > +      properties:
-> > +        compatible:
-> > +          contains:
-> > +            enum:
-> > +              - fsl,imx8mq-pcie
-> > +              - fsl,imx8mq-pcie-ep
-> 
-> "linux,pci-domain" is a generic property. So you cannot make it required only
-> for certain SoCs. 
+On Sat, 6 Jan 2024 at 14:10, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.4.266 release.
+> There are 45 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Mon, 08 Jan 2024 08:39:59 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.4.266-rc2.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.4.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Sorry, why not? there are many generic property.
 
-> But you can make it so for all SoCs. This way, the drivers
-> can also rely on it.
-> 
-> Now, you should get rid of the commit message about driver internals:
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-Not all dts already added "linux,pci-domain" yet. If required for all SOCs,
-it will cause dtb check warnings.
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-Frank
-> 
-> > This adjustment paves the way for eliminating the hardcoded check on the
-> > base register for acquiring the controller_id.
-> > 
-> >       ...
-> >       if (dbi_base->start == IMX8MQ_PCIE2_BASE_ADDR)
-> >               imx6_pcie->controller_id = 1;
-> >       ...
-> > 
-> > The controller_id is crucial and utilized for certain register bit
-> > positions. It must align precisely with the controller index in the SoC.
-> > An auto-incremented ID don't fit this case. The DTS or fuse configurations
-> > may deactivate specific PCI controllers.
-> > 
-> 
-> - Mani
-> 
-> > +    then:
-> > +      required:
-> > +        - linux,pci-domain
-> > +
-> >  additionalProperties: true
-> >  
-> >  ...
-> > -- 
-> > 2.34.1
-> > 
-> 
-> -- 
-> மணிவண்ணன் சதாசிவம்
+## Build
+* kernel: 5.4.266-rc2
+* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+* git branch: linux-5.4.y
+* git commit: 27678f7dfd94dacfcf8d721b17324db3f4425487
+* git describe: v5.4.265-46-g27678f7dfd94
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.4.y/build/v5.4.2=
+65-46-g27678f7dfd94
+
+## Test Regressions (compared to v5.4.264)
+
+## Metric Regressions (compared to v5.4.264)
+
+## Test Fixes (compared to v5.4.264)
+
+## Metric Fixes (compared to v5.4.264)
+
+## Test result summary
+total: 91826, pass: 71656, fail: 2493, skip: 17628, xfail: 49
+
+## Build Summary
+* arc: 5 total, 5 passed, 0 failed
+* arm: 148 total, 148 passed, 0 failed
+* arm64: 47 total, 45 passed, 2 failed
+* i386: 30 total, 24 passed, 6 failed
+* mips: 27 total, 27 passed, 0 failed
+* parisc: 3 total, 0 passed, 3 failed
+* powerpc: 32 total, 32 passed, 0 failed
+* riscv: 15 total, 15 passed, 0 failed
+* s390: 8 total, 8 passed, 0 failed
+* sh: 10 total, 10 passed, 0 failed
+* sparc: 8 total, 8 passed, 0 failed
+* x86_64: 41 total, 41 passed, 0 failed
+
+## Test suites summary
+* boot
+* kselftest-android
+* kselftest-arm64
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers-dma-buf
+* kselftest-efivarfs
+* kselftest-exec
+* kselftest-filesystems
+* kselftest-filesystems-binderfs
+* kselftest-filesystems-epoll
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-ftrace
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-net-forwarding
+* kselftest-net-mptcp
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-user_events
+* kselftest-vDSO
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* kunit
+* log-parser-boot
+* log-parser-test
+* ltp-cap_bounds
+* ltp-commands
+* ltp-containers
+* ltp-controllers
+* ltp-cpuhotplug
+* ltp-crypto
+* ltp-cve
+* ltp-dio
+* ltp-fcntl-locktests
+* ltp-filecaps
+* ltp-fs
+* ltp-fs_bind
+* ltp-fs_perms_simple
+* ltp-fsx
+* ltp-hugetlb
+* ltp-io
+* ltp-ipc
+* ltp-math
+* ltp-mm
+* ltp-nptl
+* ltp-pty
+* ltp-sched
+* ltp-securebits
+* ltp-smoke
+* ltp-syscalls
+* ltp-tracing
+* perf
+* rcutorture
+
+--
+Linaro LKFT
+https://lkft.linaro.org
 
