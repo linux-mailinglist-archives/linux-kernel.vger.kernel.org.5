@@ -1,103 +1,98 @@
-Return-Path: <linux-kernel+bounces-18962-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18963-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 31BDB8265BF
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 20:15:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B31F38265C7
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 20:17:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 506721C20ABD
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 19:15:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BF76A1C210D2
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 19:17:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 493F31118F;
-	Sun,  7 Jan 2024 19:15:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB3AB1119B;
+	Sun,  7 Jan 2024 19:17:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=alu.unizg.hr header.i=@alu.unizg.hr header.b="khWyaJHr";
-	dkim=pass (2048-bit key) header.d=alu.unizg.hr header.i=@alu.unizg.hr header.b="HEpJZLuQ"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="xjgfuRce"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from domac.alu.hr (domac.alu.unizg.hr [161.53.235.3])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2F4F10A13;
-	Sun,  7 Jan 2024 19:15:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alu.unizg.hr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alu.unizg.hr
-Received: from localhost (localhost [127.0.0.1])
-	by domac.alu.hr (Postfix) with ESMTP id A62026017E;
-	Sun,  7 Jan 2024 20:15:41 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-	t=1704654941; bh=d3LbiJNQ7y0NCWm2gRzh66E1f66jjXrRh4BTfGJ7PdQ=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=khWyaJHrgQPSJxKd+OYGTw7ohoRPc0qI7EF/7OmTPfrMymRYPbU45x2+5DrXqlraM
-	 zURsjsV0QSZWPfZWMjF458LU8vIkewU5s4C+IkAfxZP40Z8jftLPowY6lm7LU5mv6W
-	 RO2MI5yJlmXsLGBsqXw08owJ7oN3lFb+AOGgKmbjzTCjyIqVidpdbx42k8E0BANwHE
-	 x8oOB0t06YLK/JsF2dfxsZnpPzCQ6kYR+pIQS2YJTwEGCH+k3dC5ouCKBrNVlxumE7
-	 JR5vjamx+enEnthRcIVIzbUFoQ66ogMme3zgQo2BAHG/jvTsmujBBXg4W260YNruai
-	 f6UdYmWXtlTjw==
-X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
-Received: from domac.alu.hr ([127.0.0.1])
-	by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id 2XVoPw5UeT1x; Sun,  7 Jan 2024 20:15:39 +0100 (CET)
-Received: from [192.168.6.51] (unknown [95.168.121.73])
-	by domac.alu.hr (Postfix) with ESMTPSA id EA42760171;
-	Sun,  7 Jan 2024 20:15:38 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-	t=1704654939; bh=d3LbiJNQ7y0NCWm2gRzh66E1f66jjXrRh4BTfGJ7PdQ=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=HEpJZLuQ0pVPcJ8fs2UcGDNWlPQCfaud5Xlqivdnd8jjqXD5QGLvxpEaoddO/JLew
-	 IsUDi5B50DylKXVGHFR6KF/i4hqE3pbcinGmiHiaVnIk46710/3MLQpHT//5UUpro9
-	 xnhiAF5HvboJ+vdWqllkbbbbfcmO7C9OU/CgI8TdY+Hk5QUS/hBC1G64jQPMudwT7F
-	 g4DhmCdR0rVA7+lavQmNXDgpRhDps0C8pxP3min4g4kX5f+s5L/mcyd5gp8ZygOaac
-	 zmDe4uX2NaJUnu0AQ29RTRLQpoza4wvZyy7t2Vw7LsjuwDxIx7YapUqvtJqTgKlVT6
-	 fK3d2GET5mHug==
-Message-ID: <69683d58-3cde-4bff-bc11-4d2953e22bf2@alu.unizg.hr>
-Date: Sun, 7 Jan 2024 20:15:37 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E60B210A3C;
+	Sun,  7 Jan 2024 19:17:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=ShIBqfFvGWvOYEHtMNULgAQ4OuLCr8SgdXz0DO7tAwE=; b=xjgfuRceNwNt8POVHAxhoDta4n
+	Sb50yfK4BEU1CNA4NNOTuQLVNOEeBX3GQ7aEFulG01eDLsd1eGhnD0Zl4qZYefWz+7Gnl1H6xgbfE
+	Vml1QVZS+DgcLQSS2kOkYWutOZsl1W3/J/QurlMTEUn0SIoov15j7qJmz3QFg+tzA4cbP90YhvYhM
+	DNL8GYwbmmccfKXu3NzFk0y80+pJiwHLbWhctnz7RGRy3mxAd0uXNUjcwJQvD5CqGWnOPzkOW6Y7G
+	c+SvvkBNXqN5UG7s8Weav15eoeqbdEsQD+Gdl3dd2dReAGbNF4af/beLKjzlO2OatqcHmvYMFVFn2
+	NpagF3QA==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:37984)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1rMYeJ-0002Ki-1A;
+	Sun, 07 Jan 2024 19:17:31 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1rMYeK-0002UL-8f; Sun, 07 Jan 2024 19:17:32 +0000
+Date: Sun, 7 Jan 2024 19:17:32 +0000
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: Sergio Palumbo <palumbo.ser@outlook.it>
+Cc: Andrew Lunn <andrew@lunn.ch>, Heiner Kallweit <hkallweit1@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH]     net: sfp: add quirk for DFP-34X-2C2 GPON ONU SFP
+Message-ID: <ZZr4zCzEpuzOoIGQ@shell.armlinux.org.uk>
+References: <AS1PR03MB8189FE82C632EBA97644D70082642@AS1PR03MB8189.eurprd03.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 3/4] ksellftest: alsa: Fix the printf format specifier
- to unsigned int
-Content-Language: en-US, hr
-To: Andreas Schwab <schwab@linux-m68k.org>
-Cc: =?UTF-8?B?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= <nfraprado@collabora.com>,
- Mark Brown <broonie@kernel.org>, linux-sound@vger.kernel.org,
- linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Shuah Khan <shuah@kernel.org>
-References: <20240107151218.933806-1-mirsad.todorovac@alu.unizg.hr>
- <20240107151218.933806-4-mirsad.todorovac@alu.unizg.hr>
- <87r0itm1ft.fsf@igel.home>
-From: Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
-In-Reply-To: <87r0itm1ft.fsf@igel.home>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <AS1PR03MB8189FE82C632EBA97644D70082642@AS1PR03MB8189.eurprd03.prod.outlook.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-On 07. 01. 2024. 19:40, Andreas Schwab wrote:
-> s/ksellftest/kselftest/
+On Sun, Jan 07, 2024 at 05:17:57PM +0100, Sergio Palumbo wrote:
+>     Add a quirk for a GPON SFP that identifies itself as "OEM"
+>     "DFP-34X-2C2". This module's PHY is accessible at 1000base-X,
+>     but can also run at 2500base-X as per specs of the module.
+>     After application of the quirk the module is enebled to run both
+>     at 1000base-X as well as at 2500base-X interface mode.
+> 
+> Signed-off-by: Sergio Palumbo <palumbo.ser@outlook.it>
 
-Thx.
+There are several issues here:
 
-Fixed in v2.
+1. Submitting to netdev needs either [PATCH net] or [PATCH net-next]
+   to indicate which tree is being targetted. As this isn't a fix,
+   net-next is appropriate, but I would also suggest that it is too
+   late in the cycle as v6.7 is due out today.
 
-Thanks,
-Mirsad
+2. How does the module switch between 1000base-X and 2500base-X?
+   What happens if the module wants to use 2500base-X but the host
+   doesn't support it? Please include these details in the commit
+   message.
+
+3. While I know the Turris Rollball entries are out of order, please
+   try to keep the list alphabetically sorted, first by vendor string
+   and then part string.
+
+Thanks.
 
 -- 
-Mirsad Goran Todorovac
-Sistem inženjer
-Grafički fakultet | Akademija likovnih umjetnosti
-Sveučilište u Zagrebu
- 
-System engineer
-Faculty of Graphic Arts | Academy of Fine Arts
-University of Zagreb, Republic of Croatia
-The European Union
-
-"I see something approaching fast ... Will it be friends with me?"
-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
