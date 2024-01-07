@@ -1,117 +1,88 @@
-Return-Path: <linux-kernel+bounces-18956-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18957-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5FA438265A2
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 19:43:31 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4DBF28265AE
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 19:45:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1CB491F21843
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 18:43:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9BB4CB2121F
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 18:45:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95F6F10A3B;
-	Sun,  7 Jan 2024 18:43:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFE8411185;
+	Sun,  7 Jan 2024 18:44:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=alu.unizg.hr header.i=@alu.unizg.hr header.b="ClM4duYN";
-	dkim=pass (2048-bit key) header.d=alu.unizg.hr header.i=@alu.unizg.hr header.b="dqzbqbxK"
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="zVfDGiXp"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from domac.alu.hr (domac.alu.unizg.hr [161.53.235.3])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92EAB10A17;
-	Sun,  7 Jan 2024 18:43:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alu.unizg.hr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alu.unizg.hr
-Received: from localhost (localhost [127.0.0.1])
-	by domac.alu.hr (Postfix) with ESMTP id 8828C6017E;
-	Sun,  7 Jan 2024 19:43:14 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-	t=1704652994; bh=/8k/gc+e92RynLmS4ARbFS1DT+RhiG7LkYKs7/Pc1mA=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=ClM4duYNYMFqf4Q3i2yLrMFwWEeU8yXR1xMqFJRl85c/R7ikosiVfKJRJIwtYjMeS
-	 v4aw6FyrYVnmIWZBvVlEXEhf+4BlgFXpxV18IowwMz8TCBrNFWUr2v26TpGS6WoGTU
-	 2KKbF62OUHLwxR+PKrVjb9mQESwt66SJBwbh/PG1IMEasARyqx7TWzPqG8K3GUJ42z
-	 FS2KJaam0sN6IOJlNBdotF5aO8qeOxnSPqN0v4RHkbqruDli9GTB+ONL3FjqCo67cA
-	 6AkmjKE9T9ydwYm48RJx4ZhVwGPTi34uY8IMrNhrEOU+ZLDNnDJPvW2QEC5+g+x7dn
-	 ty+kh7uhH9jUQ==
-X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
-Received: from domac.alu.hr ([127.0.0.1])
-	by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id UCwbCgsSh47H; Sun,  7 Jan 2024 19:43:12 +0100 (CET)
-Received: from [192.168.6.51] (unknown [95.168.121.73])
-	by domac.alu.hr (Postfix) with ESMTPSA id B8F5860171;
-	Sun,  7 Jan 2024 19:43:11 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-	t=1704652992; bh=/8k/gc+e92RynLmS4ARbFS1DT+RhiG7LkYKs7/Pc1mA=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=dqzbqbxKp39R5QruQR03NEzBNXfSwudlJ6oXbzfhTO0Q7WMi1rlpcfHvZLnXnl4bz
-	 46gn7DsFOotpCzZJzs/ttqAMVJkBoC7k9Ep9Ci1uGgEUIqarawJQDbpCuTQo+VTeQu
-	 g0W36mF4F9QRe6C1v+Mo0r1G7KCOBAoCx99uetqWpFnnksjkEg+sj5Hynt4mhbiWrJ
-	 qigcMCd+GpJqBVXL6ujpjFcUeVeW9gfiqMmVpSOQevR40vdMNZpvRtNJFciB8PeiNd
-	 ltL0Ut1DyKIKI7yUbAGeHnjyiyUeF+ruu0uDNVhaMtdpZ2zsgR9y4M8Gr5viq5GMHJ
-	 dqhiDFg7yYHcw==
-Message-ID: <c6cb8004-23e8-4f37-ac49-0ed6b5c66b2f@alu.unizg.hr>
-Date: Sun, 7 Jan 2024 19:43:10 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7102811183;
+	Sun,  7 Jan 2024 18:44:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=0jaV7ovbzbIte+b19ohi0bhK6HoVIw2c2WB+T5GbL3w=; b=zVfDGiXp6wfbV4hPykKINDsu5o
+	bTNMbvJfQbUbj+0Yq4aQOmAJzZjomgTN6WGOFgvTmV14HyQ17z0v39+IkD3N89/rL0nbaor+uITc5
+	lcxAn35uNW/cP0ogR2PHGYr7s3Vqu5wHzHa8nx8eSX3C7niVUEGzmGxC5xA6oKpmV3aI=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1rMY8S-004aGA-Bh; Sun, 07 Jan 2024 19:44:36 +0100
+Date: Sun, 7 Jan 2024 19:44:36 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: Christian Marangi <ansuelsmth@gmail.com>
+Cc: Sergey Ryazanov <ryazanov.s.a@gmail.com>,
+	Robert Marko <robert.marko@sartura.hr>,
+	Vladimir Oltean <olteanv@gmail.com>,
+	Rob Herring <robh+dt@kernel.org>, Luo Jie <quic_luoj@quicinc.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, Andy Gross <agross@kernel.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	netdev@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org
+Subject: Re: [net-next PATCH RFC v3 1/8] dt-bindings: net: document ethernet
+ PHY package nodes
+Message-ID: <a6a155ab-0852-4f08-b49b-952ac74124a8@lunn.ch>
+References: <20231126015346.25208-1-ansuelsmth@gmail.com>
+ <20231126015346.25208-2-ansuelsmth@gmail.com>
+ <0926ea46-1ce4-4118-a04c-b6badc0b9e15@gmail.com>
+ <659aedb1.df0a0220.35691.1853@mx.google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 3/4] ksellftest: alsa: Fix the printf format specifier
- to unsigned int
-Content-Language: en-US, hr
-To: Mark Brown <broonie@kernel.org>
-Cc: =?UTF-8?B?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= <nfraprado@collabora.com>,
- linux-sound@vger.kernel.org, linux-kselftest@vger.kernel.org,
- linux-kernel@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, Shuah Khan <shuah@kernel.org>
-References: <20240107151218.933806-1-mirsad.todorovac@alu.unizg.hr>
- <20240107151218.933806-4-mirsad.todorovac@alu.unizg.hr>
- <ZZrEXSU3Bx85rSGo@finisterre.sirena.org.uk>
- <34121d01-34dd-4c29-b31e-91f3e8ea15bc@alu.unizg.hr>
- <ZZrqE4iCRMqTX/3v@finisterre.sirena.org.uk>
-From: Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
-In-Reply-To: <ZZrqE4iCRMqTX/3v@finisterre.sirena.org.uk>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <659aedb1.df0a0220.35691.1853@mx.google.com>
 
-On 07. 01. 2024. 19:14, Mark Brown wrote:
-> On Sun, Jan 07, 2024 at 05:21:00PM +0100, Mirsad Todorovac wrote:
-> 
->> I guess I can keep the Acked-by tags. Will the patchwork find the tag in
->> the v1 patch set?
-> 
-> No, you need to include it.
+> Honestly I would postpone untile we have a clear idea of what is
+> actually part of the PHY and what can be handled externally... Example
+> setting the clock in gcc, writing a specific driver...
 
-Great. Sent v2 for review.
+That is really core of the problem here. We have no reliable
+description of the hardware. The datasheet often starts with a block
+diagram of the PHY package. Sometimes there is a product brief with
+the same diagram. We need that published. I'm not asking for the full
+data sheet, just the introductory text which gives a high level
+overview of what the hardware actually is. Then we can sketch out a
+high level Linux architecture for the PHY package.
 
-I heard that there is a rule "one version per day or when confirmed"?
-
-Nevertheless, these are minor fixes in the error reporting logic (though
-no change is small enough to bee taken lightly), so I am sending now
-because I don't know about the load tomorrow.
-
-Please find v2 of the patch set on the LKML.
-
-Kept two ACKs (code unchnaged), two left to review.
-
-Thanks,
-Mirsad
-
--- 
-Mirsad Goran Todorovac
-Sistem inženjer
-Grafički fakultet | Akademija likovnih umjetnosti
-Sveučilište u Zagrebu
- 
-System engineer
-Faculty of Graphic Arts | Academy of Fine Arts
-University of Zagreb, Republic of Croatia
-The European Union
-
-"I see something approaching fast ... Will it be friends with me?"
-
+     Andrew
 
