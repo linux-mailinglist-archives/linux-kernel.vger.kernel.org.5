@@ -1,63 +1,63 @@
-Return-Path: <linux-kernel+bounces-18984-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18985-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6C174826605
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 22:08:14 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3A79F826608
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 22:13:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D51A8B21107
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 21:08:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D03141F21498
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 21:13:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C62361173A;
-	Sun,  7 Jan 2024 21:08:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F4FB1173F;
+	Sun,  7 Jan 2024 21:13:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="W9ec5ptg"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="A35VX3Rq"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
+Received: from mail-il1-f169.google.com (mail-il1-f169.google.com [209.85.166.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2B0611703;
-	Sun,  7 Jan 2024 21:07:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5394E11717;
+	Sun,  7 Jan 2024 21:13:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-5f3a5b9e09cso1778287b3.0;
-        Sun, 07 Jan 2024 13:07:57 -0800 (PST)
+Received: by mail-il1-f169.google.com with SMTP id e9e14a558f8ab-35d374bebe3so653805ab.1;
+        Sun, 07 Jan 2024 13:13:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704661676; x=1705266476; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1704662025; x=1705266825; darn=vger.kernel.org;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:from:date:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=XqFKwxe/g7DE0cTXEUKKeAEz7faDz+ZW7iaTXoLpK84=;
-        b=W9ec5ptgPdVqAliAk2GdrVAJYbPssVEC+ImW7qtNCsFl95MoMFCVmUzxXpdjOFtjJR
-         weGJa0jO07grYUDZE3QovtyH6q34nWfTSAhjZVDxnCSvv916yPs8v2nlukZF89F0sU1/
-         M4IYAq0LmtyqIkBC5y3A7aSSzbRB8Oag6gjhZhrsq8clICl2/7Te/IzDyr7keQbRnn9Z
-         E1/8ej/TP8Bgvooi1NkZXf3yAFz/EUpxiCHu11oLy4t58eAQijqtUyWtaZAYoAxNdd1H
-         94PJkNNeSKF/xzYzqDSbYrBOZk8jR39mTVWSK6KsfEuWPw8BCC7tJQpx4F2OQ4Jt9Iuu
-         O8Sg==
+        bh=ROm8ZhdgnvaZAIzOUEljUQj8Jiy9j8p4bOwcYNGDP80=;
+        b=A35VX3RqUie08OvMzEkC+M1IuXrjLrn5UMU0YqwG90LXGtMezD4/b/GncgYh2KY4+R
+         6A7NOw55uQsVgw8ZdmrhudN5Z4sKBx5KyW6aqyHll+STGh21oeS9UxdWI74cil5psOrF
+         lxv7wmyNrhxcyW0b4dXDFtpgM6xySUNYTWJV3r8dcVhdrCorPQuKZIV/UEZ2E1zaC/Tz
+         9ADPPpMuHE5JQ9MaGLJO3nxY9hFHE+xXCsuBdYrNwSct6D/uWfTcG4LParsJUvNAGwZE
+         A1TawopeKvaJQiius44SQZykT9OKVpIc1eHLQxGXAyOoB3alhyDXFk1Z6GJyCJ7NljlB
+         iZjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704661676; x=1705266476;
+        d=1e100.net; s=20230601; t=1704662025; x=1705266825;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=XqFKwxe/g7DE0cTXEUKKeAEz7faDz+ZW7iaTXoLpK84=;
-        b=sLK7QkTVzEqH+smQrsaGkyZUdyYh1mWMu4FMIM6SRxtZvBr3qSDYL9XUZRnAj6QZwo
-         2zpMuBSFddHurtJAiL3M5H1+gvPE7Ppd891qIR3SBWG+DsXkEe/h7E13uk73WnuSsmLG
-         j8S2EtAjeNFKxSQA+buohoR6UYe9f0TXSnEiFtAn42QM4wVp5Z6X9nKug47mrhOB5OXn
-         kHA34OGNJOehIsucaYNZi5cdWW4Ifaq9LwXLeZoevjiRRmldf1sb1UpB3WbuqcQeUosi
-         t1l2JXfBCj9qHnIpQZ/H//7u3kinzRwmJGH4sv34ePtWyiu2gl9yixm+RngTZBS3G2VE
-         cVtg==
-X-Gm-Message-State: AOJu0Ywd8VjLX5PENliBFg++w0H/qnp5ZH2gjPj9jO4KowPKFbHmAiAl
-	vJnyin0K+KBYGiG/8wzZut4=
-X-Google-Smtp-Source: AGHT+IHgoO6dUdsEdmQNWRRdnNI1v5fKLRztD/ue3i/uQsJd0T1Up1P+Rg3Ai34bQ5DYYg8vrEb1Eg==
-X-Received: by 2002:a81:bc4d:0:b0:5f6:e144:3396 with SMTP id b13-20020a81bc4d000000b005f6e1443396mr1244154ywl.4.1704661676655;
-        Sun, 07 Jan 2024 13:07:56 -0800 (PST)
+        bh=ROm8ZhdgnvaZAIzOUEljUQj8Jiy9j8p4bOwcYNGDP80=;
+        b=wA32A4XhtlHv0H4v8gPoi9jWqtFGyhXMfjvg4igzk5wl4OzbSsmdXccgwaS/Vjjwdx
+         Wu1KQFopp+Yn2vpLjruzxTVC55sJwUMK82EZQARxvYhuFe+8Q57mq5iYVVGj6YZQsIuv
+         dsYsFFhZ4ysP0RHeiySCKDK87qJpalLElw+vYiBGLibA/d0mynzcxgL1Py6qCm1BFVI5
+         +8LkVGlVIBHAJVrSYAg7FvgcmNSLrKGc+tlSUbpNoKMCqOGIB2UdGwpcQEYdE2mB37di
+         zAfTOa4nywthff6HRkwp1EDu6UfZIrp8E4dQaYdvWzkrspJQuqzQZXSsh59eym/QlnMu
+         lFwg==
+X-Gm-Message-State: AOJu0YwIpscsJ54RBUH5dbYzLi7I/2zTt/WBFPurfxu2iC/l9bBNPtEf
+	NfWks5wCxDKjARxiWfsYIc8=
+X-Google-Smtp-Source: AGHT+IF21MDjYIhNQdLPmFTxpaATVZGV9Y8IQG5WrfQGQEJn4TylQlOxYoMmqAaleCl1nqKkReo4Pg==
+X-Received: by 2002:a92:c54c:0:b0:35f:d4dc:1b1c with SMTP id a12-20020a92c54c000000b0035fd4dc1b1cmr4900291ilj.0.1704662025330;
+        Sun, 07 Jan 2024 13:13:45 -0800 (PST)
 Received: from hoboy.vegasvil.org ([2600:1700:2430:6f6f:e2d5:5eff:fea5:802f])
-        by smtp.gmail.com with ESMTPSA id x129-20020a818787000000b005ccb2d17ba7sm2588783ywf.101.2024.01.07.13.07.55
+        by smtp.gmail.com with ESMTPSA id u187-20020a0dd2c4000000b005cb7fccffe2sm2614064ywd.126.2024.01.07.13.13.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 07 Jan 2024 13:07:56 -0800 (PST)
-Date: Sun, 7 Jan 2024 13:07:53 -0800
+        Sun, 07 Jan 2024 13:13:44 -0800 (PST)
+Date: Sun, 7 Jan 2024 13:13:42 -0800
 From: Richard Cochran <richardcochran@gmail.com>
 To: Mahesh Bandewar =?utf-8?B?KOCkruCkueClh+CktiDgpKzgpILgpKHgpYfgpLXgpL4=?=
 	=?utf-8?B?4KSwKQ==?= <maheshb@google.com>
@@ -71,7 +71,7 @@ Cc: Netdev <netdev@vger.kernel.org>, Linux <linux-kernel@vger.kernel.org>,
 	Willem de Bruijn <willemb@google.com>
 Subject: Re: [PATCHv3 net-next 2/3] ptp: add ioctl interface for
  ptp_gettimex64any()
-Message-ID: <ZZsSqXLjVG16Q7EL@hoboy.vegasvil.org>
+Message-ID: <ZZsUBqTBPULcSflB@hoboy.vegasvil.org>
 References: <20240104212439.3276458-1-maheshb@google.com>
  <ZZczNlXzM8lrZgH5@hoboy.vegasvil.org>
  <CAF2d9jga9oc4OST6PMU=C9rz_NDrURCcLGx-1tP31U00z63vbA@mail.gmail.com>
@@ -89,17 +89,25 @@ Content-Transfer-Encoding: 8bit
 In-Reply-To: <CAF2d9jhnsubL-sw792ZviSXrFB826G-U8OktdEMN1NCe5zuj0Q@mail.gmail.com>
 
 On Sat, Jan 06, 2024 at 12:08:57AM -0800, Mahesh Bandewar (महेश बंडेवार) wrote:
+> I disagree! NICs inherently benefit from bundled PTP devices due to
+> their superior low-latency, low-overhead, and precise TX/RX
+> timestamping capabilities. For demanding systems requiring increased
+> capacity, multiple NICs from various vendors are often deployed.
+> However, disciplining these diverse PTP devices across the host
+> demands a flexible approach; a general purpose syscall is not an
+> answer. The current PHC implementation using ioctls through exported
+> ptp devices (/dev/ptpX) provides a solid foundation that is per device
+> (/per NIC).
+> 
+> This series is providing another piece in an existing suite of methods
+> used for disciplining / precision tuning (along with adjfine, adjtime,
+> gettime etc.) This addition is to take that precision even further.
 
-> Having a general solution for posix timers is a nice addition.
-> However, expecting a general purpose syscall to eliminate need for
-> device ioctl is an unreasonable expectation.
+This reads like marketing fluff.
 
-Let me make this clear:
-
-There is no reasonable justification for a new PTP ioctl.
-
-The system call can and should use the the most accurate method
-internally to the kernel.
+You fail to provide any *technical* reason why your proposed cross
+time stamp method can only work with a new ioctl, and not as the back
+end of a system call.
 
 Thanks,
 Richard
