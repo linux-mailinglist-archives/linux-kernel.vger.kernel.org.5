@@ -1,63 +1,63 @@
-Return-Path: <linux-kernel+bounces-18783-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18784-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8CF7D826300
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 06:33:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C1AAD826303
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 06:34:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 37A50282ADA
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 05:33:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CEA0E1C21244
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 05:34:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10BE6125B2;
-	Sun,  7 Jan 2024 05:33:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5878125B4;
+	Sun,  7 Jan 2024 05:34:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="krsR6mz9"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Q5eyW5Z1"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-il1-f173.google.com (mail-il1-f173.google.com [209.85.166.173])
+Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEC11125AD
-	for <linux-kernel@vger.kernel.org>; Sun,  7 Jan 2024 05:33:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0299A125AD
+	for <linux-kernel@vger.kernel.org>; Sun,  7 Jan 2024 05:34:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-il1-f173.google.com with SMTP id e9e14a558f8ab-3606dc50447so6270805ab.2
-        for <linux-kernel@vger.kernel.org>; Sat, 06 Jan 2024 21:33:24 -0800 (PST)
+Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-6d9bba6d773so728853b3a.1
+        for <linux-kernel@vger.kernel.org>; Sat, 06 Jan 2024 21:34:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704605604; x=1705210404; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1704605659; x=1705210459; darn=vger.kernel.org;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:from:date:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=sUxB7wKicUOyFSlq6s48xe3dcqB2CW2xhmx3XZD8AVg=;
-        b=krsR6mz9BLFpHNaTtL7j8CUvHjsiIAiXUC8lUkTkUYEoDPMBxbFft25F1vnlFXDODg
-         LCGjYo9YdWTy8uWJyrz01fwNkmMQBYEExz1AZjRjHKX11YUKpu+64BQyN77DU77nennr
-         XJ6Zv21WINYnfyQ+c3chTk6CtdgJofOiUsdBgz2WBnCVQTb4KeebtZiAr7cXn8loKPzz
-         Zd7zw4ZTbWg6g9dv0OPnCadHNSgW9dm+GsXYHhP47u62qcAE22LzOPjQ0IqpfEQjJ2FI
-         RPK4d55uwWXG7Y039z7srqCUv1xdUEy9HOrBZEEZHgjOKXolnuGXirnPKjvvsbiQr+yS
-         mAbw==
+        bh=HqP4dggxSEGDvqw7GUe9RC6veZbTj2SMAyF3Y7WYNr4=;
+        b=Q5eyW5Z1nktFrKQkZyK0seReKRcYGy13+Hjz+97Q38053HSunHzhRe264qiUTEf1k+
+         seLOPuTmpO931SGUfO0S4DhgjNNH1NEWDVBg93U13zCJlcnX4BGlY0I9In6ZoML4ExW9
+         S1Pr7Bg4LLH14yZjEsRND/DPLNWkcEWjGOjl8LORXAlsh3daH1dWE7DOuNk/tBv45XGX
+         JDp0n1o/eBIpM8zLS+JlwEdcwCdVL3PgWCVQyBYOyX7PpDLuBuj1tY3vndT/IjnmI7j7
+         SsgLxeraIcA2tcRoapTNyD9DByxU3EeXLCAXcFMY442OYDPVgehXTR3UppLi6rRVXG1+
+         DL2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704605604; x=1705210404;
+        d=1e100.net; s=20230601; t=1704605659; x=1705210459;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=sUxB7wKicUOyFSlq6s48xe3dcqB2CW2xhmx3XZD8AVg=;
-        b=Emnj+c38M3lMlphiC+REPtk5fWoYE3s+m3l4t1zQXyOq76XHPANgisyzrVMQ+psr95
-         cbm9Qr9pGC/dd+Lr/u8j6Gd2IFCKwCIo8+DHu9MjxNWR//zg84F1hPBkvZcZE/qIUV+n
-         4UfEceni64sU5iNQrJ09zBpHfk9/nVorKH7+1uxqmTdpJRsxk4y2O9mxjdekBbDl89Yc
-         3Us4Kc1z/cuOg8dcb+5giYWp30+cfX/Obsh4LVhzX7QWk1LUWDucabOIHmkPQ5iSFXMd
-         5RElXfh6B/ViJYWp8K/KSOWdQxKgXSvmdn7HXLyTpBYN21V/N/lmTBRM2r75OcI6zL1E
-         AcUg==
-X-Gm-Message-State: AOJu0YwDP7vDAD2vXlBSfJNO+xTn35NspwTkwfzEJl4oA388Sx15S535
-	2qfWCtBymhcVrGxuiIZgu6BFgHHsKTPU+ts0qdXivaFV4rVL
-X-Google-Smtp-Source: AGHT+IFmtKRaDWh6kJgCVs2Mz99P6IEAGvyYDybSnJ6/LBG8vwMMYGCtIcWcTUqkJzaWX+SWHF8dkg==
-X-Received: by 2002:a92:ca05:0:b0:360:7c05:e484 with SMTP id j5-20020a92ca05000000b003607c05e484mr3356916ils.54.1704605603671;
-        Sat, 06 Jan 2024 21:33:23 -0800 (PST)
+        bh=HqP4dggxSEGDvqw7GUe9RC6veZbTj2SMAyF3Y7WYNr4=;
+        b=i1n0v5gvYaSkIzxJIFtvWaUOcj5HnlP6MKesKBL59qvZv8pDsLN+/JDkQODokUJzhh
+         yLOTVOUDheq1IHdWub3VHm1jpXfPwO+G86zUfgypD3OvM/db4CBleOXGWn2k+Rupq4NW
+         Tk9faC5HBGUqCdso+l1eFTF4RKEGj7+RKjVTFdWDvKQlT9TFNm+1bw4SUo/mfZ5zo3+R
+         Ykh8ZI1K5uWVj7Y7lz/BdG2ldSVzrTu+cQbRkQUzUTAtFhuNv1+SqVhIPKxu4tkhHmX6
+         JBqLevoypHnWPr/SzyGfw8T+IEy13hvcFfrkCdcZL0qEmh/xsiPfrvW0uIhRcxNoglZp
+         hVuw==
+X-Gm-Message-State: AOJu0YxBLi213YmxG8qEj1CQa+s578LrIFyEFmmdVrNGeedR31ajnQ/I
+	0uC6HGAf73yLo9Ocu7fnq/Vve0xMSYwR
+X-Google-Smtp-Source: AGHT+IFoZocBFeWiLVzcqTN3OdY9HhgdnN/awWjktzfQJqf+UN8Fi6TZfXwXPnI0VGUphL3v4zXeLA==
+X-Received: by 2002:a62:ae0e:0:b0:6d9:9239:2bbc with SMTP id q14-20020a62ae0e000000b006d992392bbcmr1992593pff.55.1704605659283;
+        Sat, 06 Jan 2024 21:34:19 -0800 (PST)
 Received: from thinkpad ([103.197.115.97])
-        by smtp.gmail.com with ESMTPSA id u13-20020a170902e80d00b001d072365b87sm3858364plg.106.2024.01.06.21.33.17
+        by smtp.gmail.com with ESMTPSA id z28-20020a62d11c000000b006daa9c80ab0sm4111219pfg.147.2024.01.06.21.34.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 06 Jan 2024 21:33:23 -0800 (PST)
-Date: Sun, 7 Jan 2024 11:03:13 +0530
+        Sat, 06 Jan 2024 21:34:18 -0800 (PST)
+Date: Sun, 7 Jan 2024 11:04:10 +0530
 From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 To: Frank Li <Frank.Li@nxp.com>
 Cc: krzysztof.kozlowski@linaro.org, bhelgaas@google.com,
@@ -69,11 +69,11 @@ Cc: krzysztof.kozlowski@linaro.org, bhelgaas@google.com,
 	linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
 	lpieralisi@kernel.org, robh@kernel.org, s.hauer@pengutronix.de,
 	shawnguo@kernel.org
-Subject: Re: [PATCH v7 08/16] PCI: imx6: Simplify switch-case logic by
- involve init_phy callback
-Message-ID: <20240107053313.GH3416@thinkpad>
+Subject: Re: [PATCH v7 09/16] dt-bindings: imx6q-pcie: Clean up irrationality
+ clocks check
+Message-ID: <20240107053410.GI3416@thinkpad>
 References: <20231227182727.1747435-1-Frank.Li@nxp.com>
- <20231227182727.1747435-9-Frank.Li@nxp.com>
+ <20231227182727.1747435-10-Frank.Li@nxp.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -83,124 +83,63 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231227182727.1747435-9-Frank.Li@nxp.com>
+In-Reply-To: <20231227182727.1747435-10-Frank.Li@nxp.com>
 
-On Wed, Dec 27, 2023 at 01:27:19PM -0500, Frank Li wrote:
-
-Subject: PCI: imx6: Introduce init_phy() callback to simplify PHY initialization
-
-> Add drvdata::init_phy() callback function, so difference SOC choose
-> difference callback function to simple switch-case logic.
+On Wed, Dec 27, 2023 at 01:27:20PM -0500, Frank Li wrote:
+> The bindings referencing this file already define these constraints for
+> each of the variants, so the if not: then: is redundant.
 > 
-
-Same subject can be used in commit message.
-
+> Acked-by: Rob Herring <robh@kernel.org>
 > Signed-off-by: Frank Li <Frank.Li@nxp.com>
+
+Acked-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+
+- Mani
+
 > ---
 > 
 > Notes:
->     change from v1 to v4:
->     - none
+>     Change from v6 to v7
+>     - rewrite git commit message by using simple words
+>     Change from v5 to v6
+>     - rewrite git commit message and explain why remove it safely.
+>     - Add Rob's Ack
+>     Change from v1 to v4
+>     - new patch at v4
 > 
->  drivers/pci/controller/dwc/pci-imx6.c | 135 ++++++++++++++------------
->  1 file changed, 71 insertions(+), 64 deletions(-)
+>  .../bindings/pci/fsl,imx6q-pcie-common.yaml      | 16 ----------------
+>  1 file changed, 16 deletions(-)
 > 
-> diff --git a/drivers/pci/controller/dwc/pci-imx6.c b/drivers/pci/controller/dwc/pci-imx6.c
-> index 717e8fa030deb..d66a2db53bdb7 100644
-> --- a/drivers/pci/controller/dwc/pci-imx6.c
-> +++ b/drivers/pci/controller/dwc/pci-imx6.c
-> @@ -69,6 +69,9 @@ enum imx6_pcie_variants {
->  #define IMX6_PCIE_MAX_CLKS       6
+> diff --git a/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie-common.yaml b/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie-common.yaml
+> index 8f39b4e6e8491..a284a27c5e873 100644
+> --- a/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie-common.yaml
+> +++ b/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie-common.yaml
+> @@ -150,22 +150,6 @@ allOf:
+>              - {}
+>              - const: pcie_phy
+>              - const: pcie_aux
+> -  - if:
+> -      properties:
+> -        compatible:
+> -          not:
+> -            contains:
+> -              enum:
+> -                - fsl,imx6sx-pcie
+> -                - fsl,imx8mq-pcie
+> -                - fsl,imx6sx-pcie-ep
+> -                - fsl,imx8mq-pcie-ep
+> -    then:
+> -      properties:
+> -        clocks:
+> -          maxItems: 3
+> -        clock-names:
+> -          maxItems: 3
 >  
->  #define IMX6_PCIE_MAX_INSTANCES			2
-> +
-> +struct imx6_pcie;
-> +
->  struct imx6_pcie_drvdata {
->  	enum imx6_pcie_variants variant;
->  	enum dw_pcie_device_mode mode;
-> @@ -80,6 +83,7 @@ struct imx6_pcie_drvdata {
->  	const u32 ltssm_mask;
->  	const u32 mode_off[IMX6_PCIE_MAX_INSTANCES];
->  	const u32 mode_mask[IMX6_PCIE_MAX_INSTANCES];
-> +	int (*init_phy)(struct imx6_pcie *pcie);
->  };
->  
->  struct imx6_pcie {
-> @@ -323,76 +327,69 @@ static int pcie_phy_write(struct imx6_pcie *imx6_pcie, int addr, u16 data)
->  	return 0;
->  }
->  
-> -static void imx6_pcie_init_phy(struct imx6_pcie *imx6_pcie)
-> +static int imx8mq_pcie_init_phy(struct imx6_pcie *imx6_pcie)
->  {
-> -	switch (imx6_pcie->drvdata->variant) {
-> -	case IMX8MM:
-> -	case IMX8MM_EP:
-> -	case IMX8MP:
-> -	case IMX8MP_EP:
-> -		/*
-> -		 * The PHY initialization had been done in the PHY
-> -		 * driver, break here directly.
-> -		 */
-> -		break;
-> -	case IMX8MQ:
-> -	case IMX8MQ_EP:
-> -		/*
-> -		 * TODO: Currently this code assumes external
-> -		 * oscillator is being used
-> -		 */
-> +	/*
-> +	 * TODO: Currently this code assumes external
-> +	 * oscillator is being used
-
-Wrap the comments to 80 column.
-
-> +	 */
-> +	regmap_update_bits(imx6_pcie->iomuxc_gpr,
-> +			   imx6_pcie_grp_offset(imx6_pcie),
-> +			   IMX8MQ_GPR_PCIE_REF_USE_PAD,
-> +			   IMX8MQ_GPR_PCIE_REF_USE_PAD);
-> +	/*
-> +	 * Regarding the datasheet, the PCIE_VPH is suggested
-> +	 * to be 1.8V. If the PCIE_VPH is supplied by 3.3V, the
-> +	 * VREG_BYPASS should be cleared to zero.
-> +	 */
-
-Same here.
-
-> +	if (imx6_pcie->vph && regulator_get_voltage(imx6_pcie->vph) > 3000000)
->  		regmap_update_bits(imx6_pcie->iomuxc_gpr,
->  				   imx6_pcie_grp_offset(imx6_pcie),
-> -				   IMX8MQ_GPR_PCIE_REF_USE_PAD,
-> -				   IMX8MQ_GPR_PCIE_REF_USE_PAD);
-> -		/*
-> -		 * Regarding the datasheet, the PCIE_VPH is suggested
-> -		 * to be 1.8V. If the PCIE_VPH is supplied by 3.3V, the
-> -		 * VREG_BYPASS should be cleared to zero.
-> -		 */
-> -		if (imx6_pcie->vph &&
-> -		    regulator_get_voltage(imx6_pcie->vph) > 3000000)
-> -			regmap_update_bits(imx6_pcie->iomuxc_gpr,
-> -					   imx6_pcie_grp_offset(imx6_pcie),
-> -					   IMX8MQ_GPR_PCIE_VREG_BYPASS,
-> -					   0);
-> -		break;
-> -	case IMX7D:
-> -		regmap_update_bits(imx6_pcie->iomuxc_gpr, IOMUXC_GPR12,
-> +				   IMX8MQ_GPR_PCIE_VREG_BYPASS,
-> +				   0);
-> +
-> +	return 0;
-> +}
-> +
-> +static int imx7d_pcie_init_phy(struct imx6_pcie *imx6_pcie)
-> +{
-> +	return	regmap_update_bits(imx6_pcie->iomuxc_gpr, IOMUXC_GPR12,
-
-For consistency, return 0.
-
-- Mani
+>    - if:
+>        properties:
+> -- 
+> 2.34.1
+> 
 
 -- 
 மணிவண்ணன் சதாசிவம்
