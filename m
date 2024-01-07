@@ -1,133 +1,105 @@
-Return-Path: <linux-kernel+bounces-18764-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18766-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2983E8262B4
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 03:39:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 163A88262BA
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 03:42:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3B379282E2B
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 02:39:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3AC4F1C212E3
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 02:42:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E96610A12;
-	Sun,  7 Jan 2024 02:39:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0094710A2A;
+	Sun,  7 Jan 2024 02:41:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="G/2dWfbs"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="RDETXhAZ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECCBC10A09;
-	Sun,  7 Jan 2024 02:39:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96776C43391;
-	Sun,  7 Jan 2024 02:39:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704595156;
-	bh=jJbJktSdzhdzV2bS3gu5EK0DeDy7WfVB0EYasXcaPjw=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=G/2dWfbsLN9WwONooqF8NP5eFXFFOXQ5R6pDJXrL/Xza8jKUMjyzLISO/JNRMvYNn
-	 ebjH0gTMb0U4Prs0XDY60enG/LtvrGLzWjVf7Zzw8H2mYYP9S0qsp8K7Ce6UKsNFDs
-	 luwaMAnTvjVJM9HUnldij5bMjLFAarf4NscxczzeoYtSCV5eoStKqOMNDLTmu19xze
-	 aMrbfKIfNiIj8X1DZgs468Zb9C+7WcgK9ZNAOjucthSo1/0cLBg7F7C6N6JPLcTfxU
-	 QUG04tPdXEPjgcJtJhrAkM9utpizPYOwvU0ipsvKaL5YnYtdbnpOYvyKg5CDhYcl0N
-	 TIVY824fazJig==
-Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-50e7ddd999bso811323e87.1;
-        Sat, 06 Jan 2024 18:39:16 -0800 (PST)
-X-Gm-Message-State: AOJu0Yy96k41kceJPCsSIyZPM+RKCzXsHH71vve1M9AgREVKm5BusafQ
-	Me2Uwvsaza0FtiYLDaTXVcKeptmSTrkC25Zp/qc=
-X-Google-Smtp-Source: AGHT+IE666iz2mwVRCBnzGP5r7CatHWfsTic6W1ztccc+lpU8OH145j+/Z8tY3bo1scDBlBwbi74pfIJZJaXjjloGT8=
-X-Received: by 2002:a05:6512:3a82:b0:50e:8ead:3889 with SMTP id
- q2-20020a0565123a8200b0050e8ead3889mr731610lfu.75.1704595154779; Sat, 06 Jan
- 2024 18:39:14 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD43F10A12
+	for <linux-kernel@vger.kernel.org>; Sun,  7 Jan 2024 02:41:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704595310; x=1736131310;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=VuRszPXM4GingMQhdsdvHHLPyUzprXGHa8cmCzT4HKY=;
+  b=RDETXhAZ8F/DHmDawewQHBdFRRAxD8cBSKNNL9HqBSlE1Qi0lIKED50j
+   28J0O8/YIo5ThQ/xmDHOLdqLLkpw/5WfE+Hwx3++zA4tn6WdNd6tsxkUQ
+   pniUO5cXm32q7A2ySNb3hz+jPcjFVnq/q68LVzjqY3PCOA7ZOG82rLTTE
+   g+r5ds9XcO013l5BhXAa5enCs6m2d5A64Yujx4RH+OgFPUeO7Kz5OAIqZ
+   kY5sWm7etNAKTED3vOgQNwqNbMvhkr/029+jI+cAkSvks3eYNJ2YBncnI
+   BF7DN/6A7xZdSS4MV9J1vmtJxsmYNkomdsq4dtnvopaavjkuTTEMUayQQ
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10945"; a="5053501"
+X-IronPort-AV: E=Sophos;i="6.04,338,1695711600"; 
+   d="scan'208";a="5053501"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jan 2024 18:41:47 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,338,1695711600"; 
+   d="scan'208";a="15583282"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by fmviesa002.fm.intel.com with ESMTP; 06 Jan 2024 18:41:45 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rMJ6c-0003HY-2F;
+	Sun, 07 Jan 2024 02:41:42 +0000
+Date: Sun, 7 Jan 2024 10:41:27 +0800
+From: kernel test robot <lkp@intel.com>
+To: Baoquan He <bhe@redhat.com>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Linux Memory Management List <linux-mm@kvack.org>,
+	Eric DeVolder <eric.devolder@oracle.com>,
+	Valentin Schneider <vschneid@redhat.com>
+Subject: kernel/crash_core.c:749:1: sparse: sparse: symbol
+ '__crash_hotplug_lock' was not declared. Should it be static?
+Message-ID: <202401071026.CeGunEjw-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231228014220.3562640-1-samuel.holland@sifive.com>
- <20231228014220.3562640-8-samuel.holland@sifive.com> <CAAhV-H5TJPqRcgS6jywWDSNsCvd-PsVacgxgoiF-fJ00ZnS4uA@mail.gmail.com>
- <84389bc3-f2e7-49c5-a820-de60ee00f8a7@sifive.com>
-In-Reply-To: <84389bc3-f2e7-49c5-a820-de60ee00f8a7@sifive.com>
-From: Huacai Chen <chenhuacai@kernel.org>
-Date: Sun, 7 Jan 2024 10:39:07 +0800
-X-Gmail-Original-Message-ID: <CAAhV-H4JxP-j5A7KuNSBncZkHF9i3O1njCtMjVkd3=RNbE5Q7w@mail.gmail.com>
-Message-ID: <CAAhV-H4JxP-j5A7KuNSBncZkHF9i3O1njCtMjVkd3=RNbE5Q7w@mail.gmail.com>
-Subject: Re: [PATCH v2 07/14] LoongArch: Implement ARCH_HAS_KERNEL_FPU_SUPPORT
-To: Samuel Holland <samuel.holland@sifive.com>
-Cc: linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org, 
-	x86@kernel.org, linux-riscv@lists.infradead.org, 
-	Christoph Hellwig <hch@lst.de>, loongarch@lists.linux.dev, linux-kernel@vger.kernel.org, 
-	amd-gfx@lists.freedesktop.org, linux-arch@vger.kernel.org, 
-	WANG Xuerui <git@xen0n.name>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On Thu, Jan 4, 2024 at 11:58=E2=80=AFPM Samuel Holland
-<samuel.holland@sifive.com> wrote:
->
-> Hi Huacai,
->
-> On 2024-01-04 3:55 AM, Huacai Chen wrote:
-> > Hi, Samuel,
-> >
-> > On Thu, Dec 28, 2023 at 9:42=E2=80=AFAM Samuel Holland
-> > <samuel.holland@sifive.com> wrote:
-> >>
-> >> LoongArch already provides kernel_fpu_begin() and kernel_fpu_end() in
-> >> asm/fpu.h, so it only needs to add kernel_fpu_available() and export
-> >> the CFLAGS adjustments.
-> >>
-> >> Acked-by: WANG Xuerui <git@xen0n.name>
-> >> Reviewed-by: Christoph Hellwig <hch@lst.de>
-> >> Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
-> >> ---
-> >>
-> >> (no changes since v1)
-> >>
-> >>  arch/loongarch/Kconfig           | 1 +
-> >>  arch/loongarch/Makefile          | 5 ++++-
-> >>  arch/loongarch/include/asm/fpu.h | 1 +
-> >>  3 files changed, 6 insertions(+), 1 deletion(-)
-> >>
-> >> diff --git a/arch/loongarch/Kconfig b/arch/loongarch/Kconfig
-> >> index ee123820a476..65d4475565b8 100644
-> >> --- a/arch/loongarch/Kconfig
-> >> +++ b/arch/loongarch/Kconfig
-> >> @@ -15,6 +15,7 @@ config LOONGARCH
-> >>         select ARCH_HAS_CPU_FINALIZE_INIT
-> >>         select ARCH_HAS_FORTIFY_SOURCE
-> >>         select ARCH_HAS_KCOV
-> >> +       select ARCH_HAS_KERNEL_FPU_SUPPORT if CPU_HAS_FPU
-> >>         select ARCH_HAS_NMI_SAFE_THIS_CPU_OPS
-> >>         select ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE
-> >>         select ARCH_HAS_PTE_SPECIAL
-> >> diff --git a/arch/loongarch/Makefile b/arch/loongarch/Makefile
-> >> index 4ba8d67ddb09..1afe28feaba5 100644
-> >> --- a/arch/loongarch/Makefile
-> >> +++ b/arch/loongarch/Makefile
-> >> @@ -25,6 +25,9 @@ endif
-> >>  32bit-emul             =3D elf32loongarch
-> >>  64bit-emul             =3D elf64loongarch
-> >>
-> >> +CC_FLAGS_FPU           :=3D -mfpu=3D64
-> >> +CC_FLAGS_NO_FPU                :=3D -msoft-float
-> > We will add LoongArch32 support later, maybe it should be -mfpu=3D32 in
-> > that case, and do other archs have the case that only support FP32?
->
-> Do you mean that LoongArch32 does not support double-precision FP in hard=
-ware?
-> At least both of the consumers in this series use double-precision, so my=
- first
-> thought is that LoongArch32 could not select ARCH_HAS_KERNEL_FPU_SUPPORT.
-Then is it possible to introduce CC_FLAGS_SP_FPU and CC_FLAGS_DP_FPU?
-I think there may be some place where SP FP is enough.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   52b1853b080a082ec3749c3a9577f6c71b1d4a90
+commit: e2a8f20dd8e9df695f736e51cd9115ae55be92d1 Crash: add lock to serialize crash hotplug handling
+date:   3 months ago
+config: i386-randconfig-061-20240106 (https://download.01.org/0day-ci/archive/20240107/202401071026.CeGunEjw-lkp@intel.com/config)
+compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240107/202401071026.CeGunEjw-lkp@intel.com/reproduce)
 
-Huacai
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202401071026.CeGunEjw-lkp@intel.com/
 
->
-> Regards,
-> Samuel
->
+sparse warnings: (new ones prefixed by >>)
+>> kernel/crash_core.c:749:1: sparse: sparse: symbol '__crash_hotplug_lock' was not declared. Should it be static?
+
+vim +/__crash_hotplug_lock +749 kernel/crash_core.c
+
+   741	
+   742	/*
+   743	 * Different than kexec/kdump loading/unloading/jumping/shrinking which
+   744	 * usually rarely happen, there will be many crash hotplug events notified
+   745	 * during one short period, e.g one memory board is hot added and memory
+   746	 * regions are online. So mutex lock  __crash_hotplug_lock is used to
+   747	 * serialize the crash hotplug handling specifically.
+   748	 */
+ > 749	DEFINE_MUTEX(__crash_hotplug_lock);
+   750	#define crash_hotplug_lock() mutex_lock(&__crash_hotplug_lock)
+   751	#define crash_hotplug_unlock() mutex_unlock(&__crash_hotplug_lock)
+   752	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
