@@ -1,104 +1,93 @@
-Return-Path: <linux-kernel+bounces-18974-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18975-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 253F68265E0
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 21:04:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E7128265E1
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 21:09:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B4C501F21494
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 20:04:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 514091C20A37
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 20:09:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3DB1111B0;
-	Sun,  7 Jan 2024 20:03:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8769E111BD;
+	Sun,  7 Jan 2024 20:09:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="m5hI6L9n"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ks87T+Fn"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com [209.85.128.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA17F11702
-	for <linux-kernel@vger.kernel.org>; Sun,  7 Jan 2024 20:03:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704657831; x=1736193831;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=StplwQhurQ+kA6BviP8xJwLJUUr6O7nFpnpEPFM0aZw=;
-  b=m5hI6L9nONJj2or9c95OAkqSCHFtDFqcBC4sZlGVzKIpoD6l3IaqSHVu
-   Bw9CIIWrDZ94cPXv2xXXN5xeA8MmAvy9PfM06oVGcaU2vcC5tBslm556I
-   eqQk3ZG7edhWI/uf5vCIwSPJljcPNuzL1ZDq3ye8KkTNvBpNIkT8yZnEj
-   uIYIPJ1hOYkNw/2IoPcJq8/bWdW80eKxpf2/kE7bk2ktYgRaotwS7MhcH
-   Hb3lrKg3I+GPVG8FLElnEDVAaZjgYH+EmU3yYkfNyDX4YRUvwR/3N2nfE
-   SguDrD8InL+dgX24/zBpNCsFNMv2lLi5G6XBiofo0l6Epl35KHIIHi7lP
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10946"; a="377238337"
-X-IronPort-AV: E=Sophos;i="6.04,339,1695711600"; 
-   d="scan'208";a="377238337"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jan 2024 12:03:51 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10946"; a="924673743"
-X-IronPort-AV: E=Sophos;i="6.04,339,1695711600"; 
-   d="scan'208";a="924673743"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmsmga001.fm.intel.com with ESMTP; 07 Jan 2024 12:03:50 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rMZN5-00046K-30;
-	Sun, 07 Jan 2024 20:03:47 +0000
-Date: Mon, 8 Jan 2024 04:03:01 +0800
-From: kernel test robot <lkp@intel.com>
-To: Thomas Zimmermann <tzimmermann@suse.de>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-	Patrik Jakobsson <patrik.r.jakobsson@gmail.com>
-Subject: drivers/gpu/drm/gma500/oaktrail_crtc.c:659:30: sparse: sparse:
- symbol 'mrst_clock_funcs' was not declared. Should it be static?
-Message-ID: <202401080401.zg9LIvDE-lkp@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 438A5111A2
+	for <linux-kernel@vger.kernel.org>; Sun,  7 Jan 2024 20:09:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-5f0629e67f4so9614207b3.3
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Jan 2024 12:09:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1704658172; x=1705262972; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=C8nPAFCVrC9CMoZifbVgJ5oM9DI/tQqOkvpJC/laO9g=;
+        b=ks87T+Fn4XBvcggEVC+6W2s8IjGoe7r3ktcVrDrdznQ025WX0j6GGgVfHWMC6k8Dtm
+         BSw5wBN3AQiEjc1rf1JvhUcMLUaKXyfkRNZrIA9871qXTxclsDB5F6xUphG953xt1YYO
+         c6YuXFDGTYCGl9K5C+TQ77gBHlz8p8rKrbRNgazcp/WMfhmNIytnlTbjJH50Gao8gmIn
+         T/o4Uhn+rhqQQkvh60o7vihHJJqHgxVQM7LSjrzR0WvvmgBmn7TR6fvn6OGI5HRyGwqd
+         0cCmljqecJs+h4d/5hY8/WOMaMbqQP04/ZXEsH5tkaBZOZ4GjSYTiTR0yS+1SOS5u3Li
+         QcvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704658172; x=1705262972;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=C8nPAFCVrC9CMoZifbVgJ5oM9DI/tQqOkvpJC/laO9g=;
+        b=Q1EBgln1q1ysrtDnCwlmV+QKyxO3Zi/43o/HCRFFhIzp7UsaDRiEiWUw3wnU9Pvkn9
+         AgnjNF2Ju1x45JRbeSqpW1cLRKrhFqiNNOMh3dGOx0o7abwsIwezcLSP6CG3SvF4vzXN
+         IZhAOih0e1EXH1FyusNxCYTuAeKQSfogc1ADY+07ezEaKRW8CPF5rCC6VAhZ4EKUELjW
+         g75XDn4R+L9L9SOIvCxPAtIDIM7nbNzW0uOufU3DyUrKAdhy9a8zqebWcchW/qCZCw2d
+         RBNfMCHNPtz21xiE/lAyfgYKpyVn9dB71A48oAocXa86/eR2vlGLnSttX8csGaj7yUSD
+         uwVA==
+X-Gm-Message-State: AOJu0Ywsoj9irgkYCXdIGVraAU7l3jUuAw3U5Sh+bhosCMQsrOiIpmrG
+	BoV0rWRKXE1VKLo/B8o+TgDXzXPYJYH3Sh4e8641Q+tYRvzUutaoHadX3WwO
+X-Google-Smtp-Source: AGHT+IGry4XVFEl601f1I74BMHsJP4cbqCd0Ab5u8jISrZR00fsRvt+8hHK1amJ3NRebygDsQhpUtFxqb6C64MDG74s=
+X-Received: by 2002:a0d:dfc5:0:b0:5f1:a1f2:f3bd with SMTP id
+ i188-20020a0ddfc5000000b005f1a1f2f3bdmr1632919ywe.28.1704658172121; Sun, 07
+ Jan 2024 12:09:32 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <202401061736.yM5FZ2oV-lkp@intel.com>
+In-Reply-To: <202401061736.yM5FZ2oV-lkp@intel.com>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Sun, 7 Jan 2024 21:09:21 +0100
+Message-ID: <CACRpkdbx=qgdy1JRyxzFGW+8Ojj+g2tLKU4dD8oWX9V0xH2-JQ@mail.gmail.com>
+Subject: Re: arch/alpha/include/asm/core_t2.h:587:23: warning: no previous
+ prototype for 't2_ioread64'
+To: kernel test robot <lkp@intel.com>
+Cc: Arnd Bergmann <arnd@arndb.de>, oe-kbuild-all@lists.linux.dev, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Thomas,
+Hi robot,
 
-First bad commit (maybe != root cause):
+On Sat, Jan 6, 2024 at 10:40=E2=80=AFAM kernel test robot <lkp@intel.com> w=
+rote:
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   52b1853b080a082ec3749c3a9577f6c71b1d4a90
-commit: e40f97ef12772f8eb04b6a155baa1e0e2e8f3ecc drm/gma500: Drop DRM_GMA600 config option
-date:   2 years, 11 months ago
-config: i386-randconfig-r132-20240106 (https://download.01.org/0day-ci/archive/20240108/202401080401.zg9LIvDE-lkp@intel.com/config)
-compiler: ClangBuiltLinux clang version 17.0.6 (https://github.com/llvm/llvm-project 6009708b4367171ccdbf4b5905cb6a803753fe18)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240108/202401080401.zg9LIvDE-lkp@intel.com/reproduce)
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202401080401.zg9LIvDE-lkp@intel.com/
+> Hi Arnd,
+>
+> FYI, the error/warning still remains.
 
-sparse warnings: (new ones prefixed by >>)
->> drivers/gpu/drm/gma500/oaktrail_crtc.c:659:30: sparse: sparse: symbol 'mrst_clock_funcs' was not declared. Should it be static?
+FYI I have already said I can't reproduce this at all. Not using
+allnoconfig, not using the .config attached to the report.
 
-vim +/mrst_clock_funcs +659 drivers/gpu/drm/gma500/oaktrail_crtc.c
+I have no idea what this is.
 
-1b082ccf590110 Alan Cox         2011-11-03  657  
-ac6113ebb70d4b Patrik Jakobsson 2013-11-06  658  /* Not used yet */
-ac6113ebb70d4b Patrik Jakobsson 2013-11-06 @659  const struct gma_clock_funcs mrst_clock_funcs = {
-
-:::::: The code at line 659 was first introduced by commit
-:::::: ac6113ebb70d4bc7018db4e73f923653347da743 drm/gma500/mrst: Add SDVO clock calculation
-
-:::::: TO: Patrik Jakobsson <patrik.r.jakobsson@gmail.com>
-:::::: CC: Patrik Jakobsson <patrik.r.jakobsson@gmail.com>
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Yours,
+Linus Walleij
 
