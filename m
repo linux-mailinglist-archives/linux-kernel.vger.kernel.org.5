@@ -1,110 +1,107 @@
-Return-Path: <linux-kernel+bounces-18983-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18984-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 89CC58265FC
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 21:56:30 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C174826605
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 22:08:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A366A281B00
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 20:56:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D51A8B21107
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 21:08:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1D5E1171F;
-	Sun,  7 Jan 2024 20:56:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C62361173A;
+	Sun,  7 Jan 2024 21:08:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="W9ec5ptg"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23A3811717
-	for <linux-kernel@vger.kernel.org>; Sun,  7 Jan 2024 20:56:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-113-rhjW_AtaOumXa1VZKDggBw-1; Sun, 07 Jan 2024 20:56:17 +0000
-X-MC-Unique: rhjW_AtaOumXa1VZKDggBw-1
-Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
- (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Sun, 7 Jan
- 2024 20:55:55 +0000
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Sun, 7 Jan 2024 20:55:55 +0000
-From: David Laight <David.Laight@ACULAB.COM>
-To: 'Matt Jan' <zoo868e@gmail.com>, Andrew Morton <akpm@linux-foundation.org>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Herve Codina
-	<herve.codina@bootlin.com>, Mark Brown <broonie@kernel.org>, "Matthew Wilcox
- (Oracle)" <willy@infradead.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] minmax: allow comparisons of 'long long int' against
- 'unsigned char/short/int'
-Thread-Topic: [PATCH] minmax: allow comparisons of 'long long int' against
- 'unsigned char/short/int'
-Thread-Index: AQHaQaWylpjHqQCA1U6JquNKFQXy47DO0q3Q
-Date: Sun, 7 Jan 2024 20:55:55 +0000
-Message-ID: <b9fcab5c9aa44964ba04ea1ff2b5de59@AcuMS.aculab.com>
-References: <20240107201129.6106-1-zoo868e@gmail.com>
-In-Reply-To: <20240107201129.6106-1-zoo868e@gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2B0611703;
+	Sun,  7 Jan 2024 21:07:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-5f3a5b9e09cso1778287b3.0;
+        Sun, 07 Jan 2024 13:07:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704661676; x=1705266476; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=XqFKwxe/g7DE0cTXEUKKeAEz7faDz+ZW7iaTXoLpK84=;
+        b=W9ec5ptgPdVqAliAk2GdrVAJYbPssVEC+ImW7qtNCsFl95MoMFCVmUzxXpdjOFtjJR
+         weGJa0jO07grYUDZE3QovtyH6q34nWfTSAhjZVDxnCSvv916yPs8v2nlukZF89F0sU1/
+         M4IYAq0LmtyqIkBC5y3A7aSSzbRB8Oag6gjhZhrsq8clICl2/7Te/IzDyr7keQbRnn9Z
+         E1/8ej/TP8Bgvooi1NkZXf3yAFz/EUpxiCHu11oLy4t58eAQijqtUyWtaZAYoAxNdd1H
+         94PJkNNeSKF/xzYzqDSbYrBOZk8jR39mTVWSK6KsfEuWPw8BCC7tJQpx4F2OQ4Jt9Iuu
+         O8Sg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704661676; x=1705266476;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=XqFKwxe/g7DE0cTXEUKKeAEz7faDz+ZW7iaTXoLpK84=;
+        b=sLK7QkTVzEqH+smQrsaGkyZUdyYh1mWMu4FMIM6SRxtZvBr3qSDYL9XUZRnAj6QZwo
+         2zpMuBSFddHurtJAiL3M5H1+gvPE7Ppd891qIR3SBWG+DsXkEe/h7E13uk73WnuSsmLG
+         j8S2EtAjeNFKxSQA+buohoR6UYe9f0TXSnEiFtAn42QM4wVp5Z6X9nKug47mrhOB5OXn
+         kHA34OGNJOehIsucaYNZi5cdWW4Ifaq9LwXLeZoevjiRRmldf1sb1UpB3WbuqcQeUosi
+         t1l2JXfBCj9qHnIpQZ/H//7u3kinzRwmJGH4sv34ePtWyiu2gl9yixm+RngTZBS3G2VE
+         cVtg==
+X-Gm-Message-State: AOJu0Ywd8VjLX5PENliBFg++w0H/qnp5ZH2gjPj9jO4KowPKFbHmAiAl
+	vJnyin0K+KBYGiG/8wzZut4=
+X-Google-Smtp-Source: AGHT+IHgoO6dUdsEdmQNWRRdnNI1v5fKLRztD/ue3i/uQsJd0T1Up1P+Rg3Ai34bQ5DYYg8vrEb1Eg==
+X-Received: by 2002:a81:bc4d:0:b0:5f6:e144:3396 with SMTP id b13-20020a81bc4d000000b005f6e1443396mr1244154ywl.4.1704661676655;
+        Sun, 07 Jan 2024 13:07:56 -0800 (PST)
+Received: from hoboy.vegasvil.org ([2600:1700:2430:6f6f:e2d5:5eff:fea5:802f])
+        by smtp.gmail.com with ESMTPSA id x129-20020a818787000000b005ccb2d17ba7sm2588783ywf.101.2024.01.07.13.07.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 07 Jan 2024 13:07:56 -0800 (PST)
+Date: Sun, 7 Jan 2024 13:07:53 -0800
+From: Richard Cochran <richardcochran@gmail.com>
+To: Mahesh Bandewar =?utf-8?B?KOCkruCkueClh+CktiDgpKzgpILgpKHgpYfgpLXgpL4=?=
+	=?utf-8?B?4KSwKQ==?= <maheshb@google.com>
+Cc: Netdev <netdev@vger.kernel.org>, Linux <linux-kernel@vger.kernel.org>,
+	David Miller <davem@davemloft.net>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
+	Jonathan Corbet <corbet@lwn.net>, John Stultz <jstultz@google.com>,
+	Don Hatchett <hatch@google.com>, Yuliang Li <yuliangli@google.com>,
+	Mahesh Bandewar <mahesh@bandewar.net>,
+	Willem de Bruijn <willemb@google.com>
+Subject: Re: [PATCHv3 net-next 2/3] ptp: add ioctl interface for
+ ptp_gettimex64any()
+Message-ID: <ZZsSqXLjVG16Q7EL@hoboy.vegasvil.org>
+References: <20240104212439.3276458-1-maheshb@google.com>
+ <ZZczNlXzM8lrZgH5@hoboy.vegasvil.org>
+ <CAF2d9jga9oc4OST6PMU=C9rz_NDrURCcLGx-1tP31U00z63vbA@mail.gmail.com>
+ <ZZjdUlaYyHZSiwSM@hoboy.vegasvil.org>
+ <CAF2d9jhnsubL-sw792ZviSXrFB826G-U8OktdEMN1NCe5zuj0Q@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAF2d9jhnsubL-sw792ZviSXrFB826G-U8OktdEMN1NCe5zuj0Q@mail.gmail.com>
 
-From: Matt Jan
-> Sent: 07 January 2024 20:11
->=20
-> Since 'unsigned int' get promoted to 'signed long long int' it is safe
-> to compare them against an 'long long int' value.
+On Sat, Jan 06, 2024 at 12:08:57AM -0800, Mahesh Bandewar (महेश बंडेवार) wrote:
 
-Yes, but not as below.
-That change would allow pretty much everything through since everything
-except 'unsigned long long' would be signed.
+> Having a general solution for posix timers is a nice addition.
+> However, expecting a general purpose syscall to eliminate need for
+> device ioctl is an unreasonable expectation.
 
-You'd need a much more complex check and the CPP bloat is pretty
-horrid already.
+Let me make this clear:
 
-That particular check is there to promote unsigned char/short to
-signed int - which always happens.
+There is no reasonable justification for a new PTP ioctl.
 
-=09David
+The system call can and should use the the most accurate method
+internally to the kernel.
 
->=20
-> Signed-off-by: Matt Jan <zoo868e@gmail.com>
-> ---
->  include/linux/minmax.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/include/linux/minmax.h b/include/linux/minmax.h
-> index 2ec559284a9f..61171286b468 100644
-> --- a/include/linux/minmax.h
-> +++ b/include/linux/minmax.h
-> @@ -37,7 +37,7 @@
->=20
->  #define __types_ok(x, y) =09=09=09=09=09\
->  =09(__is_signed(x) =3D=3D __is_signed(y) ||=09=09=09\
-> -=09=09__is_signed((x) + 0) =3D=3D __is_signed((y) + 0) ||=09\
-> +=09=09__is_signed((x) + 0ll) =3D=3D __is_signed((y) + 0ll) ||=09\
->  =09=09__is_noneg_int(x) || __is_noneg_int(y))
->=20
->  #define __cmp_op_min <
-> --
-> 2.34.1
->=20
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1=
-PT, UK
-Registration No: 1397386 (Wales)
+Thanks,
+Richard
 
 
