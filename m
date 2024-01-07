@@ -1,169 +1,201 @@
-Return-Path: <linux-kernel+bounces-18850-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18851-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 796AE8263F9
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 12:57:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 268DF826400
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 13:01:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8EB051C20C2B
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 11:57:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7ACF528231E
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 12:01:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C2B712E7F;
-	Sun,  7 Jan 2024 11:57:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="W3tdgJbF"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5751112E72;
+	Sun,  7 Jan 2024 12:01:49 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0369A12E40
-	for <linux-kernel@vger.kernel.org>; Sun,  7 Jan 2024 11:57:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-55783b7b47aso443073a12.0
-        for <linux-kernel@vger.kernel.org>; Sun, 07 Jan 2024 03:57:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704628621; x=1705233421; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=60gxa1noVk5cpuesKhyJXaBSd7M6NODkl1WRf8H+12E=;
-        b=W3tdgJbFdyfzgCnYO+PivXNUvKZislgrsknGVDl8aSjs+ASYtV9IjprlkHNAlPxoa+
-         EjlX+v8MDHwuSBihGh5h4m04L7xfbkoi2GxJPahVbFO4Wu5m/LdAG+06z3+qLpvBK4tc
-         SqapV8Hnm82dhaRw+IpzlGVZKBK9ge1rIhfYeKS3zrp9ZULzbIx3kGHoiRKU0fd6KkEr
-         Iu6wO+ley7RQDTa9Q69+YqJdu7rS0jL0BNwg1Wil18IUMJ9jAGg4D5a/emKtMtlwKw5T
-         /gAwrNFkLFsFRKllAe08r4fMeAce/wNUm6tTW4JWr+CCFcpAGcPI3I7FFUYKrNg740YL
-         cGiQ==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99D7B12E54;
+	Sun,  7 Jan 2024 12:01:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=wanadoo.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1d4c3393f99so7400865ad.0;
+        Sun, 07 Jan 2024 04:01:47 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704628621; x=1705233421;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=60gxa1noVk5cpuesKhyJXaBSd7M6NODkl1WRf8H+12E=;
-        b=lxhl7bHlqbfo1uD5tDWuZQUDRLPhLfSFIsLVdr/yaeE3u9yEuig9eHD8pzW0tpA5EN
-         4mHHdldeqbgoPadqRmducB2As8tWFbl2JsSzxRS2jXkiMSokowJXMZrsiBNYUuFVme/W
-         sw/fHL2t6AD7d0B7BI9z/fyBEVR1TA4NE7S1nEsCJboc2ken6hf1DuB+eEAbxLy5CJlD
-         bAFttwHQR+jH7t9kdX4RSWF9HnvPJMkTyJItFnSDM5gEYElqQcWxz97UvsP10yfLse7/
-         g4bFfUBz7mUp6RKhyCLBqXAb7GpliwI2MWHdBgrEvZfAOiKUattSt7yOkvHHbY1M2PsT
-         vpmA==
-X-Gm-Message-State: AOJu0Yzey9h1q+3G+OcNi4N3SQ61lsEJeboW8i51l3Dl5hjZjSn3GObk
-	WBOcNC8fLNX/6wZHzFUVpz6pUIrHzgEy6Q==
-X-Google-Smtp-Source: AGHT+IFku5eS7Ul7qfzXlwcUsJ4e+3uDpOZuFp4Pldnu0jDHe+8V8bUzwqcmq5VS+NlcV3j+QcRHHg==
-X-Received: by 2002:a50:9b4f:0:b0:557:639e:ae21 with SMTP id a15-20020a509b4f000000b00557639eae21mr1099610edj.23.1704628621347;
-        Sun, 07 Jan 2024 03:57:01 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.223.112])
-        by smtp.gmail.com with ESMTPSA id q4-20020a056402248400b005579c887effsm529167eda.79.2024.01.07.03.56.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 07 Jan 2024 03:57:00 -0800 (PST)
-Message-ID: <ea1c6c7d-08f2-4fc5-96cb-a6cfdd144f66@linaro.org>
-Date: Sun, 7 Jan 2024 12:56:58 +0100
+        d=1e100.net; s=20230601; t=1704628907; x=1705233707;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+QnGROJ1oWVw3/Pa8uoXPLukkVuGGFCJD+vSnZeWEEA=;
+        b=kZYQqnveL1wwDOGtzVN7svMP1ROQ/FSR5H3nypZSCcH7N+qPEQXwcxymIGxWmMWgb/
+         h5OaOY8++Wgk2MAcoNOm8jA9q906P8Hz9UNdwHFMPk3ZAgB6SVHgznla7JxsID8iu1ih
+         3/d8hjntz1ORkhAzbAg0t00mP9gxr3pnbaxA1vdOfmLwRu3ALFeeItPMdw2KvfuIUDL0
+         ZWsvrj3uQTef7zIwIIf1lmddGMak3lIGy+T3p83AGh6CWKkRMSS/vZz2jC1h2u6/Rwwa
+         9/ExXv8bHTAyftOS1Nob8m8+hLjLBdgz3qGZX5zUg9B6djKTYS9IHVSkoMlcL5zXV3s2
+         LKDw==
+X-Gm-Message-State: AOJu0YwRA2IUtsz9e1kxgwkXPbf7fQdVSk+N1Asc7x+raTuw9fAAZHBA
+	tdD7gN+oY4mvzO+2DSahO5RMpzqgwFPEfhXvyUc=
+X-Google-Smtp-Source: AGHT+IHLPAYIJC36BTu95hJWkiiM7l4wuMzpp++PtD979TuU3xLZ9t8ZJYI6QTGlSxDEqq4T5BatXjsFjWmrrB2CkY0=
+X-Received: by 2002:a17:903:41ce:b0:1d3:ec14:10f0 with SMTP id
+ u14-20020a17090341ce00b001d3ec1410f0mr2738441ple.52.1704628906763; Sun, 07
+ Jan 2024 04:01:46 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/4] reset: gpio: Add GPIO-based reset controller
-Content-Language: en-US
-To: Biju Das <biju.das.jz@bp.renesas.com>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Banajit Goswami <bgoswami@quicinc.com>,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>, Liam Girdwood
- <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
- "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
- "linux-sound@vger.kernel.org" <linux-sound@vger.kernel.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc: Bartosz Golaszewski <brgl@bgdev.pl>,
- Sean Anderson <sean.anderson@seco.com>
-References: <20240105155918.279657-1-krzysztof.kozlowski@linaro.org>
- <20240105155918.279657-2-krzysztof.kozlowski@linaro.org>
- <TYCPR01MB11269ABEDCD115064D449267486662@TYCPR01MB11269.jpnprd01.prod.outlook.com>
- <40b4d29e-fa5c-43d5-8ccb-4a5a41150546@linaro.org>
- <TYVPR01MB1127920B611C25FD57DFBF75486642@TYVPR01MB11279.jpnprd01.prod.outlook.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <TYVPR01MB1127920B611C25FD57DFBF75486642@TYVPR01MB11279.jpnprd01.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20221111081316.30373-1-mailhol.vincent@wanadoo.fr>
+ <20231217071250.892867-1-mailhol.vincent@wanadoo.fr> <20231217071250.892867-2-mailhol.vincent@wanadoo.fr>
+ <CAMuHMdUvqY4VLDS0mW2VbSzTmef9xt+F3FCpRj5-Mv+KeOqyXg@mail.gmail.com>
+In-Reply-To: <CAMuHMdUvqY4VLDS0mW2VbSzTmef9xt+F3FCpRj5-Mv+KeOqyXg@mail.gmail.com>
+From: Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
+Date: Sun, 7 Jan 2024 21:01:34 +0900
+Message-ID: <CAMZ6RqJyJsucRHnuwj87gC9H9hZm9UwC8vAxEJHEPvM-sY=5DA@mail.gmail.com>
+Subject: Re: [PATCH v3 1/5] m68k/bitops: force inlining of all bitops functions
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, 
+	Yury Norov <yury.norov@gmail.com>, Nick Desaulniers <ndesaulniers@google.com>, 
+	Douglas Anderson <dianders@chromium.org>, Kees Cook <keescook@chromium.org>, 
+	Petr Mladek <pmladek@suse.com>, Randy Dunlap <rdunlap@infradead.org>, 
+	Zhaoyang Huang <zhaoyang.huang@unisoc.com>, Geert Uytterhoeven <geert+renesas@glider.be>, 
+	Marco Elver <elver@google.com>, Brian Cain <bcain@quicinc.com>, 
+	Matthew Wilcox <willy@infradead.org>, "Paul E . McKenney" <paulmck@kernel.org>, linux-hexagon@vger.kernel.org, 
+	linux-m68k@lists.linux-m68k.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 07/01/2024 11:46, Biju Das wrote:
->>>> +
->>>> +	if (!platdata || !*platdata)
->>>
->>> Maybe, if (!(platdata && *platdata)) which reduces 1 inversion
->> operation.
->>
->> I would not call it easier to understand... To me !A and !*A are quite
->> obvious and easy to read instantly because !A is obvious: check if it is
->> not NULL. Therefore original check is obvious: is NULL or points to NULL?
->> Then exit.
->>
->> Now your check is a bit more complicated. It is not even frequent code
->> pattern which my brain used to see. You want to check if both are not NULL
->> and then negate it, wait, no, opposite, check if they are something and
->> then negate? To me it is really opposite of readable code.
-> 
-> I agree maybe it is not readable, even though it reduces 1 extra operation.
-> 
+On Tue. 2 janv. 2024 at 19:28, Geert Uytterhoeven <geert@linux-m68k.org> wr=
+ote:
+>
+> Hi Vincent,
+>
+> Thanks for your patch!
 
-Number of operations does not matter. Code readability matters.
-Compilers are nowadays smarter than us, so don't write code more
-difficult to read just to optimize some instruction like this.
+Thanks for the review and for running the benchmark.
 
-Best regards,
-Krzysztof
+> On Sun, Dec 17, 2023 at 8:13=E2=80=AFAM Vincent Mailhol
+> <mailhol.vincent@wanadoo.fr> wrote:
+> > The inline keyword actually does not guarantee that the compiler will
+> > inline a functions. Whenever the goal is to actually inline a
+> > function, __always_inline should always be preferred instead.
+> >
+> > On an allyesconfig, with GCC 13.2.1, it saves roughly 5 KB.
+> >
+> >   $ size --format=3DGNU vmlinux.before vmlinux.after
+> >         text       data        bss      total filename
+> >     60449738   70975612    2288988  133714338 vmlinux.before
+> >     60446534   70972412    2289596  133708542 vmlinux.after
+>
+> With gcc 9.5.0-1ubuntu1~22.04, the figures are completely different
+> (i.e. a size increase):
 
+Those results are not normal, there should not be such a big
+discrepancy between two versions of the same compiler. I double
+checked everything and found out that I made a mistake when computing
+the figures: not sure what exactly, but at some point, the ASLR seeds
+(or other similar randomization feature) got reset and so, the
+decrease I witnessed was just a "lucky roll".
+
+After rerunning the benchmark (making sure to keep every seeds), I got
+similar results as you:
+
+        text       data        bss      total filename
+    60449738   70975356    2288988  133714082
+vmlinux_allyesconfig.before_this_series
+    60446534   70979068    2289596  133715198
+vmlinux_allyesconfig.after_first_patch
+    60429746   70979132    2291676  133700554
+vmlinux_allyesconfig.final_second_patch
+
+Note that there are still some kind of randomness on the data segment
+as shown in those other benchmarks I run:
+
+        text       data        bss      total filename
+    60449738   70976124    2288988  133714850
+vmlinux_allyesconfig.before_this_series
+    60446534   70980092    2289596  133716222
+vmlinux_allyesconfig.after_first_patch
+    60429746   70979388    2291676  133700810
+vmlinux_allyesconfig.after_second_patch
+
+        text       data        bss      total filename
+    60449738   70975612    2288988  133714338
+vmlinux_allyesconfig.before_this_series
+    60446534   70980348    2289596  133716478
+vmlinux_allyesconfig.after_first_patch
+    60429746   70979900    2291676  133701322
+vmlinux_allyesconfig.after_second_patch
+
+But the error margin is within 1K.
+
+So, in short, I inlined some functions which I shouldn't have. I am
+preparing a v4 in which I will only inline the bit-find functions
+(namely: __ffs(), ffs(), ffz(), __fls(), fls() and fls64()). Here are
+the new figures:
+
+        text       data        bss      total filename
+    60453552   70955485    2288620  133697657
+vmlinux_allyesconfig.before_this_series
+    60450304   70953085    2289260  133692649
+vmlinux_allyesconfig.after_first_patch
+    60433536   70952637    2291340  133677513
+vmlinux_allyesconfig.after_second_patch
+
+N.B. The new figures were after a rebase, so do not try to compare
+with the previous benchmarks. I will send the v4 soon, after I finish
+to update the patch comments and double check things.
+
+Concerning the other functions in bitops.h, there may be some other
+ones worth a __always_inline. But I will narrow the scope of this
+series only to the bit-find function. If a good samaritan wants to
+investigate the other functions, go ahead!
+
+Yours sincerely,
+Vincent Mailhol
+
+
+
+
+> allyesconfig:
+>
+>       text       data        bss      total filename
+>   58878600   72415994    2283652  133578246 vmlinux.before
+>   58882250   72419706    2284004  133585960 vmlinux.after
+>
+> atari_defconfig:
+>
+>       text       data        bss      total filename
+>    4112060    1579862     151680    5843602 vmlinux-v6.7-rc8
+>    4117008    1579350     151680    5848038
+> vmlinux-v6.7-rc8-1-m68k-bitops-force-inlining
+>
+> The next patch offsets that for allyesconfig, but not for atari_defconfig=
+.
+>
+> > Reference: commit 8dd5032d9c54 ("x86/asm/bitops: Force inlining of
+> > test_and_set_bit and friends")
+>
+> Please don't split lines containing tags.
+>
+> > Link: https://git.kernel.org/torvalds/c/8dd5032d9c54
+> >
+> > Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+>
+> Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+>
+> Gr{oetje,eeting}s,
+>
+>                         Geert
+>
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m6=
+8k.org
+>
+> In personal conversations with technical people, I call myself a hacker. =
+But
+> when I'm talking to journalists I just say "programmer" or something like=
+ that.
+>                                 -- Linus Torvalds
 
