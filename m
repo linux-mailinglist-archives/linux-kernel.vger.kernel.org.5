@@ -1,126 +1,87 @@
-Return-Path: <linux-kernel+bounces-18886-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18887-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9AD108264A3
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 16:14:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9CB0B8264A8
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 16:20:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2EF08282093
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 15:14:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2A7871F218F3
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 15:20:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDE2913AC6;
-	Sun,  7 Jan 2024 15:13:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F4E4134DE;
+	Sun,  7 Jan 2024 15:20:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=alu.unizg.hr header.i=@alu.unizg.hr header.b="K3lWZT7r";
-	dkim=pass (2048-bit key) header.d=alu.unizg.hr header.i=@alu.unizg.hr header.b="meAJJHVy"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SP4fwjtG"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from domac.alu.hr (domac.alu.unizg.hr [161.53.235.3])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B42413AC3;
-	Sun,  7 Jan 2024 15:13:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alu.unizg.hr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alu.unizg.hr
-Received: from localhost (localhost [127.0.0.1])
-	by domac.alu.hr (Postfix) with ESMTP id DEFE66017E;
-	Sun,  7 Jan 2024 16:13:52 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-	t=1704640432; bh=UQMDbuI7hDMHLOqvTe8W5mN0lKSzuLSjkDfcH/BL+qU=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=K3lWZT7rZ6eExSqrlRb5/4PAZEvJ247D6e+xfyE0PxOrhpbTxH6oIhWbl1ttTX0ju
-	 MoHcbTVcFsY5DBRpHX0uxbOwi8IP3Hw4yscS7qJjqvpGlJk+O9abvYc3X/HJWkjzjm
-	 KrSzZ1X2sMjvi3FJ22yCZldnDWFybzHI+Db2wYLRCkTw89Uc/gk1U89G0Y9JxJg0wU
-	 QRAfZQ7a3l2NP/0IWuWqt3DbU4WtWBPtwe1nPnsw6ODpPbTh02xElHSbMfx5VjtiXE
-	 CoPbglB82xk/Sn3mQBoAIK0i2s/VeOpKnJmVutL0V/yYI0jL4wwmoZb4qq3FfpBa2w
-	 sCKiZbt8lJX1Q==
-X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
-Received: from domac.alu.hr ([127.0.0.1])
-	by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id dMbbvhzBhNU3; Sun,  7 Jan 2024 16:13:50 +0100 (CET)
-Received: from defiant.. (unknown [95.168.121.73])
-	by domac.alu.hr (Postfix) with ESMTPSA id 602D260171;
-	Sun,  7 Jan 2024 16:13:50 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-	t=1704640430; bh=UQMDbuI7hDMHLOqvTe8W5mN0lKSzuLSjkDfcH/BL+qU=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=meAJJHVyehXP/Ai4sQQqf/VyhWjBz5BIXpTzSZSF3fWKo/kNZr0+DnJl2e8j/IGTX
-	 i0im6A6Ei0kJEo5mjJX/+NPEQpngRDA+pPEOWk4UeVGZ+DAbnZFtU6ldSr3uhqNb4m
-	 h8sGZoV7P46MrBZmyRIAIC5OKg6r10dFo9JUU6E9pHtK7gdJ0p1sJoyJ6kV5Aa9z10
-	 1/UGt9v6OESKZ0Q3ysFHApeR/xKCP6XQGOm8uH0DgvZLNqXQVEJZl0P4sOxRPcY8XK
-	 eoK1jhk0zqd+v47UOPpkgn2VpcWgpHwzSX05fLISGJ8rucweNPzW6SvjVO9fxIR0nP
-	 UqMjgRPwA9yFA==
-From: Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
-To: =?UTF-8?q?N=C3=ADcolas=20F=2E=20R=2E=20A=2E=20Prado?= <nfraprado@collabora.com>,
-	Mark Brown <broonie@kernel.org>,
-	linux-sound@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	Shuah Khan <shuah@kernel.org>,
-	Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
-Subject: [PATCH v1 3/4] ksellftest: alsa: Fix the printf format specifier to unsigned int
-Date: Sun,  7 Jan 2024 16:12:20 +0100
-Message-Id: <20240107151218.933806-4-mirsad.todorovac@alu.unizg.hr>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20240107151218.933806-1-mirsad.todorovac@alu.unizg.hr>
-References: <20240107151218.933806-1-mirsad.todorovac@alu.unizg.hr>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78631134AE;
+	Sun,  7 Jan 2024 15:20:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id E5552C433C9;
+	Sun,  7 Jan 2024 15:20:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704640822;
+	bh=UPMVEb64skjeUyHTn9TCQZW9IZRq3RvDVB/yqJfBkO8=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=SP4fwjtGEouAgElcfOGY+DuI1KXe75cc4fL5EzEf8qjVnlfFLOkqHYFmFpnAZMAFJ
+	 BC9+C/9BuJJFb8NXmwdlQwM/NtA+nwZuyt3AmguMt1XMT8AD5CAMTPn26emtnZxCwR
+	 gr+irB83wLUyaGiSj0fkj2mDrhExQzlr9ypQYTGKhvg7V7xSly167DkZhTde47B+Ys
+	 1ykOiFkEJvGKsu8CMJws+Qhk+voKeMY718dAKdAIkIB3NsGBOMhT6BEmRVgxAXUvyB
+	 7sJz8b0jBMH5OKiCbHqbsKRhVFvHUzWYdAzCn1qZ6uLv0ljm3fx4bT0B5cBUIdjf+m
+	 B2rwia2n6WtKw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id CD02AC4167D;
+	Sun,  7 Jan 2024 15:20:21 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net v4] mlxbf_gige: Fix intermittent no ip issue
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <170464082183.11926.8134099660170040578.git-patchwork-notify@kernel.org>
+Date: Sun, 07 Jan 2024 15:20:21 +0000
+References: <20240105155946.23121-1-asmaa@nvidia.com>
+In-Reply-To: <20240105155946.23121-1-asmaa@nvidia.com>
+To: Asmaa Mnebhi <asmaa@nvidia.com>
+Cc: davem@davemloft.net, f.fainelli@gmail.com, edumazet@google.com,
+ kuba@kernel.org, pabeni@redhat.com, tbogendoerfer@suse.de, horms@kernel.org,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org, davthompson@nvidia.com
 
-GCC 13.2.0 compiler issued the following warning:
+Hello:
 
-mixer-test.c:350:80: warning: format ‘%ld’ expects argument of type ‘long int’, \
-			      but argument 5 has type ‘unsigned int’ [-Wformat=]
-  350 |                         ksft_print_msg("%s.%d value %ld more than item count %ld\n",
-      |                                                                              ~~^
-      |                                                                                |
-      |                                                                                long int
-      |                                                                              %d
-  351 |                                        ctl->name, index, int_val,
-  352 |                                        snd_ctl_elem_info_get_items(ctl->info));
-      |                                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      |                                        |
-      |                                        unsigned int
+This patch was applied to netdev/net.git (main)
+by David S. Miller <davem@davemloft.net>:
 
-Fixing the format specifier in call to ksft_print_msg() according to the
-compiler suggestion silences the warning.
+On Fri, 5 Jan 2024 10:59:46 -0500 you wrote:
+> Although the link is up, there is no ip assigned on setups with high background
+> traffic. Nothing is transmitted nor received. The RX error count keeps on
+> increasing. After several minutes, the RX error count stagnates and the
+> GigE interface finally gets an ip.
+> 
+> The issue is that mlxbf_gige_rx_init() is called before phy_start().
+> As soon as the RX DMA is enabled in mlxbf_gige_rx_init(), the RX CI reaches the max
+> of 128, and becomes equal to RX PI. RX CI doesn't decrease since the code hasn't
+> ran phy_start yet.
+> Bring the PHY up before starting the RX.
+> 
+> [...]
 
-Fixes: 10f2f194663af ("kselftest: alsa: Validate values read from enumerations")
-Cc: Mark Brown <broonie@kernel.org>
-Cc: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.com>
-Cc: Shuah Khan <shuah@kernel.org>
-Cc: linux-sound@vger.kernel.org
-Cc: linux-kselftest@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
----
- tools/testing/selftests/alsa/mixer-test.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Here is the summary with links:
+  - [net,v4] mlxbf_gige: Fix intermittent no ip issue
+    https://git.kernel.org/netdev/net/c/ef210ef85d5c
 
-diff --git a/tools/testing/selftests/alsa/mixer-test.c b/tools/testing/selftests/alsa/mixer-test.c
-index df942149c6f6..e3708cc52db7 100644
---- a/tools/testing/selftests/alsa/mixer-test.c
-+++ b/tools/testing/selftests/alsa/mixer-test.c
-@@ -347,7 +347,7 @@ static bool ctl_value_index_valid(struct ctl_data *ctl,
- 		}
- 
- 		if (int_val >= snd_ctl_elem_info_get_items(ctl->info)) {
--			ksft_print_msg("%s.%d value %ld more than item count %ld\n",
-+			ksft_print_msg("%s.%d value %ld more than item count %d\n",
- 				       ctl->name, index, int_val,
- 				       snd_ctl_elem_info_get_items(ctl->info));
- 			return false;
+You are awesome, thank you!
 -- 
-2.40.1
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
 
