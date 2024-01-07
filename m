@@ -1,131 +1,110 @@
-Return-Path: <linux-kernel+bounces-18929-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18930-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0897C826551
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 18:34:52 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 90709826553
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 18:37:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 80B05B21545
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 17:34:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4FA90B21621
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 17:37:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1CB813AFB;
-	Sun,  7 Jan 2024 17:34:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E6A013AF8;
+	Sun,  7 Jan 2024 17:37:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ltEK5H1/"
+	dkim=pass (2048-bit key) header.d=alu.unizg.hr header.i=@alu.unizg.hr header.b="ZD3sLIG0";
+	dkim=pass (2048-bit key) header.d=alu.unizg.hr header.i=@alu.unizg.hr header.b="bLVAPVEM"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+Received: from domac.alu.hr (domac.alu.unizg.hr [161.53.235.3])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3F9213ADF;
-	Sun,  7 Jan 2024 17:34:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-40d89446895so6143025e9.0;
-        Sun, 07 Jan 2024 09:34:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704648876; x=1705253676; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=WCTsJarysC77v3ACP/NKhPe2RrrA50cxy1q5t9LuTHM=;
-        b=ltEK5H1/IjDbTtHUZ13LZ5ojhcEVgW/pRxXnaXyCD3rMS3o90i4z46Wb+l/YSmvh+n
-         eRbSJ1UyRbo8xcIA+/mNu3bj+JjjIF3W3SUfIvAFOsnTbdQyldQQSW9FDRJMftP3I1Mx
-         ctCEFymtlmURbCKtPcoFOe4qewj/1rG+YXF2DoR0kzFdt9sjM9rw5CPWvn7EsMk61M85
-         1dyJ8fnQ0zSlRcYLFjU1IMJfWBu6hqHwC0WoCJK1qFuvs0RT2gP+wAwuQ6p/XmPMP0B+
-         fnClryBDaJs+mvyZzHK4Y+vJ+MQmjc9mvqatTIraa88SH4QHVzx1mJhI9dpkiYAp9x8I
-         5aDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704648876; x=1705253676;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WCTsJarysC77v3ACP/NKhPe2RrrA50cxy1q5t9LuTHM=;
-        b=JN5RTj4bGs1poT6OF2iGby/gbN7Waf80YvA2Eq4ViXf1fbcmLz40v2/FFxJjDK/7/l
-         KFBxQNdE9eFyqVVXqgbDC9gjkw5mBZmvz6gBE/vbMO4eLSehB7SUqot7p/ejvvLfhcyo
-         5dlWKv3Zd8s4FCn/PDGBRIK5biKFbaDmcKGoec7bVLKd2zC5otQw5VFMiQ0NHTy7nOHW
-         Msb/lfEfZu4a1J1JcGcD4+BE7CScUkbe1/wj7g6oaWr4Hj9HQm+u32ycpZof02ZRLOzD
-         wPf8rJ6S1AKt6rmfb8HiF0WVjoiTfLpRh5RZX6fsDs3mrropfB76fxJ4bXwt2kggUhzz
-         vyBQ==
-X-Gm-Message-State: AOJu0YzFXPqEazqOU7o6M4ldPTbUqKeDVZP5IQon88QvG0OnC8dlM9ek
-	j9x9wb05RoKDgUYIA5JMwmQ=
-X-Google-Smtp-Source: AGHT+IH7PVY8CzQUeCsJ1nGmDuxwcPDt3KQz68vpwQ6dpfq0z3lR/rhnWbTMxYZ+I3+lhZO8z2NwDw==
-X-Received: by 2002:a05:600c:310f:b0:40e:4134:236b with SMTP id g15-20020a05600c310f00b0040e4134236bmr1024379wmo.117.1704648875474;
-        Sun, 07 Jan 2024 09:34:35 -0800 (PST)
-Received: from ?IPV6:2a02:8389:41cf:e200:f579:21c9:7f03:46a? (2a02-8389-41cf-e200-f579-21c9-7f03-046a.cable.dynamic.v6.surfer.at. [2a02:8389:41cf:e200:f579:21c9:7f03:46a])
-        by smtp.gmail.com with ESMTPSA id u2-20020a7bc042000000b0040d79997731sm4484033wmc.0.2024.01.07.09.34.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 07 Jan 2024 09:34:35 -0800 (PST)
-Message-ID: <b842c7c6-9c56-4789-80ed-00b969a35709@gmail.com>
-Date: Sun, 7 Jan 2024 18:34:32 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B26A613AE1;
+	Sun,  7 Jan 2024 17:37:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alu.unizg.hr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alu.unizg.hr
+Received: from localhost (localhost [127.0.0.1])
+	by domac.alu.hr (Postfix) with ESMTP id 9A6566017E;
+	Sun,  7 Jan 2024 18:37:16 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+	t=1704649036; bh=sCVROg27cZxAXjRssVmgTduiqvtFmW20cj6qSjIYyOg=;
+	h=From:To:Cc:Subject:Date:From;
+	b=ZD3sLIG0MjQ8u3kBo86IpY74MgdKxdcACAWZO6AVxldhF3x7Y7oQszvba9+QErwIN
+	 YC/Ir+ZLO4Q8d00DTGwGQHWGQi6OG10AZitR72K6xF6Fs7GTqOUK3M63ljIQfE1k6g
+	 OiWiBEGqMx5WIjZ5tmP/FbO06vqBs26ntln5eLd5yzi/zf4wgsLOvbZHSodsEuJrph
+	 z7kHKvccwr0QEV7I9d65lVYz3zJE+7WkbEcRvQh3beSdFAc4/p2PE+ZqmLdD7lDrZT
+	 V0de/BfZKXqfSwtVCSEofCLh4Cenx6PVcyrolIJwXwRsckXy4X3aNLuXI08bSN0itV
+	 +9VedvnSnki8Q==
+X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
+Received: from domac.alu.hr ([127.0.0.1])
+	by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id yzRIk0TXl6Jj; Sun,  7 Jan 2024 18:37:14 +0100 (CET)
+Received: from defiant.. (unknown [95.168.121.73])
+	by domac.alu.hr (Postfix) with ESMTPSA id D85BA60171;
+	Sun,  7 Jan 2024 18:37:13 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+	t=1704649034; bh=sCVROg27cZxAXjRssVmgTduiqvtFmW20cj6qSjIYyOg=;
+	h=From:To:Cc:Subject:Date:From;
+	b=bLVAPVEMy5ST9NNyVhUE9CrG60iNjGBsZj61g0p/zjipkF5dh3kE7N3YEIP5GFprx
+	 TQtEwyPJf2+2NlrWp894vao0ZgbNqQ+b8wso0yCweynEiked+/2vhazAw3TltI80x+
+	 Rx2T3hkgoGWOEWJvFhtOfNlBRNC5eZSY32NN3snvFFWSKnqqaVUbQM70jRgJ7Y+VQk
+	 lSj5CgBX1tJSytPcW62WjHRV3aq/hEuuJjXFWNZeM55PBxBzzG5YliRdL+U1E9oNal
+	 w9eB2hBDQvyKfa/PrP6x/pula93dv/jYZ/EPDiGn5+OGJ1+Bk8S9WSusc7Sr5QkpKK
+	 9xTSGpfG3HkYA==
+From: Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
+To: =?UTF-8?q?N=C3=ADcolas=20F=2E=20R=2E=20A=2E=20Prado?= <nfraprado@collabora.com>,
+	Mark Brown <broonie@kernel.org>,
+	linux-sound@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	Shuah Khan <shuah@kernel.org>,
+	Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
+Subject: [PATCH v2 0/4] kselftest: alsa: Fix a couple of format specifiers and function parameters
+Date: Sun,  7 Jan 2024 18:37:00 +0100
+Message-Id: <20240107173704.937824-1-mirsad.todorovac@alu.unizg.hr>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 0/3] iio: light: add support for AMS AS7331
-To: Jonathan Cameron <jic23@kernel.org>
-Cc: Christian Eggers <ceggers@arri.de>, Lars-Peter Clausen <lars@metafoo.de>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, linux-iio@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- Conor Dooley <conor.dooley@microchip.com>
-References: <20240103-as7331-v2-0-6f0ad05e0482@gmail.com>
- <20240107155838.376bdd1e@jic23-huawei>
-Content-Language: en-US
-From: Javier Carrasco <javier.carrasco.cruz@gmail.com>
-In-Reply-To: <20240107155838.376bdd1e@jic23-huawei>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 07.01.24 16:58, Jonathan Cameron wrote:
-> On Wed, 03 Jan 2024 13:08:50 +0100
-> Javier Carrasco <javier.carrasco.cruz@gmail.com> wrote:
-> 
->> The AMS AS7331 UV light sensor measures three ultraviolet bands (UVA,
->> UVB and UVC, also known as deep UV or DUV) as well as temperature.
->>
->> This device is practically identical to the AMS AS73211 XYZ True Color
->> sensor that is already supported by the iio subsystem, except for the
->> photodiodes used to aquire the desired light wavelengths.
->>
->> In order to reuse code and reduce maintenance load, this series extends
->> the AS73211 driver to support the AS7331 as well.
->>
->> Note that the UVA and UVB light modifiers have not been merged into the
->> mainline kernel yet, but they are already available in Greg's char-misc
->> git tree which can be found at
->> git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/char-misc.git
->> in the char-misc-next branch.
->>
->> The original device AS73211 supported by the driver could only be tested
->> briefly due to the lack of hardware. Instead, the i2c-stub module has
->> been used to make sure that the driver registers the iio device properly
->> and the attributes exported to sysfs are correct. Some basic register
->> assignments reported the expected intensity scales and in principle
->> nothing else should have been affected by the modifications in the code.
->>
->> Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
-> Hi Javier,
-> 
-> Series applied - but given timing I'll only push this out as testing for
-> now as I'll want to rebase the IIO tree on rc1 once available in a couple of
-> weeks time.
-> 
-> Thanks,
-> 
-> Jonathan
-> 
-Hi Jonathan,
+Minor fixes of compiler warnings and one bug in the number of parameters which
+would not crash the test but it is better fixed for correctness sake.
 
-I am happy with that approach. Some extra time to catch issues before
-going live is a good thing anyway.
+As the general climate in the Linux kernel community is to fix all compiler
+warnings, this could be on the right track, even if only in the testing suite.
 
-Thank you and best regards,
+Changelog:
 
-Javier Carrasco
+v1 -> v2:
+- Compared to v1, commit subject lines have been adjusted to reflect the style
+  of the subsystem, as suggested by Mark.
+- 1/4 was already acked and unchanged (adjusted the subject line as suggested)
+  (code unchanged)
+- 2/4 was acked with suggestion to adjust the subject line (done).
+  (code unchanged)
+- 3/4 The format specifier was changed from %d to %u as suggested.
+- The 4/4 submitted for review (in the v1 it was delayed by an omission).
+  (code unchanged)
+
+Mirsad Todorovac (4):
+  kselftest/alsa - mixer-test: fix the number of parameters to
+    ksft_exit_fail_msg()
+  kselftest/alsa - mixer-test: Fix the print format specifier warning
+  kselftest/alsa - mixer-test: Fix the print format specifier warning
+  kselftest/alsa - conf: Stringify the printed errno in sysfs_get()
+
+ tools/testing/selftests/alsa/conf.c       | 2 +-
+ tools/testing/selftests/alsa/mixer-test.c | 6 +++---
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+-- 
+2.40.1
+
 
