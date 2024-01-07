@@ -1,222 +1,132 @@
-Return-Path: <linux-kernel+bounces-18845-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18846-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF02B8263E9
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 12:35:05 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D1E328263EA
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 12:37:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 99875281F4C
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 11:34:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C43DC1C20B80
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 11:37:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D509212E57;
-	Sun,  7 Jan 2024 11:34:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E277612E4A;
+	Sun,  7 Jan 2024 11:37:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IebSmCvk"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Udy5o+Go"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1777612B7E;
-	Sun,  7 Jan 2024 11:34:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A449C433C8;
-	Sun,  7 Jan 2024 11:34:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38A2712E4E;
+	Sun,  7 Jan 2024 11:37:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 947A4C433C8;
+	Sun,  7 Jan 2024 11:37:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704627292;
-	bh=q+FK+IJr5w3UyyWePtRhsxuIy+nIapv8qhRzmHldqTw=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=IebSmCvkoR9DivsuJc3+dTwekvt9rQ1tVb3njTCfmbsYrrOa6KMTBaVbFi65PFNOA
-	 jTTD3MWo8Ogjmm9D3gr7RYLwBT6q6YchCX3darK2roEl9zwT5pPJOP2rrCc3g9GDyl
-	 VK5vAAHrRdEio3BqTu8jXEZ4cH6PLV+6wbYLVm88exLU6y/5xnmxsmc8NkJ4UD75Gj
-	 UNMR01ALsUkiSlTbfUN3nonPPXq4i+kqrqCnNgG9I9fUZicUbGtf8RqFILZ+28Drk1
-	 8jTw/aOBmJRol1bum+HThigdns+38cOr+m13I1DG65uE9dLacSLLYIpbuNGwLo5xCE
-	 BMtGxYNoe2qDA==
-Received: by mail-oa1-f45.google.com with SMTP id 586e51a60fabf-205f223639fso805621fac.2;
-        Sun, 07 Jan 2024 03:34:52 -0800 (PST)
-X-Gm-Message-State: AOJu0Yw++QrPvpQpX82uXcNS3lRaQ0C3qIcH8x3iw1PKbKAkgy41BE3C
-	G9qQ9eLevGNG3yaMDDcjyTAfK9OyL67K3CyFZnQ=
-X-Google-Smtp-Source: AGHT+IEFNo/umTOKVOCwvp8VXon8yM6f5dZ8/YFlhVS2raLhwwIK7XX+vjKUUKGZhK5c4OABFLrvYqXX2vibuJQLu1E=
-X-Received: by 2002:a05:6870:4f11:b0:204:1a1f:c0ff with SMTP id
- xi17-20020a0568704f1100b002041a1fc0ffmr2998188oab.38.1704627291854; Sun, 07
- Jan 2024 03:34:51 -0800 (PST)
+	s=k20201202; t=1704627464;
+	bh=emlTJxNPbWfjYuEv3Ra2HFcvol4EKWQfp6BXpOPp+8E=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=Udy5o+Gouof6xnCy1n7tAkBcnOIY2Wb1E43e8zAcMhWrftcfiYZnZqWxcSxnjXGYw
+	 591vdJmwIxoIIgDatYvAy2Hs0O16KmaE1R7dn9uUzNxsNJw5WJhrugWapHKRDxlLDR
+	 OXm4UKQv6nvM2zmJGpqxNGyX+BKBXQHDt7+54viBwcMMQg3ffb/rqlfaYPGSQW/cp2
+	 zc0HOf7N+bAunh/kbCFh7UqxdepOpW4kYbY5HpkKQxvJ4iAaw0fRrhvYe5gsTvYyxf
+	 6hafKoZhOUGundwGb50TCn0d4CtUX0QYIWrvk5je6k3tVs4YPkp1/ZUZn/FAEub0q7
+	 zGycoepWTBUzQ==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <maz@kernel.org>)
+	id 1rMRTJ-009Yi8-Pt;
+	Sun, 07 Jan 2024 11:37:41 +0000
+Date: Sun, 07 Jan 2024 11:37:41 +0000
+Message-ID: <86cyud9xx6.wl-maz@kernel.org>
+From: Marc Zyngier <maz@kernel.org>
+To: Oliver Upton <oliver.upton@linux.dev>
+Cc: Ilkka Koskinen <ilkka@os.amperecomputing.com>,
+	James Morse <james.morse@arm.com>,
+	Suzuki K Poulose <suzuki.poulose@arm.com>,
+	Zenghui Yu <yuzenghui@huawei.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	Gavin Shan <gshan@redhat.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Raghavendra Rao Ananta <rananta@google.com>,
+	D Scott Phillips <scott@os.amperecomputing.com>,
+	linux-arm-kernel@lists.infradead.org,
+	kvmarm@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH] KVM: arm64: Workaround for Ampere AC03_CPU_36 (exception taken to an incorrect EL)
+In-Reply-To: <ZZmS32lXXlULIArw@linux.dev>
+References: <20240105213251.4141-1-ilkka@os.amperecomputing.com>
+	<ZZiWZkNP8Owytecw@linux.dev>
+	<87sf3au0bu.wl-maz@kernel.org>
+	<ZZmS32lXXlULIArw@linux.dev>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240103135454.376021-1-masahiroy@kernel.org> <CA+icZUX77miqFC5=iH_9e4BZw5hc1Ci8A3cHL1uGPnzHw258Hw@mail.gmail.com>
- <CAK7LNAQYQiuQ2mn=aAqOrx-xsV1hT5Q6UTkWLNkG_4E77NyEog@mail.gmail.com> <CA+icZUVyTm=xGWd77f2D8xxcsH+1rXm7YaW==u1i=MVDfZ-+TQ@mail.gmail.com>
-In-Reply-To: <CA+icZUVyTm=xGWd77f2D8xxcsH+1rXm7YaW==u1i=MVDfZ-+TQ@mail.gmail.com>
-From: Masahiro Yamada <masahiroy@kernel.org>
-Date: Sun, 7 Jan 2024 20:34:15 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAReV3EBzAuZxAfwk5LwaYUipkyFaKz_etZfebHiq+20-w@mail.gmail.com>
-Message-ID: <CAK7LNAReV3EBzAuZxAfwk5LwaYUipkyFaKz_etZfebHiq+20-w@mail.gmail.com>
-Subject: Re: [PATCH] linux/export.h: remove unneeded .balign directive
-To: sedat.dilek@gmail.com
-Cc: linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Helge Deller <deller@gmx.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: oliver.upton@linux.dev, ilkka@os.amperecomputing.com, james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com, catalin.marinas@arm.com, will@kernel.org, gshan@redhat.com, mark.rutland@arm.com, rananta@google.com, scott@os.amperecomputing.com, linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
-On Fri, Jan 5, 2024 at 5:21=E2=80=AFPM Sedat Dilek <sedat.dilek@gmail.com> =
-wrote:
->
-> On Thu, Jan 4, 2024 at 3:17=E2=80=AFPM Masahiro Yamada <masahiroy@kernel.=
-org> wrote:
-> >
-> > On Thu, Jan 4, 2024 at 1:05=E2=80=AFAM Sedat Dilek <sedat.dilek@gmail.c=
-om> wrote:
-> > >
-> > > Happy new 2024 Masahiro,
-> > >
-> > > some small nits.
-> > >
-> > > What about adding links to the commits...
-> > >
-> > > linux/export: Fix alignment for 64-bit ksymtab entries
-> > > [ Upstream commit f6847807c22f6944c71c981b630b9fff30801e73 ]
-> > >
-> > > linux/export: Ensure natural alignment of kcrctab array
-> > > [ Upstream commit 753547de0daecbdbd1af3618987ddade325d9aaa ]
-> > >
-> > > ^^ AFAICS in linux-stable - v6.6.10-rc1 includes both
-> > > ^^ Is yours a follow-up and makes sense for linux-stable releases?
-> >
-> >
-> > No.
-> >
-> > This patch is a separate clean-up, not a bug fix.
-> >
-> > No need for back-porting.
-> >
->
-> Thanks for the clarification.
->
-> But it is an improvement - so no discarding at link-time means
-> reduction of build-time?
-> Amy numbers?
+On Sat, 06 Jan 2024 17:50:23 +0000,
+Oliver Upton <oliver.upton@linux.dev> wrote:
+> 
+> On Sat, Jan 06, 2024 at 12:13:09PM +0000, Marc Zyngier wrote:
+> 
+> [...]
+> 
+> > > From 265cb193190c13c651d8e008d34d1d18505d4804 Mon Sep 17 00:00:00 2001
+> > > From: Oliver Upton <oliver.upton@linux.dev>
+> > > Date: Fri, 5 Jan 2024 23:18:14 +0000
+> > > Subject: [PATCH] KVM: arm64: Mitigate AmpereOne erratum AC03_CPU_36
+> > > 
+> > > The AmpereOne design suffers from an erratum where if an asynchronous
+> > > exception arrives while EL2 is modifying hypervisor exception controls
+> > > (i.e. HCR_EL2, SCTLR_EL2) the PE may take an invalid exception to
+> > > another EL.
+> > 
+> > Same questions about SCTLR_EL2 and the notion of "another EL".
+> 
+> I've got the same questions :) This is just a rewording of Ampere's
+> erratum description.
+> 
+> https://amperecomputing.com/customer-connect/products/AmpereOne-device-documentation
 
+Huh. That's full of... not a lot.
 
-The .export_symbol is already discarded.
+> > Other than the passing comments, I'm OK with this patch. However, I am
+> > very worried that this is only the start of a very long game of
+> > whack-a-mole, because there is no actual documentation on what goes
+> > wrong.
+> > 
+> > For example, we have plenty of writes to SCTLR_EL2 (using the
+> > SCTLR_EL1 alias if running VHE) for MTE. Are any of those affected?
+> > 
+> > Short of having some solid handle on what is happening, I don't see
+> > how we can promise to support this system.
+> 
+> Completely agree. At least on the AmpereOne machines I have access to
+> this seems to do the trick, but that observation is no replacement for
+> full documentation.
 
-The alignment of discarded code is "don't care".
-So, this is a code clean-up.
+Indeed. The document you quoted acknowledges that there are issues
+(one step up from the previous situation), but this is not enough to
+independently develop a workaround that will survive the test of time.
 
-I do not think there is a noticeable difference
-in the build speed.
+For example, AC03_CPU_39 doesn't even list the failing encodings,
+which may lead to real funnies if these encodings get used at some
+point.
 
+	M.
 
-
-
-See line 1005 of include/asm-generic/vmlinux.h.lds
-
-
-#define COMMON_DISCARDS                                                 \
-        SANITIZER_DISCARDS                                              \
-        PATCHABLE_DISCARDS                                              \
-        *(.discard)                                                     \
-        *(.discard.*)                                                   \
-        *(.export_symbol)                                               \
-        *(.modinfo)                                                     \
-        /* ld.bfd warns about .gnu.version* even when not emitted */    \
-        *(.gnu.version*)
-
-
-
-
-
-
-
-
-
-
-> >
-> >
-> >
-> > >
-> > > ...and CC Helge Deller?
-> >
->
-> CC in the patch - makes for me only sense if you agree on adding above
-> commit-ids of Helge's work.
-> I think this is good in sense of follow-able references.
->
-> Best regards,
-> -Sedat-
->
-> >
-> > You did it.
-> >
-> >
-> > Thanks.
-> >
-> >
-> >
-> >
-> >
-> > > Best regards,
-> > > -Sedat-
-> > >
-> > > Link: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-st=
-able-rc.git/log/?h=3Dlinux-6.6.y
-> > >
-> > > On Wed, Jan 3, 2024 at 2:55=E2=80=AFPM Masahiro Yamada <masahiroy@ker=
-nel.org> wrote:
-> > > >
-> > > > The .export_symbol section is discarded by the linker script, hence
-> > > > no alignment is needed. Simplify the code.
-> > > >
-> > > > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> > > > ---
-> > > >
-> > > >  include/linux/export.h | 10 +++-------
-> > > >  1 file changed, 3 insertions(+), 7 deletions(-)
-> > > >
-> > > > diff --git a/include/linux/export.h b/include/linux/export.h
-> > > > index 0bbd02fd351d..dff230bb5aca 100644
-> > > > --- a/include/linux/export.h
-> > > > +++ b/include/linux/export.h
-> > > > @@ -15,13 +15,9 @@
-> > > >   */
-> > > >
-> > > >  #ifdef CONFIG_64BIT
-> > > > -#define __EXPORT_SYMBOL_REF(sym)                       \
-> > > > -       .balign 8                               ASM_NL  \
-> > > > -       .quad sym
-> > > > +#define __EXPORT_SYMBOL_PTR    .quad
-> > > >  #else
-> > > > -#define __EXPORT_SYMBOL_REF(sym)                       \
-> > > > -       .balign 4                               ASM_NL  \
-> > > > -       .long sym
-> > > > +#define __EXPORT_SYMBOL_PTR    .long
-> > > >  #endif
-> > > >
-> > > >  #define ___EXPORT_SYMBOL(sym, license, ns)             \
-> > > > @@ -29,7 +25,7 @@
-> > > >         __export_symbol_##sym:                  ASM_NL  \
-> > > >                 .asciz license                  ASM_NL  \
-> > > >                 .asciz ns                       ASM_NL  \
-> > > > -               __EXPORT_SYMBOL_REF(sym)        ASM_NL  \
-> > > > +               __EXPORT_SYMBOL_PTR sym         ASM_NL  \
-> > > >         .previous
-> > > >
-> > > >  #if defined(__DISABLE_EXPORTS)
-> > > > --
-> > > > 2.40.1
-> > > >
-> > > >
-> > >
-> >
-> >
-> > --
-> > Best Regards
-> > Masahiro Yamada
-
-
-
---=20
-Best Regards
-Masahiro Yamada
+-- 
+Without deviation from the norm, progress is not possible.
 
