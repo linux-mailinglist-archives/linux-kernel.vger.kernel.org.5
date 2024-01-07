@@ -1,263 +1,434 @@
-Return-Path: <linux-kernel+bounces-18938-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18939-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D86EE82656E
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 19:00:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E05F182656F
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 19:02:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 59ADF281F9E
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 18:00:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8A8A228203F
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 18:02:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1904913FE1;
-	Sun,  7 Jan 2024 18:00:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C08C013FEF;
+	Sun,  7 Jan 2024 18:01:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fOlCscH+"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="s1JJUUct"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B50F513FE4;
-	Sun,  7 Jan 2024 18:00:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-40e4398266aso7339695e9.0;
-        Sun, 07 Jan 2024 10:00:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704650438; x=1705255238; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:cc:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=PKyStk0haCbQVEo8Al8QRs15264C+ZMsxxJKHUPR7Pc=;
-        b=fOlCscH+/wvZ9wOm2lyS2QqAzIU3M9c5tJ1RhAoYufcNTUvI61VuoalfD67wPmFRd5
-         G1W05GPHUpbWf3Mc+pNGUCy8DRhR35Iw7YucHdZscf0bGPzm47dBVyDAtXIoKxUmg/sU
-         mr+brFjkz/AcH7f/w16J7ygmy6NgUTa84ftQtwQhinpWtl+YvVCr4U475qC4Os3DMBWe
-         aaWqYL/QTBZ3r2xBM3+qbpCuIhhGdwStvDflup7wAaqTvubzDQBHbFf2dSU/xKuf8+WE
-         o1gz2jbncUFKiI6iKNkDX1F+igMOA/0pDT461F5yVVFn1x1kJGBRll+WB33+FqzBZdd1
-         aIrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704650438; x=1705255238;
-        h=content-transfer-encoding:in-reply-to:from:cc:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=PKyStk0haCbQVEo8Al8QRs15264C+ZMsxxJKHUPR7Pc=;
-        b=W5uZ9Kg4HNh9CTHImrObKFFqcALXv6yDAqqimTP+QP0AYO3+hnYSFzvzr5NuUGpdyJ
-         8V9TgFEDaXjcn4wGYL5rVoeSAw8pTDn/C4Mo98k9z/ml7jOUanSr7hzoeZlHDm4vT6tG
-         wptVKAJdGrVbDFBNPs8KPNnP1o0BPI8R238B59E3Bn1NKieKA1V0nNRy0qhhnIqdn7Tb
-         DXzcyDwCMlhATXxXFE+4bvzyC9sbXn65pwkRb7DeAxbNLbvspx/zRpi+nP2spwKMhI2V
-         mqjqp1v+eUQWvcMDXidwsJ5afOkwi8s8vtHMt6MMWM+9B7XvNxc7/kcSyQoqua/pVmDD
-         qoag==
-X-Gm-Message-State: AOJu0YxQtq46JEjlw0N7cvTEyRm7VMl6RZ7R4cuuvDj+cnZsY+KPc3MB
-	rGZcH/fWmLEhJWgcmf5ldTY=
-X-Google-Smtp-Source: AGHT+IGhqqCvDdoBIyU84SWyNgbazpRv9+3/tHjLax2Xn+swSXh47IxcWIaFtdx7zrKMSJxkodAKfQ==
-X-Received: by 2002:a05:600c:a05:b0:40d:9237:dada with SMTP id z5-20020a05600c0a0500b0040d9237dadamr1376192wmp.103.1704650437606;
-        Sun, 07 Jan 2024 10:00:37 -0800 (PST)
-Received: from [192.168.0.3] ([69.6.8.124])
-        by smtp.gmail.com with ESMTPSA id u12-20020a5d434c000000b0033761b2de64sm3547257wrr.76.2024.01.07.10.00.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 07 Jan 2024 10:00:37 -0800 (PST)
-Message-ID: <0926ea46-1ce4-4118-a04c-b6badc0b9e15@gmail.com>
-Date: Sun, 7 Jan 2024 20:00:33 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FA5613FE0;
+	Sun,  7 Jan 2024 18:01:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3C534C433C7;
+	Sun,  7 Jan 2024 18:01:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704650511;
+	bh=OKmshA2l4n6o6z7uWqL+UJpUgByybbRvwWTD/bLY2YA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=s1JJUUctn9+GpXapycqkTfQDBnBlfSMnyhWZGU0ouOdP0/M9+Hd6tVvBPz/EzvmPA
+	 nTr9FAffbRJVAd//zh8kwlTK713yMU/4FN3gv0isVRDl+FT892a/znKCKrl/ep4dH+
+	 fwCV4s/CPkyioQ9t7Owz4qYd3TwOmCQUWfubrMYQdJpA/hrJZqaidpSlVQJe8QAiRb
+	 hJCXsKLjRI3ZNMKRXFTFhy8B/WX+7qN7b3ew9z4fICDMiqHBAO/lol06ZYhiYAijtu
+	 IaL5f67DHycoqxMJhHD/IeglMktY5Jw+WMKhFEmA10fbqRiE2xAdZzKEmuYgQTlDNo
+	 eYqC6WmRpWZnw==
+Date: Sun, 7 Jan 2024 19:01:46 +0100
+From: Christian Brauner <brauner@kernel.org>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, 
+	Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Linus Torvalds <torvalds@linux-foundation.org>, 
+	Al Viro <viro@zeniv.linux.org.uk>, linux-fsdevel@vger.kernel.org, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH] tracefs/eventfs: Use root and instance inodes as default
+ ownership
+Message-ID: <20240107-verzichten-knauf-dfbbec566fdb@brauner>
+References: <20240103203246.115732ec@gandalf.local.home>
+ <20240105-wegstecken-sachkenntnis-6289842d6d01@brauner>
+ <20240105095954.67de63c2@gandalf.local.home>
+ <20240107-getrickst-angeeignet-049cea8cad13@brauner>
+ <20240107-ernennen-braumeister-c443c5dc6946@brauner>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [net-next PATCH RFC v3 1/8] dt-bindings: net: document ethernet
- PHY package nodes
-Content-Language: en-US
-To: Christian Marangi <ansuelsmth@gmail.com>,
- Robert Marko <robert.marko@sartura.hr>, Andrew Lunn <andrew@lunn.ch>,
- Vladimir Oltean <olteanv@gmail.com>, Rob Herring <robh+dt@kernel.org>
-References: <20231126015346.25208-1-ansuelsmth@gmail.com>
- <20231126015346.25208-2-ansuelsmth@gmail.com>
-Cc: Luo Jie <quic_luoj@quicinc.com>, "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Andy Gross <agross@kernel.org>,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>,
- Heiner Kallweit <hkallweit1@gmail.com>, Russell King
- <linux@armlinux.org.uk>, Matthias Brugger <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- netdev@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org
-From: Sergey Ryazanov <ryazanov.s.a@gmail.com>
-In-Reply-To: <20231126015346.25208-2-ansuelsmth@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240107-ernennen-braumeister-c443c5dc6946@brauner>
 
-Hi Christian and Robert,
-
-thank you for this great work!
-
-Let me ask a couple of questions regarding the phy package conception. 
-Please find them below.
-
-On 26.11.2023 03:53, Christian Marangi wrote:
-> Document ethernet PHY package nodes used to describe PHY shipped in
-> bundle of 4-5 PHY. The special node describe a container of PHY that
-> share common properties. This is a generic schema and PHY package
-> should create specialized version with the required additional shared
-> properties.
+On Sun, Jan 07, 2024 at 06:42:33PM +0100, Christian Brauner wrote:
+> On Sun, Jan 07, 2024 at 01:42:39PM +0100, Christian Brauner wrote:
+> > > > So tracefs supports remounting with different uid/gid mount options and
+> > > > then actually wades through _all_ of the inodes and changes their
+> > > > ownership internally? What's the use-case for this? Containers?
+> > > 
+> > > No, in fact tracing doesn't work well with containers as tracing is global
+> > > to the entire machine. It can work with privileged containers though.
+> > 
+> > At least the tracefs interface is easily supportable within a delegation
+> > model. IOW, you have a privileged process that delegates relevant
+> > portions to a container via idmapped mounts _without_ doing the insane thing
+> > and making it mountable by a container aka the fs-to-CVE pipeline.
+> > 
+> > > 
+> > > The reason for this is because tracefs was based off of debugfs where the
+> > > files and directores are created at boot up and mounted later. The reason
+> > > to do this was to allow users to mount with gid=GID to allow a given group
+> > > to have access to tracing. Without this update, tracefs would ignore it
+> > > like debugfs and proc does today.
+> > > 
+> > > I think its time I explain the purpose of tracefs and how it came to be.
+> > > 
+> > > The tracing system required a way to control tracing and read the traces.
+> > > It could have just used a new system like perf (although
+> > > /sys/kernel/debug/tracing predates perf), where it created a single ioctl()
+> > > like system call do do everything.
+> > > 
+> > > As the ftrace tracing came from PREEMPT_RT latency tracer and my own logdev
+> > > tracer, which both have an embedded background, I chose an interface that
+> > > could work with just an unmodified version of busybox. That is, I wanted it
+> > > to work with just cat and echo.
+> > > 
+> > > The main difference with tracefs compared to other file systems is that it
+> > > is a control interface, where writes happen as much as reads. The data read
+> > > is controlled. The closest thing I can think of is how cgroups work.
+> > > 
+> > > As tracing is a privileged operation, but something that could be changed
+> > > to allow a group to have access to, I wanted to make it easy for an admin
+> > > to decide who gets to do what at boot up via the /etc/fstab file.
+> > 
+> > Yeah, ok. I think you could achieve the same thing via idmapped mounts. You
+> > just need to swap out the mnt on /sys/kernel/tracing with an idmapped mount.
+> > 
+> > mount(8) should just give you the ability to specify "map the ids I explicitly
+> > want to remap to something else and for the rest use the identity mapping". I
+> > wanted that for other reasons anyway.
+> > 
+> > So in one of the next versions of mount(8) you can then do (where --beneath
+> > means place the mount beneath the current one and --replace is
+> > self-explanatory):
+> > 
+> > sudo mount --beneath -o X-mount.idmap='g:0:1234:1 u:0:0:1' /sys/kernel/tracing
+> > sudo umount /sys/kernel/tracing
+> > 
+> > or as a shortcut provided by mount(8):
+> > 
+> > sudo mount --replace -o X-mount.idmap='g:0:1234:1 u:0:0:1' /sys/kernel/tracing 
+> > 
+> > In both cases you replace the mount without unmounting tracefs.
+> > 
+> > I can illustrate this right now though:
+> > 
+> > user1@localhost:~$ sudo mount --bind -o X-mount.idmap='g:0:1000:1 u:0:1000:1' /sys/kernel/tracing/ /mnt/
+> > 
+> > # This is a tool I wrote for testing the patchset I wrote back then.
+> > user1@localhost:~/data/move-mount-beneath$ sudo ./move-mount --beneath --detached /mnt /sys/kernel/tracing
+> > Mounting beneath top mount
+> > Creating anonymous mount
+> > Attaching mount /mnt -> /sys/kernel/tracing
+> > Creating single detached mount
+> > 
+> > user1@localhost:~/data/move-mount-beneath$
+> > 
+> > # Now there's two mounts stacked on top of each other.
+> > user1@localhost:~/data/move-mount-beneath$ findmnt | grep tracing
+> > | `-/sys/kernel/tracing        tracefs        tracefs     rw,nosuid,nodev,noexec,relatime,idmapped
+> > |   `-/sys/kernel/tracing      tracefs        tracefs     rw,nosuid,nodev,noexec,relatime
+> > 
+> > user1@localhost:~/data/move-mount-beneath$ sudo ls -al /sys/kernel/tracing/| head
+> > total 0
+> > drwx------  6 root root 0 Jan  7 13:33 .
+> > drwxr-xr-x 16 root root 0 Jan  7 13:33 ..
+> > -r--r-----  1 root root 0 Jan  7 13:33 README
+> > -r--r-----  1 root root 0 Jan  7 13:33 available_events
+> > -r--r-----  1 root root 0 Jan  7 13:33 available_filter_functions
+> > -r--r-----  1 root root 0 Jan  7 13:33 available_filter_functions_addrs
+> > -r--r-----  1 root root 0 Jan  7 13:33 available_tracers
+> > -rw-r-----  1 root root 0 Jan  7 13:33 buffer_percent
+> > -rw-r-----  1 root root 0 Jan  7 13:33 buffer_size_kb
+> > 
+> > # Reveal updated mount
+> > user1@localhost:~/data/move-mount-beneath$ sudo umount /sys/kernel/tracing
+> > 
+> > user1@localhost:~/data/move-mount-beneath$ findmnt | grep tracing
+> > | `-/sys/kernel/tracing        tracefs        tracefs     rw,nosuid,nodev,noexec,relatime,idmapped
+> > 
+> > user1@localhost:~/data/move-mount-beneath$ sudo ls -al /sys/kernel/tracing/| head
+> > total 0
+> > drwx------  6 user1 user1 0 Jan  7 13:33 .
+> > drwxr-xr-x 16 root  root  0 Jan  7 13:33 ..
+> > -r--r-----  1 user1 user1 0 Jan  7 13:33 README
+> > -r--r-----  1 user1 user1 0 Jan  7 13:33 available_events
+> > -r--r-----  1 user1 user1 0 Jan  7 13:33 available_filter_functions
+> > -r--r-----  1 user1 user1 0 Jan  7 13:33 available_filter_functions_addrs
+> > -r--r-----  1 user1 user1 0 Jan  7 13:33 available_tracers
+> > -rw-r-----  1 user1 user1 0 Jan  7 13:33 buffer_percent
+> > -rw-r-----  1 user1 user1 0 Jan  7 13:33 buffer_size_kb
+> > 
+> > sudo umount -l /sys/kernel/tracing
+> > 
+> > and reveal the new mount with updated permissions and at no point in time will
+> > you have had to unmount tracefs itself. No chown needed, no remount needed that
+> > has to touch all inodes.
+> > 
+> > I did perf numbers for this when I implemented this and there's no meaningful
+> > perf impact for anything below 5 mappings. which covers 80% of the use-cases.
+> > 
+> > I mean, there are crazy people out there that do have 30 mappings, maybe. And
+> > maybe there's 3 users that go into the hundreds (340 is maximum so struct idmap
+> > still fits into cacheline) because of some LDAP crap or something.
+> > 
+> > See an ext4 filesystem to open/create 1,000,000 files. Then I looped through
+> > all of the files calling fstat() on each of them 1000 times and calculated the
+> > mean fstat() time for a single file.
+> > 
+> > |   # MAPPINGS | PATCH-NEW |
+> > |--------------|-----------|
+> > |   0 mappings |   158 ns  |
+> > |   1 mappings |   157 ns  |
+> > |   2 mappings |   158 ns  |
+> > |   3 mappings |   161 ns  |
+> > |   5 mappings |   165 ns  |
+> > |  10 mappings |   199 ns  |
+> > |  50 mappings |   218 ns  |
+> > | 100 mappings |   229 ns  |
+> > | 200 mappings |   239 ns  |
+> > | 300 mappings |   240 ns  |
+> > | 340 mappings |   248 ns  |
+> > 
+> > > 
+> > > > 
+> > > > Aside from optimizing this and the special semantics for this eventfs
+> > > > stuff that you really should think twice of doing, here's one idea for
+> > > > an extension that might alleviate some of the pain:
+> > > > 
+> > > > If you need flexible dynamic ownership change to e.g., be able to
+> > > > delegate (all, a directory, a single file of) tracefs to
+> > > > unprivileged/containers/whatever then you might want to consider
+> > > > supporting idmapped mounts for tracefs. Because then you can do stuff
+> > > > like:
+> > > 
+> > > I'm a novice here and have no idea on how id maps work ;-)
+> > 
+> > It's no magic and you don't even need to care about it. If you're on
+> > util-linux 2.39 and any kernel post 5.12 the -o X-mount.idmap option
+> > does all the details for you.
+> > 
+> > Though I still want an api where you can just pass the idmappings directly to
+> > mount_setattr(). That's another topic though.
+> > 
+> > > have. Now, can we do that and still keep the dynamic creation of inodes and
+> > > dentries?
+> > 
+> > Yes.
+> > 
+> > > Does this require having more than one dentry per inode?
+> > 
+> > No. It's just a topological change. The same subtree exposed at different
+> > locations with the ability of exposing it with different permissions (without
+> > any persistent filesystem-level changes).
+> > 
+> > So, I tried to do an exploratory patch even though I promised myself not
+> > to do it. But hey...
+> > 
+> > Some notes:
+> > 
+> > * Permission handling for idmapped mounts is done completely in the
+> >   VFS. That's the case for all filesytems that don't have a custom
+> >   ->permission() handler. So there's nothing to do for us here.
+> > 
+> > * Idmapped mount handling for ->getattr() is done completely by the VFS
+> >   if the filesystem doesn't have a custom ->getattr() handler. So we're
+> >   done here.
+> > 
+> > * Tracefs doesn't support attribute changes via ->setattr() (chown(),
+> >   chmod etc.). So there's nothing to here.
+> > 
+> > * Eventfs does support attribute changes via ->setattr(). But it relies
+> >   on simple_setattr() which is already idmapped mount aware. So there's
+> >   nothing for us to do.
+> > 
+> > * Ownership is inherited from the parent inode (tracefs) or optionally
+> >   from stashed ownership information (eventfs). That means the idmapping
+> >   is irrelevant here. It's similar to the "inherit gid from parent
+> >   directory" logic we have in some circumstances. TL;DR nothing to do
+> >   here as well.
+> > 
+> > * Tracefs supports the creation of instances from userspace via mkdir.
+> >   For example,
+> > 
+> > 	mkdir /sys/kernel/tracing/instances/foo
+> > 
+> >   And here the idmapping is relevant so we need to make the helpers
+> >   aware of the idmapping.
+> > 
+> >   I just went and plumbed this through to most helpers.
+> > 
+> > There's some subtlety in eventfs. Afaict, the directories and files for
+> > the individual events are created on-demand during lookup or readdir.
+> > 
+> > The ownership of these events is again inherited from the parent inode
+> > or recovered from stored state. In both cases the actual idmapping is
+> > irrelevant.
+> > 
+> > The callchain here is:
+> > 
+> > eventfs_root_lookup("xfs", "events")
+> > -> create_{dir,file}_dentry("xfs", "events")
+> >    -> create_{dir,file}("xfs", "events")
+> >       -> eventfs_start_creating("xfs", "events")
+> >          -> lookup_one_len("xfs", "events")
+> > 
+> > And the subtlety is that lookup_one_len() does permission checking on
+> > the parent inode (IOW, if you want a dentry for "blech" under "events"
+> > it'll do a permission check on events->d_inode) for exec permissions
+> > and then goes on to give you a new dentry.
+> > 
+> > Usually this call would have to be changed to lookup_one() and the
+> > idmapping be handed down to it. But I think that's irrelevant here.
+> > 
+> > Lookup generally doesn't need to be aware of idmappings at all. The
+> > permission checking is done purely in the vfs via may_lookup() and the
+> > idmapping is irrelevant because we always initialize inodes with the
+> > filesystem level ownership (see the idmappings.rst) documentation if
+> > you're interested in excessive details (otherwise you get inode aliases
+> > which you really don't want).
+> > 
+> > For tracefs it would not matter for lookup per se but only because
+> > tracefs seemingly creates inodes/dentries during lookup (and readdir()).
+> > 
+> > But imho the permission checking done in current eventfs_root_lookup()
+> > via lookup_one_len() is meaningless in any way; possibly even
+> > (conceptually) wrong.
+> > 
+> > Because, the actual permission checking for the creation of the eventfs
+> > entries isn't really done during lookup or readdir, it's done when mkdir
+> > is called:
+> > 
+> >         mkdir /sys/kernel/tracing/instances/foo
+> > 
+> > Here, all possible entries beneath foo including "events" and further
+> > below are recorded and stored. So once mkdir returns it basically means
+> > that it succeeded with the creation of all the necessary directories and
+> > files. For all purposes the foo/events/ directory and below have all the
+> > entries that matter. They have been created. It's comparable to them not
+> > being in the {d,i}cache, I guess.
+> > 
+> > When one goes and looksup stuff under foo/events/ or readdir the entries
+> > in that directory:
+> > 
+> > fd = open("foo/events")
+> > readdir(fd, ...)
+> > 
+> > then they are licensed to list an entry in that directory. So all that
+> > needs to be done is to actually list those files in that directory. And
+> > since they already exist (they were created during mkdir) we just need
+> > to splice in inodes and dentries for them. But for that we shouldn't
+> > check permissions on the directory again. Because we've done that
+> > already correctly when the VFS called may_lookup().
+> > 
+> > IOW, the inode_permission() in lookup_one_len() that eventfs does is
+> > redundant and just wrong.
+> > 
+> > Luckily, I don't think we need to even change anything because all
+> > directories that eventfs creates always grant exec permissions to the
+> > other group so lookup_one_len() will trivially succeed. IIUC.
+> > 
+> > Drafted-by-with-no-guarantees-whatsoever-that-this-wont-burn-the-house-down: Christian Brauner <brauner@kernel.org>
 > 
-> Example are PHY package that have some regs only in one PHY of the
-> package and will affect every other PHY in the package, for example
-> related to PHY interface mode calibration or global PHY mode selection.
+> Actually, I think that patch can be way simpler for a similar reason
+> than I mentioned before. In the regular system call for tracefs we have:
 > 
-> The PHY package node MUST declare the base address used by the PHY driver
-> for global configuration by calculating the offsets of the global PHY
-> based on the base address of the PHY package and declare the
-> "ethrnet-phy-package" compatible.
+> mkdir /sys/kernel/tracing/instances/foo
 > 
-> Each reg of the PHY defined in the PHY package node is absolute and will
-> reference the real address of the PHY on the bus.
+> -> do_mkdirat("foo")
+>    -> i_op->mkdir::tracefs_syscall_mkdir(child_dentry::foo, parent_inode)
+>       -> char *name = get_dname(child_dentry::foo) // duplicate the dentries name
+>       -> tracefs_ops.mkdir::instance_mkdir("foo")
+>         -> trace_array_create("foo")
+> 	   -> trace_array_create_dir("foo")
+> 	      -> tracefs_create_dir("foo", trace_instance_dir)
+> 	         -> __create_dir("foo", trace_instance_dir)
+>         	    -> tracefs_start_creating("foo", trace_instance_dir)
+> 		       -> lookup_one_len("foo", trace_instance_dir) // perform the lookup again and find @child_dentry again that the vfs already created
 > 
-> Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
-> ---
->   .../bindings/net/ethernet-phy-package.yaml    | 75 +++++++++++++++++++
->   1 file changed, 75 insertions(+)
->   create mode 100644 Documentation/devicetree/bindings/net/ethernet-phy-package.yaml
+> So afaict, the vfs has created you the correct target dentry and
+> performed the required permission checks already.
 > 
-> diff --git a/Documentation/devicetree/bindings/net/ethernet-phy-package.yaml b/Documentation/devicetree/bindings/net/ethernet-phy-package.yaml
-> new file mode 100644
-> index 000000000000..244d4bc29164
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/net/ethernet-phy-package.yaml
-> @@ -0,0 +1,75 @@
-> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/net/ethernet-phy-package.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Ethernet PHY Package Common Properties
-> +
-> +maintainers:
-> +  - Christian Marangi <ansuelsmth@gmail.com>
-> +
-> +description:
-> +  This schema describe PHY package as simple container for
-> +  a bundle of PHYs that share the same properties and
-> +  contains the PHYs of the package themself.
-> +
-> +  Each reg of the PHYs defined in the PHY package node is
-> +  absolute and describe the real address of the PHY on the bus.
-> +
-> +properties:
-> +  $nodename:
-> +    pattern: "^ethernet-phy-package(@[a-f0-9]+)?$"
-> +
-> +  compatible:
-> +    const: ethernet-phy-package
-> +
-> +  reg:
-> +    minimum: 0
-> +    maximum: 31
-> +    description:
-> +      The base ID number for the PHY package.
-> +      Commonly the ID of the first PHY in the PHY package.
-> +
-> +      Some PHY in the PHY package might be not defined but
-> +      still exist on the device (just not attached to anything).
-> +      The reg defined in the PHY package node might differ and
-> +      the related PHY might be not defined.
-> +
-> +  '#address-cells':
-> +    const: 1
-> +
-> +  '#size-cells':
-> +    const: 0
-> +
-> +patternProperties:
-> +  ^ethernet-phy(@[a-f0-9]+)?$:
-> +    $ref: ethernet-phy.yaml#
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +
-> +additionalProperties: true
-> +
-> +examples:
-> +  - |
-> +    mdio {
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +
-> +        ethernet-phy-package@16 {
-> +            #address-cells = <1>;
-> +            #size-cells = <0>;
-> +            compatible = "ethernet-phy-package";
-> +            reg = <0x16>;
-> +
-> +            ethernet-phy@16 {
-> +              reg = <0x16>;
-> +            };
-> +
-> +            phy4: ethernet-phy@1a {
-> +              reg = <0x1a>;
-> +            };
-> +        };
-> +    };
+> You then go on to retrieve and duplicate the name of the dentry and pass
+> that name down. And then you perform a lookup via lookup_one_len() on
+> the instances directory. And here lookup_one_len() performs the
+> permission checking again that the vfs already did in may_lookup() when
+> it walked up to the "instances" directory.
+> 
+> The reason I'm saying this is that for tracefs _the only reason_ we need
+> that idmapping in any of these helpers at all is because of the
+> superfluous permission check in lookup_one_len(). Because for actual
+> ownership of the inode it's completely irrelevant because you inherit
+> the ownership anyway. IOW, the callers fs{g,u}id etc is entirely
+> irrelevant.
+> 
+> So basically if you massage the system call path to simply reuse the
+> dentry that the vfs already given you instead of looking it up again
+> later the whole patch is literally (baring anything minor I forgot):
+> 
+> 
+> diff --git a/fs/tracefs/inode.c b/fs/tracefs/inode.c
+> index ae648deed019..2de3ec114793 100644
+> --- a/fs/tracefs/inode.c
+> +++ b/fs/tracefs/inode.c
+> @@ -439,6 +439,7 @@ static struct file_system_type trace_fs_type = {
+>         .name =         "tracefs",
+>         .mount =        trace_mount,
+>         .kill_sb =      kill_litter_super,
+> +       .fs_flags =     FS_ALLOW_IDMAP,
+>  };
+>  MODULE_ALIAS_FS("tracefs");
+> 
+> Because tracefs simply inherits ownership from parent directories or
+> from stashed info the idmapping is entirely immaterial on the creation
+> side of things. As soon as the permission checking in the VFS has
+> succeeded we know that things are alright.
+> 
+> So really, the complexity is getting in your way here. The
+> tracefs_ops.mkdir thing is only used in a single location and that is
+> 
+> kernel/trace/trace.c:   trace_instance_dir = tracefs_create_instance_dir("instances", d_tracer,
+> 
+> and there's only one callback instance_mkdir().
+> 
+> otherwise that callback ops stuff is completely unused iiuc. If that's
+> the case it would make a lot more sense to just reuse everything that
+> the VFS has given you in the regular system call path than to do that
+> "copy the name and do the lookup again including permission checks
+> later" dance.
+> 
+> Idk, maybe I'm seeing things and there's an obvious reason why my
+> thinking is all wrong and that permission check is required. I just
+> don't see it though. But I'm sure people will tell me what my error is.
+> 
+> At least for the system call path it shouldn't be.
 
-So, we ended up on a design where we use the predefined compatible 
-string 'ethernet-phy-package' to recognize a phy package inside the 
-of_mdiobus_register() function. During the V1 discussion, Vladimir came 
-up with the idea of 'ranges' property usage [1]. Can we use 'ranges' to 
-recognize a phy package in of_mdiobus_register()? IMHO this will give us 
-a clear DT solution. I mean 'ranges' clearly indicates that child nodes 
-are in the same address range as the parent node. Also we can list all 
-child addresses in 'reg' to mark them occupied.
+I guess an argument would be that the check is somewhat required because
+you create a whole hierarchy of directories and files beneath the top
+level directory that the system call path creates.
 
-   mdio {
-     ...
+But then would you ever want to fail creating any directories or files
+beneath /sys/kernel/tracing/instances/foo/* if the VFS told you that you
+have the required permission to create the top level directory
+/sys/kernel/tracing/instances/foo?
 
-     ethernet-phy-package@16 {
-       compatible = "qcom,qca8075";
-       reg = <0x16>, <0x17>, <0x18>, <0x19>, <0x1a>;
-       ranges;
-       ...
+I think that isn't the case and it isn't even possible currently. So
+even for the directories and files beneath the top level directory the
+permission check is irrelevant iiuc.
 
-       ethernet-phy@16 {
-         reg = <0x16>;
-       };
-
-       ethernet-phy@1a {
-         reg = <0x1a>;
-       };
-     };
-   };
-
-Did you find some issues with the 'ranges' conception?
-
-
-And I would like to ask you about another issue raised by Vladimir [1]. 
-These phy chips become SoC with all these built-in PHYs, PCSs, clocks, 
-interrupt controllers, etc. Should we address this now? Or should we go 
-with the proposed solution for now and postpone modeling of other 
-peripherals until we get a real hardware, as Andrew suggested?
-
-I'm asking because it looks like we have got a real hardware. Luo 
-currently trying to push QCA8084 (multi-phy/switch chip) support, and 
-this chip exactly contains a huge clock/reset controller [2,3].
-
-
-1. https://lore.kernel.org/lkml/20231124165923.p2iozsrnwlogjzua@skbuf // 
-Re: [net-next RFC PATCH 03/14] dt-bindings: net: document ethernet PHY 
-package nodes
-2. 
-https://lore.kernel.org/lkml/20231215074005.26976-1-quic_luoj@quicinc.com 
-  // [PATCH v8 00/14] add qca8084 ethernet phy driver
-3. 
-https://lore.kernel.org/lkml/20231104034858.9159-1-quic_luoj@quicinc.com 
-  // [PATCH v12 0/4] add clock controller of qca8386/qca8084
-
---
-Sergey
+Anyway, I don't think you necessarily need to change any of what you do
+right now. The first version of the patch will work with what you
+currently have and is correct. It's just more complex because of that
+additional permission checking that I think isn't needed. Because it's
+not that the user has any control over the creation of the subtree
+beneath /sys/kernel/tracing/instances/foo/*. But again, I might be
+completely off.
 
