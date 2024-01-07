@@ -1,242 +1,128 @@
-Return-Path: <linux-kernel+bounces-18790-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18791-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C8C6826312
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 06:51:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D202826314
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 06:54:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C8DAE1F21DA1
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 05:51:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CF2AE1F21CD5
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Jan 2024 05:54:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4404E125B6;
-	Sun,  7 Jan 2024 05:51:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20828125AF;
+	Sun,  7 Jan 2024 05:54:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="sVFCHCKR"
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="EIMy6tOx"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
+Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 245ED11CBE
-	for <linux-kernel@vger.kernel.org>; Sun,  7 Jan 2024 05:51:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-28ca8a37adeso777571a91.3
-        for <linux-kernel@vger.kernel.org>; Sat, 06 Jan 2024 21:51:13 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80465125AD
+	for <linux-kernel@vger.kernel.org>; Sun,  7 Jan 2024 05:54:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-50ea98440a7so766863e87.1
+        for <linux-kernel@vger.kernel.org>; Sat, 06 Jan 2024 21:54:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704606673; x=1705211473; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=7eAcb8U/Xr8Afw7sKhM8tyCYADsawYa0chI/2tUTwyk=;
-        b=sVFCHCKRMN19zJwxsPsAv5adID2Zkgkjy5MzrPgRV1igje5sHwz28Vm+8zWLbX1Wo0
-         RO1RX0U8P4Y4qRUHGvqIlCpC9P5JRa1iBhvbSg67b+PebP+aN5Klpo21LYYqjkcreg69
-         XW9FEV8SYxGg4dlKajcUSt1287VrrRxiM0dSP/BY0qykMnSYjNKBeyu7rbBdcapNAUfi
-         lgjW08WUPMJXHT/LZ5wbU1obx13OrBW6fxaTqAfgBZtFa1KbWPtdm2zTqRZhhzCrkDkY
-         amrtntCNRzpvuBIEzsyT+CRKObL7SkTxDJbIg06XBcyPm0FusWV8LwWlNwdOwMkLTjaV
-         mh4Q==
+        d=linux-foundation.org; s=google; t=1704606864; x=1705211664; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=2+WLp3U3zZ/tGPOXpKoB0JjWL2Gl79ktP3vftiqjZGc=;
+        b=EIMy6tOx0aGMh7pHaFi6EdHD3pwnqSpp3NgNCIviXZsiyUR1ZqSw3DtGPX+h0yCEdE
+         loPrdC3bjAiu6K1+GkM3uYmKXC8IkxTu7CqCFfCH5tUgNx5Bw78LNrjiLvqS9yqMqJc9
+         G9h67KLt/eGQJG/9OYYFI/RQekZc13zxSSgm8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704606673; x=1705211473;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=7eAcb8U/Xr8Afw7sKhM8tyCYADsawYa0chI/2tUTwyk=;
-        b=Oj2hR+ABc30JQerZ7Pu1FDRmpjVVrzAzmaCgUAyT5cmF2pptNvSsAf1jji37GBENCZ
-         zfvls83ThS44JiUT910u3GFhQyOMMNMGW7IgO1P+xqn28uap2vNbc5x8oYlS+Cr8FVZA
-         2kwmUSr2A/XnIKNVOAo9nyJ6NfvN12ptdN/N/0tD8i2VjmX2GRbyFOT0/4N5qVuvWzZL
-         R0FwIsjyy2o/2/zHiSI60KWukJcCws69K/ji6b0YB3U7qivm1XvI69kSz0AUj8nDPxBM
-         V+Prij5P/K5kaO0TrW8B5wHE7LY9ZTkVfjjKxYR+fm1/vvIAfJiUObUNdMKjyXpsSrPD
-         Vi7w==
-X-Gm-Message-State: AOJu0YyM+4C3di9WkdPOqDsDAAUukRwRi+21OJi6JSr6euptn+WCf4Ym
-	cAeTTZkJrsTmtRfbDw0Nr21zoI1JmQUA
-X-Google-Smtp-Source: AGHT+IGj5EZz0+/fbauC6AN45sMZrVe29Er1ZlBQrJrIMByIAuVk+Xns2TcTYLTphPA7A9ofGaCdPA==
-X-Received: by 2002:a17:902:f54f:b0:1d3:c942:144c with SMTP id h15-20020a170902f54f00b001d3c942144cmr2692451plf.80.1704606673385;
-        Sat, 06 Jan 2024 21:51:13 -0800 (PST)
-Received: from thinkpad ([103.197.115.97])
-        by smtp.gmail.com with ESMTPSA id j5-20020a170902da8500b001d4e05828a9sm3874717plx.260.2024.01.06.21.51.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 06 Jan 2024 21:51:12 -0800 (PST)
-Date: Sun, 7 Jan 2024 11:21:06 +0530
-From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To: Frank Li <Frank.Li@nxp.com>
-Cc: krzysztof.kozlowski@linaro.org, bhelgaas@google.com,
-	conor+dt@kernel.org, devicetree@vger.kernel.org, festevam@gmail.com,
-	helgaas@kernel.org, hongxing.zhu@nxp.com, imx@lists.linux.dev,
-	kernel@pengutronix.de, krzysztof.kozlowski+dt@linaro.org,
-	kw@linux.com, l.stach@pengutronix.de,
-	linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
-	linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-	lpieralisi@kernel.org, robh@kernel.org, s.hauer@pengutronix.de,
-	shawnguo@kernel.org
-Subject: Re: [PATCH v7 12/16] PCI: imx6: Add iMX95 PCIe support
-Message-ID: <20240107055106.GL3416@thinkpad>
-References: <20231227182727.1747435-1-Frank.Li@nxp.com>
- <20231227182727.1747435-13-Frank.Li@nxp.com>
+        d=1e100.net; s=20230601; t=1704606864; x=1705211664;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=2+WLp3U3zZ/tGPOXpKoB0JjWL2Gl79ktP3vftiqjZGc=;
+        b=ABDq4Sf46YwTsaw/rrKgTynNxY/NLLyQNhx4mWlYM31DHbdG7PKq6PvOxysxDmd2rw
+         MtPVEgTZTAlxY1p7T6UOWJX+AtYTcCVg93V3YaoGMBfFuL3C2990b8XBDQt5oYAIvg/t
+         JX49zpm6PcDvAWuYfCs+8TkxHp5CGak4P0vNbr5NCDF/l8KL/nEW8Z+okBkFhg/Ddtox
+         dEn1PG5lV0pmh3gqIwBC5buBlwJlVMmZoBHSwcn98tr/dILSq0z1bBndANRxVQmRzWf5
+         hFBnasS+I3mrJrTW6amGSKuFORd2thSO8p4veyQtvcE9PsqHvgfmj6nURzriP/JMXP4n
+         hzCA==
+X-Gm-Message-State: AOJu0Yx0oIE7E3VoLnr+wTZvf+J1E2VHY1TSP9TKz8zCuIYOg2Y4E0Iq
+	3HJzbxs7bRnwRE7n8nVmlZDFNbNEMQqBLJhe5lsYy7egGJzHjOe7
+X-Google-Smtp-Source: AGHT+IEegqjF78FAZt/w7XA4bIrBi7yUAJgYNq+tF9HgPiISc63afduJcVSBeKRAEVxMYL73AC5AwQ==
+X-Received: by 2002:a19:914d:0:b0:50e:ab9b:c1d with SMTP id y13-20020a19914d000000b0050eab9b0c1dmr503235lfj.37.1704606864045;
+        Sat, 06 Jan 2024 21:54:24 -0800 (PST)
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com. [209.85.167.43])
+        by smtp.gmail.com with ESMTPSA id q20-20020ac246f4000000b0050cc8bda3a6sm713477lfo.238.2024.01.06.21.54.23
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 06 Jan 2024 21:54:23 -0800 (PST)
+Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-50e835800adso775684e87.0
+        for <linux-kernel@vger.kernel.org>; Sat, 06 Jan 2024 21:54:23 -0800 (PST)
+X-Received: by 2002:a05:6512:98b:b0:50e:6e7b:1acc with SMTP id
+ w11-20020a056512098b00b0050e6e7b1accmr424707lft.129.1704606862788; Sat, 06
+ Jan 2024 21:54:22 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231227182727.1747435-13-Frank.Li@nxp.com>
+References: <202401070147.gqwVulOn-lkp@intel.com> <ZZnzd3s2L-ZwGOlz@google.com>
+In-Reply-To: <ZZnzd3s2L-ZwGOlz@google.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Sat, 6 Jan 2024 21:54:05 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wjLaBe3Y_H5WArWdQ6d36+UOQ7NSbga1w+esGYJZaVfVg@mail.gmail.com>
+Message-ID: <CAHk-=wjLaBe3Y_H5WArWdQ6d36+UOQ7NSbga1w+esGYJZaVfVg@mail.gmail.com>
+Subject: Re: include/asm-generic/unaligned.h:119:16: sparse: sparse: cast
+ truncates bits from constant value (aa01a0 becomes a0)
+To: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc: kernel test robot <lkp@intel.com>, Arnd Bergmann <arnd@arndb.de>, linux-sparse@vger.kernel.org, 
+	Chris Morgan <macromorgan@hotmail.com>, oe-kbuild-all@lists.linux.dev, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed, Dec 27, 2023 at 01:27:23PM -0500, Frank Li wrote:
+On Sat, 6 Jan 2024 at 16:42, Dmitry Torokhov <dmitry.torokhov@gmail.com> wrote:
+>
+> This is not really a kernel/driver bug, just sparse being over-eager
+> with truncation detection. I wonder if we could make sparse skip this
+> check on forced casts like this:
 
-Mention 'RC' in subject.
+No, please don't.
 
-> Add iMX95 PCIe basic root complex function support.
-> 
+Just face the fact that using integer casts to mask bits off is a bad idea.
 
-Add iMX95 PCIe Root Complex support.
+Yes, we could say "explicit casting is ok", since it's really the
+hidden implicit casts changing values that sparse complains about, but
+your solution is really ugly:
 
-> Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> ---
-> 
-> Notes:
->     Change from v1 to v3
->     - none
-> 
->  drivers/pci/controller/dwc/pci-imx6.c | 90 +++++++++++++++++++++++++--
->  1 file changed, 85 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/pci/controller/dwc/pci-imx6.c b/drivers/pci/controller/dwc/pci-imx6.c
-> index d66a2db53bdb7..9e60ab6f1885a 100644
-> --- a/drivers/pci/controller/dwc/pci-imx6.c
-> +++ b/drivers/pci/controller/dwc/pci-imx6.c
-> @@ -42,6 +42,25 @@
->  #define IMX8MQ_GPR_PCIE_VREG_BYPASS		BIT(12)
->  #define IMX8MQ_GPR12_PCIE2_CTRL_DEVICE_TYPE	GENMASK(11, 8)
->  
-> +#define IMX95_PCIE_PHY_GEN_CTRL			0x0
-> +#define IMX95_PCIE_REF_USE_PAD			BIT(17)
-> +
-> +#define IMX95_PCIE_PHY_MPLLA_CTRL		0x10
-> +#define IMX95_PCIE_PHY_MPLL_STATE		BIT(30)
-> +
-> +#define IMX95_PCIE_SS_RW_REG_0			0xf0
-> +#define IMX95_PCIE_REF_CLKEN			BIT(23)
-> +#define IMX95_PCIE_PHY_CR_PARA_SEL		BIT(9)
-> +
-> +#define IMX95_PE0_GEN_CTRL_1			0x1050
-> +#define IMX95_PCIE_DEVICE_TYPE			GENMASK(3, 0)
-> +
-> +#define IMX95_PE0_GEN_CTRL_3			0x1058
-> +#define IMX95_PCIE_LTSSM_EN			BIT(0)
-> +
-> +#define IMX95_PE0_PM_STS			0x1064
-> +#define IMX95_PCIE_PM_LINKST_IN_L2		BIT(14)
-> +
->  #define to_imx6_pcie(x)	dev_get_drvdata((x)->dev)
->  
->  enum imx6_pcie_variants {
-> @@ -52,6 +71,7 @@ enum imx6_pcie_variants {
->  	IMX8MQ,
->  	IMX8MM,
->  	IMX8MP,
-> +	IMX95,
->  	IMX8MQ_EP,
->  	IMX8MM_EP,
->  	IMX8MP_EP,
-> @@ -63,6 +83,7 @@ enum imx6_pcie_variants {
->  #define IMX6_PCIE_FLAG_HAS_PHY			BIT(3)
->  #define IMX6_PCIE_FLAG_HAS_APP_RESET		BIT(4)
->  #define IMX6_PCIE_FLAG_HAS_PHY_RESET		BIT(5)
-> +#define IMX6_PCIE_FLAG_HAS_SERDES		BIT(6)
->  
->  #define imx6_check_flag(pci, val)     (pci->drvdata->flags & val)
->  
-> @@ -179,6 +200,24 @@ static unsigned int imx6_pcie_grp_offset(const struct imx6_pcie *imx6_pcie)
->  	return imx6_pcie->controller_id == 1 ? IOMUXC_GPR16 : IOMUXC_GPR14;
+>  static inline void __put_unaligned_be24(const u32 val, u8 *p)
+>  {
+> -       *p++ = val >> 16;
+> -       *p++ = val >> 8;
+> -       *p++ = val;
+> +       *p++ = (__force u8)(val >> 16);
+> +       *p++ = (__force u8)(val >> 8);
+> +       *p++ = (__force u8)val;
 >  }
->  
-> +static int imx95_pcie_init_phy(struct imx6_pcie *imx6_pcie)
-> +{
-> +	regmap_update_bits(imx6_pcie->iomuxc_gpr,
-> +			IMX95_PCIE_SS_RW_REG_0,
-> +			IMX95_PCIE_PHY_CR_PARA_SEL,
-> +			IMX95_PCIE_PHY_CR_PARA_SEL);
-> +
-> +	regmap_update_bits(imx6_pcie->iomuxc_gpr,
-> +			   IMX95_PCIE_PHY_GEN_CTRL,
-> +			   IMX95_PCIE_REF_USE_PAD, 0);
-> +	regmap_update_bits(imx6_pcie->iomuxc_gpr,
-> +			   IMX95_PCIE_SS_RW_REG_0,
-> +			   IMX95_PCIE_REF_CLKEN,
-> +			   IMX95_PCIE_REF_CLKEN);
-> +
-> +	return 0;
-> +}
-> +
->  static void imx6_pcie_configure_type(struct imx6_pcie *imx6_pcie)
->  {
->  	const struct imx6_pcie_drvdata *drvdata = imx6_pcie->drvdata;
-> @@ -579,6 +618,7 @@ static int imx6_pcie_enable_ref_clk(struct imx6_pcie *imx6_pcie)
->  				   IMX6Q_GPR1_PCIE_REF_CLK_EN, 1 << 16);
->  		break;
->  	case IMX7D:
-> +	case IMX95:
->  		break;
->  	case IMX8MM:
->  	case IMX8MM_EP:
-> @@ -696,10 +736,19 @@ static int imx6_pcie_deassert_core_reset(struct imx6_pcie *imx6_pcie)
->  {
->  	struct dw_pcie *pci = imx6_pcie->pci;
->  	struct device *dev = pci->dev;
-> +	u32 val;
->  
->  	reset_control_deassert(imx6_pcie->pciephy_reset);
->  
->  	switch (imx6_pcie->drvdata->variant) {
-> +	case IMX95:
-> +		/* Polling the MPLL_STATE */
-> +		if (regmap_read_poll_timeout(imx6_pcie->iomuxc_gpr,
-> +					IMX95_PCIE_PHY_MPLLA_CTRL, val,
-> +					val & IMX95_PCIE_PHY_MPLL_STATE,
-> +					10, 10000))
-> +			dev_err(dev, "PCIe PLL lock timeout\n");
 
-You should return err here because, if core deassert is not performed then the
-core itself cannot be used.
+That's just disgusting.
 
-> +		break;
->  	case IMX7D:
->  		/* Workaround for ERR010728, failure of PCI-e PLL VCO to
->  		 * oscillate, especially when cold.  This turns off "Duty-cycle
-> @@ -1281,12 +1330,32 @@ static int imx6_pcie_probe(struct platform_device *pdev)
->  		return PTR_ERR(imx6_pcie->turnoff_reset);
->  	}
->  
-> +	if (imx6_pcie->drvdata->gpr) {
->  	/* Grab GPR config register range */
-> -	imx6_pcie->iomuxc_gpr =
-> -		 syscon_regmap_lookup_by_compatible(imx6_pcie->drvdata->gpr);
-> -	if (IS_ERR(imx6_pcie->iomuxc_gpr)) {
-> -		dev_err(dev, "unable to find iomuxc registers\n");
-> -		return PTR_ERR(imx6_pcie->iomuxc_gpr);
-> +		imx6_pcie->iomuxc_gpr =
-> +			 syscon_regmap_lookup_by_compatible(imx6_pcie->drvdata->gpr);
-> +		if (IS_ERR(imx6_pcie->iomuxc_gpr))
-> +			return dev_err_probe(dev, PTR_ERR(imx6_pcie->iomuxc_gpr),
-> +					     "unable to find iomuxc registers\n");
-> +	}
-> +
-> +	if (imx6_check_flag(imx6_pcie, IMX6_PCIE_FLAG_HAS_SERDES)) {
-> +		void __iomem *off = devm_platform_ioremap_resource_byname(pdev, "app");
-> +
-> +		if (IS_ERR(off))
-> +			return dev_err_probe(dev, PTR_ERR(off),
-> +					     "unable to find serdes registers\n");
-> +
-> +		static struct regmap_config regmap_config = {
+The *natural* thing to do is to simply make the masking itself be
+explicit - not the cast. IOW, just write it as
 
-const
+        *p++ = (val >> 16) & 0xff;
+        *p++ = (val >> 8) & 0xff;
+        *p++ = val & 0xff;
 
-- Mani
+and doesn't that look much more natural?
 
--- 
-மணிவண்ணன் சதாசிவம்
+Sure, the compiler will then just notice "you're assigning to a char,
+to I don't actually need to do any masking at all", but now sparse
+won't complain because there's no "cast silently drops bits" issue any
+more.
+
+And while the code is a bit more to read, I think it is actually to
+some degree more obvious to a human too what is going on.
+
+No?
+
+              Linus
 
