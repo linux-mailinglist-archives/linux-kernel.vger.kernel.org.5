@@ -1,83 +1,89 @@
-Return-Path: <linux-kernel+bounces-19759-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19760-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E5F308272F9
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 16:25:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E2608272FA
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 16:25:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 60926B22B76
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 15:25:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0685D2839C5
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 15:25:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8D4250269;
-	Mon,  8 Jan 2024 15:25:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0251524BA;
+	Mon,  8 Jan 2024 15:25:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="kg3WN+LB"
+	dkim=pass (1024-bit key) header.d=ffwll.ch header.i=@ffwll.ch header.b="EIAl8B2B"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B1E04C623
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 15:25:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
-Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-50ea8fbf261so1941152e87.2
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 07:25:02 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51ACB51C3D
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 15:25:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ffwll.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ffwll.ch
+Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-50e7b03fbbeso134155e87.0
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 07:25:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1704727501; x=1705332301; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Qdn0LsU4vhhsDdiALeiErZYl9G9gLSFRT4h7lsqaVMw=;
-        b=kg3WN+LB4o0iSAnJ09X2Z1ntqXK2SBoLQfYqn28f5Ngp8yqpXsc5+qNIVeXnar4mto
-         vOkplnim//jKruAmbPtpN3ncAlI8lFYVjR/+NcMRpNjnXBR7eDoi5SQrbMup6obsIsvQ
-         kobNWJIBzlTnOkXVx9vsQbgCju/r7+drwgFN66rhZBscGLsDzoA0P+Jv8ItN82yh1kRc
-         VRhhyowGiIPS+hoiQCeiyJUnZ62NAqB+n151WG4bJ/yvCtIgemY/QQlJKFflXP9okXwV
-         psJjnHfkNvRrdcXjvkQV13l1iIYz2y6YkcrJqbSCyA97PTs/wQVzCYTc6MHi5mrUU6P/
-         gM6Q==
+        d=ffwll.ch; s=google; t=1704727505; x=1705332305; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=zJ3EIRKSn5X0NGN+Lowl9P7K2Ny+tJ4mGNydRmUvWrU=;
+        b=EIAl8B2B0plV+Fd4CRAObep5/NzHmfzHghjvMvOOv5g3NFWGHvyqE1/8mPM6nCD3P+
+         1U0inDAvFfqky7fRmiQ6t5rHCZa/ufGtCl0km5FodIYqbSnNitPHdWBxeSiSAf9OCS7a
+         8W6iBx5uYdWowVS5mbjky2Aif2BtM9CTNExCg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704727501; x=1705332301;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Qdn0LsU4vhhsDdiALeiErZYl9G9gLSFRT4h7lsqaVMw=;
-        b=HUP9clyIbQSS/Dyc3n8j8JvOinAoS5Zdaykgrq29UnTsZdxhBPU2z1j59naRI4zhfI
-         QeMDufGgUW8A2cKyy8tRSLDz7Pp9SzSCkq4ZVSi8lzCuc8nHa6Sc+gHRc/2c7cuJKrWT
-         lZwlySlCMXdirn4nQ33CeVMFliuirKsKDaCxG2ozhHdwvuxqGpo8HV/8jasN1CTQ/nyO
-         8cfl8Mt/dwgGGAuSe5LzjzMtAKO+T4jQVDmpFJ8znl9gs3J//JypHSSvZWG2ToHYJ+mM
-         9Q7wgMck/fRzOMfuXlZdEpxRZETDf8BSzY/Is9K/lihR+vVumO2ZZsFUkswmNnCz//jV
-         AHLA==
-X-Gm-Message-State: AOJu0YyuPd9YMQbh8MusPeAorYldWgyn27nMzne7v/AQURlf/aDSRDgv
-	Js0jDjGaQfAG9Z9Mvw4aPiKcsj6XlTy23Q==
-X-Google-Smtp-Source: AGHT+IFIKd25ssXugDJwREFSiw08iApdY2/lCD8NOpaE3BAn1pS+2vN4MWVBsGeYsxsEvAkutzy1Mw==
-X-Received: by 2002:a05:6512:1392:b0:50b:f7bb:4545 with SMTP id fc18-20020a056512139200b0050bf7bb4545mr1780473lfb.68.1704727501067;
-        Mon, 08 Jan 2024 07:25:01 -0800 (PST)
-Received: from localhost (2001-1ae9-1c2-4c00-20f-c6b4-1e57-7965.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:20f:c6b4:1e57:7965])
-        by smtp.gmail.com with ESMTPSA id gs9-20020a170906f18900b00a2ada87f6a1sm679046ejb.90.2024.01.08.07.25.00
+        d=1e100.net; s=20230601; t=1704727505; x=1705332305;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=zJ3EIRKSn5X0NGN+Lowl9P7K2Ny+tJ4mGNydRmUvWrU=;
+        b=pqZ5BWhP/zTN2TZdbDTYqjpzxvw1T5h5aLuTTUtxUF3eHm9c4r9ILTU9ki3pjlOg7e
+         T3rJKgEbQZBgvD/Mu2RMHtU7K8CF+o/khz+wxQy68lxC0+PtpL5saKLX28x6c8WPx6Zi
+         NMTw3m12MXEoFf+//NDpHvZ8/YRbMBhlpk/5CCawfSNcBxkYqwzp+VrWnqX1ESBPScK6
+         x03zvePpGu3+tF5v78LUY2MXM62CmzVGn04xYuHf/Y+8uX0aAEx2oyxGXee1J2o9MBjj
+         9fEmmZQjs8Nz1ULRESfZyZOIbHHt8Z6FwnLRG77H8zeuceCriVTt4jaNPnIFQZmeiCtW
+         yuqw==
+X-Gm-Message-State: AOJu0Yy2LNrteb8NhY5j2nIHpVkES4s1Blyyh/aJPY7lNjt3J9ZawhNR
+	AgaKSvmLEwwfNTIeQtIq9dsfumwILT2mvg==
+X-Google-Smtp-Source: AGHT+IFEZmb84ZsP7WndigoWhVfLIJmu7Z3cqw2RTpxB6wKa9AmlpaVhv3E1Czp2+q+7kFveVkRA7Q==
+X-Received: by 2002:a05:6512:2212:b0:50e:9e95:5290 with SMTP id h18-20020a056512221200b0050e9e955290mr3890677lfu.1.1704727505082;
+        Mon, 08 Jan 2024 07:25:05 -0800 (PST)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id i16-20020a5d5230000000b00333404e9935sm8075814wra.54.2024.01.08.07.25.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Jan 2024 07:25:00 -0800 (PST)
-Date: Mon, 8 Jan 2024 16:24:59 +0100
-From: Andrew Jones <ajones@ventanamicro.com>
-To: Leonardo Bras <leobras@redhat.com>
-Cc: guoren@kernel.org, paul.walmsley@sifive.com, palmer@dabbelt.com, 
-	panqinglin2020@iscas.ac.cn, bjorn@rivosinc.com, conor.dooley@microchip.com, 
-	peterz@infradead.org, keescook@chromium.org, wuwei2016@iscas.ac.cn, 
-	xiaoguang.xing@sophgo.com, chao.wei@sophgo.com, unicorn_wang@outlook.com, uwu@icenowy.me, 
-	jszhang@kernel.org, wefu@redhat.com, atishp@atishpatra.org, 
-	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, Guo Ren <guoren@linux.alibaba.com>
-Subject: Re: Re: Re: Re: Re: Re: [PATCH V2 1/3] riscv: Add Zicbop instruction
- definitions & cpufeature
-Message-ID: <20240108-c47754d958917d5d5e1efc75@orel>
-References: <20231231082955.16516-2-guoren@kernel.org>
- <ZZWs0C19tz763FnH@LeoBras>
- <20240103-0c96ceea88523b7b946e4ba8@orel>
- <ZZXEpU-JzsvD2UDW@LeoBras>
- <20240104-4ecfb92d2f8c95fa773ca695@orel>
- <ZZbI3clKUbNbNtZj@LeoBras>
- <20240104-d6981cf63a39af4dff1d380a@orel>
- <ZZbuKCvATa7yyQOc@LeoBras>
- <20240105-faa40f2c20534ea498246cc3@orel>
- <ZZwH5w2QLN4t1KtU@LeoBras>
+        Mon, 08 Jan 2024 07:25:04 -0800 (PST)
+Date: Mon, 8 Jan 2024 16:25:02 +0100
+From: Daniel Vetter <daniel@ffwll.ch>
+To: Jason Gunthorpe <jgg@nvidia.com>
+Cc: Yan Zhao <yan.y.zhao@intel.com>, wanpengli@tencent.com,
+	kvm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org, kraxel@redhat.com, maz@kernel.org,
+	joro@8bytes.org, zzyiwei@google.com, yuzenghui@huawei.com,
+	olvaffe@gmail.com, kevin.tian@intel.com, suzuki.poulose@arm.com,
+	alex.williamson@redhat.com, yongwei.ma@intel.com,
+	zhiyuan.lv@intel.com, gurchetansingh@chromium.org,
+	jmattson@google.com, zhenyu.z.wang@intel.com, seanjc@google.com,
+	ankita@nvidia.com, oliver.upton@linux.dev, james.morse@arm.com,
+	pbonzini@redhat.com, vkuznets@redhat.com
+Subject: Re: [PATCH 0/4] KVM: Honor guest memory types for virtio GPU devices
+Message-ID: <ZZwTzsZqx-XSTKma@phenom.ffwll.local>
+Mail-Followup-To: Jason Gunthorpe <jgg@nvidia.com>,
+	Yan Zhao <yan.y.zhao@intel.com>, wanpengli@tencent.com,
+	kvm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org, kraxel@redhat.com, maz@kernel.org,
+	joro@8bytes.org, zzyiwei@google.com, yuzenghui@huawei.com,
+	olvaffe@gmail.com, kevin.tian@intel.com, suzuki.poulose@arm.com,
+	alex.williamson@redhat.com, yongwei.ma@intel.com,
+	zhiyuan.lv@intel.com, gurchetansingh@chromium.org,
+	jmattson@google.com, zhenyu.z.wang@intel.com, seanjc@google.com,
+	ankita@nvidia.com, oliver.upton@linux.dev, james.morse@arm.com,
+	pbonzini@redhat.com, vkuznets@redhat.com
+References: <20240105091237.24577-1-yan.y.zhao@intel.com>
+ <20240105195551.GE50406@nvidia.com>
+ <ZZuQEQAVX28v7p9Z@yzhao56-desk.sh.intel.com>
+ <20240108140250.GJ50406@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -86,184 +92,96 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZZwH5w2QLN4t1KtU@LeoBras>
+In-Reply-To: <20240108140250.GJ50406@nvidia.com>
+X-Operating-System: Linux phenom 6.5.0-4-amd64 
 
-On Mon, Jan 08, 2024 at 11:34:15AM -0300, Leonardo Bras wrote:
-> On Fri, Jan 05, 2024 at 02:24:45PM +0100, Andrew Jones wrote:
-> > On Thu, Jan 04, 2024 at 02:43:04PM -0300, Leonardo Bras wrote:
-> > ...
-> > > > > > > I don't think we can detect a caller with non-zero offset at compile time, 
-> > > > > > > since it will be used in locks which can be at (potentially) any place in 
-> > > > > > > the block size. (if you have any idea though, please let me know :) )
+On Mon, Jan 08, 2024 at 10:02:50AM -0400, Jason Gunthorpe wrote:
+> On Mon, Jan 08, 2024 at 02:02:57PM +0800, Yan Zhao wrote:
+> > On Fri, Jan 05, 2024 at 03:55:51PM -0400, Jason Gunthorpe wrote:
+> > > On Fri, Jan 05, 2024 at 05:12:37PM +0800, Yan Zhao wrote:
+> > > > This series allow user space to notify KVM of noncoherent DMA status so as
+> > > > to let KVM honor guest memory types in specified memory slot ranges.
 > > > > 
-> > > > I forgot to reply to this before. The reason I think it may be possible to
-> > > > validate offset at compile time is because it must be a constant, i.e.
-> > > > __builtin_constant_p(offset) must return true. So maybe something like
+> > > > Motivation
+> > > > ===
+> > > > A virtio GPU device may want to configure GPU hardware to work in
+> > > > noncoherent mode, i.e. some of its DMAs do not snoop CPU caches.
+> > > 
+> > > Does this mean some DMA reads do not snoop the caches or does it
+> > > include DMA writes not synchronizing the caches too?
+> > Both DMA reads and writes are not snooped.
+> 
+> Oh that sounds really dangerous.
+
+So if this is an issue then we might already have a problem, because with
+many devices it's entirely up to the device programming whether the i/o is
+snooping or not. So the moment you pass such a device to a guest, whether
+there's explicit support for non-coherent or not, you have a problem.
+
+_If_ there is a fundamental problem. I'm not sure of that, because my
+assumption was that at most the guest shoots itself and the data
+corruption doesn't go any further the moment the hypervisor does the
+dma/iommu unmapping.
+
+Also, there's a pile of x86 devices where this very much applies, x86
+being dma-coherent is not really the true ground story.
+
+Cheers, Sima
+
+> > > > This is generally for performance consideration.
+> > > > In certain platform, GFX performance can improve 20+% with DMAs going to
+> > > > noncoherent path.
 > > > > 
-> > > >  static_assert(__builtin_constant_p(offset) && !(offset & 0x1f))
+> > > > This noncoherent DMA mode works in below sequence:
+> > > > 1. Host backend driver programs hardware not to snoop memory of target
+> > > >    DMA buffer.
+> > > > 2. Host backend driver indicates guest frontend driver to program guest PAT
+> > > >    to WC for target DMA buffer.
+> > > > 3. Guest frontend driver writes to the DMA buffer without clflush stuffs.
+> > > > 4. Hardware does noncoherent DMA to the target buffer.
 > > > > 
-> > > > I'll try to find time to play with it.
-> > > > 
+> > > > In this noncoherent DMA mode, both guest and hardware regard a DMA buffer
+> > > > as not cached. So, if KVM forces the effective memory type of this DMA
+> > > > buffer to be WB, hardware DMA may read incorrect data and cause misc
+> > > > failures.
 > > > 
-> > > Let me know if you find anything.
-> > 
-> > There's nothing we can do in this file (insn-def.h), other than maybe
-> > masking, since all magic must happen at preprocessor time, other than
-> > a tiny bit of constant arithmetic allowed at assembly time. For C, using
-> > a wrapper, like patch 2 of this series introduces, we could add the
-> > static assert above. I'll suggest that in patch 2, since I've already
-> > thought it through, but it sort of feels like overkill to me.
+> > > I don't know all the details, but a big concern would be that the
+> > > caches remain fully coherent with the underlying memory at any point
+> > > where kvm decides to revoke the page from the VM.
+> > Ah, you mean, for page migration, the content of the page may not be copied
+> > correctly, right?
 > 
-> It makes sense.
+> Not just migration. Any point where KVM revokes the page from the
+> VM. Ie just tearing down the VM still has to make the cache coherent
+> with physical or there may be problems.
+>  
+> > Currently in x86, we have 2 ways to let KVM honor guest memory types:
+> > 1. through KVM memslot flag introduced in this series, for virtio GPUs, in
+> >    memslot granularity.
+> > 2. through increasing noncoherent dma count, as what's done in VFIO, for
+> >    Intel GPU passthrough, for all guest memory.
 > 
-> > 
-> > > 
-> > > > > > > 
-> > > > > > > On the other hand, we could create a S-Type macro which deliberately 
-> > > > > > > ignores imm[4:0], like  
-> > > > > > > 
-> > > > > > > + INSN_S_TRUNCATE(OPCODE_OP_IMM, FUNC3(6), __RS2(3),               \
-> > > > > > > +                 SIMM12(offset), RS1(base))
-> > > > > > > 
-> > > > > > > Which saves the bits 11:5 of offset  into imm[11:5], and zero-fill 
-> > > > > > > imm[4:0], like
-> > > > > > > 
-> > > > > > > +#define DEFINE_INSN_S                                                    \
-> > > > > > > + __DEFINE_ASM_GPR_NUMS                                           \
-> > > > > > > +"        .macro insn_s, opcode, func3, rs2, simm12, rs1\n"               \
-> > > > > > > +"        .4byte  ((\\opcode << " __stringify(INSN_S_OPCODE_SHIFT) ") |"  \
-> > > > > > > +"                 (\\func3 << " __stringify(INSN_S_FUNC3_SHIFT) ") |"    \
-> > > > > > > +"                 (.L__gpr_num_\\rs2 << " __stringify(INSN_S_RS2_SHIFT) ") |" \
-> > > > > > > +"                 (.L__gpr_num_\\rs1 << " __stringify(INSN_S_RS1_SHIFT) ") |" \
-> > > > > > > +"                 (((\\simm12 >> 5) & 0x7f) << " __stringify(INSN_S_SIMM7_SHIFT) "))\n" \
-> > > > > > > +"        .endm\n"
-> > > > > > > +
-> > > > > > > 
-> > > > > > > Does this make sense?
-> > > > > > 
-> > > > > > If we create a special version of INSN_S, then I suggest we create one
-> > > > > > where its two SIMM fields are independent and then define prefetch
-> > > > > > instructions like this
-> > > > > > 
-> > > > > >  #define PREFETCH_W(base, offset) \
-> > > > > >      INSN_S_SPLIT_IMM(OPCODE_OP_IMM, FUNC3(6), __RS2(3), \
-> > > > > >          SIMM_11_5(offset >> 5), SIMM_4_0(0), RS1(base))
-> > > > > > 
-> > > > > > which would allow simple review against the spec and potentially
-> > > > > > support other instructions which use hard coded values in the
-> > > > > > immediate fields.
-> > > > > > 
-> > > > > 
-> > > > > I agree, it looks better this way.
-> > > > > 
-> > > > > We could have:
-> > > > > INSN_S_SPLIT_IMM(OPCODE, FUNC3, RS1, RS2, SIMM_11_5, SIMM_4_0)
-> > > > > 
-> > > > > and implement INSN_S like:
-> > > > > #define INSN_S(OPCODE, FUNC3, RS1, RS2, SIMM_11_0) \
-> > > > > 	INSN_S_SPLIT_IMM(OPCODE, FUNC3, RS1, RS2,  \
-> > > > > 		SIMM_11_0 >> 5, SIMM_11_0 & 0x1f)
-> > > > 
-> > > > That won't work since SIMM_11_0 will be a string. Actually, with
-> > > > stringification in mind, I don't think defining INSN_S_SPLIT_IMM()
-> > > > is a good idea.
-> > > 
-> > > I don't see how SIMM_11_0 will be a string here. Is this due to using it 
-> > > on asm code?
-> > > 
-> > > I understand a user will call 
-> > > ---
-> > > PREFETCH_W(base, offset), which becomes:
-> > > 
-> > > INSN_S(OPCODE_OP_IMM, 6, base, 3, offset) , which becomes:
-> > > 
-> > > INSN_S_SPLIT_IMM(OPCODE_OP_IMM, FUNC3(6), RS1(base), RS2(3), \
-> > > 	SIMM_11_5(offset >> 5), SIMM_4_0(offset & 0x1f))
-> > 
-> > The other annotations, like SIMM12, stringify their arguments. So, if
-> > SIMM_11_5 and SIMM_4_0 also stringified, then it wouldn't be possible
-> > to recombine them into a simm12 for the '.insn s' directive. I suppose
-> > SIMM_11_5 and SIMM_4_0 could just expand their arguments without
-> > stringifying. With that, along with throwing even more ugly at it, then
-> > it is possible to get the end result we want, which is
-> > 
-> >  - PREFETCH_* instructions are defined with annotations and have a
-> >    SIMM_4_0(0) in their definitions to explicitly point out that field
-> > 
-> >  - the INSN_S definition still directly maps to the .insn s directive
-> > 
-> > 
-> > I got that to work with this
-> > 
-> > #define __RV_SIMM(v)           v
-> > #define RV___SIMM_11_5(v)      __RV_SIMM(v)
-> > #define RV___SIMM_4_0(v)       __RV_SIMM(v)
-> > 
-> > #define __INSN_S_SPLIT_IMM(opcode, func3, rs2, simm12, rs1) \
-> >         INSN_S(opcode, func3, rs2, SIMM12(simm12), rs1)
-> > 
-> > #define INSN_S_SPLIT_IMM(opcode, func3, rs2, simm_11_5, simm_4_0, rs1) \
-> >         __INSN_S_SPLIT_IMM(opcode, func3, rs2, (RV_##simm_11_5 << 5) | RV_##simm_4_0, rs1)
-> > 
-> > #define CBO_PREFETCH_W(base, offset)                            \
-> >         INSN_S_SPLIT_IMM(OPCODE_OP_IMM, FUNC3(6), __RS2(3),     \
-> >                 __SIMM_11_5((offset) >> 5), __SIMM_4_0(0), RS1(base))
-> > 
-> > 
-> > But, again, I feel like it's probably overkill...
+> And where does all this fixup the coherency problem?
 > 
-> I though our intention was to avoid the extra IMM masking in asm, while 
-> keeping the 5 lower bits zeroed at all times.
+> > This page migration issue should not be the case for virtio GPU, as both host
+> > and guest are synced to use the same memory type and actually the pages
+> > are not anonymous pages.
 > 
-> But IIUC here you are writing a insn_s_split_imm in terms of a plain 
-> insn_s, which guarantees the zeroed 5 lower bits but still does an 
-> unnecessaty masking in asm. In fact, if we use the split version, it 
-> concatenates the two IMM parts, to then split them again in order to build 
-> the instruction.
-
-That's backwards.
-
-INSN_S should map to its namesake directive '.insn s', which takes the
-immediate as a single simm12. simm7 and simm5 are only used in the
-fallback path. Also, it's likely few instructions care about the split.
-Other S-type instructions would want to treat the immediate as 12 bits,
-so INSN_S should not be written in terms of INSN_S_SPLIT_IMM, since we'd
-split a 12-bit immediate for those instructions just to have it merged
-again for the .insn s directive.
-
+> The guest isn't required to do this so it can force the cache to
+> become incoherent.
 > 
-> In my suggestion above, we make INSN_S_SPLIT_IMM() the helper / standard 
-> way to write an s-type and write a INSN_S() in terms of the SPLIT version.
+> > > If you allow an incoherence of cache != physical then it opens a
+> > > security attack where the observed content of memory can change when
+> > > it should not.
+> > 
+> > In this case, will this security attack impact other guests?
 > 
-> This allows using the split version when we don't need one of the halfs, 
-> thus avoiding a masking or a rotation. The full version just splits the 
-> halfs and pass to the split version that directly builds the instruction.
+> It impacts the hypervisor potentially. It depends..
 > 
-> Well, I think I was under the wrong impression that we wanted to avoid the 
-> rotation and masking, but I just noticed that we are just dealing with 
-> splitting the offset, which is supposed to be a constant during the 
-> generation of the instruction, so we can just guarantee the value being 
-> masked at no runtime cost.
+> Jason
 
-Right, there's no reason to avoid the rotation and masking with respect to
-performance, as it's all done at compile time. Avoiding the operations as
-much as possible is nice, though, since they're ugly and, with macro
-arguments, getting the parentheses right to ensure the correct order of
-operations is error prone.
-
-> 
-> So in the end we are just thinking on how it could look better to the user, 
-> and maybe the split version is unnecessary if the user guarantees the 
-> masking to be correct. But if we are going to have it, I suggest we do 
-> INSN_S in terms of INSN_S_SPLIT_IMM() instead of the other way around.
-
-Yes, the goal was to have __SIM_4_0(0) for the prefetch instructions to
-make it simple to review against the spec, but ((offset) & ~0x1f) is also
-simple to review.
-
-For the next revision of this series, I'd be happy with just the masking
-or even to just leave it up to the callers as this version does.
-
-Thanks,
-drew
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
 
