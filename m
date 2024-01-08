@@ -1,180 +1,85 @@
-Return-Path: <linux-kernel+bounces-19664-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19665-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3EF0082708E
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 15:02:41 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 152BE827090
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 15:03:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D8651283901
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 14:02:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2797F1C2232D
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 14:02:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16E6A46BB1;
-	Mon,  8 Jan 2024 14:02:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4DCE46547;
+	Mon,  8 Jan 2024 14:02:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="A8KnOfJU"
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="IDRcJWNA"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 012834652E;
-	Mon,  8 Jan 2024 14:01:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 408D7s5t018810;
-	Mon, 8 Jan 2024 14:01:51 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-type; s=qcppdkim1; bh=FZJXGcGWWSz5YokYWmw0
-	WSWSVvdN0ciyGwybnoRxiHE=; b=A8KnOfJUJ2CUHGcBaNbaJLKhz8cwL1VHWXAF
-	ZYvyK8T2v0KLKEdaa/ns/mOM5Bg9+/RmO6ABegCAsiB4Oy8cB3IeR6vxV31N50b3
-	FEesVzdzFaCvxgZ/GYOiYxRnLr0Tu8nflWwn68oN5iplLJl4DU+9qoAV8DShMKqL
-	PBUjqBKPFQE4wkO5TfzHQipiT5ibcrmetp5cUckugSKvBbCHDEonuB+UTmkbQCE5
-	Ei/db1GTyLIrFEzJWcsA/IyYhq4PqNJGyZ3p0ftMsMiGIIJAhAonGOOyEz7hr6+K
-	wVBKqFQ9EkhrkBJi/FdDE/dKpym4a7hqSEht4Ipqdog5MdoABw==
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vgbjygwaj-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 08 Jan 2024 14:01:50 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 408E1nif004519
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 8 Jan 2024 14:01:49 GMT
-Received: from blr-ubuntu-253.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Mon, 8 Jan 2024 06:01:45 -0800
-From: Sibi Sankar <quic_sibis@quicinc.com>
-To: <sudeep.holla@arm.com>, <cristian.marussi@arm.com>, <rafael@kernel.org>,
-        <viresh.kumar@linaro.org>
-CC: <linux-arm-kernel@lists.infradead.org>, <linux-pm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <quic_mdtipton@quicinc.com>,
-        <linux-arm-msm@vger.kernel.org>, Sibi Sankar <quic_sibis@quicinc.com>
-Subject: [PATCH 3/3] cpufreq: scmi: Register for limit change notifications
-Date: Mon, 8 Jan 2024 19:31:18 +0530
-Message-ID: <20240108140118.1596-4-quic_sibis@quicinc.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20240108140118.1596-1-quic_sibis@quicinc.com>
-References: <20240108140118.1596-1-quic_sibis@quicinc.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC8EA4653B;
+	Mon,  8 Jan 2024 14:02:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=UrcCoznsGe6jbQRLq+9vtH0N2hJ7Jd1bMTvVnCS7xYI=; b=IDRcJWNAvbnfe+/Ros99KeN77T
+	HCfvHw1cG4I/ykS1D/K2sKSAFPGx2vEyBuYcK3FsCJMrig7D+CkK6FpB1G5XdVdEn7dm1F++xru62
+	Re8FPLkomas9vR37NTlTz1De1U/GswxsLUaWm+LLorE14W4Kr527r6Vwtu2w7Bg51hPM=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1rMqCo-004eDc-K4; Mon, 08 Jan 2024 15:02:18 +0100
+Date: Mon, 8 Jan 2024 15:02:18 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: Dimitri Fedrau <dima.fedrau@gmail.com>
+Cc: Heiner Kallweit <hkallweit1@gmail.com>,
+	Russell King <linux@armlinux.org.uk>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Stefan Eichenberger <eichest@gmail.com>, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 net-next 4/5] net: phy: marvell-88q2xxx: fix typos
+Message-ID: <10b09d30-70c6-4f87-8367-19b2579496a1@lunn.ch>
+References: <20240108093702.13476-1-dima.fedrau@gmail.com>
+ <20240108093702.13476-5-dima.fedrau@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 2wcr9TqM6Gggil7z6caXdyBhWfUUhCA4
-X-Proofpoint-ORIG-GUID: 2wcr9TqM6Gggil7z6caXdyBhWfUUhCA4
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
- mlxlogscore=999 bulkscore=0 impostorscore=0 phishscore=0 suspectscore=0
- adultscore=0 spamscore=0 lowpriorityscore=0 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.19.0-2311290000
- definitions=main-2401080120
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240108093702.13476-5-dima.fedrau@gmail.com>
 
-Register for limit change notifications if supported with the help of
-perf_notify_support interface and determine the throttled frequency
-using the perf_opp_xlate to apply HW pressure.
+On Mon, Jan 08, 2024 at 10:36:59AM +0100, Dimitri Fedrau wrote:
+> Rename mv88q2xxxx_get_sqi to mv88q2xxx_get_sqi and
+> mv88q2xxxx_get_sqi_max to mv88q2xxx_get_sqi_max.
+> Fix linebreaks and use everywhere hexadecimal numbers written with
+> lowercase letters instead of mixing it up.
 
-Signed-off-by: Sibi Sankar <quic_sibis@quicinc.com>
----
- drivers/cpufreq/scmi-cpufreq.c | 42 +++++++++++++++++++++++++++++++++-
- 1 file changed, 41 insertions(+), 1 deletion(-)
+You could split is up into three patches. Its probably not worth it
+now, but its something to remember for the future.
 
-diff --git a/drivers/cpufreq/scmi-cpufreq.c b/drivers/cpufreq/scmi-cpufreq.c
-index 4ee23f4ebf4a..53bc8868455d 100644
---- a/drivers/cpufreq/scmi-cpufreq.c
-+++ b/drivers/cpufreq/scmi-cpufreq.c
-@@ -25,9 +25,13 @@ struct scmi_data {
- 	int domain_id;
- 	int nr_opp;
- 	struct device *cpu_dev;
-+	struct cpufreq_policy *policy;
- 	cpumask_var_t opp_shared_cpus;
-+	struct notifier_block limit_notify_nb;
- };
- 
-+const struct scmi_handle *handle;
-+static struct scmi_device *scmi_dev;
- static struct scmi_protocol_handle *ph;
- static const struct scmi_perf_proto_ops *perf_ops;
- 
-@@ -144,6 +148,22 @@ scmi_get_cpu_power(struct device *cpu_dev, unsigned long *power,
- 	return 0;
- }
- 
-+static int scmi_limit_notify_cb(struct notifier_block *nb, unsigned long event, void *data)
-+{
-+	unsigned long freq_hz;
-+	struct scmi_perf_limits_report *limit_notify = data;
-+	struct scmi_data *priv = container_of(nb, struct scmi_data, limit_notify_nb);
-+	struct cpufreq_policy *policy = priv->policy;
-+
-+	if (perf_ops->perf_opp_xlate(ph, priv->domain_id, limit_notify->range_max, &freq_hz))
-+		return NOTIFY_OK;
-+
-+	/* Update HW pressure (the boost frequencies are accepted) */
-+	arch_update_hw_pressure(policy->related_cpus, (freq_hz / HZ_PER_KHZ));
-+
-+	return NOTIFY_OK;
-+}
-+
- static int scmi_cpufreq_init(struct cpufreq_policy *policy)
- {
- 	int ret, nr_opp, domain;
-@@ -151,6 +171,7 @@ static int scmi_cpufreq_init(struct cpufreq_policy *policy)
- 	struct device *cpu_dev;
- 	struct scmi_data *priv;
- 	struct cpufreq_frequency_table *freq_table;
-+	struct scmi_perf_notify_info info = {};
- 
- 	cpu_dev = get_cpu_device(policy->cpu);
- 	if (!cpu_dev) {
-@@ -250,6 +271,25 @@ static int scmi_cpufreq_init(struct cpufreq_policy *policy)
- 	policy->fast_switch_possible =
- 		perf_ops->fast_switch_possible(ph, domain);
- 
-+	ret = perf_ops->perf_notify_support(ph, domain, &info);
-+	if (ret)
-+		dev_warn(cpu_dev, "failed to get supported notifications: %d\n", ret);
-+
-+	if (info.perf_limit_notify) {
-+		priv->limit_notify_nb.notifier_call = scmi_limit_notify_cb;
-+		ret = handle->notify_ops->devm_event_notifier_register(scmi_dev, SCMI_PROTOCOL_PERF,
-+							SCMI_EVENT_PERFORMANCE_LIMITS_CHANGED,
-+							&domain,
-+							&priv->limit_notify_nb);
-+		if (ret) {
-+			dev_err(cpu_dev, "Error in registering limit change notifier for domain %d\n",
-+				domain);
-+			return ret;
-+		}
-+	}
-+
-+	priv->policy = policy;
-+
- 	return 0;
- 
- out_free_opp:
-@@ -321,8 +361,8 @@ static int scmi_cpufreq_probe(struct scmi_device *sdev)
- {
- 	int ret;
- 	struct device *dev = &sdev->dev;
--	const struct scmi_handle *handle;
- 
-+	scmi_dev = sdev;
- 	handle = sdev->handle;
- 
- 	if (!handle)
--- 
-2.17.1
+Ideally you want lots of small patches which are obviously correct.  A
+patch just containing a rename mv88q2xxxx_get_XXX to
+mv88q2xxx_get_sqi_XXX etc, should be obviously correct, and just takes
+a few seconds to review.
 
+A patch adding a few line breaks should again take a few seconds to
+review.
+
+Upper case to lower case is easy to review.
+
+When it is all mixed together, in a bigger patch it takes a bit more
+effort to review, a bit more effort is needed to look for typ0s etc.
+Its can be faster and easier to review 10 very simple patches than 3
+big patches...
+
+    Andrew
 
