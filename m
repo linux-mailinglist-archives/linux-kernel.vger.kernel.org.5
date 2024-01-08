@@ -1,125 +1,77 @@
-Return-Path: <linux-kernel+bounces-19040-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19042-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D697E82671E
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 02:31:54 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F6E1826725
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 02:46:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 998C4281C7F
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 01:31:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9DECBB20FE5
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 01:45:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46AF1EA8;
-	Mon,  8 Jan 2024 01:31:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AFEC10F7;
+	Mon,  8 Jan 2024 01:45:49 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out30-97.freemail.mail.aliyun.com (out30-97.freemail.mail.aliyun.com [115.124.30.97])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB800800;
-	Mon,  8 Jan 2024 01:31:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 787EAC433C8;
-	Mon,  8 Jan 2024 01:31:45 +0000 (UTC)
-Date: Sun, 7 Jan 2024 20:32:58 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
- <linux-trace-kernel@vger.kernel.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>, Andy Shevchenko <andy@kernel.org>, Tom
- Zanussi <zanussi@kernel.org>
-Subject: [PATCH] tracing histograms: Simplify parse_actions() function
-Message-ID: <20240107203258.37e26d2b@gandalf.local.home>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDE387F
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 01:45:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046056;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0W-5YvzR_1704678337;
+Received: from localhost(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0W-5YvzR_1704678337)
+          by smtp.aliyun-inc.com;
+          Mon, 08 Jan 2024 09:45:37 +0800
+From: Yang Li <yang.lee@linux.alibaba.com>
+To: dhowells@redhat.com
+Cc: linux-cachefs@redhat.com,
+	linux-kernel@vger.kernel.org,
+	Yang Li <yang.lee@linux.alibaba.com>
+Subject: [PATCH -next] fs: Fix type mismatch for pos variable
+Date: Mon,  8 Jan 2024 09:45:36 +0800
+Message-Id: <20240108014536.43971-1-yang.lee@linux.alibaba.com>
+X-Mailer: git-send-email 2.20.1.7.g153144c
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+The 'pos' variable within __cachefiles_prepare_write() and related
+functions is intended to store the return value from vfs_llseek(),
+which is of loff_t type. However, it was incorrectly declared as
+an unsigned long long, which is an unsigned type and cannot store
+negative error values returned by vfs_llseek().
 
-The parse_actions() function uses 'len = str_has_prefix()' to test which
-action is in the string being parsed. But then it goes and repeats the
-logic for each different action. This logic can be simplified and
-duplicate code can be removed as 'len' contains the length of the found
-prefix which should be used for all actions.
+This patch corrects the type of 'pos' variable to loff_t, ensuring
+that error codes are properly handled and facilitating proper type
+conversion from the cachefiles_inject_read_error function.
 
-Link: https://lore.kernel.org/all/20240107112044.6702cb66@gandalf.local.home/
-
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
 ---
- kernel/trace/trace_events_hist.c | 49 ++++++++++++++++----------------
- 1 file changed, 24 insertions(+), 25 deletions(-)
+ fs/cachefiles/io.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
-index 5ecf3c8bde20..6ece1308d36a 100644
---- a/kernel/trace/trace_events_hist.c
-+++ b/kernel/trace/trace_events_hist.c
-@@ -4805,36 +4805,35 @@ static int parse_actions(struct hist_trigger_data *hist_data)
- 	int len;
+diff --git a/fs/cachefiles/io.c b/fs/cachefiles/io.c
+index bb19b8bcf2e8..3da2b2e261da 100644
+--- a/fs/cachefiles/io.c
++++ b/fs/cachefiles/io.c
+@@ -521,8 +521,9 @@ int __cachefiles_prepare_write(struct cachefiles_object *object,
+ 			       bool no_space_allocated_yet)
+ {
+ 	struct cachefiles_cache *cache = object->volume->cache;
+-	unsigned long long start = *_start, pos;
++	unsigned long long start = *_start;
+ 	size_t len = *_len;
++	loff_t pos;
+ 	int ret;
  
- 	for (i = 0; i < hist_data->attrs->n_actions; i++) {
-+		enum handler_id hid = 0;
-+		char *action_str;
-+
- 		str = hist_data->attrs->action_str[i];
- 
--		if ((len = str_has_prefix(str, "onmatch("))) {
--			char *action_str = str + len;
-+		if ((len = str_has_prefix(str, "onmatch(")))
-+			hid = HANDLER_ONMATCH;
-+		else if ((len = str_has_prefix(str, "onmax(")))
-+			hid = HANDLER_ONMAX;
-+		else if ((len = str_has_prefix(str, "onchange(")))
-+			hid = HANDLER_ONCHANGE;
- 
--			data = onmatch_parse(tr, action_str);
--			if (IS_ERR(data)) {
--				ret = PTR_ERR(data);
--				break;
--			}
--		} else if ((len = str_has_prefix(str, "onmax("))) {
--			char *action_str = str + len;
-+		action_str = str + len;
- 
--			data = track_data_parse(hist_data, action_str,
--						HANDLER_ONMAX);
--			if (IS_ERR(data)) {
--				ret = PTR_ERR(data);
--				break;
--			}
--		} else if ((len = str_has_prefix(str, "onchange("))) {
--			char *action_str = str + len;
-+		switch (hid) {
-+		case HANDLER_ONMATCH:
-+			data = onmatch_parse(tr, action_str);
-+			break;
-+		case HANDLER_ONMAX:
-+		case HANDLER_ONCHANGE:
-+			data = track_data_parse(hist_data, action_str, hid);
-+			break;
-+		default:
-+			data = ERR_PTR(-EINVAL);
-+			break;
-+		}
- 
--			data = track_data_parse(hist_data, action_str,
--						HANDLER_ONCHANGE);
--			if (IS_ERR(data)) {
--				ret = PTR_ERR(data);
--				break;
--			}
--		} else {
--			ret = -EINVAL;
-+		if (IS_ERR(data)) {
-+			ret = PTR_ERR(data);
- 			break;
- 		}
- 
+ 	/* Round to DIO size */
 -- 
-2.42.0
+2.20.1.7.g153144c
 
 
