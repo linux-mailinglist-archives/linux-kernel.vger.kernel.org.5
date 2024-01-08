@@ -1,132 +1,235 @@
-Return-Path: <linux-kernel+bounces-19068-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19340-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 68972826769
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 04:24:54 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 05D9C826BAA
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 11:39:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F23A71F21962
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 03:24:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1E8FF1C2206E
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 10:39:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29C0A249FD;
-	Mon,  8 Jan 2024 03:23:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fastmail.org header.i=@fastmail.org header.b="li5baQRl";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="6JjFoVNq"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C11B13FF0;
+	Mon,  8 Jan 2024 10:39:14 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
+Received: from mail-m608.netease.com (mail-m608.netease.com [210.79.60.8])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30C2F219E2
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 03:23:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fastmail.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastmail.org
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-	by mailout.west.internal (Postfix) with ESMTP id 2082832012CF;
-	Sun,  7 Jan 2024 22:23:16 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Sun, 07 Jan 2024 22:23:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.org; h=
-	cc:cc:content-transfer-encoding:content-type:date:date:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to; s=fm2; t=1704684195; x=
-	1704770595; bh=+R3F62X3U/sQ5pF/DcFmLgx05zf8bbzHtroH7XEogPE=; b=l
-	i5baQRl6pYxe6CD2U6RME286qPXP3XtvWT6hAiH+vGikjG0St5q8oBu042i+eq7b
-	jvYLyAaxq6OKykMCPQePZCGuFl1O9mltTlVz3ryxNawuwjZ/6ZLFmPAtqPNujF08
-	DF7lmF4GHYCksCb0Hs6k9p0EvKhpEv5v5i7hcMTPMDC/eetpydUyaQDpXo1eevP7
-	w4Ue5VYppn0x98PK9PNo5OzYM1UiiIihhdvpjAtGE1hn3ovLcSXmNcYr9O6c0IBR
-	EPeFdz1zzbXvh46i1Z7aBJwI3ltmngwcqY1JuG9FTkerKR3h7zYxYSxKLAKFc3nN
-	NPJts0mm+Hisv6gt28z1A==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:date:date:feedback-id:feedback-id:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1704684195; x=
-	1704770595; bh=+R3F62X3U/sQ5pF/DcFmLgx05zf8bbzHtroH7XEogPE=; b=6
-	JjFoVNqjbtpUaXSMmbLPKdvvZmXxj2mZIReKcnar3THr95kYBtSZ8xfGtXZj10i+
-	H3etDQQN+elSFyl+uhqAGNPhLPyTZgljQ7qO3PX0jWbIBS060AG40vWqjpWqTMGG
-	RuJiZvqmWzYtkmTWP9MjkQXUPOMLLVjA9Dj6h7TSfGkkle3hKgMRhYjbYkTcxmK+
-	7+/rpEWaA4OyfTWO3iSX7EfgfFYwu7pDf7G70lBIHCVQnvRARiGGKfe4z7GDjKJE
-	BGToYa+G23uU1BgMrr0pTVmRUq28BlKKGrxe8xewIt3RzLmDwp7mjfd7d8Y+2RLR
-	QJ0OHAS/H+2TGOGtUnJ6g==
-X-ME-Sender: <xms:o2qbZaG3q4HHAWTEhGGw96y_8JOwiwzE9LI4e8qxkwNDIFGDBdwKlw>
-    <xme:o2qbZbXxeatT0ojUQc9WDEiDwfgT0840MNQG-zXxSyS_WNppbQlGGJRx35Raav1QI
-    R34bl2Bnfnm5gQZAKE>
-X-ME-Received: <xmr:o2qbZULgUFI7aaNiHf6Zrdu5ZPYFltQcgcFdqsv4HFKhlB7cQP57r_JHUwVLkPNhKMqCRkZMTLSTkVu6N_EfJpxb31O1LTWQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdehhedgheejucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvfevufffkffojghfggfgsedtke
-    ertdertddtnecuhfhrohhmpefirghrhicutfhoohhkrghrugcuoehgrghrhihrohhokhgr
-    rhgusehfrghsthhmrghilhdrohhrgheqnecuggftrfgrthhtvghrnhepkeeuvdffueduke
-    egieeuffejhefgkeetfeehueelfeduuefgveellefhfefgjedvnecuvehluhhsthgvrhfu
-    ihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghgrrhihrhhoohhkrghrugesfh
-    grshhtmhgrihhlrdhorhhg
-X-ME-Proxy: <xmx:o2qbZUE0pvMHKjSb8QjFB3gQjJZlh06_95JqiWsEpkonBEjqWDCDAg>
-    <xmx:o2qbZQVq5tYmQ5kigjWBVK2kUo88TolULr7XBSKlunrBbVY3AErqPA>
-    <xmx:o2qbZXM-3hbE21F4_rrIwD_iGhfKBd5NlmOIEf_bLCcp61egZqnEiQ>
-    <xmx:o2qbZXTftlS6EI5ZRapeIPZndpxr99NvpU0mR4WQ90iyodXHIx88Kw>
-Feedback-ID: ifd194980:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
- 7 Jan 2024 22:23:15 -0500 (EST)
-From: Gary Rookard <garyrookard@fastmail.org>
-To: gregkh@linuxfoundation.org,
-	philipp.g.hortmann@gmail.com
-Cc: linux-staging@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	Gary Rookard <garyrookard@fastmail.org>
-Subject: [PATCH 5/5] staging: rtl8192e: rename variable AdvCoding
-Date: Sun,  7 Jan 2024 22:22:33 -0500
-Message-ID: <20240108032233.4280-6-garyrookard@fastmail.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240108032233.4280-1-garyrookard@fastmail.org>
-References: <20240108032233.4280-1-garyrookard@fastmail.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EFEE13FF6;
+	Mon,  8 Jan 2024 10:39:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=senarytech.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=senarytech.com
+Received: from liubo (unknown [61.183.143.78])
+	by mail-m12756.qiye.163.com (Hmail) with ESMTPA id 8C244DC05F0;
+	Mon,  8 Jan 2024 11:29:50 +0800 (CST)
+From: =?gb2312?B?wfWyqQ==?= <bo.liu@senarytech.com>
+To: "'Takashi Iwai'" <tiwai@suse.de>
+Cc: <perex@perex.cz>,
+	<tiwai@suse.com>,
+	<linux-sound@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] ALSA: hda/conexant: Fix headset auto detect fail in cx8070 and SN6140
+Date: Mon, 8 Jan 2024 11:29:51 +0800
+Message-ID: <002401da41e2$f159f5f0$d40de1d0$@senarytech.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain;
+	charset="gb2312"
+Content-Transfer-Encoding: quoted-printable
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AdpB4vBlAuC7K9/cRVGMODF0aT21Gg==
+Content-Language: zh-cn
+X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
+	tZV1koWUFITzdXWS1ZQUlXWQ8JGhUIEh9ZQVkaTksYVkwdGBhISB9KQkhOGVUTARMWGhIXJBQOD1
+	lXWRgSC1lBWU1KVUpDSFVKT0hVTENZV1kWGg8SFR0UWUFZT0tIVUpNT0lMTlVKS0tVSkJLS1kG
+X-HM-Tid: 0a8ce71e9649b223kuuu8c244dc05f0
+X-HM-MType: 1
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NC46Ghw4AzwdTTI2LzAsGiJJ
+	QlZPCUlVSlVKTEtPTUNPTkJKTkxMVTMWGhIXVRkUVRcSDjsIHhUaCQIPHhgTVRgUFkVZV1kSC1lB
+	WU1KVUpDSFVKT0hVTENZV1kIAVlBTElLTzcG
 
-Coding style issue, checkpatch Avoid CamelCase,
-rename it. AdvCoding -> adv_coding
+hi Takashi Iwai,
+	Thank you very much for your patient guidance. Below is the reply to
+the question, please kindly correct it, thanks.
 
-Signed-off-by: Gary Rookard <garyrookard@fastmail.org>
----
- drivers/staging/rtl8192e/rtl819x_HT.h     | 2 +-
- drivers/staging/rtl8192e/rtl819x_HTProc.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+> +static void cx_fixup_headset_recog(struct hda_codec *codec) {
+> +	unsigned int mic_persent;
+> +
+> +	/* fix some headset type recognize fail issue, such as EDIFIER
+headset */
+> +	snd_hda_codec_write(codec, 0x1c, 0, 0x320, 0x010);
+> +	snd_hda_codec_write(codec, 0x1c, 0, 0x3b0, 0xe10);
+> +	snd_hda_codec_write(codec, 0x1c, 0, 0x4f0, 0x0eb);
 
-diff --git a/drivers/staging/rtl8192e/rtl819x_HT.h b/drivers/staging/rtl8192e/rtl819x_HT.h
-index 68577bffb936..95613619d568 100644
---- a/drivers/staging/rtl8192e/rtl819x_HT.h
-+++ b/drivers/staging/rtl8192e/rtl819x_HT.h
-@@ -24,7 +24,7 @@ enum ht_extchnl_offset {
- };
- 
- struct ht_capab_ele {
--	u8	AdvCoding:1;
-+	u8	adv_coding:1;
- 	u8	ChlWidth:1;
- 	u8	MimoPwrSave:2;
- 	u8	GreenField:1;
-diff --git a/drivers/staging/rtl8192e/rtl819x_HTProc.c b/drivers/staging/rtl8192e/rtl819x_HTProc.c
-index 5598e74187cd..351000d3bce7 100644
---- a/drivers/staging/rtl8192e/rtl819x_HTProc.c
-+++ b/drivers/staging/rtl8192e/rtl819x_HTProc.c
-@@ -251,7 +251,7 @@ void ht_construct_capability_element(struct rtllib_device *ieee, u8 *pos_ht_cap,
- 		*len = 26 + 2;
- 	}
- 
--	cap_ele->AdvCoding		= 0;
-+	cap_ele->adv_coding		= 0;
- 	if (ieee->GetHalfNmodeSupportByAPsHandler(ieee->dev))
- 		cap_ele->ChlWidth = 0;
- 	else
--- 
-2.43.0
+Please use the defined verbs in sound/hda_verbs.h.
+The arguments (0x320, 0x010) are (AC_VERB_SET_AMP_GAIN_MUTE, 0x2010) =
+etc.
+
+Re: (0x1c, 0x320) is not amp gain register, but vendor defined register =
+as
+rx control register. Use AC_VERB_SET_AMP_GAIN_MUTE will confused. It's
+similar to 0x4f0 and 0xca0.
+
+Also, it's still not clear what if other nodes are used for headphone =
+and
+mic pins -- or when either only headphone or only mic is present.
+A rare case, but we need to cover.
+
+Re: in cx8070 and sn6140, only 0x16 and 0x19 can be used together as
+headset. Other nodes can be used separately as headphones or =
+microphones,
+but not as headset,=20
+so their configuration will not interfere with the type detection of
+headset.
+
+> +	/* fix reboot headset type recognize fail issue */
+> +	mic_persent =3D snd_hda_codec_read(codec, 0x19, 0,
+AC_VERB_GET_PIN_SENSE, 0x0);
+> +	if (mic_persent&0x80000000)
+
+A coding style problem.  Similar issues seen in a few other places, too.
+Consult scripts/checkpatch.pl.
+
+Re: was & need space? I have checked with scripts/checkpatch.pl before
+submitting the patch and there are no warnings or errors.
+
+> +static void cx_process_headset_plugin(struct hda_codec *codec) {
+> +	unsigned int val;
+> +	unsigned int count =3D 0;
+> +
+> +	/* Wait headset detect done. */
+> +	do {
+> +		val =3D snd_hda_codec_read(codec, 0x1c, 0, 0xca0, 0x0);
+
+Use the verb: AC_VERB_GET_PROC_COEF, 0xa000.
+At best, define the COEF values 0xa000 and 0xb000, and the corresponding
+value bits, too.
+
+Re: (0x1c, 0xca0) is not COEF register, but vendor defined register as
+jacksense register.
+
+> +static void cx_update_headset_mic_vref(struct hda_codec *codec,=20
+> +unsigned int res) {
+> +	unsigned int phone_present, mic_persent, phone_tag, mic_tag;
+> +	struct conexant_spec *spec =3D codec->spec;
+> +
+> +	/* In cx8070 and sn6140, headset is fixed to use node 16 and node
+19.
+
+Is it really guaranteed?  IMO, we should check the pin configs =
+beforehand at
+the parsing time.
+
+Re: in cx8070 and sn6140, only 0x16 and 0x19 can be used together as
+headset. The node 16 can only be config to headphone or disable,
+The node 19 can only be config to microphone or disable. Only node 16 =
+and
+node 19 both enable, the patch will process.
+
+Best Regards
+Bo Liu
+=A1=A1
+-----=D3=CA=BC=FE=D4=AD=BC=FE-----
+=B7=A2=BC=FE=C8=CB: Takashi Iwai <tiwai@suse.de>=20
+=B7=A2=CB=CD=CA=B1=BC=E4: 2024=C4=EA1=D4=C26=C8=D5 1:02
+=CA=D5=BC=FE=C8=CB: bo liu <bo.liu@senarytech.com>
+=B3=AD=CB=CD: perex@perex.cz; tiwai@suse.com; =
+linux-sound@vger.kernel.org;
+linux-kernel@vger.kernel.org
+=D6=F7=CC=E2: Re: [PATCH] ALSA: hda/conexant: Fix headset auto detect =
+fail in cx8070
+and SN6140
+
+On Thu, 04 Jan 2024 12:10:44 +0100,
+bo liu wrote:
+>=20
+> When OMTP headset plugin the headset jack of CX8070 and SN6160 sound=20
+> cards, the headset type detection circuit will recognize the headset =
+type
+as CTIA.
+> At this point, plugout and plugin the headset will get the correct=20
+> headset type as OMTP.
+> The reason for the failure of headset type recognition is that the=20
+> sound card creation will enable the VREF voltage of the headset mic,=20
+> which interferes with the headset type automatic detection circuit.=20
+> Plugout and plugin the headset will restart the headset detection and=20
+> get the correct headset type.
+> The patch is disable the VREF voltage when the headset is not present, =
+
+> and will enable the VREF voltage when the headset is present.
+>=20
+> Signed-off-by: bo liu <bo.liu@senarytech.com>
+
+Please put the revision number to the subject prefix, i.e.
+"Subject: [PATCH v3] ALSA: hda/conexant: ...."
+
+> +static void cx_fixup_headset_recog(struct hda_codec *codec) {
+> +	unsigned int mic_persent;
+> +
+> +	/* fix some headset type recognize fail issue, such as EDIFIER
+headset */
+> +	snd_hda_codec_write(codec, 0x1c, 0, 0x320, 0x010);
+> +	snd_hda_codec_write(codec, 0x1c, 0, 0x3b0, 0xe10);
+> +	snd_hda_codec_write(codec, 0x1c, 0, 0x4f0, 0x0eb);
+
+Please use the defined verbs in sound/hda_verbs.h.
+The arguments (0x320, 0x010) are (AC_VERB_SET_AMP_GAIN_MUTE, 0x2010) =
+etc.
+
+Also, it's still not clear what if other nodes are used for headphone =
+and
+mic pins -- or when either only headphone or only mic is present.
+A rare case, but we need to cover.
+
+> +	/* fix reboot headset type recognize fail issue */
+> +	mic_persent =3D snd_hda_codec_read(codec, 0x19, 0,
+AC_VERB_GET_PIN_SENSE, 0x0);
+> +	if (mic_persent&0x80000000)
+
+A coding style problem.  Similar issues seen in a few other places, too.
+Consult scripts/checkpatch.pl.
+
+> +enum {
+> +	CX_HEADSET_NOPRESENT =3D 0,
+> +	CX_HEADSET_PARTPRESENT,
+> +	CX_HEADSET_ALLPRESENT,
+> +};
+
+This should be defined earlier.  You can use the enum type for
+spec->headset_present_flag, too.
+
+> +static void cx_process_headset_plugin(struct hda_codec *codec) {
+> +	unsigned int val;
+> +	unsigned int count =3D 0;
+> +
+> +	/* Wait headset detect done. */
+> +	do {
+> +		val =3D snd_hda_codec_read(codec, 0x1c, 0, 0xca0, 0x0);
+
+Use the verb: AC_VERB_GET_PROC_COEF, 0xa000.
+At best, define the COEF values 0xa000 and 0xb000, and the corresponding
+value bits, too.
+
+> +static void cx_update_headset_mic_vref(struct hda_codec *codec,=20
+> +unsigned int res) {
+> +	unsigned int phone_present, mic_persent, phone_tag, mic_tag;
+> +	struct conexant_spec *spec =3D codec->spec;
+> +
+> +	/* In cx8070 and sn6140, headset is fixed to use node 16 and node
+19.
+
+Is it really guaranteed?  IMO, we should check the pin configs =
+beforehand at
+the parsing time.
+
+
+thanks,
+
+Takashi
 
 
