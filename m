@@ -1,248 +1,144 @@
-Return-Path: <linux-kernel+bounces-20072-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20073-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 334658278F4
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 21:12:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3DC348278F6
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 21:15:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B4C411F237D3
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 20:12:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C900028452D
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 20:15:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AE635576F;
-	Mon,  8 Jan 2024 20:12:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1D7F5577D;
+	Mon,  8 Jan 2024 20:15:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amarulasolutions.com header.i=@amarulasolutions.com header.b="NY4xJ2qd"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="LKhezgAj"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com [209.85.219.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2986F5576E
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 20:12:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=amarulasolutions.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amarulasolutions.com
-Received: by mail-yb1-f180.google.com with SMTP id 3f1490d57ef6-dbd99c08cd6so1269231276.0
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 12:12:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amarulasolutions.com; s=google; t=1704744769; x=1705349569; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jO+k5lvbngjS92ouyx3R3uEoQtzTI+waqD9Cqv6JLzo=;
-        b=NY4xJ2qdPO5Ru62RGbL1EaZnXBl2PyKoaficnh1lpCVqZO+VoXyroYUQO227AUfwVo
-         g8wdgc/urhYKP+H03RLnVP6YpqPFtSGrZfG9wdSVk4zg0qZKJj29XRKubreLWvZUbDUS
-         wvI8kgMMh98cBRK/l+jR0hv2m1y6oMpPc0TNU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704744769; x=1705349569;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jO+k5lvbngjS92ouyx3R3uEoQtzTI+waqD9Cqv6JLzo=;
-        b=mC/Xrwj40nTjvJs6QY6cr6W2bTJOnaTN3YXurstvPJy/yL0XLMuvzZocXrnVjAznpN
-         a+5ET9oyyFPTL7MHhQvQc06Z0wrtlobUiwiTjYR73QSYwmows7TI3jic4AN1kFFl7Vrp
-         Jhxgn/C+Rp5nRzbr1Bs7FXKjnx0S3usJ4wLa8Okrv5wnfPimQouXnAc5M4nMKwvDJSHd
-         qrHO91wgXVqm97Tf4RjhKtfN0VRnjmvHhDVWmHGTDht+amsNcZCv15A8K5snxtdp8mnP
-         qXtM58Fc8Z7FMZ0rf+wQxqAvTjLTIJZeuuuve8sg8bmFZ4kpqECB0OUFjPnsi3D/BoKy
-         mgCA==
-X-Gm-Message-State: AOJu0Yy1hOB1YsR+aH7fSY0JgDraoD9em0SpzpBHEJYVn/mq0ODIqmC3
-	FUsRVpq6PXIlYjTAcsCuck81tj+u1u1w76SDqZOu4SPvc9zl2Q==
-X-Google-Smtp-Source: AGHT+IFUUedhilU//0xZ1+dgQGu1fYRJoi2KV/ctlDlSR1L6Xlf0TFmrxtXePndYD4C7J5WXLQ80bM9Ha0k8nMgP2ZU=
-X-Received: by 2002:a25:8441:0:b0:db7:dad0:76ad with SMTP id
- r1-20020a258441000000b00db7dad076admr1590636ybm.73.1704744768971; Mon, 08 Jan
- 2024 12:12:48 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B69B655771
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 20:15:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 408KCVga003096;
+	Mon, 8 Jan 2024 20:15:09 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=bOUKNttGfktqe7VE8ZoTU5OPnxZCVqzq7LfDcVymoE8=; b=LK
+	hezgAjvBK7rWq12it0R3vj7GnsfzgVRI+PMwKa9QUmrpfTKio9114BT89Vh2/3nf
+	GQaI135oiUlBTKkl0r8WbYhxGHAsWYX+XeDPjF+dKmmY6RN6qAbEzuPjOPwM4WG1
+	6A8GqvFVKGRf9z5dAKylmle6g2rHOMj996Yxi+P47ahhIG3KX6/la58zGn3BIc9K
+	Aj00y2kdasqsfjhwoLOrIzuWAeqh6HtrjTDC33tlcNBXETi7I8xDjw7uqVBVKqua
+	rz+7R4eWRfoQqt3AExnSAQHm6FvbbeDHhko8gdixwbbbVhe1VJbOK3sxRg/DSB6u
+	IlhRcL97W7i5QE070Nig==
+Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vgq2yr3x3-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 08 Jan 2024 20:15:08 +0000 (GMT)
+Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
+	by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 408KF7xE010645
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 8 Jan 2024 20:15:07 GMT
+Received: from [10.110.48.152] (10.80.80.8) by nasanex01c.na.qualcomm.com
+ (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 8 Jan
+ 2024 12:15:06 -0800
+Message-ID: <ca270573-5527-6df0-3fed-17e8c54b4f89@quicinc.com>
+Date: Mon, 8 Jan 2024 12:15:05 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240104084206.721824-1-dario.binacchi@amarulasolutions.com>
- <20240104084206.721824-9-dario.binacchi@amarulasolutions.com>
- <CACRpkda+=Zq+v-505O3pHazKzukSifBnNx_CPKbKd2JH-KYpYg@mail.gmail.com>
- <CABGWkvoNuJNmxhrOE6csE2mGwF50ou-jx-kpmH-oQ2zBgzLrSg@mail.gmail.com> <CACRpkdZJF-WE8oTi3RXpX_+W+D6bV_o2Nt1ikRbErR6pBc2OJg@mail.gmail.com>
-In-Reply-To: <CACRpkdZJF-WE8oTi3RXpX_+W+D6bV_o2Nt1ikRbErR6pBc2OJg@mail.gmail.com>
-From: Dario Binacchi <dario.binacchi@amarulasolutions.com>
-Date: Mon, 8 Jan 2024 21:12:37 +0100
-Message-ID: <CABGWkvoHuzTPNhh54VihNJ4PtSTF9sRLiup6PRNqG5uoHfJc_A@mail.gmail.com>
-Subject: Re: [PATCH v4 8/8] drm/panel: nt35510: support FRIDA FRD400B25025-A-CTK
-To: Linus Walleij <linus.walleij@linaro.org>
-Cc: linux-kernel@vger.kernel.org, linux-amarula@amarulasolutions.com, 
-	Alexandre Torgue <alexandre.torgue@foss.st.com>, Daniel Vetter <daniel@ffwll.ch>, 
-	David Airlie <airlied@gmail.com>, Jessica Zhang <quic_jesszhan@quicinc.com>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
-	Neil Armstrong <neil.armstrong@linaro.org>, Sam Ravnborg <sam@ravnborg.org>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, dri-devel@lists.freedesktop.org
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH] mm,page_alloc,cma: configurable CMA utilization
+Content-Language: en-US
+To: Roman Gushchin <roman.gushchin@linux.dev>
+CC: Minchan Kim <minchan@kernel.org>,
+        Chris Goldsworthy
+	<quic_cgoldswo@quicinc.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Rik
+ van Riel" <riel@surriel.com>, Roman Gushchin <guro@fb.com>,
+        Vlastimil Babka
+	<vbabka@suse.cz>, Joonsoo Kim <js1304@gmail.com>,
+        Georgi Djakov
+	<quic_c_gdjako@quicinc.com>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20230131071052.GB19285@hu-sbhattip-lv.qualcomm.com>
+ <Y9lZoI89Nw4bjjOZ@P9FQF9L96D.corp.robot.car>
+ <20230131201001.GA8585@hu-sbhattip-lv.qualcomm.com>
+ <Y9mraBHucYdnHXiS@P9FQF9L96D.corp.robot.car>
+ <20230201040628.GA3767@hu-cgoldswo-sd.qualcomm.com>
+ <Y9r6LtMOPHfxr7UL@google.com>
+ <b9b5b669-0318-93c8-c6a0-dbbb797320f2@quicinc.com>
+ <ZZiZVnJpOpt1DAq1@P9FQF9L96D.corp.robot.car>
+From: Sukadev Bhattiprolu <quic_sukadev@quicinc.com>
+In-Reply-To: <ZZiZVnJpOpt1DAq1@P9FQF9L96D.corp.robot.car>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01c.na.qualcomm.com (10.45.79.139)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: QpD1E0sTmcBht6Zd9wSEJMF_DFTKWM_j
+X-Proofpoint-ORIG-GUID: QpD1E0sTmcBht6Zd9wSEJMF_DFTKWM_j
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 adultscore=0
+ lowpriorityscore=0 impostorscore=0 bulkscore=0 malwarescore=0
+ mlxlogscore=793 clxscore=1015 priorityscore=1501 phishscore=0 mlxscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2401080167
 
-On Sun, Jan 7, 2024 at 9:02=E2=80=AFPM Linus Walleij <linus.walleij@linaro.=
-org> wrote:
->
-> On Sat, Jan 6, 2024 at 12:07=E2=80=AFPM Dario Binacchi
-> <dario.binacchi@amarulasolutions.com> wrote:
->
-> > After submitting v4, I tested the driver under different conditions,
-> > i. e. without enabling display support in
-> > U-Boot (I also implemented a version for U-Boot, which I will send
-> > only after this series is merged into
-> > the Linux kernel). In that condition I encountered an issue with the re=
-set pin.
-> >
-> > The minimal fix, would be this:
-> >
-> > diff --git a/drivers/gpu/drm/panel/panel-novatek-nt35510.c
-> > b/drivers/gpu/drm/panel/panel-novatek-nt35510.c
-> > index c85dd0d0829d..89ba99763468 100644
-> > --- a/drivers/gpu/drm/panel/panel-novatek-nt35510.c
-> > +++ b/drivers/gpu/drm/panel/panel-novatek-nt35510.c
-> > @@ -1133,7 +1133,7 @@ static int nt35510_probe(struct mipi_dsi_device *=
-dsi)
-> >         if (ret)
-> >                 return ret;
-> >
-> > -       nt->reset_gpio =3D devm_gpiod_get_optional(dev, "reset", GPIOD_=
-ASIS);
-> > +       nt->reset_gpio =3D devm_gpiod_get_optional(dev, "reset", GPIOD_=
-OUT_HIGH);
->
->
-> This is fine, because we later on toggle reset in nt35510_power_on(),
-> this just asserts the reset signal already in probe.
->
-> I don't see why this would make a difference though?
->
-> Is it to make the reset delete artifacts from the screen?
->
-> Just explain it in the commit message.
->
-> It is a bit confusing when I look at your DTS patch:
->
-> https://lore.kernel.org/linux-arm-kernel/20240104084206.721824-7-dario.bi=
-nacchi@amarulasolutions.com/
->
-> this doesn't even contain a reset GPIO, so nothing will happen
-> at all?
-+++ b/arch/arm/boot/dts/st/stm32f769-disco-mb1225-revb03-mb1166-reva09.dts
-@@ -0,0 +1,18 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (c) 2023 Dario Binacchi <dario.binacchi@amarulasolutions.com>
-+ */
-+
-+#include "stm32f769-disco.dts"
-+
 
-The GPIO is contained in the stm32f769-disco.dts:
+On 1/5/2024 4:05 PM, Roman Gushchin wrote:
+> I'm not sure there is a "one size fits all" solution here. 
+agree - that's why we are thinking a configurable cma utilization would be
+useful.
+> There are two distinctive cases:
+> 1) A relatively small cma area used for a specific purpose. This is how cma
+>    was used until recently. And it was barely used by the kernel for non-cma
+>    allocations.
+> 2) A relatively large cma area which is used to allocate gigantic hugepages
+>    and as an anti-fragmentation mechanism in general (basically as a movable
+>    zone). In this case it might be preferable to use cma for movable
+>    allocations, because the space for non-movable allocations might be limited.
+>
+> I see two options here:
+> 1) introduce per-cma area flags which will define the usage policy
+Could you please elaborate on this - how would we use the per-cma flags
+when allocating pages?
+> 2) redesign the page allocator to better take care of fragmentation at 1Gb scale
+>
+> The latter is obviously not a small endeavour.
+> The fundamentally missing piece is a notion of an anti-fragmentation cost.
+> E.g. how much work does it makes sense to put into page migration
+> before "polluting" a new large block of memory with an unmovable folio.
 
-panel0: panel-dsi@0 {
-        compatible =3D "orisetech,otm8009a";
-        reg =3D <0>; /* dsi virtual channel (0..3) */
-        reset-gpios =3D <&gpioj 15 GPIO_ACTIVE_LOW>;
-        power-supply =3D <&vcc_3v3>;
-        backlight =3D <&panel_backlight>;
-       status =3D "okay";
-...
-};
+Stepping back, we are trying to solve for a situation where system:
+        - has lot of movable allocs in zone normal
+        - has lot of idle memory in CMA region
+        - but is low on memory for unmovable allocs, leading to oom-kills
+
+On devices where cma region is mostly idle, allocating movable pages from
+the cma region would have lesser overhead?
+
+IIUC, this redesign for smarter migration would be in addition to or in
+parallel to the CMA utilization right?
+
+Thanks,
+
+Sukadev
+
 
 >
-> > I then tried modifying the device tree instead of the nt35510 driver.
-> > In the end, I arrived
-> > at this patch that leaves me with some doubts, especially regarding
-> > the strict option.
-> >
-> > diff --git a/arch/arm/boot/dts/st/stm32f769-disco-mb1225-revb03-mb1166-=
-reva09.dts
-> > b/arch/arm/boot/dts/st/stm32f769-disco-mb1225-revb03-m>
-> > index 014cac192375..32ed420a6cbf 100644
-> > --- a/arch/arm/boot/dts/st/stm32f769-disco-mb1225-revb03-mb1166-reva09.=
-dts
-> > +++ b/arch/arm/boot/dts/st/stm32f769-disco-mb1225-revb03-mb1166-reva09.=
-dts
-> > @@ -13,6 +13,17 @@ &panel0 {
-> >         compatible =3D "frida,frd400b25025", "novatek,nt35510";
-> >         vddi-supply =3D <&vcc_3v3>;
-> >         vdd-supply =3D <&vcc_3v3>;
-> > +       pinctrl-0 =3D <&panel_reset>;
-> > +       pinctrl-names =3D "default";
-> >         /delete-property/backlight;
-> >         /delete-property/power-supply;
-> >  };
-> > +
-> > +&pinctrl {
-> > +       panel_reset: panel-reset {
-> > +               pins1 {
-> > +                       pinmux =3D <STM32_PINMUX('J', 15, GPIO)>;
-> > +                       output-high;
->
-> But this achieves the *opposite* of what you do in the
-> other patch. This sets the reset line de-asserted since it is
-> active low.
->
-> Did you add the reset line to your device tree and forgot to
-> set it as GPIO_ACTIVE_LOW perhaps?
-
-panel0: panel-dsi@0 {
-        compatible =3D "orisetech,otm8009a";
-        reg =3D <0>; /* dsi virtual channel (0..3) */
-        reset-gpios =3D <&gpioj 15 GPIO_ACTIVE_LOW>;
-
->
-> > --- a/drivers/pinctrl/stm32/pinctrl-stm32.c
-> > +++ b/drivers/pinctrl/stm32/pinctrl-stm32.c
-> > @@ -895,7 +895,6 @@ static const struct pinmux_ops stm32_pmx_ops =3D {
-> >         .set_mux                =3D stm32_pmx_set_mux,
-> >         .gpio_set_direction     =3D stm32_pmx_gpio_set_direction,
-> >         .request                =3D stm32_pmx_request,
-> > -       .strict                 =3D true,
->
-> To be honest this is what I use a lot of the time, with non-strict
-> pin control you can set up default GPIO values using the pin control
-> device tree, and it's really simple and easy to read like that since e.g.
-> in this case you set it from the panel device node which is what
-> is also consuming the GPIO, so very logical. So I
-> would certainly remove this .strict setting, but maybe Alexandre
-> et al have a strong opinion about it.
-
-I will send a separate RFC PATCH.
-
-Thanks and regards,
-Dario Binacchi
-
->
-> > Another option to fix my use case without introducing regressions
-> > could be to add a
-> > new property to the device tree that suggests whether to call
-> > devm_gpiod_get_optional()
-> > with the GPIOD_ASIS or GPIOD_OUT_HIGH parameter.
-> >
-> > What is your opinion?
->
-> It's fine either way, but just use GPIOD_OUT_HIGH and I can test
-> it on my system as well, I think it's fine.
->
-> Yours,
-> Linus Walleij
-
-
-
---=20
-
-Dario Binacchi
-
-Senior Embedded Linux Developer
-
-dario.binacchi@amarulasolutions.com
-
-__________________________________
-
-
-Amarula Solutions SRL
-
-Via Le Canevare 30, 31100 Treviso, Veneto, IT
-
-T. +39 042 243 5310
-info@amarulasolutions.com
-
-www.amarulasolutions.com
+> Thanks!
 
