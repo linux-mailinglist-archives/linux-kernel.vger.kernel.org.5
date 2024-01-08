@@ -1,162 +1,132 @@
-Return-Path: <linux-kernel+bounces-19926-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19927-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E4DB98276E0
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 19:04:32 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A2048276E5
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 19:05:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7730F1F223D2
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 18:04:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EEDDFB20CFE
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 18:05:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DBB856448;
-	Mon,  8 Jan 2024 17:58:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CF1854BE5;
+	Mon,  8 Jan 2024 17:59:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kaS7btb5"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9D1655762
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 17:58:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BAFECC15;
-	Mon,  8 Jan 2024 09:59:08 -0800 (PST)
-Received: from FVFF77S0Q05N (unknown [10.57.89.149])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DFC303F73F;
-	Mon,  8 Jan 2024 09:58:21 -0800 (PST)
-Date: Mon, 8 Jan 2024 17:58:16 +0000
-From: Mark Rutland <mark.rutland@arm.com>
-To: "Brandt, Oliver - Lenze" <oliver.brandt@lenze.com>
-Cc: "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
-	"will@kernel.org" <will@kernel.org>,
-	"catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] arm64: mm: disable PAN during caches_clean_inval_user_pou
-Message-ID: <ZZw3uIyF-b9oSCIK@FVFF77S0Q05N>
-References: <e6dc8a44a140d1e54bc1408c36704b581433ec10.camel@lenze.com>
- <ZZwa0msD9KSJg54-@FVFF77S0Q05N>
- <15b92eff2767926aa345e159964e342e3b7192ca.camel@lenze.com>
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7330754BC3;
+	Mon,  8 Jan 2024 17:58:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B4E7C433C8;
+	Mon,  8 Jan 2024 17:58:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704736739;
+	bh=D0fr5KJoH/x9z9dsJi78E0K0d6yZhAtftDcyIGu3MmQ=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=kaS7btb5WdVxbKLfLX3cHLKknUYDFfB7CJCl2rakB4nDR6dhkMTxJTDnSHHIrr0kR
+	 c/+q6oeDHlh/CL6zfYSdaA0sNhE4qt5RJnDsNWFw/g+Mbpr7BuFFSkbk5sUi+u8xZG
+	 Twbe9rxvwB8BJerm9ZsHhclYSbuFs6CaXM1BLoYNWcpYT3OfqoCUBgZRAvFBWP+D5U
+	 yv9nTsm6OKD5fai5V6xIbNSz/lLg3OX+Yo/ptxrvY7GtfZl+WXa95BLpJ6goWbCHX7
+	 U1wgillVc2R3OJ5tnhl8vl2cuN8yneWrDF5H8bspByrYA3GRPSboyufohD0ahOR88Q
+	 83LbpezItEnSg==
+From: SeongJae Park <sj@kernel.org>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: stable@vger.kernel.org,
+	patches@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	torvalds@linux-foundation.org,
+	akpm@linux-foundation.org,
+	linux@roeck-us.net,
+	shuah@kernel.org,
+	patches@kernelci.org,
+	lkft-triage@lists.linaro.org,
+	pavel@denx.de,
+	jonathanh@nvidia.com,
+	f.fainelli@gmail.com,
+	sudipm.mukherjee@gmail.com,
+	srw@sladewatkins.net,
+	rwarsow@gmx.de,
+	conor@kernel.org,
+	allen.lkml@gmail.com,
+	damon@lists.linux.dev,
+	SeongJae Park <sj@kernel.org>
+Subject: Re: [PATCH 6.6 000/124] 6.6.11-rc1 review
+Date: Mon,  8 Jan 2024 09:58:55 -0800
+Message-Id: <20240108175856.67994-1-sj@kernel.org>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20240108150602.976232871@linuxfoundation.org>
+References: 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <15b92eff2767926aa345e159964e342e3b7192ca.camel@lenze.com>
+Content-Transfer-Encoding: 8bit
 
-On Mon, Jan 08, 2024 at 04:37:37PM +0000, Brandt, Oliver - Lenze wrote:
-> > On Mon, Jan 08, 2024 at 01:00:39PM +0000, Brandt, Oliver - Lenze wrote:
-> > > Using the cacheflush() syscall from an 32-bit user-space fails when
-> > > ARM64_PAN is used. We 'll get an endless loop:
-> > > 
-> > >       1. executing "dc cvau, x2" results in raising an abort
-> > >       2. abort handler does not fix the reason for the abort and
-> > >          returns to 1.
-> > > 
-> > > Disabling PAN for the time of the cache maintenance fixes this.
-> > 
-> > Hmm... the ARM ARM says PSTATE.PAN is not supposed to affect DC CVAU.
-> > 
-> > Looking at the latest ARM ARM (ARM DDI 0487J.a), R_PMTWB states:
-> > 
-> > > The PSTATE.PAN bit has no effect on all of the following:
-> > > 
-> > > o Instruction fetches.
-> > > o Data cache instructions, except DC ZVA.
-> > > o If FEAT_PAN2 is not implemented, then address translation instructions.
-> > > o If FEAT_PAN2 is implemented, then the address translation instructions
-> > >   other than AT S1E1RP and AT S1E1WP.
-> > 
-> > So IIUC, DC CVAU shouldn't be affected by PAN.
+Hello,
+
+On Mon,  8 Jan 2024 16:07:06 +0100 Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+
+> This is the start of the stable review cycle for the 6.6.11 release.
+> There are 124 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> Ups... Sorry, didn't noticed this.
-
-No worries; this is not at all obvious!
-
-> > This could be a CPU bug; which CPU are you seeing this with?
+> Responses should be made by Wed, 10 Jan 2024 15:05:35 +0000.
+> Anything received after that time might be too late.
 > 
-> I've stumbled about this while using Intel's simulator "Simics" with a
-> model of the upcoming "Agilex5 socfpga". The "Agilex5" is a SoC
-> containing two Cortex A76 and two Cortex A55.
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.6.11-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.6.y
+> and the diffstat can be found below.
 
-Ah, so it could be a bug in Simics, then.
+This rc kernel passes DAMON functionality test[1] on my test machine.
+Attaching the test results summary below.  Please note that I retrieved the
+kernel from linux-stable-rc tree[2].
 
-> We are expecting the real silicon in a couple of weeks. Seems to be a
-> good idea to check the silicon first. Sorry to bother you with this.
+Tested-by: SeongJae Park <sj@kernel.org>
 
-Just to make sure I ran a quick test on an AML-905D3-CC board (quad-core
-Cortex-A55), and AFAICT we're not taking unexpected faults. Log below,
-including the test case.
+[1] https://github.com/awslabs/damon-tests/tree/next/corr
+[2] c52463eb66c8 ("Linux 6.6.11-rc1")
 
-If you do see problems on silicon, please let us know!
+Thanks,
+SJ
 
-Mark.
+[...]
 
----->8----
-mark@flodeboller:~/test/aarch32-cacheflush$ sudo dmesg | grep -i access
-[    0.010476] CPU features: detected: Privileged Access Never
-mark@flodeboller:~/test/aarch32-cacheflush$ cat test.c
-#include <stdio.h>
+---
 
-void cacheflush(void *start, size_t size)
-{
-        printf("Attempting flush of [%p..%p]\n", start, start + size);
-        __builtin___clear_cache(start, start + size);
-}
-
-int main(int argc, char *argv[])
-{
-        static char buf[4096];
-
-        cacheflush(buf, sizeof(buf));
-
-        cacheflush(NULL, sizeof(buf));
-
-        return 0;
-}
-mark@flodeboller:~/test/aarch32-cacheflush$ arm-linux-gnueabihf-gcc test.c -o test -O3
-mark@flodeboller:~/test/aarch32-cacheflush$ file test
-test: ELF 32-bit LSB pie executable, ARM, EABI5 version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux-armhf.so.3, BuildID[sha1]=a53713f6b623b9b7c29cee4dc615fb7d43a0dcb6, for GNU/Linux 3.2.0, not stripped
-mark@flodeboller:~/test/aarch32-cacheflush$ strace ./test
-execve("./test", ["./test"], 0xffffd7e09890 /* 25 vars */ <unfinished ...>
-[ Process PID=7682 runs in 32 bit mode. ]
-strace: WARNING: Proper structure decoding for this personality is not supported, please consider building strace with mpers support enabled.
-<... execve resumed>)                   = 0
-brk(NULL)                               = 0x222b000
-access("/etc/ld.so.preload", R_OK)      = -1 ENOENT (No such file or directory)
-openat(AT_FDCWD, "/etc/ld.so.cache", O_RDONLY|O_LARGEFILE|O_CLOEXEC) = 3
-statx(3, "", AT_STATX_SYNC_AS_STAT|AT_NO_AUTOMOUNT|AT_EMPTY_PATH, STATX_BASIC_STATS, {stx_mask=STATX_BASIC_STATS|STATX_MNT_ID, stx_attributes=0, stx_mode=S_IFREG|0644, stx_size=31402, ...}) = 0
-mmap2(NULL, 31402, PROT_READ, MAP_PRIVATE, 3, 0) = 0xf7b0b000
-close(3)                                = 0
-openat(AT_FDCWD, "/lib/arm-linux-gnueabihf/libc.so.6", O_RDONLY|O_LARGEFILE|O_CLOEXEC) = 3
-read(3, "\177ELF\1\1\1\3\0\0\0\0\0\0\0\0\3\0(\0\1\0\0\0i\344\1\0004\0\0\0"..., 512) = 512
-statx(3, "", AT_STATX_SYNC_AS_STAT|AT_NO_AUTOMOUNT|AT_EMPTY_PATH, STATX_BASIC_STATS, {stx_mask=STATX_BASIC_STATS|STATX_MNT_ID, stx_attributes=0, stx_mode=S_IFREG|0755, stx_size=1102644, ...}) = 0
-mmap2(NULL, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xf7b09000
-mmap2(NULL, 1139660, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0xf79f2000
-mmap2(0xf7afc000, 12288, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x109000) = 0xf7afc000
-mmap2(0xf7aff000, 37836, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0xf7aff000
-close(3)                                = 0
-set_tls(0xf7b09ce0)                     = 0
-set_tid_address(0xf7b09848)             = 7682
-set_robust_list(0xf7b0984c, 12)         = 0
-rseq(0xf7b09cc0, 0x20, 0, 0xe7f5def3)   = 0
-mprotect(0xf7afc000, 8192, PROT_READ)   = 0
-mprotect(0x572000, 4096, PROT_READ)     = 0
-mprotect(0xf7b31000, 4096, PROT_READ)   = 0
-ugetrlimit(RLIMIT_STACK, {rlim_cur=8192*1024, rlim_max=RLIM_INFINITY}) = 0
-munmap(0xf7b0b000, 31402)               = 0
-statx(1, "", AT_STATX_SYNC_AS_STAT|AT_NO_AUTOMOUNT|AT_EMPTY_PATH, STATX_BASIC_STATS, {stx_mask=STATX_BASIC_STATS|STATX_MNT_ID, stx_attributes=0, stx_mode=S_IFCHR|0620, stx_size=0, ...}) = 0
-getrandom("\x79\xe4\xe7\x57", 4, GRND_NONBLOCK) = 4
-brk(NULL)                               = 0x222b000
-brk(0x224c000)                          = 0x224c000
-write(1, "Attempting flush of [0x573040..0"..., 41Attempting flush of [0x573040..0x574040]
-) = 41
-cacheflush(0x573040, 0x574040, 0)       = 0
-write(1, "Attempting flush of [(nil)..0x10"..., 36Attempting flush of [(nil)..0x1000]
-) = 36
-cacheflush(0, 0x1000, 0)                = -1 EFAULT (Bad address)
-exit_group(0)                           = ?
-+++ exited with 0 +++ 
+ok 1 selftests: damon: debugfs_attrs.sh
+ok 2 selftests: damon: debugfs_schemes.sh
+ok 3 selftests: damon: debugfs_target_ids.sh
+ok 4 selftests: damon: debugfs_empty_targets.sh
+ok 5 selftests: damon: debugfs_huge_count_read_write.sh
+ok 6 selftests: damon: debugfs_duplicate_context_creation.sh
+ok 7 selftests: damon: debugfs_rm_non_contexts.sh
+ok 8 selftests: damon: sysfs.sh
+ok 9 selftests: damon: sysfs_update_removed_scheme_dir.sh
+ok 10 selftests: damon: reclaim.sh
+ok 11 selftests: damon: lru_sort.sh
+ok 1 selftests: damon-tests: kunit.sh
+ok 2 selftests: damon-tests: huge_count_read_write.sh
+ok 3 selftests: damon-tests: buffer_overflow.sh
+ok 4 selftests: damon-tests: rm_contexts.sh
+ok 5 selftests: damon-tests: record_null_deref.sh
+ok 6 selftests: damon-tests: dbgfs_target_ids_read_before_terminate_race.sh
+ok 7 selftests: damon-tests: dbgfs_target_ids_pid_leak.sh
+ok 8 selftests: damon-tests: damo_tests.sh
+ok 9 selftests: damon-tests: masim-record.sh
+ok 10 selftests: damon-tests: build_i386.sh
+ok 11 selftests: damon-tests: build_arm64.sh
+ok 12 selftests: damon-tests: build_m68k.sh
+ok 13 selftests: damon-tests: build_i386_idle_flag.sh
+ok 14 selftests: damon-tests: build_i386_highpte.sh
+ok 15 selftests: damon-tests: build_nomemcg.sh
+ [33m
+ [92mPASS [39m
 
