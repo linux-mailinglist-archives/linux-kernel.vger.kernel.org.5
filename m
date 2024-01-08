@@ -1,110 +1,140 @@
-Return-Path: <linux-kernel+bounces-19898-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19899-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90FB0827664
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 18:36:19 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 68914827667
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 18:37:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8879AB21DE3
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 17:36:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 097A3B213B1
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 17:37:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D02F454F82;
-	Mon,  8 Jan 2024 17:32:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA3EF54BCA;
+	Mon,  8 Jan 2024 17:34:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PMTO9m5j"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3040954F8F;
-	Mon,  8 Jan 2024 17:32:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=acm.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6d9e62ff056so1764115b3a.1;
-        Mon, 08 Jan 2024 09:32:42 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704735162; x=1705339962;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Kw+wSdthHXaeTv2yem3P/PJZDXSCJyoCnP92JkrK1gU=;
-        b=wzP67SDLEKGyDvk6sU6Lm94kx+oM8Dcl9aX3RipFPp5xn6452Myjb/uAeR53hsmcRf
-         11JH2vxZgJW5vI6/wzqhXl7rgRiZMwuQFrM0+nwnyQ5tDYTIURjAYRmK0BJTZw+wxb3f
-         hrlNmbnbYj83rledjAtagW/ePQQ5gD14nMqap3OK735OwoDH7OHFyqbocJLyOUds/r68
-         8ttK3jDxeJ494LIs4jl0aVPPD1r2H6F7gQqCMp7kRFvZQMLY+DHsbN0JyWTtnPTjWkdF
-         Mq1F+0gRfEwpLbXSIEZM72hTvHIml0nsYJqu5YPpyGapHJrBwY/bxCT7YGLV8GGAs9sr
-         SOkw==
-X-Gm-Message-State: AOJu0YyYvB/xl52zSbrW1Wa1h/5j6cED/7/c2ctrP1GOHaUItCZAX7jM
-	mhCmkR0jN8U8ZXKEaCt5Fr8=
-X-Google-Smtp-Source: AGHT+IHp9BFJgHPG3clEPLIKtzI6ppcoXOfiEZsiKulk1TaBrIZt2HovAlTCALbODeiuxNv3qa14EA==
-X-Received: by 2002:aa7:860a:0:b0:6d9:b417:1afe with SMTP id p10-20020aa7860a000000b006d9b4171afemr3984755pfn.32.1704735162220;
-        Mon, 08 Jan 2024 09:32:42 -0800 (PST)
-Received: from ?IPV6:2620:0:1000:8411:cee:c48d:78d6:ed9a? ([2620:0:1000:8411:cee:c48d:78d6:ed9a])
-        by smtp.gmail.com with ESMTPSA id gx18-20020a056a001e1200b006d93ca7f8f3sm126390pfb.150.2024.01.08.09.32.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Jan 2024 09:32:41 -0800 (PST)
-Message-ID: <175cf5c2-0bf2-48f4-8f48-a9589b6ad916@acm.org>
-Date: Mon, 8 Jan 2024 09:32:39 -0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B86B54725;
+	Mon,  8 Jan 2024 17:34:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 19C6BC433C7;
+	Mon,  8 Jan 2024 17:34:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704735264;
+	bh=WxF3mMEMLyJMj2C6OKuTs7PD9Vj4XTLWmmz+TPw4bh0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=PMTO9m5jCUZETuKErYC+dV7OLZJ+YU4xfDxmzZiT58AzrzQQ9lIAx5+fwI7pfZFLv
+	 qjZ4HVEJzOmsn6XaBD910G62BsXIy/BDmmbj2K8ic1r049YzHl3wggXHNqL/ghQcHE
+	 7N7o97BvHDTIUyIVv77sZh+tusVjRUNIqf3hy967MLWxQr+O0OgGwzg0YbjowKS3VF
+	 dTYMO5I3buWvcTk5GrQTQGD3JAwAehjIc3mFgy41AFSPdkdehALdnhCMex7BkSzvMs
+	 OHC5W3Bq4MM0n0F/VnYEnDtwyF4BmhmJRxUaPzIWNe8S+56BZJwH5JBJS5pgGFa30U
+	 KnM9gSl54vojQ==
+Date: Mon, 8 Jan 2024 17:34:18 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Emil Renner Berthing <emil.renner.berthing@canonical.com>
+Cc: linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-riscv@lists.infradead.org,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Jisheng Zhang <jszhang@kernel.org>, Guo Ren <guoren@kernel.org>,
+	Fu Wei <wefu@redhat.com>, Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Drew Fustini <dfustini@baylibre.com>
+Subject: Re: [PATCH v2 3/8] riscv: dts: thead: Add TH1520 pin control nodes
+Message-ID: <20240108-majorette-overtly-4ec65d0a15e9@spud>
+References: <20240103132852.298964-1-emil.renner.berthing@canonical.com>
+ <20240103132852.298964-4-emil.renner.berthing@canonical.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] ufs:mcq:Remove unused parameters
-Content-Language: en-US
-To: Chanwoo Lee <cw9316.lee@samsung.com>, alim.akhtar@samsung.com,
- avri.altman@wdc.com, jejb@linux.ibm.com, martin.petersen@oracle.com,
- stanley.chu@mediatek.com, quic_cang@quicinc.com, mani@kernel.org,
- quic_asutoshd@quicinc.com, powen.kao@mediatek.com, quic_nguyenb@quicinc.com,
- yang.lee@linux.alibaba.com, peter.wang@mediatek.com, athierry@redhat.com,
- linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: grant.jung@samsung.com, jt77.jang@samsung.com, dh0421.hwang@samsung.com,
- sh043.lee@samsung.com
-References: <20240105021041.20400-1-cw9316.lee@samsung.com>
- <CGME20240105021223epcas1p156208a9a445b5e0b527a9eb2d2589ed3@epcas1p1.samsung.com>
- <20240105021041.20400-3-cw9316.lee@samsung.com>
-From: Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <20240105021041.20400-3-cw9316.lee@samsung.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="8Qj2RGfy2RprKGUu"
+Content-Disposition: inline
+In-Reply-To: <20240103132852.298964-4-emil.renner.berthing@canonical.com>
 
-On 1/4/24 18:10, Chanwoo Lee wrote:
-> From: ChanWoo Lee <cw9316.lee@samsung.com>
-> 
-> The 'hwq' parameter is not used in this function.
-> So, remove unused parameters.
-> 
-> Signed-off-by: ChanWoo Lee <cw9316.lee@samsung.com>
+
+--8Qj2RGfy2RprKGUu
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, Jan 03, 2024 at 02:28:40PM +0100, Emil Renner Berthing wrote:
+> Add nodes for pin controllers on the T-Head TH1520 RISC-V SoC.
+>=20
+> Signed-off-by: Emil Renner Berthing <emil.renner.berthing@canonical.com>
 > ---
->   drivers/ufs/core/ufs-mcq.c | 6 ++----
->   1 file changed, 2 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/ufs/core/ufs-mcq.c b/drivers/ufs/core/ufs-mcq.c
-> index edc752e55878..8db81f1a12d5 100644
-> --- a/drivers/ufs/core/ufs-mcq.c
-> +++ b/drivers/ufs/core/ufs-mcq.c
-> @@ -258,9 +258,7 @@ EXPORT_SYMBOL_GPL(ufshcd_mcq_write_cqis);
->    * Current MCQ specification doesn't provide a Task Tag or its equivalent in
->    * the Completion Queue Entry. Find the Task Tag using an indirect method.
->    */
-> -static int ufshcd_mcq_get_tag(struct ufs_hba *hba,
-> -				     struct ufs_hw_queue *hwq,
-> -				     struct cq_entry *cqe)
-> +static int ufshcd_mcq_get_tag(struct ufs_hba *hba, struct cq_entry *cqe)
->   {
->   	u64 addr;
->   
-> @@ -278,7 +276,7 @@ static void ufshcd_mcq_process_cqe(struct ufs_hba *hba,
->   				   struct ufs_hw_queue *hwq)
->   {
->   	struct cq_entry *cqe = ufshcd_mcq_cur_cqe(hwq);
-> -	int tag = ufshcd_mcq_get_tag(hba, hwq, cqe);
-> +	int tag = ufshcd_mcq_get_tag(hba, cqe);
->   
->   	if (cqe->command_desc_base_addr) {
->   		ufshcd_compl_one_cqe(hba, tag, cqe);
+>  .../boot/dts/thead/th1520-beaglev-ahead.dts   |  4 ++++
+>  .../dts/thead/th1520-lichee-module-4a.dtsi    |  4 ++++
+>  arch/riscv/boot/dts/thead/th1520.dtsi         | 24 +++++++++++++++++++
+>  3 files changed, 32 insertions(+)
+>=20
+> diff --git a/arch/riscv/boot/dts/thead/th1520-beaglev-ahead.dts b/arch/ri=
+scv/boot/dts/thead/th1520-beaglev-ahead.dts
+> index 70e8042c8304..6c56318a8705 100644
+> --- a/arch/riscv/boot/dts/thead/th1520-beaglev-ahead.dts
+> +++ b/arch/riscv/boot/dts/thead/th1520-beaglev-ahead.dts
+> @@ -44,6 +44,10 @@ &osc_32k {
+>  	clock-frequency =3D <32768>;
+>  };
+> =20
+> +&aonsys_clk {
+> +	clock-frequency =3D <73728000>;
+> +};
+> +
+>  &apb_clk {
+>  	clock-frequency =3D <62500000>;
+>  };
+> diff --git a/arch/riscv/boot/dts/thead/th1520-lichee-module-4a.dtsi b/arc=
+h/riscv/boot/dts/thead/th1520-lichee-module-4a.dtsi
+> index a802ab110429..9865925be372 100644
+> --- a/arch/riscv/boot/dts/thead/th1520-lichee-module-4a.dtsi
+> +++ b/arch/riscv/boot/dts/thead/th1520-lichee-module-4a.dtsi
+> @@ -25,6 +25,10 @@ &osc_32k {
+>  	clock-frequency =3D <32768>;
+>  };
+> =20
+> +&aonsys_clk {
+> +	clock-frequency =3D <73728000>;
+> +};
+> +
+>  &apb_clk {
+>  	clock-frequency =3D <62500000>;
+>  };
+> diff --git a/arch/riscv/boot/dts/thead/th1520.dtsi b/arch/riscv/boot/dts/=
+thead/th1520.dtsi
+> index ba4d2c673ac8..e65a306ff575 100644
+> --- a/arch/riscv/boot/dts/thead/th1520.dtsi
+> +++ b/arch/riscv/boot/dts/thead/th1520.dtsi
+> @@ -134,6 +134,12 @@ osc_32k: 32k-oscillator {
+>  		#clock-cells =3D <0>;
+>  	};
+> =20
+> +	aonsys_clk: aonsys-clk {
+> +		compatible =3D "fixed-clock";
+> +		clock-output-names =3D "aonsys_clk";
+> +		#clock-cells =3D <0>;
+> +	};
 
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+Did this stuff sneak into this commit accidentally?
+
+--8Qj2RGfy2RprKGUu
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZZwyGgAKCRB4tDGHoIJi
+0rwgAP97KBxIGWgOemMO6hdqRmD/8ZxeJ0E6JqevM07cpZ+KvgD/UbJ+65Y7gDdm
+xrA0pClmQVdKxcDVsF7lpqNgBw4K4As=
+=LWOW
+-----END PGP SIGNATURE-----
+
+--8Qj2RGfy2RprKGUu--
 
