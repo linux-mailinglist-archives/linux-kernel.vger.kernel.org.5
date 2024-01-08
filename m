@@ -1,169 +1,244 @@
-Return-Path: <linux-kernel+bounces-20124-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20126-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D255D827A24
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 22:22:14 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8DA02827A28
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 22:24:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8BB771F237B2
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 21:22:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 78FDCB22CFA
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 21:24:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 607CC56450;
-	Mon,  8 Jan 2024 21:22:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CB2856440;
+	Mon,  8 Jan 2024 21:24:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=hpe.com header.i=@hpe.com header.b="Z1V784RG"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="FvnZoQBf"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0a-002e3701.pphosted.com (mx0a-002e3701.pphosted.com [148.163.147.86])
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E92B15644D
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 21:22:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hpe.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hpe.com
-Received: from pps.filterd (m0148663.ppops.net [127.0.0.1])
-	by mx0a-002e3701.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 408Jahf5029291;
-	Mon, 8 Jan 2024 21:21:11 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pps0720; bh=ZufkvsNmBYIhf482lC8Wys9kgXuS94HzOt66ZnzeuNQ=;
- b=Z1V784RGrqKxUoLyAoTX1A1PLrBZWq5zZSqbaVJ09iS6YlILOJHD7Z2gJlsbN5ohsdKu
- Aj7heOgDxVRpY38SAkLDPmBPGWimMLa70j/dPNFaicaoXLpDdsJdkkeMYh1ZrzRG2Xar
- Uam8XG7djnh9O7PbsNU62X/Vpa5X2T55E5bUa7TcQrLwQBK+hsyFlKzkmui0dpfaNSer
- NGp4ToGsBONKNcyXZ9rd+9BhZQ+O1106JIYvXxByXpbXHBPVSqQYqkgzqsn81JnwXoRO
- 43Z40xwzScAWM4Dw4vjxwFyZhaawdLMZRj8DpGHJhyXERGlnJGD2Bj7CqHqvSFD8Kb+W 3g== 
-Received: from p1lg14881.it.hpe.com ([16.230.97.202])
-	by mx0a-002e3701.pphosted.com (PPS) with ESMTPS id 3vgmnutdkd-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 08 Jan 2024 21:21:11 +0000
-Received: from p1lg14885.dc01.its.hpecorp.net (unknown [10.119.18.236])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by p1lg14881.it.hpe.com (Postfix) with ESMTPS id B424C805E1F;
-	Mon,  8 Jan 2024 21:21:10 +0000 (UTC)
-Received: from dog.eag.rdlabs.hpecorp.net (unknown [16.231.227.36])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(Client did not present a certificate)
-	by p1lg14885.dc01.its.hpecorp.net (Postfix) with ESMTPS id 48FB18065C5;
-	Mon,  8 Jan 2024 21:21:08 +0000 (UTC)
-Date: Mon, 8 Jan 2024 15:21:06 -0600
-From: Steve Wahl <steve.wahl@hpe.com>
-To: Steve Wahl <steve.wahl@hpe.com>, Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
-Cc: Russ Anderson <rja@hpe.com>, Dimitri Sivanich <sivanich@hpe.com>
-Subject: Re: [PATCH v2] x86/mm/ident_map: Use gbpages only where full GB page
- should be mapped.
-Message-ID: <20240108212106.GA1571174@dog.eag.rdlabs.hpecorp.net>
-References: <20231103190108.184817-1-steve.wahl@hpe.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E8835644C;
+	Mon,  8 Jan 2024 21:24:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704749056; x=1736285056;
+  h=date:from:to:cc:subject:message-id:references:
+   content-transfer-encoding:in-reply-to:mime-version;
+  bh=w1bZCtgTVwS6/KT5MbLDsjOQ19c1Rd8mDPKhQ5jRdpk=;
+  b=FvnZoQBfdtGtFTI/v3tdM0LtbYhXvbfVUXHp3x1etji4EaXYXTLOIjG3
+   PIeq52v/zk8RZza37Gp+IQLfmOL4CJYlPmAjOuFbwfo+KArgwZjV3LEhF
+   di4U8TQRjL76ew3S+G+sbe9Ldyr+G67Qed2jY8s0v2ckwNDt1fZ7YtHie
+   u/FHU2A1TQhVHUSkEZseGPS237UUFSoSuYZW77Fx1strhRd/uDXxWIQFv
+   1giT2vb/pGksWAqamNViuc3ZryMxMekDmT04guU4GhLBBT6Obp0SPpaFn
+   yG66XErtOW5t9mSfLZtj2EJxWEHNRs2vFJphFJG9fdqiSSWQgpSSfYapu
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="484188138"
+X-IronPort-AV: E=Sophos;i="6.04,180,1695711600"; 
+   d="scan'208";a="484188138"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jan 2024 13:24:16 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="815734236"
+X-IronPort-AV: E=Sophos;i="6.04,180,1695711600"; 
+   d="scan'208";a="815734236"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by orsmga001.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 08 Jan 2024 13:24:15 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 8 Jan 2024 13:24:15 -0800
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Mon, 8 Jan 2024 13:24:15 -0800
+Received: from NAM02-BN1-obe.outbound.protection.outlook.com (104.47.51.40) by
+ edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Mon, 8 Jan 2024 13:24:15 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bDxRXclbpCKQ1jv2AW8SKkouRRgqj5c87tyBxm3ocwFApX8UhIn+K3J8iKa0nbYRwxsXebBbscESrWzYRSPo1dVWRcfCGiZH8jCvzl0Wx7CulC5v0+aBPUVBqF8sfCCc/zUvYHsPWG+CTMEw3atvwqcmoETgXTeIdN8TzffGFyvhRQ9UTMlvKbAOd0FvWTWwC4KQUDDFx/R8ZK0nUYpH57TevDrnMSx7/nzq9LqM/RbFHmandl6Tg6cHWksYAOiNJITdFQd4D8g0on5SBwLnjvbTQtVubRUKcoLCChbT8wc3umU2Zg9/7uvKNVIylRscSkmoB+8dYx+K3h0w7zejHg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=lasIAx2FZHpYhebXF5w/8Z9aBlIpIGh/J/GvFMftw/E=;
+ b=HowvIQK9vkSCUPhk6QNrV+LHPXCbOt6D0rozfA/baX2FX0aBLFlCuToseBGqPPANgN5wBsuYwblu4eM8lIsAevhJ+Yupy51UDpuOHDbYCCQZZJJK/6uhGNwJUk7kQ3W4P5oLyp3lSlWmA7cjea6cnBBQ5jmgBm9fKIghxK3j15QcufZJHzcrvXs2cpyxmpqJ0mdL6pCg4Du4luBaatbbzXHF6a6ejmcpNdImbbvfSVQK/7xuf+n4Pc1SupfCZm6EhyQtLFHpF1oYUVjOndP259XlWXCWiNmtX0Rdz3glbMFdWM2VJJMCg3VclhnMJOahRATsjQpMTA0ROoQfGfX7/g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from CY5PR11MB6139.namprd11.prod.outlook.com (2603:10b6:930:29::17)
+ by DS0PR11MB8051.namprd11.prod.outlook.com (2603:10b6:8:121::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.23; Mon, 8 Jan
+ 2024 21:24:12 +0000
+Received: from CY5PR11MB6139.namprd11.prod.outlook.com
+ ([fe80::b870:a8ae:c4f1:c39b]) by CY5PR11MB6139.namprd11.prod.outlook.com
+ ([fe80::b870:a8ae:c4f1:c39b%4]) with mapi id 15.20.7159.020; Mon, 8 Jan 2024
+ 21:24:12 +0000
+Date: Mon, 8 Jan 2024 15:24:06 -0600
+From: Lucas De Marchi <lucas.demarchi@intel.com>
+To: Michal Wajdeczko <michal.wajdeczko@intel.com>
+CC: Dan Carpenter <dan.carpenter@linaro.org>,
+	<kernel-janitors@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<dri-devel@lists.freedesktop.org>, Maxime Ripard <mripard@kernel.org>,
+	"Thomas Zimmermann" <tzimmermann@suse.de>, Rodrigo Vivi
+	<rodrigo.vivi@intel.com>, <intel-xe@lists.freedesktop.org>
+Subject: Re: [PATCH] drm/xe: clean up type of GUC_HXG_MSG_0_ORIGIN
+Message-ID: <7vb3ql7z5dac3kwo7nhibh5al7wemt45ibzuyk4bpyzpltzjml@go7rtyq4m6hq>
+References: <ec22d742-632b-426a-ac86-62641a38c907@moroto.mountain>
+ <e5g3qkwvc3sjfpxcdvn43fiwbxthpblqgg2getxpbkd6g4lp5k@pgfm75tsg7wz>
+ <84a5c289-e2f6-4e30-a093-5a1c5b335057@intel.com>
+Content-Type: text/plain; charset="iso-8859-1"; format=flowed
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <84a5c289-e2f6-4e30-a093-5a1c5b335057@intel.com>
+X-ClientProxiedBy: BYAPR03CA0002.namprd03.prod.outlook.com
+ (2603:10b6:a02:a8::15) To CY5PR11MB6139.namprd11.prod.outlook.com
+ (2603:10b6:930:29::17)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231103190108.184817-1-steve.wahl@hpe.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Proofpoint-GUID: QK5-pRRNz1n0EOJVcZF1eRRMp9Kc1Vjc
-X-Proofpoint-ORIG-GUID: QK5-pRRNz1n0EOJVcZF1eRRMp9Kc1Vjc
-X-HPE-SCL: -1
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-08_10,2024-01-08_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 adultscore=0
- bulkscore=0 phishscore=0 lowpriorityscore=0 mlxlogscore=999 suspectscore=0
- clxscore=1011 priorityscore=1501 impostorscore=0 spamscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2401080175
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CY5PR11MB6139:EE_|DS0PR11MB8051:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9fcbb7e8-48f1-4878-b02d-08dc109028d8
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 0ByIXKWLc6CUAiAyh/fAg01zyFDY9T8EbJSMzSoJrhMGQDjHk1mHy2FOXsl91aKgps9hpnwFT9P5wPnvx2NgX0BiFJ/vFs1bz86JCuBTQTCNuno9vNdWwLhDhEN2O3QwN6LzfMuxD4hvTjeamfxUsxvAabsSNxS8FmNNUlFIopA2B3gEi3RWyyxU0Bp2e6gz2OVAF3q9ElFn1wePQWgNb6hAIbQ/eba96d/MvXE8aiK7DRzf91cgBC8dJxYxw1i26nobQ/4TX6Mkd3kP0LGm/+eMiaRX+ZhIA2h8A6ySLBXcs+EVLvOb0pej0fDhzGeup0BBD7+RzoJ6Rlo3oQeN15H918YNvZMci3cgmBio3E/jzU5vL6aZxsQPxNp03bbLdv0YLGC1JUwKQXjOe/+FfSVbkHWjCEesc2ySAIwQwpy8W27J0ssTsFusOro50rFVnsCmwD4VZkTNUW+Sp4w6gRpAsh37fNHlBmUbP20lF6/RXBpiM9WosvkJ2E2y5P7RitkjnffW979LXHK/q6BQvtEdGcCT6vPN6KN51Gq8mK2UqiOm7CUmLN1yNr46yEt9
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY5PR11MB6139.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(136003)(396003)(376002)(346002)(366004)(39860400002)(230922051799003)(451199024)(64100799003)(1800799012)(186009)(82960400001)(33716001)(8676002)(8936002)(38100700002)(54906003)(316002)(5660300002)(6862004)(4326008)(478600001)(83380400001)(6636002)(6506007)(9686003)(6512007)(6666004)(26005)(66556008)(66946007)(66476007)(6486002)(41300700001)(2906002)(86362001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?iso-8859-1?Q?8154ZlYi6YIG5M5rZfvxIg+50oRFGQvkxja0lUS46JORKbacVmae9rLsyo?=
+ =?iso-8859-1?Q?nxa9sfsv6zpOWOLUDkeo2AT1eK0Sd9I3qGYUE4X02lGTdWWm4iEkbyEDzz?=
+ =?iso-8859-1?Q?TRZ8LKrU7m7a/8ZsDx5bP292+KD35nsFFWRroTyLaERC3gwFjiTRMmrUWR?=
+ =?iso-8859-1?Q?HHz9I3Rj6IjwVGiDdrC9w0snBtTaYiPdc05lEDhW1FaJlbkf1AME8vgSnB?=
+ =?iso-8859-1?Q?4FNVXbk8p0RMhg1oA39XoevARS1/IwmO7o7IBlB5ypd4FLvOmts7vLG1Zy?=
+ =?iso-8859-1?Q?eLRyC4V5yUthHrmQGCdcNy6DTEm2RelNwItJDO/minZcuJ+XEHCnMklrn+?=
+ =?iso-8859-1?Q?5JYrAasVKFkw1PhL3tePk/W09+vFAVEi9XO2ATtNHpU4tXL3PmlubMtndj?=
+ =?iso-8859-1?Q?ehDlm9IOEkfTwO3JjUZwBW8pSShYAb+wgU+muRD2pygU00u+a+GAPCTD7V?=
+ =?iso-8859-1?Q?rvdzkAtnPmgarGvk/Eo/n6rs6Q5ssfFXsPgLPyBk8/DnxvncckaK3ZtpLt?=
+ =?iso-8859-1?Q?EXEID/ebKNlP+nuL7z3O5EvW66PY6ljoM35niLhShAHsBjBVGuvYMReXZV?=
+ =?iso-8859-1?Q?yk/fuZMNkpLX9oWpqrSWoGOvZXqQj/0CNcuAl3ZjyKbYO5wmgONXYiH5Si?=
+ =?iso-8859-1?Q?yoOtH5HNPlljIFBhSIl63nRSuXtPAZKNnc2NPyWHgo+HuC/nz26GG3N097?=
+ =?iso-8859-1?Q?Co67yq0qLNgUhyQMJhFJEXP9RADgDqHPVxkJNhf8D9JMAPcCI1aWnjK7F/?=
+ =?iso-8859-1?Q?WFUnPNB7pBEg5OWCqEBDPQVMvuCmW0wA7uf7YO9Qz3zsxvIPvKPgE1FF8P?=
+ =?iso-8859-1?Q?kgjU4a7yMavwYgfXXfKWyEM9ftGnUq6+1TQRtcgEItvZ+RvwYtLRG3TjvM?=
+ =?iso-8859-1?Q?g3KUwygWoybYoY2NuNkswBUK7cGq25jYeVfe7ZwqzJNEPYoUrG0Oh1U4Js?=
+ =?iso-8859-1?Q?g8UH14QybkUWZCse5i4CEYQX8dCJFtRN/+l08gQz8NehIemrUkWDSWOGR5?=
+ =?iso-8859-1?Q?+KGBm3yMJ6d+pRZ8KSyElXWUis+Y9VUd70RXTi55z5pVBsARK/2KfUr6Ji?=
+ =?iso-8859-1?Q?kYTLeCzBp4WFCDcLVEhOCgn5+sZuTXEjR4UrRG6AVSwVmis/WYUqkpfshV?=
+ =?iso-8859-1?Q?URKNNkc4pvwxce8uSMNQ4dzC3U/7SSw1P7b/1NEIkGEDrhYVAAeGyaMLRp?=
+ =?iso-8859-1?Q?j/T7hgcbJCTfj27i1xtmwxHpif/ywNknlyw6/jYz4dgQAcqm7Q2hFSPzG0?=
+ =?iso-8859-1?Q?9H7lYKyTF8YphgiQstm6OYuPVBvFT9Cm6kLP36iqRZAosoe+Ppa/i31njQ?=
+ =?iso-8859-1?Q?Jwh8JZMGWuyQF1XHGVHfSs2kuHbsCPU8vgQsRQ9WrcIdUyMDUGux01SfO1?=
+ =?iso-8859-1?Q?U3+DrchV0hCUmAwRQnEo0XX0Jm8m4+ZQk/A1JDag1UwFJtU5fpQBX8j6oM?=
+ =?iso-8859-1?Q?7kXAhr8W90Fcp9DyWDHkaENdsHJnYgBq35NB9adeCG9W0sYUZJtv3dFkui?=
+ =?iso-8859-1?Q?8qewxDdVuMvxnZul1zGwDJwDRJdIRoLR+LP9sv03fgcKHE0q8fvz1Z020h?=
+ =?iso-8859-1?Q?gRptReC3LoM/IeU00rPv2NHMd7NaZaMZX/3NP0V2XhYDRUZ6ShVzKWAYiR?=
+ =?iso-8859-1?Q?qKqx2TChHzlWaDNLST8WIctcMyNwxl4EJmD44/7QsXO5aS64lXReFfAg?=
+ =?iso-8859-1?Q?=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9fcbb7e8-48f1-4878-b02d-08dc109028d8
+X-MS-Exchange-CrossTenant-AuthSource: CY5PR11MB6139.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Jan 2024 21:24:12.8299
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: liggtMur+9K9iq3hyZl3wLaVGLrtiZVrUkZirDefq2GEcf6Dr8P+xY4rSTk49/JoaQ+Xccfgfp8flmeo28sbolz2n/UPr6jvbaupZEXpjUk=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR11MB8051
+X-OriginatorOrg: intel.com
 
-Gentle ping.  
+On Mon, Jan 08, 2024 at 09:46:47PM +0100, Michal Wajdeczko wrote:
+>
+>
+>On 08.01.2024 15:07, Lucas De Marchi wrote:
+>> On Mon, Jan 08, 2024 at 12:05:57PM +0300, Dan Carpenter wrote:
+>>> The GUC_HXG_MSG_0_ORIGIN definition should be unsigned.  Currently it is
+>>> defined as INT_MIN.  This doesn't cause a problem currently but it's
+>>> still worth cleaning up.
+>>>
+>>> Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
+>>
+>> it seems there are a few more places to change to follow what was done
+>> in commit 962bd34bb457 ("drm/i915/uc: Fix undefined behavior due to
+>> shift overflowing the constant").
+>>
+>> +Michal
+>>
+>> Could we eventually share these abi includes with i915 so we don't
+>> keep fixing the same thing in 2 places?
+>
+>it should be possible and I guess we should plan for that while
+>discussing all this new xe driver...
+>
+>anyway, what about creating new intel/ folder under drm/ ?
 
-We'd like to see this get in, we're finding the most likely time to
-hit the problem seems to be when kexec'ing a kdump kernel, and we
-don't get the dump we need to diagnose some other problem.
+include/drm/intel/?
 
-Thanks,
+>
+> - drm/intel/include/abi
+>        guc_actions_abi.h
+>        guc_klvs_abi.h
+>        ...
+>
+>the only question would be what prefix should be used for macros:
+>just GUC_ or INTEL_GUC_ or XE_GUC_ ?
 
---> Steve Wahl
+if using a intel/ dir, probably better with INTEL_ prefix
 
-On Fri, Nov 03, 2023 at 02:01:08PM -0500, Steve Wahl wrote:
-> Instead of using gbpages for all memory regions, which can include
-> vast areas outside what's actually been requested, use them only when
-> map creation requests include the full GB page of space; descend to
-> using smaller 2M pages when only portions of a GB page are included in
-> the request.
-> 
-> No attempt is made to coalesce mapping requests. If a request requires
-> a map entry at the 2M (pmd) level, subsequent mapping requests within
-> the same 1G region will also be at the pmd level, even if adjacent or
-> overlapping such requests could theoretically have been combined to
-> map a full gbpage.  Existing usage starts with larger regions and then
-> adds smaller regions, so this should not have any great consequence.
-> 
-> When gbpages are used exclusively to create identity maps, large
-> ranges of addresses not actually requested can be included in the
-> resulting table.  On UV systems, this ends up including regions that
-> will cause hardware to halt the system if accessed (these are marked
-> "reserved" by BIOS).  Even though code does not actually make
-> references to these addresses, including them in an active map allows
-> processor speculation into this region, which is enough to trigger the
-> system halt.
-> 
-> The kernel option "nogbpages" will disallow use of gbpages entirely
-> and avoid this problem, but uses a lot of extra memory for page tables
-> that are not really needed.
-> 
-> Signed-off-by: Steve Wahl <steve.wahl@hpe.com>
-> ---
-> v2: per Dave Hanson review: Additional changelog info,
->     moved pud_large() check earlier in the code, and
->     improved the comment describing the conditions
->     that restrict gbpage usage.
->    
->  arch/x86/mm/ident_map.c | 20 +++++++++++++++-----
->  1 file changed, 15 insertions(+), 5 deletions(-)
-> 
-> diff --git a/arch/x86/mm/ident_map.c b/arch/x86/mm/ident_map.c
-> index 968d7005f4a7..5c88c3a7d12a 100644
-> --- a/arch/x86/mm/ident_map.c
-> +++ b/arch/x86/mm/ident_map.c
-> @@ -31,13 +31,23 @@ static int ident_pud_init(struct x86_mapping_info *info, pud_t *pud_page,
->  		if (next > end)
->  			next = end;
->  
-> -		if (info->direct_gbpages) {
-> -			pud_t pudval;
-> +		/* if this is already a gbpage, this portion is already mapped */
-> +		if (pud_large(*pud))
-> +			continue;
->  
-> -			if (pud_present(*pud))
-> -				continue;
-> +		/*
-> +		 * To be eligible to use a gbpage:
-> +		 *   - gbpages must be enabled
-> +		 *   - addr must be gb aligned (start of region)
-> +		 *   - next must be gb aligned (end of region)
-> +		 *   - PUD must be empty (nothing already mapped in this region)
-> +		 */
-> +		if (info->direct_gbpages
-> +		    && !(addr & ~PUD_MASK)
-> +		    && !(next & ~PUD_MASK)
-> +		    && !pud_present(*pud)) {
-> +			pud_t pudval;
->  
-> -			addr &= PUD_MASK;
->  			pudval = __pud((addr - info->offset) | info->page_flag);
->  			set_pud(pud, pudval);
->  			continue;
-> -- 
-> 2.26.2
-> 
+>
+>then we can also think of creating library with common helpers for GuC
+>(for encoding/decoding HXG messages, preparing ADS, reading logs, etc)
+
+with the other differences we have, I don't see much benefit,
+particularly as it won't change for i915 wrt supported platforms.
+
+>
+>btw, we can also consider sharing register definitions:
+>
+> - drm/intel/include/regs
+>        xe_engine_regs.h
+>        xe_gt_regs.h
+>        xe_regs_defs.h
+
+same as above, I don't think it's worth it as xe will keep adding to it
+and it doesn't care for all the previous platforms. For those files we
+may eventually autogen them like done by mesa.
+
+Lucas De Marchi
+
+>
+>Michal
+>
+>>
+>> Lucas De Marchi
+>>
+>>> ---
+>>> drivers/gpu/drm/xe/abi/guc_messages_abi.h | 2 +-
+>>> 1 file changed, 1 insertion(+), 1 deletion(-)
+>>>
+>>> diff --git a/drivers/gpu/drm/xe/abi/guc_messages_abi.h
+>>> b/drivers/gpu/drm/xe/abi/guc_messages_abi.h
+>>> index 3d199016cf88..c04606872e48 100644
+>>> --- a/drivers/gpu/drm/xe/abi/guc_messages_abi.h
+>>> +++ b/drivers/gpu/drm/xe/abi/guc_messages_abi.h
+>>> @@ -40,7 +40,7 @@
+>>>  */
+>>>
+>>> #define GUC_HXG_MSG_MIN_LEN            1u
+>>> -#define GUC_HXG_MSG_0_ORIGIN            (0x1 << 31)
+>>> +#define GUC_HXG_MSG_0_ORIGIN            (0x1U << 31)
+>>> #define   GUC_HXG_ORIGIN_HOST            0u
+>>> #define   GUC_HXG_ORIGIN_GUC            1u
+>>> #define GUC_HXG_MSG_0_TYPE            (0x7 << 28)
+>>> -- 
+>>> 2.42.0
+>>>
 
