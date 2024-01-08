@@ -1,54 +1,64 @@
-Return-Path: <linux-kernel+bounces-19601-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19602-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40AD2826F70
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 14:14:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 26AF4826F75
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 14:15:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 53FCB1C22824
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 13:14:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C8F1C283D94
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 13:15:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB63B41766;
-	Mon,  8 Jan 2024 13:14:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC57F41766;
+	Mon,  8 Jan 2024 13:15:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="d5+ipSyA"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Q2xARSq1"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F1EC4174F;
-	Mon,  8 Jan 2024 13:14:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 408CD4V9012010;
-	Mon, 8 Jan 2024 13:14:26 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=GpsHIDZ+3lWGB8e2dvgrmsAmXtLnEX2d7q55g4o4vBc=; b=d5
-	+ipSyAZQ48j+60AMVsfUQJ0w1ZVTSuMR3IUwgV2GvV2RrDE/0YTbXVHBnjM/9KWB
-	3aN4Qj+1PJstlrsGEDBTwlwokifLq6p21yStoqymr9zOclTU8XYK4Ev2yrtrzg/r
-	3gA5b8P3Kl5AB8ZnMfo0Hxvj2MDl0AdT6VUFXCGLjVmiBLgbOsVGiPMvNyLWVnKu
-	RXCP2WNxRdyrPOQBTrtFzcWeJeoXU0c8N1pp/6wZviY3WkD2E7at8gdXjXW9lqLG
-	XGabo9/R8WIBHS9r/axvfd5LclXYO3BwNkYrmABpkvGxZbzV3eyrXA9nxPo0iV2g
-	aXoiP94+oAzJet0S5NHA==
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vgch50q4p-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 08 Jan 2024 13:14:26 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 408DEPJL016711
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 8 Jan 2024 13:14:25 GMT
-Received: from [10.217.219.221] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 8 Jan
- 2024 05:14:23 -0800
-Message-ID: <374ab3d3-21eb-4152-a285-ad0567ed32e7@quicinc.com>
-Date: Mon, 8 Jan 2024 18:44:20 +0530
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 997AD41747
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 13:15:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-50e7d6565b5so1785764e87.0
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 05:15:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1704719739; x=1705324539; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=fxblkkYWclSJTGaIqngVULfqflK8J7eGMQxQEPi3Hy4=;
+        b=Q2xARSq1kPuHg0arr5K3JVH7+JyCnbtqOJ0nvLJTBhRIgMLVendtp2Pmi+zHd5a5w2
+         5qklECduKUaojmxFmxILCraEs7GCgLKT0WflviCmU8KUlW2vHna7j/KSiNOVKU5v85Uw
+         uuvRPlsv8LJKEmungjQ2nN4AgCDAp8jahyuqRzY+8ayVRE8DpWGBTIdsy9fnVu8kAUhD
+         T6lfXKqlFVW3fpStKzIMDnyc1zXGzmTV5HPqn2eLkkrpekMK9lO/UXRs1q/rX756c7qK
+         Ia6HcCdROtoItgPgBOt8OZX2nwnzkdO4hZLN2/JetVLgUVMbIS9dSR42bdhNPrJ+FkxB
+         fXPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704719739; x=1705324539;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=fxblkkYWclSJTGaIqngVULfqflK8J7eGMQxQEPi3Hy4=;
+        b=R7AjefeCG8aGj/M6JqwusS/+nkTSVQxw/UjDcY+pYvGZYZJiS3FvrVhcQpIcKBSExX
+         vgmqH4VZmIPtz3KOVizCid4lpVRerbYHLe+Y3vqNNKPSclwXu0g6dF06mCHnWufU1qzq
+         +M6Mcl6kAQ97wK9ACfGz+eO/jt3O9yAQurZRsl9x+nfHYG7W6E8ggYdBjXESaY4bCZmK
+         xJ6yzzHC6lr2+4liDGdU8X6QwrdmvCaO07cvbtikZE1gXowY+J6maHDjJI7Z9rx+SFbi
+         Z2Hvk80sxGjRWII43blZ2nWPXd/VsV4LUYnLSPKdKxNYbJLEOMRKox9me33V2NOdqBbg
+         GHCQ==
+X-Gm-Message-State: AOJu0Yycnin228os2mEOYMiXuu/MGVhaJ+HY330MD334ot3o4a8IOH5c
+	DNUGHhYlyzbb99ROdsv0SqAVpKWUNutIrw==
+X-Google-Smtp-Source: AGHT+IF9fhjxJAShoaqyEajerr9Rz2DILszU0D9G9T5yETJhxWpLmmhIZ1EtNEialEeK3urH3mio2A==
+X-Received: by 2002:a05:6512:2039:b0:50e:5448:3316 with SMTP id s25-20020a056512203900b0050e54483316mr1172760lfs.137.1704719739619;
+        Mon, 08 Jan 2024 05:15:39 -0800 (PST)
+Received: from [192.168.199.125] (178235179081.dynamic-4-waw-k-1-3-0.vectranet.pl. [178.235.179.81])
+        by smtp.gmail.com with ESMTPSA id b12-20020a0564021f0c00b005574064b4fesm3508492edb.18.2024.01.08.05.15.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 08 Jan 2024 05:15:39 -0800 (PST)
+Message-ID: <6d6abee8-c3ca-4c4c-9e97-35989dd95766@linaro.org>
+Date: Mon, 8 Jan 2024 14:15:35 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,55 +66,67 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] usb: gadget: ncm: Fix indentations in documentation of
- NCM section
+Subject: Re: [PATCH 1/2] arm64: dts: qcom: sdm845-db845c: correct PCIe
+ wake-gpios
 Content-Language: en-US
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC: Krishna Kurapati <quic_kriskura@quicinc.com>,
-        Jonathan Corbet
-	<corbet@lwn.net>, <linux-usb@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20240108123602.10593-1-quic_ugoswami@quicinc.com>
- <2024010830-haven-sprawl-de51@gregkh>
-From: Udipto Goswami <quic_ugoswami@quicinc.com>
-In-Reply-To: <2024010830-haven-sprawl-de51@gregkh>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ Bjorn Andersson <andersson@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Vinod Koul <vkoul@kernel.org>,
+ Bhupesh Sharma <bhupesh.sharma@linaro.org>, linux-arm-msm@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240108131216.53867-1-krzysztof.kozlowski@linaro.org>
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20240108131216.53867-1-krzysztof.kozlowski@linaro.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: 5SsKCM7_ZnFN4d8ACyy0KFY7X7uLkHsj
-X-Proofpoint-GUID: 5SsKCM7_ZnFN4d8ACyy0KFY7X7uLkHsj
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 malwarescore=0 mlxscore=0 adultscore=0 impostorscore=0
- phishscore=0 suspectscore=0 priorityscore=1501 mlxlogscore=330 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2311290000
- definitions=main-2401080113
 
-
-
-On 1/8/2024 6:15 PM, Greg Kroah-Hartman wrote:
-> On Mon, Jan 08, 2024 at 06:06:02PM +0530, Udipto Goswami wrote:
->> Currently, the section of NCM which describes attributes are having wrong
->> indentation.
->>
->> Fix this by following the correct format recommended.
->>
->> Fixes: 1900daeefd3e ("usb: gadget: ncm: Add support to update wMaxSegmentSize via configfs")
->> Signed-off-by: Udipto Goswami <quic_ugoswami@quicinc.com>
->> ---
->>   Documentation/usb/gadget-testing.rst | 22 +++++++++++-----------
->>   1 file changed, 11 insertions(+), 11 deletions(-)
+On 8.01.2024 14:12, Krzysztof Kozlowski wrote:
+> Bindings allow a "wake", not "enable", GPIO.  Schematics also use WAKE
+> name for the pin:
 > 
-> This was reported in linux-next so it needs a "reported-by:" tag, right?
+>   sdm845-db845c.dtb: pcie@1c00000: Unevaluated properties are not allowed ('enable-gpio' was unexpected)
+> 
+> Fixes: 4a657c264b78 ("arm64: dts: qcom: db845c: Enable PCIe controllers")
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> ---
 
-right, apologies!
-Will address in v2.
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
-Thanks,
--Udipto
+Konrad
 
