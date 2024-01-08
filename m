@@ -1,128 +1,127 @@
-Return-Path: <linux-kernel+bounces-19844-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19843-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F354882752A
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 17:30:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EA3A0827527
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 17:29:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A0DE2281ECF
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 16:30:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 79C76282F6A
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 16:29:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A0085381D;
-	Mon,  8 Jan 2024 16:30:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6801D45C1B;
+	Mon,  8 Jan 2024 16:29:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ONx6Cj3y"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="fLwlSTCX"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-qk1-f178.google.com (mail-qk1-f178.google.com [209.85.222.178])
+Received: from mail-ua1-f54.google.com (mail-ua1-f54.google.com [209.85.222.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 306CF46529
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 16:30:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f178.google.com with SMTP id af79cd13be357-78313803243so203897685a.3
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 08:30:08 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7432054BC3
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 16:29:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ua1-f54.google.com with SMTP id a1e0cc1a2514c-7cc92a83200so402557241.3
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 08:29:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704731408; x=1705336208; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1704731386; x=1705336186; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1POvLeqUDu4gJT13ulQ2rf8/nBvbmNFthvIiVtWoKqg=;
-        b=ONx6Cj3yJxvasBIdn3K5dJC68bc91Z6mh9+jjSTaJstkQGpf72DfiXle5xOYkMlrsu
-         BWdNjNIrDecq4MlXejnzDkLXHXrI0doEkvbl2xnULnPw9sBiVHoh7t2Vs34ZiB2ii7WT
-         7r8XTAvURt3crD+4KTKq74vmDRKsGpo3dQaYoh9nDcWU+/dnlW0z9aD7bULgrPa20FIK
-         sn1N/UhiBAP09NCTWXp96aYtQQmSpvVfi5TzsoRoelgnn/sYU3sHcsZ/j3aHbkZNCO7/
-         sb0hbT+R/4yymLTJnuqzndIkLFRJfGfKLXB5ma8fUO9upk3SKOi/yfa+5slLw4SxSPgq
-         rLeA==
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=hT5RihLVZ6pdmIOZO3I4HwZe6d+t4eo6mHHQbGnw45s=;
+        b=fLwlSTCXwgaXLc8B7LdCHdFkPu22vc2trGAzbei8BfnpgOq0CBFJAEsPeSGjtoNj0+
+         LEGQhNQo8ZsuCcIe1QY9yt1CT1pJnsoBR7mPotXP1W8q6RDr2hFl8PV/kXb3UFxjv8DK
+         jacJ8Dtb4S62v/OlifRS32q1VTmf+83m9AtpMmwzn47b3JnJEjIvXxDawqXg/6cJehMO
+         19O8ocO37WThkmRTOaNIN23hUt15nd+g0ClAbJ31+nbs30wRCR5gpeM7XxYLz2oJet92
+         FbR4fCFjiFz2PCpYHUQW7NfcOrSzd7J1bmyd2Uqn4XFSEciGABEfH8PB3Sz1Fcw5DVPA
+         c/7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704731408; x=1705336208;
+        d=1e100.net; s=20230601; t=1704731386; x=1705336186;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1POvLeqUDu4gJT13ulQ2rf8/nBvbmNFthvIiVtWoKqg=;
-        b=uOYFqyFxcVipLkdF+WiW0t3XP+qFpIJDzsj/611YV5JILASKz9alAZ017KTaCJvMNY
-         haOgoGpwBu+l/Tnwn/gK3+MgtZ/VKAyCdFhHDGX/kt65Sez0tURu9OT3jtIgwdR9XDvj
-         0He+iSbdzu8CvRnDxz5Gar4q7+SfilgDpAFoMxJgD3WqhEVvqT/+EaEGLHEgFv4DWyOF
-         pXIW3B/GyaXEDMsq6bvIVtDCgWrPWk2lPytPtWX6WqgCgFcti4pciZASVfQCYEgo6guy
-         cRIWZUnF3FQYv14ZSqsIe4TkleG0//ozXEkPCJblHCZmh+P3ZPIgj1UuEDozUJydnyMW
-         a2yw==
-X-Gm-Message-State: AOJu0YxToag7wzYpeMLwIugqrxM3Nmtd0NzDdHT+VneqNZbTaP/ziZWz
-	DR2La6G8tdjhNSobIK9Hg/zX4XB4t6E=
-X-Google-Smtp-Source: AGHT+IGs0nHRYb1oZXKGRcimLyJoQDGEztHvAF8zqng0mnAPrgFWtGFzX2eO8Rp6ZkEtN3RBVRsk3A==
-X-Received: by 2002:a05:620a:4088:b0:780:e6b9:621a with SMTP id f8-20020a05620a408800b00780e6b9621amr4987643qko.67.1704731407951;
-        Mon, 08 Jan 2024 08:30:07 -0800 (PST)
-Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
-        by smtp.gmail.com with ESMTPSA id h3-20020a05620a21c300b00783250c9638sm15028qka.53.2024.01.08.08.30.07
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hT5RihLVZ6pdmIOZO3I4HwZe6d+t4eo6mHHQbGnw45s=;
+        b=RQwDtggr70AsCgyaIGT3T4a/cJJvg+8K0lSCjWzXx5h+6WxIokzSozOyUk95/Wbooo
+         drqUKfI+VtAnj1JSWDYPBXEh/UbfzXkP6QJ2MRcIAys59yMcY9OMrz8YmT3An6DSD/jH
+         LIFYT+lKdTi0R4Q/lSi63YGnX493/jjzysk9ChDubuPYPh854QaHEvbEwGjntdk40Fm1
+         zehL/x14gs0ccI97dWfR9UfUxSfoldC+KkAzWpOMW5DybawPSX+NEJRicPS0YNvsiIku
+         ipgyP1AprvOFCi9s+967vBNpOSrETQa08BnuN30zbZM88iCmUOKGLCsEn3uYUwFfenkK
+         I5Ew==
+X-Gm-Message-State: AOJu0YzCNZp9uoEsOq0zLx4o8d9swBXf4V8biI9krLlqERm6iIHITocs
+	w9kg2HOqpYehlpmTXZWbb3a3fY8U6FbGyDq1JKHf58cHjWs=
+X-Google-Smtp-Source: AGHT+IE1YQHcy6e8n1tq1lbfLcK9JM25Lp1bfmlHIT4nZ9l04SI3Alzffg2MLOaAT8NfsRDRtgoygQ==
+X-Received: by 2002:a05:6102:3eca:b0:467:b195:6f68 with SMTP id n10-20020a0561023eca00b00467b1956f68mr793643vsv.30.1704731386246;
+        Mon, 08 Jan 2024 08:29:46 -0800 (PST)
+Received: from ubuntu-server-vm-macos (072-189-067-006.res.spectrum.com. [72.189.67.6])
+        by smtp.gmail.com with ESMTPSA id f1-20020ab06f81000000b007cb869908b0sm16080uav.6.2024.01.08.08.29.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Jan 2024 08:30:07 -0800 (PST)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailauth.nyi.internal (Postfix) with ESMTP id 2AE0827C0060;
-	Mon,  8 Jan 2024 11:30:07 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Mon, 08 Jan 2024 11:30:07 -0500
-X-ME-Sender: <xms:DiOcZeJUIVeTF2DCVtWA9cRYczE4GAPIh2nnOXMvDvpc6AklMeHEHA>
-    <xme:DiOcZWJMwo_TVB0o64635YSZsdV6INr8vs4BIy94yOBhZJDAqbHsGCsBKRJL7Tx49
-    wncgSlJwZ4FSVsoig>
-X-ME-Received: <xmr:DiOcZevpEiSRYkNbC5S4gELk_Qfe1F-hvcLaxd-tZw3vnnRmt7mC0aIxUoLYOw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdehjedgkeejucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhu
-    nhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrg
-    htthgvrhhnpeehudfgudffffetuedtvdehueevledvhfelleeivedtgeeuhfegueeviedu
-    ffeivdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    gsohhquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdei
-    gedqudejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfih
-    igmhgvrdhnrghmvg
-X-ME-Proxy: <xmx:DiOcZTYnvg0OHBnIX-c10KhL170-LWz3BSNgYRGMInbaNHDmbwcigg>
-    <xmx:DiOcZVb6POcyb9ljR0P-a9fOK-UAziW5IA6UcH-u50d0yAqPsxULYQ>
-    <xmx:DiOcZfB2Dhp-8EGITXQlJXb1xo-Y4_Pr6TRNPWiNsW0j37BUCs-IAw>
-    <xmx:DyOcZTMjzKSSEmxQo9MGLGb6wGF3XliwjtHAijNBcjGY8Klb1q_bXQ>
-Feedback-ID: iad51458e:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 8 Jan 2024 11:30:06 -0500 (EST)
-Date: Mon, 8 Jan 2024 08:28:46 -0800
-From: Boqun Feng <boqun.feng@gmail.com>
-To: Xuewen Yan <xuewen.yan94@gmail.com>
-Cc: Xuewen Yan <xuewen.yan@unisoc.com>, peterz@infradead.org,
-	mingo@redhat.com, will@kernel.org, longman@redhat.com,
-	ke.wang@unisoc.com, zhiguo.niu@unisoc.com,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] lock/lockdep: Add missing graph_unlock in validate_chain
-Message-ID: <ZZwivt2C7-oxuMJS@boqun-archlinux>
-References: <20240104054030.14733-1-xuewen.yan@unisoc.com>
- <ZZcJ-3MXF4BPqPtL@boqun-archlinux>
- <CAB8ipk9+BAFOa_4Dm2hs-bpfmMC_LHkaAb=JUVBq1CChX11wzA@mail.gmail.com>
+        Mon, 08 Jan 2024 08:29:45 -0800 (PST)
+Date: Mon, 8 Jan 2024 16:29:43 +0000
+From: William Breathitt Gray <william.gray@linaro.org>
+To: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Cc: linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 0/2] tools: counter: add counter_watch_events
+Message-ID: <ZZwi944O0O2AlckN@ubuntu-server-vm-macos>
+References: <20231206164726.418990-1-fabrice.gasnier@foss.st.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="vez9kyFd2T+wrLnY"
+Content-Disposition: inline
+In-Reply-To: <20231206164726.418990-1-fabrice.gasnier@foss.st.com>
+
+
+--vez9kyFd2T+wrLnY
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAB8ipk9+BAFOa_4Dm2hs-bpfmMC_LHkaAb=JUVBq1CChX11wzA@mail.gmail.com>
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jan 05, 2024 at 12:46:36PM +0800, Xuewen Yan wrote:
-[...]
-> >
-> > Are you hitting a real issue or this is found by code reading?
-> 
-> Indeed, we hit a real issue:
-> One cpu did not call graph_unlock, as a result, caused a deadlock with
-> other cpus,
-> because any cpu calling raw_spin_lock would get the graph_lock first.
-> 
+On Wed, Dec 06, 2023 at 05:47:24PM +0100, Fabrice Gasnier wrote:
+> Introduces a new tool that can be used for testing. Also
+> add MAINTAINERS entry as per William's recommendations.
+>=20
+> Changelog:
+> - This is a split of another series [1].
+> [1] https://lore.kernel.org/lkml/20230922143920.3144249-1-fabrice.gasnier=
+@foss.st.com/
+>=20
+> Fabrice Gasnier (2):
+>   tools/counter: add a flexible watch events tool
+>   MAINTAINERS: add myself as counter watch events tool maintainer
+>=20
+>  MAINTAINERS                          |   5 +
+>  tools/counter/Build                  |   1 +
+>  tools/counter/Makefile               |  12 +-
+>  tools/counter/counter_watch_events.c | 372 +++++++++++++++++++++++++++
+>  4 files changed, 388 insertions(+), 2 deletions(-)
+>  create mode 100644 tools/counter/counter_watch_events.c
+>=20
+> --=20
+> 2.25.1
+>=20
 
-Could you share more details about the real issue you hit? For example,
-serial log? I asked because although the graph_unlock() makes logical
-sense, but that path should really not hit if lockdep works correctly.
-Thanks!
+Hi Fabrice,
 
-Regards,
-Boqun
+I'm going to reply to some of these patches with my Reviewed-by tag for
+my own sake, so that I know I've already reviewed them before picking
+them up at a later point.
 
-> Thanks!
+William Breathitt Gray
+
+--vez9kyFd2T+wrLnY
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQSNN83d4NIlKPjon7a1SFbKvhIjKwUCZZwi9wAKCRC1SFbKvhIj
+K0k3AQCe8ZmmLm3SGKy3zItu8XwD5EcVCyCSjxQLoK0sqWEYnAEAiZSlr+EX/vyn
+yWQEOi56Tq27zvaC7dvLVkRvAx5GhgU=
+=OkFg
+-----END PGP SIGNATURE-----
+
+--vez9kyFd2T+wrLnY--
 
