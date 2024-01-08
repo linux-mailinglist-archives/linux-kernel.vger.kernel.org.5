@@ -1,119 +1,89 @@
-Return-Path: <linux-kernel+bounces-19582-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19574-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E461D826F20
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 14:02:41 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F2BC826F02
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 13:53:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D5B821C227AB
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 13:02:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C15F31F22EFB
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 12:53:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2687941212;
-	Mon,  8 Jan 2024 13:02:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2F9B41744;
+	Mon,  8 Jan 2024 12:52:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="E3ZBZNRd"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ftxwX6d8"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from out203-205-221-240.mail.qq.com (out203-205-221-240.mail.qq.com [203.205.221.240])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A97E541745;
-	Mon,  8 Jan 2024 13:02:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1704718944; bh=0ub3HiEeynpEvWN9T9rYs29daqMSRNhQo+LY89G/pJQ=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=E3ZBZNRdYmjh3Ih60sq6dzqptRKo6MnhtYf8yZmoket4Z15yS6hva6PMU5O5H3Br0
-	 Y7DJZ1fWjJTRQc8UGVh/Q/nWxpM3PsQ7e2f/e4HjQDswTAYFlNyWJoPOzPNtSrqsQk
-	 2NzTJHqB/TH/ZbflaOA1XyUfzXMD3IfjtGcsq+V4=
-Received: from levi-pc.. ([61.186.21.12])
-	by newxmesmtplogicsvrszc5-1.qq.com (NewEsmtp) with SMTP
-	id D5405488; Mon, 08 Jan 2024 20:53:20 +0800
-X-QQ-mid: xmsmtpt1704718402t7bah2boi
-Message-ID: <tencent_7D17862FAF1D04B210747D392317785A6508@qq.com>
-X-QQ-XMAILINFO: N26DAMVpW7UE8bEsG1DL1OQYT7OG4saY288xbYPEwBD89ZTWXtlQhFRinzLe4R
-	 oxEVR37D8UfJMiesvq3v3YB4fz79I8slxfUXVOntX6GCRMhyFjLiVsCeKCNtuMIlT8kZrbo0R/+d
-	 ACUy5wIcRlgfW+C+0TzcBUzoP7ufroOwxlu0EivkDwqGFXtBJY+hYi1/k/JqVkLDL0WTMJ/zTs1m
-	 nw40gsSPccOHFe1UTSOedvzun1/jC1+4cZY5Y531VO2g13Il7EJ4YizHbVA5soWKWzurqWb+LOh3
-	 usjjZzSYPKoB8GOBkZ9rvEG3kYRS0l8nxbTb38kieY+ucgX0+ywE0mKOzXebRG+2/tg5KSxNUzyX
-	 D7Ijh8LhtxxiACM7jFGpmhER9kYnRtgDX7W+IaBeKrH2swYUnchM2XO/6YP8JSqrtsJHRbVCquZb
-	 ZE7WwUO2kvytdlSmSX0tcP93pC2OP4BRQwPAhhFiXud8tjtlAj64Is3FA6Jj1MG5/5O2TsuxDed/
-	 yHZROdUEGa+7W8xBLsSbWMdRfmpOvRPugN/+0Q+YnjYyRYFGdND43SqarAMJ2tF5CxuAKMoKW1aZ
-	 m3jMYjgZU+zHob4wR2vOaM5t1lSaXoPfg0s/INTEUa4ty8fVI3kHtxtaQBKKO1Ue4gmXpJy9tqH8
-	 rCrKzutVmRsE8uzolFt/ptfJH4CdMu3yWSpcoGG7U9AahlB0ZW/jZuqWM41jXxLgmtS/3anTxtaX
-	 frZGvikKwXv86uKOBh+zXHECqLg41G3ob4iCBAY9WOcZl2n9h3NhtpUyPikoTuA7If5R28U74JiV
-	 mqlIy3TZL8+/0lzm4Owsw5tujPK8S0LGw4yP2OQO19+xFkCf9Prt1fF9PDW4aVsESUSIhJuFomVV
-	 BKOBqi68+z8EamdVXYBkg74lcKyX03v8Wtu03gapP0b8/HjDR36kRqeZhEoprDnzQ3fhQra5Z5ye
-	 ZRUp5obLRwMqrvwvZMGAVGgMAc0/rdsQqWNrrXq5bpEkEdesZYelMGPn84POT+EaZeveIL1iNfz8
-	 nsUZisrsuLAbqFrqJr
-X-QQ-XMRINFO: Mp0Kj//9VHAxr69bL5MkOOs=
-From: Huayu Zhang <932367230@qq.com>
-To: tiwai@suse.com
-Cc: linux-sound@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	james.schulman@cirrus.com,
-	david.rhodes@cirrus.com,
-	rf@opensource.cirrus.com,
-	perex@perex.cz,
-	sbinding@opensource.cirrus.com,
-	kailang@realtek.com,
-	zhanghuayu.dev@gmail.com
-Subject: [PATCH] add DSD for ThinkBook 16p G4 IRH with Subsystem Id of : 0x17aa38a9
-Date: Mon,  8 Jan 2024 20:51:37 +0800
-X-OQ-MSGID: <20240108125137.15081-2-932367230@qq.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240108125137.15081-1-932367230@qq.com>
-References: <20240108125137.15081-1-932367230@qq.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A286B4175C
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 12:52:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1704718353;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=fD1GykFikbXTFKh3tVS8W6aZYCFQw2YGT7ld2MYyAJI=;
+	b=ftxwX6d8po3E6L/dzICEM9btBB3uO7uqEP9pOeK0ruDJUgoSxTAgJ0+k8GVPD2vaLWDHEa
+	FJR0t+7x0t7EwTFJHZmGoGXsyKZFQkVVJaFaJIqvKLaF3ifVgWfhQo/hWJnUeLLc9bceMD
+	IdTbDf+Cb7Wl4/rhObM8fFev+EyP/9c=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-329-OX0Np3ZbPcOLiTJaY-vt2Q-1; Mon, 08 Jan 2024 07:52:30 -0500
+X-MC-Unique: OX0Np3ZbPcOLiTJaY-vt2Q-1
+Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 96F0D185A786;
+	Mon,  8 Jan 2024 12:52:28 +0000 (UTC)
+Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 7FA9D492BC7;
+	Mon,  8 Jan 2024 12:52:28 +0000 (UTC)
+From: Paolo Bonzini <pbonzini@redhat.com>
+To: linux-kernel@vger.kernel.org,
+	kvm@vger.kernel.org
+Subject: [PATCH] KVM: x86: add missing "depends on KVM"
+Date: Mon,  8 Jan 2024 07:52:28 -0500
+Message-Id: <20240108125228.115731-1-pbonzini@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
 
-From: Huayu Zhang <zhanghuayu.dev@gmail.com>
+Support for KVM software-protected VMs should not be configurable,
+if KVM is not available at all.
 
+Fixes: 89ea60c2c7b5 ("KVM: x86: Add support for "protected VMs" that can utilize private memory")
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 ---
- sound/pci/hda/cs35l41_hda_property.c | 2 ++
- sound/pci/hda/patch_realtek.c        | 1 +
- 2 files changed, 3 insertions(+)
+ arch/x86/kvm/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/pci/hda/cs35l41_hda_property.c b/sound/pci/hda/cs35l41_hda_property.c
-index 35277ce890a4..b1844224123f 100644
---- a/sound/pci/hda/cs35l41_hda_property.c
-+++ b/sound/pci/hda/cs35l41_hda_property.c
-@@ -93,6 +93,7 @@ static const struct cs35l41_config cs35l41_config_table[] = {
- 	{ "10431F12", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4500, 24 },
- 	{ "10431F1F", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, -1, 0, 0, 0, 0 },
- 	{ "10431F62", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 0, 0, 0 },
-+	{ "17AA38A9", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 0, 0, 0 },
- 	{ "17AA38B4", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 0, 0, 0 },
- 	{ "17AA38B5", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 0, 0, 0 },
- 	{ "17AA38B6", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 0, 0, 0 },
-@@ -427,6 +428,7 @@ static const struct cs35l41_prop_model cs35l41_prop_model_table[] = {
- 	{ "CSC3551", "10431F12", generic_dsd_config },
- 	{ "CSC3551", "10431F1F", generic_dsd_config },
- 	{ "CSC3551", "10431F62", generic_dsd_config },
-+	{ "CSC3551", "17AA38A9", generic_dsd_config },
- 	{ "CSC3551", "17AA38B4", generic_dsd_config },
- 	{ "CSC3551", "17AA38B5", generic_dsd_config },
- 	{ "CSC3551", "17AA38B6", generic_dsd_config },
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 1dcfba27e075..3eae1a5d9bcd 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -10256,6 +10256,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x17aa, 0x3886, "Y780 VECO DUAL", ALC287_FIXUP_TAS2781_I2C),
- 	SND_PCI_QUIRK(0x17aa, 0x38a7, "Y780P AMD YG dual", ALC287_FIXUP_TAS2781_I2C),
- 	SND_PCI_QUIRK(0x17aa, 0x38a8, "Y780P AMD VECO dual", ALC287_FIXUP_TAS2781_I2C),
-+	SND_PCI_QUIRK(0x17aa, 0x38a9, "ThinkBook 16p G4 IRH", ALC287_FIXUP_CS35L41_I2C_2),
- 	SND_PCI_QUIRK(0x17aa, 0x38b4, "Legion Slim 7 16IRH8", ALC287_FIXUP_CS35L41_I2C_2),
- 	SND_PCI_QUIRK(0x17aa, 0x38b5, "Legion Slim 7 16IRH8", ALC287_FIXUP_CS35L41_I2C_2),
- 	SND_PCI_QUIRK(0x17aa, 0x38b6, "Legion Slim 7 16APH8", ALC287_FIXUP_CS35L41_I2C_2),
+diff --git a/arch/x86/kvm/Kconfig b/arch/x86/kvm/Kconfig
+index cce3dea27920..10c56603cc06 100644
+--- a/arch/x86/kvm/Kconfig
++++ b/arch/x86/kvm/Kconfig
+@@ -77,7 +77,7 @@ config KVM_WERROR
+ config KVM_SW_PROTECTED_VM
+ 	bool "Enable support for KVM software-protected VMs"
+ 	depends on EXPERT
+-	depends on X86_64
++	depends on KVM && X86_64
+ 	select KVM_GENERIC_PRIVATE_MEM
+ 	help
+ 	  Enable support for KVM software-protected VMs.  Currently "protected"
 -- 
-2.34.1
+2.39.1
 
 
