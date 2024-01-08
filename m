@@ -1,140 +1,183 @@
-Return-Path: <linux-kernel+bounces-19548-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19544-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92436826EA1
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 13:44:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A73F4826E99
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 13:43:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 463951F22DF9
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 12:44:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4073A28334E
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 12:43:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA3FE55E67;
-	Mon,  8 Jan 2024 12:34:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82E2045BF6;
+	Mon,  8 Jan 2024 12:34:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JQ72iHxx"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D69945BFC
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 12:34:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 703E6FEC;
-	Mon,  8 Jan 2024 04:35:37 -0800 (PST)
-Received: from [127.0.1.1] (unknown [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D55CD3F64C;
-	Mon,  8 Jan 2024 04:34:50 -0800 (PST)
-From: Cristian Marussi <cristian.marussi@arm.com>
-Date: Mon, 08 Jan 2024 12:34:16 +0000
-Subject: [PATCH 6/6] firmware: arm_ffa: Handle partitions setup failures
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3997A44C8C;
+	Mon,  8 Jan 2024 12:34:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a271a28aeb4so167625666b.2;
+        Mon, 08 Jan 2024 04:34:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704717287; x=1705322087; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=InaA6S2R9U+w0dMzKJ26FvYihdPWx+aFSXWaCzGQox0=;
+        b=JQ72iHxxYpci5xVG9jt9PjYzsrOR2fXpjLTLTKo1JkPdjfFAQQtCWAYF2AK698Wwi6
+         POsQrDdDCUPBYpAFQut+eR0VUmp3qTvq9lZEf+WO2uBrBx4+GIDQpKacuF+ncCzc6h6i
+         Ufbdp9SbCDRBwqCSqN4T6CZVBe5rM4J+C5sR930AYF08wfgWHWct0TM1FHsv97nnCaU2
+         ozt8ZnxJ9bBR7doliVFib7z+9aSiema/dk/+pR0hzCDSq9ct6JSz+NDL4kRSAqMS+5N3
+         xnnv6oYf6RlIFLuvYJ6/eAUE9vA7iQfLCo6OPoxhfLtWRdwEJfXas3AbkucJNdZZ03RF
+         0txA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704717287; x=1705322087;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=InaA6S2R9U+w0dMzKJ26FvYihdPWx+aFSXWaCzGQox0=;
+        b=Ab1JebeeJuoFPkWLmTnXzlZKSf41ADcElo/p1PWf1UA7gH8gfU57ZhRBJmbQ66B4Cq
+         EV/RxitOuu3cfH8QgVKJi2xG8Ux0qgHrOSr3MjU7J+WxC2OteIYbS9jq8J6FweaGlhyx
+         cYreaqBaBwOnnDHdiqEA7ohdHABmxliQBP4dQEbgSD9bz2bZlTjk385uahost8vz2f6p
+         o0FhqFtzwE3PZcZw6fFbizMBO+2Vu3UPIetTGf6Qtgmj0BvqakE/KzJjlsI1mKzqSbJR
+         PjFH5gunmS+gjFjDyR5+uM17/ZHcy5bk7RhFhKQf/Njs3pSEF+wjyZ7zeHz0X8ez3S23
+         hWqg==
+X-Gm-Message-State: AOJu0YxDGAG6lTDrOnr4YsQ0mBZNDI3SnKcynNneszUGXsAZpqO1xDgg
+	FFCE6FtkbKw9eYxtFeu4nA8jgTgbEvSLqQ==
+X-Google-Smtp-Source: AGHT+IGUddrnY5+YKbCei4noQYPHLM7BkRkB2zZCINU5UYnRktijbOTfd3LtC/AkKciXs9PFqbp8wQ==
+X-Received: by 2002:a17:907:770c:b0:a28:e441:7998 with SMTP id kw12-20020a170907770c00b00a28e4417998mr1222461ejc.108.1704717287040;
+        Mon, 08 Jan 2024 04:34:47 -0800 (PST)
+Received: from skbuf ([188.25.255.36])
+        by smtp.gmail.com with ESMTPSA id 1-20020a170906318100b00a2a632e4eebsm1439209ejy.119.2024.01.08.04.34.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Jan 2024 04:34:46 -0800 (PST)
+Date: Mon, 8 Jan 2024 14:34:44 +0200
+From: Vladimir Oltean <olteanv@gmail.com>
+To: =?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
+Cc: Simon Horman <horms@kernel.org>, Daniel Golle <daniel@makrotopia.org>,
+	Landen Chao <Landen.Chao@mediatek.com>,
+	DENG Qingfang <dqfext@gmail.com>,
+	Sean Wang <sean.wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>,
+	Florian Fainelli <f.fainelli@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	David Bauer <mail@david-bauer.net>, mithat.guner@xeront.com,
+	erkin.bozoglu@xeront.com,
+	Luiz Angelo Daros de Luca <luizluca@gmail.com>,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH net-next] net: dsa: mt7530: support OF-based registration
+ of switch MDIO bus
+Message-ID: <20240108123444.r3k4mhgii2yontc4@skbuf>
+References: <20240106122142.235389-1-arinc.unal@arinc9.com>
+ <20240107195241.GB132648@kernel.org>
+ <65274929-fa59-482c-a744-6b9ce162ab46@arinc9.com>
+ <20240108110000.aujqhlufehngtkjj@skbuf>
+ <20240106122142.235389-1-arinc.unal@arinc9.com>
+ <20240107195241.GB132648@kernel.org>
+ <65274929-fa59-482c-a744-6b9ce162ab46@arinc9.com>
+ <20240108110000.aujqhlufehngtkjj@skbuf>
+ <7e89034c-afbd-4180-98e5-50d8cd07f924@arinc9.com>
+ <7e89034c-afbd-4180-98e5-50d8cd07f924@arinc9.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240108-ffa_fixes_6-8-v1-6-75bf7035bc50@arm.com>
-References: <20240108-ffa_fixes_6-8-v1-0-75bf7035bc50@arm.com>
-In-Reply-To: <20240108-ffa_fixes_6-8-v1-0-75bf7035bc50@arm.com>
-To: Sudeep Holla <sudeep.holla@arm.com>
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
- Cristian Marussi <cristian.marussi@arm.com>
-X-Mailer: b4 0.12.4
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <7e89034c-afbd-4180-98e5-50d8cd07f924@arinc9.com>
+ <7e89034c-afbd-4180-98e5-50d8cd07f924@arinc9.com>
 
-Make ffa_setup_partitions() fail, cleanup and return an error when the Host
-partition setup fails: in such a case ffa_init() itself will fail.
+On Mon, Jan 08, 2024 at 03:14:45PM +0300, Arınç ÜNAL wrote:
+> I realised that I also miss these:
+> 
+> - run of_node_put(mnp) if bus = devm_mdiobus_alloc(dev) fails
+> - don't run mt7530_free_mdio_irq if MDIO bus is described on OF
+> 
+> Please let me know if this addresses everything:
+> 
+> diff --git a/drivers/net/dsa/mt7530.c b/drivers/net/dsa/mt7530.c
+> index 391c4dbdff42..cf2ff7680c15 100644
+> --- a/drivers/net/dsa/mt7530.c
+> +++ b/drivers/net/dsa/mt7530.c
+> @@ -2146,24 +2146,40 @@ mt7530_free_irq_common(struct mt7530_priv *priv)
+>  static void
+>  mt7530_free_irq(struct mt7530_priv *priv)
+>  {
+> -	mt7530_free_mdio_irq(priv);
+> +	struct device_node *mnp, *np = priv->dev->of_node;
+> +
+> +	mnp = of_get_child_by_name(np, "mdio");
+> +	if (!mnp)
+> +		mt7530_free_mdio_irq(priv);
+> +	of_node_put(mnp);
+> +
+>  	mt7530_free_irq_common(priv);
+>  }
+>  static int
+>  mt7530_setup_mdio(struct mt7530_priv *priv)
+>  {
+> +	struct device_node *mnp, *np = priv->dev->of_node;
+>  	struct dsa_switch *ds = priv->ds;
+>  	struct device *dev = priv->dev;
+>  	struct mii_bus *bus;
+>  	static int idx;
+> -	int ret;
+> +	int ret = 0;
+> +
+> +	mnp = of_get_child_by_name(np, "mdio");
+> +
+> +	if (mnp && !of_device_is_available(mnp))
+> +		goto out;
+>  	bus = devm_mdiobus_alloc(dev);
+> -	if (!bus)
+> -		return -ENOMEM;
+> +	if (!bus) {
+> +		ret = -ENOMEM;
+> +		goto out;
+> +	}
+> +
+> +	if (!mnp)
+> +		ds->user_mii_bus = bus;
+> -	ds->user_mii_bus = bus;
+>  	bus->priv = priv;
+>  	bus->name = KBUILD_MODNAME "-mii";
+>  	snprintf(bus->id, MII_BUS_ID_SIZE, KBUILD_MODNAME "-%d", idx++);
+> @@ -2174,16 +2190,18 @@ mt7530_setup_mdio(struct mt7530_priv *priv)
+>  	bus->parent = dev;
+>  	bus->phy_mask = ~ds->phys_mii_mask;
+> -	if (priv->irq)
+> +	if (priv->irq && !mnp)
+>  		mt7530_setup_mdio_irq(priv);
+> -	ret = devm_mdiobus_register(dev, bus);
+> +	ret = devm_of_mdiobus_register(dev, bus, mnp);
+>  	if (ret) {
+>  		dev_err(dev, "failed to register MDIO bus: %d\n", ret);
+> -		if (priv->irq)
+> +		if (priv->irq && !mnp)
+>  			mt7530_free_mdio_irq(priv);
+>  	}
+> +out:
+> +	of_node_put(mnp);
+>  	return ret;
+>  }
 
-Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
----
- drivers/firmware/arm_ffa/driver.c | 28 +++++++++++++++++++++++-----
- 1 file changed, 23 insertions(+), 5 deletions(-)
+Looks ok.
 
-diff --git a/drivers/firmware/arm_ffa/driver.c b/drivers/firmware/arm_ffa/driver.c
-index c613b57747cf..f2556a8e9401 100644
---- a/drivers/firmware/arm_ffa/driver.c
-+++ b/drivers/firmware/arm_ffa/driver.c
-@@ -112,6 +112,7 @@ struct ffa_drv_info {
- };
- 
- static struct ffa_drv_info *drv_info;
-+static void ffa_partitions_cleanup(void);
- 
- /*
-  * The driver must be able to support all the versions from the earliest
-@@ -1195,7 +1196,7 @@ void ffa_device_match_uuid(struct ffa_device *ffa_dev, const uuid_t *uuid)
- 	kfree(pbuf);
- }
- 
--static void ffa_setup_partitions(void)
-+static int ffa_setup_partitions(void)
- {
- 	int count, idx, ret;
- 	uuid_t uuid;
-@@ -1206,7 +1207,7 @@ static void ffa_setup_partitions(void)
- 	count = ffa_partition_probe(&uuid_null, &pbuf);
- 	if (count <= 0) {
- 		pr_info("%s: No partitions found, error %d\n", __func__, count);
--		return;
-+		return -EINVAL;
- 	}
- 
- 	xa_init(&drv_info->partition_info);
-@@ -1250,8 +1251,14 @@ static void ffa_setup_partitions(void)
- 
- 	/* Allocate for the host */
- 	info = kzalloc(sizeof(*info), GFP_KERNEL);
--	if (!info)
--		return;
-+	if (!info) {
-+		pr_err("%s: failed to alloc Host partition ID 0x%x. Abort.\n",
-+		       __func__, drv_info->vm_id);
-+		/* Already registered devices are freed on bus_exit */
-+		ffa_partitions_cleanup();
-+		return -ENOMEM;
-+	}
-+
- 	rwlock_init(&info->rw_lock);
- 	ret = xa_insert(&drv_info->partition_info, drv_info->vm_id,
- 			info, GFP_KERNEL);
-@@ -1259,7 +1266,11 @@ static void ffa_setup_partitions(void)
- 		pr_err("%s: failed to save Host partition ID 0x%x - ret:%d. Abort.\n",
- 		       __func__, drv_info->vm_id, ret);
- 		kfree(info);
-+		/* Already registered devices are freed on bus_exit */
-+		ffa_partitions_cleanup();
- 	}
-+
-+	return ret;
- }
- 
- static void ffa_partitions_cleanup(void)
-@@ -1520,7 +1531,11 @@ static int __init ffa_init(void)
- 
- 	ffa_notifications_setup();
- 
--	ffa_setup_partitions();
-+	ret = ffa_setup_partitions();
-+	if (ret) {
-+		pr_err("failed to setup partitions\n");
-+		goto cleanup_notifs;
-+	}
- 
- 	ret = ffa_sched_recv_cb_update(drv_info->vm_id, ffa_self_notif_handle,
- 				       drv_info, true);
-@@ -1528,6 +1543,9 @@ static int __init ffa_init(void)
- 		pr_info("Failed to register driver sched callback %d\n", ret);
- 
- 	return 0;
-+
-+cleanup_notifs:
-+	ffa_notifications_cleanup();
- free_pages:
- 	if (drv_info->tx_buffer)
- 		free_pages_exact(drv_info->tx_buffer, RXTX_BUFFER_SIZE);
-
--- 
-2.34.1
-
+Please note that net-next has now closed. Sorry that I couldn't bring
+myself to review more during the weekend and the holidays.
+https://lore.kernel.org/netdev/20240107172221.733a7a44@kernel.org/
 
