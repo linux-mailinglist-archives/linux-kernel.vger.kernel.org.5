@@ -1,165 +1,293 @@
-Return-Path: <linux-kernel+bounces-19136-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19137-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47A1882688C
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 08:27:40 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CCD3A82688F
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 08:28:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 67B8F1C219A1
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 07:27:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 32AC0B212A1
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 07:28:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08D218BF3;
-	Mon,  8 Jan 2024 07:27:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 088AA883C;
+	Mon,  8 Jan 2024 07:27:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ICVyQ4vv"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="qgSUtfhf"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8A8C8BEB
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 07:27:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1704698851;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=++HIVa+fUHc7mVxMPbgRezSHjTqa6qZR6U7zKUbz7Hc=;
-	b=ICVyQ4vvWaweiGQQeg9cd9GTYQ0qgjJnb+zxvLHcmc+5VCVvmN80VpdO4hYiPbEfvFyjK3
-	1r7mA272zVQtL4jQGMGciDza4oL1C7XLIwL97P48LpnyQN+8JA5TXTywvw7TZqIqYxVh7M
-	3HT5rjWwuYN3xsybTA1XKx8sJez1VTU=
-Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com
- [209.85.216.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-468-MuXJ6G9bMKqDOnSYcoDnSg-1; Mon, 08 Jan 2024 02:27:30 -0500
-X-MC-Unique: MuXJ6G9bMKqDOnSYcoDnSg-1
-Received: by mail-pj1-f72.google.com with SMTP id 98e67ed59e1d1-28bd331cb57so744078a91.1
-        for <linux-kernel@vger.kernel.org>; Sun, 07 Jan 2024 23:27:29 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6DAEB654
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 07:27:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-557a615108eso3379a12.0
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Jan 2024 23:27:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1704698870; x=1705303670; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=BJXglrxZ0d8+BhxOIbS06P0ULVG1OLYD2iL8gTXCkQg=;
+        b=qgSUtfhfAhtEs6yXv+BeEOYQr5wtkbN0mE4VG7X/JQJZu2BS4PXO7dylm/Lmbp5p0k
+         ejOKI5eEuz8R7ZVIYSMaeQHqWxO5lOVkMP7WuOxMridBcoeG+SkJoIEEY4Ky0wwGBVKw
+         I8jS3HZzhUwsmR7sASnVrm+gg5uhWokeewpdukePg2tyaua0HQ/cwpHdHz0Y1TCXaCwY
+         Anf5ttjpzKNdbCe5QZEDg+v3BAbSiXg4GHKOWJd2ufhh5zjFEqGfKor0ygVd9RJvuvL2
+         4g4pQRtAqvU5wb4UrEque0FH8bQzn+5ocPJIfe11oa5x/qMtpd4fJVgdcCOXZPgH8u7K
+         uwjg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704698849; x=1705303649;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=++HIVa+fUHc7mVxMPbgRezSHjTqa6qZR6U7zKUbz7Hc=;
-        b=OasseItHmYlmthzmh5F80cVFaKhAfzHTPztM6Z7OfbHRD+yOva/AwKd3z1IQg8mhOF
-         K8f5+KEaZymioXFo9SnQc2NsSlf5boYF63W7OPZ7TFCR2+DEkhxoO7LlJjdXpw8HAlms
-         R2b8KO0s/As4aF1Z2O9sfsczxo6BE3tuhE3DUT3bIAU6Sy68HdrXc+wAlQkt+SJroXlh
-         ljACmIb49lUsO5QPjZv0PUBQe4xlCTAdW+/ARK+8sDIN/NDR8aZX84ZaSNvfzpNJFYoC
-         J2AkdaU4LvbrFIczLA/2o9buqGoZgpvo7R2pz4Laqn4yGo8ztFmIJEt25aqO2ej/hBo2
-         2SKQ==
-X-Gm-Message-State: AOJu0YxnzKJBjAU0BK368WGIOn9X3U9fgJGu/x1NofXbjXhbULms02Oa
-	uC6qOqqwuVbTknKjr7bSFEkYUwUO46eKYJbaLvGXOM5GZHNF6dzhEB6nFFEY3MFekzB+Zp+RLBV
-	zpA+yMt39Mva5G/gxT+3W7OmzWeDTmm4G
-X-Received: by 2002:a05:6a20:3cab:b0:199:c866:1d46 with SMTP id b43-20020a056a203cab00b00199c8661d46mr931060pzj.6.1704698848995;
-        Sun, 07 Jan 2024 23:27:28 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHCAavyxZcZwU5CLY8vR5nixlH4bDIz/ZGJUz9tbspcbUqeK+w5R+Hs85r/f/cHobBdBUdCsQ==
-X-Received: by 2002:a05:6a20:3cab:b0:199:c866:1d46 with SMTP id b43-20020a056a203cab00b00199c8661d46mr931031pzj.6.1704698848614;
-        Sun, 07 Jan 2024 23:27:28 -0800 (PST)
-Received: from x1n ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id d5-20020a17090a8d8500b0028c2de909e4sm5617976pjo.50.2024.01.07.23.27.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 07 Jan 2024 23:27:28 -0800 (PST)
-Date: Mon, 8 Jan 2024 15:27:17 +0800
-From: Peter Xu <peterx@redhat.com>
-To: Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc: "linux-mm@kvack.org" <linux-mm@kvack.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	James Houghton <jthoughton@google.com>,
-	David Hildenbrand <david@redhat.com>,
-	"Kirill A . Shutemov" <kirill@shutemov.name>,
-	Yang Shi <shy828301@gmail.com>,
-	"linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	"Aneesh Kumar K . V" <aneesh.kumar@kernel.org>,
-	Rik van Riel <riel@surriel.com>,
-	Andrea Arcangeli <aarcange@redhat.com>,
-	Axel Rasmussen <axelrasmussen@google.com>,
-	Mike Rapoport <rppt@kernel.org>, John Hubbard <jhubbard@nvidia.com>,
-	Vlastimil Babka <vbabka@suse.cz>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Andrew Jones <andrew.jones@linux.dev>,
-	"linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-	Mike Kravetz <mike.kravetz@oracle.com>,
-	Muchun Song <muchun.song@linux.dev>,
-	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
-	Jason Gunthorpe <jgg@nvidia.com>,
-	Christoph Hellwig <hch@infradead.org>,
-	Lorenzo Stoakes <lstoakes@gmail.com>,
-	Matthew Wilcox <willy@infradead.org>
-Subject: Re: [PATCH v2 00/13] mm/gup: Unify hugetlb, part 2
-Message-ID: <ZZuj1Q3k9hX0IlK3@x1n>
-References: <20240103091423.400294-1-peterx@redhat.com>
- <591c59d6-dedb-4399-8a6f-c574fd2ad9cc@csgroup.eu>
+        d=1e100.net; s=20230601; t=1704698870; x=1705303670;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=BJXglrxZ0d8+BhxOIbS06P0ULVG1OLYD2iL8gTXCkQg=;
+        b=bZWMpNojXDlEZQvpzq/YtfjIYYV2vHxAGK7nKWGCZjAfUKTg9KoE+wv5+fMIlaB9t9
+         l6GsiP8UGW99jesUuS3cFzObj03De5VDUg7JT9kQfkeLV6NvPsdjdBv8HG0NmibflB3O
+         tuoJ4JtxfK9Zh3hGRkM/ZMb6hfTMvPoEwHS4XA7Dw5Mq6OIHjGhXy5nJ8LVwTIvu5u5z
+         M4htXhqZGrErOlHFuHQ/KPk1ZhMyc0lwF79jonNxUcISvAtCISO3VOeWd7pdUwLDTDiL
+         5IB2EdD03ybtbZoPJS93FaGADtrp+ZMr/DWVZYZKYKwm9PTASAnmKySk/zXo9hxhdCfS
+         LnFg==
+X-Gm-Message-State: AOJu0Ywo9/rLZ5rbYUgzyDHcTFjBW14AM9ktHwSWnaRlOZCOKIce2QiG
+	QpY8Hbg+C1HIEw1L8iQb7h+oAW1eNcNqu/dV8HYV2Uk+bF1V
+X-Google-Smtp-Source: AGHT+IGo8qYamOBr/SIC/RUrheMOYr/AMLjM0qBOsfKYXZ4g5n/M6cTlzmAE+bvOFfU+9VeZuB6dq8Adlr8mGNPF4jQ=
+X-Received: by 2002:a50:8a93:0:b0:557:15d:b784 with SMTP id
+ j19-20020a508a93000000b00557015db784mr204034edj.2.1704698869895; Sun, 07 Jan
+ 2024 23:27:49 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <591c59d6-dedb-4399-8a6f-c574fd2ad9cc@csgroup.eu>
+References: <20231206150729.54604-1-marpagan@redhat.com>
+In-Reply-To: <20231206150729.54604-1-marpagan@redhat.com>
+From: David Gow <davidgow@google.com>
+Date: Mon, 8 Jan 2024 15:27:37 +0800
+Message-ID: <CABVgOSnbBzjcb_zt=YJ8p8Rm97s2ZYp=YvjThB_NCZD9BJQaSg@mail.gmail.com>
+Subject: Re: [PATCH v3] kunit: run test suites only after module
+ initialization completes
+To: Marco Pagani <marpagan@redhat.com>
+Cc: Brendan Higgins <brendan.higgins@linux.dev>, Shuah Khan <skhan@linuxfoundation.org>, 
+	Jinjie Ruan <ruanjinjie@huawei.com>, Rae Moar <rmoar@google.com>, 
+	Richard Fitzgerald <rf@opensource.cirrus.com>, Javier Martinez Canillas <javierm@redhat.com>, 
+	linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com, 
+	linux-kernel@vger.kernel.org
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+	boundary="0000000000009d28bf060e6a22ba"
 
-Hi, Christophe,
+--0000000000009d28bf060e6a22ba
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed, Jan 03, 2024 at 11:14:54AM +0000, Christophe Leroy wrote:
-> > Test Done
-> > =========
-> > 
-> > This v1 went through the normal GUP smoke tests over different memory
-> > types on archs (using VM instances): x86_64, aarch64, ppc64le.  For
-> > aarch64, tested over 64KB cont_pte huge pages.  For ppc64le, tested over
-> > 16MB hugepd entries (Power8 hash MMU on 4K base page size).
-> > 
-> 
-> Can you tell how you test ?
-> 
-> I'm willing to test this series on powerpc 8xx (PPC32).
+On Wed, 6 Dec 2023 at 23:07, Marco Pagani <marpagan@redhat.com> wrote:
+>
+> Commit 2810c1e99867 ("kunit: Fix wild-memory-access bug in
+> kunit_free_suite_set()") fixed a wild-memory-access bug that could have
+> happened during the loading phase of test suites built and executed as
+> loadable modules. However, it also introduced a problematic side effect
+> that causes test suites modules to crash when they attempt to register
+> fake devices.
+>
+> When a module is loaded, it traverses the MODULE_STATE_UNFORMED and
+> MODULE_STATE_COMING states before reaching the normal operating state
+> MODULE_STATE_LIVE. Finally, when the module is removed, it moves to
+> MODULE_STATE_GOING before being released. However, if the loading
+> function load_module() fails between complete_formation() and
+> do_init_module(), the module goes directly from MODULE_STATE_COMING to
+> MODULE_STATE_GOING without passing through MODULE_STATE_LIVE.
+>
+> This behavior was causing kunit_module_exit() to be called without
+> having first executed kunit_module_init(). Since kunit_module_exit() is
+> responsible for freeing the memory allocated by kunit_module_init()
+> through kunit_filter_suites(), this behavior was resulting in a
+> wild-memory-access bug.
+>
+> Commit 2810c1e99867 ("kunit: Fix wild-memory-access bug in
+> kunit_free_suite_set()") fixed this issue by running the tests when the
+> module is still in MODULE_STATE_COMING. However, modules in that state
+> are not fully initialized, lacking sysfs kobjects. Therefore, if a test
+> module attempts to register a fake device, it will inevitably crash.
+>
+> This patch proposes a different approach to fix the original
+> wild-memory-access bug while restoring the normal module execution flow
+> by making kunit_module_exit() able to detect if kunit_module_init() has
+> previously initialized the tests suite set. In this way, test modules
+> can once again register fake devices without crashing.
+>
+> This behavior is achieved by checking whether mod->kunit_suites is a
+> virtual or direct mapping address. If it is a virtual address, then
+> kunit_module_init() has allocated the suite_set in kunit_filter_suites()
+> using kmalloc_array(). On the contrary, if mod->kunit_suites is still
+> pointing to the original address that was set when looking up the
+> .kunit_test_suites section of the module, then the loading phase has
+> failed and there's no memory to be freed.
+>
+> v3:
+> - add a comment to clarify why the start address is checked
+> v2:
+> - add include <linux/mm.h>
+>
+> Fixes: 2810c1e99867 ("kunit: Fix wild-memory-access bug in kunit_free_suite_set()")
+> Tested-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+> Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
+> Signed-off-by: Marco Pagani <marpagan@redhat.com>
+> ---
 
-My apologies, for some reason I totally overlooked this email..
+Sorry for the delay here: there are enough subtleties here that I
+wanted to double check some things.
 
-I only tested using run_vmtests.sh, with:
+I keep feeling that there has to be a nicer way of doing this, but I
+can't think of one, so let's go with this, since it's fixing a real
+issue.
 
-  $ bash ./run_vmtests.sh -t gup_test -a
+I'm a little hesitant about our use of the suite_set.start address as
+an 'is initialised' flag, and depending on it being reallocated via
+kunit_filter_suites(), but since we already depend on that (by always
+using kunit_free_suite_set()), I'm okay with it.
 
-It should cover pretty much lots of tests of GUP using gup_test program.  I
-think the ones that matters here is "-H" over either "-U/-b".
+My only request (other than this needing a rebase, probably on top of
+6.8) would be to add a comment in kunit_filter_suites() noting that it
+must return a virtual address. That's probably something we should've
+done a while ago, but I can just see this requirement getting
+forgotten.
 
-For ppc8xx, even though kernel mapping uses hugepd, I don't expect anything
-should change before/after this series, because the code that I touched
-(slow gup only) only affects user pages, so it shouldn't change anything
-over kernel mappings.  Said so, please feel free to smoke over whatever
-type of kernel hugepd mappings, and I'd trust you're the expert on how to
-trigger those paths.
+Reviewed-by: David Gow <davidgow@google.com>
 
-Since I got your attention, when working on this series I talked to David
-Gibson and just got to know that hugepd is actually a pure software idea.
-IIUC it means there's no PPC hardware that really understands the hugepd
-format at all, but only a "this is a huge page" hint for Linux.
+Cheers,
+-- David
 
-Considering that it _seems_ to play a similar role of cont_pXX here: do you
-think hugepd can have any chance to be implemented similarly like cont_pXX,
-or somehow share the code?
+>  lib/kunit/test.c | 14 +++++++++++---
+>  1 file changed, 11 insertions(+), 3 deletions(-)
+>
+> diff --git a/lib/kunit/test.c b/lib/kunit/test.c
+> index 7aceb07a1af9..3263e0d5e0f6 100644
+> --- a/lib/kunit/test.c
+> +++ b/lib/kunit/test.c
+> @@ -16,6 +16,7 @@
+>  #include <linux/panic.h>
+>  #include <linux/sched/debug.h>
+>  #include <linux/sched.h>
+> +#include <linux/mm.h>
+>
+>  #include "debugfs.h"
+>  #include "hooks-impl.h"
+> @@ -775,12 +776,19 @@ static void kunit_module_exit(struct module *mod)
+>         };
+>         const char *action = kunit_action();
+>
+> +       /*
+> +        * Check if the start address is a valid virtual address to detect
+> +        * if the module load sequence has failed and the suite set has not
+> +        * been initialized and filtered.
+> +        */
+> +       if (!suite_set.start || !virt_addr_valid(suite_set.start))
+> +               return;
+> +
+>         if (!action)
+>                 __kunit_test_suites_exit(mod->kunit_suites,
+>                                          mod->num_kunit_suites);
+>
+> -       if (suite_set.start)
+> -               kunit_free_suite_set(suite_set);
+> +       kunit_free_suite_set(suite_set);
+>  }
+>
+>  static int kunit_module_notify(struct notifier_block *nb, unsigned long val,
+> @@ -790,12 +798,12 @@ static int kunit_module_notify(struct notifier_block *nb, unsigned long val,
+>
+>         switch (val) {
+>         case MODULE_STATE_LIVE:
+> +               kunit_module_init(mod);
+>                 break;
+>         case MODULE_STATE_GOING:
+>                 kunit_module_exit(mod);
+>                 break;
+>         case MODULE_STATE_COMING:
+> -               kunit_module_init(mod);
+>                 break;
+>         case MODULE_STATE_UNFORMED:
+>                 break;
+>
+> base-commit: 33cc938e65a98f1d29d0a18403dbbee050dcad9a
+> --
+> 2.43.0
+>
 
-For example, if hugepd is recognized only by Linux kernel itself, maybe
-there can be some special pgtable hint that can be attached to the cont_*
-entries, showing whether it's a "real cont_*" entry or a "hugepd" entry?
-IIUC it can be quite flexible because if hugepd only works for hash MMU so
-no hardware will even walk that radix table.  But I can overlook important
-things here.
+--0000000000009d28bf060e6a22ba
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
 
-It'll be definitely great if hugepd can be merged into some existing forms
-like a generic pgtable (IMHO cont_* is such case: it's the same as no
-cont_* entries for softwares, while hardware can accelerate with TLB hits
-on larger ranges).  But I can be asking a very silly question here too, as
-I can overlook very important things.
-
-Thanks,
-
--- 
-Peter Xu
-
+MIIPqgYJKoZIhvcNAQcCoIIPmzCCD5cCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
+gg0EMIIEtjCCA56gAwIBAgIQeAMYYHb81ngUVR0WyMTzqzANBgkqhkiG9w0BAQsFADBMMSAwHgYD
+VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
+AxMKR2xvYmFsU2lnbjAeFw0yMDA3MjgwMDAwMDBaFw0yOTAzMTgwMDAwMDBaMFQxCzAJBgNVBAYT
+AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFz
+IFIzIFNNSU1FIENBIDIwMjAwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCvLe9xPU9W
+dpiHLAvX7kFnaFZPuJLey7LYaMO8P/xSngB9IN73mVc7YiLov12Fekdtn5kL8PjmDBEvTYmWsuQS
+6VBo3vdlqqXZ0M9eMkjcKqijrmDRleudEoPDzTumwQ18VB/3I+vbN039HIaRQ5x+NHGiPHVfk6Rx
+c6KAbYceyeqqfuJEcq23vhTdium/Bf5hHqYUhuJwnBQ+dAUcFndUKMJrth6lHeoifkbw2bv81zxJ
+I9cvIy516+oUekqiSFGfzAqByv41OrgLV4fLGCDH3yRh1tj7EtV3l2TngqtrDLUs5R+sWIItPa/4
+AJXB1Q3nGNl2tNjVpcSn0uJ7aFPbAgMBAAGjggGKMIIBhjAOBgNVHQ8BAf8EBAMCAYYwHQYDVR0l
+BBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFHzM
+CmjXouseLHIb0c1dlW+N+/JjMB8GA1UdIwQYMBaAFI/wS3+oLkUkrk1Q+mOai97i3Ru8MHsGCCsG
+AQUFBwEBBG8wbTAuBggrBgEFBQcwAYYiaHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL3Jvb3Ry
+MzA7BggrBgEFBQcwAoYvaHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvcm9vdC1y
+My5jcnQwNgYDVR0fBC8wLTAroCmgJ4YlaHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9yb290LXIz
+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
+7xDrOPfX3COqq162RFg/MFcGA1UdIARQME4wCQYHZ4EMAQUBATBBBgkrBgEEAaAyASgwNDAyBggr
+BgEFBQcCARYmaHR0cHM6Ly93d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wDAYDVR0TAQH/
+BAIwADCBmgYIKwYBBQUHAQEEgY0wgYowPgYIKwYBBQUHMAGGMmh0dHA6Ly9vY3NwLmdsb2JhbHNp
+Z24uY29tL2NhL2dzYXRsYXNyM3NtaW1lY2EyMDIwMEgGCCsGAQUFBzAChjxodHRwOi8vc2VjdXJl
+Lmdsb2JhbHNpZ24uY29tL2NhY2VydC9nc2F0bGFzcjNzbWltZWNhMjAyMC5jcnQwHwYDVR0jBBgw
+FoAUfMwKaNei6x4schvRzV2Vb4378mMwRgYDVR0fBD8wPTA7oDmgN4Y1aHR0cDovL2NybC5nbG9i
+YWxzaWduLmNvbS9jYS9nc2F0bGFzcjNzbWltZWNhMjAyMC5jcmwwDQYJKoZIhvcNAQELBQADggEB
+AK0lDd6/eSh3qHmXaw1YUfIFy07B25BEcTvWgOdla99gF1O7sOsdYaTz/DFkZI5ghjgaPJCovgla
+mRMfNcxZCfoBtsB7mAS6iOYjuwFOZxi9cv6jhfiON6b89QWdMaPeDddg/F2Q0bxZ9Z2ZEBxyT34G
+wlDp+1p6RAqlDpHifQJW16h5jWIIwYisvm5QyfxQEVc+XH1lt+taSzCfiBT0ZLgjB9Sg+zAo8ys6
+5PHxFaT2a5Td/fj5yJ5hRSrqy/nj/hjT14w3/ZdX5uWg+cus6VjiiR/5qGSZRjHt8JoApD6t6/tg
+ITv8ZEy6ByumbU23nkHTMOzzQSxczHkT+0q10/MxggJqMIICZgIBATBoMFQxCzAJBgNVBAYTAkJF
+MRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFzIFIz
+IFNNSU1FIENBIDIwMjACEAHS+TgZvH/tCq5FcDC0n9IwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZI
+hvcNAQkEMSIEIBiYDyCC/O89ptU6ntT70LtGso8A7nzhLj2fqsxf1IpSMBgGCSqGSIb3DQEJAzEL
+BgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTI0MDEwODA3Mjc1MFowaQYJKoZIhvcNAQkPMVww
+WjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkq
+hkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQAkZ5lu
+9MZY53R0aUdPmlanDJnrqB3PJdfG0OygtakjXPRt5Mzaajv14/QVg8A4iiSsaRYV4cg6vuKWT593
+fASVidbtzF/rN2J3glPR39Lbtb6Ye6TURS4n3GtQhm7S8Hd/LZaNcHPKMmWffnhTGtDnikTC5ZIU
+3qFXic3dDpQ84O4XZfShVlsoUeltjRspFjargAMbI7VAIjBKKIiSR7IPFmRMACoRbObIDhlJUcOA
+SaiO3BgAmYNzFGgYcyJP15sOHdoM+CwN3Vg0wbr7JNK6dAqf7XTFtBG8q1q369qR2Gkuhqpxb83g
+d0qAac+3mu2LExo1NWC+UvcGSWK3iUOs
+--0000000000009d28bf060e6a22ba--
 
