@@ -1,102 +1,81 @@
-Return-Path: <linux-kernel+bounces-19958-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19959-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B304827773
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 19:27:35 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BD3EF827776
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 19:27:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3A1272847B1
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 18:27:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 684F31F23A15
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 18:27:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6428354BDB;
-	Mon,  8 Jan 2024 18:27:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b="gyCpfHha"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DDF754F8D;
+	Mon,  8 Jan 2024 18:27:29 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from ms.lwn.net (ms.lwn.net [45.79.88.28])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EC2154BC0;
-	Mon,  8 Jan 2024 18:27:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lwn.net
-Received: from localhost (unknown [IPv6:2601:280:5e00:7e19::646])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by ms.lwn.net (Postfix) with ESMTPSA id 31CC5377;
-	Mon,  8 Jan 2024 18:27:23 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 31CC5377
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-	t=1704738443; bh=6A53Fmc3sg36fdjFQCDXxbk/Zai3VfsgTloQdrPblU0=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=gyCpfHhaEHCNty4eBaRFlalLNy3XXk1BRuvXBCi6xxtRGX5KwOVyclDy4guaOSw7X
-	 hxIXok/dNoDMJuNKSoxwdhio+8ayHPmNZhr65tB3MQuTHHbwUWT9n3f9sqtR4FggeW
-	 ZvONN6KwAVI/Awylp+0zxcaH7pf87kDzKthJpZnT/wRj8dWCX86u3vMwf5XiNty2A2
-	 3OMeYNKCl7rtqtiz4HiDtG0+XUw7z/AhpfoXSnI5kipWoIVjJ0i2rJwh5UO1kc/HEJ
-	 3hEJKM6lQja22SRObdBIGpnu88ntRCqFryGKE3sR99+jmVfAQC50g3QUZfRULRXLbl
-	 naMYuT7+fdC5w==
-From: Jonathan Corbet <corbet@lwn.net>
-To: Yueh-Shun Li <shamrocklee@posteo.net>
-Cc: Hu Haowen <src.res.211@gmail.com>, Alex Shi <alexs@kernel.org>, Yanteng
- Si <siyanteng@loongson.cn>, Randy Dunlap <rdunlap@infradead.org>,
- workflows@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/4] coding-style: show how reusing macros prevents
- naming collisions
-In-Reply-To: <eecb9fa3e0cd84fce0b2f9e5449888a0@posteo.net>
-References: <107b6b5e-ca14-4b2b-ba2e-38ecd74c0ad3@infradead.org>
- <20240108160746.177421-1-shamrocklee@posteo.net>
- <20240108160746.177421-3-shamrocklee@posteo.net>
- <871qaryel9.fsf@meer.lwn.net>
- <eecb9fa3e0cd84fce0b2f9e5449888a0@posteo.net>
-Date: Mon, 08 Jan 2024 11:27:22 -0700
-Message-ID: <87ederwuid.fsf@meer.lwn.net>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5340954BD7;
+	Mon,  8 Jan 2024 18:27:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1d542701796so5575345ad.1;
+        Mon, 08 Jan 2024 10:27:27 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704738446; x=1705343246;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=foK6GojmVN5cHJkPZwe/GjKQwChqN60GolaCvetvTnQ=;
+        b=Jr08JsocOAL6GPQ0196Ery6UMVU6mC3rj/MZ+yi/LHdE0wMKv2G6UhlLBwTpOAjcSv
+         ByMVKBOsnc76YQXgogX2YnHPhP9NHlfnlrlMIhI5PUWgfSRfX7nZAoz8sBvtttDeW6Uu
+         Y9zpb5T3ToYc4V7VvVx1AasTf6ZJXxvCSJhNJHZZyJcKPDb/YfdCgqZi/khu87wal76s
+         LGkQiNAkqx76pk9WC3MIrIuMTIwU0sNs0JjPgUqQHrjZXdE39mVSORdHBiQQCpxDnOXb
+         r+ZxVQV11RguyEl/F0GZFKKkVvzJvVCokjjwvXHb5CCxQGlCZ3NgDtrOn5UCVo96dY7A
+         8VVQ==
+X-Gm-Message-State: AOJu0YyDPv8D6DM9TPCtz2egYUR99r8pUi1JmjCp+7S7Ck1aO3dkYuQz
+	oVnF0ujZ7a9oJFKXm5EtsmU=
+X-Google-Smtp-Source: AGHT+IFZvfVF9hWJMJ7E58jI4gNUXscahK/pXAC7nJ10yV9YVSmbN1dji7Yjp31xMJwqtlcp7cas1w==
+X-Received: by 2002:a17:90a:a004:b0:28c:4b9:4fcc with SMTP id q4-20020a17090aa00400b0028c04b94fccmr1345664pjp.74.1704738446622;
+        Mon, 08 Jan 2024 10:27:26 -0800 (PST)
+Received: from localhost (fpd11144dd.ap.nuro.jp. [209.17.68.221])
+        by smtp.gmail.com with ESMTPSA id k13-20020a17090aaa0d00b0028d19ddb1afsm282269pjq.33.2024.01.08.10.27.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Jan 2024 10:27:26 -0800 (PST)
+Date: Tue, 9 Jan 2024 03:27:24 +0900
+From: Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+To: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	Michal Simek <michal.simek@amd.com>,
+	Thippeswamy Havalige <thippeswamy.havalige@amd.com>,
+	Bharat Kumar Gogada <bharat.kumar.gogada@amd.com>,
+	linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org, dan.carpenter@linaro.org,
+	kernel-janitors@vger.kernel.org, error27@gmail.com
+Subject: Re: [PATCH next] PCI: xilinx-xdma: Fix error code in
+ xilinx_pl_dma_pcie_init_irq_domain()
+Message-ID: <20240108182724.GA2638520@rocinante>
+References: <20231030072757.3236546-1-harshit.m.mogalapalli@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231030072757.3236546-1-harshit.m.mogalapalli@oracle.com>
 
-Yueh-Shun Li <shamrocklee@posteo.net> writes:
+Hello,
 
->> So everything we add to our documentation has a cost in terms of reader
->> attention.  We ask people to read through a lot of material now, and
->> should only increase that ask for good reason.
->> 
->> With that context, I have to wonder whether we really need to tell our
->> readers, who are supposed to be capable developers, that reuse can help
->> to avoid name collisions?
->> 
->
-> The motivation comes from existing inconsistency of the "__stringify()" 
-> macro
-> definition between e.g. "samples/bpf/tracex5.bpf.c" and other files.
->
-> I agree that increasing the length of the documentation without
-> substantial benefits would not be helpful for the readers, and
-> doubling the length of a section is too much for its purpose.
->
-> Should I shorten it into one sentence, like
->
-> ```
-> On the other hand, locally-defined variants, such as ``#define 
-> __stringify(x) #x``,
-> could lead to naming collisions that break otherwise functioning 
-> facilities.
-> ```
->
-> or just omit it in the next version of patches?
+> Return -ENOMEM instead of zero(success) when it fails to get IRQ domain.
 
-My own feeling (others may well disagree) is that this isn't worth
-mentioning in the coding-style document.  What you *could* do is to fix
-the redefinitions (if that hasn't happened yet) and make sure that the
-macros in question are covered in our kernel documentation.
+Applied to controller/xilinx, thank you!
 
-Thanks,
+[1/1] PCI: xilinx-xdma: Fix error code in xilinx_pl_dma_pcie_init_irq_domain()
+      https://git.kernel.org/pci/pci/c/2324be17b5e0
 
-jon
+	Krzysztof
 
