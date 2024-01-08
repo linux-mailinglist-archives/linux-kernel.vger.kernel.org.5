@@ -1,295 +1,166 @@
-Return-Path: <linux-kernel+bounces-19493-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19494-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3A707826DC4
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 13:26:17 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 969BB826DC7
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 13:27:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B990C1F22658
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 12:26:16 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F2759B20C1A
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 12:27:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92D4F405C8;
-	Mon,  8 Jan 2024 12:26:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2376A405CA;
+	Mon,  8 Jan 2024 12:26:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="fvoS5MCQ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E56B13FE4E;
-	Mon,  8 Jan 2024 12:26:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2AEAFC15;
-	Mon,  8 Jan 2024 04:26:49 -0800 (PST)
-Received: from FVFF77S0Q05N (unknown [10.57.89.149])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A62BB3F64C;
-	Mon,  8 Jan 2024 04:26:00 -0800 (PST)
-Date: Mon, 8 Jan 2024 12:25:55 +0000
-From: Mark Rutland <mark.rutland@arm.com>
-To: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Florent Revest <revest@chromium.org>,
-	linux-trace-kernel@vger.kernel.org,
-	LKML <linux-kernel@vger.kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>,
-	Sven Schnelle <svens@linux.ibm.com>,
-	Alexei Starovoitov <ast@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Alan Maguire <alan.maguire@oracle.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>
-Subject: Re: [PATCH v5 11/34] function_graph: Have the instances use their
- own ftrace_ops for filtering
-Message-ID: <ZZvp08OFIFbP3rnk@FVFF77S0Q05N>
-References: <170290509018.220107.1347127510564358608.stgit@devnote2>
- <170290522555.220107.1435543481968270637.stgit@devnote2>
- <ZZg3tlOynx7YVLGQ@FVFF77S0Q05N>
- <20240108101436.07509def635fbecf80a59ae6@kernel.org>
+Received: from mail-il1-f173.google.com (mail-il1-f173.google.com [209.85.166.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24E99405C3
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 12:26:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-il1-f173.google.com with SMTP id e9e14a558f8ab-3606f8417beso7191655ab.0
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 04:26:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1704716810; x=1705321610; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=esFbHJHXkt3d6VbeiojeTGg7fe/AX6HXvfjR+5ff6d0=;
+        b=fvoS5MCQey5VNFCJd/UugVa+isDm9wwhMojg2Ly7bZES+hOq0LFe9XJYKROy3q7lii
+         ZlmxsCcH66d7ApLkUd/iQbeGm3vP00VzyKWxHvZmVIrAG42NLkfZ8/ORpQEAW04LxWDx
+         7r7CWu3tHTPRDvYc6DCdTGWHhV7hZx1FGQpLG8rQ3pY8ARXcHqgjaN9ZuKGiyeMpZ5tR
+         o8nDsydlWq9LufNG5bpXSkSIrS+0IB9OB0qu7PhJz1ieI+/mOBBEKKiwQYh6zUqBgfD6
+         qKbqa5hdHu9IMDkDzLXuKuvr4eR6CDmP4y0X93yZ0a87RJTVhy+WlAKTjB7DCI7HtNY3
+         xJ5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704716810; x=1705321610;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=esFbHJHXkt3d6VbeiojeTGg7fe/AX6HXvfjR+5ff6d0=;
+        b=I917VMviJSh1z/L2q27SFJ4MWEcmIstlt9CVS6XDC/ry0OusqjMnRbYrRdgWqwlSCU
+         O1X8oNNv+/yKcNJSq/ZqpReTrLrPmbRyhObST1QfHDIfZl7+6y4YBK/iJB0ywQfMFUNN
+         zpuXQe2+PgDLWwY/dZokTq3ZvJJCaMo+BoBemnAxiaNwA+mt6ByoaElci+7rQRhbe/5G
+         wdM5cZZEz84oaBypGMQJKh9NnUPxhR4v7BQ1qz9Rspiy+/ByRrlrG4ybmbtnc/+j7Dob
+         18xef2X7CL1sx+vQHdfXPbDFQUrE7wGPB3cZHGJVA6PSl7bbfGtLObc6XKYLG1X/wrCR
+         8dfQ==
+X-Gm-Message-State: AOJu0Yw0nW6MOkR6Mkhw9grnYVCpFilyO6E73i1pr4SIZojKr2D6qMGJ
+	LvExBT2aOvMfyZdbJd4D52pZb3Dt5WQ6GQ==
+X-Google-Smtp-Source: AGHT+IG/pFf6iArnT0Hy1HxW2S+Cxe0Qktx5I7qCAZk+vWC5f0o4VloBZZNAnByyk4HtRKIlsGZp2g==
+X-Received: by 2002:a05:6e02:1d17:b0:35f:d487:986c with SMTP id i23-20020a056e021d1700b0035fd487986cmr3136619ila.6.1704716810302;
+        Mon, 08 Jan 2024 04:26:50 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.223.112])
+        by smtp.gmail.com with ESMTPSA id bk10-20020a056e02328a00b00360489b2977sm2502062ilb.83.2024.01.08.04.26.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 08 Jan 2024 04:26:49 -0800 (PST)
+Message-ID: <5fc52ff2-e903-46e6-a808-b4a41a76ad58@linaro.org>
+Date: Mon, 8 Jan 2024 13:26:43 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240108101436.07509def635fbecf80a59ae6@kernel.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH] dt-bindings: PCI: ti,j721e-pci-host: Add device-id
+ for TI's J784S4 SoC
+To: Siddharth Vadapalli <s-vadapalli@ti.com>, lpieralisi@kernel.org,
+ kw@linux.com, robh@kernel.org, bhelgaas@google.com,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
+Cc: linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ srk@ti.com
+References: <20240108050735.512445-1-s-vadapalli@ti.com>
+ <67af1724-6424-456a-aff6-85d9e010c430@linaro.org>
+ <bc3a0fb0-6268-476a-a13a-2d538704f61d@ti.com>
+ <7d3439c2-35e3-4318-aa99-af9b7c8ed53b@linaro.org>
+ <e4bd76d1-e5d9-4ff6-8917-db5784dea847@ti.com>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <e4bd76d1-e5d9-4ff6-8917-db5784dea847@ti.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hi,
-
-There's a bit more of an info-dump below; I'll go try to dump the fgraph shadow
-stack so that we can analyse this in more detail.
-
-On Mon, Jan 08, 2024 at 10:14:36AM +0900, Masami Hiramatsu wrote:
-> On Fri, 5 Jan 2024 17:09:10 +0000
-> Mark Rutland <mark.rutland@arm.com> wrote:
+On 08/01/2024 12:34, Siddharth Vadapalli wrote:
+>>>>
+>>>> Why is this patch incomplete? What is missing here? What are you asking
+>>>> about as RFC?
+>>>
+>>> Since the merge window is closed, I was hoping to get the patch reviewed in
+>>> order to get any "Reviewed-by" tags if possible. That way, I will be able to
+>>> post it again as v1 along with the tags when the merge window opens. For that
+>>
+>> This is v1, so that would be v2.
+>>
+>>> reason, I have marked it as an RFC patch. Is there an alternative to this "RFC
+>>> patch" method that I have followed? Please let me know.
+>>
+>> Then how does it differ from posting without RFC? Sorry, RFC is
+>> incomplete work. Often ignored during review.
 > 
-> > On Mon, Dec 18, 2023 at 10:13:46PM +0900, Masami Hiramatsu (Google) wrote:
-> > > From: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> > > 
-> > > Allow for instances to have their own ftrace_ops part of the fgraph_ops
-> > > that makes the funtion_graph tracer filter on the set_ftrace_filter file
-> > > of the instance and not the top instance.
-> > > 
-> > > This also change how the function_graph handles multiple instances on the
-> > > shadow stack. Previously we use ARRAY type entries to record which one
-> > > is enabled, and this makes it a bitmap of the fgraph_array's indexes.
-> > > Previous function_graph_enter() expects calling back from
-> > > prepare_ftrace_return() function which is called back only once if it is
-> > > enabled. But this introduces different ftrace_ops for each fgraph
-> > > instance and those are called from ftrace_graph_func() one by one. Thus
-> > > we can not loop on the fgraph_array(), and need to reuse the ret_stack
-> > > pushed by the previous instance. Finding the ret_stack is easy because
-> > > we can check the ret_stack->func. But that is not enough for the self-
-> > > recursive tail-call case. Thus fgraph uses the bitmap entry to find it
-> > > is already set (this means that entry is for previous tail call).
-> > > 
-> > > Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> > > Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> > 
-> > As a heads-up, while testing the topic/fprobe-on-fgraph branch on arm64, I get
-> > a warning which bisets down to this commit:
+> I was under the impression that posting patches when the merge window is closed
+> will be met with a "post your patch later when the merge window is open"
+> response. That is why I chose the "RFC patch" path since RFCs can be posted anytime.
 > 
-> Hmm, so does this happen when enabling function graph tracer?
+> For the Networking Subsystem, it is documented that patches with new features
+> shouldn't be posted when the merge window is closed. I have mostly posted
+> patches for the Networking Subsystem and am not sure about the rules for the
+> device-tree bindings and PCI Subsystems. To be on the safe side I posted this
+> patch as an RFC patch.
 
-Yes; I see it during the function_graph boot-time self-test if I also enable
-CONFIG_IRQSOFF_TRACER=y. I can also trigger it regardless of
-CONFIG_IRQSOFF_TRACER if I cat /proc/self/stack with the function_graph tracer
-enabled (note that I hacked the unwinder to continue after failing to recover a
-return address):
+Ah, so you want to go around that policy by posting non-RFC patch as
+RFC. It does not work like that.
 
-| # mount -t tracefs none /sys/kernel/tracing/
-| # echo function_graph > /sys/kernel/tracing/current_tracer
-| # cat /proc/self/stack
-| [   37.469980] ------------[ cut here ]------------
-| [   37.471503] WARNING: CPU: 2 PID: 174 at arch/arm64/kernel/stacktrace.c:84 arch_stack_walk+0x2d8/0x338
-| [   37.474381] Modules linked in:
-| [   37.475501] CPU: 2 PID: 174 Comm: cat Not tainted 6.7.0-rc2-00026-gea1e68a341c2-dirty #15
-| [   37.478133] Hardware name: linux,dummy-virt (DT)
-| [   37.479670] pstate: 60400005 (nZCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-| [   37.481923] pc : arch_stack_walk+0x2d8/0x338
-| [   37.483373] lr : arch_stack_walk+0x1bc/0x338
-| [   37.484818] sp : ffff8000835f3a90
-| [   37.485974] x29: ffff8000835f3a90 x28: ffff8000835f3b80 x27: ffff8000835f3b38
-| [   37.488405] x26: ffff000004341e00 x25: ffff8000835f4000 x24: ffff80008002df18
-| [   37.490842] x23: ffff80008002df18 x22: ffff8000835f3b60 x21: ffff80008015d240
-| [   37.493269] x20: ffff8000835f3b50 x19: ffff8000835f3b40 x18: 0000000000000000
-| [   37.495704] x17: 0000000000000000 x16: 0000000000000000 x15: 0000000000000000
-| [   37.498144] x14: 0000000000000000 x13: 0000000000000000 x12: 0000000000000000
-| [   37.500579] x11: ffff800082b4d920 x10: ffff8000835f3a70 x9 : ffff8000800e55a0
-| [   37.503021] x8 : ffff80008002df18 x7 : ffff000004341e00 x6 : 00000000ffffffff
-| [   37.505452] x5 : 0000000000000000 x4 : ffff8000835f3e48 x3 : ffff8000835f3b80
-| [   37.507888] x2 : ffff80008002df18 x1 : ffff000007f7b000 x0 : ffff80008002df18
-| [   37.510319] Call trace:
-| [   37.511202]  arch_stack_walk+0x2d8/0x338
-| [   37.512541]  stack_trace_save_tsk+0x90/0x110
-| [   37.514012]  return_to_handler+0x0/0x48
-| [   37.515336]  return_to_handler+0x0/0x48
-| [   37.516657]  return_to_handler+0x0/0x48
-| [   37.517985]  return_to_handler+0x0/0x48
-| [   37.519305]  return_to_handler+0x0/0x48
-| [   37.520623]  return_to_handler+0x0/0x48
-| [   37.521957]  return_to_handler+0x0/0x48
-| [   37.523272]  return_to_handler+0x0/0x48
-| [   37.524595]  return_to_handler+0x0/0x48
-| [   37.525931]  return_to_handler+0x0/0x48
-| [   37.527254]  return_to_handler+0x0/0x48
-| [   37.528564]  el0t_64_sync_handler+0x120/0x130
-| [   37.530046]  el0t_64_sync+0x190/0x198
-| [   37.531310] ---[ end trace 0000000000000000 ]---
-| [<0>] ftrace_stub_graph+0x8/0x8
-| [<0>] ftrace_stub_graph+0x8/0x8
-| [<0>] ftrace_stub_graph+0x8/0x8
-| [<0>] ftrace_stub_graph+0x8/0x8
-| [<0>] ftrace_stub_graph+0x8/0x8
-| [<0>] ftrace_stub_graph+0x8/0x8
-| [<0>] ftrace_stub_graph+0x8/0x8
-| [<0>] ftrace_stub_graph+0x8/0x8
-| [<0>] ftrace_stub_graph+0x8/0x8
-| [<0>] ftrace_stub_graph+0x8/0x8
-| [<0>] ftrace_stub_graph+0x8/0x8
-| [<0>] el0t_64_sync_handler+0x120/0x130
-| [<0>] el0t_64_sync+0x190/0x198
+Best regards,
+Krzysztof
 
-One interesting thing there is that there are two distinct failure modes: the
-unwind for the WARNING gives return_to_handler instead of the original return
-address, and the unwind returned from /proc/self/stack gives ftrace_stub_graph
-rather than the original return address.
-
-> > 
-> > | Testing tracer function_graph: 
-> > | ------------[ cut here ]------------
-> > | WARNING: CPU: 2 PID: 0 at arch/arm64/kernel/stacktrace.c:84 arch_stack_walk+0x3c0/0x3d8
-> > | Modules linked in:
-> > | CPU: 2 PID: 0 Comm: swapper/2 Not tainted 6.7.0-rc2-00026-gea1e68a341c2 #12
-> > | Hardware name: linux,dummy-virt (DT)
-> > | pstate: 604000c5 (nZCv daIF +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-> > | pc : arch_stack_walk+0x3c0/0x3d8
-> > | lr : arch_stack_walk+0x260/0x3d8
-> > | sp : ffff80008318be00
-> > | x29: ffff80008318be00 x28: ffff000003c0ae80 x27: 0000000000000000
-> > | x26: 0000000000000000 x25: ffff000003c0ae80 x24: 0000000000000000
-> > | x23: ffff8000800234c8 x22: ffff80008002dc30 x21: ffff800080035d10
-> > | x20: ffff80008318bee8 x19: ffff800080023460 x18: ffff800083453c68
-> > | x17: 0000000000000000 x16: ffff800083188000 x15: 000000008ccc5058
-> > | x14: 0000000000000004 x13: ffff800082b8c4f0 x12: 0000000000000000
-> > | x11: ffff800081fba9b0 x10: ffff80008318bff0 x9 : ffff800080010798
-> > | x8 : ffff80008002dc30 x7 : ffff000003c0ae80 x6 : 00000000ffffffff
-> > | x5 : 0000000000000000 x4 : ffff8000832a3c18 x3 : ffff80008318bff0
-> > | x2 : ffff80008002dc30 x1 : ffff80008002dc30 x0 : ffff80008002dc30
-> > | Call trace:
-> > |  arch_stack_walk+0x3c0/0x3d8
-> > |  return_address+0x40/0x80
-> > |  trace_hardirqs_on+0x8c/0x198
-> > |  __do_softirq+0xe8/0x440
-> > | ---[ end trace 0000000000000000 ]---
-
-With the smae hack to continue after failing to recover a return address, the
-failure in the selftest looks like:
-
-| ------------[ cut here ]------------
-| WARNING: CPU: 7 PID: 0 at arch/arm64/kernel/stacktrace.c:84 arch_stack_walk+0x2d8/0x338
-| Modules linked in:
-| CPU: 7 PID: 0 Comm: swapper/7 Not tainted 6.7.0-rc2-00026-gea1e68a341c2-dirty #14
-| Hardware name: linux,dummy-virt (DT)
-| pstate: 604000c5 (nZCv daIF +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-| pc : arch_stack_walk+0x2d8/0x338
-| lr : arch_stack_walk+0x1bc/0x338
-| sp : ffff8000830c3e20
-| x29: ffff8000830c3e20 x28: ffff8000830c3ff0 x27: ffff8000830c3ec8
-| x26: ffff0000037e0000 x25: ffff8000830c4000 x24: ffff80008002e080
-| x23: ffff80008002e080 x22: ffff8000830c3ee8 x21: ffff800080023418
-| x20: ffff8000830c3f50 x19: ffff8000830c3f40 x18: ffffffffffffffff
-| x17: 0000000000000000 x16: ffff8000830c0000 x15: 0000000000000000
-| x14: 0000000000000002 x13: ffff8000800360f8 x12: ffff800080028330
-| x11: ffff800081f4a978 x10: ffff8000830c3ff0 x9 : ffff800080010798
-| x8 : ffff80008002e080 x7 : ffff0000037e0000 x6 : 00000000ffffffff
-| x5 : 0000000000000000 x4 : ffff8000831dbc18 x3 : ffff8000830c3ff0
-| x2 : ffff80008002e080 x1 : ffff0000040a3000 x0 : ffff80008002e080
-| Call trace:
-|  arch_stack_walk+0x2d8/0x338
-|  return_address+0x40/0x80
-|  trace_hardirqs_on+0x8c/0x198
-|  __do_softirq+0xe8/0x43c
-|  return_to_handler+0x0/0x48
-|  return_to_handler+0x0/0x48
-|  do_softirq_own_stack+0x24/0x38
-|  return_to_handler+0x0/0x48
-|  el1_interrupt+0x38/0x68
-|  el1h_64_irq_handler+0x18/0x28
-|  el1h_64_irq+0x64/0x68
-|  default_idle_call+0x70/0x178
-|  do_idle+0x228/0x290
-|  cpu_startup_entry+0x40/0x50
-|  secondary_start_kernel+0x138/0x160
-|  __secondary_switched+0xb8/0xc0
-| ---[ end trace 0000000000000000 ]---
-
-The portion of the trace with:
-
-	__do_softirq+0xe8/0x43c
-	return_to_handler+0x0/0x48
-	return_to_handler+0x0/0x48
-	do_softirq_own_stack+0x24/0x38
-
-... should be something like:
-
-	__do_softirq
-	____do_softirq
-	call_on_irq_stack	// asm trampoline, not traceable
-	do_softirq_own_stack
-
-The generated assembly for do_softirq_own_stack(), ____do_softirq(), and
-__do_softirq() is as I'd expect with no tail calls, so I can't see an obvious
-reason the return address cannot be recovered correctly.
-
-> > That's a warning in arm64's unwind_recover_return_address() function, which
-> > fires when ftrace_graph_ret_addr() finds return_to_handler:
-> > 
-> > 	if (state->task->ret_stack &&
-> > 	    (state->pc == (unsigned long)return_to_handler)) {
-> > 		unsigned long orig_pc;
-> > 		orig_pc = ftrace_graph_ret_addr(state->task, NULL, state->pc,
-> > 						(void *)state->fp);
-> > 		if (WARN_ON_ONCE(state->pc == orig_pc))
-> > 			return -EINVAL;
-> > 		state->pc = orig_pc;
-> > 	}
-> > 
-> > The rationale there is that since tail calls are (currently) disabled on arm64,
-> > the only reason for ftrace_graph_ret_addr() to return return_to_handler is when
-> > it fails to find the original return address.
-> 
-> Yes. what about FP check?
-
-Do you mean HAVE_FUNCTION_GRAPH_FP_TEST?
-
-That is enabled, and there are warnings from ftrace_pop_return_trace(), so I
-believe push/pop is balanced.
-
-We also have HAVE_FUNCTION_GRAPH_RET_ADDR_PTR, but since the return address is
-not on the stack at the point function-entry is intercepted we use the FP as
-the retp value -- in the absence of tail calls this will be different between a
-caller and callee.
-
-> > Does this change make it legitimate for ftrace_graph_ret_addr() to return
-> > return_to_handler in other cases, or is that a bug?
-> 
-> It should be a bug to be fixed.
-
-Cool; thanks for confirming!
-
-> > Either way, we'll need *some* way to recover the original return addresss...
-> 
-> At least it needs to dump the shadow stack so that we can analyze what
-> happened. 
-
-Sounds like a plan; as above I'll have a go at putting that together and will
-dump the results here.
-
-Thanks for the help! :)
-
-Mark.
 
