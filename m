@@ -1,144 +1,150 @@
-Return-Path: <linux-kernel+bounces-20073-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20074-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3DC348278F6
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 21:15:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8474C827900
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 21:16:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C900028452D
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 20:15:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 24CF41F2382E
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 20:16:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1D7F5577D;
-	Mon,  8 Jan 2024 20:15:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A34955789;
+	Mon,  8 Jan 2024 20:16:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="LKhezgAj"
+	dkim=pass (1024-bit key) header.d=amarulasolutions.com header.i=@amarulasolutions.com header.b="AZCTdL+C"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B69B655771
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 20:15:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 408KCVga003096;
-	Mon, 8 Jan 2024 20:15:09 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=bOUKNttGfktqe7VE8ZoTU5OPnxZCVqzq7LfDcVymoE8=; b=LK
-	hezgAjvBK7rWq12it0R3vj7GnsfzgVRI+PMwKa9QUmrpfTKio9114BT89Vh2/3nf
-	GQaI135oiUlBTKkl0r8WbYhxGHAsWYX+XeDPjF+dKmmY6RN6qAbEzuPjOPwM4WG1
-	6A8GqvFVKGRf9z5dAKylmle6g2rHOMj996Yxi+P47ahhIG3KX6/la58zGn3BIc9K
-	Aj00y2kdasqsfjhwoLOrIzuWAeqh6HtrjTDC33tlcNBXETi7I8xDjw7uqVBVKqua
-	rz+7R4eWRfoQqt3AExnSAQHm6FvbbeDHhko8gdixwbbbVhe1VJbOK3sxRg/DSB6u
-	IlhRcL97W7i5QE070Nig==
-Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vgq2yr3x3-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 08 Jan 2024 20:15:08 +0000 (GMT)
-Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
-	by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 408KF7xE010645
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 8 Jan 2024 20:15:07 GMT
-Received: from [10.110.48.152] (10.80.80.8) by nasanex01c.na.qualcomm.com
- (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 8 Jan
- 2024 12:15:06 -0800
-Message-ID: <ca270573-5527-6df0-3fed-17e8c54b4f89@quicinc.com>
-Date: Mon, 8 Jan 2024 12:15:05 -0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DB2555771
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 20:16:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=amarulasolutions.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amarulasolutions.com
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-553ba2f0c8fso2564127a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 12:16:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amarulasolutions.com; s=google; t=1704744982; x=1705349782; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=470HE3R0eHCn9Vp1B3I9DAfMXHgYPXc2oiMu7MIw+p8=;
+        b=AZCTdL+C+QWLrlpFyDrHghwCm+opJPFKDJNV+ZBFCnZzbPZXLaLIdNRjpLUjJVCLX8
+         GksXzsIj4G2eR9Js8fH+Ky8iZbW1dl8yaHHcI7cGrrX0HvqVRZPPfbKj2vZhypRAgj2l
+         MwMZZgaixPgmCF6UqETd35PjeyDlw50tx0/Lc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704744982; x=1705349782;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=470HE3R0eHCn9Vp1B3I9DAfMXHgYPXc2oiMu7MIw+p8=;
+        b=EZTTevLPltS+ORjHgM0k5GEeVtN1HsLegb6SD0SB66ysAoG/AT7s/mQqXDAkvf+/hr
+         qnTEgaW7JmPBkRz4Ub3CgXEZe1XPy+VIH/10XaTwZEGeKAsDIbMziIU9F7GbJSnbIg6w
+         vpkbp06BB/sgzO5TFclN6mkQC7s91Zh+pcv+rFBDJICKr/OCnyeAcUGYCDL+1j2nGlVx
+         3Z1+P1vUvO63UFkoijYJPU5Y9pgMW7HjemV3CQl7IHzhp0GDhFt0F4MVZ6BSOfPsgZQ0
+         ng8+ZHSQDelOaUS2gX7wKJubKRQ+oHhUV0+wu3fdZbH1xdaBA4BMswjV9ljNEWqwMidf
+         F3eg==
+X-Gm-Message-State: AOJu0YwU4EUwJTMftTmC+4saVd2m06FzzuNOZWq8w1HEDukQXtKNvx2C
+	xlI1Tc3C3olXZmXvb3/HUpI+E+pLLSQe24mC9/1TtQsYMfc=
+X-Google-Smtp-Source: AGHT+IF2ZasPZ/p6zpGvkUuRiRHfFlzGs6nWLvVv8dVV9W/VrEMy2+3FKeFaVhCTnVVhkhLLqSbRDQ==
+X-Received: by 2002:a50:8acb:0:b0:557:8ab7:40 with SMTP id k11-20020a508acb000000b005578ab70040mr1035120edk.168.1704744981995;
+        Mon, 08 Jan 2024 12:16:21 -0800 (PST)
+Received: from dario-ThinkPad-T14s-Gen-2i.homenet.telecomitalia.it (host-87-2-38-81.retail.telecomitalia.it. [87.2.38.81])
+        by smtp.gmail.com with ESMTPSA id by26-20020a0564021b1a00b00555fd008741sm173699edb.95.2024.01.08.12.16.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Jan 2024 12:16:21 -0800 (PST)
+From: Dario Binacchi <dario.binacchi@amarulasolutions.com>
+To: linux-kernel@vger.kernel.org
+Cc: linux-amarula@amarulasolutions.com,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Dario Binacchi <dario.binacchi@amarulasolutions.com>,
+	Andre Przywara <andre.przywara@arm.com>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Daniel Vetter <daniel@ffwll.ch>,
+	David Airlie <airlied@gmail.com>,
+	Jessica Zhang <quic_jesszhan@quicinc.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Lee Jones <lee@kernel.org>,
+	=?UTF-8?q?Leonard=20G=C3=B6hrs?= <l.goehrs@pengutronix.de>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Peter Rosin <peda@axentia.se>,
+	Rob Herring <robh+dt@kernel.org>,
+	Sam Ravnborg <sam@ravnborg.org>,
+	Sean Nyekjaer <sean@geanix.com>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	devicetree@vger.kernel.org,
+	dri-devel@lists.freedesktop.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-stm32@st-md-mailman.stormreply.com
+Subject: [PATCH v5 0/8] Add display support for stm32f769-disco board
+Date: Mon,  8 Jan 2024 21:15:45 +0100
+Message-ID: <20240108201618.2798649-1-dario.binacchi@amarulasolutions.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH] mm,page_alloc,cma: configurable CMA utilization
-Content-Language: en-US
-To: Roman Gushchin <roman.gushchin@linux.dev>
-CC: Minchan Kim <minchan@kernel.org>,
-        Chris Goldsworthy
-	<quic_cgoldswo@quicinc.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Rik
- van Riel" <riel@surriel.com>, Roman Gushchin <guro@fb.com>,
-        Vlastimil Babka
-	<vbabka@suse.cz>, Joonsoo Kim <js1304@gmail.com>,
-        Georgi Djakov
-	<quic_c_gdjako@quicinc.com>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20230131071052.GB19285@hu-sbhattip-lv.qualcomm.com>
- <Y9lZoI89Nw4bjjOZ@P9FQF9L96D.corp.robot.car>
- <20230131201001.GA8585@hu-sbhattip-lv.qualcomm.com>
- <Y9mraBHucYdnHXiS@P9FQF9L96D.corp.robot.car>
- <20230201040628.GA3767@hu-cgoldswo-sd.qualcomm.com>
- <Y9r6LtMOPHfxr7UL@google.com>
- <b9b5b669-0318-93c8-c6a0-dbbb797320f2@quicinc.com>
- <ZZiZVnJpOpt1DAq1@P9FQF9L96D.corp.robot.car>
-From: Sukadev Bhattiprolu <quic_sukadev@quicinc.com>
-In-Reply-To: <ZZiZVnJpOpt1DAq1@P9FQF9L96D.corp.robot.car>
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01c.na.qualcomm.com (10.45.79.139)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: QpD1E0sTmcBht6Zd9wSEJMF_DFTKWM_j
-X-Proofpoint-ORIG-GUID: QpD1E0sTmcBht6Zd9wSEJMF_DFTKWM_j
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 adultscore=0
- lowpriorityscore=0 impostorscore=0 bulkscore=0 malwarescore=0
- mlxlogscore=793 clxscore=1015 priorityscore=1501 phishscore=0 mlxscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2401080167
 
+The series adds display support for the stm32f769-disco board. It has been
+tested on hardware revisions MB1225-B03 and MB1166-A09. This required
+modifications to the nt35510 driver. As I do not have the Hydis HVA40WV1
+display, it would be better if someone tested the driver in that
+configuration.
 
-On 1/5/2024 4:05 PM, Roman Gushchin wrote:
-> I'm not sure there is a "one size fits all" solution here. 
-agree - that's why we are thinking a configurable cma utilization would be
-useful.
-> There are two distinctive cases:
-> 1) A relatively small cma area used for a specific purpose. This is how cma
->    was used until recently. And it was barely used by the kernel for non-cma
->    allocations.
-> 2) A relatively large cma area which is used to allocate gigantic hugepages
->    and as an anti-fragmentation mechanism in general (basically as a movable
->    zone). In this case it might be preferable to use cma for movable
->    allocations, because the space for non-movable allocations might be limited.
->
-> I see two options here:
-> 1) introduce per-cma area flags which will define the usage policy
-Could you please elaborate on this - how would we use the per-cma flags
-when allocating pages?
-> 2) redesign the page allocator to better take care of fragmentation at 1Gb scale
->
-> The latter is obviously not a small endeavour.
-> The fundamentally missing piece is a notion of an anti-fragmentation cost.
-> E.g. how much work does it makes sense to put into page migration
-> before "polluting" a new large block of memory with an unmovable folio.
+Changes in v5:
+- Add Acked-by tag of Krzysztof Kozlowski
+- Add Reviewed-by tag of Linus Walleij
+- Replace NT35510_ROTATE_180_SETTING with NT35510_ROTATE_0_SETTING
+- Add Reviewed-by tag of Linus Walleij
+- Tested-by tag of Linus Walleij
+- Replace GPIOD_ASIS with GPIOD_OUT_HIGH in the call to devm_gpiod_get_optional().
 
-Stepping back, we are trying to solve for a situation where system:
-        - has lot of movable allocs in zone normal
-        - has lot of idle memory in CMA region
-        - but is low on memory for unmovable allocs, leading to oom-kills
+Changes in v4:
+- Put the "enum" list in alphabetical order
 
-On devices where cma region is mostly idle, allocating movable pages from
-the cma region would have lesser overhead?
+Changes in v3:
+- Use "enum" to have less code changed
 
-IIUC, this redesign for smarter migration would be in addition to or in
-parallel to the CMA utilization right?
+Changes in v2:
+- Add Acked-by tag of Conor Dooley
+- Add a dash in front of each "items:"
+- Change the status of panel_backlight node to "disabled"
+- Delete backlight property from panel0 node.
+- Re-write the patch [7/8] "drm/panel: nt35510: refactor panel initialization"
+  in the same style as the original driver in order to maintain the same
+  structure.
+- Re-write the patch [8/8] "drm/panel: nt35510: support FRIDA FRD400B25025-A-CTK"
+  in the same style as the original driver.
 
-Thanks,
+Dario Binacchi (8):
+  dt-bindings: mfd: stm32f7: Add binding definition for DSI
+  ARM: dts: stm32: add DSI support on stm32f769
+  ARM: dts: stm32: rename mmc_vcard to vcc-3v3 on stm32f769-disco
+  ARM: dts: stm32: add display support on stm32f769-disco
+  dt-bindings: nt35510: add compatible for FRIDA FRD400B25025-A-CTK
+  ARM: dts: add stm32f769-disco-mb1225-revb03-mb1166-reva09
+  drm/panel: nt35510: move hardwired parameters to configuration
+  drm/panel: nt35510: support FRIDA FRD400B25025-A-CTK
 
-Sukadev
+ .../display/panel/novatek,nt35510.yaml        |   4 +-
+ arch/arm/boot/dts/st/Makefile                 |   1 +
+ ...f769-disco-mb1225-revb03-mb1166-reva09.dts |  18 +
+ arch/arm/boot/dts/st/stm32f769-disco.dts      |  78 +++-
+ arch/arm/boot/dts/st/stm32f769.dtsi           |  21 +
+ drivers/gpu/drm/panel/panel-novatek-nt35510.c | 424 +++++++++++++++---
+ include/dt-bindings/mfd/stm32f7-rcc.h         |   1 +
+ 7 files changed, 485 insertions(+), 62 deletions(-)
+ create mode 100644 arch/arm/boot/dts/st/stm32f769-disco-mb1225-revb03-mb1166-reva09.dts
+ create mode 100644 arch/arm/boot/dts/st/stm32f769.dtsi
 
+-- 
+2.43.0
 
->
-> Thanks!
 
