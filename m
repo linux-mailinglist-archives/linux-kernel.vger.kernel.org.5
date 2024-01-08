@@ -1,140 +1,183 @@
-Return-Path: <linux-kernel+bounces-19899-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19902-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 68914827667
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 18:37:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B68D827671
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 18:41:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 097A3B213B1
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 17:37:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1765E1C21ADF
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 17:41:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA3EF54BCA;
-	Mon,  8 Jan 2024 17:34:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PMTO9m5j"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 881CE55C01;
+	Mon,  8 Jan 2024 17:35:38 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B86B54725;
-	Mon,  8 Jan 2024 17:34:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 19C6BC433C7;
-	Mon,  8 Jan 2024 17:34:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704735264;
-	bh=WxF3mMEMLyJMj2C6OKuTs7PD9Vj4XTLWmmz+TPw4bh0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=PMTO9m5jCUZETuKErYC+dV7OLZJ+YU4xfDxmzZiT58AzrzQQ9lIAx5+fwI7pfZFLv
-	 qjZ4HVEJzOmsn6XaBD910G62BsXIy/BDmmbj2K8ic1r049YzHl3wggXHNqL/ghQcHE
-	 7N7o97BvHDTIUyIVv77sZh+tusVjRUNIqf3hy967MLWxQr+O0OgGwzg0YbjowKS3VF
-	 dTYMO5I3buWvcTk5GrQTQGD3JAwAehjIc3mFgy41AFSPdkdehALdnhCMex7BkSzvMs
-	 OHC5W3Bq4MM0n0F/VnYEnDtwyF4BmhmJRxUaPzIWNe8S+56BZJwH5JBJS5pgGFa30U
-	 KnM9gSl54vojQ==
-Date: Mon, 8 Jan 2024 17:34:18 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Emil Renner Berthing <emil.renner.berthing@canonical.com>
-Cc: linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-riscv@lists.infradead.org,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Jisheng Zhang <jszhang@kernel.org>, Guo Ren <guoren@kernel.org>,
-	Fu Wei <wefu@redhat.com>, Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Drew Fustini <dfustini@baylibre.com>
-Subject: Re: [PATCH v2 3/8] riscv: dts: thead: Add TH1520 pin control nodes
-Message-ID: <20240108-majorette-overtly-4ec65d0a15e9@spud>
-References: <20240103132852.298964-1-emil.renner.berthing@canonical.com>
- <20240103132852.298964-4-emil.renner.berthing@canonical.com>
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6496B5466A
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 17:35:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BDBE3C15;
+	Mon,  8 Jan 2024 09:36:20 -0800 (PST)
+Received: from [10.57.42.133] (unknown [10.57.42.133])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6DE003F73F;
+	Mon,  8 Jan 2024 09:35:33 -0800 (PST)
+Message-ID: <c9cf02b5-7add-46ea-8db1-46fdce191c1c@arm.com>
+Date: Mon, 8 Jan 2024 17:35:26 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="8Qj2RGfy2RprKGUu"
-Content-Disposition: inline
-In-Reply-To: <20240103132852.298964-4-emil.renner.berthing@canonical.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 0/2] iommu/iova: Make the rcache depot properly
+ flexible
+Content-Language: en-GB
+To: Ido Schimmel <idosch@idosch.org>
+Cc: joro@8bytes.org, will@kernel.org, iommu@lists.linux.dev,
+ linux-kernel@vger.kernel.org, zhangzekun11@huawei.com,
+ john.g.garry@oracle.com, dheerajkumar.srivastava@amd.com, jsnitsel@redhat.com
+References: <cover.1694535580.git.robin.murphy@arm.com>
+ <ZY1osaGLyT-sdKE8@shredder>
+From: Robin Murphy <robin.murphy@arm.com>
+In-Reply-To: <ZY1osaGLyT-sdKE8@shredder>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
+On 2023-12-28 12:23 pm, Ido Schimmel wrote:
+> On Tue, Sep 12, 2023 at 05:28:04PM +0100, Robin Murphy wrote:
+>> v2: https://lore.kernel.org/linux-iommu/cover.1692641204.git.robin.murphy@arm.com/
+>>
+>> Hi all,
+>>
+>> I hope this is good to go now, just fixed the locking (and threw
+>> lockdep at it to confirm, which of course I should have done to begin
+>> with...) and picked up tags.
+> 
+> Hi,
+> 
+> After pulling the v6.7 changes we started seeing the following memory
+> leaks [1] of 'struct iova_magazine'. I'm not sure how to reproduce it,
+> which is why I didn't perform bisection. However, looking at the
+> mentioned code paths, they seem to have been changed in v6.7 as part of
+> this patchset. I reverted both patches and didn't see any memory leaks
+> when running a full regression (~10 hours), but I will repeat it to be
+> sure.
+> 
+> Any idea what could be the problem?
 
---8Qj2RGfy2RprKGUu
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hmm, we've got what looks to be a set of magazines forming a plausible 
+depot list (or at least the tail end of one):
 
-On Wed, Jan 03, 2024 at 02:28:40PM +0100, Emil Renner Berthing wrote:
-> Add nodes for pin controllers on the T-Head TH1520 RISC-V SoC.
->=20
-> Signed-off-by: Emil Renner Berthing <emil.renner.berthing@canonical.com>
-> ---
->  .../boot/dts/thead/th1520-beaglev-ahead.dts   |  4 ++++
->  .../dts/thead/th1520-lichee-module-4a.dtsi    |  4 ++++
->  arch/riscv/boot/dts/thead/th1520.dtsi         | 24 +++++++++++++++++++
->  3 files changed, 32 insertions(+)
->=20
-> diff --git a/arch/riscv/boot/dts/thead/th1520-beaglev-ahead.dts b/arch/ri=
-scv/boot/dts/thead/th1520-beaglev-ahead.dts
-> index 70e8042c8304..6c56318a8705 100644
-> --- a/arch/riscv/boot/dts/thead/th1520-beaglev-ahead.dts
-> +++ b/arch/riscv/boot/dts/thead/th1520-beaglev-ahead.dts
-> @@ -44,6 +44,10 @@ &osc_32k {
->  	clock-frequency =3D <32768>;
->  };
-> =20
-> +&aonsys_clk {
-> +	clock-frequency =3D <73728000>;
-> +};
-> +
->  &apb_clk {
->  	clock-frequency =3D <62500000>;
->  };
-> diff --git a/arch/riscv/boot/dts/thead/th1520-lichee-module-4a.dtsi b/arc=
-h/riscv/boot/dts/thead/th1520-lichee-module-4a.dtsi
-> index a802ab110429..9865925be372 100644
-> --- a/arch/riscv/boot/dts/thead/th1520-lichee-module-4a.dtsi
-> +++ b/arch/riscv/boot/dts/thead/th1520-lichee-module-4a.dtsi
-> @@ -25,6 +25,10 @@ &osc_32k {
->  	clock-frequency =3D <32768>;
->  };
-> =20
-> +&aonsys_clk {
-> +	clock-frequency =3D <73728000>;
-> +};
-> +
->  &apb_clk {
->  	clock-frequency =3D <62500000>;
->  };
-> diff --git a/arch/riscv/boot/dts/thead/th1520.dtsi b/arch/riscv/boot/dts/=
-thead/th1520.dtsi
-> index ba4d2c673ac8..e65a306ff575 100644
-> --- a/arch/riscv/boot/dts/thead/th1520.dtsi
-> +++ b/arch/riscv/boot/dts/thead/th1520.dtsi
-> @@ -134,6 +134,12 @@ osc_32k: 32k-oscillator {
->  		#clock-cells =3D <0>;
->  	};
-> =20
-> +	aonsys_clk: aonsys-clk {
-> +		compatible =3D "fixed-clock";
-> +		clock-output-names =3D "aonsys_clk";
-> +		#clock-cells =3D <0>;
-> +	};
+ffff8881411f9000 -> ffff8881261c1000
 
-Did this stuff sneak into this commit accidentally?
+ffff8881261c1000 -> ffff88812be26400
 
---8Qj2RGfy2RprKGUu
-Content-Type: application/pgp-signature; name="signature.asc"
+ffff88812be26400 -> ffff8188392ec000
 
------BEGIN PGP SIGNATURE-----
+ffff8188392ec000 -> ffff8881a5301000
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZZwyGgAKCRB4tDGHoIJi
-0rwgAP97KBxIGWgOemMO6hdqRmD/8ZxeJ0E6JqevM07cpZ+KvgD/UbJ+65Y7gDdm
-xrA0pClmQVdKxcDVsF7lpqNgBw4K4As=
-=LWOW
------END PGP SIGNATURE-----
+ffff8881a5301000 -> NULL
 
---8Qj2RGfy2RprKGUu--
+which I guess has somehow become detached from its rcache->depot without 
+being freed properly? However I'm struggling to see any conceivable way 
+that could happen which wouldn't already be more severely broken in 
+other ways as well (i.e. either general memory corruption or someone 
+somehow still trying to use the IOVA domain while it's being torn down).
+
+Out of curiosity, does reverting just patch #2 alone make a difference? 
+And is your workload doing anything "interesting" in relation to IOVA 
+domain lifetimes, like creating and destroying SR-IOV virtual functions, 
+changing IOMMU domain types via sysfs, or using that horrible vdpa 
+thing, or are you seeing this purely from regular driver DMA API usage?
+
+Thanks,
+Robin.
+
+> 
+> Thanks
+> 
+> [1]
+> unreferenced object 0xffff8881a5301000 (size 1024):
+>    comm "softirq", pid 0, jiffies 4306297099 (age 462.991s)
+>    hex dump (first 32 bytes):
+>      00 00 00 00 00 00 00 00 e7 7d 05 00 00 00 00 00  .........}......
+>      0f b4 05 00 00 00 00 00 b4 96 05 00 00 00 00 00  ................
+>    backtrace:
+>      [<ffffffff819f5f08>] __kmem_cache_alloc_node+0x1e8/0x320
+>      [<ffffffff818a239a>] kmalloc_trace+0x2a/0x60
+>      [<ffffffff8231d31e>] free_iova_fast+0x28e/0x4e0
+>      [<ffffffff82310860>] fq_ring_free_locked+0x1b0/0x310
+>      [<ffffffff8231225d>] fq_flush_timeout+0x19d/0x2e0
+>      [<ffffffff813e95ba>] call_timer_fn+0x19a/0x5c0
+>      [<ffffffff813ea16b>] __run_timers+0x78b/0xb80
+>      [<ffffffff813ea5bd>] run_timer_softirq+0x5d/0xd0
+>      [<ffffffff82f1d915>] __do_softirq+0x205/0x8b5
+> 
+> unreferenced object 0xffff8881392ec000 (size 1024):
+>    comm "softirq", pid 0, jiffies 4306326731 (age 433.359s)
+>    hex dump (first 32 bytes):
+>      00 10 30 a5 81 88 ff ff 50 ff 0f 00 00 00 00 00  ..0.....P.......
+>      f3 99 05 00 00 00 00 00 87 b7 05 00 00 00 00 00  ................
+>    backtrace:
+>      [<ffffffff819f5f08>] __kmem_cache_alloc_node+0x1e8/0x320
+>      [<ffffffff818a239a>] kmalloc_trace+0x2a/0x60
+>      [<ffffffff8231d31e>] free_iova_fast+0x28e/0x4e0
+>      [<ffffffff82310860>] fq_ring_free_locked+0x1b0/0x310
+>      [<ffffffff8231225d>] fq_flush_timeout+0x19d/0x2e0
+>      [<ffffffff813e95ba>] call_timer_fn+0x19a/0x5c0
+>      [<ffffffff813ea16b>] __run_timers+0x78b/0xb80
+>      [<ffffffff813ea5bd>] run_timer_softirq+0x5d/0xd0
+>      [<ffffffff82f1d915>] __do_softirq+0x205/0x8b5
+> 
+> unreferenced object 0xffff8881411f9000 (size 1024):
+>    comm "softirq", pid 0, jiffies 4306708887 (age 51.459s)
+>    hex dump (first 32 bytes):
+>      00 10 1c 26 81 88 ff ff 2c 96 05 00 00 00 00 00  ...&....,.......
+>      ac fe 0f 00 00 00 00 00 a6 fe 0f 00 00 00 00 00  ................
+>    backtrace:
+>      [<ffffffff819f5f08>] __kmem_cache_alloc_node+0x1e8/0x320
+>      [<ffffffff818a239a>] kmalloc_trace+0x2a/0x60
+>      [<ffffffff8231d31e>] free_iova_fast+0x28e/0x4e0
+>      [<ffffffff82310860>] fq_ring_free_locked+0x1b0/0x310
+>      [<ffffffff8231225d>] fq_flush_timeout+0x19d/0x2e0
+>      [<ffffffff813e95ba>] call_timer_fn+0x19a/0x5c0
+>      [<ffffffff813ea16b>] __run_timers+0x78b/0xb80
+>      [<ffffffff813ea5bd>] run_timer_softirq+0x5d/0xd0
+>      [<ffffffff82f1d915>] __do_softirq+0x205/0x8b5
+> 
+> unreferenced object 0xffff88812be26400 (size 1024):
+>    comm "softirq", pid 0, jiffies 4306710027 (age 50.319s)
+>    hex dump (first 32 bytes):
+>      00 c0 2e 39 81 88 ff ff 32 ab 05 00 00 00 00 00  ...9....2.......
+>      e3 ac 05 00 00 00 00 00 1f b6 05 00 00 00 00 00  ................
+>    backtrace:
+>      [<ffffffff819f5f08>] __kmem_cache_alloc_node+0x1e8/0x320
+>      [<ffffffff818a239a>] kmalloc_trace+0x2a/0x60
+>      [<ffffffff8231d31e>] free_iova_fast+0x28e/0x4e0
+>      [<ffffffff82310860>] fq_ring_free_locked+0x1b0/0x310
+>      [<ffffffff8231225d>] fq_flush_timeout+0x19d/0x2e0
+>      [<ffffffff813e95ba>] call_timer_fn+0x19a/0x5c0
+>      [<ffffffff813ea16b>] __run_timers+0x78b/0xb80
+>      [<ffffffff813ea5bd>] run_timer_softirq+0x5d/0xd0
+>      [<ffffffff82f1d915>] __do_softirq+0x205/0x8b5
+> 
+> unreferenced object 0xffff8881261c1000 (size 1024):
+>    comm "softirq", pid 0, jiffies 4306711547 (age 48.799s)
+>    hex dump (first 32 bytes):
+>      00 64 e2 2b 81 88 ff ff c0 7c 05 00 00 00 00 00  .d.+.....|......
+>      87 a5 05 00 00 00 00 00 0e 9a 05 00 00 00 00 00  ................
+>    backtrace:
+>      [<ffffffff819f5f08>] __kmem_cache_alloc_node+0x1e8/0x320
+>      [<ffffffff818a239a>] kmalloc_trace+0x2a/0x60
+>      [<ffffffff8231d31e>] free_iova_fast+0x28e/0x4e0
+>      [<ffffffff82310860>] fq_ring_free_locked+0x1b0/0x310
+>      [<ffffffff8231225d>] fq_flush_timeout+0x19d/0x2e0
+>      [<ffffffff813e95ba>] call_timer_fn+0x19a/0x5c0
+>      [<ffffffff813ea16b>] __run_timers+0x78b/0xb80
+>      [<ffffffff813ea5bd>] run_timer_softirq+0x5d/0xd0
+>      [<ffffffff82f1d915>] __do_softirq+0x205/0x8b5
 
