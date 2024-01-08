@@ -1,341 +1,410 @@
-Return-Path: <linux-kernel+bounces-20165-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20166-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE38D827AE6
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 23:54:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D884F827AE8
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 23:54:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C528F1C23048
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 22:54:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 828EB285836
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 22:54:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D611654BD7;
-	Mon,  8 Jan 2024 22:53:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B1C35674C;
+	Mon,  8 Jan 2024 22:54:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="hKzhqWVh"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="W5GyNJOc"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EC586D6C0;
-	Mon,  8 Jan 2024 22:53:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704754431; x=1736290431;
-  h=message-id:subject:from:to:cc:date:
-   content-transfer-encoding:mime-version;
-  bh=L+DcvWu6H9/l/ND3QdWxSY5uAb6MVFiqorsFj9zCCUo=;
-  b=hKzhqWVheIJNCjmv14PIg5hWpjLptC0wWOuE1OjUzDWKTMPrLHrREDSP
-   YnrC9iS21cLEf1G2qiKK4mjuuI2o0ARC8AQS7yDG3qUJJXNMXJwM03nTz
-   Ew7aN8HA1CVDPySHk9X7/8Ck6E7cPab4L7i7LngdHm4dTct/XodFD3JAQ
-   aKk/72KNp5uFZe339joTnv0hsqrrPq1BSbkhxWMe4pKmtd4FoGqvZnaZC
-   zoZY0ijxSlOYhUq7YcGL6TdrfcBd7hlLgaiMq3nAroq9cPm4O/YGJ/iir
-   LxhmNFuYO1+JSg1DFIV/NLccOEeRyCJ355rr4ENExd7Rl4D6ZwhCj/Ca1
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="5109892"
-X-IronPort-AV: E=Sophos;i="6.04,181,1695711600"; 
-   d="scan'208";a="5109892"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jan 2024 14:53:51 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="781572685"
-X-IronPort-AV: E=Sophos;i="6.04,181,1695711600"; 
-   d="scan'208";a="781572685"
-Received: from psross-mobl4.amr.corp.intel.com ([10.212.89.13])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jan 2024 14:53:49 -0800
-Message-ID: <8bde35bf981a1e490114c6b50fc4755a64da55a5.camel@linux.intel.com>
-Subject: [PATCH] crypto: iaa - Remove header table code
-From: Tom Zanussi <tom.zanussi@linux.intel.com>
-To: herbert@gondor.apana.org.au, davem@davemloft.net, fenghua.yu@intel.com
-Cc: dan.carpenter@linaro.org, dave.jiang@intel.com, tony.luck@intel.com, 
-	linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org, 
-	dmaengine@vger.kernel.org
-Date: Mon, 08 Jan 2024 16:53:48 -0600
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A04CF56740;
+	Mon,  8 Jan 2024 22:54:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1704754449;
+	bh=VBF/byM1vm/iUxyCl1D+PwVWglAOTC24+zekK3GjUWc=;
+	h=Date:From:To:Cc:Subject:From;
+	b=W5GyNJOc481nBtBBx1fxw2zP1bPRX7fYSvM/lW95zPf7jL//64ljUQLgeG7cUGph2
+	 CsCylcItm7JT2h7Uf0iSlKoOvzJ6nRsAma/yOoeTLjF0Yx1fbZ7Oc5llI2YO0eWZT0
+	 vxG9GW7krME/ln9M6lTGSaJ90mQWz6qahrWQT/l0g9xmrfsYY3ehN+V0VAcwExJU3A
+	 T57tAYPA6kHpoVnn2l6JDnDwoZGUI90iKp02uMTnf7Fle+g0L0tthG3Vm5lMUwzv+m
+	 b8LQ1j42xQmpyhQSWAX0Z+o9MVfTFOtiXTcA8Is08XYZ8v5nG3ugUCJKwV/o1luYSP
+	 FBkxJ5+N0u3Hw==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4T88WN3Q2Qz4x1P;
+	Tue,  9 Jan 2024 09:54:08 +1100 (AEDT)
+Date: Tue, 9 Jan 2024 09:54:05 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: David Sterba <dsterba@suse.cz>
+Cc: Christian Brauner <brauner@kernel.org>, David Sterba <dsterba@suse.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
+ Mailing List <linux-next@vger.kernel.org>, "Matthew Wilcox (Oracle)"
+ <willy@infradead.org>, Qu Wenruo <wqu@suse.com>
+Subject: linux-next: manual merge of the btrfs tree with Linus' tree
+Message-ID: <20240109095405.02bd795f@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/Q5zib2a=DHH=.b+Zu7rSaoh";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-The header table and related code is currently unused - it was
-included and used for canned mode, but canned mode has been removed,
-so this code can be safely removed as well.
+--Sig_/Q5zib2a=DHH=.b+Zu7rSaoh
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-This indirectly fixes a bug reported by Dan Carpenter.
+Hi all,
 
-Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-Closes: https://lore.kernel.org/linux-crypto/b2e0bd974981291e16882686a2b9b1=
-db3986abe4.camel@linux.intel.com/T/#m4403253d6a4347a925fab4fc1cdb4ef7c095fb=
-86
-Signed-off-by: Tom Zanussi <tom.zanussi@linux.intel.com>
----
- drivers/crypto/intel/iaa/iaa_crypto.h         |  25 ----
- .../crypto/intel/iaa/iaa_crypto_comp_fixed.c  |   1 -
- drivers/crypto/intel/iaa/iaa_crypto_main.c    | 108 +-----------------
- 3 files changed, 3 insertions(+), 131 deletions(-)
+Today's linux-next merge of the btrfs tree got a conflict in:
 
-diff --git a/drivers/crypto/intel/iaa/iaa_crypto.h b/drivers/crypto/intel/i=
-aa/iaa_crypto.h
-index 014420f7beb0..2524091a5f70 100644
---- a/drivers/crypto/intel/iaa/iaa_crypto.h
-+++ b/drivers/crypto/intel/iaa/iaa_crypto.h
-@@ -59,10 +59,8 @@ struct iaa_device_compression_mode {
- 	const char			*name;
-=20
- 	struct aecs_comp_table_record	*aecs_comp_table;
--	struct aecs_decomp_table_record	*aecs_decomp_table;
-=20
- 	dma_addr_t			aecs_comp_table_dma_addr;
--	dma_addr_t			aecs_decomp_table_dma_addr;
- };
-=20
- /* Representation of IAA device with wqs, populated by probe */
-@@ -107,23 +105,6 @@ struct aecs_comp_table_record {
- 	u32 reserved_padding[2];
- } __packed;
-=20
--/* AECS for decompress */
--struct aecs_decomp_table_record {
--	u32 crc;
--	u32 xor_checksum;
--	u32 low_filter_param;
--	u32 high_filter_param;
--	u32 output_mod_idx;
--	u32 drop_init_decomp_out_bytes;
--	u32 reserved[36];
--	u32 output_accum_data[2];
--	u32 out_bits_valid;
--	u32 bit_off_indexing;
--	u32 input_accum_data[64];
--	u8  size_qw[32];
--	u32 decomp_state[1220];
--} __packed;
--
- int iaa_aecs_init_fixed(void);
- void iaa_aecs_cleanup_fixed(void);
-=20
-@@ -136,9 +117,6 @@ struct iaa_compression_mode {
- 	int			ll_table_size;
- 	u32			*d_table;
- 	int			d_table_size;
--	u32			*header_table;
--	int			header_table_size;
--	u16			gen_decomp_table_flags;
- 	iaa_dev_comp_init_fn_t	init;
- 	iaa_dev_comp_free_fn_t	free;
- };
-@@ -148,9 +126,6 @@ int add_iaa_compression_mode(const char *name,
- 			     int ll_table_size,
- 			     const u32 *d_table,
- 			     int d_table_size,
--			     const u8 *header_table,
--			     int header_table_size,
--			     u16 gen_decomp_table_flags,
- 			     iaa_dev_comp_init_fn_t init,
- 			     iaa_dev_comp_free_fn_t free);
-=20
-diff --git a/drivers/crypto/intel/iaa/iaa_crypto_comp_fixed.c b/drivers/cry=
-pto/intel/iaa/iaa_crypto_comp_fixed.c
-index 45cf5d74f0fb..19d9a333ac49 100644
---- a/drivers/crypto/intel/iaa/iaa_crypto_comp_fixed.c
-+++ b/drivers/crypto/intel/iaa/iaa_crypto_comp_fixed.c
-@@ -78,7 +78,6 @@ int iaa_aecs_init_fixed(void)
- 				       sizeof(fixed_ll_sym),
- 				       fixed_d_sym,
- 				       sizeof(fixed_d_sym),
--				       NULL, 0, 0,
- 				       init_fixed_mode, NULL);
- 	if (!ret)
- 		pr_debug("IAA fixed compression mode initialized\n");
-diff --git a/drivers/crypto/intel/iaa/iaa_crypto_main.c b/drivers/crypto/in=
-tel/iaa/iaa_crypto_main.c
-index dfd3baf0a8d8..39a5fc905c4d 100644
---- a/drivers/crypto/intel/iaa/iaa_crypto_main.c
-+++ b/drivers/crypto/intel/iaa/iaa_crypto_main.c
-@@ -258,16 +258,14 @@ static void free_iaa_compression_mode(struct iaa_comp=
-ression_mode *mode)
- 	kfree(mode->name);
- 	kfree(mode->ll_table);
- 	kfree(mode->d_table);
--	kfree(mode->header_table);
-=20
- 	kfree(mode);
- }
-=20
- /*
-- * IAA Compression modes are defined by an ll_table, a d_table, and an
-- * optional header_table.  These tables are typically generated and
-- * captured using statistics collected from running actual
-- * compress/decompress workloads.
-+ * IAA Compression modes are defined by an ll_table and a d_table.
-+ * These tables are typically generated and captured using statistics
-+ * collected from running actual compress/decompress workloads.
-  *
-  * A module or other kernel code can add and remove compression modes
-  * with a given name using the exported @add_iaa_compression_mode()
-@@ -315,9 +313,6 @@ EXPORT_SYMBOL_GPL(remove_iaa_compression_mode);
-  * @ll_table_size: The ll table size in bytes
-  * @d_table: The d table
-  * @d_table_size: The d table size in bytes
-- * @header_table: Optional header table
-- * @header_table_size: Optional header table size in bytes
-- * @gen_decomp_table_flags: Otional flags used to generate the decomp tabl=
-e
-  * @init: Optional callback function to init the compression mode data
-  * @free: Optional callback function to free the compression mode data
-  *
-@@ -330,9 +325,6 @@ int add_iaa_compression_mode(const char *name,
- 			     int ll_table_size,
- 			     const u32 *d_table,
- 			     int d_table_size,
--			     const u8 *header_table,
--			     int header_table_size,
--			     u16 gen_decomp_table_flags,
- 			     iaa_dev_comp_init_fn_t init,
- 			     iaa_dev_comp_free_fn_t free)
- {
-@@ -370,16 +362,6 @@ int add_iaa_compression_mode(const char *name,
- 		mode->d_table_size =3D d_table_size;
- 	}
-=20
--	if (header_table) {
--		mode->header_table =3D kzalloc(header_table_size, GFP_KERNEL);
--		if (!mode->header_table)
--			goto free;
--		memcpy(mode->header_table, header_table, header_table_size);
--		mode->header_table_size =3D header_table_size;
--	}
--
--	mode->gen_decomp_table_flags =3D gen_decomp_table_flags;
--
- 	mode->init =3D init;
- 	mode->free =3D free;
-=20
-@@ -420,10 +402,6 @@ static void free_device_compression_mode(struct iaa_de=
-vice *iaa_device,
- 	if (device_mode->aecs_comp_table)
- 		dma_free_coherent(dev, size, device_mode->aecs_comp_table,
- 				  device_mode->aecs_comp_table_dma_addr);
--	if (device_mode->aecs_decomp_table)
--		dma_free_coherent(dev, size, device_mode->aecs_decomp_table,
--				  device_mode->aecs_decomp_table_dma_addr);
--
- 	kfree(device_mode);
- }
-=20
-@@ -440,73 +418,6 @@ static int check_completion(struct device *dev,
- 			    bool compress,
- 			    bool only_once);
-=20
--static int decompress_header(struct iaa_device_compression_mode *device_mo=
-de,
--			     struct iaa_compression_mode *mode,
--			     struct idxd_wq *wq)
--{
--	dma_addr_t src_addr, src2_addr;
--	struct idxd_desc *idxd_desc;
--	struct iax_hw_desc *desc;
--	struct device *dev;
--	int ret =3D 0;
--
--	idxd_desc =3D idxd_alloc_desc(wq, IDXD_OP_BLOCK);
--	if (IS_ERR(idxd_desc))
--		return PTR_ERR(idxd_desc);
--
--	desc =3D idxd_desc->iax_hw;
--
--	dev =3D &wq->idxd->pdev->dev;
--
--	src_addr =3D dma_map_single(dev, (void *)mode->header_table,
--				  mode->header_table_size, DMA_TO_DEVICE);
--	dev_dbg(dev, "%s: mode->name %s, src_addr %llx, dev %p, src %p, slen %d\n=
-",
--		__func__, mode->name, src_addr,	dev,
--		mode->header_table, mode->header_table_size);
--	if (unlikely(dma_mapping_error(dev, src_addr))) {
--		dev_dbg(dev, "dma_map_single err, exiting\n");
--		ret =3D -ENOMEM;
--		return ret;
--	}
--
--	desc->flags =3D IAX_AECS_GEN_FLAG;
--	desc->opcode =3D IAX_OPCODE_DECOMPRESS;
--
--	desc->src1_addr =3D (u64)src_addr;
--	desc->src1_size =3D mode->header_table_size;
--
--	src2_addr =3D device_mode->aecs_decomp_table_dma_addr;
--	desc->src2_addr =3D (u64)src2_addr;
--	desc->src2_size =3D 1088;
--	dev_dbg(dev, "%s: mode->name %s, src2_addr %llx, dev %p, src2_size %d\n",
--		__func__, mode->name, desc->src2_addr, dev, desc->src2_size);
--	desc->max_dst_size =3D 0; // suppressed output
--
--	desc->decompr_flags =3D mode->gen_decomp_table_flags;
--
--	desc->priv =3D 0;
--
--	desc->completion_addr =3D idxd_desc->compl_dma;
--
--	ret =3D idxd_submit_desc(wq, idxd_desc);
--	if (ret) {
--		pr_err("%s: submit_desc failed ret=3D0x%x\n", __func__, ret);
--		goto out;
--	}
--
--	ret =3D check_completion(dev, idxd_desc->iax_completion, false, false);
--	if (ret)
--		dev_dbg(dev, "%s: mode->name %s check_completion failed ret=3D%d\n",
--			__func__, mode->name, ret);
--	else
--		dev_dbg(dev, "%s: mode->name %s succeeded\n", __func__,
--			mode->name);
--out:
--	dma_unmap_single(dev, src_addr, 1088, DMA_TO_DEVICE);
--
--	return ret;
--}
--
- static int init_device_compression_mode(struct iaa_device *iaa_device,
- 					struct iaa_compression_mode *mode,
- 					int idx, struct idxd_wq *wq)
-@@ -529,24 +440,11 @@ static int init_device_compression_mode(struct iaa_de=
-vice *iaa_device,
- 	if (!device_mode->aecs_comp_table)
- 		goto free;
-=20
--	device_mode->aecs_decomp_table =3D dma_alloc_coherent(dev, size,
--							    &device_mode->aecs_decomp_table_dma_addr, GFP_KERNEL);
--	if (!device_mode->aecs_decomp_table)
--		goto free;
--
- 	/* Add Huffman table to aecs */
- 	memset(device_mode->aecs_comp_table, 0, sizeof(*device_mode->aecs_comp_ta=
-ble));
- 	memcpy(device_mode->aecs_comp_table->ll_sym, mode->ll_table, mode->ll_tab=
-le_size);
- 	memcpy(device_mode->aecs_comp_table->d_sym, mode->d_table, mode->d_table_=
-size);
-=20
--	if (mode->header_table) {
--		ret =3D decompress_header(device_mode, mode, wq);
--		if (ret) {
--			pr_debug("iaa header decompression failed: ret=3D%d\n", ret);
--			goto free;
--		}
--	}
--
- 	if (mode->init) {
- 		ret =3D mode->init(device_mode);
- 		if (ret)
+  fs/btrfs/extent_io.c
+
+between commit:
+
+  600f111ef51d ("fs: Rename mapping private members")
+
+from Linus' tree and commits:
+
+  08236d11031b ("btrfs: cache folio size and shift in extent_buffer")
+  13df3775efca ("btrfs: cleanup metadata page pointer usage")
+  082d5bb9b336 ("btrfs: migrate extent_buffer::pages[] to folio")
+  09e6cef19c9f ("btrfs: refactor alloc_extent_buffer() to allocate-then-att=
+ach method")
+  cfbf07e2787e ("btrfs: migrate to use folio private instead of page privat=
+e")
+
+from the btrfs tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
 --=20
-2.34.1
+Cheers,
+Stephen Rothwell
 
+diff --cc fs/btrfs/extent_io.c
+index b6ff6f320198,c8aabe3be169..000000000000
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@@ -874,14 -901,14 +901,14 @@@ static int attach_extent_buffer_folio(s
+  	 * For cloned or dummy extent buffers, their pages are not mapped and
+  	 * will not race with any other ebs.
+  	 */
+- 	if (page->mapping)
+- 		lockdep_assert_held(&page->mapping->i_private_lock);
++ 	if (folio->mapping)
+ -		lockdep_assert_held(&folio->mapping->private_lock);
+++		lockdep_assert_held(&folio->mapping->i_private_lock);
+ =20
+  	if (fs_info->nodesize >=3D PAGE_SIZE) {
+- 		if (!PagePrivate(page))
+- 			attach_page_private(page, eb);
++ 		if (!folio_test_private(folio))
++ 			folio_attach_private(folio, eb);
+  		else
+- 			WARN_ON(page->private !=3D (unsigned long)eb);
++ 			WARN_ON(folio_get_private(folio) !=3D eb);
+  		return 0;
+  	}
+ =20
+@@@ -1741,9 -1775,9 +1775,9 @@@ static int submit_eb_subpage(struct pag
+  		 * Take private lock to ensure the subpage won't be detached
+  		 * in the meantime.
+  		 */
+ -		spin_lock(&page->mapping->private_lock);
+ +		spin_lock(&page->mapping->i_private_lock);
+- 		if (!PagePrivate(page)) {
++ 		if (!folio_test_private(folio)) {
+ -			spin_unlock(&page->mapping->private_lock);
+ +			spin_unlock(&page->mapping->i_private_lock);
+  			break;
+  		}
+  		spin_lock_irqsave(&subpage->lock, flags);
+@@@ -1816,9 -1851,9 +1851,9 @@@ static int submit_eb_page(struct page *
+  	if (btrfs_sb(page->mapping->host->i_sb)->nodesize < PAGE_SIZE)
+  		return submit_eb_subpage(page, wbc);
+ =20
+ -	spin_lock(&mapping->private_lock);
+ +	spin_lock(&mapping->i_private_lock);
+- 	if (!PagePrivate(page)) {
++ 	if (!folio_test_private(folio)) {
+ -		spin_unlock(&mapping->private_lock);
+ +		spin_unlock(&mapping->i_private_lock);
+  		return 0;
+  	}
+ =20
+@@@ -3062,10 -3097,10 +3097,10 @@@ static bool folio_range_has_eb(struct b
+  {
+  	struct btrfs_subpage *subpage;
+ =20
+- 	lockdep_assert_held(&page->mapping->i_private_lock);
+ -	lockdep_assert_held(&folio->mapping->private_lock);
+++	lockdep_assert_held(&folio->mapping->i_private_lock);
+ =20
+- 	if (PagePrivate(page)) {
+- 		subpage =3D (struct btrfs_subpage *)page->private;
++ 	if (folio_test_private(folio)) {
++ 		subpage =3D folio_get_private(folio);
+  		if (atomic_read(&subpage->eb_refs))
+  			return true;
+  		/*
+@@@ -3084,15 -3119,15 +3119,15 @@@ static void detach_extent_buffer_folio(
+  	const bool mapped =3D !test_bit(EXTENT_BUFFER_UNMAPPED, &eb->bflags);
+ =20
+  	/*
+- 	 * For mapped eb, we're going to change the page private, which should
++ 	 * For mapped eb, we're going to change the folio private, which should
+ -	 * be done under the private_lock.
+ +	 * be done under the i_private_lock.
+  	 */
+  	if (mapped)
+- 		spin_lock(&page->mapping->i_private_lock);
+ -		spin_lock(&folio->mapping->private_lock);
+++		spin_lock(&folio->mapping->i_private_lock);
+ =20
+- 	if (!PagePrivate(page)) {
++ 	if (!folio_test_private(folio)) {
+  		if (mapped)
+- 			spin_unlock(&page->mapping->i_private_lock);
+ -			spin_unlock(&folio->mapping->private_lock);
+++			spin_unlock(&folio->mapping->i_private_lock);
+  		return;
+  	}
+ =20
+@@@ -3101,22 -3136,18 +3136,18 @@@
+  		 * We do this since we'll remove the pages after we've
+  		 * removed the eb from the radix tree, so we could race
+  		 * and have this page now attached to the new eb.  So
+- 		 * only clear page_private if it's still connected to
++ 		 * only clear folio if it's still connected to
+  		 * this eb.
+  		 */
+- 		if (PagePrivate(page) &&
+- 		    page->private =3D=3D (unsigned long)eb) {
++ 		if (folio_test_private(folio) && folio_get_private(folio) =3D=3D eb) {
+  			BUG_ON(test_bit(EXTENT_BUFFER_DIRTY, &eb->bflags));
+- 			BUG_ON(PageDirty(page));
+- 			BUG_ON(PageWriteback(page));
+- 			/*
+- 			 * We need to make sure we haven't be attached
+- 			 * to a new eb.
+- 			 */
+- 			detach_page_private(page);
++ 			BUG_ON(folio_test_dirty(folio));
++ 			BUG_ON(folio_test_writeback(folio));
++ 			/* We need to make sure we haven't be attached to a new eb. */
++ 			folio_detach_private(folio);
+  		}
+  		if (mapped)
+- 			spin_unlock(&page->mapping->i_private_lock);
+ -			spin_unlock(&folio->mapping->private_lock);
+++			spin_unlock(&folio->mapping->i_private_lock);
+  		return;
+  	}
+ =20
+@@@ -3130,16 -3161,16 +3161,16 @@@
+  		return;
+  	}
+ =20
+- 	btrfs_page_dec_eb_refs(fs_info, page);
++ 	btrfs_folio_dec_eb_refs(fs_info, folio);
+ =20
+  	/*
+- 	 * We can only detach the page private if there are no other ebs in the
++ 	 * We can only detach the folio private if there are no other ebs in the
+  	 * page range and no unfinished IO.
+  	 */
+- 	if (!page_range_has_eb(fs_info, page))
+- 		btrfs_detach_subpage(fs_info, page);
++ 	if (!folio_range_has_eb(fs_info, folio))
++ 		btrfs_detach_subpage(fs_info, folio);
+ =20
+- 	spin_unlock(&page->mapping->i_private_lock);
+ -	spin_unlock(&folio->mapping->private_lock);
+++	spin_unlock(&folio->mapping->i_private_lock);
+  }
+ =20
+  /* Release all pages attached to the extent buffer */
+@@@ -3516,11 -3603,9 +3603,9 @@@ struct extent_buffer *alloc_extent_buff
+ =20
+  	btrfs_set_buffer_lockdep_class(lockdep_owner, eb, level);
+ =20
+- 	num_pages =3D num_extent_pages(eb);
+-=20
+  	/*
+- 	 * Preallocate page->private for subpage case, so that we won't
++ 	 * Preallocate folio private for subpage case, so that we won't
+ -	 * allocate memory with private_lock nor page lock hold.
+ +	 * allocate memory with i_private_lock nor page lock hold.
+  	 *
+  	 * The memory will be freed by attach_extent_buffer_page() or freed
+  	 * manually if we exit earlier.
+@@@ -3533,26 -3618,61 +3618,61 @@@
+  		}
+  	}
+ =20
+- 	for (i =3D 0; i < num_pages; i++, index++) {
+- 		p =3D find_or_create_page(mapping, index, GFP_NOFS|__GFP_NOFAIL);
+- 		if (!p) {
+- 			exists =3D ERR_PTR(-ENOMEM);
+- 			btrfs_free_subpage(prealloc);
+- 			goto free_eb;
++ reallocate:
++ 	/* Allocate all pages first. */
++ 	ret =3D alloc_eb_folio_array(eb, __GFP_NOFAIL);
++ 	if (ret < 0) {
++ 		btrfs_free_subpage(prealloc);
++ 		goto out;
++ 	}
++=20
++ 	num_folios =3D num_extent_folios(eb);
++ 	/* Attach all pages to the filemap. */
++ 	for (int i =3D 0; i < num_folios; i++) {
++ 		struct folio *folio;
++=20
++ 		ret =3D attach_eb_folio_to_filemap(eb, i, &existing_eb);
++ 		if (ret > 0) {
++ 			ASSERT(existing_eb);
++ 			goto out;
+  		}
+ =20
+- 		spin_lock(&mapping->i_private_lock);
+- 		exists =3D grab_extent_buffer(fs_info, p);
+- 		if (exists) {
+- 			spin_unlock(&mapping->i_private_lock);
+- 			unlock_page(p);
+- 			put_page(p);
+- 			mark_extent_buffer_accessed(exists, p);
+- 			btrfs_free_subpage(prealloc);
+- 			goto free_eb;
++ 		/*
++ 		 * TODO: Special handling for a corner case where the order of
++ 		 * folios mismatch between the new eb and filemap.
++ 		 *
++ 		 * This happens when:
++ 		 *
++ 		 * - the new eb is using higher order folio
++ 		 *
++ 		 * - the filemap is still using 0-order folios for the range
++ 		 *   This can happen at the previous eb allocation, and we don't
++ 		 *   have higher order folio for the call.
++ 		 *
++ 		 * - the existing eb has already been freed
++ 		 *
++ 		 * In this case, we have to free the existing folios first, and
++ 		 * re-allocate using the same order.
++ 		 * Thankfully this is not going to happen yet, as we're still
++ 		 * using 0-order folios.
++ 		 */
++ 		if (unlikely(ret =3D=3D -EAGAIN)) {
++ 			ASSERT(0);
++ 			goto reallocate;
+  		}
++ 		attached++;
++=20
++ 		/*
++ 		 * Only after attach_eb_folio_to_filemap(), eb->folios[] is
++ 		 * reliable, as we may choose to reuse the existing page cache
++ 		 * and free the allocated page.
++ 		 */
++ 		folio =3D eb->folios[i];
++ 		eb->folio_size =3D folio_size(folio);
++ 		eb->folio_shift =3D folio_shift(folio);
+ -		spin_lock(&mapping->private_lock);
+++		spin_lock(&mapping->i_private_lock);
+  		/* Should not fail, as we have preallocated the memory */
+- 		ret =3D attach_extent_buffer_page(eb, p, prealloc);
++ 		ret =3D attach_extent_buffer_folio(eb, folio, prealloc);
+  		ASSERT(!ret);
+  		/*
+  		 * To inform we have extra eb under allocation, so that
+@@@ -3563,12 -3683,21 +3683,21 @@@
+  		 * detach_extent_buffer_page().
+  		 * Thus needs no special handling in error path.
+  		 */
+- 		btrfs_page_inc_eb_refs(fs_info, p);
++ 		btrfs_folio_inc_eb_refs(fs_info, folio);
+ -		spin_unlock(&mapping->private_lock);
+ +		spin_unlock(&mapping->i_private_lock);
+ =20
+- 		WARN_ON(btrfs_page_test_dirty(fs_info, p, eb->start, eb->len));
+- 		eb->pages[i] =3D p;
+- 		if (!btrfs_page_test_uptodate(fs_info, p, eb->start, eb->len))
++ 		WARN_ON(btrfs_folio_test_dirty(fs_info, folio, eb->start, eb->len));
++=20
++ 		/*
++ 		 * Check if the current page is physically contiguous with previous eb
++ 		 * page.
++ 		 * At this stage, either we allocated a large folio, thus @i
++ 		 * would only be 0, or we fall back to per-page allocation.
++ 		 */
++ 		if (i && folio_page(eb->folios[i - 1], 0) + 1 !=3D folio_page(folio, 0))
++ 			page_contig =3D false;
++=20
++ 		if (!btrfs_folio_test_uptodate(fs_info, folio, eb->start, eb->len))
+  			uptodate =3D 0;
+ =20
+  		/*
+@@@ -4566,11 -4773,11 +4773,11 @@@ static int try_release_subpage_extent_b
+  		release_extent_buffer(eb);
+  	}
+  	/*
+- 	 * Finally to check if we have cleared page private, as if we have
+- 	 * released all ebs in the page, the page private should be cleared now.
++ 	 * Finally to check if we have cleared folio private, as if we have
++ 	 * released all ebs in the page, the folio private should be cleared now.
+  	 */
+ -	spin_lock(&page->mapping->private_lock);
+ +	spin_lock(&page->mapping->i_private_lock);
+- 	if (!PagePrivate(page))
++ 	if (!folio_test_private(page_folio(page)))
+  		ret =3D 1;
+  	else
+  		ret =3D 0;
+@@@ -4587,12 -4795,12 +4795,12 @@@ int try_release_extent_buffer(struct pa
+  		return try_release_subpage_extent_buffer(page);
+ =20
+  	/*
+- 	 * We need to make sure nobody is changing page->private, as we rely on
+- 	 * page->private as the pointer to extent buffer.
++ 	 * We need to make sure nobody is changing folio private, as we rely on
++ 	 * folio private as the pointer to extent buffer.
+  	 */
+ -	spin_lock(&page->mapping->private_lock);
+ +	spin_lock(&page->mapping->i_private_lock);
+- 	if (!PagePrivate(page)) {
++ 	if (!folio_test_private(folio)) {
+ -		spin_unlock(&page->mapping->private_lock);
+ +		spin_unlock(&page->mapping->i_private_lock);
+  		return 1;
+  	}
+ =20
 
+--Sig_/Q5zib2a=DHH=.b+Zu7rSaoh
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmWcfQ0ACgkQAVBC80lX
+0GzzQwf+OONW5Ff/GExciOfxFdEX9QsVw9Un/WgRsoPDscS4eHyr0+69gX6LHZD8
+Ho+a2GS68qSOH0npggiydHf+ZzHg+n8y1U9FFmh/Hn546e2ZCHNbi+IAJUtK+9KK
+sK2vZekOgzM0siGjnypbIKt7eh6C/MTkCa4/DEoBRN8Rivsh3ztbKq0oCHSLMauP
+hWKzAWO4RlossIOth2N++tRnPMhfTJDIhwe2RU0wPeSV3j54l8a456DV/tsqJpBL
+nlcfQ0x9hoW0I5JwNWx9F5Q4neB6dGqtP7uLgLMS2xkYYaD9uq2NwerLYclYeVDE
+wHokVSLQiEx2B/7tuoTB27NQd1rZPg==
+=Pw/q
+-----END PGP SIGNATURE-----
+
+--Sig_/Q5zib2a=DHH=.b+Zu7rSaoh--
 
