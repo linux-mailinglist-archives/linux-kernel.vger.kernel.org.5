@@ -1,76 +1,74 @@
-Return-Path: <linux-kernel+bounces-20075-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20076-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A0BF8827904
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 21:16:41 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE460827906
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 21:16:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B9C021C22C5E
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 20:16:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6101B1F23806
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 20:16:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B44F455C16;
-	Mon,  8 Jan 2024 20:16:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90EF455E46;
+	Mon,  8 Jan 2024 20:16:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amarulasolutions.com header.i=@amarulasolutions.com header.b="SUjFAHn2"
+	dkim=pass (1024-bit key) header.d=amarulasolutions.com header.i=@amarulasolutions.com header.b="len7vc+0"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
+Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 823BB5576E
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 20:16:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76BC355787
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 20:16:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=amarulasolutions.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amarulasolutions.com
-Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-50e7dd8bce8so2435949e87.1
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 12:16:25 -0800 (PST)
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-5534dcfdd61so3969775a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 12:16:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amarulasolutions.com; s=google; t=1704744983; x=1705349783; darn=vger.kernel.org;
+        d=amarulasolutions.com; s=google; t=1704744984; x=1705349784; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=oZHp7o9P6sSCcRzfgnf9GmPoPPKRvORDv/jTzo46w2U=;
-        b=SUjFAHn2HsxKld7VVYckh+g3Tli4loAyO7StFjqFQZ9/M80TNvSOc221qkbJkYN1Dk
-         3UfRsCXfViiCi4fpCDyz56IBaiS1kyBgahWhVSjlasdzzQ6sqJcbC8+40FvpOTJ63GxN
-         /wZ8E0qeMl8SmBwao5kr1ZE7+MATZ54lw727g=
+        bh=mmQnQzOW0HVCglZmRdERbSkiK/7LfpA/GFNr/QR6hMQ=;
+        b=len7vc+0zau/hN4mQd6296DfQjx47rOgIvNbijgyy2t+BJghw+Q2lZmedIM9Nj9Gt7
+         eLnENrSQHcnoJs3KxmHR6uuzPuIfvEB6j/cUclSBSwlIR4jORR2oBQXh06yuQUBbApBp
+         94tO9PxGNsojTpSiW9L3KFF4Yd9rrTawCLcQU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704744983; x=1705349783;
+        d=1e100.net; s=20230601; t=1704744984; x=1705349784;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=oZHp7o9P6sSCcRzfgnf9GmPoPPKRvORDv/jTzo46w2U=;
-        b=gc1Q8CIG3winz6Suj0DXR1Fqc+qD/P/B1llj6QUSbEet37+81K/tg8XvNTxaIw3DCc
-         FRlD1xhxxIujKUv+sT/INyWnlMoedn1e1F6NZ91Btn94IAJdJwiUpzqK6oK+sfnhshXB
-         8YpFEP/0fV1tpbkQwgmcNl+Ggngs/Myf8NNFDw69tb84CCXDXYjWPprjLWLZODJsM0Se
-         /xEVy9jtrH6vLMZ1Tg97CKMCuUrkJ4JpCgg+Qgj2KNdp1NBaZWkOreEHpUnI0+YakUrF
-         +V9hibH3W6uI7S3qMEJhop9H9Q7rwVNFOqXRka8QCfrxEpBZy+OLIBGFAQVS5KGZOGkV
-         iOgA==
-X-Gm-Message-State: AOJu0Yw0Bh/g6gIdt0f6Fr3nkcpl+gpYe1dPPTUtj51YxiHj33VQwE5M
-	Qi7ey3PGS0puFcZwaC+u43ekO67P4jboCDv1sZXTcGC+OeU=
-X-Google-Smtp-Source: AGHT+IG+bnMS+c8tiYQ5DRcgpg4/in0j4YpErDzhA91O3wWg4FpcIE3GXCuL7kfF9HOWzE4sOP3CtA==
-X-Received: by 2002:a05:6512:3f01:b0:50e:73b8:e8b5 with SMTP id y1-20020a0565123f0100b0050e73b8e8b5mr1890614lfa.74.1704744983333;
-        Mon, 08 Jan 2024 12:16:23 -0800 (PST)
+        bh=mmQnQzOW0HVCglZmRdERbSkiK/7LfpA/GFNr/QR6hMQ=;
+        b=fvUP58ZRO5NHcEpVsEgjYHHjnLBqFq2jjcdyoA7nAhlUiN6KD0mY6XqhX2X0AgACci
+         n0vQSt5AsNPvkA3iLwvUXE3NG4PKY0XubyIBZaQDWrYpzMzxeP7R5OXCpMLplLolUEwF
+         u/11X7yj6J49rZEvN73J/2UPemrLilM/i9AkS14C9DZU+eZBitbLzF5XqEhVilMbS4ci
+         WiQV3I3f6yAgkpq/IVEZLTtAmsLw8VRoY1KIi47XVcbSsZRxzgrziDPPY+WR3KTuLfQR
+         yw9KDBtEDfBMvWJPD5wt1Vhm5hHa/2tF48b0DMtfK2YVouEgUJSm543f0fj5c580M/BS
+         ABMQ==
+X-Gm-Message-State: AOJu0YyQ8VWMnJb4RZRnzoTzPPtc12OhCsij5OEzM3v5ED4XsCgNtw8H
+	6fLs4CQwlxuoQEdxTpoghrJzePzzwMFo6zlYtev9qeDIuqk=
+X-Google-Smtp-Source: AGHT+IGkQ1MYwYhPQpHmfUvm48FJCD16KRlfqQTmXiok9BCXVdNdaFNjBMf2+daPgMlNsn+/b/5DcA==
+X-Received: by 2002:aa7:c6d2:0:b0:557:14da:db43 with SMTP id b18-20020aa7c6d2000000b0055714dadb43mr302217eds.6.1704744984573;
+        Mon, 08 Jan 2024 12:16:24 -0800 (PST)
 Received: from dario-ThinkPad-T14s-Gen-2i.homenet.telecomitalia.it (host-87-2-38-81.retail.telecomitalia.it. [87.2.38.81])
-        by smtp.gmail.com with ESMTPSA id by26-20020a0564021b1a00b00555fd008741sm173699edb.95.2024.01.08.12.16.22
+        by smtp.gmail.com with ESMTPSA id by26-20020a0564021b1a00b00555fd008741sm173699edb.95.2024.01.08.12.16.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Jan 2024 12:16:22 -0800 (PST)
+        Mon, 08 Jan 2024 12:16:24 -0800 (PST)
 From: Dario Binacchi <dario.binacchi@amarulasolutions.com>
 To: linux-kernel@vger.kernel.org
 Cc: linux-amarula@amarulasolutions.com,
 	Alexandre Torgue <alexandre.torgue@foss.st.com>,
 	Dario Binacchi <dario.binacchi@amarulasolutions.com>,
-	Conor Dooley <conor.dooley@microchip.com>,
 	Conor Dooley <conor+dt@kernel.org>,
 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Lee Jones <lee@kernel.org>,
 	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
 	Rob Herring <robh+dt@kernel.org>,
 	devicetree@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org,
 	linux-stm32@st-md-mailman.stormreply.com
-Subject: [PATCH v5 1/8] dt-bindings: mfd: stm32f7: Add binding definition for DSI
-Date: Mon,  8 Jan 2024 21:15:46 +0100
-Message-ID: <20240108201618.2798649-2-dario.binacchi@amarulasolutions.com>
+Subject: [PATCH v5 2/8] ARM: dts: stm32: add DSI support on stm32f769
+Date: Mon,  8 Jan 2024 21:15:47 +0100
+Message-ID: <20240108201618.2798649-3-dario.binacchi@amarulasolutions.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240108201618.2798649-1-dario.binacchi@amarulasolutions.com>
 References: <20240108201618.2798649-1-dario.binacchi@amarulasolutions.com>
@@ -82,33 +80,46 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add binding definition for MIPI DSI Host controller.
+Add support for MIPI DSI Host controller. Since MIPI DSI is not
+available on stm32f746, the patch adds the "stm32f769.dtsi" file
+containing the dsi node inside.
 
 Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
-
 ---
 
-(no changes since v2)
+(no changes since v1)
 
-Changes in v2:
-- Add Acked-by tag of Conor Dooley
+ arch/arm/boot/dts/st/stm32f769.dtsi | 21 +++++++++++++++++++++
+ 1 file changed, 21 insertions(+)
+ create mode 100644 arch/arm/boot/dts/st/stm32f769.dtsi
 
- include/dt-bindings/mfd/stm32f7-rcc.h | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/include/dt-bindings/mfd/stm32f7-rcc.h b/include/dt-bindings/mfd/stm32f7-rcc.h
-index 8d73a9c51e2b..a4e4f9271395 100644
---- a/include/dt-bindings/mfd/stm32f7-rcc.h
-+++ b/include/dt-bindings/mfd/stm32f7-rcc.h
-@@ -108,6 +108,7 @@
- #define STM32F7_RCC_APB2_SAI1		22
- #define STM32F7_RCC_APB2_SAI2		23
- #define STM32F7_RCC_APB2_LTDC		26
-+#define STM32F7_RCC_APB2_DSI		27
- 
- #define STM32F7_APB2_RESET(bit)	(STM32F7_RCC_APB2_##bit + (0x24 * 8))
- #define STM32F7_APB2_CLOCK(bit)	(STM32F7_RCC_APB2_##bit + 0xA0)
+diff --git a/arch/arm/boot/dts/st/stm32f769.dtsi b/arch/arm/boot/dts/st/stm32f769.dtsi
+new file mode 100644
+index 000000000000..e09184f7079c
+--- /dev/null
++++ b/arch/arm/boot/dts/st/stm32f769.dtsi
+@@ -0,0 +1,21 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (c) 2023 Dario Binacchi <dario.binacchi@amarulasolutions.com>
++ */
++
++#include "stm32f746.dtsi"
++
++/ {
++	soc {
++		dsi: dsi@40016c00 {
++			compatible = "st,stm32-dsi";
++			reg = <0x40016c00 0x800>;
++			interrupts = <98>;
++			clocks = <&rcc 1 CLK_F769_DSI>, <&clk_hse>;
++			clock-names = "pclk", "ref";
++			resets = <&rcc STM32F7_APB2_RESET(DSI)>;
++			reset-names = "apb";
++			status = "disabled";
++		};
++	};
++};
 -- 
 2.43.0
 
