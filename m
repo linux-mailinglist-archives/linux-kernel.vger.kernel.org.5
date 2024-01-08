@@ -1,225 +1,438 @@
-Return-Path: <linux-kernel+bounces-19706-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19708-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 516F0827140
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 15:26:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AED0B827148
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 15:27:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EC5BD284040
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 14:26:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C5B001C22A3D
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 14:27:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A140646533;
-	Mon,  8 Jan 2024 14:26:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="a05ITonK"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C719537EB;
+	Mon,  8 Jan 2024 14:27:46 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4443646521
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 14:26:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704723991; x=1736259991;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=bj5j5nuhV/qrZwZnlx7DCKPmSdslwRR0SSqhJ0uVBmM=;
-  b=a05ITonK3HE7hLImU3em80dqDH7iT8cqGLRWcDapFLZP8UVm7XvVAL1E
-   qMw8Qk4BhdZge2Fzznsy4/1YqMnR2sv7NQgDk1O2ms0Bci2Z4h8qhrDYF
-   MuzMS3RQBNtjFmQx3yqG3W073vkCsS2QZpvvIXb8VqwiG4vopQT1TGkm2
-   q2WFpSru/+fPbV9EfDouD3GPEavbteu4NchSQiSq0MniF3mIMqy9/q+j/
-   pfeDxqTrft96ZKofFbMfRfrjjtb7rlNYpHXXHaqD3RPN+nGf+mySDBzfd
-   ZbhsS15CZpTNDQ2Aj90pRnwkPudvm8r6zF/0cQbO6sRhKVYHw9NZ2wY/P
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="4649809"
-X-IronPort-AV: E=Sophos;i="6.04,341,1695711600"; 
-   d="scan'208";a="4649809"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jan 2024 06:26:29 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="781425229"
-X-IronPort-AV: E=Sophos;i="6.04,341,1695711600"; 
-   d="scan'208";a="781425229"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga002.jf.intel.com with ESMTP; 08 Jan 2024 06:26:26 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rMqa7-0004mh-2q;
-	Mon, 08 Jan 2024 14:26:23 +0000
-Date: Mon, 8 Jan 2024 22:26:12 +0800
-From: kernel test robot <lkp@intel.com>
-To: Xiao Wang <xiao.w.wang@intel.com>, paul.walmsley@sifive.com,
-	palmer@dabbelt.com, aou@eecs.berkeley.edu
-Cc: oe-kbuild-all@lists.linux.dev, conor.dooley@microchip.com,
-	ajones@ventanamicro.com, heiko@sntech.de, haicheng.li@intel.com,
-	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-	Xiao Wang <xiao.w.wang@intel.com>
-Subject: Re: [PATCH] riscv: Optimize crc32 with Zbc extension
-Message-ID: <202401082215.4rPI1A5Z-lkp@intel.com>
-References: <20240105080830.3738117-1-xiao.w.wang@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24D8C537E4
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 14:27:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ghiti.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ghiti.fr
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 2266DFF806;
+	Mon,  8 Jan 2024 14:27:38 +0000 (UTC)
+Message-ID: <c671e93a-c3a9-4d15-aade-ea4a70390f08@ghiti.fr>
+Date: Mon, 8 Jan 2024 15:27:38 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240105080830.3738117-1-xiao.w.wang@intel.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] riscv: Add support for BATCHED_UNMAP_TLB_FLUSH
+Content-Language: en-US
+To: Jisheng Zhang <jszhang@kernel.org>,
+ Alexandre Ghiti <alexghiti@rivosinc.com>
+Cc: Paul Walmsley <paul.walmsley@sifive.com>,
+ Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
+ linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20240102141851.105144-1-alexghiti@rivosinc.com>
+ <ZZU9s7iHDTBD39C0@xhacker>
+ <CAHVXubgpMFesz8C-tY4qY0OGzB3Jfyp1eK6YafN8GQN=u7Etyg@mail.gmail.com>
+ <CAHVXubij+L84tpwM-O1W6HV31D8Q7Gb0OerobYJVcmznXaQ2eg@mail.gmail.com>
+ <ZZlZ1HEhDuj4Ojwd@xhacker> <ZZleH4KcnIwkI6q9@xhacker>
+From: Alexandre Ghiti <alex@ghiti.fr>
+In-Reply-To: <ZZleH4KcnIwkI6q9@xhacker>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: alex@ghiti.fr
 
-Hi Xiao,
+Hi Jisheng,
 
-kernel test robot noticed the following build warnings:
+On 06/01/2024 15:05, Jisheng Zhang wrote:
+> On Sat, Jan 06, 2024 at 09:47:04PM +0800, Jisheng Zhang wrote:
+>> On Fri, Jan 05, 2024 at 02:36:44PM +0100, Alexandre Ghiti wrote:
+>>> On Thu, Jan 4, 2024 at 6:42 PM Alexandre Ghiti <alexghiti@rivosinc.com> wrote:
+>>>> Hi Jisheng,
+>>>>
+>>>> On Wed, Jan 3, 2024 at 12:10 PM Jisheng Zhang <jszhang@kernel.org> wrote:
+>>>>> On Tue, Jan 02, 2024 at 03:18:51PM +0100, Alexandre Ghiti wrote:
+>>>>>> Allow to defer the flushing of the TLB when unmapping pges, which allows
+>>>>>> to reduce the numbers of IPI and the number of sfence.vma.
+>>>>>>
+>>>>>> The ubenchmarch used in commit 43b3dfdd0455 ("arm64: support
+>>>>>> batched/deferred tlb shootdown during page reclamation/migration") shows
+>>>>>> good performance improvement and perf reports an important decrease in
+>>>>>> time spent flushing the tlb (results come from qemu):
+>>>>> Hi Alex,
+>>>>>
+>>>>> I tried this micro benchmark with your patch on T-HEAD TH1520 platform, I
+>>>>> didn't see any performance improvement for the micro benchmark. Per
+>>>>> myunderstanding, the micro benchmark is special case for arm64 because
+>>>>> in a normal tlb flush flow, below sequence is necessary:
+>>>>>
+>>>>> tlbi
+>>>>> dsb
+>>>>>
+>>>>>
+>>>>> while with BATCHED_UNMAP_TLB_FLUSH, the arm64 just does 'tlbi', leaving
+>>>>> the dsb to the arch_tlbbatch_flush(). So the final result is
+>>>>>
+>>>>> several 'tlbi + dsb' sequence VS. several 'tlbi' instructions + only one dsb
+>>>>> The performance improvement comes from the unnecessary dsb eliminations.
+>>>> Some batching should take place, and with this patch, we only send one
+>>>> "full" sfence.vma instead of a "local" sfence.vma for each page, it
+>>>> seems weird that you don't see any improvement, I would have thought
+>>>> that one "full" sfence.vma would be better.
+>>>>
+>>>>> Do you have suitable benchmark(s) for BATCHED_UNMAP_TLB_FLUSH on riscv?
+>>>> Can you give the following benchmark a try? I simply created threads
+>>>> and dispatched them on all the cpus to force IPI usage, that should be
+>>>> way better if the batching of the first ubenchmark is not enough to
+>>>> exacerbate performance improvements, let me know and thanks for your
+>>>> tests!
+>>>>
+>>>> #define _GNU_SOURCE
+>>>> #include <pthread.h>
+>>>> #include <sys/types.h>
+>>>> #include <unistd.h>
+>>>> #include <sys/mman.h>
+>>>> #include <string.h>
+>>>> #include <errno.h>
+>>>> #include <sched.h>
+>>>> #include <time.h>
+>>>>
+>>>> int stick_this_thread_to_core(int core_id) {
+>>>>          int num_cores = sysconf(_SC_NPROCESSORS_ONLN);
+>>>>          if (core_id < 0 || core_id >= num_cores)
+>>>>             return EINVAL;
+>>>>
+>>>>          cpu_set_t cpuset;
+>>>>          CPU_ZERO(&cpuset);
+>>>>          CPU_SET(core_id, &cpuset);
+>>>>
+>>>>          pthread_t current_thread = pthread_self();
+>>>>          return pthread_setaffinity_np(current_thread,
+>>>> sizeof(cpu_set_t), &cpuset);
+>>>> }
+>>>>
+>>>> static void *fn_thread (void *p_data)
+>>>> {
+>>>>          int ret;
+>>>>          pthread_t thread;
+>>>>
+>>>>          stick_this_thread_to_core((int)p_data);
+>>>>
+>>>>          while (1) {
+>>>>                  sleep(1);
+>>>>          }
+>>>>
+>>>>          return NULL;
+>>>> }
+>>>>
+>>>> int main()
+>>>> {
+>>>> #define SIZE (1 * 1024 * 1024)
+>>>>          volatile unsigned char *p = mmap(NULL, SIZE, PROT_READ | PROT_WRITE,
+>>>>                                           MAP_SHARED | MAP_ANONYMOUS, -1, 0);
+>>>>          pthread_t threads[4];
+>>>>          int ret;
+>>>>
+>>>>          for (int i = 0; i < 4; ++i) {
+>>>>                  ret = pthread_create(&threads[i], NULL, fn_thread, (void *)i);
+>>>>                  if (ret)
+>>>>                  {
+>>>>                          printf("%s", strerror (ret));
+>>>>                  }
+>>>>          }
+>>>>
+>>>>          memset(p, 0x88, SIZE);
+>>>>
+>>>>          for (int k = 0; k < 500 /* 10000 */; k++) {
+>>>>                  /* swap in */
+>>>>                  for (int i = 0; i < SIZE; i += 4096) {
+>>>>                          (void)p[i];
+>>>>                  }
+>>>>
+>>>>                  /* swap out */
+>>>>                  madvise(p, SIZE, MADV_PAGEOUT);
+>>>>          }
+>>>>
+>>>>          for (int i = 0; i < 4; i++)
+>>>>          {
+>>>>                  pthread_cancel(threads[i]);
+>>>>          }
+>>>>
+>>>>          for (int i = 0; i < 4; i++)
+>>>>          {
+>>>>                  pthread_join(threads[i], NULL);
+>>>>          }
+>>>>
+>>>>          return 0;
+>>>>
+>>>> }
+>>>>
+>>> So I removed the dust from my unmatched and ran the benchmarks I proposed:
+>>>
+>>> Without this patch:
+>>> * benchmark from commit 43b3dfdd0455 (4 runs)  : ~20.3s
+>>> * same benchmark with threads (4 runs)                : ~27.4s
+>>>
+>>> With this patch:
+>>> * benchmark from commit 43b3dfdd0455 (4 runs)  : ~17.9s
+>>> * same benchmark with threads (4 runs)                : ~18.1s
+>>>
+>>> So a small improvement for the single thread benchmark, but it depends
+>>> on the number of pages that get flushed, so to me that's not
+>>> applicable for the general case. For the same benchmark with multiple
+>>> threads, that's ~34% improvement. I'll add those numbers to the v2,
+>>> and JIsheng if you can provide some too, I'll add them too!
+>> Hi Alex,
+>>
+>> the threaded version show ~78% improvement! impressive!
+> One more thing when you cook v2: it's better to patch the riscv entry
+> in Documentation/features/vm/TLB/arch-support.txt
+>
+>> So for the patch:
+>>
+>> Reviewed-by: Jisheng Zhang <jszhang@kernel.org>
+>> Tested-by: Jisheng Zhang <jszhang@kernel.org>
+>>
+>> Thanks
 
-[auto build test WARNING on linus/master]
-[also build test WARNING on v6.7 next-20240108]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Xiao-Wang/riscv-Optimize-crc32-with-Zbc-extension/20240105-161053
-base:   linus/master
-patch link:    https://lore.kernel.org/r/20240105080830.3738117-1-xiao.w.wang%40intel.com
-patch subject: [PATCH] riscv: Optimize crc32 with Zbc extension
-config: riscv-randconfig-r121-20240106 (https://download.01.org/0day-ci/archive/20240108/202401082215.4rPI1A5Z-lkp@intel.com/config)
-compiler: riscv64-linux-gcc (GCC) 13.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20240108/202401082215.4rPI1A5Z-lkp@intel.com/reproduce)
+Thanks for your tests and review, and the missing documentation update!
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202401082215.4rPI1A5Z-lkp@intel.com/
+Alex
 
-sparse warnings: (new ones prefixed by >>)
->> arch/riscv/lib/crc32.c:192:19: sparse: sparse: invalid assignment: ^=
-   arch/riscv/lib/crc32.c:192:19: sparse:    left side has type unsigned long
-   arch/riscv/lib/crc32.c:192:19: sparse:    right side has type restricted __be64
->> arch/riscv/lib/crc32.c:110:42: sparse: sparse: restricted __le64 degrades to integer
->> arch/riscv/lib/crc32.c:110:42: sparse: sparse: restricted __le64 degrades to integer
 
-vim +192 arch/riscv/lib/crc32.c
-
-    78	
-    79	static inline u32 __pure crc32_le_generic(u32 crc, unsigned char const *p,
-    80	#if (BITS_PER_LONG == 64)
-    81						  size_t len, u32 poly, u64 poly_qt,
-    82	#else
-    83						  size_t len, u32 poly, u32 poly_qt,
-    84	#endif
-    85						  fallback crc_fb)
-    86	{
-    87		size_t offset, head_len, tail_len;
-    88		const unsigned long *p_ul;
-    89		unsigned long s;
-    90	
-    91		asm_volatile_goto(ALTERNATIVE("j %l[legacy]", "nop", 0,
-    92					      RISCV_ISA_EXT_ZBC, 1)
-    93				  : : : : legacy);
-    94	
-    95		/* Handle the unalignment head. */
-    96		offset = (unsigned long)p & OFFSET_MASK;
-    97		if (offset) {
-    98			head_len = MIN(STEP - offset, len);
-    99			crc = crc_fb(crc, p, head_len);
-   100			len -= head_len;
-   101			p += head_len;
-   102		}
-   103	
-   104		tail_len = len & OFFSET_MASK;
-   105		len = len >> STEP_ORDER;
-   106		p_ul = (unsigned long *)p;
-   107	
-   108		for (int i = 0; i < len; i++) {
-   109	#if (BITS_PER_LONG == 64)
- > 110			s = (unsigned long)crc ^ __cpu_to_le64(*p_ul++);
-   111			/* We don't have a "clmulrh" insn, so use clmul + slli instead.
-   112			 */
-   113			asm volatile (".option push\n"
-   114				      ".option arch,+zbc\n"
-   115				      "clmul	%0, %1, %2\n"
-   116				      "slli	%0, %0, 1\n"
-   117				      "xor	%0, %0, %1\n"
-   118				      "clmulr	%0, %0, %3\n"
-   119				      "srli	%0, %0, 32\n"
-   120				      ".option pop\n"
-   121				      : "=&r" (crc)
-   122				      : "r" (s),
-   123					"r" (poly_qt),
-   124					"r" ((u64)poly << 32)
-   125				      :);
-   126	#else
-   127			s = crc ^ __cpu_to_le32(*p_ul++);
-   128			/* We don't have a "clmulrh" insn, so use clmul + slli instead.
-   129			 */
-   130			asm volatile (".option push\n"
-   131				      ".option arch,+zbc\n"
-   132				      "clmul	%0, %1, %2\n"
-   133				      "slli	%0, %0, 1\n"
-   134				      "xor	%0, %0, %1\n"
-   135				      "clmulr	%0, %0, %3\n"
-   136				      ".option pop\n"
-   137				      : "=&r" (crc)
-   138				      : "r" (s),
-   139					"r" (poly_qt),
-   140					"r" (poly)
-   141				      :);
-   142	#endif
-   143		}
-   144	
-   145		/* Handle the tail bytes. */
-   146		if (tail_len)
-   147			crc = crc_fb(crc, (unsigned char const *)p_ul, tail_len);
-   148		return crc;
-   149	
-   150	legacy:
-   151		return crc_fb(crc, p, len);
-   152	}
-   153	
-   154	u32 __pure crc32_le(u32 crc, unsigned char const *p, size_t len)
-   155	{
-   156		return crc32_le_generic(crc, p, len, CRC32_POLY_LE, CRC32_POLY_QT_LE,
-   157					crc32_le_base);
-   158	}
-   159	
-   160	u32 __pure __crc32c_le(u32 crc, unsigned char const *p, size_t len)
-   161	{
-   162		return crc32_le_generic(crc, p, len, CRC32C_POLY_LE,
-   163					CRC32C_POLY_QT_LE, __crc32c_le_base);
-   164	}
-   165	
-   166	u32 __pure crc32_be(u32 crc, unsigned char const *p, size_t len)
-   167	{
-   168		size_t offset, head_len, tail_len;
-   169		const unsigned long *p_ul;
-   170		unsigned long s;
-   171	
-   172		asm_volatile_goto(ALTERNATIVE("j %l[legacy]", "nop", 0,
-   173					      RISCV_ISA_EXT_ZBC, 1)
-   174				  : : : : legacy);
-   175	
-   176		/* Handle the unalignment head. */
-   177		offset = (unsigned long)p & OFFSET_MASK;
-   178		if (offset) {
-   179			head_len = MIN(STEP - offset, len);
-   180			crc = crc32_be_base(crc, p, head_len);
-   181			len -= head_len;
-   182			p += head_len;
-   183		}
-   184	
-   185		tail_len = len & OFFSET_MASK;
-   186		len = len >> STEP_ORDER;
-   187		p_ul = (unsigned long *)p;
-   188	
-   189		for (int i = 0; i < len; i++) {
-   190	#if (BITS_PER_LONG == 64)
-   191			s = (unsigned long)crc << 32;
- > 192			s ^= __cpu_to_be64(*p_ul++);
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+>>> Thanks,
+>>>
+>>> Alex
+>>>
+>>>>> Thanks
+>>>>>
+>>>>>> Before this patch:
+>>>>>>
+>>>>>> real  2m1.135s
+>>>>>> user  0m0.980s
+>>>>>> sys   2m0.096s
+>>>>>>
+>>>>>> 4.83%  batch_tlb  [kernel.kallsyms]            [k] __flush_tlb_range
+>>>>>>
+>>>>>> After this patch:
+>>>>>>
+>>>>>> real  1m0.543s
+>>>>>> user  0m1.059s
+>>>>>> sys   0m59.489s
+>>>>>>
+>>>>>> 0.14%  batch_tlb  [kernel.kallsyms]            [k] __flush_tlb_range
+>>>>>>
+>>>>>> Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
+>>>>>> ---
+>>>>>>   arch/riscv/Kconfig                |  1 +
+>>>>>>   arch/riscv/include/asm/tlbbatch.h | 15 +++++++
+>>>>>>   arch/riscv/include/asm/tlbflush.h | 10 +++++
+>>>>>>   arch/riscv/mm/tlbflush.c          | 71 ++++++++++++++++++++++---------
+>>>>>>   4 files changed, 77 insertions(+), 20 deletions(-)
+>>>>>>   create mode 100644 arch/riscv/include/asm/tlbbatch.h
+>>>>>>
+>>>>>> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+>>>>>> index 7603bd8ab333..aa07bd43b138 100644
+>>>>>> --- a/arch/riscv/Kconfig
+>>>>>> +++ b/arch/riscv/Kconfig
+>>>>>> @@ -53,6 +53,7 @@ config RISCV
+>>>>>>        select ARCH_USE_MEMTEST
+>>>>>>        select ARCH_USE_QUEUED_RWLOCKS
+>>>>>>        select ARCH_USES_CFI_TRAPS if CFI_CLANG
+>>>>>> +     select ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH if SMP && MMU
+>>>>>>        select ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT if MMU
+>>>>>>        select ARCH_WANT_FRAME_POINTERS
+>>>>>>        select ARCH_WANT_GENERAL_HUGETLB if !RISCV_ISA_SVNAPOT
+>>>>>> diff --git a/arch/riscv/include/asm/tlbbatch.h b/arch/riscv/include/asm/tlbbatch.h
+>>>>>> new file mode 100644
+>>>>>> index 000000000000..46014f70b9da
+>>>>>> --- /dev/null
+>>>>>> +++ b/arch/riscv/include/asm/tlbbatch.h
+>>>>>> @@ -0,0 +1,15 @@
+>>>>>> +/* SPDX-License-Identifier: GPL-2.0-only */
+>>>>>> +/*
+>>>>>> + * Copyright (C) 2023 Rivos Inc.
+>>>>>> + */
+>>>>>> +
+>>>>>> +#ifndef _ASM_RISCV_TLBBATCH_H
+>>>>>> +#define _ASM_RISCV_TLBBATCH_H
+>>>>>> +
+>>>>>> +#include <linux/cpumask.h>
+>>>>>> +
+>>>>>> +struct arch_tlbflush_unmap_batch {
+>>>>>> +     struct cpumask cpumask;
+>>>>>> +};
+>>>>>> +
+>>>>>> +#endif /* _ASM_RISCV_TLBBATCH_H */
+>>>>>> diff --git a/arch/riscv/include/asm/tlbflush.h b/arch/riscv/include/asm/tlbflush.h
+>>>>>> index 8f3418c5f172..f0b731ccc0c2 100644
+>>>>>> --- a/arch/riscv/include/asm/tlbflush.h
+>>>>>> +++ b/arch/riscv/include/asm/tlbflush.h
+>>>>>> @@ -46,6 +46,16 @@ void flush_tlb_kernel_range(unsigned long start, unsigned long end);
+>>>>>>   void flush_pmd_tlb_range(struct vm_area_struct *vma, unsigned long start,
+>>>>>>                        unsigned long end);
+>>>>>>   #endif
+>>>>>> +
+>>>>>> +#ifdef CONFIG_ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH
+>>>>>> +bool arch_tlbbatch_should_defer(struct mm_struct *mm);
+>>>>>> +void arch_tlbbatch_add_pending(struct arch_tlbflush_unmap_batch *batch,
+>>>>>> +                            struct mm_struct *mm,
+>>>>>> +                            unsigned long uaddr);
+>>>>>> +void arch_flush_tlb_batched_pending(struct mm_struct *mm);
+>>>>>> +void arch_tlbbatch_flush(struct arch_tlbflush_unmap_batch *batch);
+>>>>>> +#endif /* CONFIG_ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH */
+>>>>>> +
+>>>>>>   #else /* CONFIG_SMP && CONFIG_MMU */
+>>>>>>
+>>>>>>   #define flush_tlb_all() local_flush_tlb_all()
+>>>>>> diff --git a/arch/riscv/mm/tlbflush.c b/arch/riscv/mm/tlbflush.c
+>>>>>> index e6659d7368b3..bb623bca0a7d 100644
+>>>>>> --- a/arch/riscv/mm/tlbflush.c
+>>>>>> +++ b/arch/riscv/mm/tlbflush.c
+>>>>>> @@ -93,29 +93,23 @@ static void __ipi_flush_tlb_range_asid(void *info)
+>>>>>>        local_flush_tlb_range_asid(d->start, d->size, d->stride, d->asid);
+>>>>>>   }
+>>>>>>
+>>>>>> -static void __flush_tlb_range(struct mm_struct *mm, unsigned long start,
+>>>>>> -                           unsigned long size, unsigned long stride)
+>>>>>> +static void __flush_tlb_range(struct cpumask *cmask, unsigned long asid,
+>>>>>> +                           unsigned long start, unsigned long size,
+>>>>>> +                           unsigned long stride)
+>>>>>>   {
+>>>>>>        struct flush_tlb_range_data ftd;
+>>>>>> -     const struct cpumask *cmask;
+>>>>>> -     unsigned long asid = FLUSH_TLB_NO_ASID;
+>>>>>>        bool broadcast;
+>>>>>>
+>>>>>> -     if (mm) {
+>>>>>> -             unsigned int cpuid;
+>>>>>> +     if (cpumask_empty(cmask))
+>>>>>> +             return;
+>>>>>>
+>>>>>> -             cmask = mm_cpumask(mm);
+>>>>>> -             if (cpumask_empty(cmask))
+>>>>>> -                     return;
+>>>>>> +     if (cmask != cpu_online_mask) {
+>>>>>> +             unsigned int cpuid;
+>>>>>>
+>>>>>>                cpuid = get_cpu();
+>>>>>>                /* check if the tlbflush needs to be sent to other CPUs */
+>>>>>>                broadcast = cpumask_any_but(cmask, cpuid) < nr_cpu_ids;
+>>>>>> -
+>>>>>> -             if (static_branch_unlikely(&use_asid_allocator))
+>>>>>> -                     asid = atomic_long_read(&mm->context.id) & asid_mask;
+>>>>>>        } else {
+>>>>>> -             cmask = cpu_online_mask;
+>>>>>>                broadcast = true;
+>>>>>>        }
+>>>>>>
+>>>>>> @@ -135,25 +129,34 @@ static void __flush_tlb_range(struct mm_struct *mm, unsigned long start,
+>>>>>>                local_flush_tlb_range_asid(start, size, stride, asid);
+>>>>>>        }
+>>>>>>
+>>>>>> -     if (mm)
+>>>>>> +     if (cmask != cpu_online_mask)
+>>>>>>                put_cpu();
+>>>>>>   }
+>>>>>>
+>>>>>> +static inline unsigned long get_mm_asid(struct mm_struct *mm)
+>>>>>> +{
+>>>>>> +     return static_branch_unlikely(&use_asid_allocator) ?
+>>>>>> +                     atomic_long_read(&mm->context.id) & asid_mask : FLUSH_TLB_NO_ASID;
+>>>>>> +}
+>>>>>> +
+>>>>>>   void flush_tlb_mm(struct mm_struct *mm)
+>>>>>>   {
+>>>>>> -     __flush_tlb_range(mm, 0, FLUSH_TLB_MAX_SIZE, PAGE_SIZE);
+>>>>>> +     __flush_tlb_range(mm_cpumask(mm), get_mm_asid(mm),
+>>>>>> +                       0, FLUSH_TLB_MAX_SIZE, PAGE_SIZE);
+>>>>>>   }
+>>>>>>
+>>>>>>   void flush_tlb_mm_range(struct mm_struct *mm,
+>>>>>>                        unsigned long start, unsigned long end,
+>>>>>>                        unsigned int page_size)
+>>>>>>   {
+>>>>>> -     __flush_tlb_range(mm, start, end - start, page_size);
+>>>>>> +     __flush_tlb_range(mm_cpumask(mm), get_mm_asid(mm),
+>>>>>> +                       start, end - start, page_size);
+>>>>>>   }
+>>>>>>
+>>>>>>   void flush_tlb_page(struct vm_area_struct *vma, unsigned long addr)
+>>>>>>   {
+>>>>>> -     __flush_tlb_range(vma->vm_mm, addr, PAGE_SIZE, PAGE_SIZE);
+>>>>>> +     __flush_tlb_range(mm_cpumask(vma->vm_mm), get_mm_asid(vma->vm_mm),
+>>>>>> +                       addr, PAGE_SIZE, PAGE_SIZE);
+>>>>>>   }
+>>>>>>
+>>>>>>   void flush_tlb_range(struct vm_area_struct *vma, unsigned long start,
+>>>>>> @@ -185,18 +188,46 @@ void flush_tlb_range(struct vm_area_struct *vma, unsigned long start,
+>>>>>>                }
+>>>>>>        }
+>>>>>>
+>>>>>> -     __flush_tlb_range(vma->vm_mm, start, end - start, stride_size);
+>>>>>> +     __flush_tlb_range(mm_cpumask(vma->vm_mm), get_mm_asid(vma->vm_mm),
+>>>>>> +                       start, end - start, stride_size);
+>>>>>>   }
+>>>>>>
+>>>>>>   void flush_tlb_kernel_range(unsigned long start, unsigned long end)
+>>>>>>   {
+>>>>>> -     __flush_tlb_range(NULL, start, end - start, PAGE_SIZE);
+>>>>>> +     __flush_tlb_range((struct cpumask *)cpu_online_mask, FLUSH_TLB_NO_ASID,
+>>>>>> +                       start, end - start, PAGE_SIZE);
+>>>>>>   }
+>>>>>>
+>>>>>>   #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+>>>>>>   void flush_pmd_tlb_range(struct vm_area_struct *vma, unsigned long start,
+>>>>>>                        unsigned long end)
+>>>>>>   {
+>>>>>> -     __flush_tlb_range(vma->vm_mm, start, end - start, PMD_SIZE);
+>>>>>> +     __flush_tlb_range(mm_cpumask(vma->vm_mm), get_mm_asid(vma->vm_mm),
+>>>>>> +                       start, end - start, PMD_SIZE);
+>>>>>>   }
+>>>>>>   #endif
+>>>>>> +
+>>>>>> +#ifdef CONFIG_ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH
+>>>>>> +bool arch_tlbbatch_should_defer(struct mm_struct *mm)
+>>>>>> +{
+>>>>>> +     return true;
+>>>>>> +}
+>>>>>> +
+>>>>>> +void arch_tlbbatch_add_pending(struct arch_tlbflush_unmap_batch *batch,
+>>>>>> +                            struct mm_struct *mm,
+>>>>>> +                            unsigned long uaddr)
+>>>>>> +{
+>>>>>> +     cpumask_or(&batch->cpumask, &batch->cpumask, mm_cpumask(mm));
+>>>>>> +}
+>>>>>> +
+>>>>>> +void arch_flush_tlb_batched_pending(struct mm_struct *mm)
+>>>>>> +{
+>>>>>> +     flush_tlb_mm(mm);
+>>>>>> +}
+>>>>>> +
+>>>>>> +void arch_tlbbatch_flush(struct arch_tlbflush_unmap_batch *batch)
+>>>>>> +{
+>>>>>> +     __flush_tlb_range(&batch->cpumask, FLUSH_TLB_NO_ASID, 0,
+>>>>>> +                       FLUSH_TLB_MAX_SIZE, PAGE_SIZE);
+>>>>>> +}
+>>>>>> +#endif /* CONFIG_ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH */
+>>>>>> --
+>>>>>> 2.39.2
+>>>>>>
+>>>>>>
+>>>>>> _______________________________________________
+>>>>>> linux-riscv mailing list
+>>>>>> linux-riscv@lists.infradead.org
+>>>>>> http://lists.infradead.org/mailman/listinfo/linux-riscv
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
 
