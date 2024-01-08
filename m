@@ -1,129 +1,88 @@
-Return-Path: <linux-kernel+bounces-19022-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19024-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34B588266D6
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 01:15:11 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 759F08266E1
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 01:30:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C377F281812
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 00:15:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D643FB21081
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 00:30:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A1F779CD;
-	Mon,  8 Jan 2024 00:15:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36DDC1385;
+	Mon,  8 Jan 2024 00:30:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="OmsTBqF3"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="K2Qf2H++"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CB337497;
-	Mon,  8 Jan 2024 00:14:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1704672894;
-	bh=037L4Bx9N+1mGd2j8MWjXO0307K1Ky4m2b0KGWg3Ki4=;
-	h=Date:From:To:Cc:Subject:From;
-	b=OmsTBqF3bIjUT99Rllsfo2snosICcCsQ6sj3p+4AS6+xGUpGG/ohO7cdEGBazQH4j
-	 FVKehnO4OEMo16FBlVhbk0wPr1f+q2A7m8n9OpvMjogj3TlxsdHLJKEaUxUdmAJVy2
-	 PfgBUNuCfK75gF0gHCvURQ6NHAyn5nEJR9UmZli4xketp9bqujkP1NCfTE41MrxtkT
-	 UEt7BOh7Mko8Sp7XXFpZXFj9JsQOq9E3UPHcMfXeoTp3h/4JVGq+C2betAPic7uFf0
-	 w/HwVbC7qYNOmgZy3cZpOtpCN+Y/X3kVJxOd9WxuY0KM7aZ2S6asWbx/4JVOSTxMX7
-	 HE8tSVNuKMaOg==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4T7ZM10SZmz4wdB;
-	Mon,  8 Jan 2024 11:14:53 +1100 (AEDT)
-Date: Mon, 8 Jan 2024 11:14:51 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Dave Airlie <airlied@redhat.com>, DRI <dri-devel@lists.freedesktop.org>
-Cc: Alex Deucher <alexander.deucher@amd.com>, Imre Deak
- <imre.deak@intel.com>, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>, Linux Next Mailing List
- <linux-next@vger.kernel.org>, Wade Wang <wade.wang@hp.com>, Wayne Lin
- <wayne.lin@amd.com>
-Subject: linux-next: manual merge of the drm tree with Linus' tree
-Message-ID: <20240108111451.67c34a93@canb.auug.org.au>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47061800;
+	Mon,  8 Jan 2024 00:30:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id D2C8040002;
+	Mon,  8 Jan 2024 00:30:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1704673818;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=qVtt9Z51WVizmklSojDBStset8GLJ3cHfn2WBgUbF8s=;
+	b=K2Qf2H++p5e83SaS3+FtQPUoZ2T7TSgu9CIIsD5JfT6IOctItW64LHO2lKuSaVbsG3AXdZ
+	63fig7MPtuG6uXeWWlas64brwCg6zynYGuEGI4ud54iRVPmecnBn9pvo0oSa7lHGdv/JHI
+	ENgaltFHKzAkGt+C3m4h4tJ6u3PYrxIqcjFzz3lvxHElFvHY+6b2zCbV3MFhiRnwGGPT1T
+	vpi+xT6rFrhEeRpQCnvj611vsrfIiwCYnG5Fwf+kcXxt/27qSQBqFeP58bUgmWB3HE8Y1y
+	ohML5OE79Zu3KvLrz7xjtL8ciBuAqasIyG8QzNtWmISD2BLfVAmPN30MP/H2fQ==
+From: alexandre.belloni@bootlin.com
+To: Alessandro Zummo <a.zummo@towertech.it>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc: linux-rtc@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] rtc: rv8803: add wakeup-source support
+Date: Mon,  8 Jan 2024 01:30:10 +0100
+Message-ID: <20240108003010.599456-1-alexandre.belloni@bootlin.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/d75n8xzFTcdrovT1=A9bA_h";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: alexandre.belloni@bootlin.com
 
---Sig_/d75n8xzFTcdrovT1=A9bA_h
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+From: Alexandre Belloni <alexandre.belloni@bootlin.com>
 
-Hi all,
+The RV8803 can be wired directly to a PMIC that can wake up an SoC without
+the CPU getting interrupts.
 
-Today's linux-next merge of the drm tree got a conflict in:
+Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+---
+ drivers/rtc/rtc-rv8803.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-  drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+diff --git a/drivers/rtc/rtc-rv8803.c b/drivers/rtc/rtc-rv8803.c
+index 11e6b0d31f5d..1327251e527c 100644
+--- a/drivers/rtc/rtc-rv8803.c
++++ b/drivers/rtc/rtc-rv8803.c
+@@ -712,9 +712,12 @@ static int rv8803_probe(struct i2c_client *client)
+ 			if (err)
+ 				dev_err(&client->dev, "failed to set wake IRQ\n");
+ 		}
++	} else {
++		if (device_property_read_bool(&client->dev, "wakeup-source"))
++			device_init_wakeup(&client->dev, true);
++		else
++			clear_bit(RTC_FEATURE_ALARM, rv8803->rtc->features);
+ 	}
+-	if (!client->irq)
+-		clear_bit(RTC_FEATURE_ALARM, rv8803->rtc->features);
+ 
+ 	if (of_property_read_bool(client->dev.of_node, "epson,vdet-disable"))
+ 		rv8803->backup |= RX8900_FLAG_VDETOFF;
+-- 
+2.43.0
 
-between commit:
-
-  9cdef4f72037 ("drm/amd/display: pbn_div need be updated for hotplug event=
-")
-
-from Linus' tree and commit:
-
-  191dc43935d1 ("drm/dp_mst: Store the MST PBN divider value in fixed point=
- format")
-
-from the drm tree.
-
-I fixed it up (I think, see below) and can carry the fix as
-necessary. This is now fixed as far as linux-next is concerned, but any
-non trivial conflicts should be mentioned to your upstream maintainer
-when your tree is submitted for merging.  You may also want to consider
-cooperating with the maintainer of the conflicting tree to minimise any
-particularly complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-index 73dd4bc870dc,54861136dafd..000000000000
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-@@@ -6916,7 -7007,8 +7009,7 @@@ static int dm_encoder_helper_atomic_che
-  	if (IS_ERR(mst_state))
-  		return PTR_ERR(mst_state);
- =20
-- 	mst_state->pbn_div =3D dm_mst_get_pbn_divider(aconnector->mst_root->dc_l=
-ink);
- -	if (!mst_state->pbn_div.full)
- -		mst_state->pbn_div.full =3D dfixed_const(dm_mst_get_pbn_divider(aconnec=
-tor->mst_root->dc_link));
-++	mst_state->pbn_div.full =3D dfixed_const(dm_mst_get_pbn_divider(aconnect=
-or->mst_root->dc_link));
- =20
-  	if (!state->duplicated) {
-  		int max_bpc =3D conn_state->max_requested_bpc;
-
---Sig_/d75n8xzFTcdrovT1=A9bA_h
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmWbPnsACgkQAVBC80lX
-0GyFVgf8DNuxxfYi5lerGxqQLb82OBymXJLZcvRwzmabkrIqRBrtIkkxVg+mz09z
-s2+FF+0V87HFR3iO0E71WZr2oHZ/1nhQQNT6H5BKp7AcVj3n/xHcSkUlzvp8MfCs
-mthwSP+dobQJMgr9Co9dwHnA+gCXh8vAMXZ+A/5pH3kj6J5AGJmDRmZXrn6SVLK8
-dLRFykwOrE3DkaDtN11pRdVOhrl7+YvPc1+y/nzRQok+aWwwmxmNG1wCEX6Bp22p
-zxP/tft4zJaJw+CAD/hQQk//GDcEuMKAuixCMp376V1agqYHPmnOBhQgFJ0K+Cpc
-5u/A/WEXlwokNx0Nrfa9mX1bxR+rfg==
-=F69V
------END PGP SIGNATURE-----
-
---Sig_/d75n8xzFTcdrovT1=A9bA_h--
 
