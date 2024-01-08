@@ -1,132 +1,116 @@
-Return-Path: <linux-kernel+bounces-19737-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19738-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 427F282721E
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 16:08:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 01B12827222
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 16:09:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D4385B225B1
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 15:08:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 28E1F1C22B40
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 15:09:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5180E4C3D3;
-	Mon,  8 Jan 2024 15:08:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="dSMoNcme"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0AAF4BAA8;
+	Mon,  8 Jan 2024 15:09:26 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F40414C3AD
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 15:07:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1704726478;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=XGkGg6RWYBQE5b/vbAuEGwRY5SKVcqrmQKtMawiQB5k=;
-	b=dSMoNcmeTLjbuSMR994oEA4/zBFkkJqbatSx47utKNgBjf3mO210wLAyKQJ4PDLEJw0n/0
-	l5eUGAHhbLxc/i5ja+arLU2Pn6YkCo/BFPmngtBwKaXJRzRR/AGuu1f+r+R3RfRNGCAVeG
-	oNEJx0MpogBoVbj3+1uxZvNwX5YyjyM=
-Received: from mail-pg1-f200.google.com (mail-pg1-f200.google.com
- [209.85.215.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-689-gj-nvBZ5NdCJ12wRdbxCGQ-1; Mon, 08 Jan 2024 10:07:55 -0500
-X-MC-Unique: gj-nvBZ5NdCJ12wRdbxCGQ-1
-Received: by mail-pg1-f200.google.com with SMTP id 41be03b00d2f7-5c6245bc7caso521227a12.3
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 07:07:55 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704726475; x=1705331275;
-        h=content-transfer-encoding:content-disposition:mime-version
-         :references:in-reply-to:message-id:date:subject:cc:to:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=XGkGg6RWYBQE5b/vbAuEGwRY5SKVcqrmQKtMawiQB5k=;
-        b=rET88xeaGYnjJTUfq7CcgZxK8gfhD5zB7gWo9chcBg70y+qZIM/GUcrr7bMAgy/sJF
-         9GISUBIgnjn8osXNlW20fxx0POeomuGa6MMl4mprlFdmssOlUwd9VKZ87lrozMpDG+qr
-         MvD51UoBg4qjUn4PJYh4zsPYX7IL6c676YG3RL9o6sSZqayWATfJjTfYDkag0uz6pL/j
-         sKksQdlYJsMNaJKjA9TnrwWPT5HSDbzrSV2qeDaq5Y/OAQ9E3//f29ZHpKO6iT2JN/TV
-         cVkmvSWO/GMRV124fl5wCxKRiKYZBlnPYAmTmeL2+OMJnqjBPWFBPTLihLB5uqkZ6WJU
-         MScA==
-X-Gm-Message-State: AOJu0YwsHWu179OrPAeLwlOxzqyNodOwQaOY67AcVXbz7Fs7ZSXRl1Sq
-	hdSmgNDDNaY5t6M1aLRasK+x2X8W2167LcmSMmylLQtnia+/55RIU8nUNWvW54kU735HAyMHOwD
-	TyzYhfy9Z50bJ+xd2btkI/vZ0KsggMnUK
-X-Received: by 2002:a17:90a:9a92:b0:28c:6529:ec9c with SMTP id e18-20020a17090a9a9200b0028c6529ec9cmr1176640pjp.92.1704726474805;
-        Mon, 08 Jan 2024 07:07:54 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IE8hI/FTvmA45bxfRTbHrh7uolmBIN6qyyCS+HvONvtiC8qNzr83Hlrhe2QGgtKCUrt2aUQIg==
-X-Received: by 2002:a17:90a:9a92:b0:28c:6529:ec9c with SMTP id e18-20020a17090a9a9200b0028c6529ec9cmr1176622pjp.92.1704726474474;
-        Mon, 08 Jan 2024 07:07:54 -0800 (PST)
-Received: from LeoBras.redhat.com ([2804:1b3:a803:26a5:3f32:e12b:5335:3c2d])
-        by smtp.gmail.com with ESMTPSA id l21-20020a17090ac59500b0028acb86f7b5sm57168pjt.44.2024.01.08.07.07.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Jan 2024 07:07:54 -0800 (PST)
-From: Leonardo Bras <leobras@redhat.com>
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Leonardo Bras <leobras@redhat.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Oleg Nesterov <oleg@redhat.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Mark Brown <broonie@kernel.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Guo Hui <guohui@uniontech.com>,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 1/1] arm64: remove unnecessary ifdefs around is_compat_task()
-Date: Mon,  8 Jan 2024 12:07:48 -0300
-Message-ID: <ZZwPxNNc5pXr9kPi@LeoBras>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <112ae7d5-61b2-4887-a56f-35ea7c3b1bfa@app.fastmail.com>
-References: <20240105041458.126602-3-leobras@redhat.com> <ZZgAtntCQFKbsGiW@FVFF77S0Q05N> <112ae7d5-61b2-4887-a56f-35ea7c3b1bfa@app.fastmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0B974C3AD;
+	Mon,  8 Jan 2024 15:09:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.31])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4T7y872KHNz67Lqc;
+	Mon,  8 Jan 2024 23:06:47 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id 68003140D27;
+	Mon,  8 Jan 2024 23:09:20 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Mon, 8 Jan
+ 2024 15:09:20 +0000
+Date: Mon, 8 Jan 2024 15:09:19 +0000
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: Ira Weiny <ira.weiny@intel.com>
+CC: Fan Ni <nifan.cxl@gmail.com>, Dave Jiang <dave.jiang@intel.com>,
+	<linux-cxl@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Huai-Cheng Kuo
+	<hchkuo@avery-design.com.tw>
+Subject: Re: [PATCH v2 2/2] cxl/cdat: Fix header sum value in CDAT checksum
+Message-ID: <20240108150919.000045d4@Huawei.com>
+In-Reply-To: <658228023732d_277bd294ae@iweiny-mobl.notmuch>
+References: <20231117-fix-cdat-cs-v2-0-715399976d4d@intel.com>
+	<20231117-fix-cdat-cs-v2-2-715399976d4d@intel.com>
+	<20231218132837.00001424@Huawei.com>
+	<658228023732d_277bd294ae@iweiny-mobl.notmuch>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml100004.china.huawei.com (7.191.162.219) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On Fri, Jan 05, 2024 at 03:38:05PM +0100, Arnd Bergmann wrote:
-> On Fri, Jan 5, 2024, at 14:14, Mark Rutland wrote:
-> > On Fri, Jan 05, 2024 at 01:15:00AM -0300, Leonardo Bras wrote:
-> > arch/arm64/kernel/ptrace.c:2121:25: note: each undeclared identifier is 
-> > reported only once for each function it appears in
-> > arch/arm64/kernel/ptrace.c:2123:25: error: 'user_aarch32_ptrace_view' 
-> > undeclared (first use in this function)
-> >  2123 |                 return &user_aarch32_ptrace_view;
-> >       |                         ^~~~~~~~~~~~~~~~~~~~~~~~
-> > make[4]: *** [scripts/Makefile.build:243: arch/arm64/kernel/ptrace.o] 
-> > Error 1
-> > make[3]: *** [scripts/Makefile.build:480: arch/arm64/kernel] Error 2
-> > make[2]: *** [scripts/Makefile.build:480: arch/arm64] Error 2
-> > make[1]: *** [/home/mark/src/linux/Makefile:1911: .] Error 2
-> > make: *** [Makefile:234: __sub-make] Error 2
-> >
-> > ... and looking at the code, user_aarch32_view and user_aarch32_ptrace_view are
-> > both defined under ifdeffery for CONFIG_COMPAT, so that's obviously not going
-> > to work...
+On Tue, 19 Dec 2023 15:32:18 -0800
+Ira Weiny <ira.weiny@intel.com> wrote:
 
-Thanks for noticing, Mark!
-
+> Jonathan Cameron wrote:
+> > On Wed, 29 Nov 2023 17:33:04 -0800
+> > Ira Weiny <ira.weiny@intel.com> wrote:
+> >   
+> > > The addition of the DCD support for CXL type-3 devices extended the CDAT
+> > > table large enough that the checksum being returned was incorrect.[1]
+> > > 
+> > > This was because the checksum value was using the header length field
+> > > rather than each of the 4 bytes of the length field.  This was
+> > > previously not seen because the length of the CDAT data was less than
+> > > 256 thus resulting in an equivalent checksum value.
+> > > 
+> > > Properly calculate the checksum for the CDAT header.
+> > > 
+> > > [1] https://lore.kernel.org/all/20231116-fix-cdat-devm-free-v1-1-b148b40707d7@intel.com/
+> > > 
+> > > Fixes: aba578bdace5 ("hw/cxl/cdat: CXL CDAT Data Object Exchange implementation")
+> > > Cc: Huai-Cheng Kuo <hchkuo@avery-design.com.tw>
+> > > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> > > 
+> > > ---
+> > > Changes from V1:
+> > > [djiang: Remove do {} while (0);]
+> > > ---
+> > >  hw/cxl/cxl-cdat.c | 9 +++++++--
+> > >  1 file changed, 7 insertions(+), 2 deletions(-)
+> > > 
+> > > diff --git a/hw/cxl/cxl-cdat.c b/hw/cxl/cxl-cdat.c
+> > > index 24829cf2428d..67e44a4f992a 100644
+> > > --- a/hw/cxl/cxl-cdat.c
+> > > +++ b/hw/cxl/cxl-cdat.c
+> > > @@ -49,6 +49,7 @@ static void ct3_build_cdat(CDATObject *cdat, Error **errp)
+> > >      g_autofree CDATTableHeader *cdat_header = NULL;
+> > >      g_autofree CDATEntry *cdat_st = NULL;
+> > >      uint8_t sum = 0;
+> > > +    uint8_t *buf;  
+> > This results in a shadowing variable warning. I'll rename it to hdr_buf or something
+> > like that.  
 > 
-> I suspect it's enough to remove all of the other
-> "#ifdef CONFIG_COMPAT" checks in this file and rely on
-> dead code elimination to remove the rest, but there might
-> be additional problems if some extern declarations are
-> hidden in an #ifdef as well.
+> <sigh>  sorry again...
 > 
->     Arnd
-
-Sure, I sill send a v2 soon.
-
-Thanks!
-Leo
-
+> With all the discussion did you want me to re-roll the set?
 > 
+> AFAICS this is the only actual issue.  So if you want to do it that would
+> be great.
+> 
+I've done it locally - just not dealt with some other stuff on that tree yet hence
+not pushed out.  Will get to that sometime this week hopefully.
+
+Jonathan
+
+> Thanks,
+> Ira
 
 
