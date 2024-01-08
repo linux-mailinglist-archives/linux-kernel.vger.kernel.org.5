@@ -1,201 +1,147 @@
-Return-Path: <linux-kernel+bounces-19182-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19183-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2756A826965
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 09:25:43 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id ECAC4826967
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 09:26:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8FD3C1F216AA
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 08:25:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7FE60B2176D
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 08:26:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EED01B66C;
-	Mon,  8 Jan 2024 08:25:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="gESezSnz"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76329BA33;
+	Mon,  8 Jan 2024 08:25:52 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0E6FB665
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 08:25:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1704702332;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=KZTv9nbes+UUv6ydUaDBh+0jRRVdETkIFavswDy7m5g=;
-	b=gESezSnzLQ++EcmmORs8Xw7RVyySirLfgYj9kGu+9QJMT2PKoPZnZnR5tdFVr8PWQbsWxd
-	dguMmYyMFNqoD98BmOnB2h1v76uqgO5IA+SjY+aZ7oeZre5DYmOBfjy6AHjvBWfjCVq5EU
-	9djF4HbotoJ8QQqI9d7r8INvDVWoD4I=
-Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
- [209.85.222.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-382-0CaYMRCVOrmpV6T-XdDqtg-1; Mon, 08 Jan 2024 03:25:26 -0500
-X-MC-Unique: 0CaYMRCVOrmpV6T-XdDqtg-1
-Received: by mail-qk1-f200.google.com with SMTP id af79cd13be357-78130939196so50381485a.1
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 00:25:26 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704702325; x=1705307125;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=KZTv9nbes+UUv6ydUaDBh+0jRRVdETkIFavswDy7m5g=;
-        b=dwPCvDRwyQP5ZFh+a9pVnrWjE28gBBE9aC6GXJtLJnh1A1tgGsAfyd9S+yLHFMtcYV
-         WS9C1DOWQNTIqUV3KYlYs9Vj3pLcJr394R+KjoK6IEpfbRHQkFbNxLYu2gv68jsY0vrH
-         o9H44WRvMnGZfr+i2zDuz8N3db+6/LroxH3IELBSML2zh1oBeCD4Wwkmu2+JE6Lob6s6
-         hexAKUhtV83vU9A102ivkbaKebgYv12ah4/yy9WfeQDzE7uuPw53ZY5Q5muhU4Wc1LFf
-         WjJ1r9gWrbG7OiZKfKWX1Ug1YPdB1q7G5ii+MijPlDa6uZh8CEdtBDEhdKVw9w/E0Z7L
-         u2rg==
-X-Gm-Message-State: AOJu0YxZKquhad6Tbf535jJTR4j7RIOIUDjVmBi0GAR5JGmyTHpuEalk
-	+3mALzdnePdUgaQH6bNRK0ygP1wtVAcLn0+JENzyQU6FhyxkMZJntb23rdSelt/XIb3Eg29tZ+p
-	wBMHt/cru/6nqOtBP0nL1fj5zB+AXJu9/LdXoLYnS
-X-Received: by 2002:a05:620a:288e:b0:783:c16:7a16 with SMTP id j14-20020a05620a288e00b007830c167a16mr6043900qkp.1.1704702325676;
-        Mon, 08 Jan 2024 00:25:25 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHfw9fsaBrvtnrSiGzHe6+3DxQpSVdE63JJD/cnb6iJsbp5EFyBmCe5Ck8H1SRExu3t2tyTDQ==
-X-Received: by 2002:a05:620a:288e:b0:783:c16:7a16 with SMTP id j14-20020a05620a288e00b007830c167a16mr6043890qkp.1.1704702325367;
-        Mon, 08 Jan 2024 00:25:25 -0800 (PST)
-Received: from pstanner-thinkpadt14sgen1.remote.csb (nat-pool-muc-t.redhat.com. [149.14.88.26])
-        by smtp.gmail.com with ESMTPSA id c28-20020a05620a135c00b007831a3aaa0bsm1087803qkl.110.2024.01.08.00.25.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Jan 2024 00:25:25 -0800 (PST)
-Message-ID: <3d0e251f0d58f1f8266074973644160d831fa462.camel@redhat.com>
-Subject: Re: [PATCH 1/2] platform_device: add devres function region-reqs
-From: Philipp Stanner <pstanner@redhat.com>
-To: Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-Cc: dri-devel@lists.freedesktop.org, Fabio Estevam <festevam@gmail.com>, 
- "Rafael J. Wysocki" <rafael@kernel.org>, Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>, Sascha Hauer <s.hauer@pengutronix.de>,
- linux-kernel@vger.kernel.org, Maxime Ripard <mripard@kernel.org>,  Mark
- Brown <broonie@kernel.org>, NXP Linux Team <linux-imx@nxp.com>, Thomas
- Zimmermann <tzimmermann@suse.de>, Laurentiu Palcu
- <laurentiu.palcu@oss.nxp.com>, David Gow <davidgow@google.com>, Shawn Guo
- <shawnguo@kernel.org>, Pengutronix Kernel Team <kernel@pengutronix.de>,
- linux-arm-kernel@lists.infradead.org
-Date: Mon, 08 Jan 2024 09:25:22 +0100
-In-Reply-To: <5k75ed3czl6rqzkykl7xc4dbyih2frunoor4ypfqxx7yzfs2vd@6ieg4dewtgxf>
-References: <20240105172218.42457-2-pstanner@redhat.com>
-	 <20240105172218.42457-3-pstanner@redhat.com>
-	 <5k75ed3czl6rqzkykl7xc4dbyih2frunoor4ypfqxx7yzfs2vd@6ieg4dewtgxf>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB833C139;
+	Mon,  8 Jan 2024 08:25:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.234])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4T7nCc0ZBmz1gx9K;
+	Mon,  8 Jan 2024 16:24:12 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (unknown [7.185.36.74])
+	by mail.maildlp.com (Postfix) with ESMTPS id 07150140384;
+	Mon,  8 Jan 2024 16:25:42 +0800 (CST)
+Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Mon, 8 Jan
+ 2024 16:25:41 +0800
+Subject: Re: [PATCH net-next 2/6] page_frag: unify gfp bits for order 3 page
+ allocation
+To: Alexander H Duyck <alexander.duyck@gmail.com>, <davem@davemloft.net>,
+	<kuba@kernel.org>, <pabeni@redhat.com>
+CC: <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>, "Michael S.
+ Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, Andrew Morton
+	<akpm@linux-foundation.org>, Eric Dumazet <edumazet@google.com>,
+	<kvm@vger.kernel.org>, <virtualization@lists.linux.dev>, <linux-mm@kvack.org>
+References: <20240103095650.25769-1-linyunsheng@huawei.com>
+ <20240103095650.25769-3-linyunsheng@huawei.com>
+ <d4947ef05bca8525d04f9943e92b4e43ec82c583.camel@gmail.com>
+From: Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <1d40427d-78e3-ef40-a63f-206c0697bda2@huawei.com>
+Date: Mon, 8 Jan 2024 16:25:41 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+In-Reply-To: <d4947ef05bca8525d04f9943e92b4e43ec82c583.camel@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
 
-Hi
+On 2024/1/5 23:35, Alexander H Duyck wrote:
+> On Wed, 2024-01-03 at 17:56 +0800, Yunsheng Lin wrote:
+>> Currently there seems to be three page frag implementions
+>> which all try to allocate order 3 page, if that fails, it
+>> then fail back to allocate order 0 page, and each of them
+>> all allow order 3 page allocation to fail under certain
+>> condition by using specific gfp bits.
+>>
+>> The gfp bits for order 3 page allocation are different
+>> between different implementation, __GFP_NOMEMALLOC is
+>> or'd to forbid access to emergency reserves memory for
+>> __page_frag_cache_refill(), but it is not or'd in other
+>> implementions, __GFP_DIRECT_RECLAIM is masked off to avoid
+>> direct reclaim in skb_page_frag_refill(), but it is not
+>> masked off in __page_frag_cache_refill().
+>>
+>> This patch unifies the gfp bits used between different
+>> implementions by or'ing __GFP_NOMEMALLOC and masking off
+>> __GFP_DIRECT_RECLAIM for order 3 page allocation to avoid
+>> possible pressure for mm.
+>>
+>> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+>> CC: Alexander Duyck <alexander.duyck@gmail.com>
+>> ---
+>>  drivers/vhost/net.c | 2 +-
+>>  mm/page_alloc.c     | 4 ++--
+>>  net/core/sock.c     | 2 +-
+>>  3 files changed, 4 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/drivers/vhost/net.c b/drivers/vhost/net.c
+>> index f2ed7167c848..e574e21cc0ca 100644
+>> --- a/drivers/vhost/net.c
+>> +++ b/drivers/vhost/net.c
+>> @@ -670,7 +670,7 @@ static bool vhost_net_page_frag_refill(struct vhost_net *net, unsigned int sz,
+>>  		/* Avoid direct reclaim but allow kswapd to wake */
+>>  		pfrag->page = alloc_pages((gfp & ~__GFP_DIRECT_RECLAIM) |
+>>  					  __GFP_COMP | __GFP_NOWARN |
+>> -					  __GFP_NORETRY,
+>> +					  __GFP_NORETRY | __GFP_NOMEMALLOC,
+>>  					  SKB_FRAG_PAGE_ORDER);
+>>  		if (likely(pfrag->page)) {
+>>  			pfrag->size = PAGE_SIZE << SKB_FRAG_PAGE_ORDER;
+>> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+>> index 9a16305cf985..1f0b36dd81b5 100644
+>> --- a/mm/page_alloc.c
+>> +++ b/mm/page_alloc.c
+>> @@ -4693,8 +4693,8 @@ static struct page *__page_frag_cache_refill(struct page_frag_cache *nc,
+>>  	gfp_t gfp = gfp_mask;
+>>  
+>>  #if (PAGE_SIZE < PAGE_FRAG_CACHE_MAX_SIZE)
+>> -	gfp_mask |= __GFP_COMP | __GFP_NOWARN | __GFP_NORETRY |
+>> -		    __GFP_NOMEMALLOC;
+>> +	gfp_mask = (gfp_mask & ~__GFP_DIRECT_RECLAIM) |  __GFP_COMP |
+>> +		   __GFP_NOWARN | __GFP_NORETRY | __GFP_NOMEMALLOC;
+>>  	page = alloc_pages_node(NUMA_NO_NODE, gfp_mask,
+>>  				PAGE_FRAG_CACHE_MAX_ORDER);
+>>  	nc->size = page ? PAGE_FRAG_CACHE_MAX_SIZE : PAGE_SIZE;
+>> diff --git a/net/core/sock.c b/net/core/sock.c
+>> index 446e945f736b..d643332c3ee5 100644
+>> --- a/net/core/sock.c
+>> +++ b/net/core/sock.c
+>> @@ -2900,7 +2900,7 @@ bool skb_page_frag_refill(unsigned int sz, struct page_frag *pfrag, gfp_t gfp)
+>>  		/* Avoid direct reclaim but allow kswapd to wake */
+>>  		pfrag->page = alloc_pages((gfp & ~__GFP_DIRECT_RECLAIM) |
+>>  					  __GFP_COMP | __GFP_NOWARN |
+>> -					  __GFP_NORETRY,
+>> +					  __GFP_NORETRY | __GFP_NOMEMALLOC,
+>>  					  SKB_FRAG_PAGE_ORDER);
+>>  		if (likely(pfrag->page)) {
+>>  			pfrag->size = PAGE_SIZE << SKB_FRAG_PAGE_ORDER;
+> 
+> Looks fine to me.
+> 
+> One thing you may want to consider would be to place this all in an
+> inline function that could just consolidate all the code.
 
-On Fri, 2024-01-05 at 20:11 +0100, Uwe Kleine-K=C3=B6nig wrote:
-> On Fri, Jan 05, 2024 at 06:22:18PM +0100, Philipp Stanner wrote:
-> > Some drivers want to use (request) a region exclusively but
-> > nevertheless
-> > create several mappings within that region.
-> >=20
-> > Currently, there is no managed devres function to request a region
-> > without mapping it.
-> >=20
-> > Add the function devm_platform_get_resource()
-> >=20
-> > Signed-off-by: Philipp Stanner <pstanner@redhat.com>
-> > ---
-> > =C2=A0drivers/base/platform.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 | 37
-> > +++++++++++++++++++++++++++++++++
-> > =C2=A0include/linux/platform_device.h |=C2=A0 2 ++
-> > =C2=A02 files changed, 39 insertions(+)
-> >=20
-> > diff --git a/drivers/base/platform.c b/drivers/base/platform.c
-> > index 10c577963418..243b9ec54d04 100644
-> > --- a/drivers/base/platform.c
-> > +++ b/drivers/base/platform.c
-> > @@ -82,6 +82,43 @@ struct resource *platform_get_mem_or_io(struct
-> > platform_device *dev,
-> > =C2=A0}
-> > =C2=A0EXPORT_SYMBOL_GPL(platform_get_mem_or_io);
-> > =C2=A0
-> > +/**
-> > + * devm_platform_get_and_resource - get and request a resource
->=20
-> This function name is wrong.
->=20
-> > + *
-> > + * @pdev: the platform device to get the resource from
-> > + * @type: resource type (either IORESOURCE_MEM or IORESOURCE_IO)
-> > + * @num: resource index
-> > + * @name: name to be associated with the request
-> > + *
-> > + * Return: a pointer to the resource on success, an ERR_PTR on
-> > failure.
-> > + *
-> > + * Gets a resource and requests it. Use this instead of
-> > + * devm_platform_ioremap_resource() only if you have to create
-> > several single
-> > + * mappings with devm_ioremap().
-> > + */
-> > +struct resource *devm_platform_get_resource(struct platform_device
-> > *pdev,
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0unsigned int type, unsigned int num, const char
-> > *name)
-> > +{
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0struct resource *res;
-> > +
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0res =3D platform_get_resourc=
-e(pdev, type, num);
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (!res)
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0return ERR_PTR(-EINVAL);
->=20
-> From devm_platform_get_resource I'd expect that it only does
-> platform_get_resource() + register a cleanup function to undo it.
->=20
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (type & IORESOURCE_MEM)
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0res =3D devm_request_mem_region(&pdev->dev, res-
-> > >start, res->end, name);
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0else if (type & IORESOURCE_I=
-O)
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0res =3D devm_request_region(&pdev->dev, res->start,
-> > res->end, name);
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0else
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0return ERR_PTR(-EINVAL);
->=20
-> So this part is surprising. IMHO your function's name should include
-> "request".
+Do you think it is possible to further unify the implementations of the
+'struct page_frag_cache' and 'struct page_frag', so adding a inline
+function for above is unnecessary?
 
-Yes, that sounds very correct to me. I'll address that in v2
-
-
-Thx for the feedback,
-
-P.
-
->=20
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (!res)
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0return ERR_PTR(-EBUSY);
-> > +
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return res;
-> > +}
-> > +EXPORT_SYMBOL_GPL(devm_platform_get_resource);
-> > +
-> > =C2=A0#ifdef CONFIG_HAS_IOMEM
-> > =C2=A0/**
-> > =C2=A0 * devm_platform_get_and_ioremap_resource - call
-> > devm_ioremap_resource() for a
->=20
-> Best regards
-> Uwe
->=20
-
+> 
+> Reviewed-by: Alexander Duyck <alexanderduyck@fb.com>
+> 
+> .
+> 
 
