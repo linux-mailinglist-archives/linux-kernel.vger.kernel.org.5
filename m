@@ -1,73 +1,47 @@
-Return-Path: <linux-kernel+bounces-20134-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20135-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A99C0827A5F
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 22:46:41 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 19836827A61
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 22:48:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 54AAB284D0C
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 21:46:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 67303B22DEF
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 21:47:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B1765646D;
-	Mon,  8 Jan 2024 21:46:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 877A056461;
+	Mon,  8 Jan 2024 21:47:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="BTlo9Odg"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="map9tqWE"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B19AD5644D;
-	Mon,  8 Jan 2024 21:46:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704750384; x=1736286384;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=vL2CfUljdFe7w0t2AJp2MOgIOpmNHhRLVOLT7Dr6oi4=;
-  b=BTlo9Odgr6VfkxsteR3eP9+xE+OgzbYmYwMhfLaio0Y7hMGW2CkPK458
-   nLA7H0szO6Q5jnNHoc18v4+hyUmc+ZZp+QogbW9/WbR0UcU+EeyxitPQ+
-   DrQFAwhGJGbyiAZhUErm/AIrIdJptbKgJKXWGNoqiWI7+VwwiBWMQU9sM
-   NHzl8qo1ZsaVgCuOVujTOD+EktKJbryzEOhFfn4tW2sb8GnpTEv0HwMKn
-   eFRBNnkFOdWdDa3ks6ndFTRPnPOOlA4OUlh0w987DyLBSXAKda3MJ+8bH
-   LN1YRQnVLrK3mdHzIeiI/9Q7rRj58+woYOfjAvwrITYaiQvD6Q6RN97o8
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="11359337"
-X-IronPort-AV: E=Sophos;i="6.04,180,1695711600"; 
-   d="scan'208";a="11359337"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jan 2024 13:46:23 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="872007229"
-X-IronPort-AV: E=Sophos;i="6.04,180,1695711600"; 
-   d="scan'208";a="872007229"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by FMSMGA003.fm.intel.com with ESMTP; 08 Jan 2024 13:46:17 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rMxQw-00057e-0T;
-	Mon, 08 Jan 2024 21:45:31 +0000
-Date: Tue, 9 Jan 2024 05:44:48 +0800
-From: kernel test robot <lkp@intel.com>
-To: Thomas Zimmermann <tzimmermann@suse.de>, ardb@kernel.org,
-	tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-	dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
-	bhelgaas@google.com, arnd@arndb.de, zohar@linux.ibm.com,
-	dmitry.kasatkin@gmail.com, paul@paul-moore.com, jmorris@namei.org,
-	serge@hallyn.com, javierm@redhat.com
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	linux-arch@vger.kernel.org, linux-efi@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-	linux-integrity@vger.kernel.org,
-	linux-security-module@vger.kernel.org,
-	Thomas Zimmermann <tzimmermann@suse.de>
-Subject: Re: [PATCH v4 4/4] arch/x86: Do not include <asm/bootparam.h> in
- several files
-Message-ID: <202401090541.atvQk6V7-lkp@intel.com>
-References: <20240108095903.8427-5-tzimmermann@suse.de>
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96C6E5644F;
+	Mon,  8 Jan 2024 21:47:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: from CPC-beaub-VBQ1L. (unknown [4.155.48.124])
+	by linux.microsoft.com (Postfix) with ESMTPSA id 1BC1520B3CC1;
+	Mon,  8 Jan 2024 13:47:49 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 1BC1520B3CC1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1704750469;
+	bh=Kj6+QzNwkDHsrznrwFSPMTSSLEkn1Iq05bk+KRJ9TOA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=map9tqWEDTTjoa0HZzvLuz4qkRBHCRe3n9aLhLjYzBq8h0VwLliAMDttvbw+zepAS
+	 lzKtfqZaJs2b4QCG8POdEQrOGpzpFzFJD5NPmjVf2rjzUBUyw+KRn1S92sciVKa8dm
+	 b7Nvih4/KTxewJUzEfjie+h4a8gH5u5CgF5l9SpE=
+Date: Mon, 8 Jan 2024 21:47:44 +0000
+From: Beau Belgrave <beaub@linux.microsoft.com>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: LKML <linux-kernel@vger.kernel.org>,
+	Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Subject: Re: [PATCH] tracing user_events: Simplify user_event_parse_field()
+ parsing
+Message-ID: <20240108214744.GA100-beaub@linux.microsoft.com>
+References: <20240108133723.031cf322@gandalf.local.home>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,79 +50,99 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240108095903.8427-5-tzimmermann@suse.de>
+In-Reply-To: <20240108133723.031cf322@gandalf.local.home>
 
-Hi Thomas,
+On Mon, Jan 08, 2024 at 01:37:23PM -0500, Steven Rostedt wrote:
+> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+> 
+> Instead of having a bunch of if statements with:
+> 
+>        len = str_has_prefix(field, "__data_loc unsigned ");
+>        if (len)
+>                goto skip_next;
+> 
+>        len = str_has_prefix(field, "__data_loc ");
+>        if (len)
+>                goto skip_next;
+> 
+>        len = str_has_prefix(field, "__rel_loc unsigned ");
+>        if (len)
+>                goto skip_next;
+> 
+>        len = str_has_prefix(field, "__rel_loc ");
+>        if (len)
+>                goto skip_next;
+> 
+> 	goto parse;
+> 
+>  skip_next:
+> 
+> Consolidate it into a negative check and jump to parse if all the
+> str_has_prefix() calls fail. If one succeeds, it will just continue with
+> len equal to the proper string:
+> 
+>        if (!(len = str_has_prefix(field, "__data_loc unsigned ")) &&
+>            !(len = str_has_prefix(field, "__data_loc ")) &&
+>            !(len = str_has_prefix(field, "__rel_loc unsigned ")) &&
+>            !(len = str_has_prefix(field, "__rel_loc "))) {
+>                goto parse;
+>        }
+> 
+>  skip_next:
+> 
+> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+> ---
+>  kernel/trace/trace_events_user.c | 22 ++++++----------------
+>  1 file changed, 6 insertions(+), 16 deletions(-)
+> 
+> diff --git a/kernel/trace/trace_events_user.c b/kernel/trace/trace_events_user.c
+> index 9365ce407426..ce0c5f1ded48 100644
+> --- a/kernel/trace/trace_events_user.c
+> +++ b/kernel/trace/trace_events_user.c
+> @@ -1175,23 +1175,13 @@ static int user_event_parse_field(char *field, struct user_event *user,
+>  		goto skip_next;
+>  	}
+>  
+> -	len = str_has_prefix(field, "__data_loc unsigned ");
+> -	if (len)
+> -		goto skip_next;
+> -
+> -	len = str_has_prefix(field, "__data_loc ");
+> -	if (len)
+> -		goto skip_next;
+> -
+> -	len = str_has_prefix(field, "__rel_loc unsigned ");
+> -	if (len)
+> -		goto skip_next;
+> -
+> -	len = str_has_prefix(field, "__rel_loc ");
+> -	if (len)
+> -		goto skip_next;
+> +	if (!(len = str_has_prefix(field, "__data_loc unsigned ")) &&
+> +	    !(len = str_has_prefix(field, "__data_loc ")) &&
+> +	    !(len = str_has_prefix(field, "__rel_loc unsigned ")) &&
+> +	    !(len = str_has_prefix(field, "__rel_loc "))) {
+> +		goto parse;
+> +	}
 
-kernel test robot noticed the following build errors:
+This now triggers a checkpatch error:
+ERROR: do not use assignment in if condition
+#1184: FILE: kernel/trace/trace_events_user.c:1184:
++       if (!(len = str_has_prefix(field, "__data_loc unsigned ")) &&
 
-[auto build test ERROR on tip/x86/core]
-[also build test ERROR on efi/next tip/master tip/auto-latest linus/master v6.7 next-20240108]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+I personally prefer to keep these files fully checkpatch clean.
+However, I did test these changes under the self-tests and it passed.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Thomas-Zimmermann/arch-x86-Move-UAPI-setup-structures-into-setup_data-h/20240108-180158
-base:   tip/x86/core
-patch link:    https://lore.kernel.org/r/20240108095903.8427-5-tzimmermann%40suse.de
-patch subject: [PATCH v4 4/4] arch/x86: Do not include <asm/bootparam.h> in several files
-config: i386-allnoconfig (https://download.01.org/0day-ci/archive/20240109/202401090541.atvQk6V7-lkp@intel.com/config)
-compiler: ClangBuiltLinux clang version 17.0.6 (https://github.com/llvm/llvm-project 6009708b4367171ccdbf4b5905cb6a803753fe18)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240109/202401090541.atvQk6V7-lkp@intel.com/reproduce)
+Do they bug you that much? :)
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202401090541.atvQk6V7-lkp@intel.com/
+Thanks,
+-Beau
 
-All errors (new ones prefixed by >>):
-
-   In file included from arch/x86/boot/compressed/cmdline.c:2:
->> arch/x86/boot/compressed/misc.h:154:5: error: incomplete definition of type 'struct boot_params'
-     154 |                 bp->cc_blob_address = 0;
-         |                 ~~^
-   arch/x86/include/asm/mem_encrypt.h:18:8: note: forward declaration of 'struct boot_params'
-      18 | struct boot_params;
-         |        ^
-   1 error generated.
-
-
-vim +154 arch/x86/boot/compressed/misc.h
-
-cec49df9d331fe Joe Millenbach    2012-07-19  135  
-597cfe48212a3f Joerg Roedel      2020-09-07  136  #ifdef CONFIG_AMD_MEM_ENCRYPT
-ec1c66af3a30d4 Michael Roth      2022-02-09  137  void sev_enable(struct boot_params *bp);
-8c29f016540532 Nikunj A Dadhania 2023-01-18  138  void snp_check_features(void);
-597cfe48212a3f Joerg Roedel      2020-09-07  139  void sev_es_shutdown_ghcb(void);
-69add17a7c1992 Joerg Roedel      2020-09-07  140  extern bool sev_es_check_ghcb_fault(unsigned long address);
-4f9c403e44e5e8 Brijesh Singh     2022-02-09  141  void snp_set_page_private(unsigned long paddr);
-4f9c403e44e5e8 Brijesh Singh     2022-02-09  142  void snp_set_page_shared(unsigned long paddr);
-76f61e1e89b32f Michael Roth      2022-02-24  143  void sev_prep_identity_maps(unsigned long top_level_pgt);
-597cfe48212a3f Joerg Roedel      2020-09-07  144  #else
-4b1c742407571e Michael Roth      2022-08-23  145  static inline void sev_enable(struct boot_params *bp)
-4b1c742407571e Michael Roth      2022-08-23  146  {
-4b1c742407571e Michael Roth      2022-08-23  147  	/*
-4b1c742407571e Michael Roth      2022-08-23  148  	 * bp->cc_blob_address should only be set by boot/compressed kernel.
-4b1c742407571e Michael Roth      2022-08-23  149  	 * Initialize it to 0 unconditionally (thus here in this stub too) to
-4b1c742407571e Michael Roth      2022-08-23  150  	 * ensure that uninitialized values from buggy bootloaders aren't
-4b1c742407571e Michael Roth      2022-08-23  151  	 * propagated.
-4b1c742407571e Michael Roth      2022-08-23  152  	 */
-4b1c742407571e Michael Roth      2022-08-23  153  	if (bp)
-4b1c742407571e Michael Roth      2022-08-23 @154  		bp->cc_blob_address = 0;
-4b1c742407571e Michael Roth      2022-08-23  155  }
-8c29f016540532 Nikunj A Dadhania 2023-01-18  156  static inline void snp_check_features(void) { }
-597cfe48212a3f Joerg Roedel      2020-09-07  157  static inline void sev_es_shutdown_ghcb(void) { }
-69add17a7c1992 Joerg Roedel      2020-09-07  158  static inline bool sev_es_check_ghcb_fault(unsigned long address)
-69add17a7c1992 Joerg Roedel      2020-09-07  159  {
-69add17a7c1992 Joerg Roedel      2020-09-07  160  	return false;
-69add17a7c1992 Joerg Roedel      2020-09-07  161  }
-4f9c403e44e5e8 Brijesh Singh     2022-02-09  162  static inline void snp_set_page_private(unsigned long paddr) { }
-4f9c403e44e5e8 Brijesh Singh     2022-02-09  163  static inline void snp_set_page_shared(unsigned long paddr) { }
-76f61e1e89b32f Michael Roth      2022-02-24  164  static inline void sev_prep_identity_maps(unsigned long top_level_pgt) { }
-597cfe48212a3f Joerg Roedel      2020-09-07  165  #endif
-597cfe48212a3f Joerg Roedel      2020-09-07  166  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+>  
+> -	goto parse;
+>  skip_next:
+>  	type = field;
+>  	field = strpbrk(field + len, " ");
+> -- 
+> 2.43.0
 
