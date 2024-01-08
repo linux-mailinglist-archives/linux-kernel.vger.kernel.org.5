@@ -1,150 +1,174 @@
-Return-Path: <linux-kernel+bounces-19250-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19251-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id BCCF7826A51
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 10:11:00 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 251FE826A53
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 10:11:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5DACBB22627
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 09:10:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 05C4A1C21BC2
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 09:11:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F56FE570;
-	Mon,  8 Jan 2024 09:10:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C927012B94;
+	Mon,  8 Jan 2024 09:10:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WsF6SftS"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="SYzS9hHJ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-oo1-f47.google.com (mail-oo1-f47.google.com [209.85.161.47])
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 466F512B74;
-	Mon,  8 Jan 2024 09:10:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f47.google.com with SMTP id 006d021491bc7-5983686ef62so687748eaf.3;
-        Mon, 08 Jan 2024 01:10:33 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7355112B98
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 09:10:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-557bbcaa4c0so3180a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 01:10:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704705032; x=1705309832; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1704705036; x=1705309836; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=8BNk0vEp/T06pV48VMkJResRLpbsMI3MWGq9I4p+kNk=;
-        b=WsF6SftS0GQrxkz8NY8BH5/iA2AQhXZ/wXvOvxY2sO4WhUspIUFgugY2zR0CACXEkP
-         1nj8GygmpnEHAlaYsNvT7lhxTdN7YstH0rwBXbM7k0oe2Cu+ciRDeKkuRUZE185YBsfC
-         QvAfamwmhmWMB0TtSBAPUbAoqMVvcaiW0obyBV6jGVw/P90QdWiX7Hxcgp86oo5tWmeo
-         PoOtR8n9aProXuFyj14zvYLuWGm1LR+2pkyJ2Va5x2JqyYLS4T89U0vkO6BC693hpJNW
-         BeBN7tBsPDsJwvvabMAa/jOKhm9sz0Fv7e/vwAeTfmBO6q3qM12q2xmy61aJbs+iYA2c
-         +oTw==
+        bh=uVeISqx1IYuB8q44TarP2V7Hig1f2BS8XZ7W6hewe98=;
+        b=SYzS9hHJZAZYXEfLbNe/GUEIR7fGlAB1KRVPyh2zqVvagxsHiGmtlVQ0rfHfVIUqaB
+         KTv3SZQ6wMfAJmLS7RvgLY8yZm9dKODchYna1eU88EMl4v7xqLoAPp5qKVrt1IzlKm6B
+         CnG6SNPLBzeTKtbgP6q3THBYeZqwSeuk4FZW+umsTmH3XfHhqNHRllEjnVIRJ/Andmcf
+         iuRDYqqyGON5NqnSw/icpG3EnYgIbIMdUPLNBskc5EqT4hPo8wRwofBFyVEf3TIYuCWi
+         TxVe5w70RIycAu8onDmmL4JQUXaDI6Y6LoIbfmSMha2OPQyi/t4oo9wkKcemwEbe9QVb
+         aqvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704705032; x=1705309832;
+        d=1e100.net; s=20230601; t=1704705036; x=1705309836;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=8BNk0vEp/T06pV48VMkJResRLpbsMI3MWGq9I4p+kNk=;
-        b=Sg9rx3hsEb8Ja+tYYU3+KnwZ7EBbR6FJ1z0hBavLWFPGudhay17Hm+pn0dG8IRlBm2
-         lUDJMtFD8oNaFGRpBJjHSCvbxW9BgCYkpMfAE9AjL9cUHj4p1cWHB9WIQ6HcHLtvFJW3
-         dzJ5Nvps+cLWM+SMnLfc79UedA1xqDbFZy8g3Z0FVnmmrE6Y8XhIbcfmDLE9KB6U91DX
-         Zy1hf0MKxI/tZ8haXe8/rKe17oZ2K2rvlAN6vovSpuYoVNItetLj8QpCdP8GIZXKxAGq
-         jy4K4adx+fF6KeRVdtj8lMQWa7I+gg8XX8Hn4sxvKPtY7fcDNRhz3biRtAa4ZTquJYE3
-         XSpA==
-X-Gm-Message-State: AOJu0YzllBRseun9RnGg1yO9b6BMJQyOL13R6Y3pmH3hQEpHhIivT787
-	E1V8rapzQk5FZkBJeioUi+y6YcSI7ELNaXcUsAY=
-X-Google-Smtp-Source: AGHT+IF2MwJ/UZzPV8uyJamt7LhXi1gqzFtMrt+HSyf/3ZHTC8mbQhMMQTQjX3ZC7FHw0NkGYyqC1jicwunwbc66LFY=
-X-Received: by 2002:a05:6820:60c:b0:596:3121:1425 with SMTP id
- e12-20020a056820060c00b0059631211425mr2183414oow.5.1704705032001; Mon, 08 Jan
- 2024 01:10:32 -0800 (PST)
+        bh=uVeISqx1IYuB8q44TarP2V7Hig1f2BS8XZ7W6hewe98=;
+        b=iPr3+yyuJ1UGmWbc/XxkXVWEStTyQYncjP/7NvGZHmgMQthOvmXTH6W0IPYaqAlqIK
+         cA686olLwqDWiUDeuasGQsVuOK+9kRL4YFjvar1OcVZsqRo1dMQnlkEQ8UU/LzHqEhT1
+         usol4noFTl5414upg0P/2XMoz6iKLQEaxTpeqKpFUKhHRKVgEVSjBglcG5yL3O2I48RV
+         S59n2iLbdbph7m4BXRbS6xT0TTsAoUsulX72OBdEJjiR0nNawt6AFipA+ECmQ7iFmQE3
+         cPuxBLkhME8sfjPne7VQCKvPYwKl35nHwYR0+ZlgmhX2XD/Aitq3tWhk13PwIqLpigOr
+         3ipQ==
+X-Gm-Message-State: AOJu0YynN6kdunaAlKVoUqOvnfGy7ud/81bRJBHYm9wIh1bs+L8Z7R/0
+	Z5dl9u8DvAW9rYzvAt1hHBG5gpTYiNHrzyfH7UcZFZt5OKKi
+X-Google-Smtp-Source: AGHT+IHqPHz71QsG0pUS7Sxrs39ixb6yF9R+Cx8SM+f0nSa29nQo0T3GqFRg7JLq7IC1+zqp5TvF2GxZ9wD3A5XklD4=
+X-Received: by 2002:a50:9b1e:0:b0:553:5578:2fc9 with SMTP id
+ o30-20020a509b1e000000b0055355782fc9mr204336edi.5.1704705036396; Mon, 08 Jan
+ 2024 01:10:36 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240108072253.30183-1-qiujingbao.dlmu@gmail.com>
- <20240108072253.30183-2-qiujingbao.dlmu@gmail.com> <cd4c5c26-fef9-44d8-a2fe-1cff0fc6fd03@linaro.org>
-In-Reply-To: <cd4c5c26-fef9-44d8-a2fe-1cff0fc6fd03@linaro.org>
-From: Jingbao Qiu <qiujingbao.dlmu@gmail.com>
-Date: Mon, 8 Jan 2024 17:10:21 +0800
-Message-ID: <CAJRtX8TcXrP8aqr3ejvtDGR5Y-ogbLkvJvJkLh_MzpnK7wgLGw@mail.gmail.com>
-Subject: Re: [PATCH v5 1/1] dt-bindings: rtc: sophgo: add RTC support for
- Sophgo CV1800 series SoC
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: a.zummo@towertech.it, alexandre.belloni@bootlin.com, robh+dt@kernel.org, 
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
-	paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu, 
-	linux-rtc@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
+References: <20240108085232.95437-1-ptikhomirov@virtuozzo.com>
+In-Reply-To: <20240108085232.95437-1-ptikhomirov@virtuozzo.com>
+From: Eric Dumazet <edumazet@google.com>
+Date: Mon, 8 Jan 2024 10:10:22 +0100
+Message-ID: <CANn89iJv1RjbKrX2wbJKepg24a4t46kwuFV_fRYHpsPHJfi+KA@mail.gmail.com>
+Subject: Re: [PATCH] neighbour: purge nf_bridged skb from foreign device neigh
+To: Pavel Tikhomirov <ptikhomirov@virtuozzo.com>
+Cc: "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, 
+	Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	kernel@openvz.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jan 8, 2024 at 4:04=E2=80=AFPM Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
+On Mon, Jan 8, 2024 at 9:52=E2=80=AFAM Pavel Tikhomirov
+<ptikhomirov@virtuozzo.com> wrote:
 >
-> On 08/01/2024 08:22, Jingbao Qiu wrote:
-> > Add RTC devicetree binding for Sophgo CV1800 SoC.
-> >
-> > Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> > Signed-off-by: Jingbao Qiu <qiujingbao.dlmu@gmail.com>
-> > ---
-> >  .../bindings/rtc/sophgo,cv1800-rtc.yaml       | 56 +++++++++++++++++++
-> >  1 file changed, 56 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/rtc/sophgo,cv1800=
--rtc.yaml
-> >
-> > diff --git a/Documentation/devicetree/bindings/rtc/sophgo,cv1800-rtc.ya=
-ml b/Documentation/devicetree/bindings/rtc/sophgo,cv1800-rtc.yaml
-> > new file mode 100644
-> > index 000000000000..01a926cb5c81
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/rtc/sophgo,cv1800-rtc.yaml
-> > @@ -0,0 +1,56 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/rtc/sophgo,cv1800-rtc.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Real Time Clock of the Sophgo CV1800 SoC
-> > +
-> > +allOf:
-> > +  - $ref: rtc.yaml#
+> An skb can be added to a neigh->arp_queue while waiting for an arp
+> reply. Where original skb's skb->dev can be different to neigh's
+> neigh->dev. For instance in case of bridging dnated skb from one veth to
+> another, the skb would be added to a neigh->arp_queue of the bridge.
 >
-> Why the allOf has moved?
-
-Hi,
-Do you mean allof should be under maintainers? Or other meanings.
-
+> There is no explicit mechanism that prevents the original skb->dev link
+> of such skb from being freed under us. For instance neigh_flush_dev does
+> not cleanup skbs from different device's neigh queue. But that original
+> link can be used and lead to crash on e.g. this stack:
 >
-> > +
-> > +maintainers:
-> > +  - Jingbao Qiu <qiujingbao.dlmu@gmail.com>
-> > +
-> > +description:
-> > +  Real Time Clock (RTC) is an independently powered module
-> > +  within the chip, which includes a 32KHz oscillator and a
-> > +  Power On Reset/POR submodule. It can be used for time display
-> > +  and timed alarm generation. In addition, the hardware state
-> > +  machine provides triggering and timing control for chip
-> > +  power on, off, and reset.
-> > +
-> > +properties:
-> > +  compatible:
-> > +    items:
-> > +      - const: sophgo,cv1800-rtc
-> > +      - const: syscon
+> arp_process
+>   neigh_update
+>     skb =3D __skb_dequeue(&neigh->arp_queue)
+>       neigh_resolve_output(..., skb)
+>         ...
+>           br_nf_dev_xmit
+>             br_nf_pre_routing_finish_bridge_slow
+>               skb->dev =3D nf_bridge->physindev
+>               br_handle_frame_finish
 >
-> Why is this syscon? Description does not explain this.
+> So let's improve neigh_flush_dev to also purge skbs when device
+> equal to their skb->nf_bridge->physindev gets destroyed.
+>
+> Signed-off-by: Pavel Tikhomirov <ptikhomirov@virtuozzo.com>
+> ---
+> I'm not fully sure, but likely it is:
+> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+> ---
+>  net/core/neighbour.c | 26 ++++++++++++++++++++++++++
+>  1 file changed, 26 insertions(+)
+>
+> diff --git a/net/core/neighbour.c b/net/core/neighbour.c
+> index 552719c3bbc3d..47d2d52f17da3 100644
+> --- a/net/core/neighbour.c
+> +++ b/net/core/neighbour.c
+> @@ -39,6 +39,9 @@
+>  #include <linux/inetdevice.h>
+>  #include <net/addrconf.h>
+>
+> +#include <linux/skbuff.h>
+> +#include <linux/netfilter_bridge.h>
+> +
+>  #include <trace/events/neigh.h>
+>
+>  #define NEIGH_DEBUG 1
+> @@ -377,6 +380,28 @@ static void pneigh_queue_purge(struct sk_buff_head *=
+list, struct net *net,
+>         }
+>  }
+>
+> +static void neigh_purge_nf_bridge_dev(struct neighbour *neigh, struct ne=
+t_device *dev)
+> +{
+> +       struct sk_buff_head *list =3D &neigh->arp_queue;
+> +       struct nf_bridge_info *nf_bridge;
+> +       struct sk_buff *skb, *next;
+> +
+> +       write_lock(&neigh->lock);
+> +       skb =3D skb_peek(list);
+> +       while (skb) {
+> +               nf_bridge =3D nf_bridge_info_get(skb);
 
-Because the driver of the submodule POR in RTC only requires register
-address and range to work, according to what you said, it is only a compati=
-ble
-attribute and does not need to be a child node.
+This depends on CONFIG_BRIDGE_NETFILTER
 
-So I wrote the following in the changelog.
+Can we solve this issue without adding another layer violation ?
 
-- add syscon attribute to share registers
-  with POR
-
-Best regards,
-Jingbao Qiu
+> +
+> +               next =3D skb_peek_next(skb, list);
+> +               if (nf_bridge && nf_bridge->physindev =3D=3D dev) {
+> +                       __skb_unlink(skb, list);
+> +                       neigh->arp_queue_len_bytes -=3D skb->truesize;
+> +                       kfree_skb(skb);
+> +               }
+> +               skb =3D next;
+> +       }
+> +       write_unlock(&neigh->lock);
+> +}
+> +
+>  static void neigh_flush_dev(struct neigh_table *tbl, struct net_device *=
+dev,
+>                             bool skip_perm)
+>  {
+> @@ -393,6 +418,7 @@ static void neigh_flush_dev(struct neigh_table *tbl, =
+struct net_device *dev,
+>                 while ((n =3D rcu_dereference_protected(*np,
+>                                         lockdep_is_held(&tbl->lock))) !=
+=3D NULL) {
+>                         if (dev && n->dev !=3D dev) {
+> +                               neigh_purge_nf_bridge_dev(n, dev);
+>                                 np =3D &n->next;
+>                                 continue;
+>                         }
+> --
+> 2.43.0
+>
 
