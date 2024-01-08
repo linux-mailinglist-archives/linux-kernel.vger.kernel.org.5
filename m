@@ -1,153 +1,127 @@
-Return-Path: <linux-kernel+bounces-19952-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19954-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E7815827749
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 19:23:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DE601827752
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 19:23:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 705E81F23BC6
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 18:23:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7C7781F23AD0
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 18:23:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4C2854BEB;
-	Mon,  8 Jan 2024 18:21:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E518454FB0;
+	Mon,  8 Jan 2024 18:23:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="dCPyCAxK"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="pqpNI8Rj"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A187255787
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 18:21:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704738080; x=1736274080;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=rA6kBrzJ5OOOtJGdHfM4ZOZhz9B/1WMS3VZTBriAc90=;
-  b=dCPyCAxKbL4f3SYjedPxSUdHS2hWvebpDK0qtLP9HVII3OQVQ500iCa7
-   QayJw7ipsbRFwb9lxsfXaU/6u/u5QOWI+p3Y6fwgqtUshMlAVDdpuW0yh
-   wJKBpXGOO+R4j3OWNxW1IQePfBaOILAF2hwkExqkx5qY4ee6sSXIcfthw
-   7+Yo01ELc5fPiDRcZtTeR8/qX/LscGTjoYX3ZQU/CwKi2H4W9t6oZGhLD
-   KB590HHDfO6TU1RgWulF2jdrL9cIV6R1CKsFR7voecZq4t9HQWrBTzod8
-   2h54n8ce8xnT7jgvJbcyetTAPAJn24es+PuFfgbQ21gyXfVxoC2ED9hRw
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="4726255"
-X-IronPort-AV: E=Sophos;i="6.04,180,1695711600"; 
-   d="scan'208";a="4726255"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jan 2024 10:21:20 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="954732636"
-X-IronPort-AV: E=Sophos;i="6.04,180,1695711600"; 
-   d="scan'208";a="954732636"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga005.jf.intel.com with ESMTP; 08 Jan 2024 10:21:18 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rMuFQ-0004zO-01;
-	Mon, 08 Jan 2024 18:21:16 +0000
-Date: Tue, 9 Jan 2024 02:20:16 +0800
-From: kernel test robot <lkp@intel.com>
-To: Bart Van Assche <bvanassche@acm.org>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-	Jens Axboe <axboe@kernel.dk>
-Subject: drivers/md/raid1.c:1993:60: sparse: sparse: incorrect type in
- argument 5 (different base types)
-Message-ID: <202401090226.k6ktCQYr-lkp@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBB6454F9C;
+	Mon,  8 Jan 2024 18:23:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 408IHepa024137;
+	Mon, 8 Jan 2024 18:23:11 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	date:from:to:cc:subject:message-id:references:mime-version
+	:content-type:in-reply-to; s=qcppdkim1; bh=uHY3fQLsNHWDaKV+dXru0
+	SBvr/s3dbPl29fFLxwGtjg=; b=pqpNI8Rjihhn5C/FPeVII7fBTbYbpwp9BkbEf
+	B1v9CFO1Xl5uLWoR9Ulo7ijKPYf75Xa8OOBGMFdROFV5J3GBVG82JkJdmIpJi3rL
+	KPjlELd95b5sJBojSZp0ClrQYEfdl8U+tfeXSwEsKo4/Wd4SYowsEkuehmILglCU
+	Wo5I6G9TV5GGIwTuSD8aK74Q4UmeW4d1NGuX0eAKEdfbmWGq6UrqFoyCenTQq9zE
+	+ejwKDOK9Ld6MAyNsWSQ+9WuoJyz1bw2aEz0ji74Qku0Dz6PoFlAlxae5/5gk8bH
+	jRgGeUi3tfMcwX3uCwCHhZx1Ug86Bc6fkzyLvFsBJWqTMf45g==
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vgfwjry3u-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 08 Jan 2024 18:23:11 +0000 (GMT)
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 408INApm012620
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 8 Jan 2024 18:23:10 GMT
+Received: from hu-bjorande-lv.qualcomm.com (10.49.16.6) by
+ nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Mon, 8 Jan 2024 10:23:09 -0800
+Date: Mon, 8 Jan 2024 10:23:08 -0800
+From: Bjorn Andersson <quic_bjorande@quicinc.com>
+To: Konrad Dybcio <konrad.dybcio@linaro.org>
+CC: Bjorn Andersson <andersson@kernel.org>,
+        Michael Turquette
+	<mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, Rob Herring
+	<robh+dt@kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, Taniya Das <quic_tdas@quicinc.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Johan Hovold <johan+linaro@kernel.org>,
+        Catalin Marinas
+	<catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-clk@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        "Dmitry
+ Baryshkov" <dmitry.baryshkov@linaro.org>
+Subject: Re: [PATCH v2 3/8] clk: qcom: gpucc-sc8280xp: Add external supply
+ for GX gdsc
+Message-ID: <20240108182308.GL1315173@hu-bjorande-lv.qualcomm.com>
+References: <20231220-sa8295p-gpu-v2-0-4763246b72c0@quicinc.com>
+ <20231220-sa8295p-gpu-v2-3-4763246b72c0@quicinc.com>
+ <0d20be70-7db2-4d8b-aecb-5256a42ba62e@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
+In-Reply-To: <0d20be70-7db2-4d8b-aecb-5256a42ba62e@linaro.org>
+X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: AWHDRG9Pdm-ZMgbxBVL6ZrxrNndmMuFG
+X-Proofpoint-GUID: AWHDRG9Pdm-ZMgbxBVL6ZrxrNndmMuFG
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 clxscore=1015
+ impostorscore=0 lowpriorityscore=0 phishscore=0 mlxlogscore=778
+ suspectscore=0 priorityscore=1501 mlxscore=0 malwarescore=0 adultscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2401080154
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   0dd3ee31125508cd67f7e7172247f05b7fd1753a
-commit: 4ce4c73f662bdb0ae5bfb058bc7ec6f6829ca078 md/core: Combine two sync_page_io() arguments
-date:   1 year, 6 months ago
-config: x86_64-randconfig-121-20240107 (https://download.01.org/0day-ci/archive/20240109/202401090226.k6ktCQYr-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240109/202401090226.k6ktCQYr-lkp@intel.com/reproduce)
+On Wed, Dec 27, 2023 at 02:07:52AM +0100, Konrad Dybcio wrote:
+> On 22.12.2023 05:39, Bjorn Andersson wrote:
+> > On SA8295P and SA8540P the GFX rail is powered by a dedicated external
+> > regulator, instead of the rpmh-controlled "gfx.lvl".
+> > 
+> > Define the "vdd-gfx" as the supply regulator for the GDSC, to cause the
+> > gdsc logic to look for, and control, this external power supply.
+> > 
+> > Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> > Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
+> > ---
+> Worth noting the regulator framework will create a virtual supply
+> for the normal 8280
+> 
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202401090226.k6ktCQYr-lkp@intel.com/
+You're right. No functional harm, but that's not very nice.
 
-sparse warnings: (new ones prefixed by >>)
-   drivers/md/raid1.c:646:24: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   drivers/md/raid1.c:646:24: sparse:    struct md_rdev [noderef] __rcu *
-   drivers/md/raid1.c:646:24: sparse:    struct md_rdev *
-   drivers/md/raid1.c:777:24: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   drivers/md/raid1.c:777:24: sparse:    struct md_rdev [noderef] __rcu *
-   drivers/md/raid1.c:777:24: sparse:    struct md_rdev *
-   drivers/md/raid1.c:1223:30: sparse: sparse: incorrect type in initializer (different base types) @@     expected int const op @@     got restricted blk_opf_t enum req_op @@
-   drivers/md/raid1.c:1223:30: sparse:     expected int const op
-   drivers/md/raid1.c:1223:30: sparse:     got restricted blk_opf_t enum req_op
-   drivers/md/raid1.c:1224:52: sparse: sparse: incorrect type in initializer (different base types) @@     expected unsigned long const do_sync @@     got restricted blk_opf_t @@
-   drivers/md/raid1.c:1224:52: sparse:     expected unsigned long const do_sync
-   drivers/md/raid1.c:1224:52: sparse:     got restricted blk_opf_t
-   drivers/md/raid1.c:1241:24: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   drivers/md/raid1.c:1241:24: sparse:    struct md_rdev [noderef] __rcu *
-   drivers/md/raid1.c:1241:24: sparse:    struct md_rdev *
-   drivers/md/raid1.c:1404:40: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   drivers/md/raid1.c:1404:40: sparse:    struct md_rdev [noderef] __rcu *
-   drivers/md/raid1.c:1404:40: sparse:    struct md_rdev *
-   drivers/md/raid1.c:1635:40: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   drivers/md/raid1.c:1635:40: sparse:    struct md_rdev [noderef] __rcu *
-   drivers/md/raid1.c:1635:40: sparse:    struct md_rdev *
-   drivers/md/raid1.c:1707:40: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   drivers/md/raid1.c:1707:40: sparse:    struct md_rdev [noderef] __rcu *
-   drivers/md/raid1.c:1707:40: sparse:    struct md_rdev *
-   drivers/md/raid1.c:1824:25: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   drivers/md/raid1.c:1824:25: sparse:    struct md_rdev [noderef] __rcu *
-   drivers/md/raid1.c:1824:25: sparse:    struct md_rdev *
-   drivers/md/raid1.c:1835:25: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   drivers/md/raid1.c:1835:25: sparse:    struct md_rdev [noderef] __rcu *
-   drivers/md/raid1.c:1835:25: sparse:    struct md_rdev *
->> drivers/md/raid1.c:1993:60: sparse: sparse: incorrect type in argument 5 (different base types) @@     expected restricted blk_opf_t [usertype] opf @@     got int rw @@
-   drivers/md/raid1.c:2298:32: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   drivers/md/raid1.c:2298:32: sparse:    struct md_rdev [noderef] __rcu *
-   drivers/md/raid1.c:2298:32: sparse:    struct md_rdev *
-   drivers/md/raid1.c:2334:32: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   drivers/md/raid1.c:2334:32: sparse:    struct md_rdev [noderef] __rcu *
-   drivers/md/raid1.c:2334:32: sparse:    struct md_rdev *
-   drivers/md/raid1.c:2351:32: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   drivers/md/raid1.c:2351:32: sparse:    struct md_rdev [noderef] __rcu *
-   drivers/md/raid1.c:2351:32: sparse:    struct md_rdev *
-   drivers/md/raid1.c:2767:24: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   drivers/md/raid1.c:2767:24: sparse:    struct md_rdev [noderef] __rcu *
-   drivers/md/raid1.c:2767:24: sparse:    struct md_rdev *
+I don't think we have any benefit from having a dummy supply, if the DT
+author failed to provide a proper one, so it seems reasonable to switch
+gdsc to devm_regulator_get_optional().
 
-vim +1993 drivers/md/raid1.c
+Regards,
+Bjorn
 
-  1989	
-  1990	static int r1_sync_page_io(struct md_rdev *rdev, sector_t sector,
-  1991				   int sectors, struct page *page, int rw)
-  1992	{
-> 1993		if (sync_page_io(rdev, sector, sectors << 9, page, rw, false))
-  1994			/* success */
-  1995			return 1;
-  1996		if (rw == WRITE) {
-  1997			set_bit(WriteErrorSeen, &rdev->flags);
-  1998			if (!test_and_set_bit(WantReplacement,
-  1999					      &rdev->flags))
-  2000				set_bit(MD_RECOVERY_NEEDED, &
-  2001					rdev->mddev->recovery);
-  2002		}
-  2003		/* need to record an error - either for the block or the device */
-  2004		if (!rdev_set_badblocks(rdev, sector, sectors, 0))
-  2005			md_error(rdev->mddev, rdev);
-  2006		return 0;
-  2007	}
-  2008	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> 
+> Konrad
 
