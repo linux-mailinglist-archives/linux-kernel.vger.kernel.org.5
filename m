@@ -1,174 +1,110 @@
-Return-Path: <linux-kernel+bounces-19600-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19601-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8EE6C826F6E
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 14:14:13 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 40AD2826F70
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 14:14:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 29393283DDE
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 13:14:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 53FCB1C22824
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 13:14:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3B124438E;
-	Mon,  8 Jan 2024 13:13:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB63B41766;
+	Mon,  8 Jan 2024 13:14:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="tuQX+QVd";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="zMuqHbkg";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="tuQX+QVd";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="zMuqHbkg"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="d5+ipSyA"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F27541743;
-	Mon,  8 Jan 2024 13:13:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 190A921F6A;
-	Mon,  8 Jan 2024 13:13:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1704719623; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=eYHi3j8aE6cn/bC8ETd9FyL64aOVkoUdh0pTfHniGqk=;
-	b=tuQX+QVdZ/EnNwKqS0KpTwijtUmBSS0fiIOqbp7DSSEzdjwpPcAncubVKvhqff67j8H4xH
-	whj21CAFvQ7bmdrjG8rZp3bWoMzPhASqYRKCaAocgU+oF3SF2HfJ6TIV4RhEz+RIDfd/Vv
-	OFCJK8fkumK0M6BO4RANfqHp0vtyEf0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1704719623;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=eYHi3j8aE6cn/bC8ETd9FyL64aOVkoUdh0pTfHniGqk=;
-	b=zMuqHbkg1JHidOFSYTnWA2zthem9PgIXUUTAGlDf2FBZRcKQjcUau5Dp0163mUw0U+Zbk4
-	30NvYaKGbg4uD0Cg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1704719623; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=eYHi3j8aE6cn/bC8ETd9FyL64aOVkoUdh0pTfHniGqk=;
-	b=tuQX+QVdZ/EnNwKqS0KpTwijtUmBSS0fiIOqbp7DSSEzdjwpPcAncubVKvhqff67j8H4xH
-	whj21CAFvQ7bmdrjG8rZp3bWoMzPhASqYRKCaAocgU+oF3SF2HfJ6TIV4RhEz+RIDfd/Vv
-	OFCJK8fkumK0M6BO4RANfqHp0vtyEf0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1704719623;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=eYHi3j8aE6cn/bC8ETd9FyL64aOVkoUdh0pTfHniGqk=;
-	b=zMuqHbkg1JHidOFSYTnWA2zthem9PgIXUUTAGlDf2FBZRcKQjcUau5Dp0163mUw0U+Zbk4
-	30NvYaKGbg4uD0Cg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BA92B13686;
-	Mon,  8 Jan 2024 13:13:42 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id eWU2LAb1m2UKbgAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Mon, 08 Jan 2024 13:13:42 +0000
-Date: Mon, 08 Jan 2024 14:13:42 +0100
-Message-ID: <87a5pgt1bt.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Huayu Zhang <932367230@qq.com>
-Cc: tiwai@suse.com,
-	linux-sound@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	james.schulman@cirrus.com,
-	david.rhodes@cirrus.com,
-	rf@opensource.cirrus.com,
-	perex@perex.cz,
-	sbinding@opensource.cirrus.com,
-	kailang@realtek.com,
-	zhanghuayu.dev@gmail.com
-Subject: Re: add DSD for ThinkBook 16p G4 IRH with Subsystem Id of :
-In-Reply-To: <tencent_0ED010E11594001F62B9EF66C41B0FABCC05@qq.com>
-References: <tencent_0ED010E11594001F62B9EF66C41B0FABCC05@qq.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F1EC4174F;
+	Mon,  8 Jan 2024 13:14:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 408CD4V9012010;
+	Mon, 8 Jan 2024 13:14:26 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=GpsHIDZ+3lWGB8e2dvgrmsAmXtLnEX2d7q55g4o4vBc=; b=d5
+	+ipSyAZQ48j+60AMVsfUQJ0w1ZVTSuMR3IUwgV2GvV2RrDE/0YTbXVHBnjM/9KWB
+	3aN4Qj+1PJstlrsGEDBTwlwokifLq6p21yStoqymr9zOclTU8XYK4Ev2yrtrzg/r
+	3gA5b8P3Kl5AB8ZnMfo0Hxvj2MDl0AdT6VUFXCGLjVmiBLgbOsVGiPMvNyLWVnKu
+	RXCP2WNxRdyrPOQBTrtFzcWeJeoXU0c8N1pp/6wZviY3WkD2E7at8gdXjXW9lqLG
+	XGabo9/R8WIBHS9r/axvfd5LclXYO3BwNkYrmABpkvGxZbzV3eyrXA9nxPo0iV2g
+	aXoiP94+oAzJet0S5NHA==
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vgch50q4p-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 08 Jan 2024 13:14:26 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 408DEPJL016711
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 8 Jan 2024 13:14:25 GMT
+Received: from [10.217.219.221] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 8 Jan
+ 2024 05:14:23 -0800
+Message-ID: <374ab3d3-21eb-4152-a285-ad0567ed32e7@quicinc.com>
+Date: Mon, 8 Jan 2024 18:44:20 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Level: *
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 190A921F6A
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=tuQX+QVd;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=zMuqHbkg
-X-Spam-Score: -5.45
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spamd-Result: default: False [-5.45 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 TO_DN_SOME(0.00)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_TRACE(0.00)[suse.de:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_SEVEN(0.00)[11];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 FREEMAIL_TO(0.00)[qq.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 BAYES_HAM(-2.94)[99.75%];
-	 ARC_NA(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 FROM_HAS_DN(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com,qq.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 DWL_DNSWL_HI(-3.50)[suse.de:dkim];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 MID_CONTAINS_FROM(1.00)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FREEMAIL_CC(0.00)[suse.com,vger.kernel.org,cirrus.com,opensource.cirrus.com,perex.cz,realtek.com,gmail.com];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] usb: gadget: ncm: Fix indentations in documentation of
+ NCM section
+Content-Language: en-US
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC: Krishna Kurapati <quic_kriskura@quicinc.com>,
+        Jonathan Corbet
+	<corbet@lwn.net>, <linux-usb@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20240108123602.10593-1-quic_ugoswami@quicinc.com>
+ <2024010830-haven-sprawl-de51@gregkh>
+From: Udipto Goswami <quic_ugoswami@quicinc.com>
+In-Reply-To: <2024010830-haven-sprawl-de51@gregkh>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: 5SsKCM7_ZnFN4d8ACyy0KFY7X7uLkHsj
+X-Proofpoint-GUID: 5SsKCM7_ZnFN4d8ACyy0KFY7X7uLkHsj
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 malwarescore=0 mlxscore=0 adultscore=0 impostorscore=0
+ phishscore=0 suspectscore=0 priorityscore=1501 mlxlogscore=330 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2311290000
+ definitions=main-2401080113
 
-On Mon, 08 Jan 2024 13:51:36 +0100,
-Huayu Zhang wrote:
+
+
+On 1/8/2024 6:15 PM, Greg Kroah-Hartman wrote:
+> On Mon, Jan 08, 2024 at 06:06:02PM +0530, Udipto Goswami wrote:
+>> Currently, the section of NCM which describes attributes are having wrong
+>> indentation.
+>>
+>> Fix this by following the correct format recommended.
+>>
+>> Fixes: 1900daeefd3e ("usb: gadget: ncm: Add support to update wMaxSegmentSize via configfs")
+>> Signed-off-by: Udipto Goswami <quic_ugoswami@quicinc.com>
+>> ---
+>>   Documentation/usb/gadget-testing.rst | 22 +++++++++++-----------
+>>   1 file changed, 11 insertions(+), 11 deletions(-)
 > 
-> Sorry for missing the info within patch and not familiar with the
-> mailing system using git. As mentioned in the subject,
-> the patch is using to fix the sound issue of ThinkBook 16p G4 IRH with
-> Subsystem Id of : 0x17aa38a9. But this just enable the downside (bass)
-> speakers. When I tried to adjust the volumn, it atually mapped to the
-> frequency division (the lower volumn actually set the bass speakers,
-> and higher volumn map to the louder sound of up facing speakers).
-> Wondering if this related to ALSA?
+> This was reported in linux-next so it needs a "reported-by:" tag, right?
 
-The amp behavior is a question to Cirrus people, I suppose.
+right, apologies!
+Will address in v2.
 
-In anyway, the patch can't be taken as is.  You need to submit the
-patch in a more formal way.
-
-- Correct the subject line with a proper prefix, e.g.
-    [PATCH] ALSA: hda: Add DSD for ....
-  When resubmitting with some changes, put the revision number, too,
-    [PATCH v2] ALSA: hda: Add DSD for ....
-
-- Give the proper patch description in the patch itself.
-
-- Put your Signed-off-by line after the patch description.
-  It's a legal requirement.
-
-Please refer to Documentation/process/submitting-patches.rst for
-details.
-
-
-thanks,
-
-Takashi
+Thanks,
+-Udipto
 
