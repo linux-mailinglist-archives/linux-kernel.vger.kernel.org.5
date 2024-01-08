@@ -1,143 +1,148 @@
-Return-Path: <linux-kernel+bounces-19862-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19863-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D98138275AF
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 17:46:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8E618275B0
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 17:47:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7A348B22297
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 16:46:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4802028408E
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 16:47:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC7DA53E2B;
-	Mon,  8 Jan 2024 16:46:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46C3454BD6;
+	Mon,  8 Jan 2024 16:46:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="T0OEpvAU"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="oXN78cDh"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-vs1-f45.google.com (mail-vs1-f45.google.com [209.85.217.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C866153E2E;
-	Mon,  8 Jan 2024 16:46:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 408CD3j0026873;
-	Mon, 8 Jan 2024 16:46:20 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	date:from:to:cc:subject:message-id:references:mime-version
-	:content-type:in-reply-to; s=qcppdkim1; bh=HwPgusZd6sVHWD8by0F+C
-	dumsdRLBdsgVOZVKMtEy04=; b=T0OEpvAUtr967xCjX60o8oETNp9uqllaAy2Oa
-	uOckrhDUQ3FSSjKqX7JS+UyUWiqCMWZhCP6Jy/cFDfj1VX1NDDx/xEWLq/ZoBUtb
-	fuqyZOAaO8ctR2Ng4S9eg1JIofymRALjbnp25PxawpHVbkHHSd7pxRabmvDqyvwg
-	OFtoB8+BC3D0xGVM6uVb7QF+C/sAxFVtyxeyL5k1nWKcdHg7eIkJHa/iT02KcqoN
-	uvit8RuSPG7FuX2B7fxxZfsom822jxCDFOst7+UeKUbTg3KT6o09OJ9pVk7r2C1l
-	rIq2uzlsmZh0GlTfRFuZYN93ouX9JSPh37ArstqvYjAMu6jOg==
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vgbuj99ad-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 08 Jan 2024 16:46:20 +0000 (GMT)
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 408GkJEW019482
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 8 Jan 2024 16:46:19 GMT
-Received: from hu-bjorande-lv.qualcomm.com (10.49.16.6) by
- nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Mon, 8 Jan 2024 08:46:18 -0800
-Date: Mon, 8 Jan 2024 08:46:17 -0800
-From: Bjorn Andersson <quic_bjorande@quicinc.com>
-To: Johan Hovold <johan@kernel.org>
-CC: Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio
-	<konrad.dybcio@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Wesley Cheng <quic_wcheng@quicinc.com>,
-        Thinh Nguyen
-	<Thinh.Nguyen@synopsys.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Philipp Zabel
-	<p.zabel@pengutronix.de>,
-        <linux-arm-msm@vger.kernel.org>, <linux-usb@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Krishna Kurapati PSSNV
-	<quic_kriskura@quicinc.com>
-Subject: Re: [PATCH 00/12] usb: dwc3: qcom: Flatten dwc3 structure
-Message-ID: <20240108164617.GJ1315173@hu-bjorande-lv.qualcomm.com>
-References: <20231016-dwc3-refactor-v1-0-ab4a84165470@quicinc.com>
- <ZV3OgorG4G4mwvv1@hovoldconsulting.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E9C354BD5
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 16:46:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-vs1-f45.google.com with SMTP id ada2fe7eead31-467a18fc0fcso255764137.3
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 08:46:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1704732400; x=1705337200; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=v86cSdeLVN4Eor53KHOEZU66rYPCIfEGIjL+hEGlyNA=;
+        b=oXN78cDhjWFi1yzkX9VsJPJGNH0wQmSE0IVXkSPYDplZbzwTrLXXXiCOd5Hu0a8wyL
+         iXM7lFI8AsD3Vn5Ya6uMsbZ77uxgSnjtEj/+NbsZ4s8aXAOVsxBtY/pBbDYXTNUs7lgz
+         497JCLauoUdSTiE9FVzTortuHd3bnXcCyV7ChSJOie9wZfaP0AgXUxEVZnxJaVqQchDx
+         UYhn/HJSU2mtqOMlxtlzCB1IEe2zgbriKbto1X+UYPxk5IN/6a2f3mqzR2pZAZpw50N0
+         56b+PP28NladRUOZhAShkgTGC2KAANs1ApwQZqMQjcqmqoICmrLYy/Csd8T/AEc4k2Xd
+         3AsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704732400; x=1705337200;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=v86cSdeLVN4Eor53KHOEZU66rYPCIfEGIjL+hEGlyNA=;
+        b=nFANj8hP5U+0xbN8MGcVVWCIMOxkwESwQeRsWQsWJBj9eZ4ccV27dJHRv+5uV4Ugt9
+         fC+G3sdDZeB475qhTusrnkm1gXT9xcNuEXpahfxAofWlFWKfDkVXn4RK34kpoZuhdcyU
+         kXGVYphH/d1QB1JOVStVUP/DDLc6b9Qzvw70x4bD1izAg5J97JSLs/djzX0EV4T/2JNY
+         uWfzZcoVaBj/i+6Uc3uAoWbRRKyzMPRg0+/qUv3lBok/L9vNsd25BHpQiO+smOCGEiKQ
+         +ByOUJ6w4k2BuwvdEq4xWFwSA1UmYPVBULeeZmSZz0g+swBsEwpWavbzOOwCBCRCAvh+
+         DjXg==
+X-Gm-Message-State: AOJu0YxpZKguBGvYUO+r4krPmScoCVUlWFENfQQX96fcUfkpJxwiG1uN
+	4bkqBgw10ETljQAilygWMVJl4d9EPxrY9w==
+X-Google-Smtp-Source: AGHT+IFDHtN0shChS/FabzBprTpMRYYx1/bf2NeDqz0LAzczeUWPYsOkVksyLMdiy/L1EaVaq6GIxA==
+X-Received: by 2002:a67:e687:0:b0:467:a189:2f51 with SMTP id hv7-20020a67e687000000b00467a1892f51mr1623827vsb.66.1704732399907;
+        Mon, 08 Jan 2024 08:46:39 -0800 (PST)
+Received: from ubuntu-server-vm-macos (072-189-067-006.res.spectrum.com. [72.189.67.6])
+        by smtp.gmail.com with ESMTPSA id hx6-20020a67e786000000b00467be2e0fa1sm26884vsb.25.2024.01.08.08.46.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Jan 2024 08:46:39 -0800 (PST)
+Date: Mon, 8 Jan 2024 16:46:37 +0000
+From: William Breathitt Gray <william.gray@linaro.org>
+To: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Cc: lee@kernel.org, alexandre.torgue@foss.st.com, linux-iio@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 04/10] counter: stm32-timer-cnt: introduce clock signal
+Message-ID: <ZZwm7ZyrL7vFn0Xd@ubuntu-server-vm-macos>
+References: <20231220145726.640627-1-fabrice.gasnier@foss.st.com>
+ <20231220145726.640627-5-fabrice.gasnier@foss.st.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="FfZYnz6NI7seIHjE"
 Content-Disposition: inline
-In-Reply-To: <ZV3OgorG4G4mwvv1@hovoldconsulting.com>
-X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: s1k51z_EGZ8hMjCFo420-aH1DU7AN6ss
-X-Proofpoint-ORIG-GUID: s1k51z_EGZ8hMjCFo420-aH1DU7AN6ss
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 suspectscore=0
- bulkscore=0 phishscore=0 adultscore=0 priorityscore=1501 mlxscore=0
- mlxlogscore=832 lowpriorityscore=0 malwarescore=0 impostorscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2401080141
-
-On Wed, Nov 22, 2023 at 10:48:50AM +0100, Johan Hovold wrote:
-> On Mon, Oct 16, 2023 at 08:11:08PM -0700, Bjorn Andersson wrote:
-> > The USB IP-block found in most Qualcomm platforms is modelled in the
-> > Linux kernel as 3 different independent device drivers, but as shown by
-> > the already existing layering violations in the Qualcomm glue driver
-> > they can not be operated independently.
-> > 
-> > With the current implementation, the glue driver registers the core and
-> > has no way to know when this is done. As a result, e.g. the suspend
-> > callbacks needs to guard against NULL pointer dereferences when trying
-> > to peek into the struct dwc3 found in the drvdata of the child.
-> > 
-> > Missing from the upstream Qualcomm USB support is handling of role
-> > switching, in which the glue needs to be notified upon DRD mode changes.
-> > Several attempts has been made through the years to register callbacks
-> > etc, but they always fall short when it comes to handling of the core's
-> > probe deferral on resources etc.
-> 
-> Nice to see this finally being worked on. It's not clear why mode-change
-> notifications would be a problem though, as if you get such a
-> notification, you know that core has been probed.
->  
-
-The problem here is that the usb_role_switch is implemented in the core,
-but the glue needs to act upon the notification as well - and there's
-currently no way to have the core notify the glue about such changes.
+In-Reply-To: <20231220145726.640627-5-fabrice.gasnier@foss.st.com>
 
 
-You can see this "solved" in the case of extcon, where both the Qualcomm
-glue and core listens to and act upon the extcon updates. This isn't
-pretty, but with the of-graph based role-switching description (and good
-judgement) it's not possible to replicate this on modern platforms.
+--FfZYnz6NI7seIHjE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Which means that this leaves a TODO to investigate if we can drop the
-extcon support from dwc3-qcom.c
+On Wed, Dec 20, 2023 at 03:57:20PM +0100, Fabrice Gasnier wrote:
+> Introduce the internal clock signal, used to count when in simple rising
+> function. Also add the "frequency" extension to the clock signal.
+>=20
+> With this patch, signal action reports a consistent state when "increase"
+> function is used, and the counting frequency:
+>     $ echo increase > function
+>     $ grep -H "" signal*_action
+>     signal0_action:none
+>     signal1_action:none
+>     signal2_action:rising edge
+>     $ echo 1 > enable
+>     $ cat count
+>     25425
+>     $ cat count
+>     44439
+>     $ cat ../signal2/frequency
+>     208877930
+>=20
+> Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
 
-Regards,
-Bjorn
+Reviewed-by: William Breathitt Gray <william.gray@linaro.org>
 
-> > Furhtermore, the DeviceTree binding is a direct representation of the
-> > Linux driver model, and doesn't necessarily describe "the USB IP-block".
-> 
-> True.
-> 
-> Johan
+The code is all right, but some minor suggestions below.
+
+> +static struct counter_comp stm32_count_clock_ext[] =3D {
+> +	COUNTER_COMP_SIGNAL_U64("frequency", stm32_count_clk_get_freq, NULL),
+
+It might be worth introducing a new COUNTER_COMP_FREQUENCY() macro now
+that we have a second driver with the 'frequency' extension
+(ti-ecap-capture also has 'frequency'). But it's up to you if you want
+to add a precursor patch to this series, or I'll introduce it separately
+myself in a independent patch.
+
+> @@ -287,7 +321,13 @@ static struct counter_signal stm32_signals[] =3D {
+>  	{
+>  		.id =3D STM32_CH2_SIG,
+>  		.name =3D "Channel 2"
+> -	}
+> +	},
+> +	{
+> +		.id =3D STM32_CLOCK_SIG,
+> +		.name =3D "Clock Signal",
+
+The word "Signal" feels unnecessary to me when both the sysfs path and
+data structure will have 'signal' already. Do you think "Clock" by
+itself is clear enough?
+
+William Breathitt Gray
+
+--FfZYnz6NI7seIHjE
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQSNN83d4NIlKPjon7a1SFbKvhIjKwUCZZwm7QAKCRC1SFbKvhIj
+K9HkAP9p5tjj9d7bEok5P8rHe8XAO3QFNKaXaaEcdc+BJgMHqAEA2FngXSvqxRzd
+DSkZbpLR+ErJlXMCYj6LMcwcTUqC2Qk=
+=D0v2
+-----END PGP SIGNATURE-----
+
+--FfZYnz6NI7seIHjE--
 
