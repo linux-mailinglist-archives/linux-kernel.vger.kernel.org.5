@@ -1,69 +1,74 @@
-Return-Path: <linux-kernel+bounces-19439-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19440-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EFBAB826CEA
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 12:35:13 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C1CB2826CEB
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 12:35:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9E588281B71
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 11:35:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5807CB20FB8
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 11:35:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CA472941F;
-	Mon,  8 Jan 2024 11:35:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EC8314AAE;
+	Mon,  8 Jan 2024 11:35:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AQgPv8Iu"
+	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="OxhB4BQY"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A22F29410
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 11:35:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-40d4f5d902dso19047905e9.2
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 03:35:04 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5594C29419
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 11:35:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-55590da560dso1912144a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 03:35:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704713703; x=1705318503; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=CCbzvMSP53KUgOmOhE8yp5XexmFsT2hAeja2IF/7EwY=;
-        b=AQgPv8Iurut33ukpgk4muR7nys4MqP0o2zCMRdjSh4OSEw+/Olt4j/WmOW1yTZUxJL
-         sLVY8qokY8+S+DJmWa+ItXUp/Uyf6qxDxvWrgheRkJ55wGv2mLwcypvF3j08ofwe0TUF
-         Kvg/TjhH/PTDJQtxcgRI9fusgipG0LdclJbn641i+TYziGS/c/bBEyPfSPFXPQLWW9Ga
-         FebgYfq2o0gPvNb4e3YTQbDXshNHYGFcO5Z2xTH5LbcndwnRy6aMvSzBMMy7NYYg0DWw
-         u8xsvoobCn1qCd7DWJDqWBLVpQ4J/NkqIesO0osGu4tdk2ytKGsJ+LwmfnRUnKYpyTuf
-         rY4A==
+        d=ventanamicro.com; s=google; t=1704713715; x=1705318515; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=OXz+M+W1v8IkWUzljPV7N45CqW1f60s7WitH1y4Yico=;
+        b=OxhB4BQYv3lV+OUtH0s0S3+kx9PplGOduerl4MXTZ3DtLcBDVPWZrfK5SDWffXXoAW
+         Tg9jlxyjVOUknFEd2OxfYA7aYh9zudkg4/Mqq0m2ZCBKZghDhX7DYlnMoUx2M6T8AB4f
+         mNclig/NaQtLk/vcjgQ0gLcQHH5x1KSxrrKEqkSYd2LCxWK6SecnwKXSg+VCnRecfGa9
+         EFZZDtHpBbzFBV8FT+gPIyZHV/z7MKxgOOit7UwZiFkPX23x8ijr/9DL+dx134t6sklS
+         CEPjJWmcIGbyhZs4BcpJGEVy+GxJ564BzGR8HGdeWGhEqgYPOB/fhyRRc35Fodp+owap
+         9jAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704713703; x=1705318503;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=CCbzvMSP53KUgOmOhE8yp5XexmFsT2hAeja2IF/7EwY=;
-        b=PVQlZwBnTgtEDG1qJcrnGkxaY5AA4M0irJpTeYSlRMJwkJr+JPYgMwqGTP4nyIm87T
-         2Q4DGMaa/cJhSnawYjyHUZsjMButUNW3T6q46p2Tw6PJ883/y7MSFPQYQdmmd3rOTfRe
-         cYRmw0wJTVWihUyDivQcve1k7LBWSJreLRywoAkVBgR0eRBGfk5KIlCTQpnIR+mxRPkC
-         1X/NsTtOjBBszDL5+5VDfKG81IwKppQlCT4Ygq2Qcyd37IkZ+n0EVXQI8spNW7GxIsY9
-         bHQ2aJuRqNaxaFlBjJrElTby44i0ckfinEHuijaBaVlJbREwf66TNPwgNyqcFjM+bK6u
-         oivQ==
-X-Gm-Message-State: AOJu0YwWC6F5/8B2mwL9hGCsoXD/2/1AyZ9QxSivsV7WGTwqE2Ph4a+1
-	aMyenoXd92msEHLiU8m2sR3fqFu3Ofw=
-X-Google-Smtp-Source: AGHT+IFXJcY0byDiI2DYtaN2Spm/TBGmaU48O1htQWSVQl/prLbkHdJscgY+TG0vBEr0TJf/XN9RRw==
-X-Received: by 2002:a05:600c:248:b0:40e:4ab8:639b with SMTP id 8-20020a05600c024800b0040e4ab8639bmr107621wmj.39.1704713703086;
-        Mon, 08 Jan 2024 03:35:03 -0800 (PST)
-Received: from gmail.com (1F2EF3FE.nat.pool.telekom.hu. [31.46.243.254])
-        by smtp.gmail.com with ESMTPSA id fl13-20020a05600c0b8d00b0040e490cb666sm1585535wmb.12.2024.01.08.03.35.02
+        d=1e100.net; s=20230601; t=1704713715; x=1705318515;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OXz+M+W1v8IkWUzljPV7N45CqW1f60s7WitH1y4Yico=;
+        b=Q2kfh/qlveb+P3dlsNR+IS2bnmfZS1WI9F+X5xzzEokUq/ANvpA0/2lwPRjsbOIlZV
+         n5GT6pr9z9Lg/6lPOULjbMhQpkoHCoKftahZF7KWgt80RZlNzMZw5CU6GknsiGDTFP19
+         NUh8mYE2kOlFX0lota4z8aH181ipd73Dqp/y0mfpzL54FeTq0ZPMTAloyvam7NRpgSob
+         BZn3P51xg9GExyKoXqRxq9D90QdWCE0Ff7LGq/k/se5a8zXDjWthiKp1AUo6hzdcDek3
+         2mvvDWTwLbgAKQURRoEyoasDuLTjEjt1X6FoMGqkarvZoNExoAmgh1w1ami8BY61BMVk
+         7EAw==
+X-Gm-Message-State: AOJu0YxutY3/dOslgKrqK5/pNwkZlC91V0iB1fp3UCYkvOP9ry9HB4aB
+	0X/4l2HCBS2c3N4R5ITsmkHaR9X65bJsBA==
+X-Google-Smtp-Source: AGHT+IGNFTf74SYqecew/zugquC+nKHg3U1rGduBdRyqSi2v04Wt1HCZM1c+hLYUJf5m9uXkjPyhsA==
+X-Received: by 2002:a05:6402:b03:b0:557:427c:1c2c with SMTP id bm3-20020a0564020b0300b00557427c1c2cmr1797243edb.85.1704713715404;
+        Mon, 08 Jan 2024 03:35:15 -0800 (PST)
+Received: from localhost (2001-1ae9-1c2-4c00-20f-c6b4-1e57-7965.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:20f:c6b4:1e57:7965])
+        by smtp.gmail.com with ESMTPSA id ij15-20020a056402158f00b0055410f0d709sm4143181edb.19.2024.01.08.03.35.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Jan 2024 03:35:02 -0800 (PST)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date: Mon, 8 Jan 2024 12:35:00 +0100
-From: Ingo Molnar <mingo@kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-kernel@vger.kernel.org, the arch/x86 maintainers <x86@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>
-Subject: [GIT PULL] x86/mm changes for v6.8
-Message-ID: <ZZvd5KZKVXAtM1+F@gmail.com>
+        Mon, 08 Jan 2024 03:35:14 -0800 (PST)
+Date: Mon, 8 Jan 2024 12:35:13 +0100
+From: Andrew Jones <ajones@ventanamicro.com>
+To: Andrea Parri <parri.andrea@gmail.com>
+Cc: Christoph =?utf-8?Q?M=C3=BCllner?= <christoph.muellner@vrull.eu>, 
+	Heiko Stuebner <heiko@sntech.de>, linux-riscv@lists.infradead.org, palmer@dabbelt.com, 
+	paul.walmsley@sifive.com, linux-kernel@vger.kernel.org, David.Laight@aculab.com, 
+	Conor Dooley <conor@kernel.org>
+Subject: Re: Re: [PATCH v3 0/2] Add Zawrs support and use it for spinlocks
+Message-ID: <20240108-a56ba0dfd1779e4ab6893d16@orel>
+References: <20230521114715.955823-1-heiko.stuebner@vrull.eu>
+ <ZTE7eUyrb8+J+ORB@andrea>
+ <CAEg0e7jkTOn1pjO=+GaiCZJ9_Yd2NcB1GMG=Q6m3-r0+Q0OjGQ@mail.gmail.com>
+ <ZTJUOji+B+dDbMKh@andrea>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -72,35 +77,41 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <ZTJUOji+B+dDbMKh@andrea>
 
-Linus,
+On Fri, Oct 20, 2023 at 12:19:38PM +0200, Andrea Parri wrote:
+> (Removing Heiko's @vrull address from Cc:, since it seemed to bounce, keeping
+>  his @sntech address.)
+> 
+> > I had a quick look at your changes, and they look good to me.
+> 
+> Great.  Thank you for looking them over.
+> 
+> > Did you agree with Palmer about testing requirements?
+> > I.e., do we need to run this on hardware that implements Zawrs in a
+> > non-trivial way?
+> 
+> I didn't quite discuss such specific requirements or hardware implementations,
+> but I agree that's a valid concern.  Not that I currently have access to such
+> hardware; any further inputs/data will be appreciated.
+> 
+> > I can try to raise the priority on this here, but can't promise anything.
+> > For me it is also ok if you take over this patchset.
+> 
+> Thanks.  Either way works for me.  No urgency from my side.  I'd say - let us
+> leave this up to the community/other reviewers.  (IIUC, Palmer was recovering
+> from a certain flu and might need more time than usual to get back here.)
+>
 
-Please pull the latest x86/mm git tree from:
+Hi everyone,
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86-mm-2024-01-08
+I'm also interested in seeing this series resurrected and making progress
+again. I'd be happy to help out in any way. It's not clear to me if it has
+a current owner. If not, then I could start shepherding the patches with
+their authorships intact.
 
-   # HEAD: 91c17d7b04498ffb52939a18eb7e28fd23c9b654 x86/percpu: Use %RIP-relative address in untagged_addr()
+I may be able to do some testing on an FPGA too.
 
-x86/mm changes for v6.8:
-
- - Robustify pfn_to_kaddr()
-
- - Improve the __untagged_addr() code: RIP-relative addresses are fine these days
-   and generate better code, and update misleading/outdated comments as well.
-
- Thanks,
-
-	Ingo
-
------------------->
-Michael Roth (1):
-      x86/mm: Ensure input to pfn_to_kaddr() is treated as a 64-bit type
-
-Uros Bizjak (1):
-      x86/percpu: Use %RIP-relative address in untagged_addr()
-
-
- arch/x86/include/asm/page.h       |  6 +++++-
- arch/x86/include/asm/uaccess_64.h | 11 ++++-------
- 2 files changed, 9 insertions(+), 8 deletions(-)
+Thanks,
+drew
 
