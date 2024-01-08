@@ -1,150 +1,172 @@
-Return-Path: <linux-kernel+bounces-19641-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19642-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21A5D82702A
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 14:47:03 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 121AB827030
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 14:48:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B51D71F2322F
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 13:47:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 02A6BB223FF
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 13:48:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6661745947;
-	Mon,  8 Jan 2024 13:46:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68D8845945;
+	Mon,  8 Jan 2024 13:48:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=public-files.de header.i=frank-w@public-files.de header.b="Nzu45zx7"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IG/C9/Hn"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oo1-f53.google.com (mail-oo1-f53.google.com [209.85.161.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CDBF45941;
-	Mon,  8 Jan 2024 13:46:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=public-files.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=public-files.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=public-files.de;
-	s=s31663417; t=1704721594; x=1705326394; i=frank-w@public-files.de;
-	bh=eHFTTnrAlxZxsnvH49LqdXsKFSZ7Cww6ornO/kw2wR4=;
-	h=X-UI-Sender-Class:Date:From:To:CC:Subject:Reply-to:In-Reply-To:
-	 References;
-	b=Nzu45zx7TGWivSS7zIVmVRMzMRk2B9poNz47OhalBWl/jadI7bUDH5bEc8Y6zVOi
-	 3SH41JApS5KTBKRnGS1JdHCjnvn8lqPVKN79D695LFi1C//6O+/SORTwX4fl3dZJD
-	 DZnTAxyn5NWu4CgQX1MRbIQadJCMJYUBUsvM3glgjWEHZSlBIMPxfzdZuAF/iNLNw
-	 HchtxXDyBW9czu9+7RxMIDIdG9xGFhrbcngLGSUWPIXoeNvJy3zBQUh1siHGUAlgN
-	 +fy1no13Mi1waJl54T+eAUQZGhMKJtdjEAaRzFZrDt1NO5B8IlDpfZRuhfRIAGkD7
-	 3DfRMgspDTUF+t39cQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [IPv6:::1] ([80.187.71.7]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MEFzr-1rWQKj44DF-00AHf2; Mon, 08
- Jan 2024 14:46:34 +0100
-Date: Mon, 08 Jan 2024 14:46:17 +0100
-From: Frank Wunderlich <frank-w@public-files.de>
-To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- Frank Wunderlich <linux@fw-web.de>,
- Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- Philipp Zabel <p.zabel@pengutronix.de>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>
-CC: Sam Shih <sam.shih@mediatek.com>, Daniel Golle <daniel@makrotopia.org>,
- linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
- linux-mediatek@lists.infradead.org
-Subject: =?US-ASCII?Q?Re=3A_=5BPATCH_v2_2/2=5D_clk=3A_mediatek=3A_add?= =?US-ASCII?Q?_infracfg_reset_controller_for_mt7988?=
-User-Agent: K-9 Mail for Android
-Reply-to: frank-w@public-files.de
-In-Reply-To: <717a21bb-de39-4f7d-913c-f2a20d8b02bd@collabora.com>
-References: <20240105162056.43266-1-linux@fw-web.de> <20240105162056.43266-3-linux@fw-web.de> <717a21bb-de39-4f7d-913c-f2a20d8b02bd@collabora.com>
-Message-ID: <D0CA0019-A61D-4843-B502-7F40DA619FB3@public-files.de>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62CE345947;
+	Mon,  8 Jan 2024 13:48:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f53.google.com with SMTP id 006d021491bc7-598699c0f1eso165438eaf.2;
+        Mon, 08 Jan 2024 05:48:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704721682; x=1705326482; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=AwnXjHz9QhC6YpmyZGK0fpH1dHMBCL/ovpNQY0IYB4Y=;
+        b=IG/C9/HnB1b+uesAZLCB7VYhiPC+gzyYqjJPTUeKepJ9zm/56RpXv5/R3CLFNtc6Lj
+         EZcWCM7QSJ3BjlwCEEQBkmpWudJcGfLwkRGMS+2cXFx0M13bYYi14O5Q7b8KnDKTxRec
+         iDbSipK2wv/YX3OlxjahBYlVSZo4XFEK7rfDr9AIfekOLapYBcuLSmMypAo0QyQsyj8a
+         NVu59Sv+zjTHPP2TVX2tmK8zBSYvYKPw5OcqIRt9U1j8nHSpvVYK8mYelOMqAKxmzDPk
+         5JsnGvNk2fFwyFqRUWYHV0U+iSZcdcXZTtaNnYFeey3qG6lHg3SDKOD/YOkFWU8gC4nb
+         uW8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704721682; x=1705326482;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=AwnXjHz9QhC6YpmyZGK0fpH1dHMBCL/ovpNQY0IYB4Y=;
+        b=RkHuyPfxdl7rmGAW/AKCgeQpUZKNm/5HYBFLqgEppXx+k9H93HfgA9czAzKAY7D0R/
+         2cgCPjrWyJNoY7awhFygFYIMWN1YQoIyXxa4VjgnUvXIGzTmEGMb7cRiVdRFpkwqYKO/
+         JfoIDpgJpg6pIwec7k9BWESCloolZiLLd/FkEIwhmrERT7+phQsTWt+tP6gllM5kplqv
+         CMZ1Pnsis2AvuhBfxHfzelBga0b2rFkbCOnaOWcTermI7/NzM4nn5pIEXyWOiL3K6t5e
+         POpJv0vVIWOwUCRN7WNZwKJoJbVnpfJbBQiOFJTt9wMyOQ7bGlHKqCg+beAGA1eIZk36
+         /TkQ==
+X-Gm-Message-State: AOJu0YyU4OgqYfMrnai6AhH4Sy8ol+P+Yu/D8RPn27J8Ff59YlBlywto
+	MXjpE8y6kzRo09o5pMfA2Byceh/Hn2grSUWbvJs=
+X-Google-Smtp-Source: AGHT+IG4fkhvNGr0kFehqgZRY2cEgCpzZfvxzd9lVUBUIEj3Bfz6dLwJH27oAX5TWQ4Re9/+ycyyf0c4su0r7DTgoUg=
+X-Received: by 2002:a4a:5ec3:0:b0:591:c16b:eb29 with SMTP id
+ h186-20020a4a5ec3000000b00591c16beb29mr2077817oob.13.1704721682084; Mon, 08
+ Jan 2024 05:48:02 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
+References: <20240108072253.30183-1-qiujingbao.dlmu@gmail.com>
+ <20240108072253.30183-2-qiujingbao.dlmu@gmail.com> <cd4c5c26-fef9-44d8-a2fe-1cff0fc6fd03@linaro.org>
+ <CAJRtX8TcXrP8aqr3ejvtDGR5Y-ogbLkvJvJkLh_MzpnK7wgLGw@mail.gmail.com> <7ceb8f61-6929-4ca0-83e0-c6534241ca5a@linaro.org>
+In-Reply-To: <7ceb8f61-6929-4ca0-83e0-c6534241ca5a@linaro.org>
+From: Jingbao Qiu <qiujingbao.dlmu@gmail.com>
+Date: Mon, 8 Jan 2024 21:47:51 +0800
+Message-ID: <CAJRtX8QSoS72rUj7vu3CLgthfneG-RudUygcZEsw-sBFKw99tw@mail.gmail.com>
+Subject: Re: [PATCH v5 1/1] dt-bindings: rtc: sophgo: add RTC support for
+ Sophgo CV1800 series SoC
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: a.zummo@towertech.it, alexandre.belloni@bootlin.com, robh+dt@kernel.org, 
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
+	paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu, 
+	linux-rtc@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:xblEkwWVshSiG/6u0lgUW6oJn5QhPXUSO4eD2KMSmL3wRJcRLMH
- N52WYGxVpESAKG26Qc5C0MuKrWlqmrURECmvc4GnzGt9lwnwy27vrdLzDrlXEgANOKfq6uk
- bDz2NHK/9fUaUeA7HaRsDDfp9fnPpUX/3a+WxuhbWPM8AcsZc58J8UAj9j3MNUoX5R1rpyD
- rQRWLzvjH3ZEg0N2VWDUQ==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:UHoxeZHGFCA=;zNPt/J3l03QqhDyB7HxtL7N9zr4
- NA8NfUJbGXxSCURvNbWIP13RBD1w8aha9xpnzf3RuoIEmLZOnVU7tcJGT5ABNsEvDjo+V/rbg
- 4S4A7/qReBDzO4pjGWDqyWvK/CzpWnlt9BYpuCQnxUxcQEZ1NJ1Tg/XpfRZkSXfIhHZuF4Scu
- p023r/UsyLcF+GfZ18YKyEuNXsOiD0u+/LR3rorNhNBCh5kEi2d3Vm9hLaOeQwTu+1PnvZsdY
- krSDiDizdIXOo7ySGRr38dVsceK3YxrRuGFMAsJt5jRE9FMHCxo+563TfWlGDXcCccUfeJl2r
- nJhCNrG8kOmFPi6Zl2fjRtDYJQ8bclKit1OXTjCrzJvSvJmlyXQWc64zP/ffePBvBRwKPoQar
- bDIFY1dt64NJCeG6RVDCza417fRzl14DfRc324Z43utKSlIhswr2crEAf/P51kzDC0WZrnHrO
- 6yGsg1OWsK9aCR9d0NkvVW1o6/LswUyGlvKevmWIiSn94KL4WPKiWH+nlhMqDYB/RnyYCZDf+
- 0Wd+ZJ7tn387ZIqq++rnSepwo6T9H2bxhlT2o9RwXx0Uqa2+nTA6u+5GvIpK2OszC5cb+knx0
- D0dVrX9P49ADAswF/dNBJR19J5x6bVBbrgPm5IJ+YH8Tr4h/I5zxe6lnCqlFqStOFQ2FVh0+H
- LXZ5N9YFxCxmqbirPh8rSMyBp1XVH4yLHaaDxMcDyVUMCnXT26IGh65Cwn3JM5p/JhwmkzqzJ
- HwlVXigIwOtGblAEs2ca6HsWXgHY+7yc/ows9rLksLNrw6h+coYyKYF2mgWnF4XmKeST/lnBp
- g7aHpZsoyR6aMqLb4vP6bwzKsc8X6RV+my67Pn9FwxoYn++Ng4Um7JmAIXk/Seh4RY51woWBk
- 85NpLVxq/u3itttkE3DiUt6bKTI8os87bliwvFwQRsNL3MYEZwCle/ZBlO8TNhIuLn/2q9Wne
- ivecCg==
 
-Am 8=2E Januar 2024 11:12:26 MEZ schrieb AngeloGioacchino Del Regno <angelo=
-gioacchino=2Edelregno@collabora=2Ecom>:
->Il 05/01/24 17:20, Frank Wunderlich ha scritto:
->> From: Frank Wunderlich <frank-w@public-files=2Ede>
->>=20
->> Infracfg can also operate as reset controller, add support for it=2E
->>=20
->> Signed-off-by: Frank Wunderlich <frank-w@public-files=2Ede>
->> ---
->>   drivers/clk/mediatek/clk-mt7988-infracfg=2Ec | 20 +++++++++++++++++++=
-+
->>   1 file changed, 20 insertions(+)
->>=20
->> diff --git a/drivers/clk/mediatek/clk-mt7988-infracfg=2Ec b/drivers/clk=
-/mediatek/clk-mt7988-infracfg=2Ec
->> index 8011ef278bea=2E=2E1660a45349ff 100644
->> --- a/drivers/clk/mediatek/clk-mt7988-infracfg=2Ec
->> +++ b/drivers/clk/mediatek/clk-mt7988-infracfg=2Ec
->> @@ -14,6 +14,9 @@
->>   #include "clk-gate=2Eh"
->>   #include "clk-mux=2Eh"
->>   #include <dt-bindings/clock/mediatek,mt7988-clk=2Eh>
->> +#include <dt-bindings/reset/mediatek,mt7988-resets=2Eh>
->> +
->> +#define	INFRA_RST_SET_OFFSET	0x80
->>     static DEFINE_SPINLOCK(mt7988_clk_lock);
->>   @@ -249,12 +252,29 @@ static const struct mtk_gate infra_clks[] =3D {
->>   	GATE_INFRA3(CLK_INFRA_133M_PCIE_CK_P3, "infra_133m_pcie_ck_p3", "sys=
-axi_sel", 31),
->>   };
->>   +static u16 infra_rst_ofs[] =3D {
->> +	INFRA_RST_SET_OFFSET,
->> +};
->> +
->> +static u16 infra_idx_map[] =3D {
->> +	[MT7988_INFRA_RST0_THERM_CTRL_SWRST] =3D 0 * RST_NR_PER_BANK + 9,
+On Mon, Jan 8, 2024 at 5:28=E2=80=AFPM Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
 >
->The MT7988A datasheet says that INFRA_RST0 bit 9 is CONN2EMI_M0_GALS_SLV_=
-SWRST, so
->this is wrong: THERM_CTRL_SWRST is in the RST1 register, bit 9=2E
+> On 08/01/2024 10:10, Jingbao Qiu wrote:
+> > On Mon, Jan 8, 2024 at 4:04=E2=80=AFPM Krzysztof Kozlowski
+> > <krzysztof.kozlowski@linaro.org> wrote:
+> >>
+> >> On 08/01/2024 08:22, Jingbao Qiu wrote:
+> >>> Add RTC devicetree binding for Sophgo CV1800 SoC.
+> >>>
+> >>> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> >>> Signed-off-by: Jingbao Qiu <qiujingbao.dlmu@gmail.com>
+> >>> ---
+> >>>  .../bindings/rtc/sophgo,cv1800-rtc.yaml       | 56 +++++++++++++++++=
+++
+> >>>  1 file changed, 56 insertions(+)
+> >>>  create mode 100644 Documentation/devicetree/bindings/rtc/sophgo,cv18=
+00-rtc.yaml
+> >>>
+> >>> diff --git a/Documentation/devicetree/bindings/rtc/sophgo,cv1800-rtc.=
+yaml b/Documentation/devicetree/bindings/rtc/sophgo,cv1800-rtc.yaml
+> >>> new file mode 100644
+> >>> index 000000000000..01a926cb5c81
+> >>> --- /dev/null
+> >>> +++ b/Documentation/devicetree/bindings/rtc/sophgo,cv1800-rtc.yaml
+> >>> @@ -0,0 +1,56 @@
+> >>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> >>> +%YAML 1.2
+> >>> +---
+> >>> +$id: http://devicetree.org/schemas/rtc/sophgo,cv1800-rtc.yaml#
+> >>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> >>> +
+> >>> +title: Real Time Clock of the Sophgo CV1800 SoC
+> >>> +
+> >>> +allOf:
+> >>> +  - $ref: rtc.yaml#
+> >>
+> >> Why the allOf has moved?
+> >
+> > Hi,
+> > Do you mean allof should be under maintainers? Or other meanings.
 >
->Also, I'm sure that you really want to add the PCIe MAC reset bit as well=
-, to be
->used with the PCIe driver=2E=2E=2E
->
->[MT7988_INFRA_RST0_PEXTP_MAC_SWRST] =3D 0 * RST_NR_PER_BANK + 6,
->[MT7988_INFRA_RST1_THERM_CTRL_SWRST] =3D 1 * RST_NR_PER_BANK + 9,
-
-Yes you are right=2E=2E=2Ei have only rst1 as screenshot,need to get the f=
-ull datasheet or can you tell me base address for rst0? Need to change valu=
-e of INFRA_RST_SET_OFFSET then to rst0 and check RST_NR_PER_BANK to be corr=
-ect=2E
-
->Enjoy=2E=2E=2E :-)
->
->Cheers,
->Angelo
+> Yes and the patch which got my review had it correctly placed.
 >
 
+Thank you for your reply. I will adjust their order.
 
-regards Frank
+> >
+> >>
+> >>> +
+> >>> +maintainers:
+> >>> +  - Jingbao Qiu <qiujingbao.dlmu@gmail.com>
+> >>> +
+> >>> +description:
+> >>> +  Real Time Clock (RTC) is an independently powered module
+> >>> +  within the chip, which includes a 32KHz oscillator and a
+> >>> +  Power On Reset/POR submodule. It can be used for time display
+> >>> +  and timed alarm generation. In addition, the hardware state
+> >>> +  machine provides triggering and timing control for chip
+> >>> +  power on, off, and reset.
+> >>> +
+> >>> +properties:
+> >>> +  compatible:
+> >>> +    items:
+> >>> +      - const: sophgo,cv1800-rtc
+> >>> +      - const: syscon
+> >>
+> >> Why is this syscon? Description does not explain this.
+> >
+> > Because the driver of the submodule POR in RTC only requires register
+> > address and range to work, according to what you said, it is only a com=
+patible
+> > attribute and does not need to be a child node.
+>
+> What child node has anything to do with syscon? Anyway I don't
+> understand that.
+>
+> >
+> > So I wrote the following in the changelog.
+> >
+> > - add syscon attribute to share registers
+> >   with POR
+>
+> Where is this syscon attribute? Please point me to specific line in DTS
+> and in the driver.
+
+I will explain in the next version of DTS.
+Thank you again for your patient reply.
+
+Best regards,
+Jingbao Qiu
 
