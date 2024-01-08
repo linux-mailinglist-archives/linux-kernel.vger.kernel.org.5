@@ -1,322 +1,441 @@
-Return-Path: <linux-kernel+bounces-19268-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19261-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91F57826A97
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 10:21:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60E7F826A83
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 10:19:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AB9941C20946
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 09:21:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D96221F211D4
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 09:19:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F3C4D51B;
-	Mon,  8 Jan 2024 09:20:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6F4E11716;
+	Mon,  8 Jan 2024 09:19:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="jM4KlA8I"
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="T7mF5F/w"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mailout4.samsung.com (mailout4.samsung.com [203.254.224.34])
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0845429420
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 09:20:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
-Received: from epcas5p4.samsung.com (unknown [182.195.41.42])
-	by mailout4.samsung.com (KnoxPortal) with ESMTP id 20240108092028epoutp0445fd0d2f5c5f985133a333a5843a56a8~oVLykesy_0770507705epoutp04e
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 09:20:28 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20240108092028epoutp0445fd0d2f5c5f985133a333a5843a56a8~oVLykesy_0770507705epoutp04e
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1704705628;
-	bh=f7oEAqGc3D1UQYparyVNa8WFZxoDPCcV8mgY0hQuHNs=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=jM4KlA8IiubKgWM1FRGiyC/nW5vo7zmxWonzpz+oYpfDWprK2zNZ9awrAXsw4Qn6F
-	 Bv5sNSsMeACb31ePrO2/rFxtbZ13BOyDp/92cOeza+2MiWtZWL+vQYSGeZ98/7pq4i
-	 GSME2/PERFHkp2S0NvTid7AOJSaOPKtnqCNbCuQ0=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-	epcas5p3.samsung.com (KnoxPortal) with ESMTP id
-	20240108092027epcas5p392d31e572aa553e7cf907e920885c561~oVLyHPbMs0528705287epcas5p3K;
-	Mon,  8 Jan 2024 09:20:27 +0000 (GMT)
-Received: from epsmges5p2new.samsung.com (unknown [182.195.38.181]) by
-	epsnrtp2.localdomain (Postfix) with ESMTP id 4T7pST6FkVz4x9Q4; Mon,  8 Jan
-	2024 09:20:25 +0000 (GMT)
-Received: from epcas5p3.samsung.com ( [182.195.41.41]) by
-	epsmges5p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
-	6B.32.10009.95EBB956; Mon,  8 Jan 2024 18:20:25 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-	epcas5p3.samsung.com (KnoxPortal) with ESMTPA id
-	20240108092025epcas5p39e2ecb3b12b4fba9e41f0694f430ec1d~oVLwDr3Gl0532205322epcas5p3s;
-	Mon,  8 Jan 2024 09:20:25 +0000 (GMT)
-Received: from epsmgmcp1.samsung.com (unknown [182.195.42.82]) by
-	epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-	20240108092025epsmtrp2a8eab9146eecf2ff52dab07c38705603~oVLwCWUDP2017920179epsmtrp21;
-	Mon,  8 Jan 2024 09:20:25 +0000 (GMT)
-X-AuditID: b6c32a4a-ff1ff70000002719-0a-659bbe599c82
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-	epsmgmcp1.samsung.com (Symantec Messaging Gateway) with SMTP id
-	B4.E0.18939.95EBB956; Mon,  8 Jan 2024 18:20:25 +0900 (KST)
-Received: from ws2030077324.sa.corp.samsungelectronics.net (unknown
-	[107.99.237.91]) by epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-	20240108092023epsmtip24d4cae43eaa0bc47c78f6ad265e60e3c~oVLufuCik2133021330epsmtip24;
-	Mon,  8 Jan 2024 09:20:23 +0000 (GMT)
-From: Sandeep C S <sandeep.cs@samsung.com>
-To: Jiri Kosina <jikos@kernel.org>, Benjamin Tissoires
-	<benjamin.tissoires@redhat.com>
-Cc: gaudium.lee@samsung.com, ih0923.kim@samsung.com,
-	suhyun_.kim@samsung.com, jitender.s21@samsung.com, junwan.cho@samsung.com,
-	sandeep.cs@samsung.com, linux-input@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [HID Patchsets for Samsung driver v2 6/6] HID: Samsung : Add
- Samsung wireless bookcover and universal keyboard support.
-Date: Mon,  8 Jan 2024 14:49:16 +0530
-Message-Id: <20240108091917.1552013-7-sandeep.cs@samsung.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240108091917.1552013-1-sandeep.cs@samsung.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5E3F1170B;
+	Mon,  8 Jan 2024 09:19:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
+Received: from ideasonboard.com (unknown [IPv6:2001:b07:5d2e:52c9:cc1e:e404:491f:e6ea])
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 3FDB9552;
+	Mon,  8 Jan 2024 10:18:35 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+	s=mail; t=1704705515;
+	bh=zUD5PLhJbcZWl3zLwbDJ8KqLFUNntLO7Yn6Fb2k7xek=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=T7mF5F/wiyYMv45XZqD7ohCokDD5l+a4nYhZZJ/0jEmUYagtZNiFTPNmw9mwVi5zU
+	 TPLgixRvXrm9qq9IfXm1QHmg+ITf05yCy8x+zvRxADrcSwHTQ6UaS/yVrWMzxG/ufT
+	 dTSkwtoz1uL0Ind6dgs4s2G0UdXlmdbUiADSAe6M=
+Date: Mon, 8 Jan 2024 10:19:35 +0100
+From: Jacopo Mondi <jacopo.mondi@ideasonboard.com>
+To: Sakari Ailus <sakari.ailus@linux.intel.com>, 
+	Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc: Vinay Varma <varmavinaym@gmail.com>, 
+	Dave Stevenson <dave.stevenson@raspberrypi.com>, Mauro Carvalho Chehab <mchehab@kernel.org>, 
+	"open list:SONY IMX219 SENSOR DRIVER" <linux-media@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] media: i2c: imx219: implement the v4l2 selection api
+Message-ID: <3q6andka2su7i43xz2ok44ejvtb3hdjdn6xretyde7sdcvtd7l@lz2syngckivi>
+References: <kv6yfyahbud474e75y4jaczg64pcowvlz7i52kikknuh6wje5o@4k2hikwcueoy>
+ <ZZu2C_lu6TAh-LOf@kekkonen.localdomain>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupnk+LIzCtJLcpLzFFi42LZdlhTUzdy3+xUg2fP9C2uT9nManF7gafF
-	1iVzWS1uHW9ltHj5YAO7xebJj1gsbn76xmpxedccNov22c8YLR6t2MTkwOWxaVUnm8f7fVfZ
-	PPq2rGL0+LxJLoAlKtsmIzUxJbVIITUvOT8lMy/dVsk7ON453tTMwFDX0NLCXEkhLzE31VbJ
-	xSdA1y0zB+geJYWyxJxSoFBAYnGxkr6dTVF+aUmqQkZ+cYmtUmpBSk6BSYFecWJucWleul5e
-	aomVoYGBkSlQYUJ2xr9Nl5gKNhtWTGqcytjA2KXZxcjJISFgIjFj6R7GLkYuDiGB3YwSU3bt
-	YoZwPjFKdL2cxQbntM64zgjT8mz/XFaIxE5GiWP7NzJBOJ1MErOfLWEHqWIT0JLoO/KdCcQW
-	EYiQeLdgE1g3s8B1RokHDwNBGoQFmhglbp5eCVbEIqAq0fb0P9A+Dg5eAVuJr/9yILbJS+w/
-	eJYZxOYUsJPY9mQjWDmvgKDEyZlPWCBmyks0b50NdreEwE92iY/3/7FDNLtIPP51kAXCFpZ4
-	dXwLVFxK4vO7vWwQDd2MEktvH2OHcGYwSrTsvMoMUWUv8fP1BLCLmAU0Jdbv0ofYxifR+/sJ
-	E0hYQoBXoqNNCKJaReJp125WmPnfT0AcKiHgIfFk7QIWSAhNZJT4cfYp+wRG+VlInpiF5IlZ
-	CNsWMDKvYpRMLSjOTU8tNi0wyksth8dtcn7uJkZwytTy2sH48MEHvUOMTByMhxglOJiVRHgl
-	Z8xOFeJNSaysSi3Kjy8qzUktPsRoCgzkicxSosn5wKSdVxJvaGJpYGJmZmZiaWxmqCTO+7p1
-	boqQQHpiSWp2ampBahFMHxMHp1QDU3XvDUNVT5te64CzWtFOV87kVMy7o6ybfEpn8So3mzXH
-	q5Z98nLcxuLyzawq8Wfoih4JOfdPPhvlfJoczu+T53XITAq6bbdx6mbR0/9mGd3YefvR4rIJ
-	z9gdy2wZ8zYyL1vpeiLoxqvM8B8rBB98re9fPl3kL981aZ2kXc9+WfQL9nM232r5e+yVxKfj
-	C8yLWF2P/FedtOxo4fTgip3bMoLtGvjUhX7eZHY7+27p8UUVl+/tXuPmlFZznffJ9B8sejla
-	nA7zjq9/sGnNvyO/Qtn33fmxtMCHf7m25SvfEwY6v86eTrtQ0MxwZNc3/TdrTHWq2BwvzXl9
-	8enyZodF23nL3v40j3m+z0a0sUdj0hQlluKMREMt5qLiRACV5EdkIgQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrDLMWRmVeSWpSXmKPExsWy7bCSvG7kvtmpBi+2illcn7KZ1eL2Ak+L
-	rUvmslrcOt7KaPHywQZ2i82TH7FY3Pz0jdXi8q45bBbts58xWjxasYnJgctj06pONo/3+66y
-	efRtWcXo8XmTXABLFJdNSmpOZllqkb5dAlfGv02XmAo2G1ZMapzK2MDYpdnFyMkhIWAi8Wz/
-	XNYuRi4OIYHtjBL/frcyQiSkJFZdvwdlC0us/PecHaKonUni1J/3LCAJNgEtib4j35lAbBGB
-	CIlp/9YyghQxC9xnlNi6/yobSEJYoIFRYvYcKRCbRUBVou3pf6A4BwevgK3E1385EAvkJfYf
-	PMsMYnMK2Else7IRbKYQUMmLKd/YQWxeAUGJkzOfgO1lBqpv3jqbeQKjwCwkqVlIUgsYmVYx
-	iqYWFOem5yYXGOoVJ+YWl+al6yXn525iBAe4VtAOxmXr/+odYmTiYDzEKMHBrCTCKzljdqoQ
-	b0piZVVqUX58UWlOavEhRmkOFiVxXuWczhQhgfTEktTs1NSC1CKYLBMHp1QDU2fv7Q1NNy+3
-	avBJ/Eo7t8n7wV8JQ9G8Ft/F8hs/OjBs+cv/7nvppt3ijwqmT9cKahVYc7H9TbpIyQblV1oO
-	U6wXLk258bligvL592XTg23mmFyVOXq+NyZDVfmAeG5H96odrw+G/Pr04EqAuoD6n+sxH7fP
-	mxZ3cXG/nPX5us0HkmxFd+aYcYcuTjm0bYMdwzmPkMcVOqUHMnS2H/lyzYVR48W2rPMFr/L1
-	lnGHzn4nZmD1T6PjUI/0yoC7sSmPmw7JfZq6nsm3vHaFZFCD6tf5IXer6tLOnYyQKXgRtshn
-	Rffe/2vCllx7xWDtMHHvPnf/R0VbG+/sabqmcWcuc5TxtZrulLrIqKk6918LsyixFGckGmox
-	FxUnAgBvZ0zF3wIAAA==
-X-CMS-MailID: 20240108092025epcas5p39e2ecb3b12b4fba9e41f0694f430ec1d
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-CMS-TYPE: 105P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20240108092025epcas5p39e2ecb3b12b4fba9e41f0694f430ec1d
-References: <20240108091917.1552013-1-sandeep.cs@samsung.com>
-	<CGME20240108092025epcas5p39e2ecb3b12b4fba9e41f0694f430ec1d@epcas5p3.samsung.com>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <ZZu2C_lu6TAh-LOf@kekkonen.localdomain>
 
-Add support for samsung wireless bookcover and universal keyboard with input mapping events.
+Hi Sakari, Vinay,
 
-Device a005 (Samsung wireless bookcover keyboard)
-Device a006 (Samsung wireless universal keyboard)
-Device a064 (Samsung wireless multi hogp keyboard)
+   a more foundamental question is how this usage of the crop/compose
+API plays with the fact we enumerate only a limited set of frame
+sizes, and now you can get an arbitrary output size. We could get away
+by modifying enum_frame_sizes to return a size range (or ranges) but I
+wonder if it wouldn't be better to introduce an internal pad to
+represent the pixel array where to apply TGT_CROP in combination with
+a source pad where we could apply TGT_COMPOSE and an output format.
 
-Signed-off-by: Sandeep C S <sandeep.cs@samsung.com>
-Signed-off-by: Junwan Cho <junwan.cho@samsung.com>
-Signed-off-by: Jitender Sajwan <jitender.s21@samsung.com>
----
- drivers/hid/hid-ids.h     |   3 +
- drivers/hid/hid-samsung.c | 142 ++++++++++++++++++++++++++++++++++++++
- 2 files changed, 145 insertions(+)
+To be completely honest, binning should be handled with a different
+mechanism than the selection API, but that would require a completly
+new design.
 
-diff --git a/drivers/hid/hid-ids.h b/drivers/hid/hid-ids.h
-index b1208d04712c..c03137ada8f5 100644
---- a/drivers/hid/hid-ids.h
-+++ b/drivers/hid/hid-ids.h
-@@ -1145,6 +1145,9 @@
- #define USB_DEVICE_ID_SAMSUNG_WIRELESS_KBD	0x7021
- #define USB_DEVICE_ID_SAMSUNG_WIRELESS_GAMEPAD	0xa000
- #define USB_DEVICE_ID_SAMSUNG_WIRELESS_ACTIONMOUSE	0xa004
-+#define USB_DEVICE_ID_SAMSUNG_WIRELESS_BOOKCOVER	0xa005
-+#define USB_DEVICE_ID_SAMSUNG_WIRELESS_UNIVERSAL_KBD	0xa006
-+#define USB_DEVICE_ID_SAMSUNG_WIRELESS_MULTI_HOGP_KBD	0xa064
- 
- #define USB_VENDOR_ID_SEMICO			0x1a2c
- #define USB_DEVICE_ID_SEMICO_USB_KEYKOARD	0x0023
-diff --git a/drivers/hid/hid-samsung.c b/drivers/hid/hid-samsung.c
-index 36ab9540e064..ba1c71f25d78 100644
---- a/drivers/hid/hid-samsung.c
-+++ b/drivers/hid/hid-samsung.c
-@@ -362,6 +362,140 @@ static int samsung_actionmouse_input_mapping(struct hid_device *hdev,
- 	return 1;
- }
- 
-+static int samsung_universal_kbd_input_mapping(struct hid_device *hdev,
-+	struct hid_input *hi, struct hid_field *field, struct hid_usage *usage,
-+	unsigned long **bit, int *max)
-+{
-+	if (!(HID_UP_CONSUMER == (usage->hid & HID_USAGE_PAGE) ||
-+			HID_UP_KEYBOARD == (usage->hid & HID_USAGE_PAGE)))
-+		return 0;
-+
-+	dbg_hid("samsung wireless keyboard input mapping event [0x%x]\n",
-+		usage->hid & HID_USAGE);
-+
-+	if (HID_UP_KEYBOARD == (usage->hid & HID_USAGE_PAGE)) {
-+		set_bit(EV_REP, hi->input->evbit);
-+		switch (usage->hid & HID_USAGE) {
-+		/* Only for UK keyboard */
-+		/* key found */
-+#ifdef CONFIG_HID_KK_UPGRADE
-+		case 0x32:
-+			samsung_kbd_mouse_map_key_clear(KEY_KBDILLUMTOGGLE);
-+			break;
-+		case 0x64:
-+			samsung_kbd_mouse_map_key_clear(KEY_BACKSLASH);
-+			break;
-+#else
-+		case 0x32:
-+			samsung_kbd_mouse_map_key_clear(KEY_BACKSLASH);
-+			break;
-+		case 0x64:
-+			samsung_kbd_mouse_map_key_clear(KEY_102ND);
-+			break;
-+#endif
-+		/* Only for BR keyboard */
-+		case 0x87:
-+			samsung_kbd_mouse_map_key_clear(KEY_RO);
-+			break;
-+		default:
-+			return 0;
-+		}
-+	}
-+
-+	if (HID_UP_CONSUMER == (usage->hid & HID_USAGE_PAGE)) {
-+		switch (usage->hid & HID_USAGE) {
-+		/* report 2 */
-+		/* MENU */
-+		case 0x040:
-+			samsung_kbd_mouse_map_key_clear(KEY_MENU);
-+			break;
-+		case 0x18a:
-+			samsung_kbd_mouse_map_key_clear(KEY_MAIL);
-+			break;
-+		case 0x196:
-+			samsung_kbd_mouse_map_key_clear(KEY_WWW);
-+			break;
-+		case 0x19e:
-+			samsung_kbd_mouse_map_key_clear(KEY_SCREENLOCK);
-+			break;
-+		case 0x221:
-+			samsung_kbd_mouse_map_key_clear(KEY_SEARCH);
-+			break;
-+		case 0x223:
-+			samsung_kbd_mouse_map_key_clear(KEY_HOMEPAGE);
-+			break;
-+		/* RECENTAPPS */
-+		case 0x301:
-+			samsung_kbd_mouse_map_key_clear(BTN_TRIGGER_HAPPY1);
-+			break;
-+		/* APPLICATION */
-+		case 0x302:
-+			samsung_kbd_mouse_map_key_clear(BTN_TRIGGER_HAPPY2);
-+			break;
-+		/* Voice search */
-+		case 0x305:
-+			samsung_kbd_mouse_map_key_clear(BTN_TRIGGER_HAPPY4);
-+			break;
-+		/* QPANEL on/off */
-+		case 0x306:
-+			samsung_kbd_mouse_map_key_clear(BTN_TRIGGER_HAPPY5);
-+			break;
-+		/* SIP on/off */
-+		case 0x307:
-+			samsung_kbd_mouse_map_key_clear(BTN_TRIGGER_HAPPY3);
-+			break;
-+		/* LANG */
-+		case 0x308:
-+			samsung_kbd_mouse_map_key_clear(KEY_LANGUAGE);
-+			break;
-+		case 0x30a:
-+			samsung_kbd_mouse_map_key_clear(KEY_BRIGHTNESSDOWN);
-+			break;
-+		case 0x070:
-+			samsung_kbd_mouse_map_key_clear(KEY_BRIGHTNESSDOWN);
-+			break;
-+		case 0x30b:
-+			samsung_kbd_mouse_map_key_clear(KEY_BRIGHTNESSUP);
-+			break;
-+		case 0x06f:
-+			samsung_kbd_mouse_map_key_clear(KEY_BRIGHTNESSUP);
-+			break;
-+		/* S-Finder */
-+		case 0x304:
-+			samsung_kbd_mouse_map_key_clear(BTN_TRIGGER_HAPPY7);
-+			break;
-+		/* Screen Capture */
-+		case 0x303:
-+			samsung_kbd_mouse_map_key_clear(KEY_SYSRQ);
-+			break;
-+		/* Multi Window */
-+		case 0x309:
-+			samsung_kbd_mouse_map_key_clear(BTN_TRIGGER_HAPPY9);
-+			break;
-+		/* HotKey App 1 */
-+		case 0x071:
-+			samsung_kbd_mouse_map_key_clear(0x2f5);
-+			break;
-+		/* HotKey App 2 */
-+		case 0x072:
-+			samsung_kbd_mouse_map_key_clear(0x2f6);
-+			break;
-+		/* HotKey App 3 */
-+		case 0x073:
-+			samsung_kbd_mouse_map_key_clear(0x2f7);
-+			break;
-+		/* Dex */
-+		case 0x06e:
-+			samsung_kbd_mouse_map_key_clear(0x2bd);
-+			break;
-+		default:
-+			return 0;
-+		}
-+	}
-+
-+	return 1;
-+}
-+
- static __u8 *samsung_report_fixup(struct hid_device *hdev, __u8 *rdesc,
- 	unsigned int *rsize)
- {
-@@ -388,6 +522,12 @@ static int samsung_input_mapping(struct hid_device *hdev, struct hid_input *hi,
- 	else if (hdev->product == USB_DEVICE_ID_SAMSUNG_WIRELESS_ACTIONMOUSE)
- 		ret = samsung_actionmouse_input_mapping(hdev,
- 			hi, field, usage, bit, max);
-+	else if (hdev->product == USB_DEVICE_ID_SAMSUNG_WIRELESS_UNIVERSAL_KBD)
-+		ret = samsung_universal_kbd_input_mapping(hdev,
-+			hi, field, usage, bit, max);
-+	else if (hdev->product == USB_DEVICE_ID_SAMSUNG_WIRELESS_MULTI_HOGP_KBD)
-+		ret = samsung_universal_kbd_input_mapping(hdev,
-+			hi, field, usage, bit, max);
- 
- 	return ret;
- }
-@@ -433,6 +573,8 @@ static const struct hid_device_id samsung_devices[] = {
- 	{ HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_SAMSUNG_ELECTRONICS, USB_DEVICE_ID_SAMSUNG_WIRELESS_KBD) },
- 	{ HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_SAMSUNG_ELECTRONICS, USB_DEVICE_ID_SAMSUNG_WIRELESS_GAMEPAD) },
- 	{ HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_SAMSUNG_ELECTRONICS, USB_DEVICE_ID_SAMSUNG_WIRELESS_ACTIONMOUSE) },
-+	{ HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_SAMSUNG_ELECTRONICS, USB_DEVICE_ID_SAMSUNG_WIRELESS_UNIVERSAL_KBD) },
-+	{ HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_SAMSUNG_ELECTRONICS, USB_DEVICE_ID_SAMSUNG_WIRELESS_MULTI_HOGP_KBD) },
- 	{ }
- };
- MODULE_DEVICE_TABLE(hid, samsung_devices);
--- 
-2.34.1
+Laurent: are there plans to introduce internal pad for embedded data
+support for this sensor ?
 
+Also, the patch doesn't apply on the most recent media master, please
+rebase before resending.
+
+On Mon, Jan 08, 2024 at 08:44:59AM +0000, Sakari Ailus wrote:
+> Hi Vinay,
+>
+> Thanks for the patch.
+>
+> On Sun, Jan 07, 2024 at 03:42:59PM +0800, Vinay Varma wrote:
+> > This patch exposes IMX219's crop and compose capabilities
+> > by implementing the selection API. Horizontal and vertical
+> > binning being separate registers, `imx219_binning_goodness`
+> > computes the best possible height and width of the compose
+> > specification using the selection flags. Compose operation
+> > updates the subdev's format object to keep them in sync.
+>
+> The line length limit here is 75, not ~ 60. Please rewrap.
+>
+> >
+> > Signed-off-by: Vinay Varma <varmavinaym@gmail.com>
+> > ---
+> >  drivers/media/i2c/imx219.c | 222 +++++++++++++++++++++++++++++++------
+> >  1 file changed, 190 insertions(+), 32 deletions(-)
+> >
+> > diff --git a/drivers/media/i2c/imx219.c b/drivers/media/i2c/imx219.c
+> > index 39943d72c22d..27d85fb7ad51 100644
+> > --- a/drivers/media/i2c/imx219.c
+> > +++ b/drivers/media/i2c/imx219.c
+> > @@ -29,6 +29,7 @@
+> >  #include <media/v4l2-event.h>
+> >  #include <media/v4l2-fwnode.h>
+> >  #include <media/v4l2-mediabus.h>
+> > +#include <media/v4l2-rect.h>
+> >
+> >  /* Chip ID */
+> >  #define IMX219_REG_CHIP_ID		CCI_REG16(0x0000)
+> > @@ -73,6 +74,7 @@
+> >  /* V_TIMING internal */
+> >  #define IMX219_REG_VTS			CCI_REG16(0x0160)
+> >  #define IMX219_VTS_MAX			0xffff
+> > +#define IMX219_VTS_DEF 1763
+> >
+> >  #define IMX219_VBLANK_MIN		32
+> >
+> > @@ -146,6 +148,7 @@
+> >  #define IMX219_PIXEL_ARRAY_TOP		8U
+> >  #define IMX219_PIXEL_ARRAY_WIDTH	3280U
+> >  #define IMX219_PIXEL_ARRAY_HEIGHT	2464U
+> > +#define IMX219_MIN_COMPOSE_SIZE 8U
+>
+> Please align 8U with the rest of the macros. Same above.
+>
+> >
+> >  /* Mode : resolution and related config&values */
+> >  struct imx219_mode {
+> > @@ -284,6 +287,8 @@ static const u32 imx219_mbus_formats[] = {
+> >  #define IMX219_XCLR_MIN_DELAY_US	6200
+> >  #define IMX219_XCLR_DELAY_RANGE_US	1000
+> >
+> > +static const u32 binning_ratios[] = { 1, 2 };
+> > +
+> >  /* Mode configs */
+> >  static const struct imx219_mode supported_modes[] = {
+> >  	{
+> > @@ -296,19 +301,19 @@ static const struct imx219_mode supported_modes[] = {
+> >  		/* 1080P 30fps cropped */
+> >  		.width = 1920,
+> >  		.height = 1080,
+> > -		.vts_def = 1763,
+> > +		.vts_def = IMX219_VTS_DEF,
+> >  	},
+> >  	{
+> >  		/* 2x2 binned 30fps mode */
+> >  		.width = 1640,
+> >  		.height = 1232,
+> > -		.vts_def = 1763,
+> > +		.vts_def = IMX219_VTS_DEF,
+> >  	},
+> >  	{
+> >  		/* 640x480 30fps mode */
+> >  		.width = 640,
+> >  		.height = 480,
+> > -		.vts_def = 1763,
+> > +		.vts_def = IMX219_VTS_DEF,
+> >  	},
+> >  };
+> >
+> > @@ -809,6 +814,39 @@ static int imx219_enum_frame_size(struct v4l2_subdev *sd,
+> >  	return 0;
+> >  }
+> >
+> > +static void imx219_refresh_ctrls(struct v4l2_subdev *sd,
+> > +				 struct v4l2_subdev_state *state,
+> > +				 unsigned int vts_def)
+> > +{
+> > +	int exposure_max;
+> > +	int exposure_def;
+> > +	int hblank;
+> > +	struct imx219 *imx219 = to_imx219(sd);
+> > +	struct v4l2_mbus_framefmt *fmt =
+> > +		v4l2_subdev_get_pad_format(sd, state, 0);
+> > +
+> > +	/* Update limits and set FPS to default */
+> > +	__v4l2_ctrl_modify_range(imx219->vblank, IMX219_VBLANK_MIN,
+> > +				 IMX219_VTS_MAX - fmt->height, 1,
+> > +				 vts_def - fmt->height);
+> > +	__v4l2_ctrl_s_ctrl(imx219->vblank, vts_def - fmt->height);
+> > +	/* Update max exposure while meeting expected vblanking */
+> > +	exposure_max = vts_def - 4;
+> > +	exposure_def = (exposure_max < IMX219_EXPOSURE_DEFAULT) ?
+> > +			       exposure_max :
+> > +			       IMX219_EXPOSURE_DEFAULT;
+> > +	__v4l2_ctrl_modify_range(imx219->exposure, imx219->exposure->minimum,
+> > +				 exposure_max, imx219->exposure->step,
+> > +				 exposure_def);
+> > +	/*
+> > +	 * Currently PPL is fixed to IMX219_PPL_DEFAULT, so hblank
+> > +	 * depends on mode->width only, and is not changeble in any
+> > +	 * way other than changing the mode.
+> > +	 */
+> > +	hblank = IMX219_PPL_DEFAULT - fmt->width;
+> > +	__v4l2_ctrl_modify_range(imx219->hblank, hblank, hblank, 1, hblank);
+> > +}
+> > +
+> >  static int imx219_set_pad_format(struct v4l2_subdev *sd,
+> >  				 struct v4l2_subdev_state *state,
+> >  				 struct v4l2_subdev_format *fmt)
+> > @@ -816,7 +854,7 @@ static int imx219_set_pad_format(struct v4l2_subdev *sd,
+> >  	struct imx219 *imx219 = to_imx219(sd);
+> >  	const struct imx219_mode *mode;
+> >  	struct v4l2_mbus_framefmt *format;
+> > -	struct v4l2_rect *crop;
+> > +	struct v4l2_rect *crop, *compose;
+> >  	unsigned int bin_h, bin_v;
+> >
+> >  	mode = v4l2_find_nearest_size(supported_modes,
+> > @@ -842,34 +880,14 @@ static int imx219_set_pad_format(struct v4l2_subdev *sd,
+> >  	crop->left = (IMX219_NATIVE_WIDTH - crop->width) / 2;
+> >  	crop->top = (IMX219_NATIVE_HEIGHT - crop->height) / 2;
+> >
+> > -	if (fmt->which == V4L2_SUBDEV_FORMAT_ACTIVE) {
+> > -		int exposure_max;
+> > -		int exposure_def;
+> > -		int hblank;
+> > -
+> > -		/* Update limits and set FPS to default */
+> > -		__v4l2_ctrl_modify_range(imx219->vblank, IMX219_VBLANK_MIN,
+> > -					 IMX219_VTS_MAX - mode->height, 1,
+> > -					 mode->vts_def - mode->height);
+> > -		__v4l2_ctrl_s_ctrl(imx219->vblank,
+> > -				   mode->vts_def - mode->height);
+> > -		/* Update max exposure while meeting expected vblanking */
+> > -		exposure_max = mode->vts_def - 4;
+> > -		exposure_def = (exposure_max < IMX219_EXPOSURE_DEFAULT) ?
+> > -			exposure_max : IMX219_EXPOSURE_DEFAULT;
+> > -		__v4l2_ctrl_modify_range(imx219->exposure,
+> > -					 imx219->exposure->minimum,
+> > -					 exposure_max, imx219->exposure->step,
+> > -					 exposure_def);
+> > -		/*
+> > -		 * Currently PPL is fixed to IMX219_PPL_DEFAULT, so hblank
+> > -		 * depends on mode->width only, and is not changeble in any
+> > -		 * way other than changing the mode.
+> > -		 */
+> > -		hblank = IMX219_PPL_DEFAULT - mode->width;
+> > -		__v4l2_ctrl_modify_range(imx219->hblank, hblank, hblank, 1,
+> > -					 hblank);
+> > -	}
+> > +	compose = v4l2_subdev_get_pad_compose(sd, state, 0);
+> > +	compose->width = format->width;
+> > +	compose->height = format->height;
+> > +	compose->left = 0;
+> > +	compose->top = 0;
+> > +
+> > +	if (fmt->which == V4L2_SUBDEV_FORMAT_ACTIVE)
+> > +		imx219_refresh_ctrls(sd, state, mode->vts_def);
+> >
+> >  	return 0;
+> >  }
+> > @@ -884,6 +902,11 @@ static int imx219_get_selection(struct v4l2_subdev *sd,
+> >  		return 0;
+> >  	}
+> >
+> > +	case V4L2_SEL_TGT_COMPOSE: {
+> > +		sel->r = *v4l2_subdev_get_pad_compose(sd, state, 0);
+> > +		return 0;
+> > +	}
+>
+> The braces are unnecessary here.
+>
+> > +
+> >  	case V4L2_SEL_TGT_NATIVE_SIZE:
+> >  		sel->r.top = 0;
+> >  		sel->r.left = 0;
+> > @@ -900,11 +923,145 @@ static int imx219_get_selection(struct v4l2_subdev *sd,
+> >  		sel->r.height = IMX219_PIXEL_ARRAY_HEIGHT;
+> >
+> >  		return 0;
+> > +
+> > +	case V4L2_SEL_TGT_COMPOSE_DEFAULT:
+> > +	case V4L2_SEL_TGT_COMPOSE_BOUNDS:
+> > +	case V4L2_SEL_TGT_COMPOSE_PADDED:
+> > +		sel->r.top = 0;
+> > +		sel->r.left = 0;
+> > +		sel->r.width = IMX219_PIXEL_ARRAY_WIDTH;
+> > +		sel->r.height = IMX219_PIXEL_ARRAY_HEIGHT;
+> > +		return 0;
+> >  	}
+> >
+> >  	return -EINVAL;
+> >  }
+> >
+> > +#define IMX219_ROUND(dim, step, flags)                \
+> > +	((flags) & V4L2_SEL_FLAG_GE ?                 \
+> > +		 round_up((dim), (step)) :            \
+> > +		 ((flags) & V4L2_SEL_FLAG_LE ?        \
+> > +			  round_down((dim), (step)) : \
+> > +			  round_down((dim) + (step) / 2, (step))))
+> > +
+> > +static int imx219_set_selection_crop(struct v4l2_subdev *sd,
+> > +				     struct v4l2_subdev_state *sd_state,
+> > +				     struct v4l2_subdev_selection *sel)
+> > +{
+> > +	u32 max_binning;
+> > +	struct v4l2_rect *compose, *crop;
+> > +	struct v4l2_mbus_framefmt *fmt;
+> > +
+> > +	crop = v4l2_subdev_get_pad_crop(sd, sd_state, 0);
+> > +	if (v4l2_rect_equal(&sel->r, crop))
+> > +		return false;
+> > +	max_binning = binning_ratios[ARRAY_SIZE(binning_ratios) - 1];
+> > +	sel->r.width =
+> > +		clamp(IMX219_ROUND(sel->r.width, max_binning, sel->flags),
+> > +		      max_binning * IMX219_MIN_COMPOSE_SIZE,
+> > +		      IMX219_PIXEL_ARRAY_WIDTH);
+> > +	sel->r.height =
+> > +		clamp(IMX219_ROUND(sel->r.width, max_binning, sel->flags),
+> > +		      max_binning * IMX219_MIN_COMPOSE_SIZE,
+> > +		      IMX219_PIXEL_ARRAY_WIDTH);
+> > +	sel->r.left =
+> > +		min_t(u32, sel->r.left, IMX219_PIXEL_ARRAY_LEFT - sel->r.width);
+> > +	sel->r.top =
+> > +		min_t(u32, sel->r.top, IMX219_PIXEL_ARRAY_TOP - sel->r.top);
+> > +
+> > +	compose = v4l2_subdev_get_pad_compose(sd, sd_state, 0);
+> > +	fmt = v4l2_subdev_get_pad_format(sd, sd_state, 0);
+> > +	*crop = sel->r;
+> > +	compose->height = crop->height;
+> > +	compose->width = crop->width;
+> > +	return true;
+> > +}
+> > +
+> > +static int imx219_binning_goodness(u32 act, u32 ask, u32 flags)
+> > +{
+> > +	const int goodness = 100000;
+> > +	int val = 0;
+> > +
+> > +	if (flags & V4L2_SEL_FLAG_GE)
+> > +		if (act < ask)
+> > +			val -= goodness;
+> > +
+> > +	if (flags & V4L2_SEL_FLAG_LE)
+> > +		if (act > ask)
+> > +			val -= goodness;
+> > +
+> > +	val -= abs(act - ask);
+> > +
+> > +	return val;
+> > +}
+> > +
+> > +static bool imx219_set_selection_compose(struct v4l2_subdev *sd,
+> > +					 struct v4l2_subdev_state *state,
+> > +					 struct v4l2_subdev_selection *sel)
+> > +{
+> > +	int best_goodness;
+>
+> This would be nicer if declared after the line below. Think of reverse
+> Christmas trees.
+>
+> Similarly for max_binning a few functions up actually as well as variables
+> in imx219_refresh_ctrls().
+>
+> > +	struct v4l2_rect *compose, *crop;
+> > +
+> > +	compose = v4l2_subdev_get_pad_compose(sd, state, 0);
+> > +	if (v4l2_rect_equal(compose, &sel->r))
+> > +		return false;
+> > +
+> > +	crop = v4l2_subdev_get_pad_crop(sd, state, 0);
+> > +
+> > +	best_goodness = INT_MIN;
+> > +	for (int i = 0; i < ARRAY_SIZE(binning_ratios); ++i) {
+> > +		u32 width = crop->width / binning_ratios[i];
+> > +		int goodness = imx219_binning_goodness(width, sel->r.width,
+> > +						       sel->flags);
+> > +		if (goodness > best_goodness) {
+> > +			best_goodness = goodness;
+> > +			compose->width = width;
+> > +		}
+> > +	}
+> > +	best_goodness = INT_MIN;
+> > +	for (int i = 0; i < ARRAY_SIZE(binning_ratios); ++i) {
+> > +		u32 height = crop->height / binning_ratios[i];
+> > +		int goodness = imx219_binning_goodness(height, sel->r.height,
+> > +						       sel->flags);
+> > +		if (goodness > best_goodness) {
+> > +			best_goodness = goodness;
+> > +			compose->height = height;
+> > +		}
+> > +	}
+> > +	return true;
+> > +}
+> > +
+> > +static int imx219_set_selection(struct v4l2_subdev *sd,
+> > +				struct v4l2_subdev_state *sd_state,
+> > +				struct v4l2_subdev_selection *sel)
+> > +{
+> > +	bool compose_updated = false;
+> > +
+> > +	switch (sel->target) {
+> > +	case V4L2_SEL_TGT_CROP:
+> > +		compose_updated = imx219_set_selection_crop(sd, sd_state, sel);
+> > +		break;
+> > +	case V4L2_SEL_TGT_COMPOSE:
+> > +		compose_updated =
+> > +			imx219_set_selection_compose(sd, sd_state, sel);
+> > +		break;
+> > +	default:
+> > +		return -EINVAL;
+> > +	}
+> > +	if (compose_updated) {
+> > +		struct v4l2_rect *compose =
+> > +			v4l2_subdev_get_pad_compose(sd, sd_state, 0);
+> > +		struct v4l2_mbus_framefmt *fmt =
+> > +			v4l2_subdev_get_pad_format(sd, sd_state, 0);
+>
+> A newline here?
+>
+> > +		fmt->height = compose->height;
+> > +		fmt->width = compose->width;
+> > +	}
+> > +	if (compose_updated && sel->which == V4L2_SUBDEV_FORMAT_ACTIVE)
+> > +		imx219_refresh_ctrls(sd, sd_state, IMX219_VTS_DEF);
+>
+> Please move this inside the previous condition (where you check just
+> sel->which).
+>
+> > +
+> > +	return 0;
+> > +}
+> > +
+> >  static int imx219_init_cfg(struct v4l2_subdev *sd,
+> >  			   struct v4l2_subdev_state *state)
+> >  {
+> > @@ -938,6 +1095,7 @@ static const struct v4l2_subdev_pad_ops imx219_pad_ops = {
+> >  	.get_fmt = v4l2_subdev_get_fmt,
+> >  	.set_fmt = imx219_set_pad_format,
+> >  	.get_selection = imx219_get_selection,
+> > +	.set_selection = imx219_set_selection,
+> >  	.enum_frame_size = imx219_enum_frame_size,
+> >  };
+> >
+>
+> --
+> Regards,
+>
+> Sakari Ailus
+>
 
