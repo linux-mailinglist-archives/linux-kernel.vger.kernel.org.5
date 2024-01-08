@@ -1,153 +1,126 @@
-Return-Path: <linux-kernel+bounces-19882-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19883-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1DA8827616
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 18:15:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC074827621
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 18:16:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 906122833E1
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 17:15:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 059CA1C225AF
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 17:15:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 638A954661;
-	Mon,  8 Jan 2024 17:15:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E79154667;
+	Mon,  8 Jan 2024 17:15:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="taaEqgJS"
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="j2QX8bAi"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAA6053E36;
-	Mon,  8 Jan 2024 17:15:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F14FDC433C9;
-	Mon,  8 Jan 2024 17:15:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704734133;
-	bh=xPMgJ2aFREL2j1LwnOpPiVGiyM4ZUehkCaCWx0OubRs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=taaEqgJSS2VqNtognZZIE0e3GBSPrdc969WAXrzTWZ6kb+8SvyyA06W1eFxhxnK1+
-	 Wxj6Ay+fC4HEBmNbIMPL5BXpGF2RuF4e2mT7sYyeqzQ8PUqxNPXk50hVpLlp3z2a/M
-	 U5UPOwqt8c6Ndfa/23D+IsnwDzMo4Vn3pNk9t2cWXaqSllEabiv0bsOWfcMgJoXPKz
-	 l06YYjxhs11AoD25vXBfMuXhjfx2rm+7U6IreyQSDHktRlwOLVsHXiaVHy+Nw5NbpO
-	 lrZZT27Lw3CsA9v59Lx/mvEZxOPZCTom5L1s74WFwUuPLa67Zxn9HqoCj6EMa6Tjd/
-	 UfQ+HfKsbHzNA==
-Date: Mon, 8 Jan 2024 17:15:27 +0000
-From: Lee Jones <lee@kernel.org>
-To: Stephen Rothwell <sfr@rothwell.id.au>
-Cc: Sean Young <sean@mess.org>, Bagas Sanjaya <bagasdotme@gmail.com>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	Jingoo Han <jingoohan1@gmail.com>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Stephen Rothwell <sfr@canb.auug.org.au>,
-	Flavio Suligoi <f.suligoi@asem.it>,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	Linux Next Mailing List <linux-next@vger.kernel.org>,
-	Linux DRI Development <dri-devel@lists.freedesktop.org>
-Subject: Re: (subset) linux-next: build failure after merge of the pwm tree
-Message-ID: <20240108171527.GB7948@google.com>
-References: <20231221165805.0c4771c1@canb.auug.org.au>
- <170316329164.542553.8341559295114557258.b4-ty@kernel.org>
- <20231221125801.GG10102@google.com>
- <ZYSFUZf8NcK5vvLv@orome.fritz.box>
- <ZZaCQahr3t8CUumD@archie.me>
- <ZZaplFvjLADNz-2m@gofer.mess.org>
- <20240105090449.5cf240ec@oak>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A391454661
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 17:15:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2cd0d05838fso22170001fa.1
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 09:15:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1704734142; x=1705338942; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JhcmxUh8JpNw9VG2lpkQDwxahGUDO7wjwTVRAGTPxjA=;
+        b=j2QX8bAi5E5ntxFXE5rNmTT3GtM9aZ798SitzWTMgl+8eg8wWJ/AcXWZOcWXW7pDSP
+         +NGHuK1hoBptQ8yjNhTYvHh/dZW5FdI4TFr6DBVrNGc8l8NDVfBeY6Tjeo5oDPcEtBpP
+         06vYu04CPYqQNXJp9wb6Lz5LCVhhYAtgCW3vw4vYir+I+otcPTRtEV0awbucf0aSnHnt
+         n3D7kDIugSiUvnemXNZVA/Uw2o1HRCmj4ZeWjpyWLDajVUhjhq3abzlWfoLL0XVUGNPh
+         6/GIokDm4tCt5P47pcKz7/2wTnSZOFYA02dO3bZ8RaODm3qVQp47DM0KiVnbC+tHh6uY
+         r1PQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704734142; x=1705338942;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=JhcmxUh8JpNw9VG2lpkQDwxahGUDO7wjwTVRAGTPxjA=;
+        b=f1SYRm1gQ/9/QFLv1nuiAeVxomwqR4RM+v9tgs3R9b+rfycS5ie7vsGZKsetciyfdw
+         z6koTQzaLxn+eqvddYavmNH2FpYZ6e4WJ7lyEpKHLivapalE+rVnFLB4sieNNM4JNGF9
+         x3mXRHVBLFOFn+d727HoS/aQ8eWsM6Vc/IglJN3YdQZjBi0Agpmg++yIj3tde+O1bI6e
+         LOL/n0IkCAjCFf5AimI6YNIhk+q7paV5rQDM0PJ2OpGUKIqrym/vT+0pnLsMp4Qgb/HE
+         Al45uqSPYHcAYR9S0KWDMsWFuKajY+KVyBOXMg4NYsgGNlzzq+cveKM57ioepWyndvEg
+         x64A==
+X-Gm-Message-State: AOJu0YzPKwdlUaLo2x/QEgHflKDgnoBP0LIuNR2cCQTq79lXcbNBz86c
+	LLfgDFWDFSWIPj8uadbJbCXPRIwZwQjw/GoL5K/jyaaI85vzsBorbwDFhP2e9pY=
+X-Google-Smtp-Source: AGHT+IG3rX1ILTMGzLZZdp1B52tdxBx7OKgMOIVcoQaLg54QYbSD79UEfIQDySh7E4DnU1YKnMS9AGGlYHyDYRnHfPI=
+X-Received: by 2002:a2e:9a84:0:b0:2cc:6fef:d80a with SMTP id
+ p4-20020a2e9a84000000b002cc6fefd80amr1741294lji.4.1704734142596; Mon, 08 Jan
+ 2024 09:15:42 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240105090449.5cf240ec@oak>
+References: <20231215-ad7380-mainline-v3-0-7a11ebf642b9@baylibre.com>
+ <20231215-ad7380-mainline-v3-1-7a11ebf642b9@baylibre.com> <20240107164356.3e8df266@jic23-huawei>
+ <f431e418-0b7c-4362-be26-9d2f03e0de07@sirena.org.uk> <CAMknhBE7eUMzcD0bdymrhL2Lw3FubB3aHDWmJFD7YnaGNYmQ9w@mail.gmail.com>
+ <0a774bc6-3bf9-4b5f-92e0-8bd673e71a33@sirena.org.uk>
+In-Reply-To: <0a774bc6-3bf9-4b5f-92e0-8bd673e71a33@sirena.org.uk>
+From: David Lechner <dlechner@baylibre.com>
+Date: Mon, 8 Jan 2024 11:15:31 -0600
+Message-ID: <CAMknhBGNDV7+C4wE8ced5jhe-0eydo7g8SZMJwLnFi+y_qon_w@mail.gmail.com>
+Subject: Re: [PATCH v3 1/3] dt-bindings: spi: add spi-rx-bus-channels
+ peripheral property
+To: Mark Brown <broonie@kernel.org>
+Cc: Jonathan Cameron <jic23@kernel.org>, linux-iio@vger.kernel.org, linux-spi@vger.kernel.org, 
+	devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Michael Hennerich <michael.hennerich@analog.com>, =?UTF-8?B?TnVubyBTw6E=?= <nuno.sa@analog.com>, 
+	Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, 05 Jan 2024, Stephen Rothwell wrote:
+On Mon, Jan 8, 2024 at 10:39=E2=80=AFAM Mark Brown <broonie@kernel.org> wro=
+te:
+>
+> On Sun, Jan 07, 2024 at 05:02:56PM -0600, David Lechner wrote:
+> > On Sun, Jan 7, 2024 at 3:27=E2=80=AFPM Mark Brown <broonie@kernel.org> =
+wrote:
+>
+> > > This makes no sense to me without a corresponding change in the SPI c=
+ore
+> > > and possibly controller support, though I guess you could do data
+> > > manging to rewrite from a normal parallel SPI to this for a pure
+> > > software implementation.  I also see nothing in the driver that even
+> > > attempts to parse this so I can't see how it could possibly work.
+>
+> > We currently don't have a controller that supports this. This is just
+> > an attempt to make a complete binding for a peripheral according to
+> > [2] which says:
+>
+> ...
+>
+> > So, will DT maintainers accept an incomplete binding for the
+> > peripheral? Or will you reconsider this without SPI core support if I
+> > can explain it better? It doesn't seem like a reasonable request to
+> > expect us to spend time developing software that we don't need at this
+> > time just to get a complete DT binding accepted for a feature that
+> > isn't being used.
+>
+> I don't think it's sensible to try to make a binding for this without
+> having actually tried to put a system together that uses it and made
+> sure that everything is joined up properly, the thing about complete
+> bindings is more for things that are handle turning than for things that
+> are substantial new features in subsystems.
 
-> Hi all,
-> 
-> On Thu, 4 Jan 2024 12:50:28 +0000 Sean Young <sean@mess.org> wrote:
-> >
-> > On Thu, Jan 04, 2024 at 05:02:41PM +0700, Bagas Sanjaya wrote:
-> > > [also add Jingoo (additional backlight maintainer) and Linus]
-> > > 
-> > > On Thu, Dec 21, 2023 at 07:34:57PM +0100, Thierry Reding wrote:  
-> > > > On Thu, Dec 21, 2023 at 12:58:01PM +0000, Lee Jones wrote:  
-> > > > > On Thu, 21 Dec 2023, Lee Jones wrote:
-> > > > >   
-> > > > > > On Thu, 21 Dec 2023 16:58:05 +1100, Stephen Rothwell wrote:  
-> > > > > > > After merging the backlight tree, today's linux-next build (x86_64
-> > > > > > > allmodconfig) failed like this:
-> > > > > > > 
-> > > > > > > drivers/video/backlight/mp3309c.c: In function 'mp3309c_bl_update_status':
-> > > > > > > drivers/video/backlight/mp3309c.c:134:23: error: implicit declaration of function 'pwm_apply_state'; did you mean 'pwm_apply_args'? [-Werror=implicit-function-declaration]
-> > > > > > >   134 |                 ret = pwm_apply_state(chip->pwmd, &pwmstate);
-> > > > > > >       |                       ^~~~~~~~~~~~~~~
-> > > > > > >       |                       pwm_apply_args
-> > > > > > > 
-> > > > > > > [...]  
-> > > > > > 
-> > > > > > Applied, thanks!
-> > > > > > 
-> > > > > > [1/1] linux-next: build failure after merge of the pwm tree
-> > > > > >       commit: f7baa9ccef93ba1c36a8ecf58c2f4e86fb3181b9  
-> > > > > 
-> > > > > Actually it's:
-> > > > > 
-> > > > >   f7baa9ccef93b ("backlight: mp3309c: Rename  pwm_apply_state() to pwm_apply_might_sleep()")
-> > > > > 
-> > > > > But don't bank on the commit ID staying the same.  
-> > > > 
-> > > > This is likely going to break the build on your branch because
-> > > > pwm_apply_might_sleep() is only available in the PWM tree right now. In
-> > > > any case, I've now pushed a commit that adds pwm_apply_state() back as a
-> > > > compatibility stub, so it should be okay for you to drop this if you
-> > > > run into problems. It's always possible that somebody else wants to add
-> > > > a new caller of pwm_apply_state() and in retrospect we should've
-> > > > probably done this from the start, at least as a transitional measure
-> > > > for one or two cycles.
-> > > >   
-> > > 
-> > > Hi Lee and Thierry,
-> > > 
-> > > I know that we're still on New Year vibes, so some things are not up to full
-> > > steam for now; but since we're close to v6.7 release and v6.8 merge window,
-> > > hence allow me to ask:
-> > > 
-> > > Stephen Rothwell is still complaining about backlight tree build failure
-> > > due to f7baa9ccef93b, yet it has not been fixed so far. Has the culprit
-> > > been dropped/reverted as he requested? The worst case is the culprit slips
-> > > through and become part of backlight PR and Linus will likely not happy
-> > > with the build regression (maybe he had to fix by himself).  
-> > 
-> > This should be fixed by 9a216587a03df, and on current linux-next I can't 
-> > reproduce the problem any more (x86_64 allmodconfig).
-> 
-> Of course linux-next is fine, because I have fixed it up in there.
-> 
-> Here is the problem:  the backlight tree
-> (git://git.kernel.org/pub/scm/linux/kernel/git/lee/backlight.git#for-backlight-next)
-> is broken when built in its own because of the above patch (which is
-> commit f7baa9ccef93).  In linux-next, I have been merging the previous
-> working version of the backlight tree (with head commit 7d84a63a39b7).
-> The patch (commit f7baa9ccef93) can only be applied to the merge of the
-> backlight tree and the pwm tree
-> (git://git.kernel.org/pub/scm/linux/kernel/git/thierry.reding/linux-pwm.git#for-next)
-> which is merged much later in the linux-next process.  If the backlight
-> tree was merged by Linus before the pwm tree, it would break his build
-> (and he would not be happy).  But the patch on the head of the
-> backlight tree was made unnecessary by commit 9a216587a03d in the pwm
-> tree.  So, please either revert commit f7baa9ccef93 in the backlight
-> tree (or simply to a "git reset --hard HEAD^" there).  The patch of
-> commit f7baa9ccef93 can be applied some time later (after Linus has
-> merged both trees.
+We do have plans to eventually implement such a feature in an
+FPGA-based SPI controller, so if we need to wait until then for the
+binding, then we can do that. But it would be really nice if we could
+find a way forward for the IIO driver in this series without having to
+wait for the resolution of new SPI controller feature for the complete
+DT bindings.
 
-Works for me.
-
-It is done!
-
--- 
-Lee Jones [李琼斯]
+DT/IIO maintainers, if I resubmit this series with the
+`spi-rx-bus-channels` parts removed from the iio/adc/adi,ad7380.yaml
+bindings, would that be acceptable? (Also resubmitting without this
+patch of course.)
 
