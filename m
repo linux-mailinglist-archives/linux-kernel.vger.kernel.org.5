@@ -1,251 +1,153 @@
-Return-Path: <linux-kernel+bounces-20016-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20017-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E6C5827843
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 20:15:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF566827847
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 20:16:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 937FF284312
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 19:14:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 638571F23C26
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 19:16:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2987254FB2;
-	Mon,  8 Jan 2024 19:14:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E229454FB3;
+	Mon,  8 Jan 2024 19:16:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EqtF3I10"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="HxR0w1Nu"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C13CA54F8D;
-	Mon,  8 Jan 2024 19:14:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2cce6c719caso23626391fa.2;
-        Mon, 08 Jan 2024 11:14:44 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19A2554F91
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 19:16:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--rdbabiera.bounces.google.com
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dbe9ef2422cso1902239276.0
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 11:16:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704741283; x=1705346083; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XNaXoD9prw+TMf7vR3/H5SQrElCx5I5cZfXaOBoOuIs=;
-        b=EqtF3I101xaku751kQycUYruR8v0SRrCFfosA8eip8M2iQ+KuA1zLTt0yocgIIinBt
-         whXMLaKDL1SQI7Mbc3T3MZweR/a7q43/iQ7rE/yefImQrSYPuQXO3uJRkeXi2k8/U9iO
-         kDMP4YqutovCMn8+E794uHBxN8cPkXdN5kCsmrMfufy01kEe84MyVUhbZeBZO2V8TIui
-         XlF19wVE5gocvAmVBLrbs2A9BkjkBaIURL1axSClRGHI+RdI82KXpESWdCVDcpa09twC
-         wKYbnrf2nCZXG3/ymToxYnmXAORGbkabW4Rg9L9a7x2wH6DZDMdnIA8+w0l2ULm8lWed
-         HzAg==
+        d=google.com; s=20230601; t=1704741390; x=1705346190; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=2bGe+uuOkBgrwm/2cptBzkQ5d6/QuIv5dqSJD9o8kNM=;
+        b=HxR0w1NutpaRr0hdvjfOlazRtz3YbRVi++Nocw03BUulcUOHObHNGIAqrYLmw5aXSN
+         QI1awL1PvOwuQK5PcljBr8EggVZByBv6bFLkCjt9klU7TsjVAeu3Ly3aH4tTdVvxeIib
+         057uUI9Y0zkOqw1oZgq6sbI58G8+/0vGAaAeQsr+T50XLGgkjbK3G5ceWYUtaLt0n3vb
+         ZmdjiZsfWXHY7qz8Il4AezJo5UF/Enpw7SKhUViOac6R8zmjv7WPiMpEQ42yIuYK8S4Q
+         pzQfdz5HYaH+4Pzr9FdbqDnpCx9dtPWNZtkBK/mkR88FGR3kQ/902YiVangZJRATXe1B
+         KJSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704741283; x=1705346083;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XNaXoD9prw+TMf7vR3/H5SQrElCx5I5cZfXaOBoOuIs=;
-        b=KVJVCHSUGEulXQrqwGoVVcRQtN7raf8RGxDV8tIGizGfSo1rc6qpT2a42durU++Y8B
-         RtcCRfS7F1HbEzPwR0n+jxfJrzNSLJmU4QC+a7Xmg6mANW+28r5UB8BLg3tIUcjjNQr5
-         yEpIHIG5CMkAHPBYmYLXHkq1+LUWEXbXK1iMIoaqKCZxM3D02nIUtvTkQbeCkg7vXbfw
-         mkFOUSUqsVo+aIsXkcR2qwcYOrCLvYJLjFB9r97u9BBXh4tk/059ITN41K3mxDjWUpAa
-         3QGX/T+Dui2mj67LZ1pikJB8FTrLFr+CwZRQLd/NQW2+j9FVWEEI5NhqtoF/78Jpm+s/
-         wKKA==
-X-Gm-Message-State: AOJu0YwcFA06w6OJFjeSDz5j6TUhW1ocv2Jux/D7f1nQI2WZERY7+5vW
-	zoici1382/89cgtp8Yei+pNWZPR0PI2NcKkDFiQ=
-X-Google-Smtp-Source: AGHT+IFPGxJimeRpzJMd95o6QI8rggtAvEJYoUJJgYP/Mw1L/pgo4qp5I8El6GOtn2hJoGU8wIaydZdRmuDOrEWS49c=
-X-Received: by 2002:a2e:b17c:0:b0:2cc:3f55:a4c1 with SMTP id
- a28-20020a2eb17c000000b002cc3f55a4c1mr1852426ljm.100.1704741282404; Mon, 08
- Jan 2024 11:14:42 -0800 (PST)
+        d=1e100.net; s=20230601; t=1704741390; x=1705346190;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=2bGe+uuOkBgrwm/2cptBzkQ5d6/QuIv5dqSJD9o8kNM=;
+        b=TPakXUYtHoGtt/gn8WtdcejOQrhOSLDtcjAMbgicRZa/4mriKLzl6Da7zvihZtpMtU
+         RJFJcF7baslgKfLlbmePYVIHHF0UC8gYI4ooM8KLCvodEz1+Ou8kASlQzcyHoR6TwuC8
+         cboOtIWuWtOO19Ur/UR8TQyF2D+YBAaynMMoSnAEXsYPgs1Sb80NpgOZ348H4ikO7OFF
+         v6wMzubrByV/v4uJSSEtyjR/4WE4+eETDwVMiKnfEO2wE0Jq+NlgtEAM1lfPiiq2tu59
+         zMfGuaOIg7mmJJMxnzMF1wMPVKac1ZMm9BXUM5GNj6G4gjT3oy8rw7DbwW4BEg0FWHI5
+         XNVw==
+X-Gm-Message-State: AOJu0YyCNKuon1esFZFAYQEMW3qiozdvB3slzBcv6COOX/rhQzlG7DIA
+	3Vt0juAqzxhav7lJ0yz+E7hL3hZKYxmW96Nd87zm5w==
+X-Google-Smtp-Source: AGHT+IHEHIq7dJJQu3e5Jy/+3w2noU5XNby30WDoYeYOHWWd4KG5y6Jppq/B04cpnM82XM1DlEwNoiXo/NzQmHo=
+X-Received: from rdbabiera.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:18a8])
+ (user=rdbabiera job=sendgmr) by 2002:a25:8388:0:b0:dbd:7149:a389 with SMTP id
+ t8-20020a258388000000b00dbd7149a389mr142790ybk.11.1704741390212; Mon, 08 Jan
+ 2024 11:16:30 -0800 (PST)
+Date: Mon,  8 Jan 2024 19:16:13 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240108183938.468426-1-verdre@v0yd.nl> <20240108183938.468426-5-verdre@v0yd.nl>
- <5d1f2013-5758-4d6c-8d01-e96a76bb2686@v0yd.nl> <40550fc1-3b5b-438c-891d-2da0f30874f3@v0yd.nl>
-In-Reply-To: <40550fc1-3b5b-438c-891d-2da0f30874f3@v0yd.nl>
-From: Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-Date: Mon, 8 Jan 2024 14:14:29 -0500
-Message-ID: <CABBYNZKV8SujJ7GFUqTMXUskE=yK0q=opmwvTZNEpPb=JkiQbA@mail.gmail.com>
-Subject: Re: [PATCH v2 4/4] Bluetooth: Remove pending ACL connection attempts
-To: =?UTF-8?Q?Jonas_Dre=C3=9Fler?= <verdre@v0yd.nl>
-Cc: Marcel Holtmann <marcel@holtmann.org>, Johan Hedberg <johan.hedberg@gmail.com>, 
-	linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	netdev@vger.kernel.org
+Mime-Version: 1.0
+X-Developer-Key: i=rdbabiera@google.com; a=openpgp; fpr=639A331F1A21D691815CE090416E17CA2BBBD5C8
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3559; i=rdbabiera@google.com;
+ h=from:subject; bh=T6W1b6xfgTVUjTcJ8N2zILYWmciZGv0IRjajoRxiXJo=;
+ b=owGbwMvMwCFW0bfok0KS4TbG02pJDKlzvFj6zSK8A8RUDrmeZHWe0vR4cZb9mbPs8RwR5o8VX
+ y+VPNHdUcrCIMbBICumyKLrn2dw40rqljmcNcYwc1iZQIYwcHEKwESUuhkZ5jTnep8X2bxoeb70
+ XqtpaUcLtDif8/06GbZufUVcpaS5AyND06yfvoX9PJfNd7GoeR+3fX43ocCA/9v9b2/38PM9Pqr JBQA=
+X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
+Message-ID: <20240108191620.987785-14-rdbabiera@google.com>
+Subject: [PATCH v3 00/12] usb: typec: add SOP' support to the tcpm and alt
+ mode drivers
+From: RD Babiera <rdbabiera@google.com>
+To: rdbabiera@google.com, heikki.krogerus@linux.intel.com, linux@roeck-us.net, 
+	gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, 
+	linux-usb@vger.kernel.org
+Cc: badhri@google.com, bryan.odonoghue@linaro.org, agross@kernel.org, 
+	andersson@kernel.org, konrad.dybcio@linaro.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-Hi Jonas,
+Extend the TCPM's functionality to include support for SOP' messages.
+This feature is opt-in: TCPCI chip drivers opt into sending and receiving
+SOP' messages. TCPCI drivers will also be expected to take the SOP frame
+type in order to process SOP' messages within the TCPM. Specifically,
+the exisiting API tcpm_pd_receive now takes tcpm_transmit_type as input.
+The Maxim TCPCI implements this in Patch 4.
 
-On Mon, Jan 8, 2024 at 1:55=E2=80=AFPM Jonas Dre=C3=9Fler <verdre@v0yd.nl> =
-wrote:
->
-> On 1/8/24 19:44, Jonas Dre=C3=9Fler wrote:
-> > On 1/8/24 19:39, Jonas Dre=C3=9Fler wrote:
-> >> With the last commit we moved to using the hci_sync queue for "Create
-> >> Connection" requests, removing the need for retrying the paging after
-> >> finished/failed "Create Connection" requests and after the end of
-> >> inquiries.
-> >>
-> >> hci_conn_check_pending() was used to trigger this retry, we can remove=
- it
-> >> now.
-> >>
-> >> Note that we can also remove the special handling for COMMAND_DISALLOW=
-ED
-> >> errors in the completion handler of "Create Connection", because "Crea=
-te
-> >> Connection" requests are now always serialized.
-> >>
-> >> This is somewhat reverting commit 4c67bc74f016 ("[Bluetooth] Support
-> >> concurrent connect requests").
-> >>
-> >> With this, the BT_CONNECT2 state of ACL hci_conn objects should now be
-> >> back to meaning only one thing: That we received a connection request
-> >> from another device (see hci_conn_request_evt), but the actual connect
-> >> should be deferred.
-> >> ---
-> >>   include/net/bluetooth/hci_core.h |  1 -
-> >>   net/bluetooth/hci_conn.c         | 16 ----------------
-> >>   net/bluetooth/hci_event.c        | 21 ++++-----------------
-> >>   3 files changed, 4 insertions(+), 34 deletions(-)
-> >>
-> >> diff --git a/include/net/bluetooth/hci_core.h
-> >> b/include/net/bluetooth/hci_core.h
-> >> index 2c30834c1..d7483958d 100644
-> >> --- a/include/net/bluetooth/hci_core.h
-> >> +++ b/include/net/bluetooth/hci_core.h
-> >> @@ -1330,7 +1330,6 @@ struct hci_conn *hci_conn_add(struct hci_dev
-> >> *hdev, int type, bdaddr_t *dst,
-> >>                     u8 role);
-> >>   void hci_conn_del(struct hci_conn *conn);
-> >>   void hci_conn_hash_flush(struct hci_dev *hdev);
-> >> -void hci_conn_check_pending(struct hci_dev *hdev);
-> >>   struct hci_chan *hci_chan_create(struct hci_conn *conn);
-> >>   void hci_chan_del(struct hci_chan *chan);
-> >> diff --git a/net/bluetooth/hci_conn.c b/net/bluetooth/hci_conn.c
-> >> index 541d55301..22033057b 100644
-> >> --- a/net/bluetooth/hci_conn.c
-> >> +++ b/net/bluetooth/hci_conn.c
-> >> @@ -2534,22 +2534,6 @@ void hci_conn_hash_flush(struct hci_dev *hdev)
-> >>       }
-> >>   }
-> >> -/* Check pending connect attempts */
-> >> -void hci_conn_check_pending(struct hci_dev *hdev)
-> >> -{
-> >> -    struct hci_conn *conn;
-> >> -
-> >> -    BT_DBG("hdev %s", hdev->name);
-> >> -
-> >> -    hci_dev_lock(hdev);
-> >> -
-> >> -    conn =3D hci_conn_hash_lookup_state(hdev, ACL_LINK, BT_CONNECT2);
-> >> -    if (conn)
-> >> -        hci_cmd_sync_queue(hdev, hci_acl_create_connection_sync,
-> >> conn, NULL);
-> >> -
-> >> -    hci_dev_unlock(hdev);
-> >> -}
-> >> -
-> >>   static u32 get_link_mode(struct hci_conn *conn)
-> >>   {
-> >>       u32 link_mode =3D 0;
-> >> diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
-> >> index e8b4a0126..91973d6d1 100644
-> >> --- a/net/bluetooth/hci_event.c
-> >> +++ b/net/bluetooth/hci_event.c
-> >> @@ -117,8 +117,6 @@ static u8 hci_cc_inquiry_cancel(struct hci_dev
-> >> *hdev, void *data,
-> >>           hci_discovery_set_state(hdev, DISCOVERY_STOPPED);
-> >>       hci_dev_unlock(hdev);
-> >> -    hci_conn_check_pending(hdev);
-> >> -
-> >>       return rp->status;
-> >>   }
-> >> @@ -149,8 +147,6 @@ static u8 hci_cc_exit_periodic_inq(struct hci_dev
-> >> *hdev, void *data,
-> >>       hci_dev_clear_flag(hdev, HCI_PERIODIC_INQ);
-> >> -    hci_conn_check_pending(hdev);
-> >> -
-> >>       return rp->status;
-> >>   }
-> >> @@ -2296,10 +2292,8 @@ static void hci_cs_inquiry(struct hci_dev
-> >> *hdev, __u8 status)
-> >>   {
-> >>       bt_dev_dbg(hdev, "status 0x%2.2x", status);
-> >> -    if (status) {
-> >> -        hci_conn_check_pending(hdev);
-> >> +    if (status)
-> >>           return;
-> >> -    }
-> >>       set_bit(HCI_INQUIRY, &hdev->flags);
-> >>   }
-> >> @@ -2323,12 +2317,9 @@ static void hci_cs_create_conn(struct hci_dev
-> >> *hdev, __u8 status)
-> >>       if (status) {
-> >>           if (conn && conn->state =3D=3D BT_CONNECT) {
-> >> -            if (status !=3D HCI_ERROR_COMMAND_DISALLOWED ||
-> >> conn->attempt > 2) {
-> >> -                conn->state =3D BT_CLOSED;
-> >> -                hci_connect_cfm(conn, status);
-> >> -                hci_conn_del(conn);
-> >> -            } else
-> >> -                conn->state =3D BT_CONNECT2;
-> >> +            conn->state =3D BT_CLOSED;
-> >> +            hci_connect_cfm(conn, status);
-> >> +            hci_conn_del(conn);
-> >>           }
-> >>       } else {
-> >>           if (!conn) {
-> >> @@ -3020,8 +3011,6 @@ static void hci_inquiry_complete_evt(struct
-> >> hci_dev *hdev, void *data,
-> >>       bt_dev_dbg(hdev, "status 0x%2.2x", ev->status);
-> >> -    hci_conn_check_pending(hdev);
-> >> -
-> >>       if (!test_and_clear_bit(HCI_INQUIRY, &hdev->flags))
-> >>           return;
-> >> @@ -3247,8 +3236,6 @@ static void hci_conn_complete_evt(struct hci_dev
-> >> *hdev, void *data,
-> >>   unlock:
-> >>       hci_dev_unlock(hdev);
-> >> -
-> >> -    hci_conn_check_pending(hdev);
-> >>   }
-> >>   static void hci_reject_conn(struct hci_dev *hdev, bdaddr_t *bdaddr)
-> >
-> > Please take a special look at this one: I'm not sure if I'm breaking th=
-e
-> > functionality of deferred connecting using BT_CONNECT2 in
-> > hci_conn_request_evt() here, as I don't see anywhere where we check for
-> > this state and establish a connection later.
-> >
-> > It seems that this is how hci_conn_request_evt() was initially written
-> > though, hci_conn_check_pending() only got introduced later and seems
-> > unrelated.
->
-> Ahh nevermind... The check for BT_CONNECT2 on "Conn Complete event" got
-> introduced with 4c67bc74f01 ([Bluetooth] Support concurrent connect
-> requests). And later the deferred connection setup on "Conn Request
-> event" got introduced with 20714bfef8 ("Bluetooth: Implement deferred
-> sco socket setup").
->
-> I assume the latter commit was relying on the "Create Connection"
-> request "Conn Complete event" that got introduced with the former commit
-> then? That would imply that we use BT_CONNECT2 if there's already a
-> "Create Connection" going on when the "Conn Request event" happens, and
-> we must wait for that existing request to finish.. Is that how those
-> deferred connections are supposed to work?
+Discover Identity, Discover SVIDs, Discover Modes, and Alt Mode SVDM
+support are included within the patchset. Because the port is expected to
+be the Vconn source in order to communicate with the cable, TCPCI chip
+drivers opt into performing a Vconn swap after Discover Identity on SOP
+before performing Discover Identity on SOP'.
 
-Well if you are not sure that works we better make sure we have tests
-that cover this, for LE I know for sure it works because we have the
-likes of iso-tester that do connect 2 peers simultaneously, but for
-classic I don't recall having any test that does multiple connections.
+typec_cable_ops are defined to facilitate communication between the alt
+mode drivers and the cable plugs. 2 new apis allow the alt mode drivers
+to enter and exit mode on active cable plugs. A third is used by alt mode
+drivers to send VDMs to the cable plugs or by the TCPM to return the
+resulting VDM from the cable plug to the alt mode drivers.
+---
+Changes since v1:
+* Add typec_cable_ops as replacement for changing typec_altmode_ops
+  interface. Displayport driver patch now reflects this
+* Separate patch for cable SVDM versioning.
+* Separate patch for tcpm_pd_receive() api changes and cable_comm_capable
+  addition to tcpci.
+* Separate patches for Discover SVIDs/Discover Modes and Alt Mode
+  operations on SOP'.
 
-> >
-> > Thanks,
-> > Jonas
+Changes since v2:
+* Style changes, bugfix for lock in displayport.c, bugfix in tcpm.c that
+  restores code deleted by patch.
+
+RD Babiera (12):
+  usb: typec: altmodes: add typec_cable_ops to typec_altmode
+  usb: typec: altmodes: add svdm version info for typec cables
+  usb: typec: tcpci: add cable_comm_capable attribute
+  usb: typec: tcpci: add tcpm_transmit_type to tcpm_pd_receive
+  usb: typec: tcpm: process receive and transmission of sop' messages
+  usb: typec: tcpm: add control message support to sop'
+  usb: typec: tcpci: add attempt_vconn_swap_discovery callback
+  usb: typec: tcpm: add discover identity support for SOP'
+  usb: typec: tcpm: add state machine support for
+    SRC_VDM_IDENTITY_REQUEST
+  usb: typec: tcpm: add discover svids and discover modes support for
+    sop'
+  usb: typec: tcpm: add alt mode enter/exit/vdm support for sop'
+  usb: typec: altmodes/displayport: add SOP' support
+
+ drivers/usb/typec/altmodes/displayport.c      |  162 ++-
+ drivers/usb/typec/bus.c                       |  102 ++
+ drivers/usb/typec/class.c                     |   59 +
+ drivers/usb/typec/class.h                     |    1 +
+ drivers/usb/typec/tcpm/fusb302.c              |    2 +-
+ .../typec/tcpm/qcom/qcom_pmic_typec_pdphy.c   |    2 +-
+ drivers/usb/typec/tcpm/tcpci.c                |   26 +-
+ drivers/usb/typec/tcpm/tcpci_maxim.h          |    1 +
+ drivers/usb/typec/tcpm/tcpci_maxim_core.c     |   38 +-
+ drivers/usb/typec/tcpm/tcpm.c                 | 1030 ++++++++++++++---
+ drivers/usb/typec/tcpm/wcove.c                |    2 +-
+ include/linux/usb/pd.h                        |    1 +
+ include/linux/usb/pd_vdo.h                    |    8 +-
+ include/linux/usb/tcpci.h                     |   13 +
+ include/linux/usb/tcpm.h                      |   16 +-
+ include/linux/usb/typec.h                     |    7 +
+ include/linux/usb/typec_altmode.h             |   30 +
+ 17 files changed, 1337 insertions(+), 163 deletions(-)
 
 
+base-commit: 933bb7b878ddd0f8c094db45551a7daddf806e00
+-- 
+2.43.0.472.g3155946c3a-goog
 
---=20
-Luiz Augusto von Dentz
 
