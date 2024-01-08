@@ -1,37 +1,44 @@
-Return-Path: <linux-kernel+bounces-19755-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19756-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 546E18272DF
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 16:21:10 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9FDA78272E7
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 16:22:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 79B8F1C217AD
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 15:21:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2A3EAB22A5E
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 15:22:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 181FA4C3DC;
-	Mon,  8 Jan 2024 15:20:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98EAB4F893;
+	Mon,  8 Jan 2024 15:22:37 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC8015103A;
-	Mon,  8 Jan 2024 15:20:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B1797C43391;
-	Mon,  8 Jan 2024 15:20:19 +0000 (UTC)
-Date: Mon, 8 Jan 2024 10:21:15 -0500
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 361C44C3AD;
+	Mon,  8 Jan 2024 15:22:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BFEB3C433C8;
+	Mon,  8 Jan 2024 15:22:35 +0000 (UTC)
+Date: Mon, 8 Jan 2024 10:23:31 -0500
 From: Steven Rostedt <rostedt@goodmis.org>
-To: Andy Shevchenko <andy.shevchenko@gmail.com>
+To: Christian Brauner <brauner@kernel.org>
 Cc: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
  <linux-trace-kernel@vger.kernel.org>, Masami Hiramatsu
  <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Andy Shevchenko <andy@kernel.org>, Tom Zanussi <zanussi@kernel.org>
-Subject: Re: [PATCH] tracing histograms: Simplify parse_actions() function
-Message-ID: <20240108102115.43464fd6@gandalf.local.home>
-In-Reply-To: <CAHp75VcsV8t2-6GB24Rz003B2JSAEOBjWD7B7FjEXuCQhkJ5pQ@mail.gmail.com>
-References: <20240107203258.37e26d2b@gandalf.local.home>
-	<CAHp75VcsV8t2-6GB24Rz003B2JSAEOBjWD7B7FjEXuCQhkJ5pQ@mail.gmail.com>
+ Linus Torvalds <torvalds@linux-foundation.org>, Al Viro
+ <viro@zeniv.linux.org.uk>, linux-fsdevel@vger.kernel.org, Greg
+ Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH] tracefs/eventfs: Use root and instance inodes as
+ default ownership
+Message-ID: <20240108102331.7de98cab@gandalf.local.home>
+In-Reply-To: <20240108-ortsrand-ziehen-4e9a9a58e708@brauner>
+References: <20240103203246.115732ec@gandalf.local.home>
+	<20240105-wegstecken-sachkenntnis-6289842d6d01@brauner>
+	<20240105095954.67de63c2@gandalf.local.home>
+	<20240107-getrickst-angeeignet-049cea8cad13@brauner>
+	<20240107132912.71b109d8@rorschach.local.home>
+	<20240108-ortsrand-ziehen-4e9a9a58e708@brauner>
 X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -39,56 +46,39 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Mon, 8 Jan 2024 10:32:14 +0200
-Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+On Mon, 8 Jan 2024 12:04:54 +0100
+Christian Brauner <brauner@kernel.org> wrote:
 
-> On Mon, Jan 8, 2024 at 3:31=E2=80=AFAM Steven Rostedt <rostedt@goodmis.or=
-g> wrote:
-> >
-> > From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
-> >
-> > The parse_actions() function uses 'len =3D str_has_prefix()' to test wh=
-ich
-> > action is in the string being parsed. But then it goes and repeats the
-> > logic for each different action. This logic can be simplified and
-> > duplicate code can be removed as 'len' contains the length of the found
-> > prefix which should be used for all actions. =20
->=20
-> > Link: https://lore.kernel.org/all/20240107112044.6702cb66@gandalf.local=
-.home/
-> >
-> > Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org> =20
->=20
-> If you want Link to be formally a tag, you should drop the following
-> blank line.
+> > > IOW, the inode_permission() in lookup_one_len() that eventfs does is
+> > > redundant and just wrong.  
+> > 
+> > I don't think so.  
+> 
+> I'm very well aware that the dentries and inode aren't created during
+> mkdir but the completely directory layout is determined. You're just
+> splicing in dentries and inodes during lookup and readdir.
+> 
+> If mkdir /sys/kernel/tracing/instances/foo has succeeded and you later
+> do a lookup/readdir on
+> 
+> ls -al /sys/kernel/tracing/instances/foo/events
+> 
+> Why should the creation of the dentries and inodes ever fail due to a
+> permission failure?
 
-The link is for humans not for parsers.
+They shouldn't.
 
->=20
->=20
-> > +               if ((len =3D str_has_prefix(str, "onmatch(")))
-> > +                       hid =3D HANDLER_ONMATCH;
-> > +               else if ((len =3D str_has_prefix(str, "onmax(")))
-> > +                       hid =3D HANDLER_ONMAX;
-> > +               else if ((len =3D str_has_prefix(str, "onchange(")))
-> > +                       hid =3D HANDLER_ONCHANGE; =20
->=20
-> The repeating check for ( might be moved out as well after this like
->=20
->   if (str[len] !=3D '(') {
->     // not sure if you need data to be assigned here as well
->     ret =3D -EINVAL;
->     ...
->   }
->=20
+> The vfs did already verify that you had the required
+> permissions to list entries in that directory. Why should filling up
+> /sys/kernel/tracing/instances/foo/events ever fail then? It shouldn't
+> That tracefs instance would be half-functional. And again, right now
+> that inode_permission() check cannot even fail.
 
-Not sure how that makes it any better. It adds more code. I could start
-with checking the "on" before checking for "match", "max" and "change", but
-that just makes it more complex.
+And it shouldn't. But without dentries and inodes, how does VFS know what
+is allowed to open the files?
 
 -- Steve
-
 
