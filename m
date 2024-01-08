@@ -1,524 +1,107 @@
-Return-Path: <linux-kernel+bounces-20082-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20083-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D275D827911
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 21:18:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BFE9E827913
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 21:18:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B02DFB22FFB
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 20:18:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B44951C230DD
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 20:18:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA53F56B79;
-	Mon,  8 Jan 2024 20:16:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0238555797;
+	Mon,  8 Jan 2024 20:17:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amarulasolutions.com header.i=@amarulasolutions.com header.b="nE91HUQr"
+	dkim=pass (2048-bit key) header.d=posteo.net header.i=@posteo.net header.b="kjT/Q3vS"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout01.posteo.de (mout01.posteo.de [185.67.36.65])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F79E56771
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 20:16:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=amarulasolutions.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amarulasolutions.com
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-55745901085so2749237a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 12:16:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amarulasolutions.com; s=google; t=1704744994; x=1705349794; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+MCPXMEUmBdUjD4WJjEqOzEiZ+XYjKChWW5zBUjkQsc=;
-        b=nE91HUQrRZYXsgKOtGCxMn612tE5YJJxoHu5421YfinzZXP4jztOtAU26Fsq6yRBXv
-         zLHTaRZbVPGZXE5KoZ2917ETQqEplWbQdcc7kDW9ROTBmUyxi/7lZku3JDecs75HytRk
-         KctZNlHjCgDFnnmQ0Ll7enPEpYvVv9qXzuEkU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704744994; x=1705349794;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+MCPXMEUmBdUjD4WJjEqOzEiZ+XYjKChWW5zBUjkQsc=;
-        b=UIhoqxAKgPJEJ4++1YvjsoQ3YhojFJtz6bW8wNq3hlCkJ+drSvrrC2nOyTngM2ukla
-         yspOTep44ZQMvo3Y5e/FngNlqdtozhKIaysyfI0q47DUA0yQcGR2F/NISDvAg5IkjlwT
-         UeTUF8g1TF8I0f85gg4XNrHJ4NRa8TySPe1Bfs15BalcUbbsNtiwQPfqqMe4l1lqgy3D
-         /P1VVoNwH63eP1T2iMympe5+UZwSlqgxBH7zQj/igdyhoUInoEFqo452waCrcpdoUpRd
-         PAbnYk3X9cQP/fD6OKJZlmj5b+OEIwB3WMtqHqhRIvltsEtXi4xol90ir8g83S7UZP5R
-         8B4w==
-X-Gm-Message-State: AOJu0YxLFdrKzJPSydYxnY8752o7kv1j+mCagPsg5LAI1JzXVaoCmPuu
-	cchUVQzNSKRgp7jQmfR4D0E3IjDqh+x3jgdqNKQfILRnseY=
-X-Google-Smtp-Source: AGHT+IEYQCC+Wt+jaP19tu+e6W7Q7gDofZAintw+44O/keDEgTTSCjbr2HaJRdmGhF7IkGArv5BKsQ==
-X-Received: by 2002:a50:d6cd:0:b0:554:35b4:60 with SMTP id l13-20020a50d6cd000000b0055435b40060mr2260762edj.28.1704744994275;
-        Mon, 08 Jan 2024 12:16:34 -0800 (PST)
-Received: from dario-ThinkPad-T14s-Gen-2i.homenet.telecomitalia.it (host-87-2-38-81.retail.telecomitalia.it. [87.2.38.81])
-        by smtp.gmail.com with ESMTPSA id by26-20020a0564021b1a00b00555fd008741sm173699edb.95.2024.01.08.12.16.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Jan 2024 12:16:33 -0800 (PST)
-From: Dario Binacchi <dario.binacchi@amarulasolutions.com>
-To: linux-kernel@vger.kernel.org
-Cc: linux-amarula@amarulasolutions.com,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Dario Binacchi <dario.binacchi@amarulasolutions.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	David Airlie <airlied@gmail.com>,
-	Jessica Zhang <quic_jesszhan@quicinc.com>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Sam Ravnborg <sam@ravnborg.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	dri-devel@lists.freedesktop.org
-Subject: [PATCH v5 8/8] drm/panel: nt35510: support FRIDA FRD400B25025-A-CTK
-Date: Mon,  8 Jan 2024 21:15:53 +0100
-Message-ID: <20240108201618.2798649-9-dario.binacchi@amarulasolutions.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240108201618.2798649-1-dario.binacchi@amarulasolutions.com>
-References: <20240108201618.2798649-1-dario.binacchi@amarulasolutions.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7113B56B9A
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 20:17:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=posteo.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=posteo.net
+Received: from submission (posteo.de [185.67.36.169]) 
+	by mout01.posteo.de (Postfix) with ESMTPS id A01B624002A
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 21:17:12 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
+	t=1704745032; bh=J6kY8gZmU4XB9qAJZUwFxvhBWjXDFb5lmjy/iW0iY7U=;
+	h=MIME-Version:Content-Transfer-Encoding:Date:From:To:Cc:Subject:
+	 Message-ID:From;
+	b=kjT/Q3vS5/zfFzI+O9p4I4PffOSoJwwTC4wsnsJmy0Fl2h9i5zSyjodJ2SV3LKGlL
+	 0DNVJNzbTtcQZZCsIQEguKc+/ZnfHYWMfqiw56cEoaORPx6KRMZZubhxQ7HAL5IYXy
+	 oaWqo8RKLuTXRr/9uzTz5YwDXp9YlRFw7T8Zig4swmXXg/vCv9sKiWahXnHutPKbr8
+	 Mve2iqdvRB96kI08DYGsMiOyr3nodm7vwPAQM1m/A2lyzqw31AAc7YD01PDdisNuuV
+	 L1veOG34nIZjUcfWw3MywQ7brnO2Tdc2vIz2teKWacEDTIxMTOphu3kTv1g1B8/zrj
+	 BIsVkhMVdsnLQ==
+Received: from customer (localhost [127.0.0.1])
+	by submission (posteo.de) with ESMTPSA id 4T852H5wMmz6tsg;
+	Mon,  8 Jan 2024 21:17:11 +0100 (CET)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date: Mon, 08 Jan 2024 20:17:11 +0000
+From: Yueh-Shun Li <shamrocklee@posteo.net>
+To: Jonathan Corbet <corbet@lwn.net>, Randy Dunlap <rdunlap@infradead.org>,
+ Hu Haowen <src.res.211@gmail.com>, Alex Shi <alexs@kernel.org>, Yanteng Si
+ <siyanteng@loongson.cn>
+Cc: workflows@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/3] coding-style: recommend reusing macros from
+ split headers instead of kernel.h
+In-Reply-To: <20240108193737.189282-1-shamrocklee@posteo.net>
+References: <107b6b5e-ca14-4b2b-ba2e-38ecd74c0ad3@infradead.org>
+ <20240108193737.189282-1-shamrocklee@posteo.net>
+Message-ID: <176e5fad73a871e5f40d4ffafc5041a0@posteo.net>
 
-The initialization commands are taken from the STMicroelectronics driver
-found at [1].
-To ensure backward compatibility, flags have been added to enable gamma
-correction setting and display control. In other cases, registers have
-been set to their default values according to the specifications found
-in the datasheet.
+On 2024-01-09 03:37, Yueh-Shun Li wrote:
+> Dear Maintainers,
+> 
+> In this version of patch series, I drop the patch abouth the nameing
+> conflicts caused by locally-defined macro variants to streamline the
+> documentation.[1]
+> 
+> This series of patches targets the "Linux kernel coding style"
+> documentation and recommend reusing macros inside the include/linux
+> directory instead of the obsolete header "include/linux/kernel.h".
+> 
+> This addresses the issue 'Irrelevant documentation recommending the use
+> of "include/linux/kernel.h"'[2][3] and help deprecating "kernel.h".
+> 
+> This series contains the update to the zh_TW and zh_CN translation of
+> the corresponding documentation changes.
+> 
+> Best regards,
+> 
+> Shamrock
+> 
+> [1]: https://lore.kernel.org/linux-doc/87ederwuid.fsf@meer.lwn.net/
+> [2]:
+> https://lore.kernel.org/linux-doc/bc63acd7ef43bdd8d9609fa48dbf92f9@posteo.net/
+> [3]:
+> https://lore.kernel.org/linux-doc/107b6b5e-ca14-4b2b-ba2e-38ecd74c0ad3@infradead.org/
+> 
+> Yueh-Shun Li (3):
+>   coding-style: recommend split headers instead of kernel.h
+>   doc/zh_TW: coding-style: update content for section 18
+>   doc/zh_CN: coding-style: update content of section 18
+> 
+>  Documentation/process/coding-style.rst        | 24 ++++++++++---------
+>  .../zh_CN/process/coding-style.rst            | 22 ++++++++---------
+>  .../zh_TW/process/coding-style.rst            | 22 ++++++++---------
+>  3 files changed, 35 insertions(+), 33 deletions(-)
 
-[1] https://github.com/STMicroelectronics/STM32CubeF7/blob/master/Drivers/BSP/Components/nt35510/
-Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
+This series of patches didn't make it to the lists due to my loose ends.
+Sorry for the noise.
 
----
+Sincerely,
 
-Changes in v5:
-- Replace GPIOD_ASIS with GPIOD_OUT_HIGH in the call to devm_gpiod_get_optional().
-
-Changes in v2:
-- Re-write the patch [8/8] "drm/panel: nt35510: support FRIDA FRD400B25025-A-CTK"
-  in the same style as the original driver.
-
- drivers/gpu/drm/panel/panel-novatek-nt35510.c | 284 ++++++++++++++++--
- 1 file changed, 252 insertions(+), 32 deletions(-)
-
-diff --git a/drivers/gpu/drm/panel/panel-novatek-nt35510.c b/drivers/gpu/drm/panel/panel-novatek-nt35510.c
-index fc16cf3a6d9d..7c634579634d 100644
---- a/drivers/gpu/drm/panel/panel-novatek-nt35510.c
-+++ b/drivers/gpu/drm/panel/panel-novatek-nt35510.c
-@@ -36,6 +36,9 @@
- #include <drm/drm_modes.h>
- #include <drm/drm_panel.h>
- 
-+#define NT35510_CMD_CORRECT_GAMMA BIT(0)
-+#define NT35510_CMD_CONTROL_DISPLAY BIT(1)
-+
- #define MCS_CMD_MAUCCTR		0xF0 /* Manufacturer command enable */
- #define MCS_CMD_READ_ID1	0xDA
- #define MCS_CMD_READ_ID2	0xDB
-@@ -112,18 +115,33 @@
- /* AVDD and AVEE setting 3 bytes */
- #define NT35510_P1_AVDD_LEN 3
- #define NT35510_P1_AVEE_LEN 3
-+#define NT35510_P1_VCL_LEN 3
- #define NT35510_P1_VGH_LEN 3
- #define NT35510_P1_VGL_LEN 3
- #define NT35510_P1_VGP_LEN 3
- #define NT35510_P1_VGN_LEN 3
-+#define NT35510_P1_VCMOFF_LEN 2
- /* BT1CTR thru BT5CTR setting 3 bytes */
- #define NT35510_P1_BT1CTR_LEN 3
- #define NT35510_P1_BT2CTR_LEN 3
-+#define NT35510_P1_BT3CTR_LEN 3
- #define NT35510_P1_BT4CTR_LEN 3
- #define NT35510_P1_BT5CTR_LEN 3
- /* 52 gamma parameters times two per color: positive and negative */
- #define NT35510_P1_GAMMA_LEN 52
- 
-+#define NT35510_WRCTRLD_BCTRL BIT(5)
-+#define NT35510_WRCTRLD_A BIT(4)
-+#define NT35510_WRCTRLD_DD BIT(3)
-+#define NT35510_WRCTRLD_BL BIT(2)
-+#define NT35510_WRCTRLD_DB BIT(1)
-+#define NT35510_WRCTRLD_G BIT(0)
-+
-+#define NT35510_WRCABC_OFF 0
-+#define NT35510_WRCABC_UI_MODE 1
-+#define NT35510_WRCABC_STILL_MODE 2
-+#define NT35510_WRCABC_MOVING_MODE 3
-+
- /**
-  * struct nt35510_config - the display-specific NT35510 configuration
-  *
-@@ -175,6 +193,10 @@ struct nt35510_config {
- 	 * @mode_flags: DSI operation mode related flags
- 	 */
- 	unsigned long mode_flags;
-+	/**
-+	 * @cmds: enable DSI commands
-+	 */
-+	u32 cmds;
- 	/**
- 	 * @avdd: setting for AVDD ranging from 0x00 = 6.5V to 0x14 = 4.5V
- 	 * in 0.1V steps the default is 0x05 which means 6.0V
-@@ -224,6 +246,25 @@ struct nt35510_config {
- 	 * The defaults are 4 and 3 yielding 0x34
- 	 */
- 	u8 bt2ctr[NT35510_P1_BT2CTR_LEN];
-+	/**
-+	 * @vcl: setting for VCL ranging from 0x00 = -2.5V to 0x11 = -4.0V
-+	 * in 1V steps, the default is 0x00 which means -2.5V
-+	 */
-+	u8 vcl[NT35510_P1_VCL_LEN];
-+	/**
-+	 * @bt3ctr: setting for boost power control for the VCL step-up
-+	 * circuit (3)
-+	 * bits 0..2 in the lower nibble controls CLCK, the booster clock
-+	 * frequency, the values are the same as for PCK in @bt1ctr.
-+	 * bits 4..5 in the upper nibble controls BTCL, the boosting
-+	 * amplification for the step-up circuit.
-+	 * 0 = Disable
-+	 * 1 = -0.5 x VDDB
-+	 * 2 = -1 x VDDB
-+	 * 3 = -2 x VDDB
-+	 * The defaults are 4 and 2 yielding 0x24
-+	 */
-+	u8 bt3ctr[NT35510_P1_BT3CTR_LEN];
- 	/**
- 	 * @vgh: setting for VGH ranging from 0x00 = 7.0V to 0x0B = 18.0V
- 	 * in 1V steps, the default is 0x08 which means 15V
-@@ -277,6 +318,19 @@ struct nt35510_config {
- 	 * same layout of bytes as @vgp.
- 	 */
- 	u8 vgn[NT35510_P1_VGN_LEN];
-+	/**
-+	 * @vcmoff: setting the DC VCOM offset voltage
-+	 * The first byte contains bit 8 of VCM in bit 0 and VCMOFFSEL in bit 4.
-+	 * The second byte contains bits 0..7 of VCM.
-+	 * VCMOFFSEL the common voltage offset mode.
-+	 * VCMOFFSEL 0x00 = VCOM .. 0x01 Gamma.
-+	 * The default is 0x00.
-+	 * VCM the VCOM output voltage (VCMOFFSEL = 0) or the internal register
-+	 * offset for gamma voltage (VCMOFFSEL = 1).
-+	 * VCM 0x00 = 0V/0 .. 0x118 = 3.5V/280 in steps of 12.5mV/1step
-+	 * The default is 0x00 = 0V/0.
-+	 */
-+	u8 vcmoff[NT35510_P1_VCMOFF_LEN];
- 	/**
- 	 * @dopctr: setting optional control for display
- 	 * ERR bits 0..1 in the first byte is the ERR pin output signal setting.
-@@ -441,6 +495,43 @@ struct nt35510_config {
- 	 * @gamma_corr_neg_b: Blue gamma correction parameters, negative
- 	 */
- 	u8 gamma_corr_neg_b[NT35510_P1_GAMMA_LEN];
-+	/**
-+	 * @wrdisbv: write display brightness
-+	 * 0x00 value means the lowest brightness and 0xff value means
-+	 * the highest brightness.
-+	 * The default is 0x00.
-+	 */
-+	u8 wrdisbv;
-+	/**
-+	 * @wrctrld: write control display
-+	 * G bit 0 selects gamma curve: 0 = Manual, 1 = Automatic
-+	 * DB bit 1 selects display brightness: 0 = Manual, 1 = Automatic
-+	 * BL bit 2 controls backlight control: 0 = Off, 1 = On
-+	 * DD bit 3 controls display dimming: 0 = Off, 1 = On
-+	 * A bit 4 controls LABC block: 0 = Off, 1 = On
-+	 * BCTRL bit 5 controls brightness block: 0 = Off, 1 = On
-+	 */
-+	u8 wrctrld;
-+	/**
-+	 * @wrcabc: write content adaptive brightness control
-+	 * There is possible to use 4 different modes for content adaptive
-+	 * image functionality:
-+	 * 0: Off
-+	 * 1: User Interface Image (UI-Mode)
-+	 * 2: Still Picture Image (Still-Mode)
-+	 * 3: Moving Picture Image (Moving-Mode)
-+	 * The default is 0
-+	 */
-+	u8 wrcabc;
-+	/**
-+	 * @wrcabcmb: write CABC minimum brightness
-+	 * Set the minimum brightness value of the display for CABC
-+	 * function.
-+	 * 0x00 value means the lowest brightness for CABC and 0xff
-+	 * value means the highest brightness for CABC.
-+	 * The default is 0x00.
-+	 */
-+	u8 wrcabcmb;
- };
- 
- /**
-@@ -584,6 +675,16 @@ static int nt35510_setup_power(struct nt35510 *nt)
- 				nt->conf->bt2ctr);
- 	if (ret)
- 		return ret;
-+	ret = nt35510_send_long(nt, dsi, NT35510_P1_SETVCL,
-+				NT35510_P1_VCL_LEN,
-+				nt->conf->vcl);
-+	if (ret)
-+		return ret;
-+	ret = nt35510_send_long(nt, dsi, NT35510_P1_BT3CTR,
-+				NT35510_P1_BT3CTR_LEN,
-+				nt->conf->bt3ctr);
-+	if (ret)
-+		return ret;
- 	ret = nt35510_send_long(nt, dsi, NT35510_P1_SETVGH,
- 				NT35510_P1_VGH_LEN,
- 				nt->conf->vgh);
-@@ -620,6 +721,12 @@ static int nt35510_setup_power(struct nt35510 *nt)
- 	if (ret)
- 		return ret;
- 
-+	ret = nt35510_send_long(nt, dsi, NT35510_P1_SETVCMOFF,
-+				NT35510_P1_VCMOFF_LEN,
-+				nt->conf->vcmoff);
-+	if (ret)
-+		return ret;
-+
- 	/* Typically 10 ms */
- 	usleep_range(10000, 20000);
- 
-@@ -799,36 +906,38 @@ static int nt35510_power_on(struct nt35510 *nt)
- 	if (ret)
- 		return ret;
- 
--	ret = nt35510_send_long(nt, dsi, NT35510_P1_SET_GAMMA_RED_POS,
--				NT35510_P1_GAMMA_LEN,
--				nt->conf->gamma_corr_pos_r);
--	if (ret)
--		return ret;
--	ret = nt35510_send_long(nt, dsi, NT35510_P1_SET_GAMMA_GREEN_POS,
--				NT35510_P1_GAMMA_LEN,
--				nt->conf->gamma_corr_pos_g);
--	if (ret)
--		return ret;
--	ret = nt35510_send_long(nt, dsi, NT35510_P1_SET_GAMMA_BLUE_POS,
--				NT35510_P1_GAMMA_LEN,
--				nt->conf->gamma_corr_pos_b);
--	if (ret)
--		return ret;
--	ret = nt35510_send_long(nt, dsi, NT35510_P1_SET_GAMMA_RED_NEG,
--				NT35510_P1_GAMMA_LEN,
--				nt->conf->gamma_corr_neg_r);
--	if (ret)
--		return ret;
--	ret = nt35510_send_long(nt, dsi, NT35510_P1_SET_GAMMA_GREEN_NEG,
--				NT35510_P1_GAMMA_LEN,
--				nt->conf->gamma_corr_neg_g);
--	if (ret)
--		return ret;
--	ret = nt35510_send_long(nt, dsi, NT35510_P1_SET_GAMMA_BLUE_NEG,
--				NT35510_P1_GAMMA_LEN,
--				nt->conf->gamma_corr_neg_b);
--	if (ret)
--		return ret;
-+	if (nt->conf->cmds & NT35510_CMD_CORRECT_GAMMA) {
-+		ret = nt35510_send_long(nt, dsi, NT35510_P1_SET_GAMMA_RED_POS,
-+					NT35510_P1_GAMMA_LEN,
-+					nt->conf->gamma_corr_pos_r);
-+		if (ret)
-+			return ret;
-+		ret = nt35510_send_long(nt, dsi, NT35510_P1_SET_GAMMA_GREEN_POS,
-+					NT35510_P1_GAMMA_LEN,
-+					nt->conf->gamma_corr_pos_g);
-+		if (ret)
-+			return ret;
-+		ret = nt35510_send_long(nt, dsi, NT35510_P1_SET_GAMMA_BLUE_POS,
-+					NT35510_P1_GAMMA_LEN,
-+					nt->conf->gamma_corr_pos_b);
-+		if (ret)
-+			return ret;
-+		ret = nt35510_send_long(nt, dsi, NT35510_P1_SET_GAMMA_RED_NEG,
-+					NT35510_P1_GAMMA_LEN,
-+					nt->conf->gamma_corr_neg_r);
-+		if (ret)
-+			return ret;
-+		ret = nt35510_send_long(nt, dsi, NT35510_P1_SET_GAMMA_GREEN_NEG,
-+					NT35510_P1_GAMMA_LEN,
-+					nt->conf->gamma_corr_neg_g);
-+		if (ret)
-+			return ret;
-+		ret = nt35510_send_long(nt, dsi, NT35510_P1_SET_GAMMA_BLUE_NEG,
-+					NT35510_P1_GAMMA_LEN,
-+					nt->conf->gamma_corr_neg_b);
-+		if (ret)
-+			return ret;
-+	}
- 
- 	/* Set up stuff in  manufacturer control, page 0 */
- 	ret = nt35510_send_long(nt, dsi, MCS_CMD_MAUCCTR,
-@@ -907,6 +1016,26 @@ static int nt35510_prepare(struct drm_panel *panel)
- 	/* Up to 120 ms */
- 	usleep_range(120000, 150000);
- 
-+	if (nt->conf->cmds & NT35510_CMD_CONTROL_DISPLAY) {
-+		ret = mipi_dsi_dcs_write(dsi, MIPI_DCS_WRITE_CONTROL_DISPLAY,
-+					 &nt->conf->wrctrld,
-+					 sizeof(nt->conf->wrctrld));
-+		if (ret < 0)
-+			return ret;
-+
-+		ret = mipi_dsi_dcs_write(dsi, MIPI_DCS_WRITE_POWER_SAVE,
-+					 &nt->conf->wrcabc,
-+					 sizeof(nt->conf->wrcabc));
-+		if (ret < 0)
-+			return ret;
-+
-+		ret = mipi_dsi_dcs_write(dsi, MIPI_DCS_SET_CABC_MIN_BRIGHTNESS,
-+					 &nt->conf->wrcabcmb,
-+					 sizeof(nt->conf->wrcabcmb));
-+		if (ret < 0)
-+			return ret;
-+	}
-+
- 	ret = mipi_dsi_dcs_set_display_on(dsi);
- 	if (ret) {
- 		dev_err(nt->dev, "failed to turn display on (%d)\n", ret);
-@@ -1004,7 +1133,7 @@ static int nt35510_probe(struct mipi_dsi_device *dsi)
- 	if (ret)
- 		return ret;
- 
--	nt->reset_gpio = devm_gpiod_get_optional(dev, "reset", GPIOD_ASIS);
-+	nt->reset_gpio = devm_gpiod_get_optional(dev, "reset", GPIOD_OUT_HIGH);
- 	if (IS_ERR(nt->reset_gpio)) {
- 		dev_err(dev, "error getting RESET GPIO\n");
- 		return PTR_ERR(nt->reset_gpio);
-@@ -1033,7 +1162,10 @@ static int nt35510_probe(struct mipi_dsi_device *dsi)
- 			return PTR_ERR(bl);
- 		}
- 		bl->props.max_brightness = 255;
--		bl->props.brightness = 255;
-+		if (nt->conf->cmds & NT35510_CMD_CONTROL_DISPLAY)
-+			bl->props.brightness = nt->conf->wrdisbv;
-+		else
-+			bl->props.brightness = 255;
- 		bl->props.power = FB_BLANK_POWERDOWN;
- 		nt->panel.backlight = bl;
- 	}
-@@ -1112,6 +1244,7 @@ static const struct nt35510_config nt35510_hydis_hva40wv1 = {
- 		.flags = 0,
- 	},
- 	.mode_flags = MIPI_DSI_CLOCK_NON_CONTINUOUS,
-+	.cmds = NT35510_CMD_CORRECT_GAMMA,
- 	/* 0x09: AVDD = 5.6V */
- 	.avdd = { 0x09, 0x09, 0x09 },
- 	/* 0x34: PCK = Hsync/2, BTP = 2 x VDDB */
-@@ -1120,6 +1253,10 @@ static const struct nt35510_config nt35510_hydis_hva40wv1 = {
- 	.avee = { 0x09, 0x09, 0x09 },
- 	/* 0x24: NCK = Hsync/2, BTN =  -2 x VDDB */
- 	.bt2ctr = { 0x24, 0x24, 0x24 },
-+	/* VBCLA: -2.5V, VBCLB: -2.5V, VBCLC: -2.5V */
-+	.vcl = { 0x00, 0x00, 0x00 },
-+	/* 0x24: CLCK = Hsync/2, BTN =  -1 x VDDB */
-+	.bt3ctr = { 0x24, 0x24, 0x24 },
- 	/* 0x05 = 12V */
- 	.vgh = { 0x05, 0x05, 0x05 },
- 	/* 0x24: NCKA = Hsync/2, VGH = 2 x AVDD - AVEE */
-@@ -1132,6 +1269,8 @@ static const struct nt35510_config nt35510_hydis_hva40wv1 = {
- 	.vgp = { 0x00, 0xA3, 0x00 },
- 	/* VGMP: 0x0A3 = 5.0375V, VGSP = 0V */
- 	.vgn = { 0x00, 0xA3, 0x00 },
-+	/* VCMOFFSEL = VCOM voltage offset mode, VCM = 0V */
-+	.vcmoff = { 0x00, 0x00 },
- 	/* Enable TE, EoTP and RGB pixel format */
- 	.dopctr = { NT35510_DOPCTR_0_DSITE | NT35510_DOPCTR_0_EOTP |
- 		    NT35510_DOPCTR_0_N565, NT35510_DOPCTR_1_CTB },
-@@ -1163,7 +1302,88 @@ static const struct nt35510_config nt35510_hydis_hva40wv1 = {
- 	.gamma_corr_neg_b = { NT35510_GAMMA_NEG_DEFAULT },
- };
- 
-+static const struct nt35510_config nt35510_frida_frd400b25025 = {
-+	.width_mm = 52,
-+	.height_mm = 86,
-+	.mode = {
-+		.clock = 23000,
-+		.hdisplay = 480,
-+		.hsync_start = 480 + 34, /* HFP = 34 */
-+		.hsync_end = 480 + 34 + 2, /* HSync = 2 */
-+		.htotal = 480 + 34 + 2 + 34, /* HBP = 34 */
-+		.vdisplay = 800,
-+		.vsync_start = 800 + 15, /* VFP = 15 */
-+		.vsync_end = 800 + 15 + 12, /* VSync = 12 */
-+		.vtotal = 800 + 15 + 12 + 15, /* VBP = 15 */
-+		.flags = 0,
-+	},
-+	.mode_flags = MIPI_DSI_MODE_VIDEO | MIPI_DSI_MODE_VIDEO_BURST |
-+			MIPI_DSI_MODE_LPM,
-+	.cmds = NT35510_CMD_CONTROL_DISPLAY,
-+	/* 0x03: AVDD = 6.2V */
-+	.avdd = { 0x03, 0x03, 0x03 },
-+	/* 0x46: PCK = 2 x Hsync, BTP = 2.5 x VDDB */
-+	.bt1ctr = { 0x46, 0x46, 0x46 },
-+	/* 0x03: AVEE = -6.2V */
-+	.avee = { 0x03, 0x03, 0x03 },
-+	/* 0x36: PCK = 2 x Hsync, BTP =  2 x VDDB */
-+	.bt2ctr = { 0x36, 0x36, 0x36 },
-+	/* VBCLA: -2.5V, VBCLB: -2.5V, VBCLC: -3.5V */
-+	.vcl = { 0x00, 0x00, 0x02 },
-+	/* 0x26: CLCK = 2 x Hsync, BTN =  -1 x VDDB */
-+	.bt3ctr = { 0x26, 0x26, 0x26 },
-+	/* 0x09 = 16V */
-+	.vgh = { 0x09, 0x09, 0x09 },
-+	/* 0x36: HCK = 2 x Hsync, VGH = 2 x AVDD - AVEE */
-+	.bt4ctr = { 0x36, 0x36, 0x36 },
-+	/* 0x08 = -10V */
-+	.vgl = { 0x08, 0x08, 0x08 },
-+	/* 0x26: LCK = 2 x Hsync, VGL = AVDD + VCL - AVDD */
-+	.bt5ctr = { 0x26, 0x26, 0x26 },
-+	/* VGMP: 0x080 = 4.6V, VGSP = 0V */
-+	.vgp = { 0x00, 0x80, 0x00 },
-+	/* VGMP: 0x080 = 4.6V, VGSP = 0V */
-+	.vgn = { 0x00, 0x80, 0x00 },
-+	/* VCMOFFSEL = VCOM voltage offset mode, VCM = -1V */
-+	.vcmoff = { 0x00, 0x50 },
-+	.dopctr = { NT35510_DOPCTR_0_RAMKP | NT35510_DOPCTR_0_DSITE |
-+		NT35510_DOPCTR_0_DSIG | NT35510_DOPCTR_0_DSIM |
-+		NT35510_DOPCTR_0_EOTP | NT35510_DOPCTR_0_N565, 0 },
-+	.madctl = NT35510_ROTATE_180_SETTING,
-+	/* 0x03: SDT = 1.5 us */
-+	.sdhdtctr = 0x03,
-+	/* EQ control for gate signals, 0x00 = 0 us */
-+	.gseqctr = { 0x00, 0x00 },
-+	/* SDEQCTR: source driver EQ mode 2, 1 us rise time on each step */
-+	.sdeqctr = { 0x01, 0x02, 0x02, 0x02 },
-+	/* SDVPCTR: Normal operation off color during v porch */
-+	.sdvpctr = 0x01,
-+	/* T1: number of pixel clocks on one scanline: 0x184 = 389 clocks */
-+	.t1 = 0x0184,
-+	/* VBP: vertical back porch toward the panel */
-+	.vbp = 0x1C,
-+	/* VFP: vertical front porch toward the panel */
-+	.vfp = 0x1C,
-+	/* PSEL: divide pixel clock 23MHz with 1 (no clock downscaling) */
-+	.psel = 0,
-+	/* DPTMCTR12: 0x03: LVGL = VGLX, overlap mode, swap R->L O->E */
-+	.dpmctr12 = { 0x03, 0x00, 0x00, },
-+	/* write display brightness */
-+	.wrdisbv = 0x7f,
-+	/* write control display */
-+	.wrctrld = NT35510_WRCTRLD_BCTRL | NT35510_WRCTRLD_DD |
-+			NT35510_WRCTRLD_BL,
-+	/* write content adaptive brightness control */
-+	.wrcabc = NT35510_WRCABC_STILL_MODE,
-+	/* write CABC minimum brightness */
-+	.wrcabcmb = 0xff,
-+};
-+
- static const struct of_device_id nt35510_of_match[] = {
-+	{
-+		.compatible = "frida,frd400b25025",
-+		.data = &nt35510_frida_frd400b25025,
-+	},
- 	{
- 		.compatible = "hydis,hva40wv1",
- 		.data = &nt35510_hydis_hva40wv1,
--- 
-2.43.0
-
+Shamrock
 
