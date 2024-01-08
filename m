@@ -1,84 +1,88 @@
-Return-Path: <linux-kernel+bounces-19063-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19064-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34EC1826764
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 04:23:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 65E96826765
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 04:23:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 25F79B211F5
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 03:23:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 35C611C2185C
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 03:23:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 239A711716;
-	Mon,  8 Jan 2024 03:22:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7CCE13AE3;
+	Mon,  8 Jan 2024 03:22:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fastmail.org header.i=@fastmail.org header.b="UjkVLkHE";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="DJIoHkmX"
+	dkim=pass (2048-bit key) header.d=fastmail.org header.i=@fastmail.org header.b="EIP7ciim";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="9ezDmld7"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CA6910799
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 03:22:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4969112B8F
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 03:22:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fastmail.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastmail.org
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-	by mailout.west.internal (Postfix) with ESMTP id DBBD03201200;
-	Sun,  7 Jan 2024 22:22:38 -0500 (EST)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailout.west.internal (Postfix) with ESMTP id 24B6032012AF;
+	Sun,  7 Jan 2024 22:22:46 -0500 (EST)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Sun, 07 Jan 2024 22:22:39 -0500
+  by compute5.internal (MEProxy); Sun, 07 Jan 2024 22:22:46 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.org; h=
 	cc:cc:content-transfer-encoding:content-type:date:date:from:from
-	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
-	:to; s=fm2; t=1704684158; x=1704770558; bh=onmYDi2bgJAbWwtqW9n0m
-	nXFLqOYwMLqr9H57OBtotE=; b=UjkVLkHEIcp+8C8yW+2P/o107DYOuV6263TUD
-	yFZDEl2wUd2g8eZp2Er+7JwdLENyXqKoqs/3b7zLOZ0Bxo4ZI2mumMpYxXi5fCYl
-	NyfnUyAxd7VuM8YL3H4uTX37EF2qg5AuzKZbKY9U5zTSXRlwVlygJXj1RkWYS7K8
-	pchN/NAb1PpMeQt4VoyvfPzLnJgmOiMK0EwPHIcP76xEu0QhqrRjVwSBaaKbNt9E
-	aZuWCS2GWLKyo8C4fLQWrfYZMTRCX/VUhBSQP0Z9sfi2zAttH3boqPWqfLXwcgyC
-	IgQYekK61Aa/n3oy3uQieDHrsdLqV32aHMjs7wKFn/Ox00/aQ==
+	:in-reply-to:in-reply-to:message-id:mime-version:references
+	:reply-to:subject:subject:to:to; s=fm2; t=1704684165; x=
+	1704770565; bh=TQ+vAMCace025Yta24D3XLwxWST60kKGlqxwczS5tME=; b=E
+	IP7ciim4pJE6R8cI1u/J/wZncFKfHm7aXexyhTXHym1K1u7MhRHukNjzy9xrTe+t
+	d/rkg9QKGuGHvcNmDkBdM3mjzggPPWjrLEMcyqhwot5dgus7+RoQztPre5KbE1Mu
+	3PNdcfQSjeVqG0uTPiKOfDm0bGLh/06EPNZyDT0t3DKpc33FyUeDXWlYL+aOsecw
+	KhlQFpNkrTwAJgdncqQa+guuEe0qu+snrupZG5KwBWuNgZ08CvrcTgqPmyHPAB+h
+	CaPYi5VBrCsFeDRyEWJsbnyXx0CpEtMambGf2gZwqMPE8aP2bWZwZ3siaD0/2qgN
+	mjmt1BxXdogh3aThL0/xA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:cc:content-transfer-encoding
 	:content-type:date:date:feedback-id:feedback-id:from:from
-	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1704684158; x=1704770558; bh=onmYDi2bgJAbWwtqW9n0mnXFLqOY
-	wMLqr9H57OBtotE=; b=DJIoHkmX/wkmIkvbmvXJReLJ6anRqGB4AVs0OdVrLKOf
-	gjOy6LTWOnZAaR/M6s346AVm9r1CYgvGg0gCBICiNACeey9ggEQX/pzx5B4r+Gvl
-	Jux7mTpdqxhY7Un1PRl2BbyhnonYeOj/yW1wEU5aP2Ptkc5dxU161Tqiv7IXYgtD
-	k34gx8vHtFSMOVt9Q7N/1TpFUq0nlZ8ukHo3GFC2hlvhhmU5GXgIvTRK39jCN+Q/
-	Acb7tlhkArdK63tSSukmjMzWNqhLnYpQ8BwGcNg63UNOhpjd7WyFiake19ADIMuT
-	Xn+DsGsHA6mttoE70dXl4yCh60Q/OpW4bknt+QAH9A==
-X-ME-Sender: <xms:fmqbZb9cF2QlTbiH7lGvYcx-Lw9bXcSrdUohiYQWy1x3cd1hV4bxhg>
-    <xme:fmqbZXszUAX_FYFRlkqFbqi6FgsDJUQlnNs7erwdYzO7qQptEdOd8ex3oh12kBNTj
-    -QW8Cd8aneLSspoavU>
-X-ME-Received: <xmr:fmqbZZDFKmjSSiiW6i4p7cQQKLv76AQPw99qCyHXJ_tfvBZyUaTpOnfci3TkDke1DDC-ZeihOp8rDn_v5BnfUzcu_iOjGdIa>
+	:in-reply-to:in-reply-to:message-id:mime-version:references
+	:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1704684165; x=
+	1704770565; bh=TQ+vAMCace025Yta24D3XLwxWST60kKGlqxwczS5tME=; b=9
+	ezDmld7IzQVNGhKxKOHGot3l9SLGF4/ikwUDYV3lSpIZdDJlei9nKRmWFJJ7SNk6
+	VANQwTmXFpB3cqYifPlWv8vdAd84HNAWbKaOMG0HyHnhu8BpCckocujjuBdkzFVD
+	gwwAhMxaIYIokQ9yH+Lu4LehGpXfo75CMq1kxF4KBDFKet5Xw/QLIngnpigmdAf/
+	prllMWQN+9ZAP+8uQdX7cToVVLIFs61e1WSOLHag9jZdnCs9MAE36+xT/nkENB2A
+	tTJ5zz5Zy7u+l3VuR1onzlpgTTYqSuf4nu2dD6yKsWUV/dWIZfW8CyjmaRqlGmmN
+	teZOmibtpEXJYdRPlm6AQ==
+X-ME-Sender: <xms:hWqbZZ7WoyASM2M8zhODk3c8mxs3mNbueKQexla5obNbMQEHBYtkrg>
+    <xme:hWqbZW5xMj4WgU824LkBrdtB42zx9u1I28gUOyTdJ8bnvSzpSHfNp0uJNRkT3HPYt
+    zEuei6wPRcCq4BC-QY>
+X-ME-Received: <xmr:hWqbZQd4K7q6TpiHbNezHnHlFesyryWrv6jtydoBOCjO3CUA28_loIVr5w5wNZkcqsPnwr9SYpsFWihF2ayr3_XIxNUOPtWE>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdehhedgheejucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvfevufffkffoggfgsedtkeertd
-    ertddtnecuhfhrohhmpefirghrhicutfhoohhkrghrugcuoehgrghrhihrohhokhgrrhgu
-    sehfrghsthhmrghilhdrohhrgheqnecuggftrfgrthhtvghrnhepleegffffgfehhfejge
-    ejheeivdfgleefheeuueetkedtffeihfevlefhgeevvdevnecuvehluhhsthgvrhfuihii
-    vgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghgrrhihrhhoohhkrghrugesfhgrsh
-    htmhgrihhlrdhorhhg
-X-ME-Proxy: <xmx:fmqbZXfqWA36ojZ8uXz2birusTQ89Zaxx93VNKoVBTNv8LFWQ-uBtg>
-    <xmx:fmqbZQODeiXsHr17V9SRP_JiYOQJm9zIUEdIBmZ0uqCk1zNmKes9lw>
-    <xmx:fmqbZZkWiehbXZjoKU0zqEVhRK7wrp7QFdUt6ulpW3rmTYOsR3mbYg>
-    <xmx:fmqbZVpWek8-eCig96LZCZLDIFJFbmAgOJtl9DtwcK_nlbQq4HFfSw>
+    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvfevufffkffojghfggfgsedtke
+    ertdertddtnecuhfhrohhmpefirghrhicutfhoohhkrghrugcuoehgrghrhihrohhokhgr
+    rhgusehfrghsthhmrghilhdrohhrgheqnecuggftrfgrthhtvghrnhepkeeuvdffueduke
+    egieeuffejhefgkeetfeehueelfeduuefgveellefhfefgjedvnecuvehluhhsthgvrhfu
+    ihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghgrrhihrhhoohhkrghrugesfh
+    grshhtmhgrihhlrdhorhhg
+X-ME-Proxy: <xmx:hWqbZSLRr08smvrotEkqP4jqd7naAdO_iUckPTMNWLzSpW-W70udDQ>
+    <xmx:hWqbZdJbXGdCIRA7KKcJ7scXcOdzV4cPp0O9M5APmP3PyHIplGnJmA>
+    <xmx:hWqbZbxgUD8kGLlC46mkkShCgUiIYoNj1T7vq6xd8bo80CAZIp7SEQ>
+    <xmx:hWqbZd2hRbrflTR5NjaGMTK0NlNrQHwWcDUrShTAUl4va08LgpKvpg>
 Feedback-ID: ifd194980:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
- 7 Jan 2024 22:22:37 -0500 (EST)
+ 7 Jan 2024 22:22:45 -0500 (EST)
 From: Gary Rookard <garyrookard@fastmail.org>
 To: gregkh@linuxfoundation.org,
 	philipp.g.hortmann@gmail.com
 Cc: linux-staging@lists.linux.dev,
 	linux-kernel@vger.kernel.org,
 	Gary Rookard <garyrookard@fastmail.org>
-Subject: [PATCH 0/5] staging: rtl8192e: renamed variable is40MHz and 4 other
-Date: Sun,  7 Jan 2024 22:22:28 -0500
-Message-ID: <20240108032233.4280-1-garyrookard@fastmail.org>
+Subject: [PATCH 1/5] staging: rtl8192e: rename variable is40MHz
+Date: Sun,  7 Jan 2024 22:22:29 -0500
+Message-ID: <20240108032233.4280-2-garyrookard@fastmail.org>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240108032233.4280-1-garyrookard@fastmail.org>
+References: <20240108032233.4280-1-garyrookard@fastmail.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -87,30 +91,63 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Hi,
-
-This patch series renames (5) different variables with
-the checkpatch coding style issue, Avoid CamelCase.
-
-Patch 1/5) rename variable is40MHz
-Patch 2/5) rename variable isShortGI
-Patch 3/5) rename variable retValue
-Patch 4/5) rename variable EWC11NHTCap
-Patch 5/5) rename variable AdvCoding
+Coding style issue, checkpatch avoid CamelCase,
+rename it. is40MHz -> is_40mhz
 
 Signed-off-by: Gary Rookard <garyrookard@fastmail.org>
+---
+ drivers/staging/rtl8192e/rtl819x_HTProc.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-Gary Rookard (5):
-  staging: rtl8192e: rename variable is40MHz
-  staging: rtl8192e: rename variable isShortGI
-  staging: rtl8192e: rename variable retValue
-  staging: rtl8192e: rename variable EWC11NHTCap
-  staging: rtl8192e: rename variable AdvCoding
-
- drivers/staging/rtl8192e/rtl819x_HT.h     |  2 +-
- drivers/staging/rtl8192e/rtl819x_HTProc.c | 58 +++++++++++------------
- 2 files changed, 30 insertions(+), 30 deletions(-)
-
+diff --git a/drivers/staging/rtl8192e/rtl819x_HTProc.c b/drivers/staging/rtl8192e/rtl819x_HTProc.c
+index 6d0912f90198..1b1cb9514028 100644
+--- a/drivers/staging/rtl8192e/rtl819x_HTProc.c
++++ b/drivers/staging/rtl8192e/rtl819x_HTProc.c
+@@ -87,36 +87,36 @@ static u16 ht_mcs_to_data_rate(struct rtllib_device *ieee, u8 mcs_rate)
+ {
+ 	struct rt_hi_throughput *ht_info = ieee->ht_info;
+ 
+-	u8	is40MHz = (ht_info->cur_bw_40mhz) ? 1 : 0;
++	u8	is_40mhz = (ht_info->cur_bw_40mhz) ? 1 : 0;
+ 	u8	isShortGI = (ht_info->cur_bw_40mhz) ?
+ 			    ((ht_info->cur_short_gi_40mhz) ? 1 : 0) :
+ 			    ((ht_info->cur_short_gi_20mhz) ? 1 : 0);
+-	return MCS_DATA_RATE[is40MHz][isShortGI][(mcs_rate & 0x7f)];
++	return MCS_DATA_RATE[is_40mhz][isShortGI][(mcs_rate & 0x7f)];
+ }
+ 
+ u16  tx_count_to_data_rate(struct rtllib_device *ieee, u8 data_rate)
+ {
+ 	u16	cck_of_dm_rate[12] = {0x02, 0x04, 0x0b, 0x16, 0x0c, 0x12, 0x18,
+ 				   0x24, 0x30, 0x48, 0x60, 0x6c};
+-	u8	is40MHz = 0;
++	u8	is_40mhz = 0;
+ 	u8	isShortGI = 0;
+ 
+ 	if (data_rate < 12)
+ 		return cck_of_dm_rate[data_rate];
+ 	if (data_rate >= 0x10 && data_rate <= 0x1f) {
+-		is40MHz = 0;
++		is_40mhz = 0;
+ 		isShortGI = 0;
+ 	} else if (data_rate >= 0x20  && data_rate <= 0x2f) {
+-		is40MHz = 1;
++		is_40mhz = 1;
+ 		isShortGI = 0;
+ 	} else if (data_rate >= 0x30  && data_rate <= 0x3f) {
+-		is40MHz = 0;
++		is_40mhz = 0;
+ 		isShortGI = 1;
+ 	} else if (data_rate >= 0x40  && data_rate <= 0x4f) {
+-		is40MHz = 1;
++		is_40mhz = 1;
+ 		isShortGI = 1;
+ 	}
+-	return MCS_DATA_RATE[is40MHz][isShortGI][data_rate & 0xf];
++	return MCS_DATA_RATE[is_40mhz][isShortGI][data_rate & 0xf];
+ }
+ 
+ bool is_ht_half_nmode_aps(struct rtllib_device *ieee)
 -- 
 2.43.0
 
