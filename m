@@ -1,78 +1,77 @@
-Return-Path: <linux-kernel+bounces-19933-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19935-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 231CE8276FC
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 19:10:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 119F3827706
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 19:12:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8E9B61C20E9A
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 18:10:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1CC001C21729
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 18:11:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 953BF55C23;
-	Mon,  8 Jan 2024 18:02:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F269B55E62;
+	Mon,  8 Jan 2024 18:03:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="CjjNn3ty"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="N3uVa8IM"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7690B55C12
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 18:02:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1d3e2972f65so4506515ad.3
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 10:02:36 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B05EC56B7E;
+	Mon,  8 Jan 2024 18:03:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-40d88fff7faso22778155e9.3;
+        Mon, 08 Jan 2024 10:03:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1704736956; x=1705341756; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1704737005; x=1705341805; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=KLhyf5sIXfLhdOh02ua5GenSjAf22p09pniZl0gR2xc=;
-        b=CjjNn3tyERbER0eNoDZezpmtO3PQ2BUtHkyiVvjL3OLOUQd0BINz721p3mtkvFw+yR
-         5juLmIvNcPGeQein1WwfhxwqyguFDiS1krH0GKg11cHDJTVWK7e7Ji3YnyOgg44h22XC
-         E6RPDB2f2FkXz72K1Jwvlc6UC/8s6Q1mbvIcyOMrYlHmmg3tfccoQhtV176YUAmdaIhZ
-         1vFZczjKT17aVXMKye4YutpKKz1GrbRxinJ5dT627F/9KtBkCzaBJejRvARQYv6WQ2g2
-         CnQZbpNNW/pCDeJLE1HW9LggQLzujEPvQa14GS5sMC4POeqmBINVHVbT4TR3chQE6saT
-         Tseg==
+        bh=rohZ4h41q1Lpjm2ASdq6poviREEB3sYbV11ylcmnrRo=;
+        b=N3uVa8IMyLgXdkEmHblcT69e+gKttFNHMx1RHzpIdkG9w1vk6KxnAwArBqVu8DSn4v
+         U/Gw2gagh5tBfjmBTgHCuX9yn/7MfrVrZFzE49LHIIZrM8db5ZWtoBAqJV/oQajIjpMi
+         ncMQOXD71MnM3geAxCKrTUqNy8hBZC25QS7+kMAZScfnSBjzwAaPZSe6bo1vc2qO8meC
+         Yf1OAW+JgrvUpbA4KaY4RT1YGh52B9g1c6zLarXkunA7Fn85IVRonomKa/JQ0CRc4Qpr
+         Imz5B1FsVXO7SJurBiKLiTZ+8bM5dTb9xsUO8emmpzWnK4GTW27jLtVNAPirpJJM/PFy
+         M/oA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704736956; x=1705341756;
+        d=1e100.net; s=20230601; t=1704737005; x=1705341805;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=KLhyf5sIXfLhdOh02ua5GenSjAf22p09pniZl0gR2xc=;
-        b=Nd43WFxECh1hqhNOuwoD2y+6UWwteqFkgtM0aUq3H+cwQNEWMiIPQkfMRtt8g55vkF
-         mVUX5dt9nIvBLavTGwbTapgmrrmZlyFkOnBaPdB2Fxs58hHPr1RDCV0ECxLa0FyqfYfA
-         2rt53SCDdftm45NK/qnJl+zj+svg0/sVJFkN3pFPkQMXG2NXIds0ZQpn0bDhSBDYwdIk
-         NptXzTiZdybfZtdxqk3NSbOY5jkWBGkvUrONcJk4Vek0wh9CtZufKW3E+RUbBseHyS8u
-         qMp4O4So2FvNki0s9i+aaVbGFRCknflTbortutGD5PTyM2SjsRzbiRS6bceP8GrNtj4O
-         apQg==
-X-Gm-Message-State: AOJu0YyyWbJWpi1X3P/f3OgdBqkcyhOWqu3VND10WsKxowJObmEDAjjM
-	NJTrBh86rel2N6spJN6B3KbtjBSsWWugLA==
-X-Google-Smtp-Source: AGHT+IF0KV6ppakYNjF2hnQktuahh7myDZAFD1mLkbcDl8/nMLb6ibIHPCTgpmQPcDHUkw/Qt6ReXg==
-X-Received: by 2002:a17:903:1205:b0:1d5:4c70:262f with SMTP id l5-20020a170903120500b001d54c70262fmr692193plh.95.1704736955622;
-        Mon, 08 Jan 2024 10:02:35 -0800 (PST)
-Received: from ghost ([2601:647:5700:6860:304d:b1a:4fb3:783f])
-        by smtp.gmail.com with ESMTPSA id m2-20020a170902768200b001cff9cd5129sm174005pll.298.2024.01.08.10.02.34
+        bh=rohZ4h41q1Lpjm2ASdq6poviREEB3sYbV11ylcmnrRo=;
+        b=P46s8gYzNlahMqdI5IQLh1v63htk56lCdywAajV+FDTtxHcdd0sv9hfRsWc1xMJNd6
+         tMCaa5oVHhE4QGNPvsY6xwp8+E0dhZF0rLuZd7PtFzEWlF6JCnptpdSbXZB5cPWxH71z
+         jJzBVe2utG5MXWOwdJH1gutxTuwFdOLP21dn6iBpvhsKqP/Eb4mto4dFQJhqXBgmBgke
+         BQBHTKAWXxfem5RnoorZIl2jkYPO2kSHSe7V6+suSIZE0YtKv82GAthKc7gUYbwLDQlD
+         Ir6/CXwVmjO6DYhgdm1Wbi5xwOB45SPf6B16tsLmQS74tz/jltmZsD1BA38Rb1BGm9qv
+         SToQ==
+X-Gm-Message-State: AOJu0Yw4Jws4w+DBvsX0D1ysXgMQeMeIOAbTfhPSfFpw7f4boEmPinFb
+	RPzkUu6IcHIWt7HYYH9B/pU=
+X-Google-Smtp-Source: AGHT+IGL9HaOHI1pA66TfIvcnThcrsucMoJsUN9XCN/3vveKsO6ydakuBqm/MjZ2YbGaQxNUJ599Jg==
+X-Received: by 2002:a05:600c:1c9f:b0:40d:70c0:b50d with SMTP id k31-20020a05600c1c9f00b0040d70c0b50dmr1171249wms.8.1704737004722;
+        Mon, 08 Jan 2024 10:03:24 -0800 (PST)
+Received: from cjw-notebook (2a02-8388-0502-f480-6c32-186a-368b-d6a9.cable.dynamic.v6.surfer.at. [2a02:8388:502:f480:6c32:186a:368b:d6a9])
+        by smtp.gmail.com with ESMTPSA id ay26-20020a05600c1e1a00b0040e4a8c2d47sm1726250wmb.43.2024.01.08.10.03.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Jan 2024 10:02:35 -0800 (PST)
-Date: Mon, 8 Jan 2024 10:02:32 -0800
-From: Charlie Jenkins <charlie@rivosinc.com>
-To: Randy Dunlap <rdunlap@infradead.org>
-Cc: Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>, Jonathan Corbet <corbet@lwn.net>,
-	Conor Dooley <conor.dooley@microchip.com>,
-	=?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <cleger@rivosinc.com>,
-	Atish Patra <atishp@atishpatra.org>,
-	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Mon, 08 Jan 2024 10:03:24 -0800 (PST)
+Date: Mon, 8 Jan 2024 19:03:21 +0100
+From: Christoph Winklhofer <cj.winklhofer@gmail.com>
+To: Jiri Slaby <jirislaby@kernel.org>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>, Rob Herring <robh@kernel.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Jonathan Corbet <corbet@lwn.net>, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
 	linux-doc@vger.kernel.org
-Subject: Re: [PATCH v4 2/2] documentation: Document
- PR_RISCV_SET_ICACHE_FLUSH_CTX prctl
-Message-ID: <ZZw4uCCahPRbHdfR@ghost>
-References: <20240107-fencei-v4-0-d4cf2fb905d3@rivosinc.com>
- <20240107-fencei-v4-2-d4cf2fb905d3@rivosinc.com>
- <34f6da8c-1e63-43a5-b9d4-d6865a5d2252@infradead.org>
+Subject: Re: [PATCH v4 3/3] w1: add UART w1 bus driver
+Message-ID: <ZZw46ZQ5JoxlWflG@cjw-notebook>
+References: <20240106-w1-uart-v4-0-7fe1378a8b3e@gmail.com>
+ <20240106-w1-uart-v4-3-7fe1378a8b3e@gmail.com>
+ <5ff1d706-9f06-4eb6-bc86-75f933e54118@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -81,143 +80,147 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <34f6da8c-1e63-43a5-b9d4-d6865a5d2252@infradead.org>
+In-Reply-To: <5ff1d706-9f06-4eb6-bc86-75f933e54118@kernel.org>
 
-On Sun, Jan 07, 2024 at 11:06:34PM -0800, Randy Dunlap wrote:
-> Hi--
-> 
-> On 1/7/24 22:21, Charlie Jenkins wrote:
-> > Provide documentation that explains how to properly do CMODX in riscv.
+On Mon, Jan 08, 2024 at 07:18:31AM +0100, Jiri Slaby wrote:
+> On 06. 01. 24, 17:02, Christoph Winklhofer via B4 Relay wrote:
+> > From: Christoph Winklhofer <cj.winklhofer@gmail.com>
 > > 
-> > Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
-> > ---
-> >  Documentation/arch/riscv/cmodx.rst | 88 ++++++++++++++++++++++++++++++++++++++
-> >  Documentation/arch/riscv/index.rst |  1 +
-> >  2 files changed, 89 insertions(+)
+> > Add a UART 1-Wire bus driver. The driver utilizes the UART interface via
+> > the Serial Device Bus to create the 1-Wire timing patterns. The driver
+> > was tested on a "Raspberry Pi 3B" with a DS18B20 and on a "Variscite
+> > DART-6UL" with a DS18S20 temperature sensor.
 > > 
-> > diff --git a/Documentation/arch/riscv/cmodx.rst b/Documentation/arch/riscv/cmodx.rst
-> > new file mode 100644
-> > index 000000000000..71598850e131
+> > The 1-Wire timing pattern and the corresponding UART baud-rate with the
+> > interpretation of the transferred bytes are described in the document:
+> > 
+> > Link: https://www.analog.com/en/technical-articles/using-a-uart-to-implement-a-1wire-bus-master.html
+> > 
+> > In short, the UART peripheral must support full-duplex and operate in
+> > open-drain mode. The timing patterns are generated by a specific
+> > combination of baud-rate and transmitted byte, which corresponds to a
+> > 1-Wire read bit, write bit or reset.
+> ...
 > > --- /dev/null
-> > +++ b/Documentation/arch/riscv/cmodx.rst
-> > @@ -0,0 +1,88 @@
-> > +.. SPDX-License-Identifier: GPL-2.0
+> > +++ b/drivers/w1/masters/w1-uart.c
+> > @@ -0,0 +1,398 @@
+> > +// SPDX-License-Identifier: GPL-2.0-or-later
+> > +/*
+> > + * w1-uart - UART 1-Wire bus driver
+> > + *
+> > + * Uses the UART interface (via Serial Device Bus) to create the 1-Wire
+> > + * timing patterns. Implements the following 1-Wire master interface:
+> > + *
+> > + * - reset_bus: requests baud-rate 9600
+> > + *
+> > + * - touch_bit: requests baud-rate 115200
+> > + *
+> > + * Author: Christoph Winklhofer <cj.winklhofer@gmail.com>
+> > + */
 > > +
-> > +==============================================================================
-> > +Concurrent Modification and Execution of Instructions (CMODX) for RISC-V Linux
-> > +==============================================================================
+> > +#include <linux/completion.h>
+> > +#include <linux/delay.h>
+> > +#include <linux/jiffies.h>
+> > +#include <linux/module.h>
+> > +#include <linux/mutex.h>
+> > +#include <linux/of.h>
+> > +#include <linux/serdev.h>
+> > +#include <linux/w1.h>
 > > +
-> > +CMODX is a programming technique where a program executes instructions that were
-> > +modified by the program itself. Instruction storage and the instruction cache
-> > +(icache) is not guaranteed to be synchronized on RISC-V hardware. Therefore, the
-> 
->             are not
-> 
-> > +program must enforce its own synchronization with the unprivileged fence.i
-> > +instruction.
+> > +#define W1_UART_TIMEOUT msecs_to_jiffies(500)
 > > +
-> > +However, the default Linux ABI prohibits the use of fence.i in userspace
-> > +applications. At any point the scheduler may migrate a task onto a new hart. If
-> > +migration occurs after the userspace synchronized the icache and instruction
-> > +storage with fence.i, the icache will no longer be clean. This is due to the
-> > +behavior of fence.i only affecting the hart that it is called on. Thus, the hart
-> > +that the task has been migrated to, may not have synchronized instruction
+> > +/*
+> > + * struct w1_uart_config - configuration for 1-Wire operation
+> > + *
+> > + * @baudrate: baud-rate returned from serdev
+> > + * @delay_us: delay to complete a 1-Wire cycle (in us)
+> > + * @tx_byte: byte to generate 1-Wire timing pattern
+> > + */
+> > +struct w1_uart_config {
+> > +	unsigned int baudrate;
+> > +	unsigned int delay_us;
+> > +	unsigned char tx_byte;
 > 
->                                    to may not
+> If it is a "byte", it should be u8.
 > 
-> > +storage and icache.
-> > +
-> > +There are two ways to solve this problem: use the riscv_flush_icache() syscall,
-> > +or use the ``PR_RISCV_SET_ICACHE_FLUSH_CTX`` prctl() and emit fence.i in
-> > +userspace. The syscall performs a one-off icache flushing operation. The prctl
-> > +changes the Linux ABI to allow userspace to emit icache flushing operations.
-> > +
-> > +1.  prctl() Interface
-> > +---------------------
-> 
-> Why is "1." needed here? or is it?
+will change this and all others to u8.
 
-Not needed, thank you.
-
-- Charlie
-
+...
+> > +
+> > +static inline unsigned int baud_to_bit_ns(unsigned int baud)
+> > +{
+> > +	return 1000000000 / baud;
 > 
-> > +
-> > +Call prctl() with ``PR_RISCV_SET_ICACHE_FLUSH_CTX`` as the first argument. The
-> > +remaining arguments will be delegated to the riscv_set_icache_flush_ctx
-> > +function detailed below.
-> > +
-> > +.. kernel-doc:: arch/riscv/mm/cacheflush.c
-> > +	:identifiers: riscv_set_icache_flush_ctx
-> > +
-> > +Example usage:
-> > +
-> > +The following files are meant to be compiled and linked with each other. The
-> > +modify_instruction() function replaces an add with 0 with an add with one,
-> > +causing the instruction sequence in get_value() to change from returning a zero
-> > +to returning a one.
-> > +
-> > +cmodx.c::
-> > +
-> > +	#include <stdio.h>
-> > +	#include <sys/prctl.h>
-> > +
-> > +	extern int get_value();
-> > +	extern void modify_instruction();
-> > +
-> > +	int main()
-> > +	{
-> > +		int value = get_value();
-> > +		printf("Value before cmodx: %d\n", value);
-> > +
-> > +		// Call prctl before first fence.i is called inside modify_instruction
-> > +		prctl(PR_RISCV_SET_ICACHE_FLUSH_CTX_ON, PR_RISCV_CTX_SW_FENCEI, 0);
-> > +		modify_instruction();
-> > +
-> > +		value = get_value();
-> > +		printf("Value after cmodx: %d\n", value);
-> > +		return 0;
-> > +	}
-> > +
-> > +cmodx.S::
-> > +
-> > +	.option norvc
-> > +
-> > +	.text
-> > +	.global modify_instruction
-> > +	modify_instruction:
-> > +	lw a0, new_insn
-> > +	lui a5,%hi(old_insn)
-> > +	sw  a0,%lo(old_insn)(a5)
-> > +	fence.i
-> > +	ret
-> > +
-> > +	.section modifiable, "awx"
-> > +	.global get_value
-> > +	get_value:
-> > +	li a0, 0
-> > +	old_insn:
-> > +	addi a0, a0, 0
-> > +	ret
-> > +
-> > +	.data
-> > +	new_insn:
-> > +	addi a0, a0, 1
-> > diff --git a/Documentation/arch/riscv/index.rst b/Documentation/arch/riscv/index.rst
-> > index 4dab0cb4b900..eecf347ce849 100644
-> > --- a/Documentation/arch/riscv/index.rst
-> > +++ b/Documentation/arch/riscv/index.rst
-> > @@ -13,6 +13,7 @@ RISC-V architecture
-> >      patch-acceptance
-> >      uabi
-> >      vector
-> > +    cmodx
-> >  
-> >      features
-> >  
-> > 
+> NSEC_PER_SEC
 > 
-> Thanks.
+> > +}
+> > +
+> > +static inline unsigned int to_ns(unsigned int us)
+> > +{
+> > +	return us * 1000;
+> 
+> NSEC_PER_USEC
+> 
+and use the correct constants.
+
+...
+> > +}
+> > +
+> > +/*
+> > + * Set baud-rate, delay and tx-byte to create a 1-Wire pulse and adapt
+> > + * the tx-byte according to the actual baud-rate.
+> > + *
+> > + * Reject when:
+> > + * - time for a bit outside min/max range
+> > + * - a 1-Wire response is not detectable for sent byte
+> > + */
+> > +static int w1_uart_set_config(struct serdev_device *serdev,
+> > +			      const struct w1_uart_limits *limits,
+> > +			      struct w1_uart_config *w1cfg)
+> > +{
+...
+> > +	/* 1-Wire response detectable for sent byte */
+> > +	if (limits->sample_us > 0 &&
+> > +	    bit_ns * 8 < low_ns + to_ns(limits->sample_us))
+> 
+> BITS_PER_BYTE
+> 
+ok, change it (it is the time for the UART data-frame).
+> > +		return -EINVAL;
+> > +
+> > +	/* delay to complete 1-Wire cycle, include start and stop-bit */
+> > +	w1cfg->delay_us = 0;
+> > +	if (bit_ns * 10 < to_ns(limits->cycle_us))
+> 
+> What is this 10? Dub it.
+> 
+> > +		w1cfg->delay_us =
+> > +			(to_ns(limits->cycle_us) - bit_ns * 10) / 1000;
+> 
+> And this 10?
+> 
+> The end: / NSEC_PER_USEC
+> 
+will be more explicit (it is the time for the UART packet:
+BITS_PER_BYTE + 2 (start and stop-bit).
+
+...
+> > +static int w1_uart_serdev_receive_buf(struct serdev_device *serdev,
+> > +				      const unsigned char *buf, size_t count)
+> 
+> serdev already uses u8 * here. You are basing on the top of some old tree.
+Yes, this patch is based on the w1-next branch of
+  git://git.kernel.org/pub/scm/linux/kernel/git/krzk/linux-w1.git
+was not sure from where to start. I guess that this change is probably in
+the w1-tree after the next stable release.
+> 
+> regards,
 > -- 
-> #Randy
+> js
+> suse labs
+> 
+Thanks Jiri for the review!
+
+Kind regards,
+Christoph
 
