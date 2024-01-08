@@ -1,131 +1,116 @@
-Return-Path: <linux-kernel+bounces-19188-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19189-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 48392826984
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 09:29:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 48D93826989
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 09:33:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F039C1F21B89
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 08:29:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 596F31C21C2E
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 08:32:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85507BA27;
-	Mon,  8 Jan 2024 08:29:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD7C1BA4B;
+	Mon,  8 Jan 2024 08:32:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HoTsV4Dv"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qk1-f173.google.com (mail-qk1-f173.google.com [209.85.222.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2603EBA26;
-	Mon,  8 Jan 2024 08:29:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A28AFC433C7;
-	Mon,  8 Jan 2024 08:29:45 +0000 (UTC)
-Message-ID: <545138cc-2cc1-4da0-9b26-7ebe4241c8df@xs4all.nl>
-Date: Mon, 8 Jan 2024 09:29:42 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4F3CDDAA;
+	Mon,  8 Jan 2024 08:32:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qk1-f173.google.com with SMTP id af79cd13be357-7831be84f4eso113376885a.0;
+        Mon, 08 Jan 2024 00:32:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704702771; x=1705307571; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5GwILI2ALIJNST8VPsffc3ahIHUwnzbrpdCcG6R7Vhc=;
+        b=HoTsV4DvBMHGn6Gc01wMfSso7vRMCJLHPeOPGdmENBoNZTQDayk3+B8mmlnDfYVdHu
+         VlY4HmqfAdRZwhm/Mo7mT0n55kk4xz1wFsNj8SYj9WUoz7qUO3E+ageDqnvOjnXzoYEH
+         q10FApay7za4whrVaUDwi/sdLMeQjoxJWfqsMq6kF69mglZApuUnWxW4dVYCdy0Lj0XP
+         C7lOZsk9AGAXgC++fEebscewmh4m6aUd9jSuUsSUQ7R/spVBRzX3fmhjNKzgyoC7oLEh
+         ArK6vhacTW/YbwXE4jTKB5H3KNGAmCiOz4M/tK2nSejLq2PpZMGa7Njnwnf5GZ01vZWI
+         w8QQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704702771; x=1705307571;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5GwILI2ALIJNST8VPsffc3ahIHUwnzbrpdCcG6R7Vhc=;
+        b=ToIBPaQ+rgY/aBWKOI+5mQTyB5s+hoSagnDGyM6Cy8lRYc7zYZHGyu3MKV5EAQ7k8z
+         QlMqk1P10yN2ohK2B1+ni/ddsg3+W30/qP4eOUmtQFt1T/OlOajhtt8K6FjrnryXCEKX
+         vLAwIMwfp82m75bmuhYxnjaHpuIitU2ZjIQOJjwa25+Jx6V4vOYnP604FD3zMLBl17PR
+         uY3LQZyuJZ22lXmzLS6MYSNsIeB21RgoO21/4AfgvOgxTvcKqHjCfXNLpPFeLb4e19j3
+         oYWMTGJ0ZI3Fz80RUfkjY6MirbsCaOIxiN5zk4QnfjgDMzWeM5CpalmNPPMUhpvuoQRr
+         zicQ==
+X-Gm-Message-State: AOJu0Yy9+NoMi2X7xAR/lhwkG8Nr5SomdBOU/7QQD32Hp8gjGw8IhaoZ
+	WiM5hXkCD/lyZB7lTeV2kFAm/ZU+TEy/GCZ7SNNTh/JcOcE=
+X-Google-Smtp-Source: AGHT+IG1hYBz6K5KACuHekMLwBrEkxXFHG+wjm3BDqSNoAayV1A15p4tlYfATgTjURZaXukYiBYGdCrKH8cKINUQZL8=
+X-Received: by 2002:a05:6214:500a:b0:67f:998b:bfa6 with SMTP id
+ jo10-20020a056214500a00b0067f998bbfa6mr4859226qvb.64.1704702770711; Mon, 08
+ Jan 2024 00:32:50 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3,04/21] v4l: add documentation for secure memory flag
-To: Jeffrey Kardatzke <jkardatzke@google.com>
-Cc: Yunfei Dong <yunfei.dong@mediatek.com>,
- =?UTF-8?Q?N=C3=ADcolas_F_=2E_R_=2E_A_=2E_Prado?= <nfraprado@collabora.com>,
- Nicolas Dufresne <nicolas.dufresne@collabora.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- Benjamin Gaignard <benjamin.gaignard@collabora.com>,
- Nathan Hebert <nhebert@chromium.org>, Chen-Yu Tsai <wenst@chromium.org>,
- Yong Wu <yong.wu@mediatek.com>, Hsin-Yi Wang <hsinyi@chromium.org>,
- Fritz Koenig <frkoenig@chromium.org>, Daniel Vetter <daniel@ffwll.ch>,
- Steve Cho <stevecho@chromium.org>, Sumit Semwal <sumit.semwal@linaro.org>,
- Brian Starkey <Brian.Starkey@arm.com>, John Stultz <jstultz@google.com>,
- "T . J . Mercier" <tjmercier@google.com>,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- Matthias Brugger <matthias.bgg@gmail.com>, dri-devel@lists.freedesktop.org,
- linaro-mm-sig@lists.linaro.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-mediatek@lists.infradead.org,
- Project_Global_Chrome_Upstream_Group@mediatek.com
-References: <20231206081538.17056-1-yunfei.dong@mediatek.com>
- <20231206081538.17056-5-yunfei.dong@mediatek.com>
- <ce2110bf-a16a-45ae-979b-7e41be2896cd@xs4all.nl>
- <CA+ddPcM6nz0ufF5NXUq7E_vF6HnFKrEEag5iUDAknT6=hWTCNQ@mail.gmail.com>
-Content-Language: en-US, nl
-From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-In-Reply-To: <CA+ddPcM6nz0ufF5NXUq7E_vF6HnFKrEEag5iUDAknT6=hWTCNQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20240107203258.37e26d2b@gandalf.local.home>
+In-Reply-To: <20240107203258.37e26d2b@gandalf.local.home>
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+Date: Mon, 8 Jan 2024 10:32:14 +0200
+Message-ID: <CAHp75VcsV8t2-6GB24Rz003B2JSAEOBjWD7B7FjEXuCQhkJ5pQ@mail.gmail.com>
+Subject: Re: [PATCH] tracing histograms: Simplify parse_actions() function
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, 
+	Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Andy Shevchenko <andy@kernel.org>, 
+	Tom Zanussi <zanussi@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 04/01/2024 21:05, Jeffrey Kardatzke wrote:
-> On Mon, Dec 11, 2023 at 3:05 AM Hans Verkuil <hverkuil-cisco@xs4all.nl> wrote:
->>
->> On 06/12/2023 09:15, Yunfei Dong wrote:
->>> From: Jeffrey Kardatzke <jkardatzke@google.com>
->>>
->>> Adds documentation for V4L2_MEMORY_FLAG_SECURE.
->>>
->>> Signed-off-by: Jeffrey Kardatzke <jkardatzke@google.com>
->>> Signed-off-by: Yunfei Dong <yunfei.dong@mediatek.com>
->>> ---
->>>  Documentation/userspace-api/media/v4l/buffer.rst | 8 +++++++-
->>>  1 file changed, 7 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/Documentation/userspace-api/media/v4l/buffer.rst b/Documentation/userspace-api/media/v4l/buffer.rst
->>> index 52bbee81c080..a5a7d1c72d53 100644
->>> --- a/Documentation/userspace-api/media/v4l/buffer.rst
->>> +++ b/Documentation/userspace-api/media/v4l/buffer.rst
->>> @@ -696,7 +696,7 @@ enum v4l2_memory
->>>
->>>  .. _memory-flags:
->>>
->>> -Memory Consistency Flags
->>> +Memory Flags
->>>  ------------------------
->>>
->>>  .. raw:: latex
->>> @@ -728,6 +728,12 @@ Memory Consistency Flags
->>>       only if the buffer is used for :ref:`memory mapping <mmap>` I/O and the
->>>       queue reports the :ref:`V4L2_BUF_CAP_SUPPORTS_MMAP_CACHE_HINTS
->>>       <V4L2-BUF-CAP-SUPPORTS-MMAP-CACHE-HINTS>` capability.
->>> +    * .. _`V4L2-MEMORY-FLAG-SECURE`:
->>> +
->>> +      - ``V4L2_MEMORY_FLAG_SECURE``
->>> +      - 0x00000002
->>> +      - DMA bufs passed into the queue will be validated to ensure they were
->>> +     allocated from a secure dma-heap.
->>
->> Hmm, that needs a bit more work. How about:
->>
->> - The queued buffers are expected to be in secure memory. If not, an error will be
->>   returned. This flag can only be used with ``V4L2_MEMORY_DMABUF``. Typically
->>   secure buffers are allocated using a secure dma-heap. This flag can only be
->>   specified if the ``V4L2_BUF_CAP_SUPPORTS_SECURE_MEM`` is set.
->>
-> 
-> Thanks Hans. Yunfei, can you integrate this change into the patch please?
-> 
->> In addition, the title of this table is currently "Memory Consistency Flags": that
->> should be renamed to "Memory Flags".
-> 
-> Hans, the patch is already renaming the table as you suggested. :)
-> (unless there's some other spot I'm missing)
+On Mon, Jan 8, 2024 at 3:31=E2=80=AFAM Steven Rostedt <rostedt@goodmis.org>=
+ wrote:
+>
+> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+>
+> The parse_actions() function uses 'len =3D str_has_prefix()' to test whic=
+h
+> action is in the string being parsed. But then it goes and repeats the
+> logic for each different action. This logic can be simplified and
+> duplicate code can be removed as 'len' contains the length of the found
+> prefix which should be used for all actions.
 
-Sorry for the noise, I missed that change.
+> Link: https://lore.kernel.org/all/20240107112044.6702cb66@gandalf.local.h=
+ome/
+>
+> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 
-Regards,
+If you want Link to be formally a tag, you should drop the following
+blank line.
 
-	Hans
 
->>
->> Regards,
->>
->>         Hans
->>
->>>
->>>  .. raw:: latex
->>>
->>
+> +               if ((len =3D str_has_prefix(str, "onmatch(")))
+> +                       hid =3D HANDLER_ONMATCH;
+> +               else if ((len =3D str_has_prefix(str, "onmax(")))
+> +                       hid =3D HANDLER_ONMAX;
+> +               else if ((len =3D str_has_prefix(str, "onchange(")))
+> +                       hid =3D HANDLER_ONCHANGE;
 
+The repeating check for ( might be moved out as well after this like
+
+  if (str[len] !=3D '(') {
+    // not sure if you need data to be assigned here as well
+    ret =3D -EINVAL;
+    ...
+  }
+
+--=20
+With Best Regards,
+Andy Shevchenko
 
