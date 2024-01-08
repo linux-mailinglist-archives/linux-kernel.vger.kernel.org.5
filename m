@@ -1,200 +1,263 @@
-Return-Path: <linux-kernel+bounces-19037-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19038-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2CA62826714
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 02:23:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F3F082671C
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 02:29:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CA5B0B20F5B
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 01:22:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9094EB20BAB
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 01:29:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D3D5EDE;
-	Mon,  8 Jan 2024 01:22:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="a6sE1gu+"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B4781115;
+	Mon,  8 Jan 2024 01:29:06 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5D1B7E2;
-	Mon,  8 Jan 2024 01:22:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AE133C433C9;
-	Mon,  8 Jan 2024 01:22:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704676971;
-	bh=U48ddkhZbLIGmAm3tOALZCKxURR7hnYXdKWlBy0GGfA=;
-	h=From:To:Cc:Subject:Date:From;
-	b=a6sE1gu+iyHrvqLEnF3gZ8hqAMt0d19Tqb51eyQ2y2jfyu1rqDD1r8efs0JJpQFxC
-	 zMj5zgm7a4R9GKgCKIZtyMr8AcFAoBmbZcjntIqii3a7oYckywD/hUf6w8xY9hxlDd
-	 RxkbQEn0NVYbwyLerVdgNCQm2UXJujPH88oANXwqfMfbdjhQF4mYxbHUoGZqrWH7Vq
-	 J5vRqS5fQLhjoPwwwE/lWxF7piM93sxB6FkYgXN7Kc40fUU6QxsrYG9ku3Gj0agCB3
-	 uvKIN3d5uOaN0wMVkybTQDY38e+AXOogFbXijQADywzuxNezlkMrOUG2/gtPhcEJE4
-	 ahvkb+qzKzzCw==
-From: Miguel Ojeda <ojeda@kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Miguel Ojeda <ojeda@kernel.org>,
-	Wedson Almeida Filho <wedsonaf@gmail.com>,
-	Alex Gaynor <alex.gaynor@gmail.com>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Gary Guo <gary@garyguo.net>,
-	=?UTF-8?q?Bj=C3=B6rn=20Roy=20Baron?= <bjorn3_gh@protonmail.com>,
-	Benno Lossin <benno.lossin@proton.me>,
-	Andreas Hindborg <a.hindborg@samsung.com>,
-	Alice Ryhl <aliceryhl@google.com>,
-	rust-for-linux@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Rust for v6.8
-Date: Mon,  8 Jan 2024 02:20:55 +0100
-Message-ID: <20240108012055.519813-1-ojeda@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22E8F7F;
+	Mon,  8 Jan 2024 01:29:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
+Received: from mail.maildlp.com (unknown [172.19.88.163])
+	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4T7byg4v76z1Q7r7;
+	Mon,  8 Jan 2024 09:27:23 +0800 (CST)
+Received: from kwepemi500006.china.huawei.com (unknown [7.221.188.68])
+	by mail.maildlp.com (Postfix) with ESMTPS id D7EC61800BC;
+	Mon,  8 Jan 2024 09:28:53 +0800 (CST)
+Received: from [10.67.120.168] (10.67.120.168) by
+ kwepemi500006.china.huawei.com (7.221.188.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 8 Jan 2024 09:28:53 +0800
+Message-ID: <fb7c85a4-165d-7eda-740a-d11a32cb86c0@hisilicon.com>
+Date: Mon, 8 Jan 2024 09:28:52 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.1.0
+From: Junxian Huang <huangjunxian6@hisilicon.com>
+Subject: Re: [PATCH iproute2-rc 2/2] rdma: Fix the error of accessing string
+ variable outside the lifecycle
+To: <jgg@ziepe.ca>, <leon@kernel.org>, <dsahern@gmail.com>,
+	<stephen@networkplumber.org>, Chengchang Tang <tangchengchang@huawei.com>
+CC: <netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+	<linuxarm@huawei.com>, <linux-kernel@vger.kernel.org>
+References: <20231229065241.554726-1-huangjunxian6@hisilicon.com>
+ <20231229065241.554726-3-huangjunxian6@hisilicon.com>
+Content-Language: en-US
+In-Reply-To: <20231229065241.554726-3-huangjunxian6@hisilicon.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ kwepemi500006.china.huawei.com (7.221.188.68)
 
-Hi Linus,
 
-This is the next round of the Rust support.
+Hi all,
 
-All the commits have been in linux-next for more than a couple weeks,
-but only for 3 -next tags given the holidays (first one next-20231222).
+the first patch is replaced by Stephen's latest patches. Are there any
+comments to this patch?
 
-No conflicts expected. No changes to the C side.
+Thanks,
+Junxian
 
-There are also some Rust abstractions for network PHY drivers (with a
-Rust reference driver included for Asix PHY) which you will likely get
-through the networking tree. No conflicts expected with those either,
-and tests pass with those merged too.
-
-Please pull for v6.8 -- thanks!
-
-Cheers,
-Miguel
-
-The following changes since commit a39b6ac3781d46ba18193c9dbb2110f31e9bffe9:
-
-  Linux 6.7-rc5 (2023-12-10 14:33:40 -0800)
-
-are available in the Git repository at:
-
-  https://github.com/Rust-for-Linux/linux.git tags/rust-6.8
-
-for you to fetch changes up to 711cbfc717650532624ca9f56fbaf191bed56e67:
-
-  docs: rust: Clarify that 'rustup override' applies to build directory (2023-12-21 22:47:40 +0100)
-
-----------------------------------------------------------------
-Rust changes for v6.8
-
-Another routine one in terms of features. In terms of lines, this time
-the 'alloc' version upgrade is less prominent, given that it was fairly
-small (and we did not have two upgrades).
-
-Toolchain and infrastructure:
-
- - Upgrade to Rust 1.74.1.
-
-   The patch release includes a fix for an ICE that the Apple AGX GPU
-   driver was hitting.
-
- - Support 'srctree'-relative links in Rust code documentation.
-
- - Automate part of the manual constants handling (i.e. the ones not
-   recognised by 'bindgen').
-
- - Suppress searching builtin sysroot to avoid confusion with installed
-   sysroots, needed for the to-be-merged arm64 support which uses
-   a builtin target.
-
- - Ignore '__preserve_most' functions for 'bindgen'.
-
- - Reduce header inclusion bloat in exports.
-
-'kernel' crate:
-
- - Implement 'Debug' for 'CString'.
-
- - Make 'CondVar::wait()' an uninterruptible wait.
-
-'macros' crate:
-
- - Update 'paste!' to accept string literals.
-
- - Improve '#[vtable]' documentation.
-
-Documentation:
-
- - Add testing section (KUnit and 'rusttest' target).
-
- - Remove 'CC=clang' mentions.
-
- - Clarify that 'rustup override' applies to build directory.
-
-----------------------------------------------------------------
-Asahi Lina (1):
-      rust: kernel: str: Implement Debug for CString
-
-Benno Lossin (1):
-      rust: macros: improve `#[vtable]` documentation
-
-Boqun Feng (1):
-      rust: sync: Makes `CondVar::wait()` an uninterruptible wait
-
-Dirk Behme (1):
-      docs: rust: Add rusttest info
-
-Gary Guo (1):
-      rust: bindings: rename const binding using sed
-
-Masahiro Yamada (1):
-      rust: replace <linux/module.h> with <linux/export.h> in rust/exports.c
-
-Matthew Maurer (2):
-      rust: Ignore preserve-most functions
-      rust: Suppress searching builtin sysroot
-
-Miguel Ojeda (3):
-      rust: upgrade to Rust 1.74.1
-      rust: support `srctree`-relative links
-      docs: rust: remove `CC=clang` mentions
-
-Trevor Gross (1):
-      rust: macros: update 'paste!' macro to accept string literals
-
-Viresh Kumar (1):
-      docs: rust: Clarify that 'rustup override' applies to build directory
-
- Documentation/process/changes.rst          |  2 +-
- Documentation/rust/coding-guidelines.rst   | 13 +++++
- Documentation/rust/general-information.rst | 24 +++++++++
- Documentation/rust/quick-start.rst         | 18 +++----
- rust/Makefile                              |  8 ++-
- rust/alloc/alloc.rs                        | 32 +++++++----
- rust/alloc/lib.rs                          |  6 +--
- rust/alloc/slice.rs                        |  2 +-
- rust/alloc/vec/mod.rs                      | 87 +++++++++++++++++++++++++++++-
- rust/bindgen_parameters                    |  4 ++
- rust/bindings/bindings_helper.h            |  6 +--
- rust/bindings/lib.rs                       |  3 --
- rust/exports.c                             |  2 +-
- rust/kernel/allocator.rs                   |  2 +-
- rust/kernel/error.rs                       |  6 ++-
- rust/kernel/ioctl.rs                       |  2 +-
- rust/kernel/kunit.rs                       |  2 +-
- rust/kernel/print.rs                       |  8 +--
- rust/kernel/str.rs                         |  6 +++
- rust/kernel/sync/condvar.rs                | 32 +++++------
- rust/kernel/sync/lock/mutex.rs             |  2 +-
- rust/kernel/sync/lock/spinlock.rs          |  2 +-
- rust/kernel/task.rs                        |  2 +-
- rust/kernel/workqueue.rs                   |  2 +-
- rust/macros/lib.rs                         | 62 +++++++++++++++++----
- rust/macros/paste.rs                       | 10 +++-
- scripts/Makefile.build                     |  1 +
- scripts/min-tool-version.sh                |  2 +-
- 28 files changed, 275 insertions(+), 73 deletions(-)
+On 2023/12/29 14:52, Junxian Huang wrote:
+> From: wenglianfa <wenglianfa@huawei.com>
+> 
+> All these SPRINT_BUF(b) definitions are inside the 'if' block, but
+> accessed outside the 'if' block through the pointers 'comm'. This
+> leads to empty 'comm' attribute when querying resource information.
+> So move the definitions to the beginning of the functions to extend
+> their life cycle.
+> 
+> Before:
+> $ rdma res show srq
+> dev hns_0 srqn 0 type BASIC lqpn 18 pdn 5 pid 7775 comm
+> 
+> After:
+> $ rdma res show srq
+> dev hns_0 srqn 0 type BASIC lqpn 18 pdn 5 pid 7775 comm ib_send_bw
+> 
+> Fixes: 1808f002dfdd ("lib/fs: fix memory leak in get_task_name()")
+> Signed-off-by: wenglianfa <wenglianfa@huawei.com>
+> Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
+> ---
+>  rdma/res-cmid.c | 3 +--
+>  rdma/res-cq.c   | 3 +--
+>  rdma/res-ctx.c  | 3 +--
+>  rdma/res-mr.c   | 3 +--
+>  rdma/res-pd.c   | 3 +--
+>  rdma/res-qp.c   | 3 +--
+>  rdma/res-srq.c  | 3 +--
+>  rdma/stat.c     | 3 +--
+>  8 files changed, 8 insertions(+), 16 deletions(-)
+> 
+> diff --git a/rdma/res-cmid.c b/rdma/res-cmid.c
+> index 7371c3a6..595af848 100644
+> --- a/rdma/res-cmid.c
+> +++ b/rdma/res-cmid.c
+> @@ -102,6 +102,7 @@ static int res_cm_id_line(struct rd *rd, const char *name, int idx,
+>  	uint32_t lqpn = 0, ps;
+>  	uint32_t cm_idn = 0;
+>  	char *comm = NULL;
+> +	SPRINT_BUF(b);
+>  
+>  	if (!nla_line[RDMA_NLDEV_ATTR_RES_STATE] ||
+>  	    !nla_line[RDMA_NLDEV_ATTR_RES_PS])
+> @@ -159,8 +160,6 @@ static int res_cm_id_line(struct rd *rd, const char *name, int idx,
+>  		goto out;
+>  
+>  	if (nla_line[RDMA_NLDEV_ATTR_RES_PID]) {
+> -		SPRINT_BUF(b);
+> -
+>  		pid = mnl_attr_get_u32(nla_line[RDMA_NLDEV_ATTR_RES_PID]);
+>  		if (!get_task_name(pid, b, sizeof(b)))
+>  			comm = b;
+> diff --git a/rdma/res-cq.c b/rdma/res-cq.c
+> index 2cfa4994..80994a03 100644
+> --- a/rdma/res-cq.c
+> +++ b/rdma/res-cq.c
+> @@ -63,6 +63,7 @@ static int res_cq_line(struct rd *rd, const char *name, int idx,
+>  	uint32_t cqn = 0;
+>  	uint64_t users;
+>  	uint32_t cqe;
+> +	SPRINT_BUF(b);
+>  
+>  	if (!nla_line[RDMA_NLDEV_ATTR_RES_CQE] ||
+>  	    !nla_line[RDMA_NLDEV_ATTR_RES_USECNT])
+> @@ -84,8 +85,6 @@ static int res_cq_line(struct rd *rd, const char *name, int idx,
+>  		goto out;
+>  
+>  	if (nla_line[RDMA_NLDEV_ATTR_RES_PID]) {
+> -		SPRINT_BUF(b);
+> -
+>  		pid = mnl_attr_get_u32(nla_line[RDMA_NLDEV_ATTR_RES_PID]);
+>  		if (!get_task_name(pid, b, sizeof(b)))
+>  			comm = b;
+> diff --git a/rdma/res-ctx.c b/rdma/res-ctx.c
+> index 500186d9..99736ea0 100644
+> --- a/rdma/res-ctx.c
+> +++ b/rdma/res-ctx.c
+> @@ -13,13 +13,12 @@ static int res_ctx_line(struct rd *rd, const char *name, int idx,
+>  	char *comm = NULL;
+>  	uint32_t ctxn = 0;
+>  	uint32_t pid = 0;
+> +	SPRINT_BUF(b);
+>  
+>  	if (!nla_line[RDMA_NLDEV_ATTR_RES_CTXN])
+>  		return MNL_CB_ERROR;
+>  
+>  	if (nla_line[RDMA_NLDEV_ATTR_RES_PID]) {
+> -		SPRINT_BUF(b);
+> -
+>  		pid = mnl_attr_get_u32(nla_line[RDMA_NLDEV_ATTR_RES_PID]);
+>  		if (!get_task_name(pid, b, sizeof(b)))
+>  			comm = b;
+> diff --git a/rdma/res-mr.c b/rdma/res-mr.c
+> index fb48d5df..e6c81d11 100644
+> --- a/rdma/res-mr.c
+> +++ b/rdma/res-mr.c
+> @@ -30,6 +30,7 @@ static int res_mr_line(struct rd *rd, const char *name, int idx,
+>  	uint32_t pdn = 0;
+>  	uint32_t mrn = 0;
+>  	uint32_t pid = 0;
+> +	SPRINT_BUF(b);
+>  
+>  	if (!nla_line[RDMA_NLDEV_ATTR_RES_MRLEN])
+>  		return MNL_CB_ERROR;
+> @@ -47,8 +48,6 @@ static int res_mr_line(struct rd *rd, const char *name, int idx,
+>  		goto out;
+>  
+>  	if (nla_line[RDMA_NLDEV_ATTR_RES_PID]) {
+> -		SPRINT_BUF(b);
+> -
+>  		pid = mnl_attr_get_u32(nla_line[RDMA_NLDEV_ATTR_RES_PID]);
+>  		if (!get_task_name(pid, b, sizeof(b)))
+>  			comm = b;
+> diff --git a/rdma/res-pd.c b/rdma/res-pd.c
+> index 66f91f42..0dbb310a 100644
+> --- a/rdma/res-pd.c
+> +++ b/rdma/res-pd.c
+> @@ -16,6 +16,7 @@ static int res_pd_line(struct rd *rd, const char *name, int idx,
+>  	uint32_t pid = 0;
+>  	uint32_t pdn = 0;
+>  	uint64_t users;
+> +	SPRINT_BUF(b);
+>  
+>  	if (!nla_line[RDMA_NLDEV_ATTR_RES_USECNT])
+>  		return MNL_CB_ERROR;
+> @@ -34,8 +35,6 @@ static int res_pd_line(struct rd *rd, const char *name, int idx,
+>  			nla_line[RDMA_NLDEV_ATTR_RES_UNSAFE_GLOBAL_RKEY]);
+>  
+>  	if (nla_line[RDMA_NLDEV_ATTR_RES_PID]) {
+> -		SPRINT_BUF(b);
+> -
+>  		pid = mnl_attr_get_u32(nla_line[RDMA_NLDEV_ATTR_RES_PID]);
+>  		if (!get_task_name(pid, b, sizeof(b)))
+>  			comm = b;
+> diff --git a/rdma/res-qp.c b/rdma/res-qp.c
+> index c180a97e..cd2f4aa2 100644
+> --- a/rdma/res-qp.c
+> +++ b/rdma/res-qp.c
+> @@ -86,6 +86,7 @@ static int res_qp_line(struct rd *rd, const char *name, int idx,
+>  	uint32_t port = 0, pid = 0;
+>  	uint32_t pdn = 0;
+>  	char *comm = NULL;
+> +	SPRINT_BUF(b);
+>  
+>  	if (!nla_line[RDMA_NLDEV_ATTR_RES_LQPN] ||
+>  	    !nla_line[RDMA_NLDEV_ATTR_RES_SQ_PSN] ||
+> @@ -146,8 +147,6 @@ static int res_qp_line(struct rd *rd, const char *name, int idx,
+>  		goto out;
+>  
+>  	if (nla_line[RDMA_NLDEV_ATTR_RES_PID]) {
+> -		SPRINT_BUF(b);
+> -
+>  		pid = mnl_attr_get_u32(nla_line[RDMA_NLDEV_ATTR_RES_PID]);
+>  		if (!get_task_name(pid, b, sizeof(b)))
+>  			comm = b;
+> diff --git a/rdma/res-srq.c b/rdma/res-srq.c
+> index cf9209d7..758bb193 100644
+> --- a/rdma/res-srq.c
+> +++ b/rdma/res-srq.c
+> @@ -183,13 +183,12 @@ static int res_srq_line(struct rd *rd, const char *name, int idx,
+>  	char qp_str[MAX_QP_STR_LEN] = {};
+>  	char *comm = NULL;
+>  	uint8_t type = 0;
+> +	SPRINT_BUF(b);
+>  
+>  	if (!nla_line[RDMA_NLDEV_ATTR_RES_SRQN])
+>  		return MNL_CB_ERROR;
+>  
+>  	if (nla_line[RDMA_NLDEV_ATTR_RES_PID]) {
+> -		SPRINT_BUF(b);
+> -
+>  		pid = mnl_attr_get_u32(nla_line[RDMA_NLDEV_ATTR_RES_PID]);
+>  		if (!get_task_name(pid, b, sizeof(b)))
+>  			comm = b;
+> diff --git a/rdma/stat.c b/rdma/stat.c
+> index 3df2c98f..c7dde680 100644
+> --- a/rdma/stat.c
+> +++ b/rdma/stat.c
+> @@ -223,6 +223,7 @@ static int res_counter_line(struct rd *rd, const char *name, int index,
+>  	struct nlattr *hwc_table, *qp_table;
+>  	struct nlattr *nla_entry;
+>  	const char *comm = NULL;
+> +	SPRINT_BUF(b);
+>  	bool isfirst;
+>  	int err;
+>  
+> @@ -248,8 +249,6 @@ static int res_counter_line(struct rd *rd, const char *name, int index,
+>  		return MNL_CB_OK;
+>  
+>  	if (nla_line[RDMA_NLDEV_ATTR_RES_PID]) {
+> -		SPRINT_BUF(b);
+> -
+>  		pid = mnl_attr_get_u32(nla_line[RDMA_NLDEV_ATTR_RES_PID]);
+>  		if (!get_task_name(pid, b, sizeof(b)))
+>  			comm = b;
 
