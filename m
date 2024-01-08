@@ -1,74 +1,82 @@
-Return-Path: <linux-kernel+bounces-20078-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20079-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 981D882790B
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 21:17:23 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C023682790D
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 21:17:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BD3101C23050
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 20:17:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6EEFE28448A
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 20:17:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E9CD54FB7;
-	Mon,  8 Jan 2024 20:16:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BA7856472;
+	Mon,  8 Jan 2024 20:16:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amarulasolutions.com header.i=@amarulasolutions.com header.b="DjY6wFQW"
+	dkim=pass (1024-bit key) header.d=amarulasolutions.com header.i=@amarulasolutions.com header.b="OcU+N4K8"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D798355E50
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 20:16:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 737BA56443
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 20:16:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=amarulasolutions.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amarulasolutions.com
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-5534dcfdd61so3969854a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 12:16:28 -0800 (PST)
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-5574feb7958so2493432a12.3
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 12:16:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amarulasolutions.com; s=google; t=1704744987; x=1705349787; darn=vger.kernel.org;
+        d=amarulasolutions.com; s=google; t=1704744988; x=1705349788; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=c6lTYGwOZkH/q3mVT10Wfxgf2APvMbHICMTqCuHaYlQ=;
-        b=DjY6wFQW3LhX9PezQ2OplLYWgcy2hI/cSii4x61bmpleZrLLcQEbXwbppxMo2XTqSS
-         XjsU1x3h2g1j+tLyuN9NumQMUJUsBMQkyb5ODrE2/6SoC8bvyttc3xdwJ2aallPUuJoq
-         c0vTMHPiVzLwPh7FSp5qHqUQKBWDtTB39wqb8=
+        bh=uPj6dK4Y6vsktwHdkLF/o85MNUXF5Ogkk69ytI2SuLg=;
+        b=OcU+N4K8XQ9L8CBeZd7kbLR0weNxCjMlJx7hxPGbG3Y5yAS0+s0/xWcs/hsKtQnzHu
+         cisH8c7sEXdunEKTxcH/zJYpGCHG8+HgbQcItNRE8LmdfBGQPIBC5A123+ZqbLdApLlb
+         kgA/idQAMGn13SmvAAJD4Hc+aOOQW8EQdJBIs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704744987; x=1705349787;
+        d=1e100.net; s=20230601; t=1704744988; x=1705349788;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=c6lTYGwOZkH/q3mVT10Wfxgf2APvMbHICMTqCuHaYlQ=;
-        b=BVIAJzO0UjxGMd31QJxY6RDg9Rl8qOQS4fIuirzmyAdC2lls1Yxrno/PjSakeVtZg7
-         M0jwsVC6k988hLPtLdMmpT83iaEoVmYjowWIbNU/qDDXK4srGOb0RHuuJqIdAu0HZK9y
-         w7Zte+XB63B+yQCamMYULdZOhqQ8wDvG30D1RxoV7+qT6xvfH0IDw9Uq3oMnzNjsjRfu
-         ytmtD/2rUcxnXRnqWLOUWZvqNVfjFbyKaxvP/Lar57Cs/co15fgqFqdYMAOvXnhw1Fd6
-         nR3hn+Ll7UkkAaFjwbIeEsjuTIsPYBAeE4I0jYS1/TNsJ2U78Pko+Zsjz33OG+My/PZO
-         6drQ==
-X-Gm-Message-State: AOJu0YylRe+pieEa6h2D/DSvNBFX11aXxT438otKBSvKWkLp5rqEO4cv
-	F23tZoLFqnEtnYFhhL/I/XPHZD2SrqBZgZMaPBcOWLZPo4Q=
-X-Google-Smtp-Source: AGHT+IH571bHgLenmr1+KWUBb4GbCe9fNk/ox6ov48UEPndOfewqWXbJLWttw2GX2aE8VnQZLowacw==
-X-Received: by 2002:a05:6402:7c2:b0:557:7501:4242 with SMTP id u2-20020a05640207c200b0055775014242mr288476edy.12.1704744986947;
-        Mon, 08 Jan 2024 12:16:26 -0800 (PST)
+        bh=uPj6dK4Y6vsktwHdkLF/o85MNUXF5Ogkk69ytI2SuLg=;
+        b=ds7uiDbW/j6rTMundFX9rXjn3I3PdbpQuk3ld+vr9lZLDIjDhUuJVlGi1Ei0U9hMke
+         q078pWulVgxK02o0KHCZiWiAxfgbUp0PmoG1Iya54QwTdgcfvsN78/G7FyMVJI5bz5li
+         wqiJ6y45jGCtm3sn7gdrou68RLJ92y2JN0N38EIFl0URqOAcO0QNtjsweJzdoOwC9vkf
+         l0pwyLx3F2ZAG8eWwB0RoBlGY6vOqLmxDqbLyBAmSCHtMnwU+Z6rhVCiHgCzxoTPIGZH
+         wy8tT6Lw8V4UFDD42qcy7F4BTWUjbHwVLiepbECnxDkkaiMq+oG5s/PkYlbJvMs2z02s
+         PjQg==
+X-Gm-Message-State: AOJu0YzHGuvpY/Pr/ezrMUaU2zy47X5snFHvthrjMR1I0DF8AJoVdN2Q
+	S1xgfnlj4ofU/FlbUeKP1VAzxIcRuJD7WTXPd+zMyIX+OpA=
+X-Google-Smtp-Source: AGHT+IGrVO/mj2lDXlfdaxVxV7Vk6MkhS7TNruVIj2gBo7vMSKctLqbruq6TfuxXv46NP1kfhsXTgQ==
+X-Received: by 2002:a50:d55b:0:b0:557:6401:e7c with SMTP id f27-20020a50d55b000000b0055764010e7cmr2320287edj.18.1704744988646;
+        Mon, 08 Jan 2024 12:16:28 -0800 (PST)
 Received: from dario-ThinkPad-T14s-Gen-2i.homenet.telecomitalia.it (host-87-2-38-81.retail.telecomitalia.it. [87.2.38.81])
-        by smtp.gmail.com with ESMTPSA id by26-20020a0564021b1a00b00555fd008741sm173699edb.95.2024.01.08.12.16.25
+        by smtp.gmail.com with ESMTPSA id by26-20020a0564021b1a00b00555fd008741sm173699edb.95.2024.01.08.12.16.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Jan 2024 12:16:26 -0800 (PST)
+        Mon, 08 Jan 2024 12:16:28 -0800 (PST)
 From: Dario Binacchi <dario.binacchi@amarulasolutions.com>
 To: linux-kernel@vger.kernel.org
 Cc: linux-amarula@amarulasolutions.com,
 	Alexandre Torgue <alexandre.torgue@foss.st.com>,
 	Dario Binacchi <dario.binacchi@amarulasolutions.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Linus Walleij <linus.walleij@linaro.org>,
 	Conor Dooley <conor+dt@kernel.org>,
+	Daniel Vetter <daniel@ffwll.ch>,
+	David Airlie <airlied@gmail.com>,
+	Jessica Zhang <quic_jesszhan@quicinc.com>,
 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
 	Rob Herring <robh+dt@kernel.org>,
+	Sam Ravnborg <sam@ravnborg.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
 	devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-stm32@st-md-mailman.stormreply.com
-Subject: [PATCH v5 4/8] ARM: dts: stm32: add display support on stm32f769-disco
-Date: Mon,  8 Jan 2024 21:15:49 +0100
-Message-ID: <20240108201618.2798649-5-dario.binacchi@amarulasolutions.com>
+	dri-devel@lists.freedesktop.org
+Subject: [PATCH v5 5/8] dt-bindings: nt35510: add compatible for FRIDA FRD400B25025-A-CTK
+Date: Mon,  8 Jan 2024 21:15:50 +0100
+Message-ID: <20240108201618.2798649-6-dario.binacchi@amarulasolutions.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240108201618.2798649-1-dario.binacchi@amarulasolutions.com>
 References: <20240108201618.2798649-1-dario.binacchi@amarulasolutions.com>
@@ -80,127 +88,46 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The patch adds display support on the stm32f769-disco board.
+The patch adds the FRIDA FRD400B25025-A-CTK panel, which belongs to the
+Novatek NT35510-based panel family.
 
 Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+
 ---
 
-(no changes since v1)
+Changes in v5:
+- Add Acked-by tag of Krzysztof Kozlowski
+- Add Reviewed-by tag of Linus Walleij
 
- arch/arm/boot/dts/st/stm32f769-disco.dts | 72 +++++++++++++++++++++++-
- 1 file changed, 71 insertions(+), 1 deletion(-)
+Changes in v4:
+- Put the "enum" list in alphabetical order
 
-diff --git a/arch/arm/boot/dts/st/stm32f769-disco.dts b/arch/arm/boot/dts/st/stm32f769-disco.dts
-index 8632bd866272..d1eb5f9c78bf 100644
---- a/arch/arm/boot/dts/st/stm32f769-disco.dts
-+++ b/arch/arm/boot/dts/st/stm32f769-disco.dts
-@@ -41,7 +41,7 @@
-  */
- 
- /dts-v1/;
--#include "stm32f746.dtsi"
-+#include "stm32f769.dtsi"
- #include "stm32f769-pinctrl.dtsi"
- #include <dt-bindings/input/input.h>
- #include <dt-bindings/gpio/gpio.h>
-@@ -60,6 +60,19 @@ memory@c0000000 {
- 		reg = <0xC0000000 0x1000000>;
- 	};
- 
-+	reserved-memory {
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+		ranges;
-+
-+		linux,dma {
-+			compatible = "shared-dma-pool";
-+			linux,dma-default;
-+			no-map;
-+			size = <0x100000>;
-+		};
-+	};
-+
- 	aliases {
- 		serial0 = &usart1;
- 	};
-@@ -85,6 +98,13 @@ button-0 {
- 		};
- 	};
- 
-+	panel_backlight: panel-backlight {
-+		compatible = "gpio-backlight";
-+		gpios = <&gpioi 14 GPIO_ACTIVE_HIGH>;
-+		default-on;
-+		status = "okay";
-+	};
-+
- 	usbotg_hs_phy: usb-phy {
- 		#phy-cells = <0>;
- 		compatible = "usb-nop-xceiv";
-@@ -114,6 +134,46 @@ &clk_hse {
- 	clock-frequency = <25000000>;
- };
- 
-+&dsi {
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+	status = "okay";
-+
-+	ports {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		port@0 {
-+			reg = <0>;
-+			dsi_in: endpoint {
-+				remote-endpoint = <&ltdc_out_dsi>;
-+			};
-+		};
-+
-+		port@1 {
-+			reg = <1>;
-+			dsi_out: endpoint {
-+				remote-endpoint = <&dsi_panel_in>;
-+			};
-+		};
-+	};
-+
-+	panel0: panel-dsi@0 {
-+		compatible = "orisetech,otm8009a";
-+		reg = <0>; /* dsi virtual channel (0..3) */
-+		reset-gpios = <&gpioj 15 GPIO_ACTIVE_LOW>;
-+		power-supply = <&vcc_3v3>;
-+		backlight = <&panel_backlight>;
-+		status = "okay";
-+
-+		port {
-+			dsi_panel_in: endpoint {
-+				remote-endpoint = <&dsi_out>;
-+			};
-+		};
-+	};
-+};
-+
- &i2c1 {
- 	pinctrl-0 = <&i2c1_pins_b>;
- 	pinctrl-names = "default";
-@@ -122,6 +182,16 @@ &i2c1 {
- 	status = "okay";
- };
- 
-+&ltdc {
-+	status = "okay";
-+
-+	port {
-+		ltdc_out_dsi: endpoint@0 {
-+			remote-endpoint = <&dsi_in>;
-+		};
-+	};
-+};
-+
- &rtc {
- 	status = "okay";
- };
+Changes in v3:
+- Use "enum" to have less code changed
+
+Changes in v2:
+- Add a dash in front of each "items:"
+
+ .../devicetree/bindings/display/panel/novatek,nt35510.yaml    | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/Documentation/devicetree/bindings/display/panel/novatek,nt35510.yaml b/Documentation/devicetree/bindings/display/panel/novatek,nt35510.yaml
+index bc92928c805b..a4afaff483b7 100644
+--- a/Documentation/devicetree/bindings/display/panel/novatek,nt35510.yaml
++++ b/Documentation/devicetree/bindings/display/panel/novatek,nt35510.yaml
+@@ -15,7 +15,9 @@ allOf:
+ properties:
+   compatible:
+     items:
+-      - const: hydis,hva40wv1
++      - enum:
++          - frida,frd400b25025
++          - hydis,hva40wv1
+       - const: novatek,nt35510
+     description: This indicates the panel manufacturer of the panel
+       that is in turn using the NT35510 panel driver. The compatible
 -- 
 2.43.0
 
