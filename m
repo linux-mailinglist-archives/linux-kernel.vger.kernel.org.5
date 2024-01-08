@@ -1,98 +1,103 @@
-Return-Path: <linux-kernel+bounces-20009-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20010-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE085827831
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 20:11:13 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C0D2827835
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 20:11:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A21571F23673
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 19:11:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1C1811C22F3F
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 19:11:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F04E454F85;
-	Mon,  8 Jan 2024 19:10:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF81354FA3;
+	Mon,  8 Jan 2024 19:11:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ha+phNj9"
+	dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b="infJdD5p"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mx0.riseup.net (mx0.riseup.net [198.252.153.6])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26CE454F86;
-	Mon,  8 Jan 2024 19:10:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98380C433C8;
-	Mon,  8 Jan 2024 19:10:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704741058;
-	bh=WraLqJFI2xWoiB1MhS47d5f1UTVr6ZVdi8PhHonYykA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ha+phNj9Ek3W6jeVKjM5BPYlwMk2c5EA7ancxkpxbvePrLiKrXTAtIHdnidxdrw3y
-	 PF8twwQAuLD2uAU8ZsEZZCJs62RNdnUXixgaQZioKvSsaGzJ66Q6XifzH11Dp1ay4J
-	 2jHnJvAWbmxnIrsUFpSGa7fWvgAl5f2gyYHso8s3Mel/1Cx4wprLnu6WWR2xS9Igbq
-	 Z5gvsc2zRPgReKVL8t6ldX+eR11OxtHJzwviLrPUGsbuzPx4Za/h3lQugjLIFSi3BJ
-	 EdcEgqCJIJ3rh9/OoHtsMc2pZxf2yDfdpDa156GjyBSQxSB/WZr4DnIH72FtL57Fv5
-	 PvjiEF0+Eng0g==
-Received: (nullmailer pid 1897186 invoked by uid 1000);
-	Mon, 08 Jan 2024 19:10:52 -0000
-Date: Mon, 8 Jan 2024 12:10:52 -0700
-From: Rob Herring <robh@kernel.org>
-To: Bartosz Golaszewski <brgl@bgdev.pl>
-Cc: Kalle Valo <kvalo@kernel.org>,
-	"David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Heiko Stuebner <heiko@sntech.de>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Chris Morgan <macromorgan@hotmail.com>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	=?iso-8859-1?Q?N=EDcolas_F_=2E_R_=2E_A_=2E?= Prado <nfraprado@collabora.com>,
-	Marek Szyprowski <m.szyprowski@samsung.com>,
-	Peng Fan <peng.fan@nxp.com>, Robert Richter <rrichter@amd.com>,
-	Dan Williams <dan.j.williams@intel.com>,
-	Jonathan Cameron <"Jonath an.Cameron"@huawei.com>,
-	Terry Bowman <terry.bowman@amd.com>,
-	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
-	Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-	Huacai Chen <chenhuacai@kernel.org>, Alex Elder <elder@linaro.org>,
-	Srini Kandagatla <srinivas.kandagatla@linaro.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-msm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-pci@vger.kernel.org,
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: [RFC 6/9] dt-bindings: vendor-prefixes: add a PCI prefix for
- Qualcomm Atheros
-Message-ID: <20240108191052.GA1893484-robh@kernel.org>
-References: <20240104130123.37115-1-brgl@bgdev.pl>
- <20240104130123.37115-7-brgl@bgdev.pl>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A206954F85;
+	Mon,  8 Jan 2024 19:11:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=riseup.net
+Received: from fews02-sea.riseup.net (fews02-sea-pn.riseup.net [10.0.1.112])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx0.riseup.net (Postfix) with ESMTPS id 4T83ZB0qJ2z9wqT;
+	Mon,  8 Jan 2024 19:11:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
+	t=1704741074; bh=BcZ3KVI53mstXqau6zectZz4RnmhY47xgMYJZN+ZIaQ=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=infJdD5p34mA9gKPvJptIjOzdbIfe9Hujjif438x1zRpCeP2wBWmtoAcqAHAmtZRD
+	 9w7Xqc0zwSdpzlxCEYwJiFccWwGGOCclyO+ECrxq5anWS21fevSpvMz4Z/uAOFq2ul
+	 7NNQLRs3Jt4dioKbYJv71J5E6QFXSAsWijtNImf4=
+X-Riseup-User-ID: 7573B3426939D883A3225FA69B0B75C911D2C11A815A2296FDD774F32314207C
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+	 by fews02-sea.riseup.net (Postfix) with ESMTPSA id 4T83Z46ZlrzFrsD;
+	Mon,  8 Jan 2024 19:11:08 +0000 (UTC)
+Message-ID: <2737e91a-27dd-4c43-a678-47e041c42559@riseup.net>
+Date: Mon, 8 Jan 2024 16:11:05 -0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240104130123.37115-7-brgl@bgdev.pl>
+Subject: Re: [PATCH 7/7] drm/vkms: Create KUnit tests for YUV conversions
+Content-Language: en-US
+To: Maxime Ripard <mripard@kernel.org>
+Cc: Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>,
+ Haneen Mohammed <hamohammed.sa@gmail.com>,
+ Harry Wentland <harry.wentland@amd.com>, Jonathan Corbet <corbet@lwn.net>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ =?UTF-8?Q?Ma=C3=ADra_Canal?= <mairacanal@riseup.net>,
+ Melissa Wen <melissa.srw@gmail.com>,
+ Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
+ Thomas Zimmermann <tzimmermann@suse.de>, dri-devel@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
+References: <20240105-vkms-yuv-v1-0-34c4cd3455e0@riseup.net>
+ <20240105-vkms-yuv-v1-7-34c4cd3455e0@riseup.net>
+ <5z66ivuhfrzrnuzt6lwjfm5fuozxlgqsco3qb5rfzyf6mil5ms@2svqtlcncyjj>
+From: Arthur Grillo <arthurgrillo@riseup.net>
+In-Reply-To: <5z66ivuhfrzrnuzt6lwjfm5fuozxlgqsco3qb5rfzyf6mil5ms@2svqtlcncyjj>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Thu, Jan 04, 2024 at 02:01:20PM +0100, Bartosz Golaszewski wrote:
-> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+
+
+On 08/01/24 07:15, Maxime Ripard wrote:
+> Hi Arthur,
 > 
-> Document the PCI vendor prefix for Qualcomm Atheros so that we can
-> define the QCA PCI devices on device tree.
+> On Fri, Jan 05, 2024 at 01:35:08PM -0300, Arthur Grillo wrote:
+>> diff --git a/drivers/gpu/drm/vkms/vkms_formats.c b/drivers/gpu/drm/vkms/vkms_formats.c
+>> index b654b6661a20..11df990a0fa9 100644
+>> --- a/drivers/gpu/drm/vkms/vkms_formats.c
+>> +++ b/drivers/gpu/drm/vkms/vkms_formats.c
+>> @@ -440,3 +440,7 @@ void *get_pixel_write_function(u32 format)
+>>  		return NULL;
+>>  	}
+>>  }
+>> +
+>> +#ifdef CONFIG_DRM_VKMS_KUNIT_TESTS
+>> +#include "tests/vkms_format_test.c"
+>> +#endif
+> 
+> I assume this is due to testing a static function?
 
-Why? vendor-prefixes.yaml is only applied to property names. 'qca' 
-should be the prefix for those.
+Yeah, you're right.
 
-Rob
+> 
+> If so, the preferred way nowadays is to use EXPORT_SYMBOL_IF_KUNIT or
+> EXPORT_SYMBOL_FOR_TESTS_ONLY if it's DRM/KMS only.
+
+Oh, I didn't know about that. I think I will use EXPORT_SYMBOL_IF_KUNIT
+as you can use VISIBLE_IF_KUNIT to maintain the function static if the
+test is not used.
+
+~Arthur Grillo
+> 
+> Maxime
 
