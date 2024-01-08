@@ -1,142 +1,150 @@
-Return-Path: <linux-kernel+bounces-19651-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19650-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92274827056
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 14:51:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BE371827053
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 14:51:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3F211283414
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 13:51:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6C47D2811B6
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 13:51:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C66E4642A;
-	Mon,  8 Jan 2024 13:50:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fairphone.com header.i=@fairphone.com header.b="MdOVdgNC"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92E5645C07;
+	Mon,  8 Jan 2024 13:50:12 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBBD64642B
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 13:50:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fairphone.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fairphone.com
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a28d61ba65eso192857866b.3
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 05:50:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fairphone.com; s=fair; t=1704721814; x=1705326614; darn=vger.kernel.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=N7LXM3KgfbgyguER3OfUGbhzrMJWhuXRU6uPC0haymU=;
-        b=MdOVdgNCBMnZDVPiTA0fmGyibHCz6I7zC7igsHiAw8LZSYQuTCPduz6lWQ2Csx9G2G
-         LMciZ2wfRMwop/K8klJ4yZZMRrQRsJRHR49WCGI5ajcUROYx9pGKQOJsKCVRZuMapAqL
-         O80iZXdooDYJsga72TYmpSoUBTli1UVwCLtqDta6hxDYGDW6eh6bXXo27nBWrNcOwS1Q
-         sstxOj04eLxnYCqtZ2qzTrHlbG7MZ4eu89JklhCBHbVHL7S1HBMQZ4qevJ30BMI+jIX4
-         7bIb/ffNRXMeQKBkNNQGE/0VKwLVttCHdlINwQR8Wt8/0KSx5murK022GaT3InpBBs+/
-         0OMw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704721814; x=1705326614;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=N7LXM3KgfbgyguER3OfUGbhzrMJWhuXRU6uPC0haymU=;
-        b=xTzsUvfiXkaznHn16JYpnexL21zrGr/LkmIPqBQIsvZnA8zIq2HZ2pfzzUqpXClT6l
-         M9U/nwGXTb2Q1EWfMMrzSVffePGxyoTzhTT0OqONrbet4hF1BKKh1zE2TQfPKl2NXnJr
-         eD8Cm+EfzSguEUZJlL7F1qHKNo4029gTHSDg3owFpUDghBDUWMm/thEVuBgbfzixMy7Z
-         +S0QS4UcJzmgGYrZPpqSL5MsG7Y3BQytn88HGnWEOQI+cya5vg57Bh92noUQeqihW+q/
-         rPEvzkCEq9IeFGYTznK0TUacykAIU4UzxjeaJ/lZW0xM+m7CzNfZMjUThLDvQu2+0PHH
-         QogQ==
-X-Gm-Message-State: AOJu0Yyq5pa+fGq31HATxzG/0M2vA2VPqf7OngMv4RCLNWrAIfC9SHz1
-	KYqw+PbEnej6gR2nhCCHrA3RCW71/O5GWQ==
-X-Google-Smtp-Source: AGHT+IGM5+CmWIg9M/4CszE6SvRMtGuh7gRrlse6pdfdbou4+pHKIRI/SPkLVIYVE8jFlP9FC8RDHw==
-X-Received: by 2002:a17:906:f587:b0:a28:aab8:c4e7 with SMTP id cm7-20020a170906f58700b00a28aab8c4e7mr1281438ejd.34.1704721813712;
-        Mon, 08 Jan 2024 05:50:13 -0800 (PST)
-Received: from otso.luca.vpn.lucaweiss.eu (144-178-202-138.static.ef-service.nl. [144.178.202.138])
-        by smtp.gmail.com with ESMTPSA id fx19-20020a170906b75300b00a2362c5e3dbsm3930173ejb.151.2024.01.08.05.50.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Jan 2024 05:50:12 -0800 (PST)
-From: Luca Weiss <luca.weiss@fairphone.com>
-Date: Mon, 08 Jan 2024 14:49:57 +0100
-Subject: [PATCH RFT] arm64: dts: qcom: sm8350: Reenable crypto & cryptobam
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6086C45BE1;
+	Mon,  8 Jan 2024 13:50:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.216])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4T7wNj6VDyz67NNV;
+	Mon,  8 Jan 2024 21:47:33 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id E4007140A86;
+	Mon,  8 Jan 2024 21:50:06 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Mon, 8 Jan
+ 2024 13:50:06 +0000
+Date: Mon, 8 Jan 2024 13:50:05 +0000
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: Ira Weiny <ira.weiny@intel.com>
+CC: Dan Williams <dan.j.williams@intel.com>, Smita Koralahalli
+	<Smita.KoralahalliChannabasappa@amd.com>, Shiju Jose <shiju.jose@huawei.com>,
+	Yazen Ghannam <yazen.ghannam@amd.com>, "Davidlohr Bueso" <dave@stgolabs.net>,
+	Dave Jiang <dave.jiang@intel.com>, "Alison Schofield"
+	<alison.schofield@intel.com>, Vishal Verma <vishal.l.verma@intel.com>, Ard
+ Biesheuvel <ardb@kernel.org>, <linux-efi@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-cxl@vger.kernel.org>
+Subject: Re: [PATCH v5 9/9] cxl/pci: Register for and process CPER events
+Message-ID: <20240108135005.0000288f@Huawei.com>
+In-Reply-To: <20231220-cxl-cper-v5-9-1bb8a4ca2c7a@intel.com>
+References: <20231220-cxl-cper-v5-0-1bb8a4ca2c7a@intel.com>
+	<20231220-cxl-cper-v5-9-1bb8a4ca2c7a@intel.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240108-sm8350-qce-v1-1-b7d586ff38af@fairphone.com>
-X-B4-Tracking: v=1; b=H4sIAIT9m2UC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDIxMDQwML3eJcC2NTA93C5FRds8SURBPLNEsDM1NzJaCGgqLUtMwKsGHRSkF
- uIUqxtbUA3+epsGEAAAA=
-To: Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>, 
- Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, 
- Bhupesh Sharma <bhupesh.linux@gmail.com>, David Heidelberg <david@ixit.cz>
-Cc: ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org, 
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, 
- linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
- linux-kernel@vger.kernel.org, Luca Weiss <luca.weiss@fairphone.com>
-X-Mailer: b4 0.12.4
+X-ClientProxiedBy: lhrpeml500002.china.huawei.com (7.191.160.78) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-When num-channels and qcom,num-ees is not provided in devicetree, the
-driver will try to read these values from the registers during probe but
-this fails if the interconnect is not on and then crashes the system.
+On Wed, 20 Dec 2023 16:17:36 -0800
+Ira Weiny <ira.weiny@intel.com> wrote:
 
-So we can provide these properties in devicetree (queried after patching
-BAM driver to enable the necessary interconnect) so we can probe
-cryptobam without reading registers and then also use the QCE as
-expected.
+> If the firmware has configured CXL event support to be firmware first
+> the OS can process those events through CPER records.  The CXL layer has
+> unique DPA to HPA knowledge and standard event trace parsing in place.
+> 
+> CPER records contain Bus, Device, Function information which can be used
+> to identify the PCI device which is sending the event.
+> 
+> Change the PCI driver registration to include registration of a CXL
+> CPER callback to process events through the trace subsystem.
+> 
+> Use new scoped based management to simplify the handling of the PCI
+> device object.
+> 
+> NOTE this patch depends on Dan's addition of a device guard[1].
+> 
+> [1] https://lore.kernel.org/all/170250854466.1522182.17555361077409628655.stgit@dwillia2-xfh.jf.intel.com/
+> 
+One trivial comment inline.
+The guard change Dan suggests makes sense.  Otherwise I'm fine with this.
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-Fixes: 4d29db204361 ("arm64: dts: qcom: sm8350: fix BAM DMA crash and reboot")
-Fixes: f1040a7fe8f0 ("arm64: dts: qcom: sm8350: Add Crypto Engine support")
-Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
----
-Not tested myself, but David Heidelberg was so nice and ran it on a
-SM8350 board in a test farm and it seems to be working as expected.
+I'll bolt in the other stuff I need to test it from QEMU this week.
+Did the protocol error first, but these are easy to add now I have
+that working,
 
-But still please test it on some other boards so make sure it actually
-works as expected there also.
----
- arch/arm64/boot/dts/qcom/sm8350.dtsi | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+Jonathan
+> ---
+> Changes for v5:
+> [Smita/djbw: trace a generic UUID if the type is unknown]
+> [Jonathan: clean up pci and device state error handling]
+> [iweiny: consolidate the trace function]
+> ---
+>  drivers/cxl/core/mbox.c   | 49 ++++++++++++++++++++++++++++-----------
+>  drivers/cxl/cxlmem.h      |  4 ++++
+>  drivers/cxl/pci.c         | 58 ++++++++++++++++++++++++++++++++++++++++++++++-
+>  include/linux/cxl-event.h |  1 +
+>  4 files changed, 98 insertions(+), 14 deletions(-)
+> 
+> diff --git a/drivers/cxl/core/mbox.c b/drivers/cxl/core/mbox.c
+> index 06957696247b..b801faaccd45 100644
+> --- a/drivers/cxl/core/mbox.c
+> +++ b/drivers/cxl/core/mbox.c
+> @@ -836,21 +836,44 @@ int cxl_enumerate_cmds(struct cxl_memdev_state *mds)
+>  }
+>  EXPORT_SYMBOL_NS_GPL(cxl_enumerate_cmds, CXL);
+>  
+> -static void cxl_event_trace_record(const struct cxl_memdev *cxlmd,
+> -				   enum cxl_event_log_type type,
+> -				   struct cxl_event_record_raw *record)
+> +void cxl_event_trace_record(const struct cxl_memdev *cxlmd,
+> +			    enum cxl_event_log_type type,
+> +			    enum cxl_event_type event_type,
+> +			    const uuid_t *uuid, union cxl_event *evt)
+>  {
+> -	union cxl_event *evt = &record->event;
+> -	uuid_t *id = &record->id;
+> -
+> -	if (uuid_equal(id, &CXL_EVENT_GEN_MEDIA_UUID))
+> +	switch (event_type) {
+> +	case CXL_CPER_EVENT_GEN_MEDIA:
+>  		trace_cxl_general_media(cxlmd, type, &evt->gen_media);
+> -	else if (uuid_equal(id, &CXL_EVENT_DRAM_UUID))
+> +		break;
 
-diff --git a/arch/arm64/boot/dts/qcom/sm8350.dtsi b/arch/arm64/boot/dts/qcom/sm8350.dtsi
-index b46236235b7f..3cd75ab552c5 100644
---- a/arch/arm64/boot/dts/qcom/sm8350.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm8350.dtsi
-@@ -1754,10 +1754,10 @@ cryptobam: dma-controller@1dc4000 {
- 			#dma-cells = <1>;
- 			qcom,ee = <0>;
- 			qcom,controlled-remotely;
-+			num-channels = <16>;
-+			qcom,num-ees = <4>;
- 			iommus = <&apps_smmu 0x594 0x0011>,
- 				 <&apps_smmu 0x596 0x0011>;
--			/* FIXME: Probing BAM DMA causes some abort and system hang */
--			status = "fail";
- 		};
- 
- 		crypto: crypto@1dfa000 {
-@@ -1769,8 +1769,6 @@ crypto: crypto@1dfa000 {
- 				 <&apps_smmu 0x596 0x0011>;
- 			interconnects = <&aggre2_noc MASTER_CRYPTO 0 &mc_virt SLAVE_EBI1 0>;
- 			interconnect-names = "memory";
--			/* FIXME: dependency BAM DMA is disabled */
--			status = "disabled";
- 		};
- 
- 		ipa: ipa@1e40000 {
+Might as well return directly and save a reviewer having to check if anything else happens
+after the switch
 
----
-base-commit: 0dd3ee31125508cd67f7e7172247f05b7fd1753a
-change-id: 20240108-sm8350-qce-6ada49f90657
+> +	case CXL_CPER_EVENT_DRAM:
+>  		trace_cxl_dram(cxlmd, type, &evt->dram);
+> -	else if (uuid_equal(id, &CXL_EVENT_MEM_MODULE_UUID))
+> +		break;
+> +	case CXL_CPER_EVENT_MEM_MODULE:
+>  		trace_cxl_memory_module(cxlmd, type, &evt->mem_module);
+> -	else
+> -		trace_cxl_generic_event(cxlmd, type, id, &evt->generic);
+> +		break;
+> +	case CXL_CPER_EVENT_GENERIC:
+> +	default:
+> +		trace_cxl_generic_event(cxlmd, type, uuid, &evt->generic);
+> +		break;
+> +	}
+> +}
+> +EXPORT_SYMBOL_NS_GPL(cxl_event_trace_record, CXL);
 
-Best regards,
--- 
-Luca Weiss <luca.weiss@fairphone.com>
+
 
 
