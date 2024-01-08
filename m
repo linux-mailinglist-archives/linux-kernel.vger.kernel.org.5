@@ -1,118 +1,100 @@
-Return-Path: <linux-kernel+bounces-19609-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19610-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C444A826FA4
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 14:23:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id DBFEE826FA6
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 14:23:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D32291C21FA4
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 13:23:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0F4261C227E6
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 13:23:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CA8044C7D;
-	Mon,  8 Jan 2024 13:23:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="ogsUDni9"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E170E44C82;
+	Mon,  8 Jan 2024 13:23:32 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F5814438A;
-	Mon,  8 Jan 2024 13:23:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id DABA82000D;
-	Mon,  8 Jan 2024 13:23:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1704720183;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=FsViLUTtGI0FGj6ozi2lqrqfTfYZWRiUqJ4UdhRsYyw=;
-	b=ogsUDni9AfsiTRalY4li5F+jqN+/N+Tp9JzubNhq8uAJ6MDiHbpaBBgcJUWNVyuneKIIbw
-	BxUKQQs6s0hqqEWEL+0UWu9Qpc2uTWzzuRmFuabl1/cvD0nzvCfJtfCuuHgQoRD7Fc999B
-	Xa5hUMxrknJatJi0nrtqs8pP+MiLQOtnV8uEIuSrRPEB0D/UvwbA/KzJWxTTi4dp/RmXQ5
-	LspxUuU4nDlpqbcfyor79DHviSY4asL2mUfMlKcMVKAuuy83jXrik1UhGr+TBIOQ/MPeLz
-	5jIO4p4AADzQ1zuAsCUbOtiUT/D0pK/HUB5/zEz7m9iQeVbNRfr/AccReXLskg==
-Date: Mon, 8 Jan 2024 14:23:02 +0100
-From: Herve Codina <herve.codina@bootlin.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Saravana Kannan
- <saravanak@google.com>, linux-kernel@vger.kernel.org, Allan Nielsen
- <allan.nielsen@microchip.com>, Horatiu Vultur
- <horatiu.vultur@microchip.com>, Steen Hegelund
- <steen.hegelund@microchip.com>, Thomas Petazzoni
- <thomas.petazzoni@bootlin.com>, stable@vger.kernel.org
-Subject: Re: [PATCH v3 1/1] driver core: Keep the supplier fwnode consistent
- with the device
-Message-ID: <20240108142302.7ecd2705@bootlin.com>
-In-Reply-To: <2024010436-bulb-direness-5582@gregkh>
-References: <20231114074632.192858-1-herve.codina@bootlin.com>
-	<2024010436-bulb-direness-5582@gregkh>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2FBC41760;
+	Mon,  8 Jan 2024 13:23:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.31])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4T7vpK1Yzbz67vyB;
+	Mon,  8 Jan 2024 21:21:13 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id 5A1BD1400D9;
+	Mon,  8 Jan 2024 21:23:27 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Mon, 8 Jan
+ 2024 13:23:26 +0000
+Date: Mon, 8 Jan 2024 13:23:25 +0000
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: Ira Weiny <ira.weiny@intel.com>
+CC: Dan Williams <dan.j.williams@intel.com>, Smita Koralahalli
+	<Smita.KoralahalliChannabasappa@amd.com>, Shiju Jose <shiju.jose@huawei.com>,
+	Yazen Ghannam <yazen.ghannam@amd.com>, "Davidlohr Bueso" <dave@stgolabs.net>,
+	Dave Jiang <dave.jiang@intel.com>, "Alison Schofield"
+	<alison.schofield@intel.com>, Vishal Verma <vishal.l.verma@intel.com>, Ard
+ Biesheuvel <ardb@kernel.org>, <linux-efi@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-cxl@vger.kernel.org>
+Subject: Re: [PATCH v5 4/9] cxl/events: Remove passing a UUID to known event
+ traces
+Message-ID: <20240108132325.00000e9c@Huawei.com>
+In-Reply-To: <20231220-cxl-cper-v5-4-1bb8a4ca2c7a@intel.com>
+References: <20231220-cxl-cper-v5-0-1bb8a4ca2c7a@intel.com>
+	<20231220-cxl-cper-v5-4-1bb8a4ca2c7a@intel.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: herve.codina@bootlin.com
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml500002.china.huawei.com (7.191.160.78) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-Hi Greg,
+On Wed, 20 Dec 2023 16:17:31 -0800
+Ira Weiny <ira.weiny@intel.com> wrote:
 
-On Thu, 4 Jan 2024 16:39:49 +0100
-Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
-
-> On Tue, Nov 14, 2023 at 08:46:32AM +0100, Herve Codina wrote:
-> > The commit 3a2dbc510c43 ("driver core: fw_devlink: Don't purge child
-> > fwnode's consumer links") introduces the possibility to use the
-> > supplier's parent device instead of the supplier itself.
-> > In that case the supplier fwnode used is not updated and is no more
-> > consistent with the supplier device used.
-> > 
-> > Use the fwnode consistent with the supplier device when checking flags.
-> > 
-> > Fixes: 3a2dbc510c43 ("driver core: fw_devlink: Don't purge child fwnode's consumer links")
-> > Cc: stable@vger.kernel.org
-> > Signed-off-by: Herve Codina <herve.codina@bootlin.com>
-> > ---
-> > Changes v2 -> v3:
-> >   Do not update the supplier handle in order to keep the original handle
-> >   for debug traces.
-> > 
-> > Changes v1 -> v2:
-> >   Remove sup_handle check and related pr_debug() call as sup_handle cannot be
-> >   invalid if sup_dev is valid.
-> > 
-> >  drivers/base/core.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/base/core.c b/drivers/base/core.c
-> > index 4d8b315c48a1..440b52ec027f 100644
-> > --- a/drivers/base/core.c
-> > +++ b/drivers/base/core.c
-> > @@ -2082,7 +2082,7 @@ static int fw_devlink_create_devlink(struct device *con,
-> >  		 * supplier device indefinitely.
-> >  		 */
-> >  		if (sup_dev->links.status == DL_DEV_NO_DRIVER &&
-> > -		    sup_handle->flags & FWNODE_FLAG_INITIALIZED) {
-> > +		    sup_dev->fwnode->flags & FWNODE_FLAG_INITIALIZED) {
-> >  			dev_dbg(con,
-> >  				"Not linking %pfwf - dev might never probe\n",
-> >  				sup_handle);
-> > -- 
-> > 2.41.0
-> >   
+> The UUID data is redundant in the known event trace types.  The addition
+> of static defines allows the trace macros to create the UUID data inside
+> the trace thus removing unnecessary code.
 > 
-> Is this still needed?  If so, how come no one is noticing it?
+> Have well known trace events use static data to set the uuid field based
+> on the event type.
+> 
+> Suggested-by: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
 > 
 
-I think it is. At least, I don't see anything that make this patch obsolete.
+>  	TP_STRUCT__entry(
+>  		CXL_EVT_TP_entry
+> @@ -422,7 +424,8 @@ TRACE_EVENT(cxl_dram,
+>  	),
+>  
+>  	TP_fast_assign(
+> -		CXL_EVT_TP_fast_assign(cxlmd, log, uuid, rec->hdr);
+> +		CXL_EVT_TP_fast_assign(cxlmd, log, rec->hdr);
+> +		memcpy(&__entry->hdr_uuid, &CXL_EVENT_DRAM_UUID, sizeof(uuid_t));
 
-Hervé
+Hmm. Why not
+
+		__entry->hdr_uuid = CXL_EVENT_DRAM_UUID;
+?
+
+Compiler should be able to squish the stuff in the define down to data as as the
+UUID generation logic is pretty simple.
+
+I've not emulated the cper records for these yet, so not tested that works beyond
+compiling.
+
+J
+
+
 
