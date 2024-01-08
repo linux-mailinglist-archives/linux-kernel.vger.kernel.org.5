@@ -1,52 +1,53 @@
-Return-Path: <linux-kernel+bounces-19510-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19511-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 57F4E826E11
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 13:33:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC5A6826E15
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 13:33:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 54FD51C22537
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 12:33:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8DF001F22B6B
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 12:33:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F02113FE49;
-	Mon,  8 Jan 2024 12:28:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56EF54597B;
+	Mon,  8 Jan 2024 12:28:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MQep2QIx"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DPJJ1RNO"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FF1044C97;
-	Mon,  8 Jan 2024 12:28:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97C07C433A9;
-	Mon,  8 Jan 2024 12:28:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BB274596A;
+	Mon,  8 Jan 2024 12:28:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BBF91C433CA;
+	Mon,  8 Jan 2024 12:28:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704716935;
-	bh=0pMd2NkwNypVAaJM69uyrT+5T8QfS6QQ5RO+ZUtRpXU=;
+	s=k20201202; t=1704716938;
+	bh=KIh12wVbDmJiLHjHRse8HnJ7sh45nq/r0+4isSVV99Y=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=MQep2QIxQnkNOwduR2ZOD8jLRpKQ6Fy+7LpEVHLVsZJBUW8N+gbPfZ10lsFAhRL4Q
-	 3S6coIsvQ/mUQs/OG7oXCkZAw3+3hbPKu5W//EWJkhY4XdYOW3KoZkx42kC5Xi/fAq
-	 KtyIH4iIRi5qt/VG74LpVcUCUKL6tFEISp3OOwPlhn73jSgwklvb+LCdQh+fIQj3z6
-	 d5UWsHAitC4bizaGvJCRavHqg3qq/MoIedfZ91cfKt2+rN30CdreYB0P7RdCf+RoMJ
-	 8lzkq/ofm/QG9WJOFAgwD+aut2YFUu1zernUBmq31CghRR7ipuAgrDG8fuoBG0ZP7H
-	 s82uC9qM76NAQ==
+	b=DPJJ1RNOMq8OA+P+YYHyX5MQVybNVBAXdmytjK7+EB7yxDuOoYxkd+QwLwboxvJ1e
+	 s8xi6Nlj4R0yIO18YkhyedWPOPFEa8MIfryhNkIgwct+Se/a+1O1nIGPnFjngLiv2O
+	 UtFApi4ZbtA56JYGrR//Ng6s07WM+nyLtaBsaWn6IE/InZrMXfARP8zkbMjQ0onqd4
+	 265JR/AgH4RyPmpeenLqXjGCCX4UuCKKWQRlV+HYkk5B2G0Bh4etc9f6zQkH4IuORM
+	 3Txt5ngLeejGaPok6lhjlFPEkiSBCvnBUaTN1uT7EUOT6vqnm0hnx9BZGYoE8F/DT3
+	 aLBv3k0YgwVuQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Sarannya S <quic_sarannya@quicinc.com>,
-	Simon Horman <horms@kernel.org>,
-	"David S . Miller" <davem@davemloft.net>,
+Cc: Stefan Wahren <wahrenst@gmx.net>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Chen-Yu Tsai <wens@csie.org>,
+	Arnd Bergmann <arnd@arndb.de>,
 	Sasha Levin <sashal@kernel.org>,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	linux-arm-msm@vger.kernel.org,
-	netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 2/3] net: qrtr: ns: Return 0 if server port is not present
-Date: Mon,  8 Jan 2024 07:28:45 -0500
-Message-ID: <20240108122849.2090674-2-sashal@kernel.org>
+	linux@armlinux.org.uk,
+	jernej.skrabec@gmail.com,
+	samuel@sholland.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-sunxi@lists.linux.dev
+Subject: [PATCH AUTOSEL 5.15 3/3] ARM: sun9i: smp: fix return code check of of_property_match_string
+Date: Mon,  8 Jan 2024 07:28:46 -0500
+Message-ID: <20240108122849.2090674-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240108122849.2090674-1-sashal@kernel.org>
 References: <20240108122849.2090674-1-sashal@kernel.org>
@@ -61,43 +62,49 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.15.146
 Content-Transfer-Encoding: 8bit
 
-From: Sarannya S <quic_sarannya@quicinc.com>
+From: Stefan Wahren <wahrenst@gmx.net>
 
-[ Upstream commit 9bf2e9165f90dc9f416af53c902be7e33930f728 ]
+[ Upstream commit 643fe70e7bcdcc9e2d96952f7fc2bab56385cce5 ]
 
-When a 'DEL_CLIENT' message is received from the remote, the corresponding
-server port gets deleted. A DEL_SERVER message is then announced for this
-server. As part of handling the subsequent DEL_SERVER message, the name-
-server attempts to delete the server port which results in a '-ENOENT' error.
-The return value from server_del() is then propagated back to qrtr_ns_worker,
-causing excessive error prints.
-To address this, return 0 from control_cmd_del_server() without checking the
-return value of server_del(), since the above scenario is not an error case
-and hence server_del() doesn't have any other error return value.
+of_property_match_string returns an int; either an index from 0 or
+greater if successful or negative on failure. Even it's very
+unlikely that the DT CPU node contains multiple enable-methods
+these checks should be fixed.
 
-Signed-off-by: Sarannya Sasikumar <quic_sarannya@quicinc.com>
-Reviewed-by: Simon Horman <horms@kernel.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+This patch was inspired by the work of Nick Desaulniers.
+
+Link: https://lore.kernel.org/lkml/20230516-sunxi-v1-1-ac4b9651a8c1@google.com/T/
+Cc: Nick Desaulniers <ndesaulniers@google.com>
+Signed-off-by: Stefan Wahren <wahrenst@gmx.net>
+Link: https://lore.kernel.org/r/20231228193903.9078-2-wahrenst@gmx.net
+Reviewed-by: Chen-Yu Tsai <wens@csie.org>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/qrtr/ns.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ arch/arm/mach-sunxi/mc_smp.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/net/qrtr/ns.c b/net/qrtr/ns.c
-index 3e40a1ba48f79..4a13b9f7abb44 100644
---- a/net/qrtr/ns.c
-+++ b/net/qrtr/ns.c
-@@ -569,7 +569,9 @@ static int ctrl_cmd_del_server(struct sockaddr_qrtr *from,
- 	if (!node)
- 		return -ENOENT;
+diff --git a/arch/arm/mach-sunxi/mc_smp.c b/arch/arm/mach-sunxi/mc_smp.c
+index 26cbce1353387..5d7ddfd5990e5 100644
+--- a/arch/arm/mach-sunxi/mc_smp.c
++++ b/arch/arm/mach-sunxi/mc_smp.c
+@@ -804,14 +804,14 @@ static int __init sunxi_mc_smp_init(void)
+ 	for (i = 0; i < ARRAY_SIZE(sunxi_mc_smp_data); i++) {
+ 		ret = of_property_match_string(node, "enable-method",
+ 					       sunxi_mc_smp_data[i].enable_method);
+-		if (!ret)
++		if (ret >= 0)
+ 			break;
+ 	}
  
--	return server_del(node, port, true);
-+	server_del(node, port, true);
-+
-+	return 0;
- }
+ 	is_a83t = sunxi_mc_smp_data[i].is_a83t;
  
- static int ctrl_cmd_new_lookup(struct sockaddr_qrtr *from,
+ 	of_node_put(node);
+-	if (ret)
++	if (ret < 0)
+ 		return -ENODEV;
+ 
+ 	if (!sunxi_mc_smp_cpu_table_init())
 -- 
 2.43.0
 
