@@ -1,369 +1,164 @@
-Return-Path: <linux-kernel+bounces-19716-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19717-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8BE0E8271AA
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 15:42:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C4478271CE
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 15:50:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0F5DEB21FE7
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 14:42:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 113DD1F23211
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 14:50:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8020647787;
-	Mon,  8 Jan 2024 14:42:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D0904778D;
+	Mon,  8 Jan 2024 14:50:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="RoAfq4dO"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCBAF4777F
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 14:42:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 98F00C15;
-	Mon,  8 Jan 2024 06:42:50 -0800 (PST)
-Received: from [10.1.197.1] (ewhatever.cambridge.arm.com [10.1.197.1])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E19813F64C;
-	Mon,  8 Jan 2024 06:42:02 -0800 (PST)
-Message-ID: <82e9dbed-281c-4a87-8c0b-a2b1cb0a2247@arm.com>
-Date: Mon, 8 Jan 2024 14:42:01 +0000
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3FB147780
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 14:50:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--aliceryhl.bounces.google.com
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-5e7547e98f1so31754497b3.1
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 06:50:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1704725404; x=1705330204; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=5BINcGECvEsWTT9DMOcD/NYX5FsAQjYJ3MPey7hy/CI=;
+        b=RoAfq4dOGv3yBeCPUGy1dipj4Big8eoYGbojMuPcmMWoPb+tkEJc5q0og/CvchkMKS
+         DchFjQBNW/HSLo4IheNxBMZbe33HU76nsvSc++g/b2aGRY+IaBP/hJ2ORmnRZ9cPtipW
+         wE/HskxX+ThMMMZerTXzOZ23aOgX5sJUTcGoMyFlboHhQJmPqwFRcYrDluKQ2ZNAhAbJ
+         RzYGmBK2zHQ1C+XNaxsJ8zIhnnJd98GsLh4cOFUEB0Ps2U79wOg1zGxR0N/ifouRkoxq
+         GIWlneU9HaGXlYDFUYeBC8fEfk6c49BNn5UUT5Tl62n7Nen6Tr7Kk+kKzWgahCsS6Wbi
+         vjIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704725404; x=1705330204;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=5BINcGECvEsWTT9DMOcD/NYX5FsAQjYJ3MPey7hy/CI=;
+        b=GO8wSpDUHBa8x/cDIfnGcbrxv+lMFt0G6usunwn4BCF/9GeErlErelK5s8ciL9x/3b
+         87v0293yfw9/knMq956BsTbnlSGJ9AJoUHH8fqdRV0dC+Nf9tNKszBRnxWW0Et2xQqZS
+         oTdJdhcdGU/hWuDgEzNzRL9LO/L1DyuPNGG/YhAwzKucMLJYUMNoBM9e3rVzVdcSs5d7
+         uUy3JoKfm3ZmSZdNNLtD+yIlbHLTQE7i53y17NZ6DfhNT2FMlHXYaiPV8DL6Q2jxMaQl
+         kpCC1KTq2Q0EadrK17JufmnhCNWSC2t9P872cIVhIXB8EF8KJTM7bLd4Is02C2KxxKkR
+         vXQg==
+X-Gm-Message-State: AOJu0YxIOChd6pCfTWp6siNFMVJfQDzXVh94msHkHQm6sFGErFDtJ+jz
+	uv5/XkZDdBtF8SSITe7DcTS8+Xy3DVR6t/wWfxLGkw==
+X-Google-Smtp-Source: AGHT+IGOGzj9aEfvqssJXaiS+G17nnnYxCa62EX3NL6uTdjiNulnlUsR7q2pYMVsE+EpUC7eFqLAVDqiB2tELbo=
+X-Received: from aliceryhl2.c.googlers.com ([fda3:e722:ac3:cc00:68:949d:c0a8:572])
+ (user=aliceryhl job=sendgmr) by 2002:a05:6902:27c1:b0:dbe:d5b3:89dc with SMTP
+ id ec1-20020a05690227c100b00dbed5b389dcmr1610521ybb.0.1704725403851; Mon, 08
+ Jan 2024 06:50:03 -0800 (PST)
+Date: Mon, 08 Jan 2024 14:49:56 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 5/8] coresight: Remove the 'enable' field.
-Content-Language: en-US
-To: James Clark <james.clark@arm.com>, coresight@lists.linaro.org
-Cc: Mike Leach <mike.leach@linaro.org>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Maxime Coquelin <mcoquelin.stm32@gmail.com>,
- Alexandre Torgue <alexandre.torgue@foss.st.com>,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-stm32@st-md-mailman.stormreply.com, Tao Zhang
- <quic_taozha@quicinc.com>, Mao Jinlong <quic_jinlmao@quicinc.com>
-References: <20231212155407.1429121-1-james.clark@arm.com>
- <20231212155407.1429121-6-james.clark@arm.com>
-From: Suzuki K Poulose <suzuki.poulose@arm.com>
-In-Reply-To: <20231212155407.1429121-6-james.clark@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIAJULnGUC/3XNSwrCMBSF4a2UjI3k2aIj9yEO8rhpA7aRpESld
+ O+mhYIiHf4H7ncnlCB6SOhcTShC9smHoYQ4VMh0amgBe1saMcI4ZUTiqPEAT2zCYLOKuIexCzZ
+ h1mh1ktZJKygqx48Izr9W+Hor3fk0hvhe/2S6rBtZ75GZYoI5V8Io3Tir1KUNob3D0YQeLWZmX w7dd1hxNJFK1xRqK/WfwzdHEErErsOL0xAtqXBGg2Q/zjzPHyDd8ABNAQAA
+X-Developer-Key: i=aliceryhl@google.com; a=openpgp; fpr=49F6C1FAA74960F43A5B86A1EE7A392FDE96209F
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2913; i=aliceryhl@google.com;
+ h=from:subject:message-id; bh=XVBH1qF+OhuNqpjEXI7B/xwdvAfa7Seq4OzBOwOWR64=;
+ b=owEBbQKS/ZANAwAKAQRYvu5YxjlGAcsmYgBlnAuW1Vhoq6TeJkpHejsmIMZb2vak2s481PpY1
+ W7Vd6hXk7OJAjMEAAEKAB0WIQSDkqKUTWQHCvFIvbIEWL7uWMY5RgUCZZwLlgAKCRAEWL7uWMY5
+ RoPUD/0feWBz/CvDY5WnXDYuRumChdf+/N5FkNrkJvErOCB5U97equhbuyFNh0b4m2BDkKOCNUE
+ NuKht2KU6vstUyidH4M1ZcSiCvP8n5bc8brNVyKfYGELQSYeqWvFGyJZVgtIXNiCQk8Qy/VPemJ
+ BTXJvw/ecwRHE1Yoy6EOLvvDGVmeHLsyTz/XWVjY8Q/daEB0pcAhSUHPueXYhhK2qh9lG+K9lsV
+ YeE/O/sg+TaNt8pVSMx3s6Kqw/Ty0eCUz08tJJOQEm2x/y/z2IK6fIw1dXIqZie6B+Inf0SBFv5
+ Zx1yLz0XzIbqhEt+nwq4RekUOIgdeCSKa21H/82jmhqqCgztF3exdiCq7sCvKmb3ZVYv0KO94RJ
+ 9opZx7lsIKt4CeMP9rP6+/wt2uvigaLmd0ZhZOd6qA9vLGqAK9SdDgaOYLK3RC6dRPwBoUn9aSl
+ TWGpD04xqoegPH4AxFpq+w9c5H1CzNKP99MFp0jQFHrbNSPiinu3zlFT5fmBIuUaGLKmx3genSp
+ AOVGzJYCAyJKPA6JEExHYd9SdLSqFCtHGOzaEyvHWwlfGmA8J8QvBmUjFMD9KdckehUR1C2mFKg
+ ep78QyvgFjvhStDFAyAeu9HQULxfUCUoZFU7oq1YW0Cq3Sad9dEVuLBzfDkV7cEcowmol275yN8 nQIoZMfGQsIxejg==
+X-Mailer: b4 0.13-dev-26615
+Message-ID: <20240108-rb-new-condvar-methods-v4-0-88e0c871cc05@google.com>
+Subject: [PATCH v4 0/4] Additional CondVar methods needed by Rust Binder
+From: Alice Ryhl <aliceryhl@google.com>
+To: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
+	Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
+	"=?utf-8?q?Bj=C3=B6rn_Roy_Baron?=" <bjorn3_gh@protonmail.com>, Benno Lossin <benno.lossin@proton.me>, 
+	Andreas Hindborg <a.hindborg@samsung.com>, Peter Zijlstra <peterz@infradead.org>, 
+	Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>, Waiman Long <longman@redhat.com>, 
+	Tiago Lam <tiagolam@gmail.com>, Thomas Gleixner <tglx@linutronix.de>
+Cc: Martin Rodriguez Reboredo <yakoyoku@gmail.com>, rust-for-linux@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Alice Ryhl <aliceryhl@google.com>
+Content-Type: text/plain; charset="utf-8"
 
-Hi James
+This patchset contains some CondVar methods that Rust Binder needs.
 
-+Cc: Tao Zhang <quic_taozha@quicinc.com>
-+Cc: Mao Jinlong <quic_jinlmao@quicinc.com>
+The CondVar type implements a condition variable, and tries to mirror
+the API of the CondVar type provided by the Rust standard library [2].
+It is implemented using a `wait_queue_head`.
 
-On 12/12/2023 15:54, James Clark wrote:
-> 'enable', which probably should have been 'enabled', is only ever read
-> in the core code in relation to controlling sources, and specifically
-> only sources in sysfs mode. Confusingly it's not labelled as such and
-> relying on it can be a source of bugs like the one fixed by
-> commit 078dbba3f0c9 ("coresight: Fix crash when Perf and sysfs modes are
-> used concurrently").
-> 
-> Most importantly, it can only be used when the coresight_mutex is held
-> which is only done when enabling and disabling paths in sysfs mode, and
-> not Perf mode.
+Please see the Rust Binder RFC for usage examples [1].
 
+Users of rust: sync: add `CondVar::notify_sync`:
+	[PATCH RFC 04/20] rust_binder: add work lists
+	[PATCH RFC 07/20] rust_binder: add epoll support
+	[PATCH RFC 08/20] rust_binder: add non-oneway transactions
 
-I think we may be able to relax this a bit for the syfs. The sole reason
-for holding the mutex is for the "build_path" (and get_enabled_sink)
-where we need to make sure that no devices are removed/added. We hold
-necessary refcount on the device and the module (via 
-coresight_grab_device()). After which, we should be able to release the
-mutex and perform the rest without it in coresight_enable()
+Users of rust: time: add msecs to jiffies conversion:
+	[PATCH v2 3/3] rust: sync: add `CondVar::wait_timeout`
+	[PATCH RFC 15/20] rust_binder: add process freezing
 
-> So to prevent its usage spreading and leaking out to
-> other devices, remove it.
-> 
-> It's use is equivalent to checking if the mode is currently sysfs, as
-> due to the coresight_mutex lock, mode == CS_MODE_SYSFS can only become
-> true or untrue when that lock is held, and when mode == CS_MODE_SYSFS
-> the device is both enabled and in sysfs mode.
+Users of rust: sync: add `CondVar::wait_timeout`:
+	[PATCH RFC 15/20] rust_binder: add process freezing
 
-All of the above makes sense and looks good to me.
+This patchset is based on top of the rust-6.8 tag.
 
-> 
-> The one place it was used outside of the core code is in TPDA, but that
-> pattern is more appropriately represented using refcounts inside the
-> device's own spinlock.
+Link: https://lore.kernel.org/rust-for-linux/20231101-rust-binder-v1-0-08ba9197f637@google.com/ [1]
+Link: https://doc.rust-lang.org/stable/std/sync/struct.Condvar.html [2]
+Link: https://lore.kernel.org/all/20231214200421.690629-1-boqun.feng@gmail.com/ [3]
+Signed-off-by: Alice Ryhl <aliceryhl@google.com>
+---
+Changes in v4:
+- Fix imports.
+- Improve documentation for `notify_sync`.
+- Add justification for using a jiffies-based `wait_timeout`.
+- Link to v3: https://lore.kernel.org/r/20240104-rb-new-condvar-methods-v3-0-70b514fcbe52@google.com
 
-But, I think we can clean up this code a bit more better. See below.
+Changes in v3:
+- Update module description for new `time` module.
+- Move constants to `rust/kernel/task.rs`.
+- Fix incorrect doc-comment on `CondVar::notify`.
+- Rename c_long argument to `timeout_in_jiffies`.
+- Link to v2: https://lore.kernel.org/r/20231216-rb-new-condvar-methods-v2-0-b05ab61e6d5b@google.com
 
-> 
-> Signed-off-by: James Clark <james.clark@arm.com>
-> ---
->   drivers/hwtracing/coresight/coresight-core.c | 86 +++++++-------------
->   drivers/hwtracing/coresight/coresight-tpda.c | 12 ++-
->   include/linux/coresight.h                    |  2 -
->   3 files changed, 38 insertions(+), 62 deletions(-)
-> 
-> diff --git a/drivers/hwtracing/coresight/coresight-core.c b/drivers/hwtracing/coresight/coresight-core.c
-> index ab226441e5f4..1d0bd1586590 100644
-> --- a/drivers/hwtracing/coresight/coresight-core.c
-> +++ b/drivers/hwtracing/coresight/coresight-core.c
-> @@ -279,29 +279,18 @@ EXPORT_SYMBOL_GPL(coresight_add_helper);
->   static int coresight_enable_sink(struct coresight_device *csdev,
->   				 enum cs_mode mode, void *data)
->   {
-> -	int ret = sink_ops(csdev)->enable(csdev, mode, data);
-> -
-> -	if (ret)
-> -		return ret;
-> -
-> -	csdev->enable = true;
-> -
-> -	return 0;
-> +	return sink_ops(csdev)->enable(csdev, mode, data);
->   }
->   
->   static void coresight_disable_sink(struct coresight_device *csdev)
->   {
-> -	int ret = sink_ops(csdev)->disable(csdev);
-> -	if (ret)
-> -		return;
-> -	csdev->enable = false;
-> +	sink_ops(csdev)->disable(csdev);
->   }
->   
->   static int coresight_enable_link(struct coresight_device *csdev,
->   				 struct coresight_device *parent,
->   				 struct coresight_device *child)
->   {
-> -	int ret = 0;
->   	int link_subtype;
->   	struct coresight_connection *inconn, *outconn;
->   
-> @@ -317,19 +306,13 @@ static int coresight_enable_link(struct coresight_device *csdev,
->   	if (link_subtype == CORESIGHT_DEV_SUBTYPE_LINK_SPLIT && IS_ERR(outconn))
->   		return PTR_ERR(outconn);
->   
-> -	ret = link_ops(csdev)->enable(csdev, inconn, outconn);
-> -	if (!ret)
-> -		csdev->enable = true;
-> -
-> -	return ret;
-> +	return link_ops(csdev)->enable(csdev, inconn, outconn);
->   }
->   
->   static void coresight_disable_link(struct coresight_device *csdev,
->   				   struct coresight_device *parent,
->   				   struct coresight_device *child)
->   {
-> -	int i;
-> -	int link_subtype;
->   	struct coresight_connection *inconn, *outconn;
->   
->   	if (!parent || !child)
-> @@ -337,26 +320,8 @@ static void coresight_disable_link(struct coresight_device *csdev,
->   
->   	inconn = coresight_find_out_connection(parent, csdev);
->   	outconn = coresight_find_out_connection(csdev, child);
-> -	link_subtype = csdev->subtype.link_subtype;
->   
->   	link_ops(csdev)->disable(csdev, inconn, outconn);
-> -
-> -	if (link_subtype == CORESIGHT_DEV_SUBTYPE_LINK_MERG) {
-> -		for (i = 0; i < csdev->pdata->nr_inconns; i++)
-> -			if (atomic_read(&csdev->pdata->in_conns[i]->dest_refcnt) !=
-> -			    0)
-> -				return;
-> -	} else if (link_subtype == CORESIGHT_DEV_SUBTYPE_LINK_SPLIT) {
-> -		for (i = 0; i < csdev->pdata->nr_outconns; i++)
-> -			if (atomic_read(&csdev->pdata->out_conns[i]->src_refcnt) !=
-> -			    0)
-> -				return;
-> -	} else {
-> -		if (atomic_read(&csdev->refcnt) != 0)
-> -			return;
-> -	}
-> -
-> -	csdev->enable = false;
->   }
->   
->   int coresight_enable_source(struct coresight_device *csdev, enum cs_mode mode,
-> @@ -364,11 +329,16 @@ int coresight_enable_source(struct coresight_device *csdev, enum cs_mode mode,
->   {
->   	int ret;
->   
-> -	if (!csdev->enable) {
-> +	/*
-> +	 * Comparison with CS_MODE_SYSFS works without taking any device
-> +	 * specific spinlock because the truthyness of that comparison can only
-> +	 * change with coresight_mutex held, which we already have here.
-> +	 */
-> +	lockdep_assert_held(&coresight_mutex);
-> +	if (local_read(&csdev->mode) != CS_MODE_SYSFS) {
->   		ret = source_ops(csdev)->enable(csdev, data, mode);
->   		if (ret)
->   			return ret;
-> -		csdev->enable = true;
->   	}
->   
->   	atomic_inc(&csdev->refcnt);
-> @@ -385,22 +355,12 @@ static bool coresight_is_helper(struct coresight_device *csdev)
->   static int coresight_enable_helper(struct coresight_device *csdev,
->   				   enum cs_mode mode, void *data)
->   {
-> -	int ret = helper_ops(csdev)->enable(csdev, mode, data);
-> -
-> -	if (ret)
-> -		return ret;
-> -
-> -	csdev->enable = true;
-> -	return 0;
-> +	return helper_ops(csdev)->enable(csdev, mode, data);
->   }
->   
->   static void coresight_disable_helper(struct coresight_device *csdev)
->   {
-> -	int ret = helper_ops(csdev)->disable(csdev, NULL);
-> -
-> -	if (ret)
-> -		return;
-> -	csdev->enable = false;
-> +	helper_ops(csdev)->disable(csdev, NULL);
->   }
->   
->   static void coresight_disable_helpers(struct coresight_device *csdev)
-> @@ -445,11 +405,15 @@ EXPORT_SYMBOL_GPL(coresight_disable_source);
->   static bool coresight_disable_source_sysfs(struct coresight_device *csdev,
->   					   void *data)
->   {
-> +	lockdep_assert_held(&coresight_mutex);
-> +	if (local_read(&csdev->mode) != CS_MODE_SYSFS)
-> +		return false;
-> +
->   	if (atomic_dec_return(&csdev->refcnt) == 0) {
->   		coresight_disable_source(csdev, data);
-> -		csdev->enable = false;
-> +		return true;
->   	}
-> -	return !csdev->enable;
-> +	return false;
->   }
->   
->   /*
-> @@ -1097,7 +1061,13 @@ int coresight_enable(struct coresight_device *csdev)
->   	if (ret)
->   		goto out;
->   
-> -	if (csdev->enable) {
-> +	/*
-> +	 * mode == SYSFS implies that it's already enabled. Don't look at the
-> +	 * refcount to determine this because we don't claim the source until
-> +	 * coresight_enable_source() so can still race with Perf mode which
-> +	 * doesn't hold coresight_mutex.
-> +	 */
-> +	if (local_read(&csdev->mode) == CS_MODE_SYSFS) {
->   		/*
->   		 * There could be multiple applications driving the software
->   		 * source. So keep the refcount for each such user when the
-> @@ -1183,7 +1153,7 @@ void coresight_disable(struct coresight_device *csdev)
->   	if (ret)
->   		goto out;
->   
-> -	if (!csdev->enable || !coresight_disable_source_sysfs(csdev, NULL))
-> +	if (!coresight_disable_source_sysfs(csdev, NULL))
->   		goto out;
->   
->   	switch (csdev->subtype.source_subtype) {
-> @@ -1249,7 +1219,9 @@ static ssize_t enable_source_show(struct device *dev,
->   {
->   	struct coresight_device *csdev = to_coresight_device(dev);
->   
-> -	return scnprintf(buf, PAGE_SIZE, "%u\n", csdev->enable);
-> +	guard(mutex)(&coresight_mutex);
-> +	return scnprintf(buf, PAGE_SIZE, "%u\n",
-> +			 local_read(&csdev->mode) == CS_MODE_SYSFS);
->   }
->   
->   static ssize_t enable_source_store(struct device *dev,
-> diff --git a/drivers/hwtracing/coresight/coresight-tpda.c b/drivers/hwtracing/coresight/coresight-tpda.c
-> index 5f82737c37bb..65c70995ab00 100644
-> --- a/drivers/hwtracing/coresight/coresight-tpda.c
-> +++ b/drivers/hwtracing/coresight/coresight-tpda.c
-> @@ -148,7 +148,11 @@ static int __tpda_enable(struct tpda_drvdata *drvdata, int port)
->   
->   	CS_UNLOCK(drvdata->base);
->   
-> -	if (!drvdata->csdev->enable)
-> +	/*
-> +	 * Only do pre-port enable for first port that calls enable when the
-> +	 * device's main refcount is still 0
-> +	 */
-> +	if (!atomic_read(&drvdata->csdev->refcnt))
->   		tpda_enable_pre_port(drvdata);
+Changes in v2:
+- Introduce "rust: time: add msecs to jiffies conversion" patch.
+- Introduce "rust: sync: update integer types in CondVar" patch.
+- Merge wait_internal and wait_internal_timeout.
+- Use new Jiffies type alias instead of u64.
+- Update names to use _interruptable suffix (and base patchset on top of [3]).
+- Link to v1: https://lore.kernel.org/r/20231206-rb-new-condvar-methods-v1-0-33a4cab7fdaa@google.com
 
-Relying on the "csdev->enable" to do pre-port configuration looks like
-a complete hack to me. This could have been performed once and for all
-during the probe time, at say, tpda_init_default_data(). That value is
-(drvdata->atid) never updated and need not be re-written  unless the
-value is lost during a power idle.
+---
+Alice Ryhl (4):
+      rust: sync: add `CondVar::notify_sync`
+      rust: time: add msecs to jiffies conversion
+      rust: sync: add `CondVar::wait_timeout`
+      rust: sync: update integer types in CondVar
 
-Mao, Tao, are you able to confirm this ? If that is the case, we don't 
-need this csdev->refcnt.
+ rust/bindings/bindings_helper.h |  1 +
+ rust/kernel/lib.rs              |  1 +
+ rust/kernel/sync/condvar.rs     | 95 ++++++++++++++++++++++++++++++++---------
+ rust/kernel/sync/lock.rs        |  4 +-
+ rust/kernel/task.rs             | 18 +++++++-
+ rust/kernel/time.rs             | 20 +++++++++
+ 6 files changed, 117 insertions(+), 22 deletions(-)
+---
+base-commit: 711cbfc717650532624ca9f56fbaf191bed56e67
+change-id: 20231205-rb-new-condvar-methods-27ba95df5d41
 
->   
->   	ret = tpda_enable_port(drvdata, port);
-> @@ -169,6 +173,7 @@ static int tpda_enable(struct coresight_device *csdev,
->   		ret = __tpda_enable(drvdata, in->dest_port);
->   		if (!ret) {
->   			atomic_inc(&in->dest_refcnt);
-> +			atomic_inc(&csdev->refcnt);
->   			dev_dbg(drvdata->dev, "TPDA inport %d enabled.\n", in->dest_port);
->   		}
->   	}
-> @@ -197,9 +202,10 @@ static void tpda_disable(struct coresight_device *csdev,
->   	struct tpda_drvdata *drvdata = dev_get_drvdata(csdev->dev.parent);
->   
->   	spin_lock(&drvdata->spinlock);
-> -	if (atomic_dec_return(&in->dest_refcnt) == 0)
-> +	if (atomic_dec_return(&in->dest_refcnt) == 0) {
->   		__tpda_disable(drvdata, in->dest_port);
-> -
-> +		atomic_dec(&csdev->refcnt);
-
-If we need this, then: This should be performed outside the if () isn't it ?
-
-e.g.,
-
-Operation:		in_conn->refcnt		csdev->refcnt
-port_enable : port0	0 - > 1			0 - > 1
-port_enable : port0 	1 - > 2			1 - > 2
-port_disable: port0	2 - > 1			2 (no change)
-port_disable: port0	1 - > 0			2 - > 1
-
-As you can see the csdev->refcnt skipped a dec.
-
-Suzuki
-
-
-> +	}
->   	spin_unlock(&drvdata->spinlock);
->   
->   	dev_dbg(drvdata->dev, "TPDA inport %d disabled\n", in->dest_port);
-> diff --git a/include/linux/coresight.h b/include/linux/coresight.h
-> index ba817f563ff7..46e6667f72ce 100644
-> --- a/include/linux/coresight.h
-> +++ b/include/linux/coresight.h
-> @@ -233,7 +233,6 @@ struct coresight_sysfs_link {
->    *		a non-atomic read would also work.
->    * @refcnt:	keep track of what is in use.
->    * @orphan:	true if the component has connections that haven't been linked.
-> - * @enable:	'true' if component is currently part of an active path.
->    * @sysfs_sink_activated: 'true' when a sink has been selected for use via sysfs
->    *		by writing a 1 to the 'enable_sink' file.  A sink can be
->    *		activated but not yet enabled.  Enabling for a _sink_ happens
-> @@ -260,7 +259,6 @@ struct coresight_device {
->   	local_t	mode;
->   	atomic_t refcnt;
->   	bool orphan;
-> -	bool enable;
->   	/* sink specific fields */
->   	bool sysfs_sink_activated;
->   	struct dev_ext_attribute *ea;
+Best regards,
+-- 
+Alice Ryhl <aliceryhl@google.com>
 
 
