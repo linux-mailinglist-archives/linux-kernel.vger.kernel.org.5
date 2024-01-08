@@ -1,129 +1,106 @@
-Return-Path: <linux-kernel+bounces-19438-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19439-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C74A826CE7
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 12:34:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EFBAB826CEA
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 12:35:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F27E71F2289D
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 11:34:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9E588281B71
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 11:35:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6F6714ABA;
-	Mon,  8 Jan 2024 11:34:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CA472941F;
+	Mon,  8 Jan 2024 11:35:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="c01Cec7i"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AQgPv8Iu"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8655129412;
-	Mon,  8 Jan 2024 11:34:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 408BYJqA061459;
-	Mon, 8 Jan 2024 05:34:19 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1704713659;
-	bh=6ybS2qS69K54f2tDvHXfkSmY2DjqqOxTa+HLeypQHJQ=;
-	h=Date:CC:Subject:To:References:From:In-Reply-To;
-	b=c01Cec7it89xzE/bLC69pzucAOv1+iGa1pKsrNQKh4akhLHoM05X/1PS4S4VbwNXz
-	 VxJdnCOndTny4ujBvAsefa0biv/aVIYT9GcPaTCssn3W0ws+XXhhBfomXWMOpvdKbQ
-	 y54NSgP3jh3hfGnnGAkH04ynj75FiPt3Uug7nizc=
-Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
-	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 408BYJMQ091423
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Mon, 8 Jan 2024 05:34:19 -0600
-Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 8
- Jan 2024 05:34:18 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 8 Jan 2024 05:34:18 -0600
-Received: from [172.24.227.9] (uda0492258.dhcp.ti.com [172.24.227.9])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 408BYE4R062021;
-	Mon, 8 Jan 2024 05:34:15 -0600
-Message-ID: <e4bd76d1-e5d9-4ff6-8917-db5784dea847@ti.com>
-Date: Mon, 8 Jan 2024 17:04:14 +0530
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A22F29410
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 11:35:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-40d4f5d902dso19047905e9.2
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 03:35:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704713703; x=1705318503; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=CCbzvMSP53KUgOmOhE8yp5XexmFsT2hAeja2IF/7EwY=;
+        b=AQgPv8Iurut33ukpgk4muR7nys4MqP0o2zCMRdjSh4OSEw+/Olt4j/WmOW1yTZUxJL
+         sLVY8qokY8+S+DJmWa+ItXUp/Uyf6qxDxvWrgheRkJ55wGv2mLwcypvF3j08ofwe0TUF
+         Kvg/TjhH/PTDJQtxcgRI9fusgipG0LdclJbn641i+TYziGS/c/bBEyPfSPFXPQLWW9Ga
+         FebgYfq2o0gPvNb4e3YTQbDXshNHYGFcO5Z2xTH5LbcndwnRy6aMvSzBMMy7NYYg0DWw
+         u8xsvoobCn1qCd7DWJDqWBLVpQ4J/NkqIesO0osGu4tdk2ytKGsJ+LwmfnRUnKYpyTuf
+         rY4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704713703; x=1705318503;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=CCbzvMSP53KUgOmOhE8yp5XexmFsT2hAeja2IF/7EwY=;
+        b=PVQlZwBnTgtEDG1qJcrnGkxaY5AA4M0irJpTeYSlRMJwkJr+JPYgMwqGTP4nyIm87T
+         2Q4DGMaa/cJhSnawYjyHUZsjMButUNW3T6q46p2Tw6PJ883/y7MSFPQYQdmmd3rOTfRe
+         cYRmw0wJTVWihUyDivQcve1k7LBWSJreLRywoAkVBgR0eRBGfk5KIlCTQpnIR+mxRPkC
+         1X/NsTtOjBBszDL5+5VDfKG81IwKppQlCT4Ygq2Qcyd37IkZ+n0EVXQI8spNW7GxIsY9
+         bHQ2aJuRqNaxaFlBjJrElTby44i0ckfinEHuijaBaVlJbREwf66TNPwgNyqcFjM+bK6u
+         oivQ==
+X-Gm-Message-State: AOJu0YwWC6F5/8B2mwL9hGCsoXD/2/1AyZ9QxSivsV7WGTwqE2Ph4a+1
+	aMyenoXd92msEHLiU8m2sR3fqFu3Ofw=
+X-Google-Smtp-Source: AGHT+IFXJcY0byDiI2DYtaN2Spm/TBGmaU48O1htQWSVQl/prLbkHdJscgY+TG0vBEr0TJf/XN9RRw==
+X-Received: by 2002:a05:600c:248:b0:40e:4ab8:639b with SMTP id 8-20020a05600c024800b0040e4ab8639bmr107621wmj.39.1704713703086;
+        Mon, 08 Jan 2024 03:35:03 -0800 (PST)
+Received: from gmail.com (1F2EF3FE.nat.pool.telekom.hu. [31.46.243.254])
+        by smtp.gmail.com with ESMTPSA id fl13-20020a05600c0b8d00b0040e490cb666sm1585535wmb.12.2024.01.08.03.35.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Jan 2024 03:35:02 -0800 (PST)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date: Mon, 8 Jan 2024 12:35:00 +0100
+From: Ingo Molnar <mingo@kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-kernel@vger.kernel.org, the arch/x86 maintainers <x86@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>
+Subject: [GIT PULL] x86/mm changes for v6.8
+Message-ID: <ZZvd5KZKVXAtM1+F@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-CC: <linux-pci@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        <srk@ti.com>, <s-vadapalli@ti.com>
-Subject: Re: [RFC PATCH] dt-bindings: PCI: ti,j721e-pci-host: Add device-id
- for TI's J784S4 SoC
-Content-Language: en-US
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        <lpieralisi@kernel.org>, <kw@linux.com>, <robh@kernel.org>,
-        <bhelgaas@google.com>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>
-References: <20240108050735.512445-1-s-vadapalli@ti.com>
- <67af1724-6424-456a-aff6-85d9e010c430@linaro.org>
- <bc3a0fb0-6268-476a-a13a-2d538704f61d@ti.com>
- <7d3439c2-35e3-4318-aa99-af9b7c8ed53b@linaro.org>
-From: Siddharth Vadapalli <s-vadapalli@ti.com>
-In-Reply-To: <7d3439c2-35e3-4318-aa99-af9b7c8ed53b@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+Linus,
+
+Please pull the latest x86/mm git tree from:
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86-mm-2024-01-08
+
+   # HEAD: 91c17d7b04498ffb52939a18eb7e28fd23c9b654 x86/percpu: Use %RIP-relative address in untagged_addr()
+
+x86/mm changes for v6.8:
+
+ - Robustify pfn_to_kaddr()
+
+ - Improve the __untagged_addr() code: RIP-relative addresses are fine these days
+   and generate better code, and update misleading/outdated comments as well.
+
+ Thanks,
+
+	Ingo
+
+------------------>
+Michael Roth (1):
+      x86/mm: Ensure input to pfn_to_kaddr() is treated as a 64-bit type
+
+Uros Bizjak (1):
+      x86/percpu: Use %RIP-relative address in untagged_addr()
 
 
-
-On 08/01/24 16:51, Krzysztof Kozlowski wrote:
-> On 08/01/2024 11:20, Siddharth Vadapalli wrote:
->> Hello Krzysztof,
->>
->> On 08/01/24 12:39, Krzysztof Kozlowski wrote:
->>> On 08/01/2024 06:07, Siddharth Vadapalli wrote:
->>>> Add the device-id of 0xb012 for the PCIe controller on the J784S4 SoC as
->>>> described in the CTRL_MMR_PCI_DEVICE_ID register's PCI_DEVICE_ID_DEVICE_ID
->>>> field. The Register descriptions and the Technical Reference Manual for
->>>> J784S4 SoC can be found at: https://www.ti.com/lit/zip/spruj52
->>>>
->>>> Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
->>>> ---
->>>>
->>>> This patch is based on linux-next tagged next-20240105.
->>>
->>> Why is this patch incomplete? What is missing here? What are you asking
->>> about as RFC?
->>
->> Since the merge window is closed, I was hoping to get the patch reviewed in
->> order to get any "Reviewed-by" tags if possible. That way, I will be able to
->> post it again as v1 along with the tags when the merge window opens. For that
-> 
-> This is v1, so that would be v2.
-> 
->> reason, I have marked it as an RFC patch. Is there an alternative to this "RFC
->> patch" method that I have followed? Please let me know.
-> 
-> Then how does it differ from posting without RFC? Sorry, RFC is
-> incomplete work. Often ignored during review.
-
-I was under the impression that posting patches when the merge window is closed
-will be met with a "post your patch later when the merge window is open"
-response. That is why I chose the "RFC patch" path since RFCs can be posted anytime.
-
-For the Networking Subsystem, it is documented that patches with new features
-shouldn't be posted when the merge window is closed. I have mostly posted
-patches for the Networking Subsystem and am not sure about the rules for the
-device-tree bindings and PCI Subsystems. To be on the safe side I posted this
-patch as an RFC patch.
-
-Thank you for clarifying that it is alright to post patches even when merge
-window is closed. Going forward I shall not post RFC patches unless it really
-requires feedback and suggestions.
-
--- 
-Regards,
-Siddharth.
+ arch/x86/include/asm/page.h       |  6 +++++-
+ arch/x86/include/asm/uaccess_64.h | 11 ++++-------
+ 2 files changed, 9 insertions(+), 8 deletions(-)
 
