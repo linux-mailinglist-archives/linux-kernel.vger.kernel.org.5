@@ -1,150 +1,114 @@
-Return-Path: <linux-kernel+bounces-19804-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19806-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D608382747E
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 16:53:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A1BF827484
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 16:53:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7632CB21A57
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 15:53:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BE6A3B21AEB
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 15:53:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91CE3524A7;
-	Mon,  8 Jan 2024 15:53:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43247524AC;
+	Mon,  8 Jan 2024 15:53:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ScUJdTf6"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="odd55ff7"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BAC05100D
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 15:53:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-5e73bd9079eso33036767b3.2
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 07:53:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1704729184; x=1705333984; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=LXpfvDdR25mi61ZRv+hUGYfziJrbv6+q0uR9W3pdtgw=;
-        b=ScUJdTf6pY1EyzXXhTCOXHjVT97d9to7GQ83OVVOdFBTRhGje7AGwchBSTlrSGUrYQ
-         VFbN4vMFF6Hla0gcX4RSkXf6EB87oabE/uJ0REVkG1YoQnSO9DHgfBiIqpjFeVPpYgzK
-         HXHrCrHGNHHUcptvmkPg86uQDGNIfA4Fh/ldNw7mjAzVqIsfH6Lfsq5tLDEKfe/MjSVD
-         Ejfo41gQFHZtoLFYZpVLtvZAUILVJCvSpfdWYL5sbxmnQCSYpM4snT6X7Do0wUrHWdlt
-         SDtLaa4/o7/jEn/nOJYlnSZIvd4GiuE5MFW8M3iYnzZS699H8VSVAX1CKzzhaTLXF02A
-         Cn7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704729184; x=1705333984;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=LXpfvDdR25mi61ZRv+hUGYfziJrbv6+q0uR9W3pdtgw=;
-        b=gdbHIxbAv3WRapYFvp5XKoNLNw8WXFZ2rjLuGYaU7uTEkQ/83v+togff2GqjwFXpuX
-         JzrpQzRmwpkK1X2/zftjp8hV/mBT23PsttvxUzL1cw3zjg1koRRKBCz4UZ/9/q5W6ttg
-         H1zHGv4hzQkl4tTfbixMWCBrwk2otpSkmxzv0FAmEuav8SOTg6kFcvpuMMEGdmO91ut+
-         uvt+H0aNA7RCSeHA6EEz+z26rwqlBCPRt1Jyvn3CqFMkyMZWcJowPQZCVqpZyieeZmQE
-         +B96wDybdx+ut4Kjd1V9sXdXEey4/VpjZMyMVIFdujzl63yiYPE7zfUTFmZC9IXz9ROU
-         xKFQ==
-X-Gm-Message-State: AOJu0YwdfpERGt9HQj2l3O0G0vGAfK4IyuuuU/IN61KiLdSBitKruLl+
-	fe6x+kiMwrFDTC1O2cBEOYvbWxyY0nJYyB9sZg==
-X-Google-Smtp-Source: AGHT+IH6tgug6GZXuthKAIt2m3rWLQls/sRxvnIhe9rTO176GAtStoSNma4aHNycx8stxCAgF2wzux11TeA=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:83d0:0:b0:dbe:a20a:6330 with SMTP id
- v16-20020a2583d0000000b00dbea20a6330mr1497318ybm.9.1704729184054; Mon, 08 Jan
- 2024 07:53:04 -0800 (PST)
-Date: Mon, 8 Jan 2024 07:53:02 -0800
-In-Reply-To: <CAJ5mJ6hpSSVhZ5hbPZ8vfSnmNU6W+g4e=PeLrG7fG2u8KptfHQ@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB2E451C30;
+	Mon,  8 Jan 2024 15:53:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=oyblU9fS9RIJhRfq92DSb7yUSCuEu12wiegVylc2g30=; b=odd55ff7qVX3LGHrloljObiz1O
+	v2p/97U82lb9laxeFxsG3dQ6za8J5Q/HPzXk6Gsv9WaXA3PTPRXeDZOxJPz1XGlTfO82eaZIj14U9
+	JLnVdnniUiBE2p/5QOoIzO32zAzlMcDICGN9t1Ydbx0khVNbx8jgj+4tMgDgEfuprlmYZPAOeaK4W
+	iLe7w3jD18HHkjB6hHS2oh1PTJQraW4OS9BNS94QYqTJ5KsKOeV2fmNUmJhtRlPJErXhc4rbsJIM3
+	Q0llvh+RPy0yoDh3b545p3E4shhJdRF8rug1bfVCVE1BIpOOTiUa2Za278kUvLqAtVCZWm25p4cMC
+	gCS5fKlw==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:36992)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1rMrwC-0003BF-0e;
+	Mon, 08 Jan 2024 15:53:16 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1rMrwD-0003MQ-F2; Mon, 08 Jan 2024 15:53:17 +0000
+Date: Mon, 8 Jan 2024 15:53:17 +0000
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: Andrew Lunn <andrew@lunn.ch>
+Cc: Sergey Ryazanov <ryazanov.s.a@gmail.com>,
+	Jie Luo <quic_luoj@quicinc.com>, agross@kernel.org,
+	andersson@kernel.org, konrad.dybcio@linaro.org, davem@davemloft.net,
+	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org, hkallweit1@gmail.com, robert.marko@sartura.hr,
+	linux-arm-msm@vger.kernel.org, netdev@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	quic_srichara@quicinc.com
+Subject: Re: [PATCH v4 0/5] support ipq5332 platform
+Message-ID: <ZZwabT7pmwDof8Cs@shell.armlinux.org.uk>
+References: <20231225084424.30986-1-quic_luoj@quicinc.com>
+ <a6a50fb6-871f-424c-a146-12b2628b8b64@gmail.com>
+ <cfb04c82-3cc3-49f6-9a8a-1f6d1a22df40@quicinc.com>
+ <dd05a599-247a-4516-8ad3-7550ceea99f7@gmail.com>
+ <ac1977f5-cd6a-4f16-b0a0-f4322c34c5f5@quicinc.com>
+ <bdeca791-f2e5-4256-b386-a75c03f93686@gmail.com>
+ <895eadd7-1631-4b6b-8db4-d371f2e52611@lunn.ch>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20231230172351.574091-1-michael.roth@amd.com> <20231230172351.574091-27-michael.roth@amd.com>
- <CAJ5mJ6hpSSVhZ5hbPZ8vfSnmNU6W+g4e=PeLrG7fG2u8KptfHQ@mail.gmail.com>
-Message-ID: <ZZwaXo62DpiBJiWN@google.com>
-Subject: Re: [PATCH v11 26/35] KVM: SEV: Support SEV-SNP AP Creation NAE event
-From: Sean Christopherson <seanjc@google.com>
-To: Jacob Xu <jacobhxu@google.com>
-Cc: Michael Roth <michael.roth@amd.com>, kvm@vger.kernel.org, linux-coco@lists.linux.dev, 
-	linux-mm@kvack.org, linux-crypto@vger.kernel.org, x86@kernel.org, 
-	linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com, 
-	jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com, ardb@kernel.org, 
-	pbonzini@redhat.com, vkuznets@redhat.com, jmattson@google.com, 
-	luto@kernel.org, dave.hansen@linux.intel.com, slp@redhat.com, 
-	pgonda@google.com, peterz@infradead.org, srinivas.pandruvada@linux.intel.com, 
-	rientjes@google.com, dovmurik@linux.ibm.com, tobin@ibm.com, bp@alien8.de, 
-	vbabka@suse.cz, kirill@shutemov.name, ak@linux.intel.com, tony.luck@intel.com, 
-	sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com, 
-	jarkko@kernel.org, ashish.kalra@amd.com, nikunj.dadhania@amd.com, 
-	pankaj.gupta@amd.com, liam.merwick@oracle.com, zhi.a.wang@intel.com, 
-	Brijesh Singh <brijesh.singh@amd.com>, Adam Dunlap <acdunlap@google.com>
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <895eadd7-1631-4b6b-8db4-d371f2e52611@lunn.ch>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-On Fri, Jan 05, 2024, Jacob Xu wrote:
-> > +       if (kick) {
-> > +               if (target_vcpu->arch.mp_state == KVM_MP_STATE_UNINITIALIZED)
-> > +                       target_vcpu->arch.mp_state = KVM_MP_STATE_RUNNABLE;
-> > +
-> > +               kvm_make_request(KVM_REQ_UPDATE_PROTECTED_GUEST_STATE, target_vcpu);
+On Sat, Jan 06, 2024 at 04:45:08PM +0100, Andrew Lunn wrote:
+> > I just realized that the UNIPHY block is a MII (probably SGMII) controller.
+> > Isn't it? And I expect that it responsible more then just for clock
+> > enabling. It should also activate and perform a basic configuration of MII
+> > for actual data transmission. If so, then it should placed somewhere under
+> > drivers/net/phy or drivers/net/pcs.
 > 
-> I think we should  switch the order of these two statements for
-> setting mp_state and for making the request for
-> KVM_REQ_UPDATE_PROTECTED_GUEST_STATE.
-> There is a race condition I observed when booting with SVSM where:
-> 1. BSP sets target vcpu to KVM_MP_STATE_RUNNABLE
-> 2. AP thread within the loop of arch/x86/kvm.c:vcpu_run() checks
-> vm_vcpu_running()
-> 3. AP enters the guest without having updated the VMSA state from
-> KVM_REQ_UPDATE_PROTECTED_GUEST_STATE
+> Before we decide that, we need a description of what the UNIPHY
+> actually does, what registers it has, etc. Sometimes blocks like this
+> get split into a generic PHY, aka drivers/phy/ and a PCS driver. This
+> would be true if the UNIPHY is also used for USB SERDES, SATA SERDES
+> etc. The SERDES parts go into a generic PHY driver, and the SGMII on
+> to of the SERDES is placed is a PCS driver.
 > 
-> This results in the AP executing on a bad RIP and then crashing.
-> If we set the request first, then we avoid the race condition.
+> The problem i have so far is that there is no usable description of
+> any of this hardware, and the developers trying to produce drivers for
+> this hardware don't actually seem to understand the Linux architecture
+> for things like this.
 
-That just introducs a different race, e.g. if this task gets delayed and the
-target vCPU processes KVM_REQ_UPDATE_PROTECTED_GUEST_STATE before its marked
-RUNNABLE, then the target vCPU could end up stuck in the UNINITIALIZED loop.
++1. I think it's now more convoluted than ever, and someone needs to
+take a step back, look at the hardware, look at the kernel model, and
+work out how to implement this. It needs to be explained in a clear
+and concise way in _one_ go, not spread over multiple emails. Probably
+with ASCII art diagrams showing the structure.
 
-Reading and writing arch.mp_state across vCPUs is simply not safe.  There's a
-reason why KVM atomically manages INITs and SIPIs and only modifies mp_state when
-processing events on the target vCPU.
+If that isn't possible, then someone needs to provide a detailed
+description of the hardware so that the subsystem maintainers get a
+proper view of what this hardware is so they can advise. This is the
+least preferable option due to the maintainer time it takes.
 
-> > +               kvm_vcpu_kick(target_vcpu);
+If neither of these two things happen, then I'm afraid all bets are
+off for getting this into the kernel.
 
-...
-
-> > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> > index 87b78d63e81d..df9ec357d538 100644
-> > --- a/arch/x86/kvm/x86.c
-> > +++ b/arch/x86/kvm/x86.c
-> > @@ -10858,6 +10858,14 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
-> >
-> >                 if (kvm_check_request(KVM_REQ_UPDATE_CPU_DIRTY_LOGGING, vcpu))
-> >                         static_call(kvm_x86_update_cpu_dirty_logging)(vcpu);
-> > +
-> > +               if (kvm_check_request(KVM_REQ_UPDATE_PROTECTED_GUEST_STATE, vcpu)) {
-> > +                       kvm_vcpu_reset(vcpu, true);
-> > +                       if (vcpu->arch.mp_state != KVM_MP_STATE_RUNNABLE) {
-> > +                               r = 1;
-> > +                               goto out;
-> > +                       }
-> > +               }
-> >         }
-> >
-> >         if (kvm_check_request(KVM_REQ_EVENT, vcpu) || req_int_win ||
-> > @@ -13072,6 +13080,9 @@ static inline bool kvm_vcpu_has_events(struct kvm_vcpu *vcpu)
-> >         if (kvm_test_request(KVM_REQ_PMI, vcpu))
-> >                 return true;
-> >
-> > +       if (kvm_test_request(KVM_REQ_UPDATE_PROTECTED_GUEST_STATE, vcpu))
-> > +               return true;
-> > +
-> >         if (kvm_arch_interrupt_allowed(vcpu) &&
-> >             (kvm_cpu_has_interrupt(vcpu) ||
-> >             kvm_guest_apic_has_interrupt(vcpu)))
-> > --
-> > 2.25.1
-> >
-> >
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
