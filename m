@@ -1,56 +1,53 @@
-Return-Path: <linux-kernel+bounces-19517-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19518-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D4BD826E2B
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 13:35:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BFBCF826E30
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 13:36:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 26D481F22C1C
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 12:35:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 592891F227F7
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 12:36:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9D2846556;
-	Mon,  8 Jan 2024 12:29:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEF9B46B96;
+	Mon,  8 Jan 2024 12:29:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VX4+REBe"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="h+ZH52CE"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1275346551;
-	Mon,  8 Jan 2024 12:29:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4FCABC433CC;
-	Mon,  8 Jan 2024 12:29:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2506D46B91;
+	Mon,  8 Jan 2024 12:29:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74774C433C9;
+	Mon,  8 Jan 2024 12:29:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704716962;
-	bh=KIh12wVbDmJiLHjHRse8HnJ7sh45nq/r0+4isSVV99Y=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=VX4+REBemHnabyoaVLGtixeND3gNzgBbFfll7oVLTKVmsUQQw2ogQHRzCCtYMigrD
-	 HuNVLRzge8Vp2yhxfs1EKuMQoh+jlmR3AMG3+yF0NCn3Lc+k6hxD3xdMzjnMcUS9J/
-	 RvR3h2SPbx1Yen03Aq1Ujr0KeQRkn2ohvLj+tBS7JoCX4GDlgPa25HdXwgdVo/9sqY
-	 DnC0SDhJKHu1ipoGxrzeUT26U77F1/nkCZLuZOTuHSOebozaCL3DIRtgRY2T0KU6S2
-	 YNLZ8LcSTccmu/JqpIBYqWGt3cLxiHXGcXcXWi8OX2jbRuWjt0+ITCVuX6ntLBfCog
-	 n4e/itPAKtdag==
+	s=k20201202; t=1704716969;
+	bh=vM6QXaZm9tiA/pNFRwjwhyWMtcO2J1E6ww2Avca+rmM=;
+	h=From:To:Cc:Subject:Date:From;
+	b=h+ZH52CEHvGVJ+HPy1vv8rbFoV3Kl2zPYLIPB5lGzxrEoG8ClMAs06qmZ6Ki6LaDE
+	 87QE/llLTS91NWkRHvBO6ls72FRXuRDYXUAxoVRHGZK1Wr0zvF+V+R0iyJaxq4fB3Q
+	 OBLnpLfIVrWF5ib1DO0WP0u+yencg0d6LjZtf5PaTljSE5+5/Y0gSuUXyUalsV/Fwa
+	 4rj8VEmvf4+V6/zE/HCSZ1wAt9AfAvQY9kISLG19FxkT4Jt43V3kMMtxkvQSCIN0AQ
+	 k18nBdW14gRxT0USDOL1ROG5nLtJy2cXUQTpCl6B+c5nXD+zFOr66jwphFe5b1tG/S
+	 P3YTEWKyGaSKQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Stefan Wahren <wahrenst@gmx.net>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Chen-Yu Tsai <wens@csie.org>,
-	Arnd Bergmann <arnd@arndb.de>,
+Cc: Siddh Raman Pant <code@siddh.me>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Suman Ghosh <sumang@marvell.com>,
+	"David S . Miller" <davem@davemloft.net>,
 	Sasha Levin <sashal@kernel.org>,
-	linux@armlinux.org.uk,
-	jernej.skrabec@gmail.com,
-	samuel@sholland.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-sunxi@lists.linux.dev
-Subject: [PATCH AUTOSEL 5.4 2/2] ARM: sun9i: smp: fix return code check of of_property_match_string
-Date: Mon,  8 Jan 2024 07:29:13 -0500
-Message-ID: <20240108122915.2090922-2-sashal@kernel.org>
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 1/2] nfc: Do not send datagram if socket state isn't LLCP_BOUND
+Date: Mon,  8 Jan 2024 07:29:23 -0500
+Message-ID: <20240108122926.2090989-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240108122915.2090922-1-sashal@kernel.org>
-References: <20240108122915.2090922-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -59,52 +56,43 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.4.265
+X-stable-base: Linux 4.19.303
 Content-Transfer-Encoding: 8bit
 
-From: Stefan Wahren <wahrenst@gmx.net>
+From: Siddh Raman Pant <code@siddh.me>
 
-[ Upstream commit 643fe70e7bcdcc9e2d96952f7fc2bab56385cce5 ]
+[ Upstream commit 6ec0d7527c4287369b52df3bcefd21a0c4fb2b7c ]
 
-of_property_match_string returns an int; either an index from 0 or
-greater if successful or negative on failure. Even it's very
-unlikely that the DT CPU node contains multiple enable-methods
-these checks should be fixed.
+As we know we cannot send the datagram (state can be set to LLCP_CLOSED
+by nfc_llcp_socket_release()), there is no need to proceed further.
 
-This patch was inspired by the work of Nick Desaulniers.
+Thus, bail out early from llcp_sock_sendmsg().
 
-Link: https://lore.kernel.org/lkml/20230516-sunxi-v1-1-ac4b9651a8c1@google.com/T/
-Cc: Nick Desaulniers <ndesaulniers@google.com>
-Signed-off-by: Stefan Wahren <wahrenst@gmx.net>
-Link: https://lore.kernel.org/r/20231228193903.9078-2-wahrenst@gmx.net
-Reviewed-by: Chen-Yu Tsai <wens@csie.org>
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Siddh Raman Pant <code@siddh.me>
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Reviewed-by: Suman Ghosh <sumang@marvell.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/mach-sunxi/mc_smp.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ net/nfc/llcp_sock.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/arch/arm/mach-sunxi/mc_smp.c b/arch/arm/mach-sunxi/mc_smp.c
-index 26cbce1353387..5d7ddfd5990e5 100644
---- a/arch/arm/mach-sunxi/mc_smp.c
-+++ b/arch/arm/mach-sunxi/mc_smp.c
-@@ -804,14 +804,14 @@ static int __init sunxi_mc_smp_init(void)
- 	for (i = 0; i < ARRAY_SIZE(sunxi_mc_smp_data); i++) {
- 		ret = of_property_match_string(node, "enable-method",
- 					       sunxi_mc_smp_data[i].enable_method);
--		if (!ret)
-+		if (ret >= 0)
- 			break;
+diff --git a/net/nfc/llcp_sock.c b/net/nfc/llcp_sock.c
+index 605d7448c3de1..b27bb2e2486c2 100644
+--- a/net/nfc/llcp_sock.c
++++ b/net/nfc/llcp_sock.c
+@@ -802,6 +802,11 @@ static int llcp_sock_sendmsg(struct socket *sock, struct msghdr *msg,
  	}
  
- 	is_a83t = sunxi_mc_smp_data[i].is_a83t;
+ 	if (sk->sk_type == SOCK_DGRAM) {
++		if (sk->sk_state != LLCP_BOUND) {
++			release_sock(sk);
++			return -ENOTCONN;
++		}
++
+ 		DECLARE_SOCKADDR(struct sockaddr_nfc_llcp *, addr,
+ 				 msg->msg_name);
  
- 	of_node_put(node);
--	if (ret)
-+	if (ret < 0)
- 		return -ENODEV;
- 
- 	if (!sunxi_mc_smp_cpu_table_init())
 -- 
 2.43.0
 
