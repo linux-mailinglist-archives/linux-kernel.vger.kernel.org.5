@@ -1,257 +1,153 @@
-Return-Path: <linux-kernel+bounces-19466-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19467-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5386E826D63
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 13:05:42 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 65058826D66
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 13:06:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BBB831F22951
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 12:05:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4586CB21832
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 12:06:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAA8E2420E;
-	Mon,  8 Jan 2024 12:05:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D594C24B44;
+	Mon,  8 Jan 2024 12:05:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ffwll.ch header.i=@ffwll.ch header.b="CcHkg3EV"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="cVSJztDv"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-oa1-f48.google.com (mail-oa1-f48.google.com [209.85.160.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2089.outbound.protection.outlook.com [40.107.94.89])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 929FC22068
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 12:05:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ffwll.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ffwll.ch
-Received: by mail-oa1-f48.google.com with SMTP id 586e51a60fabf-204b216e4easo403925fac.1
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 04:05:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google; t=1704715531; x=1705320331; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=E0ycSkS6Zak2ui1rQPyyxjJDorzRP8x1XQbB3KxyGEg=;
-        b=CcHkg3EVP+Y3JN96dMQLmwCJ5Mjuj6e25iLN5SX6B2kaWBtP1VXEBgkIr+wt5x56If
-         SPeMCDmU1eT5cGYjzvB3jE6c4ih3KhwP1SS7Qu5V7l7K50V+iGCrat+kbXWezaIiAQee
-         JuRnkcd/bm1Ca544zbFs0V4C3Oaaei37ege90=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704715531; x=1705320331;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=E0ycSkS6Zak2ui1rQPyyxjJDorzRP8x1XQbB3KxyGEg=;
-        b=FRiTo4AhIsTBc3lOjL83YRrJ4mz5JdKQdJpf06Q/mSpeDvNAIiGzjR3vNIdryQtc+R
-         xHRSZJTd9xfFCIdQEIe70NYh5dAvJ7cvWrB2NRyMwszmTBwgx4yt3SPVLPKyZMGuBAPn
-         El8Z6RPRYXNTdVISdkDsmRDn+QXjh/KCXmbykcpzfYtXD+ViSbcwRxlCTPs3wwV3bAPb
-         68RkIP050ytySiMl8+rw3aokJCzm0AXhB5NsA2IuBXfXbqj4JPLjJDv9e0hZpRKDxWQO
-         oLTK6W2CsKmyADXSuLXDS/7zn7V/bMAx8DNMfP16j6wug+AroFkDVtSDHhr0Vf2wm66T
-         ES2Q==
-X-Gm-Message-State: AOJu0YyvjJrexlkPbK/XIGvqcOsBdT0yDqPQWZdSk2B6o/1ROa1h8zPa
-	q7/z1Dhw+MG3wCpA9TJH55kjLbNPggqqrBKpp7eernK3veJPHg==
-X-Google-Smtp-Source: AGHT+IFzg0ncgiosaItJcS6EqUbmXIhJfdKj13esd/8B0OHht7SYAYuam+XXDGCU1LyVattVFje1kzEfWm/X5Nm9YOM=
-X-Received: by 2002:a05:6870:c115:b0:204:9066:c34f with SMTP id
- f21-20020a056870c11500b002049066c34fmr6593653oad.5.1704715531309; Mon, 08 Jan
- 2024 04:05:31 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8419D2940B;
+	Mon,  8 Jan 2024 12:05:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lXvzJrQEv8+DXkto+5FvU7hJ/YCT4Y4ur/e0M4EAAOJanEZcRl6mFjP0FooqHKhSJIa3fGqSvN9oPBNUCz2KUfClYR43QvJKofsiztkV7K23joDqIydIDR24ZlOhLF6MbTHuv9hcFhUDngPXELBK6u3DsRJFYvptwNzfeyCNWtbwNHJvKjcL87h4LBZ5NmrAKSG1Af46Z22kby8X3MpQtwYCYljlALaY5VAyqM/dAcG/IN1mJ0kQTh34vCatw2TR7JuVdA786YwqMnDD/NgN1iN123/LsxF9GH/sRxlHIU3JUSZG0pkiSqJw3E+apwosj/Z1k8KylhwFWKLshSk90w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ueBJFiL0xSdEP04GePajUj0y9LSbBPwyXFWbks23tTg=;
+ b=Ei4VzWFQJnbFQAuRurYXlm4r+njyMHaBn1DzXnkytk7sIesAA8HVWmx4cMYu8jBLfZ4dPtaoY1QHynxaBqaiL9E5Nxpc4m0iHezZhrt7sXhRhut3Qiv77b7IsxVN15qHQFIm/b9Yxh2pFmkR+nS3DwcgjaTu8+rBActYoXv/Y1izGBrqXH6Wox4epPaw/yw556LpT0imlVCE0TyW9FXbOM+VNO8mPWZteGA94LSrbsFV4Jgc46icWMSoh7QBPS/gAkamR9RCYjlAf5USzGOIZVloGNnzFfOY3d+nLrsJbZ9CmKu3wnvl6lISSizGZqQObxtw+el8m/Y7Otw204E3DA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.160) smtp.rcpttodomain=google.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ueBJFiL0xSdEP04GePajUj0y9LSbBPwyXFWbks23tTg=;
+ b=cVSJztDvsyMyqKok7NLILd30BoxHa4nCTerZmpWVRa9pYBxU6JrbPnBZhlsVJ4Ee2YM1DNMYyxc129W7Tqm7//bDpuzrsu4kpFt3bE3jeT2Km9c7AtNHIqPp/+5fhLzsuoxyCek0XhXywctS+Exy74DJxQoUxbctlezFf8NxWd00vSN98z9f7YtScuWuIpudKkgdrSqg3KNgNEnASFI9AuAkqQMxTSNbt5Dh76O+Xz6a2+HT57MXEVBAu6Fm1TREUdJ5nZYAPZyp7kdTANldEvIPjFfeg5wBHn140wgkvMTs8ULEKE1bMOkYwUq7g1VkhTjVQGq2iOPsyK+2KXnyTQ==
+Received: from MW4PR03CA0181.namprd03.prod.outlook.com (2603:10b6:303:b8::6)
+ by SA3PR12MB7858.namprd12.prod.outlook.com (2603:10b6:806:306::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.21; Mon, 8 Jan
+ 2024 12:05:50 +0000
+Received: from CO1PEPF000044F6.namprd21.prod.outlook.com
+ (2603:10b6:303:b8:cafe::84) by MW4PR03CA0181.outlook.office365.com
+ (2603:10b6:303:b8::6) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.21 via Frontend
+ Transport; Mon, 8 Jan 2024 12:05:50 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.160) by
+ CO1PEPF000044F6.mail.protection.outlook.com (10.167.241.196) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7202.2 via Frontend Transport; Mon, 8 Jan 2024 12:05:50 +0000
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
+ (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Mon, 8 Jan 2024
+ 04:05:29 -0800
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by rnnvmail201.nvidia.com
+ (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Mon, 8 Jan 2024
+ 04:05:29 -0800
+Received: from vidyas-desktop.nvidia.com (10.127.8.9) by mail.nvidia.com
+ (10.129.68.8) with Microsoft SMTP Server id 15.2.986.41 via Frontend
+ Transport; Mon, 8 Jan 2024 04:05:25 -0800
+From: Vidya Sagar <vidyas@nvidia.com>
+To: <bhelgaas@google.com>, <rdunlap@infradead.org>,
+	<ilpo.jarvinen@linux.intel.com>, <tglx@linutronix.de>,
+	<jiang.liu@linux.intel.com>
+CC: <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<treding@nvidia.com>, <jonathanh@nvidia.com>, <sdonthineni@nvidia.com>,
+	<kthota@nvidia.com>, <mmaddireddy@nvidia.com>, <vidyas@nvidia.com>,
+	<sagar.tv@gmail.com>
+Subject: [PATCH V2] PCI/MSI: Fix MSI hwirq truncation
+Date: Mon, 8 Jan 2024 17:35:22 +0530
+Message-ID: <20240108120522.1368240-1-vidyas@nvidia.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20240105134339.3091497-1-vidyas@nvidia.com>
+References: <20240105134339.3091497-1-vidyas@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240107103426.2038075-1-olekstysh@gmail.com>
-In-Reply-To: <20240107103426.2038075-1-olekstysh@gmail.com>
-From: Daniel Vetter <daniel@ffwll.ch>
-Date: Mon, 8 Jan 2024 13:05:20 +0100
-Message-ID: <CAKMK7uE07Uz-3yxH3+TNUEroKCobZ5xG+_HBPNWLOO0-cKAS+g@mail.gmail.com>
-Subject: Re: [PATCH v2] xen/gntdev: Fix the abuse of underlying struct page in
- DMA-buf import
-To: Oleksandr Tyshchenko <olekstysh@gmail.com>
-Cc: xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org, 
-	Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>, 
-	=?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
-	Juergen Gross <jgross@suse.com>, Stefano Stabellini <sstabellini@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-NVConfidentiality: public
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CO1PEPF000044F6:EE_|SA3PR12MB7858:EE_
+X-MS-Office365-Filtering-Correlation-Id: 992b9061-ad0d-4bae-a245-08dc104227e4
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	8rkGlBI1ZVW5BeCVMGttaIcw496pFSIgYijas2OD5jTp+wmkKupA9/ygP7M37y9HLi/nUK6EglnvIsmthRr4uaLVKrWVEbfq/r6LXT0cOzUSspaGgapHveptjUEXaEWJ4SbIufzlZZfO9c2n8UftGpzItv7uJkwg9G+/IN+H+Tyxy5hvuzoozmElQtQnddh5bjof3JjnfaJUQluLEszbr/COHLWQdX/q2tdXl9qwQzI/CWdaFmI3u1R0G9UhmBB4MB4sgI4nN2O3j/I2rJBPpbSC4ONmKV9lt1Zgzpf/ibaoJ/2vgRkt8sNgClzztKNvu3F+DxgTr5Nq99OPKpWwn0v8W37Vu2LuUpC9Gy1tsLEcRPKo2T5Hcs4COWnh7lAk+Jwnu6Vuh9WQ3+cyvgu5yD2DLmtrfS6L/eGRzA4edpduWgT1Kqx4X456HLBrcIjB5nv4+iOVVdkL+g5YLL5LTj0ViXo6EMBk73V3Mlmt3tv6jAKUNPHJddDDLNYL4K941qRV9MbqTDMg1L5TclzGcg3BLnA+22mQ7sJ/I3+JyPefimcL2klUrTxXNTta06kbEPTUKTbDT1fCTq/Af/Ps77w1flEGJJkvGBLchUu+Ky0YH1FR31aoLggvyG9/srJ3swjQ/iIjyfC/DeHVb++GURRAFujiYBbDH49gPSfhx9bvPNv+VRQyR1nnHgEzJwGVdmZK/osMXIQCue2X65rigsb/jZCBeyJVHkY9bTm3fcU+gh7upv1+EdqsGa5glUoa
+X-Forefront-Antispam-Report:
+	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(396003)(136003)(39860400002)(376002)(346002)(230922051799003)(451199024)(1800799012)(64100799003)(82310400011)(186009)(46966006)(40470700004)(36840700001)(83380400001)(40460700003)(336012)(1076003)(26005)(40480700001)(47076005)(36860700001)(5660300002)(4326008)(426003)(7696005)(2616005)(82740400003)(7636003)(356005)(6666004)(478600001)(110136005)(54906003)(316002)(70586007)(70206006)(8936002)(8676002)(36756003)(41300700001)(86362001)(2906002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Jan 2024 12:05:50.1542
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 992b9061-ad0d-4bae-a245-08dc104227e4
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	CO1PEPF000044F6.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA3PR12MB7858
 
-On Sun, 7 Jan 2024 at 11:35, Oleksandr Tyshchenko <olekstysh@gmail.com> wro=
-te:
->
-> From: Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
->
-> DO NOT access the underlying struct page of an sg table exported
-> by DMA-buf in dmabuf_imp_to_refs(), this is not allowed.
-> Please see drivers/dma-buf/dma-buf.c:mangle_sg_table() for details.
->
-> Fortunately, here (for special Xen device) we can avoid using
-> pages and calculate gfns directly from dma addresses provided by
-> the sg table.
->
-> Suggested-by: Daniel Vetter <daniel@ffwll.ch>
-> Signed-off-by: Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
-> Acked-by: Christian K=C3=B6nig <christian.koenig@amd.com>
-> Reviewed-by: Stefano Stabellini <sstabellini@kernel.org>
-> ---
-> Please note, I didn't manage to test the patch against the latest master =
-branch
-> on real HW (patch was only build tested there). Patch was tested on Arm64
-> guests using Linux v5.10.41 from vendor's BSP, this is the environment wh=
-ere
-> running this use-case is possible and to which I have an access (Xen PV d=
-isplay
-> with zero-copy and backend domain as a buffer provider - be-alloc=3D1, so=
- dma-buf
-> import part was involved). A little bit old, but the dma-buf import code
-> in gntdev-dmabuf.c hasn't been changed much since that time, all context
-> remains allmost the same according to my code inspection.
->
->   v2:
->    - add R-b and A-b
->    - fix build warning noticed by kernel test robot by initializing
->      "ret" in case of error
->      https://lore.kernel.org/oe-kbuild-all/202401062122.it6zvLG0-lkp@inte=
-l.com/
-> ---
-> ---
->  drivers/xen/gntdev-dmabuf.c | 44 ++++++++++++++++---------------------
->  1 file changed, 19 insertions(+), 25 deletions(-)
->
-> diff --git a/drivers/xen/gntdev-dmabuf.c b/drivers/xen/gntdev-dmabuf.c
-> index 4440e626b797..272c0ab01ef5 100644
-> --- a/drivers/xen/gntdev-dmabuf.c
-> +++ b/drivers/xen/gntdev-dmabuf.c
-> @@ -11,6 +11,7 @@
->  #include <linux/kernel.h>
->  #include <linux/errno.h>
->  #include <linux/dma-buf.h>
-> +#include <linux/dma-direct.h>
->  #include <linux/slab.h>
->  #include <linux/types.h>
->  #include <linux/uaccess.h>
-> @@ -50,7 +51,7 @@ struct gntdev_dmabuf {
->
->         /* Number of pages this buffer has. */
->         int nr_pages;
-> -       /* Pages of this buffer. */
-> +       /* Pages of this buffer (only for dma-buf export). */
->         struct page **pages;
->  };
->
-> @@ -484,7 +485,7 @@ static int dmabuf_exp_from_refs(struct gntdev_priv *p=
-riv, int flags,
->  /* DMA buffer import support. */
->
->  static int
-> -dmabuf_imp_grant_foreign_access(struct page **pages, u32 *refs,
-> +dmabuf_imp_grant_foreign_access(unsigned long *gfns, u32 *refs,
->                                 int count, int domid)
->  {
->         grant_ref_t priv_gref_head;
-> @@ -507,7 +508,7 @@ dmabuf_imp_grant_foreign_access(struct page **pages, =
-u32 *refs,
->                 }
->
->                 gnttab_grant_foreign_access_ref(cur_ref, domid,
-> -                                               xen_page_to_gfn(pages[i])=
-, 0);
-> +                                               gfns[i], 0);
->                 refs[i] =3D cur_ref;
->         }
->
-> @@ -529,7 +530,6 @@ static void dmabuf_imp_end_foreign_access(u32 *refs, =
-int count)
->
->  static void dmabuf_imp_free_storage(struct gntdev_dmabuf *gntdev_dmabuf)
->  {
-> -       kfree(gntdev_dmabuf->pages);
->         kfree(gntdev_dmabuf->u.imp.refs);
->         kfree(gntdev_dmabuf);
->  }
-> @@ -549,12 +549,6 @@ static struct gntdev_dmabuf *dmabuf_imp_alloc_storag=
-e(int count)
->         if (!gntdev_dmabuf->u.imp.refs)
->                 goto fail;
->
-> -       gntdev_dmabuf->pages =3D kcalloc(count,
-> -                                      sizeof(gntdev_dmabuf->pages[0]),
-> -                                      GFP_KERNEL);
-> -       if (!gntdev_dmabuf->pages)
-> -               goto fail;
-> -
->         gntdev_dmabuf->nr_pages =3D count;
->
->         for (i =3D 0; i < count; i++)
-> @@ -576,7 +570,8 @@ dmabuf_imp_to_refs(struct gntdev_dmabuf_priv *priv, s=
-truct device *dev,
->         struct dma_buf *dma_buf;
->         struct dma_buf_attachment *attach;
->         struct sg_table *sgt;
-> -       struct sg_page_iter sg_iter;
-> +       struct sg_dma_page_iter sg_iter;
-> +       unsigned long *gfns;
->         int i;
->
->         dma_buf =3D dma_buf_get(fd);
-> @@ -624,26 +619,25 @@ dmabuf_imp_to_refs(struct gntdev_dmabuf_priv *priv,=
- struct device *dev,
->
->         gntdev_dmabuf->u.imp.sgt =3D sgt;
->
-> -       /* Now convert sgt to array of pages and check for page validity.=
- */
-> +       gfns =3D kcalloc(count, sizeof(*gfns), GFP_KERNEL);
-> +       if (!gfns) {
-> +               ret =3D ERR_PTR(-ENOMEM);
-> +               goto fail_unmap;
-> +       }
-> +
-> +       /* Now convert sgt to array of gfns without accessing underlying =
-pages. */
->         i =3D 0;
-> -       for_each_sgtable_page(sgt, &sg_iter, 0) {
-> -               struct page *page =3D sg_page_iter_page(&sg_iter);
-> -               /*
-> -                * Check if page is valid: this can happen if we are give=
-n
-> -                * a page from VRAM or other resources which are not back=
-ed
-> -                * by a struct page.
-> -                */
-> -               if (!pfn_valid(page_to_pfn(page))) {
-> -                       ret =3D ERR_PTR(-EINVAL);
-> -                       goto fail_unmap;
-> -               }
-> +       for_each_sgtable_dma_page(sgt, &sg_iter, 0) {
+While calculating the hwirq number for an MSI interrupt, the higher
+bits (i.e. from bit-5 onwards a.k.a domain_nr >= 32) of the PCI domain
+number gets truncated because of the shifted value casting to u32. This
+for example is resulting in same hwirq number for devices 0019:00:00.0
+and 0039:00:00.0.
 
-Maybe add a comment here to explain why this is done and why it's ok?
-Either way:
+So, cast the PCI domain number to u64 before left shifting it to
+calculate hwirq number.
 
-Acked-by: Daniel Vetter <daniel@ffwll.ch>
+Fixes: 3878eaefb89a ("PCI/MSI: Enhance core to support hierarchy irqdomain")
+Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
+---
+V2:
+* Added Fixes tag
 
+ drivers/pci/msi/irqdomain.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> +               dma_addr_t addr =3D sg_page_iter_dma_address(&sg_iter);
-> +               unsigned long pfn =3D bfn_to_pfn(XEN_PFN_DOWN(dma_to_phys=
-(dev, addr)));
->
-> -               gntdev_dmabuf->pages[i++] =3D page;
-> +               gfns[i++] =3D pfn_to_gfn(pfn);
->         }
->
-> -       ret =3D ERR_PTR(dmabuf_imp_grant_foreign_access(gntdev_dmabuf->pa=
-ges,
-> +       ret =3D ERR_PTR(dmabuf_imp_grant_foreign_access(gfns,
->                                                       gntdev_dmabuf->u.im=
-p.refs,
->                                                       count, domid));
-> +       kfree(gfns);
->         if (IS_ERR(ret))
->                 goto fail_end_access;
->
-> --
-> 2.34.1
->
+diff --git a/drivers/pci/msi/irqdomain.c b/drivers/pci/msi/irqdomain.c
+index c8be056c248d..cfd84a899c82 100644
+--- a/drivers/pci/msi/irqdomain.c
++++ b/drivers/pci/msi/irqdomain.c
+@@ -61,7 +61,7 @@ static irq_hw_number_t pci_msi_domain_calc_hwirq(struct msi_desc *desc)
+ 
+ 	return (irq_hw_number_t)desc->msi_index |
+ 		pci_dev_id(dev) << 11 |
+-		(pci_domain_nr(dev->bus) & 0xFFFFFFFF) << 27;
++		((irq_hw_number_t)(pci_domain_nr(dev->bus) & 0xFFFFFFFF)) << 27;
+ }
+ 
+ static void pci_msi_domain_set_desc(msi_alloc_info_t *arg,
+-- 
+2.25.1
 
-
---=20
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
 
