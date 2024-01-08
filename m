@@ -1,165 +1,108 @@
-Return-Path: <linux-kernel+bounces-19330-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19331-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D1699826B7A
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 11:18:44 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EBA7D826B81
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 11:20:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 862D01F231D7
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 10:18:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 77340B2198B
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 10:20:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FF4513FE7;
-	Mon,  8 Jan 2024 10:18:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AB7C13FE7;
+	Mon,  8 Jan 2024 10:20:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="FN6gRA7m"
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="bhA03MLh"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3190413AC7
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 10:18:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-5534180f0e9so10088a12.1
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 02:18:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1704709109; x=1705313909; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8Qfly6nhl8jFfx0HUMf8kF4M5Jg9zmmCAg6MMJqYeTY=;
-        b=FN6gRA7mALBe1fK1MNNMoNbqZ0Jq3PVgOBum/KdFHf/7817h+DQzTV6h6C5AjoZbg6
-         CcVn8V1xzXT4CrOcdTmNwuQ00RgWg1wKny95A6aB20vZndsXz3tvp6w5veUUnCvTuDIe
-         DnV2aZUtBdC62PikOHFYjjnzQPpmM7nS0UPFG8V4e9NSMci0Wm+q02N+VnYZr5coptA8
-         WnIHZE5GFGU+HWdA1ysBVMgtLpjffa2Q96ZUXJ/iXdC4EJ9MOJNoMVYfZdxBFPVldboq
-         chERDvKNAv0LIPvBxH5LUl3pRaIz1FJbXQ8KqK+5oB7PzM0gRrUZKiAHtvOSXN6152lD
-         IvbQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704709109; x=1705313909;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8Qfly6nhl8jFfx0HUMf8kF4M5Jg9zmmCAg6MMJqYeTY=;
-        b=l1+UziGHegm2Nu59LoF0li3bfQ00Yd2xpvZj9GJFzNbsom6XwK7X+ppKnpcnLrHSDa
-         yfbacRUEEXZbPjewI5LRkP5+Bfzsi+Hu6X+pNtaPnKreXz6WtdSP5fzhkMj4cKYnXdzl
-         p9hnJIfqWVZlS4fFyaEtZFmWB5LbRYJlkeebdcrns333x+0cj3wWW3pDhCRT13sY0Bt7
-         fc5VX2VjKL+pjox95xjI1CVAPB2kM/qWuEyk9CnFcvhHNFKjjL/wdz5dLmRLsjcGJ0iP
-         kp21MGVNGxxh07TR6+cEav5KMpNtUFSeNFCh3sQ69gtE+mj/Jg3IOx28dkxuvV2wXAtr
-         Fa2A==
-X-Gm-Message-State: AOJu0YysRdYi8bp5i/XY+4GoDxHoSwC4JWc/mRT3CQpcBZesmAXY6C4P
-	8cQsRkp4pgR8ix7mis4ujWjnCGY1hRpzTHcBFtnb6KX9rTD9
-X-Google-Smtp-Source: AGHT+IFEWfYqZHIG+LUJ5EaJhMftBDDG9sJmw7KbKz3j+4Pc9Jto7FXpe22zDYZiLa6obmvd316Ar7V7fftFPa1Gtf8=
-X-Received: by 2002:a50:cdd1:0:b0:557:1142:d5bb with SMTP id
- h17-20020a50cdd1000000b005571142d5bbmr268574edj.4.1704709108543; Mon, 08 Jan
- 2024 02:18:28 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C67A913AC7;
+	Mon,  8 Jan 2024 10:20:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 408AKOIA044815;
+	Mon, 8 Jan 2024 04:20:24 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1704709224;
+	bh=MZTcfKa0JGgjKosImq417HAF98o0lITE41SczYfrfg0=;
+	h=Date:CC:Subject:To:References:From:In-Reply-To;
+	b=bhA03MLhviuwXzRnTVzi8ydbZQZ/jJLbeSbDlFxebWw0VifD6Fs6A9eSoHgb59Sic
+	 qO0KcW3GJY/ePZFN5y/GuJKug1L4haDh3HYqhHrdxfPHJ85f+r9g65030Jm/vSkoEn
+	 CJ4ETLpSGobcqXLk/HwhjgA3yiDik4QdHMekZqkQ=
+Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
+	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 408AKObi012359
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Mon, 8 Jan 2024 04:20:24 -0600
+Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 8
+ Jan 2024 04:20:24 -0600
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE107.ent.ti.com
+ (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Mon, 8 Jan 2024 04:20:24 -0600
+Received: from [172.24.227.9] (uda0492258.dhcp.ti.com [172.24.227.9])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 408AKKJC108092;
+	Mon, 8 Jan 2024 04:20:21 -0600
+Message-ID: <bc3a0fb0-6268-476a-a13a-2d538704f61d@ti.com>
+Date: Mon, 8 Jan 2024 15:50:20 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240104232714.619657-1-xzou017@ucr.edu>
-In-Reply-To: <20240104232714.619657-1-xzou017@ucr.edu>
-From: Eric Dumazet <edumazet@google.com>
-Date: Mon, 8 Jan 2024 11:18:15 +0100
-Message-ID: <CANn89iLZKMW4ncpk2TAsGKo=t+fm=Jss9466zF5YQ0NN+M_K9A@mail.gmail.com>
-Subject: Re: [PATCH] net: gre: complete lockless access to dev->needed_headroom
-To: Xiaochen Zou <xzou017@ucr.edu>
-Cc: davem@davemloft.net, dsahern@kernel.org, kuba@kernel.org, 
-	pabeni@redhat.com, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+User-Agent: Mozilla Thunderbird
+CC: <linux-pci@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        <srk@ti.com>, <s-vadapalli@ti.com>
+Subject: Re: [RFC PATCH] dt-bindings: PCI: ti,j721e-pci-host: Add device-id
+ for TI's J784S4 SoC
+Content-Language: en-US
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        <lpieralisi@kernel.org>, <kw@linux.com>, <robh@kernel.org>,
+        <bhelgaas@google.com>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>
+References: <20240108050735.512445-1-s-vadapalli@ti.com>
+ <67af1724-6424-456a-aff6-85d9e010c430@linaro.org>
+From: Siddharth Vadapalli <s-vadapalli@ti.com>
+In-Reply-To: <67af1724-6424-456a-aff6-85d9e010c430@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On Fri, Jan 5, 2024 at 12:26=E2=80=AFAM Xiaochen Zou <xzou017@ucr.edu> wrot=
-e:
->
-> According to 4b397c06cb9 (net: tunnels: annotate lockless
-> accesses to dev->needed_headroom), we need to use lockless
-> access to protect dev->needed_headroom from data racing.
-> This patch complete the changes in ip(6)_gre.
->
-> More changes in other modules might be needed for completeness.
->
-> Signed-off-by: Xiaochen Zou <xzou017@ucr.edu>
-> ---
->  net/ipv4/ip_gre.c  | 12 ++++++------
->  net/ipv6/ip6_gre.c | 12 ++++++------
->  2 files changed, 12 insertions(+), 12 deletions(-)
->
-> diff --git a/net/ipv4/ip_gre.c b/net/ipv4/ip_gre.c
-> index 5169c3c72cff..8c979c421d79 100644
-> --- a/net/ipv4/ip_gre.c
-> +++ b/net/ipv4/ip_gre.c
-> @@ -491,7 +491,7 @@ static void gre_fb_xmit(struct sk_buff *skb, struct n=
-et_device *dev,
->         key =3D &tun_info->key;
->         tunnel_hlen =3D gre_calc_hlen(key->tun_flags);
->
-> -       if (skb_cow_head(skb, dev->needed_headroom))
-> +       if (skb_cow_head(skb, READ_ONCE(dev->needed_headroom)))
->                 goto err_free_skb;
->
->         /* Push Tunnel header. */
-> @@ -541,7 +541,7 @@ static void erspan_fb_xmit(struct sk_buff *skb, struc=
-t net_device *dev)
->         version =3D md->version;
->         tunnel_hlen =3D 8 + erspan_hdr_len(version);
->
-> -       if (skb_cow_head(skb, dev->needed_headroom))
-> +       if (skb_cow_head(skb, READ_ONCE(dev->needed_headroom)))
->                 goto err_free_skb;
->
->         if (gre_handle_offloads(skb, false))
-> @@ -653,7 +653,7 @@ static netdev_tx_t ipgre_xmit(struct sk_buff *skb,
->                     skb_checksum_start(skb) < skb->data)
->                         goto free_skb;
->         } else {
-> -               if (skb_cow_head(skb, dev->needed_headroom))
-> +               if (skb_cow_head(skb, READ_ONCE(dev->needed_headroom)))
->                         goto free_skb;
->
->                 tnl_params =3D &tunnel->parms.iph;
-> @@ -689,7 +689,7 @@ static netdev_tx_t erspan_xmit(struct sk_buff *skb,
->         if (gre_handle_offloads(skb, false))
->                 goto free_skb;
->
-> -       if (skb_cow_head(skb, dev->needed_headroom))
-> +       if (skb_cow_head(skb, READ_ONCE(dev->needed_headroom)))
->                 goto free_skb;
->
->         if (skb->len > dev->mtu + dev->hard_header_len) {
-> @@ -742,7 +742,7 @@ static netdev_tx_t gre_tap_xmit(struct sk_buff *skb,
->         if (gre_handle_offloads(skb, !!(tunnel->parms.o_flags & TUNNEL_CS=
-UM)))
->                 goto free_skb;
->
-> -       if (skb_cow_head(skb, dev->needed_headroom))
-> +       if (skb_cow_head(skb, READ_ONCE(dev->needed_headroom)))
->                 goto free_skb;
->
->         __gre_xmit(skb, dev, &tunnel->parms.iph, htons(ETH_P_TEB));
-> @@ -768,7 +768,7 @@ static void ipgre_link_update(struct net_device *dev,=
- bool set_mtu)
->         if (dev->header_ops)
->                 dev->hard_header_len +=3D len;
->         else
-> -               dev->needed_headroom +=3D len;
-> +               WRITE_ONCE(dev->needed_headroom, dev->needed_headroom + l=
-en);
+Hello Krzysztof,
 
-Can the updates here happen while packets are in flight ?
+On 08/01/24 12:39, Krzysztof Kozlowski wrote:
+> On 08/01/2024 06:07, Siddharth Vadapalli wrote:
+>> Add the device-id of 0xb012 for the PCIe controller on the J784S4 SoC as
+>> described in the CTRL_MMR_PCI_DEVICE_ID register's PCI_DEVICE_ID_DEVICE_ID
+>> field. The Register descriptions and the Technical Reference Manual for
+>> J784S4 SoC can be found at: https://www.ti.com/lit/zip/spruj52
+>>
+>> Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
+>> ---
+>>
+>> This patch is based on linux-next tagged next-20240105.
+> 
+> Why is this patch incomplete? What is missing here? What are you asking
+> about as RFC?
 
-ip6_tnl_xmit() updates definitely could happen while packets are in
-flight, this is why we needed
+Since the merge window is closed, I was hoping to get the patch reviewed in
+order to get any "Reviewed-by" tags if possible. That way, I will be able to
+post it again as v1 along with the tags when the merge window opens. For that
+reason, I have marked it as an RFC patch. Is there an alternative to this "RFC
+patch" method that I have followed? Please let me know.
 
-if (max_headroom > READ_ONCE(dev->needed_headroom))
-     WRITE_ONCE(dev->needed_headroom, max_headroom);
+> 
+> Best regards,
+> Krzysztof
+> 
 
-Do you have a KCSAN stack trace or something ?
-
-Normally, dev->needed_headroom is only set at setup time,
-
-Commit 8eb30be0352d ("ipv6: Create ip6_tnl_xmit") violated this rule.
+-- 
+Regards,
+Siddharth.
 
