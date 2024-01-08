@@ -1,127 +1,125 @@
-Return-Path: <linux-kernel+bounces-19843-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19845-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA3A0827527
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 17:29:57 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C46E5827531
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 17:32:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 79C76282F6A
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 16:29:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EAF26B22B51
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 16:32:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6801D45C1B;
-	Mon,  8 Jan 2024 16:29:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3D6946B96;
+	Mon,  8 Jan 2024 16:32:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="fLwlSTCX"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="rWSH4W95"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ua1-f54.google.com (mail-ua1-f54.google.com [209.85.222.54])
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7432054BC3
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 16:29:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ua1-f54.google.com with SMTP id a1e0cc1a2514c-7cc92a83200so402557241.3
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 08:29:47 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86420537ED
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 16:32:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-40e461c1f44so12895225e9.3
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 08:32:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704731386; x=1705336186; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=hT5RihLVZ6pdmIOZO3I4HwZe6d+t4eo6mHHQbGnw45s=;
-        b=fLwlSTCXwgaXLc8B7LdCHdFkPu22vc2trGAzbei8BfnpgOq0CBFJAEsPeSGjtoNj0+
-         LEGQhNQo8ZsuCcIe1QY9yt1CT1pJnsoBR7mPotXP1W8q6RDr2hFl8PV/kXb3UFxjv8DK
-         jacJ8Dtb4S62v/OlifRS32q1VTmf+83m9AtpMmwzn47b3JnJEjIvXxDawqXg/6cJehMO
-         19O8ocO37WThkmRTOaNIN23hUt15nd+g0ClAbJ31+nbs30wRCR5gpeM7XxYLz2oJet92
-         FbR4fCFjiFz2PCpYHUQW7NfcOrSzd7J1bmyd2Uqn4XFSEciGABEfH8PB3Sz1Fcw5DVPA
-         c/7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704731386; x=1705336186;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=google.com; s=20230601; t=1704731520; x=1705336320; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=hT5RihLVZ6pdmIOZO3I4HwZe6d+t4eo6mHHQbGnw45s=;
-        b=RQwDtggr70AsCgyaIGT3T4a/cJJvg+8K0lSCjWzXx5h+6WxIokzSozOyUk95/Wbooo
-         drqUKfI+VtAnj1JSWDYPBXEh/UbfzXkP6QJ2MRcIAys59yMcY9OMrz8YmT3An6DSD/jH
-         LIFYT+lKdTi0R4Q/lSi63YGnX493/jjzysk9ChDubuPYPh854QaHEvbEwGjntdk40Fm1
-         zehL/x14gs0ccI97dWfR9UfUxSfoldC+KkAzWpOMW5DybawPSX+NEJRicPS0YNvsiIku
-         ipgyP1AprvOFCi9s+967vBNpOSrETQa08BnuN30zbZM88iCmUOKGLCsEn3uYUwFfenkK
-         I5Ew==
-X-Gm-Message-State: AOJu0YzCNZp9uoEsOq0zLx4o8d9swBXf4V8biI9krLlqERm6iIHITocs
-	w9kg2HOqpYehlpmTXZWbb3a3fY8U6FbGyDq1JKHf58cHjWs=
-X-Google-Smtp-Source: AGHT+IE1YQHcy6e8n1tq1lbfLcK9JM25Lp1bfmlHIT4nZ9l04SI3Alzffg2MLOaAT8NfsRDRtgoygQ==
-X-Received: by 2002:a05:6102:3eca:b0:467:b195:6f68 with SMTP id n10-20020a0561023eca00b00467b1956f68mr793643vsv.30.1704731386246;
-        Mon, 08 Jan 2024 08:29:46 -0800 (PST)
-Received: from ubuntu-server-vm-macos (072-189-067-006.res.spectrum.com. [72.189.67.6])
-        by smtp.gmail.com with ESMTPSA id f1-20020ab06f81000000b007cb869908b0sm16080uav.6.2024.01.08.08.29.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Jan 2024 08:29:45 -0800 (PST)
-Date: Mon, 8 Jan 2024 16:29:43 +0000
-From: William Breathitt Gray <william.gray@linaro.org>
-To: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
-Cc: linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 0/2] tools: counter: add counter_watch_events
-Message-ID: <ZZwi944O0O2AlckN@ubuntu-server-vm-macos>
-References: <20231206164726.418990-1-fabrice.gasnier@foss.st.com>
+        bh=KlZtp8Mc/IdEItW9zdWJoKOLhQnUFxnWRKbUrflBtl8=;
+        b=rWSH4W959MkgSlZChVouh6sM94+uQXRccWerZ2JDB1b3cDkSWYhx0A2Lm0QkW64fYu
+         o7z50w1QPb+AyrcqwoIat5VNN6+xRhaokzpezansR6PhhD5tJEzkS2cEUJ9QrWPoE4FH
+         EcqdKsP/OJWEwpsk3BgIFf4B/MGh3uC0b3mgf/yUROO4KxmuevHw+lfoozuNM9U8CeBS
+         1xqBaxe35sH+Cb4dbwHCi0HlwaW5kK9NJ/UZq3ugsV5B7IaHWj+RRSSIouKGulck0jre
+         AGgl3L+LhRRgESfFgvardSBW23WauNOqPzpWuF078l5n6ab6i55G342aXOdkRMYG+gsF
+         R9cQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704731520; x=1705336320;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KlZtp8Mc/IdEItW9zdWJoKOLhQnUFxnWRKbUrflBtl8=;
+        b=Uz2aYLXq/iCLVyheWdi1ZZ2qdSzprp7bG1vPY+0ceh1P4xHBXMKK4C10pUY1EMMMFU
+         wNpBzEwqkKGmwZPKYsBnDRDgAxgznM6CO96Gj3RKbLmOc6VjWeQiB/lq70J+feM/E0vI
+         E+ppOzR4DWOZK/6eHLMVmFnLUW1Wf2fabjMI5sSHDDACGf0f82vQEV6UPy6ZU8UDCtJU
+         NQf9xo5zcu9Znru9i5ahTcfAQjteY+VpyiAWREln06RrmxWNujkVlLteKYOHvSMSJX8r
+         hmbnIK/3QXBfrJUxwzeTunnKxtyJS70POGz/D02dE5fOeuP8ov7RmL+pze0tY7Cr5dYp
+         FKyg==
+X-Gm-Message-State: AOJu0YyATCyD7QFfgYJt+QZm9YWlVFWNal3hZe7V+k5kLmVuwAkQD9QP
+	IWidw2uzaQ8JubP0igryHf5Rh1KGPH4yAugQq6goKQqnpIYKHmZlwcIjt4vO3b2J
+X-Google-Smtp-Source: AGHT+IE+HJ6kcZvKnHQNGaVcsMN6yrWNgiZ5/HRkVlFCiWKs0+nk83b2SJCK0fThLzy/qbHzwkldT58c/xYbwY6tIYI=
+X-Received: by 2002:a5d:5706:0:b0:336:ca4b:b5ff with SMTP id
+ a6-20020a5d5706000000b00336ca4bb5ffmr1831234wrv.75.1704731519617; Mon, 08 Jan
+ 2024 08:31:59 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="vez9kyFd2T+wrLnY"
-Content-Disposition: inline
-In-Reply-To: <20231206164726.418990-1-fabrice.gasnier@foss.st.com>
-
-
---vez9kyFd2T+wrLnY
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20240108033138.217032-1-wangrui@loongson.cn>
+In-Reply-To: <20240108033138.217032-1-wangrui@loongson.cn>
+From: Nick Desaulniers <ndesaulniers@google.com>
+Date: Mon, 8 Jan 2024 08:31:45 -0800
+Message-ID: <CAKwvOd=ygyfAzmk=1TTf+U62U8wkvpFYCJo-Ci--6rs5nSoT0A@mail.gmail.com>
+Subject: Re: [PATCH] scripts/min-tool-version.sh: Raise min clang version to
+ 18.0.0 for loongarch
+To: WANG Rui <wangrui@loongson.cn>
+Cc: Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>, llvm@lists.linux.dev, 
+	linux-kernel@vger.kernel.org, loongarch@lists.linux.dev, 
+	loongson-kernel@lists.loongnix.cn, Nathan Chancellor <nathan@kernel.org>, 
+	Tiezhu Yang <yangtiezhu@loongson.cn>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Dec 06, 2023 at 05:47:24PM +0100, Fabrice Gasnier wrote:
-> Introduces a new tool that can be used for testing. Also
-> add MAINTAINERS entry as per William's recommendations.
->=20
-> Changelog:
-> - This is a split of another series [1].
-> [1] https://lore.kernel.org/lkml/20230922143920.3144249-1-fabrice.gasnier=
-@foss.st.com/
->=20
-> Fabrice Gasnier (2):
->   tools/counter: add a flexible watch events tool
->   MAINTAINERS: add myself as counter watch events tool maintainer
->=20
->  MAINTAINERS                          |   5 +
->  tools/counter/Build                  |   1 +
->  tools/counter/Makefile               |  12 +-
->  tools/counter/counter_watch_events.c | 372 +++++++++++++++++++++++++++
->  4 files changed, 388 insertions(+), 2 deletions(-)
->  create mode 100644 tools/counter/counter_watch_events.c
->=20
-> --=20
-> 2.25.1
->=20
+On Sun, Jan 7, 2024 at 7:32=E2=80=AFPM WANG Rui <wangrui@loongson.cn> wrote=
+:
+>
+> The existing mainline clang development version encounters diffculties
 
-Hi Fabrice,
+s/diffculties/difficulties/
 
-I'm going to reply to some of these patches with my Reviewed-by tag for
-my own sake, so that I know I've already reviewed them before picking
-them up at a later point.
+> compiling the LoongArch kernel module. It is anticipated that this issue
+> will be resolved in the upcoming 18.0.0 release. To prevent user
+> confusion arising from broken builds, it is advisable to raise the
+> minimum required clang version for LoongArch to 18.0.0.
+>
+> Suggested-by: Nathan Chancellor <nathan@kernel.org>
+> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+> Signed-off-by: WANG Rui <wangrui@loongson.cn>
 
-William Breathitt Gray
+Thanks for all of the work here; it's nice to observe the progress.
 
---vez9kyFd2T+wrLnY
-Content-Type: application/pgp-signature; name="signature.asc"
+Acked-by: Nick Desaulniers <ndesaulniers@google.com>
+Link: https://github.com/ClangBuiltLinux/linux/issues/1941
 
------BEGIN PGP SIGNATURE-----
+> ---
+>  scripts/min-tool-version.sh | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/scripts/min-tool-version.sh b/scripts/min-tool-version.sh
+> index c62066825f53..9faa4d3d91e3 100755
+> --- a/scripts/min-tool-version.sh
+> +++ b/scripts/min-tool-version.sh
+> @@ -26,6 +26,8 @@ gcc)
+>  llvm)
+>         if [ "$SRCARCH" =3D s390 ]; then
+>                 echo 15.0.0
+> +       elif [ "$SRCARCH" =3D loongarch ]; then
+> +               echo 18.0.0
+>         else
+>                 echo 11.0.0
+>         fi
+> --
+> 2.43.0
+>
+>
 
-iHUEABYIAB0WIQSNN83d4NIlKPjon7a1SFbKvhIjKwUCZZwi9wAKCRC1SFbKvhIj
-K0k3AQCe8ZmmLm3SGKy3zItu8XwD5EcVCyCSjxQLoK0sqWEYnAEAiZSlr+EX/vyn
-yWQEOi56Tq27zvaC7dvLVkRvAx5GhgU=
-=OkFg
------END PGP SIGNATURE-----
 
---vez9kyFd2T+wrLnY--
+--=20
+Thanks,
+~Nick Desaulniers
 
