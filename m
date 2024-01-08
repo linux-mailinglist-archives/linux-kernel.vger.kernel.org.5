@@ -1,157 +1,163 @@
-Return-Path: <linux-kernel+bounces-19953-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19955-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8FF3A82774D
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 19:23:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 42F86827754
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 19:24:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3F32C284B32
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 18:23:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 688511C22E3B
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 18:24:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03B045100F;
-	Mon,  8 Jan 2024 18:23:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AA005577B;
+	Mon,  8 Jan 2024 18:23:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="p7RAqiHy"
+	dkim=pass (2048-bit key) header.d=posteo.net header.i=@posteo.net header.b="A/pEiq0N"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mout01.posteo.de (mout01.posteo.de [185.67.36.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4463154BC4;
-	Mon,  8 Jan 2024 18:23:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1C7DDC433C7;
-	Mon,  8 Jan 2024 18:23:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704738196;
-	bh=Xq/EO1oUzFOE5Dl+jP8wqA2TBHVt9HXTNupEvkc0Mw8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=p7RAqiHyXZ+NltxPmigtpJ8Z/lm8bpdTwMJMz8r1/LU4pGanagTzD+YnVkZll3WR2
-	 hCwfhrJVor0hHRfd/uAdlPbvKrDE0vx5wjfyY7u6SdNpuBqiTsKf1bZRWPAA4zeEX+
-	 vOADwhE5ZyuCUWwqHyTm7QJhBIvxWZdqJJftObzm6qquhm/ynfpu+xMjs6OOI4mpdz
-	 c2sNGe4PglrSVQObDhkduh5AqcO/zHAxb6TJrlUFt5qZWsNT0GtCs4vTyk4gsppE0A
-	 TxuxA+dd90B2l/CSfciF0gMRk1t4fC1J9LMc0VHIYH5AZA8Lp23sDINf+blvmtjDhF
-	 iFSpZ3sClG8fQ==
-Date: Mon, 8 Jan 2024 18:23:12 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Elad Nachman <enachman@marvell.com>
-Cc: "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-	"robh+dt@kernel.org" <robh+dt@kernel.org>,
-	"krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
-	"conor+dt@kernel.org" <conor+dt@kernel.org>,
-	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-	"linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [EXT] Re: [PATCH] dt-bindings: usb: Add Marvell ac5
-Message-ID: <20240108-undiluted-spiffy-8107aafdfa50@spud>
-References: <20240107152557.3561341-1-enachman@marvell.com>
- <20240108-zoning-tactical-20501dccfac1@spud>
- <BN9PR18MB425195C57E2FC24D5F331C19DB6B2@BN9PR18MB4251.namprd18.prod.outlook.com>
- <20240108-chariot-thinner-7a86808a0571@spud>
- <BN9PR18MB42513EDDDA454FA50249205BDB6B2@BN9PR18MB4251.namprd18.prod.outlook.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A21A55778
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 18:23:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=posteo.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=posteo.net
+Received: from submission (posteo.de [185.67.36.169]) 
+	by mout01.posteo.de (Postfix) with ESMTPS id 5E9A4240028
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 19:23:25 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
+	t=1704738205; bh=fwt/GANjNvWWtupqWsOG0MztgpT1y2UeL0pOsAIRuPg=;
+	h=MIME-Version:Content-Transfer-Encoding:Date:From:To:Cc:Subject:
+	 Message-ID:From;
+	b=A/pEiq0NY9RP7r3bCBdSIk7irRHQ7Gr3qKUQ4103zHQ+p4HvwshIxw84GG0tY2vVq
+	 bcCTmvSerBeDSl6t402vFLikEyLPzDxIcem1wllgvDlK1LQGOnt44zOTYjlffuEK4a
+	 7fAOIKEo/XO+dRK4Q4tiSK231fdTEY/Gu/GFM4IkV32oBOjCcgtuhKYXL1sljpErWH
+	 bQ6lM4BUN4bnzq7ydIIF+n8HHsOs3XzZsGR1tyekrErKGoIzkM9G2txrQZQ7+V5IUZ
+	 bwImo7b7wrOKlVHzgpd6nTtbKrS8IngZ0jYBo5AbYWCB5GutT9FgL0tb8iV+mwkeg3
+	 AXRMGYk1V/w4A==
+Received: from customer (localhost [127.0.0.1])
+	by submission (posteo.de) with ESMTPSA id 4T82Vy2MWRz6twD;
+	Mon,  8 Jan 2024 19:23:21 +0100 (CET)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="fFekk1XW+GUOomhA"
-Content-Disposition: inline
-In-Reply-To: <BN9PR18MB42513EDDDA454FA50249205BDB6B2@BN9PR18MB4251.namprd18.prod.outlook.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date: Mon, 08 Jan 2024 18:23:21 +0000
+From: Yueh-Shun Li <shamrocklee@posteo.net>
+To: Jonathan Corbet <corbet@lwn.net>
+Cc: Hu Haowen <src.res.211@gmail.com>, Alex Shi <alexs@kernel.org>, Yanteng
+ Si <siyanteng@loongson.cn>, Randy Dunlap <rdunlap@infradead.org>,
+ workflows@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/4] coding-style: show how reusing macros prevents
+ naming collisions
+In-Reply-To: <871qaryel9.fsf@meer.lwn.net>
+References: <107b6b5e-ca14-4b2b-ba2e-38ecd74c0ad3@infradead.org>
+ <20240108160746.177421-1-shamrocklee@posteo.net>
+ <20240108160746.177421-3-shamrocklee@posteo.net>
+ <871qaryel9.fsf@meer.lwn.net>
+Message-ID: <eecb9fa3e0cd84fce0b2f9e5449888a0@posteo.net>
 
+Dear Mr. Corbet,
 
---fFekk1XW+GUOomhA
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Thank you very much for your feed back.
 
-On Mon, Jan 08, 2024 at 06:15:51PM +0000, Elad Nachman wrote:
-> > -----Original Message-----
-> > From: Conor Dooley <conor@kernel.org>
-> > On Mon, Jan 08, 2024 at 05:47:24PM +0000, Elad Nachman wrote:
-> > > > -----Original Message-----
-> > > > From: Conor Dooley <conor@kernel.org>
-> > > > -- On Sun, Jan 07, 2024 at 05:25:57PM +0200, Elad Nachman wrote:
-> > > > > From: Elad Nachman <enachman@marvell.com>
-> > > > >
-> > > > > Add Marvell ac5 device tree bindings to generic EHCI.
-> > > > > This compatible enables the Marvell Orion platform code to
-> > > > > properly configure the DMA mask for the Marvell AC5 SOC.
-> > > > >
-> > > > > Signed-off-by: Elad Nachman <enachman@marvell.com>
-> > > >
-> > > > Maybe I am dumb, but I don't understand how this does what the
-> > > > commit message says. There's no fallback to generic-ehci or any
-> > > > other compatible that is already understood by the driver.
-> > > >
-> > > > What am I missing?
-> > >
-> > > Following guidance by Andrew Lunn on my mmc patchset, I have split the
-> > > patchset Into a single patch for dt-bindings review and another for U=
-SB
-> > driver review.
-> >=20
-> > I don't understand that advice. dt-bindings should (almost) always be w=
-ith
-> > the driver. Otherwise you just confuse people like me.
-> >=20
-> > Perhaps Andrew meant sending dt*s* patches separately from the driver &
-> > bindings?
->=20
-> The rational was different people making the actual merge, into different
-> intermediate git REPOs, before mering into linux-next.
+On 2024-01-09 00:28, Jonathan Corbet wrote:
+> Yueh-Shun Li <shamrocklee@posteo.net> writes:
+> 
+>> In section "18) Don't re-invent the kernel macros" in "Linux kernel
+>> coding style":
+>> 
+>> Show how reusing macros from shared headers prevents naming collisions
+>> using "stringify", the one of the most widely reinvented macro, as an
+>> example.
+>> 
+>> This patch aims to provide a stronger reason to reuse shared macros,
+>> by showing the risk of improvised macro variants.
+>> 
+>> Signed-off-by: Yueh-Shun Li <shamrocklee@posteo.net>
+>> ---
+>>  Documentation/process/coding-style.rst | 22 ++++++++++++++++++++++
+>>  1 file changed, 22 insertions(+)
+>> 
+>> diff --git a/Documentation/process/coding-style.rst 
+>> b/Documentation/process/coding-style.rst
+>> index 2504cb00a961..1e79aba4b346 100644
+>> --- a/Documentation/process/coding-style.rst
+>> +++ b/Documentation/process/coding-style.rst
+>> @@ -1070,6 +1070,28 @@ Similarly, if you need to calculate the size of 
+>> some structure member, use
+>>  There are also ``min()`` and ``max()`` macros in 
+>> ``include/linux/minmax.h``
+>>  that do strict type checking if you need them.
+>> 
+>> +Using existing macros provided by the shared headers also prevents 
+>> naming
+>> +collisions. For example, if one developer define in ``foo.h``
+>> +
+>> +.. code-block:: c
+>> +
+>> +	#define __stringify(x) __stringify_1(x)
+>> +	#define __stringify_1(x) #x
+>> +
+>> +and another define in ``bar.h``
+>> +
+>> +.. code-block:: c
+>> +
+>> +	#define stringify(x) __stringify(x)
+>> +	#define __stringify(x) #x
+>> +
+>> +When both headers are ``#include``-d into the same file, the 
+>> facilities provided
+>> +by ``foo.h`` might be broken by ``bar.h``.
+>> +
+>> +If both ``foo.h`` and ``bar.h``  use the macro ``__stringify()`` 
+>> provided by
+>> +``include/linux/stringify.h``, they wouldn't have stepped onto each 
+>> other's
+>> +toes.
+>> +
+> 
+> So everything we add to our documentation has a cost in terms of reader
+> attention.  We ask people to read through a lot of material now, and
+> should only increase that ask for good reason.
+> 
+> With that context, I have to wonder whether we really need to tell our
+> readers, who are supposed to be capable developers, that reuse can help
+> to avoid name collisions?
+> 
 
-Which almost certainly means he was talking about dts patches, not
-dt-bindings. bindings (almost) always go through the same tree as the
-driver that uses them.
+The motivation comes from existing inconsistency of the "__stringify()" 
+macro
+definition between e.g. "samples/bpf/tracex5.bpf.c" and other files.
 
-Cheers,
-Conor.
+I agree that increasing the length of the documentation without 
+substantial
+benefits would not be helpful for the readers, and doubling the length 
+of a
+section is too much for its purpose.
 
-> > > The USB driver patch utilizing this new dt bindings compatible string=
- is here:
-> > >
-> > > https://patchwork.kernel.org/project/linux-usb/patch/20240107163307.36
-> > > 77347-1-enachman@marvell.com/
-> > >
-> > > >
-> > > > > ---
-> > > > >  Documentation/devicetree/bindings/usb/generic-ehci.yaml | 1 +
-> > > > >  1 file changed, 1 insertion(+)
-> > > > >
-> > > > > diff --git
-> > > > > a/Documentation/devicetree/bindings/usb/generic-ehci.yaml
-> > > > > b/Documentation/devicetree/bindings/usb/generic-ehci.yaml
-> > > > > index 87986c45be88..2ed178f16a78 100644
-> > > > > --- a/Documentation/devicetree/bindings/usb/generic-ehci.yaml
-> > > > > +++ b/Documentation/devicetree/bindings/usb/generic-ehci.yaml
-> > > > > @@ -77,6 +77,7 @@ properties:
-> > > > >            - const: usb-ehci
-> > > > >        - enum:
-> > > > >            - generic-ehci
-> > > > > +          - marvell,ac5-ehci
-> > > > >            - marvell,armada-3700-ehci
-> > > > >            - marvell,orion-ehci
-> > > > >            - nuvoton,npcm750-ehci
-> > > > > --
-> > > > > 2.25.1
-> > > > >
-> > >
-> > > Elad.
->=20
-> Elad.
+Should I shorten it into one sentence, like
 
---fFekk1XW+GUOomhA
-Content-Type: application/pgp-signature; name="signature.asc"
+```
+On the other hand, locally-defined variants, such as ``#define 
+__stringify(x) #x``,
+could lead to naming collisions that break otherwise functioning 
+facilities.
+```
 
------BEGIN PGP SIGNATURE-----
+or just omit it in the next version of patches?
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZZw9kAAKCRB4tDGHoIJi
-0sM1AP9jWivE9hoqI0QOA/4B6CD932ZBuoDM9HyaadT9ksWEkQD9GTRkXhrdXoCt
-dtMkPLigOH+rBt9/GpyrGriyQOeiRgs=
-=RjMD
------END PGP SIGNATURE-----
+> Thanks,
+> 
+> jon
 
---fFekk1XW+GUOomhA--
+Thank you for your time and guidance.
+
+Shamrock
 
