@@ -1,233 +1,167 @@
-Return-Path: <linux-kernel+bounces-19860-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19861-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 37C0682758F
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 17:43:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EED0E8275A7
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 17:46:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 72297B213DA
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 16:43:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 20E931C218DE
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 16:46:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C19AD53E32;
-	Mon,  8 Jan 2024 16:42:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 320C95381B;
+	Mon,  8 Jan 2024 16:46:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="M3EvzQoy"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="pUP2rOtW"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 905185381B;
-	Mon,  8 Jan 2024 16:42:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 408ErPrY027212;
-	Mon, 8 Jan 2024 16:42:34 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	date:from:to:cc:subject:message-id:references:mime-version
-	:content-type:in-reply-to; s=qcppdkim1; bh=FO86rpvOW1MW0cxKDcGsA
-	aMDqrd90lBjORAQzptXprg=; b=M3EvzQoyEor08EFn7FMX1zLB35x9JI3dRoVKy
-	sY7ZmYLpaY8SkQg/sX9PKzRoq9CGiKddKUIlagQysSQI9sKHy81uikmEIysL9/iU
-	zwPCn4Hl2GnmlGN1dzm5GyoELkY55+Hwdh00oZ/+IRSpToXbNNxhkkQG+lkbGru4
-	wIIdJZoOIe1bSvpRCpQs19IxB3fPpFeO6qb+LoElmG4Utk0a6/PhZmlVznvZVsv6
-	0/ac/Wx+VoeI0TbgScBkfZSgkesPeuNuXohi22WqEaYIdwvCtgmkBw9rBGWALt8T
-	sElUuthVLbvGORvIakwe7c6i74tNw+FwfEv25jpcluumvPaQw==
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vghkvgfyf-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 08 Jan 2024 16:42:33 +0000 (GMT)
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 408GgXjQ019690
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 8 Jan 2024 16:42:33 GMT
-Received: from hu-bjorande-lv.qualcomm.com (10.49.16.6) by
- nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Mon, 8 Jan 2024 08:42:32 -0800
-Date: Mon, 8 Jan 2024 08:42:31 -0800
-From: Bjorn Andersson <quic_bjorande@quicinc.com>
-To: Johan Hovold <johan@kernel.org>
-CC: Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio
-	<konrad.dybcio@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Wesley Cheng <quic_wcheng@quicinc.com>,
-        Thinh Nguyen
-	<Thinh.Nguyen@synopsys.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Philipp Zabel
-	<p.zabel@pengutronix.de>,
-        <linux-arm-msm@vger.kernel.org>, <linux-usb@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Krishna Kurapati PSSNV
-	<quic_kriskura@quicinc.com>
-Subject: Re: [PATCH 04/12] usb: dwc3: Expose core driver as library
-Message-ID: <20240108164231.GI1315173@hu-bjorande-lv.qualcomm.com>
-References: <20231016-dwc3-refactor-v1-0-ab4a84165470@quicinc.com>
- <20231016-dwc3-refactor-v1-4-ab4a84165470@quicinc.com>
- <ZV3ssSP5dTwAs-e3@hovoldconsulting.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2027553E25
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 16:46:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pg1-f173.google.com with SMTP id 41be03b00d2f7-5ce10b5ee01so1254929a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 08:46:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1704732388; x=1705337188; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=hcP4oDQ3eDslDSaUDkl9PzQaFEemmBlUGTQnZjWidg4=;
+        b=pUP2rOtW6Xehw5sbW4Db42S3eXL6pYW2eYllWr4cE/Q9bnNaTfOfy1cM8mYZWubd9Z
+         rtaVNOTe6OcOY2YwRAL7wh8FCjGxp1gPQdbTndHCfQVcrb2fnYGthuBXnuvWndwMB5/E
+         2SC+BM68cnEV6IAyTN7QlvKr1PseDLFkKykt8A/Q+PvGFZgxoOqLxXv4v6y01OFc+cBX
+         QdDNQGb8nDrRVQvknzMAT0J5bLR4YE2W5LAh1Hens3v2sqAkmvsfDFsrXhpYrAYJLNpS
+         5Zq65cRlis0A16Zg0lkKvJJhcPLNnWPq4TKem4OH7mmUlATYiu51ulayh596kejad5HF
+         6vQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704732388; x=1705337188;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=hcP4oDQ3eDslDSaUDkl9PzQaFEemmBlUGTQnZjWidg4=;
+        b=Pj4fNgNDmqPopzeFqjy3ukauEELGMcGg97WO2wfMfoKKYUymwNU+yMniTpMirLDl24
+         j6lWuh2AMvbeH6qz340rJAgb7IHC6iPWP/5RO5zCTmvxVoSeJ3Hdr5XXeIL0v0kf/z1P
+         l3ZanOs3LON+dHo3mlHFss6PiTnyXw57nr55096y/M3KYwrBAgkq2WaK5nBWtkS+L7u2
+         39eMRs5KQnWAXPXeTAeCz+N24OKGwWTt85j6TYefTljt5ceqqAbANdzeW+gUYwaDwjFi
+         IyhgYmYzE4H0D0d3SC68J4MclgVBt1jon5/HAqrCSpFlrCL1AraFzuWoxiiKQDzAUPYo
+         M0Gg==
+X-Gm-Message-State: AOJu0YwV151pIGEJxxM3mrxmNxB52GRo7fa3JMaIqZq6OWJ1xCvr49iu
+	f3CYi50kbtPJAiZr56QNfXcsfmAlZ5tQHPexOWIeIRMuoF5aFw==
+X-Google-Smtp-Source: AGHT+IFw0ZW5iYobNEFWZzdpYvN80E//t7DHgMsA/jih0qwTCCuMrTnc/u3iq7XAKVneW1gI6Fz2Ad2vEIHHTTaIGds=
+X-Received: by 2002:a05:6a20:1b22:b0:199:995d:e88c with SMTP id
+ ch34-20020a056a201b2200b00199995de88cmr5854pzb.24.1704732388407; Mon, 08 Jan
+ 2024 08:46:28 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <ZV3ssSP5dTwAs-e3@hovoldconsulting.com>
-X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: zMI_u-Lk-eYJNVznLh-3UAcDrA-xRHg9
-X-Proofpoint-GUID: zMI_u-Lk-eYJNVznLh-3UAcDrA-xRHg9
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 bulkscore=0
- mlxscore=0 lowpriorityscore=0 clxscore=1015 adultscore=0
- priorityscore=1501 suspectscore=0 spamscore=0 malwarescore=0 phishscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2401080141
+References: <20240108134843.429769-1-vincent.guittot@linaro.org>
+ <20240108134843.429769-2-vincent.guittot@linaro.org> <158a8c60-cb54-43c1-8232-6a0a46cc6d42@arm.com>
+In-Reply-To: <158a8c60-cb54-43c1-8232-6a0a46cc6d42@arm.com>
+From: Vincent Guittot <vincent.guittot@linaro.org>
+Date: Mon, 8 Jan 2024 17:46:16 +0100
+Message-ID: <CAKfTPtC7sM1ZeW4iGN6fzvF9bR0juYePycX3GeWzYQwRBR7XkA@mail.gmail.com>
+Subject: Re: [PATCH v3 1/5] cpufreq: Add a cpufreq pressure feedback for the scheduler
+To: Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc: linux@armlinux.org.uk, catalin.marinas@arm.com, will@kernel.org, 
+	sudeep.holla@arm.com, rafael@kernel.org, viresh.kumar@linaro.org, 
+	agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org, 
+	mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com, 
+	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de, bristot@redhat.com, 
+	vschneid@redhat.com, lukasz.luba@arm.com, rui.zhang@intel.com, 
+	mhiramat@kernel.org, daniel.lezcano@linaro.org, amit.kachhap@gmail.com, 
+	corbet@lwn.net, gregkh@linuxfoundation.org, 
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	linux-pm@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
+	linux-trace-kernel@vger.kernel.org, linux-doc@vger.kernel.org, 
+	qyousef@layalina.io
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed, Nov 22, 2023 at 12:57:37PM +0100, Johan Hovold wrote:
-> On Mon, Oct 16, 2023 at 08:11:12PM -0700, Bjorn Andersson wrote:
-> > The DWC3 IP block is handled by three distinct device drivers: XHCI,
-> > DWC3 core and a platform specific (optional) DWC3 glue driver.
-> > 
-> > This has resulted in, at least in the case of the Qualcomm glue, the
-> > presence of a number of layering violations, where the glue code either
-> > can't handle, or has to work around, the fact that core might not probe
-> > deterministically.
-> > 
-> > An example of this is that the suspend path should operate slightly
-> > different depending on the device operating in host or peripheral mode,
-> > and the only way to determine the operating state is to peek into the
-> > core's drvdata.
-> > 
-> > The Qualcomm glue driver is expected to make updates in the qscratch
-> > register region (the "glue" region) during role switch events, but with
-> > the glue and core split using the driver model, there is no reasonable
-> > way to introduce listeners for mode changes.
-> > 
-> > Split the dwc3 core platfrom_driver callbacks and their implementation
-> > and export the implementation, to make it possible to deterministically
-> > instantiate the dwc3 core as part of the dwc3 glue drivers and to
-> > allow flattening of the DeviceTree representation.
-> > 
-> > Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
+On Mon, 8 Jan 2024 at 17:35, Dietmar Eggemann <dietmar.eggemann@arm.com> wrote:
+>
+> On 08/01/2024 14:48, Vincent Guittot wrote:
+> > Provide to the scheduler a feedback about the temporary max available
+> > capacity. Unlike arch_update_thermal_pressure, this doesn't need to be
+> > filtered as the pressure will happen for dozens ms or more.
+>
+> Is this then related to the 'medium pace system pressure' you mentioned
+> in your OSPM '23 talk?
+>
+> >
+> > Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
 > > ---
-> >  drivers/usb/dwc3/core.c | 134 ++++++++++++++++++++++++++++++++----------------
-> >  drivers/usb/dwc3/core.h |  10 ++++
-> >  2 files changed, 100 insertions(+), 44 deletions(-)
-> > 
-> > diff --git a/drivers/usb/dwc3/core.c b/drivers/usb/dwc3/core.c
-> > index d25490965b27..71e376bebb16 100644
-> > --- a/drivers/usb/dwc3/core.c
-> > +++ b/drivers/usb/dwc3/core.c
-> > @@ -1876,7 +1876,7 @@ static int dwc3_get_clocks(struct dwc3 *dwc)
-> >  	return 0;
+> >  drivers/cpufreq/cpufreq.c | 36 ++++++++++++++++++++++++++++++++++++
+> >  include/linux/cpufreq.h   | 10 ++++++++++
+> >  2 files changed, 46 insertions(+)
+> >
+> > diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
+> > index 44db4f59c4cc..fa2e2ea26f7f 100644
+> > --- a/drivers/cpufreq/cpufreq.c
+> > +++ b/drivers/cpufreq/cpufreq.c
+> > @@ -2563,6 +2563,40 @@ int cpufreq_get_policy(struct cpufreq_policy *policy, unsigned int cpu)
 > >  }
-> >  
-> > -static int dwc3_probe(struct platform_device *pdev)
-> > +struct dwc3 *dwc3_probe(struct platform_device *pdev)
-> 
-> Perhaps you should move allocation of struct dwc3 to the caller as well
-> as you are going to need some way to pass in callback to core which need
-> to be set before you register the xhci platform device.
-> 
-> There could be other ways, like passing in a struct of callbacks, which
-> can be added incrementally but it may be good think this through from
-> the start.
-> 
-
-My intention was to have callbacks and quirks passed through additional
-arguments in an incremental patch.
-
-IMHO passing such information through a pre-allocated and partially
-initialized struct is more obscure than passing that information as
-explicit parameters to the function...
-
-> >  {
-> >  	struct device		*dev = &pdev->dev;
-> >  	struct resource		*res, dwc_res;
-> > @@ -1886,14 +1886,14 @@ static int dwc3_probe(struct platform_device *pdev)
-> >  
-> >  	dwc = devm_kzalloc(dev, sizeof(*dwc), GFP_KERNEL);
-> >  	if (!dwc)
-> > -		return -ENOMEM;
-> > +		return ERR_PTR(-ENOMEM);
-> >  
-> >  	dwc->dev = dev;
-> >  
-> >  	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> >  	if (!res) {
-> >  		dev_err(dev, "missing memory resource\n");
-> > -		return -ENODEV;
-> > +		return ERR_PTR(-ENODEV);
-> >  	}
-> >  
-> >  	dwc->xhci_resources[0].start = res->start;
-> > @@ -1922,7 +1922,7 @@ static int dwc3_probe(struct platform_device *pdev)
-> >  
-> >  	regs = devm_ioremap_resource(dev, &dwc_res);
-> >  	if (IS_ERR(regs))
-> > -		return PTR_ERR(regs);
-> > +		return ERR_CAST(regs);
-> >  
-> >  	dwc->regs	= regs;
-> >  	dwc->regs_size	= resource_size(&dwc_res);
-> > @@ -1953,7 +1953,6 @@ static int dwc3_probe(struct platform_device *pdev)
-> >  		goto err_disable_clks;
-> >  	}
-> >  
-> > -	platform_set_drvdata(pdev, dwc);
-> 
-> This is broken however as the pm ops access the data driver data and can
-> be called as soon as you call pm_runtime_put() below.
-> 
-
-You're right, thanks for spotting that.
-
-Regards,
-Bjorn
-
-> >  	dwc3_cache_hwparams(dwc);
-> >  
-> >  	if (!dwc->sysdev_is_parent &&
-> > @@ -2006,7 +2005,7 @@ static int dwc3_probe(struct platform_device *pdev)
-> >  
-> >  	pm_runtime_put(dev);
-> 
-> That is here.
-> 
-> > -	return 0;
-> > +	return dwc;
->  
-> > -static void dwc3_remove(struct platform_device *pdev)
-> > +static int dwc3_plat_probe(struct platform_device *pdev)
-> >  {
-> > -	struct dwc3	*dwc = platform_get_drvdata(pdev);
-> > +	struct dwc3 *dwc;
+> >  EXPORT_SYMBOL(cpufreq_get_policy);
+> >
+> > +DEFINE_PER_CPU(unsigned long, cpufreq_pressure);
 > > +
-> > +	dwc = dwc3_probe(pdev);
-> > +	if (IS_ERR(dwc))
-> > +		return PTR_ERR(dwc);
-> 
-> And that leaves a window, for example, here where you can hit a NULL
-> pointer dereference.
-> 
-> > +	platform_set_drvdata(pdev, dwc);
+> > +/**
+> > + * cpufreq_update_pressure() - Update cpufreq pressure for CPUs
+> > + * @policy: cpufreq policy of the CPUs.
+> > + *
+> > + * Update the value of cpufreq pressure for all @cpus in the policy.
+> > + */
+> > +static void cpufreq_update_pressure(struct cpufreq_policy *policy)
+> > +{
+> > +     unsigned long max_capacity, capped_freq, pressure;
+> > +     u32 max_freq;
+> > +     int cpu;
 > > +
-> > +	return 0;
+> > +     /*
+> > +      * Handle properly the boost frequencies, which should simply clean
+> > +      * the thermal pressure value.
+>                ^^^^^^^
+> IMHO, this is a copy & paste error from topology_update_thermal_pressure()?
+>
+> > +      */
+> > +     if (max_freq <= capped_freq) {
+>
+> max_freq seems to be uninitialized.
+
+argh yes, I made crap while cleaning up
+both max_freq and capped_freq are uninitialized
+
+>
+> > +             pressure = 0;
+>
+> Is this x86 (turbo boost) specific? IMHO at arm we follow this max freq
+> (including boost) relates to 1024 in capacity? Or haven't we made this
+> discussion yet?
+
+This is not x86 specific. We can have capped_freq > max_freq on Arm too
+
+Also this bypass all calculation below when max_freq == capped_freq
+which is the most common case
+
+>
+> > +     } else {
+> > +             cpu = cpumask_first(policy->related_cpus);
+> > +             max_capacity = arch_scale_cpu_capacity(cpu);
+> > +             capped_freq = policy->max;
+> > +             max_freq = arch_scale_freq_ref(cpu);
+> > +
+> > +             pressure = max_capacity -
+> > +                        mult_frac(max_capacity, capped_freq, max_freq);
+> > +     }
+> > +
+> > +     for_each_cpu(cpu, policy->related_cpus)
+> > +             WRITE_ONCE(per_cpu(cpufreq_pressure, cpu), pressure);
 > > +}
-> 
-> Johan
-> 
+> > +
+>
+> [...]
+>
 
