@@ -1,85 +1,117 @@
-Return-Path: <linux-kernel+bounces-19905-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19906-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C90A8827679
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 18:44:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E60E82767B
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 18:45:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A2A691C22E5D
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 17:44:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E8F602827E7
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 17:45:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C045154BFA;
-	Mon,  8 Jan 2024 17:38:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E84455E52;
+	Mon,  8 Jan 2024 17:38:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rsTwT/i7"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="1yff7LPS"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DBD254663;
-	Mon,  8 Jan 2024 17:38:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 03F89C433C7;
-	Mon,  8 Jan 2024 17:38:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704735484;
-	bh=eNUrttsVgFF4P/49UF3SSpefaOULOT3cYt21cVvtd8g=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=rsTwT/i7gpjtBxKQ298UbzoZbtlAnCHmNdS8OTdB3dpoIW2/5pWIIxDlkb5TfK4hp
-	 08k1cGec+1eZlU8BdA7vEyBMjLRjkzQD09Y4onzWIvQ6ZUPoF7w7TIdWpV47T0bZib
-	 kir/k81p2l6uHumyys31uP1HeZj3pG2LuStz/wjy+ItH1/dQxDxbuUr/+gWtod2Lcg
-	 dZ7JF3Ip2RZiR5I/At2LGpeSYCW3ql3G/fKHRXPjd/B+9y6XzV3vEjEenyKQvtcWsz
-	 T/aTdQ6nIvzrYh38FlYWvdh2YHd7y45tti71XidueRgj0ExQHmDmhaM8bTV4U9bGBU
-	 mC/ISNL3U63bA==
-Date: Mon, 8 Jan 2024 17:37:59 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
-Cc: =?iso-8859-1?Q?N=EDcolas_F=2E_R=2E_A=2E?= Prado <nfraprado@collabora.com>,
-	linux-sound@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>, Shuah Khan <shuah@kernel.org>
-Subject: Re: [PATCH v2 4/4] kselftest/alsa - conf: Stringify the printed
- errno in sysfs_get()
-Message-ID: <0654c2d9-3980-4f5c-9c0f-eaafc44fee52@sirena.org.uk>
-References: <20240107173704.937824-1-mirsad.todorovac@alu.unizg.hr>
- <20240107173704.937824-5-mirsad.todorovac@alu.unizg.hr>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AB7E54F89
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 17:38:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dbea293017dso2198859276.1
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 09:38:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1704735485; x=1705340285; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=CeET3LCD9y8mkzdt1n7zEREdExwaFpwQOr0tIUhzNgg=;
+        b=1yff7LPSiX+Lx9usqzs3Ck7+fY59unWKCz9VwGMAY7w4RCgqBd4FImn/dqQmKvU5GY
+         ajXMHZrEntZ51vVZxopVlZe5Q7R5obWH7o5C+BM9uQ1ZuKrymWuhumXUjrRIbFCErfk+
+         vZyPR3/rLP/6NslI9e0++PXoVzmWHLS4fW7gJUsqyyacTecmi3ia12nujaARyRYsgYbs
+         nvuGZ42DA06RAFY4RxpQ6k7jABOgzdMbYP/2Kc3mryEg1QH07euEWRt572EnypLl1SMZ
+         T3XYmgsHwFkvAIW5DaKtX4OJsfK8HtUMAH9WKsnCTL92s/38z2C2FTteRDltXZl8qyRZ
+         WoxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704735485; x=1705340285;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=CeET3LCD9y8mkzdt1n7zEREdExwaFpwQOr0tIUhzNgg=;
+        b=nOhi+xTfMBKcJk62jKgsiIucO38TOWQF0PabqYi2+ZTIznP5Z52UL1ufXqzZzU3enO
+         VDY7G+vMXMYG/OnvlG9NVG5LJ9nMg+cwl6TX0/8aG8WqOAsUlT84y3VrxW1rLZZBaPUd
+         aAd/eHpw09eVxYY+rxus0NDd3AsisJivxZ+NotSpi+v9TwuqSaNbC3EcKYNth8ToGEti
+         6bgdQYN0DHrqJe1wgSwPB+0L/tAx7gQIsgNaV/ZApCou0RLSB9A0LERbZLuCeYAyqaHN
+         Kd4PIJ9Tz2SAVfEz82V8iluPJQFtc2kBjEdnEMMxk32pbb0gdm2I1A+pNyKmX3rbsi5F
+         2MrA==
+X-Gm-Message-State: AOJu0Yyoq2rRSYaFTv2DqXh5XWWujqO+NrbwVP+eTDVingbX7LHDNq06
+	vPYou2zBKhiWm/5UynP5uK3Lf7MwvkpNddkLCg==
+X-Google-Smtp-Source: AGHT+IFY9eZr/TVBtL10OzQOm/ftwdCvRmuFITZVupfSGA0iFM+gy+JvMfFVxN4DNX5NCzguKOIVEMkCDaM=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a25:ba86:0:b0:dbe:9f60:c72f with SMTP id
+ s6-20020a25ba86000000b00dbe9f60c72fmr1636784ybg.4.1704735485088; Mon, 08 Jan
+ 2024 09:38:05 -0800 (PST)
+Date: Mon, 8 Jan 2024 09:38:03 -0800
+In-Reply-To: <CAE8KmOwPKDM5xcd1kFhefeJsqYZndP09n9AxaRbypTsHm8mkgw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="A8cnQTpSggv4PUgP"
-Content-Disposition: inline
-In-Reply-To: <20240107173704.937824-5-mirsad.todorovac@alu.unizg.hr>
-X-Cookie: Best if used before date on carton.
+Mime-Version: 1.0
+References: <20240103075343.549293-1-ppandit@redhat.com> <CAE8KmOwPKDM5xcd1kFhefeJsqYZndP09n9AxaRbypTsHm8mkgw@mail.gmail.com>
+Message-ID: <ZZwy-wCpHs-piGhJ@google.com>
+Subject: Re: [PATCH] KVM: x86: make KVM_REQ_NMI request iff NMI pending for vcpu
+From: Sean Christopherson <seanjc@google.com>
+To: Prasad Pandit <ppandit@redhat.com>
+Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Prasad Pandit <pjp@fedoraproject.org>
+Content-Type: text/plain; charset="us-ascii"
 
+On Mon, Jan 08, 2024, Prasad Pandit wrote:
+> On Wed, 3 Jan 2024 at 13:24, Prasad Pandit <ppandit@redhat.com> wrote:
+> > kvm_vcpu_ioctl_x86_set_vcpu_events() routine makes 'KVM_REQ_NMI'
+> > request for a vcpu even when its 'events->nmi.pending' is zero.
+> > Ex:
+> >     qemu_thread_start
+> >      kvm_vcpu_thread_fn
+> >       qemu_wait_io_event
+> >        qemu_wait_io_event_common
+> >         process_queued_cpu_work
+> >          do_kvm_cpu_synchronize_post_init/_reset
+> >           kvm_arch_put_registers
+> >            kvm_put_vcpu_events (cpu, level=[2|3])
+> >
+> > This leads vCPU threads in QEMU to constantly acquire & release the
+> > global mutex lock, delaying the guest boot due to lock contention.
+> > Add check to make KVM_REQ_NMI request only if vcpu has NMI pending.
+> >
+> > Fixes: bdedff263132 ("KVM: x86: Route pending NMIs from userspace through process_nmi()")
+> > Signed-off-by: Prasad Pandit <pjp@fedoraproject.org>
+> > ---
+> >  arch/x86/kvm/x86.c | 3 ++-
+> >  1 file changed, 2 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> > index 1a3aaa7dafae..468870450b8b 100644
+> > --- a/arch/x86/kvm/x86.c
+> > +++ b/arch/x86/kvm/x86.c
+> > @@ -5405,7 +5405,8 @@ static int kvm_vcpu_ioctl_x86_set_vcpu_events(struct kvm_vcpu *vcpu,
+> >         if (events->flags & KVM_VCPUEVENT_VALID_NMI_PENDING) {
+> >                 vcpu->arch.nmi_pending = 0;
+> >                 atomic_set(&vcpu->arch.nmi_queued, events->nmi.pending);
+> > -               kvm_make_request(KVM_REQ_NMI, vcpu);
+> > +               if (events->nmi.pending)
+> > +                       kvm_make_request(KVM_REQ_NMI, vcpu);
+> >         }
+> >         static_call(kvm_x86_set_nmi_mask)(vcpu, events->nmi.masked);
+> > --
+> > 2.43.0
+> 
+> Ping...!
 
---A8cnQTpSggv4PUgP
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Sun, Jan 07, 2024 at 06:37:08PM +0100, Mirsad Todorovac wrote:
-> GCC 13.2.0 reported the warning of the print format specifier:
-
-Acked-by: Mark Brown <broonie@kernel.org>
-
---A8cnQTpSggv4PUgP
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmWcMvcACgkQJNaLcl1U
-h9BXwgf+PmizVcddynLN/+45MndOSyIGNHf+pdHPtqijnt/LK2KL++RVGqSO0qP3
-2SDNiL83pcKT7ojUAHHQNPoafXx1l32mA+Sv2mw8Mn770t+WhyQUzbkMKf/q9sjf
-Qd5EAX8cXGd1UzoALVA95FR/17ePC5Fm+/v8vhREFH+l3vwpqW+jTjx9UkyC+9Cy
-mkdGJ3xzgWc4LJ/sdT2+2SNL9rNOu24NO/9xe1Sz3RLUUPWPTxRUc9XC1qz3Viql
-fwH4eSGHXhd1/J7pcrM4hwejjdy9foW/p6numLkXqI6S6xaUTFkcqzoj3AVkO7H1
-N+ld18phJC+50RefKyYbua/c5QdBTQ==
-=P2F1
------END PGP SIGNATURE-----
-
---A8cnQTpSggv4PUgP--
+This is on my list of things to grab for 6.8, I'm just waiting for various pull
+requests to fully land in order to simplify my branch management.
 
