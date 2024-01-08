@@ -1,191 +1,114 @@
-Return-Path: <linux-kernel+bounces-19873-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19875-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C1D578275FB
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 18:04:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D64648275FE
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 18:05:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D91FC1C22618
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 17:04:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1193D1C22619
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 17:05:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84F8E53E2A;
-	Mon,  8 Jan 2024 17:04:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7286454669;
+	Mon,  8 Jan 2024 17:05:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b="TK/BHEQB"
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="U/ewXcsS"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from omta036.useast.a.cloudfilter.net (omta036.useast.a.cloudfilter.net [44.202.169.35])
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B26095472A
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 17:04:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=embeddedor.com
-Received: from eig-obgw-6002a.ext.cloudfilter.net ([10.0.30.222])
-	by cmsmtp with ESMTPS
-	id MpkRrOOr18uLRMt2brNT9t; Mon, 08 Jan 2024 17:03:57 +0000
-Received: from gator4166.hostgator.com ([108.167.133.22])
-	by cmsmtp with ESMTPS
-	id Mt2arRdAWD6lhMt2arjUWB; Mon, 08 Jan 2024 17:03:57 +0000
-X-Authority-Analysis: v=2.4 cv=LNR1/ba9 c=1 sm=1 tr=0 ts=659c2afd
- a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=GfQleyYEO+cc22AUyTT7qQ==:17
- a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
- a=IkcTkHD0fZMA:10 a=dEuoMetlWLkA:10 a=wYkD_t78qR0A:10 a=4RBUngkUAAAA:8
- a=yPCof4ZbAAAA:8 a=VwQbUJbxAAAA:8 a=KKAkSRfTAAAA:8 a=ZvJPU1clwQC8LSIsbNEA:9
- a=QEXdDO2ut3YA:10 a=_sbA2Q-Kp09kWB8D3iXc:22 a=AjGcO6oz07-iQ99wixmX:22
- a=cvBusfyB2V15izCimMoJ:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=zVnMDgYqQIW31yhlq5X+5vjFVCRFGlx7qcSQZAIaikw=; b=TK/BHEQBl2MBSv1vTxi/fBTG6w
-	5P6o+PbNfRxLqQrNMSF9Yn0LkA01bzddDvZcFe9XL4llxXTfRxNpqkqkyeQzZmUObGzTDFvEAnT7z
-	VbxZtkYqOY1dCwlUgFar7Y7W+fwWUNhCr/rBYuNZfognJFTEFSCqwJXNeDYbzTMIbA+HxQ+k2nwR5
-	kGkFm/d2R9t3tpVJqViO+yovW6PdS3YUuVUgn5bccLQKpCHdyfhJaWtHX6t3gvhDYPz4ew2Xw1lDa
-	7L1GqRX9wLI6aMeCz0QJi4y6tBbqjNQ/YSh9KPTQGahoxX9ObnQAe7+pf4kzpr9Xrn9XWFVueez+s
-	88YDv9jg==;
-Received: from 187.184.157.186.cable.dyn.cableonline.com.mx ([187.184.157.186]:18340 helo=[192.168.0.10])
-	by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.96.2)
-	(envelope-from <gustavo@embeddedor.com>)
-	id 1rMt2Y-002LqS-1z;
-	Mon, 08 Jan 2024 11:03:54 -0600
-Message-ID: <7826922a-d642-424e-bede-bfc45be9254d@embeddedor.com>
-Date: Mon, 8 Jan 2024 11:03:51 -0600
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E37295465C;
+	Mon,  8 Jan 2024 17:05:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 8DA1C40E016C;
+	Mon,  8 Jan 2024 17:05:06 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id CuKpKJOv0sMx; Mon,  8 Jan 2024 17:05:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1704733504; bh=w1U9JuwWvaJMBjH60Qfm085eTdHCG+21c5u4mrqzaCs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=U/ewXcsSUdD+9SivtyMgsN1CLap1vAi6dgi/nHSjCXg0jJhmbsOPxEmWonINyytCW
+	 yHusPDNEelLb2hSX/YpL86mKhzh6613QmFUDCKyPEVWa+yTwr3xKKYmHYETfOFioHM
+	 UG7wND5TN6SCBiUotmh/m0XPbPDaukfUGTkMy8jnkxzO4SwdfBDEUEnmkTpsGLZIOE
+	 sect88K4iyvL5/WYaCvR73nckuSijcOIQo4dmwfrAlizNGjOyn854a/fvz8K//UgzF
+	 WHkRisFKQ8H6k4WW77iRE/076LW8ZTb2CZJ5Tw71s6Ct6Jj8qJbypu83wz+y5t6xtn
+	 iyzJ67+JsiDecDvJpKCAYW9vOrCoSsUAmnPZCMwZX4Kz7rzgKj5fdwvD6fNyPGt4M0
+	 Wqatg1aOn4oh4LYWIf771GzU8hK1uihaj2XDIN6oLIWQ0iVNt5H/oTMPAW2d50+Jcb
+	 Gp2WStL5TwCP2vpCpWCHmCVAXXECM1pdxg5YQR7YlHrwAzoXgGYnr3TKUZKIclkwWQ
+	 /SVh/PhLwC3rsUUnMSUm+aBtUwi3A7GTVVTadwBTH/Qe3NuvHc677pP2x2yTeqLHPg
+	 pbBP0l6Y/iLEfyEE0WoSxhReJIxxwMk0lxvbvVJDa22IFMtfW8R1HhMLioru2Lyj6A
+	 Mxev4/iCkvm2ibZWTuP9drhI=
+Received: from zn.tnic (pd9530f8c.dip0.t-ipconnect.de [217.83.15.140])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id DC56840E01B0;
+	Mon,  8 Jan 2024 17:04:24 +0000 (UTC)
+Date: Mon, 8 Jan 2024 18:04:18 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
+Cc: Michael Roth <michael.roth@amd.com>, x86@kernel.org,
+	kvm@vger.kernel.org, linux-coco@lists.linux.dev, linux-mm@kvack.org,
+	linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+	tglx@linutronix.de, mingo@redhat.com, jroedel@suse.de,
+	thomas.lendacky@amd.com, hpa@zytor.com, ardb@kernel.org,
+	pbonzini@redhat.com, seanjc@google.com, vkuznets@redhat.com,
+	jmattson@google.com, luto@kernel.org, dave.hansen@linux.intel.com,
+	slp@redhat.com, pgonda@google.com, peterz@infradead.org,
+	srinivas.pandruvada@linux.intel.com, rientjes@google.com,
+	tobin@ibm.com, vbabka@suse.cz, kirill@shutemov.name,
+	ak@linux.intel.com, tony.luck@intel.com,
+	sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com,
+	jarkko@kernel.org, ashish.kalra@amd.com, nikunj.dadhania@amd.com,
+	pankaj.gupta@amd.com, liam.merwick@oracle.com, zhi.a.wang@intel.com,
+	Brijesh Singh <brijesh.singh@amd.com>
+Subject: Re: [PATCH v1 04/26] x86/sev: Add the host SEV-SNP initialization
+ support
+Message-ID: <20240108170418.GDZZwrEiIaGuMpV0B0@fat_crate.local>
+References: <20231230161954.569267-1-michael.roth@amd.com>
+ <20231230161954.569267-5-michael.roth@amd.com>
+ <f60c5fe0-9909-468d-8160-34d5bae39305@linux.microsoft.com>
+ <20240105160916.GDZZgprE8T6xbbHJ9E@fat_crate.local>
+ <20240105162142.GEZZgslgQCQYI7twat@fat_crate.local>
+ <0c4aac73-10d8-4e47-b6a8-f0c180ba1900@linux.microsoft.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/2] VMCI: Fix memcpy() run-time warning in
- dg_dispatch_as_host()
-Content-Language: en-US
-To: Dan Carpenter <dan.carpenter@linaro.org>,
- Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
-Cc: linux-hardening@vger.kernel.org, keescook@chromium.org,
- error27@gmail.com, gustavoars@kernel.org, Bryan Tan <bryantan@vmware.com>,
- Vishnu Dasa <vdasa@vmware.com>,
- VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
- Arnd Bergmann <arnd@arndb.de>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- linux-kernel@vger.kernel.org, vegard.nossum@oracle.com,
- darren.kenny@oracle.com, syzkaller <syzkaller@googlegroups.com>
-References: <20240105164001.2129796-1-harshit.m.mogalapalli@oracle.com>
- <20240105164001.2129796-2-harshit.m.mogalapalli@oracle.com>
- <fc132bde-d42d-4aac-ba91-7a939a18091a@moroto.mountain>
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-In-Reply-To: <fc132bde-d42d-4aac-ba91-7a939a18091a@moroto.mountain>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.184.157.186
-X-Source-L: No
-X-Exim-ID: 1rMt2Y-002LqS-1z
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187.184.157.186.cable.dyn.cableonline.com.mx ([192.168.0.10]) [187.184.157.186]:18340
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 4
-X-Org: HG=hgshared;ORG=hostgator;
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfPeKeb2K9nBa0qb0PRtnb7QcQY7EjvOllmlOBb5V/b6rgV8GvY37+NUnPD3ZA53FLN9cINJSG23BegxTHlf0w74VJQN+vviqNkY1PF7DjVV0c2KKjV/k
- yAaNMEkQz1GQ3ZssQqhMIu4QwbgqPuKopfFJnC+6S3DWlWyXgYOjN47mewtBMjMbtRNonz/ibYGYz1ZvLyDhjGyU6Rein/7ykRNPS9Uhv3mcOdPRbZJT9iUQ
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <0c4aac73-10d8-4e47-b6a8-f0c180ba1900@linux.microsoft.com>
 
+On Mon, Jan 08, 2024 at 05:49:01PM +0100, Jeremi Piotrowski wrote:
+> What I wrote: "allow for the kernel to allocate the rmptable".
 
+What?!
 
-On 1/8/24 01:33, Dan Carpenter wrote:
-> On Fri, Jan 05, 2024 at 08:40:00AM -0800, Harshit Mogalapalli wrote:
->> Syzkaller hit 'WARNING in dg_dispatch_as_host' bug.
->>
->> memcpy: detected field-spanning write (size 56) of single field "&dg_info->msg"
->> at drivers/misc/vmw_vmci/vmci_datagram.c:237 (size 24)
->>
->> WARNING: CPU: 0 PID: 1555 at drivers/misc/vmw_vmci/vmci_datagram.c:237
->> dg_dispatch_as_host+0x88e/0xa60 drivers/misc/vmw_vmci/vmci_datagram.c:237
->>
->> Some code commentry, based on my understanding:
->>
->> 544 #define VMCI_DG_SIZE(_dg) (VMCI_DG_HEADERSIZE + (size_t)(_dg)->payload_size)
->> /// This is 24 + payload_size
->>
->> memcpy(&dg_info->msg, dg, dg_size);
->> 	Destination = dg_info->msg ---> this is a 24 byte
->> 					structure(struct vmci_datagram)
->> 	Source = dg --> this is a 24 byte structure (struct vmci_datagram)
->> 	Size = dg_size = 24 + payload_size
->>
->> {payload_size = 56-24 =32} -- Syzkaller managed to set payload_size to 32.
->>
->>   35 struct delayed_datagram_info {
->>   36         struct datagram_entry *entry;
->>   37         struct work_struct work;
->>   38         bool in_dg_host_queue;
->>   39         /* msg and msg_payload must be together. */
->>   40         struct vmci_datagram msg;
->>   41         u8 msg_payload[];
->>   42 };
->>
->> So those extra bytes of payload are copied into msg_payload[], a run time
->> warning is seen while fuzzing with Syzkaller.
->>
->> One possible way to fix the warning is to split the memcpy() into
->> two parts -- one -- direct assignment of msg and second taking care of payload.
->>
->> Gustavo quoted:
->> "Under FORTIFY_SOURCE we should not copy data across multiple members
->> in a structure."
->>
->> Reported-by: syzkaller <syzkaller@googlegroups.com>
->> Suggested-by: Vegard Nossum <vegard.nossum@oracle.com>
->> Suggested-by: Gustavo A. R. Silva <gustavoars@kernel.org>
->> Signed-off-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
->> ---
->> This patch is only tested with the C reproducer, not any testing
->> specific to driver is done.
->>
->> v1->v2: ( Suggestions from Gustavo )
->>          1. Change the commit message false positive --> legitimate
->>             warning.
-> 
-> The commit message is fine.
-> 
-> Reviewed-by: Dan Carpenter <dan.carpenter@linaro.org>
-> 
-> But, I mean, it's not really "legitimate".  It meets the fortify source
-> heuristic, but it's still a false positive.  Fortify source is
-> *supposed* to find memory corruption bugs and this is not a memory
-> corruption bug.  It's just that these days we have to treat foritify
-> false positives as crashing bugs because people enable it and we have to
-> fix it.
-> 
-> Let's not pretend that fortify has helped us in this situation, it has
-> caused us a problem.  It has taken valid code and created a crashing
-> bug.  I'm not saying that the cost isn't worth it, but let's not pretend.
-> 
+"15.36.5 Hypervisor RMP Management
 
-It's a "legitimate warning" (which differs from a "legitimate memory
-corruption bug") in the sense that the feature is doing what it's
-supposed to do: reporting a write beyond the boundaries of a field/member
-in a structure.
+...
 
-Is that simple.  I don't see the "pretense" here.
+Because the RMP is initialized by the AMD-SP to prevent direct access to
+the RMP, the hypervisor must use the RMPUPDATE instruction to alter the
+entries of the RMP. RMPUPDATE allows the hypervisor to alter the
+Guest_Physical_Address, Assigned, Page_Size, Immutable, and ASID fields
+of an RMP entry."
 
-BTW, is this _warning_ really causing a crash?
+What you want is something that you should keep far and away from the
+upstream kernel.
 
-Thanks
---
-Gustavo
+-- 
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
 
