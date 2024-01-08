@@ -1,129 +1,117 @@
-Return-Path: <linux-kernel+bounces-19725-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19726-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F29868271F4
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 15:55:22 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E75498271F6
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 15:56:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9F6F6284405
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 14:55:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 024D51C22AFF
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 14:56:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F52C47781;
-	Mon,  8 Jan 2024 14:55:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D57DC46B8E;
+	Mon,  8 Jan 2024 14:55:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="H95tkDiu"
+	dkim=pass (4096-bit key) header.d=crudebyte.com header.i=@crudebyte.com header.b="RJU3hCOO"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from kylie.crudebyte.com (kylie.crudebyte.com [5.189.157.229])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A83A45C19
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 14:55:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1704725709;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ChSqd1/MKZYhZDgOOxzAxdhSiK525NwFpogR4BbTBeo=;
-	b=H95tkDiu93IU8skEXs4er9/b8ApeJUqrDYMmlb4/rridtJuwV5I32tMAuHCvz5IgxNPXYx
-	yx0mVCNJQN1PTzyexaeTRBmU0Hk6qZDAuz9zfDARyVuPbQdVwQcazQ6qbabvlO+7s1awPV
-	s7dHSWfSn7JnJ2g54oeC/98wabcQLuQ=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-683-Vbcmpqq9M0ymrJ8x8avBrw-1; Mon, 08 Jan 2024 09:55:07 -0500
-X-MC-Unique: Vbcmpqq9M0ymrJ8x8avBrw-1
-Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-a22f129e5acso92640266b.1
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 06:55:07 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704725705; x=1705330505;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ChSqd1/MKZYhZDgOOxzAxdhSiK525NwFpogR4BbTBeo=;
-        b=sgQQzPj78xKukqHwCesJqu8N4sbprOND3TmKgTbgxasYD3s8rDZwpI2pgwKq4c0tvt
-         YQFBFRLiZVYAz38cZLozAj5EpvP7gGzoMmnkFv65o/Ios6XdscWZ97wCpJqUfj4ty4rc
-         g2qKiVWJiDSKDwQ/YI2Ep2BjkvN0YpMtC7StHamFgfEcYt8Ya+x4kI+JaeUF2qA588HD
-         /OAZweuTKGyNFjNek5aq64yVqgD6ndT+gdvl5thO9LKp42Yoai48lua1Yx6eSc1qHJpT
-         jAyr1DagkwAZNGHivu71Ic2kjoO4xwn1S/+wwpKPXuqsafb1ZXngPq5XP2+b86KLpbIW
-         Lj6w==
-X-Gm-Message-State: AOJu0YyrzPZHfXyt6Trg2TLoPt8+h6+n40/g8cYqb5cq8TdxMMe2EQOp
-	X27zLhgVe6IV/xeufD+lhbR3qAcJ6KpoRcEJwZxK+86eJJe7AQeFwtCAargVKrnxj45c9rFS+ib
-	RXhPLHPB31N7wcSEoLwLD2ztRoCPrkXDCYS105Uak
-X-Received: by 2002:a17:907:a0c:b0:a1c:e4e0:9d56 with SMTP id bb12-20020a1709070a0c00b00a1ce4e09d56mr2292574ejc.95.1704725705807;
-        Mon, 08 Jan 2024 06:55:05 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEKOmHDFV5+3W6eE/6oCuThAGo4GPzJQzvJNyhoAq6ukGw+DBZ2epFVHtK14Tc2GP/y8GSVcA==
-X-Received: by 2002:a17:907:a0c:b0:a1c:e4e0:9d56 with SMTP id bb12-20020a1709070a0c00b00a1ce4e09d56mr2292564ejc.95.1704725705359;
-        Mon, 08 Jan 2024 06:55:05 -0800 (PST)
-Received: from [10.40.98.142] ([78.108.130.194])
-        by smtp.gmail.com with ESMTPSA id oq3-20020a170906cc8300b00a293c6cc184sm3788783ejb.24.2024.01.08.06.55.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Jan 2024 06:55:04 -0800 (PST)
-Message-ID: <7625a697-cdbc-4787-b8c2-cb5d541c344c@redhat.com>
-Date: Mon, 8 Jan 2024 15:55:03 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE7E745C18;
+	Mon,  8 Jan 2024 14:55:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=crudebyte.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=crudebyte.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=crudebyte.com; s=kylie; h=Content-Type:Content-Transfer-Encoding:
+	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
+	Content-ID:Content-Description;
+	bh=eeXtdx992y+1nJUpXYwWG19Qi8cqqD3QCgs9gZkGRVw=; b=RJU3hCOOKl9TthnSWlI9/vqN1w
+	++SllsTqIyWLVyh3itvO5JO3Mr0EYyn0RTszfozQUgUZQ3So6QvzUozTDE0AGPGngr0b/JniJMZ80
+	p3W7uHj0NLHrfu+pL2PeQTN+oVHes+5pYE/LUaf8C/4vcew3jSoC4z+iZjbTjHVqLQRsq1sCzIvFR
+	cxH07pVhBo0tYdBYIB9iroixwcRL4bp91upCQuG/SwL94rGZqAFWSJ63z7CTHCjFqTHOyTLfypb9J
+	8nwEe64n6URWC8+E9uXkzsCYPVRdOV09V/JUFMda5ZZ4yeBcdJzfs+639VpjSHOY9mZE/DTuHFoxA
+	9UJWqayb5aAgwLAoHTCOPBW1im824y4iLxk7s4wtAy5vQ1MUaTtg2bgMeA3bSD7sEuwmVcHmTCKi8
+	toGPuK5VEqWSAl+/BF8r7oOypYrJ6258Y77yRQUH0HZimkEo5AmNYELQa0CvlYHML5wm4kuWyTANv
+	dt75uUlhYPkPFIoP1xeLQJRTE48iL7S/YUu5dwwVDIdKmkHBjnQl9ox3u/0mCuEiULDcD7/gJq6ZY
+	z6q/GQIfQlOxSqSQ9NZpWiOOV/pZ1mqe8gY2kPS5QiHBc/OAo+yxcFioS0339Uju7ZHa5z/f7FrZ3
+	1FOHjLWC1WlOG1CbEk9BG/OUfpdtqD6qd3VUZSBrs=;
+From: Christian Schoenebeck <linux_oss@crudebyte.com>
+To: Eric Van Hensbergen <ericvh@kernel.org>
+Cc: asmadeus@codewreck.org, linux-kernel@vger.kernel.org,
+ v9fs@lists.linux.dev, rminnich@gmail.com, lucho@ionkov.net
+Subject: Re: [PATCH] fs/9p: fix inode nlink accounting
+Date: Mon, 08 Jan 2024 15:55:53 +0100
+Message-ID: <7785659.j189Hiylts@silver>
+In-Reply-To:
+ <CAFkjPTn0HFnnZk8rt7m+mfLyPofMxZC6EzaoFChoyRVdVnwM6Q@mail.gmail.com>
+References:
+ <20240107-fix-nlink-handling-v1-1-8b1f65ebc9b2@kernel.org>
+ <8004884.rDQMAZhJ5Z@silver>
+ <CAFkjPTn0HFnnZk8rt7m+mfLyPofMxZC6EzaoFChoyRVdVnwM6Q@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] platform/x86: wmi: Fix wmi_dev_probe()
-Content-Language: en-US
-To: Dan Carpenter <dan.carpenter@linaro.org>, Armin Wolf <W_Armin@gmx.de>
-Cc: =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
- platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
- kernel-janitors@vger.kernel.org
-References: <9c81251b-bc87-4ca3-bb86-843dc85e5145@moroto.mountain>
-From: Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <9c81251b-bc87-4ca3-bb86-843dc85e5145@moroto.mountain>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"
 
-Hi,
+On Monday, January 8, 2024 3:12:24 PM CET Eric Van Hensbergen wrote:
+> On Mon, Jan 8, 2024 at 6:08=E2=80=AFAM Christian Schoenebeck
+> <linux_oss@crudebyte.com> wrote:
+> >
+> > On Monday, January 8, 2024 12:19:34 PM CET asmadeus@codewreck.org wrote:
+> > > Eric Van Hensbergen wrote on Sun, Jan 07, 2024 at 07:07:52PM +0000:
+> > > > I was running some regressions and noticed a (race-y) kernel warnin=
+g that
+> > > > happens when nlink becomes less than zero.  Looking through the code
+> > > > it looks like we aren't good about protecting the inode lock when
+> > > > manipulating nlink and some code that was added several years ago to
+> > > > protect against bugs in underlying file systems nlink handling didn=
+'t
+> > > > look quite right either.  I took a look at what NFS was doing and t=
+ried to
+> > > > follow similar approaches in the 9p code.
+> > >
+> > > I was about to say the set/inc/etc_nlink helpers could probably just =
+be
+> > > using atomic (there's an atomic_dec_if_postive that we could have used
+> > > for the v9fs_dec_count warning), but this isn't our code so not much =
+to
+> > > do about that -- I agree it needs a lock.
+> > >
+> > > I didn't take the time to check if you missed any, but it won't be wo=
+rse
+> > > than what we have right now:
+> > > Acked-by: Dominique Martinet <asmadeus@codewreck.org>
+> >
+> > That's actually a good point. For these tasks atomic inc/sub/etc are us=
+ually
+> > used instead of locks.
+> >
+> > I would at least add local wrapper functions that would do these spinlo=
+cks for
+> > us.
+> >
+>=20
+> I'm good with adding local wrapper functions,  I imagine these aren't
+> used in the kernel because for regular file-systems maybe you want the
+> warning that your inode link accounting is wrong.
+> I suppose we could be naughty and not use the kernel functions (which
+> themselves are basically wrappers).
 
-On 1/5/24 14:47, Dan Carpenter wrote:
-> This has a reversed if statement so it accidentally disables the wmi
-> method before returning.
-> 
-> Fixes: 704af3a40747 ("platform/x86: wmi: Remove chardev interface")
-> Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
+Well, one half of that code is actually using atomic operations to incremen=
+t/
+decrement the private counter. Which means to me those kernel functions were
+intended to be called from a concurrent context. So I don't get why the oth=
+er
+variable is not atomic there. They should be I think.
 
-Thank you for your patch, I've applied this patch to my review-hans 
-branch:
-https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
+I would probably try and send a patch for changing those kernel functions a=
+nd
+see if people are fine with that. But up to you.
 
-Note it will show up in my review-hans branch once I've pushed my
-local branch there, which might take a while.
-
-I will include this patch in my next fixes pull-req to Linus
-for the current kernel development cycle.
-
-Regards,
-
-Hans
-
-
-> ---
->  drivers/platform/x86/wmi.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/platform/x86/wmi.c b/drivers/platform/x86/wmi.c
-> index 157f1ce8ac0a..e6f6fa2fd080 100644
-> --- a/drivers/platform/x86/wmi.c
-> +++ b/drivers/platform/x86/wmi.c
-> @@ -868,7 +868,7 @@ static int wmi_dev_probe(struct device *dev)
->  	if (wdriver->probe) {
->  		ret = wdriver->probe(dev_to_wdev(dev),
->  				find_guid_context(wblock, wdriver));
-> -		if (!ret) {
-> +		if (ret) {
->  			if (ACPI_FAILURE(wmi_method_enable(wblock, false)))
->  				dev_warn(dev, "Failed to disable device\n");
->  
 
 
