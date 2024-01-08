@@ -1,111 +1,109 @@
-Return-Path: <linux-kernel+bounces-19514-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19515-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E3DC1826E21
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 13:34:41 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 465D6826E23
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 13:34:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5340AB227C9
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 12:34:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EBFD51F22BF7
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 12:34:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6C9B46439;
-	Mon,  8 Jan 2024 12:29:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hYdQ8OfZ"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9C7046452;
+	Mon,  8 Jan 2024 12:29:14 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B04146430;
-	Mon,  8 Jan 2024 12:29:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2B10C433CB;
-	Mon,  8 Jan 2024 12:29:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704716952;
-	bh=KIh12wVbDmJiLHjHRse8HnJ7sh45nq/r0+4isSVV99Y=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=hYdQ8OfZO/LyZ0q+hUnI9cmRezzI+yUER3PbvcFNQZF4N/Vf0eMJip+sOhEl3g532
-	 dPnzozVB/2qZXi9hrBpQn5kQP7hjDzjF3103T8Mj1OzK/z8TLOkwbwSOWk3auRjQGp
-	 wyiNU7caR2m5Tjb2uKj9udCus4BT9Ne8u5DxfvKeDTH0+gxbLilExKqFfCuV6vmk2B
-	 54AUV7zpapJIfJ5mNdqCrYRiF/W4K624Iu51321p+koYUBXlIveLBgkIsYZq0ndsH6
-	 TNM/o+5WSTz1VI9MCxVSdwIAiBJZkZ5V/m+d3om8kbg7xq+Q3XnHEugeD6+5CBE0Gx
-	 YDZEKPyzYV7ZA==
-From: Sasha Levin <sashal@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Cc: Stefan Wahren <wahrenst@gmx.net>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Chen-Yu Tsai <wens@csie.org>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Sasha Levin <sashal@kernel.org>,
-	linux@armlinux.org.uk,
-	jernej.skrabec@gmail.com,
-	samuel@sholland.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-sunxi@lists.linux.dev
-Subject: [PATCH AUTOSEL 5.10 3/3] ARM: sun9i: smp: fix return code check of of_property_match_string
-Date: Mon,  8 Jan 2024 07:28:59 -0500
-Message-ID: <20240108122903.2090825-3-sashal@kernel.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240108122903.2090825-1-sashal@kernel.org>
-References: <20240108122903.2090825-1-sashal@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 326E146431
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 12:29:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.234])
+	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4T7tcV6nPzz1Q7vJ;
+	Mon,  8 Jan 2024 20:27:38 +0800 (CST)
+Received: from canpemm500009.china.huawei.com (unknown [7.192.105.203])
+	by mail.maildlp.com (Postfix) with ESMTPS id 8E1A41404D8;
+	Mon,  8 Jan 2024 20:29:09 +0800 (CST)
+Received: from [10.67.121.177] (10.67.121.177) by
+ canpemm500009.china.huawei.com (7.192.105.203) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 8 Jan 2024 20:29:09 +0800
+CC: <suzuki.poulose@arm.com>, <wangkefeng.wang@huawei.com>,
+	<yangyicong@hisilicon.com>, <alexander.shishkin@linux.intel.com>,
+	<jonathan.cameron@huawei.com>, <john.garry@huawei.com>,
+	<mathieu.poirier@linaro.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] hwtracing: hisi_ptt: Move type check to the beginning
+ of hisi_ptt_pmu_event_init()
+To: Yang Jihong <yangjihong1@huawei.com>
+References: <20240108121906.3514820-1-yangjihong1@huawei.com>
+From: Yicong Yang <yangyicong@huawei.com>
+Message-ID: <fd4037ad-59df-d3e2-0fe9-bde0182ce79f@huawei.com>
+Date: Mon, 8 Jan 2024 20:29:09 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.10.206
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240108121906.3514820-1-yangjihong1@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ canpemm500009.china.huawei.com (7.192.105.203)
 
-From: Stefan Wahren <wahrenst@gmx.net>
+Hi Jihong,
 
-[ Upstream commit 643fe70e7bcdcc9e2d96952f7fc2bab56385cce5 ]
+On 2024/1/8 20:19, Yang Jihong wrote:
+> When perf_init_event() calls perf_try_init_event() to init pmu driver,
+> searches for the next pmu driver only when the return value is -ENOENT.
+> Therefore, hisi_ptt_pmu_event_init() needs to check the type at the
+> beginning of the function.
+> Otherwise, in the case of perf-task mode, perf_try_init_event() returns
+> -EOPNOTSUPP and skips subsequent pmu drivers, causes perf_init_event() to
+> fail.
+> 
+> Fixes: ff0de066b463 ("hwtracing: hisi_ptt: Add trace function support for HiSilicon PCIe Tune and Trace device")
+> Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
 
-of_property_match_string returns an int; either an index from 0 or
-greater if successful or negative on failure. Even it's very
-unlikely that the DT CPU node contains multiple enable-methods
-these checks should be fixed.
+Thanks for fixing this:
 
-This patch was inspired by the work of Nick Desaulniers.
+Reviewed-by: Yicong Yang <yangyicong@hisilicon.com>
 
-Link: https://lore.kernel.org/lkml/20230516-sunxi-v1-1-ac4b9651a8c1@google.com/T/
-Cc: Nick Desaulniers <ndesaulniers@google.com>
-Signed-off-by: Stefan Wahren <wahrenst@gmx.net>
-Link: https://lore.kernel.org/r/20231228193903.9078-2-wahrenst@gmx.net
-Reviewed-by: Chen-Yu Tsai <wens@csie.org>
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- arch/arm/mach-sunxi/mc_smp.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/arch/arm/mach-sunxi/mc_smp.c b/arch/arm/mach-sunxi/mc_smp.c
-index 26cbce1353387..5d7ddfd5990e5 100644
---- a/arch/arm/mach-sunxi/mc_smp.c
-+++ b/arch/arm/mach-sunxi/mc_smp.c
-@@ -804,14 +804,14 @@ static int __init sunxi_mc_smp_init(void)
- 	for (i = 0; i < ARRAY_SIZE(sunxi_mc_smp_data); i++) {
- 		ret = of_property_match_string(node, "enable-method",
- 					       sunxi_mc_smp_data[i].enable_method);
--		if (!ret)
-+		if (ret >= 0)
- 			break;
- 	}
- 
- 	is_a83t = sunxi_mc_smp_data[i].is_a83t;
- 
- 	of_node_put(node);
--	if (ret)
-+	if (ret < 0)
- 		return -ENODEV;
- 
- 	if (!sunxi_mc_smp_cpu_table_init())
--- 
-2.43.0
-
+> ---
+> 
+> Changes since v1:
+>  - Add fixes tag.
+> 
+>  drivers/hwtracing/ptt/hisi_ptt.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/hwtracing/ptt/hisi_ptt.c b/drivers/hwtracing/ptt/hisi_ptt.c
+> index a991ecb7515a..24a1f7797aeb 100644
+> --- a/drivers/hwtracing/ptt/hisi_ptt.c
+> +++ b/drivers/hwtracing/ptt/hisi_ptt.c
+> @@ -995,6 +995,9 @@ static int hisi_ptt_pmu_event_init(struct perf_event *event)
+>  	int ret;
+>  	u32 val;
+>  
+> +	if (event->attr.type != hisi_ptt->hisi_ptt_pmu.type)
+> +		return -ENOENT;
+> +
+>  	if (event->cpu < 0) {
+>  		dev_dbg(event->pmu->dev, "Per-task mode not supported\n");
+>  		return -EOPNOTSUPP;
+> @@ -1003,9 +1006,6 @@ static int hisi_ptt_pmu_event_init(struct perf_event *event)
+>  	if (event->attach_state & PERF_ATTACH_TASK)
+>  		return -EOPNOTSUPP;
+>  
+> -	if (event->attr.type != hisi_ptt->hisi_ptt_pmu.type)
+> -		return -ENOENT;
+> -
+>  	ret = hisi_ptt_trace_valid_filter(hisi_ptt, event->attr.config);
+>  	if (ret < 0)
+>  		return ret;
+> 
 
