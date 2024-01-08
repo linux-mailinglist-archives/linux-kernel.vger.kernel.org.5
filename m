@@ -1,121 +1,154 @@
-Return-Path: <linux-kernel+bounces-20133-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20134-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D7692827A52
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 22:41:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A99C0827A5F
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 22:46:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5E11DB22CCF
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 21:41:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 54AAB284D0C
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 21:46:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C09356459;
-	Mon,  8 Jan 2024 21:41:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B1765646D;
+	Mon,  8 Jan 2024 21:46:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="fpKn6COD"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="BTlo9Odg"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 138F55644F
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 21:41:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1704750098;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=PouS+fcfRBFYHLc59Q6jvOZOpQHzKSFm7NNqEvCIUk8=;
-	b=fpKn6CODj83irOHMxu8+seNQQlK3LCOcZTwTetwljPVf0E9lbVn0GuM0r3FIRgQ71ZsOjU
-	yc7v73gAK9Bu7uk77aAR40F9xYbykida4Y8dkReZ816xtSu6/VfON4jl/WiA8ecRQ5qQy8
-	Vhc5BFhZG1h1JbOiat+rZmbhHWIY864=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-18-xSjPy8pPM0Sj570e6fr0mA-1; Mon,
- 08 Jan 2024 16:41:37 -0500
-X-MC-Unique: xSjPy8pPM0Sj570e6fr0mA-1
-Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 3B96B3C02B64;
-	Mon,  8 Jan 2024 21:41:37 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.42.28.27])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 8342B492BC7;
-	Mon,  8 Jan 2024 21:41:36 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-	Kingdom.
-	Registered in England and Wales under Company Registration No. 3798903
-From: David Howells <dhowells@redhat.com>
-In-Reply-To: <CAKXUXMzXN=+hKDPP-RdHKELA_fGA6PcdCj5fXM32qh4Px0Hprg@mail.gmail.com>
-References: <CAKXUXMzXN=+hKDPP-RdHKELA_fGA6PcdCj5fXM32qh4Px0Hprg@mail.gmail.com>
-To: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc: dhowells@redhat.com, linux-cachefs@redhat.com,
-    linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-    Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: Reference to non-existing CONFIG_NETFS_FSCACHE
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B19AD5644D;
+	Mon,  8 Jan 2024 21:46:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704750384; x=1736286384;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=vL2CfUljdFe7w0t2AJp2MOgIOpmNHhRLVOLT7Dr6oi4=;
+  b=BTlo9Odgr6VfkxsteR3eP9+xE+OgzbYmYwMhfLaio0Y7hMGW2CkPK458
+   nLA7H0szO6Q5jnNHoc18v4+hyUmc+ZZp+QogbW9/WbR0UcU+EeyxitPQ+
+   DrQFAwhGJGbyiAZhUErm/AIrIdJptbKgJKXWGNoqiWI7+VwwiBWMQU9sM
+   NHzl8qo1ZsaVgCuOVujTOD+EktKJbryzEOhFfn4tW2sb8GnpTEv0HwMKn
+   eFRBNnkFOdWdDa3ks6ndFTRPnPOOlA4OUlh0w987DyLBSXAKda3MJ+8bH
+   LN1YRQnVLrK3mdHzIeiI/9Q7rRj58+woYOfjAvwrITYaiQvD6Q6RN97o8
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="11359337"
+X-IronPort-AV: E=Sophos;i="6.04,180,1695711600"; 
+   d="scan'208";a="11359337"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jan 2024 13:46:23 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="872007229"
+X-IronPort-AV: E=Sophos;i="6.04,180,1695711600"; 
+   d="scan'208";a="872007229"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by FMSMGA003.fm.intel.com with ESMTP; 08 Jan 2024 13:46:17 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rMxQw-00057e-0T;
+	Mon, 08 Jan 2024 21:45:31 +0000
+Date: Tue, 9 Jan 2024 05:44:48 +0800
+From: kernel test robot <lkp@intel.com>
+To: Thomas Zimmermann <tzimmermann@suse.de>, ardb@kernel.org,
+	tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+	dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
+	bhelgaas@google.com, arnd@arndb.de, zohar@linux.ibm.com,
+	dmitry.kasatkin@gmail.com, paul@paul-moore.com, jmorris@namei.org,
+	serge@hallyn.com, javierm@redhat.com
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	linux-arch@vger.kernel.org, linux-efi@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+	linux-integrity@vger.kernel.org,
+	linux-security-module@vger.kernel.org,
+	Thomas Zimmermann <tzimmermann@suse.de>
+Subject: Re: [PATCH v4 4/4] arch/x86: Do not include <asm/bootparam.h> in
+ several files
+Message-ID: <202401090541.atvQk6V7-lkp@intel.com>
+References: <20240108095903.8427-5-tzimmermann@suse.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <1542012.1704750095.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date: Mon, 08 Jan 2024 21:41:35 +0000
-Message-ID: <1542013.1704750095@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240108095903.8427-5-tzimmermann@suse.de>
 
-Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
+Hi Thomas,
 
-> In commit 62c3b7481b9a ("netfs: Provide a writepages implementation"),
-> you have added some code that is included under #ifdef
-> CONFIG_NETFS_FSCACHE, but if I read the code correctly, the actual
-> intended config here is called CONFIG_FSCACHE.
+kernel test robot noticed the following build errors:
 
-Yeah - it should be the latter.  Something like the attached patch should =
-fix
-it.
+[auto build test ERROR on tip/x86/core]
+[also build test ERROR on efi/next tip/master tip/auto-latest linus/master v6.7 next-20240108]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-David
----
-netfs: Fix wrong #ifdef hiding wait
+url:    https://github.com/intel-lab-lkp/linux/commits/Thomas-Zimmermann/arch-x86-Move-UAPI-setup-structures-into-setup_data-h/20240108-180158
+base:   tip/x86/core
+patch link:    https://lore.kernel.org/r/20240108095903.8427-5-tzimmermann%40suse.de
+patch subject: [PATCH v4 4/4] arch/x86: Do not include <asm/bootparam.h> in several files
+config: i386-allnoconfig (https://download.01.org/0day-ci/archive/20240109/202401090541.atvQk6V7-lkp@intel.com/config)
+compiler: ClangBuiltLinux clang version 17.0.6 (https://github.com/llvm/llvm-project 6009708b4367171ccdbf4b5905cb6a803753fe18)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240109/202401090541.atvQk6V7-lkp@intel.com/reproduce)
 
-netfs_writepages_begin() has the wait on the fscache folio conditional on
-CONFIG_NETFS_FSCACHE - which doesn't exist.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202401090541.atvQk6V7-lkp@intel.com/
 
-Fix it to be conditional on CONFIG_FSCACHE instead.
+All errors (new ones prefixed by >>):
 
-Fixes: 62c3b7481b9a ("netfs: Provide a writepages implementation")
-Reported-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Signed-off-by: David Howells <dhowells@redhat.com>
-cc: Matthew Wilcox <willy@infradead.org>
-cc: linux-afs@lists.infradead.org
-cc: linux-cachefs@redhat.com
-cc: linux-fsdevel@vger.kernel.org
-cc: linux-mm@kvack.org
----
- fs/netfs/buffered_write.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+   In file included from arch/x86/boot/compressed/cmdline.c:2:
+>> arch/x86/boot/compressed/misc.h:154:5: error: incomplete definition of type 'struct boot_params'
+     154 |                 bp->cc_blob_address = 0;
+         |                 ~~^
+   arch/x86/include/asm/mem_encrypt.h:18:8: note: forward declaration of 'struct boot_params'
+      18 | struct boot_params;
+         |        ^
+   1 error generated.
 
-diff --git a/fs/netfs/buffered_write.c b/fs/netfs/buffered_write.c
-index 0b2b7a60dabc..de517ca70d91 100644
---- a/fs/netfs/buffered_write.c
-+++ b/fs/netfs/buffered_write.c
-@@ -1076,7 +1076,7 @@ static ssize_t netfs_writepages_begin(struct address=
-_space *mapping,
- 		folio_unlock(folio);
- 		if (wbc->sync_mode !=3D WB_SYNC_NONE) {
- 			folio_wait_writeback(folio);
--#ifdef CONFIG_NETFS_FSCACHE
-+#ifdef CONFIG_FSCACHE
- 			folio_wait_fscache(folio);
- #endif
- 			goto lock_again;
 
+vim +154 arch/x86/boot/compressed/misc.h
+
+cec49df9d331fe Joe Millenbach    2012-07-19  135  
+597cfe48212a3f Joerg Roedel      2020-09-07  136  #ifdef CONFIG_AMD_MEM_ENCRYPT
+ec1c66af3a30d4 Michael Roth      2022-02-09  137  void sev_enable(struct boot_params *bp);
+8c29f016540532 Nikunj A Dadhania 2023-01-18  138  void snp_check_features(void);
+597cfe48212a3f Joerg Roedel      2020-09-07  139  void sev_es_shutdown_ghcb(void);
+69add17a7c1992 Joerg Roedel      2020-09-07  140  extern bool sev_es_check_ghcb_fault(unsigned long address);
+4f9c403e44e5e8 Brijesh Singh     2022-02-09  141  void snp_set_page_private(unsigned long paddr);
+4f9c403e44e5e8 Brijesh Singh     2022-02-09  142  void snp_set_page_shared(unsigned long paddr);
+76f61e1e89b32f Michael Roth      2022-02-24  143  void sev_prep_identity_maps(unsigned long top_level_pgt);
+597cfe48212a3f Joerg Roedel      2020-09-07  144  #else
+4b1c742407571e Michael Roth      2022-08-23  145  static inline void sev_enable(struct boot_params *bp)
+4b1c742407571e Michael Roth      2022-08-23  146  {
+4b1c742407571e Michael Roth      2022-08-23  147  	/*
+4b1c742407571e Michael Roth      2022-08-23  148  	 * bp->cc_blob_address should only be set by boot/compressed kernel.
+4b1c742407571e Michael Roth      2022-08-23  149  	 * Initialize it to 0 unconditionally (thus here in this stub too) to
+4b1c742407571e Michael Roth      2022-08-23  150  	 * ensure that uninitialized values from buggy bootloaders aren't
+4b1c742407571e Michael Roth      2022-08-23  151  	 * propagated.
+4b1c742407571e Michael Roth      2022-08-23  152  	 */
+4b1c742407571e Michael Roth      2022-08-23  153  	if (bp)
+4b1c742407571e Michael Roth      2022-08-23 @154  		bp->cc_blob_address = 0;
+4b1c742407571e Michael Roth      2022-08-23  155  }
+8c29f016540532 Nikunj A Dadhania 2023-01-18  156  static inline void snp_check_features(void) { }
+597cfe48212a3f Joerg Roedel      2020-09-07  157  static inline void sev_es_shutdown_ghcb(void) { }
+69add17a7c1992 Joerg Roedel      2020-09-07  158  static inline bool sev_es_check_ghcb_fault(unsigned long address)
+69add17a7c1992 Joerg Roedel      2020-09-07  159  {
+69add17a7c1992 Joerg Roedel      2020-09-07  160  	return false;
+69add17a7c1992 Joerg Roedel      2020-09-07  161  }
+4f9c403e44e5e8 Brijesh Singh     2022-02-09  162  static inline void snp_set_page_private(unsigned long paddr) { }
+4f9c403e44e5e8 Brijesh Singh     2022-02-09  163  static inline void snp_set_page_shared(unsigned long paddr) { }
+76f61e1e89b32f Michael Roth      2022-02-24  164  static inline void sev_prep_identity_maps(unsigned long top_level_pgt) { }
+597cfe48212a3f Joerg Roedel      2020-09-07  165  #endif
+597cfe48212a3f Joerg Roedel      2020-09-07  166  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
