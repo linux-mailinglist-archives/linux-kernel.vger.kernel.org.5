@@ -1,97 +1,110 @@
-Return-Path: <linux-kernel+bounces-19070-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19071-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 02A3F82676D
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 04:32:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94DF6826771
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 04:36:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 66B7C1F218C9
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 03:32:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 625C41C215A3
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 03:36:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29BF7138E;
-	Mon,  8 Jan 2024 03:32:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FE9C3FDC;
+	Mon,  8 Jan 2024 03:36:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="QUg1mS/a"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B179D7493
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 03:31:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
-Received: from loongson.cn (unknown [112.22.232.245])
-	by gateway (Coremail) with SMTP id _____8AxDLutbJtlfwUDAA--.1613S3;
-	Mon, 08 Jan 2024 11:31:57 +0800 (CST)
-Received: from localhost.localdomain (unknown [112.22.232.245])
-	by localhost.localdomain (Coremail) with SMTP id AQAAf8Bx34epbJtldugGAA--.17876S2;
-	Mon, 08 Jan 2024 11:31:55 +0800 (CST)
-From: WANG Rui <wangrui@loongson.cn>
-To: Huacai Chen <chenhuacai@kernel.org>
-Cc: WANG Xuerui <kernel@xen0n.name>,
-	llvm@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	loongarch@lists.linux.dev,
-	loongson-kernel@lists.loongnix.cn,
-	WANG Rui <wangrui@loongson.cn>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Tiezhu Yang <yangtiezhu@loongson.cn>
-Subject: [PATCH] scripts/min-tool-version.sh: Raise min clang version to 18.0.0 for loongarch
-Date: Mon,  8 Jan 2024 11:31:38 +0800
-Message-ID: <20240108033138.217032-1-wangrui@loongson.cn>
-X-Mailer: git-send-email 2.43.0
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B2D110F5;
+	Mon,  8 Jan 2024 03:36:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1704684989;
+	bh=rLJkeC1ri2q4IsnLMJ/ivzjYisiUMhtXCeHKxDAJr+k=;
+	h=Date:From:To:Cc:Subject:From;
+	b=QUg1mS/aHOvGTBet0I0I8iQnVx0Ys+qcANNMupVtI+QZFhCl/nFR+1UoCPAtcjqgj
+	 +GQKfYYYN2q60h1OitWOYlZQSLgGy8L8++befyIuM09aI2P8/Mm8M+FmfKu/S0+1mw
+	 nF2xsmLo+XSQJa2pyIp5J99mTiU2K+Y4vdmHN9EwaE/uvoC7YOv5o/ZJw8b5sX5FQO
+	 AeYLYCfxHFjpsJOK1mjyASAdjdDcKNdyGVBs9YELY4fhF4k0Wu3jbY3du4lQm4jK3f
+	 TfP1fTdRhRzKDobDHREm3XlmERKlMd+GGRgq5tZajMDD2ojEhlQ42iYgE4jALMt4jN
+	 MVJYwk0J56DdQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4T7fqc5lSfz4wcg;
+	Mon,  8 Jan 2024 14:36:28 +1100 (AEDT)
+Date: Mon, 8 Jan 2024 14:36:27 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Yury Norov <yury.norov@gmail.com>, Greg KH <greg@kroah.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Hugo Villeneuve
+ <hvilleneuve@dimonoff.com>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the bitmap tree with the tty tree
+Message-ID: <20240108143627.29ac91fe@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:AQAAf8Bx34epbJtldugGAA--.17876S2
-X-CM-SenderInfo: pzdqw2txl6z05rqj20fqof0/
-X-Coremail-Antispam: 1Uk129KBj9xXoWrtrW8Ar13AF4UCw45Jw1UArc_yoWftrX_J3
-	Z2v3WxZr45Jr4Svan7tFn5Zry2ka93Xw4rCF1rWrWDA340k3s0qF1DJFWDAF1Y9rsrGrs3
-	W39FqryxCry7CosvyTuYvTs0mTUanT9S1TB71UUUUUJqnTZGkaVYY2UrUUUUj1kv1TuYvT
-	s0mT0YCTnIWjqI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUI
-	cSsGvfJTRUUUbh8YFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20x
-	vaj40_Wr0E3s1l1IIY67AEw4v_Jrv_JF1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-	w2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-	WxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
-	xVW8Jr0_Cr1UM2kKe7AKxVWUXVWUAwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07
-	AIYIkI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWr
-	XVW3AwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7V
-	AKI48JMxkF7I0En4kS14v26r126r1DMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY
-	6r1j6r4UMxCIbckI1I0E14v26r1Y6r17MI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7
-	xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xII
-	jxv20xvE14v26F1j6w1UMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWxJVW8Jr1lIxAIcVCF04
-	k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26F4j6r4UJwCI42IY6I8E87Iv6xkF
-	7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxU36RRDUUUU
+Content-Type: multipart/signed; boundary="Sig_/joe/0VJoWKMra3/TtN=Q_XD";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-The existing mainline clang development version encounters diffculties
-compiling the LoongArch kernel module. It is anticipated that this issue
-will be resolved in the upcoming 18.0.0 release. To prevent user
-confusion arising from broken builds, it is advisable to raise the
-minimum required clang version for LoongArch to 18.0.0.
+--Sig_/joe/0VJoWKMra3/TtN=Q_XD
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Suggested-by: Nathan Chancellor <nathan@kernel.org>
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-Signed-off-by: WANG Rui <wangrui@loongson.cn>
----
- scripts/min-tool-version.sh | 2 ++
- 1 file changed, 2 insertions(+)
+Hi all,
 
-diff --git a/scripts/min-tool-version.sh b/scripts/min-tool-version.sh
-index c62066825f53..9faa4d3d91e3 100755
---- a/scripts/min-tool-version.sh
-+++ b/scripts/min-tool-version.sh
-@@ -26,6 +26,8 @@ gcc)
- llvm)
- 	if [ "$SRCARCH" = s390 ]; then
- 		echo 15.0.0
-+	elif [ "$SRCARCH" = loongarch ]; then
-+		echo 18.0.0
- 	else
- 		echo 11.0.0
- 	fi
--- 
-2.43.0
+Today's linux-next merge of the bitmap tree got a conflict in:
 
+  drivers/tty/serial/sc16is7xx.c
+
+between commits:
+
+  8a1060ce9749 ("serial: sc16is7xx: fix invalid sc16is7xx_lines bitfield in=
+ case of probe error")
+  3837a0379533 ("serial: sc16is7xx: improve regmap debugfs by using one reg=
+map per port")
+
+from the tty tree and commit:
+
+  e63a961be48f ("serial: sc12is7xx: optimize sc16is7xx_alloc_line()")
+
+from the bitmap tree.
+
+I fixed it up (the former removed the function updated by the latter) and
+can carry the fix as necessary. This is now fixed as far as linux-next
+is concerned, but any non trivial conflicts should be mentioned to your
+upstream maintainer when your tree is submitted for merging.  You may
+also want to consider cooperating with the maintainer of the conflicting
+tree to minimise any particularly complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/joe/0VJoWKMra3/TtN=Q_XD
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmWbbbsACgkQAVBC80lX
+0GwWIwf/UTC0V4/vsfmGBdLPKQTKU10BciR19F+wmCfF5gbfHpjHabEzVPVK8HIF
+C2pEfpFYfsm2dmMooUvcd3cnxYHyynq94U2omzBgPTgtXUjbSpDDH34eylehQHc3
+nPFeUtvfkxhLCcoBAf3O6W5ubwzo1rNNLsJIP23/Sk2eDJJem/u4D9hH/Dxky6iU
+Y2zuL7s0lCtLqiM15by9STcKUJjiSkDG2LUuIP5SULbool2XGcvGC0nKrGgRHE3P
+7pFkO1/r6AUN6NXthYlqVOPzSroupqKu/HQ0klvsXpdaLcBLh3/+UUkEILBIDMRP
+2gnN8vJVua9XmtOO7lX4z8l8Dq9yVw==
+=s768
+-----END PGP SIGNATURE-----
+
+--Sig_/joe/0VJoWKMra3/TtN=Q_XD--
 
