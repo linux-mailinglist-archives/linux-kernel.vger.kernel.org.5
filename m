@@ -1,49 +1,47 @@
-Return-Path: <linux-kernel+bounces-19029-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19030-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D25EC8266F2
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 01:37:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F38BE8266F6
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 01:44:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 86D001F216DC
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 00:37:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D76281C2179B
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 00:44:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBA3D7481;
-	Mon,  8 Jan 2024 00:37:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FBAD801;
+	Mon,  8 Jan 2024 00:44:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="nPGrkrNr"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="NoV7PuyY"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 689055CB0;
-	Mon,  8 Jan 2024 00:37:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-	Content-ID:Content-Description:In-Reply-To:References;
-	bh=3bMaMkziS0/N+UDamXhqPcO/Lypj3kmw4TlMaIlfB4o=; b=nPGrkrNrjpUqicje19YYn42kvj
-	FsVR3ie557JMeoyvi4Yf0DSjANmIfuzFpoyVxtmF983FclU487u/M1KnNUud/NHizdWEOM0nFJfnu
-	V40DGhVtCsvbq5bxBqm6sHsPyelbvJqtwrIlatpWN11tEIx6fKfw3gn/dKVXsgda/eNSivLbTIDLZ
-	suG5LzhiYIu+b9jNHXz5i2Fr6eSuKGZRpkhPGYGEofjVNgK6i/r4qyC1F0glh7c5XzURf9zH35dGf
-	K5NyigXzVJWEJOQePXq3Znb3yKWoI8+WdiQxnumfo3wz2KD8tzxZ3lYGgpZGCmH1c8UiGu5dxhuz1
-	NNh2Mi1w==;
-Received: from [50.53.46.231] (helo=bombadil.infradead.org)
-	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1rMddV-003lj6-08;
-	Mon, 08 Jan 2024 00:37:01 +0000
-From: Randy Dunlap <rdunlap@infradead.org>
-To: linux-kernel@vger.kernel.org
-Cc: Randy Dunlap <rdunlap@infradead.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	linux-doc@vger.kernel.org
-Subject: [PATCH] kernel-doc: drop looking for "MACDOC"
-Date: Sun,  7 Jan 2024 16:37:00 -0800
-Message-ID: <20240108003700.13418-1-rdunlap@infradead.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2DE8AD2C;
+	Mon,  8 Jan 2024 00:44:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id BB7FAE0002;
+	Mon,  8 Jan 2024 00:44:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1704674648;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=o0aHdR8lER2O5mtTdzH0rhyo8wdieG48QTmFj+EH8TI=;
+	b=NoV7PuyY1ZWCGXGTFb7LIAc87qnIk6w8DeUo+xZJ473zjTcKpXQql7u7VbkY/CDnD0+yhS
+	T5vAfLYRlS4JfO/Dqd0VPHWtAfqfOJoPV4M576nNAvnTN89SiTMCzE6uDSXlhhwnQvxx3s
+	3AESPnfw3VUIHdcLXLghnHagZEGTWoCJqUrZvMSvHAiqgDjsEg8EpHPeGsgMDB5S1I5tJX
+	bu4ccziAKEVI/BQ2rGt86sYuLMHx1c+1wtanljJDmLu5wycLhP5ADgEjpPwhgQsfAAXfqj
+	IahK2TfPTnmV9jSyyizRqSBiwZfpdIVPmWLMnXHuAhQpBPlXJn1Cits1XWFIZg==
+From: alexandre.belloni@bootlin.com
+To: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc: linux-rtc@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v2] rtc: rv8803: add wakeup-source support
+Date: Mon,  8 Jan 2024 01:43:57 +0100
+Message-ID: <20240108004357.602918-1-alexandre.belloni@bootlin.com>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -52,27 +50,52 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-GND-Sasl: alexandre.belloni@bootlin.com
 
-Linux kernel does not use "MACDOC" in any documenation or any
-source files, so stop searching for it.
+From: Alexandre Belloni <alexandre.belloni@bootlin.com>
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Jonathan Corbet <corbet@lwn.net>
-Cc: linux-doc@vger.kernel.org
+The RV8803 can be wired directly to a PMIC that can wake up an SoC without
+the CPU getting interrupts.
+
+Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
 ---
- scripts/kernel-doc |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ Documentation/devicetree/bindings/rtc/epson,rx8900.yaml | 2 ++
+ drivers/rtc/rtc-rv8803.c                                | 7 +++++--
+ 2 files changed, 7 insertions(+), 2 deletions(-)
 
-diff -- a/scripts/kernel-doc b/scripts/kernel-doc
---- a/scripts/kernel-doc
-+++ b/scripts/kernel-doc
-@@ -1907,7 +1907,7 @@ sub process_proto_function($$) {
+diff --git a/Documentation/devicetree/bindings/rtc/epson,rx8900.yaml b/Documentation/devicetree/bindings/rtc/epson,rx8900.yaml
+index 1df7c45d95c1..b770149c5fd6 100644
+--- a/Documentation/devicetree/bindings/rtc/epson,rx8900.yaml
++++ b/Documentation/devicetree/bindings/rtc/epson,rx8900.yaml
+@@ -29,6 +29,8 @@ properties:
  
-     $x =~ s@\/\/.*$@@gos; # strip C99-style comments to end of line
+   trickle-diode-disable: true
  
--    if ($x =~ m#\s*/\*\s+MACDOC\s*#io || ($x =~ /^#/ && $x !~ /^#\s*define/)) {
-+    if ($x =~ /^#/ && $x !~ /^#\s*define/) {
- 	# do nothing
-     }
-     elsif ($x =~ /([^\{]*)/) {
++  wakeup-source: true
++
+ required:
+   - compatible
+   - reg
+diff --git a/drivers/rtc/rtc-rv8803.c b/drivers/rtc/rtc-rv8803.c
+index 11e6b0d31f5d..1327251e527c 100644
+--- a/drivers/rtc/rtc-rv8803.c
++++ b/drivers/rtc/rtc-rv8803.c
+@@ -712,9 +712,12 @@ static int rv8803_probe(struct i2c_client *client)
+ 			if (err)
+ 				dev_err(&client->dev, "failed to set wake IRQ\n");
+ 		}
++	} else {
++		if (device_property_read_bool(&client->dev, "wakeup-source"))
++			device_init_wakeup(&client->dev, true);
++		else
++			clear_bit(RTC_FEATURE_ALARM, rv8803->rtc->features);
+ 	}
+-	if (!client->irq)
+-		clear_bit(RTC_FEATURE_ALARM, rv8803->rtc->features);
+ 
+ 	if (of_property_read_bool(client->dev.of_node, "epson,vdet-disable"))
+ 		rv8803->backup |= RX8900_FLAG_VDETOFF;
+-- 
+2.43.0
+
 
