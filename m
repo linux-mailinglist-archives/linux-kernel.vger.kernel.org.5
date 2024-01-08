@@ -1,51 +1,47 @@
-Return-Path: <linux-kernel+bounces-19019-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19020-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0954A8266D0
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 01:04:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C7678266D1
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 01:04:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 933C0281826
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 00:04:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A90591C21435
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 00:04:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D36C13FF8;
-	Mon,  8 Jan 2024 00:04:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC4BD14271;
+	Mon,  8 Jan 2024 00:04:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="E3c5M++3"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="RNhJCiaB"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mslow1.mail.gandi.net (mslow1.mail.gandi.net [217.70.178.240])
+Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B6CF13FEB
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 00:04:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E1BA14000
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 00:04:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: from relay6-d.mail.gandi.net (unknown [IPv6:2001:4b98:dc4:8::226])
-	by mslow1.mail.gandi.net (Postfix) with ESMTP id 80143C2C19
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 00:04:11 +0000 (UTC)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id F1E47C0002;
-	Mon,  8 Jan 2024 00:04:02 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 645A21BF205;
+	Mon,  8 Jan 2024 00:04:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1704672244;
+	t=1704672254;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Eg4ZK/4xRof4C62MEDOAspYaJdjduto++dnlzUfFY3U=;
-	b=E3c5M++3pyZznVbBRuHbNyAa4O2MEbwB7JLXIrrfxSvY62D6kipm54Sn0tFbRmvZ/fDx7E
-	3YANJyw9K39oRIS9Q0BZHDoaa/SNndLm26j3YW6zW2yxDnefVqcRYv+7vP/bf8NS/ASiRJ
-	lHo9M5ixmRsZ/w3JdxroUPgWXLO4NpbIav+zhmEfeAgM+uxi9+DKqVCCaHnUtEXgn6dWJE
-	GkpRrQRrYCXxpvPAxbYSBlAM+FYPTs2oJa9vdjPVyj6/meYi4O3Iocw1CkgoP0gZbCdmrJ
-	SQErILPUUNV2ADJnZs8dGNkiwGH+MM5BqLu6QC/oePlda7gEqjaCliwIizpiWA==
-Date: Mon, 8 Jan 2024 01:04:02 +0100
+	bh=Tdf5Xfn2/DCKkUk8uXbKkMEcVB0zckMLmQU1nw+lsO8=;
+	b=RNhJCiaBPBd2SrPwPb2Zwt0QbmP1O7VhzophmpmegyJ/N/mYJkN8558X1yPtXrnw9WLnWK
+	0XCn+MmD1JapvUOrWE4IpiqObWKLDoxSfO97HOYKaoIHTR2TRxhSHGN7bgpluALz7Fu0Ww
+	xZSCT5YMiiVruM/10YOzy01Yy19ukJwsxaZ3sDVUa7vtK+zK67Y16BJn4oOJji86yyAYWJ
+	nC8kkb+MF4WCyyBxISCSOg1P74W04HtZDHqwuHGsO/l7OvIwkpWWYtI/EB74Ei5JriwvmV
+	EuT/j+YjIw6JjSPuQzTF2w1j1YoijRGusf8lXqKpLcRZbAXhyChv2v1t5ZP08A==
+Date: Mon, 8 Jan 2024 01:04:13 +0100
 From: Alexandre Belloni <alexandre.belloni@bootlin.com>
-To: pgaj@cadence.com, Harshit Shah <harshitshah.opendev@gmail.com>
-Cc: linux-i3c@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] i3c: master: cdns: Update maximum prescaler value for
- i2c clock
-Message-ID: <170467220284.558820.9894090612605026533.b4-ty@bootlin.com>
-References: <1703927483-28682-1-git-send-email-harshitshah.opendev@gmail.com>
+To: linux-kernel@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>
+Cc: linux-i3c@lists.infradead.org
+Subject: Re: [PATCH] i3c: master: fix Excess kernel-doc description warning
+Message-ID: <170467220283.558820.13127608286872037848.b4-ty@bootlin.com>
+References: <20231223050542.13930-1-rdunlap@infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -54,24 +50,21 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1703927483-28682-1-git-send-email-harshitshah.opendev@gmail.com>
+In-Reply-To: <20231223050542.13930-1-rdunlap@infradead.org>
 X-GND-Sasl: alexandre.belloni@bootlin.com
 
 
-On Sat, 30 Dec 2023 14:41:23 +0530, Harshit Shah wrote:
-> As per the Cadence IP document fixed the I2C clock divider value limit from
-> 16 bits instead of 10 bits. Without this change setting up the I2C clock to
-> low frequencies will not work as the prescaler value might be greater than
-> 10 bit number.
+On Fri, 22 Dec 2023 21:05:42 -0800, Randy Dunlap wrote:
+> Remove the @boardinfo: line to prevent the kernel-doc warning:
 > 
-> I3C clock divider value is 10 bits only. Updating the macro names for both.
+> include/linux/i3c/master.h:98: warning: Excess struct member 'boardinfo' description in 'i2c_dev_desc'
 > 
-> [...]
+> 
 
 Applied, thanks!
 
-[1/1] i3c: master: cdns: Update maximum prescaler value for i2c clock
-      commit: 374c13f9080a1b9835a5ed3e7bea93cf8e2dc262
+[1/1] i3c: master: fix Excess kernel-doc description warning
+      commit: 18e5794879905a788e06fb2bc40b6f5b58eae5c2
 
 Best regards,
 
