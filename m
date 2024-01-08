@@ -1,64 +1,54 @@
-Return-Path: <linux-kernel+bounces-19082-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19083-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB06E82679C
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 05:46:43 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 26E5C8267A3
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 05:51:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 15FB7281D9C
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 04:46:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4993A1C217E3
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 04:51:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39F8D79EE;
-	Mon,  8 Jan 2024 04:46:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E039A4C8C;
+	Mon,  8 Jan 2024 04:51:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QnYnMp3k"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="nVN9p1fv"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 189F9749C
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 04:46:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-555d89bf8f4so329291a12.1
-        for <linux-kernel@vger.kernel.org>; Sun, 07 Jan 2024 20:46:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704689188; x=1705293988; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=qBQoCtGsAlNdiuEM9BfbadXmqeot2938UuOpdhMoIOA=;
-        b=QnYnMp3k0/0EQgksRVQXAYzXVt4NFM9eDUY0v0bEliTxPaG/pyFx+DBeBtpzh1/ACJ
-         Z4bLn2CVIaUO5I6KE4Z3kXU4G7pqjaB9sgFFbUbOuvLP9KBhsVCCbuQ0PBzuVJmF3+uH
-         ljur369sqViGFixOTXGngfVyylNEQwtnkQvlk7JD81E90Z12iwTCD/j0Mq5x4PWDCfBP
-         j5fheImjB+3piQ+ppjP1htdhaP/muv3mms8NAIJ1ypeRXMD81UPXNHtUxYYWvxZahAdP
-         5p+CboHCr9Tv3W522QQp7Qs5aypV7mAu3sTE9Xt3PVYSHDUS6vaVCmPZYy/BlX02Cipa
-         1Sjg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704689188; x=1705293988;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=qBQoCtGsAlNdiuEM9BfbadXmqeot2938UuOpdhMoIOA=;
-        b=rPZJ0Z15nBF6DvlrznF69B8Csm5qUeE8+aAtC7+SjkptI8VPmEnaFZxK0ABTXYrnJg
-         K1qFa3Fo+248qfGqBZLCGRtODvGVLBpItRh54d2DacJRsuTj4oDt6yBz2QDirDmQ7fOe
-         o8bzkLpBApbyvbZE/4g9QnnyuGnDfnlGC2+34/W3JDvGOPGFvqQX34cp4pNWa3ZnYsfZ
-         p27MQM9x8ZELD87d4fw7TkBbN7oAeUCB7zWcLGyiiPIQZxAebkQDJAIL+B5M5uUwppbH
-         9JlD9NK8uEK1vo4lXiYlYZ0LzF9V0nhNKrT9yT9eGWinSo5MH8LO6ek4xHvVdd57AjXv
-         SFcQ==
-X-Gm-Message-State: AOJu0Yxrz0cNMk8yNV0NMT3iOrirovRo8hdEW1GQVPqzxuOUR5drOi1w
-	vdphTo/LXjERZRYUIwAA+ig=
-X-Google-Smtp-Source: AGHT+IHgJxrZw0Dn+jNq/CXNJUNGp2UOlFLAKsAsrPM7qMuLtzQBCVmyBRzb8LA0OacxnfNOXCQ5kg==
-X-Received: by 2002:a17:907:a0cf:b0:a28:34e5:b86e with SMTP id hw15-20020a170907a0cf00b00a2834e5b86emr2738438ejc.2.1704689187935;
-        Sun, 07 Jan 2024 20:46:27 -0800 (PST)
-Received: from [192.168.0.104] (p54a07fa0.dip0.t-ipconnect.de. [84.160.127.160])
-        by smtp.gmail.com with ESMTPSA id r2-20020a170906550200b00a2a4086c6b0sm1412269ejp.82.2024.01.07.20.46.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 07 Jan 2024 20:46:27 -0800 (PST)
-Message-ID: <9be7603e-1a94-4077-80e0-091f863e7b72@gmail.com>
-Date: Mon, 8 Jan 2024 05:46:26 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FCFA10FF;
+	Mon,  8 Jan 2024 04:50:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4084dYRd001533;
+	Mon, 8 Jan 2024 04:50:50 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:from:subject:to:cc:references
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=wn0KpzyETGzgK82KXrmO0siRS+V7lvyHUVEVDqjKIJE=; b=nV
+	N9p1fvjUkKSEx0C/Nq/H9h0mImY0D6aTlxzEHASQ95zoMjWt1TVrvcMEJFkK3j0w
+	m/ZFLK+0p/Mhm2/ev4pkRrV+Eo30+cqbFFYNnhGVsCWorheWNwGVtsPAjx3/6LC5
+	xhb+Hs7i2OIwVG7k7PBmBJci1iCQp28vQL1iwK7eo7+i4+l++NWJdZ2JYRVZygDW
+	odTsxC7kXba6WEDFmQ8q0cpA2KHMSSYL5UZ5toXuYZQzBkSxZVyqtzWbBspJbIFt
+	Z7pTT6pMIwdEVMwO7XYpyvp0EDKh5QHbfzVQHZ3buyzEjqTZd8Gfz08G7iCQW2QO
+	yBIfwqQBU8UkqOS3QVqQ==
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vg8nwr61x-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 08 Jan 2024 04:50:50 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4084on8R012621
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 8 Jan 2024 04:50:49 GMT
+Received: from [10.217.219.221] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Sun, 7 Jan
+ 2024 20:50:47 -0800
+Message-ID: <7cebe5e1-4ac1-4c3d-a2f8-b283cde82105@quicinc.com>
+Date: Mon, 8 Jan 2024 10:20:44 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,45 +56,94 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/5] staging: rtl8192e: renamed variable is40MHz and 4
- other
-To: Gary Rookard <garyrookard@fastmail.org>, gregkh@linuxfoundation.org
-Cc: linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-References: <20240108032233.4280-1-garyrookard@fastmail.org>
+From: Udipto Goswami <quic_ugoswami@quicinc.com>
+Subject: Re: [PATCH] usb: core: Prevent null pointer dereference in
+ update_port_device_state
+To: Alan Stern <stern@rowland.harvard.edu>,
+        Greg Kroah-Hartman
+	<gregkh@linuxfoundation.org>
+CC: <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20240104102616.20120-1-quic_ugoswami@quicinc.com>
+ <2024010447-sprite-shelter-0743@gregkh>
+ <eade09eb-4454-460f-9ce6-87da986c5acf@quicinc.com>
+ <2024010432-fifth-shakable-0d84@gregkh>
+ <1fafda18-8806-4036-bcc1-ac08e2d3b9cd@rowland.harvard.edu>
 Content-Language: en-US
-From: Philipp Hortmann <philipp.g.hortmann@gmail.com>
-In-Reply-To: <20240108032233.4280-1-garyrookard@fastmail.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+In-Reply-To: <1fafda18-8806-4036-bcc1-ac08e2d3b9cd@rowland.harvard.edu>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: SOpyAHagGmRSPVRBfoZjz2s6w0EHiRGJ
+X-Proofpoint-ORIG-GUID: SOpyAHagGmRSPVRBfoZjz2s6w0EHiRGJ
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 spamscore=0 lowpriorityscore=0 suspectscore=0
+ impostorscore=0 mlxlogscore=994 phishscore=0 mlxscore=0 bulkscore=0
+ adultscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2401080036
 
-On 1/8/24 04:22, Gary Rookard wrote:
-> Hi,
-> 
-> This patch series renames (5) different variables with
-> the checkpatch coding style issue, Avoid CamelCase.
-> 
-> Patch 1/5) rename variable is40MHz
-> Patch 2/5) rename variable isShortGI
-> Patch 3/5) rename variable retValue
-> Patch 4/5) rename variable EWC11NHTCap
-> Patch 5/5) rename variable AdvCoding
-> 
-> Signed-off-by: Gary Rookard <garyrookard@fastmail.org>
-> 
-> Gary Rookard (5):
->    staging: rtl8192e: rename variable is40MHz
->    staging: rtl8192e: rename variable isShortGI
->    staging: rtl8192e: rename variable retValue
->    staging: rtl8192e: rename variable EWC11NHTCap
->    staging: rtl8192e: rename variable AdvCoding
-> 
->   drivers/staging/rtl8192e/rtl819x_HT.h     |  2 +-
->   drivers/staging/rtl8192e/rtl819x_HTProc.c | 58 +++++++++++------------
->   2 files changed, 30 insertions(+), 30 deletions(-)
-> 
+Hi Greg, Alan,
 
-Can be applied on top of other patches send in.
-Is working fine on hardware.
+On 1/4/2024 8:26 PM, Alan Stern wrote:
+> On Thu, Jan 04, 2024 at 02:13:51PM +0100, Greg Kroah-Hartman wrote:
+>> On Thu, Jan 04, 2024 at 06:35:38PM +0530, Udipto Goswami wrote:
+>>> Hi Greg,
+>>>
+>>> On 1/4/2024 4:14 PM, Greg Kroah-Hartman wrote:
+>>>> On Thu, Jan 04, 2024 at 03:56:16PM +0530, Udipto Goswami wrote:
+>>>>> Currently,the function update_port_device_state gets the usb_hub from
+>>>>> udev->parent by calling usb_hub_to_struct_hub.
+>>>>> However, in case the actconfig or the maxchild is 0, the usb_hub would
+>>>>> be NULL and upon further accessing to get port_dev would result in null
+>>>>> pointer dereference.
+>>>>
+>>>> Is this true for any real (or fake) hardware?
+>>>
+>>> We saw this in our QCOM hardwares where lvstest.c was calling
+>>> get_dev_desc_store:
+>>>
+>>> 	usb_set_device_state+0x128/0x17c
+>>> 	create_lvs_device+0x60/0xf8 [lvstest]
+>>> 	get_dev_desc_store+0x94/0x18c [lvstest]
+>>> 	dev_attr_store+0x30/0x48
+>>>
+>>> I think the part of the test procedure is to first unbind the hub driver
+>>> which calls hub_disconnect setting the maxchild = 0.
+>>
+>> Are you sure lvstest is correct here?
+By the commit description of lvstest driver this seems to be the procedure:
 
-Bye Philipp
+https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit/drivers/usb/misc/lvstest.c?h=v6.6.9&id=ce21bfe603b3401c258c415456c915634998e133
+
+As you can see it mentions unbind is necessary before further steps 
+carried out. Also, since the test was passing before 
+update_port_device_state was introduced, wasn't doubting this.
+
+Either way, usb_hub_to_struct_hub() can potentially return NULL not only 
+for maxchild == 0, but other cases like actconfig == NULL or hdev == 
+NULL as well, so it isn't wise to access the hub in subsequent line.
+
+> 
+> This is what happens when people work behind the hub driver's back.  :-(
+> 
+> If you can't find another way to fix the problem, you should at least
+> change the patch to include a comment before the "if (hub)" test,
+> explaining why it is necessary.  Otherwise somebody in the future will
+> remove the test, because under normal circumstances hub would never be
+> NULL here.
+Thanks for the review Alan. Sure I'll put a comment here stating the 
+necessity of the check for clarity in the next version.
+
+I agree under normal conditions this won't fail for example even in this 
+case we unbinded 2-1. Since 1-1 wasn't unbinded that therefore usb1 has 
+a maxchild still present.
+
+Thanks,
+-Udipto
+
 
