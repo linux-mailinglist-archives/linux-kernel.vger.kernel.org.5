@@ -1,97 +1,62 @@
-Return-Path: <linux-kernel+bounces-19951-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19952-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 04831827747
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 19:22:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7815827749
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 19:23:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1AF341C22391
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 18:22:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 705E81F23BC6
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 18:23:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E20C455760;
-	Mon,  8 Jan 2024 18:20:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4C2854BEB;
+	Mon,  8 Jan 2024 18:21:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="bllMikhw"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="dCPyCAxK"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4C3B54665
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 18:20:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1d40eec5e12so17014775ad.1
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 10:20:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1704738014; x=1705342814; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=MqDz4oNfh2B5BR/R2EPy7vlFbl/dDn7Jawuse3WFwvo=;
-        b=bllMikhwnjXw9qktxz4YuUWo3qwbDoFs3t/lVGHkqklTFIEYTaKxD0GCcAyAoOu3T2
-         4uuWz54cSyrNUbwSeBB5Un/TSUcBOa4oSuN6ljO0ydDWyJmnlgCUXioFJfFh0eE0f1ye
-         FQJrShhwQFaBJJjVFL3EbvMeGVbWXHBA+Bth4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704738014; x=1705342814;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=MqDz4oNfh2B5BR/R2EPy7vlFbl/dDn7Jawuse3WFwvo=;
-        b=d0b4zea4yDrE9VekWUt5dX6twPmQxlEwh77/4vSMLomzsUeBksmq9IiP4dmSkHDH9P
-         U/tamP8hHvwZJqEU+fepD1QGOc/rHC8zEyYjaxKEotEhLegAeu/8/VUwslo9Krn9oHhW
-         jNqbjX/SswRA3v0COz0VLhScxFKNEnlbVH+i0dfI2a2cdEFyUmmvD4AT7Pr+IyifPe0A
-         +E31VZM6+PTQxa4pMvYYVsvuhsqCYQtm5SXzsOSdvPOVF7xu+6HW2RhMtaWhNYyVWTRZ
-         c5P/xmYvkHgH6JPB25rWcC/hF4efNKotGUvYT8mnyc7R29AG6WvKZ5TCQIlvGRhUuaNb
-         pCnw==
-X-Gm-Message-State: AOJu0YyplZYCgzp0U1lwO1F3+Fiht0LMe1AXbOT0OOjbpDzxJqpPfssg
-	hH4JOxs3l+F/R1YvdkNxi7VL3pJqyofI
-X-Google-Smtp-Source: AGHT+IFxNO0lEcwVoYJ2PS0WIsN/wyi14uuN4veTMd6NRnkjGW0P6RQp8XvrWrO8PioGVkNCuYdP4A==
-X-Received: by 2002:a17:902:684f:b0:1d5:4dbf:6045 with SMTP id f15-20020a170902684f00b001d54dbf6045mr517599pln.86.1704738014214;
-        Mon, 08 Jan 2024 10:20:14 -0800 (PST)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id d23-20020a170902729700b001d54b86774dsm205146pll.67.2024.01.08.10.20.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Jan 2024 10:20:13 -0800 (PST)
-Date: Mon, 8 Jan 2024 10:20:13 -0800
-From: Kees Cook <keescook@chromium.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-kernel@vger.kernel.org, Alexander Potapenko <glider@google.com>,
-	Anders Larsen <al@alarsen.net>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Anna Schumaker <anna@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-	Azeem Shaikh <azeemshaikh38@gmail.com>,
-	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-	Chuck Lever <chuck.lever@oracle.com>, Dai Ngo <Dai.Ngo@oracle.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Dmitry Vyukov <dvyukov@google.com>,
-	Eric Dumazet <edumazet@google.com>,
-	Geliang Tang <geliang.tang@suse.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Gurucharan G <gurucharanx.g@intel.com>,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
-	Jakub Kicinski <kuba@kernel.org>, Jeff Layton <jlayton@kernel.org>,
-	Jesse Brandeburg <jesse.brandeburg@intel.com>,
-	Justin Stitt <justinstitt@google.com>, kasan-dev@googlegroups.com,
-	Kees Cook <keescook@chromium.org>, linux-hardening@vger.kernel.org,
-	linux-nfs@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Marco Elver <elver@google.com>,
-	"Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
-	Neil Brown <neilb@suse.de>, netdev@vger.kernel.org,
-	Olga Kornievskaia <kolga@netapp.com>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Ronald Monthero <debug.penguin32@gmail.com>,
-	Shiraz Saleem <shiraz.saleem@intel.com>,
-	Stephen Boyd <swboyd@chromium.org>,
-	"Steven Rostedt (Google)" <rostedt@goodmis.org>,
-	Thomas Gleixner <tglx@linutronix.de>, Tom Talpey <tom@talpey.com>,
-	Tony Nguyen <anthony.l.nguyen@intel.com>,
-	Trond Myklebust <trond.myklebust@hammerspace.com>,
-	Valentin Schneider <vschneid@redhat.com>,
-	Xu Panda <xu.panda@zte.com.cn>
-Subject: [GIT PULL] hardening updates for v6.8-rc1
-Message-ID: <202401081012.7571CBB@keescook>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A187255787
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 18:21:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704738080; x=1736274080;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=rA6kBrzJ5OOOtJGdHfM4ZOZhz9B/1WMS3VZTBriAc90=;
+  b=dCPyCAxKbL4f3SYjedPxSUdHS2hWvebpDK0qtLP9HVII3OQVQ500iCa7
+   QayJw7ipsbRFwb9lxsfXaU/6u/u5QOWI+p3Y6fwgqtUshMlAVDdpuW0yh
+   wJKBpXGOO+R4j3OWNxW1IQePfBaOILAF2hwkExqkx5qY4ee6sSXIcfthw
+   7+Yo01ELc5fPiDRcZtTeR8/qX/LscGTjoYX3ZQU/CwKi2H4W9t6oZGhLD
+   KB590HHDfO6TU1RgWulF2jdrL9cIV6R1CKsFR7voecZq4t9HQWrBTzod8
+   2h54n8ce8xnT7jgvJbcyetTAPAJn24es+PuFfgbQ21gyXfVxoC2ED9hRw
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="4726255"
+X-IronPort-AV: E=Sophos;i="6.04,180,1695711600"; 
+   d="scan'208";a="4726255"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jan 2024 10:21:20 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="954732636"
+X-IronPort-AV: E=Sophos;i="6.04,180,1695711600"; 
+   d="scan'208";a="954732636"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga005.jf.intel.com with ESMTP; 08 Jan 2024 10:21:18 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rMuFQ-0004zO-01;
+	Mon, 08 Jan 2024 18:21:16 +0000
+Date: Tue, 9 Jan 2024 02:20:16 +0800
+From: kernel test robot <lkp@intel.com>
+To: Bart Van Assche <bvanassche@acm.org>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+	Jens Axboe <axboe@kernel.dk>
+Subject: drivers/md/raid1.c:1993:60: sparse: sparse: incorrect type in
+ argument 5 (different base types)
+Message-ID: <202401090226.k6ktCQYr-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -101,104 +66,88 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-Hi Linus,
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   0dd3ee31125508cd67f7e7172247f05b7fd1753a
+commit: 4ce4c73f662bdb0ae5bfb058bc7ec6f6829ca078 md/core: Combine two sync_page_io() arguments
+date:   1 year, 6 months ago
+config: x86_64-randconfig-121-20240107 (https://download.01.org/0day-ci/archive/20240109/202401090226.k6ktCQYr-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240109/202401090226.k6ktCQYr-lkp@intel.com/reproduce)
 
-Please pull these hardening updates for v6.8-rc1. There will be a second
-pull request coming at the end of the rc1 window, as we can now finally
-remove the "strlcpy" API entirely from the kernel. However, that depends
-on other trees landing first. As always, my tree has been in -next the
-whole time, and anything touching other subsystems was either explicitly
-Acked by those maintainers or they were sufficiently trivial and went
-ignored so I picked them up.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202401090226.k6ktCQYr-lkp@intel.com/
 
-Thanks!
+sparse warnings: (new ones prefixed by >>)
+   drivers/md/raid1.c:646:24: sparse: sparse: incompatible types in comparison expression (different address spaces):
+   drivers/md/raid1.c:646:24: sparse:    struct md_rdev [noderef] __rcu *
+   drivers/md/raid1.c:646:24: sparse:    struct md_rdev *
+   drivers/md/raid1.c:777:24: sparse: sparse: incompatible types in comparison expression (different address spaces):
+   drivers/md/raid1.c:777:24: sparse:    struct md_rdev [noderef] __rcu *
+   drivers/md/raid1.c:777:24: sparse:    struct md_rdev *
+   drivers/md/raid1.c:1223:30: sparse: sparse: incorrect type in initializer (different base types) @@     expected int const op @@     got restricted blk_opf_t enum req_op @@
+   drivers/md/raid1.c:1223:30: sparse:     expected int const op
+   drivers/md/raid1.c:1223:30: sparse:     got restricted blk_opf_t enum req_op
+   drivers/md/raid1.c:1224:52: sparse: sparse: incorrect type in initializer (different base types) @@     expected unsigned long const do_sync @@     got restricted blk_opf_t @@
+   drivers/md/raid1.c:1224:52: sparse:     expected unsigned long const do_sync
+   drivers/md/raid1.c:1224:52: sparse:     got restricted blk_opf_t
+   drivers/md/raid1.c:1241:24: sparse: sparse: incompatible types in comparison expression (different address spaces):
+   drivers/md/raid1.c:1241:24: sparse:    struct md_rdev [noderef] __rcu *
+   drivers/md/raid1.c:1241:24: sparse:    struct md_rdev *
+   drivers/md/raid1.c:1404:40: sparse: sparse: incompatible types in comparison expression (different address spaces):
+   drivers/md/raid1.c:1404:40: sparse:    struct md_rdev [noderef] __rcu *
+   drivers/md/raid1.c:1404:40: sparse:    struct md_rdev *
+   drivers/md/raid1.c:1635:40: sparse: sparse: incompatible types in comparison expression (different address spaces):
+   drivers/md/raid1.c:1635:40: sparse:    struct md_rdev [noderef] __rcu *
+   drivers/md/raid1.c:1635:40: sparse:    struct md_rdev *
+   drivers/md/raid1.c:1707:40: sparse: sparse: incompatible types in comparison expression (different address spaces):
+   drivers/md/raid1.c:1707:40: sparse:    struct md_rdev [noderef] __rcu *
+   drivers/md/raid1.c:1707:40: sparse:    struct md_rdev *
+   drivers/md/raid1.c:1824:25: sparse: sparse: incompatible types in comparison expression (different address spaces):
+   drivers/md/raid1.c:1824:25: sparse:    struct md_rdev [noderef] __rcu *
+   drivers/md/raid1.c:1824:25: sparse:    struct md_rdev *
+   drivers/md/raid1.c:1835:25: sparse: sparse: incompatible types in comparison expression (different address spaces):
+   drivers/md/raid1.c:1835:25: sparse:    struct md_rdev [noderef] __rcu *
+   drivers/md/raid1.c:1835:25: sparse:    struct md_rdev *
+>> drivers/md/raid1.c:1993:60: sparse: sparse: incorrect type in argument 5 (different base types) @@     expected restricted blk_opf_t [usertype] opf @@     got int rw @@
+   drivers/md/raid1.c:2298:32: sparse: sparse: incompatible types in comparison expression (different address spaces):
+   drivers/md/raid1.c:2298:32: sparse:    struct md_rdev [noderef] __rcu *
+   drivers/md/raid1.c:2298:32: sparse:    struct md_rdev *
+   drivers/md/raid1.c:2334:32: sparse: sparse: incompatible types in comparison expression (different address spaces):
+   drivers/md/raid1.c:2334:32: sparse:    struct md_rdev [noderef] __rcu *
+   drivers/md/raid1.c:2334:32: sparse:    struct md_rdev *
+   drivers/md/raid1.c:2351:32: sparse: sparse: incompatible types in comparison expression (different address spaces):
+   drivers/md/raid1.c:2351:32: sparse:    struct md_rdev [noderef] __rcu *
+   drivers/md/raid1.c:2351:32: sparse:    struct md_rdev *
+   drivers/md/raid1.c:2767:24: sparse: sparse: incompatible types in comparison expression (different address spaces):
+   drivers/md/raid1.c:2767:24: sparse:    struct md_rdev [noderef] __rcu *
+   drivers/md/raid1.c:2767:24: sparse:    struct md_rdev *
 
--Kees
+vim +1993 drivers/md/raid1.c
 
-The following changes since commit 98b1cc82c4affc16f5598d4fa14b1858671b2263:
-
-  Linux 6.7-rc2 (2023-11-19 15:02:14 -0800)
-
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git tags/hardening-v6.8-rc1
-
-for you to fetch changes up to a75b3809dce2ad006ebf7fa641f49881fa0d79d7:
-
-  qnx4: Use get_directory_fname() in qnx4_match() (2023-12-13 11:19:18 -0800)
-
-----------------------------------------------------------------
-hardening updates for v6.8-rc1
-
-- Introduce the param_unknown_fn type and other clean ups (Andy Shevchenko)
-
-- Various __counted_by annotations (Christophe JAILLET, Gustavo A. R. Silva,
-  Kees Cook)
-
-- Add KFENCE test to LKDTM (Stephen Boyd)
-
-- Various strncpy() refactorings (Justin Stitt)
-
-- Fix qnx4 to avoid writing into the smaller of two overlapping buffers
-
-- Various strlcpy() refactorings
-
-----------------------------------------------------------------
-Andy Shevchenko (5):
-      params: Introduce the param_unknown_fn type
-      params: Do not go over the limit when getting the string length
-      params: Use size_add() for kmalloc()
-      params: Sort headers
-      params: Fix multi-line comment style
-
-Christophe JAILLET (1):
-      VMCI: Annotate struct vmci_handle_arr with __counted_by
-
-Gustavo A. R. Silva (2):
-      afs: Add __counted_by for struct afs_acl and use struct_size()
-      atags_proc: Add __counted_by for struct buffer and use struct_size()
-
-Justin Stitt (5):
-      HID: uhid: replace deprecated strncpy with strscpy
-      drm/modes: replace deprecated strncpy with strscpy_pad
-      nvme-fabrics: replace deprecated strncpy with strscpy
-      nvdimm/btt: replace deprecated strncpy with strscpy
-      nvme-fc: replace deprecated strncpy with strscpy
-
-Kees Cook (6):
-      SUNRPC: Replace strlcpy() with strscpy()
-      samples: Replace strlcpy() with strscpy()
-      i40e: Annotate struct i40e_qvlist_info with __counted_by
-      tracing/uprobe: Replace strlcpy() with strscpy()
-      qnx4: Extract dir entry filename processing into helper
-      qnx4: Use get_directory_fname() in qnx4_match()
-
-Stephen Boyd (1):
-      lkdtm: Add kfence read after free crash type
-
- arch/arm/kernel/atags_proc.c               |  4 +-
- drivers/gpu/drm/drm_modes.c                |  6 +--
- drivers/hid/uhid.c                         | 15 ++++----
- drivers/misc/lkdtm/heap.c                  | 60 ++++++++++++++++++++++++++++++
- drivers/misc/vmw_vmci/vmci_handle_array.h  |  2 +-
- drivers/nvdimm/btt.c                       |  2 +-
- drivers/nvme/host/fabrics.c                |  4 +-
- drivers/nvme/host/fc.c                     |  8 ++--
- fs/afs/internal.h                          |  2 +-
- fs/afs/xattr.c                             |  2 +-
- fs/qnx4/dir.c                              | 52 ++++----------------------
- fs/qnx4/namei.c                            | 29 ++++++---------
- fs/qnx4/qnx4.h                             | 60 ++++++++++++++++++++++++++++++
- include/linux/kfence.h                     |  2 +
- include/linux/moduleparam.h                |  6 +--
- include/linux/net/intel/i40e_client.h      |  2 +-
- kernel/params.c                            | 52 ++++++++++++++------------
- kernel/trace/trace_uprobe.c                |  2 +-
- net/sunrpc/clnt.c                          | 10 ++++-
- samples/trace_events/trace-events-sample.h |  2 +-
- samples/v4l/v4l2-pci-skeleton.c            | 10 ++---
- 21 files changed, 208 insertions(+), 124 deletions(-)
+  1989	
+  1990	static int r1_sync_page_io(struct md_rdev *rdev, sector_t sector,
+  1991				   int sectors, struct page *page, int rw)
+  1992	{
+> 1993		if (sync_page_io(rdev, sector, sectors << 9, page, rw, false))
+  1994			/* success */
+  1995			return 1;
+  1996		if (rw == WRITE) {
+  1997			set_bit(WriteErrorSeen, &rdev->flags);
+  1998			if (!test_and_set_bit(WantReplacement,
+  1999					      &rdev->flags))
+  2000				set_bit(MD_RECOVERY_NEEDED, &
+  2001					rdev->mddev->recovery);
+  2002		}
+  2003		/* need to record an error - either for the block or the device */
+  2004		if (!rdev_set_badblocks(rdev, sector, sectors, 0))
+  2005			md_error(rdev->mddev, rdev);
+  2006		return 0;
+  2007	}
+  2008	
 
 -- 
-Kees Cook
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
