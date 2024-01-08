@@ -1,247 +1,159 @@
-Return-Path: <linux-kernel+bounces-19784-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19790-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3DB2D8273D9
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 16:40:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 028588273FC
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 16:42:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 421E81C22D24
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 15:40:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 92092285104
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 15:42:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B95B53814;
-	Mon,  8 Jan 2024 15:39:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="JwKUZj7o"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8B7D5475D;
+	Mon,  8 Jan 2024 15:40:53 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-vk1-f172.google.com (mail-vk1-f172.google.com [209.85.221.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A6AC524A8
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 15:39:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-vk1-f172.google.com with SMTP id 71dfb90a1353d-4b72c944019so484511e0c.3
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 07:39:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1704728393; x=1705333193; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OOJbSi5rNTjMHJMF5lMEiPd+GXhzy+vNHdpBCiGEhzo=;
-        b=JwKUZj7oWgdMXLSKxW16NP93FDntTQXSMfSXfehzkgOQ5DWkLpb464jT9E9MiUWRVf
-         LTO/5dfd4OzHhL5A4po/zfn6XXcUrqBZ1fxCRu+rUHSu5GzikhVd4EBq6ndsRcjyvWAR
-         suyrQFaK6i+6aITUDtb+KPzxA5MM7h1DVL3oifC+AB3NkQEwIerHhto5qin4yY65WWoX
-         8pQ04Tl9DaR9oXeIVyqQxdEr3jcBaZFXcCIMVoxnnw2MkTig3X8c/x/fFOWpez1+iPQP
-         4Dv+mRXNwx1raZNwz7tmG7KDj8e6TMA9owmFehOBXlvTqh2edt+qnBQtGLJTtHCdNn+8
-         oL3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704728393; x=1705333193;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OOJbSi5rNTjMHJMF5lMEiPd+GXhzy+vNHdpBCiGEhzo=;
-        b=qv4T5VbxVD6SsBB+oaGnz2AZrrw8d20x7GEeMcVSdXDwt/KlWN+xLqU1QRbJjt9dfk
-         a90aeJBL69BMZieA2UTHv5RZo0115amysDoNAEd004TscPqB4O69MMu6bbBiF/r1Dwqo
-         Lcbk5qHzL+6Mt3umzSX0rqDLckId6qjUEfWn+2Xa8vkPb6aSGyLoUAxOIOO/6n5vF5vR
-         TdAPviZlhhpxuehNimATFdv3o3aFCu+C+4aySoT8dAM/kOrRuO90rdhJgkbYdT3xfEzS
-         6QMcyM7zm8tTgJiJriAFpB8PSpe9eXb1jzD8YXN9cMcb1hUCeSxdnK1KGHqfGQBgaTLq
-         u51Q==
-X-Gm-Message-State: AOJu0YxekP1DMJgjmK0+w7T1butB+p7RaFaOhO3MYOh9LRadFJleNmQy
-	s85ae+5/fKejyp/RkHHb+SbJIp1K6W2N1BLU2wJ9Ixmib6N14wRcOD6RIAki
-X-Google-Smtp-Source: AGHT+IEXzfxEmWO3/tWR9nmj4EUSphBVdtQt7Noz+NC5+wWfuyb2uKGTlK89MCeD6645lTIuyBAXX+gEKP8BJcLiGic=
-X-Received: by 2002:a05:6122:3a16:b0:4b7:17ae:747d with SMTP id
- fp22-20020a0561223a1600b004b717ae747dmr1208222vkb.22.1704728393280; Mon, 08
- Jan 2024 07:39:53 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 518085380B;
+	Mon,  8 Jan 2024 15:40:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CAFE0C433C7;
+	Mon,  8 Jan 2024 15:40:51 +0000 (UTC)
+Date: Mon, 8 Jan 2024 10:41:47 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Christian Brauner <brauner@kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
+ <linux-trace-kernel@vger.kernel.org>, Masami Hiramatsu
+ <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Linus Torvalds <torvalds@linux-foundation.org>, Al Viro
+ <viro@zeniv.linux.org.uk>, linux-fsdevel@vger.kernel.org, Greg
+ Kroah-Hartman <gregkh@linuxfoundation.org>, Kees Cook
+ <keescook@chromium.org>
+Subject: Re: [PATCH] tracefs/eventfs: Use root and instance inodes as
+ default ownership
+Message-ID: <20240108104147.49baa4cb@gandalf.local.home>
+In-Reply-To: <20240108-natur-geophysik-f4c6fdaf6901@brauner>
+References: <20240103203246.115732ec@gandalf.local.home>
+	<20240105-wegstecken-sachkenntnis-6289842d6d01@brauner>
+	<20240105095954.67de63c2@gandalf.local.home>
+	<20240107-getrickst-angeeignet-049cea8cad13@brauner>
+	<20240107132912.71b109d8@rorschach.local.home>
+	<20240107133228.05b0f485@rorschach.local.home>
+	<20240108-natur-geophysik-f4c6fdaf6901@brauner>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240102155949.73434-1-brgl@bgdev.pl> <CGME20240108130315eucas1p1ecb6dbf60f9b796c3c678c889371a747@eucas1p1.samsung.com>
- <20240102155949.73434-4-brgl@bgdev.pl> <32c76177-83c1-48c5-8198-b7347b83d5db@samsung.com>
-In-Reply-To: <32c76177-83c1-48c5-8198-b7347b83d5db@samsung.com>
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-Date: Mon, 8 Jan 2024 16:39:42 +0100
-Message-ID: <CAMRc=MfAbgApC5nXjqvyRi9k_Zx9N_n8g-d5sGO-WR4mHn=LBQ@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] gpiolib: pin GPIO devices in place during
- descriptor lookup
-To: Marek Szyprowski <m.szyprowski@samsung.com>
-Cc: Linus Walleij <linus.walleij@linaro.org>, linux-gpio@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, 
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Mon, Jan 8, 2024 at 2:03=E2=80=AFPM Marek Szyprowski
-<m.szyprowski@samsung.com> wrote:
->
-> On 02.01.2024 16:59, Bartosz Golaszewski wrote:
-> > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> >
-> > There's time between when we locate the relevant descriptor during
-> > lookup and when we actually take the reference to its parent GPIO
-> > device where - if the GPIO device in question is removed - we'll end up
-> > with a dangling pointer to freed memory. Make sure devices cannot be
-> > removed until we hold a new reference to the device.
-> >
-> > Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
->
-> This patch landed in linux-next as commit db660b9a9f86 ("gpiolib: pin
-> GPIO devices in place during descriptor lookup"). Unfortunately it
-> introduces a following lock-dep warning:
->
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> WARNING: possible recursive locking detected
-> 6.7.0-rc7-00062-gdb660b9a9f86 #7819 Not tainted
-> --------------------------------------------
-> kworker/u4:2/27 is trying to acquire lock:
-> c13f4e1c (gpio_devices_sem){++++}-{3:3}, at: gpio_device_find+0x30/0x94
->
-> but task is already holding lock:
-> c13f4e1c (gpio_devices_sem){++++}-{3:3}, at:
-> gpiod_find_and_request+0x44/0x594
->
-> other info that might help us debug this:
->   Possible unsafe locking scenario:
->
->         CPU0
->         ----
->    lock(gpio_devices_sem);
->    lock(gpio_devices_sem);
->
->   *** DEADLOCK ***
->
->   May be due to missing lock nesting notation
->
-> 4 locks held by kworker/u4:2/27:
->   #0: c1c06ca8 ((wq_completion)events_unbound){+.+.}-{0:0}, at:
-> process_one_work+0x148/0x608
->   #1: e093df20 ((work_completion)(&entry->work)){+.+.}-{0:0}, at:
-> process_one_work+0x148/0x608
->   #2: c1f3048c (&dev->mutex){....}-{3:3}, at:
-> __driver_attach_async_helper+0x38/0xec
->   #3: c13f4e1c (gpio_devices_sem){++++}-{3:3}, at:
-> gpiod_find_and_request+0x44/0x594
->
-> stack backtrace:
-> CPU: 0 PID: 27 Comm: kworker/u4:2 Not tainted
-> 6.7.0-rc7-00062-gdb660b9a9f86 #7819
-> Hardware name: Samsung Exynos (Flattened Device Tree)
-> Workqueue: events_unbound async_run_entry_fn
->   unwind_backtrace from show_stack+0x10/0x14
->   show_stack from dump_stack_lvl+0x58/0x70
->   dump_stack_lvl from __lock_acquire+0x1300/0x2984
->   __lock_acquire from lock_acquire+0x130/0x37c
->   lock_acquire from down_read+0x44/0x224
->   down_read from gpio_device_find+0x30/0x94
->   gpio_device_find from of_get_named_gpiod_flags+0xa4/0x3a8
->   of_get_named_gpiod_flags from of_find_gpio+0x80/0x168
->   of_find_gpio from gpiod_find_and_request+0x120/0x594
->   gpiod_find_and_request from gpiod_get_optional+0x54/0x90
->   gpiod_get_optional from reg_fixed_voltage_probe+0x200/0x400
->   reg_fixed_voltage_probe from platform_probe+0x5c/0xb8
->   platform_probe from really_probe+0xe0/0x400
->   really_probe from __driver_probe_device+0x9c/0x1f0
->   __driver_probe_device from driver_probe_device+0x30/0xc0
->   driver_probe_device from __driver_attach_async_helper+0x54/0xec
->   __driver_attach_async_helper from async_run_entry_fn+0x40/0x154
->   async_run_entry_fn from process_one_work+0x204/0x608
->   process_one_work from worker_thread+0x1e0/0x498
->   worker_thread from kthread+0x104/0x138
->   kthread from ret_from_fork+0x14/0x28
-> Exception stack(0xe093dfb0 to 0xe093dff8)
-> ...
->
->
-> Taking gpio_devices_sem more than once for reading is safe, but it looks
-> that it needs some lock-dep annotations to to make it happy and avoid
-> the above warning.
->
->
-> > ---
-> >   drivers/gpio/gpiolib.c | 40 +++++++++++++++++++++++-----------------
-> >   1 file changed, 23 insertions(+), 17 deletions(-)
-> >
-> > diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
-> > index 4c93cf73a826..be57f8d6aeae 100644
-> > --- a/drivers/gpio/gpiolib.c
-> > +++ b/drivers/gpio/gpiolib.c
-> > @@ -4134,27 +4134,33 @@ static struct gpio_desc *gpiod_find_and_request=
-(struct device *consumer,
-> >       struct gpio_desc *desc;
-> >       int ret;
-> >
-> > -     desc =3D gpiod_find_by_fwnode(fwnode, consumer, con_id, idx, &fla=
-gs, &lookupflags);
-> > -     if (gpiod_not_found(desc) && platform_lookup_allowed) {
-> > +     scoped_guard(rwsem_read, &gpio_devices_sem) {
-> > +             desc =3D gpiod_find_by_fwnode(fwnode, consumer, con_id, i=
-dx,
-> > +                                         &flags, &lookupflags);
-> > +             if (gpiod_not_found(desc) && platform_lookup_allowed) {
-> > +                     /*
-> > +                      * Either we are not using DT or ACPI, or their l=
-ookup
-> > +                      * did not return a result. In that case, use pla=
-tform
-> > +                      * lookup as a fallback.
-> > +                      */
-> > +                     dev_dbg(consumer,
-> > +                             "using lookup tables for GPIO lookup\n");
-> > +                     desc =3D gpiod_find(consumer, con_id, idx, &looku=
-pflags);
-> > +             }
-> > +
-> > +             if (IS_ERR(desc)) {
-> > +                     dev_dbg(consumer, "No GPIO consumer %s found\n",
-> > +                             con_id);
-> > +                     return desc;
-> > +             }
-> > +
-> >               /*
-> > -              * Either we are not using DT or ACPI, or their lookup di=
-d not
-> > -              * return a result. In that case, use platform lookup as =
-a
-> > -              * fallback.
-> > +              * If a connection label was passed use that, else attemp=
-t to
-> > +              * use the device name as label
-> >                */
-> > -             dev_dbg(consumer, "using lookup tables for GPIO lookup\n"=
-);
-> > -             desc =3D gpiod_find(consumer, con_id, idx, &lookupflags);
-> > +             ret =3D gpiod_request(desc, label);
-> >       }
-> >
-> > -     if (IS_ERR(desc)) {
-> > -             dev_dbg(consumer, "No GPIO consumer %s found\n", con_id);
-> > -             return desc;
-> > -     }
-> > -
-> > -     /*
-> > -      * If a connection label was passed use that, else attempt to use
-> > -      * the device name as label
-> > -      */
-> > -     ret =3D gpiod_request(desc, label);
-> >       if (ret) {
-> >               if (!(ret =3D=3D -EBUSY && flags & GPIOD_FLAGS_BIT_NONEXC=
-LUSIVE))
-> >                       return ERR_PTR(ret);
->
-> Best regards
-> --
-> Marek Szyprowski, PhD
-> Samsung R&D Institute Poland
->
+On Mon, 8 Jan 2024 12:32:46 +0100
+Christian Brauner <brauner@kernel.org> wrote:
 
-Thanks for the report. I think it may have come too late in the
-release cycle as it has the potential to break a lot of things. I will
-back it out of my for-next branch. I'll resend it for v6.9.
+> On Sun, Jan 07, 2024 at 01:32:28PM -0500, Steven Rostedt wrote:
+> > On Sun, 7 Jan 2024 13:29:12 -0500
+> > Steven Rostedt <rostedt@goodmis.org> wrote:
+> >   
+> > > > 
+> > > > IOW, the inode_permission() in lookup_one_len() that eventfs does is
+> > > > redundant and just wrong.    
+> > > 
+> > > I don't think so.  
+> > 
+> > Just to make it clear. eventfs has nothing to do with mkdir instance/foo.
+> > It exists without that. Although one rationale to do eventfs was so  
+> 
+> Every instance/foo/ tracefs instances also contains an events directory
+> and thus a eventfs portion. Eventfs is just a subtree of tracefs. It's
+> not a separate filesystem. Both eventfs and tracefs are on the same
+> single, system wide superblock.
+> 
+> > that the instance directories wouldn't recreate the same 10thousands
+> > event inodes and dentries for every mkdir done.  
+> 
+> I know but that's irrelevant to what I'm trying to tell you.
+> 
+> A mkdir /sys/kernel/tracing/instances/foo creates a new tracefs
+> instance. With or without the on-demand dentry and inode creation for
+> the eventfs portion that tracefs "instance" has now been created in its
+> entirety including all the required information for someone to later
+> come along and perform a lookup on /sys/kernel/tracing/instances/foo/events.
+> 
+> All you've done is to defer the addition of the dentries and inodes when
+> someone does actually look at the events directory of the tracefs
+> instance.
+> 
+> Whether you choose to splice in the dentries and inodes for the eventfs
+> portion during lookup and readdir or if you had chosen to not do the
+> on-demand thing at all and the entries were created at the same time as
+> the mkdir call are equivalent from the perspective of permission
+> checking.
+> 
+> If you have the required permissions to look at the events directory
+> then there's no reason why listing the directory entries in there should
+> fail. This can't even happen right now.
 
-Bart
+Ah, I think I know where the confusion lies. The tracing information in
+kernel/trace/*.c doesn't keep track of permission. It relies totally on
+fs/tracefs/* to do so. If someone does 'chmod' or 'chown' or mounts with
+'gid=xxx' then it's up to tracefs to maintain that information and not the
+tracing subsystem. The tracing subsystem only gives the "default"
+permissions (before boot finishes).
+
+The difference between normal file systems and pseudo file systems like
+debugfs and tracefs, is that normal file systems keep the permission
+information stored on the external device. That is, when the inodes and
+dentries are created, the information is retrieved from the stored file
+system.
+
+I think this may actually be a failure of debugfs (and tracefs as it was
+based on debugfs), in that the inodes and dentries are created at the same
+time the "files" backing them are. Which is normally at boot up and before
+the file system is mounted.
+
+That is, inodes and dentries are actually coupled with the data they
+represent. It's not a cache for a back store like a hard drive partition.
+
+To create a file in debugfs you do:
+
+struct dentry *debugfs_create_file(const char *name, umode_t mode,
+				   struct dentry *parent, void *data,
+				   const struct file_operations *fops)
+
+That is, you pass a the name, the mode, the parent dentry, data, and the
+fops and that will create an inode and dentry (which is returned).
+
+This happens at boot up before user space is running and before debugfs is
+even mounted.
+
+Because debugfs is mostly for debugging, people don't care about how it's
+mounted. It is usually restricted to root only access. Especially since
+there's a lot of sensitive information that shouldn't be exposed to
+non-privileged users.
+
+The reason tracefs came about is that people asked me to be able to have
+access to tracing without needing to even enable debugfs. They also want to
+easily make it accessible to non root users and talking with Kees Cook, he
+recommended using ACL. But because it inherited a lot from debugfs, I
+started doing these tricks like walking the dentry tree to make it work a
+bit better. Because the dentries and inodes were created before mount, I
+had to play these tricks.
+
+But as Linus pointed out, that was the wrong way to do that. The right way
+was to use .getattr and .permission callbacks to figure out what the
+permissions to the files are.
+
+This has nothing to do with the creation of the files, it's about who has
+access to the files that the inodes point to.
+
+This sounds like another topic to bring up at LSFMM ;-)  "Can we
+standardize pseudo file systems like debugfs and tracefs to act more like
+real file systems, and have inodes and dentries act as cache and not be so
+coupled to the data?"
+
+-- Steve
 
