@@ -1,229 +1,323 @@
-Return-Path: <linux-kernel+bounces-20035-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20037-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE87E827877
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 20:22:22 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D29F827881
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 20:23:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C71DE1C21556
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 19:22:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5A7D21C21BAB
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 19:23:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2B9C55794;
-	Mon,  8 Jan 2024 19:21:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9570355C16;
+	Mon,  8 Jan 2024 19:23:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b="UcuRE8b/"
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="Botro/Sz"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from omta38.uswest2.a.cloudfilter.net (omta38.uswest2.a.cloudfilter.net [35.89.44.37])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46E7055C11
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 19:21:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=embeddedor.com
-Received: from eig-obgw-6007a.ext.cloudfilter.net ([10.0.30.247])
-	by cmsmtp with ESMTPS
-	id MuM0rnqW4oMN9MvBorreTt; Mon, 08 Jan 2024 19:21:36 +0000
-Received: from gator4166.hostgator.com ([108.167.133.22])
-	by cmsmtp with ESMTPS
-	id MvBorBURFyxR5MvBorECh3; Mon, 08 Jan 2024 19:21:36 +0000
-X-Authority-Analysis: v=2.4 cv=JYOvEGGV c=1 sm=1 tr=0 ts=659c4b40
- a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=GfQleyYEO+cc22AUyTT7qQ==:17
- a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
- a=IkcTkHD0fZMA:10 a=dEuoMetlWLkA:10 a=wYkD_t78qR0A:10 a=4RBUngkUAAAA:8
- a=yPCof4ZbAAAA:8 a=VwQbUJbxAAAA:8 a=KKAkSRfTAAAA:8 a=xBSaC5TXKjcKYkrMF84A:9
- a=QEXdDO2ut3YA:10 a=_sbA2Q-Kp09kWB8D3iXc:22 a=AjGcO6oz07-iQ99wixmX:22
- a=cvBusfyB2V15izCimMoJ:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=rxv1zyBPmROyH3ODikrSiXesbgEjrba4VMOwSjsq8Bs=; b=UcuRE8b/Z8LikqSXkz82gnemfo
-	5s0zrEyCNtKTDjk6HHrqCtfDwBPPlrdxtnwO21fRoyfMO8z+THBoyTPbOBjbuDEtlaVbu1P7DC6D7
-	PcBPVl0ER3Osiw2Enn6lqQC+3NhDSMMyRFWFyjRCvM1K6ovQdchituyy86QeUQ6awQn6Tkp/6oXyz
-	CklilmjSS+JJYzvyyR0yRsmyJwHbq2LqnQx0Sthz8QQpggBcobS/75iJzybv+JAeUttaDhSufLhE0
-	iyE2ZNVnk2tfYejn9JUJ9Q4Ohj63go4LPd/qqq3tZT9k4X7relp63HU//hpuhzzVgCK/6qgee2H2O
-	5ehjGSag==;
-Received: from 187.184.157.186.cable.dyn.cableonline.com.mx ([187.184.157.186]:32462 helo=[192.168.0.10])
-	by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.96.2)
-	(envelope-from <gustavo@embeddedor.com>)
-	id 1rMvBm-000aMY-0G;
-	Mon, 08 Jan 2024 13:21:34 -0600
-Message-ID: <7be0e5cc-058e-474e-bca9-f1c5b9a5f507@embeddedor.com>
-Date: Mon, 8 Jan 2024 13:21:30 -0600
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C761555C0F
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 19:23:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-50e5a9bcec9so2621779e87.3
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 11:23:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1704741791; x=1705346591; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=pxCaRDmSqsLBvSOC+ec1RaWFfJ/mHhsWAI2gaK+/jy8=;
+        b=Botro/SzYLxBCIb3Nu3lKqDSTlUlJdEKIqYN+ncMXHn7leko7mWlfejUWoBPNK8Q6Z
+         fGIIfj5uY0wKEod0ppgVG3tc9BrJIBn8MHZ7FZ6kDsQ/S/uHgDIOcEX/kkv544sRjSqd
+         Sm38T0KACpMUCdz54H+3dmlItxLZ2w+St3Zsdz7RrUxXWvYgJ8tmwL9AfXtTljK7AEns
+         UBRudvKkWWp54My90lAg7/SIt2wOKJufSwQQQwALWUKz2eV9Tj1nKOSC/GVrUQtnAgZX
+         qWkJD1gt9yikqcbuGvVWTxXkDX6wIHw1a1MYZ3XiSXZxuxfxEaE3zXC1NqquwNceeJe3
+         rz5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704741791; x=1705346591;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=pxCaRDmSqsLBvSOC+ec1RaWFfJ/mHhsWAI2gaK+/jy8=;
+        b=CYsiBxpVdl63k4GmeMtD5Gyg3YQVreIHTGf59CfXo4yK375W+xLUrj5rFWV/Un/acN
+         bGBJAcrmjlHi9g8DinZFfcZ6u9u+CSpnIV1mIBMkEQ1xebS//KFjXRnynOYEGceqlSV+
+         ggNoRpsfyxp7BNkSabNu2rOPpSB94SZvDIIIZQ9vMO0lt4xYXW5jP8r0W2g1UWb3SqED
+         6Abs91M4Mv7z+39LsVh7dMJ0M3w3RVPth773CQTKJl8z1HpOccwnPefjpZsWzHbprpr1
+         ks/OkIDwBe6sdP9X5vow8OUpVeCqrptiUcyFvGxnRkWgGJbYOUqPaJySF930zmUYsybu
+         OAUg==
+X-Gm-Message-State: AOJu0Yy5nrJICRpkaVrhNA9MtfUvdXqTFsd/iv8jm/PKu+eDONw3PWz6
+	CYMPAYVfnzf3yoLpWWJJSphdlTlijBC419fNGUwnSaZeMdJVGg==
+X-Google-Smtp-Source: AGHT+IGX7tj4NQqFdLLzsLhJbSGqUUbtw6AZ3qSFM9YDtORIeW2rw1tTwTJ34SefrTeFxS1hs38T6NjzISoolBVO+oA=
+X-Received: by 2002:ac2:5dfb:0:b0:50e:74ec:75f6 with SMTP id
+ z27-20020ac25dfb000000b0050e74ec75f6mr1748307lfq.136.1704741790709; Mon, 08
+ Jan 2024 11:23:10 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/2] VMCI: Fix memcpy() run-time warning in
- dg_dispatch_as_host()
-Content-Language: en-US
-To: Dan Carpenter <dan.carpenter@linaro.org>
-Cc: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>,
- linux-hardening@vger.kernel.org, keescook@chromium.org, error27@gmail.com,
- gustavoars@kernel.org, Bryan Tan <bryantan@vmware.com>,
- Vishnu Dasa <vdasa@vmware.com>,
- VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
- Arnd Bergmann <arnd@arndb.de>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- linux-kernel@vger.kernel.org, vegard.nossum@oracle.com,
- darren.kenny@oracle.com, syzkaller <syzkaller@googlegroups.com>
-References: <20240105164001.2129796-1-harshit.m.mogalapalli@oracle.com>
- <20240105164001.2129796-2-harshit.m.mogalapalli@oracle.com>
- <fc132bde-d42d-4aac-ba91-7a939a18091a@moroto.mountain>
- <7826922a-d642-424e-bede-bfc45be9254d@embeddedor.com>
- <8023e9f4-c14b-453a-8071-ef94bba0d0d3@moroto.mountain>
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-In-Reply-To: <8023e9f4-c14b-453a-8071-ef94bba0d0d3@moroto.mountain>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.184.157.186
-X-Source-L: No
-X-Exim-ID: 1rMvBm-000aMY-0G
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187.184.157.186.cable.dyn.cableonline.com.mx ([192.168.0.10]) [187.184.157.186]:32462
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 4
-X-Org: HG=hgshared;ORG=hostgator;
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfIXnlu80mlNMk2Tb6Cd2rmVFiFcIBCB1tuWPwCCwf40GPYyBwJTY2vxnfFWKfFCuLvm8QL4CVWiaI0DEeIZpgBYnlPL6Kj+/w4aYEYOAePF2D1RNQ0sB
- S42s9Za2Pha2SLV1Hsjf/VPPlCKkMKnJWqf4oCGd/8Xk5hIX4fbSI9pKnMgNibPyZufA3WSJqz+Ak9rKaYLQ2mA7HP1ePlm9hvM8xqIlNDi93z4muLKNR2Y1
+References: <20231227-optimize_checksum-v14-0-ddfd48016566@rivosinc.com> <20231227-optimize_checksum-v14-2-ddfd48016566@rivosinc.com>
+In-Reply-To: <20231227-optimize_checksum-v14-2-ddfd48016566@rivosinc.com>
+From: Evan Green <evan@rivosinc.com>
+Date: Mon, 8 Jan 2024 11:22:34 -0800
+Message-ID: <CALs-HssxwMphYSCFEYh6b3paQchmSm+tzeZ=2Ro-S4U_Gkom=w@mail.gmail.com>
+Subject: Re: [PATCH v14 2/5] riscv: Add static key for misaligned accesses
+To: Charlie Jenkins <charlie@rivosinc.com>
+Cc: Palmer Dabbelt <palmer@dabbelt.com>, Conor Dooley <conor@kernel.org>, 
+	Samuel Holland <samuel.holland@sifive.com>, David Laight <David.Laight@aculab.com>, 
+	Xiao Wang <xiao.w.wang@intel.com>, Guo Ren <guoren@kernel.org>, 
+	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	linux-arch@vger.kernel.org, Paul Walmsley <paul.walmsley@sifive.com>, 
+	Albert Ou <aou@eecs.berkeley.edu>, Arnd Bergmann <arnd@arndb.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Wed, Dec 27, 2023 at 9:38=E2=80=AFAM Charlie Jenkins <charlie@rivosinc.c=
+om> wrote:
+>
+> Support static branches depending on the value of misaligned accesses.
+> This will be used by a later patch in the series. All online cpus must
+> be considered "fast" for this static branch to be flipped.
+>
+> Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
 
+This is fancier than I would have gone for, I probably would have
+punted on heterogeneous hotplug out of laziness for now. However, what
+you've done looks smart, in that we'll basically flip the branch if at
+any moment all the online CPUs are fast. I've got some nits below, but
+won't withhold my review for them (making them optional I suppose :)).
 
-On 1/8/24 12:36, Dan Carpenter wrote:
-> On Mon, Jan 08, 2024 at 11:03:51AM -0600, Gustavo A. R. Silva wrote:
->>
->>
->> On 1/8/24 01:33, Dan Carpenter wrote:
->>> On Fri, Jan 05, 2024 at 08:40:00AM -0800, Harshit Mogalapalli wrote:
->>>> Syzkaller hit 'WARNING in dg_dispatch_as_host' bug.
->>>>
->>>> memcpy: detected field-spanning write (size 56) of single field "&dg_info->msg"
->>>> at drivers/misc/vmw_vmci/vmci_datagram.c:237 (size 24)
->>>>
->>>> WARNING: CPU: 0 PID: 1555 at drivers/misc/vmw_vmci/vmci_datagram.c:237
->>>> dg_dispatch_as_host+0x88e/0xa60 drivers/misc/vmw_vmci/vmci_datagram.c:237
->>>>
->>>> Some code commentry, based on my understanding:
->>>>
->>>> 544 #define VMCI_DG_SIZE(_dg) (VMCI_DG_HEADERSIZE + (size_t)(_dg)->payload_size)
->>>> /// This is 24 + payload_size
->>>>
->>>> memcpy(&dg_info->msg, dg, dg_size);
->>>> 	Destination = dg_info->msg ---> this is a 24 byte
->>>> 					structure(struct vmci_datagram)
->>>> 	Source = dg --> this is a 24 byte structure (struct vmci_datagram)
->>>> 	Size = dg_size = 24 + payload_size
->>>>
->>>> {payload_size = 56-24 =32} -- Syzkaller managed to set payload_size to 32.
->>>>
->>>>    35 struct delayed_datagram_info {
->>>>    36         struct datagram_entry *entry;
->>>>    37         struct work_struct work;
->>>>    38         bool in_dg_host_queue;
->>>>    39         /* msg and msg_payload must be together. */
->>>>    40         struct vmci_datagram msg;
->>>>    41         u8 msg_payload[];
->>>>    42 };
->>>>
->>>> So those extra bytes of payload are copied into msg_payload[], a run time
->>>> warning is seen while fuzzing with Syzkaller.
->>>>
->>>> One possible way to fix the warning is to split the memcpy() into
->>>> two parts -- one -- direct assignment of msg and second taking care of payload.
->>>>
->>>> Gustavo quoted:
->>>> "Under FORTIFY_SOURCE we should not copy data across multiple members
->>>> in a structure."
->>>>
->>>> Reported-by: syzkaller <syzkaller@googlegroups.com>
->>>> Suggested-by: Vegard Nossum <vegard.nossum@oracle.com>
->>>> Suggested-by: Gustavo A. R. Silva <gustavoars@kernel.org>
->>>> Signed-off-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
->>>> ---
->>>> This patch is only tested with the C reproducer, not any testing
->>>> specific to driver is done.
->>>>
->>>> v1->v2: ( Suggestions from Gustavo )
->>>>           1. Change the commit message false positive --> legitimate
->>>>              warning.
->>>
->>> The commit message is fine.
->>>
->>> Reviewed-by: Dan Carpenter <dan.carpenter@linaro.org>
->>>
->>> But, I mean, it's not really "legitimate".  It meets the fortify source
->>> heuristic, but it's still a false positive.  Fortify source is
->>> *supposed* to find memory corruption bugs and this is not a memory
->>> corruption bug.  It's just that these days we have to treat foritify
->>> false positives as crashing bugs because people enable it and we have to
->>> fix it.
->>>
->>> Let's not pretend that fortify has helped us in this situation, it has
->>> caused us a problem.  It has taken valid code and created a crashing
->>> bug.  I'm not saying that the cost isn't worth it, but let's not pretend.
->>>
->>
->> It's a "legitimate warning" (which differs from a "legitimate memory
->> corruption bug") in the sense that the feature is doing what it's
->> supposed to do: reporting a write beyond the boundaries of a field/member
->> in a structure.
->>
->> Is that simple.  I don't see the "pretense" here.
->>
->> BTW, is this _warning_ really causing a crash?
-> 
-> I don't know how many people have Reboot on Warn enabled but I've heard
-> it's a shocking high number of people.
-> 
-> My problem with "legitimate" is that it's a biased word which imples
-> "good".  A more neutral way to describe it would be "acceptable" or
-> "matches the heuristic".
-> 
-> Generally, we get a lot of patches which are to make a tool happy and
-> sometimes like here it's probably an acceptable cost.  But I think
-> other times people lose sight of what it's all about and confuse good
-> and bad.  In some kind of very literal and narrow sense this warning is
-> bad.  It takes perfectly okay code and turns it into a crashing bug.  In
-> the larger sense and long term view then, sure, the heuristic is useful,
-> but right here, in this situation, it's bad.
+Reviewed-by: Evan Green <evan@rivosinc.com>
 
+> ---
+>  arch/riscv/include/asm/cpufeature.h |  2 +
+>  arch/riscv/kernel/cpufeature.c      | 89 +++++++++++++++++++++++++++++++=
+++++--
+>  2 files changed, 87 insertions(+), 4 deletions(-)
+>
+> diff --git a/arch/riscv/include/asm/cpufeature.h b/arch/riscv/include/asm=
+/cpufeature.h
+> index a418c3112cd6..7b129e5e2f07 100644
+> --- a/arch/riscv/include/asm/cpufeature.h
+> +++ b/arch/riscv/include/asm/cpufeature.h
+> @@ -133,4 +133,6 @@ static __always_inline bool riscv_cpu_has_extension_u=
+nlikely(int cpu, const unsi
+>         return __riscv_isa_extension_available(hart_isa[cpu].isa, ext);
+>  }
+>
+> +DECLARE_STATIC_KEY_FALSE(fast_misaligned_access_speed_key);
+> +
+>  #endif
+> diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeatur=
+e.c
+> index b3785ffc1570..dfd716b93565 100644
+> --- a/arch/riscv/kernel/cpufeature.c
+> +++ b/arch/riscv/kernel/cpufeature.c
+> @@ -8,8 +8,10 @@
+>
+>  #include <linux/acpi.h>
+>  #include <linux/bitmap.h>
+> +#include <linux/cpu.h>
+>  #include <linux/cpuhotplug.h>
+>  #include <linux/ctype.h>
+> +#include <linux/jump_label.h>
+>  #include <linux/log2.h>
+>  #include <linux/memory.h>
+>  #include <linux/module.h>
+> @@ -44,6 +46,8 @@ struct riscv_isainfo hart_isa[NR_CPUS];
+>  /* Performance information */
+>  DEFINE_PER_CPU(long, misaligned_access_speed);
+>
+> +static cpumask_t fast_misaligned_access;
+> +
+>  /**
+>   * riscv_isa_extension_base() - Get base extension word
+>   *
+> @@ -643,6 +647,16 @@ static int check_unaligned_access(void *param)
+>                 (speed =3D=3D RISCV_HWPROBE_MISALIGNED_FAST) ? "fast" : "=
+slow");
+>
+>         per_cpu(misaligned_access_speed, cpu) =3D speed;
+> +
+> +       /*
+> +        * Set the value of fast_misaligned_access of a CPU. These operat=
+ions
+> +        * are atomic to avoid race conditions.
+> +        */
+> +       if (speed =3D=3D RISCV_HWPROBE_MISALIGNED_FAST)
+> +               cpumask_set_cpu(cpu, &fast_misaligned_access);
+> +       else
+> +               cpumask_clear_cpu(cpu, &fast_misaligned_access);
+> +
+>         return 0;
+>  }
+>
+> @@ -655,13 +669,70 @@ static void check_unaligned_access_nonboot_cpu(void=
+ *param)
+>                 check_unaligned_access(pages[cpu]);
+>  }
+>
+> +DEFINE_STATIC_KEY_FALSE(fast_misaligned_access_speed_key);
+> +
+> +static int exclude_set_unaligned_access_static_branches(int cpu)
+> +{
+> +       /*
+> +        * Same as set_unaligned_access_static_branches, except excludes =
+the
+> +        * given CPU from the result. When a CPU is hotplugged into an of=
+fline
+> +        * state, this function is called before the CPU is set to offlin=
+e in
+> +        * the cpumask, and thus the CPU needs to be explicitly excluded.
+> +        */
+> +
+> +       cpumask_t online_fast_misaligned_access;
+> +
+> +       cpumask_and(&online_fast_misaligned_access, &fast_misaligned_acce=
+ss, cpu_online_mask);
+> +       cpumask_clear_cpu(cpu, &online_fast_misaligned_access);
+> +
+> +       if (cpumask_weight(&online_fast_misaligned_access) =3D=3D (num_on=
+line_cpus() - 1))
+> +               static_branch_enable_cpuslocked(&fast_misaligned_access_s=
+peed_key);
+> +       else
+> +               static_branch_disable_cpuslocked(&fast_misaligned_access_=
+speed_key);
+> +
+> +       return 0;
+> +}
 
-This is right on point:
+A minor nit:  the function above and below are looking a little
+copy/pasty, and lead to multiple spots where the static branch gets
+changed. You could make a third function that actually does the
+setting with parameters, then these two could call it in different
+ways. The return types also don't need to be int, since you always
+return 0. Something like:
 
-"In some kind of very literal and narrow sense this warning is bad."
+static void modify_unaligned_access_branches(cpumask_t *mask, int weight)
+{
+        if (cpumask_weight(mask) =3D=3D weight) {
+               static_branch_enable_cpuslocked(&fast_misaligned_access_spee=
+d_key);
+        } else {
+               static_branch_disable_cpuslocked(&fast_misaligned_access_spe=
+ed_key);
+        }
+}
 
-Let's say the vast majority of people is of this opinion. Thus, they
-engage in never-ending discussions, and end up disregarding this sort
-of warning, deciding to ignore it completely. Then, a lot more of these
-warnings go unfixed. Then, a couple of actual memory corruption bugs
-are introduced. Then, people don't notice them. Then, the hardening
-feature ends up becoming useless.
+static void set_unaligned_access_branches(void)
+{
+        cpumask_t fast_and_online;
 
-Why insist on disregarding something that is clearly beneficial to
-acknowledge and worth correcting right on the spot?
+        cpumask_and(&fast_and_online, &fast_misaligned_access, cpu_online_m=
+ask);
+        modify_unaligned_access_branches(&fast_and_online, num_online_cpus(=
+));
+}
 
-This is real work that must be done if we want the feature to help us
-detect bugs and potential vulnerabilities.
+static void set_unaligned_access_branches_except_cpu(unsigned int cpu)
+{
+        cpumask_t fast_except_me;
 
-Thanks
---
-Gustavo
+        cpumask_and(&online_fast_misaligned_access,
+&fast_misaligned_access, cpu_online_mask);
+        cpumask_clear_cpu(cpu, &fast_except_me);
+        modify_unaligned_access_branches(&fast_except_me,
+num_online_cpus() - 1);
+}
+
+> +
+> +static int set_unaligned_access_static_branches(void)
+> +{
+> +       /*
+> +        * This will be called after check_unaligned_access_all_cpus so t=
+he
+> +        * result of unaligned access speed for all CPUs will be availabl=
+e.
+> +        *
+> +        * To avoid the number of online cpus changing between reading
+> +        * cpu_online_mask and calling num_online_cpus, cpus_read_lock mu=
+st be
+> +        * held before calling this function.
+> +        */
+> +       cpumask_t online_fast_misaligned_access;
+> +
+> +       cpumask_and(&online_fast_misaligned_access, &fast_misaligned_acce=
+ss, cpu_online_mask);
+> +
+> +       if (cpumask_weight(&online_fast_misaligned_access) =3D=3D num_onl=
+ine_cpus())
+> +               static_branch_enable_cpuslocked(&fast_misaligned_access_s=
+peed_key);
+> +       else
+> +               static_branch_disable_cpuslocked(&fast_misaligned_access_=
+speed_key);
+> +
+> +       return 0;
+> +}
+> +
+> +static int lock_and_set_unaligned_access_static_branch(void)
+> +{
+> +       cpus_read_lock();
+> +       set_unaligned_access_static_branches();
+> +       cpus_read_unlock();
+> +
+> +       return 0;
+> +}
+> +
+> +arch_initcall_sync(lock_and_set_unaligned_access_static_branch);
+> +
+>  static int riscv_online_cpu(unsigned int cpu)
+>  {
+>         static struct page *buf;
+>
+>         /* We are already set since the last check */
+>         if (per_cpu(misaligned_access_speed, cpu) !=3D RISCV_HWPROBE_MISA=
+LIGNED_UNKNOWN)
+> -               return 0;
+> +               goto exit;
+>
+>         buf =3D alloc_pages(GFP_KERNEL, MISALIGNED_BUFFER_ORDER);
+>         if (!buf) {
+> @@ -671,7 +742,14 @@ static int riscv_online_cpu(unsigned int cpu)
+>
+>         check_unaligned_access(buf);
+>         __free_pages(buf, MISALIGNED_BUFFER_ORDER);
+> -       return 0;
+> +
+> +exit:
+> +       return set_unaligned_access_static_branches();
+> +}
+> +
+> +static int riscv_offline_cpu(unsigned int cpu)
+> +{
+> +       return exclude_set_unaligned_access_static_branches(cpu);
+>  }
+>
+>  /* Measure unaligned access on all CPUs present at boot in parallel. */
+> @@ -705,9 +783,12 @@ static int check_unaligned_access_all_cpus(void)
+>         /* Check core 0. */
+>         smp_call_on_cpu(0, check_unaligned_access, bufs[0], true);
+>
+> -       /* Setup hotplug callback for any new CPUs that come online. */
+> +       /*
+> +        * Setup hotplug callbacks for any new CPUs that come online or g=
+o
+> +        * offline.
+> +        */
+>         cpuhp_setup_state_nocalls(CPUHP_AP_ONLINE_DYN, "riscv:online",
+> -                                 riscv_online_cpu, NULL);
+> +                                 riscv_online_cpu, riscv_offline_cpu);
+>
+>  out:
+>         unaligned_emulation_finish();
+>
+> --
+> 2.43.0
+>
 
