@@ -1,324 +1,176 @@
-Return-Path: <linux-kernel+bounces-19314-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19315-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3447B826B49
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 11:03:25 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5DDA8826B4D
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 11:03:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4CFE31C21F74
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 10:03:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D72131F2223B
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 10:03:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55596134C3;
-	Mon,  8 Jan 2024 10:03:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 079F013AE3;
+	Mon,  8 Jan 2024 10:03:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QxSt1KPi"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="PAWCjBd0"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2AF613ACF;
-	Mon,  8 Jan 2024 10:03:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704708192; x=1736244192;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=t9ibrJFOVgyhcdPDuPa5NcrTMKPcC41hMEaQWW3U7Ic=;
-  b=QxSt1KPiWi6C/xsc3LQzhsXvpRXSCLZ2NB8dWCOaaM8DfaUsqWfM2/rT
-   yffJ17tKA2M46pj4EL+fdhx5NWQSmSJxFhC81CgrahOSjsJH5GWYdzcM3
-   ucneqyEe/2CwFdcu7UE/Pm6iYoOlbsLvhSsD1rUaxRcgVn/d8vIEG/ZsV
-   zjKiy/vk5fWK8TR3l5obaPXxfF83EIQINfpoz9MlybW98plJOKn+Ddo/z
-   3oVkUrZG3EKPSUr8iJe1YtRdGyhwin+oogsitUkDGL1trIcLAKqW/EiLg
-   BwHfcGg/saThJCu2ldgUCiIzV1CiAlgYAgJGZ9Qx7xiKcZ94PQDbbWLdy
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10946"; a="464239563"
-X-IronPort-AV: E=Sophos;i="6.04,340,1695711600"; 
-   d="scan'208";a="464239563"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jan 2024 02:03:11 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10946"; a="1028361723"
-X-IronPort-AV: E=Sophos;i="6.04,340,1695711600"; 
-   d="scan'208";a="1028361723"
-Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jan 2024 02:03:09 -0800
-Received: from kekkonen.localdomain (localhost [127.0.0.1])
-	by kekkonen.fi.intel.com (Postfix) with SMTP id A664111F913;
-	Mon,  8 Jan 2024 12:03:06 +0200 (EET)
-Date: Mon, 8 Jan 2024 10:03:06 +0000
-From: Sakari Ailus <sakari.ailus@linux.intel.com>
-To: Umang Jain <umang.jain@ideasonboard.com>
-Cc: linux-media@vger.kernel.org,
-	"Paul J . Murphy" <paul.j.murphy@intel.com>,
-	Daniele Alessandrelli <daniele.alessandrelli@intel.com>,
-	Kieran Bingham <kieran.bingham@ideasonboard.com>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3] media: i2c: imx335: Support multiple link frequency
-Message-ID: <ZZvIWhqPkwe9E8wR@kekkonen.localdomain>
-References: <20231213091712.55529-1-umang.jain@ideasonboard.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FFE6134BC
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 10:03:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
+Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-5eefd0da5c0so12749417b3.2
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 02:03:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google; t=1704708208; x=1705313008; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=A5rluKBNhYXwtDegeCZErXljTKweV7Oesk2lDglaSvc=;
+        b=PAWCjBd0yh/e5mbfTbKkISWhuZTUiMxUMwZ4EmpkEdAk7HbeGDux8iLpPFpkIA0wKF
+         5/87okKdl07ipvt2V4N4/20rNRlrocNi/ZoUZJK2aA2MBW5/0AwjzkLbW10dkp0dI7AH
+         q0BwKC0bGvu9RJGCzJOQeh5ccT1cDBIM5RtT8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704708208; x=1705313008;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=A5rluKBNhYXwtDegeCZErXljTKweV7Oesk2lDglaSvc=;
+        b=Zh3Rvx/1J2XZpODDudrv/ldyTQS/V8BQlOizjJ74WTU2v7HX3TE73zeXCfLAr1pd0W
+         ZI29+kx8+bVpICmWtfMg5drBvjz5OlulSDFBwD6w+aMYmkplnMZhoXfhqB6B/5QasKM4
+         lLeqV2I7oDvXAOCGlEBbpVZn3R0yGwLbzweXjCAy7Ntu9XmvsM4AEQQm31C40wf/OsV7
+         PdkZoXVzo1xySmdklPqkSKyRB3zClcR5QEDrYjNPDof8AZy0SXbZi8avsfCm5Ms9tiB9
+         mmsFLD3W/51O/7Oc6cga85RkAo+Z+S/SxKN4Vx+eiU/bHlP69Pha4tkAH9aBFYb8xzUe
+         XuYg==
+X-Gm-Message-State: AOJu0YwYkwY4EsSLBCV21Jn2se3KXzw75CedyjPNOzupc7z400K6K05P
+	ulxfDswluzS0xXtY4wydUIuN8rHge+it/OK7/HzEdjUc0UJJ
+X-Google-Smtp-Source: AGHT+IFvR8TWanCEgIv9soQRM9yMz4/iIR1vDmYca+EycbBNf0vg3l7/m//zsgF2er537oFvyZh+EhtPxYX09i3AbVg=
+X-Received: by 2002:a81:9a05:0:b0:5f7:a46:6bfd with SMTP id
+ r5-20020a819a05000000b005f70a466bfdmr1372391ywg.14.1704708206925; Mon, 08 Jan
+ 2024 02:03:26 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231213091712.55529-1-umang.jain@ideasonboard.com>
+References: <d714306e-b7d7-4e89-b973-a9ff0f260c78@moroto.mountain> <170470704553.160127.3442999643967580359.b4-ty@kernel.org>
+In-Reply-To: <170470704553.160127.3442999643967580359.b4-ty@kernel.org>
+From: Selvin Xavier <selvin.xavier@broadcom.com>
+Date: Mon, 8 Jan 2024 15:33:14 +0530
+Message-ID: <CA+sbYW3P3LoE0b++E9OLvEx7=MT-htCoGrx+8Fc2qU025w6suw@mail.gmail.com>
+Subject: Re: [PATCH] RDMA/bnxt_re: Fix error code in bnxt_re_create_cq()
+To: Leon Romanovsky <leon@kernel.org>
+Cc: Dan Carpenter <dan.carpenter@linaro.org>, Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+	boundary="00000000000038f44b060e6c4f58"
 
-Hi Umang,
+--00000000000038f44b060e6c4f58
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Thanks for the patch.
+On Mon, Jan 8, 2024 at 3:14=E2=80=AFPM Leon Romanovsky <leon@kernel.org> wr=
+ote:
+>
+>
+> On Mon, 08 Jan 2024 12:06:11 +0300, Dan Carpenter wrote:
+> > Return -ENOMEM if get_zeroed_page() fails.  Don't return success.
+> >
+Acked-by: Selvin Xavier <selvin.xavier@broadcom.com>
+> >
+>
+> Applied, thanks!
+>
+> [1/1] RDMA/bnxt_re: Fix error code in bnxt_re_create_cq()
+>       https://git.kernel.org/rdma/rdma/c/abdde500cdf456
+>
+> Best regards,
+> --
+> Leon Romanovsky <leon@kernel.org>
 
-Note that Daniele and Paul are no longer maintaining the driver.
+--00000000000038f44b060e6c4f58
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
 
-On Wed, Dec 13, 2023 at 02:47:12PM +0530, Umang Jain wrote:
-> Support link frequency of 445MHz in addition to 594MHz.
-> Break out the register set specific to each data lane rate and also add
-> the general timing register set corresponding to the each data
-> lane rate.
-> 
-> Signed-off-by: Umang Jain <umang.jain@ideasonboard.com>
-> ---
-> Changes in v3:
-> - Use tabspace for indent as denoted by checkpatch.
-> 
-> Changes in v2:
-> - Split out from [PATCH v3 0/8] media: Sony IMX335 improvements
->   where original patch was introduced.
-> - Add general timing registers to each data lane rate configuration
-> - Reword commit message. 
-> ---
->  drivers/media/i2c/imx335.c | 108 +++++++++++++++++++++++++++++--------
->  1 file changed, 87 insertions(+), 21 deletions(-)
-> 
-> diff --git a/drivers/media/i2c/imx335.c b/drivers/media/i2c/imx335.c
-> index 7a37eb327ff4..ffceeb8a15c7 100644
-> --- a/drivers/media/i2c/imx335.c
-> +++ b/drivers/media/i2c/imx335.c
-> @@ -49,7 +49,8 @@
->  #define IMX335_INCLK_RATE	24000000
->  
->  /* CSI2 HW configuration */
-> -#define IMX335_LINK_FREQ	594000000
-> +#define IMX335_LINK_FREQ_594MHz	594000000
-> +#define IMX335_LINK_FREQ_445MHz	445500000
->  #define IMX335_NUM_DATA_LANES	4
->  
->  #define IMX335_REG_MIN		0x00
-> @@ -99,7 +100,6 @@ static const char * const imx335_supply_name[] = {
->   * @vblank_min: Minimum vertical blanking in lines
->   * @vblank_max: Maximum vertical blanking in lines
->   * @pclk: Sensor pixel clock
-> - * @link_freq_idx: Link frequency index
->   * @reg_list: Register list for sensor mode
->   */
->  struct imx335_mode {
-> @@ -111,7 +111,6 @@ struct imx335_mode {
->  	u32 vblank_min;
->  	u32 vblank_max;
->  	u64 pclk;
-> -	u32 link_freq_idx;
->  	struct imx335_reg_list reg_list;
->  };
->  
-> @@ -133,6 +132,7 @@ struct imx335_mode {
->   * @again_ctrl: Pointer to analog gain control
->   * @vblank: Vertical blanking in lines
->   * @cur_mode: Pointer to current selected sensor mode
-> + * @link_freq_idx: Selected link frequency index
->   * @mutex: Mutex for serializing sensor controls
->   * @cur_mbus_code: Currently selected media bus format code
->   */
-> @@ -156,20 +156,16 @@ struct imx335 {
->  	};
->  	u32 vblank;
->  	const struct imx335_mode *cur_mode;
-> +	u32 link_freq_idx;
->  	struct mutex mutex;
->  	u32 cur_mbus_code;
->  };
->  
-> -static const s64 link_freq[] = {
-> -	IMX335_LINK_FREQ,
-> -};
->  
->  /* Sensor mode registers */
->  static const struct imx335_reg mode_2592x1940_regs[] = {
->  	{0x3000, 0x01},
->  	{0x3002, 0x00},
-> -	{0x300c, 0x3b},
-> -	{0x300d, 0x2a},
->  	{0x3018, 0x04},
->  	{0x302c, 0x3c},
->  	{0x302e, 0x20},
-> @@ -177,10 +173,6 @@ static const struct imx335_reg mode_2592x1940_regs[] = {
->  	{0x3074, 0xc8},
->  	{0x3076, 0x28},
->  	{0x304c, 0x00},
-> -	{0x314c, 0xc6},
-> -	{0x315a, 0x02},
-> -	{0x3168, 0xa0},
-> -	{0x316a, 0x7e},
->  	{0x31a1, 0x00},
->  	{0x3288, 0x21},
->  	{0x328a, 0x02},
-> @@ -266,6 +258,65 @@ static const struct imx335_reg raw12_framefmt_regs[] = {
->  	{0x341d, 0x00},
->  };
->  
-> +static const struct imx335_reg mipi_data_rate_1188Mbps[] = {
-> +	{0x300c, 0x3b},
-> +	{0x300d, 0x2a},
-> +	{0x314c, 0xc6},
-> +	{0x314d, 0x00},
-> +	{0x315a, 0x02},
-> +	{0x3168, 0xa0},
-> +	{0x316a, 0x7e},
-> +	{0x319e, 0x01},
-> +	{0x3a18, 0x8f},
-> +	{0x3a1a, 0x4f},
-> +	{0x3a1c, 0x47},
-> +	{0x3a1e, 0x37},
-> +	{0x3a1f, 0x01},
-> +	{0x3a20, 0x4f},
-> +	{0x3a22, 0x87},
-> +	{0x3a24, 0x4f},
-> +	{0x3a26, 0x7f},
-> +	{0x3a28, 0x3f},
-> +};
-> +
-> +static const struct imx335_reg mipi_data_rate_891Mbps[] = {
-> +	{0x300c, 0x3b},
-> +	{0x300d, 0x2a},
-> +	{0x314c, 0x29},
-> +	{0x314d, 0x01},
-> +	{0x315a, 0x06},
-> +	{0x3168, 0xa0},
-> +	{0x316a, 0x7e},
-> +	{0x319e, 0x02},
-> +	{0x3a18, 0x7f},
-> +	{0x3a1a, 0x37},
-> +	{0x3a1c, 0x37},
-> +	{0x3a1e, 0xf7},
-> +	{0x3a20, 0x3f},
-> +	{0x3a22, 0x6f},
-> +	{0x3a24, 0x3f},
-> +	{0x3a26, 0x5f},
-> +	{0x3a28, 0x2f},
-> +};
-> +
-> +static const s64 link_freq[] = {
-> +	/* Corresponds to 1188Mbps data lane rate */
-> +	IMX335_LINK_FREQ_594MHz,
-> +	/* Corresponds to 891Mbps data lane rate */
-> +	IMX335_LINK_FREQ_445MHz,
-> +};
-> +
-> +static const struct imx335_reg_list link_freq_reglist[] = {
-> +	{
-> +		.num_of_regs = ARRAY_SIZE(mipi_data_rate_1188Mbps),
-> +		.regs = mipi_data_rate_1188Mbps,
-> +	},
-> +	{
-> +		.num_of_regs = ARRAY_SIZE(mipi_data_rate_891Mbps),
-> +		.regs = mipi_data_rate_891Mbps,
-> +	},
-> +};
-> +
->  static const u32 imx335_mbus_codes[] = {
->  	MEDIA_BUS_FMT_SRGGB12_1X12,
->  	MEDIA_BUS_FMT_SRGGB10_1X10,
-> @@ -280,7 +331,6 @@ static const struct imx335_mode supported_mode = {
->  	.vblank_min = 2560,
->  	.vblank_max = 133060,
->  	.pclk = 396000000,
-> -	.link_freq_idx = 0,
->  	.reg_list = {
->  		.num_of_regs = ARRAY_SIZE(mode_2592x1940_regs),
->  		.regs = mode_2592x1940_regs,
-> @@ -405,7 +455,7 @@ static int imx335_update_controls(struct imx335 *imx335,
->  {
->  	int ret;
->  
-> -	ret = __v4l2_ctrl_s_ctrl(imx335->link_freq_ctrl, mode->link_freq_idx);
-> +	ret = __v4l2_ctrl_s_ctrl(imx335->link_freq_ctrl, imx335->link_freq_idx);
->  	if (ret)
->  		return ret;
->  
-> @@ -755,6 +805,14 @@ static int imx335_start_streaming(struct imx335 *imx335)
->  	const struct imx335_reg_list *reg_list;
->  	int ret;
->  
-> +	/* Setup PLL */
-> +	reg_list = &link_freq_reglist[imx335->link_freq_idx];
-> +	ret = imx335_write_regs(imx335, reg_list->regs, reg_list->num_of_regs);
-> +	if (ret) {
-> +		dev_err(imx335->dev, "%s failed to set plls\n", __func__);
-> +		return ret;
-> +	}
-> +
->  	/* Write sensor mode registers */
->  	reg_list = &imx335->cur_mode->reg_list;
->  	ret = imx335_write_regs(imx335, reg_list->regs,
-> @@ -881,7 +939,7 @@ static int imx335_parse_hw_config(struct imx335 *imx335)
->  	};
->  	struct fwnode_handle *ep;
->  	unsigned long rate;
-> -	unsigned int i;
-> +	unsigned int i, j;
->  	int ret;
->  
->  	if (!fwnode)
-> @@ -945,13 +1003,21 @@ static int imx335_parse_hw_config(struct imx335 *imx335)
->  		goto done_endpoint_free;
->  	}
->  
-> -	for (i = 0; i < bus_cfg.nr_of_link_frequencies; i++)
-> -		if (bus_cfg.link_frequencies[i] == IMX335_LINK_FREQ)
-> -			goto done_endpoint_free;
->  
-> -	dev_err(imx335->dev, "no compatible link frequencies found\n");
-> +	for (i = 0; i < bus_cfg.nr_of_link_frequencies; i++) {
-> +		for (j = 0; j < ARRAY_SIZE(link_freq); j++) {
-> +			if (bus_cfg.link_frequencies[i] == link_freq[j]) {
-> +				imx335->link_freq_idx = j;
-> +				break;
-
-Instead of stabbing the old implementation, could you instead use
-v4l2_link_freq_to_bitmap()
-<URL:https://patchwork.linuxtv.org/project/linux-media/patch/20240108075221.15757-2-sakari.ailus@linux.intel.com/>?
-
-> +			}
-> +		}
->  
-> -	ret = -EINVAL;
-> +		if (j == ARRAY_SIZE(link_freq)) {
-> +			ret = dev_err_probe(imx335->dev, -EINVAL,
-> +					    "no supported link freq found\n");
-> +			goto done_endpoint_free;
-> +		}
-> +	}
->  
->  done_endpoint_free:
->  	v4l2_fwnode_endpoint_free(&bus_cfg);
-> @@ -1101,7 +1167,7 @@ static int imx335_init_controls(struct imx335 *imx335)
->  							V4L2_CID_LINK_FREQ,
->  							ARRAY_SIZE(link_freq) -
->  							1,
-> -							mode->link_freq_idx,
-> +							imx335->link_freq_idx,
->  							link_freq);
->  	if (imx335->link_freq_ctrl)
->  		imx335->link_freq_ctrl->flags |= V4L2_CTRL_FLAG_READ_ONLY;
-
--- 
-Regards,
-
-Sakari Ailus
+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
+FYMZp2DojLAq9f4Oi2OBetbnWxo0WGycXpmq/jC4PUx2u9mazQ79i80VLagGRshWniESXuf+SYG8
++zBimjld9ZZnwm7itHAZdtme4YYFxx+EHa4PUxPV8t+hPHhsiIjirPa1pVXPbQIDAQABo4IB2zCC
+AdcwDgYDVR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDov
+L3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAu
+Y3J0MEEGCCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29u
+YWxzaWduMmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0
+cHM6Ly93d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBA
+MD6gPKA6hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2Ey
+MDIwLmNybDAlBgNVHREEHjAcgRpzZWx2aW4ueGF2aWVyQGJyb2FkY29tLmNvbTATBgNVHSUEDDAK
+BggrBgEFBQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQU3TaH
+dsgUhTW3LwObmZ20fj+8Xj8wDQYJKoZIhvcNAQELBQADggEBAAbt6Sptp6ZlTnhM2FDhkVXks68/
+iqvfL/e8wSPVdBxOuiP+8EXGLV3E72KfTTJXMbkcmFpK2K11poBDQJhz0xyOGTESjXNnN6Eqq+iX
+hQtF8xG2lzPq8MijKI4qXk5Vy5DYfwsVfcF0qJw5AhC32nU9uuIPJq8/mQbZfqmoanV/yadootGr
+j1Ze9ndr+YDXPpCymOsynmmw0ErHZGGW1OmMpAEt0A+613glWCURLDlP8HONi1wnINV6aDiEf0ad
+9NMGxDsp+YWiRXD3txfo2OMQbpIxM90QfhKKacX8t1J1oAAWxDrLVTJBXBNvz5tr+D1sYwuye93r
+hImmkM1unboxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWdu
+IG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIw
+Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIOfLHmyg0rsT
+rBlMh/mddte/zqrkfnki9AklPNS9LK/PMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
+hvcNAQkFMQ8XDTI0MDEwODEwMDMyOFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
+YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
+AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQAsFRY49FcdGmobonirpuqiDMuS2bRr
+gAJxUo5pfjtfosw9f5plYPj162vQaXk2s/aTcjI3sMjvPLXldqTKf24stf0dvGc5buca4y4BSikL
+dsW9uPpHcnf24qwpCIn0EFVk8DGxsDgbR6WtBGcUZ9QVTb7cRkBQgg//23T/+gn/DFrZsJqpC/8k
+D5zGEXRAg6tLXAb14PeT6K6vfbPl47L9evyTk9Z80JkpcXHDtEJr0p/Z413s0IDLC1l+nycyrTMz
+oQqJdldKkcuraHrNGBMijzk5cxlbBkMq5UIta6oUU3OocZfNyFAJnSqR/B9GfPE9tLSvN/FhV3cq
+bF3JwVlC
+--00000000000038f44b060e6c4f58--
 
