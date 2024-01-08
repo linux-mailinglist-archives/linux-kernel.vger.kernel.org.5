@@ -1,225 +1,108 @@
-Return-Path: <linux-kernel+bounces-19632-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19633-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC9E2827010
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 14:41:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 85FEC827013
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 14:41:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8433F283924
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 13:41:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 362D12840AD
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 13:41:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94FB845948;
-	Mon,  8 Jan 2024 13:41:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 977DC45943;
+	Mon,  8 Jan 2024 13:41:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UfdbhMYu"
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="g/89ezCx"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EFD944C89;
-	Mon,  8 Jan 2024 13:41:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-557bfc7f7b4so1006930a12.0;
-        Mon, 08 Jan 2024 05:41:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704721265; x=1705326065; darn=vger.kernel.org;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3r6g5z9Mx4IxtW42MMxxjM9D6NLe62syXKXuO2xxI40=;
-        b=UfdbhMYuz7Slksf7KjAEI3fNe+TuJvFAfDX6WyqgMQvjUSyuurAdWtLm62fryPbS5W
-         LAetMQObo4ihXyubJQaHTLMVHMFEDZJf0AsPgJv6FjEdm+oF2tE/08ARAC1URlQEviHl
-         wYiqlGkuc2WQL8sce2ALwlcN8X+WjKcmZV5qieIjg1DCsdD+7J7k44q4yzrPjCJyqQR7
-         AhJ+V1DGHolE/AzvTovns2qFtkqxwBCPUgP+N9AgBAkwP1IYkP12vAdIa0mbLAGl7wh4
-         XayWqm3W4PUcaPyqYBwTiZ3qmPUaBTCo4XMiWUzdi3vQbzloVJdxDOL4awJyoq86pT89
-         Ewow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704721265; x=1705326065;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3r6g5z9Mx4IxtW42MMxxjM9D6NLe62syXKXuO2xxI40=;
-        b=qryFBt/Sd0ydDO1rgO0FZicpd83H6aFc6SwV0iprbEg7kXG9vsEb9BkwjtiaciM4nB
-         wLjkeWGoZ9NbZ/GDLWDDQMwP5Kt60Ld0i2sUKjnY6Vsa3LDOCOpLHHrMXkzbeAsOSS8h
-         ncCWubdYKNInOVKFB6pjF2UCJvCaVWlm5KccE2GmboZuy9vrCdGpSQ+Cp1+pislnS5qt
-         lS9HjnuJYv26rl+7e45gdmnguHMJkjrTN9zcpK12M8bWgsh9o3/vRoBfq11m1uI+ejMa
-         KpoA5ioowVraITMt26n06dsBdIJnOFQFIKeM/FsqMnCOXAH8TWf9NoFFw5KNxMeiKMSP
-         uiJg==
-X-Gm-Message-State: AOJu0Yxbf1b8bUbQ0NDluszmNl4N2Bd8qxl9/1S81y2I7ggxTvSjwOa4
-	RQSWt0NrxM3hEbWvXYlz1pY=
-X-Google-Smtp-Source: AGHT+IHsSgTUHLYbaiUv5IWw6W2ekoAhScEgfGZkpNW1wQrT2vNPo2yxBdPLVFG/wdZpaBKadwDpqw==
-X-Received: by 2002:a17:906:2c53:b0:a27:fdc1:59c6 with SMTP id f19-20020a1709062c5300b00a27fdc159c6mr5492095ejh.26.1704721265272;
-        Mon, 08 Jan 2024 05:41:05 -0800 (PST)
-Received: from felia.fritz.box ([2a02:810d:7e40:14b0:a060:7056:782e:5e26])
-        by smtp.gmail.com with ESMTPSA id b1-20020a170906490100b00a26b36311ecsm4017896ejq.146.2024.01.08.05.41.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Jan 2024 05:41:04 -0800 (PST)
-From: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jiri Slaby <jirislaby@kernel.org>,
-	linux-serial@vger.kernel.org
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
-	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-	Helge Deller <deller@gmx.de>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linux-input@vger.kernel.org,
-	linux-m68k@lists.linux-m68k.org,
-	linux-fbdev@vger.kernel.org,
-	dri-devel@lists.freedesktop.org,
-	kernel-janitors@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH] vt: remove superfluous CONFIG_HW_CONSOLE
-Date: Mon,  8 Jan 2024 14:41:02 +0100
-Message-Id: <20240108134102.601-1-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.17.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 858A145948;
+	Mon,  8 Jan 2024 13:41:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=eG9T8lTouYuHP4iTNggEDal9BKSEaIu9o9UHqgV4zmU=; b=g/89ezCx8XKj8W9WmBVIIO1o2v
+	Xrhg/GZiVeJL8+zT0PrmSbue3YHm45GvMqN34rXMHhRVjLn5ggcS5uLitaN9K3ZBf9LvpoTlX3G2l
+	f1q+wmn+Iq76ScsWq6Apwf8I0AEZUWJTBs5u7YApblPFDXs5zD4uka8lxEKjQ+BwNpwc=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1rMpsM-004dvG-Sa; Mon, 08 Jan 2024 14:41:10 +0100
+Date: Mon, 8 Jan 2024 14:41:10 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: David Laight <David.Laight@aculab.com>
+Cc: Petr =?utf-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>,
+	Eric Dumazet <edumazet@google.com>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Jose Abreu <joabreu@synopsys.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Chen-Yu Tsai <wens@csie.org>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Samuel Holland <samuel@sholland.org>,
+	"open list:STMMAC ETHERNET DRIVER" <netdev@vger.kernel.org>,
+	"moderated list:ARM/STM32 ARCHITECTURE" <linux-stm32@st-md-mailman.stormreply.com>,
+	"moderated list:ARM/STM32 ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>,
+	open list <linux-kernel@vger.kernel.org>,
+	"open list:ARM/Allwinner sunXi SoC support" <linux-sunxi@lists.linux.dev>,
+	Jiri Pirko <jiri@resnulli.us>
+Subject: Re: [PATCH] net: stmmac: protect statistics updates with a spinlock
+Message-ID: <32c4095e-ec33-4059-a8d3-f85e18363c77@lunn.ch>
+References: <CANn89iLuYZBersxq4aH-9Fg_ojD0fh=0xtdLbRdbMrup=nvrkA@mail.gmail.com>
+ <20240105113402.0f5f1232@meshulam.tesarici.cz>
+ <CANn89iLEvW9ZS=+WPETPC=mKRyu9AKmueGCWZZOrz9oX3Xef=g@mail.gmail.com>
+ <20240105121447.11ae80d1@meshulam.tesarici.cz>
+ <20240105142732.1903bc70@meshulam.tesarici.cz>
+ <CANn89iLHLvGFX_JEYU-en0ZoCUpTvjXPBzFECxLFfa_Jhpcjmg@mail.gmail.com>
+ <CANn89iKWSemsKmfsLjupwWBnyeKjtHH+mZjTzYiJT4G=xyUrNQ@mail.gmail.com>
+ <20240105154558.2ca38aca@meshulam.tesarici.cz>
+ <a8bb0eb0-8398-4e7e-8dc5-6ebf2f981ca8@lunn.ch>
+ <d05ca29283eb47df9c58838cb87a887c@AcuMS.aculab.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d05ca29283eb47df9c58838cb87a887c@AcuMS.aculab.com>
 
-The config HW_CONSOLE is always identical to the config VT and is not
-visible in the kernel's build menuconfig. So, CONFIG_HW_CONSOLE is
-redundant.
+> > You might want to consider per CPU statistics. Since each CPU has its
+> > own structure of statistics, you don't need atomic.
+> > 
+> > The code actually using the statistics then needs to sum up the per
+> > CPU statistics, and using syncp should be sufficient for that.
+> 
+> Doesn't that consume rather a lot of memory on systems with
+> 'silly numbers' of cpu?
 
-Replace all references to CONFIG_HW_CONSOLE with CONFIG_VT and remove
-CONFIG_HW_CONSOLE.
+Systems with silly number of CPUS tend to also have silly amounts of
+memory. We are talking about maybe a dozen u64 here. So the memory
+usage goes from 144 bytes, to 144K for a 1024CPU system.  Is 144K
+excessive for such a system?
 
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
----
-I think this patch is best picked up by Greg rather than splitting it
-in smaller pieces for m68k, amiga keyboard, fbdev etc.
+> Updating an atomic_t is (pretty much) the same as taking a lock.
+> unlock() is also likely to also contain an atomic operation.
+> So if you update more than two atomic_t it is likely that a lock
+> will be faster.
 
-Greg, if that is fine, could you pick this for the next merge window?
+True, but all those 1024 CPUs in your silly system get affected by a
+lock or an atomic. They all need to do something with there L1 and L2
+cache when using atomics. Spending an extra 144K of RAM means the
+other 1023 CPUs don't notice anything at all during the increment
+phase, which could be happening 1M times a second. They only get
+involved when something in user space wants the statistics, so maybe
+once per second from the SNMP agent.
 
-I was also considering to rename config VT_HW_CONSOLE_BINDING to
-VT_CONSOLE_BINDING, as the dependency is on VT, not HW_CONSOLE, but
-at the moment, that seemed more churn than value of clarification.
+Also, stmmac is not used on silly CPU systems. It used in embedded
+systems. I doubt its integrated into anything with more than 8 CPUs.
 
- arch/m68k/amiga/config.c        | 2 +-
- drivers/input/keyboard/amikbd.c | 6 +++---
- drivers/tty/Kconfig             | 7 +------
- drivers/tty/vt/Makefile         | 4 ++--
- drivers/video/fbdev/tgafb.c     | 2 +-
- include/linux/console.h         | 2 +-
- lib/Kconfig.kgdb                | 2 +-
- 7 files changed, 10 insertions(+), 15 deletions(-)
-
-diff --git a/arch/m68k/amiga/config.c b/arch/m68k/amiga/config.c
-index 7791673e547b..99718f3dc686 100644
---- a/arch/m68k/amiga/config.c
-+++ b/arch/m68k/amiga/config.c
-@@ -846,6 +846,6 @@ static void amiga_get_hardware_list(struct seq_file *m)
-  * The Amiga keyboard driver needs key_maps, but we cannot export it in
-  * drivers/char/defkeymap.c, as it is autogenerated
-  */
--#ifdef CONFIG_HW_CONSOLE
-+#ifdef CONFIG_VT
- EXPORT_SYMBOL_GPL(key_maps);
- #endif
-diff --git a/drivers/input/keyboard/amikbd.c b/drivers/input/keyboard/amikbd.c
-index e305c44cd0aa..ecfae0b0b6aa 100644
---- a/drivers/input/keyboard/amikbd.c
-+++ b/drivers/input/keyboard/amikbd.c
-@@ -26,7 +26,7 @@ MODULE_AUTHOR("Vojtech Pavlik <vojtech@ucw.cz>");
- MODULE_DESCRIPTION("Amiga keyboard driver");
- MODULE_LICENSE("GPL");
- 
--#ifdef CONFIG_HW_CONSOLE
-+#ifdef CONFIG_VT
- static unsigned char amikbd_keycode[0x78] __initdata = {
- 	[0]	 = KEY_GRAVE,
- 	[1]	 = KEY_1,
-@@ -148,9 +148,9 @@ static void __init amikbd_init_console_keymaps(void)
- 		memcpy(key_maps[i], temp_map, sizeof(temp_map));
- 	}
- }
--#else /* !CONFIG_HW_CONSOLE */
-+#else /* !CONFIG_VT */
- static inline void amikbd_init_console_keymaps(void) {}
--#endif /* !CONFIG_HW_CONSOLE */
-+#endif /* !CONFIG_VT */
- 
- static const char *amikbd_messages[8] = {
- 	[0] = KERN_ALERT "amikbd: Ctrl-Amiga-Amiga reset warning!!\n",
-diff --git a/drivers/tty/Kconfig b/drivers/tty/Kconfig
-index 5646dc6242cd..a45d423ad10f 100644
---- a/drivers/tty/Kconfig
-+++ b/drivers/tty/Kconfig
-@@ -75,14 +75,9 @@ config VT_CONSOLE_SLEEP
- 	def_bool y
- 	depends on VT_CONSOLE && PM_SLEEP
- 
--config HW_CONSOLE
--	bool
--	depends on VT
--	default y
--
- config VT_HW_CONSOLE_BINDING
- 	bool "Support for binding and unbinding console drivers"
--	depends on HW_CONSOLE
-+	depends on VT
- 	help
- 	  The virtual terminal is the device that interacts with the physical
- 	  terminal through console drivers. On these systems, at least one
-diff --git a/drivers/tty/vt/Makefile b/drivers/tty/vt/Makefile
-index b3dfe9d5717e..2c8ce8b592ed 100644
---- a/drivers/tty/vt/Makefile
-+++ b/drivers/tty/vt/Makefile
-@@ -5,9 +5,9 @@
- FONTMAPFILE = cp437.uni
- 
- obj-$(CONFIG_VT)			+= vt_ioctl.o vc_screen.o \
--					   selection.o keyboard.o
-+					   selection.o keyboard.o \
-+					   vt.o defkeymap.o
- obj-$(CONFIG_CONSOLE_TRANSLATIONS)	+= consolemap.o consolemap_deftbl.o
--obj-$(CONFIG_HW_CONSOLE)		+= vt.o defkeymap.o
- 
- # Files generated that shall be removed upon make clean
- clean-files := consolemap_deftbl.c defkeymap.c
-diff --git a/drivers/video/fbdev/tgafb.c b/drivers/video/fbdev/tgafb.c
-index ca43774f3156..dccfc38cfbd5 100644
---- a/drivers/video/fbdev/tgafb.c
-+++ b/drivers/video/fbdev/tgafb.c
-@@ -380,7 +380,7 @@ tgafb_set_par(struct fb_info *info)
- 		BT463_LOAD_ADDR(par, 0x0000);
- 		TGA_WRITE_REG(par, BT463_PALETTE << 2, TGA_RAMDAC_SETUP_REG);
- 
--#ifdef CONFIG_HW_CONSOLE
-+#ifdef CONFIG_VT
- 		for (i = 0; i < 16; i++) {
- 			int j = color_table[i];
- 
-diff --git a/include/linux/console.h b/include/linux/console.h
-index 779d388af8a0..c129e4173dec 100644
---- a/include/linux/console.h
-+++ b/include/linux/console.h
-@@ -112,7 +112,7 @@ int con_is_bound(const struct consw *csw);
- int do_unregister_con_driver(const struct consw *csw);
- int do_take_over_console(const struct consw *sw, int first, int last, int deflt);
- void give_up_console(const struct consw *sw);
--#ifdef CONFIG_HW_CONSOLE
-+#ifdef CONFIG_VT
- int con_debug_enter(struct vc_data *vc);
- int con_debug_leave(void);
- #else
-diff --git a/lib/Kconfig.kgdb b/lib/Kconfig.kgdb
-index 3b9a44008433..b5c0e6576749 100644
---- a/lib/Kconfig.kgdb
-+++ b/lib/Kconfig.kgdb
-@@ -43,7 +43,7 @@ config KGDB_SERIAL_CONSOLE
- 	tristate "KGDB: use kgdb over the serial console"
- 	select CONSOLE_POLL
- 	select MAGIC_SYSRQ
--	depends on TTY && HW_CONSOLE
-+	depends on TTY && VT
- 	default y
- 	help
- 	  Share a serial console with kgdb. Sysrq-g must be used
--- 
-2.17.1
-
+       Andrew
 
