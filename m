@@ -1,65 +1,64 @@
-Return-Path: <linux-kernel+bounces-19122-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19125-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 50A15826857
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 08:00:29 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 276CC82685E
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 08:03:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5B7291C21803
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 07:00:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 872ACB21245
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 07:03:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE5BE8BE3;
-	Mon,  8 Jan 2024 07:00:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FAA88813;
+	Mon,  8 Jan 2024 07:03:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="upZ7kSqt"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="SuTS8i+i"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com [209.85.208.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B84C079F4
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 07:00:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9AAC8F55
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 07:03:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-5576fae29ffso1198482a12.1
-        for <linux-kernel@vger.kernel.org>; Sun, 07 Jan 2024 23:00:18 -0800 (PST)
+Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2ccae380df2so14242601fa.1
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Jan 2024 23:03:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704697217; x=1705302017; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=+pokG/CLOgYWlbfKe765UTsobBkQD7FAsCRbNDOEelM=;
-        b=upZ7kSqtl94P/4Wfmpk3vAM4vhoPLbzd/TMkMv5K6LZEswR6sVjaWRhUrOeQszDhIo
-         Nt4fWd8SRSYzz1aKQfbi8CuzyTY0qcKZ8fHB28bFu/iGRFXLpFTtMxIdCZK74+3Eh1qE
-         6UC50Kr0D8a2eG+3y99YD4h8w5DA+Sqwf50ZO3KLofpgu6x6nQ7czxFqiCDtSBMCd/TP
-         PoipRbwvYJDPMzK/4EPDFl6ohs/kvvy85H1a59VLd+P5PosRLfQoVWdg3V69oOjkEqz8
-         47j+xoxGbTTPDq65+B7oEv38GRzvdVrMRfaItlFNT7ZAmzg4JOqzYQCXIy5/m+je2bVH
-         Asmw==
+        d=linaro.org; s=google; t=1704697384; x=1705302184; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=/KaKy41Wl3MSbQMyAjeN+ovopvqexe3XNPCK+UGM1Aw=;
+        b=SuTS8i+iaxZjndTW7EPiLSfh2rTg7OychI/nyo4FBpkIg8uVud6vlY631yN2MB8sl/
+         u9u5rlr8aRU6ufsyq23AbIpZEDxETHG93indwUGgKq8DDjtgqoUDGfKse59XW5w4WiFC
+         hcAp3iC4PFanEYUtRkrJte15XXa5rpCEVHkDXBovHo7F2Ns66p7ChAtK+wi5iDjgHRct
+         oJdUiGYkG83BnCJHSlNSlclaWQBJLmChGTPrK17XYqdHnjd3cN5FEcUvfWxcmg26EspO
+         QIWEZLoYwPn0Ij23GW2rz/w9zYHYzB6wRphPzh0tQeQ98uGovvpkSqoqBqv5nD/CSvnh
+         OHrg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704697217; x=1705302017;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+pokG/CLOgYWlbfKe765UTsobBkQD7FAsCRbNDOEelM=;
-        b=du32AcQOA4r4k97JmqZpEgxjHDCQYSTZpVjlC8I2Mh6hH0r1eWUXE9+/Z5eBSFZSOD
-         cBveXSHcLxf7OUVJFSYmP2KaXvQ4MsYnGs1cWTTENWRcu1/rtYGNS9JOCG5H0A6btO1m
-         97APodtclYxlzES4w9cCYC0IXLXPWDfPm9QZtTK4rzftH7eua6OD8jVMFCQ3TRpI7WHI
-         05GuVTrO1Rj8bXVd9YTA8L+MvX8sALOQ0ZxKIc3Pz/b8JUUEZpcFhkbMQRlelrH8C0iV
-         UtPrhjwZ8tvnY7D1xFih5kwHbDOvfhxMQEG0yQgzrEKNIzXOt4SruZSBX6EuNma4xQsG
-         P0bQ==
-X-Gm-Message-State: AOJu0Yw/7tnn6lO+0FldWsg7uksWtGcnrgCopHH7mWO5BFCpRw5fHTZ3
-	Q/hT5vP+mx2mwR/It93inMyGO8iWBJmXQg==
-X-Google-Smtp-Source: AGHT+IFujA2kbNXHUD4abUNe34Jqu00gxYU+FV+pw9Iiy7LGqVIaiUQcNou4igtJc7ZwtvKajt8hmQ==
-X-Received: by 2002:a17:906:c258:b0:a28:a9e2:6c04 with SMTP id bl24-20020a170906c25800b00a28a9e26c04mr1220931ejb.111.1704697216818;
-        Sun, 07 Jan 2024 23:00:16 -0800 (PST)
+        d=1e100.net; s=20230601; t=1704697384; x=1705302184;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/KaKy41Wl3MSbQMyAjeN+ovopvqexe3XNPCK+UGM1Aw=;
+        b=DMS+FIkXFb4xfDtEd9AhMjcO6e9qhV8lRFTpaBV/7KkiJOgLOH9weo0cIGUbzEqulq
+         M5rArn5Uo9XWYsbYypVsx1YIdbfEfjGHqgLevesyNi6F6p4fr2GYlEY4BxcfJC5WStar
+         LirowIRTUEFSoOfr0nxhx5BTnn85iESbYO8eY/AK3mXkEeFeKor2SphC0fMUXzE1TQ2/
+         vpQzC8GvQAtwkpR+Fp2OGOBrkncSvgm/wF2hbfX5eLzS5YwtZ51zUhJCu6sfkIQNGr+z
+         iDGjur0Ogfw2ZV8UfbzOcZHyPj2LOSbDMwzAyM9HwTgF8bdiwQ67PcVQ2Bc+GgL+wL1u
+         HDgw==
+X-Gm-Message-State: AOJu0YxdppC+quG5+U2ooYf+2xahIPMDAugE7XbZ8mel0EyCOS5vrDQ3
+	2yhwZAsK5dGogi96/lEBHJ+HKc/Ys6n5tg==
+X-Google-Smtp-Source: AGHT+IFQFyNxCs4W5c+otBlgRtlz4sM8FhUK59SRgJYF8ukc5ONiyT9lbikH0M8Trkk9qGlzlDiMlw==
+X-Received: by 2002:a2e:9cd4:0:b0:2cd:2acc:e9ff with SMTP id g20-20020a2e9cd4000000b002cd2acce9ffmr1040830ljj.26.1704697384577;
+        Sun, 07 Jan 2024 23:03:04 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.223.112])
-        by smtp.gmail.com with ESMTPSA id k1-20020a17090632c100b00a28fa7838a1sm3684768ejk.172.2024.01.07.23.00.15
+        by smtp.gmail.com with ESMTPSA id fd5-20020a056402388500b0055743d6e9ebsm3059360edb.41.2024.01.07.23.03.02
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 07 Jan 2024 23:00:16 -0800 (PST)
-Message-ID: <32ea2f79-8d30-4155-8feb-6eff46dfacf3@linaro.org>
-Date: Mon, 8 Jan 2024 08:00:14 +0100
+        Sun, 07 Jan 2024 23:03:04 -0800 (PST)
+Message-ID: <cc7cc943-7242-4fd1-9b56-3ece0a418e05@linaro.org>
+Date: Mon, 8 Jan 2024 08:03:01 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -67,16 +66,20 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] arm64: dts: rockchip: enable NanoPC-T6 MiniPCIe power
-To: Hugh Cole-Baker <sigmaris@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>
-Cc: John Clark <inindev@gmail.com>,
- Thomas McKahan <tmckahan@singleboardsolutions.com>,
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20240107223714.8158-1-sigmaris@gmail.com>
+Subject: Re: [PATCH v7 1/4] dt-bindings: soc: sophgo: Add Sophgo system
+ control module
 Content-Language: en-US
+To: Chen Wang <unicornxw@gmail.com>, aou@eecs.berkeley.edu,
+ chao.wei@sophgo.com, conor@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+ mturquette@baylibre.com, palmer@dabbelt.com, paul.walmsley@sifive.com,
+ richardcochran@gmail.com, robh+dt@kernel.org, sboyd@kernel.org,
+ devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+ haijiao.liu@sophgo.com, xiaoguang.xing@sophgo.com, guoren@kernel.org,
+ jszhang@kernel.org, inochiama@outlook.com, samuel.holland@sifive.com
+Cc: Chen Wang <unicorn_wang@outlook.com>
+References: <cover.1704694903.git.unicorn_wang@outlook.com>
+ <acebc88db3e5fcd2a2607b56842af7443a6e1289.1704694903.git.unicorn_wang@outlook.com>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -122,30 +125,51 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240107223714.8158-1-sigmaris@gmail.com>
+In-Reply-To: <acebc88db3e5fcd2a2607b56842af7443a6e1289.1704694903.git.unicorn_wang@outlook.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 07/01/2024 23:37, Hugh Cole-Baker wrote:
-> The NanoPC-T6 has a Mini PCIe slot intended to be used for a 4G or LTE
-> modem. This slot has no PCIe functionality, only its USB 2.0 pins are
-> wired to the SoC, and its USIM pins are wired to a SIM card slot on the
-> board. Define the 3.3v supply for the slot so it can be used.
+On 08/01/2024 07:48, Chen Wang wrote:
+> From: Chen Wang <unicorn_wang@outlook.com>
 > 
-> Signed-off-by: Hugh Cole-Baker <sigmaris@gmail.com>
+> Add documentation to describe Sophgo System Controller for SG2042.
+> 
+> Signed-off-by: Chen Wang <unicorn_wang@outlook.com>
+> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 > ---
+>  .../soc/sophgo/sophgo,sg2042-sysctrl.yaml     | 34 +++++++++++++++++++
+>  1 file changed, 34 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/soc/sophgo/sophgo,sg2042-sysctrl.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/soc/sophgo/sophgo,sg2042-sysctrl.yaml b/Documentation/devicetree/bindings/soc/sophgo/sophgo,sg2042-sysctrl.yaml
+> new file mode 100644
+> index 000000000000..1ec1eaa55598
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/soc/sophgo/sophgo,sg2042-sysctrl.yaml
+> @@ -0,0 +1,34 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/soc/sophgo/sophgo,sg2042-sysctrl.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Sophgo SG2042 SoC system controller
+> +
+> +maintainers:
+> +  - Chen Wang <unicorn_wang@outlook.com>
+> +
+> +description:
+> +  The Sophgo SG2042 SoC system controller provides register information such
+> +  as offset, mask and shift that can be used by other modules, such as clocks.
 
-...
+"offset, mask and shift" is not a register information stored in
+syscons. Are you really sure, that your system controller hardware
+stores offsets of some other registers?
 
->  
->  &combphy0_ps {
-> @@ -504,6 +516,10 @@ pcie_m2_1_pwren: pcie-m21-pwren {
->  	};
->  
->  	usb {
-> +		_4g_lte_pwren: 4g-lte-pwren {
+Show as some example of such offsets, masks and shifts provided by this
+hardware.
 
-Labels start with alphanumeric characters.
+
 
 Best regards,
 Krzysztof
