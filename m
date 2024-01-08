@@ -1,126 +1,116 @@
-Return-Path: <linux-kernel+bounces-20086-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20087-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B68C582791C
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 21:23:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 55FF5827920
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 21:25:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C5A641C230E5
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 20:23:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E14CC28458B
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 20:24:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52F6D55C37;
-	Mon,  8 Jan 2024 20:23:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9BBD55780;
+	Mon,  8 Jan 2024 20:24:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b="EI0uCo4W"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+Received: from mx0.riseup.net (mx0.riseup.net [198.252.153.6])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F043C55789;
-	Mon,  8 Jan 2024 20:22:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=omp.ru
-Received: from [192.168.1.105] (31.173.87.204) by msexch01.omp.ru
- (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Mon, 8 Jan
- 2024 23:22:49 +0300
-Subject: Re: [PATCH net-next v3 17/19] net: ravb: Return cached statistics if
- the interface is down
-To: Claudiu <claudiu.beznea@tuxon.dev>, <davem@davemloft.net>,
-	<edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-	<richardcochran@gmail.com>, <p.zabel@pengutronix.de>,
-	<yoshihiro.shimoda.uh@renesas.com>, <wsa+renesas@sang-engineering.com>
-CC: <netdev@vger.kernel.org>, <linux-renesas-soc@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <geert+renesas@glider.be>, Claudiu Beznea
-	<claudiu.beznea.uj@bp.renesas.com>
-References: <20240105082339.1468817-1-claudiu.beznea.uj@bp.renesas.com>
- <20240105082339.1468817-18-claudiu.beznea.uj@bp.renesas.com>
-From: Sergey Shtylyov <s.shtylyov@omp.ru>
-Organization: Open Mobile Platform
-Message-ID: <af5ab82e-5904-c33b-983e-b37844dab3f5@omp.ru>
-Date: Mon, 8 Jan 2024 23:22:48 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE9675577D;
+	Mon,  8 Jan 2024 20:24:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=riseup.net
+Received: from fews02-sea.riseup.net (fews02-sea-pn.riseup.net [10.0.1.112])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx0.riseup.net (Postfix) with ESMTPS id 4T85C45Xtcz9tmc;
+	Mon,  8 Jan 2024 20:24:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
+	t=1704745489; bh=yWYgR2g5/NR7onl+pGnMt+zTaf83mLrm74A0GDCyAIg=;
+	h=From:Date:Subject:To:Cc:From;
+	b=EI0uCo4W/R9lOerDcFovfE17khByuxUf+RqXtGyNyRGTh+z7LXgT5MHjfN+kEyp+D
+	 LKQsj+XlcLk/QxXlFx08cz/YERVkL/t3C9Bl7hu5EStFaBNgL/KUgXziq9Lb3oZstw
+	 bk8BXAkpHuMenrgwzchU8eBPCR7zfOtpR/gyQS+g=
+X-Riseup-User-ID: 8B28C812D41CCC59E7EBB9A6A5B3D75B2DA2F39207C1ECE892CDC6DD37E81E94
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+	 by fews02-sea.riseup.net (Postfix) with ESMTPSA id 4T85By1zZKzFs05;
+	Mon,  8 Jan 2024 20:24:41 +0000 (UTC)
+From: Arthur Grillo <arthurgrillo@riseup.net>
+Date: Mon, 08 Jan 2024 17:24:33 -0300
+Subject: [PATCH v2] Documentation: KUnit: Update the instructions on how to
+ test static functions
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240105082339.1468817-18-claudiu.beznea.uj@bp.renesas.com>
 Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
- (10.188.4.12)
-X-KSE-ServerInfo: msexch01.omp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 6.1.0, Database issued on: 01/08/2024 20:12:41
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 59
-X-KSE-AntiSpam-Info: Lua profiles 182482 [Jan 08 2024]
-X-KSE-AntiSpam-Info: Version: 6.1.0.3
-X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
-X-KSE-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a
-X-KSE-AntiSpam-Info: {rep_avail}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: {relay has no DNS name}
-X-KSE-AntiSpam-Info: {SMTP from is not routable}
-X-KSE-AntiSpam-Info: {Found in DNSBL: 31.173.87.204 in (user)
- b.barracudacentral.org}
-X-KSE-AntiSpam-Info:
-	127.0.0.199:7.1.2;31.173.87.204:7.1.2;omp.ru:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1
-X-KSE-AntiSpam-Info: ApMailHostAddress: 31.173.87.204
-X-KSE-AntiSpam-Info: {DNS response errors}
-X-KSE-AntiSpam-Info: Rate: 59
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
- smtp.mailfrom=omp.ru;dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 01/08/2024 20:16:00
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 1/8/2024 7:11:00 PM
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+Message-Id: <20240108-kunit-doc-export-v2-1-8f2dd3395fed@riseup.net>
+X-B4-Tracking: v=1; b=H4sIAABanGUC/32NQQrDIBRErxL+uha1xcauco+SRarf5lPQoEZSg
+ nevzQHKrN7AvNkhYSRMcO92iFgoUfAN5KkDM0/+hYxsY5BcXrngPXuvnjKzwTDclhAzQzTCacG
+ np7pBmy0RHW2H8jE2ninlED/HQxG/9o+sCNYi9EX11nGr1RAp4bqcPWYYa61fclWsELEAAAA=
+To: Brendan Higgins <brendan.higgins@linux.dev>, 
+ David Gow <davidgow@google.com>, Jonathan Corbet <corbet@lwn.net>
+Cc: linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com, 
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Arthur Grillo <arthurgrillo@riseup.net>
 
-On 1/5/24 11:23 AM, Claudiu wrote:
+Now that we have the VISIBLE_IF_KUNIT and EXPORT_SYMBOL_IF_KUNIT macros,
+update the instructions to stop recommending including .c files.
 
-> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-> 
-> Return the cached statistics in case the interface is down. There should be
-> no drawback to this, as cached statistics are updated in ravb_close().
-> 
-> The commit prepares the code for the addition of runtime PM support.
-> 
-> Suggested-by: Sergey Shtylyov <s.shtylyov@omp.ru>
-> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-[...]
+Signed-off-by: Arthur Grillo <arthurgrillo@riseup.net>
+---
+Changes in v2:
+- Fix #if condition
+- Link to v1: https://lore.kernel.org/r/20240108-kunit-doc-export-v1-1-119368df0d96@riseup.net
+---
+ Documentation/dev-tools/kunit/usage.rst | 13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
 
-> diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
-> index 76035afd4054..168b6208db37 100644
-> --- a/drivers/net/ethernet/renesas/ravb_main.c
-> +++ b/drivers/net/ethernet/renesas/ravb_main.c
-> @@ -2117,6 +2117,9 @@ static struct net_device_stats *ravb_get_stats(struct net_device *ndev)
->  	const struct ravb_hw_info *info = priv->info;
->  	struct net_device_stats *nstats, *stats0, *stats1;
->  
-> +	if (!(ndev->flags & IFF_UP))
+diff --git a/Documentation/dev-tools/kunit/usage.rst b/Documentation/dev-tools/kunit/usage.rst
+index c27e1646ecd9..f095c6bb76ff 100644
+--- a/Documentation/dev-tools/kunit/usage.rst
++++ b/Documentation/dev-tools/kunit/usage.rst
+@@ -671,19 +671,22 @@ Testing Static Functions
+ ------------------------
+ 
+ If we do not want to expose functions or variables for testing, one option is to
+-conditionally ``#include`` the test file at the end of your .c file. For
+-example:
++conditionally export the used symbol.
+ 
+ .. code-block:: c
+ 
+ 	/* In my_file.c */
+ 
+-	static int do_interesting_thing();
++	VISIBLE_IF_KUNIT int do_interesting_thing();
++	EXPORT_SYMBOL_IF_KUNIT(do_interesting_thing);
+ 
+-	#ifdef CONFIG_MY_KUNIT_TEST
+-	#include "my_kunit_test.c"
++	/* In my_file.h */
++
++	#if IS_ENABLED(CONFIG_KUNIT)
++		int do_interesting_thing(void);
+ 	#endif
+ 
++
+ Injecting Test-Only Code
+ ------------------------
+ 
 
-   Well, I guess it's OK to read the counters in the reset mode... BUT
-won't this race with pm_runtime_put_autosuspend() when its call gets added
-to ravb_close()?
+---
+base-commit: eeb8e8d9f124f279e80ae679f4ba6e822ce4f95f
+change-id: 20240108-kunit-doc-export-eec1f910ab67
 
-> +		return &ndev->stats;
-> +
->  	nstats = &ndev->stats;
->  	stats0 = &priv->stats[RAVB_BE];
->  
-[...]
+Best regards,
+-- 
+Arthur Grillo <arthurgrillo@riseup.net>
 
-MBR, Sergey
 
