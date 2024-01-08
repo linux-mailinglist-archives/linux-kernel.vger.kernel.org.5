@@ -1,88 +1,102 @@
-Return-Path: <linux-kernel+bounces-19043-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19046-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18711826726
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 02:46:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 601D282672F
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 02:49:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DC09F2816DD
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 01:46:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3F000281C04
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 01:49:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89540611A;
-	Mon,  8 Jan 2024 01:45:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RYZqdPht"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 599BC79EE;
+	Mon,  8 Jan 2024 01:48:15 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD673522D
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 01:45:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 656CAC433C7;
-	Mon,  8 Jan 2024 01:45:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704678352;
-	bh=xjmnXEKv1lECuwEh6Yk8bttQ20GcHU0SGe1AicjpZEk=;
-	h=From:To:Cc:Subject:Date:From;
-	b=RYZqdPhtXdOI9JTmdiyBQ44mBTHIo/1bSHGxHRSwfeFWu6zUNLFi/HTDLbVc7ok0J
-	 zW8VOBlOyL07swhiY++laQq8Gi2Y3H/bvNGN0H/OfS3Un5SVccJFa5d3th6VqdGXgv
-	 43uIONGlAMgBQVHn0zmwfY+RCWFtbfJlHjnR+cQPXKr4jjHfyrQl9wku742ff2ms1N
-	 Obgf67GjaJehDeKu9StCG+2CD796wS21jGslcEsP/W1yZTNQU+r0wTaEiErPxOGbMB
-	 JLtwJp6gXySKg+PKyYOgzzze1ojSY2u+Sg7fkqae7F07W0+yK7rrkE2rjRlOc34qhS
-	 Vk7yCTgpLW5+w==
-From: Miguel Ojeda <ojeda@kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Miguel Ojeda <ojeda@kernel.org>,
-	linux-kernel@vger.kernel.org
-Subject: [GIT PULL] clang-format for v6.8
-Date: Mon,  8 Jan 2024 02:45:43 +0100
-Message-ID: <20240108014543.525447-1-ojeda@kernel.org>
+Received: from mg.richtek.com (mg.richtek.com [220.130.44.152])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF02F8BF3;
+	Mon,  8 Jan 2024 01:48:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=richtek.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=richtek.com
+X-MailGates: (SIP:2,PASS,NONE)(compute_score:DELIVER,40,3)
+Received: from 192.168.10.46
+	by mg.richtek.com with MailGates ESMTPS Server V6.0(636803:0:AUTH_RELAY)
+	(envelope-from <cy_huang@richtek.com>)
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256/256); Mon, 08 Jan 2024 09:47:30 +0800 (CST)
+Received: from ex4.rt.l (192.168.10.47) by ex3.rt.l (192.168.10.46) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.27; Mon, 8 Jan
+ 2024 09:47:29 +0800
+Received: from linuxcarl2.richtek.com (192.168.10.154) by ex4.rt.l
+ (192.168.10.45) with Microsoft SMTP Server id 15.2.1258.27 via Frontend
+ Transport; Mon, 8 Jan 2024 09:47:29 +0800
+From: <cy_huang@richtek.com>
+To: Jonathan Cameron <jic23@kernel.org>
+CC: Lars-Peter Clausen <lars@metafoo.de>, Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
+	<conor+dt@kernel.org>, ChiYuan Huang <cy_huang@richtek.com>,
+	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+	<linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+Subject: [PATCH v5 0/2] RTQ6056: Add compatible for the same chip family
+Date: Mon, 8 Jan 2024 09:47:26 +0800
+Message-ID: <cover.1704676198.git.cy_huang@richtek.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 
-Hi Linus,
+From: ChiYuan Huang <cy_huang@richtek.com>
 
-A routine update for clang-format -- we did not have one for quite
-a while.
+RTQ6053 and RTQ6059 are the same RTQ6056 family.
+The differences are listed below
+- RTQ6053
+  Only change chip package type
+- RTQ6059
+  1. Enlarge the shunt voltage sensing range
+  2. Shrink the pinout for VBUS sense pin
+  3. Due to 1, the scale value is also changed
 
-All the commits have been in -next for a month. No conflicts expected.
+Since v5:
+- Correct field names for rtq6059 bitfield declaration
 
-Please pull for v6.8 -- thanks!
+Since v4:
+- Remove the unused chip type enum
+- Directly return in switch case of read_channel function
+- Refine in write_raw switch case for IIO_CHAN_INFO_SAMP_FREQ
+  If sample frequency is fixed, return invalid and break switch case
+- Use devdata->num_channels to replace the predefined constant
+- Change the rtq6059 difference part for the control bitfield name from
+  the general 'F_xxx' to 'F_RTQ6059_xxx'
+- Fix rtq6059 average sample variable store problem in 'set_average' function
 
-Cheers,
-Miguel
+Since v3:
+- Add Reviewed-by tag in binding document patch
+- Resotre the enum for control field.
+- Put all the predefined datas/callbacks in dev_data.
+- Remove the unused 'rtq6059_info'.
+- Change 'default_conv_time' to 'default_conv_time_us'.
+- Move the comment for default config above the dev_data setting line.
 
-The following changes since commit 33cc938e65a98f1d29d0a18403dbbee050dcad9a:
+Since v2:
+- Refine the description of 'compatible' property
 
-  Linux 6.7-rc4 (2023-12-03 18:52:56 +0900)
+ChiYuan Huang (2):
+  dt-bindings: iio: adc: rtq6056: add support for the whole RTQ6056
+    family
+  iio: adc: rtq6056: Add support for the whole RTQ6056 family
 
-are available in the Git repository at:
+ .../bindings/iio/adc/richtek,rtq6056.yaml     |   9 +-
+ drivers/iio/adc/rtq6056.c                     | 275 ++++++++++++++++--
+ 2 files changed, 263 insertions(+), 21 deletions(-)
 
-  https://github.com/ojeda/linux.git tags/clang-format-6.8
 
-for you to fetch changes up to 5a205c6a9f79d14db38006aa2d7c4f4e76b1bfc7:
+base-commit: 610a9b8f49fbcf1100716370d3b5f6f884a2835a
+-- 
+2.34.1
 
-  clang-format: Update with v6.7-rc4's `for_each` macro list (2023-12-08 23:54:38 +0100)
-
-----------------------------------------------------------------
-clang-format changes for v6.8
-
-A routine update of the 'for_each' macro list.
-
-----------------------------------------------------------------
-Elliot Berman (1):
-      clang-format: Add maple tree's for_each macros
-
-Miguel Ojeda (1):
-      clang-format: Update with v6.7-rc4's `for_each` macro list
-
- .clang-format | 92 +++++++++++++++++++++++++++++++++++++++++++++++------------
- 1 file changed, 73 insertions(+), 19 deletions(-)
 
