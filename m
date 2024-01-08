@@ -1,309 +1,228 @@
-Return-Path: <linux-kernel+bounces-19445-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19447-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 59052826D00
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 12:38:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 708AB826D05
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 12:40:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6E41D1C220D8
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 11:38:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1B2E4282FBC
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 11:40:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 601D3219E2;
-	Mon,  8 Jan 2024 11:38:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17A2822065;
+	Mon,  8 Jan 2024 11:40:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="Lf/gwVK9"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="CEjqpgon"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f74.google.com (mail-wr1-f74.google.com [209.85.221.74])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C705714AAE;
-	Mon,  8 Jan 2024 11:38:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
-Received: from [192.168.88.20] (91-154-35-128.elisa-laajakaista.fi [91.154.35.128])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 73E24480;
-	Mon,  8 Jan 2024 12:37:28 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1704713849;
-	bh=Apu0LcX+HI1x1I8B+6F1DY6EFGKpI+VtkB40HG3o5+Y=;
-	h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
-	b=Lf/gwVK9PQdCt/2A5xkMzEai0YrJFJuO23QFB9mgrTTJWdjDExgPFmm7WORZQ7bDy
-	 0PwFlyTcW1v2qMQnRvFRzuw77fhp2aavHnyXyZIfwi+0LqDNYXcyTNV8OKsU9Cvqpa
-	 D/XQeKzWfmreGzNqju1VbWbQQ+rLI7O7KZPO3Qvk=
-Message-ID: <83520f6d-15b5-412a-adb4-e95daf519bf2@ideasonboard.com>
-Date: Mon, 8 Jan 2024 13:38:31 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1E351E497
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 11:39:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--jackmanb.bounces.google.com
+Received: by mail-wr1-f74.google.com with SMTP id ffacd0b85a97d-33753ac460bso1181350f8f.3
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 03:39:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1704713996; x=1705318796; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=PYojaOK4ISq04M658HG0Lc/KZ0ySyiQHYKNYCJoto0c=;
+        b=CEjqpgonj8m+5sondGn57GtCVxqwa8qCUkPzP+Z9764GAG5mZba2EE48W+soeOnVyY
+         +qN5zpHnB/auGbfWdCuEqdnHGk0ouNdiEUjwsUBd8Hosr+UmQsyjOLA8IG9IAb7m62ps
+         U2a/inhAp/dgIit34SN6fM5gBGwincQfUz8qzl+CjjKsu/xjr6ISu2FjcrsXk817MyrJ
+         CVwyqXYh0Q6TIj1D4R6J1npigIfSwuzRebFdPa4+eLuTkIXh+sPbeb1IWLuCApg/Fymv
+         cZrkJ/G2vSUP6lUlD8GlCR11eYg8mqIe0nSUMUzAbdxlslRVFR4IjInN4jScS3/9xC/f
+         4b7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704713996; x=1705318796;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=PYojaOK4ISq04M658HG0Lc/KZ0ySyiQHYKNYCJoto0c=;
+        b=sEt83iQd7VBKlf3BaZlFmCWE0EuqcHh6aQb34dECdYUXicf3EDVwnAoQ0tIqg/+aLY
+         ZUBxj3DHX4foViCSVNBsOKQa4bo6BN7RlUAoGPH83IYiC/CEBChmYwvqDVJS0X1cHdPL
+         jd8mQpNUYdcMZz+gqf/uVQghu3LW3XAA7F2Yy3gOQs131I6ZaNbjc1tXFrnKmIh0lFqB
+         +mtFut2uEYHFChmqu0T6STbUa19aZOpcN/9HPUmrmrOyWoFSD1iLydf44QWaNkUicP8v
+         PfiVKTRz6Sk0eMJWl99ff0Gp9u5BRsFEQvsjDgV7MvBS5TzWMnoh3T9ufvc26LT2ZXvt
+         FqBQ==
+X-Gm-Message-State: AOJu0Yw+VKOk5fyhBeF4IJjEMRmDt2uoS+eGsKpmxY7ZbgB19j+jEuk4
+	Qi/1cv25a68jHCs8c/5mpPMhChCQyOifd7IaLo9h
+X-Google-Smtp-Source: AGHT+IHMmf52kGj2P/XSi6kfkFV9ZlexWdM7YQjiOQF59eZwbeswVX/euw77KcuNiNyxDc9oJv2aw7dEqFYP/g==
+X-Received: from beeg.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:11db])
+ (user=jackmanb job=sendgmr) by 2002:a05:6000:4007:b0:337:54d0:a99e with SMTP
+ id cp7-20020a056000400700b0033754d0a99emr12525wrb.2.1704713995691; Mon, 08
+ Jan 2024 03:39:55 -0800 (PST)
+Date: Mon,  8 Jan 2024 11:39:50 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 08/10] media: rkisp1: Shift DMA buffer addresses on
- i.MX8MP
-Content-Language: en-US
-From: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-To: Paul Elder <paul.elder@ideasonboard.com>, linux-media@vger.kernel.org,
- linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org
-Cc: kieran.bingham@ideasonboard.com, umang.jain@ideasonboard.com,
- aford173@gmail.com, Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
- Alexander Stein <alexander.stein@ew.tq-group.com>,
- Dafna Hirschfeld <dafna@fastmail.com>,
- Mauro Carvalho Chehab <mchehab@kernel.org>, Heiko Stuebner
- <heiko@sntech.de>,
- "moderated list:ARM/Rockchip SoC support"
- <linux-arm-kernel@lists.infradead.org>,
- open list <linux-kernel@vger.kernel.org>
-References: <20240106160221.4183409-1-paul.elder@ideasonboard.com>
- <20240106160221.4183409-9-paul.elder@ideasonboard.com>
- <5e335fef-201c-4775-8a42-4441d749c345@ideasonboard.com>
-Autocrypt: addr=tomi.valkeinen@ideasonboard.com; keydata=
- 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
-In-Reply-To: <5e335fef-201c-4775-8a42-4441d749c345@ideasonboard.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.43.0.275.g3460e3d667-goog
+Message-ID: <20240108113950.360438-1-jackmanb@google.com>
+Subject: [PATCH v3 RESEND] x86/entry: Avoid redundant CR3 write on paranoid returns
+From: Brendan Jackman <jackmanb@google.com>
+To: luto@kernel.org, tglx@linutronix.de, peterz@infradead.org, 
+	dave.hansen@linux.intel.com
+Cc: mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com, 
+	linux-kernel@vger.kernel.org, laijs@linux.alibaba.com, yosryahmed@google.com, 
+	reijiw@google.com, oweisse@google.com, Brendan Jackman <jackmanb@google.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On 08/01/2024 13:37, Tomi Valkeinen wrote:
-> On 06/01/2024 18:02, Paul Elder wrote:
->> On the ISP that is integrated in the i.MX8MP, DMA addresses have been
->> extended to 34 bits, with the 32 MSBs stored in the DMA address
->> registers and the 2 LSBs set to 0. Shift the buffer addresses right by 2
->> on that platform.
->>
->> While at it, fix an issue where if the system allocated CMA memory
->> happens to be located higher than 32-bits, the driver will fail to
->> allocate CMA memory and falls back to kmalloc(), which will fail for
->> larger allocations (over MAX_ORDER, which often mean 4MB).
->>
->> Fix this by setting the dma mask to 34 bits when allowed, and fixing the
->> use dma_addr_t when storing dma addresses instead of u32.
-> 
-> I think the desc could be rewritten a bit for clarity. "While at it" 
-> sounds like doing some secondary changes too, but it's all required. And 
-> it's not really "fixing", as this is adding a new feature.
-> 
-> To support i.MX8MP's 34-bit addresses, we need to:
-> 
-> - shift the addresses when writing to registers
-> - set the dma mask
-> - use dma_addr_t instead of u32 when storing the addresses
-> 
-> Can you rewrite the desc to describe the above?
+From: Lai Jiangshan <laijs@linux.alibaba.com>
 
-Oh, and the patch title is not quite right anymore. I think this is more 
-about supporting i.MX8MP's 34-bit DMA.
+This path gets used called from:
 
-  Tomi
+1. #NMI return.
+2. paranoid_exit (i.e. #MCE, #VC, #DB and #DF return)
 
-> For the change itself:
-> 
-> Reviewed-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-> 
->   Tomi
-> 
->> Signed-off-by: Paul Elder <paul.elder@ideasonboard.com>
->> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
->> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
->> Tested-by: Alexander Stein <alexander.stein@ew.tq-group.com>
->> Tested-by: Adam Ford <aford173@gmail.com>
->> ---
->> Changes since v4:
->>
->> - Squash in fix from Tomi:
->>    - 
->> https://gitlab.com/ideasonboard/nxp/linux/-/commit/d6477fe673b1c0d05d12ae21d8db9a03b07e7fea
->>
->> Changes since v2:
->>
->> - Document the RKISP1_FEATURE_DMA_34BIT bit
->> - Use the rkisp1_has_feature() macro
->> ---
->>   .../platform/rockchip/rkisp1/rkisp1-capture.c | 20 ++++++++++---------
->>   .../platform/rockchip/rkisp1/rkisp1-common.h  |  4 +++-
->>   .../platform/rockchip/rkisp1/rkisp1-dev.c     | 11 +++++++++-
->>   3 files changed, 24 insertions(+), 11 deletions(-)
-> 
-> Reviewed-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-> 
->   Tomi
-> 
->> diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-capture.c 
->> b/drivers/media/platform/rockchip/rkisp1/rkisp1-capture.c
->> index ca95f62822fa..1ee7639c42b7 100644
->> --- a/drivers/media/platform/rockchip/rkisp1/rkisp1-capture.c
->> +++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-capture.c
->> @@ -648,11 +648,13 @@ static void rkisp1_dummy_buf_destroy(struct 
->> rkisp1_capture *cap)
->>   static void rkisp1_set_next_buf(struct rkisp1_capture *cap)
->>   {
->> +    u8 shift = rkisp1_has_feature(cap->rkisp1, DMA_34BIT) ? 2 : 0;
->> +
->>       cap->buf.curr = cap->buf.next;
->>       cap->buf.next = NULL;
->>       if (!list_empty(&cap->buf.queue)) {
->> -        u32 *buff_addr;
->> +        dma_addr_t *buff_addr;
->>           cap->buf.next = list_first_entry(&cap->buf.queue, struct 
->> rkisp1_buffer, queue);
->>           list_del(&cap->buf.next->queue);
->> @@ -660,7 +662,7 @@ static void rkisp1_set_next_buf(struct 
->> rkisp1_capture *cap)
->>           buff_addr = cap->buf.next->buff_addr;
->>           rkisp1_write(cap->rkisp1, cap->config->mi.y_base_ad_init,
->> -                 buff_addr[RKISP1_PLANE_Y]);
->> +                 buff_addr[RKISP1_PLANE_Y] >> shift);
->>           /*
->>            * In order to support grey format we capture
->>            * YUV422 planar format from the camera and
->> @@ -669,17 +671,17 @@ static void rkisp1_set_next_buf(struct 
->> rkisp1_capture *cap)
->>           if (cap->pix.cfg->fourcc == V4L2_PIX_FMT_GREY) {
->>               rkisp1_write(cap->rkisp1,
->>                        cap->config->mi.cb_base_ad_init,
->> -                     cap->buf.dummy.dma_addr);
->> +                     cap->buf.dummy.dma_addr >> shift);
->>               rkisp1_write(cap->rkisp1,
->>                        cap->config->mi.cr_base_ad_init,
->> -                     cap->buf.dummy.dma_addr);
->> +                     cap->buf.dummy.dma_addr >> shift);
->>           } else {
->>               rkisp1_write(cap->rkisp1,
->>                        cap->config->mi.cb_base_ad_init,
->> -                     buff_addr[RKISP1_PLANE_CB]);
->> +                     buff_addr[RKISP1_PLANE_CB] >> shift);
->>               rkisp1_write(cap->rkisp1,
->>                        cap->config->mi.cr_base_ad_init,
->> -                     buff_addr[RKISP1_PLANE_CR]);
->> +                     buff_addr[RKISP1_PLANE_CR] >> shift);
->>           }
->>       } else {
->>           /*
->> @@ -687,11 +689,11 @@ static void rkisp1_set_next_buf(struct 
->> rkisp1_capture *cap)
->>            * throw data if there is no available buffer.
->>            */
->>           rkisp1_write(cap->rkisp1, cap->config->mi.y_base_ad_init,
->> -                 cap->buf.dummy.dma_addr);
->> +                 cap->buf.dummy.dma_addr >> shift);
->>           rkisp1_write(cap->rkisp1, cap->config->mi.cb_base_ad_init,
->> -                 cap->buf.dummy.dma_addr);
->> +                 cap->buf.dummy.dma_addr >> shift);
->>           rkisp1_write(cap->rkisp1, cap->config->mi.cr_base_ad_init,
->> -                 cap->buf.dummy.dma_addr);
->> +                 cap->buf.dummy.dma_addr >> shift);
->>       }
->>       /* Set plane offsets */
->> diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-common.h 
->> b/drivers/media/platform/rockchip/rkisp1/rkisp1-common.h
->> index 69940014d597..26573f6ae575 100644
->> --- a/drivers/media/platform/rockchip/rkisp1/rkisp1-common.h
->> +++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-common.h
->> @@ -114,6 +114,7 @@ enum rkisp1_isp_pad {
->>    * @RKISP1_FEATURE_MAIN_STRIDE: The ISP supports configurable stride 
->> on the main path
->>    * @RKISP1_FEATURE_SELF_PATH: The ISP has a self path
->>    * @RKISP1_FEATURE_DUAL_CROP: The ISP has the dual crop block at the 
->> resizer input
->> + * @RKISP1_FEATURE_DMA_34BIT: The ISP uses 34-bit DMA addresses
->>    *
->>    * The ISP features are stored in a bitmask in &rkisp1_info.features 
->> and allow
->>    * the driver to implement support for features present in some ISP 
->> versions
->> @@ -124,6 +125,7 @@ enum rkisp1_feature {
->>       RKISP1_FEATURE_MAIN_STRIDE = BIT(1),
->>       RKISP1_FEATURE_SELF_PATH = BIT(2),
->>       RKISP1_FEATURE_DUAL_CROP = BIT(3),
->> +    RKISP1_FEATURE_DMA_34BIT = BIT(4),
->>   };
->>   #define rkisp1_has_feature(rkisp1, feature) \
->> @@ -239,7 +241,7 @@ struct rkisp1_vdev_node {
->>   struct rkisp1_buffer {
->>       struct vb2_v4l2_buffer vb;
->>       struct list_head queue;
->> -    u32 buff_addr[VIDEO_MAX_PLANES];
->> +    dma_addr_t buff_addr[VIDEO_MAX_PLANES];
->>   };
->>   /*
->> diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c 
->> b/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c
->> index 01f811b9f9a5..fd99355d5fe0 100644
->> --- a/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c
->> +++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c
->> @@ -549,7 +549,8 @@ static const struct rkisp1_info imx8mp_isp_info = {
->>       .isrs = imx8mp_isp_isrs,
->>       .isr_size = ARRAY_SIZE(imx8mp_isp_isrs),
->>       .isp_ver = IMX8MP_V10,
->> -    .features = RKISP1_FEATURE_MAIN_STRIDE,
->> +    .features = RKISP1_FEATURE_MAIN_STRIDE
->> +          | RKISP1_FEATURE_DMA_34BIT,
->>   };
->>   static const struct of_device_id rkisp1_of_match[] = {
->> @@ -575,6 +576,7 @@ static int rkisp1_probe(struct platform_device *pdev)
->>       struct device *dev = &pdev->dev;
->>       struct rkisp1_device *rkisp1;
->>       struct v4l2_device *v4l2_dev;
->> +    unsigned long long dma_mask;
->>       unsigned int i;
->>       int ret, irq;
->>       u32 cif_id;
->> @@ -589,6 +591,13 @@ static int rkisp1_probe(struct platform_device 
->> *pdev)
->>       dev_set_drvdata(dev, rkisp1);
->>       rkisp1->dev = dev;
->> +    dma_mask = rkisp1_has_feature(rkisp1, DMA_34BIT) ? 
->> DMA_BIT_MASK(34) :
->> +                               DMA_BIT_MASK(32);
->> +
->> +    ret = dma_set_mask_and_coherent(dev, dma_mask);
->> +    if (ret)
->> +        return ret;
->> +
->>       mutex_init(&rkisp1->stream_lock);
->>       rkisp1->base_addr = devm_platform_ioremap_resource(pdev, 0);
-> 
+Contrary to the implication in commit 21e94459110252 ("x86/mm: Optimize
+RESTORE_CR3"), the kernel never modifies CR3 in any of these exceptions,
+except for switching from user to kernel pagetables under PTI. That
+means that most of the time when returning from an exception that
+interrupted the kernel no CR3 restore is necessary. Writing CR3 is
+expensive on some machines, so this commit avoids redundant writes.
+
+I said "most of the time" because the interrupt might have come during
+kernel entry before the user->kernel CR3 switch or the during exit after
+the kernel->user switch. In the former case skipping the restore might
+actually be be fine, but definitely not the latter. So we do still need
+to check the saved CR3 and restore it if it's a user CR3.
+
+Note this code is ONLY used for returning _to kernel code_. So the only
+times where the CR3 write is necessary are in those rather special cases
+mentioned above where we are in kernel _code_ but a userspace CR3.
+
+While changing this logic the macro is given a new name to clarify its
+usage, and a comment that was describing its behaviour at the call site
+is removed.  We can also simplify the code around the SET_NOFLUSH_BIT
+invocation as we no longer need to branch to it from above.
+
+Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
+[Rewrote commit message; responded to review comments]
+Signed-off-by: Brendan Jackman <jackmanb@google.com>
+Change-Id: I6e56978c4753fb943a7897ff101f519514fa0827
+---
+
+Notes:
+    v1: https://lore.kernel.org/lkml/20230817121513.1382800-1-jackmanb@google.com/
+
+    v1->v2: Rewrote some comments, added a proper commit message, cleaned up
+        the code per tglx's suggestion.
+
+        I've kept Lai as the Author. If you prefer for the blame to
+        record the last person that touched it then that's also fine
+        though, I can credit Lai as Co-developed-by.
+
+    v2: https://lore.kernel.org/lkml/20230920150443.1789000-1-jackmanb@google.com/
+
+    v2->v3: Clarified the commit message per Dave's suggestion and renamed the
+        macro. I did not carry PeterZ's ack since I have made some changes.
+
+    original v3 (no responses): 
+        https://lore.kernel.org/lkml/20231108171656.3444702-1-jackmanb@google.com/
+
+Thanks for the reviews :)
+
+ arch/x86/entry/calling.h  | 26 ++++++++++----------------
+ arch/x86/entry/entry_64.S |  7 +++----
+ 2 files changed, 13 insertions(+), 20 deletions(-)
+
+diff --git a/arch/x86/entry/calling.h b/arch/x86/entry/calling.h
+index f6907627172b..25cbfba1fe46 100644
+--- a/arch/x86/entry/calling.h
++++ b/arch/x86/entry/calling.h
+@@ -233,17 +233,19 @@ For 32-bit we have the following conventions - kernel is built with
+ .Ldone_\@:
+ .endm
+ 
+-.macro RESTORE_CR3 scratch_reg:req save_reg:req
++/* Restore CR3 from a kernel context. May restore a user CR3 value. */
++.macro PARANOID_RESTORE_CR3 scratch_reg:req save_reg:req
+ 	ALTERNATIVE "jmp .Lend_\@", "", X86_FEATURE_PTI
+ 
+-	ALTERNATIVE "jmp .Lwrcr3_\@", "", X86_FEATURE_PCID
+-
+ 	/*
+-	 * KERNEL pages can always resume with NOFLUSH as we do
+-	 * explicit flushes.
++	 * If CR3 contained the kernel page tables at the paranoid exception
++	 * entry, then there is nothing to restore as CR3 is not modified while
++	 * handling the exception.
+ 	 */
+ 	bt	$PTI_USER_PGTABLE_BIT, \save_reg
+-	jnc	.Lnoflush_\@
++	jnc	.Lend_\@
++
++	ALTERNATIVE "jmp .Lwrcr3_\@", "", X86_FEATURE_PCID
+ 
+ 	/*
+ 	 * Check if there's a pending flush for the user ASID we're
+@@ -251,20 +253,12 @@ For 32-bit we have the following conventions - kernel is built with
+ 	 */
+ 	movq	\save_reg, \scratch_reg
+ 	andq	$(0x7FF), \scratch_reg
+-	bt	\scratch_reg, THIS_CPU_user_pcid_flush_mask
+-	jnc	.Lnoflush_\@
+-
+ 	btr	\scratch_reg, THIS_CPU_user_pcid_flush_mask
+-	jmp	.Lwrcr3_\@
++	jc	.Lwrcr3_\@
+ 
+-.Lnoflush_\@:
+ 	SET_NOFLUSH_BIT \save_reg
+ 
+ .Lwrcr3_\@:
+-	/*
+-	 * The CR3 write could be avoided when not changing its value,
+-	 * but would require a CR3 read *and* a scratch register.
+-	 */
+ 	movq	\save_reg, %cr3
+ .Lend_\@:
+ .endm
+@@ -279,7 +273,7 @@ For 32-bit we have the following conventions - kernel is built with
+ .endm
+ .macro SAVE_AND_SWITCH_TO_KERNEL_CR3 scratch_reg:req save_reg:req
+ .endm
+-.macro RESTORE_CR3 scratch_reg:req save_reg:req
++.macro PARANOID_RESTORE_CR3 scratch_reg:req save_reg:req
+ .endm
+ 
+ #endif
+diff --git a/arch/x86/entry/entry_64.S b/arch/x86/entry/entry_64.S
+index de6469dffe3a..d65182500bfe 100644
+--- a/arch/x86/entry/entry_64.S
++++ b/arch/x86/entry/entry_64.S
+@@ -957,14 +957,14 @@ SYM_CODE_START_LOCAL(paranoid_exit)
+ 	IBRS_EXIT save_reg=%r15
+ 
+ 	/*
+-	 * The order of operations is important. RESTORE_CR3 requires
++	 * The order of operations is important. PARANOID_RESTORE_CR3 requires
+ 	 * kernel GSBASE.
+ 	 *
+ 	 * NB to anyone to try to optimize this code: this code does
+ 	 * not execute at all for exceptions from user mode. Those
+ 	 * exceptions go through error_return instead.
+ 	 */
+-	RESTORE_CR3	scratch_reg=%rax save_reg=%r14
++	PARANOID_RESTORE_CR3 scratch_reg=%rax save_reg=%r14
+ 
+ 	/* Handle the three GSBASE cases */
+ 	ALTERNATIVE "jmp .Lparanoid_exit_checkgs", "", X86_FEATURE_FSGSBASE
+@@ -1393,8 +1393,7 @@ end_repeat_nmi:
+ 	/* Always restore stashed SPEC_CTRL value (see paranoid_entry) */
+ 	IBRS_EXIT save_reg=%r15
+ 
+-	/* Always restore stashed CR3 value (see paranoid_entry) */
+-	RESTORE_CR3 scratch_reg=%r15 save_reg=%r14
++	PARANOID_RESTORE_CR3 scratch_reg=%r15 save_reg=%r14
+ 
+ 	/*
+ 	 * The above invocation of paranoid_entry stored the GSBASE
+-- 
+2.42.0.869.gea05f2083d-goog
 
 
