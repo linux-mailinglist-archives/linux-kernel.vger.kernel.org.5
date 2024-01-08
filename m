@@ -1,319 +1,150 @@
-Return-Path: <linux-kernel+bounces-19805-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19804-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EDF4F827480
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 16:53:33 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D608382747E
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 16:53:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 90134282B8B
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 15:53:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7632CB21A57
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 15:53:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FA0252F71;
-	Mon,  8 Jan 2024 15:53:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91CE3524A7;
+	Mon,  8 Jan 2024 15:53:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b="lCLBtcTf"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ScUJdTf6"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from out203-205-221-245.mail.qq.com (out203-205-221-245.mail.qq.com [203.205.221.245])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E153B52F78
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 15:53:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foxmail.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-	s=s201512; t=1704729183;
-	bh=Ij+3Ix3Kb6+ZSZanXqYqNIh8zHKZtPuZeycz8V73gG4=;
-	h=From:To:Cc:Subject:Date;
-	b=lCLBtcTfb10mrWw06PKUpvMv742EsrxcgVeZWA48fViKJ8r5l8LDzU+hLb/KMpj0J
-	 ST6YOUsJVaSAKf40LiF9kinhqVv2KY97+aRyhNteGrD8mavL01bd/UYoUZOnZAkSYH
-	 BFd1pPp6QJtq+nSYyXwgAy3KPgd8wVjCXmxowiCo=
-Received: from localhost.localdomain ([2409:8a60:2a63:2f30:4bcb:13ed:5b05:9ecd])
-	by newxmesmtplogicsvrszb6-0.qq.com (NewEsmtp) with SMTP
-	id CF306402; Mon, 08 Jan 2024 23:51:51 +0800
-X-QQ-mid: xmsmtpt1704729111trkm971hy
-Message-ID: <tencent_3C9A298878D22B5D8F79DC2FEE99BB4A8F05@qq.com>
-X-QQ-XMAILINFO: NhUkPfKlCtQwYYTj5BM41Da47XdYIN0Aqf80Ha1rwlfNNQbfTlo7hvwJnDp3S2
-	 5u0vTsM1Xcyjon9qX2Oh6+svAepkkKNenUt/ZuyFnG+8h9zZUu1eSHUs1JCtQc/angeMNJyqlexP
-	 xKlFBe7jCcW4RAhRjSiugTkUyqWJ11omvsCQ/Cx2hY1tuQm952qfNsy2mY7mpjz+M9UXncT/nPsd
-	 n36lM6L+pKWL62RMCOjhEpw/ZDx/dToGm38h19a7rKTi0GdAtZ86d/rEaeiZMKBsA1G323LckkyX
-	 i7XO80lhIHI4dL5ThOYauj7PEOjrWKo11QZ6y6+zOAZN8hp/qXQeNmlY+IMVu4Gs0xyMvGAJ7VYf
-	 EcNdcZsbjZQ0HEziNxbVw7DNvBgwG1lgixuZ8LeAGRZR8FFQlrApWlrfM5Xp2SagYEm30towE1BU
-	 6F5xpYJeJNBw/y7IFNoKKN4NIWqU7KifN+vnJUE6QC3g50yys/Yhd/cZ0Te1deWJeZc9Rdtl/SHb
-	 EU1Iwqzxy8Kf8Yf7jQ7uY5vMUALKktLathT9hFd3lJq1BVKwL3h9PVyot0WIAl8UevrDj+awHiXe
-	 S1vwNtx3wieN37sGVVdZtR0SUwCngB71htTTXNFqgjVvWAFYLNfL0aLUavya0xLfdY4LAipctSFd
-	 hWebDNQ93flcH8rhR5UANgeG6ATdTnpDDdDvptkR1iAvrTU/uOCcvzkBTfn3jQJnlU4lvpkSrgDI
-	 UD5wTgYwfb+PL7vRTWlB4jxB6YcxBiqhZUiB9SfyfCqwMeVaVPNX/h8AlTeUEwCWNrAccBoSOiqf
-	 HaGHL51JBrg98AGzWinqYtnB1IiO13MIHD0eZgawxIegsd11blQJgyv1lewBnrKgpqhhC9MANQVW
-	 YaEegcWIsbn/jsZcKoimIdM0kmgyGTW6/70gUk1N8SlixZWJxz+mUUz+IPnk7EKv6tiJ5x3SNlSH
-	 M3Q34vIaXk1a6BGLcViyah7I7Vo2P3aqbpQ2jKiArM0o8/hnaB/xVla9YQSoztgkS51nIynVGzvS
-	 ZdEBd+YftEAn3kPnzAYxZL/bp6CLWDiI0FlQ9As6CVDMmvU45g
-X-QQ-XMRINFO: MPJ6Tf5t3I/ycC2BItcBVIA=
-From: wenyang.linux@foxmail.com
-To: Shuah Khan <skhan@linuxfoundation.org>,
-	Christian Brauner <brauner@kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>
-Cc: Wen Yang <wenyang.linux@foxmail.com>,
-	Shuah Khan <shuah@kernel.org>,
-	Javier Martinez Canillas <javierm@redhat.com>,
-	Pengfei Xu <pengfei.xu@intel.com>,
-	Miklos Szeredi <mszeredi@redhat.com>,
-	Andrei Vagin <avagin@google.com>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] selftests: add eventfd selftests
-Date: Mon,  8 Jan 2024 23:51:32 +0800
-X-OQ-MSGID: <20240108155132.9153-1-wenyang.linux@foxmail.com>
-X-Mailer: git-send-email 2.25.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BAC05100D
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 15:53:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-5e73bd9079eso33036767b3.2
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 07:53:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1704729184; x=1705333984; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=LXpfvDdR25mi61ZRv+hUGYfziJrbv6+q0uR9W3pdtgw=;
+        b=ScUJdTf6pY1EyzXXhTCOXHjVT97d9to7GQ83OVVOdFBTRhGje7AGwchBSTlrSGUrYQ
+         VFbN4vMFF6Hla0gcX4RSkXf6EB87oabE/uJ0REVkG1YoQnSO9DHgfBiIqpjFeVPpYgzK
+         HXHrCrHGNHHUcptvmkPg86uQDGNIfA4Fh/ldNw7mjAzVqIsfH6Lfsq5tLDEKfe/MjSVD
+         Ejfo41gQFHZtoLFYZpVLtvZAUILVJCvSpfdWYL5sbxmnQCSYpM4snT6X7Do0wUrHWdlt
+         SDtLaa4/o7/jEn/nOJYlnSZIvd4GiuE5MFW8M3iYnzZS699H8VSVAX1CKzzhaTLXF02A
+         Cn7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704729184; x=1705333984;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=LXpfvDdR25mi61ZRv+hUGYfziJrbv6+q0uR9W3pdtgw=;
+        b=gdbHIxbAv3WRapYFvp5XKoNLNw8WXFZ2rjLuGYaU7uTEkQ/83v+togff2GqjwFXpuX
+         JzrpQzRmwpkK1X2/zftjp8hV/mBT23PsttvxUzL1cw3zjg1koRRKBCz4UZ/9/q5W6ttg
+         H1zHGv4hzQkl4tTfbixMWCBrwk2otpSkmxzv0FAmEuav8SOTg6kFcvpuMMEGdmO91ut+
+         uvt+H0aNA7RCSeHA6EEz+z26rwqlBCPRt1Jyvn3CqFMkyMZWcJowPQZCVqpZyieeZmQE
+         +B96wDybdx+ut4Kjd1V9sXdXEey4/VpjZMyMVIFdujzl63yiYPE7zfUTFmZC9IXz9ROU
+         xKFQ==
+X-Gm-Message-State: AOJu0YwdfpERGt9HQj2l3O0G0vGAfK4IyuuuU/IN61KiLdSBitKruLl+
+	fe6x+kiMwrFDTC1O2cBEOYvbWxyY0nJYyB9sZg==
+X-Google-Smtp-Source: AGHT+IH6tgug6GZXuthKAIt2m3rWLQls/sRxvnIhe9rTO176GAtStoSNma4aHNycx8stxCAgF2wzux11TeA=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a25:83d0:0:b0:dbe:a20a:6330 with SMTP id
+ v16-20020a2583d0000000b00dbea20a6330mr1497318ybm.9.1704729184054; Mon, 08 Jan
+ 2024 07:53:04 -0800 (PST)
+Date: Mon, 8 Jan 2024 07:53:02 -0800
+In-Reply-To: <CAJ5mJ6hpSSVhZ5hbPZ8vfSnmNU6W+g4e=PeLrG7fG2u8KptfHQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+References: <20231230172351.574091-1-michael.roth@amd.com> <20231230172351.574091-27-michael.roth@amd.com>
+ <CAJ5mJ6hpSSVhZ5hbPZ8vfSnmNU6W+g4e=PeLrG7fG2u8KptfHQ@mail.gmail.com>
+Message-ID: <ZZwaXo62DpiBJiWN@google.com>
+Subject: Re: [PATCH v11 26/35] KVM: SEV: Support SEV-SNP AP Creation NAE event
+From: Sean Christopherson <seanjc@google.com>
+To: Jacob Xu <jacobhxu@google.com>
+Cc: Michael Roth <michael.roth@amd.com>, kvm@vger.kernel.org, linux-coco@lists.linux.dev, 
+	linux-mm@kvack.org, linux-crypto@vger.kernel.org, x86@kernel.org, 
+	linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com, 
+	jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com, ardb@kernel.org, 
+	pbonzini@redhat.com, vkuznets@redhat.com, jmattson@google.com, 
+	luto@kernel.org, dave.hansen@linux.intel.com, slp@redhat.com, 
+	pgonda@google.com, peterz@infradead.org, srinivas.pandruvada@linux.intel.com, 
+	rientjes@google.com, dovmurik@linux.ibm.com, tobin@ibm.com, bp@alien8.de, 
+	vbabka@suse.cz, kirill@shutemov.name, ak@linux.intel.com, tony.luck@intel.com, 
+	sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com, 
+	jarkko@kernel.org, ashish.kalra@amd.com, nikunj.dadhania@amd.com, 
+	pankaj.gupta@amd.com, liam.merwick@oracle.com, zhi.a.wang@intel.com, 
+	Brijesh Singh <brijesh.singh@amd.com>, Adam Dunlap <acdunlap@google.com>
+Content-Type: text/plain; charset="us-ascii"
 
-From: Wen Yang <wenyang.linux@foxmail.com>
+On Fri, Jan 05, 2024, Jacob Xu wrote:
+> > +       if (kick) {
+> > +               if (target_vcpu->arch.mp_state == KVM_MP_STATE_UNINITIALIZED)
+> > +                       target_vcpu->arch.mp_state = KVM_MP_STATE_RUNNABLE;
+> > +
+> > +               kvm_make_request(KVM_REQ_UPDATE_PROTECTED_GUEST_STATE, target_vcpu);
+> 
+> I think we should  switch the order of these two statements for
+> setting mp_state and for making the request for
+> KVM_REQ_UPDATE_PROTECTED_GUEST_STATE.
+> There is a race condition I observed when booting with SVSM where:
+> 1. BSP sets target vcpu to KVM_MP_STATE_RUNNABLE
+> 2. AP thread within the loop of arch/x86/kvm.c:vcpu_run() checks
+> vm_vcpu_running()
+> 3. AP enters the guest without having updated the VMSA state from
+> KVM_REQ_UPDATE_PROTECTED_GUEST_STATE
+> 
+> This results in the AP executing on a bad RIP and then crashing.
+> If we set the request first, then we avoid the race condition.
 
-This adds the promised selftest for eventfd. It will verify the flags
-of eventfd2, including EFD_CLOEXEC,  EFD_NONBLOCK and EFD_SEMAPHORE.
+That just introducs a different race, e.g. if this task gets delayed and the
+target vCPU processes KVM_REQ_UPDATE_PROTECTED_GUEST_STATE before its marked
+RUNNABLE, then the target vCPU could end up stuck in the UNINITIALIZED loop.
 
-Signed-off-by: Wen Yang <wenyang.linux@foxmail.com>
-Cc: Shuah Khan <shuah@kernel.org>
-Cc: Javier Martinez Canillas <javierm@redhat.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Christian Brauner <brauner@kernel.org>
-Cc: Pengfei Xu <pengfei.xu@intel.com>
-Cc: Miklos Szeredi <mszeredi@redhat.com>
-Cc: Andrei Vagin <avagin@google.com>
-Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: linux-kselftest@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
----
- .../selftests/filesystems/eventfd/.gitignore  |   2 +
- .../selftests/filesystems/eventfd/Makefile    |   7 +
- .../filesystems/eventfd/eventfd_test.c        | 186 ++++++++++++++++++
- 3 files changed, 195 insertions(+)
- create mode 100644 tools/testing/selftests/filesystems/eventfd/.gitignore
- create mode 100644 tools/testing/selftests/filesystems/eventfd/Makefile
- create mode 100644 tools/testing/selftests/filesystems/eventfd/eventfd_test.c
+Reading and writing arch.mp_state across vCPUs is simply not safe.  There's a
+reason why KVM atomically manages INITs and SIPIs and only modifies mp_state when
+processing events on the target vCPU.
 
-diff --git a/tools/testing/selftests/filesystems/eventfd/.gitignore b/tools/testing/selftests/filesystems/eventfd/.gitignore
-new file mode 100644
-index 000000000000..483faf59fe4a
---- /dev/null
-+++ b/tools/testing/selftests/filesystems/eventfd/.gitignore
-@@ -0,0 +1,2 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+eventfd_test
-diff --git a/tools/testing/selftests/filesystems/eventfd/Makefile b/tools/testing/selftests/filesystems/eventfd/Makefile
-new file mode 100644
-index 000000000000..0a8e3910df15
---- /dev/null
-+++ b/tools/testing/selftests/filesystems/eventfd/Makefile
-@@ -0,0 +1,7 @@
-+# SPDX-License-Identifier: GPL-2.0
-+
-+CFLAGS += $(KHDR_INCLUDES)
-+LDLIBS += -lpthread
-+TEST_GEN_PROGS := eventfd_test
-+
-+include ../../lib.mk
-diff --git a/tools/testing/selftests/filesystems/eventfd/eventfd_test.c b/tools/testing/selftests/filesystems/eventfd/eventfd_test.c
-new file mode 100644
-index 000000000000..f142a137526c
---- /dev/null
-+++ b/tools/testing/selftests/filesystems/eventfd/eventfd_test.c
-@@ -0,0 +1,186 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#define _GNU_SOURCE
-+#include <errno.h>
-+#include <fcntl.h>
-+#include <asm/unistd.h>
-+#include <linux/time_types.h>
-+#include <unistd.h>
-+#include <assert.h>
-+#include <signal.h>
-+#include <pthread.h>
-+#include <sys/epoll.h>
-+#include <sys/eventfd.h>
-+#include "../../kselftest_harness.h"
-+
-+struct error {
-+	int  code;
-+	char msg[512];
-+};
-+
-+static int error_set(struct error *err, int code, const char *fmt, ...)
-+{
-+	va_list args;
-+	int r;
-+
-+	if (code == 0 || !err || err->code != 0)
-+		return code;
-+
-+	err->code = code;
-+	va_start(args, fmt);
-+	r = vsnprintf(err->msg, sizeof(err->msg), fmt, args);
-+	assert((size_t)r < sizeof(err->msg));
-+	va_end(args);
-+
-+	return code;
-+}
-+
-+static inline int sys_eventfd2(unsigned int count, int flags)
-+{
-+	return syscall(__NR_eventfd2, count, flags);
-+}
-+
-+TEST(eventfd01)
-+{
-+	int fd, flags;
-+
-+	fd = sys_eventfd2(0, 0);
-+	ASSERT_GE(fd, 0);
-+
-+	flags = fcntl(fd, F_GETFL);
-+	// since the kernel automatically added O_RDWR.
-+	EXPECT_EQ(flags, O_RDWR);
-+
-+	close(fd);
-+}
-+
-+TEST(eventfd02)
-+{
-+	int fd, flags;
-+
-+	fd = sys_eventfd2(0, EFD_CLOEXEC);
-+	ASSERT_GE(fd, 0);
-+
-+	flags = fcntl(fd, F_GETFD);
-+	ASSERT_GT(flags, -1);
-+	EXPECT_EQ(flags, FD_CLOEXEC);
-+
-+	close(fd);
-+}
-+
-+TEST(eventfd03)
-+{
-+	int fd, flags;
-+
-+	fd = sys_eventfd2(0, EFD_NONBLOCK);
-+	ASSERT_GE(fd, 0);
-+
-+	flags = fcntl(fd, F_GETFL);
-+	ASSERT_GT(flags, -1);
-+	EXPECT_EQ(flags & EFD_NONBLOCK, EFD_NONBLOCK);
-+	EXPECT_EQ(flags & O_RDWR, O_RDWR);
-+
-+	close(fd);
-+}
-+
-+TEST(eventfd04)
-+{
-+	int fd, flags;
-+
-+	fd = sys_eventfd2(0, EFD_CLOEXEC|EFD_NONBLOCK);
-+	ASSERT_GE(fd, 0);
-+
-+	flags = fcntl(fd, F_GETFL);
-+	ASSERT_GT(flags, -1);
-+	EXPECT_EQ(flags & EFD_NONBLOCK, EFD_NONBLOCK);
-+	EXPECT_EQ(flags & O_RDWR, O_RDWR);
-+
-+	flags = fcntl(fd, F_GETFD);
-+	ASSERT_GT(flags, -1);
-+	EXPECT_EQ(flags, FD_CLOEXEC);
-+
-+	close(fd);
-+}
-+
-+static inline void trim_newline(char *str)
-+{
-+	char *pos = strrchr(str, '\n');
-+
-+	if (pos)
-+		*pos = '\0';
-+}
-+
-+static int verify_fdinfo(int fd, struct error *err, const char *prefix,
-+		size_t prefix_len, const char *expect, ...)
-+{
-+	char buffer[512] = {0, };
-+	char path[512] = {0, };
-+	va_list args;
-+	FILE *f;
-+	char *line = NULL;
-+	size_t n = 0;
-+	int found = 0;
-+	int r;
-+
-+	va_start(args, expect);
-+	r = vsnprintf(buffer, sizeof(buffer), expect, args);
-+	assert((size_t)r < sizeof(buffer));
-+	va_end(args);
-+
-+	snprintf(path, sizeof(path), "/proc/self/fdinfo/%d", fd);
-+	f = fopen(path, "re");
-+	if (!f)
-+		return error_set(err, -1, "fdinfo open failed for %d", fd);
-+
-+	while (getline(&line, &n, f) != -1) {
-+		char *val;
-+
-+		if (strncmp(line, prefix, prefix_len))
-+			continue;
-+
-+		found = 1;
-+
-+		val = line + prefix_len;
-+		r = strcmp(val, buffer);
-+		if (r != 0) {
-+			trim_newline(line);
-+			trim_newline(buffer);
-+			error_set(err, -1, "%s '%s' != '%s'",
-+				  prefix, val, buffer);
-+		}
-+		break;
-+	}
-+
-+	free(line);
-+	fclose(f);
-+
-+	if (found == 0)
-+		return error_set(err, -1, "%s not found for fd %d",
-+				 prefix, fd);
-+
-+	return 0;
-+}
-+
-+TEST(eventfd05)
-+{
-+	struct error err = {0};
-+	int fd, ret;
-+
-+	fd = sys_eventfd2(0, EFD_SEMAPHORE);
-+	ASSERT_GE(fd, 0);
-+
-+	ret = fcntl(fd, F_GETFL);
-+	ASSERT_GT(ret, -1);
-+	EXPECT_EQ(ret & O_RDWR, O_RDWR);
-+
-+	// The semaphore could only be obtained from fdinfo.
-+	ret = verify_fdinfo(fd, &err, "eventfd-semaphore: ", 19, "1\n");
-+	if (ret != 0)
-+		ksft_print_msg("eventfd-semaphore check failed, msg: %s\n",
-+				err.msg);
-+	EXPECT_EQ(ret, 0);
-+
-+	close(fd);
-+}
-+
-+TEST_HARNESS_MAIN
--- 
-2.25.1
+> > +               kvm_vcpu_kick(target_vcpu);
 
+...
+
+> > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> > index 87b78d63e81d..df9ec357d538 100644
+> > --- a/arch/x86/kvm/x86.c
+> > +++ b/arch/x86/kvm/x86.c
+> > @@ -10858,6 +10858,14 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
+> >
+> >                 if (kvm_check_request(KVM_REQ_UPDATE_CPU_DIRTY_LOGGING, vcpu))
+> >                         static_call(kvm_x86_update_cpu_dirty_logging)(vcpu);
+> > +
+> > +               if (kvm_check_request(KVM_REQ_UPDATE_PROTECTED_GUEST_STATE, vcpu)) {
+> > +                       kvm_vcpu_reset(vcpu, true);
+> > +                       if (vcpu->arch.mp_state != KVM_MP_STATE_RUNNABLE) {
+> > +                               r = 1;
+> > +                               goto out;
+> > +                       }
+> > +               }
+> >         }
+> >
+> >         if (kvm_check_request(KVM_REQ_EVENT, vcpu) || req_int_win ||
+> > @@ -13072,6 +13080,9 @@ static inline bool kvm_vcpu_has_events(struct kvm_vcpu *vcpu)
+> >         if (kvm_test_request(KVM_REQ_PMI, vcpu))
+> >                 return true;
+> >
+> > +       if (kvm_test_request(KVM_REQ_UPDATE_PROTECTED_GUEST_STATE, vcpu))
+> > +               return true;
+> > +
+> >         if (kvm_arch_interrupt_allowed(vcpu) &&
+> >             (kvm_cpu_has_interrupt(vcpu) ||
+> >             kvm_guest_apic_has_interrupt(vcpu)))
+> > --
+> > 2.25.1
+> >
+> >
 
