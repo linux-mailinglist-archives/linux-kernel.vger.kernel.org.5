@@ -1,257 +1,200 @@
-Return-Path: <linux-kernel+bounces-20139-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20141-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C6254827A7C
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 23:06:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F3CA827A80
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 23:09:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C10FA1C22E38
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 22:06:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2D960285153
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 22:09:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7757256461;
-	Mon,  8 Jan 2024 22:06:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90EE056466;
+	Mon,  8 Jan 2024 22:09:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=seco.com header.i=@seco.com header.b="G7k2ZBqS";
-	dkim=pass (2048-bit key) header.d=seco.com header.i=@seco.com header.b="G7k2ZBqS"
-Received: from EUR01-VE1-obe.outbound.protection.outlook.com (mail-ve1eur01on2052.outbound.protection.outlook.com [40.107.14.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="FiNY4zh4"
+Received: from mail-vk1-f175.google.com (mail-vk1-f175.google.com [209.85.221.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D34912B6B;
-	Mon,  8 Jan 2024 22:05:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=seco.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=seco.com
-ARC-Seal: i=2; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=pass;
- b=E7rnx4Uhqcif/09HB6BrWLw4sSrDQ0dbmXyTWkp44HpfmuUij1iwIS8+3pAVhiD3FPyJPFUAL5HJS3oh1TbOPeXmat1aWkm3Y79R73pw2FGH/fE9HXBI3JOinvPw+LH12T5wajd72fJt3GAVuNnHae5T7HReA01F/kq0LPMk3aZu6kvBs6aJ3Cp2p/GAeFR/jRNJpshF7IbfNaGK8FFbMCJcsuaKeVncqUN9tmnBs4EMI5WRXTpBqmV+ookgq+4dVQsLzVy6J8Ra0NrDkqqx9xF9n31sXljqJQ+hpeE+oC7uO8oxWmFDf6Qm5Fr1JO5lzCPE3Sn66/scAscFMZdLxA==
-ARC-Message-Signature: i=2; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=dYnMLReIpQ8/eeHbUiWDOagmkFsywJiGN6E6hcWujEA=;
- b=l0pLcUTvi/W2R6Aazgijzl2lZHtKqCezWX7sJwMFuslGqxh4J01jjHqMDk+ky8b09tKqhCi15wTRAwYPeQ6TWcHFnxAu5+JPuPSYGdS/q5JzSBJchyqJen8hOe+W/UfXRTZH61GO/xXrcNhBBfjToZYeGml9XxOmZ0ZojxlOQF5iAAqEF91nHD+9BQUoZGOKln3PXCALiSE293gByKKY9GQWql+zp1HJme5kuhnzUWoWBjY2N1cuASo23bL+rTUFjHvRsZO2EGxkK/H14un9F8Z3nLQZgMuHLASzz/yicsYL/5yi5Uw0J9CDwyrqeMi8XU5dnyuzGrLFDSGlvPYBjg==
-ARC-Authentication-Results: i=2; mx.microsoft.com 1; spf=pass (sender ip is
- 20.160.56.85) smtp.rcpttodomain=bootlin.com smtp.mailfrom=seco.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=seco.com;
- dkim=pass (signature was verified) header.d=seco.com; arc=pass (0 oda=1
- ltdi=1 spf=[1,1,smtp.mailfrom=seco.com] dkim=[1,1,header.d=seco.com]
- dmarc=[1,1,header.from=seco.com])
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=seco.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=dYnMLReIpQ8/eeHbUiWDOagmkFsywJiGN6E6hcWujEA=;
- b=G7k2ZBqScSoO1LDlVTTjXXK3yaqhhO1F/uk5dv2gREkAn/5/VH0S9WuHeqL4a6bs9ssgtNlcyjRio0hgJCQeOUxKhOTr9dGHiQ/wcgNmQ3HJAOL5WdWbNHSln4iD+G9u9z47GQ8NVYmAPQjKVWc4rBln0o+i89nS/XnZ+ALrtISHkG+K85j0PjsGPtY9E3cyP0jA2PWqGTXy7x9MplK6+LGcOD2Kr/1nnPiordMqSgS0010qEZfodjwoCi7+rHPRHsFQcJIedQP1lr8dd0ZUeeAyLbzm4OW09zcFYGffRRNsMI3GKAU0bQoGvzkhFeWZze0XpIRQ6DF56GgqJcxU6g==
-Received: from FR2P281CA0165.DEUP281.PROD.OUTLOOK.COM (2603:10a6:d10:99::7) by
- PAXPR03MB7729.eurprd03.prod.outlook.com (2603:10a6:102:205::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.21; Mon, 8 Jan
- 2024 22:05:55 +0000
-Received: from VI1EUR05FT007.eop-eur05.prod.protection.outlook.com
- (2603:10a6:d10:99:cafe::fa) by FR2P281CA0165.outlook.office365.com
- (2603:10a6:d10:99::7) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.14 via Frontend
- Transport; Mon, 8 Jan 2024 22:05:55 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 20.160.56.85)
- smtp.mailfrom=seco.com; dkim=pass (signature was verified)
- header.d=seco.com;dmarc=pass action=none header.from=seco.com;
-Received-SPF: Pass (protection.outlook.com: domain of seco.com designates
- 20.160.56.85 as permitted sender) receiver=protection.outlook.com;
- client-ip=20.160.56.85; helo=repost-eu.tmcas.trendmicro.com; pr=C
-Received: from repost-eu.tmcas.trendmicro.com (20.160.56.85) by
- VI1EUR05FT007.mail.protection.outlook.com (10.233.242.84) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7135.32 via Frontend Transport; Mon, 8 Jan 2024 22:05:54 +0000
-Received: from outmta (unknown [192.168.82.135])
-	by repost-eu.tmcas.trendmicro.com (Trend Micro CAS) with ESMTP id 6B8882008009D;
-	Mon,  8 Jan 2024 22:05:54 +0000 (UTC)
-Received: from EUR04-VI1-obe.outbound.protection.outlook.com (unknown [104.47.14.50])
-	by repre.tmcas.trendmicro.com (Trend Micro CAS) with ESMTPS id A2AB62008006F;
-	Mon,  8 Jan 2024 22:05:52 +0000 (UTC)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TaplvNWlKVC4dc82ZT9bhMCzahMy5X3BFWTOWg4K5wAq9i9w5ssvZaQ40DXOiAN/xo7TCUccTP5uSoO4LE4bonyX5J9DEDqUdj0q/+HA6Vs9k3YHnQYvyZh4pnLzG5J2cVtQLLxsBhPzyPlCFl2ptsmCfSSGa3WscaKyAlFyrpFK3rTv4DKbwK0L1v9hhWSj48O8IQkdbIT9NHJYpVTIoCLUstM5grmGZV1w2BJUX30ve/puegJoFZJDyqSFLMZoOeqBD28IeMIF1lxkO1F5ycSF4b6yMuVmJQ/euAwOO6N6FVBkfmKA4ZIBpyAsPTuPqiAadgaoHSNf7r1J9ElomA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=dYnMLReIpQ8/eeHbUiWDOagmkFsywJiGN6E6hcWujEA=;
- b=YOZiufFtRfxmRbLVWeqeDGTTrZMJesjMkjdzMHmgIhj97wKasCt3G2qg/TFKwkCmR+JqhRXiOprdjUBcgGL1yvuveqNgIZ0y1L9WYKKgo6IGM3OQL6iuxXI4AdvN0yvFPxYWM8J6uFtd3cxRl2pQv+GMKvbhaJJZ5RA2EItguguCQkDPPuonQSLxHkNkcyE10463M1m3FGjIFJp8oxgYQDuVmKxCXP4Hm6SwpxOth+X6JEkXMRdTrp1xKwNrh8H3VOsq/BaK3ETcpTdul+o+8OHXS9iEet57QJCeCOqzy6UAa9lEOp8mrlSA0x4k1qX4PDGL7NyePtrBAXoMENwZaA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=seco.com; dmarc=pass action=none header.from=seco.com;
- dkim=pass header.d=seco.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=seco.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=dYnMLReIpQ8/eeHbUiWDOagmkFsywJiGN6E6hcWujEA=;
- b=G7k2ZBqScSoO1LDlVTTjXXK3yaqhhO1F/uk5dv2gREkAn/5/VH0S9WuHeqL4a6bs9ssgtNlcyjRio0hgJCQeOUxKhOTr9dGHiQ/wcgNmQ3HJAOL5WdWbNHSln4iD+G9u9z47GQ8NVYmAPQjKVWc4rBln0o+i89nS/XnZ+ALrtISHkG+K85j0PjsGPtY9E3cyP0jA2PWqGTXy7x9MplK6+LGcOD2Kr/1nnPiordMqSgS0010qEZfodjwoCi7+rHPRHsFQcJIedQP1lr8dd0ZUeeAyLbzm4OW09zcFYGffRRNsMI3GKAU0bQoGvzkhFeWZze0XpIRQ6DF56GgqJcxU6g==
-Authentication-Results-Original: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=seco.com;
-Received: from DB9PR03MB8847.eurprd03.prod.outlook.com (2603:10a6:10:3dd::13)
- by AM9PR03MB7631.eurprd03.prod.outlook.com (2603:10a6:20b:412::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.19; Mon, 8 Jan
- 2024 22:05:50 +0000
-Received: from DB9PR03MB8847.eurprd03.prod.outlook.com
- ([fe80::5cfa:9e05:d8dc:ba0f]) by DB9PR03MB8847.eurprd03.prod.outlook.com
- ([fe80::5cfa:9e05:d8dc:ba0f%7]) with mapi id 15.20.7159.020; Mon, 8 Jan 2024
- 22:05:50 +0000
-Message-ID: <ff40a221-38b5-40d7-a0fc-cf617853a096@seco.com>
-Date: Mon, 8 Jan 2024 17:05:47 -0500
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] rtc: abx80x: Don't warn about oscillator failure after
- PoR
-Content-Language: en-US
-From: Sean Anderson <sean.anderson@seco.com>
-To: Alessandro Zummo <a.zummo@towertech.it>,
- Alexandre Belloni <alexandre.belloni@bootlin.com>, linux-rtc@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-References: <20231019163931.3682923-1-sean.anderson@seco.com>
- <c3cda013-eab0-46c0-a89a-ed51ecfd1e1d@seco.com>
-In-Reply-To: <c3cda013-eab0-46c0-a89a-ed51ecfd1e1d@seco.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MN2PR22CA0029.namprd22.prod.outlook.com
- (2603:10b6:208:238::34) To DB9PR03MB8847.eurprd03.prod.outlook.com
- (2603:10a6:10:3dd::13)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E1395644F
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 22:09:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-vk1-f175.google.com with SMTP id 71dfb90a1353d-4b7480a80ceso1906107e0c.0
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 14:09:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1704751779; x=1705356579; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=zPwL0VIADWvObusNS4Aap9j3lSZsmdqtr+hhZskgl0M=;
+        b=FiNY4zh45Wb22FNH7vlPypDwgurJvV3rZv+3rppt5QVdyBGK/f0W6W6VQHlykCwAxj
+         TrlL0wWDdg3kI8flLQovZnVb95wzc8dZsGlKcj1pYnKyHXW9lyYC1qVxU4G5S6yCdjfz
+         HKxPE+TJEysExZcVLG3nvdTgMxWAIbzuK0UW4dmkxpZVwid3HLXwWEbE90dZAVS5znmI
+         sVwY35TIz6l0a/0EL6CLNdyrEzTqkBgVEe0l7zSAGpIt3f3g9xVctLtdbbtJah9Af4I7
+         8+4WrNJV3/YDrkNjqi4VgSQQ2kx3XW0BXvUSuP0QhiUMq1I2GQaedB9+4AKshpNiVvQf
+         bdpg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704751779; x=1705356579;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zPwL0VIADWvObusNS4Aap9j3lSZsmdqtr+hhZskgl0M=;
+        b=BtTpSuILfU0xDVyHB2tb3h/bPEh1klgcdkdaPSFoXMtILZenshVET4Ol0Rc2xORmBM
+         NpPv4tbxj//HEIFzonNvjEt9Zcq31uRB9wxs3v7WRttmaxVOh4q05H9nJIZr7ICsL49v
+         Z4n6FWTIgaEltZqOX2Mh0zoAoGdaxy1nmRensDiN6Mq71oVUrIpJq1TZAODpaif4HSUA
+         ShvhrgMjNRoF2htlPWSTmqDi3+I0rpwgplfb2eYkFGcHrtLfzq+ti52aeN/pTQFT543K
+         UH1vqrVqClAvzj+ebYvoAKvZfwesYaQ3DYQfz3xB53TxSaBOPKiHgaJlEYUa/fz8k21y
+         kt0Q==
+X-Gm-Message-State: AOJu0YyCMQViF8yH9ScIQeIlML9u6NE3QKrx2N2SdzAl8eFOxmyJoh5d
+	gWSQYFKmuem55EXpFizJ7oTwDCoL+XnZceBbZp1gKK0axZ8=
+X-Google-Smtp-Source: AGHT+IE6hTwFu+QRXDhnPkTMqdy0XSYmsMHuM7fSO/yZXKcRDQzPFDoRFNo79VfhiJlWDzMOLsuoMw==
+X-Received: by 2002:a05:6122:10e4:b0:4b6:c780:ac90 with SMTP id m4-20020a05612210e400b004b6c780ac90mr334731vko.0.1704751778736;
+        Mon, 08 Jan 2024 14:09:38 -0800 (PST)
+Received: from ubuntu-server-vm-macos (072-189-067-006.res.spectrum.com. [72.189.67.6])
+        by smtp.gmail.com with ESMTPSA id em8-20020a056122380800b004b6d2b7109esm81131vkb.46.2024.01.08.14.07.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Jan 2024 14:08:07 -0800 (PST)
+Date: Mon, 8 Jan 2024 22:07:09 +0000
+From: William Breathitt Gray <william.gray@linaro.org>
+To: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Cc: lee@kernel.org, alexandre.torgue@foss.st.com, linux-iio@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 10/10] counter: stm32-timer-cnt: add support for
+ capture events
+Message-ID: <ZZxyDbYC9oHNKcGF@ubuntu-server-vm-macos>
+References: <20231220145726.640627-1-fabrice.gasnier@foss.st.com>
+ <20231220145726.640627-11-fabrice.gasnier@foss.st.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-TrafficTypeDiagnostic:
-	DB9PR03MB8847:EE_|AM9PR03MB7631:EE_|VI1EUR05FT007:EE_|PAXPR03MB7729:EE_
-X-MS-Office365-Filtering-Correlation-Id: e6587377-1185-4528-fdae-08dc1095fc53
-X-TrendMicro-CAS-OUT-LOOP-IDENTIFIER: 656f966764b7fb185830381c646b41a1
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam-Untrusted: BCL:0;
-X-Microsoft-Antispam-Message-Info-Original:
- X0TerTqr+njOZEwVLAJ1DkFsiGwewuGrt70mFOEiVnYNBL6xpftlrj84D0tT/eQgzNip6qCT+G33e+9pSUpls62Dg4h9cFYaeMq0cSOODjKZJPepHjbloBbWWX0IBJOrOG6L4+wZTlSizJIkAatCMkaovkBcfqwxk3KKthvfUcqNcxGuLRuZZMIdmKOiEHbwy1H5Tv4IgDsCSQ/gYG4eznOge8hDNhx3b+I5QJdbR3xnLrD00qYo9zFYfw4OxShEEqNGHR2ZNMMhirOJQwuCVnfqmjO7VkvXrnS97+4CCh+tgLzA72Cl4GiB24bb1TN2m8fptcdfFq3nniEW+9WR5kTGPvOwqzR+YxuQnGolIoD50eBe6pUQ0p57gK76JOZrGGYT/Y+1rw8S6v2a7UTxBXLyKt+D2ui2zbY5SCxY2J7kF4g0KwVgESOSiMzQ9AeyNsFnyVw9a0nZq+yQS+iy3EASnt/aaueK00kcA6AevIfPAAnLo161pAtYOo3pv77QTkSPB797DDBlaVUNZ2+qbyxKaSTCyXeQiobiBxBzqfDOOxyk8pvH+vdd/Ty2gh2gPZYtO+s0iVhOp7L19YGp/OLjv8ox6jm9SM4ss4CXrn5NFdTe97nU3RSXoTa8MDulnlwwKLF9p8Aj38ByJBoMzr6SZwXFpxSZ1+HifTbq3QHz/iZLNJX7iO0Uhdw66+IwDbOMRkFWJPNJDLpTiCnlO2hsg2jgiB14BT1tDRb0PZNxl2wXNVn/JZDfBuEkpWvetQU0DHa/BzVLLMYyWCEK2A==
-X-Forefront-Antispam-Report-Untrusted:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR03MB8847.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(366004)(396003)(346002)(376002)(39850400004)(230922051799003)(230273577357003)(230173577357003)(64100799003)(451199024)(186009)(1800799012)(38100700002)(38350700005)(36756003)(86362001)(31686004)(31696002)(6512007)(6666004)(6506007)(52116002)(53546011)(110136005)(316002)(6486002)(4326008)(478600001)(66476007)(26005)(83380400001)(66946007)(66556008)(2616005)(8676002)(8936002)(41300700001)(2906002)(44832011)(5660300002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR03MB7631
-X-EOPAttributedMessage: 0
-X-MS-Exchange-Transport-CrossTenantHeadersStripped:
- VI1EUR05FT007.eop-eur05.prod.protection.outlook.com
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id-Prvs:
-	721d1231-fa41-4aee-8ef1-08dc1095f969
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	TCdH5RQ+ptRbB7Gs9H8fUPeSUpfcftuCPTLXkT2SpLCw4OQoYmI06xDPzbUlUX+rbFK/SiEveVTcMKEZlBjXQEpbEaE9ULn6r5SO6Fnei0CMSRdpsZQj+HlNKSJPIH4svQwxZg1v5IyXwgyJR90cicIzbBLPwKfaMBh42gk4fg7BD3JorEboOAIgQg5gun67HJvbmCVh5RkVsDOMfckjzDpo+qN1g9FONpFckaIkeg8CQ+0+6ubYTBIXRd+HZkUM3UPZ4ehOsXpQE0j7Bnm9fCnpxHhY5H42schO8qVM87etY5IGvx1T79gVBbw8y4sTP5VKR3DULI8bbLxqjoQMLr/ogA/JyQFu609mDn2LeKmGvLx1fAnHpObF64orO0MZt1I4uTy2xOkbPig7FCUSfzlpOoNKX3XStXaH4hM3Lt5p3nPmjsHYwtalEvqD5USOBQRPFzzSvCEy+d3nBnRzdE9QjiY/CBQuazlw4AVam+WPs/4CScWERBJgJs7hvMDjXmjpLU/1nLGV3Qwt4iNnp8JekJ/trB4+LQdugBiR1xsiWQB/GuCVt9+Zh+F7AS433ntB9iJ7DWq/bWejt7si85bxw7W0SAGDS3qPuksGB3EK7dlC9yQ5uyaNK1/Z+riaXjcT6sIa1WivJvc31uO/5k8dUZ0mpQDwxvJVu4oh0Bw0lzN/iNOrYMi1Wu4ZV7lE0IWsu1BNUUBxMRKAgO/aw3OZMFO4q2D0Grg3e0oT0ZJXtT9bxP40ar2v201D2LnEVk/vZKuqrDPLgK3kIem0B/dmlcUrEI2272azWwFkyyO9HsYx4YXtEgkpmnU3IbdGoYVbyJ5NI4P4bFI1/lVBztszNWmvBlf6Ym/sAT84evA=
-X-Forefront-Antispam-Report:
-	CIP:20.160.56.85;CTRY:NL;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:repost-eu.tmcas.trendmicro.com;PTR:repost-eu.tmcas.trendmicro.com;CAT:NONE;SFS:(13230031)(39850400004)(346002)(376002)(136003)(396003)(230173577357003)(230273577357003)(230922051799003)(64100799003)(186009)(1800799012)(451199024)(82310400011)(46966006)(36840700001)(40470700004)(356005)(41300700001)(7636003)(7596003)(86362001)(34020700004)(8676002)(8936002)(6486002)(40480700001)(40460700003)(31686004)(31696002)(2906002)(5660300002)(82740400003)(110136005)(36756003)(336012)(70206006)(26005)(316002)(2616005)(70586007)(36860700001)(6512007)(6506007)(83380400001)(47076005)(478600001)(6666004)(53546011)(44832011)(4326008)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: seco.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Jan 2024 22:05:54.8520
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: e6587377-1185-4528-fdae-08dc1095fc53
-X-MS-Exchange-CrossTenant-Id: bebe97c3-6438-442e-ade3-ff17aa50e733
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=bebe97c3-6438-442e-ade3-ff17aa50e733;Ip=[20.160.56.85];Helo=[repost-eu.tmcas.trendmicro.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	VI1EUR05FT007.eop-eur05.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR03MB7729
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="WiW47Lt2gdjHTFQC"
+Content-Disposition: inline
+In-Reply-To: <20231220145726.640627-11-fabrice.gasnier@foss.st.com>
 
-On 12/11/23 11:03, Sean Anderson wrote:
-> On 10/19/23 12:39, Sean Anderson wrote:
->> According to the datasheet, the "oscillator failure" bit is set
->> 
->>> ...on a power on reset, when both the system and battery voltages have
->>> dropped below acceptable levels. It is also set if an Oscillator Failure
->>> occurs....
->> 
->> From testing, this bit is also set if a software reset is initiated.
->> 
->> This bit has a confusing name; it really tells us whether the time data
->> is valid. We clear it when writing the time. If it is still set, that
->> means there is a persistent issue (such as an oscillator failure),
->> instead of a transient one (such as power loss).
->> 
->> Because there are several other reasons which might cause this bit
->> to be set (including booting for the first time or a battery failure),
->> do not warn about oscillator failures willy-nilly. This may cause system
->> integrators to waste time looking into the wrong line of investigation.
->> 
->> We continue printing a message about invalid time data or an oscillator
->> failure. There is no voltimeter in this RTC, so this is the best
->> indication that the battery is dead (or dying) and reeds replacement.
->> 
->> Signed-off-by: Sean Anderson <sean.anderson@seco.com>
->> ---
->> Note that the following drivers all warn when they detect a problem with
->> the oscillator:
->> 
->> drivers/rtc/rtc-ds1672.c
->> drivers/rtc/rtc-pcf*.c
->> drivers/rtc/rtc-rs5c*.c
->> drivers/rtc/rtc-sc27xx.c
->> 
->> So warning about such an error has good precedent.
->> 
->> Changes in v3:
->> - Use info since this is a good indication of a battery failure
->> 
->> Changes in v2:
->> - Use debug instead of info in the typical case (no battery)
->> 
->>  drivers/rtc/rtc-abx80x.c | 17 ++++++++++++++++-
->>  1 file changed, 16 insertions(+), 1 deletion(-)
->> 
->> diff --git a/drivers/rtc/rtc-abx80x.c b/drivers/rtc/rtc-abx80x.c
->> index fde2b8054c2e..f463a58a240b 100644
->> --- a/drivers/rtc/rtc-abx80x.c
->> +++ b/drivers/rtc/rtc-abx80x.c
->> @@ -127,6 +127,7 @@ struct abx80x_priv {
->>  	struct rtc_device *rtc;
->>  	struct i2c_client *client;
->>  	struct watchdog_device wdog;
->> +	bool wrote_time;
->>  };
->>  
->>  static int abx80x_write_config_key(struct i2c_client *client, u8 key)
->> @@ -179,6 +180,7 @@ static int abx80x_enable_trickle_charger(struct i2c_client *client,
->>  static int abx80x_rtc_read_time(struct device *dev, struct rtc_time *tm)
->>  {
->>  	struct i2c_client *client = to_i2c_client(dev);
->> +	struct abx80x_priv *priv = i2c_get_clientdata(client);
->>  	unsigned char buf[8];
->>  	int err, flags, rc_mode = 0;
->>  
->> @@ -193,7 +195,18 @@ static int abx80x_rtc_read_time(struct device *dev, struct rtc_time *tm)
->>  			return flags;
->>  
->>  		if (flags & ABX8XX_OSS_OF) {
->> -			dev_err(dev, "Oscillator failure, data is invalid.\n");
->> +			/*
->> +			 * The OF bit can be set either because of a reset
->> +			 * (PoR/Software reset) or because of an oscillator
->> +			 * failure. Effectively, it indicates that the stored
->> +			 * time is invalid. When we write the time, we clear
->> +			 * this bit. If it stays set, then this indicates an
->> +			 * oscillator failure.
->> +			 */
->> +			if (priv->wrote_time)
->> +				dev_err(dev, "Oscillator failure\n");
->> +			else
->> +				dev_info(dev, "Time data invalid\n");
->>  			return -EINVAL;
->>  		}
->>  	}
->> @@ -219,6 +232,7 @@ static int abx80x_rtc_read_time(struct device *dev, struct rtc_time *tm)
->>  static int abx80x_rtc_set_time(struct device *dev, struct rtc_time *tm)
->>  {
->>  	struct i2c_client *client = to_i2c_client(dev);
->> +	struct abx80x_priv *priv = i2c_get_clientdata(client);
->>  	unsigned char buf[8];
->>  	int err, flags;
->>  
->> @@ -252,6 +266,7 @@ static int abx80x_rtc_set_time(struct device *dev, struct rtc_time *tm)
->>  		dev_err(&client->dev, "Unable to write oscillator status register\n");
->>  		return err;
->>  	}
->> +	priv->wrote_time = true;
->>  
->>  	return 0;
->>  }
-> 
-> ping?
 
-ping again?
+--WiW47Lt2gdjHTFQC
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, Dec 20, 2023 at 03:57:26PM +0100, Fabrice Gasnier wrote:
+> +	/*
+> +	 * configure channel in input capture mode, map channel 1 on TI1, chann=
+el2 on TI2...
+> +	 * Select both edges / non-inverted to trigger a capture.
+> +	 */
+
+I suggest defining a new local variable 'cc' to point to stm32_cc[ch]. I
+think that's make the code look nicer here to avoid all the array index
+syntax every time you access stm32_cc[ch].
+
+> +	if (enable) {
+> +		/* first clear possibly latched capture flag upon enabling */
+> +		regmap_read(priv->regmap, TIM_CCER, &ccer);
+> +		if (!(ccer & stm32_cc[ch].ccer_bits)) {
+
+Try regmap_test_bits() here instead of using regmap_read().
+
+> +			sr =3D ~TIM_SR_CC_IF(ch);
+> +			regmap_write(priv->regmap, TIM_SR, sr);
+
+Eliminate 'sr' by regmap_write(priv->regmap, TIM_SR, ~TIM_SR_CC_IF(ch)).
+
+> @@ -366,6 +460,12 @@ static int stm32_count_events_configure(struct count=
+er_device *counter)
+>  				regmap_write(priv->regmap, TIM_SR, (u32)~TIM_SR_UIF);
+>  			dier |=3D TIM_DIER_UIE;
+>  			break;
+> +		case COUNTER_EVENT_CAPTURE:
+> +			ret =3D stm32_count_capture_configure(counter, event_node->channel, t=
+rue);
+> +			if (ret)
+> +				return ret;
+> +			dier |=3D TIM_DIER_CC_IE(event_node->channel);
+
+Ah, now I understand why the previous patch OR'd TIM_DIER_UIE to dier.
+Apologies for the noise.
+
+> @@ -374,6 +474,15 @@ static int stm32_count_events_configure(struct count=
+er_device *counter)
+> =20
+>  	regmap_write(priv->regmap, TIM_DIER, dier);
+> =20
+> +	/* check for disabled capture events */
+> +	for (i =3D 0 ; i < priv->nchannels; i++) {
+> +		if (!(dier & TIM_DIER_CC_IE(i))) {
+> +			ret =3D stm32_count_capture_configure(counter, i, false);
+> +			if (ret)
+> +				return ret;
+> +		}
+
+Would for_each_clear_bitrange() in linux/find.h work for this loop?
+
+> @@ -504,7 +620,7 @@ static irqreturn_t stm32_timer_cnt_isr(int irq, void =
+*ptr)
+>  	 * Some status bits in SR don't match with the enable bits in DIER. Onl=
+y take care of
+>  	 * the possibly enabled bits in DIER (that matches in between SR and DI=
+ER).
+>  	 */
+> -	dier &=3D TIM_DIER_UIE;
+> +	dier &=3D (TIM_DIER_UIE | TIM_DIER_CC1IE | TIM_DIER_CC2IE | TIM_DIER_CC=
+3IE | TIM_DIER_CC4IE);
+
+Again, sorry for the noise on the previous patch; this makes sense now.
+
+> @@ -515,6 +631,15 @@ static irqreturn_t stm32_timer_cnt_isr(int irq, void=
+ *ptr)
+>  		clr &=3D ~TIM_SR_UIF;
+>  	}
+> =20
+> +	/* Check capture events */
+> +	for (i =3D 0 ; i < priv->nchannels; i++) {
+> +		if (sr & TIM_SR_CC_IF(i)) {
+
+Would for_each_set_bitrange() in linux/find.h work for this loop?
+
+> +			counter_push_event(counter, COUNTER_EVENT_CAPTURE, i);
+> +			clr &=3D ~TIM_SR_CC_IF(i);
+
+Perhaps u32p_replace_bits(&clr, 0, TIM_SR_CC_IF(i)) is clearer here.
+
+> @@ -627,8 +752,11 @@ static int stm32_timer_cnt_probe(struct platform_dev=
+ice *pdev)
+>  		}
+>  	} else {
+>  		for (i =3D 0; i < priv->nr_irqs; i++) {
+> -			/* Only take care of update IRQ for overflow events */
+> -			if (i !=3D STM32_TIMERS_IRQ_UP)
+> +			/*
+> +			 * Only take care of update IRQ for overflow events, and cc for
+> +			 * capture events.
+> +			 */
+> +			if (i !=3D STM32_TIMERS_IRQ_UP && i !=3D STM32_TIMERS_IRQ_CC)
+>  				continue;
+
+Okay, I see now why you have this check. This should be fine as it'll
+makes adding support in the future for the other IRQs a less invasive
+change.
+
+William Breathitt Gray
+
+--WiW47Lt2gdjHTFQC
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQSNN83d4NIlKPjon7a1SFbKvhIjKwUCZZxyDQAKCRC1SFbKvhIj
+Ky5wAP4gGBh3+vNrHgCFcl/2xnX9onULDns/GxDSAl/SYUHaxQD/UlBRNYjuTlpn
+mQy4bZaGfms5hT09QoJcBuaniegpLQg=
+=2KS6
+-----END PGP SIGNATURE-----
+
+--WiW47Lt2gdjHTFQC--
 
