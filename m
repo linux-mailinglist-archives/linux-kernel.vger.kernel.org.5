@@ -1,63 +1,56 @@
-Return-Path: <linux-kernel+bounces-19959-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19960-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD3EF827776
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 19:27:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A8C18827781
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 19:31:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 684F31F23A15
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 18:27:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4188F284879
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 18:31:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DDF754F8D;
-	Mon,  8 Jan 2024 18:27:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0402146449;
+	Mon,  8 Jan 2024 18:31:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="1UE7pWXu"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5340954BD7;
-	Mon,  8 Jan 2024 18:27:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1d542701796so5575345ad.1;
-        Mon, 08 Jan 2024 10:27:27 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704738446; x=1705343246;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=foK6GojmVN5cHJkPZwe/GjKQwChqN60GolaCvetvTnQ=;
-        b=Jr08JsocOAL6GPQ0196Ery6UMVU6mC3rj/MZ+yi/LHdE0wMKv2G6UhlLBwTpOAjcSv
-         ByMVKBOsnc76YQXgogX2YnHPhP9NHlfnlrlMIhI5PUWgfSRfX7nZAoz8sBvtttDeW6Uu
-         Y9zpb5T3ToYc4V7VvVx1AasTf6ZJXxvCSJhNJHZZyJcKPDb/YfdCgqZi/khu87wal76s
-         LGkQiNAkqx76pk9WC3MIrIuMTIwU0sNs0JjPgUqQHrjZXdE39mVSORdHBiQQCpxDnOXb
-         r+ZxVQV11RguyEl/F0GZFKKkVvzJvVCokjjwvXHb5CCxQGlCZ3NgDtrOn5UCVo96dY7A
-         8VVQ==
-X-Gm-Message-State: AOJu0YyDPv8D6DM9TPCtz2egYUR99r8pUi1JmjCp+7S7Ck1aO3dkYuQz
-	oVnF0ujZ7a9oJFKXm5EtsmU=
-X-Google-Smtp-Source: AGHT+IFZvfVF9hWJMJ7E58jI4gNUXscahK/pXAC7nJ10yV9YVSmbN1dji7Yjp31xMJwqtlcp7cas1w==
-X-Received: by 2002:a17:90a:a004:b0:28c:4b9:4fcc with SMTP id q4-20020a17090aa00400b0028c04b94fccmr1345664pjp.74.1704738446622;
-        Mon, 08 Jan 2024 10:27:26 -0800 (PST)
-Received: from localhost (fpd11144dd.ap.nuro.jp. [209.17.68.221])
-        by smtp.gmail.com with ESMTPSA id k13-20020a17090aaa0d00b0028d19ddb1afsm282269pjq.33.2024.01.08.10.27.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Jan 2024 10:27:26 -0800 (PST)
-Date: Tue, 9 Jan 2024 03:27:24 +0900
-From: Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
-To: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
-Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Michal Simek <michal.simek@amd.com>,
-	Thippeswamy Havalige <thippeswamy.havalige@amd.com>,
-	Bharat Kumar Gogada <bharat.kumar.gogada@amd.com>,
-	linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org, dan.carpenter@linaro.org,
-	kernel-janitors@vger.kernel.org, error27@gmail.com
-Subject: Re: [PATCH next] PCI: xilinx-xdma: Fix error code in
- xilinx_pl_dma_pcie_init_irq_domain()
-Message-ID: <20240108182724.GA2638520@rocinante>
-References: <20231030072757.3236546-1-harshit.m.mogalapalli@oracle.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0090825755
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 18:30:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=VlUAd8oG1kTAZGT+1dUtSqGacdlM72KwoMUwqlEUI6I=; b=1UE7pWXutFGrTxLmE5ZCVPTO14
+	M63GVNMrAPGye81IQWjB8pvSE5kTNKazD+g7m8vXx3iKyHnaeNctY5MyUObp0EBQJxnQB4TeT31rG
+	qCVQhh9yAm/bvbgFFsvBWJlXdPQgp0f2B1T4cjncVpo8vof2iOW80B6rbL62VIb3Z5NIvrEBe/MsQ
+	JJGknppsWIRU6FyE3KMZwHVOxaE7UMNLmGFMAMklZbBUPnfTvvp9ruRBxlrSWzy66vfDtCpKfbG2k
+	Rp6nkLFkzclC0E5YijowGnOEvBOt3xOqzOLdLrS80YqByxro2O02GCumsTCRVomagWyJHTbGDFHB8
+	LA6R+/1A==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:45438)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1rMuOf-0003Jh-1A;
+	Mon, 08 Jan 2024 18:30:49 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1rMuOi-0003S7-22; Mon, 08 Jan 2024 18:30:52 +0000
+Date: Mon, 8 Jan 2024 18:30:52 +0000
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: Dimitri John Ledkov <dimitri.ledkov@canonical.com>
+Cc: linux-kernel@vger.kernel.org
+Subject: Re: [BUG] SHA-3 causes kmod 28 to segfault
+Message-ID: <ZZw/XK12CnSgPtaB@shell.armlinux.org.uk>
+References: <ZZwk8nFBTIMISLXp@shell.armlinux.org.uk>
+ <CADWks+Y7JOsvzWc50syVwOB9LF2Lxc_YiLzLxCkhEv8sBxrNvw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,16 +59,53 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231030072757.3236546-1-harshit.m.mogalapalli@oracle.com>
+In-Reply-To: <CADWks+Y7JOsvzWc50syVwOB9LF2Lxc_YiLzLxCkhEv8sBxrNvw@mail.gmail.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-Hello,
+On Mon, Jan 08, 2024 at 06:14:17PM +0000, Dimitri John Ledkov wrote:
+> Hi,
+> 
+> On Mon, 8 Jan 2024 at 16:38, Russell King (Oracle)
+> <linux@armlinux.org.uk> wrote:
+> >
+> > Hi,
+> >
+> > When building 6.7 under Debian Oldstable with kmod 28, the installation
+> > of modules fails during depmod with a SEGV.
+> >
+> 
+> What is your kernel configuration, and I hope you make config choices
+> compatible with your target host OS.
 
-> Return -ENOMEM instead of zero(success) when it fails to get IRQ domain.
+"target host OS" - that's a total misnomer. "host" is generally what
+you're building under. "target" is generally what you're building _for_.
+So I don't fully understand your comment. Maybe you meant "target _and_
+host" ?
 
-Applied to controller/xilinx, thank you!
+> > Running under gdb:
+> >
+> > Program received signal SIGSEGV, Segmentation fault.
+> > __strlen_sse2 () at ../sysdeps/x86_64/multiarch/strlen-vec.S:133
+> >
+> > I have no further information as I can't remember how to get the debug
+> > info for packages under Debian - and even if I could, it's probably a
+> > bug in the kmod package that Debian will have absolutely no interest in
+> > fixing (based on previous experience reporting bugs to Debian.)
+> 
+> For latest kernel and latest kernel features support in kmod, latest
+> kmod is required. I.e. patched with
+> https://github.com/kmod-project/kmod/commit/510c8b7f7455c6613dd1706e5e41ec7b09cf6703
 
-[1/1] PCI: xilinx-xdma: Fix error code in xilinx_pl_dma_pcie_init_irq_domain()
-      https://git.kernel.org/pci/pci/c/2324be17b5e0
+Would be nice if there was some documentation. Also, as kconfig provides
+a mechanism to detect e.g. the version of tooling used to build the
+kernel, it would've been nice to detect whether depmod was sufficiently
+recent to support SHA3 and make the module signing SHA3 options depend
+on that.
 
-	Krzysztof
+Leaving this to a SEGV to indicate that something is wrong isn't user
+friendly.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
