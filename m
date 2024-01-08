@@ -1,128 +1,94 @@
-Return-Path: <linux-kernel+bounces-19177-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19178-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79949826953
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 09:19:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C5E1E826955
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 09:20:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DC2D4B211BC
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 08:19:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 63BEA1F21C5C
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 08:20:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F5DFBE6F;
-	Mon,  8 Jan 2024 08:18:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84E04BA33;
+	Mon,  8 Jan 2024 08:20:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="eSIDp8pI"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="nh0y+/W+"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com [209.85.219.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0AA8B665
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 08:18:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1d45f182fa2so13319485ad.3
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 00:18:43 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BB6CB65E
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 08:20:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f176.google.com with SMTP id 3f1490d57ef6-dbe39a45e8eso673900276.1
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 00:20:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1704701923; x=1705306723; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=linaro.org; s=google; t=1704702033; x=1705306833; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=PajgPkTBW3iluxw6UIGchSAnGs+6/xnB8PBfDDEr3ic=;
-        b=eSIDp8pIUHRUnRMpRxvShBcC93mhY4GBatmmS/Et4yMbFzihxilFXskFnVeRsq1UR+
-         azfv0ojCvJMg5TCEURzdYa1TkJttmljkwoaP0BfNHFSQHyO8jWiCCQoORok67sVUWRwG
-         zgO566agMWhFxA279kj/GOPpZWNG5g4RMgJ60=
+        bh=3HMbiqG8ChZxBryomK+7l9NLbRmnfN/R8I1A0uwEXdM=;
+        b=nh0y+/W+XOG8evQX3JzFG/Fk2o/ZxrbQV0kPpSCrdBeb7P2RVFz2iiCdNkEJ2Q7iOB
+         rmR0Dqc7lEGgEsU4EMDjGMYBxo2ceVVOexMCpA23yqEd/KTdM6ce71vWpfwTASB+AhCH
+         /Mln9bLJpkux3dt4RTX9Y9EGSXGM30zJc8sXzf7c8J+nLmOtuMktbeu3C0Y5k/kSIxvd
+         ccK3Zo4ALzOV+dxDxVpdLwdSBdIB9+bWTh66wRLpBGIeauHf8z3ZGriogz9hnu8B69fe
+         HHGXdNk+hoWxcCiIO5ImGRhgu+AnBKd6jsJDJUJR/QdQ6zyeNYYcdYr2uhKpw8hXxKrl
+         0A1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704701923; x=1705306723;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1704702033; x=1705306833;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=PajgPkTBW3iluxw6UIGchSAnGs+6/xnB8PBfDDEr3ic=;
-        b=wOyEqkyycfGhFuJW/LnVwCN5F+ofV+c5IEQ0XFhWYY5lFpW6qft6AqRKrWBab3kLP4
-         GRED9yDw44iasM15O0DhtfC3m0HMn/L5z0ywRHEaPc/YfsEKXr9y5N+jIX8mrK7MFGdQ
-         7fWkaqd6vwf08fnUQtOIbvbQDAvycgCILGqYebNRm1eYQc/aAZKFoYekQPFlrGcGaCPp
-         DlrF8JcacfbcgwWZkNahgaFvCcIwWTt9/YxwuumepiQV2hMYmfTnRK1NGJoGXHZUjCYD
-         urb8zCgWbocvW54vcdITYuqUTjxXYvnJ7EugzUQBdyKgPZOpFnVKnzT+RTlMYCHR/FmV
-         TcZA==
-X-Gm-Message-State: AOJu0YxhgcbBlOj/8NAq9WFt743aP0akTQarn4NFjX1X18Q3EwvxEva5
-	QAgxxF3rBETtbsPbJkBCM8lzWYIj8s4A
-X-Google-Smtp-Source: AGHT+IHWcp3e1C1pCxpD9ZE1ctDnpB0lvwh36vHDQttf1iujltl/YpMCv6WgVen6qzG0XRhu94epxQ==
-X-Received: by 2002:a17:902:dac5:b0:1d0:6ffe:9f5 with SMTP id q5-20020a170902dac500b001d06ffe09f5mr4245569plx.83.1704701923020;
-        Mon, 08 Jan 2024 00:18:43 -0800 (PST)
-Received: from treapking.tpe.corp.google.com ([2401:fa00:1:10:6859:f8da:3370:7a74])
-        by smtp.gmail.com with ESMTPSA id jj4-20020a170903048400b001d078445059sm5672513plb.143.2024.01.08.00.18.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Jan 2024 00:18:42 -0800 (PST)
-From: Pin-yen Lin <treapking@chromium.org>
-To: Michael Turquette <mturquette@baylibre.com>,
-	Stephen Boyd <sboyd@kernel.org>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Cc: Pin-yen Lin <treapking@chromium.org>,
-	Chen-Yu Tsai <wenst@chromium.org>,
-	Weiyi Lu <weiyi.lu@mediatek.com>,
-	linux-kernel@vger.kernel.org,
-	linux-clk@vger.kernel.org,
-	linux-mediatek@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org
-Subject: [PATCH v3 2/2] clk: mediatek: mt8183: Enable need_runtime_pm on mt8183-mfgcfg
-Date: Mon,  8 Jan 2024 16:18:16 +0800
-Message-ID: <20240108081834.408403-2-treapking@chromium.org>
-X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
-In-Reply-To: <20240108081834.408403-1-treapking@chromium.org>
-References: <20240108081834.408403-1-treapking@chromium.org>
+        bh=3HMbiqG8ChZxBryomK+7l9NLbRmnfN/R8I1A0uwEXdM=;
+        b=f8LSZrJcu2M954S3cGG22P86Ae8sYtkAi+wSiaUneW5q5Q8CCWGx/abDdWE/WafRbV
+         WC53OosOYByOt4MMRravYLJIRc5X2a1jF9RVN6j6Geo5XW4woi85UEsiLJR/oFitursM
+         tQcJkM+02C5kHNcb+SYmP7UKzrGaMTy//xM9Vc6nA9BruUHH6CG1DseiyUH8mcEivEwS
+         aaf5Wu9mSmhGXWsibfKhIk8u4CMnHpDhQjVtCCQ8ER8MIVUUxbDgfN/8358JfZy54DkN
+         DGcoPyg4SAA6M8CMFa7maq//MSB8uvbz6fH1Vje+ZLJiplIa/ws44hxD503vp0cfXbqz
+         HubQ==
+X-Gm-Message-State: AOJu0Yw4DO0nr1MZl6FEsSWM+jwJeaWZ4WuEebwNDJj1P40utqxijK+1
+	tSRBeXKU8RjGs7hyM07/tz9/WdKfCVTVMBlGx5o4Esbor0lTgwcGQW186akh
+X-Google-Smtp-Source: AGHT+IHMiO4upr0AvuxbnYzHHdp5azUyT28gcKKireut/Cz4/IMtjynVPM39+2xqwQ7S9lhur+XAQpuD6Oa5A17sB0Q=
+X-Received: by 2002:a25:9391:0:b0:dbe:cf37:c838 with SMTP id
+ a17-20020a259391000000b00dbecf37c838mr866827ybm.1.1704702033344; Mon, 08 Jan
+ 2024 00:20:33 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240103-si902x-fixes-v1-0-b9fd3e448411@ideasonboard.com>
+In-Reply-To: <20240103-si902x-fixes-v1-0-b9fd3e448411@ideasonboard.com>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Mon, 8 Jan 2024 09:20:21 +0100
+Message-ID: <CACRpkdbcmh-YwKii=2sHfpZ97Z5mQcz_e0Fy=MqgXrL3qG9QjQ@mail.gmail.com>
+Subject: Re: [PATCH 0/2] drm/bridge: sii902x: Crash fixes
+To: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Cc: Andrzej Hajda <andrzej.hajda@intel.com>, Neil Armstrong <neil.armstrong@linaro.org>, 
+	Robert Foss <rfoss@kernel.org>, Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, 
+	Jonas Karlman <jonas@kwiboo.se>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
+	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	Boris Brezillon <bbrezillon@kernel.org>, Peter Rosin <peda@axentia.se>, 
+	Fabrizio Castro <fabrizio.castro@bp.renesas.com>, Jyri Sarha <jsarha@ti.com>, 
+	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
+	Nishanth Menon <nm@ti.com>, Aradhya Bhatia <a-bhatia1@ti.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-mt8183-mfgcfg has a mutual dependency with genpd during the probing
-stage, so enable need_runtim_pm to prevent a deadlock in the following
-call stack:
+On Wed, Jan 3, 2024 at 2:31=E2=80=AFPM Tomi Valkeinen
+<tomi.valkeinen@ideasonboard.com> wrote:
 
-CPU0:  genpd_lock --> clk_prepare_lock
-genpd_power_off_work_fn()
- genpd_lock()
- generic_pm_domain::power_off()
-    clk_unprepare()
-      clk_prepare_lock()
+> Two small fixes to sii902x for crashes.
+>
+> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
 
-CPU1: clk_prepare_lock --> genpd_lock
-clk_register()
-  __clk_core_init()
-    clk_prepare_lock()
-    clk_pm_runtime_get()
-      genpd_lock()
+These look good to me!
+Acked-by: Linus Walleij <linus.walleij@linaro.org>
 
-Do a runtime PM get at the probe function to make sure clk_register()
-won't acquire the genpd lock.
-
-Fixes: acddfc2c261b ("clk: mediatek: Add MT8183 clock support")
-Signed-off-by: Pin-yen Lin <treapking@chromium.org>
----
-
-(no changes since v1)
-
- drivers/clk/mediatek/clk-mt8183-mfgcfg.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/clk/mediatek/clk-mt8183-mfgcfg.c b/drivers/clk/mediatek/clk-mt8183-mfgcfg.c
-index ba504e19d420..62d876e150e1 100644
---- a/drivers/clk/mediatek/clk-mt8183-mfgcfg.c
-+++ b/drivers/clk/mediatek/clk-mt8183-mfgcfg.c
-@@ -29,6 +29,7 @@ static const struct mtk_gate mfg_clks[] = {
- static const struct mtk_clk_desc mfg_desc = {
- 	.clks = mfg_clks,
- 	.num_clks = ARRAY_SIZE(mfg_clks),
-+	.need_runtime_pm = true,
- };
- 
- static const struct of_device_id of_match_clk_mt8183_mfg[] = {
--- 
-2.43.0.472.g3155946c3a-goog
-
+Yours,
+Linus Walleij
 
