@@ -1,259 +1,90 @@
-Return-Path: <linux-kernel+bounces-19480-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19469-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CAB26826D8A
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 13:13:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 827FA826D6C
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 13:08:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CCFA41C22388
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 12:13:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 27D451F2282A
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 12:08:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9460E405F6;
-	Mon,  8 Jan 2024 12:10:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35A0E2420E;
+	Mon,  8 Jan 2024 12:08:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="ME1wlTxe"
+	dkim=pass (4096-bit key) header.d=crudebyte.com header.i=@crudebyte.com header.b="akIgN35X"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
+Received: from kylie.crudebyte.com (kylie.crudebyte.com [5.189.157.229])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7034444374
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 12:10:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com [209.85.208.69])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id EC3DA3F744
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 12:10:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-	s=20210705; t=1704715824;
-	bh=5YU1NX55EkC+kEj5EffEs5H2AwvURtGdQ/HYjkwRM8I=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version;
-	b=ME1wlTxeCrq7VypFX8QeCIX9CrWDmtHj3rCV7u52LprNG24j5mRPU1v0quLW8Yp6X
-	 GIa1SUT3GdEZLo47aA2gHLg/zC/3vUqjWtZQyi5V45qQ7AOayOlIRSbKZ/OytvW34h
-	 GK+ScFaONHEUNA5TgQZBZaB/zexMemv8THw/icOkRqS4rJvrZmKPV/fs2+LvFHSw6Y
-	 Z3CK69KZQtloqdiNrmipkdd4j03+B9GBFNPeLqTcr5Bdk5CN/HUT0JGJfjwebT1alb
-	 ZcLDCuaEvnUCzM/FyLVl9R6IQTtjmGtlpI7GOnVcugOkvVvRP981hYQWMR/DjqPhtt
-	 6mZadzbd03egw==
-Received: by mail-ed1-f69.google.com with SMTP id 4fb4d7f45d1cf-5572a57deb1so968216a12.3
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 04:10:24 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704715824; x=1705320624;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5YU1NX55EkC+kEj5EffEs5H2AwvURtGdQ/HYjkwRM8I=;
-        b=Xu2Z//rAHGs211CE3lMedN2pa3Wr49kMYPk+GvBWRDp9P8v42VdcjnIwDz3t72/AXY
-         6ySCj1aPCthpaNHLIoO6rsfYpetE7tH/ei+D8SlY70CZNM1qsI1eBqmoD9PDyONYqUOf
-         cJ+ib3qzhtkrtCj5krC1q9tsosEVTJz8TYvhGX2yIXuPmxsA2Fd8LJt2ws5LZhwVOkYI
-         muO8ptKvSyRalwmbwzovmQqyMFI4JeuQzdVAiHdPB9gE/HHMU6npSiIwUai5seeAY4sc
-         xnR7ryuPdwnL6dQHICKnELaJpd0NQoHPZFHgyFEdjMc5RbUfjwnMRkBuf137unyz2Cb5
-         BqWA==
-X-Gm-Message-State: AOJu0Yxcios9YcTmVzzmpCMvY7CieSOqBkKf2686ZQPeIiwaD/tT9tbP
-	1OUMnJYur1y0P/1CdUSfGgG5cLrx2l/Rmd2s7tNkwjKPG1XNTt8h9zw6ObSlXURnRLduDFlYhBn
-	xBgWp7eRb69StnbG4YbIdAafZVOTaxCJhoMUZqsJF6SvydMcF
-X-Received: by 2002:a50:951e:0:b0:552:fcca:ee11 with SMTP id u30-20020a50951e000000b00552fccaee11mr1322927eda.74.1704715824424;
-        Mon, 08 Jan 2024 04:10:24 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGbkDQ81TrJrfcIXQl9SZ1Mnhsn8K0v5xkp/foSnlY+Kqttn18YIQ5m+/IG2qQHswCxHJux4g==
-X-Received: by 2002:a50:951e:0:b0:552:fcca:ee11 with SMTP id u30-20020a50951e000000b00552fccaee11mr1322918eda.74.1704715823978;
-        Mon, 08 Jan 2024 04:10:23 -0800 (PST)
-Received: from localhost.localdomain ([91.64.72.41])
-        by smtp.gmail.com with ESMTPSA id fi21-20020a056402551500b005578b816f20sm1767959edb.29.2024.01.08.04.10.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Jan 2024 04:10:22 -0800 (PST)
-From: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
-To: mszeredi@redhat.com
-Cc: brauner@kernel.org,
-	stgraber@stgraber.org,
-	linux-fsdevel@vger.kernel.org,
-	Seth Forshee <sforshee@kernel.org>,
-	Miklos Szeredi <miklos@szeredi.hu>,
-	Amir Goldstein <amir73il@gmail.com>,
-	Bernd Schubert <bschubert@ddn.com>,
-	Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v1 9/9] fs/fuse: allow idmapped mounts
-Date: Mon,  8 Jan 2024 13:08:24 +0100
-Message-Id: <20240108120824.122178-10-aleksandr.mikhalitsyn@canonical.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240108120824.122178-1-aleksandr.mikhalitsyn@canonical.com>
-References: <20240108120824.122178-1-aleksandr.mikhalitsyn@canonical.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF3292575B;
+	Mon,  8 Jan 2024 12:08:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=crudebyte.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=crudebyte.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=crudebyte.com; s=kylie; h=Content-Type:Content-Transfer-Encoding:
+	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
+	Content-ID:Content-Description;
+	bh=cagyf7j04cToSXabvYW43dze5arP+lifLYmlhSYnUZ8=; b=akIgN35X1P9RGr00+WcbSHEpBA
+	klW5ykJiJY05ljY+rZoWhILwOYxxB5r64OavHvm4Mje2AG/MKG48BzUAc+MPr+y8h5ThPd7K5s7ns
+	wVBJ2PgIt7UT6nSxYuZx65QN6OVPQpYm+53lSlmUhkto9Gj4XtQLXy+OKwcFL//MWdWpTHOF1AtnZ
+	kET5KB9UikjlWEuwPbZRQn4ro6TqGSxi8S4qttZW4qAVl/DbTlF9UDqpD9hM57PDFa3bq+S3P0L82
+	deh4802xgtgzU2y3C67DKzHPgJJfJgEVR23qMs0jnspYyo+X5xA206XwzB9aOhJC2PXIaXEAVuT2S
+	Wq+hliOs1vmiDVlzGD2Nqva6eedM/0/NIB1zYRFJM61FxEXLA1z83PIqINokjzDsSxU3HvwHBvK96
+	C1kktiEoGfhm788/YST6bb5IW5hC9mNuIoCS00Ov0J9jtP2BCWPKdIep2zV+LktCw7Q2fKeJ/zg97
+	mWJkHtXud5ApC9XPMfPGcSFf+panICrd6rQrgUHxCAuEcyiYNWZRDLCOxS3NinDc+VzBoaMEbOKIv
+	i6KbywucrpnD+2lrY27plMaBE0AIcD37WhVnE/j7TKHUchJYfKaubZ8ZQh3pQW1TBL3W0lq5aKHMi
+	hr7s7BZRrWVcM/8gK6nb41bF80Vo3NWbGJB/XNndY=;
+From: Christian Schoenebeck <linux_oss@crudebyte.com>
+To: Eric Van Hensbergen <ericvh@kernel.org>, asmadeus@codewreck.org
+Cc: linux-kernel@vger.kernel.org, v9fs@lists.linux.dev, rminnich@gmail.com,
+ lucho@ionkov.net
+Subject: Re: [PATCH] fs/9p: fix inode nlink accounting
+Date: Mon, 08 Jan 2024 13:08:31 +0100
+Message-ID: <8004884.rDQMAZhJ5Z@silver>
+In-Reply-To: <ZZvaRt4T-RjOBoS2@codewreck.org>
+References:
+ <20240107-fix-nlink-handling-v1-1-8b1f65ebc9b2@kernel.org>
+ <ZZvaRt4T-RjOBoS2@codewreck.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 
-Now we have everything in place and we can allow idmapped mounts
-by setting the FS_ALLOW_IDMAP flag. Notice that real availability
-of idmapped mounts will depend on the fuse daemon. Fuse daemon
-have to set FUSE_ALLOW_IDMAP flag in the FUSE_INIT reply.
+On Monday, January 8, 2024 12:19:34 PM CET asmadeus@codewreck.org wrote:
+> Eric Van Hensbergen wrote on Sun, Jan 07, 2024 at 07:07:52PM +0000:
+> > I was running some regressions and noticed a (race-y) kernel warning that
+> > happens when nlink becomes less than zero.  Looking through the code
+> > it looks like we aren't good about protecting the inode lock when
+> > manipulating nlink and some code that was added several years ago to
+> > protect against bugs in underlying file systems nlink handling didn't
+> > look quite right either.  I took a look at what NFS was doing and tried to
+> > follow similar approaches in the 9p code.
+> 
+> I was about to say the set/inc/etc_nlink helpers could probably just be
+> using atomic (there's an atomic_dec_if_postive that we could have used
+> for the v9fs_dec_count warning), but this isn't our code so not much to
+> do about that -- I agree it needs a lock.
+> 
+> I didn't take the time to check if you missed any, but it won't be worse
+> than what we have right now:
+> Acked-by: Dominique Martinet <asmadeus@codewreck.org>
 
-To discuss:
-- we enable idmapped mounts support only if "default_permissions" mode is enabled,
-because otherwise we would need to deal with UID/GID mappings in the userspace side OR
-provide the userspace with idmapped req->in.h.uid/req->in.h.gid values which is not
-something that we probably want to. Idmapped mounts phylosophy is not about faking
-caller uid/gid.
+That's actually a good point. For these tasks atomic inc/sub/etc are usually
+used instead of locks.
 
-- We have a small offlist discussion with Christian around adding fs_type->allow_idmap
-hook. Christian pointed that it would be nice to have a superblock flag instead like
-SB_I_NOIDMAP and we can set this flag during mount time if we see that filesystem does not
-support idmappings. But, unfortunately I didn't succeed here because the kernel will
-know if the filesystem supports idmapping or not after FUSE_INIT request, but FUSE_INIT request
-is being sent at the end of mounting process, so mount and superblock will exist and
-visible by the userspace in that time. It seems like setting SB_I_NOIDMAP flag in this
-case is too late as user may do the trick with creating a idmapped mount while it wasn't
-restricted by SB_I_NOIDMAP. Alternatively, we can introduce a "positive" version SB_I_ALLOWIDMAP
-and "weak" version of FS_ALLOW_IDMAP like FS_MAY_ALLOW_IDMAP. So if FS_MAY_ALLOW_IDMAP is set,
-then SB_I_ALLOWIDMAP has to be set on the superblock to allow creation of an idmapped mount.
-But that's a matter of our discussion.
+I would at least add local wrapper functions that would do these spinlocks for
+us.
 
-Some extra links and examples:
+However would it be too bold to change those inode functions to use atomic
+operations directly on their end?
 
-- libfuse support
-https://github.com/mihalicyn/libfuse/commits/idmap_support
+/Christian
 
-- fuse-overlayfs support:
-https://github.com/mihalicyn/fuse-overlayfs/commits/idmap_support
-
-- cephfs-fuse conversion example
-https://github.com/mihalicyn/ceph/commits/fuse_idmap
-
-- glusterfs conversion example
-https://github.com/mihalicyn/glusterfs/commits/fuse_idmap
-
-Cc: Christian Brauner <brauner@kernel.org>
-Cc: Seth Forshee <sforshee@kernel.org>
-Cc: Miklos Szeredi <miklos@szeredi.hu>
-Cc: Amir Goldstein <amir73il@gmail.com>
-Cc: Bernd Schubert <bschubert@ddn.com>
-Cc: <linux-fsdevel@vger.kernel.org>
-Signed-off-by: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
----
- fs/fuse/fuse_i.h          |  3 +++
- fs/fuse/inode.c           | 22 +++++++++++++++++++---
- include/uapi/linux/fuse.h |  5 ++++-
- 3 files changed, 26 insertions(+), 4 deletions(-)
-
-diff --git a/fs/fuse/fuse_i.h b/fs/fuse/fuse_i.h
-index 94b25ea5344a..9317b8c35191 100644
---- a/fs/fuse/fuse_i.h
-+++ b/fs/fuse/fuse_i.h
-@@ -809,6 +809,9 @@ struct fuse_conn {
- 	/* Add owner_{u,g}id info when creating a new inode */
- 	unsigned int owner_uid_gid_ext:1;
- 
-+	/* Allow creation of idmapped mounts */
-+	unsigned int allow_idmap:1;
-+
- 	/* Does the filesystem support per inode DAX? */
- 	unsigned int inode_dax:1;
- 
-diff --git a/fs/fuse/inode.c b/fs/fuse/inode.c
-index 08cd3714b32d..47e32a8baed3 100644
---- a/fs/fuse/inode.c
-+++ b/fs/fuse/inode.c
-@@ -1286,6 +1286,12 @@ static void process_init_reply(struct fuse_mount *fm, struct fuse_args *args,
- 				fc->direct_io_allow_mmap = 1;
- 			if (flags & FUSE_OWNER_UID_GID_EXT)
- 				fc->owner_uid_gid_ext = 1;
-+			if (flags & FUSE_ALLOW_IDMAP) {
-+				if (fc->owner_uid_gid_ext && fc->default_permissions)
-+					fc->allow_idmap = 1;
-+				else
-+					ok = false;
-+			}
- 		} else {
- 			ra_pages = fc->max_read / PAGE_SIZE;
- 			fc->no_lock = 1;
-@@ -1332,7 +1338,8 @@ void fuse_send_init(struct fuse_mount *fm)
- 		FUSE_NO_OPENDIR_SUPPORT | FUSE_EXPLICIT_INVAL_DATA |
- 		FUSE_HANDLE_KILLPRIV_V2 | FUSE_SETXATTR_EXT | FUSE_INIT_EXT |
- 		FUSE_SECURITY_CTX | FUSE_CREATE_SUPP_GROUP |
--		FUSE_HAS_EXPIRE_ONLY | FUSE_DIRECT_IO_ALLOW_MMAP | FUSE_OWNER_UID_GID_EXT;
-+		FUSE_HAS_EXPIRE_ONLY | FUSE_DIRECT_IO_ALLOW_MMAP |
-+		FUSE_OWNER_UID_GID_EXT | FUSE_ALLOW_IDMAP;
- #ifdef CONFIG_FUSE_DAX
- 	if (fm->fc->dax)
- 		flags |= FUSE_MAP_ALIGNMENT;
-@@ -1915,12 +1922,20 @@ static void fuse_kill_sb_anon(struct super_block *sb)
- 	fuse_mount_destroy(get_fuse_mount_super(sb));
- }
- 
-+static bool fuse_allow_idmap(struct super_block *sb)
-+{
-+	struct fuse_conn *fc = get_fuse_conn_super(sb);
-+
-+	return fc->allow_idmap;
-+}
-+
- static struct file_system_type fuse_fs_type = {
- 	.owner		= THIS_MODULE,
- 	.name		= "fuse",
--	.fs_flags	= FS_HAS_SUBTYPE | FS_USERNS_MOUNT,
-+	.fs_flags	= FS_HAS_SUBTYPE | FS_USERNS_MOUNT | FS_ALLOW_IDMAP,
- 	.init_fs_context = fuse_init_fs_context,
- 	.parameters	= fuse_fs_parameters,
-+	.allow_idmap	= fuse_allow_idmap,
- 	.kill_sb	= fuse_kill_sb_anon,
- };
- MODULE_ALIAS_FS("fuse");
-@@ -1938,8 +1953,9 @@ static struct file_system_type fuseblk_fs_type = {
- 	.name		= "fuseblk",
- 	.init_fs_context = fuse_init_fs_context,
- 	.parameters	= fuse_fs_parameters,
-+	.allow_idmap	= fuse_allow_idmap,
- 	.kill_sb	= fuse_kill_sb_blk,
--	.fs_flags	= FS_REQUIRES_DEV | FS_HAS_SUBTYPE,
-+	.fs_flags	= FS_REQUIRES_DEV | FS_HAS_SUBTYPE | FS_ALLOW_IDMAP,
- };
- MODULE_ALIAS_FS("fuseblk");
- 
-diff --git a/include/uapi/linux/fuse.h b/include/uapi/linux/fuse.h
-index ebe82104b172..d8e1235d9796 100644
---- a/include/uapi/linux/fuse.h
-+++ b/include/uapi/linux/fuse.h
-@@ -215,6 +215,7 @@
-  *  7.40
-  *  - add FUSE_EXT_OWNER_UID_GID
-  *  - add FUSE_OWNER_UID_GID_EXT
-+ *  - add FUSE_ALLOW_IDMAP
-  */
- 
- #ifndef _LINUX_FUSE_H
-@@ -250,7 +251,7 @@
- #define FUSE_KERNEL_VERSION 7
- 
- /** Minor version number of this interface */
--#define FUSE_KERNEL_MINOR_VERSION 39
-+#define FUSE_KERNEL_MINOR_VERSION 40
- 
- /** The node ID of the root inode */
- #define FUSE_ROOT_ID 1
-@@ -416,6 +417,7 @@ struct fuse_file_lock {
-  * FUSE_DIRECT_IO_ALLOW_MMAP: allow shared mmap in FOPEN_DIRECT_IO mode.
-  * FUSE_OWNER_UID_GID_EXT: add inode owner UID/GID info to create, mkdir,
-  *			   symlink and mknod
-+ * FUSE_ALLOW_IDMAP: allow creation of idmapped mounts
-  */
- #define FUSE_ASYNC_READ		(1 << 0)
- #define FUSE_POSIX_LOCKS	(1 << 1)
-@@ -459,6 +461,7 @@ struct fuse_file_lock {
- /* Obsolete alias for FUSE_DIRECT_IO_ALLOW_MMAP */
- #define FUSE_DIRECT_IO_RELAX	FUSE_DIRECT_IO_ALLOW_MMAP
- #define FUSE_OWNER_UID_GID_EXT	(1ULL << 37)
-+#define FUSE_ALLOW_IDMAP	(1ULL << 38)
- 
- /**
-  * CUSE INIT request/reply flags
--- 
-2.34.1
 
 
