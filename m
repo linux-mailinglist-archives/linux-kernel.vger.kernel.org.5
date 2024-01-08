@@ -1,107 +1,85 @@
-Return-Path: <linux-kernel+bounces-19047-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19048-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C167F826731
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 02:49:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8FF5B826735
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 02:56:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F413B1C21839
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 01:49:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2721B1F21880
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 01:56:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A89769461;
-	Mon,  8 Jan 2024 01:49:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E788F10E9;
+	Mon,  8 Jan 2024 01:56:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="FBYJFMab"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="m1/SKIvw"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7753A7F;
-	Mon,  8 Jan 2024 01:49:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1704678564;
-	bh=Lf53kHBVwbitP7k47OPxiji8oPEUlYg9H+eTQgsaYEI=;
-	h=Date:From:To:Cc:Subject:From;
-	b=FBYJFMabJvocXp/zMaN/XvQQpocHjMm9B3K+lCfmlgvzeC4uC0YQXawKi8LCL6k87
-	 ZpAlrK1+WJssR59IdKUHavJo9Q9wtBl7w+xEnfbevpQ3hHU4l3VLJt0fsDR+6TqTO7
-	 I17e+jDNMTlSqKdcLRhCPvxcDW/5wHZQpD8FkvI+t+cJ5ST+wBTpQsSgBaDPD/dl0J
-	 VxI5BP7ngcWSw33M6AgobSj6cfGRxsRY3lJEZtmV0FMSPuLc9PYivn5RPmHxeoJCwH
-	 wCPS0EHorcbUhrf7px/p/tMsw8nIqkST1C+MMzVc/N0/oCbkVrRP7qE30oHjLctuuu
-	 CLmz7yD4XNg9A==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4T7cS32zMPz4wx5;
-	Mon,  8 Jan 2024 12:49:23 +1100 (AEDT)
-Date: Mon, 8 Jan 2024 12:49:22 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu
- <mhiramat@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
- Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: manual merge of the ftrace tree with the vfs tree
-Message-ID: <20240108124922.37bd7fe3@canb.auug.org.au>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4737EA5B
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 01:56:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5B6BC433C8;
+	Mon,  8 Jan 2024 01:56:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704678981;
+	bh=nPOBRGC2VotsfeV0BHpZIaFmtAz84IpUskz3nT4flEo=;
+	h=From:To:Cc:Subject:Date:From;
+	b=m1/SKIvwIoMtpiufn9DfEI2gNw+dHtBCOvTSZbpRfL7+Sq70oaux33kALqJ2A8i1V
+	 AaFWWh03maX1JGhg9wecn5rH0qNR+NmPcM3+KmNAOO1D8WYey1pgOQWiL+JtVq2jgM
+	 kTiSneWBy78cFCLWvWruk6KyyE2oFMxbwO0pwSaSAM9IKFWxhEoow2Za+0sG0+AWrN
+	 rSOUE1vG8b4ch0LLHQrAe2IRguBbWvgfSJQaryrtM7zw3Ud7gzZNRr+RlncSUqWJcy
+	 lxsbBeLiIdJqcq4ZMZ2YUiwoQWdgSjI4pXnrPOQK6KQEb2Ej1kgeAjiMXAPwHuQCyw
+	 BPrdRms+xl/nw==
+From: Miguel Ojeda <ojeda@kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Miguel Ojeda <ojeda@kernel.org>,
+	linux-kernel@vger.kernel.org
+Subject: [GIT PULL] auxdisplay for v6.8
+Date: Mon,  8 Jan 2024 02:55:31 +0100
+Message-ID: <20240108015531.528189-1-ojeda@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/x+fIwksRk+Kxf4h2ScQydzQ";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 
---Sig_/x+fIwksRk+Kxf4h2ScQydzQ
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi Linus,
 
-Hi all,
+A single cleanup for auxdisplay.
 
-Today's linux-next merge of the ftrace tree got a conflict in:
+The commit has been in -next for more than a month. No conflicts
+expected.
 
-  fs/tracefs/inode.c
+Please pull for v6.8 -- thanks!
 
-between commit:
-
-  da549bdd15c2 ("dentry: switch the lists of children to hlist")
-
-from the vfs tree and commit:
-
-  8186fff7ab64 ("tracefs/eventfs: Use root and instance inodes as default o=
-wnership")
-
-from the ftrace tree.
-
-I fixed it up (the latter removed the code modified by the former, so
-I just did that) and can carry the fix as necessary. This is now fixed
-as far as linux-next is concerned, but any non trivial conflicts should
-be mentioned to your upstream maintainer when your tree is submitted for
-merging.  You may also want to consider cooperating with the maintainer
-of the conflicting tree to minimise any particularly complex conflicts.
-
---=20
 Cheers,
-Stephen Rothwell
+Miguel
 
---Sig_/x+fIwksRk+Kxf4h2ScQydzQ
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+The following changes since commit 2cc14f52aeb78ce3f29677c2de1f06c0e91471ab:
 
------BEGIN PGP SIGNATURE-----
+  Linux 6.7-rc3 (2023-11-26 19:59:33 -0800)
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmWbVKIACgkQAVBC80lX
-0Gx/qgf8CIlnK9gkNc0lxCD8t2z0dljFVw/iVj1F96iBZ/FHXPnErhceK36SzzOU
-zc+Smwz4tfrP730btCvE2P4cUzK4ifRBM0KBJGzeseqIbcOShqdQmp9W5cB1dh53
-iP9xGMEQZwR6lQ1KiyAQUOdymDQS4q+e0FuWArwUJBbR0nX161NxUq85bIPTD2Y1
-7xGrgTzBL/5MBH8Ql8wM7NfBjZrOND/yFYQuXTtfbPlxAM2F6pIpMfeLky5fcxhP
-zgUlEN5gyk5KzUGmYqewXC54wVGX2cEHtvoahtIIyaobDOGAt4LIKWJqaxJyA4+0
-B2ITAuDyrNKcHOPfn/qaErzXqPMK0Q==
-=SVM+
------END PGP SIGNATURE-----
+are available in the Git repository at:
 
---Sig_/x+fIwksRk+Kxf4h2ScQydzQ--
+  https://github.com/ojeda/linux.git tags/auxdisplay-6.8
+
+for you to fetch changes up to c52391fafcefe4c562bdac62088a2735c185b942:
+
+  auxdisplay: img-ascii-lcd: Use device_get_match_data() (2023-12-01 16:39:45 +0100)
+
+----------------------------------------------------------------
+auxdisplay changes for v6.8
+
+A single cleanup for 'img-ascii-lcd': use 'device_get_match_data()'.
+
+----------------------------------------------------------------
+Rob Herring (1):
+      auxdisplay: img-ascii-lcd: Use device_get_match_data()
+
+ drivers/auxdisplay/img-ascii-lcd.c | 12 +++---------
+ 1 file changed, 3 insertions(+), 9 deletions(-)
 
