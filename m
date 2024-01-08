@@ -1,140 +1,393 @@
-Return-Path: <linux-kernel+bounces-19998-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19999-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A7BFE827800
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 19:58:02 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 67BCB827805
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 19:59:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BA2F71C22B64
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 18:58:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C72981F2311D
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 18:59:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64D3554F94;
-	Mon,  8 Jan 2024 18:57:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95D5254F94;
+	Mon,  8 Jan 2024 18:59:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="DYvboTC/"
+	dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b="sIzASYUO"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from ms.lwn.net (ms.lwn.net [45.79.88.28])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 270D154F86
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 18:57:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-50eaa8b447bso2083329e87.1
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 10:57:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704740271; x=1705345071; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=tQnG2vm7xrX5JkeFsGNLAPB6HNjNoawjhUqMEb81Rcw=;
-        b=DYvboTC/NZccl5IJ00F69ExR+zQTwNs23Szxq4kkkvQlkTkteb5uiHksu1kLCD4wmL
-         BIHTSi7oXopKx+UBEu4Z5N8K5cEOf7AfF8ngz48Skbe0obqA+I3fpB7vFvFG7bKfgqMc
-         r8My9Hnu9CJZb5JCHMUhLWj7MoLsrWgWWGPtnW1yHZ/wsEGfXw/N0Ok1pFW4BYuEdA1M
-         6FiDcXUqINiy8hGpZJFF11zwWb7CNwz5ugS9mT6ec0DGj1X7YETBNbJ36Exfg/mpSusV
-         RQP1aFbS6NODO8XRT2pU9m6fZ56+iSxnWG9Qk1b1v6DGuFFUi6k1f7QcAuyzsNhHu4H4
-         g5ng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704740271; x=1705345071;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=tQnG2vm7xrX5JkeFsGNLAPB6HNjNoawjhUqMEb81Rcw=;
-        b=n+SLDSiM7FGrMzm5yQWOAhKAMT+qmwT3qESjmARoZ6OkWQzBnXmYMITSq2EonNtGbt
-         B5YevTjfA/Hj5AqyclXEwFRwFKDs+yFuFHGi85UDmaL/IkMsk8cHuWYzcM0DhGJKOhRP
-         0yp0Y54JaNtHqZ9k8aYPRVz6ZqDhzBJEqEeg9CO/Nt3IbOAYzJxupYRHTl21tLszgjFf
-         p9XH4u3gd8jdmdgc5VkEYPRWShByXaMNPEYSw+I6oNMRpNGq+onoanms2Klxrz8vqnWi
-         GrnJnaFWcIxFNPdYVCa7vXsF6YANkwQSCaYFwDyKWR7lBgK7Virxf5nXewgB5UoV0M6T
-         zYaA==
-X-Gm-Message-State: AOJu0YwKnz/FrgFQkfYYwC9RbaQnKeO665CfO+FNet8JaqDHLZ6XrDkF
-	W/m3gWR0PszRzaTr1/GZ72XdQIVx/itx/Q==
-X-Google-Smtp-Source: AGHT+IFek8NoHqTlJeGch/oyJrkcEDYOmgkGWBwFF42O4GNVSFMeA1XpAmSEa8i7amXIPNAhmc3niA==
-X-Received: by 2002:a05:6512:3288:b0:50e:2e88:1157 with SMTP id p8-20020a056512328800b0050e2e881157mr660996lfe.107.1704740271197;
-        Mon, 08 Jan 2024 10:57:51 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.223.112])
-        by smtp.gmail.com with ESMTPSA id m2-20020a170906234200b00a2684d2e684sm162438eja.92.2024.01.08.10.57.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Jan 2024 10:57:50 -0800 (PST)
-Message-ID: <d3e1dbe4-bec8-4c9a-bd3d-a9c2f026dfec@linaro.org>
-Date: Mon, 8 Jan 2024 19:57:48 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D93DB54F82;
+	Mon,  8 Jan 2024 18:59:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lwn.net
+Received: from localhost (unknown [IPv6:2601:280:5e00:7e19::646])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by ms.lwn.net (Postfix) with ESMTPSA id 17C59377;
+	Mon,  8 Jan 2024 18:59:25 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 17C59377
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+	t=1704740365; bh=ozaEI1S4huawJuLFBf/xIlVv/aNEtvbhOwZ0AuBrcqM=;
+	h=From:To:Cc:Subject:Date:From;
+	b=sIzASYUOLGMxsDxRfJ0o9HxOVS81rqBZdKTjTGUdTpa5xnHPw1eGKxCbxi78RpFZl
+	 Hnk/+1/3o+qPwOqamPYAMnZsf+aZETPsXXBRSogAjMFHS2T/3XG/WUC7kHjlYPMdnP
+	 UYlgKdhA86enS5+DL72jQI74kdL4b0K70hDcycWLj5DZzXOFE7cD4KOwC63zvMjbBE
+	 CUUD5gYVQFdev/oqOfREjykOdZ+LMGta6nGJzWBFvKulKeQe/GHL78Uo/2aMiGjlAn
+	 PJB2otuGm/j+5knKdp4IjacxVUF0gj3jjcS5hsViv53Qp6CRVpnprYbxwIWI0EJ8qL
+	 XG0N7xO1n7fTg==
+From: Jonathan Corbet <corbet@lwn.net>
+To: Linus Torvalds <torvalds@linuxfoundation.org>
+Cc: linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Documentation for 6.8
+Date: Mon, 08 Jan 2024 11:59:24 -0700
+Message-ID: <87sf37vegj.fsf@meer.lwn.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next 04/10] net: fill in MODULE_DESCRIPTION()s for NFC
-Content-Language: en-US
-To: Breno Leitao <leitao@debian.org>, davem@davemloft.net,
- edumazet@google.com, kuba@kernel.org, pabeni@redhat.com
-Cc: netdev@vger.kernel.org, Jeremy Cline <jeremy@jcline.org>,
- Simon Horman <horms@kernel.org>, open list <linux-kernel@vger.kernel.org>
-References: <20240108181610.2697017-1-leitao@debian.org>
- <20240108181610.2697017-5-leitao@debian.org>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240108181610.2697017-5-leitao@debian.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On 08/01/2024 19:16, Breno Leitao wrote:
-> W=1 builds now warn if module is built without a MODULE_DESCRIPTION().
-> Add descriptions to all NFC Controller Interface (NCI) modules.
-> 
-> Signed-off-by: Breno Leitao <leitao@debian.org>
-> ---
->  net/nfc/digital_core.c | 1 +
->  net/nfc/nci/core.c     | 1 +
+The following changes since commit b85ea95d086471afb4ad062012a4d73cd328fa86:
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+  Linux 6.7-rc1 (2023-11-12 16:19:07 -0800)
 
-Best regards,
-Krzysztof
+are available in the Git repository at:
 
+  git://git.lwn.net/linux.git tags/docs-6.8
+
+for you to fetch changes up to 2d179e8ac02e33c82c1a314961254353eb5028b3:
+
+  MAINTAINERS: use tabs for indent of CONFIDENTIAL COMPUTING THREAT MODEL (=
+2024-01-08 11:39:00 -0700)
+
+----------------------------------------------------------------
+Another moderately busy cycle for documentation, including:
+
+- The minimum Sphinx requirement has been raised to 2.4.4, following a
+  warning that was added in 6.2.
+
+- Some reworking of the Documentation/process front page to, hopefully,
+  make it more useful.
+
+- Various kernel-doc tweaks to, for example, make it deal properly with
+  __counted_by annotations.
+
+- We have also restored a warning for documentation of nonexistent
+  structure members that disappeared a while back.  That had the delightful
+  consequence of adding some 600 warnings to the docs build.  A sustained
+  effort by Randy, Vegard, and myself has addressed almost all of those,
+  bringing the documentation back into sync with the code.  The fixes are
+  going through the appropriate maintainer trees.
+
+- Various improvements to the HTML rendered docs, including automatic links
+  to Git revisions and a nice new pulldown to make translations easy to
+  access.
+
+- Speaking of translations, more of those for Spanish and Chinese.
+
+...plus the usual stream of documentation updates and typo fixes.
+
+There is somewhat more than the usual number of merge conflicts, alas,
+including with the security, RCU, crypto, and amdgpu trees.  Most of
+these are in driver-api/index.rst and userspace-api/index.rst, which are
+suffering from the "everybody adds new stuff to the end" problem;
+imposing some order there is on my list of things to do.
+
+----------------------------------------------------------------
+Alejandro Colomar (1):
+      CREDITS, MAINTAINERS, docs/process/howto: Update man-pages' maintainer
+
+Andy Shevchenko (1):
+      kernel-doc: Align quick help and the code
+
+Ariel Miculas (1):
+      docs: vfs: fix typo in struct xattr_handlers
+
+Avadhut Naik (4):
+      docs/sp_SP: Add translation of process/management-style
+      docs/sp_SP: Add translation of process/submit-checklist
+      docs/sp_SP: Warn of links pointing to documentation in English
+      docs/sp_SP: Move howto.rst into /sp_SP/process/
+
+Borislav Petkov (AMD) (1):
+      docs: submitting-patches: improve the base commit explanation
+
+Brian Johannesmeyer (1):
+      docs: dma-api: Fix description of the sync_sg API
+
+Carlos Bilbao (2):
+      docs/sp_SP: Add translation of process/handling-regressions
+      MAINTAINERS: add reviewer for Spanish translations
+
+Donald Hunter (1):
+      docs: Change <h4> style to use smaller font size than <h3>
+
+Hu Haowen (1):
+      docs/zh_TW: replace my email address
+
+Jakub Kicinski (1):
+      MAINTAINERS: use tabs for indent of CONFIDENTIAL COMPUTING THREAT MOD=
+EL
+
+JiaLong.Yang (1):
+      Docs/zh_CN: Fix the meaning of DEBUG to pr_debug()
+
+Jonathan Corbet (4):
+      Merge branch 'vegard' into docs-mw
+      docs: Raise the minimum Sphinx requirement to 2.4.4
+      docs: ignore __counted_by attribute in structure definitions
+      A reworked process/index.rst
+
+Kees Cook (2):
+      docs: conf.py: Ignore __counted_by attribute
+      scripts: kernel-doc: Clarify missing struct member description
+
+Li Zhijian (1):
+      docs: dma: update a reference to a moved document
+
+Luca Ceresoli (2):
+      docs: nvmem: generate kernel-doc API documentation
+      docs: nvmem: remove function parameters (fixes hyperlink generation)
+
+Matthew Cassell (1):
+      Documentation/trace: Fixed typos in the ftrace FLAGS section
+
+Randy Dunlap (4):
+      fs: vboxsf: fix a kernel-doc warning
+      scripts/kernel-doc: restore warning for Excess struct/union
+      scripts/get_abi.pl: ignore some temp files
+      kernel-doc: handle a void function without producing a warning
+
+Rex Nie (1):
+      Documentation: Remove redundant file names from examples
+
+Steven Rostedt (Google) (1):
+      ring-buffer/Documentation: Add documentation on buffer_percent file
+
+Sumit Garg (1):
+      Documentation: Destage TEE subsystem documentation
+
+Thomas Wei=C3=9Fschuh (1):
+      Docs: remove mentions of fdformat from util-linux
+
+Vegard Nossum (18):
+      docs: style toctree captions as headings
+      doc: userspace-api: properly format ToC headings
+      media: admin-guide: properly format ToC heading
+      crypto: doc: properly format ToC headings
+      Documentation: dev-tools: properly format ToC headingss
+      docs: driver-api: properly format ToC headings
+      input: docs: properly format ToC headings
+      doc: misc-device: properly format ToC heading
+      media: doc: properly format ToC headings
+      docs: use toctree :caption: and move introduction
+      docs: remove .toc-title class
+      docs: automarkup: linkify git revs
+      Documentation: add tux logo
+      docs: translations: add translations links when they exist
+      scripts/get_abi: fix source path leak
+      docs: kernel_abi.py: fix command injection
+      Documentation: move driver-api/isapnp to userspace-api/
+      Documentation: move driver-api/dcdbas to userspace-api/
+
+Vlastimil Babka (1):
+      Documentation, mm/unaccepted: document accept_memory kernel parameter
+
+Yanteng Si (3):
+      docs/zh_CN: add process maintainer-pgp-guide tanslation
+      docs/zh_CN: Adjust the number of characters per line in magic-number.=
+rst to less than 40
+      docs/zh_CN: Update process index to 6.7-rc2
+
+Yuanhsi Chung (1):
+      Documentation: Fix filename typo in ftrace doc
+
+attreyee-muk (1):
+      Documentation/core-api : fix typo in workqueue
+
+longjin (1):
+      Translated the RISC-V architecture boot documentation.
+
+ CREDITS                                            |   7 +
+ Documentation/admin-guide/abi-obsolete.rst         |   2 +-
+ Documentation/admin-guide/abi-removed.rst          |   2 +-
+ Documentation/admin-guide/abi-stable.rst           |   2 +-
+ Documentation/admin-guide/abi-testing.rst          |   2 +-
+ Documentation/admin-guide/dynamic-debug-howto.rst  |   6 +-
+ Documentation/admin-guide/kernel-parameters.txt    |  11 +
+ Documentation/admin-guide/media/index.rst          |  10 +-
+ Documentation/arch/x86/boot.rst                    |   2 +-
+ Documentation/bpf/btf.rst                          |   6 +-
+ Documentation/conf.py                              |   9 +-
+ Documentation/core-api/dma-api-howto.rst           |   2 +-
+ Documentation/core-api/dma-api.rst                 |   2 +-
+ Documentation/core-api/workqueue.rst               |   2 +-
+ Documentation/crypto/api.rst                       |   5 +-
+ Documentation/crypto/index.rst                     |   5 +-
+ Documentation/dev-tools/index.rst                  |   5 +-
+ Documentation/doc-guide/sphinx.rst                 |  11 +-
+ Documentation/driver-api/index.rst                 |   8 +-
+ Documentation/driver-api/media/index.rst           |   7 +-
+ Documentation/driver-api/mei/index.rst             |   7 +-
+ Documentation/driver-api/nvmem.rst                 |   8 +-
+ Documentation/driver-api/pci/index.rst             |   5 +-
+ Documentation/driver-api/tee.rst                   |  66 ++
+ Documentation/filesystems/vfs.rst                  |   2 +-
+ Documentation/input/input_kapi.rst                 |   5 +-
+ Documentation/input/input_uapi.rst                 |   5 +-
+ Documentation/input/joydev/index.rst               |   5 +-
+ Documentation/livepatch/callbacks.rst              |   4 +-
+ Documentation/misc-devices/index.rst               |   5 +-
+ Documentation/networking/snmp_counter.rst          |  16 +-
+ Documentation/process/changes.rst                  |   6 +-
+ Documentation/process/development-process.rst      |  19 +-
+ Documentation/process/howto.rst                    |   3 +-
+ Documentation/process/index.rst                    |  84 ++-
+ Documentation/process/submitting-patches.rst       |  15 +-
+ Documentation/security/keys/trusted-encrypted.rst  |   2 +-
+ Documentation/sphinx-static/custom.css             |  63 ++
+ Documentation/sphinx-static/theme_overrides.css    |   5 -
+ Documentation/sphinx/automarkup.py                 |  26 +-
+ Documentation/sphinx/cdomain.py                    |   6 +-
+ Documentation/sphinx/kernel_abi.py                 |  56 +-
+ Documentation/sphinx/kfigure.py                    |   8 +-
+ Documentation/sphinx/templates/translations.html   |  15 +
+ Documentation/sphinx/translations.py               | 101 +++
+ Documentation/staging/index.rst                    |   1 -
+ Documentation/staging/tee.rst                      | 364 ----------
+ Documentation/subsystem-apis.rst                   |   1 +
+ Documentation/tee/amd-tee.rst                      |  90 +++
+ Documentation/tee/index.rst                        |  19 +
+ Documentation/tee/op-tee.rst                       | 166 +++++
+ Documentation/tee/tee.rst                          |  22 +
+ Documentation/trace/ftrace-uses.rst                |   4 +-
+ Documentation/trace/ftrace.rst                     |  17 +-
+ .../it_IT/process/development-process.rst          |  19 +-
+ Documentation/translations/sp_SP/disclaimer-sp.rst |   3 +
+ Documentation/translations/sp_SP/index.rst         |   1 -
+ .../sp_SP/process/handling-regressions.rst         | 797 +++++++++++++++++=
+++++
+ .../translations/sp_SP/{ =3D> process}/howto.rst     |   2 +-
+ Documentation/translations/sp_SP/process/index.rst |   4 +
+ .../sp_SP/process/management-style.rst             | 299 ++++++++
+ .../sp_SP/process/submit-checklist.rst             | 133 ++++
+ .../translations/zh_CN/arch/riscv/boot.rst         | 155 ++++
+ .../translations/zh_CN/arch/riscv/index.rst        |   1 +
+ .../translations/zh_CN/core-api/printk-basics.rst  |   2 +-
+ .../translations/zh_CN/dev-tools/index.rst         |   5 +-
+ .../zh_CN/dev-tools/testing-overview.rst           |   2 +-
+ .../translations/zh_CN/driver-api/gpio/index.rst   |   3 +-
+ .../translations/zh_CN/driver-api/index.rst        |   5 +-
+ .../zh_CN/process/development-process.rst          |   5 +-
+ Documentation/translations/zh_CN/process/index.rst |  53 +-
+ .../translations/zh_CN/process/magic-number.rst    |  69 +-
+ .../zh_CN/process/maintainer-pgp-guide.rst         | 789 +++++++++++++++++=
++++
+ .../translations/zh_CN/userspace-api/index.rst     |   5 +-
+ Documentation/translations/zh_TW/IRQ.txt           |   8 +-
+ .../translations/zh_TW/admin-guide/README.rst      |   2 +-
+ .../translations/zh_TW/admin-guide/bug-bisect.rst  |   2 +-
+ .../translations/zh_TW/admin-guide/bug-hunting.rst |   2 +-
+ .../zh_TW/admin-guide/clearing-warn-once.rst       |   2 +-
+ .../translations/zh_TW/admin-guide/cpu-load.rst    |   2 +-
+ .../translations/zh_TW/admin-guide/index.rst       |   2 +-
+ .../translations/zh_TW/admin-guide/init.rst        |   2 +-
+ .../zh_TW/admin-guide/reporting-issues.rst         |   2 +-
+ .../zh_TW/admin-guide/security-bugs.rst            |   2 +-
+ .../zh_TW/admin-guide/tainted-kernels.rst          |   2 +-
+ .../translations/zh_TW/admin-guide/unicode.rst     |   2 +-
+ .../translations/zh_TW/arch/arm64/amu.rst          |   2 +-
+ .../translations/zh_TW/arch/arm64/booting.txt      |   4 +-
+ .../translations/zh_TW/arch/arm64/elf_hwcaps.rst   |   2 +-
+ .../translations/zh_TW/arch/arm64/hugetlbpage.rst  |   2 +-
+ .../translations/zh_TW/arch/arm64/index.rst        |   2 +-
+ .../zh_TW/arch/arm64/legacy_instructions.txt       |   4 +-
+ .../translations/zh_TW/arch/arm64/memory.txt       |   4 +-
+ .../translations/zh_TW/arch/arm64/perf.rst         |   2 +-
+ .../zh_TW/arch/arm64/silicon-errata.txt            |   4 +-
+ .../zh_TW/arch/arm64/tagged-pointers.txt           |   4 +-
+ .../translations/zh_TW/dev-tools/sparse.rst        |  10 +-
+ .../zh_TW/dev-tools/testing-overview.rst           |   2 +-
+ .../translations/zh_TW/disclaimer-zh_TW.rst        |   2 +-
+ .../translations/zh_TW/filesystems/debugfs.rst     |   2 +-
+ .../translations/zh_TW/filesystems/index.rst       |   2 +-
+ .../translations/zh_TW/filesystems/sysfs.txt       |   2 +-
+ .../translations/zh_TW/filesystems/virtiofs.rst    |   2 +-
+ Documentation/translations/zh_TW/gpio.txt          |   8 +-
+ Documentation/translations/zh_TW/index.rst         |   2 +-
+ Documentation/translations/zh_TW/io_ordering.txt   |   8 +-
+ .../translations/zh_TW/process/1.Intro.rst         |   2 +-
+ .../translations/zh_TW/process/2.Process.rst       |   2 +-
+ .../translations/zh_TW/process/3.Early-stage.rst   |   2 +-
+ .../translations/zh_TW/process/4.Coding.rst        |   2 +-
+ .../translations/zh_TW/process/5.Posting.rst       |   2 +-
+ .../translations/zh_TW/process/6.Followthrough.rst |   2 +-
+ .../zh_TW/process/7.AdvancedTopics.rst             |   2 +-
+ .../translations/zh_TW/process/8.Conclusion.rst    |   2 +-
+ .../process/code-of-conduct-interpretation.rst     |   2 +-
+ .../translations/zh_TW/process/code-of-conduct.rst |   2 +-
+ .../translations/zh_TW/process/coding-style.rst    |   2 +-
+ .../zh_TW/process/development-process.rst          |   6 +-
+ .../translations/zh_TW/process/email-clients.rst   |   2 +-
+ .../zh_TW/process/embargoed-hardware-issues.rst    |   2 +-
+ Documentation/translations/zh_TW/process/howto.rst |   2 +-
+ Documentation/translations/zh_TW/process/index.rst |   2 +-
+ .../zh_TW/process/kernel-driver-statement.rst      |   2 +-
+ .../zh_TW/process/kernel-enforcement-statement.rst |   2 +-
+ .../translations/zh_TW/process/license-rules.rst   |   2 +-
+ .../translations/zh_TW/process/magic-number.rst    |   2 +-
+ .../zh_TW/process/management-style.rst             |   2 +-
+ .../zh_TW/process/programming-language.rst         |   2 +-
+ .../zh_TW/process/stable-api-nonsense.rst          |   2 +-
+ .../zh_TW/process/stable-kernel-rules.rst          |   2 +-
+ .../zh_TW/process/submit-checklist.rst             |   2 +-
+ .../zh_TW/process/submitting-patches.rst           |   2 +-
+ .../zh_TW/process/volatile-considered-harmful.rst  |   2 +-
+ .../{driver-api =3D> userspace-api}/dcdbas.rst       |   0
+ Documentation/userspace-api/index.rst              |   8 +-
+ .../{driver-api =3D> userspace-api}/isapnp.rst       |   8 +-
+ Documentation/userspace-api/media/cec/cec-api.rst  |   7 +-
+ .../userspace-api/media/drivers/index.rst          |   7 +-
+ Documentation/userspace-api/media/dvb/dvbapi.rst   |   7 +-
+ Documentation/userspace-api/media/index.rst        |   7 +-
+ .../media/mediactl/media-controller.rst            |   7 +-
+ .../userspace-api/media/rc/remote_controllers.rst  |   7 +-
+ Documentation/userspace-api/media/v4l/v4l2.rst     |   7 +-
+ Documentation/userspace-api/tee.rst                |  39 +
+ MAINTAINERS                                        |  21 +-
+ drivers/platform/x86/dell/Kconfig                  |   2 +-
+ drivers/platform/x86/dell/dcdbas.c                 |   2 +-
+ drivers/pnp/isapnp/Kconfig                         |   2 +-
+ drivers/tee/optee/Kconfig                          |   2 +-
+ fs/vboxsf/vboxsf_wrappers.c                        |   2 +-
+ scripts/get_abi.pl                                 |   3 +-
+ scripts/kernel-doc                                 |  15 +-
+ scripts/sphinx-pre-install                         |  10 +-
+ 153 files changed, 3206 insertions(+), 794 deletions(-)
+ create mode 100644 Documentation/driver-api/tee.rst
+ create mode 100644 Documentation/sphinx/templates/translations.html
+ create mode 100644 Documentation/sphinx/translations.py
+ delete mode 100644 Documentation/staging/tee.rst
+ create mode 100644 Documentation/tee/amd-tee.rst
+ create mode 100644 Documentation/tee/index.rst
+ create mode 100644 Documentation/tee/op-tee.rst
+ create mode 100644 Documentation/tee/tee.rst
+ create mode 100644 Documentation/translations/sp_SP/process/handling-regre=
+ssions.rst
+ rename Documentation/translations/sp_SP/{ =3D> process}/howto.rst (99%)
+ create mode 100644 Documentation/translations/sp_SP/process/management-sty=
+le.rst
+ create mode 100644 Documentation/translations/sp_SP/process/submit-checkli=
+st.rst
+ create mode 100644 Documentation/translations/zh_CN/arch/riscv/boot.rst
+ create mode 100644 Documentation/translations/zh_CN/process/maintainer-pgp=
+-guide.rst
+ rename Documentation/{driver-api =3D> userspace-api}/dcdbas.rst (100%)
+ rename Documentation/{driver-api =3D> userspace-api}/isapnp.rst (51%)
+ create mode 100644 Documentation/userspace-api/tee.rst
 
