@@ -1,136 +1,122 @@
-Return-Path: <linux-kernel+bounces-19686-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19687-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 641FE8270DC
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 15:18:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4AB6B8270E3
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 15:19:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8B57B1C227DC
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 14:18:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BF2EF283BF7
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 14:19:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2773646BBD;
-	Mon,  8 Jan 2024 14:18:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FD5F46B80;
+	Mon,  8 Jan 2024 14:18:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="tM7WFjmo"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="y7q0+JSg"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
+Received: from mail-qv1-f45.google.com (mail-qv1-f45.google.com [209.85.219.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE12547772
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 14:18:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEDAC47790
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 14:18:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-40d858c56cbso24983195e9.2
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 06:18:16 -0800 (PST)
+Received: by mail-qv1-f45.google.com with SMTP id 6a1803df08f44-67f91d48863so16445326d6.0
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 06:18:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704723495; x=1705328295; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=P3kcA+8gd/ihreT+PW6mSK4aXzHl6uwlNcvHHeH5WiU=;
-        b=tM7WFjmoIQ88teh6wPNt1c9d2g4CYW2funJNrdxfbYBwDF91tlVfil1HLLH8A6UEjQ
-         sgwsEGf1BzasLD9+j9JqEgPgoymXL8kjf2uJE3vkLUWIODV/dKwnpZ+KxM+5E3PI5hRM
-         Err3qb5WRqn4Udgm6VyN7kF1pbkLJJSuVz57ZRavkbxBsa46HhYJ2wrqowX5D53RLmiJ
-         P6uvx3vLFXyMayRO1PwTDHIoewtKfRbi1ffx3wPVIRdMdiTbsZw+UdhQTfm7hVK5B84m
-         xnMmdHS1uzenJynVUvUooHWoBIkYTg25oScGIggIGmURq3gFi4bpG7JGKgYbO+ddeA7s
-         N+lA==
+        d=linaro.org; s=google; t=1704723514; x=1705328314; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=5Ezznyb8/vx5+hfZyfj88KqUcvTty4zUAzZJ+hlesbo=;
+        b=y7q0+JSglky8dwbo7fPHUAJZrkmcEW3YVv3Rqu0PrY+7plPdrqp/9eTiGoaMVdhvOh
+         QL/EjqH84hKdZ7UuRJZztsY+YMjLeiXfj82UpPSJWi1mrdGljvKaC6xu2bZtJaFOEKhP
+         kQmoZMqrXAV5COSZOL3cAT0Jb56G1loyJF+6aQyCHpCLH/gJP3E5l9tGeqNZsp2PeDSH
+         Xrlii1D0+vn9aXLJ2p3LSp/PncI5p4XoA18K3hNg3Kap3Lvknzz8EYjToXB1XT8jlVC2
+         5HJnFSugmbo68qKZjuT7zbYWDNptfuM33oznYKMZlVDWoSV5e+Rl0NSog4G/YYwW2L0v
+         8fLw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704723495; x=1705328295;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=P3kcA+8gd/ihreT+PW6mSK4aXzHl6uwlNcvHHeH5WiU=;
-        b=FDF2NiTk5dt02EI3gS5e3I3TP3HDCOopJssxAY0Yrnaq35YTFqNKsmUv6NpHn6Jh8q
-         KAUvfdbGW114v3coh7bFvUBqyB4QzHvFQPoaZw6//wYB99aEfWaYmDx/pnMtlDbnezMA
-         DyfTMBc2pVq0ZySWx1TWdcaujjpokskEoxaHM1ILclOhTOZnQQqw4Wi9iD9yRNEXVe5q
-         XCrZbAApsrOlzCUwY5QOhiKjwcbIIW559tIuk0dfFU5YRwM+bStGONIq7e2eh19Ar9ZQ
-         XC+GLqC8PWVc0cres6OOjO/6SQokfLAMM2NLunJAx0dSrXvPgVk6uBgTA6xsJtXUmDxV
-         0T3g==
-X-Gm-Message-State: AOJu0YwUVbVF57VPxo9xf4DQX6WlKjHriWsJNBdEZGjysrwNmNPPMJom
-	0wVH8EUaI8JkpvFuQHTW9e42KaiuVLQprw==
-X-Google-Smtp-Source: AGHT+IEN4VGbGmk3ve6F4+vOxvCSRMWlfVOCUolGlty5MqdDNcoSKMdHoVhYxoXIxYndwVFW2nTKDg==
-X-Received: by 2002:a05:600c:4595:b0:40d:2df0:ba12 with SMTP id r21-20020a05600c459500b0040d2df0ba12mr2037004wmo.83.1704723495272;
-        Mon, 08 Jan 2024 06:18:15 -0800 (PST)
-Received: from [192.168.199.125] (178235179081.dynamic-4-waw-k-1-3-0.vectranet.pl. [178.235.179.81])
-        by smtp.gmail.com with ESMTPSA id ha17-20020a170906a89100b00a2b1db54f7asm46705ejb.70.2024.01.08.06.18.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Jan 2024 06:18:14 -0800 (PST)
-Message-ID: <a5923bf7-0a05-43bd-b282-b45e5653ac4d@linaro.org>
-Date: Mon, 8 Jan 2024 15:18:12 +0100
+        d=1e100.net; s=20230601; t=1704723514; x=1705328314;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=5Ezznyb8/vx5+hfZyfj88KqUcvTty4zUAzZJ+hlesbo=;
+        b=w4MzOE1uZJE2fuAQr7RkBjfjB8rxYQdcTnQ8YaxJk4xT0IC6dWcaRvuTtkqJ5vZOyL
+         AtXFLIoXsKPk2GAZTiqw8tHXbNGzllJYOx16YOsulLHOv+IDgctHUEdOb7e6muQMkZjF
+         NxZDYPbDMDxuvT50QZxYvroJNZ12Qhd+b+FRGCFlNFCIOZq8/hVnyM8MuzpDNKe53L49
+         T50EFyiPoFcmZlCYNCtlDaidxjpEk9+kIOHBG51BKUGZDYLJlfFMbf5OhDDMlt7qIIN9
+         qzUvDF0VOV6q4c/mE2UNMpfZTkIBgbk1Al8eJyzbcxNiPCe7wjYolulrWBsjMHkAy5Ab
+         qcvg==
+X-Gm-Message-State: AOJu0Yyxwrutn1X3Fkn7FrWIie76qSvEET8C/HXV0KB7LfAuWxA365rg
+	6jAl8UaqDhc1OQA5Xqv60eofwFTI9pStHHJqQ6ypOWjYlJpeAA==
+X-Google-Smtp-Source: AGHT+IGPjgYTxHMolIfwDbJJoI+7GNHNxr913C1/eJoHLVLrZVJqXMfjkqYykrGmoMDgJma1CoSyQSccprDC0VfOBi8=
+X-Received: by 2002:a05:6214:29e4:b0:67a:a721:7837 with SMTP id
+ jv4-20020a05621429e400b0067aa7217837mr4866809qvb.92.1704723513781; Mon, 08
+ Jan 2024 06:18:33 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFT] arm64: dts: qcom: sm8350: Reenable crypto & cryptobam
-Content-Language: en-US
-To: Luca Weiss <luca.weiss@fairphone.com>, Andy Gross <agross@kernel.org>,
- Bjorn Andersson <andersson@kernel.org>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Bhupesh Sharma
- <bhupesh.linux@gmail.com>, David Heidelberg <david@ixit.cz>
-Cc: ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240108-sm8350-qce-v1-1-b7d586ff38af@fairphone.com>
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20240108-sm8350-qce-v1-1-b7d586ff38af@fairphone.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20231228125805.661725-1-tudor.ambarus@linaro.org> <20231228125805.661725-2-tudor.ambarus@linaro.org>
+In-Reply-To: <20231228125805.661725-2-tudor.ambarus@linaro.org>
+From: Peter Griffin <peter.griffin@linaro.org>
+Date: Mon, 8 Jan 2024 14:18:21 +0000
+Message-ID: <CADrjBPo8tARhHjpBJMABV3dqrd6AqhPVASTK5+3rSmoDA8eStw@mail.gmail.com>
+Subject: Re: [PATCH v2 01/12] dt-bindings: clock: google,gs101-clock: add
+ PERIC0 clock management unit
+To: Tudor Ambarus <tudor.ambarus@linaro.org>
+Cc: robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, 
+	mturquette@baylibre.com, sboyd@kernel.org, conor+dt@kernel.org, 
+	andi.shyti@kernel.org, alim.akhtar@samsung.com, gregkh@linuxfoundation.org, 
+	jirislaby@kernel.org, s.nawrocki@samsung.com, tomasz.figa@gmail.com, 
+	cw00.choi@samsung.com, arnd@arndb.de, semen.protsenko@linaro.org, 
+	andre.draszik@linaro.org, saravanak@google.com, willmcvicker@google.com, 
+	linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, 
+	linux-clk@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org, 
+	linux-serial@vger.kernel.org, kernel-team@android.com
+Content-Type: text/plain; charset="UTF-8"
 
-On 8.01.2024 14:49, Luca Weiss wrote:
-> When num-channels and qcom,num-ees is not provided in devicetree, the
-> driver will try to read these values from the registers during probe but
-> this fails if the interconnect is not on and then crashes the system.
-> 
-> So we can provide these properties in devicetree (queried after patching
-> BAM driver to enable the necessary interconnect) so we can probe
-> cryptobam without reading registers and then also use the QCE as
-> expected.
+Hi Tudor,
 
-This really feels a bit backwards.. Enable the resource to query the
-hardware for numbers, so that said resource can be enabled, but
-slightly later :/
+On Thu, 28 Dec 2023 at 12:58, Tudor Ambarus <tudor.ambarus@linaro.org> wrote:
+>
+> Add dt-schema documentation for the Connectivity Peripheral 0 (PERIC0)
+> clock management unit.
+>
+> Reviewed-by: Sam Protsenko <semen.protsenko@linaro.org>
+> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+> ---
+> v2:
+> - fix comments as per Sam's suggestion and collect his R-b tag
+> - Rob's suggestion of renaming the clock-names to just "bus" and "ip"
+>   was not implemented as I felt it affects readability in the driver
+>   and consistency with other exynos clock drivers. I will happily update
+>   the names in the -rc phase if someone else has a stronger opinion than
+>   mine.
+>
 
-Konrad
+It would be good to get Krzysztof and Robs view on whether they agree
+with the above rationale or whether they would still like to see the
+names updated.
+
+Personally I like the consistency, grepability and the fact the
+current name encodes whether it is a gate, divider into the name.
+Seeing 'sss' or 'ip' as a clock name in the driver code doesn't tell
+you a lot without having to then cross reference with the dts.
+
+Is there some rationale and/or benefit behind having the shorter
+names? The only thing I could think of is trying to partially re-use
+this file on future SoCs like gs201 which might be clocked
+differently, but then these exynos clock drivers seem to be SoC
+specific anyway.
+
+Anyways apart from that:
+Reviewed-by: Peter Griffin <peter.griffin@linaro.org>
+
+kind regards,
+
+Peter
 
