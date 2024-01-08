@@ -1,59 +1,59 @@
-Return-Path: <linux-kernel+bounces-20020-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20021-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4136C82784F
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 20:17:30 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 04CDF827851
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 20:17:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 58F9F1C23F89
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 19:17:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1D5E51C24019
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 19:17:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A318855C31;
-	Mon,  8 Jan 2024 19:16:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A38D55C06;
+	Mon,  8 Jan 2024 19:16:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="gXjA9WZK"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="pkvB1Ko1"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pg1-f202.google.com (mail-pg1-f202.google.com [209.85.215.202])
+Received: from mail-pl1-f201.google.com (mail-pl1-f201.google.com [209.85.214.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15F9955780
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 19:16:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C5AD55C22
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 19:16:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--rdbabiera.bounces.google.com
-Received: by mail-pg1-f202.google.com with SMTP id 41be03b00d2f7-5cde2b113e7so481448a12.2
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 11:16:35 -0800 (PST)
+Received: by mail-pl1-f201.google.com with SMTP id d9443c01a7336-1d552f40a4aso1842295ad.0
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 11:16:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1704741395; x=1705346195; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1704741397; x=1705346197; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=CVjThMZLotAdWb9TIioEoi19kF6hz6fkppa/3qq7zYI=;
-        b=gXjA9WZKQE618v3eomvwmqVc0HmFl12Pr3USpMwXCUw2qFTAw1aG/M1PwDohAgy6dz
-         RJAJgrVINOeor6NvkoIJ+eLElk+xFxcVbVeFV6K4mWcDxf0MKlm7i/OPIF1g2/1swrC1
-         k55CwwCkZYl3p9nzGAksScZueBMh2yDsOmnh2WLnNU8Mq2k42CzjGjDzvOylWzsnO+V7
-         jgkb/OzwQcLo6yIQykTsFV26nGQH6GUCJ8Tu48gT8ZeapQqtUIOohg758t3TMtjzJFAx
-         I5o3wtuUXc7KDf8uNAkB3q+TbKqRuF5XVZjPhkxyOTLx1P6RUypKtsCuoUJ6b68wImNY
-         g7Bw==
+        bh=VA6GXsaY8kxjlMQ9qtGQVmBvg/30vKloMaDh2oUyHwI=;
+        b=pkvB1Ko1EQ/BiNJ5bHJoxAn0AY8XniHOnH+oqKecqEaTcuDyAu82LCkvJmoV+cTDTv
+         tyLZTDZSS5dxiYI2B017M1UMNKLwFxlu2uhWzHogegBeCIAVIobGb8pHyZSUiaTJgDOK
+         I7telnMY9ESpt/bvyj3SZI9PcoMqBRdw+0tseCa50Y049eKHzZ9eX2ES4SYCZkNeOee3
+         +1OYHgyQMVF8p2OG5K90JAT0bjvz4owR6L5IyoLJSWEBNAQ8iGsXxnunfDjXs3h/pyzt
+         wR84+v3IPult/NjOMxna7kzDhpXMjVcY9p+xcvyHlj86gbD4CICdnsd2aKMi/auwL+k1
+         V7tg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704741395; x=1705346195;
+        d=1e100.net; s=20230601; t=1704741397; x=1705346197;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=CVjThMZLotAdWb9TIioEoi19kF6hz6fkppa/3qq7zYI=;
-        b=Kb/BI97OPXrdRR7/+PBpLMQBhUwnC2iFVQm5e/IW75e9J64GEUMifhZvQJpg7t5OPT
-         Ll/+PP2dY9U5sffDJKMXBIVtlol1b9SkRaBxOkOgqeUk9SwrInFU1ytzBFTam6ADdINX
-         fJNDF0CWmgNnyv0nNWkfq5I9+IAOjHwjCSYP8YMY9SheZJueq/UIKty+L0dAm3d//aL3
-         I1huhAY6oHmizi4o4Hpf0vO9zFFPbBDYmC0RoaNExVknaX9EY/2mlMTXPKZ96YNpOtJy
-         SOWaQaVGtQUtkXCCfGZ2khI/qtDi2jOvDVdazdBtBq4/P8p6rn/cRtxzgkt1aWdTeukE
-         jfhg==
-X-Gm-Message-State: AOJu0YwperNZKD5eSWNMGWVaU/cC5xhmix0MpAiI+ZPyq/XRE7tuH0Da
-	hyTA10eYBn3oVhCpxSzKy8tQRcNZ09NYyizKVqfJGw==
-X-Google-Smtp-Source: AGHT+IGOIUXWhXCLu+tJx6ka3Fimz8laJsoLIhYNxmZmaI92SoS5S6nir2+WtKY/6bjERFB4yDlbwoqYrIqu5uk=
+        bh=VA6GXsaY8kxjlMQ9qtGQVmBvg/30vKloMaDh2oUyHwI=;
+        b=NreqEibTRC7SxEg6pHiIuNEJ6uYFdHqBGmktURGgNxQyHM0XZ9HzRXcnm3pIuO7BIq
+         QZdIr3FsEaAOCDnibf03ekr0SGjSlhYbvmhPOINCl8OzEa4qoN/9coXJuab0Nxd3gI3r
+         aHRf9l1DuQqbSttZa8LBTBd7rNqyEfwN2KSV6bctuqpVGqAU1cofAlZbTPq/N5PhZeKM
+         cLPu/in1pUnDpb/kSXO4juWvY4Cv00E9IiMSQQayssP0IJHUCgnzp36pa6Ca8/Zvly8J
+         RDDojUIOUe0MhcWq1ZIa1sNMak6cRWfwSIR2o00DUAQx9QnJXO170wcSpnqjMAVj2rFh
+         oBEA==
+X-Gm-Message-State: AOJu0YzTyfAMUYS9pFAr8t3pJSqb4Y55/LpQhoni1hfXiEkRaLmWMZas
+	YLKOVmcjSOv5fuf1Y175QjVH5VzpcxF8FjGqcFHFrw==
+X-Google-Smtp-Source: AGHT+IHLeB3JtE/yg5rsa2U4JlRcIRg2oHST9k2zHOUcXXd40s+glPZ9flSrGLbpc8aszExhs9/dYz0/72zaFbE=
 X-Received: from rdbabiera.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:18a8])
- (user=rdbabiera job=sendgmr) by 2002:a63:1c54:0:b0:5ca:43c7:a67 with SMTP id
- c20-20020a631c54000000b005ca43c70a67mr23049pgm.9.1704741395247; Mon, 08 Jan
- 2024 11:16:35 -0800 (PST)
-Date: Mon,  8 Jan 2024 19:16:16 +0000
+ (user=rdbabiera job=sendgmr) by 2002:a17:902:c946:b0:1d5:82f:4fe9 with SMTP
+ id i6-20020a170902c94600b001d5082f4fe9mr23296pla.2.1704741397360; Mon, 08 Jan
+ 2024 11:16:37 -0800 (PST)
+Date: Mon,  8 Jan 2024 19:16:17 +0000
 In-Reply-To: <20240108191620.987785-14-rdbabiera@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -63,14 +63,14 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20240108191620.987785-14-rdbabiera@google.com>
 X-Developer-Key: i=rdbabiera@google.com; a=openpgp; fpr=639A331F1A21D691815CE090416E17CA2BBBD5C8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4338; i=rdbabiera@google.com;
- h=from:subject; bh=putn0Ho6wv9tIgjQ9wNDNZ2hIDbeB2w3mtNH9bjlwx0=;
- b=owGbwMvMwCFW0bfok0KS4TbG02pJDKlzvFjfXD6++XiP0TlvxS1e0R8fJxR032DmMN/EyiVeJ
- NE7b25RRykLgxgHg6yYIouuf57BjSupW+Zw1hjDzGFlAhnCwMUpABNJaWP4X/Be13n6O/XbTmsP
- WjzKnD0ptO/hqs4N69V6G2vuPdaUucnIcG+e5DIhF8uQD/JnHk/aleHXf6eGLeO9jnp+rdmdx65 yfAA=
+X-Developer-Signature: v=1; a=openpgp-sha256; l=8407; i=rdbabiera@google.com;
+ h=from:subject; bh=MgJ6WW9+Da7xRutzrTnX/nmyFQBobvHWlziyx0kihc4=;
+ b=owGbwMvMwCFW0bfok0KS4TbG02pJDKlzvNiWcdoc2x3dznzoxfqlIcym25aqxLEukGB9Kh05V
+ fcDP8P9jlIWBjEOBlkxRRZd/zyDG1dSt8zhrDGGmcPKBDKEgYtTACZy8APD/zDFqf4qM/g2fs3+
+ anDn26JPH1Kcw3z9Hb48Kwo4cu/001+MDOvULiwOnbVRTeXm/2cX/fT/bdpto+dY7bfmkFVCzuw juYwA
 X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
-Message-ID: <20240108191620.987785-17-rdbabiera@google.com>
-Subject: [PATCH v3 03/12] usb: typec: tcpci: add cable_comm_capable attribute
+Message-ID: <20240108191620.987785-18-rdbabiera@google.com>
+Subject: [PATCH v3 04/12] usb: typec: tcpci: add tcpm_transmit_type to tcpm_pd_receive
 From: RD Babiera <rdbabiera@google.com>
 To: rdbabiera@google.com, heikki.krogerus@linux.intel.com, linux@roeck-us.net, 
 	gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, 
@@ -79,109 +79,223 @@ Cc: badhri@google.com, bryan.odonoghue@linaro.org, agross@kernel.org,
 	andersson@kernel.org, konrad.dybcio@linaro.org
 Content-Type: text/plain; charset="UTF-8"
 
-Add cable_comm_capable to tcpci_data for tcpci drivers to indicate that
-the port tcpc is capable of communicating to cables over SOP. A
-corresponding tcpci callback tcpci_cable_comm_capable returns this value.
-The tcpm will primarily use this in later patches to determine if the port
-can transmit and receive SOP' messages.
+tcpm_pd_receive adds the SOP type as a parameter, and passes it within the
+pd_rx_event struct for tcpm_pd_rx_handler to use. For now, the handler
+drops all SOP' messages.
 
-Maxim based tcpci drivers are capable of SOP' communication, so the
-cable_comm_capable flag is set to true.
+Maxim based tcpci drivers are capable of SOP' communication, so process_rx
+now takes the SOP type into account and passes the value to
+tcpm_pd_receive.
+
+tcpci_set_pd_rx now utilizes the cable_comm_capable flag to determine if
+TCPC_RX_DETECT_SOP1 should be added to the bitfield when enabling PD
+message reception.
+
+For all other consumers of tcpm_pd_receive, default the new field to
+TCPC_TX_SOP.
 
 Signed-off-by: RD Babiera <rdbabiera@google.com>
 Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 ---
 Changes since v2:
-* Added reviewed-by tag
-Changes since v1:
-* Moved tcpm_pd_receive changes to separate patch
+* added reviewed-by tag
 ---
- drivers/usb/typec/tcpm/tcpci.c            | 8 ++++++++
- drivers/usb/typec/tcpm/tcpci_maxim_core.c | 1 +
- include/linux/usb/tcpci.h                 | 3 +++
- include/linux/usb/tcpm.h                  | 4 ++++
- 4 files changed, 16 insertions(+)
+ drivers/usb/typec/tcpm/fusb302.c              |  2 +-
+ .../typec/tcpm/qcom/qcom_pmic_typec_pdphy.c   |  2 +-
+ drivers/usb/typec/tcpm/tcpci.c                |  7 +++++--
+ drivers/usb/typec/tcpm/tcpci_maxim_core.c     | 20 ++++++++++++++++---
+ drivers/usb/typec/tcpm/tcpm.c                 | 10 +++++++++-
+ drivers/usb/typec/tcpm/wcove.c                |  2 +-
+ include/linux/usb/tcpci.h                     |  1 +
+ include/linux/usb/tcpm.h                      |  3 ++-
+ 8 files changed, 37 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/usb/typec/tcpm/tcpci.c b/drivers/usb/typec/tcpm/tcpci.c
-index 0ee3e6e29bb1..1ededbcecc09 100644
---- a/drivers/usb/typec/tcpm/tcpci.c
-+++ b/drivers/usb/typec/tcpm/tcpci.c
-@@ -584,6 +584,13 @@ static int tcpci_pd_transmit(struct tcpc_dev *tcpc, enum tcpm_transmit_type type
- 	return 0;
+diff --git a/drivers/usb/typec/tcpm/fusb302.c b/drivers/usb/typec/tcpm/fusb302.c
+index bc21006e979c..ef18a448b740 100644
+--- a/drivers/usb/typec/tcpm/fusb302.c
++++ b/drivers/usb/typec/tcpm/fusb302.c
+@@ -1467,7 +1467,7 @@ static int fusb302_pd_read_message(struct fusb302_chip *chip,
+ 	if ((!len) && (pd_header_type_le(msg->header) == PD_CTRL_GOOD_CRC))
+ 		tcpm_pd_transmit_complete(chip->tcpm_port, TCPC_TX_SUCCESS);
+ 	else
+-		tcpm_pd_receive(chip->tcpm_port, msg);
++		tcpm_pd_receive(chip->tcpm_port, msg, TCPC_TX_SOP);
+ 
+ 	return ret;
+ }
+diff --git a/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec_pdphy.c b/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec_pdphy.c
+index 52c81378e36e..a3154085ae32 100644
+--- a/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec_pdphy.c
++++ b/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec_pdphy.c
+@@ -299,7 +299,7 @@ static void qcom_pmic_typec_pdphy_pd_receive(struct pmic_typec_pdphy *pmic_typec
+ 
+ 	if (!ret) {
+ 		dev_vdbg(dev, "pd_receive: handing %d bytes to tcpm\n", size);
+-		tcpm_pd_receive(pmic_typec_pdphy->tcpm_port, &msg);
++		tcpm_pd_receive(pmic_typec_pdphy->tcpm_port, &msg, TCPC_TX_SOP);
+ 	}
  }
  
-+static bool tcpci_cable_comm_capable(struct tcpc_dev *tcpc)
-+{
-+	struct tcpci *tcpci = tcpc_to_tcpci(tcpc);
-+
-+	return tcpci->data->cable_comm_capable;
-+}
-+
- static int tcpci_init(struct tcpc_dev *tcpc)
- {
- 	struct tcpci *tcpci = tcpc_to_tcpci(tcpc);
-@@ -793,6 +800,7 @@ struct tcpci *tcpci_register_port(struct device *dev, struct tcpci_data *data)
- 	tcpci->tcpc.enable_frs = tcpci_enable_frs;
- 	tcpci->tcpc.frs_sourcing_vbus = tcpci_frs_sourcing_vbus;
- 	tcpci->tcpc.set_partner_usb_comm_capable = tcpci_set_partner_usb_comm_capable;
-+	tcpci->tcpc.cable_comm_capable = tcpci_cable_comm_capable;
+diff --git a/drivers/usb/typec/tcpm/tcpci.c b/drivers/usb/typec/tcpm/tcpci.c
+index 1ededbcecc09..8ea4ed159a13 100644
+--- a/drivers/usb/typec/tcpm/tcpci.c
++++ b/drivers/usb/typec/tcpm/tcpci.c
+@@ -445,8 +445,11 @@ static int tcpci_set_pd_rx(struct tcpc_dev *tcpc, bool enable)
+ 	unsigned int reg = 0;
+ 	int ret;
  
- 	if (tcpci->data->check_contaminant)
- 		tcpci->tcpc.check_contaminant = tcpci_check_contaminant;
+-	if (enable)
++	if (enable) {
+ 		reg = TCPC_RX_DETECT_SOP | TCPC_RX_DETECT_HARD_RESET;
++		if (tcpci->data->cable_comm_capable)
++			reg |= TCPC_RX_DETECT_SOP1;
++	}
+ 	ret = regmap_write(tcpci->regmap, TCPC_RX_DETECT, reg);
+ 	if (ret < 0)
+ 		return ret;
+@@ -719,7 +722,7 @@ irqreturn_t tcpci_irq(struct tcpci *tcpci)
+ 		/* Read complete, clear RX status alert bit */
+ 		tcpci_write16(tcpci, TCPC_ALERT, TCPC_ALERT_RX_STATUS);
+ 
+-		tcpm_pd_receive(tcpci->port, &msg);
++		tcpm_pd_receive(tcpci->port, &msg, TCPC_TX_SOP);
+ 	}
+ 
+ 	if (tcpci->data->vbus_vsafe0v && (status & TCPC_ALERT_EXTENDED_STATUS)) {
 diff --git a/drivers/usb/typec/tcpm/tcpci_maxim_core.c b/drivers/usb/typec/tcpm/tcpci_maxim_core.c
-index 7fb966fd639b..7b2d4e6e52a2 100644
+index 7b2d4e6e52a2..f9f838df43f7 100644
 --- a/drivers/usb/typec/tcpm/tcpci_maxim_core.c
 +++ b/drivers/usb/typec/tcpm/tcpci_maxim_core.c
-@@ -478,6 +478,7 @@ static int max_tcpci_probe(struct i2c_client *client)
- 	chip->data.vbus_vsafe0v = true;
- 	chip->data.set_partner_usb_comm_capable = max_tcpci_set_partner_usb_comm_capable;
- 	chip->data.check_contaminant = max_tcpci_check_contaminant;
-+	chip->data.cable_comm_capable = true;
+@@ -128,6 +128,7 @@ static void process_rx(struct max_tcpci_chip *chip, u16 status)
+ 	u8 count, frame_type, rx_buf[TCPC_RECEIVE_BUFFER_LEN];
+ 	int ret, payload_index;
+ 	u8 *rx_buf_ptr;
++	enum tcpm_transmit_type rx_type;
  
- 	max_tcpci_init_regs(chip);
- 	chip->tcpci = tcpci_register_port(chip->dev, &chip->data);
-diff --git a/include/linux/usb/tcpci.h b/include/linux/usb/tcpci.h
-index 467e8045e9f8..1d0b849defd0 100644
---- a/include/linux/usb/tcpci.h
-+++ b/include/linux/usb/tcpci.h
-@@ -198,12 +198,15 @@ struct tcpci;
-  *		Chip level drivers are expected to check for contaminant and call
-  *		tcpm_clean_port when the port is clean to put the port back into
-  *		toggling state.
-+ * @cable_comm_capable
-+ *		optional; Set when TCPC can communicate with cable plugs over SOP'
-  */
- struct tcpci_data {
- 	struct regmap *regmap;
- 	unsigned char TX_BUF_BYTE_x_hidden:1;
- 	unsigned char auto_discharge_disconnect:1;
- 	unsigned char vbus_vsafe0v:1;
-+	unsigned char cable_comm_capable:1;
+ 	/*
+ 	 * READABLE_BYTE_COUNT: Indicates the number of bytes in the RX_BUF_BYTE_x registers
+@@ -143,10 +144,23 @@ static void process_rx(struct max_tcpci_chip *chip, u16 status)
+ 	count = rx_buf[TCPC_RECEIVE_BUFFER_COUNT_OFFSET];
+ 	frame_type = rx_buf[TCPC_RECEIVE_BUFFER_FRAME_TYPE_OFFSET];
  
- 	int (*init)(struct tcpci *tcpci, struct tcpci_data *data);
- 	int (*set_vconn)(struct tcpci *tcpci, struct tcpci_data *data,
-diff --git a/include/linux/usb/tcpm.h b/include/linux/usb/tcpm.h
-index 65fac5e1f317..430fa3ec69bb 100644
---- a/include/linux/usb/tcpm.h
-+++ b/include/linux/usb/tcpm.h
-@@ -119,6 +119,9 @@ enum tcpm_transmit_type {
-  *		at the end of the deboumce period or when the port is still
-  *		toggling. Chip level drivers are expected to check for contaminant
-  *		and call tcpm_clean_port when the port is clean.
-+ * @cable_comm_capable
-+ *		Optional; Returns whether cable communication over SOP' is supported
-+ *		by the tcpc
-  */
- struct tcpc_dev {
- 	struct fwnode_handle *fwnode;
-@@ -154,6 +157,7 @@ struct tcpc_dev {
- 	bool (*is_vbus_vsafe0v)(struct tcpc_dev *dev);
- 	void (*set_partner_usb_comm_capable)(struct tcpc_dev *dev, bool enable);
- 	void (*check_contaminant)(struct tcpc_dev *dev);
-+	bool (*cable_comm_capable)(struct tcpc_dev *dev);
+-	if (count == 0 || frame_type != TCPC_RX_BUF_FRAME_TYPE_SOP) {
++	switch (frame_type) {
++	case TCPC_RX_BUF_FRAME_TYPE_SOP1:
++		rx_type = TCPC_TX_SOP_PRIME;
++		break;
++	case TCPC_RX_BUF_FRAME_TYPE_SOP:
++		rx_type = TCPC_TX_SOP;
++		break;
++	default:
++		rx_type = TCPC_TX_SOP;
++		break;
++	}
++
++	if (count == 0 || (frame_type != TCPC_RX_BUF_FRAME_TYPE_SOP &&
++	    frame_type != TCPC_RX_BUF_FRAME_TYPE_SOP1)) {
+ 		max_tcpci_write16(chip, TCPC_ALERT, TCPC_ALERT_RX_STATUS);
+ 		dev_err(chip->dev, "%s\n", count ==  0 ? "error: count is 0" :
+-			"error frame_type is not SOP");
++			"error frame_type is not SOP/SOP'");
+ 		return;
+ 	}
+ 
+@@ -183,7 +197,7 @@ static void process_rx(struct max_tcpci_chip *chip, u16 status)
+ 	if (ret < 0)
+ 		return;
+ 
+-	tcpm_pd_receive(chip->port, &msg);
++	tcpm_pd_receive(chip->port, &msg, rx_type);
+ }
+ 
+ static int max_tcpci_set_vbus(struct tcpci *tcpci, struct tcpci_data *tdata, bool source, bool sink)
+diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
+index 5945e3a2b0f7..ff0fcf560c88 100644
+--- a/drivers/usb/typec/tcpm/tcpm.c
++++ b/drivers/usb/typec/tcpm/tcpm.c
+@@ -518,6 +518,7 @@ struct pd_rx_event {
+ 	struct kthread_work work;
+ 	struct tcpm_port *port;
+ 	struct pd_message msg;
++	enum tcpm_transmit_type rx_sop_type;
  };
  
- struct tcpm_port;
+ static const char * const pd_rev[] = {
+@@ -2981,12 +2982,17 @@ static void tcpm_pd_rx_handler(struct kthread_work *work)
+ 	const struct pd_message *msg = &event->msg;
+ 	unsigned int cnt = pd_header_cnt_le(msg->header);
+ 	struct tcpm_port *port = event->port;
++	enum tcpm_transmit_type rx_sop_type = event->rx_sop_type;
+ 
+ 	mutex_lock(&port->lock);
+ 
+ 	tcpm_log(port, "PD RX, header: %#x [%d]", le16_to_cpu(msg->header),
+ 		 port->attached);
+ 
++	/* Ignore SOP' for now */
++	if (rx_sop_type == TCPC_TX_SOP_PRIME)
++		goto done;
++
+ 	if (port->attached) {
+ 		enum pd_ctrl_msg_type type = pd_header_type_le(msg->header);
+ 		unsigned int msgid = pd_header_msgid_le(msg->header);
+@@ -3028,7 +3034,8 @@ static void tcpm_pd_rx_handler(struct kthread_work *work)
+ 	kfree(event);
+ }
+ 
+-void tcpm_pd_receive(struct tcpm_port *port, const struct pd_message *msg)
++void tcpm_pd_receive(struct tcpm_port *port, const struct pd_message *msg,
++		     enum tcpm_transmit_type rx_sop_type)
+ {
+ 	struct pd_rx_event *event;
+ 
+@@ -3038,6 +3045,7 @@ void tcpm_pd_receive(struct tcpm_port *port, const struct pd_message *msg)
+ 
+ 	kthread_init_work(&event->work, tcpm_pd_rx_handler);
+ 	event->port = port;
++	event->rx_sop_type = rx_sop_type;
+ 	memcpy(&event->msg, msg, sizeof(*msg));
+ 	kthread_queue_work(port->wq, &event->work);
+ }
+diff --git a/drivers/usb/typec/tcpm/wcove.c b/drivers/usb/typec/tcpm/wcove.c
+index 87d4abde0ea2..cf719307b3f6 100644
+--- a/drivers/usb/typec/tcpm/wcove.c
++++ b/drivers/usb/typec/tcpm/wcove.c
+@@ -535,7 +535,7 @@ static irqreturn_t wcove_typec_irq(int irq, void *data)
+ 				goto err;
+ 			}
+ 
+-			tcpm_pd_receive(wcove->tcpm, &msg);
++			tcpm_pd_receive(wcove->tcpm, &msg, TCPC_TX_SOP);
+ 
+ 			ret = regmap_read(wcove->regmap, USBC_RXSTATUS,
+ 					  &status);
+diff --git a/include/linux/usb/tcpci.h b/include/linux/usb/tcpci.h
+index 1d0b849defd0..9ed6d62c9c5f 100644
+--- a/include/linux/usb/tcpci.h
++++ b/include/linux/usb/tcpci.h
+@@ -145,6 +145,7 @@
+ #define TCPC_RX_BYTE_CNT		0x30
+ #define TCPC_RX_BUF_FRAME_TYPE		0x31
+ #define TCPC_RX_BUF_FRAME_TYPE_SOP	0
++#define TCPC_RX_BUF_FRAME_TYPE_SOP1	1
+ #define TCPC_RX_HDR			0x32
+ #define TCPC_RX_DATA			0x34 /* through 0x4f */
+ 
+diff --git a/include/linux/usb/tcpm.h b/include/linux/usb/tcpm.h
+index 430fa3ec69bb..41d1ac9c8bbf 100644
+--- a/include/linux/usb/tcpm.h
++++ b/include/linux/usb/tcpm.h
+@@ -170,7 +170,8 @@ void tcpm_cc_change(struct tcpm_port *port);
+ void tcpm_sink_frs(struct tcpm_port *port);
+ void tcpm_sourcing_vbus(struct tcpm_port *port);
+ void tcpm_pd_receive(struct tcpm_port *port,
+-		     const struct pd_message *msg);
++		     const struct pd_message *msg,
++		     enum tcpm_transmit_type rx_sop_type);
+ void tcpm_pd_transmit_complete(struct tcpm_port *port,
+ 			       enum tcpm_transmit_status status);
+ void tcpm_pd_hard_reset(struct tcpm_port *port);
 -- 
 2.43.0.472.g3155946c3a-goog
 
