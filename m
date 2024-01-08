@@ -1,145 +1,175 @@
-Return-Path: <linux-kernel+bounces-19838-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19839-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93CFD82750B
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 17:26:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE15A82750E
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 17:27:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 483DF1F21232
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 16:26:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 00E451C22AF9
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 16:27:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EFA852F9D;
-	Mon,  8 Jan 2024 16:26:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC64C537F3;
+	Mon,  8 Jan 2024 16:26:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="W6W7Kac3"
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="eLMqCnP2";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="53g7yn4e"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3B5052F7E;
-	Mon,  8 Jan 2024 16:26:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-28bc870c540so1764273a91.2;
-        Mon, 08 Jan 2024 08:26:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704731162; x=1705335962; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7c7bb56Fe3/y7pgmJGOLp2UvSxEw8VjV4D0LZYXHKG0=;
-        b=W6W7Kac3rdDV993pob/Xub0ia4nSyjAqRnI6Oq5MVQXmK2722XYdiNzQnQsAdDynph
-         FM92YGjZIYOWFgz9boxg9YFT9UOv2NQvvRyANYiMLyWTRPzjvnD7D/Gm1iknJFjW8hOx
-         DuZXvISuWKBh/hYAnawOynvWenL44EzpyLJUeyT1oM+7JR9A+3n01IREHGW/IRzyngCp
-         krLud1fYrB8fMKNCVI3TVfRJZtu+MmzyW4FjCvHwansQQ6tQOCIVT6nFmmEOYJjAHwMu
-         KEf1QMRgFI+UTCZaSGl23Ri28mT115sEMSTGabJB5ThfD1OTH2F3LhSnaUPNdjS8hxjJ
-         porA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704731162; x=1705335962;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7c7bb56Fe3/y7pgmJGOLp2UvSxEw8VjV4D0LZYXHKG0=;
-        b=kUykyJeCBDQy4Mtd3fegOMODeMYkQ+wYhtA3kWhhWr/2peAExTXpz3zsvIEPMf1T4G
-         XvfzevPAxrytP6vz7XE2cCpK2U3FJKil25fan0Zz3t63TK+Z38pfE4w/RSTmqaLdKjas
-         Xn4qZvBaTbjjjmGqU2dmvJ/dxThZVHcdnTUNb2BZ2FpxL9b8vQTxfT5uU+W6NNzRTgKe
-         bq89+h+I15ryATJfBZgny93zyrHWnVKXCt+cQxw5niignCPrHKEm1UH609/WBnM8FZwx
-         jXh/EmdfTNHKth0REkr2gMkZdGdubBLLdHWoTQbxrRkiYRpZTgF3QkHTITZRi8Cs3sZo
-         wePQ==
-X-Gm-Message-State: AOJu0YytdLiquzCRphHyq0TFB9MAigMqy70ZoVftvu5kB063xdi1HUqx
-	ItiqkmIIBL7mQ4De+qUNKFF+WlKWgA5AID3ky6A=
-X-Google-Smtp-Source: AGHT+IF6ceeZSxlz/wlFZ+bbF/0v/1LMUhzHmD+gMxSm5drrqIrCieFYp3vecgYjUA0kN0zffPcMnL1OO1vVFqjTI78=
-X-Received: by 2002:a17:90b:1211:b0:28b:dafb:cc29 with SMTP id
- gl17-20020a17090b121100b0028bdafbcc29mr1720680pjb.26.1704731162168; Mon, 08
- Jan 2024 08:26:02 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3D0552F86
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 16:26:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailout.nyi.internal (Postfix) with ESMTP id EFC6F5C031A;
+	Mon,  8 Jan 2024 11:26:46 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Mon, 08 Jan 2024 11:26:46 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm2; t=1704731206; x=1704817606; bh=eeIzoqxrLX
+	o1KH8BIqbi+bTf8TyIf0sMlfYqbdxX6QQ=; b=eLMqCnP2BUFKyAsVgX1rOKjFDV
+	S4KTs1mPwq7THeA/it05hV74OvJykOS2Ujskkn0Ts3NirCjUIMXkMf/QJuTlBydQ
+	0z229j2CYF1edy8Yeumj0noQqTYJ88fNAGEldPqeIoGHkkvQKveP9cRRJLGlvN0a
+	eHy4mtyZd4Y3eLNnJaBbvJsOkRmvxyg6litoOungLvIA2FAS6dmSU57eD76piW9T
+	8iqwB1s0yESSTg3haVNSrMl8PHf11QxXj2yvl4/r7j0yIGHupOOLfD/Seg60TRnH
+	e2P3DUnVLIn7OQv3lMnGvjE+h3A7thi5s5hzs3hyAqN7jR3mrCIKeAt+yJBg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1704731206; x=1704817606; bh=eeIzoqxrLXo1KH8BIqbi+bTf8TyI
+	f0sMlfYqbdxX6QQ=; b=53g7yn4eUzL7WZbr/n2CLy6X06nxW3hQkQOhlf5MdIMV
+	PZadsxw2um0gDWTEJeWqjsj/C5IEt3WJCRRA6UcO9Sj42CVQuijH3WOYr9TuDlqy
+	t2QwiHJZS6tNsenQQXvOmkWh9Ieayb6HjwNawg0inUWZZzDn/DIfCHbrUwxIPE7U
+	kQnFV3kox04ZKdUj2BBN6LcAjp6cUspt1G43MZxG+1TAQc64lsdyCIylRaPgi45b
+	uPrTART495RqYGjpnY6JT1aHRGhwA1ChAq9ZnuynUnjIQeEiQdwfKSwiieeY3lCz
+	b9g/YE8YJRV99Wa5GwwN8xp0ygDOFccLJq0fDNL7Kg==
+X-ME-Sender: <xms:RiKcZccYzu5UJIiAnmlTejzLHbsMvQ1bOKFK4n9YqX8AqWR46tkVfQ>
+    <xme:RiKcZeNybYlNwM0VLuzXoiJWC7H2lGSkktbb5ajQYNPqm9Q5AB6kG_7ERNY0wKWRV
+    ZfxCiOtTKGJdKSfV4M>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdehjedgkeeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
+    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
+    hrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:RiKcZdg0dpPmSUT5KPhS74g1Br4bpkVW3IdBP67yyZSL5JL-MDGhtA>
+    <xmx:RiKcZR_80Uh0XaalCc1_dcYihXtnBvXBPlIJVYO52DpiMXWX64Hu9g>
+    <xmx:RiKcZYv3wzRh1qN4NxgUa5H2wOVHV_HfrEq5XnZvcf9NFjOojjcc1g>
+    <xmx:RiKcZd979eDY3v0TMTje9A75FEUAZlORVQe3J16suh7xrerh1vrJTw>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 5C0BFB6008F; Mon,  8 Jan 2024 11:26:46 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-1364-ga51d5fd3b7-fm-20231219.001-ga51d5fd3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240103095650.25769-1-linyunsheng@huawei.com>
- <20240103095650.25769-4-linyunsheng@huawei.com> <f4abe71b3439b39d17a6fb2d410180f367cadf5c.camel@gmail.com>
- <74c9a3a1-5204-f79a-95ff-5c108ec6cf2a@huawei.com>
-In-Reply-To: <74c9a3a1-5204-f79a-95ff-5c108ec6cf2a@huawei.com>
-From: Alexander Duyck <alexander.duyck@gmail.com>
-Date: Mon, 8 Jan 2024 08:25:25 -0800
-Message-ID: <CAKgT0Uf=hFrXLzDFaOxs_j9yYP7aQCmi=wjUyuop3FBv2vzgCA@mail.gmail.com>
-Subject: Re: [PATCH net-next 3/6] mm/page_alloc: use initial zero offset for page_frag_alloc_align()
-To: Yunsheng Lin <linyunsheng@huawei.com>
-Cc: davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com, 
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Message-Id: <6278e066-a443-4055-9e5c-b13dea5909de@app.fastmail.com>
+In-Reply-To: <ZZwdKjsNj95wlTk4@LeoBras>
+References: <20240105041458.126602-3-leobras@redhat.com>
+ <ZZgAtntCQFKbsGiW@FVFF77S0Q05N>
+ <112ae7d5-61b2-4887-a56f-35ea7c3b1bfa@app.fastmail.com>
+ <ZZwPxNNc5pXr9kPi@LeoBras> <ZZwdKjsNj95wlTk4@LeoBras>
+Date: Mon, 08 Jan 2024 17:26:26 +0100
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Leonardo Bras" <leobras@redhat.com>
+Cc: "Mark Rutland" <mark.rutland@arm.com>, "Oleg Nesterov" <oleg@redhat.com>,
+ "Catalin Marinas" <catalin.marinas@arm.com>, "Will Deacon" <will@kernel.org>,
+ "Mark Brown" <broonie@kernel.org>, "Steven Rostedt" <rostedt@goodmis.org>,
+ "Guo Hui" <guohui@uniontech.com>, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 1/1] arm64: remove unnecessary ifdefs around is_compat_task()
+Content-Type: text/plain
 
-On Mon, Jan 8, 2024 at 12:59=E2=80=AFAM Yunsheng Lin <linyunsheng@huawei.co=
-m> wrote:
+On Mon, Jan 8, 2024, at 17:04, Leonardo Bras wrote:
+> On Mon, Jan 08, 2024 at 12:07:48PM -0300, Leonardo Bras wrote:
+>> On Fri, Jan 05, 2024 at 03:38:05PM +0100, Arnd Bergmann wrote:
+>> > 
+>> > I suspect it's enough to remove all of the other
+>> > "#ifdef CONFIG_COMPAT" checks in this file and rely on
+>> > dead code elimination to remove the rest, but there might
+>> > be additional problems if some extern declarations are
+>> > hidden in an #ifdef as well.
 >
-> On 2024/1/5 23:42, Alexander H Duyck wrote:
-> > On Wed, 2024-01-03 at 17:56 +0800, Yunsheng Lin wrote:
-> >> The next patch is above to use page_frag_alloc_align() to
-> >> replace vhost_net_page_frag_refill(), the main difference
-> >> between those two frag page implementations is whether we
-> >> use a initial zero offset or not.
-> >>
-> >> It seems more nature to use a initial zero offset, as it
-> >> may enable more correct cache prefetching and skb frag
-> >> coalescing in the networking, so change it to use initial
-> >> zero offset.
-> >>
-> >> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
-> >> CC: Alexander Duyck <alexander.duyck@gmail.com>
-> >
-> > There are several advantages to running the offset as a countdown
-> > rather than count-up value.
-> >
-> > 1. Specifically for the size of the chunks we are allocating doing it
-> > from the bottom up doesn't add any value as we are jumping in large
-> > enough amounts and are being used for DMA so being sequential doesn't
-> > add any value.
+> I could remove all CONFIG_COMPAT ifdefs from this file, and for compiling 
+> it required a few extra defines (in other files) to be moved outside of
+> their #ifdef CONFIG_COMPAT. Those being:
 >
-> What is the expected size of the above chunks in your mind? I suppose
-> that is like NAPI_HAS_SMALL_PAGE_FRAG to avoid excessive truesize
-> underestimation?
+>  #define VFP_STATE_SIZE         ((32 * 8) + 4)
+>  #define VFP_FPSCR_STAT_MASK    0xf800009f
+>  #define VFP_FPSCR_CTRL_MASK    0x07f79f00
 >
-> It seems there is no limit for min size of allocation for
-> page_frag_alloc_align() now, and as the page_frag API seems to be only
-> used in networking, should we enforce the min size of allocation at API
-> level?
+>  #define COMPAT_ELF_NGREG               18
+>  typedef unsigned int                   compat_elf_greg_t;
+>  typedef compat_elf_greg_t              compat_elf_gregset_t[COMPAT_ELF_NGREG];
+> 
+>
+> OTOH, the size of the final arch/arm64/kernel/ptrace.o went from 44768 to 
+> 56328 bytes, which I understand to be undesired.
 
-The primary use case for this is to allocate fragments to be used for
-storing network data. We usually end up allocating a minimum of 1K in
-most cases as you end up having to reserve something like 512B for
-headroom and the skb_shared_info in an skb. In addition the slice
-lengths become very hard to predict as these are usually used for
-network traffic so the size can be as small as 60B for a packet or as
-large as 9KB
+Right, unfortunately it seems that compat_arch_ptrace() is
+globally visible and consequently not dropped by the compiler
+in dead code elimination.
 
-> >
-> > 2. By starting at the end and working toward zero we can use built in
-> > functionality of the CPU to only have to check and see if our result
-> > would be signed rather than having to load two registers with the
-> > values and then compare them which saves us a few cycles. In addition
-> > it saves us from having to read both the size and the offset for every
-> > page.
+> A different (and simpler) solution is to have an empty struct in case of 
+> !CONFIG_COMPAT, that will be optimized out in compile-time:
 >
-> I suppose the above is ok if we only use the page_frag_alloc*() API to
-> allocate memory for skb->data, not for the frag in skb_shinfo(), as by
-> starting at the end and working toward zero, it means we can not do skb
-> coalescing.
+> diff --git a/arch/arm64/kernel/ptrace.c b/arch/arm64/kernel/ptrace.c
+> index 9f8781f1fdfda..d2f275d8a3e6e 100644
+> --- a/arch/arm64/kernel/ptrace.c
+> +++ b/arch/arm64/kernel/ptrace.c
+> @@ -2107,6 +2107,9 @@ long compat_arch_ptrace(struct task_struct 
+> *child, compat_long_t request,
+> 
+>         return ret;
+>  }
+> +#else
+> +static const struct user_regset_view user_aarch32_view = {};
+> +static const struct user_regset_view user_aarch32_ptrace_view = {};
+>  #endif /* CONFIG_COMPAT */
+> 
+>  const struct user_regset_view *task_user_regset_view(struct task_struct *task)
 >
-> As page_frag_alloc*() is returning va now, I am assuming most of users
-> is using the API for skb->data, I guess it is ok to drop this patch for
-> now.
+> With this the patch will build successfully and arch/arm64/kernel/ptrace.o 
+> will be able to keep it's original size.
 >
-> If we allow page_frag_alloc*() to return struct page, we might need this
-> patch to enable coalescing.
+> Arnd, is that ok?
 
-I would argue this is not the interface for enabling coalescing. This
-is one of the reasons why this is implemented the way it is. When you
-are aligning fragments you aren't going to be able to coalesce the
-frames anyway as the alignment would push the fragments apart.
+I don't see it being worth it if you add extra unused lines
+in order to remove one more #ifdef. I would either leave the
+task_user_regset_view() function unchanged here, or (if this
+works) move the #ifdef down a few lines so the existing
+user_regset_view structures can be shared:
+
+@@ -1595,7 +1595,6 @@ static const struct user_regset_view user_aarch64_view = {
+        .regsets = aarch64_regsets, .n = ARRAY_SIZE(aarch64_regsets)
+ };
+ 
+-#ifdef CONFIG_COMPAT
+ enum compat_regset {
+        REGSET_COMPAT_GPR,
+        REGSET_COMPAT_VFP,
+@@ -1852,6 +1851,7 @@ static const struct user_regset_view user_aarch32_ptrace_view = {
+        .regsets = aarch32_ptrace_regsets, .n = ARRAY_SIZE(aarch32_ptrace_regsets)
+ };
+ 
++#ifdef CONFIG_COMPAT
+ static int compat_ptrace_read_user(struct task_struct *tsk, compat_ulong_t off,
+                                   compat_ulong_t __user *ret)
+ {
+
+
+     Arnd
 
