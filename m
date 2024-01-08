@@ -1,800 +1,785 @@
-Return-Path: <linux-kernel+bounces-19607-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19608-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 75C7E826F99
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 14:20:52 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BCEE2826FA2
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 14:22:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1FD0F283D95
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 13:20:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 047FEB21425
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 13:22:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1ED7745944;
-	Mon,  8 Jan 2024 13:20:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C58744C7F;
+	Mon,  8 Jan 2024 13:22:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ffwll.ch header.i=@ffwll.ch header.b="VfJyfxtG"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="aQCnf9wY"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02A4345948
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 13:20:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ffwll.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ffwll.ch
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-40e34d136d5so3016595e9.0
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 05:20:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google; t=1704720024; x=1705324824; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=V96apZbY6abKJmncic63h33mVMuU+yngRRzNWzu37m8=;
-        b=VfJyfxtGn5hGon0F8PBC+0SimTxpPvdktAAxrYnrNVknH2Z/g9Xx34+wG72goYRy8U
-         mSOsL1qnPFan9T3os3A3oX0vCA+t7kvdmNsTLuSevnnoSBalIDgXrwgjgsn0N6YpmFXZ
-         NUzAPJNTqEwOUPrrCxs7MtZhzEOVDewlQayY8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704720024; x=1705324824;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=V96apZbY6abKJmncic63h33mVMuU+yngRRzNWzu37m8=;
-        b=uI8yxIQ93zJVdSwSf/s/E7AMm9juxgxqvm1yiUX319HsNuv9hrKdPmztDhqCML/lKZ
-         ktQmQOF3ycsj1BxN6HAZQKe93+qw8vh5M+SKCohVrjxjA+9WHRhdiRlo67whfJXbuFT1
-         XNQuT3znfsjSmDyF3lpjerwtt/DFpmMBrJ2uoJ+RTgmnS6qAdhZNQyjKdlEVsNl94kqk
-         LqCAwAwUMxTiRhKa/WONAaSERjABlRUcI7crwZAfYSCwerXObHonLNPyfa5dBdXfb1GQ
-         LVvHqQ48Q0Ldl6L1NDH1W2SOEIhHZ+SfFUKS7YXEHcQ8juffJFPfwXvzzNz5f0NB2l0V
-         3o5w==
-X-Gm-Message-State: AOJu0YyCelMGkP28Sp9ZwJTnwX0Fqym/ynxufzmiaxQ9ihGY4IXV3AK0
-	kCU9oQxAA6hj8t2vzqgI82W3s8b3IFgzkg==
-X-Google-Smtp-Source: AGHT+IEwcRrN/+64DX+YRQ8bByIVAzjjZpvHcW5sgif5AwCUz+o9yO0OPKVkdB2MnF/CXhFPzGAbqw==
-X-Received: by 2002:a05:600c:35cc:b0:40e:36e2:9264 with SMTP id r12-20020a05600c35cc00b0040e36e29264mr4585800wmq.0.1704720024124;
-        Mon, 08 Jan 2024 05:20:24 -0800 (PST)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id ay26-20020a05600c1e1a00b0040e4a8c2d47sm891845wmb.43.2024.01.08.05.20.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Jan 2024 05:20:23 -0800 (PST)
-Date: Mon, 8 Jan 2024 14:20:21 +0100
-From: Daniel Vetter <daniel@ffwll.ch>
-To: Paul Cercueil <paul@crapouillou.net>
-Cc: Jonathan Cameron <jic23@kernel.org>,
-	Lars-Peter Clausen <lars@metafoo.de>,
-	Sumit Semwal <sumit.semwal@linaro.org>,
-	Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-	Vinod Koul <vkoul@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
-	Michael Hennerich <Michael.Hennerich@analog.com>,
-	linux-doc@vger.kernel.org, linux-iio@vger.kernel.org,
-	linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-	linaro-mm-sig@lists.linaro.org,
-	Nuno =?iso-8859-1?Q?S=E1?= <noname.nuno@gmail.com>,
-	dmaengine@vger.kernel.org, linux-media@vger.kernel.org
-Subject: Re: [PATCH v5 5/8] iio: core: Add new DMABUF interface infrastructure
-Message-ID: <ZZv2lZTKlcIUvh-v@phenom.ffwll.local>
-Mail-Followup-To: Paul Cercueil <paul@crapouillou.net>,
-	Jonathan Cameron <jic23@kernel.org>,
-	Lars-Peter Clausen <lars@metafoo.de>,
-	Sumit Semwal <sumit.semwal@linaro.org>,
-	Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-	Vinod Koul <vkoul@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
-	Michael Hennerich <Michael.Hennerich@analog.com>,
-	linux-doc@vger.kernel.org, linux-iio@vger.kernel.org,
-	linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-	linaro-mm-sig@lists.linaro.org,
-	Nuno =?iso-8859-1?Q?S=E1?= <noname.nuno@gmail.com>,
-	dmaengine@vger.kernel.org, linux-media@vger.kernel.org
-References: <20231219175009.65482-1-paul@crapouillou.net>
- <20231219175009.65482-6-paul@crapouillou.net>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4834644C76;
+	Mon,  8 Jan 2024 13:22:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 408Cbur0022651;
+	Mon, 8 Jan 2024 13:22:38 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=o0VcOhJuQRpeTaDulVHmbz0vhxac4kh9ufIpTC2IkBk=; b=aQ
+	Cnf9wYY/bTZEPCxnfES/m7arV9ivNxJrWYNB6D/KGZaukIu44rkAzxxAV10916pz
+	lJacWd/udgnNCNfnOGomsios42ol+52tTVXC2n2vkPd4MXk996EydRlcdmmpKbym
+	yXjds3WiaPJ0RulWtW0TMDU2iJKWdJWHiQsv304rPX+3OhjEuFUyk/Zjlzb8MfUs
+	CW2EHbASGX9jxStZbQ17p61X/x+wmCeDc1lhfHcLLxc3f+dPD+nR4BoHOD40fdHe
+	L8wk7DArB2rcCtfeHFR8SoUW/qUbA/SVzhzp1riA5faZJiIWuvJwvCjgn0Sy/QqW
+	1MUn/8xfx/QLlCSeG2tA==
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vg97b12j6-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 08 Jan 2024 13:22:38 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 408DMbK8003478
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 8 Jan 2024 13:22:37 GMT
+Received: from [10.216.40.78] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 8 Jan
+ 2024 05:22:31 -0800
+Message-ID: <bd98da3f-17c2-e4c7-cb7c-b76090cab06b@quicinc.com>
+Date: Mon, 8 Jan 2024 18:52:26 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231219175009.65482-6-paul@crapouillou.net>
-X-Operating-System: Linux phenom 6.5.0-4-amd64 
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.13.1
+Subject: Re: [PATCH v9] bus: mhi: host: Add tracing support
+Content-Language: en-US
+To: Manivannan Sadhasivam <mani@kernel.org>,
+        Steven Rostedt
+	<rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+CC: <linux-kernel@vger.kernel.org>, <mhi@lists.linux.dev>,
+        <linux-arm-msm@vger.kernel.org>, <linux-trace-kernel@vger.kernel.org>,
+        <quic_vbadigan@quicinc.com>, <quic_ramkri@quicinc.com>,
+        <quic_nitegupt@quicinc.com>, <quic_skananth@quicinc.com>,
+        <quic_parass@quicinc.com>
+References: <20240105-ftrace_support-v9-1-a2dca64cc6ea@quicinc.com>
+From: Krishna Chaitanya Chundru <quic_krichai@quicinc.com>
+In-Reply-To: <20240105-ftrace_support-v9-1-a2dca64cc6ea@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: tmKEzRNFrBNg4cU9CNM5jn0oluStAYwv
+X-Proofpoint-ORIG-GUID: tmKEzRNFrBNg4cU9CNM5jn0oluStAYwv
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ impostorscore=0 phishscore=0 clxscore=1015 mlxscore=0 bulkscore=0
+ priorityscore=1501 malwarescore=0 mlxlogscore=999 suspectscore=0
+ spamscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2401080115
 
-On Tue, Dec 19, 2023 at 06:50:06PM +0100, Paul Cercueil wrote:
-> Add the necessary infrastructure to the IIO core to support a new
-> optional DMABUF based interface.
-> 
-> With this new interface, DMABUF objects (externally created) can be
-> attached to a IIO buffer, and subsequently used for data transfer.
-> 
-> A userspace application can then use this interface to share DMABUF
-> objects between several interfaces, allowing it to transfer data in a
-> zero-copy fashion, for instance between IIO and the USB stack.
-> 
-> The userspace application can also memory-map the DMABUF objects, and
-> access the sample data directly. The advantage of doing this vs. the
-> read() interface is that it avoids an extra copy of the data between the
-> kernel and userspace. This is particularly userful for high-speed
-> devices which produce several megabytes or even gigabytes of data per
-> second.
-> 
-> As part of the interface, 3 new IOCTLs have been added:
-> 
-> IIO_BUFFER_DMABUF_ATTACH_IOCTL(int fd):
->  Attach the DMABUF object identified by the given file descriptor to the
->  buffer.
-> 
-> IIO_BUFFER_DMABUF_DETACH_IOCTL(int fd):
->  Detach the DMABUF object identified by the given file descriptor from
->  the buffer. Note that closing the IIO buffer's file descriptor will
->  automatically detach all previously attached DMABUF objects.
-> 
-> IIO_BUFFER_DMABUF_ENQUEUE_IOCTL(struct iio_dmabuf *):
->  Request a data transfer to/from the given DMABUF object. Its file
->  descriptor, as well as the transfer size and flags are provided in the
->  "iio_dmabuf" structure.
-> 
-> These three IOCTLs have to be performed on the IIO buffer's file
-> descriptor, obtained using the IIO_BUFFER_GET_FD_IOCTL() ioctl.
-> 
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-> 
+Hi Steven,
+
+Even though I added your reviewed-by tag, I incorporated changes 
+mentioned in the previous patch.
+
+Can you please review it once.
+
+Thanks & Regards,
+
+Krishna Chaitanya.
+
+On 1/5/2024 5:53 PM, Krishna chaitanya chundru wrote:
+> This change adds ftrace support for following functions which
+> helps in debugging the issues when there is Channel state & MHI
+> state change and also when we receive data and control events:
+> 1. mhi_intvec_mhi_states
+> 2. mhi_process_data_event_ring
+> 3. mhi_process_ctrl_ev_ring
+> 4. mhi_gen_tre
+> 5. mhi_update_channel_state
+> 6. mhi_tryset_pm_state
+> 7. mhi_pm_st_worker
+>
+> Change the implementation of the arrays which has enum to strings mapping
+> to make it consistent in both trace header file and other files.
+>
+> Where ever the trace events are added, debug messages are removed.
+>
+> Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
+> Reviewed-by: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 > ---
-> v2: Only allow the new IOCTLs on the buffer FD created with
->     IIO_BUFFER_GET_FD_IOCTL().
-> 
-> v3: - Get rid of the old IOCTLs. The IIO subsystem does not create or
->     manage DMABUFs anymore, and only attaches/detaches externally
->     created DMABUFs.
->     - Add IIO_BUFFER_DMABUF_CYCLIC to the supported flags.
-> 
-> v5: - Use dev_err() instead of pr_err()
->     - Inline to_iio_dma_fence()
->     - Add comment to explain why we unref twice when detaching dmabuf
->     - Remove TODO comment. It is actually safe to free the file's
->       private data even when transfers are still pending because it
->       won't be accessed.
->     - Fix documentation of new fields in struct iio_buffer_access_funcs
->     - iio_dma_resv_lock() does not need to be exported, make it static
+> Changes in v9:
+> - Change the implementations of some array so that the strings to enum mapping
+> - is same in both trace header and other files as suggested by steve.
+> - Link to v8: https://lore.kernel.org/r/20231207-ftrace_support-v8-1-7f62d4558555@quicinc.com
+>
+> Changes in v8:
+> - Pass the structure and derefernce the variables in TP_fast_assign as suggested by steve
+> - Link to v7: https://lore.kernel.org/r/20231206-ftrace_support-v7-1-aca49a04268b@quicinc.com
+>
+> Changes in v7:
+> - change log format as pointed by mani.
+> - Link to v6: https://lore.kernel.org/r/20231204-ftrace_support-v6-1-9b206546dac2@quicinc.com
+>
+> Changes in v6:
+> - use 'rp' directly as suggested by jeffrey.
+> - Link to v5: https://lore.kernel.org/r/20231127-ftrace_support-v5-1-eb67daead4f1@quicinc.com
+>
+> Changes in v5:
+> - Use DECLARE_EVENT_CLASS for multiple events as suggested by steve.
+> - Instead of converting to u64 to print address, use %px to print the address to avoid
+> - warnings in some platforms.
+> - Link to v4: https://lore.kernel.org/r/20231111-ftrace_support-v4-1-c83602399461@quicinc.com
+>
+> Changes in v4:
+> - Fix compilation issues in previous patch which happended due to rebasing.
+> - In the defconfig FTRACE config is not enabled due to that the compilation issue is not
+> - seen in my workspace.
+> - Link to v3: https://lore.kernel.org/r/20231111-ftrace_support-v3-1-f358d2911a74@quicinc.com
+>
+> Changes in v3:
+> - move trace header file from include/trace/events to drivers/bus/mhi/host/ so that
+> - we can include driver header files.
+> - Use macros directly in the trace events as suggested Jeffrey Hugo.
+> - Reorder the structure in the events as suggested by steve to avoid holes in the buffer.
+> - removed the mhi_to_physical function as this can give security issues.
+> - removed macros to define strings as we can get those from driver headers.
+> - Link to v2: https://lore.kernel.org/r/20231013-ftrace_support-v2-1-6e893ce010b5@quicinc.com
+>
+> Changes in v2:
+> - Passing the raw state into the trace event and using  __print_symbolic() as suggested by bjorn.
+> - Change mhi_pm_st_worker to mhi_pm_st_transition as suggested by bjorn.
+> - Fixed the kernel test rebot issues.
+> - Link to v1: https://lore.kernel.org/r/20231005-ftrace_support-v1-1-23a2f394fa49@quicinc.com
 > ---
->  drivers/iio/industrialio-buffer.c | 402 ++++++++++++++++++++++++++++++
->  include/linux/iio/buffer_impl.h   |  26 ++
->  include/uapi/linux/iio/buffer.h   |  22 ++
->  3 files changed, 450 insertions(+)
-> 
-> diff --git a/drivers/iio/industrialio-buffer.c b/drivers/iio/industrialio-buffer.c
-> index 09c41e9ccf87..24c040e073a7 100644
-> --- a/drivers/iio/industrialio-buffer.c
-> +++ b/drivers/iio/industrialio-buffer.c
-> @@ -13,10 +13,14 @@
->  #include <linux/kernel.h>
->  #include <linux/export.h>
->  #include <linux/device.h>
-> +#include <linux/dma-buf.h>
-> +#include <linux/dma-fence.h>
-> +#include <linux/dma-resv.h>
->  #include <linux/file.h>
->  #include <linux/fs.h>
->  #include <linux/cdev.h>
->  #include <linux/slab.h>
-> +#include <linux/mm.h>
->  #include <linux/poll.h>
->  #include <linux/sched/signal.h>
->  
-> @@ -28,6 +32,31 @@
->  #include <linux/iio/buffer.h>
->  #include <linux/iio/buffer_impl.h>
->  
-> +#define DMABUF_ENQUEUE_TIMEOUT_MS 5000
+>   drivers/bus/mhi/common.h        |  38 +++---
+>   drivers/bus/mhi/host/init.c     |  63 +++++----
+>   drivers/bus/mhi/host/internal.h |  40 ++++++
+>   drivers/bus/mhi/host/main.c     |  19 ++-
+>   drivers/bus/mhi/host/pm.c       |   7 +-
+>   drivers/bus/mhi/host/trace.h    | 275 ++++++++++++++++++++++++++++++++++++++++
+>   6 files changed, 378 insertions(+), 64 deletions(-)
+>
+> diff --git a/drivers/bus/mhi/common.h b/drivers/bus/mhi/common.h
+> index f794b9c8049e..dda340aaed95 100644
+> --- a/drivers/bus/mhi/common.h
+> +++ b/drivers/bus/mhi/common.h
+> @@ -297,30 +297,30 @@ struct mhi_ring_element {
+>   	__le32 dword[2];
+>   };
+>   
+> +#define MHI_STATE_LIST				\
+> +	mhi_state(RESET,	"RESET")	\
+> +	mhi_state(READY,	"READY")	\
+> +	mhi_state(M0,		"M0")		\
+> +	mhi_state(M1,		"M1")		\
+> +	mhi_state(M2,		"M2")		\
+> +	mhi_state(M3,		"M3")		\
+> +	mhi_state(M3_FAST,	"M3_FAST")	\
+> +	mhi_state(BHI,		"BHI")		\
+> +	mhi_state_end(SYS_ERR,	"SYS ERROR")
 > +
-> +struct iio_dma_fence;
+> +#undef mhi_state
+> +#undef mhi_state_end
 > +
-> +struct iio_dmabuf_priv {
-> +	struct list_head entry;
-> +	struct kref ref;
+> +#define mhi_state(a, b)		case MHI_STATE_##a: return b;
+> +#define mhi_state_end(a, b)	case MHI_STATE_##a: return b;
 > +
-> +	struct iio_buffer *buffer;
-> +	struct iio_dma_buffer_block *block;
-> +
-> +	u64 context;
-> +	spinlock_t lock;
-> +
-> +	struct dma_buf_attachment *attach;
-> +	struct iio_dma_fence *fence;
-> +};
-> +
-> +struct iio_dma_fence {
-> +	struct dma_fence base;
-> +	struct iio_dmabuf_priv *priv;
-> +	struct sg_table *sgt;
-> +	enum dma_data_direction dir;
-> +};
-> +
->  static const char * const iio_endian_prefix[] = {
->  	[IIO_BE] = "be",
->  	[IIO_LE] = "le",
-> @@ -332,6 +361,7 @@ void iio_buffer_init(struct iio_buffer *buffer)
->  {
->  	INIT_LIST_HEAD(&buffer->demux_list);
->  	INIT_LIST_HEAD(&buffer->buffer_list);
-> +	INIT_LIST_HEAD(&buffer->dmabufs);
->  	init_waitqueue_head(&buffer->pollq);
->  	kref_init(&buffer->ref);
->  	if (!buffer->watermark)
-> @@ -1519,14 +1549,54 @@ static void iio_buffer_unregister_legacy_sysfs_groups(struct iio_dev *indio_dev)
->  	kfree(iio_dev_opaque->legacy_scan_el_group.attrs);
->  }
->  
-> +static void iio_buffer_dmabuf_release(struct kref *ref)
-> +{
-> +	struct iio_dmabuf_priv *priv = container_of(ref, struct iio_dmabuf_priv, ref);
-> +	struct dma_buf_attachment *attach = priv->attach;
-> +	struct iio_buffer *buffer = priv->buffer;
-> +	struct dma_buf *dmabuf = attach->dmabuf;
-> +
-> +	buffer->access->detach_dmabuf(buffer, priv->block);
-> +
-> +	dma_buf_detach(attach->dmabuf, attach);
-> +	dma_buf_put(dmabuf);
-> +	kfree(priv);
+>   static inline const char *mhi_state_str(enum mhi_state state)
+>   {
+>   	switch (state) {
+> -	case MHI_STATE_RESET:
+> -		return "RESET";
+> -	case MHI_STATE_READY:
+> -		return "READY";
+> -	case MHI_STATE_M0:
+> -		return "M0";
+> -	case MHI_STATE_M1:
+> -		return "M1";
+> -	case MHI_STATE_M2:
+> -		return "M2";
+> -	case MHI_STATE_M3:
+> -		return "M3";
+> -	case MHI_STATE_M3_FAST:
+> -		return "M3 FAST";
+> -	case MHI_STATE_BHI:
+> -		return "BHI";
+> -	case MHI_STATE_SYS_ERR:
+> -		return "SYS ERROR";
+> +	MHI_STATE_LIST
+>   	default:
+>   		return "Unknown state";
+>   	}
+> -};
 > +}
-> +
-> +void iio_buffer_dmabuf_get(struct dma_buf_attachment *attach)
-> +{
-> +	struct iio_dmabuf_priv *priv = attach->importer_priv;
-> +
-> +	kref_get(&priv->ref);
-> +}
-> +EXPORT_SYMBOL_GPL(iio_buffer_dmabuf_get);
-> +
-> +void iio_buffer_dmabuf_put(struct dma_buf_attachment *attach)
-> +{
-> +	struct iio_dmabuf_priv *priv = attach->importer_priv;
-> +
-> +	kref_put(&priv->ref, iio_buffer_dmabuf_release);
-> +}
-> +EXPORT_SYMBOL_GPL(iio_buffer_dmabuf_put);
-> +
->  static int iio_buffer_chrdev_release(struct inode *inode, struct file *filep)
->  {
->  	struct iio_dev_buffer_pair *ib = filep->private_data;
->  	struct iio_dev *indio_dev = ib->indio_dev;
->  	struct iio_buffer *buffer = ib->buffer;
-> +	struct iio_dmabuf_priv *priv, *tmp;
->  
->  	wake_up(&buffer->pollq);
->  
-> +	/* Close all attached DMABUFs */
-> +	list_for_each_entry_safe(priv, tmp, &buffer->dmabufs, entry) {
-> +		list_del_init(&priv->entry);
-> +		iio_buffer_dmabuf_put(priv->attach);
-> +	}
-> +
-> +	if (!list_empty(&buffer->dmabufs))
-> +		dev_warn(&indio_dev->dev, "Buffer FD closed with active transfers\n");
-> +
->  	kfree(ib);
->  	clear_bit(IIO_BUSY_BIT_POS, &buffer->flags);
->  	iio_device_put(indio_dev);
-> @@ -1534,11 +1604,343 @@ static int iio_buffer_chrdev_release(struct inode *inode, struct file *filep)
->  	return 0;
->  }
->  
-> +static int iio_dma_resv_lock(struct dma_buf *dmabuf, bool nonblock)
-> +{
-> +	int ret;
-> +
-> +	ret = dma_resv_lock_interruptible(dmabuf->resv, NULL);
-> +	if (ret) {
-> +		if (ret != -EDEADLK)
-> +			goto out;
-> +		if (nonblock) {
-> +			ret = -EBUSY;
-> +			goto out;
-> +		}
-> +
-> +		ret = dma_resv_lock_slow_interruptible(dmabuf->resv, NULL);
-
-This is overkill, without a reservation context you never get -EDEADLK and
-so never have to go into the slowpath locking mode. You can check this
-with the CONFIG_DEBUG_WW_MUTEX_SLOWPATH=y build option.
-
-> +	}
-> +
-> +out:
-> +	return ret;
-> +}
-> +
-> +static struct dma_buf_attachment *
-> +iio_buffer_find_attachment(struct iio_dev *indio_dev, struct dma_buf *dmabuf)
-> +{
-> +	struct dma_buf_attachment *elm, *attach = NULL;
-> +	int ret;
-> +
-> +	ret = iio_dma_resv_lock(dmabuf, false);
-> +	if (ret)
-> +		return ERR_PTR(ret);
-> +
-> +	list_for_each_entry(elm, &dmabuf->attachments, node) {
-> +		if (elm->dev == indio_dev->dev.parent) {
-> +			attach = elm;
-> +			break;
-> +		}
-> +	}
-> +
-> +	if (attach)
-> +		iio_buffer_dmabuf_get(elm);
-
-Same comment as on your usb gagdet support: This must be a
-kref_get_unless_zero, and I'd really prefer if you use your own
-list+locking instead of digging around in dma-buf internals in a
-lifetime-relevant way.
-
-> +
-> +	dma_resv_unlock(dmabuf->resv);
-> +
-> +	return attach ?: ERR_PTR(-EPERM);
-> +}
-> +
-> +static int iio_buffer_attach_dmabuf(struct iio_dev_buffer_pair *ib,
-> +				    int __user *user_fd)
-> +{
-> +	struct iio_dev *indio_dev = ib->indio_dev;
-> +	struct iio_buffer *buffer = ib->buffer;
-> +	struct dma_buf_attachment *attach;
-> +	struct iio_dmabuf_priv *priv;
-> +	struct dma_buf *dmabuf;
-> +	int err, fd;
-> +
-> +	if (!buffer->access->attach_dmabuf
-> +	    || !buffer->access->detach_dmabuf
-> +	    || !buffer->access->enqueue_dmabuf)
-> +		return -EPERM;
-> +
-> +	if (copy_from_user(&fd, user_fd, sizeof(fd)))
-> +		return -EFAULT;
-> +
-> +	priv = kzalloc(sizeof(*priv), GFP_KERNEL);
-> +	if (!priv)
-> +		return -ENOMEM;
-> +
-> +	spin_lock_init(&priv->lock);
-> +	priv->context = dma_fence_context_alloc(1);
-> +
-> +	dmabuf = dma_buf_get(fd);
-> +	if (IS_ERR(dmabuf)) {
-> +		err = PTR_ERR(dmabuf);
-> +		goto err_free_priv;
-> +	}
-> +
-> +	attach = dma_buf_attach(dmabuf, indio_dev->dev.parent);
-> +	if (IS_ERR(attach)) {
-> +		err = PTR_ERR(attach);
-> +		goto err_dmabuf_put;
-> +	}
-> +
-> +	kref_init(&priv->ref);
-> +	priv->buffer = buffer;
-> +	priv->attach = attach;
-> +	attach->importer_priv = priv;
-> +
-> +	priv->block = buffer->access->attach_dmabuf(buffer, attach);
-> +	if (IS_ERR(priv->block)) {
-> +		err = PTR_ERR(priv->block);
-> +		goto err_dmabuf_detach;
-> +	}
-> +
-> +	list_add(&priv->entry, &buffer->dmabufs);
-
-This list seems to have no locking. And I think you want to tie the attach
-refcount 1:1 to this list, to make sure userspace can't double-detach and
-hence underrun any refcount here. Would also address my concern with your
-find_attachment() function.
-
-> +
-> +	return 0;
-> +
-> +err_dmabuf_detach:
-> +	dma_buf_detach(dmabuf, attach);
-> +err_dmabuf_put:
-> +	dma_buf_put(dmabuf);
-> +err_free_priv:
-> +	kfree(priv);
-> +
-> +	return err;
-> +}
-> +
-> +static int iio_buffer_detach_dmabuf(struct iio_dev_buffer_pair *ib, int *user_req)
-> +{
-> +	struct dma_buf_attachment *attach;
-> +	struct iio_dmabuf_priv *priv;
-> +	struct dma_buf *dmabuf;
-> +	int dmabuf_fd, ret = 0;
-> +
-> +	if (copy_from_user(&dmabuf_fd, user_req, sizeof(dmabuf_fd)))
-> +		return -EFAULT;
-> +
-> +	dmabuf = dma_buf_get(dmabuf_fd);
-> +	if (IS_ERR(dmabuf))
-> +		return PTR_ERR(dmabuf);
-> +
-> +	attach = iio_buffer_find_attachment(ib->indio_dev, dmabuf);
-> +	if (IS_ERR(attach)) {
-> +		ret = PTR_ERR(attach);
-> +		goto out_dmabuf_put;
-> +	}
-> +
-> +	priv = attach->importer_priv;
-> +	list_del_init(&priv->entry);
-> +
-> +	/*
-> +	 * Unref twice to release the reference obtained with
-> +	 * iio_buffer_find_attachment() above, and the one obtained in
-> +	 * iio_buffer_attach_dmabuf().
-> +	 */
-
-Again like in the usb gagdet code, this looks like it's exploitable to
-provoke a refcount underflow by userspace.
-
-> +	iio_buffer_dmabuf_put(attach);
-> +	iio_buffer_dmabuf_put(attach);
-> +
-> +out_dmabuf_put:
-> +	dma_buf_put(dmabuf);
-> +
-> +	return ret;
-> +}
-> +
-> +static const char *
-> +iio_buffer_dma_fence_get_driver_name(struct dma_fence *fence)
-> +{
-> +	return "iio";
-> +}
-> +
-> +static void iio_buffer_dma_fence_release(struct dma_fence *fence)
-> +{
-> +	struct iio_dma_fence *iio_fence =
-> +		container_of(fence, struct iio_dma_fence, base);
-> +
-> +	kfree(iio_fence);
-> +}
-> +
-> +static const struct dma_fence_ops iio_buffer_dma_fence_ops = {
-> +	.get_driver_name	= iio_buffer_dma_fence_get_driver_name,
-> +	.get_timeline_name	= iio_buffer_dma_fence_get_driver_name,
-> +	.release		= iio_buffer_dma_fence_release,
-> +};
-> +
-> +static int iio_buffer_enqueue_dmabuf(struct iio_dev_buffer_pair *ib,
-> +				     struct iio_dmabuf __user *iio_dmabuf_req,
-> +				     bool nonblock)
-> +{
-> +	struct iio_dev *indio_dev = ib->indio_dev;
-> +	struct iio_buffer *buffer = ib->buffer;
-> +	struct iio_dmabuf iio_dmabuf;
-> +	struct dma_buf_attachment *attach;
-> +	struct iio_dmabuf_priv *priv;
-> +	enum dma_data_direction dir;
-> +	struct iio_dma_fence *fence;
-> +	struct dma_buf *dmabuf;
-> +	struct sg_table *sgt;
-> +	unsigned long timeout;
-> +	bool dma_to_ram;
-> +	bool cyclic;
-> +	int ret;
-> +
-> +	if (copy_from_user(&iio_dmabuf, iio_dmabuf_req, sizeof(iio_dmabuf)))
-> +		return -EFAULT;
-> +
-> +	if (iio_dmabuf.flags & ~IIO_BUFFER_DMABUF_SUPPORTED_FLAGS)
-> +		return -EINVAL;
-> +
-> +	cyclic = iio_dmabuf.flags & IIO_BUFFER_DMABUF_CYCLIC;
-> +
-> +	/* Cyclic flag is only supported on output buffers */
-> +	if (cyclic && buffer->direction != IIO_BUFFER_DIRECTION_OUT)
-> +		return -EINVAL;
-> +
-> +	dmabuf = dma_buf_get(iio_dmabuf.fd);
-> +	if (IS_ERR(dmabuf))
-> +		return PTR_ERR(dmabuf);
-> +
-> +	if (!iio_dmabuf.bytes_used || iio_dmabuf.bytes_used > dmabuf->size) {
-> +		ret = -EINVAL;
-> +		goto err_dmabuf_put;
-> +	}
-> +
-> +	attach = iio_buffer_find_attachment(indio_dev, dmabuf);
-> +	if (IS_ERR(attach)) {
-> +		ret = PTR_ERR(attach);
-> +		goto err_dmabuf_put;
-> +	}
-> +
-> +	priv = attach->importer_priv;
-> +
-> +	dma_to_ram = buffer->direction == IIO_BUFFER_DIRECTION_IN;
-> +	dir = dma_to_ram ? DMA_FROM_DEVICE : DMA_TO_DEVICE;
-> +
-> +	sgt = dma_buf_map_attachment(attach, dir);
-> +	if (IS_ERR(sgt)) {
-> +		ret = PTR_ERR(sgt);
-> +		dev_err(&indio_dev->dev, "Unable to map attachment: %d\n", ret);
-> +		goto err_attachment_put;
-> +	}
-> +
-> +	fence = kmalloc(sizeof(*fence), GFP_KERNEL);
-> +	if (!fence) {
-> +		ret = -ENOMEM;
-> +		goto err_unmap_attachment;
-> +	}
-> +
-> +	fence->priv = priv;
-> +	fence->sgt = sgt;
-> +	fence->dir = dir;
-> +	priv->fence = fence;
-> +
-> +	dma_fence_init(&fence->base, &iio_buffer_dma_fence_ops,
-> +		       &priv->lock, priv->context, 0);
-
-Same comment as for the usb gadget patch: You need a real seqno here (and
-iio must then guarantee that all transactions are ordered), or a new
-unordered dma_fence (meaning a new context for each fence, currently
-there's no non-hackish way to make that happen).
-
-> +
-> +	ret = iio_dma_resv_lock(dmabuf, nonblock);
-> +	if (ret)
-> +		goto err_fence_put;
-> +
-> +	timeout = nonblock ? 0 : msecs_to_jiffies(DMABUF_ENQUEUE_TIMEOUT_MS);
-> +
-> +	/* Make sure we don't have writers */
-> +	ret = (int) dma_resv_wait_timeout(dmabuf->resv, DMA_RESV_USAGE_WRITE,
-> +					  true, timeout);
-> +	if (ret == 0)
-> +		ret = -EBUSY;
-> +	if (ret < 0)
-> +		goto err_resv_unlock;
-> +
-> +	if (dma_to_ram) {
-> +		/*
-> +		 * If we're writing to the DMABUF, make sure we don't have
-> +		 * readers
-> +		 */
-> +		ret = (int) dma_resv_wait_timeout(dmabuf->resv,
-> +						  DMA_RESV_USAGE_READ, true,
-> +						  timeout);
-> +		if (ret == 0)
-> +			ret = -EBUSY;
-> +		if (ret < 0)
-> +			goto err_resv_unlock;
-> +	}
-> +
-> +	ret = dma_resv_reserve_fences(dmabuf->resv, 1);
-> +	if (ret)
-> +		goto err_resv_unlock;
-> +
-> +	dma_resv_add_fence(dmabuf->resv, &fence->base,
-> +			   dma_resv_usage_rw(dma_to_ram));
-> +	dma_resv_unlock(dmabuf->resv);
-
-Please add dma_buf_begin/end_signalling annotations here to make sure the
-locking/memory allocation rules for dma_fence are followed. Same
-suggestion would also be good in the usb gadget code.
-> +
-> +	ret = buffer->access->enqueue_dmabuf(buffer, priv->block, sgt,
-> +					     iio_dmabuf.bytes_used, cyclic);
-> +	if (ret)
-> +		iio_buffer_signal_dmabuf_done(attach, ret);
-> +
-> +	dma_buf_put(dmabuf);
-> +
-> +	return ret;
-> +
-> +err_resv_unlock:
-> +	dma_resv_unlock(dmabuf->resv);
-> +err_fence_put:
-> +	dma_fence_put(&fence->base);
-> +err_unmap_attachment:
-> +	dma_buf_unmap_attachment(attach, sgt, dir);
-> +err_attachment_put:
-> +	iio_buffer_dmabuf_put(attach);
-> +err_dmabuf_put:
-> +	dma_buf_put(dmabuf);
-> +
-> +	return ret;
-> +}
-> +
-> +void iio_buffer_signal_dmabuf_done(struct dma_buf_attachment *attach, int ret)
-> +{
-> +	struct iio_dmabuf_priv *priv = attach->importer_priv;
-> +	struct iio_dma_fence *fence = priv->fence;
-> +	enum dma_data_direction dir = fence->dir;
-> +	struct sg_table *sgt = fence->sgt;
-> +
-> +	dma_fence_get(&fence->base);
-> +	fence->base.error = ret;
-> +	dma_fence_signal(&fence->base);
-> +	dma_fence_put(&fence->base);
-> +
-> +	dma_buf_unmap_attachment(attach, sgt, dir);
-> +	iio_buffer_dmabuf_put(attach);
-
-Like with the usb gadget code I have concerns that you might hold up the
-entire completion machinery here by taking the wrong locks. You probably
-want to add dma_fence_begin/end_signalling annotations here, and also
-split out the final attachment unref with all the refcount unravelling
-into a preallocated worker.
-
-The other issue is dma_buf_unmap_attachment here. That must be called with
-dma_resv_lock held, but you can't do that here because this is dma_fence
-completion code.
-
-Usually drivers cache this stuff, but I guess you could also just put that
-into your unref worker. The more gnarly issue is that if you need this for
-cache coherency maintainance, then that should be _before_ the
-dma_fence_signal(), but currently we don't have a dma_buf function which
-does only the cache maintenance (which wouldn't need dma_resv_lock) and
-not also the unmapping.
-
-I think to make sure we don't have a big design issue here we need:
-
-- dma_fence_begin/end_signalling critical section annotations in both iio
-  and usb gadget code, for anything that could potentially hold up the
-  dma_fence_signal at any point after a fence has been installed into the
-  dma_resv object.
-
-- probably dma-api debugging or a platform that needs cache flushes to
-  make sure this works. For gpu dma-buf sharing we pretty much side-step
-  this all by assuming everyone does only write-combined mappings ever, or
-  at least the interconnect fabric is reasonable enough that flushing only
-  around cpu access is enough. This assumption very much does not hold in
-  general, and it's fallen apart enough times even for gpu dma-buf sharing
-  in the past.
-
-Otherwise I think we might end up opening pandoras box here a bit and
-merge code that works in tech demo mode, but which would need serious
-amounts of subsystem rework in iio or usb gadget to make it work correctly
-across the board.
-
-Cheers, Sima
-
-> +}
-> +EXPORT_SYMBOL_GPL(iio_buffer_signal_dmabuf_done);
-> +
-> +static long iio_buffer_chrdev_ioctl(struct file *filp,
-> +				    unsigned int cmd, unsigned long arg)
-> +{
-> +	struct iio_dev_buffer_pair *ib = filp->private_data;
-> +	void __user *_arg = (void __user *)arg;
-> +
-> +	switch (cmd) {
-> +	case IIO_BUFFER_DMABUF_ATTACH_IOCTL:
-> +		return iio_buffer_attach_dmabuf(ib, _arg);
-> +	case IIO_BUFFER_DMABUF_DETACH_IOCTL:
-> +		return iio_buffer_detach_dmabuf(ib, _arg);
-> +	case IIO_BUFFER_DMABUF_ENQUEUE_IOCTL:
-> +		return iio_buffer_enqueue_dmabuf(ib, _arg,
-> +						 filp->f_flags & O_NONBLOCK);
-> +	default:
-> +		return IIO_IOCTL_UNHANDLED;
-> +	}
-> +}
-> +
->  static const struct file_operations iio_buffer_chrdev_fileops = {
->  	.owner = THIS_MODULE,
->  	.llseek = noop_llseek,
->  	.read = iio_buffer_read,
->  	.write = iio_buffer_write,
-> +	.unlocked_ioctl = iio_buffer_chrdev_ioctl,
-> +	.compat_ioctl = compat_ptr_ioctl,
->  	.poll = iio_buffer_poll,
->  	.release = iio_buffer_chrdev_release,
->  };
-> diff --git a/include/linux/iio/buffer_impl.h b/include/linux/iio/buffer_impl.h
-> index 89c3fd7c29ca..55d93705c96b 100644
-> --- a/include/linux/iio/buffer_impl.h
-> +++ b/include/linux/iio/buffer_impl.h
-> @@ -9,8 +9,11 @@
->  #include <uapi/linux/iio/buffer.h>
->  #include <linux/iio/buffer.h>
->  
-> +struct dma_buf_attachment;
->  struct iio_dev;
-> +struct iio_dma_buffer_block;
->  struct iio_buffer;
-> +struct sg_table;
->  
->  /**
->   * INDIO_BUFFER_FLAG_FIXED_WATERMARK - Watermark level of the buffer can not be
-> @@ -39,6 +42,13 @@ struct iio_buffer;
->   *                      device stops sampling. Calles are balanced with @enable.
->   * @release:		called when the last reference to the buffer is dropped,
->   *			should free all resources allocated by the buffer.
-> + * @attach_dmabuf:	called from userspace via ioctl to attach one external
-> + *			DMABUF.
-> + * @detach_dmabuf:	called from userspace via ioctl to detach one previously
-> + *			attached DMABUF.
-> + * @enqueue_dmabuf:	called from userspace via ioctl to queue this DMABUF
-> + *			object to this buffer. Requires a valid DMABUF fd, that
-> + *			was previouly attached to this buffer.
->   * @modes:		Supported operating modes by this buffer type
->   * @flags:		A bitmask combination of INDIO_BUFFER_FLAG_*
->   *
-> @@ -68,6 +78,14 @@ struct iio_buffer_access_funcs {
->  
->  	void (*release)(struct iio_buffer *buffer);
->  
-> +	struct iio_dma_buffer_block * (*attach_dmabuf)(struct iio_buffer *buffer,
-> +						       struct dma_buf_attachment *attach);
-> +	void (*detach_dmabuf)(struct iio_buffer *buffer,
-> +			      struct iio_dma_buffer_block *block);
-> +	int (*enqueue_dmabuf)(struct iio_buffer *buffer,
-> +			      struct iio_dma_buffer_block *block,
-> +			      struct sg_table *sgt, size_t size, bool cyclic);
-> +
->  	unsigned int modes;
->  	unsigned int flags;
->  };
-> @@ -136,6 +154,9 @@ struct iio_buffer {
->  
->  	/* @ref: Reference count of the buffer. */
->  	struct kref ref;
-> +
-> +	/* @dmabufs: List of DMABUF attachments */
-> +	struct list_head dmabufs;
->  };
->  
->  /**
-> @@ -156,9 +177,14 @@ int iio_update_buffers(struct iio_dev *indio_dev,
->   **/
->  void iio_buffer_init(struct iio_buffer *buffer);
->  
-> +void iio_buffer_dmabuf_get(struct dma_buf_attachment *attach);
-> +void iio_buffer_dmabuf_put(struct dma_buf_attachment *attach);
-> +
->  struct iio_buffer *iio_buffer_get(struct iio_buffer *buffer);
->  void iio_buffer_put(struct iio_buffer *buffer);
->  
-> +void iio_buffer_signal_dmabuf_done(struct dma_buf_attachment *attach, int ret);
-> +
->  #else /* CONFIG_IIO_BUFFER */
->  
->  static inline void iio_buffer_get(struct iio_buffer *buffer) {}
-> diff --git a/include/uapi/linux/iio/buffer.h b/include/uapi/linux/iio/buffer.h
-> index 13939032b3f6..c666aa95e532 100644
-> --- a/include/uapi/linux/iio/buffer.h
-> +++ b/include/uapi/linux/iio/buffer.h
-> @@ -5,6 +5,28 @@
->  #ifndef _UAPI_IIO_BUFFER_H_
->  #define _UAPI_IIO_BUFFER_H_
->  
-> +#include <linux/types.h>
-> +
-> +/* Flags for iio_dmabuf.flags */
-> +#define IIO_BUFFER_DMABUF_CYCLIC		(1 << 0)
-> +#define IIO_BUFFER_DMABUF_SUPPORTED_FLAGS	0x00000001
-> +
-> +/**
-> + * struct iio_dmabuf - Descriptor for a single IIO DMABUF object
-> + * @fd:		file descriptor of the DMABUF object
-> + * @flags:	one or more IIO_BUFFER_DMABUF_* flags
-> + * @bytes_used:	number of bytes used in this DMABUF for the data transfer.
-> + *		Should generally be set to the DMABUF's size.
+>   
+>   #endif /* _MHI_COMMON_H */
+> diff --git a/drivers/bus/mhi/host/init.c b/drivers/bus/mhi/host/init.c
+> index f78aefd2d7a3..c28bc02872fe 100644
+> --- a/drivers/bus/mhi/host/init.c
+> +++ b/drivers/bus/mhi/host/init.c
+> @@ -20,50 +20,49 @@
+>   #include <linux/wait.h>
+>   #include "internal.h"
+>   
+> +#define CREATE_TRACE_POINTS
+> +#include "trace.h"
+> +
+>   static DEFINE_IDA(mhi_controller_ida);
+>   
+> +#undef mhi_ee
+> +#undef mhi_ee_end
+> +
+> +#define mhi_ee(a, b)		[MHI_EE_##a] = b,
+> +#define mhi_ee_end(a, b)	[MHI_EE_##a] = b,
+> +
+>   const char * const mhi_ee_str[MHI_EE_MAX] = {
+> -	[MHI_EE_PBL] = "PRIMARY BOOTLOADER",
+> -	[MHI_EE_SBL] = "SECONDARY BOOTLOADER",
+> -	[MHI_EE_AMSS] = "MISSION MODE",
+> -	[MHI_EE_RDDM] = "RAMDUMP DOWNLOAD MODE",
+> -	[MHI_EE_WFW] = "WLAN FIRMWARE",
+> -	[MHI_EE_PTHRU] = "PASS THROUGH",
+> -	[MHI_EE_EDL] = "EMERGENCY DOWNLOAD",
+> -	[MHI_EE_FP] = "FLASH PROGRAMMER",
+> -	[MHI_EE_DISABLE_TRANSITION] = "DISABLE",
+> -	[MHI_EE_NOT_SUPPORTED] = "NOT SUPPORTED",
+> +	MHI_EE_LIST
+>   };
+>   
+> +#undef dev_st_trans
+> +#undef dev_st_trans_end
+> +
+> +#define dev_st_trans(a, b)	[DEV_ST_TRANSITION_##a] = b,
+> +#define dev_st_trans_end(a, b)	[DEV_ST_TRANSITION_##a] = b,
+> +
+>   const char * const dev_state_tran_str[DEV_ST_TRANSITION_MAX] = {
+> -	[DEV_ST_TRANSITION_PBL] = "PBL",
+> -	[DEV_ST_TRANSITION_READY] = "READY",
+> -	[DEV_ST_TRANSITION_SBL] = "SBL",
+> -	[DEV_ST_TRANSITION_MISSION_MODE] = "MISSION MODE",
+> -	[DEV_ST_TRANSITION_FP] = "FLASH PROGRAMMER",
+> -	[DEV_ST_TRANSITION_SYS_ERR] = "SYS ERROR",
+> -	[DEV_ST_TRANSITION_DISABLE] = "DISABLE",
+> +	DEV_ST_TRANSITION_LIST
+>   };
+>   
+> +#undef ch_state_type
+> +#undef ch_state_type_end
+> +
+> +#define ch_state_type(a, b)	[MHI_CH_STATE_TYPE_##a] = b,
+> +#define ch_state_type_end(a, b)	[MHI_CH_STATE_TYPE_##a] = b,
+> +
+>   const char * const mhi_ch_state_type_str[MHI_CH_STATE_TYPE_MAX] = {
+> -	[MHI_CH_STATE_TYPE_RESET] = "RESET",
+> -	[MHI_CH_STATE_TYPE_STOP] = "STOP",
+> -	[MHI_CH_STATE_TYPE_START] = "START",
+> +	MHI_CH_STATE_TYPE_LIST
+>   };
+>   
+> +#undef mhi_pm_state
+> +#undef mhi_pm_state_end
+> +
+> +#define mhi_pm_state(a, b)	[MHI_PM_STATE_##a] = b,
+> +#define mhi_pm_state_end(a, b)	[MHI_PM_STATE_##a] = b,
+> +
+>   static const char * const mhi_pm_state_str[] = {
+> -	[MHI_PM_STATE_DISABLE] = "DISABLE",
+> -	[MHI_PM_STATE_POR] = "POWER ON RESET",
+> -	[MHI_PM_STATE_M0] = "M0",
+> -	[MHI_PM_STATE_M2] = "M2",
+> -	[MHI_PM_STATE_M3_ENTER] = "M?->M3",
+> -	[MHI_PM_STATE_M3] = "M3",
+> -	[MHI_PM_STATE_M3_EXIT] = "M3->M0",
+> -	[MHI_PM_STATE_FW_DL_ERR] = "Firmware Download Error",
+> -	[MHI_PM_STATE_SYS_ERR_DETECT] = "SYS ERROR Detect",
+> -	[MHI_PM_STATE_SYS_ERR_PROCESS] = "SYS ERROR Process",
+> -	[MHI_PM_STATE_SHUTDOWN_PROCESS] = "SHUTDOWN Process",
+> -	[MHI_PM_STATE_LD_ERR_FATAL_DETECT] = "Linkdown or Error Fatal Detect",
+> +	MHI_PM_STATE_LIST
+>   };
+>   
+>   const char *to_mhi_pm_state_str(u32 state)
+> diff --git a/drivers/bus/mhi/host/internal.h b/drivers/bus/mhi/host/internal.h
+> index 2e139e76de4c..9a2f2ca2be7c 100644
+> --- a/drivers/bus/mhi/host/internal.h
+> +++ b/drivers/bus/mhi/host/internal.h
+> @@ -42,6 +42,11 @@ enum mhi_ch_state_type {
+>   	MHI_CH_STATE_TYPE_MAX,
+>   };
+>   
+> +#define MHI_CH_STATE_TYPE_LIST				\
+> +	ch_state_type(RESET,		"RESET")	\
+> +	ch_state_type(STOP,		"STOP")		\
+> +	ch_state_type_end(START,	"START")
+> +
+>   extern const char * const mhi_ch_state_type_str[MHI_CH_STATE_TYPE_MAX];
+>   #define TO_CH_STATE_TYPE_STR(state) (((state) >= MHI_CH_STATE_TYPE_MAX) ? \
+>   				     "INVALID_STATE" : \
+> @@ -50,6 +55,18 @@ extern const char * const mhi_ch_state_type_str[MHI_CH_STATE_TYPE_MAX];
+>   #define MHI_INVALID_BRSTMODE(mode) (mode != MHI_DB_BRST_DISABLE && \
+>   				    mode != MHI_DB_BRST_ENABLE)
+>   
+> +#define MHI_EE_LIST						\
+> +	mhi_ee(PBL,			"PRIMARY BOOTLOADER")	\
+> +	mhi_ee(SBL,			"SECONDARY BOOTLOADER")	\
+> +	mhi_ee(AMSS,			"MISSION MODE")		\
+> +	mhi_ee(RDDM,			"RAMDUMP DOWNLOAD MODE")\
+> +	mhi_ee(WFW,			"WLAN FIRMWARE")	\
+> +	mhi_ee(PTHRU,			"PASS THROUGH")		\
+> +	mhi_ee(EDL,			"EMERGENCY DOWNLOAD")	\
+> +	mhi_ee(FP,			"FLASH PROGRAMMER")	\
+> +	mhi_ee(DISABLE_TRANSITION,	"DISABLE")		\
+> +	mhi_ee_end(NOT_SUPPORTED,	"NOT SUPPORTED")
+> +
+>   extern const char * const mhi_ee_str[MHI_EE_MAX];
+>   #define TO_MHI_EXEC_STR(ee) (((ee) >= MHI_EE_MAX) ? \
+>   			     "INVALID_EE" : mhi_ee_str[ee])
+> @@ -72,6 +89,15 @@ enum dev_st_transition {
+>   	DEV_ST_TRANSITION_MAX,
+>   };
+>   
+> +#define DEV_ST_TRANSITION_LIST					\
+> +	dev_st_trans(PBL,		"PBL")			\
+> +	dev_st_trans(READY,		"READY")		\
+> +	dev_st_trans(SBL,		"SBL")			\
+> +	dev_st_trans(MISSION_MODE,	"MISSION MODE")		\
+> +	dev_st_trans(FP,		"FLASH PROGRAMMER")	\
+> +	dev_st_trans(SYS_ERR,		"SYS ERROR")		\
+> +	dev_st_trans_end(DISABLE,	"DISABLE")
+> +
+>   extern const char * const dev_state_tran_str[DEV_ST_TRANSITION_MAX];
+>   #define TO_DEV_STATE_TRANS_STR(state) (((state) >= DEV_ST_TRANSITION_MAX) ? \
+>   				"INVALID_STATE" : dev_state_tran_str[state])
+> @@ -93,6 +119,20 @@ enum mhi_pm_state {
+>   	MHI_PM_STATE_MAX
+>   };
+>   
+> +#define MHI_PM_STATE_LIST							\
+> +	mhi_pm_state(DISABLE,			"DISABLE")			\
+> +	mhi_pm_state(POR,			"POWER ON RESET")		\
+> +	mhi_pm_state(M0,			"M0")				\
+> +	mhi_pm_state(M2,			"M2")				\
+> +	mhi_pm_state(M3_ENTER,			"M?->M3")			\
+> +	mhi_pm_state(M3,			"M3")				\
+> +	mhi_pm_state(M3_EXIT,			"M3->M0")			\
+> +	mhi_pm_state(FW_DL_ERR,			"Firmware Download Error")	\
+> +	mhi_pm_state(SYS_ERR_DETECT,		"SYS ERROR Detect")		\
+> +	mhi_pm_state(SYS_ERR_PROCESS,		"SYS ERROR Process")		\
+> +	mhi_pm_state(SHUTDOWN_PROCESS,		"SHUTDOWN Process")		\
+> +	mhi_pm_state_end(LD_ERR_FATAL_DETECT,	"Linkdown or Error Fatal Detect")
+> +
+>   #define MHI_PM_DISABLE					BIT(0)
+>   #define MHI_PM_POR					BIT(1)
+>   #define MHI_PM_M0					BIT(2)
+> diff --git a/drivers/bus/mhi/host/main.c b/drivers/bus/mhi/host/main.c
+> index dcf627b36e82..189f4786403e 100644
+> --- a/drivers/bus/mhi/host/main.c
+> +++ b/drivers/bus/mhi/host/main.c
+> @@ -15,6 +15,7 @@
+>   #include <linux/skbuff.h>
+>   #include <linux/slab.h>
+>   #include "internal.h"
+> +#include "trace.h"
+>   
+>   int __must_check mhi_read_reg(struct mhi_controller *mhi_cntrl,
+>   			      void __iomem *base, u32 offset, u32 *out)
+> @@ -491,11 +492,8 @@ irqreturn_t mhi_intvec_threaded_handler(int irq_number, void *priv)
+>   
+>   	state = mhi_get_mhi_state(mhi_cntrl);
+>   	ee = mhi_get_exec_env(mhi_cntrl);
+> -	dev_dbg(dev, "local ee: %s state: %s device ee: %s state: %s\n",
+> -		TO_MHI_EXEC_STR(mhi_cntrl->ee),
+> -		mhi_state_str(mhi_cntrl->dev_state),
+> -		TO_MHI_EXEC_STR(ee), mhi_state_str(state));
+>   
+> +	trace_mhi_intvec_states(mhi_cntrl, ee, state);
+>   	if (state == MHI_STATE_SYS_ERR) {
+>   		dev_dbg(dev, "System error detected\n");
+>   		pm_state = mhi_tryset_pm_state(mhi_cntrl,
+> @@ -832,6 +830,8 @@ int mhi_process_ctrl_ev_ring(struct mhi_controller *mhi_cntrl,
+>   	while (dev_rp != local_rp) {
+>   		enum mhi_pkt_type type = MHI_TRE_GET_EV_TYPE(local_rp);
+>   
+> +		trace_mhi_ctrl_event(mhi_cntrl, local_rp);
+> +
+>   		switch (type) {
+>   		case MHI_PKT_TYPE_BW_REQ_EVENT:
+>   		{
+> @@ -997,6 +997,8 @@ int mhi_process_data_event_ring(struct mhi_controller *mhi_cntrl,
+>   	while (dev_rp != local_rp && event_quota > 0) {
+>   		enum mhi_pkt_type type = MHI_TRE_GET_EV_TYPE(local_rp);
+>   
+> +		trace_mhi_data_event(mhi_cntrl, local_rp);
+> +
+>   		chan = MHI_TRE_GET_EV_CHID(local_rp);
+>   
+>   		WARN_ON(chan >= mhi_cntrl->max_chan);
+> @@ -1235,6 +1237,7 @@ int mhi_gen_tre(struct mhi_controller *mhi_cntrl, struct mhi_chan *mhi_chan,
+>   	mhi_tre->dword[0] = MHI_TRE_DATA_DWORD0(info->len);
+>   	mhi_tre->dword[1] = MHI_TRE_DATA_DWORD1(bei, eot, eob, chain);
+>   
+> +	trace_mhi_gen_tre(mhi_cntrl, mhi_chan, mhi_tre);
+>   	/* increment WP */
+>   	mhi_add_ring_element(mhi_cntrl, tre_ring);
+>   	mhi_add_ring_element(mhi_cntrl, buf_ring);
+> @@ -1327,9 +1330,7 @@ static int mhi_update_channel_state(struct mhi_controller *mhi_cntrl,
+>   	enum mhi_cmd_type cmd = MHI_CMD_NOP;
+>   	int ret;
+>   
+> -	dev_dbg(dev, "%d: Updating channel state to: %s\n", mhi_chan->chan,
+> -		TO_CH_STATE_TYPE_STR(to_state));
+> -
+> +	trace_mhi_channel_command_start(mhi_cntrl, mhi_chan, to_state);
+>   	switch (to_state) {
+>   	case MHI_CH_STATE_TYPE_RESET:
+>   		write_lock_irq(&mhi_chan->lock);
+> @@ -1396,9 +1397,7 @@ static int mhi_update_channel_state(struct mhi_controller *mhi_cntrl,
+>   		write_unlock_irq(&mhi_chan->lock);
+>   	}
+>   
+> -	dev_dbg(dev, "%d: Channel state change to %s successful\n",
+> -		mhi_chan->chan, TO_CH_STATE_TYPE_STR(to_state));
+> -
+> +	trace_mhi_channel_command_end(mhi_cntrl, mhi_chan, to_state);
+>   exit_channel_update:
+>   	mhi_cntrl->runtime_put(mhi_cntrl);
+>   	mhi_device_put(mhi_cntrl->mhi_dev);
+> diff --git a/drivers/bus/mhi/host/pm.c b/drivers/bus/mhi/host/pm.c
+> index 8a4362d75fc4..5a2394b5b2e1 100644
+> --- a/drivers/bus/mhi/host/pm.c
+> +++ b/drivers/bus/mhi/host/pm.c
+> @@ -15,6 +15,7 @@
+>   #include <linux/slab.h>
+>   #include <linux/wait.h>
+>   #include "internal.h"
+> +#include "trace.h"
+>   
+>   /*
+>    * Not all MHI state transitions are synchronous. Transitions like Linkdown,
+> @@ -123,6 +124,7 @@ enum mhi_pm_state __must_check mhi_tryset_pm_state(struct mhi_controller *mhi_cn
+>   	if (unlikely(!(dev_state_transitions[index].to_states & state)))
+>   		return cur_state;
+>   
+> +	trace_mhi_tryset_pm_state(mhi_cntrl, state);
+>   	mhi_cntrl->pm_state = state;
+>   	return mhi_cntrl->pm_state;
+>   }
+> @@ -753,7 +755,6 @@ void mhi_pm_st_worker(struct work_struct *work)
+>   	struct mhi_controller *mhi_cntrl = container_of(work,
+>   							struct mhi_controller,
+>   							st_worker);
+> -	struct device *dev = &mhi_cntrl->mhi_dev->dev;
+>   
+>   	spin_lock_irq(&mhi_cntrl->transition_lock);
+>   	list_splice_tail_init(&mhi_cntrl->transition_list, &head);
+> @@ -761,8 +762,8 @@ void mhi_pm_st_worker(struct work_struct *work)
+>   
+>   	list_for_each_entry_safe(itr, tmp, &head, node) {
+>   		list_del(&itr->node);
+> -		dev_dbg(dev, "Handling state transition: %s\n",
+> -			TO_DEV_STATE_TRANS_STR(itr->state));
+> +
+> +		trace_mhi_pm_st_transition(mhi_cntrl, itr->state);
+>   
+>   		switch (itr->state) {
+>   		case DEV_ST_TRANSITION_PBL:
+> diff --git a/drivers/bus/mhi/host/trace.h b/drivers/bus/mhi/host/trace.h
+> new file mode 100644
+> index 000000000000..c74be0949178
+> --- /dev/null
+> +++ b/drivers/bus/mhi/host/trace.h
+> @@ -0,0 +1,275 @@
+> +/* SPDX-License-Identifier: GPL-2.0-only */
+> +/*
+> + * Copyright (c) 2023 Qualcomm Innovation Center, Inc. All rights reserved.
 > + */
-> +struct iio_dmabuf {
-> +	__u32 fd;
-> +	__u32 flags;
-> +	__u64 bytes_used;
-> +};
 > +
->  #define IIO_BUFFER_GET_FD_IOCTL			_IOWR('i', 0x91, int)
-> +#define IIO_BUFFER_DMABUF_ATTACH_IOCTL		_IOW('i', 0x92, int)
-> +#define IIO_BUFFER_DMABUF_DETACH_IOCTL		_IOW('i', 0x93, int)
-> +#define IIO_BUFFER_DMABUF_ENQUEUE_IOCTL		_IOW('i', 0x94, struct iio_dmabuf)
->  
->  #endif /* _UAPI_IIO_BUFFER_H_ */
-> -- 
-> 2.43.0
-> 
-
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+> +#undef TRACE_SYSTEM
+> +#define TRACE_SYSTEM mhi_host
+> +
+> +#if !defined(_TRACE_EVENT_MHI_HOST_H) || defined(TRACE_HEADER_MULTI_READ)
+> +#define _TRACE_EVENT_MHI_HOST_H
+> +
+> +#include <linux/tracepoint.h>
+> +#include <linux/trace_seq.h>
+> +#include "../common.h"
+> +#include "internal.h"
+> +
+> +#undef mhi_state
+> +#undef mhi_state_end
+> +
+> +#define mhi_state(a, b)		TRACE_DEFINE_ENUM(MHI_STATE_##a);
+> +#define mhi_state_end(a, b)	TRACE_DEFINE_ENUM(MHI_STATE_##a);
+> +
+> +MHI_STATE_LIST
+> +
+> +#undef mhi_state
+> +#undef mhi_state_end
+> +
+> +#define mhi_state(a, b)		{ MHI_STATE_##a, b },
+> +#define mhi_state_end(a, b)	{ MHI_STATE_##a, b }
+> +
+> +#undef mhi_pm_state
+> +#undef mhi_pm_state_end
+> +
+> +#define mhi_pm_state(a, b)		TRACE_DEFINE_ENUM(MHI_PM_STATE_##a);
+> +#define mhi_pm_state_end(a, b)		TRACE_DEFINE_ENUM(MHI_PM_STATE_##a);
+> +
+> +MHI_PM_STATE_LIST
+> +
+> +#undef mhi_pm_state
+> +#undef mhi_pm_state_end
+> +
+> +#define mhi_pm_state(a, b)		{ MHI_PM_STATE_##a, b },
+> +#define mhi_pm_state_end(a, b)		{ MHI_PM_STATE_##a, b }
+> +
+> +#undef mhi_ee
+> +#undef mhi_ee_end
+> +
+> +#define mhi_ee(a, b)			TRACE_DEFINE_ENUM(MHI_EE_##a);
+> +#define mhi_ee_end(a, b)		TRACE_DEFINE_ENUM(MHI_EE_##a);
+> +
+> +MHI_EE_LIST
+> +
+> +#undef mhi_ee
+> +#undef mhi_ee_end
+> +
+> +#define mhi_ee(a, b)			{ MHI_EE_##a, b },
+> +#define mhi_ee_end(a, b)		{ MHI_EE_##a, b }
+> +
+> +#undef ch_state_type
+> +#undef ch_state_type_end
+> +
+> +#define ch_state_type(a, b)		TRACE_DEFINE_ENUM(MHI_CH_STATE_TYPE_##a);
+> +#define ch_state_type_end(a, b)		TRACE_DEFINE_ENUM(MHI_CH_STATE_TYPE_##a);
+> +
+> +MHI_CH_STATE_TYPE_LIST
+> +
+> +#undef ch_state_type
+> +#undef ch_state_type_end
+> +
+> +#define ch_state_type(a, b)		{ MHI_CH_STATE_TYPE_##a, b },
+> +#define ch_state_type_end(a, b)		{ MHI_CH_STATE_TYPE_##a, b }
+> +
+> +#undef dev_st_trans
+> +#undef dev_st_trans_end
+> +
+> +#define dev_st_trans(a, b)		TRACE_DEFINE_ENUM(DEV_ST_TRANSITION_##a);
+> +#define dev_st_trans_end(a, b)		TRACE_DEFINE_ENUM(DEV_ST_TRANSITION_##a);
+> +
+> +DEV_ST_TRANSITION_LIST
+> +
+> +#undef dev_st_trans
+> +#undef dev_st_trans_end
+> +
+> +#define dev_st_trans(a, b)		{ DEV_ST_TRANSITION_##a, b },
+> +#define dev_st_trans_end(a, b)		{ DEV_ST_TRANSITION_##a, b }
+> +
+> +TRACE_EVENT(mhi_gen_tre,
+> +
+> +	TP_PROTO(struct mhi_controller *mhi_cntrl, struct mhi_chan *mhi_chan,
+> +		 struct mhi_ring_element *mhi_tre),
+> +
+> +	TP_ARGS(mhi_cntrl, mhi_chan, mhi_tre),
+> +
+> +	TP_STRUCT__entry(
+> +		__string(name, mhi_cntrl->mhi_dev->name)
+> +		__field(int, ch_num)
+> +		__field(void *, wp)
+> +		__field(__le64, tre_ptr)
+> +		__field(__le32, dword0)
+> +		__field(__le32, dword1)
+> +	),
+> +
+> +	TP_fast_assign(
+> +		__assign_str(name, mhi_cntrl->mhi_dev->name);
+> +		__entry->ch_num = mhi_chan->chan;
+> +		__entry->wp = mhi_tre;
+> +		__entry->tre_ptr = mhi_tre->ptr;
+> +		__entry->dword0 = mhi_tre->dword[0];
+> +		__entry->dword1 = mhi_tre->dword[1];
+> +	),
+> +
+> +	TP_printk("%s: Chan: %d Tre: 0x%p Tre buf: 0x%llx dword0: 0x%08x dword1: 0x%08x\n",
+> +		  __get_str(name), __entry->ch_num, __entry->wp, __entry->tre_ptr,
+> +		  __entry->dword0, __entry->dword1)
+> +);
+> +
+> +TRACE_EVENT(mhi_intvec_states,
+> +
+> +	TP_PROTO(struct mhi_controller *mhi_cntrl, int dev_ee, int dev_state),
+> +
+> +	TP_ARGS(mhi_cntrl, dev_ee, dev_state),
+> +
+> +	TP_STRUCT__entry(
+> +		__string(name, mhi_cntrl->mhi_dev->name)
+> +		__field(int, local_ee)
+> +		__field(int, state)
+> +		__field(int, dev_ee)
+> +		__field(int, dev_state)
+> +	),
+> +
+> +	TP_fast_assign(
+> +		__assign_str(name, mhi_cntrl->mhi_dev->name);
+> +		__entry->local_ee = mhi_cntrl->ee;
+> +		__entry->state = mhi_cntrl->dev_state;
+> +		__entry->dev_ee = dev_ee;
+> +		__entry->dev_state = dev_state;
+> +	),
+> +
+> +	TP_printk("%s: local ee: %s state: %s device ee: %s state: %s\n",
+> +		  __get_str(name),
+> +		  __print_symbolic(__entry->local_ee, MHI_EE_LIST),
+> +		  __print_symbolic(__entry->state, MHI_STATE_LIST),
+> +		  __print_symbolic(__entry->dev_ee, MHI_EE_LIST),
+> +		  __print_symbolic(__entry->state, MHI_STATE_LIST))
+> +);
+> +
+> +TRACE_EVENT(mhi_tryset_pm_state,
+> +
+> +	TP_PROTO(struct mhi_controller *mhi_cntrl, int pm_state),
+> +
+> +	TP_ARGS(mhi_cntrl, pm_state),
+> +
+> +	TP_STRUCT__entry(
+> +		__string(name, mhi_cntrl->mhi_dev->name)
+> +		__field(int, pm_state)
+> +	),
+> +
+> +	TP_fast_assign(
+> +		__assign_str(name, mhi_cntrl->mhi_dev->name);
+> +		if (pm_state)
+> +			pm_state = __fls(pm_state);
+> +		__entry->pm_state = pm_state;
+> +	),
+> +
+> +	TP_printk("%s: PM state: %s\n", __get_str(name),
+> +		  __print_symbolic(__entry->pm_state, MHI_PM_STATE_LIST))
+> +);
+> +
+> +DECLARE_EVENT_CLASS(mhi_process_event_ring,
+> +
+> +	TP_PROTO(struct mhi_controller *mhi_cntrl, struct mhi_ring_element *rp),
+> +
+> +	TP_ARGS(mhi_cntrl, rp),
+> +
+> +	TP_STRUCT__entry(
+> +		__string(name, mhi_cntrl->mhi_dev->name)
+> +		__field(__le32, dword0)
+> +		__field(__le32, dword1)
+> +		__field(int, state)
+> +		__field(__le64, ptr)
+> +		__field(void *, rp)
+> +	),
+> +
+> +	TP_fast_assign(
+> +		__assign_str(name, mhi_cntrl->mhi_dev->name);
+> +		__entry->rp = rp;
+> +		__entry->ptr = rp->ptr;
+> +		__entry->dword0 = rp->dword[0];
+> +		__entry->dword1 = rp->dword[1];
+> +		__entry->state = MHI_TRE_GET_EV_STATE(rp);
+> +	),
+> +
+> +	TP_printk("%s: Tre: 0x%p Tre buf: 0x%llx dword0: 0x%08x dword1: 0x%08x state: %s\n",
+> +		  __get_str(name), __entry->rp, __entry->ptr, __entry->dword0,
+> +		  __entry->dword1, __print_symbolic(__entry->state, MHI_STATE_LIST))
+> +);
+> +
+> +DEFINE_EVENT(mhi_process_event_ring, mhi_data_event,
+> +
+> +	TP_PROTO(struct mhi_controller *mhi_cntrl, struct mhi_ring_element *rp),
+> +
+> +	TP_ARGS(mhi_cntrl, rp)
+> +);
+> +
+> +DEFINE_EVENT(mhi_process_event_ring, mhi_ctrl_event,
+> +
+> +	TP_PROTO(struct mhi_controller *mhi_cntrl, struct mhi_ring_element *rp),
+> +
+> +	TP_ARGS(mhi_cntrl, rp)
+> +);
+> +
+> +DECLARE_EVENT_CLASS(mhi_update_channel_state,
+> +
+> +	TP_PROTO(struct mhi_controller *mhi_cntrl, struct mhi_chan *mhi_chan, int state),
+> +
+> +	TP_ARGS(mhi_cntrl, mhi_chan, state),
+> +
+> +	TP_STRUCT__entry(
+> +		__string(name, mhi_cntrl->mhi_dev->name)
+> +		__field(int, ch_num)
+> +		__field(int, state)
+> +	),
+> +
+> +	TP_fast_assign(
+> +		__assign_str(name, mhi_cntrl->mhi_dev->name);
+> +		__entry->ch_num = mhi_chan->chan;
+> +		__entry->state = state;
+> +	),
+> +
+> +	TP_printk("%s: chan%d: Updating state to: %s\n",
+> +		  __get_str(name), __entry->ch_num,
+> +		  __print_symbolic(__entry->state, MHI_CH_STATE_TYPE_LIST))
+> +);
+> +
+> +DEFINE_EVENT(mhi_update_channel_state, mhi_channel_command_start,
+> +
+> +	TP_PROTO(struct mhi_controller *mhi_cntrl, struct mhi_chan *mhi_chan, int state),
+> +
+> +	TP_ARGS(mhi_cntrl, mhi_chan, state)
+> +);
+> +
+> +DEFINE_EVENT(mhi_update_channel_state, mhi_channel_command_end,
+> +
+> +	TP_PROTO(struct mhi_controller *mhi_cntrl, struct mhi_chan *mhi_chan, int state),
+> +
+> +	TP_ARGS(mhi_cntrl, mhi_chan, state)
+> +);
+> +
+> +TRACE_EVENT(mhi_pm_st_transition,
+> +
+> +	TP_PROTO(struct mhi_controller *mhi_cntrl, int state),
+> +
+> +	TP_ARGS(mhi_cntrl, state),
+> +
+> +	TP_STRUCT__entry(
+> +		__string(name, mhi_cntrl->mhi_dev->name)
+> +		__field(int, state)
+> +	),
+> +
+> +	TP_fast_assign(
+> +		__assign_str(name, mhi_cntrl->mhi_dev->name);
+> +		__entry->state = state;
+> +	),
+> +
+> +	TP_printk("%s: Handling state transition: %s\n", __get_str(name),
+> +		  __print_symbolic(__entry->state, DEV_ST_TRANSITION_LIST))
+> +);
+> +
+> +#endif
+> +#undef TRACE_INCLUDE_PATH
+> +#define TRACE_INCLUDE_PATH ../../drivers/bus/mhi/host
+> +#undef TRACE_INCLUDE_FILE
+> +#define TRACE_INCLUDE_FILE trace
+> +
+> +#include <trace/define_trace.h>
+>
+> ---
+> base-commit: 3006adf3be79cde4d14b1800b963b82b6e5572e0
+> change-id: 20231005-ftrace_support-6869d4156139
+>
+> Best regards,
 
