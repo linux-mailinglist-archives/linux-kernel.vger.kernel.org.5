@@ -1,132 +1,159 @@
-Return-Path: <linux-kernel+bounces-20094-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20095-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD01E827934
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 21:36:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A15B7827935
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 21:38:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9C1861C23119
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 20:36:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3ED6128443E
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 20:38:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7078E54BF2;
-	Mon,  8 Jan 2024 20:36:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 539C055C30;
+	Mon,  8 Jan 2024 20:38:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YD/7AL24"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A63754BD5;
-	Mon,  8 Jan 2024 20:36:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=omp.ru
-Received: from [192.168.1.105] (31.173.87.204) by msexch01.omp.ru
- (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Mon, 8 Jan
- 2024 23:36:38 +0300
-Subject: Re: [PATCH net-next v3 18/19] net: ravb: Do not apply RX CSUM
- settings to hardware if the interface is down
-From: Sergey Shtylyov <s.shtylyov@omp.ru>
-To: Claudiu <claudiu.beznea@tuxon.dev>, <davem@davemloft.net>,
-	<edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-	<richardcochran@gmail.com>, <p.zabel@pengutronix.de>,
-	<yoshihiro.shimoda.uh@renesas.com>, <wsa+renesas@sang-engineering.com>
-CC: <netdev@vger.kernel.org>, <linux-renesas-soc@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <geert+renesas@glider.be>, Claudiu Beznea
-	<claudiu.beznea.uj@bp.renesas.com>
-References: <20240105082339.1468817-1-claudiu.beznea.uj@bp.renesas.com>
- <20240105082339.1468817-19-claudiu.beznea.uj@bp.renesas.com>
- <045aa818-8f99-4150-0072-f17fdc6ced0b@omp.ru>
-Organization: Open Mobile Platform
-Message-ID: <1fb19b21-3815-f0b1-3634-b3dd667fbdb2@omp.ru>
-Date: Mon, 8 Jan 2024 23:36:37 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F5C754BD5
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 20:38:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-3368b9bbeb4so2413864f8f.2
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 12:38:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704746288; x=1705351088; darn=vger.kernel.org;
+        h=content-transfer-encoding:running:mime-version:message-id:date
+         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=qk8DV8xOiqw0q8KdiSyUG8alGH4xQIsQzu0Gj64hSoU=;
+        b=YD/7AL249SE3GB/sXj2CQi1YQY59H6AmpBtoX6Eq16ELr+lEi9alJfdiub7U1GqrfB
+         8438GjkpEjCsj9DyNVAAJCR724npfTRIWRgKvQUpgcATjgp8IggnoyVng3i5LiG+zgPi
+         v5EKAJGE8Xc7MhIcE5ouXoTSRVli1nlAjMq4CMSzFp+yCj3CnDUMA4LuQllEckYeMlJM
+         aIU/5BkjxlyAQsm9qXF78F9pHN1YzULgoiR1bewt+c0ujdqyu+YIJ3je5v/9QZsWQbOS
+         DpCAkAZTc/0VjChXhP/Q00pV3ojo+JADoTbBnZxxiSwDGpgHiW9ezCgamFROcQ8Yzt9O
+         Ci1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704746288; x=1705351088;
+        h=content-transfer-encoding:running:mime-version:message-id:date
+         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qk8DV8xOiqw0q8KdiSyUG8alGH4xQIsQzu0Gj64hSoU=;
+        b=iueIse7nL5fvlJ9HMROTf4LLwxaNcLOtPrcqnVJwlHEWGOU6Nq6T8ZosdQUeeeOfDA
+         np178JC87oQ1g2iM2rXtWGuDhTFcE+y5WlLv5cUKLXKRHxsPuV0Xe8BsQQwHHdsa5OST
+         V2GeQjVqtysl8cDwWoxGIAXJKOjoz/wYCXhovC0mQtaLGFLsRF4ONId3e8YuxXUo5Qok
+         SzaGo+pvPqaGb3Tf+OYXMRKTeEcUWkzt9nyOa7H4NptfAqZ7qbcCEDst1ybCLd3FIqRV
+         ti4ur++OAp9pb+/a4LzeheJF9hRE++SlLG7KC0nJmCmiMEIL0ZlXx1Dp5IKP+9HIyT4I
+         u+dw==
+X-Gm-Message-State: AOJu0YxjOMcwQm03/ECJ0Q7DTaZ2u676kMiqqGrYXGg1NI+/r7RU49j0
+	YmlV73e25iQQWU7ZGIRVJzk=
+X-Google-Smtp-Source: AGHT+IGaUmAt3ND/9w0B6jj5u4cPNpraZpClxzC8ID7Ztpm0RaVJOXNCQAZyWoonwTjDcjg//n7CRw==
+X-Received: by 2002:a5d:6683:0:b0:336:67ef:436e with SMTP id l3-20020a5d6683000000b0033667ef436emr2376wru.147.1704746287973;
+        Mon, 08 Jan 2024 12:38:07 -0800 (PST)
+Received: from ubuntu2004.cynet.local (vpn1382.cynet.com. [84.110.53.106])
+        by smtp.gmail.com with ESMTPSA id b15-20020adfe30f000000b003367a51217csm547245wrj.34.2024.01.08.12.38.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Jan 2024 12:38:07 -0800 (PST)
+From: arielsilver77@gmail.com
+To: forest@alittletooquiet.net,
+	gregkh@linuxfoundation.org
+Cc: linux-staging@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	SilverPlate3 <arielsilver77@gmail.com>
+Subject: [PATCH] fixing sparse warnings about a dangerous cast and possible bad endianness. 
+Date: Mon,  8 Jan 2024 22:37:14 +0200
+Message-Id: <20240108203714.34820-1-arielsilver77@gmail.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <045aa818-8f99-4150-0072-f17fdc6ced0b@omp.ru>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
- (10.188.4.12)
-X-KSE-ServerInfo: msexch01.omp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 6.1.0, Database issued on: 01/08/2024 20:18:26
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 59
-X-KSE-AntiSpam-Info: Lua profiles 182482 [Jan 08 2024]
-X-KSE-AntiSpam-Info: Version: 6.1.0.3
-X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
-X-KSE-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a
-X-KSE-AntiSpam-Info: {rep_avail}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: {relay has no DNS name}
-X-KSE-AntiSpam-Info: {SMTP from is not routable}
-X-KSE-AntiSpam-Info: {Found in DNSBL: 31.173.87.204 in (user)
- b.barracudacentral.org}
-X-KSE-AntiSpam-Info: {Found in DNSBL: 31.173.87.204 in (user)
- dbl.spamhaus.org}
-X-KSE-AntiSpam-Info:
-	d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;31.173.87.204:7.7.3,7.4.1;omp.ru:7.1.1;127.0.0.199:7.1.2
-X-KSE-AntiSpam-Info: {cloud_iprep_silent}
-X-KSE-AntiSpam-Info: ApMailHostAddress: 31.173.87.204
-X-KSE-AntiSpam-Info: {DNS response errors}
-X-KSE-AntiSpam-Info: Rate: 59
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
- smtp.mailfrom=omp.ru;dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 01/08/2024 20:23:00
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 1/8/2024 7:11:00 PM
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+Running: 'make M=drivers/staging/vt6655 C=2' causes sparse to generate few warnings. 
+Content-Transfer-Encoding: 8bit
 
-On 1/8/24 11:34 PM, Sergey Shtylyov wrote:
-[...]
+From: SilverPlate3 <arielsilver77@gmail.com>
 
->> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->>
->> Do not apply the RX CSUM settings to hardware if the interface is down. In
->> case runtime PM is enabled, and while the interface is down, the IP will be
->> in reset mode (as for some platforms disabling the clocks will switch the
->> IP to reset mode, which will lead to losing registers content) and applying
->> settings in reset mode is not an option. Instead, cache the RX CSUM
->> settings and apply them in ravb_open() though ravb_emac_init().
->>
->> Commit prepares for the addition of runtime PM.
->>
->> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-> [...]
-> 
->> diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
->> index 168b6208db37..e909960fbc30 100644
->> --- a/drivers/net/ethernet/renesas/ravb_main.c
->> +++ b/drivers/net/ethernet/renesas/ravb_main.c
->> @@ -2342,6 +2342,9 @@ static void ravb_set_rx_csum(struct net_device *ndev, bool enable)
->>  	struct ravb_private *priv = netdev_priv(ndev);
->>  	unsigned long flags;
->>  
->> +	if (!(ndev->flags & IFF_UP))
-> 
->    Well, I guess it's even OK to even write EDCMR in the reset mode... BUT
+---
+ drivers/staging/vt6655/card.c | 18 +++++++++++++-----
+ 1 file changed, 13 insertions(+), 5 deletions(-)
 
-   Well, I guess it's even OK to write ECMR in the reset mode... :-)
+diff --git a/drivers/staging/vt6655/card.c b/drivers/staging/vt6655/card.c
+index 350ab8f3778a..8290dc5a0398 100644
+--- a/drivers/staging/vt6655/card.c
++++ b/drivers/staging/vt6655/card.c
+@@ -292,14 +292,16 @@ bool card_update_tsf(struct vnt_private *priv, unsigned char rx_rate,
+ {
+ 	u64 local_tsf;
+ 	u64 qwTSFOffset = 0;
+-
++	__le64 le_qwTSFOffset = 0;
++	
+ 	local_tsf = vt6655_get_current_tsf(priv);
+ 
+ 	if (qwBSSTimestamp != local_tsf) {
+ 		qwTSFOffset = CARDqGetTSFOffset(rx_rate, qwBSSTimestamp,
+ 						local_tsf);
+ 		/* adjust TSF, HW's TSF add TSF Offset reg */
+-		qwTSFOffset =  le64_to_cpu(qwTSFOffset);
++		le_qwTSFOffset = cpu_to_le64(qwTSFOffset);
++		qwTSFOffset = le64_to_cpu(le_qwTSFOffset);
+ 		iowrite32((u32)qwTSFOffset, priv->port_offset + MAC_REG_TSFOFST);
+ 		iowrite32((u32)(qwTSFOffset >> 32), priv->port_offset + MAC_REG_TSFOFST + 4);
+ 		vt6655_mac_reg_bits_on(priv->port_offset, MAC_REG_TFTCTL, TFTCTL_TSFSYNCEN);
+@@ -324,6 +326,7 @@ bool CARDbSetBeaconPeriod(struct vnt_private *priv,
+ 			  unsigned short wBeaconInterval)
+ {
+ 	u64 qwNextTBTT;
++	__le64 le_qwNextTBTT;
+ 
+ 	qwNextTBTT = vt6655_get_current_tsf(priv); /* Get Local TSF counter */
+ 
+@@ -333,7 +336,8 @@ bool CARDbSetBeaconPeriod(struct vnt_private *priv,
+ 	iowrite16(wBeaconInterval, priv->port_offset + MAC_REG_BI);
+ 	priv->wBeaconInterval = wBeaconInterval;
+ 	/* Set NextTBTT */
+-	qwNextTBTT =  le64_to_cpu(qwNextTBTT);
++	le_qwNextTBTT = cpu_to_le64(qwNextTBTT);
++	qwNextTBTT = le64_to_cpu(le_qwNextTBTT);
+ 	iowrite32((u32)qwNextTBTT, priv->port_offset + MAC_REG_NEXTTBTT);
+ 	iowrite32((u32)(qwNextTBTT >> 32), priv->port_offset + MAC_REG_NEXTTBTT + 4);
+ 	vt6655_mac_reg_bits_on(priv->port_offset, MAC_REG_TFTCTL, TFTCTL_TBTTSYNCEN);
+@@ -796,12 +800,14 @@ void CARDvSetFirstNextTBTT(struct vnt_private *priv,
+ {
+ 	void __iomem *iobase = priv->port_offset;
+ 	u64 qwNextTBTT;
++	__le64 le_qwNextTBTT = 0;
+ 
+ 	qwNextTBTT = vt6655_get_current_tsf(priv); /* Get Local TSF counter */
+ 
+ 	qwNextTBTT = CARDqGetNextTBTT(qwNextTBTT, wBeaconInterval);
+ 	/* Set NextTBTT */
+-	qwNextTBTT =  le64_to_cpu(qwNextTBTT);
++	le_qwNextTBTT = cpu_to_le64(qwNextTBTT);
++	qwNextTBTT = le64_to_cpu(le_qwNextTBTT);
+ 	iowrite32((u32)qwNextTBTT, iobase + MAC_REG_NEXTTBTT);
+ 	iowrite32((u32)(qwNextTBTT >> 32), iobase + MAC_REG_NEXTTBTT + 4);
+ 	vt6655_mac_reg_bits_on(iobase, MAC_REG_TFTCTL, TFTCTL_TBTTSYNCEN);
+@@ -824,11 +830,13 @@ void CARDvSetFirstNextTBTT(struct vnt_private *priv,
+ void CARDvUpdateNextTBTT(struct vnt_private *priv, u64 qwTSF,
+ 			 unsigned short wBeaconInterval)
+ {
++	__le64 le_qwTSF = 0;
+ 	void __iomem *iobase = priv->port_offset;
+ 
+ 	qwTSF = CARDqGetNextTBTT(qwTSF, wBeaconInterval);
+ 	/* Set NextTBTT */
+-	qwTSF =  le64_to_cpu(qwTSF);
++	le_qwTSF = cpu_to_le64(qwTSF);
++	qwTSF = le64_to_cpu(le_qwTSF);
+ 	iowrite32((u32)qwTSF, iobase + MAC_REG_NEXTTBTT);
+ 	iowrite32((u32)(qwTSF >> 32), iobase + MAC_REG_NEXTTBTT + 4);
+ 	vt6655_mac_reg_bits_on(iobase, MAC_REG_TFTCTL, TFTCTL_TBTTSYNCEN);
+-- 
+2.25.1
 
-> again, won't this race with pm_runtime_put_autosuspend() when its call gets
-> added to ravb_close()?
-
-[...]
-
-MBR, Sergey
 
