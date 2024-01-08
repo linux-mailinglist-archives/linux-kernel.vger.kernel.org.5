@@ -1,127 +1,83 @@
-Return-Path: <linux-kernel+bounces-19587-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19588-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 53661826F41
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 14:07:43 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E733E826F44
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 14:07:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 080171F22C07
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 13:07:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 04F9C1C22793
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 13:07:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6530A41742;
-	Mon,  8 Jan 2024 13:07:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="POHozhsy"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF8274122F;
+	Mon,  8 Jan 2024 13:07:45 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B826B4121B;
-	Mon,  8 Jan 2024 13:07:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 408D5F63016636;
-	Mon, 8 Jan 2024 13:07:28 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:mime-version:content-type; s=
-	qcppdkim1; bh=Yj9tfHIzcfb2h/uSh/hSnE1BOhG/nWfIZRNBZOaOKwc=; b=PO
-	HozhsyEi8bceubFsjNEO071nGkwSLZFl63qVaZHnM+bcYT9vZDFmYa4/PmeSUZE8
-	e3egga/UuxhFCR3H1zi1d2qAN+YjwQ1uLXHgAch9ap89g0ltNX6iGYc7XPyFSjs5
-	s45Tjo5ri/Cj+z7nRqSsY4/0zGEsd4VSE315gJ8b2OliuGL/CZXJ82IfRObD04bi
-	64ISO3iUn/cQBdIUKN28L2IOXVhLX772mGuYGaXrMH24nFuR9KVFwECjb41ipvO/
-	XAJRSk/Iv3wsTCfyV91i9WDmlAjQCWrWIAlsIh+G0ADlScDE4axXRBPJVIqj8KEK
-	dGrHyk32wqodTJPSJ2Ag==
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vghkvg07u-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 08 Jan 2024 13:07:27 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 408D7RZa008122
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 8 Jan 2024 13:07:27 GMT
-Received: from hu-ugoswami-hyd.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Mon, 8 Jan 2024 05:07:24 -0800
-From: Udipto Goswami <quic_ugoswami@quicinc.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC: Krishna Kurapati <quic_kriskura@quicinc.com>, <linux-usb@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>,
-        Udipto Goswami
-	<quic_ugoswami@quicinc.com>
-Subject: [PATCH v2] usb: core: Prevent null pointer dereference in update_port_device_state
-Date: Mon, 8 Jan 2024 18:37:06 +0530
-Message-ID: <20240108130706.15698-1-quic_ugoswami@quicinc.com>
-X-Mailer: git-send-email 2.17.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 389FD44C80;
+	Mon,  8 Jan 2024 13:07:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.216])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4T7vRj6tHsz6K9Tm;
+	Mon,  8 Jan 2024 21:05:05 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id E5AFD140A86;
+	Mon,  8 Jan 2024 21:07:38 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Mon, 8 Jan
+ 2024 13:07:38 +0000
+Date: Mon, 8 Jan 2024 13:07:37 +0000
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: Ira Weiny <ira.weiny@intel.com>
+CC: Dan Williams <dan.j.williams@intel.com>, Smita Koralahalli
+	<Smita.KoralahalliChannabasappa@amd.com>, Shiju Jose <shiju.jose@huawei.com>,
+	Yazen Ghannam <yazen.ghannam@amd.com>, "Davidlohr Bueso" <dave@stgolabs.net>,
+	Dave Jiang <dave.jiang@intel.com>, "Alison Schofield"
+	<alison.schofield@intel.com>, Vishal Verma <vishal.l.verma@intel.com>, Ard
+ Biesheuvel <ardb@kernel.org>, <linux-efi@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-cxl@vger.kernel.org>
+Subject: Re: [PATCH v5 3/9] cxl/events: Create common event UUID defines
+Message-ID: <20240108130737.00001e77@Huawei.com>
+In-Reply-To: <20231220-cxl-cper-v5-3-1bb8a4ca2c7a@intel.com>
+References: <20231220-cxl-cper-v5-0-1bb8a4ca2c7a@intel.com>
+	<20231220-cxl-cper-v5-3-1bb8a4ca2c7a@intel.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: tFXC9erw_5xUX0EVfnEybc4zJbpTspHs
-X-Proofpoint-GUID: tFXC9erw_5xUX0EVfnEybc4zJbpTspHs
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 bulkscore=0
- mlxscore=0 lowpriorityscore=0 clxscore=1011 adultscore=0
- priorityscore=1501 suspectscore=0 spamscore=0 malwarescore=0 phishscore=0
- mlxlogscore=708 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2401080113
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml100005.china.huawei.com (7.191.160.25) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-Currently,the function update_port_device_state gets the usb_hub from
-udev->parent by calling usb_hub_to_struct_hub.
-However, in case the actconfig or the maxchild is 0, the usb_hub would
-be NULL and upon further accessing to get port_dev would result in null
-pointer dereference.
+On Wed, 20 Dec 2023 16:17:30 -0800
+Ira Weiny <ira.weiny@intel.com> wrote:
 
-Fix this by introducing an if check after the usb_hub is populated.
+> Dan points out in review that the cxl_test code could be made better
+> through the use of UUID's defines rather than being open coded.[1]
+> 
+> Create UUID defines and use them rather than open coding them.
+> 
+> [1] https://lore.kernel.org/all/65738d09e30e2_45e0129451@dwillia2-xfh.jf.intel.com.notmuch/
+> 
+> Suggested-by: Dan Williams <dan.j.williams@intel.com>
+> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-Fixes: 83cb2604f641 ("usb: core: add sysfs entry for usb device state")
-Cc: stable@vger.kernel.org
-Signed-off-by: Udipto Goswami <quic_ugoswami@quicinc.com>
----
-v2: Introduced comment for the if check & CC'ed stable.
+> 
+> ---
+> Changes for v5:
+> [Jonathan: eliminate the static uuid variables]
+Now I'm not sure why I minded them.  Ah well, good either way - sorry
+for the noise!
 
- drivers/usb/core/hub.c | 15 ++++++++++++---
- 1 file changed, 12 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/usb/core/hub.c b/drivers/usb/core/hub.c
-index ffd7c99e24a3..d40b5500f95b 100644
---- a/drivers/usb/core/hub.c
-+++ b/drivers/usb/core/hub.c
-@@ -2053,9 +2053,18 @@ static void update_port_device_state(struct usb_device *udev)
- 
- 	if (udev->parent) {
- 		hub = usb_hub_to_struct_hub(udev->parent);
--		port_dev = hub->ports[udev->portnum - 1];
--		WRITE_ONCE(port_dev->state, udev->state);
--		sysfs_notify_dirent(port_dev->state_kn);
-+
-+		/*
-+		 * usb_hub_to_struct_hub() if returns NULL can
-+		 * potentially cause NULL pointer dereference upon further
-+		 * access.
-+		 * Avoid this with an if check.
-+		 */
-+		if (hub) {
-+			port_dev = hub->ports[udev->portnum - 1];
-+			WRITE_ONCE(port_dev->state, udev->state);
-+			sysfs_notify_dirent(port_dev->state_kn);
-+		}
- 	}
- }
- 
--- 
-2.17.1
-
+Jonathan
 
