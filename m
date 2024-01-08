@@ -1,156 +1,174 @@
-Return-Path: <linux-kernel+bounces-19599-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19600-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6EBDC826F6C
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 14:14:01 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8EE6C826F6E
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 14:14:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D85781F230DC
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 13:14:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 29393283DDE
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 13:14:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C68DF44C81;
-	Mon,  8 Jan 2024 13:13:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3B124438E;
+	Mon,  8 Jan 2024 13:13:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="OAoSGY28"
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="tuQX+QVd";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="zMuqHbkg";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="tuQX+QVd";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="zMuqHbkg"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A156E4174D;
-	Mon,  8 Jan 2024 13:13:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 408ClkX7008664;
-	Mon, 8 Jan 2024 13:13:31 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=TUkqyDZU2w0pJe2IADGbbappcrOnCPRNodexsVKjT+8=;
- b=OAoSGY28pCKHNAjzJrlgLXmSe/AsB4iZf8ugjpTFG0OxcsC9b2DjyRTdaMr24WBfiREm
- 4hoGrP1gWHyMMPP7SCH1NIqBCGpRlNp2TsgvICA4c111As3MRU+oCMKQl0OlJvj1IDJS
- zotNXl+5uON9ss4zf/lxkZq6niHLf876crLFvBM2CYHSp55tKW0Pwyr2/eKPi336uqcb
- vENdCWRGiHzXxgr7Do/B98PTdcVUeca4jYTm5Z4dw3UX2t5E/znGqTRtKiQmZD8Go+L3
- tYamG7a3JEwQW/j9j5unqnQRcN9O3pfSvVJDa5rMkFsjrCxAyDo7roMwHO/m/72/SRQj qg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vghc3gnh3-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 08 Jan 2024 13:13:30 +0000
-Received: from m0353727.ppops.net (m0353727.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 408Cm39u009852;
-	Mon, 8 Jan 2024 13:13:30 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vghc3gngk-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 08 Jan 2024 13:13:30 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 408B6lwk027006;
-	Mon, 8 Jan 2024 13:13:29 GMT
-Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
-	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3vfkw1qjnm-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 08 Jan 2024 13:13:29 +0000
-Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
-	by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 408DDRDV40501792
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 8 Jan 2024 13:13:27 GMT
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 8327920049;
-	Mon,  8 Jan 2024 13:13:27 +0000 (GMT)
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 56CFD20040;
-	Mon,  8 Jan 2024 13:13:27 +0000 (GMT)
-Received: from DESKTOP-2CCOB1S. (unknown [9.171.166.51])
-	by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Mon,  8 Jan 2024 13:13:27 +0000 (GMT)
-Date: Mon, 8 Jan 2024 14:13:25 +0100
-From: Tobias Huschle <huschle@linux.ibm.com>
-To: "Michael S. Tsirkin" <mst@redhat.com>
-Cc: Jason Wang <jasowang@redhat.com>, Abel Wu <wuyun.abel@bytedance.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linux Kernel <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
-        virtualization@lists.linux.dev, netdev@vger.kernel.org
-Subject: Re: Re: Re: EEVDF/vhost regression (bisected to 86bfbb7ce4f6
- sched/fair: Add lag based placement)
-Message-ID: <ZZv09bLJvA5M/kc7@DESKTOP-2CCOB1S.>
-References: <20231209053443-mutt-send-email-mst@kernel.org>
- <CACGkMEuSGT-e-i-8U7hum-N_xEnsEKL+_07Mipf6gMLFFhj2Aw@mail.gmail.com>
- <20231211115329-mutt-send-email-mst@kernel.org>
- <CACGkMEudZnF7hUajgt0wtNPCxH8j6A3L1DgJj2ayJWhv9Bh1WA@mail.gmail.com>
- <20231212111433-mutt-send-email-mst@kernel.org>
- <42870.123121305373200110@us-mta-641.us.mimecast.lan>
- <20231213061719-mutt-send-email-mst@kernel.org>
- <25485.123121307454100283@us-mta-18.us.mimecast.lan>
- <20231213094854-mutt-send-email-mst@kernel.org>
- <20231214021328-mutt-send-email-mst@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F27541743;
+	Mon,  8 Jan 2024 13:13:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 190A921F6A;
+	Mon,  8 Jan 2024 13:13:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1704719623; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=eYHi3j8aE6cn/bC8ETd9FyL64aOVkoUdh0pTfHniGqk=;
+	b=tuQX+QVdZ/EnNwKqS0KpTwijtUmBSS0fiIOqbp7DSSEzdjwpPcAncubVKvhqff67j8H4xH
+	whj21CAFvQ7bmdrjG8rZp3bWoMzPhASqYRKCaAocgU+oF3SF2HfJ6TIV4RhEz+RIDfd/Vv
+	OFCJK8fkumK0M6BO4RANfqHp0vtyEf0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1704719623;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=eYHi3j8aE6cn/bC8ETd9FyL64aOVkoUdh0pTfHniGqk=;
+	b=zMuqHbkg1JHidOFSYTnWA2zthem9PgIXUUTAGlDf2FBZRcKQjcUau5Dp0163mUw0U+Zbk4
+	30NvYaKGbg4uD0Cg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1704719623; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=eYHi3j8aE6cn/bC8ETd9FyL64aOVkoUdh0pTfHniGqk=;
+	b=tuQX+QVdZ/EnNwKqS0KpTwijtUmBSS0fiIOqbp7DSSEzdjwpPcAncubVKvhqff67j8H4xH
+	whj21CAFvQ7bmdrjG8rZp3bWoMzPhASqYRKCaAocgU+oF3SF2HfJ6TIV4RhEz+RIDfd/Vv
+	OFCJK8fkumK0M6BO4RANfqHp0vtyEf0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1704719623;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=eYHi3j8aE6cn/bC8ETd9FyL64aOVkoUdh0pTfHniGqk=;
+	b=zMuqHbkg1JHidOFSYTnWA2zthem9PgIXUUTAGlDf2FBZRcKQjcUau5Dp0163mUw0U+Zbk4
+	30NvYaKGbg4uD0Cg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BA92B13686;
+	Mon,  8 Jan 2024 13:13:42 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id eWU2LAb1m2UKbgAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Mon, 08 Jan 2024 13:13:42 +0000
+Date: Mon, 08 Jan 2024 14:13:42 +0100
+Message-ID: <87a5pgt1bt.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Huayu Zhang <932367230@qq.com>
+Cc: tiwai@suse.com,
+	linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	james.schulman@cirrus.com,
+	david.rhodes@cirrus.com,
+	rf@opensource.cirrus.com,
+	perex@perex.cz,
+	sbinding@opensource.cirrus.com,
+	kailang@realtek.com,
+	zhanghuayu.dev@gmail.com
+Subject: Re: add DSD for ThinkBook 16p G4 IRH with Subsystem Id of :
+In-Reply-To: <tencent_0ED010E11594001F62B9EF66C41B0FABCC05@qq.com>
+References: <tencent_0ED010E11594001F62B9EF66C41B0FABCC05@qq.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231214021328-mutt-send-email-mst@kernel.org>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: ECAMvZcC_h-gkpU_Pbp9Ecir0gWIPvvz
-X-Proofpoint-GUID: uFGhddQc-GSToOejEHlZ_c_bFqoRBb5C
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-08_04,2024-01-08_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
- priorityscore=1501 suspectscore=0 bulkscore=0 mlxlogscore=825 phishscore=0
- clxscore=1011 adultscore=0 spamscore=0 lowpriorityscore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
- definitions=main-2401080113
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Level: *
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: 190A921F6A
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=tuQX+QVd;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=zMuqHbkg
+X-Spam-Score: -5.45
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spamd-Result: default: False [-5.45 / 50.00];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 TO_DN_SOME(0.00)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_TRACE(0.00)[suse.de:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_SEVEN(0.00)[11];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 FREEMAIL_TO(0.00)[qq.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 BAYES_HAM(-2.94)[99.75%];
+	 ARC_NA(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 FROM_HAS_DN(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com,qq.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 TAGGED_RCPT(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 DWL_DNSWL_HI(-3.50)[suse.de:dkim];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 MID_CONTAINS_FROM(1.00)[];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FREEMAIL_CC(0.00)[suse.com,vger.kernel.org,cirrus.com,opensource.cirrus.com,perex.cz,realtek.com,gmail.com];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
 
-On Thu, Dec 14, 2023 at 02:14:59AM -0500, Michael S. Tsirkin wrote:
+On Mon, 08 Jan 2024 13:51:36 +0100,
+Huayu Zhang wrote:
 > 
-> Peter, would appreciate feedback on this. When is cond_resched()
-> insufficient to give up the CPU? Should Documentation/kernel-hacking/hacking.rst
-> be updated to require schedule() instead?
-> 
+> Sorry for missing the info within patch and not familiar with the
+> mailing system using git. As mentioned in the subject,
+> the patch is using to fix the sound issue of ThinkBook 16p G4 IRH with
+> Subsystem Id of : 0x17aa38a9. But this just enable the downside (bass)
+> speakers. When I tried to adjust the volumn, it atually mapped to the
+> frequency division (the lower volumn actually set the bass speakers,
+> and higher volumn map to the louder sound of up facing speakers).
+> Wondering if this related to ALSA?
 
-Happy new year everybody!
+The amp behavior is a question to Cirrus people, I suppose.
 
-I'd like to bring this thread back to life. To reiterate:
+In anyway, the patch can't be taken as is.  You need to submit the
+patch in a more formal way.
 
-- The introduction of the EEVDF scheduler revealed a performance
-  regression in a uperf testcase of ~50%.
-- Tracing the scheduler showed that it takes decisions which are
-  in line with its design.
-- The traces showed as well, that a vhost instance might run
-  excessively long on its CPU in some circumstance. Those cause
-  the performance regression as they cause delay times of 100+ms
-  for a kworker which drives the actual network processing.
-- Before EEVDF, the vhost would always be scheduled off its CPU
-  in favor of the kworker, as the kworker was being woken up and
-  the former scheduler was giving more priority to the woken up
-  task. With EEVDF, the kworker, as a long running process, is
-  able to accumulate negative lag, which causes EEVDF to not
-  prefer it on its wake up, leaving the vhost running.
-- If the kworker is not scheduled when being woken up, the vhost
-  continues looping until it is migrated off the CPU.
-- The vhost offers to be scheduled off the CPU by calling 
-  cond_resched(), but, the the need_resched flag is not set,
-  therefore cond_resched() does nothing.
+- Correct the subject line with a proper prefix, e.g.
+    [PATCH] ALSA: hda: Add DSD for ....
+  When resubmitting with some changes, put the revision number, too,
+    [PATCH v2] ALSA: hda: Add DSD for ....
 
-To solve this, I see the following options 
-  (might not be a complete nor a correct list)
-- Along with the wakeup of the kworker, need_resched needs to
-  be set, such that cond_resched() triggers a reschedule.
-- The vhost calls schedule() instead of cond_resched() to give up
-  the CPU. This would of course be a significantly stricter
-  approach and might limit the performance of vhost in other cases.
-- Preventing the kworker from accumulating negative lag as it is
-  mostly not runnable and if it runs, it only runs for a very short
-  time frame. This might clash with the overall concept of EEVDF.
-- On cond_resched(), verify if the consumed runtime of the caller
-  is outweighing the negative lag of another process (e.g. the 
-  kworker) and schedule the other process. Introduces overhead
-  to cond_resched.
+- Give the proper patch description in the patch itself.
 
-I would be curious on feedback on those ideas and interested in
-alternative approaches.
+- Put your Signed-off-by line after the patch description.
+  It's a legal requirement.
+
+Please refer to Documentation/process/submitting-patches.rst for
+details.
+
+
+thanks,
+
+Takashi
 
