@@ -1,110 +1,77 @@
-Return-Path: <linux-kernel+bounces-19236-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19237-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED775826A1E
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 10:04:18 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 10D94826A23
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 10:06:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 763541F25B18
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 09:04:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BD2F01C21A92
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 09:06:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8278512B84;
-	Mon,  8 Jan 2024 09:03:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1714BDDBB;
+	Mon,  8 Jan 2024 09:06:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="JNPK2oVp";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="5WA0tnyj";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="gBdMRmm2";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="1+SFhyyc"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="SDz+xyLS"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1C5012B68;
-	Mon,  8 Jan 2024 09:03:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id F05A621DDA;
-	Mon,  8 Jan 2024 09:03:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1704704626;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=m4Xh0t3rzxdhxIIt83BuRXIVZyt/UJX75ymAv70NJMk=;
-	b=JNPK2oVpBIaxy1jMovlfy95ZToP3Qn2NfXsLaphJqGIf2q+4W3nLYoW1gD2HpZdCsjKosl
-	t/kYNWa3n+vlzNvH3852QCoTTKCBYsUdxErHLGolW/WGMzksSRoWxSkXGpL4g+bdPmr0j/
-	fX8y+seZe6tZkW0eW47vS82cN1wQGYQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1704704626;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=m4Xh0t3rzxdhxIIt83BuRXIVZyt/UJX75ymAv70NJMk=;
-	b=5WA0tnyjSd/52uOjktQ6ZPJ3oZhhPA7qvVXa36UBSxKBUNUKkuxpki2yiS1ZVgYhQMWlnf
-	K5IXVSGG2Xis2SAQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1704704624;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=m4Xh0t3rzxdhxIIt83BuRXIVZyt/UJX75ymAv70NJMk=;
-	b=gBdMRmm2/jRyJwLE2bPW4AO1FtdWAjMGhdizG09CuM+oQ2sVq7FSVvytmBAD/N3wsIM/p1
-	l9O7J1h4xzgCzXrJzfHBonzjFW+MummDvJrLngTu7yRC4aGubysdhDe5jlW9KA0BKNWYk1
-	LEPCzs4pjYfLUEXmUT/CQ3/HRuTDIWI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1704704624;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=m4Xh0t3rzxdhxIIt83BuRXIVZyt/UJX75ymAv70NJMk=;
-	b=1+SFhyyc6SNeox6a4FFnhvNQaA7YuroPRYTsnVbpjnzUoJmSZka+BzlEY6sE3/3CJH75VN
-	ZByRBgLwaf1BA8Aw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4E87113496;
-	Mon,  8 Jan 2024 09:03:44 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id LQbPEXC6m2WjCQAAD6G6ig
-	(envelope-from <pvorel@suse.cz>); Mon, 08 Jan 2024 09:03:44 +0000
-Date: Mon, 8 Jan 2024 10:03:38 +0100
-From: Petr Vorel <pvorel@suse.cz>
-To: Rob Landley <rob@landley.net>
-Cc: Cyril Hrubis <chrubis@suse.cz>,
-	Geert Uytterhoeven <geert@linux-m68k.org>, ltp@lists.linux.it,
-	Li Wang <liwang@redhat.com>,
-	Andrea Cervesato <andrea.cervesato@suse.com>,
-	Greg Ungerer <gerg@linux-m68k.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Randy Dunlap <rdunlap@infradead.org>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	Christophe Lyon <christophe.lyon@linaro.org>,
-	linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
-	Linux ARM <linux-arm-kernel@lists.infradead.org>,
-	linux-riscv <linux-riscv@lists.infradead.org>,
-	Linux-sh list <linux-sh@vger.kernel.org>,
-	automated-testing@lists.yoctoproject.org, buildroot@buildroot.org,
-	Niklas Cassel <niklas.cassel@wdc.com>
-Subject: Re: Call for nommu LTP maintainer [was: Re: [PATCH 00/36] Remove
- UCLINUX from LTP]
-Message-ID: <20240108090338.GA1552643@pevik>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-References: <20240103015240.1065284-1-pvorel@suse.cz>
- <CAMuHMdXGwyS-CL0vLdUP4Z4YEYhmcmDyC3YdGCnS=jFkqASqvw@mail.gmail.com>
- <20240103114957.GD1073466@pevik>
- <CAMuHMdX0s0gLRoPtjJmDnSmZ_MNY590dN+JxM1HKAL1g_bjX+w@mail.gmail.com>
- <ZZVOhlGPg5KRyS-F@yuki>
- <5a1f1ff3-8a61-67cf-59a9-ce498738d912@landley.net>
- <20240105131135.GA1484621@pevik>
- <90c1ddc1-c608-30fc-d5aa-fdf63c90d055@landley.net>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0115DDCD
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 09:06:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-40e490c2115so1503905e9.0
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 01:06:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1704704761; x=1705309561; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=w2EyoLbnPqZmV+8zXuTXWwVH9AFKfyr2X73Q99Ksn7g=;
+        b=SDz+xyLSrHs8XA25VS5OX3bTq+MlRk+2QXHAsRJMDzhJjFHRjXNp6vBJVfWaKFGLAd
+         Njx6ExOG9TI/poYZndRBGndcbCh4VlG18MauJvcl+C5ldCmDtR0B8lv2zRIl58Np6a9R
+         E9qEYdfWixyrdyboHLdQPXXtoWJeYb13/hjRQAbEJdtAfgmdQSQsGCXLYgbzEgT290v+
+         Mm/lIuEo9QeI23rv2sWui2WnuuJVWnYAqbGmfPSaxjoZKDA5RZiImEEbY64oBPYT/Sq/
+         mQ7VPLa3wnmSfw3dkeADjR5Ap1fa7vIkj6AbXMo4vLUpRgYPLysv8WfEkQzxGnMvZzXF
+         IVyQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704704761; x=1705309561;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=w2EyoLbnPqZmV+8zXuTXWwVH9AFKfyr2X73Q99Ksn7g=;
+        b=gdycdQvbDlwmjHnFZUWtrwlHyvFe0xuYwSBqYxTlPnqZqReUhsp3Q900id6bhXu2Po
+         j7v38s/VzvCQRQYe1Zq+4fXciTQII98N8Zpk3c7C7wA9s2eSQdn99/dxFXOTV+s1rmhF
+         3gyhftWlgWvEbvqj1d4sCRjsE+O58wbgxpH3fRBUIJzOUo1b5Fk1dBlwrhdFYjPU0EBx
+         cisj8+JQykP/L/ZzHUj3G3/hoev2LtHBFcG9xqfJABZjFz5kW7Xy4LuQN/LNrT7tAfFZ
+         QTuPBntQXQHzT0cWtZJMs1zPLkhAdZo3GZddUoXZJYxHTTL9oe6JMaDMUH0zbqhVw50r
+         Vx5A==
+X-Gm-Message-State: AOJu0YyF+HW2kvV3/4i99D/Y3CVUGeyItkXLI/UpdljWatNv0Jt7HajB
+	vaVdiC0IIT7JfvCzix5Ylfa61HJw0AQtzg==
+X-Google-Smtp-Source: AGHT+IGCvzuvE9K9DjjuxaKem4GrCkze1n5YKKD7JDglZ2aL/3ZCSvPl+yXc9xU+sGZNscYNx6DS0w==
+X-Received: by 2002:a1c:7204:0:b0:40e:4aae:7e62 with SMTP id n4-20020a1c7204000000b0040e4aae7e62mr12731wmc.58.1704704760955;
+        Mon, 08 Jan 2024 01:06:00 -0800 (PST)
+Received: from localhost ([102.140.209.237])
+        by smtp.gmail.com with ESMTPSA id w5-20020a05600c474500b0040e34835a58sm10219495wmo.22.2024.01.08.01.06.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Jan 2024 01:06:00 -0800 (PST)
+Date: Mon, 8 Jan 2024 12:05:57 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Lucas De Marchi <lucas.demarchi@intel.com>
+Cc: Oded Gabbay <ogabbay@kernel.org>,
+	Thomas =?iso-8859-1?Q?Hellstr=F6m?= <thomas.hellstrom@linux.intel.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+	John Harrison <John.C.Harrison@intel.com>,
+	Michal Wajdeczko <michal.wajdeczko@intel.com>,
+	Matthew Brost <matthew.brost@intel.com>,
+	Rodrigo Vivi <rodrigo.vivi@intel.com>,
+	intel-xe@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: [PATCH] drm/xe: clean up type of GUC_HXG_MSG_0_ORIGIN
+Message-ID: <ec22d742-632b-426a-ac86-62641a38c907@moroto.mountain>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -113,145 +80,31 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <90c1ddc1-c608-30fc-d5aa-fdf63c90d055@landley.net>
-X-Spam-Level: 
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -3.50
-X-Spamd-Result: default: False [-3.50 / 50.00];
-	 HAS_REPLYTO(0.30)[pvorel@suse.cz];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 BAYES_HAM(-3.00)[100.00%];
-	 ARC_NA(0.00)[];
-	 REPLYTO_EQ_FROM(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 RCPT_COUNT_TWELVE(0.00)[19];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[]
-X-Spam-Flag: NO
+X-Mailer: git-send-email haha only kidding
 
-Hi Rob, all,
+The GUC_HXG_MSG_0_ORIGIN definition should be unsigned.  Currently it is
+defined as INT_MIN.  This doesn't cause a problem currently but it's
+still worth cleaning up.
 
-[ Added Niklas Cassel, who is maintainer of qemu_riscv64_nommu_virt_defconfig in
-buildroot ]
+Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
+---
+ drivers/gpu/drm/xe/abi/guc_messages_abi.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> On 1/5/24 07:11, Petr Vorel wrote:
-> >> Nobody is maintaining "uclinux" because that was a distro, but you can build
-> >> nommu support in buildroot and such, and people do.
+diff --git a/drivers/gpu/drm/xe/abi/guc_messages_abi.h b/drivers/gpu/drm/xe/abi/guc_messages_abi.h
+index 3d199016cf88..c04606872e48 100644
+--- a/drivers/gpu/drm/xe/abi/guc_messages_abi.h
++++ b/drivers/gpu/drm/xe/abi/guc_messages_abi.h
+@@ -40,7 +40,7 @@
+  */
+ 
+ #define GUC_HXG_MSG_MIN_LEN			1u
+-#define GUC_HXG_MSG_0_ORIGIN			(0x1 << 31)
++#define GUC_HXG_MSG_0_ORIGIN			(0x1U << 31)
+ #define   GUC_HXG_ORIGIN_HOST			0u
+ #define   GUC_HXG_ORIGIN_GUC			1u
+ #define GUC_HXG_MSG_0_TYPE			(0x7 << 28)
+-- 
+2.42.0
 
-> > Right, there are nommu users. Will anybody join LTP development to maintain
-> > nommu support in LTP? The needed work is to add this support to LTP new C API
-> > [1] and use it in the relevant test. There is some implementation in the old
-> > API, I have no idea how well it worked.
-
-> > If nobody stands for maintaing nommu, we will have to delete it. There is nobody
-> > from the current maintainers who is using LTP on nommu HW (that is the reason why
-> > nommu support have not been implemented in the new API).
-
-> I'm interested, but overwhelmed. Not sure I've got the spoons to come up to
-> speed on a new project and give it regular attention just now.
-
-> I see you cc'd buildroot (although the message might not go through if you
-> aren't subscribed, dunno how clogged their moderation queue is these days, and
-> the cc: list is long enough it might twig anyway). They had a nommu fix go in
-> earlier this week (commit 98684ba7885b).
-
-> That said, qemu supports several nommu platforms and buildroot has defconfigs to
-> build systems for them:
-
-> $ git clone git://buildroot.org/buildroot
-> $ make help
-> $ make list-defconfigs | grep qemu
-> $ make qemu_ppc_bamboo_defconfig
-> $ make
->   (time passes...)
-> >>> host-gettext-tiny 0.3.2 Extracting
-> gzip -d -c
-> /home/landley/buildroot/buildroot/dl/gettext-tiny/gettext-tiny-0.3.2.tar.gz |
-> tar --strip-components=1 -C
-> /home/landley/buildroot/buildroot/output/build/host-gettext-tiny-0.3.2   -xf -
-> mkdir -p
-> /home/landley/buildroot/buildroot/output/build/host-gettext-tiny-0.3.2/gettext-gnu
-> xzcat /home/landley/buildroot/buildroot/dl/gettext-tiny/gettext-0.22.4.tar.xz |
-> tar --strip-components=1 -C
-> /home/landley/buildroot/buildroot/output/build/host-gettext-tiny-0.3.2/gettext-gnu
->  -xf -
-> xzcat: /home/landley/buildroot/buildroot/dl/gettext-tiny/gettext-0.22.4.tar.xz:
-> No such file or directory
-> tar: This does not look like a tar archive
-> tar: Exiting with failure status due to previous errors
-> make: *** [package/pkg-generic.mk:209:
-> /home/landley/buildroot/buildroot/output/build/host-gettext-tiny-0.3.2/.stamp_extracted]
-> Error 2
-
-
-> Sigh, never build git pull du jour of anything, buildroot's having glitch du
-> jour. But the point is:
-
-> $ grep -rl bamboo board/
-> board/qemu/ppc-bamboo/readme.txt
-> $ cat board/qemu/ppc-bamboo/readme.txt
-> Run the emulation with:
-
-> qemu-system-ppc -nographic -M bamboo -kernel output/images/vmlinux -net
-> nic,model=virtio-net-pci -net user # qemu_ppc_bamboo_defconfig
-
-> The login prompt will appear in the terminal that started Qemu
-> -------------------
-
-> In THEORY, once it builds an image (presumably using a tagged release version
-> rather than expecting "continuous integration" to ever mean anything) you should
-> be able to launch it with qemu. Assuming the instructions aren't also
-> bit-rotted. (Or using one of the other nommu boards, I haven't gone through the
-> whole list to see what they've got. I used to use a nommu arm board, but the
-> linux kernel broke it when converting everything to device tree and not
-> regression testing it.)
-
-> Buildroot also apparently has an LTP package selectable in menuconfig:
-
-> https://github.com/buildroot/buildroot/tree/master/package/ltp-testsuite
-
-> But I haven't tried it...
-
-I'm the maintainer of the LTP package in buildroot in my private time.
-BTW I spent quite a lot of time fixing LTP (and some other system packages,
-e.g. nfs-utils) compilation on some old legacy architectures reported via
-http://autobuild.buildroot.net/ I've never used in the reality.
-But I certainly don't have time to drive nommu support in my private time.
-I don't even have an interest, I don't use any nommu device.
-
-And I would not justify to work on nommu in my working paid by SUSE, because
-that's not a platform SUSE uses. Lack of resources means that there is a vast
-majority of new kernel functionality not being tested. Also with very small
-resources it's hard to even fix existing tests broken by changed functionality
-in each mainline kernel release.
-
-Therefore nobody who is not involved in nommu will not find a time to support it
-in LTP (support does not mean just to add the functionality to the new C API,
-but run tests on nommu and fix failing bugs). I suppose nobody is paid to work
-on nommu platforms, it would have to be a hobby project, right?
-
-But as I said, if anybody from nommu decides to maintain it in LTP, I'll try to
-support him in my free time (review patches, give advices). And if nobody
-stands, this patchset which removes the support in the old API will be merged
-after next LTP release (in the end of January).
-
-Kind regards,
-Petr
-
-> Rob
-
-> P.S. I automate qemu testing all the time over in toybox, see testroot.sh under
-> https://github.com/landley/toybox/tree/master/mkroot for an example.
 
