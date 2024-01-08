@@ -1,56 +1,56 @@
-Return-Path: <linux-kernel+bounces-19827-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19830-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0DE578274CA
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 17:16:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AE69E8274D7
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 17:17:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8B5471F230C4
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 16:16:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3089F283FFB
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 16:17:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCC0652F6C;
-	Mon,  8 Jan 2024 16:16:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4A9652F6A;
+	Mon,  8 Jan 2024 16:16:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=posteo.net header.i=@posteo.net header.b="oAR6Gwaj"
+	dkim=pass (2048-bit key) header.d=posteo.net header.i=@posteo.net header.b="HzQVztjN"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mout02.posteo.de (mout02.posteo.de [185.67.36.66])
+Received: from mout01.posteo.de (mout01.posteo.de [185.67.36.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E2CC52F61
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 16:16:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76E5B5380D
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 16:16:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=posteo.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=posteo.net
 Received: from submission (posteo.de [185.67.36.169]) 
-	by mout02.posteo.de (Postfix) with ESMTPS id 87889240101
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 17:16:04 +0100 (CET)
+	by mout01.posteo.de (Postfix) with ESMTPS id DBCD8240029
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 17:16:30 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
-	t=1704730564; bh=X3VtHd5GjlJi8/Twrh4yAaOYDgw5xWt6nucsz68JnqU=;
+	t=1704730590; bh=VhNI/VyHttpB6Dc+nOmQ0eI7dT/saNfHep5H24iJdO8=;
 	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:
 	 Content-Transfer-Encoding:From;
-	b=oAR6GwajS3y8dsWT0cTJzZ++cMYORHI0OiZFlheCvbx9Bz2WOu21/mJCYSGtxDwz4
-	 h6k3yv1V0fWP2Fvp2A3WLR/Mskuz806PGtjJxfdhQO5XwjPOaZMtPIQcYnTrQfXZP1
-	 /I1E6cdiqypmkVIDZb60H7W/6n1eyBNDcQTg9L447vqXWyPc7Tg8xYGYs+7UE8b/Gf
-	 GsLpP9ijgW8lf4vSUdF6tG8puOM3ifhROSGQj823ibDvoI0VR3NLUIn1XOZCeyPnmc
-	 rQy51/3RE6opGSEbI/kqmwQzt7vt6cl2TGREoSDpibLb9smIP5PihqRP3GLRCT5AJU
-	 pflgMcO7yXtbw==
+	b=HzQVztjNExNwWDrBuHzEvHtkFFb6vD0OXysV/RE2YSQAQeRZRM4R2KPi1eqBI1IE0
+	 BSv2xCrBjDcgcfMHIjpUhv7F7AXvuX8XRuiUkCupg5ER15Ex18/IoSvHTPiCypErA9
+	 870DCFFhsdxf6Ku/I5Bdn4tyn4/jWmgW0j+pNBTZ19BpBQFy9thMKIBdX+Xy1LGjKn
+	 ktiSoGhu0cJbFOuiyqcWbCl5Iv5BRsQl12Bl6+IAmoxmpSpOAEKunG3bM33lUuyF6b
+	 w7VL9S2/9IFb4670o/kT67shDy+0J9nn2ZRyR2cEJqPySYA83y8pVs3zf3EgzSV+PD
+	 zV6Uyu0OElw7A==
 Received: from customer (localhost [127.0.0.1])
-	by submission (posteo.de) with ESMTPSA id 4T7zh03SCsz9rxB;
-	Mon,  8 Jan 2024 17:16:00 +0100 (CET)
+	by submission (posteo.de) with ESMTPSA id 4T7zhV4n4Wz9rxN;
+	Mon,  8 Jan 2024 17:16:26 +0100 (CET)
 From: Yueh-Shun Li <shamrocklee@posteo.net>
 To: Jonathan Corbet <corbet@lwn.net>
 Cc: Yueh-Shun Li <shamrocklee@posteo.net>,
-	Randy Dunlap <rdunlap@infradead.org>,
 	Hu Haowen <src.res.211@gmail.com>,
 	Alex Shi <alexs@kernel.org>,
 	Yanteng Si <siyanteng@loongson.cn>,
+	Randy Dunlap <rdunlap@infradead.org>,
 	workflows@vger.kernel.org,
 	linux-doc@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 1/4] coding-style: recommend split headers instead of kernel.h
-Date: Mon,  8 Jan 2024 16:03:22 +0000
-Message-ID: <20240108160746.177421-2-shamrocklee@posteo.net>
+Subject: [PATCH 2/4] coding-style: show how reusing macros prevents naming collisions
+Date: Mon,  8 Jan 2024 16:03:23 +0000
+Message-ID: <20240108160746.177421-3-shamrocklee@posteo.net>
 In-Reply-To: <20240108160746.177421-1-shamrocklee@posteo.net>
 References: <107b6b5e-ca14-4b2b-ba2e-38ecd74c0ad3@infradead.org>
  <20240108160746.177421-1-shamrocklee@posteo.net>
@@ -65,67 +65,51 @@ Content-Transfer-Encoding: 8bit
 In section "18) Don't re-invent the kernel macros" in "Linux kernel
 coding style":
 
-Recommend reusing macros from headers inside include/linux, instead of
-the obsolete include/linux/kernel.h
+Show how reusing macros from shared headers prevents naming collisions
+using "stringify", the one of the most widely reinvented macro, as an
+example.
 
-Change wording
-
-- "The header file contains macros" -> "the header files provide macros"
-  Some macros are intended to use inside the header file only, or are
-  considered the implementation detail of other facilities. Developers
-  are expected to determine if a macro is meant to be used outside the
-  header file.
+This patch aims to provide a stronger reason to reuse shared macros,
+by showing the risk of improvised macro variants.
 
 Signed-off-by: Yueh-Shun Li <shamrocklee@posteo.net>
 ---
- Documentation/process/coding-style.rst | 23 +++++++++++++----------
- 1 file changed, 13 insertions(+), 10 deletions(-)
+ Documentation/process/coding-style.rst | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
 
 diff --git a/Documentation/process/coding-style.rst b/Documentation/process/coding-style.rst
-index 6db37a46d305..2504cb00a961 100644
+index 2504cb00a961..1e79aba4b346 100644
 --- a/Documentation/process/coding-style.rst
 +++ b/Documentation/process/coding-style.rst
-@@ -1048,27 +1048,30 @@ readable alternative if the call-sites have naked true/false constants.
- Otherwise limited use of bool in structures and arguments can improve
- readability.
+@@ -1070,6 +1070,28 @@ Similarly, if you need to calculate the size of some structure member, use
+ There are also ``min()`` and ``max()`` macros in ``include/linux/minmax.h``
+ that do strict type checking if you need them.
  
++Using existing macros provided by the shared headers also prevents naming
++collisions. For example, if one developer define in ``foo.h``
 +
- 18) Don't re-invent the kernel macros
- -------------------------------------
- 
--The header file include/linux/kernel.h contains a number of macros that
--you should use, rather than explicitly coding some variant of them yourself.
-+The header files in the ``include/linux`` directory provide a number of macros
-+that you should use, rather than explicitly coding some variant of them
-+yourself.
++.. code-block:: c
 +
- For example, if you need to calculate the length of an array, take advantage
--of the macro
-+of the macro ``ARRAY_SIZE()`` from ``include/linux/array_size.h`` by
++	#define __stringify(x) __stringify_1(x)
++	#define __stringify_1(x) #x
++
++and another define in ``bar.h``
++
++.. code-block:: c
++
++	#define stringify(x) __stringify(x)
++	#define __stringify(x) #x
++
++When both headers are ``#include``-d into the same file, the facilities provided
++by ``foo.h`` might be broken by ``bar.h``.
++
++If both ``foo.h`` and ``bar.h``  use the macro ``__stringify()`` provided by
++``include/linux/stringify.h``, they wouldn't have stepped onto each other's
++toes.
++
+ Feel free to search across and peruse the header files to see what else is
+ already defined that you shouldn't reproduce in your code.
  
- .. code-block:: c
- 
--	#define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
-+	#include <linux/array_size.h>
-+	ARRAY_SIZE(x) // The size of array x
- 
- Similarly, if you need to calculate the size of some structure member, use
-+``sizeof_field()`` from ``include/linux/stddef.h``.
- 
--.. code-block:: c
--
--	#define sizeof_field(t, f) (sizeof(((t*)0)->f))
-+There are also ``min()`` and ``max()`` macros in ``include/linux/minmax.h``
-+that do strict type checking if you need them.
- 
--There are also min() and max() macros that do strict type checking if you
--need them.  Feel free to peruse that header file to see what else is already
--defined that you shouldn't reproduce in your code.
-+Feel free to search across and peruse the header files to see what else is
-+already defined that you shouldn't reproduce in your code.
- 
- 
- 19) Editor modelines and other cruft
 -- 
 2.42.0
 
