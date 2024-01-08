@@ -1,119 +1,127 @@
-Return-Path: <linux-kernel+bounces-19623-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19587-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 84C85826FEA
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 14:33:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 53661826F41
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 14:07:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AB9031C2292E
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 13:33:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 080171F22C07
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 13:07:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B360E44C97;
-	Mon,  8 Jan 2024 13:32:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6530A41742;
+	Mon,  8 Jan 2024 13:07:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="POHozhsy"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-m17244.xmail.ntesmail.com (mail-m17244.xmail.ntesmail.com [45.195.17.244])
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D5F344C7A
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 13:32:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=easystack.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=easystack.cn
-Received: from fedora.. (unknown [211.103.144.18])
-	by smtp.qiye.163.com (Hmail) with ESMTPA id 386114C0297;
-	Mon,  8 Jan 2024 21:07:33 +0800 (CST)
-From: fuqiang wang <fuqiang.wang@easystack.cn>
-To: Baoquan He <bhe@redhat.com>,
-	Vivek Goyal <vgoyal@redhat.com>,
-	Dave Young <dyoung@redhat.com>
-Cc: kexec@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v4] x86/kexec: fix potential cmem->ranges out of bounds
-Date: Mon,  8 Jan 2024 21:06:47 +0800
-Message-ID: <20240108130720.228478-1-fuqiang.wang@easystack.cn>
-X-Mailer: git-send-email 2.42.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B826B4121B;
+	Mon,  8 Jan 2024 13:07:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 408D5F63016636;
+	Mon, 8 Jan 2024 13:07:28 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:mime-version:content-type; s=
+	qcppdkim1; bh=Yj9tfHIzcfb2h/uSh/hSnE1BOhG/nWfIZRNBZOaOKwc=; b=PO
+	HozhsyEi8bceubFsjNEO071nGkwSLZFl63qVaZHnM+bcYT9vZDFmYa4/PmeSUZE8
+	e3egga/UuxhFCR3H1zi1d2qAN+YjwQ1uLXHgAch9ap89g0ltNX6iGYc7XPyFSjs5
+	s45Tjo5ri/Cj+z7nRqSsY4/0zGEsd4VSE315gJ8b2OliuGL/CZXJ82IfRObD04bi
+	64ISO3iUn/cQBdIUKN28L2IOXVhLX772mGuYGaXrMH24nFuR9KVFwECjb41ipvO/
+	XAJRSk/Iv3wsTCfyV91i9WDmlAjQCWrWIAlsIh+G0ADlScDE4axXRBPJVIqj8KEK
+	dGrHyk32wqodTJPSJ2Ag==
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vghkvg07u-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 08 Jan 2024 13:07:27 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 408D7RZa008122
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 8 Jan 2024 13:07:27 GMT
+Received: from hu-ugoswami-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Mon, 8 Jan 2024 05:07:24 -0800
+From: Udipto Goswami <quic_ugoswami@quicinc.com>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC: Krishna Kurapati <quic_kriskura@quicinc.com>, <linux-usb@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>,
+        Udipto Goswami
+	<quic_ugoswami@quicinc.com>
+Subject: [PATCH v2] usb: core: Prevent null pointer dereference in update_port_device_state
+Date: Mon, 8 Jan 2024 18:37:06 +0530
+Message-ID: <20240108130706.15698-1-quic_ugoswami@quicinc.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
-	tZV1koWUFJQjdXWS1ZQUlXWQ8JGhUIEh9ZQVkaTkIYVk5OGRhKQxpIGRlOT1UZERMWGhIXJBQOD1
-	lXWRgSC1lBWUlKSlVKS0hVSk9PVUpDWVdZFhoPEhUdFFlBWU9LSFVKTU9JTE5VSktLVUpCS0tZBg
-	++
-X-HM-Tid: 0a8ce92f7fc0022ekunm386114c0297
-X-HM-MType: 1
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6MhQ6Pww5ITczExAPIwoZIik0
-	D0wKCg9VSlVKTEtPTEpCSU5PS0lIVTMWGhIXVR0OChIaFRxVDBoVHDseGggCCA8aGBBVGBVFWVdZ
-	EgtZQVlJSkpVSktIVUpPT1VKQ1lXWQgBWUFITk5MNwY+
+Content-Type: text/plain
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: tFXC9erw_5xUX0EVfnEybc4zJbpTspHs
+X-Proofpoint-GUID: tFXC9erw_5xUX0EVfnEybc4zJbpTspHs
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 bulkscore=0
+ mlxscore=0 lowpriorityscore=0 clxscore=1011 adultscore=0
+ priorityscore=1501 suspectscore=0 spamscore=0 malwarescore=0 phishscore=0
+ mlxlogscore=708 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2401080113
 
-In memmap_exclude_ranges(), elfheader will be excluded from crashk_res.
-In the current x86 architecture code, the elfheader is always allocated
-at crashk_res.start. It seems that there won't be a new split range.
-But it depends on the allocation position of elfheader in crashk_res. To
-avoid potential out of bounds in future, add a extra slot.
+Currently,the function update_port_device_state gets the usb_hub from
+udev->parent by calling usb_hub_to_struct_hub.
+However, in case the actconfig or the maxchild is 0, the usb_hub would
+be NULL and upon further accessing to get port_dev would result in null
+pointer dereference.
 
-The similar issue also exists in fill_up_crash_elf_data(). The range to
-be excluded is [0, 1M], start (0) is special and will not appear in the
-middle of existing cmem->ranges[]. But in cast the low 1M could be
-changed in the future, add a extra slot too.
+Fix this by introducing an if check after the usb_hub is populated.
 
-Previously discussed link:
-[1] https://lore.kernel.org/kexec/ZXk2oBf%2FT1Ul6o0c@MiWiFi-R3L-srv/
-[2] https://lore.kernel.org/kexec/273284e8-7680-4f5f-8065-c5d780987e59@easystack.cn/
-[3] https://lore.kernel.org/kexec/ZYQ6O%2F57sHAPxTHm@MiWiFi-R3L-srv/
-
-Signed-off-by: fuqiang wang <fuqiang.wang@easystack.cn>
+Fixes: 83cb2604f641 ("usb: core: add sysfs entry for usb device state")
+Cc: stable@vger.kernel.org
+Signed-off-by: Udipto Goswami <quic_ugoswami@quicinc.com>
 ---
- arch/x86/kernel/crash.c | 21 +++++++++++++++++++--
- 1 file changed, 19 insertions(+), 2 deletions(-)
+v2: Introduced comment for the if check & CC'ed stable.
 
-diff --git a/arch/x86/kernel/crash.c b/arch/x86/kernel/crash.c
-index b6b044356f1b..d21592ad8952 100644
---- a/arch/x86/kernel/crash.c
-+++ b/arch/x86/kernel/crash.c
-@@ -149,8 +149,18 @@ static struct crash_mem *fill_up_crash_elf_data(void)
- 	/*
- 	 * Exclusion of crash region and/or crashk_low_res may cause
- 	 * another range split. So add extra two slots here.
-+	 *
-+	 * Exclusion of low 1M may not cause another range split, because the
-+	 * range of exclude is [0, 1M] and the condition for splitting a new
-+	 * region is that the start, end parameters are both in a certain
-+	 * existing region in cmem and cannot be equal to existing region's
-+	 * start or end. Obviously, the start of [0, 1M] cannot meet this
-+	 * condition.
-+	 *
-+	 * But in order to lest the low 1M could be changed in the future,
-+	 * (e.g. [stare, 1M]), add a extra slot.
- 	 */
--	nr_ranges += 2;
-+	nr_ranges += 3;
- 	cmem = vzalloc(struct_size(cmem, ranges, nr_ranges));
- 	if (!cmem)
- 		return NULL;
-@@ -282,9 +292,16 @@ int crash_setup_memmap_entries(struct kimage *image, struct boot_params *params)
- 	struct crash_memmap_data cmd;
- 	struct crash_mem *cmem;
+ drivers/usb/core/hub.c | 15 ++++++++++++---
+ 1 file changed, 12 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/usb/core/hub.c b/drivers/usb/core/hub.c
+index ffd7c99e24a3..d40b5500f95b 100644
+--- a/drivers/usb/core/hub.c
++++ b/drivers/usb/core/hub.c
+@@ -2053,9 +2053,18 @@ static void update_port_device_state(struct usb_device *udev)
  
--	cmem = vzalloc(struct_size(cmem, ranges, 1));
-+	/*
-+	 * In the current x86 architecture code, the elfheader is always
-+	 * allocated at crashk_res.start. But it depends on the allocation
-+	 * position of elfheader in crashk_res. To avoid potential out of
-+	 * bounds in future, add a extra slot.
-+	 */
-+	cmem = vzalloc(struct_size(cmem, ranges, 2));
- 	if (!cmem)
- 		return -ENOMEM;
-+	cmem->max_nr_ranges = 2;
+ 	if (udev->parent) {
+ 		hub = usb_hub_to_struct_hub(udev->parent);
+-		port_dev = hub->ports[udev->portnum - 1];
+-		WRITE_ONCE(port_dev->state, udev->state);
+-		sysfs_notify_dirent(port_dev->state_kn);
++
++		/*
++		 * usb_hub_to_struct_hub() if returns NULL can
++		 * potentially cause NULL pointer dereference upon further
++		 * access.
++		 * Avoid this with an if check.
++		 */
++		if (hub) {
++			port_dev = hub->ports[udev->portnum - 1];
++			WRITE_ONCE(port_dev->state, udev->state);
++			sysfs_notify_dirent(port_dev->state_kn);
++		}
+ 	}
+ }
  
- 	memset(&cmd, 0, sizeof(struct crash_memmap_data));
- 	cmd.params = params;
 -- 
-2.42.0
+2.17.1
 
 
