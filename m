@@ -1,160 +1,102 @@
-Return-Path: <linux-kernel+bounces-19300-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19301-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2EBC8826B13
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 10:46:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7113B826B17
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 10:51:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CFD5A28290F
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 09:46:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B0FC72828E4
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 09:51:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7023125DE;
-	Mon,  8 Jan 2024 09:46:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FF2012B98;
+	Mon,  8 Jan 2024 09:51:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="D9mhllVt"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-m49203.qiye.163.com (mail-m49203.qiye.163.com [45.254.49.203])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8DB2134D3;
-	Mon,  8 Jan 2024 09:46:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=senarytech.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=senarytech.com
-Received: from liubo (unknown [61.183.143.78])
-	by mail-m12756.qiye.163.com (Hmail) with ESMTPA id A288CDC1402;
-	Mon,  8 Jan 2024 17:45:58 +0800 (CST)
-From: =?gb2312?B?wfWyqQ==?= <bo.liu@senarytech.com>
-To: "'Takashi Iwai'" <tiwai@suse.de>
-Cc: <perex@perex.cz>,
-	<tiwai@suse.com>,
-	<linux-sound@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] ALSA: hda/conexant: Fix headset auto detect fail in cx8070 and SN6140
-Date: Mon, 8 Jan 2024 17:46:00 +0800
-Message-ID: <003501da4217$7cfdf4b0$76f9de10$@senarytech.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41FDD12B84
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 09:51:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-40e43e4890cso12471315e9.1
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 01:51:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704707483; x=1705312283; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=8RkRozTY1veR0tBHYBI23lEvIQeGjftu+YjSb+RyP1g=;
+        b=D9mhllVtOlYfDf7M49nMV71n/TkUpabEmbxAroLQkrzbXsAf1PfCa1k5vISec9ZNDT
+         +p1fHJaznT+eTR4TC2V0aURC6V6OYz8iMGSt9hiVwzXJ25gexnO/v6EFjHJQ5qj5s9aM
+         Ea9D+fbrpSLCcnPDvLY438fM1vQ9m/tDotZQXMFdmR5Ts/9cZjFks4TDAoP0lORd2sib
+         vWXxirt0TQJfYh1U6LdmhgxiAPTFsYonTahchhaMlmNAZIZMcqzzZ1Ymiqy6mpzJB7ob
+         CXVbmDG7uSVFekiSU+JB6cl869ovybV6ZflJAecEEShwcbY3o9VCnEpVqg0yyXhWo8QA
+         7Y4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704707483; x=1705312283;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=8RkRozTY1veR0tBHYBI23lEvIQeGjftu+YjSb+RyP1g=;
+        b=YFaOAIS/RurllMyydTqaRZDcZ6YOSMlQBmQvBY5FPT/oEYy5npLjm1SDuJKI0iwIgo
+         Iuck6cc8LSlqM+Qd2e0e9vRO0QZnIbUteeIBWmfFr1xlm+p8z/Cn6477U97TjCLfVMWe
+         6Fzr8stM78oW8eVHeF5EQrz/AoSmlnQbc8Ncy2ApZXXX8wMo2lRe0RRzUTM5kCgynf5t
+         7E+YJxqgjOr+37t8E0M6l3nb6dL6pI57SDjHAXVtLA2QE4k5CSvFkoHhEabgaOuwDqNL
+         oziLPcRdGXwwEa9O1Dv+u0RvJJ2lwySabX8YkYuDDXpD1VtyrDTylhNm5mpoMYKQPjqQ
+         eJnA==
+X-Gm-Message-State: AOJu0Yxsy07ts6jx1ULWUNGn9ZSVdmGtKq+5XcrOGE3Y128LRVz1zbiB
+	Hkf26a69C61GiNx67u/K2FQ=
+X-Google-Smtp-Source: AGHT+IGQwI0zsMhwz6cEoKtLClqOM9M44TCPTCw5O7F5SuepIJbz23+NhjXkBt93aLjCrVIgocy4Iw==
+X-Received: by 2002:a05:600c:2241:b0:40e:437c:7db2 with SMTP id a1-20020a05600c224100b0040e437c7db2mr759146wmm.211.1704707483402;
+        Mon, 08 Jan 2024 01:51:23 -0800 (PST)
+Received: from gmail.com (1F2EF3FE.nat.pool.telekom.hu. [31.46.243.254])
+        by smtp.gmail.com with ESMTPSA id e8-20020a5d5948000000b00336898daceasm7341388wri.96.2024.01.08.01.51.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Jan 2024 01:51:22 -0800 (PST)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date: Mon, 8 Jan 2024 10:51:06 +0100
+From: Ingo Molnar <mingo@kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Andy Lutomirski <luto@kernel.org>
+Subject: [GIT PULL] Generic syscall entry code changes for v6.8
+Message-ID: <ZZvFimN17XOmnb1c@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="gb2312"
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AdpCFyHGmgv8cbCjRkurC5slBpdJyg==
-Content-Language: zh-cn
-X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
-	tZV1koWUFITzdXWS1ZQUlXWQ8JGhUIEh9ZQVkZH01IVktPGR8YTkJKTkxDGlUTARMWGhIXJBQOD1
-	lXWRgSC1lBWU1KVUpDSFVKT0hVTENZV1kWGg8SFR0UWUFZT0tIVUpNT0lMTlVKS0tVSkJLS1kG
-X-HM-Tid: 0a8ce876f33db223kuuua288cdc1402
-X-HM-MType: 1
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6M1E6Ihw6QjwvHDEzGi0eFioy
-	AT8wCVZVSlVKTEtPTEtMSk5CTkNOVTMWGhIXVRkUVRcSDjsIHhUaCQIPHhgTVRgUFkVZV1kSC1lB
-	WU1KVUpDSFVKT0hVTENZV1kIAVlBTkhPSTcG
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Hi Takashi,
-	Thank you for your quick reply. I hope the following response can be
-explained clearly, thanks.
+Linus,
 
-> > > +	/* fix some headset type recognize fail issue, such as EDIFIER
-> > headset */
-> > > +	snd_hda_codec_write(codec, 0x1c, 0, 0x320, 0x010);
-> > > +	snd_hda_codec_write(codec, 0x1c, 0, 0x3b0, 0xe10);
-> > > +	snd_hda_codec_write(codec, 0x1c, 0, 0x4f0, 0x0eb);
-> > 
-> > Please use the defined verbs in sound/hda_verbs.h.
-> > The arguments (0x320, 0x010) are (AC_VERB_SET_AMP_GAIN_MUTE, 0x2010)
-etc.
-> > 
-> > Re: (0x1c, 0x320) is not amp gain register, but vendor defined 
-> > register as rx control register. Use AC_VERB_SET_AMP_GAIN_MUTE will 
-> > confused. It's similar to 0x4f0 and 0xca0.
->
-> Ah interesting.  But the verb is actually seen as
-AC_VERB_SET_AMP_GAIN_MUTE -- although the resultant bits seem invalid.
->
-> HD-audio combines the verb and the value into 20 bits, e.g. (0x320,
-> 0x10) is composed as 0x32010, and (0x3b0, 0xe10) is 0x3be10.
-> 0x3xx is translated as SET_AMP_GAIN_MUTE, but in your case, 0x32010 leaves
-0 to both the input/output bits (bits 14 and 15), which makes it as invalid.
->
-> 0x3be10 is another invalid verb, which sets SET_AMP_GAIN_MUTE with OUTPUT,
-but it sets both LEFT and RIGHT, and passes a high index (14).
->
-> And, what actually (0x4f0, 0x0eb) does?  It's composed as 0x4f0eb, and in
-this case, it's a valid verb (SET_PROC_COEF + 0xf0eb).  But COEF is
-vendor-specific, so it can be translated in everything the chip wants.
->
-> So, if those verbs are vendor-specific ones, please define them and/or
-give proper comments to explain what they do for each.
+Please pull the latest core/entry git tree from:
 
-Re: In cx8070 and sn6140, (0x1c, 0x320, 0x010) is used to set micbiasd
-output current comparator 
-threshold from 66% to 55%. (0x1c, 0x3b0, 0xe10) is used to set OFF voltage
-for DFET from -1.2V to 
--0.8V, set headset micbias registor value adjustment trim from 2.2K ohms to
-2.0K ohms.
-(0x1c, 0x4f0, 0x0eb) is used to set headset detect debounce time, this will
-impact detection time.
-As it needs to be adjusted according to the project, i think it set to bios
-may better. So I will remove
-the setting from this patch.
+   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git core-entry-2024-01-08
 
-> > Also, it's still not clear what if other nodes are used for headphone 
-> > and mic pins -- or when either only headphone or only mic is present.
-> > A rare case, but we need to cover.
-> > 
-> > Re: in cx8070 and sn6140, only 0x16 and 0x19 can be used together as 
-> > headset. Other nodes can be used separately as headphones or 
-> > microphones, but not as headset, so their configuration will not 
-> > interfere with the type detection of headset.
->
-> OK, then explain this in comments, too (that we blindly assume those
-pins).
+   # HEAD: 221a164035fd8b554a44bd7c4bf8e7715a497561 entry: Move syscall_enter_from_user_mode() to header file
 
-Re: OK, I will add the description to patch.
+Move various entry functions from kernel/entry/common.c to <linux/entry-common.h>,
+and always-inline them, to improve syscall entry performance on s390 by ~11%.
 
-> > > +static void cx_process_headset_plugin(struct hda_codec *codec) {
-> > > +	unsigned int val;
-> > > +	unsigned int count = 0;
-> > > +
-> > > +	/* Wait headset detect done. */
-> > > +	do {
-> > > +		val = snd_hda_codec_read(codec, 0x1c, 0, 0xca0, 0x0);
-> > 
-> > Use the verb: AC_VERB_GET_PROC_COEF, 0xa000.
-> > At best, define the COEF values 0xa000 and 0xb000, and the 
-> > corresponding value bits, too.
-> > 
-> > Re: (0x1c, 0xca0) is not COEF register, but vendor defined register as 
-> > jacksense register.
-> > 
-> > > +static void cx_update_headset_mic_vref(struct hda_codec *codec, 
-> > > +unsigned int res) {
-> > > +	unsigned int phone_present, mic_persent, phone_tag, mic_tag;
-> > > +	struct conexant_spec *spec = codec->spec;
-> > > +
-> > > +	/* In cx8070 and sn6140, headset is fixed to use node 16 and node
-> > 19.
-> > 
-> > Is it really guaranteed?  IMO, we should check the pin configs 
-> > beforehand at the parsing time.
-> > 
-> > Re: in cx8070 and sn6140, only 0x16 and 0x19 can be used together as 
-> > headset. The node 16 can only be config to headphone or disable, The 
-> > node 19 can only be config to microphone or disable. Only node 16 and 
-> > node 19 both enable, the patch will process.
->
-> Then we still might need a check for the condition?
+ Thanks,
 
-Re: because the node 16 and node 19 can only be config to headphone and
-microphone, as describe 
-before, whether node 16 and node 19 enable, the patch can process, so I
-think it's no need to check
-their pin configs.
+	Ingo
 
-Best Regards
-Bo Liu
+------------------>
+Sven Schnelle (3):
+      entry: Move exit to usermode functions to header file
+      entry: Move enter_from_user_mode() to header file
+      entry: Move syscall_enter_from_user_mode() to header file
 
+
+ include/linux/entry-common.h |  95 +++++++++++++++++++++++++++++++++++--
+ kernel/entry/common.c        | 108 +++++--------------------------------------
+ 2 files changed, 103 insertions(+), 100 deletions(-)
 
