@@ -1,281 +1,83 @@
-Return-Path: <linux-kernel+bounces-19567-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19575-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97CD2826EEC
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 13:51:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C733C826F05
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 13:53:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 02AA1B2132D
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 12:51:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 76213283B12
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 12:53:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65F3645C1C;
-	Mon,  8 Jan 2024 12:47:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6242040C0A;
+	Mon,  8 Jan 2024 12:53:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="RehZNtQM"
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="SfAlAja2"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from out203-205-221-149.mail.qq.com (out203-205-221-149.mail.qq.com [203.205.221.149])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B70545BF7
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 12:47:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1704718064;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=NUQb3ZgfVWywTpmXggFoXewrDYTsKJJ8WCGj59D+i+A=;
-	b=RehZNtQMW9Wf9yLzgEhHbId86w282rLqYdbv5m3+Ab2hJsovgotKFpXDKDI+nBEMJpVK4E
-	WPMPy2DIG06k4mFgUiD5oRlfRLhEBFV1/mUS31nl6AYLOegKHWXWA/6ryFxMuFF+rob++P
-	3rCUiNQNzlkWu/lZTVPzFWw751HB0Ms=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-65-fL18LyPvOe6IP1Z1ILKQfg-1; Mon, 08 Jan 2024 07:47:42 -0500
-X-MC-Unique: fL18LyPvOe6IP1Z1ILKQfg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 4686A185A781;
-	Mon,  8 Jan 2024 12:47:42 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 2A61E38DF;
-	Mon,  8 Jan 2024 12:47:42 +0000 (UTC)
-From: Paolo Bonzini <pbonzini@redhat.com>
-To: linux-kernel@vger.kernel.org,
-	kvm@vger.kernel.org
-Cc: ajones@ventanamicro.com
-Subject: [PATCH v2 5/5] treewide: remove CONFIG_HAVE_KVM
-Date: Mon,  8 Jan 2024 07:47:40 -0500
-Message-Id: <20240108124740.114453-6-pbonzini@redhat.com>
-In-Reply-To: <20240108124740.114453-1-pbonzini@redhat.com>
-References: <20240108124740.114453-1-pbonzini@redhat.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57AC240BF2;
+	Mon,  8 Jan 2024 12:53:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1704718402; bh=CPfVigqtKj9N695Aa1G5su1g8j3lakcRAE4bhJn7SZ0=;
+	h=From:To:Cc:Subject:Date;
+	b=SfAlAja2Bu9lwctmVzvbERypdiM04AcR8MicQYJVXEE3WEIlYl4F/f8i+IT77FnpY
+	 +3cDP00tnyJRzUCvELwwupocQJSxg5FaEyUHCP4zyUIhr7JqSaVV8cMZ2e6HOV1iq/
+	 ztW2iIQWhXmYXXiAc5mWpMd7squJ/ueTlKg7nqXM=
+Received: from levi-pc.. ([61.186.21.12])
+	by newxmesmtplogicsvrszc5-1.qq.com (NewEsmtp) with SMTP
+	id D5405488; Mon, 08 Jan 2024 20:53:20 +0800
+X-QQ-mid: xmsmtpt1704718400ts1lhh214
+Message-ID: <tencent_0ED010E11594001F62B9EF66C41B0FABCC05@qq.com>
+X-QQ-XMAILINFO: OW8nL0XA5GqleSrjdBA7ntZHzHSgw2nE91fUuaBc1wWL83X5FLNBZiJqwigJDn
+	 V0g08mNheRmsg9LS0xDWNFtwIAyTm4n5gPN525VRorjE1SNG+Io3ZcDFr+0uTnAk52JLp7hMYrKt
+	 W/v8I3PsGNvfyy3flBzfsPYst8QOW8B8qf67vQ6DYdggOPiGgxjjco1o7GvxClVIFeGyt9b25LZo
+	 W6mrvU9jCymCK7uZIm7uxS46KUl9GTHxpA+asInZtmUIYbUOI8Snr6fFo7regHNoILKH4ncGuRU+
+	 4TNapv9LkuNDQ8DGrgXpmVVw9n7m32LJAr+SHvrVQ1uUfi51ybipsU96jiF8N8VrzySQtjybiESo
+	 j3UzVu+QuTXRMFwNHzmXq4Hx493uYBArRxY6ITwqhjrpHjiRWCLfjcq5cwlG9FFqiZmKbzHro8kD
+	 hKQ63uew1zpou1DgJ2si/csONeG6cDXLPg81vxUecfgQ8COYBup1WIDyLC2FIZdSa3eRITkKFLqm
+	 Q8CRBudGIY6jBNIclgxjEHHh0je9u3xlfkhR1yP/aSkHyH5MBEOdWlEIHwTT+ZeX5SiQzjJnjG15
+	 y8IBjSuEpBD1pgNd6tcHWr1C2oKqVC4ynQ3zIqKb2qxJiWAtT4A9wSf6MiPLpaYqxMERlZmsikDI
+	 htRVNnz+sgOHKYXoTYSlrFA17Q7rSo5lcFgQ5Co+5T6+r6Rq8L3S6/ADRUeyqJTSxeTh0Y8loCVw
+	 psMAjUf5712p7EawlRha9GlzEYN+ifbEx92JBMM8sKfUx/sh3MHeR7GGA20FPftUPvzD+dwpU8dS
+	 pBnoKpbMdVpnOewPOGuqBW7QJZDS3/KDv9uSRfX/RHkNsi9veievjV97gd++HBR8DQp5h/huL5SF
+	 ain4xr+tU4QGcQ3hvwucolVWrNeTnS3TuR5XdkHYv+3UgcVdGFxq4pTTl7+bucq44TrvK5H/2klF
+	 rvHAbNjyt2Zmy0OMeoEt2DrXYpsDmQ
+X-QQ-XMRINFO: NI4Ajvh11aEj8Xl/2s1/T8w=
+From: Huayu Zhang <932367230@qq.com>
+To: tiwai@suse.com
+Cc: linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	james.schulman@cirrus.com,
+	david.rhodes@cirrus.com,
+	rf@opensource.cirrus.com,
+	perex@perex.cz,
+	sbinding@opensource.cirrus.com,
+	kailang@realtek.com,
+	zhanghuayu.dev@gmail.com
+Subject: add DSD for ThinkBook 16p G4 IRH with Subsystem Id of :
+Date: Mon,  8 Jan 2024 20:51:36 +0800
+X-OQ-MSGID: <20240108125137.15081-1-932367230@qq.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
 
-It has no users anymore.
-
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
----
- arch/arm64/Kconfig         | 1 -
- arch/arm64/kvm/Kconfig     | 1 -
- arch/loongarch/Kconfig     | 1 -
- arch/loongarch/kvm/Kconfig | 1 -
- arch/mips/Kconfig          | 9 ---------
- arch/s390/Kconfig          | 1 -
- arch/s390/kvm/Kconfig      | 1 -
- arch/x86/Kconfig           | 1 -
- arch/x86/kvm/Kconfig       | 2 --
- virt/kvm/Kconfig           | 3 ---
- 10 files changed, 21 deletions(-)
-
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index 7b071a00425d..dbf08f8b66dd 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -214,7 +214,6 @@ config ARM64
- 	select HAVE_HW_BREAKPOINT if PERF_EVENTS
- 	select HAVE_IOREMAP_PROT
- 	select HAVE_IRQ_TIME_ACCOUNTING
--	select HAVE_KVM
- 	select HAVE_MOD_ARCH_SPECIFIC
- 	select HAVE_NMI
- 	select HAVE_PERF_EVENTS
-diff --git a/arch/arm64/kvm/Kconfig b/arch/arm64/kvm/Kconfig
-index 6c3c8ca73e7f..5678238324e2 100644
---- a/arch/arm64/kvm/Kconfig
-+++ b/arch/arm64/kvm/Kconfig
-@@ -20,7 +20,6 @@ if VIRTUALIZATION
- 
- menuconfig KVM
- 	bool "Kernel-based Virtual Machine (KVM) support"
--	depends on HAVE_KVM
- 	select KVM_COMMON
- 	select KVM_GENERIC_HARDWARE_ENABLING
- 	select KVM_GENERIC_MMU_NOTIFIER
-diff --git a/arch/loongarch/Kconfig b/arch/loongarch/Kconfig
-index ee123820a476..78330e0ca2f2 100644
---- a/arch/loongarch/Kconfig
-+++ b/arch/loongarch/Kconfig
-@@ -129,7 +129,6 @@ config LOONGARCH
- 	select HAVE_KPROBES
- 	select HAVE_KPROBES_ON_FTRACE
- 	select HAVE_KRETPROBES
--	select HAVE_KVM
- 	select HAVE_MOD_ARCH_SPECIFIC
- 	select HAVE_NMI
- 	select HAVE_PCI
-diff --git a/arch/loongarch/kvm/Kconfig b/arch/loongarch/kvm/Kconfig
-index 61f7e33b1f95..ac4de790dc31 100644
---- a/arch/loongarch/kvm/Kconfig
-+++ b/arch/loongarch/kvm/Kconfig
-@@ -20,7 +20,6 @@ if VIRTUALIZATION
- config KVM
- 	tristate "Kernel-based Virtual Machine (KVM) support"
- 	depends on AS_HAS_LVZ_EXTENSION
--	depends on HAVE_KVM
- 	select HAVE_KVM_DIRTY_RING_ACQ_REL
- 	select HAVE_KVM_VCPU_ASYNC_IOCTL
- 	select KVM_COMMON
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index 3eb3239013d9..cf5bb1c756e6 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -1262,7 +1262,6 @@ config CPU_LOONGSON64
- 	select MIPS_FP_SUPPORT
- 	select GPIOLIB
- 	select SWIOTLB
--	select HAVE_KVM
- 	help
- 	  The Loongson GSx64(GS264/GS464/GS464E/GS464V) series of processor
- 	  cores implements the MIPS64R2 instruction set with many extensions,
-@@ -1375,7 +1374,6 @@ config CPU_MIPS32_R2
- 	select CPU_SUPPORTS_32BIT_KERNEL
- 	select CPU_SUPPORTS_HIGHMEM
- 	select CPU_SUPPORTS_MSA
--	select HAVE_KVM
- 	help
- 	  Choose this option to build a kernel for release 2 or later of the
- 	  MIPS32 architecture.  Most modern embedded systems with a 32-bit
-@@ -1391,7 +1389,6 @@ config CPU_MIPS32_R5
- 	select CPU_SUPPORTS_HIGHMEM
- 	select CPU_SUPPORTS_MSA
- 	select CPU_SUPPORTS_VZ
--	select HAVE_KVM
- 	select MIPS_O32_FP64_SUPPORT
- 	help
- 	  Choose this option to build a kernel for release 5 or later of the
-@@ -1408,7 +1405,6 @@ config CPU_MIPS32_R6
- 	select CPU_SUPPORTS_HIGHMEM
- 	select CPU_SUPPORTS_MSA
- 	select CPU_SUPPORTS_VZ
--	select HAVE_KVM
- 	select MIPS_O32_FP64_SUPPORT
- 	help
- 	  Choose this option to build a kernel for release 6 or later of the
-@@ -1444,7 +1440,6 @@ config CPU_MIPS64_R2
- 	select CPU_SUPPORTS_HIGHMEM
- 	select CPU_SUPPORTS_HUGEPAGES
- 	select CPU_SUPPORTS_MSA
--	select HAVE_KVM
- 	help
- 	  Choose this option to build a kernel for release 2 or later of the
- 	  MIPS64 architecture.  Many modern embedded systems with a 64-bit
-@@ -1463,7 +1458,6 @@ config CPU_MIPS64_R5
- 	select CPU_SUPPORTS_MSA
- 	select MIPS_O32_FP64_SUPPORT if 32BIT || MIPS32_O32
- 	select CPU_SUPPORTS_VZ
--	select HAVE_KVM
- 	help
- 	  Choose this option to build a kernel for release 5 or later of the
- 	  MIPS64 architecture.  This is a intermediate MIPS architecture
-@@ -1482,7 +1476,6 @@ config CPU_MIPS64_R6
- 	select CPU_SUPPORTS_MSA
- 	select MIPS_O32_FP64_SUPPORT if 32BIT || MIPS32_O32
- 	select CPU_SUPPORTS_VZ
--	select HAVE_KVM
- 	help
- 	  Choose this option to build a kernel for release 6 or later of the
- 	  MIPS64 architecture.  New MIPS processors, starting with the Warrior
-@@ -1500,7 +1493,6 @@ config CPU_P5600
- 	select CPU_SUPPORTS_VZ
- 	select CPU_MIPSR2_IRQ_VI
- 	select CPU_MIPSR2_IRQ_EI
--	select HAVE_KVM
- 	select MIPS_O32_FP64_SUPPORT
- 	help
- 	  Choose this option to build a kernel for MIPS Warrior P5600 CPU.
-@@ -1621,7 +1613,6 @@ config CPU_CAVIUM_OCTEON
- 	select USB_OHCI_BIG_ENDIAN_MMIO if CPU_BIG_ENDIAN
- 	select MIPS_L1_CACHE_SHIFT_7
- 	select CPU_SUPPORTS_VZ
--	select HAVE_KVM
- 	help
- 	  The Cavium Octeon processor is a highly integrated chip containing
- 	  many ethernet hardware widgets for networking tasks. The processor
-diff --git a/arch/s390/Kconfig b/arch/s390/Kconfig
-index 3bec98d20283..b369ee2648c2 100644
---- a/arch/s390/Kconfig
-+++ b/arch/s390/Kconfig
-@@ -194,7 +194,6 @@ config S390
- 	select HAVE_KPROBES
- 	select HAVE_KPROBES_ON_FTRACE
- 	select HAVE_KRETPROBES
--	select HAVE_KVM
- 	select HAVE_LIVEPATCH
- 	select HAVE_MEMBLOCK_PHYS_MAP
- 	select HAVE_MOD_ARCH_SPECIFIC
-diff --git a/arch/s390/kvm/Kconfig b/arch/s390/kvm/Kconfig
-index 72e9b7dcdf7d..cae908d64550 100644
---- a/arch/s390/kvm/Kconfig
-+++ b/arch/s390/kvm/Kconfig
-@@ -19,7 +19,6 @@ if VIRTUALIZATION
- config KVM
- 	def_tristate y
- 	prompt "Kernel-based Virtual Machine (KVM) support"
--	depends on HAVE_KVM
- 	select HAVE_KVM_CPU_RELAX_INTERCEPT
- 	select HAVE_KVM_VCPU_ASYNC_IOCTL
- 	select KVM_ASYNC_PF
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 3762f41bb092..a3935a737c14 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -240,7 +240,6 @@ config X86
- 	select HAVE_FUNCTION_ERROR_INJECTION
- 	select HAVE_KRETPROBES
- 	select HAVE_RETHOOK
--	select HAVE_KVM
- 	select HAVE_LIVEPATCH			if X86_64
- 	select HAVE_MIXED_BREAKPOINTS_REGS
- 	select HAVE_MOD_ARCH_SPECIFIC
-diff --git a/arch/x86/kvm/Kconfig b/arch/x86/kvm/Kconfig
-index cce3dea27920..2851cfbbe5d2 100644
---- a/arch/x86/kvm/Kconfig
-+++ b/arch/x86/kvm/Kconfig
-@@ -7,7 +7,6 @@ source "virt/kvm/Kconfig"
- 
- menuconfig VIRTUALIZATION
- 	bool "Virtualization"
--	depends on HAVE_KVM || X86
- 	default y
- 	help
- 	  Say Y here to get to see options for using your Linux host to run other
-@@ -20,7 +19,6 @@ if VIRTUALIZATION
- 
- config KVM
- 	tristate "Kernel-based Virtual Machine (KVM) support"
--	depends on HAVE_KVM
- 	depends on HIGH_RES_TIMERS
- 	depends on X86_LOCAL_APIC
- 	select KVM_COMMON
-diff --git a/virt/kvm/Kconfig b/virt/kvm/Kconfig
-index 184dab4ee871..71ec20e7c39b 100644
---- a/virt/kvm/Kconfig
-+++ b/virt/kvm/Kconfig
-@@ -1,9 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0
- # KVM common configuration items and defaults
- 
--config HAVE_KVM
--       bool
--
- config KVM_COMMON
-        bool
-        select EVENTFD
--- 
-2.39.1
+Sorry for missing the info within patch and not familiar with the
+mailing system using git. As mentioned in the subject,
+the patch is using to fix the sound issue of ThinkBook 16p G4 IRH with
+Subsystem Id of : 0x17aa38a9. But this just enable the downside (bass)
+speakers. When I tried to adjust the volumn, it atually mapped to the
+frequency division (the lower volumn actually set the bass speakers,
+and higher volumn map to the louder sound of up facing speakers).
+Wondering if this related to ALSA?
 
 
