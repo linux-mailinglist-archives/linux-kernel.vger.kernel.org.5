@@ -1,237 +1,132 @@
-Return-Path: <linux-kernel+bounces-19230-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19231-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A6DE0826A0B
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 10:01:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D4B41826A0D
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 10:01:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 278711F24899
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 09:01:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 72CBC1F24B83
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 09:01:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CB90EEBF;
-	Mon,  8 Jan 2024 09:01:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55C9812B94;
+	Mon,  8 Jan 2024 09:01:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="U0N7SIRX"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="1Y+cn/bo";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="XqA4yX00"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-vk1-f173.google.com (mail-vk1-f173.google.com [209.85.221.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5C0C1170F
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 09:01:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-vk1-f173.google.com with SMTP id 71dfb90a1353d-4b7fc7642fcso147919e0c.0
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 01:01:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704704462; x=1705309262; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UFjCzv0wMwtjh1YuQ8FxsYy2UVS53yTu4+7AY0ZgE1g=;
-        b=U0N7SIRXoskWNte8UCaK567PIlBTMwxnXS5qI/Vkmu7yorbhhuolX2QzQNZlj6YFzM
-         DLbtFT3Xu2qU4cChIUmiJAdcL9OL51vHz2d+OjrDIrcrcFlazVyrxmEXIv1Zn1BR6+dR
-         hLmwCSLD50QCgENL0fEtLOy0M4t9OMCQAOlOUwoAG48A52ygqkvdsWd+bkRvinp6G9tP
-         7KcA6XxxZzQ5VzmQ6eAJtw0l6j52Q0ELdJXOVGia1U57xkKrLt/WUVxi6VRpxhcC3l9j
-         L4tvbfcP1j0a1t87L0b8S5/0+Gs5tsWobK9JC5cFzPa7KK1Jb4DUEygV/yJQt+CC19hX
-         5CrA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704704462; x=1705309262;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=UFjCzv0wMwtjh1YuQ8FxsYy2UVS53yTu4+7AY0ZgE1g=;
-        b=B2DUvi+nwYQStbp4eT8yzv7TuJECCw45VRN46GSheYfTC+Gh8vusXG2Vov1QAq9W4y
-         sU+H8PzIkaW/JICUj15v5pJQIYIbqStqNjH/rpkKVaiuNUWTfY4n2rzVQEvHLufa3Gb3
-         x/XZDSNdCKOFVC4BlpP/DN6VWDf6Dt/G52ka5EXC5tKFx2uI7/gU0zv1jycICYj7A16i
-         TSslc1saa2hDihjrj8Jw8PdT38dWyMraZyYiBmSCzNM19B5T+1/XikzvnYPkBfugeH/h
-         M4d1SlPDkanWZtkMRs9o65UCqj2nz6XVv2EIhBJ1zDh7VLvRlw0z5gqcfpLFfzxakb4M
-         NvTQ==
-X-Gm-Message-State: AOJu0YxrF+Bb4+wLdRqZLxec+PQyTA2sJHtkQ0nK3Il6XOIqjP5ZW5QT
-	Ym6mTSNll7yTBu3YfAcA07isk4uGKB/MCqzqOcDQSYFVzq5ZyQ==
-X-Google-Smtp-Source: AGHT+IG80yfhqGycs7SKTJxvgdfjKPJyKrWvjZqGjXKguPsR36dAPkp845OCnFOxSxMXRSUZQDA6d+T/QGsYxAHwmXQ=
-X-Received: by 2002:a05:6122:181d:b0:4b6:e848:bf1b with SMTP id
- ay29-20020a056122181d00b004b6e848bf1bmr687292vkb.29.1704704462535; Mon, 08
- Jan 2024 01:01:02 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0D4912B71;
+	Mon,  8 Jan 2024 09:01:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Mon, 08 Jan 2024 09:01:03 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1704704464;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Dyxas6APHfzo9ugShPXhkzsrATg+NmwaWDa+0Gt9Lvs=;
+	b=1Y+cn/boN8dLNVv6zEVb2/BLwzKX1Ba441831wXTIv14c7UPHuYm/fEWS2ZSZiaCRyPAyY
+	99uSvUWOLLyMXjk4TF0R0fImIXgZeBjMmhMjN6FYx5ak+KYXKlSmYhLmrZ1MofCBais9k6
+	CTAEhFj6wMUFbqK/AWuZIk3OTsyYX1W25+D522YISeNkWr56Y+aSyS9yjVSVbeDSZNhBi9
+	YEh4XW+8SIqgM88WP0ayK2trl8dZNBVH0e17lKhZ/HyquJm5NlvuafwwIRluBU+Bs+3Y+D
+	qX+oBZkPK3mc1dFydIhytme7FOKrmxusEDYO0L7+EHnDcTCLgsHRW30gg+3CCQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1704704464;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Dyxas6APHfzo9ugShPXhkzsrATg+NmwaWDa+0Gt9Lvs=;
+	b=XqA4yX00ob9xNMGUC5ctqwURGJ0GqxO2lRTH8ia/9KRYTTT7bsxPIbZg5CxT3qoVp6W7Z4
+	frG4HssbHuKuj1CA==
+From: "tip-bot2 for Ingo Molnar" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To: linux-tip-commits@vger.kernel.org
+Subject: [tip: locking/core] locking/mutex: Clarify that mutex_unlock(), and
+ most other sleeping locks, can still use the lock object after it's unlocked
+Cc: Ingo Molnar <mingo@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
+ Jann Horn <jannh@google.com>, Linus Torvalds <torvalds@linux-foundation.org>,
+ x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20231201121808.GL3818@noisy.programming.kicks-ass.net>
+References: <20231201121808.GL3818@noisy.programming.kicks-ass.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240107123823.571931307@linuxfoundation.org>
-In-Reply-To: <20240107123823.571931307@linuxfoundation.org>
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Mon, 8 Jan 2024 14:30:51 +0530
-Message-ID: <CA+G9fYu1vV-wiFPX-m-8qnuEtQ53w2exp14mY-Z-Xwxg31j+XA@mail.gmail.com>
-Subject: Re: [PATCH 4.14 00/19] 4.14.335-rc3 review
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: stable@vger.kernel.org, patches@lists.linux.dev, 
-	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, 
-	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, 
-	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, 
-	jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, 
-	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Message-ID: <170470446336.398.8996133670425061216.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe:
+ Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Precedence: bulk
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 
-On Sun, 7 Jan 2024 at 18:08, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 4.14.335 release.
-> There are 19 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Tue, 09 Jan 2024 12:38:13 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.14.335-rc3.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.14.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+The following commit has been merged into the locking/core branch of tip:
 
+Commit-ID:     2b9d9e0a9ba0e24cb9c78336481f0ed8b2bc1ff2
+Gitweb:        https://git.kernel.org/tip/2b9d9e0a9ba0e24cb9c78336481f0ed8b2bc1ff2
+Author:        Ingo Molnar <mingo@kernel.org>
+AuthorDate:    Mon, 08 Jan 2024 09:31:16 +01:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Mon, 08 Jan 2024 09:55:31 +01:00
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+locking/mutex: Clarify that mutex_unlock(), and most other sleeping locks, can still use the lock object after it's unlocked
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Clarify the mutex lock lifetime rules a bit more.
 
-## Build
-* kernel: 4.14.335-rc3
-* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-* git branch: linux-4.14.y
-* git commit: 58efe9e4bff401aa96c1be73b8b05fed2437b3f7
-* git describe: v4.14.334-20-g58efe9e4bff4
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.14.y/build/v4.14=
-.334-20-g58efe9e4bff4
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Jann Horn <jannh@google.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Link: https://lore.kernel.org/r/20231201121808.GL3818@noisy.programming.kicks-ass.net
+---
+ Documentation/locking/mutex-design.rst | 24 ++++++++++++++++++------
+ 1 file changed, 18 insertions(+), 6 deletions(-)
 
-## Test Regressions (compared to v4.14.333)
-
-## Metric Regressions (compared to v4.14.333)
-
-## Test Fixes (compared to v4.14.333)
-
-## Metric Fixes (compared to v4.14.333)
-
-## Test result summary
-total: 54694, pass: 45673, fail: 1625, skip: 7350, xfail: 46
-
-## Build Summary
-* arc: 10 total, 10 passed, 0 failed
-* arm: 108 total, 103 passed, 5 failed
-* arm64: 35 total, 31 passed, 4 failed
-* i386: 21 total, 18 passed, 3 failed
-* mips: 19 total, 19 passed, 0 failed
-* parisc: 3 total, 0 passed, 3 failed
-* powerpc: 8 total, 7 passed, 1 failed
-* s390: 6 total, 5 passed, 1 failed
-* sh: 10 total, 10 passed, 0 failed
-* sparc: 6 total, 6 passed, 0 failed
-* x86_64: 27 total, 23 passed, 4 failed
-
-## Test suites summary
-* boot
-* kselftest-android
-* kselftest-arm64
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers-dma-buf
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-filesystems-binderfs
-* kselftest-filesystems-epoll
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-ftrace
-* kselftest-futex
-* kselftest-gpio
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-net-forwarding
-* kselftest-net-mptcp
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-user_events
-* kselftest-vDSO
-* kselftest-vm
-* kselftest-watchdog
-* kselftest-zram
-* kunit
-* log-parser-boot
-* log-parser-test
-* ltp-cap_bounds
-* ltp-commands
-* ltp-containers
-* ltp-controllers
-* ltp-crypto
-* ltp-cve
-* ltp-fcntl-locktests
-* ltp-filecaps
-* ltp-fs
-* ltp-fs_bind
-* ltp-fs_perms_simple
-* ltp-fsx
-* ltp-hugetlb
-* ltp-io
-* ltp-ipc
-* ltp-math
-* ltp-mm
-* ltp-nptl
-* ltp-pty
-* ltp-sched
-* ltp-securebits
-* ltp-smoke
-* ltp-syscalls
-* ltp-tracing
-* rcutorture
-
---
-Linaro LKFT
-https://lkft.linaro.org
+diff --git a/Documentation/locking/mutex-design.rst b/Documentation/locking/mutex-design.rst
+index 7572339..7c30b4a 100644
+--- a/Documentation/locking/mutex-design.rst
++++ b/Documentation/locking/mutex-design.rst
+@@ -101,12 +101,24 @@ features that make lock debugging easier and faster:
+     - Detects multi-task circular deadlocks and prints out all affected
+       locks and tasks (and only those tasks).
+ 
+-Releasing a mutex is not an atomic operation: Once a mutex release operation
+-has begun, another context may be able to acquire the mutex before the release
+-operation has fully completed. The mutex user must ensure that the mutex is not
+-destroyed while a release operation is still in progress - in other words,
+-callers of mutex_unlock() must ensure that the mutex stays alive until
+-mutex_unlock() has returned.
++Mutexes - and most other sleeping locks like rwsems - do not provide an
++implicit reference for the memory they occupy, which reference is released
++with mutex_unlock().
++
++[ This is in contrast with spin_unlock() [or completion_done()], which
++  APIs can be used to guarantee that the memory is not touched by the
++  lock implementation after spin_unlock()/completion_done() releases
++  the lock. ]
++
++mutex_unlock() may access the mutex structure even after it has internally
++released the lock already - so it's not safe for another context to
++acquire the mutex and assume that the mutex_unlock() context is not using
++the structure anymore.
++
++The mutex user must ensure that the mutex is not destroyed while a
++release operation is still in progress - in other words, callers of
++mutex_unlock() must ensure that the mutex stays alive until mutex_unlock()
++has returned.
+ 
+ Interfaces
+ ----------
 
