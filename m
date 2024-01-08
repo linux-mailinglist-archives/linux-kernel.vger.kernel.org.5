@@ -1,173 +1,102 @@
-Return-Path: <linux-kernel+bounces-19243-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19241-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C77A7826A3A
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 10:08:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C4AC826A32
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 10:07:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D7F6F1C21C46
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 09:08:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 310951C21BFF
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 09:07:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06E011170E;
-	Mon,  8 Jan 2024 09:07:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE17011C88;
+	Mon,  8 Jan 2024 09:07:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="pF0VyO+o"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="cRHCx1tb"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6F7713FE4;
-	Mon,  8 Jan 2024 09:07:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4085PPNP010851;
-	Mon, 8 Jan 2024 09:07:20 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=uVnjU5qE0zN1BVEJIW7uX8TLCXT3C3/9s/FQ7gedwi8=; b=pF
-	0VyO+oDi92UhCCTXHb0kils0LYT2umNDhwqri7MvE+LFuIvSlBXT63jRi5lfsoDJ
-	Zp6f8BETIa5DX7oHLXxvLhfku421InmAB1gXR07vwLVv3LW0ZGLqmWd3n5FvGoKl
-	P/KSV+GCm5xMVzVB49nFnTakZJ8Nbr55ZToeNaQw8/bL5gzyXOWEMsFRwgKMWJ9i
-	23Ek/XFrXeHpYklEUZASxZYQTmzHNixu6u/7UanL3AC5YkAKCxpwE94J+VjKZtX7
-	QavHOWaDKjVAgiFfHcjnhMoR6alJo++YRCDpCJ1+soW9ll/CkEiqdQGlgi7WQl/0
-	psgCVS3fGh/u5+kxYu9A==
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3veymmbfae-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 08 Jan 2024 09:07:20 +0000 (GMT)
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 408972Kj006927
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 8 Jan 2024 09:07:02 GMT
-Received: from [10.253.76.26] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 8 Jan
- 2024 01:06:55 -0800
-Message-ID: <63219ada-4bc0-44df-9541-2840229febc6@quicinc.com>
-Date: Mon, 8 Jan 2024 17:06:51 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B9EB11C86
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 09:07:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-3366ddd1eddso1800331f8f.0
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 01:07:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1704704826; x=1705309626; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=AvlSIPhnSxsAgUZ5VOCaG02vTPapjaMyzZC3lbOeJWU=;
+        b=cRHCx1tbGGdbpx0wfS45W8o4Ix9oH6s8GjAShrv6W6Zrxh3Vv0lBERvsn561cbvdBA
+         FYPuZ46pLfNV6nNPYyuIjgx8mFmz2BRZSKXIhfKbwE7ukOanYYyAmR+ch8iw4L2ErUav
+         vgNt75p2TmTC5m171jlrt/7xEfm7y/sBsr+KIhIhPuS/irQmp/RuvDKvYDuLK5J66KLq
+         2jRMUyAR4/CBXtJK9kW0PVmv/4/mIm/f5XRMZuUmy4LfzKQ4F32ElxBH9DTUTvEvsqEo
+         2bNcjJu92hrYIUcBpVju9kHEznihl4zr+TWMfXJoEiSRdwprJJMRzwqCHoXU2ymI3Twx
+         8Ygw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704704826; x=1705309626;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=AvlSIPhnSxsAgUZ5VOCaG02vTPapjaMyzZC3lbOeJWU=;
+        b=KVC1aKEj41IGGAL1FEbyVJH7IL96598hW9oXa/tyTf7QE6cuhmSEI88OPDrx8Wgzyy
+         8YwRSTo3rXmQ4Dc18W2QdX4/95YQTWMJpTmhxcPSdXlwYo6dIhfQhqFh7igyP7BvyHdX
+         l+mGAUJ9DTNfORDsHJV7dkowc3Hj06QxJHEBSGDd8J7FyuvwtGh6rywLT8aDOISUTO9s
+         K1N1Tzoo1fFE2KhBHw3AEzIYZfza8hEUBXek0i+kA/Z8hUh2vNl4Wk5lC/YusYETWnFB
+         qcqSk8Ky+sSRahxnY3QOQlKGoIdIA/Z3+UfQwZ36yPLKcU/ZGIOP1sd5aKEiHXGdr3ug
+         A3Iw==
+X-Gm-Message-State: AOJu0YzNGxVwKgc8SOZUyj5y09OkAB/omLNVesn2Emb2pPkpq8qG8ZHx
+	9A0PDkHHi2ePzkWSJiSXrVi6DmNICwtz/A==
+X-Google-Smtp-Source: AGHT+IEWNfg091q6tWh0kqNPnDplnj2PkfU7WHRqqW4eF4QRA44j6syz81m1KGHMf+/2yX7v+dgEfw==
+X-Received: by 2002:a05:600c:5d5:b0:40d:560e:26f3 with SMTP id p21-20020a05600c05d500b0040d560e26f3mr920797wmd.136.1704704826697;
+        Mon, 08 Jan 2024 01:07:06 -0800 (PST)
+Received: from localhost ([102.140.209.237])
+        by smtp.gmail.com with ESMTPSA id s11-20020a05600c45cb00b0040e395cd20bsm10132486wmo.7.2024.01.08.01.07.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Jan 2024 01:07:06 -0800 (PST)
+Date: Mon, 8 Jan 2024 12:07:02 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Marcelo Schmitt <marcelo.schmitt@analog.com>
+Cc: Lars-Peter Clausen <lars@metafoo.de>,
+	Michael Hennerich <Michael.Hennerich@analog.com>,
+	Jonathan Cameron <jic23@kernel.org>, linux-iio@vger.kernel.org,
+	linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: [PATCH] iio: adc: ad7091r8: Fix error code in ad7091r8_gpio_setup()
+Message-ID: <fd905ad0-6413-489c-9a3b-90c0cdb35ec9@moroto.mountain>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 0/5] support ipq5332 platform
-Content-Language: en-US
-To: Sergey Ryazanov <ryazanov.s.a@gmail.com>, Andrew Lunn <andrew@lunn.ch>
-CC: <agross@kernel.org>, <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
-        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-        <pabeni@redhat.com>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <hkallweit1@gmail.com>, <linux@armlinux.org.uk>,
-        <robert.marko@sartura.hr>, <linux-arm-msm@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <quic_srichara@quicinc.com>
-References: <20231225084424.30986-1-quic_luoj@quicinc.com>
- <a6a50fb6-871f-424c-a146-12b2628b8b64@gmail.com>
- <cfb04c82-3cc3-49f6-9a8a-1f6d1a22df40@quicinc.com>
- <dd05a599-247a-4516-8ad3-7550ceea99f7@gmail.com>
- <ac1977f5-cd6a-4f16-b0a0-f4322c34c5f5@quicinc.com>
- <bdeca791-f2e5-4256-b386-a75c03f93686@gmail.com>
- <895eadd7-1631-4b6b-8db4-d371f2e52611@lunn.ch>
- <1df87389-d78c-48e0-b743-0fd11bd82b85@gmail.com>
-From: Jie Luo <quic_luoj@quicinc.com>
-In-Reply-To: <1df87389-d78c-48e0-b743-0fd11bd82b85@gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: dBJMmOueCiwKNiVtb_v-cpc7Q5dzksgV
-X-Proofpoint-GUID: dBJMmOueCiwKNiVtb_v-cpc7Q5dzksgV
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 impostorscore=0
- mlxlogscore=829 spamscore=0 phishscore=0 malwarescore=0 bulkscore=0
- suspectscore=0 adultscore=0 mlxscore=0 priorityscore=1501
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2401080077
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email haha only kidding
 
+There is a copy and paste error so it accidentally returns ->convst_gpio
+instead of ->reset_gpio.  Fix it.
 
+Fixes: 0b76ff46c463 ("iio: adc: Add support for AD7091R-8")
+Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
+---
+ drivers/iio/adc/ad7091r8.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-On 1/7/2024 6:03 AM, Sergey Ryazanov wrote:
-> On 06.01.2024 17:45, Andrew Lunn wrote:
->>> I just realized that the UNIPHY block is a MII (probably SGMII) 
->>> controller.
->>> Isn't it? And I expect that it responsible more then just for clock
->>> enabling. It should also activate and perform a basic configuration 
->>> of MII
->>> for actual data transmission. If so, then it should placed somewhere 
->>> under
->>> drivers/net/phy or drivers/net/pcs.
->>
->> Before we decide that, we need a description of what the UNIPHY
->> actually does, what registers it has, etc. Sometimes blocks like this
->> get split into a generic PHY, aka drivers/phy/ and a PCS driver. This
->> would be true if the UNIPHY is also used for USB SERDES, SATA SERDES
->> etc. The SERDES parts go into a generic PHY driver, and the SGMII on
->> to of the SERDES is placed is a PCS driver.
-> 
-> As far as I understand, UNIPHY only contains SGMII/PSGMII/whatever and a 
-> simple clock controller. PCIe & USB phys are implemented in other 
-> hardware blocks. See the lately merged USB support code for similar 
-> IPQ5018 SoC. But I can only speak to what I found searching online and 
-> checking the vendor's qca-ssdk "driver".
-> 
-> https://git.codelinaro.org/clo/qsdk/oss/lklm/qca-ssdk/-/tree/NHSS.QSDK.12.4.5.r3
-> 
-> I hope Luo can clarify with more confidence.
+diff --git a/drivers/iio/adc/ad7091r8.c b/drivers/iio/adc/ad7091r8.c
+index 57700f124803..700564305057 100644
+--- a/drivers/iio/adc/ad7091r8.c
++++ b/drivers/iio/adc/ad7091r8.c
+@@ -195,7 +195,7 @@ static int ad7091r8_gpio_setup(struct ad7091r_state *st)
+ 	st->reset_gpio = devm_gpiod_get_optional(st->dev, "reset",
+ 						 GPIOD_OUT_HIGH);
+ 	if (IS_ERR(st->reset_gpio))
+-		return dev_err_probe(st->dev, PTR_ERR(st->convst_gpio),
++		return dev_err_probe(st->dev, PTR_ERR(st->reset_gpio),
+ 				     "Error on requesting reset GPIO\n");
+ 
+ 	if (st->reset_gpio) {
+-- 
+2.42.0
 
-Yes, Sergey. UNIPHY includes the interface mode controller(SGMII/UXGMII
-PSGMII etc.) and the clock controller that provides the clocks to the
-PPE(packet process engine) ports, which is the dedicated UNIPHY(PCS) for
-connecting external PHY(such as qca8084 PHY) and located in the PPE
-hardware block. The UNIPHY of PPE can't be used for PCIE & USB.
-
-> 
->> The problem i have so far is that there is no usable description of
->> any of this hardware, and the developers trying to produce drivers for
->> this hardware don't actually seem to understand the Linux architecture
->> for things like this.
->>
->>> As far as I understand, we basically agree that clocks configuration 
->>> can be
->>> implemented based on the clock API using a more specialized driver(s) 
->>> than
->>> MDIO. The only obstacle is the PHY chip initialization issue explained
->>> below.
->>> Thank you for this compact yet detailed summary. Now it much more clear,
->>> what this phy chip requires to be initialized.
->>>
->>> Looks like you need to implement at least two drivers:
->>> 1. chip (package) level driver that is responsible for basic "package"
->>> initialization;
->>> 2. phy driver to handle actual phy capabilities.
->>
->> Nope. As i keep saying, please look at the work Christian is
->> doing. phylib already has the concept of a PHY package, e.g. look at
->> the MSCC driver, and how it uses devm_phy_package_join(). What is
->> missing is a DT binding which allows package properties to be
->> expressed in DT. And this is what Christian is adding.
-> 
-> Andrew, thank you so much for pointing me to that API and Christian's 
-> work. I have checked the DT change proposal and it fits this QCA8084 
-> case perfectly.
-> 
-> Am I right that all one has to do to solve this QCA8084 initialization 
-> case is wrap phys in a ethernet-phy-package node and use 
-> devm_phy_package_join() / phy_package_init_once() to do the basic 
-> initialization? So simple?
-> 
-> I came to put my 2c in and learnt a couple of new tricks. What a nice 
-> day :)
-> 
-> -- 
-> Sergey
 
