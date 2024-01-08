@@ -1,43 +1,44 @@
-Return-Path: <linux-kernel+bounces-19483-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19484-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE81A826D96
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 13:15:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD0F6826D98
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 13:16:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 50F46B21B9C
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 12:15:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7E89628355C
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 12:16:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 563993FE57;
-	Mon,  8 Jan 2024 12:15:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74A913FE5A;
+	Mon,  8 Jan 2024 12:15:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b="CnWKE+c2"
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="lBOnSMzz"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
+Received: from mout.web.de (mout.web.de [212.227.15.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B53963FE43;
-	Mon,  8 Jan 2024 12:14:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arinc9.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id C0C6C1C0006;
-	Mon,  8 Jan 2024 12:14:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arinc9.com; s=gm1;
-	t=1704716095;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Dm5EAPPVxetSThQhTA1Yp9hIcUX30yOFV9rrGkdITCw=;
-	b=CnWKE+c2iTvEZ+tt6oyNhwN+KXV0tsgvbYNlDK66quL+Ws/yc8i9Xbp9OJi18PakSyBmZt
-	RSdA+1OYQcgDhcKDN6eJrCQ2SnafZhAsjzXMAgtnutbQluDH0cvFWGzk33J5WFK08xvmZt
-	ASu9x8zdLivdIj+s+WnZo4buiGf47DZx6ybS0Uj3zNbtvjeEH/eUSHlHIqTvQ2e13PXrZf
-	4OdOxugnhJ6uFh36iCVzb9I6ptuujnqht1ZFJARncCdUMrUZH1xWFj838ubKbVASZmhZr3
-	A8ULRC2nEArCBqUrEzYj+wkKA0vcXdj/K+8kszZ/D/C9a60nCVIxyYaUrn+BCA==
-Message-ID: <7e89034c-afbd-4180-98e5-50d8cd07f924@arinc9.com>
-Date: Mon, 8 Jan 2024 15:14:45 +0300
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 981853FE46;
+	Mon,  8 Jan 2024 12:15:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
+	t=1704716145; x=1705320945; i=markus.elfring@web.de;
+	bh=ftjai2gBCPxKGA6L3Dpqoe1qrerRfyJo5B7ew4NadGg=;
+	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+	 In-Reply-To;
+	b=lBOnSMzzO6p7d7Xo5ePpJsEXEwS6zqWYzEMDguVbRwAoE/qCXAC2IwDkobxku46o
+	 PQ14T39Wc14/Dx1p75PfECfQpKzjL+xUBzjhBQIyJS3ybQHkSR8xdvXrSu8s2Foma
+	 DxVhvvERW538CDVBMpCAhfx/4YWDQS3as4JT+H4dVUeAczfYeSfUlLnZptqqVRUpG
+	 6v9q64vHlvhTMyX1z9uXDhOCms/NTRH1MykwJXaBxjAEP1PgBxH081EHtPcvi52an
+	 z/AEUAb5l8e29udWnSdD9t8nqrWgPP1HVOClLADDqJrh2pjwSKNwpxMzRT6ZN5fA9
+	 LfKNBcCwNL5rbjNLqQ==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.83.95]) by smtp.web.de (mrweb005
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1MDe2F-1rVqYI0Te3-00AhCL; Mon, 08
+ Jan 2024 13:15:45 +0100
+Message-ID: <f97521ef-0600-401a-8fdb-9648d576ea4c@web.de>
+Date: Mon, 8 Jan 2024 13:15:43 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -45,140 +46,50 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next] net: dsa: mt7530: support OF-based registration
- of switch MDIO bus
-Content-Language: en-US
-To: Vladimir Oltean <olteanv@gmail.com>
-Cc: Simon Horman <horms@kernel.org>, Daniel Golle <daniel@makrotopia.org>,
- Landen Chao <Landen.Chao@mediatek.com>, DENG Qingfang <dqfext@gmail.com>,
- Sean Wang <sean.wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>,
- Florian Fainelli <f.fainelli@gmail.com>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- David Bauer <mail@david-bauer.net>, mithat.guner@xeront.com,
- erkin.bozoglu@xeront.com, Luiz Angelo Daros de Luca <luizluca@gmail.com>,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org
-References: <20240106122142.235389-1-arinc.unal@arinc9.com>
- <20240107195241.GB132648@kernel.org>
- <65274929-fa59-482c-a744-6b9ce162ab46@arinc9.com>
- <20240108110000.aujqhlufehngtkjj@skbuf>
-From: =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
-In-Reply-To: <20240108110000.aujqhlufehngtkjj@skbuf>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: arinc.unal@arinc9.com
+Subject: Re: fs/9p: Improve exception handling in v9fs_session_init()
+Content-Language: en-GB
+To: Dominique Martinet <asmadeus@codewreck.org>,
+ Eric Van Hensbergen <ericvh@kernel.org>, v9fs@lists.linux.dev,
+ kernel-janitors@vger.kernel.org
+Cc: =?UTF-8?Q?Christian_Sch=C3=B6nebeck?= <linux_oss@crudebyte.com>,
+ Latchesar Ionkov <lucho@ionkov.net>, LKML <linux-kernel@vger.kernel.org>
+References: <7203d3fc-f1e4-4fb1-8dd3-068b0ec6c752@web.de>
+ <ZZvX6sQLkgm0kOTN@codewreck.org>
+From: Markus Elfring <Markus.Elfring@web.de>
+In-Reply-To: <ZZvX6sQLkgm0kOTN@codewreck.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:gl0ACkqWjLQpN7DW1bz4DW6OBTXzylZArZ0ih9Y/aiilrlZgNZe
+ XUmANt6EhrcgjAVHNF8zdBBCvqDIQ3YrautoPK5CSjcqYLJlaW4OlTXG0G/ixfn/LQGg5eG
+ oj3t57hiuLAB3DnoPPMC09aLGkTHoAqG6O7SZZiTsDXhS8yImSIQ6hDEuB0C0+vInuMQNR4
+ j5RRVo3PEA/aJJmmTV0WA==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:c4zC0rRpEzg=;0HOZ/Whp5g4WVRdV8jvuDJ7cskc
+ wU2huU4c5dedgcwfj/7o+YTZbN8f6xbNNRiITjBrHKxxnE6GVdTeGLL45yk2a7AIyky+ORej8
+ XxOsG0Tbz9fb/Na4c7syYGLjyo4XVlIzavF58rcVg6MoiXioriaDjaiKVGfpntdeVsZCK21IP
+ WjReKwsaIUXy2hAtyJDWQkMHMFiNHn70pOzwHMVEHMmmC+RxmBiy0GUV6vgnP7sTWa6NTC7TU
+ NOBpKpCXxDLlLR/gOHqphasi75b+9q2jquxo+0SpOgTNsFp+wG4g3QhDydO8PT1HShQ6155+W
+ w40tAd6YahtG6NQGduSTdabFE7248fptr7JJMbiZmVKaeAKf1mIB1XtYzDROmdCPMWlPnCQx8
+ MJ49XgNVjWC6tWAV5wMxtcWHK6Pf5F7guEXVYMMA8fhGf0gE4U1t08erPNannjZ6bIsJDWqj8
+ N7FDH3xq5gamrsO/LIZNFpHIZGdegigvnaNvEQ/famzj7Sqa58X8BT6DbDyR0JjYEwJLntHTV
+ lEWoq0KKGUAHEqKek+krvDYY16VFFIv5r/d256pSNF4z3eKdyE8twHPqQtb9rGWWGcE0MFKjw
+ bXJejYSfNnINiZsaonf/MbmigYwD8vmLq3LHJiD+bSjhmQD5a8j03UvtkViYwVenR35Xs0l4k
+ Und6INeC0QFy4bcCqDMeaQZd0XB6WwOY0ZncPIfxz2VqaX6p08F2eybeBYhB1VYGRz5sbnBbU
+ lwm8b1CY+H1qFRoSS3MAmtWZ8hA4XLCKHb2RmK/z9C13b6FC1R8tXa1S+ak/0DUqPN/Dd5nET
+ OLcXvaV9iaST+E6bfEksxYINh4AjugubHZyUMtCOoI+bcucioQhAIHtY2viF1srydDiUGdNO1
+ Jg/eIrj4jXprZ5y3zkSJk06lsXPmistrI5UAmaf4Y6tcJciLUuwHe3fHEsrMpAAHyLe2A5LF3
+ Fa2xcw==
 
-On 8.01.2024 14:00, Vladimir Oltean wrote:
-> On Mon, Jan 08, 2024 at 01:22:18PM +0300, Arınç ÜNAL wrote:
->>>> diff --git a/drivers/net/dsa/mt7530.c b/drivers/net/dsa/mt7530.c
->>>> index 391c4dbdff42..39d7e7ad7154 100644
->>>> --- a/drivers/net/dsa/mt7530.c
->>>> +++ b/drivers/net/dsa/mt7530.c
->>>> @@ -2153,17 +2153,25 @@ mt7530_free_irq(struct mt7530_priv *priv)
->>>>    static int
->>>>    mt7530_setup_mdio(struct mt7530_priv *priv)
->>>>    {
->>>> +	struct device_node *mnp, *np = priv->dev->of_node;
->>>>    	struct dsa_switch *ds = priv->ds;
->>>>    	struct device *dev = priv->dev;
->>>>    	struct mii_bus *bus;
->>>>    	static int idx;
->>>> -	int ret;
->>>> +	int ret = 0;
->>>> +
->>>> +	mnp = of_get_child_by_name(np, "mdio");
->>>> +
->>>> +	if (mnp && !of_device_is_available(mnp))
->>>> +		goto out;
->>>
->>> nit: I think it would easier on the eyes to simply
->>>
->>> 		return 0;
-> 
-> Actually "return 0" leaks "mnp". An of_node_put() is needed.
+>> The kfree() function was called in up to two cases by
+>> the v9fs_session_init() function during error handling
+>> even if the passed variable contained a null pointer.
+>
+> I don't see the problem in calling kfree on null things (especially on
+> error path).
 
-I realised that I also miss these:
+Will you become willing to reduce the number of redundant function calls
+for improved exception handling?
 
-- run of_node_put(mnp) if bus = devm_mdiobus_alloc(dev) fails
-- don't run mt7530_free_mdio_irq if MDIO bus is described on OF
-
-Please let me know if this addresses everything:
-
-diff --git a/drivers/net/dsa/mt7530.c b/drivers/net/dsa/mt7530.c
-index 391c4dbdff42..cf2ff7680c15 100644
---- a/drivers/net/dsa/mt7530.c
-+++ b/drivers/net/dsa/mt7530.c
-@@ -2146,24 +2146,40 @@ mt7530_free_irq_common(struct mt7530_priv *priv)
-  static void
-  mt7530_free_irq(struct mt7530_priv *priv)
-  {
--	mt7530_free_mdio_irq(priv);
-+	struct device_node *mnp, *np = priv->dev->of_node;
-+
-+	mnp = of_get_child_by_name(np, "mdio");
-+	if (!mnp)
-+		mt7530_free_mdio_irq(priv);
-+	of_node_put(mnp);
-+
-  	mt7530_free_irq_common(priv);
-  }
-  
-  static int
-  mt7530_setup_mdio(struct mt7530_priv *priv)
-  {
-+	struct device_node *mnp, *np = priv->dev->of_node;
-  	struct dsa_switch *ds = priv->ds;
-  	struct device *dev = priv->dev;
-  	struct mii_bus *bus;
-  	static int idx;
--	int ret;
-+	int ret = 0;
-+
-+	mnp = of_get_child_by_name(np, "mdio");
-+
-+	if (mnp && !of_device_is_available(mnp))
-+		goto out;
-  
-  	bus = devm_mdiobus_alloc(dev);
--	if (!bus)
--		return -ENOMEM;
-+	if (!bus) {
-+		ret = -ENOMEM;
-+		goto out;
-+	}
-+
-+	if (!mnp)
-+		ds->user_mii_bus = bus;
-  
--	ds->user_mii_bus = bus;
-  	bus->priv = priv;
-  	bus->name = KBUILD_MODNAME "-mii";
-  	snprintf(bus->id, MII_BUS_ID_SIZE, KBUILD_MODNAME "-%d", idx++);
-@@ -2174,16 +2190,18 @@ mt7530_setup_mdio(struct mt7530_priv *priv)
-  	bus->parent = dev;
-  	bus->phy_mask = ~ds->phys_mii_mask;
-  
--	if (priv->irq)
-+	if (priv->irq && !mnp)
-  		mt7530_setup_mdio_irq(priv);
-  
--	ret = devm_mdiobus_register(dev, bus);
-+	ret = devm_of_mdiobus_register(dev, bus, mnp);
-  	if (ret) {
-  		dev_err(dev, "failed to register MDIO bus: %d\n", ret);
--		if (priv->irq)
-+		if (priv->irq && !mnp)
-  			mt7530_free_mdio_irq(priv);
-  	}
-  
-+out:
-+	of_node_put(mnp);
-  	return ret;
-  }
-  
-
-Arınç
+Regards,
+Markus
 
