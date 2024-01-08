@@ -1,116 +1,126 @@
-Return-Path: <linux-kernel+bounces-19189-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19190-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 48D93826989
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 09:33:00 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0F1882698D
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 09:33:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 596F31C21C2E
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 08:32:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 707ECB214CB
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 08:33:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD7C1BA4B;
-	Mon,  8 Jan 2024 08:32:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB58C11C87;
+	Mon,  8 Jan 2024 08:33:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HoTsV4Dv"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="c2T3111V"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-qk1-f173.google.com (mail-qk1-f173.google.com [209.85.222.173])
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4F3CDDAA;
-	Mon,  8 Jan 2024 08:32:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f173.google.com with SMTP id af79cd13be357-7831be84f4eso113376885a.0;
-        Mon, 08 Jan 2024 00:32:51 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2649B1170D
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 08:33:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-40d2376db79so14790805e9.0
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 00:33:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704702771; x=1705307571; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5GwILI2ALIJNST8VPsffc3ahIHUwnzbrpdCcG6R7Vhc=;
-        b=HoTsV4DvBMHGn6Gc01wMfSso7vRMCJLHPeOPGdmENBoNZTQDayk3+B8mmlnDfYVdHu
-         VlY4HmqfAdRZwhm/Mo7mT0n55kk4xz1wFsNj8SYj9WUoz7qUO3E+ageDqnvOjnXzoYEH
-         q10FApay7za4whrVaUDwi/sdLMeQjoxJWfqsMq6kF69mglZApuUnWxW4dVYCdy0Lj0XP
-         C7lOZsk9AGAXgC++fEebscewmh4m6aUd9jSuUsSUQ7R/spVBRzX3fmhjNKzgyoC7oLEh
-         ArK6vhacTW/YbwXE4jTKB5H3KNGAmCiOz4M/tK2nSejLq2PpZMGa7Njnwnf5GZ01vZWI
-         w8QQ==
+        d=suse.com; s=google; t=1704702813; x=1705307613; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=GfLQg2J+OwD4mK8aB87IakjXF3Kgfssqm9r5be44QF4=;
+        b=c2T3111V3t9+xUAP2vipi3qNRYeYjNE2BQ0UfqlwHCtuAQbQLcf2qSKxTQcarMM6tV
+         o9w2+qUgmcv3RJu0Sv907qG4m/rxNJ+0Wmi/RG0u9PcbwHljd9KcXpO3F7J0vzwAk/cf
+         hddJv0TwRt9Y6PPLtDDisnuoPQPS6NBuXTGFRIBC6AJk9N1DCoUwgK+LsCbgLRH0efZm
+         ICQQeDp3RozBTBbCQ/z1u11SncBdEDra+jMw7Vzt1UXeOZyShrfa7k/t/OsSCPkH8XFI
+         AWHP4Mwlwfc1awYa7EdMg/C3CtEZ8fdbipmS7+xq4ToJM02z256wvqs4ZCvkF/Sv5YRb
+         +M3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704702771; x=1705307571;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5GwILI2ALIJNST8VPsffc3ahIHUwnzbrpdCcG6R7Vhc=;
-        b=ToIBPaQ+rgY/aBWKOI+5mQTyB5s+hoSagnDGyM6Cy8lRYc7zYZHGyu3MKV5EAQ7k8z
-         QlMqk1P10yN2ohK2B1+ni/ddsg3+W30/qP4eOUmtQFt1T/OlOajhtt8K6FjrnryXCEKX
-         vLAwIMwfp82m75bmuhYxnjaHpuIitU2ZjIQOJjwa25+Jx6V4vOYnP604FD3zMLBl17PR
-         uY3LQZyuJZ22lXmzLS6MYSNsIeB21RgoO21/4AfgvOgxTvcKqHjCfXNLpPFeLb4e19j3
-         oYWMTGJ0ZI3Fz80RUfkjY6MirbsCaOIxiN5zk4QnfjgDMzWeM5CpalmNPPMUhpvuoQRr
-         zicQ==
-X-Gm-Message-State: AOJu0Yy9+NoMi2X7xAR/lhwkG8Nr5SomdBOU/7QQD32Hp8gjGw8IhaoZ
-	WiM5hXkCD/lyZB7lTeV2kFAm/ZU+TEy/GCZ7SNNTh/JcOcE=
-X-Google-Smtp-Source: AGHT+IG1hYBz6K5KACuHekMLwBrEkxXFHG+wjm3BDqSNoAayV1A15p4tlYfATgTjURZaXukYiBYGdCrKH8cKINUQZL8=
-X-Received: by 2002:a05:6214:500a:b0:67f:998b:bfa6 with SMTP id
- jo10-20020a056214500a00b0067f998bbfa6mr4859226qvb.64.1704702770711; Mon, 08
- Jan 2024 00:32:50 -0800 (PST)
+        d=1e100.net; s=20230601; t=1704702813; x=1705307613;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=GfLQg2J+OwD4mK8aB87IakjXF3Kgfssqm9r5be44QF4=;
+        b=Ce2s+Jkptw8OfyzLThgH2KkWoZjpd1yGh5KE3sBFIwdVZywANoXut0UpGMEbGxM/+8
+         iY0aGNbO9nh+65GU3VymoE6uYp2AGBKBrS7b24wzOvibywNPhJ2w7Rgo4oQDvGHocX/y
+         AsXHOmuya/mEjhvoV49BbjltSfpihfChjBtgz1fMItkJ6TjvhXOUdJQin7OWOn3NghPJ
+         bEzyRjzuIiyQOSXpka4du7W9n4hdZQRmS16nRjJ99UEpSC8j+eYrcGBn0Qa39Lz3UpEz
+         1aQ+Qr5pXei74gFyjXS8QZs2vMEezjwvH/yziAUWm6BRB5qzZ5KvZxHycvH+NRFJQSC1
+         Po9w==
+X-Gm-Message-State: AOJu0YyarvxAbLN180LkE5Hi/bRFx02MTDGHU4zqUxeIhv6CdBS8tZbE
+	kF1Lboyvyz7ZbBXVxnPzGbGOMvRpaDBBLg==
+X-Google-Smtp-Source: AGHT+IFdr9+p9p3yVvUI5Yb2+RUaaTtc6lK6/0ftFespHQFyJZzml/U22xZUgZCqObC/GxElyekYhg==
+X-Received: by 2002:a05:600c:3411:b0:40d:4dce:4a2e with SMTP id y17-20020a05600c341100b0040d4dce4a2emr2008525wmp.26.1704702813400;
+        Mon, 08 Jan 2024 00:33:33 -0800 (PST)
+Received: from [172.20.10.3] ([37.161.21.69])
+        by smtp.gmail.com with ESMTPSA id p7-20020a05600c358700b0040d3db8186fsm10246189wmq.5.2024.01.08.00.33.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 08 Jan 2024 00:33:32 -0800 (PST)
+Message-ID: <848d1908-b758-44c2-a7bd-f3e83da18bce@suse.com>
+Date: Mon, 8 Jan 2024 09:33:23 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240107203258.37e26d2b@gandalf.local.home>
-In-Reply-To: <20240107203258.37e26d2b@gandalf.local.home>
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Date: Mon, 8 Jan 2024 10:32:14 +0200
-Message-ID: <CAHp75VcsV8t2-6GB24Rz003B2JSAEOBjWD7B7FjEXuCQhkJ5pQ@mail.gmail.com>
-Subject: Re: [PATCH] tracing histograms: Simplify parse_actions() function
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, 
-	Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Andy Shevchenko <andy@kernel.org>, 
-	Tom Zanussi <zanussi@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 00/36] Remove UCLINUX from LTP
+To: Rob Landley <rob@landley.net>, Cyril Hrubis <chrubis@suse.cz>,
+ Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Petr Vorel <pvorel@suse.cz>, ltp@lists.linux.it,
+ Li Wang <liwang@redhat.com>, Greg Ungerer <gerg@linux-m68k.org>,
+ Jonathan Corbet <corbet@lwn.net>, Randy Dunlap <rdunlap@infradead.org>,
+ John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+ Christophe Lyon <christophe.lyon@linaro.org>,
+ linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+ Linux ARM <linux-arm-kernel@lists.infradead.org>,
+ linux-riscv <linux-riscv@lists.infradead.org>,
+ Linux-sh list <linux-sh@vger.kernel.org>
+References: <20240103015240.1065284-1-pvorel@suse.cz>
+ <CAMuHMdXGwyS-CL0vLdUP4Z4YEYhmcmDyC3YdGCnS=jFkqASqvw@mail.gmail.com>
+ <20240103114957.GD1073466@pevik>
+ <CAMuHMdX0s0gLRoPtjJmDnSmZ_MNY590dN+JxM1HKAL1g_bjX+w@mail.gmail.com>
+ <ZZVOhlGPg5KRyS-F@yuki> <5a1f1ff3-8a61-67cf-59a9-ce498738d912@landley.net>
+Content-Language: en-US
+From: Andrea Cervesato <andrea.cervesato@suse.com>
+In-Reply-To: <5a1f1ff3-8a61-67cf-59a9-ce498738d912@landley.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Mon, Jan 8, 2024 at 3:31=E2=80=AFAM Steven Rostedt <rostedt@goodmis.org>=
- wrote:
+Hi!
+
+My 2 cents. I'm working on refactoring growfiles test which uses UCLINUX 
+flag.
+During its development I had occasion to check UCLINUX support and 
+(indeed) it seems pretty
+broken for LTP, because nobody is maintaining it for a while and such 
+tests use old API that will
+be replaced in any case sooner or later. I agree with other people about 
+removing it, unless there's
+a valid reason to keep it.
+Just in case we want to keep it, someone should take care about UCLINUX 
+support, testing LTP releases for it as well, but it doesn't seem like 
+something we can do inside the LTP devs team due to the lack of resources.
+
+Regards,
+Andrea
+
+On 1/5/24 04:52, Rob Landley wrote:
+> On 1/3/24 06:09, Cyril Hrubis wrote:
+>> Hi!
+>>> I am not sure I agree with this series.
+>>> Removing support for UCLINUX from LTP is almost a guarantee for
+>>> not noticing when more breakage is introduced.
+>>>
+>>> How exactly is UCLINUX broken in LTP?
+>> As far as we know noone is using it and nobody is maintaing it for a
+>> decade,
+> Nobody is maintaining "uclinux" because that was a distro, but you can build
+> nommu support in buildroot and such, and people do.
 >
-> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
->
-> The parse_actions() function uses 'len =3D str_has_prefix()' to test whic=
-h
-> action is in the string being parsed. But then it goes and repeats the
-> logic for each different action. This logic can be simplified and
-> duplicate code can be removed as 'len' contains the length of the found
-> prefix which should be used for all actions.
-
-> Link: https://lore.kernel.org/all/20240107112044.6702cb66@gandalf.local.h=
-ome/
->
-> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
-
-If you want Link to be formally a tag, you should drop the following
-blank line.
+> Rob
 
 
-> +               if ((len =3D str_has_prefix(str, "onmatch(")))
-> +                       hid =3D HANDLER_ONMATCH;
-> +               else if ((len =3D str_has_prefix(str, "onmax(")))
-> +                       hid =3D HANDLER_ONMAX;
-> +               else if ((len =3D str_has_prefix(str, "onchange(")))
-> +                       hid =3D HANDLER_ONCHANGE;
-
-The repeating check for ( might be moved out as well after this like
-
-  if (str[len] !=3D '(') {
-    // not sure if you need data to be assigned here as well
-    ret =3D -EINVAL;
-    ...
-  }
-
---=20
-With Best Regards,
-Andy Shevchenko
 
