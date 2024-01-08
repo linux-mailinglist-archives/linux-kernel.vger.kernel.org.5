@@ -1,94 +1,109 @@
-Return-Path: <linux-kernel+bounces-19178-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19179-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5E1E826955
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 09:20:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 91576826957
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 09:21:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 63BEA1F21C5C
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 08:20:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B6F171C21BB4
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 08:21:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84E04BA33;
-	Mon,  8 Jan 2024 08:20:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="nh0y+/W+"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62450B662;
+	Mon,  8 Jan 2024 08:21:00 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com [209.85.219.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BB6CB65E
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 08:20:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f176.google.com with SMTP id 3f1490d57ef6-dbe39a45e8eso673900276.1
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 00:20:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704702033; x=1705306833; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3HMbiqG8ChZxBryomK+7l9NLbRmnfN/R8I1A0uwEXdM=;
-        b=nh0y+/W+XOG8evQX3JzFG/Fk2o/ZxrbQV0kPpSCrdBeb7P2RVFz2iiCdNkEJ2Q7iOB
-         rmR0Dqc7lEGgEsU4EMDjGMYBxo2ceVVOexMCpA23yqEd/KTdM6ce71vWpfwTASB+AhCH
-         /Mln9bLJpkux3dt4RTX9Y9EGSXGM30zJc8sXzf7c8J+nLmOtuMktbeu3C0Y5k/kSIxvd
-         ccK3Zo4ALzOV+dxDxVpdLwdSBdIB9+bWTh66wRLpBGIeauHf8z3ZGriogz9hnu8B69fe
-         HHGXdNk+hoWxcCiIO5ImGRhgu+AnBKd6jsJDJUJR/QdQ6zyeNYYcdYr2uhKpw8hXxKrl
-         0A1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704702033; x=1705306833;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3HMbiqG8ChZxBryomK+7l9NLbRmnfN/R8I1A0uwEXdM=;
-        b=f8LSZrJcu2M954S3cGG22P86Ae8sYtkAi+wSiaUneW5q5Q8CCWGx/abDdWE/WafRbV
-         WC53OosOYByOt4MMRravYLJIRc5X2a1jF9RVN6j6Geo5XW4woi85UEsiLJR/oFitursM
-         tQcJkM+02C5kHNcb+SYmP7UKzrGaMTy//xM9Vc6nA9BruUHH6CG1DseiyUH8mcEivEwS
-         aaf5Wu9mSmhGXWsibfKhIk8u4CMnHpDhQjVtCCQ8ER8MIVUUxbDgfN/8358JfZy54DkN
-         DGcoPyg4SAA6M8CMFa7maq//MSB8uvbz6fH1Vje+ZLJiplIa/ws44hxD503vp0cfXbqz
-         HubQ==
-X-Gm-Message-State: AOJu0Yw4DO0nr1MZl6FEsSWM+jwJeaWZ4WuEebwNDJj1P40utqxijK+1
-	tSRBeXKU8RjGs7hyM07/tz9/WdKfCVTVMBlGx5o4Esbor0lTgwcGQW186akh
-X-Google-Smtp-Source: AGHT+IHMiO4upr0AvuxbnYzHHdp5azUyT28gcKKireut/Cz4/IMtjynVPM39+2xqwQ7S9lhur+XAQpuD6Oa5A17sB0Q=
-X-Received: by 2002:a25:9391:0:b0:dbe:cf37:c838 with SMTP id
- a17-20020a259391000000b00dbecf37c838mr866827ybm.1.1704702033344; Mon, 08 Jan
- 2024 00:20:33 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 520B8B665;
+	Mon,  8 Jan 2024 08:20:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.105])
+	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4T7n761B8HzNkfT;
+	Mon,  8 Jan 2024 16:20:18 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (unknown [7.185.36.74])
+	by mail.maildlp.com (Postfix) with ESMTPS id A18E6140518;
+	Mon,  8 Jan 2024 16:20:53 +0800 (CST)
+Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Mon, 8 Jan
+ 2024 16:20:53 +0800
+Subject: Re: [PATCH net-next 1/6] mm/page_alloc: modify
+ page_frag_alloc_align() to accept align as an argument
+To: Alexander H Duyck <alexander.duyck@gmail.com>, <davem@davemloft.net>,
+	<kuba@kernel.org>, <pabeni@redhat.com>
+CC: <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Andrew Morton
+	<akpm@linux-foundation.org>, Eric Dumazet <edumazet@google.com>,
+	<linux-mm@kvack.org>
+References: <20240103095650.25769-1-linyunsheng@huawei.com>
+ <20240103095650.25769-2-linyunsheng@huawei.com>
+ <3f382fdcacc10cf897df9dc7f17c04271839d81a.camel@gmail.com>
+From: Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <a0bd9da0-b7b3-a424-8280-e755a68575e9@huawei.com>
+Date: Mon, 8 Jan 2024 16:20:52 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240103-si902x-fixes-v1-0-b9fd3e448411@ideasonboard.com>
-In-Reply-To: <20240103-si902x-fixes-v1-0-b9fd3e448411@ideasonboard.com>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Mon, 8 Jan 2024 09:20:21 +0100
-Message-ID: <CACRpkdbcmh-YwKii=2sHfpZ97Z5mQcz_e0Fy=MqgXrL3qG9QjQ@mail.gmail.com>
-Subject: Re: [PATCH 0/2] drm/bridge: sii902x: Crash fixes
-To: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Cc: Andrzej Hajda <andrzej.hajda@intel.com>, Neil Armstrong <neil.armstrong@linaro.org>, 
-	Robert Foss <rfoss@kernel.org>, Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, 
-	Jonas Karlman <jonas@kwiboo.se>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
-	Boris Brezillon <bbrezillon@kernel.org>, Peter Rosin <peda@axentia.se>, 
-	Fabrizio Castro <fabrizio.castro@bp.renesas.com>, Jyri Sarha <jsarha@ti.com>, 
-	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
-	Nishanth Menon <nm@ti.com>, Aradhya Bhatia <a-bhatia1@ti.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <3f382fdcacc10cf897df9dc7f17c04271839d81a.camel@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
 
-On Wed, Jan 3, 2024 at 2:31=E2=80=AFPM Tomi Valkeinen
-<tomi.valkeinen@ideasonboard.com> wrote:
+On 2024/1/5 23:28, Alexander H Duyck wrote:
+> On Wed, 2024-01-03 at 17:56 +0800, Yunsheng Lin wrote:
+>> napi_alloc_frag_align() and netdev_alloc_frag_align() accept
+>> align as an argument, and they are thin wrappers around the
+>> __napi_alloc_frag_align() and __netdev_alloc_frag_align() APIs
+>> doing the align and align_mask conversion, in order to call
+>> page_frag_alloc_align() directly.
+>>
+>> As __napi_alloc_frag_align() and __netdev_alloc_frag_align()
+>> APIs are only used by the above thin wrappers, it seems that
+>> it makes more sense to remove align and align_mask conversion
+>> and call page_frag_alloc_align() directly. By doing that, we
+>> can also avoid the confusion between napi_alloc_frag_align()
+>> accepting align as an argument and page_frag_alloc_align()
+>> accepting align_mask as an argument when they both have the
+>> 'align' suffix.
+>>
+>> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+>> CC: Alexander Duyck <alexander.duyck@gmail.com>
+> 
+> This patch overlooks much of the main reason for having the wrappers.
+> By having the in-line wrapper and passing the argument as a mask we can
+> avoid having to verify the alignment value during execution time since
+> it can usually be handled during compile time.
 
-> Two small fixes to sii902x for crashes.
->
-> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+When it can not be handled during compile time, we might have a bigger
+executable size for kernel, right? doesn't that may defeat some purpose of
+inlining?
 
-These look good to me!
-Acked-by: Linus Walleij <linus.walleij@linaro.org>
+But from the callers of those API, it does seems the handling during compile
+time is the ususal case here. Will add a __page_frag_alloc_align which is
+passed with the mask the original function expected as you suggested.
 
-Yours,
-Linus Walleij
+> 
+> By moving it into the function itself we are adding additional CPU
+> overhead per page as we will have to go through and validate the
+> alignment value for every single page instead of when the driver using
+> the function is compiled.
+> 
+> The overhead may not seem like much, but when you are having to deal
+> with it per page and you are processing pages at millions per second it
+> can quickly start to add up.
+> 
+> This is essentially a code cleanup at the cost of some amount of
+> performance.
+> 
+> .
+> 
 
