@@ -1,139 +1,111 @@
-Return-Path: <linux-kernel+bounces-20069-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20070-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E4A18278EE
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 21:07:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3DFFD8278F1
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 21:07:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 634D01C22BE4
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 20:07:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E75651F237B2
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 20:07:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E97E755789;
-	Mon,  8 Jan 2024 20:06:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB4DA55784;
+	Mon,  8 Jan 2024 20:07:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="rnDG1nx5"
+	dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b="r+6nvLZT"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+Received: from mx1.riseup.net (mx1.riseup.net [198.252.153.129])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E92A45576D;
-	Mon,  8 Jan 2024 20:06:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 408HgQC8024004;
-	Mon, 8 Jan 2024 20:06:15 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=fe4MM+RHPGj7NBqLoEBQPhnMIRmofJo9g9DvpjIm0vQ=;
- b=rnDG1nx5WxdoAhlIhQuiJmQBi0L840/q6a9KVwgdozWYfbHXyQzuxBNVVTP1MNYXBZwQ
- ysk429x1Fe9ADnzg6wlE8yP8Ux++zSdwJzzFiyTxu2K8rg5gKxV+7a5+ZpWOPjGFm3uW
- jTjhmU4V4weCVw4xUFzTN+FM2wkAbo3NrxnXu0ABrK/1mr+WtSyrhhOv/dvs1EF17/cR
- n5kbspz4z2+x/l0plQfTpbB/rS3y/nqsfrQf4JnRizEK0YgfoRjBhqoYmqMpHI1Eqau2
- 6pFbhs+jjb1wv6Rix8Gel7TYwmP1T+Sc8QY/G0miJOnveou4LPDpxrykHM3nKWzzPL6f Yw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vgnpbawmp-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 08 Jan 2024 20:06:15 +0000
-Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 408K5bvX031475;
-	Mon, 8 Jan 2024 20:06:14 GMT
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vgnpbawhb-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 08 Jan 2024 20:06:14 +0000
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 408IHKnv004427;
-	Mon, 8 Jan 2024 20:05:56 GMT
-Received: from smtprelay04.dal12v.mail.ibm.com ([172.16.1.6])
-	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3vfjpkj75h-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 08 Jan 2024 20:05:56 +0000
-Received: from smtpav04.wdc07v.mail.ibm.com (smtpav04.wdc07v.mail.ibm.com [10.39.53.231])
-	by smtprelay04.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 408K5t9I30933352
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 8 Jan 2024 20:05:55 GMT
-Received: from smtpav04.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 6535058052;
-	Mon,  8 Jan 2024 20:05:55 +0000 (GMT)
-Received: from smtpav04.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id C27AA58050;
-	Mon,  8 Jan 2024 20:05:53 +0000 (GMT)
-Received: from [9.61.145.235] (unknown [9.61.145.235])
-	by smtpav04.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-	Mon,  8 Jan 2024 20:05:53 +0000 (GMT)
-Message-ID: <60c8bbdb-4e08-44f0-88d4-ab164d4843b5@linux.ibm.com>
-Date: Mon, 8 Jan 2024 14:05:53 -0600
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 7/8] tpm: tis-i2c: Add more compatible strings
-Content-Language: en-US
-To: Guenter Roeck <linux@roeck-us.net>, Conor Dooley <conor@kernel.org>
-Cc: robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        joel@jms.id.au, andrew@codeconstruct.com.au, peterhuewe@gmx.de,
-        jarkko@kernel.org, jgg@ziepe.ca, keescook@chromium.org,
-        tony.luck@intel.com, gpiccoli@igalia.com,
-        johannes.holland@infineon.com, broonie@kernel.org,
-        patrick.rudolph@9elements.com, vincent@vtremblay.dev,
-        peteryin.openbmc@gmail.com, lakshmiy@us.ibm.com, bhelgaas@google.com,
-        naresh.solanki@9elements.com, alexander.stein@ew.tq-group.com,
-        festevam@denx.de, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-aspeed@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-hardening@vger.kernel.org, geissonator@yahoo.com
-References: <20231212164004.1683589-1-ninad@linux.ibm.com>
- <20231212164004.1683589-8-ninad@linux.ibm.com>
- <20231212-avid-grill-dbead068fac8@spud>
- <73381bb0-7fa7-4a9e-88df-ab0063058e26@roeck-us.net>
- <20231212-mouth-choice-40a83caa34ec@spud>
- <2946fbb1-2a47-4d21-83dc-8e45bf6ba5a9@roeck-us.net>
-From: Ninad Palsule <ninad@linux.ibm.com>
-In-Reply-To: <2946fbb1-2a47-4d21-83dc-8e45bf6ba5a9@roeck-us.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: igcND97za6Qila30g2tiHFbnKTqCQXeu
-X-Proofpoint-GUID: WWPMiDbJqRBLOcKMs5Kz-64L-S9cP7EG
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77AD555C0B;
+	Mon,  8 Jan 2024 20:07:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=riseup.net
+Received: from fews02-sea.riseup.net (fews02-sea-pn.riseup.net [10.0.1.112])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx1.riseup.net (Postfix) with ESMTPS id 4T84pJ0tPMzDqnS;
+	Mon,  8 Jan 2024 20:06:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
+	t=1704744419; bh=GvBZ4MO6PTyVXhkHH8RCr66B+FmBvQMByIVByVjvfpk=;
+	h=From:Date:Subject:To:Cc:From;
+	b=r+6nvLZTiiOwQwHKUoZo6pEpmQc66R0LYGLXaxUYFyo/IwfawAFnjrL9Rtz0SAWbk
+	 qPzmkQ6OKRVVntbtPWQi0JvAIUQ1mzoZrIEI8IgWWE2tGTGrrTg8d/8hWccAqNMxZY
+	 8PxfuV3KBpqdCbVwVBN8ThUEWRDARSnTxy/d3bDI=
+X-Riseup-User-ID: 9517D74B558B75BB0763739553289EED4191B568DB0FD6AB058503A17AEBDC39
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+	 by fews02-sea.riseup.net (Postfix) with ESMTPSA id 4T84pD34PBzFrsf;
+	Mon,  8 Jan 2024 20:06:44 +0000 (UTC)
+From: Arthur Grillo <arthurgrillo@riseup.net>
+Date: Mon, 08 Jan 2024 17:06:38 -0300
+Subject: [PATCH] Documentation: KUnit: Update the instructions on how to
+ test static functions
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-08_09,2024-01-08_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 adultscore=0
- impostorscore=0 mlxscore=0 mlxlogscore=999 suspectscore=0 malwarescore=0
- spamscore=0 lowpriorityscore=0 priorityscore=1501 bulkscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2401080167
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240108-kunit-doc-export-v1-1-119368df0d96@riseup.net>
+X-B4-Tracking: v=1; b=H4sIAM1VnGUC/x3MTQqAIBBA4avIrBvQiP6uEi3MphoCDbUQpLsnL
+ b/FexkCeaYAo8jg6eHAzhaoSoA5tN0JeS2GWtaNVLLH87YccXUGKV3ORyQyahuU1EvbQckuTxu
+ nfznN7/sBFZ23F2IAAAA=
+To: Brendan Higgins <brendan.higgins@linux.dev>, 
+ David Gow <davidgow@google.com>, Jonathan Corbet <corbet@lwn.net>
+Cc: linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com, 
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Arthur Grillo <arthurgrillo@riseup.net>
 
-Hello Guenter,
+Now that we have the VISIBLE_IF_KUNIT and EXPORT_SYMBOL_IF_KUNIT macros,
+update the instructions to stop recommending including .c files.
 
-On 12/12/23 13:50, Guenter Roeck wrote:
-> On 12/12/23 10:51, Conor Dooley wrote:
->> On Tue, Dec 12, 2023 at 10:00:39AM -0800, Guenter Roeck wrote:
->>> On Tue, Dec 12, 2023 at 05:15:51PM +0000, Conor Dooley wrote:
->>>> On Tue, Dec 12, 2023 at 10:40:03AM -0600, Ninad Palsule wrote:
->>>>> From: Joel Stanley <joel@jms.id.au>
->>>>>
->>>>> The NPCT75x TPM is TIS compatible. It has an I2C and SPI interface.
->>>>>
->>>>> https://www.nuvoton.com/products/cloud-computing/security/trusted-platform-module-tpm/ 
->>>>>
->>>>>
->>>>> Add a compatible string for it, and the generic compatible.
->>>>>
->>>>> OpenBMC-Staging-Count: 3
->>>>
->>>> Delete this from every patch that it appears from.
+Signed-off-by: Arthur Grillo <arthurgrillo@riseup.net>
+---
+ Documentation/dev-tools/kunit/usage.rst | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
+diff --git a/Documentation/dev-tools/kunit/usage.rst b/Documentation/dev-tools/kunit/usage.rst
+index c27e1646ecd9..7410b39ec5b7 100644
+--- a/Documentation/dev-tools/kunit/usage.rst
++++ b/Documentation/dev-tools/kunit/usage.rst
+@@ -671,19 +671,22 @@ Testing Static Functions
+ ------------------------
+ 
+ If we do not want to expose functions or variables for testing, one option is to
+-conditionally ``#include`` the test file at the end of your .c file. For
+-example:
++conditionally export the used symbol.
+ 
+ .. code-block:: c
+ 
+ 	/* In my_file.c */
+ 
+-	static int do_interesting_thing();
++	VISIBLE_IF_KUNIT int do_interesting_thing();
++	EXPORT_SYMBOL_IF_KUNIT(do_interesting_thing);
++
++	/* In my_file.h */
+ 
+ 	#ifdef CONFIG_MY_KUNIT_TEST
+-	#include "my_kunit_test.c"
++		int do_interesting_thing(void);
+ 	#endif
+ 
++
+ Injecting Test-Only Code
+ ------------------------
+ 
 
-I have send it as a separate commit. 
-https://lore.kernel.org/linux-kernel/20231214144954.3833998-1-ninad@linux.ibm.com/
+---
+base-commit: eeb8e8d9f124f279e80ae679f4ba6e822ce4f95f
+change-id: 20240108-kunit-doc-export-eec1f910ab67
+
+Best regards,
+-- 
+Arthur Grillo <arthurgrillo@riseup.net>
 
 
