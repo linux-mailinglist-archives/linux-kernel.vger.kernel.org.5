@@ -1,287 +1,284 @@
-Return-Path: <linux-kernel+bounces-19836-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19837-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E15E98274EA
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 17:20:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BBE13827508
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 17:25:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 24081B220BA
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 16:20:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2AACD1F2361E
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 16:25:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8131253803;
-	Mon,  8 Jan 2024 16:19:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B06FF537E1;
+	Mon,  8 Jan 2024 16:25:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=seco.com header.i=@seco.com header.b="PhFn8G0f";
-	dkim=pass (2048-bit key) header.d=seco.com header.i=@seco.com header.b="PhFn8G0f"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="HL8tnVM+"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2070.outbound.protection.outlook.com [40.107.22.70])
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD53452F80;
-	Mon,  8 Jan 2024 16:19:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=seco.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=seco.com
-ARC-Seal: i=2; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=pass;
- b=InP1XfeXX/PqWVxh4vC364aDQhAtWSUyVUg1h7bW75uG+yKkVlI6MbgcRH4zI+Mbwu0ghCPv9eMIDoaZ5a6dzQ7pH6YZcWlLNP5tK6Gcs16YLU8lvdsXP+FqIuUTbt8weD9lsyQQR4ZZBquOreOZkSt1YJbUnlJ+WG2BGtjLV5/qoZAAHCZtPuJMedpJiv43ROMnh6wtcwV61lhBwJWBf6EwnzbygdYDnFqyBuVTg5yZFlCDuk5AIlHA1k5Og6b6gOASjAnFqbq8tYOjUMGDa9oI8WO7OiEEiRr5BvIdWOCAtiljKG5VyPMJI26VcEFqdsF+Xbsfenj0qVKZXDnHkg==
-ARC-Message-Signature: i=2; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ZnrvgF5J9pAlxkMmdOmVrj7HVJWTM1JEmjzZiXVfaCs=;
- b=cgBoQwO+eWV5Jc4Ycp2V4scLzX2K0ge6CYjd4JsRhXCLkFYGI7in0kRcgl9yBAOdYe9XYMcxW2rlmRRucel+TDNhouHC0oZ54TEBJHJc6/O3z0bfdhWggYAKRj4OaCHngSPuEavWPfo6xbwlqYt+0ICxup+E+aDEypMbDnF0F8KxxCBzV9eD+qUaVgztSxso6lyufXg+NF77HNYclosM2cN722RozRY02Zbqz3opqvAiBI+P+PCoEhAQtCZ+n+Bf2GXNTpySqo6Kp/lXvelyNHnC3mP9g+WxHmwNnfzHO0mlmIGjjXB6beHcvhWkEOavZM5Qm1A46K6Q3Nqb8s72vw==
-ARC-Authentication-Results: i=2; mx.microsoft.com 1; spf=pass (sender ip is
- 20.160.56.82) smtp.rcpttodomain=buserror.net smtp.mailfrom=seco.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=seco.com;
- dkim=pass (signature was verified) header.d=seco.com; arc=pass (0 oda=1
- ltdi=1 spf=[1,1,smtp.mailfrom=seco.com] dkim=[1,1,header.d=seco.com]
- dmarc=[1,1,header.from=seco.com])
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=seco.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZnrvgF5J9pAlxkMmdOmVrj7HVJWTM1JEmjzZiXVfaCs=;
- b=PhFn8G0fIhZsRK93i69Fy4cVSslHMpN076tYlrud9WF8LE1aYa8rlnSm6HCm0iDr+QJLUiC3dDuOBrLg3nXbnYVyFlRkMYCpc6k+IpWr0AZeuvK9B1JWlUYsjJO3jtsRC6H6r44yN2V4Y51xirIL85kRRPAxtFWdKNIk2YRBb2an9qNmaRZKDp8ovLqVEibHoZQfVJtiuKWZhhoLfwNIM5CgAkdD7PM+H60/LcdVdI3nDmoBdGw7wna/Ps1PUjZNuzIajaaO/aKpGU0FI4f0E6pHpuLYfrtdDJqCYUHB2q9qMWy5NkUoBGF7NX1Tg44I14hFO+OXZ4plVXNlFfRynA==
-Received: from DU7PR01CA0008.eurprd01.prod.exchangelabs.com
- (2603:10a6:10:50f::29) by DU0PR03MB9708.eurprd03.prod.outlook.com
- (2603:10a6:10:44c::9) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.21; Mon, 8 Jan
- 2024 16:19:38 +0000
-Received: from DB8EUR05FT028.eop-eur05.prod.protection.outlook.com
- (2603:10a6:10:50f:cafe::c5) by DU7PR01CA0008.outlook.office365.com
- (2603:10a6:10:50f::29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.21 via Frontend
- Transport; Mon, 8 Jan 2024 16:19:37 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 20.160.56.82)
- smtp.mailfrom=seco.com; dkim=pass (signature was verified)
- header.d=seco.com;dmarc=pass action=none header.from=seco.com;
-Received-SPF: Pass (protection.outlook.com: domain of seco.com designates
- 20.160.56.82 as permitted sender) receiver=protection.outlook.com;
- client-ip=20.160.56.82; helo=repost-eu.tmcas.trendmicro.com; pr=C
-Received: from repost-eu.tmcas.trendmicro.com (20.160.56.82) by
- DB8EUR05FT028.mail.protection.outlook.com (10.233.238.130) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7135.29 via Frontend Transport; Mon, 8 Jan 2024 16:19:37 +0000
-Received: from outmta (unknown [192.168.82.135])
-	by repost-eu.tmcas.trendmicro.com (Trend Micro CAS) with ESMTP id 497112008009D;
-	Mon,  8 Jan 2024 16:19:37 +0000 (UTC)
-Received: from EUR01-HE1-obe.outbound.protection.outlook.com (unknown [104.47.0.50])
-	by repre.tmcas.trendmicro.com (Trend Micro CAS) with ESMTPS id 864522008006E;
-	Mon,  8 Jan 2024 16:19:29 +0000 (UTC)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dInTO86FAcXzNyAe4uynZ+ER+9sZS+H/5a3TcHV6/uyTex6vy8HXhZETnZ+PPD/jGIV2hKI0bzkqYOlQgD6A4HodhwCRRqdFznFnqeHC79bFOFuW+NYXTjYANZZeejIe/zd/eTca/678iBlaCmpMmXeetGFOUIbIuGwCiJBeOxfKtMZhpxpwpi4CdzhbYw6Q16IwC/n+xJi97/RrssPjMZOtH63INVPus/bom3dL7i2exEXG2fhXxg5BJwt8UoW95u6+B645c4xI/Qmru4ZOQ7UQAs46Nwumyr1QqekICrGBiNPdRlpYDtFUzvvRYnxfYmod30lxi/40VCCZmC8UPg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ZnrvgF5J9pAlxkMmdOmVrj7HVJWTM1JEmjzZiXVfaCs=;
- b=YgwChIDukoVbuhtCDbvgW0h7CuI9hY9NF0j7STUFTuz0qVntUplq3Lv88isR3RsVc+3748UIcUfDg/SGco4F5WNnhW9yc26I1Yn5H7LRAZ/rXs/nLkbukAlwYUIIHIkDqOQwq0UZrDNr89RUUyDax8RUho7hZypfcFuSkQ0129PsWONuhlCo0IKCsWEw9FIMKHKBPmVrtXCUJM0y8QbpdnY+DlGqS087Lny2WDIVlVPKFXWgwS6qDntSZIGOSN096+YprAqwWnL0v2NKSx4b2qQimb1G/JxQte/d/iS07zn2kbKemA0jiZFSBa0Egk9IoBNTh9rL/nUeVDBCy0mnvw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=seco.com; dmarc=pass action=none header.from=seco.com;
- dkim=pass header.d=seco.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=seco.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZnrvgF5J9pAlxkMmdOmVrj7HVJWTM1JEmjzZiXVfaCs=;
- b=PhFn8G0fIhZsRK93i69Fy4cVSslHMpN076tYlrud9WF8LE1aYa8rlnSm6HCm0iDr+QJLUiC3dDuOBrLg3nXbnYVyFlRkMYCpc6k+IpWr0AZeuvK9B1JWlUYsjJO3jtsRC6H6r44yN2V4Y51xirIL85kRRPAxtFWdKNIk2YRBb2an9qNmaRZKDp8ovLqVEibHoZQfVJtiuKWZhhoLfwNIM5CgAkdD7PM+H60/LcdVdI3nDmoBdGw7wna/Ps1PUjZNuzIajaaO/aKpGU0FI4f0E6pHpuLYfrtdDJqCYUHB2q9qMWy5NkUoBGF7NX1Tg44I14hFO+OXZ4plVXNlFfRynA==
-Authentication-Results-Original: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=seco.com;
-Received: from DB9PR03MB8847.eurprd03.prod.outlook.com (2603:10a6:10:3dd::13)
- by PAWPR03MB9858.eurprd03.prod.outlook.com (2603:10a6:102:2e3::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.21; Mon, 8 Jan
- 2024 16:19:27 +0000
-Received: from DB9PR03MB8847.eurprd03.prod.outlook.com
- ([fe80::5cfa:9e05:d8dc:ba0f]) by DB9PR03MB8847.eurprd03.prod.outlook.com
- ([fe80::5cfa:9e05:d8dc:ba0f%7]) with mapi id 15.20.7159.020; Mon, 8 Jan 2024
- 16:19:27 +0000
-From: Sean Anderson <sean.anderson@seco.com>
-To: Li Yang <leoyang.li@nxp.com>,
-	linuxppc-dev@lists.ozlabs.org,
-	linux-arm-kernel@lists.infradead.org
-Cc: Roy Pledge <roy.pledge@nxp.com>,
-	Camelia Groza <camelia.groza@nxp.com>,
-	"David S . Miller" <davem@davemloft.net>,
-	Claudiu Manoil <claudiu.manoil@nxp.com>,
-	linux-kernel@vger.kernel.org,
-	Scott Wood <oss@buserror.net>,
-	Steffen Trumtrar <s.trumtrar@pengutronix.de>,
-	stable@vger.kernel.org,
-	Vladimir Oltean <vladimir.oltean@nxp.com>,
-	Sean Anderson <sean.anderson@seco.com>
-Subject: [PATCH v4 2/2] soc: fsl: qbman: Use raw spinlock for cgr_lock
-Date: Mon,  8 Jan 2024 11:19:04 -0500
-Message-Id: <20240108161904.2865093-2-sean.anderson@seco.com>
-X-Mailer: git-send-email 2.35.1.1320.gc452695387.dirty
-In-Reply-To: <20240108161904.2865093-1-sean.anderson@seco.com>
-References: <20240108161904.2865093-1-sean.anderson@seco.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: BL1P222CA0022.NAMP222.PROD.OUTLOOK.COM
- (2603:10b6:208:2c7::27) To DB9PR03MB8847.eurprd03.prod.outlook.com
- (2603:10a6:10:3dd::13)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59D4452F6C;
+	Mon,  8 Jan 2024 16:25:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 408FD2Nu032201;
+	Mon, 8 Jan 2024 16:25:20 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	date:from:to:cc:subject:message-id:references:mime-version
+	:content-type:in-reply-to; s=qcppdkim1; bh=7BtvbYPfzK5Tc5wemztcm
+	NVEcPSSVbRXg2K0DQH70H0=; b=HL8tnVM+qpCC9dZrAVqV0bOAT2URW+mzvr7Wf
+	ZehzEWqm19kc8OxLmrtRRQ5st+xF62RLuWiF8Xa8THosKHw3J9xXT9g3MN6zNzOk
+	wO07+pmUpcowfpv5VOWE4j2UggAiJqWm4XHHpwUIhHGIO2SFy/6VX89p1GhqvGE3
+	PtqBiJDHx0tFh9ccV4aw/Jtj3rYVsfhIxKIV32rc/z9z+mKLhjebAFKdblH7f9Rl
+	qv21ETjP/omaF+w7DBNfuGN+SrkFdHvnYOb8A130H2bcbzJ8AOOARPnOLsBtBZ0j
+	zIFWhaP7YkAid2lUydcXzA/lMTSWSyf/hFHsy3KytXtRmCBiQ==
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vgfwjrpcx-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 08 Jan 2024 16:25:19 +0000 (GMT)
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 408GPIW7020674
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 8 Jan 2024 16:25:18 GMT
+Received: from hu-bjorande-lv.qualcomm.com (10.49.16.6) by
+ nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Mon, 8 Jan 2024 08:25:18 -0800
+Date: Mon, 8 Jan 2024 08:25:16 -0800
+From: Bjorn Andersson <quic_bjorande@quicinc.com>
+To: Johan Hovold <johan@kernel.org>
+CC: Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio
+	<konrad.dybcio@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Wesley Cheng <quic_wcheng@quicinc.com>,
+        Thinh Nguyen
+	<Thinh.Nguyen@synopsys.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Philipp Zabel
+	<p.zabel@pengutronix.de>,
+        <linux-arm-msm@vger.kernel.org>, <linux-usb@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Krishna Kurapati PSSNV
+	<quic_kriskura@quicinc.com>
+Subject: Re: [PATCH 03/12] usb: dwc3: qcom: Merge resources from urs_usb
+ device
+Message-ID: <20240108162516.GH1315173@hu-bjorande-lv.qualcomm.com>
+References: <20231016-dwc3-refactor-v1-0-ab4a84165470@quicinc.com>
+ <20231016-dwc3-refactor-v1-3-ab4a84165470@quicinc.com>
+ <ZV3WxwxmqH8wRo0A@hovoldconsulting.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-TrafficTypeDiagnostic:
-	DB9PR03MB8847:EE_|PAWPR03MB9858:EE_|DB8EUR05FT028:EE_|DU0PR03MB9708:EE_
-X-MS-Office365-Filtering-Correlation-Id: fc7e8839-e641-454d-160f-08dc10659c0f
-X-TrendMicro-CAS-OUT-LOOP-IDENTIFIER: 656f966764b7fb185830381c646b41a1
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam-Untrusted: BCL:0;
-X-Microsoft-Antispam-Message-Info-Original:
- 7RevYU7OWBDopUQDUYLsl9s/Ac2VZcfTVTIbufS1NYcx9rjBuvwo8Q3fTePwsfH82MbldfVhcj0KHjwINyE0U0nQwrHeexOPIGMZIqxvh/h3IU1GD4tuZek+C/AWZSRKxJNtQpCyban6LkevO/Cg+yl4z7U9r/g2TRQLMEhhEsDbODbuB1QKOfA10bhoo4lCZ2zhdiX4QBSrwFGtd0Jg2G7/23eaUTbiwVM2r4dmXF8QLFZAYxf1xgBTxXxW2ol/VSkR0LrNPISt7ddfiTPC80vqDE5ohAtK2CNqyac8gs72ity0byEzgzkieALW4Xfx1Y2P4Lj7tSiSKsDKskHFDq5tH1JNLXH5rBcGMihNbIXxRHXuNjzuVr6zxKuAlOyaX9jb/4EnwtXvJtVoq1N+ONh6t59Q+br9ZfSBpNgLdGJfXCOuFyO+ACgZpwxam0+/bR/lh8ySC6C41FN8ALy5GP4jLgEVI9AskEUkRTm2Jpq0ItduuG1qkcf1wlm93RNR37Vb9Y0mLSmyA6M0sSiBwZIkmeBR5YFoQ2kKXzjs5ykq2y/dVAXMd4XxeEHmPFrWc+iwiNEZ6fCr/5ax88N1y799UEnUQNoN1BojkGtu4cc=
-X-Forefront-Antispam-Report-Untrusted:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR03MB8847.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39850400004)(136003)(396003)(366004)(346002)(376002)(230922051799003)(1800799012)(186009)(64100799003)(451199024)(6666004)(2616005)(26005)(1076003)(966005)(52116002)(478600001)(6486002)(6506007)(6512007)(83380400001)(66476007)(107886003)(5660300002)(2906002)(41300700001)(7416002)(316002)(66556008)(54906003)(8676002)(4326008)(44832011)(8936002)(66946007)(38350700005)(38100700002)(36756003)(86362001);DIR:OUT;SFP:1101;
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAWPR03MB9858
-X-EOPAttributedMessage: 0
-X-MS-Exchange-Transport-CrossTenantHeadersStripped:
- DB8EUR05FT028.eop-eur05.prod.protection.outlook.com
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id-Prvs:
-	46a89d09-a91e-4918-3b5e-08dc10659618
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	3g9yNprucK2DBC4h77ZBbAkUnspz6VBeXUxHSVTFcMQbWCnDctigcl96qZyOsBIAx5l3iRpZ03fJ3UqJcbvVc0LZcKjEJlRbY72qGP76ozGCNQFXltw1RfoNwsT9rU/vKjXhkdWPJMnd/5i3HpJXk4LJhC1Yo9goNyhDeM3dlccW1tKGQTbmHpPhttMCwa3RUbU7T0X7w9xhIYcIXYHQdJ+6DwACIH5JCPo2Rhe89yaARHpQ49b/DY5ZWviIayN4BZqo4wH0yVQqvVdtORkTRmIb4+joad+AYNI1cIFUn/e7eLrFRHktR8hysvg0JXbMq+0eOZRzSifmacSdDgTKg2dYhPnocZ8TbmGbOSXAziWgyz/3Nfvu1sKKO8tRyvAsOabE3yM/hctQ6baUMRHTlEQ4JE6J1701DMNwslBd0/WmrQRmuD3rY5pYzscTA3AE+7fJ9J2/xuh1a4nuEXZ2xJ1XZ7S0tcGVLpacoXGs7yERNUjn/N7DDY4g6crBNMV+smXFqoIb3bzwgZjNb9YY7A1031cwuZcd5lHwB/+V6nweeezxVt1+SC4+aakuVKkTbEjb7X4H6vr804Z/ZKOUV3cQfW7HiKKDnUVweGFKhdfVdmdGoQjr9rfQQhXq0WcR6zT/ZAh5VVZhvuDVmcg5jJEyipNNi5nW8jsdGo/7VG+WFD2sXu0zdEsoacyrqwr2TFSaAWClL3rcPMXj/Fdcjm0Z7kM7DImnA/XZsf6pnXDhIa2OKvXYHejBYsYUgT1KdOJ/fnMU7Tg4ELkskaPSRw==
-X-Forefront-Antispam-Report:
-	CIP:20.160.56.82;CTRY:NL;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:repost-eu.tmcas.trendmicro.com;PTR:repost-eu.tmcas.trendmicro.com;CAT:NONE;SFS:(13230031)(376002)(346002)(136003)(396003)(39850400004)(230922051799003)(451199024)(64100799003)(1800799012)(186009)(82310400011)(40470700004)(36840700001)(46966006)(7636003)(356005)(82740400003)(7596003)(36756003)(8676002)(8936002)(83380400001)(54906003)(336012)(316002)(5660300002)(4326008)(6506007)(478600001)(44832011)(966005)(6512007)(6666004)(26005)(1076003)(70586007)(70206006)(107886003)(6486002)(2616005)(34070700002)(41300700001)(7416002)(47076005)(2906002)(36860700001)(40460700003)(86362001)(40480700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: seco.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Jan 2024 16:19:37.4962
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: fc7e8839-e641-454d-160f-08dc10659c0f
-X-MS-Exchange-CrossTenant-Id: bebe97c3-6438-442e-ade3-ff17aa50e733
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=bebe97c3-6438-442e-ade3-ff17aa50e733;Ip=[20.160.56.82];Helo=[repost-eu.tmcas.trendmicro.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	DB8EUR05FT028.eop-eur05.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU0PR03MB9708
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <ZV3WxwxmqH8wRo0A@hovoldconsulting.com>
+X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: pXTZRqHywNPisdlQCuK5blcXasM8QHJ5
+X-Proofpoint-GUID: pXTZRqHywNPisdlQCuK5blcXasM8QHJ5
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 clxscore=1011
+ impostorscore=0 lowpriorityscore=0 phishscore=0 mlxlogscore=999
+ suspectscore=0 priorityscore=1501 mlxscore=0 malwarescore=0 adultscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2401080139
 
-cgr_lock may be locked with interrupts already disabled by
-smp_call_function_single. As such, we must use a raw spinlock to avoid
-problems on PREEMPT_RT kernels. Although this bug has existed for a
-while, it was not apparent until commit ef2a8d5478b9 ("net: dpaa: Adjust
-queue depth on rate change") which invokes smp_call_function_single via
-qman_update_cgr_safe every time a link goes up or down.
+On Wed, Nov 22, 2023 at 11:24:07AM +0100, Johan Hovold wrote:
+> On Mon, Oct 16, 2023 at 08:11:11PM -0700, Bjorn Andersson wrote:
+> > With some ACPI DSDT tables, such as the one found in SC8180X devices,
+> > the USB resources are split between the URSn and it's child USBn device
+> > nodes, in particular the interrupts are placed in the child nodes.
+> > 
+> > The solution that was chosen for handling this is to allocate a
+> > platform_device from the child node and selectively pick interrupts
+> > from the main platform_device, or from this created child device, when
+> > creating the platform_device for the DWC3 core.
+> > 
+> > This does however not work with the upcoming change where the DWC3 core
+> > is instantiated from the same platform_device as the glue, as the DRD
+> > and host code will attempt to resolve their interrupts from the shared
+> > device, and not the child device.
+> > 
+> > Work around this by merging the resources of the child device into the
+> > glue device node, to present a single platform_device with all the
+> > resources necessary.
+> 
+> Nice approach.
+> 
+> An alternative would be to drop ACPI support completely as Konrad
+> suggested. Should simplify both this series and the multiport one.
+> 
+> Is anyone really using the ACPI support here anymore?
+> 
 
-Fixes: 96f413f47677 ("soc/fsl/qbman: fix issue in qman_delete_cgr_safe()")
-Reported-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-Closes: https://lore.kernel.org/all/20230323153935.nofnjucqjqnz34ej@skbuf/
-Reported-by: Steffen Trumtrar <s.trumtrar@pengutronix.de>
-Closes: https://lore.kernel.org/linux-arm-kernel/87wmsyvclu.fsf@pengutronix.de/
-Signed-off-by: Sean Anderson <sean.anderson@seco.com>
-Reviewed-by: Camelia Groza <camelia.groza@nxp.com>
-Tested-by: Vladimir Oltean <vladimir.oltean@nxp.com>
----
-Please backport these fixes when applied. This bug has been reported
-multiple times (see links above).
+At the introduction of SC8180X and the Lenovo Flex 5G we where able to
+run the Debian installer off the ACPI support in the kernel.
 
-Changes in v4:
-- Add a note about how raw spinlocks aren't quite right
+Since then, at least the UFS support has regressed to the point that
+this would no longer be possible - without anyone noticing.
 
-Changes in v3:
-- Change blamed commit to something more appropriate
 
- drivers/soc/fsl/qbman/qman.c | 25 ++++++++++++++-----------
- 1 file changed, 14 insertions(+), 11 deletions(-)
+I would like to see ACPI supported again in the future, but I can't
+really argue for its existence currently. In the end the new flattened
+code path is mostly shared with the ACPI path, so perhaps it makes sense
+to drop the support after this refactor, perhaps not. I will re-evaluate
+this.
 
-diff --git a/drivers/soc/fsl/qbman/qman.c b/drivers/soc/fsl/qbman/qman.c
-index 1bf1f1ea67f0..7e9074519ad2 100644
---- a/drivers/soc/fsl/qbman/qman.c
-+++ b/drivers/soc/fsl/qbman/qman.c
-@@ -991,7 +991,7 @@ struct qman_portal {
- 	/* linked-list of CSCN handlers. */
- 	struct list_head cgr_cbs;
- 	/* list lock */
--	spinlock_t cgr_lock;
-+	raw_spinlock_t cgr_lock;
- 	struct work_struct congestion_work;
- 	struct work_struct mr_work;
- 	char irqname[MAX_IRQNAME];
-@@ -1281,7 +1281,7 @@ static int qman_create_portal(struct qman_portal *portal,
- 		/* if the given mask is NULL, assume all CGRs can be seen */
- 		qman_cgrs_fill(&portal->cgrs[0]);
- 	INIT_LIST_HEAD(&portal->cgr_cbs);
--	spin_lock_init(&portal->cgr_lock);
-+	raw_spin_lock_init(&portal->cgr_lock);
- 	INIT_WORK(&portal->congestion_work, qm_congestion_task);
- 	INIT_WORK(&portal->mr_work, qm_mr_process_task);
- 	portal->bits = 0;
-@@ -1456,11 +1456,14 @@ static void qm_congestion_task(struct work_struct *work)
- 	union qm_mc_result *mcr;
- 	struct qman_cgr *cgr;
- 
--	spin_lock_irq(&p->cgr_lock);
-+	/*
-+	 * FIXME: QM_MCR_TIMEOUT is 10ms, which is too long for a raw spinlock!
-+	 */
-+	raw_spin_lock_irq(&p->cgr_lock);
- 	qm_mc_start(&p->p);
- 	qm_mc_commit(&p->p, QM_MCC_VERB_QUERYCONGESTION);
- 	if (!qm_mc_result_timeout(&p->p, &mcr)) {
--		spin_unlock_irq(&p->cgr_lock);
-+		raw_spin_unlock_irq(&p->cgr_lock);
- 		dev_crit(p->config->dev, "QUERYCONGESTION timeout\n");
- 		qman_p_irqsource_add(p, QM_PIRQ_CSCI);
- 		return;
-@@ -1476,7 +1479,7 @@ static void qm_congestion_task(struct work_struct *work)
- 	list_for_each_entry(cgr, &p->cgr_cbs, node)
- 		if (cgr->cb && qman_cgrs_get(&c, cgr->cgrid))
- 			cgr->cb(p, cgr, qman_cgrs_get(&rr, cgr->cgrid));
--	spin_unlock_irq(&p->cgr_lock);
-+	raw_spin_unlock_irq(&p->cgr_lock);
- 	qman_p_irqsource_add(p, QM_PIRQ_CSCI);
- }
- 
-@@ -2440,7 +2443,7 @@ int qman_create_cgr(struct qman_cgr *cgr, u32 flags,
- 	preempt_enable();
- 
- 	cgr->chan = p->config->channel;
--	spin_lock_irq(&p->cgr_lock);
-+	raw_spin_lock_irq(&p->cgr_lock);
- 
- 	if (opts) {
- 		struct qm_mcc_initcgr local_opts = *opts;
-@@ -2477,7 +2480,7 @@ int qman_create_cgr(struct qman_cgr *cgr, u32 flags,
- 	    qman_cgrs_get(&p->cgrs[1], cgr->cgrid))
- 		cgr->cb(p, cgr, 1);
- out:
--	spin_unlock_irq(&p->cgr_lock);
-+	raw_spin_unlock_irq(&p->cgr_lock);
- 	put_affine_portal();
- 	return ret;
- }
-@@ -2512,7 +2515,7 @@ int qman_delete_cgr(struct qman_cgr *cgr)
- 		return -EINVAL;
- 
- 	memset(&local_opts, 0, sizeof(struct qm_mcc_initcgr));
--	spin_lock_irqsave(&p->cgr_lock, irqflags);
-+	raw_spin_lock_irqsave(&p->cgr_lock, irqflags);
- 	list_del(&cgr->node);
- 	/*
- 	 * If there are no other CGR objects for this CGRID in the list,
-@@ -2537,7 +2540,7 @@ int qman_delete_cgr(struct qman_cgr *cgr)
- 		/* add back to the list */
- 		list_add(&cgr->node, &p->cgr_cbs);
- release_lock:
--	spin_unlock_irqrestore(&p->cgr_lock, irqflags);
-+	raw_spin_unlock_irqrestore(&p->cgr_lock, irqflags);
- 	put_affine_portal();
- 	return ret;
- }
-@@ -2577,9 +2580,9 @@ static int qman_update_cgr(struct qman_cgr *cgr, struct qm_mcc_initcgr *opts)
- 	if (!p)
- 		return -EINVAL;
- 
--	spin_lock_irqsave(&p->cgr_lock, irqflags);
-+	raw_spin_lock_irqsave(&p->cgr_lock, irqflags);
- 	ret = qm_modify_cgr(cgr, 0, opts);
--	spin_unlock_irqrestore(&p->cgr_lock, irqflags);
-+	raw_spin_unlock_irqrestore(&p->cgr_lock, irqflags);
- 	put_affine_portal();
- 	return ret;
- }
--- 
-2.35.1.1320.gc452695387.dirty
+> > -static struct platform_device *
+> > -dwc3_qcom_create_urs_usb_platdev(struct device *dev)
+> > +static int dwc3_qcom_acpi_merge_urs_resources(struct platform_device *pdev)
+> >  {
+> > +	struct device *dev = &pdev->dev;
+> > +	struct list_head resource_list;
+> > +	struct resource_entry *rentry;
+> > +	struct resource *resources;
+> >  	struct fwnode_handle *fwh;
+> >  	struct acpi_device *adev;
+> >  	char name[8];
+> > +	int count;
+> >  	int ret;
+> >  	int id;
+> > +	int i;
+> >  
+> >  	/* Figure out device id */
+> >  	ret = sscanf(fwnode_get_name(dev->fwnode), "URS%d", &id);
+> >  	if (!ret)
+> > -		return NULL;
+> > +		return -EINVAL;
+> >  
+> >  	/* Find the child using name */
+> >  	snprintf(name, sizeof(name), "USB%d", id);
+> >  	fwh = fwnode_get_named_child_node(dev->fwnode, name);
+> >  	if (!fwh)
+> > -		return NULL;
+> > +		return 0;
+> >  
+> >  	adev = to_acpi_device_node(fwh);
+> >  	if (!adev)
+> > -		return NULL;
+> > +		return -EINVAL;
+> 
+> This is currently leaking a reference to the fwnode, I fixed that up
+> here:
+> 
+> 	https://lore.kernel.org/linux-usb/20231117173650.21161-4-johan+linaro@kernel.org/
+> 
+> > +	INIT_LIST_HEAD(&resource_list);
+> > +
+> > +	count = acpi_dev_get_resources(adev, &resource_list, NULL, NULL);
+> > +	if (count <= 0)
+> > +		return count;
+> > +
+> > +	count += pdev->num_resources;
+> > +
+> > +	resources = kcalloc(count, sizeof(*resources), GFP_KERNEL);
+> > +	if (!resources) {
+> > +		acpi_dev_free_resource_list(&resource_list);
+> > +		return -ENOMEM;
+> > +	}
+> > +
+> > +	memcpy(resources, pdev->resource, sizeof(struct resource) * pdev->num_resources);
+> > +	count = pdev->num_resources;
+> > +	list_for_each_entry(rentry, &resource_list, node) {
+> > +		/* Avoid inserting duplicate entries, in case this is called more than once */
+> 
+> Either shorten this one or make it a multiline comment to stay within 80
+> chars.
+> 
+> > +		for (i = 0; i < count; i++) {
+> 
+> Should this not be pdev->num_resources?
+> 
 
+count is first used to denote the number of entries to allocate in the
+new list, it's then reset to pdev->num_resources 3 lines above this and
+after this list_for_each_entry() it would be the total number of
+resources in the new list (which could be less than the allocated number
+of items).
+
+I can avoid reusing the variable, to clarify this - if I choose to keep
+the ACPI support through the series.
+
+> > +			if (resource_type(&resources[i]) == resource_type(rentry->res) &&
+> > +			    resources[i].start == rentry->res->start &&
+> > +			    resources[i].end == rentry->res->end)
+> > +				break;
+> > +		}
+> > +
+> > +		if (i == count)
+> 
+> Same here.
+> 
+> > +			resources[count++] = *rentry->res;
+> > +	}
+> >  
+> > -	return acpi_create_platform_device(adev, NULL);
+> > +	ret = platform_device_add_resources(pdev, resources, count);
+> > +	if (ret)
+> > +		dev_err(&pdev->dev, "failed to add resources\n");
+> > +
+> > +	acpi_dev_free_resource_list(&resource_list);
+> > +	kfree(resources);
+> > +
+> > +	return ret;
+> >  }
+> >  
+> >  static int dwc3_qcom_probe(struct platform_device *pdev)
+> > @@ -817,6 +853,12 @@ static int dwc3_qcom_probe(struct platform_device *pdev)
+> >  			dev_err(&pdev->dev, "no supporting ACPI device data\n");
+> >  			return -EINVAL;
+> >  		}
+> > +
+> > +		if (qcom->acpi_pdata->is_urs) {
+> > +			ret = dwc3_qcom_acpi_merge_urs_resources(pdev);
+> > +			if (ret < 0)
+> > +				goto clk_disable;
+> 
+> The clocks have not been enabled here, just return ret.
+> 
+
+Right.
+
+Thanks,
+Bjorn
+
+> > +		}
+> >  	}
+> >  
+> >  	qcom->resets = devm_reset_control_array_get_optional_exclusive(dev);
+> > @@ -857,18 +899,6 @@ static int dwc3_qcom_probe(struct platform_device *pdev)
+> >  			qcom->acpi_pdata->qscratch_base_offset;
+> >  		parent_res->end = parent_res->start +
+> >  			qcom->acpi_pdata->qscratch_base_size;
+> > -
+> > -		if (qcom->acpi_pdata->is_urs) {
+> > -			qcom->urs_usb = dwc3_qcom_create_urs_usb_platdev(dev);
+> > -			if (IS_ERR_OR_NULL(qcom->urs_usb)) {
+> > -				dev_err(dev, "failed to create URS USB platdev\n");
+> > -				if (!qcom->urs_usb)
+> > -					ret = -ENODEV;
+> > -				else
+> > -					ret = PTR_ERR(qcom->urs_usb);
+> > -				goto clk_disable;
+> > -			}
+> > -		}
+> >  	}
+> >  
+> >  	qcom->qscratch_base = devm_ioremap_resource(dev, parent_res);
+> 
+> Johan
 
