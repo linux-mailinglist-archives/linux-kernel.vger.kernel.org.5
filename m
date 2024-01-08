@@ -1,164 +1,293 @@
-Return-Path: <linux-kernel+bounces-20197-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20199-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C994827BB8
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 00:55:18 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E48CD827BBC
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 00:57:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7DE911C229FD
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 23:55:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A622DB22D16
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 23:57:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F6C05674D;
-	Mon,  8 Jan 2024 23:55:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07BB856759;
+	Mon,  8 Jan 2024 23:57:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="CRG1cjwL"
-Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2089.outbound.protection.outlook.com [40.107.101.89])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="HCCe0DHr"
+Received: from mail-oa1-f41.google.com (mail-oa1-f41.google.com [209.85.160.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCA4A5645E;
-	Mon,  8 Jan 2024 23:55:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SCEzJaShu1Z3GI+aSvcgT2qJ6gb2PQIeBvJlM58Q6tg8akC+z4H2TbMh6ytwHKyRQc1xvKvHbZSXxUuTn6UiZAEShTU5alx95t4fzMNKtRt3PemfheqE3A9gYoZlz1yeE+jIWcGRLG5YRCxuuTaF2CjO246S4DAwolFr4toc03+Hea6CyX0qU6LJjYzNRaFXbZiGoBCHlfzVRt+UBFXisVmaL516OpixWgAiTK4slwabCEYfoGNkM9Q4Xqvc7Ono2OrD6Iir/5D3An1PaUtZLVNw//rRTCFxoZHfrU3brTOFGYaLEaZPsDk42A3KGIoUX7tXi3V9VhsbhJep0jHLng==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ZyWLLs8jbJbR+rLeYXVyLs+FlPBh40GYmb1rYwYC2TE=;
- b=ME1kJ2JoqSY8mfM1mKWUCiVJvBFrGLMnmp6f2lEN655kWLzPvZZB11YMIB032LN5ArbI847Tgd2xPr65Nq77C9Z2c64i+AkBoAYrf8tjfMSKaaErebGyqabtFCCJYnPD1Iq/bUp7COvamHzv987Q/NBZFhA4yicjQYRemF/c2vSz06QxjF7ovBbWDyUMEx+JWInz/3LCTiijfhm3wr9FWMYXgXwSvhFzP5ye2d0MB5DjI1IiHo4lXOtZ5Vv2gFuE0wkBBPraJc/VGuAiLLur6ECEc0zoxtX9MFWJEoop3mi5FeXo/qI8qZdj1riuSNrl4t2ID5bUv0t0eNugLORwlw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=google.com smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZyWLLs8jbJbR+rLeYXVyLs+FlPBh40GYmb1rYwYC2TE=;
- b=CRG1cjwLunccynfuPQ9i9VuxCgk3aTCYtzaJrDNqnW6Sfk812PK/107ukSJXz0wXyEdPze5fkbpXpF5TJGHhvNSzgZYBMzts0dxeF3mCMJvTtPHo4telSl/5NYcyBN0iyndATJrD9Uh4cQ5D/Tyb49iwpkxPTDTeFmQdPedTYjM=
-Received: from DS0PR17CA0002.namprd17.prod.outlook.com (2603:10b6:8:191::25)
- by MN0PR12MB6223.namprd12.prod.outlook.com (2603:10b6:208:3c1::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.21; Mon, 8 Jan
- 2024 23:54:58 +0000
-Received: from DS3PEPF000099E1.namprd04.prod.outlook.com
- (2603:10b6:8:191:cafe::1e) by DS0PR17CA0002.outlook.office365.com
- (2603:10b6:8:191::25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.23 via Frontend
- Transport; Mon, 8 Jan 2024 23:54:58 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- DS3PEPF000099E1.mail.protection.outlook.com (10.167.17.196) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7181.13 via Frontend Transport; Mon, 8 Jan 2024 23:54:58 +0000
-Received: from localhost (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Mon, 8 Jan
- 2024 17:54:57 -0600
-Date: Mon, 8 Jan 2024 17:54:39 -0600
-From: Michael Roth <michael.roth@amd.com>
-To: Sean Christopherson <seanjc@google.com>
-CC: <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Paolo Bonzini
-	<pbonzini@redhat.com>, James Houghton <jthoughton@google.com>, Peter Xu
-	<peterx@redhat.com>, Axel Rasmussen <axelrasmussen@google.com>, Oliver Upton
-	<oliver.upton@linux.dev>, Isaku Yamahata <isaku.yamahata@linux.intel.com>,
-	David Matlack <dmatlack@google.com>, Yan Zhao <yan.y.zhao@intel.com>, Marc
- Zyngier <maz@kernel.org>, Aaron Lewis <aaronlewis@google.com>
-Subject: Re: [ANNOUNCE / RFC] PUCK Future Topics
-Message-ID: <20240108235439.ecb5x2eef2mbccby@amd.com>
-References: <20231214001753.779022-1-seanjc@google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2110356475
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 23:57:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-oa1-f41.google.com with SMTP id 586e51a60fabf-204e52f0617so1555053fac.1
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 15:57:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1704758247; x=1705363047; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ame9l2qcp8W3BLOjm08r1uJEq7CAYl28JAJ9F06Kn3g=;
+        b=HCCe0DHr9CuWwyRf59Otr3LUg2S9Ld/NIuYBSbAsRTkpPIzaDjgBp7hFTVsclAuzYd
+         sgnNQvsKttNs+ntx+TBmpuY1Wvp5C8t8P3lgzIe1fDCzZTmmsfepZ76xEhMhptg8G4ur
+         fVlY5Cp1EFje0qVi8VtO5411HE44S8fQZCJA40x2w4zqxqLg6jtsYyaPNw7AxKETJoiF
+         1BukIkR8BDrIlFSmK+RO4KISh7Ah+GPduRmxglnNp1dR7RgzAdsLi3/n9X2EoFIX/ssp
+         e39kRb8lqb43uytmqsr+evYVBBKiX2koqzd7jnBIbjl/5wiSFhvTOY4IQ1LE2VDsTYBh
+         m6SQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704758247; x=1705363047;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ame9l2qcp8W3BLOjm08r1uJEq7CAYl28JAJ9F06Kn3g=;
+        b=JDy4Judw4QrPpJHKoH+cb91gsePupMkVYE5f7KhuJUYBUdlu6CF4IVxyDWnFJFqwuS
+         mKF/9+2kVq4RRdnrhwTm4j/G1PkMaVRlpGm8znkqc4fJDp7e7Eh+DGVEe/ip/CGwZG1e
+         4ghQPEdIJSqgCzKjmmYeVXgXL596jmd1ARHfxS1GvG2Ai4ornGEhgevxKVXVN5oNA83u
+         okJcw/kei+xKvjDxAMeWNYU32xW9lY/YGR5EkdUiqIYACATrhVqQvyiFJPz4ljf8ZKqO
+         u2pdh0JB38CX3hnkIYJFvMAgL5k8gvR4rHxfjvBHA/bhbN0SaShgUH3FvGgYgYi3367k
+         Ljkw==
+X-Gm-Message-State: AOJu0YwLtWut03+FiOvhg2sCWMHJUtJd9LudCXngatQl6/WgYai7hzD8
+	VNEr3A42os9jOmn+PJueyLS54JRL9WQCjQ==
+X-Google-Smtp-Source: AGHT+IHi1J1WRRNoADpp6L+dL8gC+r3BOYLwTzvE8u2A0Tr6D1I0AC6w3V6M787ebgrmj06JKkab2w==
+X-Received: by 2002:a05:6870:8891:b0:205:e4da:bfbc with SMTP id m17-20020a056870889100b00205e4dabfbcmr235809oam.3.1704758247045;
+        Mon, 08 Jan 2024 15:57:27 -0800 (PST)
+Received: from charlie.ba.rivosinc.com ([64.71.180.162])
+        by smtp.gmail.com with ESMTPSA id ti5-20020a056871890500b002043b415eaasm206961oab.29.2024.01.08.15.57.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Jan 2024 15:57:26 -0800 (PST)
+From: Charlie Jenkins <charlie@rivosinc.com>
+Subject: [PATCH v15 0/5] riscv: Add fine-tuned checksum functions
+Date: Mon, 08 Jan 2024 15:57:01 -0800
+Message-Id: <20240108-optimize_checksum-v15-0-1c50de5f2167@rivosinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20231214001753.779022-1-seanjc@google.com>
-X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS3PEPF000099E1:EE_|MN0PR12MB6223:EE_
-X-MS-Office365-Filtering-Correlation-Id: ab4722cc-b5ad-4077-1d6d-08dc10a53874
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	UwbO0Vz1cUMhOLRd2k8FZ8BWDSd8qQDkFpScRTRkJ+jJ4HHK08bKleEUR6nZbt0zDdd5JBvtmI0YUYQ85oOQmsLigra86CeCd3jCagYbrtYxfskQjkGEWQHHcZgeDWSsPe7Xu0W3vVyst+RGQeeqWC0CdtAxvvzlgM7zoheHBWyZBuyTlWh2SAyFa7XAeebJuWo0MkPjVXZqrmscGJsCre3My19sZ9ElQ+kt0DPxqOi/kpquMXvpVq7Hu83Y/jAq4frhE2wvTh5HpthYMkE4+Me3OtQ6nM7iOiprKjb0ogZqpNaFdT0s2gCYY4V5FfLjOjmKAoHjBy93JAQFFLSWr92K69IsewImUE48ofaMXN7cIrFf29k78dqSHKTE/J1pV7YngBMuny+F2AGivbOxrhbrRVcSd7GAkjPaF5LXvrpgOxpR7Sxme2LS5u9C/pHQSFNerLKUADps70MYK5JXEY8gwHj7hHYdLfRPem5SpqbQqFlXSPKu4wmGQ2OSVFQ04O7sz7/s1r6eBWBeL6zsN11fg9QHg20u6qWA/S1Hlt5YbwXJ8sMKtzuEuzSdE4/ekWXcLLQppcZwmpJQVjItqeE2R5nzrMnehikk0S1FSyIFpoS/N4/WnbncNQWqVzctHp+ddQP2gOm0426TSZnXTc7nTGURdZ4m+XRQSvascIDSu7C2LT1SIgFKp3AW6gGeEOhZ/B0bNlNR0OqI3jZ3zNWppvgZk5ri7i1o4bEAxWW7+u4r8e6NVTHaPDLytZPvd92OJkcAuil+i1gRBvhBpKIB35kwZB155rg7LiRCVEAcETgNTrq3UytrStFSjKuEFPC6u0/WwFABY7JzHqiI96NR6CRyjuVSVkaWcCQRgQkCkiW+a1ucCtWHkEd6UruU
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(346002)(376002)(396003)(136003)(39860400002)(230173577357003)(230273577357003)(230922051799003)(186009)(451199024)(82310400011)(64100799003)(1800799012)(40470700004)(46966006)(36840700001)(70206006)(70586007)(47076005)(8936002)(8676002)(1076003)(26005)(478600001)(16526019)(426003)(336012)(2616005)(83380400001)(5930299018)(966005)(316002)(2906002)(6916009)(5660300002)(82740400003)(7416002)(81166007)(41300700001)(4326008)(40480700001)(356005)(86362001)(36860700001)(6666004)(36756003)(54906003)(40460700003)(44832011)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Jan 2024 23:54:58.1612
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: ab4722cc-b5ad-4077-1d6d-08dc10a53874
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	DS3PEPF000099E1.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR12MB6223
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAM6LnGUC/23S207EIBAG4FcxvbaGGQ4DXvkexhhgqEvMbk2rj
+ Yfsu0uNcUmcS0j4YH7+r2EtSy3rcHv1NSxlq2udT20B9vpqyId4eipj5bYxoEKtvDLj/PJaj/W
+ zPOZDyc/r23HkBMai9zEjDO3cy1Km+v6D3j+09aGur/Py8XPHBvvur4ZO0DYY1Rg0WQWpsRjvl
+ rrNaz3lmzwfhx3c8IIEZSUEG5IzO+s5kdFJQHSPkIToHbEKWRsOTFpATIcASIhpCFHOGDmUpgi
+ I7REp4c3uLwk2eYxIloqAuB4RM3ENARNdnhxkB15AqEeChFBDlMvEipktOwHxfwgoFIP1DZlKI
+ lDAgJ4FJHSIFoMNDSlRgS8uJMQgIKAuSrtLbFsbZ4wmeEuUUnAiAx0D4kSwt5ZaS4I1U9EOJOZ
+ SW0BAkdl7ayBEk6Jj56R4QXcMKpHZmxtJW0MFcmTpq8H0jDzU3l3miY1X4Oy/15zP52/50o9+Q
+ QQAAA==
+To: Charlie Jenkins <charlie@rivosinc.com>, 
+ Palmer Dabbelt <palmer@dabbelt.com>, Conor Dooley <conor@kernel.org>, 
+ Samuel Holland <samuel.holland@sifive.com>, 
+ David Laight <David.Laight@aculab.com>, Xiao Wang <xiao.w.wang@intel.com>, 
+ Evan Green <evan@rivosinc.com>, Guo Ren <guoren@kernel.org>, 
+ linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, 
+ linux-arch@vger.kernel.org
+Cc: Paul Walmsley <paul.walmsley@sifive.com>, 
+ Albert Ou <aou@eecs.berkeley.edu>, Arnd Bergmann <arnd@arndb.de>, 
+ David Laight <david.laight@aculab.com>, 
+ Conor Dooley <conor.dooley@microchip.com>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1704758245; l=7699;
+ i=charlie@rivosinc.com; s=20231120; h=from:subject:message-id;
+ bh=4EOYBtqtiIKNjQ7RGmnLjHPQtqeJgMfF//Og2/cODXU=;
+ b=q9E7KeVhJRkPDLBeP/iIZ0JM/sa3wIV9aol2J4ZRCyNROlbB3nkMrs3dcs0aJpsnVmuUjX0dx
+ zvdM7oAD4dxCoaOsWukXzsKokeEk9a8acfXb8JaIRt/Upp12wNEofF0
+X-Developer-Key: i=charlie@rivosinc.com; a=ed25519;
+ pk=t4RSWpMV1q5lf/NWIeR9z58bcje60/dbtxxmoSfBEcs=
 
-On Wed, Dec 13, 2023 at 04:17:53PM -0800, Sean Christopherson wrote:
-> Hi all!  There are a handful of PUCK topics that I want to get scheduled, and
-> would like your help/input in confirming attendance to ensure we reach critical
-> mass.
-> 
-> If you are on the Cc, please confirm that you are willing and able to attend
-> PUCK on the proposed/tentative date for any topics tagged with your name.  Or
-> if you simply don't want to attend, I suppose that's a valid answer too. :-)
-> 
-> If you are not on the Cc but want to ensure that you can be present for a given
-> topic, please speak up asap if you have a conflict.  I will do my best to
-> accomodate everyone's schedules, and the more warning I get the easier that will
-> be.
-> 
-> Note, the proposed schedule is largely arbitrary, I am not wedded to any
-> particular order.  The only known conflict at this time is the guest_memfd()
-> post-copy discussion can't land on Jan 10th.
-> 
-> Thanks!
-> 
-> 
-> 2024.01.03 - Post-copy for guest_memfd()
->     Needs: David M, Paolo, Peter Xu, James, Oliver, Aaron
-> 
-> 2024.01.10 - Unified uAPI for protected VMs
->     Needs: Paolo, Isaku, Mike R
+Each architecture generally implements fine-tuned checksum functions to
+leverage the instruction set. This patch adds the main checksum
+functions that are used in networking. Tested on QEMU, this series
+allows the CHECKSUM_KUNIT tests to complete an average of 50.9% faster.
 
-Hi Sean,
+This patch takes heavy use of the Zbb extension using alternatives
+patching.
 
-I'll be present for this one. Not sure what the specific agenda is, but
-hoping we can cover some of the hooks that were proposed in this RFC
-series and are now part of SNP hypervisor v11 patchset:
+To test this patch, enable the configs for KUNIT, then CHECKSUM_KUNIT.
 
-  https://lore.kernel.org/kvm/20231016115028.996656-1-michael.roth@amd.com/
+I have attempted to make these functions as optimal as possible, but I
+have not ran anything on actual riscv hardware. My performance testing
+has been limited to inspecting the assembly, running the algorithms on
+x86 hardware, and running in QEMU.
 
--Mike
+ip_fast_csum is a relatively small function so even though it is
+possible to read 64 bits at a time on compatible hardware, the
+bottleneck becomes the clean up and setup code so loading 32 bits at a
+time is actually faster.
 
-> 
-> 2024.01.17 - Memtypes for non-coherent MDA
->     Needs: Paolo, Yan, Oliver, Marc, more ARM folks?
-> 
-> 2024.01.24 - TDP MMU for IOMMU
->     Needs: Paolo, Yan, Jason, ???
-> 
-> 
-> P.S. if you're wondering, what the puck is PUCK?
-> 
->   Time:  6am PDT
->   Video: https://meet.google.com/vdb-aeqo-knk
->   Phone: https://tel.meet/vdb-aeqo-knk?pin=3003112178656
-> 
->   Calendar: https://calendar.google.com/calendar/u/0?cid=Y182MWE1YjFmNjQ0NzM5YmY1YmVkN2U1ZWE1ZmMzNjY5Y2UzMmEyNTQ0YzVkYjFjN2M4OTE3MDJjYTUwOTBjN2Q1QGdyb3VwLmNhbGVuZGFyLmdvb2dsZS5jb20
->   Drive:    https://drive.google.com/drive/folders/1aTqCrvTsQI9T4qLhhLs_l986SngGlhPH?resourcekey=0-FDy0ykM3RerZedI8R-zj4A&usp=drive_link
-> 
->   https://lore.kernel.org/all/20230512231026.799267-1-seanjc@google.com
+Relies on https://lore.kernel.org/lkml/20230920193801.3035093-1-evan@rivosinc.com/
+
+---
+    
+The algorithm proposed to replace the default csum_fold can be seen to
+compute the same result by running all 2^32 possible inputs.
+    
+static inline unsigned int ror32(unsigned int word, unsigned int shift)
+{
+	return (word >> (shift & 31)) | (word << ((-shift) & 31));
+}
+
+unsigned short csum_fold(unsigned int csum)
+{
+	unsigned int sum = csum;
+	sum = (sum & 0xffff) + (sum >> 16);
+	sum = (sum & 0xffff) + (sum >> 16);
+	return ~sum;
+}
+
+unsigned short csum_fold_arc(unsigned int csum)
+{
+	return ((~csum - ror32(csum, 16)) >> 16);
+}
+
+int main()
+{
+	unsigned int start = 0x0;
+	do {
+		if (csum_fold(start) != csum_fold_arc(start)) {
+			printf("Not the same %u\n", start);
+			return -1;
+		}
+		start += 1;
+	} while(start != 0x0);
+	printf("The same\n");
+	return 0;
+}
+
+Cc: Paul Walmsley <paul.walmsley@sifive.com>
+Cc: Albert Ou <aou@eecs.berkeley.edu>
+Cc: Arnd Bergmann <arnd@arndb.de>
+To: Charlie Jenkins <charlie@rivosinc.com>
+To: Palmer Dabbelt <palmer@dabbelt.com>
+To: Conor Dooley <conor@kernel.org>
+To: Samuel Holland <samuel.holland@sifive.com>
+To: David Laight <David.Laight@aculab.com>
+To: Xiao Wang <xiao.w.wang@intel.com>
+To: Evan Green <evan@rivosinc.com>
+To: Guo Ren <guoren@kernel.org> 
+To: linux-riscv@lists.infradead.org
+To: linux-kernel@vger.kernel.org
+To: linux-arch@vger.kernel.org
+Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
+
+---
+Changes in v15:
+- Create modify_unaligned_access_branches to consolidate duplicate code
+  (Evan)
+- Link to v14: https://lore.kernel.org/r/20231227-optimize_checksum-v14-0-ddfd48016566@rivosinc.com
+
+Changes in v14:
+- Update misaligned static branch when CPUs are hotplugged (Guo)
+- Leave off Evan's reviewed-by on patch 2 since it was completely
+  re-written
+- Link to v13: https://lore.kernel.org/r/20231220-optimize_checksum-v13-0-a73547e1cad8@rivosinc.com
+
+Changes in v13:
+- Move cast from patch 4 to patch 3
+- Link to v12: https://lore.kernel.org/r/20231212-optimize_checksum-v12-0-419a4ba6d666@rivosinc.com
+
+Changes in v12:
+- Rebase onto 6.7-rc5
+- Add performance stats in the cover letter
+- Link to v11: https://lore.kernel.org/r/20231117-optimize_checksum-v11-0-7d9d954fe361@rivosinc.com
+
+Changes in v11:
+- Extensive modifications to comply to sparse
+- Organize include statements (Xiao)
+- Add csum_ipv6_magic to commit message (Xiao)
+- Remove extraneous len statement (Xiao)
+- Add kasan_check_read call (Xiao)
+- Improve comment field checksum.h (Xiao)
+- Consolidate "buff" and "len" into one parameter "end" (Xiao)
+- Link to v10: https://lore.kernel.org/r/20231101-optimize_checksum-v10-0-a498577bb969@rivosinc.com
+
+Changes in v10:
+- Move tests that were riscv-specific to be arch agnostic (Arnd)
+- Link to v9: https://lore.kernel.org/r/20231031-optimize_checksum-v9-0-ea018e69b229@rivosinc.com
+
+Changes in v9:
+- Use ror64 (Xiao)
+- Move do_csum and csum_ipv6_magic headers to patch 4 (Xiao)
+- Remove word "IP" from checksum headers (Xiao)
+- Swap to using ifndef CONFIG_32BIT instead of ifdef CONFIG_64BIT (Xiao)
+- Run no alignment code when buff is aligned (Xiao)
+- Consolidate two do_csum implementations overlap into do_csum_common
+- Link to v8: https://lore.kernel.org/r/20231027-optimize_checksum-v8-0-feb7101d128d@rivosinc.com
+
+Changes in v8:
+- Speedups of 12% without Zbb and 21% with Zbb when cpu supports fast
+  misaligned accesses for do_csum
+- Various formatting updates
+- Patch now relies on https://lore.kernel.org/lkml/20230920193801.3035093-1-evan@rivosinc.com/
+- Link to v7: https://lore.kernel.org/r/20230919-optimize_checksum-v7-0-06c7d0ddd5d6@rivosinc.com
+
+Changes in v7:
+- Included linux/bitops.h in asm-generic/checksum.h to use ror (Conor)
+- Optimized loop in do_csum (David)
+- Used ror instead of shifting (David)
+- Unfortunately had to reintroduce ifdefs because gcc is not smart
+  enough to not throw warnings on code that will never execute
+- Use ifdef instead of IS_ENABLED on __LITTLE_ENDIAN because IS_ENABLED
+  does not work on that
+- Only optimize for zbb when alternatives is enabled in do_csum
+- Link to v6: https://lore.kernel.org/r/20230915-optimize_checksum-v6-0-14a6cf61c618@rivosinc.com
+
+Changes in v6:
+- Fix accuracy of commit message for csum_fold
+- Fix indentation
+- Link to v5: https://lore.kernel.org/r/20230914-optimize_checksum-v5-0-c95b82a2757e@rivosinc.com
+
+Changes in v5:
+- Drop vector patches
+- Check ZBB enabled before doing any ZBB code (Conor)
+- Check endianness in IS_ENABLED
+- Revert to the simpler non-tree based version of ipv6_csum_magic since
+  David pointed out that the tree based version is not better.
+- Link to v4: https://lore.kernel.org/r/20230911-optimize_checksum-v4-0-77cc2ad9e9d7@rivosinc.com
+
+Changes in v4:
+- Suggestion by David Laight to use an improved checksum used in
+  arch/arc.
+- Eliminates zero-extension on rv32, but not on rv64.
+- Reduces data dependency which should improve execution speed on
+  rv32 and rv64
+- Still passes CHECKSUM_KUNIT and RISCV_CHECKSUM_KUNIT on rv32 and
+  rv64 with and without zbb.
+- Link to v3: https://lore.kernel.org/r/20230907-optimize_checksum-v3-0-c502d34d9d73@rivosinc.com
+
+Changes in v3:
+- Use riscv_has_extension_likely and has_vector where possible (Conor)
+- Reduce ifdefs by using IS_ENABLED where possible (Conor)
+- Use kernel_vector_begin in the vector code (Samuel)
+- Link to v2: https://lore.kernel.org/r/20230905-optimize_checksum-v2-0-ccd658db743b@rivosinc.com
+
+Changes in v2:
+- After more benchmarking, rework functions to improve performance.
+- Remove tests that overlapped with the already existing checksum
+  tests and make tests more extensive.
+- Use alternatives to activate code with Zbb and vector extensions
+- Link to v1: https://lore.kernel.org/r/20230826-optimize_checksum-v1-0-937501b4522a@rivosinc.com
+
+---
+Charlie Jenkins (5):
+      asm-generic: Improve csum_fold
+      riscv: Add static key for misaligned accesses
+      riscv: Add checksum header
+      riscv: Add checksum library
+      kunit: Add tests for csum_ipv6_magic and ip_fast_csum
+
+ arch/riscv/include/asm/checksum.h   |  93 ++++++++++
+ arch/riscv/include/asm/cpufeature.h |   2 +
+ arch/riscv/kernel/cpufeature.c      |  90 +++++++++-
+ arch/riscv/lib/Makefile             |   1 +
+ arch/riscv/lib/csum.c               | 326 ++++++++++++++++++++++++++++++++++++
+ include/asm-generic/checksum.h      |   6 +-
+ lib/checksum_kunit.c                | 284 ++++++++++++++++++++++++++++++-
+ 7 files changed, 795 insertions(+), 7 deletions(-)
+---
+base-commit: a39b6ac3781d46ba18193c9dbb2110f31e9bffe9
+change-id: 20230804-optimize_checksum-db145288ac21
+-- 
+- Charlie
+
 
