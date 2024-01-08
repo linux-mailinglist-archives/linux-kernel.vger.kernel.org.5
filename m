@@ -1,247 +1,149 @@
-Return-Path: <linux-kernel+bounces-20091-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20093-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 73AE882792A
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 21:31:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED7E5827931
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 21:35:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CC587B22A58
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 20:31:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1F99A1C2317B
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 20:35:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 070A347773;
-	Mon,  8 Jan 2024 20:31:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="UYj8xoJc"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B443655E56;
+	Mon,  8 Jan 2024 20:35:01 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A084914264
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 20:31:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-557c188f313so1749614a12.1
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 12:31:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1704745863; x=1705350663; darn=vger.kernel.org;
-        h=mime-version:user-agent:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=F+YTmapdlstnvW0VoOulWHkOEtM5IYtbqGvFbMceXSQ=;
-        b=UYj8xoJceRt7eAziXjsRHE2REWkdjOorRJq0A/dYdRGPuCD5w7Lwqbv5IVqWBvXaOB
-         7mSTMYwBJkfa+4aBAAuC0eTDHsG+sJiXO6nuQBz/yf6OFLpz6r+5SzGJBEtyz8Qmm8/C
-         XqEeObfrJ8tDcpR+UzCqNetrDxqIpoeNyffQ/uRLGHz/zVAsnOLhrhwSKWgDIwD6yt5Z
-         2I3HY7aTZtx3L4xEmj9H8nz8daR2je8VAAK2xHLyVuwf0hWdZ5IgBq9iMHn1KjOi0dMg
-         edriaETClrHSg+/zJvWufv82Nbsqwqfp2GjqEIYnU/KhtYsUKvBtlDvrKTt+ft9MCMiq
-         gLLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704745863; x=1705350663;
-        h=mime-version:user-agent:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=F+YTmapdlstnvW0VoOulWHkOEtM5IYtbqGvFbMceXSQ=;
-        b=BdeiRkbLwLe8h8lCfdYIr+jp9Rp7O3NwfZSYCJ6yUdpogXniQ7DswkDW6I54PxHDcq
-         ft8ABAIIU3f/FMcLTaD/YnRg15encAmwpSV400Vs4XLmnfJF72kP5EpJii1H9TwdIp+a
-         f8mBVk8K/7ZRPVfOcR/O35CRt5jWViiFz5BMDMn+VJU31u00zYrydBBt3/VFGMzfzluV
-         +inocjotQ9AIDZ9fptOKYbFzSXRkcH1Tg/h2jUg2+m/8Whl2duVDQOB3L2pi2w/nH/uv
-         mO0wKgSljUM4uvI9+f2klM9BCMfd39Iyf5PPTS2O8GiEVPxd4rZUDWAH9TNZrIwrAO3v
-         m4yg==
-X-Gm-Message-State: AOJu0Yyke8kQ2H1ji6J87N0jahCU9RTY8hD2d+ZKclvYYc3M5cpZymkh
-	t+gwu7ysnn2R9VLZGqtpt4QQQFomvn+Eng==
-X-Google-Smtp-Source: AGHT+IFjRbOF545mO7sIzX8VJ/06xAixraVlw3xz4yws66UL+kPmOyBPxTqea83XqM5mBQwx1OyKWg==
-X-Received: by 2002:a05:6402:7c2:b0:557:7501:4242 with SMTP id u2-20020a05640207c200b0055775014242mr304893edy.12.1704745862831;
-        Mon, 08 Jan 2024 12:31:02 -0800 (PST)
-Received: from localhost (nat2.prg.suse.com. [195.250.132.146])
-        by smtp.gmail.com with ESMTPSA id dm3-20020a05640222c300b0054b53aacd86sm183207edb.65.2024.01.08.12.31.02
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 08 Jan 2024 12:31:02 -0800 (PST)
-From: Jiri Kosina <jkosina@suse.com>
-X-Google-Original-From: Jiri Kosina <jikos@kernel.org>
-Date: Mon, 8 Jan 2024 21:31:04 +0100 (CET)
-To: Linus Torvalds <torvalds@linux-foundation.org>
-cc: Benjamin Tissoires <benjamin.tissoires@redhat.com>, 
-    linux-kernel@vger.kernel.org
-Subject: [GIT PULL] HID for 6.8
-Message-ID: <nycvar.YFH.7.76.2401082125270.29548@cbobk.fhfr.pm>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1803D55E43
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 20:34:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 13052C15;
+	Mon,  8 Jan 2024 12:35:44 -0800 (PST)
+Received: from bogus (unknown [10.57.74.54])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0F4A43F73F;
+	Mon,  8 Jan 2024 12:34:56 -0800 (PST)
+Date: Mon, 8 Jan 2024 20:31:50 +0000
+From: Sudeep Holla <sudeep.holla@arm.com>
+To: Konrad Dybcio <konradybcio@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>,
+	Sudeep Holla <sudeep.holla@arm.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Marijn Suijten <marijn.suijten@somainline.org>,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	Bjorn Andersson <andersson@kernel.org>
+Subject: Re: [PATCH 2/2] firmware/psci: Set
+ pm_set_resume/suspend_via_firmware() on qcom
+Message-ID: <20240108203150.cx2kswpfcfmouv76@bogus>
+References: <20231227-topic-psci_fw_sus-v1-0-6910add70bf3@linaro.org>
+ <20231227-topic-psci_fw_sus-v1-2-6910add70bf3@linaro.org>
+ <20231228102801.fzaubcjq5thfwgxg@bogus>
+ <f34dd5de-9e56-4c58-b9bf-2356b41d17b1@linaro.org>
+ <20231228115053.zlypgc5uxxvghi4a@bogus>
+ <376d3040-b9ed-4574-90d7-fb864d694e3c@linaro.org>
+ <20231228124348.mmtceqeuean7ly6y@bogus>
+ <7e31d489-de96-42f0-a72a-a581859e7131@linaro.org>
+ <20240103094442.mlh2pf3odof3ze3s@bogus>
+ <5499a078-a4de-47fb-ad2c-aa478699eb77@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5499a078-a4de-47fb-ad2c-aa478699eb77@kernel.org>
 
-Linus,
+On Mon, Jan 08, 2024 at 04:47:05PM +0100, Konrad Dybcio wrote:
+> On 3.01.2024 10:44, Sudeep Holla wrote:
+> >
+> > But I don't like the Qualcomm specific changes.
+>
+> Is that because of the matching table, or due to the slightly more
+> convoluted way of suspending the platform through CPU_SUSPEND?
+>
 
-please pull from
+I would say both. I don't like this to be Qualcomm platform specific
+feature. Also advertising absence of system suspend on those platforms
+as presence of some special system suspend. It simply is not system
+suspend. The sysfs hides/abstracts and provides s2idle even when user
+request s2r on such platforms.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/hid/hid.git tags/hid-for-linus-2024010801
+We should advertise it as s2idle. I would do something like below patch,
+just a rough idea, not compiled or tested. This avoids any misleading
+or confusion IMO.
 
-to receive HID subsystem queue for 6.8 merge window. Highlights:
+However I am interested in knowing which are these drivers that rely on
+the pm_suspend_global_flags ? The reason I ask the x86 ACPI doesn't set
+the flags for s2idle. Also the core code explicitly calls
+pm_set_suspend_no_platform() in suspend_devices_and_enter(). What you
+want conflicts with both the above observations. I would like to involve
+Rafael and check what is the correct/expected way to use those flags.
 
-=====
-- assorted functional fixes for hid-steam ported from SteamOS betas (Vicki 
-  Pfau)
+Regards,
+Sudeep
 
-- fix for custom sensor-hub sensors (hinge angle sensor and LISS sensors) 
-  not working (Yauhen Kharuzhy)
+--->8
+diff --git i/drivers/firmware/psci/psci.c w/drivers/firmware/psci/psci.c
+index 0e622aa5ad58..b2559ae7668a 100644
+--- i/drivers/firmware/psci/psci.c
++++ w/drivers/firmware/psci/psci.c
+@@ -505,26 +505,42 @@ static int psci_system_suspend(unsigned long unused)
+        return psci_to_linux_errno(err);
+ }
 
-- functional fix for handling Confidence in Wacom driver (Jason Gerecke)
+-static int psci_system_suspend_enter(suspend_state_t state)
++static int psci_system_idle_prepare_late(void)
+ {
+        pm_set_resume_via_firmware();
++       return 0;
++}
++#define psci_system_system_prepare_late        psci_system_idle_prepare_late
++
++static int psci_system_suspend_enter(suspend_state_t state)
++{
++       psci_system_system_prepare_late();
 
-- support for Ilitek ili2901 touchscreen (Zhengqiao Xia)
+        return cpu_suspend(0, psci_system_suspend);
+ }
 
-- power management fix for Wacom userspace battery exporting (Tatsunosuke 
-  Tobita)
+-static int psci_system_suspend_begin(suspend_state_t state)
++static int psci_system_idle_begin(void)
+ {
+        pm_set_suspend_via_firmware();
+-
+        return 0;
+ }
 
-- rework of wait-for-reset in order to reduce the need for 
-  I2C_HID_QUIRK_NO_IRQ_AFTER_RESET qurk; the success rate is now 50% 
-  better, but there are still further improvements to be made (Hans de 
-  Goede)
++static int psci_system_suspend_begin(suspend_state_t state)
++{
++       return psci_system_idle_begin();
++}
++
+ static const struct platform_suspend_ops psci_suspend_ops = {
+        .valid          = suspend_valid_only_mem,
+        .enter          = psci_system_suspend_enter,
+        .begin          = psci_system_suspend_begin,
+ };
 
-- greatly improved coverage of Tablets in hid-selftests (Benjamin 
-  Tissoires)
++static const struct platform_s2idle_ops psci_s2idle_ops = {
++       .begin = psci_system_idle_begin,
++       .prepare_late = psci_system_idle_prepare_late,
++};
++
+ static void __init psci_init_system_reset2(void)
+ {
+        int ret;
+@@ -546,6 +562,8 @@ static void __init psci_init_system_suspend(void)
 
-- support for Nintendo NSO controllers -- SNES, Genesis and N64 (Ryan 
-  McClelland)
+        if (ret != PSCI_RET_NOT_SUPPORTED)
+                suspend_set_ops(&psci_suspend_ops);
++
++       s2idle_set_ops(&psci_s2idle_ops);
+ }
 
-- support for controlling mcp2200 GPIOs (Johannes Roith)
-
-- power management improvement for EHL OOB wakeup in intel-ish (Kai-Heng 
-  Feng)
-
-- other assorted device-specific fixes and code cleanups
-=====
-
-Thanks.
-
-----------------------------------------------------------------
-Basavaraj Natikar (3):
-      HID: amd_sfh: rename float_to_int() to amd_sfh_float_to_int()
-      HID: amd_sfh: Add a new interface for exporting HPD data
-      HID: amd_sfh: Add a new interface for exporting ALS data
-
-Benjamin Tissoires (16):
-      selftests/hid: vmtest.sh: update vm2c and container
-      selftests/hid: vmtest.sh: allow finer control on the build steps
-      selftests/hid: base: allow for multiple skip_if_uhdev
-      selftests/hid: tablets: remove unused class
-      selftests/hid: tablets: move the transitions to PenState
-      selftests/hid: tablets: move move_to function to PenDigitizer
-      selftests/hid: tablets: do not set invert when the eraser is used
-      selftests/hid: tablets: set initial data for tilt/twist
-      selftests/hid: tablets: define the elements of PenState
-      selftests/hid: tablets: add variants of states with buttons
-      selftests/hid: tablets: convert the primary button tests
-      selftests/hid: tablets: add a secondary barrel switch test
-      selftests/hid: tablets: be stricter for some transitions
-      selftests/hid: fix mypy complains
-      selftests/hid: fix ruff linter complains
-      selftests/hid: fix failing tablet button tests
-
-Even Xu (4):
-      HID: Intel-ish-hid: Ishtp: Add helper functions for client connection
-      HID: intel-ish-hid: ishtp-hid-client: use helper functions for connection
-      HID: intel-ish-hid: ishtp-fw-loader: use helper functions for connection
-      platform/chrome: cros_ec_ishtp: use helper functions for connection
-
-Greg Kroah-Hartman (3):
-      HID: make hid_bus_type const
-      HID: make ishtp_cl_bus_type const
-      HID: bpf: make bus_type const in struct hid_bpf_ops
-
-Hamish Martin (3):
-      HID: mcp2221: Set ACPI companion
-      HID: mcp2221: Don't set bus speed on every transfer
-      HID: mcp2221: Handle reads greater than 60 bytes
-
-Hans de Goede (7):
-      HID: i2c-hid: Fold i2c_hid_execute_reset() into i2c_hid_hwreset()
-      HID: i2c-hid: Split i2c_hid_hwreset() in start() and finish() functions
-      HID: i2c-hid: Switch i2c_hid_parse() to goto style error handling
-      HID: i2c-hid: Move i2c_hid_finish_hwreset() to after reading the report-descriptor
-      HID: i2c-hid: Turn missing reset ack into a warning
-      HID: i2c-hid: Remove I2C_HID_QUIRK_SET_PWR_WAKEUP_DEV quirk
-      HID: i2c-hid: Renumber I2C_HID_QUIRK_ defines
-
-Jason Gerecke (2):
-      HID: wacom: Correct behavior when processing some confidence == false touches
-      HID: wacom: Add additional tests of confidence behavior
-
-Jiri Kosina (1):
-      HID: magicmouse: fix kerneldoc for struct magicmouse_sc
-
-Johannes Roith (1):
-      HID: mcp2200: added driver for GPIOs of MCP2200
-
-Kai-Heng Feng (1):
-      HID: intel-ish-hid: ipc: Rework EHL OOB wakeup
-
-Ryan McClelland (1):
-      HID: nintendo: add support for nso controllers
-
-Tatsunosuke Tobita (1):
-      HID: wacom: Remove AES power_supply after extended inactivity
-
-Vicki Pfau (7):
-      HID: hid-steam: Avoid overwriting smoothing parameter
-      HID: hid-steam: Disable watchdog instead of using a heartbeat
-      HID: hid-steam: Clean up locking
-      HID: hid-steam: Make client_opened a counter
-      HID: hid-steam: Update list of identifiers from SDL
-      HID: hid-steam: Better handling of serial number length
-      HID: hid-steam: Add gamepad-only mode switched to by holding options
-
-Yauhen Kharuzhy (1):
-      HID: sensor-hub: Enable hid core report processing for all devices
-
-Zhengqiao Xia (2):
-      dt-bindings: HID: i2c-hid: elan: Introduce Ilitek ili2901
-      HID: i2c-hid: elan: Add ili2901 timing
-
- .../devicetree/bindings/input/elan,ekth6915.yaml   |   5 +-
- drivers/hid/Kconfig                                |  22 +-
- drivers/hid/Makefile                               |   1 +
- drivers/hid/amd-sfh-hid/amd_sfh_common.h           |   6 +
- drivers/hid/amd-sfh-hid/sfh1_1/amd_sfh_desc.c      |  28 +-
- drivers/hid/amd-sfh-hid/sfh1_1/amd_sfh_init.c      |  20 +
- drivers/hid/amd-sfh-hid/sfh1_1/amd_sfh_interface.c |  59 ++
- drivers/hid/amd-sfh-hid/sfh1_1/amd_sfh_interface.h |   2 +
- drivers/hid/hid-core.c                             |   2 +-
- drivers/hid/hid-ids.h                              |   6 +-
- drivers/hid/hid-magicmouse.c                       |   3 +
- drivers/hid/hid-mcp2200.c                          | 392 +++++++++
- drivers/hid/hid-mcp2221.c                          |  72 +-
- drivers/hid/hid-nintendo.c                         | 897 +++++++++++++++------
- drivers/hid/hid-sensor-hub.c                       |   2 +-
- drivers/hid/hid-steam.c                            | 547 +++++++++----
- drivers/hid/i2c-hid/i2c-hid-core.c                 | 137 ++--
- drivers/hid/i2c-hid/i2c-hid-of-elan.c              |   8 +
- drivers/hid/intel-ish-hid/ipc/pci-ish.c            |  67 +-
- drivers/hid/intel-ish-hid/ishtp-fw-loader.c        |  60 +-
- drivers/hid/intel-ish-hid/ishtp-hid-client.c       |  63 +-
- drivers/hid/intel-ish-hid/ishtp/bus.c              |   2 +-
- drivers/hid/intel-ish-hid/ishtp/client.c           | 185 ++++-
- drivers/hid/wacom.h                                |   1 +
- drivers/hid/wacom_sys.c                            |   8 +
- drivers/hid/wacom_wac.c                            |  44 +-
- drivers/hid/wacom_wac.h                            |   1 +
- drivers/platform/chrome/cros_ec_ishtp.c            |  74 +-
- include/linux/amd-pmf-io.h                         |  50 ++
- include/linux/hid.h                                |   2 +-
- include/linux/hid_bpf.h                            |   2 +-
- include/linux/intel-ish-client-if.h                |   3 +
- tools/testing/selftests/hid/tests/base.py          |   7 +-
- tools/testing/selftests/hid/tests/test_mouse.py    |  14 +-
- tools/testing/selftests/hid/tests/test_tablet.py   | 764 ++++++++++++------
- .../selftests/hid/tests/test_wacom_generic.py      | 282 ++++++-
- tools/testing/selftests/hid/vmtest.sh              |  46 +-
- 37 files changed, 2834 insertions(+), 1050 deletions(-)
- create mode 100644 drivers/hid/hid-mcp2200.c
- create mode 100644 include/linux/amd-pmf-io.h
-
--- 
-Jiri Kosina
-SUSE Labs
+ static void __init psci_init_cpu_suspend(void)
 
 
