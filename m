@@ -1,107 +1,130 @@
-Return-Path: <linux-kernel+bounces-19851-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19852-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0899C82754F
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 17:35:13 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F42F827553
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 17:35:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A8814B22E2A
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 16:35:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4449C1C229B2
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 16:35:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 822215380F;
-	Mon,  8 Jan 2024 16:35:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="dSDcafJg"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9D4D53E13;
+	Mon,  8 Jan 2024 16:35:19 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-vs1-f41.google.com (mail-vs1-f41.google.com [209.85.217.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E340F42AB2
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 16:34:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-vs1-f41.google.com with SMTP id ada2fe7eead31-46788b25f95so253414137.0
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 08:34:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704731697; x=1705336497; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Aaeb09tWE1K+nwOrTBr/Ka6fbm31sgc04gxFPmYXCe4=;
-        b=dSDcafJgdh6UvHr8xZ/7oaLibyPvUBDAsV4FJRLYtaWkabgBNhU2CL1mDzdbz5fcRM
-         qTXC36McWHrFo3yKwl0Cd5ElStW4bY3pozacHH30Em0PwHjMghonkWn73D+JIGiSYFYh
-         oooL3++lTkfY07HRFv+Sbe4TOyFsumDg7xQLGDD4aqQyEREjJabkAFxEKRv4CU42PbuU
-         F9EeSR+l1D4aSq8PtRjC2/ebUHlb35evngb5+GEqflWIYYOEhK2ZX3KgnojPZngNXK8M
-         YWvgiROyVEzuIbHrY+34eYq+vvgH8hHjXiaQ18AYaWGd7qRLtSWLbEmRo3HW61q9WAgg
-         OHLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704731697; x=1705336497;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Aaeb09tWE1K+nwOrTBr/Ka6fbm31sgc04gxFPmYXCe4=;
-        b=DonQ4legsl+6B7U0m6+9ukNtDALGIic+0+kDRyF9maujEmWMj8d8ZJDd3tKf4f8AbX
-         +MUBYBgiHn5t63trRVh35vCMWrOsL7auQutYRS/CQC59HBfIxQ8umbjY+d5TEWCEzL7h
-         5DsD71yceH1Smw1Ds/6ggp3p+kxPWhT+ufqwAUACGNrx1SfyMg9+OKeDLF5dxnYiq02m
-         wDYdef43PiHyKILvkWsy3T0inu7+QSZFOKnEkj1kcZwKsRsdxgpnewR8i6VbxFZkSP6u
-         Ypl1d8WdcZlTufP3uWahhSJrlBhaI46t9hKdf/KH+QfNHlvlavPqxfnmtERRO4qWoJKl
-         PfVA==
-X-Gm-Message-State: AOJu0YxZfLuIIoczB494UhqPXEQJBdX7DFz+2MklVcER5Q4YRUKShF8V
-	oEYU5iH9MLiG8b+w++dVGb+GSbUz+Pn3eQ==
-X-Google-Smtp-Source: AGHT+IGQ0arLRW2+JcH6xmHwAlc+Cv6QrAiA3W02JuecyXKxM31mvSYE9QkoJVTjcNvoa88gdfyFQg==
-X-Received: by 2002:a05:6102:4b87:b0:467:1786:6144 with SMTP id ic7-20020a0561024b8700b0046717866144mr2027372vsb.30.1704731696796;
-        Mon, 08 Jan 2024 08:34:56 -0800 (PST)
-Received: from ubuntu-server-vm-macos (072-189-067-006.res.spectrum.com. [72.189.67.6])
-        by smtp.gmail.com with ESMTPSA id i18-20020ab03752000000b007cd2ad6e1e0sm14811uat.38.2024.01.08.08.34.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Jan 2024 08:34:56 -0800 (PST)
-Date: Mon, 8 Jan 2024 16:34:54 +0000
-From: William Breathitt Gray <william.gray@linaro.org>
-To: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
-Cc: lee@kernel.org, alexandre.torgue@foss.st.com, linux-iio@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 03/10] counter: stm32-timer-cnt: adopt signal
- definitions
-Message-ID: <ZZwkLhQZsL9RPuWt@ubuntu-server-vm-macos>
-References: <20231220145726.640627-1-fabrice.gasnier@foss.st.com>
- <20231220145726.640627-4-fabrice.gasnier@foss.st.com>
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDBAE54664;
+	Mon,  8 Jan 2024 16:35:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3C484FEC;
+	Mon,  8 Jan 2024 08:36:02 -0800 (PST)
+Received: from [192.168.178.6] (unknown [172.31.20.19])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A9D683F64C;
+	Mon,  8 Jan 2024 08:35:10 -0800 (PST)
+Message-ID: <158a8c60-cb54-43c1-8232-6a0a46cc6d42@arm.com>
+Date: Mon, 8 Jan 2024 17:35:08 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="2A3cd3ictZgfwlWr"
-Content-Disposition: inline
-In-Reply-To: <20231220145726.640627-4-fabrice.gasnier@foss.st.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 1/5] cpufreq: Add a cpufreq pressure feedback for the
+ scheduler
+Content-Language: en-US
+To: Vincent Guittot <vincent.guittot@linaro.org>, linux@armlinux.org.uk,
+ catalin.marinas@arm.com, will@kernel.org, sudeep.holla@arm.com,
+ rafael@kernel.org, viresh.kumar@linaro.org, agross@kernel.org,
+ andersson@kernel.org, konrad.dybcio@linaro.org, mingo@redhat.com,
+ peterz@infradead.org, juri.lelli@redhat.com, rostedt@goodmis.org,
+ bsegall@google.com, mgorman@suse.de, bristot@redhat.com,
+ vschneid@redhat.com, lukasz.luba@arm.com, rui.zhang@intel.com,
+ mhiramat@kernel.org, daniel.lezcano@linaro.org, amit.kachhap@gmail.com,
+ corbet@lwn.net, gregkh@linuxfoundation.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-pm@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, linux-doc@vger.kernel.org
+Cc: qyousef@layalina.io
+References: <20240108134843.429769-1-vincent.guittot@linaro.org>
+ <20240108134843.429769-2-vincent.guittot@linaro.org>
+From: Dietmar Eggemann <dietmar.eggemann@arm.com>
+In-Reply-To: <20240108134843.429769-2-vincent.guittot@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
+On 08/01/2024 14:48, Vincent Guittot wrote:
+> Provide to the scheduler a feedback about the temporary max available
+> capacity. Unlike arch_update_thermal_pressure, this doesn't need to be
+> filtered as the pressure will happen for dozens ms or more.
 
---2A3cd3ictZgfwlWr
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Is this then related to the 'medium pace system pressure' you mentioned
+in your OSPM '23 talk?
 
-On Wed, Dec 20, 2023 at 03:57:19PM +0100, Fabrice Gasnier wrote:
-> Adopt signals definitions to ease later signals additions.
-> There are no intended functional changes here.
->=20
-> Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+> 
+> Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
+> ---
+>  drivers/cpufreq/cpufreq.c | 36 ++++++++++++++++++++++++++++++++++++
+>  include/linux/cpufreq.h   | 10 ++++++++++
+>  2 files changed, 46 insertions(+)
+> 
+> diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
+> index 44db4f59c4cc..fa2e2ea26f7f 100644
+> --- a/drivers/cpufreq/cpufreq.c
+> +++ b/drivers/cpufreq/cpufreq.c
+> @@ -2563,6 +2563,40 @@ int cpufreq_get_policy(struct cpufreq_policy *policy, unsigned int cpu)
+>  }
+>  EXPORT_SYMBOL(cpufreq_get_policy);
+>  
+> +DEFINE_PER_CPU(unsigned long, cpufreq_pressure);
+> +
+> +/**
+> + * cpufreq_update_pressure() - Update cpufreq pressure for CPUs
+> + * @policy: cpufreq policy of the CPUs.
+> + *
+> + * Update the value of cpufreq pressure for all @cpus in the policy.
+> + */
+> +static void cpufreq_update_pressure(struct cpufreq_policy *policy)
+> +{
+> +	unsigned long max_capacity, capped_freq, pressure;
+> +	u32 max_freq;
+> +	int cpu;
+> +
+> +	/*
+> +	 * Handle properly the boost frequencies, which should simply clean
+> +	 * the thermal pressure value.
+               ^^^^^^^
+IMHO, this is a copy & paste error from topology_update_thermal_pressure()?
 
-Reviewed-by: William Breathitt Gray <william.gray@linaro.org>
+> +	 */
+> +	if (max_freq <= capped_freq) {
 
---2A3cd3ictZgfwlWr
-Content-Type: application/pgp-signature; name="signature.asc"
+max_freq seems to be uninitialized.
 
------BEGIN PGP SIGNATURE-----
+> +		pressure = 0;
 
-iHUEABYIAB0WIQSNN83d4NIlKPjon7a1SFbKvhIjKwUCZZwkLgAKCRC1SFbKvhIj
-K/5VAP9dNxQRO/rMnLCWzROjUOk/Yef+aY3rTJDWSCLMEphZ+gD/b4LhAHIbnPCY
-PxZZZd7COd6FDzoCqPsZKQ4NM47JYw8=
-=hX0c
------END PGP SIGNATURE-----
+Is this x86 (turbo boost) specific? IMHO at arm we follow this max freq
+(including boost) relates to 1024 in capacity? Or haven't we made this
+discussion yet?
 
---2A3cd3ictZgfwlWr--
+> +	} else {
+> +		cpu = cpumask_first(policy->related_cpus);
+> +		max_capacity = arch_scale_cpu_capacity(cpu);
+> +		capped_freq = policy->max;
+> +		max_freq = arch_scale_freq_ref(cpu);
+> +
+> +		pressure = max_capacity -
+> +			   mult_frac(max_capacity, capped_freq, max_freq);
+> +	}
+> +
+> +	for_each_cpu(cpu, policy->related_cpus)
+> +		WRITE_ONCE(per_cpu(cpufreq_pressure, cpu), pressure);
+> +}
+> +
+
+[...]
+
 
