@@ -1,131 +1,221 @@
-Return-Path: <linux-kernel+bounces-19612-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19614-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B5303826FB1
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 14:27:50 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E6035826FBA
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 14:28:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5EF4E1F23113
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 13:27:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0AB081C2286E
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 13:28:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62C9D44C87;
-	Mon,  8 Jan 2024 13:27:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4882B44C8D;
+	Mon,  8 Jan 2024 13:28:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="L133qaA2"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="IKbwcL/e"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08B6344C7F;
-	Mon,  8 Jan 2024 13:27:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 408DG8Yo005240;
-	Mon, 8 Jan 2024 13:27:39 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:mime-version:content-type; s=
-	qcppdkim1; bh=Cz9N0Iv039pO0J3plF5Oz0zQifQGedt5jqRTlubgixI=; b=L1
-	33qaA2hKvcsykHXx4JvjAmwKQit65Zze3fhkD+m7tVYbKR7F2N0bIjD4e6mNXRTC
-	5YUjO6la4cd7WhniphbTtTuPAVQ8XSZ0fuXywxAtD99XZOjqm8lA+ynHNjOia3is
-	SjEpjxtxdKh7wMttKYwXRIjhMFsOn0nNADsS0Xa8TSSWrGjuUYGk4WexyCeJ4dkx
-	oFTtVlcB+AYb3sdTk6J/gAK3IGPs4OYbJv3TDgzilRRSPbmAR80aOAqJq/m1eBj+
-	Ib3+ce8s1fOfNPGSLrQn3HsLTPzmOmPPrOzJyHWhuPQ3/NPIwdPDXTio616Ow8Q0
-	+m1iM0TyONLmJkFVU3nw==
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vgbuj8tk3-1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B97B24595B;
+	Mon,  8 Jan 2024 13:28:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 408Cav1c030726;
+	Mon, 8 Jan 2024 13:28:02 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=YZrtjlymUFc4byqHO1ZhX/gQFMaIFJDcdnbyP0K+LSI=;
+ b=IKbwcL/eOoBuDHEQ5WyDwT1cYYmJcSOZgTLdbRnUJj777wJTvtiX/MWyfjTaOCddZgLQ
+ tj1eMQqu6ZDHmkDWoA1mlyBg5GG9TRwJIBsL1F66jj5lVb/D0B8HkGnKJrW1iL3W9mqK
+ damzBE/oVpTFoa5NVv7Hpze6MwyVZbCd87kUDGwspm0X5kZ2VO8Pf542bFiWyHH6dvyw
+ vYIEFR5d4L53caymKeIZkypaqq7DLwl9yzntLriTfIBn48FFT0Vd/Qf/dtydkaYSColp
+ x5n3AaUf/OWNAAJbCFdQHE6dXQedGhWHTFKL9bRS+k9othUH+IjqkRWFDSjt5oarMQ11 7Q== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vg9jjkssf-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 08 Jan 2024 13:27:39 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 408DRcpV011973
+	Mon, 08 Jan 2024 13:28:02 +0000
+Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 408Cav1Y030697;
+	Mon, 8 Jan 2024 13:28:01 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vg9jjksrv-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 8 Jan 2024 13:27:38 GMT
-Received: from hu-ugoswami-hyd.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Mon, 8 Jan 2024 05:27:36 -0800
-From: Udipto Goswami <quic_ugoswami@quicinc.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC: Krishna Kurapati <quic_kriskura@quicinc.com>, <linux-usb@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Udipto Goswami <quic_ugoswami@quicinc.com>
-Subject: [PATCH v2] usb: gadget: ncm: Fix indentations in documentation of NCM section
-Date: Mon, 8 Jan 2024 18:57:20 +0530
-Message-ID: <20240108132720.7786-1-quic_ugoswami@quicinc.com>
-X-Mailer: git-send-email 2.17.1
+	Mon, 08 Jan 2024 13:28:01 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 408AwFvQ027026;
+	Mon, 8 Jan 2024 13:28:01 GMT
+Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
+	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3vfkw1qmj8-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 08 Jan 2024 13:28:00 +0000
+Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
+	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 408DRvaP26673730
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 8 Jan 2024 13:27:57 GMT
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id C488720063;
+	Mon,  8 Jan 2024 13:27:57 +0000 (GMT)
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 634FC2004E;
+	Mon,  8 Jan 2024 13:27:57 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+	by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Mon,  8 Jan 2024 13:27:57 +0000 (GMT)
+From: Sumanth Korikkar <sumanthk@linux.ibm.com>
+To: linux-mm <linux-mm@kvack.org>, Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>
+Cc: Oscar Salvador <osalvador@suse.de>, Michal Hocko <mhocko@suse.com>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Sumanth Korikkar <sumanthk@linux.ibm.com>
+Subject: [PATCH v6 0/5] implement "memmap on memory" feature on s390
+Date: Mon,  8 Jan 2024 14:27:42 +0100
+Message-Id: <20240108132747.3238763-1-sumanthk@linux.ibm.com>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 7sfaMaf-krFeYvCKwbT0-1gCbFEM438K
-X-Proofpoint-ORIG-GUID: 7sfaMaf-krFeYvCKwbT0-1gCbFEM438K
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: HWLEJXtVwxL90AxRfylw2WIkcf-hiU-U
+X-Proofpoint-GUID: mfEpPjY0k2GxBpgTstDeLz0jnu_CNXe4
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 suspectscore=0
- bulkscore=0 phishscore=0 adultscore=0 priorityscore=1501 mlxscore=0
- mlxlogscore=576 lowpriorityscore=0 malwarescore=0 impostorscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2401080116
+ definitions=2024-01-08_04,2024-01-08_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ mlxlogscore=579 spamscore=0 mlxscore=0 clxscore=1011 bulkscore=0
+ malwarescore=0 impostorscore=0 suspectscore=0 phishscore=0
+ lowpriorityscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2311290000 definitions=main-2401080115
 
-Currently, the section of NCM which describes attributes are having wrong
-indentation.
+Hi All,
 
-Fix this by following the correct format recommended.
+This series provides "memmap on memory" support on s390 platform.
+"memmap on memory" allows struct pages array to be allocated from the
+hotplugged memory range instead of allocating it from main system
+memory.
 
-Fixes: 1900daeefd3e ("usb: gadget: ncm: Add support to update wMaxSegmentSize via configfs")
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Closes: https://lore.kernel.org/all/20240108160221.743649b5@canb.auug.org.au/
-Signed-off-by: Udipto Goswami <quic_ugoswami@quicinc.com>
----
-v2: Added "Reported-by" and "Closes" tags.
+s390 currently preallocates struct pages array for all potentially
+possible memory, which ensures memory onlining always succeeds, but with
+the cost of significant memory consumption from the available system
+memory during boottime. In certain extreme configuration, this could
+lead to ipl failure.
 
- Documentation/usb/gadget-testing.rst | 22 +++++++++++-----------
- 1 file changed, 11 insertions(+), 11 deletions(-)
+"memmap on memory" ensures struct pages array are populated from self
+contained hotplugged memory range instead of depleting the available
+system memory  and this could eliminate ipl failure on s390 platform.
 
-diff --git a/Documentation/usb/gadget-testing.rst b/Documentation/usb/gadget-testing.rst
-index 8cd62c466d20..077dfac7ed98 100644
---- a/Documentation/usb/gadget-testing.rst
-+++ b/Documentation/usb/gadget-testing.rst
-@@ -448,17 +448,17 @@ Function-specific configfs interface
- The function name to use when creating the function directory is "ncm".
- The NCM function provides these attributes in its function directory:
- 
--	===============   ==================================================
--	ifname		  network device interface name associated with this
--			  function instance
--	qmult		  queue length multiplier for high and super speed
--	host_addr	  MAC address of host's end of this
--			  Ethernet over USB link
--	dev_addr	  MAC address of device's end of this
--			  Ethernet over USB link
--	max_segment_size  Segment size required for P2P connections. This
--			  will set MTU to (max_segment_size - 14 bytes)
--	===============   ==================================================
-+	======================= ==================================================
-+	ifname			network device interface name associated with this
-+				function instance
-+	qmult			queue length multiplier for high and super speed
-+	host_addr		MAC address of host's end of this
-+				Ethernet over USB link
-+	dev_addr		MAC address of device's end of this
-+				Ethernet over USB link
-+	max_segment_size	Segment size required for P2P connections. This
-+				will set MTU to 14 bytes
-+	======================= ==================================================
- 
- and after creating the functions/ncm.<instance name> they contain default
- values: qmult is 5, dev_addr and host_addr are randomly selected.
+On other platforms, system might go OOM when the physically hotplugged
+memory depletes the available memory before it is onlined. Hence,
+"memmap on memory" feature was introduced as described in commit
+a08a2ae34613 ("mm,memory_hotplug: allocate memmap from the added memory
+range").
+
+Unlike other architectures, s390 memory blocks are not physically accessible
+until it is online.  To make it physically accessible two new memory
+notifiers MEM_PREPARE_ONLINE / MEM_FINISH_OFFLINE are added and this
+notifier lets the hypervisor inform that the memory should be made
+physically accessible. This allows for "memmap on memory" initialization
+during memory hotplug onlining phase, which is performed before calling
+MEM_GOING_ONLINE notifier.
+
+Patch 1 introduces  MEM_PREPARE_ONLINE/MEM_FINISH_OFFLINE memory
+notifiers to prepare the transition of memory to and from a physically
+accessible state. New mhp_flag MHP_OFFLINE_INACCESSIBLE is introduced to
+ensure altmap cannot be written when adding memory - before it is set
+online. This enhancement is crucial for implementing the "memmap on
+memory" feature for s390 in a subsequent patch.
+
+Patches 2 allocates vmemmap pages from self-contained memory range for
+s390. It allocates memory map (struct pages array) from the hotplugged
+memory range, rather than using system memory by passing altmap to
+vmemmap functions.
+
+Patch 3 removes unhandled memory notifier types on s390.
+
+Patch 4 implements MEM_PREPARE_ONLINE/MEM_FINISH_OFFLINE memory
+notifiers on s390. MEM_PREPARE_ONLINE memory notifier makes memory block
+physical accessible via sclp assign command. The notifier ensures
+self-contained memory maps are accessible and hence enabling the "memmap
+on memory" on s390. MEM_FINISH_OFFLINE memory notifier shifts the memory
+block to an inaccessible state via sclp unassign command.
+
+Patch 5 finally enables MHP_MEMMAP_ON_MEMORY on s390.
+
+v6:
+* Added usecase description in cover letter.
+* Rebased against mm branch. Added mhp_flag parameter to
+  create_altmaps_and_memory_blocks() inorder to rebase patch1.
+
+v5:
+* Added reviewed-by
+* Removed  variables altmap_start, altmap_size in sclp_cmd.c
+* Used PFN_PHYS macro.
+
+Thanks for the valualble feedback.
+
+v4:
+* Introduced two new fields, altmap_start_pfn and altmap_nr_pages, in
+  the memory_notify structure and document it that it is used only in 
+  MEM_PREPARE_ONLINE/MEM_FINISH_OFFLINE callbacks.
+* Incorporated the newly added fields into s390's
+  MEM_PREPARE_ONLINE/MEM_FINISH_OFFLINE notifier callbacks.
+* Prevent access to memblock->altmap->free in the s390 notifier callback.
+* page_init_poison() could be performed similar to when adding new
+  memory in sparse_add_section(). Perform it without cond_resched().
+
+v3:
+* added comments to MHP_OFFLINE_ACCESSIBLE as suggested by David.
+* Squashed three commits related to new memory notifier.
+
+v2:
+* Fixes are integrated and hence removed from this patch series
+Suggestions from David:
+* Add new flag MHP_OFFLINE_INACCESSIBLE to avoid accessing memory
+  during memory hotplug addition phase.
+* Avoid page_init_poison() on memmap during mhp addition phase, when
+  MHP_OFFLINE_INACCESSIBLE mhp_flag is passed in add_memory().
+* Do not skip add_pages() in arch_add_memory(). Similarly, remove
+  similar hacks in arch_remove_memory(). 
+* Use MHP_PREPARE_ONLINE/MHP_FINISH_OFFLINE naming convention for
+  new memory notifiers.
+* Rearrange removal of unused s390 memory notifier.
+* Necessary commit messages changes.
+
+Thank you
+
+Sumanth Korikkar (5):
+  mm/memory_hotplug: introduce MEM_PREPARE_ONLINE/MEM_FINISH_OFFLINE
+    notifiers
+  s390/mm: allocate vmemmap pages from self-contained memory range
+  s390/sclp: remove unhandled memory notifier type
+  s390/mm: implement MEM_PREPARE_ONLINE/MEM_FINISH_OFFLINE notifiers
+  s390: enable MHP_MEMMAP_ON_MEMORY
+
+ arch/s390/Kconfig              |  1 +
+ arch/s390/mm/init.c            |  3 --
+ arch/s390/mm/vmem.c            | 62 +++++++++++++++++++---------------
+ drivers/base/memory.c          | 23 ++++++++++++-
+ drivers/s390/char/sclp_cmd.c   | 44 +++++++++++++++++++-----
+ include/linux/memory.h         |  9 +++++
+ include/linux/memory_hotplug.h | 18 +++++++++-
+ include/linux/memremap.h       |  1 +
+ mm/memory_hotplug.c            | 17 ++++++++--
+ mm/sparse.c                    |  3 +-
+ 10 files changed, 136 insertions(+), 45 deletions(-)
+
 -- 
-2.17.1
+2.40.1
 
 
