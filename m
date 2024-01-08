@@ -1,91 +1,167 @@
-Return-Path: <linux-kernel+bounces-20147-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20148-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39498827A92
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 23:28:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 38DD6827AA0
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 23:31:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C71961F23F38
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 22:28:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D87232848DD
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 22:31:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1376E5646E;
-	Mon,  8 Jan 2024 22:28:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54EAC1E48B;
+	Mon,  8 Jan 2024 22:31:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Yb8RtHfE"
-Received: from mail-pg1-f181.google.com (mail-pg1-f181.google.com [209.85.215.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="JbevQwjH"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F9BE53811
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 22:28:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pg1-f181.google.com with SMTP id 41be03b00d2f7-5ca29c131ebso1809685a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 14:28:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1704752912; x=1705357712; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=XIz5GdX77lFb9OhsM/0GWdi8bxP1o8+l8qU3iYNTkSE=;
-        b=Yb8RtHfEoYjzjdKO1D/wsgNTBukl8fQvr4jlvb9SNUSDR1jtZ+4NKxCf+MlzSqax3f
-         sGKOiq2ndM5uL2102g2cFSftnInPGvEjhgAXgyXrSW69x4RhVQ9YUo+bigRpSBKdVdQP
-         niCZJwFjvD7rs9DOVDhPTPQZP4okiebXlM9Ng=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704752912; x=1705357712;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XIz5GdX77lFb9OhsM/0GWdi8bxP1o8+l8qU3iYNTkSE=;
-        b=MLag60/IHpk5NPcA8d34hhrdxS7EaNdx8MFHpeMF8iRcuVAUmawyy/zllbM20bQXJQ
-         BpgxHFX4mobJBBEzF46vqEFV8kexIFpK0Ev57h74XOZBhR2yLoVhdqSMPYvdhXkKg72A
-         k+YruDumn4m2oLTnWptgOkmxNwZ2KQPCwK9MnzDR2hnkCjOhCmNLx5fSRejjwLLueabd
-         TPjpultOxXtbW1RTbnt0WclxZqt4VJFZHooN3iWKZIXpPJH0v95Yo5Qv3P/ksbWeTZuS
-         Rcy2pIZUqWSJb6iEbow+l0jCeyi6ps4UTRBw52MC+tq0wFWSjFTAKUObGwci1R/rbbMI
-         +yeQ==
-X-Gm-Message-State: AOJu0Yzs1PMm/EZO+KrARrrbO3MkPAw89QipKJYGNApWWwjaEsAu1RZp
-	0th8oBDt0uhKSYaI/dTUVNT5mxsI+TYe
-X-Google-Smtp-Source: AGHT+IFtKmKYgClXz3t7LX7s+lUEissTL9t51VE4k00tztjPyrp7lFr66tearov/dGpx4eZr9Vy+dA==
-X-Received: by 2002:a05:6a20:2589:b0:199:dd55:1459 with SMTP id k9-20020a056a20258900b00199dd551459mr934233pzd.81.1704752912438;
-        Mon, 08 Jan 2024 14:28:32 -0800 (PST)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id q17-20020a62ae11000000b006d9361fcfc8sm367358pff.177.2024.01.08.14.28.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Jan 2024 14:28:31 -0800 (PST)
-Date: Mon, 8 Jan 2024 14:28:30 -0800
-From: Kees Cook <keescook@chromium.org>
-To: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
-Cc: linux-hardening@vger.kernel.org, error27@gmail.com,
-	gustavoars@kernel.org, Bryan Tan <bryantan@vmware.com>,
-	Vishnu Dasa <vdasa@vmware.com>,
-	VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	linux-kernel@vger.kernel.org, vegard.nossum@oracle.com,
-	darren.kenny@oracle.com
-Subject: Re: [PATCH v2 1/2] VMCI: Use struct_size() in kmalloc()
-Message-ID: <202401081428.F7A80008D2@keescook>
-References: <20240105164001.2129796-1-harshit.m.mogalapalli@oracle.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10FF415AE
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 22:31:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1704753098;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=g3fhJdYhF0Jh8djZ9CbUM5+BZiYxRI9hKlm7wmHneNE=;
+	b=JbevQwjH+fHrkK9/mBGibU5ioKXJswKOLbwzX7C9bUQpe1H68tPLjwj6+asKZ+Dkf39Gja
+	JjSFx8czVjG4wtFS/bGkf5CuVM1UtpFeTUfrLohoZGB2h7C/WmAK0PfVNOUeTxGSRXzibI
+	ZijLbrj0g0Tyb9Fw90dIylz8HmUVM20=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-124-mFt6nnssNiyKD7dLtjUHgg-1; Mon,
+ 08 Jan 2024 17:31:35 -0500
+X-MC-Unique: mFt6nnssNiyKD7dLtjUHgg-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 4CFBE1C29EAA;
+	Mon,  8 Jan 2024 22:31:34 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.27])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id BECCF1121306;
+	Mon,  8 Jan 2024 22:31:30 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+	Kingdom.
+	Registered in England and Wales under Company Registration No. 3798903
+From: David Howells <dhowells@redhat.com>
+In-Reply-To: <20240107160916.GA129355@kernel.org>
+References: <20240107160916.GA129355@kernel.org> <20240103145935.384404-1-dhowells@redhat.com> <20240103145935.384404-2-dhowells@redhat.com>
+To: Simon Horman <horms@kernel.org>
+Cc: dhowells@redhat.com, Christian Brauner <christian@brauner.io>,
+    Jeff Layton <jlayton@kernel.org>,
+    Gao Xiang <hsiangkao@linux.alibaba.com>,
+    Dominique Martinet <asmadeus@codewreck.org>,
+    Steve French <smfrench@gmail.com>,
+    Matthew Wilcox <willy@infradead.org>,
+    Marc Dionne <marc.dionne@auristor.com>,
+    Paulo Alcantara <pc@manguebit.com>,
+    Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>,
+    Eric Van Hensbergen <ericvh@kernel.org>,
+    Ilya Dryomov <idryomov@gmail.com>, linux-cachefs@redhat.com,
+    linux-afs@lists.infradead.org, linux-cifs@vger.kernel.org,
+    linux-nfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+    v9fs@lists.linux.dev, linux-erofs@lists.ozlabs.org,
+    linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+    netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+    Yiqun Leng <yqleng@linux.alibaba.com>,
+    Jia Zhu <zhujia.zj@bytedance.com>
+Subject: Re: [PATCH 1/5] cachefiles: Fix __cachefiles_prepare_write()
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240105164001.2129796-1-harshit.m.mogalapalli@oracle.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <1544729.1704753090.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date: Mon, 08 Jan 2024 22:31:30 +0000
+Message-ID: <1544730.1704753090@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
 
-On Fri, Jan 05, 2024 at 08:39:59AM -0800, Harshit Mogalapalli wrote:
-> Use struct_size() instead of open coding.
-> 
-> Suggested-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> Signed-off-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+Simon Horman <horms@kernel.org> wrote:
 
-Yeah, clear replacement.
+> I realise these patches have been accepted, but I have a minor nit:
+> pos is now unsigned, and so cannot be less than zero.
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+Good point.  How about the attached patch.  Whilst I would prefer to use
+unsigned long long to avoid the casts, it might =
 
--- 
-Kees Cook
+
+David
+---
+cachefiles: Fix signed/unsigned mixup
+
+In __cachefiles_prepare_write(), the start and pos variables were made
+unsigned 64-bit so that the casts in the checking could be got rid of -
+which should be fine since absolute file offsets can't be negative, except
+that an error code may be obtained from vfs_llseek(), which *would* be
+negative.  This breaks the error check.
+
+Fix this for now by reverting pos and start to be signed and putting back
+the casts.  Unfortunately, the error value checks cannot be replaced with
+IS_ERR_VALUE() as long might be 32-bits.
+
+Fixes: 7097c96411d2 ("cachefiles: Fix __cachefiles_prepare_write()")
+Reported-by: Simon Horman <horms@kernel.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202401071152.DbKqMQMu-lkp@in=
+tel.com/
+Signed-off-by: David Howells <dhowells@redhat.com>
+cc: Gao Xiang <hsiangkao@linux.alibaba.com>
+cc: Yiqun Leng <yqleng@linux.alibaba.com>
+cc: Jia Zhu <zhujia.zj@bytedance.com>
+cc: Jeff Layton <jlayton@kernel.org>
+cc: linux-cachefs@redhat.com
+cc: linux-erofs@lists.ozlabs.org
+cc: linux-fsdevel@vger.kernel.org
+cc: linux-mm@kvack.org
+---
+ fs/cachefiles/io.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/fs/cachefiles/io.c b/fs/cachefiles/io.c
+index 3eec26967437..9a2cb2868e90 100644
+--- a/fs/cachefiles/io.c
++++ b/fs/cachefiles/io.c
+@@ -522,7 +522,7 @@ int __cachefiles_prepare_write(struct cachefiles_objec=
+t *object,
+ 			       bool no_space_allocated_yet)
+ {
+ 	struct cachefiles_cache *cache =3D object->volume->cache;
+-	unsigned long long start =3D *_start, pos;
++	loff_t start =3D *_start, pos;
+ 	size_t len =3D *_len;
+ 	int ret;
+ =
+
+@@ -556,7 +556,7 @@ int __cachefiles_prepare_write(struct cachefiles_objec=
+t *object,
+ 					  cachefiles_trace_seek_error);
+ 		return pos;
+ 	}
+-	if (pos >=3D start + *_len)
++	if ((u64)pos >=3D (u64)start + *_len)
+ 		goto check_space; /* Unallocated region */
+ =
+
+ 	/* We have a block that's at least partially filled - if we're low on
+@@ -575,7 +575,7 @@ int __cachefiles_prepare_write(struct cachefiles_objec=
+t *object,
+ 					  cachefiles_trace_seek_error);
+ 		return pos;
+ 	}
+-	if (pos >=3D start + *_len)
++	if ((u64)pos >=3D (u64)start + *_len)
+ 		return 0; /* Fully allocated */
+ =
+
+ 	/* Partially allocated, but insufficient space: cull. */
+
 
