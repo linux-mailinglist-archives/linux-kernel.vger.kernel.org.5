@@ -1,171 +1,187 @@
-Return-Path: <linux-kernel+bounces-20111-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20112-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 743148279B4
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 21:54:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C3B838279B6
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 21:55:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2243F285065
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 20:54:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 73FCF282A56
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 20:55:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87F3556777;
-	Mon,  8 Jan 2024 20:53:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B38254BE9;
+	Mon,  8 Jan 2024 20:53:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="C40OVGRf"
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="s/LAsJ23"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5256C5467C;
-	Mon,  8 Jan 2024 20:53:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 408KQdwX009770;
-	Mon, 8 Jan 2024 20:52:01 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=PQMgwo5v8yBuXGGB1Ie/PPOVUlA7ykfCipsRApxniaE=; b=C4
-	0OVGRflLQsXRQU4qbFsHilnQoE9bxWtZ1d3oLCtQ1X4Db4vrdVfWIWLZyLT6baVz
-	7HqyX5JZj2yyzCplVCD+P1fwvKLk66+qxIVqNt0WgRoz/e4uqwk9iw3j0rwHz+gj
-	GiiEf1EzoL4Jq2r1HFdnpf0RxbLfXQt//A+WW2i67m+Xhnf+zAh4A6G8JcuZDTq/
-	URVeT8eCU40mRwA9FXA31lgRyCjCbxBH9kgVfL/UWX0KVhgPtpUmsgjW7e5CEZqA
-	+wRUU4PHR7y8j2EK4l3QG1GVU5upMfMHkleMaC5fblrZqlcshg1/pJN6DiP1NAwZ
-	8oO62aJTPPlJvvw8EHtw==
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vgkkh8rmf-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 08 Jan 2024 20:52:01 +0000 (GMT)
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 408Kq0He011437
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 8 Jan 2024 20:52:00 GMT
-Received: from [10.110.97.125] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 8 Jan
- 2024 12:51:59 -0800
-Message-ID: <7b2ec96b-b72f-c848-7c35-36e61a4072ac@quicinc.com>
-Date: Mon, 8 Jan 2024 12:51:58 -0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BEDB56B67;
+	Mon,  8 Jan 2024 20:53:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1704747228;
+	bh=u4PSZoBxfcNP9TlOlX2nwk0N5IWVfjg8KWDg0/CD2UI=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=s/LAsJ23E8YZ9eBZsxGiEr2hzmRAFpJP/RLC27Bg33uWpHL0UPzVe8s+JjyQe0Cnb
+	 8bWvmGy3M6MDwCagKqs30QUICuQlVW8drCDKKqdoMnal8bCSd9uRqLWjgcir4MQRQy
+	 QPm8t5cZ8Yd2NUL84YnNe0mXTZ1jbriRbh0TSqbik36HAoKPR1ZJrYDU1MUwPtPuwP
+	 nbTlYCWZvnyyBbvTvVlCZn5DvCDBoy4ho6FMYaImGZ+cbzFO8JxeJS+TEJAOMcvqM0
+	 XeYvkcqQ3FIEP2OaMtCFSFprdxO7bgb00ebE3MtzARSExCIkgLpVAfchwk+h4aDE5k
+	 lQp84Ai7RGPXA==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4T85rX1Jhjz4x1P;
+	Tue,  9 Jan 2024 07:53:47 +1100 (AEDT)
+Date: Tue, 9 Jan 2024 07:53:46 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: David Sterba <dsterba@suse.cz>
+Cc: Jan Kara <jack@suse.cz>, Nathan Chancellor <nathan@kernel.org>,
+ Christian Brauner <brauner@kernel.org>, David Sterba <dsterba@suse.com>,
+ Josef Bacik <josef@toxicpanda.com>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>
+Subject: Re: linux-next: manual merge of the vfs-brauner tree with the btrfs
+ tree
+Message-ID: <20240109075346.0e1ac96b@canb.auug.org.au>
+In-Reply-To: <20231130075021.27851843@canb.auug.org.au>
+References: <20231127092001.54a021e8@canb.auug.org.au>
+	<20231128213344.GA3423530@dev-arch.thelio-3990X>
+	<20231129110930.qncvzm63xjg4ucky@quack3>
+	<20231130075021.27851843@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.1
-Subject: Re: [PATCH v12 04/41] usb: host: xhci-mem: Cleanup pending secondary
- event ring events
-Content-Language: en-US
-To: Mathias Nyman <mathias.nyman@linux.intel.com>,
-        <srinivas.kandagatla@linaro.org>, <mathias.nyman@intel.com>,
-        <perex@perex.cz>, <conor+dt@kernel.org>, <corbet@lwn.net>,
-        <gregkh@linuxfoundation.org>, <lgirdwood@gmail.com>,
-        <andersson@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <konrad.dybcio@linaro.org>, <Thinh.Nguyen@synopsys.com>,
-        <broonie@kernel.org>, <bgoswami@quicinc.com>, <tiwai@suse.com>,
-        <robh+dt@kernel.org>, <agross@kernel.org>
-CC: <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-sound@vger.kernel.org>, <linux-usb@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        <alsa-devel@alsa-project.org>
-References: <20240102214549.22498-1-quic_wcheng@quicinc.com>
- <20240102214549.22498-5-quic_wcheng@quicinc.com>
- <734591a1-50b4-6dc7-0b93-077355ec12e4@linux.intel.com>
-From: Wesley Cheng <quic_wcheng@quicinc.com>
-In-Reply-To: <734591a1-50b4-6dc7-0b93-077355ec12e4@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: h1WdLni0I-RNQn7WJw5CZxOmyf6I2X9g
-X-Proofpoint-ORIG-GUID: h1WdLni0I-RNQn7WJw5CZxOmyf6I2X9g
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 clxscore=1015
- spamscore=0 suspectscore=0 priorityscore=1501 mlxlogscore=748
- impostorscore=0 malwarescore=0 lowpriorityscore=0 bulkscore=0 mlxscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2401080172
+Content-Type: multipart/signed; boundary="Sig_/BWFky=4e=HQX3e3_BD8zGnd";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-Hi Mathias,
+--Sig_/BWFky=4e=HQX3e3_BD8zGnd
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On 1/4/2024 6:48 AM, Mathias Nyman wrote:
-> On 2.1.2024 23.45, Wesley Cheng wrote:
->> As part of xHCI bus suspend, the XHCI is halted.  However, if there are
->> pending events in the secondary event ring, it is observed that the xHCI
->> controller stops responding to further commands upon host or device
->> initiated bus resume.  Iterate through all pending events and update the
->> dequeue pointer to the beginning of the event ring.
->>
->> Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
-> ...
->> +/*
->> + * Move the event ring dequeue pointer to skip events kept in the 
->> secondary
->> + * event ring.  This is used to ensure that pending events in the 
->> ring are
->> + * acknowledged, so the XHCI HCD can properly enter suspend/resume.  The
->> + * secondary ring is typically maintained by an external component.
->> + */
->> +void xhci_skip_sec_intr_events(struct xhci_hcd *xhci,
->> +    struct xhci_ring *ring,    struct xhci_interrupter *ir)
->> +{
->> +    union xhci_trb *erdp_trb, *current_trb;
->> +    u64 erdp_reg;
->> +    u32 iman_reg;
->> +    dma_addr_t deq;
->> +
->> +    /* disable irq, ack pending interrupt and ack all pending events */
->> +    xhci_disable_interrupter(ir);
->> +    iman_reg = readl_relaxed(&ir->ir_set->irq_pending);
->> +    if (iman_reg & IMAN_IP)
->> +        writel_relaxed(iman_reg, &ir->ir_set->irq_pending);
->> +
->> +    /* last acked event trb is in erdp reg  */
->> +    erdp_reg = xhci_read_64(xhci, &ir->ir_set->erst_dequeue);
->> +    deq = (dma_addr_t)(erdp_reg & ERST_PTR_MASK);
->> +    if (!deq) {
->> +        xhci_err(xhci, "event ring handling not required\n");
->> +        return;
->> +    }
->> +
->> +    erdp_trb = current_trb = ir->event_ring->dequeue;
->> +    /* read cycle state of the last acked trb to find out CCS */
->> +    ring->cycle_state = le32_to_cpu(current_trb->event_cmd.flags) & 
->> TRB_CYCLE;
->> +
->> +    while (1) {
->> +        inc_deq(xhci, ir->event_ring);
->> +        erdp_trb = ir->event_ring->dequeue;
->> +        /* cycle state transition */
->> +        if ((le32_to_cpu(erdp_trb->event_cmd.flags) & TRB_CYCLE) !=
->> +            ring->cycle_state)
->> +            break;
->> +    }
->> +
->> +    xhci_update_erst_dequeue(xhci, ir, current_trb, true);
->> +}
-> 
-> Code above is very similar to the existing event ring processing parts 
-> of xhci_irq()
-> and xhci_handle_event()
-> 
-> I'll see if I can refactor the existing event ring processing, decouple 
-> it from
-> event handling so that it could be used by primary and secondary 
-> interrupters with
-> handlers, and this case where we just want to clear the event ring.
-> 
+Hi all,
 
-Thanks, that makes sense.  Will take a look as well.
+On Thu, 30 Nov 2023 07:50:21 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>
+> On Wed, 29 Nov 2023 12:09:30 +0100 Jan Kara <jack@suse.cz> wrote:
+> >
+> > On Tue 28-11-23 14:33:44, Nathan Chancellor wrote: =20
+> > > Hi Stephen (and other maintainers),
+> > >=20
+> > > On Mon, Nov 27, 2023 at 09:20:01AM +1100, Stephen Rothwell wrote:   =
+=20
+> > > > Hi all,
+> > > >=20
+> > > > Today's linux-next merge of the vfs-brauner tree got a conflict in:
+> > > >=20
+> > > >   fs/btrfs/super.c
+> > > >=20
+> > > > between commit:
+> > > >=20
+> > > >   2f2cfead5107 ("btrfs: remove old mount API code")
+> > > >=20
+> > > > from the btrfs tree and commit:
+> > > >=20
+> > > >   ead622674df5 ("btrfs: Do not restrict writes to btrfs devices")
+> > > >=20
+> > > > from the vfs-brauner tree.
+> > > >=20
+> > > > I fixed it up (the former removed the funtion updated by the latter=
+, but
+> > > > a further fix may be required to implement the intent of the latter=
+?)   =20
+> > >=20
+> > > Yes, the lack of ead622674df5 appears to cause issues with mounting
+> > > btrfs volumes on at least next-20231128 due to the presence of commit
+> > > 6f861765464f ("fs: Block writes to mounted block devices"). In QEMU, I
+> > > can see:
+> > >=20
+> > >   :: running early hook [udev]
+> > >   Warning: /lib/modules/6.7.0-rc3-next-20231128/modules.devname not f=
+ound - ignoring
+> > >   Starting systemd-udevd version 252.5-1-arch
+> > >   :: running hook [udev]
+> > >   :: Triggering uevents...
+> > >   :: running hook [keymap]
+> > >   :: Loading keymap...kbd_mode: KDSKBMODE: Inappropriate ioctl for de=
+vice
+> > >   done.
+> > >   :: performing fsck on '/dev/vda2'
+> > >   :: mounting '/dev/vda2' on real root
+> > >   mount: /new_root: wrong fs type, bad option, bad superblock on /dev=
+/vda2, missing codepage or helper program, or other error.
+> > >          dmesg(1) may have more information after failed mount system=
+ call.
+> > >   You are now being dropped into an emergency shell.
+> > >   sh: can't access tty; job control turned off
+> > >   [rootfs ]#
+> > >=20
+> > > The following diff allows my VM to boot properly but I am not sure if
+> > > there is a better or more proper fix (I am already out of my element
+> > > heh). If a proper merge solution cannot be found quickly, can
+> > > 6f861765464f be reverted in the meantime so that all my machines with
+> > > btrfs can boot properly? :)
+> > >=20
+> > > diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+> > > index 99d10a25a579..23db0306b8ef 100644
+> > > --- a/fs/btrfs/super.c
+> > > +++ b/fs/btrfs/super.c
+> > > @@ -299,6 +299,7 @@ static int btrfs_parse_param(struct fs_context *f=
+c,
+> > >  	case Opt_device: {
+> > >  		struct btrfs_device *device;
+> > >  		blk_mode_t mode =3D sb_open_mode(fc->sb_flags);
+> > > +		mode &=3D ~BLK_OPEN_RESTRICT_WRITES;
+> > > =20
+> > >  		mutex_lock(&uuid_mutex);
+> > >  		device =3D btrfs_scan_one_device(param->string, mode, false);
+> > > @@ -1801,6 +1802,8 @@ static int btrfs_get_tree_super(struct fs_conte=
+xt *fc)
+> > >  	blk_mode_t mode =3D sb_open_mode(fc->sb_flags);
+> > >  	int ret;
+> > > =20
+> > > +	mode &=3D ~BLK_OPEN_RESTRICT_WRITES;
+> > > +
+> > >  	btrfs_ctx_to_info(fs_info, ctx);
+> > >  	mutex_lock(&uuid_mutex);   =20
+> >=20
+> > This looks like the proper resolution. Basically btrfs needs to strip
+> > BLK_OPEN_RESTRICT_WRITES from the mode provided by sb_open_mode(). Than=
+ks
+> > for writing it! =20
+>=20
+> I have added this patch as a merge fix from today.
 
-Thanks
-Wesley Cheng
+This is now a conflict between the btrfs tree and Linus' tree.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/BWFky=4e=HQX3e3_BD8zGnd
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmWcYNoACgkQAVBC80lX
+0GzpDgf+NY7RKKB4lCa/PNkJyYvVWs2+h2s8ZNKr/Tc197oQ35TaH+Rx7W7CxRx0
+4qiXE6LuuoYMlJzdqL2M21PR1RSgyuflYBTTa2K7Q7P2ejWzLdE8KASJgU4titsR
+d7uEzyFGXwa/lyFS9hle8O+zRESMscF2swnKl/DtM+RDrpVbIrbWYw5tdEH92mS1
+Bh7ZeDbrANCIgLTNyhLzRDGtuV40Lgw24wzy174cCnkCh+ciNioP8cHYxYcr1BGh
+bo7D5mFaEgwZO+Ew6BCgwtDkYhhk60c4YEmLmIuOqV3uVW+VK7gGsuAJPe6nGCiE
+Y/UI91rdiy0qBEAhaRs/fbCvnJWMIw==
+=ADb9
+-----END PGP SIGNATURE-----
+
+--Sig_/BWFky=4e=HQX3e3_BD8zGnd--
 
