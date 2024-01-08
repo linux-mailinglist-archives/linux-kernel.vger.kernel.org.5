@@ -1,31 +1,39 @@
-Return-Path: <linux-kernel+bounces-19407-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19408-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E513F826C7B
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 12:21:33 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 393C0826C7E
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 12:22:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8B57D283392
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 11:21:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 99485B21F48
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 11:22:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EB0E14AA8;
-	Mon,  8 Jan 2024 11:21:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9592D14A8D;
+	Mon,  8 Jan 2024 11:21:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="rwyaTlET"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9997214ABA
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 11:21:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C3F58C15;
-	Mon,  8 Jan 2024 03:21:58 -0800 (PST)
-Received: from [10.1.197.1] (ewhatever.cambridge.arm.com [10.1.197.1])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 52F3A3F5A1;
-	Mon,  8 Jan 2024 03:21:11 -0800 (PST)
-Message-ID: <137f3f74-0732-4a01-9c14-680ab45107d8@arm.com>
-Date: Mon, 8 Jan 2024 11:21:09 +0000
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06AE72575D;
+	Mon,  8 Jan 2024 11:21:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
+Received: from [192.168.88.20] (91-154-35-128.elisa-laajakaista.fi [91.154.35.128])
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 8C290480;
+	Mon,  8 Jan 2024 12:20:47 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+	s=mail; t=1704712848;
+	bh=Tum8/DuvvQKxm1SdPRKA7qtNnE7rrSJyBakAOivYufU=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=rwyaTlETzQot2HCkB5oLTPp2Yz0vLBGXvD0Lle9YxkmHWZu6EDLfcYb44bHnVjuWj
+	 +SXlD0/RRpGtKgVD9ZP+Je2EqdkHZLqZMMEHr9QK/Wn3zxiu5MJMmpdBhMlQw+tAFI
+	 n+EwDbpaZboJ0H4MHQcyBTIbj6XaTOm+lWcP9kYM=
+Message-ID: <9cd1d791-ea1b-426b-9472-fc0fb9476b4b@ideasonboard.com>
+Date: Mon, 8 Jan 2024 13:21:47 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -33,242 +41,270 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/8] coresight: Make language around "activated" sinks
- consistent
+Subject: Re: [PATCH v5 02/10] media: rkisp1: Support setting memory stride for
+ main path
 Content-Language: en-US
-To: James Clark <james.clark@arm.com>, coresight@lists.linaro.org
-Cc: Mike Leach <mike.leach@linaro.org>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Maxime Coquelin <mcoquelin.stm32@gmail.com>,
- Alexandre Torgue <alexandre.torgue@foss.st.com>,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-stm32@st-md-mailman.stormreply.com
-References: <20231212155407.1429121-1-james.clark@arm.com>
- <20231212155407.1429121-3-james.clark@arm.com>
-From: Suzuki K Poulose <suzuki.poulose@arm.com>
-In-Reply-To: <20231212155407.1429121-3-james.clark@arm.com>
+To: Paul Elder <paul.elder@ideasonboard.com>, linux-media@vger.kernel.org,
+ linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org
+Cc: kieran.bingham@ideasonboard.com, umang.jain@ideasonboard.com,
+ aford173@gmail.com, Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+ Alexander Stein <alexander.stein@ew.tq-group.com>,
+ Dafna Hirschfeld <dafna@fastmail.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>, Heiko Stuebner
+ <heiko@sntech.de>,
+ "moderated list:ARM/Rockchip SoC support"
+ <linux-arm-kernel@lists.infradead.org>,
+ open list <linux-kernel@vger.kernel.org>
+References: <20240106160221.4183409-1-paul.elder@ideasonboard.com>
+ <20240106160221.4183409-3-paul.elder@ideasonboard.com>
+From: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Autocrypt: addr=tomi.valkeinen@ideasonboard.com; keydata=
+ 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
+In-Reply-To: <20240106160221.4183409-3-paul.elder@ideasonboard.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-Hi James,
-
-
-On 12/12/2023 15:53, James Clark wrote:
-> Activated has the specific meaning of a sink that's selected for use by
-> the user via sysfs. But comments in some code that's shared by Perf use
-> the same word, so in those cases change them to just say "selected"
-> instead. With selected implying either via Perf or "activated" via
-> sysfs.
+On 06/01/2024 18:02, Paul Elder wrote:
+> Some versions of the ISP supported by the rkisp1 driver, such as the ISP
+> in the i.MX8MP, implement configurable memory stride for the main path
+> the same way as already implemented by the driver for the self path.
+> Support this feature by adding a main stride feature flag and program
+> the corresponding registers accordingly.
 > 
-> coresight_get_enabled_sink() doesn't actually get an enabled sink, it
-> only gets an activated one, so change that too.
-> 
-
-These changes look good to me. Please see a minor nit below.
-
-> And change the activated variable name to include "sysfs" so it can't
-> be confused as a general status.
-> 
-> Signed-off-by: James Clark <james.clark@arm.com>
+> Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> Signed-off-by: Paul Elder <paul.elder@ideasonboard.com>
+> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> Tested-by: Alexander Stein <alexander.stein@ew.tq-group.com>
+> Tested-by: Adam Ford <aford173@gmail.com>
 > ---
->   drivers/hwtracing/coresight/coresight-core.c | 51 ++++++++------------
->   drivers/hwtracing/coresight/coresight-priv.h |  2 -
->   include/linux/coresight.h                    | 14 +++---
->   3 files changed, 27 insertions(+), 40 deletions(-)
+> Changes since v3:
 > 
-> diff --git a/drivers/hwtracing/coresight/coresight-core.c b/drivers/hwtracing/coresight/coresight-core.c
-> index 965bb6d4e1bf..f79aa9ff9b64 100644
-> --- a/drivers/hwtracing/coresight/coresight-core.c
-> +++ b/drivers/hwtracing/coresight/coresight-core.c
-> @@ -500,7 +500,7 @@ static void coresight_disable_path_from(struct list_head *path,
->   		/*
->   		 * ETF devices are tricky... They can be a link or a sink,
->   		 * depending on how they are configured.  If an ETF has been
-> -		 * "activated" it will be configured as a sink, otherwise
-> +		 * selected as a sink it will be configured as a sink, otherwise
->   		 * go ahead with the link configuration.
->   		 */
->   		if (type == CORESIGHT_DEV_TYPE_LINKSINK)
-> @@ -578,7 +578,7 @@ int coresight_enable_path(struct list_head *path, enum cs_mode mode,
->   		/*
->   		 * ETF devices are tricky... They can be a link or a sink,
->   		 * depending on how they are configured.  If an ETF has been
-> -		 * "activated" it will be configured as a sink, otherwise
-> +		 * selected as a sink it will be configured as a sink, otherwise
->   		 * go ahead with the link configuration.
->   		 */
->   		if (type == CORESIGHT_DEV_TYPE_LINKSINK)
-> @@ -635,15 +635,21 @@ struct coresight_device *coresight_get_sink(struct list_head *path)
->   	return csdev;
->   }
+> - Implement memory stride support
+> - Squash patch that adds register bits definitions
+> - Reword the commit message
+> 
+> Changes since v2:
+> 
+> - Document the RKISP1_FEATURE_MAIN_STRIDE bit
+> - Use the rkisp1_has_feature() macro
+> ---
+>   .../platform/rockchip/rkisp1/rkisp1-capture.c | 34 ++++++++++++-------
+>   .../platform/rockchip/rkisp1/rkisp1-common.h  |  6 ++--
+>   .../platform/rockchip/rkisp1/rkisp1-regs.h    | 27 +++++++++++++++
+>   3 files changed, 52 insertions(+), 15 deletions(-)
+
+Reviewed-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+
+  Tomi
+
+> diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-capture.c b/drivers/media/platform/rockchip/rkisp1/rkisp1-capture.c
+> index c381c22135a2..83a968487f24 100644
+> --- a/drivers/media/platform/rockchip/rkisp1/rkisp1-capture.c
+> +++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-capture.c
+> @@ -442,6 +442,14 @@ static void rkisp1_mp_config(struct rkisp1_capture *cap)
+>   	rkisp1_write(rkisp1, cap->config->mi.cr_size_init,
+>   		     rkisp1_pixfmt_comp_size(pixm, RKISP1_PLANE_CR));
 >   
-> +/**
-> + * coresight_find_activated_sysfs_sink - returns the first sink activated via
-> + * sysfs using connection based search starting from the source reference.
-> + *
-> + * @csdev: Coresight source device reference
-> + */
->   static struct coresight_device *
-> -coresight_find_enabled_sink(struct coresight_device *csdev)
-> +coresight_find_activated_sysfs_sink(struct coresight_device *csdev)
+> +	if (rkisp1_has_feature(rkisp1, MAIN_STRIDE)) {
+> +		rkisp1_write(rkisp1, RKISP1_CIF_MI_MP_Y_LLENGTH, cap->stride);
+> +		rkisp1_write(rkisp1, RKISP1_CIF_MI_MP_Y_PIC_WIDTH, pixm->width);
+> +		rkisp1_write(rkisp1, RKISP1_CIF_MI_MP_Y_PIC_HEIGHT, pixm->height);
+> +		rkisp1_write(rkisp1, RKISP1_CIF_MI_MP_Y_PIC_SIZE,
+> +			     cap->stride * pixm->height);
+> +	}
+> +
+>   	rkisp1_irq_frame_end_enable(cap);
+>   
+>   	/* set uv swapping for semiplanar formats */
+> @@ -479,11 +487,11 @@ static void rkisp1_sp_config(struct rkisp1_capture *cap)
+>   	rkisp1_write(rkisp1, cap->config->mi.cr_size_init,
+>   		     rkisp1_pixfmt_comp_size(pixm, RKISP1_PLANE_CR));
+>   
+> -	rkisp1_write(rkisp1, RKISP1_CIF_MI_SP_Y_LLENGTH, cap->sp_y_stride);
+> +	rkisp1_write(rkisp1, RKISP1_CIF_MI_SP_Y_LLENGTH, cap->stride);
+>   	rkisp1_write(rkisp1, RKISP1_CIF_MI_SP_Y_PIC_WIDTH, pixm->width);
+>   	rkisp1_write(rkisp1, RKISP1_CIF_MI_SP_Y_PIC_HEIGHT, pixm->height);
+>   	rkisp1_write(rkisp1, RKISP1_CIF_MI_SP_Y_PIC_SIZE,
+> -		     cap->sp_y_stride * pixm->height);
+> +		     cap->stride * pixm->height);
+>   
+>   	rkisp1_irq_frame_end_enable(cap);
+>   
+> @@ -1095,8 +1103,8 @@ static const struct vb2_ops rkisp1_vb2_ops = {
+>    */
+>   
+>   static const struct v4l2_format_info *
+> -rkisp1_fill_pixfmt(struct v4l2_pix_format_mplane *pixm,
+> -		   enum rkisp1_stream_id id)
+> +rkisp1_fill_pixfmt(const struct rkisp1_capture *cap,
+> +		   struct v4l2_pix_format_mplane *pixm)
 >   {
->   	int i;
->   	struct coresight_device *sink = NULL;
->   
->   	if ((csdev->type == CORESIGHT_DEV_TYPE_SINK ||
->   	     csdev->type == CORESIGHT_DEV_TYPE_LINKSINK) &&
-> -	     csdev->activated)
-> +	     csdev->sysfs_sink_activated)
->   		return csdev;
+>   	struct v4l2_plane_pix_format *plane_y = &pixm->plane_fmt[0];
+>   	const struct v4l2_format_info *info;
+> @@ -1109,10 +1117,13 @@ rkisp1_fill_pixfmt(struct v4l2_pix_format_mplane *pixm,
 >   
 >   	/*
-> @@ -654,7 +660,7 @@ coresight_find_enabled_sink(struct coresight_device *csdev)
+>   	 * The SP supports custom strides, expressed as a number of pixels for
+> -	 * the Y plane. Clamp the stride to a reasonable value to avoid integer
+> -	 * overflows when calculating the bytesperline and sizeimage values.
+> +	 * the Y plane, and so does the MP in ISP versions that have the
+> +	 * MAIN_STRIDE feature. Clamp the stride to a reasonable value to avoid
+> +	 * integer overflows when calculating the bytesperline and sizeimage
+> +	 * values.
+>   	 */
+> -	if (id == RKISP1_SELFPATH)
+> +	if (cap->id == RKISP1_SELFPATH ||
+> +	    rkisp1_has_feature(cap->rkisp1, MAIN_STRIDE))
+>   		stride = clamp(DIV_ROUND_UP(plane_y->bytesperline, info->bpp[0]),
+>   			       pixm->width, 65536U);
+>   	else
+> @@ -1187,7 +1198,7 @@ static void rkisp1_try_fmt(const struct rkisp1_capture *cap,
+>   	pixm->ycbcr_enc = V4L2_YCBCR_ENC_DEFAULT;
+>   	pixm->quantization = V4L2_QUANTIZATION_DEFAULT;
 >   
->   		child_dev = csdev->pdata->out_conns[i]->dest_dev;
->   		if (child_dev)
-> -			sink = coresight_find_enabled_sink(child_dev);
-> +			sink = coresight_find_activated_sysfs_sink(child_dev);
->   		if (sink)
->   			return sink;
->   	}
-> @@ -662,21 +668,6 @@ coresight_find_enabled_sink(struct coresight_device *csdev)
->   	return NULL;
+> -	info = rkisp1_fill_pixfmt(pixm, cap->id);
+> +	info = rkisp1_fill_pixfmt(cap, pixm);
+>   
+>   	if (fmt_cfg)
+>   		*fmt_cfg = fmt;
+> @@ -1199,12 +1210,9 @@ static void rkisp1_set_fmt(struct rkisp1_capture *cap,
+>   			   struct v4l2_pix_format_mplane *pixm)
+>   {
+>   	rkisp1_try_fmt(cap, pixm, &cap->pix.cfg, &cap->pix.info);
+> -	cap->pix.fmt = *pixm;
+>   
+> -	/* SP supports custom stride in number of pixels of the Y plane */
+> -	if (cap->id == RKISP1_SELFPATH)
+> -		cap->sp_y_stride = pixm->plane_fmt[0].bytesperline /
+> -				   cap->pix.info->bpp[0];
+> +	cap->pix.fmt = *pixm;
+> +	cap->stride = pixm->plane_fmt[0].bytesperline / cap->pix.info->bpp[0];
 >   }
 >   
-> -/**
-> - * coresight_get_enabled_sink - returns the first enabled sink using
-> - * connection based search starting from the source reference
-> - *
-> - * @source: Coresight source device reference
-> - */
-> -struct coresight_device *
-> -coresight_get_enabled_sink(struct coresight_device *source)
-> -{
-> -	if (!source)
-> -		return NULL;
-> -
-> -	return coresight_find_enabled_sink(source);
-> -}
-> -
->   static int coresight_sink_by_id(struct device *dev, const void *data)
->   {
->   	struct coresight_device *csdev = to_coresight_device(dev);
-> @@ -810,11 +801,10 @@ static void coresight_drop_device(struct coresight_device *csdev)
->    * @sink:	The final sink we want in this path.
->    * @path:	The list to add devices to.
+>   static int rkisp1_try_fmt_vid_cap_mplane(struct file *file, void *fh,
+> diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-common.h b/drivers/media/platform/rockchip/rkisp1/rkisp1-common.h
+> index be6cb42776b0..6a811b7ef1b9 100644
+> --- a/drivers/media/platform/rockchip/rkisp1/rkisp1-common.h
+> +++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-common.h
+> @@ -110,6 +110,7 @@ enum rkisp1_isp_pad {
+>    * enum rkisp1_feature - ISP features
 >    *
-> - * The tree of Coresight device is traversed until an activated sink is
-> - * found.  From there the sink is added to the list along with all the
-> - * devices that led to that point - the end result is a list from source
-> - * to sink. In that list the source is the first device and the sink the
-> - * last one.
-> + * The tree of Coresight device is traversed until the selected sink is found.
-
-minor nit: s/until the selected/until *a* selected/
-
-There could be multiple sinks activated that can be reached from the 
-source. But we choose the "closest" possible selected sink for a source.
-So, it may be better to drop "the".
-
-
-> + * From there the sink is added to the list along with all the devices that led
-> + * to that point - the end result is a list from source to sink. In that list
-> + * the source is the first device and the sink the last one.
+>    * @RKISP1_FEATURE_MIPI_CSI2: The ISP has an internal MIPI CSI-2 receiver
+> + * @RKISP1_FEATURE_MAIN_STRIDE: The ISP supports configurable stride on the main path
+>    *
+>    * The ISP features are stored in a bitmask in &rkisp1_info.features and allow
+>    * the driver to implement support for features present in some ISP versions
+> @@ -117,6 +118,7 @@ enum rkisp1_isp_pad {
 >    */
->   static int _coresight_build_path(struct coresight_device *csdev,
->   				 struct coresight_device *sink,
-> @@ -824,7 +814,7 @@ static int _coresight_build_path(struct coresight_device *csdev,
->   	bool found = false;
->   	struct coresight_node *node;
+>   enum rkisp1_feature {
+>   	RKISP1_FEATURE_MIPI_CSI2 = BIT(0),
+> +	RKISP1_FEATURE_MAIN_STRIDE = BIT(1),
+>   };
 >   
-> -	/* An activated sink has been found.  Enqueue the element */
-> +	/* The selected sink has been found.  Enqueue the element */
-
-Similarly here.
-
-Rest looks fine to me.
-
-Suzuki
-
-
->   	if (csdev == sink)
->   		goto out;
+>   #define rkisp1_has_feature(rkisp1, feature) \
+> @@ -266,7 +268,7 @@ struct rkisp1_device;
+>    *		  handler to stop the streaming by waiting on the 'done' wait queue.
+>    *		  If the irq handler is not called, the stream is stopped by the callback
+>    *		  after timeout.
+> - * @sp_y_stride:  the selfpath allows to configure a y stride that is longer than the image width.
+> + * @stride:       the line stride for the first plane, in pixel units
+>    * @buf.lock:	  lock to protect buf.queue
+>    * @buf.queue:	  queued buffer list
+>    * @buf.dummy:	  dummy space to store dropped data
+> @@ -287,7 +289,7 @@ struct rkisp1_capture {
+>   	bool is_streaming;
+>   	bool is_stopping;
+>   	wait_queue_head_t done;
+> -	unsigned int sp_y_stride;
+> +	unsigned int stride;
+>   	struct {
+>   		/* protects queue, curr and next */
+>   		spinlock_t lock;
+> diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-regs.h b/drivers/media/platform/rockchip/rkisp1/rkisp1-regs.h
+> index bea69a0d766a..3b19c8411360 100644
+> --- a/drivers/media/platform/rockchip/rkisp1/rkisp1-regs.h
+> +++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-regs.h
+> @@ -207,6 +207,24 @@
+>   #define RKISP1_CIF_MI_XTD_FMT_CTRL_SP_CB_CR_SWAP	BIT(1)
+>   #define RKISP1_CIF_MI_XTD_FMT_CTRL_DMA_CB_CR_SWAP	BIT(2)
 >   
-> @@ -1145,7 +1135,7 @@ int coresight_enable(struct coresight_device *csdev)
->   		goto out;
->   	}
+> +/* MI_OUTPUT_ALIGN_FORMAT */
+> +#define RKISP1_CIF_OUTPUT_ALIGN_FORMAT_MP_LSB_ALIGNMENT			BIT(0)
+> +#define RKISP1_CIF_OUTPUT_ALIGN_FORMAT_MP_BYTE_SWAP_BYTES		BIT(1)
+> +#define RKISP1_CIF_OUTPUT_ALIGN_FORMAT_MP_BYTE_SWAP_WORDS		BIT(2)
+> +#define RKISP1_CIF_OUTPUT_ALIGN_FORMAT_MP_BYTE_SWAP_DWORDS		BIT(3)
+> +#define RKISP1_CIF_OUTPUT_ALIGN_FORMAT_SP_BYTE_SWAP_BYTES		BIT(4)
+> +#define RKISP1_CIF_OUTPUT_ALIGN_FORMAT_SP_BYTE_SWAP_WORDS		BIT(5)
+> +#define RKISP1_CIF_OUTPUT_ALIGN_FORMAT_SP_BYTE_SWAP_DWORDS		BIT(6)
+> +#define RKISP1_CIF_OUTPUT_ALIGN_FORMAT_DMA_BYTE_SWAP_BYTES		BIT(7)
+> +#define RKISP1_CIF_OUTPUT_ALIGN_FORMAT_DMA_BYTE_SWAP_WORDS		BIT(8)
+> +#define RKISP1_CIF_OUTPUT_ALIGN_FORMAT_DMA_BYTE_SWAP_DWORDS		BIT(9)
+> +
+> +/* MI_MP_OUTPUT_FIFO_SIZE */
+> +#define RKISP1_CIF_MI_MP_OUTPUT_FIFO_SIZE_OUTPUT_FIFO_DEPTH_FULL	(0 << 0)
+> +#define RKISP1_CIF_MI_MP_OUTPUT_FIFO_SIZE_OUTPUT_FIFO_DEPTH_HALF	(1 << 0)
+> +#define RKISP1_CIF_MI_MP_OUTPUT_FIFO_SIZE_OUTPUT_FIFO_DEPTH_QUARTER	(2 << 0)
+> +#define RKISP1_CIF_MI_MP_OUTPUT_FIFO_SIZE_OUTPUT_FIFO_DEPTH_EIGHT	(3 << 0)
+> +
+>   /* VI_CCL */
+>   #define RKISP1_CIF_CCL_CIF_CLK_DIS			BIT(2)
+>   /* VI_ISP_CLK_CTRL */
+> @@ -1000,6 +1018,15 @@
+>   #define RKISP1_CIF_MI_SP_CB_BASE_AD_INIT2	(RKISP1_CIF_MI_BASE + 0x00000140)
+>   #define RKISP1_CIF_MI_SP_CR_BASE_AD_INIT2	(RKISP1_CIF_MI_BASE + 0x00000144)
+>   #define RKISP1_CIF_MI_XTD_FORMAT_CTRL		(RKISP1_CIF_MI_BASE + 0x00000148)
+> +#define RKISP1_CIF_MI_MP_HANDSHAKE_0		(RKISP1_CIF_MI_BASE + 0x0000014C)
+> +#define RKISP1_CIF_MI_MP_Y_LLENGTH		(RKISP1_CIF_MI_BASE + 0x00000150)
+> +#define RKISP1_CIF_MI_MP_Y_SLICE_OFFSET		(RKISP1_CIF_MI_BASE + 0x00000154)
+> +#define RKISP1_CIF_MI_MP_C_SLICE_OFFSET		(RKISP1_CIF_MI_BASE + 0x00000158)
+> +#define RKISP1_CIF_MI_OUTPUT_ALIGN_FORMAT	(RKISP1_CIF_MI_BASE + 0x0000015C)
+> +#define RKISP1_CIF_MI_MP_OUTPUT_FIFO_SIZE	(RKISP1_CIF_MI_BASE + 0x00000160)
+> +#define RKISP1_CIF_MI_MP_Y_PIC_WIDTH		(RKISP1_CIF_MI_BASE + 0x00000164)
+> +#define RKISP1_CIF_MI_MP_Y_PIC_HEIGHT		(RKISP1_CIF_MI_BASE + 0x00000168)
+> +#define RKISP1_CIF_MI_MP_Y_PIC_SIZE		(RKISP1_CIF_MI_BASE + 0x0000016C)
 >   
-> -	sink = coresight_get_enabled_sink(csdev);
-> +	sink = coresight_find_activated_sysfs_sink(csdev);
->   	if (!sink) {
->   		ret = -EINVAL;
->   		goto out;
-> @@ -1259,7 +1249,7 @@ static ssize_t enable_sink_show(struct device *dev,
->   {
->   	struct coresight_device *csdev = to_coresight_device(dev);
->   
-> -	return scnprintf(buf, PAGE_SIZE, "%u\n", csdev->activated);
-> +	return scnprintf(buf, PAGE_SIZE, "%u\n", csdev->sysfs_sink_activated);
->   }
->   
->   static ssize_t enable_sink_store(struct device *dev,
-> @@ -1274,10 +1264,7 @@ static ssize_t enable_sink_store(struct device *dev,
->   	if (ret)
->   		return ret;
->   
-> -	if (val)
-> -		csdev->activated = true;
-> -	else
-> -		csdev->activated = false;
-> +	csdev->sysfs_sink_activated = !!val;
->   
->   	return size;
->   
-> diff --git a/drivers/hwtracing/coresight/coresight-priv.h b/drivers/hwtracing/coresight/coresight-priv.h
-> index 30c051055e54..ced5be05a527 100644
-> --- a/drivers/hwtracing/coresight/coresight-priv.h
-> +++ b/drivers/hwtracing/coresight/coresight-priv.h
-> @@ -130,8 +130,6 @@ void coresight_disable_path(struct list_head *path);
->   int coresight_enable_path(struct list_head *path, enum cs_mode mode,
->   			  void *sink_data);
->   struct coresight_device *coresight_get_sink(struct list_head *path);
-> -struct coresight_device *
-> -coresight_get_enabled_sink(struct coresight_device *source);
->   struct coresight_device *coresight_get_sink_by_id(u32 id);
->   struct coresight_device *
->   coresight_find_default_sink(struct coresight_device *csdev);
-> diff --git a/include/linux/coresight.h b/include/linux/coresight.h
-> index a4cb7dd6ca23..65131bfbd904 100644
-> --- a/include/linux/coresight.h
-> +++ b/include/linux/coresight.h
-> @@ -229,10 +229,12 @@ struct coresight_sysfs_link {
->    * @refcnt:	keep track of what is in use.
->    * @orphan:	true if the component has connections that haven't been linked.
->    * @enable:	'true' if component is currently part of an active path.
-> - * @activated:	'true' only if a _sink_ has been activated.  A sink can be
-> - *		activated but not yet enabled.  Enabling for a _sink_
-> - *		happens when a source has been selected and a path is enabled
-> - *		from source to that sink.
-> + * @sysfs_sink_activated: 'true' when a sink has been selected for use via sysfs
-> + *		by writing a 1 to the 'enable_sink' file.  A sink can be
-> + *		activated but not yet enabled.  Enabling for a _sink_ happens
-> + *		when a source has been selected and a path is enabled from
-> + *		source to that sink. A sink can also become enabled but not
-> + *		activated if it's used via Perf.
->    * @ea:		Device attribute for sink representation under PMU directory.
->    * @def_sink:	cached reference to default sink found for this device.
->    * @nr_links:   number of sysfs links created to other components from this
-> @@ -252,9 +254,9 @@ struct coresight_device {
->   	struct device dev;
->   	atomic_t refcnt;
->   	bool orphan;
-> -	bool enable;	/* true only if configured as part of a path */
-> +	bool enable;
->   	/* sink specific fields */
-> -	bool activated;	/* true only if a sink is part of a path */
-> +	bool sysfs_sink_activated;
->   	struct dev_ext_attribute *ea;
->   	struct coresight_device *def_sink;
->   	/* sysfs links between components */
+>   #define RKISP1_CIF_SMIA_BASE			0x00001a00
+>   #define RKISP1_CIF_SMIA_CTRL			(RKISP1_CIF_SMIA_BASE + 0x00000000)
 
 
