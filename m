@@ -1,38 +1,38 @@
-Return-Path: <linux-kernel+bounces-19221-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19223-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E04B8269F7
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 09:58:46 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C96AF8269FA
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 09:59:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 36E2F283B22
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 08:58:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DCAB11C22857
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 08:59:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AE2EDDCD;
-	Mon,  8 Jan 2024 08:58:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD1F712B6A;
+	Mon,  8 Jan 2024 08:58:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fris.de header.i=@fris.de header.b="dT6Z9Tj8"
+	dkim=pass (2048-bit key) header.d=fris.de header.i=@fris.de header.b="K4BsnmzL"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from mail.fris.de (mail.fris.de [116.203.77.234])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DD71DDCF;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DDA0E543;
 	Mon,  8 Jan 2024 08:58:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fris.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fris.de
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id BA0DBC00F4;
-	Mon,  8 Jan 2024 09:51:14 +0100 (CET)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id A1246C00F6;
+	Mon,  8 Jan 2024 09:51:16 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fris.de; s=dkim;
-	t=1704703875; h=from:subject:date:message-id:to:cc:mime-version:
+	t=1704703877; h=from:subject:date:message-id:to:cc:mime-version:
 	 content-transfer-encoding:in-reply-to:references;
-	bh=oeyirk30VzrJwXs/jPqp36nZYKhhaMWlQBYYBY4oDRg=;
-	b=dT6Z9Tj8rXvxOSxZcRTAlHvCdHt4QhOVjFnuomBrKVqb35FVLrEX2b73AcSTSWgmCqBwD8
-	1xyZbvgaL9Q6CYW8MbfkNuAAlXo/KbR1hiN8dX+hd8pfajJDBXAD03FHPxC0yzYCa9fv6M
-	n8MgKB+PrB5hmiUNSpmAJ7BoPilWvSXotD/7/EUnkMBR82dWzlmHexiDXjpsltV30gikwU
-	Ck4WZKVHzuC44tKO9N7D8a/xXrIQ4NaHJRcPta0buJIv/42VGLldgk5U+jvXKiiqcCEIo6
-	LcSogElLqAXW7aQG7RIg9VfuuevCLz2mv2IwqBgE5yQNMFd90vv4C2GhneJAYQ==
+	bh=akNdEaX30HzkHKP9IaufaAprUiB8tYROpt6AP/lowi0=;
+	b=K4BsnmzL+Kuq5/Qqu0wqe9rMKbqqu1F81mBa60iTXsSP2dLjqr1aWoEkd7BGz+EWvZiUts
+	7EKCFBGLq+qnAUcEVoeiOds+dFAToqV07+u26TLGK0IweTryL0ZsfXskWAG66mOB5qsmzz
+	jwFMBG35c7Q4bhzMknigiPVicy7fDD5c8BC8Xe4uN7gnTAAhOQ6I+pfYO8EFa/ZHLGk4xM
+	rgDVv3KndMnMGmE8awsSuGeGzyrSBZkHMGDbchqO560Z3VzjfWFvpKvhfwsW31c8NgJZVq
+	LK5wWCHdjb7r+/Tbjw7fBWzAp/ImYUuSZPmEmtDSbHB9DwwGgzIixdBJpKoBig==
 From: Frieder Schrempf <frieder@fris.de>
 To: Conor Dooley <conor+dt@kernel.org>,
 	devicetree@vger.kernel.org,
@@ -44,11 +44,12 @@ To: Conor Dooley <conor+dt@kernel.org>,
 	Sascha Hauer <s.hauer@pengutronix.de>,
 	Shawn Guo <shawnguo@kernel.org>
 Cc: Fabio Estevam <festevam@gmail.com>,
+	Krzysztof Kozlowski <krzk@kernel.org>,
 	NXP Linux Team <linux-imx@nxp.com>,
 	Pengutronix Kernel Team <kernel@pengutronix.de>
-Subject: [PATCH v4 03/12] arm64: dts: imx8mm-kontron: Disable pullups for onboard UART signals on BL OSM-S board
-Date: Mon,  8 Jan 2024 09:49:00 +0100
-Message-ID: <20240108084945.75356-4-frieder@fris.de>
+Subject: [PATCH v4 04/12] arm64: dts: imx8mm-kontron: Disable pullups for onboard UART signals on BL board
+Date: Mon,  8 Jan 2024 09:49:01 +0100
+Message-ID: <20240108084945.75356-5-frieder@fris.de>
 In-Reply-To: <20240108084945.75356-1-frieder@fris.de>
 References: <20240108084945.75356-1-frieder@fris.de>
 Precedence: bulk
@@ -67,7 +68,7 @@ transceiver. There's no need to enable the internal pull resistors
 and due to silicon errata ERR050080 let's disable the internal ones
 to prevent any unwanted behavior in case they wear out.
 
-Fixes: de9618e84f76 ("arm64: dts: Add support for Kontron SL/BL i.MX8MM OSM-S")
+Fixes: 8668d8b2e67f ("arm64: dts: Add the Kontron i.MX8M Mini SoMs and baseboards")
 Signed-off-by: Frieder Schrempf <frieder.schrempf@kontron.de>
 ---
 Changes for v3:
@@ -76,14 +77,14 @@ Changes for v3:
 Changes for v2:
 * none
 ---
- .../dts/freescale/imx8mm-kontron-bl-osm-s.dts    | 16 ++++++++--------
+ .../boot/dts/freescale/imx8mm-kontron-bl.dts     | 16 ++++++++--------
  1 file changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mm-kontron-bl-osm-s.dts b/arch/arm64/boot/dts/freescale/imx8mm-kontron-bl-osm-s.dts
-index 0730c22e5b6b9..1dd03ef0a7835 100644
---- a/arch/arm64/boot/dts/freescale/imx8mm-kontron-bl-osm-s.dts
-+++ b/arch/arm64/boot/dts/freescale/imx8mm-kontron-bl-osm-s.dts
-@@ -313,19 +313,19 @@ MX8MM_IOMUXC_SAI5_MCLK_GPIO3_IO25		0x19
+diff --git a/arch/arm64/boot/dts/freescale/imx8mm-kontron-bl.dts b/arch/arm64/boot/dts/freescale/imx8mm-kontron-bl.dts
+index 5fd2e45258b11..ee93db11c0d06 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mm-kontron-bl.dts
++++ b/arch/arm64/boot/dts/freescale/imx8mm-kontron-bl.dts
+@@ -292,19 +292,19 @@ MX8MM_IOMUXC_SPDIF_RX_PWM2_OUT			0x19
  
  	pinctrl_uart1: uart1grp {
  		fsl,pins = <
