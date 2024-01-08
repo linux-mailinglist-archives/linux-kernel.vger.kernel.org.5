@@ -1,179 +1,225 @@
-Return-Path: <linux-kernel+bounces-19184-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19185-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 857D882697A
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 09:27:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D601C82697E
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 09:28:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9DB6F1C21B95
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 08:27:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EE2791C21C00
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 08:28:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BA80BA33;
-	Mon,  8 Jan 2024 08:27:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B26E0C8CE;
+	Mon,  8 Jan 2024 08:27:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="YJi/vpm5"
+	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="bOWZ+OQq"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com [209.85.219.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6721F13AC7;
-	Mon,  8 Jan 2024 08:27:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40860CQ0009945;
-	Mon, 8 Jan 2024 08:27:21 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=lzYxfaFzQtBCI6PD1UXT0CYm6nKTZBF5UPuLGV0Yrgo=; b=YJ
-	i/vpm5/6dC2ufWheJwfAxzTxCI+H0WFqjiZy0Ft9DAouykkn50415nzsW4agGY0Q
-	STiDfae32c5nK2qypCUw834WiQlHsGSJAkVODiTXiJUQ2P9kACimZH8J69uMMw8Q
-	q6mFxhuT2+W3hBtz9mN5c3hN3RJy40lpmqEK5iX65rmqOcK8e8H9FQlvG8/7Iq7l
-	nFvGA3z0rtScWiFo51kyWX48dwrZCE/n+H6XRUWWgGjtVd0+JuXpu2D9FCT43kT9
-	OFjU0bDReu7pe8WpnHaWNv0hRZLIvVnB5XjH1iuamDLl+ZuOmWN1qjCMNOo9AB0B
-	uvwwWsj52loym3JRYJbg==
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3veymmbcxg-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 08 Jan 2024 08:27:20 +0000 (GMT)
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4088R9qm018144
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 8 Jan 2024 08:27:09 GMT
-Received: from [10.253.76.26] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 8 Jan
- 2024 00:27:04 -0800
-Message-ID: <6a7d62fc-a518-4aab-bb28-9289c398b74b@quicinc.com>
-Date: Mon, 8 Jan 2024 16:27:00 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75C109473
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 08:27:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
+Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-dbed4b84667so791941276.0
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 00:27:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google; t=1704702472; x=1705307272; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=pvJpgUA4AhlF5UzDkm4aNhAt25RJ3NPKJbdB1Fs6ecM=;
+        b=bOWZ+OQqRn+9/rAkwO/3OG3E8L3xCsiLwM7QTnI+PuG/HmIqZa2bwWd6eOT3JtgryE
+         wF/1bvKpU361+3xEvijraqQU6eloqwmMXQ3KafpoiCXo7hF+ffcnFyZgYNa/Qj5wNANS
+         K32D/k7O/2PdoAAsnpme1ugsKT+KIemelVuezCDMm0SyHrEqyp90EiLRfWN6v4Jg/0ki
+         dMgfYW201b/rNTMwmSr05fm9+fNVYBmjz1sAVgM2PearSn81vJ8DD84x6iFve28hKU2l
+         PsXbsJUvdjvDO/Hx+HwmO/y4jtVi3vWetZRgkA86Jr6QxC8d/E+HVcOuta0OBkP44xA5
+         NEzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704702472; x=1705307272;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=pvJpgUA4AhlF5UzDkm4aNhAt25RJ3NPKJbdB1Fs6ecM=;
+        b=wWxp+f9sAqKCSrKLoG+wHIqu5DdrRiZwp1QEjlxJSy4G9wKyigPoOnL6E162Uv40Om
+         Pt5Qs5VzkpjcrOkGUcNNnby3dUUHz8jhN0ictGmbuO0Q5iileVhvQH5RRYSXqVCvr422
+         vLSTMePSQKrT4VCD5j70nMii8Lgd0d6ySSroZ63qU1DhfA6VZNkbA5AjyqpKcDMNUgB6
+         Dpe3iZPx2TCP7J2thIClpWA1jRq3Nf/diDofRiG6HaqnXjSziBMgl4ohMvA5FV95HeJ3
+         NiaCZQcmTtZ7rjinfPVdt9UnQbde7PAUSeg1xmU+fk+z6fh7PaAmcgu79nwPm3KadkJ6
+         faMQ==
+X-Gm-Message-State: AOJu0YxRb1oralH/m0JrHf1FZ4+TziPwrwU4i1g5/ww3Xlx9xgWv4uzq
+	vwIkmi+pGjDW8YpWrIWjL8wjUD2+CaEGBWD/uS2eLl+n307cKg==
+X-Google-Smtp-Source: AGHT+IFFb/Niyem1I290kG8fWBodwAxnQ44aza9G+jPqE1Lo+m061UGkuugFtDe83W4bVPZF0f7YxoMVpvdXsCZV7iU=
+X-Received: by 2002:a25:2689:0:b0:dbe:9ef5:9605 with SMTP id
+ m131-20020a252689000000b00dbe9ef59605mr1156037ybm.4.1704702472335; Mon, 08
+ Jan 2024 00:27:52 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v8 14/14] dt-bindings: net: ar803x: add qca8084 PHY
- properties
-Content-Language: en-US
-To: Andrew Lunn <andrew@lunn.ch>
-CC: Christian Marangi <ansuelsmth@gmail.com>,
-        "Russell King (Oracle)"
-	<linux@armlinux.org.uk>,
-        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-        <pabeni@redhat.com>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <hkallweit1@gmail.com>, <corbet@lwn.net>, <p.zabel@pengutronix.de>,
-        <f.fainelli@gmail.com>, <netdev@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-doc@vger.kernel.org>
-References: <6abe5d6f-9d00-445f-8c81-9c89b9da3e0a@quicinc.com>
- <ZX3LqN8DSdKXqsYc@shell.armlinux.org.uk>
- <1bddd434-024c-45ff-9866-92951a3f555f@quicinc.com>
- <ZZPeHJJU96y1kdlZ@shell.armlinux.org.uk>
- <6593e0a3.050a0220.5c543.8e12@mx.google.com>
- <cee9de2c-bfa4-4ca9-9001-725e2041bc25@quicinc.com>
- <85590a5b-9d5a-40cb-8a0e-a3a3a1c3720a@lunn.ch>
- <c5263daa-b5f4-4b9c-a216-73d68493a802@quicinc.com>
- <50252a5a-e4fb-42d3-b838-9ef04faf4c5c@lunn.ch>
- <b427c89a-81a9-439f-905e-2a6632065b78@quicinc.com>
- <864b0867-06c0-4c6d-ae71-9b5025c8d93a@lunn.ch>
-From: Jie Luo <quic_luoj@quicinc.com>
-In-Reply-To: <864b0867-06c0-4c6d-ae71-9b5025c8d93a@lunn.ch>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: _JTl_QMG-Z0PXhZbt5wiQBTQfpaSIKJ7
-X-Proofpoint-GUID: _JTl_QMG-Z0PXhZbt5wiQBTQfpaSIKJ7
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 impostorscore=0
- mlxlogscore=999 spamscore=0 phishscore=0 malwarescore=0 bulkscore=0
- suspectscore=0 adultscore=0 mlxscore=0 priorityscore=1501
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2401080071
+References: <20231024101902.6689-1-nylon.chen@sifive.com> <20231024101902.6689-3-nylon.chen@sifive.com>
+ <20231211204950.fkaqsnpzb6kixqf2@pengutronix.de>
+In-Reply-To: <20231211204950.fkaqsnpzb6kixqf2@pengutronix.de>
+From: Nylon Chen <nylon.chen@sifive.com>
+Date: Mon, 8 Jan 2024 16:27:40 +0800
+Message-ID: <CAHh=Yk-9-M2G_cfdxLig2d0g1DucEytXhfFO5dp5HcDn+egWBw@mail.gmail.com>
+Subject: Re: [v5 2/2] pwm: sifive: change the PWM controlled LED algorithm
+To: =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+Cc: linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-riscv@lists.infradead.org, devicetree@vger.kernel.org, 
+	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
+	paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu, 
+	thierry.reding@gmail.com, emil.renner.berthing@canonical.com, 
+	vincent.chen@sifive.com, greentime.hu@sifive.com, zong.li@sifive.com, 
+	nylon7717@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de> =E6=96=BC 2023=E5=B9=
+=B412=E6=9C=8812=E6=97=A5 =E9=80=B1=E4=BA=8C =E4=B8=8A=E5=8D=884:50=E5=AF=
+=AB=E9=81=93=EF=BC=9A
+>
+> Hello Nylon,
 
+Hi Uwe, thanks for your feedback.
+>
+>
+>
+> On Tue, Oct 24, 2023 at 06:19:02PM +0800, Nylon Chen wrote:
+> > The `frac` variable represents the pulse inactive time, and the result
+> > of this algorithm is the pulse active time. Therefore, we must reverse =
+the result.
+> >
+> > The reference is SiFive FU740-C000 Manual[0]
+> >
+> > Link: https://sifive.cdn.prismic.io/sifive/1a82e600-1f93-4f41-b2d8-86ed=
+8b16acba_fu740-c000-manual-v1p6.pdf [0]
+> >
+> > Signed-off-by: Nylon Chen <nylon.chen@sifive.com>
+> > Signed-off-by: Vincent Chen <vincent.chen@sifive.com>
+> > ---
+> >  drivers/pwm/pwm-sifive.c | 10 ++++++----
+> >  1 file changed, 6 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/drivers/pwm/pwm-sifive.c b/drivers/pwm/pwm-sifive.c
+> > index eabddb7c7820..353c2342fbf1 100644
+> > --- a/drivers/pwm/pwm-sifive.c
+> > +++ b/drivers/pwm/pwm-sifive.c
+> > @@ -101,7 +101,7 @@ static void pwm_sifive_update_clock(struct pwm_sifi=
+ve_ddata *ddata,
+> >
+> >       /* As scale <=3D 15 the shift operation cannot overflow. */
+> >       num =3D (unsigned long long)NSEC_PER_SEC << (PWM_SIFIVE_CMPWIDTH =
++ scale);
+> > -     ddata->real_period =3D div64_ul(num, rate);
+> > +     ddata->real_period =3D DIV_ROUND_UP_ULL(num, rate);
+>
+> It's unclear to me, why you changed that.
+Because there is a gap in idempotent tests.
+e.g.
+root@unmatched:~# echo 110 >
+/sys/devices/platform/led-controller-1/leds/d12/brightness
+[  706.987712] .apply is not idempotent (ena=3D1 pol=3D0 1739692/4032985)
+-> (ena=3D1 pol=3D0 1739630/4032985)
+root@unmatched:~# echo 120 >
+/sys/devices/platform/led-controller-1/leds/d12/brightness
+[  709.817554] .apply is not idempotent (ena=3D1 pol=3D0 1897846/4032985)
+-> (ena=3D1 pol=3D0 1897784/4032985)
 
-On 1/5/2024 9:37 PM, Andrew Lunn wrote:
->>> O.K. Since we are getting nowhere at the moment, lets take just the
->>> pure PHY chip, and ignore the rest for the moment.
->>>
->>> For any pure PHY, there is generally one clock input, which might be a
->>> crystal, or an actual clock. If you look at other DT bindings for
->>> PHYs, it is only listed if the clock is expected to come from
->>> somewhere else, like a SoC, and it needs to be turned on before the
->>> PHY will work. And generally, a pure PHY has one defined clock
->>> frequency input. If that is true, there is no need to specify the
->>> clock. If multiple clock input frequencies are supported, then you do
->>> need to specify the clock, so its possible to work out what frequency
->>> it is using. How that clock input is then used internally in the PHY
->>> is not described in DT, but the driver can set any dividers, PLLs
->>> needed etc.
->>
->> Yes, Andrew, there is only one clock input to qca8084(same as qca8386),
->> this input clock rate is 50MHZ, which is from the output clock of CMN
->> PLL block that is configured by the MDIO bus driver patch under review.
-> 
-> Lets concentrate on the pure PHY. All it sees is a clock. It does not
-> care where it come from. All you need in the device tree for the pure
-> PHY is a clock consumer.
-Yes.
+Round the result to the nearest whole number. This ensures that
+real_period is always a reasonable integer that is not lower than the
+actual value.
 
-> 
-> There is one clock input, so its shared by all four instances in the
-> pure PHY package. So you need to use Christians code which extends the
-> PHY DT bindings to allow DT properties for a package of PHYs.
+After modification, idempotent errors can be avoided.
+>
+>
+> >       dev_dbg(ddata->chip.dev,
+> >               "New real_period =3D %u ns\n", ddata->real_period);
+> >  }
+> > @@ -121,13 +121,14 @@ static int pwm_sifive_get_state(struct pwm_chip *=
+chip, struct pwm_device *pwm,
+> >               state->enabled =3D false;
+> >
+> >       state->period =3D ddata->real_period;
+> > +
+> > +     duty =3D (1U << PWM_SIFIVE_CMPWIDTH) - 1 - duty;
+>
+> I would have placed that directly after
+>
+>         duty =3D readl(...);
+>
+> which then also influences
+>
+>         state->enabled =3D duty > 0;
+>
+> (as it should?).
+>
+Yes, you are right. I will make relevant corrections.
+...
+        duty =3D readl(ddata->regs + PWM_SIFIVE_PWMCMP(pwm->hwpwm));
++       duty =3D (1U << PWM_SIFIVE_CMPWIDTH) - 1 - duty;
+-       state->enabled =3D duty <=3D 65535;
++       state->enabled =3D duty > 0;
+...
+        state->period =3D ddata->real_period;
+-       duty =3D (1U << PWM_SIFIVE_CMPWIDTH) - 1 - duty;
 
-OK, will
+>
+> >       state->duty_cycle =3D
+> >               (u64)duty * ddata->real_period >> PWM_SIFIVE_CMPWIDTH;
+> > -     state->polarity =3D PWM_POLARITY_INVERSED;
+> > +     state->polarity =3D PWM_POLARITY_NORMAL;
+> >
+> >       return 0;
+> >  }
+> > -
+> >  static int pwm_sifive_apply(struct pwm_chip *chip, struct pwm_device *=
+pwm,
+> >                           const struct pwm_state *state)
+> >  {
+> > @@ -139,7 +140,7 @@ static int pwm_sifive_apply(struct pwm_chip *chip, =
+struct pwm_device *pwm,
+> >       int ret =3D 0;
+> >       u32 frac;
+> >
+> > -     if (state->polarity !=3D PWM_POLARITY_INVERSED)
+> > +     if (state->polarity !=3D PWM_POLARITY_NORMAL)
+> >               return -EINVAL;
+> >
+> >       cur_state =3D pwm->state;
+> > @@ -158,6 +159,7 @@ static int pwm_sifive_apply(struct pwm_chip *chip, =
+struct pwm_device *pwm,
+> >       num =3D (u64)duty_cycle * (1U << PWM_SIFIVE_CMPWIDTH);
+> >       frac =3D DIV64_U64_ROUND_CLOSEST(num, state->period);
+> >       /* The hardware cannot generate a 100% duty cycle */
+> > +     frac =3D (1U << PWM_SIFIVE_CMPWIDTH) - 1 - frac;
+> >       frac =3D min(frac, (1U << PWM_SIFIVE_CMPWIDTH) - 1);
+>
+> frac can only be > (1U << PWM_SIFIVE_CMPWIDTH) - 1 if an overflow
+> happend the line above. Is that what you want here?
+I made a mistake, I pushed the wrong changes.
 
-> 
-> What about resets. Is there one reset pin for the pure PHY package, or
-> one per PHY?
+I want to invert it after taking the minimum value, which makes sense to me=
+.
+        frac =3D DIV64_U64_ROUND_CLOSEST(num, state->period);
+        /* The hardware cannot generate a 100% duty cycle */
+        frac =3D min(frac, (1U << PWM_SIFIVE_CMPWIDTH) - 1);
++       frac =3D (1U << PWM_SIFIVE_CMPWIDTH) - 1 - frac;
 
-There is only one GPIO hardware reset PIN for the chip qca8084 including
-all 4 PHYs.
-
-> 
-> Go find Christians code, understand it, and propose a DT binding for
-> the pure PHY. Include the clock provider and the reset
-> provider. Forget about the MDIO controller, and the PHY integrated
-> into the switch, etc. Baby steps...
-
-Thanks Andrew for pointing me the Christians code, i will keep the
-driver of qca8084 synced with Christian's code before pushing the
-next patch set.
-
-> 
->> In qca8084(same as qca8386), there is a clock controller, let's call it
->> as NSSCC, the logic of NSSCC is same as qualcomm GCC(located in SoC),
->> the NSSCC provides the clocks to the quad PHYs, the initial clocks for
->> quad PHYs need to be configured before PHY to work.
-> 
-> You said above, there is one clock input to the qca8084. Here you use
-> the word clocks, plural. Is there one clock, or multiple clocks?
-> 
->      Andrew
-
-Yes, Andrew, it is multiple clocks.
-These multiple clocks are generated(PLL, divider) and used internally by
-qca8084 CHIP, these clocks are generated by the clock controller of
-qca8084, let's call the clock controller of qca8084 as NSSCC provider,
-which generates the clocks to the PHYs, this NSSCC is located in
-qca8084.
-
-The only one input clock of qca8084 is the clock source of the chip
-qca8084, which is fixed to 50MHZ.
-
-The NSSCC of qca8084 generates different clock rates for the different
-link speed of the PHY, which is the internal block of qca8084.
-
-
+>
+> >       mutex_lock(&ddata->lock);
+>
+> Best regards
+> Uwe
+Best regards
+Nylon
+>
+> --
+> Pengutronix e.K.                           | Uwe Kleine-K=C3=B6nig       =
+     |
+> Industrial Linux Solutions                 | https://www.pengutronix.de/ =
+|
 
