@@ -1,335 +1,539 @@
-Return-Path: <linux-kernel+bounces-19889-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19890-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3EB02827642
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 18:24:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41777827643
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 18:25:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A8CB91F2297E
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 17:24:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C4702283D1C
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 17:25:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9720E5466A;
-	Mon,  8 Jan 2024 17:24:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90F4554673;
+	Mon,  8 Jan 2024 17:25:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="c+rCSrQw"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="b3vuXlAw"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D45B54BC1;
-	Mon,  8 Jan 2024 17:24:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-6d9b13fe9e9so1751842b3a.2;
-        Mon, 08 Jan 2024 09:24:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704734650; x=1705339450; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=rGn5g/i0OAEaE/8R8RL/B7/zL2YsQjya1Hphw6b6Sic=;
-        b=c+rCSrQwureLbDwdVv+aThIsWCA5XK4xHK0R2LPv+y0QbNBjvyy15nCITCmBvQKkX+
-         UceP164rnilZnVsdLqXK49K2pDDa8fE4Cpeg8c2YulSnoZbnqVfHUodFx+zdlqNqVTEp
-         gT4Yu6iwldnQ0zb29KrjWXTwmnTxJ7cxFlUyTaIK3d3XxZF2bYLzz7J1Aw+pV3PaknJA
-         2K0sx9hjLY4ogx5Qa/DKletUcxFV0WHdjEnenCpf8vW9vfVAirEySiVH2nFl+v5kZRZq
-         gOkk4l3PUwcNpxTrySs3J/7Fe1OINH/yJabhYquwiqkJ3bKtCjLjJgnoXVR4KnrLcMwv
-         zo5A==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB4CD54662
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 17:25:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1704734701;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=C6aX9dBiEE8LbJklMGgqvE97/nITQJQxltiGdxz/Yh4=;
+	b=b3vuXlAw6W9i36uBzuHDqC5uUMd3Wk2KEuaLbAhEz+jFftsjIZ37DIl/n3YUJGhGT5YUYM
+	sD8LdqZ4CknwwN/irbRW649qaHJrJHUKnsFQe8ud2KjUYtRhTlsy6P3Hm0/JQxxMwR6Uk/
+	e1uSWl/2Rx8G9F2vxUhBah5QvHBY7r0=
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
+ [209.85.219.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-94-4nvP6-uDOAmLXjmBsx-atg-1; Mon, 08 Jan 2024 12:25:00 -0500
+X-MC-Unique: 4nvP6-uDOAmLXjmBsx-atg-1
+Received: by mail-qv1-f69.google.com with SMTP id 6a1803df08f44-680971002e3so40426006d6.0
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 09:25:00 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704734650; x=1705339450;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rGn5g/i0OAEaE/8R8RL/B7/zL2YsQjya1Hphw6b6Sic=;
-        b=Oq/O7lZCVS6+tFfNJCrlFYqXviGgmFm7a+94/AEPalpu0C5HTi7OvyExAwKmltaG+D
-         N/2MMZxjZwr0odPasXfwiqU8wVQQRczdsj2gwePolPrhET6oapCNw/Gj6rPmE/iHoVL+
-         4ZhCs7ZY+NTB/fkvk8/0tBrxIaOTHxTUxvm/xnDbK74eGYaKBx7FdldybRu64k4dNzL5
-         Tq4Ckdb1kxLuR0X5jXet5k04/OIqKOwvCSKLUyjpLsD7SMfZgyQLITJYM1lf5BARGm7k
-         nbe60wkTPSFDFV64YRgRkP1p3lE2cUKZmVMT6CoDdi/cuVPxapDVJJlHnsOIDT4aMcoq
-         uRDw==
-X-Gm-Message-State: AOJu0YwhG0os4NTuRNvo/SPlsh1ufk4L8j8xD4dHlRZxqSQVy0HTlo+q
-	/ZO26GTLhUVeBwis6yDJbEYDpslB5TI=
-X-Google-Smtp-Source: AGHT+IGnMQ4UGMZXE4CQLZlgPglRq2ggVjKs3yWoXqheICzI9foio9C7Ov/UaaFkbLpZKLG8ML0Yag==
-X-Received: by 2002:a05:6a21:608:b0:199:9d92:f307 with SMTP id ll8-20020a056a21060800b001999d92f307mr2721973pzb.94.1704734650174;
-        Mon, 08 Jan 2024 09:24:10 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id f31-20020a056a000b1f00b006ce95e37a40sm121606pfu.111.2024.01.08.09.24.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Jan 2024 09:24:09 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-From: Guenter Roeck <linux@roeck-us.net>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-hwmon@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [GIT PULL] hwmon updates for v6.8
-Date: Mon,  8 Jan 2024 09:24:08 -0800
-Message-Id: <20240108172408.2220642-1-linux@roeck-us.net>
-X-Mailer: git-send-email 2.39.2
+        d=1e100.net; s=20230601; t=1704734700; x=1705339500;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=C6aX9dBiEE8LbJklMGgqvE97/nITQJQxltiGdxz/Yh4=;
+        b=InrM1VzNM2r0EWoE4UC+cQHK7ca4MGmobiMHdIEXPqFVSv4JT6v7crKOyHRf5f6apq
+         gF80THDvuIkcgCz/gGnxe7AXiegS8LHondLyt6a/UQvaNTnpICsnQMBkuYO0OGW+t5KQ
+         8mYHJuMjVNVYPrDrpbN9l0r1KC3JDdvfCe/RzZPxA1Xn5JHNkXB19DOcea6BtKrZPwoJ
+         eMozLlMDyocV87S4mXGdinm7qDsQif9L14oICh1LyhFRDnwvZJhRa9q3yKjvh1eLEhij
+         DPqGKgR4+vN4WVsn/rF4CSsAN7kVvYeIzhopvLJoCFJZ9X+iI3isIRHaxoZd21nabMlU
+         COPg==
+X-Gm-Message-State: AOJu0Yxofl6jP6ixXWW/+23YEJqAgKq55bHo7LBwpdzVWfQnBvr0i1me
+	xZm94OkD7OqqsomDoS3Gur5vlIFIdFxeGDrLGSHtnSjkgypRXS1c5ejVQcE1MMwafWJZLd/gLCy
+	ycKXLFcSLWGi/Xw/RGexaYEoiFwax8eA=
+X-Received: by 2002:a05:6214:2407:b0:680:ce93:f47b with SMTP id fv7-20020a056214240700b00680ce93f47bmr174734qvb.11.1704734699663;
+        Mon, 08 Jan 2024 09:24:59 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHwHhGjS1auKA1aOgNfaOKzeWdPecytVxhAHRqr0je3LYSsu03Z8q8kEDkBIOyxyb0Q++s3FA==
+X-Received: by 2002:a05:6214:2407:b0:680:ce93:f47b with SMTP id fv7-20020a056214240700b00680ce93f47bmr174719qvb.11.1704734699284;
+        Mon, 08 Jan 2024 09:24:59 -0800 (PST)
+Received: from [192.168.9.34] (net-2-34-31-72.cust.vodafonedsl.it. [2.34.31.72])
+        by smtp.gmail.com with ESMTPSA id i11-20020a0cfccb000000b006810b63d26fsm137357qvq.59.2024.01.08.09.24.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 08 Jan 2024 09:24:58 -0800 (PST)
+Message-ID: <c2026945-76ab-4224-b3af-b6991e16d282@redhat.com>
+Date: Mon, 8 Jan 2024 18:24:55 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v4 1/1] fpga: add an owner and use it to take the
+ low-level module's refcount
+To: Xu Yilun <yilun.xu@linux.intel.com>
+Cc: Moritz Fischer <mdf@kernel.org>, Wu Hao <hao.wu@intel.com>,
+ Xu Yilun <yilun.xu@intel.com>, Tom Rix <trix@redhat.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ linux-kernel@vger.kernel.org, linux-fpga@vger.kernel.org
+References: <20240105231526.109247-1-marpagan@redhat.com>
+ <20240105231526.109247-2-marpagan@redhat.com>
+ <ZZu7Uf3kC1i3zho3@yilunxu-OptiPlex-7050>
+Content-Language: en-US
+From: Marco Pagani <marpagan@redhat.com>
+In-Reply-To: <ZZu7Uf3kC1i3zho3@yilunxu-OptiPlex-7050>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+
+
+
+On 2024-01-08 10:07, Xu Yilun wrote:
+> On Sat, Jan 06, 2024 at 12:15:26AM +0100, Marco Pagani wrote:
+>> Add a module owner field to the fpga_manager struct to take the
+>> low-level control module refcount instead of assuming that the parent
+>> device has a driver and using its owner pointer. The owner is now
+>> passed as an additional argument at registration time. To this end,
+>> the functions for registration have been modified to take an additional
+>> owner parameter and renamed to avoid conflicts. The old function names
+>> are now used for helper macros that automatically set the module that
+>> registers the fpga manager as the owner. This ensures compatibility
+>> with existing low-level control modules and reduces the chances of
+>> registering a manager without setting the owner.
+>>
+>> To detect when the owner module pointer becomes stale, set the mops
+>> pointer to null during fpga_mgr_unregister() and test it before taking
+>> the module's refcount. Use a mutex to protect against a crash that can
+>> happen if __fpga_mgr_get() gets suspended between testing the mops
+>> pointer and taking the refcount while the low-level module is being
+>> unloaded.
+>>
+>> Other changes: opportunistically move put_device() from __fpga_mgr_get()
+>> to fpga_mgr_get() and of_fpga_mgr_get() to improve code clarity since
+>> the device refcount in taken in these functions.
+>>
+>> Fixes: 654ba4cc0f3e ("fpga manager: ensure lifetime with of_fpga_mgr_get")
+>> Suggested-by: Xu Yilun <yilun.xu@intel.com>
+>> Signed-off-by: Marco Pagani <marpagan@redhat.com>
+>> ---
+>>  drivers/fpga/fpga-mgr.c       | 93 ++++++++++++++++++++++-------------
+>>  include/linux/fpga/fpga-mgr.h | 80 +++++++++++++++++++++++++++---
+>>  2 files changed, 134 insertions(+), 39 deletions(-)
+>>
+>> diff --git a/drivers/fpga/fpga-mgr.c b/drivers/fpga/fpga-mgr.c
+>> index 06651389c592..d7bfbdfdf2fc 100644
+>> --- a/drivers/fpga/fpga-mgr.c
+>> +++ b/drivers/fpga/fpga-mgr.c
+>> @@ -664,20 +664,20 @@ static struct attribute *fpga_mgr_attrs[] = {
+>>  };
+>>  ATTRIBUTE_GROUPS(fpga_mgr);
+>>  
+>> -static struct fpga_manager *__fpga_mgr_get(struct device *dev)
+>> +static struct fpga_manager *__fpga_mgr_get(struct device *mgr_dev)
+>>  {
+>>  	struct fpga_manager *mgr;
+>>  
+>> -	mgr = to_fpga_manager(dev);
+>> +	mgr = to_fpga_manager(mgr_dev);
+>>  
+>> -	if (!try_module_get(dev->parent->driver->owner))
+>> -		goto err_dev;
+>> +	mutex_lock(&mgr->mops_mutex);
+>>  
+>> -	return mgr;
+>> +	if (!mgr->mops || !try_module_get(mgr->mops_owner))
+> 
+> Why move the owner out of struct fpga_manager_ops? The owner within the
+> ops struct makes more sense to me, it better illustrates what the mutex
+> is protecting.
+>
+
+I think having the owner in fpga_manager_ops made sense when it was
+meant to be set while initializing the struct in the low-level module.
+However, since the owner is now passed as an argument and set at
+registration time, keeping it in the FPGA manager context seems more
+straightforward to me.
+
+ 
+>> +		mgr = ERR_PTR(-ENODEV);
+>>  
+>> -err_dev:
+>> -	put_device(dev);
+>> -	return ERR_PTR(-ENODEV);
+>> +	mutex_unlock(&mgr->mops_mutex);
+>> +
+>> +	return mgr;
+>>  }
+>>  
+>>  static int fpga_mgr_dev_match(struct device *dev, const void *data)
+>> @@ -693,12 +693,18 @@ static int fpga_mgr_dev_match(struct device *dev, const void *data)
+>>   */
+>>  struct fpga_manager *fpga_mgr_get(struct device *dev)
+>>  {
+>> -	struct device *mgr_dev = class_find_device(&fpga_mgr_class, NULL, dev,
+>> -						   fpga_mgr_dev_match);
+>> +	struct fpga_manager *mgr;
+>> +	struct device *mgr_dev;
+>> +
+>> +	mgr_dev = class_find_device(&fpga_mgr_class, NULL, dev, fpga_mgr_dev_match);
+>>  	if (!mgr_dev)
+>>  		return ERR_PTR(-ENODEV);
+>>  
+>> -	return __fpga_mgr_get(mgr_dev);
+>> +	mgr = __fpga_mgr_get(mgr_dev);
+>> +	if (IS_ERR(mgr))
+>> +		put_device(mgr_dev);
+>> +
+>> +	return mgr;
+>>  }
+>>  EXPORT_SYMBOL_GPL(fpga_mgr_get);
+>>  
+>> @@ -711,13 +717,18 @@ EXPORT_SYMBOL_GPL(fpga_mgr_get);
+>>   */
+>>  struct fpga_manager *of_fpga_mgr_get(struct device_node *node)
+>>  {
+>> -	struct device *dev;
+>> +	struct fpga_manager *mgr;
+>> +	struct device *mgr_dev;
+>>  
+>> -	dev = class_find_device_by_of_node(&fpga_mgr_class, node);
+>> -	if (!dev)
+>> +	mgr_dev = class_find_device_by_of_node(&fpga_mgr_class, node);
+>> +	if (!mgr_dev)
+>>  		return ERR_PTR(-ENODEV);
+>>  
+>> -	return __fpga_mgr_get(dev);
+>> +	mgr = __fpga_mgr_get(mgr_dev);
+>> +	if (IS_ERR(mgr))
+>> +		put_device(mgr_dev);
+>> +
+>> +	return mgr;
+>>  }
+>>  EXPORT_SYMBOL_GPL(of_fpga_mgr_get);
+>>  
+>> @@ -727,7 +738,7 @@ EXPORT_SYMBOL_GPL(of_fpga_mgr_get);
+>>   */
+>>  void fpga_mgr_put(struct fpga_manager *mgr)
+>>  {
+>> -	module_put(mgr->dev.parent->driver->owner);
+>> +	module_put(mgr->mops_owner);
+>>  	put_device(&mgr->dev);
+>>  }
+>>  EXPORT_SYMBOL_GPL(fpga_mgr_put);
+>> @@ -766,9 +777,10 @@ void fpga_mgr_unlock(struct fpga_manager *mgr)
+>>  EXPORT_SYMBOL_GPL(fpga_mgr_unlock);
+>>  
+>>  /**
+>> - * fpga_mgr_register_full - create and register an FPGA Manager device
+>> + * __fpga_mgr_register_full - create and register an FPGA Manager device
+>>   * @parent:	fpga manager device from pdev
+>>   * @info:	parameters for fpga manager
+>> + * @owner:	owner module containing the ops
+>>   *
+>>   * The caller of this function is responsible for calling fpga_mgr_unregister().
+>>   * Using devm_fpga_mgr_register_full() instead is recommended.
+>> @@ -776,7 +788,8 @@ EXPORT_SYMBOL_GPL(fpga_mgr_unlock);
+>>   * Return: pointer to struct fpga_manager pointer or ERR_PTR()
+>>   */
+>>  struct fpga_manager *
+>> -fpga_mgr_register_full(struct device *parent, const struct fpga_manager_info *info)
+>> +__fpga_mgr_register_full(struct device *parent, const struct fpga_manager_info *info,
+>> +			 struct module *owner)
+>>  {
+>>  	const struct fpga_manager_ops *mops = info->mops;
+>>  	struct fpga_manager *mgr;
+>> @@ -803,6 +816,9 @@ fpga_mgr_register_full(struct device *parent, const struct fpga_manager_info *in
+>>  	}
+>>  
+>>  	mutex_init(&mgr->ref_mutex);
+>> +	mutex_init(&mgr->mops_mutex);
+>> +
+>> +	mgr->mops_owner = owner;
+>>  
+>>  	mgr->name = info->name;
+>>  	mgr->mops = info->mops;
+>> @@ -841,14 +857,15 @@ fpga_mgr_register_full(struct device *parent, const struct fpga_manager_info *in
+>>  
+>>  	return ERR_PTR(ret);
+>>  }
+>> -EXPORT_SYMBOL_GPL(fpga_mgr_register_full);
+>> +EXPORT_SYMBOL_GPL(__fpga_mgr_register_full);
+>>  
+>>  /**
+>> - * fpga_mgr_register - create and register an FPGA Manager device
+>> + * __fpga_mgr_register - create and register an FPGA Manager device
+>>   * @parent:	fpga manager device from pdev
+>>   * @name:	fpga manager name
+>>   * @mops:	pointer to structure of fpga manager ops
+>>   * @priv:	fpga manager private data
+>> + * @owner:	owner module containing the ops
+>>   *
+>>   * The caller of this function is responsible for calling fpga_mgr_unregister().
+>>   * Using devm_fpga_mgr_register() instead is recommended. This simple
+>> @@ -859,8 +876,8 @@ EXPORT_SYMBOL_GPL(fpga_mgr_register_full);
+>>   * Return: pointer to struct fpga_manager pointer or ERR_PTR()
+>>   */
+>>  struct fpga_manager *
+>> -fpga_mgr_register(struct device *parent, const char *name,
+>> -		  const struct fpga_manager_ops *mops, void *priv)
+>> +__fpga_mgr_register(struct device *parent, const char *name,
+>> +		    const struct fpga_manager_ops *mops, void *priv, struct module *owner)
+>>  {
+>>  	struct fpga_manager_info info = { 0 };
+>>  
+>> @@ -868,9 +885,9 @@ fpga_mgr_register(struct device *parent, const char *name,
+>>  	info.mops = mops;
+>>  	info.priv = priv;
+>>  
+>> -	return fpga_mgr_register_full(parent, &info);
+>> +	return __fpga_mgr_register_full(parent, &info, owner);
+>>  }
+>> -EXPORT_SYMBOL_GPL(fpga_mgr_register);
+>> +EXPORT_SYMBOL_GPL(__fpga_mgr_register);
+>>  
+>>  /**
+>>   * fpga_mgr_unregister - unregister an FPGA manager
+>> @@ -888,6 +905,12 @@ void fpga_mgr_unregister(struct fpga_manager *mgr)
+>>  	 */
+>>  	fpga_mgr_fpga_remove(mgr);
+>>  
+>> +	mutex_lock(&mgr->mops_mutex);
+>> +
+>> +	mgr->mops = NULL;
+>> +
+>> +	mutex_unlock(&mgr->mops_mutex);
+>> +
+>>  	device_unregister(&mgr->dev);
+>>  }
+>>  EXPORT_SYMBOL_GPL(fpga_mgr_unregister);
+>> @@ -900,9 +923,10 @@ static void devm_fpga_mgr_unregister(struct device *dev, void *res)
+>>  }
+>>  
+>>  /**
+>> - * devm_fpga_mgr_register_full - resource managed variant of fpga_mgr_register()
+>> + * __devm_fpga_mgr_register_full - resource managed variant of fpga_mgr_register()
+>>   * @parent:	fpga manager device from pdev
+>>   * @info:	parameters for fpga manager
+>> + * @owner:	owner module containing the ops
+>>   *
+>>   * Return:  fpga manager pointer on success, negative error code otherwise.
+>>   *
+>> @@ -910,7 +934,8 @@ static void devm_fpga_mgr_unregister(struct device *dev, void *res)
+>>   * function will be called automatically when the managing device is detached.
+>>   */
+>>  struct fpga_manager *
+>> -devm_fpga_mgr_register_full(struct device *parent, const struct fpga_manager_info *info)
+>> +__devm_fpga_mgr_register_full(struct device *parent, const struct fpga_manager_info *info,
+>> +			      struct module *owner)
+>>  {
+>>  	struct fpga_mgr_devres *dr;
+>>  	struct fpga_manager *mgr;
+>> @@ -919,7 +944,7 @@ devm_fpga_mgr_register_full(struct device *parent, const struct fpga_manager_inf
+>>  	if (!dr)
+>>  		return ERR_PTR(-ENOMEM);
+>>  
+>> -	mgr = fpga_mgr_register_full(parent, info);
+>> +	mgr = __fpga_mgr_register_full(parent, info, owner);
+>>  	if (IS_ERR(mgr)) {
+>>  		devres_free(dr);
+>>  		return mgr;
+>> @@ -930,14 +955,15 @@ devm_fpga_mgr_register_full(struct device *parent, const struct fpga_manager_inf
+>>  
+>>  	return mgr;
+>>  }
+>> -EXPORT_SYMBOL_GPL(devm_fpga_mgr_register_full);
+>> +EXPORT_SYMBOL_GPL(__devm_fpga_mgr_register_full);
+>>  
+>>  /**
+>> - * devm_fpga_mgr_register - resource managed variant of fpga_mgr_register()
+>> + * __devm_fpga_mgr_register - resource managed variant of fpga_mgr_register()
+>>   * @parent:	fpga manager device from pdev
+>>   * @name:	fpga manager name
+>>   * @mops:	pointer to structure of fpga manager ops
+>>   * @priv:	fpga manager private data
+>> + * @owner:	owner module containing the ops
+>>   *
+>>   * Return:  fpga manager pointer on success, negative error code otherwise.
+>>   *
+>> @@ -946,8 +972,9 @@ EXPORT_SYMBOL_GPL(devm_fpga_mgr_register_full);
+>>   * device is detached.
+>>   */
+>>  struct fpga_manager *
+>> -devm_fpga_mgr_register(struct device *parent, const char *name,
+>> -		       const struct fpga_manager_ops *mops, void *priv)
+>> +__devm_fpga_mgr_register(struct device *parent, const char *name,
+>> +			 const struct fpga_manager_ops *mops, void *priv,
+>> +			 struct module *owner)
+>>  {
+>>  	struct fpga_manager_info info = { 0 };
+>>  
+>> @@ -955,9 +982,9 @@ devm_fpga_mgr_register(struct device *parent, const char *name,
+>>  	info.mops = mops;
+>>  	info.priv = priv;
+>>  
+>> -	return devm_fpga_mgr_register_full(parent, &info);
+>> +	return __devm_fpga_mgr_register_full(parent, &info, owner);
+>>  }
+>> -EXPORT_SYMBOL_GPL(devm_fpga_mgr_register);
+>> +EXPORT_SYMBOL_GPL(__devm_fpga_mgr_register);
+>>  
+>>  static void fpga_mgr_dev_release(struct device *dev)
+>>  {
+>> diff --git a/include/linux/fpga/fpga-mgr.h b/include/linux/fpga/fpga-mgr.h
+>> index 54f63459efd6..967540311462 100644
+>> --- a/include/linux/fpga/fpga-mgr.h
+>> +++ b/include/linux/fpga/fpga-mgr.h
+>> @@ -201,6 +201,8 @@ struct fpga_manager_ops {
+>>   * @state: state of fpga manager
+>>   * @compat_id: FPGA manager id for compatibility check.
+>>   * @mops: pointer to struct of fpga manager ops
+>> + * @mops_mutex: protects mops from low-level module removal
+>> + * @mops_owner: module containing the mops
+>>   * @priv: low level driver private date
+>>   */
+>>  struct fpga_manager {
+>> @@ -210,6 +212,8 @@ struct fpga_manager {
+>>  	enum fpga_mgr_states state;
+>>  	struct fpga_compat_id *compat_id;
+>>  	const struct fpga_manager_ops *mops;
+>> +	struct mutex mops_mutex;
+>> +	struct module *mops_owner;
+>>  	void *priv;
+>>  };
+>>  
+>> @@ -222,6 +226,7 @@ void fpga_image_info_free(struct fpga_image_info *info);
+>>  int fpga_mgr_load(struct fpga_manager *mgr, struct fpga_image_info *info);
+>>  
+>>  int fpga_mgr_lock(struct fpga_manager *mgr);
+>> +
+> 
+> Why adding a line?
+>
+
+I'll remove the line.
+ 
+>>  void fpga_mgr_unlock(struct fpga_manager *mgr);
+>>  
+>>  struct fpga_manager *of_fpga_mgr_get(struct device_node *node);
+>> @@ -230,18 +235,81 @@ struct fpga_manager *fpga_mgr_get(struct device *dev);
+>>  
+>>  void fpga_mgr_put(struct fpga_manager *mgr);
+>>  
+>> +/**
+>> + * fpga_mgr_register_full - create and register an FPGA Manager device
+>> + * @parent:	fpga manager device from pdev
+>> + * @info:	parameters for fpga manager
+>> + *
+>> + * The caller of this function is responsible for calling fpga_mgr_unregister().
+>> + * Using devm_fpga_mgr_register_full() instead is recommended.
+>> + *
+>> + * Return: pointer to struct fpga_manager pointer or ERR_PTR()
+>> + */
+> 
+> No need to duplicate the doc, just remove it.
+> Same for the rest of code.
+
+Do you mean keeping the kernel-doc comments only for the __fpga_mgr_*
+functions in fpga-mgr.c?
+
+> 
+>> +#define fpga_mgr_register_full(parent, info) \
+>> +	__fpga_mgr_register_full(parent, info, THIS_MODULE)
+>> +
+> 
+> Delete the line, and ...
+> 
+>>  struct fpga_manager *
+>> -fpga_mgr_register_full(struct device *parent, const struct fpga_manager_info *info);
+>> +__fpga_mgr_register_full(struct device *parent, const struct fpga_manager_info *info,
+>> +			 struct module *owner);
+> 
+> Add a line here, to make the related functions packed.
+> Same for the rest of code.
+
+Do you prefer having the macro just above the function prototype? Like:
+
+#define devm_fpga_mgr_register(parent, name, mops, priv) \
+	__devm_fpga_mgr_register(parent, name, mops, priv, THIS_MODULE)
+struct fpga_manager *
+__devm_fpga_mgr_register(struct device *parent, const char *name,
+			 const struct fpga_manager_ops *mops, void *priv,
+			 struct module *owner);
+
+> 
+>> +/**
+>> + * fpga_mgr_register - create and register an FPGA Manager device
+>> + * @parent:	fpga manager device from pdev
+>> + * @name:	fpga manager name
+>> + * @mops:	pointer to structure of fpga manager ops
+>> + * @priv:	fpga manager private data
+>> + *
+>> + * The caller of this function is responsible for calling fpga_mgr_unregister().
+>> + * Using devm_fpga_mgr_register() instead is recommended. This simple
+>> + * version of the register function should be sufficient for most users. The
+>> + * fpga_mgr_register_full() function is available for users that need to pass
+>> + * additional, optional parameters.
+>> + *
+>> + * Return: pointer to struct fpga_manager pointer or ERR_PTR()
+>> + */
+>> +#define fpga_mgr_register(parent, name, mops, priv) \
+>> +	__fpga_mgr_register(parent, name, mops, priv, THIS_MODULE)
+>>  
+>>  struct fpga_manager *
+>> -fpga_mgr_register(struct device *parent, const char *name,
+>> -		  const struct fpga_manager_ops *mops, void *priv);
+>> +__fpga_mgr_register(struct device *parent, const char *name,
+>> +		    const struct fpga_manager_ops *mops, void *priv, struct module *owner);
+>> +
+>>  void fpga_mgr_unregister(struct fpga_manager *mgr);
+>>  
+>> +/**
+>> + * devm_fpga_mgr_register_full - resource managed variant of fpga_mgr_register()
+>> + * @parent:	fpga manager device from pdev
+>> + * @info:	parameters for fpga manager
+>> + *
+>> + * Return:  fpga manager pointer on success, negative error code otherwise.
+>> + *
+>> + * This is the devres variant of fpga_mgr_register_full() for which the unregister
+>> + * function will be called automatically when the managing device is detached.
+>> + */
+>> +#define devm_fpga_mgr_register_full(parent, info) \
+>> +	__devm_fpga_mgr_register_full(parent, info, THIS_MODULE)
+>> +
+>>  struct fpga_manager *
+>> -devm_fpga_mgr_register_full(struct device *parent, const struct fpga_manager_info *info);
+>> +__devm_fpga_mgr_register_full(struct device *parent, const struct fpga_manager_info *info,
+>> +			      struct module *owner);
+>> +/**
+>> + * devm_fpga_mgr_register - resource managed variant of fpga_mgr_register()
+>> + * @parent:	fpga manager device from pdev
+>> + * @name:	fpga manager name
+>> + * @mops:	pointer to structure of fpga manager ops
+>> + * @priv:	fpga manager private data
+>> + *
+>> + * Return:  fpga manager pointer on success, negative error code otherwise.
+>> + *
+>> + * This is the devres variant of fpga_mgr_register() for which the
+>> + * unregister function will be called automatically when the managing
+>> + * device is detached.
+>> + */
+>> +#define devm_fpga_mgr_register(parent, name, mops, priv) \
+>> +	__devm_fpga_mgr_register(parent, name, mops, priv, THIS_MODULE)
+>> +
+>>  struct fpga_manager *
+>> -devm_fpga_mgr_register(struct device *parent, const char *name,
+>> -		       const struct fpga_manager_ops *mops, void *priv);
+>> +__devm_fpga_mgr_register(struct device *parent, const char *name,
+>> +			 const struct fpga_manager_ops *mops, void *priv,
+>> +			 struct module *owner);
+>>  
+>>  #endif /*_LINUX_FPGA_MGR_H */
+>> -- 
+>> 2.43.0
+>>
+>>
+> 
 
-Hi Linus,
-
-Please pull hwmon updates for Linux v6.8 from signed tag:
-
-    git://git.kernel.org/pub/scm/linux/kernel/git/groeck/linux-staging.git hwmon-for-v6.8
-
-Thanks,
-Guenter
-------
-
-The following changes since commit a39b6ac3781d46ba18193c9dbb2110f31e9bffe9:
-
-  Linux 6.7-rc5 (2023-12-10 14:33:40 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/groeck/linux-staging.git tags/hwmon-for-v6.8
-
-for you to fetch changes up to 41c71105a845ec1458680f01644d032a5fbbe0d9:
-
-  hwmon: (gigabyte_waterforce) Mark status report as received under a spinlock (2024-01-08 07:27:27 -0800)
-
-----------------------------------------------------------------
-hwmon updates for v6.8
-
-- New drivers
-
-  * pmbus: Support for MPS Multi-phase mp2856/mp2857 controller
-
-  * pmbus: Support for MPS Multi-phase mp5990
-
-  * Driver for Gigabyte AORUS Waterforce AIO coolers
-
-0c459759ca97 hwmon: (pmbus) Add ltc4286 driver
-
-- Added support to existing drivers
-
-  * lm75: Support for AMS AS6200 temperature sensor
-
-  * k10temp: Support for AMD Family 19h Model 8h
-
-  * max31827: Support for max31828 and max31829
-
-  * sht3x: Support for sts3x
-
-  * Add support for WMI SMM interface, and various related improvements.
-    Add support for Optiplex 7000
-
-  * emc1403: Support for EMC1442
-
-  * npcm750-pwm-fan: Support for NPCM8xx
-
-  * nct6775: Add support for 2 additional fan controls
-
-- Minor improvements and bug fixes
-
-  * gigabyte_waterforce: Mark status report as received under a spinlock
-
-  * aquacomputer_d5next: Remove unneeded CONFIG_DEBUG_FS #ifdef
-
-  * gpio-fan: Convert txt bindings to yaml
-
-  * smsc47m1: Various cleanups / improvements
-
-  * corsair-cpro: use NULL instead of 0
-
-  * hp-wmi-sensors: Fix failure to load on EliteDesk 800 G6
-
-  * tmp513: Various cleanups
-
-  * peci/dimmtemp: Bump timeout
-
-  * pc87360: Bounds check data->innr usage
-
-  * nct6775: Fix fan speed set failure in automatic mode
-
-  * ABI: sysfs-class-hwmon: document various missing attributes
-
-  * lm25066: Use i2c_get_match_data()
-
-  * nct6775: Use i2c_get_match_data(), and related fixes
-
-  * max6650: Use i2c_get_match_data()
-
-  * aspeed-pwm-tacho: Fix -Wstringop-overflow warning in aspeed_create_fan_tach_channel()
-
-----------------------------------------------------------------
-Abdel Alkuor (3):
-      dt-bindings: hwmon: (lm75) Add AMS AS6200 temperature sensor
-      hwmon: (lm75) Add AMS AS6200 temperature sensor
-      hwmon: (lm75) Fix tmp112 default config
-
-Aleksa Savic (3):
-      hwmon: Add driver for Gigabyte AORUS Waterforce AIO coolers
-      hwmon: (aquacomputer_d5next) Remove unneeded CONFIG_DEBUG_FS #ifdef
-      hwmon: (gigabyte_waterforce) Mark status report as received under a spinlock
-
-Andy Shevchenko (3):
-      hwmon: (tmp513) Don't use "proxy" headers
-      hwmon: (tmp513) Simplify with dev_err_probe()
-      hwmon: (tmp513) Use SI constants from units.h
-
-Antoniu Miclaus (1):
-      hwmon: (ltc2991) remove device reference from state
-
-Armin Wolf (9):
-      hwmon: (dell-smm) Prepare for multiple SMM calling backends
-      hwmon: (dell-smm) Move blacklist handling to module init
-      hwmon: (dell-smm) Move whitelist handling to module init
-      hwmon: (dell-smm) Move DMI config handling to module init
-      hwmon: (dell-smm) Move config entries out of i8k_dmi_table
-      hwmon: (dell-smm) Introduce helper function for data init
-      hwmon: (dell-smm) Add support for WMI SMM interface
-      hwmon: (dell-smm) Document the WMI SMM interface
-      hwmon: (dell-smm) Add Optiplex 7000 to fan control whitelist
-
-Daniel Matyas (5):
-      hwmon: (max31827) Handle new properties from the devicetree
-      hwmon: (max31827) Add support for max31828 and max31829
-      hwmon: (max31827) Update bits with shutdown_write()
-      hwmon: (max31827) Return closest value in update_interval
-      hwmon: (max31827) Add custom attribute for resolution
-
-David Heidelberg (1):
-      dt-bindings: hwmon: gpio-fan: Convert txt bindings to yaml
-
-Delphine CC Chiu (3):
-      hwmon: (emc1403) Add support for EMC1442
-      dt-bindings: hwmon: Add lltc ltc4286 driver bindings
-      hwmon: (pmbus) Add ltc4286 driver
-
-Guenter Roeck (1):
-      hwmon: (nct6775-core) Explicitly initialize nct6775_device_names indexes
-
-Gustavo A. R. Silva (1):
-      hwmon: (aspeed-pwm-tacho) Fix -Wstringop-overflow warning in aspeed_create_fan_tach_channel()
-
-James Seo (1):
-      hwmon: (hp-wmi-sensors) Fix failure to load on EliteDesk 800 G6
-
-Jami Kurki (1):
-      hwmon: (k10temp) Add support for AMD Family 19h Model 8h
-
-Javier Carrasco (4):
-      ABI: sysfs-class-hwmon: rearrange humidity attributes alphabetically
-      ABI: sysfs-class-hwmon: document missing humidity attributes
-      ABI: sysfs-class-hwmon: fix tempY_crit_alarm access rights
-      ABI: sysfs-class-hwmon: document emergency/max/min temperature alarms
-
-Kees Cook (2):
-      hwmon: (nct6775-platform) Explicitly initialize nct6775_sio_names indexes
-      hwmon: (pc87360) Bounds check data->innr usage
-
-Luca Ceresoli (1):
-      hwmon: (lm75) remove now-unused include
-
-Marius Zachmann (1):
-      hwmon: (corsair-cpro) use NULL instead of 0
-
-Michal Simek (1):
-      dt-bindings: hwmon: Increase max number of io-channels
-
-Patrick Rudolph (1):
-      hwmon: (peci/dimmtemp) Bump timeout
-
-Peter Yin (4):
-      dt-bindings: hwmon: Add mps mp5990 driver bindings
-      hwmon: (pmbus) Add support for MPS Multi-phase mp5990
-      dt-bindings: Add MP2856/MP2857 voltage regulator device
-      hwmon: (pmbus) Add support for MPS Multi-phase mp2856/mp2857 controller
-
-Rob Herring (3):
-      hwmon: (max6650) Use i2c_get_match_data()
-      hwmon: (nct6775-i2c) Use i2c_get_match_data()
-      hwmon: (lm25066) Use i2c_get_match_data()
-
-Serge Semin (1):
-      MAINTAINERS: Add maintainer for Baikal-T1 PVT hwmon driver
-
-Stefan Gloor (1):
-      hwmon: (sht3x) add sts3x support
-
-Tomer Maimon (1):
-      hwmon: (npcm750-pwm-fan) Add NPCM8xx support
-
-Uwe Kleine-König (4):
-      hwmon: (smsc47m1) Mark driver struct with __refdata to prevent section mismatch
-      hwmon: (smsc47m1) Convert to platform remove callback returning void
-      hwmon: (smsc47m1) Simplify device registration
-      hwmon: (smsc47m1) Rename global platform device variable
-
-Xing Tong Wu (2):
-      hwmon: (nct6775) Add support for 2 additional fan controls
-      hwmon: (nct6775) Fix fan speed set failure in automatic mode
-
-Yang Li (1):
-      hwmon: Fix some kernel-doc comments
-
- Documentation/ABI/testing/sysfs-class-hwmon        | 110 +++-
- .../devicetree/bindings/hwmon/gpio-fan.txt         |  41 --
- .../devicetree/bindings/hwmon/gpio-fan.yaml        |  60 ++
- .../devicetree/bindings/hwmon/iio-hwmon.yaml       |   2 +-
- .../devicetree/bindings/hwmon/lltc,ltc4286.yaml    |  50 ++
- Documentation/devicetree/bindings/hwmon/lm75.yaml  |  33 ++
- .../devicetree/bindings/trivial-devices.yaml       |   6 +
- Documentation/hwmon/dell-smm-hwmon.rst             |  38 +-
- Documentation/hwmon/gigabyte_waterforce.rst        |  47 ++
- Documentation/hwmon/index.rst                      |   4 +
- Documentation/hwmon/lm75.rst                       |  10 +
- Documentation/hwmon/ltc4286.rst                    |  95 ++++
- Documentation/hwmon/max31827.rst                   |  75 ++-
- Documentation/hwmon/mp2856.rst                     |  98 ++++
- Documentation/hwmon/mp5990.rst                     |  84 +++
- Documentation/hwmon/sht3x.rst                      |  29 +-
- MAINTAINERS                                        |  25 +
- drivers/hwmon/Kconfig                              |  11 +
- drivers/hwmon/Makefile                             |   1 +
- drivers/hwmon/aquacomputer_d5next.c                |  10 -
- drivers/hwmon/aspeed-pwm-tacho.c                   |  26 +-
- drivers/hwmon/corsair-cpro.c                       |   2 +-
- drivers/hwmon/dell-smm-hwmon.c                     | 608 ++++++++++++++-------
- drivers/hwmon/emc1403.c                            |   6 +-
- drivers/hwmon/gigabyte_waterforce.c                | 430 +++++++++++++++
- drivers/hwmon/hp-wmi-sensors.c                     | 125 ++++-
- drivers/hwmon/k10temp.c                            |   1 +
- drivers/hwmon/lm75.c                               | 114 +++-
- drivers/hwmon/ltc2991.c                            |  20 +-
- drivers/hwmon/max31827.c                           | 275 ++++++++--
- drivers/hwmon/max6650.c                            |   8 +-
- drivers/hwmon/nct6775-core.c                       |  41 +-
- drivers/hwmon/nct6775-i2c.c                        |  14 +-
- drivers/hwmon/nct6775-platform.c                   |  26 +-
- drivers/hwmon/nct6775.h                            |   2 +-
- drivers/hwmon/npcm750-pwm-fan.c                    |  30 +-
- drivers/hwmon/pc87360.c                            |   6 +-
- drivers/hwmon/peci/dimmtemp.c                      |   2 +-
- drivers/hwmon/pmbus/Kconfig                        |  28 +
- drivers/hwmon/pmbus/Makefile                       |   3 +
- drivers/hwmon/pmbus/lm25066.c                      |  14 +-
- drivers/hwmon/pmbus/ltc4286.c                      | 175 ++++++
- drivers/hwmon/pmbus/mp2856.c                       | 466 ++++++++++++++++
- drivers/hwmon/pmbus/mp5990.c                       | 179 ++++++
- drivers/hwmon/sht4x.c                              |   3 +-
- drivers/hwmon/smsc47m1.c                           |  67 +--
- drivers/hwmon/tmp513.c                             |  64 ++-
- drivers/platform/x86/wmi.c                         |   1 +
- 48 files changed, 3066 insertions(+), 499 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/hwmon/gpio-fan.txt
- create mode 100644 Documentation/devicetree/bindings/hwmon/gpio-fan.yaml
- create mode 100644 Documentation/devicetree/bindings/hwmon/lltc,ltc4286.yaml
- create mode 100644 Documentation/hwmon/gigabyte_waterforce.rst
- create mode 100644 Documentation/hwmon/ltc4286.rst
- create mode 100644 Documentation/hwmon/mp2856.rst
- create mode 100644 Documentation/hwmon/mp5990.rst
- create mode 100644 drivers/hwmon/gigabyte_waterforce.c
- create mode 100644 drivers/hwmon/pmbus/ltc4286.c
- create mode 100644 drivers/hwmon/pmbus/mp2856.c
- create mode 100644 drivers/hwmon/pmbus/mp5990.c
 
