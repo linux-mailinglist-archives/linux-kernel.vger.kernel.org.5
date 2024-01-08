@@ -1,162 +1,139 @@
-Return-Path: <linux-kernel+bounces-19336-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19332-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B5DE826B95
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 11:30:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 32E0C826B85
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 11:22:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 982F61C208A7
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 10:30:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8EBCC1F222B8
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 10:22:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBF9913FEB;
-	Mon,  8 Jan 2024 10:29:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99B7113FE0;
+	Mon,  8 Jan 2024 10:22:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b="o8+G7C7L"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from relay.hostedemail.com (smtprelay0010.hostedemail.com [216.40.44.10])
+Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F382513ACF;
-	Mon,  8 Jan 2024 10:29:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=perches.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=perches.com
-Received: from omf19.hostedemail.com (a10.router.float.18 [10.200.18.1])
-	by unirelay06.hostedemail.com (Postfix) with ESMTP id B1C21A155C;
-	Mon,  8 Jan 2024 10:21:14 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf19.hostedemail.com (Postfix) with ESMTPA id C8CE620026;
-	Mon,  8 Jan 2024 10:21:11 +0000 (UTC)
-Message-ID: <486973921f89f70bcc5d42501eeca3fd105be2c4.camel@perches.com>
-Subject: Re: [HID Patchsets for Samsung driver v2 2/6] HID: Samsung : Fix
- the checkpatch complain.
-From: Joe Perches <joe@perches.com>
-To: Sandeep C S <sandeep.cs@samsung.com>, Jiri Kosina <jikos@kernel.org>, 
-	Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Cc: gaudium.lee@samsung.com, ih0923.kim@samsung.com,
- suhyun_.kim@samsung.com,  jitender.s21@samsung.com, junwan.cho@samsung.com,
- linux-input@vger.kernel.org,  linux-kernel@vger.kernel.org
-Date: Mon, 08 Jan 2024 02:21:10 -0800
-In-Reply-To: <20240108091917.1552013-3-sandeep.cs@samsung.com>
-References: <20240108091917.1552013-1-sandeep.cs@samsung.com>
-	 <CGME20240108091959epcas5p2559b779424e2fb7c7e268d1b24612b4f@epcas5p2.samsung.com>
-	 <20240108091917.1552013-3-sandeep.cs@samsung.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4600113AD8;
+	Mon,  8 Jan 2024 10:22:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arinc9.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 0E041240004;
+	Mon,  8 Jan 2024 10:22:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arinc9.com; s=gm1;
+	t=1704709348;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=XuJv/OyK8RE0Y94blspywgd4cYFg7aH1NjsPMWEemMY=;
+	b=o8+G7C7L1f0U+TNR9hjwq2dvwbkDeoKwHmYJ/lL98i2S7oyotEB4PbNN8gyDcg5GRlloJ4
+	OciNnaR2VvZAC4nmjTZ+np5PbKkNYYG7o1Cxr7H5Ye6fAga97KSuwf7NsI7zp7idUgQpfg
+	SJ5mMW2o4WK9TYiKJbFjDrnvtHRuIBMM1O5SEMQzc5CfYklj5y1x6IP7YkqlmqWwl+YquJ
+	yqFc4NSjOXsnEZ7IPLJZI/AEBAntp7P30m6zqhukwqjO/1FoLS/c3pMqFGmgUl1G6OssGb
+	psc0qp57ss1dPfKAo2AdfXGmLbT3NcjCQLmbmv/g/I0FcIuhY6aWaSsm1ApBBw==
+Message-ID: <65274929-fa59-482c-a744-6b9ce162ab46@arinc9.com>
+Date: Mon, 8 Jan 2024 13:22:18 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Rspamd-Queue-Id: C8CE620026
-X-Stat-Signature: ohyahdhggxcq6imyoria9os1j15h5bc3
-X-Rspamd-Server: rspamout01
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1/53bmHUQaLyx7q7JMJOiCZyDhi2zgUNEI=
-X-HE-Tag: 1704709271-838445
-X-HE-Meta: U2FsdGVkX196M2AdNXOPLo9uz+4s8/IoxjHpXeHLkLeCQAmORr8bhzTvACQY+KOVz3zekDoNImo57EunBEU513qa2RTm3p9lWfSkK457FybOEmGQRcTUp8XTy/gf6xQugTubj1iyTK4Wh7MxgstD6r3mvOj5tLFPjiEEXGTeNPFF3Cj7AAy94fa+ybN/8GYAfJTKHWbtOxRJLcbc1Bzg7jz2BoA47b6ZhoJn4s7ejKhxZraYWQBUAZonO5lYKtreZS45+VtX8A6b7vfJTCxmAX9h/sZTSI6tkxtYQvGBv2jP3Pr8L86mVAcbIZgpmZ56
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next] net: dsa: mt7530: support OF-based registration
+ of switch MDIO bus
+Content-Language: en-US
+To: Simon Horman <horms@kernel.org>
+Cc: Daniel Golle <daniel@makrotopia.org>,
+ Landen Chao <Landen.Chao@mediatek.com>, DENG Qingfang <dqfext@gmail.com>,
+ Sean Wang <sean.wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>,
+ Florian Fainelli <f.fainelli@gmail.com>, Vladimir Oltean
+ <olteanv@gmail.com>, "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Matthias Brugger <matthias.bgg@gmail.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ David Bauer <mail@david-bauer.net>, mithat.guner@xeront.com,
+ erkin.bozoglu@xeront.com, Luiz Angelo Daros de Luca <luizluca@gmail.com>,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org
+References: <20240106122142.235389-1-arinc.unal@arinc9.com>
+ <20240107195241.GB132648@kernel.org>
+From: =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
+In-Reply-To: <20240107195241.GB132648@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: arinc.unal@arinc9.com
 
-On Mon, 2024-01-08 at 14:49 +0530, Sandeep C S wrote:
-> Warning found by checkpatch.pl script.
-[]
-> diff --git a/drivers/hid/hid-samsung.c b/drivers/hid/hid-samsung.c
-[]
-> @@ -67,20 +67,17 @@ static __u8 *samsung_irda_report_fixup(struct hid_dev=
-ice *hdev, __u8 *rdesc,
->  		rdesc[178] =3D 0x08;
->  		rdesc[180] =3D 0x06;
->  		rdesc[182] =3D 0x42;
-> -	} else
-> -	if (*rsize =3D=3D 203 && rdesc[192] =3D=3D 0x15 && rdesc[193] =3D=3D 0x=
-0 &&
-> +	} else if (*rsize =3D=3D 203 && rdesc[192] =3D=3D 0x15 && rdesc[193] =
-=3D=3D 0x0 &&
->  			rdesc[194] =3D=3D 0x25 && rdesc[195] =3D=3D 0x12) {
->  		samsung_irda_dev_trace(hdev, 203);
->  		rdesc[193] =3D 0x1;
->  		rdesc[195] =3D 0xf;
-> -	} else
-> -	if (*rsize =3D=3D 135 && rdesc[124] =3D=3D 0x15 && rdesc[125] =3D=3D 0x=
-0 &&
-> +	} else if (*rsize =3D=3D 135 && rdesc[124] =3D=3D 0x15 && rdesc[125] =
-=3D=3D 0x0 &&
->  			rdesc[126] =3D=3D 0x25 && rdesc[127] =3D=3D 0x11) {
->  		samsung_irda_dev_trace(hdev, 135);
->  		rdesc[125] =3D 0x1;
->  		rdesc[127] =3D 0xe;
-> -	} else
-> -	if (*rsize =3D=3D 171 && rdesc[160] =3D=3D 0x15 && rdesc[161] =3D=3D 0x=
-0 &&
-> +	} else if (*rsize =3D=3D 171 && rdesc[160] =3D=3D 0x15 && rdesc[161] =
-=3D=3D 0x0 &&
->  			rdesc[162] =3D=3D 0x25 && rdesc[163] =3D=3D 0x01) {
->  		samsung_irda_dev_trace(hdev, 171);
->  		rdesc[161] =3D 0x1;
+On 7.01.2024 22:52, Simon Horman wrote:
+> On Sat, Jan 06, 2024 at 03:21:42PM +0300, Arınç ÜNAL wrote:
+>> From: David Bauer <mail@david-bauer.net>
+>>
+>> Currently the MDIO bus of the switches the MT7530 DSA subdriver controls
+>> can only be registered as non-OF-based. Bring support for registering the
+>> bus OF-based.
+>>
+>> The subdrivers that control switches [with MDIO bus] probed on OF must
+>> follow this logic to support all cases properly:
+>>
+>> No switch MDIO bus defined: Populate ds->user_mii_bus, register the MDIO
+>> bus, set the interrupts for PHYs if "interrupt-controller" is defined at
+>> the switch node. This case should only be covered for the switches which
+>> their dt-bindings documentation didn't document the MDIO bus from the
+>> start. This is to keep supporting the device trees that do not describe the
+>> MDIO bus on the device tree but the MDIO bus is being used nonetheless.
+>>
+>> Switch MDIO bus defined: Don't populate ds->user_mii_bus, register the MDIO
+>> bus, set the interrupts for PHYs if ["interrupt-controller" is defined at
+>> the switch node and "interrupts" is defined at the PHY nodes under the
+>> switch MDIO bus node].
+>>
+>> Switch MDIO bus defined but explicitly disabled: If the device tree says
+>> status = "disabled" for the MDIO bus, we shouldn't need an MDIO bus at all.
+>> Instead, just exit as early as possible and do not call any MDIO API.
+>>
+>> The use of ds->user_mii_bus is inappropriate when the MDIO bus of the
+>> switch is described on the device tree [1], which is why we don't populate
+>> ds->user_mii_bus in that case.
+>>
+>> Link: https://lore.kernel.org/netdev/20231213120656.x46fyad6ls7sqyzv@skbuf/ [1]
+>> Suggested-by: David Bauer <mail@david-bauer.net>
+>> Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
+>> ---
+>>   drivers/net/dsa/mt7530.c | 18 ++++++++++++++----
+>>   1 file changed, 14 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/drivers/net/dsa/mt7530.c b/drivers/net/dsa/mt7530.c
+>> index 391c4dbdff42..39d7e7ad7154 100644
+>> --- a/drivers/net/dsa/mt7530.c
+>> +++ b/drivers/net/dsa/mt7530.c
+>> @@ -2153,17 +2153,25 @@ mt7530_free_irq(struct mt7530_priv *priv)
+>>   static int
+>>   mt7530_setup_mdio(struct mt7530_priv *priv)
+>>   {
+>> +	struct device_node *mnp, *np = priv->dev->of_node;
+>>   	struct dsa_switch *ds = priv->ds;
+>>   	struct device *dev = priv->dev;
+>>   	struct mii_bus *bus;
+>>   	static int idx;
+>> -	int ret;
+>> +	int ret = 0;
+>> +
+>> +	mnp = of_get_child_by_name(np, "mdio");
+>> +
+>> +	if (mnp && !of_device_is_available(mnp))
+>> +		goto out;
+> 
+> nit: I think it would easier on the eyes to simply
+> 
+> 		return 0;
 
-For this block, I think a rewrite using memcmp would be clearer.
-Something like:
----
- drivers/hid/hid-samsung.c | 34 +++++++++++++++-------------------
- 1 file changed, 15 insertions(+), 19 deletions(-)
+Will do.
 
-diff --git a/drivers/hid/hid-samsung.c b/drivers/hid/hid-samsung.c
-index cf5992e970940..cd84fb5e68f69 100644
---- a/drivers/hid/hid-samsung.c
-+++ b/drivers/hid/hid-samsung.c
-@@ -58,33 +58,29 @@ static inline void samsung_irda_dev_trace(struct hid_de=
-vice *hdev,
- static __u8 *samsung_irda_report_fixup(struct hid_device *hdev, __u8 *rdes=
-c,
- 		unsigned int *rsize)
- {
--	if (*rsize =3D=3D 184 && rdesc[175] =3D=3D 0x25 && rdesc[176] =3D=3D 0x40=
- &&
--			rdesc[177] =3D=3D 0x75 && rdesc[178] =3D=3D 0x30 &&
--			rdesc[179] =3D=3D 0x95 && rdesc[180] =3D=3D 0x01 &&
--			rdesc[182] =3D=3D 0x40) {
-+	if (*rsize =3D=3D 184 &&
-+	    !memcmp(&rdesc[175], "\x25\x40\x75\x30\x95\x01", 6) &&
-+	    rdesc[182] =3D=3D 0x40) {
- 		samsung_irda_dev_trace(hdev, 184);
- 		rdesc[176] =3D 0xff;
- 		rdesc[178] =3D 0x08;
- 		rdesc[180] =3D 0x06;
- 		rdesc[182] =3D 0x42;
--	} else
--	if (*rsize =3D=3D 203 && rdesc[192] =3D=3D 0x15 && rdesc[193] =3D=3D 0x0 =
-&&
--			rdesc[194] =3D=3D 0x25 && rdesc[195] =3D=3D 0x12) {
-+	} else if (*rsize =3D=3D 203 &&
-+		   !memcmp(&rdesc[192], "\x15\x00\x25\x12", 4)) {
- 		samsung_irda_dev_trace(hdev, 203);
--		rdesc[193] =3D 0x1;
--		rdesc[195] =3D 0xf;
--	} else
--	if (*rsize =3D=3D 135 && rdesc[124] =3D=3D 0x15 && rdesc[125] =3D=3D 0x0 =
-&&
--			rdesc[126] =3D=3D 0x25 && rdesc[127] =3D=3D 0x11) {
-+		rdesc[193] =3D 0x01;
-+		rdesc[195] =3D 0x0f;
-+	} else if (*rsize =3D=3D 135 &&
-+		   !memcmp(&rdesc[124], "\x15\x00\x25\x11", 4)) {
- 		samsung_irda_dev_trace(hdev, 135);
--		rdesc[125] =3D 0x1;
--		rdesc[127] =3D 0xe;
--	} else
--	if (*rsize =3D=3D 171 && rdesc[160] =3D=3D 0x15 && rdesc[161] =3D=3D 0x0 =
-&&
--			rdesc[162] =3D=3D 0x25 && rdesc[163] =3D=3D 0x01) {
-+		rdesc[125] =3D 0x01;
-+		rdesc[127] =3D 0x0e;
-+	} else if (*rsize =3D=3D 171 &&
-+		   !memcmp(&rdesc[160], "\x15\x00\x25\x01", 4)) {
- 		samsung_irda_dev_trace(hdev, 171);
--		rdesc[161] =3D 0x1;
--		rdesc[163] =3D 0x3;
-+		rdesc[161] =3D 0x01;
-+		rdesc[163] =3D 0x03;
- 	}
- 	return rdesc;
- }
-
+Thanks.
+Arınç
 
