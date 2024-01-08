@@ -1,237 +1,153 @@
-Return-Path: <linux-kernel+bounces-19099-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19094-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A466826803
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 07:32:43 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ADA358267E3
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 07:16:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A388F1F21A26
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 06:32:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D369C1C21844
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 06:16:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53D928C18;
-	Mon,  8 Jan 2024 06:32:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 349878473;
+	Mon,  8 Jan 2024 06:16:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="gg6IyFLV"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ehxx9LLd"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oa1-f54.google.com (mail-oa1-f54.google.com [209.85.160.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D58D8BE3;
-	Mon,  8 Jan 2024 06:32:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704695545; x=1736231545;
-  h=date:from:to:cc:subject:message-id:reply-to:references:
-   in-reply-to:mime-version;
-  bh=knIVwYUdH/U3EoUDFUOg4cooiZ3qNyc5t39UFY0WNHQ=;
-  b=gg6IyFLVQxcB3ViKpX/1zuNvbm1+SXehBm/9PPA3i9F+JQXRasdQ+z1f
-   ve9uooxEZcN58nMiYSLI8XBycWWzWUTglFnJ8VjvTBoNCPFWXx78J6wIt
-   gauRe+Z1hS1wRaR1A7bPQtHaaRpZnkeDfq/wJYjDZZDT8mQsNu6GBfYdX
-   40E11MgNOAhX3s8FOZlqs7kfEQJjuJ2nYApU3ruWUja7m7FbnfEvUU863
-   fELg03OrFgaLYiFteyG/cx1CAyjuICWl+0uF3/ZQVIV/mZobvH2XItjCc
-   KdVzzpPxTdkQqfT7mndFqliH5AcHONWwsJgjuNFjXkl80UsHBcrwPSnGO
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10946"; a="16403048"
-X-IronPort-AV: E=Sophos;i="6.04,340,1695711600"; 
-   d="scan'208";a="16403048"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jan 2024 22:32:24 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10946"; a="900281426"
-X-IronPort-AV: E=Sophos;i="6.04,340,1695711600"; 
-   d="scan'208";a="900281426"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 07 Jan 2024 22:32:24 -0800
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Sun, 7 Jan 2024 22:32:23 -0800
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Sun, 7 Jan 2024 22:32:23 -0800
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Sun, 7 Jan 2024 22:32:23 -0800
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.168)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Sun, 7 Jan 2024 22:32:23 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FjRi1z4TaVT1vIFUacFymPKEMTgt4jw/smCS1ogbee9nytsa8HhkBt5Nw8RvmH+W/rdp/mIWV3FdjEx2aFEmGKQD4wJyQQVji3H3N7c6kDhXOQloyVDPYAqwmvKQWNFZH0yzcOaGHXYDqfjXre7KKQo79wI46hhIxL/KHzx0KRfdH8u49nYUlKjtHRjZHhm0zlG+2lauLIZFBAAwuzukz6KZUV6D42NhU56qpLCQ7kPCXqgT3aXIcHnWTqLlUBMJy7gmVMrr5YN32dnDzjatkeUGQ1q9BYSNd+Gtibwcx7M3QlpP4oEN61VvGVbS4PM9igBE7Uxr8qGQkwkQZ0XvYQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=uggCuDlteYTBuOQMfFX9g5AY5oqzo5DL/3OjUDRCKdw=;
- b=hFd5pycsDS93+8yhkX4yWdz4WNPzRV6o+nkaEDGwZk2l/KHy3n4UCSocXfgXq4/7JK0cRBCqIwZuv6BPXNE/NMrbTg8tUlDHZHojtDOHkdzfEOYPFmibFXC7nmEbQ85KSvHu0xUWbdLFNwWECS4s7XwrtexBvrZ6nwlMnprFId0IjAd8CNELmiGSiTiVbO1xM8zQF407v+szQc4IHmLTQpbztMYL/T0hf38sG+5rWj6FqyTVZnb8JPihfViU+mXp4/rKI5S2t0dxT+X3/tHGBX9Wr5QVpmRdqeKw5R1cuv9HMQZHb7d5RbQs6kKp0laN5x9b/sDR+hEpNzAQpqq1HA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from DS7PR11MB5966.namprd11.prod.outlook.com (2603:10b6:8:71::6) by
- PH0PR11MB5207.namprd11.prod.outlook.com (2603:10b6:510:32::15) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7159.21; Mon, 8 Jan 2024 06:32:21 +0000
-Received: from DS7PR11MB5966.namprd11.prod.outlook.com
- ([fe80::32a9:54b8:4253:31d4]) by DS7PR11MB5966.namprd11.prod.outlook.com
- ([fe80::32a9:54b8:4253:31d4%4]) with mapi id 15.20.7159.020; Mon, 8 Jan 2024
- 06:32:20 +0000
-Date: Mon, 8 Jan 2024 14:02:57 +0800
-From: Yan Zhao <yan.y.zhao@intel.com>
-To: Jason Gunthorpe <jgg@nvidia.com>
-CC: <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<dri-devel@lists.freedesktop.org>, <pbonzini@redhat.com>,
-	<seanjc@google.com>, <olvaffe@gmail.com>, <kevin.tian@intel.com>,
-	<zhiyuan.lv@intel.com>, <zhenyu.z.wang@intel.com>, <yongwei.ma@intel.com>,
-	<vkuznets@redhat.com>, <wanpengli@tencent.com>, <jmattson@google.com>,
-	<joro@8bytes.org>, <gurchetansingh@chromium.org>, <kraxel@redhat.com>,
-	<zzyiwei@google.com>, <ankita@nvidia.com>, <alex.williamson@redhat.com>,
-	<maz@kernel.org>, <oliver.upton@linux.dev>, <james.morse@arm.com>,
-	<suzuki.poulose@arm.com>, <yuzenghui@huawei.com>
-Subject: Re: [PATCH 0/4] KVM: Honor guest memory types for virtio GPU devices
-Message-ID: <ZZuQEQAVX28v7p9Z@yzhao56-desk.sh.intel.com>
-Reply-To: Yan Zhao <yan.y.zhao@intel.com>
-References: <20240105091237.24577-1-yan.y.zhao@intel.com>
- <20240105195551.GE50406@nvidia.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20240105195551.GE50406@nvidia.com>
-X-ClientProxiedBy: SG2PR04CA0198.apcprd04.prod.outlook.com
- (2603:1096:4:14::36) To DS7PR11MB5966.namprd11.prod.outlook.com
- (2603:10b6:8:71::6)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21D6379DE;
+	Mon,  8 Jan 2024 06:16:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oa1-f54.google.com with SMTP id 586e51a60fabf-2045bedb806so1671584fac.3;
+        Sun, 07 Jan 2024 22:16:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704694609; x=1705299409; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=R96nFtUAHcvK+Syyw7DXDD2f4NflWNpk/wdXNthWbzI=;
+        b=ehxx9LLdjRFHfsVMpsrdenN9NZuOs8NJSmXFuz8thZMoWg6dKQT59fOL1MBwP1WA/y
+         M+8LpcdG4u1r3jxDL9m7mqvz61GAvZ2LuubxndkmZhbkSanrt2LUWIwXuMMYn7k1ImWh
+         hapqsRWHIOkne3GtXjRZFNEc0kLRCBqWahJ51jr7g2hxmIDaaNq08uEWd5rtJlG8ZeG7
+         jP6o+tf8ow879kpDJ4Gp+qCIrlFHFyJKJ9jKtUwtG/ZgUypqWjdVbzqHALqOyl+h3g0F
+         XUyGFvTvamLWpsav6AO41df+Mep2FnQFZgdrAomh/WfQjaBdMEmES+vBNotfvPRtpHJa
+         bZfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704694609; x=1705299409;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=R96nFtUAHcvK+Syyw7DXDD2f4NflWNpk/wdXNthWbzI=;
+        b=S1gj4k8adxtfZ5AF16vVxzSoYv14vpp4X9+3xeFhjOvQRmUe7VZeDtSM5G0RYcVf63
+         QodtB34Tel/PiedzmsxpfDI8NVOpHcY3Q3ZhIF3LChboxw7OFWTe4t1DnT1V8kYVyykj
+         VlhKcJpBSgoENXAkp1Pra2Myyinl2JeVmC7S/qAqaO3612xuBO+BrWziSTzrdzgFs4ol
+         krPSWnrj/tdG0HWsEUGtzmSS+iKgXTR3guxcYDJtSMuQHKlEVKJH+QvpUNtn3XuS9tL9
+         65tRVnL67pE2GTgsu632xy0MHLKSQIITVRUsnGL5EwLKYv3jsxGiWqE0QvDaygLZC6Az
+         nwQw==
+X-Gm-Message-State: AOJu0Yzo6ijRQYkYE79yJ9/6sGxoklrT2+RhoPDPjzCtyiV9lOuN1u/Z
+	sWGASkJGdvSW3SiYjv23Mkc=
+X-Google-Smtp-Source: AGHT+IGM41Cgc2Loe8AEzfxl/LX42E5QQD9J+La3nidUPkLnPHcx80eiqLpXgjHIxCPMBHCwZclhug==
+X-Received: by 2002:a05:6358:5384:b0:175:67e3:f9be with SMTP id z4-20020a056358538400b0017567e3f9bemr3641697rwe.31.1704694608850;
+        Sun, 07 Jan 2024 22:16:48 -0800 (PST)
+Received: from google.com ([2620:15c:9d:2:7a4a:2478:1813:e8c2])
+        by smtp.gmail.com with ESMTPSA id nc6-20020a17090b37c600b0028649b84907sm5464921pjb.16.2024.01.07.22.16.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 07 Jan 2024 22:16:48 -0800 (PST)
+Date: Sun, 7 Jan 2024 22:16:45 -0800
+From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH] asm-generic: make sparse happy with odd-sized
+ put_unaligned_*()
+Message-ID: <ZZuTTRCUFqWzA1y-@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS7PR11MB5966:EE_|PH0PR11MB5207:EE_
-X-MS-Office365-Filtering-Correlation-Id: 671385a7-fa70-4fd6-c9ba-08dc10139142
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: aS5kg4431Tvl2oYtJIooEbJMQ/TqhrW9lhkzjc+fMQUieD3luoveviRZ9ZsQJ52adaZio5j4BGAW5TgsOg40w+z6CikfXVd8Lhz3oeDnJnOO9kbvuA6cT0bpptQPqi7vHwf6QEvEXfQOCY/UFXvdQumrkCldFzrCADzDkEuQwxbGCyERLV5B6S/iatPKepnRjqJ/MP+wjoOqX7Qa7MPyDJOkuir1g72lWBEYJxS5x924bFd0i9lyjiVDZcYqm80q4YOFIwPJN4JM/5YfyGd9iIcWK996KuZ0vQECP0dKtT3LhHPHzUX+unacazcdhqpQN2y2yX3jCZOujHPvTifLptXJ4KKAFehVT2HX8lrqqI3qnk+HHP+80H6n7SlMH6bRZKLbOTGOsK8NRrGjdwK1Uvd9Pm2Zk1mbKWGYty5uwVtz0vNv+/8tzGYXQB5TeUJ11I1+gzx57zx2vfEcOYIM8dhaOmbe4wFOElikhrU9PBZG102gQoybjqhW6mzteiWt41f4Vwn8TyDJl934GZlhzGrht0yFbrBY2JarAtQ64lL48lc1CKgV9SorxFdyfe+m
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR11MB5966.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(136003)(346002)(39860400002)(396003)(376002)(230922051799003)(1800799012)(451199024)(64100799003)(186009)(6486002)(26005)(478600001)(6506007)(6512007)(6666004)(83380400001)(5660300002)(2906002)(7416002)(41300700001)(66476007)(66556008)(66946007)(6916009)(316002)(54906003)(8936002)(8676002)(4326008)(3450700001)(38100700002)(86362001)(82960400001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?p6jM7Na2Ia0Q850VhWTEgtg8tLR/cUAw95a/g+R8wa9d0RYrWK1ud2XNAdOS?=
- =?us-ascii?Q?stc5WBVmZcNHptxTEgwJPMoFGzOh9Baob6XNZr9ioHt7NgqDtY3ivksfE6VJ?=
- =?us-ascii?Q?G/RCmWwtey6n1F9zIMPGBjKBFClOskBMTBOr0RKQWYmajHk6oO8IOtPTA/tL?=
- =?us-ascii?Q?5HeCYfR5nItFwCsoer11QIm+Kfef9wWHDSzMTX/QGejnril6m3enQROX9AHX?=
- =?us-ascii?Q?nCFFaY5v1fyh+qcZqz+TZuYA7hbfhWOIv++BHAJZc/kCQF3dlpxWN6R5pjMc?=
- =?us-ascii?Q?cTGZwtuNyXs8O3mm0OpbgnPVmQ/Na3PZvbMC3kTdwLSmef25Zv2gt/luqz3k?=
- =?us-ascii?Q?G8rpZs1Vy+/V4c0lMu675SctwTUYxaI6Im9SZgAdNZpFxO3mOu6MDtrIm3We?=
- =?us-ascii?Q?K9IobQZHYf692xfRffF/PSpzuRpVZbo4QgEC9JY6n+rAfuo/pfuJvcwkFdT4?=
- =?us-ascii?Q?4gQ1bMZ/b7FxkuZ37qRUsmAGmbCqIxUv3xAsl08Sn5z1tuXKWZ7ZlylqY7xH?=
- =?us-ascii?Q?PBHj0IEAuykx+3FO8KFlOMND+rQU0ej+68prePrzUrx4aeTceh5rUaN0Y91A?=
- =?us-ascii?Q?LDahhlC3qdU3BLDgAhil8AvJMr1Rst3Q+M7LNW6TxHRhEu6JNmU4nqnbBext?=
- =?us-ascii?Q?MuxrPLsgvt7N9xgFVYhYlh1jUDIgHwn9sHmsagMv9sdfLvyUUacuLrt4B31V?=
- =?us-ascii?Q?CNg6gS8dSHxxOP2SBfqpHTqcoc3gNlJ6GTi5T/RGLvqJPgdxb151GQS4k1jV?=
- =?us-ascii?Q?M36PpAgrdVF0mxDjgnS5pHKtRgANoJWZObYtyOLR79fO7cUTL24Pmxogo/Tg?=
- =?us-ascii?Q?urt3xt07sfOomwmtvbWnPx36U93ItqPZX2QoO/tvYYGTcRfwSPHr2EPnvdcj?=
- =?us-ascii?Q?Oeo3pn+trlaDvLMd2HhdUe35vxSeFl2mMu+o8AvWkzeqNpQhsb0rpErPXsS2?=
- =?us-ascii?Q?+o3whNHMaLtNWFQvJMojEA6k96aIBe01snYG1ObH5Lzp4qI0iGzwObaYINVn?=
- =?us-ascii?Q?FkdamQ6+utGUwXuZ9NABRQJNEWif7vwFntoZPdL1zMpQDg/B/03ztKTRwwVu?=
- =?us-ascii?Q?NQcPBVWg4E9N927sh1ICsJBzd6zncZAxQe7P2hx1PFyddwAl/Xds8RGrzulY?=
- =?us-ascii?Q?mSA78UEB2pKhNIAOFWZdM6HNFAroV+J5taXnxkfbXvEpQubwmz9MDMHIjFR2?=
- =?us-ascii?Q?6DOs9ONDbO7BjdA1pjQB+/ac+cYtaSTZ3q7GgNip+XSupjN372voNybdkjc7?=
- =?us-ascii?Q?2vUg8lEAAuFf1rET0recWNxz96Jn/d3lOsnGWAWqVn+Wl2tpKfOl29zpOitT?=
- =?us-ascii?Q?6eE9AXFSPw6cKSBIKOCKiKFUrJ5SXTUzohVTUzQmEMS3GALDvFyIvkkbK9R4?=
- =?us-ascii?Q?XndIOct4DngzxGJiLaSaKAUR4QmiGUYHxtoO38P5l0TPqvNuG1J166E3fsUg?=
- =?us-ascii?Q?j+BiZ3s1ibI/cv5bBURlGpc0fqz33M7Y6Rw2L7KdoLjOz32AoPTrRLhTyKYm?=
- =?us-ascii?Q?Uu5/KPJf9WJUMrHvKhaQOXH0jmbw1hpdnkGoSTC97JzV4/Li9mO+8uXgGein?=
- =?us-ascii?Q?f9AZ9Ue5y91oXgSvrjIiKh2NDoktyEpaotRU4/Iy?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 671385a7-fa70-4fd6-c9ba-08dc10139142
-X-MS-Exchange-CrossTenant-AuthSource: DS7PR11MB5966.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Jan 2024 06:32:20.8793
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: NdgQyTOl8TrdsYL7+2eu5y0Zi/o1bWMS5V40k7b14jDLuLzhg89LWHT1AM88EY5RfJdt133LIr4bE9jL7TF29g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB5207
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On Fri, Jan 05, 2024 at 03:55:51PM -0400, Jason Gunthorpe wrote:
-> On Fri, Jan 05, 2024 at 05:12:37PM +0800, Yan Zhao wrote:
-> > This series allow user space to notify KVM of noncoherent DMA status so as
-> > to let KVM honor guest memory types in specified memory slot ranges.
-> > 
-> > Motivation
-> > ===
-> > A virtio GPU device may want to configure GPU hardware to work in
-> > noncoherent mode, i.e. some of its DMAs do not snoop CPU caches.
-> 
-> Does this mean some DMA reads do not snoop the caches or does it
-> include DMA writes not synchronizing the caches too?
-Both DMA reads and writes are not snooped.
-The virtio host side will mmap the buffer to WC (pgprot_writecombine)
-for CPU access and program the device to access the buffer in uncached
-way.
-Meanwhile, virtio host side will construct a memslot in KVM with the PTR
-returned from the mmap, and notify virtio guest side to mmap the same buffer in
-guest page table with PAT=WC, too.
+__put_unaligned_be24() and friends use implicit casts to convert
+larger-sized data to bytes, which trips sparse truncation warnings when
+the argument is a constant:
 
-> 
-> > This is generally for performance consideration.
-> > In certain platform, GFX performance can improve 20+% with DMAs going to
-> > noncoherent path.
-> > 
-> > This noncoherent DMA mode works in below sequence:
-> > 1. Host backend driver programs hardware not to snoop memory of target
-> >    DMA buffer.
-> > 2. Host backend driver indicates guest frontend driver to program guest PAT
-> >    to WC for target DMA buffer.
-> > 3. Guest frontend driver writes to the DMA buffer without clflush stuffs.
-> > 4. Hardware does noncoherent DMA to the target buffer.
-> > 
-> > In this noncoherent DMA mode, both guest and hardware regard a DMA buffer
-> > as not cached. So, if KVM forces the effective memory type of this DMA
-> > buffer to be WB, hardware DMA may read incorrect data and cause misc
-> > failures.
-> 
-> I don't know all the details, but a big concern would be that the
-> caches remain fully coherent with the underlying memory at any point
-> where kvm decides to revoke the page from the VM.
-Ah, you mean, for page migration, the content of the page may not be copied
-correctly, right?
+  CC [M]  drivers/input/touchscreen/hynitron_cstxxx.o
+  CHECK   drivers/input/touchscreen/hynitron_cstxxx.c
+drivers/input/touchscreen/hynitron_cstxxx.c: note: in included file (through arch/x86/include/generated/asm/unaligned.h):
+./include/asm-generic/unaligned.h:119:16: warning: cast truncates bits from constant value (aa01a0 becomes a0)
+./include/asm-generic/unaligned.h:120:20: warning: cast truncates bits from constant value (aa01 becomes 1)
+./include/asm-generic/unaligned.h:119:16: warning: cast truncates bits from constant value (ab00d0 becomes d0)
+./include/asm-generic/unaligned.h:120:20: warning: cast truncates bits from constant value (ab00 becomes 0)
 
-Currently in x86, we have 2 ways to let KVM honor guest memory types:
-1. through KVM memslot flag introduced in this series, for virtio GPUs, in
-   memslot granularity.
-2. through increasing noncoherent dma count, as what's done in VFIO, for
-   Intel GPU passthrough, for all guest memory.
+To avoid this let's mask off upper bits explicitly, the resulting code
+should be exactly the same, but it will keep sparse happy.
 
-This page migration issue should not be the case for virtio GPU, as both host
-and guest are synced to use the same memory type and actually the pages
-are not anonymous pages.
-For GPU pass-through, though host mmaps with WB, it's still fine for guest to
-use WC because page migration on pages of VMs with pass-through device is not
-allowed.
+Reported-by: kernel test robot <lkp@intel.com>
+Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+Closes: https://lore.kernel.org/oe-kbuild-all/202401070147.gqwVulOn-lkp@intel.com/
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+---
+ include/asm-generic/unaligned.h | 24 ++++++++++++------------
+ 1 file changed, 12 insertions(+), 12 deletions(-)
 
-But I agree, this should be a case if user space sets the memslot flag to honor
-guest memory type to memslots for guest system RAM where non-enlightened guest
-components may cause guest and host to access with different memory types.
-Or simply when the guest is a malicious one.
-
-> If you allow an incoherence of cache != physical then it opens a
-> security attack where the observed content of memory can change when
-> it should not.
-
-In this case, will this security attack impact other guests?
-
-> 
-> ARM64 has issues like this and due to that ARM has to have explict,
-> expensive, cache flushing at certain points.
->
+diff --git a/include/asm-generic/unaligned.h b/include/asm-generic/unaligned.h
+index 699650f81970..a84c64e5f11e 100644
+--- a/include/asm-generic/unaligned.h
++++ b/include/asm-generic/unaligned.h
+@@ -104,9 +104,9 @@ static inline u32 get_unaligned_le24(const void *p)
+ 
+ static inline void __put_unaligned_be24(const u32 val, u8 *p)
+ {
+-	*p++ = val >> 16;
+-	*p++ = val >> 8;
+-	*p++ = val;
++	*p++ = (val >> 16) & 0xff;
++	*p++ = (val >> 8) & 0xff;
++	*p++ = val & 0xff;
+ }
+ 
+ static inline void put_unaligned_be24(const u32 val, void *p)
+@@ -116,9 +116,9 @@ static inline void put_unaligned_be24(const u32 val, void *p)
+ 
+ static inline void __put_unaligned_le24(const u32 val, u8 *p)
+ {
+-	*p++ = val;
+-	*p++ = val >> 8;
+-	*p++ = val >> 16;
++	*p++ = val & 0xff;
++	*p++ = (val >> 8) & 0xff;
++	*p++ = (val >> 16) & 0xff;
+ }
+ 
+ static inline void put_unaligned_le24(const u32 val, void *p)
+@@ -128,12 +128,12 @@ static inline void put_unaligned_le24(const u32 val, void *p)
+ 
+ static inline void __put_unaligned_be48(const u64 val, u8 *p)
+ {
+-	*p++ = val >> 40;
+-	*p++ = val >> 32;
+-	*p++ = val >> 24;
+-	*p++ = val >> 16;
+-	*p++ = val >> 8;
+-	*p++ = val;
++	*p++ = (val >> 40) & 0xff;
++	*p++ = (val >> 32) & 0xff;
++	*p++ = (val >> 24) & 0xff;
++	*p++ = (val >> 16) & 0xff;
++	*p++ = (val >> 8) & 0xff;
++	*p++ = val & 0xff;
+ }
+ 
+ static inline void put_unaligned_be48(const u64 val, void *p)
+-- 
+2.43.0.195.gebba966016-goog
 
 
-
+-- 
+Dmitry
 
