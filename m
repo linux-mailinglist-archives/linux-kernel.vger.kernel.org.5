@@ -1,96 +1,102 @@
-Return-Path: <linux-kernel+bounces-19696-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19697-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC80182710E
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 15:22:11 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 262CE827111
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 15:22:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5AD3E1F228C8
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 14:22:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3201CB2283A
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 14:22:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B71284655B;
-	Mon,  8 Jan 2024 14:20:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="BY82WmJr"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE3054778A;
+	Mon,  8 Jan 2024 14:21:14 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-qv1-f44.google.com (mail-qv1-f44.google.com [209.85.219.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC37346553
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 14:20:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-qv1-f44.google.com with SMTP id 6a1803df08f44-680496bc3aaso11793466d6.0
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 06:20:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704723635; x=1705328435; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=EHPjKZvqaVUgCPDWo115UGnb9Gx7ydX+36Jn9aorY8Q=;
-        b=BY82WmJrWoYYkJAl3VIfmiREqbDHcJ+GlyhJhwHKqa7SwihVtF3xijj91/BM650FSx
-         8Ovg3PPCZxwl9PfF9caG0u/ZRyD2YjM3S3UNfV4oS2nzaeifV5xAYyY8l0YgIK79+Cn1
-         5M297SL325MrBDEjKJsmFUMbhFnlEjVLAZ1fV31q6b3vfiehD2fsQ5I8H2Z+WTLsLq1N
-         Vf4NHbXekd0tmkYUzN+q0Ydw2v3EF6ZZR2cndP8mW9SXeqRIJdmx0ZRQwzxQhSgsQoPZ
-         CUqsgbZS9ieFeWUQDz7WyrJOlNR7A2kT8TCWcAiDGSsZkcV4Tx4SImeXpg9g349hDFy5
-         QFWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704723635; x=1705328435;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=EHPjKZvqaVUgCPDWo115UGnb9Gx7ydX+36Jn9aorY8Q=;
-        b=cuMF9+glsqn4GlTqLr7S2vO/cyDtXlqjIzUoRFSs7MJc7rv+st+iUn1PEFvpFBjPwv
-         Fi6l9Gz9O7OTxymtX2pqr7KXKsYhEndpcqThuvfdsPV5QKFCZPIwzhLm9J/3itw+hx2G
-         C8vlM1r1N99MXLxYmNsElcql692e7IPhdRRaTjd6KDZ82l6LSKbsPwRef5jhH3qC38PU
-         Tl8E1VTuBxB+n+WCiZUeBCgzV8GzrWutDm/3ZA5GWQNwkAqyiWPUrmJUw+EoB1gZhcjj
-         2pQIN3j0CP6tm6Q/aUyQMHzq/9sSaYOQ5nYSmIfLqcFoH5p7s61U78x9S3WoV/kExvK+
-         LQjA==
-X-Gm-Message-State: AOJu0YzYayPxluIdxwXkQwEkUtxTCbdIbbwDBARUih+rtOiBNrrzyz8N
-	e84MkxnlLfQrqR7YQkqQvnz3fSMPpNIHyt3vCQiFpefK4ivxgA==
-X-Google-Smtp-Source: AGHT+IEXe4ZOFOtiuG815eIIL+sH4z4cDlfwnD79RCSo8KfcQVtGH26iaTCEMOjh44nXGjzl36Omhh0sKsCQcVoORtY=
-X-Received: by 2002:ad4:5ba5:0:b0:67a:b0a5:843c with SMTP id
- 5-20020ad45ba5000000b0067ab0a5843cmr3501275qvq.58.1704723634719; Mon, 08 Jan
- 2024 06:20:34 -0800 (PST)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F00EF47776;
+	Mon,  8 Jan 2024 14:21:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 383B3C15;
+	Mon,  8 Jan 2024 06:21:57 -0800 (PST)
+Received: from FVFF77S0Q05N (unknown [10.57.89.149])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B1A833F64C;
+	Mon,  8 Jan 2024 06:21:08 -0800 (PST)
+Date: Mon, 8 Jan 2024 14:21:03 +0000
+From: Mark Rutland <mark.rutland@arm.com>
+To: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Florent Revest <revest@chromium.org>,
+	linux-trace-kernel@vger.kernel.org,
+	LKML <linux-kernel@vger.kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>,
+	Sven Schnelle <svens@linux.ibm.com>,
+	Alexei Starovoitov <ast@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Alan Maguire <alan.maguire@oracle.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>
+Subject: Re: [PATCH v5 11/34] function_graph: Have the instances use their
+ own ftrace_ops for filtering
+Message-ID: <ZZwEz8HsTa2IZE3L@FVFF77S0Q05N>
+References: <170290509018.220107.1347127510564358608.stgit@devnote2>
+ <170290522555.220107.1435543481968270637.stgit@devnote2>
+ <ZZg3tlOynx7YVLGQ@FVFF77S0Q05N>
+ <20240108101436.07509def635fbecf80a59ae6@kernel.org>
+ <ZZvp08OFIFbP3rnk@FVFF77S0Q05N>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231228125805.661725-1-tudor.ambarus@linaro.org> <20231228125805.661725-3-tudor.ambarus@linaro.org>
-In-Reply-To: <20231228125805.661725-3-tudor.ambarus@linaro.org>
-From: Peter Griffin <peter.griffin@linaro.org>
-Date: Mon, 8 Jan 2024 14:20:23 +0000
-Message-ID: <CADrjBPrJM7GY4fgfrC+5OQw3MtMOTMSg8gh2xyES10vQrP4J+A@mail.gmail.com>
-Subject: Re: [PATCH v2 02/12] dt-bindings: i2c: exynos5: add
- google,gs101-hsi2c compatible
-To: Tudor Ambarus <tudor.ambarus@linaro.org>
-Cc: robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, 
-	mturquette@baylibre.com, sboyd@kernel.org, conor+dt@kernel.org, 
-	andi.shyti@kernel.org, alim.akhtar@samsung.com, gregkh@linuxfoundation.org, 
-	jirislaby@kernel.org, s.nawrocki@samsung.com, tomasz.figa@gmail.com, 
-	cw00.choi@samsung.com, arnd@arndb.de, semen.protsenko@linaro.org, 
-	andre.draszik@linaro.org, saravanak@google.com, willmcvicker@google.com, 
-	linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, 
-	linux-clk@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org, 
-	linux-serial@vger.kernel.org, kernel-team@android.com, 
-	Wolfram Sang <wsa@kernel.org>, Rob Herring <robh@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZZvp08OFIFbP3rnk@FVFF77S0Q05N>
 
-Hi Tudor,
+On Mon, Jan 08, 2024 at 12:25:55PM +0000, Mark Rutland wrote:
+> We also have HAVE_FUNCTION_GRAPH_RET_ADDR_PTR, but since the return address is
+> not on the stack at the point function-entry is intercepted we use the FP as
+> the retp value -- in the absence of tail calls this will be different between a
+> caller and callee.
 
-On Thu, 28 Dec 2023 at 12:58, Tudor Ambarus <tudor.ambarus@linaro.org> wrote:
->
-> Add google,gs101-hsi2c dedicated compatible for representing
-> I2C of Google GS101 SoC.
->
-> Acked-by: Wolfram Sang <wsa@kernel.org>
-> Acked-by: Rob Herring <robh@kernel.org>
-> Reviewed-by: Sam Protsenko <semen.protsenko@linaro.org>
-> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+Ah; I just spotted that this patch changed that in ftrace_graph_func(), which
+is the source of the bug. 
 
-Reviewed-by: Peter Griffin <peter.griffin@linaro.org>
+As of this patch, we use the address of fregs->lr as the retp value, but the
+unwinder still uses the FP value, and so when unwind_recover_return_address()
+calls ftrace_graph_ret_addr(), the retp value won't match the expected entry on
+the fgraph ret_stack, resulting in failing to find the expected entry.
+
+Since the ftrace_regs only exist transiently during function entry/exit, it's
+possible for a stackframe to reuse that same address on the stack, which would
+result in finding a different entry by mistake.
+
+The diff below restores the existing behaviour and fixes the issue for me.
+Could you please fold that into this patch?
+
+On a separate note, looking at how this patch changed arm64's
+ftrace_graph_func(), do we need similar changes to arm64's
+prepare_ftrace_return() for the old-style mcount based ftrace?
+
+Mark.
+
+---->8----
+diff --git a/arch/arm64/kernel/ftrace.c b/arch/arm64/kernel/ftrace.c
+index 205937e04ece..329092ce06ba 100644
+--- a/arch/arm64/kernel/ftrace.c
++++ b/arch/arm64/kernel/ftrace.c
+@@ -495,7 +495,7 @@ void ftrace_graph_func(unsigned long ip, unsigned long parent_ip,
+        if (bit < 0)
+                return;
+ 
+-       if (!function_graph_enter_ops(*parent, ip, fregs->fp, parent, gops))
++       if (!function_graph_enter_ops(*parent, ip, fregs->fp, (void *)fregs->fp, gops))
+                *parent = (unsigned long)&return_to_handler;
+ 
+        ftrace_test_recursion_unlock(bit);
 
