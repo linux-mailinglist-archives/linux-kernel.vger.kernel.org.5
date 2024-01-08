@@ -1,149 +1,128 @@
-Return-Path: <linux-kernel+bounces-20093-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20092-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED7E5827931
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 21:35:08 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E2CE827930
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 21:34:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1F99A1C2317B
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 20:35:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DEE56B22A82
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 20:34:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B443655E56;
-	Mon,  8 Jan 2024 20:35:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72D7654BDA;
+	Mon,  8 Jan 2024 20:34:43 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1803D55E43
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 20:34:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 13052C15;
-	Mon,  8 Jan 2024 12:35:44 -0800 (PST)
-Received: from bogus (unknown [10.57.74.54])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0F4A43F73F;
-	Mon,  8 Jan 2024 12:34:56 -0800 (PST)
-Date: Mon, 8 Jan 2024 20:31:50 +0000
-From: Sudeep Holla <sudeep.holla@arm.com>
-To: Konrad Dybcio <konradybcio@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>,
-	Sudeep Holla <sudeep.holla@arm.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Marijn Suijten <marijn.suijten@somainline.org>,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	Bjorn Andersson <andersson@kernel.org>
-Subject: Re: [PATCH 2/2] firmware/psci: Set
- pm_set_resume/suspend_via_firmware() on qcom
-Message-ID: <20240108203150.cx2kswpfcfmouv76@bogus>
-References: <20231227-topic-psci_fw_sus-v1-0-6910add70bf3@linaro.org>
- <20231227-topic-psci_fw_sus-v1-2-6910add70bf3@linaro.org>
- <20231228102801.fzaubcjq5thfwgxg@bogus>
- <f34dd5de-9e56-4c58-b9bf-2356b41d17b1@linaro.org>
- <20231228115053.zlypgc5uxxvghi4a@bogus>
- <376d3040-b9ed-4574-90d7-fb864d694e3c@linaro.org>
- <20231228124348.mmtceqeuean7ly6y@bogus>
- <7e31d489-de96-42f0-a72a-a581859e7131@linaro.org>
- <20240103094442.mlh2pf3odof3ze3s@bogus>
- <5499a078-a4de-47fb-ad2c-aa478699eb77@kernel.org>
+Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3E3F55C2E;
+	Mon,  8 Jan 2024 20:34:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=omp.ru
+Received: from [192.168.1.105] (31.173.87.204) by msexch01.omp.ru
+ (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Mon, 8 Jan
+ 2024 23:34:29 +0300
+Subject: Re: [PATCH net-next v3 18/19] net: ravb: Do not apply RX CSUM
+ settings to hardware if the interface is down
+To: Claudiu <claudiu.beznea@tuxon.dev>, <davem@davemloft.net>,
+	<edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+	<richardcochran@gmail.com>, <p.zabel@pengutronix.de>,
+	<yoshihiro.shimoda.uh@renesas.com>, <wsa+renesas@sang-engineering.com>
+CC: <netdev@vger.kernel.org>, <linux-renesas-soc@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <geert+renesas@glider.be>, Claudiu Beznea
+	<claudiu.beznea.uj@bp.renesas.com>
+References: <20240105082339.1468817-1-claudiu.beznea.uj@bp.renesas.com>
+ <20240105082339.1468817-19-claudiu.beznea.uj@bp.renesas.com>
+From: Sergey Shtylyov <s.shtylyov@omp.ru>
+Organization: Open Mobile Platform
+Message-ID: <045aa818-8f99-4150-0072-f17fdc6ced0b@omp.ru>
+Date: Mon, 8 Jan 2024 23:34:28 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5499a078-a4de-47fb-ad2c-aa478699eb77@kernel.org>
+In-Reply-To: <20240105082339.1468817-19-claudiu.beznea.uj@bp.renesas.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
+ (10.188.4.12)
+X-KSE-ServerInfo: msexch01.omp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 6.1.0, Database issued on: 01/08/2024 20:18:26
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 59
+X-KSE-AntiSpam-Info: Lua profiles 182482 [Jan 08 2024]
+X-KSE-AntiSpam-Info: Version: 6.1.0.3
+X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
+X-KSE-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a
+X-KSE-AntiSpam-Info: {rep_avail}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: {relay has no DNS name}
+X-KSE-AntiSpam-Info: {SMTP from is not routable}
+X-KSE-AntiSpam-Info: {Found in DNSBL: 31.173.87.204 in (user)
+ b.barracudacentral.org}
+X-KSE-AntiSpam-Info:
+	d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;31.173.87.204:7.1.2;omp.ru:7.1.1;127.0.0.199:7.1.2
+X-KSE-AntiSpam-Info: ApMailHostAddress: 31.173.87.204
+X-KSE-AntiSpam-Info: {DNS response errors}
+X-KSE-AntiSpam-Info: Rate: 59
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
+ smtp.mailfrom=omp.ru;dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 01/08/2024 20:23:00
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 1/8/2024 7:11:00 PM
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
 
-On Mon, Jan 08, 2024 at 04:47:05PM +0100, Konrad Dybcio wrote:
-> On 3.01.2024 10:44, Sudeep Holla wrote:
-> >
-> > But I don't like the Qualcomm specific changes.
->
-> Is that because of the matching table, or due to the slightly more
-> convoluted way of suspending the platform through CPU_SUSPEND?
->
+On 1/5/24 11:23 AM, Claudiu wrote:
 
-I would say both. I don't like this to be Qualcomm platform specific
-feature. Also advertising absence of system suspend on those platforms
-as presence of some special system suspend. It simply is not system
-suspend. The sysfs hides/abstracts and provides s2idle even when user
-request s2r on such platforms.
+> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+> 
+> Do not apply the RX CSUM settings to hardware if the interface is down. In
+> case runtime PM is enabled, and while the interface is down, the IP will be
+> in reset mode (as for some platforms disabling the clocks will switch the
+> IP to reset mode, which will lead to losing registers content) and applying
+> settings in reset mode is not an option. Instead, cache the RX CSUM
+> settings and apply them in ravb_open() though ravb_emac_init().
+> 
+> Commit prepares for the addition of runtime PM.
+> 
+> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+[...]
 
-We should advertise it as s2idle. I would do something like below patch,
-just a rough idea, not compiled or tested. This avoids any misleading
-or confusion IMO.
+> diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
+> index 168b6208db37..e909960fbc30 100644
+> --- a/drivers/net/ethernet/renesas/ravb_main.c
+> +++ b/drivers/net/ethernet/renesas/ravb_main.c
+> @@ -2342,6 +2342,9 @@ static void ravb_set_rx_csum(struct net_device *ndev, bool enable)
+>  	struct ravb_private *priv = netdev_priv(ndev);
+>  	unsigned long flags;
+>  
+> +	if (!(ndev->flags & IFF_UP))
 
-However I am interested in knowing which are these drivers that rely on
-the pm_suspend_global_flags ? The reason I ask the x86 ACPI doesn't set
-the flags for s2idle. Also the core code explicitly calls
-pm_set_suspend_no_platform() in suspend_devices_and_enter(). What you
-want conflicts with both the above observations. I would like to involve
-Rafael and check what is the correct/expected way to use those flags.
+   Well, I guess it's even OK to even write EDCMR in the reset mode... BUT
+again, won't this race with pm_runtime_put_autosuspend() when its call gets
+added to ravb_close()?
 
-Regards,
-Sudeep
+> +		return;
+> +
+>  	spin_lock_irqsave(&priv->lock, flags);
+>  
+>  	/* Disable TX and RX */
 
---->8
-diff --git i/drivers/firmware/psci/psci.c w/drivers/firmware/psci/psci.c
-index 0e622aa5ad58..b2559ae7668a 100644
---- i/drivers/firmware/psci/psci.c
-+++ w/drivers/firmware/psci/psci.c
-@@ -505,26 +505,42 @@ static int psci_system_suspend(unsigned long unused)
-        return psci_to_linux_errno(err);
- }
-
--static int psci_system_suspend_enter(suspend_state_t state)
-+static int psci_system_idle_prepare_late(void)
- {
-        pm_set_resume_via_firmware();
-+       return 0;
-+}
-+#define psci_system_system_prepare_late        psci_system_idle_prepare_late
-+
-+static int psci_system_suspend_enter(suspend_state_t state)
-+{
-+       psci_system_system_prepare_late();
-
-        return cpu_suspend(0, psci_system_suspend);
- }
-
--static int psci_system_suspend_begin(suspend_state_t state)
-+static int psci_system_idle_begin(void)
- {
-        pm_set_suspend_via_firmware();
--
-        return 0;
- }
-
-+static int psci_system_suspend_begin(suspend_state_t state)
-+{
-+       return psci_system_idle_begin();
-+}
-+
- static const struct platform_suspend_ops psci_suspend_ops = {
-        .valid          = suspend_valid_only_mem,
-        .enter          = psci_system_suspend_enter,
-        .begin          = psci_system_suspend_begin,
- };
-
-+static const struct platform_s2idle_ops psci_s2idle_ops = {
-+       .begin = psci_system_idle_begin,
-+       .prepare_late = psci_system_idle_prepare_late,
-+};
-+
- static void __init psci_init_system_reset2(void)
- {
-        int ret;
-@@ -546,6 +562,8 @@ static void __init psci_init_system_suspend(void)
-
-        if (ret != PSCI_RET_NOT_SUPPORTED)
-                suspend_set_ops(&psci_suspend_ops);
-+
-+       s2idle_set_ops(&psci_s2idle_ops);
- }
-
- static void __init psci_init_cpu_suspend(void)
-
+MBR, Sergey
 
