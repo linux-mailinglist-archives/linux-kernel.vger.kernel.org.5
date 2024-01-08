@@ -1,138 +1,71 @@
-Return-Path: <linux-kernel+bounces-19670-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19671-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40A9082709E
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 15:04:54 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AE6558270A3
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 15:05:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 72B42B22691
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 14:04:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BCD861C220A9
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 14:05:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 380F54655C;
-	Mon,  8 Jan 2024 14:04:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEC8346540;
+	Mon,  8 Jan 2024 14:05:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="EpdviaNk"
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="1ehixv99"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-qv1-f54.google.com (mail-qv1-f54.google.com [209.85.219.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D46746B85
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 14:04:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-qv1-f54.google.com with SMTP id 6a1803df08f44-680b12e5d42so16247606d6.3
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 06:04:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1704722659; x=1705327459; darn=vger.kernel.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=3jFIqgAme8pj3yZgHK0ETOAopc0DS9Aqbs7DQMRGmnU=;
-        b=EpdviaNkEUjeHkHfSTrYS1hB0QW5v4lLwxaYeX/rIViG52slXqNzC2wdMBAEX1BtZ9
-         RHNj2S6qxpZSgjwBX2RwekF+ek7XihqswW+tFxb87KzpMhDQVoVJ/KsLx0VpF+QyQUR5
-         mLZVREl9vyGMGcXBq16ydw7mK4796QHFt3ekE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704722659; x=1705327459;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=3jFIqgAme8pj3yZgHK0ETOAopc0DS9Aqbs7DQMRGmnU=;
-        b=cA7RdgCf/ydrDHn/8UKShWTjb0HbCFT1MbmznRVa5px65CnVStGEgnfgY3a/M4I4aL
-         IWT5CRCLWJt83bIX7zdGK+nrnk8cH2NR/SeuStcuQUVktjtyTpZsg39lXaFUqFrXZEJj
-         ffEdHQ1EMkA+55xy/XisI2dfgcOGZwVG8OMoMoz51tjeqW1S42auVPYcNrpqyck4+JJF
-         9NCr6FHz+VfO6MBxfDm4ITQCuV3AAb9C2HABAPPbNlqMglbx3aay2Ge115HAzse7zAzs
-         JoArKQ/qNMruxd/8J/rMZDsyTp9gcZPlWQ/sgUknN2zQocymOM33QSTXnwz/mzoqH9Ag
-         Kkcg==
-X-Gm-Message-State: AOJu0YwDkpeC17QcDT7G/1iDmify4FpURUrkrGTqrOHfUg2CmwBdIer1
-	958BCnILQz2VSE4v0tQtVcllQ138nnYx
-X-Google-Smtp-Source: AGHT+IGr7Jqo3C50QDJJ3Ehny3W7unRbzrikSD6hXFNXTJtjzfIEseqVbAgLtK8O8EgLumUQeYSGeA==
-X-Received: by 2002:ad4:5b88:0:b0:681:9cc:b707 with SMTP id 8-20020ad45b88000000b0068109ccb707mr1078038qvp.63.1704722658691;
-        Mon, 08 Jan 2024 06:04:18 -0800 (PST)
-Received: from denia.c.googlers.com (204.246.236.35.bc.googleusercontent.com. [35.236.246.204])
-        by smtp.gmail.com with ESMTPSA id bo14-20020a05621414ae00b0067f3a1a7557sm2869708qvb.120.2024.01.08.06.04.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Jan 2024 06:04:18 -0800 (PST)
-From: Ricardo Ribalda <ribalda@chromium.org>
-Date: Mon, 08 Jan 2024 14:04:16 +0000
-Subject: [PATCH v2] media: uvcvideo: Fix power line control for
- Shine-Optics Camera
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F52E4652F;
+	Mon,  8 Jan 2024 14:05:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=876Pmdev7h3YBKXrTytJRM8JGp0yGIQGTehUIIKYAUk=; b=1ehixv99HNX5QcJ2OoPKf9eQrH
+	lTkFJSKGFYVKS6LDV/2scCjpgy4F5tH7oEPDQYBug+Mng+LSgsifziSmR3YGbOT5GSF6/7B+Vr8Bv
+	FnDbm2wFnlj46pSmKXixGYQNRpr6Lc4as4eXQMI+uyjtCV9+BFdUunK3bRN8mC8O0dHs=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1rMqG1-004eK2-99; Mon, 08 Jan 2024 15:05:37 +0100
+Date: Mon, 8 Jan 2024 15:05:37 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: Dimitri Fedrau <dima.fedrau@gmail.com>
+Cc: Heiner Kallweit <hkallweit1@gmail.com>,
+	Russell King <linux@armlinux.org.uk>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Stefan Eichenberger <eichest@gmail.com>, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 net-next 4/5] net: phy: marvell-88q2xxx: fix typos
+Message-ID: <a9e822af-6173-486b-9e54-f71147fbf9a1@lunn.ch>
+References: <20240108093702.13476-1-dima.fedrau@gmail.com>
+ <20240108093702.13476-5-dima.fedrau@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240108-shine-v2-1-ddff959dab89@chromium.org>
-X-B4-Tracking: v=1; b=H4sIAN8AnGUC/13MQQ7CIBCF4as0sxYzg6a1rryH6QIByywKZlCia
- bi72KXL/+XlWyF7YZ/h3K0gvnDmFFvoXQc2mDh7xa41aNRHJDypHDh6hb3tER0NRhto34f4O78
- 35zq1DpyfST4bW+i3/guFFKnRDTc8GDIj0sUGSQu/ln2SGaZa6xfM45cmnQAAAA==
-To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>, 
- Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Yunke Cao <yunkec@google.com>, Ricardo Ribalda <ribalda@chromium.org>
-X-Mailer: b4 0.12.3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240108093702.13476-5-dima.fedrau@gmail.com>
 
-The device does not implement the power line frequency control
-correctly. It is a UVC 1.5 device, but implements the control as a UVC
-1.1 device.
+On Mon, Jan 08, 2024 at 10:36:59AM +0100, Dimitri Fedrau wrote:
+> Rename mv88q2xxxx_get_sqi to mv88q2xxx_get_sqi and
+> mv88q2xxxx_get_sqi_max to mv88q2xxx_get_sqi_max.
+> Fix linebreaks and use everywhere hexadecimal numbers written with
+> lowercase letters instead of mixing it up.
+> 
+> Signed-off-by: Dimitri Fedrau <dima.fedrau@gmail.com>
 
-Add the corresponding control mapping override.
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 
-Bus 003 Device 002: ID 3277:009e Shine-Optics Integrated Camera
-Device Descriptor:
-  bLength                18
-  bDescriptorType         1
-  bcdUSB               2.01
-  bDeviceClass          239 Miscellaneous Device
-  bDeviceSubClass         2
-  bDeviceProtocol         1 Interface Association
-  bMaxPacketSize0        64
-  idVendor           0x3277
-  idProduct          0x009e
-  bcdDevice            0.01
-  iManufacturer           3 Shine-Optics
-  iProduct                1 Integrated Camera
-  iSerial                 2 0001
-
-Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
----
-Changes in v2:
-- Fix camera name in subject
-- Link to v1: https://lore.kernel.org/r/20240108-shine-v1-1-9d7b03a1a901@chromium.org
----
- drivers/media/usb/uvc/uvc_driver.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
-
-diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
-index 08fcd2ffa727..ceca1addd7e0 100644
---- a/drivers/media/usb/uvc/uvc_driver.c
-+++ b/drivers/media/usb/uvc/uvc_driver.c
-@@ -3012,6 +3012,15 @@ static const struct usb_device_id uvc_ids[] = {
- 	  .bInterfaceSubClass	= 1,
- 	  .bInterfaceProtocol	= 0,
- 	  .driver_info		= (kernel_ulong_t)&uvc_ctrl_power_line_limited },
-+	/* Shine-Optics Integrated Camera */
-+	{ .match_flags		= USB_DEVICE_ID_MATCH_DEVICE
-+				| USB_DEVICE_ID_MATCH_INT_INFO,
-+	  .idVendor		= 0x3277,
-+	  .idProduct		= 0x009e,
-+	  .bInterfaceClass	= USB_CLASS_VIDEO,
-+	  .bInterfaceSubClass	= 1,
-+	  .bInterfaceProtocol	= UVC_PC_PROTOCOL_15,
-+	  .driver_info		= (kernel_ulong_t)&uvc_ctrl_power_line_uvc11 },
- 	/* Acer EasyCamera */
- 	{ .match_flags		= USB_DEVICE_ID_MATCH_DEVICE
- 				| USB_DEVICE_ID_MATCH_INT_INFO,
-
----
-base-commit: 0dd3ee31125508cd67f7e7172247f05b7fd1753a
-change-id: 20240108-shine-06c600d17a2a
-
-Best regards,
--- 
-Ricardo Ribalda <ribalda@chromium.org>
-
+    Andrew
 
