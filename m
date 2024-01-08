@@ -1,108 +1,120 @@
-Return-Path: <linux-kernel+bounces-19124-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19123-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9EA9082685A
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 08:01:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D965A826858
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 08:01:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4A131281BAF
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 07:01:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 06EFF1C21920
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 07:01:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D123AD49;
-	Mon,  8 Jan 2024 07:01:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08A468C02;
+	Mon,  8 Jan 2024 07:01:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="DqwWDey1"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="mz4cbGlW"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-vs1-f44.google.com (mail-vs1-f44.google.com [209.85.217.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 691D38F5C
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 07:01:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704697281; x=1736233281;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=5S4isNVG9Yb7RJpP09hRnFGD7S+jYFLuPo45bW/bt5o=;
-  b=DqwWDey1+T38GDYEc9VrkEvpC0el72ezITooAQ4dITstZfv/ieoMWPcv
-   tBvJlNmRezOkOt71/7fLjMLXkEnliSQhcXIe7xLRXZah54ykB9lhgcuL7
-   H89UQ8qfnbYfrcljsplQPB1lTswPgE8nQnkmsc9dH9d53AALG4Xy4ZwVa
-   e2dhC/WWOcNIu0fVckqfKsUoFkUJibXnu2yeAn2NYO6+lH7zwrIfg23XG
-   yi2IzSZYQrEg7sbiMmmRQCVD/E8Y0q8hbiDpXdNRqOYmjdFzatZJewPE3
-   xbffhKWF3/3Bi7Nld0dVUjF8ybrTNBegNKz+RP2OVXyrCW3tLFu1oKAOF
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10946"; a="462099696"
-X-IronPort-AV: E=Sophos;i="6.04,340,1695711600"; 
-   d="scan'208";a="462099696"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jan 2024 23:01:20 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,340,1695711600"; 
-   d="scan'208";a="23077666"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orviesa002.jf.intel.com with ESMTP; 07 Jan 2024 23:01:20 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rMjci-0004V6-1c;
-	Mon, 08 Jan 2024 07:00:59 +0000
-Date: Mon, 8 Jan 2024 14:59:54 +0800
-From: kernel test robot <lkp@intel.com>
-To: Neil Armstrong <neil.armstrong@linaro.org>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-	Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-	Bjorn Andersson <andersson@kernel.org>
-Subject: drivers/usb/typec/ucsi/ucsi_glink.c:258:2-3: Unneeded semicolon
-Message-ID: <202401081453.4Ff5FBfw-lkp@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 416D18BE3
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 07:01:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-vs1-f44.google.com with SMTP id ada2fe7eead31-4670af5bd56so271011137.2
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Jan 2024 23:01:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1704697260; x=1705302060; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=XaSGSt7oo6/seLu3rOawrEq2RYwxc9+YcD3xNECSKxo=;
+        b=mz4cbGlWmu2Uu8wFoQHHxihIOv89NYNRw0n3LMop/QOh8jxXpM5a61paBLxr8TcyO/
+         PnOiZTvnnRjbR/qU/XOBUSxu+F8lALws2j9UZZAEtNTU1dteAhgRe/xWGXsKjdtmM7yN
+         WWlKn70CHA/L/H96Bm6QttmjFvrr7bhuMquACNU1EmYt+vCE0dQATpyqAqCD5x3Rq/Pt
+         ApwrvdJ81kHBxb5Jmg3BVcj8pH8dPXDbb6ljQzqMGsvBsP9ti1Fv51gEgTfmGIpP/nnG
+         5BLH8Wux8IyPGKO/+KJbAYool8aMVEcyTUkUR6VN933qsjYLJ3OpCBzF+wX4uAqAlyKU
+         eCHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704697260; x=1705302060;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=XaSGSt7oo6/seLu3rOawrEq2RYwxc9+YcD3xNECSKxo=;
+        b=wX3IYc4Xmy0RcXxetcSZMbdMjwctmNJqMkJsLyL2J89eoExT/EVhdzgLHJQbddFsOz
+         bKHNVEFpSChsmgiURceb/GBPCyoTCYsYCeJZ1IF7FHk08diOMOiEJMZeqllvQ/U/Rb6K
+         tJbrcf2phCvUQI9QpqnrrX9qFhELF20Z6KvafB8uP9L/3nl47EyO5HC5yl7fYhr1Cg3x
+         FYAI2yzUSwu7d+ifFyeIY3UX/2Xit5dNQz2sEcDqSfJ1BpFwtMZMkci2EryEx9tyKIHV
+         M/w4XcCWZA1Si0mZozSqXY/62Hsdm6+98LnY/Z2Dvl6vP55m1sDvDM1iga9aUhx/iMk+
+         smtg==
+X-Gm-Message-State: AOJu0YxuBStR4rLMPqR9u73LmGo1NI0GA/LSfBzqi1kxNZqzH6dBcpY5
+	QBy3Wez2KQSUH9re4O38jS+AELgdhqe3qGsAvF9BJkaGSymS
+X-Google-Smtp-Source: AGHT+IFpUN6pC7xCIbsApGCrJl55CBrGAh6IirKLDVKz3A3mm7X38w82LDyi08a6WKg/Zz3amwxxsgoI1/gJIOwtPq4=
+X-Received: by 2002:a05:6102:304b:b0:467:ac41:856d with SMTP id
+ w11-20020a056102304b00b00467ac41856dmr1575462vsa.20.1704697260063; Sun, 07
+ Jan 2024 23:01:00 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20240104164937.424320-1-pierre.gondois@arm.com> <CANpmjNOwqoEbmuyE_LeMmJ=x9-3CkpXqYsi6m3Gniudyj+RFzw@mail.gmail.com>
+In-Reply-To: <CANpmjNOwqoEbmuyE_LeMmJ=x9-3CkpXqYsi6m3Gniudyj+RFzw@mail.gmail.com>
+From: Marco Elver <elver@google.com>
+Date: Mon, 8 Jan 2024 08:00:00 +0100
+Message-ID: <CANpmjNMK3hiBPG2UwEV14YZoee08a7ULw4cwcsxfV=E5+FcTTg@mail.gmail.com>
+Subject: Re: [PATCH v2 0/3] list: Add hlist_count_nodes()
+To: Pierre Gondois <pierre.gondois@arm.com>, Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-kernel@vger.kernel.org, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, =?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>, 
+	Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>, 
+	Joel Fernandes <joel@joelfernandes.org>, Christian Brauner <brauner@kernel.org>, 
+	Carlos Llamas <cmllamas@google.com>, Suren Baghdasaryan <surenb@google.com>, Coly Li <colyli@suse.de>, 
+	Kent Overstreet <kent.overstreet@gmail.com>, Kees Cook <keescook@chromium.org>, 
+	Jani Nikula <jani.nikula@intel.com>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
+	Ingo Molnar <mingo@kernel.org>, linux-bcache@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   0dd3ee31125508cd67f7e7172247f05b7fd1753a
-commit: 62b5412b1f4afab27d8df90ddcabb8e1e11a00ad usb: typec: ucsi: add PMIC Glink UCSI driver
-date:   10 months ago
-config: i386-randconfig-052-20240106 (https://download.01.org/0day-ci/archive/20240108/202401081453.4Ff5FBfw-lkp@intel.com/config)
-compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
+On Thu, 4 Jan 2024 at 18:16, Marco Elver <elver@google.com> wrote:
+> On Thu, 4 Jan 2024 at 17:50, Pierre Gondois <pierre.gondois@arm.com> wrote:
+> >
+> > v2:
+> > - Add usages of the function to avoid considering it as dead code.
+> > v1:
+> > - https://lore.kernel.org/all/20240103090241.164817-1-pierre.gondois@arm.com/
+> >
+> > Add a generic hlist_count_nodes() function.
+> >
+> > This function aims to be used in a private module. As suggested by
+> > Marco, having it used would avoid to consider it as dead code.
+> > Thus, add some usages of the function in two drivers.
+>
+> Whether or not it's used in a private module is probably irrelevant
+> from an upstream perspective.
+>
+> But this is a reasonable cleanup, and at the same time adds API
+> symmetry with the already existing list_count_nodes().
+>
+> > Pierre Gondois (3):
+> >   list: Add hlist_count_nodes()
+> >   binder: Use of hlist_count_nodes()
+> >   bcache: Use of hlist_count_nodes()
+> >
+> >  drivers/android/binder.c  |  4 +---
+> >  drivers/md/bcache/sysfs.c |  8 +-------
+> >  include/linux/list.h      | 15 +++++++++++++++
+> >  3 files changed, 17 insertions(+), 10 deletions(-)
+>
+> For the series:
+>
+> Acked-by: Marco Elver <elver@google.com>
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202401081453.4Ff5FBfw-lkp@intel.com/
+Btw, there doesn't appear to be a clear maintainer or tree for
+include/linux/list.h. Since there have been several Acks/Reviews by
+now, did you have a particular tree in mind?
+Perhaps Andrew (+Cc) can help.
 
-cocci warnings: (new ones prefixed by >>)
->> drivers/usb/typec/ucsi/ucsi_glink.c:258:2-3: Unneeded semicolon
-
-vim +258 drivers/usb/typec/ucsi/ucsi_glink.c
-
-   242	
-   243	static void pmic_glink_ucsi_callback(const void *data, size_t len, void *priv)
-   244	{
-   245		struct pmic_glink_ucsi *ucsi = priv;
-   246		const struct pmic_glink_hdr *hdr = data;
-   247	
-   248		switch (hdr->opcode) {
-   249		case UC_UCSI_READ_BUF_REQ:
-   250			pmic_glink_ucsi_read_ack(ucsi, data, len);
-   251			break;
-   252		case UC_UCSI_WRITE_BUF_REQ:
-   253			pmic_glink_ucsi_write_ack(ucsi, data, len);
-   254			break;
-   255		case UC_UCSI_USBC_NOTIFY_IND:
-   256			schedule_work(&ucsi->notify_work);
-   257			break;
- > 258		};
-   259	}
-   260	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Thanks,
+-- Marco
 
