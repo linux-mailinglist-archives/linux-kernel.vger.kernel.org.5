@@ -1,215 +1,200 @@
-Return-Path: <linux-kernel+bounces-19113-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19114-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F1FE826835
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 07:45:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D1073826839
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 07:48:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2662F28205C
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 06:45:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 72F3E282035
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 06:48:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12C8B8C01;
-	Mon,  8 Jan 2024 06:45:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55C228827;
+	Mon,  8 Jan 2024 06:47:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="ML/wyvtM"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aNk27Ju4"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2059.outbound.protection.outlook.com [40.107.94.59])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ot1-f47.google.com (mail-ot1-f47.google.com [209.85.210.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBC728BE3
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 06:45:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RiFQYGr//8KoVcWsexq7H9netGjNDO4lV6oe7zPCULWJOY5s7MqYT0+gG3tmcHBJk7jbVHSckNs6m7S64iKYZ4L64XNZctZ+Wk91drX4qJ46NeldAwnB+oD2T238IKWCZBxOx8Hs4Dj1k+26Mvpd1MT+UfoEUT8+QkUzeDcp/T0TNcXskqrLf/sG34/Q7wOtoQ+T7J57Jn6W2veSvNMrdjx89rtklheDRwGJ0GRwJZw2rLeddX4gDnnLExVT1EimJEg5sdpp2HoamGa01TFtaCTgTuk3256Ef4Ezsb37YZr3IkBD3Br9LjzaFdwDHPkDYOOSyYEa51YG/zOEabLZTw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=atAiE1fxIaR6BbnSkuiGgZsTu2ZXrOoGPJjP2K0KUgE=;
- b=gesKfTrH8pJ+HCvQLzQoyCLnCFD4uapsHqOjJp2uN/Lg8QeFWe8pq9qj24SL7lI/2miIDiVJq4AFNs3rg5bU6GZwt1CIyoMeMIk+nLwb+NCGS+V+sO33yWpqTQSveA3/ZjRcfl5k84h34YVj5vNVDOOU28F3v05xB08qwmr4nxkdBpD1G1mFFpzDnmFMsdschJu21SuHOU2ajSA6Ps81XDY5w+1BE5CF9AXN08cb1d8p86QCxza51UrlBVKA3HkMv8eF4MdoQotTzQr+h62rQaFs8nFDNRggHJVSh0n4SN01WJZ1G6LIf1n9SAvstJVBz82s6bjn7x0E2lmPKy9f7w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=atAiE1fxIaR6BbnSkuiGgZsTu2ZXrOoGPJjP2K0KUgE=;
- b=ML/wyvtM6IyTDW1rFDOP1ygXTqSsKObcdQNf7gfOoklZaER1dlAPnEDIatdRNcs3y4uPyKYTNvEb96hudxkUTvnqYz1DXgAC8EUfySz6LeacA9BCkIMwPnaJaWdVLo5Jc56c6dOAkHYilhUr+sS2xGbfdTh5zH971nRbH9s1hg4=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from PH7PR12MB5685.namprd12.prod.outlook.com (2603:10b6:510:13c::22)
- by MN2PR12MB4389.namprd12.prod.outlook.com (2603:10b6:208:262::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.21; Mon, 8 Jan
- 2024 06:45:13 +0000
-Received: from PH7PR12MB5685.namprd12.prod.outlook.com
- ([fe80::e1fb:4123:48b1:653]) by PH7PR12MB5685.namprd12.prod.outlook.com
- ([fe80::e1fb:4123:48b1:653%4]) with mapi id 15.20.7159.020; Mon, 8 Jan 2024
- 06:45:13 +0000
-Message-ID: <c82fbab0-1ba1-43cf-9f31-57d365b2baa2@amd.com>
-Date: Mon, 8 Jan 2024 07:45:09 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/1] Refactor radeon driver to use
- drm_gem_create_map_offset() instead of its custom implementation for
- associating GEM object with a fake offset. Since, we already have a generic
- implementation, we don't need the custom function and it is better to
- standardize the code.
-Content-Language: en-US
-To: Dipam Turkar <dipamt1729@gmail.com>, alexander.deucher@amd.com
-Cc: Xinhui.Pan@amd.com, airlied@gmail.com, daniel@ffwll.ch,
- amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
- linux-kernel@vger.kernel.org
-References: <20240106141422.10734-1-dipamt1729@gmail.com>
-From: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-In-Reply-To: <20240106141422.10734-1-dipamt1729@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: FR0P281CA0235.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:b2::20) To PH7PR12MB5685.namprd12.prod.outlook.com
- (2603:10b6:510:13c::22)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F9CC79EE;
+	Mon,  8 Jan 2024 06:47:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f47.google.com with SMTP id 46e09a7af769-6dbd445f395so871695a34.2;
+        Sun, 07 Jan 2024 22:47:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704696473; x=1705301273; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=eNqLWwBfGaYn9XJSIaItQtf1MNxpe69O24j9U8v8Pko=;
+        b=aNk27Ju4Mn5gAaVeWJVVt0LrKEfOAMN1+50X7bn35lP6VkxbUcyXFD3jlSJs+UjDI8
+         r+2pZBfUVG/CJuqAxvsoCRXpv/rOVbwLOSV8TZYPx1Z/8kAKKrhHqZIQwrJzISFoH8vk
+         vSQ+UeyofHEvkfMhEZQtdVMGomlBK3PmbjGhSobXKhAwdTCKmXnrZFcvRs7ke5traA1e
+         iOchKD0eUBh7fDtlHP60eJmYjqvhSydIxpyRusRde3Jkz1ozhA0xarYx/LnWmcQlzGSO
+         zPq4VYdxeZQN2mMg45E+NV49pIYGNca6C8IrWNQWZ5A/W+UZw/H4BHvt4Ghu3vEuLsGf
+         FHbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704696473; x=1705301273;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=eNqLWwBfGaYn9XJSIaItQtf1MNxpe69O24j9U8v8Pko=;
+        b=WA1CrjwKyj4iw+Xmq78Wi41GQuyc2X4z/KSY9O8kpmon/r0tFLG36W4vkx0Zq870kK
+         nABqii+0EPQhxEb0da+ptEYbMnveRZrwEUQDEZHSK0royA0OkQ1N/u8TlzZ7Ch7w1loO
+         7yddVQrXDXoRWhpxtKBK+yzzzbUVvj3T/MNjhzkd+Usr7mHCabUoCcgMAPF+3f6tWOuE
+         /ZnBiFLWaKqqafiHhYtaGD/NKsrSUyKhmvi3Wjxid95w6jiatIq/w+VZ6TTh0zhI9REI
+         LY7yS45ZJacd3yvkPlUeKQ4dEyQT72MYNpJDOdE1fkqakwJ4Koz0yCBcEq87qS1HvbEe
+         FW2Q==
+X-Gm-Message-State: AOJu0YxUwidydETEwx03EDhHwKSDFcutDro9meJyD7cdcXB/xpDuj1aN
+	MQc08N1BCQW4uK3HhruiF7g=
+X-Google-Smtp-Source: AGHT+IEAed1LQOm4jnO2eZoQd48MGOblsDN0s+H3MVZ9h3pg6L7uNjJRnOkq3FBkJM9fob5C55G+ig==
+X-Received: by 2002:a9d:7308:0:b0:6dd:bf77:480 with SMTP id e8-20020a9d7308000000b006ddbf770480mr1453865otk.51.1704696472954;
+        Sun, 07 Jan 2024 22:47:52 -0800 (PST)
+Received: from localhost.localdomain ([122.8.183.87])
+        by smtp.gmail.com with ESMTPSA id dw1-20020a05683033a100b006ddd602afccsm102718otb.66.2024.01.07.22.47.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 07 Jan 2024 22:47:52 -0800 (PST)
+From: Chen Wang <unicornxw@gmail.com>
+To: aou@eecs.berkeley.edu,
+	chao.wei@sophgo.com,
+	conor@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	mturquette@baylibre.com,
+	palmer@dabbelt.com,
+	paul.walmsley@sifive.com,
+	richardcochran@gmail.com,
+	robh+dt@kernel.org,
+	sboyd@kernel.org,
+	devicetree@vger.kernel.org,
+	linux-clk@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-riscv@lists.infradead.org,
+	haijiao.liu@sophgo.com,
+	xiaoguang.xing@sophgo.com,
+	guoren@kernel.org,
+	jszhang@kernel.org,
+	inochiama@outlook.com,
+	samuel.holland@sifive.com
+Cc: Chen Wang <unicorn_wang@outlook.com>
+Subject: [PATCH v7 0/4] riscv: sophgo: add clock support for sg2042
+Date: Mon,  8 Jan 2024 14:47:41 +0800
+Message-Id: <cover.1704694903.git.unicorn_wang@outlook.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH7PR12MB5685:EE_|MN2PR12MB4389:EE_
-X-MS-Office365-Filtering-Correlation-Id: ad30f7b0-5128-44ab-ebeb-08dc10155d94
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	21rf7eTHU5nOYSlykLoCR+0T+vGgPS/fOZ62zc5e8cic9PKgEST79dqBWZonFPzrDoEbuu4HQxJ7i97LWCf0xaMsCvbzPdIfAAV5AaQXA8/qS3VCHw80/N6/JnmUCPmkoZyIqzxspGo6z5WfiJX+mci2aj6hy0ekClbSGkdnepauGrPOtDUJZrjdktFaSCqRw+9mU5ZWB/szPGhWuofxG5XO1tBe7iFs2nyeQL+mBRog291BysK5NMzXtGsvtpwtVSZ3//EdE/kPigvjL+keqjKpf02crOv9cC9GcOLJuqCoKyYuieXmsto57WuazQVX4VnWAwz44VYyLoIxcSsUFJN2KNuRGMHBjf232zR40LpY2Q09VBp83m988X68d/OmJm85vJx91WXp+UGUDhwxP8lYfCUZtZBlj+PwdQEapXb18U7hatpb3827jT71n1O1Up8bfz5zivPQk0ip6wm4K2ht0RvDBdKSmLfuGh3/LSbLi0rLks5/hWE2L4dNWRhKuXPnp9CnodGg90/GogOmgvnlUqap//c6yAQUpJMR96DqWBsMgWYjJE9BS62qR3uAPDF/uhkAKaqiZ+1ZlbyGYOcfya52Yac6/ryyF0KjsvaOEHfEAsXgPerSsJ5zRB/tsuczsydJkOFwfOsSKMPYmduwQbMLktyKc6CX/eDbce2UjpMpUIfGF+I/QPpCvLuZ2rsuUDM+wQf6f9ZI6w0ksg==
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB5685.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(376002)(39860400002)(396003)(346002)(136003)(230922051799003)(451199024)(64100799003)(1800799012)(186009)(8936002)(2616005)(26005)(8676002)(6506007)(316002)(6512007)(83380400001)(6486002)(31696002)(66556008)(66476007)(66946007)(41300700001)(86362001)(6666004)(6636002)(478600001)(36756003)(5660300002)(38100700002)(31686004)(2906002)(4326008)(41533002)(219693005)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?RXIvMm9nS05CdjRZNW9XRFRYR2crOVphaTl4Q3ZWbWdmNkJySVdFWEhTQ2J1?=
- =?utf-8?B?WlpEY1ljbkU2UmdJMDhPc1c0VkZCTFB2clhKRXlETklpZ1YzZEpQSGFvd1Jm?=
- =?utf-8?B?eld3TXpFRWVyb1dvSDhqQXBRUkM2cjFLbzYyMDVpTStYQTQ3VmV1enJPcDlo?=
- =?utf-8?B?YTVwUGZQQjdWaFVVWitGYzJsdkNNdE1oZGVnWFJnV3pSREpCYnFYYis4dzZi?=
- =?utf-8?B?SXYxU0VDd1BVTlpLTGd4Z1dxcEd6UjJNalVmUEFxLzNia0Zaa1MyTncvTzhz?=
- =?utf-8?B?OEpmNzcwM041RFo0cDN6OFA4WklDeXNTcCtRWWpwdm9VNHlhVW9TQXNRYzJu?=
- =?utf-8?B?YzlEVzJIYkkwcU1LYmh1UnY5YzM1cHdiUlZGa1pPU0s0d3VmQlpKejYwSGVh?=
- =?utf-8?B?b21Mb0dTcDZDakVPOElkSWF5MmNsSnIzVzNNdkU2RVM3UEFlTHBWcTZwcVJQ?=
- =?utf-8?B?bm9DeTBuWHVSdnNDaWpVSDR4a0NLVGhCOS9lc1BlUUg0M011MG9FaEdlNnFO?=
- =?utf-8?B?RFZ0ZUlBZEFQYWRPWEo4ZHBtZEE1WTBuME5USmhXQmFDS2tZa29aektGaW5u?=
- =?utf-8?B?MkdXUVVFWXdqTzlQYkdhOVRPOEN3WXlnTEtRMEozUTVTaDFaTkFWM3MvK1V0?=
- =?utf-8?B?R3o1ZlNiajgvcDlMK28rL1FzcGllWHNuQ2pFZW5pelhtTENBY1RSamhxTzJi?=
- =?utf-8?B?SE50eHo0TXYyWVdXcUtoa0w3NmNrTWxuSUFiSTZRS3Q4TWt0Y2JMdTUvclpw?=
- =?utf-8?B?emJkb29Fa1NNZGhzZmxBL0U5eUd6SCtlU2YweVlNZk0yVW0rMllvZ2hYL1Y0?=
- =?utf-8?B?WkhMYXVNSzZwNmdHNEdWMlliYVEvUnI5VEQwelVnZW9xaGx2cHozZG5QZENk?=
- =?utf-8?B?eTBWL0RXbTB1THd6QnlseWM1R1ZMNkdSWlRnMFl6SlU0RExhU1V5bGhMRzAr?=
- =?utf-8?B?NDBtcUI5cTRYaEJwNzNTSmU4Zko4cE9ZQXZCNnF0Um9BVWFXU3UwZm1FZ1hH?=
- =?utf-8?B?dUx6QmxJZFhKT1V4QUJBczcxckpid21od1ExVVYxNnlEWlNyK1UxTDhtekUw?=
- =?utf-8?B?Z1dTYVl6M0E1di9paDM5S2x5TDY4MHF5YlZ0UEFiSENFblg2Uk5jMHowb0JZ?=
- =?utf-8?B?alJzMkkvcDg0amoreEMxWjNVcjhYb053UElFLzFMTUllc3daSlQyVnN6ZUcy?=
- =?utf-8?B?cWtNRDlmR3czcDY1TkZpUktEcmhJZi9UN09tZUNVTVhDVWlod2NFclQvOThr?=
- =?utf-8?B?a0x2ZnlpSEt2TStlZjZQNGEway9Vc0VhcHBSM2RON0NYSG0zVnFHbnpxYkRz?=
- =?utf-8?B?c21uTk1Ob2lVUVo0YUtCYU1wVkl6dGFQQUhSY0VJajUzenIwajN5N1JQTklJ?=
- =?utf-8?B?RGZXRmtvUnBEOU1DQm8ya2pmNisvclJCRXUvNlRvaGM2dFE4S1BmL2NHMzds?=
- =?utf-8?B?QmZ5YVYvMkU2K3ZwZWF6UlptaTFCNnpvaER4WWN4d1F6Q00zOER4YUpoU25T?=
- =?utf-8?B?cFA0b0U1YlpiS3BDYzZXUGYwQXdGWVg4d3cycU9tZlBGTEViUHVPWTQxZTdP?=
- =?utf-8?B?dWdLSEdCR1FodjRmcS9vSG5xcXV0NkhiNEJCd0Ria2JxLzUyeU1qWWoxNmY2?=
- =?utf-8?B?UlN2NEErSTByVEJVM2lGQWdlTGxHRlM4d3FheHYrYzF4d2pvT2Fuc0JlcnN4?=
- =?utf-8?B?Vmw4YndrblVON1UrMTZpQlRxSEJzUi9DOVdvbTNaczNqT1cyZHRybk1hVGhr?=
- =?utf-8?B?RGQ1OWhnK3UzbnV4azZWTEN2U2dxbElFL1FRK2ozcmkvU05nUDNKNUlnV2Q2?=
- =?utf-8?B?dVpMdXd5TVJMNTJ2aXBrSVgvU2ZZTThOUXU1Ui9CRXlWL0t2dTRPK2xUejBD?=
- =?utf-8?B?OVN0Y3ppdFkvbmxHSWsxZVpzUityTjNyTnFVUzB3UG90bjczTWQrOXdTbThw?=
- =?utf-8?B?dUxuakN1R3dZeVdCNWE5SE9oMStySnBPbW9IdW1wTmZwWjB3VWRlbHV3em9V?=
- =?utf-8?B?QmJGNHg5NllxM3ZxTjJwRGQrTmg0WUwwUWxyQWI2c3krSE8rVmRPeDlOYmpx?=
- =?utf-8?B?VTN4VEtJTWJNMkxHVFJGTFdZK3RDRlo5TzVGMTk1a1hwUEV4dnNjYmx0a3Rz?=
- =?utf-8?Q?MpmwwN4ZMzs/kYUSpUYjx0/bw?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ad30f7b0-5128-44ab-ebeb-08dc10155d94
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB5685.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Jan 2024 06:45:13.3078
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: +jImhtLqLufzlmYIIlsXBo7QgJo+dk1FPVaGIyUkUQerKjDyFL8a/gyNC1OAHIui
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4389
+Content-Transfer-Encoding: 8bit
 
-Am 06.01.24 um 15:14 schrieb Dipam Turkar:
-> Signed-off-by: Dipam Turkar <dipamt1729@gmail.com>
-> ---
->   drivers/gpu/drm/radeon/radeon_drv.c |  2 +-
->   drivers/gpu/drm/radeon/radeon_gem.c | 24 ++----------------------
->   2 files changed, 3 insertions(+), 23 deletions(-)
->
-> diff --git a/drivers/gpu/drm/radeon/radeon_drv.c b/drivers/gpu/drm/radeon/radeon_drv.c
-> index fa531493b111..f590ed65ffba 100644
-> --- a/drivers/gpu/drm/radeon/radeon_drv.c
-> +++ b/drivers/gpu/drm/radeon/radeon_drv.c
-> @@ -578,7 +578,7 @@ static const struct drm_driver kms_driver = {
->   	.ioctls = radeon_ioctls_kms,
->   	.num_ioctls = ARRAY_SIZE(radeon_ioctls_kms),
->   	.dumb_create = radeon_mode_dumb_create,
-> -	.dumb_map_offset = radeon_mode_dumb_mmap,
-> +	.dumb_map_offset = drm_gem_dumb_map_offset,
->   	.fops = &radeon_driver_kms_fops,
->   
->   	.gem_prime_import_sg_table = radeon_gem_prime_import_sg_table,
-> diff --git a/drivers/gpu/drm/radeon/radeon_gem.c b/drivers/gpu/drm/radeon/radeon_gem.c
-> index 358d19242f4b..99794c550d2c 100644
-> --- a/drivers/gpu/drm/radeon/radeon_gem.c
-> +++ b/drivers/gpu/drm/radeon/radeon_gem.c
-> @@ -31,6 +31,7 @@
->   
->   #include <drm/drm_device.h>
->   #include <drm/drm_file.h>
-> +#include <drm/dem_gem.h>
->   #include <drm/drm_gem_ttm_helper.h>
->   #include <drm/radeon_drm.h>
->   
-> @@ -480,33 +481,12 @@ int radeon_gem_set_domain_ioctl(struct drm_device *dev, void *data,
->   	return r;
->   }
->   
-> -int radeon_mode_dumb_mmap(struct drm_file *filp,
-> -			  struct drm_device *dev,
-> -			  uint32_t handle, uint64_t *offset_p)
-> -{
-> -	struct drm_gem_object *gobj;
-> -	struct radeon_bo *robj;
-> -
-> -	gobj = drm_gem_object_lookup(filp, handle);
-> -	if (gobj == NULL) {
-> -		return -ENOENT;
-> -	}
-> -	robj = gem_to_radeon_bo(gobj);
-> -	if (radeon_ttm_tt_has_userptr(robj->rdev, robj->tbo.ttm)) {
+From: Chen Wang <unicorn_wang@outlook.com>
 
-Well apart from the obvious typos, the missing commit message and the 
-mangled subject line this also removes this important check for userptrs 
-here.
+This series adds clock controller support for sophgo sg2042.
 
-This in turn is a complete no-go since it can lead to kernel crashes.
+Thanks,
+Chen
 
-Regards,
-Christian.
+---
 
-> -		drm_gem_object_put(gobj);
-> -		return -EPERM;
-> -	}
-> -	*offset_p = radeon_bo_mmap_offset(robj);
-> -	drm_gem_object_put(gobj);
-> -	return 0;
-> -}
-> -
->   int radeon_gem_mmap_ioctl(struct drm_device *dev, void *data,
->   			  struct drm_file *filp)
->   {
->   	struct drm_radeon_gem_mmap *args = data;
->   
-> -	return radeon_mode_dumb_mmap(filp, dev, args->handle, &args->addr_ptr);
-> +	return drm_gem_dumb_map_offset(filp, dev, args->handle, &args->addr_ptr);
->   }
->   
->   int radeon_gem_busy_ioctl(struct drm_device *dev, void *data,
+Changes in v7:
+  The patch series is based on v6.7. You can simply review or test the
+  patches at the link [8].
+  - fixed initval issue.
+  - fixed pll clk crash issue.
+  - fixed warning reported by <lkp@intel.com>
+  - code optimization as per review comments.
+  - code cleanup and style improvements as per review comments and checkpatch
+    with "--strict"
+
+Changes in v6:
+  The patch series is based on v6.7-rc1. You can simply review or test the
+  patches at the link [7].
+  - fixed some warnings/errors reported by kernel test robot <lkp@intel.com>.
+
+Changes in v5:
+  The patch series is based on v6.7-rc1. You can simply review or test the
+  patches at the link [6].
+  - dt-bindings: improved yaml, such as:
+    - add vendor prefix for system-ctrl property for clock generator.
+    - Add explanation for system-ctrl property.
+  - move sophgo,sg2042-clkgen.yaml to directly under clock folder.
+  - fixed bugs for driver Makefile/Kconfig
+  - continue cleaning-up debug print for driver code.
+
+Changes in v4:
+  The patch series is based on v6.7-rc1. You can simply review or test the
+  patches at the link [5].
+  - dt-bindings: fixed a dt_binding_check error.
+
+Changes in v3:
+  The patch series is based on v6.7-rc1. You can simply review or test the
+  patches at the link [3].
+  - DTS: don't use syscon but define sg2042 specific system control node. More
+    background info can read [4].
+  - Updating minor issues in dt-bindings as per input from reviews.
+
+Changes in v2:
+  The patch series is based on v6.7-rc1. You can simply review or test the
+  patches at the link [2].
+  - Squashed the patch adding clock definitions with the patch adding the
+    binding for the clock controller.
+  - Updating dt-binding for syscon, remove oneOf for property compatible;
+    define clock controller as child of syscon.
+  - DTS changes: merge sg2042-clock.dtsi into sg2042.dtsi; move clock-frequency
+    property of osc to board devicethree due to the oscillator is outside the
+    SoC.
+  - Fixed some bugs in driver code during testing, including removing warnings
+    for rv32_defconfig.
+  - Updated MAINTAINERS info.
+
+Changes in v1:
+  The patch series is based on v6.7-rc1. You can simply review or test the
+  patches at the link [1].
+
+Link: https://github.com/unicornx/linux-riscv/commits/upstream-sg2042-clock-v1 [1]
+Link: https://github.com/unicornx/linux-riscv/commits/upstream-sg2042-clock-v2 [2]
+Link: https://github.com/unicornx/linux-riscv/commits/upstream-sg2042-clock-v3 [3]
+Link: https://lore.kernel.org/linux-riscv/MA0P287MB03329AE180378E1A2E034374FE82A@MA0P287MB0332.INDP287.PROD.OUTLOOK.COM/ [4]
+Link: https://github.com/unicornx/linux-riscv/commits/upstream-sg2042-clock-v4 [5]
+Link: https://github.com/unicornx/linux-riscv/commits/upstream-sg2042-clock-v5 [6]
+Link: https://github.com/unicornx/linux-riscv/commits/upstream-sg2042-clock-v6 [7]
+Link: https://github.com/unicornx/linux-riscv/commits/upstream-sg2042-clock-v7 [8]
+
+---
+
+Chen Wang (4):
+  dt-bindings: soc: sophgo: Add Sophgo system control module
+  dt-bindings: clock: sophgo: support SG2042
+  clk: sophgo: Add SG2042 clock generator driver
+  riscv: dts: add clock generator for Sophgo SG2042 SoC
+
+ .../bindings/clock/sophgo,sg2042-clkgen.yaml  |   53 +
+ .../soc/sophgo/sophgo,sg2042-sysctrl.yaml     |   34 +
+ MAINTAINERS                                   |    7 +
+ .../boot/dts/sophgo/sg2042-milkv-pioneer.dts  |    4 +
+ arch/riscv/boot/dts/sophgo/sg2042.dtsi        |   23 +
+ drivers/clk/Kconfig                           |    1 +
+ drivers/clk/Makefile                          |    1 +
+ drivers/clk/sophgo/Kconfig                    |    8 +
+ drivers/clk/sophgo/Makefile                   |    2 +
+ drivers/clk/sophgo/clk-sophgo-sg2042.c        | 1316 +++++++++++++++++
+ drivers/clk/sophgo/clk-sophgo-sg2042.h        |  236 +++
+ .../dt-bindings/clock/sophgo,sg2042-clkgen.h  |  169 +++
+ 12 files changed, 1854 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/clock/sophgo,sg2042-clkgen.yaml
+ create mode 100644 Documentation/devicetree/bindings/soc/sophgo/sophgo,sg2042-sysctrl.yaml
+ create mode 100644 drivers/clk/sophgo/Kconfig
+ create mode 100644 drivers/clk/sophgo/Makefile
+ create mode 100644 drivers/clk/sophgo/clk-sophgo-sg2042.c
+ create mode 100644 drivers/clk/sophgo/clk-sophgo-sg2042.h
+ create mode 100644 include/dt-bindings/clock/sophgo,sg2042-clkgen.h
+
+
+base-commit: 0dd3ee31125508cd67f7e7172247f05b7fd1753a
+-- 
+2.25.1
 
 
