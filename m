@@ -1,179 +1,108 @@
-Return-Path: <linux-kernel+bounces-19121-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19124-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EBBD882684B
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 07:50:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9EA9082685A
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 08:01:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 893F71F21B66
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 06:50:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4A131281BAF
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 07:01:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFC5C9465;
-	Mon,  8 Jan 2024 06:50:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D123AD49;
+	Mon,  8 Jan 2024 07:01:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LIjSVYyG"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="DqwWDey1"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-oa1-f45.google.com (mail-oa1-f45.google.com [209.85.160.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBD859474;
-	Mon,  8 Jan 2024 06:50:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f45.google.com with SMTP id 586e51a60fabf-204520717b3so1372265fac.0;
-        Sun, 07 Jan 2024 22:50:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704696602; x=1705301402; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PK7rFBBfXgKkr6a1SrOgShSCoWN7R3rCy+5wKL2xaF0=;
-        b=LIjSVYyGb31myOoxqSck9So0v9ZOio6YfeYp8Pc3ANPai/Vgg+vjJ1tLvbZm1hD6iM
-         GDSI/kyF9c75pXQSwdbkVEhtbMPkf3e7j73aejELvaDNCswBpaxIFLsOIUH/m2vcpJxX
-         xOaKoZPHM+QXVBNGorbd/ujUk5TXf3K3GFnR2+rjdWCDOa2Pn4w1mjeHAE1O+nf7m67Z
-         0LgP+kRXqRhQczPh4VxU3g/DP9aYFk6qfRGEVGT8RxS6naj5dAiQP9G1lpYoYaGjLbnA
-         3rsS+onMokD1v/r8hKp+VBir2ZOlz5tMYE2LjIRfkcIso7CfkWs3vfLKy6Pn09sm5gHM
-         s4Ig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704696602; x=1705301402;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PK7rFBBfXgKkr6a1SrOgShSCoWN7R3rCy+5wKL2xaF0=;
-        b=BYnJOh0t3//hPYsF3WPkiEBwnfjk/T8M8Q6tWRB/N4w9DgmOpRlB6R2Tp7tre4JCq/
-         cI6LNrUayKWhMTkGvoRWwXmBPLd9SZ4huD7XA0ukmwAKn5OLpAPX56NTcMOjScljt6sA
-         NPX3OI99umNrdSYUNNiAw65uUv8nML3tXNH+fnG6iLaq4B66A3tJDNKefCG67VFPNDcT
-         kKpNwPzJ3S47WVCHW6kTs18KHoS/KEkXvEVxkJZEPwamXmX0EldP+ap89w3Q4t5SIzxj
-         /0qwGuNZEVT21+fth3XIj2eynI1m3TozDYBaS6GEX5Z+jSk0ZDWE0OgGpAkrkisNIoQ9
-         dIRw==
-X-Gm-Message-State: AOJu0Yyf2dPkS2RGwY/TLPhLAOce7QZSSD5JnMJ9O3PbWwAvxs6Z3SjF
-	To6XIHmHt7d6jzZdXWzIhIY=
-X-Google-Smtp-Source: AGHT+IFTdFMRuz/SQJG/sod7IGjWs8IgoYHcIo0BMp9OVvd7RzaZctPz1Ug/WzRhWHrcnlTk97fofw==
-X-Received: by 2002:a05:6870:3d8c:b0:205:c5c3:7a5d with SMTP id lm12-20020a0568703d8c00b00205c5c37a5dmr4937937oab.31.1704696601858;
-        Sun, 07 Jan 2024 22:50:01 -0800 (PST)
-Received: from localhost.localdomain ([122.8.183.87])
-        by smtp.gmail.com with ESMTPSA id s19-20020a05683004d300b006dbf6784271sm1282994otd.75.2024.01.07.22.50.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 07 Jan 2024 22:50:01 -0800 (PST)
-From: Chen Wang <unicornxw@gmail.com>
-To: aou@eecs.berkeley.edu,
-	chao.wei@sophgo.com,
-	conor@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	mturquette@baylibre.com,
-	palmer@dabbelt.com,
-	paul.walmsley@sifive.com,
-	richardcochran@gmail.com,
-	robh+dt@kernel.org,
-	sboyd@kernel.org,
-	devicetree@vger.kernel.org,
-	linux-clk@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-riscv@lists.infradead.org,
-	haijiao.liu@sophgo.com,
-	xiaoguang.xing@sophgo.com,
-	guoren@kernel.org,
-	jszhang@kernel.org,
-	inochiama@outlook.com,
-	samuel.holland@sifive.com
-Cc: Chen Wang <unicorn_wang@outlook.com>
-Subject: [PATCH v7 4/4] riscv: dts: add clock generator for Sophgo SG2042 SoC
-Date: Mon,  8 Jan 2024 14:49:53 +0800
-Message-Id: <25650372c373b15309cd9f3822306838e556d3c7.1704694903.git.unicorn_wang@outlook.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1704694903.git.unicorn_wang@outlook.com>
-References: <cover.1704694903.git.unicorn_wang@outlook.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 691D38F5C
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 07:01:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704697281; x=1736233281;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=5S4isNVG9Yb7RJpP09hRnFGD7S+jYFLuPo45bW/bt5o=;
+  b=DqwWDey1+T38GDYEc9VrkEvpC0el72ezITooAQ4dITstZfv/ieoMWPcv
+   tBvJlNmRezOkOt71/7fLjMLXkEnliSQhcXIe7xLRXZah54ykB9lhgcuL7
+   H89UQ8qfnbYfrcljsplQPB1lTswPgE8nQnkmsc9dH9d53AALG4Xy4ZwVa
+   e2dhC/WWOcNIu0fVckqfKsUoFkUJibXnu2yeAn2NYO6+lH7zwrIfg23XG
+   yi2IzSZYQrEg7sbiMmmRQCVD/E8Y0q8hbiDpXdNRqOYmjdFzatZJewPE3
+   xbffhKWF3/3Bi7Nld0dVUjF8ybrTNBegNKz+RP2OVXyrCW3tLFu1oKAOF
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10946"; a="462099696"
+X-IronPort-AV: E=Sophos;i="6.04,340,1695711600"; 
+   d="scan'208";a="462099696"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jan 2024 23:01:20 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,340,1695711600"; 
+   d="scan'208";a="23077666"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orviesa002.jf.intel.com with ESMTP; 07 Jan 2024 23:01:20 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rMjci-0004V6-1c;
+	Mon, 08 Jan 2024 07:00:59 +0000
+Date: Mon, 8 Jan 2024 14:59:54 +0800
+From: kernel test robot <lkp@intel.com>
+To: Neil Armstrong <neil.armstrong@linaro.org>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+	Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+	Bjorn Andersson <andersson@kernel.org>
+Subject: drivers/usb/typec/ucsi/ucsi_glink.c:258:2-3: Unneeded semicolon
+Message-ID: <202401081453.4Ff5FBfw-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-From: Chen Wang <unicorn_wang@outlook.com>
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   0dd3ee31125508cd67f7e7172247f05b7fd1753a
+commit: 62b5412b1f4afab27d8df90ddcabb8e1e11a00ad usb: typec: ucsi: add PMIC Glink UCSI driver
+date:   10 months ago
+config: i386-randconfig-052-20240106 (https://download.01.org/0day-ci/archive/20240108/202401081453.4Ff5FBfw-lkp@intel.com/config)
+compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
 
-Add clock generator node to device tree for SG2042, and enable clock for
-uart.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202401081453.4Ff5FBfw-lkp@intel.com/
 
-Signed-off-by: Chen Wang <unicorn_wang@outlook.com>
----
- .../boot/dts/sophgo/sg2042-milkv-pioneer.dts  |  4 ++++
- arch/riscv/boot/dts/sophgo/sg2042.dtsi        | 23 +++++++++++++++++++
- 2 files changed, 27 insertions(+)
+cocci warnings: (new ones prefixed by >>)
+>> drivers/usb/typec/ucsi/ucsi_glink.c:258:2-3: Unneeded semicolon
 
-diff --git a/arch/riscv/boot/dts/sophgo/sg2042-milkv-pioneer.dts b/arch/riscv/boot/dts/sophgo/sg2042-milkv-pioneer.dts
-index 49b4b9c2c101..0b3b3b2b0c64 100644
---- a/arch/riscv/boot/dts/sophgo/sg2042-milkv-pioneer.dts
-+++ b/arch/riscv/boot/dts/sophgo/sg2042-milkv-pioneer.dts
-@@ -14,6 +14,10 @@ chosen {
- 	};
- };
- 
-+&cgi {
-+	clock-frequency = <25000000>;
-+};
-+
- &uart0 {
- 	status = "okay";
- };
-diff --git a/arch/riscv/boot/dts/sophgo/sg2042.dtsi b/arch/riscv/boot/dts/sophgo/sg2042.dtsi
-index 93256540d078..c9616d111905 100644
---- a/arch/riscv/boot/dts/sophgo/sg2042.dtsi
-+++ b/arch/riscv/boot/dts/sophgo/sg2042.dtsi
-@@ -5,6 +5,7 @@
- 
- /dts-v1/;
- #include <dt-bindings/interrupt-controller/irq.h>
-+#include <dt-bindings/clock/sophgo,sg2042-clkgen.h>
- 
- #include "sg2042-cpus.dtsi"
- 
-@@ -18,6 +19,12 @@ aliases {
- 		serial0 = &uart0;
- 	};
- 
-+	cgi: oscillator {
-+		compatible = "fixed-clock";
-+		clock-output-names = "cgi";
-+		#clock-cells = <0>;
-+	};
-+
- 	soc: soc {
- 		compatible = "simple-bus";
- 		#address-cells = <2>;
-@@ -311,12 +318,28 @@ intc: interrupt-controller@7090000000 {
- 			riscv,ndev = <224>;
- 		};
- 
-+		sys_ctrl: system-controller@7030010000 {
-+			compatible = "sophgo,sg2042-sysctrl";
-+			reg = <0x70 0x30010000 0x0 0x1000>;
-+		};
-+
-+		clkgen: clock-controller@7030012000 {
-+			compatible = "sophgo,sg2042-clkgen";
-+			reg = <0x70 0x30012000 0x0 0x1000>;
-+			sophgo,system-ctrl = <&sys_ctrl>;
-+			#clock-cells = <1>;
-+			clocks = <&cgi>;
-+		};
-+
- 		uart0: serial@7040000000 {
- 			compatible = "snps,dw-apb-uart";
- 			reg = <0x00000070 0x40000000 0x00000000 0x00001000>;
- 			interrupt-parent = <&intc>;
- 			interrupts = <112 IRQ_TYPE_LEVEL_HIGH>;
- 			clock-frequency = <500000000>;
-+			clocks = <&clkgen GATE_CLK_UART_500M>,
-+				 <&clkgen GATE_CLK_APB_UART>;
-+			clock-names = "baudclk", "apb_pclk";
- 			reg-shift = <2>;
- 			reg-io-width = <4>;
- 			status = "disabled";
+vim +258 drivers/usb/typec/ucsi/ucsi_glink.c
+
+   242	
+   243	static void pmic_glink_ucsi_callback(const void *data, size_t len, void *priv)
+   244	{
+   245		struct pmic_glink_ucsi *ucsi = priv;
+   246		const struct pmic_glink_hdr *hdr = data;
+   247	
+   248		switch (hdr->opcode) {
+   249		case UC_UCSI_READ_BUF_REQ:
+   250			pmic_glink_ucsi_read_ack(ucsi, data, len);
+   251			break;
+   252		case UC_UCSI_WRITE_BUF_REQ:
+   253			pmic_glink_ucsi_write_ack(ucsi, data, len);
+   254			break;
+   255		case UC_UCSI_USBC_NOTIFY_IND:
+   256			schedule_work(&ucsi->notify_work);
+   257			break;
+ > 258		};
+   259	}
+   260	
+
 -- 
-2.25.1
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
