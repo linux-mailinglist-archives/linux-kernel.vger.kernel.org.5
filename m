@@ -1,193 +1,252 @@
-Return-Path: <linux-kernel+bounces-19624-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19625-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5ABF826FEB
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 14:33:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 22DC0826FF5
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 14:35:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6504E1F22D00
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 13:33:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3AA841C2287B
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 13:35:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09C1044C8E;
-	Mon,  8 Jan 2024 13:33:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="NsO9rgYN"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18FFE44C8F;
+	Mon,  8 Jan 2024 13:35:12 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54DE544C76
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 13:33:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704720799; x=1736256799;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=G54Pi13jT8VpODe/nYPHSczABLoKWp9Q4adw6Xh/qxE=;
-  b=NsO9rgYNz9BOEZyZN7ywOdeYFpGLRNZDDoUbUmp6UYFhJeYI1RDMAH15
-   rsTUDfi0EKL/CgPwE+5tutDEOrJvqwT/IACXOlx2HccT0x+al4zqetEGp
-   wWlTTMwopuPfloxzYX6LQcqdXqv1pVI1LjvpCeZkNi6AtYuFFr2h3xioS
-   2qUWje3tCVyLB3FwrCQc2P76rI502ZQoRYlVj6IGFQX6DxoOdwC20jZZ9
-   rQ12EdVUBbEEbqpy+3+m9mG5SKCTgv+eHqu8iA/eQHnS7H8ukyZkpjgpe
-   ff2PQrhoDMS0JNrllxVN0/wp2Lbgof4DJx24Gsnhe8jaaDAxUAVEe0bu0
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="4669364"
-X-IronPort-AV: E=Sophos;i="6.04,341,1695711600"; 
-   d="scan'208";a="4669364"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jan 2024 05:33:18 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="815606779"
-X-IronPort-AV: E=Sophos;i="6.04,341,1695711600"; 
-   d="scan'208";a="815606779"
-Received: from ddraghic-mobl.ger.corp.intel.com (HELO box.shutemov.name) ([10.251.212.53])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jan 2024 05:33:12 -0800
-Received: by box.shutemov.name (Postfix, from userid 1000)
-	id CC77610498C; Mon,  8 Jan 2024 16:33:08 +0300 (+03)
-Date: Mon, 8 Jan 2024 16:33:08 +0300
-From: "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>
-To: "Huang, Kai" <kai.huang@intel.com>
-Cc: "tglx@linutronix.de" <tglx@linutronix.de>,
-	"mingo@redhat.com" <mingo@redhat.com>,
-	"bp@alien8.de" <bp@alien8.de>,
-	"dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-	"hpa@zytor.com" <hpa@zytor.com>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"ak@linux.intel.com" <ak@linux.intel.com>,
-	"x86@kernel.org" <x86@kernel.org>,
-	"seanjc@google.com" <seanjc@google.com>
-Subject: Re: [PATCHv2] x86/trampoline: Bypass compat mode in
- trampoline_start64() if not needed
-Message-ID: <20240108133308.dqffkxcojo3nab6p@box.shutemov.name>
-References: <20240107122847.27740-1-kirill.shutemov@linux.intel.com>
- <b69afad98d043ddfb685982c9977105f1b563485.camel@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E9D544C80
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 13:35:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-401-rx3PGZ5KN0axv6x_9_gT7g-1; Mon, 08 Jan 2024 13:35:01 +0000
+X-MC-Unique: rx3PGZ5KN0axv6x_9_gT7g-1
+Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
+ (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Mon, 8 Jan
+ 2024 13:34:36 +0000
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Mon, 8 Jan 2024 13:34:36 +0000
+From: David Laight <David.Laight@ACULAB.COM>
+To: 'Jiri Slaby' <jirislaby@gmail.com>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>
+CC: Linus Torvalds <torvalds@linux-foundation.org>, 'Andy Shevchenko'
+	<andriy.shevchenko@linux.intel.com>, 'Andrew Morton'
+	<akpm@linux-foundation.org>, "'Matthew Wilcox (Oracle)'"
+	<willy@infradead.org>, 'Christoph Hellwig' <hch@infradead.org>, "'Jason A.
+ Donenfeld'" <Jason@zx2c4.com>
+Subject: RE: [PATCH next v4 0/5] minmax: Relax type checks in min() and max().
+Thread-Topic: [PATCH next v4 0/5] minmax: Relax type checks in min() and
+ max().
+Thread-Index: AdnqB/CwAvMQ3gkdSO607JUF4aSKdhYIFqaAAALCfrA=
+Date: Mon, 8 Jan 2024 13:34:36 +0000
+Message-ID: <147531551ec54a558c91bbef47f035c8@AcuMS.aculab.com>
+References: <b97faef60ad24922b530241c5d7c933c@AcuMS.aculab.com>
+ <18c6df0d-45ed-450c-9eda-95160a2bbb8e@gmail.com>
+In-Reply-To: <18c6df0d-45ed-450c-9eda-95160a2bbb8e@gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b69afad98d043ddfb685982c9977105f1b563485.camel@intel.com>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 
-On Mon, Jan 08, 2024 at 01:10:31PM +0000, Huang, Kai wrote:
-> On Sun, 2024-01-07 at 15:28 +0300, Kirill A. Shutemov wrote:
-> > The trampoline_start64() vector is used when a secondary CPU starts in
-> > 64-bit mode. The current implementation directly enters compatibility
-> > mode. It is necessary to disable paging and re-enable it in the correct
-> > paging mode: either 4- or 5-level, depending on the configuration.
-> > 
-> > The X86S[1] ISA does not support compatibility mode in ring 0, and
-> > paging cannot be disabled.
-> > 
-> > The trampoline_start64() function is reworked to only enter compatibility
-> > mode if it is necessary to change the paging mode. If the CPU is already
-> > in the desired paging mode, it will proceed in long mode.
-> > 
-> > This change will allow a secondary CPU to boot on an X86S machine as
-> > long as the CPU is already in the correct paging mode.
-> > 
-> > In the future, there will be a mechanism to switch between paging modes
-> > without disabling paging.
-> > 
-> > [1] https://www.intel.com/content/www/us/en/developer/articles/technical/envisioning-future-simplified-architecture.html
-> > 
-> > Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> > Reviewed-by: Andi Kleen <ak@linux.intel.com>
-> > Cc: Sean Christopherson <seanjc@google.com>
-> > 
-> > ---
-> >  v2:
-> >   - Fix build with GCC;
-> > ---
-> >  arch/x86/realmode/rm/trampoline_64.S | 31 +++++++++++++++++++++++++++-
-> >  1 file changed, 30 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/arch/x86/realmode/rm/trampoline_64.S b/arch/x86/realmode/rm/trampoline_64.S
-> > index c9f76fae902e..c07354542188 100644
-> > --- a/arch/x86/realmode/rm/trampoline_64.S
-> > +++ b/arch/x86/realmode/rm/trampoline_64.S
-> > @@ -37,13 +37,15 @@
-> >  	.text
-> >  	.code16
-> >  
-> > -.macro LOCK_AND_LOAD_REALMODE_ESP lock_pa=0
-> > +.macro LOCK_AND_LOAD_REALMODE_ESP lock_pa=0 lock_rip=0
-> >  	/*
-> >  	 * Make sure only one CPU fiddles with the realmode stack
-> >  	 */
-> >  .Llock_rm\@:
-> >  	.if \lock_pa
-> >          lock btsl       $0, pa_tr_lock
-> > +	.elseif \lock_rip
-> > +        lock btsl       $0, tr_lock(%rip)
-> >  	.else
-> >          lock btsl       $0, tr_lock
-> >  	.endif
-> > @@ -220,6 +222,33 @@ SYM_CODE_START(trampoline_start64)
-> >  	lidt	tr_idt(%rip)
-> >  	lgdt	tr_gdt64(%rip)
-> >  
-> > +	/* Check if paging mode has to be changed */
-> > +	movq	%cr4, %rax
-> > +	xorq	tr_cr4(%rip), %rax
-> > +	andq	$X86_CR4_LA57, %rax
-> > +	jnz	.L_switch_paging
-> 
-> This seems depends on the BIOS will always use 4-level paging.  Can we make such
-> assumption?
+RnJvbTogSmlyaSBTbGFieSA8amlyaXNsYWJ5QGdtYWlsLmNvbT4NCj4gU2VudDogMDggSmFudWFy
+eSAyMDI0IDExOjQ2DQo+IA0KPiBIaSwNCj4gDQo+IE9uIDE4LiAwOS4gMjMsIDEwOjE0LCBEYXZp
+ZCBMYWlnaHQgd3JvdGU6DQo+ID4gVGhlIG1pbigpIChldGMpIGZ1bmN0aW9ucyBpbiBtaW5tYXgu
+aCByZXF1aXJlIHRoYXQgdGhlIGFyZ3VtZW50cyBoYXZlDQo+ID4gZXhhY3RseSB0aGUgc2FtZSB0
+eXBlcy4NCj4gPg0KPiA+IEhvd2V2ZXIgd2hlbiB0aGUgdHlwZSBjaGVjayBmYWlscywgcmF0aGVy
+IHRoYW4gbG9vayBhdCB0aGUgdHlwZXMgYW5kDQo+ID4gZml4IHRoZSB0eXBlIG9mIGEgdmFyaWFi
+bGUvY29uc3RhbnQsIGV2ZXJ5b25lIHNlZW1zIHRvIGp1bXAgb24gbWluX3QoKS4NCj4gPiBJbiBy
+ZWFsaXR5IG1pbl90KCkgb3VnaHQgdG8gYmUgcmFyZSAtIHdoZW4gc29tZXRoaW5nIHVudXN1YWwg
+aXMgYmVpbmcNCj4gPiBkb25lLCBub3Qgbm9ybWFsaXR5Lg0KPiAuLi4NCj4gPiBEYXZpZCBMYWln
+aHQgKDUpOg0KPiA+ICAgIG1pbm1heDogQWRkIHVtaW4oYSwgYikgYW5kIHVtYXgoYSwgYikNCj4g
+PiAgICBtaW5tYXg6IEFsbG93IG1pbigpL21heCgpL2NsYW1wKCkgaWYgdGhlIGFyZ3VtZW50cyBo
+YXZlIHRoZSBzYW1lDQo+ID4gICAgICBzaWduZWRuZXNzLg0KPiA+ICAgIG1pbm1heDogRml4IGlu
+ZGVudGF0aW9uIG9mIF9fY21wX29uY2UoKSBhbmQgX19jbGFtcF9vbmNlKCkNCj4gPiAgICBtaW5t
+YXg6IEFsbG93IGNvbXBhcmlzb25zIG9mICdpbnQnIGFnYWluc3QgJ3Vuc2lnbmVkIGNoYXIvc2hv
+cnQnLg0KPiA+ICAgIG1pbm1heDogUmVsYXggY2hlY2sgdG8gYWxsb3cgY29tcGFyaXNvbiBiZXR3
+ZWVuIHVuc2lnbmVkIGFyZ3VtZW50cyBhbmQNCj4gPiAgICAgIHNpZ25lZCBjb25zdGFudHMuDQo+
+IA0KPiBUaGlzIHNsb3dzIGRvd24gdGhlIGJ1aWxkIGFuZCBpbmNyZWFzZXMgdGhlIGJ1aWxkIG1l
+bW9yeSBjb25zdW1wdGlvbiBzbw0KPiB0aGF0IGl0IGNhdXNlcyBPT01zLg0KPiANCj4gSW4gcGFy
+dGljdWxhciA2Ljc6DQo+ICQgdGltZSBtYWtlIGRyaXZlcnMvbWVkaWEvcGNpL3NvbG82eDEwL3Nv
+bG82eDEwLXAybS5pDQo+IC4uLg0KPiAgICBDUFAgW01dIGRyaXZlcnMvbWVkaWEvcGNpL3NvbG82
+eDEwL3NvbG82eDEwLXAybS5pDQo+IHJlYWwgICAgMG00NSwwMDJzDQo+IHVzZXIgICAgMG00MCw4
+NDBzDQo+IHN5cyAgICAgMG01LDkyMnMNCj4gDQo+IA0KPiAkIGdpdCByZXZlcnQgODY3MDQ2Y2M3
+MDI3NzAzZjYwYTQ2MzM5ZmZkZTkxYTE5NzBmMjkwMQ0KPiAkIHRpbWUgbWFrZSBkcml2ZXJzL21l
+ZGlhL3BjaS9zb2xvNngxMC9zb2xvNngxMC1wMm0uaQ0KPiAuLi4NCj4gICAgQ1BQIFtNXSBkcml2
+ZXJzL21lZGlhL3BjaS9zb2xvNngxMC9zb2xvNngxMC1wMm0uaQ0KPiByZWFsICAgIDBtMTEsMTMy
+cw0KPiB1c2VyICAgIDBtOSw3MzdzDQo+IHN5cyAgICAgMG0xLDQxNXMNCj4gDQo+IA0KPiAkIGdp
+dCByZXZlcnQgNGVhZDUzNGZiYTQyZmM0ZmQ0MTE2MzI5NzUyOGQyYWE3MzFjZDEyMQ0KPiAkIHRp
+bWUgbWFrZSBkcml2ZXJzL21lZGlhL3BjaS9zb2xvNngxMC9zb2xvNngxMC1wMm0uaQ0KPiAuLi4N
+Cj4gICAgQ1BQIFtNXSBkcml2ZXJzL21lZGlhL3BjaS9zb2xvNngxMC9zb2xvNngxMC1wMm0uaQ0K
+PiByZWFsICAgIDBtMyw3MTFzDQo+IHVzZXIgICAgMG0zLDA0MXMNCj4gc3lzICAgICAwbTAsNzEw
+cw0KPiANCj4gDQo+IA0KPiBOb3RlIGl0J3Mgb25seSBhIHByZXByb2Nlc3NvciBydW4uIElmIHlv
+dSBydW4gYSBjb21waWxlciBvbiB0b3Agb2YgdGhhdCwNCj4gaXQgZXZlbiBkaWVzLg0KPiANCj4g
+VGhlcmUgaXMgbm90aGluZyBzcGVjaWFsIGluIHRoYXQgZmlsZSwganVzdDoNCj4gaWYgKFNPTE9f
+U0RSQU1fRU5EKHNvbG9fZGV2KSA+IHNvbG9fZGV2LT5zZHJhbV9zaXplKSB7DQo+IA0KPiB3aGlj
+aCBhdCBzb21lIHBvaW50IGV4cGFuZHMgdG8NCj4gICAgICAgICAgbWF4KF9fU09MT19KUEVHX01J
+Tl9TSVpFKF9fc29sbyksICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFwNCj4gICAgICAg
+ICAgICAgIG1pbigoX19zb2xvLT5zZHJhbV9zaXplIC0gU09MT19KUEVHX0VYVF9BRERSKF9fc29s
+bykpLA0KPiAweDAwZmYwMDAwKSkNCj4gDQo+IGFuZCB0aGF0IGV4cGFuZHMgdG8gYSBsb3Qgb2Yg
+c3R1ZmYuDQo+IA0KPiBOb3RlIHRoYXQgX2xpbmVfIGlzIDUxOSBrYnl0ZXMgb24gNi42IGFscmVh
+ZHkuIEFuZCA2IE1CIG9uIDYuNy4NCg0KRXZlbiB3aXRoIHRyaXZpYWwgbWluKCkgbWF4KCkgaXQg
+aXMgNy41ayAocGlwZWQgdGhyb3VnaCB4YXJncyAtczcyKToNCihzZWUgaHR0cHM6Ly9nb2Rib2x0
+Lm9yZy96L3J6RTM5WW9kVykNCg0KVGhlICdleHBsb3Npb24nIGhhcHBlbnMgYmVjYXVzZSB0aGVy
+ZSBhcmUgbmVzdGVkIG1heChhLCBtaW4oYiwgYykpLg0KSSB0aGluazogbWF4KGEsIG1pbihtYXgo
+YiwgbWluKGMsIGQpKSwgZSkpDQoNCkkgYWN0dWFsbHkgY2FuJ3QgaGVscCBmZWVsaW5nIHRoYXQg
+aXMgdGhlIGRyaXZlciBldmVyIHVzZXMNCmFueSBvZiB0aGVzZSB2YWx1ZXMgdGhleSBvdWdodCB0
+byBiZSBzYXZlZCBkdXJpbmcgaW5pdGlhbGlzYXRpb24uDQpUaGF0IHdvdWxkIGxpa2VseSBzYXZl
+IGEgbG90IG9mIGNvZGUgbGF0ZXIgLSBhcyB3ZWxsIGFzIHNocmlua2luZw0KdGhpcyB0ZXN0IHRv
+IHNvbWV0aGluZyBzYW5lLg0KDQpyZXR1cm4gKCgoKCgoKCgweDAwMDAwMDAwICsgMHgwMDQ4MDAw
+MCkgKyAoKHNvbG8tPnR5cGUgPT0gMSA/DQoweDEwMDAwIDogMHgyMDAwMCkgKiAzMikpICsgMHgw
+MDA4MDAwMCkgKyAweDAwMDEwMDAwKSArDQooKCgoc29sby0+c2RyYW1fc2l6ZSA8PSAoMzIgPDwg
+MjApKSA/IDQgOiAxNikgKyAxKSAqICgxOCA8PCAxNikpKQ0KKyAoMHgwMDE0MDAwMCAqIHNvbG8t
+Pm5yX2NoYW5zICogMikpICsgKCgoc29sby0+bnJfY2hhbnMgKg0KMHgwMDA4MDAwMCkpID4gKCgo
+KChzb2xvLT5zZHJhbV9zaXplIC0gKCgoKCgoMHgwMDAwMDAwMCArDQoweDAwNDgwMDAwKSArICgo
+c29sby0+dHlwZSA9PSAxID8gMHgxMDAwMCA6IDB4MjAwMDApICogMzIpKSArDQoweDAwMDgwMDAw
+KSArIDB4MDAwMTAwMDApICsgKCgoKHNvbG8tPnNkcmFtX3NpemUgPD0gKDMyIDw8IDIwKSkgPw0K
+NCA6IDE2KSArIDEpICogKDE4IDw8IDE2KSkpICsgKDB4MDAxNDAwMDAgKiBzb2xvLT5ucl9jaGFu
+cyAqIDIpKSkNCi0gKHNvbG8tPm5yX2NoYW5zICogMHgwMDA4MDAwMCkpKSA8ICgweDAwZmYwMDAw
+KSA/DQooKChzb2xvLT5zZHJhbV9zaXplIC0gKCgoKCgoMHgwMDAwMDAwMCArIDB4MDA0ODAwMDAp
+ICsNCigoc29sby0+dHlwZSA9PSAxID8gMHgxMDAwMCA6IDB4MjAwMDApICogMzIpKSArIDB4MDAw
+ODAwMDApICsNCjB4MDAwMTAwMDApICsgKCgoKHNvbG8tPnNkcmFtX3NpemUgPD0gKDMyIDw8IDIw
+KSkgPyA0IDogMTYpICsgMSkgKg0KKDE4IDw8IDE2KSkpICsgKDB4MDAxNDAwMDAgKiBzb2xvLT5u
+cl9jaGFucyAqIDIpKSkgLQ0KKHNvbG8tPm5yX2NoYW5zICogMHgwMDA4MDAwMCkpKSA6ICgweDAw
+ZmYwMDAwKSkpID8NCigoc29sby0+bnJfY2hhbnMgKiAweDAwMDgwMDAwKSkgOiAoKCgoKHNvbG8t
+PnNkcmFtX3NpemUgLQ0KKCgoKCgoMHgwMDAwMDAwMCArIDB4MDA0ODAwMDApICsgKChzb2xvLT50
+eXBlID09IDEgPyAweDEwMDAwIDoNCjB4MjAwMDApICogMzIpKSArIDB4MDAwODAwMDApICsgMHgw
+MDAxMDAwMCkgKyAoKCgoc29sby0+c2RyYW1fc2l6ZQ0KPD0gKDMyIDw8IDIwKSkgPyA0IDogMTYp
+ICsgMSkgKiAoMTggPDwgMTYpKSkgKyAoMHgwMDE0MDAwMCAqDQpzb2xvLT5ucl9jaGFucyAqIDIp
+KSkgLSAoc29sby0+bnJfY2hhbnMgKiAweDAwMDgwMDAwKSkpIDwNCigweDAwZmYwMDAwKSA/ICgo
+KHNvbG8tPnNkcmFtX3NpemUgLSAoKCgoKCgweDAwMDAwMDAwICsNCjB4MDA0ODAwMDApICsgKChz
+b2xvLT50eXBlID09IDEgPyAweDEwMDAwIDogMHgyMDAwMCkgKiAzMikpICsNCjB4MDAwODAwMDAp
+ICsgMHgwMDAxMDAwMCkgKyAoKCgoc29sby0+c2RyYW1fc2l6ZSA8PSAoMzIgPDwgMjApKSA/DQo0
+IDogMTYpICsgMSkgKiAoMTggPDwgMTYpKSkgKyAoMHgwMDE0MDAwMCAqIHNvbG8tPm5yX2NoYW5z
+ICogMikpKQ0KLSAoc29sby0+bnJfY2hhbnMgKiAweDAwMDgwMDAwKSkpIDogKDB4MDBmZjAwMDAp
+KSkpKSArDQooKChzb2xvLT5ucl9jaGFucyAqIDB4MDAwODAwMDApKSA+ICgoKChzb2xvLT5zZHJh
+bV9zaXplIC0NCigoKCgoKCgweDAwMDAwMDAwICsgMHgwMDQ4MDAwMCkgKyAoKHNvbG8tPnR5cGUg
+PT0gMSA/IDB4MTAwMDAgOg0KMHgyMDAwMCkgKiAzMikpICsgMHgwMDA4MDAwMCkgKyAweDAwMDEw
+MDAwKSArICgoKChzb2xvLT5zZHJhbV9zaXplDQo8PSAoMzIgPDwgMjApKSA/IDQgOiAxNikgKyAx
+KSAqICgxOCA8PCAxNikpKSArICgweDAwMTQwMDAwICoNCnNvbG8tPm5yX2NoYW5zICogMikpICsg
+KCgoc29sby0+bnJfY2hhbnMgKiAweDAwMDgwMDAwKSkgPg0KKCgoKChzb2xvLT5zZHJhbV9zaXpl
+IC0gKCgoKCgoMHgwMDAwMDAwMCArIDB4MDA0ODAwMDApICsNCigoc29sby0+dHlwZSA9PSAxID8g
+MHgxMDAwMCA6IDB4MjAwMDApICogMzIpKSArIDB4MDAwODAwMDApICsNCjB4MDAwMTAwMDApICsg
+KCgoKHNvbG8tPnNkcmFtX3NpemUgPD0gKDMyIDw8IDIwKSkgPyA0IDogMTYpICsgMSkgKg0KKDE4
+IDw8IDE2KSkpICsgKDB4MDAxNDAwMDAgKiBzb2xvLT5ucl9jaGFucyAqIDIpKSkgLQ0KKHNvbG8t
+Pm5yX2NoYW5zICogMHgwMDA4MDAwMCkpKSA8ICgweDAwZmYwMDAwKSA/DQooKChzb2xvLT5zZHJh
+bV9zaXplIC0gKCgoKCgoMHgwMDAwMDAwMCArIDB4MDA0ODAwMDApICsNCigoc29sby0+dHlwZSA9
+PSAxID8gMHgxMDAwMCA6IDB4MjAwMDApICogMzIpKSArIDB4MDAwODAwMDApICsNCjB4MDAwMTAw
+MDApICsgKCgoKHNvbG8tPnNkcmFtX3NpemUgPD0gKDMyIDw8IDIwKSkgPyA0IDogMTYpICsgMSkg
+Kg0KKDE4IDw8IDE2KSkpICsgKDB4MDAxNDAwMDAgKiBzb2xvLT5ucl9jaGFucyAqIDIpKSkgLQ0K
+KHNvbG8tPm5yX2NoYW5zICogMHgwMDA4MDAwMCkpKSA6ICgweDAwZmYwMDAwKSkpID8NCigoc29s
+by0+bnJfY2hhbnMgKiAweDAwMDgwMDAwKSkgOiAoKCgoKHNvbG8tPnNkcmFtX3NpemUgLQ0KKCgo
+KCgoMHgwMDAwMDAwMCArIDB4MDA0ODAwMDApICsgKChzb2xvLT50eXBlID09IDEgPyAweDEwMDAw
+IDoNCjB4MjAwMDApICogMzIpKSArIDB4MDAwODAwMDApICsgMHgwMDAxMDAwMCkgKyAoKCgoc29s
+by0+c2RyYW1fc2l6ZQ0KPD0gKDMyIDw8IDIwKSkgPyA0IDogMTYpICsgMSkgKiAoMTggPDwgMTYp
+KSkgKyAoMHgwMDE0MDAwMCAqDQpzb2xvLT5ucl9jaGFucyAqIDIpKSkgLSAoc29sby0+bnJfY2hh
+bnMgKiAweDAwMDgwMDAwKSkpIDwNCigweDAwZmYwMDAwKSA/ICgoKHNvbG8tPnNkcmFtX3NpemUg
+LSAoKCgoKCgweDAwMDAwMDAwICsNCjB4MDA0ODAwMDApICsgKChzb2xvLT50eXBlID09IDEgPyAw
+eDEwMDAwIDogMHgyMDAwMCkgKiAzMikpICsNCjB4MDAwODAwMDApICsgMHgwMDAxMDAwMCkgKyAo
+KCgoc29sby0+c2RyYW1fc2l6ZSA8PSAoMzIgPDwgMjApKSA/DQo0IDogMTYpICsgMSkgKiAoMTgg
+PDwgMTYpKSkgKyAoMHgwMDE0MDAwMCAqIHNvbG8tPm5yX2NoYW5zICogMikpKQ0KLSAoc29sby0+
+bnJfY2hhbnMgKiAweDAwMDgwMDAwKSkpIDogKDB4MDBmZjAwMDApKSkpKSkpIDwNCigweDAwZmYw
+MDAwKSA/ICgoc29sby0+c2RyYW1fc2l6ZSAtICgoKCgoKCgweDAwMDAwMDAwICsNCjB4MDA0ODAw
+MDApICsgKChzb2xvLT50eXBlID09IDEgPyAweDEwMDAwIDogMHgyMDAwMCkgKiAzMikpICsNCjB4
+MDAwODAwMDApICsgMHgwMDAxMDAwMCkgKyAoKCgoc29sby0+c2RyYW1fc2l6ZSA8PSAoMzIgPDwg
+MjApKSA/DQo0IDogMTYpICsgMSkgKiAoMTggPDwgMTYpKSkgKyAoMHgwMDE0MDAwMCAqIHNvbG8t
+Pm5yX2NoYW5zICogMikpICsNCigoKHNvbG8tPm5yX2NoYW5zICogMHgwMDA4MDAwMCkpID4gKCgo
+KChzb2xvLT5zZHJhbV9zaXplIC0NCigoKCgoKDB4MDAwMDAwMDAgKyAweDAwNDgwMDAwKSArICgo
+c29sby0+dHlwZSA9PSAxID8gMHgxMDAwMCA6DQoweDIwMDAwKSAqIDMyKSkgKyAweDAwMDgwMDAw
+KSArIDB4MDAwMTAwMDApICsgKCgoKHNvbG8tPnNkcmFtX3NpemUNCjw9ICgzMiA8PCAyMCkpID8g
+NCA6IDE2KSArIDEpICogKDE4IDw8IDE2KSkpICsgKDB4MDAxNDAwMDAgKg0Kc29sby0+bnJfY2hh
+bnMgKiAyKSkpIC0gKHNvbG8tPm5yX2NoYW5zICogMHgwMDA4MDAwMCkpKSA8DQooMHgwMGZmMDAw
+MCkgPyAoKChzb2xvLT5zZHJhbV9zaXplIC0gKCgoKCgoMHgwMDAwMDAwMCArDQoweDAwNDgwMDAw
+KSArICgoc29sby0+dHlwZSA9PSAxID8gMHgxMDAwMCA6IDB4MjAwMDApICogMzIpKSArDQoweDAw
+MDgwMDAwKSArIDB4MDAwMTAwMDApICsgKCgoKHNvbG8tPnNkcmFtX3NpemUgPD0gKDMyIDw8IDIw
+KSkgPw0KNCA6IDE2KSArIDEpICogKDE4IDw8IDE2KSkpICsgKDB4MDAxNDAwMDAgKiBzb2xvLT5u
+cl9jaGFucyAqIDIpKSkNCi0gKHNvbG8tPm5yX2NoYW5zICogMHgwMDA4MDAwMCkpKSA6ICgweDAw
+ZmYwMDAwKSkpID8NCigoc29sby0+bnJfY2hhbnMgKiAweDAwMDgwMDAwKSkgOiAoKCgoKHNvbG8t
+PnNkcmFtX3NpemUgLQ0KKCgoKCgoMHgwMDAwMDAwMCArIDB4MDA0ODAwMDApICsgKChzb2xvLT50
+eXBlID09IDEgPyAweDEwMDAwIDoNCjB4MjAwMDApICogMzIpKSArIDB4MDAwODAwMDApICsgMHgw
+MDAxMDAwMCkgKyAoKCgoc29sby0+c2RyYW1fc2l6ZQ0KPD0gKDMyIDw8IDIwKSkgPyA0IDogMTYp
+ICsgMSkgKiAoMTggPDwgMTYpKSkgKyAoMHgwMDE0MDAwMCAqDQpzb2xvLT5ucl9jaGFucyAqIDIp
+KSkgLSAoc29sby0+bnJfY2hhbnMgKiAweDAwMDgwMDAwKSkpIDwNCigweDAwZmYwMDAwKSA/ICgo
+KHNvbG8tPnNkcmFtX3NpemUgLSAoKCgoKCgweDAwMDAwMDAwICsNCjB4MDA0ODAwMDApICsgKChz
+b2xvLT50eXBlID09IDEgPyAweDEwMDAwIDogMHgyMDAwMCkgKiAzMikpICsNCjB4MDAwODAwMDAp
+ICsgMHgwMDAxMDAwMCkgKyAoKCgoc29sby0+c2RyYW1fc2l6ZSA8PSAoMzIgPDwgMjApKSA/DQo0
+IDogMTYpICsgMSkgKiAoMTggPDwgMTYpKSkgKyAoMHgwMDE0MDAwMCAqIHNvbG8tPm5yX2NoYW5z
+ICogMikpKQ0KLSAoc29sby0+bnJfY2hhbnMgKiAweDAwMDgwMDAwKSkpIDogKDB4MDBmZjAwMDAp
+KSkpKSkpIDoNCigweDAwZmYwMDAwKSkpID8gKChzb2xvLT5ucl9jaGFucyAqIDB4MDAwODAwMDAp
+KSA6DQooKCgoc29sby0+c2RyYW1fc2l6ZSAtICgoKCgoKCgweDAwMDAwMDAwICsgMHgwMDQ4MDAw
+MCkgKw0KKChzb2xvLT50eXBlID09IDEgPyAweDEwMDAwIDogMHgyMDAwMCkgKiAzMikpICsgMHgw
+MDA4MDAwMCkgKw0KMHgwMDAxMDAwMCkgKyAoKCgoc29sby0+c2RyYW1fc2l6ZSA8PSAoMzIgPDwg
+MjApKSA/IDQgOiAxNikgKyAxKSAqDQooMTggPDwgMTYpKSkgKyAoMHgwMDE0MDAwMCAqIHNvbG8t
+Pm5yX2NoYW5zICogMikpICsNCigoKHNvbG8tPm5yX2NoYW5zICogMHgwMDA4MDAwMCkpID4gKCgo
+KChzb2xvLT5zZHJhbV9zaXplIC0NCigoKCgoKDB4MDAwMDAwMDAgKyAweDAwNDgwMDAwKSArICgo
+c29sby0+dHlwZSA9PSAxID8gMHgxMDAwMCA6DQoweDIwMDAwKSAqIDMyKSkgKyAweDAwMDgwMDAw
+KSArIDB4MDAwMTAwMDApICsgKCgoKHNvbG8tPnNkcmFtX3NpemUNCjw9ICgzMiA8PCAyMCkpID8g
+NCA6IDE2KSArIDEpICogKDE4IDw8IDE2KSkpICsgKDB4MDAxNDAwMDAgKg0Kc29sby0+bnJfY2hh
+bnMgKiAyKSkpIC0gKHNvbG8tPm5yX2NoYW5zICogMHgwMDA4MDAwMCkpKSA8DQooMHgwMGZmMDAw
+MCkgPyAoKChzb2xvLT5zZHJhbV9zaXplIC0gKCgoKCgoMHgwMDAwMDAwMCArDQoweDAwNDgwMDAw
+KSArICgoc29sby0+dHlwZSA9PSAxID8gMHgxMDAwMCA6IDB4MjAwMDApICogMzIpKSArDQoweDAw
+MDgwMDAwKSArIDB4MDAwMTAwMDApICsgKCgoKHNvbG8tPnNkcmFtX3NpemUgPD0gKDMyIDw8IDIw
+KSkgPw0KNCA6IDE2KSArIDEpICogKDE4IDw8IDE2KSkpICsgKDB4MDAxNDAwMDAgKiBzb2xvLT5u
+cl9jaGFucyAqIDIpKSkNCi0gKHNvbG8tPm5yX2NoYW5zICogMHgwMDA4MDAwMCkpKSA6ICgweDAw
+ZmYwMDAwKSkpID8NCigoc29sby0+bnJfY2hhbnMgKiAweDAwMDgwMDAwKSkgOiAoKCgoKHNvbG8t
+PnNkcmFtX3NpemUgLQ0KKCgoKCgoMHgwMDAwMDAwMCArIDB4MDA0ODAwMDApICsgKChzb2xvLT50
+eXBlID09IDEgPyAweDEwMDAwIDoNCjB4MjAwMDApICogMzIpKSArIDB4MDAwODAwMDApICsgMHgw
+MDAxMDAwMCkgKyAoKCgoc29sby0+c2RyYW1fc2l6ZQ0KPD0gKDMyIDw8IDIwKSkgPyA0IDogMTYp
+ICsgMSkgKiAoMTggPDwgMTYpKSkgKyAoMHgwMDE0MDAwMCAqDQpzb2xvLT5ucl9jaGFucyAqIDIp
+KSkgLSAoc29sby0+bnJfY2hhbnMgKiAweDAwMDgwMDAwKSkpIDwNCigweDAwZmYwMDAwKSA/ICgo
+KHNvbG8tPnNkcmFtX3NpemUgLSAoKCgoKCgweDAwMDAwMDAwICsNCjB4MDA0ODAwMDApICsgKChz
+b2xvLT50eXBlID09IDEgPyAweDEwMDAwIDogMHgyMDAwMCkgKiAzMikpICsNCjB4MDAwODAwMDAp
+ICsgMHgwMDAxMDAwMCkgKyAoKCgoc29sby0+c2RyYW1fc2l6ZSA8PSAoMzIgPDwgMjApKSA/DQo0
+IDogMTYpICsgMSkgKiAoMTggPDwgMTYpKSkgKyAoMHgwMDE0MDAwMCAqIHNvbG8tPm5yX2NoYW5z
+ICogMikpKQ0KLSAoc29sby0+bnJfY2hhbnMgKiAweDAwMDgwMDAwKSkpIDogKDB4MDBmZjAwMDAp
+KSkpKSkpIDwNCigweDAwZmYwMDAwKSA/ICgoc29sby0+c2RyYW1fc2l6ZSAtICgoKCgoKCgweDAw
+MDAwMDAwICsNCjB4MDA0ODAwMDApICsgKChzb2xvLT50eXBlID09IDEgPyAweDEwMDAwIDogMHgy
+MDAwMCkgKiAzMikpICsNCjB4MDAwODAwMDApICsgMHgwMDAxMDAwMCkgKyAoKCgoc29sby0+c2Ry
+YW1fc2l6ZSA8PSAoMzIgPDwgMjApKSA/DQo0IDogMTYpICsgMSkgKiAoMTggPDwgMTYpKSkgKyAo
+MHgwMDE0MDAwMCAqIHNvbG8tPm5yX2NoYW5zICogMikpICsNCigoKHNvbG8tPm5yX2NoYW5zICog
+MHgwMDA4MDAwMCkpID4gKCgoKChzb2xvLT5zZHJhbV9zaXplIC0NCigoKCgoKDB4MDAwMDAwMDAg
+KyAweDAwNDgwMDAwKSArICgoc29sby0+dHlwZSA9PSAxID8gMHgxMDAwMCA6DQoweDIwMDAwKSAq
+IDMyKSkgKyAweDAwMDgwMDAwKSArIDB4MDAwMTAwMDApICsgKCgoKHNvbG8tPnNkcmFtX3NpemUN
+Cjw9ICgzMiA8PCAyMCkpID8gNCA6IDE2KSArIDEpICogKDE4IDw8IDE2KSkpICsgKDB4MDAxNDAw
+MDAgKg0Kc29sby0+bnJfY2hhbnMgKiAyKSkpIC0gKHNvbG8tPm5yX2NoYW5zICogMHgwMDA4MDAw
+MCkpKSA8DQooMHgwMGZmMDAwMCkgPyAoKChzb2xvLT5zZHJhbV9zaXplIC0gKCgoKCgoMHgwMDAw
+MDAwMCArDQoweDAwNDgwMDAwKSArICgoc29sby0+dHlwZSA9PSAxID8gMHgxMDAwMCA6IDB4MjAw
+MDApICogMzIpKSArDQoweDAwMDgwMDAwKSArIDB4MDAwMTAwMDApICsgKCgoKHNvbG8tPnNkcmFt
+X3NpemUgPD0gKDMyIDw8IDIwKSkgPw0KNCA6IDE2KSArIDEpICogKDE4IDw8IDE2KSkpICsgKDB4
+MDAxNDAwMDAgKiBzb2xvLT5ucl9jaGFucyAqIDIpKSkNCi0gKHNvbG8tPm5yX2NoYW5zICogMHgw
+MDA4MDAwMCkpKSA6ICgweDAwZmYwMDAwKSkpID8NCigoc29sby0+bnJfY2hhbnMgKiAweDAwMDgw
+MDAwKSkgOiAoKCgoKHNvbG8tPnNkcmFtX3NpemUgLQ0KKCgoKCgoMHgwMDAwMDAwMCArIDB4MDA0
+ODAwMDApICsgKChzb2xvLT50eXBlID09IDEgPyAweDEwMDAwIDoNCjB4MjAwMDApICogMzIpKSAr
+IDB4MDAwODAwMDApICsgMHgwMDAxMDAwMCkgKyAoKCgoc29sby0+c2RyYW1fc2l6ZQ0KPD0gKDMy
+IDw8IDIwKSkgPyA0IDogMTYpICsgMSkgKiAoMTggPDwgMTYpKSkgKyAoMHgwMDE0MDAwMCAqDQpz
+b2xvLT5ucl9jaGFucyAqIDIpKSkgLSAoc29sby0+bnJfY2hhbnMgKiAweDAwMDgwMDAwKSkpIDwN
+CigweDAwZmYwMDAwKSA/ICgoKHNvbG8tPnNkcmFtX3NpemUgLSAoKCgoKCgweDAwMDAwMDAwICsN
+CjB4MDA0ODAwMDApICsgKChzb2xvLT50eXBlID09IDEgPyAweDEwMDAwIDogMHgyMDAwMCkgKiAz
+MikpICsNCjB4MDAwODAwMDApICsgMHgwMDAxMDAwMCkgKyAoKCgoc29sby0+c2RyYW1fc2l6ZSA8
+PSAoMzIgPDwgMjApKSA/DQo0IDogMTYpICsgMSkgKiAoMTggPDwgMTYpKSkgKyAoMHgwMDE0MDAw
+MCAqIHNvbG8tPm5yX2NoYW5zICogMikpKQ0KLSAoc29sby0+bnJfY2hhbnMgKiAweDAwMDgwMDAw
+KSkpIDogKDB4MDBmZjAwMDApKSkpKSkpIDoNCigweDAwZmYwMDAwKSkpKSk7IH0NCg0KCURhdmlk
+DQoNCj4gDQo+IFRoZSBmaWxlIGlzIDQuM00gdnMuIDEyMk0uDQo+IA0KPiBDb3VsZCB5b3UgaW52
+ZXN0aWdhdGUvZml4L3JldmVydCAoYXQgbGVhc3QpIHRoZSBhYm92ZSB0d28gY29tbWl0cz8NCj4g
+DQo+IHRoYW5rcywNCj4gLS0NCj4ganMNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNzIExha2VzaWRl
+LCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAxUFQsIFVLDQpS
+ZWdpc3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
 
-What makes you think this?
-
-The check is basically
-
-    if ((tr_cr4 ^ CR4) & X86_CR4_LA57)
-	goto .L_switch_paging;
-
-It means if LA57 is not the same between tr_cr4 and CR4 we need to change
-paging mode.
-
-> > +
-> > +	/* Paging mode is correct proceed in 64-bit mode */
-> > +
-> > +	LOCK_AND_LOAD_REALMODE_ESP lock_rip=1
-> > +
-> > +	movw	$__KERNEL_DS, %dx
-> > +	movl	%edx, %ss
-> > +	addl	$pa_real_mode_base, %esp
-> > +	movl	%edx, %ds
-> > +	movl	%edx, %es
-> > +	movl	%edx, %fs
-> > +	movl	%edx, %gs
-> > +
-> > +	movl	$pa_trampoline_pgd, %eax
-> > +	movq	%rax, %cr3
-> > +
-> > +	jmpq	*tr_start(%rip)
-> 
-> IIUC you won't be using __KERNEL_CS in this case?  Not sure whether this matters
-> though, because the spec says in 64-bit mode the hardware treats CS,DS,ES,SS as
-> zero.
-> 
-
-secondary_startup_64() will set CS to __KERNEL_CS before jumping to C
-code.
-
-> > +.L_switch_paging:
-> > +	/*
-> > +	 * To switch between 4- and 5-level paging modes, it is necessary
-> > +	 * to disable paging. This must be done in the compatibility mode.
-> > +	 */
-> >  	ljmpl	*tr_compat(%rip)
-> >  SYM_CODE_END(trampoline_start64)
-> >  
-> 
-
--- 
-  Kiryl Shutsemau / Kirill A. Shutemov
 
