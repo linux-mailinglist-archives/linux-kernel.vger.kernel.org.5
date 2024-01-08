@@ -1,126 +1,109 @@
-Return-Path: <linux-kernel+bounces-19895-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19896-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 977D482765B
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 18:31:40 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2728C82765E
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 18:33:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 346AE1F232CD
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 17:31:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 97C2C284244
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 17:32:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C3D654735;
-	Mon,  8 Jan 2024 17:31:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="un01cIWs"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D86F54BD7;
+	Mon,  8 Jan 2024 17:31:29 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90C385466F;
-	Mon,  8 Jan 2024 17:31:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB9E7C433C8;
-	Mon,  8 Jan 2024 17:31:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704735083;
-	bh=TpcI3dIuWNjlKbiZdSsWqC4HAoWP9zhHwULpZ+JjExE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=un01cIWsY2l7ec12fbUWfb1qr8tZmvTjPeOHQAZJDN7e8roSZWeXC8LHNqMgPmpt/
-	 OSJq5FkZWjL4xVuyHSbSu7PnsXNvasjfv2Fewr2IM4Kn9JwVTcO+e8Atyi9TiwW0TE
-	 2xCNujZTg4R/G6UpksnYomw7qHgAQ+vTmtoLzh4k+sBUjltbXgHCuwUabRygiYJh63
-	 ZgkmEgfsZIbiXJaHkMiwJxqdY1kSPBHIcaKcQb5VU33KHe7SQSHhGtUqHxXc9VX8dI
-	 V4xdKwwTFgLcd5t635lQSRPyblLOgmp1KqPriyffLCc/wFGfI/YcwXKFK+C8BhEkxH
-	 BRzEyAvcqb7XQ==
-Date: Mon, 8 Jan 2024 17:31:17 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Emil Renner Berthing <emil.renner.berthing@canonical.com>
-Cc: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
-	William Qiu <william.qiu@starfivetech.com>,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-riscv@lists.infradead.org, linux-pwm@vger.kernel.org,
-	Emil Renner Berthing <kernel@esmil.dk>,
-	Rob Herring <robh+dt@kernel.org>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Hal Feng <hal.feng@starfivetech.com>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>
-Subject: Re: [PATCH v10 3/4] riscv: dts: starfive: jh7100: Add PWM node and
- pins configuration
-Message-ID: <20240108-hubcap-stubble-ecf6ea34afb9@spud>
-References: <20231222094548.54103-1-william.qiu@starfivetech.com>
- <20231222094548.54103-4-william.qiu@starfivetech.com>
- <CAJM55Z9tyrR7emEBrY0+Fnc_LUFQHkqYHLQ4ptL=XQMy52qtVw@mail.gmail.com>
- <xd2ryic6mr6d6cbljjbhmr56mfpchfzkmc3lnznhmoiwyzip2a@6bhbho267e7c>
- <CAJM55Z9DgFCwXjQGhe+urnOg-AkJMbQUR+biXKONQsRcup1GXw@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B91BF54BCA;
+	Mon,  8 Jan 2024 17:31:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=acm.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-6d9bec20980so791997b3a.2;
+        Mon, 08 Jan 2024 09:31:27 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704735087; x=1705339887;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=39272ZGTbY1zLfGfrdj1xG1tF4EI2nX02WVJoTjgMlg=;
+        b=TsRcPF8CgjL8xFC6yqLImtdz9DMl2OnJEuzkPjpZuK3cRGuM+PLMNE3O6kZBZY7SVP
+         C45+/8PkOrA8eghHxzOq3sKDzMI7iR0tNFgtLJAjngZIw9UmY/dv6NHzpigxZteo9JvC
+         7Zh++bE8DIccmiuZor9JP3PNwIZ9Pa2gt8x8arEfeEH0ozoMop5SUMu3BkqWLBaLjDjv
+         qrv5QYGy8j3t9s3GLzi0E++vCDwrGhQoKMOkJtrBabiKx0jNmigtFCY36WAWWVjrzCDB
+         nBzcTg9OMLEcg2QFCVnOeAPHHFroBXzTlROX/MIuA0Btx41D0EOXo3BXQs70wyFZ7Z7Z
+         x18w==
+X-Gm-Message-State: AOJu0YwKZp/NFdSPnYHxX8mKo48ZPAbA1agM3YRzJnbj4WQmLQyRKfFa
+	XbEvy7qVaV/Ur6f2E/rxSkg=
+X-Google-Smtp-Source: AGHT+IHqUTUOu2xUUsCvTWYjqR6ZfFuBIEm7Vnf3BmP42N7vsGy5ZtvdrNxLirg2T5Y+w9XiRXqpzQ==
+X-Received: by 2002:aa7:8758:0:b0:6d9:9984:66d9 with SMTP id g24-20020aa78758000000b006d9998466d9mr1587468pfo.37.1704735086803;
+        Mon, 08 Jan 2024 09:31:26 -0800 (PST)
+Received: from ?IPV6:2620:0:1000:8411:cee:c48d:78d6:ed9a? ([2620:0:1000:8411:cee:c48d:78d6:ed9a])
+        by smtp.gmail.com with ESMTPSA id gx18-20020a056a001e1200b006d93ca7f8f3sm126390pfb.150.2024.01.08.09.31.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 08 Jan 2024 09:31:23 -0800 (PST)
+Message-ID: <77fd81ae-269c-42c5-9788-dbbee31c05db@acm.org>
+Date: Mon, 8 Jan 2024 09:31:18 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="uwSZRLPC3LWeYwWV"
-Content-Disposition: inline
-In-Reply-To: <CAJM55Z9DgFCwXjQGhe+urnOg-AkJMbQUR+biXKONQsRcup1GXw@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] ufs:mcq:Use ufshcd_mcq_req_to_hwq() to simplify
+ updating hwq.
+Content-Language: en-US
+To: Chanwoo Lee <cw9316.lee@samsung.com>, alim.akhtar@samsung.com,
+ avri.altman@wdc.com, jejb@linux.ibm.com, martin.petersen@oracle.com,
+ stanley.chu@mediatek.com, quic_cang@quicinc.com, mani@kernel.org,
+ quic_asutoshd@quicinc.com, powen.kao@mediatek.com, quic_nguyenb@quicinc.com,
+ yang.lee@linux.alibaba.com, peter.wang@mediatek.com, athierry@redhat.com,
+ linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: grant.jung@samsung.com, jt77.jang@samsung.com, dh0421.hwang@samsung.com,
+ sh043.lee@samsung.com
+References: <20240105021041.20400-1-cw9316.lee@samsung.com>
+ <CGME20240105021138epcas1p3fdfa70996ddbd282c1067de02e39dbd4@epcas1p3.samsung.com>
+ <20240105021041.20400-2-cw9316.lee@samsung.com>
+From: Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <20240105021041.20400-2-cw9316.lee@samsung.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
+On 1/4/24 18:10, Chanwoo Lee wrote:
+> From: ChanWoo Lee <cw9316.lee@samsung.com>
+> 
+> Use ufshcd_mcq_req_to_hwq() to remove unnecessary variables and simplify.
+> 
+> Signed-off-by: ChanWoo Lee <cw9316.lee@samsung.com>
+> ---
+>   drivers/ufs/core/ufshcd.c | 5 +----
+>   1 file changed, 1 insertion(+), 4 deletions(-)
+> 
+> diff --git a/drivers/ufs/core/ufshcd.c b/drivers/ufs/core/ufshcd.c
+> index 30df6f6a72c6..c9d122302889 100644
+> --- a/drivers/ufs/core/ufshcd.c
+> +++ b/drivers/ufs/core/ufshcd.c
+> @@ -5597,7 +5597,6 @@ static void ufshcd_mcq_compl_pending_transfer(struct ufs_hba *hba,
+>   	struct ufshcd_lrb *lrbp;
+>   	struct scsi_cmnd *cmd;
+>   	unsigned long flags;
+> -	u32 hwq_num, utag;
+>   	int tag;
+>   
+>   	for (tag = 0; tag < hba->nutrs; tag++) {
+> @@ -5607,9 +5606,7 @@ static void ufshcd_mcq_compl_pending_transfer(struct ufs_hba *hba,
+>   		    test_bit(SCMD_STATE_COMPLETE, &cmd->state))
+>   			continue;
+>   
+> -		utag = blk_mq_unique_tag(scsi_cmd_to_rq(cmd));
+> -		hwq_num = blk_mq_unique_tag_to_hwq(utag);
+> -		hwq = &hba->uhq[hwq_num];
+> +		hwq = ufshcd_mcq_req_to_hwq(hba, scsi_cmd_to_rq(cmd));
+>   
+>   		if (force_compl) {
+>   			ufshcd_mcq_compl_all_cqes_lock(hba, hwq);
 
---uwSZRLPC3LWeYwWV
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Fri, Jan 05, 2024 at 05:18:45AM -0800, Emil Renner Berthing wrote:
-> Uwe Kleine-K=F6nig wrote:
-> > Hello Emil,
-> >
-> > On Sun, Dec 24, 2023 at 02:49:34AM -0800, Emil Renner Berthing wrote:
-> > > William Qiu wrote:
-> > > > Add OpenCores PWM controller node and add PWM pins configuration
-> > > > on VisionFive 1 board.
-> > > >
-> > > > Signed-off-by: William Qiu <william.qiu@starfivetech.com>
-> > >
-> > > Sorry, I thought I already sent my review. This looks good.
-> > >
-> > > Reviewed-by: Emil Renner Berthing <emil.renner.berthing@canonical.com>
-> >
-> > Is this also an implicit Ack to take this patch via the pwm tree once
-> > the earlier patches are ready? Or do you want to take it via your tree?
-> > (Maybe already now together with the binding? If so, you can assume my
-> > Reviewed-by to be an implicit Ack for that.)
->=20
-> Yes, sorry. This is also meant to be an Ack from me.
->=20
-> I imagined the dt patches would go through Conor's riscv-dt-for-next bran=
-ch,
-> but the pwm tree is certainly also fine by.
-
-idk, I prefer things to go as MAINTAINERS indicates, in case something
-is determined to be wrong in the cycle where the patch is in the "wrong"
-tree.
-
-I suppose I could take the binding though, since I am CCed on every
-binding patch under the sun... I'd rather an explicit ack in that case
-though.
-
-Cheers,
-Conor.
-
---uwSZRLPC3LWeYwWV
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZZwxZQAKCRB4tDGHoIJi
-0nUqAP9yJe3WrgYMWXpHjBz60+ar3t/qeJkOfk0Jf5wV3nSGKQEA/+BcCFymlJ3W
-7iVCVwtlZAqIdUtOXuLEG5keZjo0kwI=
-=7uiV
------END PGP SIGNATURE-----
-
---uwSZRLPC3LWeYwWV--
+Reviewed-by: Bart Van Assche <bvanassche@acm.org>
 
