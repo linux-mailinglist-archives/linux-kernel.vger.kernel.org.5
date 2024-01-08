@@ -1,110 +1,219 @@
-Return-Path: <linux-kernel+bounces-19076-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19077-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B69F82678A
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 05:14:19 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 73A8D82678E
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 05:16:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 34A3A1C214D9
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 04:14:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1B040281C4D
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 04:16:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52A7B8489;
-	Mon,  8 Jan 2024 04:14:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85F08849C;
+	Mon,  8 Jan 2024 04:16:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="H96c5Lae"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F9797F;
-	Mon,  8 Jan 2024 04:14:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
-Received: from loongson.cn (unknown [113.200.148.30])
-	by gateway (Coremail) with SMTP id _____8DxvruKdptlWgcDAA--.1620S3;
-	Mon, 08 Jan 2024 12:14:02 +0800 (CST)
-Received: from linux.localdomain (unknown [113.200.148.30])
-	by localhost.localdomain (Coremail) with SMTP id AQAAf8BxK9yJdptlT_QGAA--.18279S2;
-	Mon, 08 Jan 2024 12:14:02 +0800 (CST)
-From: Tiezhu Yang <yangtiezhu@loongson.cn>
-To: Chris Mason <clm@fb.com>,
-	Josef Bacik <josef@toxicpanda.com>,
-	David Sterba <dsterba@suse.com>
-Cc: Denis Efremov <efremov@linux.com>,
-	linux-btrfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] btrfs: send: Silence build warning about kvcalloc()
-Date: Mon,  8 Jan 2024 12:13:51 +0800
-Message-ID: <20240108041351.9847-1-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.42.0
+Received: from mail-qv1-f47.google.com (mail-qv1-f47.google.com [209.85.219.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 797E27F;
+	Mon,  8 Jan 2024 04:16:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qv1-f47.google.com with SMTP id 6a1803df08f44-67f5c0be04cso15450016d6.0;
+        Sun, 07 Jan 2024 20:16:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704687388; x=1705292188; darn=vger.kernel.org;
+        h=in-reply-to:autocrypt:from:content-language:references:cc:to
+         :subject:user-agent:mime-version:date:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=G39BbRFm9oOt8R6geou4KSFAkCT2cUdc4etIgTklN44=;
+        b=H96c5LaejS7QBID25VnfOHq617crTlRo92sxNKkZqB0m2hDnFYPGrOqtzaYAPSxn8m
+         bCZqVkAdbk34+dJK0TO7JuO0Z6je/RaKfK1sFxxPkHgr4DRZNpytdtMm99nmTbT6whFl
+         C2T16FHZyUXzjnNLamnCtgoKqYlPanXMp4oDQ9nlrQvfVa8LFfunsLshowKfnO5kQNYH
+         GO21McEaqqIjxy8482h/FAowo4wtZkQhR0r7jqzru+QustEuYrISzdP3wYlQ3k/S4X3/
+         q1gVusPZyD7rbeOknxQWMPJDB6+l0MS0sOSGdGf/lzLph4+dc1rdR2syTsPLXGLgJ3pj
+         G9cw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704687388; x=1705292188;
+        h=in-reply-to:autocrypt:from:content-language:references:cc:to
+         :subject:user-agent:mime-version:date:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=G39BbRFm9oOt8R6geou4KSFAkCT2cUdc4etIgTklN44=;
+        b=ZGvXXwnIA2X/YDZxzzuE3+ESwhvTtnupITo1cazci+OVHdMNGgoD1mQJ7GEzYlqAo7
+         I/i0gCWeJ1cos2ipF8QcPI3MQ4B5L4wD/UbsehimBMhR4L4+bnOfwsAxVo/2urHeHmsw
+         Z65htmkXq4TvTc9+NW3HV0urSyuSSn6Zi5kXWLS82l73ouwbn6rgINl6+1Xo0McUvll/
+         UbVJc7tHzl5dSHXS/StNinyb9SyoisJNV2sbowDrOgW4+g9b3wmAS7utojLjxnw/yA5f
+         L1OAJWE61+VcS0DoZFZ0DF5fCwcAUXpU3cmd0bMT422YgPIGUpP7EAPuaZ3F5y7kxHaG
+         yV8w==
+X-Gm-Message-State: AOJu0YyOl0/WWAmOC0J0pQScWnMIP5wlxwmkOioEbf8H92r822mdD2wK
+	VQhejvAAFpAGbjbjQSj91qQ=
+X-Google-Smtp-Source: AGHT+IG/oR/Aw3I3ZED06i/9TypHwct1p3w9mSILSkmYQYA2akipYcjP1zEkSnbEOOCppFNiicYa0A==
+X-Received: by 2002:ad4:5aab:0:b0:67f:641e:bfc5 with SMTP id u11-20020ad45aab000000b0067f641ebfc5mr4757391qvg.26.1704687388243;
+        Sun, 07 Jan 2024 20:16:28 -0800 (PST)
+Received: from [192.168.2.14] ([174.88.31.222])
+        by smtp.gmail.com with ESMTPSA id mx20-20020a0562142e1400b0067f802d373bsm2557852qvb.89.2024.01.07.20.16.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 07 Jan 2024 20:16:27 -0800 (PST)
+Message-ID: <02eea90d-5a3a-415f-9123-36e81ff9511a@gmail.com>
+Date: Sun, 7 Jan 2024 23:16:18 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:115.0) Gecko/20100101
+ Thunderbird/115.6.0
+Subject: Re: [PATCH 1/2] drm/sched: One function call less in drm_sched_init()
+ after error detection
+To: Markus Elfring <Markus.Elfring@web.de>, dri-devel@lists.freedesktop.org,
+ kernel-janitors@vger.kernel.org, Daniel Vetter <daniel@ffwll.ch>,
+ David Airlie <airlied@gmail.com>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>
+Cc: LKML <linux-kernel@vger.kernel.org>, cocci@inria.fr
+References: <12b3e9cb-3241-40cc-b7a4-43c45b9eedc9@web.de>
+ <85066512-983d-480c-a44d-32405ab1b80e@web.de>
+Content-Language: en-CA, en-US
+From: Luben Tuikov <ltuikov89@gmail.com>
+Autocrypt: addr=ltuikov89@gmail.com; keydata=
+ xjMEZTohOhYJKwYBBAHaRw8BAQdAWSq76k+GsENjDTMVCy9Vr4fAO9Rb57/bPT1APnbnnRHN
+ Ikx1YmVuIFR1aWtvdiA8bHR1aWtvdjg5QGdtYWlsLmNvbT7CmQQTFgoAQRYhBJkj7+VmFO9b
+ eaAl10wVR5QxozSvBQJlOiE6AhsDBQkJZgGABQsJCAcCAiICBhUKCQgLAgQWAgMBAh4HAheA
+ AAoJEEwVR5QxozSvSm4BAOwCpX53DTQhE20FBGlTMqKCOQyJqlMcIQ9SO1qPWX1iAQCv3vfy
+ JwktF7REl1yt7IU2Sye1qmQMfJxdt9JMbMNNBs44BGU6IToSCisGAQQBl1UBBQEBB0BT9wSP
+ cCE8uGe7FWo8C+nTSyWPXKTx9F0gpEnlqReRBwMBCAfCfgQYFgoAJhYhBJkj7+VmFO9beaAl
+ 10wVR5QxozSvBQJlOiE6AhsMBQkJZgGAAAoJEEwVR5QxozSvSsYA/2LIFjbxQ2ikbU5S0pKo
+ aMDzO9eGz69uNhNWJcvIKJK6AQC9228Mqc1JeZMIyjYWr2HKYHi8S2q2/zHrSZwAWYYwDA==
+In-Reply-To: <85066512-983d-480c-a44d-32405ab1b80e@web.de>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------akJcGWK3GfgbDEfTJY9Ui4oZ"
+
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------akJcGWK3GfgbDEfTJY9Ui4oZ
+Content-Type: multipart/mixed; boundary="------------j0wM5t9os3GxcVz0WOntpr3w";
+ protected-headers="v1"
+From: Luben Tuikov <ltuikov89@gmail.com>
+To: Markus Elfring <Markus.Elfring@web.de>, dri-devel@lists.freedesktop.org,
+ kernel-janitors@vger.kernel.org, Daniel Vetter <daniel@ffwll.ch>,
+ David Airlie <airlied@gmail.com>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>
+Cc: LKML <linux-kernel@vger.kernel.org>, cocci@inria.fr
+Message-ID: <02eea90d-5a3a-415f-9123-36e81ff9511a@gmail.com>
+Subject: Re: [PATCH 1/2] drm/sched: One function call less in drm_sched_init()
+ after error detection
+References: <12b3e9cb-3241-40cc-b7a4-43c45b9eedc9@web.de>
+ <85066512-983d-480c-a44d-32405ab1b80e@web.de>
+In-Reply-To: <85066512-983d-480c-a44d-32405ab1b80e@web.de>
+
+--------------j0wM5t9os3GxcVz0WOntpr3w
+Content-Type: multipart/mixed; boundary="------------NXadqVeg3RFjjwx8Fg5PFeCc"
+
+--------------NXadqVeg3RFjjwx8Fg5PFeCc
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:AQAAf8BxK9yJdptlT_QGAA--.18279S2
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
-X-Coremail-Antispam: 1Uk129KBj93XoW7Zr1xtFy7Jw1fJrWkCFWrCrX_yoW8Ar1fpF
-	4fGF15tr4rZa4kX34xKw4S9r1Sq3s7K3y7t397Zr4aqr1xuFWkGFs0y3y0qr1qyF97ZFWU
-	ZwsFg3WUC3WqvabCm3ZEXasCq-sJn29KB7ZKAUJUUUU5529EdanIXcx71UUUUU7KY7ZEXa
-	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-	0xBIdaVrnRJUUUkFb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-	IYs7xG6rWj6s0DM7CIcVAFz4kK6r106r15M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-	0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
-	xVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx
-	1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv
-	67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82IYc2
-	Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s02
-	6x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0x
-	vE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE
-	42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6x
-	kF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07j1YL9UUUUU=
+Content-Transfer-Encoding: quoted-printable
 
-There exist the following warning when building kernel v6.7:
+On 2023-12-26 10:56, Markus Elfring wrote:
+> From: Markus Elfring <elfring@users.sourceforge.net>
+> Date: Tue, 26 Dec 2023 16:30:25 +0100
+>=20
+> The kfree() function was called in one case by the
+> drm_sched_init() function during error handling
+> even if the passed data structure member contained a null pointer.
+> This issue was detected by using the Coccinelle software.
+>=20
+> Thus adjust a jump target.
+>=20
+> Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
 
-  CC      fs/btrfs/send.o
-fs/btrfs/send.c: In function ‘btrfs_ioctl_send’:
-fs/btrfs/send.c:8208:44: warning: ‘kvcalloc’ sizes specified with ‘sizeof’ in the earlier argument and not in the later argument [-Wcalloc-transposed-args]
- 8208 |         sctx->clone_roots = kvcalloc(sizeof(*sctx->clone_roots),
-      |                                            ^
-fs/btrfs/send.c:8208:44: note: earlier argument should specify number of elements, later size of each element
+Thank you Markus for this patch.
 
-tested with the latest upstream toolchains (20240105):
+Reviewed-by: Luben Tuikov <ltuikov89@gmail.com>
 
-  [fedora@linux 6.7.test]$ gcc --version
-  gcc (GCC) 14.0.0 20240105 (experimental)
-  [fedora@linux 6.7.test]$ as --version
-  GNU assembler (GNU Binutils) 2.41.50.20240105
-  [fedora@linux 6.7.test]$ ld --version
-  GNU ld (GNU Binutils) 2.41.50.20240105
+Pushed to drm-misc-next.
+--=20
+Regards,
+Luben
 
-just switch the first and second arguments of kvcalloc() to silence
-the build warning, compile tested only.
+> ---
+>  drivers/gpu/drm/scheduler/sched_main.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/drivers/gpu/drm/scheduler/sched_main.c b/drivers/gpu/drm/s=
+cheduler/sched_main.c
+> index 550492a7a031..b99d4e9ff109 100644
+> --- a/drivers/gpu/drm/scheduler/sched_main.c
+> +++ b/drivers/gpu/drm/scheduler/sched_main.c
+> @@ -1289,7 +1289,7 @@ int drm_sched_init(struct drm_gpu_scheduler *sche=
+d,
+>  	sched->sched_rq =3D kmalloc_array(num_rqs, sizeof(*sched->sched_rq),
+>  					GFP_KERNEL | __GFP_ZERO);
+>  	if (!sched->sched_rq)
+> -		goto Out_free;
+> +		goto Out_check_own;
+>  	sched->num_rqs =3D num_rqs;
+>  	for (i =3D DRM_SCHED_PRIORITY_KERNEL; i < sched->num_rqs; i++) {
+>  		sched->sched_rq[i] =3D kzalloc(sizeof(*sched->sched_rq[i]), GFP_KERN=
+EL);
+> @@ -1314,9 +1314,10 @@ int drm_sched_init(struct drm_gpu_scheduler *sch=
+ed,
+>  Out_unroll:
+>  	for (--i ; i >=3D DRM_SCHED_PRIORITY_KERNEL; i--)
+>  		kfree(sched->sched_rq[i]);
+> -Out_free:
+> +
+>  	kfree(sched->sched_rq);
+>  	sched->sched_rq =3D NULL;
+> +Out_check_own:
+>  	if (sched->own_submit_wq)
+>  		destroy_workqueue(sched->submit_wq);
+>  	drm_err(sched, "%s: Failed to setup GPU scheduler--out of memory\n", =
+__func__);
+> --
+> 2.43.0
+>=20
 
-Fixes: bae12df966f0 ("btrfs: use kvcalloc for allocation in btrfs_ioctl_send()")
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
----
- fs/btrfs/send.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+--------------NXadqVeg3RFjjwx8Fg5PFeCc
+Content-Type: application/pgp-keys; name="OpenPGP_0x4C15479431A334AF.asc"
+Content-Disposition: attachment; filename="OpenPGP_0x4C15479431A334AF.asc"
+Content-Description: OpenPGP public key
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
-index 4e36550618e5..2d7519a6ce72 100644
---- a/fs/btrfs/send.c
-+++ b/fs/btrfs/send.c
-@@ -8205,8 +8205,8 @@ long btrfs_ioctl_send(struct inode *inode, struct btrfs_ioctl_send_args *arg)
- 		goto out;
- 	}
- 
--	sctx->clone_roots = kvcalloc(sizeof(*sctx->clone_roots),
--				     arg->clone_sources_count + 1,
-+	sctx->clone_roots = kvcalloc(arg->clone_sources_count + 1,
-+				     sizeof(*sctx->clone_roots),
- 				     GFP_KERNEL);
- 	if (!sctx->clone_roots) {
- 		ret = -ENOMEM;
--- 
-2.42.0
+-----BEGIN PGP PUBLIC KEY BLOCK-----
 
+xjMEZTohOhYJKwYBBAHaRw8BAQdAWSq76k+GsENjDTMVCy9Vr4fAO9Rb57/bPT1A
+PnbnnRHNIkx1YmVuIFR1aWtvdiA8bHR1aWtvdjg5QGdtYWlsLmNvbT7CmQQTFgoA
+QRYhBJkj7+VmFO9beaAl10wVR5QxozSvBQJlOiE6AhsDBQkJZgGABQsJCAcCAiIC
+BhUKCQgLAgQWAgMBAh4HAheAAAoJEEwVR5QxozSvSm4BAOwCpX53DTQhE20FBGlT
+MqKCOQyJqlMcIQ9SO1qPWX1iAQCv3vfyJwktF7REl1yt7IU2Sye1qmQMfJxdt9JM
+bMNNBs44BGU6IToSCisGAQQBl1UBBQEBB0BT9wSPcCE8uGe7FWo8C+nTSyWPXKTx
+9F0gpEnlqReRBwMBCAfCfgQYFgoAJhYhBJkj7+VmFO9beaAl10wVR5QxozSvBQJl
+OiE6AhsMBQkJZgGAAAoJEEwVR5QxozSvSsYA/2LIFjbxQ2ikbU5S0pKoaMDzO9eG
+z69uNhNWJcvIKJK6AQC9228Mqc1JeZMIyjYWr2HKYHi8S2q2/zHrSZwAWYYwDA=3D=3D
+=3DqCaZ
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------NXadqVeg3RFjjwx8Fg5PFeCc--
+
+--------------j0wM5t9os3GxcVz0WOntpr3w--
+
+--------------akJcGWK3GfgbDEfTJY9Ui4oZ
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+wnsEABYIACMWIQSZI+/lZhTvW3mgJddMFUeUMaM0rwUCZZt3EgUDAAAAAAAKCRBMFUeUMaM0r2Z2
+AP9SVEcM87yBgCEEumb7RrTcowF28fJe4at5i5gRwqqH9AD/fIedeYxvDzo+bgS6qnGXXomI7lqZ
+tF/sjFL/xiKcBAI=
+=xKWp
+-----END PGP SIGNATURE-----
+
+--------------akJcGWK3GfgbDEfTJY9Ui4oZ--
 
