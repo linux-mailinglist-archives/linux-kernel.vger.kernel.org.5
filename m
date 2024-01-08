@@ -1,325 +1,241 @@
-Return-Path: <linux-kernel+bounces-20003-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20004-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B8E7827819
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 20:03:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E2F382781D
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 20:07:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A52FF285E54
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 19:03:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DD5191F2370E
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 19:07:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D879154FB1;
-	Mon,  8 Jan 2024 19:03:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6C1954F83;
+	Mon,  8 Jan 2024 19:07:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HSFpIQbr"
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="JYU751VI"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2611B54F85;
-	Mon,  8 Jan 2024 19:03:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704740597; x=1736276597;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=hotAzSDt4GyFBzV8LdqCM38AOqSNK8pRxPEhv/Fvg04=;
-  b=HSFpIQbr8frpppMhT0QUzYZ8CV5RQVA9Fyj5bRmmPREGTjx8M8ZOvQWW
-   KzgI4aH4+z1wt9Eqhi7OxViOzYIohHAULk8FCtBl6QN9NmQtzjelGLdDC
-   jlU19qEuOwrpRHr9ePIkKfHpuGrl2VLntfP9hAQDztkGnCn3+BEUPtV+V
-   NQEbVbQbp/bgyOMcveHlOmYbbMS6nAe4kYvmBXAMEOpdjEI4ll1qaVj+n
-   oeevV7hUDY/17DBTFoqEGN0wCOZbwebSmcPu4e6EFrnX2QsdSRM/QCiPa
-   fbyMJGAsSrq/3OXGqm8SvUnPKe20JLRff0PauJeJYfrPC6nTh1xvV9XEH
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="4757762"
-X-IronPort-AV: E=Sophos;i="6.04,180,1695711600"; 
-   d="scan'208";a="4757762"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jan 2024 11:03:16 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="1112814327"
-X-IronPort-AV: E=Sophos;i="6.04,180,1695711600"; 
-   d="scan'208";a="1112814327"
-Received: from stinti-mobl.ger.corp.intel.com ([10.249.37.10])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jan 2024 11:03:13 -0800
-Date: Mon, 8 Jan 2024 21:03:06 +0200 (EET)
-From: =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To: Liming Sun <limings@nvidia.com>
-cc: Hans de Goede <hdegoede@redhat.com>, Vadim Pasternak <vadimp@nvidia.com>, 
-    David Thompson <davthompson@nvidia.com>, Mark Gross <markgross@kernel.org>, 
-    Dan Carpenter <dan.carpenter@linaro.org>, 
-    "platform-driver-x86@vger.kernel.org" <platform-driver-x86@vger.kernel.org>, 
-    LKML <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v2 1/1] Drop Tx network packet when Tx TmFIFO is full
-In-Reply-To: <BN9PR12MB50685E0F43D2C551B97326B0D36B2@BN9PR12MB5068.namprd12.prod.outlook.com>
-Message-ID: <a5d02043-5654-acdb-e27e-23c792e12638@linux.intel.com>
-References: <f250079635da4ba75c3a3a1d7c3820f48cfc3f06.1704380474.git.limings@nvidia.com> <02fd0faaa555d1914b6ff4bd4b0b294e16989cef.1704381197.git.limings@nvidia.com> <c510206b-1dbb-8f1-642d-7e1c8ac7a7c@linux.intel.com>
- <BN9PR12MB5068662A46D3B8A23BFE5DA6D3662@BN9PR12MB5068.namprd12.prod.outlook.com> <d5ce7c9f-eaf8-45d4-bb8b-24fb1153d946@redhat.com> <BN9PR12MB50685E0F43D2C551B97326B0D36B2@BN9PR12MB5068.namprd12.prod.outlook.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2229054F86
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 19:07:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-50eaa8b447bso2095923e87.1
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 11:07:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1704740852; x=1705345652; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:user-agent:from:references
+         :in-reply-to:mime-version:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=We+XtMZMnhJFuy/p3AKTQ8zg8vFcYw6TH96BXfabyL8=;
+        b=JYU751VIn5PDVLDT3sK7O8pNGfZtZ5nozSM3Ovd1TMZj/2efjLgzGVK7RrPuJ4xdxP
+         Ci6uLBN0qladaRGnzbNHZE329fSK9y53yYdA2zYFdrMD0B9ScO+YfUwTpaHnVqsD/K9j
+         AlmCjyqU1wYHraqexsCNxLljmkgblHTHNTyig=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704740852; x=1705345652;
+        h=cc:to:subject:message-id:date:user-agent:from:references
+         :in-reply-to:mime-version:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=We+XtMZMnhJFuy/p3AKTQ8zg8vFcYw6TH96BXfabyL8=;
+        b=vOw5jjAAFjXuru8IJ/XdYHEELinvFtwz4qwfg728B62VCcs1mxKoVH4BmECpSAHRnT
+         zy9pOTvPljm2rlJ1iRq2nEklfkniJdQCMcOf+67Q4Osqn7n95nen/kYqm/LE2GjA7Oez
+         kt65KX5el2ZTKODLRFyv3cnJz1nG0080sq3O1N4ZrjuRcOJM0qBGHLpmJkWYUrCXBpR/
+         3aKxGN1NjgjXK3Vpmx3vf4oCBlMQDJxMvjTblrKWBsvdlfeopSuRoUMgMrFgwhiJa367
+         a4+gRlnyKhGj9XPlLLTBt9A8wOfefXUQtHm/7P9GgPJ/9k4At0QDRK+CEdsPslpBWUmy
+         q/0w==
+X-Gm-Message-State: AOJu0Yy2pN4uB7JhDsJ0p2lViGemxy9o0JusfarEG/49RSGRvv+nIfka
+	NXIlMYzTUux1lXSo4L12QHMJGj5PghwNeaNU+OAOJbzOWk4Z
+X-Google-Smtp-Source: AGHT+IE6K+PJmc05Cj2mfH6Z0awrQ5vPUI8t9ls4UXkSW1jFYmXRo/oPc5DYPkXg/yMzj1tghV81uta6x1BjWADCF2w=
+X-Received: by 2002:a05:6512:3d15:b0:50e:7cbe:cf36 with SMTP id
+ d21-20020a0565123d1500b0050e7cbecf36mr1203074lfv.40.1704740851950; Mon, 08
+ Jan 2024 11:07:31 -0800 (PST)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Mon, 8 Jan 2024 11:07:31 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-974403408-1704740595=:1762"
+In-Reply-To: <CANg-bXAVm01qoGUL2hUN9=3eK5o6c6BKtTUL82WiLL8cxFeaLA@mail.gmail.com>
+References: <20240102210820.2604667-1-markhas@chromium.org>
+ <20240102140734.v4.24.Ieee574a0e94fbaae01fd6883ffe2ceeb98d7df28@changeid>
+ <CAE-0n50zkwZ8nguUJcL1gjbuavhSU_rLxfGhanxB4YA7N34hLQ@mail.gmail.com>
+ <CANg-bXByhaSngW2AAG9h6DYHpiTUvh8+yw3LPU6ZQSCb62M-wg@mail.gmail.com>
+ <CAE-0n52u68wMHJGe8=jz4Y1y2=voycFEY15keebz9tPDDBgiqA@mail.gmail.com>
+ <CANg-bXDzLJgWLuH8Xj4GLYG=AVfcbmi_EfrA7DaHj4F6i350DA@mail.gmail.com>
+ <CAE-0n52365_AYgjaXyV7+oB8WgaJVp5oCUzdsq7NquZsR08XXw@mail.gmail.com> <CANg-bXAVm01qoGUL2hUN9=3eK5o6c6BKtTUL82WiLL8cxFeaLA@mail.gmail.com>
+From: Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.10
+Date: Mon, 8 Jan 2024 11:07:31 -0800
+Message-ID: <CAE-0n50nNXSybfAnOgAk4g8hOma7=yLG8+y9PpHaXXSUE-zfsw@mail.gmail.com>
+Subject: Re: [PATCH v4 24/24] platform/chrome: cros_ec: Use PM subsystem to
+ manage wakeirq
+To: Mark Hasemeyer <markhas@chromium.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Sudeep Holla <sudeep.holla@arm.com>, 
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Rob Herring <robh@kernel.org>, 
+	Andy Shevchenko <andriy.shevchenko@intel.com>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Raul Rangel <rrangel@chromium.org>, Tzung-Bi Shih <tzungbi@kernel.org>, 
+	Benson Leung <bleung@chromium.org>, Bhanu Prakash Maiya <bhanumaiya@chromium.org>, 
+	Chen-Yu Tsai <wenst@chromium.org>, Guenter Roeck <groeck@chromium.org>, 
+	Prashant Malani <pmalani@chromium.org>, Rob Barnes <robbarnes@google.com>, 
+	chrome-platform@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
-
---8323329-974403408-1704740595=:1762
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
-
-On Mon, 8 Jan 2024, Liming Sun wrote:
-> > -----Original Message-----
-> > From: Hans de Goede <hdegoede@redhat.com>
-> > Sent: Monday, January 8, 2024 9:23 AM
-> > To: Liming Sun <limings@nvidia.com>; Ilpo Järvinen
-> > <ilpo.jarvinen@linux.intel.com>
-> > Cc: Vadim Pasternak <vadimp@nvidia.com>; David Thompson
-> > <davthompson@nvidia.com>; Mark Gross <markgross@kernel.org>; Dan
-> > Carpenter <dan.carpenter@linaro.org>; platform-driver-x86@vger.kernel.org;
-> > LKML <linux-kernel@vger.kernel.org>
-> > Subject: Re: [PATCH v2 1/1] Drop Tx network packet when Tx TmFIFO is full
-> > 
-> > Hi,
-> > 
-> > On 1/5/24 18:40, Liming Sun wrote:
+Quoting Mark Hasemeyer (2024-01-03 20:55:41)
+> > > > > > Does using the pm wakeirq logic require the use of 'wakeup-source'
+> > > > > > property in DT? A quick glance makes me believe it isn't needed, so
+> > > > > > please split that part out of this patch as well.
+> > > > >
+> > > > > No, 'wakeup-source' is not required, it provides an indication to the
+> > > > > driver that the IRQ should be used for wake, which then enables the pm
+> > > > > subsystem accordingly. If 'wakup-source' is not used, we're back to
+> > > > > square one of making assumptions. Specifically in this case, it would
+> > > > > be assumed that all SPI based EC's are wake capable.
+> > > >
+> > > > Is that the wrong assumption to make? My understanding of the DT
+> > > > property is that it is used to signal that this device should be treated
+> > > > as a wakeup source, when otherwise it isn't treated as one. In this
+> > > > case, the device has always been treated as a wakeup source so adding
+> > > > the property is redundant.
 > > >
+> > > For SPI, it's not the wrong assumption. I was trying to drop the
+> > > assumption though to match ACPI/LPC behavior.
+> >
+> > Ok. Is the EC always a wakeup source? Not the EC irq, the EC device.
+>
+> Yes. The powerd daemon enables the EC for wake [1]. At least on ACPI systems.
+> [1] https://source.chromium.org/chromiumos/chromiumos/codesearch/+/81b23aeac510655f27e1d87b99b12c78146e7c37:src/platform2/power_manager/powerd/daemon.cc;l=611
+>
+> > > Regardless,
+> > > I can update the SPI code to assume a wake capable IRQ. But I'd like
+> > > to keep the prerequisite device tree patches unless there's a good
+> > > reason to drop them. Specifying 'wake-source' certainly doesn't hurt
+> > > anything, and there are other improvements to the OF
+> > > subsystem/documentation.
+> >
+> > I don't see any harm in having wakeup-source in the binding, but I'd
+> > prefer it is behind a different compatible string as optional, and
+> > introduced when we need to have an EC that doesn't wake up the system.
+>
+> The 'wakeup-source' property is already optional. See patch 04 in this
+> version of the series which updates the documentation surrounding the
+> property. Or are you suggesting a completely new string so that we can
+> be forever backward compatible? If that's the case, the property would
+> indeed have to have inverted logic signifying a device that is *not*
+> wakeup capable. It feels wrong to have to do something like that.
+
+Isn't this patch series making the wakeup-source DT property required
+for all existing DT nodes? I'm saying that the property is implicit
+based on the compatible string "google,cros-ec-{spi,rpmsg,uart}", so
+we shouldn't add the property explicitly. Just rely on the compatible
+string to convey the property's existence.
+
+>
+> > Otherwise it's all future coding for a device that doesn't exist.
+>
+> I agree adding 'wakeup-source' is future coding for a device that
+> doesn't exist. It does provide (pseudo) feature parity with ACPI
+> systems though. See my comment below about ACPI GpioInt/Interrupt
+> resources.
+>
+> > It's
+> > also a potential landmine if the driver patch is backported somewhere
+> > without the DTS patch (maybe the DTS is not upstream?). Someone will
+> > have to debug why wakeups aren't working anymore.
+>
+> I can change the SPI driver so it doesn't look for the 'wakeup-source'
+> property, keeping existing behavior where wakeirq is assumed. So there
+> should be no issues with backporting.
+>
+> > > > What is the goal of this patch series? Is it to allow disabling the
+> > > > wakeup capability of the EC wake irq from userspace? I can see a
+> > > > possible problem where we want to disable wakeup for the EC dynamically
+> > > > because either it has no child devices that are wakeup sources (e.g. no
+> > > > power button, no keyboard on ARM) or userspace has disabled all the
+> > > > wakeup sources for those child devices at runtime. In that case, we
+> > > > would want to keep the EC irq from waking up the system from suspend. Is
+> > > > that what you're doing here?
 > > >
-> > >> -----Original Message-----
-> > >> From: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
-> > >> Sent: Thursday, January 4, 2024 12:39 PM
-> > >> To: Liming Sun <limings@nvidia.com>
-> > >> Cc: Vadim Pasternak <vadimp@nvidia.com>; David Thompson
-> > >> <davthompson@nvidia.com>; Hans de Goede <hdegoede@redhat.com>;
-> > >> Mark Gross <markgross@kernel.org>; Dan Carpenter
-> > >> <dan.carpenter@linaro.org>; platform-driver-x86@vger.kernel.org; LKML
-> > >> <linux-kernel@vger.kernel.org>
-> > >> Subject: Re: [PATCH v2 1/1] Drop Tx network packet when Tx TmFIFO is full
-> > >>
-> > >> On Thu, 4 Jan 2024, Liming Sun wrote:
-> > >>
-> > >>> Starting from Linux 5.16 kernel, Tx timeout mechanism was added
-> > >>> into the virtio_net driver which prints the "Tx timeout" message
-> > >>> when a packet is stuck in Tx queue for too long which could happen
-> > >>> when external host driver is stuck or stopped and failed to read
-> > >>> the FIFO.
-> > >>>
-> > >>> Below is an example of the reported message:
-> > >>>
-> > >>> "[494105.316739] virtio_net virtio1 tmfifo_net0: TX timeout on
-> > >>> queue: 0, sq: output.0, vq: 0×1, name: output.0, usecs since
-> > >>> last trans: 3079892256".
-> > >>>
-> > >>> To avoid such "Tx timeout" messages, this commit adds a timeout
-> > >>> mechanism to drop and release the pending Tx packet if not able to
-> > >>> transmit for two seconds due to Tx FIFO full.
-> > >>>
-> > >>> This commit also handles the special case that the packet is half-
-> > >>> transmitted into the Tx FIFO. In such case, the packet is discarded
-> > >>> with remaining length stored in vring->rem_padding. So paddings with
-> > >>> zeros can be sent out when Tx space is available to maintain the
-> > >>> integrity of the packet format. The padded packet will be dropped on
-> > >>> the receiving side.
-> > >>>
-> > >>> Signed-off-by: Liming Sun <limings@nvidia.com>
-> > >>
-> > >> This doesn't really explain how it helps (other than avoiding the
-> > >> message which sounds like just hiding the issue). That is, how this helps
-> > >> to resume Tx? Or does Tx resume? There's nothing to indicate either way.
+> > > The root of this patch series stems from a bug where spurious wakes
+> > > are seen on Skyrim.
+> >
+> > Are all 24 patches needed to fix spurious wakeups? Why can't we do a DMI
+> > match table for Skyrim devices and disable the wakeirq logic on that
+> > platform? That would be a much more focused and targeted fix, no?
+>
+> It would be more focused and targeted, but I don't think it's the
+> correct fix. Skyrim is not the quirk. The driver is incorrectly
+> enabling the IRQ for wake even though a GPE exists for the EC to wake the AP.
+> ACPI defines keywords to specify GpioInt and Interrupt
+> resources as wake capable, and until recently [2], we were not
+> flagging the respective resources correctly. Most ACPI Chromebooks
+> have a dedicated GPE for wake, and enabling the IRQ for wake is
+> unintentional IMHO.
+
+I'm no expert in ACPI so sorry if I'm misunderstanding. The driver
+unconditionally enables wake on the irq. Most other chromebooks have
+added some other interrupt (GPE?) for wakeup purposes, which is
+different from the irq used for IO? And this patch series tries to
+figure out if enable_irq_wake() is going to fail on those devices so it
+can only enable irq wake if the irq supports it? When does calling
+enable_irq_wake() not return an error to properly indicate that the irq
+can't wake? On skyrim devices, where presumably it needed to be marked
+in ACPI differently? Or does that platform really support wake on the
+irq, but we also have a GPE so enabling wake on the irq is not failing?
+
+Having to backport 24 patches to fix a bug is not good. Can the driver
+look for both an IO interrupt and a GPE and then assume the GPE is for
+wakeup and the interrupt is for IO?
+
+> [2] https://review.coreboot.org/c/coreboot/+/79373
+>
+> > > Copying some wording from the DTS patches:
+> > > "Some Chromebooks use a separate wake pin, while others overload the
+> > > interrupt for wake and IO. With the current assumption, spurious wakes
+> > > can occur on systems that use a separate wake pin. It is planned to
+> > > update the driver to no longer assume that the EC interrupt pin should
+> > > be enabled for wake."
 > > >
-> > > As the commit message mentioned, the expired packet is discarded and the
-> > > packet buffer is released (see changes of calling mlxbf_tmfifo_release_pkt()).
-> > > The Tx will resume automatically once the FIFO space is available, such as
-> > when
-> > > external host driver starts to drain the TMFIFO. No need for any other logic.
-> > 
-> > Hmm, it seems to me that the same (resuming on FIFO space available)
-> > will happen without this patch ?
-> 
-> Yes, it's true.
-> 
-> > 
-> > So as Ilpo mentioned the only purpose here seems to be to avoid the warning
-> > getting logged? And things work properly without this too ?
-> > 
-> > I guess the advantage of this patch is that during a blocked FIFO packets
-> > get discarded rather the piling up ?
-> > 
-> > Regards,
-> > 
-> > Hans
-> 
-> Probably I misunderstood Ilpo's comments.
-> Yes, the only purpose is to avoid the warning messages (since users and QA doesn't like these messages).
-> It is only for networking packet, which seems reasonable to drop it if not able to complete the transmission in seconds.
+> > > This patch series will allow us to disable the ec_sync pin as a wake
+> > > source on Skyrim as it already uses a dedicated wake gpio.
+> >
+> > Aha! This last sentence is the detail I've been looking for. Please put
+> > these details in the commit text.
+> >
+> > "Skyrim devices are experiencing spurious wakeups due to the EC driver
+> > always enabling the irq as a wakeup source but on Skyrim devices the EC
+> > wakeup signal is a dedicated gpio separate from the irq."
+> >
+> > Please be direct and specific instead of writing in general terms.
+>
+> Sure, I can update the commit text :-)
+>
+> In summary, there are a lot of comments that suggest different
+> solutions. Here are the options I see:
+> 1. Skyrim DMI quirk
+> 2a. Update EC SPI driver to assume wake capable regardless of
+> 'wakeup-source' property being present
+> 2b. Remove 'wakeup-source' entries from DTS
 
-Okay, makes much more sense now as I couldn't see anything that would have 
-helped to resume from "stuck" or "failed" state.
+One disconnect I have is that 'wakeup-source' isn't only talking about
+the interrupt in DT. It's indicating that the device itself is a wakeup
+source. The interrupt controller hierarchy decides which interrupts are
+wakeup capable. It sounds like in ACPI the wakeup capability is encoded
+in the interrupt descriptor? DT is different here. As I stated earlier,
+the EC device has always been a wakeup source, so having the DT property
+there is redundant.
 
-I think the first paragraph of the commit message misleads the reader to 
-think something is "stuck" or "failed". And since this doesn't exactly fix 
-such an issue that is not there in the first place it leads to confusion.
+> 3. Leave the existing solution
 
-Perhaps it would be good to try to rephrase the first paragraph such that 
-it wouldn't hint something is stuck when there is only a delay spike in 
-FIFO's consumer side (if I now understand the problem space correctly?).
+How is 3 an option? I thought this patch series was fixing a bug.
 
--- 
- i.
-
-> > >>> ---
-> > >>>  drivers/platform/mellanox/mlxbf-tmfifo.c | 67
-> > >> ++++++++++++++++++++++++
-> > >>>  1 file changed, 67 insertions(+)
-> > >>>
-> > >>> diff --git a/drivers/platform/mellanox/mlxbf-tmfifo.c
-> > >> b/drivers/platform/mellanox/mlxbf-tmfifo.c
-> > >>> index 5c683b4eaf10..f39b7b9d2bfe 100644
-> > >>> --- a/drivers/platform/mellanox/mlxbf-tmfifo.c
-> > >>> +++ b/drivers/platform/mellanox/mlxbf-tmfifo.c
-> > >>> @@ -47,6 +47,9 @@
-> > >>>  /* Message with data needs at least two words (for header & data). */
-> > >>>  #define MLXBF_TMFIFO_DATA_MIN_WORDS		2
-> > >>>
-> > >>> +/* Tx timeout in milliseconds. */
-> > >>> +#define TMFIFO_TX_TIMEOUT			2000
-> > >>> +
-> > >>>  /* ACPI UID for BlueField-3. */
-> > >>>  #define TMFIFO_BF3_UID				1
-> > >>>
-> > >>> @@ -62,12 +65,14 @@ struct mlxbf_tmfifo;
-> > >>>   * @drop_desc: dummy desc for packet dropping
-> > >>>   * @cur_len: processed length of the current descriptor
-> > >>>   * @rem_len: remaining length of the pending packet
-> > >>> + * @rem_padding: remaining bytes to send as paddings
-> > >>>   * @pkt_len: total length of the pending packet
-> > >>>   * @next_avail: next avail descriptor id
-> > >>>   * @num: vring size (number of descriptors)
-> > >>>   * @align: vring alignment size
-> > >>>   * @index: vring index
-> > >>>   * @vdev_id: vring virtio id (VIRTIO_ID_xxx)
-> > >>> + * @tx_timeout: expire time of last tx packet
-> > >>>   * @fifo: pointer to the tmfifo structure
-> > >>>   */
-> > >>>  struct mlxbf_tmfifo_vring {
-> > >>> @@ -79,12 +84,14 @@ struct mlxbf_tmfifo_vring {
-> > >>>  	struct vring_desc drop_desc;
-> > >>>  	int cur_len;
-> > >>>  	int rem_len;
-> > >>> +	int rem_padding;
-> > >>>  	u32 pkt_len;
-> > >>>  	u16 next_avail;
-> > >>>  	int num;
-> > >>>  	int align;
-> > >>>  	int index;
-> > >>>  	int vdev_id;
-> > >>> +	unsigned long tx_timeout;
-> > >>>  	struct mlxbf_tmfifo *fifo;
-> > >>>  };
-> > >>>
-> > >>> @@ -819,6 +826,50 @@ static bool mlxbf_tmfifo_rxtx_one_desc(struct
-> > >> mlxbf_tmfifo_vring *vring,
-> > >>>  	return true;
-> > >>>  }
-> > >>>
-> > >>> +static void mlxbf_tmfifo_check_tx_timeout(struct mlxbf_tmfifo_vring
-> > >> *vring)
-> > >>> +{
-> > >>> +	unsigned long flags;
-> > >>> +
-> > >>> +	/* Only handle Tx timeout for network vdev. */
-> > >>> +	if (vring->vdev_id != VIRTIO_ID_NET)
-> > >>> +		return;
-> > >>> +
-> > >>> +	/* Initialize the timeout or return if not expired. */
-> > >>> +	if (!vring->tx_timeout) {
-> > >>> +		/* Initialize the timeout. */
-> > >>> +		vring->tx_timeout = jiffies +
-> > >>> +			msecs_to_jiffies(TMFIFO_TX_TIMEOUT);
-> > >>> +		return;
-> > >>> +	} else if (time_before(jiffies, vring->tx_timeout)) {
-> > >>> +		/* Return if not timeout yet. */
-> > >>> +		return;
-> > >>> +	}
-> > >>> +
-> > >>> +	/*
-> > >>> +	 * Drop the packet after timeout. The outstanding packet is
-> > >>> +	 * released and the remaining bytes will be sent with padding byte
-> > >> 0x00
-> > >>> +	 * as a recovery. On the peer(host) side, the padding bytes 0x00 will be
-> > >>> +	 * either dropped directly, or appended into existing outstanding
-> > >> packet
-> > >>> +	 * thus dropped as corrupted network packet.
-> > >>> +	 */
-> > >>> +	vring->rem_padding = round_up(vring->rem_len, sizeof(u64));
-> > >>> +	mlxbf_tmfifo_release_pkt(vring);
-> > >>> +	vring->cur_len = 0;
-> > >>> +	vring->rem_len = 0;
-> > >>> +	vring->fifo->vring[0] = NULL;
-> > >>> +
-> > >>> +	/*
-> > >>> +	 * Make sure the load/store are in order before
-> > >>> +	 * returning back to virtio.
-> > >>> +	 */
-> > >>> +	virtio_mb(false);
-> > >>> +
-> > >>> +	/* Notify upper layer. */
-> > >>> +	spin_lock_irqsave(&vring->fifo->spin_lock[0], flags);
-> > >>> +	vring_interrupt(0, vring->vq);
-> > >>> +	spin_unlock_irqrestore(&vring->fifo->spin_lock[0], flags);
-> > >>> +}
-> > >>> +
-> > >>>  /* Rx & Tx processing of a queue. */
-> > >>>  static void mlxbf_tmfifo_rxtx(struct mlxbf_tmfifo_vring *vring, bool is_rx)
-> > >>>  {
-> > >>> @@ -841,6 +892,7 @@ static void mlxbf_tmfifo_rxtx(struct
-> > >> mlxbf_tmfifo_vring *vring, bool is_rx)
-> > >>>  		return;
-> > >>>
-> > >>>  	do {
-> > >>> +retry:
-> > >>>  		/* Get available FIFO space. */
-> > >>>  		if (avail == 0) {
-> > >>>  			if (is_rx)
-> > >>> @@ -851,6 +903,17 @@ static void mlxbf_tmfifo_rxtx(struct
-> > >> mlxbf_tmfifo_vring *vring, bool is_rx)
-> > >>>  				break;
-> > >>>  		}
-> > >>>
-> > >>> +		/* Insert paddings for discarded Tx packet. */
-> > >>> +		if (!is_rx) {
-> > >>> +			vring->tx_timeout = 0;
-> > >>> +			while (vring->rem_padding >= sizeof(u64)) {
-> > >>> +				writeq(0, vring->fifo->tx.data);
-> > >>> +				vring->rem_padding -= sizeof(u64);
-> > >>> +				if (--avail == 0)
-> > >>> +					goto retry;
-> > >>> +			}
-> > >>> +		}
-> > >>> +
-> > >>>  		/* Console output always comes from the Tx buffer. */
-> > >>>  		if (!is_rx && devid == VIRTIO_ID_CONSOLE) {
-> > >>>  			mlxbf_tmfifo_console_tx(fifo, avail);
-> > >>> @@ -860,6 +923,10 @@ static void mlxbf_tmfifo_rxtx(struct
-> > >> mlxbf_tmfifo_vring *vring, bool is_rx)
-> > >>>  		/* Handle one descriptor. */
-> > >>>  		more = mlxbf_tmfifo_rxtx_one_desc(vring, is_rx, &avail);
-> > >>>  	} while (more);
-> > >>> +
-> > >>> +	/* Check Tx timeout. */
-> > >>> +	if (avail <= 0 && !is_rx)
-> > >>> +		mlxbf_tmfifo_check_tx_timeout(vring);
-> > >>>  }
-> > >>>
-> > >>>  /* Handle Rx or Tx queues. */
-> > >>>
-> 
-> 
---8323329-974403408-1704740595=:1762--
+>
+> I'm arguing for 2a (without 2b). This keeps backward compatibility
+> while adding an indication that the EC is wake capable and keeps
+> closer feature parity with the ACPI/LPC interface. FWIW, others have
+> already reviewed/ack'd the dts patches.
 
