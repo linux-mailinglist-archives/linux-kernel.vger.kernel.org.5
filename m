@@ -1,59 +1,59 @@
-Return-Path: <linux-kernel+bounces-19718-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19719-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A6E48271D2
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 15:50:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B60E8271D4
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 15:50:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 844A5283DD6
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 14:50:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 439AF1C22A07
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 14:50:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 828A94C3BB;
-	Mon,  8 Jan 2024 14:50:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D82851019;
+	Mon,  8 Jan 2024 14:50:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="npUwnaWH"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Js7/DtjJ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78E874779C
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 14:50:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A3A84C605
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 14:50:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--aliceryhl.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-db402e6f61dso2018074276.3
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 06:50:07 -0800 (PST)
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dbedaa77289so2050479276.0
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 06:50:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1704725406; x=1705330206; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1704725409; x=1705330209; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=bnwJONZ3lqNGKjXAo9ka9hqMWO5IxVpynKJIV/pgiEE=;
-        b=npUwnaWHdth44JfRUSJcmbfljZF4S2AeNXRi1PGjdxzN5m1OzFdhrASGJOi5uvTf8I
-         R6b/I8uteGk/9dNYaqVYR8d7irj0riy0lEHrboDy8O7mb30aqFIDnRCDZbySmSZUsdc3
-         Rqj+VzXI/bp7oKB/gsoONy5nS4FGvlHgrd5mkDJDS0sHwD4lq5GkpYV3b9Dzipo2SlDD
-         aZqGqxbUn48+xLeUwC85fC1Brng8Q5f0msXGE1lP3sdZ80aX4+AOAxNEAJFnpglGa5Hc
-         OK2cGXglh5qz243xInDz2YBeDuz3t6HNPb5hsDFGsFIjAPuPzyp8Cayg/rkK69Wydkt0
-         yL/Q==
+        bh=pY0HtCQNVEDI/Vsc7JQzdf3b/zPkklUdbelm2DZN3NU=;
+        b=Js7/DtjJn/lEf+e0KOJvJaR1gnYra8NEte72OZ0xpzZuTnOmRwj4jdLCZ5Seq0SkMj
+         vhYZ0ruLLi7X2e+ffeKIixZlLGR/RQbWTAMvcM7dBpKhj+Wm0thBU3jISSQxbDXNrtFx
+         oSdCzFDODBh+Nl1kPVypMryDQEffplmNGzbtJ2g7Mjrc8migeLrGYUDJcXXjz1DD22Dl
+         Q33nfx/d03h0ro8TBnxJtTIcDg+NNt03WD1DXtMJZyiuh8ZvBlLdn/P9UM9qnHuoMy/v
+         6NQ1Bb6w7bZLoBREAifwKjG8kIZL1qEtowfP9WR2v4UrI1fVxAKj4vQWSaHQbg/Zbfm1
+         w8Hw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704725406; x=1705330206;
+        d=1e100.net; s=20230601; t=1704725409; x=1705330209;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=bnwJONZ3lqNGKjXAo9ka9hqMWO5IxVpynKJIV/pgiEE=;
-        b=Eh9caIjVaAbvQ9dNJ/neOC5eHi+brYsGZv/RgZDvC4/BiTmPLZwsuD5qT6bQF5pP24
-         8OlJm2QQZATBbX9P4p5chB3coQhM0Eqs7FeBJAU+aEAhcAnKESq5zsMeg/T/eJi5g8LZ
-         hz9DF61YnOzqIPKb9bangpDqDhBXGy8ApjzM4cxisrZwqH+myi2E9D8CWi1yijO0yuh5
-         B/njmF4NfdKnmE3oJJWv2Q8/ZEN1JBHkwALXgxhZhkHheZvFyAhmQL3fyab2+eJ8LIQH
-         1vWptF5cXv354zDrQnbvujDL6s3l2qvmlq3uKRR2re3oyDnrNjwUx6mRFs+oBAU9HIc+
-         XdjQ==
-X-Gm-Message-State: AOJu0YyVH7KMp16NWsE2mLcr/dogsB/c6sLUx/U51b8nZj9uyzR5/Jkd
-	4HZLAcCcWYWqihW5JqBeHPLefoiNJPr3SsDEceY1Aw==
-X-Google-Smtp-Source: AGHT+IHmdP+w7bmx5EPMykFzlMsIrxFehhDztFE298PAMbn4SQjrtVVuX49AEZrgBveT4k9GTPZ7urGKfZDYpNQ=
+        bh=pY0HtCQNVEDI/Vsc7JQzdf3b/zPkklUdbelm2DZN3NU=;
+        b=DL5YDJrm2vfrrepHgCHQYQyD6Vs9PvGKNUiaCpUf047Bi7ECWCZbxLcrP6GIxUXzNM
+         C+FZDfN2b8QgK7h9kfgYee+KzHvbLBujKFf4SguRsAW7wuz8qQ5OkLh59+EeAl1j5WAg
+         7zBfEH4vlahHjTGcsHH6v12+Glw0cclRlMwvYk3Go59K83gThlosz4FsXJ+Dq7ua4w6s
+         Tc/hFtOO6EOnxwHXtiAuWO5OKagMwSIEquGZuE9fCljTnOVClSksp0AfjX3277LOvR2Z
+         1wUmbFJBRW9CInwU1AygKWRKj5ZKkFIAifCXdxq81xEEWDSu0csvQ/JCKyBuUm/Ke9NM
+         Cniw==
+X-Gm-Message-State: AOJu0Yxtdermj/qaeil96OxypHtos9K2H0VQgMH6w5CnGUPh0DxbY5vA
+	PEGwXII10T7KwhOmfjw9Xp25hfBdDBDu7DcfAJdtVg==
+X-Google-Smtp-Source: AGHT+IGJxJ4El1SsQB80UHGXIn9YKxGgM1kwSFmA8mPeiF1/Xo3RC3FFCXswDhgV7dN1lUchDF9BZnUagANvItQ=
 X-Received: from aliceryhl2.c.googlers.com ([fda3:e722:ac3:cc00:68:949d:c0a8:572])
- (user=aliceryhl job=sendgmr) by 2002:a05:6902:136d:b0:dbd:b756:983a with SMTP
- id bt13-20020a056902136d00b00dbdb756983amr1431440ybb.9.1704725406476; Mon, 08
- Jan 2024 06:50:06 -0800 (PST)
-Date: Mon, 08 Jan 2024 14:49:57 +0000
+ (user=aliceryhl job=sendgmr) by 2002:a05:6902:27c1:b0:dbe:d5b3:89dc with SMTP
+ id ec1-20020a05690227c100b00dbed5b389dcmr1610560ybb.0.1704725409310; Mon, 08
+ Jan 2024 06:50:09 -0800 (PST)
+Date: Mon, 08 Jan 2024 14:49:58 +0000
 In-Reply-To: <20240108-rb-new-condvar-methods-v4-0-88e0c871cc05@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -63,22 +63,22 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20240108-rb-new-condvar-methods-v4-0-88e0c871cc05@google.com>
 X-Developer-Key: i=aliceryhl@google.com; a=openpgp; fpr=49F6C1FAA74960F43A5B86A1EE7A392FDE96209F
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1773; i=aliceryhl@google.com;
- h=from:subject:message-id; bh=V4luaNSyjxN/VywBe1xxHgUOl/JEebqcSaoMufGn4dg=;
- b=owEBbQKS/ZANAwAKAQRYvu5YxjlGAcsmYgBlnAuWxfp8qMduMbMX2T2PGs8QR3xSAjwxXpgeG
- Dswbv5Jvq2JAjMEAAEKAB0WIQSDkqKUTWQHCvFIvbIEWL7uWMY5RgUCZZwLlgAKCRAEWL7uWMY5
- Rp2qEACsiZji70Fyhw9whBLl/VPFPDVm+L+rmMqGgu3Ol3E8p/1zVOQPKcMarHJynTIkxIZ/BJz
- 00x5mlOpb1UwU0miyhSRd7hvTGEV6vYMMpPxQmnt2ufAZHGec8IiSt+6T5UYIM4J+tJ7WVO4qlD
- /lkGVlBFrTu/HsXqslRm5yuPowIGMcT9Z4e79BqNQ138EVshyosAKB67z5Au+b3zdiHMB/eJu2y
- zWOWTnDqmqIW27Jomq+hI3WON7JltKkhEc9qnJacsSmXukGUlxrEnlv8xWfNMgB0JMRcFB4iRYP
- i9YwUTtPgHoJ5NcbHiK94AdUcmW8fmDAL1H6aotymo9E0/QHEo4kVPMNCZxwjVZdVgMVo+oBKuo
- FsYF+t/4HQfVZhxIu+FP+F2OPL/RRIRR8IsScNfY7EVId+5K92wS2bk/n2e0etBEvcq7Qrqa1l2
- QVhabtO9k+q1a9cbbZhoiy3b114SuXFe5CL6F+TWoKs6RE3oJIvNWJbBCmojtP5dlkxuhhLniWi
- +t5yvTS3o1OW8AHvWDGy+Wc2sABBPGMGCWw0Va/fYcYbG6vRke1xor8Dg4lcrJqtEcfj2ZfTupH
- bMq5O1WR21V4a6bCJ6QnQlBWjT7poRDxDAYwXNJbZ8ttEGRT+GvBEEjy83qmNERBam2nTqRYFVR 0D8lnfZ2ALcAPXQ==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2768; i=aliceryhl@google.com;
+ h=from:subject:message-id; bh=p9Hjc0DIm01aLLvHmXgxckf25tmtqAjiAqjiP2XhYzQ=;
+ b=owEBbQKS/ZANAwAKAQRYvu5YxjlGAcsmYgBlnAuX80giaQX0FdHju3XER/Jm5Yh4IO0sNQLTH
+ UnHUWhw7CaJAjMEAAEKAB0WIQSDkqKUTWQHCvFIvbIEWL7uWMY5RgUCZZwLlwAKCRAEWL7uWMY5
+ Rp36D/49UpNyjSWnCBZWXnLo//R/VePqgsn8LBRMySFdg2Qi64hzXFpIHq0tyOYcvQXY21Bx3bU
+ Z/W02lSB30fuwDsu588yG1fHBp/AxV0xSCZeVQHNoCUX5pBGU8sdiNhpEgYGDOkqRHCAwWqOzmO
+ 2hM80yeIQRRVmcpW7PmgDhy9yzM5rTRnvteUpN1hTuijKmSr45grtQqflfjBfIRNQCx7TxN5Cy1
+ FMqM8v/Ver+FZJa+QphOOPfaL+/logcJTIJXikudNVlAs9HLSFc6dGWEEF0ImNpJbHEOzMcZ4Bi
+ J4Z81+wgcHW22R3S3U95p2PM+cbzcm1qR1jYIsuyAKghgYHJEY/VjWdsdxoOcKDUkOyGvqcHsXQ
+ fUmpOP4Wlo42JB+/OYUp1b5G+sYxOgcyxKfTpIVDDtZwGCzOMfEL9/15UOd70g2hd9FMvKvX3J3
+ XGfhGTlAxagLlanFXkQeeQZk7QOYNVeLgqLVXI4SqyGYoE/djtRUmnROBuo3g8dEOaY+7oUtqfS
+ umAlMShmZ3uBnBcNrynYe0x/AaEff9hi31fY2fz5qJaUNtHk9+KY/eOq40gmpoyfZD3FofMo1/4
+ T7LIrDVY5lhYfzBOfApioNDE7a50A/n7LNwlz9PiBoK9pcoMch9hOL6KTC8Fv0ZG72tbHQbcE8f p1fAOZcQ5GN1iQA==
 X-Mailer: b4 0.13-dev-26615
-Message-ID: <20240108-rb-new-condvar-methods-v4-1-88e0c871cc05@google.com>
-Subject: [PATCH v4 1/4] rust: sync: add `CondVar::notify_sync`
+Message-ID: <20240108-rb-new-condvar-methods-v4-2-88e0c871cc05@google.com>
+Subject: [PATCH v4 2/4] rust: time: add msecs to jiffies conversion
 From: Alice Ryhl <aliceryhl@google.com>
 To: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
 	Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
@@ -90,47 +90,82 @@ Cc: Martin Rodriguez Reboredo <yakoyoku@gmail.com>, rust-for-linux@vger.kernel.o
 	linux-kernel@vger.kernel.org, Alice Ryhl <aliceryhl@google.com>
 Content-Type: text/plain; charset="utf-8"
 
-Wake up another thread synchronously.
+Defines type aliases and conversions for msecs and jiffies.
 
-This method behaves like `notify_one`, except that it hints to the
-scheduler that the current thread is about to go to sleep, so it should
-schedule the target thread on the same CPU.
+This is used by Rust Binder for process freezing. There, we want to
+sleep until the freeze operation completes, but we want to be able to
+abort the process freezing if it doesn't complete within some timeout.
+The freeze timeout is supplied in msecs.
 
-This is used by Rust Binder as a performance optimization. When sending
-a transaction to a different process, we usually know which thread will
-handle it, so we can schedule that thread for execution next on this
-CPU for better cache locality.
+Note that we need to convert to jiffies in Binder. It is not enough to
+introduce a variant of `CondVar::wait_timeout` that takes the timeout in
+msecs because we need to be able to restart the sleep with the remaining
+sleep duration if it is interrupted, and if the API takes msecs rather
+than jiffies, then that would require a conversion roundtrip jiffies->
+msecs->jiffies that is best avoided.
 
+Suggested-by: Boqun Feng <boqun.feng@gmail.com>
+Reviewed-by: Boqun Feng <boqun.feng@gmail.com>
 Reviewed-by: Benno Lossin <benno.lossin@proton.me>
 Reviewed-by: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
 Reviewed-by: Tiago Lam <tiagolam@gmail.com>
-Reviewed-by: Boqun Feng <boqun.feng@gmail.com>
 Signed-off-by: Alice Ryhl <aliceryhl@google.com>
 ---
- rust/kernel/sync/condvar.rs | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ rust/bindings/bindings_helper.h |  1 +
+ rust/kernel/lib.rs              |  1 +
+ rust/kernel/time.rs             | 20 ++++++++++++++++++++
+ 3 files changed, 22 insertions(+)
 
-diff --git a/rust/kernel/sync/condvar.rs b/rust/kernel/sync/condvar.rs
-index f65e19d5a37c..b323a0c26513 100644
---- a/rust/kernel/sync/condvar.rs
-+++ b/rust/kernel/sync/condvar.rs
-@@ -155,6 +155,16 @@ fn notify(&self, count: i32, flags: u32) {
-         };
-     }
+diff --git a/rust/bindings/bindings_helper.h b/rust/bindings/bindings_helper.h
+index b5714fb69fe3..227dc9240f3f 100644
+--- a/rust/bindings/bindings_helper.h
++++ b/rust/bindings/bindings_helper.h
+@@ -8,6 +8,7 @@
  
-+    /// Calls the kernel function to notify one thread synchronously.
-+    ///
-+    /// This method behaves like `notify_one`, except that it hints to the scheduler that the
-+    /// current thread is about to go to sleep, so it should schedule the target thread on the same
-+    /// CPU.
-+    pub fn notify_sync(&self) {
-+        // SAFETY: `wait_list` points to valid memory.
-+        unsafe { bindings::__wake_up_sync(self.wait_list.get(), bindings::TASK_NORMAL) };
-+    }
+ #include <kunit/test.h>
+ #include <linux/errname.h>
++#include <linux/jiffies.h>
+ #include <linux/slab.h>
+ #include <linux/refcount.h>
+ #include <linux/wait.h>
+diff --git a/rust/kernel/lib.rs b/rust/kernel/lib.rs
+index e6aff80b521f..d4f90acdd517 100644
+--- a/rust/kernel/lib.rs
++++ b/rust/kernel/lib.rs
+@@ -46,6 +46,7 @@
+ pub mod str;
+ pub mod sync;
+ pub mod task;
++pub mod time;
+ pub mod types;
+ pub mod workqueue;
+ 
+diff --git a/rust/kernel/time.rs b/rust/kernel/time.rs
+new file mode 100644
+index 000000000000..25a896eed468
+--- /dev/null
++++ b/rust/kernel/time.rs
+@@ -0,0 +1,20 @@
++// SPDX-License-Identifier: GPL-2.0
 +
-     /// Wakes a single waiter up, if any.
-     ///
-     /// This is not 'sticky' in the sense that if no thread is waiting, the notification is lost
++//! Time related primitives.
++//!
++//! This module contains the kernel APIs related to time and timers that
++//! have been ported or wrapped for usage by Rust code in the kernel.
++
++/// The time unit of Linux kernel. One jiffy equals (1/HZ) second.
++pub type Jiffies = core::ffi::c_ulong;
++
++/// The millisecond time unit.
++pub type Msecs = core::ffi::c_uint;
++
++/// Converts milliseconds to jiffies.
++#[inline]
++pub fn msecs_to_jiffies(msecs: Msecs) -> Jiffies {
++    // SAFETY: The `__msecs_to_jiffies` function is always safe to call no
++    // matter what the argument is.
++    unsafe { bindings::__msecs_to_jiffies(msecs) }
++}
 
 -- 
 2.43.0.472.g3155946c3a-goog
