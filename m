@@ -1,120 +1,103 @@
-Return-Path: <linux-kernel+bounces-19394-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19396-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B653826C50
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 12:14:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C2C7826C57
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 12:15:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id ACC64B21AAD
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 11:14:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 96E5D282460
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 11:15:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E7E114266;
-	Mon,  8 Jan 2024 11:14:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47A9514282;
+	Mon,  8 Jan 2024 11:15:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="Oeb0M4LI"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SrAC5YaC"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-vs1-f51.google.com (mail-vs1-f51.google.com [209.85.217.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E77921426E
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 11:13:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-vs1-f51.google.com with SMTP id ada2fe7eead31-4678c4e51a5so340796137.0
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 03:13:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1704712438; x=1705317238; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PMmNHA5ZM5uagnRv+Z2EBfHRX06UJnwNICsOfprVTxU=;
-        b=Oeb0M4LIgaUfMrkV4Z7TvDOMxhdzBRIEM7UUakXwVi3HEOHfNgNFDA4ey67VG9+xaK
-         IadFcarAyiroLG7YOMXfp+JkLXWk1ypBa9O62fNwSJBV/2VdFv1EnkSZOainYwNMfKKO
-         KzNw12FE9k+7xCZcY2mxtX68DcXoufooAdbtkRuGWiPZq3lY9H/5iMroxeHbLlp/2pG2
-         G4cNwutLvrXuFzeA3aXLaeSL34uUeC4GYFrZF3I01R81MaOjIUzEr5Z+CWV81bxBdwZ6
-         NVZCcO49JLIUIX6ov8a3u9h1b35R1+xjIT8oRCReBr0hPVSQMClKgdRTo4qbYy20Ivyx
-         apUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704712438; x=1705317238;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PMmNHA5ZM5uagnRv+Z2EBfHRX06UJnwNICsOfprVTxU=;
-        b=Bw/4DH1R9kElEV4Pdx5JGSHnE8pDKiiysV+b0xkgVNUmhKXMle38CRsFVys1hZHzFh
-         dSY5EMuTC/EjCenhqdtFc2tHw60bVw9+p2yx4oLu2CiNurcKxYlbCfnhQFxtlU7ZnvPW
-         nrXEi94J8WKX2B+OpAIoGDMFeBlg8yTRP6tLxTMgDughGRKh17sgvLMX7B0cegciNxuk
-         ZRE7B67JR8VA/BRHw8ZOpkriCfgbKPZ2lxm2k1/xfXgud7bvshx0Ue62WbMTEHuYwDiZ
-         YrrFSWZJqmRyZ2dAvm/aKc8Q1yxrm10hocOnPMHkyaycetx7GRncUgTbnHiHpmTk3ZVM
-         byCA==
-X-Gm-Message-State: AOJu0YwqP6ajzQ2qHmwWtfISecZiTukzy6PovN0zKeGoQm+Cj/ppN9Rb
-	vZMtw5v6y8+ii6gc/6E5nOADt2riZRheSMduSvKTAKtExnkWew==
-X-Google-Smtp-Source: AGHT+IFUCaD2C2j/tqCkMONWfs1OnD+E7URpzHw4UpbkW5y8hSqJvmsQCrqyEoFMZlctyYNJ2KWUjnAks/4t+55vjJA=
-X-Received: by 2002:a05:6102:3d84:b0:467:c94e:3790 with SMTP id
- h4-20020a0561023d8400b00467c94e3790mr1154552vsv.20.1704712438691; Mon, 08 Jan
- 2024 03:13:58 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 928A71426B;
+	Mon,  8 Jan 2024 11:15:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EE990C433C7;
+	Mon,  8 Jan 2024 11:15:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704712510;
+	bh=3onyJACON7UN+r62nN4g7w7HHbRgM+h21qgM1D0k0r8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=SrAC5YaC8C/78giFGYGDmAO9hHqI3cDeSUnGDufaz+cC39G+F4UziFgYogb6u2b7m
+	 s0/BFGaX7LSMtEXbDTbVufZhX0s+xPtXJB2ylD9Dl5a/sGc4EmcrjerEGAwqbZfH2p
+	 k3cb0Z0ZJBWANO3X35IRgq9ozi7qLcGxzPXx2QlQjZqy/6rwnsbk/iqjUFuPvO6GN1
+	 0wtZBFUZggsU8UHeHWMqg19y5k8b2j1NqHV8Jstg3VFNmsPg7MJJRaImu/vqxolo2M
+	 yOQ3bimzkhEhBk37koV4IwJ7P3++y9xTMUOG8/YNEUGEMX5KjGVSG+cWSXDlbx2zCD
+	 2PD+Mjyl74ZAg==
+Date: Mon, 8 Jan 2024 11:15:03 +0000
+From: Simon Horman <horms@kernel.org>
+To: Vladimir Oltean <olteanv@gmail.com>
+Cc: =?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>,
+	Daniel Golle <daniel@makrotopia.org>,
+	Landen Chao <Landen.Chao@mediatek.com>,
+	DENG Qingfang <dqfext@gmail.com>,
+	Sean Wang <sean.wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>,
+	Florian Fainelli <f.fainelli@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	David Bauer <mail@david-bauer.net>, mithat.guner@xeront.com,
+	erkin.bozoglu@xeront.com,
+	Luiz Angelo Daros de Luca <luizluca@gmail.com>,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH net-next] net: dsa: mt7530: support OF-based registration
+ of switch MDIO bus
+Message-ID: <20240108111503.GI132648@kernel.org>
+References: <20240106122142.235389-1-arinc.unal@arinc9.com>
+ <20240107195241.GB132648@kernel.org>
+ <65274929-fa59-482c-a744-6b9ce162ab46@arinc9.com>
+ <20240108110000.aujqhlufehngtkjj@skbuf>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240108110055.1531153-1-arnd@kernel.org>
-In-Reply-To: <20240108110055.1531153-1-arnd@kernel.org>
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-Date: Mon, 8 Jan 2024 12:13:47 +0100
-Message-ID: <CAMRc=McFNz5fJqScS_q1JzX-U=VC+FXQ1p6=j7ANHxL0RV88dQ@mail.gmail.com>
-Subject: Re: [PATCH] ARM: davinci: always select CONFIG_CPU_ARM926T
-To: Arnd Bergmann <arnd@kernel.org>
-Cc: soc@kernel.org, Arnd Bergmann <arnd@arndb.de>, Sekhar Nori <nsekhar@ti.com>, 
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240108110000.aujqhlufehngtkjj@skbuf>
 
-On Mon, Jan 8, 2024 at 12:01=E2=80=AFPM Arnd Bergmann <arnd@kernel.org> wro=
-te:
->
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> The select was lost by accident during the multiplatform conversion.
-> Any davinci-only
->
-> arm-linux-gnueabi-ld: arch/arm/mach-davinci/sleep.o: in function `CACHE_F=
-LUSH':
-> (.text+0x168): undefined reference to `arm926_flush_kern_cache_all'
->
-> Fixes: f962396ce292 ("ARM: davinci: support multiplatform build for ARM v=
-5")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
-> I ran into this today for the first time after five years of randconfig t=
-esting
-> with the bug in place, so it is clearly very hard to hit.
->
-> It's an obvious fix, so I'm applying it to the soc/arm branch directly
-> for this week's pull requests.
->
->
->  arch/arm/mach-davinci/Kconfig | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/arch/arm/mach-davinci/Kconfig b/arch/arm/mach-davinci/Kconfi=
-g
-> index 1c8bf56982e5..2a8a9fe46586 100644
-> --- a/arch/arm/mach-davinci/Kconfig
-> +++ b/arch/arm/mach-davinci/Kconfig
-> @@ -4,6 +4,7 @@ menuconfig ARCH_DAVINCI
->         bool "TI DaVinci"
->         depends on ARCH_MULTI_V5
->         depends on CPU_LITTLE_ENDIAN
-> +       select CPU_ARM926T
->         select DAVINCI_TIMER
->         select ZONE_DMA
->         select PM_GENERIC_DOMAINS if PM
-> --
-> 2.39.2
->
+On Mon, Jan 08, 2024 at 01:00:00PM +0200, Vladimir Oltean wrote:
+> On Mon, Jan 08, 2024 at 01:22:18PM +0300, Arınç ÜNAL wrote:
+> > > > diff --git a/drivers/net/dsa/mt7530.c b/drivers/net/dsa/mt7530.c
+> > > > index 391c4dbdff42..39d7e7ad7154 100644
+> > > > --- a/drivers/net/dsa/mt7530.c
+> > > > +++ b/drivers/net/dsa/mt7530.c
+> > > > @@ -2153,17 +2153,25 @@ mt7530_free_irq(struct mt7530_priv *priv)
+> > > >   static int
+> > > >   mt7530_setup_mdio(struct mt7530_priv *priv)
+> > > >   {
+> > > > +	struct device_node *mnp, *np = priv->dev->of_node;
+> > > >   	struct dsa_switch *ds = priv->ds;
+> > > >   	struct device *dev = priv->dev;
+> > > >   	struct mii_bus *bus;
+> > > >   	static int idx;
+> > > > -	int ret;
+> > > > +	int ret = 0;
+> > > > +
+> > > > +	mnp = of_get_child_by_name(np, "mdio");
+> > > > +
+> > > > +	if (mnp && !of_device_is_available(mnp))
+> > > > +		goto out;
+> > > 
+> > > nit: I think it would easier on the eyes to simply
+> > > 
+> > > 		return 0;
+> 
+> Actually "return 0" leaks "mnp". An of_node_put() is needed.
 
-Acked-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Yes, sorry for not noticing that.
 
