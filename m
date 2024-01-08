@@ -1,64 +1,43 @@
-Return-Path: <linux-kernel+bounces-19128-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19129-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0AAF826867
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 08:06:23 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E771B826869
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 08:06:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 485C11F210E3
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 07:06:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9270B281802
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 07:06:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB9F08BFC;
-	Mon,  8 Jan 2024 07:06:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D31CE8BF6;
+	Mon,  8 Jan 2024 07:06:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="phI3eXm5"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="qHCdtxSG"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62BF4B660
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 07:06:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
-Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-50ea9daac4cso1346551e87.3
-        for <linux-kernel@vger.kernel.org>; Sun, 07 Jan 2024 23:06:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1704697559; x=1705302359; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=+W5MR0GZTvvVT7Ez94bP6YWkWN8S36H3wYikt4HSl4Q=;
-        b=phI3eXm59qPP0jQ8DwkFvWbXhXYGoID3/wYE1adMQ60hFPVf6xzqQ+lSTk9whbAidC
-         Kjmx36XSDGf+EE+n2rEIXlOMb/CAOidVvXyLYhhA4w1jMg8853SSEOSk+P+mtgVmk5lw
-         kKldn4woAzVrFPtjQD85wE/VDnrQhV8slyl/ttwnrkqDwh+zzQW+Yti9pUcVsowqnIVr
-         Dmdu0tpwtA+XMQL9syRoUcK7f2tjTB0tfzQmFTIi2Ice1U00oX4IGZURPOZQJ4qYiajn
-         puZzodbWzUYfukddEviLWRv7JXXoP/d52KCLGZsZu7PtF8Mea7GZkRruSrYegAUD2FPd
-         lrKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704697559; x=1705302359;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+W5MR0GZTvvVT7Ez94bP6YWkWN8S36H3wYikt4HSl4Q=;
-        b=FbagQ+VmwJokaEhnjfVjJq00YHiFI8kL5n6kxa2RO6Q5pAYVoU9PJrfB2Ni4xvgFcv
-         UU4z2x0YNiRyFbeNPEJZYjGO44YjMSDHazHpQawuM4O6jk8JmlMVX4wDtlq0Q+Virfr+
-         KIreyLqC6QRO8fSsScJPKS/n/4Oc2DR0wgqMzrYGGVA7APPNiDJe9zNLc8p+DBBMmWID
-         VBiW0lR7DzeEMDumlQ/AbDhtm7jfjHrmdEMhvXwSTrV+mhYLIiQb2SsbD1ndPpgH7rHU
-         mRDCsbwOKSS6kgoqSPZxyvYZoTgSzD9RgwIYkf0nv4vnFtrUC6aDL1V+lyNfqI+pM4pK
-         aSiQ==
-X-Gm-Message-State: AOJu0YwZcNwLebzPjPDVcfjbYGKeBKt4JpiBuDJbx4pT92XeKMpbb3cz
-	x2Uysez3M8/SoaV9tOMxmjwlwQ5hZ5NslA==
-X-Google-Smtp-Source: AGHT+IF2PtwQKrEqWSIs9T+bjTD2KsvisYFdWZg8Aq53R2YUIdp6yibADBbGYZSvkWNnhjOzoyIUyg==
-X-Received: by 2002:a05:6512:b23:b0:50e:a942:e6f3 with SMTP id w35-20020a0565120b2300b0050ea942e6f3mr1367517lfu.10.1704697559144;
-        Sun, 07 Jan 2024 23:05:59 -0800 (PST)
-Received: from [192.168.50.4] ([82.78.167.5])
-        by smtp.gmail.com with ESMTPSA id ez10-20020a1709070bca00b00a28a7f56dc4sm1063479ejc.188.2024.01.07.23.05.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 07 Jan 2024 23:05:58 -0800 (PST)
-Message-ID: <bd76083f-c1de-4581-820c-50d9084b3942@tuxon.dev>
-Date: Mon, 8 Jan 2024 09:05:56 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D22A779F4;
+	Mon,  8 Jan 2024 07:06:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=LF0x5OqxikW92E6tW53GMsX7DXWMrPunKcFQ7/Vhjvk=; b=qHCdtxSGpgkfwJQp7Cyd/q3I1U
+	Cd/6XAFW55VidI9bjw34x8u7O5ubcOKL1eRq+9o3inW7GXjzzBs2iDH1/p7KCiDrgdxWsd65zUZs8
+	Ytz1J2Fqtw+Pbtf/lRdDccLljJbfy0YpZILTb0sibi0qyjFySnlE5swh3rEXeEf31ZWdS+Nh7OUfW
+	RC1NSFXPG1eAplwKQbmvH1EliQ0M6e5jQUnyo8O52sY4/3N1BXYGu/26JaO4Uf9BrVySFwjklk8hw
+	GIVIg4pgyx/jeh/VNKohWPeGhCyh/IpMC/gXeBZCUlm53JyIlh4Bhy9sfJHlDGgNdG6nm0WLYDzWy
+	PdhIEs8g==;
+Received: from [50.53.46.231] (helo=[192.168.254.15])
+	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+	id 1rMjiW-0048l9-1B;
+	Mon, 08 Jan 2024 07:06:36 +0000
+Message-ID: <34f6da8c-1e63-43a5-b9d4-d6865a5d2252@infradead.org>
+Date: Sun, 7 Jan 2024 23:06:34 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,64 +45,153 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v3 03/19] net: ravb: Make reset controller
- support mandatory
+Subject: Re: [PATCH v4 2/2] documentation: Document
+ PR_RISCV_SET_ICACHE_FLUSH_CTX prctl
 Content-Language: en-US
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: s.shtylyov@omp.ru, davem@davemloft.net, edumazet@google.com,
- kuba@kernel.org, pabeni@redhat.com, richardcochran@gmail.com,
- p.zabel@pengutronix.de, yoshihiro.shimoda.uh@renesas.com,
- wsa+renesas@sang-engineering.com, netdev@vger.kernel.org,
- linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
- geert+renesas@glider.be, Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-References: <20240105082339.1468817-1-claudiu.beznea.uj@bp.renesas.com>
- <20240105082339.1468817-4-claudiu.beznea.uj@bp.renesas.com>
- <CAMuHMdWTE=AUEd5iqd4Qm04sgFcGtHkbYEQJH9A=qPWph=S4+g@mail.gmail.com>
-From: claudiu beznea <claudiu.beznea@tuxon.dev>
-In-Reply-To: <CAMuHMdWTE=AUEd5iqd4Qm04sgFcGtHkbYEQJH9A=qPWph=S4+g@mail.gmail.com>
+To: Charlie Jenkins <charlie@rivosinc.com>,
+ Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
+ <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
+ Jonathan Corbet <corbet@lwn.net>, Conor Dooley <conor.dooley@microchip.com>,
+ =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>,
+ Atish Patra <atishp@atishpatra.org>
+Cc: linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-doc@vger.kernel.org
+References: <20240107-fencei-v4-0-d4cf2fb905d3@rivosinc.com>
+ <20240107-fencei-v4-2-d4cf2fb905d3@rivosinc.com>
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20240107-fencei-v4-2-d4cf2fb905d3@rivosinc.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 
-Hi, Geert,
+Hi--
 
-On 05.01.2024 11:38, Geert Uytterhoeven wrote:
-> Hi Claudiu,
+On 1/7/24 22:21, Charlie Jenkins wrote:
+> Provide documentation that explains how to properly do CMODX in riscv.
 > 
-> On Fri, Jan 5, 2024 at 9:24 AM Claudiu <claudiu.beznea@tuxon.dev> wrote:
->> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->>
->> On the RZ/G3S SoC the reset controller is mandatory for the IP to work.
->> The device tree binding documentation for the ravb driver specifies that
->> the resets are mandatory. Based on this, make the resets mandatory also in
->> driver for all ravb devices.
->>
->> Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
->> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
->> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+> Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
+> ---
+>  Documentation/arch/riscv/cmodx.rst | 88 ++++++++++++++++++++++++++++++++++++++
+>  Documentation/arch/riscv/index.rst |  1 +
+>  2 files changed, 89 insertions(+)
 > 
->> --- a/drivers/net/ethernet/renesas/ravb_main.c
->> +++ b/drivers/net/ethernet/renesas/ravb_main.c
->> @@ -2645,7 +2645,7 @@ static int ravb_probe(struct platform_device *pdev)
->>                 return -EINVAL;
->>         }
->>
->> -       rstc = devm_reset_control_get_optional_exclusive(&pdev->dev, NULL);
->> +       rstc = devm_reset_control_get_exclusive(&pdev->dev, NULL);
->>         if (IS_ERR(rstc))
->>                 return dev_err_probe(&pdev->dev, PTR_ERR(rstc),
->>                                      "failed to get cpg reset\n");
-> 
-> Upon second look, you also have to make config RAVB select
-> RESET_CONTROLLER.
-> Currently, you can build an R-Car Gen[234] kernel with RESET_CONTROLLER
-> disabled, causing devm_reset_control_get_exclusive() to fail
-> unconditionally.
+> diff --git a/Documentation/arch/riscv/cmodx.rst b/Documentation/arch/riscv/cmodx.rst
+> new file mode 100644
+> index 000000000000..71598850e131
+> --- /dev/null
+> +++ b/Documentation/arch/riscv/cmodx.rst
+> @@ -0,0 +1,88 @@
+> +.. SPDX-License-Identifier: GPL-2.0
+> +
+> +==============================================================================
+> +Concurrent Modification and Execution of Instructions (CMODX) for RISC-V Linux
+> +==============================================================================
+> +
+> +CMODX is a programming technique where a program executes instructions that were
+> +modified by the program itself. Instruction storage and the instruction cache
+> +(icache) is not guaranteed to be synchronized on RISC-V hardware. Therefore, the
 
-ok, I'll update it. Thanks!
+            are not
 
+> +program must enforce its own synchronization with the unprivileged fence.i
+> +instruction.
+> +
+> +However, the default Linux ABI prohibits the use of fence.i in userspace
+> +applications. At any point the scheduler may migrate a task onto a new hart. If
+> +migration occurs after the userspace synchronized the icache and instruction
+> +storage with fence.i, the icache will no longer be clean. This is due to the
+> +behavior of fence.i only affecting the hart that it is called on. Thus, the hart
+> +that the task has been migrated to, may not have synchronized instruction
+
+                                   to may not
+
+> +storage and icache.
+> +
+> +There are two ways to solve this problem: use the riscv_flush_icache() syscall,
+> +or use the ``PR_RISCV_SET_ICACHE_FLUSH_CTX`` prctl() and emit fence.i in
+> +userspace. The syscall performs a one-off icache flushing operation. The prctl
+> +changes the Linux ABI to allow userspace to emit icache flushing operations.
+> +
+> +1.  prctl() Interface
+> +---------------------
+
+Why is "1." needed here? or is it?
+
+> +
+> +Call prctl() with ``PR_RISCV_SET_ICACHE_FLUSH_CTX`` as the first argument. The
+> +remaining arguments will be delegated to the riscv_set_icache_flush_ctx
+> +function detailed below.
+> +
+> +.. kernel-doc:: arch/riscv/mm/cacheflush.c
+> +	:identifiers: riscv_set_icache_flush_ctx
+> +
+> +Example usage:
+> +
+> +The following files are meant to be compiled and linked with each other. The
+> +modify_instruction() function replaces an add with 0 with an add with one,
+> +causing the instruction sequence in get_value() to change from returning a zero
+> +to returning a one.
+> +
+> +cmodx.c::
+> +
+> +	#include <stdio.h>
+> +	#include <sys/prctl.h>
+> +
+> +	extern int get_value();
+> +	extern void modify_instruction();
+> +
+> +	int main()
+> +	{
+> +		int value = get_value();
+> +		printf("Value before cmodx: %d\n", value);
+> +
+> +		// Call prctl before first fence.i is called inside modify_instruction
+> +		prctl(PR_RISCV_SET_ICACHE_FLUSH_CTX_ON, PR_RISCV_CTX_SW_FENCEI, 0);
+> +		modify_instruction();
+> +
+> +		value = get_value();
+> +		printf("Value after cmodx: %d\n", value);
+> +		return 0;
+> +	}
+> +
+> +cmodx.S::
+> +
+> +	.option norvc
+> +
+> +	.text
+> +	.global modify_instruction
+> +	modify_instruction:
+> +	lw a0, new_insn
+> +	lui a5,%hi(old_insn)
+> +	sw  a0,%lo(old_insn)(a5)
+> +	fence.i
+> +	ret
+> +
+> +	.section modifiable, "awx"
+> +	.global get_value
+> +	get_value:
+> +	li a0, 0
+> +	old_insn:
+> +	addi a0, a0, 0
+> +	ret
+> +
+> +	.data
+> +	new_insn:
+> +	addi a0, a0, 1
+> diff --git a/Documentation/arch/riscv/index.rst b/Documentation/arch/riscv/index.rst
+> index 4dab0cb4b900..eecf347ce849 100644
+> --- a/Documentation/arch/riscv/index.rst
+> +++ b/Documentation/arch/riscv/index.rst
+> @@ -13,6 +13,7 @@ RISC-V architecture
+>      patch-acceptance
+>      uabi
+>      vector
+> +    cmodx
+>  
+>      features
+>  
 > 
-> Gr{oetje,eeting}s,
-> 
->                         Geert
-> 
+
+Thanks.
+-- 
+#Randy
 
