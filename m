@@ -1,313 +1,121 @@
-Return-Path: <linux-kernel+bounces-20132-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20133-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 856EA827A45
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 22:38:00 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D7692827A52
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 22:41:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 161DE284537
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 21:37:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5E11DB22CCF
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 21:41:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 151AB56443;
-	Mon,  8 Jan 2024 21:37:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C09356459;
+	Mon,  8 Jan 2024 21:41:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="1c7S71uS"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="fpKn6COD"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7400A56455
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 21:37:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1d427518d52so15717685ad.0
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 13:37:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1704749862; x=1705354662; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=yJLvvvJMK3asun1jUdYXWo2TZ3pozvY0KGbDySw/SbA=;
-        b=1c7S71uShVuFivFPSytvYFLDgm7CTpmAN23G/rj17+ZNC3A4qPlgXR4OGCvZHwNCtt
-         bK33QTgb32UeRcwpnrQqqp/QMfu4QiTdb5AwnjVXZXvGYy4yRK/bXAIC2nu9gPY0RnDa
-         MEGm3eOEU6f5VV++r58yTsIXNX9kT3b8x+CQjO2tPfVG0kG81zU7EYlrHp5yToYWA97g
-         3EphB5KDj4ivSsK4/jjNLZfl2/p0o88n4BSVmgnSFt8IKYqoZLtdF5RIJG3CfvxGVCxb
-         aX3zAQV8CsmH9H3zRWMOJPDum4+P4/5RYLADud5EZ9sOWaJ+iHJGCXQpyZVz5P8tIDzx
-         fmAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704749862; x=1705354662;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=yJLvvvJMK3asun1jUdYXWo2TZ3pozvY0KGbDySw/SbA=;
-        b=MyORu19rf+MbauONHBVLCY1sL/54KlVyKlI/9yNHSk+0yKcUpK/Eftb701NoRUtXCV
-         2rCb5JAf8qUyp496kIAvou9uq54PXtjwcdO8oRqNGED6NbFeYq1MLiFRhBe2JzQQs1p7
-         opoCxf51Wia+gLT7SC+KVlI3HnfVCNeWGzjVKgBWg95qlZd9BUb8JrpDUsCUOuG2PGmQ
-         R3y5OGkcddQb12Zj5aBSmhPLHeUYSpHOZ2Vt8X3fHrDAxxenEubHhwIOPmmN/5WP2ENU
-         zhW3OVjieASr9i5trwHH12CDkb6Xsma5vLg1174e/NhTf7mTPBLM3IxfQFQSzdTm6WH2
-         RUbA==
-X-Gm-Message-State: AOJu0YwGg8bJ3jm+oWxjBkZKVVT7FqiPmGFBCKfi00i0NFM5NiIBoUec
-	trvaYE9SAx1X98tcZ5LbEuBP+mVR3R+XKA==
-X-Google-Smtp-Source: AGHT+IHQ4QQDXGn4XgDikhyIDnu1OWMDjpzqXqwrJWDdftq8BLIp1IAy6omczLGfxYcLBlFnGQKsEg==
-X-Received: by 2002:a17:902:ecc9:b0:1d4:d14b:9ab8 with SMTP id a9-20020a170902ecc900b001d4d14b9ab8mr503559plh.31.1704749861754;
-        Mon, 08 Jan 2024 13:37:41 -0800 (PST)
-Received: from ghost ([12.44.203.122])
-        by smtp.gmail.com with ESMTPSA id t5-20020a170902bc4500b001d3e3704d2fsm350829plz.31.2024.01.08.13.37.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Jan 2024 13:37:41 -0800 (PST)
-Date: Mon, 8 Jan 2024 13:37:38 -0800
-From: Charlie Jenkins <charlie@rivosinc.com>
-To: Evan Green <evan@rivosinc.com>
-Cc: Palmer Dabbelt <palmer@dabbelt.com>, Conor Dooley <conor@kernel.org>,
-	Samuel Holland <samuel.holland@sifive.com>,
-	David Laight <David.Laight@aculab.com>,
-	Xiao Wang <xiao.w.wang@intel.com>, Guo Ren <guoren@kernel.org>,
-	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-arch@vger.kernel.org,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Albert Ou <aou@eecs.berkeley.edu>, Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH v14 2/5] riscv: Add static key for misaligned accesses
-Message-ID: <ZZxrIgggqxiKOZCt@ghost>
-References: <20231227-optimize_checksum-v14-0-ddfd48016566@rivosinc.com>
- <20231227-optimize_checksum-v14-2-ddfd48016566@rivosinc.com>
- <CALs-HssxwMphYSCFEYh6b3paQchmSm+tzeZ=2Ro-S4U_Gkom=w@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 138F55644F
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 21:41:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1704750098;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=PouS+fcfRBFYHLc59Q6jvOZOpQHzKSFm7NNqEvCIUk8=;
+	b=fpKn6CODj83irOHMxu8+seNQQlK3LCOcZTwTetwljPVf0E9lbVn0GuM0r3FIRgQ71ZsOjU
+	yc7v73gAK9Bu7uk77aAR40F9xYbykida4Y8dkReZ816xtSu6/VfON4jl/WiA8ecRQ5qQy8
+	Vhc5BFhZG1h1JbOiat+rZmbhHWIY864=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-18-xSjPy8pPM0Sj570e6fr0mA-1; Mon,
+ 08 Jan 2024 16:41:37 -0500
+X-MC-Unique: xSjPy8pPM0Sj570e6fr0mA-1
+Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 3B96B3C02B64;
+	Mon,  8 Jan 2024 21:41:37 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.27])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 8342B492BC7;
+	Mon,  8 Jan 2024 21:41:36 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+	Kingdom.
+	Registered in England and Wales under Company Registration No. 3798903
+From: David Howells <dhowells@redhat.com>
+In-Reply-To: <CAKXUXMzXN=+hKDPP-RdHKELA_fGA6PcdCj5fXM32qh4Px0Hprg@mail.gmail.com>
+References: <CAKXUXMzXN=+hKDPP-RdHKELA_fGA6PcdCj5fXM32qh4Px0Hprg@mail.gmail.com>
+To: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc: dhowells@redhat.com, linux-cachefs@redhat.com,
+    linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+    Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: Reference to non-existing CONFIG_NETFS_FSCACHE
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CALs-HssxwMphYSCFEYh6b3paQchmSm+tzeZ=2Ro-S4U_Gkom=w@mail.gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <1542012.1704750095.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date: Mon, 08 Jan 2024 21:41:35 +0000
+Message-ID: <1542013.1704750095@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
 
-On Mon, Jan 08, 2024 at 11:22:34AM -0800, Evan Green wrote:
-> On Wed, Dec 27, 2023 at 9:38 AM Charlie Jenkins <charlie@rivosinc.com> wrote:
-> >
-> > Support static branches depending on the value of misaligned accesses.
-> > This will be used by a later patch in the series. All online cpus must
-> > be considered "fast" for this static branch to be flipped.
-> >
-> > Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
-> 
-> This is fancier than I would have gone for, I probably would have
-> punted on heterogeneous hotplug out of laziness for now. However, what
-> you've done looks smart, in that we'll basically flip the branch if at
-> any moment all the online CPUs are fast. I've got some nits below, but
-> won't withhold my review for them (making them optional I suppose :)).
-> 
-> Reviewed-by: Evan Green <evan@rivosinc.com>
-> 
+Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
 
-Thanks!
+> In commit 62c3b7481b9a ("netfs: Provide a writepages implementation"),
+> you have added some code that is included under #ifdef
+> CONFIG_NETFS_FSCACHE, but if I read the code correctly, the actual
+> intended config here is called CONFIG_FSCACHE.
 
-> > ---
-> >  arch/riscv/include/asm/cpufeature.h |  2 +
-> >  arch/riscv/kernel/cpufeature.c      | 89 +++++++++++++++++++++++++++++++++++--
-> >  2 files changed, 87 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/arch/riscv/include/asm/cpufeature.h b/arch/riscv/include/asm/cpufeature.h
-> > index a418c3112cd6..7b129e5e2f07 100644
-> > --- a/arch/riscv/include/asm/cpufeature.h
-> > +++ b/arch/riscv/include/asm/cpufeature.h
-> > @@ -133,4 +133,6 @@ static __always_inline bool riscv_cpu_has_extension_unlikely(int cpu, const unsi
-> >         return __riscv_isa_extension_available(hart_isa[cpu].isa, ext);
-> >  }
-> >
-> > +DECLARE_STATIC_KEY_FALSE(fast_misaligned_access_speed_key);
-> > +
-> >  #endif
-> > diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
-> > index b3785ffc1570..dfd716b93565 100644
-> > --- a/arch/riscv/kernel/cpufeature.c
-> > +++ b/arch/riscv/kernel/cpufeature.c
-> > @@ -8,8 +8,10 @@
-> >
-> >  #include <linux/acpi.h>
-> >  #include <linux/bitmap.h>
-> > +#include <linux/cpu.h>
-> >  #include <linux/cpuhotplug.h>
-> >  #include <linux/ctype.h>
-> > +#include <linux/jump_label.h>
-> >  #include <linux/log2.h>
-> >  #include <linux/memory.h>
-> >  #include <linux/module.h>
-> > @@ -44,6 +46,8 @@ struct riscv_isainfo hart_isa[NR_CPUS];
-> >  /* Performance information */
-> >  DEFINE_PER_CPU(long, misaligned_access_speed);
-> >
-> > +static cpumask_t fast_misaligned_access;
-> > +
-> >  /**
-> >   * riscv_isa_extension_base() - Get base extension word
-> >   *
-> > @@ -643,6 +647,16 @@ static int check_unaligned_access(void *param)
-> >                 (speed == RISCV_HWPROBE_MISALIGNED_FAST) ? "fast" : "slow");
-> >
-> >         per_cpu(misaligned_access_speed, cpu) = speed;
-> > +
-> > +       /*
-> > +        * Set the value of fast_misaligned_access of a CPU. These operations
-> > +        * are atomic to avoid race conditions.
-> > +        */
-> > +       if (speed == RISCV_HWPROBE_MISALIGNED_FAST)
-> > +               cpumask_set_cpu(cpu, &fast_misaligned_access);
-> > +       else
-> > +               cpumask_clear_cpu(cpu, &fast_misaligned_access);
-> > +
-> >         return 0;
-> >  }
-> >
-> > @@ -655,13 +669,70 @@ static void check_unaligned_access_nonboot_cpu(void *param)
-> >                 check_unaligned_access(pages[cpu]);
-> >  }
-> >
-> > +DEFINE_STATIC_KEY_FALSE(fast_misaligned_access_speed_key);
-> > +
-> > +static int exclude_set_unaligned_access_static_branches(int cpu)
-> > +{
-> > +       /*
-> > +        * Same as set_unaligned_access_static_branches, except excludes the
-> > +        * given CPU from the result. When a CPU is hotplugged into an offline
-> > +        * state, this function is called before the CPU is set to offline in
-> > +        * the cpumask, and thus the CPU needs to be explicitly excluded.
-> > +        */
-> > +
-> > +       cpumask_t online_fast_misaligned_access;
-> > +
-> > +       cpumask_and(&online_fast_misaligned_access, &fast_misaligned_access, cpu_online_mask);
-> > +       cpumask_clear_cpu(cpu, &online_fast_misaligned_access);
-> > +
-> > +       if (cpumask_weight(&online_fast_misaligned_access) == (num_online_cpus() - 1))
-> > +               static_branch_enable_cpuslocked(&fast_misaligned_access_speed_key);
-> > +       else
-> > +               static_branch_disable_cpuslocked(&fast_misaligned_access_speed_key);
-> > +
-> > +       return 0;
-> > +}
-> 
-> A minor nit:  the function above and below are looking a little
-> copy/pasty, and lead to multiple spots where the static branch gets
-> changed. You could make a third function that actually does the
-> setting with parameters, then these two could call it in different
-> ways. The return types also don't need to be int, since you always
-> return 0. Something like:
-> 
-> static void modify_unaligned_access_branches(cpumask_t *mask, int weight)
-> {
->         if (cpumask_weight(mask) == weight) {
->                static_branch_enable_cpuslocked(&fast_misaligned_access_speed_key);
->         } else {
->                static_branch_disable_cpuslocked(&fast_misaligned_access_speed_key);
->         }
-> }
-> 
-> static void set_unaligned_access_branches(void)
-> {
->         cpumask_t fast_and_online;
-> 
->         cpumask_and(&fast_and_online, &fast_misaligned_access, cpu_online_mask);
->         modify_unaligned_access_branches(&fast_and_online, num_online_cpus());
-> }
-> 
-> static void set_unaligned_access_branches_except_cpu(unsigned int cpu)
-> {
->         cpumask_t fast_except_me;
-> 
->         cpumask_and(&online_fast_misaligned_access,
-> &fast_misaligned_access, cpu_online_mask);
->         cpumask_clear_cpu(cpu, &fast_except_me);
->         modify_unaligned_access_branches(&fast_except_me,
-> num_online_cpus() - 1);
-> }
-> 
+Yeah - it should be the latter.  Something like the attached patch should =
+fix
+it.
 
-Great suggestions, I will apply these changes and send out a new
-version.
+David
+---
+netfs: Fix wrong #ifdef hiding wait
 
-- Charlie
+netfs_writepages_begin() has the wait on the fscache folio conditional on
+CONFIG_NETFS_FSCACHE - which doesn't exist.
 
-> > +
-> > +static int set_unaligned_access_static_branches(void)
-> > +{
-> > +       /*
-> > +        * This will be called after check_unaligned_access_all_cpus so the
-> > +        * result of unaligned access speed for all CPUs will be available.
-> > +        *
-> > +        * To avoid the number of online cpus changing between reading
-> > +        * cpu_online_mask and calling num_online_cpus, cpus_read_lock must be
-> > +        * held before calling this function.
-> > +        */
-> > +       cpumask_t online_fast_misaligned_access;
-> > +
-> > +       cpumask_and(&online_fast_misaligned_access, &fast_misaligned_access, cpu_online_mask);
-> > +
-> > +       if (cpumask_weight(&online_fast_misaligned_access) == num_online_cpus())
-> > +               static_branch_enable_cpuslocked(&fast_misaligned_access_speed_key);
-> > +       else
-> > +               static_branch_disable_cpuslocked(&fast_misaligned_access_speed_key);
-> > +
-> > +       return 0;
-> > +}
-> > +
-> > +static int lock_and_set_unaligned_access_static_branch(void)
-> > +{
-> > +       cpus_read_lock();
-> > +       set_unaligned_access_static_branches();
-> > +       cpus_read_unlock();
-> > +
-> > +       return 0;
-> > +}
-> > +
-> > +arch_initcall_sync(lock_and_set_unaligned_access_static_branch);
-> > +
-> >  static int riscv_online_cpu(unsigned int cpu)
-> >  {
-> >         static struct page *buf;
-> >
-> >         /* We are already set since the last check */
-> >         if (per_cpu(misaligned_access_speed, cpu) != RISCV_HWPROBE_MISALIGNED_UNKNOWN)
-> > -               return 0;
-> > +               goto exit;
-> >
-> >         buf = alloc_pages(GFP_KERNEL, MISALIGNED_BUFFER_ORDER);
-> >         if (!buf) {
-> > @@ -671,7 +742,14 @@ static int riscv_online_cpu(unsigned int cpu)
-> >
-> >         check_unaligned_access(buf);
-> >         __free_pages(buf, MISALIGNED_BUFFER_ORDER);
-> > -       return 0;
-> > +
-> > +exit:
-> > +       return set_unaligned_access_static_branches();
-> > +}
-> > +
-> > +static int riscv_offline_cpu(unsigned int cpu)
-> > +{
-> > +       return exclude_set_unaligned_access_static_branches(cpu);
-> >  }
-> >
-> >  /* Measure unaligned access on all CPUs present at boot in parallel. */
-> > @@ -705,9 +783,12 @@ static int check_unaligned_access_all_cpus(void)
-> >         /* Check core 0. */
-> >         smp_call_on_cpu(0, check_unaligned_access, bufs[0], true);
-> >
-> > -       /* Setup hotplug callback for any new CPUs that come online. */
-> > +       /*
-> > +        * Setup hotplug callbacks for any new CPUs that come online or go
-> > +        * offline.
-> > +        */
-> >         cpuhp_setup_state_nocalls(CPUHP_AP_ONLINE_DYN, "riscv:online",
-> > -                                 riscv_online_cpu, NULL);
-> > +                                 riscv_online_cpu, riscv_offline_cpu);
-> >
-> >  out:
-> >         unaligned_emulation_finish();
-> >
-> > --
-> > 2.43.0
-> >
+Fix it to be conditional on CONFIG_FSCACHE instead.
+
+Fixes: 62c3b7481b9a ("netfs: Provide a writepages implementation")
+Reported-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Signed-off-by: David Howells <dhowells@redhat.com>
+cc: Matthew Wilcox <willy@infradead.org>
+cc: linux-afs@lists.infradead.org
+cc: linux-cachefs@redhat.com
+cc: linux-fsdevel@vger.kernel.org
+cc: linux-mm@kvack.org
+---
+ fs/netfs/buffered_write.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fs/netfs/buffered_write.c b/fs/netfs/buffered_write.c
+index 0b2b7a60dabc..de517ca70d91 100644
+--- a/fs/netfs/buffered_write.c
++++ b/fs/netfs/buffered_write.c
+@@ -1076,7 +1076,7 @@ static ssize_t netfs_writepages_begin(struct address=
+_space *mapping,
+ 		folio_unlock(folio);
+ 		if (wbc->sync_mode !=3D WB_SYNC_NONE) {
+ 			folio_wait_writeback(folio);
+-#ifdef CONFIG_NETFS_FSCACHE
++#ifdef CONFIG_FSCACHE
+ 			folio_wait_fscache(folio);
+ #endif
+ 			goto lock_again;
+
 
