@@ -1,186 +1,141 @@
-Return-Path: <linux-kernel+bounces-19984-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19985-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 59D4F8277DA
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 19:41:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 07C418277DF
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 19:42:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 630E91C20B52
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 18:41:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2E4281C22FF3
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 18:42:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4E0155E72;
-	Mon,  8 Jan 2024 18:40:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 738E454F8F;
+	Mon,  8 Jan 2024 18:42:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="2tLL0GVD"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mout-p-102.mailbox.org (mout-p-102.mailbox.org [80.241.56.152])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oa1-f49.google.com (mail-oa1-f49.google.com [209.85.160.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E666355C12;
-	Mon,  8 Jan 2024 18:39:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=v0yd.nl
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=v0yd.nl
-Received: from smtp202.mailbox.org (smtp202.mailbox.org [IPv6:2001:67c:2050:b231:465::202])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mout-p-102.mailbox.org (Postfix) with ESMTPS id 4T82sx5tQGz9sk7;
-	Mon,  8 Jan 2024 19:39:49 +0100 (CET)
-From: =?UTF-8?q?Jonas=20Dre=C3=9Fler?= <verdre@v0yd.nl>
-To: Marcel Holtmann <marcel@holtmann.org>,
-	Johan Hedberg <johan.hedberg@gmail.com>,
-	Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-Cc: =?UTF-8?q?Jonas=20Dre=C3=9Fler?= <verdre@v0yd.nl>,
-	linux-bluetooth@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org
-Subject: [PATCH v2 4/4] Bluetooth: Remove pending ACL connection attempts
-Date: Mon,  8 Jan 2024 19:39:36 +0100
-Message-ID: <20240108183938.468426-5-verdre@v0yd.nl>
-In-Reply-To: <20240108183938.468426-1-verdre@v0yd.nl>
-References: <20240108183938.468426-1-verdre@v0yd.nl>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19BAE54BEB
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 18:42:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-oa1-f49.google.com with SMTP id 586e51a60fabf-2044d093b3fso1758131fac.3
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 10:42:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1704739359; x=1705344159; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=7nOCifhuDAF11Xb1y36KLhAB8txEl19e9KXFbeS4gyw=;
+        b=2tLL0GVD30E6OQOU9VVhPDk98+tOjAOlHrN3Hrz7SihFOFiUWDJI+djCyjj+9zo9lz
+         3YU2n6VICW6QBQwEoa2j9sp4uidTR7oFq4aLQG8AmKYzI8Mkk+nTyeJHXrqy1e882iYT
+         Hvhu7XECK4JhhKS6rK9o+4d9OReaaDzAm8ZhxtNoew4TuyjBhHm/EVfFuQUdoexGX5m1
+         tFTGQoJ+4oXwjEk3252u9FB35LrggidD7ceIJ6QJVPj7BdPXNT6EMVNfDJMBEaVSKd3o
+         f0U6cL3rZvkODVof+tLbQzWXh1drYjTNdRdCFK7+LfuKvKNI2fCDPMlDDT2UEUc5yBRc
+         NK2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704739359; x=1705344159;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=7nOCifhuDAF11Xb1y36KLhAB8txEl19e9KXFbeS4gyw=;
+        b=dC+n/nGqgB/IkvnzsLY5gxsORKOZ17gf8WwcziIADCB+99G0z6A5kq58oPLzJBmuN3
+         TxeX9ygJu5TAslV96hAiaJWS/FzEhw0r0ri5XQWtstUShDduh4tLWhChUMzpa6umr9ST
+         vE/v1V3qJ09SFJ0pjh+6TeHluw8zDdsi11rHtdYq2lF9TAsh7No+N4q69a6FoujqQXuX
+         Pqs5sErx1rjO0IJJGdPbysqa2B3HHMKO7EGqvHtj0dlcKbcV9hwi3vjVXdamkbEA8I0y
+         49ejx0oNDrLrG77LPteQBeoL8xqZiN10nXoymm/LlmP6TQvRn/5s22vm6NxqsdHGmUqi
+         rJzQ==
+X-Gm-Message-State: AOJu0Yya8Wquw0OLQQr/V6kq/h5uSl+kPkEiJH6xlgqYaDBR6N6erjXA
+	SY1h5NyG6xfhVEfu9C8RCMZk0Pi+7YrzLQ==
+X-Google-Smtp-Source: AGHT+IFBhwdGEizekSKi4JNYjZjHKzpIt3Wz/KrnO04cinNIvQ+drTPWlQ+A/SCeEXr4sswGa/DJsQ==
+X-Received: by 2002:a05:6870:91cd:b0:204:302f:74cb with SMTP id c13-20020a05687091cd00b00204302f74cbmr5618403oaf.24.1704739359134;
+        Mon, 08 Jan 2024 10:42:39 -0800 (PST)
+Received: from charlie.ba.rivosinc.com ([64.71.180.162])
+        by smtp.gmail.com with ESMTPSA id pp24-20020a0568709d1800b002044a0677adsm97860oab.8.2024.01.08.10.42.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Jan 2024 10:42:38 -0800 (PST)
+From: Charlie Jenkins <charlie@rivosinc.com>
+Subject: [PATCH v5 0/2] riscv: Create and document
+ PR_RISCV_SET_ICACHE_FLUSH_CTX prctl
+Date: Mon, 08 Jan 2024 10:42:28 -0800
+Message-Id: <20240108-fencei-v5-0-aa1e51d7222f@rivosinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 4T82sx5tQGz9sk7
+X-B4-Tracking: v=1; b=H4sIABRCnGUC/23PTW7DIBCG4atErEs1M+CfdNV7RFkYPCSzqB1Bh
+ RpZvntw1DhR5OWHeF7EpBJH4aS+dpOKnCXJOJRRfeyUP3fDibX0ZSsCMojY6MCDZ9FhH2rom9a
+ GDlS5fIkc5O8eOhzLPkv6HeP13s24nP4niB6JjBq0Yw8toneE9B0lj0kG/+nHH7VUMr1IA6ukI
+ sm7mkzn0GHYkOYpCc0qzfJmU2HVkmnZNRvSPqQFhPXD2RbZWx8ouD1UvXmT8zzfAOamo+VNAQA
+ A
+To: Paul Walmsley <paul.walmsley@sifive.com>, 
+ Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, 
+ Jonathan Corbet <corbet@lwn.net>, Conor Dooley <conor.dooley@microchip.com>, 
+ =?utf-8?q?Cl=C3=A9ment_L=C3=A9ger?= <cleger@rivosinc.com>, 
+ Atish Patra <atishp@atishpatra.org>, Randy Dunlap <rdunlap@infradead.org>
+Cc: linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, 
+ linux-doc@vger.kernel.org, Charlie Jenkins <charlie@rivosinc.com>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1704739355; l=1802;
+ i=charlie@rivosinc.com; s=20231120; h=from:subject:message-id;
+ bh=6KNeJtSft3TzqK/eFueLjOMt0bd1sLwSYJMWIyfbYI0=;
+ b=vMikdA7TGJkoeVdq0Tn488ZeRydrutnxr/h5WWzxF168I0ofq4f+j+tnBgjLzA/QnKYhZjICD
+ Jyvi8cks/1TAsDtEcNbyiyigWNNKiqvbIjmsdAUhBCF/ufU605rgoo3
+X-Developer-Key: i=charlie@rivosinc.com; a=ed25519;
+ pk=t4RSWpMV1q5lf/NWIeR9z58bcje60/dbtxxmoSfBEcs=
 
-With the last commit we moved to using the hci_sync queue for "Create
-Connection" requests, removing the need for retrying the paging after
-finished/failed "Create Connection" requests and after the end of
-inquiries.
+Improve the performance of icache flushing by creating a new prctl flag
+PR_RISCV_SET_ICACHE_FLUSH_CTX. The interface is left generic to allow
+for future expansions such as with the proposed J extension [1].
 
-hci_conn_check_pending() was used to trigger this retry, we can remove it
-now.
+Documentation is also provided to explain the use case.
 
-Note that we can also remove the special handling for COMMAND_DISALLOWED
-errors in the completion handler of "Create Connection", because "Create
-Connection" requests are now always serialized.
+[1] https://github.com/riscv/riscv-j-extension
 
-This is somewhat reverting commit 4c67bc74f016 ("[Bluetooth] Support
-concurrent connect requests").
-
-With this, the BT_CONNECT2 state of ACL hci_conn objects should now be
-back to meaning only one thing: That we received a connection request
-from another device (see hci_conn_request_evt), but the actual connect
-should be deferred.
+Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
 ---
- include/net/bluetooth/hci_core.h |  1 -
- net/bluetooth/hci_conn.c         | 16 ----------------
- net/bluetooth/hci_event.c        | 21 ++++-----------------
- 3 files changed, 4 insertions(+), 34 deletions(-)
+Changes in v5:
+- Minor documentation changes (Randy)
+- Link to v4: https://lore.kernel.org/r/20240107-fencei-v4-0-d4cf2fb905d3@rivosinc.com
 
-diff --git a/include/net/bluetooth/hci_core.h b/include/net/bluetooth/hci_core.h
-index 2c30834c1..d7483958d 100644
---- a/include/net/bluetooth/hci_core.h
-+++ b/include/net/bluetooth/hci_core.h
-@@ -1330,7 +1330,6 @@ struct hci_conn *hci_conn_add(struct hci_dev *hdev, int type, bdaddr_t *dst,
- 			      u8 role);
- void hci_conn_del(struct hci_conn *conn);
- void hci_conn_hash_flush(struct hci_dev *hdev);
--void hci_conn_check_pending(struct hci_dev *hdev);
- 
- struct hci_chan *hci_chan_create(struct hci_conn *conn);
- void hci_chan_del(struct hci_chan *chan);
-diff --git a/net/bluetooth/hci_conn.c b/net/bluetooth/hci_conn.c
-index 541d55301..22033057b 100644
---- a/net/bluetooth/hci_conn.c
-+++ b/net/bluetooth/hci_conn.c
-@@ -2534,22 +2534,6 @@ void hci_conn_hash_flush(struct hci_dev *hdev)
- 	}
- }
- 
--/* Check pending connect attempts */
--void hci_conn_check_pending(struct hci_dev *hdev)
--{
--	struct hci_conn *conn;
--
--	BT_DBG("hdev %s", hdev->name);
--
--	hci_dev_lock(hdev);
--
--	conn = hci_conn_hash_lookup_state(hdev, ACL_LINK, BT_CONNECT2);
--	if (conn)
--		hci_cmd_sync_queue(hdev, hci_acl_create_connection_sync, conn, NULL);
--
--	hci_dev_unlock(hdev);
--}
--
- static u32 get_link_mode(struct hci_conn *conn)
- {
- 	u32 link_mode = 0;
-diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
-index e8b4a0126..91973d6d1 100644
---- a/net/bluetooth/hci_event.c
-+++ b/net/bluetooth/hci_event.c
-@@ -117,8 +117,6 @@ static u8 hci_cc_inquiry_cancel(struct hci_dev *hdev, void *data,
- 		hci_discovery_set_state(hdev, DISCOVERY_STOPPED);
- 	hci_dev_unlock(hdev);
- 
--	hci_conn_check_pending(hdev);
--
- 	return rp->status;
- }
- 
-@@ -149,8 +147,6 @@ static u8 hci_cc_exit_periodic_inq(struct hci_dev *hdev, void *data,
- 
- 	hci_dev_clear_flag(hdev, HCI_PERIODIC_INQ);
- 
--	hci_conn_check_pending(hdev);
--
- 	return rp->status;
- }
- 
-@@ -2296,10 +2292,8 @@ static void hci_cs_inquiry(struct hci_dev *hdev, __u8 status)
- {
- 	bt_dev_dbg(hdev, "status 0x%2.2x", status);
- 
--	if (status) {
--		hci_conn_check_pending(hdev);
-+	if (status)
- 		return;
--	}
- 
- 	set_bit(HCI_INQUIRY, &hdev->flags);
- }
-@@ -2323,12 +2317,9 @@ static void hci_cs_create_conn(struct hci_dev *hdev, __u8 status)
- 
- 	if (status) {
- 		if (conn && conn->state == BT_CONNECT) {
--			if (status != HCI_ERROR_COMMAND_DISALLOWED || conn->attempt > 2) {
--				conn->state = BT_CLOSED;
--				hci_connect_cfm(conn, status);
--				hci_conn_del(conn);
--			} else
--				conn->state = BT_CONNECT2;
-+			conn->state = BT_CLOSED;
-+			hci_connect_cfm(conn, status);
-+			hci_conn_del(conn);
- 		}
- 	} else {
- 		if (!conn) {
-@@ -3020,8 +3011,6 @@ static void hci_inquiry_complete_evt(struct hci_dev *hdev, void *data,
- 
- 	bt_dev_dbg(hdev, "status 0x%2.2x", ev->status);
- 
--	hci_conn_check_pending(hdev);
--
- 	if (!test_and_clear_bit(HCI_INQUIRY, &hdev->flags))
- 		return;
- 
-@@ -3247,8 +3236,6 @@ static void hci_conn_complete_evt(struct hci_dev *hdev, void *data,
- 
- unlock:
- 	hci_dev_unlock(hdev);
--
--	hci_conn_check_pending(hdev);
- }
- 
- static void hci_reject_conn(struct hci_dev *hdev, bdaddr_t *bdaddr)
+Changes in v4:
+- Add OFF flag to disallow fence.i in userspace (Atish)
+- Fix documentation issues (Atish)
+- Link to v3: https://lore.kernel.org/r/20231213-fencei-v3-0-b75158238eb7@rivosinc.com
+
+Changes in v3:
+- Check if value force_icache_flush set on thread, rather than in mm
+  twice (Clément)
+- Link to v2: https://lore.kernel.org/r/20231130-fencei-v2-0-2cb623ab1b1f@rivosinc.com
+
+Changes in v2:
+- Fix kernel-doc comment (Conor)
+- Link to v1: https://lore.kernel.org/r/20231122-fencei-v1-0-bec0811cb212@rivosinc.com
+
+---
+Charlie Jenkins (2):
+      riscv: Include riscv_set_icache_flush_ctx prctl
+      documentation: Document PR_RISCV_SET_ICACHE_FLUSH_CTX prctl
+
+ Documentation/arch/riscv/cmodx.rst | 88 ++++++++++++++++++++++++++++++++++++++
+ Documentation/arch/riscv/index.rst |  1 +
+ arch/riscv/include/asm/mmu.h       |  2 +
+ arch/riscv/include/asm/processor.h |  6 +++
+ arch/riscv/mm/cacheflush.c         | 56 ++++++++++++++++++++++++
+ arch/riscv/mm/context.c            |  8 ++--
+ include/uapi/linux/prctl.h         |  4 ++
+ kernel/sys.c                       |  6 +++
+ 8 files changed, 168 insertions(+), 3 deletions(-)
+---
+base-commit: b85ea95d086471afb4ad062012a4d73cd328fa86
+change-id: 20231117-fencei-f9f60d784fa0
 -- 
-2.43.0
+- Charlie
 
 
