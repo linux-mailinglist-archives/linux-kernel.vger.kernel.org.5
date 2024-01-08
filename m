@@ -1,200 +1,154 @@
-Return-Path: <linux-kernel+bounces-20141-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20142-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F3CA827A80
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 23:09:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CC029827A81
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 23:10:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2D960285153
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 22:09:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DAC571C22FAC
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 22:10:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90EE056466;
-	Mon,  8 Jan 2024 22:09:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D59156464;
+	Mon,  8 Jan 2024 22:09:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="FiNY4zh4"
-Received: from mail-vk1-f175.google.com (mail-vk1-f175.google.com [209.85.221.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="pkDD63IW"
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E1395644F
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 22:09:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-vk1-f175.google.com with SMTP id 71dfb90a1353d-4b7480a80ceso1906107e0c.0
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 14:09:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704751779; x=1705356579; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=zPwL0VIADWvObusNS4Aap9j3lSZsmdqtr+hhZskgl0M=;
-        b=FiNY4zh45Wb22FNH7vlPypDwgurJvV3rZv+3rppt5QVdyBGK/f0W6W6VQHlykCwAxj
-         TrlL0wWDdg3kI8flLQovZnVb95wzc8dZsGlKcj1pYnKyHXW9lyYC1qVxU4G5S6yCdjfz
-         HKxPE+TJEysExZcVLG3nvdTgMxWAIbzuK0UW4dmkxpZVwid3HLXwWEbE90dZAVS5znmI
-         sVwY35TIz6l0a/0EL6CLNdyrEzTqkBgVEe0l7zSAGpIt3f3g9xVctLtdbbtJah9Af4I7
-         8+4WrNJV3/YDrkNjqi4VgSQQ2kx3XW0BXvUSuP0QhiUMq1I2GQaedB9+4AKshpNiVvQf
-         bdpg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704751779; x=1705356579;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zPwL0VIADWvObusNS4Aap9j3lSZsmdqtr+hhZskgl0M=;
-        b=BtTpSuILfU0xDVyHB2tb3h/bPEh1klgcdkdaPSFoXMtILZenshVET4Ol0Rc2xORmBM
-         NpPv4tbxj//HEIFzonNvjEt9Zcq31uRB9wxs3v7WRttmaxVOh4q05H9nJIZr7ICsL49v
-         Z4n6FWTIgaEltZqOX2Mh0zoAoGdaxy1nmRensDiN6Mq71oVUrIpJq1TZAODpaif4HSUA
-         ShvhrgMjNRoF2htlPWSTmqDi3+I0rpwgplfb2eYkFGcHrtLfzq+ti52aeN/pTQFT543K
-         UH1vqrVqClAvzj+ebYvoAKvZfwesYaQ3DYQfz3xB53TxSaBOPKiHgaJlEYUa/fz8k21y
-         kt0Q==
-X-Gm-Message-State: AOJu0YyCMQViF8yH9ScIQeIlML9u6NE3QKrx2N2SdzAl8eFOxmyJoh5d
-	gWSQYFKmuem55EXpFizJ7oTwDCoL+XnZceBbZp1gKK0axZ8=
-X-Google-Smtp-Source: AGHT+IE6hTwFu+QRXDhnPkTMqdy0XSYmsMHuM7fSO/yZXKcRDQzPFDoRFNo79VfhiJlWDzMOLsuoMw==
-X-Received: by 2002:a05:6122:10e4:b0:4b6:c780:ac90 with SMTP id m4-20020a05612210e400b004b6c780ac90mr334731vko.0.1704751778736;
-        Mon, 08 Jan 2024 14:09:38 -0800 (PST)
-Received: from ubuntu-server-vm-macos (072-189-067-006.res.spectrum.com. [72.189.67.6])
-        by smtp.gmail.com with ESMTPSA id em8-20020a056122380800b004b6d2b7109esm81131vkb.46.2024.01.08.14.07.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Jan 2024 14:08:07 -0800 (PST)
-Date: Mon, 8 Jan 2024 22:07:09 +0000
-From: William Breathitt Gray <william.gray@linaro.org>
-To: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
-Cc: lee@kernel.org, alexandre.torgue@foss.st.com, linux-iio@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 10/10] counter: stm32-timer-cnt: add support for
- capture events
-Message-ID: <ZZxyDbYC9oHNKcGF@ubuntu-server-vm-macos>
-References: <20231220145726.640627-1-fabrice.gasnier@foss.st.com>
- <20231220145726.640627-11-fabrice.gasnier@foss.st.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EF0D56455
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 22:09:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=1qHwK95bEOKG6reOtvx1ZSfRgeuypZvj/GZ9ynd1hSY=; b=pkDD63IWWWbxDsYfuLY34sTUqN
+	RDH6dtYMM2vysEQmgLjoQ651/FTMkFPRuwKm1S1j9rRM0W+h5+vSo1qd2gbCKAfLb/raGXb6yAGT2
+	bLxhVD7pGIyzEqu6tEzR/o/VjtvzMJWvHHKMAbUQYSgKyMkeoWf7nQ/UgqCBonikb+5hxdEpttat4
+	Cw0UfOmkjCXTDxO22/kCx23ePTxI4MwsJNZ+po4oVTxY9XiXgi33HMOQqy8SvlDVS+1j21yPnf/po
+	rfkqiCGLPY7FLgvjcsKWcAdiZtKRuDFJuFrLy148lnai8LksI79bE19wDIa0MSpaBEGCbJkINb3W+
+	upKPd80Q==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:60026)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1rMxoY-0003Sp-1E;
+	Mon, 08 Jan 2024 22:09:46 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1rMxob-0003bs-1A; Mon, 08 Jan 2024 22:09:49 +0000
+Date: Mon, 8 Jan 2024 22:09:48 +0000
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: Dimitri John Ledkov <dimitri.ledkov@canonical.com>
+Cc: linux-kernel@vger.kernel.org
+Subject: Re: [BUG] SHA-3 causes kmod 28 to segfault
+Message-ID: <ZZxyrFkTmrGneP0H@shell.armlinux.org.uk>
+References: <ZZwk8nFBTIMISLXp@shell.armlinux.org.uk>
+ <CADWks+Y7JOsvzWc50syVwOB9LF2Lxc_YiLzLxCkhEv8sBxrNvw@mail.gmail.com>
+ <ZZw/XK12CnSgPtaB@shell.armlinux.org.uk>
+ <CADWks+YdQ_1QkbhT5tzVA0c_5z0Yn39-nyfNMH201=Anu7DCJQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="WiW47Lt2gdjHTFQC"
-Content-Disposition: inline
-In-Reply-To: <20231220145726.640627-11-fabrice.gasnier@foss.st.com>
-
-
---WiW47Lt2gdjHTFQC
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CADWks+YdQ_1QkbhT5tzVA0c_5z0Yn39-nyfNMH201=Anu7DCJQ@mail.gmail.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-On Wed, Dec 20, 2023 at 03:57:26PM +0100, Fabrice Gasnier wrote:
-> +	/*
-> +	 * configure channel in input capture mode, map channel 1 on TI1, chann=
-el2 on TI2...
-> +	 * Select both edges / non-inverted to trigger a capture.
-> +	 */
+On Mon, Jan 08, 2024 at 06:46:10PM +0000, Dimitri John Ledkov wrote:
+> On Mon, 8 Jan 2024 at 18:30, Russell King (Oracle)
+> <linux@armlinux.org.uk> wrote:
+> >
+> > On Mon, Jan 08, 2024 at 06:14:17PM +0000, Dimitri John Ledkov wrote:
+> > > Hi,
+> > >
+> > > On Mon, 8 Jan 2024 at 16:38, Russell King (Oracle)
+> > > <linux@armlinux.org.uk> wrote:
+> > > >
+> > > > Hi,
+> > > >
+> > > > When building 6.7 under Debian Oldstable with kmod 28, the installation
+> > > > of modules fails during depmod with a SEGV.
+> > > >
+> > >
+> > > What is your kernel configuration, and I hope you make config choices
+> > > compatible with your target host OS.
+> >
+> > "target host OS" - that's a total misnomer. "host" is generally what
+> > you're building under. "target" is generally what you're building _for_.
+> > So I don't fully understand your comment. Maybe you meant "target _and_
+> > host" ?
+> 
+> the kernel configuration you use, should target the operating system
+> you are planning to use the given kernel on.
 
-I suggest defining a new local variable 'cc' to point to stm32_cc[ch]. I
-think that's make the code look nicer here to avoid all the array index
-syntax every time you access stm32_cc[ch].
+Thank you for stating the damn obvious. I've been developing Linux
+kernels for 30 years, I think I know this.
 
-> +	if (enable) {
-> +		/* first clear possibly latched capture flag upon enabling */
-> +		regmap_read(priv->regmap, TIM_CCER, &ccer);
-> +		if (!(ccer & stm32_cc[ch].ccer_bits)) {
+> using bleeding edge kernel features, with an obsolete userspace often
+> can have compatibility issues.
 
-Try regmap_test_bits() here instead of using regmap_read().
+You're still not being clear. I wonder whether you understand the
+terms "target" and "host".
 
-> +			sr =3D ~TIM_SR_CC_IF(ch);
-> +			regmap_write(priv->regmap, TIM_SR, sr);
+> > > > Running under gdb:
+> > > >
+> > > > Program received signal SIGSEGV, Segmentation fault.
+> > > > __strlen_sse2 () at ../sysdeps/x86_64/multiarch/strlen-vec.S:133
+> > > >
+> > > > I have no further information as I can't remember how to get the debug
+> > > > info for packages under Debian - and even if I could, it's probably a
+> > > > bug in the kmod package that Debian will have absolutely no interest in
+> > > > fixing (based on previous experience reporting bugs to Debian.)
+> > >
+> > > For latest kernel and latest kernel features support in kmod, latest
+> > > kmod is required. I.e. patched with
+> > > https://github.com/kmod-project/kmod/commit/510c8b7f7455c6613dd1706e5e41ec7b09cf6703
+> >
+> > Would be nice if there was some documentation. Also, as kconfig provides
+> > a mechanism to detect e.g. the version of tooling used to build the
+> > kernel, it would've been nice to detect whether depmod was sufficiently
+> > recent to support SHA3 and make the module signing SHA3 options depend
+> > on that.
+> >
+> > Leaving this to a SEGV to indicate that something is wrong isn't user
+> > friendly.
+> >
+> 
+> There is no ability to detect runtime kmod at build time, given the
+> two are usually often not the same.
 
-Eliminate 'sr' by regmap_write(priv->regmap, TIM_SR, ~TIM_SR_CC_IF(ch)).
+Again, you CLEARLY don't understand the problem. I am *NOT* reporting
+a problem on the target. I am reporting a problem on the *build*
+*host*.
 
-> @@ -366,6 +460,12 @@ static int stm32_count_events_configure(struct count=
-er_device *counter)
->  				regmap_write(priv->regmap, TIM_SR, (u32)~TIM_SR_UIF);
->  			dier |=3D TIM_DIER_UIE;
->  			break;
-> +		case COUNTER_EVENT_CAPTURE:
-> +			ret =3D stm32_count_capture_configure(counter, event_node->channel, t=
-rue);
-> +			if (ret)
-> +				return ret;
-> +			dier |=3D TIM_DIER_CC_IE(event_node->channel);
+> Can you please provide your config?
+> Can you please explain how you chose it?
 
-Ah, now I understand why the previous patch OR'd TIM_DIER_UIE to dier.
-Apologies for the noise.
+No, because it's totally irrelevant to the problem I'm reporting.
 
-> @@ -374,6 +474,15 @@ static int stm32_count_events_configure(struct count=
-er_device *counter)
-> =20
->  	regmap_write(priv->regmap, TIM_DIER, dier);
-> =20
-> +	/* check for disabled capture events */
-> +	for (i =3D 0 ; i < priv->nchannels; i++) {
-> +		if (!(dier & TIM_DIER_CC_IE(i))) {
-> +			ret =3D stm32_count_capture_configure(counter, i, false);
-> +			if (ret)
-> +				return ret;
-> +		}
+What I'm reporting to you is that _IF_ you build a kernel with the
+SHA3 modsigning options on a HOST that has kmod 28, then depmod
+SEGVs when _INSTALLING_ the modules to a directory on the _HOST_.
 
-Would for_each_clear_bitrange() in linux/find.h work for this loop?
+This has *nothing* to do with the capabilities of the _TARGET_.
+Whether the configuration matches the capabilities of the _TARGET_
+is *totally* irrelevant at _this_ stage. In fact, with the _HOST_
+depmod segfaulting, one can't complete the installation process
+to even _think_ about transferring it to the _TARGET_.
 
-> @@ -504,7 +620,7 @@ static irqreturn_t stm32_timer_cnt_isr(int irq, void =
-*ptr)
->  	 * Some status bits in SR don't match with the enable bits in DIER. Onl=
-y take care of
->  	 * the possibly enabled bits in DIER (that matches in between SR and DI=
-ER).
->  	 */
-> -	dier &=3D TIM_DIER_UIE;
-> +	dier &=3D (TIM_DIER_UIE | TIM_DIER_CC1IE | TIM_DIER_CC2IE | TIM_DIER_CC=
-3IE | TIM_DIER_CC4IE);
+So please, I'm not stupid - but right now I think you are, because
+you clearly don't understand the difference between TARGET and HOST.
 
-Again, sorry for the noise on the previous patch; this makes sense now.
-
-> @@ -515,6 +631,15 @@ static irqreturn_t stm32_timer_cnt_isr(int irq, void=
- *ptr)
->  		clr &=3D ~TIM_SR_UIF;
->  	}
-> =20
-> +	/* Check capture events */
-> +	for (i =3D 0 ; i < priv->nchannels; i++) {
-> +		if (sr & TIM_SR_CC_IF(i)) {
-
-Would for_each_set_bitrange() in linux/find.h work for this loop?
-
-> +			counter_push_event(counter, COUNTER_EVENT_CAPTURE, i);
-> +			clr &=3D ~TIM_SR_CC_IF(i);
-
-Perhaps u32p_replace_bits(&clr, 0, TIM_SR_CC_IF(i)) is clearer here.
-
-> @@ -627,8 +752,11 @@ static int stm32_timer_cnt_probe(struct platform_dev=
-ice *pdev)
->  		}
->  	} else {
->  		for (i =3D 0; i < priv->nr_irqs; i++) {
-> -			/* Only take care of update IRQ for overflow events */
-> -			if (i !=3D STM32_TIMERS_IRQ_UP)
-> +			/*
-> +			 * Only take care of update IRQ for overflow events, and cc for
-> +			 * capture events.
-> +			 */
-> +			if (i !=3D STM32_TIMERS_IRQ_UP && i !=3D STM32_TIMERS_IRQ_CC)
->  				continue;
-
-Okay, I see now why you have this check. This should be fine as it'll
-makes adding support in the future for the other IRQs a less invasive
-change.
-
-William Breathitt Gray
-
---WiW47Lt2gdjHTFQC
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQSNN83d4NIlKPjon7a1SFbKvhIjKwUCZZxyDQAKCRC1SFbKvhIj
-Ky5wAP4gGBh3+vNrHgCFcl/2xnX9onULDns/GxDSAl/SYUHaxQD/UlBRNYjuTlpn
-mQy4bZaGfms5hT09QoJcBuaniegpLQg=
-=2KS6
------END PGP SIGNATURE-----
-
---WiW47Lt2gdjHTFQC--
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
