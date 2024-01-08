@@ -1,52 +1,52 @@
-Return-Path: <linux-kernel+bounces-19782-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19783-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E64638273D0
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 16:40:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1BD248273D4
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 16:40:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E29E41C211EA
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 15:40:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BE3DE284A60
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 15:40:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B49452F62;
-	Mon,  8 Jan 2024 15:39:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0050952F8B;
+	Mon,  8 Jan 2024 15:39:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="cNm4Tk5f"
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="0IR/qDxp"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2040.outbound.protection.outlook.com [40.107.236.40])
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2048.outbound.protection.outlook.com [40.107.223.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A17751C51;
-	Mon,  8 Jan 2024 15:39:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE2D5524D9;
+	Mon,  8 Jan 2024 15:39:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=oFngOnnxyMdgibVqiyuy8Nh4j06V6yHYVHoNJaQYyWDxNs8Zyxbrs8AkN4IWyqNm8Z1e4LZs6AbKrrdCXMGU3gC3iwFeNIMDeTau/drtHEEMBUsMShR7p5wdPAIjrZLjglVoQotmOQ638tMynBEwxhV6pGNFchnT4963UnGvoDQiz8HfGw2ZM6H6lMYTHvuX7XP+tXHdZpZI8Qpg9nH/q+NUrJdumZsS+b7cc25+U9mqBCYfh+B1CsuELNoI7ZUe2N+KLPs7MLmtPRc/5v5mqZAd24BJ+Zo+IBLaxdNwwCL5WaNUCSIOvr66lWYw/YIvU6Saj+2cTl6xTIgjg5fg0g==
+ b=YhzxdoL3aY+SoWeyfo5N9Y20oCluZMjGOoxqBB4Ubr3UxQ2HzD+jxlthMpGiUpaE4t1Wbp5MIV29aD7rRzejQyyqyX1oGwfmjYWhGNtAQ7sd9QA/YKEwmcl+ngc12iAxhyY7w+vl1L5C2kELuSjO2TVsiSldFGcD/S8XerZsHGhLVUt51uJ0Qv0wwfiqE3oGWZVuY8jsIQMBPepIhCFXVOPQqCOetN17UDLoARM7AoJ+vYzIMmE7UimJd0Dyf8tdbnpSXbS6GnwVg+vqqyxKTqvWo2W/Cf/a542mtKgEILWENnYvnCWxhy4sKpCxVZkUetHcgVLGHc07Z19iQPNmNQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=DtdTICBwJImj6z/mBcD7met1g5fjHkm+7jnIlQ6zAxg=;
- b=H8sWvUdB8ZqKhY1FIkLG2X/2qmkKOXn3SE2KUyX6/KTrCFtjGfoXv3XqRM1yAXzEvmE06vmdpKE8ahi+BWkwwL0rArcaHVaM6Q5XZ6fKF7e6c6pr6jwCk4lFhP/i8474XgkE2OaqFh4AcvSdc9T8UTMIWLT4Z+gD7K74n8PEIpN/4V+wlsCkdbWKMOniwKIJEWyc1OTyz+jjkymAUC7MM0vXRyXuV35lCORSH/oiT//OaacsGQFXS632SzMa/d5XU9MpGnLr3TSFLY+gQa378ySTsbHE6nvKjC+pygAGzdl5+0GHNgVp4N296ypLkIf/6RLbu3cpv1nC5WNjFpQmfg==
+ bh=FsSJEqJj23hKZvDHAQf838Q5IhhZWlSfVijudDopMtg=;
+ b=mTZhVwvf30BjuWAJ1zsab6OSR5RBJXvrgDwniwEOdMJb+4hKIbT0taVbXCfTpg/pghEgf4VyT/ZHCpbmCgSt5mwSWL/5Lq2sgshzbBsvIyCf4xJfsMQ9vCMW3aDDahXIMX0jeZdeNIsqLVgf8Q/8INFp3eSaZLhAU0BM9AtG2UB5t2xzNeUo2GSBzB6q2vUrwyUU8JujX+yM5Aei2IjZLR4ZKI/ElWi8yer24xfxkx0vdGtheSQ1jo63brnpqWQvlbA+TiaGBF3Bgk24YTqJXLrMSl0fEA9LnZG5S3lhuATNBVLARf14OjvZPDCtNGJMt4gmkofTF0VataxXwgUJnQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
  dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
  header.from=amd.com; dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DtdTICBwJImj6z/mBcD7met1g5fjHkm+7jnIlQ6zAxg=;
- b=cNm4Tk5f3h06G9cwgv4PNCgcTkVdag9ZYsw0byroMUaxS0g2V9Fq8HaRWVAgaBVXA6cb/LswkjPbSKBV3L1ujcPYwyZt4niNFC9VjCNoiVj/chvjw2T1sk0mIZz2HVT+g2usKA4Hzg2C9UWmJIZAIP+svsFovMY7dQixlCiNN2I=
-Received: from BL1PR13CA0068.namprd13.prod.outlook.com (2603:10b6:208:2b8::13)
- by MW3PR12MB4377.namprd12.prod.outlook.com (2603:10b6:303:55::11) with
+ bh=FsSJEqJj23hKZvDHAQf838Q5IhhZWlSfVijudDopMtg=;
+ b=0IR/qDxprpV1Ba/aF8KJoFri/p8QK3nBRRlzwKtTOLPtAb1tn/VeOwngylx76shMXNPHkuZKFWB57jKTLrrV/QBqyLQKvwCToeDBxiJWK4RhPqKDQ0vnz9PA3V8qYzddn0iTeICiDzOgpdYWUYyjrnkuNwc2Ch8Mql8CkOMhBPE=
+Received: from MN2PR15CA0028.namprd15.prod.outlook.com (2603:10b6:208:1b4::41)
+ by SJ0PR12MB6807.namprd12.prod.outlook.com (2603:10b6:a03:479::13) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.23; Mon, 8 Jan
- 2024 15:39:38 +0000
-Received: from BL6PEPF0001AB77.namprd02.prod.outlook.com
- (2603:10b6:208:2b8:cafe::73) by BL1PR13CA0068.outlook.office365.com
- (2603:10b6:208:2b8::13) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.14 via Frontend
- Transport; Mon, 8 Jan 2024 15:39:38 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.21; Mon, 8 Jan
+ 2024 15:39:42 +0000
+Received: from BL6PEPF0001AB74.namprd02.prod.outlook.com
+ (2603:10b6:208:1b4:cafe::5e) by MN2PR15CA0028.outlook.office365.com
+ (2603:10b6:208:1b4::41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.21 via Frontend
+ Transport; Mon, 8 Jan 2024 15:39:42 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
  smtp.mailfrom=amd.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=amd.com;
@@ -54,24 +54,25 @@ Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
  165.204.84.17 as permitted sender) receiver=protection.outlook.com;
  client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
 Received: from SATLEXMB04.amd.com (165.204.84.17) by
- BL6PEPF0001AB77.mail.protection.outlook.com (10.167.242.170) with Microsoft
+ BL6PEPF0001AB74.mail.protection.outlook.com (10.167.242.167) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7181.12 via Frontend Transport; Mon, 8 Jan 2024 15:39:38 +0000
+ 15.20.7181.13 via Frontend Transport; Mon, 8 Jan 2024 15:39:42 +0000
 Received: from localhost (10.180.168.240) by SATLEXMB04.amd.com
  (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Mon, 8 Jan
- 2024 09:39:36 -0600
+ 2024 09:39:40 -0600
 From: Michal Simek <michal.simek@amd.com>
 To: <linux-kernel@vger.kernel.org>, <monstr@monstr.eu>,
 	<michal.simek@xilinx.com>, <git@xilinx.com>
-CC: Neal Frager <neal.frager@amd.com>, Conor Dooley <conor+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Rob Herring
-	<robh+dt@kernel.org>, "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE
- BINDINGS" <devicetree@vger.kernel.org>, "moderated list:ARM/ZYNQ
- ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>
-Subject: [PATCH 02/14] arm64: zynqmp: Add output-enable pins to SOMs
-Date: Mon, 8 Jan 2024 16:39:13 +0100
-Message-ID: <9270938b48c8939ac5dca4ac2c59f1c4a8c564d8.1704728353.git.michal.simek@amd.com>
+CC: Ilias Apalodimas <ilias.apalodimas@linaro.org>, Conor Dooley
+	<conor+dt@kernel.org>, Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>, Rob Herring <robh+dt@kernel.org>, "open
+ list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
+	<devicetree@vger.kernel.org>, "moderated list:ARM/ZYNQ ARCHITECTURE"
+	<linux-arm-kernel@lists.infradead.org>
+Subject: [PATCH 03/14] arm64: zynqmp: Add an OP-TEE node to the device tree
+Date: Mon, 8 Jan 2024 16:39:14 +0100
+Message-ID: <9ee7e8c263c453a8c9e6bc3b91fad78b0f54edc0.1704728353.git.michal.simek@amd.com>
 X-Mailer: git-send-email 2.36.1
 In-Reply-To: <cover.1704728353.git.michal.simek@amd.com>
 References: <cover.1704728353.git.michal.simek@amd.com>
@@ -81,7 +82,7 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3183; i=michal.simek@amd.com; h=from:subject:message-id; bh=K4Likrju5N6IQT/vTOAqCEGTmbOAXbKQ1ofxxlprE/w=; b=owGbwMvMwCR4yjP1tKYXjyLjabUkhtQ54moefnoJsU/m2K9al791hVvjfwH1yEnbYj6/PHhAK jHllWZMRywLgyATg6yYIou0zZUzeytnTBG+eFgOZg4rE8gQBi5OAZhIczjDXNk1S3/MvROkJX2G YY+OztKnYc0/NzDMlZJhd1waFFZpY3EpJirLhSk3TuIqAA==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=863; i=michal.simek@amd.com; h=from:subject:message-id; bh=gWExqgkPLlFYJKtW0mMizkmM3/KP/YcnDXnIDtK0Rxw=; b=owGbwMvMwCR4yjP1tKYXjyLjabUkhtQ54mpOhzk0hZTq9E8ev9B4/OyTaG/H8vkTVO+vPq81+ VVTt3B+RywLgyATg6yYIou0zZUzeytnTBG+eFgOZg4rE8gQBi5OAZiIWiTD/HrLNzdaG2e/SHnu fd3xUN4x3mrrewxz+GddO8f067lM7FbB7S9lO/L3KjA8AAA=
 X-Developer-Key: i=michal.simek@amd.com; a=openpgp; fpr=67350C9BF5CCEE9B5364356A377C7F21FE3D1F91
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
@@ -89,138 +90,56 @@ X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
  (10.181.40.145)
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL6PEPF0001AB77:EE_|MW3PR12MB4377:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4fa912df-158c-46d4-76e5-08dc1060060d
+X-MS-TrafficTypeDiagnostic: BL6PEPF0001AB74:EE_|SJ0PR12MB6807:EE_
+X-MS-Office365-Filtering-Correlation-Id: f49d8aba-a1ac-4c8e-1ab2-08dc10600857
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	RJbUM0oHlN79pxVwiu0oNkgZ8iDgoUlJZPoGwGcw2yI89QuD8RxL672gIQnUz5UVmuXqtTJuUCuHbggtJ2z3F5ffp2MrEBxOi7N1kh+AFBfHInENCTaPgRYWMbMsReTs+EQCUHpJ7p1syvvc8DDI44vERELdEhkerUMY25j2ldA9HH5xmMOChDEf9LIwpho6wsqFQVE5jF4v3FXsnrNytafLTSGFRW5mRUN8qAgxWUGVPaTj21NW6B820cpXKpLybGE/lBWefVz7vJ26zRgMSiijKHXYpl4VzDM0EPDcRlieXT8ozDKqMjUQ92F+xByszXS38KkUQ6LFPGFISJhXCIx7WYzaA6EmO/4Df8p1kHRCkSdRyEjBrR1mHmqY4CZnPWedTdaVHMUFLZj60qT3LDjXpIVDZl2AkZB2776FA/24VSNZ4BV+15ZKjtkx8eaxE0S9Eo/4Y8LDRKDaIWXIe9eFKCms9GvqAEOR7X3n9cOI/XhdYNb79ZZNcJIBQvxlkU0qmdrzwJQenpuu+ioNPAuMLInayO0o9c0eGQMw+D178gbS+h8P8u9ws9xUcoaMlXVa0KdaPepOIwhLU4eC64JE9gppw6SGheG0cAfEqs9yZvbwhoqkLCvDCzBbDGGHyDNS5inLi/nhGg4C83STdyOd6tUYrfjUbIoJphodAN5tekfmWKTLjxDDcH/STFtjhQ3o2/SNJA8bbjLJXiDKdg7Yoed4gitmu0um80JcEYQLFTh4f9rn42FH5FDAxH6LhMTYE51DBlx3U28HRvipoezf/Zn8Z8hYnnw5/fV0mJ4=
+	eX0RFh2MSgvW8FFSV/tPD9AisD+UiX2KcHED/sxSoV0YjiqWYNJPtZaky89jAltgef77dodMfR5dBWLGKGTehp4xVucdBeb6WiHLy6Y3ey2/V14lp/Ct/3zYYhWO5c/7PLxiLkDEE1ng7Qrc9vyQFd0vFpcA1BiDDJ83u/o0Hb4PMi50LuDPIXCYevIdnEhAo+Og1RSduLRyAt/Q8kSImPBqcmrjGSbA1MLjEPNb1zk/UZmZTE0O01xG6B3dxjQgSJDRi21bhsmZ/y9pmS6aA2rs/vxdGsR39XtToHhxVBkxP3utroBOMdXPwqo6Kdt/DWtuwuwk79sHF/vl+x6vM3HeX+U37xXHF/VFybcV0NqU2KG5B4L5qXEKceHeSy9pOrEbogYFNwEkjmusSR8LDH09rVYjP7hBv2PCUzWGwo6pBmWNuK8EoJbBTbmBP8gP8GPlDYiySe5GC1rxH4AA8yifl0zKnoN+k978sU+2I7qXaWv8cQGIFbie+c5mgkENaw2W/av6/cItg+QFapnu+TQsATUULrvYaGearHoVn18raHKGVfwk29XvHP7vngnD5DhCIQmTGoANmiO9ARiJShYT9gHmdD6Ctd4KitnSeZHsjNRlOlFya0xUBmcTtxtoX3u4VDaiIKEx/RH0b0SUjWiJLwesZgQBpPHhbsM7PPciO6zElTbDVuR+FBFHKdpfVLHLA1U/kYb8tCEZe1TtvJlL+18ppC2JHB7YkwjTeVDYd+OBd9VWT/zGxldY7ZRHi5CHWwiKV2iDPI0JfOgHXNr9ODaO4DOqyV65rgODiuM=
 X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(346002)(396003)(376002)(136003)(230922051799003)(451199024)(64100799003)(82310400011)(186009)(1800799012)(40470700004)(46966006)(36840700001)(47076005)(5660300002)(2906002)(81166007)(41300700001)(36756003)(86362001)(356005)(82740400003)(36860700001)(40460700003)(8936002)(40480700001)(8676002)(4326008)(478600001)(6666004)(70206006)(70586007)(316002)(110136005)(54906003)(426003)(336012)(16526019)(2616005)(44832011)(26005)(36900700001)(2101003);DIR:OUT;SFP:1101;
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(136003)(346002)(39860400002)(396003)(376002)(230922051799003)(186009)(82310400011)(1800799012)(451199024)(64100799003)(46966006)(36840700001)(40470700004)(36756003)(5660300002)(40460700003)(36860700001)(40480700001)(4744005)(82740400003)(6666004)(478600001)(2906002)(47076005)(44832011)(4326008)(81166007)(356005)(336012)(426003)(16526019)(2616005)(26005)(8676002)(8936002)(316002)(110136005)(54906003)(41300700001)(86362001)(70206006)(70586007)(36900700001)(2101003);DIR:OUT;SFP:1101;
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Jan 2024 15:39:38.3905
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Jan 2024 15:39:42.2130
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4fa912df-158c-46d4-76e5-08dc1060060d
+X-MS-Exchange-CrossTenant-Network-Message-Id: f49d8aba-a1ac-4c8e-1ab2-08dc10600857
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	BL6PEPF0001AB77.namprd02.prod.outlook.com
+	BL6PEPF0001AB74.namprd02.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR12MB4377
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR12MB6807
 
-From: Neal Frager <neal.frager@amd.com>
+From: Ilias Apalodimas <ilias.apalodimas@linaro.org>
 
-Now that the zynqmp pinctrl driver supports the tri-state registers, make
-sure that the pins requiring output-enable are configured appropriately for
-SOMs.
+Since the zynqmp boards can run upstream OP-TEE, and having the DT node
+present doesn't cause any side effects add it in case someone tries to
+load OP-TEE.
 
-Without it, all tristate setting for MIOs, which are not related to SOM
-itself, are using default configuration which is not correct setting.
-It means SDs, USBs, ethernet, etc. are not working properly.
-
-In past it was fixed through calling tristate configuration via bootcmd:
-usb_init=mw 0xFF180208 2020
-kv260_gem3=mw 0xFF18020C 0xFC0 && gpio toggle gpio@ff0a000038 && \
-  gpio toggle gpio@ff0a000038
-
-Signed-off-by: Neal Frager <neal.frager@amd.com>
+Signed-off-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>
 Signed-off-by: Michal Simek <michal.simek@amd.com>
 ---
 
- arch/arm64/boot/dts/xilinx/zynqmp-sck-kv-g-revA.dtso | 5 +++++
- arch/arm64/boot/dts/xilinx/zynqmp-sck-kv-g-revB.dtso | 5 +++++
- 2 files changed, 10 insertions(+)
+ arch/arm64/boot/dts/xilinx/zynqmp.dtsi | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-sck-kv-g-revA.dtso b/arch/arm64/boot/dts/xilinx/zynqmp-sck-kv-g-revA.dtso
-index 92f4190d564d..e7940067ff3c 100644
---- a/arch/arm64/boot/dts/xilinx/zynqmp-sck-kv-g-revA.dtso
-+++ b/arch/arm64/boot/dts/xilinx/zynqmp-sck-kv-g-revA.dtso
-@@ -185,6 +185,7 @@ conf-rx {
- 		conf-tx {
- 			pins = "MIO36";
- 			bias-disable;
-+			output-enable;
- 		};
+diff --git a/arch/arm64/boot/dts/xilinx/zynqmp.dtsi b/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
+index a9a23cf50196..f72fb4ea3e11 100644
+--- a/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
++++ b/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
+@@ -180,6 +180,11 @@ psci {
+ 	};
  
- 		mux {
-@@ -236,6 +237,7 @@ conf-rx {
- 		conf-bootstrap {
- 			pins = "MIO71", "MIO73", "MIO75";
- 			bias-disable;
-+			output-enable;
- 			low-power-disable;
- 		};
- 
-@@ -243,6 +245,7 @@ conf-tx {
- 			pins = "MIO64", "MIO65", "MIO66",
- 				"MIO67", "MIO68", "MIO69";
- 			bias-disable;
-+			output-enable;
- 			low-power-enable;
- 		};
- 
-@@ -251,6 +254,7 @@ conf-mdio {
- 			slew-rate = <SLEW_RATE_SLOW>;
- 			power-source = <IO_STANDARD_LVCMOS18>;
- 			bias-disable;
-+			output-enable;
- 		};
- 
- 		mux-mdio {
-@@ -281,6 +285,7 @@ conf-tx {
- 			pins = "MIO54", "MIO56", "MIO57", "MIO58", "MIO59",
- 			"MIO60", "MIO61", "MIO62", "MIO63";
- 			bias-disable;
-+			output-enable;
- 			drive-strength = <4>;
- 			slew-rate = <SLEW_RATE_SLOW>;
- 		};
-diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-sck-kv-g-revB.dtso b/arch/arm64/boot/dts/xilinx/zynqmp-sck-kv-g-revB.dtso
-index f88b71f5b07a..f72312926299 100644
---- a/arch/arm64/boot/dts/xilinx/zynqmp-sck-kv-g-revB.dtso
-+++ b/arch/arm64/boot/dts/xilinx/zynqmp-sck-kv-g-revB.dtso
-@@ -168,6 +168,7 @@ conf-rx {
- 		conf-tx {
- 			pins = "MIO36";
- 			bias-disable;
-+			output-enable;
- 		};
- 
- 		mux {
-@@ -219,6 +220,7 @@ conf-rx {
- 		conf-bootstrap {
- 			pins = "MIO71", "MIO73", "MIO75";
- 			bias-disable;
-+			output-enable;
- 			low-power-disable;
- 		};
- 
-@@ -226,6 +228,7 @@ conf-tx {
- 			pins = "MIO64", "MIO65", "MIO66",
- 				"MIO67", "MIO68", "MIO69";
- 			bias-disable;
-+			output-enable;
- 			low-power-enable;
- 		};
- 
-@@ -234,6 +237,7 @@ conf-mdio {
- 			slew-rate = <SLEW_RATE_SLOW>;
- 			power-source = <IO_STANDARD_LVCMOS18>;
- 			bias-disable;
-+			output-enable;
- 		};
- 
- 		mux-mdio {
-@@ -264,6 +268,7 @@ conf-tx {
- 			pins = "MIO54", "MIO56", "MIO57", "MIO58", "MIO59",
- 			"MIO60", "MIO61", "MIO62", "MIO63";
- 			bias-disable;
-+			output-enable;
- 			drive-strength = <4>;
- 			slew-rate = <SLEW_RATE_SLOW>;
- 		};
+ 	firmware {
++		optee: optee  {
++			compatible = "linaro,optee-tz";
++			method = "smc";
++		};
++
+ 		zynqmp_firmware: zynqmp-firmware {
+ 			compatible = "xlnx,zynqmp-firmware";
+ 			#power-domain-cells = <1>;
 -- 
 2.36.1
 
