@@ -1,137 +1,98 @@
-Return-Path: <linux-kernel+bounces-19800-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19801-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A326782746B
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 16:47:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8610282746E
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 16:47:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BF5151C22F0A
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 15:47:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9612C1C22F13
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 15:47:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 922BC4121D;
-	Mon,  8 Jan 2024 15:46:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mKiHVVQk"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95B0251C50;
+	Mon,  8 Jan 2024 15:46:45 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85A6F5103E;
-	Mon,  8 Jan 2024 15:46:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-28c2b8d6f2aso1084519a91.2;
-        Mon, 08 Jan 2024 07:46:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704728777; x=1705333577; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6ABIEatGvpONoYLEnM8zujVINLyFvWCQbpURBZGHqyc=;
-        b=mKiHVVQktys16d1/b7MkCrWnZpxoc85LXFsbfPNgCTaSKxzoEVLjYAGOJTC3BJs0Ri
-         gL+zJO9U+OG2jhMKU8xNhWqXKGp8UYZ6Mls75foj0jYdK47r0avg7bNJXwnyasj1ZcrO
-         sPnNK6VpmYnJ2QePsIi/5W3xfqVSTnfKppGBvRi5rTMzDwjGLWZsCcLNmjjiCukNDrrG
-         Xj9LJ2k3ZKNFkc9qGPhV68i2yOQ19fwGsCH71zj6BrM09uNKjdtpMBMgzCBwaQH8abz6
-         uF/B2dNgnZRla6DBZSpbl8NQrlIZ9qMgOf1oCtX4Fe2U0ufnceUG6yZ3wF83rYAXWAWS
-         Nr1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704728777; x=1705333577;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6ABIEatGvpONoYLEnM8zujVINLyFvWCQbpURBZGHqyc=;
-        b=DRNJ9ccm3E1JS+xYu+dDCA5ArlD9Har8fv3orStiZ+OfN492TEFY6WyC4n8LOU8xku
-         gzD9wxTHLzgCmtITiazSTStFtLfKSPTeoh7kkaHEqXlpfHnN4JdamoZmcA9SIdljWuxZ
-         fysQjfFNNxyBS/aIF2i7VXotREOT0hL/HWKGMrFjFWfBAkJ8eTvqNos2T/ohDkPauiEk
-         Db9uJ19HX2G82pNEahfFADiwgtNxddbsA2fGYWnSg8T8n8Gd4KC6y9FkvTyVqOteDaQq
-         53op73ytnw9V8zsNwz6HOFA7tEIEvBtrVWAtuiIasoOpCThcQORgFchS27I5DGoO0ET9
-         yZFQ==
-X-Gm-Message-State: AOJu0Yx9imv/mZvKyOkJzI1wnz8vrI37Y4ymdzoeaL/4ZjNNZCWipJWC
-	LQ0/3uAZESRxiyj/6jFaIroZDhLxj7gqcCR8Vm37dVqT
-X-Google-Smtp-Source: AGHT+IHZJe1ZY74k1Lg4LUidpgawMu0QAPQhvu8GZrpY+cE2pAX9oNfGVAG8ljK3e18QPKlpOElMC5jvPt+GMAfHuo0=
-X-Received: by 2002:a17:90a:d315:b0:28c:d85:9807 with SMTP id
- p21-20020a17090ad31500b0028c0d859807mr1131248pju.78.1704728776801; Mon, 08
- Jan 2024 07:46:16 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F5E25103F
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 15:46:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei-partners.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei-partners.com
+Received: from mail.maildlp.com (unknown [172.18.186.231])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4T7z081kdMz6FGpG;
+	Mon,  8 Jan 2024 23:44:56 +0800 (CST)
+Received: from frapeml500002.china.huawei.com (unknown [7.182.85.205])
+	by mail.maildlp.com (Postfix) with ESMTPS id BAE0F1404F5;
+	Mon,  8 Jan 2024 23:46:39 +0800 (CST)
+Received: from [10.126.171.78] (10.126.171.78) by
+ frapeml500002.china.huawei.com (7.182.85.205) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 8 Jan 2024 16:46:38 +0100
+Message-ID: <c68cfc31-317c-4709-a2e5-3729a137b1bb@huawei-partners.com>
+Date: Mon, 8 Jan 2024 16:46:35 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240103095650.25769-1-linyunsheng@huawei.com>
- <20240103095650.25769-5-linyunsheng@huawei.com> <1a66f99173de36e1ae639569582feaf76202361d.camel@gmail.com>
- <705e59c2-6f46-5d39-b8da-8e2310904d71@huawei.com>
-In-Reply-To: <705e59c2-6f46-5d39-b8da-8e2310904d71@huawei.com>
-From: Alexander Duyck <alexander.duyck@gmail.com>
-Date: Mon, 8 Jan 2024 07:45:40 -0800
-Message-ID: <CAKgT0UdLA820trYGWkgNR8KFX=QbFbiR_AcrWXwFwrmQzaVmKA@mail.gmail.com>
-Subject: Re: [PATCH net-next 4/6] vhost/net: remove vhost_net_page_frag_refill()
-To: Yunsheng Lin <linyunsheng@huawei.com>
-Cc: davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com, 
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Jason Wang <jasowang@redhat.com>, "Michael S. Tsirkin" <mst@redhat.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, kvm@vger.kernel.org, 
-	virtualization@lists.linux.dev, bpf@vger.kernel.org
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] swiotlb: check alloc_size before the allocation of a new
+ memory pool
+To: Peng Zhang <zhangpeng362@huawei.com>, <hch@lst.de>,
+	<m.szyprowski@samsung.com>, <robin.murphy@arm.com>, <iommu@lists.linux.dev>,
+	<linux-kernel@vger.kernel.org>
+CC: <wangkefeng.wang@huawei.com>, <sunnanyong@huawei.com>
+References: <20240108140005.3355316-1-zhangpeng362@huawei.com>
+Content-Language: en-US
+From: Petr Tesarik <petr.tesarik1@huawei-partners.com>
+In-Reply-To: <20240108140005.3355316-1-zhangpeng362@huawei.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: frapeml100001.china.huawei.com (7.182.85.63) To
+ frapeml500002.china.huawei.com (7.182.85.205)
 
-On Mon, Jan 8, 2024 at 1:06=E2=80=AFAM Yunsheng Lin <linyunsheng@huawei.com=
-> wrote:
->
-> On 2024/1/6 0:06, Alexander H Duyck wrote:
-> >>
-> >>  static void handle_tx_copy(struct vhost_net *net, struct socket *sock=
-)
-> >> @@ -1353,8 +1318,7 @@ static int vhost_net_open(struct inode *inode, s=
-truct file *f)
-> >>                      vqs[VHOST_NET_VQ_RX]);
-> >>
-> >>      f->private_data =3D n;
-> >> -    n->page_frag.page =3D NULL;
-> >> -    n->refcnt_bias =3D 0;
-> >> +    n->pf_cache.va =3D NULL;
-> >>
-> >>      return 0;
-> >>  }
-> >> @@ -1422,8 +1386,9 @@ static int vhost_net_release(struct inode *inode=
-, struct file *f)
-> >>      kfree(n->vqs[VHOST_NET_VQ_RX].rxq.queue);
-> >>      kfree(n->vqs[VHOST_NET_VQ_TX].xdp);
-> >>      kfree(n->dev.vqs);
-> >> -    if (n->page_frag.page)
-> >> -            __page_frag_cache_drain(n->page_frag.page, n->refcnt_bias=
-);
-> >> +    if (n->pf_cache.va)
-> >> +            __page_frag_cache_drain(virt_to_head_page(n->pf_cache.va)=
-,
-> >> +                                    n->pf_cache.pagecnt_bias);
-> >>      kvfree(n);
-> >>      return 0;
-> >>  }
-> >
-> > I would recommend reordering this patch with patch 5. Then you could
-> > remove the block that is setting "n->pf_cache.va =3D NULL" above and ju=
-st
-> > make use of page_frag_cache_drain in the lower block which would also
-> > return the va to NULL.
->
-> I am not sure if we can as there is no zeroing for 'struct vhost_net' in
-> vhost_net_open().
->
-> If we don't have "n->pf_cache.va =3D NULL", don't we use the uninitialize=
-d data
-> when calling page_frag_alloc_align() for the first time?
+On 1/8/2024 3:00 PM, Peng Zhang wrote:
+> From: ZhangPeng <zhangpeng362@huawei.com>
+> 
+> The allocation request for swiotlb contiguous memory greater than
+> 128*2KB cannot be fulfilled because it exceeds the maximum contiguous
+> memory limit. If the swiotlb memory we allocate is larger than 128*2KB,
+> swiotlb_find_slots() will still schedule the allocation of a new memory
+> pool, which will increase memory overhead.
+> 
+> Fix it by adding a check with alloc_size no more than 128*2KB before
+> scheduling the allocation of a new memory pool in swiotlb_find_slots().
+> 
+> Signed-off-by: ZhangPeng <zhangpeng362@huawei.com>
+> ---
+>  kernel/dma/swiotlb.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
+> index 33d942615be5..cc92cff02c60 100644
+> --- a/kernel/dma/swiotlb.c
+> +++ b/kernel/dma/swiotlb.c
+> @@ -1126,6 +1126,9 @@ static int swiotlb_find_slots(struct device *dev, phys_addr_t orig_addr,
+>  	u64 phys_limit;
+>  	int index;
+>  
+> +	if (alloc_size > IO_TLB_SEGSIZE * IO_TLB_SIZE)
+> +		return -1;
+> +
+>  	rcu_read_lock();
+>  	list_for_each_entry_rcu(pool, &mem->pools, node) {
+>  		index = swiotlb_pool_find_slots(dev, pool, orig_addr,
 
-I see. So kvmalloc is used instead of kvzalloc when allocating the
-structure. That might be an opportunity to clean things up a bit by
-making that change to reduce the risk of some piece of memory
-initialization being missed.
+IIUC this such big allocations are not normally required by drivers, but
+I have already run into a similar issue with a Raspberry Pi 4 dma-buf
+object, so they can be triggered at will by user space. I also believe
+this sanity check is a good idea in general, not only when dynamic
+SWIOTLB is enabled.
 
-That said, I still think reordering the two patches might be useful as
-it would help to make it so that the change you make to vhost_net is
-encapsulated in one patch to fully enable the use of the new page pool
-API.
+Reviewed-by: Petr Tesarik <petr.tesarik1@huawei-partners.com>
+
+Petr T
 
