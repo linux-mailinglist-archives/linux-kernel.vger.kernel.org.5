@@ -1,156 +1,99 @@
-Return-Path: <linux-kernel+bounces-20171-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20172-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 752FA827B51
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 00:13:33 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D8374827B55
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 00:15:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1002628508B
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 23:13:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 84B46B22AE0
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 23:15:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76C1253E3F;
-	Mon,  8 Jan 2024 23:13:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49A695476B;
+	Mon,  8 Jan 2024 23:15:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="4VUg1IKo"
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZJ8foQrT"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 200712EB12
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 23:13:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a28ee72913aso587167066b.1
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 15:13:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1704755602; x=1705360402; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fecCiAR481SWOqpFkPJSiF/c70aAk78xZ2uswrvKLww=;
-        b=4VUg1IKo3IWKor1hKqJhlqLqOiP87mquqNU6c9FG5aHfrMJRGEfxkTP6v0GIqR/60l
-         OxEMG2GUxZzqCR3wDlD5F8ilXnC82XwdnKWP2uLRiuvR3gjcFzxMi11FjqPA8OPPrMxL
-         NuRcW4Pa6LBz2EtoSyR2qFZv5YSJ2tI21c5K9KYbkIJQ1iirohxONsnrdAJabur0loyX
-         PXX6XLXnNs9XfAQJRaJKYYyEzqMAEcs5BuKh4ZkzjDMi9XQLe8nd5BsFP/yd4dngMehR
-         E1iFXIstuiQmyQcMksHUPdeMqivijxC8dKVoSY3zvSj9XlUL4wXq3FZnT10Vu8vqZH4Q
-         hGcw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704755602; x=1705360402;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fecCiAR481SWOqpFkPJSiF/c70aAk78xZ2uswrvKLww=;
-        b=JbqyShYu6EJ/LGGDNo8lHeg/tqD8XXGwWqVvQizph7Kv1dzswGnUxObi8U8qXPdH3m
-         sHOVP9vNaZ7hypWzDC5SMJY47KVMJCv1leceFp90ayBtzLo/VGICTQIMryO9avWC012a
-         SDmuv+3FPS/HlMZDgWlK7L4uBAyan2ReD59S+4aeL2acPAGYL4hNt9DbqfhYOi+BjPqZ
-         0fimsh8p3vpBtXr5s6DqF1OKiY9Ft5NQnksLo0PjuPlBGQiQ/1gA0o5wrf0qet5k89FW
-         29rP0srPy7R2vm/hyJ50uCA8Isk3CJkmVEpz5XpLhJg7uUYx7qybUo8LwPRCcT3zU+ig
-         g+Ng==
-X-Gm-Message-State: AOJu0Ywlxrqscw06rVa1XjeV0NpeLn1s8QX5TWZ51vHKo5SezTj/fErJ
-	CelSeBnzdLtUANfdESX66M1IFxYD6o6noa7wW2X59UduT6Xb
-X-Google-Smtp-Source: AGHT+IG9FZliAE8ycwaVIJMrC1FRCDl1rIILVQHoDAQ2lQ0DPsbMkwQgzFpd6F5F+y2lmeGdKKadoIEf1q5ihv/vjaY=
-X-Received: by 2002:a17:906:1dd:b0:a28:c04e:315b with SMTP id
- 29-20020a17090601dd00b00a28c04e315bmr131634ejj.13.1704755602122; Mon, 08 Jan
- 2024 15:13:22 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AA5EB672
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 23:15:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1E403C433C7;
+	Mon,  8 Jan 2024 23:15:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704755724;
+	bh=7KlcJVD8ZYiOIvP/KELAQLAx/l7D+V5cUHRCxDMgkEY=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=ZJ8foQrTyKniQDnjPPX687cBiNwV5nw4ShB8Muq+4lXuESkucboH5Vku4ScB+8cBy
+	 0MdQgDmKl6s/jmTBscx0oGEpwgJrZkC4II30SMotD52XMKx1wLFOMsteVm6ZYxwpXJ
+	 TARpO+7tmxHAQSgTg6uTiGx+XoUO3HItG4GfNusKRwyDCKp9naNZIiPR9arAR9ChcJ
+	 jc5AWwEXiwhyaKfj1WVjCeSpB7F6N4RrHodJoQUVGz/y+9QK9oTwKkn3EdUbUvMZA+
+	 A2cZVFcawaROBhQYKMrnwu4AkePCUb2gRcZQ8ruRHGNNvURJU9hqekMAa1KUnJGN2v
+	 3SsKrVZV57IJQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id B2278CE0C54; Mon,  8 Jan 2024 15:15:23 -0800 (PST)
+Date: Mon, 8 Jan 2024 15:15:23 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: lucas.dimarchi@intel.com, ogabbay@kernel.org,
+	thomas.hellstrom@linux.intel.com, linux-kernel@vger.kernel.org,
+	intel-xe@lists.freedesktop.org
+Subject: Re: [BUG] allmodconfig build error in next-20240108
+Message-ID: <341a4955-0cdd-48d0-bfbd-cc6f6f09df37@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <45ad1d0f-a10f-483e-848a-76a30252edbe@paulmck-laptop>
+ <20240109095757.1313b2d9@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231024142706.195517-1-hezhongkun.hzk@bytedance.com>
- <CAKEwX=OiNB+pPhb-3Tf7O=F7psKE3EOpwmbPSeLSOyuHpj3i+Q@mail.gmail.com>
- <CACSyD1P6HmH9tSvONnNxYv8P+am_hH2dK3UJQd9_+o6EWkPsXA@mail.gmail.com>
- <CAKEwX=PC3C-PrWAH3XiYGyR4ujqBJQBBX6uRa2jXKCy9VMyRCQ@mail.gmail.com>
- <CACSyD1O7t0+BXUujJ81RAdEys3MUnmpu0sRADLazoyvayx5DLA@mail.gmail.com>
- <CAKEwX=P5AC+ubnunnZr5vMiC6fFU+E_E7jg_FZztWwZRYSxTWQ@mail.gmail.com>
- <CACSyD1Nnc_w3epbt6+EMt7a-4pAzgW1hbE=G5Fy5Tc5R5+uxKw@mail.gmail.com>
- <CAKEwX=NuXR9Ot1eRFsp9n-3Tq9yhjD9up+jyvXeOzQ4xK9kEPA@mail.gmail.com> <CAKEwX=Oj2dR6a4-DeccvcVdJ-J7b=83uCWQAf5u7U0sySudnkw@mail.gmail.com>
-In-Reply-To: <CAKEwX=Oj2dR6a4-DeccvcVdJ-J7b=83uCWQAf5u7U0sySudnkw@mail.gmail.com>
-From: Yosry Ahmed <yosryahmed@google.com>
-Date: Mon, 8 Jan 2024 15:12:45 -0800
-Message-ID: <CAJD7tkb2oda=4f0s8w8xn+t_TM1b2Q_otbb86VPQ9R1m2uqDTA@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH] mm: zswap: fix the lack of page lru flag
- in zswap_writeback_entry
-To: Nhat Pham <nphamcs@gmail.com>
-Cc: Zhongkun He <hezhongkun.hzk@bytedance.com>, akpm@linux-foundation.org, 
-	hannes@cmpxchg.org, sjenning@redhat.com, ddstreet@ieee.org, 
-	vitaly.wool@konsulko.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
-	Chris Li <chrisl@kernel.org>, weijie.yang@samsung.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240109095757.1313b2d9@canb.auug.org.au>
 
-On Sun, Jan 7, 2024 at 1:59=E2=80=AFPM Nhat Pham <nphamcs@gmail.com> wrote:
->
-> On Sun, Jan 7, 2024 at 1:29=E2=80=AFPM Nhat Pham <nphamcs@gmail.com> wrot=
-e:
+On Tue, Jan 09, 2024 at 09:57:57AM +1100, Stephen Rothwell wrote:
+> Hi Paul,
+> 
+> On Mon, 8 Jan 2024 13:33:36 -0800 "Paul E. McKenney" <paulmck@kernel.org> wrote:
 > >
-> > On Fri, Jan 5, 2024 at 6:10=E2=80=AFAM Zhongkun He <hezhongkun.hzk@byte=
-dance.com> wrote:
-> > >
-> > > > > There is another option here, which is not to move the page to th=
-e
-> > > > > tail of the inactive
-> > > > > list after end_writeback and delete the following code in
-> > > > > zswap_writeback_entry(),
-> > > > > which did not work properly. But the pages will not be released f=
-irst.
-> > > > >
-> > > > > /* move it to the tail of the inactive list after end_writeback *=
-/
-> > > > > SetPageReclaim(page);
-> >
-> >
-> > Ok, so I took a look at the patch that originally introduced this
-> > piece of logic:
-> >
-> > https://github.com/torvalds/linux/commit/b349acc76b7f65400b85abd09a5379=
-ddd6fa5a97
-> >
-> > Looks like it's not for the sake of correctness, but only as a
-> > best-effort optimization (reducing page scanning). If it doesn't bring
-> > any benefit (i.e due to the newly allocated page still on the cpu
-> > batch), then we can consider removing it. After all, if you're right
-> > and it's not really doing anything here - why bother. Perhaps we can
-> > replace this with some other mechanism to avoid it being scanned for
-> > reclaim.
->
-> For instance, we can grab the local lock, look for the folio in the
-> add batch and take the folio off it, then add it to the rotate batch
-> instead? Not sure if this is doable within folio_rotate_reclaimable(),
-> or you'll have to manually perform this yourself (and remove the
-> PG_reclaim flag set here so that folio_end_writeback() doesn't try to
-> handle it).
->
-> There is still some overhead with this, but at least we don't have to
-> *drain everything* (which looks like what's lru_add_drain() ->
-> lru_add_drain_cpu() is doing). The latter sounds expensive and
-> unnecessary, whereas this is just one element addition and one element
-> removal - and if IIUC the size of the per-cpu add batch is capped at
-> 15, so lookup + removal (if possible) shouldn't be too expensive?
->
-> Just throwing ideas out there :)
+> > Recent -next trees get the following build error for allmodconfig builds:
+> > 
+> > ------------------------------------------------------------------------
+> > 
+> > drivers/gpu/drm/xe/xe_gt_pagefault.c: In function ‘xe_guc_pagefault_handler’:
+> > ./include/linux/fortify-string.h:57:33: error: writing 16 bytes into a region of  size 0 [-Werror=stringop-overflow=]
+> >    57 | #define __underlying_memcpy     __builtin_memcpy
+> >       |                                 ^
+> > ./include/linux/fortify-string.h:644:9: note: in expansion of macro ‘__underlying_memcpy’
+> >   644 |         __underlying_##op(p, q, __fortify_size); \
+> >       |         ^~~~~~~~~~~~~
+> > ./include/linux/fortify-string.h:689:26: note: in expansion of macro ‘__fortify_memcpy_chk’
+> >   689 | #define memcpy(p, q, s)  __fortify_memcpy_chk(p, q, s, \
+> >       |                          ^~~~~~~~~~~~~~~~~~~~
+> > drivers/gpu/drm/xe/xe_gt_pagefault.c:340:17: note: in expansion of macro ‘memcpy’
+> >   340 |                 memcpy(pf_queue->data + pf_queue->tail, msg, len * sizeof(u32));
+> >       |                 ^~~~~~
+> > In file included from drivers/gpu/drm/xe/xe_device_types.h:17,
+> >                  from drivers/gpu/drm/xe/xe_vm_types.h:16,
+> >                  from drivers/gpu/drm/xe/xe_bo.h:13,
+> >                  from drivers/gpu/drm/xe/xe_gt_pagefault.c:16:
+> > drivers/gpu/drm/xe/xe_gt_types.h:102:25: note: at offset [1144, 265324] into destination object ‘tile’ of size 8
+> >   102 |         struct xe_tile *tile;
+> >       |
+> 
+> Which architecture?  What compiler and version?  Anything special in your build
+> setup?  I do x86_64 allmodconfig builds all day with gcc v13.2 and I don't see
+> this failure.
 
-Sorry for being late to the party. It seems to me that all of this
-hassle can be avoided if lru_add_fn() did the right thing in this case
-and added the folio to the tail of the lru directly. I am no expert in
-how the page flags work here, but it seems like we can do something
-like this in lru_add_fn():
+Good point!
 
-if (folio_test_reclaim(folio))
-    lruvec_add_folio_tail(lruvec, folio);
-else
-    lruvec_add_folio(lruvec, folio);
+I am using gcc version 11.3.1 20230605 (Red Hat 11.4.1-2) on x86_64.
+I see the same behavior on gcc version 8.5.0, which for all I know might
+be too old.
 
-I think the main problem with this is that PG_reclaim is an alias to
-PG_readahead, so readahead pages will also go to the tail of the lru,
-which is probably not good.
-
-A more intrusive alternative is to introduce a folio_lru_add_tail()
-variant that always adds pages to the tail, and optionally call that
-from __read_swap_cache_async() instead of folio_lru_add() based on a
-new boolean argument. The zswap code can set that boolean argument
-during writeback to make sure newly allocated folios are always added
-to the tail of the lru.
+							Thanx, Paul
 
