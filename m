@@ -1,126 +1,118 @@
-Return-Path: <linux-kernel+bounces-20005-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20006-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97BB8827821
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 20:08:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BCF0B827826
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 20:09:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A3739B225CF
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 19:08:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6A8CA2846AD
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 19:09:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC13F54F8F;
-	Mon,  8 Jan 2024 19:08:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D092754FA5;
+	Mon,  8 Jan 2024 19:09:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ihxtPQbl"
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="GlG+GYPB"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com [209.85.219.174])
+Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB4D754F8A
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 19:08:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-dbd715ed145so1261915276.1
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 11:08:03 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1866454F86
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 19:09:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-5e89ba9810aso16140567b3.2
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 11:09:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704740882; x=1705345682; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1704740945; x=1705345745; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=SM3aC6olapTfRcKgxOoQ7CTMu8MLMwnZq6KcPmvWqC0=;
-        b=ihxtPQblgyUl5mkpU2abXMU++S4ZvzmCIzJiOeEjsGkqvDL2VcESp9opbwgrdka/9c
-         b4GKTAC5wpLlLobu51JlaaREIK6YeOyHGGE5ugMrHOYpGv4tNxMSLjxTjrciQC0lpVXG
-         PAfYWFuMXh6YK4ZdD49b4ANrtj0ASOnlRRfOeVDOGf1EK2Qg+4VypFkXqmmrw8MmQiCG
-         G3JvEPbO9AXKl2fzTCj7qyJgdLYqOuWW8uT2cCahauv0Z4UAPtRvmneoi2x5G37Gm1cX
-         /TqjqfFNpOuITp6tXs046JAqMHcQNl4WhwmVDSbpjiovA+VegVQbqwf8lXQXqcd6BT3Y
-         D4sw==
+        bh=DdFDb54bQ/iPZlWQVp8olWIpdQfHr4McuEO6nhlwfQY=;
+        b=GlG+GYPBaC93H4it9eM8pRSdwurFyP2Ql2YuSkEGmab95FTEjZ1k6R6yI37Vm8Ux0o
+         Wmi931NCs9UBulRCUo8yNib1/G4lfTfNbsP40owBq85u0UpZ/HPKoiRO50cNR52ziYga
+         wOVmUYSZ1ZJqDk4n0q7p6oQg+RqzFJimvrofs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704740882; x=1705345682;
+        d=1e100.net; s=20230601; t=1704740945; x=1705345745;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=SM3aC6olapTfRcKgxOoQ7CTMu8MLMwnZq6KcPmvWqC0=;
-        b=lZYwr2ExE+XpyA1lpPaJU7Y3ayhczCvS8WA4IYfbrUzm0nmWJt8oBEw2SUvogD9M64
-         ZiR3kjBPs371khLkFdMrGuypATVb9DlcJsieQA8RDSIB+1f476DYbsdEEleF0IV02bwt
-         253u0Env0MIFDRmttSsIcyt/F5rYfxw52KletAUBOiJiUlNkVujhyIgPJtff9iV8WtX7
-         XfkMxPWCkeWVDjp0GgknsVbAmXcec20tIAueRF/LuKK65OnoPTHAUhfs4dBpu4CLxYaN
-         l3mSUbAToH96gTKVk+5ZzU1qDnxXWpM4Ie5bwtr9w3Rk55M3lW1Y1xQ0dBeSPB/CEZSv
-         ANOw==
-X-Gm-Message-State: AOJu0YwxPb9jahLzFbbBFPe+b5lQBU2bS/Tx/TBfTTqhB1JG3bD7cpxW
-	0xroFgXcxOXB3CHs/aTIrhx89wfJOgdPFn01LaNLQ0mLbtKyKLgmLRF/woQJyYTMyA==
-X-Google-Smtp-Source: AGHT+IFUDrKtN6+cLggfKBa01OY/UJnyibyg/gt78qguBxgUpnHsr3JF10cBom9sAGfl7XW03Vr81pUVakoZkhwEwFk=
-X-Received: by 2002:a25:ce10:0:b0:dbd:d4ea:7b7 with SMTP id
- x16-20020a25ce10000000b00dbdd4ea07b7mr1916063ybe.60.1704740882574; Mon, 08
- Jan 2024 11:08:02 -0800 (PST)
+        bh=DdFDb54bQ/iPZlWQVp8olWIpdQfHr4McuEO6nhlwfQY=;
+        b=daTIr0teSes4ziR2/mzanVMy1QaUqLWJWa1Iwv3boxgyhQ0zNLKcJt1M8pltfMYAFn
+         VBRDKCGPeZlmm+yCWhSlBuN3CQkR8f5OkA2R82EJqyfp8MHpF2ZfRJIWM64WbfTZQUyc
+         Pr1BGy9OaRzfOF2COgEcUyVJTATTAN7t7/WK7JG5iRVtfQuWjjjDhQct1F0bv8bIPNNh
+         dosLCvmi20f6rOkiJtQpydL98eNqeUMjvhtJ+pz0+WMskJ1J0RCnYzYdrHW6hnks89c8
+         8ySZcL82ymRD6uoOQLGqpDckxbCyLhBf2ziAnUZLbr05Gmhkdm0Ee3jguGcQK8xb6BIj
+         rqjw==
+X-Gm-Message-State: AOJu0Yy0LcsdbZEmx0E7TA2eyXjmmLc/A4dashtBawxkjfyW0XjlwoRz
+	rmVnES58lDtiZPTNqt2wBSWcwJdUNjEVjOCBMNgNNb53qMXT
+X-Google-Smtp-Source: AGHT+IFqbTaQBwF5KFHSC80fhApdUGgPLP6zXYivf0vKMqkNEHamGGwAXksyQIg4izP7sJkzpmbX+Xe8BuslOn3+lWc=
+X-Received: by 2002:a81:f106:0:b0:5f6:dee2:2b25 with SMTP id
+ h6-20020a81f106000000b005f6dee22b25mr2099819ywm.80.1704740945135; Mon, 08 Jan
+ 2024 11:09:05 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240106-fd-migrate-mdp5-v3-0-3d2750378063@linaro.org>
- <20240106-fd-migrate-mdp5-v3-3-3d2750378063@linaro.org> <c8d6769b-eb28-337c-fa55-4dae86611da5@quicinc.com>
- <CAA8EJpoF3uKobGzjHbLMKYvcQbdqYzur7Mn1cNDPyc+wiiZ+SQ@mail.gmail.com> <9807bb4a-98d9-8f4b-b24d-0134f42f6cd3@quicinc.com>
-In-Reply-To: <9807bb4a-98d9-8f4b-b24d-0134f42f6cd3@quicinc.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Mon, 8 Jan 2024 21:07:51 +0200
-Message-ID: <CAA8EJpqmkzOaewrW8tqSV5wz+0zovZx-kpMdVWp_nW_g1KrRzA@mail.gmail.com>
-Subject: Re: [PATCH v3 3/4] drm/msm: add a kernel param to select between MDP5
- and DPU drivers
-To: Carl Vanderlip <quic_carlv@quicinc.com>
-Cc: Rob Clark <robdclark@gmail.com>, Abhinav Kumar <quic_abhinavk@quicinc.com>, 
-	Sean Paul <sean@poorly.run>, Marijn Suijten <marijn.suijten@somainline.org>, 
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, linux-arm-msm@vger.kernel.org, 
-	freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
-	dri-devel@lists.freedesktop.org, Stephen Boyd <swboyd@chromium.org>
+References: <20240102210820.2604667-1-markhas@chromium.org>
+ <20240102140734.v4.2.Ifd0903f1c351e84376d71dbdadbd43931197f5ea@changeid> <ZZlnNR1-yKLSIWeF@smile.fi.intel.com>
+In-Reply-To: <ZZlnNR1-yKLSIWeF@smile.fi.intel.com>
+From: Mark Hasemeyer <markhas@chromium.org>
+Date: Mon, 8 Jan 2024 12:08:54 -0700
+Message-ID: <CANg-bXA+zuPAYHKaYihkPN1W3+78gBx_Edvhb-a6DqD_adJeaA@mail.gmail.com>
+Subject: Re: [PATCH v4 02/24] gpiolib: acpi: Modify acpi_dev_irq_wake_get_by()
+ to use resource
+To: Andy Shevchenko <andriy.shevchenko@intel.com>
+Cc: LKML <linux-kernel@vger.kernel.org>, Sudeep Holla <sudeep.holla@arm.com>, 
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Raul Rangel <rrangel@chromium.org>, Tzung-Bi Shih <tzungbi@kernel.org>, 
+	Bartosz Golaszewski <brgl@bgdev.pl>, Len Brown <lenb@kernel.org>, 
+	Linus Walleij <linus.walleij@linaro.org>, 
+	Mika Westerberg <mika.westerberg@linux.intel.com>, "Rafael J. Wysocki" <rafael@kernel.org>, 
+	Wolfram Sang <wsa@kernel.org>, linux-acpi@vger.kernel.org, linux-gpio@vger.kernel.org, 
+	linux-i2c@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-On Mon, 8 Jan 2024 at 19:57, Carl Vanderlip <quic_carlv@quicinc.com> wrote:
+> Missing blank line.
+> We put a commit message as
 >
+> $SUMARY
+> ...blank line...
+> $DESCRIPTION (can contain blank lines)
+> ...blank line...
+> $TAG block (may not contain blank lines)
 >
->
-> On 1/5/2024 4:38 PM, Dmitry Baryshkov wrote:
-> > On Sat, 6 Jan 2024 at 02:04, Carl Vanderlip <quic_carlv@quicinc.com> wrote:
-> >>
-> >>
-> >> On 1/5/2024 3:34 PM, Dmitry Baryshkov wrote:
-> >>> diff --git a/drivers/gpu/drm/msm/msm_drv.c b/drivers/gpu/drm/msm/msm_drv.c
-> >>> index 50b65ffc24b1..ef57586fbeca 100644
-> >>> --- a/drivers/gpu/drm/msm/msm_drv.c
-> >>> +++ b/drivers/gpu/drm/msm/msm_drv.c
-> >>> @@ -969,6 +969,37 @@ static int add_components_mdp(struct device *master_dev,
-> >>>        return 0;
-> >>>    }
-> >>>
-> >>> +#if !IS_REACHABLE(CONFIG_DRM_MSM_MDP5) || !IS_REACHABLE(CONFIG_DRM_MSM_DPU)
-> >>> +bool msm_disp_drv_should_bind(struct device *dev, bool mdp5_driver)
-> >>> +{
-> >>> +     /* If just a single driver is enabled, use it no matter what */
-> >>> +     return true;
-> >>> +}
-> >>
-> >> This will cause both MDP/DPU probes to return -ENODEV, rather than
-> >> select the enabled one.
-> >
-> > No. The code (e.g. for DPU) is:
-> >
-> >         if (!msm_disp_drv_should_bind(&pdev->dev, true))
-> >                  return -ENODEV;
-> >
-> > So the driver returns -ENODEV if msm_disp_drv_should_bind() returns
-> > false. Which is logical from the function name point of view.
-> >
->
-> but msm_disp_drv_should_bind() is returning true in the #if !REACHABLE()
-> case?
->
-> at minimum the comment is incorrect since returning true causes the
-> driver to NOT be used.
+> > Signed-off-by: Mark Hasemeyer <markhas@chromium.org>
 
-No. Returning _false_ causes the driver to not be used.
+Looks like a nuance of patman I need to iron out.
 
--- 
-With best wishes
-Dmitry
+>
+> ...
+>
+> > +                     unsigned long res_flags;
+>
+> Why not calling it irq_flags?
+
+irq_flags is already used within the same scope, although it's
+declared at the top of the function. I'll move the declaration to the
+scope where it's used and rename irq_flags -> irq_type, and irq_res ->
+irq_flags.
+
+> > +struct resource;
+>
+> This...
+>
+> > +     struct resource r = {};
+>
+> > +     return ret ?: r.start;
+>
+> ...does _not_ cover these cases.
+>
+> Hence ioport.h must be included. Did I miss it?
+
+You're right. It didn't break the build, which means ioport.h must be
+included indirectly. I'll add it back.
 
