@@ -1,166 +1,190 @@
-Return-Path: <linux-kernel+bounces-19459-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19460-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3C09A826D35
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 12:56:59 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 02282826D3A
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 12:58:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4AB701C22220
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 11:56:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 72C101F226D7
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 11:58:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED2B1219E2;
-	Mon,  8 Jan 2024 11:56:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE5C022091;
+	Mon,  8 Jan 2024 11:58:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JRktUcaS"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="enOChvHJ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2048.outbound.protection.outlook.com [40.107.223.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB9CE2575A;
-	Mon,  8 Jan 2024 11:56:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-55753dc5cf0so1978262a12.0;
-        Mon, 08 Jan 2024 03:56:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704715008; x=1705319808; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=C3jG1+g9orZDYd7ZrTJDWqqE7ECfbqn0Ds9F5CofQDU=;
-        b=JRktUcaSPjA7qWP9BdYV+v1ipsl6xKpJCF4NnkXssLwwTEnXdZVkVA6SW3/AVHSOk4
-         r96qBzCFW7ykV0AG9PwXQrgYdYa9LAupPO7gWgFEGU1LiPbXo5Sd5rbBGaM3sM0Tjtnp
-         mQ4Z2ZLQqu88zh18E6bjKgTVZkolj2kk23nnh0WfMzhE0p5JzhD0rZZP8KF9qE/SRaLm
-         0kdykSVwlKoT7kfnwZupSz6mAioZChGgXBp8Ph8kj5GPREvBM8vaG7clsdSn8tN3KQlS
-         5Oli9UXXLMIIB7nYcEMYeK6O0yb4PxDuhgUTlAzlI8IoydCFAASK3TvDNilPM2UGx/dq
-         XaMw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704715008; x=1705319808;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=C3jG1+g9orZDYd7ZrTJDWqqE7ECfbqn0Ds9F5CofQDU=;
-        b=fWSFxPOzPlWn9mlrtb9QkwiimfXUCs0nlgRtDpGxmxl7X6Nt/FeFLlP74mIbKcO0ud
-         zqDdIps4PkGEsuC04Bj997V6/i4ENcOROhbIYNMFBT2V4FiB5BxT7LEQTQiu2l5V3BID
-         mAKsebSb56vuUBp5bDOruW0PHni/3uUJNw+fguXANHtG/+qJuDuo4clEBtyxl7qeGI9R
-         i/+GExdbAe4YoGZPm3+jf4s64WyyOPqZlygYu9UU/VV0fpXpDSPaE5/b2UHrvy/S/+Wj
-         GwjYjyTLEmJP/vuGyHB3mTngV7/6zaUSe+gkE0Xg1On0rInud4or+2gFzrs6gzzrjmoq
-         MCoA==
-X-Gm-Message-State: AOJu0Yz/TtEWpihKI7BCgHzrws2TPlOT5+QMlMzcyeTdndWfaXzRBdLl
-	EmknPjDkndfXNRfrK5Rukgk=
-X-Google-Smtp-Source: AGHT+IGy21YwV3E1QafQojen3DyVqfppJ4D76r3UB+dxIfeD0HkrBsUD3Khz9wpI/ph4CzMSw1ec0w==
-X-Received: by 2002:a17:906:859:b0:a27:7075:7613 with SMTP id f25-20020a170906085900b00a2770757613mr1417201ejd.67.1704715007931;
-        Mon, 08 Jan 2024 03:56:47 -0800 (PST)
-Received: from gmail.com (1F2EF3FE.nat.pool.telekom.hu. [31.46.243.254])
-        by smtp.gmail.com with ESMTPSA id d20-20020a1709061f5400b00a2b086c29e1sm146372ejk.127.2024.01.08.03.56.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Jan 2024 03:56:47 -0800 (PST)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date: Mon, 8 Jan 2024 12:56:45 +0100
-From: Ingo Molnar <mingo@kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
-	Arnaldo Carvalho de Melo <acme@redhat.com>,
-	Jiri Olsa <jolsa@redhat.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Namhyung Kim <namhyung@kernel.org>,
-	linux-perf-users@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
-	Thomas Gleixner <tglx@linutronix.de>
-Subject: [GIT PULL] Performance events changes for v6.8
-Message-ID: <ZZvi/bFoxFRnS4vp@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 780022575A;
+	Mon,  8 Jan 2024 11:58:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QX/SygRH9v2ixSVQgRi0PkT00fg3ImKi24T0d4lhv7r8nmkejEx+TlD/RWWZY0vjQzlGE+IDudsbsWEFIGp6qBlEQ6nqccqcGCQ/zvnDbRmCSAi/BKS8CtzsLFI7W84USt4MeZ5C9KuggL4wBVZgPEmqekrCrT+aTjo2xzOW394Uvvk+ffDnqQl0VWne4h2m4xBo6jih0IKcbqSaKiVgIwYXYN6uiW9F/QtLuR5XGhEKPbLlXCSYKOlRNXW2fZsHuv38zRQRymDfoqkm9ubcT+RGuZ08r1wxAlv67BJiKW4rmos+U2kdhSbyfRN6IKooRc0NpDARG38rBcNtp5SBvA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=7S8wRJY7RrhhwPK0JuWEJ+IDUdTX0ZCfV/IktDYUmpA=;
+ b=fruUvLimxSkQvdltZfCoFSEVjT9DReKVh6TKnbK+5oqHaeZ9g1DFjTu+Z+mqUu2D/Qfrp9TrXB+QXtmdUjh1hVBha7ascvtPIGwNDSzWdSjf4Uwj764Mxb7kf2/v3J/gksAqbL9mUJECB+PNNXC7/7B41zEcgwOUKKGnW2U2JKNYuSz5Z3WBZJADsEB5TzVvYO05P6wk9ocqMt57+3LzLDBX6evWuSV2MaYKkWprREsD+bWwYR9hRQcUDy1A/dWLqecVFB7ehasC1QfERmKWci9KOXxx8Fng4b2uGguYkFZl6jPXGH/ErvhMd0S7sL1K/bsyWnSLiVU6EXYqiPMfnQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7S8wRJY7RrhhwPK0JuWEJ+IDUdTX0ZCfV/IktDYUmpA=;
+ b=enOChvHJa4N7gl01HAJ5d1D+OzaBZzOespSSYL48IbxX1pPEY/wvTl+Enww7C9Uqo3zjk9ZSjmfhCfPbSH1H/FJZe6cmqCdD4lvnjF2WryeBCO9siDZ3onHLNtbnBDq1/1ZgV5qsSv5hTp6h1Yga2LsEDsUAMcvUth6vzg9Bcjw/v7Tl6nPqb367oVzaM8s8gRemjyiZi8vCqF/kvJoM+FXtpuFE8xqxBK5+gsD+dib1E8cljkc6C+/+MckDt09AV+upNeEzwgnUQQxnyYrDgdX0FwfKoGbsaM5Skys/CsCkkZBu39u/WRVRxs4wkNWnsiDdox4JP6e2vFWV2If7lg==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from PH8PR12MB6674.namprd12.prod.outlook.com (2603:10b6:510:1c1::18)
+ by MW3PR12MB4490.namprd12.prod.outlook.com (2603:10b6:303:2f::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.23; Mon, 8 Jan
+ 2024 11:58:41 +0000
+Received: from PH8PR12MB6674.namprd12.prod.outlook.com
+ ([fe80::55f7:f35f:a684:bf3c]) by PH8PR12MB6674.namprd12.prod.outlook.com
+ ([fe80::55f7:f35f:a684:bf3c%4]) with mapi id 15.20.7159.020; Mon, 8 Jan 2024
+ 11:58:40 +0000
+Message-ID: <d8ccc4ea-385a-4def-bc71-574a99538e34@nvidia.com>
+Date: Mon, 8 Jan 2024 17:28:31 +0530
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V1] PCI/MSI: Fix MSI hwirq truncation
+To: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
+ bhelgaas@google.com, rdunlap@infradead.org, ilpo.jarvinen@linux.intel.com,
+ tglx@linutronix.de
+Cc: linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+ treding@nvidia.com, jonathanh@nvidia.com, sdonthineni@nvidia.com,
+ kthota@nvidia.com, mmaddireddy@nvidia.com, sagar.tv@gmail.com
+References: <20240105134339.3091497-1-vidyas@nvidia.com>
+ <e529aafc-7d97-4e38-b994-26ce99f2715d@linux.intel.com>
+Content-Language: en-US
+From: Vidya Sagar <vidyas@nvidia.com>
+In-Reply-To: <e529aafc-7d97-4e38-b994-26ce99f2715d@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MA0PR01CA0023.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:a01:b8::12) To PH8PR12MB6674.namprd12.prod.outlook.com
+ (2603:10b6:510:1c1::18)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH8PR12MB6674:EE_|MW3PR12MB4490:EE_
+X-MS-Office365-Filtering-Correlation-Id: 7f6dbd60-da96-4a7e-cb82-08dc104127b7
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	S3PW33u706WreM/Mv538vk2Mo/v7XoH90BrKzyE8kX68FtB0H2uHO8tDTJ1M52hYRMZT6SRn04BPkhiWQWQvW4AtrMWbuIkjWHrEQxbe0v0DTmZoGeZUBwxuSKZEwWLxtoVXER2ZKVJ0jXpxQacP7yeAfX7HkYF+pAgLHHHPkxl0ytulTAZMay4KR4ItFveWc3ImAvKFDnrxnn3INfgSA4gp2kJz5Jk3XHTQDW4lAcQ+zcECuuldlAzOMgK5Bh1FDKWz2SMudlnBEpep7gTu7/tBvQpiUa6lt5kjPS4HDjv2Wv3uNcE6KgXvEqtHLMXv9NRftBXnG/94rXmcfNqPePmxaFrGE9GhfgRH3F/9iOagyFxu30AnZR1yvnxHDFsHkoe0fwaAUhixxwLf/H/OhWxwI4gA/S+evhhvEhEUwC9EG6D562kASP/SLL3Jr2QqdzHjxzqhqAHs9pLvBIm2Wa97JMZ4BM/JPLsCrxokUruS8a/9pqIcgIqgj8dhSAq6xZbKsAe6vkQvg6WYnJtzeoMXBW/pXxDB9UtEX3SeMxu8vw8DaGA1ovT/pBnaNKGluttetPXM+tE5WV2yYV01HJeNuElofXOk6fAzrAn0NFwaDYLv526cQlSvcUmyDrPcQZYNRXAoG1fYOL1Xh17NpY6JLf32m+MoqzcapJGD6YqX1rfTXVQzsR+q7wYE0J0xQt5R12A32CElmMhZWPJ2jmIwHNOaT/MvukAerTDSzvU=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR12MB6674.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(39860400002)(366004)(396003)(376002)(136003)(230922051799003)(230273577357003)(230173577357003)(64100799003)(451199024)(186009)(1800799012)(31686004)(26005)(53546011)(2616005)(6666004)(6512007)(6506007)(478600001)(6486002)(966005)(38100700002)(86362001)(31696002)(36756003)(5660300002)(2906002)(41300700001)(83380400001)(66476007)(66946007)(316002)(66556008)(4326008)(8676002)(8936002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?djNJTVBNbzNCa3g5eVFSVzk0RGRlU3dYeE9MOTl1cm90UkNvRjhCZlNneFQx?=
+ =?utf-8?B?dkttRGVESWpQS1dlbklEeGtwWnpRaUZjWDc3SDlyaTJuVXNWUGdyVlF1ODRD?=
+ =?utf-8?B?UG90Nll2MlVXZlpnY1JBUkxjU3FUN2FhRVdrUWZteXJFSmZwb2ZVZ1RjK1N3?=
+ =?utf-8?B?MDNFa3p2eUJUTTJ0YjJCM3ZMZ050ek1oTUswc2kvR0ZhVi9STDdhZnlwZTUr?=
+ =?utf-8?B?YWNmUVRKTzdOSktzZlFHVVUzNXc0cGVBdWRMc2U5blFDUXIzc3hwZW03cVBs?=
+ =?utf-8?B?aG1IVUVKZW4rbHBWQUZFeVl4V0xZSnFUN1hRV21UdGo0OXpHbjJoQlFOVVVY?=
+ =?utf-8?B?NmxsMnNFdnovT3cyUEdpTzRmN0UxTlNmempkcTgrZHdmb2QzN3NCZkFvVDhs?=
+ =?utf-8?B?dkpWbTNxV1ZDdlkzTU1GRUpXM3J4M2U2dUM5ZHYvQkZJWjJTQ0lFc2x5T0p0?=
+ =?utf-8?B?My84d045Y1QyOGNRTWppSXNXMjRaeHA0VU8wVFpDZmZYUGMyYndsZU11OG1j?=
+ =?utf-8?B?NnlMZFdLSWhaNm5rc0VtL2QyanhRUmN5ZkFERXpqR21CQVM5ZFFsMUNaekJl?=
+ =?utf-8?B?SGJSQTEzL2NGVlJSTU1ZSHV3M1hLcCs0cE5icXFXc0NUSDdXbE5KTGlhNFY4?=
+ =?utf-8?B?MXBhZmVxSUJWTU5ER202OUszd1AwcDY3YVluVE81TitVUHZTSU5QdWx1bXFl?=
+ =?utf-8?B?bWtEdWhrUEdHcGtqZjZHaUtEMW15TTNFVFNNaEtJVkRMV21lc1pXZjU2cjFy?=
+ =?utf-8?B?a2I1RTZYYzBHRTVuRE8vU0RqT1oyVUoyN2Y4YUlvQmczTW1CTmE5TWpMcU43?=
+ =?utf-8?B?YTVpemFVL1krVFFTRTBBQWk0Y01sYi9zMnpUS1VwUnZzS0JjT0lBdS9Ob1Jq?=
+ =?utf-8?B?R2lzVWFGcTBRajFVOTgyRlpBL0ZqajBTSml5MW0yalVqeGxUM0o1dElCeXBp?=
+ =?utf-8?B?Rm81ejIvdmlIcThaeGdzU0RVWFJNSTNoRGtzdXRDemVZT2VZWlFmUm9ONUww?=
+ =?utf-8?B?VXJzQmp1K1NWR01mMDZkNW5vY1lvem01elM5OTVFODlEVVI1b2pwTThxcFh3?=
+ =?utf-8?B?Ty9qTHYyNmZaUHd2KzVSeXhVUXdGR0kzZ3VYVmFvQTE1cXJ2U3RRNjU1UVFM?=
+ =?utf-8?B?czVxcGhEa2hwQTNNdWUvYTJBS3BUQUt3eFdCQUcwMGIxZjFoZkVPZzlHVkJv?=
+ =?utf-8?B?eitJc1ZMOUhlekdmWUw1Z1ZHTVc0aGZXWjVyMW5yWTROT3dBTU1Oc1J2c1lv?=
+ =?utf-8?B?UVkzMnRoYjI5Z1hNQ0VqMmtEdEFhV25KRjRQQjVsSHJPS3NCVmU1RDRsM0Qr?=
+ =?utf-8?B?cHo0aUc4ZWdOekNTMTRiaW0yRi9Sa1hkeXQ4ZlhNUkM4YnUyRzZHdWlqN3oz?=
+ =?utf-8?B?K0lROGpuUmhNRWkrZzR0M2diWDEvTGF6eXV5ay96MzFvd3JlQ1FCQmtTWWcw?=
+ =?utf-8?B?S2JuL1k4SnRCcEV5MEFKa1ZJRUVGTm00anJMNnN3cC80b0VhSHgwTWNSbzNs?=
+ =?utf-8?B?anRydGtoSjZiQmVQcW80ZnYrd21QdlprZHZNdjNhMnV6b3FVSzExUkxSaE1E?=
+ =?utf-8?B?Wk5iYUdnRXB4UURQRytUdndEKzVJbk9KQjdyRmtUbC9EL0ViZDBxdHV5UHg5?=
+ =?utf-8?B?RGxnSmwwVGtjRWxTbTgwcUdCSXBhVG4yWk9oY012SXNhUndjcnBoZEgrNGJp?=
+ =?utf-8?B?Z1B5Q1VGZFZOTlBNbXZ0VHVTMkI1UUo3SEVSTktERVlqRm9OaFRHZnZSZGsx?=
+ =?utf-8?B?ZzhuN095YXN6bUk2UTRQWVA5dlBzOVlnZmZCRVQ2TUdBdGREaWQ2emlFbm1o?=
+ =?utf-8?B?M2I0OUhtZjZxSmdUalBHdjBnM1BQazU3ajV6WnhrVUFOL3lPcC9zSUhab3Ra?=
+ =?utf-8?B?MWVFZEN6SHM2SGw3U2dSbGxqLzlpai8yd1pjVy90U013RFhCZ1h1TXNrSmtv?=
+ =?utf-8?B?TnpDMHM2aDNVMDhvOGl1RWxPQWJCT2V0THVxNWJabWpRUXYxanYycUtVbU00?=
+ =?utf-8?B?b3REQ2NQOHhVMFF0R3IwNUhmckhjTlRpQWN4a0hPSVUvN0RkNjJQYUd2a2h2?=
+ =?utf-8?B?NFR5TncxbnZpSHZrRzB4Mi9GWmx0cGJndWx4WEVrRnBIWTMzZldTNlB3VTZ3?=
+ =?utf-8?Q?YWYKXPxRLY15Wppad//cpy+qt?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7f6dbd60-da96-4a7e-cb82-08dc104127b7
+X-MS-Exchange-CrossTenant-AuthSource: PH8PR12MB6674.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Jan 2024 11:58:40.8750
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 76+pMmAOC2DI1Bg9rP/Gt2JxZuk+Hse/i4H+L3ZZHF5Ni7MdA4qa9lHC4xdnwbmOLv2LEgJ/Kuqcb0F3FZhhtA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR12MB4490
 
 
-Linus,
 
-Please pull the latest perf/core git tree from:
+On 1/5/2024 10:32 PM, Kuppuswamy Sathyanarayanan wrote:
+> External email: Use caution opening links or attachments
+> 
+> 
+> On 1/5/2024 5:43 AM, Vidya Sagar wrote:
+>> While calculating the hwirq number for an MSI interrupt, the higher
+>> bits (i.e. from bit-5 onwards a.k.a domain_nr >= 32) of the PCI domain
+>> number gets truncated because of the shifted value casting to u32. This
+>> for example is resulting in same hwirq number for devices 0019:00:00.0
+>> and 0039:00:00.0.
+>>
+>> So, cast the PCI domain number to u64 before left shifting it to
+>> calculate hwirq number.
+> 
+> This seems like a bug fix. Why not add Fixes: tag?
+This doesn't seem to be introduced by any recent change as such. It has
+been from the time the original change appeared in the mainline. I'll
+give the commit ID of the original change for 'Fixes'.
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git perf-core-2024-01-08
+> 
+> Is this issue detected in a platform test? Maybe including the relevant
+> details about it will help reproduce the issue.
+The issue is detected while running ARM's ACS test suite. But, I
+couldn't give that info as there was some bug in the test suite itself
+for which I raised an issue at 
+https://gitlab.arm.com/linux-arm/linux-acs/-/issues/2
 
-   # HEAD: fdd041028f2294228e10610b4fca6a1a83ac683d perf/x86/intel/uncore: Factor out topology_gidnid_map()
-
-Performance events changes for v6.8 are:
-
- - Add branch stack counters ABI extension to better capture
-   the growing amount of information the PMU exposes via
-   branch stack sampling. There's matching tooling support.
-
- - Fix race when creating the nr_addr_filters sysfs file
-
- - Add Intel Sierra Forest and Grand Ridge intel/cstate
-   PMU support.
-
- - Add Intel Granite Rapids, Sierra Forest and Grand Ridge
-   uncore PMU support.
-
- - Misc cleanups & fixes.
-
- Thanks,
-
-	Ingo
-
------------------->
-Alexander Antonov (2):
-      perf/x86/intel/uncore: Fix NULL pointer dereference issue in upi_fill_topology()
-      perf/x86/intel/uncore: Factor out topology_gidnid_map()
-
-Greg KH (1):
-      perf/core: Fix narrow startup race when creating the perf nr_addr_filters sysfs file
-
-Kan Liang (14):
-      perf: Add branch stack counters
-      perf/x86: Add PERF_X86_EVENT_NEEDS_BRANCH_STACK flag
-      perf: Add branch_sample_call_stack
-      perf/x86/intel: Reorganize attrs and is_visible
-      perf/x86/intel: Support branch counters logging
-      perf/x86/intel/cstate: Cleanup duplicate attr_groups
-      x86/smp: Export symbol cpu_clustergroup_mask()
-      perf/x86/intel/cstate: Add Sierra Forest support
-      perf/x86/intel/cstate: Add Grand Ridge support
-      perf/x86/intel/uncore: Generic uncore_get_uncores and MMIO format of SPR
-      perf/x86/uncore: Use u64 to replace unsigned for the uncore offsets array
-      perf/x86/intel/uncore: Support Granite Rapids
-      perf/x86/intel/uncore: Support IIO free-running counters on GNR
-      perf/x86/intel/uncore: Support Sierra Forest and Grand Ridge
-
-Namhyung Kim (1):
-      perf/x86/amd: Reject branch stack for IBS events
-
-Peter Zijlstra (1):
-      perf: Fix the nr_addr_filters fix
-
-
- .../testing/sysfs-bus-event_source-devices-caps    |   6 +
- arch/powerpc/perf/core-book3s.c                    |   2 +-
- arch/x86/events/amd/core.c                         |   2 +-
- arch/x86/events/amd/ibs.c                          |   3 +
- arch/x86/events/core.c                             |   4 +-
- arch/x86/events/intel/core.c                       | 145 +++++++++++---
- arch/x86/events/intel/cstate.c                     | 162 ++++++++++++----
- arch/x86/events/intel/ds.c                         |   4 +-
- arch/x86/events/intel/lbr.c                        |  85 ++++++++-
- arch/x86/events/intel/uncore.c                     |  12 ++
- arch/x86/events/intel/uncore.h                     |  10 +-
- arch/x86/events/intel/uncore_discovery.c           |   5 +-
- arch/x86/events/intel/uncore_discovery.h           |   2 +-
- arch/x86/events/intel/uncore_nhmex.c               |   2 +-
- arch/x86/events/intel/uncore_snbep.c               | 208 ++++++++++++++++-----
- arch/x86/events/perf_event.h                       |  12 ++
- arch/x86/events/perf_event_flags.h                 |   2 +
- arch/x86/include/asm/msr-index.h                   |   5 +
- arch/x86/include/asm/perf_event.h                  |   4 +
- arch/x86/kernel/smpboot.c                          |   1 +
- include/linux/perf_event.h                         |  22 ++-
- include/uapi/linux/perf_event.h                    |  13 ++
- kernel/events/core.c                               |  46 +++--
- 23 files changed, 627 insertions(+), 130 deletions(-)
+> 
+>>
+>> Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
+>> ---
+>>   drivers/pci/msi/irqdomain.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/pci/msi/irqdomain.c b/drivers/pci/msi/irqdomain.c
+>> index c8be056c248d..cfd84a899c82 100644
+>> --- a/drivers/pci/msi/irqdomain.c
+>> +++ b/drivers/pci/msi/irqdomain.c
+>> @@ -61,7 +61,7 @@ static irq_hw_number_t pci_msi_domain_calc_hwirq(struct msi_desc *desc)
+>>
+>>        return (irq_hw_number_t)desc->msi_index |
+>>                pci_dev_id(dev) << 11 |
+>> -             (pci_domain_nr(dev->bus) & 0xFFFFFFFF) << 27;
+>> +             ((irq_hw_number_t)(pci_domain_nr(dev->bus) & 0xFFFFFFFF)) << 27;
+>>   }
+>>
+>>   static void pci_msi_domain_set_desc(msi_alloc_info_t *arg,
+> 
+> --
+> Sathyanarayanan Kuppuswamy
+> Linux Kernel Developer
 
