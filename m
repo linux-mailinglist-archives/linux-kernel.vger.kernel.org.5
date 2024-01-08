@@ -1,120 +1,140 @@
-Return-Path: <linux-kernel+bounces-20108-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20109-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A91C3827959
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 21:49:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8DE84827971
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 21:51:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 89EA01C2141E
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 20:49:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 395C81F21D84
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 20:51:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C723B5579A;
-	Mon,  8 Jan 2024 20:49:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E364F55C23;
+	Mon,  8 Jan 2024 20:51:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ferdQ/19"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 910E055776;
-	Mon,  8 Jan 2024 20:49:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=omp.ru
-Received: from [192.168.1.105] (31.173.87.204) by msexch01.omp.ru
- (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Mon, 8 Jan
- 2024 23:49:30 +0300
-Subject: Re: [PATCH net-next v3 18/19] net: ravb: Do not apply RX CSUM
- settings to hardware if the interface is down
-To: Claudiu <claudiu.beznea@tuxon.dev>, <davem@davemloft.net>,
-	<edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-	<richardcochran@gmail.com>, <p.zabel@pengutronix.de>,
-	<yoshihiro.shimoda.uh@renesas.com>, <wsa+renesas@sang-engineering.com>
-CC: <netdev@vger.kernel.org>, <linux-renesas-soc@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <geert+renesas@glider.be>, Claudiu Beznea
-	<claudiu.beznea.uj@bp.renesas.com>
-References: <20240105082339.1468817-1-claudiu.beznea.uj@bp.renesas.com>
- <20240105082339.1468817-19-claudiu.beznea.uj@bp.renesas.com>
-From: Sergey Shtylyov <s.shtylyov@omp.ru>
-Organization: Open Mobile Platform
-Message-ID: <16361de1-5f90-01e6-7a4a-8faacc0fa056@omp.ru>
-Date: Mon, 8 Jan 2024 23:49:29 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C89A755787
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 20:51:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1704747099;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=2UkyxvZQ5pYouZXCc0oPIjClMUAkVOY8Na3esy8fS2w=;
+	b=ferdQ/19XsRuDo2yl/uNftdc6KZBZNlS55w8m7Zva3OYJKP13qQe3x3nNswLOvoO1s5aHP
+	EReLY8JnYh1Fzz/zoyhEu8PYex7au+LJ04iorxNXrzO1gZWb6u5Tn7JXJ87N/mXfxkN0mq
+	I6rQ75wEJjoyzM320hthcNUfRSENIwQ=
+Received: from mail-yb1-f200.google.com (mail-yb1-f200.google.com
+ [209.85.219.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-117-qZSLA9TtMUa2RnXi4VLf0A-1; Mon, 08 Jan 2024 15:51:38 -0500
+X-MC-Unique: qZSLA9TtMUa2RnXi4VLf0A-1
+Received: by mail-yb1-f200.google.com with SMTP id 3f1490d57ef6-dbe868fdc33so2501331276.0
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 12:51:38 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704747097; x=1705351897;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2UkyxvZQ5pYouZXCc0oPIjClMUAkVOY8Na3esy8fS2w=;
+        b=oRfvopK8xhKbzisw3yhKgbMtudJNWYOjIj1j6bIGxuTK60vZBila70yWssNx679Saq
+         smKgznBkuqPk7Tz8sP3D8AToIf8om5sGlNYA2rILLOfFj2djW2ntpytvOSbOaZ2YwSjA
+         Z/F3D336eAQIQeLv33OEEYC+zWL4rQZ8q19pUkkUq/kIDzWWq5s+4zhTFtNZzT5muM7i
+         YRa9nvO/YXnCmeT7DIAT+6AtJU4f/L/bRwvn1kCGkbaJOnA6tvfqyU2IrfWDPK25nzr/
+         rGb6PZBQw3jy7iFsDOTk/P+/IX/2va4+dwMgF/N51eZkDjCEVUij1SnGfStdi94LKtSt
+         N/ZQ==
+X-Gm-Message-State: AOJu0YwETVPvg5ltHaCrKPwSZZO4cIEltoGAWA48TSq3bCGW/VpBCJHm
+	BdPo+IGVz5U/SSVd17AwoB/CiyLkOKBrFXkU6vwhvFxuVkHNA6yKHIAC2XHI/T60ma4zlgJAcQW
+	tYjdCTkyrtJLvpb9GeeIBYvMHs3GSfx17+goqePz/d6Hmoybe
+X-Received: by 2002:a25:7391:0:b0:db7:dacf:ed65 with SMTP id o139-20020a257391000000b00db7dacfed65mr1729930ybc.70.1704747097757;
+        Mon, 08 Jan 2024 12:51:37 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEE32OTXBZZ4AqcenfCZ/npf5vs1T3rzedd0Tz3UXzGyBKTZfzreJp+V6uBk9p0wYuShiMc+Z+KKDA0CtYQxSY=
+X-Received: by 2002:a25:7391:0:b0:db7:dacf:ed65 with SMTP id
+ o139-20020a257391000000b00db7dacfed65mr1729902ybc.70.1704747097086; Mon, 08
+ Jan 2024 12:51:37 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240105082339.1468817-19-claudiu.beznea.uj@bp.renesas.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
- (10.188.4.12)
-X-KSE-ServerInfo: msexch01.omp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 6.1.0, Database issued on: 01/08/2024 20:32:49
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 59
-X-KSE-AntiSpam-Info: Lua profiles 182482 [Jan 08 2024]
-X-KSE-AntiSpam-Info: Version: 6.1.0.3
-X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
-X-KSE-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a
-X-KSE-AntiSpam-Info: {rep_avail}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: {relay has no DNS name}
-X-KSE-AntiSpam-Info: {SMTP from is not routable}
-X-KSE-AntiSpam-Info: {Found in DNSBL: 31.173.87.204 in (user)
- b.barracudacentral.org}
-X-KSE-AntiSpam-Info: {Found in DNSBL: 31.173.87.204 in (user)
- dbl.spamhaus.org}
-X-KSE-AntiSpam-Info:
-	31.173.87.204:7.4.1,7.7.3;omp.ru:7.1.1;127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1
-X-KSE-AntiSpam-Info: {cloud_iprep_silent}
-X-KSE-AntiSpam-Info: ApMailHostAddress: 31.173.87.204
-X-KSE-AntiSpam-Info: {DNS response errors}
-X-KSE-AntiSpam-Info: Rate: 59
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
- smtp.mailfrom=omp.ru;dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 01/08/2024 20:37:00
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 1/8/2024 7:11:00 PM
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+References: <20240108122823.2090312-1-sashal@kernel.org> <20240108122823.2090312-5-sashal@kernel.org>
+In-Reply-To: <20240108122823.2090312-5-sashal@kernel.org>
+From: David Airlie <airlied@redhat.com>
+Date: Tue, 9 Jan 2024 06:51:25 +1000
+Message-ID: <CAMwc25rAm1ndSiofWMMmQ1BeB0XxBvsHpcvaDKXUwEZp72iwEA@mail.gmail.com>
+Subject: Re: [PATCH AUTOSEL 6.1 5/5] nouveau: fix disp disabling with GSP
+To: Sasha Levin <sashal@kernel.org>
+Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org, 
+	Dave Airlie <airlied@gmail.com>, kherbst@redhat.com, lyude@redhat.com, dakr@redhat.com, 
+	daniel@ffwll.ch, bskeggs@redhat.com, dri-devel@lists.freedesktop.org, 
+	nouveau@lists.freedesktop.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 1/5/24 11:23 AM, Claudiu wrote:
+NAK for backporting this to anything, it is just a fix for 6.7
 
-> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-> 
-> Do not apply the RX CSUM settings to hardware if the interface is down. In
 
-   s/CSUM/checksum/?
-
-> case runtime PM is enabled, and while the interface is down, the IP will be
-> in reset mode (as for some platforms disabling the clocks will switch the
-> IP to reset mode, which will lead to losing registers content) and applying
-> settings in reset mode is not an option. Instead, cache the RX CSUM
-
-   Same here...
-
-> settings and apply them in ravb_open() though ravb_emac_init().
-
-   Through?
-
-> Commit prepares for the addition of runtime PM.
-> 
-> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-[...]
-
-MBR, Sergey
+On Mon, Jan 8, 2024 at 10:28=E2=80=AFPM Sasha Levin <sashal@kernel.org> wro=
+te:
+>
+> From: Dave Airlie <airlied@gmail.com>
+>
+> [ Upstream commit 7854ea0e408d7f2e8faaada1773f3ddf9cb538f5 ]
+>
+> This func ptr here is normally static allocation, but gsp r535
+> uses a dynamic pointer, so we need to handle that better.
+>
+> This fixes a crash with GSP when you use config=3Ddisp=3D0 to avoid
+> disp problems.
+>
+> Signed-off-by: Dave Airlie <airlied@redhat.com>
+> Link: https://patchwork.freedesktop.org/patch/msgid/20231222043308.309008=
+9-4-airlied@gmail.com
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
+> ---
+>  drivers/gpu/drm/nouveau/nvkm/engine/disp/base.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/nouveau/nvkm/engine/disp/base.c b/drivers/gp=
+u/drm/nouveau/nvkm/engine/disp/base.c
+> index 65c99d948b686..ae47eabd5d0bd 100644
+> --- a/drivers/gpu/drm/nouveau/nvkm/engine/disp/base.c
+> +++ b/drivers/gpu/drm/nouveau/nvkm/engine/disp/base.c
+> @@ -359,7 +359,7 @@ nvkm_disp_oneinit(struct nvkm_engine *engine)
+>         if (ret)
+>                 return ret;
+>
+> -       if (disp->func->oneinit) {
+> +       if (disp->func && disp->func->oneinit) {
+>                 ret =3D disp->func->oneinit(disp);
+>                 if (ret)
+>                         return ret;
+> @@ -461,8 +461,10 @@ nvkm_disp_new_(const struct nvkm_disp_func *func, st=
+ruct nvkm_device *device,
+>         spin_lock_init(&disp->client.lock);
+>
+>         ret =3D nvkm_engine_ctor(&nvkm_disp, device, type, inst, true, &d=
+isp->engine);
+> -       if (ret)
+> +       if (ret) {
+> +               disp->func =3D NULL;
+>                 return ret;
+> +       }
+>
+>         if (func->super) {
+>                 disp->super.wq =3D create_singlethread_workqueue("nvkm-di=
+sp");
+> --
+> 2.43.0
+>
 
 
