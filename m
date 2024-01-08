@@ -1,199 +1,356 @@
-Return-Path: <linux-kernel+bounces-19667-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19668-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2ED1C827096
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 15:03:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F0FF82709A
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 15:04:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 99EF0B224B6
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 14:03:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 619C41C2265E
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 14:04:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED78446526;
-	Mon,  8 Jan 2024 14:02:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="q+UC/JV/"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E56D46542;
+	Mon,  8 Jan 2024 14:03:11 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2070.outbound.protection.outlook.com [40.107.244.70])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4AFC46531;
-	Mon,  8 Jan 2024 14:02:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HnO9tuj59zffV7oaVyXez4Xv0eQDC89PP979Md9QTDEnCC1hPcOfLZ0dbeLhg6mOsaavJ0yIg8NunKLeU9PrcwBvUANYbjn/GxNisslEiMfWA9UIjAYIEVJoijMqb/6S27OQAH6KCXV3ofXHILqXI7TVTA60m4D5zN5okDEDChujLyXDfyr2xHbJwivEBLc/2jyezPs4GNtEl2JHG8ppi7z3NX/U7zyMPEOSH8SwVj33TqP2Kp60xqCCpJIlc3FDQ2hD9YlKIc+0BvPSPLmqanzq3UJg7GzugdZEUVU0Jnn4M06fhEtvUKKqWfVB9iaDJ0b6Leg/I2whdnWfDbGZGA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=O3H/scIysDbHkCk+GFipvvZr68uuJqZfyJMhhpu6AHo=;
- b=Az8YMW1erLhFdkJZrsupjL5k7AWQcDdoXDl5rUbH8dMDD2FWOvdfIP8TdoAjuoBIfStFRCQTbSqpTCVbaLOW2HebagHDBkMPeskaDUiesEGTrlQk9ys8xFx/W/xCedeUZFvOGEDAYPvNsXa6IKy1263a7O+wefiEMYcnw0b0POeZQBDU23K4qNVENa42uYHVul9JUF/wJZpmIlm7CksjmJp3Wx/RRwSaokrL6CrwyPODSKeQLY8cXDiaEyQ+78OJ4uZMWlYHjMfHoJxf5tLnTUJpePFxk75lIq5UXadyXsSxXG66bqdWKCIPO6RO1dkSLwLzSECXDJBewS4cSf+bdw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=O3H/scIysDbHkCk+GFipvvZr68uuJqZfyJMhhpu6AHo=;
- b=q+UC/JV//GyQO82iHnS6t6n1RrCxsB7JK6Q+wZdrpG7MhWIOUIW4bq5j86d4pUPt6O1+Fqg7XS/tiXfzZP9xlyIxpuFG0NrkGyd8uApSn+PrYPWExC6xCmZGWAr1Vgh6XLgc27gJAKC75kxEuCVrNwsp3W5sUwueJOjWmv66LxeLjDkSQX6of9Nwl3GruSgygNX2LS+pHNqgJ1RrkIe2ZkP0padvzf9PClLR3OvHplI1+pHVnokNtTDQoOZ9Dr7OovV05ZjfCEd6RpfHLoAu4FRmhYjEpqG1X4z3O51GqqbANy0Pz3xTZ3LH3qiLwRmuZ7aI31pjLLQHCBGkcH/ysA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by CH3PR12MB8850.namprd12.prod.outlook.com (2603:10b6:610:167::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.23; Mon, 8 Jan
- 2024 14:02:52 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::60d4:c1e3:e1aa:8f93]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::60d4:c1e3:e1aa:8f93%4]) with mapi id 15.20.7159.020; Mon, 8 Jan 2024
- 14:02:51 +0000
-Date: Mon, 8 Jan 2024 10:02:50 -0400
-From: Jason Gunthorpe <jgg@nvidia.com>
-To: Yan Zhao <yan.y.zhao@intel.com>
-Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-	dri-devel@lists.freedesktop.org, pbonzini@redhat.com,
-	seanjc@google.com, olvaffe@gmail.com, kevin.tian@intel.com,
-	zhiyuan.lv@intel.com, zhenyu.z.wang@intel.com, yongwei.ma@intel.com,
-	vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
-	joro@8bytes.org, gurchetansingh@chromium.org, kraxel@redhat.com,
-	zzyiwei@google.com, ankita@nvidia.com, alex.williamson@redhat.com,
-	maz@kernel.org, oliver.upton@linux.dev, james.morse@arm.com,
-	suzuki.poulose@arm.com, yuzenghui@huawei.com
-Subject: Re: [PATCH 0/4] KVM: Honor guest memory types for virtio GPU devices
-Message-ID: <20240108140250.GJ50406@nvidia.com>
-References: <20240105091237.24577-1-yan.y.zhao@intel.com>
- <20240105195551.GE50406@nvidia.com>
- <ZZuQEQAVX28v7p9Z@yzhao56-desk.sh.intel.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZZuQEQAVX28v7p9Z@yzhao56-desk.sh.intel.com>
-X-ClientProxiedBy: MN2PR05CA0021.namprd05.prod.outlook.com
- (2603:10b6:208:c0::34) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA4F047A52;
+	Mon,  8 Jan 2024 14:03:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 285F8C15;
+	Mon,  8 Jan 2024 06:03:54 -0800 (PST)
+Received: from localhost (ionvoi01-desktop.cambridge.arm.com [10.2.78.69])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CC12E3F64C;
+	Mon,  8 Jan 2024 06:03:07 -0800 (PST)
+Date: Mon, 8 Jan 2024 14:03:06 +0000
+From: Ionela Voinescu <ionela.voinescu@arm.com>
+To: "lihuisong (C)" <lihuisong@huawei.com>
+Cc: Vanshidhar Konda <vanshikonda@os.amperecomputing.com>,
+	linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, rafael@kernel.org,
+	beata.michalska@arm.com, sumitg@nvidia.com, zengheng4@huawei.com,
+	yang@os.amperecomputing.com, will@kernel.org, sudeep.holla@arm.com,
+	liuyonglong@huawei.com, zhanjie9@hisilicon.com,
+	"linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>
+Subject: Re: [PATCH] cpufreq: CPPC: Resolve the large frequency discrepancy
+ from cpuinfo_cur_freq
+Message-ID: <ZZwAmqp6hcmMF8aN@arm.com>
+References: <20231212072617.14756-1-lihuisong@huawei.com>
+ <ZZWfJOsDlEXWYHA5@arm.com>
+ <9428a1ed-ba4d-1fe6-63e8-11e152bf1f09@huawei.com>
+ <lnocwcitdbmgcyhd2dlczgdlhtfw4pfot2br2i3hqscnvr3xgq@nuxlauxum3nr>
+ <d0f47e9d-6a58-8b46-89be-b3182abb69f0@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|CH3PR12MB8850:EE_
-X-MS-Office365-Filtering-Correlation-Id: d5470f08-9acf-4ffa-ff62-08dc105280ff
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	kT/puTJLBLM29Q0S9eLOLKwZlVKbblJHmAN8EGWkxkt/5hbMxi3f5PUsKECpfLz60/HEUAMH8rDoeDnzJrf9c2DkPtnKMBgRsn893Oaccgs6rXiDpFWRyU73fEdfKS0bv1cmjg0HH5CKQRUS0nrSd779jG580QE7yKklpuFfCa8FWlqp+7/VtveaLtik0vggvvVcbgpGWBKTbEMEJgoFnL7QQUbAHNAgZrnv2nUXbYdCmHQ71XfI5HzXqr48wCgcXAWrJFUbUAV24l8lo9iDN4rOGVK7w8X+3Ns2WrMBLmcpRcUk+GNicU+P/Y2OKH+e01DHQ/mYRzqalm0taSuG/qWsaH3Zgriy0VCEJRi3d/ofsWAio/xGME5vTmJG5YOBKbQTaWWDQ56OIFc4s3ye/QxL7zL4jUM8Z9rPgkLC2RyT1D6XH1WmBmfSmsvxdAqscGFmmEEeo1zO7k+xmisduGHYfJTv9xPCDHTVlIWJNlzEy9UKGpMIogV7EDbB8LB3w/rfxHrikl2mYTi114vi1zCWW80KSLij88jWgw718SZeLLk+vwib7EmnMUFqWO+y
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(376002)(346002)(396003)(39860400002)(136003)(230922051799003)(1800799012)(451199024)(186009)(64100799003)(41300700001)(33656002)(1076003)(6506007)(83380400001)(6916009)(66556008)(66476007)(66946007)(6486002)(2906002)(316002)(38100700002)(478600001)(2616005)(6512007)(26005)(86362001)(36756003)(7416002)(5660300002)(4326008)(8676002)(8936002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?yZdrbHtVdZTlo9p770wHbM5ynm45cNtKRGfI0+EOPpRh0UcxpyHUmDEHPfOI?=
- =?us-ascii?Q?asDD+k0OMLcXAxP6im4qngoFeedOg4wQWQZB41NGTMIHZohlDrCPxyoaZ8od?=
- =?us-ascii?Q?PmhPVMe0pWUXjK9Q/tlox2AKQ6MKlo6/z6R0wKP+wRvGPaeTvqNJcD6S0JyM?=
- =?us-ascii?Q?hmUkG/mUE7XJHPaDzucPCeOwvUNRM14k3teaEEdrKqs6ZUfr2pE+HHJv2yAe?=
- =?us-ascii?Q?xX65RhDeYY9uPfEupcr6lQ3tamHwPY/wbk32pQMU3JTcSiuFbV44JhhS73CP?=
- =?us-ascii?Q?MLmSmuEMZef5rN7Fxe0Nh2i3ciiimy58aIsUj8jMegGlVh++y9iE6qDk9af3?=
- =?us-ascii?Q?pGtDFzoKE2a7IcCZ83fjPaQRlFJehUyEcXRdsmXceoOdMk+VaHnmhzFHc3ep?=
- =?us-ascii?Q?c0BJ8WzEJ1jyYCKTRw0S0tpjfoO5bajhoHSFXY+MuH17twn0kRDaBaE42Nwz?=
- =?us-ascii?Q?AOk6LSyYeVr2atr2jSt+v7cNMjN/fHJSXLanQigR2LvR3P5mc27JAfjTLyAa?=
- =?us-ascii?Q?QcO6JeomoSfL5lNp/Pri7NYRfqv6qab9nMOig0LBWJqM76w+17qRo97WfLr0?=
- =?us-ascii?Q?AzU4s1PmdX36dcAKdB+mDTkybNDe4c5sH3ULfC5LAFeRC5iVSLEKms1xAUl8?=
- =?us-ascii?Q?BbJEdviNvWR59AZiusv7mqVDAww2ZeBGe9irTjvAHnMdx62TIEO30PH+lTHu?=
- =?us-ascii?Q?4vgjNB0+TrtJjZK+VTYcGJEtRq23ipuh4rVK53AUKF/CsUj2694AGH0QrxWe?=
- =?us-ascii?Q?CZh10xGyLoqWz2kLjrIsl22Nb8xZdPSHyxbUabGVNaQdyGpbKJSIU+CwcrkD?=
- =?us-ascii?Q?SLG4DtnBaHiOb/rUIuLSSOyv+lXxP2x2h8dlISUhTc+Tk/gXsLnT8uBnmK6R?=
- =?us-ascii?Q?XQME5QD+u0POWGNFJwvnJV0jmdudjDQ1ReLfDNkDVcGT3bZyXyecP8pw3Oxu?=
- =?us-ascii?Q?DBq8Ka34Deh8zyeu2cOmw1OWSoONnaFlQUB12VW+Xpe3Hgx65T0OwSaAi4iu?=
- =?us-ascii?Q?XTCn3K39s3pXiRbpkziLdh/F+NOD8MshcjYtFkjzfH9brf9Dl3BmPA3/tQNq?=
- =?us-ascii?Q?6xzzSgHHXej1lBZjvyhHpgmatOUzVqy5IWT5oISdZrVudqL5UAbWQxj7AgOt?=
- =?us-ascii?Q?iac7+2NVGP4UAgG0TA8uPk4W/9Ts/ewl9ZvdDqpyI+kvIzW1BbvontVu4SIx?=
- =?us-ascii?Q?x3GI7a+g0x5xE49DEwYLoUmE27LBaGdfXPpD+4BBmrWCGH4mA8FmO6EqIx6B?=
- =?us-ascii?Q?J8PDaKTLDsUzCCVHpZixWMKoh6Q79GOT+BxeyrvqUB7BWdC19WfNp5jjokHp?=
- =?us-ascii?Q?S67gXXk1f8Z4Bhvt+QXXzck/qoF9reyh3YNPpEyUIFbcdUcT3cBfOpkrk71X?=
- =?us-ascii?Q?se8ehsENuRWckR2UfI242zGhUMYvJ36iFjRPigcUrmNfRh2mN5Q50R07S+pp?=
- =?us-ascii?Q?8CLqTf4NXa9KJ7Nx9jmUXZ0qSrRARD+ZOtLEv8bPZKZ9V8zM/4c23HbjjAjD?=
- =?us-ascii?Q?EoEDspwK3zUuQhI2VFIoDRWeqkLvZPH1wW23Z3DP4WR4lqREk01XQdsILc+9?=
- =?us-ascii?Q?sWX5PdmphtpmPZA1gAk=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d5470f08-9acf-4ffa-ff62-08dc105280ff
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Jan 2024 14:02:51.8568
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: quCpi6jGKLPyaxu7749lyKefDo7m3ng9s4njVWLD8Rk8FPdYYzCd/ccP8jG3Wbma
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB8850
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <d0f47e9d-6a58-8b46-89be-b3182abb69f0@huawei.com>
 
-On Mon, Jan 08, 2024 at 02:02:57PM +0800, Yan Zhao wrote:
-> On Fri, Jan 05, 2024 at 03:55:51PM -0400, Jason Gunthorpe wrote:
-> > On Fri, Jan 05, 2024 at 05:12:37PM +0800, Yan Zhao wrote:
-> > > This series allow user space to notify KVM of noncoherent DMA status so as
-> > > to let KVM honor guest memory types in specified memory slot ranges.
-> > > 
-> > > Motivation
-> > > ===
-> > > A virtio GPU device may want to configure GPU hardware to work in
-> > > noncoherent mode, i.e. some of its DMAs do not snoop CPU caches.
-> > 
-> > Does this mean some DMA reads do not snoop the caches or does it
-> > include DMA writes not synchronizing the caches too?
-> Both DMA reads and writes are not snooped.
+Hi,
 
-Oh that sounds really dangerous.
-
-> > > This is generally for performance consideration.
-> > > In certain platform, GFX performance can improve 20+% with DMAs going to
-> > > noncoherent path.
-> > > 
-> > > This noncoherent DMA mode works in below sequence:
-> > > 1. Host backend driver programs hardware not to snoop memory of target
-> > >    DMA buffer.
-> > > 2. Host backend driver indicates guest frontend driver to program guest PAT
-> > >    to WC for target DMA buffer.
-> > > 3. Guest frontend driver writes to the DMA buffer without clflush stuffs.
-> > > 4. Hardware does noncoherent DMA to the target buffer.
-> > > 
-> > > In this noncoherent DMA mode, both guest and hardware regard a DMA buffer
-> > > as not cached. So, if KVM forces the effective memory type of this DMA
-> > > buffer to be WB, hardware DMA may read incorrect data and cause misc
-> > > failures.
-> > 
-> > I don't know all the details, but a big concern would be that the
-> > caches remain fully coherent with the underlying memory at any point
-> > where kvm decides to revoke the page from the VM.
-> Ah, you mean, for page migration, the content of the page may not be copied
-> correctly, right?
-
-Not just migration. Any point where KVM revokes the page from the
-VM. Ie just tearing down the VM still has to make the cache coherent
-with physical or there may be problems.
- 
-> Currently in x86, we have 2 ways to let KVM honor guest memory types:
-> 1. through KVM memslot flag introduced in this series, for virtio GPUs, in
->    memslot granularity.
-> 2. through increasing noncoherent dma count, as what's done in VFIO, for
->    Intel GPU passthrough, for all guest memory.
-
-And where does all this fixup the coherency problem?
-
-> This page migration issue should not be the case for virtio GPU, as both host
-> and guest are synced to use the same memory type and actually the pages
-> are not anonymous pages.
-
-The guest isn't required to do this so it can force the cache to
-become incoherent.
-
-> > If you allow an incoherence of cache != physical then it opens a
-> > security attack where the observed content of memory can change when
-> > it should not.
+On Friday 05 Jan 2024 at 15:04:47 (+0800), lihuisong (C) wrote:
+> Hi Vanshi,
 > 
-> In this case, will this security attack impact other guests?
+> 在 2024/1/5 8:48, Vanshidhar Konda 写道:
+> > On Thu, Jan 04, 2024 at 05:36:51PM +0800, lihuisong (C) wrote:
+> > > 
+> > > 在 2024/1/4 1:53, Ionela Voinescu 写道:
+> > > > Hi,
+> > > > 
+> > > > On Tuesday 12 Dec 2023 at 15:26:17 (+0800), Huisong Li wrote:
+> > > > > Many developers found that the cpu current frequency is greater than
+> > > > > the maximum frequency of the platform, please see [1], [2] and [3].
+> > > > > 
+> > > > > In the scenarios with high memory access pressure, the patch [1] has
+> > > > > proved the significant latency of cpc_read() which is used to obtain
+> > > > > delivered and reference performance counter cause an absurd frequency.
+> > > > > The sampling interval for this counters is very critical and
+> > > > > is expected
+> > > > > to be equal. However, the different latency of cpc_read() has a direct
+> > > > > impact on their sampling interval.
+> > > > > 
+> > > > Would this [1] alternative solution work for you?
+> > > It would work for me AFAICS.
+> > > Because the "arch_freq_scale" is also from AMU core and constant
+> > > counter, and read together.
+> > > But, from their discuss line, it seems that there are some tricky
+> > > points to clarify or consider.
+> > 
+> > I think the changes in [1] would work better when CPUs may be idle. With
+> > this
+> > patch we would have to wake any core that is in idle state to read the
+> > AMU
+> > counters. Worst case, if core 0 is trying to read the CPU frequency of
+> > all
+> > cores, it may need to wake up all the other cores to read the AMU
+> > counters.
+> From the approach in [1], if all CPUs (one or more cores) under one policy
+> are idle, they still cannot be obtained the CPU frequency, right?
+> In this case, the [1] API will return 0 and have to back to call
+> cpufreq_driver->get() for cpuinfo_cur_freq.
+> Then we still need to face the issue this patch mentioned.
 
-It impacts the hypervisor potentially. It depends..
+With the implementation at [1], arch_freq_get_on_cpu() will not return 0
+for idle CPUs and the get() callback will not be called to wake up the
+CPUs.
 
-Jason
+Worst case, arch_freq_get_on_cpu() will return a frequency based on the
+AMU counter values obtained on the last tick on that CPU. But if that CPU
+is not a housekeeping CPU, a housekeeping CPU in the same policy will be
+selected, as it would have had a more recent tick, and therefore a more
+recent frequency value for the domain.
+
+I understand that the frequency returned here will not be up to date,
+but there's no proper frequency feedback for an idle CPU. If one only
+wakes up a CPU to sample counters, before the CPU goes back to sleep,
+the obtained frequency feedback is meaningless.
+
+> > For systems with 128 cores or more, this could be very expensive and
+> > happen
+> > very frequently.
+> > 
+> > AFAICS, the approach in [1] would avoid this cost.
+> But the CPU frequency is just an average value for the last tick period
+> instead of the current one the CPU actually runs at.
+> In addition, there are some conditions to use 'arch_freq_scale' in this
+> approach.
+
+What are the conditions you are referring to?
+
+> So I'm not sure if this approach can entirely cover the frequency
+> discrepancy issue.
+
+Unfortunately there is no perfect frequency feedback. By the time you
+observe/use the value of scaling_cur_freq/cpuinfo_cur_freq, the frequency
+of the CPU might have already changed. Therefore, an average value might
+be a better indication of the recent performance level of a CPU.
+
+Would you be able to test [1] on your platform and usecase?
+
+Many thanks,
+Ionela.
+
+> 
+> /Huisong
+> 
+> > > > 
+> > > > [1] https://lore.kernel.org/lkml/20231127160838.1403404-1-beata.michalska@arm.com/
+> > > > 
+> > > > Thanks,
+> > > > Ionela.
+> > > > 
+> > > > > This patch adds a interface, cpc_read_arch_counters_on_cpu, to read
+> > > > > delivered and reference performance counter together. According to my
+> > > > > test[4], the discrepancy of cpu current frequency in the
+> > > > > scenarios with
+> > > > > high memory access pressure is lower than 0.2% by stress-ng
+> > > > > application.
+> > > > > 
+> > > > > [1] https://lore.kernel.org/all/20231025093847.3740104-4-zengheng4@huawei.com/
+> > > > > [2] https://lore.kernel.org/all/20230328193846.8757-1-yang@os.amperecomputing.com/
+> > > > > [3]
+> > > > > https://lore.kernel.org/all/20230418113459.12860-7-sumitg@nvidia.com/
+> > > > > 
+> > > > > [4] My local test:
+> > > > > The testing platform enable SMT and include 128 logical CPU in total,
+> > > > > and CPU base frequency is 2.7GHz. Reading "cpuinfo_cur_freq" for each
+> > > > > physical core on platform during the high memory access pressure from
+> > > > > stress-ng, and the output is as follows:
+> > > > >   0: 2699133     2: 2699942     4: 2698189     6: 2704347
+> > > > >   8: 2704009    10: 2696277    12: 2702016    14: 2701388
+> > > > >  16: 2700358    18: 2696741    20: 2700091    22: 2700122
+> > > > >  24: 2701713    26: 2702025    28: 2699816    30: 2700121
+> > > > >  32: 2700000    34: 2699788    36: 2698884    38: 2699109
+> > > > >  40: 2704494    42: 2698350    44: 2699997    46: 2701023
+> > > > >  48: 2703448    50: 2699501    52: 2700000    54: 2699999
+> > > > >  56: 2702645    58: 2696923    60: 2697718    62: 2700547
+> > > > >  64: 2700313    66: 2700000    68: 2699904    70: 2699259
+> > > > >  72: 2699511    74: 2700644    76: 2702201    78: 2700000
+> > > > >  80: 2700776    82: 2700364    84: 2702674    86: 2700255
+> > > > >  88: 2699886    90: 2700359    92: 2699662    94: 2696188
+> > > > >  96: 2705454    98: 2699260   100: 2701097   102: 2699630
+> > > > > 104: 2700463   106: 2698408   108: 2697766   110: 2701181
+> > > > > 112: 2699166   114: 2701804   116: 2701907   118: 2701973
+> > > > > 120: 2699584   122: 2700474   124: 2700768   126: 2701963
+> > > > > 
+> > > > > Signed-off-by: Huisong Li <lihuisong@huawei.com>
+> > > > > ---
+> > > > >  arch/arm64/kernel/topology.c | 43
+> > > > > ++++++++++++++++++++++++++++++++++--
+> > > > >  drivers/acpi/cppc_acpi.c     | 22 +++++++++++++++---
+> > > > >  include/acpi/cppc_acpi.h     |  5 +++++
+> > > > >  3 files changed, 65 insertions(+), 5 deletions(-)
+> > > > > 
+> > > > > diff --git a/arch/arm64/kernel/topology.c
+> > > > > b/arch/arm64/kernel/topology.c
+> > > > > index 7d37e458e2f5..c3122154d738 100644
+> > > > > --- a/arch/arm64/kernel/topology.c
+> > > > > +++ b/arch/arm64/kernel/topology.c
+> > > > > @@ -299,6 +299,11 @@ core_initcall(init_amu_fie);
+> > > > >  #ifdef CONFIG_ACPI_CPPC_LIB
+> > > > >  #include <acpi/cppc_acpi.h>
+> > > > > +struct amu_counters {
+> > > > > +    u64 corecnt;
+> > > > > +    u64 constcnt;
+> > > > > +};
+> > > > > +
+> > > > >  static void cpu_read_corecnt(void *val)
+> > > > >  {
+> > > > >      /*
+> > > > > @@ -322,8 +327,27 @@ static void cpu_read_constcnt(void *val)
+> > > > >                0UL : read_constcnt();
+> > > > >  }
+> > > > > +static void cpu_read_amu_counters(void *data)
+> > > > > +{
+> > > > > +    struct amu_counters *cnt = (struct amu_counters *)data;
+> > > > > +
+> > > > > +    /*
+> > > > > +     * The running time of the this_cpu_has_cap() might
+> > > > > have a couple of
+> > > > > +     * microseconds and is significantly increased to tens
+> > > > > of microseconds.
+> > > > > +     * But AMU core and constant counter need to be read
+> > > > > togeter without any
+> > > > > +     * time interval to reduce the calculation discrepancy
+> > > > > using this counters.
+> > > > > +     */
+> > > > > +    if (this_cpu_has_cap(ARM64_WORKAROUND_2457168)) {
+> > > > > +        cnt->corecnt = read_corecnt();
+> > > > > +        cnt->constcnt = 0;
+> > > > > +    } else {
+> > > > > +        cnt->corecnt = read_corecnt();
+> > > > > +        cnt->constcnt = read_constcnt();
+> > > > > +    }
+> > > > > +}
+> > > > > +
+> > > > >  static inline
+> > > > > -int counters_read_on_cpu(int cpu, smp_call_func_t func, u64 *val)
+> > > > > +int counters_read_on_cpu(int cpu, smp_call_func_t func, void *data)
+> > > > >  {
+> > > > >      /*
+> > > > >       * Abort call on counterless CPU or when interrupts are
+> > > > > @@ -335,7 +359,7 @@ int counters_read_on_cpu(int cpu,
+> > > > > smp_call_func_t func, u64 *val)
+> > > > >      if (WARN_ON_ONCE(irqs_disabled()))
+> > > > >          return -EPERM;
+> > > > > -    smp_call_function_single(cpu, func, val, 1);
+> > > > > +    smp_call_function_single(cpu, func, data, 1);
+> > > > >      return 0;
+> > > > >  }
+> > > > > @@ -364,6 +388,21 @@ bool cpc_ffh_supported(void)
+> > > > >      return true;
+> > > > >  }
+> > > > > +int cpc_read_arch_counters_on_cpu(int cpu, u64 *delivered,
+> > > > > u64 *reference)
+> > > > > +{
+> > > > > +    struct amu_counters cnts = {0};
+> > > > > +    int ret;
+> > > > > +
+> > > > > +    ret = counters_read_on_cpu(cpu, cpu_read_amu_counters, &cnts);
+> > > > > +    if (ret)
+> > > > > +        return ret;
+> > > > > +
+> > > > > +    *delivered = cnts.corecnt;
+> > > > > +    *reference = cnts.constcnt;
+> > > > > +
+> > > > > +    return 0;
+> > > > > +}
+> > > > > +
+> > > > >  int cpc_read_ffh(int cpu, struct cpc_reg *reg, u64 *val)
+> > > > >  {
+> > > > >      int ret = -EOPNOTSUPP;
+> > > > > diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
+> > > > > index 7ff269a78c20..f303fabd7cfe 100644
+> > > > > --- a/drivers/acpi/cppc_acpi.c
+> > > > > +++ b/drivers/acpi/cppc_acpi.c
+> > > > > @@ -1299,6 +1299,11 @@ bool cppc_perf_ctrs_in_pcc(void)
+> > > > >  }
+> > > > >  EXPORT_SYMBOL_GPL(cppc_perf_ctrs_in_pcc);
+> > > > > +int __weak cpc_read_arch_counters_on_cpu(int cpu, u64
+> > > > > *delivered, u64 *reference)
+> > > > > +{
+> > > > > +    return 0;
+> > > > > +}
+> > > > > +
+> > > > >  /**
+> > > > >   * cppc_get_perf_ctrs - Read a CPU's performance feedback counters.
+> > > > >   * @cpunum: CPU from which to read counters.
+> > > > > @@ -1313,7 +1318,8 @@ int cppc_get_perf_ctrs(int cpunum,
+> > > > > struct cppc_perf_fb_ctrs *perf_fb_ctrs)
+> > > > >          *ref_perf_reg, *ctr_wrap_reg;
+> > > > >      int pcc_ss_id = per_cpu(cpu_pcc_subspace_idx, cpunum);
+> > > > >      struct cppc_pcc_data *pcc_ss_data = NULL;
+> > > > > -    u64 delivered, reference, ref_perf, ctr_wrap_time;
+> > > > > +    u64 delivered = 0, reference = 0;
+> > > > > +    u64 ref_perf, ctr_wrap_time;
+> > > > >      int ret = 0, regs_in_pcc = 0;
+> > > > >      if (!cpc_desc) {
+> > > > > @@ -1350,8 +1356,18 @@ int cppc_get_perf_ctrs(int cpunum,
+> > > > > struct cppc_perf_fb_ctrs *perf_fb_ctrs)
+> > > > >          }
+> > > > >      }
+> > > > > -    cpc_read(cpunum, delivered_reg, &delivered);
+> > > > > -    cpc_read(cpunum, reference_reg, &reference);
+> > > > > +    if (cpc_ffh_supported()) {
+> > > > > +        ret = cpc_read_arch_counters_on_cpu(cpunum,
+> > > > > &delivered, &reference);
+> > > > > +        if (ret) {
+> > > > > +            pr_debug("read arch counters failed, ret=%d.\n", ret);
+> > > > > +            ret = 0;
+> > > > > +        }
+> > > > > +    }
+> > > > > +    if (!delivered || !reference) {
+> > > > > +        cpc_read(cpunum, delivered_reg, &delivered);
+> > > > > +        cpc_read(cpunum, reference_reg, &reference);
+> > > > > +    }
+> > > > > +
+> > > > >      cpc_read(cpunum, ref_perf_reg, &ref_perf);
+> > > > >      /*
+> > > > > diff --git a/include/acpi/cppc_acpi.h b/include/acpi/cppc_acpi.h
+> > > > > index 6126c977ece0..07d4fd82d499 100644
+> > > > > --- a/include/acpi/cppc_acpi.h
+> > > > > +++ b/include/acpi/cppc_acpi.h
+> > > > > @@ -152,6 +152,7 @@ extern bool cpc_ffh_supported(void);
+> > > > >  extern bool cpc_supported_by_cpu(void);
+> > > > >  extern int cpc_read_ffh(int cpunum, struct cpc_reg *reg, u64 *val);
+> > > > >  extern int cpc_write_ffh(int cpunum, struct cpc_reg *reg, u64 val);
+> > > > > +extern int cpc_read_arch_counters_on_cpu(int cpu, u64
+> > > > > *delivered, u64 *reference);
+> > > > >  extern int cppc_get_epp_perf(int cpunum, u64 *epp_perf);
+> > > > >  extern int cppc_set_epp_perf(int cpu, struct
+> > > > > cppc_perf_ctrls *perf_ctrls, bool enable);
+> > > > >  extern int cppc_get_auto_sel_caps(int cpunum, struct
+> > > > > cppc_perf_caps *perf_caps);
+> > > > > @@ -209,6 +210,10 @@ static inline int cpc_write_ffh(int
+> > > > > cpunum, struct cpc_reg *reg, u64 val)
+> > > > >  {
+> > > > >      return -ENOTSUPP;
+> > > > >  }
+> > > > > +static inline int cpc_read_arch_counters_on_cpu(int cpu,
+> > > > > u64 *delivered, u64 *reference)
+> > > > > +{
+> > > > > +    return -EOPNOTSUPP;
+> > > > > +}
+> > > > >  static inline int cppc_set_epp_perf(int cpu, struct
+> > > > > cppc_perf_ctrls *perf_ctrls, bool enable)
+> > > > >  {
+> > > > >      return -ENOTSUPP;
+> > > > > -- 
+> > > > > 2.33.0
+> > > > > 
+> > > > .
+> > > 
+> > > _______________________________________________
+> > > linux-arm-kernel mailing list
+> > > linux-arm-kernel@lists.infradead.org
+> > > http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+> > 
+> > .
 
