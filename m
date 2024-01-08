@@ -1,131 +1,126 @@
-Return-Path: <linux-kernel+bounces-20085-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20086-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D2700827919
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 21:23:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B68C582791C
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 21:23:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E2C3A1C2305F
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 20:23:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C5A641C230E5
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 20:23:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D9FF5579C;
-	Mon,  8 Jan 2024 20:23:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=posteo.net header.i=@posteo.net header.b="f+mLiayT"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52F6D55C37;
+	Mon,  8 Jan 2024 20:23:03 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mout02.posteo.de (mout02.posteo.de [185.67.36.66])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 567535577B
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 20:22:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=posteo.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=posteo.net
-Received: from submission (posteo.de [185.67.36.169]) 
-	by mout02.posteo.de (Postfix) with ESMTPS id 733F5240108
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 21:22:55 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
-	t=1704745375; bh=QdXdfx57ZJPNwppUDVSfjTZfO7rtid5cQ8dOF8J1p8o=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:
-	 Content-Transfer-Encoding:From;
-	b=f+mLiayTkIkdCQsqNYeLNTSKdh8rsjRSg6AeDgKXVYiI1APjpptqojbY+foZ0Slb2
-	 nwx3XVXY4HOc9dPKRQwSMmWDUlW02MLw6DtSQLdI31ZP1ajx+Nl7vwPlqnFceTsRLS
-	 MkHp91rftJvk7PK9P0KZVJOoqd3E1/uHfVFHYEvfu0Hc2bbmRsmY5vwAuxj/9NHmzF
-	 hvxAeshXsxW0hJ4pVxkl3BvjTb4GYfWGSh9tBHdVHNyqBJy3Ls3tv3Lrp80TpkHZ3N
-	 P2wV20OUPUzW5bjd3FiU2fuaMSgWFE4RwWS3wCnhLeUcRdD1jPEcEyNrkNZZKdh5IG
-	 C7zflfrmmtZMg==
-Received: from customer (localhost [127.0.0.1])
-	by submission (posteo.de) with ESMTPSA id 4T858k6p49z6tyS;
-	Mon,  8 Jan 2024 21:22:46 +0100 (CET)
-From: Yueh-Shun Li <shamrocklee@posteo.net>
-To: Jonathan Corbet <corbet@lwn.net>
-Cc: Yueh-Shun Li <shamrocklee@posteo.net>,
-	Randy Dunlap <rdunlap@infradead.org>,
-	Hu Haowen <src.res.211@gmail.com>,
-	Alex Shi <alexs@kernel.org>,
-	Yanteng Si <siyanteng@loongson.cn>,
-	workflows@vger.kernel.org,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v3 1/1] coding-style: recommend split headers instead of kernel.h
-Date: Mon,  8 Jan 2024 20:22:08 +0000
-Message-ID: <20240108202217.191839-1-shamrocklee@posteo.net>
-In-Reply-To: <20240108201851.191604-1-shamrocklee@posteo.net>
-References: <107b6b5e-ca14-4b2b-ba2e-38ecd74c0ad3@infradead.org> <20240108201851.191604-1-shamrocklee@posteo.net>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F043C55789;
+	Mon,  8 Jan 2024 20:22:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=omp.ru
+Received: from [192.168.1.105] (31.173.87.204) by msexch01.omp.ru
+ (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Mon, 8 Jan
+ 2024 23:22:49 +0300
+Subject: Re: [PATCH net-next v3 17/19] net: ravb: Return cached statistics if
+ the interface is down
+To: Claudiu <claudiu.beznea@tuxon.dev>, <davem@davemloft.net>,
+	<edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+	<richardcochran@gmail.com>, <p.zabel@pengutronix.de>,
+	<yoshihiro.shimoda.uh@renesas.com>, <wsa+renesas@sang-engineering.com>
+CC: <netdev@vger.kernel.org>, <linux-renesas-soc@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <geert+renesas@glider.be>, Claudiu Beznea
+	<claudiu.beznea.uj@bp.renesas.com>
+References: <20240105082339.1468817-1-claudiu.beznea.uj@bp.renesas.com>
+ <20240105082339.1468817-18-claudiu.beznea.uj@bp.renesas.com>
+From: Sergey Shtylyov <s.shtylyov@omp.ru>
+Organization: Open Mobile Platform
+Message-ID: <af5ab82e-5904-c33b-983e-b37844dab3f5@omp.ru>
+Date: Mon, 8 Jan 2024 23:22:48 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240105082339.1468817-18-claudiu.beznea.uj@bp.renesas.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
+ (10.188.4.12)
+X-KSE-ServerInfo: msexch01.omp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 6.1.0, Database issued on: 01/08/2024 20:12:41
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 59
+X-KSE-AntiSpam-Info: Lua profiles 182482 [Jan 08 2024]
+X-KSE-AntiSpam-Info: Version: 6.1.0.3
+X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
+X-KSE-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a
+X-KSE-AntiSpam-Info: {rep_avail}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: {relay has no DNS name}
+X-KSE-AntiSpam-Info: {SMTP from is not routable}
+X-KSE-AntiSpam-Info: {Found in DNSBL: 31.173.87.204 in (user)
+ b.barracudacentral.org}
+X-KSE-AntiSpam-Info:
+	127.0.0.199:7.1.2;31.173.87.204:7.1.2;omp.ru:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1
+X-KSE-AntiSpam-Info: ApMailHostAddress: 31.173.87.204
+X-KSE-AntiSpam-Info: {DNS response errors}
+X-KSE-AntiSpam-Info: Rate: 59
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
+ smtp.mailfrom=omp.ru;dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 01/08/2024 20:16:00
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 1/8/2024 7:11:00 PM
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
 
-In section "18) Don't re-invent the kernel macros" in "Linux kernel
-coding style":
+On 1/5/24 11:23 AM, Claudiu wrote:
 
-Recommend reusing macros from headers inside include/linux, instead of
-the obsolete include/linux/kernel.h
+> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+> 
+> Return the cached statistics in case the interface is down. There should be
+> no drawback to this, as cached statistics are updated in ravb_close().
+> 
+> The commit prepares the code for the addition of runtime PM support.
+> 
+> Suggested-by: Sergey Shtylyov <s.shtylyov@omp.ru>
+> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+[...]
 
-Change wording
+> diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
+> index 76035afd4054..168b6208db37 100644
+> --- a/drivers/net/ethernet/renesas/ravb_main.c
+> +++ b/drivers/net/ethernet/renesas/ravb_main.c
+> @@ -2117,6 +2117,9 @@ static struct net_device_stats *ravb_get_stats(struct net_device *ndev)
+>  	const struct ravb_hw_info *info = priv->info;
+>  	struct net_device_stats *nstats, *stats0, *stats1;
+>  
+> +	if (!(ndev->flags & IFF_UP))
 
-- "The header file contains macros" -> "the header files provide macros"
-  Some macros are intended to use inside the header file only, or are
-  considered the implementation detail of other facilities. Developers
-  are expected to determine if a macro is meant to be used outside the
-  header file.
+   Well, I guess it's OK to read the counters in the reset mode... BUT
+won't this race with pm_runtime_put_autosuspend() when its call gets added
+to ravb_close()?
 
-Signed-off-by: Yueh-Shun Li <shamrocklee@posteo.net>
----
- Documentation/process/coding-style.rst | 24 +++++++++++++-----------
- 1 file changed, 13 insertions(+), 11 deletions(-)
+> +		return &ndev->stats;
+> +
+>  	nstats = &ndev->stats;
+>  	stats0 = &priv->stats[RAVB_BE];
+>  
+[...]
 
-diff --git a/Documentation/process/coding-style.rst b/Documentation/process/coding-style.rst
-index 6db37a46d305..2a5c4f4c568c 100644
---- a/Documentation/process/coding-style.rst
-+++ b/Documentation/process/coding-style.rst
-@@ -1048,27 +1048,29 @@ readable alternative if the call-sites have naked true/false constants.
- Otherwise limited use of bool in structures and arguments can improve
- readability.
- 
-+
- 18) Don't re-invent the kernel macros
- -------------------------------------
- 
--The header file include/linux/kernel.h contains a number of macros that
--you should use, rather than explicitly coding some variant of them yourself.
-+The header files in the ``include/linux`` directory provide a number of macros
-+that you should use, rather than explicitly coding some variant of them
-+yourself.
-+
- For example, if you need to calculate the length of an array, take advantage
--of the macro
-+of the macro ``ARRAY_SIZE()`` from ``include/linux/array_size.h`` by
- 
- .. code-block:: c
- 
--	#define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
-+	#include <linux/array_size.h>
-+	ARRAY_SIZE(x) // The size of array x
- 
- Similarly, if you need to calculate the size of some structure member, use
-+``sizeof_field()`` from ``include/linux/stddef.h``.
- 
--.. code-block:: c
--
--	#define sizeof_field(t, f) (sizeof(((t*)0)->f))
--
--There are also min() and max() macros that do strict type checking if you
--need them.  Feel free to peruse that header file to see what else is already
--defined that you shouldn't reproduce in your code.
-+There are also ``min()`` and ``max()`` macros in ``include/linux/minmax.h``
-+that do strict type checking if you need them. Feel free to search across and
-+peruse the header files to see what else is already defined that you shouldn't
-+reproduce in your code.
- 
- 
- 19) Editor modelines and other cruft
--- 
-2.42.0
-
+MBR, Sergey
 
