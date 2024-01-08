@@ -1,79 +1,169 @@
-Return-Path: <linux-kernel+bounces-20125-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20124-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 75D48827A25
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 22:22:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D255D827A24
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 22:22:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 10C3E284524
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 21:22:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8BB771F237B2
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 21:22:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFFC95644E;
-	Mon,  8 Jan 2024 21:22:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 607CC56450;
+	Mon,  8 Jan 2024 21:22:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=hpe.com header.i=@hpe.com header.b="Z1V784RG"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from irl.hu (irl.hu [95.85.9.111])
+Received: from mx0a-002e3701.pphosted.com (mx0a-002e3701.pphosted.com [148.163.147.86])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BFD455E77;
-	Mon,  8 Jan 2024 21:22:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=irl.hu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=irl.hu
-Received: from fedori.lan (51b681dd.dsl.pool.telekom.hu [::ffff:81.182.129.221])
-  (AUTH: CRAM-MD5 soyer@irl.hu, )
-  by irl.hu with ESMTPSA
-  id 0000000000072D22.00000000659C666B.00161D8E; Mon, 08 Jan 2024 22:17:30 +0100
-From: Gergo Koteles <soyer@irl.hu>
-To: Shenghao Ding <shenghao-ding@ti.com>, Kevin Lu <kevin-lu@ti.com>,
-  Baojun Xu <baojun.xu@ti.com>, Jaroslav Kysela <perex@perex.cz>,
-  Takashi Iwai <tiwai@suse.com>
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
-  linux-sound@vger.kernel.org, Gergo Koteles <soyer@irl.hu>,
-  kernel test robot <lkp@intel.com>
-Subject: [PATCH] ALSA: hda/tas2781: annotate calibration data endianness
-Date: Mon,  8 Jan 2024 22:16:46 +0100
-Message-ID: <3852ff28ea7d5d8f2086d8dd78aeff8d1d984991.1704748435.git.soyer@irl.hu>
-X-Mailer: git-send-email 2.43.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E92B15644D
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 21:22:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hpe.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hpe.com
+Received: from pps.filterd (m0148663.ppops.net [127.0.0.1])
+	by mx0a-002e3701.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 408Jahf5029291;
+	Mon, 8 Jan 2024 21:21:11 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pps0720; bh=ZufkvsNmBYIhf482lC8Wys9kgXuS94HzOt66ZnzeuNQ=;
+ b=Z1V784RGrqKxUoLyAoTX1A1PLrBZWq5zZSqbaVJ09iS6YlILOJHD7Z2gJlsbN5ohsdKu
+ Aj7heOgDxVRpY38SAkLDPmBPGWimMLa70j/dPNFaicaoXLpDdsJdkkeMYh1ZrzRG2Xar
+ Uam8XG7djnh9O7PbsNU62X/Vpa5X2T55E5bUa7TcQrLwQBK+hsyFlKzkmui0dpfaNSer
+ NGp4ToGsBONKNcyXZ9rd+9BhZQ+O1106JIYvXxByXpbXHBPVSqQYqkgzqsn81JnwXoRO
+ 43Z40xwzScAWM4Dw4vjxwFyZhaawdLMZRj8DpGHJhyXERGlnJGD2Bj7CqHqvSFD8Kb+W 3g== 
+Received: from p1lg14881.it.hpe.com ([16.230.97.202])
+	by mx0a-002e3701.pphosted.com (PPS) with ESMTPS id 3vgmnutdkd-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 08 Jan 2024 21:21:11 +0000
+Received: from p1lg14885.dc01.its.hpecorp.net (unknown [10.119.18.236])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by p1lg14881.it.hpe.com (Postfix) with ESMTPS id B424C805E1F;
+	Mon,  8 Jan 2024 21:21:10 +0000 (UTC)
+Received: from dog.eag.rdlabs.hpecorp.net (unknown [16.231.227.36])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(Client did not present a certificate)
+	by p1lg14885.dc01.its.hpecorp.net (Postfix) with ESMTPS id 48FB18065C5;
+	Mon,  8 Jan 2024 21:21:08 +0000 (UTC)
+Date: Mon, 8 Jan 2024 15:21:06 -0600
+From: Steve Wahl <steve.wahl@hpe.com>
+To: Steve Wahl <steve.wahl@hpe.com>, Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
+Cc: Russ Anderson <rja@hpe.com>, Dimitri Sivanich <sivanich@hpe.com>
+Subject: Re: [PATCH v2] x86/mm/ident_map: Use gbpages only where full GB page
+ should be mapped.
+Message-ID: <20240108212106.GA1571174@dog.eag.rdlabs.hpecorp.net>
+References: <20231103190108.184817-1-steve.wahl@hpe.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Mime-Autoconverted: from 8bit to 7bit by courier 1.0
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231103190108.184817-1-steve.wahl@hpe.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Proofpoint-GUID: QK5-pRRNz1n0EOJVcZF1eRRMp9Kc1Vjc
+X-Proofpoint-ORIG-GUID: QK5-pRRNz1n0EOJVcZF1eRRMp9Kc1Vjc
+X-HPE-SCL: -1
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-08_10,2024-01-08_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 adultscore=0
+ bulkscore=0 phishscore=0 lowpriorityscore=0 mlxlogscore=999 suspectscore=0
+ clxscore=1011 priorityscore=1501 impostorscore=0 spamscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2401080175
 
-Sparse reports an endian mismatch.
-The amplifier expects the calibration data as big-endian.
-Use the __be32 type to express endianness better.
+Gentle ping.  
 
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202401072137.Oc7pQgRW-lkp@intel.com/
+We'd like to see this get in, we're finding the most likely time to
+hit the problem seems to be when kexec'ing a kdump kernel, and we
+don't get the dump we need to diagnose some other problem.
 
-Signed-off-by: Gergo Koteles <soyer@irl.hu>
----
- sound/pci/hda/tas2781_hda_i2c.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks,
 
-diff --git a/sound/pci/hda/tas2781_hda_i2c.c b/sound/pci/hda/tas2781_hda_i2c.c
-index 4805cf0b6480..2dd809de62e5 100644
---- a/sound/pci/hda/tas2781_hda_i2c.c
-+++ b/sound/pci/hda/tas2781_hda_i2c.c
-@@ -424,8 +424,8 @@ static const struct snd_kcontrol_new tas2781_dsp_conf_ctrl = {
- 
- static void tas2563_apply_calib(struct tasdevice_priv *tas_priv)
- {
--	unsigned int data;
- 	int offset = 0;
-+	__be32 data;
- 	int ret;
- 
- 	for (int i = 0; i < tas_priv->ndev; i++) {
+--> Steve Wahl
 
-base-commit: 736c40609d31481b3b2fffe8c239f2c86fb2b54c
--- 
-2.43.0
-
+On Fri, Nov 03, 2023 at 02:01:08PM -0500, Steve Wahl wrote:
+> Instead of using gbpages for all memory regions, which can include
+> vast areas outside what's actually been requested, use them only when
+> map creation requests include the full GB page of space; descend to
+> using smaller 2M pages when only portions of a GB page are included in
+> the request.
+> 
+> No attempt is made to coalesce mapping requests. If a request requires
+> a map entry at the 2M (pmd) level, subsequent mapping requests within
+> the same 1G region will also be at the pmd level, even if adjacent or
+> overlapping such requests could theoretically have been combined to
+> map a full gbpage.  Existing usage starts with larger regions and then
+> adds smaller regions, so this should not have any great consequence.
+> 
+> When gbpages are used exclusively to create identity maps, large
+> ranges of addresses not actually requested can be included in the
+> resulting table.  On UV systems, this ends up including regions that
+> will cause hardware to halt the system if accessed (these are marked
+> "reserved" by BIOS).  Even though code does not actually make
+> references to these addresses, including them in an active map allows
+> processor speculation into this region, which is enough to trigger the
+> system halt.
+> 
+> The kernel option "nogbpages" will disallow use of gbpages entirely
+> and avoid this problem, but uses a lot of extra memory for page tables
+> that are not really needed.
+> 
+> Signed-off-by: Steve Wahl <steve.wahl@hpe.com>
+> ---
+> v2: per Dave Hanson review: Additional changelog info,
+>     moved pud_large() check earlier in the code, and
+>     improved the comment describing the conditions
+>     that restrict gbpage usage.
+>    
+>  arch/x86/mm/ident_map.c | 20 +++++++++++++++-----
+>  1 file changed, 15 insertions(+), 5 deletions(-)
+> 
+> diff --git a/arch/x86/mm/ident_map.c b/arch/x86/mm/ident_map.c
+> index 968d7005f4a7..5c88c3a7d12a 100644
+> --- a/arch/x86/mm/ident_map.c
+> +++ b/arch/x86/mm/ident_map.c
+> @@ -31,13 +31,23 @@ static int ident_pud_init(struct x86_mapping_info *info, pud_t *pud_page,
+>  		if (next > end)
+>  			next = end;
+>  
+> -		if (info->direct_gbpages) {
+> -			pud_t pudval;
+> +		/* if this is already a gbpage, this portion is already mapped */
+> +		if (pud_large(*pud))
+> +			continue;
+>  
+> -			if (pud_present(*pud))
+> -				continue;
+> +		/*
+> +		 * To be eligible to use a gbpage:
+> +		 *   - gbpages must be enabled
+> +		 *   - addr must be gb aligned (start of region)
+> +		 *   - next must be gb aligned (end of region)
+> +		 *   - PUD must be empty (nothing already mapped in this region)
+> +		 */
+> +		if (info->direct_gbpages
+> +		    && !(addr & ~PUD_MASK)
+> +		    && !(next & ~PUD_MASK)
+> +		    && !pud_present(*pud)) {
+> +			pud_t pudval;
+>  
+> -			addr &= PUD_MASK;
+>  			pudval = __pud((addr - info->offset) | info->page_flag);
+>  			set_pud(pud, pudval);
+>  			continue;
+> -- 
+> 2.26.2
+> 
 
