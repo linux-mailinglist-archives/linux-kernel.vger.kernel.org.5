@@ -1,147 +1,92 @@
-Return-Path: <linux-kernel+bounces-19183-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19187-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id ECAC4826967
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 09:26:05 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 05A14826982
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 09:29:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7FE60B2176D
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 08:26:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2A7911C21C10
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 08:29:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76329BA33;
-	Mon,  8 Jan 2024 08:25:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B36CBA57;
+	Mon,  8 Jan 2024 08:28:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="JrUqbAZj"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB833C139;
-	Mon,  8 Jan 2024 08:25:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.234])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4T7nCc0ZBmz1gx9K;
-	Mon,  8 Jan 2024 16:24:12 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (unknown [7.185.36.74])
-	by mail.maildlp.com (Postfix) with ESMTPS id 07150140384;
-	Mon,  8 Jan 2024 16:25:42 +0800 (CST)
-Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Mon, 8 Jan
- 2024 16:25:41 +0800
-Subject: Re: [PATCH net-next 2/6] page_frag: unify gfp bits for order 3 page
- allocation
-To: Alexander H Duyck <alexander.duyck@gmail.com>, <davem@davemloft.net>,
-	<kuba@kernel.org>, <pabeni@redhat.com>
-CC: <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>, "Michael S.
- Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, Andrew Morton
-	<akpm@linux-foundation.org>, Eric Dumazet <edumazet@google.com>,
-	<kvm@vger.kernel.org>, <virtualization@lists.linux.dev>, <linux-mm@kvack.org>
-References: <20240103095650.25769-1-linyunsheng@huawei.com>
- <20240103095650.25769-3-linyunsheng@huawei.com>
- <d4947ef05bca8525d04f9943e92b4e43ec82c583.camel@gmail.com>
-From: Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <1d40427d-78e3-ef40-a63f-206c0697bda2@huawei.com>
-Date: Mon, 8 Jan 2024 16:25:41 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29B69B673
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 08:28:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704702533; x=1736238533;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=prSPQ9PpceItCYT5PtbjU8y4+s795odvXDIRVVIUCcg=;
+  b=JrUqbAZj3I5oCL8ZwNwjsaQrkmci2QqGb25VBv8J9hg6/l24Fk/q5pb7
+   17/yGQHH/e2X/E5GZ0cACxh0TPIz2gaaxBveRLEz+RdZleDIEJw0NFeJi
+   cqPV9ZK86xYgFy9TOjNpfJVry7IY0z/EQvKSswbkNDldMuopIZD/N4oWy
+   uN98ypMe6lnbZg5BN1c0sZXvkte28TYJXAbr2vTc+PzjerTn1/x0Zz5yo
+   A3vYqwYrO+PYu31hR9Ok4rSfXm6H2h+P7qV4VuDA4wd+vD60wUaR7zYGz
+   6+8/GlXt4xCnwEq5PiBwDZQ2uITpaDysD8VSr0a2FcR22oC8TEQ/D6djq
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10946"; a="377967276"
+X-IronPort-AV: E=Sophos;i="6.04,340,1695711600"; 
+   d="scan'208";a="377967276"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jan 2024 00:28:52 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10946"; a="924793054"
+X-IronPort-AV: E=Sophos;i="6.04,340,1695711600"; 
+   d="scan'208";a="924793054"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jan 2024 00:28:49 -0800
+From: "Huang, Ying" <ying.huang@intel.com>
+To: Kairui Song <ryncsn@gmail.com>
+Cc: linux-mm@kvack.org,  Kairui Song <kasong@tencent.com>,  Andrew Morton
+ <akpm@linux-foundation.org>,  Chris Li <chrisl@kernel.org>,  Hugh Dickins
+ <hughd@google.com>,  Johannes Weiner <hannes@cmpxchg.org>,  Matthew Wilcox
+ <willy@infradead.org>,  Michal Hocko <mhocko@suse.com>,  Yosry Ahmed
+ <yosryahmed@google.com>,  David Hildenbrand <david@redhat.com>,
+  linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 6/9] mm/swap: handle swapcache lookup in swapin_entry
+In-Reply-To: <20240102175338.62012-7-ryncsn@gmail.com> (Kairui Song's message
+	of "Wed, 3 Jan 2024 01:53:35 +0800")
+References: <20240102175338.62012-1-ryncsn@gmail.com>
+	<20240102175338.62012-7-ryncsn@gmail.com>
+Date: Mon, 08 Jan 2024 16:26:51 +0800
+Message-ID: <87a5pg9qno.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <d4947ef05bca8525d04f9943e92b4e43ec82c583.camel@gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpemm500005.china.huawei.com (7.185.36.74)
+Content-Type: text/plain; charset=ascii
 
-On 2024/1/5 23:35, Alexander H Duyck wrote:
-> On Wed, 2024-01-03 at 17:56 +0800, Yunsheng Lin wrote:
->> Currently there seems to be three page frag implementions
->> which all try to allocate order 3 page, if that fails, it
->> then fail back to allocate order 0 page, and each of them
->> all allow order 3 page allocation to fail under certain
->> condition by using specific gfp bits.
->>
->> The gfp bits for order 3 page allocation are different
->> between different implementation, __GFP_NOMEMALLOC is
->> or'd to forbid access to emergency reserves memory for
->> __page_frag_cache_refill(), but it is not or'd in other
->> implementions, __GFP_DIRECT_RECLAIM is masked off to avoid
->> direct reclaim in skb_page_frag_refill(), but it is not
->> masked off in __page_frag_cache_refill().
->>
->> This patch unifies the gfp bits used between different
->> implementions by or'ing __GFP_NOMEMALLOC and masking off
->> __GFP_DIRECT_RECLAIM for order 3 page allocation to avoid
->> possible pressure for mm.
->>
->> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
->> CC: Alexander Duyck <alexander.duyck@gmail.com>
->> ---
->>  drivers/vhost/net.c | 2 +-
->>  mm/page_alloc.c     | 4 ++--
->>  net/core/sock.c     | 2 +-
->>  3 files changed, 4 insertions(+), 4 deletions(-)
->>
->> diff --git a/drivers/vhost/net.c b/drivers/vhost/net.c
->> index f2ed7167c848..e574e21cc0ca 100644
->> --- a/drivers/vhost/net.c
->> +++ b/drivers/vhost/net.c
->> @@ -670,7 +670,7 @@ static bool vhost_net_page_frag_refill(struct vhost_net *net, unsigned int sz,
->>  		/* Avoid direct reclaim but allow kswapd to wake */
->>  		pfrag->page = alloc_pages((gfp & ~__GFP_DIRECT_RECLAIM) |
->>  					  __GFP_COMP | __GFP_NOWARN |
->> -					  __GFP_NORETRY,
->> +					  __GFP_NORETRY | __GFP_NOMEMALLOC,
->>  					  SKB_FRAG_PAGE_ORDER);
->>  		if (likely(pfrag->page)) {
->>  			pfrag->size = PAGE_SIZE << SKB_FRAG_PAGE_ORDER;
->> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
->> index 9a16305cf985..1f0b36dd81b5 100644
->> --- a/mm/page_alloc.c
->> +++ b/mm/page_alloc.c
->> @@ -4693,8 +4693,8 @@ static struct page *__page_frag_cache_refill(struct page_frag_cache *nc,
->>  	gfp_t gfp = gfp_mask;
->>  
->>  #if (PAGE_SIZE < PAGE_FRAG_CACHE_MAX_SIZE)
->> -	gfp_mask |= __GFP_COMP | __GFP_NOWARN | __GFP_NORETRY |
->> -		    __GFP_NOMEMALLOC;
->> +	gfp_mask = (gfp_mask & ~__GFP_DIRECT_RECLAIM) |  __GFP_COMP |
->> +		   __GFP_NOWARN | __GFP_NORETRY | __GFP_NOMEMALLOC;
->>  	page = alloc_pages_node(NUMA_NO_NODE, gfp_mask,
->>  				PAGE_FRAG_CACHE_MAX_ORDER);
->>  	nc->size = page ? PAGE_FRAG_CACHE_MAX_SIZE : PAGE_SIZE;
->> diff --git a/net/core/sock.c b/net/core/sock.c
->> index 446e945f736b..d643332c3ee5 100644
->> --- a/net/core/sock.c
->> +++ b/net/core/sock.c
->> @@ -2900,7 +2900,7 @@ bool skb_page_frag_refill(unsigned int sz, struct page_frag *pfrag, gfp_t gfp)
->>  		/* Avoid direct reclaim but allow kswapd to wake */
->>  		pfrag->page = alloc_pages((gfp & ~__GFP_DIRECT_RECLAIM) |
->>  					  __GFP_COMP | __GFP_NOWARN |
->> -					  __GFP_NORETRY,
->> +					  __GFP_NORETRY | __GFP_NOMEMALLOC,
->>  					  SKB_FRAG_PAGE_ORDER);
->>  		if (likely(pfrag->page)) {
->>  			pfrag->size = PAGE_SIZE << SKB_FRAG_PAGE_ORDER;
-> 
-> Looks fine to me.
-> 
-> One thing you may want to consider would be to place this all in an
-> inline function that could just consolidate all the code.
+Kairui Song <ryncsn@gmail.com> writes:
 
-Do you think it is possible to further unify the implementations of the
-'struct page_frag_cache' and 'struct page_frag', so adding a inline
-function for above is unnecessary?
+> From: Kairui Song <kasong@tencent.com>
+>
+> Since all callers of swapin_entry need to check the swap cache first, we
+> can merge this common routine into swapin_entry, so it can be shared and
+> optimized later.
+>
+> Also introduce a enum to better represent possible swap cache usage, and
+> add some comments about it, make the usage of swap cache easier to
+> understand.
 
-> 
-> Reviewed-by: Alexander Duyck <alexanderduyck@fb.com>
-> 
-> .
-> 
+I don't find any benefit to do this.  The code line number isn't
+reduced.  The concept of swap cache isn't hided either.
+
+--
+Best Regards,
+Huang, Ying
+
 
