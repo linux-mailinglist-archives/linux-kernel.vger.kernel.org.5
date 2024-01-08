@@ -1,353 +1,107 @@
-Return-Path: <linux-kernel+bounces-19155-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19172-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4DFCA8268E2
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 08:49:36 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF174826915
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 09:05:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7F524B20DEC
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 07:49:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4FF70B2124B
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 08:05:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 686838F47;
-	Mon,  8 Jan 2024 07:49:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="KITGLv8y"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BE39946C;
+	Mon,  8 Jan 2024 08:05:30 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+Received: from mxout70.expurgate.net (mxout70.expurgate.net [91.198.224.70])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4DA08BF3;
-	Mon,  8 Jan 2024 07:49:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704700161; x=1736236161;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=3JUd2u6+WmcDLRkS6SGeD8yDlGeehHUpeG8fD2943NU=;
-  b=KITGLv8yEpsIJKwrOUN9uzoHyomcAguat2ouHa+IA0iJFiM87hB3dfbd
-   oDSUZa65N61GRRi0+l0esMGaJnEntwf+/rW2241H2htlDJ5vi78HQMFAZ
-   8VMfEEKNtWgatc1MynZT81K2bSG7scqMTQe73lv3R0r6tMyhEgrqvjpet
-   cKVx71LbjpHdtIVMSb/E+oBTssMIEI29785XE09h0o7SlMbcs/l4Y7fnr
-   fWVhtUGwWs2YMtFQpjlHG9P0e3h+uYfMttuPL+8xamL4SDK5/OsGJ9cXp
-   UG8ZTa3os9yOufz/S/oRCGvNR8RrMV3pOeJu5ywA/Vl4miZAlIX5/QcJP
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10946"; a="4898552"
-X-IronPort-AV: E=Sophos;i="6.04,340,1695711600"; 
-   d="scan'208";a="4898552"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jan 2024 23:49:20 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10946"; a="851709196"
-X-IronPort-AV: E=Sophos;i="6.04,340,1695711600"; 
-   d="scan'208";a="851709196"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
-  by fmsmga004.fm.intel.com with ESMTP; 07 Jan 2024 23:49:16 -0800
-Date: Mon, 8 Jan 2024 15:46:20 +0800
-From: Xu Yilun <yilun.xu@linux.intel.com>
-To: Michal Simek <michal.simek@amd.com>
-Cc: linux-kernel@vger.kernel.org, monstr@monstr.eu, michal.simek@xilinx.com,
-	git@xilinx.com, Conor Dooley <conor+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Moritz Fischer <mdf@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-	Tom Rix <trix@redhat.com>, Wu Hao <hao.wu@intel.com>,
-	Xu Yilun <yilun.xu@intel.com>,
-	"open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>,
-	"open list:FPGA MANAGER FRAMEWORK" <linux-fpga@vger.kernel.org>
-Subject: Re: [PATCH 2/2] dt-bindings: fpga: altera: Convert bridge bindings
- to yaml
-Message-ID: <ZZuoTG2wdXQvLlAa@yilunxu-OptiPlex-7050>
-References: <3100bbc4723643ec1ec7d4548e9ab353c856b564.1704470663.git.michal.simek@amd.com>
- <e738a64f742982bba6c7a8ea3cbc660f81316d2b.1704470663.git.michal.simek@amd.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7E6A8F47;
+	Mon,  8 Jan 2024 08:05:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dev.tdt.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dev.tdt.de
+Received: from [127.0.0.1] (helo=localhost)
+	by relay.expurgate.net with smtp (Exim 4.92)
+	(envelope-from <prvs=27517e8fb8=fe@dev.tdt.de>)
+	id 1rMkLl-000MIh-Ss; Mon, 08 Jan 2024 08:47:09 +0100
+Received: from [195.243.126.94] (helo=securemail.tdt.de)
+	by relay.expurgate.net with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <fe@dev.tdt.de>)
+	id 1rMkLk-000MHO-E1; Mon, 08 Jan 2024 08:47:08 +0100
+Received: from securemail.tdt.de (localhost [127.0.0.1])
+	by securemail.tdt.de (Postfix) with ESMTP id 14224240049;
+	Mon,  8 Jan 2024 08:47:08 +0100 (CET)
+Received: from mail.dev.tdt.de (unknown [10.2.4.42])
+	by securemail.tdt.de (Postfix) with ESMTP id A7D1C240040;
+	Mon,  8 Jan 2024 08:47:07 +0100 (CET)
+Received: from mail.dev.tdt.de (localhost [IPv6:::1])
+	by mail.dev.tdt.de (Postfix) with ESMTP id 54D7534839;
+	Mon,  8 Jan 2024 08:47:07 +0100 (CET)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e738a64f742982bba6c7a8ea3cbc660f81316d2b.1704470663.git.michal.simek@amd.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date: Mon, 08 Jan 2024 08:47:07 +0100
+From: Florian Eckert <fe@dev.tdt.de>
+To: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Lee Jones <lee@kernel.org>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warning after merge of the leds-lj tree
+In-Reply-To: <20240105173352.6ce1a546@canb.auug.org.au>
+References: <20240105173352.6ce1a546@canb.auug.org.au>
+Message-ID: <17b4305d9fe1fbed3e39597f0767f7bd@dev.tdt.de>
+X-Sender: fe@dev.tdt.de
+User-Agent: Roundcube Webmail/1.3.17
+X-purgate-type: clean
+X-purgate-ID: 151534::1704700028-9767C464-91F02735/0/0
+X-purgate: clean
 
-On Fri, Jan 05, 2024 at 05:04:31PM +0100, Michal Simek wrote:
-> Convert Altera's bridges to yaml with using fpga-bridge.yaml.
+Hello Stephen,
+
+thanks for your hint
+
+On 2024-01-05 07:33, Stephen Rothwell wrote:
+> Hi all,
 > 
-> Signed-off-by: Michal Simek <michal.simek@amd.com>
-> ---
+> After merging the leds-lj tree, today's linux-next build (htmldocs)
+> produced this warning:
 > 
->  .../fpga/altera-fpga2sdram-bridge.txt         | 13 ----
->  .../fpga/altera-fpga2sdram-bridge.yaml        | 34 ++++++++++
->  .../bindings/fpga/altera-freeze-bridge.txt    | 20 ------
->  .../bindings/fpga/altera-freeze-bridge.yaml   | 41 ++++++++++++
->  .../bindings/fpga/altera-hps2fpga-bridge.txt  | 36 -----------
->  .../bindings/fpga/altera-hps2fpga-bridge.yaml | 63 +++++++++++++++++++
->  6 files changed, 138 insertions(+), 69 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/fpga/altera-fpga2sdram-bridge.txt
->  create mode 100644 Documentation/devicetree/bindings/fpga/altera-fpga2sdram-bridge.yaml
->  delete mode 100644 Documentation/devicetree/bindings/fpga/altera-freeze-bridge.txt
->  create mode 100644 Documentation/devicetree/bindings/fpga/altera-freeze-bridge.yaml
->  delete mode 100644 Documentation/devicetree/bindings/fpga/altera-hps2fpga-bridge.txt
->  create mode 100644 Documentation/devicetree/bindings/fpga/altera-hps2fpga-bridge.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/fpga/altera-fpga2sdram-bridge.txt b/Documentation/devicetree/bindings/fpga/altera-fpga2sdram-bridge.txt
-> deleted file mode 100644
-> index 5dd0ff0f7b4e..000000000000
-> --- a/Documentation/devicetree/bindings/fpga/altera-fpga2sdram-bridge.txt
-> +++ /dev/null
-> @@ -1,13 +0,0 @@
-> -Altera FPGA To SDRAM Bridge Driver
-> -
-> -Required properties:
-> -- compatible		: Should contain "altr,socfpga-fpga2sdram-bridge"
-> -
-> -See Documentation/devicetree/bindings/fpga/fpga-bridge.txt for generic bindings.
-> -
-> -Example:
-> -	fpga_bridge3: fpga-bridge@ffc25080 {
-> -		compatible = "altr,socfpga-fpga2sdram-bridge";
-> -		reg = <0xffc25080 0x4>;
-> -		bridge-enable = <0>;
-> -	};
-> diff --git a/Documentation/devicetree/bindings/fpga/altera-fpga2sdram-bridge.yaml b/Documentation/devicetree/bindings/fpga/altera-fpga2sdram-bridge.yaml
-> new file mode 100644
-> index 000000000000..a3f3fe2729f2
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/fpga/altera-fpga2sdram-bridge.yaml
-> @@ -0,0 +1,34 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/fpga/altera-fpga2sdram-bridge.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Altera FPGA To SDRAM Bridge
-> +
-> +maintainers:
-> +  - Xu Yilun <yilun.xu@intel.com>
-> +
-> +allOf:
-> +  - $ref: fpga-bridge.yaml#
-> +
-> +properties:
-> +  compatible:
-> +    const: altr,socfpga-fpga2sdram-bridge
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +required:
-> +  - compatible
-> +  - reg
+> Warning: /sys/class/leds/<led>/rx is defined 2 times:
+> Documentation/ABI/testing/sysfs-class-led-trigger-tty:7
+> Documentation/ABI/testing/sysfs-class-led-trigger-netdev:49
+> Warning: /sys/class/leds/<led>/tx is defined 2 times:
+> Documentation/ABI/testing/sysfs-class-led-trigger-tty:15
+> Documentation/ABI/testing/sysfs-class-led-trigger-netdev:34
 
-Is the 'reg' required? I didn't see it in original txt.
+The behavior of the tty trigger can be controlled via the Rx and Tx 
+file.
+If a value is set in Rx or Tx, the LED flashes when data is transmitted 
+in
+this direction. The same behavior is used for the netdev trigger.
+I have therefore used the same pattern for the new tty trigger as well.
 
-> +
-> +unevaluatedProperties: false
-> +
-> +examples:
-> +  - |
-> +    fpga-bridge@ffc25080 {
-> +        compatible = "altr,socfpga-fpga2sdram-bridge";
-> +        reg = <0xffc25080 0x4>;
-> +        bridge-enable = <0>;
-> +    };
-> diff --git a/Documentation/devicetree/bindings/fpga/altera-freeze-bridge.txt b/Documentation/devicetree/bindings/fpga/altera-freeze-bridge.txt
-> deleted file mode 100644
-> index 8b26fbcff3c6..000000000000
-> --- a/Documentation/devicetree/bindings/fpga/altera-freeze-bridge.txt
-> +++ /dev/null
-> @@ -1,20 +0,0 @@
-> -Altera Freeze Bridge Controller Driver
-> -
-> -The Altera Freeze Bridge Controller manages one or more freeze bridges.
-> -The controller can freeze/disable the bridges which prevents signal
-> -changes from passing through the bridge.  The controller can also
-> -unfreeze/enable the bridges which allows traffic to pass through the
-> -bridge normally.
-> -
-> -Required properties:
-> -- compatible		: Should contain "altr,freeze-bridge-controller"
-> -- regs			: base address and size for freeze bridge module
-> -
-> -See Documentation/devicetree/bindings/fpga/fpga-bridge.txt for generic bindings.
-> -
-> -Example:
-> -	freeze-controller@100000450 {
-> -		compatible = "altr,freeze-bridge-controller";
-> -		regs = <0x1000 0x10>;
-> -		bridge-enable = <0>;
-> -	};
-> diff --git a/Documentation/devicetree/bindings/fpga/altera-freeze-bridge.yaml b/Documentation/devicetree/bindings/fpga/altera-freeze-bridge.yaml
-> new file mode 100644
-> index 000000000000..4a89e3980669
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/fpga/altera-freeze-bridge.yaml
-> @@ -0,0 +1,41 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/fpga/altera-freeze-bridge.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Altera Freeze Bridge Controller
-> +
-> +description: |
-> +  The Altera Freeze Bridge Controller manages one or more freeze bridges.
-> +  The controller can freeze/disable the bridges which prevents signal
-> +  changes from passing through the bridge. The controller can also
-> +  unfreeze/enable the bridges which allows traffic to pass through the bridge
-> +  normally.
-> +
-> +maintainers:
-> +  - Xu Yilun <yilun.xu@intel.com>
-> +
-> +allOf:
-> +  - $ref: fpga-bridge.yaml#
-> +
-> +properties:
-> +  compatible:
-> +    const: altr,freeze-bridge-controller
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +
-> +unevaluatedProperties: false
-> +
-> +examples:
-> +  - |
-> +    fpga-bridge@100000450 {
-> +        compatible = "altr,freeze-bridge-controller";
-> +        reg = <0x1000 0x10>;
-> +        bridge-enable = <0>;
-> +    };
-> diff --git a/Documentation/devicetree/bindings/fpga/altera-hps2fpga-bridge.txt b/Documentation/devicetree/bindings/fpga/altera-hps2fpga-bridge.txt
-> deleted file mode 100644
-> index 68cce3945b10..000000000000
-> --- a/Documentation/devicetree/bindings/fpga/altera-hps2fpga-bridge.txt
-> +++ /dev/null
-> @@ -1,36 +0,0 @@
-> -Altera FPGA/HPS Bridge Driver
-> -
-> -Required properties:
-> -- regs		: base address and size for AXI bridge module
-> -- compatible	: Should contain one of:
-> -		  "altr,socfpga-lwhps2fpga-bridge",
-> -		  "altr,socfpga-hps2fpga-bridge", or
-> -		  "altr,socfpga-fpga2hps-bridge"
-> -- resets	: Phandle and reset specifier for this bridge's reset
-> -- clocks	: Clocks used by this module.
-> -
-> -See Documentation/devicetree/bindings/fpga/fpga-bridge.txt for generic bindings.
-> -
-> -Example:
-> -	fpga_bridge0: fpga-bridge@ff400000 {
-> -		compatible = "altr,socfpga-lwhps2fpga-bridge";
-> -		reg = <0xff400000 0x100000>;
-> -		resets = <&rst LWHPS2FPGA_RESET>;
-> -		clocks = <&l4_main_clk>;
-> -		bridge-enable = <0>;
-> -	};
-> -
-> -	fpga_bridge1: fpga-bridge@ff500000 {
-> -		compatible = "altr,socfpga-hps2fpga-bridge";
-> -		reg = <0xff500000 0x10000>;
-> -		resets = <&rst HPS2FPGA_RESET>;
-> -		clocks = <&l4_main_clk>;
-> -		bridge-enable = <1>;
-> -	};
-> -
-> -	fpga_bridge2: fpga-bridge@ff600000 {
-> -		compatible = "altr,socfpga-fpga2hps-bridge";
-> -		reg = <0xff600000 0x100000>;
-> -		resets = <&rst FPGA2HPS_RESET>;
-> -		clocks = <&l4_main_clk>;
-> -	};
-> diff --git a/Documentation/devicetree/bindings/fpga/altera-hps2fpga-bridge.yaml b/Documentation/devicetree/bindings/fpga/altera-hps2fpga-bridge.yaml
-> new file mode 100644
-> index 000000000000..f8210449dfed
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/fpga/altera-hps2fpga-bridge.yaml
-> @@ -0,0 +1,63 @@
+I didn't know that the names have to be unique!
 
-Is the License identifier also needed?
+I'm a bit at a loss as to what to do now. Should I put a prefix "tty_"
+in front of the names so that we have "tty_rx", "tty_tx"?
 
+If we do it this way, however, the general question arises as to whether
+we do have to use a prefix everywhere! If new triggers are added, then 
+the
+names for a config file are already used up and anyone who then wants to 
+use
+the same name for an other trigger with the same config file because it 
+describe
+the same function must then work with a prefix!
 
-Otherwise, Reviewed-by: Xu Yilun <yilun.xu@intel.com>
+Best regards
 
-Thanks
-
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/fpga/altera-hps2fpga-bridge.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Altera FPGA/HPS Bridge
-> +
-> +maintainers:
-> +  - Xu Yilun <yilun.xu@intel.com>
-> +
-> +allOf:
-> +  - $ref: fpga-bridge.yaml#
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - altr,socfpga-lwhps2fpga-bridge
-> +      - altr,socfpga-hps2fpga-bridge
-> +      - altr,socfpga-fpga2hps-bridge
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  resets:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    maxItems: 1
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - clocks
-> +  - resets
-> +
-> +unevaluatedProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/reset/altr,rst-mgr.h>
-> +
-> +    fpga-bridge@ff400000 {
-> +      compatible = "altr,socfpga-lwhps2fpga-bridge";
-> +      reg = <0xff400000 0x100000>;
-> +      bridge-enable = <0>;
-> +      clocks = <&l4_main_clk>;
-> +      resets = <&rst LWHPS2FPGA_RESET>;
-> +    };
-> +
-> +    fpga_bridge1: fpga-bridge@ff500000 {
-> +      compatible = "altr,socfpga-hps2fpga-bridge";
-> +      reg = <0xff500000 0x10000>;
-> +      bridge-enable = <1>;
-> +      clocks = <&l4_main_clk>;
-> +      resets = <&rst HPS2FPGA_RESET>;
-> +    };
-> +
-> +    fpga_bridge2: fpga-bridge@ff600000 {
-> +      compatible = "altr,socfpga-fpga2hps-bridge";
-> +      reg = <0xff600000 0x100000>;
-> +      clocks = <&l4_main_clk>;
-> +      resets = <&rst FPGA2HPS_RESET>;
-> +    };
-> -- 
-> 2.36.1
-> 
-> 
+Florian
 
