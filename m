@@ -1,127 +1,116 @@
-Return-Path: <linux-kernel+bounces-19359-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19360-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 648DB826BE1
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 11:52:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 03866826BE4
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 11:53:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6F8BBB21C83
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 10:52:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9243F282E47
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 10:53:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A906114A93;
-	Mon,  8 Jan 2024 10:52:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0E7014003;
+	Mon,  8 Jan 2024 10:52:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="u8cBdJ1m"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="brIYRnfj"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0661614A84
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 10:52:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2089CC43397;
-	Mon,  8 Jan 2024 10:52:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704711124;
-	bh=sfKZ2kHfxV9HPHSYjliuoTfI7Nt51hYocQh/PZfvhWo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=u8cBdJ1mVHDxUsTD3j5JUxsOq3K41Qj4Y1HUr1B9DvwsuMtfcmd+CudWe0/sjnzLC
-	 cB4hULjjgZtaK7rkLRCODemY7h26DLZkoz/00LbyY4lHAvPU6l/Ur92RC4FR8LfQwZ
-	 kzl1y9TVWvlTIsSltGO+6cZVSp26O6jX6ZNSZk12WvuD755ddBDw+StfNE5wQRf1BZ
-	 TX93I4sjmHbq7FkWra9jo52NOBJfXjZ+siDhGO2UMdOAw5niPrVM26cg3mtqrxzzzP
-	 7UKvXe8bxpOTdhCduu5gbJRjzWS/EQLmtQpvAfhWsnqBAqfbTz5GISCjozhWMU6c9m
-	 8UsEZHxtHJWqg==
-Date: Mon, 8 Jan 2024 11:52:01 +0100
-From: Maxime Ripard <mripard@kernel.org>
-To: =?utf-8?Q?Micha=C5=82?= Winiarski <michal.winiarski@intel.com>
-Cc: intel-xe@lists.freedesktop.org, dri-devel@lists.freedesktop.org, 
-	linux-kernel@vger.kernel.org, Rodrigo Vivi <rodrigo.vivi@intel.com>, 
-	Michal Wajdeczko <michal.wajdeczko@intel.com>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, 
-	Daniel Vetter <daniel@ffwll.ch>, Javier Martinez Canillas <javierm@redhat.com>, 
-	=?utf-8?B?TWHDrXJh?= Canal <mcanal@igalia.com>
-Subject: Re: [PATCH v4 5/6] drm/tests: managed: Extract device initialization
- into test init
-Message-ID: <3yoesok4yzvc565hmlbj4ybdihhzsofqsnpx3bnzg2phlbq3zf@55jn4zo24vvv>
-References: <20240105101324.26811-1-michal.winiarski@intel.com>
- <20240105101324.26811-6-michal.winiarski@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F3BC13FFB;
+	Mon,  8 Jan 2024 10:52:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704711176; x=1736247176;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=OAUhQ/TR7A7NytdPGBdRlhb9xG+z8S8msU7oGu6+pTQ=;
+  b=brIYRnfjFGHRBP6DR+rK8Vwm0AP1eSUDxK5qI7rc2zDKjbcBBnZ158xm
+   Y3C2WIc+KbiJd/P2+EWBW1v2adK4YUzFLIiCoyYWpj5H1Kz1uiWXjtkAo
+   MRmenXGm7als0hTD0ApUy7BOeK0vdz+es02GLURcPjhZs5+JMh6JS8X9c
+   qZ9ju6hcQu8gNYojneYMjIuMwNG8rUEAP9fvWZI87On+OhZu/LR9pIxv+
+   wSp3529Y6wI5vDczxoG45dfa0PJzLdEbKU2VDXJxsg6/IxPPCKgNF3dpb
+   mYYyfWdWdkdIGawfMCgIuqEzaZJl/ijMTTUs6AAdtmcGq722r64EwmH3U
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10946"; a="16449708"
+X-IronPort-AV: E=Sophos;i="6.04,340,1695711600"; 
+   d="scan'208";a="16449708"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jan 2024 02:52:55 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10946"; a="1028370659"
+X-IronPort-AV: E=Sophos;i="6.04,340,1695711600"; 
+   d="scan'208";a="1028370659"
+Received: from stinti-mobl.ger.corp.intel.com ([10.249.37.10])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jan 2024 02:52:52 -0800
+Date: Mon, 8 Jan 2024 12:52:47 +0200 (EET)
+From: =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To: Armin Wolf <W_Armin@gmx.de>
+cc: jithu.joseph@intel.com, Hans de Goede <hdegoede@redhat.com>, 
+    platform-driver-x86@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] platform/x86: intel-wmi-sbl-fw-update: Fix function name
+ in error message
+In-Reply-To: <20240106224126.13803-1-W_Armin@gmx.de>
+Message-ID: <2e86d7b5-bdf4-71be-8296-77626f43891@linux.intel.com>
+References: <20240106224126.13803-1-W_Armin@gmx.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="ynvmvfuteawikynt"
-Content-Disposition: inline
-In-Reply-To: <20240105101324.26811-6-michal.winiarski@intel.com>
+Content-Type: multipart/mixed; boundary="8323329-265098238-1704711173=:1762"
 
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
---ynvmvfuteawikynt
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+--8323329-265098238-1704711173=:1762
+Content-Type: text/plain; charset=ISO-8859-15
+Content-Transfer-Encoding: 8BIT
 
-On Fri, Jan 05, 2024 at 11:13:23AM +0100, Micha=C5=82 Winiarski wrote:
-> It simplifies the process of extending the test suite with additional
-> test cases without unnecessary duplication.
->=20
-> Signed-off-by: Micha=C5=82 Winiarski <michal.winiarski@intel.com>
+On Sat, 6 Jan 2024, Armin Wolf wrote:
+
+> Since when the driver was converted to use the bus-based WMI
+> interface, the old GUID-based WMI functions are not used anymore.
+> Update the error message to avoid confusing users.
+> 
+> Compile-tested only.
+> 
+> Fixes: 75c487fcb69c ("platform/x86: intel-wmi-sbl-fw-update: Use bus-based WMI interface")
+> Signed-off-by: Armin Wolf <W_Armin@gmx.de>
 > ---
->  drivers/gpu/drm/tests/drm_managed_test.c | 37 +++++++++++++++---------
->  1 file changed, 24 insertions(+), 13 deletions(-)
->=20
-> diff --git a/drivers/gpu/drm/tests/drm_managed_test.c b/drivers/gpu/drm/t=
-ests/drm_managed_test.c
-> index 986a38c9144a5..c1fc1f0aac9b2 100644
-> --- a/drivers/gpu/drm/tests/drm_managed_test.c
-> +++ b/drivers/gpu/drm/tests/drm_managed_test.c
-> @@ -9,6 +9,7 @@
->  #include <linux/device.h>
-> =20
->  struct managed_test_priv {
-> +	struct drm_device *drm;
->  	bool action_done;
->  };
-> =20
-> @@ -24,11 +25,26 @@ static void drm_action(struct drm_device *drm, void *=
-ptr)
->   * device is released.
->   */
->  static void drm_test_managed_run_action(struct kunit *test)
-> +{
-> +	struct managed_test_priv *priv =3D test->priv;
-> +	int ret;
-> +
-> +	ret =3D drmm_add_action_or_reset(priv->drm, drm_action, priv);
-> +	KUNIT_EXPECT_EQ(test, ret, 0);
-> +
-> +	ret =3D drm_dev_register(priv->drm, 0);
-> +	KUNIT_ASSERT_EQ(test, ret, 0);
-> +
-> +	drm_dev_unregister(priv->drm);
-> +	drm_kunit_helper_free_device(test, priv->drm->dev);
-> +
-> +	KUNIT_EXPECT_TRUE_MSG(test, priv->action_done, "Release action was not =
-called");
+>  drivers/platform/x86/intel/wmi/sbl-fw-update.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/platform/x86/intel/wmi/sbl-fw-update.c b/drivers/platform/x86/intel/wmi/sbl-fw-update.c
+> index 9cf5ed0f8dc2..040153ad67c1 100644
+> --- a/drivers/platform/x86/intel/wmi/sbl-fw-update.c
+> +++ b/drivers/platform/x86/intel/wmi/sbl-fw-update.c
+> @@ -32,7 +32,7 @@ static int get_fwu_request(struct device *dev, u32 *out)
+>  		return -ENODEV;
+> 
+>  	if (obj->type != ACPI_TYPE_INTEGER) {
+> -		dev_warn(dev, "wmi_query_block returned invalid value\n");
+> +		dev_warn(dev, "wmidev_block_query returned invalid value\n");
+>  		kfree(obj);
+>  		return -EINVAL;
+>  	}
+> @@ -55,7 +55,7 @@ static int set_fwu_request(struct device *dev, u32 in)
+> 
+>  	status = wmidev_block_set(to_wmi_device(dev), 0, &input);
+>  	if (ACPI_FAILURE(status)) {
+> -		dev_err(dev, "wmi_set_block failed\n");
+> +		dev_err(dev, "wmidev_block_set failed\n");
+>  		return -ENODEV;
+>  	}
 
-Aside from the message here I already pointed out,
+Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
 
-Acked-by: Maxime Ripard <mripard@kernel.org>
+-- 
+ i.
 
-Maxime
-
---ynvmvfuteawikynt
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZZvT0QAKCRDj7w1vZxhR
-xUjcAP9F4VU4nJFspkaO37BLPuWH06/oUpWOQzG7BGmgtUxEHAEAtUYmuvBS+A0A
-S8IGzOW+79zQbKpyZgFjz/F8khdc7QE=
-=zS7P
------END PGP SIGNATURE-----
-
---ynvmvfuteawikynt--
+--8323329-265098238-1704711173=:1762--
 
