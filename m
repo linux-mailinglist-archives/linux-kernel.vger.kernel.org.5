@@ -1,113 +1,102 @@
-Return-Path: <linux-kernel+bounces-19085-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19086-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CED098267AD
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 06:02:40 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 069A58267B2
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 06:08:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7A513281DFF
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 05:02:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8A4ACB21197
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 05:08:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC10C849C;
-	Mon,  8 Jan 2024 05:02:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D05A56119;
+	Mon,  8 Jan 2024 05:08:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="bL66XsM4"
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="tnM+RfbL"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38BCF7465;
-	Mon,  8 Jan 2024 05:02:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1704690143;
-	bh=jGUxO4zFaWo/dDYsN94y27oanYz2Av2c4pEPFEnC+Bg=;
-	h=Date:From:To:Cc:Subject:From;
-	b=bL66XsM4clkMI9moRBzucScVNAvYPSKkMvbMUGjW1EjQYDILRn2n6WpyGVoE/8X2b
-	 e5a5DmOUNe4NdqSYHmmNgBhLyOqdss/PE/GYHnfhEd32++Kzve985cftdQyUetLIaD
-	 Zs1Xeg4oWHuEvdUfTboWJFp8Iu7sYbNHTzb/ks+9oLAePPUm5kzomTjU6tAbUDOue6
-	 gYWjEj0JP1MbQqPVphAINsAx/hEs748QKilGEAwg4FaGwozIobRcmmKW9VMWtdRpf1
-	 OX/Ca9HCuShAL9yNY7j92cOcpjk9/47BwvTjVPNjvGg+5eOaZdOy6Zq7vEOgeLy5X9
-	 7I8of8XlpgaGQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4T7hkl3SYrz4wd4;
-	Mon,  8 Jan 2024 16:02:23 +1100 (AEDT)
-Date: Mon, 8 Jan 2024 16:02:21 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Greg KH <greg@kroah.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Krishna Kurapati
- <quic_kriskura@quicinc.com>, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>, Linux Next Mailing List
- <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the usb tree
-Message-ID: <20240108160221.743649b5@canb.auug.org.au>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4772079C2;
+	Mon,  8 Jan 2024 05:08:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40857eMO041857;
+	Sun, 7 Jan 2024 23:07:40 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1704690460;
+	bh=SEOZBEh1rdSE2ER95qLbRtCJXFatCDoGS/5h4fdRzDY=;
+	h=From:To:CC:Subject:Date;
+	b=tnM+RfbLMxQxkHCUo99jQJIm2kpYQU1TvbZE1ZOosVH/XarQcicjU7jwoNSiH97Bx
+	 l5/e3i+eIHdtgHr5jEIgQcdD9TZA6X6MdCtJzYLUTxwJBahR1VCqUkdT/pkEslaFfQ
+	 oHlqIihCLRdawWNTOYBf+ikyohiefhQde2C02dsU=
+Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
+	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40857eOH103780
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Sun, 7 Jan 2024 23:07:40 -0600
+Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Sun, 7
+ Jan 2024 23:07:39 -0600
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Sun, 7 Jan 2024 23:07:39 -0600
+Received: from uda0492258.dhcp.ti.com (uda0492258.dhcp.ti.com [172.24.227.9])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40857ZP1039261;
+	Sun, 7 Jan 2024 23:07:36 -0600
+From: Siddharth Vadapalli <s-vadapalli@ti.com>
+To: <lpieralisi@kernel.org>, <kw@linux.com>, <robh@kernel.org>,
+        <bhelgaas@google.com>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>
+CC: <linux-pci@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        <srk@ti.com>, <s-vadapalli@ti.com>
+Subject: [RFC PATCH] dt-bindings: PCI: ti,j721e-pci-host: Add device-id for TI's J784S4 SoC
+Date: Mon, 8 Jan 2024 10:37:35 +0530
+Message-ID: <20240108050735.512445-1-s-vadapalli@ti.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/oXYenmHC0WV=+bWIswrv1t7";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
---Sig_/oXYenmHC0WV=+bWIswrv1t7
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Add the device-id of 0xb012 for the PCIe controller on the J784S4 SoC as
+described in the CTRL_MMR_PCI_DEVICE_ID register's PCI_DEVICE_ID_DEVICE_ID
+field. The Register descriptions and the Technical Reference Manual for
+J784S4 SoC can be found at: https://www.ti.com/lit/zip/spruj52
 
-Hi all,
+Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
+---
 
-After merging the usb tree, today's linux-next build (htmldocs) produced
-this warning:
+This patch is based on linux-next tagged next-20240105.
 
-Documentation/usb/gadget-testing.rst:459: ERROR: Malformed table.
-Text in column margin in table line 9.
+Regards,
+Siddharth.
 
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D   =3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-ifname            network device interface name associated with this
-                  function instance
-qmult             queue length multiplier for high and super speed
-host_addr         MAC address of host's end of this
-                  Ethernet over USB link
-dev_addr          MAC address of device's end of this
-                  Ethernet over USB link
-max_segment_size  Segment size required for P2P connections. This
-                  will set MTU to (max_segment_size - 14 bytes)
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D   =3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+ Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml | 1 +
+ 1 file changed, 1 insertion(+)
 
-Introduced by commit
+diff --git a/Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml b/Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml
+index b7a534cef24d..0b1f21570ed0 100644
+--- a/Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml
++++ b/Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml
+@@ -68,6 +68,7 @@ properties:
+       - 0xb00d
+       - 0xb00f
+       - 0xb010
++      - 0xb012
+       - 0xb013
+ 
+   msi-map: true
+-- 
+2.34.1
 
-  1900daeefd3e ("usb: gadget: ncm: Add support to update wMaxSegmentSize vi=
-a configfs")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/oXYenmHC0WV=+bWIswrv1t7
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmWbgd0ACgkQAVBC80lX
-0Gx90gf9GC+XJKEdL4OiEaYuzG60iuJgu732PGq5SzeUzGbmqgvCHD9HWD8xXNGW
-65rcI4beQhl/5Av3p7aEeX9omdx5qeXG+qsfN2aI5lV0KCAlDHPcF+VH3SbCaJL5
-DQs3t5lo7VTbskKzbDN6AwsqaJPoBZ/Vb1Li0bRrRjF8wZt+OFyTsrUos1satpRM
-hdEG0XTKOupr2TFCznpLGeZTl8PD/9ny/+hQNMEEWqip1qK0mOn8Nsr2r0MPwsMC
-sder4vbpdyjwTE3B9qmCtEvpzXLNyQtBbgeDPn/97wm7zLrJXV7YzNLpxBoC5Yhy
-XHohdgqNiaoeriRx7ZJMaL8k9J0Egw==
-=1Z0Z
------END PGP SIGNATURE-----
-
---Sig_/oXYenmHC0WV=+bWIswrv1t7--
 
