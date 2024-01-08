@@ -1,145 +1,176 @@
-Return-Path: <linux-kernel+bounces-19316-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19317-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 49B95826B50
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 11:05:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 15356826B52
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 11:06:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2FB921C21F2E
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 10:05:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A55881F21E08
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 10:06:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3724D13AE2;
-	Mon,  8 Jan 2024 10:05:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E12213AC7;
+	Mon,  8 Jan 2024 10:05:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="BXnEhf8H"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dvt0/qjh"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51F71134C8;
-	Mon,  8 Jan 2024 10:05:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4088OuKU003159;
-	Mon, 8 Jan 2024 10:05:24 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:mime-version:content-type; s=
-	qcppdkim1; bh=eVg6xNPnAthWRp6dVUFjU+PI9OyT+fFbgWrhWYJmdiI=; b=BX
-	nEhf8HVQY6vg5hCKldgGPzEwrw8z8UrQXR7AeOuS7zwRWgEjDDqsKkT7QZwZE7c6
-	vkf0wNWDN8tz+iPqTKBWqgT4FP7KUhQumvzcz0eHhnGxoIxsfxTelLwA2qnmfAIt
-	zcS021ifFiy8xYI9XWVoK6sPaiszJFpYA5CgSDkdk+uuANdn2BkSNC5JPSVZamZd
-	T/gnX5lAhktln0chS4duYpKMnItKPA4zGGDAKxjF8T+3VoFNDak9XV4GMLG0g0JV
-	S/kZZz4XzRPH9WYLOZc6DH7YquNUqzyxJF87p3Dmz4xLdwkvhgpuIlwOXHdmnzuv
-	hMJi4TzTsy7nwTJ+1RNg==
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vfxrk1d19-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 08 Jan 2024 10:05:24 +0000 (GMT)
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 408A5NgR003022
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 8 Jan 2024 10:05:23 GMT
-Received: from hu-ekangupt-hyd.qualcomm.com (10.80.80.8) by
- nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Mon, 8 Jan 2024 02:05:21 -0800
-From: Ekansh Gupta <quic_ekangupt@quicinc.com>
-To: <srinivas.kandagatla@linaro.org>, <linux-arm-msm@vger.kernel.org>
-CC: <gregkh@linuxfoundation.org>, <linux-kernel@vger.kernel.org>,
-        stable
-	<stable@kernel.org>
-Subject: [PATCH v1] misc: fastrpc: Pass proper arguments to scm call
-Date: Mon, 8 Jan 2024 15:35:13 +0530
-Message-ID: <20240108100513.19993-1-quic_ekangupt@quicinc.com>
-X-Mailer: git-send-email 2.17.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC84414271;
+	Mon,  8 Jan 2024 10:05:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-3367632ce7bso1502925f8f.2;
+        Mon, 08 Jan 2024 02:05:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704708334; x=1705313134; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=4xYzN2Nttdc7HPzsAjIhxYOW2Xli4S/FbED/CaXe2GY=;
+        b=dvt0/qjhTTnNLew+ZcL+lUlPjPiR81L747SrbiIaGVyfdBnjl+5v/3IyPQlPHcH9QA
+         3tpXKSbEEKFHnj9/tbd/gpvdMYYqpgAT13gOd1mmME29PvDf1ZIUJqKQOaUGXV3LTea8
+         1Lo1XHZWQn4WcweRFPAYQ1HNJyjiRxIsXkZNDVjd9Yf+IurOBPsxFztOK1aPI8YFvljT
+         RaxHxdsOoOIwxyIf5uLyEGCgGb2lI4SrhrtDrjAK5kbfOGHps1G58NN83/E//j3PV3vI
+         EcMQD7oB/l6Vqf7xJ+6KCnl/xmwCJP64nxvbNsXduy0yUUzYSYASYOtx7lcgvtQVvyIx
+         8f+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704708334; x=1705313134;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4xYzN2Nttdc7HPzsAjIhxYOW2Xli4S/FbED/CaXe2GY=;
+        b=UQ3cdaGkcMC318MTs+oqxhhhISzh3hOocdXr5o0elJq1OLarTTvtwQeGsiquslWqNJ
+         KzcPuEsNl9JQlMDHIJjB3sThR/d62yLxB2UL685zCipwPuXl2NIGsxtvdD72Bfs679M/
+         yD/miAtdGo2m8s143IvMyKAOq2pw9c+l5cRNJ4eNIaiB0wZNecChwfEPm1SaWQg3VTE/
+         n7ljPyfP83s/ohz5YT4MYecakDSEdeAX5OonQ8/8TWNvziU81xOB1hULO21JaTF1O+di
+         mDfDANWD/Bsf0TnLRlOycxzyrTfEfPjVPxwcQyBXmSqzKo0yZxs3fY9OfXBjKvsbWzRa
+         XiYA==
+X-Gm-Message-State: AOJu0YyZxINOxZq2PKgQpxJGoHrvz3/iTXOJIWmcYYvbK1/wW0qzb1/h
+	eFMXvRQhWQra5XrAMh2Gci/iB93FRmY=
+X-Google-Smtp-Source: AGHT+IHKkbb5zrfuKsZwwxS8K1rupztEUtZ6sYv5Qokpp/o5IHTSRY3GUC+v2iK37aAsl1yxC5LSFA==
+X-Received: by 2002:adf:c088:0:b0:336:c403:56e0 with SMTP id d8-20020adfc088000000b00336c40356e0mr1552036wrf.130.1704708333683;
+        Mon, 08 Jan 2024 02:05:33 -0800 (PST)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id o15-20020adfca0f000000b0033666ec47b7sm7371909wrh.99.2024.01.08.02.05.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Jan 2024 02:05:33 -0800 (PST)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Mon, 8 Jan 2024 11:05:30 +0100
+To: Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>, bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH bpf-next v2] bpf: Return -ENOTSUPP if calls are not
+ allowed in non-JITed programs
+Message-ID: <ZZvI6g2gGRoebPiO@krava>
+References: <20240104130817.1221-1-yangtiezhu@loongson.cn>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: Aj6xEq-F1cEWqhAy-o7OlZ-c77Z_RFjK
-X-Proofpoint-ORIG-GUID: Aj6xEq-F1cEWqhAy-o7OlZ-c77Z_RFjK
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 bulkscore=0
- lowpriorityscore=0 malwarescore=0 mlxlogscore=942 priorityscore=1501
- impostorscore=0 suspectscore=0 mlxscore=0 clxscore=1011 adultscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2401080084
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240104130817.1221-1-yangtiezhu@loongson.cn>
 
-For CMA memory allocation, ownership is assigned to DSP to make it
-accessible by the PD running on the DSP. With current implementation
-HLOS VM is stored in the channel structure during rpmsg_probe and
-this VM is passed to qcom_scm call as the source VM.
+On Thu, Jan 04, 2024 at 09:08:17PM +0800, Tiezhu Yang wrote:
+> If CONFIG_BPF_JIT_ALWAYS_ON is not set and bpf_jit_enable is 0, there
+> exist 6 failed tests.
+> 
+>   [root@linux bpf]# echo 0 > /proc/sys/net/core/bpf_jit_enable
+>   [root@linux bpf]# echo 0 > /proc/sys/kernel/unprivileged_bpf_disabled
+>   [root@linux bpf]# ./test_verifier | grep FAIL
+>   #106/p inline simple bpf_loop call FAIL
+>   #107/p don't inline bpf_loop call, flags non-zero FAIL
+>   #108/p don't inline bpf_loop call, callback non-constant FAIL
+>   #109/p bpf_loop_inline and a dead func FAIL
+>   #110/p bpf_loop_inline stack locations for loop vars FAIL
+>   #111/p inline bpf_loop call in a big program FAIL
+>   Summary: 768 PASSED, 15 SKIPPED, 6 FAILED
+> 
+> The test log shows that callbacks are not allowed in non-JITed programs,
+> interpreter doesn't support them yet, thus these tests should be skipped
+> if jit is disabled, just return -ENOTSUPP instead of -EINVAL for pseudo
+> calls in fixup_call_args().
+> 
+> With this patch:
+> 
+>   [root@linux bpf]# echo 0 > /proc/sys/net/core/bpf_jit_enable
+>   [root@linux bpf]# echo 0 > /proc/sys/kernel/unprivileged_bpf_disabled
+>   [root@linux bpf]# ./test_verifier | grep FAIL
+>   Summary: 768 PASSED, 21 SKIPPED, 0 FAILED
+> 
+> Additionally, as Eduard suggested, return -ENOTSUPP instead of -EINVAL
+> for the other three places where "non-JITed" is used in error messages
+> to keep consistent.
+> 
+> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+> ---
+> 
+> v2:
+>   -- rebase on the latest bpf-next tree.
+>   -- return -ENOTSUPP instead of -EINVAL for the other three places
+>      where "non-JITed" is used in error messages to keep consistent.
+>   -- update the patch subject and commit message.
+> 
+>  kernel/bpf/verifier.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index d5f4ff1eb235..99558a5186b2 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -8908,7 +8908,7 @@ static int check_map_func_compatibility(struct bpf_verifier_env *env,
+>  			goto error;
+>  		if (env->subprog_cnt > 1 && !allow_tail_call_in_subprogs(env)) {
+>  			verbose(env, "tail_calls are not allowed in non-JITed programs with bpf-to-bpf calls\n");
+> -			return -EINVAL;
+> +			return -ENOTSUPP;
 
-The qcom_scm call will overwrite the passed source VM with the next
-VM which would cause a problem in case the scm call is again needed.
-Adding a local copy of source VM whereever scm call is made to avoid
-this problem.
+FWIW I agree with John review earlier [1], also there's chance (however small)
+we could mess up with some app already checking on that
 
-Fixes: 0871561055e6 ("misc: fastrpc: Add support for audiopd")
-Cc: stable <stable@kernel.org>
-Signed-off-by: Ekansh Gupta <quic_ekangupt@quicinc.com>
----
- drivers/misc/fastrpc.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+jirka
 
-diff --git a/drivers/misc/fastrpc.c b/drivers/misc/fastrpc.c
-index 1c6c62a7f7f5..c13efa7727e0 100644
---- a/drivers/misc/fastrpc.c
-+++ b/drivers/misc/fastrpc.c
-@@ -263,7 +263,6 @@ struct fastrpc_channel_ctx {
- 	int domain_id;
- 	int sesscount;
- 	int vmcount;
--	u64 perms;
- 	struct qcom_scm_vmperm vmperms[FASTRPC_MAX_VMIDS];
- 	struct rpmsg_device *rpdev;
- 	struct fastrpc_session_ctx session[FASTRPC_MAX_SESSIONS];
-@@ -1279,9 +1278,11 @@ static int fastrpc_init_create_static_process(struct fastrpc_user *fl,
- 
- 		/* Map if we have any heap VMIDs associated with this ADSP Static Process. */
- 		if (fl->cctx->vmcount) {
-+			u64 src_perms = BIT(QCOM_SCM_VMID_HLOS);
-+
- 			err = qcom_scm_assign_mem(fl->cctx->remote_heap->phys,
- 							(u64)fl->cctx->remote_heap->size,
--							&fl->cctx->perms,
-+							&src_perms,
- 							fl->cctx->vmperms, fl->cctx->vmcount);
- 			if (err) {
- 				dev_err(fl->sctx->dev, "Failed to assign memory with phys 0x%llx size 0x%llx err %d",
-@@ -1915,8 +1916,10 @@ static int fastrpc_req_mmap(struct fastrpc_user *fl, char __user *argp)
- 
- 	/* Add memory to static PD pool, protection thru hypervisor */
- 	if (req.flags == ADSP_MMAP_REMOTE_HEAP_ADDR && fl->cctx->vmcount) {
-+		u64 src_perms = BIT(QCOM_SCM_VMID_HLOS);
-+
- 		err = qcom_scm_assign_mem(buf->phys, (u64)buf->size,
--			&fl->cctx->perms, fl->cctx->vmperms, fl->cctx->vmcount);
-+			&src_perms, fl->cctx->vmperms, fl->cctx->vmcount);
- 		if (err) {
- 			dev_err(fl->sctx->dev, "Failed to assign memory phys 0x%llx size 0x%llx err %d",
- 					buf->phys, buf->size, err);
-@@ -2290,7 +2293,6 @@ static int fastrpc_rpmsg_probe(struct rpmsg_device *rpdev)
- 
- 	if (vmcount) {
- 		data->vmcount = vmcount;
--		data->perms = BIT(QCOM_SCM_VMID_HLOS);
- 		for (i = 0; i < data->vmcount; i++) {
- 			data->vmperms[i].vmid = vmids[i];
- 			data->vmperms[i].perm = QCOM_SCM_PERM_RWX;
--- 
-2.17.1
+[1] https://lore.kernel.org/bpf/6594a4c15a677_11e86208cd@john.notmuch/
 
+>  		}
+>  		break;
+>  	case BPF_FUNC_perf_event_read:
+> @@ -19069,14 +19069,14 @@ static int fixup_call_args(struct bpf_verifier_env *env)
+>  #ifndef CONFIG_BPF_JIT_ALWAYS_ON
+>  	if (has_kfunc_call) {
+>  		verbose(env, "calling kernel functions are not allowed in non-JITed programs\n");
+> -		return -EINVAL;
+> +		return -ENOTSUPP;
+>  	}
+>  	if (env->subprog_cnt > 1 && env->prog->aux->tail_call_reachable) {
+>  		/* When JIT fails the progs with bpf2bpf calls and tail_calls
+>  		 * have to be rejected, since interpreter doesn't support them yet.
+>  		 */
+>  		verbose(env, "tail_calls are not allowed in non-JITed programs with bpf-to-bpf calls\n");
+> -		return -EINVAL;
+> +		return -ENOTSUPP;
+>  	}
+>  	for (i = 0; i < prog->len; i++, insn++) {
+>  		if (bpf_pseudo_func(insn)) {
+> @@ -19084,7 +19084,7 @@ static int fixup_call_args(struct bpf_verifier_env *env)
+>  			 * have to be rejected, since interpreter doesn't support them yet.
+>  			 */
+>  			verbose(env, "callbacks are not allowed in non-JITed programs\n");
+> -			return -EINVAL;
+> +			return -ENOTSUPP;
+>  		}
+>  
+>  		if (!bpf_pseudo_call(insn))
+> -- 
+> 2.42.0
+> 
+> 
 
