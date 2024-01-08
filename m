@@ -1,179 +1,120 @@
-Return-Path: <linux-kernel+bounces-20107-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20108-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE485827955
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 21:48:02 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A91C3827959
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 21:49:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F2262284518
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 20:48:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 89EA01C2141E
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 20:49:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C16555E54;
-	Mon,  8 Jan 2024 20:47:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="HQ1Hwazy"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C723B5579A;
+	Mon,  8 Jan 2024 20:49:42 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C25FE55E46
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 20:47:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-50e5a9bcec9so2719471e87.3
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 12:47:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1704746871; x=1705351671; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:user-agent:from:references
-         :in-reply-to:mime-version:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=4j2m9ttyYBnQGcELMK0PzOZL5BgPNtka95T8FKd/tY0=;
-        b=HQ1HwazymMZ+ThalIPCz24sdwuZkhn0OeBUe1WSuMq+S4ahNO3VV9hc6CIkmshgmIk
-         mhrwgZ9LrG/mMmfcmLcQgs/i/u7rTwVAUvxP8SndqJ+qreTd4QBCEiyP1VVk28avBSMW
-         ghse6x7eXCqoJrIPls/jj/2KEwYOGkOxLEmZA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704746871; x=1705351671;
-        h=cc:to:subject:message-id:date:user-agent:from:references
-         :in-reply-to:mime-version:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4j2m9ttyYBnQGcELMK0PzOZL5BgPNtka95T8FKd/tY0=;
-        b=APIwP//BziiM66x+QN9NLCpIfemPCFo3CrVOtMYfne5yMWF8vzrOk6i/4LQm28N64r
-         Aa1PIqudfpj7ckyM/pwiAnoPLluag+hj9+1a3pHzck2OYL6Uz+0XXe05MHNVwj9Q+thY
-         xN5XVJ4DXWXdf5N7qhyIwxUS9xfMTAydTkHnfKOPJ+TqNNEoN9THM7UaNGdP7U5lSAGg
-         nhUrbva0/YBYswZiKyvJ+7QRaRV5Az4BgogJkR3vwTmfgDijAj/VvXgqGsGw9Y70xvGL
-         053q1YzwBP7bG69EKfqVtsq/P8Npm60sNd7G2UiZsuljnOFurWirLF/Ch6vV0X8peKVx
-         FxVw==
-X-Gm-Message-State: AOJu0YwZ3bkWjYfQfudcTZL1v2r0K7fu+6mcxKscowaKyKmwGWrn5xJF
-	YzVlEweplzz3nc5l/BIXWQ4uZEidvrT7zP8OUkZ6GRFIxb7A
-X-Google-Smtp-Source: AGHT+IFrXNY5JCZjDG0wh8MJ115D2h3ZIcWAwz50L9LhrxlnOz44eC+kuILatHzHo0WqAX2exa7M31EX3ZCTpEK9S3I=
-X-Received: by 2002:ac2:5de1:0:b0:50e:6032:984b with SMTP id
- z1-20020ac25de1000000b0050e6032984bmr1754251lfq.110.1704746870844; Mon, 08
- Jan 2024 12:47:50 -0800 (PST)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Mon, 8 Jan 2024 12:47:50 -0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 910E055776;
+	Mon,  8 Jan 2024 20:49:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=omp.ru
+Received: from [192.168.1.105] (31.173.87.204) by msexch01.omp.ru
+ (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Mon, 8 Jan
+ 2024 23:49:30 +0300
+Subject: Re: [PATCH net-next v3 18/19] net: ravb: Do not apply RX CSUM
+ settings to hardware if the interface is down
+To: Claudiu <claudiu.beznea@tuxon.dev>, <davem@davemloft.net>,
+	<edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+	<richardcochran@gmail.com>, <p.zabel@pengutronix.de>,
+	<yoshihiro.shimoda.uh@renesas.com>, <wsa+renesas@sang-engineering.com>
+CC: <netdev@vger.kernel.org>, <linux-renesas-soc@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <geert+renesas@glider.be>, Claudiu Beznea
+	<claudiu.beznea.uj@bp.renesas.com>
+References: <20240105082339.1468817-1-claudiu.beznea.uj@bp.renesas.com>
+ <20240105082339.1468817-19-claudiu.beznea.uj@bp.renesas.com>
+From: Sergey Shtylyov <s.shtylyov@omp.ru>
+Organization: Open Mobile Platform
+Message-ID: <16361de1-5f90-01e6-7a4a-8faacc0fa056@omp.ru>
+Date: Mon, 8 Jan 2024 23:49:29 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CANg-bXAO0Pk8Lea-Ci+k56ucBDA+w-2+3L_uP6y2=-JihujXDg@mail.gmail.com>
-References: <20240102210820.2604667-1-markhas@chromium.org>
- <20240102140734.v4.24.Ieee574a0e94fbaae01fd6883ffe2ceeb98d7df28@changeid>
- <CAE-0n50zkwZ8nguUJcL1gjbuavhSU_rLxfGhanxB4YA7N34hLQ@mail.gmail.com>
- <CANg-bXByhaSngW2AAG9h6DYHpiTUvh8+yw3LPU6ZQSCb62M-wg@mail.gmail.com>
- <CAE-0n52u68wMHJGe8=jz4Y1y2=voycFEY15keebz9tPDDBgiqA@mail.gmail.com>
- <CANg-bXDzLJgWLuH8Xj4GLYG=AVfcbmi_EfrA7DaHj4F6i350DA@mail.gmail.com>
- <CAE-0n52365_AYgjaXyV7+oB8WgaJVp5oCUzdsq7NquZsR08XXw@mail.gmail.com>
- <CANg-bXAVm01qoGUL2hUN9=3eK5o6c6BKtTUL82WiLL8cxFeaLA@mail.gmail.com>
- <CAE-0n50nNXSybfAnOgAk4g8hOma7=yLG8+y9PpHaXXSUE-zfsw@mail.gmail.com> <CANg-bXAO0Pk8Lea-Ci+k56ucBDA+w-2+3L_uP6y2=-JihujXDg@mail.gmail.com>
-From: Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.10
-Date: Mon, 8 Jan 2024 12:47:50 -0800
-Message-ID: <CAE-0n53N302rys6iFk0e=G2XXyew3rA_eHHgohbKyJc04e3EZg@mail.gmail.com>
-Subject: Re: [PATCH v4 24/24] platform/chrome: cros_ec: Use PM subsystem to
- manage wakeirq
-To: Mark Hasemeyer <markhas@chromium.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Sudeep Holla <sudeep.holla@arm.com>, 
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Rob Herring <robh@kernel.org>, 
-	Andy Shevchenko <andriy.shevchenko@intel.com>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Raul Rangel <rrangel@chromium.org>, Tzung-Bi Shih <tzungbi@kernel.org>, 
-	Benson Leung <bleung@chromium.org>, Bhanu Prakash Maiya <bhanumaiya@chromium.org>, 
-	Chen-Yu Tsai <wenst@chromium.org>, Guenter Roeck <groeck@chromium.org>, 
-	Prashant Malani <pmalani@chromium.org>, Rob Barnes <robbarnes@google.com>, 
-	chrome-platform@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20240105082339.1468817-19-claudiu.beznea.uj@bp.renesas.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
+ (10.188.4.12)
+X-KSE-ServerInfo: msexch01.omp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 6.1.0, Database issued on: 01/08/2024 20:32:49
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 59
+X-KSE-AntiSpam-Info: Lua profiles 182482 [Jan 08 2024]
+X-KSE-AntiSpam-Info: Version: 6.1.0.3
+X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
+X-KSE-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a
+X-KSE-AntiSpam-Info: {rep_avail}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: {relay has no DNS name}
+X-KSE-AntiSpam-Info: {SMTP from is not routable}
+X-KSE-AntiSpam-Info: {Found in DNSBL: 31.173.87.204 in (user)
+ b.barracudacentral.org}
+X-KSE-AntiSpam-Info: {Found in DNSBL: 31.173.87.204 in (user)
+ dbl.spamhaus.org}
+X-KSE-AntiSpam-Info:
+	31.173.87.204:7.4.1,7.7.3;omp.ru:7.1.1;127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1
+X-KSE-AntiSpam-Info: {cloud_iprep_silent}
+X-KSE-AntiSpam-Info: ApMailHostAddress: 31.173.87.204
+X-KSE-AntiSpam-Info: {DNS response errors}
+X-KSE-AntiSpam-Info: Rate: 59
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
+ smtp.mailfrom=omp.ru;dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 01/08/2024 20:37:00
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 1/8/2024 7:11:00 PM
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
 
-Quoting Mark Hasemeyer (2024-01-08 11:56:44)
-> > Isn't this patch series making the wakeup-source DT property required
-> > for all existing DT nodes? I'm saying that the property is implicit
-> > based on the compatible string "google,cros-ec-{spi,rpmsg,uart}", so
-> > we shouldn't add the property explicitly. Just rely on the compatible
-> > string to convey the property's existence.
->
-> The current wording in 'wakeup-source.txt' states: "Nodes that
-> describe devices which has wakeup capability must contain a
-> "wakeup-source" boolean property." According to that wording, the
-> existing DTS does not match the expectation. This is what led me to
-> add the property. However, feedback from KML mentioned the wording may
-> be a little strong and it should be updated. Hence patch 04 in this
-> series.
->
-> I can revert the SPI driver to assume wake capability, which will no
-> longer make the wakeup-source property required. At that point,
-> leaving the property in the DTS simply provides an indication. Considering it
-> won't be required, I can drop the DTS patches that add the property.
->
-> > I'm no expert in ACPI so sorry if I'm misunderstanding. The driver
-> > unconditionally enables wake on the irq.
->
-> Yes.
->
-> > Most other chromebooks have
-> > added some other interrupt (GPE?) for wakeup purposes, which is
-> > different from the irq used for IO?
->
-> The GPE is used for wake and IO (It processes ACPI notify alerts).
-> AFAIK, the separate IRQ was introduced for latency reasons as the GPE
-> path was too slow.
+On 1/5/24 11:23 AM, Claudiu wrote:
 
-Alright, I don't know what ACPI notify alerts are so most likely that is
-causing me confusion.
+> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+> 
+> Do not apply the RX CSUM settings to hardware if the interface is down. In
 
->
-> > And this patch series tries to
-> > figure out if enable_irq_wake() is going to fail on those devices so it
-> > can only enable irq wake if the irq supports it? When does calling
-> > enable_irq_wake() not return an error to properly indicate that the irq
-> > can't wake? On skyrim devices, where presumably it needed to be marked
-> > in ACPI differently? Or does that platform really support wake on the
-> > irq, but we also have a GPE so enabling wake on the irq is not failing?
->
-> The patch series does two things:
-> 1. Determines whether the irq should be enabled for wake, as opposed
-> to assuming (at least for LPC/ACPI).
-> 2. Moves enable_irq_wake() logic to the PM subsystem.
->
-> Skyrim does _not_ support wake on irq. It uses a GPE. So the patch
-> series drops the assumption that irqwake should be enabled.
+   s/CSUM/checksum/?
 
-Does the call to enable_irq_wake() on skyrim succeed? It seems like the
-driver considers failure to enable wake on the irq as the way to figure
-out if the irq supports wakeup or not. I'm trying to understand why
-anything needs to be changed.
+> case runtime PM is enabled, and while the interface is down, the IP will be
+> in reset mode (as for some platforms disabling the clocks will switch the
+> IP to reset mode, which will lead to losing registers content) and applying
+> settings in reset mode is not an option. Instead, cache the RX CSUM
 
-> Instead,
-> it polls the ACPI tables to determine whether or not the IRQ should be
-> enabled for wake.
->
-> > Having to backport 24 patches to fix a bug is not good.
->
-> Some of the patches were DTS related as a result of my interpretation
-> of 'wakeup-source.txt' (see above comment). Other patches are
-> tangential based on KML feedback to fix things that are orthogonal to
-> the bug itself.
+   Same here...
 
-Fair enough. The fix should be isolated and be early in the series so
-that we don't need to backport the whole stack to fix a bug.
+> settings and apply them in ravb_open() though ravb_emac_init().
 
->
-> > Can the driver
-> > look for both an IO interrupt and a GPE and then assume the GPE is for
-> > wakeup and the interrupt is for IO?
->
-> No, some boards need the IO based irq to wake, and may use both.
+   Through?
 
-Ok.
+> Commit prepares for the addition of runtime PM.
+> 
+> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+[...]
 
->
-> > > 3. Leave the existing solution
-> >
-> > How is 3 an option? I thought this patch series was fixing a bug.
->
-> I meant the solution in the existing patch train.
+MBR, Sergey
 
-Got it.
 
