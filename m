@@ -1,137 +1,89 @@
-Return-Path: <linux-kernel+bounces-19929-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19930-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E41E98276ED
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 19:07:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B1CA58276F0
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 19:08:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 683FDB21D96
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 18:07:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2ED301C21901
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 18:08:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CF0656756;
-	Mon,  8 Jan 2024 18:00:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 962E256773;
+	Mon,  8 Jan 2024 18:00:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="Rx4swttZ";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="l7TL9Wfz"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KPLEgK7a"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6ED655775;
-	Mon,  8 Jan 2024 17:59:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailout.west.internal (Postfix) with ESMTP id 45C743200D46;
-	Mon,  8 Jan 2024 12:59:57 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Mon, 08 Jan 2024 12:59:58 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm1; t=1704736796;
-	 x=1704823196; bh=pNIZiWpwLsHDep+0m+KAN+8thOCgoQ7cLNAuzaNkgag=; b=
-	Rx4swttZoBqP4k0C3+opoVb8qkKfsAa8lfwJ0rZMJxOsqXyjPxVdT2bsT7Z+P0OE
-	C75X10/GaNzr7mbZ/MfxWAtd7Zdu2v2h+vwxAhOnPz+ZY4BCyV4EmwmoNo5apX6M
-	AhlKeJRupGulf9j+pGVKLnlrjsmR2KG1SeUuDOv2Wj4jZwWy4oVTd9Dv5bP/au2Z
-	vb3YW9wSwlb8wcb+T4qtjISJs0lV98wYzACSfmnhtX2Uq9HkB5YEwfSSih+fVzo6
-	Gvc0mEeCVrTtTm5nx60/4Te/WsMsLvhFQVyzLXf8SoH8w04M05wrwkQN4rdKdCxq
-	7yswvz+MtzPmgukyCA3K2g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1704736796; x=
-	1704823196; bh=pNIZiWpwLsHDep+0m+KAN+8thOCgoQ7cLNAuzaNkgag=; b=l
-	7TL9WfzzkC8KTjGzrmx5twRcM+F7fNrdAWppedfCKOrUSJhgTxoZapYWYhH856J1
-	hAZornn23OdVyzcvX83Qf5YoTohWo13G3OII9XescaxTzhKngDxJVeK0dn8QwKuU
-	i2kDCu+4zqEXtWxjTY0bgcKO+DqmPmdkW/jbXOtRinT/R6ZTh3FwQsANa4GYJYCB
-	36s9Xaeg2fqHa9HgE+DqqSH9ym8aT5qLzab/kwFlobBwiGsjHBRQDtqt5o/LSb/2
-	uU3m3sBfjXCRiS2cqQljDQxHVMrtDxiRODvlggeOTNjmGi2EgWpdWTsIUYBAhOK1
-	fdDu0dWAqat9SFWFYIqug==
-X-ME-Sender: <xms:HDicZVFn287Wpybs115sHq_B3zb7sWVpBMhwvGIQ1ZmCwkAvQEOdkw>
-    <xme:HDicZaXf3_aWQixsLHEMzvjjsitusBn6lYcDFdDB5ac7CfNK2cD_fVXCavb5cImcz
-    SzDzuT9MqoTmbqkvg>
-X-ME-Received: <xmr:HDicZXLPvHmseHSVhWr84iRqcQw9Rz-pZWA80aiSWOBd0wrAeLWTnA_guaxbej5qgcs4jgV2BuSMWzLGWKzAoUTDfJswb69aETu6v-Q>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdehjedguddtiecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enfghrlhcuvffnffculdejtddmnecujfgurhepfffhvfevuffkfhggtggugfgjsehtkefs
-    tddttdejnecuhfhrohhmpeffrghnihgvlhcuighuuceougiguhesugiguhhuuhdrgiihii
-    eqnecuggftrfgrthhtvghrnheptdfgueeuueekieekgfeiueekffelteekkeekgeegffev
-    tddvjeeuheeuueelfeetnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrg
-    hilhhfrhhomhepugiguhesugiguhhuuhdrgiihii
-X-ME-Proxy: <xmx:HDicZbErwNUiEcSPERba9fNpnUavuPsT4XgYi2h47UeqY5BzfOaamQ>
-    <xmx:HDicZbVkg6s9M6k2UJvR_LUUDCcWNRNEAyiNQM8xT8_Tom0axnr-6g>
-    <xmx:HDicZWMbL2Hsl81L_lfx46enuO38QVxwVPc54yT_6fZ3Y73bQs7vgw>
-    <xmx:HDicZdYYCxb4RGdthMRNbQsZezIGsyZpmAkbXGM3wMyZDL1zJ4rnvg>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 8 Jan 2024 12:59:54 -0500 (EST)
-Date: Mon, 8 Jan 2024 10:59:53 -0700
-From: Daniel Xu <dxu@dxuuu.xyz>
-To: Lorenz Bauer <lorenz.bauer@isovalent.com>
-Cc: andrii@kernel.org, ast@kernel.org, daniel@iogearbox.net, 
-	martin.lau@linux.dev, alexei.starovoitov@gmail.com, olsajiri@gmail.com, 
-	quentin@isovalent.com, alan.maguire@oracle.com, memxor@gmail.com, song@kernel.org, 
-	yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com, 
-	haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH bpf-next v3 2/3] bpf: btf: Add BTF_KFUNCS_START/END macro
- pair
-Message-ID: <hn3ukzscwlquov6k2nw3omi4vmwo44d7yqyqtrn57xgtpqvrau@db2rdabczwph>
-References: <cover.1704565248.git.dxu@dxuuu.xyz>
- <ae0a144d9ade8bf096317cc86367ed1f5468af25.1704565248.git.dxu@dxuuu.xyz>
- <CAN+4W8isJzy=J_CciNqwUa5o7wu+RQ1_cvPYXt7_OkgjPycsDw@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E32A054BCA;
+	Mon,  8 Jan 2024 18:00:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 82C0CC433CC;
+	Mon,  8 Jan 2024 18:00:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704736824;
+	bh=ZPtCBC9L0AvdsOpji1pM9ayh3zDXg4gMWbVp5crgq4Y=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=KPLEgK7a0Glokga2cTTT2aCJjMLwhE7Z6f1CPbXcz5o5TpbDifdNN2Evs6LiRvbl1
+	 ki/W0m7b0LyY4wyhjfP89wzF5FLsCAcCtx8/g/g4niwoZ2Uidec9L1609Gby7cKuyo
+	 HLY9ZxjdcQBaHIYBTp1i6XUiBJoiCxwXAVRf3g4KRnWv3ya8++7rpau8dDMu9/HnoG
+	 C+7zXt/yWYwk3QEsieL9FvjLUUdDPVbqgIu/O9nipi72oOwAiF/zyFoYQ32OVh+tM7
+	 IqEvcJZEMh4SW14/1H8WO4Eqb+0fV8jc+caUDJaWxQVln84H+Ae1OsyMV1GCItiC8V
+	 sf/5ZeHowdriQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 5CA2AD8C977;
+	Mon,  8 Jan 2024 18:00:24 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAN+4W8isJzy=J_CciNqwUa5o7wu+RQ1_cvPYXt7_OkgjPycsDw@mail.gmail.com>
+Subject: Re: [PATCH V3] Bluetooth: rfcomm: Fix null-ptr-deref in
+ rfcomm_check_security
+From: patchwork-bot+bluetooth@kernel.org
+Message-Id: 
+ <170473682437.30343.8024937175045116311.git-patchwork-notify@kernel.org>
+Date: Mon, 08 Jan 2024 18:00:24 +0000
+References: <20240103091043.3379363-1-20373622@buaa.edu.cn>
+In-Reply-To: <20240103091043.3379363-1-20373622@buaa.edu.cn>
+To: Yuxuan-Hu <20373622@buaa.edu.cn>
+Cc: marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com,
+ linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
+ baijiaju1990@gmail.com, sy2239101@buaa.edu.cn, pmenzel@molgen.mpg.de
 
-On Mon, Jan 08, 2024 at 10:14:13AM +0100, Lorenz Bauer wrote:
-> On Sat, Jan 6, 2024 at 7:25 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
-> >
-> > This macro pair is functionally equivalent to BTF_SET8_START/END, except
-> > with BTF_SET8_KFUNCS flag set in the btf_id_set8 flags field. The next
-> > commit will codemod all kfunc set8s to this new variant such that all
-> > kfuncs are tagged as such in .BTF_ids section.
-> >
-> > Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
-> > ---
-> >  include/linux/btf_ids.h | 11 +++++++++++
-> >  1 file changed, 11 insertions(+)
-> >
-> > diff --git a/include/linux/btf_ids.h b/include/linux/btf_ids.h
-> > index dca09b7f21dc..0fe4f1cd1918 100644
-> > --- a/include/linux/btf_ids.h
-> > +++ b/include/linux/btf_ids.h
-> > @@ -8,6 +8,9 @@ struct btf_id_set {
-> >         u32 ids[];
-> >  };
-> >
-> > +/* This flag implies BTF_SET8 holds kfunc(s) */
-> > +#define BTF_SET8_KFUNCS                (1 << 0)
+Hello:
+
+This patch was applied to bluetooth/bluetooth-next.git (master)
+by Luiz Augusto von Dentz <luiz.von.dentz@intel.com>:
+
+On Wed,  3 Jan 2024 17:10:43 +0800 you wrote:
+> During our fuzz testing of the connection and disconnection process at the
+> RFCOMM layer, we discovered this bug. By comparing the packets from a
+> normal connection and disconnection process with the testcase that
+> triggered a KASAN report. We analyzed the cause of this bug as follows:
 > 
-> Nit: could this be an enum so that the flag is discoverable via BTF?
+> 1. In the packets captured during a normal connection, the host sends a
+> `Read Encryption Key Size` type of `HCI_CMD` packet
+> (Command Opcode: 0x1408) to the controller to inquire the length of
+> encryption key.After receiving this packet, the controller immediately
+> replies with a Command Completepacket (Event Code: 0x0e) to return the
+> Encryption Key Size.
+> 
+> [...]
 
-Sure, makes sense.
+Here is the summary with links:
+  - [V3] Bluetooth: rfcomm: Fix null-ptr-deref in rfcomm_check_security
+    https://git.kernel.org/bluetooth/bluetooth-next/c/6ec00b0737fe
 
-> Also, isn't this UAPI if pahole interprets this flag?
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-Not sure. I guess it'd fall under same category as any of the structs
-the kernel lays out in .BTF_ids, like `struct btf_id_set8`. IMO it's
-not, as that's kinda confusing to call anything in ELF uapi. Eg I don't
-think people would consider layout of `.data..percpu` section uapi.
 
-Thanks,
-Daniel
 
