@@ -1,111 +1,105 @@
-Return-Path: <linux-kernel+bounces-20070-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20071-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3DFFD8278F1
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 21:07:23 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D6988278F2
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 21:07:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E75651F237B2
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 20:07:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2AFDB2838B6
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 20:07:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB4DA55784;
-	Mon,  8 Jan 2024 20:07:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9800A55E4B;
+	Mon,  8 Jan 2024 20:07:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b="r+6nvLZT"
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="fSgBxzVA"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx1.riseup.net (mx1.riseup.net [198.252.153.129])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oa1-f48.google.com (mail-oa1-f48.google.com [209.85.160.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77AD555C0B;
-	Mon,  8 Jan 2024 20:07:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=riseup.net
-Received: from fews02-sea.riseup.net (fews02-sea-pn.riseup.net [10.0.1.112])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx1.riseup.net (Postfix) with ESMTPS id 4T84pJ0tPMzDqnS;
-	Mon,  8 Jan 2024 20:06:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
-	t=1704744419; bh=GvBZ4MO6PTyVXhkHH8RCr66B+FmBvQMByIVByVjvfpk=;
-	h=From:Date:Subject:To:Cc:From;
-	b=r+6nvLZTiiOwQwHKUoZo6pEpmQc66R0LYGLXaxUYFyo/IwfawAFnjrL9Rtz0SAWbk
-	 qPzmkQ6OKRVVntbtPWQi0JvAIUQ1mzoZrIEI8IgWWE2tGTGrrTg8d/8hWccAqNMxZY
-	 8PxfuV3KBpqdCbVwVBN8ThUEWRDARSnTxy/d3bDI=
-X-Riseup-User-ID: 9517D74B558B75BB0763739553289EED4191B568DB0FD6AB058503A17AEBDC39
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-	 by fews02-sea.riseup.net (Postfix) with ESMTPSA id 4T84pD34PBzFrsf;
-	Mon,  8 Jan 2024 20:06:44 +0000 (UTC)
-From: Arthur Grillo <arthurgrillo@riseup.net>
-Date: Mon, 08 Jan 2024 17:06:38 -0300
-Subject: [PATCH] Documentation: KUnit: Update the instructions on how to
- test static functions
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E0D555C30
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 20:07:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+Received: by mail-oa1-f48.google.com with SMTP id 586e51a60fabf-204301f2934so1807876fac.1
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 12:07:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1704744429; x=1705349229; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=a0ZAlEBjGplq0TA4rGOIY+Fm8QMufuog3/zNcBtCWCI=;
+        b=fSgBxzVA4vq96FX+88exQkx5hJryrSG7uFche4O7prAgEzLQHz+GlgM4U+N2iJj2U+
+         rMf9pnDqszKcv8dq2s6uWLV9QyjUiwQCyyymOr8bnS7YHmO7U62GPju18wVy5m0ZJbE/
+         0uVmKzoHBfKDIhPOJnDEgx7azjsAxAZmqi+5w+IZ+MbCfC/2pvqwa3povvcd/Z5oWykA
+         R7dW2Z1VSN3e8fyB15RBZF5OV1GR4ERaoP+znBdChCDSva3npLKENZbw/dXVGQDsnpGa
+         p+IoeWP7uVRNiLpWamFivdi3j9rnPD73GUlmteZ6/qEbfJArj+rIYVIH6UO1Q1AFnmr8
+         2f+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704744429; x=1705349229;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=a0ZAlEBjGplq0TA4rGOIY+Fm8QMufuog3/zNcBtCWCI=;
+        b=qU5GeDemZqDw1resm2pmyjkDXdt1yG530O+nmfGpz0CB05i2hLlRnBqtwR00Naci9z
+         IQMV6jT98vWPMaHkszdr5Ve6ZrJqg0NXPg89NkAnyW+kHo+IsR2OrFLNAm0WMvKCCz6Z
+         mt1Y/z7cnMZe5xkiNJJGIrysqoauSr4J5gCfqtuZytgy5CDuGGlNC/8egpMeVoWzAiaA
+         bvHEmo+vID4CAd9HWf7KFELtRDu6wIt/4NNJZFvD4zXeIqcE+lkvO5aq54zlpqER1vSo
+         j9tYYVZBLsI5LEPD97FXfvjBxdNpy/Ce94dPeGMzkRGT1r5HCAq06n1m/CmZGohwBYpr
+         LZAA==
+X-Gm-Message-State: AOJu0YyfFKFI2XRPHVRpOZia+uhyKNQr9suRdTbmqbZbH1cuFrqIX3wc
+	NTsNJD5dGESCxTdL3mI2n4SEUV8I+PsnWQ==
+X-Google-Smtp-Source: AGHT+IFRf9wPQBcL+YChPl9qGlJTPQwrSBs87PEmn2B68yZaTNOlcnjG9lNRoF4WnjWBlFf7r1Vf1g==
+X-Received: by 2002:a05:6870:ac8f:b0:204:44a9:a342 with SMTP id ns15-20020a056870ac8f00b0020444a9a342mr5712141oab.32.1704744429373;
+        Mon, 08 Jan 2024 12:07:09 -0800 (PST)
+Received: from freyr.lechnology.com (ip98-183-112-25.ok.ok.cox.net. [98.183.112.25])
+        by smtp.gmail.com with ESMTPSA id d14-20020a056830138e00b006dc0f1f0b34sm101468otq.18.2024.01.08.12.07.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Jan 2024 12:07:08 -0800 (PST)
+From: David Lechner <dlechner@baylibre.com>
+To: Jonathan Cameron <jic23@kernel.org>
+Cc: David Lechner <dlechner@baylibre.com>,
+	linux-iio@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] iio: core: use INDIO_ALL_BUFFER_MODES in iio_buffer_enabled()
+Date: Mon,  8 Jan 2024 14:06:44 -0600
+Message-ID: <20240108200647.3916681-1-dlechner@baylibre.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240108-kunit-doc-export-v1-1-119368df0d96@riseup.net>
-X-B4-Tracking: v=1; b=H4sIAM1VnGUC/x3MTQqAIBBA4avIrBvQiP6uEi3MphoCDbUQpLsnL
- b/FexkCeaYAo8jg6eHAzhaoSoA5tN0JeS2GWtaNVLLH87YccXUGKV3ORyQyahuU1EvbQckuTxu
- nfznN7/sBFZ23F2IAAAA=
-To: Brendan Higgins <brendan.higgins@linux.dev>, 
- David Gow <davidgow@google.com>, Jonathan Corbet <corbet@lwn.net>
-Cc: linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com, 
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Arthur Grillo <arthurgrillo@riseup.net>
+Content-Transfer-Encoding: 8bit
 
-Now that we have the VISIBLE_IF_KUNIT and EXPORT_SYMBOL_IF_KUNIT macros,
-update the instructions to stop recommending including .c files.
+This replaces use of individual buffer mode flags with
+INDIO_ALL_BUFFER_MODES in the iio_buffer_enabled() function.
 
-Signed-off-by: Arthur Grillo <arthurgrillo@riseup.net>
+This simplifies the code and makes it robust in case of the addition of
+new buffer modes.
+
+Signed-off-by: David Lechner <dlechner@baylibre.com>
 ---
- Documentation/dev-tools/kunit/usage.rst | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+ drivers/iio/industrialio-core.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/Documentation/dev-tools/kunit/usage.rst b/Documentation/dev-tools/kunit/usage.rst
-index c27e1646ecd9..7410b39ec5b7 100644
---- a/Documentation/dev-tools/kunit/usage.rst
-+++ b/Documentation/dev-tools/kunit/usage.rst
-@@ -671,19 +671,22 @@ Testing Static Functions
- ------------------------
+diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
+index c77745b594bd..8855d377d710 100644
+--- a/drivers/iio/industrialio-core.c
++++ b/drivers/iio/industrialio-core.c
+@@ -210,9 +210,7 @@ bool iio_buffer_enabled(struct iio_dev *indio_dev)
+ {
+ 	struct iio_dev_opaque *iio_dev_opaque = to_iio_dev_opaque(indio_dev);
  
- If we do not want to expose functions or variables for testing, one option is to
--conditionally ``#include`` the test file at the end of your .c file. For
--example:
-+conditionally export the used symbol.
+-	return iio_dev_opaque->currentmode &
+-	       (INDIO_BUFFER_HARDWARE | INDIO_BUFFER_SOFTWARE |
+-		INDIO_BUFFER_TRIGGERED);
++	return iio_dev_opaque->currentmode & INDIO_ALL_BUFFER_MODES;
+ }
+ EXPORT_SYMBOL_GPL(iio_buffer_enabled);
  
- .. code-block:: c
- 
- 	/* In my_file.c */
- 
--	static int do_interesting_thing();
-+	VISIBLE_IF_KUNIT int do_interesting_thing();
-+	EXPORT_SYMBOL_IF_KUNIT(do_interesting_thing);
-+
-+	/* In my_file.h */
- 
- 	#ifdef CONFIG_MY_KUNIT_TEST
--	#include "my_kunit_test.c"
-+		int do_interesting_thing(void);
- 	#endif
- 
-+
- Injecting Test-Only Code
- ------------------------
- 
-
----
-base-commit: eeb8e8d9f124f279e80ae679f4ba6e822ce4f95f
-change-id: 20240108-kunit-doc-export-eec1f910ab67
-
-Best regards,
 -- 
-Arthur Grillo <arthurgrillo@riseup.net>
+2.43.0
 
 
