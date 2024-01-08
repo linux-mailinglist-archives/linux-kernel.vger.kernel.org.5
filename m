@@ -1,187 +1,159 @@
-Return-Path: <linux-kernel+bounces-19760-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19769-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E2608272FA
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 16:25:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69C9E827319
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 16:29:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0685D2839C5
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 15:25:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 757FD1C22C69
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 15:29:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0251524BA;
-	Mon,  8 Jan 2024 15:25:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ffwll.ch header.i=@ffwll.ch header.b="EIAl8B2B"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00A6F537FB;
+	Mon,  8 Jan 2024 15:28:23 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51ACB51C3D
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 15:25:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ffwll.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ffwll.ch
-Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-50e7b03fbbeso134155e87.0
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 07:25:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google; t=1704727505; x=1705332305; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=zJ3EIRKSn5X0NGN+Lowl9P7K2Ny+tJ4mGNydRmUvWrU=;
-        b=EIAl8B2B0plV+Fd4CRAObep5/NzHmfzHghjvMvOOv5g3NFWGHvyqE1/8mPM6nCD3P+
-         1U0inDAvFfqky7fRmiQ6t5rHCZa/ufGtCl0km5FodIYqbSnNitPHdWBxeSiSAf9OCS7a
-         8W6iBx5uYdWowVS5mbjky2Aif2BtM9CTNExCg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704727505; x=1705332305;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zJ3EIRKSn5X0NGN+Lowl9P7K2Ny+tJ4mGNydRmUvWrU=;
-        b=pqZ5BWhP/zTN2TZdbDTYqjpzxvw1T5h5aLuTTUtxUF3eHm9c4r9ILTU9ki3pjlOg7e
-         T3rJKgEbQZBgvD/Mu2RMHtU7K8CF+o/khz+wxQy68lxC0+PtpL5saKLX28x6c8WPx6Zi
-         NMTw3m12MXEoFf+//NDpHvZ8/YRbMBhlpk/5CCawfSNcBxkYqwzp+VrWnqX1ESBPScK6
-         x03zvePpGu3+tF5v78LUY2MXM62CmzVGn04xYuHf/Y+8uX0aAEx2oyxGXee1J2o9MBjj
-         9fEmmZQjs8Nz1ULRESfZyZOIbHHt8Z6FwnLRG77H8zeuceCriVTt4jaNPnIFQZmeiCtW
-         yuqw==
-X-Gm-Message-State: AOJu0Yy2LNrteb8NhY5j2nIHpVkES4s1Blyyh/aJPY7lNjt3J9ZawhNR
-	AgaKSvmLEwwfNTIeQtIq9dsfumwILT2mvg==
-X-Google-Smtp-Source: AGHT+IFEZmb84ZsP7WndigoWhVfLIJmu7Z3cqw2RTpxB6wKa9AmlpaVhv3E1Czp2+q+7kFveVkRA7Q==
-X-Received: by 2002:a05:6512:2212:b0:50e:9e95:5290 with SMTP id h18-20020a056512221200b0050e9e955290mr3890677lfu.1.1704727505082;
-        Mon, 08 Jan 2024 07:25:05 -0800 (PST)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id i16-20020a5d5230000000b00333404e9935sm8075814wra.54.2024.01.08.07.25.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Jan 2024 07:25:04 -0800 (PST)
-Date: Mon, 8 Jan 2024 16:25:02 +0100
-From: Daniel Vetter <daniel@ffwll.ch>
-To: Jason Gunthorpe <jgg@nvidia.com>
-Cc: Yan Zhao <yan.y.zhao@intel.com>, wanpengli@tencent.com,
-	kvm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org, kraxel@redhat.com, maz@kernel.org,
-	joro@8bytes.org, zzyiwei@google.com, yuzenghui@huawei.com,
-	olvaffe@gmail.com, kevin.tian@intel.com, suzuki.poulose@arm.com,
-	alex.williamson@redhat.com, yongwei.ma@intel.com,
-	zhiyuan.lv@intel.com, gurchetansingh@chromium.org,
-	jmattson@google.com, zhenyu.z.wang@intel.com, seanjc@google.com,
-	ankita@nvidia.com, oliver.upton@linux.dev, james.morse@arm.com,
-	pbonzini@redhat.com, vkuznets@redhat.com
-Subject: Re: [PATCH 0/4] KVM: Honor guest memory types for virtio GPU devices
-Message-ID: <ZZwTzsZqx-XSTKma@phenom.ffwll.local>
-Mail-Followup-To: Jason Gunthorpe <jgg@nvidia.com>,
-	Yan Zhao <yan.y.zhao@intel.com>, wanpengli@tencent.com,
-	kvm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org, kraxel@redhat.com, maz@kernel.org,
-	joro@8bytes.org, zzyiwei@google.com, yuzenghui@huawei.com,
-	olvaffe@gmail.com, kevin.tian@intel.com, suzuki.poulose@arm.com,
-	alex.williamson@redhat.com, yongwei.ma@intel.com,
-	zhiyuan.lv@intel.com, gurchetansingh@chromium.org,
-	jmattson@google.com, zhenyu.z.wang@intel.com, seanjc@google.com,
-	ankita@nvidia.com, oliver.upton@linux.dev, james.morse@arm.com,
-	pbonzini@redhat.com, vkuznets@redhat.com
-References: <20240105091237.24577-1-yan.y.zhao@intel.com>
- <20240105195551.GE50406@nvidia.com>
- <ZZuQEQAVX28v7p9Z@yzhao56-desk.sh.intel.com>
- <20240108140250.GJ50406@nvidia.com>
+Received: from zg8tmty3ljk5ljewns4xndka.icoremail.net (zg8tmty3ljk5ljewns4xndka.icoremail.net [167.99.105.149])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB44D524D3;
+	Mon,  8 Jan 2024 15:28:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zju.edu.cn
+Received: from luzhipeng.223.5.5.5 (unknown [183.159.171.224])
+	by mail-app2 (Coremail) with SMTP id by_KCgBn+fBKGZxleMgHAA--.4251S2;
+	Mon, 08 Jan 2024 23:48:27 +0800 (CST)
+From: Zhipeng Lu <alexious@zju.edu.cn>
+To: alexious@zju.edu.cn
+Cc: Simon Horman <horms@kernel.org>,
+	Saeed Mahameed <saeedm@nvidia.com>,
+	Leon Romanovsky <leon@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Maor Gottlieb <maorg@mellanox.com>,
+	netdev@vger.kernel.org,
+	linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] [v2] net/mlx5e: fix a double-free in arfs_create_groups
+Date: Mon,  8 Jan 2024 23:26:04 +0800
+Message-Id: <20240108152605.3712050-1-alexious@zju.edu.cn>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240108140250.GJ50406@nvidia.com>
-X-Operating-System: Linux phenom 6.5.0-4-amd64 
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:by_KCgBn+fBKGZxleMgHAA--.4251S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxZrWUXrWrXw4kWF48KrWDCFg_yoW5Ar48pF
+	45J34DKFs5Za48XanrA3yvqw1rCa18tayUu3WIv34SqwnFyr4UCFyrK3y3AFyxCFW3ArnF
+	y3Z8Zw1UAFZxArUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvj14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+	2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
+	Y2ka0xkIwI1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
+	xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43
+	MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
+	0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWU
+	JVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUoO
+	J5UUUUU
+X-CM-SenderInfo: qrsrjiarszq6lmxovvfxof0/
 
-On Mon, Jan 08, 2024 at 10:02:50AM -0400, Jason Gunthorpe wrote:
-> On Mon, Jan 08, 2024 at 02:02:57PM +0800, Yan Zhao wrote:
-> > On Fri, Jan 05, 2024 at 03:55:51PM -0400, Jason Gunthorpe wrote:
-> > > On Fri, Jan 05, 2024 at 05:12:37PM +0800, Yan Zhao wrote:
-> > > > This series allow user space to notify KVM of noncoherent DMA status so as
-> > > > to let KVM honor guest memory types in specified memory slot ranges.
-> > > > 
-> > > > Motivation
-> > > > ===
-> > > > A virtio GPU device may want to configure GPU hardware to work in
-> > > > noncoherent mode, i.e. some of its DMAs do not snoop CPU caches.
-> > > 
-> > > Does this mean some DMA reads do not snoop the caches or does it
-> > > include DMA writes not synchronizing the caches too?
-> > Both DMA reads and writes are not snooped.
-> 
-> Oh that sounds really dangerous.
+When `in` allocated by kvzalloc fails, arfs_create_groups will free
+ft->g and return an error. However, arfs_create_table, the only caller of
+arfs_create_groups, will hold this error and call to
+mlx5e_destroy_flow_table, in which the ft->g will be freed again.
 
-So if this is an issue then we might already have a problem, because with
-many devices it's entirely up to the device programming whether the i/o is
-snooping or not. So the moment you pass such a device to a guest, whether
-there's explicit support for non-coherent or not, you have a problem.
+Fixes: 1cabe6b0965e ("net/mlx5e: Create aRFS flow tables")
+Signed-off-by: Zhipeng Lu <alexious@zju.edu.cn>
+Reviewed-by: Simon Horman <horms@kernel.org>
+---
+Changelog:
 
-_If_ there is a fundamental problem. I'm not sure of that, because my
-assumption was that at most the guest shoots itself and the data
-corruption doesn't go any further the moment the hypervisor does the
-dma/iommu unmapping.
+v2: free ft->g just in arfs_create_groups with a unwind ladde.
+---
+ .../net/ethernet/mellanox/mlx5/core/en_arfs.c   | 17 +++++++++--------
+ drivers/net/ethernet/mellanox/mlx5/core/en_fs.c |  1 -
+ 2 files changed, 9 insertions(+), 9 deletions(-)
 
-Also, there's a pile of x86 devices where this very much applies, x86
-being dma-coherent is not really the true ground story.
-
-Cheers, Sima
-
-> > > > This is generally for performance consideration.
-> > > > In certain platform, GFX performance can improve 20+% with DMAs going to
-> > > > noncoherent path.
-> > > > 
-> > > > This noncoherent DMA mode works in below sequence:
-> > > > 1. Host backend driver programs hardware not to snoop memory of target
-> > > >    DMA buffer.
-> > > > 2. Host backend driver indicates guest frontend driver to program guest PAT
-> > > >    to WC for target DMA buffer.
-> > > > 3. Guest frontend driver writes to the DMA buffer without clflush stuffs.
-> > > > 4. Hardware does noncoherent DMA to the target buffer.
-> > > > 
-> > > > In this noncoherent DMA mode, both guest and hardware regard a DMA buffer
-> > > > as not cached. So, if KVM forces the effective memory type of this DMA
-> > > > buffer to be WB, hardware DMA may read incorrect data and cause misc
-> > > > failures.
-> > > 
-> > > I don't know all the details, but a big concern would be that the
-> > > caches remain fully coherent with the underlying memory at any point
-> > > where kvm decides to revoke the page from the VM.
-> > Ah, you mean, for page migration, the content of the page may not be copied
-> > correctly, right?
-> 
-> Not just migration. Any point where KVM revokes the page from the
-> VM. Ie just tearing down the VM still has to make the cache coherent
-> with physical or there may be problems.
->  
-> > Currently in x86, we have 2 ways to let KVM honor guest memory types:
-> > 1. through KVM memslot flag introduced in this series, for virtio GPUs, in
-> >    memslot granularity.
-> > 2. through increasing noncoherent dma count, as what's done in VFIO, for
-> >    Intel GPU passthrough, for all guest memory.
-> 
-> And where does all this fixup the coherency problem?
-> 
-> > This page migration issue should not be the case for virtio GPU, as both host
-> > and guest are synced to use the same memory type and actually the pages
-> > are not anonymous pages.
-> 
-> The guest isn't required to do this so it can force the cache to
-> become incoherent.
-> 
-> > > If you allow an incoherence of cache != physical then it opens a
-> > > security attack where the observed content of memory can change when
-> > > it should not.
-> > 
-> > In this case, will this security attack impact other guests?
-> 
-> It impacts the hypervisor potentially. It depends..
-> 
-> Jason
-
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_arfs.c b/drivers/net/ethernet/mellanox/mlx5/core/en_arfs.c
+index bb7f86c993e5..c96f4c571b63 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_arfs.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_arfs.c
+@@ -252,13 +252,14 @@ static int arfs_create_groups(struct mlx5e_flow_table *ft,
+ 	int err;
+ 	u8 *mc;
+ 
++	ft->num_groups = 0;
++
+ 	ft->g = kcalloc(MLX5E_ARFS_NUM_GROUPS,
+ 			sizeof(*ft->g), GFP_KERNEL);
+ 	in = kvzalloc(inlen, GFP_KERNEL);
+ 	if  (!in || !ft->g) {
+-		kfree(ft->g);
+-		kvfree(in);
+-		return -ENOMEM;
++		err = -ENOMEM;
++		goto free_ft;
+ 	}
+ 
+ 	mc = MLX5_ADDR_OF(create_flow_group_in, in, match_criteria);
+@@ -278,7 +279,7 @@ static int arfs_create_groups(struct mlx5e_flow_table *ft,
+ 		break;
+ 	default:
+ 		err = -EINVAL;
+-		goto out;
++		goto free_ft;
+ 	}
+ 
+ 	switch (type) {
+@@ -300,7 +301,7 @@ static int arfs_create_groups(struct mlx5e_flow_table *ft,
+ 		break;
+ 	default:
+ 		err = -EINVAL;
+-		goto out;
++		goto free_ft;
+ 	}
+ 
+ 	MLX5_SET_CFG(in, match_criteria_enable, MLX5_MATCH_OUTER_HEADERS);
+@@ -327,7 +328,9 @@ static int arfs_create_groups(struct mlx5e_flow_table *ft,
+ err:
+ 	err = PTR_ERR(ft->g[ft->num_groups]);
+ 	ft->g[ft->num_groups] = NULL;
+-out:
++free_ft:
++	kfree(ft->g);
++	ft->g = NULL;
+ 	kvfree(in);
+ 
+ 	return err;
+@@ -343,8 +346,6 @@ static int arfs_create_table(struct mlx5e_flow_steering *fs,
+ 	struct mlx5_flow_table_attr ft_attr = {};
+ 	int err;
+ 
+-	ft->num_groups = 0;
+-
+ 	ft_attr.max_fte = MLX5E_ARFS_TABLE_SIZE;
+ 	ft_attr.level = MLX5E_ARFS_FT_LEVEL;
+ 	ft_attr.prio = MLX5E_NIC_PRIO;
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_fs.c b/drivers/net/ethernet/mellanox/mlx5/core/en_fs.c
+index 777d311d44ef..7b6aa0c8b58d 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_fs.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_fs.c
+@@ -883,7 +883,6 @@ void mlx5e_fs_init_l2_addr(struct mlx5e_flow_steering *fs, struct net_device *ne
+ void mlx5e_destroy_flow_table(struct mlx5e_flow_table *ft)
+ {
+ 	mlx5e_destroy_groups(ft);
+-	kfree(ft->g);
+ 	mlx5_destroy_flow_table(ft->t);
+ 	ft->t = NULL;
+ }
 -- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+2.34.1
+
 
