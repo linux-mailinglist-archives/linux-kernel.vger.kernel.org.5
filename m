@@ -1,105 +1,129 @@
-Return-Path: <linux-kernel+bounces-19437-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19438-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3102826CE1
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 12:33:45 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C74A826CE7
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 12:34:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2EB6428313D
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 11:33:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F27E71F2289D
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 11:34:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E073014A93;
-	Mon,  8 Jan 2024 11:33:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6F6714ABA;
+	Mon,  8 Jan 2024 11:34:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b="0FC1hU3u"
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="c01Cec7i"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp-bc0e.mail.infomaniak.ch (smtp-bc0e.mail.infomaniak.ch [45.157.188.14])
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60CAF2575B
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 11:33:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=digikod.net
-Received: from smtp-3-0000.mail.infomaniak.ch (unknown [10.4.36.107])
-	by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4T7sPv2N0JzMpnPR;
-	Mon,  8 Jan 2024 11:33:23 +0000 (UTC)
-Received: from unknown by smtp-3-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4T7sPt4bsHzsJ;
-	Mon,  8 Jan 2024 12:33:22 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=digikod.net;
-	s=20191114; t=1704713603;
-	bh=InkQS/SgGv/BxlTjsZAmTXYbqz2CdOrb9eJn7eQSusY=;
-	h=From:To:Cc:Subject:Date:From;
-	b=0FC1hU3uppeCBcyFr9Tzz6g5FFwOI1Qq+IY7BYeznTAYHGtgEgNaD6Qs4EC7CdL/m
-	 OShEgFeqP1oNP6hNQTkCUb8ozK9OrjmJtVROTlBpyGhWFiduygBwNaUjL5ZEkALErC
-	 LBG6rdv3LXX9Co6u615njW/dfBpjQKIJXDYBkAaE=
-From: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>,
-	=?UTF-8?q?G=C3=BCnther=20Noack?= <gnoack@google.com>,
-	Paul Moore <paul@paul-moore.com>,
-	linux-kernel@vger.kernel.org,
-	linux-security-module@vger.kernel.org
-Subject: [GIT PULL] Landlock updates for v6.8
-Date: Mon,  8 Jan 2024 12:33:11 +0100
-Message-ID: <20240108113311.192252-1-mic@digikod.net>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8655129412;
+	Mon,  8 Jan 2024 11:34:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 408BYJqA061459;
+	Mon, 8 Jan 2024 05:34:19 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1704713659;
+	bh=6ybS2qS69K54f2tDvHXfkSmY2DjqqOxTa+HLeypQHJQ=;
+	h=Date:CC:Subject:To:References:From:In-Reply-To;
+	b=c01Cec7it89xzE/bLC69pzucAOv1+iGa1pKsrNQKh4akhLHoM05X/1PS4S4VbwNXz
+	 VxJdnCOndTny4ujBvAsefa0biv/aVIYT9GcPaTCssn3W0ws+XXhhBfomXWMOpvdKbQ
+	 y54NSgP3jh3hfGnnGAkH04ynj75FiPt3Uug7nizc=
+Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
+	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 408BYJMQ091423
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Mon, 8 Jan 2024 05:34:19 -0600
+Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 8
+ Jan 2024 05:34:18 -0600
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE110.ent.ti.com
+ (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Mon, 8 Jan 2024 05:34:18 -0600
+Received: from [172.24.227.9] (uda0492258.dhcp.ti.com [172.24.227.9])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 408BYE4R062021;
+	Mon, 8 Jan 2024 05:34:15 -0600
+Message-ID: <e4bd76d1-e5d9-4ff6-8917-db5784dea847@ti.com>
+Date: Mon, 8 Jan 2024 17:04:14 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Infomaniak-Routing: alpha
+User-Agent: Mozilla Thunderbird
+CC: <linux-pci@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        <srk@ti.com>, <s-vadapalli@ti.com>
+Subject: Re: [RFC PATCH] dt-bindings: PCI: ti,j721e-pci-host: Add device-id
+ for TI's J784S4 SoC
+Content-Language: en-US
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        <lpieralisi@kernel.org>, <kw@linux.com>, <robh@kernel.org>,
+        <bhelgaas@google.com>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>
+References: <20240108050735.512445-1-s-vadapalli@ti.com>
+ <67af1724-6424-456a-aff6-85d9e010c430@linaro.org>
+ <bc3a0fb0-6268-476a-a13a-2d538704f61d@ti.com>
+ <7d3439c2-35e3-4318-aa99-af9b7c8ed53b@linaro.org>
+From: Siddharth Vadapalli <s-vadapalli@ti.com>
+In-Reply-To: <7d3439c2-35e3-4318-aa99-af9b7c8ed53b@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-Hi Linus,
 
-This PR adds new tests, a slight optimization, and some cosmetic changes.
 
-Please pull these changes for v6.8-rc1.  These 7 commits merged cleanly with
-your master branch.  The kernel code has been tested in the latest linux-next
-releases for a few weeks.  I rebased the latest patches with updated
-descriptions though.
+On 08/01/24 16:51, Krzysztof Kozlowski wrote:
+> On 08/01/2024 11:20, Siddharth Vadapalli wrote:
+>> Hello Krzysztof,
+>>
+>> On 08/01/24 12:39, Krzysztof Kozlowski wrote:
+>>> On 08/01/2024 06:07, Siddharth Vadapalli wrote:
+>>>> Add the device-id of 0xb012 for the PCIe controller on the J784S4 SoC as
+>>>> described in the CTRL_MMR_PCI_DEVICE_ID register's PCI_DEVICE_ID_DEVICE_ID
+>>>> field. The Register descriptions and the Technical Reference Manual for
+>>>> J784S4 SoC can be found at: https://www.ti.com/lit/zip/spruj52
+>>>>
+>>>> Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
+>>>> ---
+>>>>
+>>>> This patch is based on linux-next tagged next-20240105.
+>>>
+>>> Why is this patch incomplete? What is missing here? What are you asking
+>>> about as RFC?
+>>
+>> Since the merge window is closed, I was hoping to get the patch reviewed in
+>> order to get any "Reviewed-by" tags if possible. That way, I will be able to
+>> post it again as v1 along with the tags when the merge window opens. For that
+> 
+> This is v1, so that would be v2.
+> 
+>> reason, I have marked it as an RFC patch. Is there an alternative to this "RFC
+>> patch" method that I have followed? Please let me know.
+> 
+> Then how does it differ from posting without RFC? Sorry, RFC is
+> incomplete work. Often ignored during review.
 
-Test coverage for security/landlock is 92.4% of 710 lines according to
-gcc/gcov-13, same as before because only semantic tests are added.
+I was under the impression that posting patches when the merge window is closed
+will be met with a "post your patch later when the merge window is open"
+response. That is why I chose the "RFC patch" path since RFCs can be posted anytime.
 
+For the Networking Subsystem, it is documented that patches with new features
+shouldn't be posted when the merge window is closed. I have mostly posted
+patches for the Networking Subsystem and am not sure about the rules for the
+device-tree bindings and PCI Subsystems. To be on the safe side I posted this
+patch as an RFC patch.
+
+Thank you for clarifying that it is alright to post patches even when merge
+window is closed. Going forward I shall not post RFC patches unless it really
+requires feedback and suggestions.
+
+-- 
 Regards,
- Mickaël
-
---
-The following changes since commit b85ea95d086471afb4ad062012a4d73cd328fa86:
-
-  Linux 6.7-rc1 (2023-11-12 16:19:07 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/mic/linux.git tags/landlock-6.8-rc1
-
-for you to fetch changes up to 0daaa610c8e033cdfb420db728c2b40eb3a75134:
-
-  landlock: Optimize the number of calls to get_access_mask slightly (2024-01-03 12:43:17 +0100)
-
-----------------------------------------------------------------
-Landlock updates for v6.8-rc1
-
-----------------------------------------------------------------
-Günther Noack (5):
-      landlock: Remove remaining "inline" modifiers in .c files [v5.15]
-      landlock: Remove remaining "inline" modifiers in .c files [v6.1]
-      landlock: Remove remaining "inline" modifiers in .c files [v6.6]
-      selftests/landlock: Rename "permitted" to "allowed" in ftruncate tests
-      landlock: Optimize the number of calls to get_access_mask slightly
-
-Mickaël Salaün (2):
-      selftests/landlock: Add tests to check unknown rule's access rights
-      selftests/landlock: Add tests to check unhandled rule's access rights
-
- security/landlock/fs.c                      | 26 +++++-----
- security/landlock/ruleset.c                 |  7 +--
- tools/testing/selftests/landlock/fs_test.c  | 80 +++++++++++++++++++++++++----
- tools/testing/selftests/landlock/net_test.c | 59 ++++++++++++++++++++-
- 4 files changed, 145 insertions(+), 27 deletions(-)
+Siddharth.
 
