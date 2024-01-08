@@ -1,159 +1,90 @@
-Return-Path: <linux-kernel+bounces-19769-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19761-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69C9E827319
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 16:29:40 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7515D8272FD
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 16:26:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 757FD1C22C69
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 15:29:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 043A3B2137E
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 15:26:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00A6F537FB;
-	Mon,  8 Jan 2024 15:28:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 375535101B;
+	Mon,  8 Jan 2024 15:26:17 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from zg8tmty3ljk5ljewns4xndka.icoremail.net (zg8tmty3ljk5ljewns4xndka.icoremail.net [167.99.105.149])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB44D524D3;
-	Mon,  8 Jan 2024 15:28:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zju.edu.cn
-Received: from luzhipeng.223.5.5.5 (unknown [183.159.171.224])
-	by mail-app2 (Coremail) with SMTP id by_KCgBn+fBKGZxleMgHAA--.4251S2;
-	Mon, 08 Jan 2024 23:48:27 +0800 (CST)
-From: Zhipeng Lu <alexious@zju.edu.cn>
-To: alexious@zju.edu.cn
-Cc: Simon Horman <horms@kernel.org>,
-	Saeed Mahameed <saeedm@nvidia.com>,
-	Leon Romanovsky <leon@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Maor Gottlieb <maorg@mellanox.com>,
-	netdev@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] [v2] net/mlx5e: fix a double-free in arfs_create_groups
-Date: Mon,  8 Jan 2024 23:26:04 +0800
-Message-Id: <20240108152605.3712050-1-alexious@zju.edu.cn>
-X-Mailer: git-send-email 2.34.1
+Received: from netrider.rowland.org (netrider.rowland.org [192.131.102.5])
+	by smtp.subspace.kernel.org (Postfix) with SMTP id CE1C451010
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 15:26:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=rowland.harvard.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netrider.rowland.org
+Received: (qmail 499378 invoked by uid 1000); 8 Jan 2024 10:26:07 -0500
+Date: Mon, 8 Jan 2024 10:26:07 -0500
+From: Alan Stern <stern@rowland.harvard.edu>
+To: Udipto Goswami <quic_ugoswami@quicinc.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+  Krishna Kurapati <quic_kriskura@quicinc.com>, linux-usb@vger.kernel.org,
+  linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH v2] usb: core: Prevent null pointer dereference in
+ update_port_device_state
+Message-ID: <2d801dd7-93de-4323-a214-1a73cc5a8451@rowland.harvard.edu>
+References: <20240108130706.15698-1-quic_ugoswami@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:by_KCgBn+fBKGZxleMgHAA--.4251S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxZrWUXrWrXw4kWF48KrWDCFg_yoW5Ar48pF
-	45J34DKFs5Za48XanrA3yvqw1rCa18tayUu3WIv34SqwnFyr4UCFyrK3y3AFyxCFW3ArnF
-	y3Z8Zw1UAFZxArUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvj14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-	2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
-	Y2ka0xkIwI1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
-	xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43
-	MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
-	0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWU
-	JVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUoO
-	J5UUUUU
-X-CM-SenderInfo: qrsrjiarszq6lmxovvfxof0/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240108130706.15698-1-quic_ugoswami@quicinc.com>
 
-When `in` allocated by kvzalloc fails, arfs_create_groups will free
-ft->g and return an error. However, arfs_create_table, the only caller of
-arfs_create_groups, will hold this error and call to
-mlx5e_destroy_flow_table, in which the ft->g will be freed again.
+On Mon, Jan 08, 2024 at 06:37:06PM +0530, Udipto Goswami wrote:
+> Currently,the function update_port_device_state gets the usb_hub from
+> udev->parent by calling usb_hub_to_struct_hub.
+> However, in case the actconfig or the maxchild is 0, the usb_hub would
+> be NULL and upon further accessing to get port_dev would result in null
+> pointer dereference.
+> 
+> Fix this by introducing an if check after the usb_hub is populated.
+> 
+> Fixes: 83cb2604f641 ("usb: core: add sysfs entry for usb device state")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Udipto Goswami <quic_ugoswami@quicinc.com>
+> ---
+> v2: Introduced comment for the if check & CC'ed stable.
+> 
+>  drivers/usb/core/hub.c | 15 ++++++++++++---
+>  1 file changed, 12 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/usb/core/hub.c b/drivers/usb/core/hub.c
+> index ffd7c99e24a3..d40b5500f95b 100644
+> --- a/drivers/usb/core/hub.c
+> +++ b/drivers/usb/core/hub.c
+> @@ -2053,9 +2053,18 @@ static void update_port_device_state(struct usb_device *udev)
+>  
+>  	if (udev->parent) {
+>  		hub = usb_hub_to_struct_hub(udev->parent);
+> -		port_dev = hub->ports[udev->portnum - 1];
+> -		WRITE_ONCE(port_dev->state, udev->state);
+> -		sysfs_notify_dirent(port_dev->state_kn);
+> +
+> +		/*
+> +		 * usb_hub_to_struct_hub() if returns NULL can
+> +		 * potentially cause NULL pointer dereference upon further
+> +		 * access.
+> +		 * Avoid this with an if check.
+> +		 */
 
-Fixes: 1cabe6b0965e ("net/mlx5e: Create aRFS flow tables")
-Signed-off-by: Zhipeng Lu <alexious@zju.edu.cn>
-Reviewed-by: Simon Horman <horms@kernel.org>
----
-Changelog:
+This is not what I meant.  It's perfectly obvious that if 
+usb_hub_to_struct_hub() returns NULL then there will be a NULL-pointer 
+dereference.  You don't need to explain that to anybody.
 
-v2: free ft->g just in arfs_create_groups with a unwind ladde.
----
- .../net/ethernet/mellanox/mlx5/core/en_arfs.c   | 17 +++++++++--------
- drivers/net/ethernet/mellanox/mlx5/core/en_fs.c |  1 -
- 2 files changed, 9 insertions(+), 9 deletions(-)
+Instead, you need to explain why it is _possible_ for 
+usb_hub_to_struct_hub() to return NULL.  The reason is because the 
+lvstest driver messes around with usbcore internals without telling the 
+hub driver, so hub will be NULL in cases where udev was created by 
+lvstest.
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_arfs.c b/drivers/net/ethernet/mellanox/mlx5/core/en_arfs.c
-index bb7f86c993e5..c96f4c571b63 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_arfs.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_arfs.c
-@@ -252,13 +252,14 @@ static int arfs_create_groups(struct mlx5e_flow_table *ft,
- 	int err;
- 	u8 *mc;
- 
-+	ft->num_groups = 0;
-+
- 	ft->g = kcalloc(MLX5E_ARFS_NUM_GROUPS,
- 			sizeof(*ft->g), GFP_KERNEL);
- 	in = kvzalloc(inlen, GFP_KERNEL);
- 	if  (!in || !ft->g) {
--		kfree(ft->g);
--		kvfree(in);
--		return -ENOMEM;
-+		err = -ENOMEM;
-+		goto free_ft;
- 	}
- 
- 	mc = MLX5_ADDR_OF(create_flow_group_in, in, match_criteria);
-@@ -278,7 +279,7 @@ static int arfs_create_groups(struct mlx5e_flow_table *ft,
- 		break;
- 	default:
- 		err = -EINVAL;
--		goto out;
-+		goto free_ft;
- 	}
- 
- 	switch (type) {
-@@ -300,7 +301,7 @@ static int arfs_create_groups(struct mlx5e_flow_table *ft,
- 		break;
- 	default:
- 		err = -EINVAL;
--		goto out;
-+		goto free_ft;
- 	}
- 
- 	MLX5_SET_CFG(in, match_criteria_enable, MLX5_MATCH_OUTER_HEADERS);
-@@ -327,7 +328,9 @@ static int arfs_create_groups(struct mlx5e_flow_table *ft,
- err:
- 	err = PTR_ERR(ft->g[ft->num_groups]);
- 	ft->g[ft->num_groups] = NULL;
--out:
-+free_ft:
-+	kfree(ft->g);
-+	ft->g = NULL;
- 	kvfree(in);
- 
- 	return err;
-@@ -343,8 +346,6 @@ static int arfs_create_table(struct mlx5e_flow_steering *fs,
- 	struct mlx5_flow_table_attr ft_attr = {};
- 	int err;
- 
--	ft->num_groups = 0;
--
- 	ft_attr.max_fte = MLX5E_ARFS_TABLE_SIZE;
- 	ft_attr.level = MLX5E_ARFS_FT_LEVEL;
- 	ft_attr.prio = MLX5E_NIC_PRIO;
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_fs.c b/drivers/net/ethernet/mellanox/mlx5/core/en_fs.c
-index 777d311d44ef..7b6aa0c8b58d 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_fs.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_fs.c
-@@ -883,7 +883,6 @@ void mlx5e_fs_init_l2_addr(struct mlx5e_flow_steering *fs, struct net_device *ne
- void mlx5e_destroy_flow_table(struct mlx5e_flow_table *ft)
- {
- 	mlx5e_destroy_groups(ft);
--	kfree(ft->g);
- 	mlx5_destroy_flow_table(ft->t);
- 	ft->t = NULL;
- }
--- 
-2.34.1
-
+Alan Stern
 
