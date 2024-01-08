@@ -1,165 +1,223 @@
-Return-Path: <linux-kernel+bounces-19934-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19933-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16AD0827701
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 19:11:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 231CE8276FC
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 19:10:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 533151F226E3
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 18:11:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8E9B61C20E9A
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 18:10:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13D4D55E40;
-	Mon,  8 Jan 2024 18:03:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 953BF55C23;
+	Mon,  8 Jan 2024 18:02:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="N37iDMzO"
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="CjjNn3ty"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B672A55C12;
-	Mon,  8 Jan 2024 18:03:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 408BoIoV025456;
-	Mon, 8 Jan 2024 18:02:52 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	date:from:to:cc:subject:message-id:references:mime-version
-	:content-type:in-reply-to; s=qcppdkim1; bh=cW3/52u923rUZekNz8/9L
-	Anvs2y92KpYma+wacAjnTE=; b=N37iDMzOZUq0CKK2SF8XWvW/udLwoKiMXp/Uo
-	Pn7sJx/sybXuhC/NCu/bquS4HPgi/bFNDxxCk5869NIwb+qQRYFMByZ8QCDeEuNI
-	HEieZ7wjQD8K17j2kpRpfY4gEZG5lM0dXFle6a0iZ7LjFsi/khHZUD3OhRTpEjdu
-	vepoRhQo6jaQ+92qALsj0VpMXN0MMXf7TQdVsyINJgrb1dDZ+8atQTmV8fnWR5Vh
-	wy0JCcQ4r5nU5qhlpESyKs/sZGZ2ThuRLVkUQBJVcGmwUAZ2fgFAUH3SyRMghbYx
-	4yUKxees3RH2Dm5Je4E8oCJ76qfUmQzAgkb1BrxO1MdI1LRsw==
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vgbjyhg5k-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 08 Jan 2024 18:02:52 +0000 (GMT)
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 408I2Obp027117
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 8 Jan 2024 18:02:24 GMT
-Received: from hu-bjorande-lv.qualcomm.com (10.49.16.6) by
- nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Mon, 8 Jan 2024 10:02:24 -0800
-Date: Mon, 8 Jan 2024 10:02:23 -0800
-From: Bjorn Andersson <quic_bjorande@quicinc.com>
-To: Johan Hovold <johan@kernel.org>
-CC: Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio
-	<konrad.dybcio@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Wesley Cheng <quic_wcheng@quicinc.com>,
-        Thinh Nguyen
-	<Thinh.Nguyen@synopsys.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Philipp Zabel
-	<p.zabel@pengutronix.de>,
-        <linux-arm-msm@vger.kernel.org>, <linux-usb@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Krishna Kurapati PSSNV
-	<quic_kriskura@quicinc.com>
-Subject: Re: [PATCH 06/12] usb: dwc3: qcom: Add dwc3 core reference in driver
- state
-Message-ID: <20240108180223.GK1315173@hu-bjorande-lv.qualcomm.com>
-References: <20231016-dwc3-refactor-v1-0-ab4a84165470@quicinc.com>
- <20231016-dwc3-refactor-v1-6-ab4a84165470@quicinc.com>
- <ZV3xmW0fDWY5-6qZ@hovoldconsulting.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7690B55C12
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 18:02:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1d3e2972f65so4506515ad.3
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 10:02:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1704736956; x=1705341756; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=KLhyf5sIXfLhdOh02ua5GenSjAf22p09pniZl0gR2xc=;
+        b=CjjNn3tyERbER0eNoDZezpmtO3PQ2BUtHkyiVvjL3OLOUQd0BINz721p3mtkvFw+yR
+         5juLmIvNcPGeQein1WwfhxwqyguFDiS1krH0GKg11cHDJTVWK7e7Ji3YnyOgg44h22XC
+         E6RPDB2f2FkXz72K1Jwvlc6UC/8s6Q1mbvIcyOMrYlHmmg3tfccoQhtV176YUAmdaIhZ
+         1vFZczjKT17aVXMKye4YutpKKz1GrbRxinJ5dT627F/9KtBkCzaBJejRvARQYv6WQ2g2
+         CnQZbpNNW/pCDeJLE1HW9LggQLzujEPvQa14GS5sMC4POeqmBINVHVbT4TR3chQE6saT
+         Tseg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704736956; x=1705341756;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KLhyf5sIXfLhdOh02ua5GenSjAf22p09pniZl0gR2xc=;
+        b=Nd43WFxECh1hqhNOuwoD2y+6UWwteqFkgtM0aUq3H+cwQNEWMiIPQkfMRtt8g55vkF
+         mVUX5dt9nIvBLavTGwbTapgmrrmZlyFkOnBaPdB2Fxs58hHPr1RDCV0ECxLa0FyqfYfA
+         2rt53SCDdftm45NK/qnJl+zj+svg0/sVJFkN3pFPkQMXG2NXIds0ZQpn0bDhSBDYwdIk
+         NptXzTiZdybfZtdxqk3NSbOY5jkWBGkvUrONcJk4Vek0wh9CtZufKW3E+RUbBseHyS8u
+         qMp4O4So2FvNki0s9i+aaVbGFRCknflTbortutGD5PTyM2SjsRzbiRS6bceP8GrNtj4O
+         apQg==
+X-Gm-Message-State: AOJu0YyyWbJWpi1X3P/f3OgdBqkcyhOWqu3VND10WsKxowJObmEDAjjM
+	NJTrBh86rel2N6spJN6B3KbtjBSsWWugLA==
+X-Google-Smtp-Source: AGHT+IF0KV6ppakYNjF2hnQktuahh7myDZAFD1mLkbcDl8/nMLb6ibIHPCTgpmQPcDHUkw/Qt6ReXg==
+X-Received: by 2002:a17:903:1205:b0:1d5:4c70:262f with SMTP id l5-20020a170903120500b001d54c70262fmr692193plh.95.1704736955622;
+        Mon, 08 Jan 2024 10:02:35 -0800 (PST)
+Received: from ghost ([2601:647:5700:6860:304d:b1a:4fb3:783f])
+        by smtp.gmail.com with ESMTPSA id m2-20020a170902768200b001cff9cd5129sm174005pll.298.2024.01.08.10.02.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Jan 2024 10:02:35 -0800 (PST)
+Date: Mon, 8 Jan 2024 10:02:32 -0800
+From: Charlie Jenkins <charlie@rivosinc.com>
+To: Randy Dunlap <rdunlap@infradead.org>
+Cc: Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>, Jonathan Corbet <corbet@lwn.net>,
+	Conor Dooley <conor.dooley@microchip.com>,
+	=?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <cleger@rivosinc.com>,
+	Atish Patra <atishp@atishpatra.org>,
+	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-doc@vger.kernel.org
+Subject: Re: [PATCH v4 2/2] documentation: Document
+ PR_RISCV_SET_ICACHE_FLUSH_CTX prctl
+Message-ID: <ZZw4uCCahPRbHdfR@ghost>
+References: <20240107-fencei-v4-0-d4cf2fb905d3@rivosinc.com>
+ <20240107-fencei-v4-2-d4cf2fb905d3@rivosinc.com>
+ <34f6da8c-1e63-43a5-b9d4-d6865a5d2252@infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZV3xmW0fDWY5-6qZ@hovoldconsulting.com>
-X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: TW63nP16Eh9jn7-rOIH8U91wuAlO_iug
-X-Proofpoint-ORIG-GUID: TW63nP16Eh9jn7-rOIH8U91wuAlO_iug
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
- mlxlogscore=999 impostorscore=0 bulkscore=0 phishscore=0 suspectscore=0
- adultscore=0 spamscore=0 clxscore=1015 priorityscore=1501
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2401080153
+In-Reply-To: <34f6da8c-1e63-43a5-b9d4-d6865a5d2252@infradead.org>
 
-On Wed, Nov 22, 2023 at 01:18:33PM +0100, Johan Hovold wrote:
-> On Mon, Oct 16, 2023 at 08:11:14PM -0700, Bjorn Andersson wrote:
-> > In the coming changes the Qualcomm DWC3 glue will be able to either
-> > manage the DWC3 core as a child platform_device, or directly instantiate
-> > it within its own context.
+On Sun, Jan 07, 2024 at 11:06:34PM -0800, Randy Dunlap wrote:
+> Hi--
+> 
+> On 1/7/24 22:21, Charlie Jenkins wrote:
+> > Provide documentation that explains how to properly do CMODX in riscv.
 > > 
-> > Introduce a reference to the dwc3 core state and make the driver
-> > reference the dwc3 core either the child device or this new reference.
-> > 
-> > As the new member isn't assigned, and qcom->dwc_dev is assigned in all
-> > current cases, the change should have no functional impact.
-> > 
-> > Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
+> > Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
 > > ---
-> >  drivers/usb/dwc3/dwc3-qcom.c | 100 +++++++++++++++++++++++++++++++++++--------
-> >  1 file changed, 83 insertions(+), 17 deletions(-)
+> >  Documentation/arch/riscv/cmodx.rst | 88 ++++++++++++++++++++++++++++++++++++++
+> >  Documentation/arch/riscv/index.rst |  1 +
+> >  2 files changed, 89 insertions(+)
 > > 
-> > diff --git a/drivers/usb/dwc3/dwc3-qcom.c b/drivers/usb/dwc3/dwc3-qcom.c
-> > index 7c810712d246..901e5050363b 100644
-> > --- a/drivers/usb/dwc3/dwc3-qcom.c
-> > +++ b/drivers/usb/dwc3/dwc3-qcom.c
-> > @@ -67,7 +67,8 @@ struct dwc3_acpi_pdata {
-> >  struct dwc3_qcom {
-> >  	struct device		*dev;
-> >  	void __iomem		*qscratch_base;
-> > -	struct platform_device	*dwc_dev;
-> > +	struct platform_device	*dwc_dev; /* only used when core is separate device */
-> > +	struct dwc3		*dwc; /* not used when core is separate device */
+> > diff --git a/Documentation/arch/riscv/cmodx.rst b/Documentation/arch/riscv/cmodx.rst
+> > new file mode 100644
+> > index 000000000000..71598850e131
+> > --- /dev/null
+> > +++ b/Documentation/arch/riscv/cmodx.rst
+> > @@ -0,0 +1,88 @@
+> > +.. SPDX-License-Identifier: GPL-2.0
+> > +
+> > +==============================================================================
+> > +Concurrent Modification and Execution of Instructions (CMODX) for RISC-V Linux
+> > +==============================================================================
+> > +
+> > +CMODX is a programming technique where a program executes instructions that were
+> > +modified by the program itself. Instruction storage and the instruction cache
+> > +(icache) is not guaranteed to be synchronized on RISC-V hardware. Therefore, the
 > 
-> Hmm. This quickly become really messy and hard to maintain. It may be
-> fine as an intermediate step as part of this series, but why can't you
-> do the conversion fully so that the Qualcomm glue driver never registers
-> a core platform device? Is it just about where the core driver looks for
-> DT properties?
+>             are not
 > 
+> > +program must enforce its own synchronization with the unprivileged fence.i
+> > +instruction.
+> > +
+> > +However, the default Linux ABI prohibits the use of fence.i in userspace
+> > +applications. At any point the scheduler may migrate a task onto a new hart. If
+> > +migration occurs after the userspace synchronized the icache and instruction
+> > +storage with fence.i, the icache will no longer be clean. This is due to the
+> > +behavior of fence.i only affecting the hart that it is called on. Thus, the hart
+> > +that the task has been migrated to, may not have synchronized instruction
+> 
+>                                    to may not
+> 
+> > +storage and icache.
+> > +
+> > +There are two ways to solve this problem: use the riscv_flush_icache() syscall,
+> > +or use the ``PR_RISCV_SET_ICACHE_FLUSH_CTX`` prctl() and emit fence.i in
+> > +userspace. The syscall performs a one-off icache flushing operation. The prctl
+> > +changes the Linux ABI to allow userspace to emit icache flushing operations.
+> > +
+> > +1.  prctl() Interface
+> > +---------------------
+> 
+> Why is "1." needed here? or is it?
 
-In the new driver model, pdev->dev.of_node needs to contain the
-resources for both the glue and the core. For most of the information,
-that's a matter of copying properties and child nodes from the child
-of_node, but e.g. reg and interrupts needs to be merged.
+Not needed, thank you.
 
-As mentioned in my other reply, extcon is serviced to both nodes, so
-without the callbacks that will break, at least - and I'd have to check
-to see if the of_graphs can be handled...
+- Charlie
 
-
-That said, part of the reason for doing this shuffle is to make sure
-that dwc is always a valid pointer, and while keeping this scheme of two
-modes we will not be able to assume this anywhere in the code - and
-hence continue to rely on luck.
-
-One way around this would be to follow the of_platform_populate() with a
-check to see if the core was registered and if so grab the dwc pointer,
-otherwise of_platform_depopulate() the core again and probe defer.
-
-It will come with a penalty for devices running on the old binding, and
-we don't protect ourselves from the core being unbound while we're
-holding a pointer to its internal data. But it looks like a much better
-position to me.
-
-(In this case I think dwc_dev becomes a local variable using during
-probe, and the rest of the code would operate on dwc)
-
-Regards,
-Bjorn
+> 
+> > +
+> > +Call prctl() with ``PR_RISCV_SET_ICACHE_FLUSH_CTX`` as the first argument. The
+> > +remaining arguments will be delegated to the riscv_set_icache_flush_ctx
+> > +function detailed below.
+> > +
+> > +.. kernel-doc:: arch/riscv/mm/cacheflush.c
+> > +	:identifiers: riscv_set_icache_flush_ctx
+> > +
+> > +Example usage:
+> > +
+> > +The following files are meant to be compiled and linked with each other. The
+> > +modify_instruction() function replaces an add with 0 with an add with one,
+> > +causing the instruction sequence in get_value() to change from returning a zero
+> > +to returning a one.
+> > +
+> > +cmodx.c::
+> > +
+> > +	#include <stdio.h>
+> > +	#include <sys/prctl.h>
+> > +
+> > +	extern int get_value();
+> > +	extern void modify_instruction();
+> > +
+> > +	int main()
+> > +	{
+> > +		int value = get_value();
+> > +		printf("Value before cmodx: %d\n", value);
+> > +
+> > +		// Call prctl before first fence.i is called inside modify_instruction
+> > +		prctl(PR_RISCV_SET_ICACHE_FLUSH_CTX_ON, PR_RISCV_CTX_SW_FENCEI, 0);
+> > +		modify_instruction();
+> > +
+> > +		value = get_value();
+> > +		printf("Value after cmodx: %d\n", value);
+> > +		return 0;
+> > +	}
+> > +
+> > +cmodx.S::
+> > +
+> > +	.option norvc
+> > +
+> > +	.text
+> > +	.global modify_instruction
+> > +	modify_instruction:
+> > +	lw a0, new_insn
+> > +	lui a5,%hi(old_insn)
+> > +	sw  a0,%lo(old_insn)(a5)
+> > +	fence.i
+> > +	ret
+> > +
+> > +	.section modifiable, "awx"
+> > +	.global get_value
+> > +	get_value:
+> > +	li a0, 0
+> > +	old_insn:
+> > +	addi a0, a0, 0
+> > +	ret
+> > +
+> > +	.data
+> > +	new_insn:
+> > +	addi a0, a0, 1
+> > diff --git a/Documentation/arch/riscv/index.rst b/Documentation/arch/riscv/index.rst
+> > index 4dab0cb4b900..eecf347ce849 100644
+> > --- a/Documentation/arch/riscv/index.rst
+> > +++ b/Documentation/arch/riscv/index.rst
+> > @@ -13,6 +13,7 @@ RISC-V architecture
+> >      patch-acceptance
+> >      uabi
+> >      vector
+> > +    cmodx
+> >  
+> >      features
+> >  
+> > 
+> 
+> Thanks.
+> -- 
+> #Randy
 
