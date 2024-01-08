@@ -1,59 +1,59 @@
-Return-Path: <linux-kernel+bounces-19720-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19721-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91E5E8271D6
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 15:51:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 352608271D8
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 15:51:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 146061F20FA2
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 14:51:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BC695283FDD
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 14:51:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5881251C3B;
-	Mon,  8 Jan 2024 14:50:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27D14524AD;
+	Mon,  8 Jan 2024 14:50:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="t7nPoB6s"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="f6SSQ91L"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0ADEF51029
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 14:50:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E327E51C3D
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 14:50:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--aliceryhl.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dbce2a8d700so1451672276.1
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 06:50:12 -0800 (PST)
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dbeac1f5045so2322317276.1
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 06:50:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1704725412; x=1705330212; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1704725415; x=1705330215; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=FC3zSuKOQJ4VOItAZMX3cy9K0P5EzH8kuQgbB61S/9A=;
-        b=t7nPoB6svrrWC3fQ2I1b7eZJArLL61PnOiMz4LslVaUgo51ISuXU3Jbdaa7HwVkqIu
-         naU3tT/vkeJnpBcVbHgpMGAr3LoxR4AQ/FIuS5cotZFO1UxO1LXelcA6ZGyPJlgyTasX
-         D6g6AsllBmZYXXI5Wk5gb1GnTthO1unS7xNxgY2ELwVNKwm6pnLyTwEpg4yw5PAkaGiH
-         SUyq/ClKcIVIhBji8l7PTJSpuhvA5/lUxQPw6jiSZKeC7KE01SIStGxVdyCJp6ys5EzO
-         sGPm1MPv8janwu8tWfB9C1WTFoGV1CcbD5QGdKqqZsvMJA2WJthO7Ih0Lu59hY9tlhCA
-         e/SA==
+        bh=6SZoYYqOOUlMq4hjr9gywH5xihJLOMWXAYIKnq88z+Q=;
+        b=f6SSQ91L/S/HMh04Aa26IRBAwQY3cGZnnnSOx56sUricJIfUIDSszIFIEbqOQz7QoP
+         UD91edN5stZe+EHlgSKFBH2bERVWNVPqzBHte9Sf2iV9sW6Qf5B4/QwxHIF6sevSwoe+
+         L38pvWKK19WInT6JGnC3mdhughtWqfdn8jtOYWWploFB5W/htuLgI6/supJSBQdybPXS
+         e/oRdlATG8JQwXZpETh4LTH22qlu0MKATv2Nk4cEKvwBffMfbSc5OVkJfpO9AoiYVKji
+         q5kMhj9katkdJjTL7/yHBAw3JORWboBO+dh2+GvcdpQVMSeNeJ4cEx+PnkldAuCbKiwl
+         t8IA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704725412; x=1705330212;
+        d=1e100.net; s=20230601; t=1704725415; x=1705330215;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=FC3zSuKOQJ4VOItAZMX3cy9K0P5EzH8kuQgbB61S/9A=;
-        b=b3uGsyIoud9WjxJJAVAi7PoWl8ZMu5ihLrfI62UkwNswuif8+OqrFQ2GKaIaO0rzvH
-         RcY1+08XUdgFNkx0sp3/f3cJN8SmcHlfRQoclsdW71i7rnrcK5Ej/n23kdH/CKXeJA8N
-         hOrVi76F3v7Z16rjlGXL0+UZPrVfgpg8S05iOW5KjbjYchbHdgzv6pctyXvm408ntEKr
-         alyQ24Jn4RfoiTPiD61/hdpyDPng38epd7jaKVcFtPAKH7leKMWirFPlIjSFywbVw4Dc
-         fm6jySorGPdK1XiP7H007QHW/BKrHP8EhMAKWrW2sxa57lPF6QMiqb157luW+v2wYDcN
-         dF0w==
-X-Gm-Message-State: AOJu0Yy3NeUsOATU2jzQSsg/wTfodlISh5315MuzSb/+JN4cqSwokdT8
-	W5cwdsHlqE6HEg9C2FpT/OlSpqwcV1d7onE7gQlC6Q==
-X-Google-Smtp-Source: AGHT+IEPNTj5SK4xnk+K+oSPjZ+cukAEB9mSC2NTVZHULzc5WjngM80a5n1vbGdmDADDneDvpzWjcPGVUHwF17w=
+        bh=6SZoYYqOOUlMq4hjr9gywH5xihJLOMWXAYIKnq88z+Q=;
+        b=RaSCK+9+Agb3fS/Ar+wKcKrtqG9HF+tmfnPoHTf/jjQgMYYpFFV/a5Gx6K2bqsD7+d
+         +j9GSUUDPk6dQKsVnQorxr5enwrzCbWiKOccqU2CqdBadR2u/k4R0ZIMSbVyeX3K6AWS
+         vystzy359eOsXGIlXJogZ2Qwqdrxs2x+DM2gAlzz0yKaIsR4f4/+xWOsXg6UhHJ1Ekp/
+         9LoaBgdysu8CpWvnTyJMR4FS+eOsWjG9j+FyRqQRMpoiBIvsHKUr1HjGZNugjqpcAa4Z
+         2MK6n9/jNcl9/ODEwHKs+0l9yb9MD5HYZp1DArUSlo5Ki1ukL2CH5Cn32hiRjqIVjS/8
+         XzXQ==
+X-Gm-Message-State: AOJu0YyVvxhHQXEslZ6ohuD7BVPHzAWIv4P0qvO3Flq6GeX4/B1oyJ9w
+	E50LJCVJ5V9t7tfd4RfvOU857bJ7B9G3k/WtLzQabw==
+X-Google-Smtp-Source: AGHT+IGoF8enDRleCmZP7Dmc/qRxjrTw5VAhRL9E5ptEbQRiVTHdmIVTFFthzEjgA3zPSvy/xLgsVV/t1bikGlU=
 X-Received: from aliceryhl2.c.googlers.com ([fda3:e722:ac3:cc00:68:949d:c0a8:572])
- (user=aliceryhl job=sendgmr) by 2002:a25:824d:0:b0:dbe:3087:1d22 with SMTP id
- d13-20020a25824d000000b00dbe30871d22mr116090ybn.13.1704725412185; Mon, 08 Jan
- 2024 06:50:12 -0800 (PST)
-Date: Mon, 08 Jan 2024 14:49:59 +0000
+ (user=aliceryhl job=sendgmr) by 2002:a05:6902:1342:b0:dbd:ee44:8908 with SMTP
+ id g2-20020a056902134200b00dbdee448908mr1432916ybu.0.1704725415044; Mon, 08
+ Jan 2024 06:50:15 -0800 (PST)
+Date: Mon, 08 Jan 2024 14:50:00 +0000
 In-Reply-To: <20240108-rb-new-condvar-methods-v4-0-88e0c871cc05@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -63,22 +63,22 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20240108-rb-new-condvar-methods-v4-0-88e0c871cc05@google.com>
 X-Developer-Key: i=aliceryhl@google.com; a=openpgp; fpr=49F6C1FAA74960F43A5B86A1EE7A392FDE96209F
-X-Developer-Signature: v=1; a=openpgp-sha256; l=7424; i=aliceryhl@google.com;
- h=from:subject:message-id; bh=7DhaZf4SIHmOZSumn+foJHl61MmWwbMVF8kY96krCxU=;
- b=owEBbQKS/ZANAwAKAQRYvu5YxjlGAcsmYgBlnAuX2Bw76dgmwZsRUQv2BSOUeYFtlj/bnw3Mt
- qnMUZmjXuyJAjMEAAEKAB0WIQSDkqKUTWQHCvFIvbIEWL7uWMY5RgUCZZwLlwAKCRAEWL7uWMY5
- RrR7EACwCNPW0WeatnTjrXtcg5qPPDvC1cN6wsnV9Zpn5s5UGCcXQuXHILMAL2HtrV69KBbjvcF
- +RxYCnNShxHWfDYR0U0BYTWKcGIwMTEkbD1Kak/ardDFEf33OUb89Mu29tUw7TUyhKAJi3fi/P7
- nMzieT8KQAq8HC/LJpAS53ZkfH7pD6GLuVF8u9d+4zpwnL6DgclZ1pmRMkszsYzINjp8gKElO8C
- JDmnxmDQhw0fWXOS8ZYeuPq8RWGvqZPHD/xZEHyVVWnV6rcZQ1D9V6P31kKCV+han0X8Jrfxhk9
- MIOuw8sQXIvV3M8ekAVcX3hJ61wTdh+G5RdfOjIL04eCln+j7EYmNYOVMp2/HJBTNHIv89i4ZCb
- sbK9rGA5+SIEEVo5hlxOw3fXD1Uy/V0TptWIB8P3kpGlnsirteOKgf5axWCyv/aiJ+ZjEmClEUI
- HwXkFE5jWc8BptxfEgTU/g0506pgjXmlYZwAOA/yeXrqjQtvOJbNiJ3B9sc5+9LARJGihVMZeTS
- Jzr+ropsW+bs76K5Ahfr4xs0QdBpv5BdkytzlaBW+bL61Q4zoMNaG+y3JJ6jnlOwZC3x0ncjqFR
- DMzCokS4+yurF0+MFG+YKkAAOQ9JceBC1UwfbxQfzdLrpR4XpQoXLB0NPvNGbPdVmF2jcTdhWrX OXHRmN3fP+7m28Q==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=7874; i=aliceryhl@google.com;
+ h=from:subject:message-id; bh=p4ziQv4KIkMhpCT+PoV/4ZeXHtEOSN15SNY70QjJ4kk=;
+ b=owEBbQKS/ZANAwAKAQRYvu5YxjlGAcsmYgBlnAuYNVHmKC/whrgPlUF7M5/1PQ7D0IobbMcTZ
+ G0XbqHAVBeJAjMEAAEKAB0WIQSDkqKUTWQHCvFIvbIEWL7uWMY5RgUCZZwLmAAKCRAEWL7uWMY5
+ RmZ/D/9wxhF2JuR645ZiU06XtSTBT7fKFn5jm6SHcWIrPs1lK/brMEZLknoDDugO0eNDeioMjTY
+ hjO1ZOhWQmgGeKesSTDuolvXpqCbneXSBMAX932Fbk71jk75j1hXxVy/8pSLAKoqp+K/ayRV1vj
+ gcPaVgxN3rFrKg8zI+bM3o9YTl2PSvY0/nugeeb2gEKj/vVD6gbpxm7bpl9nB69BjYJX8eNPskU
+ edI/0ea6H9DEuX6d3Z8K9P4HfSQWYjt8D9r6b3jcdAKqy66TkYqPQHD16fFyYcQBwQBJaHt5gvf
+ DLYDvQVfCf+tLHkN7ZWz4J51Ougi9vHyrOkZbQDvuRm3Wubs/vFUeRkG/CnG0PU0S06DhL3nox0
+ si6ZAelzmH2u3gwjdH01kSQYEpzG/FjxVlaqc5oM13Rq0f+nYfpB1oYZ60UCVc86SAch6NZ0MVJ
+ nEL6v/Tb1veTV8mdVrF6JTNmWg2zTvMmGrhm02IAN9v4sRWmg51571911mBMuKaiPhqGj7oQbSa
+ 9NqtZYNME1Nhx7Boom4phakBXG6+U3FJMOae4g50WTu7wkUjZ5dVTZjPFHJPgaNIbD5jmxlynQ1
+ GXldTJ9N8kRiNrgY045lMsvpAt2g2cr28B0r421lIFRYwxWzI9VkD/4bvOrEhw2MaPAR2wPWCzA i1qQlcxdbCLvOHg==
 X-Mailer: b4 0.13-dev-26615
-Message-ID: <20240108-rb-new-condvar-methods-v4-3-88e0c871cc05@google.com>
-Subject: [PATCH v4 3/4] rust: sync: add `CondVar::wait_timeout`
+Message-ID: <20240108-rb-new-condvar-methods-v4-4-88e0c871cc05@google.com>
+Subject: [PATCH v4 4/4] rust: sync: update integer types in CondVar
 From: Alice Ryhl <aliceryhl@google.com>
 To: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
 	Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
@@ -90,176 +90,183 @@ Cc: Martin Rodriguez Reboredo <yakoyoku@gmail.com>, rust-for-linux@vger.kernel.o
 	linux-kernel@vger.kernel.org, Alice Ryhl <aliceryhl@google.com>
 Content-Type: text/plain; charset="utf-8"
 
-Sleep on a condition variable with a timeout.
+Reduce the chances of compilation failures due to integer type
+mismatches in `CondVar`.
 
-This is used by Rust Binder for process freezing. There, we want to
-sleep until the freeze operation completes, but we want to be able to
-abort the process freezing if it doesn't complete within some timeout.
+When an integer is defined using a #define in C, bindgen doesn't know
+which integer type it is supposed to be, so it will just use `u32` by
+default (if it fits in an u32). Whenever the right type is something
+else, we insert a cast in Rust. However, this means that the code has a
+lot of extra casts, and sometimes the code will be missing casts if u32
+happens to be correct on the developer's machine, even though the type
+might be something else on a different platform.
 
-Note that it is not enough to avoid jiffies by introducing a variant of
-`CondVar::wait_timeout` that takes the timeout in msecs because we need
-to be able to restart the sleep with the remaining sleep duration if it
-is interrupted, and if the API takes msecs rather than jiffies, then
-that would require a conversion roundtrip jiffies->msecs->jiffies that
-is best avoided.
+This patch updates all uses of such constants in
+`rust/kernel/sync/condvar.rs` to use constants defined with the right
+type. This allows us to remove various unnecessary casts, while also
+future-proofing for the case where `unsigned int != u32`.
 
-Reviewed-by: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
+I wrote this patch at the suggestion of Benno in [1].
+
+Link: https://lore.kernel.org/all/nAEg-6vbtX72ZY3oirDhrSEf06TBWmMiTt73EklMzEAzN4FD4mF3TPEyAOxBZgZtjzoiaBYtYr3s8sa9wp1uYH9vEWRf2M-Lf4I0BY9rAgk=@proton.me/ [1]
+Suggested-by: Benno Lossin <benno.lossin@proton.me>
 Reviewed-by: Tiago Lam <tiagolam@gmail.com>
 Reviewed-by: Boqun Feng <boqun.feng@gmail.com>
+Reviewed-by: Benno Lossin <benno.lossin@proton.me>
+Reviewed-by: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
 Signed-off-by: Alice Ryhl <aliceryhl@google.com>
 ---
- rust/kernel/sync/condvar.rs | 60 ++++++++++++++++++++++++++++++++++++++++-----
- rust/kernel/sync/lock.rs    |  4 +--
- rust/kernel/task.rs         |  5 +++-
- 3 files changed, 60 insertions(+), 9 deletions(-)
+ rust/kernel/sync/condvar.rs | 39 +++++++++++++++++++--------------------
+ rust/kernel/task.rs         | 15 ++++++++++++++-
+ 2 files changed, 33 insertions(+), 21 deletions(-)
 
 diff --git a/rust/kernel/sync/condvar.rs b/rust/kernel/sync/condvar.rs
-index b323a0c26513..fa38c095cbe0 100644
+index fa38c095cbe0..7f2b78e4abc7 100644
 --- a/rust/kernel/sync/condvar.rs
 +++ b/rust/kernel/sync/condvar.rs
-@@ -6,7 +6,11 @@
- //! variable.
+@@ -7,11 +7,17 @@
  
  use super::{lock::Backend, lock::Guard, LockClassKey};
--use crate::{bindings, init::PinInit, pin_init, str::CStr, types::Opaque};
-+use crate::{
-+    bindings, init::PinInit, pin_init, str::CStr, task::MAX_SCHEDULE_TIMEOUT, time::Jiffies,
-+    types::Opaque,
-+};
-+use core::ffi::c_long;
+ use crate::{
+-    bindings, init::PinInit, pin_init, str::CStr, task::MAX_SCHEDULE_TIMEOUT, time::Jiffies,
++    bindings,
++    init::PinInit,
++    pin_init,
++    str::CStr,
++    task::{MAX_SCHEDULE_TIMEOUT, TASK_INTERRUPTIBLE, TASK_NORMAL, TASK_UNINTERRUPTIBLE},
++    time::Jiffies,
+     types::Opaque,
+ };
+-use core::ffi::c_long;
++use core::ffi::{c_int, c_long};
  use core::marker::PhantomPinned;
++use core::ptr;
  use macros::pin_data;
  
-@@ -102,7 +106,12 @@ pub fn new(name: &'static CStr, key: &'static LockClassKey) -> impl PinInit<Self
-         })
-     }
+ /// Creates a [`CondVar`] initialiser with the given name and a newly-created lock class.
+@@ -108,7 +114,7 @@ pub fn new(name: &'static CStr, key: &'static LockClassKey) -> impl PinInit<Self
  
--    fn wait_internal<T: ?Sized, B: Backend>(&self, wait_state: u32, guard: &mut Guard<'_, T, B>) {
-+    fn wait_internal<T: ?Sized, B: Backend>(
-+        &self,
-+        wait_state: u32,
-+        guard: &mut Guard<'_, T, B>,
-+        timeout_in_jiffies: c_long,
-+    ) -> c_long {
-         let wait = Opaque::<bindings::wait_queue_entry>::uninit();
- 
-         // SAFETY: `wait` points to valid memory.
-@@ -113,11 +122,13 @@ fn wait_internal<T: ?Sized, B: Backend>(&self, wait_state: u32, guard: &mut Guar
-             bindings::prepare_to_wait_exclusive(self.wait_list.get(), wait.get(), wait_state as _)
-         };
- 
--        // SAFETY: No arguments, switches to another thread.
--        guard.do_unlocked(|| unsafe { bindings::schedule() });
-+        // SAFETY: Switches to another thread. The timeout can be any number.
-+        let ret = guard.do_unlocked(|| unsafe { bindings::schedule_timeout(timeout_in_jiffies) });
+     fn wait_internal<T: ?Sized, B: Backend>(
+         &self,
+-        wait_state: u32,
++        wait_state: c_int,
+         guard: &mut Guard<'_, T, B>,
+         timeout_in_jiffies: c_long,
+     ) -> c_long {
+@@ -119,7 +125,7 @@ fn wait_internal<T: ?Sized, B: Backend>(
  
          // SAFETY: Both `wait` and `wait_list` point to valid memory.
-         unsafe { bindings::finish_wait(self.wait_list.get(), wait.get()) };
-+
-+        ret
-     }
+         unsafe {
+-            bindings::prepare_to_wait_exclusive(self.wait_list.get(), wait.get(), wait_state as _)
++            bindings::prepare_to_wait_exclusive(self.wait_list.get(), wait.get(), wait_state)
+         };
  
-     /// Releases the lock and waits for a notification in uninterruptible mode.
-@@ -127,7 +138,7 @@ fn wait_internal<T: ?Sized, B: Backend>(&self, wait_state: u32, guard: &mut Guar
+         // SAFETY: Switches to another thread. The timeout can be any number.
+@@ -138,7 +144,7 @@ fn wait_internal<T: ?Sized, B: Backend>(
      /// [`CondVar::notify_one`] or [`CondVar::notify_all`]. Note that it may also wake up
      /// spuriously.
      pub fn wait<T: ?Sized, B: Backend>(&self, guard: &mut Guard<'_, T, B>) {
--        self.wait_internal(bindings::TASK_UNINTERRUPTIBLE, guard);
-+        self.wait_internal(bindings::TASK_UNINTERRUPTIBLE, guard, MAX_SCHEDULE_TIMEOUT);
+-        self.wait_internal(bindings::TASK_UNINTERRUPTIBLE, guard, MAX_SCHEDULE_TIMEOUT);
++        self.wait_internal(TASK_UNINTERRUPTIBLE, guard, MAX_SCHEDULE_TIMEOUT);
      }
  
      /// Releases the lock and waits for a notification in interruptible mode.
-@@ -138,10 +149,31 @@ pub fn wait<T: ?Sized, B: Backend>(&self, guard: &mut Guard<'_, T, B>) {
+@@ -149,7 +155,7 @@ pub fn wait<T: ?Sized, B: Backend>(&self, guard: &mut Guard<'_, T, B>) {
      /// Returns whether there is a signal pending.
      #[must_use = "wait_interruptible returns if a signal is pending, so the caller must check the return value"]
      pub fn wait_interruptible<T: ?Sized, B: Backend>(&self, guard: &mut Guard<'_, T, B>) -> bool {
--        self.wait_internal(bindings::TASK_INTERRUPTIBLE, guard);
-+        self.wait_internal(bindings::TASK_INTERRUPTIBLE, guard, MAX_SCHEDULE_TIMEOUT);
+-        self.wait_internal(bindings::TASK_INTERRUPTIBLE, guard, MAX_SCHEDULE_TIMEOUT);
++        self.wait_internal(TASK_INTERRUPTIBLE, guard, MAX_SCHEDULE_TIMEOUT);
          crate::current!().signal_pending()
      }
  
-+    /// Releases the lock and waits for a notification in interruptible mode.
-+    ///
-+    /// Atomically releases the given lock (whose ownership is proven by the guard) and puts the
-+    /// thread to sleep. It wakes up when notified by [`CondVar::notify_one`] or
-+    /// [`CondVar::notify_all`], or when a timeout occurs, or when the thread receives a signal.
-+    #[must_use = "wait_interruptible_timeout returns if a signal is pending, so the caller must check the return value"]
-+    pub fn wait_interruptible_timeout<T: ?Sized, B: Backend>(
-+        &self,
-+        guard: &mut Guard<'_, T, B>,
-+        jiffies: Jiffies,
-+    ) -> CondVarTimeoutResult {
-+        let jiffies = jiffies.try_into().unwrap_or(MAX_SCHEDULE_TIMEOUT);
-+        let res = self.wait_internal(bindings::TASK_INTERRUPTIBLE, guard, jiffies);
-+
-+        match (res as Jiffies, crate::current!().signal_pending()) {
-+            (jiffies, true) => CondVarTimeoutResult::Signal { jiffies },
-+            (0, false) => CondVarTimeoutResult::Timeout,
-+            (jiffies, false) => CondVarTimeoutResult::Woken { jiffies },
-+        }
-+    }
-+
-     /// Calls the kernel function to notify the appropriate number of threads with the given flags.
-     fn notify(&self, count: i32, flags: u32) {
-         // SAFETY: `wait_list` points to valid memory.
-@@ -181,3 +213,19 @@ pub fn notify_all(&self) {
-         self.notify(0, 0);
+@@ -165,7 +171,7 @@ pub fn wait_interruptible_timeout<T: ?Sized, B: Backend>(
+         jiffies: Jiffies,
+     ) -> CondVarTimeoutResult {
+         let jiffies = jiffies.try_into().unwrap_or(MAX_SCHEDULE_TIMEOUT);
+-        let res = self.wait_internal(bindings::TASK_INTERRUPTIBLE, guard, jiffies);
++        let res = self.wait_internal(TASK_INTERRUPTIBLE, guard, jiffies);
+ 
+         match (res as Jiffies, crate::current!().signal_pending()) {
+             (jiffies, true) => CondVarTimeoutResult::Signal { jiffies },
+@@ -174,17 +180,10 @@ pub fn wait_interruptible_timeout<T: ?Sized, B: Backend>(
+         }
      }
- }
-+
-+/// The return type of `wait_timeout`.
-+pub enum CondVarTimeoutResult {
-+    /// The timeout was reached.
-+    Timeout,
-+    /// Somebody woke us up.
-+    Woken {
-+        /// Remaining sleep duration.
-+        jiffies: Jiffies,
-+    },
-+    /// A signal occurred.
-+    Signal {
-+        /// Remaining sleep duration.
-+        jiffies: Jiffies,
-+    },
-+}
-diff --git a/rust/kernel/sync/lock.rs b/rust/kernel/sync/lock.rs
-index f12a684bc957..149a5259d431 100644
---- a/rust/kernel/sync/lock.rs
-+++ b/rust/kernel/sync/lock.rs
-@@ -139,7 +139,7 @@ pub struct Guard<'a, T: ?Sized, B: Backend> {
- unsafe impl<T: Sync + ?Sized, B: Backend> Sync for Guard<'_, T, B> {}
  
- impl<T: ?Sized, B: Backend> Guard<'_, T, B> {
--    pub(crate) fn do_unlocked(&mut self, cb: impl FnOnce()) {
-+    pub(crate) fn do_unlocked<U>(&mut self, cb: impl FnOnce() -> U) -> U {
-         // SAFETY: The caller owns the lock, so it is safe to unlock it.
-         unsafe { B::unlock(self.lock.state.get(), &self.state) };
+-    /// Calls the kernel function to notify the appropriate number of threads with the given flags.
+-    fn notify(&self, count: i32, flags: u32) {
++    /// Calls the kernel function to notify the appropriate number of threads.
++    fn notify(&self, count: c_int) {
+         // SAFETY: `wait_list` points to valid memory.
+-        unsafe {
+-            bindings::__wake_up(
+-                self.wait_list.get(),
+-                bindings::TASK_NORMAL,
+-                count,
+-                flags as _,
+-            )
+-        };
++        unsafe { bindings::__wake_up(self.wait_list.get(), TASK_NORMAL, count, ptr::null_mut()) };
+     }
  
-@@ -147,7 +147,7 @@ pub(crate) fn do_unlocked(&mut self, cb: impl FnOnce()) {
-         let _relock =
-             ScopeGuard::new(|| unsafe { B::relock(self.lock.state.get(), &mut self.state) });
+     /// Calls the kernel function to notify one thread synchronously.
+@@ -194,7 +193,7 @@ fn notify(&self, count: i32, flags: u32) {
+     /// CPU.
+     pub fn notify_sync(&self) {
+         // SAFETY: `wait_list` points to valid memory.
+-        unsafe { bindings::__wake_up_sync(self.wait_list.get(), bindings::TASK_NORMAL) };
++        unsafe { bindings::__wake_up_sync(self.wait_list.get(), TASK_NORMAL) };
+     }
  
--        cb();
-+        cb()
+     /// Wakes a single waiter up, if any.
+@@ -202,7 +201,7 @@ pub fn notify_sync(&self) {
+     /// This is not 'sticky' in the sense that if no thread is waiting, the notification is lost
+     /// completely (as opposed to automatically waking up the next waiter).
+     pub fn notify_one(&self) {
+-        self.notify(1, 0);
++        self.notify(1);
+     }
+ 
+     /// Wakes all waiters up, if any.
+@@ -210,7 +209,7 @@ pub fn notify_one(&self) {
+     /// This is not 'sticky' in the sense that if no thread is waiting, the notification is lost
+     /// completely (as opposed to automatically waking up the next waiter).
+     pub fn notify_all(&self) {
+-        self.notify(0, 0);
++        self.notify(0);
      }
  }
  
 diff --git a/rust/kernel/task.rs b/rust/kernel/task.rs
-index 9451932d5d86..17f14ebb8f48 100644
+index 17f14ebb8f48..6072b0de4a3e 100644
 --- a/rust/kernel/task.rs
 +++ b/rust/kernel/task.rs
-@@ -5,7 +5,10 @@
+@@ -5,11 +5,24 @@
  //! C header: [`include/linux/sched.h`](srctree/include/linux/sched.h).
  
  use crate::{bindings, types::Opaque};
--use core::{marker::PhantomData, ops::Deref, ptr};
-+use core::{ffi::c_long, marker::PhantomData, ops::Deref, ptr};
-+
-+/// A sentinal value used for infinite timeouts.
-+pub const MAX_SCHEDULE_TIMEOUT: c_long = c_long::MAX;
+-use core::{ffi::c_long, marker::PhantomData, ops::Deref, ptr};
++use core::{
++    ffi::{c_int, c_long, c_uint},
++    marker::PhantomData,
++    ops::Deref,
++    ptr,
++};
  
+ /// A sentinal value used for infinite timeouts.
+ pub const MAX_SCHEDULE_TIMEOUT: c_long = c_long::MAX;
+ 
++/// Bitmask for tasks that are sleeping in an interruptible state.
++pub const TASK_INTERRUPTIBLE: c_int = bindings::TASK_INTERRUPTIBLE as c_int;
++/// Bitmask for tasks that are sleeping in an uninterruptible state.
++pub const TASK_UNINTERRUPTIBLE: c_int = bindings::TASK_UNINTERRUPTIBLE as c_int;
++/// Convenience constant for waking up tasks regardless of whether they are in interruptible or
++/// uninterruptible sleep.
++pub const TASK_NORMAL: c_uint = bindings::TASK_NORMAL as c_uint;
++
  /// Returns the currently running task.
  #[macro_export]
+ macro_rules! current {
 
 -- 
 2.43.0.472.g3155946c3a-goog
