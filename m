@@ -1,61 +1,62 @@
-Return-Path: <linux-kernel+bounces-19194-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19195-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 09C03826999
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 09:38:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 43FEC82699C
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 09:38:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 94C45282642
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 08:38:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D5FF91F21227
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 08:38:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD0131173D;
-	Mon,  8 Jan 2024 08:38:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37F93C2E6;
+	Mon,  8 Jan 2024 08:38:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="rB4y1W2j"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="gq4D9Z2p"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A0051170D
-	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 08:38:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2FDA1173E
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 08:38:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a298accc440so152431666b.1
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 00:38:00 -0800 (PST)
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a2ac304e526so37089466b.0
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 00:38:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704703079; x=1705307879; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=h9EjmPEpm+7zFB1A5P7UnIdVAOMDyAK96vwEc7rBv8w=;
-        b=rB4y1W2jdiSv1eD16TZIQLf4hXLfK8bfRRRTLSa/VI60RnLg0/De3xXp980lt/bDaf
-         Yfw9TVXpTXi5r9tVFYiJT2HE9MMb+Ejc/pvspaYuxrjrdIJakta3SaO1AVIfvB1toGcG
-         TCu0/7TvA3Rs/jhbVKhQyH2FCrBFO3+ySPXc+R8eLl+Lc3+8HRk42BBwrQRvOnI57lql
-         8hLqfyO8MPgFpZ1ZjQRoqv2CIvE/tCsyPVnVdzv720kT03rTa14fsGlv8YTWxziU82ZB
-         QoL5wqmWHo0o2MO6E/bL515hJXzsTsVPp1n4gv3lqZnpadN06/6UlU9gTBfXECmeDoVF
-         nF8A==
+        d=linaro.org; s=google; t=1704703081; x=1705307881; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LmR9KxQP8dD4PzUTQD7z34F00y2gKvodpqxcPdEO1Jc=;
+        b=gq4D9Z2pMuu990PveRM7Ho9mA8QXwLC9Wup3I/2NYHu2KB9aMvNQeZp4/R26ZKZzVt
+         GDPoL5FY+8ZDO/HqfSyVQplqqPr4wNenh3ADokOXiJE6TaRyOyVArRYfesyLCyzeBEXH
+         z5skURwFU3hhRR+oUv0b0VcLRNNgR9uyR6lIVOq41lQErNPGYqMC08WKrVI+6hmx26Nb
+         pttdftgY6XIrhCFUPXwDChN1TC6Y067JCPbY4MPiBnKdQfslzIocQIoZT5prcAQB3pLL
+         gnf0dp7QD0lYqzszEBmM5wtZr3wOfuaAHH2c3AHWBbXLT/1r+wjVipSE/AsUfSZjq2/p
+         Bq8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704703079; x=1705307879;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=h9EjmPEpm+7zFB1A5P7UnIdVAOMDyAK96vwEc7rBv8w=;
-        b=JdhJN1Y+QNYGSuBUXTedHXY5yY4TERjEtCTmvFQvhz4jwI518Dr245Grt9FeIaCVsl
-         37sD9mfkTpoIMKhad83mwYFGYJHj7G2Ckm/Si41BrU+/8qTczPcoHbaPXNnl8fdi0Dtr
-         o3xgm++R1j0Mn2QsHLyDwB1Zrpav4NCiztbUE+5mzGp5oOTZfj9hWKlbojfK9cj/yEHZ
-         jR12Ns1msD4k9b9MNjv+H5xoxpSe1/7OdsGelyi6rFiBTYOIlaXfrNZrfj1Iw4TwQQ96
-         g9Z5OzJitiyLWHSFtIOV1bPsomGDSIGu74q+4tVQU/Ux+vmkHYbE4Dq7M5CIu2e0TQrc
-         j6Xg==
-X-Gm-Message-State: AOJu0YxL0zUwtagBcI76pMGth4UbjdQ9Er+yLMDGv7djjoXT/oNBJBd9
-	Vi1L0enjEFfCf8yD+EU8u9EuaOObRSV8Rw==
-X-Google-Smtp-Source: AGHT+IFdoYt0dHBvsE2LpeeI64ijVPEIz4mG19z+t6zBxFH/JUZ/i+3Oj7nxmNbixo9o07IEoK0new==
-X-Received: by 2002:a17:907:268a:b0:a28:abb3:dd74 with SMTP id bn10-20020a170907268a00b00a28abb3dd74mr1615203ejc.81.1704703078532;
-        Mon, 08 Jan 2024 00:37:58 -0800 (PST)
+        d=1e100.net; s=20230601; t=1704703081; x=1705307881;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=LmR9KxQP8dD4PzUTQD7z34F00y2gKvodpqxcPdEO1Jc=;
+        b=vExrCoUqbbxogKeqs2WY6ACb009rcLQIqHE669HJtA50TK9SZb+/ACT4IBOQ4gK5RG
+         +uexIPbj1GxOYIZMbE8Zl/AussYtqLUp/PydRZnlN1iehHO6dKviKI9fRpjvB9CGB0n7
+         5YQzlbu6iJQ4MJLaEIdccfMP5fwJlBgeuyMpNgyU8T9OK5xqeX/CfJS6JSpmz0qXTqNc
+         SnyhseUs693IRIf9pF+bNDRU1qJwh2VT4olGMhuP9iIiEj+OCJyGNhjtz/TpYjJRZ8Yd
+         YTAppXvy2zz773TfJy73T15cNx4gEGKjKhqJxbEMq4D6L/lizZDdFudWSvVoa9caWlym
+         1tkQ==
+X-Gm-Message-State: AOJu0YzcmkgPCR4oQD0xKNyzZa5FsSuf395Z0D6Re/mz6gQ7qjli/PAY
+	3HDdX7mIbfAmiD2hgJZTIitdhaGCOrYaOg==
+X-Google-Smtp-Source: AGHT+IGwcyCWtQRwsq6lSM5m0WxXOX7TwKM4rEruLlGVkTCEypoJJzCsLna7iMU3sCXtgk8sZbKDWg==
+X-Received: by 2002:a17:907:969e:b0:a26:9d95:a347 with SMTP id hd30-20020a170907969e00b00a269d95a347mr1631096ejc.25.1704703080980;
+        Mon, 08 Jan 2024 00:38:00 -0800 (PST)
 Received: from krzk-bin.. ([178.197.223.112])
-        by smtp.gmail.com with ESMTPSA id ws6-20020a170907704600b00a2a360d719fsm1683504ejb.221.2024.01.08.00.37.57
+        by smtp.gmail.com with ESMTPSA id ws6-20020a170907704600b00a2a360d719fsm1683504ejb.221.2024.01.08.00.37.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Jan 2024 00:37:58 -0800 (PST)
+        Mon, 08 Jan 2024 00:37:59 -0800 (PST)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 To: Rob Herring <robh+dt@kernel.org>,
 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
@@ -65,10 +66,12 @@ To: Rob Herring <robh+dt@kernel.org>,
 Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
 	Mark Brown <broonie@kernel.org>,
 	Mauro Carvalho Chehab <mchehab@kernel.org>
-Subject: [PATCH 1/2] docs: dt: submitting-patches: drop outdated points to TXT format
-Date: Mon,  8 Jan 2024 09:37:49 +0100
-Message-Id: <20240108083750.16350-1-krzysztof.kozlowski@linaro.org>
+Subject: [PATCH 2/2] docs: dt: submitting-patches: add commit subject prefix in reversed format
+Date: Mon,  8 Jan 2024 09:37:50 +0100
+Message-Id: <20240108083750.16350-2-krzysztof.kozlowski@linaro.org>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240108083750.16350-1-krzysztof.kozlowski@linaro.org>
+References: <20240108083750.16350-1-krzysztof.kozlowski@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -77,58 +80,33 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-New bindings in TXT format are not accepted and DT schema format expects
-all compatibles to be explicitly defined, thus guidance about "wildcard
-<chip>" is not correct anymore.  Drop that paragraph and update one more
-place which still mentions TXT files.
-
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-
----
+ASoC, media, regulators and SPI subsystems prefer commits starting with
+subsystem name (e.g. "spi: dt-bindings:"), so document this to avoid
+confusing contributors.
 
 Cc: Mark Brown <broonie@kernel.org>
 Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
- .../devicetree/bindings/submitting-patches.rst | 18 ++++--------------
- 1 file changed, 4 insertions(+), 14 deletions(-)
+ Documentation/devicetree/bindings/submitting-patches.rst | 5 +++++
+ 1 file changed, 5 insertions(+)
 
 diff --git a/Documentation/devicetree/bindings/submitting-patches.rst b/Documentation/devicetree/bindings/submitting-patches.rst
-index 36a17b250ccc..b460ebffee42 100644
+index b460ebffee42..a64f21a5f299 100644
 --- a/Documentation/devicetree/bindings/submitting-patches.rst
 +++ b/Documentation/devicetree/bindings/submitting-patches.rst
-@@ -42,28 +42,18 @@ I. For patch submitters
-      the code implementing the binding.
+@@ -15,6 +15,11 @@ I. For patch submitters
  
-   6) Any compatible strings used in a chip or board DTS file must be
--     previously documented in the corresponding DT binding text file
-+     previously documented in the corresponding DT binding file
-      in Documentation/devicetree/bindings.  This rule applies even if
-      the Linux device driver does not yet match on the compatible
-      string.  [ checkpatch will emit warnings if this step is not
-      followed as of commit bff5da4335256513497cc8c79f9a9d1665e09864
-      ("checkpatch: add DT compatible string documentation checks"). ]
+        "dt-bindings: <binding dir>: ..."
  
--  7) The wildcard "<chip>" may be used in compatible strings, as in
--     the following example:
--
--         - compatible: Must contain '"nvidia,<chip>-pcie",
--           "nvidia,tegra20-pcie"' where <chip> is tegra30, tegra132, ...
--
--     As in the above example, the known values of "<chip>" should be
--     documented if it is used.
--
--  8) If a documented compatible string is not yet matched by the
-+  7) If a documented compatible string is not yet matched by the
-      driver, the documentation should also include a compatible
--     string that is matched by the driver (as in the "nvidia,tegra20-pcie"
--     example above).
-+     string that is matched by the driver.
- 
--  9) Bindings are actively used by multiple projects other than the Linux
-+  8) Bindings are actively used by multiple projects other than the Linux
-      Kernel, extra care and consideration may need to be taken when making changes
-      to existing bindings.
- 
++     Few subsystems, like ASoC, media, regulators and SPI, expect reverse order
++     of the prefixes::
++
++       "<binding dir>: dt-bindings: ..."
++
+      The 80 characters of the subject are precious. It is recommended to not
+      use "Documentation" or "doc" because that is implied. All bindings are
+      docs. Repeating "binding" again should also be avoided.
 -- 
 2.34.1
 
