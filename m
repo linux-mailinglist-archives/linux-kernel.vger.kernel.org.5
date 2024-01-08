@@ -1,110 +1,126 @@
-Return-Path: <linux-kernel+bounces-19901-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19895-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C891D82766E
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 18:40:32 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 977D482765B
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 18:31:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 62B5F1F222DA
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 17:40:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 346AE1F232CD
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 17:31:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D25C55577B;
-	Mon,  8 Jan 2024 17:34:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C3D654735;
+	Mon,  8 Jan 2024 17:31:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ispras.ru header.i=@ispras.ru header.b="m5ajLXJk"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="un01cIWs"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail.ispras.ru (mail.ispras.ru [83.149.199.84])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD5A15576A;
-	Mon,  8 Jan 2024 17:34:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ispras.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ispras.ru
-Received: from [192.168.1.54] (unknown [85.30.205.207])
-	by mail.ispras.ru (Postfix) with ESMTPSA id 286DF40F1DEB;
-	Mon,  8 Jan 2024 17:34:35 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.ispras.ru 286DF40F1DEB
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ispras.ru;
-	s=default; t=1704735275;
-	bh=hRWuIE+2qFwu/n+vsFXIu1/VBVgfBej0lvtPdg99qfs=;
-	h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-	b=m5ajLXJk2I7FoFz07Q7nQtLAg9Q/ozw+ilu15EXO/B2u6a8Pr8ygdcZ5hyJeu/Il8
-	 +GWMZW/ucsbpsxOb6kDBQXZRXWoS10dJhiYGJYJtip0UR/DfC/pBJZr8BVoith1o1z
-	 yKuvp1wmHWlp6JppHO5aNHTahmvECuquP8M3yc9c=
-Subject: Re: [PATCH] iphase: Adding a null pointer check
-To: Andrey Shumilin <shum.sdl@nppct.ru>, 3chas3@gmail.com
-Cc: linux-atm-general@lists.sourceforge.net, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, lvc-project@linuxtesting.org
-References: <20231107123600.14529-1-shum.sdl@nppct.ru>
-From: Alexey Khoroshilov <khoroshilov@ispras.ru>
-Message-ID: <d8884b3c-bef4-7042-934b-0bcdb4347b97@ispras.ru>
-Date: Mon, 8 Jan 2024 20:28:31 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90C385466F;
+	Mon,  8 Jan 2024 17:31:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB9E7C433C8;
+	Mon,  8 Jan 2024 17:31:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704735083;
+	bh=TpcI3dIuWNjlKbiZdSsWqC4HAoWP9zhHwULpZ+JjExE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=un01cIWsY2l7ec12fbUWfb1qr8tZmvTjPeOHQAZJDN7e8roSZWeXC8LHNqMgPmpt/
+	 OSJq5FkZWjL4xVuyHSbSu7PnsXNvasjfv2Fewr2IM4Kn9JwVTcO+e8Atyi9TiwW0TE
+	 2xCNujZTg4R/G6UpksnYomw7qHgAQ+vTmtoLzh4k+sBUjltbXgHCuwUabRygiYJh63
+	 ZgkmEgfsZIbiXJaHkMiwJxqdY1kSPBHIcaKcQb5VU33KHe7SQSHhGtUqHxXc9VX8dI
+	 V4xdKwwTFgLcd5t635lQSRPyblLOgmp1KqPriyffLCc/wFGfI/YcwXKFK+C8BhEkxH
+	 BRzEyAvcqb7XQ==
+Date: Mon, 8 Jan 2024 17:31:17 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Emil Renner Berthing <emil.renner.berthing@canonical.com>
+Cc: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
+	William Qiu <william.qiu@starfivetech.com>,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-riscv@lists.infradead.org, linux-pwm@vger.kernel.org,
+	Emil Renner Berthing <kernel@esmil.dk>,
+	Rob Herring <robh+dt@kernel.org>,
+	Thierry Reding <thierry.reding@gmail.com>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Hal Feng <hal.feng@starfivetech.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>
+Subject: Re: [PATCH v10 3/4] riscv: dts: starfive: jh7100: Add PWM node and
+ pins configuration
+Message-ID: <20240108-hubcap-stubble-ecf6ea34afb9@spud>
+References: <20231222094548.54103-1-william.qiu@starfivetech.com>
+ <20231222094548.54103-4-william.qiu@starfivetech.com>
+ <CAJM55Z9tyrR7emEBrY0+Fnc_LUFQHkqYHLQ4ptL=XQMy52qtVw@mail.gmail.com>
+ <xd2ryic6mr6d6cbljjbhmr56mfpchfzkmc3lnznhmoiwyzip2a@6bhbho267e7c>
+ <CAJM55Z9DgFCwXjQGhe+urnOg-AkJMbQUR+biXKONQsRcup1GXw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20231107123600.14529-1-shum.sdl@nppct.ru>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-
-Proposal for subject:
-
-atm: iphase: Move check for NULL before derefence in get_desc()
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="uwSZRLPC3LWeYwWV"
+Content-Disposition: inline
+In-Reply-To: <CAJM55Z9DgFCwXjQGhe+urnOg-AkJMbQUR+biXKONQsRcup1GXw@mail.gmail.com>
 
 
-On 07.11.2023 15:36, Andrey Shumilin wrote:
-> The pointer <dev->desc_tbl[i].iavcc> is dereferenced on line 195.
-> Further in the code, it is checked for null on line 204.
-> It is proposed to add a check before dereferencing the pointer.
+--uwSZRLPC3LWeYwWV
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Line numbers in commit messages are not welcome since they are subject
-for change and a reader of the message likely has other code at that
-lines in his version of the file.
+On Fri, Jan 05, 2024 at 05:18:45AM -0800, Emil Renner Berthing wrote:
+> Uwe Kleine-K=F6nig wrote:
+> > Hello Emil,
+> >
+> > On Sun, Dec 24, 2023 at 02:49:34AM -0800, Emil Renner Berthing wrote:
+> > > William Qiu wrote:
+> > > > Add OpenCores PWM controller node and add PWM pins configuration
+> > > > on VisionFive 1 board.
+> > > >
+> > > > Signed-off-by: William Qiu <william.qiu@starfivetech.com>
+> > >
+> > > Sorry, I thought I already sent my review. This looks good.
+> > >
+> > > Reviewed-by: Emil Renner Berthing <emil.renner.berthing@canonical.com>
+> >
+> > Is this also an implicit Ack to take this patch via the pwm tree once
+> > the earlier patches are ready? Or do you want to take it via your tree?
+> > (Maybe already now together with the binding? If so, you can assume my
+> > Reviewed-by to be an implicit Ack for that.)
+>=20
+> Yes, sorry. This is also meant to be an Ack from me.
+>=20
+> I imagined the dt patches would go through Conor's riscv-dt-for-next bran=
+ch,
+> but the pwm tree is certainly also fine by.
 
-> 
-> Found by Linux Verification Center (linuxtesting.org) with SVACE.
-> 
-> Signed-off-by: Andrey Shumilin <shum.sdl@nppct.ru>
-> ---
->  drivers/atm/iphase.c | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
-> diff --git a/drivers/atm/iphase.c b/drivers/atm/iphase.c
-> index 324148686953..596422fbfacc 100644
-> --- a/drivers/atm/iphase.c
-> +++ b/drivers/atm/iphase.c
-> @@ -192,6 +192,11 @@ static u16 get_desc (IADEV *dev, struct ia_vcc *iavcc) {
->             i++;
->             continue;
->          }
-> +       if (!(iavcc_r = dev->desc_tbl[i].iavcc)) {
-> +	   printk("Fatal err, desc table vcc or skb is NULL\n");
-> +	   i++;
-> +	   continue;
-> +	}
+idk, I prefer things to go as MAINTAINERS indicates, in case something
+is determined to be wrong in the cycle where the patch is in the "wrong"
+tree.
 
-Error message should be fixed, skb is not check for NULL here.
+I suppose I could take the binding though, since I am CCed on every
+binding patch under the sun... I'd rather an explicit ack in that case
+though.
 
->          ltimeout = dev->desc_tbl[i].iavcc->ltimeout; 
->          delta = jiffies - dev->desc_tbl[i].timestamp;
->          if (delta >= ltimeout) {
-> 
+Cheers,
+Conor.
 
+--uwSZRLPC3LWeYwWV
+Content-Type: application/pgp-signature; name="signature.asc"
 
->           if (!dev->desc_tbl[i].txskb || !(iavcc_r =
-dev->desc_tbl[i].iavcc))
->              printk("Fatal err, desc table vcc or skb is NULL\n");
+-----BEGIN PGP SIGNATURE-----
 
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZZwxZQAKCRB4tDGHoIJi
+0nUqAP9yJe3WrgYMWXpHjBz60+ar3t/qeJkOfk0Jf5wV3nSGKQEA/+BcCFymlJ3W
+7iVCVwtlZAqIdUtOXuLEG5keZjo0kwI=
+=7uiV
+-----END PGP SIGNATURE-----
 
-The existing check should be fixed to check for skb only.
-
---
-Alexey
+--uwSZRLPC3LWeYwWV--
 
