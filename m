@@ -1,78 +1,52 @@
-Return-Path: <linux-kernel+bounces-19384-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19385-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 850E9826C30
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 12:09:06 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E9350826C32
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 12:09:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7CF531C22230
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 11:09:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7F59D282F37
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 11:09:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1075D28E1E;
-	Mon,  8 Jan 2024 11:08:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EBD014288;
+	Mon,  8 Jan 2024 11:08:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mVE7S4Y/"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LkLnXY8u"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6E292575B;
-	Mon,  8 Jan 2024 11:08:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-40e4582ed74so10018025e9.1;
-        Mon, 08 Jan 2024 03:08:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704712090; x=1705316890; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=47u96KtdzEvbIpKBaQmivqY/mxW7t8J2PKKE9/Wcn3U=;
-        b=mVE7S4Y/3pFCsUzFSvdf4XgZz6CUGkQaoudC5XTRfT0McHt/Fs2dXWQQ93S9SASvhG
-         xxXN9AdRMv7f6/JkGgncLnbS0w0kM/HbqcRzkBFS4JMNvXOQRU975V+E52yGVB0duAXd
-         hkMVm3dNf10EUBDFdnavZzpS/FUYINS2XxbNYNcIxTHeKLfgS7dKUqAPjG4bYVT7lO3p
-         PH/0asJiK7ZHUDl5vECwfDQRFnWEIFEaEhAXINNNpWMOK7g15QcL9XBMvFiRpdrER0f1
-         SOctbG7Uef0RF5ispRcKCXCHREN89IXfDYAm6nfJOi2fCwf6v03fNeozxCCs7baZudJ3
-         GJdA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704712090; x=1705316890;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=47u96KtdzEvbIpKBaQmivqY/mxW7t8J2PKKE9/Wcn3U=;
-        b=bDQEh2rPjyET8m6jjz+bCNkupk3cE10lD3tfb1xTLQzpXkGOEkxorJc+2IAaze5ym2
-         fkvc2oC+Mccwhf43kCP9CqkzjyfrIpXXvYuFjiv8tIiIvlDZK2gTAEgMqFdm8KGpj9sQ
-         fJk7pmkX1fpK5GxfLMn3BrGdAm3eDt3lM45EhWMiShmY9lb88be1m6ZWYpxEcjvuF2ru
-         IEYUc2Bp+5cOGZJ4lBf+bX+XgOKPEkwnR1bZHKD778ZO+NihKTX+bqQ0H9LwtNMog4Ff
-         SnzzIEAUQLPRCbhAc2fczSf/GvEqYmvmW9k8wI5dKJUqNQyIKccDcU68TJKRUtwXQmkn
-         vHBA==
-X-Gm-Message-State: AOJu0YwtMMZSlwkZnhLoNNJLzBEqgaGWXcDay0fV/asMbmssblISLrts
-	Ol/9+YVho2LIrlUYL23DbjCY1Yk2Azg=
-X-Google-Smtp-Source: AGHT+IGljMzclHKVfoI+sXkPb2zICLcFM1DoUK59Ef+y09I+psVm/Oh8UmBC8uDStHQXnZLH0LCwnQ==
-X-Received: by 2002:a05:600c:358d:b0:40e:3d34:3e77 with SMTP id p13-20020a05600c358d00b0040e3d343e77mr972856wmq.44.1704712089757;
-        Mon, 08 Jan 2024 03:08:09 -0800 (PST)
-Received: from gmail.com (1F2EF3FE.nat.pool.telekom.hu. [31.46.243.254])
-        by smtp.gmail.com with ESMTPSA id c12-20020a05600c0a4c00b0040c11fbe581sm10556031wmq.27.2024.01.08.03.08.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Jan 2024 03:08:09 -0800 (PST)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date: Mon, 8 Jan 2024 12:08:07 +0100
-From: Ingo Molnar <mingo@kernel.org>
-To: Borislav Petkov <bp@alien8.de>
-Cc: linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
-	Jun'ichi Nomura <junichi.nomura@nec.com>,
-	Derek Barbosa <debarbos@redhat.com>,
-	Kees Cook <keescook@chromium.org>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Andy Lutomirski <luto@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-	Peter Zijlstra <peterz@infradead.org>, x86@kernel.org
-Subject: Re: [tip: x86/boot] x86/boot: Ignore NMIs during very early boot
-Message-ID: <ZZvXlyW8Khmr805c@gmail.com>
-References: <170133478498.398.5261666675868615202.tip-bot2@tip-bot2>
- <20231130103339.GCZWhlA196uRklTMNF@fat_crate.local>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD8C11426D;
+	Mon,  8 Jan 2024 11:08:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA26BC433C7;
+	Mon,  8 Jan 2024 11:08:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704712129;
+	bh=wEJjNDaehk6eNSabXV7AmGugSgejPKqecFRSyFZ8RZc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=LkLnXY8u4eI9km5fTHwImF1ktVgLyZ6u2QGrP7Hk+OgzoGS2vG8mnJyRaxXn+91iH
+	 nwC+Dl+c79JuUYMhoX+SsMBWnmT1P9qwWOpSWnHSGJ9ltXJKc6VANm/u95gJgCavAX
+	 dkLmyBLZe+XuRwRJeeCgDzytrVvnp42JLFZ1Zi3vWxteEcdk1pzIFAFB/hQE1nKd4X
+	 j6QH4T4Q3dBf8wKpKhZz8grpjjpFlwEN98upscb41xbxcyTClGu+OiB5+I2rPhKtib
+	 LzdaDjZ26pI6G0rXjjk9UytWHG+rJFOfoWF+c2AFz3n5qhuX0Lih89cMxiUUiqSlub
+	 gSKOzV9j51BIQ==
+Date: Mon, 8 Jan 2024 11:08:44 +0000
+From: Simon Horman <horms@kernel.org>
+To: Dimitri Fedrau <dima.fedrau@gmail.com>
+Cc: Andrew Lunn <andrew@lunn.ch>, Heiner Kallweit <hkallweit1@gmail.com>,
+	Russell King <linux@armlinux.org.uk>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Stefan Eichenberger <eichest@gmail.com>, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 net-next 5/5] net: phy: marvell-88q2xxx: add driver
+ for the Marvell 88Q2220 PHY
+Message-ID: <20240108110844.GH132648@kernel.org>
+References: <20240108093702.13476-1-dima.fedrau@gmail.com>
+ <20240108093702.13476-6-dima.fedrau@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -81,29 +55,67 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231130103339.GCZWhlA196uRklTMNF@fat_crate.local>
+In-Reply-To: <20240108093702.13476-6-dima.fedrau@gmail.com>
 
+On Mon, Jan 08, 2024 at 10:37:00AM +0100, Dimitri Fedrau wrote:
+> Add a driver for the Marvell 88Q2220. This driver allows to detect the
+> link, switch between 100BASE-T1 and 1000BASE-T1 and switch between
+> master and slave mode. Autonegoation is supported.
 
-* Borislav Petkov <bp@alien8.de> wrote:
+nit: Autonegotiation
 
-> On Thu, Nov 30, 2023 at 08:59:44AM -0000, tip-bot2 for Jun'ichi Nomura wrote:
-> > +void do_boot_nmi_trap(struct pt_regs *regs, unsigned long error_code)
-> > +{
-> > +	/* Empty handler to ignore NMI during early boot */
+> Signed-off-by: Dimitri Fedrau <dima.fedrau@gmail.com>
+> ---
+>  drivers/net/phy/marvell-88q2xxx.c | 206 +++++++++++++++++++++++++++++-
+>  include/linux/marvell_phy.h       |   1 +
+>  2 files changed, 201 insertions(+), 6 deletions(-)
 > 
-> It might be good to issue something here to say that a spurious NMI got
-> ignored.
-> 
-> Something ala
-> 
-> 	error_putstr("Spurious early NMI ignored.\n");
-> 
-> so that we at least say that we ignored an NMI and not have it disappear
-> unnoticed.
+> diff --git a/drivers/net/phy/marvell-88q2xxx.c b/drivers/net/phy/marvell-88q2xxx.c
 
-That makes sense. Jun'ichi-san, could you please send a patch for this?
+...
 
-Thanks,
+> @@ -29,6 +36,42 @@
+>  
+>  #define MDIO_MMD_PCS_MV_RX_STAT			33328
+>  
+> +struct mmd_val {
+> +	int devad;
+> +	u32 regnum;
+> +	u16 val;
+> +};
+> +
+> +const struct mmd_val mv88q222x_revb0_init_seq0[] = {
+> +	{ MDIO_MMD_PCS, 0x8033, 0x6801 },
+> +	{ MDIO_MMD_AN, MDIO_AN_T1_CTRL, 0x0 },
+> +	{ MDIO_MMD_PMAPMD, MDIO_CTRL1,
+> +	  MDIO_CTRL1_LPOWER | MDIO_PMA_CTRL1_SPEED1000 },
+> +	{ MDIO_MMD_PCS, 0xfe1b, 0x48 },
+> +	{ MDIO_MMD_PCS, 0xffe4, 0x6b6 },
+> +	{ MDIO_MMD_PMAPMD, MDIO_CTRL1, 0x0 },
+> +	{ MDIO_MMD_PCS, MDIO_CTRL1, 0x0 },
+> +};
+> +
+> +const struct mmd_val mv88q222x_revb0_init_seq1[] = {
+> +	{ MDIO_MMD_PCS, 0xfe79, 0x0 },
+> +	{ MDIO_MMD_PCS, 0xfe07, 0x125a },
+> +	{ MDIO_MMD_PCS, 0xfe09, 0x1288 },
+> +	{ MDIO_MMD_PCS, 0xfe08, 0x2588 },
+> +	{ MDIO_MMD_PCS, 0xfe11, 0x1105 },
+> +	{ MDIO_MMD_PCS, 0xfe72, 0x042c },
+> +	{ MDIO_MMD_PCS, 0xfbba, 0xcb2 },
+> +	{ MDIO_MMD_PCS, 0xfbbb, 0xc4a },
+> +	{ MDIO_MMD_AN, 0x8032, 0x2020 },
+> +	{ MDIO_MMD_AN, 0x8031, 0xa28 },
+> +	{ MDIO_MMD_AN, 0x8031, 0xc28 },
+> +	{ MDIO_MMD_PCS, 0xffdb, 0xfc10 },
+> +	{ MDIO_MMD_PCS, 0xfe1b, 0x58 },
+> +	{ MDIO_MMD_PCS, 0xfe79, 0x4 },
+> +	{ MDIO_MMD_PCS, 0xfe5f, 0xe8 },
+> +	{ MDIO_MMD_PCS, 0xfe05, 0x755c },
+> +};
 
-	Ingo
+nit: mv88q222x_revb0_init_seq0 and mv88q222x_revb0_init_seq1 seem
+    to only be used in this file. Perhaps they should be static.
+
+...
 
