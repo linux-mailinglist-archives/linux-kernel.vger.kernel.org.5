@@ -1,154 +1,203 @@
-Return-Path: <linux-kernel+bounces-19914-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19915-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C177882769A
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 18:53:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4EA0682769E
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 18:54:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F38512846E1
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 17:53:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C53AF2847A4
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Jan 2024 17:54:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71B7A55C2D;
-	Mon,  8 Jan 2024 17:45:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0063B54F87;
+	Mon,  8 Jan 2024 17:47:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TGC+SAEU"
+	dkim=pass (2048-bit key) header.d=networkplumber-org.20230601.gappssmtp.com header.i=@networkplumber-org.20230601.gappssmtp.com header.b="QwhRj2Ft"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CD0555C02;
-	Mon,  8 Jan 2024 17:45:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1d3e84fded7so7723015ad.1;
-        Mon, 08 Jan 2024 09:45:32 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B176E54BF9
+	for <linux-kernel@vger.kernel.org>; Mon,  8 Jan 2024 17:47:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=networkplumber.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=networkplumber.org
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1d3f29fea66so6844875ad.3
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 09:47:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704735932; x=1705340732; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=+fnFo2qN+5N3CH8AeJVVQXPbhYY1VYUCGrkTW1+0CJY=;
-        b=TGC+SAEUrnpQGEsTPozidqBIFoQoQ4Vz4kJQHVsRr9hIZXm+szMq5c3e9py4mwunlI
-         dnzPA32ENWPK5EIccoeiY4NDedrrIfm6fifpmw8MM/7STRvtEAFhE8VzvJfDbQDDMYrK
-         IRXi+xtwLuBal1PKBdAdbJad+gf7zMeOMdz/CBJ7DnAMx3pTWG7ctOoVZpvn3bZcxxvZ
-         bdGQIxgBRDB8S/wizLWZfx/A8hd7+g+V05JlSmI3aF5wzvCxm4MPUkj13wEoagCRmYT3
-         ayk4GeCZPA2/hRja2KWm//RAGvkMIY6XgJ3esLaRD5JwzAofDTU1ugdgL7Veowr5b9hS
-         CS1g==
+        d=networkplumber-org.20230601.gappssmtp.com; s=20230601; t=1704736032; x=1705340832; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:subject:cc:to
+         :from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=1iaOEh5y9aboYMTed+aamtV3KcDRPhqHF35NpDISIS0=;
+        b=QwhRj2FtTyioiB1KEXatn+TvdZa5OdnVSgILC/GV6O6ieHulE4efs4QdP4WlSquEo1
+         T8sM33G45ft5l90pIIJZu7u+ItJAsS2qQwe0BhvqyPK5EeOYFZO44PHMZCgziSwCPjT4
+         gfvyvrohLX9JOnlQYfRU5dxXHO1JdLfx+cFvFCX64M/rqtckXPv2QpQzZ10/YFCzMwUB
+         XhZS44pby0dLe5ZG+m1R8z+ISn8ut8WYiTvO3XdHnnElYCbd3AsfGqsaSGxCY+gB2N06
+         a9yNGPJFjI8Xvh3ScckoimvfmEcBKBr71NNyyEJPHsGf0+rpq7lIrT7joy1fdbWx+y6b
+         JTCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704735932; x=1705340732;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+fnFo2qN+5N3CH8AeJVVQXPbhYY1VYUCGrkTW1+0CJY=;
-        b=b4indeII1iw/nSnCgLGLsBPHagtTmS9UlVkhtgPNNUwh5v3yAP5HprG1Z20Zo5yni4
-         Q/9guW1Sm9nHKIRo388lQ6+G3L38adVBr6DlaAUMtCujMf5jd1FOhIHKw2WL0Mtr/bmG
-         CGRDQ7982zS5qj1OcOaaTM9gvzQQtHWxmTR5fYANTT/i6oaxyE9Xp3+k9zmCcfsOHy+c
-         KjHpj1TuK2Ak4BBLSVSwgkcoZ8HZb63HV3vDCBuUqiVyoq5JsP4oxtwtVOAu8+hpLY6K
-         XKeirgWOy1sTBphP6EZD7LURYoZ/l3xsMoX31c9hBdkOvBTqvw/PWqoHcO2HFCFBq/ps
-         ywSQ==
-X-Gm-Message-State: AOJu0YxE/l/5KVL4cz2NAH6Y1sdX5gmUtnXwCNXsxU5mEktjXNv0yPKT
-	CDyWX/iZslIiM7zUwEAToxc=
-X-Google-Smtp-Source: AGHT+IEIdJM9jpfa3YiU9CGymjMNZiakByYFZyndLpbw0yHpCpOH8AJkZoPc48IlAjYuuFTm0gMyxQ==
-X-Received: by 2002:a17:902:ac90:b0:1d4:752d:2f0e with SMTP id h16-20020a170902ac9000b001d4752d2f0emr1725219plr.79.1704735931543;
-        Mon, 08 Jan 2024 09:45:31 -0800 (PST)
-Received: from google.com ([2620:15c:9d:2:7a4a:2478:1813:e8c2])
-        by smtp.gmail.com with ESMTPSA id q1-20020a170902bd8100b001d06b63bb98sm176997pls.71.2024.01.08.09.45.30
+        d=1e100.net; s=20230601; t=1704736032; x=1705340832;
+        h=content-transfer-encoding:mime-version:message-id:subject:cc:to
+         :from:date:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=1iaOEh5y9aboYMTed+aamtV3KcDRPhqHF35NpDISIS0=;
+        b=HT++TXvQvlPsLyb6RuY475N7OHs89FQtNpWVXC+mHI66TgqtBAxGz8WKJ2WOH3t3MJ
+         oAwe4oQOtzDrJvImFIMmlLAVJMLqI/1Zdq5hYtLXIbm3H53GND+HmMp3+1rZVUoWAW/V
+         z/bkXatd4PiVPIV2CQyw4+9WKa1JHqqHbfb/3GHSg8NTg5GXC3MXSgZAN2o6hnD9Lq1n
+         JEY1Z4JfLogjiDAi/JKaY75Er60trWI8yimfreDESV8Fs+NZCIFixkAlpebyTGz/V6x4
+         SdXC4bWPWq0EB464NGE7HqhSERF7knOJy57ZjtDCsIpN9MsaSFnDYNYHPGjsNM6x+XGm
+         39jQ==
+X-Gm-Message-State: AOJu0YxC0DofNTxhGVHj5Zva1MTdUH+v/2pEdO/ofwH0MmS9bsYuSfcV
+	xxHfKcz5PYIoUy9XVM1eoT28k7W+1jvLny9MCTMJcmZPqCY=
+X-Google-Smtp-Source: AGHT+IG61JCOZrmpJ1uodRk8qF6BcpsWMuZHiBcuhs9pOCsji5mzvHM2db38ZsAl9rOPEC6IUcRT9w==
+X-Received: by 2002:a17:903:454:b0:1d4:3314:d3cb with SMTP id iw20-20020a170903045400b001d43314d3cbmr1367221plb.119.1704736031963;
+        Mon, 08 Jan 2024 09:47:11 -0800 (PST)
+Received: from hermes.local (204-195-123-141.wavecable.com. [204.195.123.141])
+        by smtp.gmail.com with ESMTPSA id ay8-20020a1709028b8800b001d49f61cb64sm161008plb.262.2024.01.08.09.47.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Jan 2024 09:45:31 -0800 (PST)
-Date: Mon, 8 Jan 2024 09:45:28 -0800
-From: 'Dmitry Torokhov' <dmitry.torokhov@gmail.com>
-To: David Laight <David.Laight@aculab.com>
-Cc: Arnd Bergmann <arnd@arndb.de>,
-	"linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH] asm-generic: make sparse happy with odd-sized
- put_unaligned_*()
-Message-ID: <ZZw0uFeUAUnosaK-@google.com>
-References: <ZZuTTRCUFqWzA1y-@google.com>
- <12d88da48f6947ab86a845e8d02319ff@AcuMS.aculab.com>
+        Mon, 08 Jan 2024 09:47:11 -0800 (PST)
+Date: Mon, 8 Jan 2024 09:47:09 -0800
+From: Stephen Hemminger <stephen@networkplumber.org>
+To: netdev@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Subject: [ANNOUNCE] iproute2 6.7.0 release
+Message-ID: <20240108094709.050e22bc@hermes.local>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <12d88da48f6947ab86a845e8d02319ff@AcuMS.aculab.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Mon, Jan 08, 2024 at 11:03:22AM +0000, David Laight wrote:
-> From: Dmitry Torokhov
-> > Sent: 08 January 2024 06:17
-> > 
-> > __put_unaligned_be24() and friends use implicit casts to convert
-> > larger-sized data to bytes, which trips sparse truncation warnings when
-> > the argument is a constant:
-> > 
-> >   CC [M]  drivers/input/touchscreen/hynitron_cstxxx.o
-> >   CHECK   drivers/input/touchscreen/hynitron_cstxxx.c
-> > drivers/input/touchscreen/hynitron_cstxxx.c: note: in included file (through
-> > arch/x86/include/generated/asm/unaligned.h):
-> > ./include/asm-generic/unaligned.h:119:16: warning: cast truncates bits from constant value (aa01a0
-> > becomes a0)
-> > ./include/asm-generic/unaligned.h:120:20: warning: cast truncates bits from constant value (aa01
-> > becomes 1)
-> > ./include/asm-generic/unaligned.h:119:16: warning: cast truncates bits from constant value (ab00d0
-> > becomes d0)
-> > ./include/asm-generic/unaligned.h:120:20: warning: cast truncates bits from constant value (ab00
-> > becomes 0)
-> > 
-> > To avoid this let's mask off upper bits explicitly, the resulting code
-> > should be exactly the same, but it will keep sparse happy.
-> 
-> Maybe someone should fix sparse?
+Update release of iproute2 corresponding to the 6.7 kernel.
+Most of the changes in this release are in bridge and rdma tools.
 
-I proposed doing this in
-https://lore.kernel.org/oe-kbuild-all/ZZnzd3s2L-ZwGOlz@google.com/ but
-the idea was not welcome.
+Download:
+    https://www.kernel.org/pub/linux/utils/net/iproute2/iproute2-6.7.0.tar.gz
 
-> I have seen a compiler generate two explicit masks with 0xff
-> followed by a byte write for:
-> 	*p = (char)(x & 0xff);
-> but I expect modern gcc is ok.
-> 
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
-> > Closes: https://lore.kernel.org/oe-kbuild-all/202401070147.gqwVulOn-lkp@intel.com/
-> > Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-> > ---
-> >  include/asm-generic/unaligned.h | 24 ++++++++++++------------
-> >  1 file changed, 12 insertions(+), 12 deletions(-)
-> > 
-> > diff --git a/include/asm-generic/unaligned.h b/include/asm-generic/unaligned.h
-> > index 699650f81970..a84c64e5f11e 100644
-> > --- a/include/asm-generic/unaligned.h
-> > +++ b/include/asm-generic/unaligned.h
-> > @@ -104,9 +104,9 @@ static inline u32 get_unaligned_le24(const void *p)
-> > 
-> >  static inline void __put_unaligned_be24(const u32 val, u8 *p)
-> >  {
-> > -	*p++ = val >> 16;
-> > -	*p++ = val >> 8;
-> > -	*p++ = val;
-> > +	*p++ = (val >> 16) & 0xff;
-> > +	*p++ = (val >> 8) & 0xff;
-> > +	*p++ = val & 0xff;
-> >  }
-> 
-> What happens if you implement the as (eg):
-> 	*p = val >> 16;
-> 	put_unaligned_be16(p + 1, val);
-> I think that should generate better code.
-> And it may stop sparse bleating.
+Repository for current release
+    https://github.com/shemminger/iproute2.git
+    git://git.kernel.org/pub/scm/network/iproute2/iproute2.git
 
-This is rarely in a hot path (typically you do this with a "slow"
-device), and while being faster it looks more complex. But if that's
-what people prefer...
+And future release (net-next):
+    git://git.kernel.org/pub/scm/network/iproute2/iproute2-next.git
 
-Thanks.
+Contributions:
 
--- 
-Dmitry
+Allen Hubbe (1):
+      vdpa: consume device_features parameter
+
+Amit Cohen (8):
+      bridge: fdb: rename some variables to contain 'brport'
+      bridge: fdb: support match on source VNI in flush command
+      bridge: fdb: support match on nexthop ID in flush command
+      bridge: fdb: support match on destination VNI in flush command
+      bridge: fdb: support match on destination port in flush command
+      bridge: fdb: support match on destination IP in flush command
+      bridge: fdb: support match on [no]router flag in flush command
+      man: bridge: add a note about using 'master' and 'self' with flush
+
+Andrea Claudi (3):
+      configure: add the --color option
+      treewide: use configured value as the default color output
+      Makefile: use /usr/share/iproute2 for config files
+
+Benjamin Poirier (18):
+      bridge: vni: Accept 'del' command
+      bridge: vni: Remove dead code in group argument parsing
+      bridge: vni: Fix duplicate group and remote error messages
+      bridge: vni: Report duplicate vni argument using duparg()
+      bridge: vni: Fix vni filter help strings
+      bridge: vlan: Use printf() to avoid temporary buffer
+      bridge: vlan: Remove paranoid check
+      bridge: vni: Remove print_vnifilter_rtm_filter()
+      bridge: vni: Move open_json_object() within print_vni()
+      bridge: vni: Guard close_vni_port() call
+      bridge: vni: Reverse the logic in print_vnifilter_rtm()
+      bridge: vni: Remove stray newlines after each interface
+      bridge: vni: Replace open-coded instance of print_nl()
+      bridge: vni: Remove unused argument in open_vni_port()
+      bridge: vni: Align output columns
+      bridge: vni: Indent statistics with 2 spaces
+      bridge: Deduplicate print_range()
+      bridge: Provide rta_type()
+
+David Ahern (2):
+      Update kernel headers
+      Update kernel headers
+
+Dima Chumak (2):
+      devlink: Support setting port function ipsec_crypto cap
+      devlink: Support setting port function ipsec_packet cap
+
+Eli Schwartz (1):
+      configure: avoid un-recommended command substitution form
+
+Ido Schimmel (1):
+      bridge: mdb: Add get support
+
+Jiri Pirko (1):
+      mnl_utils: sanitize incoming netlink payload size in callbacks
+
+Johannes Nixdorf (1):
+      iplink: bridge: Add support for bridge FDB learning limits
+
+Junxian Huang (1):
+      rdma: Update uapi headers
+
+Luca Boccassi (1):
+      Revert "Makefile: ensure CONF_USR_DIR honours the libdir config"
+
+Maks Mishin (1):
+      lnstat: Fix deref of null in print_json() function
+
+Max Kunzelmann (1):
+      libnetlink: validate nlmsg header length first
+
+Patrisious Haddad (3):
+      rdma: update uapi headers
+      rdma: Add an option to set privileged QKEY parameter
+      rdma: Adjust man page for rdma system set privileged-qkey command
+
+Phil Sutter (2):
+      man: ip-route.8: Fix typo in rt_protos location spec
+      man: Fix malformatted database file locations
+
+Quentin Deslandes (1):
+      ss: prevent "Process" column from being printed unless requested
+
+Shung-Hsi Yu (2):
+      libbpf: set kernel_log_level when available
+      bpf: increase verifier verbosity when in verbose mode
+
+Stephen Hemminger (18):
+      uapi: update headers from 6.7-rc1
+      ip: move get_failed blocks
+      man: fix man page errors
+      man: allow up to 100 character lines
+      iplink: spelling fix in error message
+      ip: require RTM_NEWLINK
+      uapi: update stddef.h
+      configure: drop test for ATM
+      ip-link: use shorter URL to kernel docs
+      rdma: use print_XXX instead of COLOR_NONE
+      ip: merge duplicate if clauses
+      rdma: shorten print_ lines
+      rdma: use standard flag for json
+      rdma: make pretty behave like other commands
+      rdma: make supress_errors a bit
+      rdma: add oneline flag
+      rdma: do not mix newline and json object
+      v6.7.0
+
+heminhong (2):
+      iproute2: prevent memory leak
+      iproute2: prevent memory leak on error return
+
+wenglianfa (2):
+      rdma: Add support to dump SRQ resource in raw format
+      rdma: Fix the error of accessing string variable outside the lifecycle
+
 
