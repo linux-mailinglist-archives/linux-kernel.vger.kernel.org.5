@@ -1,84 +1,165 @@
-Return-Path: <linux-kernel+bounces-21253-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21254-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40109828C8B
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 19:24:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3BC84828C8D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 19:24:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BF579B2249B
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 18:24:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BACC2B227F9
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 18:24:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79B583C484;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 814B83C487;
 	Tue,  9 Jan 2024 18:24:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FqfcIAoy"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UMOsYWHp"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B98443C461;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDDBC3C463;
 	Tue,  9 Jan 2024 18:24:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8EACC43390;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0DE7C433F1;
 	Tue,  9 Jan 2024 18:24:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1704824666;
-	bh=ORDcydzdI4WqaEgEC+N/AtgYAWYt9TwVHCyZQqFzwkk=;
+	bh=YH4M2iq+dsTemyb3X8718ozap7wGWcbUkBH3kDOUFvg=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=FqfcIAoytbaSHClCub3k0jxMaJaWgOI2FQwjtJxIXh7UOH/yf0c7CdjZhcio43w8y
-	 SesPyKyuELEZu5lUvXZklbsirfkcCwTXGK/7Em8UUraHtVQvdplLUU7GmEAEVk+uBr
-	 rndLi8n+vAFCO3qvf9msB4n87DUT/S8pZdlnlMkgb0BMmte9VDshXW++Na/DC4io8H
-	 /ABNg6zrJonmMswfLb92UHFPVuKY2qwTHcd/z7qcoN4x3G4N+ZAPRDQ+EW+Eym9qSE
-	 DpIcz+KvZzUWyOkdsSIT/C3/uOHcGfGa4Dfgof0hebZMpLpFnQUviGPidOmuPJqH0/
-	 b23KHxffuk75g==
-Received: (nullmailer pid 2900974 invoked by uid 1000);
-	Tue, 09 Jan 2024 18:24:20 -0000
-Date: Tue, 9 Jan 2024 12:24:20 -0600
-From: Rob Herring <robh@kernel.org>
-To: Frank Li <Frank.Li@nxp.com>
-Cc: krzysztof.kozlowski@linaro.org, bhelgaas@google.com, conor+dt@kernel.org, devicetree@vger.kernel.org, festevam@gmail.com, helgaas@kernel.org, hongxing.zhu@nxp.com, imx@lists.linux.dev, kernel@pengutronix.de, krzysztof.kozlowski+dt@linaro.org, kw@linux.com, l.stach@pengutronix.de, linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com, linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org, lpieralisi@kernel.org, manivannan.sadhasivam@linaro.org, s.hauer@pengutronix.de, shawnguo@kernel.org
-Subject: Re: [PATCH v8 04/16] dt-bindings: imx6q-pcie: Add linux,pci-domain
- as required for iMX8MQ
-Message-ID: <20240109182420.GA2896319-robh@kernel.org>
-References: <20240108232145.2116455-1-Frank.Li@nxp.com>
- <20240108232145.2116455-5-Frank.Li@nxp.com>
+	b=UMOsYWHpozaWSSGPj5W71OllGoVAA8fbDri9UCvDsttZDEheTgpxxudaF7LoSaY4D
+	 PzOOG9Pjxwj0RjvDqQfaGZB69mN2zpJ0O8UEICciPzk88MPINNdvsN8NgP6vSpb5cT
+	 qjTWz/FoE+/52wl7eU9dx+8VNLdPkwNNFjfv4YoTPJLoZsaFL8F/XyyKHv2j+rOa9a
+	 TtbiePv0NDaVr74xVlXDapYknDMkviHKnU+FYuZYBUzFmmOV3PdHQoh3+N4EHP5zoT
+	 XKCxzWBFbW+BlwBMp9JPKUnVzOHxf4iTaTPCnpvdKBfw+3nv/PS00kwlFWylZAlpRb
+	 8HdksWcecgyIw==
+Date: Tue, 9 Jan 2024 18:24:20 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Atish Patra <atishp@rivosinc.com>
+Cc: linux-kernel@vger.kernel.org, Palmer Dabbelt <palmer@rivosinc.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Alexandre Ghiti <alexghiti@rivosinc.com>,
+	Andrew Jones <ajones@ventanamicro.com>,
+	Anup Patel <anup@brainfault.org>,
+	Atish Patra <atishp@atishpatra.org>,
+	Conor Dooley <conor.dooley@microchip.com>,
+	Guo Ren <guoren@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
+	kvm-riscv@lists.infradead.org, kvm@vger.kernel.org,
+	linux-riscv@lists.infradead.org,
+	Mark Rutland <mark.rutland@arm.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Will Deacon <will@kernel.org>
+Subject: Re: [v2 03/10] drivers/perf: riscv: Read upper bits of a firmware
+ counter
+Message-ID: <20240109-saddlebag-daylight-306f7eab1c1f@spud>
+References: <20231229214950.4061381-1-atishp@rivosinc.com>
+ <20231229214950.4061381-4-atishp@rivosinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="hp43pEGkrkpwpLxJ"
+Content-Disposition: inline
+In-Reply-To: <20231229214950.4061381-4-atishp@rivosinc.com>
+
+
+--hp43pEGkrkpwpLxJ
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240108232145.2116455-5-Frank.Li@nxp.com>
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jan 08, 2024 at 06:21:33PM -0500, Frank Li wrote:
-> iMX8MQ have two pci controllers. Adds "linux,pci-domain" as required
-> property for iMX8MQ to indicate pci controller index.
-> 
-> This adjustment paves the way for eliminating the hardcoded check on the
-> base register for acquiring the controller_id.
-> 
-> 	...
-> 	if (dbi_base->start == IMX8MQ_PCIE2_BASE_ADDR)
-> 		imx6_pcie->controller_id = 1;
-> 	...
-> 
-> The controller_id is crucial and utilized for certain register bit
-> positions. It must align precisely with the controller index in the SoC.
-> An auto-incremented ID don't fit this case. The DTS or fuse configurations
-> may deactivate specific PCI controllers.
-> 
-> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+On Fri, Dec 29, 2023 at 01:49:43PM -0800, Atish Patra wrote:
+> SBI v2.0 introduced a explicit function to read the upper 32 bits
+> for any firmwar counter width that is longer than 32bits.
+> This is only applicable for RV32 where firmware counter can be
+> 64 bit.
+>=20
+> Acked-by: Palmer Dabbelt <palmer@rivosinc.com>
+> Signed-off-by: Atish Patra <atishp@rivosinc.com>
 > ---
-> 
-> Notes:
->     Keep current to avoid DTB_CHECK warning. After these patch merged. Will add
->     linux,pci-domain in all dts file. So dt-binding can remove condition check
->     by soc.
+>  drivers/perf/riscv_pmu_sbi.c | 20 ++++++++++++++++----
+>  1 file changed, 16 insertions(+), 4 deletions(-)
+>=20
+> diff --git a/drivers/perf/riscv_pmu_sbi.c b/drivers/perf/riscv_pmu_sbi.c
+> index 16acd4dcdb96..646604f8c0a5 100644
+> --- a/drivers/perf/riscv_pmu_sbi.c
+> +++ b/drivers/perf/riscv_pmu_sbi.c
+> @@ -35,6 +35,8 @@
+>  PMU_FORMAT_ATTR(event, "config:0-47");
+>  PMU_FORMAT_ATTR(firmware, "config:63");
+> =20
+> +static bool sbi_v2_available;
+> +
+>  static struct attribute *riscv_arch_formats_attr[] =3D {
+>  	&format_attr_event.attr,
+>  	&format_attr_firmware.attr,
+> @@ -488,16 +490,23 @@ static u64 pmu_sbi_ctr_read(struct perf_event *even=
+t)
+>  	struct hw_perf_event *hwc =3D &event->hw;
+>  	int idx =3D hwc->idx;
+>  	struct sbiret ret;
+> -	union sbi_pmu_ctr_info info;
+>  	u64 val =3D 0;
+> +	union sbi_pmu_ctr_info info =3D pmu_ctr_list[idx];
+> =20
+>  	if (pmu_sbi_is_fw_event(event)) {
+>  		ret =3D sbi_ecall(SBI_EXT_PMU, SBI_EXT_PMU_COUNTER_FW_READ,
+>  				hwc->idx, 0, 0, 0, 0, 0);
+> -		if (!ret.error)
+> -			val =3D ret.value;
+> +		if (ret.error)
+> +			return val;
 
-Please don't. No need to make required everywhere. Besides not needed, 
-it is an ABI break.
+A nit perhaps, but can you just make this return 0 please? I think it
+makes the code more obvious in its intent.
 
-Rob
+Otherwise I think you've satisfied the issues that I had with the
+previous iteration:
+Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+
+Cheers,
+Conor.
+
+> +
+> +		val =3D ret.value;
+> +		if (IS_ENABLED(CONFIG_32BIT) && sbi_v2_available && info.width >=3D 32=
+) {
+> +			ret =3D sbi_ecall(SBI_EXT_PMU, SBI_EXT_PMU_COUNTER_FW_READ_HI,
+> +					hwc->idx, 0, 0, 0, 0, 0);
+> +			if (!ret.error)
+> +				val |=3D ((u64)ret.value << 32);
+> +		}
+>  	} else {
+> -		info =3D pmu_ctr_list[idx];
+>  		val =3D riscv_pmu_ctr_read_csr(info.csr);
+>  		if (IS_ENABLED(CONFIG_32BIT))
+>  			val =3D ((u64)riscv_pmu_ctr_read_csr(info.csr + 0x80)) << 31 | val;
+> @@ -1108,6 +1117,9 @@ static int __init pmu_sbi_devinit(void)
+>  		return 0;
+>  	}
+> =20
+> +	if (sbi_spec_version >=3D sbi_mk_version(2, 0))
+> +		sbi_v2_available =3D true;
+> +
+>  	ret =3D cpuhp_setup_state_multi(CPUHP_AP_PERF_RISCV_STARTING,
+>  				      "perf/riscv/pmu:starting",
+>  				      pmu_sbi_starting_cpu, pmu_sbi_dying_cpu);
+> --=20
+> 2.34.1
+>=20
+
+--hp43pEGkrkpwpLxJ
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZZ2PVAAKCRB4tDGHoIJi
+0lgIAP4y9URWADEjBFdKYjZhtBZVo75g7Yg78LJJtKqUKfqYzwEA+GssPUjOp7ib
+coGIu9cWotZmHHa2TkJCe40qLfau4As=
+=uhMP
+-----END PGP SIGNATURE-----
+
+--hp43pEGkrkpwpLxJ--
 
