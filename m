@@ -1,232 +1,248 @@
-Return-Path: <linux-kernel+bounces-21187-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21190-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F14D828B7D
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 18:51:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0FF88828B84
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 18:52:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 367C71C2147D
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 17:51:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AF288282C88
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 17:52:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A37503BB3E;
-	Tue,  9 Jan 2024 17:51:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="eH5yz393"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 875F43BB26;
+	Tue,  9 Jan 2024 17:51:30 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69AD53B795;
-	Tue,  9 Jan 2024 17:51:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 409EhhdQ020762;
-	Tue, 9 Jan 2024 17:51:08 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:date:subject:mime-version:content-type
-	:content-transfer-encoding:message-id:references:in-reply-to:to
-	:cc; s=qcppdkim1; bh=y5VlpeuodbB1DMvG8sLo1Ojxo2aWLkN76d0378K62RA
-	=; b=eH5yz393/pAg6u4UVSiokgG3A8AcVLYXvXso9a0c3Mnal5imoR9Abvdp+Vb
-	WXb9zU/5O99leWiUoLR8qzePEHk+1Z78KDd3fm15jfLeX82kJ/1QOEILMGHE2Vqi
-	VK/UrZF6lFKzVkSTGQUikvKskZdNvrDGaORkbG7vDWUzVndp7U0ILrLF60morqc6
-	6uppr1rppWYfwA8I4QZI/ejBAfdakwYWmNARpe2wB9bIiWHW+R8qU38kv8TN7cGs
-	nqbkMoh90AF1Bn13s4ABixEHcetxSn6nZes07xwQz8JvMI9hFWFAzpb04glvKnbQ
-	4s2w84l7gGQIEYjGf2+0H2WBasw==
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vgwx39n6a-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 09 Jan 2024 17:51:08 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 409Hp7Xt031647
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 9 Jan 2024 17:51:07 GMT
-Received: from [169.254.0.1] (10.49.16.6) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 9 Jan
- 2024 09:51:07 -0800
-From: Jeff Johnson <quic_jjohnson@quicinc.com>
-Date: Tue, 9 Jan 2024 09:51:05 -0800
-Subject: [PATCH 3/3] wifi: ath12k: Use initializers for QMI message buffers
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 023373D0B6;
+	Tue,  9 Jan 2024 17:51:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CCFECC433C7;
+	Tue,  9 Jan 2024 17:51:26 +0000 (UTC)
+Date: Tue, 9 Jan 2024 17:51:24 +0000
+From: Catalin Marinas <catalin.marinas@arm.com>
+To: Baruch Siach <baruch@tkos.co.il>
+Cc: Christoph Hellwig <hch@lst.de>,
+	Marek Szyprowski <m.szyprowski@samsung.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Frank Rowand <frowand.list@gmail.com>,
+	Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+	iommu@lists.linux.dev, devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	Petr =?utf-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>,
+	Ramon Fried <ramon@neureality.ai>,
+	Elad Nachman <enachman@marvell.com>
+Subject: Re: [PATCH RFC 3/4] dma-direct: add offset to zone_dma_bits
+Message-ID: <ZZ2HnHJV3gdzu1Aj@arm.com>
+References: <cover.1703683642.git.baruch@tkos.co.il>
+ <fae5b1180161a7d8cd626a96f5df80b0a0796b8b.1703683642.git.baruch@tkos.co.il>
+ <ZZw3FDy8800NScEk@arm.com>
+ <87msterf7b.fsf@tarshish>
+ <ZZ0mAxGupZKRPzWR@arm.com>
+ <871qaqr477.fsf@tarshish>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <20240109-qmi-cleanup-v1-3-607b10858566@quicinc.com>
-References: <20240109-qmi-cleanup-v1-0-607b10858566@quicinc.com>
-In-Reply-To: <20240109-qmi-cleanup-v1-0-607b10858566@quicinc.com>
-To: Kalle Valo <kvalo@kernel.org>, Jeff Johnson <quic_jjohnson@quicinc.com>
-CC: <ath12k@lists.infradead.org>, <linux-wireless@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-X-Mailer: b4 0.12.3
-X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: HIjEzzWSJ5epqKywNhNwbC429jrY5vQI
-X-Proofpoint-ORIG-GUID: HIjEzzWSJ5epqKywNhNwbC429jrY5vQI
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 lowpriorityscore=0
- adultscore=0 spamscore=0 priorityscore=1501 malwarescore=0 mlxlogscore=999
- impostorscore=0 clxscore=1015 bulkscore=0 phishscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2311290000
- definitions=main-2401090144
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <871qaqr477.fsf@tarshish>
 
-Currently most of the QMI messaging functions use memset() to zero out
-the QMI message buffers. Prefer to use a {} initializer to allow the
-compiler to generate optimized code and avoid the function call
-overhead.
+On Tue, Jan 09, 2024 at 03:54:13PM +0200, Baruch Siach wrote:
+> On Tue, Jan 09 2024, Catalin Marinas wrote:
+> > On Tue, Jan 09, 2024 at 12:03:43PM +0200, Baruch Siach wrote:
+> >> On Mon, Jan 08 2024, Catalin Marinas wrote:
+> >> > On Wed, Dec 27, 2023 at 05:04:27PM +0200, Baruch Siach wrote:
+> >> >> Current code using zone_dma_bits assume that all addresses range in the
+> >> >> bits mask are suitable for DMA. For some existing platforms this
+> >> >> assumption is not correct. DMA range might have non zero lower limit.
+> >> >> 
+> >> >> Add 'zone_dma_off' for platform code to set base address for DMA zone.
+> >> >> 
+> >> >> Rename the dma_direct_supported() local 'min_mask' variable to better
+> >> >> describe its use as limit.
+> >> >> 
+> >> >> Suggested-by: Catalin Marinas <catalin.marinas@arm.com>
+> >> >
+> >> > When I suggested taking the DMA offsets into account, that's not exactly
+> >> > what I meant. Based on patch 4, it looks like zone_dma_off is equivalent
+> >> > to the lower CPU address. Let's say a system has DRAM starting at 2GB
+> >> > and all 32-bit DMA-capable devices has a DMA offset of 0. We want
+> >> > ZONE_DMA32 to end at 4GB rather than 6GB.
+> >> 
+> >> Patch 4 sets zone_dma_off to the lower limit from 'dma-ranges' property
+> >> that determines zone_dma_bits. This is not necessarily equivalent to
+> >> start of DRAM, though it happens to be that way on my platform.
+> >
+> > A bit better but it still assumes that all devices have the same DMA
+> > offset which may not be the case.
+> 
+> Current code calculates zone_dma_bits based on the lowest high limit of
+> all 'dma-ranges' properties. The assumption appears to be that this
+> limit fits all devices. This series does not change this assumption. It
+> only extends the logic to the lower limit of the "winning" 'dma-ranges'
+> to set the base address for DMA zone.
+> 
+> Moving to dma_zone_limit would not change that logic. Unless I'm missing
+> something.
 
-No functional changes, compile tested only.
----
- drivers/net/wireless/ath/ath12k/qmi.c | 40 ++++++++++-------------------------
- 1 file changed, 11 insertions(+), 29 deletions(-)
+Indeed, the logic here stays the same. What doesn't work currently is
+that we use fls64() of this address and we also cap it to 32 in the
+arm64 zone_sizes_init(). On a system where RAM starts at 4GB and we have
+a (for example) 30-bit device, zone_dma_bits ends up as 32 (fls64(5G)).
+With your patch, IIUC, zone_dma_off would be 4GB in such scenario and
+adding DMA_BIT_MASK(zone_dma_bits) to it results in 8GB, not the 5GB
+limit that we actually need (the first GB of the RAM).
 
-diff --git a/drivers/net/wireless/ath/ath12k/qmi.c b/drivers/net/wireless/ath/ath12k/qmi.c
-index 1f2df2e3fbce..c4c7f31a91cd 100644
---- a/drivers/net/wireless/ath/ath12k/qmi.c
-+++ b/drivers/net/wireless/ath/ath12k/qmi.c
-@@ -1919,14 +1919,11 @@ static void ath12k_host_cap_parse_mlo(struct qmi_wlanfw_host_cap_req_msg_v01 *re
+> Breaking the "one DMA zone fits all devices" assumption as Petr
+> suggested is a much larger change.
+
+I don't think we should go this way, we just need to make sure the DMA
+zone does not extend above the lowest upper limit of the cpu addresses
+in the 'dma-ranges' property. Basically what
+of_dma_get_max_cpu_address() gives us but without any capping or
+conversion into a power of two. This should cover those sub-32-bit
+devices.
+
+See the partial patch below, not really tested (and it breaks powerpc,
+s390) but it's easier to discuss on code. In addition, we need to figure
+out what to do with ZONE_DMA32 in such case. Do we consider the first
+4GB of the RAM or we just don't bother with setting up this zone if the
+RAM starts above 4GB, only rely on ZONE_DMA? I'd go with the latter but
+needs some thinking.
+
+diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
+index 74c1db8ce271..0a15628ece7e 100644
+--- a/arch/arm64/mm/init.c
++++ b/arch/arm64/mm/init.c
+@@ -113,36 +113,24 @@ static void __init arch_reserve_crashkernel(void)
+ 				    low_size, high);
+ }
  
- static int ath12k_qmi_host_cap_send(struct ath12k_base *ab)
+-/*
+- * Return the maximum physical address for a zone accessible by the given bits
+- * limit. If DRAM starts above 32-bit, expand the zone to the maximum
+- * available memory, otherwise cap it at 32-bit.
+- */
+-static phys_addr_t __init max_zone_phys(unsigned int zone_bits)
++static phys_addr_t __init max_zone_phys(phys_addr_t zone_mask)
  {
--	struct qmi_wlanfw_host_cap_req_msg_v01 req;
--	struct qmi_wlanfw_host_cap_resp_msg_v01 resp;
-+	struct qmi_wlanfw_host_cap_req_msg_v01 req = {};
-+	struct qmi_wlanfw_host_cap_resp_msg_v01 resp = {};
- 	struct qmi_txn txn;
- 	int ret = 0;
- 
--	memset(&req, 0, sizeof(req));
--	memset(&resp, 0, sizeof(resp));
+-	phys_addr_t zone_mask = DMA_BIT_MASK(zone_bits);
+-	phys_addr_t phys_start = memblock_start_of_DRAM();
 -
- 	req.num_clients_valid = 1;
- 	req.num_clients = 1;
- 	req.mem_cfg_mode = ab->qmi.target_mem_mode;
-@@ -2070,7 +2067,7 @@ static int ath12k_qmi_fw_ind_register_send(struct ath12k_base *ab)
- static int ath12k_qmi_respond_fw_mem_request(struct ath12k_base *ab)
- {
- 	struct qmi_wlanfw_respond_mem_req_msg_v01 *req;
--	struct qmi_wlanfw_respond_mem_resp_msg_v01 resp;
-+	struct qmi_wlanfw_respond_mem_resp_msg_v01 resp = {};
- 	struct qmi_txn txn;
- 	int ret = 0, i;
- 	bool delayed;
-@@ -2079,8 +2076,6 @@ static int ath12k_qmi_respond_fw_mem_request(struct ath12k_base *ab)
- 	if (!req)
- 		return -ENOMEM;
- 
--	memset(&resp, 0, sizeof(resp));
+-	if (phys_start > U32_MAX)
+-		zone_mask = PHYS_ADDR_MAX;
+-	else if (phys_start > zone_mask)
+-		zone_mask = U32_MAX;
 -
- 	/* Some targets by default request a block of big contiguous
- 	 * DMA memory, it's hard to allocate from kernel. So host returns
- 	 * failure to firmware and firmware then request multiple blocks of
-@@ -2090,7 +2085,6 @@ static int ath12k_qmi_respond_fw_mem_request(struct ath12k_base *ab)
- 		delayed = true;
- 		ath12k_dbg(ab, ATH12K_DBG_QMI, "qmi delays mem_request %d\n",
- 			   ab->qmi.mem_seg_count);
--		memset(req, 0, sizeof(*req));
- 	} else {
- 		delayed = false;
- 		req->mem_seg_len = ab->qmi.mem_seg_count;
-@@ -2211,17 +2205,14 @@ static int ath12k_qmi_alloc_target_mem_chunk(struct ath12k_base *ab)
+ 	return min(zone_mask, memblock_end_of_DRAM() - 1) + 1;
+ }
  
- static int ath12k_qmi_request_target_cap(struct ath12k_base *ab)
+ static void __init zone_sizes_init(void)
  {
--	struct qmi_wlanfw_cap_req_msg_v01 req;
--	struct qmi_wlanfw_cap_resp_msg_v01 resp;
-+	struct qmi_wlanfw_cap_req_msg_v01 req = {};
-+	struct qmi_wlanfw_cap_resp_msg_v01 resp = {};
- 	struct qmi_txn txn;
- 	unsigned int board_id = ATH12K_BOARD_ID_DEFAULT;
- 	int ret = 0;
- 	int r;
- 	int i;
+ 	unsigned long max_zone_pfns[MAX_NR_ZONES]  = {0};
+-	unsigned int __maybe_unused acpi_zone_dma_bits;
+-	unsigned int __maybe_unused dt_zone_dma_bits;
+-	phys_addr_t __maybe_unused dma32_phys_limit = max_zone_phys(32);
++	phys_addr_t __maybe_unused acpi_zone_dma_limit;
++	phys_addr_t __maybe_unused dt_zone_dma_limit;
++	phys_addr_t __maybe_unused dma32_phys_limit =
++		max_zone_phys(DMA_BIT_MASK(32));
  
--	memset(&req, 0, sizeof(req));
--	memset(&resp, 0, sizeof(resp));
--
- 	ret = qmi_txn_init(&ab->qmi.handle, &txn,
- 			   qmi_wlanfw_cap_resp_msg_v01_ei, &resp);
- 	if (ret < 0)
-@@ -2314,7 +2305,7 @@ static int ath12k_qmi_load_file_target_mem(struct ath12k_base *ab,
- 					   const u8 *data, u32 len, u8 type)
- {
- 	struct qmi_wlanfw_bdf_download_req_msg_v01 *req;
--	struct qmi_wlanfw_bdf_download_resp_msg_v01 resp;
-+	struct qmi_wlanfw_bdf_download_resp_msg_v01 resp = {};
- 	struct qmi_txn txn;
- 	const u8 *temp = data;
- 	int ret;
-@@ -2323,7 +2314,6 @@ static int ath12k_qmi_load_file_target_mem(struct ath12k_base *ab,
- 	req = kzalloc(sizeof(*req), GFP_KERNEL);
- 	if (!req)
- 		return -ENOMEM;
--	memset(&resp, 0, sizeof(resp));
+ #ifdef CONFIG_ZONE_DMA
+-	acpi_zone_dma_bits = fls64(acpi_iort_dma_get_max_cpu_address());
+-	dt_zone_dma_bits = fls64(of_dma_get_max_cpu_address(NULL));
+-	zone_dma_bits = min3(32U, dt_zone_dma_bits, acpi_zone_dma_bits);
+-	arm64_dma_phys_limit = max_zone_phys(zone_dma_bits);
++	acpi_zone_dma_limit = acpi_iort_dma_get_max_cpu_address();
++	dt_zone_dma_limit = of_dma_get_max_cpu_address(NULL);
++	zone_dma_limit = min(dt_zone_dma_limit, acpi_zone_dma_limit);
++	arm64_dma_phys_limit = max_zone_phys(zone_dma_limit);
+ 	max_zone_pfns[ZONE_DMA] = PFN_DOWN(arm64_dma_phys_limit);
+ #endif
+ #ifdef CONFIG_ZONE_DMA32
+diff --git a/include/linux/dma-direct.h b/include/linux/dma-direct.h
+index 18aade195884..f55de778612b 100644
+--- a/include/linux/dma-direct.h
++++ b/include/linux/dma-direct.h
+@@ -12,7 +12,7 @@
+ #include <linux/mem_encrypt.h>
+ #include <linux/swiotlb.h>
  
- 	while (remaining) {
- 		req->valid = 1;
-@@ -2549,14 +2539,11 @@ static void ath12k_qmi_m3_free(struct ath12k_base *ab)
- static int ath12k_qmi_wlanfw_m3_info_send(struct ath12k_base *ab)
- {
- 	struct m3_mem_region *m3_mem = &ab->qmi.m3_mem;
--	struct qmi_wlanfw_m3_info_req_msg_v01 req;
--	struct qmi_wlanfw_m3_info_resp_msg_v01 resp;
-+	struct qmi_wlanfw_m3_info_req_msg_v01 req = {};
-+	struct qmi_wlanfw_m3_info_resp_msg_v01 resp = {};
- 	struct qmi_txn txn;
- 	int ret = 0;
+-extern unsigned int zone_dma_bits;
++extern phys_addr_t zone_dma_limit;
  
--	memset(&req, 0, sizeof(req));
--	memset(&resp, 0, sizeof(resp));
--
- 	ret = ath12k_qmi_m3_load(ab);
- 	if (ret) {
- 		ath12k_err(ab, "failed to load m3 firmware: %d", ret);
-@@ -2601,14 +2588,11 @@ static int ath12k_qmi_wlanfw_m3_info_send(struct ath12k_base *ab)
- static int ath12k_qmi_wlanfw_mode_send(struct ath12k_base *ab,
- 				       u32 mode)
- {
--	struct qmi_wlanfw_wlan_mode_req_msg_v01 req;
--	struct qmi_wlanfw_wlan_mode_resp_msg_v01 resp;
-+	struct qmi_wlanfw_wlan_mode_req_msg_v01 req = {};
-+	struct qmi_wlanfw_wlan_mode_resp_msg_v01 resp = {};
- 	struct qmi_txn txn;
- 	int ret = 0;
+ /*
+  * Record the mapping of CPU physical to DMA addresses for a given region.
+diff --git a/kernel/dma/direct.c b/kernel/dma/direct.c
+index 73c95815789a..1e12c593b6f3 100644
+--- a/kernel/dma/direct.c
++++ b/kernel/dma/direct.c
+@@ -20,7 +20,7 @@
+  * it for entirely different regions. In that case the arch code needs to
+  * override the variable below for dma-direct to work properly.
+  */
+-unsigned int zone_dma_bits __ro_after_init = 24;
++phys_addr_t zone_dma_limit __ro_after_init = DMA_BIT_MASK(24);
  
--	memset(&req, 0, sizeof(req));
--	memset(&resp, 0, sizeof(resp));
--
- 	req.mode = mode;
- 	req.hw_debug_valid = 1;
- 	req.hw_debug = 0;
-@@ -2654,7 +2638,7 @@ static int ath12k_qmi_wlanfw_mode_send(struct ath12k_base *ab,
- static int ath12k_qmi_wlanfw_wlan_cfg_send(struct ath12k_base *ab)
- {
- 	struct qmi_wlanfw_wlan_cfg_req_msg_v01 *req;
--	struct qmi_wlanfw_wlan_cfg_resp_msg_v01 resp;
-+	struct qmi_wlanfw_wlan_cfg_resp_msg_v01 resp = {};
- 	struct ce_pipe_config *ce_cfg;
- 	struct service_to_pipe *svc_cfg;
- 	struct qmi_txn txn;
-@@ -2667,8 +2651,6 @@ static int ath12k_qmi_wlanfw_wlan_cfg_send(struct ath12k_base *ab)
- 	if (!req)
- 		return -ENOMEM;
+ static inline dma_addr_t phys_to_dma_direct(struct device *dev,
+ 		phys_addr_t phys)
+@@ -59,7 +59,7 @@ static gfp_t dma_direct_optimal_gfp_mask(struct device *dev, u64 *phys_limit)
+ 	 * zones.
+ 	 */
+ 	*phys_limit = dma_to_phys(dev, dma_limit);
+-	if (*phys_limit <= DMA_BIT_MASK(zone_dma_bits))
++	if (*phys_limit <= zone_dma_limit)
+ 		return GFP_DMA;
+ 	if (*phys_limit <= DMA_BIT_MASK(32))
+ 		return GFP_DMA32;
+@@ -583,7 +583,7 @@ int dma_direct_supported(struct device *dev, u64 mask)
+ 	 * part of the check.
+ 	 */
+ 	if (IS_ENABLED(CONFIG_ZONE_DMA))
+-		min_mask = min_t(u64, min_mask, DMA_BIT_MASK(zone_dma_bits));
++		min_mask = min_t(u64, min_mask, zone_dma_limit);
+ 	return mask >= phys_to_dma_unencrypted(dev, min_mask);
+ }
  
--	memset(&resp, 0, sizeof(resp));
--
- 	req->host_version_valid = 1;
- 	strscpy(req->host_version, ATH12K_HOST_VERSION_STRING,
- 		sizeof(req->host_version));
+diff --git a/kernel/dma/pool.c b/kernel/dma/pool.c
+index b481c48a31a6..af02948adfff 100644
+--- a/kernel/dma/pool.c
++++ b/kernel/dma/pool.c
+@@ -70,7 +70,7 @@ static bool cma_in_zone(gfp_t gfp)
+ 	/* CMA can't cross zone boundaries, see cma_activate_area() */
+ 	end = cma_get_base(cma) + size - 1;
+ 	if (IS_ENABLED(CONFIG_ZONE_DMA) && (gfp & GFP_DMA))
+-		return end <= DMA_BIT_MASK(zone_dma_bits);
++		return end <= zone_dma_limit;
+ 	if (IS_ENABLED(CONFIG_ZONE_DMA32) && (gfp & GFP_DMA32))
+ 		return end <= DMA_BIT_MASK(32);
+ 	return true;
+diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
+index 33d942615be5..be76816b3ff9 100644
+--- a/kernel/dma/swiotlb.c
++++ b/kernel/dma/swiotlb.c
+@@ -446,7 +446,7 @@ int swiotlb_init_late(size_t size, gfp_t gfp_mask,
+ 	if (!remap)
+ 		io_tlb_default_mem.can_grow = true;
+ 	if (IS_ENABLED(CONFIG_ZONE_DMA) && (gfp_mask & __GFP_DMA))
+-		io_tlb_default_mem.phys_limit = DMA_BIT_MASK(zone_dma_bits);
++		io_tlb_default_mem.phys_limit = zone_dma_limit;
+ 	else if (IS_ENABLED(CONFIG_ZONE_DMA32) && (gfp_mask & __GFP_DMA32))
+ 		io_tlb_default_mem.phys_limit = DMA_BIT_MASK(32);
+ 	else
+@@ -625,7 +625,7 @@ static struct page *swiotlb_alloc_tlb(struct device *dev, size_t bytes,
+ 	}
+ 
+ 	gfp &= ~GFP_ZONEMASK;
+-	if (phys_limit <= DMA_BIT_MASK(zone_dma_bits))
++	if (phys_limit <= zone_dma_limit)
+ 		gfp |= __GFP_DMA;
+ 	else if (phys_limit <= DMA_BIT_MASK(32))
+ 		gfp |= __GFP_DMA32;
 
 -- 
-2.42.0
-
+Catalin
 
