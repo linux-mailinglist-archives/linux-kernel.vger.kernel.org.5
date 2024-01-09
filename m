@@ -1,158 +1,174 @@
-Return-Path: <linux-kernel+bounces-20717-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20718-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 59CED828411
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 11:35:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F6B6828416
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 11:37:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7D9601C23BD8
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 10:35:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 49BAD2864CC
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 10:37:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA699364B6;
-	Tue,  9 Jan 2024 10:35:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED52F364C7;
+	Tue,  9 Jan 2024 10:37:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="jWiapSy2";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="7xYaP8h9"
-Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="FvogehUS"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5ECBB13FE0;
-	Tue,  9 Jan 2024 10:35:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailout.west.internal (Postfix) with ESMTP id B579A3200A51;
-	Tue,  9 Jan 2024 05:35:47 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Tue, 09 Jan 2024 05:35:48 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm2; t=1704796547; x=1704882947; bh=DgG9tCDREy
-	TfxAwH9mDVpC/UFPRAXNZSHBS2vcSJXRU=; b=jWiapSy2JW7izbbWmSzVs7RHGy
-	NYrT/mP0CmV2uSUWKFoTiLgU2aLm3HH7zxQbmpqnFerzFFas2LevMfawtBzbA21/
-	6v6gS6FV5yzPH19s0wTx/x0H6VGa4wDACgkmQNzYstwJIqGhGzxi4H4N16yfAnUf
-	Pt1Lzs22mpi4artsj9c5FHd6ZBWktc6Hm/WU0+6JRQn2Xj5LqDMU6PScnGpGybyn
-	EWeyT+9uczVokEfqp64mLFxRXE44Y/4Li71gkF2rmJydO3RJRrBSDEP/HbSAoh13
-	Z+byJFgUoimTjicJGGpUgyZT0Hja9tZj4Ojl1fEFc+BTncvqF2opTFvGNufA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1704796547; x=1704882947; bh=DgG9tCDREyTfxAwH9mDVpC/UFPRA
-	XNZSHBS2vcSJXRU=; b=7xYaP8h9UrHAJ+SEQA2d0sh8T9lgXKtXfhz7L/ctcO6m
-	o2LC21vB2dwZ+BMW5T51rOTtYk5W2TuWaJt0Q5KEErupShgEUupuRC+EIemJL+2y
-	Uk4P6/8yA+VVvYtaat6upbpwfAkIhs9q+yp+xIn+W5a58IPDfBnIkptEPuDYAh5f
-	vmRx9jwvSyWmWwgy7J+7+o62fWT2TOgZ3Lrv7vtsXBoP3TiG9FmNS/fqtz0M+O4x
-	oUxWnmY0djEj/ogNCfN2gTShnkd7HFvOl78cfBTDOvAzJglXTmIHqeKQhVlcbwKu
-	3i9uk9fEC4TGGgC8+SCMycak2wmwg2pqedMWW6Yhqg==
-X-ME-Sender: <xms:giGdZY-PegoksqYrZRanLBhTqZVVFv-DRKm7bu2rw1yRRGDmbHLHZg>
-    <xme:giGdZQu28zTkxel3LogUfLSzJcFR10IY7WoGL-VfIxoPVxgK8Q4o5dTp4TkuElwgS
-    Tjht46wuNLhtB0dCX0>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdehledgudeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepvefhffeltdegheeffffhtdegvdehjedtgfekueevgfduffettedtkeekueef
-    hedunecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpe
-    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrhhnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:giGdZeC81tTlvnFmALc-wQhcV6FNbl3C0ydHmAju8mN2Jomw-zihvQ>
-    <xmx:giGdZYcXgzAU3cbWsycUQc9iJsOMvsxU8jqcxPqnRCZEnD82NXlNYQ>
-    <xmx:giGdZdMSrG0d9-vyy7aZ7_uZX2IzqRxOzX3jGxafbTH_MYqZC1_FeA>
-    <xmx:gyGdZZD2dvZNN4ekKml_HGglqJScMv8XauUYoLa3RKkaYmVWChESRw>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 973E4B6008F; Tue,  9 Jan 2024 05:35:46 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-1364-ga51d5fd3b7-fm-20231219.001-ga51d5fd3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68DE429429;
+	Tue,  9 Jan 2024 10:37:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 409514fM024567;
+	Tue, 9 Jan 2024 10:36:50 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:references:in-reply-to
+	:content-type:content-transfer-encoding:mime-version; s=
+	qcppdkim1; bh=doZSVThDl+rEsM8+z088MTldxx8ituz61HC+0IA192U=; b=Fv
+	ogehUSZpG3NNZwaWqgCqxvznFocUP5wTGcMbVO4Mzwm0m/LkOYp1COwzXbbP9d0X
+	bsfDBFksud9JCrrn5Ui9uISzD3wOfepwgZv1D8j4VQb6iWa1rTig12anGbILYBN5
+	o3YfDaKzOTdAgEK7VE5casq8tctZltrMUV+V9BO5LzUeF2DyWfKQJpP7CwyhnY1H
+	BAckIXJyCgEKumByyH86NggP9Pxt6pQCHtjew3Ayi7nzSufUNBaxXtmlno1Haktg
+	jKbF0X+MMFXm0ZcQrg+dk9Yx8mAYS+NEhzdiTFJ+Gru4LSbWDktPgkUhipgUqt1n
+	aBqj2VzKuJHJ4V/vfnyg==
+Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vgwsjrsb8-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 09 Jan 2024 10:36:50 +0000 (GMT)
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+	by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 409AanMc025789
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 9 Jan 2024 10:36:49 GMT
+Received: from nasanex01a.na.qualcomm.com (10.52.223.231) by
+ nasanex01b.na.qualcomm.com (10.46.141.250) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Tue, 9 Jan 2024 02:36:47 -0800
+Received: from nasanex01a.na.qualcomm.com ([fe80::5887:2b4f:ce74:2394]) by
+ nasanex01a.na.qualcomm.com ([fe80::5887:2b4f:ce74:2394%12]) with mapi id
+ 15.02.1118.040; Tue, 9 Jan 2024 02:36:48 -0800
+From: "Ritesh Kumar (QUIC)" <quic_riteshk@quicinc.com>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC: "neil.armstrong@linaro.org" <neil.armstrong@linaro.org>,
+        "Jessica Zhang
+ (QUIC)" <quic_jesszhan@quicinc.com>,
+        "sam@ravnborg.org" <sam@ravnborg.org>,
+        "maarten.lankhorst@linux.intel.com" <maarten.lankhorst@linux.intel.com>,
+        "mripard@kernel.org" <mripard@kernel.org>,
+        "tzimmermann@suse.de"
+	<tzimmermann@suse.de>,
+        "airlied@gmail.com" <airlied@gmail.com>,
+        "daniel@ffwll.ch" <daniel@ffwll.ch>,
+        "robh+dt@kernel.org"
+	<robh+dt@kernel.org>,
+        "krzysztof.kozlowski+dt@linaro.org"
+	<krzysztof.kozlowski+dt@linaro.org>,
+        "conor+dt@kernel.org"
+	<conor+dt@kernel.org>,
+        "Abhinav Kumar (QUIC)" <quic_abhinavk@quicinc.com>,
+        "Rajeev Nandan (QUIC)" <quic_rajeevny@quicinc.com>,
+        "Vishnuvardhan Prodduturi
+ (QUIC)" <quic_vproddut@quicinc.com>,
+        "sumit.semwal@linaro.org"
+	<sumit.semwal@linaro.org>
+Subject: RE: [v2 1/2] dt-bindings: display: panel: Add Novatek NT36672E LCD
+ DSI
+Thread-Topic: [v2 1/2] dt-bindings: display: panel: Add Novatek NT36672E LCD
+ DSI
+Thread-Index: AQHaQhlaWbCuVjlKVE28ed4o8u9QQrDQNvIAgAETHNA=
+Date: Tue, 9 Jan 2024 10:36:48 +0000
+Message-ID: <341a0546d52c43998bace0292b99ec4c@quicinc.com>
+References: <20240108095902.22725-1-quic_riteshk@quicinc.com>
+ <20240108095902.22725-2-quic_riteshk@quicinc.com>
+ <4ca08b91-a950-43cc-946a-932afd855f9a@linaro.org>
+In-Reply-To: <4ca08b91-a950-43cc-946a-932afd855f9a@linaro.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <468ce58a-9f4a-4a75-adbf-7beb8fa13580@app.fastmail.com>
-In-Reply-To: <4c859da1-9551-4d0b-a19c-f20f1133acac@gmail.com>
-References: <20240109090715.982332-1-arnd@kernel.org>
- <4c859da1-9551-4d0b-a19c-f20f1133acac@gmail.com>
-Date: Tue, 09 Jan 2024 11:35:25 +0100
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Heiner Kallweit" <hkallweit1@gmail.com>,
- "Arnd Bergmann" <arnd@kernel.org>, "Pavel Machek" <pavel@ucw.cz>,
- "Lee Jones" <lee@kernel.org>
-Cc: "Andrew Lunn" <andrew@lunn.ch>, "Hans de Goede" <hdegoede@redhat.com>,
- "Jean-Jacques Hiblot" <jjhiblot@traphandler.com>, linux-leds@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] leds: remove led_init_default_state_get() and
- devm_led_classdev_register_ext() stubs
-Content-Type: text/plain
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: paJe1E5CMyncrXs2NtbyauatnO_m0Szf
+X-Proofpoint-ORIG-GUID: paJe1E5CMyncrXs2NtbyauatnO_m0Szf
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 suspectscore=0
+ lowpriorityscore=0 phishscore=0 priorityscore=1501 adultscore=0
+ spamscore=0 impostorscore=0 mlxscore=0 bulkscore=0 mlxlogscore=999
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2401090085
 
-On Tue, Jan 9, 2024, at 11:10, Heiner Kallweit wrote:
-> On 09.01.2024 10:06, Arnd Bergmann wrote:
->> From: Arnd Bergmann <arnd@arndb.de>
->> 
->> These two functions have stub implementations that are called when
->> NEW_LEDS and/or LEDS_CLASS are disabled, theorerically allowing drivers
->> to optionally use the LED subsystem.
->> 
->> However, this has never really worked because a built-in driver is
->> unable to link against these functions if the LED class is in a loadable
->> module. Heiner ran into this problem with a driver that newly gained
->> a LEDS_CLASS dependency and suggested using an IS_REACHABLE() check.
->> 
->> This is the reverse approach, removing the stub entirely to acknowledge
->> that it is pointless in its current form, and that not having it avoids
->> misleading developers into thinking that they can rely on it.
->> 
->> This survived around 1000 randconfig builds to validate that any callers
->> of the interface already have the correct Kconfig dependency already,
->> with the exception of the one that Heiner just added.
->> 
->> Cc: Heiner Kallweit <hkallweit1@gmail.com>
->> Link: https://lore.kernel.org/linux-leds/0f6f432b-c650-4bb8-a1b5-fe3372804d52@gmail.com/T/#u
->> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
->> ---
->
-> For r8169 we have a Kconfig-based solution now, right. I had a brief look
-> at other drivers using LED functionality, and already the first one I looked
-> at seems to suffer from the same problem. input/keyboard/qt2160.c has the
-> following what should result in the same link error if qt2160 is built-in
-> and CONFIG_LEDS_CLASS=m. qt2160 has a Kconfig dependency only on I2C.
->
-> #ifdef CONFIG_LEDS_CLASS
-> static int qt2160_register_leds(struct qt2160_data *qt2160)
-> {
-> [...]
-> 	error = devm_led_classdev_register(&client->dev, &led->cdev);
-> [...]		
-> }
-> #else
-
-This is a bug, but I think a different one, with a similar effect.
-
-Part of the problem in this driver is that it uses #ifdef instead
-of "#if IS_ENABLED(CONFIG_LEDS_CLASS)". As a result, it just
-never uses the LEDS when LEDS_CLASS=m, because that would
-define CONFIG_LEDS_CLASS_MODULE but not CONFIG_LEDS_CLASS.
-
-Changing it to IS_ENABLED() would cause the link failure
-you describe, but would do it regardless of my change.
-
-The same bug seems to be present in other files as well.
-
-> 2. If stubs are removed (but also in the current situation, see example),
->    then it seems some drivers need adding proper build dependencies.
-
-I don't see any driver that actually relies on the stub, since
-that would only work a driver that can never be built-in.
-
-If a driver can be built-in (like your r8169 code) and uses
-the stub, we would have seen it fail to link in randconfig
-kernels and added a LEDS_CLASS dependency.
-
-     Arnd
+DQo+LS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj5Gcm9tOiBLcnp5c3p0b2YgS296bG93c2tp
+IDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+DQo+U2VudDogTW9uZGF5LCBKYW51YXJ5
+IDgsIDIwMjQgMzozOCBQTQ0KPlRvOiBSaXRlc2ggS3VtYXIgKFFVSUMpIDxxdWljX3JpdGVzaGtA
+cXVpY2luYy5jb20+OyBkcmktDQo+ZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnOyBkZXZpY2V0
+cmVlQHZnZXIua2VybmVsLm9yZzsgbGludXgtDQo+a2VybmVsQHZnZXIua2VybmVsLm9yZw0KPkNj
+OiBuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnOyBKZXNzaWNhIFpoYW5nIChRVUlDKQ0KPjxxdWlj
+X2plc3N6aGFuQHF1aWNpbmMuY29tPjsgc2FtQHJhdm5ib3JnLm9yZzsNCj5tYWFydGVuLmxhbmto
+b3JzdEBsaW51eC5pbnRlbC5jb207IG1yaXBhcmRAa2VybmVsLm9yZzsNCj50emltbWVybWFubkBz
+dXNlLmRlOyBhaXJsaWVkQGdtYWlsLmNvbTsgZGFuaWVsQGZmd2xsLmNoOw0KPnJvYmgrZHRAa2Vy
+bmVsLm9yZzsga3J6eXN6dG9mLmtvemxvd3NraStkdEBsaW5hcm8ub3JnOyBjb25vcitkdEBrZXJu
+ZWwub3JnOw0KPkFiaGluYXYgS3VtYXIgKFFVSUMpIDxxdWljX2FiaGluYXZrQHF1aWNpbmMuY29t
+PjsgUmFqZWV2IE5hbmRhbiAoUVVJQykNCj48cXVpY19yYWplZXZueUBxdWljaW5jLmNvbT47IFZp
+c2hudXZhcmRoYW4gUHJvZGR1dHVyaSAoUVVJQykNCj48cXVpY192cHJvZGR1dEBxdWljaW5jLmNv
+bT47IHN1bWl0LnNlbXdhbEBsaW5hcm8ub3JnDQo+U3ViamVjdDogUmU6IFt2MiAxLzJdIGR0LWJp
+bmRpbmdzOiBkaXNwbGF5OiBwYW5lbDogQWRkIE5vdmF0ZWsgTlQzNjY3MkUgTENEDQo+RFNJDQo+
+DQo+T24gMDgvMDEvMjAyNCAxMDo1OSwgUml0ZXNoIEt1bWFyIHdyb3RlOg0KPj4gRG9jdW1lbnQg
+Tm92YXRlayBOVDM2NjcyRSBGSEQrIExDRCBEU0kgcGFuZWwuDQo+Pg0KPj4gU2lnbmVkLW9mZi1i
+eTogUml0ZXNoIEt1bWFyIDxxdWljX3JpdGVzaGtAcXVpY2luYy5jb20+DQo+Pg0KPj4gLS0tDQo+
+PiB2MjogRml4ZWQgcmV2aWV3IGNvbW1lbnRzIGZyb20gS3J6eXN6dG9mDQo+DQo+UGxlYXNlIHVz
+ZSBzdGFuZGFyZCBlbWFpbCBzdWJqZWN0cywgc28gd2l0aCB0aGUgUEFUQ0gga2V5d29yZCBpbiB0
+aGUgdGl0bGUuIGBnaXQNCj5mb3JtYXQtcGF0Y2hgIGhlbHBzIGhlcmUgdG8gY3JlYXRlIHByb3Bl
+ciB2ZXJzaW9uZWQgcGF0Y2hlcy4NCj5Bbm90aGVyIHVzZWZ1bCB0b29sIGlzIGI0LiBTa2lwcGlu
+ZyB0aGUgUEFUQ0gga2V5d29yZCBtYWtlcyBmaWx0ZXJpbmcgb2YgZW1haWxzDQo+bW9yZSBkaWZm
+aWN1bHQgdGh1cyBtYWtpbmcgdGhlIHJldmlldyBwcm9jZXNzIGxlc3MgY29udmVuaWVudC4NCg0K
+SSBhbSB1c2luZyBnaXQgZm9ybWF0LXBhdGNoIG9ubHkuIEkgdGhpbmsgdGhlIG5hbWUgb2Ygc2Vy
+aWVzIGlzIGNoYW5nZWQgY2F1c2luZyB0aGUgdHJvdWJsZS4NCg0KPg0KPj4gICAgICAgLSByZW5h
+bWVkIHRvIG5vdmF0ZWssbnQzNjY3MmUsIHNpbmNlIHRoZSBiaW5kaW5nIGlzIGZvciB0aGUgSUMg
+YW5kDQo+PiAgICAgICAgIG5vdCB0aGUgcGFuZWwuDQo+PiAgICAgICAtIG1vdmVkIGFkZGl0aW9u
+YWxQcm9wZXJ0aWVzIGFmdGVyIHJlcXVpcmVkLg0KPj4gLS0tDQo+PiAgLi4uL2Rpc3BsYXkvcGFu
+ZWwvbm92YXRlayxudDM2NjcyZS55YW1sICAgICAgIHwgNjYgKysrKysrKysrKysrKysrKysrKw0K
+Pj4gIDEgZmlsZSBjaGFuZ2VkLCA2NiBpbnNlcnRpb25zKCspDQo+PiAgY3JlYXRlIG1vZGUgMTAw
+NjQ0DQo+PiBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvZGlzcGxheS9wYW5lbC9u
+b3ZhdGVrLG50MzY2NzJlLnlhbWwNCj4+DQo+PiBkaWZmIC0tZ2l0DQo+Pg0KPmEvRG9jdW1lbnRh
+dGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL2Rpc3BsYXkvcGFuZWwvbm92YXRlayxudDM2NjcyZS55
+YW0NCj4+IGwNCj4+DQo+Yi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvZGlzcGxh
+eS9wYW5lbC9ub3ZhdGVrLG50MzY2NzJlLnlhbQ0KPj4gbA0KPj4gbmV3IGZpbGUgbW9kZSAxMDA2
+NDQNCj4+IGluZGV4IDAwMDAwMDAwMDAwMC4uZGM0NjcyZjNkMDFkDQo+PiAtLS0gL2Rldi9udWxs
+DQo+PiArKysgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvZGlzcGxheS9wYW5l
+bC9ub3ZhdGVrLG50MzY2NzJlDQo+PiArKysgLnlhbWwNCj4+IEBAIC0wLDAgKzEsNjYgQEANCj4+
+ICsjIFNQRFgtTGljZW5zZS1JZGVudGlmaWVyOiBHUEwtMi4wLW9ubHkgT1IgQlNELTItQ2xhdXNl
+ICVZQU1MIDEuMg0KPj4gKy0tLQ0KPj4gKyRpZDoNCj4+ICtodHRwOi8vZGV2aWNldHJlZS5vcmcv
+c2NoZW1hcy9kaXNwbGF5L3BhbmVsL25vdmF0ZWssbnQzNjY3MmUueWFtbCMNCj4+ICskc2NoZW1h
+OiBodHRwOi8vZGV2aWNldHJlZS5vcmcvbWV0YS1zY2hlbWFzL2NvcmUueWFtbCMNCj4+ICsNCj4+
+ICt0aXRsZTogTm92YXRlayBOVDM2NjcyRSBMQ0QgRFNJIFBhbmVsDQo+PiArDQo+PiArbWFpbnRh
+aW5lcnM6DQo+PiArICAtIFJpdGVzaCBLdW1hciA8cXVpY19yaXRlc2hrQHF1aWNpbmMuY29tPg0K
+Pj4gKw0KPj4gK2FsbE9mOg0KPj4gKyAgLSAkcmVmOiBwYW5lbC1jb21tb24ueWFtbCMNCj4+ICsN
+Cj4+ICtwcm9wZXJ0aWVzOg0KPj4gKyAgY29tcGF0aWJsZToNCj4+ICsgICAgY29uc3Q6IG5vdmF0
+ZWssbnQzNjY3MmUNCj4+ICsNCj4+ICsgIHJlZzoNCj4+ICsgICAgbWF4SXRlbXM6IDENCj4+ICsg
+ICAgZGVzY3JpcHRpb246IERTSSB2aXJ0dWFsIGNoYW5uZWwNCj4+ICsNCj4+ICsgIHZkZGktc3Vw
+cGx5OiB0cnVlDQo+PiArICBhdmRkLXN1cHBseTogdHJ1ZQ0KPj4gKyAgYXZlZS1zdXBwbHk6IHRy
+dWUNCj4NCj5BcmUgdGhlc2UgbmFtZXMgb2YgcGlucz8gU29tZWhvdyBJIGhhdmUgdHJvdWJsZXMg
+YmVsaWV2aW5nIHRoYXQgTlQzNjY3MkENCj5hbmQgTlQzNjY3MkUgaGF2ZSBlbnRpcmVseSBkaWZm
+ZXJlbnQgbmFtZXMgZm9yIHRoZXNlLi4uDQoNClllcywgdGhlc2UgYXJlIG5hbWUgb2YgcGlucy4N
+Cg0KQmVsb3cgaXMgdGhlIFBpbiBEZXNjcmlwdGlvbiBmcm9tIE5UMzY2NzJFIERhdGFzaGVldDoN
+Cg0KdmRkaSAtIFBvd2VyIHN1cHBseSB0byB0aGUgSS9PLg0KYXZkZCAtIFBvc2l0aXZlIGlucHV0
+IGFuYWxvZyBwb3dlciBmb3IgZHJpdmVyIElDIHVzZS4NCmF2ZWUgLSBOZWdhdGl2ZSBpbnB1dCBh
+bmFsb2cgcG93ZXIgZm9yIGRyaXZlciBJQyB1c2UuDQoNCkkgY291bGQgbm90IGZpbmQgZGF0YXNo
+ZWV0IG9mIE5UMzY2NzJBIG9ubGluZSB0byBjb21wYXJlICB0aGUgbmFtZXMuDQoNClRoYW5rcywN
+ClJpdGVzaA0K
 
