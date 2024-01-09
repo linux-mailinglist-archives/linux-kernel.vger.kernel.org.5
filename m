@@ -1,74 +1,74 @@
-Return-Path: <linux-kernel+bounces-21425-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21426-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 58EE4828EFA
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 22:37:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A31D828EFB
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 22:38:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4AC331C2312E
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 21:37:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B38471C24052
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 21:38:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 595413DB94;
-	Tue,  9 Jan 2024 21:37:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89F873DBA1;
+	Tue,  9 Jan 2024 21:38:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="YFWfbkRc"
-Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="b27uJhjV"
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB16B3D577
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 21:37:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 729143DB84
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 21:38:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-50e7c6e3c63so3622068e87.3
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 13:37:44 -0800 (PST)
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a294295dda3so394760366b.0
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 13:38:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704836263; x=1705441063; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1704836296; x=1705441096; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Df5vbAJJu14yKYfvCr4fxtDlzFXpAT3tR5jvbBHluqQ=;
-        b=YFWfbkRcOHKiTZdcmpDxQFyWVW6egN7PGpayOa+HqUmjjKDj/fEvGRWEEdSRnGnDry
-         wLzQAvMiOzw7H1PU+0qh3Jv1zM3DsH2c72SKg4YXyFcpbKStzZ5NdJzzccFDBJXaYYWu
-         SqjtiEbTVWSmT7ibTXcEx7LMvaN9lxJRbZKBLL9Kv8WEj7neZjY1s1GHxsqC2Bv7NXeF
-         fL815P1lyds6qVmbOhN9Y/I2YGU9kws+Df8x0fdEgcVR1CGdqHkqP41D2NXMBVud6jX0
-         w1tyjOXNWP7By2fH2VmzCg71wAGQvJwq0c0hmZyotXu9ilMA5tBKghgBhaBw/2DAN/BE
-         /uxA==
+        bh=A5G3kOVOJ3YPkVZuV6/moOWckQ3gnsEMdzz/Vic7oRo=;
+        b=b27uJhjVnSbkpq4sw6ycBiWAcU0t46PWMGyqUm/FqJKSOZfSU0JFN5h4zdh+enaWWj
+         cvegy78/gqpr3LeQSq5KUp1ft+NgZn+Vf/0NUltrIz5meV4cITIFqrMiaCJn6M4rokUZ
+         W5vvISyaWjfwkb65pbobiwi/yD52IlQZfVg8c0SSurQ0a25IBhT46rAhaHNIA8pJQfed
+         ACrLjYWoL7Mxe2UVTDOFQVionzBD3XFwAHqNMosx77s7WWYDgI511j2x+4IHE1j3zYRx
+         jWfJo0yqYNOgjcAjWkVAwYlSVLzZhT0GbfGK8udHYmzeJdcmWK2jHXRQ0NV2EPdFI9KQ
+         r8Uw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704836263; x=1705441063;
+        d=1e100.net; s=20230601; t=1704836296; x=1705441096;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=Df5vbAJJu14yKYfvCr4fxtDlzFXpAT3tR5jvbBHluqQ=;
-        b=PNUS0tJ9Z7dSdb8I6gFdVGkFHAMPsxQ5Fu4XkuvS97465vC4oEGoM9S3GrQDuP/u3e
-         Wqx/5ASOkMBQzM0mtg6HXpGZEOgdSfFe/ImNi9NXdgmNtj1XuexV546VpsiR2RaRskgj
-         dcnEf1IayKHBCXCtS4A9hdmrG02zUHEvDnqbT10uhDmg/x0ytvgdiKQX+5NM2NMbriJz
-         LhiVSRtZrCAIUKO6VL461r45vfYe3DKZ4NiTgC+d8eddwm2TGZusSKVgFFC/1GEZ6YR1
-         fxYiyJrZPs4aSSQsjdSe/vRY91huBBfSVRxNQcEKdEOxkjtOP5iM+J/Q7F8GUfy056J/
-         5N/g==
-X-Gm-Message-State: AOJu0Yy1VTVlo9jDGxo2gNJy412RZgXhdgSzsumkaKnKHkrqnmKjSxZK
-	v1Dg26/iKRkZinyzackwjMlFpk8iSkiFtg==
-X-Google-Smtp-Source: AGHT+IGaixYqKBLJGCt7Dc8bk3FuZ2kSYvJcJs/DSrS/IfT6nLOs57OXi7Hzzt5IyKJ5I0YIuzzo2g==
-X-Received: by 2002:ac2:484e:0:b0:50e:7b7b:5557 with SMTP id 14-20020ac2484e000000b0050e7b7b5557mr1310256lfy.145.1704836262813;
-        Tue, 09 Jan 2024 13:37:42 -0800 (PST)
+        bh=A5G3kOVOJ3YPkVZuV6/moOWckQ3gnsEMdzz/Vic7oRo=;
+        b=pbH1KsUCcv3bn38hWUUciJ4ed7O0pblHaJxpIF03e/ydP1XBcIesFNfiq72k6vgqam
+         LQrX/gF39deSDelwoAtSy5mM/6gboNParGRsOfsq4ylyFsFWCWe5xZcPo7+xzQuutd5k
+         u7gT9lNnlUVXj/ywWPtzIp9naLANMbi1Ou7wEmU3l24WbjTOxMkenhzXYuqsTPFhF6Jl
+         OszLYSqnq0ratJYV2srYUZi2XQwIasiT+5pXbgWhxibkcLKOzzeI5la3XuG9Tkj4pPVf
+         /4ya5gm03p/P/4onwnti42FqQ0rsCxkKQCPo7fUPlFX4en/I20yNeKEsl8qWmX1bUNA0
+         Uzcw==
+X-Gm-Message-State: AOJu0YzWDtTpxBwhu/hw7lgbchzTdq8gPDVAwtZlBMF4lSyg95lZKU5p
+	9nl4gcI1FKWNmlTUmVw5zdyoESaqtbOQRw==
+X-Google-Smtp-Source: AGHT+IH7hjFDBoKfUKdAfGYFie2ibx6B3yk4kAZkSCroFtKisI44OmhXw4LX0HY1I/6GHFrCWp+sTA==
+X-Received: by 2002:a17:906:39c1:b0:a28:c06d:2e12 with SMTP id i1-20020a17090639c100b00a28c06d2e12mr28962eje.21.1704836295878;
+        Tue, 09 Jan 2024 13:38:15 -0800 (PST)
 Received: from krzk-bin.. ([178.197.223.112])
-        by smtp.gmail.com with ESMTPSA id g17-20020a1709063b1100b00a2356a7eafasm1413272ejf.199.2024.01.09.13.37.40
+        by smtp.gmail.com with ESMTPSA id lf11-20020a170907174b00b00a26ac5e3683sm1420197ejc.100.2024.01.09.13.38.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Jan 2024 13:37:41 -0800 (PST)
+        Tue, 09 Jan 2024 13:38:15 -0800 (PST)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+To: Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
 	Rob Herring <robh+dt@kernel.org>,
 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
 	Conor Dooley <conor+dt@kernel.org>,
+	Jerome Brunet <jbrunet@baylibre.com>,
+	linux-sound@vger.kernel.org,
 	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Rob Herring <robh@kernel.org>,
-	Michael Walle <michael@walle.cc>,
-	=?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
-Subject: [PATCH] dt-bindings: nvmem: add common definition of nvmem-cell-cells
-Date: Tue,  9 Jan 2024 22:37:39 +0100
-Message-Id: <20240109213739.558287-1-krzysztof.kozlowski@linaro.org>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH] ASoC: dt-bindings: dai-common: Narrow possible sound-dai-cells
+Date: Tue,  9 Jan 2024 22:38:12 +0100
+Message-Id: <20240109213812.558492-1-krzysztof.kozlowski@linaro.org>
 X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -76,49 +76,34 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Linux kernel NVMEM consumer bindings define phandle to NVMEM cells
-("nvmem-cells"), thus we also want the common definition of property
-defining number of cells encoding that specifier, so the
+Instead of accepting any value for sound-dai-cells, the common DAI
+properties schema should narrow them to sane choice.
 
-Suggested-by: Rob Herring <robh@kernel.org>
-Reported-by: Michael Walle <michael@walle.cc>
-Closes: https://github.com/devicetree-org/dt-schema/pull/89
-Reported-by: Rafał Miłecki <zajec5@gmail.com>
-Closes: https://lore.kernel.org/linux-arm-kernel/20221121105830.7411-1-zajec5@gmail.com/#r
-Closes: https://lore.kernel.org/all/bdf7751b-0421-485d-8382-26c084f09d7d@gmail.com/
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
----
- .../bindings/nvmem/nvmem-provider.yaml         | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/nvmem/nvmem-provider.yaml
 
-diff --git a/Documentation/devicetree/bindings/nvmem/nvmem-provider.yaml b/Documentation/devicetree/bindings/nvmem/nvmem-provider.yaml
-new file mode 100644
-index 000000000000..4009a9a03841
---- /dev/null
-+++ b/Documentation/devicetree/bindings/nvmem/nvmem-provider.yaml
-@@ -0,0 +1,18 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/nvmem/nvmem-provider.yaml#
-+$schema: http://devicetree.org/meta-schemas/base.yaml#
-+
-+title: NVMEM (Non Volatile Memory) Provider
-+
-+maintainers:
-+  - Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-+
-+select: true
-+
-+properties:
-+  '#nvmem-cell-cells':
-+    enum: [0, 1]
-+
-+additionalProperties: true
+---
+
+Mostly sound-dai-cells are 0 or 1, but
+Documentation/devicetree/bindings/sound/amlogic,aiu.yaml has value of 2.
+---
+ Documentation/devicetree/bindings/sound/dai-common.yaml | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/Documentation/devicetree/bindings/sound/dai-common.yaml b/Documentation/devicetree/bindings/sound/dai-common.yaml
+index 1aed2f0f1775..6db35887cbe6 100644
+--- a/Documentation/devicetree/bindings/sound/dai-common.yaml
++++ b/Documentation/devicetree/bindings/sound/dai-common.yaml
+@@ -13,6 +13,7 @@ allOf:
+   - $ref: component-common.yaml#
+ 
+ properties:
+-  '#sound-dai-cells': true
++  '#sound-dai-cells':
++    enum: [0, 1, 2]
+ 
+ additionalProperties: true
 -- 
 2.34.1
 
