@@ -1,83 +1,128 @@
-Return-Path: <linux-kernel+bounces-20212-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20216-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C85E827BF8
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 01:27:40 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1CD0A827C11
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 01:30:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 79372B22916
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 00:27:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 441061C21C89
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 00:30:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9712E39E;
-	Tue,  9 Jan 2024 00:27:29 +0000 (UTC)
-Received: from omta002.cacentral1.a.cloudfilter.net (omta002.cacentral1.a.cloudfilter.net [3.97.99.33])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12E7F186C;
+	Tue,  9 Jan 2024 00:30:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="gCeq9nn2"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1878191
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 00:27:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dilger.ca
-Received: from shw-obgw-4003a.ext.cloudfilter.net ([10.228.9.183])
-	by cmsmtp with ESMTPS
-	id MwQLrilTOGAIJMzwErFEuj; Tue, 09 Jan 2024 00:25:50 +0000
-Received: from webber.adilger.int ([70.77.200.158])
-	by cmsmtp with ESMTP
-	id MzwDrA0jx0nMNMzwDrMW0D; Tue, 09 Jan 2024 00:25:50 +0000
-X-Authority-Analysis: v=2.4 cv=Qcx1A+Xv c=1 sm=1 tr=0 ts=659c928e
- a=0Thh8+fbYSyN3T2vM72L7A==:117 a=0Thh8+fbYSyN3T2vM72L7A==:17 a=RPJ6JBhKAAAA:8
- a=QQdngafKVaWhNDnW0jYA:9 a=fa_un-3J20JGBB2Tu-mn:22
-From: Andreas Dilger <adilger@dilger.ca>
-To: Andy Whitcroft <apw@canonical.com>,
-	Joe Perches <joe@perches.com>
-Cc: linux-kernel@vger.kernel.org,
-	Andreas Dilger <adilger@dilger.ca>
-Subject: [PATCH v2] checkpatch: ignore deleted lines for comment context
-Date: Mon,  8 Jan 2024 17:25:36 -0700
-Message-Id: <20240109002536.56695-1-adilger@dilger.ca>
-X-Mailer: git-send-email 2.25.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4AEF15A4
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 00:30:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1704760208;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=w5k+ZXtVfG6u9Bw3T1Sa5a4COKTCSddmRJFEwTBvDNI=;
+	b=gCeq9nn2aypv0+VE1dkvzIjoyW+kVcGqmRmafiJ1fKWyuuiH4SQkWNR1x8zVErR8IL36TG
+	+7enhepNDCYWH1vkhTWpmsPhfyEko07b0xdben0UPazp/nZvipsMJ2R+RSnM7XpdiUUd/f
+	9p3izZsqddWeHQ54MEqgqj0fqUZdiAk=
+Received: from mail-pl1-f199.google.com (mail-pl1-f199.google.com
+ [209.85.214.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-672-TZo_lc2OMdyQEgTl41qMjA-1; Mon, 08 Jan 2024 19:30:07 -0500
+X-MC-Unique: TZo_lc2OMdyQEgTl41qMjA-1
+Received: by mail-pl1-f199.google.com with SMTP id d9443c01a7336-1d44c745bfcso26029175ad.2
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 16:30:07 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704760206; x=1705365006;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=w5k+ZXtVfG6u9Bw3T1Sa5a4COKTCSddmRJFEwTBvDNI=;
+        b=jXMzxcRsMrIGGzXtkhpGQNj1SRAKaM5WB+hIw5vWeSb0ARmL/ADnNdJnnpKsAhdtgT
+         wsy3+ntVESN4ErV0rpCgrm7nFexBvB+NjopKIW5s6pxLAVJo0ZA4KcBdI5ovaAwKOwWx
+         bJUCwOdiBpJNssHi3Wc6j9AtsnaLr04fz2R0xQAAw59usjuBgCOk6HjVj2XZAii47N3M
+         VZNvGvoJaQtyTIuqUttB0YguSnTZDn4YflPQYPz8fgWBPmlz6bHfFXmTvaoKClYA9gCu
+         akjBo9kPFBMIQHmSe0Y64ycxpmReIre1mAYJO+zP9NezoRm1RHpiyTC9bLAZKD+9z7bX
+         EXuA==
+X-Gm-Message-State: AOJu0Yyz8pNM0EOI6wEmZ55Dx6tHWcbn2G6I2bM2CyTo9aiEZOjwfXUt
+	PXEfx2Am/MEXY6DPpP251EuX4Goz+dj5ldONQpHQ84uijnrOTWOs8YIfkmpUs7p6zZWn0A/4Zu+
+	mPUrv2gihBUZ1eogunRmfJPsvfqMi7QSb
+X-Received: by 2002:a17:903:2344:b0:1d5:4c37:714f with SMTP id c4-20020a170903234400b001d54c37714fmr1278400plh.22.1704760206412;
+        Mon, 08 Jan 2024 16:30:06 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFKsw+pTaiH9xGzdzNmrW8Ru6E0RFiaaS1q6loEdAq46i2p3vx+rT4qLXe66Af5VWUPuJT01A==
+X-Received: by 2002:a17:903:2344:b0:1d5:4c37:714f with SMTP id c4-20020a170903234400b001d54c37714fmr1278384plh.22.1704760206123;
+        Mon, 08 Jan 2024 16:30:06 -0800 (PST)
+Received: from localhost ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id jf18-20020a170903269200b001d4abb685c7sm477815plb.22.2024.01.08.16.30.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Jan 2024 16:30:05 -0800 (PST)
+Date: Tue, 9 Jan 2024 08:27:06 +0800
+From: Coiby Xu <coxu@redhat.com>
+To: Jarkko Sakkinen <jarkko@kernel.org>
+Cc: linux-integrity@vger.kernel.org, itrymybest80@protonmail.com, 
+	Mimi Zohar <zohar@linux.ibm.com>, Dmitry Kasatkin <dmitry.kasatkin@gmail.com>, 
+	Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>, 
+	"Serge E. Hallyn" <serge@hallyn.com>, 
+	"open list:SECURITY SUBSYSTEM" <linux-security-module@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>
+Subject: Re: Re: [PATCH] integrity: don't throw an error immediately when
+ failed to add a cert to the .machine keyring
+Message-ID: <hnx4cg626xworbjszwn2m7cijhh6fux7h7qnatgccfym6mjxic@uzs7ufqoswhw>
+References: <20231227044156.166009-1-coxu@redhat.com>
+ <CY54Q6U6UMKM.2H5N3BACDBGU0@suppilovahvero>
+ <43dozoqfip7m6nglbwzwyzykx23fpzbp7d42pcqzudnzlfvfkb@yjvuo5a6suvv>
+ <CY6WDWW69XDP.2E8GFRMXYTB22@suppilovahvero>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4xfIKe30+Lirkkrd59KOXxg9WzvL+y/mNDg5+p+ivw9SvC8yMdV8ASfGNtiTxRsGGh3F75Tt5629nnzfW8tibOpsJG72aqp+wpqZw7VjelHKP9v3zt3NyN
- Os6KOiFg1EBfBG5hbukFB2jOtAp05+CfsIvcDTTK2YfF1UUE1QxBFj7Q2iZBGlnXYQHKzxnMhLvcWub+KhG1OOE2Dd5se1GAwwG+MYSuAmUUL7LwNUN6sEnw
- 1+dFAxrbyKsX5/fUisSBWDTriXUmpWnpjaCe5fDZkLA4v5PAZTeZ5q9WlZZnV0B3
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <CY6WDWW69XDP.2E8GFRMXYTB22@suppilovahvero>
 
-Don't consider lines being removed by a patch as part of the context.
-Otherwise, false "WARNING: memory barrier without comment" and similar
-warnings can be reported when a comment exists on the previous line.
+On Fri, Jan 05, 2024 at 06:02:38PM +0200, Jarkko Sakkinen wrote:
+>On Fri Jan 5, 2024 at 3:20 PM EET, Coiby Xu wrote:
+>> On Wed, Jan 03, 2024 at 04:09:29PM +0200, Jarkko Sakkinen wrote:
+>> >On Wed Dec 27, 2023 at 6:41 AM EET, Coiby Xu wrote:
+>> >> Currently when the kernel fails to add a cert to the .machine keyring,
+>> >> it will throw an error immediately in the function integrity_add_key.
+>> >>
+>> >> Since the kernel will try adding to the .platform keyring next or throw
+>> >> an error (in the caller of integrity_add_key i.e. add_to_machine_keyring),
+>> >> so there is no need to throw an error immediately in integrity_add_key.
+>> >>
+>> >> Reported-by: itrymybest80@protonmail.com
+>> >
+>> >Missing "Firstname Lastname".
+>>
+>> Thanks for raising this concern! I've asked the reporter if he/she can
+>> share his/her name.
+>
+>Also, it is lacking fixes tag.
 
-For example, a change like below was previously incorrectly flagged:
+Thanks for catching this issue! I've included the Fixes tag in v2.
 
-	/* matched by smp_store_release() in some_function() */
- -	if (smp_load_acquire(&list->tail) == head))
- +	if (smp_load_acquire(&list->tail) == head) && flags == 0)
+>
+>Fixes tag is mandatory, name part would be super nice to have :-) Since
+>this categories as a bug fix, getting them in is 1st priority and that
+>thus does not absolutely block applying the change. Thanks for going
+>trouble trying to query it, however.
 
-Signed-off-by: Andreas Dilger <adilger@dilger.ca>
----
-  V1 -> V2: don't include extra debugging in 'warn' line
+Thanks for the explanation! As I still get no reply from the reporter,
+so I guess we have to accept the name part for now.
 
- scripts/checkpatch.pl | 1 +
- 1 file changed, 1 insertion(+)
+>
+>BR, Jarkko
+>
 
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index 25fdb7fda112..316a65354718 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -1973,6 +1973,7 @@ sub ctx_locate_comment {
- 	for (my $linenr = $first_line; $linenr < $end_line; $linenr++) {
- 		my $line = $rawlines[$linenr - 1];
- 		#warn "           $line\n";
-+		next if ($line =~ /^-/); # ignore lines removed by patch
- 		if ($linenr == $first_line and $line =~ m@^.\s*\*@) {
- 			$in_comment = 1;
- 		}
 -- 
-2.25.1
+Best regards,
+Coiby
 
 
