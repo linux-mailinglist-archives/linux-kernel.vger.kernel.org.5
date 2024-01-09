@@ -1,205 +1,179 @@
-Return-Path: <linux-kernel+bounces-20469-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20512-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 19CD0827F6A
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 08:26:45 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D3B5827FFB
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 09:00:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1EA4E1C254F0
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 07:26:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8BE561F26058
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 08:00:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E22C8381AC;
-	Tue,  9 Jan 2024 07:21:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wiwynn.com header.i=@wiwynn.com header.b="iOV11NqV"
-Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01on2088.outbound.protection.outlook.com [40.107.215.88])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8620C13AF8;
+	Tue,  9 Jan 2024 08:00:29 +0000 (UTC)
+Received: from CHN02-BJS-obe.outbound.protection.partner.outlook.cn (mail-bjschn02on2085.outbound.protection.partner.outlook.cn [139.219.17.85])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98D57374F7;
-	Tue,  9 Jan 2024 07:21:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wiwynn.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wiwynn.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64F8613AE2;
+	Tue,  9 Jan 2024 08:00:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=starfivetech.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=We2NS9XzFnHv2vnbmDVuG0fUW131HRf1SmR/miOVwClpmDSsOI0aObe6Q5Gwmu1WUS6JhkAe7ls/gzuyi+m9FSRMrMN6JyaxVIaqZywrkPnwkYG3heICfjRaVgrqOQRJQILhf1ryJOXlhq+Jot6l/96+Ofv/VGNc3erejL4pyuedtlBPYnH8RMvpcn0H+SFKl4+H/uNLUf9N9ChhQAoO4ewfZqMnGcwk8X+dMyTH4h+j/e4P8sZY6y5WFDQJccj8a9v/cZEkU2bsI3N8K7FccWz1UUuOXDONzwh7XGCcK0bcblKd0Fgku9DCmO0zcld1kS9ikTlxZyr22+N8N9tMHg==
+ b=XySMMhkEb2SjcTg4jSHIQVRFn8biV/NBAKZYUmuq/tcQF81pDgCBuOtCSHho03caFU/FGl7ZFNRfzhYnwWHW1n2+FOYv3Z9jujnxTgQqf85sZ/H/yQNlfIvy9/TzaS3lGO4YsN9jmyCck2Ferc81EHqYoQ+8EbLZyLqmL0NR/mqTg1wmHNO0cXg/Nyn3MHYJT+SZ/axEiZ1wHHK9r5sfxAsFsaSQv24XUIYKsQ2vKfctUuYLlz9EhBSC5V3sRw9jOnxRzNqo3uGKJ+yBBH+C4dIdqaks/l9YbqaHVcd81SiGs2heSHWrfsCWy2ZfuR56cW8DKAA0428jqGMB0hOEsw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=oYpFg9mdH6XKuJD9Pi7Zr2ZT/6fjyL6fFPQPXh/DZEk=;
- b=DdGgt989oPXXrrLXwMEs12PjF2rUZ83eqIpftGQ0xBNBLX/QqK7CxEnd+vIfGHmA1epdMX6a+lxnIdiCcFv+1N1olrQAEEa4Esqu/RBHOq74U54tElSXUKu4fRK+KayUaUPbf9T+byBUAZdZAr5SkiJHafPgUsSO+FfR+rEkSCnGKXtkxPu079seASAjCLUZ86X9QECLS7MNj/1mRGSSxXlWG793mDrlqsQt5Tha9F5KTY2epH/DXmTRR2gBTYLNFrSaPaG6Wry4Rz7ZkJckkudqByMf8DRlu2XxgKpObRIM5EcyrXeoDKsR7j81Zu4c/TUh6h+hQIMhgFrI7SMrIw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=fail (sender ip is
- 211.20.1.79) smtp.rcpttodomain=stwcx.xyz smtp.mailfrom=wiwynn.com; dmarc=fail
- (p=quarantine sp=quarantine pct=100) action=quarantine
- header.from=wiwynn.com; dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wiwynn.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=oYpFg9mdH6XKuJD9Pi7Zr2ZT/6fjyL6fFPQPXh/DZEk=;
- b=iOV11NqVn3rBm5vMIL03G0518i5A++l8lq9/p8rRjdJr8xlY8xRxLOSVcBWC6z6/4ICkqznMnf9DXxfg2a3l2P2mTvJNUxLxQ/dZoNJob9UOTQSfyGU7N0Fhtj9O9l2KWvZPQG2ATBNbJ3snO277YcRdEOltAEyMKCRkm2F17278ssysjgs3dRiMqA+3Y8mQrBbtL1QmYu4G5QdJkkA+z2V1hIqhB9LkBjCZwLL7Ajv1P+Zke6nKp5r4Lj/khQhxZrLRSTVwUuoeavPx2P/yJbmXOaqlyXS22qh4af4QRDrlQe6QrkHHNPmqDFYT82tBOc5XiATkSxqhDD4+I+b7FQ==
-Received: from PUZP153CA0016.APCP153.PROD.OUTLOOK.COM (2603:1096:301:c2::18)
- by SEZPR04MB6623.apcprd04.prod.outlook.com (2603:1096:101:92::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.23; Tue, 9 Jan
- 2024 07:21:46 +0000
-Received: from HK3PEPF0000021E.apcprd03.prod.outlook.com
- (2603:1096:301:c2:cafe::37) by PUZP153CA0016.outlook.office365.com
- (2603:1096:301:c2::18) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.6 via Frontend
- Transport; Tue, 9 Jan 2024 07:21:46 +0000
-X-MS-Exchange-Authentication-Results: spf=fail (sender IP is 211.20.1.79)
- smtp.mailfrom=wiwynn.com; dkim=none (message not signed)
- header.d=none;dmarc=fail action=quarantine header.from=wiwynn.com;
-Received-SPF: Fail (protection.outlook.com: domain of wiwynn.com does not
- designate 211.20.1.79 as permitted sender) receiver=protection.outlook.com;
- client-ip=211.20.1.79; helo=localhost.localdomain;
-Received: from localhost.localdomain (211.20.1.79) by
- HK3PEPF0000021E.mail.protection.outlook.com (10.167.8.40) with Microsoft SMTP
- Server id 15.20.7181.13 via Frontend Transport; Tue, 9 Jan 2024 07:21:46
- +0000
-From: Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>
-To: patrick@stwcx.xyz,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Joel Stanley <joel@jms.id.au>,
-	Andrew Jeffery <andrew@codeconstruct.com.au>
-Cc: Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>,
-	devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-aspeed@lists.ozlabs.org,
+ bh=MTzShixjE7oUtM7mcd+b6ERhd0vS0ITc1Wt5L7srMuE=;
+ b=ZqtW95cPxUQDASdkOpYdlq2/nukIXXAmDazFtGiMBZoUD7gBtNcX5IljzGuE8fY6FhQ4W4RW1yUu229EiCFBqzU5ek8+e+SDIqBvHr38M08WqPf9SIwQqgUvPNW5Bc1uOpxD0uaO43apb+0ZxypLyHfK+nqq9AMbGyX8ixDBjNmJWX46Ov2jzzvz5ud4hUU3QVY0Rq1KGrnA47YWwBZAr2MLINtUwVYbdj208NmCD4ieKMAbf/P7gtbgKKs6eUQf1a2j1r7/bzzoE4vtCRdOZ1QW95pke5TvnkaqmZZKxxNlFOqf9vltUVjSoppRZ9Ncg2i5ZGKGUeELZM0DTQvC/A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=starfivetech.com; dmarc=pass action=none
+ header.from=starfivetech.com; dkim=pass header.d=starfivetech.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=starfivetech.com;
+Received: from NT0PR01MB1070.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c510:3::6) by NT0PR01MB1231.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c510:e::9) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7135.32; Tue, 9 Jan
+ 2024 07:25:24 +0000
+Received: from NT0PR01MB1070.CHNPR01.prod.partner.outlook.cn
+ ([fe80::85fc:7fb9:8b00:dd88]) by
+ NT0PR01MB1070.CHNPR01.prod.partner.outlook.cn ([fe80::85fc:7fb9:8b00:dd88%3])
+ with mapi id 15.20.7135.019; Tue, 9 Jan 2024 07:25:24 +0000
+From: Shengyang Chen <shengyang.chen@starfivetech.com>
+To: devicetree@vger.kernel.org,
+	dri-devel@lists.freedesktop.org
+Cc: andrzej.hajda@intel.com,
+	neil.armstrong@linaro.org,
+	rfoss@kernel.org,
+	Laurent.pinchart@ideasonboard.com,
+	jonas@kwiboo.se,
+	jernej.skrabec@gmail.com,
+	maarten.lankhorst@linux.intel.com,
+	mripard@kernel.org,
+	tzimmermann@suse.de,
+	airlied@gmail.com,
+	daniel@ffwll.ch,
+	robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	p.zabel@pengutronix.de,
+	tomi.valkeinen@ideasonboard.com,
+	r-ravikumar@ti.com,
+	aford173@gmail.com,
+	rdunlap@infradead.org,
+	u.kleine-koenig@pengutronix.de,
+	bbrezillon@kernel.org,
+	changhuang.liang@starfivetech.com,
+	keith.zhao@starfivetech.com,
+	shengyang.chen@starfivetech.com,
+	jack.zhu@starfivetech.com,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v4 19/19] ARM: dts: aspeed: yosemite4: support mux to cpld
-Date: Tue,  9 Jan 2024 15:20:51 +0800
-Message-Id: <20240109072053.3980855-20-Delphine_CC_Chiu@wiwynn.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240109072053.3980855-1-Delphine_CC_Chiu@wiwynn.com>
-References: <20240109072053.3980855-1-Delphine_CC_Chiu@wiwynn.com>
+Subject: [PATCH v2 0/2] Add StarFive JH7110 SoC DSI support
+Date: Tue,  9 Jan 2024 15:25:14 +0800
+Message-Id: <20240109072516.24328-1-shengyang.chen@starfivetech.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-ClientProxiedBy: NT0PR01CA0008.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c510::13) To NT0PR01MB1070.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c510:3::6)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: HK3PEPF0000021E:EE_|SEZPR04MB6623:EE_
-Content-Type: text/plain
-X-MS-Office365-Filtering-Correlation-Id: 2ac978e3-ff02-491b-62d8-08dc10e3a374
+X-MS-TrafficTypeDiagnostic: NT0PR01MB1070:EE_|NT0PR01MB1231:EE_
+X-MS-Office365-Filtering-Correlation-Id: db48c1bf-e533-438b-ca23-08dc10e42546
 X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	D4kT2DSyzOB0T5L5G4vBqQ8dFtymdIzAiB5hv7yzKFznJbquQNcENLTKojcEzvDY22FckAh2XJ+bDiLGR2+ErZyhw9d0DL8i/JQL7fAAPM156Sd3Uk3hYfwnKK70StmsRmGz+WKgUKhVYqfGer40tXoJTX7jjZJmtlds47ooqRS5MFQXck9FLUpO1VE99gkog/rSsQ+ufZHq8Zi4Qijoe+gwAk7nBmFnH+sXT88BSVu3LIYd/gxuhEx8ky4xsFvaFFPncgIRtAPzX0CQL5d8HFuP6r52qenQCvBKgDeBs7UVdyBPw1bQ2WvRQ0ahA4e9bGGVh829YAE5MRHy1nHV5d2BHi2qYQFmfmTJhJJ+ffxLc1h8WsTLVXyhovX4GTAEtxJd3Vj1HpwJThvmfBYUyX7CRu6Cn7auKAC2Jb2CdvehcatRPLyIewtDy61l8odUpxjAsc/9txeKAKV9Rh+L6DwIoEykSugaX4q+0g/6Kw2pksaWyQlYUi+Y/G62XmgLpkTZ2kcKjS/vmjDf3g4WsCFZ3LPTDPZXtrQzpT5jEA5EanNfekq764s0gN2lHLnmU7Q8Aet7OpSJK+PJJ40OYPjFX/swCMDLFSkqttIChUnU9MjXK0VEFZ0o/4dOO46JGiGcqCa8E0KvJSw5EJTtjhTVvJDAJ4Wgk7F9m5OX+L5oLS5MgjxwE0zEQ3eaBKUiXsNPxCfHR+x3TLQyoiic/g==
+	Jz2tFfE3xGi17J0rgz+y+hYj130rrPknRkWqJfTn0RV7KD6h1qHFO4xRDWUj2ImEjG+JmrYNHf97I1ZJWlkLnvtQBMocyhWw3oznSxQlYsDdd+R/xuIPgcFeoI2Qvm2/2otI17EURREtg04x27fzopyzX3395bD0Sb9X0IeLsxcLycJzT0H1Aevo9fL0kruMo6r1NskmEhxvKYdBbILHMva//98AHsPuu754YcNIDym8SpKbmLvutIPgyBGY7c4lLY91HmjWohK79eQOUY5lBAbyl/3zyzDTknslL+oP99sD51V86VP7n1G9FgU/MAepuG/GZIDhQZvExupHzLc+A40qHZcJFEfINNiXW8UqW4Uf1rCNjv2B+CSysp381bmo4Bg3S1ZVd3jr/scBGGMt2hq7gammj1UU1gEzUHlUyvtAZxAAidZuSuPAmc6GVHvV5JkoCS4QwsESxyvGIS7uNRU+CQLa9ePEKcq+p8hsApnwzWe5Z+IZ4It/CH9kZ1JlfoHX2rcSW7h8ZNEcWNOn8oVsdfB7XX2+TY2Io7GlWSHsBxEEhEmNY+kiVg3eY1Gd
 X-Forefront-Antispam-Report:
-	CIP:211.20.1.79;CTRY:TW;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:localhost.localdomain;PTR:211-20-1-79.hinet-ip.hinet.net;CAT:NONE;SFS:(13230031)(6069001)(4636009)(136003)(376002)(39860400002)(346002)(396003)(230922051799003)(186009)(82310400011)(451199024)(64100799003)(1800799012)(46966006)(36840700001)(81166007)(70206006)(70586007)(356005)(6512007)(36756003)(9316004)(6486002)(6666004)(6506007)(478600001)(5660300002)(86362001)(7416002)(2906002)(8676002)(8936002)(110136005)(36736006)(316002)(4326008)(41300700001)(40480700001)(47076005)(336012)(82740400003)(83380400001)(2616005)(956004)(26005)(1076003)(36860700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: wiwynn.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Jan 2024 07:21:46.3670
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:NT0PR01MB1070.CHNPR01.prod.partner.outlook.cn;PTR:;CAT:NONE;SFS:(13230031)(396003)(136003)(366004)(39830400003)(346002)(230922051799003)(186009)(451199024)(1800799012)(64100799003)(86362001)(66946007)(40160700002)(36756003)(40180700001)(38100700002)(83380400001)(1076003)(38350700005)(508600001)(52116002)(966005)(6666004)(7416002)(8676002)(8936002)(2906002)(66556008)(4326008)(44832011)(5660300002)(66476007)(26005)(41300700001)(2616005)(41320700001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?pC2pKiZhwMH4+9Km0YqLBmE+jryGpPzid4rYkem3pTzHsb0dgPNSuPYL5/mu?=
+ =?us-ascii?Q?Sh+xL2XjK3mSvAm5M55x+rvNRnlfMjcrAC+tus9Hhed+yvvnGEdiYPlVVKYq?=
+ =?us-ascii?Q?Hkpfl2LTqJp4nsCSZTT7tL7zRtz4evOP4H3Ss6zpiNVh11tqx2kpizBqd8Z0?=
+ =?us-ascii?Q?NgSotgMMu/mMmvY66DhhE1o1YgwJglo0+J73nzOCbaw7iOcm8LKXAhDePfqk?=
+ =?us-ascii?Q?iSJAm24ddYRmhAkQuUO9lH+mmM2WOtneSqRcLiUsQtHbSOBOcj/bAmQx3U2T?=
+ =?us-ascii?Q?oz1pEiTu6r0UJXMTT9f60+EYGK6Yk/GeKGzrYxP3Pa6ldfLbs9xXMlUzYa6K?=
+ =?us-ascii?Q?XcO7yjMREApr1/AaVVG1/3qvw/IKI/cVKEjEV9klmsY0/O7+Zi3GGqaXeD5P?=
+ =?us-ascii?Q?CuUGUy3GIZfS6B/GcK62cPOWK3WyMi5JPftnbSLB2zX/PIOKjhLbpNLUnL4V?=
+ =?us-ascii?Q?B70nrZ2s8WWpwltohL//nVyvGresXxuv3T8uVmLn+4IeZmpS6LrLddZCGsQC?=
+ =?us-ascii?Q?8AwxZXBeiL9lYgAhoJVL0YYi9h4smwYYmQmuS/hNY0JfSkae6m8bCLfyQNqg?=
+ =?us-ascii?Q?I4zyixiwIdrI2OfDXGe2p9VtL8GQhU4a2kvNRaOTW4UJTlTLtkm2oJjKH4KS?=
+ =?us-ascii?Q?ShgfThhxLpE8CHGGjN38TKtx8kXYEoAhlCYrvZPtMQDQsBDaxGolSXn9Yg2j?=
+ =?us-ascii?Q?vuEEnrkfbQSNUDSXxoG83+MOrVkzSe3XWrjW6lcCxk4AlPtaFy7G+Y0MMoyw?=
+ =?us-ascii?Q?AupTw1JQFBRnWBvDSiARES78Hpo4+gdNE77bF8xVviOwNX8BOVPlDV8x0l4x?=
+ =?us-ascii?Q?CLNAXxTJ7b3RXU8GHYV8zbH560w2cDsNJ0z8CH3LsYttBpxqbZxdAc4+h6pO?=
+ =?us-ascii?Q?87k6eIRpiTLUTm2zK4Y4O0B3VF8gQ+ABcvCBW4tM3xadZ1TRyj/AvYNR1AHl?=
+ =?us-ascii?Q?C4O9N1m7ZYvkugCzIwjyYt106KzpRIencjnqtzmshMTNfme58s/OOjwhYrnM?=
+ =?us-ascii?Q?x6vg/iMvdI+9DOcOhwT8L4L8+V/w42rT9xwO7QFnzj4mN+RZpz8moOpmHJs+?=
+ =?us-ascii?Q?rFyUikO07AXSt9VAUPGq5NhdliLt5bs4po38OZhORBfWlp5XgKVy8D5eiq/c?=
+ =?us-ascii?Q?ArpRcksTsWhA2oCNL2UXwyNEUTJZRPHvKFWr2r95ai4Bin0D7K37o1YfqE7D?=
+ =?us-ascii?Q?rlOYNZgsZ2p8vEDIp9V/I6SdHp32sVJX1pyMU26hWGW4Jf2cksxCKeeXsHxt?=
+ =?us-ascii?Q?e/DAwKCSGV0BMwGwyVkXjFCOP8K0k8mDZd4trCCF4R8udq8YNuHjdWrLvj9o?=
+ =?us-ascii?Q?h9/rFkSsXYTxNIUMEYUIwp9z6aLAcVOnEW3mrEOO/AHjRa1gjDZtsiavCA3X?=
+ =?us-ascii?Q?MCdQTNPrw+kEIlDfxQCLwqCLMKUcVwndY/pEDyBrChmgc/KXG8eJCI0VZks2?=
+ =?us-ascii?Q?m7+9bqtUqIq2AgXxWRn8uEerOgDllobG3TZhkiI9c/SesSa3W8RC9r7gwmgU?=
+ =?us-ascii?Q?QEmBzv9ntT1JNyzyDlMVzOQIek+h/w/vD0m+OEvlVe/c7CQDwAAkovchF/I3?=
+ =?us-ascii?Q?luxpN0zvpZNNPdc0MtV6RsEWeP/JaC256mPsPiBcaLG1R7/xLcWKGm3JCODO?=
+ =?us-ascii?Q?jCegKxam0gUC2cHO6puqX08=3D?=
+X-OriginatorOrg: starfivetech.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: db48c1bf-e533-438b-ca23-08dc10e42546
+X-MS-Exchange-CrossTenant-AuthSource: NT0PR01MB1070.CHNPR01.prod.partner.outlook.cn
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Jan 2024 07:25:24.5306
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2ac978e3-ff02-491b-62d8-08dc10e3a374
-X-MS-Exchange-CrossTenant-Id: da6e0628-fc83-4caf-9dd2-73061cbab167
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=da6e0628-fc83-4caf-9dd2-73061cbab167;Ip=[211.20.1.79];Helo=[localhost.localdomain]
-X-MS-Exchange-CrossTenant-AuthSource:
-	HK3PEPF0000021E.apcprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEZPR04MB6623
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 06fe3fa3-1221-43d3-861b-5a4ee687a85c
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: TJq775dZnJx2jggY7iEIAWjIjuG/tSj9/h/B/tBH7L4I3I9P9TLCJzN6HzhHYSUS4y+PYQsX4LvRsV8XAyqNaoqoZDANI9MITRZVbm6rMa4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: NT0PR01MB1231
 
-Mux pca9544 to cpld was added on EVT HW schematic design,
-so add dts setting for devices behind mux pca9544 to cpld
+This series is the series that attempts to support
+the CDNS DSI driver used to converts DPI to DSI.
+CDNS DSI is embedded in StarFive JH7110 SoC.
+The series has been tested on the VisionFive 2 board.
 
-Signed-off-by: Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>
----
- .../aspeed/aspeed-bmc-facebook-yosemite4.dts  | 64 ++++++++++++++-----
- 1 file changed, 49 insertions(+), 15 deletions(-)
 
-diff --git a/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts b/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts
-index 8589f7d31ffb..440f735ef059 100644
---- a/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts
-+++ b/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts
-@@ -36,6 +36,10 @@ aliases {
- 		i2c31 = &imux31;
- 		i2c32 = &imux32;
- 		i2c33 = &imux33;
-+		i2c34 = &imux34;
-+		i2c35 = &imux35;
-+		i2c36 = &imux36;
-+		i2c37 = &imux37;
- 	};
- 
- 	chosen {
-@@ -951,24 +955,54 @@ &i2c12 {
- 	status = "okay";
- 	bus-frequency = <400000>;
- 
--	temperature-sensor@48 {
--		compatible = "ti,tmp75";
--		reg = <0x48>;
--	};
-+	i2c-mux@70 {
-+		compatible = "nxp,pca9544";
-+		i2c-mux-idle-disconnect;
-+		reg = <0x70>;
- 
--	eeprom@50 {
--		compatible = "atmel,24c128";
--		reg = <0x50>;
--	};
-+		imux34: i2c@0 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <0>;
- 
--	eeprom@54 {
--		compatible = "atmel,24c64";
--		reg = <0x54>;
--	};
-+			temperature-sensor@48 {
-+				compatible = "ti,tmp75";
-+				reg = <0x48>;
-+			};
-+
-+			eeprom@50 {
-+				compatible = "atmel,24c128";
-+				reg = <0x50>;
-+			};
- 
--	rtc@6f {
--		compatible = "nuvoton,nct3018y";
--		reg = <0x6f>;
-+			eeprom@54 {
-+				compatible = "atmel,24c64";
-+				reg = <0x54>;
-+			};
-+
-+			rtc@6f {
-+				compatible = "nuvoton,nct3018y";
-+				reg = <0x6f>;
-+			};
-+		};
-+
-+		imux35: i2c@1 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <1>;
-+		};
-+
-+		imux36: i2c@2 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <2>;
-+		};
-+
-+		imux37: i2c@3 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <3>;
-+		};
- 	};
- };
- 
+changes since v1:
+- Rebased on tag v6.7.
+
+patch 1:
+- Changed the 'starfive,cdns-dsi' to 'starfve,jh7110-dsi'.
+- Changed the compatible enum alphabetical order.
+- Restrict other variants.
+- Drop 'dsi_' prefix.
+
+patch 2:
+- Optimize the calculation process.
+- Drop useless definition.
+
+v1: https://patchwork.kernel.org/project/dri-devel/cover/20231127113436.57361-1-shengyang.chen@starfivetech.com/
+
+Keith Zhao (2):
+  dt-bindings: display: bridge: cdns: Add properties to support StarFive
+    JH7110 SoC
+  gpu: drm: bridge: cadence: Add a driver and platform ops for StarFive
+    JH7110 SoC
+
+ .../bindings/display/bridge/cdns,dsi.yaml     |  44 +++-
+ MAINTAINERS                                   |   8 +
+ drivers/gpu/drm/bridge/cadence/Kconfig        |   7 +
+ drivers/gpu/drm/bridge/cadence/Makefile       |   1 +
+ .../gpu/drm/bridge/cadence/cdns-dsi-core.c    |  29 ++-
+ .../gpu/drm/bridge/cadence/cdns-dsi-core.h    |  21 ++
+ .../gpu/drm/bridge/cadence/cdns-dsi-jh7110.c  | 193 ++++++++++++++++++
+ .../gpu/drm/bridge/cadence/cdns-dsi-jh7110.h  |  16 ++
+ 8 files changed, 316 insertions(+), 3 deletions(-)
+ create mode 100644 drivers/gpu/drm/bridge/cadence/cdns-dsi-jh7110.c
+ create mode 100644 drivers/gpu/drm/bridge/cadence/cdns-dsi-jh7110.h
+
 -- 
-2.25.1
+2.17.1
 
 
