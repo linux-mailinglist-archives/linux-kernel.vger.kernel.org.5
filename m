@@ -1,122 +1,201 @@
-Return-Path: <linux-kernel+bounces-20986-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20987-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD251828824
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 15:31:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6EF72828825
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 15:32:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1068F1C23641
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 14:31:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0987B285FCC
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 14:32:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D96526AFD;
-	Tue,  9 Jan 2024 14:31:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85F52364A2;
+	Tue,  9 Jan 2024 14:32:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="uNCafcL3"
-Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com [209.85.215.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Eo6xdvC9"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 652031391
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 14:31:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pg1-f175.google.com with SMTP id 41be03b00d2f7-5bdbe2de25fso2278710a12.3
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 06:31:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704810663; x=1705415463; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=d3HXRcKDVxJPTXyXJSN6jduIbifNRx9OK443HIjFR3c=;
-        b=uNCafcL3BbzriyQNRDfLPsysHiWA0xiGo1soCwY9H5k4/YXABvsNn+ch3oLKdxHBgK
-         0xBcwdCI6eDD283MK41rFiTEHJXGzx5f+8jTrBWF8PkvC1Y+SL9a6W9+ZNQ1qOqXtdrW
-         zNdDa80CyA5jrt/2AGxZuKQKaX5RemiAcBm94SpDGmhRCws7DsPislkMFGy5FHBAGs8P
-         EUa/k6CDUM8trkRKY5Yl7aqeGH9R4185NUbQeBNDOWFCGKl5ixOdukYr1d4IpITzZI/c
-         +4hqgqluZEoRKpWh21xf8eW7r9gz+ECGdIpG9hDOoIhbM/YElNbORxQKTC9mH4Wh7rAo
-         8Dbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704810663; x=1705415463;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=d3HXRcKDVxJPTXyXJSN6jduIbifNRx9OK443HIjFR3c=;
-        b=Ir/su4enrQ8+4/XgoI4gWU489MwpHCYmYgT93NdglSY7CLyVKo5vMo5lZUZXFOdmbg
-         HNSgVJasdAr+9TA1w3LPBTClHahrbcZA02wVc1h00nmcKFLjNIb0/NsJz7BciIMp8385
-         sItU2BeDnAAviyjDDDb+Mxg4j87rAQ36p5J4r/BWsqT8Uj4FCSEoQbtqWPTWVH2BZMKI
-         E8w8j959/svQlEvFykzDzs6FoyCQrIaSjT74MYl8xc4QAn+UgJ/u9qImUN+oCkQgoUXD
-         zCJ7epghTvm9nve1S3cNvHXwrxj8WHPCIvPngVKXXQi7v9e8N67Hxfdu9i6Zyqcsehqt
-         /EVQ==
-X-Gm-Message-State: AOJu0Yz2M/nnFtiPkyXRFzpml4iVBfb97pdTHsCmcssLG+6F3UXxu+LN
-	AVZtOB+74sxdprZrmT6zkyir0Dr8BXrzGgwPoAyZMerbumPnRg==
-X-Google-Smtp-Source: AGHT+IGCrRv2Xox8IoTKAK1tK0lI+F5UQ2lc3D09T7sRQDvvxo2IzFqkGcHCcK2S942TMjaLqrnQP9OX3vcm21L/yJk=
-X-Received: by 2002:a17:90a:ea83:b0:28c:8ec9:6330 with SMTP id
- h3-20020a17090aea8300b0028c8ec96330mr3145262pjz.15.1704810662738; Tue, 09 Jan
- 2024 06:31:02 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36F7A39E
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 14:32:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1704810725;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=T4PbYrmacdkxUZGDudl2g58tiJlad9NdV+LI2jnLDRI=;
+	b=Eo6xdvC9+H/V77Bs9jYD+AVqBzssR1ekRw765GZvJr7lR770pcenPelX75alXJ/4xlC7Iz
+	DLLlNQ6HEi2vLNSrmsG+LCkfCLfE2uHCiz3mvL9Pc1G3NeWkaKD2XUS0f6UlfLniIEunJK
+	w8fLh3Sc3ZzkjTryoMuisNDID2Dxmhk=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-595-Ia7ILSYLND2q9wuualNwBw-1; Tue, 09 Jan 2024 09:32:02 -0500
+X-MC-Unique: Ia7ILSYLND2q9wuualNwBw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 9F9D2811E9E;
+	Tue,  9 Jan 2024 14:32:01 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.67])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 6A85E2166B32;
+	Tue,  9 Jan 2024 14:32:00 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+	Kingdom.
+	Registered in England and Wales under Company Registration No. 3798903
+From: David Howells <dhowells@redhat.com>
+To: Marc Dionne <marc.dionne@auristor.com>, dhowells@redhat.com,
+    "David S.
+ Miller" <davem@davemloft.net>,
+    Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+    Paolo Abeni <pabeni@redhat.com>, linux-afs@lists.infradead.org,
+    netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net v2] rxrpc: Fix use of Don't Fragment flag
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240108134843.429769-1-vincent.guittot@linaro.org>
- <20240108134843.429769-3-vincent.guittot@linaro.org> <fb25afab-9586-455a-b8c1-47949035c95a@arm.com>
-In-Reply-To: <fb25afab-9586-455a-b8c1-47949035c95a@arm.com>
-From: Vincent Guittot <vincent.guittot@linaro.org>
-Date: Tue, 9 Jan 2024 15:30:51 +0100
-Message-ID: <CAKfTPtDEKzup63H0iwHkTQCZOdQLUurACCYfEB-MpW+v7JEfag@mail.gmail.com>
-Subject: Re: [PATCH v3 2/5] sched: Take cpufreq feedback into account
-To: Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc: linux@armlinux.org.uk, catalin.marinas@arm.com, will@kernel.org, 
-	sudeep.holla@arm.com, rafael@kernel.org, viresh.kumar@linaro.org, 
-	agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org, 
-	mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com, 
-	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de, bristot@redhat.com, 
-	vschneid@redhat.com, lukasz.luba@arm.com, rui.zhang@intel.com, 
-	mhiramat@kernel.org, daniel.lezcano@linaro.org, amit.kachhap@gmail.com, 
-	corbet@lwn.net, gregkh@linuxfoundation.org, 
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	linux-pm@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org, linux-doc@vger.kernel.org, 
-	qyousef@layalina.io
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <1580268.1704810719.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date: Tue, 09 Jan 2024 14:31:59 +0000
+Message-ID: <1580269.1704810719@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
 
-On Tue, 9 Jan 2024 at 12:22, Dietmar Eggemann <dietmar.eggemann@arm.com> wrote:
->
-> On 08/01/2024 14:48, Vincent Guittot wrote:
-> > Aggregate the different pressures applied on the capacity of CPUs and
-> > create a new function that returns the actual capacity of the CPU:
-> >   get_actual_cpu_capacity()
->
->    function name                scaling
->
-> (1) arch_scale_cpu_capacity() - uarch
->
-> (2) get_actual_cpu_capacity() - hw + cpufreq/thermal of (1)
->
-> (3) capacity_of()             - rt (rt/dl/irq) of (2) (used by fair)
->
-> Although (1) - (3) are very close to each other from the functional
+    =
 
-I don't get your point as name of (1) and (3) have not been changed by the patch
+rxrpc normally has the Don't Fragment flag set on the UDP packets it
+transmits, except when it has decided that DATA packets aren't getting
+through - in which case it turns it off just for the DATA transmissions.
+This can be a problem, however, for RESPONSE packets that convey
+authentication and crypto data from the client to the server as ticket may
+be larger than can fit in the MTU.
 
-> standpoint, their names are not very coherent.
->
-> I assume this makes it hard to understand all of this when reading the
-> code w/o knowing these patches before.
->
-> Why is (2) tagged with 'actual'?
+In such a case, rxrpc gets itself into an infinite loop as the sendmsg
+returns an error (EMSGSIZE), which causes rxkad_send_response() to return
+-EAGAIN - and the CHALLENGE packet is put back on the Rx queue to retry,
+leading to the I/O thread endlessly attempting to perform the transmission=
+.
 
-This is the actual max compute capacity of the cpu at now  i.e.
-possibly reduced because of temporary frequency capping
+Fix this by disabling DF on RESPONSE packets for now.  The use of DF and
+best data MTU determination needs reconsidering at some point in the
+future.
 
-So (2) equals (1) minus temporary performance capping and (3)
-additionally subtracts the time used by other class to (2)
+Reported-by: Marc Dionne <marc.dionne@auristor.com>
+Signed-off-by: David Howells <dhowells@redhat.com>
+cc: "David S. Miller" <davem@davemloft.net>
+cc: Eric Dumazet <edumazet@google.com>
+cc: Jakub Kicinski <kuba@kernel.org>
+cc: Paolo Abeni <pabeni@redhat.com>
+cc: linux-afs@lists.infradead.org
+cc: netdev@vger.kernel.org
+---
+ net/rxrpc/ar-internal.h  |    1 +
+ net/rxrpc/local_object.c |   13 ++++++++++++-
+ net/rxrpc/output.c       |    6 ++----
+ net/rxrpc/rxkad.c        |    2 ++
+ 4 files changed, 17 insertions(+), 5 deletions(-)
 
+diff --git a/net/rxrpc/ar-internal.h b/net/rxrpc/ar-internal.h
+index e8e14c6f904d..e8b43408136a 100644
+--- a/net/rxrpc/ar-internal.h
++++ b/net/rxrpc/ar-internal.h
+@@ -1076,6 +1076,7 @@ void rxrpc_send_version_request(struct rxrpc_local *=
+local,
+ /*
+  * local_object.c
+  */
++void rxrpc_local_dont_fragment(const struct rxrpc_local *local, bool set)=
+;
+ struct rxrpc_local *rxrpc_lookup_local(struct net *, const struct sockadd=
+r_rxrpc *);
+ struct rxrpc_local *rxrpc_get_local(struct rxrpc_local *, enum rxrpc_loca=
+l_trace);
+ struct rxrpc_local *rxrpc_get_local_maybe(struct rxrpc_local *, enum rxrp=
+c_local_trace);
+diff --git a/net/rxrpc/local_object.c b/net/rxrpc/local_object.c
+index c553a30e9c83..7a3150482e37 100644
+--- a/net/rxrpc/local_object.c
++++ b/net/rxrpc/local_object.c
+@@ -36,6 +36,17 @@ static void rxrpc_encap_err_rcv(struct sock *sk, struct=
+ sk_buff *skb, int err,
+ 		return ipv6_icmp_error(sk, skb, err, port, info, payload);
+ }
+ =
 
->
-> This is especially visible in feec() where local variable cpu_cap
-> relates to (3) whereas cpu_actual_cap related to (2).
->
-> [...]
->
++/*
++ * Set or clear the Don't Fragment flag on a socket.
++ */
++void rxrpc_local_dont_fragment(const struct rxrpc_local *local, bool set)
++{
++	if (set)
++		ip_sock_set_mtu_discover(local->socket->sk, IP_PMTUDISC_DONT);
++	else
++		ip_sock_set_mtu_discover(local->socket->sk, IP_PMTUDISC_DO);
++}
++
+ /*
+  * Compare a local to an address.  Return -ve, 0 or +ve to indicate less =
+than,
+  * same or greater than.
+@@ -203,7 +214,7 @@ static int rxrpc_open_socket(struct rxrpc_local *local=
+, struct net *net)
+ 		ip_sock_set_recverr(usk);
+ =
+
+ 		/* we want to set the don't fragment bit */
+-		ip_sock_set_mtu_discover(usk, IP_PMTUDISC_DO);
++		rxrpc_local_dont_fragment(local, true);
+ =
+
+ 		/* We want receive timestamps. */
+ 		sock_enable_timestamps(usk);
+diff --git a/net/rxrpc/output.c b/net/rxrpc/output.c
+index 5e53429c6922..a0906145e829 100644
+--- a/net/rxrpc/output.c
++++ b/net/rxrpc/output.c
+@@ -494,14 +494,12 @@ int rxrpc_send_data_packet(struct rxrpc_call *call, =
+struct rxrpc_txbuf *txb)
+ 	switch (conn->local->srx.transport.family) {
+ 	case AF_INET6:
+ 	case AF_INET:
+-		ip_sock_set_mtu_discover(conn->local->socket->sk,
+-					 IP_PMTUDISC_DONT);
++		rxrpc_local_dont_fragment(conn->local, false);
+ 		rxrpc_inc_stat(call->rxnet, stat_tx_data_send_frag);
+ 		ret =3D do_udp_sendmsg(conn->local->socket, &msg, len);
+ 		conn->peer->last_tx_at =3D ktime_get_seconds();
+ =
+
+-		ip_sock_set_mtu_discover(conn->local->socket->sk,
+-					 IP_PMTUDISC_DO);
++		rxrpc_local_dont_fragment(conn->local, true);
+ 		break;
+ =
+
+ 	default:
+diff --git a/net/rxrpc/rxkad.c b/net/rxrpc/rxkad.c
+index 1bf571a66e02..b52dedcebce0 100644
+--- a/net/rxrpc/rxkad.c
++++ b/net/rxrpc/rxkad.c
+@@ -724,7 +724,9 @@ static int rxkad_send_response(struct rxrpc_connection=
+ *conn,
+ 	serial =3D atomic_inc_return(&conn->serial);
+ 	whdr.serial =3D htonl(serial);
+ =
+
++	rxrpc_local_dont_fragment(conn->local, false);
+ 	ret =3D kernel_sendmsg(conn->local->socket, &msg, iov, 3, len);
++	rxrpc_local_dont_fragment(conn->local, true);
+ 	if (ret < 0) {
+ 		trace_rxrpc_tx_fail(conn->debug_id, serial, ret,
+ 				    rxrpc_tx_point_rxkad_response);
+
 
