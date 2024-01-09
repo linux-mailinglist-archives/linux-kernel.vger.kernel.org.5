@@ -1,88 +1,137 @@
-Return-Path: <linux-kernel+bounces-20801-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20810-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97746828561
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 12:47:01 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 110B3828582
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 12:52:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E96D4B23A27
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 11:46:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A8770B233B6
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 11:52:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B68F33716F;
-	Tue,  9 Jan 2024 11:45:50 +0000 (UTC)
-Received: from cstnet.cn (smtp85.cstnet.cn [159.226.251.85])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6086A381C0;
+	Tue,  9 Jan 2024 11:51:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=natalenko.name header.i=@natalenko.name header.b="DGqhDSB4"
+Received: from prime.voidband.net (prime.voidband.net [199.247.17.104])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08360374C4;
-	Tue,  9 Jan 2024 11:45:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iie.ac.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iie.ac.cn
-Received: from mengjingzi$iie.ac.cn ( [114.245.34.24] ) by
- ajax-webmail-APP-13 (Coremail) ; Tue, 9 Jan 2024 19:45:27 +0800 (GMT+08:00)
-Date: Tue, 9 Jan 2024 19:45:27 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From: =?UTF-8?B?5a2f5pWs5ae/?= <mengjingzi@iie.ac.cn>
-To: "Theodore Ts'o" <tytso@mit.edu>
-Cc: "Greg KH" <gregkh@linuxfoundation.org>, brauner@kernel.org, 
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: proposal to refine capability checks when _rlimit_overlimit()
- is true
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.15 build 20230921(8ad33efc)
- Copyright (c) 2002-2024 www.mailtech.cn cnic.cn
-In-Reply-To: <20240103173002.GB136592@mit.edu>
-References: <1a8ed7bd.c96e.18ccd4ee4d1.Coremail.mengjingzi@iie.ac.cn>
- <2024010353-legwarmer-flap-869d@gregkh> <20240103173002.GB136592@mit.edu>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B1D13716B;
+	Tue,  9 Jan 2024 11:51:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=natalenko.name
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=natalenko.name
+Received: from spock.localnet (unknown [94.142.239.106])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	(No client certificate requested)
+	by prime.voidband.net (Postfix) with ESMTPSA id 633D062DD19A;
+	Tue,  9 Jan 2024 12:45:48 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
+	s=dkim-20170712; t=1704800748;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+	bh=a70FyQBxFFn5JMG0Q0O4V6pTeF/ihUmX4t9eLgwGQF0=;
+	b=DGqhDSB4nGcCz1L/RON79NbamG4X/0oPyGnwnny6lfWxgIHTP/puu8xt2PgR79CtpJmYsv
+	mRl230oLNKyo699ndw3aPSHNgdddA4dBttlQRbiF1l/Bl6LUjfiyKu0uSbQIpYVpNovUUr
+	diazVmBU8quAK6UVw0fJO5kcxnVVfOY=
+From: Oleksandr Natalenko <oleksandr@natalenko.name>
+To: linux-kernel@vger.kernel.org
+Cc: linux-input@vger.kernel.org,
+ Filipe =?ISO-8859-1?Q?La=EDns?= <lains@riseup.net>,
+ Bastien Nocera <hadess@hadess.net>, Jiri Kosina <jikos@kernel.org>,
+ Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+ Hans de Goede <hdegoede@redhat.com>
+Subject: Flood of logitech-hidpp-device messages in v6.7
+Date: Tue, 09 Jan 2024 12:45:37 +0100
+Message-ID: <3277085.44csPzL39Z@natalenko.name>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <7d2df0e7.174cd.18cee0ab373.Coremail.mengjingzi@iie.ac.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID:twCowADX38_YMZ1lkGcFAA--.51763W
-X-CM-SenderInfo: pphqwyxlqj6xo6llvhldfou0/1tbiCRELE2Wc6oLuzQABsz
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VW3Jw
-	CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
-	daVFxhVjvjDU=
+Content-Type: multipart/signed; boundary="nextPart8321016.T7Z3S40VBb";
+ micalg="pgp-sha256"; protocol="application/pgp-signature"
 
-SSB1bmRlcnN0YW5kIGNoYW5nZSB0aGUgY29kZSBoZXJlIG1heSBhZmZlY3QgdGhlIHdvcmxkIG91
-dHNpZGUgdGhlCmtlcm5lbC4gQW5kIHRoZXJlIG1pZ2h0IGJlIHVzZWFiaWxpdHkgaXNzdWVzIHdo
-ZW4gYXBwbGljYXRpb25zIGluIAp1c2Vyc3BhY2UgYXJlIG5vdCB1cGRhdGVkLiBCdXQgdGhlIGdv
-b2QgbmV3cyBpcyB0aGF0IHRoZSAKbW9kaWZpY2F0aW9uJ3MgaW1wYWN0IG9uIHVzZXJzcGFjZSBp
-cyByZWxhdGl2ZWx5IGNvbnRhaW5lZC4gCkhlcmUncyBhIGJyZWFrZG93bjogCgoxLiBVc2FnZSBz
-dGF0aXN0aWNzIGZvciB0aGUgbGF0ZXN0IHZlcnNpb24gb2YgVWJ1bnR1IHNob3cgdGhhdCAKICAg
-YXBwbGljYXRpb25zIGhhdmUgbGltaXRlZCB1c2Ugb2YgY2FwYWJpbGl0eS4gCiAgICAgICAgKDEp
-IFVuZGVyIHRoZSBkZWZhdWx0IGNvbmZpZ3VyYXRpb24sIG9ubHkgMjggcHJvY2Vzc2VzIGluIAog
-ICAgICAgICAgICBVYnVudHUgMjIuMDQgTFRTIHdlcmUgZm91bmQgdG8gaGF2ZSBjYXBhYmlsaXR5
-LCB3aXRoIDE1IAogICAgICAgICAgICBydW5uaW5nIGFzIHJvb3QgYW5kIHVuYWZmZWN0ZWQgYnkg
-dGhlIHByb3Bvc2VkIGNoYW5nZS4gCiAgICAgICAgKDIpIEFtb25nIHRoZSA1OWsgcGFja2FnZXMg
-b24gVWJ1bnR1IDIxLjEwLCBvbmx5IDI5IHByb2dyYW1zIAogICAgICAgICAgICB3ZXJlIGNvbmZp
-Z3VyZWQgd2l0aCBjYXBhYmlsaXR5LlsxXQoKMi4gRm9yIHByb2dyYW1zIHRoYXQgdXNlIGNhcGFi
-aWxpdHksIGl0IGlzIG5vdCBjb21wbGljYXRlZCBmb3IgZGV2ZWxvcGVycwogICBvciBzeXNhZG1p
-biB0byByZWNvbmZpZ3VyZSBpdC4gUHJvZ3JhbXMgdXNpbmcgY2FwYWJpbGl0eSBjYW4gYmUgCiAg
-IGNhdGVnb3JpemVkIGludG8gdHdvIHR5cGVzOiAKICAgICAgICAoMSkgdGhvc2Ugc3RhcnRlZCBi
-eSByb290IGhhdmUgZnVsbCBjYXBhYmlsaXR5IGJ5IGRlZmF1bHQsIHdoaWNoIAogICAgICAgICAg
-ICBjYW4gYmUgY2hhbmdlZCB3aXRoIHRoZSBwcmN0bCBzeXN0ZW0gY2FsbC4KICAgICAgICAoMikg
-YW5kIHRob3NlIHdpdGggY2FwYWJpbGl0aWVzIGNvbmZpZ3VyZWQgZGlyZWN0bHkgb24gdGhlIAog
-ICAgICAgICAgICBleGVjdXRhYmxlIGZpbGUgY2FuIGJlIG1vZGlmaWVkIGJ5IHNlY2FwIGNvbW1h
-bmQgZGlyZWN0bHkuCgpTbyB0aGUga2V5IHRvIHVzaW5nIGNhcGFiaWxpdHkgaXMgdG8gY2hvb3Nl
-IHRoZSBsZWFzdCBwcml2aWxlZ2UgdGhhdCAKd2lsbCBhY2NvbXBsaXNoIHRoZSBmdW5jdGlvbi4g
-VGhpcyBjYW4ndCBiZSBkb25lIHdpdGhvdXQgdGhlIGtlcm5lbCdzIApjbGVhciBkZWxpbmVhdGlv
-biBvZiBwcml2aWxlZ2VzLgoKVGhpcyBjaGFuZ2Ugd2lsbCBtYWtlIGl0IGNsZWFyIHRoYXQgaWYg
-eW91IG9ubHkgbmVlZCB0byBjcm9zcyBzeXN0ZW0gCmxpbWl0cywgdGhlbiBzeXNfcmVzb3VyY2Ug
-aXMgdGhlIGNhcGFiaWxpdHkgeW91IG5lZWQuIFRoaXMgbWF5IGNhdXNlIApzb21lIHByb2Nlc3Nl
-cyB0aGF0IGFyZSB1c2luZyBzeXNfYWRtaW4gdG8gYnlwYXNzIGxpbWl0cyB0byBmYWlsLCBidXQg
-CmZyb20gYSBsZWFzdCBwcml2aWxlZ2UgcG9pbnQgb2YgdmlldywgaXQgbWF5IGJlIGdvb2QgdG8g
-cmVkdWNlIHRoZSAKdW5uZWNlc3NhcnkgdXNlIG9mIHN5c19hZG1pbi4KCkJlc3QgcmVnYXJkcywK
-SmluZ3ppCgpbMV0gSGFzYW4sIE1kIE1laGVkaSwgU2V5ZWRoYW1lZCBHaGF2YW1uaWEsIGFuZCBN
-aWNoYWxpcyBQb2x5Y2hyb25ha2lzLiAKICAgICJEZWNhcDogRGVwcml2aWxlZ2luZyBwcm9ncmFt
-cyBieSByZWR1Y2luZyB0aGVpciBjYXBhYmlsaXRpZXMuIiAKICAgIFByb2NlZWRpbmdzIG9mIHRo
-ZSAyNXRoIEludGVybmF0aW9uYWwgU3ltcG9zaXVtIG9uIFJlc2VhcmNoIGluIEF0dGFja3MsCiAg
-ICBJbnRydXNpb25zIGFuZCBEZWZlbnNlcy4gMjAyMi4K
+--nextPart8321016.T7Z3S40VBb
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"; protected-headers="v1"
+From: Oleksandr Natalenko <oleksandr@natalenko.name>
+To: linux-kernel@vger.kernel.org
+Subject: Flood of logitech-hidpp-device messages in v6.7
+Date: Tue, 09 Jan 2024 12:45:37 +0100
+Message-ID: <3277085.44csPzL39Z@natalenko.name>
+MIME-Version: 1.0
+
+Hello Hans et al.
+
+Starting from v6.7 release I get the following messages repeating in `dmesg` regularly:
+
+```
+Jan 09 10:05:06 spock kernel: logitech-hidpp-device 0003:046D:4051.0006: Disconnected
+Jan 09 10:07:15 spock kernel: logitech-hidpp-device 0003:046D:408A.0005: Disconnected
+Jan 09 10:16:51 spock kernel: logitech-hidpp-device 0003:046D:4051.0006: HID++ 4.5 device connected.
+Jan 09 10:16:55 spock kernel: logitech-hidpp-device 0003:046D:408A.0005: HID++ 4.5 device connected.
+Jan 09 10:16:55 spock kernel: logitech-hidpp-device 0003:046D:408A.0005: HID++ 4.5 device connected.
+Jan 09 10:36:31 spock kernel: logitech-hidpp-device 0003:046D:4051.0006: Disconnected
+Jan 09 10:37:07 spock kernel: logitech-hidpp-device 0003:046D:4051.0006: HID++ 4.5 device connected.
+Jan 09 10:46:21 spock kernel: logitech-hidpp-device 0003:046D:4051.0006: Disconnected
+Jan 09 10:48:23 spock kernel: logitech-hidpp-device 0003:046D:408A.0005: Disconnected
+Jan 09 11:12:27 spock kernel: logitech-hidpp-device 0003:046D:4051.0006: HID++ 4.5 device connected.
+Jan 09 11:12:47 spock kernel: logitech-hidpp-device 0003:046D:408A.0005: HID++ 4.5 device connected.
+Jan 09 11:12:47 spock kernel: logitech-hidpp-device 0003:046D:408A.0005: HID++ 4.5 device connected.
+Jan 09 11:38:32 spock kernel: logitech-hidpp-device 0003:046D:4051.0006: Disconnected
+Jan 09 11:43:32 spock kernel: logitech-hidpp-device 0003:046D:408A.0005: Disconnected
+Jan 09 11:45:10 spock kernel: logitech-hidpp-device 0003:046D:4051.0006: HID++ 4.5 device connected.
+Jan 09 11:45:11 spock kernel: logitech-hidpp-device 0003:046D:408A.0005: HID++ 4.5 device connected.
+Jan 09 11:45:11 spock kernel: logitech-hidpp-device 0003:046D:408A.0005: HID++ 4.5 device connected.
+Jan 09 12:31:48 spock kernel: logitech-hidpp-device 0003:046D:4051.0006: Disconnected
+Jan 09 12:33:21 spock kernel: logitech-hidpp-device 0003:046D:4051.0006: HID++ 4.5 device connected.
+```
+
+I've got the following hardware:
+
+* Bus 006 Device 004: ID 046d:c52b Logitech, Inc. Unifying Receiver
+* Logitech MX Keys
+* Logitech M510v2
+
+With v6.6 I do not get those messages.
+
+I think this is related to 680ee411a98e ("HID: logitech-hidpp: Fix connect event race").
+
+My speculation is that some of the devices enter powersaving state after being idle for some time (5 mins?), and then wake up and reconnect once I touch either keyboard or mouse. I should highlight that everything works just fine, it is the flood of messages that worries me.
+
+Is it expected?
+
+Thank you.
+
+-- 
+Oleksandr Natalenko (post-factum)
+--nextPart8321016.T7Z3S40VBb
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEZUOOw5ESFLHZZtOKil/iNcg8M0sFAmWdMeEACgkQil/iNcg8
+M0u9kRAAmQK0aeOpOEO+/c+yK/Yo1nWVpA+8lwE9ymnqlMMnkd25LWsW1CCda7bw
+h3UGk4Hcn4X9Ljop2mmt8k1IycWUlKAdUpTM/qwHu/PygH9OfHwa/TyUYjMqQrYR
+zz36lg77GrfjVN0RlkUNG2lcQmJbV8lv5hjzvKLiAVWl7zR7qoK8Xnw22xvwqcgo
+UsxYdQjU08jj1IU7jgcHVatXBSVIfHqozZ5dxtLCxwC/rupkWcLo5Ag1v5wMfzR+
+wnQkQcBG0gFeoWvqC7yRZ2sr885eABJnEvUsEehz5I31Y4fJ/mrnXefMX/Y2e9L2
+JWssOo5R0eT8AuS6+aB2CrrYLONEA9TTqPwOjQxoR3bZxWMmlW4rJrgk84XNde2g
+AyV25a1zeXBU+ka/dhUM8r1cDrBso/eokMnYhKUxRcqQ8qoy8B3DIogunGFa/OAI
+6KUmKnASo8YzySDz+wGm+lY3SG8bcjhnVSoIo1DihG9IUbdaZF0y47eYLoHeuTQ5
+lPPosqG/o0pIBbpW/3xAYY1og5aGAyvhIOyX+6dfjTTRhdXB/cCySayyEAoxP+mY
+/TL3kMOT9IM869afydLTOlsS+ivkj2Q0ahkJyhXpAKmN7aSeGK7tHSixmj8fWL3a
+FrcVWVpChXHSq8w1QBeSHhVj/0AsO6qFHgXIiaiJR2QnOv+xcRs=
+=nVhh
+-----END PGP SIGNATURE-----
+
+--nextPart8321016.T7Z3S40VBb--
+
+
+
 
