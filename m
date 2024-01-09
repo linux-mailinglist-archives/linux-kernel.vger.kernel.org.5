@@ -1,149 +1,223 @@
-Return-Path: <linux-kernel+bounces-20282-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20283-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A5E39827CD5
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 03:20:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 65B51827CD7
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 03:21:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A50BB1C233B1
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 02:20:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B318A1F24366
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 02:21:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C153F28E8;
-	Tue,  9 Jan 2024 02:19:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE833259D;
+	Tue,  9 Jan 2024 02:21:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=vivo.com header.i=@vivo.com header.b="WVg8wjOn"
-Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01on2113.outbound.protection.outlook.com [40.107.215.113])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="1F2wpBk7"
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 897F02115;
-	Tue,  9 Jan 2024 02:19:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vivo.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=vivo.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ijPcpDbGAkCchFSXwZ3/ifxul8guAYZGsHEJCUkXNVDWH5ez/3pmv6cvnoWeKPiBfOlCVez7TBU6c546kuP05aRS2dpaNNYFr2T4DSADHpd9iQmE2kLBX/ITXW3VBWfJy+P94PfK7xIASQLuOpUR8jGYBI3YfXluFSaqKamU0K1DrRrd0oP5CzSLIzRFR2J+v873AmxufZ4G3WvsniAPZM1d4p3kf1uuZhtQPQo5BjSdLNAGx+7AP5CKmL1q2XDNBNNOZW+7QS4BZ0rSY5lCuaej+wLYDElWdvFi/YM2GqgBc+dIaX/raNIugDbIkZqDBMwk0SnxDjF4oKcR9kguDg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=c13Kn9NTAc0JAoLfoSC3Bmm4oe6v0ejTngOWKVXpul8=;
- b=Wk2N2lSXIVCxZrX6wfe5MgmLPfRBLICUFtOFDZ1eYQ7P8nZD9SsibLt3Rmzit5+UCuUSav8IIaCD9C9FzU/ftZuZ5GvIoTk/+FkrSjeKeBfagNMc6vNcW68FdoTWMFpjpv2Ivxw69R1OqhImjtvlh+oivmuQQQJ2BUp/TMKqSeKsoDJ4BWmObefJGg6eEWK8LgC9Q57ms+BG4z8TkPNAJ+e9zqd3P4Z2R9SfqEHRJLsb0/VNOa/XAlfRSaOmGgHFi4+u14ZaeWBWWX5y3QuYOre9eAm1+S1AI5DjT9ay8pUCVoWx8rX93WCHoGpEEkR9nvcySK1L/rRezdw4NvxQbA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=c13Kn9NTAc0JAoLfoSC3Bmm4oe6v0ejTngOWKVXpul8=;
- b=WVg8wjOnD2G1gYR1gLN+087FyGad8lLyHvv7b+AGEJoIHs10lXG01Sm6dMLA/b3PVVOGkTXkoKHSBgCnNKVr1389zYQVG8sIdZBnS1Vpnz4FfUhM/RCglTJeBpiG13gpFysbAgSysmk/dWA904w/VRr95HZUcqib93Y7hYcbOPQMz9HGgn3proMK18KqpE+Dw3pTheW0wSDei1hNbmQpVe8EN08x2gKqw6fQ37vxqWAKd+lEwe4+QVXbHy3+zNdYScH1PTjtUnL20BHaYY7fS+v2Auvyj845fAkYv+EB4QauM8q3xyr2uLKOyDWSjHw7AZ4QyZZs6EUDlJghkpf3ag==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=vivo.com;
-Received: from SG2PR06MB5288.apcprd06.prod.outlook.com (2603:1096:4:1dc::9) by
- KL1PR0601MB3940.apcprd06.prod.outlook.com (2603:1096:820:2a::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.23; Tue, 9 Jan
- 2024 02:19:50 +0000
-Received: from SG2PR06MB5288.apcprd06.prod.outlook.com
- ([fe80::f3c:e509:94c2:122d]) by SG2PR06MB5288.apcprd06.prod.outlook.com
- ([fe80::f3c:e509:94c2:122d%7]) with mapi id 15.20.7159.020; Tue, 9 Jan 2024
- 02:19:50 +0000
-From: Minjie Du <duminjie@vivo.com>
-To: Tom Zanussi <tom.zanussi@linux.intel.com>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	"David S. Miller" <davem@davemloft.net>,
-	linux-crypto@vger.kernel.org (open list:INTEL IAA CRYPTO DRIVER),
-	linux-kernel@vger.kernel.org (open list)
-Cc: opensource.kernel@vivo.com,
-	Minjie Du <duminjie@vivo.com>
-Subject: [PATCH v1] crypto: iaa - Remove unnecessary debugfs_create_dir() error check in iaa_crypto_debugfs_init()
-Date: Tue,  9 Jan 2024 10:19:14 +0800
-Message-Id: <20240109021916.20960-1-duminjie@vivo.com>
-X-Mailer: git-send-email 2.39.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SG2PR01CA0167.apcprd01.prod.exchangelabs.com
- (2603:1096:4:28::23) To SG2PR06MB5288.apcprd06.prod.outlook.com
- (2603:1096:4:1dc::9)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63B0523B1
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 02:20:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1d3f8af8297so9419575ad.2
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 18:20:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1704766858; x=1705371658; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=GVG8c40f68G3korcyEKi0z8ULvfpyOFV+s3GtOXVEHo=;
+        b=1F2wpBk7F5WZV0KDV4EUPOhKPnarcGdL1A8WWZtSUqfjZJ/70wewamBM8hRj7c1ib3
+         V1HKJiagBjCylBltt5spy9lKJdy5ad3TYNBWwcC5Sftk0zBn00VXvxG14awwN16trbsr
+         Hu8gOnGYgwt1OuPb+P7D25h96NL3awnoxOACJ1XLxNdlCB5pmGE6krw4bnyjkIfZR4a6
+         x1dx+FBp3BwSCbvKbSf1GLZDEsBEbAXsDKtKth99gjehjL1+I31QvRJfXQT0576kGXNP
+         DTLxtb9gRr/IsjRWkot8v6OAJ7FnKHSdpF3DSjTtouMT+OLyG+rSD2LzsWJQynKduqUv
+         Jbtg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704766858; x=1705371658;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=GVG8c40f68G3korcyEKi0z8ULvfpyOFV+s3GtOXVEHo=;
+        b=hS0DtniBZ466jn7U75iBwLPgd2iGlH3Ya9+eC0Fg2UMMqiuwEXhOdvmjQS9qTb6059
+         zo8V8mpn1Bqq3Su4ZkWQJocyVcVwd5Nk+ZfOYQ8UKEghfyG5067TEewO6jUBBF83RkMG
+         uwrHbQV2G9M/a0r57XSI+Y3ODlyX1yUJqoMzdhrhfLuIf6ekxkqgDT40OQtkNsXx2anW
+         Boedh/x2iyjuLozhty/JXsTlfFJtlvjdZR/KHUclTvryGjxnmeVY7yGPRnm9g6TuDju8
+         lKtfFTL56iyUj9pojWRzQmSAUABBw8OnZ7vBhiObqKRNsoJHDmmn5+TlpykSs3mcqDt9
+         UrWQ==
+X-Gm-Message-State: AOJu0YyQQ0SKHqbOUTup9QQqfV/5MpoItPLddB8Ar8LbnaF7QXB8b6zG
+	RfREewLg1iVfbb5MTzV6BtLTyZD2ylK2YuF3ZEjPptRBYe0=
+X-Google-Smtp-Source: AGHT+IGXYRm5IEE3b4P8Xco9rGgrHSS8TganxZJswq3boRda5meQG0P0cEGLQN2/znprRxf6er9ZaQ==
+X-Received: by 2002:a17:902:740b:b0:1d3:ec6f:3c47 with SMTP id g11-20020a170902740b00b001d3ec6f3c47mr2406282pll.71.1704766858597;
+        Mon, 08 Jan 2024 18:20:58 -0800 (PST)
+Received: from ghost ([12.44.203.122])
+        by smtp.gmail.com with ESMTPSA id d19-20020a170902c19300b001bc930d4517sm567240pld.42.2024.01.08.18.20.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Jan 2024 18:20:58 -0800 (PST)
+Date: Mon, 8 Jan 2024 18:20:55 -0800
+From: Charlie Jenkins <charlie@rivosinc.com>
+To: Atish Patra <atishp@atishpatra.org>
+Cc: Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>, Jonathan Corbet <corbet@lwn.net>,
+	Conor Dooley <conor.dooley@microchip.com>,
+	=?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <cleger@rivosinc.com>,
+	Randy Dunlap <rdunlap@infradead.org>,
+	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-doc@vger.kernel.org
+Subject: Re: [PATCH v5 2/2] documentation: Document
+ PR_RISCV_SET_ICACHE_FLUSH_CTX prctl
+Message-ID: <ZZyth6Ijtsmy5D84@ghost>
+References: <20240108-fencei-v5-0-aa1e51d7222f@rivosinc.com>
+ <20240108-fencei-v5-2-aa1e51d7222f@rivosinc.com>
+ <CAOnJCUJQ-M1bVC_VhogMLo47mRyk3Pzq-GFH5P7ADn70BN9ObA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SG2PR06MB5288:EE_|KL1PR0601MB3940:EE_
-X-MS-Office365-Filtering-Correlation-Id: e2c2cf28-e5b6-4d60-089b-08dc10b97515
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	G1Io6tZYaMAJaBRVZ4ilIJGsDuHJxSi46mZEuunY6fApcfjG4NsozXWiq2ByA8jEAm6eLd43RVU2LzYF/MIv3Oe5O7O8I9xiSAchoHlJI4GOQ9+J6e5l03Bb28tPj+/8zKpFfxoi2oQMA+c0g8zt9JpLmSLKjK2oVHLSOuhoFmWhIVL8iMdevYYHeGm/Q5MKxI6hCxRTSvXLp9GkYPyWfFduJdsE1pEz/TAKq7YS32Fg86l6gH76+yT5+XERh03R+Nv+zSFWpgbuBvYexwp4g8UrcTDDYKhiONsOaeFx1Vx1lbmuu/2zEgzMrBJxo5VWb4J6H/02mv1o4Jhuo1UT8NK1oxYDpSlh+71D4YL0TWgFIdzKcJOIbOOZTDJ9EcguDDD0UrcN9fz7xJEqYr45dm3rxfTeF+ktxRB0pGBNogtoWPKnZXNMzTKvd6pXkK+xTGca5eSvL4nu6yPJh1mRVJ9D7YJB2xh5JjpjRSS1qnymT26poUSmDFmg1xSO4H6CIBZmcszOfUuA5xIiN79F96IlX1S4h9DpzPi8QBc8UOOHpqgi60l3AuIrkk7LhboDnu8kYE8cdEdw3uOi7bWITSo1UV5ZZcQnW7rE4gqUj5ZAIosfyuJA8XNcIkQsumBI
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SG2PR06MB5288.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(396003)(366004)(136003)(39860400002)(346002)(230922051799003)(186009)(64100799003)(1800799012)(451199024)(6506007)(52116002)(478600001)(6512007)(38350700005)(107886003)(2616005)(6486002)(1076003)(83380400001)(26005)(66556008)(66946007)(66476007)(36756003)(8676002)(8936002)(6666004)(110136005)(316002)(4326008)(4744005)(38100700002)(2906002)(5660300002)(86362001)(41300700001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?CiE6ucgcoCvobhtpNGW2wq4eGCmqYr0UXFj5BEFECVxRG3tx2MQFTXEna2fW?=
- =?us-ascii?Q?eOvbWRUXC1hbFy3L4XrGGZe3+JhJ+RQuMKnnkGK6Uvo2LiK9Q+7cux283/d3?=
- =?us-ascii?Q?KEJjEAX86hQlu6pf1r/goPiT4pwUc0oU1oq3jFnjQsyp1UI9qHQn7YAZyi/d?=
- =?us-ascii?Q?JQ9h31wlcsyTvIKRvZu+tc28HFJccbmr2Ijw+AqjnXz2aGIZSJ7uweIBwTYj?=
- =?us-ascii?Q?KHS9TfQM72O7qOUvieIBPIj+CtKmSDZ3RGaGWyMdKAw05najOp6skLYaXRSv?=
- =?us-ascii?Q?mZ/HJrsWayEDDtxUxeKIFRDE8jV8enVzPf1qS6aq2ah+QAYqN36FBtyN8XXy?=
- =?us-ascii?Q?7Bd0L/ku3EeFN9yA+Qi1kmxApekFR0WZoiVFfQ5tHIZzQlIg+dVnaHVS0gXx?=
- =?us-ascii?Q?o+kIAQQp2Q7kbY/29/vXSvTbUD/cL9eiKJ21wrAi64Y34bcHpgZXliUR6G6/?=
- =?us-ascii?Q?F/jbFoOqm5MPMONXMhu9zTObroZ/RohWX86jJkPeVPIfLOpdMOx92aOO2A0U?=
- =?us-ascii?Q?Z6/f6yr/i/hOobd2VQeM2BrALGyOWmE9F/6V4WjSz+aRSbOZNd9O2e+cirNq?=
- =?us-ascii?Q?PHOszl5ZJ/w6qTPQw612n31BLCb71qGNY6S2pyra1CEcYXEh4H8wzWb0plm0?=
- =?us-ascii?Q?kIU9sjqTaGOjyPxKwf3y2he7Y+7GsYgDxSRWUj81wqGKUOwkuGDFrtMnpQzb?=
- =?us-ascii?Q?JB2ovfWE/Hkjl7fOlPUt2p9F9pHPwiQNpI8ukLX0qFlug2gFeN0iebmT4bSd?=
- =?us-ascii?Q?RVQxVWU/m6o28iL6rWQ3Su/Y6otup+pvZV0DyMp1g4Y/bc2/twk6GmtOjmWh?=
- =?us-ascii?Q?PClp3HN7tJ5usM5R64igJbq2vZfvpamCoTp51BpxcL4izEfHHiHBiPAkd/mB?=
- =?us-ascii?Q?EOkkY5CdTkg6CSE/eoT+XD5qQ5MevtN0eSEkAOekmtxFXV84bDUgV67iD7Yt?=
- =?us-ascii?Q?zXD02NUEBUcUWXSLRiOqebUbEID6nu9rS7n2MOLoHjUyZuQun/UmMM5tAkEv?=
- =?us-ascii?Q?XmLKtfPO40jaR108rnaBP7AdO/UopohP4NgDy38o52pEApVJCPt717ew4fnW?=
- =?us-ascii?Q?luPjbw84zRmZbD/q3M0y+Lao6NtlfnEl70ZfnBEAD61GN+nDP7Zpg0aIrXuZ?=
- =?us-ascii?Q?wKLE8JGwVrmteOInxs2UT6GcxNtxT30hx9ik0IhyQjxNIcetbnoB3SJR1928?=
- =?us-ascii?Q?Oie7PqqeW4NMRa0nsV42zpjxMo9oWaMD1tx7PUTPHoK5Uua2YetBlJuKVsln?=
- =?us-ascii?Q?RjGLvsJkegZdGMji86u52HRnx6vSA9wD3BOvaK2bN6klC09R6tXmUV4OijL6?=
- =?us-ascii?Q?e64fhbSd3kij50I5xELeQXuwGFUsq7CJEeMmFO070S1pZ7gBaehcvmmcaNnO?=
- =?us-ascii?Q?KHsrNA5o6lfQcZTXkj1WxZk7NzjxYiJ7XoDvfdFJoi7Hku5IPfXC8FdHNSGi?=
- =?us-ascii?Q?4mv4P5Emk7/3lXJoSA/5gXnjgnI4dPmljmeRcR5ayixxfglB3uHCiAdqqkdj?=
- =?us-ascii?Q?mImj7zoNMq7Uso83YWqtfSjwRKZMXl0+AJgKqQ8J7rTUVpMfXuXqKSuM+gSk?=
- =?us-ascii?Q?OzO14Jb4YK0yQh46rvwORg0j5WFAh8v7euVuGKWD?=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e2c2cf28-e5b6-4d60-089b-08dc10b97515
-X-MS-Exchange-CrossTenant-AuthSource: SG2PR06MB5288.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Jan 2024 02:19:50.1055
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: gKhcZmh/NgXh2J1cbNLepX/g6KElvGvApOetgS+wBRDn0YUjvKnxyznt/ate1uFobBpHiTcoA1frQIwROOnPTw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: KL1PR0601MB3940
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAOnJCUJQ-M1bVC_VhogMLo47mRyk3Pzq-GFH5P7ADn70BN9ObA@mail.gmail.com>
 
-This patch removes the debugfs_create_dir() error checking in
-iaa_crypto_debugfs_init(). Because the debugfs_create_dir() is developed
-in a way that the caller can safely handle the errors that
-occur during the creation of DebugFS nodes.
+On Mon, Jan 08, 2024 at 05:24:47PM -0800, Atish Patra wrote:
+> On Mon, Jan 8, 2024 at 10:42 AM Charlie Jenkins <charlie@rivosinc.com> wrote:
+> >
+> > Provide documentation that explains how to properly do CMODX in riscv.
+> >
+> > Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
+> > ---
+> >  Documentation/arch/riscv/cmodx.rst | 88 ++++++++++++++++++++++++++++++++++++++
+> >  Documentation/arch/riscv/index.rst |  1 +
+> >  2 files changed, 89 insertions(+)
+> >
+> > diff --git a/Documentation/arch/riscv/cmodx.rst b/Documentation/arch/riscv/cmodx.rst
+> > new file mode 100644
+> > index 000000000000..afd7086c222c
+> > --- /dev/null
+> > +++ b/Documentation/arch/riscv/cmodx.rst
+> > @@ -0,0 +1,88 @@
+> > +.. SPDX-License-Identifier: GPL-2.0
+> > +
+> > +==============================================================================
+> > +Concurrent Modification and Execution of Instructions (CMODX) for RISC-V Linux
+> > +==============================================================================
+> > +
+> > +CMODX is a programming technique where a program executes instructions that were
+> > +modified by the program itself. Instruction storage and the instruction cache
+> > +(icache) are not guaranteed to be synchronized on RISC-V hardware. Therefore, the
+> > +program must enforce its own synchronization with the unprivileged fence.i
+> > +instruction.
+> > +
+> > +However, the default Linux ABI prohibits the use of fence.i in userspace
+> > +applications. At any point the scheduler may migrate a task onto a new hart. If
+> > +migration occurs after the userspace synchronized the icache and instruction
+> > +storage with fence.i, the icache will no longer be clean. This is due to the
+> > +behavior of fence.i only affecting the hart that it is called on. Thus, the hart
+> > +that the task has been migrated to may not have synchronized instruction storage
+> > +and icache.
+> > +
+> > +There are two ways to solve this problem: use the riscv_flush_icache() syscall,
+> > +or use the ``PR_RISCV_SET_ICACHE_FLUSH_CTX`` prctl() and emit fence.i in
+> > +userspace. The syscall performs a one-off icache flushing operation. The prctl
+> > +changes the Linux ABI to allow userspace to emit icache flushing operations.
+> > +
+> > +prctl() Interface
+> > +---------------------
+> > +
+> > +Call prctl() with ``PR_RISCV_SET_ICACHE_FLUSH_CTX`` as the first argument. The
+> > +remaining arguments will be delegated to the riscv_set_icache_flush_ctx
+> > +function detailed below.
+> > +
+> > +.. kernel-doc:: arch/riscv/mm/cacheflush.c
+> > +       :identifiers: riscv_set_icache_flush_ctx
+> > +
+> 
+> Document the arguments of the prctl as well ?
 
-Signed-off-by: Minjie Du <duminjie@vivo.com>
----
- drivers/crypto/intel/iaa/iaa_crypto_stats.c | 2 --
- 1 file changed, 2 deletions(-)
+Do you mean to include the ``PR_RISCV_SET_ICACHE_FLUSH_CTX`` key in the
+comment of riscv_set_icache_flush_ctx? The args to
+riscv_set_icache_flush_ctx are the args to the prctl except for the key.
 
-diff --git a/drivers/crypto/intel/iaa/iaa_crypto_stats.c b/drivers/crypto/intel/iaa/iaa_crypto_stats.c
-index 2e3b7b73af20..cbf87d0effe3 100644
---- a/drivers/crypto/intel/iaa/iaa_crypto_stats.c
-+++ b/drivers/crypto/intel/iaa/iaa_crypto_stats.c
-@@ -275,8 +275,6 @@ int __init iaa_crypto_debugfs_init(void)
- 		return -ENODEV;
- 
- 	iaa_crypto_debugfs_root = debugfs_create_dir("iaa_crypto", NULL);
--	if (!iaa_crypto_debugfs_root)
--		return -ENOMEM;
- 
- 	debugfs_create_u64("max_comp_delay_ns", 0644,
- 			   iaa_crypto_debugfs_root, &max_comp_delay_ns);
--- 
-2.39.0
+- Charlie
 
+> 
+> > +Example usage:
+> > +
+> > +The following files are meant to be compiled and linked with each other. The
+> > +modify_instruction() function replaces an add with 0 with an add with one,
+> > +causing the instruction sequence in get_value() to change from returning a zero
+> > +to returning a one.
+> > +
+> > +cmodx.c::
+> > +
+> > +       #include <stdio.h>
+> > +       #include <sys/prctl.h>
+> > +
+> > +       extern int get_value();
+> > +       extern void modify_instruction();
+> > +
+> > +       int main()
+> > +       {
+> > +               int value = get_value();
+> > +               printf("Value before cmodx: %d\n", value);
+> > +
+> > +               // Call prctl before first fence.i is called inside modify_instruction
+> > +               prctl(PR_RISCV_SET_ICACHE_FLUSH_CTX_ON, PR_RISCV_CTX_SW_FENCEI, 0);
+> > +               modify_instruction();
+> > +
+> > +               value = get_value();
+> > +               printf("Value after cmodx: %d\n", value);
+> > +               return 0;
+> > +       }
+> > +
+> > +cmodx.S::
+> > +
+> > +       .option norvc
+> > +
+> > +       .text
+> > +       .global modify_instruction
+> > +       modify_instruction:
+> > +       lw a0, new_insn
+> > +       lui a5,%hi(old_insn)
+> > +       sw  a0,%lo(old_insn)(a5)
+> > +       fence.i
+> > +       ret
+> > +
+> > +       .section modifiable, "awx"
+> > +       .global get_value
+> > +       get_value:
+> > +       li a0, 0
+> > +       old_insn:
+> > +       addi a0, a0, 0
+> > +       ret
+> > +
+> > +       .data
+> > +       new_insn:
+> > +       addi a0, a0, 1
+> > diff --git a/Documentation/arch/riscv/index.rst b/Documentation/arch/riscv/index.rst
+> > index 4dab0cb4b900..eecf347ce849 100644
+> > --- a/Documentation/arch/riscv/index.rst
+> > +++ b/Documentation/arch/riscv/index.rst
+> > @@ -13,6 +13,7 @@ RISC-V architecture
+> >      patch-acceptance
+> >      uabi
+> >      vector
+> > +    cmodx
+> >
+> >      features
+> >
+> >
+> > --
+> > 2.43.0
+> >
+> 
+> 
+> --
+> Regards,
+> Atish
 
