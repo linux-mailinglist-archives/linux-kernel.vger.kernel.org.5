@@ -1,96 +1,117 @@
-Return-Path: <linux-kernel+bounces-20439-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20440-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E5BB4827EFB
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 08:02:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D9FB827EFE
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 08:03:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7EBF5284193
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 07:02:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AFCDE1F24583
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 07:03:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68A099442;
-	Tue,  9 Jan 2024 07:02:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AB338F67;
+	Tue,  9 Jan 2024 07:03:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="It+HKYJt"
-Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VqoiXbgE"
+Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E74B79C4
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 07:02:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-50eabbc3dccso2601949e87.2
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 23:02:40 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DD1F8F48;
+	Tue,  9 Jan 2024 07:03:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-28c7e30c83fso1624243a91.1;
+        Mon, 08 Jan 2024 23:03:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704783759; x=1705388559; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=CIUb3fcPdkO1d5slw3lM6PxUfdrzjr/kVi5On1PQKpo=;
-        b=It+HKYJtsB9FazHgWThY/bgCwzHrt6+l4zrnGIup8b3r1E6teF3qkT9uvlHNd29aCX
-         PhvVJGCRx5hISQNXDVcPAfUAde4v9gyTGpAI7GOiVqZIk/5fzw6RcMBBxBTrKMOpgY24
-         wLNctoMkOJbfbLIJFWoVCgsS476lFgLqF/XG0/MhGVzKgN5lY9aajZ1ygmEnXLvMUyRu
-         gc4MUO0t0PyYyphgD5L2oHG+6hMBp+BUsqwPc9R8VvTCBSAV6vHfLWaX3PIaBw0xWaCo
-         fRoCj/TVt87tmzrqWWdVkNwbPf8BHAWDjk4L7DzWLNQ5Ok48ObSrb9l4X6AGmAs2Z/jJ
-         2zfg==
+        d=gmail.com; s=20230601; t=1704783824; x=1705388624; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Xs3tOsO7zy1R5Dpwf1Worw1jnEX4JWvf4b/DnGpavKs=;
+        b=VqoiXbgETnXs2LvUFJcTF5bUFN4Fs5GDG2BDIK1s4eySyx8W2ejOpdEy9HX6J1QonT
+         PoJLOdf3VWWSZyOAeexp1HrEGzTJ/1q77SpdtkYdhWJy+oGw0ItujS5cVbGQ68wWPj8n
+         GA9cwPdodbULrgxQO13u0LIUI8cjFU67WXnYgS7cmn9n5DrqEKg33tO/UR/k8/sLmIPG
+         aTSXkT6AQ61KoznzAJBYOA75IurL6PrKk8+rY8oluu7MSNSUyRPSD17GFsLSDQjnrVU8
+         5N2H+KHs+srTAMPj0ArJeXaBUNt+bldCo7yqIgQC4TqN38u3zJWjMgoDXQotWDT6mI2p
+         Dh/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704783759; x=1705388559;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=CIUb3fcPdkO1d5slw3lM6PxUfdrzjr/kVi5On1PQKpo=;
-        b=dNehRuke68AsQFKNb/3+HUFFNewoPf2klddt6l0tLAoMbOWTXOIKGkBsbV4+gsSfq2
-         w2WT9WYpRghghoPN4/Zf3Qfxh8cuWSC9TWPB5L5IJAVEA+05CxZQm9G+z00WTEVIZKJ0
-         hlNKhiDGayMu1rLgG3H9h8h2PzmtDTzwM88pQ9Y5K/2EbEzAEGSobqls8ZbTUttIhTJf
-         HytPpp3s04lNXptB+yNcPzcfATSajZ3RMTR03Vc5ACZ3nhPA6FmrBC0C4EUgin5ZjF5X
-         SwAluplVPZkpwkcwzWh0a8AHkGC1yShp0NMrqA6PsNMbeV5VXi3oPqH5p20IiOELrZwL
-         Z43w==
-X-Gm-Message-State: AOJu0Yw145xZdkGYW+gIw4Rn/3Mjx5dKC/WOfmwb3FBS/6BdNnSqdeoZ
-	c0uQCVlf/9MBgbZ3rTmAR1Zer7+b3Du2lA6epgqBjt0n4tUYpQ==
-X-Google-Smtp-Source: AGHT+IEgMo2mUb6Aj/7j7xOXqjUltJu9TEhDb21ULuFUtFc1SGjj28Nb5MGitUzJ0zi1A/h5DMeW67Gkll+DYgkAFYo=
-X-Received: by 2002:ac2:52b4:0:b0:50e:6a31:130c with SMTP id
- r20-20020ac252b4000000b0050e6a31130cmr867975lfm.59.1704783759048; Mon, 08 Jan
- 2024 23:02:39 -0800 (PST)
+        d=1e100.net; s=20230601; t=1704783824; x=1705388624;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Xs3tOsO7zy1R5Dpwf1Worw1jnEX4JWvf4b/DnGpavKs=;
+        b=ZjGZfkQrHfbc8bnud33AiPaMSJ4je3rFaCvu2v87ipyBipi/SC/c3xL3xhk5zSBkND
+         uahl20tH54aPnkM3hdmB5yNE0agL1A+NP7ZnyyKU3ik6rP8yJxnq0wdFtwziUXjZirbm
+         TLd3yP/Cgy5Z3a0Nli1ri+aH06ghRf+zVYL9iqASNZNYWf9aJZkh4jHGn84ACktW1D+R
+         8wy0Quv8aUxobuo1OWN+uh9AmwPzWTpDQ+mL+igXs/wOrq/8+SHHjZTmjXdM6CHpR4GD
+         NQ+2BZzbevfG43kyQLMf8ZYghjaFpB9QK+H/8yeplUaT3FIdiZtlRZD3CTqCogbPD2Ai
+         i3+A==
+X-Gm-Message-State: AOJu0YxjiG3WcCHSQvGWp7ekC9rVMPAsYVjxCMhDb1OV7tU3wJM5PYvv
+	ktvbWH7lZ56ns4Hfji0lYXA=
+X-Google-Smtp-Source: AGHT+IHlKJ76g+fmxlFbm6sHZQfVBU5b579SBwlHShnFDtKCXWmJQCvm2U+ap2npA6+m4wrCrourKg==
+X-Received: by 2002:a17:90b:1b47:b0:28b:e09f:58c4 with SMTP id nv7-20020a17090b1b4700b0028be09f58c4mr1764267pjb.67.1704783823464;
+        Mon, 08 Jan 2024 23:03:43 -0800 (PST)
+Received: from archie.me ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id i2-20020a17090a2ac200b0028bc1df95c7sm1254646pjg.4.2024.01.08.23.03.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Jan 2024 23:03:42 -0800 (PST)
+Received: by archie.me (Postfix, from userid 1000)
+	id 32439184790E7; Tue,  9 Jan 2024 14:03:40 +0700 (WIB)
+Date: Tue, 9 Jan 2024 14:03:40 +0700
+From: Bagas Sanjaya <bagasdotme@gmail.com>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
+Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+	torvalds@linux-foundation.org, akpm@linux-foundation.org,
+	linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+	lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+	f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
+	allen.lkml@gmail.com
+Subject: Re: [PATCH 6.6 000/124] 6.6.11-rc1 review
+Message-ID: <ZZzvzNcUQCfDJyWJ@archie.me>
+References: <20240108150602.976232871@linuxfoundation.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231220080147.740134-1-ilias.apalodimas@linaro.org> <20240102153547.58b23d35@kernel.org>
-In-Reply-To: <20240102153547.58b23d35@kernel.org>
-From: Ilias Apalodimas <ilias.apalodimas@linaro.org>
-Date: Tue, 9 Jan 2024 09:02:02 +0200
-Message-ID: <CAC_iWj+VM1vCDygvXkd6snuSO64iQCm48oahYa4wQQeM3QXiFg@mail.gmail.com>
-Subject: Re: [PATCH net-next v2] page_pool: Rename frag_users to pagecnt_bias
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: netdev@vger.kernel.org, linyunsheng@huawei.com, 
-	Jesper Dangaard Brouer <hawk@kernel.org>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="Znhe3Gzkdkhr9ETQ"
+Content-Disposition: inline
+In-Reply-To: <20240108150602.976232871@linuxfoundation.org>
 
-Hi Jakub,
 
-On Wed, 3 Jan 2024 at 01:35, Jakub Kicinski <kuba@kernel.org> wrote:
->
-> On Wed, 20 Dec 2023 10:01:46 +0200 Ilias Apalodimas wrote:
-> > -     long frag_users;
-> > +     long pagecnt_bias;
->
-> IDK :(
->
-> pagecnt to mean suggests this is related to page refcount,
-> not page pool specific refcount.
->
-> More importantly bias is the large number by which we increment.
-> This counter counts how many of the bias references we actually
-> consumed. So how about bias_consumed? bias_used? bias_issued?
-> frags_alloced?
+--Znhe3Gzkdkhr9ETQ
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I had similar concerns, that's why v1 used 'frag_cnt'.
-I am fine with either frags_alloced or frag_cnt
+On Mon, Jan 08, 2024 at 04:07:06PM +0100, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.6.11 release.
+> There are 124 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>=20
 
-Thanks
-/Ilias
+Successfully compiled and installed the kernel on my computer (Acer
+Aspire E15, Intel Core i3 Haswell). No noticeable regressions.
+
+Tested-by: Bagas Sanjaya <bagasdotme@gmail.com>
+
+--=20
+An old man doll... just what I always wanted! - Clara
+
+--Znhe3Gzkdkhr9ETQ
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZZzvxwAKCRD2uYlJVVFO
+o8CKAP0WyKQZoY68dpZxDcQ82JWlTdXk1ikzn2Yo5vh3ecRn3QD+PJqd+Aj8h9VM
+u203dzRkEqfonJ7VtvY8hqTTDwRyiw8=
+=3kED
+-----END PGP SIGNATURE-----
+
+--Znhe3Gzkdkhr9ETQ--
 
