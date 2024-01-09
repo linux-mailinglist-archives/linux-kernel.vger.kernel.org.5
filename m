@@ -1,180 +1,192 @@
-Return-Path: <linux-kernel+bounces-21391-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21392-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B7F0828E83
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 21:29:52 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B06DB828E85
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 21:31:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 19E5E287C1D
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 20:29:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CACE61C21458
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 20:31:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F05023D96C;
-	Tue,  9 Jan 2024 20:29:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82EE93D981;
+	Tue,  9 Jan 2024 20:31:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Fns79K0X"
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="c9zA+c9y"
+Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD9FA3D962;
-	Tue,  9 Jan 2024 20:29:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2024220E7;
+	Tue,  9 Jan 2024 20:31:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-40d8902da73so32229035e9.2;
-        Tue, 09 Jan 2024 12:29:43 -0800 (PST)
+Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-5578485fc0eso2499388a12.1;
+        Tue, 09 Jan 2024 12:31:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704832182; x=1705436982; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YhFxPk9bq95VbdmA1a6BS885aCK0kZ8gAMJ7pYXAmuY=;
-        b=Fns79K0Xjk+b+8Cg0psJzqlG7mExQdD+aNZgvxaR7yTuJ6XGx0t9hE8EI1798vQXc/
-         cli/VdOipVDfOFHmg+hecDxeG/FOZlzuLtk94EqMYXptWhmLANNA5bAX6ekv8Cd2C046
-         B5wo0pVZWjBM357mv6nvJpqZHcTrCHkwtj1zSOQQ7hTs6Sn/sy1lQnagA9lzfmA0Lo38
-         VFB6oRvOP6sAF0smcwVrdBPP6rHdNEWZnmwXDeZ4Vl8avkWFPacSNK2ZAg2VCbp0gsbi
-         lFSF0JmNPSMJFoIrAwRqx00ee6P/yldTtyf9yzfl7Acdu844hW5p5LfhhKvJiRdf8FXw
-         /P6w==
+        d=gmail.com; s=20230601; t=1704832286; x=1705437086; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Zy227x7o0Ll4yDIdnlPh8FgO9tgNZWkKoSg5mlIm//U=;
+        b=c9zA+c9yUFhlyP3rfhUsKCj6awFLhbJS6P1PqrDICsqySR63snd6urX8ZzcIYojmy4
+         Y9+wTq1o9BkJPpYqYmgxMPLzZOu7c4MzqygAr0dSQGdgmI0YCCB20eL3mg8nvx6yh7cY
+         t79IsHp56XHmExVyNnEzVEsrIeeGGs1ny6afrRLhUXkJk3zNgIPtt0xoNGB2qHZgqHqn
+         Ty74tBhZv2+cqPy6y0yW2xAEUUIpZYakb7wvpcpfIY0A6haWNJK0rltmf2mBWqcF43S2
+         SyM1aE8nOo6X3hupaHjQpS209jdJIPh5NHTxsl7nwSTUw3d1bx8rO+uJDXL1IXmkMuKy
+         UUYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704832182; x=1705436982;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YhFxPk9bq95VbdmA1a6BS885aCK0kZ8gAMJ7pYXAmuY=;
-        b=M6yaI5NQXT1BPhJQ+unTTHQuy0g2ZxNB/D4NsherYcE4lxApNJt3eqhSrCSScZYQ6B
-         w0JISnVD3dgrirTlEtYcMZag2gDXnj4qp7MbdYLBCW69iKPX3nxMWqcJC4MVx+wrBLDT
-         C4ZEaJqzpYpfealeQciwjWfeOGMQ+ioo6R17ZqnZukkA/XbhZtBKxRzst+Cj9gbKue60
-         mmXBLCu/WQ1J0jqeOWQK1zp3He362XT3rz6LlTpZVtnn26xg85IJ2vqbqFIhzsJ+RI5r
-         NtMN+56MoCKO0pdJ/vnFrPzZd2lg+Sw2M46dbQAQ/UqUvZjLcgCCM/Yvi3VUNApWM0K0
-         yf/Q==
-X-Gm-Message-State: AOJu0YyOk5gRCrYej1c6VntT3lJylgYzlzcdasHWrR+J5Rx7VpsDoD13
-	3mcE+ARphjEy/9M7s4sTCsA=
-X-Google-Smtp-Source: AGHT+IE5TnoT1XdEn0n5wgCIogYrdeyA0CMiYERCnMzgmb3h9FCnrk13KBv23kZ3Cm17VgQCyOeKbA==
-X-Received: by 2002:a05:600c:1381:b0:40d:5aa1:8f9d with SMTP id u1-20020a05600c138100b0040d5aa18f9dmr3358939wmf.35.1704832181725;
-        Tue, 09 Jan 2024 12:29:41 -0800 (PST)
-Received: from jernej-laptop.localnet (213-161-3-116.dynamic.telemach.net. [213.161.3.116])
-        by smtp.gmail.com with ESMTPSA id v12-20020a05600c470c00b0040d5f3ef2a2sm15931585wmo.16.2024.01.09.12.29.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Jan 2024 12:29:41 -0800 (PST)
-From: Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
-To: Frank Oltmanns <frank@oltmanns.dev>
-Cc: Michael Turquette <mturquette@baylibre.com>,
- Stephen Boyd <sboyd@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
- Samuel Holland <samuel@sholland.org>,
- Guido =?ISO-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>,
- Purism Kernel Team <kernel@puri.sm>, Ondrej Jirman <megi@xff.cz>,
- Neil Armstrong <neil.armstrong@linaro.org>,
- Jessica Zhang <quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
- dri-devel@lists.freedesktop.org
-Subject:
- Re: [PATCH 4/5] clk: sunxi-ng: a64: Add constraints on PLL-VIDEO0's n/m ratio
-Date: Tue, 09 Jan 2024 21:29:39 +0100
-Message-ID: <3461075.QJadu78ljV@jernej-laptop>
-In-Reply-To: <87jzoug2jz.fsf@oltmanns.dev>
-References:
- <20231218-pinephone-pll-fixes-v1-0-e238b6ed6dc1@oltmanns.dev>
- <13411739.uLZWGnKmhe@jernej-laptop> <87jzoug2jz.fsf@oltmanns.dev>
+        d=1e100.net; s=20230601; t=1704832286; x=1705437086;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Zy227x7o0Ll4yDIdnlPh8FgO9tgNZWkKoSg5mlIm//U=;
+        b=gUfB0TL2h03lclKkQZu8wtvztp1lQnfXdfRtfSLNe5d7SZ8yvrMTM0tHwXb0HRhS04
+         /bqxUGCr7gXDZoP+fEPyT0N3ztTGPFtEfLQVfWAqtKSPkHwj9KYOT1zwgT5oxoxqlMEy
+         tZ5d0/QhOiUfrIkvFNCnPsdKA19gStka3/EE8MS+j/NqUYLnuMEYW+VXxnvoU8ZEnmNN
+         IzZEKrjgXUBItVMHE4TdK9ClVNLLomBwGAboGfWmVB0RJdcAo65dznqk8KANio/Q+04Z
+         JKf2jXZwS23VtWSLjPKsS+o2tvT0GnWNf49MYncMUjdG6qNT/wHXO/bePEZn3Kxx8V6P
+         UE1w==
+X-Gm-Message-State: AOJu0Yx6B4+kr8DKdtciVHd0xB1pp2DQIyfRwlrVKj8e6RIuYfAHD/BZ
+	fX/rM42p+9v1QbvmJWtGb5U=
+X-Google-Smtp-Source: AGHT+IEhKtpTXJ1m7RpKcdYH1ZpccgeGef5Z558w35b+uYVdVfzGVHOF2tqL7DSNVdVDWI05h4l5Nw==
+X-Received: by 2002:a05:6402:1818:b0:558:2110:5ab0 with SMTP id g24-20020a056402181800b0055821105ab0mr700053edy.72.1704832286097;
+        Tue, 09 Jan 2024 12:31:26 -0800 (PST)
+Received: from ?IPV6:2a01:c22:6ec5:5b00:2949:ac5c:4096:8128? (dynamic-2a01-0c22-6ec5-5b00-2949-ac5c-4096-8128.c22.pool.telefonica.de. [2a01:c22:6ec5:5b00:2949:ac5c:4096:8128])
+        by smtp.googlemail.com with ESMTPSA id er10-20020a056402448a00b005572a1159b9sm1269937edb.22.2024.01.09.12.31.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Jan 2024 12:31:25 -0800 (PST)
+Message-ID: <d8ed4af1-5c83-4895-9fc3-9aea25724fd9@gmail.com>
+Date: Tue, 9 Jan 2024 21:31:24 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] tg3: add new module param to force device power down on
+ reboot
+Content-Language: en-US
+To: Andrea Fois <andrea.fois@eventsense.it>
+Cc: Pavan Chebbi <pavan.chebbi@broadcom.com>,
+ Michael Chan <mchan@broadcom.com>, "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, George Shuklin <george.shuklin@gmail.com>,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240109194551.17666-1-andrea.fois@eventsense.it>
+From: Heiner Kallweit <hkallweit1@gmail.com>
+Autocrypt: addr=hkallweit1@gmail.com; keydata=
+ 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
+In-Reply-To: <20240109194551.17666-1-andrea.fois@eventsense.it>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Dne nedelja, 31. december 2023 ob 10:10:40 CET je Frank Oltmanns napisal(a):
->=20
-> On 2023-12-19 at 17:54:19 +0100, Jernej =C5=A0krabec <jernej.skrabec@gmai=
-l.com> wrote:
-> > Dne ponedeljek, 18. december 2023 ob 14:35:22 CET je Frank Oltmanns nap=
-isal(a):
-> >> The Allwinner A64 manual lists the following constraint for the
-> >> PLL-VIDEO0 clock: 8 <=3D N/M <=3D 25
-> >>
-> >> Use this constraint.
-> >>
-> >> Signed-off-by: Frank Oltmanns <frank@oltmanns.dev>
-> >> ---
-> >>  drivers/clk/sunxi-ng/ccu-sun50i-a64.c | 8 ++++++--
-> >>  1 file changed, 6 insertions(+), 2 deletions(-)
-> >>
-> >> diff --git a/drivers/clk/sunxi-ng/ccu-sun50i-a64.c b/drivers/clk/sunxi=
-=2Dng/ccu-sun50i-a64.c
-> >> index c034ac027d1c..75d839da446c 100644
-> >> --- a/drivers/clk/sunxi-ng/ccu-sun50i-a64.c
-> >> +++ b/drivers/clk/sunxi-ng/ccu-sun50i-a64.c
-> >> @@ -68,7 +68,8 @@ static SUNXI_CCU_NM_WITH_SDM_GATE_LOCK(pll_audio_bas=
-e_clk, "pll-audio-base",
-> >>  				       BIT(28),	/* lock */
-> >>  				       CLK_SET_RATE_UNGATE);
-> >>
-> >> -static SUNXI_CCU_NM_WITH_FRAC_GATE_LOCK_MIN_MAX_CLOSEST(pll_video0_cl=
-k, "pll-video0",
-> >> +static SUNXI_CCU_NM_WITH_FRAC_GATE_LOCK_MIN_MAX_FEAT_NM_RATIO(pll_vid=
-eo0_clk,
-> >> +						"pll-video0",
-> >>  						"osc24M", 0x010,
-> >>  						192000000,	/* Minimum rate */
-> >>  						1008000000,	/* Maximum rate */
->=20
-> I just realized that adding the whole ratio limits for ccu_nm is
-> superfluous as you could just as well express them in for of a minimum
-> and maximum range:
-> Since 8 <=3D N/M <=3D 25 and parent_rate =3D 24 MHz, therefore
->   192 MHz <=3D rate <=3D 600 MHz.
+On 09.01.2024 20:45, Andrea Fois wrote:
+> The bug #1917471 was fixed in commit 2ca1c94ce0b6 ("tg3: Disable tg3
+> device on system reboot to avoid triggering AER") but was reintroduced
+> by commit 9fc3bc764334 ("tg3: power down device only on
+> SYSTEM_POWER_OFF").
+> 
+> The problem described in #1917471 is still consistently replicable on
+> reboots on Dell Servers (i.e. R750xs with BCM5720 LOM), causing NMIs
+> (i.e. NMI received for unknown reason 38 on cpu 0) after 9fc3bc764334
+> was committed.
+> 
+> The problem is detected also by the Lifecycle controller and logged as
+> a PCI Bus Error for the device.
+> 
+> As the problems addressed by 2ca1c94ce0b6 and by 9fc3bc764334 requires
+> opposite strategies, a new module param "force_pwr_down_on_reboot"
+> <bool> is introduced to fix both scenarios:
+> 
+Adding module parameters is discouraged. What I see could try:
 
-Good point!
+- limit 9fc3bc764334 to the specific machine type mentioned in the
+  commit message (based DMI info)
+- 2ca1c94ce0b6 performs two actions: power down tg3 and disable device
+  Based on the commit description disabling the device might be sufficient.
 
->=20
-> These absolute limits are also listed in Allwinner's A64 manual.
->=20
-> BUT, here the upper limit was raised to 1008 MHz:
-> 5de39acaf34604bd04834f092479cf4dcc946dd "clk: sunxi-ng: a64: Add max.
-> rate constraint to video PLL"
->=20
-> With this upper limit the ratio limitation is effectively:
-> 8 <=3D N/M <=3D 42
->=20
-> Icenowy Zheng (added to CC) had the reasonable explanation that this was
-> used in the BSP kernel, so we should probably stick to that and ditch
-> the two PLL-VIDEO0 related patches. What are your thoughts on that?
-
-Ok, it seems that these patches are really superfluous. Remove them for v2.
-
-Best regards,
-Jernej
-
->=20
-> >> @@ -80,7 +81,10 @@ static SUNXI_CCU_NM_WITH_FRAC_GATE_LOCK_MIN_MAX_CLO=
-SEST(pll_video0_clk, "pll-vid
-> >>  						297000000,	/* frac rate 1 */
-> >>  						BIT(31),	/* gate */
-> >>  						BIT(28),	/* lock */
-> >> -						CLK_SET_RATE_UNGATE);
-> >> +						CLK_SET_RATE_UNGATE,
-> >> +						CCU_FEATURE_FRACTIONAL |
-> >> +						CCU_FEATURE_CLOSEST_RATE,
-> >
-> > Above flags are unrelated change, put them in new patch if needed.
-> >
-> > Best regards,
-> > Jernej
-> >
-> >> +						8, 25);		/* min/max nm ratio */
-> >>
-> >>  static SUNXI_CCU_NM_WITH_FRAC_GATE_LOCK(pll_ve_clk, "pll-ve",
-> >>  					"osc24M", 0x018,
-> >>
-> >>
->=20
-
-
-
+> 	force_pwr_down_on_reboot = 0/N/n = disable, keep the current
+> 									   behavior, don't force dev
+> 									   power down on reboot
+> 
+> 	force_pwr_down_on_reboot = 1/Y/y = enable, revert to the
+> 									   behavior of 2ca1c94ce0b6,
+> 									   force dev power down on reboot
+> 
+> Fixes: 9fc3bc764334 ("tg3: power down device only on SYSTEM_POWER_OFF")
+> Signed-off-by: Andrea Fois <andrea.fois@eventsense.it>
+> ---
+>  drivers/net/ethernet/broadcom/tg3.c | 8 +++++++-
+>  1 file changed, 7 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/ethernet/broadcom/tg3.c b/drivers/net/ethernet/broadcom/tg3.c
+> index f52830dfb26a..287786357c9b 100644
+> --- a/drivers/net/ethernet/broadcom/tg3.c
+> +++ b/drivers/net/ethernet/broadcom/tg3.c
+> @@ -233,6 +233,12 @@ static int tg3_debug = -1;	/* -1 == use TG3_DEF_MSG_ENABLE as value */
+>  module_param(tg3_debug, int, 0);
+>  MODULE_PARM_DESC(tg3_debug, "Tigon3 bitmapped debugging message enable value");
+>  
+> +static bool force_pwr_down_on_reboot;	/* false == Don't force the power down of
+> +					 * the device during reboot, only on SYSTEM_POWER_OFF
+> +					 */
+> +module_param(force_pwr_down_on_reboot, bool, 0x644);
+> +MODULE_PARM_DESC(force_pwr_down_on_reboot, "Tigon3 force power down of the device on reboot enable value");
+> +
+>  #define TG3_DRV_DATA_FLAG_10_100_ONLY	0x0001
+>  #define TG3_DRV_DATA_FLAG_5705_10_100	0x0002
+>  
+> @@ -18197,7 +18203,7 @@ static void tg3_shutdown(struct pci_dev *pdev)
+>  	if (netif_running(dev))
+>  		dev_close(dev);
+>  
+> -	if (system_state == SYSTEM_POWER_OFF)
+> +	if (system_state == SYSTEM_POWER_OFF || force_pwr_down_on_reboot)
+>  		tg3_power_down(tp);
+>  
+>  	rtnl_unlock();
 
 
