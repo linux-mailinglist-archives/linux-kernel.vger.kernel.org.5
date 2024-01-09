@@ -1,121 +1,118 @@
-Return-Path: <linux-kernel+bounces-21458-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21459-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5BD6E828F69
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 23:05:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A0D4828F71
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 23:08:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8262F1C24D51
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 22:05:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 47AA028804D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 22:08:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12EA73DBAF;
-	Tue,  9 Jan 2024 22:05:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF3E63DBB1;
+	Tue,  9 Jan 2024 22:08:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ANqiQGJ7"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="NCRmx0F1"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A05DF3E462;
-	Tue,  9 Jan 2024 22:05:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704837902; x=1736373902;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=BDvoKVYVmehl2ViKsufWR9aJAI1u8ABei68fFx16HOw=;
-  b=ANqiQGJ7nvJBipTbeJhyoWte05w0nCHGuFG5y2Qjes7+xDqUDzUJvr6m
-   o6nehFr9VvqHS/1R7ijMZGdtUhcm59m9360UVJUF7ZnqljTh/VmlH+9HN
-   iaZwcSq1BY/Ms7CcvNtTxuTcVoCpAzrVankkV3PXPR+nCPD56hc7ebSnT
-   OZiXJGjSFTgvYKwpSXDydgHXfvwA7hBG2FyAdXuqAIVuarYpwKSFMADTC
-   4iGP8TP1Z+/wq0fPwFP+UIVa3+UjcDf6YTFKuncADSAXBgWcMG83vyHPG
-   9sqUvGccN5+6GTeDGggjFr3hJmtMaKX8Mnk0wPuCO+AZhfpw3ACRRSb9N
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="11822236"
-X-IronPort-AV: E=Sophos;i="6.04,184,1695711600"; 
-   d="scan'208";a="11822236"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jan 2024 14:05:01 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="775002243"
-X-IronPort-AV: E=Sophos;i="6.04,184,1695711600"; 
-   d="scan'208";a="775002243"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga007.jf.intel.com with ESMTP; 09 Jan 2024 14:04:55 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rNKDN-0006Ik-1v;
-	Tue, 09 Jan 2024 22:04:53 +0000
-Date: Wed, 10 Jan 2024 06:04:43 +0800
-From: kernel test robot <lkp@intel.com>
-To: Vidya Sagar <vidyas@nvidia.com>, lpieralisi@kernel.org, kw@linux.com,
-	robh@kernel.org, bhelgaas@google.com,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	will@kernel.org, frowand.list@gmail.com
-Cc: oe-kbuild-all@lists.linux.dev, linux-pci@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, treding@nvidia.com,
-	jonathanh@nvidia.com, kthota@nvidia.com, mmaddireddy@nvidia.com,
-	vidyas@nvidia.com, sagar.tv@gmail.com
-Subject: Re: [PATCH V1 2/2] PCI: Add support for "preserve-boot-config"
- property
-Message-ID: <202401100554.kaCFjM87-lkp@intel.com>
-References: <20240109050648.1347255-3-vidyas@nvidia.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34DDF3DB98;
+	Tue,  9 Jan 2024 22:08:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 2EB3A40E01B2;
+	Tue,  9 Jan 2024 22:08:34 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id KiOhwCe-g0qp; Tue,  9 Jan 2024 22:08:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1704838112; bh=worxUdT9KOJEranFxZps6GXVgd62mc3IxDyhlGzs0cY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=NCRmx0F1AvON411bFZmisI9EYkIitCHfOHXNYd/eCzvNPdZfDISwu7fxP5jInn05r
+	 Y7lHFxA3DeKeTHPE930sls+OiWOCmJluo7488AyOZIeKFkRBkXl2iUXCM8GGAreu2s
+	 nFVP+KSf04QKZX8XUej+18buuwurHIpE5XqekAMmpz6b5D4hIg7C9Vq8JnfDSvK7Sy
+	 qU7lJntAy1iA9V0KB54lFK7akmoJKnPsdVXl5AolCQBWq9w9WIZwHY6WUxvlUroeg0
+	 diJ9wGF38YnE3SZilIAzaW5qNKm2F9v1diPgYGTnNwzJXVyHBtrRIfSRqsapjUEATl
+	 CgmEb2dNA4CxcF/AJXsFTCxWsREDxUH2GiD+OhVGLIRJyKhH66wOWD01MkSsnjfjM5
+	 AkSZF01kqKAu+GP9zgYSV8pKHeGnbktYaoFbibduOXOGpbiutLCXU2O9aHjtJ//yYM
+	 qfekQTSH0ZeRz8qcU6k66AkfK9KgngakBU6iZQwadHQM9UkvyqXiu7tX4RYyPA641c
+	 T+xwcwaFrEkuXAle/ZJdyJlEWyG42lZfjFyclRehF8GfV6jAqmGNWv26aQm0zdHwn4
+	 Cc+99gALtyJcjitB/MLC0x+ZYPEpwh4qBL7mc4fL8Kfm7T4aQubP2IeUc2hPA7eLVs
+	 D5BX6VxTFc2YtIkwtP3VCTyY=
+Received: from zn.tnic (pd9530f8c.dip0.t-ipconnect.de [217.83.15.140])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 7C72340E016C;
+	Tue,  9 Jan 2024 22:07:52 +0000 (UTC)
+Date: Tue, 9 Jan 2024 23:07:46 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Michael Roth <michael.roth@amd.com>
+Cc: kvm@vger.kernel.org, linux-coco@lists.linux.dev, linux-mm@kvack.org,
+	linux-crypto@vger.kernel.org, x86@kernel.org,
+	linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
+	jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com,
+	ardb@kernel.org, pbonzini@redhat.com, seanjc@google.com,
+	vkuznets@redhat.com, jmattson@google.com, luto@kernel.org,
+	dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com,
+	peterz@infradead.org, srinivas.pandruvada@linux.intel.com,
+	rientjes@google.com, dovmurik@linux.ibm.com, tobin@ibm.com,
+	vbabka@suse.cz, kirill@shutemov.name, ak@linux.intel.com,
+	tony.luck@intel.com, sathyanarayanan.kuppuswamy@linux.intel.com,
+	alpergun@google.com, jarkko@kernel.org, ashish.kalra@amd.com,
+	nikunj.dadhania@amd.com, pankaj.gupta@amd.com,
+	liam.merwick@oracle.com, zhi.a.wang@intel.com,
+	Brijesh Singh <brijesh.singh@amd.com>
+Subject: Re: [PATCH v10 07/50] x86/sev: Add RMP entry lookup helpers
+Message-ID: <20240109220746.GAZZ3DsouxpiUPeBVN@fat_crate.local>
+References: <20231016132819.1002933-1-michael.roth@amd.com>
+ <20231016132819.1002933-8-michael.roth@amd.com>
+ <20231114142442.GCZVODKh03BoMFdlmj@fat_crate.local>
+ <20231219033150.m4x6yh6udupkdqaa@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240109050648.1347255-3-vidyas@nvidia.com>
+In-Reply-To: <20231219033150.m4x6yh6udupkdqaa@amd.com>
 
-Hi Vidya,
+On Mon, Dec 18, 2023 at 09:31:50PM -0600, Michael Roth wrote:
+> I've moved this to sev.h, but it RMP_PG_SIZE_4K is already defined there
+> and used by a bunch of guest code so it's a bit out-of-place to update
+> those as part of this patchset. I can send a follow-up series to clean up
+> some of the naming and get rid of sev-common.h
 
-kernel test robot noticed the following build warnings:
+Yap, good idea.
 
-[auto build test WARNING on pci/next]
-[also build test WARNING on pci/for-linus linus/master v6.7 next-20240109]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+> Doesn't seem like it would be an issue, maybe some fallout from any
+> files that previously only included sev-common.h and now need to pull in
+> guest struct definitions as well, but those definitions don't have a lot
+> of external dependencies so don't anticipate any header include
+> hellishness. I'll send that as a separate follow-up, along with some of
+> the renames you suggested above since they'll touch guest code and
+> create unecessary churn for SNP host support.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Vidya-Sagar/dt-bindings-Add-PCIe-preserve-boot-config-property/20240109-130938
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/pci/pci.git next
-patch link:    https://lore.kernel.org/r/20240109050648.1347255-3-vidyas%40nvidia.com
-patch subject: [PATCH V1 2/2] PCI: Add support for "preserve-boot-config" property
-config: alpha-allnoconfig (https://download.01.org/0day-ci/archive/20240110/202401100554.kaCFjM87-lkp@intel.com/config)
-compiler: alpha-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240110/202401100554.kaCFjM87-lkp@intel.com/reproduce)
+OTOH, people recently have started looking at including only that stuff
+which is really used so having a single header would cause more
+preprocessing effort. I'm not too crazy about it as the preprocessing
+overhead is barely measurable so might as well have a single header and
+then split it later...
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202401100554.kaCFjM87-lkp@intel.com/
+Definitely something for the after-burner and not important right now.
 
-All warnings (new ones prefixed by >>):
-
-   In file included from drivers/pci/probe.c:11:
->> include/linux/of_pci.h:31:13: warning: 'of_pci_check_preserve_boot_config' defined but not used [-Wunused-function]
-      31 | static bool of_pci_check_preserve_boot_config(struct device_node *node)
-         |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-vim +/of_pci_check_preserve_boot_config +31 include/linux/of_pci.h
-
-    30	
-  > 31	static bool of_pci_check_preserve_boot_config(struct device_node *node)
-    32	{
-    33		return false;
-    34	}
-    35	#endif
-    36	
+Thx.
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
 
