@@ -1,173 +1,104 @@
-Return-Path: <linux-kernel+bounces-20683-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20685-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90D6282836C
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 10:43:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB12F828378
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 10:51:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0E128287DCD
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 09:43:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 523041F24940
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 09:51:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BBF636093;
-	Tue,  9 Jan 2024 09:43:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4B5A3526E;
+	Tue,  9 Jan 2024 09:50:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Bw5RWdGG"
-Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com [209.85.208.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HX06f7je"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33C333608B
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 09:43:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2ccbc328744so31638761fa.3
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 01:43:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704793381; x=1705398181; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FeB2WNn4H4jWlw/Xw5gvB0Tvd8i01mZv8HHnVnUvBXo=;
-        b=Bw5RWdGGs/6C01cf55UsdZY3Yy8cL+6B7zQITbPK9t5NtSI3jMNPzp76FWzCrhBjPB
-         3mFTzxi1yi3g/khEq4L+2X1+Sfon/4OY36oNfMFBBABetIOJ8mvuNknVG+w9UGe5YCsx
-         VEuC7w+mNgQ16ao/5blLUCXnDVEs5xfalV0hdct1iZkkF21FLUsPtUCm+OzFXLsWRfFr
-         rb/+4thA479/kx/p+qJ98bdmoO+h7wQqTepRukKdhpQvibvv8ivbPIRGW+QhCIc9eYD6
-         dDxno4W2K55SX+zlE5myrCiHBmSay5tE1gXq8D4h66zJs9+JjIQieSafrobIUGry4JYM
-         Ed3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704793381; x=1705398181;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FeB2WNn4H4jWlw/Xw5gvB0Tvd8i01mZv8HHnVnUvBXo=;
-        b=ryCoZAzPfYqAmx7ppvy2LY4vNg3n4kbsvGekGTqOXeWENWcCtNFWmFEfEVb48M16QO
-         0KfC0Hj8n3Bp3aqP7ndXFMgQzfisebPJJUat0eGAnjj+p8puuIwkh7PI9kZr8s7V8jUg
-         9C6VqyPOqHSwD/g9k0j3/wQQTk6hFgp2Fg4257ftWotYMuM37sO8plkjUyJOJIsRrAN9
-         yZPMjDux7vmog+jCzU1vn9pGkym7iSBpoMpvK6WofD9wj+s/iRLxBFJG1ABX8SLkYyCs
-         hMnvAL3xePPAGJSeFyIpIUNSw6bi0azneIcBg+zs5VwVz7Lty0mkI200f3Bt6Elag1f8
-         rU9A==
-X-Gm-Message-State: AOJu0YzY64t9MRCqQgx9Zps7O75IvTgQD8x0I4/hElou7ng7minUc3GK
-	GvOmB7C31N628rSDiEiCdxOMIvpi79v4MQolOug=
-X-Google-Smtp-Source: AGHT+IEF77NlmfvikY97ga0rs3UJEAa2FaNio+f/Bwi+B7ECk24W0ukg4RSpGGSwjiEPHtBYUlmz+sjhqHSbbO9+hV0=
-X-Received: by 2002:a2e:960a:0:b0:2cd:2ac6:9685 with SMTP id
- v10-20020a2e960a000000b002cd2ac69685mr2293997ljh.92.1704793380802; Tue, 09
- Jan 2024 01:43:00 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13A00BA45
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 09:50:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A9F5DC433F1;
+	Tue,  9 Jan 2024 09:50:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704793857;
+	bh=DvrmDiuY6GgmxhNHQtU1bWPrasmkM91rmXnYqEuWm3I=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=HX06f7je50opK5ndx4+HaMqqxpX73NQHKGxSqMIx9qoF/P6rhkWNFMPCJ/vNSdk78
+	 ku/AVOhpl405OAF/oiX0QfisXafKyrjFb/ZqesDHa4Kxh5Ktpqx13hZ5P2MK8que1a
+	 3kn/wx7FiI07ijuoP3WwLXUfz9/5SBEH9+ESyax1q5N1pUpGdJ3DJaK8y+f03Tijzj
+	 6Y8KEIt3Aajg2IxCSFFwkjYhpJWY4LTJPQXr8RAKW2NFrLi76Ff+lx5yT69D2JnjXu
+	 LzqCqjuPoeMauqL4IfKuoHkWO7R1m0FkYXkmNpCTPkhLKwSTbD0pmVDbMQkK+1AaPP
+	 Iv1GdXsGIUOkQ==
+Date: Tue, 9 Jan 2024 09:50:51 +0000
+From: Will Deacon <will@kernel.org>
+To: Florian Fainelli <florian.fainelli@broadcom.com>
+Cc: linux-arm-kernel@lists.infradead.org,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Arnd Bergmann <arnd@arndb.de>,
+	"peterz@infradead.org" <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Rick Edgecombe <rick.p.edgecombe@intel.com>,
+	Nhat Pham <nphamcs@gmail.com>, Palmer Dabbelt <palmer@sifive.com>,
+	Sohil Mehta <sohil.mehta@intel.com>,
+	Miklos Szeredi <mszeredi@redhat.com>,
+	Christian Brauner <brauner@kernel.org>, Ian Kent <raven@themaw.net>,
+	open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] ARM64: Update __NR_compat_syscalls for
+ statmount/listmount
+Message-ID: <20240109095050.GA12915@willie-the-truck>
+References: <20240109010906.429652-1-florian.fainelli@broadcom.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240102175338.62012-1-ryncsn@gmail.com> <20240102175338.62012-5-ryncsn@gmail.com>
- <878r54b6ae.fsf@yhuang6-desk2.ccr.corp.intel.com> <CAMgjq7B7iShnLaiT-0MBGEMdVS65bupx_NshjM0ssLmhJm0CFQ@mail.gmail.com>
- <87edes9smm.fsf@yhuang6-desk2.ccr.corp.intel.com>
-In-Reply-To: <87edes9smm.fsf@yhuang6-desk2.ccr.corp.intel.com>
-From: Kairui Song <ryncsn@gmail.com>
-Date: Tue, 9 Jan 2024 17:42:43 +0800
-Message-ID: <CAMgjq7AzUOgaJGSZ6BBLvF0j27FAzOpaFYi+WZCrC_7KPYrJNg@mail.gmail.com>
-Subject: Re: [PATCH v2 4/9] mm/swap: always account swapped in page into
- current memcg
-To: "Huang, Ying" <ying.huang@intel.com>
-Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>, 
-	Chris Li <chrisl@kernel.org>, Hugh Dickins <hughd@google.com>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Matthew Wilcox <willy@infradead.org>, Michal Hocko <mhocko@suse.com>, 
-	Yosry Ahmed <yosryahmed@google.com>, David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240109010906.429652-1-florian.fainelli@broadcom.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 
-Huang, Ying <ying.huang@intel.com> =E4=BA=8E2024=E5=B9=B41=E6=9C=888=E6=97=
-=A5=E5=91=A8=E4=B8=80 15:46=E5=86=99=E9=81=93=EF=BC=9A
->
-> Kairui Song <ryncsn@gmail.com> writes:
->
-> > Huang, Ying <ying.huang@intel.com> =E4=BA=8E2024=E5=B9=B41=E6=9C=885=E6=
-=97=A5=E5=91=A8=E4=BA=94 15:16=E5=86=99=E9=81=93=EF=BC=9A
-> >>
-> >> Kairui Song <ryncsn@gmail.com> writes:
-> >>
-> >> > From: Kairui Song <kasong@tencent.com>
-> >> >
-> >> > Currently, mem_cgroup_swapin_charge_folio is always called with
-> >> > mm argument as NULL, except in swapin_direct.
-> >> >
-> >> > swapin_direct is used when swapin should skip readahead and
-> >> > swapcache (SWP_SYNCHRONOUS_IO). Other caller paths of
-> >> > mem_cgroup_swapin_charge_folio are for swapin that should
-> >> > not skip readahead and cache.
-> >> >
-> >> > This could cause swapin charging to behave differently depending
-> >> > on swap device. This currently didn't happen because the only call
-> >> > path of swapin_direct is the direct anon page fault path, where mm
-> >> > equals to current->mm, but will no longer be true if swapin_direct
-> >> > is shared and have other callers (eg, swapoff).
-> >> >
-> >> > So make swapin_direct also passes NULL for mm, no feature change.
-> >> >
-> >> > Signed-off-by: Kairui Song <kasong@tencent.com>
-> >> > ---
-> >> >  mm/swap_state.c | 2 +-
-> >> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >> >
-> >> > diff --git a/mm/swap_state.c b/mm/swap_state.c
-> >> > index 6130de8d5226..d39c5369da21 100644
-> >> > --- a/mm/swap_state.c
-> >> > +++ b/mm/swap_state.c
-> >> > @@ -881,7 +881,7 @@ struct folio *swapin_direct(swp_entry_t entry, g=
-fp_t gfp_mask,
-> >> >       folio =3D vma_alloc_folio(GFP_HIGHUSER_MOVABLE, 0,
-> >> >                               vma, vmf->address, false);
-> >> >       if (folio) {
-> >> > -             if (mem_cgroup_swapin_charge_folio(folio, vma->vm_mm,
-> >> > +             if (mem_cgroup_swapin_charge_folio(folio, NULL,
-> >> >                                                  GFP_KERNEL, entry))=
- {
-> >> >                       folio_put(folio);
-> >> >                       return NULL;
-> >>
-> >> I think that why not provide "mm" when it's available?  For
-> >> swapin_direct() called by do_swap_page(), mm can be provided.  While,
-> >> for swapin_direct() called by shmem swapin, mm will be NULL.  We can
-> >> even provide "mm" for __read_swap_cache_async() for VMA based swapin a=
-nd
-> >> for the fault address for cluster swapin.
-> >
-> > Hi, Ying.
-> >
-> > Thanks for the comment.
-> >
-> > Without modifying too much code, providing mm here will change swapin
-> > charge behaviour on swapoff, we discussed it previously:
-> > https://lkml.org/lkml/2023/11/19/320
->
-> It's better to use "lore" for kernel email link, for example,
->
-> https://lore.kernel.org/lkml/20231119194740.94101-24-ryncsn@gmail.com/
->
-> This is more readable than the above link.
+On Mon, Jan 08, 2024 at 05:09:04PM -0800, Florian Fainelli wrote:
+> Commit d8b0f5465012 ("wire up syscalls for statmount/listmount") added
+> two new system calls to arch/arm64/include/asm/unistd32.h but forgot to
+> update the __NR_compat_syscalls number, thus causing the following build
+> failures:
+> 
+> ./arch/arm64/include/asm/unistd32.h:922:24: error: array index in initializer exceeds array bounds
+>   922 | #define __NR_statmount 457
+>       |                        ^~~
+> arch/arm64/kernel/sys32.c:130:34: note: in definition of macro '__SYSCALL'
+>   130 | #define __SYSCALL(nr, sym)      [nr] = __arm64_##sym,
+>       |                                  ^~
+> 
+> Bump up the number by two to accomodate for the new system calls added.
+> 
+> Fixes: d8b0f5465012 ("wire up syscalls for statmount/listmount")
+> Signed-off-by: Florian Fainelli <florian.fainelli@broadcom.com>
+> ---
+>  arch/arm64/include/asm/unistd.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm64/include/asm/unistd.h b/arch/arm64/include/asm/unistd.h
+> index 531effca5f1f..b63f870debaf 100644
+> --- a/arch/arm64/include/asm/unistd.h
+> +++ b/arch/arm64/include/asm/unistd.h
+> @@ -39,7 +39,7 @@
+>  #define __ARM_NR_compat_set_tls		(__ARM_NR_COMPAT_BASE + 5)
+>  #define __ARM_NR_COMPAT_END		(__ARM_NR_COMPAT_BASE + 0x800)
+>  
+> -#define __NR_compat_syscalls		457
+> +#define __NR_compat_syscalls		459
+>  #endif
+>  
+>  #define __ARCH_WANT_SYS_CLONE
+> -- 
+> 2.34.1
 
-Hi Ying,
+Acked-by: Will Deacon <will@kernel.org>
 
-Thanks for your advice.
-
->
-> > If we want to avoid the behavior change, we have to extend all direct
-> > and indirect callers of mem_cgroup_swapin_charge_folio to accept a
-> > standalone mm argument (including swapin_direct, swap_vma_readahead,
-> > swap_cluster_readahead, __read_swap_cache_async, swapin_entry_mpol,
-> > read_swap_cache_async, and some other path may need more audit), and
-> > sort things our case by case. I'm not sure if that's a good idea...
-> >
-> > Simply dropping it here seems the easiest way to avoid such change.
->
-> OK.  Didn't realize that they are related directly.  It appears that we
-> always pass NULL as mm to mem_cgroup_swapin_charge_folio().  If so,
-> please just remove the parameter.
-
-Yes, that's also what I wanted.
-
->
-> --
-> Best Regards,
-> Huang, Ying
+Will
 
