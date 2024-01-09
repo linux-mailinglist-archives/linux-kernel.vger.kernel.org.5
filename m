@@ -1,60 +1,61 @@
-Return-Path: <linux-kernel+bounces-21124-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21125-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 32214828A4F
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 17:47:11 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 25B2D828A52
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 17:47:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9B4841F26393
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 16:47:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5C16DB245DF
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 16:47:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0D703A278;
-	Tue,  9 Jan 2024 16:47:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C325B3AC12;
+	Tue,  9 Jan 2024 16:47:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="cp29K+++"
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="jTVVLDGi"
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B8933A1D4
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 16:47:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F3843A8C8
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 16:47:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-40d5aefcc2fso35731025e9.0
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 08:47:00 -0800 (PST)
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-40d5a41143fso35182955e9.3
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 08:47:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704818819; x=1705423619; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Kyb6CN2MTJ0KrepLWGAugAgymHc/HiwDmVkQZF3Jz+E=;
-        b=cp29K+++Oy4/Vn7OfXe9ZoO+/1ViLgt5OhQUP915YB0MmAK1WBVPFW6AhCC/L7/nzR
-         4DrH5uJh49YpE2xJLlBdrdX+8PFYV6jJo8yr2sARo54wbimFqsiEFDBhipe0xKIPu/1r
-         DbNfxo+mk99p4FRTzVnsJPcYZwQcXORK4NNN9Y8gOZpGG3ZaJoM/EOq0PWa+1BrxHpJi
-         E/SeH7Sf6R4Avk/roUWRc2zPNBSjL6IrHBKpwVB+hJdElr0EGFP/eoQJLCXp+KBkp8k9
-         fyjVoT7bqNIi/ll7WnTFb6hWDiVFaQ6H0GBFdX5WS5FEKstHhA7xn9NdQFlA4GXIKepg
-         mgbA==
+        d=linaro.org; s=google; t=1704818820; x=1705423620; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1VSqPsC352z1+DaREu/L/y/EnPhhSVHlvyMYIWruXUU=;
+        b=jTVVLDGiE7WNcrkOERK2EEUMaKyg23ystLP3DjBT/yke9332eivvROsbDW5aZ55wK9
+         NfbjgFTPKu2lUX3A8Hs4cwDPggo16wcqxp4MINnLsTuWHsqhjS03inWExzQfwF137NYW
+         4p9quVeKD5CgmJ5LD7fjvOow6FJ626B4Ft0sCsFVmi0VNt2Po3uEvK++8gt/6dKX9g7t
+         V2OooJbDOL+UJY8MSTqFmXYTbKqTzjdBJ6//gDnte6iZdGlsFbo29pKFGjV+rQGPrEex
+         Z+HDwzVziw00LwoQ9MpLntwOAbl+vMgzcH3yVr6/2SowUY/Cat7xpsdbnpgH1pJYBtv7
+         bC0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704818819; x=1705423619;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Kyb6CN2MTJ0KrepLWGAugAgymHc/HiwDmVkQZF3Jz+E=;
-        b=TQXLRSXX52MgikwRpalfQDOsnQnHwWBNbdIxIB0x5CApaq7nYqHpCsuM1wICoMXKPp
-         odCCOTTuQqHGpwI+7O26gqDt4I2I2vTJAT1/VNor15ZhDbL8CwLe+sXVw2aOSfVESTWx
-         1Jvagw30Fnv9jObwNTOoX0RpOVapzSSuP8bFy89VnjEeGuR4nspQKLktVY74gSZ/SFRR
-         x+wibWKkr6Qc1bvJ4paleIAqb94UrUDZzclQNMeYdUPPdF8SEETUl2pB5kXqgKIR1gk2
-         GJG+oacPuoIszk7AQhxB6BfTe7kt7D+dFgJMtNgmyHoQ8ERQDUSyOoBLC07SRb72lCCu
-         7g/Q==
-X-Gm-Message-State: AOJu0Yy1z6/TCW+2v/mqlTSGrLOZJPrZ9x5Y3vhHHfhSn1+nef/spWf6
-	4+mTziGjh3XWbt9qg9bpLD9B0/6DuaZ1TQ==
-X-Google-Smtp-Source: AGHT+IF9dRAWRS2L2cDEzdxGpgrA4GkSU0CGNenchoR2D4PFYAdKqLE6O0kUT8J5tmPJebBS3lDDGw==
-X-Received: by 2002:a05:600c:22d0:b0:40d:8199:c3f with SMTP id 16-20020a05600c22d000b0040d81990c3fmr3183585wmg.153.1704818818906;
-        Tue, 09 Jan 2024 08:46:58 -0800 (PST)
+        d=1e100.net; s=20230601; t=1704818820; x=1705423620;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1VSqPsC352z1+DaREu/L/y/EnPhhSVHlvyMYIWruXUU=;
+        b=JRdOO7ju/WIzr6aC4XmtNd+lnIZ7m3dNbE7VZriMAsnn3Mt0sCbwX7JmhwWZTews16
+         Ay80Gspw/73TE5lI/CILepj8jZwjKrEkpI9DQCYacWJTaEtWL5tQvGdlj//lKp7bCWeU
+         QQtg8wYQ9D87ATLwbLa3QXjJs40Vn1dreL6D+dB1LQ/rmOEPbODKeBOF88oKEHfyt7fM
+         6b+REBb5NBK3ya5Bo4aC0iay70jlMYGOj0TrFHIDspd9gXtS6BSC9t7p1FJxCZukp2ip
+         xpV+STrgoNPZIVHtqPpyHGWHubufUUbLMaMacX7kH/5titpLcyTAsm/eV6Gh5/lwhBZO
+         pZyg==
+X-Gm-Message-State: AOJu0Yz4doQt5KfvepvCyrySvceQ7Y6EDM7nYgH2xUxH2Psey6MM1dov
+	I8n7axn5Fx9VU3FKTU1YlDDQaGZYvJwlzg==
+X-Google-Smtp-Source: AGHT+IH8EOAQKPftixCHH1GthJR9dBP1bpJsaA2TFNHFIEiMPDXcYKLKrfP75H6radooSSpQr9f0vg==
+X-Received: by 2002:a7b:c043:0:b0:40d:38ba:544e with SMTP id u3-20020a7bc043000000b0040d38ba544emr3404193wmc.60.1704818820623;
+        Tue, 09 Jan 2024 08:47:00 -0800 (PST)
 Received: from vingu-book.. ([2a01:e0a:f:6020:378:51f6:d46e:8457])
-        by smtp.gmail.com with ESMTPSA id r4-20020adff104000000b00336a0c083easm2847845wro.53.2024.01.09.08.46.57
+        by smtp.gmail.com with ESMTPSA id r4-20020adff104000000b00336a0c083easm2847845wro.53.2024.01.09.08.46.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Jan 2024 08:46:58 -0800 (PST)
+        Tue, 09 Jan 2024 08:46:59 -0800 (PST)
 From: Vincent Guittot <vincent.guittot@linaro.org>
 To: linux@armlinux.org.uk,
 	catalin.marinas@arm.com,
@@ -89,10 +90,12 @@ To: linux@armlinux.org.uk,
 	linux-doc@vger.kernel.org
 Cc: qyousef@layalina.io,
 	Vincent Guittot <vincent.guittot@linaro.org>
-Subject: [PATCH v4 0/5] Rework system pressure interface to the scheduler
-Date: Tue,  9 Jan 2024 17:46:50 +0100
-Message-Id: <20240109164655.626085-1-vincent.guittot@linaro.org>
+Subject: [PATCH v4 1/5] cpufreq: Add a cpufreq pressure feedback for the scheduler
+Date: Tue,  9 Jan 2024 17:46:51 +0100
+Message-Id: <20240109164655.626085-2-vincent.guittot@linaro.org>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240109164655.626085-1-vincent.guittot@linaro.org>
+References: <20240109164655.626085-1-vincent.guittot@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -101,62 +104,98 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Following the consolidation and cleanup of CPU capacity in [1], this serie
-reworks how the scheduler gets the pressures on CPUs. We need to take into
-account all pressures applied by cpufreq on the compute capacity of a CPU
-for dozens of ms or more and not only cpufreq cooling device or HW
-mitigiations. We split the pressure applied on CPU's capacity in 2 parts:
-- one from cpufreq and freq_qos
-- one from HW high freq mitigiation.
+Provide to the scheduler a feedback about the temporary max available
+capacity. Unlike arch_update_thermal_pressure, this doesn't need to be
+filtered as the pressure will happen for dozens ms or more.
 
-The next step will be to add a dedicated interface for long standing
-capping of the CPU capacity (i.e. for seconds or more) like the
-scaling_max_freq of cpufreq sysfs. The latter is already taken into
-account by this serie but as a temporary pressure which is not always the
-best choice when we know that it will happen for seconds or more.
+Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
+---
+ drivers/cpufreq/cpufreq.c | 36 ++++++++++++++++++++++++++++++++++++
+ include/linux/cpufreq.h   | 10 ++++++++++
+ 2 files changed, 46 insertions(+)
 
-[1] https://lore.kernel.org/lkml/20231211104855.558096-1-vincent.guittot@linaro.org/
-
-Change since v3:
-- Fix uninitialized variables in cpufreq_update_pressure()
-
-Change since v2:
-- Rework cpufreq_update_pressure()
-
-Change since v1:
-- Use struct cpufreq_policy as parameter of cpufreq_update_pressure()
-- Fix typos and comments
-- Make sched_thermal_decay_shift boot param as deprecated
-
-Vincent Guittot (5):
-  cpufreq: Add a cpufreq pressure feedback for the scheduler
-  sched: Take cpufreq feedback into account
-  thermal/cpufreq: Remove arch_update_thermal_pressure()
-  sched: Rename arch_update_thermal_pressure into
-    arch_update_hw_pressure
-  sched/pelt: Remove shift of thermal clock
-
- .../admin-guide/kernel-parameters.txt         |  1 +
- arch/arm/include/asm/topology.h               |  6 +-
- arch/arm64/include/asm/topology.h             |  6 +-
- drivers/base/arch_topology.c                  | 26 ++++----
- drivers/cpufreq/cpufreq.c                     | 36 +++++++++++
- drivers/cpufreq/qcom-cpufreq-hw.c             |  4 +-
- drivers/thermal/cpufreq_cooling.c             |  3 -
- include/linux/arch_topology.h                 |  8 +--
- include/linux/cpufreq.h                       | 10 +++
- include/linux/sched/topology.h                |  8 +--
- .../{thermal_pressure.h => hw_pressure.h}     | 14 ++---
- include/trace/events/sched.h                  |  2 +-
- init/Kconfig                                  | 12 ++--
- kernel/sched/core.c                           |  8 +--
- kernel/sched/fair.c                           | 63 +++++++++----------
- kernel/sched/pelt.c                           | 18 +++---
- kernel/sched/pelt.h                           | 16 ++---
- kernel/sched/sched.h                          | 22 +------
- 18 files changed, 144 insertions(+), 119 deletions(-)
- rename include/trace/events/{thermal_pressure.h => hw_pressure.h} (55%)
-
+diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
+index 44db4f59c4cc..f4eee3d107f1 100644
+--- a/drivers/cpufreq/cpufreq.c
++++ b/drivers/cpufreq/cpufreq.c
+@@ -2563,6 +2563,40 @@ int cpufreq_get_policy(struct cpufreq_policy *policy, unsigned int cpu)
+ }
+ EXPORT_SYMBOL(cpufreq_get_policy);
+ 
++DEFINE_PER_CPU(unsigned long, cpufreq_pressure);
++
++/**
++ * cpufreq_update_pressure() - Update cpufreq pressure for CPUs
++ * @policy: cpufreq policy of the CPUs.
++ *
++ * Update the value of cpufreq pressure for all @cpus in the policy.
++ */
++static void cpufreq_update_pressure(struct cpufreq_policy *policy)
++{
++	unsigned long max_capacity, capped_freq, pressure;
++	u32 max_freq;
++	int cpu;
++
++	cpu = cpumask_first(policy->related_cpus);
++	max_freq = arch_scale_freq_ref(cpu);
++	capped_freq = policy->max;
++
++	/*
++	 * Handle properly the boost frequencies, which should simply clean
++	 * the cpufreq pressure value.
++	 */
++	if (max_freq <= capped_freq) {
++		pressure = 0;
++	} else {
++		max_capacity = arch_scale_cpu_capacity(cpu);
++		pressure = max_capacity -
++			   mult_frac(max_capacity, capped_freq, max_freq);
++	}
++
++	for_each_cpu(cpu, policy->related_cpus)
++		WRITE_ONCE(per_cpu(cpufreq_pressure, cpu), pressure);
++}
++
+ /**
+  * cpufreq_set_policy - Modify cpufreq policy parameters.
+  * @policy: Policy object to modify.
+@@ -2618,6 +2652,8 @@ static int cpufreq_set_policy(struct cpufreq_policy *policy,
+ 	policy->max = __resolve_freq(policy, policy->max, CPUFREQ_RELATION_H);
+ 	trace_cpu_frequency_limits(policy);
+ 
++	cpufreq_update_pressure(policy);
++
+ 	policy->cached_target_freq = UINT_MAX;
+ 
+ 	pr_debug("new min and max freqs are %u - %u kHz\n",
+diff --git a/include/linux/cpufreq.h b/include/linux/cpufreq.h
+index afda5f24d3dd..b1d97edd3253 100644
+--- a/include/linux/cpufreq.h
++++ b/include/linux/cpufreq.h
+@@ -241,6 +241,12 @@ struct kobject *get_governor_parent_kobj(struct cpufreq_policy *policy);
+ void cpufreq_enable_fast_switch(struct cpufreq_policy *policy);
+ void cpufreq_disable_fast_switch(struct cpufreq_policy *policy);
+ bool has_target_index(void);
++
++DECLARE_PER_CPU(unsigned long, cpufreq_pressure);
++static inline unsigned long cpufreq_get_pressure(int cpu)
++{
++	return per_cpu(cpufreq_pressure, cpu);
++}
+ #else
+ static inline unsigned int cpufreq_get(unsigned int cpu)
+ {
+@@ -263,6 +269,10 @@ static inline bool cpufreq_supports_freq_invariance(void)
+ 	return false;
+ }
+ static inline void disable_cpufreq(void) { }
++static inline unsigned long cpufreq_get_pressure(int cpu)
++{
++	return 0;
++}
+ #endif
+ 
+ #ifdef CONFIG_CPU_FREQ_STAT
 -- 
 2.34.1
 
