@@ -1,96 +1,75 @@
-Return-Path: <linux-kernel+bounces-21421-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21422-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2EF7828EEB
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 22:34:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 75CED828EF1
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 22:35:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E9EE91C20AD1
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 21:34:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 298FA1F25E80
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 21:35:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75F283DB93;
-	Tue,  9 Jan 2024 21:34:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41FE23DB8B;
+	Tue,  9 Jan 2024 21:35:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="G33cPK+T"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="hINjkS8a";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="SHOfBMhg"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8671C3DB81;
-	Tue,  9 Jan 2024 21:34:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1704836083;
-	bh=8/04E63srn8np1oGm6XxP5pwqRVE48cxY2WaKP8MpZc=;
-	h=Date:From:To:Cc:Subject:From;
-	b=G33cPK+TTUKUm8FLFbXVqJa386mBeHL/rERJg6TprCJRHipbBXhujuJqICRX9Iq1d
-	 jYntvL0MnkDw1tmF+PyoGpjUoF6TI85tXuwUWC/Pm9JUZDaobhNvCaeTMeIyVDi/8l
-	 FA/Riu6uQ1vQezIuUa0zxRY1v96LDHlq19bXUE7c73IEg+feE72p55UEJo0N9HLyjA
-	 YAfCPMzby7kzApR+suLXAet7Hp3E4L9au3SgXwKgQdVop5BE/xRoXXNzSSWEPtgwa+
-	 on0ncm9rRA0Fa32snDHUOuT7Hnb4ulGoI/PRCQIzOkeioevqWUICQ6twHUSikTu/PK
-	 ACm3YmxIGFjSw==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4T8kjH5SlTz4wnw;
-	Wed, 10 Jan 2024 08:34:43 +1100 (AEDT)
-Date: Wed, 10 Jan 2024 08:34:42 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
- Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: duplicate patch in the asm-generic tree
-Message-ID: <20240110083442.6728646c@canb.auug.org.au>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F9DA3DB86
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 21:35:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1704836112;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=8Yq9im8aYFIP0Fqu2da/RxbhDMNbYhFshxI5Vyxu8QU=;
+	b=hINjkS8ag40vnUkDcgYZRYqEtMzau6NYEk1YIcFpv4LRh51sxKxD8wXQvbGrach6eo9XCb
+	zFZpU4qwj4pOHKNczo+/JUCEu5RmPgQfykXU/SxCWbMW/h0CMQBzSi6N5VckB2J9ZQe+kg
+	e4Kqlde7gpEDfOub+afuhEML4sIS1lHqH/T3CLrP6LAgSuI37VD7fYpGmzB5cpmUl9ZQCb
+	SqwkNzN5kQsufYVPhHD7fC2ciagsQn9EURC7oePsQkM24AJLVAiP7H8o8uHex9dwTqtLma
+	3XhLo6kqPQNQFzQZRmxj0y0pVqF13vK9Ro25LOTEV3y1IU63DxtdNypS0QvyIQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1704836112;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=8Yq9im8aYFIP0Fqu2da/RxbhDMNbYhFshxI5Vyxu8QU=;
+	b=SHOfBMhgmM/Lkr2jwScp3JoAhYdwbD8/0LHeXMKMpFbO1C3QrHBdUIrquD6ndwAzJuqZo4
+	WEkU4aOOBxvQeTCA==
+To: Yukai Wu <wuyukai0403@qq.com>, Dave Hansen
+ <dave.hansen@linux.intel.com>, Andy Lutomirski <luto@kernel.org>, Peter
+ Zijlstra <peterz@infradead.org>
+Cc: linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] x86/mm: Remove unnecessary casts in init_64.c
+In-Reply-To: <tencent_16DE28073E2F2BF284331B21ADFA58AB2907@qq.com>
+References: <tencent_16DE28073E2F2BF284331B21ADFA58AB2907@qq.com>
+Date: Tue, 09 Jan 2024 22:35:12 +0100
+Message-ID: <87mstejilr.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/kCP/mRUD=6iINEutNxgJH=4";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain
 
---Sig_/kCP/mRUD=6iINEutNxgJH=4
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Sun, Jan 07 2024 at 12:24, Yukai Wu wrote:
+> @@ -150,7 +150,7 @@ static void sync_global_pgds_l5(unsigned long start, unsigned long end)
+>  			pgd_t *pgd;
+>  			spinlock_t *pgt_lock;
+>  
+> -			pgd = (pgd_t *)page_address(page) + pgd_index(addr);
+> +			pgd = page_address(page) + pgd_index(addr);
 
-Hi all,
+This is not equivalent.
 
-The following commit is also in Linus Torvalds' tree as a different commit
-(but the same patch):
+Thanks,
 
-  e8cf41b96bc9 ("asm-generic: make sparse happy with odd-sized put_unaligne=
-d_*()")
-
-This is commit
-
-  1ab33c03145d ("asm-generic: make sparse happy with odd-sized put_unaligne=
-d_*()")
-
-in Linus' tree.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/kCP/mRUD=6iINEutNxgJH=4
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmWdu/IACgkQAVBC80lX
-0GyhQwgAksdfiO07WzqSTRdJWhlopi2GLVx1uNydBeTyyFa+oQECXetQ39mj1dyw
-g27EfrlagDSy0a+ALkBLNHbibxhW+qjJ4FeNxTb3t/h5qXy4oL9Mt0kTG4U8HoEG
-OJ7Eyq+HgLeomsApIZRr+Q4sIJqwqubot3sclLWLgf5vQG07E/fG9PNMt9lH/f10
-UOJ8XfSe9uVCPQ9M+UHCD2paWzWJa5Rnkx+l4TlzDLMM6xKubLIKCe9TOri0T5Gs
-ECXHC+w9N6KVVSA0EfCUzHexG2zNU7tNoLVZOuaTFr+2h0KVmTJeZHVoCpFnmeHg
-5QCoOicMcSe3tG39FRTITr0NxT2tJQ==
-=KX+F
------END PGP SIGNATURE-----
-
---Sig_/kCP/mRUD=6iINEutNxgJH=4--
+        tglx
 
