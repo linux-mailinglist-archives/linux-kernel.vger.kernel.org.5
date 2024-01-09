@@ -1,60 +1,60 @@
-Return-Path: <linux-kernel+bounces-21511-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21512-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5CFF282909A
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 00:11:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2BCCF82909B
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 00:11:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E670A1F2115E
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 23:11:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 44D4C1C23C9F
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 23:11:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E73944B5C5;
-	Tue,  9 Jan 2024 23:03:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 038FD4BA9E;
+	Tue,  9 Jan 2024 23:03:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Sw6FAc/2"
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="0EtyW66g"
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE4D64A9BA
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 23:03:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4CBE4B5C1
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 23:03:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dbce2a8d700so3912669276.1
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 15:03:37 -0800 (PST)
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dbe053d5d91so4423419276.2
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 15:03:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1704841416; x=1705446216; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1704841419; x=1705446219; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=xs0Tu69ShBr9y0BRF4QkbIzT6NPLb5tl+Q4gi6KQ7zM=;
-        b=Sw6FAc/2HgTn2VDtKHnuQ8bxgGkPvuvWhTpuMfEAlxV5E2qb3dTTzzp6La/2hLe87n
-         UMsAhAiT0UV4+4p3oW76fUB4t5IOMP2MwaGbudQmrguUGyibgdPfGV/vTbw7QJJ3f6A/
-         pNQ+jCXd+ptwGa+2B7aczr9K5e7zo8fZk5E/StRxsH6MyU8zOGiuX+CeYGEZDiEdH7LG
-         U4Q3/5/gxcp16rzGceARZV/5j4fX4BRkpNC4RcyYkc/7CGTp8KCUym0ZL6pnYxImbSHp
-         XbvjkCPrFMMlXcVltCgObAzppRm8PZxCB4KMK2+rjN5QSKmhwUaH65o2O10GNShb6VWM
-         rh+g==
+        bh=Xd2xi7qOc7aGWuph6eBSD2zpQtVKqQ03Fccj63JD6OI=;
+        b=0EtyW66g7h9wTbLDVFakjezJ1qsmhifwRve6JwP8jY32t43TSefkcmuhs78qygtSn8
+         30KH71a5bGShkRKzJRFWJSQkRBcL9Zx9Rr48vh2GUlIxq9dKg2jlIY2qRZHsg1ODyNec
+         nvSs3ewHz8T3eFuC3AcBeJgaqVYgFnuNtqcw4ApeWtcOVVS4D/vbu73k3h20amPKLj/o
+         dn55nzyBSFtNb+/iXRibbva0nrEbingm/q1ibXsfvCwL0d6AbyxVypSi4VYt83NXsPVF
+         rghiyEgYXz4vJaV8l6s9ttdjB5DBC0JEP8syCqd6+l83eltUEi42c9hzkYcJTrrYnlWh
+         48Mw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704841416; x=1705446216;
+        d=1e100.net; s=20230601; t=1704841419; x=1705446219;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=xs0Tu69ShBr9y0BRF4QkbIzT6NPLb5tl+Q4gi6KQ7zM=;
-        b=mR4vWJhHp4d+gpxsQipgAnXdrXmOYpOWfCu80YiowkwPP3KFEd6D4f62fy/4Yaqmwl
-         0m6dQeVahTjliT9zKYnqMhlo7OG5f6HN0ay0NddYjXxuh6Q3SBmydJB+aIjLFgzD6KUY
-         pYy8azs7tKOFNI3pSKUAL64/xNX7pv7YGV+Slp77d/lmFd8e5UeUqjiMw/trU4uG0N6M
-         9rkhh5OazESCE7sD7V+E8lRetsi17m0upPLXmIcosPSLXTPVo61+/3VMkQHn7Rl+fyt3
-         Zor8Djr5PiZzulY81pbS/nna/Q5RMPN5ecX6q7X25YjGAMXeyIi7PD/6zUpkqXz67O8l
-         8XnA==
-X-Gm-Message-State: AOJu0YySMsxDmC9KfdSu++9riIZufthYvTOHpG3vDtmEzYKVXdMPaLRX
-	c+X0RnhAqeO8fyxEByp7p4SAA9j4MV5OE5LLNQ==
-X-Google-Smtp-Source: AGHT+IG9ZsgQhQXqNM7DqFbl0VSMm15g4/tnqdP+I9jecPH3K8Ab3d5X141dsCgys7GSjDjlt5oHbIO4Ol0=
+        bh=Xd2xi7qOc7aGWuph6eBSD2zpQtVKqQ03Fccj63JD6OI=;
+        b=iz3bNhRZN3XDEuNg4QXZFLXIIOex9pUpZeIM+IkzQqe1RtVin++O4wuQnlfiGcllQ0
+         wDLHPYy9prT319Up+ZdcA7aoQBhbHw6lqxrPebz9Lwhl1M83suXfDU70ysqh+cUECef5
+         kFlYkdQyrqTu8FDKlb7KAXTCHbhaOhFt2bVj0+Eq9AMDK1e/l4NsHKzFD16kM6Hwbc2d
+         qmy/BGJSI92xyP4ZcB/JyVesd04N7GEcz8QVe/ivGQXkjM6ftiOHBSXwftuw191aaAfF
+         rzqcfinR8oLr69eh7wI2aBEn02nqIDLoX8YoRO1mynq7g7LBdqxqjNsfEAV9Yl9tYAXx
+         SRog==
+X-Gm-Message-State: AOJu0YyTwKXsEekUqjJ+iTeT8M17FZBpBg5lSP00Y8QeTgc6DyxGuoZj
+	3SqAUJijwMPWvRPWm1D4Yv82uFwiv9dEDfc1LQ==
+X-Google-Smtp-Source: AGHT+IFb7hq34ZiLwcnqvvhqVazGOzeft5UTdfQzhTKUjv6qFO4HcNCyzgsQQTKpk+B3S5Qp43JxcGyWAlg=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:8043:0:b0:dbd:6dff:943a with SMTP id
- a3-20020a258043000000b00dbd6dff943amr5679ybn.10.1704841416746; Tue, 09 Jan
- 2024 15:03:36 -0800 (PST)
+ (user=seanjc job=sendgmr) by 2002:a25:8251:0:b0:dbd:b056:b468 with SMTP id
+ d17-20020a258251000000b00dbdb056b468mr32904ybn.7.1704841418864; Tue, 09 Jan
+ 2024 15:03:38 -0800 (PST)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date: Tue,  9 Jan 2024 15:02:42 -0800
+Date: Tue,  9 Jan 2024 15:02:43 -0800
 In-Reply-To: <20240109230250.424295-1-seanjc@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -64,9 +64,8 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20240109230250.424295-1-seanjc@google.com>
 X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
-Message-ID: <20240109230250.424295-23-seanjc@google.com>
-Subject: [PATCH v10 22/29] KVM: selftests: Add a helper to query if the PMU
- module param is enabled
+Message-ID: <20240109230250.424295-24-seanjc@google.com>
+Subject: [PATCH v10 23/29] KVM: selftests: Add helpers to read integer module params
 From: Sean Christopherson <seanjc@google.com>
 To: Sean Christopherson <seanjc@google.com>, Paolo Bonzini <pbonzini@redhat.com>
 Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
@@ -75,74 +74,128 @@ Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
 	Aaron Lewis <aaronlewis@google.com>, Like Xu <likexu@tencent.com>
 Content-Type: text/plain; charset="UTF-8"
 
-Add a helper to probe KVM's "enable_pmu" param, open coding strings in
-multiple places is just asking for false negatives and/or runtime errors
-due to typos.
+Add helpers to read integer module params, which is painfully non-trivial
+because the pain of dealing with strings in C is exacerbated by the kernel
+inserting a newline.
 
-Reviewed-by: Dapeng Mi <dapeng1.mi@linux.intel.com>
+Don't bother differentiating between int, uint, short, etc.  They all fit
+in an int, and KVM (thankfully) doesn't have any integer params larger
+than an int.
+
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- tools/testing/selftests/kvm/include/x86_64/processor.h     | 5 +++++
- tools/testing/selftests/kvm/x86_64/pmu_counters_test.c     | 2 +-
- tools/testing/selftests/kvm/x86_64/pmu_event_filter_test.c | 2 +-
- tools/testing/selftests/kvm/x86_64/vmx_pmu_caps_test.c     | 2 +-
- 4 files changed, 8 insertions(+), 3 deletions(-)
+ .../selftests/kvm/include/kvm_util_base.h     |  4 ++
+ tools/testing/selftests/kvm/lib/kvm_util.c    | 62 +++++++++++++++++--
+ 2 files changed, 60 insertions(+), 6 deletions(-)
 
-diff --git a/tools/testing/selftests/kvm/include/x86_64/processor.h b/tools/testing/selftests/kvm/include/x86_64/processor.h
-index 92d4f8ecc730..ee082ae58f40 100644
---- a/tools/testing/selftests/kvm/include/x86_64/processor.h
-+++ b/tools/testing/selftests/kvm/include/x86_64/processor.h
-@@ -1217,6 +1217,11 @@ static inline uint8_t xsetbv_safe(uint32_t index, uint64_t value)
+diff --git a/tools/testing/selftests/kvm/include/kvm_util_base.h b/tools/testing/selftests/kvm/include/kvm_util_base.h
+index 9e5afc472c14..070f250036fc 100644
+--- a/tools/testing/selftests/kvm/include/kvm_util_base.h
++++ b/tools/testing/selftests/kvm/include/kvm_util_base.h
+@@ -259,6 +259,10 @@ bool get_kvm_param_bool(const char *param);
+ bool get_kvm_intel_param_bool(const char *param);
+ bool get_kvm_amd_param_bool(const char *param);
  
- bool kvm_is_tdp_enabled(void);
++int get_kvm_param_integer(const char *param);
++int get_kvm_intel_param_integer(const char *param);
++int get_kvm_amd_param_integer(const char *param);
++
+ unsigned int kvm_check_cap(long cap);
  
-+static inline bool kvm_is_pmu_enabled(void)
-+{
-+	return get_kvm_param_bool("enable_pmu");
+ static inline bool kvm_has_cap(long cap)
+diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/selftests/kvm/lib/kvm_util.c
+index e066d584c656..9bafe44cb978 100644
+--- a/tools/testing/selftests/kvm/lib/kvm_util.c
++++ b/tools/testing/selftests/kvm/lib/kvm_util.c
+@@ -51,13 +51,13 @@ int open_kvm_dev_path_or_exit(void)
+ 	return _open_kvm_dev_path_or_exit(O_RDONLY);
+ }
+ 
+-static bool get_module_param_bool(const char *module_name, const char *param)
++static ssize_t get_module_param(const char *module_name, const char *param,
++				void *buffer, size_t buffer_size)
+ {
+ 	const int path_size = 128;
+ 	char path[path_size];
+-	char value;
+-	ssize_t r;
+-	int fd;
++	ssize_t bytes_read;
++	int fd, r;
+ 
+ 	r = snprintf(path, path_size, "/sys/module/%s/parameters/%s",
+ 		     module_name, param);
+@@ -66,11 +66,46 @@ static bool get_module_param_bool(const char *module_name, const char *param)
+ 
+ 	fd = open_path_or_exit(path, O_RDONLY);
+ 
+-	r = read(fd, &value, 1);
+-	TEST_ASSERT(r == 1, "read(%s) failed", path);
++	bytes_read = read(fd, buffer, buffer_size);
++	TEST_ASSERT(bytes_read > 0, "read(%s) returned %ld, wanted %ld bytes",
++		    path, bytes_read, buffer_size);
+ 
+ 	r = close(fd);
+ 	TEST_ASSERT(!r, "close(%s) failed", path);
++	return bytes_read;
 +}
 +
- uint64_t *__vm_get_page_table_entry(struct kvm_vm *vm, uint64_t vaddr,
- 				    int *level);
- uint64_t *vm_get_page_table_entry(struct kvm_vm *vm, uint64_t vaddr);
-diff --git a/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c b/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c
-index 4c7133ddcda8..9e9dc4084c0d 100644
---- a/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c
-+++ b/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c
-@@ -545,7 +545,7 @@ static void test_intel_counters(void)
++static int get_module_param_integer(const char *module_name, const char *param)
++{
++	/*
++	 * 16 bytes to hold a 64-bit value (1 byte per char), 1 byte for the
++	 * NUL char, and 1 byte because the kernel sucks and inserts a newline
++	 * at the end.
++	 */
++	char value[16 + 1 + 1];
++	ssize_t r;
++
++	memset(value, '\0', sizeof(value));
++
++	r = get_module_param(module_name, param, value, sizeof(value));
++	TEST_ASSERT(value[r - 1] == '\n',
++		    "Expected trailing newline, got char '%c'", value[r - 1]);
++
++	/*
++	 * Squash the newline, otherwise atoi_paranoid() will complain about
++	 * trailing non-NUL characters in the string.
++	 */
++	value[r - 1] = '\0';
++	return atoi_paranoid(value);
++}
++
++static bool get_module_param_bool(const char *module_name, const char *param)
++{
++	char value;
++	ssize_t r;
++
++	r = get_module_param(module_name, param, &value, sizeof(value));
++	TEST_ASSERT_EQ(r, 1);
  
- int main(int argc, char *argv[])
- {
--	TEST_REQUIRE(get_kvm_param_bool("enable_pmu"));
-+	TEST_REQUIRE(kvm_is_pmu_enabled());
+ 	if (value == 'Y')
+ 		return true;
+@@ -95,6 +130,21 @@ bool get_kvm_amd_param_bool(const char *param)
+ 	return get_module_param_bool("kvm_amd", param);
+ }
  
- 	TEST_REQUIRE(host_cpu_is_intel);
- 	TEST_REQUIRE(kvm_cpu_has_p(X86_PROPERTY_PMU_VERSION));
-diff --git a/tools/testing/selftests/kvm/x86_64/pmu_event_filter_test.c b/tools/testing/selftests/kvm/x86_64/pmu_event_filter_test.c
-index 7ec9fbed92e0..fa407e2ccb2f 100644
---- a/tools/testing/selftests/kvm/x86_64/pmu_event_filter_test.c
-+++ b/tools/testing/selftests/kvm/x86_64/pmu_event_filter_test.c
-@@ -867,7 +867,7 @@ int main(int argc, char *argv[])
- 	struct kvm_vcpu *vcpu, *vcpu2 = NULL;
- 	struct kvm_vm *vm;
- 
--	TEST_REQUIRE(get_kvm_param_bool("enable_pmu"));
-+	TEST_REQUIRE(kvm_is_pmu_enabled());
- 	TEST_REQUIRE(kvm_has_cap(KVM_CAP_PMU_EVENT_FILTER));
- 	TEST_REQUIRE(kvm_has_cap(KVM_CAP_PMU_EVENT_MASKED_EVENTS));
- 
-diff --git a/tools/testing/selftests/kvm/x86_64/vmx_pmu_caps_test.c b/tools/testing/selftests/kvm/x86_64/vmx_pmu_caps_test.c
-index 2a8d4ac2f020..8ded194c5a6d 100644
---- a/tools/testing/selftests/kvm/x86_64/vmx_pmu_caps_test.c
-+++ b/tools/testing/selftests/kvm/x86_64/vmx_pmu_caps_test.c
-@@ -237,7 +237,7 @@ int main(int argc, char *argv[])
- {
- 	union perf_capabilities host_cap;
- 
--	TEST_REQUIRE(get_kvm_param_bool("enable_pmu"));
-+	TEST_REQUIRE(kvm_is_pmu_enabled());
- 	TEST_REQUIRE(kvm_cpu_has(X86_FEATURE_PDCM));
- 
- 	TEST_REQUIRE(kvm_cpu_has_p(X86_PROPERTY_PMU_VERSION));
++int get_kvm_param_integer(const char *param)
++{
++	return get_module_param_integer("kvm", param);
++}
++
++int get_kvm_intel_param_integer(const char *param)
++{
++	return get_module_param_integer("kvm_intel", param);
++}
++
++int get_kvm_amd_param_integer(const char *param)
++{
++	return get_module_param_integer("kvm_amd", param);
++}
++
+ /*
+  * Capability
+  *
 -- 
 2.43.0.472.g3155946c3a-goog
 
