@@ -1,108 +1,149 @@
-Return-Path: <linux-kernel+bounces-21524-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21525-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F91D8290BA
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 00:16:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 765748290C1
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Jan 2024 00:18:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B2A8D285B0D
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 23:16:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1484A1F277EE
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 23:18:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3EC5B3FB1F;
-	Tue,  9 Jan 2024 23:11:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Mi96A61L"
-Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 062D63E479;
+	Tue,  9 Jan 2024 23:17:57 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16F443FB08;
-	Tue,  9 Jan 2024 23:11:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-553ba2f0c8fso4027915a12.1;
-        Tue, 09 Jan 2024 15:11:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704841884; x=1705446684; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=z3/O8r8WMCN/mqaSAjimweyaQzbBXKE5blURfyCtW7s=;
-        b=Mi96A61Lk9d8duF5L6gvhtbvJlsDNEMZp4EdR+/+waEUy4/tWNSA04nawBHPhtmlEp
-         Dr8vfEpzGeZ6EVLijlRJhEwlzqw/3wYk66EVqewuV1Z5rYGclS6uzx1Sdpv1mWUoEeM1
-         6MK3v1Q0bPqf1TwNUk+/H6A1fLmVQVPxXH+O4DGxeznc+RfvKfGB6NySWory0akx80aB
-         bKcCFc5jMsVIbGl//qiIEDZdHNwhcf3G932RCMXtzPhinWa5sAEsbt/w64kHX6YbmY0W
-         9DacEbmmQQDIML12qooTAfIjJTm5h8iBidQp+g7shOHfSPywPonr1ZsGTDz0QjQJdfn/
-         Qp0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704841884; x=1705446684;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=z3/O8r8WMCN/mqaSAjimweyaQzbBXKE5blURfyCtW7s=;
-        b=N/r7J2LezwJLnRe/+em3rsDW7Ezt6if6s/Yrpr96FNqUF7P+FI6S4DbjHapvgHL4gc
-         1YJrgbAnpviD6vp6uLjmAg/y7ySzpu8HDhIWQlBHi/Cp3CyLWUpHbI09Sco7MfQzYLWc
-         qVkNx5fXQryGORcsE886MNaD26ZSHi+xUawPk/fi+LNNI/V0KCbvpi/RxlYGAKnC/jTz
-         GTerZknu6pj7zBK4Ts+NnMr9BryvZQgf4HOG7KesKsD6qbTzAVEvTSmit8E9Wo1LtTDX
-         NQUepjbjvIh28AwX7gWPN4i0adgk4H/YTsZylSTQ4LXjmelg/Lnb7yBAmyX89xqHdwGc
-         yfLg==
-X-Gm-Message-State: AOJu0YxBTYC0vmsWsaJaWWo8DhP/JgjzMI8PlYnVylTTYtFgf05lLsRO
-	js03nGSW8M/cZSKl9JH9Aegyi6lBTawUzPKmTGY=
-X-Google-Smtp-Source: AGHT+IElCGpFGfGcbo9l+q+2Dtf3w5y+2/e+ltxX6hhvNA8Ef06ASRD9eUclIYgqRWLUO4kC2Bq44YyMaNq6jLMcp4M=
-X-Received: by 2002:a05:6402:1751:b0:557:2292:8798 with SMTP id
- v17-20020a056402175100b0055722928798mr33426edx.142.1704841884206; Tue, 09 Jan
- 2024 15:11:24 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98FB43DB80;
+	Tue,  9 Jan 2024 23:17:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2313DC433C7;
+	Tue,  9 Jan 2024 23:17:51 +0000 (UTC)
+Message-ID: <461a6556-8f24-48f5-811a-498cb44f2d64@linux-m68k.org>
+Date: Wed, 10 Jan 2024 09:17:48 +1000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAEf4BzbRzb0B-Wy-fZ05bUHn5UXXoiL5yO2yP_CKyciCFf9yWA@mail.gmail.com>
- <000000000000b0ef46060c2b2e04@google.com>
-In-Reply-To: <000000000000b0ef46060c2b2e04@google.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 9 Jan 2024 15:11:11 -0800
-Message-ID: <CAEf4BzYMx_TbBY4yeK_iJqq65XHY5V3yQQ1PzfOh6OMQwyz5cA@mail.gmail.com>
-Subject: Re: [syzbot] [bpf?] WARNING in __mark_chain_precision (3)
-To: syzbot <syzbot+4d6330e14407721955eb@syzkaller.appspotmail.com>
-Cc: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
-	daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com, 
-	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org, 
-	linux-kernel@vger.kernel.org, martin.lau@linux.dev, sdf@google.com, 
-	song@kernel.org, syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: Call for nommu LTP maintainer [was: Re: [PATCH 00/36] Remove
+ UCLINUX from LTP]
+Content-Language: en-US
+To: Rob Landley <rob@landley.net>, Petr Vorel <pvorel@suse.cz>
+Cc: Cyril Hrubis <chrubis@suse.cz>, Geert Uytterhoeven
+ <geert@linux-m68k.org>, ltp@lists.linux.it, Li Wang <liwang@redhat.com>,
+ Andrea Cervesato <andrea.cervesato@suse.com>,
+ Jonathan Corbet <corbet@lwn.net>, Randy Dunlap <rdunlap@infradead.org>,
+ John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+ Christophe Lyon <christophe.lyon@linaro.org>,
+ linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+ Linux ARM <linux-arm-kernel@lists.infradead.org>,
+ linux-riscv <linux-riscv@lists.infradead.org>,
+ Linux-sh list <linux-sh@vger.kernel.org>,
+ automated-testing@lists.yoctoproject.org, buildroot@buildroot.org,
+ Niklas Cassel <niklas.cassel@wdc.com>
+References: <20240103015240.1065284-1-pvorel@suse.cz>
+ <CAMuHMdXGwyS-CL0vLdUP4Z4YEYhmcmDyC3YdGCnS=jFkqASqvw@mail.gmail.com>
+ <20240103114957.GD1073466@pevik>
+ <CAMuHMdX0s0gLRoPtjJmDnSmZ_MNY590dN+JxM1HKAL1g_bjX+w@mail.gmail.com>
+ <ZZVOhlGPg5KRyS-F@yuki> <5a1f1ff3-8a61-67cf-59a9-ce498738d912@landley.net>
+ <20240105131135.GA1484621@pevik>
+ <90c1ddc1-c608-30fc-d5aa-fdf63c90d055@landley.net>
+ <20240108090338.GA1552643@pevik>
+ <a3d7f5ae-56c6-9cd8-2cda-2d50d12be9c4@landley.net>
+From: Greg Ungerer <gerg@linux-m68k.org>
+In-Reply-To: <a3d7f5ae-56c6-9cd8-2cda-2d50d12be9c4@landley.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Sun, Dec 10, 2023 at 9:31=E2=80=AFAM syzbot
-<syzbot+4d6330e14407721955eb@syzkaller.appspotmail.com> wrote:
->
-> Hello,
->
-> syzbot has tested the proposed patch and the reproducer did not trigger a=
-ny issue:
->
-> Reported-and-tested-by: syzbot+4d6330e14407721955eb@syzkaller.appspotmail=
-com
->
-> Tested on:
->
-> commit:         482d548d bpf: handle fake register spill to stack with..
-> git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-n=
-ext.git
-> console output: https://syzkaller.appspot.com/x/log.txt?x=3D16064fcae8000=
-0
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=3Df8715b6ede5c4=
-b90
-> dashboard link: https://syzkaller.appspot.com/bug?extid=3D4d6330e14407721=
-955eb
-> compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for D=
-ebian) 2.40
->
-> Note: no patches were applied.
-> Note: testing is done by a robot and is best-effort only.
 
-#syz fix: 482d548d bpf: handle fake register spill to stack with
-BPF_ST_MEM instruction
+On 10/1/24 06:24, Rob Landley wrote:
+> On 1/8/24 03:03, Petr Vorel wrote:
+>> Hi Rob, all,
+>>
+>> [ Added Niklas Cassel, who is maintainer of qemu_riscv64_nommu_virt_defconfig in
+>> buildroot ]
+> 
+> Hi Niklas!
+> 
+>>> Buildroot also apparently has an LTP package selectable in menuconfig:
+>>
+>>> https://github.com/buildroot/buildroot/tree/master/package/ltp-testsuite
+>>
+>>> But I haven't tried it...
+>>
+>> I'm the maintainer of the LTP package in buildroot in my private time.
+>> BTW I spent quite a lot of time fixing LTP (and some other system packages,
+>> e.g. nfs-utils) compilation on some old legacy architectures reported via
+>> http://autobuild.buildroot.net/ I've never used in the reality.
+>> But I certainly don't have time to drive nommu support in my private time.
+>> I don't even have an interest, I don't use any nommu device.
+> 
+> I do, but I've never done much with LTP, and I have my hands full with toybox
+> and mkroot already.
+> 
+>> Therefore nobody who is not involved in nommu will not find a time to support it
+>> in LTP (support does not mean just to add the functionality to the new C API,
+>> but run tests on nommu and fix failing bugs). I suppose nobody is paid to work
+>> on nommu platforms, it would have to be a hobby project, right?
+> 
+> A bunch of people are paid to work on nommu platforms, and I've worked with them
+> a bunch, but none of them talk to linux-kernel. They find the culture toxic,
+> insular, and categorically dismissive of their interests.
+
+I have been involved in the kernel nommu space for 20 years, and sure, there is
+some of that. But mostly spending some time and effort to get involved pays off.
+I have seen potential contributors show up with some arrogant attitudes too,
+so it cuts both ways here.
+
+The m68k community I have been part of has been nothing but welcoming. The mm
+people have tried hard to keep nommu support up-to-date where almost none of them
+actually have a vested interest in doing so.
+
+What I have seen is that many companies working in this space just don't want
+to spend the time and effort to go mainline. That is a business decision they
+make, and that is fine. Heck my work in actual mainline has never really been
+paid for by any company and I have sunk a _lot_ of time into it. (Full disclosure
+I did get paid to work on early porting and support - just not geting it into
+mainline and maintain it there).
+
+
+> For example, cortex-m is a large nommu platform on which vendors support Linux
+> BSPs, but notice how page 8 of
+> https://www.microsemi.com/document-portal/doc_view/132181-linux-cortex-m-users-manual
+> points at a cross compiler toolchain from _2010_ and page 4 says they're booting
+> a 2.6.33 kernel?
+
+Any company/person who follows the route of not working with the linux kernel
+community to get their work included is going to inevitably get stuck on older
+versions of everything.
+
+
+> I'm a bit weird in that I try to get CURRENT stuff to work on nommu, and a lot
+> of people have been happy to consume my work, but getting any of them to post
+> directly to linux-kernel is like pulling teeth.
+
+I regularly test nommu configurations (as in every kernel rc and release) on m68k
+and at least every release on other architectures like arm(*) and recently on
+riscv as well.
+
+(*) somewhat annoyingly needing a minor patch to run the versatile qemu platform
+     I like to test with. But hey, that is on me :-)
+
+Regards
+Greg
+
+
+
+>> But as I said, if anybody from nommu decides to maintain it in LTP, I'll try to
+>> support him in my free time (review patches, give advices). And if nobody
+>> stands, this patchset which removes the support in the old API will be merged
+>> after next LTP release (in the end of January).
+> 
+> What does the API migration do? Is there a page on it ala OABI vs EABI in arm or
+> something?
+> 
+> Rob
 
