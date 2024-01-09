@@ -1,116 +1,105 @@
-Return-Path: <linux-kernel+bounces-20938-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20935-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D5D3B82879F
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 15:02:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E2AA828796
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 15:02:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6601CB2507F
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 14:02:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DF03328690D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 14:01:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9562639AC4;
-	Tue,  9 Jan 2024 14:01:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eFqpjVcQ"
-Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CCA93985A;
+	Tue,  9 Jan 2024 14:01:32 +0000 (UTC)
+Received: from mail-oo1-f41.google.com (mail-oo1-f41.google.com [209.85.161.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B994E38FB7;
-	Tue,  9 Jan 2024 14:01:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9648439843;
+	Tue,  9 Jan 2024 14:01:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-6d9bd63ec7fso1411555b3a.2;
-        Tue, 09 Jan 2024 06:01:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704808908; x=1705413708; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FC/8g7ZpWpj5XGSBITdvk8s0jNFEaS2+hXn9GTWkyls=;
-        b=eFqpjVcQc5nMDh1ei/DndWYaBYETtrbr4oYBhhImyay+qf7aBBC5efYEiOFPQuWqnP
-         hUtZiR1C50aKiwGhjMgYWn6k5rh2/9oMXRRVbusM5vr4Ix8roufWhj9kL9nepPwEoS5l
-         VWWsNsl9TpvxUu0lC9MTMBtWowUPPP2U6h/bWqZllZQPomHa4S7kD2ImGcWsu4N0Kxas
-         7fr6Kx3Pax8U8dtpy3oUQAqb1HyfDkdNEJbGIVUGju3z+5Nhtq/+aYAzgGS1wpF4lHs0
-         JM2ay59QLhOyvqW3b6RoyVEeEay2D9Qzi4z7lgYkFozAiMJ7CDEVSIGF/bQ/0FKgWPor
-         SpaQ==
+Received: by mail-oo1-f41.google.com with SMTP id 006d021491bc7-594363b4783so80722eaf.1;
+        Tue, 09 Jan 2024 06:01:30 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704808908; x=1705413708;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1704808890; x=1705413690;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=FC/8g7ZpWpj5XGSBITdvk8s0jNFEaS2+hXn9GTWkyls=;
-        b=P26wPCsSF9I4OUdcoY1APmjr94HYVn1YOnKKJGz3di4NuCt7/oLus67Qk+lzFFGh4Y
-         A11gBEOvt8SV7Wq5RXF44OLlVM2mFhmwRoFBo7qA3LnqiMlzVzzqzfvbXAD7Mfh6548v
-         kD5Z1AU+UH0kTAUfXb0Mr0MMdzpLznoTpSeu6YW9aPtZV5pQu+RKsqi4S5v1cPO6FOXg
-         7aH6HYPDYPcz0++R27lhLExvBluc0u6UdrG56FSokTHFfEyK/jE3MmhNlT1At0hC5oNm
-         PaMFoink9r/rU1YcOIjytMEUfVcwhQViHzBUp6DtJu7p+wh0Ggqc4LMoCWqDJtah9aWw
-         Ak1A==
-X-Gm-Message-State: AOJu0YxoJzhNG8kF5K3A4QLJyqp9N4rfLTCSW7majKPWnNDJgKZRnstg
-	i76Lv+JW9EZFfX2Fc2xRCw5CDCajzHre8g==
-X-Google-Smtp-Source: AGHT+IEVssHtiESKXpR+knixhH3RM0dJ0WL/8knFJz8d2Ip0hq7H0EzMPLcgxXq5uGv49Ep0Qp4+pg==
-X-Received: by 2002:a05:6a21:1f25:b0:194:d82d:83cc with SMTP id ry37-20020a056a211f2500b00194d82d83ccmr2326988pzb.108.1704808907555;
-        Tue, 09 Jan 2024 06:01:47 -0800 (PST)
-Received: from rigel.home.arpa (60-241-235-125.tpgi.com.au. [60.241.235.125])
-        by smtp.gmail.com with ESMTPSA id m2-20020a62f202000000b006d9accac5c4sm1673697pfh.35.2024.01.09.06.01.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Jan 2024 06:01:47 -0800 (PST)
-From: Kent Gibson <warthog618@gmail.com>
-To: linux-kernel@vger.kernel.org,
-	linux-gpio@vger.kernel.org,
-	linux-doc@vger.kernel.org,
-	brgl@bgdev.pl,
-	linus.walleij@linaro.org,
-	andy@kernel.org,
-	corbet@lwn.net
-Cc: Kent Gibson <warthog618@gmail.com>
-Subject: [PATCH 7/7] Documentation: gpio: move gpio-mockup into deprecated section
-Date: Tue,  9 Jan 2024 21:59:52 +0800
-Message-Id: <20240109135952.77458-8-warthog618@gmail.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240109135952.77458-1-warthog618@gmail.com>
-References: <20240109135952.77458-1-warthog618@gmail.com>
+        bh=O4g/qLgJTtLnx4Mwhlep4ev2Jw4DB5X4OpGt8/1y0G4=;
+        b=Q2KVGp2ZpH3ifHw23PFc1Y4+DALCkcG9sa7WdizcV8t+l0HWQSBXx4ESLpyb9v2tNT
+         zLt8sixGGTDO8rUpBJjb0mz4Y5MoCnxOW2bN9AOML+x3j3ktLqKpR1tzoXYyQTsGhhnN
+         xFDHB/Sf3iHD2WSpPOaVIa4bKWGQZarN1hUDgFZIzVEEZUPVulBhJs7zmMXpM6BI4824
+         ra2w6tsUiR5CSGEHM1BmtSyq1YLKNV70vwrYut+7Owcn056WXbBcHuK1qpwXO0c2Mwxm
+         MUvBps1BtN7xTHoaaz9MHhU7VPbS8bjD/rIo4AKupgGvfX17bU6T1y5dpiF+8xdr5wsM
+         /xBA==
+X-Gm-Message-State: AOJu0YxCJ+lV626DPNhsviksnrFhunQaBfzSAfejBT/oZDWKUG12a24d
+	4sizai12bXx7H4c29sHlZp74W6P4laBEsHcq2Ws=
+X-Google-Smtp-Source: AGHT+IE6YRqP3ux3j7EjNd3nCXpoVsgKfUWLobU291Rdho2HmM7G9qCpj4yPQRwGpLSkf+YsaN18PhrY01plEPVn1U8=
+X-Received: by 2002:a05:6820:d0a:b0:598:8d98:286d with SMTP id
+ ej10-20020a0568200d0a00b005988d98286dmr325959oob.0.1704808889513; Tue, 09 Jan
+ 2024 06:01:29 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <2024010520-joyfully-cosigner-c2a9@gregkh>
+In-Reply-To: <2024010520-joyfully-cosigner-c2a9@gregkh>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Tue, 9 Jan 2024 15:01:17 +0100
+Message-ID: <CAJZ5v0h6+W5PL5mSC9LHg+P+S08C8XKPfjy4XX=RDkukWOQ3vA@mail.gmail.com>
+Subject: Re: [PATCH] PNP: make pnp_bus_type const
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: rafael.j.wysocki@intel.com, linux-kernel@vger.kernel.org, 
+	linux-acpi@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The gpio-mockup has been obsoleted by the gpio-sim, so relocate its
-documentation into the deprecated section of the admin-guide book.
+On Fri, Jan 5, 2024 at 1:51=E2=80=AFPM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> Now that the driver core can properly handle constant struct bus_type,
+> move the pnp_bus_type variable to be a constant structure as well,
+> placing it into read-only memory which can not be modified at runtime.
+>
+> Cc: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+> Cc: linux-acpi@vger.kernel.org
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> ---
+>  drivers/pnp/driver.c | 2 +-
+>  include/linux/pnp.h  | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/pnp/driver.c b/drivers/pnp/driver.c
+> index 46c534f6b1c9..0a5d0d8befa8 100644
+> --- a/drivers/pnp/driver.c
+> +++ b/drivers/pnp/driver.c
+> @@ -256,7 +256,7 @@ static const struct dev_pm_ops pnp_bus_dev_pm_ops =3D=
+ {
+>         .restore =3D pnp_bus_resume,
+>  };
+>
+> -struct bus_type pnp_bus_type =3D {
+> +const struct bus_type pnp_bus_type =3D {
+>         .name    =3D "pnp",
+>         .match   =3D pnp_bus_match,
+>         .probe   =3D pnp_device_probe,
+> diff --git a/include/linux/pnp.h b/include/linux/pnp.h
+> index 267fb8a4fb6e..ddbe7c3ca4ce 100644
+> --- a/include/linux/pnp.h
+> +++ b/include/linux/pnp.h
+> @@ -435,7 +435,7 @@ struct pnp_protocol {
+>  #define protocol_for_each_dev(protocol, dev)   \
+>         list_for_each_entry(dev, &(protocol)->devices, protocol_list)
+>
+> -extern struct bus_type pnp_bus_type;
+> +extern const struct bus_type pnp_bus_type;
+>
+>  #if defined(CONFIG_PNP)
+>
+> --
 
-Signed-off-by: Kent Gibson <warthog618@gmail.com>
----
- Documentation/admin-guide/gpio/deprecated.rst | 1 +
- Documentation/admin-guide/gpio/index.rst      | 1 -
- 2 files changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/Documentation/admin-guide/gpio/deprecated.rst b/Documentation/admin-guide/gpio/deprecated.rst
-index 683d7d23e62a..8503ea2f54d5 100644
---- a/Documentation/admin-guide/gpio/deprecated.rst
-+++ b/Documentation/admin-guide/gpio/deprecated.rst
-@@ -9,4 +9,5 @@ Deprecated GPIO APIs
- 
-     Character Device Userspace API (v1) <../../userspace-api/gpio/chardev_v1>
-     Sysfs Interface <../../userspace-api/gpio/sysfs>
-+    Mockup Testing Module <gpio-mockup>
- 
-diff --git a/Documentation/admin-guide/gpio/index.rst b/Documentation/admin-guide/gpio/index.rst
-index 8489b8a3991f..573682212a56 100644
---- a/Documentation/admin-guide/gpio/index.rst
-+++ b/Documentation/admin-guide/gpio/index.rst
-@@ -9,7 +9,6 @@ GPIO
- 
-     Character Device Userspace API <../../userspace-api/gpio/chardev>
-     gpio-aggregator
--    gpio-mockup
-     gpio-sim
-     Deprecated APIs <deprecated>
- 
--- 
-2.39.2
-
+Applied as 6.8-rc1 material, thanks!
 
