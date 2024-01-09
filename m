@@ -1,83 +1,97 @@
-Return-Path: <linux-kernel+bounces-20763-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20764-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10D258284E9
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 12:24:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3CEE68284EB
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 12:24:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 22A141C23EDE
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 11:24:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DF710282AE4
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 11:24:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEEF4374E3;
-	Tue,  9 Jan 2024 11:22:10 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CCA736AE7;
-	Tue,  9 Jan 2024 11:22:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0DF4FC15;
-	Tue,  9 Jan 2024 03:22:53 -0800 (PST)
-Received: from [192.168.178.6] (unknown [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id ECB5F3F73F;
-	Tue,  9 Jan 2024 03:22:01 -0800 (PST)
-Message-ID: <fb25afab-9586-455a-b8c1-47949035c95a@arm.com>
-Date: Tue, 9 Jan 2024 12:22:01 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E44D381B7;
+	Tue,  9 Jan 2024 11:22:23 +0000 (UTC)
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 489C1381AC;
+	Tue,  9 Jan 2024 11:22:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.105])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4T8T593hd4zvQPy;
+	Tue,  9 Jan 2024 19:21:01 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (unknown [7.185.36.74])
+	by mail.maildlp.com (Postfix) with ESMTPS id 90CCE14011F;
+	Tue,  9 Jan 2024 19:22:17 +0800 (CST)
+Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Tue, 9 Jan
+ 2024 19:22:17 +0800
+Subject: Re: [PATCH net-next 3/6] mm/page_alloc: use initial zero offset for
+ page_frag_alloc_align()
+To: Alexander Duyck <alexander.duyck@gmail.com>
+CC: <davem@davemloft.net>, <kuba@kernel.org>, <pabeni@redhat.com>,
+	<netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Andrew Morton
+	<akpm@linux-foundation.org>, <linux-mm@kvack.org>
+References: <20240103095650.25769-1-linyunsheng@huawei.com>
+ <20240103095650.25769-4-linyunsheng@huawei.com>
+ <f4abe71b3439b39d17a6fb2d410180f367cadf5c.camel@gmail.com>
+ <74c9a3a1-5204-f79a-95ff-5c108ec6cf2a@huawei.com>
+ <CAKgT0Uf=hFrXLzDFaOxs_j9yYP7aQCmi=wjUyuop3FBv2vzgCA@mail.gmail.com>
+From: Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <f138193c-30e0-b1ba-1735-5f569230724b@huawei.com>
+Date: Tue, 9 Jan 2024 19:22:16 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 2/5] sched: Take cpufreq feedback into account
+In-Reply-To: <CAKgT0Uf=hFrXLzDFaOxs_j9yYP7aQCmi=wjUyuop3FBv2vzgCA@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
-To: Vincent Guittot <vincent.guittot@linaro.org>, linux@armlinux.org.uk,
- catalin.marinas@arm.com, will@kernel.org, sudeep.holla@arm.com,
- rafael@kernel.org, viresh.kumar@linaro.org, agross@kernel.org,
- andersson@kernel.org, konrad.dybcio@linaro.org, mingo@redhat.com,
- peterz@infradead.org, juri.lelli@redhat.com, rostedt@goodmis.org,
- bsegall@google.com, mgorman@suse.de, bristot@redhat.com,
- vschneid@redhat.com, lukasz.luba@arm.com, rui.zhang@intel.com,
- mhiramat@kernel.org, daniel.lezcano@linaro.org, amit.kachhap@gmail.com,
- corbet@lwn.net, gregkh@linuxfoundation.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-pm@vger.kernel.org, linux-arm-msm@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, linux-doc@vger.kernel.org
-Cc: qyousef@layalina.io
-References: <20240108134843.429769-1-vincent.guittot@linaro.org>
- <20240108134843.429769-3-vincent.guittot@linaro.org>
-From: Dietmar Eggemann <dietmar.eggemann@arm.com>
-In-Reply-To: <20240108134843.429769-3-vincent.guittot@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
 
-On 08/01/2024 14:48, Vincent Guittot wrote:
-> Aggregate the different pressures applied on the capacity of CPUs and
-> create a new function that returns the actual capacity of the CPU:
->   get_actual_cpu_capacity()
+On 2024/1/9 0:25, Alexander Duyck wrote:
+> On Mon, Jan 8, 2024 at 12:59 AM Yunsheng Lin <linyunsheng@huawei.com> wrote:
 
-   function name                scaling
+..
 
-(1) arch_scale_cpu_capacity() -	uarch
+> 
+>>>
+>>> 2. By starting at the end and working toward zero we can use built in
+>>> functionality of the CPU to only have to check and see if our result
+>>> would be signed rather than having to load two registers with the
+>>> values and then compare them which saves us a few cycles. In addition
+>>> it saves us from having to read both the size and the offset for every
+>>> page.
+>>
+>> I suppose the above is ok if we only use the page_frag_alloc*() API to
+>> allocate memory for skb->data, not for the frag in skb_shinfo(), as by
+>> starting at the end and working toward zero, it means we can not do skb
+>> coalescing.
+>>
+>> As page_frag_alloc*() is returning va now, I am assuming most of users
+>> is using the API for skb->data, I guess it is ok to drop this patch for
+>> now.
+>>
+>> If we allow page_frag_alloc*() to return struct page, we might need this
+>> patch to enable coalescing.
+> 
+> I would argue this is not the interface for enabling coalescing. This
+> is one of the reasons why this is implemented the way it is. When you
+> are aligning fragments you aren't going to be able to coalesce the
+> frames anyway as the alignment would push the fragments apart.
 
-(2) get_actual_cpu_capacity() -	hw + cpufreq/thermal of (1)
+It seems the alignment requirement is the same for the same user of a page_frag
+instance, so the aligning does not seem to be a problem for coalescing?
 
-(3) capacity_of()	      -	rt (rt/dl/irq) of (2) (used by fair)
-
-Although (1) - (3) are very close to each other from the functional
-standpoint, their names are not very coherent.
-
-I assume this makes it hard to understand all of this when reading the
-code w/o knowing these patches before.
-
-Why is (2) tagged with 'actual'?
-
-This is especially visible in feec() where local variable cpu_cap
-relates to (3) whereas cpu_actual_cap related to (2).
-
-[...]
-
+> .
+> 
 
