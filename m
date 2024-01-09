@@ -1,191 +1,237 @@
-Return-Path: <linux-kernel+bounces-21261-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21262-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39809828CA0
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 19:30:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 32AAB828CA2
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 19:31:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 96BD22874E2
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 18:30:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D02FB28879B
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 18:31:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 982BE3C6AC;
-	Tue,  9 Jan 2024 18:30:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A4453C468;
+	Tue,  9 Jan 2024 18:31:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=beagleboard-org.20230601.gappssmtp.com header.i=@beagleboard-org.20230601.gappssmtp.com header.b="2N821F09"
-Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JAA9ueKr"
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 684993C693
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 18:30:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=beagleboard.org
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=beagleboard.org
-Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-6d9b050e88cso1595360b3a.0
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 10:30:25 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3AC81E492
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 18:31:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-336788cb261so2959363f8f.3
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 10:31:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=beagleboard-org.20230601.gappssmtp.com; s=20230601; t=1704825025; x=1705429825; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=9wuehQIOXoKxKvR7IfGc8qPJ5fDo+dRhQ24T0MSYH2w=;
-        b=2N821F09EGeswp/UJdblxCiv7BMut/htPitEUV5Ii5NIQn+CBl2opbXWgLM90LIURS
-         jY/EwIsuHrzKuMY25CYAo8meoGIhxIdMTTdMvIiDHg5MiXHUDMivu/YrJelEmVZf2wNo
-         Zz0kTMc4GW24XkQIpAn05HSBWt0s9cKO3uHx5QrW3iFZPk+c+qY24H40ccdzROkolrwv
-         d5MsejmDQlE3onwJaM8LrQxF69zRVv9obGNxvrQS4BGt3anNms+f6cbCdsAYx0Vl6XRB
-         W9kfoDbz8su6fH7bclsEJxjr2wPIvy0gz1UNJE6xZ+lYJUmyGeOCT2GzLmI4eCnvBZH5
-         utEA==
+        d=gmail.com; s=20230601; t=1704825107; x=1705429907; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=9XFtGICw0ZOYP1KaZFQnHRK8o8vGVTmy1dPmwlRy2FE=;
+        b=JAA9ueKrYZBKC2j/xDt9WZhUt2AKvwYHQeSZCmzkop+/3KUqDfgL00t/cCOVF5zaBi
+         mw546brP0AKuO6mzY+HPBVITiDSDlnBQkZX55Lb5gwzCWumrJjjKXL4vlrgLOuJuRtQr
+         hpmrAS+yrMHpk2RD85wpkwQmxeBGaIdsJSRajSvFZ9p+nJqmLTXVeZIX6YK4BrUpwT1f
+         M1GH73Hs8oqgqTUO8vFnEkoGREJhJo5llgfMGybKW9ViwaW4LkDy0BoeFLEiwqJ5UEwD
+         mbDaVF5Kz0S6mC0JdW+yIU7SG0Yli1FegHuZX5lgUs/33d/LuDNaaZdGbL2rIvC19+9l
+         uFlQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704825025; x=1705429825;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9wuehQIOXoKxKvR7IfGc8qPJ5fDo+dRhQ24T0MSYH2w=;
-        b=SPWVlorgVHWe+fFp4E9mK8bXBzTspSCuPrf2czM5czlKxVcvY+BK3Z3GNzayddU17l
-         xoUAsTCMdv0QFlCFxTC4apCmPTOTKBZSrFbiB2+Xhj63W+YrZNPrH/GVbjk9PiVn39Kq
-         38yDUF4WNEwo/SO4bul9FfI/R7gYBrYITYINBidYKeIxHxl0hRybLkIs1ttrkjOSvS9q
-         508gcRP/td2H8sZrusf87Gz4YcEwuWucwuJOhFMfQuiSAFbgxoZUNRe+HKGAcKrPx54g
-         hTt0pmi28YMb7uRrbYApKw+aBQNtWiaehQnPN5LJMJ+cdd2pkm9bI8Zn5GFhubErTgOf
-         1HFw==
-X-Gm-Message-State: AOJu0YyUHgKv3I/vUfGq8X27zScUhRpwehHfQQHEo0l6aHuWMoLkg49u
-	Qm+Eyyf/6ZVExWGNXpnJAkpUaI3ZEhsQ
-X-Google-Smtp-Source: AGHT+IHMaIlxFZkyAjIjl7Fnz8/lzJ5jA7vI2S3G0WFQ6c+y6vsFBpuUI1mJKNcRCD/KUkvTSdiCsA==
-X-Received: by 2002:a05:6a00:1d8f:b0:6d9:a0da:4fbc with SMTP id z15-20020a056a001d8f00b006d9a0da4fbcmr2895967pfw.36.1704825024696;
-        Tue, 09 Jan 2024 10:30:24 -0800 (PST)
-Received: from x1 ([2601:1c2:1800:f680:6e8d:949b:d6c1:a68a])
-        by smtp.gmail.com with ESMTPSA id b3-20020a62cf03000000b006db0f35296esm1543303pfg.148.2024.01.09.10.30.23
+        d=1e100.net; s=20230601; t=1704825107; x=1705429907;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=9XFtGICw0ZOYP1KaZFQnHRK8o8vGVTmy1dPmwlRy2FE=;
+        b=iDBKVN/e1VQU/mK5E3oUb6qqKKexaqIuuYYvOjL+RpkmwNXGzFns6susUmuzhsdHsI
+         mHfuKQ2rAT6UEAPGLJfW6/6GlQ4x+Cs5BlNlgBJyi/PaAvIPIX4QJMRGkKAHZn9ysiVw
+         WQpkKNPkBs5fAleeVv4Ut9kAMHkehDdel5H2UKCHl/7sX5u7TBDeAZeGOXkpijkwVG6C
+         U5CP05CIA5B/Pj0Y2NjVNKuKfKqutxdRHC7jkl14qt4L6Ron97c9jDx2SvKcvchaMqvp
+         XHwL4orAo03ieWBNEWeR7RpDEmpGhaH3mSJX4MzZ5ETZEtC95MJ8YE1I+yDHJhjwaNoQ
+         O/ZQ==
+X-Gm-Message-State: AOJu0Yy01DccdrtF1l9aekNaB69SwmpE9fqk+ZlHe38PLwKM40ThRDqq
+	Tu0IejlRn3+KmTiXIr5CPK8=
+X-Google-Smtp-Source: AGHT+IFZ4AzApNWClmEutZip6HiuDvW/c+sSPmo7DJau1xq5iTK1B1Ps9CIi7CX59E4NeJQg4oPg4w==
+X-Received: by 2002:adf:f605:0:b0:336:c5e2:fc9e with SMTP id t5-20020adff605000000b00336c5e2fc9emr838902wrp.35.1704825106616;
+        Tue, 09 Jan 2024 10:31:46 -0800 (PST)
+Received: from EPUAKYIW03DD.. ([91.123.150.198])
+        by smtp.gmail.com with ESMTPSA id j17-20020adfea51000000b0033660f75d08sm2998540wrn.116.2024.01.09.10.31.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Jan 2024 10:30:24 -0800 (PST)
-Date: Tue, 9 Jan 2024 10:30:22 -0800
-From: Drew Fustini <drew@beagleboard.org>
-To: Conor Dooley <conor@kernel.org>
-Cc: Emil Renner Berthing <emil.renner.berthing@canonical.com>,
-	Conor Dooley <conor.dooley@microchip.com>,
-	linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-riscv@lists.infradead.org,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Jisheng Zhang <jszhang@kernel.org>, Guo Ren <guoren@kernel.org>,
-	Fu Wei <wefu@redhat.com>, Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Drew Fustini <dfustini@baylibre.com>
-Subject: Re: [PATCH v2 3/8] riscv: dts: thead: Add TH1520 pin control nodes
-Message-ID: <ZZ2QvqlWYxgfHgQX@x1>
-References: <20240103132852.298964-1-emil.renner.berthing@canonical.com>
- <20240103132852.298964-4-emil.renner.berthing@canonical.com>
- <20240108-majorette-overtly-4ec65d0a15e9@spud>
- <CAJM55Z_2zhELW3E7p94J05We17xTC2Rejs5AigNJOHCGHVr_zg@mail.gmail.com>
- <20240109-tiptoeing-twirl-ebb943e17a29@wendy>
- <CAJM55Z9Ka3hiNmgFuy01Yd0YyxL-SzS=A7S3k84=B1xABKbJhA@mail.gmail.com>
- <20240109-boggle-frugality-03a77cab8308@spud>
+        Tue, 09 Jan 2024 10:31:45 -0800 (PST)
+From: Oleksandr Tyshchenko <olekstysh@gmail.com>
+To: xen-devel@lists.xenproject.org,
+	linux-kernel@vger.kernel.org
+Cc: Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
+	=?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+	Daniel Vetter <daniel@ffwll.ch>,
+	Juergen Gross <jgross@suse.com>,
+	Stefano Stabellini <sstabellini@kernel.org>
+Subject: [PATCH v3] xen/gntdev: Fix the abuse of underlying struct page in DMA-buf import
+Date: Tue,  9 Jan 2024 20:31:25 +0200
+Message-Id: <20240109183125.2654368-1-olekstysh@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240109-boggle-frugality-03a77cab8308@spud>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Tue, Jan 09, 2024 at 05:34:11PM +0000, Conor Dooley wrote:
-> On Tue, Jan 09, 2024 at 06:28:19AM -0800, Emil Renner Berthing wrote:
-> > Conor Dooley wrote:
-> > > On Tue, Jan 09, 2024 at 04:02:01AM -0800, Emil Renner Berthing wrote:
-> > > > Conor Dooley wrote:
-> > > > > On Wed, Jan 03, 2024 at 02:28:40PM +0100, Emil Renner Berthing wrote:
-> > > > > > Add nodes for pin controllers on the T-Head TH1520 RISC-V SoC.
-> > > > > >
-> > > > > > Signed-off-by: Emil Renner Berthing <emil.renner.berthing@canonical.com>
-> > > > > > ---
-> > > > > >  .../boot/dts/thead/th1520-beaglev-ahead.dts   |  4 ++++
-> > > > > >  .../dts/thead/th1520-lichee-module-4a.dtsi    |  4 ++++
-> > > > > >  arch/riscv/boot/dts/thead/th1520.dtsi         | 24 +++++++++++++++++++
-> > > > > >  3 files changed, 32 insertions(+)
-> > > > > >
-> > > > > > diff --git a/arch/riscv/boot/dts/thead/th1520-beaglev-ahead.dts b/arch/riscv/boot/dts/thead/th1520-beaglev-ahead.dts
-> > > > > > index 70e8042c8304..6c56318a8705 100644
-> > > > > > --- a/arch/riscv/boot/dts/thead/th1520-beaglev-ahead.dts
-> > > > > > +++ b/arch/riscv/boot/dts/thead/th1520-beaglev-ahead.dts
-> > > > > > @@ -44,6 +44,10 @@ &osc_32k {
-> > > > > >  	clock-frequency = <32768>;
-> > > > > >  };
-> > > > > >
-> > > > > > +&aonsys_clk {
-> > > > > > +	clock-frequency = <73728000>;
-> > > > > > +};
-> > > > > > +
-> > > > > >  &apb_clk {
-> > > > > >  	clock-frequency = <62500000>;
-> > > > > >  };
-> > > > > > diff --git a/arch/riscv/boot/dts/thead/th1520-lichee-module-4a.dtsi b/arch/riscv/boot/dts/thead/th1520-lichee-module-4a.dtsi
-> > > > > > index a802ab110429..9865925be372 100644
-> > > > > > --- a/arch/riscv/boot/dts/thead/th1520-lichee-module-4a.dtsi
-> > > > > > +++ b/arch/riscv/boot/dts/thead/th1520-lichee-module-4a.dtsi
-> > > > > > @@ -25,6 +25,10 @@ &osc_32k {
-> > > > > >  	clock-frequency = <32768>;
-> > > > > >  };
-> > > > > >
-> > > > > > +&aonsys_clk {
-> > > > > > +	clock-frequency = <73728000>;
-> > > > > > +};
-> > > > > > +
-> > > > > >  &apb_clk {
-> > > > > >  	clock-frequency = <62500000>;
-> > > > > >  };
-> > > > > > diff --git a/arch/riscv/boot/dts/thead/th1520.dtsi b/arch/riscv/boot/dts/thead/th1520.dtsi
-> > > > > > index ba4d2c673ac8..e65a306ff575 100644
-> > > > > > --- a/arch/riscv/boot/dts/thead/th1520.dtsi
-> > > > > > +++ b/arch/riscv/boot/dts/thead/th1520.dtsi
-> > > > > > @@ -134,6 +134,12 @@ osc_32k: 32k-oscillator {
-> > > > > >  		#clock-cells = <0>;
-> > > > > >  	};
-> > > > > >
-> > > > > > +	aonsys_clk: aonsys-clk {
-> > > > > > +		compatible = "fixed-clock";
-> > > > > > +		clock-output-names = "aonsys_clk";
-> > > > > > +		#clock-cells = <0>;
-> > > > > > +	};
-> > > > >
-> > > > > Did this stuff sneak into this commit accidentally?
-> > > >
-> > > > Not really by accident no. It turns out the clock tree has gates for the bus
-> > > > clock of each pinctrl block and I think it's better to add this clock
-> > > > dependency to the bindings and driver up front.
-> > >
-> > > Maybe if I had looked a wee bit more deeply I would've noticed that it
-> > > was used there, but it's always good to mention the rationale in the
-> > > commit message so that it's more obvious why you're doin it.
-> > 
-> > You absolutely right. I forgot to update the commit message.
-> > 
-> > > > Since there is not yet any clock driver the initial device tree for the TH1520
-> > > > included the dummy apb_clk that two of the pinctrl blocks derive their clock
-> > > > from, but not the "aonsys" clock needed by the "always-on" pinctrl. I thought
-> > > > it was better to add this dummy clock with the only (so far) user of it, but if
-> > > > you have a better idea, let me know.
-> > >
-> > > No, that's fine. I was just wondering why there was an unmentioned set
-> > > of clocks being added. If they're stubbed fixed clocks I dunno if it
-> > > makes sense to add them to the board.dts/module.dtsi files though. Where
-> > > do the initial values come from for the rates? Out of reset values or
-> > > set by firmware that may vary from board to board?
-> > 
-> > The vendor u-boot sets the PLLs different from the reset values. For now I
-> > think it's the same code for every board using the Lichee Pi 4A module (and
-> > probably also for the BeagleV Ahead), but it might still make sense to move the
-> > freqency to the board instead of the module device tree.
-> 
-> Yeah, think so. Only temporarily though, do you have a clue if anyone is
-> working on the actual clock driver stuff? Seems pretty Deadge?
-> https://lore.kernel.org/linux-clk/?q=th1520
+From: Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
 
-Yes, I am working on it. Jisheng passed me his work-in-progress based on
-that original patch you linked to. I've been trying to work out an issue
-with the emmc clock but it seems timely to share what I currently have.
-I will post an RFC today.
+DO NOT access the underlying struct page of an sg table exported
+by DMA-buf in dmabuf_imp_to_refs(), this is not allowed.
+Please see drivers/dma-buf/dma-buf.c:mangle_sg_table() for details.
 
-Thanks,
-Drew
+Fortunately, here (for special Xen device) we can avoid using
+pages and calculate gfns directly from dma addresses provided by
+the sg table.
+
+Suggested-by: Daniel Vetter <daniel@ffwll.ch>
+Signed-off-by: Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
+Acked-by: Christian König <christian.koenig@amd.com>
+Acked-by: Daniel Vetter <daniel@ffwll.ch>
+Reviewed-by: Stefano Stabellini <sstabellini@kernel.org>
+---
+Please note, I didn't manage to test the patch against the latest master branch
+on real HW (patch was only build tested there). Patch was tested on Arm64
+guests using Linux v5.10.41 from vendor's BSP, this is the environment where
+running this use-case is possible and to which I have an access (Xen PV display
+with zero-copy and backend domain as a buffer provider - be-alloc=1, so dma-buf
+import part was involved). A little bit old, but the dma-buf import code
+in gntdev-dmabuf.c hasn't been changed much since that time, all context
+remains allmost the same according to my code inspection.
+
+  V2:
+   - add R-b and A-b
+   - fix build warning noticed by kernel test robot by initializing
+     "ret" in case of error
+     https://lore.kernel.org/oe-kbuild-all/202401062122.it6zvLG0-lkp@intel.com/
+
+  V3:
+   - add A-b
+   - add in-code comment
+---
+---
+ drivers/xen/gntdev-dmabuf.c | 50 ++++++++++++++++++-------------------
+ 1 file changed, 25 insertions(+), 25 deletions(-)
+
+diff --git a/drivers/xen/gntdev-dmabuf.c b/drivers/xen/gntdev-dmabuf.c
+index 4440e626b797..42adc2c1e06b 100644
+--- a/drivers/xen/gntdev-dmabuf.c
++++ b/drivers/xen/gntdev-dmabuf.c
+@@ -11,6 +11,7 @@
+ #include <linux/kernel.h>
+ #include <linux/errno.h>
+ #include <linux/dma-buf.h>
++#include <linux/dma-direct.h>
+ #include <linux/slab.h>
+ #include <linux/types.h>
+ #include <linux/uaccess.h>
+@@ -50,7 +51,7 @@ struct gntdev_dmabuf {
+ 
+ 	/* Number of pages this buffer has. */
+ 	int nr_pages;
+-	/* Pages of this buffer. */
++	/* Pages of this buffer (only for dma-buf export). */
+ 	struct page **pages;
+ };
+ 
+@@ -484,7 +485,7 @@ static int dmabuf_exp_from_refs(struct gntdev_priv *priv, int flags,
+ /* DMA buffer import support. */
+ 
+ static int
+-dmabuf_imp_grant_foreign_access(struct page **pages, u32 *refs,
++dmabuf_imp_grant_foreign_access(unsigned long *gfns, u32 *refs,
+ 				int count, int domid)
+ {
+ 	grant_ref_t priv_gref_head;
+@@ -507,7 +508,7 @@ dmabuf_imp_grant_foreign_access(struct page **pages, u32 *refs,
+ 		}
+ 
+ 		gnttab_grant_foreign_access_ref(cur_ref, domid,
+-						xen_page_to_gfn(pages[i]), 0);
++						gfns[i], 0);
+ 		refs[i] = cur_ref;
+ 	}
+ 
+@@ -529,7 +530,6 @@ static void dmabuf_imp_end_foreign_access(u32 *refs, int count)
+ 
+ static void dmabuf_imp_free_storage(struct gntdev_dmabuf *gntdev_dmabuf)
+ {
+-	kfree(gntdev_dmabuf->pages);
+ 	kfree(gntdev_dmabuf->u.imp.refs);
+ 	kfree(gntdev_dmabuf);
+ }
+@@ -549,12 +549,6 @@ static struct gntdev_dmabuf *dmabuf_imp_alloc_storage(int count)
+ 	if (!gntdev_dmabuf->u.imp.refs)
+ 		goto fail;
+ 
+-	gntdev_dmabuf->pages = kcalloc(count,
+-				       sizeof(gntdev_dmabuf->pages[0]),
+-				       GFP_KERNEL);
+-	if (!gntdev_dmabuf->pages)
+-		goto fail;
+-
+ 	gntdev_dmabuf->nr_pages = count;
+ 
+ 	for (i = 0; i < count; i++)
+@@ -576,7 +570,8 @@ dmabuf_imp_to_refs(struct gntdev_dmabuf_priv *priv, struct device *dev,
+ 	struct dma_buf *dma_buf;
+ 	struct dma_buf_attachment *attach;
+ 	struct sg_table *sgt;
+-	struct sg_page_iter sg_iter;
++	struct sg_dma_page_iter sg_iter;
++	unsigned long *gfns;
+ 	int i;
+ 
+ 	dma_buf = dma_buf_get(fd);
+@@ -624,26 +619,31 @@ dmabuf_imp_to_refs(struct gntdev_dmabuf_priv *priv, struct device *dev,
+ 
+ 	gntdev_dmabuf->u.imp.sgt = sgt;
+ 
+-	/* Now convert sgt to array of pages and check for page validity. */
++	gfns = kcalloc(count, sizeof(*gfns), GFP_KERNEL);
++	if (!gfns) {
++		ret = ERR_PTR(-ENOMEM);
++		goto fail_unmap;
++	}
++
++	/*
++	 * Now convert sgt to array of gfns without accessing underlying pages.
++	 * It is not allowed to access the underlying struct page of an sg table
++	 * exported by DMA-buf, but since we deal with special Xen dma device here
++	 * (not a normal physical one) look at the dma addresses in the sg table
++	 * and then calculate gfns directly from them.
++	 */
+ 	i = 0;
+-	for_each_sgtable_page(sgt, &sg_iter, 0) {
+-		struct page *page = sg_page_iter_page(&sg_iter);
+-		/*
+-		 * Check if page is valid: this can happen if we are given
+-		 * a page from VRAM or other resources which are not backed
+-		 * by a struct page.
+-		 */
+-		if (!pfn_valid(page_to_pfn(page))) {
+-			ret = ERR_PTR(-EINVAL);
+-			goto fail_unmap;
+-		}
++	for_each_sgtable_dma_page(sgt, &sg_iter, 0) {
++		dma_addr_t addr = sg_page_iter_dma_address(&sg_iter);
++		unsigned long pfn = bfn_to_pfn(XEN_PFN_DOWN(dma_to_phys(dev, addr)));
+ 
+-		gntdev_dmabuf->pages[i++] = page;
++		gfns[i++] = pfn_to_gfn(pfn);
+ 	}
+ 
+-	ret = ERR_PTR(dmabuf_imp_grant_foreign_access(gntdev_dmabuf->pages,
++	ret = ERR_PTR(dmabuf_imp_grant_foreign_access(gfns,
+ 						      gntdev_dmabuf->u.imp.refs,
+ 						      count, domid));
++	kfree(gfns);
+ 	if (IS_ERR(ret))
+ 		goto fail_end_access;
+ 
+-- 
+2.34.1
+
 
