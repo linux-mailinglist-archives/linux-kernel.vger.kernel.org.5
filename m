@@ -1,110 +1,133 @@
-Return-Path: <linux-kernel+bounces-20256-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20258-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34774827C81
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 02:20:43 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 37EF0827C85
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 02:21:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D774A2854B4
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 01:20:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B4C13B23062
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 01:21:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 372C320F2;
-	Tue,  9 Jan 2024 01:20:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="Av6YPCMA"
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78D301873;
+	Tue,  9 Jan 2024 01:21:20 +0000 (UTC)
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B3A428EC;
-	Tue,  9 Jan 2024 01:20:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=6BtEmCtYZmMHFCY50bU7DnIDw00PYo7ASFK/qSsw0RM=; b=Av6YPCMAPr8U6MpxUhGmP7ljKc
-	10TfumncpOYXF5qldqNoR4q/HRNHL/y+zucm855Y0H2ITU/eXyfdCWKEmQXHF/9hhvCcfNR3zjrkp
-	Bxy/Tl58bcpAAHTdiaxbeHgXYTDfvhCwSuHCMO96sClL1DtEcUu7qBilt3hv7X9ZwD3g=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1rN0mt-004hLR-HN; Tue, 09 Jan 2024 02:20:15 +0100
-Date: Tue, 9 Jan 2024 02:20:15 +0100
-From: Andrew Lunn <andrew@lunn.ch>
-To: Christian Marangi <ansuelsmth@gmail.com>
-Cc: Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	William Zhang <william.zhang@broadcom.com>,
-	Anand Gore <anand.gore@broadcom.com>,
-	Kursad Oney <kursad.oney@broadcom.com>,
-	Florian Fainelli <florian.fainelli@broadcom.com>,
-	=?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
-	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	Jacek Anaszewski <jacek.anaszewski@gmail.com>,
-	=?iso-8859-1?Q?Fern=E1ndez?= Rojas <noltari@gmail.com>,
-	Sven Schwermer <sven.schwermer@disruptive-technologies.com>,
-	linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	netdev@vger.kernel.org
-Subject: Re: [net-next PATCH v9 5/5] net: phy: at803x: add LED support for
- qca808x
-Message-ID: <c138382e-096c-4ce0-87bd-4e42e6236972@lunn.ch>
-References: <20240105142719.11042-1-ansuelsmth@gmail.com>
- <20240105142719.11042-6-ansuelsmth@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D71D1186E;
+	Tue,  9 Jan 2024 01:21:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4T8Cn42k2Yz4f3jpk;
+	Tue,  9 Jan 2024 09:21:12 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id 414671A01E3;
+	Tue,  9 Jan 2024 09:21:14 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+	by APP1 (Coremail) with SMTP id cCh0CgCXaBGIn5xlFvAaAQ--.9179S3;
+	Tue, 09 Jan 2024 09:21:14 +0800 (CST)
+Subject: Re: [PATCH v3 2/2] md: simplify md_seq_ops
+To: Song Liu <song@kernel.org>, Yu Kuai <yukuai1@huaweicloud.com>
+Cc: mariusz.tkaczyk@linux.intel.com, xni@redhat.com,
+ linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
+ yi.zhang@huawei.com, yangerkun@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
+References: <20230927061241.1552837-1-yukuai1@huaweicloud.com>
+ <20230927061241.1552837-3-yukuai1@huaweicloud.com>
+ <CAPhsuW6sdnJYtE+iy+x=C2qVKzeN18zibx+qQBF4Y=KRsAmTTg@mail.gmail.com>
+From: Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <b6a79bb8-e0fc-09b4-90e7-8112100a3fd0@huaweicloud.com>
+Date: Tue, 9 Jan 2024 09:21:12 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240105142719.11042-6-ansuelsmth@gmail.com>
+In-Reply-To: <CAPhsuW6sdnJYtE+iy+x=C2qVKzeN18zibx+qQBF4Y=KRsAmTTg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:cCh0CgCXaBGIn5xlFvAaAQ--.9179S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7tw47GF1kCw1DGw17WF1UAwb_yoW8Cw1Dpa
+	sxAFs5Gr4kuFZ2krn3WF4DW340vF4kXr15KrnIy3srGryxtF1F934IqrWFgF98WFyUX3Z0
+	q3yjkFZ5W345WaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUkC14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+	2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+	W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc7I2V7IY0VAS07AlzVAY
+	IcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14
+	v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkG
+	c2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI
+	0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_
+	Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjfUoOJ5UU
+	UUU
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 
-On Fri, Jan 05, 2024 at 03:27:17PM +0100, Christian Marangi wrote:
-> Add LED support for QCA8081 PHY.
-> 
-> Documentation for this LEDs PHY is very scarce even with NDA access
-> to Documentation for OEMs. Only the blink pattern are documented and are
-> very confusing most of the time. No documentation is present about
-> forcing the LED on/off or to always blink.
-> 
-> Those settings were reversed by poking the regs and trying to find the
-> correct bits to trigger these modes. Some bits mode are not clear and
-> maybe the documentation option are not 100% correct. For the sake of LED
-> support the reversed option are enough to add support for current LED
-> APIs.
-> 
-> Supported HW control modes are:
-> - tx
-> - rx
-> - link10
-> - link100
-> - link1000
-> - half_duplex
-> - full_duplex
-> 
-> Also add support for LED polarity set to set LED polarity to active
-> high or low. QSDK sets this value to high by default but PHY reset value
-> doesn't have this enabled by default.
-> 
-> QSDK also sets 2 additional bits but their usage is not clear, info about
-> this is added in the header. It was verified that for correct function
-> of the LED if active high is needed, only BIT 6 is needed.
-> 
-> Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+Hi,
 
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+在 2024/01/09 7:38, Song Liu 写道:
+> On Tue, Sep 26, 2023 at 11:19 PM Yu Kuai <yukuai1@huaweicloud.com> wrote:
+>>
+>> From: Yu Kuai <yukuai3@huawei.com>
+>>
+>> Before this patch, the implementation is hacky and hard to understand:
+>>
+>> 1) md_seq_start set pos to 1;
+>> 2) md_seq_show found pos is 1, then print Personalities;
+>> 3) md_seq_next found pos is 1, then it update pos to the first mddev;
+>> 4) md_seq_show found pos is not 1 or 2, show mddev;
+>> 5) md_seq_next found pos is not 1 or 2, update pos to next mddev;
+>> 6) loop 4-5 until the last mddev, then md_seq_next update pos to 2;
+>> 7) md_seq_show found pos is 2, then print unused devices;
+>> 8) md_seq_next found pos is 2, stop;
+>>
+>> This patch remove the magic value and use seq_list_start/next/stop()
+>> directly, and move printing "Personalities" to md_seq_start(),
+>> "unsed devices" to md_seq_stop():
+>>
+>> 1) md_seq_start print Personalities, and then set pos to first mddev;
+>> 2) md_seq_show show mddev;
+>> 3) md_seq_next update pos to next mddev;
+>> 4) loop 2-3 until the last mddev;
+>> 5) md_seq_stop print unsed devices;
+>>
+>> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+> 
+> Just realized this introduced a behavior change:
+> 
+> When there is not md devices, before this patch, we have
+> 
+> [root@eth50-1 ~]# cat /proc/mdstat
+> Personalities : [raid0] [raid1] [raid10] [raid6] [raid5] [raid4]
+> unused devices: <none>
+> 
+> After this patch, "cat /proc/mdstat" returns nothing. This causes
+> some confusion for users who want to read "Personalities" line,
+> for example, the mdadm test suite reads it.
+> 
+> I haven't figured out the best fix yet.
 
-    Andrew
+Yes, that's a problem. And after reviewing seq_read_iter() in detail, I
+realize that I also can't use seq_printf() in m->op->start() directly,
+because if seq buffer overflowed, md_seq_start() can be called more than
+once.
+
+I'll fix these problems soon.
+
+Thanks,
+Kuai
+
+> 
+> Thanks,
+> Song
+> 
+> .
+> 
+
 
