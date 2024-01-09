@@ -1,120 +1,172 @@
-Return-Path: <linux-kernel+bounces-20367-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20368-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E589D827DC3
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 05:09:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id DC80A827DC6
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 05:12:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 94D30285768
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 04:09:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 75FF6285828
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 04:12:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7D3C6126;
-	Tue,  9 Jan 2024 04:09:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 602206138;
+	Tue,  9 Jan 2024 04:12:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="aw5qH1Hp"
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="iRNzNeBd"
+Received: from smtp-relay-canonical-0.canonical.com (smtp-relay-canonical-0.canonical.com [185.125.188.120])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F9B725750;
-	Tue,  9 Jan 2024 04:09:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40948xXA005938;
-	Mon, 8 Jan 2024 22:08:59 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1704773339;
-	bh=JHMZnTr8NrMx/rQCap/rZ0aFLoj4Fsi96vTmJALCxNM=;
-	h=Date:CC:Subject:To:References:From:In-Reply-To;
-	b=aw5qH1HpWVvHz0h02x+EB8s8RDQs9kJpVZQMDDJF0TObya2yULfhMazIAnU2UZwBr
-	 cxcGoPoXVLZBkpVyIXMqvVLK77NYXHHo934njpx/+SrEyY3a0m7qjaIp06xDl9o4v1
-	 EQmDM7a1lsdCIVBlDo7Ci0CP+PxmqXB3U0O8ePGI=
-Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
-	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40948xTD127114
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Mon, 8 Jan 2024 22:08:59 -0600
-Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 8
- Jan 2024 22:08:59 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 8 Jan 2024 22:08:59 -0600
-Received: from [172.24.227.9] (uda0492258.dhcp.ti.com [172.24.227.9])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40948tlO029309;
-	Mon, 8 Jan 2024 22:08:55 -0600
-Message-ID: <d9c8014e-bd78-4802-95d3-aaab8c9c7c22@ti.com>
-Date: Tue, 9 Jan 2024 09:38:54 +0530
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE2D5567E;
+	Tue,  9 Jan 2024 04:12:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
+Received: from HP-EliteBook-x360-830-G8-Notebook-PC.. (unknown [10.101.196.174])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 0B9B43F1F8;
+	Tue,  9 Jan 2024 04:12:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+	s=20210705; t=1704773546;
+	bh=mkzCDhuur4nw3vJi1sNPki2ia8X8CMEeigRIEazS7gI=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
+	b=iRNzNeBdsesEXzRUQUs3tat0ggOIur6n2AMxka6CasTq80lMsGe7cxqsaCLTJO/pX
+	 J+hnhb7gqZ8V2OTrvkohkyAqU+FNG5zZo+4asq/huuiSC2h7tNEopaRaHBRoxQ8zVX
+	 stygorc/5r9XrWjIfCl819wwdcCzKMnxLFc5lwcVZVieJm3/a4ev8VKh1LfTsaskuH
+	 m20vFfL7AL0AQCCP/YQtC1KDas8NyCAygt0Mki3P21hocDgtmjlWAKEx5Sz/k8edRs
+	 fwWYFpFSORqHNKboCDkd4HJwc05uJizmdZcX2kHL/9V6Mj6B1bRmQyY3htov3Aln7A
+	 m4kmzBWNBTMbg==
+From: Kai-Heng Feng <kai.heng.feng@canonical.com>
+To: jdelvare@suse.com,
+	linux@roeck-us.net
+Cc: Kai-Heng Feng <kai.heng.feng@canonical.com>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Len Brown <lenb@kernel.org>,
+	Robert Moore <robert.moore@intel.com>,
+	linux-acpi@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	acpica-devel@lists.linux.dev
+Subject: [PATCH v4 1/2] ACPI: IPMI: Add helper to wait for when SMI is selected
+Date: Tue,  9 Jan 2024 12:12:16 +0800
+Message-Id: <20240109041218.980674-1-kai.heng.feng@canonical.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-CC: <linux-pci@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        <srk@ti.com>, <s-vadapalli@ti.com>
-Subject: Re: [RFC PATCH] dt-bindings: PCI: ti,j721e-pci-host: Add device-id
- for TI's J784S4 SoC
-Content-Language: en-US
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        <lpieralisi@kernel.org>, <kw@linux.com>, <robh@kernel.org>,
-        <bhelgaas@google.com>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>
-References: <20240108050735.512445-1-s-vadapalli@ti.com>
- <67af1724-6424-456a-aff6-85d9e010c430@linaro.org>
- <bc3a0fb0-6268-476a-a13a-2d538704f61d@ti.com>
- <7d3439c2-35e3-4318-aa99-af9b7c8ed53b@linaro.org>
- <e4bd76d1-e5d9-4ff6-8917-db5784dea847@ti.com>
- <5fc52ff2-e903-46e6-a808-b4a41a76ad58@linaro.org>
-From: Siddharth Vadapalli <s-vadapalli@ti.com>
-In-Reply-To: <5fc52ff2-e903-46e6-a808-b4a41a76ad58@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 8bit
 
+On Dell servers, many APCI methods of acpi_power_meter module evaluate
+variables inside IPMI region, so the region handler needs to be
+installed. In addition to that, the handler needs to be fully
+functional, and that depends on SMI being selected.
 
+So add a helper to let acpi_power_meter know when the handler is
+installed and ready to be used.
 
-On 08/01/24 17:56, Krzysztof Kozlowski wrote:
-> On 08/01/2024 12:34, Siddharth Vadapalli wrote:
->>>>>
->>>>> Why is this patch incomplete? What is missing here? What are you asking
->>>>> about as RFC?
->>>>
->>>> Since the merge window is closed, I was hoping to get the patch reviewed in
->>>> order to get any "Reviewed-by" tags if possible. That way, I will be able to
->>>> post it again as v1 along with the tags when the merge window opens. For that
->>>
->>> This is v1, so that would be v2.
->>>
->>>> reason, I have marked it as an RFC patch. Is there an alternative to this "RFC
->>>> patch" method that I have followed? Please let me know.
->>>
->>> Then how does it differ from posting without RFC? Sorry, RFC is
->>> incomplete work. Often ignored during review.
->>
->> I was under the impression that posting patches when the merge window is closed
->> will be met with a "post your patch later when the merge window is open"
->> response. That is why I chose the "RFC patch" path since RFCs can be posted anytime.
->>
->> For the Networking Subsystem, it is documented that patches with new features
->> shouldn't be posted when the merge window is closed. I have mostly posted
->> patches for the Networking Subsystem and am not sure about the rules for the
->> device-tree bindings and PCI Subsystems. To be on the safe side I posted this
->> patch as an RFC patch.
-> 
-> Ah, so you want to go around that policy by posting non-RFC patch as
-> RFC. It does not work like that.
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+---
+v4:
+ - Wording.
+ - Define and comment on timeout value.
+ - Move the completion to driver_data.
+ - Remove the tenary operator.
 
-Thank you for clarifying. May I post the v2 of this patch in that case, after
-rebasing it on the latest linux-next? I wish to receive feedback or Reviewed-by
-tags for the v2 patch and post the v3 accordingly when the merge window opens again.
+v3:
+ - New patch.
 
+ drivers/acpi/acpi_ipmi.c | 23 ++++++++++++++++++++++-
+ include/acpi/acpi_bus.h  |  5 +++++
+ 2 files changed, 27 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/acpi/acpi_ipmi.c b/drivers/acpi/acpi_ipmi.c
+index 0555f68c2dfd..5fba4dab5d08 100644
+--- a/drivers/acpi/acpi_ipmi.c
++++ b/drivers/acpi/acpi_ipmi.c
+@@ -22,6 +22,8 @@ MODULE_LICENSE("GPL");
+ /* the IPMI timeout is 5s */
+ #define IPMI_TIMEOUT			(5000)
+ #define ACPI_IPMI_MAX_MSG_LENGTH	64
++/* 2s should be suffient for SMI being selected */
++#define ACPI_IPMI_SMI_SELECTION_TIMEOUT	(2 * HZ)
+ 
+ struct acpi_ipmi_device {
+ 	/* the device list attached to driver_data.ipmi_devices */
+@@ -54,6 +56,7 @@ struct ipmi_driver_data {
+ 	 * to this selected global IPMI system interface.
+ 	 */
+ 	struct acpi_ipmi_device *selected_smi;
++	struct completion smi_selection_done;
+ };
+ 
+ struct acpi_ipmi_msg {
+@@ -463,8 +466,10 @@ static void ipmi_register_bmc(int iface, struct device *dev)
+ 		if (temp->handle == handle)
+ 			goto err_lock;
+ 	}
+-	if (!driver_data.selected_smi)
++	if (!driver_data.selected_smi) {
+ 		driver_data.selected_smi = ipmi_device;
++		complete(&driver_data.smi_selection_done);
++	}
+ 	list_add_tail(&ipmi_device->head, &driver_data.ipmi_devices);
+ 	mutex_unlock(&driver_data.ipmi_lock);
+ 
+@@ -578,6 +583,20 @@ acpi_ipmi_space_handler(u32 function, acpi_physical_address address,
+ 	return status;
+ }
+ 
++int acpi_wait_for_acpi_ipmi(void)
++{
++	long ret;
++
++	ret = wait_for_completion_interruptible_timeout(&driver_data.smi_selection_done,
++							ACPI_IPMI_SMI_SELECTION_TIMEOUT);
++
++	if (ret <= 0)
++		return -ETIMEDOUT;
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(acpi_wait_for_acpi_ipmi);
++
+ static int __init acpi_ipmi_init(void)
+ {
+ 	int result;
+@@ -586,6 +605,8 @@ static int __init acpi_ipmi_init(void)
+ 	if (acpi_disabled)
+ 		return 0;
+ 
++	init_completion(&driver_data.smi_selection_done);
++
+ 	status = acpi_install_address_space_handler(ACPI_ROOT_OBJECT,
+ 						    ACPI_ADR_SPACE_IPMI,
+ 						    &acpi_ipmi_space_handler,
+diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
+index 1216d72c650f..afa6e4d4bf46 100644
+--- a/include/acpi/acpi_bus.h
++++ b/include/acpi/acpi_bus.h
+@@ -821,11 +821,16 @@ static inline void acpi_put_acpi_dev(struct acpi_device *adev)
+ {
+ 	acpi_dev_put(adev);
+ }
++
++int acpi_wait_for_acpi_ipmi(void);
++
+ #else	/* CONFIG_ACPI */
+ 
+ static inline int register_acpi_bus_type(void *bus) { return 0; }
+ static inline int unregister_acpi_bus_type(void *bus) { return 0; }
+ 
++static inline int acpi_wait_for_acpi_ipmi(void) { return 0; }
++
+ #endif				/* CONFIG_ACPI */
+ 
+ #endif /*__ACPI_BUS_H__*/
 -- 
-Regards,
-Siddharth.
+2.34.1
+
 
