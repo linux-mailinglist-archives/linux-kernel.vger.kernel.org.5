@@ -1,50 +1,50 @@
-Return-Path: <linux-kernel+bounces-21208-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21209-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA8A9828BC8
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 19:03:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0157828C1C
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 19:10:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 84EF31C24C26
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 18:03:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C66FF1F24BB1
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 18:03:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C952C3D3BE;
-	Tue,  9 Jan 2024 18:01:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E60E83D967;
+	Tue,  9 Jan 2024 18:01:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="F4PhLMmw"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Tw6dJz05"
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84F5E3D0A6
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 18:01:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C53243BB30
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 18:01:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1704823298;
+	s=mimecast20190719; t=1704823307;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=e4MRJOyXPjbNk2hR0Bl18LltS/kUEDv+XACveM0IT3M=;
-	b=F4PhLMmwsLjMxdzjMaYtj107pkXyeWL5g8XhEWexhF3ZRNEbMn7ikfcCRn36U+S1HJVO5A
-	/fX1Vc7538yH4Y506C24BvMbkjurnEeFnahuB9ZBondgx8RBwDP8NCrzAOONysid+4Xm7l
-	Cam9Vv1OlLzMQPxgEqtqK3DosYQ28Y4=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-352-2TOU-R33PZWGsoiEHyyung-1; Tue,
- 09 Jan 2024 13:01:34 -0500
-X-MC-Unique: 2TOU-R33PZWGsoiEHyyung-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
+	bh=7Xf1sEICUh1u9jN2O9W9Y+tFVYV24JiIia24sIupeow=;
+	b=Tw6dJz05elh+Lvaa8nVOcMIoctIlQOvCuMw3WeB1SNshGBnzhkHJlRIceru0jkiGxh3oBJ
+	8cr+OZ1nIxRQdIXxdJfL6sZcxaEZgyWaO4kejxVQK/oIH+qdmMrB6rMUigqcfH/0KdK84B
+	wfr5bl6Jjnach8SwVsexZtqMwKufxUc=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-208-RosHVIG7NrOQHYngSPvMtw-1; Tue, 09 Jan 2024 13:01:43 -0500
+X-MC-Unique: RosHVIG7NrOQHYngSPvMtw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id B9C091C068D1;
-	Tue,  9 Jan 2024 18:01:32 +0000 (UTC)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 0453E83BA8F;
+	Tue,  9 Jan 2024 18:01:37 +0000 (UTC)
 Received: from warthog.procyon.org.com (unknown [10.42.28.67])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id E3C3A40C6EB9;
-	Tue,  9 Jan 2024 18:01:29 +0000 (UTC)
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 6C42D5012;
+	Tue,  9 Jan 2024 18:01:33 +0000 (UTC)
 From: David Howells <dhowells@redhat.com>
 To: Christian Brauner <christian@brauner.io>,
 	Jeff Layton <jlayton@kernel.org>,
@@ -69,10 +69,14 @@ Cc: David Howells <dhowells@redhat.com>,
 	linux-fsdevel@vger.kernel.org,
 	linux-mm@kvack.org,
 	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 2/4] afs: Don't use certain internal folio_*() functions
-Date: Tue,  9 Jan 2024 18:01:13 +0000
-Message-ID: <20240109180117.1669008-3-dhowells@redhat.com>
+	linux-kernel@vger.kernel.org,
+	Gao Xiang <xiang@kernel.org>,
+	Chao Yu <chao@kernel.org>,
+	Yue Hu <huyue2@coolpad.com>,
+	Jeffle Xu <jefflexu@linux.alibaba.com>
+Subject: [PATCH 3/4] erofs: Don't use certain internal folio_*() functions
+Date: Tue,  9 Jan 2024 18:01:14 +0000
+Message-ID: <20240109180117.1669008-4-dhowells@redhat.com>
 In-Reply-To: <20240109180117.1669008-1-dhowells@redhat.com>
 References: <20240109180117.1669008-1-dhowells@redhat.com>
 Precedence: bulk
@@ -82,7 +86,7 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
 
 Filesystems should not be using folio->index not folio_index(folio) and
 folio->mapping, not folio_mapping() or folio_file_mapping() in filesystem
@@ -90,64 +94,47 @@ code.
 
 Change this automagically with:
 
-perl -p -i -e 's/folio_mapping[(]([^)]*)[)]/\1->mapping/g' fs/afs/*.c
-perl -p -i -e 's/folio_file_mapping[(]([^)]*)[)]/\1->mapping/g' fs/afs/*.c
-perl -p -i -e 's/folio_index[(]([^)]*)[)]/\1->index/g' fs/afs/*.c
+perl -p -i -e 's/folio_mapping[(]([^)]*)[)]/\1->mapping/g' fs/erofs/*.c
+perl -p -i -e 's/folio_file_mapping[(]([^)]*)[)]/\1->mapping/g' fs/erofs/*.c
+perl -p -i -e 's/folio_index[(]([^)]*)[)]/\1->index/g' fs/erofs/*.c
 
 Reported-by: Matthew Wilcox <willy@infradead.org>
 Signed-off-by: David Howells <dhowells@redhat.com>
-cc: Marc Dionne <marc.dionne@auristor.com>
-cc: linux-afs@lists.infradead.org
+cc: Gao Xiang <xiang@kernel.org>
+cc: Chao Yu <chao@kernel.org>
+cc: Yue Hu <huyue2@coolpad.com>
+cc: Jeffle Xu <jefflexu@linux.alibaba.com>
+cc: linux-erofs@lists.ozlabs.org
 cc: linux-fsdevel@vger.kernel.org
 ---
- fs/afs/dir.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ fs/erofs/fscache.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/fs/afs/dir.c b/fs/afs/dir.c
-index 5219182e52e1..35f7da6963fa 100644
---- a/fs/afs/dir.c
-+++ b/fs/afs/dir.c
-@@ -124,7 +124,7 @@ static void afs_dir_read_cleanup(struct afs_read *req)
- 		if (xas_retry(&xas, folio))
- 			continue;
- 		BUG_ON(xa_is_value(folio));
--		ASSERTCMP(folio_file_mapping(folio), ==, mapping);
-+		ASSERTCMP(folio->mapping, ==, mapping);
- 
- 		folio_put(folio);
- 	}
-@@ -202,12 +202,12 @@ static void afs_dir_dump(struct afs_vnode *dvnode, struct afs_read *req)
- 		if (xas_retry(&xas, folio))
- 			continue;
- 
--		BUG_ON(folio_file_mapping(folio) != mapping);
-+		BUG_ON(folio->mapping != mapping);
- 
- 		size = min_t(loff_t, folio_size(folio), req->actual_len - folio_pos(folio));
- 		for (offset = 0; offset < size; offset += sizeof(*block)) {
- 			block = kmap_local_folio(folio, offset);
--			pr_warn("[%02lx] %32phN\n", folio_index(folio) + offset, block);
-+			pr_warn("[%02lx] %32phN\n", folio->index + offset, block);
- 			kunmap_local(block);
- 		}
- 	}
-@@ -233,7 +233,7 @@ static int afs_dir_check(struct afs_vnode *dvnode, struct afs_read *req)
- 		if (xas_retry(&xas, folio))
- 			continue;
- 
--		BUG_ON(folio_file_mapping(folio) != mapping);
-+		BUG_ON(folio->mapping != mapping);
- 
- 		if (!afs_dir_check_folio(dvnode, folio, req->actual_len)) {
- 			afs_dir_dump(dvnode, req);
-@@ -2014,7 +2014,7 @@ static bool afs_dir_release_folio(struct folio *folio, gfp_t gfp_flags)
+diff --git a/fs/erofs/fscache.c b/fs/erofs/fscache.c
+index 87ff35bff8d5..bc12030393b2 100644
+--- a/fs/erofs/fscache.c
++++ b/fs/erofs/fscache.c
+@@ -165,10 +165,10 @@ static int erofs_fscache_read_folios_async(struct fscache_cookie *cookie,
+ static int erofs_fscache_meta_read_folio(struct file *data, struct folio *folio)
  {
- 	struct afs_vnode *dvnode = AFS_FS_I(folio_inode(folio));
+ 	int ret;
+-	struct erofs_fscache *ctx = folio_mapping(folio)->host->i_private;
++	struct erofs_fscache *ctx = folio->mapping->host->i_private;
+ 	struct erofs_fscache_request *req;
  
--	_enter("{{%llx:%llu}[%lu]}", dvnode->fid.vid, dvnode->fid.vnode, folio_index(folio));
-+	_enter("{{%llx:%llu}[%lu]}", dvnode->fid.vid, dvnode->fid.vnode, folio->index);
+-	req = erofs_fscache_req_alloc(folio_mapping(folio),
++	req = erofs_fscache_req_alloc(folio->mapping,
+ 				folio_pos(folio), folio_size(folio));
+ 	if (IS_ERR(req)) {
+ 		folio_unlock(folio);
+@@ -276,7 +276,7 @@ static int erofs_fscache_read_folio(struct file *file, struct folio *folio)
+ 	struct erofs_fscache_request *req;
+ 	int ret;
  
- 	folio_detach_private(folio);
- 
+-	req = erofs_fscache_req_alloc(folio_mapping(folio),
++	req = erofs_fscache_req_alloc(folio->mapping,
+ 			folio_pos(folio), folio_size(folio));
+ 	if (IS_ERR(req)) {
+ 		folio_unlock(folio);
 
 
