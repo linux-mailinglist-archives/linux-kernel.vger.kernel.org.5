@@ -1,203 +1,128 @@
-Return-Path: <linux-kernel+bounces-21141-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21142-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17924828A9A
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 18:00:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E25D8828AA2
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 18:02:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 383321C23950
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 17:00:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7FF7D1F24910
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 17:02:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 654713A8FE;
-	Tue,  9 Jan 2024 17:00:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B49813A8EC;
+	Tue,  9 Jan 2024 17:02:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="edJzYx31"
-Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="O1ANif+B"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47A673B18D
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 17:00:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-28c0d8dd88bso2119284a91.2
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 09:00:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704819623; x=1705424423; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GlrZoxPpenGOhqFrmUG8PiyHrSyO0oBBT6cMAiO3UNE=;
-        b=edJzYx316aVyS2k0loWR5fC0QBxOA0rshXTpdzCNk3vLA0EZ1dK/TKsfwRjttZ6kNf
-         NUBD2FSPzPnjBZ6JwBIwSWTA3rbj1hNeQzAHQd23lemvHqLRw3iviDa9O+j90QCShaCA
-         8yVVREDolKo2gxEXRGQipd5af15VNQxbdrNpWwqV8mB61LdOhdqVBdyJx5YX+wpyH15i
-         uQGw0c6QTL7wl4j1D9UnkaP9xqHv8QCvVquV3d/i2pgbfE2CaCKoQ1HD43EBxpaUxeQI
-         1zcZlHySvxv/4qmSdAvthDEShIeyPvIMg2a8/JBHXDE4hcIp3/2WKDqaQjrTtK39Mk07
-         4S5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704819623; x=1705424423;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=GlrZoxPpenGOhqFrmUG8PiyHrSyO0oBBT6cMAiO3UNE=;
-        b=j7x9FUJDeC/LnFGDU4Lzn3qRUnmAhTT6Q1mDWJog4+JWLC30wu4jm2jVK9AQ/mHyEA
-         JT26r/A0NXqoSLl0VSFURb9TVGXOKivulS0fJyw9qu0shtLrJXjSIbiXNudtYeC/AW1h
-         2JT+dyrNrWUzuPtKVqfs6KGHiz45qZh3gcyi7jHHxB1PuG2EobrjwSlWie7C82yOpYro
-         2/vI2kS34zCpzVpdOMpp+o6nm1GR4IkbRV//GCUtCtDhzXcH9BDO/rngFs7oJLZ4xJ+Z
-         IpyfKkGKGbzY9FOsj28THoH5BGaurH9vnZck6cENwqkuiJKwgpvPTenPyCnFgHV+0WKM
-         Pc9Q==
-X-Gm-Message-State: AOJu0YwrSAMJexNHZLyZ10Nyax23Xn6O2iqQ3eV9/kD4GeqMTsTLAWsc
-	oDtXLXT6nQQ8rY9aQBks9znq+qrgksLkgFtw4EEB3rSfHKnwDg==
-X-Google-Smtp-Source: AGHT+IHMr5gazpEPkkx7GMMw3VKwNSvx2iydEkTrkS2t970cjficwCZjM/LewbbmVn86pT0YwcWTH1AtT/Gbqy90bUc=
-X-Received: by 2002:a17:90a:ba18:b0:28c:6529:ecb4 with SMTP id
- s24-20020a17090aba1800b0028c6529ecb4mr2374762pjr.98.1704819623455; Tue, 09
- Jan 2024 09:00:23 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1FB63A1C2;
+	Tue,  9 Jan 2024 17:02:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 409Gs88L013291;
+	Tue, 9 Jan 2024 17:02:29 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=GL00We/Hj++zFV7T+/pO2MmICizRy/fFVj5pNPe+LG0=;
+ b=O1ANif+BpBMG6dJ5AkY6O5NAAbwd8rMxFxrmCA30NWznd6Eqfts9MvxwnrBeiuI0mXf5
+ Dk63jYwwnIZJRd8zWibDsUBEWVsD4PcefKTlt54a3HghlQOji6tV+GxZ5cEtb80qaQNd
+ hJgLLCoVf4C7b5A6Pb5ChGbZMTeQN15Zxf5cVRF4F2cyGNPRDu7rfY+u0aNmjojSekLy
+ UWcJqBXjl9IE132WKvpiNxhUvzechX68EJY0ay+s61XeYhiINjEEitExhPtmkQiCNjzW
+ dVNhP8daT9tKyviJq0rK7ufKmh3Jy6bUacu4UvUzV/4+0mO24oiWF3+aLqrkSrRlea6q 0g== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vh9f11d25-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 09 Jan 2024 17:02:28 +0000
+Received: from m0353726.ppops.net (m0353726.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 409Gbv77028529;
+	Tue, 9 Jan 2024 17:02:28 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vh9f11d1k-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 09 Jan 2024 17:02:28 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 409GhI2N022952;
+	Tue, 9 Jan 2024 17:02:27 GMT
+Received: from smtprelay07.dal12v.mail.ibm.com ([172.16.1.9])
+	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3vfj6nfvvk-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 09 Jan 2024 17:02:27 +0000
+Received: from smtpav05.wdc07v.mail.ibm.com (smtpav05.wdc07v.mail.ibm.com [10.39.53.232])
+	by smtprelay07.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 409H2PfU41026230
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 9 Jan 2024 17:02:26 GMT
+Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id BC56A5805D;
+	Tue,  9 Jan 2024 17:02:25 +0000 (GMT)
+Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 9157B58053;
+	Tue,  9 Jan 2024 17:02:24 +0000 (GMT)
+Received: from [9.61.76.57] (unknown [9.61.76.57])
+	by smtpav05.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+	Tue,  9 Jan 2024 17:02:24 +0000 (GMT)
+Message-ID: <24039c50-9079-4ca5-b7b0-867c64d70630@linux.ibm.com>
+Date: Tue, 9 Jan 2024 12:02:23 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240109164655.626085-1-vincent.guittot@linaro.org>
- <20240109164655.626085-2-vincent.guittot@linaro.org> <CAJZ5v0ixmEiOhwBHkDqH8QNtchiszAEi0rY2pDCGHXiWHob0NA@mail.gmail.com>
-In-Reply-To: <CAJZ5v0ixmEiOhwBHkDqH8QNtchiszAEi0rY2pDCGHXiWHob0NA@mail.gmail.com>
-From: Vincent Guittot <vincent.guittot@linaro.org>
-Date: Tue, 9 Jan 2024 18:00:12 +0100
-Message-ID: <CAKfTPtAncXsNa6_8PXfn3Hv0G03WN79QgPQafJqPSo-3oJm6KA@mail.gmail.com>
-Subject: Re: [PATCH v4 1/5] cpufreq: Add a cpufreq pressure feedback for the scheduler
-To: "Rafael J. Wysocki" <rafael@kernel.org>
-Cc: linux@armlinux.org.uk, catalin.marinas@arm.com, will@kernel.org, 
-	sudeep.holla@arm.com, viresh.kumar@linaro.org, agross@kernel.org, 
-	andersson@kernel.org, konrad.dybcio@linaro.org, mingo@redhat.com, 
-	peterz@infradead.org, juri.lelli@redhat.com, dietmar.eggemann@arm.com, 
-	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de, bristot@redhat.com, 
-	vschneid@redhat.com, lukasz.luba@arm.com, rui.zhang@intel.com, 
-	mhiramat@kernel.org, daniel.lezcano@linaro.org, amit.kachhap@gmail.com, 
-	corbet@lwn.net, gregkh@linuxfoundation.org, 
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	linux-pm@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org, linux-doc@vger.kernel.org, 
-	qyousef@layalina.io
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] s390/vfio-ap: handle response code 01 on queue reset
+Content-Language: en-US
+To: Halil Pasic <pasic@linux.ibm.com>
+Cc: linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, jjherne@linux.ibm.com, alex.williamson@redhat.com,
+        borntraeger@linux.ibm.com, kwankhede@nvidia.com, frankja@linux.ibm.com,
+        imbrenda@linux.ibm.com, david@redhat.com
+References: <20231129143529.260264-1-akrowiak@linux.ibm.com>
+ <20231204131045.217586a3.pasic@linux.ibm.com>
+ <7c0d0ad2-b814-47b1-80e9-28ad62af6476@linux.ibm.com>
+ <20231204230529.07bf7b79.pasic@linux.ibm.com>
+From: Anthony Krowiak <akrowiak@linux.ibm.com>
+In-Reply-To: <20231204230529.07bf7b79.pasic@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: EKTpzFenP7RQVItR8gAewm7M5tGDlGK2
+X-Proofpoint-ORIG-GUID: FLQqTuYp54GV8gCG2C8IuFn5uHNLUNjs
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-09_08,2024-01-09_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 suspectscore=0
+ mlxlogscore=786 adultscore=0 malwarescore=0 mlxscore=0 phishscore=0
+ lowpriorityscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2311290000 definitions=main-2401090138
 
-On Tue, 9 Jan 2024 at 17:49, Rafael J. Wysocki <rafael@kernel.org> wrote:
->
-> On Tue, Jan 9, 2024 at 5:47=E2=80=AFPM Vincent Guittot
-> <vincent.guittot@linaro.org> wrote:
-> >
-> > Provide to the scheduler a feedback about the temporary max available
-> > capacity. Unlike arch_update_thermal_pressure, this doesn't need to be
-> > filtered as the pressure will happen for dozens ms or more.
-> >
-> > Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
->
-> Acked-by: Rafael J. Wysocki <rafael@kernel.org>
->
-> and I think I've given the tag on this patch already.
 
-yes, I preferred to not add it after the crap that I did in the v3
-with the cleanup of this [1/5] patch
-
-Thanks
-
+On 12/4/23 5:05 PM, Halil Pasic wrote:
+> On Mon, 4 Dec 2023 12:51:49 -0500
+> Tony Krowiak <akrowiak@linux.ibm.com> wrote:
 >
-> > ---
-> >  drivers/cpufreq/cpufreq.c | 36 ++++++++++++++++++++++++++++++++++++
-> >  include/linux/cpufreq.h   | 10 ++++++++++
-> >  2 files changed, 46 insertions(+)
-> >
-> > diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
-> > index 44db4f59c4cc..f4eee3d107f1 100644
-> > --- a/drivers/cpufreq/cpufreq.c
-> > +++ b/drivers/cpufreq/cpufreq.c
-> > @@ -2563,6 +2563,40 @@ int cpufreq_get_policy(struct cpufreq_policy *po=
-licy, unsigned int cpu)
-> >  }
-> >  EXPORT_SYMBOL(cpufreq_get_policy);
-> >
-> > +DEFINE_PER_CPU(unsigned long, cpufreq_pressure);
-> > +
-> > +/**
-> > + * cpufreq_update_pressure() - Update cpufreq pressure for CPUs
-> > + * @policy: cpufreq policy of the CPUs.
-> > + *
-> > + * Update the value of cpufreq pressure for all @cpus in the policy.
-> > + */
-> > +static void cpufreq_update_pressure(struct cpufreq_policy *policy)
-> > +{
-> > +       unsigned long max_capacity, capped_freq, pressure;
-> > +       u32 max_freq;
-> > +       int cpu;
-> > +
-> > +       cpu =3D cpumask_first(policy->related_cpus);
-> > +       max_freq =3D arch_scale_freq_ref(cpu);
-> > +       capped_freq =3D policy->max;
-> > +
-> > +       /*
-> > +        * Handle properly the boost frequencies, which should simply c=
-lean
-> > +        * the cpufreq pressure value.
-> > +        */
-> > +       if (max_freq <=3D capped_freq) {
-> > +               pressure =3D 0;
-> > +       } else {
-> > +               max_capacity =3D arch_scale_cpu_capacity(cpu);
-> > +               pressure =3D max_capacity -
-> > +                          mult_frac(max_capacity, capped_freq, max_fre=
-q);
-> > +       }
-> > +
-> > +       for_each_cpu(cpu, policy->related_cpus)
-> > +               WRITE_ONCE(per_cpu(cpufreq_pressure, cpu), pressure);
-> > +}
-> > +
-> >  /**
-> >   * cpufreq_set_policy - Modify cpufreq policy parameters.
-> >   * @policy: Policy object to modify.
-> > @@ -2618,6 +2652,8 @@ static int cpufreq_set_policy(struct cpufreq_poli=
-cy *policy,
-> >         policy->max =3D __resolve_freq(policy, policy->max, CPUFREQ_REL=
-ATION_H);
-> >         trace_cpu_frequency_limits(policy);
-> >
-> > +       cpufreq_update_pressure(policy);
-> > +
-> >         policy->cached_target_freq =3D UINT_MAX;
-> >
-> >         pr_debug("new min and max freqs are %u - %u kHz\n",
-> > diff --git a/include/linux/cpufreq.h b/include/linux/cpufreq.h
-> > index afda5f24d3dd..b1d97edd3253 100644
-> > --- a/include/linux/cpufreq.h
-> > +++ b/include/linux/cpufreq.h
-> > @@ -241,6 +241,12 @@ struct kobject *get_governor_parent_kobj(struct cp=
-ufreq_policy *policy);
-> >  void cpufreq_enable_fast_switch(struct cpufreq_policy *policy);
-> >  void cpufreq_disable_fast_switch(struct cpufreq_policy *policy);
-> >  bool has_target_index(void);
-> > +
-> > +DECLARE_PER_CPU(unsigned long, cpufreq_pressure);
-> > +static inline unsigned long cpufreq_get_pressure(int cpu)
-> > +{
-> > +       return per_cpu(cpufreq_pressure, cpu);
-> > +}
-> >  #else
-> >  static inline unsigned int cpufreq_get(unsigned int cpu)
-> >  {
-> > @@ -263,6 +269,10 @@ static inline bool cpufreq_supports_freq_invarianc=
-e(void)
-> >         return false;
-> >  }
-> >  static inline void disable_cpufreq(void) { }
-> > +static inline unsigned long cpufreq_get_pressure(int cpu)
-> > +{
-> > +       return 0;
-> > +}
-> >  #endif
-> >
-> >  #ifdef CONFIG_CPU_FREQ_STAT
-> > --
-> > 2.34.1
-> >
+>>> s/if\/when/at latest before/
+>>>
+>>> I would argue that some of the cleanups need to happen before even 01 is
+>>> reflected...
+>> To what cleanups are you referring?
+> Event notification and interruption disablement for starters. Otherwise
+> OS has no way to figure out when is GISA and NIB safe to deallocate.
+> Those actions are part of the reset process. I.e. some of the reset stuff
+> can be deferred at most until the queue is made accessible again, some
+> not so much.
+
+
+How do you propose we disable interrupts if the PQAP(AQIC) will likely 
+fail with response code 01 which is the subject of this patch? Do you 
+think we should not free up the AQIC resources as we do in this patch?
+
+
+>   
+>
+> Regards,
+> Halil
 
