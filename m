@@ -1,151 +1,88 @@
-Return-Path: <linux-kernel+bounces-20803-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20801-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E77DC828568
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 12:47:37 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 97746828561
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 12:47:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 027121C23A2B
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 11:47:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E96D4B23A27
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 11:46:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1C25374D1;
-	Tue,  9 Jan 2024 11:47:14 +0000 (UTC)
-Received: from zg8tmtyylji0my4xnjqumte4.icoremail.net (zg8tmtyylji0my4xnjqumte4.icoremail.net [162.243.164.118])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62CFD37149;
-	Tue,  9 Jan 2024 11:47:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernelsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernelsoft.com
-Received: from localhost.localdomain (unknown [106.37.191.2])
-	by mail (Coremail) with SMTP id AQAAfwAXEEwSMp1lYIpFAA--.14466S2;
-	Tue, 09 Jan 2024 19:46:27 +0800 (CST)
-From: tianyu2 <tianyu2@kernelsoft.com>
-To: rafael@kernel.org,
-	viresh.kumar@linaro.org,
-	shawnguo@kernel.org,
-	s.hauer@pengutronix.de
-Cc: kernel@pengutronix.de,
-	festevam@gmail.com,
-	linux-imx@nxp.com,
-	linux-pm@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] cpufreq: imx6: use regmap to read ocotp register
-Date: Tue,  9 Jan 2024 19:45:21 +0800
-Message-Id: <20240109114521.518195-1-tianyu2@kernelsoft.com>
-X-Mailer: git-send-email 2.25.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B68F33716F;
+	Tue,  9 Jan 2024 11:45:50 +0000 (UTC)
+Received: from cstnet.cn (smtp85.cstnet.cn [159.226.251.85])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08360374C4;
+	Tue,  9 Jan 2024 11:45:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iie.ac.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iie.ac.cn
+Received: from mengjingzi$iie.ac.cn ( [114.245.34.24] ) by
+ ajax-webmail-APP-13 (Coremail) ; Tue, 9 Jan 2024 19:45:27 +0800 (GMT+08:00)
+Date: Tue, 9 Jan 2024 19:45:27 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From: =?UTF-8?B?5a2f5pWs5ae/?= <mengjingzi@iie.ac.cn>
+To: "Theodore Ts'o" <tytso@mit.edu>
+Cc: "Greg KH" <gregkh@linuxfoundation.org>, brauner@kernel.org, 
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: proposal to refine capability checks when _rlimit_overlimit()
+ is true
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT5.0.15 build 20230921(8ad33efc)
+ Copyright (c) 2002-2024 www.mailtech.cn cnic.cn
+In-Reply-To: <20240103173002.GB136592@mit.edu>
+References: <1a8ed7bd.c96e.18ccd4ee4d1.Coremail.mengjingzi@iie.ac.cn>
+ <2024010353-legwarmer-flap-869d@gregkh> <20240103173002.GB136592@mit.edu>
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:AQAAfwAXEEwSMp1lYIpFAA--.14466S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxXr13WF4kKFW8GFWxGw1DAwb_yoW5Xw4Dpa
-	y7uFWayrW5XFnrtw1vyF4kG3W3trn2yayUJa10kwnaqwnxtFyrWas0vF9YyF95ZF95GF15
-	XF1ktrWxCw4UXr7anT9S1TB71UUUUUDqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnUUvcSsGvfC2KfnxnUUI43ZEXa7xR_UUUUUUUUU==
-X-CM-SenderInfo: xwld05zxs6yvxuqhz2xriwhudrp/
+Message-ID: <7d2df0e7.174cd.18cee0ab373.Coremail.mengjingzi@iie.ac.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID:twCowADX38_YMZ1lkGcFAA--.51763W
+X-CM-SenderInfo: pphqwyxlqj6xo6llvhldfou0/1tbiCRELE2Wc6oLuzQABsz
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VW3Jw
+	CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
+	daVFxhVjvjDU=
 
-Reading the ocotp register directly is unsafe and will cause the system
-to hang if its clock is not turned on in CCM. The regmap interface has
-clk enabled, which can solve this problem.
-
-Signed-off-by: tianyu2 <tianyu2@kernelsoft.com>
----
- drivers/cpufreq/imx6q-cpufreq.c | 45 +++++++++++----------------------
- 1 file changed, 15 insertions(+), 30 deletions(-)
-
-diff --git a/drivers/cpufreq/imx6q-cpufreq.c b/drivers/cpufreq/imx6q-cpufreq.c
-index 494d044b9e72..f18b9ee5e484 100644
---- a/drivers/cpufreq/imx6q-cpufreq.c
-+++ b/drivers/cpufreq/imx6q-cpufreq.c
-@@ -14,6 +14,8 @@
- #include <linux/pm_opp.h>
- #include <linux/platform_device.h>
- #include <linux/regulator/consumer.h>
-+#include <linux/mfd/syscon.h>
-+#include <linux/regmap.h>
- 
- #define PU_SOC_VOLTAGE_NORMAL	1250000
- #define PU_SOC_VOLTAGE_HIGH	1275000
-@@ -225,8 +227,6 @@ static void imx6x_disable_freq_in_opp(struct device *dev, unsigned long freq)
- 
- static int imx6q_opp_check_speed_grading(struct device *dev)
- {
--	struct device_node *np;
--	void __iomem *base;
- 	u32 val;
- 	int ret;
- 
-@@ -235,16 +235,11 @@ static int imx6q_opp_check_speed_grading(struct device *dev)
- 		if (ret)
- 			return ret;
- 	} else {
--		np = of_find_compatible_node(NULL, NULL, "fsl,imx6q-ocotp");
--		if (!np)
--			return -ENOENT;
-+		struct regmap *ocotp;
- 
--		base = of_iomap(np, 0);
--		of_node_put(np);
--		if (!base) {
--			dev_err(dev, "failed to map ocotp\n");
--			return -EFAULT;
--		}
-+		ocotp = syscon_regmap_lookup_by_compatible("fsl,imx6q-ocotp");
-+		if (IS_ERR(ocotp))
-+			return -ENOENT;
- 
- 		/*
- 		 * SPEED_GRADING[1:0] defines the max speed of ARM:
-@@ -254,8 +249,7 @@ static int imx6q_opp_check_speed_grading(struct device *dev)
- 		 * 2b'00: 792000000Hz;
- 		 * We need to set the max speed of ARM according to fuse map.
- 		 */
--		val = readl_relaxed(base + OCOTP_CFG3);
--		iounmap(base);
-+		regmap_read(ocotp, OCOTP_CFG3, &val);
- 	}
- 
- 	val >>= OCOTP_CFG3_SPEED_SHIFT;
-@@ -290,25 +284,16 @@ static int imx6ul_opp_check_speed_grading(struct device *dev)
- 		if (ret)
- 			return ret;
- 	} else {
--		struct device_node *np;
--		void __iomem *base;
--
--		np = of_find_compatible_node(NULL, NULL, "fsl,imx6ul-ocotp");
--		if (!np)
--			np = of_find_compatible_node(NULL, NULL,
--						     "fsl,imx6ull-ocotp");
--		if (!np)
--			return -ENOENT;
-+		struct regmap *ocotp;
- 
--		base = of_iomap(np, 0);
--		of_node_put(np);
--		if (!base) {
--			dev_err(dev, "failed to map ocotp\n");
--			return -EFAULT;
--		}
-+		ocotp = syscon_regmap_lookup_by_compatible("fsl,imx6ul-ocotp");
-+		if (IS_ERR(ocotp))
-+			ocotp = syscon_regmap_lookup_by_compatible("fsl,imx6ull-ocotp");
-+
-+		if (IS_ERR(ocotp))
-+			return -ENOENT;
- 
--		val = readl_relaxed(base + OCOTP_CFG3);
--		iounmap(base);
-+		regmap_read(ocotp, OCOTP_CFG3, &val);
- 	}
- 
- 	/*
--- 
-2.25.1
-
+SSB1bmRlcnN0YW5kIGNoYW5nZSB0aGUgY29kZSBoZXJlIG1heSBhZmZlY3QgdGhlIHdvcmxkIG91
+dHNpZGUgdGhlCmtlcm5lbC4gQW5kIHRoZXJlIG1pZ2h0IGJlIHVzZWFiaWxpdHkgaXNzdWVzIHdo
+ZW4gYXBwbGljYXRpb25zIGluIAp1c2Vyc3BhY2UgYXJlIG5vdCB1cGRhdGVkLiBCdXQgdGhlIGdv
+b2QgbmV3cyBpcyB0aGF0IHRoZSAKbW9kaWZpY2F0aW9uJ3MgaW1wYWN0IG9uIHVzZXJzcGFjZSBp
+cyByZWxhdGl2ZWx5IGNvbnRhaW5lZC4gCkhlcmUncyBhIGJyZWFrZG93bjogCgoxLiBVc2FnZSBz
+dGF0aXN0aWNzIGZvciB0aGUgbGF0ZXN0IHZlcnNpb24gb2YgVWJ1bnR1IHNob3cgdGhhdCAKICAg
+YXBwbGljYXRpb25zIGhhdmUgbGltaXRlZCB1c2Ugb2YgY2FwYWJpbGl0eS4gCiAgICAgICAgKDEp
+IFVuZGVyIHRoZSBkZWZhdWx0IGNvbmZpZ3VyYXRpb24sIG9ubHkgMjggcHJvY2Vzc2VzIGluIAog
+ICAgICAgICAgICBVYnVudHUgMjIuMDQgTFRTIHdlcmUgZm91bmQgdG8gaGF2ZSBjYXBhYmlsaXR5
+LCB3aXRoIDE1IAogICAgICAgICAgICBydW5uaW5nIGFzIHJvb3QgYW5kIHVuYWZmZWN0ZWQgYnkg
+dGhlIHByb3Bvc2VkIGNoYW5nZS4gCiAgICAgICAgKDIpIEFtb25nIHRoZSA1OWsgcGFja2FnZXMg
+b24gVWJ1bnR1IDIxLjEwLCBvbmx5IDI5IHByb2dyYW1zIAogICAgICAgICAgICB3ZXJlIGNvbmZp
+Z3VyZWQgd2l0aCBjYXBhYmlsaXR5LlsxXQoKMi4gRm9yIHByb2dyYW1zIHRoYXQgdXNlIGNhcGFi
+aWxpdHksIGl0IGlzIG5vdCBjb21wbGljYXRlZCBmb3IgZGV2ZWxvcGVycwogICBvciBzeXNhZG1p
+biB0byByZWNvbmZpZ3VyZSBpdC4gUHJvZ3JhbXMgdXNpbmcgY2FwYWJpbGl0eSBjYW4gYmUgCiAg
+IGNhdGVnb3JpemVkIGludG8gdHdvIHR5cGVzOiAKICAgICAgICAoMSkgdGhvc2Ugc3RhcnRlZCBi
+eSByb290IGhhdmUgZnVsbCBjYXBhYmlsaXR5IGJ5IGRlZmF1bHQsIHdoaWNoIAogICAgICAgICAg
+ICBjYW4gYmUgY2hhbmdlZCB3aXRoIHRoZSBwcmN0bCBzeXN0ZW0gY2FsbC4KICAgICAgICAoMikg
+YW5kIHRob3NlIHdpdGggY2FwYWJpbGl0aWVzIGNvbmZpZ3VyZWQgZGlyZWN0bHkgb24gdGhlIAog
+ICAgICAgICAgICBleGVjdXRhYmxlIGZpbGUgY2FuIGJlIG1vZGlmaWVkIGJ5IHNlY2FwIGNvbW1h
+bmQgZGlyZWN0bHkuCgpTbyB0aGUga2V5IHRvIHVzaW5nIGNhcGFiaWxpdHkgaXMgdG8gY2hvb3Nl
+IHRoZSBsZWFzdCBwcml2aWxlZ2UgdGhhdCAKd2lsbCBhY2NvbXBsaXNoIHRoZSBmdW5jdGlvbi4g
+VGhpcyBjYW4ndCBiZSBkb25lIHdpdGhvdXQgdGhlIGtlcm5lbCdzIApjbGVhciBkZWxpbmVhdGlv
+biBvZiBwcml2aWxlZ2VzLgoKVGhpcyBjaGFuZ2Ugd2lsbCBtYWtlIGl0IGNsZWFyIHRoYXQgaWYg
+eW91IG9ubHkgbmVlZCB0byBjcm9zcyBzeXN0ZW0gCmxpbWl0cywgdGhlbiBzeXNfcmVzb3VyY2Ug
+aXMgdGhlIGNhcGFiaWxpdHkgeW91IG5lZWQuIFRoaXMgbWF5IGNhdXNlIApzb21lIHByb2Nlc3Nl
+cyB0aGF0IGFyZSB1c2luZyBzeXNfYWRtaW4gdG8gYnlwYXNzIGxpbWl0cyB0byBmYWlsLCBidXQg
+CmZyb20gYSBsZWFzdCBwcml2aWxlZ2UgcG9pbnQgb2YgdmlldywgaXQgbWF5IGJlIGdvb2QgdG8g
+cmVkdWNlIHRoZSAKdW5uZWNlc3NhcnkgdXNlIG9mIHN5c19hZG1pbi4KCkJlc3QgcmVnYXJkcywK
+SmluZ3ppCgpbMV0gSGFzYW4sIE1kIE1laGVkaSwgU2V5ZWRoYW1lZCBHaGF2YW1uaWEsIGFuZCBN
+aWNoYWxpcyBQb2x5Y2hyb25ha2lzLiAKICAgICJEZWNhcDogRGVwcml2aWxlZ2luZyBwcm9ncmFt
+cyBieSByZWR1Y2luZyB0aGVpciBjYXBhYmlsaXRpZXMuIiAKICAgIFByb2NlZWRpbmdzIG9mIHRo
+ZSAyNXRoIEludGVybmF0aW9uYWwgU3ltcG9zaXVtIG9uIFJlc2VhcmNoIGluIEF0dGFja3MsCiAg
+ICBJbnRydXNpb25zIGFuZCBEZWZlbnNlcy4gMjAyMi4K
 
