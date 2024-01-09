@@ -1,248 +1,174 @@
-Return-Path: <linux-kernel+bounces-21190-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21192-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0FF88828B84
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 18:52:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BEF4A828B8B
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 18:54:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AF288282C88
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 17:52:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E41811C24969
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 17:54:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 875F43BB26;
-	Tue,  9 Jan 2024 17:51:30 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8702D3C070;
+	Tue,  9 Jan 2024 17:54:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XMT42gRL"
+Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 023373D0B6;
-	Tue,  9 Jan 2024 17:51:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CCFECC433C7;
-	Tue,  9 Jan 2024 17:51:26 +0000 (UTC)
-Date: Tue, 9 Jan 2024 17:51:24 +0000
-From: Catalin Marinas <catalin.marinas@arm.com>
-To: Baruch Siach <baruch@tkos.co.il>
-Cc: Christoph Hellwig <hch@lst.de>,
-	Marek Szyprowski <m.szyprowski@samsung.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Frank Rowand <frowand.list@gmail.com>,
-	Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
-	iommu@lists.linux.dev, devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	Petr =?utf-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>,
-	Ramon Fried <ramon@neureality.ai>,
-	Elad Nachman <enachman@marvell.com>
-Subject: Re: [PATCH RFC 3/4] dma-direct: add offset to zone_dma_bits
-Message-ID: <ZZ2HnHJV3gdzu1Aj@arm.com>
-References: <cover.1703683642.git.baruch@tkos.co.il>
- <fae5b1180161a7d8cd626a96f5df80b0a0796b8b.1703683642.git.baruch@tkos.co.il>
- <ZZw3FDy8800NScEk@arm.com>
- <87msterf7b.fsf@tarshish>
- <ZZ0mAxGupZKRPzWR@arm.com>
- <871qaqr477.fsf@tarshish>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E1AF3BB53;
+	Tue,  9 Jan 2024 17:54:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2ccea11b6bbso30559701fa.0;
+        Tue, 09 Jan 2024 09:54:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704822849; x=1705427649; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gIbyrPSKsQbDcDQfXkpDHHC7/9eaZRTzW2YiXQnsBHA=;
+        b=XMT42gRLyyTFYpjM96K12626QWAiAgXekewyZ2Jogf88gRAu9OYhWNTyK3aocMFiU1
+         T1tqYO9cUXBq0LrtsSG97sqhw62W9HROwsvdATzbLzAZkdJDpTnGf1Hn7iQ0YNx6B/DB
+         9sjASChdO0ra8pXyOhQrwSOChdgCVzbyylzGNKv4aOZDdMw9bDRYQhzyYKYvQbEYxE3o
+         VZmDvISrYNtoLCXPPMdKGJg8uMMBe7KVRHYjlyYd6tGrf/UJmvyaJy8dMknEZO1FVF+h
+         TwBtD+C4+xD7JX591zgqwnH5OYiHQQ0oeJjQdHsKVR8k7SB9q2uPU7YyfDUseu1Kf/6m
+         1nXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704822849; x=1705427649;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=gIbyrPSKsQbDcDQfXkpDHHC7/9eaZRTzW2YiXQnsBHA=;
+        b=OwkjTJv90kQbpFiX+a6dYAMwPBoCcbsbVey4r7yn0rh8pDhq1XrT2OLOquNmZRVVg1
+         EJ9Le1naKUmRqRpW2xqP4wyAdm7ivA3HTvRmccyCfueZYEw5xmEICvUZtbeJNnraR5Wn
+         pwXwZnzojOQKyzH82OP0zfaBLaqfKMrqb1AexD+uQInK6Ja9wDbi1Pa8+6xHMEeaWfvj
+         wVcMrZTf2F9BXb0f3jfo1qFs7meEiSmkpz8MzzcvUq9YgPLEUtdypePYNPOYEK9qCe4g
+         uuMXHDJqCkDFhydOshLTATlynKTdDO1KIiEEP43o8zQhtD5l7EWyE4z3PvKFuMzEvNIQ
+         d/7g==
+X-Gm-Message-State: AOJu0YztWfbquwU8kwdOa6ivSTG3CptSKAmL/SlkE3Rcl9EiLTEM3DLo
+	fVwtcUcYIRXFUIaV8N2lcRx/EKwbBppilV5yXhs=
+X-Google-Smtp-Source: AGHT+IEAquitmm4I7dlVh6YzzaFvZ4MIqaJQdk5o3aYdijgf7VIyZgpHMCQj8qGGmTYobON22fBPCxUBWMEY6+X144o=
+X-Received: by 2002:a2e:9606:0:b0:2cc:78b7:1ef0 with SMTP id
+ v6-20020a2e9606000000b002cc78b71ef0mr738949ljh.4.1704822849013; Tue, 09 Jan
+ 2024 09:54:09 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <871qaqr477.fsf@tarshish>
+References: <20240108224614.56900-1-verdre@v0yd.nl>
+In-Reply-To: <20240108224614.56900-1-verdre@v0yd.nl>
+From: Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+Date: Tue, 9 Jan 2024 12:53:56 -0500
+Message-ID: <CABBYNZKV176teECGnGKTCNNo45ZYbCRs=YddETOUMUsJQX5PdA@mail.gmail.com>
+Subject: Re: [PATCH v3 0/4] Bluetooth: Improve retrying of connection attempts
+To: =?UTF-8?Q?Jonas_Dre=C3=9Fler?= <verdre@v0yd.nl>
+Cc: Marcel Holtmann <marcel@holtmann.org>, Johan Hedberg <johan.hedberg@gmail.com>, 
+	linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 09, 2024 at 03:54:13PM +0200, Baruch Siach wrote:
-> On Tue, Jan 09 2024, Catalin Marinas wrote:
-> > On Tue, Jan 09, 2024 at 12:03:43PM +0200, Baruch Siach wrote:
-> >> On Mon, Jan 08 2024, Catalin Marinas wrote:
-> >> > On Wed, Dec 27, 2023 at 05:04:27PM +0200, Baruch Siach wrote:
-> >> >> Current code using zone_dma_bits assume that all addresses range in the
-> >> >> bits mask are suitable for DMA. For some existing platforms this
-> >> >> assumption is not correct. DMA range might have non zero lower limit.
-> >> >> 
-> >> >> Add 'zone_dma_off' for platform code to set base address for DMA zone.
-> >> >> 
-> >> >> Rename the dma_direct_supported() local 'min_mask' variable to better
-> >> >> describe its use as limit.
-> >> >> 
-> >> >> Suggested-by: Catalin Marinas <catalin.marinas@arm.com>
-> >> >
-> >> > When I suggested taking the DMA offsets into account, that's not exactly
-> >> > what I meant. Based on patch 4, it looks like zone_dma_off is equivalent
-> >> > to the lower CPU address. Let's say a system has DRAM starting at 2GB
-> >> > and all 32-bit DMA-capable devices has a DMA offset of 0. We want
-> >> > ZONE_DMA32 to end at 4GB rather than 6GB.
-> >> 
-> >> Patch 4 sets zone_dma_off to the lower limit from 'dma-ranges' property
-> >> that determines zone_dma_bits. This is not necessarily equivalent to
-> >> start of DRAM, though it happens to be that way on my platform.
-> >
-> > A bit better but it still assumes that all devices have the same DMA
-> > offset which may not be the case.
-> 
-> Current code calculates zone_dma_bits based on the lowest high limit of
-> all 'dma-ranges' properties. The assumption appears to be that this
-> limit fits all devices. This series does not change this assumption. It
-> only extends the logic to the lower limit of the "winning" 'dma-ranges'
-> to set the base address for DMA zone.
-> 
-> Moving to dma_zone_limit would not change that logic. Unless I'm missing
-> something.
+Hi Jonas,
 
-Indeed, the logic here stays the same. What doesn't work currently is
-that we use fls64() of this address and we also cap it to 32 in the
-arm64 zone_sizes_init(). On a system where RAM starts at 4GB and we have
-a (for example) 30-bit device, zone_dma_bits ends up as 32 (fls64(5G)).
-With your patch, IIUC, zone_dma_off would be 4GB in such scenario and
-adding DMA_BIT_MASK(zone_dma_bits) to it results in 8GB, not the 5GB
-limit that we actually need (the first GB of the RAM).
+On Mon, Jan 8, 2024 at 5:46=E2=80=AFPM Jonas Dre=C3=9Fler <verdre@v0yd.nl> =
+wrote:
+>
+> Since commit 4c67bc74f016 ("[Bluetooth] Support concurrent connect
+> requests"), the kernel supports trying to connect again in case the
+> bluetooth card is busy and fails to connect.
+>
+> The logic that should handle this became a bit spotty over time, and also
+> cards these days appear to fail with more errors than just "Command
+> Disallowed".
+>
+> This series refactores the handling of concurrent connection requests
+> by serializing all "Create Connection" commands for ACL connections
+> similar to how we do it for LE connections.
+>
+> ---
+>
+> v1: https://lore.kernel.org/linux-bluetooth/20240102185933.64179-1-verdre=
+@v0yd.nl/
+> v2: https://lore.kernel.org/linux-bluetooth/20240108183938.468426-1-verdr=
+e@v0yd.nl/
+> v3:
+>   - Move the new sync function to hci_sync.c as requested by review
+>   - Abort connection on failure using hci_abort_conn_sync() instead of
+>     hci_abort_conn()
+>   - Make the last commit message a bit more precise regarding the meaning
+>     of BT_CONNECT2 state
+>
+> Jonas Dre=C3=9Fler (4):
+>   Bluetooth: Remove superfluous call to hci_conn_check_pending()
+>   Bluetooth: hci_event: Use HCI error defines instead of magic values
+>   Bluetooth: hci_conn: Only do ACL connections sequentially
+>   Bluetooth: Remove pending ACL connection attempts
+>
+>  include/net/bluetooth/hci.h      |  3 ++
+>  include/net/bluetooth/hci_core.h |  1 -
+>  include/net/bluetooth/hci_sync.h |  3 ++
+>  net/bluetooth/hci_conn.c         | 83 +++-----------------------------
+>  net/bluetooth/hci_event.c        | 29 +++--------
+>  net/bluetooth/hci_sync.c         | 72 +++++++++++++++++++++++++++
+>  6 files changed, 93 insertions(+), 98 deletions(-)
+>
+> --
+> 2.43.0
 
-> Breaking the "one DMA zone fits all devices" assumption as Petr
-> suggested is a much larger change.
+After rebasing and fixing a little bit here and there, see v4, looks
+like this changes is affecting the following mgmt-tester -s "Pair
+Device - Power off 1":
 
-I don't think we should go this way, we just need to make sure the DMA
-zone does not extend above the lowest upper limit of the cpu addresses
-in the 'dma-ranges' property. Basically what
-of_dma_get_max_cpu_address() gives us but without any capping or
-conversion into a power of two. This should cover those sub-32-bit
-devices.
+Pair Device - Power off 1 - init
+  Read Version callback
+    Status: Success (0x00)
+    Version 1.22
+  Read Commands callback
+    Status: Success (0x00)
+  Read Index List callback
+    Status: Success (0x00)
+  Index Added callback
+    Index: 0x0000
+  Enable management Mesh interface
+  Enabling Mesh feature
+  Read Info callback
+    Status: Success (0x00)
+    Address: 00:AA:01:00:00:00
+    Version: 0x09
+    Manufacturer: 0x05f1
+    Supported settings: 0x0001bfff
+    Current settings: 0x00000080
+    Class: 0x000000
+    Name:
+    Short name:
+  Mesh feature is enabled
+Pair Device - Power off 1 - setup
+  Setup sending Set Bondable (0x0009)
+  Setup sending Set Powered (0x0005)
+  Initial settings completed
+  Test setup condition added, total 1
+  Client set connectable: Success (0x00)
+  Test setup condition complete, 0 left
+Pair Device - Power off 1 - setup complete
+Pair Device - Power off 1 - run
+  Sending Pair Device (0x0019)
+Bluetooth: hci0: command 0x0405 tx timeout
+Bluetooth: hci0: command 0x0408 tx timeout
+  Test condition added, total 1
+Pair Device - Power off 1 - test timed out
+  Pair Device (0x0019): Disconnected (0x0e)
+Pair Device - Power off 1 - test not run
+Pair Device - Power off 1 - teardown
+Pair Device - Power off 1 - teardown
+  Index Removed callback
+    Index: 0x0000
+Pair Device - Power off 1 - teardown complete
+Pair Device - Power off 1 - done
 
-See the partial patch below, not really tested (and it breaks powerpc,
-s390) but it's easier to discuss on code. In addition, we need to figure
-out what to do with ZONE_DMA32 in such case. Do we consider the first
-4GB of the RAM or we just don't bother with setting up this zone if the
-RAM starts above 4GB, only rely on ZONE_DMA? I'd go with the latter but
-needs some thinking.
-
-diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
-index 74c1db8ce271..0a15628ece7e 100644
---- a/arch/arm64/mm/init.c
-+++ b/arch/arm64/mm/init.c
-@@ -113,36 +113,24 @@ static void __init arch_reserve_crashkernel(void)
- 				    low_size, high);
- }
- 
--/*
-- * Return the maximum physical address for a zone accessible by the given bits
-- * limit. If DRAM starts above 32-bit, expand the zone to the maximum
-- * available memory, otherwise cap it at 32-bit.
-- */
--static phys_addr_t __init max_zone_phys(unsigned int zone_bits)
-+static phys_addr_t __init max_zone_phys(phys_addr_t zone_mask)
- {
--	phys_addr_t zone_mask = DMA_BIT_MASK(zone_bits);
--	phys_addr_t phys_start = memblock_start_of_DRAM();
--
--	if (phys_start > U32_MAX)
--		zone_mask = PHYS_ADDR_MAX;
--	else if (phys_start > zone_mask)
--		zone_mask = U32_MAX;
--
- 	return min(zone_mask, memblock_end_of_DRAM() - 1) + 1;
- }
- 
- static void __init zone_sizes_init(void)
- {
- 	unsigned long max_zone_pfns[MAX_NR_ZONES]  = {0};
--	unsigned int __maybe_unused acpi_zone_dma_bits;
--	unsigned int __maybe_unused dt_zone_dma_bits;
--	phys_addr_t __maybe_unused dma32_phys_limit = max_zone_phys(32);
-+	phys_addr_t __maybe_unused acpi_zone_dma_limit;
-+	phys_addr_t __maybe_unused dt_zone_dma_limit;
-+	phys_addr_t __maybe_unused dma32_phys_limit =
-+		max_zone_phys(DMA_BIT_MASK(32));
- 
- #ifdef CONFIG_ZONE_DMA
--	acpi_zone_dma_bits = fls64(acpi_iort_dma_get_max_cpu_address());
--	dt_zone_dma_bits = fls64(of_dma_get_max_cpu_address(NULL));
--	zone_dma_bits = min3(32U, dt_zone_dma_bits, acpi_zone_dma_bits);
--	arm64_dma_phys_limit = max_zone_phys(zone_dma_bits);
-+	acpi_zone_dma_limit = acpi_iort_dma_get_max_cpu_address();
-+	dt_zone_dma_limit = of_dma_get_max_cpu_address(NULL);
-+	zone_dma_limit = min(dt_zone_dma_limit, acpi_zone_dma_limit);
-+	arm64_dma_phys_limit = max_zone_phys(zone_dma_limit);
- 	max_zone_pfns[ZONE_DMA] = PFN_DOWN(arm64_dma_phys_limit);
- #endif
- #ifdef CONFIG_ZONE_DMA32
-diff --git a/include/linux/dma-direct.h b/include/linux/dma-direct.h
-index 18aade195884..f55de778612b 100644
---- a/include/linux/dma-direct.h
-+++ b/include/linux/dma-direct.h
-@@ -12,7 +12,7 @@
- #include <linux/mem_encrypt.h>
- #include <linux/swiotlb.h>
- 
--extern unsigned int zone_dma_bits;
-+extern phys_addr_t zone_dma_limit;
- 
- /*
-  * Record the mapping of CPU physical to DMA addresses for a given region.
-diff --git a/kernel/dma/direct.c b/kernel/dma/direct.c
-index 73c95815789a..1e12c593b6f3 100644
---- a/kernel/dma/direct.c
-+++ b/kernel/dma/direct.c
-@@ -20,7 +20,7 @@
-  * it for entirely different regions. In that case the arch code needs to
-  * override the variable below for dma-direct to work properly.
-  */
--unsigned int zone_dma_bits __ro_after_init = 24;
-+phys_addr_t zone_dma_limit __ro_after_init = DMA_BIT_MASK(24);
- 
- static inline dma_addr_t phys_to_dma_direct(struct device *dev,
- 		phys_addr_t phys)
-@@ -59,7 +59,7 @@ static gfp_t dma_direct_optimal_gfp_mask(struct device *dev, u64 *phys_limit)
- 	 * zones.
- 	 */
- 	*phys_limit = dma_to_phys(dev, dma_limit);
--	if (*phys_limit <= DMA_BIT_MASK(zone_dma_bits))
-+	if (*phys_limit <= zone_dma_limit)
- 		return GFP_DMA;
- 	if (*phys_limit <= DMA_BIT_MASK(32))
- 		return GFP_DMA32;
-@@ -583,7 +583,7 @@ int dma_direct_supported(struct device *dev, u64 mask)
- 	 * part of the check.
- 	 */
- 	if (IS_ENABLED(CONFIG_ZONE_DMA))
--		min_mask = min_t(u64, min_mask, DMA_BIT_MASK(zone_dma_bits));
-+		min_mask = min_t(u64, min_mask, zone_dma_limit);
- 	return mask >= phys_to_dma_unencrypted(dev, min_mask);
- }
- 
-diff --git a/kernel/dma/pool.c b/kernel/dma/pool.c
-index b481c48a31a6..af02948adfff 100644
---- a/kernel/dma/pool.c
-+++ b/kernel/dma/pool.c
-@@ -70,7 +70,7 @@ static bool cma_in_zone(gfp_t gfp)
- 	/* CMA can't cross zone boundaries, see cma_activate_area() */
- 	end = cma_get_base(cma) + size - 1;
- 	if (IS_ENABLED(CONFIG_ZONE_DMA) && (gfp & GFP_DMA))
--		return end <= DMA_BIT_MASK(zone_dma_bits);
-+		return end <= zone_dma_limit;
- 	if (IS_ENABLED(CONFIG_ZONE_DMA32) && (gfp & GFP_DMA32))
- 		return end <= DMA_BIT_MASK(32);
- 	return true;
-diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
-index 33d942615be5..be76816b3ff9 100644
---- a/kernel/dma/swiotlb.c
-+++ b/kernel/dma/swiotlb.c
-@@ -446,7 +446,7 @@ int swiotlb_init_late(size_t size, gfp_t gfp_mask,
- 	if (!remap)
- 		io_tlb_default_mem.can_grow = true;
- 	if (IS_ENABLED(CONFIG_ZONE_DMA) && (gfp_mask & __GFP_DMA))
--		io_tlb_default_mem.phys_limit = DMA_BIT_MASK(zone_dma_bits);
-+		io_tlb_default_mem.phys_limit = zone_dma_limit;
- 	else if (IS_ENABLED(CONFIG_ZONE_DMA32) && (gfp_mask & __GFP_DMA32))
- 		io_tlb_default_mem.phys_limit = DMA_BIT_MASK(32);
- 	else
-@@ -625,7 +625,7 @@ static struct page *swiotlb_alloc_tlb(struct device *dev, size_t bytes,
- 	}
- 
- 	gfp &= ~GFP_ZONEMASK;
--	if (phys_limit <= DMA_BIT_MASK(zone_dma_bits))
-+	if (phys_limit <= zone_dma_limit)
- 		gfp |= __GFP_DMA;
- 	else if (phys_limit <= DMA_BIT_MASK(32))
- 		gfp |= __GFP_DMA32;
-
--- 
-Catalin
+--=20
+Luiz Augusto von Dentz
 
