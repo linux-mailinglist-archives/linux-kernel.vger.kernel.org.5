@@ -1,238 +1,151 @@
-Return-Path: <linux-kernel+bounces-21054-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21055-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD093828917
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 16:36:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 204C082891A
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 16:36:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 75C8D286789
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 15:36:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 949B4286928
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 15:36:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 551B539FE6;
-	Tue,  9 Jan 2024 15:36:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88B7539FF2;
+	Tue,  9 Jan 2024 15:36:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="eIylwhnQ"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ywhli+63"
+Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFAE415A7
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 15:36:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1704814569;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=qz+Q+JrAWYvS9qf/dHeLoqYAlCn6rbjxNXke5nzk1EE=;
-	b=eIylwhnQpegkUQko/YZWUx6wq5ox3gqSqERW1AuYu4ZcaWnlRgt+NbvajQT8bkINljGyAy
-	Vco7kvGFd5S2xncGPJeP5s8yXvmTmjBXDSF/zoy6D/AMzmJTa3CO8k17lqYUJSPC5BZve5
-	CjiPLw7RybawvGxzAuQ1+3WgJC8OTvk=
-Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
- [209.85.219.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-70-GJ5kln9HM2ufH99LvzzmlQ-1; Tue, 09 Jan 2024 10:36:07 -0500
-X-MC-Unique: GJ5kln9HM2ufH99LvzzmlQ-1
-Received: by mail-qv1-f70.google.com with SMTP id 6a1803df08f44-6800714a149so64642796d6.0
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 07:36:07 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EBB439FE5;
+	Tue,  9 Jan 2024 15:36:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-33761e291c1so1773590f8f.0;
+        Tue, 09 Jan 2024 07:36:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704814579; x=1705419379; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Uoyz0fX05VFZUA0YqL9VDmTIjZubn+1o1Tubn/qOGIQ=;
+        b=Ywhli+630+H5SS8G8SdP1TgmtDG/N/PFkP2WGwB56asraV+ksNO+EQ+Nd63U29BAbU
+         fSWUwniKDPXC92LKRHrteNS3OxqKE8EQmyz9ciQdzSl1/bSzQqMArWwl4MIDw80JhIF0
+         c/Fnf+H+GpVfZx79mUQkH2XY1llzmOX3YX9f2zX2ndpK3KLJLjmqcII44z0j1yL0j+eO
+         t67668S4U0KHxsGVPtEetlCLC3xyNDxQfi3sFop+epuH1ri4FJs4LLx56Say1DLzk2qY
+         SU6zQH2ihIkCaUx5jVAxR61/E0gWEia9X41U1kOp4z3CcMJAZGuGkTyfeKSOVI3rA6/l
+         PYdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704814567; x=1705419367;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:from:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=qz+Q+JrAWYvS9qf/dHeLoqYAlCn6rbjxNXke5nzk1EE=;
-        b=cpaB/uQYHu+VwmdGZTqVky7LlGmBiPuHvpKLYoTOLjcvA/76H89SVKPaOMRNXinnI/
-         phncc6QJSUn0ORelvg9cc/IiD/QpaQtdAsP6zweAxcUjT9RgRwxURK433Mgoow8lyRlM
-         AcKXuYn3pU8Va+ATQ8HONeBON65Zl+9HrXcxWymfyB68jyouT9695okXI9Ly71cR9zHE
-         AEkWdokXLvoLvgMs7uCSPdAkVeUVKtDLyoQlBicoJBdejCRTrzsnySsjqXY39f58mRzp
-         aBNLK7EXSTSL1PAcqhQHCDd5ka7sKysa+DGwILG4AulaD/E6OQGJOpSQC+bLteyqSJNx
-         419g==
-X-Gm-Message-State: AOJu0YxdTvdMcxDnJJ9/IB+XA8bdPrH8F7aN0fouDIaW2S4Gh+7nmrAz
-	ce9scWVcOAZPLXPcdUFvQfSnzLrameW/U4hHeZTr5EvcBoQeUGcwQ2VB6RlApmWf3zasetD6Oqs
-	/gFsRWy65emmGe/1FHidZ3gUqYAX/HiY=
-X-Received: by 2002:a05:6214:2265:b0:681:1849:9c6f with SMTP id gs5-20020a056214226500b0068118499c6fmr1006019qvb.68.1704814567288;
-        Tue, 09 Jan 2024 07:36:07 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHjXC4DqpaaxgJdbTER0Ag1JXtCwg74ti2yIY188/Jz0ndLBxC4V6TDYJt8DOfddWMRDvRGVQ==
-X-Received: by 2002:a05:6214:2265:b0:681:1849:9c6f with SMTP id gs5-20020a056214226500b0068118499c6fmr1006013qvb.68.1704814566990;
-        Tue, 09 Jan 2024 07:36:06 -0800 (PST)
-Received: from [192.168.9.34] (net-2-34-31-72.cust.vodafonedsl.it. [2.34.31.72])
-        by smtp.gmail.com with ESMTPSA id r15-20020a0cf80f000000b00680d1d5a20dsm974838qvn.18.2024.01.09.07.36.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Jan 2024 07:36:06 -0800 (PST)
-Message-ID: <6417e8d1-f768-404a-b21d-6aa897423278@redhat.com>
-Date: Tue, 9 Jan 2024 16:36:03 +0100
+        d=1e100.net; s=20230601; t=1704814579; x=1705419379;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Uoyz0fX05VFZUA0YqL9VDmTIjZubn+1o1Tubn/qOGIQ=;
+        b=JieGXoKZP7k3rk6YPPWHfixkbKRotT7DbtHPiIDd7T5qHFDza36BU4ezZtpMhsXh94
+         VkfEbOz2hKMQvTqbTHEtqcJs8UtUgR0YcRhpKynwa/kI64NSETaar8OJ1t1QxYvWrrQ3
+         R8zx/zjY89SgKzAMJIaQEN9RM+gkBS64XhivyMdqm4xqkOOc3xddjKpY93w34z72kqq4
+         AAJLD9P1sG97NqMhmvhLIRS+qoFLkdmoEDUmVhe4ybcwQJ9ndUys46N5o+ygGkF13SsV
+         N+K4hiQjw2N45pVVMOKStpg0wggSZBbvJXRqvXamIuXO6U6qtquzZ4ToAPCH6rZGaM67
+         IHgQ==
+X-Gm-Message-State: AOJu0YxCCM27bXFYGTlNNmxIZ0Nxzz+IUei2UEE3mjw0J83tqFy6OeDx
+	ajb3sOuzaSQlh1JF3+i2dBhYW4IU1g==
+X-Google-Smtp-Source: AGHT+IFF0m5AF5RduXEuT8dKBFZD9iSqrXMBvW+29jCDOiEUyuHNHIbAu0bVFq7vtE0jEW+OG0UyyA==
+X-Received: by 2002:a5d:6349:0:b0:336:641d:626c with SMTP id b9-20020a5d6349000000b00336641d626cmr476091wrw.61.1704814578883;
+        Tue, 09 Jan 2024 07:36:18 -0800 (PST)
+Received: from staff-net-cx-3510.intern.ethz.ch (2001-67c-10ec-5784-8000--1bd.net6.ethz.ch. [2001:67c:10ec:5784:8000::1bd])
+        by smtp.gmail.com with ESMTPSA id j25-20020adfb319000000b0033672cfca96sm2682295wrd.89.2024.01.09.07.36.18
+        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
+        Tue, 09 Jan 2024 07:36:18 -0800 (PST)
+From: Hao Sun <sunhao.th@gmail.com>
+To: bpf@vger.kernel.org
+Cc: ppenkov@google.com,
+	willemb@google.com,
+	ast@kernel.org,
+	linux-kernel@vger.kernel.org,
+	Hao Sun <sunhao.th@gmail.com>
+Subject: [PATCH] bpf: Reject variable offset alu on PTR_TO_FLOW_KEYS
+Date: Tue,  9 Jan 2024 16:36:09 +0100
+Message-ID: <20240109153609.10185-1-sunhao.th@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: Marco Pagani <marpagan@redhat.com>
-Subject: Re: [PATCH v3] kunit: run test suites only after module
- initialization completes
-To: David Gow <davidgow@google.com>
-Cc: Brendan Higgins <brendan.higgins@linux.dev>,
- Shuah Khan <skhan@linuxfoundation.org>, Jinjie Ruan <ruanjinjie@huawei.com>,
- Rae Moar <rmoar@google.com>, Richard Fitzgerald <rf@opensource.cirrus.com>,
- Javier Martinez Canillas <javierm@redhat.com>,
- linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
- linux-kernel@vger.kernel.org
-References: <20231206150729.54604-1-marpagan@redhat.com>
- <CABVgOSnbBzjcb_zt=YJ8p8Rm97s2ZYp=YvjThB_NCZD9BJQaSg@mail.gmail.com>
-Content-Language: en-US
-In-Reply-To: <CABVgOSnbBzjcb_zt=YJ8p8Rm97s2ZYp=YvjThB_NCZD9BJQaSg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
+For PTR_TO_FLOW_KEYS, check_flow_keys_access() only uses fixed off
+for validation. However, variable offset ptr alu is not prohibited
+for this ptr kind. So the variable offset is not checked.
 
+The following prog is accepted:
+func#0 @0
+0: R1=ctx() R10=fp0
+0: (bf) r6 = r1                       ; R1=ctx() R6_w=ctx()
+1: (79) r7 = *(u64 *)(r6 +144)        ; R6_w=ctx() R7_w=flow_keys()
+2: (b7) r8 = 1024                     ; R8_w=1024
+3: (37) r8 /= 1                       ; R8_w=scalar()
+4: (57) r8 &= 1024                    ; R8_w=scalar(smin=smin32=0,
+smax=umax=smax32=umax32=1024,var_off=(0x0; 0x400))
+5: (0f) r7 += r8
+mark_precise: frame0: last_idx 5 first_idx 0 subseq_idx -1
+mark_precise: frame0: regs=r8 stack= before 4: (57) r8 &= 1024
+mark_precise: frame0: regs=r8 stack= before 3: (37) r8 /= 1
+mark_precise: frame0: regs=r8 stack= before 2: (b7) r8 = 1024
+6: R7_w=flow_keys(smin=smin32=0,smax=umax=smax32=umax32=1024,var_off
+=(0x0; 0x400)) R8_w=scalar(smin=smin32=0,smax=umax=smax32=umax32=1024,
+var_off=(0x0; 0x400))
+6: (79) r0 = *(u64 *)(r7 +0)          ; R0_w=scalar()
+7: (95) exit
 
-On 2024-01-08 08:27, David Gow wrote:
-> On Wed, 6 Dec 2023 at 23:07, Marco Pagani <marpagan@redhat.com> wrote:
->>
->> Commit 2810c1e99867 ("kunit: Fix wild-memory-access bug in
->> kunit_free_suite_set()") fixed a wild-memory-access bug that could have
->> happened during the loading phase of test suites built and executed as
->> loadable modules. However, it also introduced a problematic side effect
->> that causes test suites modules to crash when they attempt to register
->> fake devices.
->>
->> When a module is loaded, it traverses the MODULE_STATE_UNFORMED and
->> MODULE_STATE_COMING states before reaching the normal operating state
->> MODULE_STATE_LIVE. Finally, when the module is removed, it moves to
->> MODULE_STATE_GOING before being released. However, if the loading
->> function load_module() fails between complete_formation() and
->> do_init_module(), the module goes directly from MODULE_STATE_COMING to
->> MODULE_STATE_GOING without passing through MODULE_STATE_LIVE.
->>
->> This behavior was causing kunit_module_exit() to be called without
->> having first executed kunit_module_init(). Since kunit_module_exit() is
->> responsible for freeing the memory allocated by kunit_module_init()
->> through kunit_filter_suites(), this behavior was resulting in a
->> wild-memory-access bug.
->>
->> Commit 2810c1e99867 ("kunit: Fix wild-memory-access bug in
->> kunit_free_suite_set()") fixed this issue by running the tests when the
->> module is still in MODULE_STATE_COMING. However, modules in that state
->> are not fully initialized, lacking sysfs kobjects. Therefore, if a test
->> module attempts to register a fake device, it will inevitably crash.
->>
->> This patch proposes a different approach to fix the original
->> wild-memory-access bug while restoring the normal module execution flow
->> by making kunit_module_exit() able to detect if kunit_module_init() has
->> previously initialized the tests suite set. In this way, test modules
->> can once again register fake devices without crashing.
->>
->> This behavior is achieved by checking whether mod->kunit_suites is a
->> virtual or direct mapping address. If it is a virtual address, then
->> kunit_module_init() has allocated the suite_set in kunit_filter_suites()
->> using kmalloc_array(). On the contrary, if mod->kunit_suites is still
->> pointing to the original address that was set when looking up the
->> .kunit_test_suites section of the module, then the loading phase has
->> failed and there's no memory to be freed.
->>
->> v3:
->> - add a comment to clarify why the start address is checked
->> v2:
->> - add include <linux/mm.h>
->>
->> Fixes: 2810c1e99867 ("kunit: Fix wild-memory-access bug in kunit_free_suite_set()")
->> Tested-by: Richard Fitzgerald <rf@opensource.cirrus.com>
->> Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
->> Signed-off-by: Marco Pagani <marpagan@redhat.com>
->> ---
-> 
-> Sorry for the delay here: there are enough subtleties here that I
-> wanted to double check some things.
-> 
-> I keep feeling that there has to be a nicer way of doing this, but I
-> can't think of one, so let's go with this, since it's fixing a real
-> issue.
-> 
-> I'm a little hesitant about our use of the suite_set.start address as
-> an 'is initialised' flag, and depending on it being reallocated via
-> kunit_filter_suites(), but since we already depend on that (by always
-> using kunit_free_suite_set()), I'm okay with it.
->
+This prog loads flow_keys to r7, and adds the variable offset r8
+to r7, and finally causes out-of-bounds access:
 
-I have the same feeling. I spent some thinking about alternative
-solutions that did not require adding a flag in the module struct or
-restructuring significant portions of the code, but I could not think of
-anything better for the moment.
+BUG: unable to handle page fault for address: ffffc90014c80038
+..
+Call Trace:
+ <TASK>
+ bpf_dispatcher_nop_func include/linux/bpf.h:1231 [inline]
+ __bpf_prog_run include/linux/filter.h:651 [inline]
+ bpf_prog_run include/linux/filter.h:658 [inline]
+ bpf_prog_run_pin_on_cpu include/linux/filter.h:675 [inline]
+ bpf_flow_dissect+0x15f/0x350 net/core/flow_dissector.c:991
+ bpf_prog_test_run_flow_dissector+0x39d/0x620 net/bpf/test_run.c:1359
+ bpf_prog_test_run kernel/bpf/syscall.c:4107 [inline]
+ __sys_bpf+0xf8f/0x4560 kernel/bpf/syscall.c:5475
+ __do_sys_bpf kernel/bpf/syscall.c:5561 [inline]
+ __se_sys_bpf kernel/bpf/syscall.c:5559 [inline]
+ __x64_sys_bpf+0x73/0xb0 kernel/bpf/syscall.c:5559
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
 
-> My only request (other than this needing a rebase, probably on top of
-> 6.8) would be to add a comment in kunit_filter_suites() noting that it
-> must return a virtual address. That's probably something we should've
-> done a while ago, but I can just see this requirement getting
-> forgotten.
-> 
+Fix this by rejecting ptr alu with variable offset on flow_keys.
+Applying the patch makes the program rejected with "R7 pointer
+arithmetic on flow_keys prohibited"
 
-Sure, I'll do it.
+Fixes: d58e468b1112 ("flow_dissector: implements flow dissector BPF hook")
+Signed-off-by: Hao Sun <sunhao.th@gmail.com>
+---
+ kernel/bpf/verifier.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-Thanks,
-Marco
-
-> Reviewed-by: David Gow <davidgow@google.com>
-> 
-> 
->>  lib/kunit/test.c | 14 +++++++++++---
->>  1 file changed, 11 insertions(+), 3 deletions(-)
->>
->> diff --git a/lib/kunit/test.c b/lib/kunit/test.c
->> index 7aceb07a1af9..3263e0d5e0f6 100644
->> --- a/lib/kunit/test.c
->> +++ b/lib/kunit/test.c
->> @@ -16,6 +16,7 @@
->>  #include <linux/panic.h>
->>  #include <linux/sched/debug.h>
->>  #include <linux/sched.h>
->> +#include <linux/mm.h>
->>
->>  #include "debugfs.h"
->>  #include "hooks-impl.h"
->> @@ -775,12 +776,19 @@ static void kunit_module_exit(struct module *mod)
->>         };
->>         const char *action = kunit_action();
->>
->> +       /*
->> +        * Check if the start address is a valid virtual address to detect
->> +        * if the module load sequence has failed and the suite set has not
->> +        * been initialized and filtered.
->> +        */
->> +       if (!suite_set.start || !virt_addr_valid(suite_set.start))
->> +               return;
->> +
->>         if (!action)
->>                 __kunit_test_suites_exit(mod->kunit_suites,
->>                                          mod->num_kunit_suites);
->>
->> -       if (suite_set.start)
->> -               kunit_free_suite_set(suite_set);
->> +       kunit_free_suite_set(suite_set);
->>  }
->>
->>  static int kunit_module_notify(struct notifier_block *nb, unsigned long val,
->> @@ -790,12 +798,12 @@ static int kunit_module_notify(struct notifier_block *nb, unsigned long val,
->>
->>         switch (val) {
->>         case MODULE_STATE_LIVE:
->> +               kunit_module_init(mod);
->>                 break;
->>         case MODULE_STATE_GOING:
->>                 kunit_module_exit(mod);
->>                 break;
->>         case MODULE_STATE_COMING:
->> -               kunit_module_init(mod);
->>                 break;
->>         case MODULE_STATE_UNFORMED:
->>                 break;
->>
->> base-commit: 33cc938e65a98f1d29d0a18403dbbee050dcad9a
->> --
->> 2.43.0
->>
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index adbf330d364b..65f598694d55 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -12826,6 +12826,10 @@ static int adjust_ptr_min_max_vals(struct bpf_verifier_env *env,
+ 	}
+ 
+ 	switch (base_type(ptr_reg->type)) {
++	case PTR_TO_FLOW_KEYS:
++		if (known)
++			break;
++		fallthrough;
+ 	case CONST_PTR_TO_MAP:
+ 		/* smin_val represents the known value */
+ 		if (known && smin_val == 0 && opcode == BPF_ADD)
+-- 
+2.34.1
 
 
