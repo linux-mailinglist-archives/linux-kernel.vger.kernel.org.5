@@ -1,81 +1,84 @@
-Return-Path: <linux-kernel+bounces-21245-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21243-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC47B828C76
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 19:21:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E25D8828C6F
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 19:21:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7A1F61F2812C
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 18:21:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9238D28CF15
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 18:21:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC9873D57E;
-	Tue,  9 Jan 2024 18:20:35 +0000 (UTC)
-Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 814373D384;
+	Tue,  9 Jan 2024 18:20:34 +0000 (UTC)
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 792743C463
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 18:20:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AFAD3C08D
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 18:20:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-3608dc76b97so28709495ab.2
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 10:20:32 -0800 (PST)
+Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-35fc6976630so30400555ab.0
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 10:20:31 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704824432; x=1705429232;
+        d=1e100.net; s=20230601; t=1704824431; x=1705429231;
         h=to:from:subject:message-id:date:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=aPTzyGzO0RVliTZIwtT4o/yk3Uuej80rZWM7X5yCgfY=;
-        b=HZY2d/uwbE+tI3l7tLvrhNbMw7mZf0rdxc1f7oWzaBlB7HcPteLyyEgtOPf4IyvESQ
-         MatqiYk35zeENbBXX0Y+QsNvN6eEIeiXuYGVmylZ/2zrleinkmPS1LrosVsKqZj6Lo6j
-         +qxWMIHQnUkuhYwZyWvs/WsagGGhaFhvqgcARpSZM96WEgGIGm6nVsruq0lK/rtG351t
-         Iae+CFFByOTzxDXztRFwNzEiglbUEV6RmTowjx6lTQSIB66OaVotisW1CdMomQnpNN5t
-         wGeZTNYIDkSrH30UPdHxCEwbFZBvg+/FxSGT8MUOE8r2Jjepgf2e5+UlGWZAp9yGk7qE
-         TiLA==
-X-Gm-Message-State: AOJu0YzsXEQpGPpMVxYWX0vUZnSJCAGGhGYXIr0icHQgSuJ1j5zxS+P0
-	1eweQ5tIKr6VJfsNSHrqFisbPAOwhc1tEkUcCSTukgmidsyw
-X-Google-Smtp-Source: AGHT+IEJsobw5Y2sb2LoAztipvn7kTyaYyjGWKnTMJG6cIATk5Xjhnfs0AK2082xbky+XsV5Oj+9qVo50vdhKAcqp7rRL1UOMICb
+        bh=yvQasGYS7JeZM71OBn9LpU6STXgLDvufVBcAyw3BJIk=;
+        b=MvvuL+HPzfCjtPhKem8Bs8JgSaRqqoZNKPtpWi87hHRA4/a0cpyKR3SuXykvVvDmcT
+         upr9caiwYrtLr2rMoVzFckcsRTEGrJ8xOi030sJV2Nh82Ps1JJr3KGskNnj/Rg4LIs7y
+         fUJvo46a4AhkWTWZ753wI334hihQ79nB626jSDSzwfctUD18J9q9InWL0AP7HBxZlqeK
+         CpmJVvK293QccgxrB95QIxOoZTga5enl6pO27/doNZN7W8+T1Eq1nR0zGEg5imhKx8lg
+         zoOCALaCj5P8DqrnRILPl/wZGtqt7KqCX6/x609UFO8yn4w2ou+8DMfdXlel7rEE0tou
+         rA+Q==
+X-Gm-Message-State: AOJu0YwA2CO7oLSAc0YzmsTygi+V6XS+e3paCcLcrJhkzfvr0/bRWfQj
+	AQO9D0S3Z1k8rLJxNrSefGMpoLBV2omdbnGlJiEvJbSDj7Xj
+X-Google-Smtp-Source: AGHT+IHicLTkVmxbHefZ7xBioSjR0j/UwEhFWoVf1oYBo7LNuotHW1wcOCkjG6u2rHh0oRNeYu2aFSZNiA1B4aVU4ZwWlDX35dfp
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1c22:b0:360:7783:b60 with SMTP id
- m2-20020a056e021c2200b0036077830b60mr762012ilh.6.1704824431850; Tue, 09 Jan
+X-Received: by 2002:a92:c549:0:b0:360:5cc5:8ded with SMTP id
+ a9-20020a92c549000000b003605cc58dedmr946086ilj.3.1704824431402; Tue, 09 Jan
  2024 10:20:31 -0800 (PST)
 Date: Tue, 09 Jan 2024 10:20:31 -0800
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000aa3e5a060e875eda@google.com>
-Subject: [syzbot] Monthly gfs2 report (Jan 2024)
-From: syzbot <syzbot+list25f7fd386a79080c0cdd@syzkaller.appspotmail.com>
-To: gfs2@lists.linux.dev, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Message-ID: <000000000000a36811060e875e14@google.com>
+Subject: [syzbot] Monthly bpf report (Jan 2024)
+From: syzbot <syzbot+listfa7dbe69051a666b7429@syzkaller.appspotmail.com>
+To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
+	daniel@iogearbox.net, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 
-Hello gfs2 maintainers/developers,
+Hello bpf maintainers/developers,
 
-This is a 31-day syzbot report for the gfs2 subsystem.
+This is a 31-day syzbot report for the bpf subsystem.
 All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/gfs2
+https://syzkaller.appspot.com/upstream/s/bpf
 
-During the period, 1 new issues were detected and 0 were fixed.
-In total, 19 issues are still open and 22 have been fixed so far.
+During the period, 2 new issues were detected and 0 were fixed.
+In total, 15 issues are still open and 200 have been fixed so far.
 
 Some of the still happening issues:
 
 Ref Crashes Repro Title
-<1> 5332    Yes   WARNING in __folio_mark_dirty (2)
-                  https://syzkaller.appspot.com/bug?extid=e14d6cd6ec241f507ba7
-<2> 3678    Yes   WARNING in folio_account_dirtied
-                  https://syzkaller.appspot.com/bug?extid=8d1d62bfb63d6a480be1
-<3> 675     Yes   kernel BUG in gfs2_glock_nq (2)
-                  https://syzkaller.appspot.com/bug?extid=70f4e455dee59ab40c80
-<4> 64      Yes   WARNING in gfs2_check_blk_type
-                  https://syzkaller.appspot.com/bug?extid=092b28923eb79e0f3c41
-<5> 48      Yes   general protection fault in gfs2_dump_glock (2)
-                  https://syzkaller.appspot.com/bug?extid=427fed3295e9a7e887f2
+<1> 8166    Yes   possible deadlock in task_fork_fair
+                  https://syzkaller.appspot.com/bug?extid=1a93ee5d329e97cfbaff
+<2> 21      Yes   BUG: unable to handle kernel NULL pointer dereference in sk_msg_recvmsg
+                  https://syzkaller.appspot.com/bug?extid=84f695756ed0c4bb3aba
+<3> 19      Yes   WARNING in __mark_chain_precision (3)
+                  https://syzkaller.appspot.com/bug?extid=4d6330e14407721955eb
+<4> 3       Yes   INFO: rcu detected stall in sys_newfstatat (4)
+                  https://syzkaller.appspot.com/bug?extid=1c02a56102605204445c
+<5> 2       Yes   UBSAN: shift-out-of-bounds in adjust_reg_min_max_vals
+                  https://syzkaller.appspot.com/bug?extid=46700eea57ecc7f84776
+<6> 1       Yes   INFO: rcu detected stall in sys_unshare (9)
+                  https://syzkaller.appspot.com/bug?extid=872bccd9a68c6ba47718
 
 ---
 This report is generated by a bot. It may contain errors.
