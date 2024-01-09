@@ -1,106 +1,86 @@
-Return-Path: <linux-kernel+bounces-20595-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20594-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2BD88828224
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 09:41:15 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3093582821F
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 09:40:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CC5DD1F269B9
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 08:41:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 56FA71C25E5C
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 08:40:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3F832D7AF;
-	Tue,  9 Jan 2024 08:34:19 +0000 (UTC)
-Received: from esa3.hc1455-7.c3s2.iphmx.com (esa3.hc1455-7.c3s2.iphmx.com [207.54.90.49])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E653739AF3;
+	Tue,  9 Jan 2024 08:33:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hae9Vcp8"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B67C339FE2;
-	Tue,  9 Jan 2024 08:34:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fujitsu.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fujitsu.com
-X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="145557037"
-X-IronPort-AV: E=Sophos;i="6.04,182,1695654000"; 
-   d="scan'208";a="145557037"
-Received: from unknown (HELO yto-r4.gw.nic.fujitsu.com) ([218.44.52.220])
-  by esa3.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jan 2024 17:33:05 +0900
-Received: from yto-m3.gw.nic.fujitsu.com (yto-nat-yto-m3.gw.nic.fujitsu.com [192.168.83.66])
-	by yto-r4.gw.nic.fujitsu.com (Postfix) with ESMTP id DCC19CF1C9;
-	Tue,  9 Jan 2024 17:33:01 +0900 (JST)
-Received: from kws-ab4.gw.nic.fujitsu.com (kws-ab4.gw.nic.fujitsu.com [192.51.206.22])
-	by yto-m3.gw.nic.fujitsu.com (Postfix) with ESMTP id 1C1D09CB75;
-	Tue,  9 Jan 2024 17:33:01 +0900 (JST)
-Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
-	by kws-ab4.gw.nic.fujitsu.com (Postfix) with ESMTP id AC3CC2663B9;
-	Tue,  9 Jan 2024 17:33:00 +0900 (JST)
-Received: from localhost.localdomain (unknown [10.167.226.45])
-	by edo.cn.fujitsu.com (Postfix) with ESMTP id 33F2B1A0099;
-	Tue,  9 Jan 2024 16:33:00 +0800 (CST)
-From: Li Zhijian <lizhijian@fujitsu.com>
-To: linux-rdma@vger.kernel.org
-Cc: zyjzyj2000@gmail.com,
-	jgg@ziepe.ca,
-	leon@kernel.org,
-	linux-kernel@vger.kernel.org,
-	rpearsonhpe@gmail.com,
-	Li Zhijian <lizhijian@fujitsu.com>
-Subject: [PATCH for-next v4 2/2] RDMA/rxe: Remove rxe_info from rxe_set_mtu
-Date: Tue,  9 Jan 2024 16:32:53 +0800
-Message-Id: <20240109083253.3629967-2-lizhijian@fujitsu.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20240109083253.3629967-1-lizhijian@fujitsu.com>
-References: <20240109083253.3629967-1-lizhijian@fujitsu.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C92229431;
+	Tue,  9 Jan 2024 08:33:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 359E9C433F1;
+	Tue,  9 Jan 2024 08:33:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704789185;
+	bh=A8Hyrx8gv2NivKMAgmiyJ4RK4toNpxNWKdpezhMjsB4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=hae9Vcp8/kaaJWKrCD8n2rypMTJgDsf+fIUhRrlgD2zzHG1fE0pMkgVLy2Aay16i1
+	 cyOHkhWI6T9AA0gmkJRtZt2jCOTuc/GnE/NFt35tRFGpCvFIalZbChShpHaOxn17RM
+	 sI5RHW0Ki3H0e99EmMwZ6tO0SgA6QAqR2LAPQFlkuKHdVPcV2i/aQ865CceI5/rxfK
+	 gR0HZ9dSmm6LFVOSKnwJUC2JqLjmUkL+hI52eC592xyJdoFew40D8m5YvlAVdr2EqL
+	 CHVYbJeXgyIcRIjxYeABsn7YZUkU56k8rkALLN+maFLPBr7Q+5gP4DXI0YDvuJOFww
+	 WRb5Fwe1ZVgUw==
+Date: Tue, 9 Jan 2024 08:32:57 +0000
+From: Simon Horman <horms@kernel.org>
+To: David Howells <dhowells@redhat.com>
+Cc: Christian Brauner <christian@brauner.io>,
+	Jeff Layton <jlayton@kernel.org>,
+	Gao Xiang <hsiangkao@linux.alibaba.com>,
+	Dominique Martinet <asmadeus@codewreck.org>,
+	Steve French <smfrench@gmail.com>,
+	Matthew Wilcox <willy@infradead.org>,
+	Marc Dionne <marc.dionne@auristor.com>,
+	Paulo Alcantara <pc@manguebit.com>,
+	Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>,
+	Eric Van Hensbergen <ericvh@kernel.org>,
+	Ilya Dryomov <idryomov@gmail.com>, linux-cachefs@redhat.com,
+	linux-afs@lists.infradead.org, linux-cifs@vger.kernel.org,
+	linux-nfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+	v9fs@lists.linux.dev, linux-erofs@lists.ozlabs.org,
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Yiqun Leng <yqleng@linux.alibaba.com>,
+	Jia Zhu <zhujia.zj@bytedance.com>
+Subject: Re: [PATCH 1/5] cachefiles: Fix __cachefiles_prepare_write()
+Message-ID: <20240109083257.GK132648@kernel.org>
+References: <20240107160916.GA129355@kernel.org>
+ <20240103145935.384404-1-dhowells@redhat.com>
+ <20240103145935.384404-2-dhowells@redhat.com>
+ <1544730.1704753090@warthog.procyon.org.uk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-28108.006
-X-TM-AS-User-Approved-Sender: Yes
-X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-28108.006
-X-TMASE-Result: 10--5.745700-10.000000
-X-TMASE-MatchedRID: zpx2FW2iGB3cT4NrftwVHs69emDs42dd0MQw+++ihy9D0XHWdCmZPOEO
-	iHvBs/Z/eG7OVGjdOcqcRHJVf0LsQ32IKB5eohESEhGH3CRdKUUKW68eInZ/hd9zZd3pUn7Kuk1
-	3zQ8GyD0XLN9wFHzBy+affHI8kAmiHY/bzRmIaZEK3Ma88LL+bn0tCKdnhB58I/9UW5M5dRM+8F
-	JNGdxYq/cUt5lc1lLgkU6UkIr/V+20QRlrBF3eZfPX17vy9WxtWKHSPEaK1CJ1r8k7N0D4e8xvQ
-	1RqHRamwYJE2kpDEyQ=
-X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1544730.1704753090@warthog.procyon.org.uk>
 
-commit 9ac01f434a1e ("RDMA/rxe: Extend dbg log messages to err and info")
-newly added this info. But it did only show null device when
-the rdma_rxe is being loaded because dev_name(rxe->ib_dev->dev)
-has not yet been assigned at the moment:
+On Mon, Jan 08, 2024 at 10:31:30PM +0000, David Howells wrote:
+> Simon Horman <horms@kernel.org> wrote:
+> 
+> > I realise these patches have been accepted, but I have a minor nit:
+> > pos is now unsigned, and so cannot be less than zero.
+> 
+> Good point.  How about the attached patch.  Whilst I would prefer to use
+> unsigned long long to avoid the casts, it might 
 
-"(null): rxe_set_mtu: Set mtu to 1024"
+Hi David,
 
-Remove it to silent this message, check the mtu from it backend link
-instead if needed.
+I would also prefer to avoid casts, but I agree this is a good way forward.
+Thanks for the quick fix.
 
-CC: Bob Pearson <rpearsonhpe@gmail.com>
-Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
----
-V4: Remove it rather than re-order rxe_set_mtu() and rxe_register_device()
----
- drivers/infiniband/sw/rxe/rxe.c | 2 --
- 1 file changed, 2 deletions(-)
-
-diff --git a/drivers/infiniband/sw/rxe/rxe.c b/drivers/infiniband/sw/rxe/rxe.c
-index a086d588e159..ae466e72fc43 100644
---- a/drivers/infiniband/sw/rxe/rxe.c
-+++ b/drivers/infiniband/sw/rxe/rxe.c
-@@ -160,8 +160,6 @@ void rxe_set_mtu(struct rxe_dev *rxe, unsigned int ndev_mtu)
- 
- 	port->attr.active_mtu = mtu;
- 	port->mtu_cap = ib_mtu_enum_to_int(mtu);
--
--	rxe_info_dev(rxe, "Set mtu to %d\n", port->mtu_cap);
- }
- 
- /* called by ifc layer to create new rxe device.
--- 
-2.29.2
-
+Reviewed-by: Simon Horman <horms@kernel.org>
 
