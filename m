@@ -1,101 +1,88 @@
-Return-Path: <linux-kernel+bounces-20433-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20431-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B6AA827ECE
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 07:33:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0DAFD827EC3
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 07:26:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 31F6EB23691
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 06:33:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1CE001C20FEE
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 06:26:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56F8DB65D;
-	Tue,  9 Jan 2024 06:33:10 +0000 (UTC)
-Received: from mxct.zte.com.cn (mxct.zte.com.cn [58.251.27.85])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06BF779DD;
+	Tue,  9 Jan 2024 06:26:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Aky2la1f"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD81EB645
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 06:33:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zte.com.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zte.com.cn
-Received: from mxde.zte.com.cn (unknown [10.35.20.165])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by mxct.zte.com.cn (FangMail) with ESMTPS id 4T8LWF0rBqzW8d
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 14:24:41 +0800 (CST)
-Received: from mxhk.zte.com.cn (unknown [192.168.250.138])
-	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by mxde.zte.com.cn (FangMail) with ESMTPS id 4T8LW64nSZz6yMNs
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 14:24:34 +0800 (CST)
-Received: from mse-fl1.zte.com.cn (unknown [10.5.228.132])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by mxhk.zte.com.cn (FangMail) with ESMTPS id 4T8LVw5S1Vz4xPYn;
-	Tue,  9 Jan 2024 14:24:24 +0800 (CST)
-Received: from xaxapp01.zte.com.cn ([10.88.99.176])
-	by mse-fl1.zte.com.cn with SMTP id 4096O92i032550;
-	Tue, 9 Jan 2024 14:24:09 +0800 (+08)
-	(envelope-from yang.guang5@zte.com.cn)
-Received: from mapi (xaxapp02[null])
-	by mapi (Zmail) with MAPI id mid31;
-	Tue, 9 Jan 2024 14:24:11 +0800 (CST)
-Date: Tue, 9 Jan 2024 14:24:11 +0800 (CST)
-X-Zmail-TransId: 2afa659ce68b109-9212b
-X-Mailer: Zmail v1.0
-Message-ID: <202401091424115185126@zte.com.cn>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D68236132
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 06:26:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1704781604;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=o5muih4kLDuaOJ79kxaRis+p0HII4Xana+6AsswLR/c=;
+	b=Aky2la1fe0Xh6j+lD69acniS2kC09dQdxnY6ww4z8svMco9xxlYt9F4tdyyHaKkmKxr30A
+	vqorS8BzPjjJ1rKk78NyE5UDnpVfQM9zSnRSoXdfD7YjX/IvSxkYTbtSbGowIgaFr+1jms
+	n/4GhFZHDcwFh6nDpBcpUvRoXYGsfUk=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-417-4LJdWG4yOXCNjI4oGSg-kA-1; Tue, 09 Jan 2024 01:26:43 -0500
+X-MC-Unique: 4LJdWG4yOXCNjI4oGSg-kA-1
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-40e439092a0so16714905e9.0
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 22:26:43 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704781602; x=1705386402;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=o5muih4kLDuaOJ79kxaRis+p0HII4Xana+6AsswLR/c=;
+        b=BWHpKMRNu9CsJUgN8kvHE8UlhlOvdhvVBRGKq11SnZkq08PTPNTcod1EqqYcYJSlGi
+         8G2nNFPVU04xh7vZB5Q5PZVMBDg1aS9VXAuBouihJCH5T7galGrRVJufFtVmSbUeH5Na
+         sYIS/XG3jzoAT0UbWOakyzDqeMmmoa+MHVwCWiX+6bujrSvyqMZ6USdBlBJkz/exHbP/
+         Xd2ealV1fR3dX8SN8gMMEp3dOtq1+PzEe/sGgV0zCe3EZqx+k04jCamCZJ7+DD2TpO4A
+         HpflaDx5E3etI5S5d6mmHNv2lutWiYoKYl2sMtGTqEaJ3IZYUqtGmCGqxAkHm3o74X8m
+         ecaA==
+X-Gm-Message-State: AOJu0YzXlEgW1h2bpjVPNsmuFPeJCrZoU6JcGiZ90zoQH5RnE9gYDGlC
+	ACaIhOXj5KT6jw2PrxLKOxQNtWk6WJcc7ZV3c6WKJx7oviLO1HCAPlasRucs4Ac8LIPz1Bd1Q/K
+	fP17cOX5VvR3oHVbp4Bv4YWEqiVWMpuynJqWiaTO35wSumm5f
+X-Received: by 2002:a7b:cd0d:0:b0:40e:4239:506d with SMTP id f13-20020a7bcd0d000000b0040e4239506dmr2027380wmj.175.1704781602231;
+        Mon, 08 Jan 2024 22:26:42 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFVUTxD6fI8GCkCwWKDNUsc5oILgZSUFknu9p75wtGYWi8UpdMljIYYVfvPmZx7Kmqt0v8T7GDBV1OM+0Mt1QY=
+X-Received: by 2002:a7b:cd0d:0:b0:40e:4239:506d with SMTP id
+ f13-20020a7bcd0d000000b0040e4239506dmr2027375wmj.175.1704781601960; Mon, 08
+ Jan 2024 22:26:41 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-From: <yang.guang5@zte.com.cn>
-To: <kherbst@redhat.com>
-Cc: <jiang.xuexin@zte.com.cn>, <chen.haonan2@zte.com.cn>, <cgel.zte@gmail.com>,
-        <lyude@redhat.com>, <dakr@redhat.com>, <airlied@gmail.com>,
-        <daniel@ffwll.ch>, <bskeggs@redhat.com>, <keescook@chromium.org>,
-        <dri-devel@lists.freedesktop.org>, <nouveau@lists.freedesktop.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: =?UTF-8?B?W1BBVENIIGxpbnV4LW5leHQgdjJdIGRybS9ub3V2ZWF1L2Rpc3A6IHN3aXRjaCB0byB1c2Uga21lbWR1cCgpIGhlbHBlcg==?=
-Content-Type: text/plain;
-	charset="UTF-8"
-X-MAIL:mse-fl1.zte.com.cn 4096O92i032550
-X-Fangmail-Gw-Spam-Type: 0
-X-Fangmail-Anti-Spam-Filtered: true
-X-Fangmail-MID-QID: 659CE6A8.000/4T8LWF0rBqzW8d
+MIME-Version: 1.0
+References: <20240103075343.549293-1-ppandit@redhat.com> <CAE8KmOwPKDM5xcd1kFhefeJsqYZndP09n9AxaRbypTsHm8mkgw@mail.gmail.com>
+ <ZZwy-wCpHs-piGhJ@google.com>
+In-Reply-To: <ZZwy-wCpHs-piGhJ@google.com>
+From: Prasad Pandit <ppandit@redhat.com>
+Date: Tue, 9 Jan 2024 11:56:25 +0530
+Message-ID: <CAE8KmOxk+Vesh_y_gwM+GD8F9VwK2x_MmcQ_b6CiGKORZu52ZQ@mail.gmail.com>
+Subject: Re: [PATCH] KVM: x86: make KVM_REQ_NMI request iff NMI pending for vcpu
+To: Sean Christopherson <seanjc@google.com>
+Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-From: Chen Haonan <chen.haonan2@zte.com.cn>
+On Mon, 8 Jan 2024 at 23:08, Sean Christopherson <seanjc@google.com> wrote:
+> This is on my list of things to grab for 6.8, I'm just waiting for various pull
+> requests to fully land in order to simplify my branch management.
 
-Use kmemdup() helper instead of open-coding to
-simplify the code.
+* Okay, cool.
 
-Signed-off-by: Chen Haonan <chen.haonan2@zte.com.cn>
-Reviewed-by: Yang Guang <yang.guang5@zte.com.cn>
+Thank you.
 ---
- drivers/gpu/drm/nouveau/nvif/outp.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+  - Prasad
 
-diff --git a/drivers/gpu/drm/nouveau/nvif/outp.c b/drivers/gpu/drm/nouveau/nvif/outp.c
-index 5d3190c05250..6daeb7f0b09b 100644
---- a/drivers/gpu/drm/nouveau/nvif/outp.c
-+++ b/drivers/gpu/drm/nouveau/nvif/outp.c
-@@ -452,13 +452,12 @@ nvif_outp_edid_get(struct nvif_outp *outp, u8 **pedid)
- 	if (ret)
- 		goto done;
-
--	*pedid = kmalloc(args->size, GFP_KERNEL);
-+	*pedid = kmemdup(args->data, args->size, GFP_KERNEL);
- 	if (!*pedid) {
- 		ret = -ENOMEM;
- 		goto done;
- 	}
-
--	memcpy(*pedid, args->data, args->size);
- 	ret = args->size;
- done:
- 	kfree(args);
--- 
-2.25.1
 
