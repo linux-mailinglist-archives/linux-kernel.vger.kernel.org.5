@@ -1,194 +1,149 @@
-Return-Path: <linux-kernel+bounces-20587-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20584-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A45C68281EA
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 09:38:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A3CB38281E1
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 09:37:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 19A141F274B4
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 08:38:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4D92B286773
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 08:37:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E90493714C;
-	Tue,  9 Jan 2024 08:29:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67EBC364AC;
+	Tue,  9 Jan 2024 08:28:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="BJfda8C1"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="L/j5WFUq"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E33D29423;
-	Tue,  9 Jan 2024 08:29:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4098Aatk030120;
-	Tue, 9 Jan 2024 08:29:10 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=XCLdJ0e/Bd3E8o6EOrKg5ZcKtjQ7aRyzG5ZKf+9ziCU=; b=BJ
-	fda8C1lqJRjmxN28FUYHnf1uc6atqJmo7U2bJE8k8mOsCaqKthZxrKuqUHtJteiR
-	A7wY0ilF9P3pORVsE3IY0mk8iSBgWnckL6lxGGZ+s/fsisZSSmmK2Vf9jyWKhLND
-	0P34E9D6zHlYIb9iGlORDujP3upOkrUeCGJ8N0yiSQB/eyPmjZuZ0YnLiPm8pqDe
-	8RjwSjzWNAsaqhriN9ukzS4HUxx3+OvPhDb+PfzCUQFQvdUkpJ9ETTcy2PYdEUmq
-	Ftf3iHYcOiCUx7AR+30n2xN+0a4nKA1pXPzV1/kojucPesoD0mE6gP0R3x5sSQOk
-	X6sOlF/KGep5at/ejnCQ==
-Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vgwsjrhp2-1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2760A24B58;
+	Tue,  9 Jan 2024 08:28:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353724.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 4098HbKT023141;
+	Tue, 9 Jan 2024 08:27:53 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=tmQVfu8T5g6r8ZBSS0dsgBYtzWye/vB2luydVgb+9DM=;
+ b=L/j5WFUqBVicQU+3D0zeyhp/9/ERM4u2/xPoUmgbzEWfMDsmb29zsCaMH8+rEt9F5WA1
+ LT0lX3cMZAAGWO9U7cd00UgGZTnDAdxYvRt6rW2TMBI0GcrPJ0bjh+QVGB05O1bcPfAA
+ IEZc2bFMkhHJYckI7qHC+5vlikuqWoYEZ15YOWwCLgozuqJWC6NvT0a9oLkHj7Pcb2e2
+ zGFVICOqwgfiMZDXjxnH/FQcHKePz4VTaWRT1M7SeLTh16PeQD6dqCsUAXb8sAaEhFsw
+ fLu57zBjS9kHixafPTAPhjiD3nZJieMBTpxxg63c6qsMicqyWV0B3Wr0HC658kYtv69D 1A== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vh2gf08hb-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 09 Jan 2024 08:29:10 +0000 (GMT)
-Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
-	by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4098T8PB002926
+	Tue, 09 Jan 2024 08:27:53 +0000
+Received: from m0353724.ppops.net (m0353724.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 4098JI4F028404;
+	Tue, 9 Jan 2024 08:27:52 GMT
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vh2gf08gv-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 9 Jan 2024 08:29:08 GMT
-Received: from [10.214.66.81] (10.80.80.8) by nasanex01c.na.qualcomm.com
- (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 9 Jan
- 2024 00:27:12 -0800
-Message-ID: <209abe99-734d-f571-d930-4493437983bf@quicinc.com>
-Date: Tue, 9 Jan 2024 13:57:09 +0530
+	Tue, 09 Jan 2024 08:27:52 +0000
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 4095WLWj000926;
+	Tue, 9 Jan 2024 08:27:52 GMT
+Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
+	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3vfkdk52m3-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 09 Jan 2024 08:27:52 +0000
+Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
+	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 4098RlQb25756350
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 9 Jan 2024 08:27:47 GMT
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 0B9DB20043;
+	Tue,  9 Jan 2024 08:27:47 +0000 (GMT)
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 6413C20040;
+	Tue,  9 Jan 2024 08:27:46 +0000 (GMT)
+Received: from [9.171.15.166] (unknown [9.171.15.166])
+	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Tue,  9 Jan 2024 08:27:46 +0000 (GMT)
+Message-ID: <d5c3d69e-3405-4cf2-a2e7-0dad7d941e0c@linux.ibm.com>
+Date: Tue, 9 Jan 2024 09:27:46 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: RESEND: Re: [Patch v6 03/12] docs: qcom: Add qualcomm minidump
- guide
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 0/6] s390/vfio-ap: reset queues removed from guest's AP
+ configuration
+To: Anthony Krowiak <akrowiak@linux.ibm.com>, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc: jjherne@linux.ibm.com, borntraeger@de.ibm.com, pasic@linux.ibm.com,
+        pbonzini@redhat.com, imbrenda@linux.ibm.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com
+References: <20231212212522.307893-1-akrowiak@linux.ibm.com>
+ <11ac008c-9bea-4b34-bc4b-e0d7e7ed9bef@linux.ibm.com>
 Content-Language: en-US
-To: Ruipeng Qi <ruipengqi7@gmail.com>
-CC: <agross@kernel.org>, <alim.akhtar@samsung.com>, <andersson@kernel.org>,
-        <bmasney@redhat.com>, <conor+dt@kernel.org>, <corbet@lwn.net>,
-        <gpiccoli@igalia.com>, <keescook@chromium.org>, <kernel@quicinc.com>,
-        <kgene@kernel.org>, <konrad.dybcio@linaro.org>,
-        <krzysztof.kozlowski+dt@linaro.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        <linux-hardening@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-remoteproc@vger.kernel.org>,
-        <linux-samsung-soc@vger.kernel.org>, <mathieu.poirier@linaro.org>,
-        <matthias.bgg@gmail.com>, <nm@ti.com>, <robh+dt@kernel.org>,
-        <tony.luck@intel.com>, <vigneshr@ti.com>, <qiruipeng@lixiang.com>
-References: <1700864395-1479-4-git-send-email-quic_mojha@quicinc.com>
- <20231225135542.1789-1-ruipengqi7@gmail.com>
- <520e377d-e990-c185-4a20-07806873e506@quicinc.com>
- <CADHLONEn4oyRFrNWEbt2mxMczyc8FrDLMzaZ7fsijzm9Y8VTBA@mail.gmail.com>
-From: Mukesh Ojha <quic_mojha@quicinc.com>
-In-Reply-To: <CADHLONEn4oyRFrNWEbt2mxMczyc8FrDLMzaZ7fsijzm9Y8VTBA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01c.na.qualcomm.com (10.45.79.139)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: mmGVKHzYwm-iQH9vrziQjsvmW2EMUnvr
-X-Proofpoint-ORIG-GUID: mmGVKHzYwm-iQH9vrziQjsvmW2EMUnvr
+From: Janosch Frank <frankja@linux.ibm.com>
+Autocrypt: addr=frankja@linux.ibm.com; keydata=
+ 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
+In-Reply-To: <11ac008c-9bea-4b34-bc4b-e0d7e7ed9bef@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: fG1fh5tD5JHuOemtKglaevYVIVKCNvTD
+X-Proofpoint-GUID: i6e-3WEvesPxlczIFYvaLbSxmyp2gXwS
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 suspectscore=0
- lowpriorityscore=0 phishscore=0 priorityscore=1501 adultscore=0
- spamscore=0 impostorscore=0 mlxscore=0 bulkscore=0 mlxlogscore=999
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2401090065
+ definitions=2024-01-09_03,2024-01-08_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
+ priorityscore=1501 clxscore=1011 mlxlogscore=470 spamscore=0
+ impostorscore=0 suspectscore=0 adultscore=0 phishscore=0 bulkscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2401090065
 
-
-
-On 1/8/2024 9:04 PM, Ruipeng Qi wrote:
-> On Wed, Jan 3, 2024 at 11:27 PM Mukesh Ojha <quic_mojha@quicinc.com> wrote:
->>
->>
->> One more thing, kernel part of minidump, we are calling it APSS Minidump
->> has limitation of no of entries so it will be difficult to dump
->> non-continuous regions after a certain number of registration ~200. However,
->> we do have a solution in downstream kernel for it like to create a big
->> CMA buffer and register this buffer with Minidump so that whatever gets
->> dumped in that buffer gets captured during crash and fill up this buffer
->> and create elf during panic. I think, similar thing you are also doing
->> with your OS-minidump.
->>
->> I have just glanced into your implementation of OS-minidump, it
->> more of relying on basic concept of RAM content preserved
->> across boot and later reading it through procfs but this basic
->> stuff is common to pstore(ram) as well and pstore has file system
->> support why don't you make your driver as one of pstore record and that
->> way Qualcomm minidump also gets benefited where entire OS-minidump
->> record gets registered with Qualcomm minidump and we get this on panic
->> and you get this via pstorefs.
->>
-> Thanks Mukesh！It is a good suggestion to move OS-minidump forward!
-> By the way, I have some questions here for which I need your assistance.
+On 1/8/24 17:52, Anthony Krowiak wrote:
+> PING!
 > 
-> Firstly,I can reimplement OS-minidump as one of the pstore records to
-> dump data. The resulting dump file would contain thousands of
-> non-contiguous memory regions, each with only the virtual address and
-> size recorded. As far as I know, Qualcomm's minidump can handle
-> several memory regions, each with a physical address and size.
-> This seems to be a difference, and I'm curious as to how you deal with
-> data dumped by OS-minidump. I would really appreciate it if you could
-> provide more details on your approach.
+You're waiting for review of the last patch, right?
 
-What my thought was to think your OS-minidump to be one of pstore record 
-similar to existing records like console, ftrace, pmsg, dmesg etc.,
-If you follow this series patch 11/12 and 12/12 is trying to get the
-pstore(ram) record information and registering with minidump and here
-the physical address are of the ramoops record addresses.
-
-So, once you are capturing everything inside in a record, all minidump
-has to do is get your Os-minidump record physical address and size
-and register with minidump.
-> 
-> Secondly, what tools do you use to analyze the dump data, and does it
-> support crash tool?
-
-Currently, we are trying to capture only pstore ramoops region in text
-format and not been using any tool.
-
-Since, Qualcomm minidump is controlled from boot firmware and it can
-not be used on non-Qualcomm SoCs so here minidump driver and its usecase
-is limited to capture only pstore (ram)records for targets where RAM
-content is not guaranteed to be preserved across boots.
-
-So, you can think minidump as one of ramoops backend which will be
-dumping all the ramoops regions/records/zones.
-
-+---------+     +---------+   +--------+      +---------+
-  | console |     | pmsg    |   | ftrace |     | dmesg   | ...Os-minidump
-  +---------+     +---------+   +--------+     +---------+
-        |             |             |              |
-        |             |             |              |
-        +------------------------------------------+
-                           |
-                          \ /
-                   +----------------+
-             (1)   |pstore frontends|
-                   +----------------+
-                           |
-                          \ /
-                  +------------------- +
-             (2)  | pstore backend(ram)|
-                  +--------------------+
-                           |
-                          \ /
-
-                    +---------------+
-             (3)    | qcom_minidump |
-                    +---------------+
-
-
-> 
-> Lastly, is Qualcomm minidump compatible with non-Qualcomm SoCs,
-> and if so, how can one use it?
-
-I already replied it above.
-
--Mukesh
-
-> 
-> Best Regards
-> Ruipeng Qi
 
