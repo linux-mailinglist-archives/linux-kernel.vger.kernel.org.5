@@ -1,93 +1,105 @@
-Return-Path: <linux-kernel+bounces-21356-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21357-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3AC2A828E1D
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 20:48:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9CDE4828E23
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 20:49:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4D6D91C24A18
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 19:48:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 351E91F25131
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 19:49:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3ACF33D97A;
-	Tue,  9 Jan 2024 19:42:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B4443D548;
+	Tue,  9 Jan 2024 19:44:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iiRWnMAZ"
-Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com [209.85.128.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b="igPLvkdL"
+Received: from ms.lwn.net (ms.lwn.net [45.79.88.28])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 568B03D974
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 19:42:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-5e7409797a1so31307407b3.0
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 11:42:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704829356; x=1705434156; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EJNz4LIbNCqWmT96jTcSPLTNmx+8SCupIJghMk4NpfY=;
-        b=iiRWnMAZkYUhPexlsl36YVm6hMJxvN/UaWzzEt3SaIOtLHVk6uUX/PpLkDebHSAv7E
-         ZGEX17JKmGKGNNx5HZFy12k/xdcL1acs+j+6xAX0AUz07Nxhuapz9ADvwTtC2PIThoya
-         0e6C0LVO3o40L4tigNCnRSa+faGU3Wf6RPqzmOBJrImgyeiud346wYnSkKUJNEsxEfHf
-         CWt8Oan8r7o+Qcg5QeaNeCBMXBTzUsSbFEtxGlPQGtCo8otDgxcaZpkRwQNz0qDLzA55
-         23dFDEEYkDuDLlXqGk+H3dnut1u0gCOhN/iq3uXEZFI6JwfIhSXrLBPrtt4jZ3UiWJKo
-         YadQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704829356; x=1705434156;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=EJNz4LIbNCqWmT96jTcSPLTNmx+8SCupIJghMk4NpfY=;
-        b=OIGfbny3i8fx8KlvJXUTkP19Ckg47tnmCRsSa5QTpeD/9oGn4N6Y3hLMpge/s5hsZr
-         oCScZT+p2DiC4r1Y0cBHhxUsn531UNAwScCEBVcKEAKeJ5bh3MjPdtL7tlSl1Yx1/Zje
-         bkNY+KAEHoCSLWqKvgWehPEb1YrddesG6Fl2WRGrbAfeiXxaqTJDSwZdiyPDyv8bIjph
-         UT/hc69P3gUzf8C2djoO3lJaD1v/a7X5fryKnVuUgmwIYodHjw27Oh5qqjSFsv1f7ecQ
-         KYMfhdK+BAHRcaj25/SnKYcO56X96cwdPoLBG9+jRomoaycrpOAXwYkoBV5uPrMaY1Hx
-         s0dQ==
-X-Gm-Message-State: AOJu0Yy7CJxCuuE1M9ZYUIpz5YljIS1wRSxkml2HwguBn9Qp4RrbK76K
-	OFAFkcaDuo8UZVHS4GGlEOO14YoKttkJzuHuWMQnie9T
-X-Google-Smtp-Source: AGHT+IEnjsjlf6q7BBk0JyZkpxLkg/tDZHUnVSv9y5kFt++WeXhKxSWpGd+TwWfnd9LbK5shT3+u3d5PnUGjEldL6LE=
-X-Received: by 2002:a0d:ea52:0:b0:5e7:9474:bc7b with SMTP id
- t79-20020a0dea52000000b005e79474bc7bmr11976ywe.11.1704829356117; Tue, 09 Jan
- 2024 11:42:36 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0308F3D3B8;
+	Tue,  9 Jan 2024 19:44:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lwn.net
+Received: from localhost (unknown [IPv6:2601:280:5e00:7e19::646])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by ms.lwn.net (Postfix) with ESMTPSA id 100BC2C1;
+	Tue,  9 Jan 2024 19:44:42 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 100BC2C1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+	t=1704829482; bh=JrRTImpwqjMu8ndI1e7JDtYO7JM1fCfWbOsYmKSUr2Q=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=igPLvkdLcePpcMOIvmD1gySNx4M602WaoBmjkldd6//tO8kxCMoxijY1bWcWyvDxM
+	 IOmJtSUAP4H/EFKRjHQL4vs0Zzt/DdcCMSYzXlf2WFuB+0PjbnmBezVwYv9AR8VL8l
+	 W8aMlidrhhEB6mdL1LjiOabAt2AdvIIZw7iRb9DYD1qHxSuGB6u82paTFOuYf1kgxB
+	 seopChC9p9uM/cgHMc8Ae8FRUw5i5mgzZSVTaMpMtR93e3mzWwchAguHJaZm+MZRRR
+	 GdOM7eo7X7JNW7zepo1PghAGkb61vxABwrVwadkCXEqJHcKYuwHUQdlDL8l9eKJbRv
+	 AekBMVieaJSwQ==
+From: Jonathan Corbet <corbet@lwn.net>
+To: Borislav Petkov <bp@alien8.de>
+Cc: Tony Luck <tony.luck@intel.com>, Yazen Ghannam <yazen.ghannam@amd.com>,
+ Muralidhara M K <muralimk@amd.com>, linux-edac@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Muralidhara M K <muralidhara.mk@amd.com>,
+ linux-doc@vger.kernel.org
+Subject: Re: [PATCH] Documentation: Begin a RAS section
+In-Reply-To: <20240109183646.GAZZ2SPiMZv83J3f0a@fat_crate.local>
+References: <20231102114225.2006878-1-muralimk@amd.com>
+ <20231102114225.2006878-2-muralimk@amd.com>
+ <20231128142049.GTZWX3QQTSaQk/+u53@fat_crate.local>
+ <87a5pes8jy.fsf@meer.lwn.net>
+ <20240109183646.GAZZ2SPiMZv83J3f0a@fat_crate.local>
+Date: Tue, 09 Jan 2024 12:44:41 -0700
+Message-ID: <87wmsiqok6.fsf@meer.lwn.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240109133633.1103876-1-senozhatsky@chromium.org> <20240109153249.GA205400@dev-arch.thelio-3990X>
-In-Reply-To: <20240109153249.GA205400@dev-arch.thelio-3990X>
-From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date: Tue, 9 Jan 2024 20:42:24 +0100
-Message-ID: <CANiq72kjHCh-inyv1aU=eNca1-+E0_85MGU-8qbZZtzbC_VwOQ@mail.gmail.com>
-Subject: Re: [PATCH] Compiler Attributes: counted_by: bump compiler versions
-To: Nathan Chancellor <nathan@kernel.org>
-Cc: Sergey Senozhatsky <senozhatsky@chromium.org>, Miguel Ojeda <ojeda@kernel.org>, 
-	Kees Cook <keescook@chromium.org>, "Gustavo A . R . Silva" <gustavo@embeddedor.com>, 
-	Nick Desaulniers <ndesaulniers@google.com>, Bill Wendling <morbo@google.com>, 
-	Justin Stitt <justinstitt@google.com>, linux-kernel@vger.kernel.org, llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 
-On Tue, Jan 9, 2024 at 4:32=E2=80=AFPM Nathan Chancellor <nathan@kernel.org=
-> wrote:
+Borislav Petkov <bp@alien8.de> writes:
+
+> On Tue, Jan 09, 2024 at 10:47:29AM -0700, Jonathan Corbet wrote:
+>> I wish I'd been copied on this ... 
 >
-> It is still possible in theory for this feature to make clang-18, as the
-> release/18.x branch is not scheduled to be cut until the fourth Tuesday
-> in January, which is two weeks from now. I don't have a good feeling for
-> how close that pull request is to being mergeable though, so this is
-> fine for now. I assume this won't go to Linus immediately so we would
-> have time to change it if necessary.
+> linux-doc was CCed:
+>
+> https://lore.kernel.org/all/20231128142049.GTZWX3QQTSaQk%2F+u53@fat_crate.local/
+>
+> Or did you prefer you directly?
 
-Yeah, I was wondering about the deadline too. If LLVM's `-rc1` is the
-latest time possible to merge it, we can wait the couple weeks (which
-are conveniently the merge window) and I apply it afterwards with the
-result :)
+Lots of stuff goes to linux-doc, I can miss things.
 
-Cheers,
-Miguel
+Of course, I miss things in my own email too...you know the drill...
+
+> I've been working to get a handle on
+>> the top-level Documentation/ directories for a while, and would rather
+>> not see a new one added for this.  Offhand, based on this first
+>> document, it looks like material that belongs under
+>> Documentation/admin-guide; can we move it there, please?
+>
+> Not really an admin guide thing - yes, based on the current content but
+> actually, the aim for this is to document all things RAS, so it is more
+> likely a subsystem thing. And all the subsystems are directories under
+> Documentation/.
+>
+> So where do you want me to put it?
+
+The hope with all of this documentation thrashing has been to organize
+our docs with the *reader* in mind.  "All things RAS" is convenient for
+RAS developers, but not for (say) a sysadmin trying to figure out how to
+make use of it.  So I would really rather see RAS documentation placed
+under admin-guide or userspace-api as appropriate.
+
+Yes, there is a lot of existing documentation that still doesn't live up
+to this idea, but we can try to follow it for new stuff while the rest
+is (slowly) fixed up.
+
+Make sense?
+
+Thanks,
+
+jon
 
