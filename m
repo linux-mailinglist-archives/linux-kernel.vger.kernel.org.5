@@ -1,149 +1,269 @@
-Return-Path: <linux-kernel+bounces-20584-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20586-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A3CB38281E1
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 09:37:39 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 893C98281E5
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 09:38:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4D92B286773
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 08:37:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 11FE31F274C6
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 08:38:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67EBC364AC;
-	Tue,  9 Jan 2024 08:28:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="L/j5WFUq"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00B0236AF1;
+	Tue,  9 Jan 2024 08:28:42 +0000 (UTC)
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2760A24B58;
-	Tue,  9 Jan 2024 08:28:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353724.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 4098HbKT023141;
-	Tue, 9 Jan 2024 08:27:53 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=tmQVfu8T5g6r8ZBSS0dsgBYtzWye/vB2luydVgb+9DM=;
- b=L/j5WFUqBVicQU+3D0zeyhp/9/ERM4u2/xPoUmgbzEWfMDsmb29zsCaMH8+rEt9F5WA1
- LT0lX3cMZAAGWO9U7cd00UgGZTnDAdxYvRt6rW2TMBI0GcrPJ0bjh+QVGB05O1bcPfAA
- IEZc2bFMkhHJYckI7qHC+5vlikuqWoYEZ15YOWwCLgozuqJWC6NvT0a9oLkHj7Pcb2e2
- zGFVICOqwgfiMZDXjxnH/FQcHKePz4VTaWRT1M7SeLTh16PeQD6dqCsUAXb8sAaEhFsw
- fLu57zBjS9kHixafPTAPhjiD3nZJieMBTpxxg63c6qsMicqyWV0B3Wr0HC658kYtv69D 1A== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vh2gf08hb-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 09 Jan 2024 08:27:53 +0000
-Received: from m0353724.ppops.net (m0353724.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 4098JI4F028404;
-	Tue, 9 Jan 2024 08:27:52 GMT
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vh2gf08gv-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 09 Jan 2024 08:27:52 +0000
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 4095WLWj000926;
-	Tue, 9 Jan 2024 08:27:52 GMT
-Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
-	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3vfkdk52m3-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 09 Jan 2024 08:27:52 +0000
-Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
-	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 4098RlQb25756350
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 9 Jan 2024 08:27:47 GMT
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 0B9DB20043;
-	Tue,  9 Jan 2024 08:27:47 +0000 (GMT)
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 6413C20040;
-	Tue,  9 Jan 2024 08:27:46 +0000 (GMT)
-Received: from [9.171.15.166] (unknown [9.171.15.166])
-	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Tue,  9 Jan 2024 08:27:46 +0000 (GMT)
-Message-ID: <d5c3d69e-3405-4cf2-a2e7-0dad7d941e0c@linux.ibm.com>
-Date: Tue, 9 Jan 2024 09:27:46 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC781360BA;
+	Tue,  9 Jan 2024 08:28:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4T8PG65gZdz4f3jXY;
+	Tue,  9 Jan 2024 16:28:30 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id 458251A01CA;
+	Tue,  9 Jan 2024 16:28:34 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+	by APP1 (Coremail) with SMTP id cCh0CgDHlxCwA51lgSE5AQ--.33820S3;
+	Tue, 09 Jan 2024 16:28:34 +0800 (CST)
+Subject: Re: [PATCH v3 2/2] md: simplify md_seq_ops
+To: Song Liu <song@kernel.org>, Yu Kuai <yukuai1@huaweicloud.com>
+Cc: mariusz.tkaczyk@linux.intel.com, xni@redhat.com,
+ linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
+ yi.zhang@huawei.com, yangerkun@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
+References: <20230927061241.1552837-1-yukuai1@huaweicloud.com>
+ <20230927061241.1552837-3-yukuai1@huaweicloud.com>
+ <CAPhsuW6sdnJYtE+iy+x=C2qVKzeN18zibx+qQBF4Y=KRsAmTTg@mail.gmail.com>
+ <b6a79bb8-e0fc-09b4-90e7-8112100a3fd0@huaweicloud.com>
+ <753615cc-16d6-3c58-99ee-b5e1f0aa0cde@huaweicloud.com>
+ <CAPhsuW6Ekxu9kaxvi673MCr=nBCS78D613zuH6Kcg5Y4Hs=jDw@mail.gmail.com>
+From: Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <0f3c2220-f929-5b57-0c4d-3e487d3d1415@huaweicloud.com>
+Date: Tue, 9 Jan 2024 16:28:32 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 0/6] s390/vfio-ap: reset queues removed from guest's AP
- configuration
-To: Anthony Krowiak <akrowiak@linux.ibm.com>, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc: jjherne@linux.ibm.com, borntraeger@de.ibm.com, pasic@linux.ibm.com,
-        pbonzini@redhat.com, imbrenda@linux.ibm.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com
-References: <20231212212522.307893-1-akrowiak@linux.ibm.com>
- <11ac008c-9bea-4b34-bc4b-e0d7e7ed9bef@linux.ibm.com>
-Content-Language: en-US
-From: Janosch Frank <frankja@linux.ibm.com>
-Autocrypt: addr=frankja@linux.ibm.com; keydata=
- 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
-In-Reply-To: <11ac008c-9bea-4b34-bc4b-e0d7e7ed9bef@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: fG1fh5tD5JHuOemtKglaevYVIVKCNvTD
-X-Proofpoint-GUID: i6e-3WEvesPxlczIFYvaLbSxmyp2gXwS
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-09_03,2024-01-08_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
- priorityscore=1501 clxscore=1011 mlxlogscore=470 spamscore=0
- impostorscore=0 suspectscore=0 adultscore=0 phishscore=0 bulkscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2401090065
+In-Reply-To: <CAPhsuW6Ekxu9kaxvi673MCr=nBCS78D613zuH6Kcg5Y4Hs=jDw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:cCh0CgDHlxCwA51lgSE5AQ--.33820S3
+X-Coremail-Antispam: 1UD129KBjvJXoW3Ww1UXw43ZF47Jr1UWF4xtFb_yoW7Xw4xpF
+	s8ZFW3Ar4UXFWFqw1DAa1kuFyFv3ZrKr9Fgr97Gas8Cr1qqr93A3W3Wa13Zrn8uay8Grn8
+	Za1UKF9xury8J37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUkE14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+	2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+	W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc7I2V7IY0VAS07AlzVAY
+	IcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14
+	v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkG
+	c2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI
+	0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r1j
+	6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUdHU
+	DUUUUU=
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 
-On 1/8/24 17:52, Anthony Krowiak wrote:
-> PING!
+Hi,
+
+在 2024/01/09 16:12, Song Liu 写道:
+> On Mon, Jan 8, 2024 at 11:48 PM Yu Kuai <yukuai1@huaweicloud.com> wrote:
+>>
+>> Hi,
+>>
+>> 在 2024/01/09 9:21, Yu Kuai 写道:
+>>> Hi,
+>>>
+>>> 在 2024/01/09 7:38, Song Liu 写道:
+>>>> On Tue, Sep 26, 2023 at 11:19 PM Yu Kuai <yukuai1@huaweicloud.com> wrote:
+> [...]
+>> diff --git a/drivers/md/md.c b/drivers/md/md.c
+>> index e351e6c51cc7..289d3d89e73d 100644
+>> --- a/drivers/md/md.c
+>> +++ b/drivers/md/md.c
+>> @@ -8135,6 +8135,19 @@ static void status_unused(struct seq_file *seq)
+>>           seq_printf(seq, "\n");
+>>    }
+>>
+>> +static void status_personalities(struct seq_file *seq)
+>> +{
+>> +       struct md_personality *pers;
+>> +
+>> +       seq_puts(seq, "Personalities : ");
+>> +       spin_lock(&pers_lock);
+>> +       list_for_each_entry(pers, &pers_list, list)
+>> +               seq_printf(seq, "[%s] ", pers->name);
+>> +
+>> +       spin_unlock(&pers_lock);
+>> +       seq_puts(seq, "\n");
+>> +}
+>> +
+>>    static int status_resync(struct seq_file *seq, struct mddev *mddev)
+>>    {
+>>           sector_t max_sectors, resync, res;
+>> @@ -8273,43 +8286,53 @@ static int status_resync(struct seq_file *seq,
+>> struct mddev *mddev)
+>>           return 1;
+>>    }
+>>
+>> +#define MDDEV_NONE (void *)1
+>> +
+>>    static void *md_seq_start(struct seq_file *seq, loff_t *pos)
+>>           __acquires(&all_mddevs_lock)
+>>    {
+>> -       struct md_personality *pers;
+>> -
+>> -       seq_puts(seq, "Personalities : ");
+>> -       spin_lock(&pers_lock);
+>> -       list_for_each_entry(pers, &pers_list, list)
+>> -               seq_printf(seq, "[%s] ", pers->name);
+>> -
+>> -       spin_unlock(&pers_lock);
+>> -       seq_puts(seq, "\n");
+>>           seq->poll_event = atomic_read(&md_event_count);
+>> -
+>>           spin_lock(&all_mddevs_lock);
+>>
+>> -       return seq_list_start(&all_mddevs, *pos);
+>> +       if (!list_empty(&all_mddevs))
+>> +               return seq_list_start(&all_mddevs, *pos);
+>> +       else if (*pos == 0)
+>> +               return MDDEV_NONE;
+>> +       else
+>> +               return NULL;
+>>    }
+>>
+>>    static void *md_seq_next(struct seq_file *seq, void *v, loff_t *pos)
+>>    {
+>> +       if (v == MDDEV_NONE) {
+>> +               ++*pos;
+>> +               return NULL;
+>> +       }
+>> +
+>>           return seq_list_next(v, &all_mddevs, pos);
+>>    }
+>>
+>>    static void md_seq_stop(struct seq_file *seq, void *v)
+>>           __releases(&all_mddevs_lock)
+>>    {
+>> -       status_unused(seq);
+>>           spin_unlock(&all_mddevs_lock);
+>>    }
+>>    static int md_seq_show(struct seq_file *seq, void *v)
+>>    {
+>> -       struct mddev *mddev = list_entry(v, struct mddev, all_mddevs);
+>> +       struct mddev *mddev;
+>>           sector_t sectors;
+>>           struct md_rdev *rdev;
+>>
+>> +       if (v == MDDEV_NONE) {
+>> +               status_personalities(seq);
+>> +               status_unused(seq);
+>> +               return 0;
+>> +       }
+>> +
+>> +       mddev = list_entry(v, struct mddev, all_mddevs);
+>> +       if (mddev == list_first_entry(&all_mddevs, struct mddev,
+>> all_mddevs))
+>> +               status_personalities(seq);
+>>           if (!mddev_get(mddev))
+>>                   return 0;
+>>
+>> @@ -8385,6 +8408,10 @@ static int md_seq_show(struct seq_file *seq, void *v)
+>>           }
+>>           spin_unlock(&mddev->lock);
+>>           spin_lock(&all_mddevs_lock);
+>> +
+>> +       if (mddev == list_last_entry(&all_mddevs, struct mddev, all_mddevs))
+>> +               status_unused(seq);
+>> +
+>>           if (atomic_dec_and_test(&mddev->active))
+>>                   __mddev_put(mddev);
+>>
 > 
-You're waiting for review of the last patch, right?
+> I think something like the following is the right way to do this.
+> 
+> Thanks,
+> Song
+> 
+> diff --git i/drivers/md/md.c w/drivers/md/md.c
+> index 38a6767c65b1..14044febe009 100644
+> --- i/drivers/md/md.c
+> +++ w/drivers/md/md.c
+> @@ -8215,20 +8215,8 @@ static int status_resync(struct seq_file *seq,
+> struct mddev *mddev)
+>   static void *md_seq_start(struct seq_file *seq, loff_t *pos)
+>          __acquires(&all_mddevs_lock)
+>   {
+> -       struct md_personality *pers;
+> -
+> -       seq_puts(seq, "Personalities : ");
+> -       spin_lock(&pers_lock);
+> -       list_for_each_entry(pers, &pers_list, list)
+> -               seq_printf(seq, "[%s] ", pers->name);
+> -
+> -       spin_unlock(&pers_lock);
+> -       seq_puts(seq, "\n");
+> -       seq->poll_event = atomic_read(&md_event_count);
+> -
+>          spin_lock(&all_mddevs_lock);
+> -
+> -       return seq_list_start(&all_mddevs, *pos);
+> +       return seq_list_start_head(&all_mddevs, *pos);
+
+Yes, this is good. I didn't notice the api seq_list_start_head().
+>   }
+> 
+>   static void *md_seq_next(struct seq_file *seq, void *v, loff_t *pos)
+> @@ -8243,12 +8231,31 @@ static void md_seq_stop(struct seq_file *seq, void *v)
+>          spin_unlock(&all_mddevs_lock);
+>   }
+> 
+> +static void md_seq_print_header(struct seq_file *seq)
+> +{
+> +       struct md_personality *pers;
+> +
+> +       seq_puts(seq, "Personalities : ");
+> +       spin_lock(&pers_lock);
+> +       list_for_each_entry(pers, &pers_list, list)
+> +               seq_printf(seq, "[%s] ", pers->name);
+> +
+> +       spin_unlock(&pers_lock);
+> +       seq_puts(seq, "\n");
+> +       seq->poll_event = atomic_read(&md_event_count);
+> +}
+> +
+>   static int md_seq_show(struct seq_file *seq, void *v)
+>   {
+>          struct mddev *mddev = list_entry(v, struct mddev, all_mddevs);
+>          sector_t sectors;
+>          struct md_rdev *rdev;
+> 
+> +       if (v == &all_mddevs) {
+> +               md_seq_print_header(seq);
+
+And I will still move status_unused() to md_seq_show(), because 
+seq_read_iter() only handle the case that seq_printf() overflowed from
+md_seq_show(), not md_seq_start/stop().
+
+Thanks,
+Kuai
+
+> +               return 0;
+> +       }
+> +
+>          if (!mddev_get(mddev))
+>                  return 0;
+> 
+> .
+> 
 
 
