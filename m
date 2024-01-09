@@ -1,146 +1,120 @@
-Return-Path: <linux-kernel+bounces-21446-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21447-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D3397828F30
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 22:50:27 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 343B2828F33
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 22:50:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E8C1B1C240FA
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 21:50:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 41BA2B2591B
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 21:50:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71B1B3DB94;
-	Tue,  9 Jan 2024 21:50:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OzuLYXpU"
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A44863E497;
+	Tue,  9 Jan 2024 21:50:10 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BEA33E464;
-	Tue,  9 Jan 2024 21:49:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1d3eae5c1d7so17289755ad.2;
-        Tue, 09 Jan 2024 13:49:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704836998; x=1705441798; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CnBPxEnXk7KjlkqXAC9IxPbYGia/n1Rz7kNemo9mTos=;
-        b=OzuLYXpU6MDPhSKXnXt1NjtTOh40SWPUW27aN0ZSqWjv1sdsfe00FnTcc0yR7DTteR
-         6OG3FCODfZdIKpGn4arcVmXizLHckzN5dHu839tJPumcKHWPjqoaSxm2B2OLt/otV+Ia
-         nDi0pN+kC+sKSz69Sa3l5WUSor5E6nZxIGGtIdithUTH/Kc65c0m/N7v5r6PEe2PYK9I
-         43Are2b90Lanvsid8LDBgo+KySMHlC0/c6mHaOc4bnqVGq1AoWh4FCu5N7KMg6yOdeVx
-         gs4G71TvnH6cUEI5GLxCyfk14CqQLSqSayhRLXPnw5pxoIuGx/PjYnEC4Dh3d9SHhr0Y
-         dZ7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704836998; x=1705441798;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=CnBPxEnXk7KjlkqXAC9IxPbYGia/n1Rz7kNemo9mTos=;
-        b=ttAVTRXKYMiwu5b/OxiFEvY28bdeoQrz5gBCH0SD8oBuLtc7Ddmpf6wtbL4NquHCpc
-         7ajQWCNjholz7UgMLhTIGc3HzMQ/X4WQXL1zRhaN5tWWqWgzrDoAy7iu92OIqwJtBuEX
-         dZ41GrBxnDvk8Yejnuz6IvACZ+a0EcILGyHBRMy6ZSHBgYB3uHKUx5WSyqTBMjPyx/a6
-         Mgh9xNSsz6xyUlNMsznuLBK0rtwso/P6xr/cEEWKI2KFuGbr/pO9FaTP+SMIK6snwbMM
-         wM4SkFBQtGTRHDeslI/5/Z8j7DygD/nqPssWxB9E58z4iBU1bAbj+pMjEhz/KZM5uqC+
-         c8iA==
-X-Gm-Message-State: AOJu0YxmT4q3ajgHxNUehyLUwazEN+h2/c8G2UPF93Trtat1PIUXilD+
-	ZycJQDOwTWrM7kRvE6F9REo=
-X-Google-Smtp-Source: AGHT+IFY2Ld9moWymK/ytefZKpitqb9BBrNdq4JahB3/Dd7cexihzS/iRjzJ9kat+JUkyc//v6zpZQ==
-X-Received: by 2002:a17:902:c949:b0:1d4:e36f:748f with SMTP id i9-20020a170902c94900b001d4e36f748fmr71428pla.41.1704836997726;
-        Tue, 09 Jan 2024 13:49:57 -0800 (PST)
-Received: from bangji.corp.google.com ([2620:15c:2c0:5:b4e:5c78:a5b3:ef5b])
-        by smtp.gmail.com with ESMTPSA id t9-20020a170902bc4900b001d4b0ae7052sm2249146plz.135.2024.01.09.13.49.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Jan 2024 13:49:57 -0800 (PST)
-Sender: Namhyung Kim <namhyung@gmail.com>
-From: Namhyung Kim <namhyung@kernel.org>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>,
-	stable@vger.kernel.org,
-	patches@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	torvalds@linux-foundation.org,
-	akpm@linux-foundation.org,
-	linux@roeck-us.net,
-	shuah@kernel.org,
-	patches@kernelci.org,
-	lkft-triage@lists.linaro.org,
-	pavel@denx.de,
-	jonathanh@nvidia.com,
-	f.fainelli@gmail.com,
-	sudipm.mukherjee@gmail.com,
-	srw@sladewatkins.net,
-	rwarsow@gmx.de,
-	conor@kernel.org,
-	allen.lkml@gmail.com,
-	Vegard Nossum <vegard.nossum@oracle.com>,
-	Darren Kenny <darren.kenny@oracle.com>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Arnaldo Carvalho de Melo <acme@redhat.com>,
-	Ian Rogers <irogers@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Lieven Hey <lieven.hey@kdab.com>
-Subject: [PATCH for-5.15] perf inject: Fix GEN_ELF_TEXT_OFFSET for jit
-Date: Tue,  9 Jan 2024 13:49:55 -0800
-Message-ID: <20240109214955.451513-1-namhyung@kernel.org>
-X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
-In-Reply-To: <2024010711-skeletal-material-15e8@gregkh>
-References: <2024010711-skeletal-material-15e8@gregkh>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 052F13E464
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 21:50:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rNJz3-0001vm-5L; Tue, 09 Jan 2024 22:50:05 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rNJz2-001Z3k-Mt; Tue, 09 Jan 2024 22:50:04 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rNJz2-0066TS-1z;
+	Tue, 09 Jan 2024 22:50:04 +0100
+Date: Tue, 9 Jan 2024 22:50:04 +0100
+From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Pavel Machek <pavel@ucw.cz>
+Cc: Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org, 
+	stable@vger.kernel.org, Dmitry Torokhov <dmitry.torokhov@gmail.com>, 
+	linux-input@vger.kernel.org
+Subject: Re: [PATCH AUTOSEL 4.19 4/7] Input: amimouse - convert to platform
+ remove callback returning void
+Message-ID: <qkb22czelncqf43vr2kuz6i6npuq4juyr3ggl3jkdbp6t2uzfs@ftbna3qj6qhq>
+References: <20231226002649.7290-1-sashal@kernel.org>
+ <20231226002649.7290-4-sashal@kernel.org>
+ <ZZ0xt75z/qSf5f8V@duo.ucw.cz>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="z4dqfcfoobhdzq6r"
+Content-Disposition: inline
+In-Reply-To: <ZZ0xt75z/qSf5f8V@duo.ucw.cz>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-From: Adrian Hunter <adrian.hunter@intel.com>
 
-When a program header was added, it moved the text section but
-GEN_ELF_TEXT_OFFSET was not updated.
+--z4dqfcfoobhdzq6r
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Fix by adding the program header size and aligning.
+On Tue, Jan 09, 2024 at 12:44:55PM +0100, Pavel Machek wrote:
+> Hi!
+>=20
+> > From: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
+> >=20
+> > [ Upstream commit 42b8ff47720258d1f6a4412e780a480c139773a0 ]
+> >=20
+> > The .remove() callback for a platform driver returns an int which makes
+> > many driver authors wrongly assume it's possible to do error handling by
+> > returning an error code. However the value returned is ignored (apart
+> > from emitting a warning) and this typically results in resource leaks.
+> >=20
+> > To improve here there is a quest to make the remove callback return
+> > void. In the first step of this quest all drivers are converted to
+> > .remove_new(), which already returns void. Eventually after all drivers
+> > are converted, .remove_new() will be renamed to .remove().
+> >=20
+> > Trivially convert this driver from always returning zero in the remove
+> > callback to the void returning variant.
+>=20
+> We don't really need this for -stable.
 
-Fixes: babd04386b1df8c3 ("perf jit: Include program header in ELF files")
-Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
-Tested-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-Cc: Ian Rogers <irogers@google.com>
-Cc: Jiri Olsa <jolsa@kernel.org>
-Cc: Lieven Hey <lieven.hey@kdab.com>
-Link: https://lore.kernel.org/r/20221014170905.64069-7-adrian.hunter@intel.com
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-[namhyung: use "linux/kernel.h" instead to avoid build failure]
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
----
- tools/perf/util/genelf.h | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+Agreed! These patches shouldn't get backported to stable. Even if they
+are a dependency (which isn't the case for this patch AFAICT),
+backporting of later patches isn't hard even when dropping these
+patches.
 
-diff --git a/tools/perf/util/genelf.h b/tools/perf/util/genelf.h
-index b5c909546e3f..6af062d1c452 100644
---- a/tools/perf/util/genelf.h
-+++ b/tools/perf/util/genelf.h
-@@ -2,6 +2,8 @@
- #ifndef __GENELF_H__
- #define __GENELF_H__
- 
-+#include <linux/kernel.h>
-+
- /* genelf.c */
- int jit_write_elf(int fd, uint64_t code_addr, const char *sym,
- 		  const void *code, int csize, void *debug, int nr_debug_entries,
-@@ -76,6 +78,6 @@ int jit_add_debug_info(Elf *e, uint64_t code_addr, void *debug, int nr_debug_ent
- #endif
- 
- /* The .text section is directly after the ELF header */
--#define GEN_ELF_TEXT_OFFSET sizeof(Elf_Ehdr)
-+#define GEN_ELF_TEXT_OFFSET round_up(sizeof(Elf_Ehdr) + sizeof(Elf_Phdr), 16)
- 
- #endif
--- 
-2.43.0.472.g3155946c3a-goog
+Best regards
+Uwe
 
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--z4dqfcfoobhdzq6r
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmWdv4sACgkQj4D7WH0S
+/k7Ikgf9Ff56k8gPg9Rqm0wNd4bcxm3xlWSN6sjrtlYtZ7hUFMbbo9GjjHFzwMS8
+HxZm3aP5BMJx4BwkCGd01taCgJmANyrw6ZWZ9Um66my+592guOUVdEerXalMm9Yx
+bI6UjPrHNcEm9LhVdBhuEM7vXI3pvIESsfgJX/gMpUCgCkFfqSJKRwsvfavZ5pnS
+5SKkJ8LXgj9oMO7Kvehpyq71T6mLk7bhlz608Ns2euCY/plYxm8YYVtD0Y47wlhs
+N7LIUDpK42CgAbCpP1pI9gfkAdxR2IwX7x5cPT05lHj2UV+J9ofwo+hxvWPwlkzq
+ROZCoWdY52UhGFL4jRiZpnJ3VOnDjw==
+=FCqt
+-----END PGP SIGNATURE-----
+
+--z4dqfcfoobhdzq6r--
 
