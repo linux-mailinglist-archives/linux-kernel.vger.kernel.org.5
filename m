@@ -1,201 +1,193 @@
-Return-Path: <linux-kernel+bounces-20615-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20622-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E55A828277
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 09:52:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C800828288
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 09:54:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 47CB61C235B8
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 08:52:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 137DA285ECF
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 08:54:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61F9D25757;
-	Tue,  9 Jan 2024 08:52:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="Y5j1A16K"
-Received: from IND01-MAX-obe.outbound.protection.outlook.com (mail-maxind01olkn2061.outbound.protection.outlook.com [40.92.102.61])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E1142EB1A;
+	Tue,  9 Jan 2024 08:53:52 +0000 (UTC)
+Received: from APC01-TYZ-obe.outbound.protection.outlook.com (mail-tyzapc01on2047.outbound.protection.outlook.com [40.107.117.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FCDF6FD2;
-	Tue,  9 Jan 2024 08:52:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84CFB2E842;
+	Tue,  9 Jan 2024 08:53:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cixtech.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cixtech.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fmYKV9/fRJN6w44RfB9D9vEOOklWYNFsmB179UfiaJlw21G/hUfqN6vGNJ3oX10Qah3+wW4ajIU7fO/hDD/4c23ICG778GM0Zv/UkrDPTwUArUvFYYdj0aewzxtAu7ZOUtpKeaB4cNFxWplPximuzwL8l8T7pCW/5wViS2YtQ8nJ2UjSq9nosEc4CNYnHKU7I9Xqqwlg5LGL/dw3vWZlGCBeWy++eG3KgJhbDhaRP0u3z9DMgsWW7jua0kOLmVgortSxqmOHRPMpoPyYh9WWmiWBt+l968Xx4Jd4xICdJAv8EAut/6dTdwck4RH563HGk+oJylqPRFKJ6HNUYhWP9w==
+ b=kBfYeZmk00xg98Z5Smg/dcaZynMPHK6q/7ygTQfdzx64zzlL6uDYyk24TDdgnkQO7B3oA/96/40QwNo49E7Bmz1UNfZMdEEPfQk3OBQ2HVzBc7iQfyodZIJNom53K7XJRUBlUuuptFqHGyI6XPdZJBpBP/dWVZXxuS2Akiq9gGFJueVkosgz7+8OptxLHv/xo9KwYcz9a36BVat8HvnCIRFyLjQ853QWcWIQpBv3DUkzOAYXG4L9RxBMJS3PNV8+63O+cbG/DxP80bN6AubCzqgv6xcDMO7RteNUCkaxDKACeIKcClbcK7AXxgOgPwpSUDFa4hOs1CQVXOqViDzDhQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=30UmF/SNZGaBDpLXOd9bkZ8kYK9TcPvasrHM8HXBBQo=;
- b=HE9JVerKjg2pTPN13WmSvVjioqLhwl05EIqQdh5ZaXm0Rq+hGG1PRat+4nQ6p3T51gRo9rX6JcmgILjNiZi+mZa/y5pa/X/JT+X0zz7uezphgyY0EhaqzuNTGTDOYTnECsk1NAhlLK9TN+BCIgcYpON/M3ekR1i+TWeFj88AsYHAmd6SmiFDM0zNQQPz2PM/vpLHO1NxJuOObFr2PHE7KiQMQWYCWdby0GnX1yfkv4ImtE/KMYwNGw84ofAnM0PhFGjBIYPSSxJT0pLsm4UzuRKYb2Gg67j9hMMOHekV+ZQPKPnQ82ekpp6SVOPrKdFxW86jVAg4Gta6riBSNiMivA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=30UmF/SNZGaBDpLXOd9bkZ8kYK9TcPvasrHM8HXBBQo=;
- b=Y5j1A16KOPgOw9+8n6y5EgLrKnwYzLr9V8X56qMHMn5EwD0HUqzjcWguYqCIlHT6lYMW4fRUnQja1seWk8iF5kZijKsqCrgKsmBMVIHIT14e2EELmph0ZOHfHoRdUVYhSNzBTp5r5OVRwkiixK62Que66VKBT38MT+69cGF1ZVKVr+bqI0OyxEqmtibEKeXH9ji+LrJ7E+FSyNAET8jF0K1xgsfiS0zRMP5VUHkZ5dfPTT3Qw7tYlPGKlWD/y9HnWIWaoyvV4c/dPADWDzUYGMJWOy4Xoc7ui70szwMdl53aMrctrUDDbXJ9SJBxkVj91oNEeIyJHE8usp9cWXMjaw==
-Received: from MA0P287MB2822.INDP287.PROD.OUTLOOK.COM (2603:1096:a01:138::5)
- by PN3P287MB2314.INDP287.PROD.OUTLOOK.COM (2603:1096:c01:19d::6) with
+ bh=JbSE8flAdRznmxyS3t+R0q1HUNjtRrGgOBwc5VEB2vo=;
+ b=oZr0pcT7KQc9xODsrxueDhPz84T3lkyLfW7af335Reo0PWECKmFCI63d2X3U9/tTh9pbvJmFezDW9NbUjRsiSrVJcXlOGTnXP8lTDremI69ZV7Nkcdm5aq0Ilynu/dnO4aSLBzi9NStbYQ8Euj0SkGMgxZTmGnkfZClwXk48vAOkQUdf/OGbO7TYmiErn+a+WgOYJmugX4ESKSW6lSqraQumQJnO4OeWM25EwRtutKKbmroitzje1vc9rzFXGL2BuoYU6y7bMzm6WroBzB1MRunxo1uGT1/+WBYTVu5z2Rn0CBkAHaSQJhhCWu/6oIF757KMoeupopxbRBATpXKI3A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=cixtech.com; dmarc=pass action=none header.from=cixtech.com;
+ dkim=pass header.d=cixtech.com; arc=none
+Received: from SEYPR06MB6278.apcprd06.prod.outlook.com (2603:1096:101:143::5)
+ by SEZPR06MB5558.apcprd06.prod.outlook.com (2603:1096:101:cc::12) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.23; Tue, 9 Jan
- 2024 08:52:14 +0000
-Received: from MA0P287MB2822.INDP287.PROD.OUTLOOK.COM
- ([fe80::6e80:69e1:f2e7:d70d]) by MA0P287MB2822.INDP287.PROD.OUTLOOK.COM
- ([fe80::6e80:69e1:f2e7:d70d%3]) with mapi id 15.20.7159.020; Tue, 9 Jan 2024
- 08:52:14 +0000
+ 2024 08:53:42 +0000
+Received: from SEYPR06MB6278.apcprd06.prod.outlook.com
+ ([fe80::c5a4:6868:b1f2:43a6]) by SEYPR06MB6278.apcprd06.prod.outlook.com
+ ([fe80::c5a4:6868:b1f2:43a6%4]) with mapi id 15.20.7159.020; Tue, 9 Jan 2024
+ 08:53:41 +0000
+From: "Joakim  Zhang" <joakim.zhang@cixtech.com>
+To: "andersson@kernel.org" <andersson@kernel.org>,
+	"mathieu.poirier@linaro.org" <mathieu.poirier@linaro.org>,
+	"arnaud.pouliquen@foss.st.com" <arnaud.pouliquen@foss.st.com>
+CC: "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	cix-kernel-upstream <cix-kernel-upstream@cixtech.com>
+Subject: RE: [PATCH V3] remoteproc: virtio: Fix wdg cannot recovery remote
+ processor
+Thread-Topic: [PATCH V3] remoteproc: virtio: Fix wdg cannot recovery remote
+ processor
+Thread-Index: AQHaMKsZ01O1wcUzFk6tbyQ7iXca0rDRTy1A
+Date: Tue, 9 Jan 2024 08:53:41 +0000
 Message-ID:
- <MA0P287MB2822C1F51E9F03137EF42093FE6A2@MA0P287MB2822.INDP287.PROD.OUTLOOK.COM>
-Date: Tue, 9 Jan 2024 16:52:09 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 1/4] dt-bindings: soc: sophgo: Add Sophgo system
- control module
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- Chen Wang <unicornxw@gmail.com>, aou@eecs.berkeley.edu, chao.wei@sophgo.com,
- conor@kernel.org, krzysztof.kozlowski+dt@linaro.org,
- mturquette@baylibre.com, palmer@dabbelt.com, paul.walmsley@sifive.com,
- richardcochran@gmail.com, robh+dt@kernel.org, sboyd@kernel.org,
- devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
- haijiao.liu@sophgo.com, xiaoguang.xing@sophgo.com, guoren@kernel.org,
- jszhang@kernel.org, inochiama@outlook.com, samuel.holland@sifive.com
-References: <cover.1704694903.git.unicorn_wang@outlook.com>
- <acebc88db3e5fcd2a2607b56842af7443a6e1289.1704694903.git.unicorn_wang@outlook.com>
- <cc7cc943-7242-4fd1-9b56-3ece0a418e05@linaro.org>
- <MA0P287MB2822E54A6DD36F914DB56E98FE6B2@MA0P287MB2822.INDP287.PROD.OUTLOOK.COM>
- <1e1ef0a0-6639-4a4d-9b4e-50bcee3fb3c5@linaro.org>
-From: Chen Wang <unicorn_wang@outlook.com>
-In-Reply-To: <1e1ef0a0-6639-4a4d-9b4e-50bcee3fb3c5@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TMN: [/DJxhCjmcHnVVDSQWtYOv9JmWLyOEP5/]
-X-ClientProxiedBy: SI2PR01CA0047.apcprd01.prod.exchangelabs.com
- (2603:1096:4:193::10) To MA0P287MB2822.INDP287.PROD.OUTLOOK.COM
- (2603:1096:a01:138::5)
-X-Microsoft-Original-Message-ID:
- <ebc0a7a8-6438-4cd2-9956-1ac4f168eaa2@outlook.com>
+ <SEYPR06MB62789348742ED11883BA9F68826A2@SEYPR06MB6278.apcprd06.prod.outlook.com>
+References: <20231217053659.3245745-1-joakim.zhang@cixtech.com>
+In-Reply-To: <20231217053659.3245745-1-joakim.zhang@cixtech.com>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=cixtech.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SEYPR06MB6278:EE_|SEZPR06MB5558:EE_
+x-ms-office365-filtering-correlation-id: 0895bf3b-b749-4669-25f2-08dc10f07ad0
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ Jgr1FYvTeMjfHXcyBMVD2I8b7QMjADjbCimhUZaD3JPG4gwnq4+fGy9RBnWH1/WnG9naO30Th7jKL+WfZrd9uXaQ77TOq7SUgsvtKUqWKvKVahn/od4M703bPZeLswa3erOIa6net4Ruv/SeJ3XAg+IBdsAlDNWOX6oJoA0qEH9oSdw0KVPtxBLkHVawS6yrPaYjqawHYGHT3H8tQfEix2a0ydcBKP5CZowAf6EzReYSfO5JTGGAlcY5DyHUIWE7ahd6vw0IjIGN9D3cB6059CnB0R278Mp/q7If/X5Xs1p8iTmfoUc7UimhnP1cu8OemEAtRV5kRJVlRYvT8Q6Dcx7lUXiDIzggzfZyVO/ilcoawso6/OoWpkcsVrLp2GWpcqpL3LqH4+TX6SoAoVy39R5s5HIPesz6ZgNMJbYIczKNEF6uqptZqaRG7Gq+ER1Rfmq6WbWDI6oO6F0Dw+NchyVc5n9QjDOc6LWqzQWyU/IhA5VRE5hTI23KS+GL81Y4owVG4khtdHEDTZT09d7JzhYyvhVynGJCOvQrxJ4AKeyZG1BGcuwOL7RpKlZHalIktHziXfMhKqeJ1ApydXqrATNmlBgnzynOMoiURbFzmM58xKC2UFHrmFAVizlg4GB2
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SEYPR06MB6278.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(376002)(396003)(366004)(346002)(39840400004)(230922051799003)(1800799012)(451199024)(186009)(64100799003)(83380400001)(41300700001)(7696005)(6506007)(53546011)(71200400001)(9686003)(55016003)(38070700009)(86362001)(33656002)(8676002)(8936002)(316002)(110136005)(54906003)(76116006)(66946007)(122000001)(107886003)(2906002)(478600001)(5660300002)(26005)(64756008)(38100700002)(66446008)(4326008)(66556008)(66476007)(52536014);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?IWIrZjMKL8SlfkHvMt2GfSHhVL5ffQ2cBn1++9EoSPB27hfL+WHsFch2Jb8d?=
+ =?us-ascii?Q?c0aP5yCOr4M3Nrg1t0xdyQmxmLgrbd9OmPkUYseD2dqZVOQMhu2pVs7W+L/c?=
+ =?us-ascii?Q?R1mGZ/nHiIrdQNJJpB9TyA2489dB2wY8iDvq0YQZ+V/uz5ZlC0G476fiT0fE?=
+ =?us-ascii?Q?VrPTHcmfebJgbj33a242WZcVBi3cjCeT9Zej2RLM9dLmebLr43UeZuw2p/he?=
+ =?us-ascii?Q?Zknio4C4VfTD5U1wML1G3kyxZgvEnOBdQ/VUlk5LCSoqlRRUjZEeiBvqdrgZ?=
+ =?us-ascii?Q?x+SSRdQg9O3eCY1ym3QuW7sb4jQ2M2Gc1LyBZH2zqndulZNMvrgNIjQsxel+?=
+ =?us-ascii?Q?dvF1Mer5Hqw/6abFSQ22p/dEtzNNrCY9xKaBUYW94p2UEIKVjb9TVmfdfvr/?=
+ =?us-ascii?Q?8sew3KU9CToBr6n/8EAJEj4NNzfG/dj0kdWmxmdK7T/BbXoxsAXSbY62cN9j?=
+ =?us-ascii?Q?bg51k733mEq5lFIgSzSr2BpVAPYiBRM8ENkxZjdR8Zlix8ZhmqlrS84Rfgph?=
+ =?us-ascii?Q?pdn38gdiJZ41o3RurgadGHIUR+LFBE2JzYgBI12DUeBYFrFpjrJDnDphE5dA?=
+ =?us-ascii?Q?CTutXENRmEDlWc0uPHrJvX9wlPDVCrdBhdCbE/KcHQmvqLsgMUnUBSUYcr6o?=
+ =?us-ascii?Q?ICzecIma3dZxXBNW2THCuogaGPl/QmSlAMBvtVNM6T/PbWMWtUFllM6fkTPi?=
+ =?us-ascii?Q?5e4+oWur9OvIGPIPrRspVi/b9vMUgruDXbo4zoCALuujMstAkY4U5JZH7Q/6?=
+ =?us-ascii?Q?otVq//mRm3vOpFCUOt20BPzjqoRqmheGqPNEMFCcY2hxjV5Eu0ZdkhAfNZTD?=
+ =?us-ascii?Q?j+Yr7MzAwSm8r13mICpPZIM4os2g1V3nYSkNH2zCK35uFGNEWH02+vSDa7+m?=
+ =?us-ascii?Q?Ddf3tWY5FTaq3rgUj7gHT668uFtPKkT98j99oGpRpoAkYOsVH43Rij6WBz6q?=
+ =?us-ascii?Q?uKvsQC4jyodPEjz9ctiLijVV9qMWWEw5dHmaNrLyR46n4/zyDG98a0z0vM/U?=
+ =?us-ascii?Q?vVoFOPGOYD/EAIk9VKFwWqF2/4Rul1a+hWw9wKBYZVrLeq+eHuGhWO64SWXX?=
+ =?us-ascii?Q?yqL5po1HQQM/cpCLFpTowHXII++x7Byhap2Hm1exkrvCRU3ureFj4+hiY0zG?=
+ =?us-ascii?Q?88qpQw2dO6E2eVcVYzVV3Hy8b6vGWCkGe0FnRfXu9lI33TUf0DDwUNQbNA4l?=
+ =?us-ascii?Q?zfr4ZxN/IBVFUzP/RedCFSOzWfmrdAfysw3rt+NbvGxjcFyCR7tczeB2YLx0?=
+ =?us-ascii?Q?L6JtYeQk+DT1LSPA8q02ppwqKvGljIsSn6DQznywvLGn9U4cx+HHyftE5KJQ?=
+ =?us-ascii?Q?s7lc3eRqDO6TJ8CCXn4HBRkcNFzk4VFACe23UUQTabPQMhKviyI8+skp1kLp?=
+ =?us-ascii?Q?Cjfqj9epwqb3PcwWUzmYmHjbD+Qfg3KbAJG1XsREPWxnoN+WbE/s0+vCJVJP?=
+ =?us-ascii?Q?27UHSISLWLp304eFGUbl9i3x1p+NP3kOvNGzuaPh4AwA1G6TlMHqcD81CVs7?=
+ =?us-ascii?Q?NRu++SRA0QLq+yY8vq4T5tB3cDnN3mKdbK1KF9yh7cxqRTjsyIxRGbZR8s5A?=
+ =?us-ascii?Q?2K239TV0hhQh43oVDxQb+Thx26l5w+FesgdSmAle?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MA0P287MB2822:EE_|PN3P287MB2314:EE_
-X-MS-Office365-Filtering-Correlation-Id: 6f3a94eb-19b2-4bba-a7c0-08dc10f04696
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	96nXshlr0ryDvksM5f0mUwCNlgyCF29fTOPUYMmo1yuV2tQItMUBqmdi3nsqMD04+iw2dW8C29uJ3JMVuJZGwnumHBht9DIG1W1grDPmzRjDjkTd8SNZosMGI/0tQt0x67Z+M67ALDvEr7aUWQHs/Dbvjiyo8udQQPNMfYBkKSjlpqXdzzjMTJgtddBh2noghmQmOUGyB8xgmyDnhX5BUh4BYPwiM7PW2GgvqNh61bSHJp5DSnZji3OgnZUcCbJOjHUogW4uxu+xz2B++m6fC4xREHXbMiOHWrf3ErIG/qPby7Y1v5OXo3iaXieOs80rdE4/HtrF+Qn6Fc6080BGNjvO6C8TF8R2HJPAdy3p1h6zSPBtXeWVpY2P7WVljDkDS4VpeXohbYC1ZWjv68UG7o7+stnyRHPUqEhFw0Kie1POqjxJI4HDcwgNdHIE/Thhqo16+gtD/P0ZxcVMyJ77wN7O9QLi3HV7wQoApKCmv6zgKKhqaHv40PLhsdS6iyumeddvO4dRQacXegF2GERyVQPYjYn5x1rie1g5JzbZZmtMut6eItd2VOcTFrawpUQZRQLUY53UraopYguNnWTdcoDHqKIf5p8sDjE6eoy5m4k5L0mvxJlVUb4HvcYJDqKnABMOA9j9zpnsBF8NiDcoNg==
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?a0NPVDE5RUxEMkFkOHNpMDJJZnMxWHZ3VGxEYi9zTG96YUo3Uy8yU1NaUVZF?=
- =?utf-8?B?STJ1RFBZQ3NqbTFJc2ZwQlRGc1l1SnRoV3JKblVLcmozNGl5d3lYMDdsR1M3?=
- =?utf-8?B?MDVtK1Z2dmpOSjRtNEh1TG50b1pJMGVQaUpDOVdQYllYcFptYlFIanh4QWpl?=
- =?utf-8?B?SDZtUVo0L0lYeTJvUTQ0aFlWN1d0Nm9CR1hyQ2QwN3dycmFVY3hXSEZJamxk?=
- =?utf-8?B?TFFpaXhmd3E4UVcwOG9ud3kxU0pXZDkrVzcvMTRHdHpab2VmUVBwTTRPbE9h?=
- =?utf-8?B?RVVmaFdZdG1BZE1VUms4VnRsZVdTc2RVcnpyY2ZqQzZraE0rTFk0c1BoYzJR?=
- =?utf-8?B?WS9Od2pWYWZZdG0rSGd3L2VjYzlkdWllNlZOL05WNU1WWGdsWmZYV05RQW0z?=
- =?utf-8?B?M1hkWVdOQ0VrYzgwQlh2YVNmR2Y2dDdITG93M000TGFxRWhFbHkyelAyQ1BG?=
- =?utf-8?B?R2pQdGgyT2RMZG9uMTUrS3ZTb1RsbEU1cGRmQ3d5TzZxSHd5SlVjK2tzWFAx?=
- =?utf-8?B?MmVuM0paMnJQZWF1aThCQW8vS202RDhXNjlzS0lTaXV4MkRYbWQxcTJsanU2?=
- =?utf-8?B?Rlp5eTdjdUJ1d2kxMFJTd1FoSnhPUnpDSkFabG1YMDEyWUxlK2JvclQ2YjVD?=
- =?utf-8?B?K2daUzdlMFRib1JuQ0xVbzdhcUFpbkN3ZzBNMm5yaTZGbzZocWRIblVCN2lN?=
- =?utf-8?B?QUl6Mnp4M3ZpVHdkRTB0UHZDK0o0N2tYY1JWNlRYSitJYmw5VEFOK3pmNHdB?=
- =?utf-8?B?emw3R3RTUE5BQ1FwRnpKVDA4YWp6YjI3SWorQmZhMkducjBtZTJhQm9FeERx?=
- =?utf-8?B?V2JnR3NvNmNjWnAvb05YOGNBYXJ0UkZGdStnYTZsc0xrU01idjdESUNwdXJT?=
- =?utf-8?B?S3ZVM3dKUCtkTGRhekRRTGF3MXUxcVBjQnJIVDFUTXRxcEd0akM5WE9VNTlT?=
- =?utf-8?B?YkJGeDNmY0l1RFVtQ0FLd2tld2c1N1YxejM1WmlsOTBQcHU5bksyS1cxZlR4?=
- =?utf-8?B?dDdxUkhROGZEMGZ0bUdrUGhyUVZ1QWNaU29pUlQ3UW05dU9Vd1dNbzFLQk9n?=
- =?utf-8?B?akhPY004ZzFwUVF2MHpZTUVURVcwYm8wcGNjRDhRQlppR2U3Z0NHTjd6WmIz?=
- =?utf-8?B?cGY5anE0OVE5cTBpQWxndlV1OGdhRWNzcWpLcVc2UjhyU1RyK3BiaGI4c3NX?=
- =?utf-8?B?TmdDL09yNzcwbHZPS0s5SHljZGo5UllzbzJ6RGh0Yk1HUmZTVUlDelJuUktV?=
- =?utf-8?B?N0JaRjhZYldwKzZBTUQ1ZTM4aWhSYUsrVC9FNVFxVEJXT2g5QmY1NVVJYVNp?=
- =?utf-8?B?QTNPZ0ZocFJRVERsV2dPMWJGU2ZLVjI3bjdxakN0dE1OdkJ0SnByaW9FUVZY?=
- =?utf-8?B?Z2hyMkZNbFFJRnpiYi8wMEFqYXVKa0ZQZ2psYzgvbWFtN1kvS2xPWG1ySy95?=
- =?utf-8?B?TEZ4UjRzeGdURmYzdEhvYjg2T1RJZjRNNDJtUlVEMU5qbUVpV1MrMm96c0JK?=
- =?utf-8?B?amxVeGR0NkQ3SUx4ZGxUUm0zdUJsKzhvaUpnZkhQcHVwMDV5UWpRTFBMMTZ5?=
- =?utf-8?B?SnBIS3pFRzVRalh6cW8rSG9HRlV0YlZqaVdCcHZLMGZvUVJpelhOZE8ySk9x?=
- =?utf-8?Q?PvvZH1XWzPpeIKDCwCYwgoyaKiKfUF29cx2Z/h6jEcNA=3D?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6f3a94eb-19b2-4bba-a7c0-08dc10f04696
-X-MS-Exchange-CrossTenant-AuthSource: MA0P287MB2822.INDP287.PROD.OUTLOOK.COM
+X-OriginatorOrg: cixtech.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Jan 2024 08:52:14.5609
+X-MS-Exchange-CrossTenant-AuthSource: SEYPR06MB6278.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0895bf3b-b749-4669-25f2-08dc10f07ad0
+X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Jan 2024 08:53:41.8018
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
-	00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PN3P287MB2314
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 0409f77a-e53d-4d23-943e-ccade7cb4811
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 1Ok34s5xBWSSJ5eg0v/KVUNAjruZiQcB9OkEFmSlg/0RB8PwqyfyfrJlm6ioTj5Kq9vXTp5J2VkUcMFFO4kd2lNq35qYO/iRiNbCrtPg0r0=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEZPR06MB5558
 
 
-On 2024/1/9 3:36, Krzysztof Kozlowski wrote:
-> On 08/01/2024 08:20, Chen Wang wrote:
->> On 2024/1/8 15:03, Krzysztof Kozlowski wrote:
->>> On 08/01/2024 07:48, Chen Wang wrote:
->>>> From: Chen Wang <unicorn_wang@outlook.com>
->>>>
->>>> Add documentation to describe Sophgo System Controller for SG2042.
->>>>
->>>> Signed-off-by: Chen Wang <unicorn_wang@outlook.com>
->>>> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
->>>> ---
->>>>    .../soc/sophgo/sophgo,sg2042-sysctrl.yaml     | 34 +++++++++++++++++++
->>>>    1 file changed, 34 insertions(+)
->>>>    create mode 100644 Documentation/devicetree/bindings/soc/sophgo/sophgo,sg2042-sysctrl.yaml
->>>>
->>>> diff --git a/Documentation/devicetree/bindings/soc/sophgo/sophgo,sg2042-sysctrl.yaml b/Documentation/devicetree/bindings/soc/sophgo/sophgo,sg2042-sysctrl.yaml
->>>> new file mode 100644
->>>> index 000000000000..1ec1eaa55598
->>>> --- /dev/null
->>>> +++ b/Documentation/devicetree/bindings/soc/sophgo/sophgo,sg2042-sysctrl.yaml
->>>> @@ -0,0 +1,34 @@
->>>> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
->>>> +%YAML 1.2
->>>> +---
->>>> +$id: http://devicetree.org/schemas/soc/sophgo/sophgo,sg2042-sysctrl.yaml#
->>>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->>>> +
->>>> +title: Sophgo SG2042 SoC system controller
->>>> +
->>>> +maintainers:
->>>> +  - Chen Wang <unicorn_wang@outlook.com>
->>>> +
->>>> +description:
->>>> +  The Sophgo SG2042 SoC system controller provides register information such
->>>> +  as offset, mask and shift that can be used by other modules, such as clocks.
->>> "offset, mask and shift" is not a register information stored in
->>> syscons. Are you really sure, that your system controller hardware
->>> stores offsets of some other registers?
->>>
->>> Show as some example of such offsets, masks and shifts provided by this
->>> hardware.
->> The system control module is defined here:
->> https://github.com/sophgo/sophgo-doc/blob/main/SG2042/TRM/source/system-control.rst.
->> It contains some registers related to pll and gates.
-> I do not see there registers providing shifts and offsets... just values.
->
->> Some other clocks registars are defined in
->> https://github.com/sophgo/sophgo-doc/blob/main/SG2042/TRM/source/clock.rst.
->>
->> memory-map is defined in
->> https://github.com/sophgo/sophgo-doc/blob/main/SG2042/TRM/source/mmap.rst
->
-> Please fix the wording because it does not make sense. System controller
-> does not provide register information. Your datasheet provides register
-> information.
+Kindly Ping...
 
-Could it be that what I said "that can be used by other modules, such as 
-clocks." may cause misunderstanding. I plan to change it to "The Sophgo 
-SG2042 SoC system controller provides register information such as 
-offset, mask and shift to configure related modules such as clock." Is 
-this better?
+On Sunday, December 17, 2023 1:37 PM, Joakim Zhang wrote:
+> Recovery remote processor failed when wdg irq received:
+> [    0.842574] remoteproc remoteproc0: crash detected in cix-dsp-rproc: t=
+ype
+> watchdog
+> [    0.842750] remoteproc remoteproc0: handling crash #1 in cix-dsp-rproc
+> [    0.842824] remoteproc remoteproc0: recovering cix-dsp-rproc
+> [    0.843342] remoteproc remoteproc0: stopped remote processor cix-dsp-
+> rproc
+> [    0.847901] rproc-virtio rproc-virtio.0.auto: Failed to associate buff=
+er
+> [    0.847979] remoteproc remoteproc0: failed to probe subdevices for cix=
+-
+> dsp-rproc: -16
+>=20
+> The reason is that dma coherent mem would not be released when recovering
+> the remote processor, due to rproc_virtio_remove() would not be called,
+> where the mem released. It will fail when it try to allocate and associat=
+e buffer
+> again.
+>=20
+> Releasing reserved memory from rproc_virtio_dev_release(), instead of
+> rproc_virtio_remove().
+>=20
+> Fixes: 1d7b61c06dc3 ("remoteproc: virtio: Create platform device for the
+> remoteproc_virtio")
+> Signed-off-by: Joakim Zhang <joakim.zhang@cixtech.com>
+> ---
+> ChangeLogs:
+> V1->V2:
+> 	* the same for of_reserved_mem_device_release()
+> V2->V3:
+> 	* release reserved memory in rproc_virtio_dev_release()
+> ---
+>  drivers/remoteproc/remoteproc_virtio.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+>=20
+> diff --git a/drivers/remoteproc/remoteproc_virtio.c
+> b/drivers/remoteproc/remoteproc_virtio.c
+> index 83d76915a6ad..25b66b113b69 100644
+> --- a/drivers/remoteproc/remoteproc_virtio.c
+> +++ b/drivers/remoteproc/remoteproc_virtio.c
+> @@ -351,6 +351,9 @@ static void rproc_virtio_dev_release(struct device
+> *dev)
+>=20
+>  	kfree(vdev);
+>=20
+> +	of_reserved_mem_device_release(&rvdev->pdev->dev);
+> +	dma_release_coherent_memory(&rvdev->pdev->dev);
+> +
+>  	put_device(&rvdev->pdev->dev);
+>  }
+>=20
+> @@ -584,9 +587,6 @@ static void rproc_virtio_remove(struct
+> platform_device *pdev)
+>  	rproc_remove_subdev(rproc, &rvdev->subdev);
+>  	rproc_remove_rvdev(rvdev);
+>=20
+> -	of_reserved_mem_device_release(&pdev->dev);
+> -	dma_release_coherent_memory(&pdev->dev);
+> -
+>  	put_device(&rproc->dev);
+>  }
+>=20
+> --
+> 2.25.1
 
-
-
->
-> Best regards,
-> Krzysztof
->
 
