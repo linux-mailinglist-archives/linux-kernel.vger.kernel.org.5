@@ -1,93 +1,145 @@
-Return-Path: <linux-kernel+bounces-20492-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20493-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69E94827FAB
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 08:44:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 42BE2827FAE
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 08:46:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 911351C213FA
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 07:44:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 30C091C21072
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 07:46:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 649DDB65F;
-	Tue,  9 Jan 2024 07:44:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A566BA34;
+	Tue,  9 Jan 2024 07:46:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="RYgxkeiv"
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="MVwDePrP"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DDD113AE2
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 07:44:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-40e4d515c9aso7599915e9.0
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 23:44:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704786278; x=1705391078; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=WyKODR2ZEbBQIYSooTDZKjG3f6gcw+Ofatu+7Ljk1dY=;
-        b=RYgxkeivLxpnYAMqvkEwQoz8NF2H6X6hLfnvCtUuyE/+Yw86Yb+/RB4Xb9zA7KbJUD
-         Ji1tIcjZPOBY+9957YAYh6XKmyibDaRTCRz50eJyLNTd6P6kyzN5kyLwaLPsostxrSRn
-         WYJwPl/YcJxqxTnq+RjPQyDx21eiX4I15V6nKpaIykyn83TQjQ/3MauO+4lKOhn2Fyh5
-         au0sGXREv2cXNWFJ8MoVcLrE6PyvzArdjN1xRzXu3h9jGBm0E8BLgfF7NhAvXnhuFnAw
-         UvlqcbmAaULR+v69TU8jt3cwklHF84BIBVzV3hp+02cXh3GGAsgJqRL+0Lidc7HQ9Sb4
-         TSaw==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19EECB66C
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 07:46:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1704786388;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=QGFHDC9oHxTINUdDMjSvkJISj41ABGmGm6sZiEEVDbg=;
+	b=MVwDePrPtJuIKJ1Ik+32CUNb5IR18OsB8SLRQWQbYnfGqbBkN6KYZ4HfOJG5dXvN25jr9M
+	2a7+LduVG1yWGHaQliP9sU9tc1c4Dbv6j95JJjeFAaCUgs49o1XL1FtMRhQ3P4onuof63N
+	GP53Km/pM0dCbyDzZojAPu6hx2N+JMA=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-600-E7p6yuQ_NJWGFOHRz8Z6XA-1; Tue, 09 Jan 2024 02:46:21 -0500
+X-MC-Unique: E7p6yuQ_NJWGFOHRz8Z6XA-1
+Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-a29de6a12adso48028366b.1
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 23:46:21 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704786278; x=1705391078;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WyKODR2ZEbBQIYSooTDZKjG3f6gcw+Ofatu+7Ljk1dY=;
-        b=afstS1czCdKerecnlSO7E5Qbn3vVS8hRn3XKW7uC5Y2wzpCh9I68jdlTNn3n8pLyzK
-         8mFEcQv/Rmxq/0zHFlsVYdOJR0HIgarw94SXVs6/ONDA6+WIfPMQYliKBCE/lVJRkvBq
-         f+uNr5nyC8h5R2dnEMdI+HTH5suH/xDHWP9yG0LD1SU7DsLGczLDbg3uHtxmSkN/+tnL
-         MHQfWyoY90h4cDq1xWvU5jID5LAs8Re5ON2Gal5OFERRWaoyPiQ/iuCOPoTJZZYctBZE
-         jQIre0pl+uyemVs057kGKVAqZZMkveaiscXqwMvT0pRXFiBoctTMBHy3oPNq9rOEW/iY
-         H1Uw==
-X-Gm-Message-State: AOJu0Yxifb8gB/zaNJ85DEe5va1McBuDHCkfbS52Hq2zZVh2pRsyida0
-	JOv1OKIrzrMBn0j1RjePASYQqZxvBXzIgg==
-X-Google-Smtp-Source: AGHT+IE93+FidJZLfj+S844MOIXQn4WyHNFdclFvkYFvlBheufM5UFgj73m1IZZY8RtzG6vp0gbYvA==
-X-Received: by 2002:a05:600c:5207:b0:40e:45be:3a44 with SMTP id fb7-20020a05600c520700b0040e45be3a44mr1780522wmb.141.1704786277810;
-        Mon, 08 Jan 2024 23:44:37 -0800 (PST)
-Received: from localhost ([102.140.209.237])
-        by smtp.gmail.com with ESMTPSA id j40-20020a05600c1c2800b0040e451fd602sm7544385wms.33.2024.01.08.23.44.36
+        d=1e100.net; s=20230601; t=1704786380; x=1705391180;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=QGFHDC9oHxTINUdDMjSvkJISj41ABGmGm6sZiEEVDbg=;
+        b=nMl+8Y23KeinNl5EAhw0ePJeYhxaAVV7NmIan3wuXvPnBfTd/ADeMawi7if1Q+I0Ke
+         KlEJd/lHrNVCVOz1moiNjs36A6bh2En4CipQHjmOYMOBWeHJfE7u66o1g5ETm6ZVlOsZ
+         gW6/nRRm2NAygccIY9Qr6QV13X8d26v2xeq0rvBCOjVFCTPPao6uJJbwSxNqw4hlsUkb
+         vDqhmIB7/zXYQJXq4MYu8fvEyJecZOJQ0/ZUNo4DqGr1EHMwQ4A4nxqTVXBgZDYi6pqq
+         KpK1l8z8lMHz9xP/kAxFi6M9LJT1oMl3d3/Ep5AjX3kxVna56jBrzuIQbHVVSoMYftzy
+         ONjQ==
+X-Gm-Message-State: AOJu0YxqziY/1SRaNLuwiG6JNImx7moD/ZIUwq+UfmtOtC7neilMaNor
+	/ISQB5pzhYxggZu2imincSmzRE8SLibxhrpr7gepC4owQSu8VutxtVuicegemFZqAprtA49KrTq
+	gZtb7JQV6Ee07Txe/+vVS1xUQvIMLn6JEmDSU9LWI
+X-Received: by 2002:a17:907:7288:b0:a2a:6916:60de with SMTP id dt8-20020a170907728800b00a2a691660demr3699820ejc.4.1704786380030;
+        Mon, 08 Jan 2024 23:46:20 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGkhvEn8orHAZqTQA3hc4oarELhBfB09RFGV8IweDJ4ETUZb05mm6NMPSZT1LGbifnVVnGW+Q==
+X-Received: by 2002:a17:907:7288:b0:a2a:6916:60de with SMTP id dt8-20020a170907728800b00a2a691660demr3699807ejc.4.1704786379697;
+        Mon, 08 Jan 2024 23:46:19 -0800 (PST)
+Received: from gerbillo.redhat.com (146-241-252-40.dyn.eolo.it. [146.241.252.40])
+        by smtp.gmail.com with ESMTPSA id u18-20020a17090617d200b00a26e490e3f2sm731824eje.181.2024.01.08.23.46.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Jan 2024 23:44:37 -0800 (PST)
-Date: Tue, 9 Jan 2024 10:44:34 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Steve French <smfrench@gmail.com>
-Cc: Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-	Steve French <sfrench@samba.org>,
-	Paulo Alcantara <pc@manguebit.com>,
-	Ronnie Sahlberg <lsahlber@redhat.com>,
-	Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>,
-	linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
-	linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH 2/3] cifs: make cifs_chan_update_iface() a void function
-Message-ID: <aefa9618-b6d0-412c-ae6f-7839233bdd27@moroto.mountain>
-References: <b628a706-d356-4629-a433-59dfda24bb94@moroto.mountain>
- <eac139a7-76d4-4067-8c25-15e30692aaf9@moroto.mountain>
- <4c6b12c9-0502-400a-b2ba-dad89ef4f652@wanadoo.fr>
- <CAH2r5mu0BnSuOcbG9L=Y0Hhe6GAtOxUJ1R4wkVmXn7A-Vgxndw@mail.gmail.com>
+        Mon, 08 Jan 2024 23:46:19 -0800 (PST)
+Message-ID: <8a06f42e3a7028f88920764d5a70637a6a174eac.camel@redhat.com>
+Subject: Re: [PATCH net-next v7 1/5] ptp: clockmatrix: support 32-bit
+ address space
+From: Paolo Abeni <pabeni@redhat.com>
+To: Min Li <lnimi@hotmail.com>, richardcochran@gmail.com, lee@kernel.org
+Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org, Min Li
+	 <min.li.xe@renesas.com>
+Date: Tue, 09 Jan 2024 08:46:17 +0100
+In-Reply-To: <PH7PR03MB7064B821752DCD99610ED72CA0672@PH7PR03MB7064.namprd03.prod.outlook.com>
+References: 
+	<PH7PR03MB7064B821752DCD99610ED72CA0672@PH7PR03MB7064.namprd03.prod.outlook.com>
+Autocrypt: addr=pabeni@redhat.com; prefer-encrypt=mutual; keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.2 (3.50.2-1.fc39) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAH2r5mu0BnSuOcbG9L=Y0Hhe6GAtOxUJ1R4wkVmXn7A-Vgxndw@mail.gmail.com>
 
-On Mon, Jan 08, 2024 at 10:41:35PM -0600, Steve French wrote:
-> added the trivial change Christophe Suggested
-> 
+On Thu, 2024-01-04 at 11:36 -0500, Min Li wrote:
+> @@ -553,11 +554,11 @@ static int _sync_pll_output(struct idtcm *idtcm,
+>  	val =3D SYNCTRL1_MASTER_SYNC_RST;
+> =20
+>  	/* Place master sync in reset */
+> -	err =3D idtcm_write(idtcm, 0, sync_ctrl1, &val, sizeof(val));
+> +	err =3D idtcm_write(idtcm, sync_ctrl1, 0, &val, sizeof(val));
+>  	if (err)
+>  		return err;
 
-Thanks, Steve.
+I'm sorry for the late feedback: I lost track the last replies in the
+previous revision and later I was on PTO.
 
-regards,
-dan carpenter
+Let me extract the relevant slice from such thread:
+
+On  Wed, 13 Dec 2023 21:04:07 +0000 Min Li wrote:
+> > My reading is that this patch reverses the usage of module and regaddr.
+> > F.e. the following hunk:
+> >=20
+> > @@ -553,11 +554,11 @@ static int _sync_pll_output(struct idtcm *idtcm,
+> > 	val =3D SYNCTRL1_MASTER_SYNC_RST;
+> >=20
+> > 	/* Place master sync in reset */
+> > 	err =3D idtcm_write(idtcm, 0, sync_ctrl1, &val, sizeof(val));
+> > 	err =3D idtcm_write(idtcm, sync_ctrl1, 0, &val, sizeof(val));
+> > 	if (err)
+> > 		return err;
+> >=20
+> > 	err =3D idtcm_write(idtcm, 0, sync_ctrl0, &sync_src, sizeof(sync_src))=
+;
+> > 	err =3D idtcm_write(idtcm, sync_ctrl0, 0, &sync_src, sizeof(sync_src))=
+;
+> > 	if (err)
+> > 		return err;
+> >=20
+> > If that is really intended I think it needs to be explained, or possibl=
+y a
+> > separate patch.
+>
+> Hi Simon
+> sync_ctrl0/1 was meant to be a module and it was in a wrong place.=C2=A0
+> And this patch is just correcting it.
+
+Then you need to move this chunk (and all the later on swapping the
+'address' and the 'module' argument in a separate patch. Mixing this
+fix and  the address space extension is confusing.
+
+Additionally we are currently preparing the net-next PR for 6.8 and I
+don't feel very confident to apply such a large refactor this late. I
+think it should be better postpone to the next cycle.
+
+Cheers,
+
+Paolo
 
 
