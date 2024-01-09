@@ -1,174 +1,164 @@
-Return-Path: <linux-kernel+bounces-21247-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21248-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 543FE828C7B
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 19:22:38 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B9E68828C7D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 19:22:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BE1611F28721
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 18:22:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 49BD2B24E6D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 18:22:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6C293C46B;
-	Tue,  9 Jan 2024 18:21:24 +0000 (UTC)
-Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE1073C6BC;
+	Tue,  9 Jan 2024 18:22:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eZkbIMM/"
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF5CC3C470
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 18:21:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-35fe8c398a2so24453515ab.2
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 10:21:22 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3C313C68E;
+	Tue,  9 Jan 2024 18:22:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1d41bb4da91so15600515ad.0;
+        Tue, 09 Jan 2024 10:22:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704824541; x=1705429341; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=k4A842bIbNaLxIo03lzXt0/VhyZzfulbNd4Jc/GgvJg=;
+        b=eZkbIMM/OXBLA834+i0Re8gizkmALs8+6ruF88bZhAQpYPMp9/vTXz6FM+I21RkJj/
+         GKPVFdsicx3ICpWcjVmQnAq5f8IbTxNK6wh9q/kjUoE2vyrWBBxVWBICLuvBMa1DcwXc
+         Kbw7CSu0nf43geyJMBvRAO9tshY7KVDCYvT/zHTAvKuFg7DM8jHaE/ufUjl5Fk+N+4qF
+         Z1Z+Cz6RHp5Utb1mGkPJMIjixxW3+5CoOeFyofF1NeFW8onuyjf6Qxwz3mOVExCDRAcS
+         HlvwgWW8EZ/PkyQu8ufu0+Yf75zHO+XZsYbG94LlStQbJ36TGTZrq0yfVvoFtpkf3fZ2
+         GGkw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704824482; x=1705429282;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=qVC59Vc23lgT6cCDMP/0LxeIGJAbvJ9xzH67hQSixik=;
-        b=cX9XqtVHhxOGLy7D3l8yJU1/WZ8ugaQSHrBYAeCUr9qIYlj8Y3gUzNIyeVKAZrIZbu
-         qO9nlZYJ+mc+Bs5BDwBUmacRY0B5w+FeAxZAO2a29zr4geq3wJw2YZuoz6B5pkGcQ4RR
-         cyViTNF/BSqXzOREjYDe0nRFyCHffOSJ2+Co1xyZf3fOWyqGhVQclZzJ3DsAxWbpOjSb
-         LGF9F4LqK0D4CbqP57RKaaVYINy0prp9mlAHe93Rh4DiXlgsR9awdGqMzFp84BtHW4ao
-         6TIgYxqkadqQMiIpBj+TxxLzuPX/Sl0J5QUiGcgD9dsMaaPpTjf6biZWfO49J2DdDVic
-         A3RQ==
-X-Gm-Message-State: AOJu0YxMe0QHxHBbLqQ+VLKMoBCFBSnYFWxVXd/ubEK/GwZ3bpmfPjQk
-	n+K06pJmvweipRNm60UU+jmqBblweP91TOFpftUYvxG+/jg5
-X-Google-Smtp-Source: AGHT+IERKeoTEFtGwaMVTAC83n/K6i2RlH970TbrnaxqeQCzDF3WTECRu6bDMsSSRc8x7je4/lvtmWezux6R8KExIjDPXOCxk1v3
+        d=1e100.net; s=20230601; t=1704824541; x=1705429341;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=k4A842bIbNaLxIo03lzXt0/VhyZzfulbNd4Jc/GgvJg=;
+        b=YsIreEoRPYQGT466m2hJ3yEgVO8u05WY/t7oqSLxYTTL3dkyWBuNUceTWhSogE7TTs
+         WOQm0LPJH80HUEJYf8PvWQb+u76A8Q5QZwKKzYgTZ8ctQb7dFYo4RHZlXEeFkZ4/xeRX
+         NnCE2MD0VoDMvP9atl+EE8iuX0eP1LgnDEaNVTQYolU/E72FG1UMtiztUwfEiHHFBsbO
+         N2cd0UPHZc8+DUAiFie/zcTJXOIy2zNRpdfsvo3tswVRETW/4ttVbRX0exoBDP5io0+v
+         eOjIxz7LYvw1Dau2tuVJp4JPKvBxHt0v2cPnQBmJEksNZP4bd46lI8tx1cTiRTIAox0u
+         JPLQ==
+X-Gm-Message-State: AOJu0YyCVJa8/FN94GYWEWL3SWE7GzpWYw+bvm+aaEOSMGqvKLjGrQQz
+	qx8fCr4snoPPRvXX0lYz1+k=
+X-Google-Smtp-Source: AGHT+IHnNJgT4Frcmf+mu0NObp6XPVh7FkAVBM9nfEuBx/+VqBzGvs5E5OOVp4iBa8sQu9sssKuqoA==
+X-Received: by 2002:a17:903:32c3:b0:1d4:1a55:6e70 with SMTP id i3-20020a17090332c300b001d41a556e70mr3390318plr.113.1704824540985;
+        Tue, 09 Jan 2024 10:22:20 -0800 (PST)
+Received: from localhost ([2a00:79e1:2e00:1301:e1c5:6354:b45d:8ffc])
+        by smtp.gmail.com with ESMTPSA id jf15-20020a170903268f00b001d3e6f58e5esm2104217plb.6.2024.01.09.10.22.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Jan 2024 10:22:20 -0800 (PST)
+From: Rob Clark <robdclark@gmail.com>
+To: dri-devel@lists.freedesktop.org
+Cc: linux-arm-msm@vger.kernel.org,
+	freedreno@lists.freedesktop.org,
+	Rob Clark <robdclark@chromium.org>,
+	Rob Clark <robdclark@gmail.com>,
+	Abhinav Kumar <quic_abhinavk@quicinc.com>,
+	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+	Sean Paul <sean@poorly.run>,
+	Marijn Suijten <marijn.suijten@somainline.org>,
+	David Airlie <airlied@gmail.com>,
+	Daniel Vetter <daniel@ffwll.ch>,
+	linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] Revert "drm/msm/gpu: Push gpu lock down past runpm"
+Date: Tue,  9 Jan 2024 10:22:17 -0800
+Message-ID: <20240109182218.193804-1-robdclark@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1a6b:b0:360:6243:433f with SMTP id
- w11-20020a056e021a6b00b003606243433fmr652670ilv.1.1704824482075; Tue, 09 Jan
- 2024 10:21:22 -0800 (PST)
-Date: Tue, 09 Jan 2024 10:21:22 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000a89b3d060e876153@google.com>
-Subject: [syzbot] [gfs2?] KMSAN: uninit-value in inode_go_dump (3)
-From: syzbot <syzbot+82373528417bbb67ec62@syzkaller.appspotmail.com>
-To: agruenba@redhat.com, gfs2@lists.linux.dev, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-Hello,
+From: Rob Clark <robdclark@chromium.org>
 
-syzbot found the following issue on:
+This reverts commit abe2023b4cea192ab266b351fd38dc9dbd846df0.
 
-HEAD commit:    2639772a11c8 get_maintainer: remove stray punctuation when..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=17090a91e80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=d4130d4bb32c48ef
-dashboard link: https://syzkaller.appspot.com/bug?extid=82373528417bbb67ec62
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: i386
+Changing the locking order means that scheduler/msm_job_run() can race
+with the recovery kthread worker, with the result that the GPU gets an
+extra runpm get when we are trying to power it off.  Leaving the GPU in
+an unrecovered state.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+I'll need to come up with a different scheme for appeasing lockdep.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/8ce611d4ffb7/disk-2639772a.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/b5d39093f7c1/vmlinux-2639772a.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/dfc8359e9375/bzImage-2639772a.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+82373528417bbb67ec62@syzkaller.appspotmail.com
-
-gfs2: fsid=syz:syz.0: G:  s:SH n:2/13 f:qobnN t:SH d:EX/0 a:0 v:0 r:3 m:20 p:1
-gfs2: fsid=syz:syz.0:  H: s:SH f:eEcH e:0 p:0 [(none)] init_inodes+0x125/0x510 fs/gfs2/ops_fstype.c:884
-=====================================================
-BUG: KMSAN: uninit-value in inode_go_dump+0x471/0x4b0 fs/gfs2/glops.c:549
- inode_go_dump+0x471/0x4b0 fs/gfs2/glops.c:549
- gfs2_dump_glock+0x2219/0x2340 fs/gfs2/glock.c:2373
- gfs2_consist_inode_i+0x19f/0x220 fs/gfs2/util.c:456
- gfs2_dinode_in fs/gfs2/glops.c:470 [inline]
- gfs2_inode_refresh+0xf42/0x1550 fs/gfs2/glops.c:490
- inode_go_instantiate+0x6e/0xc0 fs/gfs2/glops.c:509
- gfs2_instantiate+0x26f/0x4b0 fs/gfs2/glock.c:454
- gfs2_glock_holder_ready fs/gfs2/glock.c:1319 [inline]
- gfs2_glock_wait+0x2a4/0x3e0 fs/gfs2/glock.c:1339
- gfs2_glock_nq+0x1d9f/0x2a00 fs/gfs2/glock.c:1579
- gfs2_glock_nq_init fs/gfs2/glock.h:237 [inline]
- init_journal+0x1208/0x38b0 fs/gfs2/ops_fstype.c:790
- init_inodes+0x125/0x510 fs/gfs2/ops_fstype.c:884
- gfs2_fill_super+0x3c05/0x42a0 fs/gfs2/ops_fstype.c:1263
- get_tree_bdev+0x6b5/0x8f0 fs/super.c:1598
- gfs2_get_tree+0x5c/0x340 fs/gfs2/ops_fstype.c:1341
- vfs_get_tree+0xa5/0x520 fs/super.c:1771
- do_new_mount+0x68d/0x1550 fs/namespace.c:3337
- path_mount+0x73d/0x1f20 fs/namespace.c:3664
- do_mount fs/namespace.c:3677 [inline]
- __do_sys_mount fs/namespace.c:3886 [inline]
- __se_sys_mount+0x725/0x810 fs/namespace.c:3863
- __ia32_sys_mount+0xe3/0x150 fs/namespace.c:3863
- do_syscall_32_irqs_on arch/x86/entry/common.c:165 [inline]
- __do_fast_syscall_32+0xa2/0x100 arch/x86/entry/common.c:321
- do_fast_syscall_32+0x37/0x70 arch/x86/entry/common.c:346
- do_SYSENTER_32+0x1f/0x30 arch/x86/entry/common.c:384
- entry_SYSENTER_compat_after_hwframe+0x70/0x7a
-
-Uninit was created at:
- __alloc_pages+0x9a4/0xe00 mm/page_alloc.c:4591
- alloc_pages_mpol+0x62b/0x9d0 mm/mempolicy.c:2133
- alloc_pages+0x1be/0x1e0 mm/mempolicy.c:2204
- alloc_slab_page mm/slub.c:1870 [inline]
- allocate_slab mm/slub.c:2017 [inline]
- new_slab+0x421/0x1570 mm/slub.c:2070
- ___slab_alloc+0x13db/0x33d0 mm/slub.c:3223
- __slab_alloc mm/slub.c:3322 [inline]
- __slab_alloc_node mm/slub.c:3375 [inline]
- slab_alloc_node mm/slub.c:3468 [inline]
- slab_alloc mm/slub.c:3486 [inline]
- __kmem_cache_alloc_lru mm/slub.c:3493 [inline]
- kmem_cache_alloc_lru+0x552/0x970 mm/slub.c:3509
- alloc_inode_sb include/linux/fs.h:2937 [inline]
- gfs2_alloc_inode+0x66/0x210 fs/gfs2/super.c:1554
- alloc_inode+0x83/0x440 fs/inode.c:261
- iget5_locked+0xa9/0x210 fs/inode.c:1271
- gfs2_inode_lookup+0xbe/0x1440 fs/gfs2/inode.c:124
- gfs2_lookup_root fs/gfs2/ops_fstype.c:460 [inline]
- init_sb+0xe62/0x1880 fs/gfs2/ops_fstype.c:527
- gfs2_fill_super+0x327e/0x42a0 fs/gfs2/ops_fstype.c:1230
- get_tree_bdev+0x6b5/0x8f0 fs/super.c:1598
- gfs2_get_tree+0x5c/0x340 fs/gfs2/ops_fstype.c:1341
- vfs_get_tree+0xa5/0x520 fs/super.c:1771
- do_new_mount+0x68d/0x1550 fs/namespace.c:3337
- path_mount+0x73d/0x1f20 fs/namespace.c:3664
- do_mount fs/namespace.c:3677 [inline]
- __do_sys_mount fs/namespace.c:3886 [inline]
- __se_sys_mount+0x725/0x810 fs/namespace.c:3863
- __ia32_sys_mount+0xe3/0x150 fs/namespace.c:3863
- do_syscall_32_irqs_on arch/x86/entry/common.c:165 [inline]
- __do_fast_syscall_32+0xa2/0x100 arch/x86/entry/common.c:321
- do_fast_syscall_32+0x37/0x70 arch/x86/entry/common.c:346
- do_SYSENTER_32+0x1f/0x30 arch/x86/entry/common.c:384
- entry_SYSENTER_compat_after_hwframe+0x70/0x7a
-
-CPU: 0 PID: 6179 Comm: syz-executor.5 Not tainted 6.7.0-rc7-syzkaller-00051-g2639772a11c8 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
-=====================================================
-
-
+Signed-off-by: Rob Clark <robdclark@chromium.org>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ drivers/gpu/drm/msm/msm_gpu.c        | 11 +++++------
+ drivers/gpu/drm/msm/msm_ringbuffer.c |  7 +++++--
+ 2 files changed, 10 insertions(+), 8 deletions(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/drivers/gpu/drm/msm/msm_gpu.c b/drivers/gpu/drm/msm/msm_gpu.c
+index 095390774f22..655002b21b0d 100644
+--- a/drivers/gpu/drm/msm/msm_gpu.c
++++ b/drivers/gpu/drm/msm/msm_gpu.c
+@@ -751,12 +751,14 @@ void msm_gpu_submit(struct msm_gpu *gpu, struct msm_gem_submit *submit)
+ 	struct msm_ringbuffer *ring = submit->ring;
+ 	unsigned long flags;
+ 
+-	pm_runtime_get_sync(&gpu->pdev->dev);
++	WARN_ON(!mutex_is_locked(&gpu->lock));
+ 
+-	mutex_lock(&gpu->lock);
++	pm_runtime_get_sync(&gpu->pdev->dev);
+ 
+ 	msm_gpu_hw_init(gpu);
+ 
++	submit->seqno = submit->hw_fence->seqno;
++
+ 	update_sw_cntrs(gpu);
+ 
+ 	/*
+@@ -781,11 +783,8 @@ void msm_gpu_submit(struct msm_gpu *gpu, struct msm_gem_submit *submit)
+ 	gpu->funcs->submit(gpu, submit);
+ 	gpu->cur_ctx_seqno = submit->queue->ctx->seqno;
+ 
+-	hangcheck_timer_reset(gpu);
+-
+-	mutex_unlock(&gpu->lock);
+-
+ 	pm_runtime_put(&gpu->pdev->dev);
++	hangcheck_timer_reset(gpu);
+ }
+ 
+ /*
+diff --git a/drivers/gpu/drm/msm/msm_ringbuffer.c b/drivers/gpu/drm/msm/msm_ringbuffer.c
+index e0ed27739449..548f5266a7d3 100644
+--- a/drivers/gpu/drm/msm/msm_ringbuffer.c
++++ b/drivers/gpu/drm/msm/msm_ringbuffer.c
+@@ -21,8 +21,6 @@ static struct dma_fence *msm_job_run(struct drm_sched_job *job)
+ 
+ 	msm_fence_init(submit->hw_fence, fctx);
+ 
+-	submit->seqno = submit->hw_fence->seqno;
+-
+ 	mutex_lock(&priv->lru.lock);
+ 
+ 	for (i = 0; i < submit->nr_bos; i++) {
+@@ -35,8 +33,13 @@ static struct dma_fence *msm_job_run(struct drm_sched_job *job)
+ 
+ 	mutex_unlock(&priv->lru.lock);
+ 
++	/* TODO move submit path over to using a per-ring lock.. */
++	mutex_lock(&gpu->lock);
++
+ 	msm_gpu_submit(gpu, submit);
+ 
++	mutex_unlock(&gpu->lock);
++
+ 	return dma_fence_get(submit->hw_fence);
+ }
+ 
+-- 
+2.43.0
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
