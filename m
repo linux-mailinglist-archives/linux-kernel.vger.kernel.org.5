@@ -1,231 +1,157 @@
-Return-Path: <linux-kernel+bounces-20821-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20822-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA6D88285AA
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 13:01:31 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id AE69F8285AF
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 13:02:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CEE531C23CE0
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 12:01:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 25EADB235CA
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 12:02:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6A64374E7;
-	Tue,  9 Jan 2024 12:01:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFD64374F2;
+	Tue,  9 Jan 2024 12:02:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="aEk/nm6D"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="bd+ciOEX"
+Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60593374C4
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 12:01:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1704801674;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=dEeODo/3WkaZKAKSZyL7V1i37f7B61KJOxjO/Qj4MAs=;
-	b=aEk/nm6DzvJPeDuR4hLbk4bnJjSZJlo8pcHNF2hnMDa00JMkaslDlBfdEtcajTmiR2CniK
-	dvxXPOPBwIjYtjSEkrklV5RHBzPFpdgjqEaU/CLHJiZknYyT4CxIzu9SMwsHfKVz5EG1VF
-	yMag+kkH0yenIGZkPc4A9XhzuF3BXvU=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-588-0ikkAoYHPUmnLXuJJ33cZQ-1; Tue, 09 Jan 2024 07:01:13 -0500
-X-MC-Unique: 0ikkAoYHPUmnLXuJJ33cZQ-1
-Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-33770774fe4so735011f8f.3
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 04:01:12 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E530E381A5
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 12:02:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com [209.85.160.200])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 7D1093F5B3
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 12:02:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+	s=20210705; t=1704801723;
+	bh=L1elb+jQDH8Ds4j0H9TwFb8qhYJOMk8842XOLWCtnwk=;
+	h=From:In-Reply-To:References:Mime-Version:Date:Message-ID:Subject:
+	 To:Cc:Content-Type;
+	b=bd+ciOEX3IPwfxFJXjKV2I/Wv0gx06Q0MgSrKjmYirIHn77p623UrjLpSVLPXRE1I
+	 rANAJOicubM2wq/Qq2+rrQ0uiCxQHE0eDP56OECPD45MJb5s+i2kH66rCt5Ec4sSqV
+	 ehvzHdqPp2eVtdTuTYk/k1QO5RDH87k75qnI69VXIEplLzxMDQs9Zr0TNhWfsdzLNt
+	 mawJEVix2+AfIJsnEK4Kkm0K76nBCZaYK3SWFrR4oreI1EbPgIHS4CIADuQqDYGjdV
+	 5uIz15/gX6M4Ez7DTP00UO2XN8hV9VK21vEn+0D+82QFu2itT3qkI6/sr9BQ4kOiU5
+	 6/LiI2KwYqA5A==
+Received: by mail-qt1-f200.google.com with SMTP id d75a77b69052e-4299db388d1so11968291cf.1
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 04:02:03 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704801672; x=1705406472;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dEeODo/3WkaZKAKSZyL7V1i37f7B61KJOxjO/Qj4MAs=;
-        b=uLrgUNUk5STg+CsgCZfc5Ud5kF8LDkqK7nz8HatpF08YxC7Guk6QsMAt98Mm7ZoTR6
-         geX12hQ+Gn81Z2gXjtOZBkkN0zDbG9xjf/a2gh5o6h8He3VNgppWdNfIy1wo332oGBx2
-         +cRfdZ+mPsUXCCP8rvJ8HORx874SczGgpLuoWQtnOyE+jhgWPisMLExuQypKlAbEigda
-         vVkYxQCRjlKCdL8cykAYrqTcz2/RqOfV0quQ9Z7SNCF74yhEi8glwzOngyQtt14L7RpW
-         30uaCUIj+ChnobLTiBG1iNiyn2CpKdbsLklIRZ4EFL3vLzTt/ZXZ5vQmc73iWlJD+7tb
-         d06w==
-X-Gm-Message-State: AOJu0YzKDSEJKGAzruSgrYkSyOqHHbnOtsQ7wgBJsoerjSFlNb8Sdoqn
-	rQUcMQji2ggpDYnWtF8KWocEAP/rrO8OhyR43DOt/+bCtkxbqLa+ztfyLo/Lvx9ePttG+xrMtYa
-	7lMvTuhM00xAXc8TzHRKYHnQ36rE1+vxn
-X-Received: by 2002:adf:fc8d:0:b0:336:8ae3:5269 with SMTP id g13-20020adffc8d000000b003368ae35269mr456366wrr.48.1704801670444;
-        Tue, 09 Jan 2024 04:01:10 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IE7LdAdyh1cKBiDUzbMDe2ZYxxOAJv6hLjHpT9cHluzoVBNMs2gUQlFBe9d+P1S6D5rMjI/hg==
-X-Received: by 2002:adf:fc8d:0:b0:336:8ae3:5269 with SMTP id g13-20020adffc8d000000b003368ae35269mr456358wrr.48.1704801670061;
-        Tue, 09 Jan 2024 04:01:10 -0800 (PST)
-Received: from redhat.com ([2.52.133.193])
-        by smtp.gmail.com with ESMTPSA id t11-20020a5d690b000000b003375009accesm2230101wru.50.2024.01.09.04.01.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Jan 2024 04:01:09 -0800 (PST)
-Date: Tue, 9 Jan 2024 07:01:05 -0500
-From: "Michael S. Tsirkin" <mst@redhat.com>
-To: Hou Tao <houtao@huaweicloud.com>
-Cc: linux-fsdevel@vger.kernel.org, Miklos Szeredi <miklos@szeredi.hu>,
-	Vivek Goyal <vgoyal@redhat.com>,
-	Stefan Hajnoczi <stefanha@redhat.com>, linux-kernel@vger.kernel.org,
-	virtualization@lists.linux.dev, houtao1@huawei.com
-Subject: Re: [PATCH] virtiofs: limit the length of ITER_KVEC dio by
- max_nopage_rw
-Message-ID: <20240109065948-mutt-send-email-mst@kernel.org>
-References: <20240103105929.1902658-1-houtao@huaweicloud.com>
+        d=1e100.net; s=20230601; t=1704801722; x=1705406522;
+        h=cc:to:subject:message-id:date:mime-version:references:in-reply-to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=L1elb+jQDH8Ds4j0H9TwFb8qhYJOMk8842XOLWCtnwk=;
+        b=EhzPl6sQsGS8dT3p+A3KmT/w3Z2c3xhSKTTefR6FQ9eIhhbS7XIYCBpepcW1pPN4zA
+         pLvOm8ju883h8uTwwtdXdWBv9N4DAyXLBsJpbOaZ6UMEOxpVyTqFTrWG75xkBM0FxAkv
+         bYvAgK1QARrb27wcogA46iaFSjpVAnbLQloPLQs43DtwMooYOY+Vza5XupWj3IlMi2EV
+         hWkbDq+nrb0/PBY1SA7OtCT3NN+aqYB0hBNrLk7xIbRVCL+aCTp4zqp4Pd6l2qdNMjLS
+         5BAVAM2JEIOlECvU653ah609vgZm2Njeh2PjIzfWQ66ZVQN7x9N80/1yMV+5fIA4EyhC
+         T0Bw==
+X-Gm-Message-State: AOJu0YwSKjFmwxrNAKniFB1lZ2eUqqns6yW95uWRcGfiHWlRQ06Xesk9
+	a7zZeqH5oTy6w6Nqu1aWl09RFaJMie/1kb0Cey9uwvSDy+NHNDuFp6dVVTso/zTW3HnqZuHAS7y
+	ZmL0f4uPg0Lb01Nl7e6Dkdjia0hSckZUGXQyj9Do3NBNF/vg7x9vTihlifc/y+lgS
+X-Received: by 2002:a05:622a:296:b0:429:8c55:4a47 with SMTP id z22-20020a05622a029600b004298c554a47mr3134589qtw.49.1704801722318;
+        Tue, 09 Jan 2024 04:02:02 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHMPXlm4YerbG4iFFrjePx491jhh9/Le2ba+OtVW+O9m5xRSQ0+oOgEThByi2GFboNj49o1lT5y0Tt5RnHjosQ=
+X-Received: by 2002:a05:622a:296:b0:429:8c55:4a47 with SMTP id
+ z22-20020a05622a029600b004298c554a47mr3134568qtw.49.1704801722008; Tue, 09
+ Jan 2024 04:02:02 -0800 (PST)
+Received: from 348282803490 named unknown by gmailapi.google.com with
+ HTTPREST; Tue, 9 Jan 2024 04:02:01 -0800
+From: Emil Renner Berthing <emil.renner.berthing@canonical.com>
+In-Reply-To: <20240108-majorette-overtly-4ec65d0a15e9@spud>
+References: <20240103132852.298964-1-emil.renner.berthing@canonical.com>
+ <20240103132852.298964-4-emil.renner.berthing@canonical.com> <20240108-majorette-overtly-4ec65d0a15e9@spud>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240103105929.1902658-1-houtao@huaweicloud.com>
+Mime-Version: 1.0
+Date: Tue, 9 Jan 2024 04:02:01 -0800
+Message-ID: <CAJM55Z_2zhELW3E7p94J05We17xTC2Rejs5AigNJOHCGHVr_zg@mail.gmail.com>
+Subject: Re: [PATCH v2 3/8] riscv: dts: thead: Add TH1520 pin control nodes
+To: Conor Dooley <conor@kernel.org>, 
+	Emil Renner Berthing <emil.renner.berthing@canonical.com>
+Cc: linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-riscv@lists.infradead.org, 
+	Linus Walleij <linus.walleij@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Jisheng Zhang <jszhang@kernel.org>, Guo Ren <guoren@kernel.org>, Fu Wei <wefu@redhat.com>, 
+	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	Drew Fustini <dfustini@baylibre.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed, Jan 03, 2024 at 06:59:29PM +0800, Hou Tao wrote:
-> From: Hou Tao <houtao1@huawei.com>
-> 
-> When trying to insert a 10MB kernel module kept in a virtiofs with cache
-> disabled, the following warning was reported:
-> 
->   ------------[ cut here ]------------
->   WARNING: CPU: 2 PID: 439 at mm/page_alloc.c:4544 ......
->   Modules linked in:
->   CPU: 2 PID: 439 Comm: insmod Not tainted 6.7.0-rc7+ #33
->   Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), ......
->   RIP: 0010:__alloc_pages+0x2c4/0x360
->   ......
->   Call Trace:
->    <TASK>
->    ? __warn+0x8f/0x150
->    ? __alloc_pages+0x2c4/0x360
->    __kmalloc_large_node+0x86/0x160
->    __kmalloc+0xcd/0x140
->    virtio_fs_enqueue_req+0x240/0x6d0
->    virtio_fs_wake_pending_and_unlock+0x7f/0x190
->    queue_request_and_unlock+0x58/0x70
->    fuse_simple_request+0x18b/0x2e0
->    fuse_direct_io+0x58a/0x850
->    fuse_file_read_iter+0xdb/0x130
->    __kernel_read+0xf3/0x260
->    kernel_read+0x45/0x60
->    kernel_read_file+0x1ad/0x2b0
->    init_module_from_file+0x6a/0xe0
->    idempotent_init_module+0x179/0x230
->    __x64_sys_finit_module+0x5d/0xb0
->    do_syscall_64+0x36/0xb0
->    entry_SYSCALL_64_after_hwframe+0x6e/0x76
->    ......
->    </TASK>
->   ---[ end trace 0000000000000000 ]---
-> 
-> The warning happened as follow. In copy_args_to_argbuf(), virtiofs uses
-> kmalloc-ed memory as bound buffer for fuse args, but
-> fuse_get_user_pages() only limits the length of fuse arg by max_read or
-> max_write for IOV_KVEC io (e.g., kernel_read_file from finit_module()).
-> For virtiofs, max_read is UINT_MAX, so a big read request which is about
-> 10MB is passed to copy_args_to_argbuf(), kmalloc() is called in turn
-> with len=10MB, and triggers the warning in __alloc_pages():
-> WARN_ON_ONCE_GFP(order > MAX_ORDER, gfp)).
-> 
-> A feasible solution is to limit the value of max_read for virtiofs, so
-> the length passed to kmalloc() will be limited. However it will affects
-> the max read size for ITER_IOVEC io and the value of max_write also needs
-> limitation. So instead of limiting the values of max_read and max_write,
-> introducing max_nopage_rw to cap both the values of max_read and
-> max_write when the fuse dio read/write request is initiated from kernel.
-> 
-> Considering that fuse read/write request from kernel is uncommon and to
-> decrease the demand for large contiguous pages, set max_nopage_rw as
-> 256KB instead of KMALLOC_MAX_SIZE - 4096 or similar.
-> 
-> Fixes: a62a8ef9d97d ("virtio-fs: add virtiofs filesystem")
-> Signed-off-by: Hou Tao <houtao1@huawei.com>
+Conor Dooley wrote:
+> On Wed, Jan 03, 2024 at 02:28:40PM +0100, Emil Renner Berthing wrote:
+> > Add nodes for pin controllers on the T-Head TH1520 RISC-V SoC.
+> >
+> > Signed-off-by: Emil Renner Berthing <emil.renner.berthing@canonical.com>
+> > ---
+> >  .../boot/dts/thead/th1520-beaglev-ahead.dts   |  4 ++++
+> >  .../dts/thead/th1520-lichee-module-4a.dtsi    |  4 ++++
+> >  arch/riscv/boot/dts/thead/th1520.dtsi         | 24 +++++++++++++++++++
+> >  3 files changed, 32 insertions(+)
+> >
+> > diff --git a/arch/riscv/boot/dts/thead/th1520-beaglev-ahead.dts b/arch/riscv/boot/dts/thead/th1520-beaglev-ahead.dts
+> > index 70e8042c8304..6c56318a8705 100644
+> > --- a/arch/riscv/boot/dts/thead/th1520-beaglev-ahead.dts
+> > +++ b/arch/riscv/boot/dts/thead/th1520-beaglev-ahead.dts
+> > @@ -44,6 +44,10 @@ &osc_32k {
+> >  	clock-frequency = <32768>;
+> >  };
+> >
+> > +&aonsys_clk {
+> > +	clock-frequency = <73728000>;
+> > +};
+> > +
+> >  &apb_clk {
+> >  	clock-frequency = <62500000>;
+> >  };
+> > diff --git a/arch/riscv/boot/dts/thead/th1520-lichee-module-4a.dtsi b/arch/riscv/boot/dts/thead/th1520-lichee-module-4a.dtsi
+> > index a802ab110429..9865925be372 100644
+> > --- a/arch/riscv/boot/dts/thead/th1520-lichee-module-4a.dtsi
+> > +++ b/arch/riscv/boot/dts/thead/th1520-lichee-module-4a.dtsi
+> > @@ -25,6 +25,10 @@ &osc_32k {
+> >  	clock-frequency = <32768>;
+> >  };
+> >
+> > +&aonsys_clk {
+> > +	clock-frequency = <73728000>;
+> > +};
+> > +
+> >  &apb_clk {
+> >  	clock-frequency = <62500000>;
+> >  };
+> > diff --git a/arch/riscv/boot/dts/thead/th1520.dtsi b/arch/riscv/boot/dts/thead/th1520.dtsi
+> > index ba4d2c673ac8..e65a306ff575 100644
+> > --- a/arch/riscv/boot/dts/thead/th1520.dtsi
+> > +++ b/arch/riscv/boot/dts/thead/th1520.dtsi
+> > @@ -134,6 +134,12 @@ osc_32k: 32k-oscillator {
+> >  		#clock-cells = <0>;
+> >  	};
+> >
+> > +	aonsys_clk: aonsys-clk {
+> > +		compatible = "fixed-clock";
+> > +		clock-output-names = "aonsys_clk";
+> > +		#clock-cells = <0>;
+> > +	};
+>
+> Did this stuff sneak into this commit accidentally?
 
-Could this get some acks from virtio fs maintainers pls?
+Not really by accident no. It turns out the clock tree has gates for the bus
+clock of each pinctrl block and I think it's better to add this clock
+dependency to the bindings and driver up front.
 
+Since there is not yet any clock driver the initial device tree for the TH1520
+included the dummy apb_clk that two of the pinctrl blocks derive their clock
+from, but not the "aonsys" clock needed by the "always-on" pinctrl. I thought
+it was better to add this dummy clock with the only (so far) user of it, but if
+you have a better idea, let me know.
 
-> ---
->  fs/fuse/file.c      | 12 +++++++++++-
->  fs/fuse/fuse_i.h    |  3 +++
->  fs/fuse/inode.c     |  1 +
->  fs/fuse/virtio_fs.c |  6 ++++++
->  4 files changed, 21 insertions(+), 1 deletion(-)
-> 
-> diff --git a/fs/fuse/file.c b/fs/fuse/file.c
-> index a660f1f21540..f1beb7c0b782 100644
-> --- a/fs/fuse/file.c
-> +++ b/fs/fuse/file.c
-> @@ -1422,6 +1422,16 @@ static int fuse_get_user_pages(struct fuse_args_pages *ap, struct iov_iter *ii,
->  	return ret < 0 ? ret : 0;
->  }
->  
-> +static size_t fuse_max_dio_rw_size(const struct fuse_conn *fc,
-> +				   const struct iov_iter *iter, int write)
-> +{
-> +	unsigned int nmax = write ? fc->max_write : fc->max_read;
-> +
-> +	if (iov_iter_is_kvec(iter))
-> +		nmax = min(nmax, fc->max_nopage_rw);
-> +	return nmax;
-> +}
-> +
->  ssize_t fuse_direct_io(struct fuse_io_priv *io, struct iov_iter *iter,
->  		       loff_t *ppos, int flags)
->  {
-> @@ -1432,7 +1442,7 @@ ssize_t fuse_direct_io(struct fuse_io_priv *io, struct iov_iter *iter,
->  	struct inode *inode = mapping->host;
->  	struct fuse_file *ff = file->private_data;
->  	struct fuse_conn *fc = ff->fm->fc;
-> -	size_t nmax = write ? fc->max_write : fc->max_read;
-> +	size_t nmax = fuse_max_dio_rw_size(fc, iter, write);
->  	loff_t pos = *ppos;
->  	size_t count = iov_iter_count(iter);
->  	pgoff_t idx_from = pos >> PAGE_SHIFT;
-> diff --git a/fs/fuse/fuse_i.h b/fs/fuse/fuse_i.h
-> index 1df83eebda92..fc753cd34211 100644
-> --- a/fs/fuse/fuse_i.h
-> +++ b/fs/fuse/fuse_i.h
-> @@ -594,6 +594,9 @@ struct fuse_conn {
->  	/** Constrain ->max_pages to this value during feature negotiation */
->  	unsigned int max_pages_limit;
->  
-> +	/** Maximum read/write size when there is no page in request */
-> +	unsigned int max_nopage_rw;
-> +
->  	/** Input queue */
->  	struct fuse_iqueue iq;
->  
-> diff --git a/fs/fuse/inode.c b/fs/fuse/inode.c
-> index 2a6d44f91729..4cbbcb4a4b71 100644
-> --- a/fs/fuse/inode.c
-> +++ b/fs/fuse/inode.c
-> @@ -923,6 +923,7 @@ void fuse_conn_init(struct fuse_conn *fc, struct fuse_mount *fm,
->  	fc->user_ns = get_user_ns(user_ns);
->  	fc->max_pages = FUSE_DEFAULT_MAX_PAGES_PER_REQ;
->  	fc->max_pages_limit = FUSE_MAX_MAX_PAGES;
-> +	fc->max_nopage_rw = UINT_MAX;
->  
->  	INIT_LIST_HEAD(&fc->mounts);
->  	list_add(&fm->fc_entry, &fc->mounts);
-> diff --git a/fs/fuse/virtio_fs.c b/fs/fuse/virtio_fs.c
-> index 5f1be1da92ce..3aac31d45198 100644
-> --- a/fs/fuse/virtio_fs.c
-> +++ b/fs/fuse/virtio_fs.c
-> @@ -1452,6 +1452,12 @@ static int virtio_fs_get_tree(struct fs_context *fsc)
->  	/* Tell FUSE to split requests that exceed the virtqueue's size */
->  	fc->max_pages_limit = min_t(unsigned int, fc->max_pages_limit,
->  				    virtqueue_size - FUSE_HEADER_OVERHEAD);
-> +	/* copy_args_to_argbuf() uses kmalloc-ed memory as bounce buffer
-> +	 * for fuse args, so limit the total size of these args to prevent
-> +	 * the warning in __alloc_pages() and decrease the demand for large
-> +	 * contiguous pages.
-> +	 */
-> +	fc->max_nopage_rw = min(fc->max_nopage_rw, 256U << 10);
->  
->  	fsc->s_fs_info = fm;
->  	sb = sget_fc(fsc, virtio_fs_test_super, set_anon_super_fc);
-> -- 
-> 2.29.2
-
+/Emil
 
