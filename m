@@ -1,100 +1,147 @@
-Return-Path: <linux-kernel+bounces-20336-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20337-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B5D2827D74
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 04:44:39 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3EE48827D77
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 04:46:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1F9AD1F241DE
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 03:44:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CED8F1F23C9D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 03:46:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 905364699;
-	Tue,  9 Jan 2024 03:44:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3360753A4;
+	Tue,  9 Jan 2024 03:45:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="izpz8q5M"
-Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="YUX6y1tG"
+Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CCCC63A4
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 03:44:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E23FA4418
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 03:45:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2cd33336b32so32259601fa.0
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 19:44:27 -0800 (PST)
+Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2cca5d81826so32166471fa.2
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Jan 2024 19:45:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1704771866; x=1705376666; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1704771955; x=1705376755; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=1IirnRXaj1MUEQGJO0zbDoWzQpnWpqMe52m35Flc2QA=;
-        b=izpz8q5MBW1FRzVC7qdMo3hQyPRbaEk4+TOL1ioe9j63uZUwoBqJxVCZFpjTuUfka0
-         KdSlAmoE5GNOpTdfpKrfyZ7eAxGcO+CxbOTmODMp0+u6IHygISfNWc10yChNUlN96ckg
-         VNLrh/P3v+L/XcKKeiFahtPMxkhZAJ4yzQp4g=
+        bh=fd7/YRbFPwHwO9y5he5hBNzYN/gDqY/82MzLlZm9KnI=;
+        b=YUX6y1tG7xv77dbnHj+tbsPeKpGIO+31YWU1RrmrxfEg41rO0kFYBwQjuYwEH6ApTD
+         OXTteLB8dz+cu2W9Glu88ngzn7jSSIzj5/WQ5lQHBq41kHV0TOvh4rkcI4LqGR5PehIQ
+         ivDfsmlmdHju4c5zpL+ZAlWdL+rkBn1cTL1n0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704771866; x=1705376666;
+        d=1e100.net; s=20230601; t=1704771955; x=1705376755;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=1IirnRXaj1MUEQGJO0zbDoWzQpnWpqMe52m35Flc2QA=;
-        b=NgZbt4udW9q4CSiKz4B5VuRxrV9Uw+HNLvwnIa9OX2Mmgs2P9Lizjhnh4YsKdAURS6
-         EoE9MqLbdvkzRP22ai+XnRksAnIVgKlEGgVDEqttw2vf8tzr/3llW+r8T90i/d8ns4RA
-         Ap9/W5V/paNLrTDIYp/drVlcSs8yCKKl6AWJwqvYswn5cILNMMkyYq2uIGz0IRcqyB6N
-         samOWawbt55JttuPVi3tg+ueH/tCfFEvEU7+Y3VB2EqtoPuzKJJrUBvqsUk1O6+Za/Kh
-         dRl3OhcB2tKsm458eFTPugDYIdsqKrkeZ+dYfSDGzXIDK+/OzxMpH1qN3D4DR3WDdzf1
-         UGBw==
-X-Gm-Message-State: AOJu0YyMdymdiklCnK3adVVx/YNTUbKtFcyK/1JvsOfqWKLMxdAAT7vI
-	aLGiEfiOMztdQZUnNnG+vVTKiKrWd//jeH2hzTq/bn32SJVj
-X-Google-Smtp-Source: AGHT+IHYdJnZJ+ia5j3MDP+U7FWEJutaJ/CAtYrvXrMKolc4lrDjHs3uboOZeTMPAaG800e+FJBUDwDxKqaytC01MRg=
-X-Received: by 2002:a2e:9b18:0:b0:2cc:7718:edfe with SMTP id
- u24-20020a2e9b18000000b002cc7718edfemr2040200lji.41.1704771865390; Mon, 08
- Jan 2024 19:44:25 -0800 (PST)
+        bh=fd7/YRbFPwHwO9y5he5hBNzYN/gDqY/82MzLlZm9KnI=;
+        b=M3sIsSAthrKv/S1VsJG9eDMv8giMg1pusCJTpBK7AJNkwHnbfbQRd7XD2spSf3bnz5
+         qcDi9kKa0V+HffrIY5A4ZcGxAXsu3I74MLc62CRZabgPXF/Ux1Vkk/9DxSoV7AY4KBzY
+         3P+m5rSWQPAlTUdQaZeOSUBZTEcMpehRUzWg7IRjphiEsNSJZmTq+4vaGDJbMNJkwzvv
+         g9JTyO+XLrcdsaWTldAQKki5EPDd7TuVWNdSgt3tYiNPlWfZclxWNuqoMYwHbRMj/WHX
+         gsHx3vQxwHHXR5NU1iqAJB3N1kwlNaSleKgrv5ELUY8woKMVOdaKXNDB8VqX6ksC74S4
+         u/Xw==
+X-Gm-Message-State: AOJu0YyfXrB/CMFsJ0HQoTeo9Wp8eycuFScgzLxDKPoM6Vi7QyxSga60
+	vRMNuoUMD7VpWwzljZNMYK4ENGEZh1trIKjpDou2TEbsmNUz2jZFP2SWaBo=
+X-Google-Smtp-Source: AGHT+IEz8gHQeTkHleBOQVXUJi9TNmpfOEWm3/cRKrxK6wXP1Bm8y7NANfcHn1QPY9Df6/CM1zdVeVWY/y0P7EUByUg=
+X-Received: by 2002:a2e:7003:0:b0:2cd:417d:195e with SMTP id
+ l3-20020a2e7003000000b002cd417d195emr2052291ljc.49.1704771954850; Mon, 08 Jan
+ 2024 19:45:54 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240108204508.691739-1-nfraprado@collabora.com>
-In-Reply-To: <20240108204508.691739-1-nfraprado@collabora.com>
+References: <20231219082726.844508-1-wenst@chromium.org> <CAJZ5v0j2LTWt-vBLuDRk3aj0nK1Rmq5Np9QmzDe=_7RGq4rFiA@mail.gmail.com>
+In-Reply-To: <CAJZ5v0j2LTWt-vBLuDRk3aj0nK1Rmq5Np9QmzDe=_7RGq4rFiA@mail.gmail.com>
 From: Chen-Yu Tsai <wenst@chromium.org>
-Date: Tue, 9 Jan 2024 11:44:14 +0800
-Message-ID: <CAGXv+5G_7OA8m=KENsLbu3wig9D_LOA+oWswQK34wEHtzHXOhQ@mail.gmail.com>
-Subject: Re: [PATCH] ASoC: mediatek: mt8192: Check existence of dai_name
- before dereferencing
-To: =?UTF-8?B?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= <nfraprado@collabora.com>
-Cc: Mark Brown <broonie@kernel.org>, 
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, kernel@collabora.com, 
-	Jaroslav Kysela <perex@perex.cz>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, 
-	Liam Girdwood <lgirdwood@gmail.com>, Matthias Brugger <matthias.bgg@gmail.com>, 
-	=?UTF-8?Q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado_via_Alsa=2Ddevel?= <alsa-devel@alsa-project.org>, 
-	Rob Herring <robh@kernel.org>, Takashi Iwai <tiwai@suse.com>, linux-arm-kernel@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org, 
-	linux-sound@vger.kernel.org
+Date: Tue, 9 Jan 2024 11:45:43 +0800
+Message-ID: <CAGXv+5GX=7-4NVLtGtihEuNGbaeV3E+AwK=3iWqOwF5-XTyCaA@mail.gmail.com>
+Subject: Re: [PATCH] thermal/core: Correctly free tz->tzp in thermal zone
+ registration error path
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: Daniel Lezcano <daniel.lezcano@linaro.org>, Zhang Rui <rui.zhang@intel.com>, 
+	Lukasz Luba <lukasz.luba@arm.com>, linux-pm@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 9, 2024 at 4:47=E2=80=AFAM N=C3=ADcolas F. R. A. Prado
-<nfraprado@collabora.com> wrote:
+On Tue, Dec 19, 2023 at 11:28=E2=80=AFPM Rafael J. Wysocki <rafael@kernel.o=
+rg> wrote:
 >
-> Following commit 13f58267cda3 ("ASoC: soc.h: don't create dummy
-> Component via COMP_DUMMY()"), the dai_name field is only populated for
-> dummy components after the card is registered. This causes a null
-> pointer dereference in the mt8192-mt6359 sound card driver's probe
-> function when searching for a dai_name among all the card's dai links.
+> On Tue, Dec 19, 2023 at 9:27=E2=80=AFAM Chen-Yu Tsai <wenst@chromium.org>=
+ wrote:
+> >
+> > After commit 3d439b1a2ad3 ("thermal/core: Alloc-copy-free the thermal
+> > zone parameters structure"), the core now copies the thermal zone
+> > parameters structure, and frees it if an error happens during thermal
+> > zone device registration, or upon unregistration of the device.
+> >
+> > In the error path, if device_register() was called, then `tz` disappear=
+s
+> > before kfree(tz->tzp) happens, causing a NULL pointer deference crash.
+> >
+> > In my case, the error path was entered from the sbs power supply driver=
+,
+> > which through the power supply core registers a thermal zone *without
+> > trip points* for the battery temperature sensor. This combined with
+> > setting the default thermal governor to "power allocator", which
+> > *requires* trip_max, causes the thermal zone registration to error out.
+> >
+> > The error path should handle the two cases, one where device_register
+> > has not happened and the kobj hasn't been reference counted, and vice
+> > versa where it has. The original commit tried to cover the first case,
+> > but fails for the second. Fix this by adding kfree(tz->tzp) before
+> > put_device() to cover the second case, and check if `tz` is still valid
+> > before calling kfree(tz->tzp) to avoid crashing in the second case.
+> >
+> > Fixes: 3d439b1a2ad3 ("thermal/core: Alloc-copy-free the thermal zone pa=
+rameters structure")
+> > Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
+> > ---
+> > This includes the minimal changes to fix the crash. I suppose some othe=
+r
+> > things in the thermal core could be reworked:
+> > - Don't use "power allocator" for thermal zones without trip points
+> > - Move some of the thermal zone cleanup code into the release function
+> >
+> >  drivers/thermal/thermal_core.c | 6 +++++-
+> >  1 file changed, 5 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_c=
+ore.c
+> > index 2415dc50c31d..e47826d82062 100644
+> > --- a/drivers/thermal/thermal_core.c
+> > +++ b/drivers/thermal/thermal_core.c
+> > @@ -1392,12 +1392,16 @@ thermal_zone_device_register_with_trips(const c=
+har *type, struct thermal_trip *t
+> >  unregister:
+> >         device_del(&tz->device);
+> >  release_device:
+> > +       /* Free tz->tzp before tz goes away. */
+> > +       kfree(tz->tzp);
+> >         put_device(&tz->device);
+> >         tz =3D NULL;
+> >  remove_id:
+> >         ida_free(&thermal_tz_ida, id);
+> >  free_tzp:
+> > -       kfree(tz->tzp);
+> > +       /* If we arrived here before device_register() was called. */
+> > +       if (tz)
+> > +               kfree(tz->tzp);
+> >  free_tz:
+> >         kfree(tz);
+> >         return ERR_PTR(result);
+> > --
 >
-> Verify that the dai_name is non-null before passing it to strcmp. While
-> at it, also check that there's at least one codec.
->
-> Reported-by: "kernelci.org bot" <bot@kernelci.org>
-> Closes: https://linux.kernelci.org/test/case/id/6582cd6d992645c680e13478/
-> Fixes: 13f58267cda3 ("ASoC: soc.h: don't create dummy Component via COMP_=
-DUMMY()")
-> Signed-off-by: N=C3=ADcolas F. R. A. Prado <nfraprado@collabora.com>
+> Can you please test linux-next from today?  The issue addressed by
+> your patch should be fixed there.
 
-Reviewed-by: Chen-Yu Tsai <wenst@chromium.org>
-Tested-by: Chen-Yu Tsai <wenst@chromium.org>
+Sorry for the very late reply. Yes it does. Thanks.
 
-Audio now works again on my MT8192 Hayato.
+ChenYu
 
