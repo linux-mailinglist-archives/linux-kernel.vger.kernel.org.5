@@ -1,52 +1,43 @@
-Return-Path: <linux-kernel+bounces-21057-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21058-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F57C828929
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 16:40:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 87AC282892D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 16:41:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DEC9F1F24998
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 15:40:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AE7591C24344
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 15:41:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4115439FE8;
-	Tue,  9 Jan 2024 15:40:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9647B39FEE;
+	Tue,  9 Jan 2024 15:41:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Ai/7ZLiQ"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=web.de header.i=frank.scheiner@web.de header.b="kdcpbEYO"
+Received: from mout.web.de (mout.web.de [212.227.15.3])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B279D38DC1
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 15:40:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1704814810;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=S3u9frew4AnXnPrgkhRned9H0OvInDmYOObkWxIBfig=;
-	b=Ai/7ZLiQ2r4IeHFTjylc/NoriwsgMmEDoKASSSj9XwqtLM5iwaSShWKyp4YZsqdRyvJWb9
-	EsuWGegA8DoYWaK4kgU1fdtKeFxQD8DSn6/6WAwNn1/7GBpSc3AygzUEedidCCzOLTrKzU
-	bzbZi0/c3chm1BYZK8YVkb6FmIuVBB0=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-249-UzIOES_hN9Wt6QwKTVHf5A-1; Tue,
- 09 Jan 2024 10:40:05 -0500
-X-MC-Unique: UzIOES_hN9Wt6QwKTVHf5A-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id BFCAC29ABA1E;
-	Tue,  9 Jan 2024 15:40:04 +0000 (UTC)
-Received: from [10.22.9.97] (unknown [10.22.9.97])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 8C41B3C2E;
-	Tue,  9 Jan 2024 15:40:03 +0000 (UTC)
-Message-ID: <83981bdc-08e5-435b-bf09-c00c90a80870@redhat.com>
-Date: Tue, 9 Jan 2024 10:40:03 -0500
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E5D8364B4;
+	Tue,  9 Jan 2024 15:41:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
+	t=1704814846; x=1705419646; i=frank.scheiner@web.de;
+	bh=JApP6Az+WCyJ8LZWaJLAbWiRJ0Ez2KkG8ThNNGlpP1E=;
+	h=X-UI-Sender-Class:Date:To:Cc:References:Subject:From:
+	 In-Reply-To;
+	b=kdcpbEYOkBjRi5CFyWzdHPHM841bTRuqlYalXCvClPki02td9jsoeZ/xfppAyD0B
+	 feZ33uAdAy9mBKZ6PJD60NzCs7e1dF4nyDAxVrgnioIbrpC/HM+JsDX/VQpaFuoH2
+	 5RLGrNIHHVxvnBMBto77sByc5cNamhNemj8/RU27UkhY/barUxEx/rGPrV7YHiQ2F
+	 B1nATWvilxK5ctowfQhf6xeRcK1HrZWydEirPJPFnc/ylmiDNXRcLn81VLw34qCRE
+	 qL98RgPcF6jJ4NzG6sEgeVcMuYxJuO2hlowqJzLtIvEHYlilznFFo6muV5IBHohdF
+	 d6CsK0hYoGnAlhmvPA==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.30] ([79.200.211.69]) by smtp.web.de (mrweb006
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1MSZI5-1rl2aV1Y7t-00Ss1N; Tue, 09
+ Jan 2024 16:40:46 +0100
+Message-ID: <fe5f6e9b-02a2-42e9-8151-ae4b6fdba7e3@web.de>
+Date: Tue, 9 Jan 2024 16:40:45 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -54,121 +45,99 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] lockdep: Add missing graph_unlock in check_prev_add
+To: torvalds@linux-foundation.org
+Cc: =?UTF-8?B?VG9tw6HFoSBHbG96YXI=?= <tglozar@gmail.com>,
+ linux-kernel@vger.kernel.org, Linux-Arch <linux-arch@vger.kernel.org>,
+ linux-ia64@vger.kernel.org, debian-ia64 <debian-ia64@lists.debian.org>,
+ t2@t2sde.org
+References: <CAHk-=widprp4XoHUcsDe7e16YZjLYJWra-dK0hE1MnfPMf6C3Q@mail.gmail.com>
+Subject: Re: Linux 6.7
 Content-Language: en-US
-To: Xuewen Yan <xuewen.yan94@gmail.com>
-Cc: Xuewen Yan <xuewen.yan@unisoc.com>, peterz@infradead.org,
- mingo@redhat.com, will@kernel.org, boqun.feng@gmail.com,
- zhiguo.niu@unisoc.com, ke.wang@unisoc.com, linux-kernel@vger.kernel.org
-References: <20240105060456.15331-1-xuewen.yan@unisoc.com>
- <a8023072-0900-4be9-bb34-02850276404b@redhat.com>
- <CAB8ipk_hcbYbZhoV0ZCDH0smQPTz98CQH7wP=PjJS6kcxavpVg@mail.gmail.com>
-From: Waiman Long <longman@redhat.com>
-In-Reply-To: <CAB8ipk_hcbYbZhoV0ZCDH0smQPTz98CQH7wP=PjJS6kcxavpVg@mail.gmail.com>
+From: Frank Scheiner <frank.scheiner@web.de>
+In-Reply-To: <CAHk-=widprp4XoHUcsDe7e16YZjLYJWra-dK0hE1MnfPMf6C3Q@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:wWzEv5bAtpy6bP4LP7Hgh5gymAnXFNgcMqUwtQHO2xO2FXy8Wpi
+ 6Y8WxYKW6VOv17orN62phc2Q6pB14YwtLMYv3dhN4VSFB0oZ5gZ8UWtu2L7awoDtFAn3xas
+ /cZagUOMZ+u6G5fTE5mmxzFQEDXcVxqiS8Yq2z+v/Wi/bI0Ko46rzgbS7SutFk9vDxv8S/u
+ gZP+oX4nbcTJvGU9UsKFQ==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:ZUg6mkXc7wo=;03QlFNZkWXXFVW74jmZTa/XzOtb
+ S9SrukX8DLJkqG5/NxLv1RajQy9fZCUG8kSFiyHbRL+wwOJcDnM/mtJbG6bdnNyjDM049txGD
+ IL/lGmKTtnrVPQ8FkJw6ZfBZCYmgixEpLa/vxIBJ6wLU1NkrwiJE6JGHFNG8+mpYDOMKd1q1+
+ OCoCUD4lsdkvP1tJ+DMn6m/wZ2p2MB62Iyfd07wRADyYRHiFe10Vvcaum/SxyXhqt1SoYOXI+
+ tgUlCY5xjHfr0Sb3nqmPA03fT/Xi4SLWtJnY9ZQGgP78qVq45rlgK510lwL572YUJoJ8D9Vmw
+ 8S8Zq9qWGUjEjagwkC0qu2c65yqYJjOzMAqR5+5JecTI4N8MpHMk8+YpQ6oouVOjCgoW/6Dpz
+ dKqGBNyOZ+gcOScnyXr5YpZc+USAb2reVXuj8P6Wt4boU5DrSwiO6oeBNl0miPC28cqmpGk1v
+ xcQJaynvQkYIuBY0rdd7fVj2jVmFYmh7KjUK9TiDyAdTwE07149Kkr1EM92YC+rSRu9Nj0dlo
+ Lzwg3d42ed63AGQLKAw1Saqw44ler7QAmXFy0U0gaTYV/9Icl0WY0JCBlkIFXr9wQPSnztXaC
+ de2iRz5D1uDopy7Qf5ueFuRPrFNOdv+wuGjEX+yPNmUvR5QAIa0spFjxl4cMcetnlwSttwW3w
+ ZV5tluad7/UcJ/fiCXLDZ/hsl0nqTnFUxxm7txuupZls6guGkELgglw03NceCrvTCFsePRml5
+ DfTmosct9wCED9FrcepEq1rYCy2SSqZZYd7mT+q8czsvpDjC1qpUyMO1uSWpuG2OICsV1QnXz
+ 0wZ5tnbpxbomHZVf+TTKnrXfPxEpZb7nuETOIQOcg9JHXxakRFgf54YDywJQVYsS+Hn++cakW
+ L2FwqwSFkXf6RQED5PkWLPPJzGVOBqhWWjAW4vMpRS1MBQMSwpBgWP/NRREMVoOp2fMEJbMxr
+ nam2y3e4NArzSz91idhIU3xuzm8=
 
-On 1/9/24 00:11, Xuewen Yan wrote:
-> Hi Waiman
->
->
-> On Tue, Jan 9, 2024 at 11:51 AM Waiman Long <longman@redhat.com> wrote:
->> On 1/5/24 01:04, Xuewen Yan wrote:
->>> The check_prev_add() is held graph_lock, and it should unlock
->>> the graph_lock before return 0.
->>> But there is one condition where it will return 0 without unlock,
->>> that is:
->>>
->>> /* <prev> is not found in <next>::locks_before */
->>>        return 0;
->>>
->>> So add graph_unlock before return 0.
->>>
->>> Fixes: 3454a36d6a39 ("lockdep: Introduce lock_list::dep")
->>> Signed-off-by: Xuewen Yan <xuewen.yan@unisoc.com>
->>> Signed-off-by: Zhiguo Niu <zhiguo.niu@unisoc.com>
->>> ---
->>> Change in V2:
->>> -move the graph_unlock to check_prev_add from validate_chain(Boqun)
->>> -Add fix tag
->>> ---
->>> ---
->>>    kernel/locking/lockdep.c | 1 +
->>>    1 file changed, 1 insertion(+)
->>>
->>> diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
->>> index 151bd3de5936..c8602a251bec 100644
->>> --- a/kernel/locking/lockdep.c
->>> +++ b/kernel/locking/lockdep.c
->>> @@ -3178,6 +3178,7 @@ check_prev_add(struct task_struct *curr, struct held_lock *prev,
->>>                        }
->>>
->>>                        /* <prev> is not found in <next>::locks_before */
->>> +                     graph_unlock();
->>>                        return 0;
->>>                }
->>>        }
->> There are multiple places in check_prev_add() that will return 0. It
->> will be odd to have just one of them has a graph_unlock(). It makes the
->> code hard to understand. You should insert graph_unlock() in a place
->> that matches the other places where graph_unlock() will be called. My
->> suggestion is as follows:
->>
->> diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
->> index 151bd3de5936..d9f2df36332c 100644
->> --- a/kernel/locking/lockdep.c
->> +++ b/kernel/locking/lockdep.c
->> @@ -3252,7 +3252,7 @@ check_prevs_add(struct task_struct *curr, struct
->> held_loc>
->>                   if (hlock->check) {
->>                           int ret = check_prev_add(curr, hlock, next,
->> distance, &>
->>                           if (!ret)
->> -                               return 0;
->> +                               goto out_bug;
->>
->>                           /*
->>                            * Stop after the first non-trylock entry,
->>
-> As you say, there are multiple places in check_prev_add() that will
-> return 0, and some cases had unlocked the lock, if all goto the
-> out_bug, would it cause double unlock?
-> Maybe as follows?
-> ---
-> diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
-> index 151bd3de5936..8b665ba90ad0 100644
-> --- a/kernel/locking/lockdep.c
-> +++ b/kernel/locking/lockdep.c
-> @@ -3178,7 +3178,7 @@ check_prev_add(struct task_struct *curr, struct
-> held_lock *prev,
->                          }
->
->                          /* <prev> is not found in <next>::locks_before */
-> -                       return 0;
-> +                       goto list_err;
->                  }
->          }
->
-> @@ -3215,6 +3215,11 @@ check_prev_add(struct task_struct *curr, struct
-> held_lock *prev,
->                  return 0;
->
->          return 2;
-> +
-> +list_err:
-> +       /* still get graph_lock, unlock it before return*/
-> +       graph_unlock();
-> +       return 0;
->   }
+Dear all,
 
-I see. the graph_unlock() is called before any error message is printed. 
-I understand the reason why this is done this way, but it does make it 
-easy to re-introduce this kind of error when the lockdep code is 
-changed. We need a better system to track the state of the graph_lock 
-and do an unlock if necessary.
+an update for Linux/ia64:
+
+After finishing the verification tests with Linux v6.7 on all of my ia64
+machines, I can confirm that this one is again a good one for ia64. I
+didn't detect any regressions or new problems for this version and it
+continues to run on the following machines:
+
+* rx4640 (w/Madison)
+* rx2620 (w/Montecito)
+* rx2660 (w/Montecito)
+* rx6600 (w/Montvale)
+* rx2800 i2 (w/Tukwila)
+
+.., as could be expected from the positive test results of all v6.7
+release candidates on the same selection of machines.
+
+Tomas maintains the ia64 patchset for Linux on [1] and you can find the
+per Linux release (candidate) source code used for regular testing on
+[2]. Please use the `[...]-w-ia64` branches.
+
+[1]: https://github.com/lenticularis39/linux-ia64/
+
+[2]: https://github.com/johnny-mnemonic/linux-ia64/
+
+****
+
+On the way to v6.7-w-ia64 we also managed to solve the mm problem on the
+rx6600. The patch is on [3] at the moment and should be looking familiar
+to loongson developers because there was a similar problem for loongson
+([4]) after 61167ad5fecd got merged. Therefore Linux v6.7-w-ia64 is the
+first release since v6.4 that works unmodified on the rx6600.
+
+[3]:
+https://github.com/lenticularis39/linux-ia64/commit/13a05b70f9a5a117560caf=
+ef0aa54425d6914550
+
+[4]:
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/=
+?id=3Db795fb9f5861ee256070d59e33130980a01fadd7
+
+****
+
+Also some good news for your choice of Linux distributions for ia64:
+
+In the meantime, ia64 is not only still available in Debian Ports ([5])
+and Gentoo ([6]), but we now also got another distribution - T2/Linux
+([6]) - that supports it.
+
+[5]: https://www.ports.debian.org/
+
+[6]: https://www.gentoo.org/downloads/#ia64
+
+[7]: https://t2sde.org/#news-2023-12-05
+
+****
+
+Thank you all for your hard work on Linux!
 
 Cheers,
-Longman
-
+Frank et al
 
