@@ -1,144 +1,172 @@
-Return-Path: <linux-kernel+bounces-21416-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21417-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD1B6828ED6
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 22:23:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D02D6828EDB
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 22:28:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4ED501F254C7
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 21:23:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 66E5D2885AB
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 21:28:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DF2C3DB89;
-	Tue,  9 Jan 2024 21:23:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gVRh1szL"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 249F03DB88;
+	Tue,  9 Jan 2024 21:28:15 +0000 (UTC)
+Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B0873DB80;
-	Tue,  9 Jan 2024 21:23:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D18CBC43390;
-	Tue,  9 Jan 2024 21:23:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704835408;
-	bh=7w8qlm8CewmioJlCiEwlQ5fWYqSXtnF3ghDjhDZEBAs=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=gVRh1szL4FkgxR3AP4ehd9ojCxNRmyx6v3m0VMDz+HrmSEYWRrq2uWpd3f0mOFqw5
-	 N5EhjmKpPamQp5jlnkYESpZxnkEZ2cdiBOzjL3FDU7je9bp5DsebDUFy91Ihzn5AAp
-	 CW8Wo4kiMJM7iJS3RPIpFohdqy/RwIuN+IAKs/Kt5BhxP7ZinpcM30rlqxIfhHvDO+
-	 6vZbedeodgkuHA2Png7gX8h8NkqE1qiR89IfmwNw/wIibyx9cucWbX7yDNI4Qd1XyC
-	 HCGnA97OeA4wc9jg0K6KomP9T2HgQCani3nr1HaHORbxg0AyKprfgjhyoDrP2mvMEq
-	 2x2dOBHsT2nZA==
-Date: Tue, 9 Jan 2024 15:23:26 -0600
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Siddharth Vadapalli <s-vadapalli@ti.com>
-Cc: lpieralisi@kernel.org, robh@kernel.org, kw@linux.com,
-	bhelgaas@google.com, linux-pci@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	ilpo.jarvinen@linux.intel.com, vigneshr@ti.com,
-	r-gunasekaran@ti.com, srk@ti.com
-Subject: Re: [PATCH v3] PCI: keystone: Fix race condition when initializing
- PHYs
-Message-ID: <20240109212326.GA2018284@bhelgaas>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BF6E20E7;
+	Tue,  9 Jan 2024 21:28:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-5ca1b4809b5so1477102a12.3;
+        Tue, 09 Jan 2024 13:28:13 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704835693; x=1705440493;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=kbavVFjwhN0dnJZu5HK083iY1XpuyuJB8VgQF8fYrDA=;
+        b=lojP7SbbPsX5kOlcEyQqHxKq+E/8odbkzTaMWdDPa9jWRyuK388perSo4A3x/x3e1F
+         eHkFrOhNr7ga6cDBPp1zfks+kH8eO7fy05atT7o3mpU2xRCY/AsJbHuuoag6lVS0WPkc
+         +Qk0m0S8iPdNlzGWz5OIuXBBYiWz0mOwvYWAKZD4hjtyA6eKi4D1RGryCG987p/DyLCw
+         PoYq7PqwpaNShDiw5mM2/hbUIRPVLNtCKYFcFa9rcu9m7kMAjIh6M3/b7IlsS0UFn2U6
+         RgJfWe8HGInNPFopjlztdgjswBNvtBPy27w9RawwfDbRUWDGQ4hLwS4N3N9j/OBcZ4w1
+         ymQg==
+X-Gm-Message-State: AOJu0Yw+rhTwK5ZB3rujzRz3ZS0NcobhHtFUNER3rJtKNO7w7PQmNE6C
+	WLBdpGmwmrYCFY9qYPiA8Z9Rq81vH+WJVdIdGyQ=
+X-Google-Smtp-Source: AGHT+IGhVn/3dB5sZI7ukT+V1aP/EnTK/ecM2V5y8xbuVa58Xk4Zevt1I7ANK4M4yrQAGo9Of4Ids8xbM/M+YphOUxY=
+X-Received: by 2002:a05:6300:808a:b0:199:ffab:9796 with SMTP id
+ ap10-20020a056300808a00b00199ffab9796mr1083376pzc.124.1704835692569; Tue, 09
+ Jan 2024 13:28:12 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230927041845.1222080-1-s-vadapalli@ti.com>
+References: <20231216072830.1009339-1-namhyung@kernel.org> <ae648bc4-b32c-4b15-8dfc-9dbd481bb927@linux.intel.com>
+In-Reply-To: <ae648bc4-b32c-4b15-8dfc-9dbd481bb927@linux.intel.com>
+From: Namhyung Kim <namhyung@kernel.org>
+Date: Tue, 9 Jan 2024 13:28:00 -0800
+Message-ID: <CAM9d7cgVHHAA0ZHaTYNx9Lmw0+hJJu_EfQRnX8K3AtLCVMznOw@mail.gmail.com>
+Subject: Re: [PATCH] perf/x86: Fix out of range data
+To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	Stephane Eranian <eranian@google.com>, stable@vger.kernel.org, 
+	"Liang, Kan" <kan.liang@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Sep 27, 2023 at 09:48:45AM +0530, Siddharth Vadapalli wrote:
-> The PCI driver invokes the PHY APIs using the ks_pcie_enable_phy()
-> function. The PHY in this case is the Serdes. It is possible that the
-> PCI instance is configured for 2 lane operation across two different
-> Serdes instances, using 1 lane of each Serdes. In such a configuration,
-> if the reference clock for one Serdes is provided by the other Serdes,
-> it results in a race condition. After the Serdes providing the reference
-> clock is initialized by the PCI driver by invoking its PHY APIs, it is
-> not guaranteed that this Serdes remains powered on long enough for the
-> PHY APIs based initialization of the dependent Serdes. In such cases,
-> the PLL of the dependent Serdes fails to lock due to the absence of the
-> reference clock from the former Serdes which has been powered off by the
-> PM Core.
-> 
-> Fix this by obtaining reference to the PHYs before invoking the PHY
-> initialization APIs and releasing reference after the initialization is
-> complete.
-> 
-> Fixes: 49229238ab47 ("PCI: keystone: Cleanup PHY handling")
-> Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
-> ---
-> 
-> NOTE: This patch is based on linux-next tagged next-20230927.
-> 
-> v2:
-> https://lore.kernel.org/r/20230926063638.1005124-1-s-vadapalli@ti.com/
-> 
-> Changes since v2:
-> - Implement suggestion by Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
->   moving the phy_pm_runtime_put_sync() For-Loop section before the
->   return value of ks_pcie_enable_phy(ks_pcie) is checked, thereby
->   preventing duplication of the For-Loop.
-> - Rebase patch on next-20230927.
-> 
-> v1:
-> https://lore.kernel.org/r/20230926054200.963803-1-s-vadapalli@ti.com/
-> 
-> Changes since v1:
-> - Add code to release reference(s) to the phy(s) when
->   ks_pcie_enable_phy(ks_pcie) fails.
-> 
-> Regards,
-> Siddharth.
-> 
->  drivers/pci/controller/dwc/pci-keystone.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
-> 
-> diff --git a/drivers/pci/controller/dwc/pci-keystone.c b/drivers/pci/controller/dwc/pci-keystone.c
-> index 49aea6ce3e87..0ec6720cc2df 100644
-> --- a/drivers/pci/controller/dwc/pci-keystone.c
-> +++ b/drivers/pci/controller/dwc/pci-keystone.c
-> @@ -1218,7 +1218,16 @@ static int __init ks_pcie_probe(struct platform_device *pdev)
->  		goto err_link;
->  	}
->  
-> +	/* Obtain reference(s) to the phy(s) */
-> +	for (i = 0; i < num_lanes; i++)
-> +		phy_pm_runtime_get_sync(ks_pcie->phy[i]);
-> +
->  	ret = ks_pcie_enable_phy(ks_pcie);
-> +
-> +	/* Release reference(s) to the phy(s) */
-> +	for (i = 0; i < num_lanes; i++)
-> +		phy_pm_runtime_put_sync(ks_pcie->phy[i]);
+Hello,
 
-This looks good and has already been applied, so no immediate action
-required.
+On Sat, Dec 16, 2023 at 4:42=E2=80=AFAM Liang, Kan <kan.liang@linux.intel.c=
+om> wrote:
+>
+>
+>
+> On 2023-12-16 2:28 a.m., Namhyung Kim wrote:
+> > On x86 each cpu_hw_events maintains a table for counter assignment but
+> > it missed to update one for the deleted event in x86_pmu_del().  This
+> > can make perf_clear_dirty_counters() reset used counter if it's called
+> > before event scheduling or enabling.  Then it would return out of range
+> > data which doesn't make sense.
+> >
+> > The following code can reproduce the problem.
+> >
+> >   $ cat repro.c
+> >   #include <pthread.h>
+> >   #include <stdio.h>
+> >   #include <stdlib.h>
+> >   #include <unistd.h>
+> >   #include <linux/perf_event.h>
+> >   #include <sys/ioctl.h>
+> >   #include <sys/mman.h>
+> >   #include <sys/syscall.h>
+> >
+> >   struct perf_event_attr attr =3D {
+> >       .type =3D PERF_TYPE_HARDWARE,
+> >       .config =3D PERF_COUNT_HW_CPU_CYCLES,
+> >       .disabled =3D 1,
+> >   };
+> >
+> >   void *worker(void *arg)
+> >   {
+> >       int cpu =3D (long)arg;
+> >       int fd1 =3D syscall(SYS_perf_event_open, &attr, -1, cpu, -1, 0);
+> >       int fd2 =3D syscall(SYS_perf_event_open, &attr, -1, cpu, -1, 0);
+> >       void *p;
+> >
+> >       do {
+> >               ioctl(fd1, PERF_EVENT_IOC_ENABLE, 0);
+> >               p =3D mmap(NULL, 4096, PROT_READ, MAP_SHARED, fd1, 0);
+> >               ioctl(fd2, PERF_EVENT_IOC_ENABLE, 0);
+> >
+> >               ioctl(fd2, PERF_EVENT_IOC_DISABLE, 0);
+> >               munmap(p, 4096);
+> >               ioctl(fd1, PERF_EVENT_IOC_DISABLE, 0);
+> >       } while (1);
+> >
+> >       return NULL;
+> >   }
+> >
+> >   int main(void)
+> >   {
+> >       int i;
+> >       int n =3D sysconf(_SC_NPROCESSORS_ONLN);
+> >       pthread_t *th =3D calloc(n, sizeof(*th));
+> >
+> >       for (i =3D 0; i < n; i++)
+> >               pthread_create(&th[i], NULL, worker, (void *)(long)i);
+> >       for (i =3D 0; i < n; i++)
+> >               pthread_join(th[i], NULL);
+> >
+> >       free(th);
+> >       return 0;
+> >   }
+> >
+> > And you can see the out of range data using perf stat like this.
+> > Probably it'd be easier to see on a large machine.
+> >
+> >   $ gcc -o repro repro.c -pthread
+> >   $ ./repro &
+> >   $ sudo perf stat -A -I 1000 2>&1 | awk '{ if (length($3) > 15) print =
+}'
+> >        1.001028462 CPU6   196,719,295,683,763      cycles              =
+             # 194290.996 GHz                       (71.54%)
+> >        1.001028462 CPU3   396,077,485,787,730      branch-misses       =
+             # 15804359784.80% of all branches      (71.07%)
+> >        1.001028462 CPU17  197,608,350,727,877      branch-misses       =
+             # 14594186554.56% of all branches      (71.22%)
+> >        2.020064073 CPU4   198,372,472,612,140      cycles              =
+             # 194681.113 GHz                       (70.95%)
+> >        2.020064073 CPU6   199,419,277,896,696      cycles              =
+             # 195720.007 GHz                       (70.57%)
+> >        2.020064073 CPU20  198,147,174,025,639      cycles              =
+             # 194474.654 GHz                       (71.03%)
+> >        2.020064073 CPU20  198,421,240,580,145      stalled-cycles-front=
+end          #  100.14% frontend cycles idle        (70.93%)
+> >        3.037443155 CPU4   197,382,689,923,416      cycles              =
+             # 194043.065 GHz                       (71.30%)
+> >        3.037443155 CPU20  196,324,797,879,414      cycles              =
+             # 193003.773 GHz                       (71.69%)
+> >        3.037443155 CPU5   197,679,956,608,205      stalled-cycles-backe=
+nd           # 1315606428.66% backend cycles idle   (71.19%)
+> >        3.037443155 CPU5   198,571,860,474,851      instructions        =
+             # 13215422.58  insn per cycle
+> >
+> > It should move the contents in the cpuc->assign as well.
+>
+> Yes, the patch looks good to me.
+>
+> Reviewed-by: Kan Liang <kan.liang@linux.intel.com>
 
-This is the only call to ks_pcie_enable_phy(), and these loops get and
-put the PM references for the same PHYs initialized in
-ks_pcie_enable_phy(), so it seems like maybe these loops could be
-moved *into* ks_pcie_enable_phy().
+Thanks for your review, Kan.
 
-Is there any similar issue in ks_pcie_disable_phy()?  What if we
-power-off a PHY that provides a reference clock to other PHYs that are
-still powered-up?  Will the dependent PHYs still power-off cleanly?
+Ingo, Peter, can you please pick this up?
 
->  	if (ret) {
->  		dev_err(dev, "failed to enable phy\n");
->  		goto err_link;
-> -- 
-> 2.34.1
-> 
-> 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+Thanks,
+Namhyung
 
