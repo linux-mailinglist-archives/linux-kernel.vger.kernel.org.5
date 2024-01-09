@@ -1,170 +1,202 @@
-Return-Path: <linux-kernel+bounces-21026-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21027-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 498E98288BE
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 16:10:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 902818288C0
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 16:11:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6A2BF1C23937
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 15:10:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4A4E8287162
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 15:11:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D70639FCE;
-	Tue,  9 Jan 2024 15:10:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7651E39FF8;
+	Tue,  9 Jan 2024 15:10:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="L6Hzum1N"
-Received: from mail-pf1-f201.google.com (mail-pf1-f201.google.com [209.85.210.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="I5B9sWXA"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0565D381B5
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 15:10:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pf1-f201.google.com with SMTP id d2e1a72fcca58-6d9d3a7d926so1555006b3a.2
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 07:10:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1704813046; x=1705417846; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=4ylzsLrKUHQNcq0YsobTPwM7oLV0ySb7Z86Oi7b0IPw=;
-        b=L6Hzum1NTMbd0B0ayEY0+MIu5ugyDPwASja34+AZTePAP6kw3Z7tT2viOn2iz1Q8LS
-         EQ834g/PsDNFr1S+PjlfCrT8DRoTJQFLtwUTI+GJVJlYQMcM6ik7/3YzeJNNXtF6LxMH
-         CG34//YAx+NTUZFv5iZcSizOtly/AzlBjtKA8DHSaUuA7oc/DyWsh70Qeu2dYGEUf0sE
-         BFgTUSSDIJSBrwc+DZNeWAQtCAi+2uaXh9PeKwLEUCH1OUC9qdPAEsD0zJ5TT+2AWzNb
-         W1NmKEuh/oeRrhWXc6z7C9lH/9eihZd0oUV0FCjfgYIsIzHPmnUXBOgyWBdy7dbREtvJ
-         Bgnw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704813046; x=1705417846;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=4ylzsLrKUHQNcq0YsobTPwM7oLV0ySb7Z86Oi7b0IPw=;
-        b=O5RMJtoGdiGSDSUmZK0rU+R3O0zj9Ur9Qvw80yJVc++QZNober7GrlS2Ira4HVOV1q
-         3PE3ULOmDIPWkr1AHJalLVtKkk/RJ2seHyDctql1pQmLaXsuP4YQtXYwIBsQfDjDNb5K
-         frq8WDtLyQIVWSmhZXuPdJxTAp2EpLwSJUigVG1mMp3PiQAQVXFyUsuHdmBo12nUyDAM
-         avNzqYeOaduX43hw2XDx4td6hombHcduZappCTgwbPdYQMU7N/LJ93sRSfSh8bu/agiM
-         EnAvEuqZdgban9OdPAtZXtNfRSCTVUl9Jk5FvKRSWhiadkOxHGbq42vte8W+IcNAZYBR
-         Z/HQ==
-X-Gm-Message-State: AOJu0Yxq98Gl1b0sk8vEXx90jHMS2EywlD+Iw24HTi6Qzk/CpC7xfCZY
-	c5zwt8L5kGuV+WrVJWjjWHtpJCw7FrfCgObF3Q==
-X-Google-Smtp-Source: AGHT+IE/xvqBNs0r0t/c46uJkAlBiNBDis11Iuiql7kFyteTbaSCdcuVoFmq4nkjKlTdQokAqQmvg0YXa/w=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6a00:2447:b0:6d9:a74f:9b49 with SMTP id
- d7-20020a056a00244700b006d9a74f9b49mr392672pfj.4.1704813046283; Tue, 09 Jan
- 2024 07:10:46 -0800 (PST)
-Date: Tue, 9 Jan 2024 07:10:44 -0800
-In-Reply-To: <06fdd362-cb7f-47df-9d1a-9b85d2ed05b5@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F64439FF1
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 15:10:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1704813054;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=tkpr1RhaJrAP/oNWGGaaG9PEfXHE0nB87Qi7Q623/H0=;
+	b=I5B9sWXA7Sj7C7nTAz6QySrfeOk+L399Ttm7n1WMbg/Dzq00d//HZoVuqZMvEAmETkAhHF
+	e58AypO+IpTmrjA7qTIJssHXzyMzo2+Ac1989qXIbIhH8T/PSMeEDxAAf1aKyz/by281B/
+	GIqgeH9/tiWb9i8w7Hhaeg4PRdo0h0U=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-610-LZhzqSeqNpqZ_akE8bFssQ-1; Tue, 09 Jan 2024 10:10:50 -0500
+X-MC-Unique: LZhzqSeqNpqZ_akE8bFssQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 78429185A780;
+	Tue,  9 Jan 2024 15:10:50 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.67])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 1F8031121306;
+	Tue,  9 Jan 2024 15:10:49 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+	Kingdom.
+	Registered in England and Wales under Company Registration No. 3798903
+From: David Howells <dhowells@redhat.com>
+To: Marc Dionne <marc.dionne@auristor.com>
+cc: dhowells@redhat.com, "David S. Miller" <davem@davemloft.net>,
+    Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+    Paolo Abeni <pabeni@redhat.com>, linux-afs@lists.infradead.org,
+    netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net v3] rxrpc: Fix use of Don't Fragment flag
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20231221140239.4349-1-weijiang.yang@intel.com>
- <93f118670137933980e9ed263d01afdb532010ed.camel@intel.com>
- <5f57ce03-9568-4739-b02d-e9fac6ed381a@intel.com> <6179ddcb25c683bd178e74e7e2455cee63ba74de.camel@intel.com>
- <ZZdLG5W5u19PsnTo@google.com> <a2344e2143ef2b9eca0d153c86091e58e596709d.camel@intel.com>
- <ZZdSSzCqvd-3sdBL@google.com> <8f070910-2b2e-425d-995e-dfa03a7695de@intel.com>
- <ZZgsipXoXTKyvCZT@google.com> <06fdd362-cb7f-47df-9d1a-9b85d2ed05b5@intel.com>
-Message-ID: <ZZ1h9GW93ckc3FlE@google.com>
-Subject: Re: [PATCH v8 00/26] Enable CET Virtualization
-From: Sean Christopherson <seanjc@google.com>
-To: Weijiang Yang <weijiang.yang@intel.com>
-Cc: Rick P Edgecombe <rick.p.edgecombe@intel.com>, Chao Gao <chao.gao@intel.com>, 
-	Dave Hansen <dave.hansen@intel.com>, "peterz@infradead.org" <peterz@infradead.org>, 
-	"john.allen@amd.com" <john.allen@amd.com>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "pbonzini@redhat.com" <pbonzini@redhat.com>, 
-	"kvm@vger.kernel.org" <kvm@vger.kernel.org>, "mlevitsk@redhat.com" <mlevitsk@redhat.com>
-Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <1581851.1704813048.1@warthog.procyon.org.uk>
 Content-Transfer-Encoding: quoted-printable
+Date: Tue, 09 Jan 2024 15:10:48 +0000
+Message-ID: <1581852.1704813048@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
 
-On Mon, Jan 08, 2024, Weijiang Yang wrote:
-> On 1/6/2024 12:21 AM, Sean Christopherson wrote:
-> > On Fri, Jan 05, 2024, Weijiang Yang wrote:
-> > > On 1/5/2024 8:54 AM, Sean Christopherson wrote:
-> > > > On Fri, Jan 05, 2024, Rick P Edgecombe wrote:
-> > > > > > For CALL/RET (and presumably any branch instructions with IBT?)=
- other
-> > > > > > instructions that are directly affected by CET, the simplest th=
-ing would
-> > > > > > probably be to disable those in KVM's emulator if shadow stacks=
- and/or IBT
-> > > > > > are enabled, and let KVM's failure paths take it from there.
-> > > > > Right, that is what I was wondering might be the normal solution =
-for
-> > > > > situations like this.
-> > > > If KVM can't emulate something, it either retries the instruction (=
-with some
-> > > > decent logic to guard against infinite retries) or punts to userspa=
-ce.
-> > > What kind of error is proper if KVM has to punt to userspace?
-> > KVM_INTERNAL_ERROR_EMULATION.  See prepare_emulation_failure_exit().
-> >=20
-> > > Or just inject #UD into guest on detecting this case?
-> > No, do not inject #UD or do anything else that deviates from architectu=
-rally
-> > defined behavior.
->=20
-> Thanks!
-> But based on current KVM implementation and patch 24, seems that if CET i=
-s exposed
-> to guest, the emulation code or shadow paging mode couldn't be activated =
-at the same time:
+    =
 
-No, requiring unrestricted guest only disables the paths where KVM *delibea=
-tely*
-emulates the entire guest code stream.  In no way, shape, or form does it p=
-revent
-KVM from attempting to emulate arbitrary instructions.
+rxrpc normally has the Don't Fragment flag set on the UDP packets it
+transmits, except when it has decided that DATA packets aren't getting
+through - in which case it turns it off just for the DATA transmissions.
+This can be a problem, however, for RESPONSE packets that convey
+authentication and crypto data from the client to the server as ticket may
+be larger than can fit in the MTU.
 
-> In vmx.c,
-> hardware_setup(void):
-> if (!cpu_has_vmx_unrestricted_guest() || !enable_ept)
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 enable_unrestricted_guest =3D =
-0;
->=20
-> in vmx_set_cr0():
-> [...]
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (enable_unrestricted_guest)
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 hw_cr0 |=3D KVM_VM_CR0_ALWAYS_ON_UNRESTRICTED_GUEST;
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 else {
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 hw_cr0 |=3D KVM_VM_CR0_ALWAYS_ON;
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 if (!enable_ept)
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 hw_cr0 |=
-=3D X86_CR0_WP;
->=20
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 if (vmx->rmode.vm86_active && (cr0 & X86_CR0_PE))
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 enter_pm=
-ode(vcpu);
->=20
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 if (!vmx->rmode.vm86_active && !(cr0 & X86_CR0_PE))
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 enter_rm=
-ode(vcpu);
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
-> [...]
->=20
-> And in patch 24:
->=20
-> +=C2=A0=C2=A0 if (!cpu_has_load_cet_ctrl() || !enable_unrestricted_guest =
-||
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 !cpu_has_vmx_basic_no_hw_errcode())=
- {
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 kvm_cpu_cap_clear(X86_FEATURE_SHSTK=
-);
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 kvm_cpu_cap_clear(X86_FEATURE_IBT);
-> +=C2=A0=C2=A0 }
->=20
-> Not sure if I missed anything.
->=20
->=20
+In such a case, rxrpc gets itself into an infinite loop as the sendmsg
+returns an error (EMSGSIZE), which causes rxkad_send_response() to return
+-EAGAIN - and the CHALLENGE packet is put back on the Rx queue to retry,
+leading to the I/O thread endlessly attempting to perform the transmission=
+.
+
+Fix this by disabling DF on RESPONSE packets for now.  The use of DF and
+best data MTU determination needs reconsidering at some point in the
+future.
+
+Fixes: 17926a79320a ("[AF_RXRPC]: Provide secure RxRPC sockets for use by =
+userspace and kernel both")
+Reported-by: Marc Dionne <marc.dionne@auristor.com>
+Signed-off-by: David Howells <dhowells@redhat.com>
+cc: "David S. Miller" <davem@davemloft.net>
+cc: Eric Dumazet <edumazet@google.com>
+cc: Jakub Kicinski <kuba@kernel.org>
+cc: Paolo Abeni <pabeni@redhat.com>
+cc: linux-afs@lists.infradead.org
+cc: netdev@vger.kernel.org
+---
+ net/rxrpc/ar-internal.h  |    1 +
+ net/rxrpc/local_object.c |   13 ++++++++++++-
+ net/rxrpc/output.c       |    6 ++----
+ net/rxrpc/rxkad.c        |    2 ++
+ 4 files changed, 17 insertions(+), 5 deletions(-)
+
+diff --git a/net/rxrpc/ar-internal.h b/net/rxrpc/ar-internal.h
+index e8e14c6f904d..e8b43408136a 100644
+--- a/net/rxrpc/ar-internal.h
++++ b/net/rxrpc/ar-internal.h
+@@ -1076,6 +1076,7 @@ void rxrpc_send_version_request(struct rxrpc_local *=
+local,
+ /*
+  * local_object.c
+  */
++void rxrpc_local_dont_fragment(const struct rxrpc_local *local, bool set)=
+;
+ struct rxrpc_local *rxrpc_lookup_local(struct net *, const struct sockadd=
+r_rxrpc *);
+ struct rxrpc_local *rxrpc_get_local(struct rxrpc_local *, enum rxrpc_loca=
+l_trace);
+ struct rxrpc_local *rxrpc_get_local_maybe(struct rxrpc_local *, enum rxrp=
+c_local_trace);
+diff --git a/net/rxrpc/local_object.c b/net/rxrpc/local_object.c
+index c553a30e9c83..34d307368135 100644
+--- a/net/rxrpc/local_object.c
++++ b/net/rxrpc/local_object.c
+@@ -36,6 +36,17 @@ static void rxrpc_encap_err_rcv(struct sock *sk, struct=
+ sk_buff *skb, int err,
+ 		return ipv6_icmp_error(sk, skb, err, port, info, payload);
+ }
+ =
+
++/*
++ * Set or clear the Don't Fragment flag on a socket.
++ */
++void rxrpc_local_dont_fragment(const struct rxrpc_local *local, bool set)
++{
++	if (set)
++		ip_sock_set_mtu_discover(local->socket->sk, IP_PMTUDISC_DO);
++	else
++		ip_sock_set_mtu_discover(local->socket->sk, IP_PMTUDISC_DONT);
++}
++
+ /*
+  * Compare a local to an address.  Return -ve, 0 or +ve to indicate less =
+than,
+  * same or greater than.
+@@ -203,7 +214,7 @@ static int rxrpc_open_socket(struct rxrpc_local *local=
+, struct net *net)
+ 		ip_sock_set_recverr(usk);
+ =
+
+ 		/* we want to set the don't fragment bit */
+-		ip_sock_set_mtu_discover(usk, IP_PMTUDISC_DO);
++		rxrpc_local_dont_fragment(local, true);
+ =
+
+ 		/* We want receive timestamps. */
+ 		sock_enable_timestamps(usk);
+diff --git a/net/rxrpc/output.c b/net/rxrpc/output.c
+index 5e53429c6922..a0906145e829 100644
+--- a/net/rxrpc/output.c
++++ b/net/rxrpc/output.c
+@@ -494,14 +494,12 @@ int rxrpc_send_data_packet(struct rxrpc_call *call, =
+struct rxrpc_txbuf *txb)
+ 	switch (conn->local->srx.transport.family) {
+ 	case AF_INET6:
+ 	case AF_INET:
+-		ip_sock_set_mtu_discover(conn->local->socket->sk,
+-					 IP_PMTUDISC_DONT);
++		rxrpc_local_dont_fragment(conn->local, false);
+ 		rxrpc_inc_stat(call->rxnet, stat_tx_data_send_frag);
+ 		ret =3D do_udp_sendmsg(conn->local->socket, &msg, len);
+ 		conn->peer->last_tx_at =3D ktime_get_seconds();
+ =
+
+-		ip_sock_set_mtu_discover(conn->local->socket->sk,
+-					 IP_PMTUDISC_DO);
++		rxrpc_local_dont_fragment(conn->local, true);
+ 		break;
+ =
+
+ 	default:
+diff --git a/net/rxrpc/rxkad.c b/net/rxrpc/rxkad.c
+index 1bf571a66e02..b52dedcebce0 100644
+--- a/net/rxrpc/rxkad.c
++++ b/net/rxrpc/rxkad.c
+@@ -724,7 +724,9 @@ static int rxkad_send_response(struct rxrpc_connection=
+ *conn,
+ 	serial =3D atomic_inc_return(&conn->serial);
+ 	whdr.serial =3D htonl(serial);
+ =
+
++	rxrpc_local_dont_fragment(conn->local, false);
+ 	ret =3D kernel_sendmsg(conn->local->socket, &msg, iov, 3, len);
++	rxrpc_local_dont_fragment(conn->local, true);
+ 	if (ret < 0) {
+ 		trace_rxrpc_tx_fail(conn->debug_id, serial, ret,
+ 				    rxrpc_tx_point_rxkad_response);
+
 
