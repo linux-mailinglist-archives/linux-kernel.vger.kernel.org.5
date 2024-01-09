@@ -1,106 +1,150 @@
-Return-Path: <linux-kernel+bounces-21172-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21173-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BBA73828B37
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 18:28:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8ED65828B3C
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 18:29:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6A01B282B81
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 17:28:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3F9462836AA
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 17:29:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F5673B2A8;
-	Tue,  9 Jan 2024 17:28:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27BAB3B2BD;
+	Tue,  9 Jan 2024 17:29:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ECGrqQF1"
-Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
+	dkim=pass (2048-bit key) header.d=raspberrypi.com header.i=@raspberrypi.com header.b="ew2/jpsm"
+Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com [209.85.128.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 033DB3B290
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 17:28:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-336746c7b6dso2865811f8f.0
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 09:28:18 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 339F03B297
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 17:29:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=raspberrypi.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=raspberrypi.com
+Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-5e6c8b70766so29420277b3.3
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 09:29:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704821297; x=1705426097; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=DXaCpLG4C/ir7DMFvPPuoa81dZws9KWt5H7TfSWS/y0=;
-        b=ECGrqQF1KJr3LTTpMA2NNM8sxfg8crw66wevT0JHAzMg82YD7n6xodhkQje+lInNxs
-         I4OZu/vojJEfhUpfJH34aB9MJezk0k5TGy76FvmlFyj84jxNgBqs72/RUTP/cW+AmdHz
-         DD26Jh3X+2TTY0XT7cIx8yWl/zyWGe1DpH4KeqXdxQuThyt7dl2r+xCihpa1XVYhmj6B
-         i1dganvo40Pmf14sS1dfEKwYFHikHFglLRAu5km5gti8JgACA2MzBrfYqVp7vYNdLYKg
-         6REZC1Cgq6ROe584CNWJ5C8e6m+/tCBJ302eg1WzzDeZnBQotFOzpKIFiIPUTA39m9vG
-         32rA==
+        d=raspberrypi.com; s=google; t=1704821341; x=1705426141; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=ES7KBLZZG8PKvoN1C5XRDxhZW5V7JmVLq/Pi/J8+3to=;
+        b=ew2/jpsmzNm926mWDm2t9p/Ph9J2GMqSH9Y5lLifC88yswIHus2CqfbUg6JuBTall6
+         2qfukrpGTJ6VhRtRn7bDzLyop7+5Zt0yuuNFSm/0RfQT7x+XokXqf3330ece+c4tGZoI
+         mow5h/FgvDgWwru1OA+b3oA5vUR7txKDdo5/yp3vceebucPfWg6rCz1fvgOezme04vos
+         0X2ybsk6dZdeTlsBBzleVAwxVP0neCVTPj5xx6oIxD3Gwcx5z5JXhv+D6eS4ex0DwdG4
+         VtTgoUJmKs5YnHDBX2ghBJYLiwYa+PPX8U4GQW9W8kd3kpXFNPHsGfPWevKgUD/AES6n
+         griQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704821297; x=1705426097;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DXaCpLG4C/ir7DMFvPPuoa81dZws9KWt5H7TfSWS/y0=;
-        b=V1bYV9CRYVQVV+84Tm0vdSo+WBaDAu1Th3jTlkVrkHadvPlViU2Q+M27g/llBBjloJ
-         AGrUTnZhb6MYFWSmMptiWs2eWHtsDBXhtMuu3VBkv9lHcGhYHugLqKqgwLv+hBLMoXoS
-         441dTGz6+bPwyMEYPBjSBP8kzK4k0GrUz7a4fer/wQEp3859YSrTc6vV2z+nCiOPdnIm
-         kGw2HjUl3nEhLzLNBTsL629TH6PZPY3ofHVBKZkirU6j+pVcWZF/O6RUiZSbKcPoDL+H
-         ev16iwXKXfNPufl/pcrLGQH3eIfiq6B7ROsl3sc1vkZQkt2e3nl7BiCqO6ir3C4zuyly
-         hKaQ==
-X-Gm-Message-State: AOJu0Yx5hBJAdfGeO1DGcWAwUr35TWJbid0TLY4C4x0s2Q+1WthS3iXP
-	FT6hen2jPREO7Z3w44wV/8Ef9gtG1yUgMQ==
-X-Google-Smtp-Source: AGHT+IFLN+7RV3EiLl0Z1OfLk39i3z4WHFOSoCEhE33KW/bbX7Y29yn64IyPPF+yuDKtY220Fq59tQ==
-X-Received: by 2002:a05:6000:1943:b0:337:4c69:3ec3 with SMTP id e3-20020a056000194300b003374c693ec3mr792595wry.32.1704821297195;
-        Tue, 09 Jan 2024 09:28:17 -0800 (PST)
-Received: from [192.168.10.46] (146725694.box.freepro.com. [130.180.211.218])
-        by smtp.googlemail.com with ESMTPSA id df8-20020a5d5b88000000b003376d4248a9sm2908868wrb.71.2024.01.09.09.28.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Jan 2024 09:28:16 -0800 (PST)
-Message-ID: <c8812a7c-47f2-4d05-9c4b-2167e77bd625@linaro.org>
-Date: Tue, 9 Jan 2024 18:28:16 +0100
+        d=1e100.net; s=20230601; t=1704821341; x=1705426141;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ES7KBLZZG8PKvoN1C5XRDxhZW5V7JmVLq/Pi/J8+3to=;
+        b=v0N6oxemQAcdaalYvjozHeISJu5pCbp9rzcvSBqVULlK10TZfUVTS9oobdWxuLIMpQ
+         tM9MKHvb87sWwhRhJUuOanyLSJXXifPwVTn0YtwHZjBSFnyag0ldzOdNfF8e84jb9tp9
+         2r5JjO/2L2fV6O0gg5ZfZEU4OwklobGlsuytrlVzNEX/yQA2I9Qsbq5y6fMIteUVFs4Z
+         aIkb1Ii/kFWZL20af/GENZkuwknk2KSgZKNkQiH0HkMFhOmtcoRhLXD5Z+OV3yYD7OeX
+         j1whRkirDfLUEnCfmujlTa3Aa1oEhttE/SIYPcglw/qj0M4oMdUnHp36sHnA8w4qR37S
+         PpwQ==
+X-Gm-Message-State: AOJu0YzXiNb7RfkHHa2H5vsuDNUD5dW+PHLDkfZffU2HpMzBVjxO6oFn
+	2cLbEm4XsgkyDIgi+8uLo7fx5OlYcL21lUlJnd9pHRgT7GsMTw==
+X-Google-Smtp-Source: AGHT+IGgI/FoLML7Z/cvGXsENd2rwJDH5p4+nuQ7PKd15HF7RA/G4lSfYUHjMfXlkBR8ob0lW+xWSn2ZjfO7PCnI8Dk=
+X-Received: by 2002:a81:9184:0:b0:5e8:8890:8afe with SMTP id
+ i126-20020a819184000000b005e888908afemr3645470ywg.78.1704821341152; Tue, 09
+ Jan 2024 09:29:01 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 1/2] thermal: netlink: Rework notify API for cooling
- devices
-Content-Language: en-US
-To: "Rafael J. Wysocki" <rjw@rjwysocki.net>,
- Linux PM <linux-pm@vger.kernel.org>
-Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
- Zhang Rui <rui.zhang@intel.com>, LKML <linux-kernel@vger.kernel.org>,
- Lukasz Luba <lukasz.luba@arm.com>
-References: <2193991.irdbgypaU6@kreacher> <3293702.aeNJFYEL58@kreacher>
-From: Daniel Lezcano <daniel.lezcano@linaro.org>
-In-Reply-To: <3293702.aeNJFYEL58@kreacher>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20240109070949.23957-1-shengyang.chen@starfivetech.com> <99d7bb85-17b0-4b5e-a6cf-f5957ad92298@linaro.org>
+In-Reply-To: <99d7bb85-17b0-4b5e-a6cf-f5957ad92298@linaro.org>
+From: Dave Stevenson <dave.stevenson@raspberrypi.com>
+Date: Tue, 9 Jan 2024 17:28:44 +0000
+Message-ID: <CAPY8ntBcXEyg5tXHGwAdbVody7ihHo3gb1C4vE+6PY2biDhN4g@mail.gmail.com>
+Subject: Re: [PATCH v2 0/2] Add waveshare 7inch touchscreen panel support
+To: neil.armstrong@linaro.org
+Cc: Shengyang Chen <shengyang.chen@starfivetech.com>, devicetree@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, quic_jesszhan@quicinc.com, sam@ravnborg.org, 
+	airlied@gmail.com, daniel@ffwll.ch, maarten.lankhorst@linux.intel.com, 
+	mripard@kernel.org, tzimmermann@suse.de, robh+dt@kernel.org, 
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, wahrenst@gmx.net, 
+	thierry.reding@gmail.com, changhuang.liang@starfivetech.com, 
+	keith.zhao@starfivetech.com, jack.zhu@starfivetech.com, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On 09/01/2024 17:42, Rafael J. Wysocki wrote:
-> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> 
-> In analogy with some previous thermal netlink API changes, redefine
-> thermal_notify_cdev_state_update(), thermal_notify_cdev_add() and
-> thermal_notify_cdev_delete() to take a const cdev pointer as their
-> first argument and let them extract the requisite information from
-> there by themselves.
-> 
-> No intentional functional impact.
-> 
-> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Hi
 
+On Tue, 9 Jan 2024 at 11:19, <neil.armstrong@linaro.org> wrote:
+>
+> Hi,
+>
+> On 09/01/2024 08:09, Shengyang Chen wrote:
+> > This patchset adds waveshare 7inch touchscreen panel support
+> > for the StarFive JH7110 SoC.
+>
+> Could you precise which SKU you're referring to ? is it 19885 => https://www.waveshare.com/7inch-dsi-lcd.htm ?
+>
+> Are you sure it requires different timings from the RPi one ? In the Waveshare
+> wiki it explicitly uses the rpi setup (vc4-kms-dsi-7inch) to drive it: https://www.waveshare.com/wiki/7inch_DSI_LCD
 
-Reviewed-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+I raise the same question.
 
+Keith Zhao earlier submitted effectively the same set of patches [1]
+and the response for the updated timing was:
+<quote>
+My platform dphy tx hardware has certain limitations.
+Only supports integer multiples of 10M bitrate:
+such as 160M ,170M, 180M,190M,...1G(max)
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+as common dphy bitrate = pixclock*bpp/lanes.
+This value cannot match successfully in most cases.
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+so in order to match bitrate , I choose a bitrate value around
+pixclock*bpp/lanes,
+Prevent overflow and underflow by fine-tuning the timing parameters:-(
+that will make the new timming value.
+</quote>
 
+I then suggested mode_fixup should be used in the DSI host driver, and
+Keith acknowledged that.
+
+Is this new timing still because of the DSI host requirement?
+
+  Dave
+
+[1] https://lists.freedesktop.org/archives/dri-devel/2023-December/434150.html
+
+> Neil
+>
+> >
+> >
+> > changes since v1:
+> > - Rebased on tag v6.7.
+> >
+> > patch 1:
+> > - Gave up original changing.
+> > - Changed the commit message.
+> > - Add compatible in panel-simple.yaml
+> >
+> > patch 2:
+> > - Gave up original changing.
+> > - Changed the commit message.
+> > - Add new mode for the panel in panel-simple.c
+> >
+> > v1: https://patchwork.kernel.org/project/dri-devel/cover/20231124104451.44271-1-shengyang.chen@starfivetech.com/
+> >
+> > Shengyang Chen (2):
+> >    dt-bindings: display: panel: panel-simple: Add compatible property for
+> >      waveshare 7inch touchscreen panel
+> >    gpu: drm: panel: panel-simple: add new display mode for waveshare
+> >      7inch touchscreen panel
+> >
+> >   .../bindings/display/panel/panel-simple.yaml  |  2 ++
+> >   drivers/gpu/drm/panel/panel-simple.c          | 28 +++++++++++++++++++
+> >   2 files changed, 30 insertions(+)
+> >
+>
 
