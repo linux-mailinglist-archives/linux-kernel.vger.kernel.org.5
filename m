@@ -1,111 +1,127 @@
-Return-Path: <linux-kernel+bounces-21378-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21379-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97B21828E5C
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 21:05:05 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B244828E5D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 21:05:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4C5111F25165
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 20:05:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2AE401C20DE9
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 20:05:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E164C3D57E;
-	Tue,  9 Jan 2024 20:04:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07FDB3D968;
+	Tue,  9 Jan 2024 20:05:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="jRDFwKkX"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="t3xm4NDU"
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87EC43D553;
-	Tue,  9 Jan 2024 20:04:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id DEB9540E016C;
-	Tue,  9 Jan 2024 20:04:49 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id NiYoeZQQalKc; Tue,  9 Jan 2024 20:04:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1704830687; bh=myWkA513SB++du6rtg253t0uQ7b+BjB5yRYgGmBmizI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=jRDFwKkXwbGGoD+MXs3OvMjNvwwQ9+CgDrEGogr4gtth8jcaqGA8nzkG6phHrHdiw
-	 8ugfNNYWrUrEjXOAuS7WmAVEc6Y4KIY8DxF9XSwUt9/FsYqf3a1Hamp+z/8pqKTZXR
-	 vxF759udYi/x+hWjxVmhoRYBoXlnI0F3rxwra4MNrw7ykwLZqxN1fCsbKQi0JGJU6E
-	 4UqhwVYJsprHSek0/xQUfGtb1DLdycaE60aYKDt0TKzEm8l1ArGPczjygFuQN5qxCm
-	 svHe9DvPmA9s/xj3vir7igBmlPzYsp0V8ghadpKNLDqBm49MbyPk6iVTZK8j7DW9nd
-	 9mf1Nxo/tdGpx+otoEPf46qdRbI4oijuNAqW2lYw553J5+baptZe/KXrr6zYOqtxJG
-	 0XYW9abUMNjA1b4j8k07YZ7TYcVMxRGRUOt0CArFdP5nGaKX/+qHlmEIUD4oKXHsEa
-	 22w8Sygby3jq0bPFUFnqkSZ/cU/7Ip3h0dWZyjmknv55YL/CprPIE+v1AA2OM0GFXN
-	 DRuIn5lu3UmZ6RQ1D2KwB0UoCnQGw5UJXsACuo/hU92ngguf2Y0hQQGxoyXVhxH3cZ
-	 tGehj+8PwCjVI3ktug0TE2g8tqg2Kjx6G+koOtkF5L0CEzTj+5nfWogJufXG0pmPHQ
-	 tbGUBMauPQB+Ejg4fQpSfNnY=
-Received: from zn.tnic (pd9530f8c.dip0.t-ipconnect.de [217.83.15.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 52EFA40E01B2;
-	Tue,  9 Jan 2024 20:04:39 +0000 (UTC)
-Date: Tue, 9 Jan 2024 21:04:34 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Jonathan Corbet <corbet@lwn.net>
-Cc: Tony Luck <tony.luck@intel.com>, Yazen Ghannam <yazen.ghannam@amd.com>,
-	Muralidhara M K <muralimk@amd.com>, linux-edac@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Muralidhara M K <muralidhara.mk@amd.com>, linux-doc@vger.kernel.org
-Subject: Re: [PATCH] Documentation: Begin a RAS section
-Message-ID: <20240109200434.GBZZ2m0vWjm9v795YX@fat_crate.local>
-References: <20231102114225.2006878-1-muralimk@amd.com>
- <20231102114225.2006878-2-muralimk@amd.com>
- <20231128142049.GTZWX3QQTSaQk/+u53@fat_crate.local>
- <87a5pes8jy.fsf@meer.lwn.net>
- <20240109183646.GAZZ2SPiMZv83J3f0a@fat_crate.local>
- <87wmsiqok6.fsf@meer.lwn.net>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C2E63D960
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 20:05:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1d40eec5e12so27301505ad.1
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 12:05:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1704830709; x=1705435509; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=8ezCSlrIoJxqfy1Xr8Ro9H9xwusIwZZHRkXvQ8oqxxo=;
+        b=t3xm4NDUxC20PGhIaYaes93kc8FkKs4XSSmuwHdZN70fZx7kspPc2cWtmPFS3MhM1t
+         u2G6POFbk8lR1TzkPj9Qgs6mHfdEvJNbOFosuHEwuhobteKK/E/niJ3PxVBXU9QJovX5
+         oPSIVljLO/D/ohZdlQNzRokF6UY+A3fTQeGhr3D2zaf5dJ2qOqpjDlkr9q0GCrYucmjJ
+         w+qEq7s89qF49rXsdYguYwwkqBJVhh70xr1waqPKC7enVGIRnSvcok/1uwCuNg7a2V94
+         WRidtgWGwoje3RZiehijb88zmQ4vNEilBxIvxFu1iduy48i80Sc9YupwAr8NqcLffrBf
+         6nTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704830709; x=1705435509;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8ezCSlrIoJxqfy1Xr8Ro9H9xwusIwZZHRkXvQ8oqxxo=;
+        b=UJgXGsOprx1q6dZF2SWfmdSJFcSaVC+pIr27ce/QQ6Wb3FMJJ37rE63vKwC7CBYsNO
+         i7tJO8k8pFq5TvkbXycrj5jreFsZwduy6xkLP+5TVUHCLXoJW3lyFHSC+aVQ6oT+rTRV
+         uhLz6O0bSbeil+KyE5mqswf/g4YXkdp363AybosJS5kdrmWajNxnuL6/SjdpvP8Oq+eE
+         edVFyLBRf9XqD6+Po3Grq1ugKAAvzRgyz8s6JFolQndBuswMlOxzLrJ/CfjpgaVD0G9Q
+         blt0w8izFh6LLj5kH5M0gL9ayQTPzLfWpHo/vd7tXovD89Rg0e/3VeDwUngv6RdMUhuK
+         9EFA==
+X-Gm-Message-State: AOJu0Yyj6YSosSKDsf1U3dcubqP521Hipi3PqKCbLTgjlvLiBehEoBue
+	AjCCnn4afz1vhsgz2LyjROdR/HofjGds
+X-Google-Smtp-Source: AGHT+IH/9sACcx8rtCH/5NKxeAsuLQr48cMbufYI+Fk/blHLimYLpyQ1dZT9d+BnGaqlyMv6ZkZeVA==
+X-Received: by 2002:a17:903:32c4:b0:1d4:ef61:2407 with SMTP id i4-20020a17090332c400b001d4ef612407mr7193791plr.74.1704830708626;
+        Tue, 09 Jan 2024 12:05:08 -0800 (PST)
+Received: from google.com (77.62.105.34.bc.googleusercontent.com. [34.105.62.77])
+        by smtp.gmail.com with ESMTPSA id k10-20020a170902ba8a00b001d3c27e00f2sm2175500pls.284.2024.01.09.12.05.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Jan 2024 12:05:08 -0800 (PST)
+Date: Tue, 9 Jan 2024 20:05:04 +0000
+From: Carlos Llamas <cmllamas@google.com>
+To: Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Tom Rix <trix@redhat.com>,
+	Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-kernel@vger.kernel.org, kernel-team@android.com,
+	Will Deacon <will@kernel.org>, John Stultz <jstultz@google.com>,
+	Masahiro Yamada <masahiroy@kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH] scripts/decode_stacktrace.sh: optionally use LLVM
+ utilities
+Message-ID: <ZZ2m8PO92oCF-uO-@google.com>
+References: <20230929034836.403735-1-cmllamas@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87wmsiqok6.fsf@meer.lwn.net>
+In-Reply-To: <20230929034836.403735-1-cmllamas@google.com>
 
-On Tue, Jan 09, 2024 at 12:44:41PM -0700, Jonathan Corbet wrote:
-> Of course, I miss things in my own email too...you know the drill...
+On Fri, Sep 29, 2023 at 03:48:17AM +0000, Carlos Llamas wrote:
+> GNU's addr2line can have problems parsing a vmlinux built with LLVM,
+> particularly when LTO was used. In order to decode the traces correctly
+> this patch adds the ability to switch to LLVM's utilities readelf and
+> addr2line. The same approach is followed by Will in [1].
+> 
+> Before:
+>   $ scripts/decode_stacktrace.sh vmlinux < kernel.log
+>   [17716.240635] Call trace:
+>   [17716.240646] skb_cow_data (??:?)
+>   [17716.240654] esp6_input (ld-temp.o:?)
+>   [17716.240666] xfrm_input (ld-temp.o:?)
+>   [17716.240674] xfrm6_rcv (??:?)
+>   [...]
+> 
+> After:
+>   $ LLVM=1 scripts/decode_stacktrace.sh vmlinux < kernel.log
+>   [17716.240635] Call trace:
+>   [17716.240646] skb_cow_data (include/linux/skbuff.h:2172 net/core/skbuff.c:4503)
+>   [17716.240654] esp6_input (net/ipv6/esp6.c:977)
+>   [17716.240666] xfrm_input (net/xfrm/xfrm_input.c:659)
+>   [17716.240674] xfrm6_rcv (net/ipv6/xfrm6_input.c:172)
+>   [...]
+> 
+> Note that one could set CROSS_COMPILE=llvm- instead to hack around this
+> issue. However, doing so can break the decodecode routine as it will
+> force the selection of other LLVM utilities down the line e.g. llvm-as.
+> 
+> [1] https://lore.kernel.org/all/20230914131225.13415-3-will@kernel.org/
+> 
+> Cc: Will Deacon <will@kernel.org>
+> Cc: John Stultz <jstultz@google.com>
+> Cc: Masahiro Yamada <masahiroy@kernel.org>
+> Signed-off-by: Carlos Llamas <cmllamas@google.com>
+> ---
 
-Yeah, tell me about it.
+There is no clear maintainer for this script. However, I had a look at
+git history and it seems this might need to be picked up by Andrew.
 
-My train of thought with CCing maintainers in such cases usually is: I'd
-CC the mailing list as I don't want to bother the maintainer - she/he gets
-too much email anyway and this is an FYI thing anyway so she/he'll find
-it in the archives eventually.
+Cc: Andrew Morton <akpm@linux-foundation.org>
 
-> Yes, there is a lot of existing documentation that still doesn't live up
-> to this idea, but we can try to follow it for new stuff while the rest
-> is (slowly) fixed up.
+Andrew can you please pick this up?
 
-The problem I see here is that not all of the RAS stuff will be
-"admin-guide" stuff but some design decisions we've made. I mean, if it
-is a really curious admin, it'll fit her/his alley but it won't be
-purely administrative tasks' descriptions.
-
-In the end of the day, I don't really care where it is as long as it is
-in one place and we can point people to it and say, here, that's why we
-did it the way we did it and what you can do about it.
-
-So I'm fine with admin-guide too - just pointing out a potential issue
-I see.
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+--
+Carlos Llamas
 
