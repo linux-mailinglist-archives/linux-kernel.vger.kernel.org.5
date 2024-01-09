@@ -1,87 +1,116 @@
-Return-Path: <linux-kernel+bounces-20854-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20855-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B259828648
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 13:51:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A5C782864A
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 13:51:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 917C31C23A54
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 12:51:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 92D08284EE2
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 12:51:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1634381DB;
-	Tue,  9 Jan 2024 12:51:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82A3838F8F;
+	Tue,  9 Jan 2024 12:51:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="OY1tnq+P"
-Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com [209.85.219.174])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="IUhJG5n7"
+Received: from mail-pg1-f181.google.com (mail-pg1-f181.google.com [209.85.215.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07FA16D6F5
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 12:51:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-dbed71baa91so1666850276.0
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 04:51:09 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5AB738F82
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 12:51:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pg1-f181.google.com with SMTP id 41be03b00d2f7-5bdbe2de25fso2194679a12.3
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 04:51:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704804669; x=1705409469; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=qROkrwZiYfF7G3qfeBpIFh1K/Mmm7qN8BCKWKeQz2Xg=;
-        b=OY1tnq+P3Q6vvno8v0wZENbjzmrUJwCN/PHwcahuwO2cP/MUTzxCVUjKs+qE9RbtKb
-         1NBcBw9KZMvx1wGO6JyvfpMmKHRqk3FnzzMh8qGbA6hkyZUlsoY9qceSg2rcrZxWoYE6
-         hCponmBawZvVUKR7TbGDov9gUDiWPfGqOQcBXnZ2UU/HCic2Nr1Q0wDgIB/1+T8yLJKs
-         rGpHMglJ/GPkmTu2WUnGv7BuJFdKyTmZ0VDl3ddoL9AaQ6XCzWfoc6pvMjOeNeE0QuCA
-         P/fnP4+CYfoPC0xGoSgWDz8YhxYuY6kS0vR9rgURu2ejOusxCX8sI8Vczukgsx6iTEt1
-         hkTQ==
+        d=chromium.org; s=google; t=1704804703; x=1705409503; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=8Sxl8/kBvhDFF/AoSIu6WVPGy6THdY3oshj1Hx9R7Rs=;
+        b=IUhJG5n7gpGW0fZeq0W3YaRJW4GZ4pJWFolpckHWzKZbVi+wvvwq3bfhMB8mbXuFgm
+         D+kRXYs/uz+Ddk4yOy0CTDQyG49DkF7usTNBL9WuuH+fqFEmB7BNAoC1hhVSFfI+7Hx0
+         aE4QERrIESpUsmA8Vz6X/1y+qV390CawsXrTQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704804669; x=1705409469;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=qROkrwZiYfF7G3qfeBpIFh1K/Mmm7qN8BCKWKeQz2Xg=;
-        b=IXnpuN7+bQlyo7Z5DGv4+Ow/I1MkltebeQYC1/TWQpoz5Ity1ZQZib9+kHNA5tl4+a
-         CsGCniGLQth1lOy0H74UhFMdoH4YnXhpNrKGqp4g8CjywqX/ox4eaDNy3i183RjSyFY2
-         oTDWLn3zmrj6rnSuuaRkcKEDsstb9CSZ5B0iUzZ4uIxKcuIpaQEREUjMgONVyoaVZ0TJ
-         sSDA59Y5xga0G5Cxregd/p/U5SUBCqL0IPUP5wfgRaE3HifOQtx1JIQ0LS9bp2dI2cDc
-         YF8zWMWA/XPaUgUAHaEol+1axErPxNmZjqKkdGTI0UdfZ1mY8DJaZGW5kuq0+vNnl8Yq
-         F1nA==
-X-Gm-Message-State: AOJu0YySb2rwqGq9nYHj6HrZJvExyyedVrNXM3uda773H+JNKsWw3qHn
-	mbq9AbS5KDr5O/G1+uRIXOx80/3yYsGGtZeWYOiCCjLuSz0iaA==
-X-Google-Smtp-Source: AGHT+IH+fzv4HWsvreNV0+tSn6byYRFteteAYCO+0WhpTnneXsrnBRv9MuDla7pttJ83htiBlMzNHxSf3skPhge1yI8=
-X-Received: by 2002:a25:e0ce:0:b0:dbd:572a:a106 with SMTP id
- x197-20020a25e0ce000000b00dbd572aa106mr2145429ybg.10.1704804669129; Tue, 09
- Jan 2024 04:51:09 -0800 (PST)
+        d=1e100.net; s=20230601; t=1704804703; x=1705409503;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8Sxl8/kBvhDFF/AoSIu6WVPGy6THdY3oshj1Hx9R7Rs=;
+        b=P9XMQk/A5vG4I09uavoLhwSgSzYFNHiAVrPJFh+z+qqZosUvscnxCD+txb1eUM0HTR
+         1YOHSoEQLNVojxeI2gRSpdaLlB32VA9c5Bd6bl6guV9oTs2dX0Ptv3d/XBDUJRcpRJbY
+         rXvaI1dT2Eb85As6U7x9+rpsjH0Z355lzNAOkhERbroQIPPhYqqxYhtjZPrAOqlHQrIB
+         XQSGBj2691jFyL8IkGzkT06np9cbn7be46+J04LVho8aLli5CB0p656jF9Lep541l5S8
+         /EAJ68PfXIFfuM0njKBk3Rbxnxm6xdowubD827FULxtHN6AIC2tvSj4BLUuSDCWQajLI
+         dbcw==
+X-Gm-Message-State: AOJu0Ywe4+OkW2WDUgDqwiJAZJmmJxZtTti2/3emwey1doxDfH4HCE1k
+	0LG0/yZHabvS1ocZTqM+Slf7dl+gFMrv
+X-Google-Smtp-Source: AGHT+IFc6rYxuOUQkU6wTWmxuuKmjNJOShljLpSpdpRfMplgFRtbGeJ3Rniw08DbwOcrhrsvP/mckw==
+X-Received: by 2002:a05:6a20:a124:b0:199:fa27:9eb9 with SMTP id q36-20020a056a20a12400b00199fa279eb9mr649774pzk.95.1704804702996;
+        Tue, 09 Jan 2024 04:51:42 -0800 (PST)
+Received: from google.com (KD124209171220.ppp-bb.dion.ne.jp. [124.209.171.220])
+        by smtp.gmail.com with ESMTPSA id i1-20020aa78b41000000b006d9af8c25easm1573919pfd.84.2024.01.09.04.51.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Jan 2024 04:51:42 -0800 (PST)
+Date: Tue, 9 Jan 2024 21:51:38 +0900
+From: Sergey Senozhatsky <senozhatsky@chromium.org>
+To: Ricardo Ribalda <ribalda@chromium.org>
+Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Yunke Cao <yunkec@google.com>
+Subject: Re: [PATCH v2] media: uvcvideo: Fix power line control for
+ Shine-Optics Camera
+Message-ID: <20240109125138.GC1012017@google.com>
+References: <20240108-shine-v2-1-ddff959dab89@chromium.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240108201618.2798649-1-dario.binacchi@amarulasolutions.com> <20240108201618.2798649-6-dario.binacchi@amarulasolutions.com>
-In-Reply-To: <20240108201618.2798649-6-dario.binacchi@amarulasolutions.com>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Tue, 9 Jan 2024 13:50:58 +0100
-Message-ID: <CACRpkdb73Qrs6MuiC427f=RnyD=rydH_4xVhBx-2bS8bX0mJCw@mail.gmail.com>
-Subject: Re: [PATCH v5 5/8] dt-bindings: nt35510: add compatible for FRIDA FRD400B25025-A-CTK
-To: Dario Binacchi <dario.binacchi@amarulasolutions.com>
-Cc: linux-kernel@vger.kernel.org, linux-amarula@amarulasolutions.com, 
-	Alexandre Torgue <alexandre.torgue@foss.st.com>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>, 
-	Jessica Zhang <quic_jesszhan@quicinc.com>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
-	Neil Armstrong <neil.armstrong@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
-	Sam Ravnborg <sam@ravnborg.org>, Thomas Zimmermann <tzimmermann@suse.de>, devicetree@vger.kernel.org, 
-	dri-devel@lists.freedesktop.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240108-shine-v2-1-ddff959dab89@chromium.org>
 
-Hi Dario,
+On (24/01/08 14:04), Ricardo Ribalda wrote:
+> The device does not implement the power line frequency control
+> correctly. It is a UVC 1.5 device, but implements the control as a UVC
+> 1.1 device.
+> 
+> Add the corresponding control mapping override.
+> 
+> Bus 003 Device 002: ID 3277:009e Shine-Optics Integrated Camera
+> Device Descriptor:
+>   bLength                18
+>   bDescriptorType         1
+>   bcdUSB               2.01
+>   bDeviceClass          239 Miscellaneous Device
+>   bDeviceSubClass         2
+>   bDeviceProtocol         1 Interface Association
+>   bMaxPacketSize0        64
+>   idVendor           0x3277
+>   idProduct          0x009e
+>   bcdDevice            0.01
+>   iManufacturer           3 Shine-Optics
+>   iProduct                1 Integrated Camera
+>   iSerial                 2 0001
+> 
+> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
 
-do you want me to apply patches 5,7,8 to the dri-misc
-tree?
+Reviewed-by: Sergey Senozhatsky <senozhatsky@chromium.org>
 
-Yours,
-Linus Walleij
+
+
+
+[..]
+> ---
+> base-commit: 0dd3ee31125508cd67f7e7172247f05b7fd1753a
+> change-id: 20240108-shine-06c600d17a2a
+> 
+> Best regards,
+> -- 
+> Ricardo Ribalda <ribalda@chromium.org>
+
+A side note: not sure what these lines are for.
 
