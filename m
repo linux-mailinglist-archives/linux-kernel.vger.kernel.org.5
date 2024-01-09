@@ -1,76 +1,160 @@
-Return-Path: <linux-kernel+bounces-20614-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20616-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8E8482826E
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 09:47:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6AEC3828279
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 09:52:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 370F7B277A7
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 08:47:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0934E1F258EB
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 08:52:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D56A25756;
-	Tue,  9 Jan 2024 08:47:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FE1C29435;
+	Tue,  9 Jan 2024 08:52:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BrqdkFJ8"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="uEKeNxaU"
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B47F224E9
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 08:47:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97294C433C7;
-	Tue,  9 Jan 2024 08:47:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704790045;
-	bh=232TwjJF1Ui9G01uyqDCIoqp2EAkeZW9NrKM8Q/mDxw=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=BrqdkFJ8xBDM4yyc7Ibmg5zTYv+Nc3fu0HyRIE95AhwN7WYBJktMV+DDImb/KqAFk
-	 zEHn1rmxXgInltwcjglTsbPRV3v/ONuvRPp4UgRp8uBsSqwU1a3+9AUZ6A0WEF+HSI
-	 n1IpogbCc3d09kc0a04secaTxunmIWbKVOqZD4GT3vbUCjw9nNDW5YMKZ+mkExaLM3
-	 2b/mKoVSr3nJZxwW8uIsJw6uCekrfNi44tNBcVnZtI30hZKa1rCw38JFsDlPf197WB
-	 HQGr/i+ZwFl5f5pm8F8FyrCiJNTBFIun6vLCG7xRED08ng2+lCaPwT3i0WY916mWwH
-	 aYK/n9teq0D4A==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF3712E636;
+	Tue,  9 Jan 2024 08:52:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
+Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
+	by mx07-00178001.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 409343pj004773;
+	Tue, 9 Jan 2024 09:52:04 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=selector1; bh=mEkudfn
+	bPoeAGsN0k1FwZZxBRhXTdPPOdbTjUnhj2ac=; b=uEKeNxaUxpDuWX9I9PBRmTg
+	7usMLb5ibtMCzRX1/81ZCLaXYDEwAoYL+ld2Ay3EFsq+X7fDpG+xqtR9QU++ypKj
+	NO9A4LEfAEq67s5zc05IbWY7AniR3uzKgdTWdQBOi1R1PlVQ/2vmZXOPNanFBmTB
+	AOyZ+1hUUeKNLpeonOWqQyrLD+L9zbNOXf3yZcdHAicwLWhPysshMWaeeh2GPQiP
+	CvLoaCJpuTBp8nbLsc/KaqZsJ1l4maqgO/GF7sPTvXpqxVOoqFmCXQTfo580REyh
+	MspEwkURmFYh+YuI8qsFi2mHY9oc4pdIyUhc0uUjy2dkvojvFWURABawLGaONBA=
+	=
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3vey30jr8m-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 09 Jan 2024 09:52:04 +0100 (CET)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id DC1C710002A;
+	Tue,  9 Jan 2024 09:51:59 +0100 (CET)
+Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
+	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id C852E22FA2D;
+	Tue,  9 Jan 2024 09:51:59 +0100 (CET)
+Received: from localhost (10.201.20.120) by SHFDAG1NODE1.st.com (10.75.129.69)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 9 Jan
+ 2024 09:51:59 +0100
+From: Hugues Fruchet <hugues.fruchet@foss.st.com>
+To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+        Philipp Zabel
+	<p.zabel@pengutronix.de>,
+        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        Sakari Ailus
+	<sakari.ailus@linux.intel.com>,
+        Benjamin Gaignard
+	<benjamin.gaignard@collabora.com>,
+        Laurent Pinchart
+	<laurent.pinchart+renesas@ideasonboard.com>,
+        Daniel Almeida
+	<daniel.almeida@collabora.com>,
+        Benjamin Mugnier
+	<benjamin.mugnier@foss.st.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Mauro
+ Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil@xs4all.nl>, <linux-media@vger.kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <linux-rockchip@lists.infradead.org>
+CC: Hugues Fruchet <hugues.fruchet@foss.st.com>,
+        Marco Felsch
+	<m.felsch@pengutronix.de>,
+        Adam Ford <aford173@gmail.com>
+Subject: [PATCH v6 0/5] Add support for video hardware codec of STMicroelectronics STM32 SoC series
+Date: Tue, 9 Jan 2024 09:51:50 +0100
+Message-ID: <20240109085155.252358-1-hugues.fruchet@foss.st.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Date: Tue, 09 Jan 2024 09:47:20 +0100
-From: Michael Walle <mwalle@kernel.org>
-To: Neil Armstrong <neil.armstrong@linaro.org>, David Airlie
- <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, Laurent Pinchart
- <Laurent.pinchart@ideasonboard.com>, Robert Foss <rfoss@kernel.org>
-Cc: Frieder Schrempf <frieder.schrempf@kontron.de>, Jagan Teki
- <jagan@amarulasolutions.com>, Andrzej Hajda <andrzej.hajda@intel.com>, Marek
- Szyprowski <m.szyprowski@samsung.com>, Jonas Karlman <jonas@kwiboo.se>,
- Jernej Skrabec <jernej.skrabec@gmail.com>, Tim Harvey
- <tharvey@gateworks.com>, Alexander Stein <alexander.stein@ew.tq-group.com>,
- linux-kernel@vger.kernel.org, DRI mailing list
- <dri-devel@lists.freedesktop.org>, Inki Dae <daeinki@gmail.com>
-Subject: Re: [PATCH] drm: bridge: samsung-dsim: Don't use FORCE_STOP_STATE
-In-Reply-To: <CAAQKjZMccDwa63_PNJCP0rNOaHjTwcOz8AbKa=JXLQi-b0QVVw@mail.gmail.com>
-References: <20231113164344.1612602-1-mwalle@kernel.org>
- <631fe35a2a3b00781231e4f3f5094fae@kernel.org>
- <1ef3dad2-5f55-40e5-bba7-3c71d71c12e4@kontron.de>
- <CAAQKjZMccDwa63_PNJCP0rNOaHjTwcOz8AbKa=JXLQi-b0QVVw@mail.gmail.com>
-Message-ID: <2400535875c353ff7208be2d86d4556f@kernel.org>
-X-Sender: mwalle@kernel.org
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SHFCAS1NODE1.st.com (10.75.129.72) To SHFDAG1NODE1.st.com
+ (10.75.129.69)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-05_08,2024-01-05_01,2023-05-22_02
 
-Hi,
+This patchset introduces support for VDEC video hardware decoder
+and VENC video hardware encoder of STMicroelectronics STM32MP25
+SoC series.
 
->> Inki, are you picking this up? Or if not, who will?
-> 
-> I can pick it up but it would be better to go to the drm-misc tree. If
-> nobody cares about it then I will pick it up. :)
-> 
-> acked-by : Inki Dae <inki.dae@samsung.com>
+This initial support implements H264 decoding, VP8 decoding and
+JPEG encoding.
 
-Who is going to pick this up? Who has access to the drm-misc tree?
+This has been tested on STM32MP257F-EV1 evaluation board.
 
--michael
+===========
+= history =
+===========
+version 6:
+   - Use a single file for VDEC and VENC variants as suggested by Alex Bee
+   - Fix some typos raised by Sebastian Fricke
+   - Add Krzysztof Kozlowski Reviewed-by
+
+version 5:
+   - Precise that video decoding as been successfully tested up to full HD
+   - Add Nicolas Dufresne Reviewed-by
+
+version 4:
+   - Fix comments from Nicolas about dropping encoder raw steps
+
+version 3:
+   - Fix remarks from Krzysztof Kozlowski:
+    - drop "items", we keep simple enum in such case
+    - drop second example - it is the same as the first
+   - Drop unused node labels as suggested by Conor Dooley
+   - Revisit min/max resolutions as suggested by Nicolas Dufresne
+
+version 2:
+   - Fix remarks from Krzysztof Kozlowski on v1:
+    - single video-codec binding for both VDEC/VENC
+    - get rid of "-names"
+    - use of generic node name "video-codec"
+
+version 1:
+  - Initial submission
+
+Hugues Fruchet (5):
+  dt-bindings: media: Document STM32MP25 VDEC & VENC video codecs
+  media: hantro: add support for STM32MP25 VDEC
+  media: hantro: add support for STM32MP25 VENC
+  arm64: dts: st: add video decoder support to stm32mp255
+  arm64: dts: st: add video encoder support to stm32mp255
+
+ .../media/st,stm32mp25-video-codec.yaml       |  50 +++++
+ arch/arm64/boot/dts/st/stm32mp251.dtsi        |  12 ++
+ arch/arm64/boot/dts/st/stm32mp255.dtsi        |  17 ++
+ drivers/media/platform/verisilicon/Kconfig    |  14 +-
+ drivers/media/platform/verisilicon/Makefile   |   3 +
+ .../media/platform/verisilicon/hantro_drv.c   |   4 +
+ .../media/platform/verisilicon/hantro_hw.h    |   2 +
+ .../platform/verisilicon/stm32mp25_vpu_hw.c   | 186 ++++++++++++++++++
+ 8 files changed, 285 insertions(+), 3 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/media/st,stm32mp25-video-codec.yaml
+ create mode 100644 drivers/media/platform/verisilicon/stm32mp25_vpu_hw.c
+
+-- 
+2.25.1
+
 
