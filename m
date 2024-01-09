@@ -1,66 +1,73 @@
-Return-Path: <linux-kernel+bounces-20385-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20386-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C10A9827DF4
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 05:46:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 84900827DFC
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 05:49:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1A69228585C
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 04:46:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4D72D1C23563
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 04:49:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1C656FBC;
-	Tue,  9 Jan 2024 04:46:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B5851371;
+	Tue,  9 Jan 2024 04:49:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="YhxfF+8k"
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mGcBbq/v"
+Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF0E91371;
-	Tue,  9 Jan 2024 04:46:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704775578; x=1736311578;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=qRDK6Oo9AgDzs3fiuyV3rGxNrCnaC1HrYpHIF810WxY=;
-  b=YhxfF+8kziYysYFxLr+RNmFI2iIg0W8OROPXT5phmpgHUkugQNncSdwu
-   4aL5UpaC2kSSZs9waA9/waEwiN7zmk1WmKvJb6xtrlT9MpQZzO71wmK2Z
-   j72mlb2RHR06H3RgknlqXyMZf2JJGiIL4dCBZ3pal7V7jNRyGXubH/g7G
-   AIgiLsxsVW5QCdSa1rZeRgnhgWigwvgaZzR/IUp8eQLqQLB54widxHMEn
-   zInDRq3oB/efPGJgW70ZIlw9BumTNE7kwBSUlFEObq2+W/HAiKfVXnvQ9
-   9r9CkFysOxcea0njbClPX4EFDnInjN2kHzUsi0iJxnNxRCWzQ7455KQli
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="395242008"
-X-IronPort-AV: E=Sophos;i="6.04,181,1695711600"; 
-   d="scan'208";a="395242008"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jan 2024 20:46:16 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="900617596"
-X-IronPort-AV: E=Sophos;i="6.04,181,1695711600"; 
-   d="scan'208";a="900617596"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmsmga002.fm.intel.com with ESMTP; 08 Jan 2024 20:46:13 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rN40B-0005TY-0t;
-	Tue, 09 Jan 2024 04:46:11 +0000
-Date: Tue, 9 Jan 2024 12:45:15 +0800
-From: kernel test robot <lkp@intel.com>
-To: James Tai <james.tai@realtek.com>, Thomas Gleixner <tglx@linutronix.de>,
-	Marc Zyngier <maz@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzk@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-	devicetree@vger.kernel.org
-Subject: Re: [PATCH v4 4/6] irqchip: Introduce RTD1319D support using the
- Realtek common interrupt controller driver
-Message-ID: <202401091218.1mO2PJxw-lkp@intel.com>
-References: <20231228060825.1380439-5-james.tai@realtek.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CE5915A4;
+	Tue,  9 Jan 2024 04:49:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-6d9a79a1ad4so1006780b3a.2;
+        Mon, 08 Jan 2024 20:49:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704775741; x=1705380541; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=GcVbVidTOCl6eb5k7/CArebD5VL1E+DnTdDkFp0PXJg=;
+        b=mGcBbq/vlhgss3g6Ta8EvZf4vYz3IuM7/lJR8Zbih/fGOjdbXUZQ2V0IoP1P4BRy2U
+         OAPK11UT7RBNi/49hcUB//+kRqn6QK9lXi1tpzqMuPPpzYfhRJHIvqrbA59uT3P5kGIJ
+         3Hqc70aVRkR0y7K+HhzxalJUxT8Dgw8Dl9pSV5eBFOrufLzgBBMGfuE6dVajvEYZEyLJ
+         KH1DkhoF6GDy/pqlSQuYDflTVGqha6bICrWvDr0cA/OrgFN+jAnkr/2u9YLoErqxctM5
+         SsyEfARRy6CA5YOUydrgBNebyYjE5DnnoY456+agLXjVj9czl8XnxCdEf0kNulJdbMvB
+         YS/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704775741; x=1705380541;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=GcVbVidTOCl6eb5k7/CArebD5VL1E+DnTdDkFp0PXJg=;
+        b=GpHsdBL/fdbi9PbEKwsvfbvN7IpTmzlHaOR1MQ4gpkZ94P1LsEcbz0GhlRxs0493mT
+         tYNUrSRnFdfMV8jlnZ2sgzDstjYVW9EIUvZuAu7zQOank/TAT+NXjMtOOLCV7YH6cjaJ
+         Zb0F/PC0uXIRRNaBSB+YwoFcBq0Wu8qECGWa5OQ1UeKKpColVLY1sw+n9UD+dwuUbeDx
+         hCebKzI3YWwVP0w+Pkg4gO9nvGx4I8Koy2aQa0GCR76N2y/YUUhyGtzkDBIoXB+CAY51
+         hJD6YMkCSLeMm73wVI1thNMA5+nRulineLpXB5g/DjU2O927EPL7MckrIzpAWZIQ84iH
+         TeOQ==
+X-Gm-Message-State: AOJu0YwWqAEdUBkIkQ8XVMqYLmcTCu2+JaqDjZQh6Ps03RV/qd56BWJ4
+	LXt5gsV5J+Z21ZIwgE+T7B43zI2PU+uN6g==
+X-Google-Smtp-Source: AGHT+IHBFovOyZneJyA1eKT6FVWIjhUtp2+U4okoPhc6nIeSQzHM1d4m0wPznQVWDcdoRUzvdBFiTw==
+X-Received: by 2002:a05:6a20:dc85:b0:199:f077:c0e1 with SMTP id ky5-20020a056a20dc8500b00199f077c0e1mr350649pzb.19.1704775741443;
+        Mon, 08 Jan 2024 20:49:01 -0800 (PST)
+Received: from DESKTOP-KA7F9LU.localdomain ([2406:7400:63:8f51:fc6d:dffa:d522:7f1f])
+        by smtp.gmail.com with ESMTPSA id k4-20020a170902ba8400b001d4e0752b5esm721671pls.157.2024.01.08.20.48.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Jan 2024 20:49:01 -0800 (PST)
+Date: Tue, 9 Jan 2024 10:18:55 +0530
+From: Vimal Kumar <vimal.kumar32@gmail.com>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>,
+	Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
+	linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+	chinmoyghosh2001@gmail.com, badolevishal1116@gmail.com,
+	mintupatel89@gmail.com
+Subject: Re: [PATCH v2] PM / sleep: Mechanism to find source aborting kernel
+ suspend transition
+Message-ID: <20240109044855.GA10187@DESKTOP-KA7F9LU.localdomain>
+References: <20231210100303.491-1-vimal.kumar32@gmail.com>
+ <2023121037-unroasted-gradation-a47f@gregkh>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -69,168 +76,192 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231228060825.1380439-5-james.tai@realtek.com>
+In-Reply-To: <2023121037-unroasted-gradation-a47f@gregkh>
 
-Hi James,
+Apologies for delayed response.
 
-kernel test robot noticed the following build errors:
+On Sun, Dec 10, 2023 at 11:35:02AM +0100, Greg Kroah-Hartman wrote:
+> On Sun, Dec 10, 2023 at 03:33:01PM +0530, Vimal Kumar wrote:
+> > +#define MAX_SUSPEND_ABORT_LEN 256
+> 
+> What does this number mean?
 
-[auto build test ERROR on tip/irq/core]
-[also build test ERROR on robh/for-next linus/master v6.7 next-20240108]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+ It was for buffer size assuming function name won't go beyond that.
+ We have removed this and modified to dynamic allocation in the next version.  
+> 
+> > +static DEFINE_RAW_SPINLOCK(abort_suspend_lock);
+> 
+> Why is this a "raw" spinlock?  What requires this?
 
-url:    https://github.com/intel-lab-lkp/linux/commits/James-Tai/dt-bindings-interrupt-controller-Add-support-for-Realtek-DHC-SoCs/20231228-141213
-base:   tip/irq/core
-patch link:    https://lore.kernel.org/r/20231228060825.1380439-5-james.tai%40realtek.com
-patch subject: [PATCH v4 4/6] irqchip: Introduce RTD1319D support using the Realtek common interrupt controller driver
-config: s390-randconfig-r113-20240109 (https://download.01.org/0day-ci/archive/20240109/202401091218.1mO2PJxw-lkp@intel.com/config)
-compiler: clang version 18.0.0git (https://github.com/llvm/llvm-project 7e186d366d6c7def0543acc255931f617e76dff0)
-reproduce: (https://download.01.org/0day-ci/archive/20240109/202401091218.1mO2PJxw-lkp@intel.com/reproduce)
+ We tried to use same as one used for wakeup_source. We modified to
+ mutex_lock in the next version. 
+> 
+> > +
+> > +struct pm_abort_suspend_source {
+> > +	struct list_head list;
+> > +	char *source_triggering_abort_suspend;
+> > +};
+> > +static LIST_HEAD(pm_abort_suspend_list);
+> > +
+> >  /**
+> >   * wakeup_source_create - Create a struct wakeup_source object.
+> >   * @name: Name of the new wakeup source.
+> > @@ -575,6 +584,56 @@ static void wakeup_source_activate(struct wakeup_source *ws)
+> >  	trace_wakeup_source_activate(ws->name, cec);
+> >  }
+> >  
+> > +/**
+> > + * abort_suspend_list_clear - Clear pm_abort_suspend_list.
+> > + *
+> > + * The pm_abort_suspend_list will be cleared when system PM exits.
+> > + */
+> > +void abort_suspend_list_clear(void)
+> > +{
+> > +	struct pm_abort_suspend_source *info, *tmp;
+> > +	unsigned long flags;
+> > +
+> > +	raw_spin_lock_irqsave(&abort_suspend_lock, flags);
+> > +	list_for_each_entry_safe(info, tmp, &pm_abort_suspend_list, list) {
+> > +		list_del(&info->list);
+> > +		kfree(info);
+> > +	}
+> > +	raw_spin_unlock_irqrestore(&abort_suspend_lock, flags);
+> > +}
+> > +EXPORT_SYMBOL_GPL(abort_suspend_list_clear);
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202401091218.1mO2PJxw-lkp@intel.com/
+ Removed EXPORT_SYMBOL in next version and fixed the name.
 
-All errors (new ones prefixed by >>):
+> > +
+> > +/**
+> > + * pm_abort_suspend_source_add - Update pm_abort_suspend_list
+> > + * @source_name: Wakeup_source or function aborting suspend transitions.
+> > + *
+> > + * Add the source name responsible for updating the abort_suspend flag in the
+> > + * pm_abort_suspend_list.
+> > + */
+> > +static void pm_abort_suspend_source_add(const char *source_name)
+> > +{
+> > +	struct pm_abort_suspend_source *info;
+> > +	unsigned long flags;
+> > +
+> > +	info = kmalloc(sizeof(*info), GFP_KERNEL);
+> > +	if (!info)
+> > +		return;
+> > +
+> > +	/* Initialize the list within the struct if it's not already initialized */
+> > +	if (list_empty(&info->list))
+> > +		INIT_LIST_HEAD(&info->list);
+> 
+> How can this list head not be initialized already?
 
-   In file included from drivers/irqchip/irq-realtek-intc-common.c:8:
-   In file included from include/linux/irqchip.h:17:
-   In file included from include/linux/of_irq.h:7:
-   In file included from include/linux/irq.h:20:
-   In file included from include/linux/io.h:13:
-   In file included from arch/s390/include/asm/io.h:78:
-   include/asm-generic/io.h:547:31: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     547 |         val = __raw_readb(PCI_IOBASE + addr);
-         |                           ~~~~~~~~~~ ^
-   include/asm-generic/io.h:560:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     560 |         val = __le16_to_cpu((__le16 __force)__raw_readw(PCI_IOBASE + addr));
-         |                                                         ~~~~~~~~~~ ^
-   include/uapi/linux/byteorder/big_endian.h:37:59: note: expanded from macro '__le16_to_cpu'
-      37 | #define __le16_to_cpu(x) __swab16((__force __u16)(__le16)(x))
-         |                                                           ^
-   include/uapi/linux/swab.h:102:54: note: expanded from macro '__swab16'
-     102 | #define __swab16(x) (__u16)__builtin_bswap16((__u16)(x))
-         |                                                      ^
-   In file included from drivers/irqchip/irq-realtek-intc-common.c:8:
-   In file included from include/linux/irqchip.h:17:
-   In file included from include/linux/of_irq.h:7:
-   In file included from include/linux/irq.h:20:
-   In file included from include/linux/io.h:13:
-   In file included from arch/s390/include/asm/io.h:78:
-   include/asm-generic/io.h:573:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     573 |         val = __le32_to_cpu((__le32 __force)__raw_readl(PCI_IOBASE + addr));
-         |                                                         ~~~~~~~~~~ ^
-   include/uapi/linux/byteorder/big_endian.h:35:59: note: expanded from macro '__le32_to_cpu'
-      35 | #define __le32_to_cpu(x) __swab32((__force __u32)(__le32)(x))
-         |                                                           ^
-   include/uapi/linux/swab.h:115:54: note: expanded from macro '__swab32'
-     115 | #define __swab32(x) (__u32)__builtin_bswap32((__u32)(x))
-         |                                                      ^
-   In file included from drivers/irqchip/irq-realtek-intc-common.c:8:
-   In file included from include/linux/irqchip.h:17:
-   In file included from include/linux/of_irq.h:7:
-   In file included from include/linux/irq.h:20:
-   In file included from include/linux/io.h:13:
-   In file included from arch/s390/include/asm/io.h:78:
-   include/asm-generic/io.h:584:33: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     584 |         __raw_writeb(value, PCI_IOBASE + addr);
-         |                             ~~~~~~~~~~ ^
-   include/asm-generic/io.h:594:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     594 |         __raw_writew((u16 __force)cpu_to_le16(value), PCI_IOBASE + addr);
-         |                                                       ~~~~~~~~~~ ^
-   include/asm-generic/io.h:604:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     604 |         __raw_writel((u32 __force)cpu_to_le32(value), PCI_IOBASE + addr);
-         |                                                       ~~~~~~~~~~ ^
-   include/asm-generic/io.h:692:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     692 |         readsb(PCI_IOBASE + addr, buffer, count);
-         |                ~~~~~~~~~~ ^
-   include/asm-generic/io.h:700:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     700 |         readsw(PCI_IOBASE + addr, buffer, count);
-         |                ~~~~~~~~~~ ^
-   include/asm-generic/io.h:708:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     708 |         readsl(PCI_IOBASE + addr, buffer, count);
-         |                ~~~~~~~~~~ ^
-   include/asm-generic/io.h:717:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     717 |         writesb(PCI_IOBASE + addr, buffer, count);
-         |                 ~~~~~~~~~~ ^
-   include/asm-generic/io.h:726:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     726 |         writesw(PCI_IOBASE + addr, buffer, count);
-         |                 ~~~~~~~~~~ ^
-   include/asm-generic/io.h:735:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     735 |         writesl(PCI_IOBASE + addr, buffer, count);
-         |                 ~~~~~~~~~~ ^
->> drivers/irqchip/irq-realtek-intc-common.c:204:3: error: call to undeclared function 'iounmap'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
-     204 |                 iounmap(data->base);
-         |                 ^
-   arch/s390/include/asm/io.h:29:17: note: expanded from macro 'iounmap'
-      29 | #define iounmap iounmap
-         |                 ^
-   drivers/irqchip/irq-realtek-intc-common.c:204:3: note: did you mean 'vunmap'?
-   arch/s390/include/asm/io.h:29:17: note: expanded from macro 'iounmap'
-      29 | #define iounmap iounmap
-         |                 ^
-   include/linux/vmalloc.h:167:13: note: 'vunmap' declared here
-     167 | extern void vunmap(const void *addr);
-         |             ^
-   12 warnings and 1 error generated.
+ This list is internal to the structure we are defining. Check is reduntant here.
+> 
+> > +
+> > +	info->source_triggering_abort_suspend = kstrdup(source_name, GFP_KERNEL);
+> > +	if (!info->source_triggering_abort_suspend) {
+> > +		kfree(info);
+> > +		return;
+> > +	}
+> > +
+> > +	raw_spin_lock_irqsave(&abort_suspend_lock, flags);
+> > +	list_add_tail(&info->list, &pm_abort_suspend_list);
+> > +	raw_spin_unlock_irqrestore(&abort_suspend_lock, flags);
+> > +}
+> > +
+> >  /**
+> >   * wakeup_source_report_event - Report wakeup event using the given source.
+> >   * @ws: Wakeup source to report the event for.
+> > @@ -590,8 +649,11 @@ static void wakeup_source_report_event(struct wakeup_source *ws, bool hard)
+> >  	if (!ws->active)
+> >  		wakeup_source_activate(ws);
+> >  
+> > -	if (hard)
+> > +	if (hard) {
+> > +		if (pm_suspend_target_state != PM_SUSPEND_ON)
+> > +			pm_abort_suspend_source_add(ws->name);
+> >  		pm_system_wakeup();
+> > +	}
+> >  }
+> >  
+> >  /**
+> > @@ -877,6 +939,7 @@ bool pm_wakeup_pending(void)
+> >  {
+> >  	unsigned long flags;
+> >  	bool ret = false;
+> > +	struct pm_abort_suspend_source *info;
+> >  
+> >  	raw_spin_lock_irqsave(&events_lock, flags);
+> >  	if (events_check_enabled) {
+> > @@ -893,12 +956,29 @@ bool pm_wakeup_pending(void)
+> >  		pm_print_active_wakeup_sources();
+> >  	}
+> >  
+> > +	if (atomic_read(&pm_abort_suspend) > 0) {
+> > +		raw_spin_lock_irqsave(&abort_suspend_lock, flags);
+> > +		list_for_each_entry(info, &pm_abort_suspend_list, list) {
+> > +			pm_pr_dbg("wakeup source or subsystem %s aborted suspend\n",
+> > +					info->source_triggering_abort_suspend);
+> > +		}
+> > +		raw_spin_unlock_irqrestore(&abort_suspend_lock, flags);
+> > +	}
+> 
+> After you print them all out, why not remove them from the list now?
+> Why wait until later?
+ Yes, this can be done. We have changed it in the next version.
 
+> 
+> > +
+> >  	return ret || atomic_read(&pm_abort_suspend) > 0;
+> >  }
+> >  EXPORT_SYMBOL_GPL(pm_wakeup_pending);
+> >  
+> >  void pm_system_wakeup(void)
+> >  {
+> > +	char buf[MAX_SUSPEND_ABORT_LEN];
+> 
+> You never actually check to ensure that you do not overflow this value,
+> right?  And are you _SURE_ you can put a string this big on the stack?
+> 
+ We have changed to dynamic allocation based on the required size in the next version.
 
-vim +/iounmap +204 drivers/irqchip/irq-realtek-intc-common.c
+> > +
+> > +	if (pm_suspend_target_state != PM_SUSPEND_ON) {
+> > +		sprintf(buf, "%ps", __builtin_return_address(0));
+> > +		if (strcmp(buf, "pm_wakeup_ws_event"))
+> 
+> This is _VERY_ fragile, you are relying on a specific symbol to never
+> change its name, which is not going to work in the long run, AND this
+> will not work if you don't have symbols in your kernel, right?
+>
+ As this is void function, we are depending on this symbol. We have put the
+ changes under debug flag in the next version.
+ If the symbol changes in future we need to adopt or if the pm_system_wakeup()
+ modified to take some input that can be used later.
+ 
+> How was this tested?
+> 
+ As of now we invoked "pm_system_wakeup()" from one of the late_suspend calls
+ and tested this functionality which listed source_name invoking abort suspend. 
 
-59fe9dce1f284e James Tai 2023-12-28  161  
-59fe9dce1f284e James Tai 2023-12-28  162  int realtek_intc_probe(struct platform_device *pdev, const struct realtek_intc_info *info)
-59fe9dce1f284e James Tai 2023-12-28  163  {
-59fe9dce1f284e James Tai 2023-12-28  164  	struct realtek_intc_data *data;
-59fe9dce1f284e James Tai 2023-12-28  165  	struct device *dev = &pdev->dev;
-59fe9dce1f284e James Tai 2023-12-28  166  	struct device_node *node = dev->of_node;
-59fe9dce1f284e James Tai 2023-12-28  167  	int ret, i;
-59fe9dce1f284e James Tai 2023-12-28  168  
-59fe9dce1f284e James Tai 2023-12-28  169  	data = devm_kzalloc(dev, struct_size(data, subset_data, info->subset_num), GFP_KERNEL);
-59fe9dce1f284e James Tai 2023-12-28  170  	if (!data)
-59fe9dce1f284e James Tai 2023-12-28  171  		return -ENOMEM;
-59fe9dce1f284e James Tai 2023-12-28  172  
-59fe9dce1f284e James Tai 2023-12-28  173  	data->base = of_iomap(node, 0);
-59fe9dce1f284e James Tai 2023-12-28  174  	if (!data->base)
-59fe9dce1f284e James Tai 2023-12-28  175  		goto iomap_cleanup;
-59fe9dce1f284e James Tai 2023-12-28  176  
-59fe9dce1f284e James Tai 2023-12-28  177  	data->info = info;
-59fe9dce1f284e James Tai 2023-12-28  178  
-59fe9dce1f284e James Tai 2023-12-28  179  	raw_spin_lock_init(&data->lock);
-59fe9dce1f284e James Tai 2023-12-28  180  
-59fe9dce1f284e James Tai 2023-12-28  181  	data->domain = irq_domain_add_linear(node, 32, &realtek_intc_domain_ops, data);
-59fe9dce1f284e James Tai 2023-12-28  182  	if (!data->domain)
-59fe9dce1f284e James Tai 2023-12-28  183  		goto iomap_cleanup;
-59fe9dce1f284e James Tai 2023-12-28  184  
-59fe9dce1f284e James Tai 2023-12-28  185  	data->subset_data_num = info->subset_num;
-59fe9dce1f284e James Tai 2023-12-28  186  	for (i = 0; i < info->subset_num; i++) {
-59fe9dce1f284e James Tai 2023-12-28  187  		ret = realtek_intc_subset(node, data, i);
-59fe9dce1f284e James Tai 2023-12-28  188  		if (ret <= 0) {
-59fe9dce1f284e James Tai 2023-12-28  189  			dev_err(dev, "failed to init subset %d: %d", i, ret);
-59fe9dce1f284e James Tai 2023-12-28  190  			goto irq_domain_cleanup;
-59fe9dce1f284e James Tai 2023-12-28  191  		}
-59fe9dce1f284e James Tai 2023-12-28  192  	}
-59fe9dce1f284e James Tai 2023-12-28  193  
-59fe9dce1f284e James Tai 2023-12-28  194  	platform_set_drvdata(pdev, data);
-59fe9dce1f284e James Tai 2023-12-28  195  
-59fe9dce1f284e James Tai 2023-12-28  196  	return 0;
-59fe9dce1f284e James Tai 2023-12-28  197  
-59fe9dce1f284e James Tai 2023-12-28  198  irq_domain_cleanup:
-59fe9dce1f284e James Tai 2023-12-28  199  	if (data->domain)
-59fe9dce1f284e James Tai 2023-12-28  200  		irq_domain_remove(data->domain);
-59fe9dce1f284e James Tai 2023-12-28  201  
-59fe9dce1f284e James Tai 2023-12-28  202  iomap_cleanup:
-59fe9dce1f284e James Tai 2023-12-28  203  	if (data->base)
-59fe9dce1f284e James Tai 2023-12-28 @204  		iounmap(data->base);
-59fe9dce1f284e James Tai 2023-12-28  205  
-59fe9dce1f284e James Tai 2023-12-28  206  	return -ENOMEM;
-59fe9dce1f284e James Tai 2023-12-28  207  }
-59fe9dce1f284e James Tai 2023-12-28  208  EXPORT_SYMBOL_GPL(realtek_intc_probe);
-59fe9dce1f284e James Tai 2023-12-28  209  
+> And again, why is this even needed, who will use it?  What tools will
+> consume it?  Who will rely on it?
+> 
+> thanks,
+> 
+> greg k-h
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+ Kernel developer can use this in debugging suspend failure while supporting system wide s2r.
+
+ Commit 8a537ece3d94 (PM / wakeup: Integrate mechanism to abort suspend transitions
+ in progress) and commit 60d4553bdc1a0 allowed to invoke pm_system_wakeup() when
+ wakeup_source_report_event() is called to signal a "hard" event to abort system
+ suspend in progress. Also, suspend can be aborted by direct call to pm_system_wakeup().
+
+ In some scenario, we have encoundered a situation where system suspend was aborted using
+ the above mechanism. However we faced a challenge in identifying the subsystem or module
+ responsible suspend failures. This will prove valuable in debugging system suspend
+ failures  by providing details about the sources aborting suspend in progress.
+
+Warm Regards,
+Vimal Kumar
 
