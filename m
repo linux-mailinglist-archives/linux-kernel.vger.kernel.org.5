@@ -1,159 +1,130 @@
-Return-Path: <linux-kernel+bounces-20896-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20895-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B23E828717
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 14:30:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9153C828713
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 14:29:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BC5D9B24ACC
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 13:30:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 353A91F253BA
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 13:29:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F4C639857;
-	Tue,  9 Jan 2024 13:29:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FB6038FA6;
+	Tue,  9 Jan 2024 13:29:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="MRs/bEWq"
-Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="EsIS+vGQ"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F386538F9E
-	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 13:29:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-53fa455cd94so928377a12.2
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 05:29:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704806982; x=1705411782; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=pyLic9iO2i6kaJfam6/jRmyNsV6AuxuUVqN/iIKWdX0=;
-        b=MRs/bEWqCeNYQcFzZWjUBYDieSYSCVIVqyrXsBfD9AicV+JHblOI1PAfdJ8dvL5M4w
-         rpX7/5KOQWTnw3f6t9UUbU5ZLu8vgTnIGxu+cyUI+msMtxppX2HLWi9eXqO45inqc1VG
-         1aftg+lU9EXJOm6IcvTHKZwfbQd2JkCVtDLDHlFrI+YejvRf89FdtziRNim5pKs1+NjQ
-         ofXuvZQH3eQElAaVlLe7/4vbMv3qQ6nr7LsdJvb6mACSsu6MrDqx8c4PYOZV7AwlVnM8
-         ZT7vbx2f92uqtGrXcu2cKWvJxP2HaTYu2iQyI4r3hcainYDgGypheJRSMu9LVHeabfDT
-         0a3Q==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 467F338F95
+	for <linux-kernel@vger.kernel.org>; Tue,  9 Jan 2024 13:29:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1704806980;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=15WUaUtJR6dbWoV6G1ufbk9qhY55jeRmgoJT7AkGO8Y=;
+	b=EsIS+vGQgcheTHGYVhOufhqgm6SVto3/cy0hNW/dsoUXX50vmS0w7dugaE2w+HbBD0p3TI
+	n2l4LA3tkg0cFSCThkPJH6eBWx2nETv1EDBUvg+2oHOCXfBJyo1x0pWknq+Ol3ndH/7aEb
+	ZnaYjQj4tG+RXYTOe8EMKVp1gXF5n6c=
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
+ [209.85.160.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-594-ILWMBoojOBq-w87_asJT-g-1; Tue, 09 Jan 2024 08:29:39 -0500
+X-MC-Unique: ILWMBoojOBq-w87_asJT-g-1
+Received: by mail-qt1-f200.google.com with SMTP id d75a77b69052e-427e371c28cso47794561cf.0
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Jan 2024 05:29:39 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704806982; x=1705411782;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=pyLic9iO2i6kaJfam6/jRmyNsV6AuxuUVqN/iIKWdX0=;
-        b=s+rEn3UnCo79KaHrk5fb2R73EZFkUBseNhs8VpVTNranlxubtt1i/pP0WIe1HeEOpQ
-         tuvBrQ24bZYXtrgDvK1ZQCWIIBSsvEQaVPVGNS0725OyMDep2rb995sbD+Q4YgNHECsm
-         fBhY8Ls66y3CzDiKpjSyezOnVblL7nuvL3ooVCwHnaPfIaGsXvG16UckDI8dcKhDe4Na
-         CGRhM3Tus0NsLRRYcorZKSl5kTxBzGtquAz9mFMzJEr8kBoFnidmvuJDqKKbbIALHMoZ
-         O7ZJlTeMkrcuej7VFklu5KYFgxNaRtUOT2YfiwvLPX3WqucbCX8l86+8peksoqmttcbT
-         hiwA==
-X-Gm-Message-State: AOJu0Yx5bHgoyfG8tsveh1o7bfKX6PqlOxAwPwOIgegoIeoGVa5/3T6F
-	Kn2oCG4XJGBMHnF1JGIu7J5jZYwjWI1ESRsoFBs8H143nBJSow==
-X-Google-Smtp-Source: AGHT+IHTyoiQC3WFdFRPjSJCoNhZ5A2+02943Z/lNMhVjhkOgqY37/nGB5ElSTBSubouYNO/eWSGYi/j7r77wcYAjoc=
-X-Received: by 2002:a17:90a:4701:b0:28c:3758:f38a with SMTP id
- h1-20020a17090a470100b0028c3758f38amr2341460pjg.5.1704806982158; Tue, 09 Jan
- 2024 05:29:42 -0800 (PST)
+        d=1e100.net; s=20230601; t=1704806978; x=1705411778;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=15WUaUtJR6dbWoV6G1ufbk9qhY55jeRmgoJT7AkGO8Y=;
+        b=IjMhe0IV4bFhHqTitLn4l7nhaerT/a37kD67d/Ogl31g3A4lYvyW5k46nzK3aEaw02
+         ue0EVwPx4V8P1lZsazFlW2koGgA4r4XGmxRq4QxrnEpFs02iwr3ZKPrdIvlaqZH9IdA6
+         9VxVJJEZkHusQUdvcIQ5mS18P2PHho24TzpmG9q93fiVP7oOFC8pBZsG+F+3T9Cv03kQ
+         uHYgbZuG1X0ATmCH9JG3wokUrbFKmX1YOrtjRKnl7TpH8HbNYMljsEcFWx+kEZbxiYmk
+         hwrO2gPIN+LWw5UZDJ6/PY8hNuKlwrB9ad76pv1juaKoSrVqEjB+gUSBqUOCffLiDyXE
+         vbug==
+X-Gm-Message-State: AOJu0YzAZAjp1a0wNqcCIEQSaT8/XqePUKLqaSanbAymQGXSD4lOzswH
+	NdQrZkPCBZ7Kw0X8NZPpB7IUCPicqlqEnXN8FLsWKKoZxgwWtIILZ2VesPBcFoM4YOetcti50uf
+	rSSKXyFFh0Yj+kSIMbCMl1XJAcT4GLhwv
+X-Received: by 2002:a05:622a:245:b0:429:a2bc:3173 with SMTP id c5-20020a05622a024500b00429a2bc3173mr1630290qtx.124.1704806978656;
+        Tue, 09 Jan 2024 05:29:38 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEsIJB0i1Ie0GcVwu2hmfVgPidxfgcdf4zv+xDBG59MebZv/M1AFPN63TY4iMwZ7RdExAnXJw==
+X-Received: by 2002:a05:622a:245:b0:429:a2bc:3173 with SMTP id c5-20020a05622a024500b00429a2bc3173mr1630278qtx.124.1704806978408;
+        Tue, 09 Jan 2024 05:29:38 -0800 (PST)
+Received: from fedora ([136.56.198.188])
+        by smtp.gmail.com with ESMTPSA id c1-20020ac853c1000000b004181e5a724csm849005qtq.88.2024.01.09.05.29.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Jan 2024 05:29:37 -0800 (PST)
+Date: Tue, 9 Jan 2024 08:29:36 -0500
+From: Audra Mitchell <audra@redhat.com>
+To: Tejun Heo <tj@kernel.org>
+Cc: Audra Mitchell <aubaker@redhat.com>, linux-kernel@vger.kernel.org,
+	raquini@redhat.com, jiangshanlai@gmail.com,
+	hirokazu.yamauchi.hk@hitachi.com,
+	Laurence Oberman <loberman@redhat.com>,
+	Donald Douwsma <ddouwsma@redhat.com>
+Subject: Re: [PATCH] workqueue.c: Change workqueue to accept variable length
+ name
+Message-ID: <ZZ1KQN5SBvujlXF8@fedora>
+References: <20231215193954.1785069-1-audra@redhat.com>
+ <ZYSwieA7FeYLh5Ey@mtj.duckdns.org>
+ <CA+bDH-v6T5vvyOwsphseHwgihdGQta7TZ9tOtt-Fnij92kvU6A@mail.gmail.com>
+ <ZYXNMEXBnuumL3D6@mac.lan>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240108134843.429769-1-vincent.guittot@linaro.org> <d37e3d06-d9fc-4fc3-ad92-e7031489660a@arm.com>
-In-Reply-To: <d37e3d06-d9fc-4fc3-ad92-e7031489660a@arm.com>
-From: Vincent Guittot <vincent.guittot@linaro.org>
-Date: Tue, 9 Jan 2024 14:29:31 +0100
-Message-ID: <CAKfTPtAOSgnStDSao1QarHuUW9BTfk1o7r6NO4LhwEJMhq1drg@mail.gmail.com>
-Subject: Re: [PATCH v3 0/5] Rework system pressure interface to the scheduler
-To: Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc: linux@armlinux.org.uk, catalin.marinas@arm.com, will@kernel.org, 
-	sudeep.holla@arm.com, rafael@kernel.org, viresh.kumar@linaro.org, 
-	agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org, 
-	mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com, 
-	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de, bristot@redhat.com, 
-	vschneid@redhat.com, lukasz.luba@arm.com, rui.zhang@intel.com, 
-	mhiramat@kernel.org, daniel.lezcano@linaro.org, amit.kachhap@gmail.com, 
-	corbet@lwn.net, gregkh@linuxfoundation.org, 
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	linux-pm@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org, linux-doc@vger.kernel.org, 
-	qyousef@layalina.io
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZYXNMEXBnuumL3D6@mac.lan>
 
-On Tue, 9 Jan 2024 at 12:34, Dietmar Eggemann <dietmar.eggemann@arm.com> wrote:
->
-> On 08/01/2024 14:48, Vincent Guittot wrote:
-> > Following the consolidation and cleanup of CPU capacity in [1], this serie
-> > reworks how the scheduler gets the pressures on CPUs. We need to take into
-> > account all pressures applied by cpufreq on the compute capacity of a CPU
-> > for dozens of ms or more and not only cpufreq cooling device or HW
-> > mitigiations. we split the pressure applied on CPU's capacity in 2 parts:
-> > - one from cpufreq and freq_qos
-> > - one from HW high freq mitigiation.
-> >
-> > The next step will be to add a dedicated interface for long standing
-> > capping of the CPU capacity (i.e. for seconds or more) like the
-> > scaling_max_freq of cpufreq sysfs. The latter is already taken into
-> > account by this serie but as a temporary pressure which is not always the
-> > best choice when we know that it will happen for seconds or more.
->
-> I guess this is related to the 'user space system pressure' (*) slide of
-> your OSPM '23 talk.
+On Sat, Dec 23, 2023 at 02:53:52AM +0900, Tejun Heo wrote:
+> Hello,
+> 
+> On Fri, Dec 22, 2023 at 10:35:03AM -0500, Audra Mitchell wrote:
+> > We have one concrete example from a Hitachi block device driver (notice the
+> > 47a1/47a2 gets
+> > cut off with the workqueue name):
+> > 
+> > Device                              Workqueue Name (24char zero terminated)
+> > /dev/sd0279b080047a1   xfs-blockgc/sd0279b0800
+> > /dev/sd0279b080047a2   xfs-blockgc/sd0279b0800
+> 
+> I see, so it's a combination of somewhat lengthy device names and then xfs
+> adding a prefix to them. Neither is particularly long but the combination
+> is.
+> 
+> > I can also imagine this issue being present with nvme devices, but the
+> > request came from Hitachi.
+> > I believe it would be up to the device driver to determine if the name can
+> > be shortened and I've
+> > included Hitachi requester on this email thread.
+> > 
+> > Alternatively, we could increase the size of the WQ_NAME_LEN, but it seems
+> > highly likely we are
+> > going to butt against the static size again in the future. We previously
+> > had variable length names
+> > and it seems (to me) to be the best long term path forward.
+> 
+> Can we just bump the length to 32 and trigger a warning if the requested
+> name overruns? I want to provide some pressure to limit the length of the
+> name so that it doesn't get too long over time. If folks bump into it and
+> can't find a different way to deal with it, we can get bring back the
+> subject.
 
-yes
+Hey Tejun!
 
->
-> Where do you draw the line when it comes to time between (*) and the
-> 'medium pace system pressure' (e.g. thermal and FREQ_QOS).
+Hope you had a nice holiday. I just got back from a bit of a break and will
+work on your suggestions this week. Thanks a bunch for your feedback!
 
-My goal is to consider the /sys/../scaling_max_freq as the 'user space
-system pressure'
+- Audra
 
->
-> IIRC, with (*) you want to rebuild the sched domains etc.
-
-The easiest way would be to rebuild the sched_domain but the cost is
-not small so I would prefer to skip the rebuild and add a new signal
-that keep track on this capped capacity
-
->
-> >
-> > [1] https://lore.kernel.org/lkml/20231211104855.558096-1-vincent.guittot@linaro.org/
-> >
-> > Change since v1:
-> > - Rework cpufreq_update_pressure()
-> >
-> > Change since v1:
-> > - Use struct cpufreq_policy as parameter of cpufreq_update_pressure()
-> > - Fix typos and comments
-> > - Make sched_thermal_decay_shift boot param as deprecated
-> >
-> > Vincent Guittot (5):
-> >   cpufreq: Add a cpufreq pressure feedback for the scheduler
-> >   sched: Take cpufreq feedback into account
-> >   thermal/cpufreq: Remove arch_update_thermal_pressure()
-> >   sched: Rename arch_update_thermal_pressure into
-> >     arch_update_hw_pressure
-> >   sched/pelt: Remove shift of thermal clock
-> >
-> >  .../admin-guide/kernel-parameters.txt         |  1 +
-> >  arch/arm/include/asm/topology.h               |  6 +-
-> >  arch/arm64/include/asm/topology.h             |  6 +-
-> >  drivers/base/arch_topology.c                  | 26 ++++----
-> >  drivers/cpufreq/cpufreq.c                     | 36 +++++++++++
-> >  drivers/cpufreq/qcom-cpufreq-hw.c             |  4 +-
-> >  drivers/thermal/cpufreq_cooling.c             |  3 -
-> >  include/linux/arch_topology.h                 |  8 +--
-> >  include/linux/cpufreq.h                       | 10 +++
-> >  include/linux/sched/topology.h                |  8 +--
-> >  .../{thermal_pressure.h => hw_pressure.h}     | 14 ++---
-> >  include/trace/events/sched.h                  |  2 +-
-> >  init/Kconfig                                  | 12 ++--
-> >  kernel/sched/core.c                           |  8 +--
-> >  kernel/sched/fair.c                           | 63 +++++++++----------
-> >  kernel/sched/pelt.c                           | 18 +++---
-> >  kernel/sched/pelt.h                           | 16 ++---
-> >  kernel/sched/sched.h                          | 22 +------
-> >  18 files changed, 144 insertions(+), 119 deletions(-)
-> >  rename include/trace/events/{thermal_pressure.h => hw_pressure.h} (55%)
->
 
