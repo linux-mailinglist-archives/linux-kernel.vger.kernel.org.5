@@ -1,116 +1,123 @@
-Return-Path: <linux-kernel+bounces-21196-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21195-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 073A6828B9D
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 18:58:46 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF06A828B9A
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 18:58:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 178141C22D2D
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 17:58:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 41E12B21C1F
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Jan 2024 17:58:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3D273C08D;
-	Tue,  9 Jan 2024 17:58:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F7593BB3A;
+	Tue,  9 Jan 2024 17:58:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AX6XZXx3"
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pBXR0hDI"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D43393BB4C;
-	Tue,  9 Jan 2024 17:58:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-40e43e48a16so28598095e9.2;
-        Tue, 09 Jan 2024 09:58:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704823098; x=1705427898; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=jpUtuzXOnCEqHGuFl9LL4Al2mrUJlNSjgLnKSAf1Ws0=;
-        b=AX6XZXx3cFGDVjyLiWXk8oT9oSecKCEIH3u3ZEdW/F6gQrooS/PFVRPByGOBSXR6Ry
-         4ov2unT2T4jNQeX3pXVFPyYZ4Uij1n/iThTp5JoZgaaQo+PbhCf2nb1yo9T557rb0DPW
-         2g/AMPjE4hITqzBbEVgxnWkFc+ndBieH9ZxK8EJs5cZHe0944FZwyCWuuDI9QMOXq541
-         VCTvS8eM6gpsD5YV1Ei8woRvG4fzlgecAF2QOoTMC6MGdRj+JB/eJCQWP1aO8WsJfffo
-         KalvAIZtihBVXQeRZI/id3759No19ifjsEBe9/oH1z7TjE0edyBf/bAeqGqn1j4CgFCc
-         94PA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704823098; x=1705427898;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=jpUtuzXOnCEqHGuFl9LL4Al2mrUJlNSjgLnKSAf1Ws0=;
-        b=Ti4O3tbL0WRecEkZ2g+dqm3Ri3wXfF080IFu8BilvyQKyfmiQXRI1FyvP0fWWO3JwT
-         zlsI7kKSq23WG8cDbFzCidjVhT33TFI78j99hq/dsfYTEUtxZY9palRzzWs6OPdYhEOm
-         aELtPwSsL2CfcCsbkCsZjExKllU4NV7ynidcf5tw+iCy8QhdcZP44mMxOZmHpL26jY9b
-         fepkfoffZEmfzlaSVHB0VcGMvKzyE+FDwBC1v7sSk5Eoa0pytwIBJqoJHDgz1tVO5+kl
-         /32inACeR76E1CtzrvJmz7kDCnrPkicO0oO1i4dBUwW7v7avudcDdDCVyjnF7eBtzMQk
-         iVEA==
-X-Gm-Message-State: AOJu0Yz8RVG40xJz8F5EpwiS8XkHVP1ZVJUVTgiZdRWtMH+EhZO8Adyc
-	XXGgRqje0VZEqQK5aHojQBf9WbUtG5s=
-X-Google-Smtp-Source: AGHT+IHKcG3xLgIZvkIf6WXKaw2viLsbGnjXdHGB+gUG0ScLL60G2Y8/mqRCqsevl+1FE7O5XIddlw==
-X-Received: by 2002:a05:600c:a05:b0:40d:9237:dada with SMTP id z5-20020a05600c0a0500b0040d9237dadamr2958932wmp.103.1704823097807;
-        Tue, 09 Jan 2024 09:58:17 -0800 (PST)
-Received: from macminim1.retailmedia.com ([2a01:e0a:b14:c1f0:617b:c61e:d65f:861e])
-        by smtp.googlemail.com with ESMTPSA id iv14-20020a05600c548e00b0040e3733a32bsm15777075wmb.41.2024.01.09.09.58.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Jan 2024 09:58:17 -0800 (PST)
-From: Erwan Velu <erwanaliasr1@gmail.com>
-X-Google-Original-From: Erwan Velu <e.velu@criteo.com>
-To: 
-Cc: Erwan Velu <e.velu@criteo.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Huang Rui <ray.huang@amd.com>,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-pm@vger.kernel.org
-Subject: [PATCH 1/2] admin-guide: Fixing typos
-Date: Tue,  9 Jan 2024 18:57:53 +0100
-Message-ID: <20240109175801.447943-1-e.velu@criteo.com>
-X-Mailer: git-send-email 2.43.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBBFD38DF8;
+	Tue,  9 Jan 2024 17:58:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EFD56C433F1;
+	Tue,  9 Jan 2024 17:58:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704823097;
+	bh=jPQukDAtVbClY9EBeS+NqfHyLacDsIvaawr24NohtKA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=pBXR0hDIxuyEvjXNm0ZHkn82qvWJPxEeg8vRLhUWpcgwAjyw9QDysog3LK2PVQult
+	 9Go+Fi125jYvZDB64hW3vCXxDEcn1/BK+pt5NqtqqQKLTdqo9bY948RcuvcxU2solW
+	 4vKCSzlftGX3C8MVRS35uscVo5/xKVpYDqx9lrU9Apjy76V+ddXDE8gB+2mmN0AuZf
+	 oPcWHesQh5ieuYvzxayCuvHpRXx3KbE78X0kmN1z43HIDK8fHuuSm5D93GP6NTB/A2
+	 otf9gtIxEuJz5XBV4wxvbQ8xXHf1BOfBSoPrqMAdPLvPhwTHpw3vbnYVN41E5sHJLi
+	 jqPfsfuLkmYcA==
+Date: Tue, 9 Jan 2024 10:58:14 -0700
+From: Nathan Chancellor <nathan@kernel.org>
+To: kernel test robot <lkp@intel.com>
+Cc: Thomas Zimmermann <tzimmermann@suse.de>, ardb@kernel.org,
+	tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+	dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
+	bhelgaas@google.com, arnd@arndb.de, zohar@linux.ibm.com,
+	dmitry.kasatkin@gmail.com, paul@paul-moore.com, jmorris@namei.org,
+	serge@hallyn.com, javierm@redhat.com, llvm@lists.linux.dev,
+	oe-kbuild-all@lists.linux.dev, linux-arch@vger.kernel.org,
+	linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-pci@vger.kernel.org, linux-integrity@vger.kernel.org,
+	linux-security-module@vger.kernel.org
+Subject: Re: [PATCH v4 2/4] arch/x86: Move internal setup_data structures
+ into setup_data.h
+Message-ID: <20240109175814.GA5981@dev-arch.thelio-3990X>
+References: <20240108095903.8427-3-tzimmermann@suse.de>
+ <202401090800.UOBEKB3W-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202401090800.UOBEKB3W-lkp@intel.com>
 
-This commit fixes two typos in the admin-guide.
+On Tue, Jan 09, 2024 at 08:28:59AM +0800, kernel test robot wrote:
+> Hi Thomas,
+> 
+> kernel test robot noticed the following build warnings:
+> 
+> [auto build test WARNING on tip/x86/core]
+> [also build test WARNING on efi/next tip/master tip/auto-latest linus/master v6.7 next-20240108]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
+> https://git-scm.com/docs/git-format-patch#_base_tree_information]
+> 
+> url:    https://github.com/intel-lab-lkp/linux/commits/Thomas-Zimmermann/arch-x86-Move-UAPI-setup-structures-into-setup_data-h/20240108-180158
+> base:   tip/x86/core
+> patch link:    https://lore.kernel.org/r/20240108095903.8427-3-tzimmermann%40suse.de
+> patch subject: [PATCH v4 2/4] arch/x86: Move internal setup_data structures into setup_data.h
+> config: x86_64-rhel-8.3-bpf (https://download.01.org/0day-ci/archive/20240109/202401090800.UOBEKB3W-lkp@intel.com/config)
+> compiler: ClangBuiltLinux clang version 17.0.6 (https://github.com/llvm/llvm-project 6009708b4367171ccdbf4b5905cb6a803753fe18)
+> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240109/202401090800.UOBEKB3W-lkp@intel.com/reproduce)
+> 
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202401090800.UOBEKB3W-lkp@intel.com/
+> 
+> All warnings (new ones prefixed by >>):
+> 
+>    In file included from arch/x86/realmode/rm/wakemain.c:3:
+>    In file included from arch/x86/boot/boot.h:24:
+>    In file included from arch/x86/include/asm/setup.h:10:
+>    In file included from arch/x86/include/asm/page_types.h:7:
+>    In file included from include/linux/mem_encrypt.h:17:
+>    In file included from arch/x86/include/asm/mem_encrypt.h:18:
+>    In file included from arch/x86/include/uapi/asm/bootparam.h:5:
+> >> arch/x86/include/asm/setup_data.h:10:20: warning: field 'data' with variable sized type 'struct setup_data' not at the end of a struct or class is a GNU extension [-Wgnu-variable-sized-type-not-at-end]
+>       10 |         struct setup_data data;
+>          |                           ^
+>    1 warning generated.
 
-- a missing e in "reference_perf".
-- the amd_pstate sysfs path uses a dash instead of an underscore.
+I think this warning is expected. This structure is now included in the
+realmode part of arch/x86, which has its own set of build flags,
+including -Wall, which includes -Wgnu on clang. The kernel obviously
+uses GNU extensions and states this clearly with '-std=gnu11', so
+-Wno-gnu is unconditionally added to KBUILD_CFLAGS for clang. It seems
+that same treatment is needed for REALMODE_CFLAGS, which also matches
+arch/x86/boot/compressed/Makefile, see commit 6c3b56b19730 ("x86/boot:
+Disable Clang warnings about GNU extensions"):
 
-Signed-off-by: Erwan Velu <e.velu@criteo.com>
----
- Documentation/admin-guide/acpi/cppc_sysfs.rst | 2 +-
- Documentation/admin-guide/pm/amd-pstate.rst   | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/Documentation/admin-guide/acpi/cppc_sysfs.rst b/Documentation/admin-guide/acpi/cppc_sysfs.rst
-index e53d76365aa7..36981c667823 100644
---- a/Documentation/admin-guide/acpi/cppc_sysfs.rst
-+++ b/Documentation/admin-guide/acpi/cppc_sysfs.rst
-@@ -75,4 +75,4 @@ taking two different snapshots of feedback counters at time T1 and T2.
-   delivered_counter_delta = fbc_t2[del] - fbc_t1[del]
-   reference_counter_delta = fbc_t2[ref] - fbc_t1[ref]
+diff --git a/arch/x86/Makefile b/arch/x86/Makefile
+index 1a068de12a56..24076db59783 100644
+--- a/arch/x86/Makefile
++++ b/arch/x86/Makefile
+@@ -53,6 +53,9 @@ REALMODE_CFLAGS += -fno-stack-protector
+ REALMODE_CFLAGS += -Wno-address-of-packed-member
+ REALMODE_CFLAGS += $(cc_stack_align4)
+ REALMODE_CFLAGS += $(CLANG_FLAGS)
++ifdef CONFIG_CC_IS_CLANG
++REALMODE_CFLAGS += -Wno-gnu
++endif
+ export REALMODE_CFLAGS
  
--  delivered_perf = (refernce_perf x delivered_counter_delta) / reference_counter_delta
-+  delivered_perf = (reference_perf x delivered_counter_delta) / reference_counter_delta
-diff --git a/Documentation/admin-guide/pm/amd-pstate.rst b/Documentation/admin-guide/pm/amd-pstate.rst
-index 1cf40f69278c..9eb26014d34b 100644
---- a/Documentation/admin-guide/pm/amd-pstate.rst
-+++ b/Documentation/admin-guide/pm/amd-pstate.rst
-@@ -361,7 +361,7 @@ Global Attributes
- 
- ``amd-pstate`` exposes several global attributes (files) in ``sysfs`` to
- control its functionality at the system level.  They are located in the
--``/sys/devices/system/cpu/amd-pstate/`` directory and affect all CPUs.
-+``/sys/devices/system/cpu/amd_pstate/`` directory and affect all CPUs.
- 
- ``status``
- 	Operation mode of the driver: "active", "passive" or "disable".
--- 
-2.43.0
-
+ # BITS is used as extension for files which are available in a 32 bit
 
